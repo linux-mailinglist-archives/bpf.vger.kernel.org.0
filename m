@@ -1,81 +1,52 @@
-Return-Path: <bpf+bounces-56947-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56948-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CCAFAA0C9D
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 15:03:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9AEFAA0D8A
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 15:33:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1D9F4830B1
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 13:03:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD2CA1A80E04
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 13:33:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C897415747C;
-	Tue, 29 Apr 2025 13:03:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HrCMNlVo"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74A9D2C2AC8;
+	Tue, 29 Apr 2025 13:33:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.uniroma2.it (smtp.uniroma2.it [160.80.4.38])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5D94487BF
-	for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 13:03:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5090284A35;
+	Tue, 29 Apr 2025 13:33:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=160.80.4.38
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745931814; cv=none; b=ImAjqao9RkHmLbzBx6md7K6D8iG620T27GRbts5eKuomW0nJTl0ikH8JbgK8RvXIU24aTeNIZ7Rrdy6641Iby/jbanCKhzhbFz+px7uW+xG+FcBKLOGh7wy7drlIVzL5dJdrbhJQ1iUxv+bnGgD8A5hbHV3eF2/h5BUFwUKGURY=
+	t=1745933598; cv=none; b=nNbuSPbQvIntdqruFyXzJmrLWhg/Az6BAdI+yxr5uab/ow09o2O3VouP4bRG8fQeZJ6b4apVX4neVZy8v8vgCfzE4pDVTA28uE2W3tp011C8fpvN7bQrRz7m29/Gj0s+dnixoOyD29gSdlKWq/8m9XDvgcqpuvuZvTZMZ9eu+vM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745931814; c=relaxed/simple;
-	bh=UVkHcl3aQSvHbDA91XSP5SGl0J5Vx2IuuxjWhC23+VM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HgebdihqDc+zS5opsaeY62x6ppli6x8TFiHGTZkKOI4ZV7Yz1xXQKvXT36STa9+eu9VLEaForlR3fXjEY4qqWDBfPuojkEx5KxILWlgQyUxGnT/bDtYj/n49qM1EH1scvG2mnQUcCt27oW1D61zfXLS7TFr2X+YnbneGkNw4z7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HrCMNlVo; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5f4b7211badso9754085a12.2
-        for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 06:03:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745931810; x=1746536610; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Uq8ecgHUyxCS5ksWMNOwpQQuAqPncUrMeyNDshKPs1o=;
-        b=HrCMNlVovpOgtz49qjs5/CcyOQDCs5eanqmT/vDcN38/zUexG5N3dApd43CERzjJwX
-         5LfHxpU7exSHIyudtm1mQutAclGxdvHDii7fE9F4j7SvfrrtVbQmJMNtbawQAahLcIxS
-         c4D30YIe8FmCA9fN8933+cggIkWlNC2xEz3zKbrDidiwy7lisvpRgHH8KsIrqYo+Exge
-         8FVedPjFhAVBhUqcVWerBvA3YYaw4eA+VIuD0l9q94nWS9IRD5veA91q2eevovaoL307
-         Z/+pSCagkZ1jQ9B/umRToLxELforByai0muNJ6vSiGidNA0XxKTlzQyC3zkhw85+/miW
-         /tuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745931810; x=1746536610;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Uq8ecgHUyxCS5ksWMNOwpQQuAqPncUrMeyNDshKPs1o=;
-        b=Xv/h9W3X2L4rxOxeK2znj3xqnVEB/ZcM486uuDAeJ2vcSJ3jFOLd31ZvwHUPWVW7in
-         vfnl/MkvTfaAYha05HgBom8R2HGClC0ALEbU1ovKtEFL4JFEGUZqE25Panph+X/wZ1kC
-         VwHWkG8dPZ8fkKbW04enh2bX2aOoHJUDCLbwUk7OU/tTSSuWKu+s1G51nozkzyKpZHWC
-         IppDLhp9WJOd+R+atKCdhWtTpkN2hNHi5tupReslh/vFqVWHaYXXm3nS9Hs9MvvvgCHD
-         k9EWPW1zzWXaH+x7Pgt3serWkmL6/6qqRZQxAovHS/4nxepFr3W3+a5aT9SILuQPqkEs
-         xSqg==
-X-Gm-Message-State: AOJu0YzftSGLCSDaM8Ae/Ga9Kcvy1i1JEubEELd/zmv4e7f07/1GaSsm
-	Id0AsmoOt6nW8QrH77W2foUW/YyfKx4LiZizDj7MCNd4ecD9LGRXEIbZog==
-X-Gm-Gg: ASbGnctr/lYLYiSiATKv83PqBAuKFwYZEfGS2B6OlDamDD7bihksnVTHrVorQXIS9Sx
-	metxPQlbQNksJzVgIddqMyl3Eppfqs90h+D3i2pNah/cTcj9oE8iNkxd2YpNGzDRkHnvXA3s9wF
-	eQrfIzSUf48iVZZLwt74IFYqo3VS+pB3SlwMwyVsJ7QOsNYAKP9OoiUzS1GlwKCIDsXErqnH7X4
-	6N3H0P1l703+Lq2PSesFBVUghDhvoI+ffBcMBVEVTpjeotozhqRVs6uRq2sKsuiuwKI8JK8+976
-	mVMK6tViJEDQQ1k7Lt+AgUVdfIy0AO+ckoDQRGTI2cDlEsQwsHTpCdrrxTu9e0egP4TtURg=
-X-Google-Smtp-Source: AGHT+IF/57nlPBgOraUhKuRizmX38TFt2Q8u4/gOxDv2gBeK5+vfJ6nlOfiwpYAo/XSPPfNYDQ/BnQ==
-X-Received: by 2002:a05:6402:350c:b0:5f7:eb1e:7f25 with SMTP id 4fb4d7f45d1cf-5f83b0c3d7fmr2211399a12.12.1745931809614;
-        Tue, 29 Apr 2025 06:03:29 -0700 (PDT)
-Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5f7011fc653sm7335905a12.14.2025.04.29.06.03.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Apr 2025 06:03:29 -0700 (PDT)
-From: Anton Protopopov <a.s.protopopov@gmail.com>
-To: bpf@vger.kernel.org
-Cc: Anton Protopopov <a.s.protopopov@gmail.com>
-Subject: [PATCH v1 bpf-next] bpf: fix uninitialized values in BPF_{CORE,PROBE}_READ
-Date: Tue, 29 Apr 2025 13:08:09 +0000
-Message-Id: <20250429130809.1811713-1-a.s.protopopov@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1745933598; c=relaxed/simple;
+	bh=dhfOGYE/ifFpnk7DyKqjBVByUrNA1ms2k80mmNiL4Mw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cuYhryYh1PGbvQJHemRmDuiIRLevySOsr9V2xLmzFlt7eA9U8DGebUjuAnSManF8+Dgvazodj55ELFnFOsj69rAcCYGuJg+Soc6yO1ea0qtW0m08S1SSSEI5Y04EW45RkA6ZEp0WC9tgSIaVvL0gRxokYBV/aBXsd1i94pGNIjs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniroma2.it; spf=pass smtp.mailfrom=uniroma2.it; arc=none smtp.client-ip=160.80.4.38
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniroma2.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniroma2.it
+Received: from localhost.localdomain ([160.80.103.126])
+	by smtp-2015.uniroma2.it (8.14.4/8.14.4/Debian-8) with ESMTP id 53TDPMc6009034
+	(version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Tue, 29 Apr 2025 15:25:23 +0200
+From: Andrea Mayer <andrea.mayer@uniroma2.it>
+To: "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, David Ahern <dsahern@kernel.org>,
+        Simon Horman <horms@kernel.org>, Kuniyuki Iwashima <kuniyu@amazon.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc: Stefano Salsano <stefano.salsano@uniroma2.it>,
+        Paolo Lungaroni <paolo.lungaroni@uniroma2.it>,
+        Ahmed Abdelsalam <ahabdels.dev@gmail.com>,
+        Andrea Mayer <andrea.mayer@uniroma2.it>
+Subject: [net-next] ipv6: sr: switch to GFP_ATOMIC flag to allocate memory during seg6local LWT setup
+Date: Tue, 29 Apr 2025 15:24:53 +0200
+Message-Id: <20250429132453.31605-1-andrea.mayer@uniroma2.it>
+X-Mailer: git-send-email 2.20.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -83,79 +54,160 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.100.0 at smtp-2015
+X-Virus-Status: Clean
 
-With the latest LLVM bpf selftests build will fail:
+Recent updates to the locking mechanism that protects IPv6 routing tables
+[1] have affected the SRv6 networking subsystem. Such changes cause
+problems with some SRv6 Endpoints behaviors, like End.B6.Encaps and also
+impact SRv6 counters.
 
-    progs/profiler.inc.h:710:31: error: default initialization of an object of type 'typeof ((parent_task)->real_cred->uid.val)' (aka 'const unsigned int') leaves the object uninitialized and is incompatible with C++ [-Werror,-Wdefault-const-init-unsafe]
-      710 |         proc_exec_data->parent_uid = BPF_CORE_READ(parent_task, real_cred, uid.val);
-          |                                      ^
-    tools/testing/selftests/bpf/tools/include/bpf/bpf_core_read.h:520:35: note: expanded from macro 'BPF_CORE_READ'
-      520 |         ___type((src), a, ##__VA_ARGS__) __r;                               \
-          |                                          ^
+Starting from commit 169fd62799e8 ("ipv6: Get rid of RTNL for SIOCADDRT and
+RTM_NEWROUTE."), the inet6_rtm_newroute() function no longer needs to
+acquire the RTNL lock for creating and configuring IPv6 routes and set up
+lwtunnels.
+The RTNL lock can be avoided because the ip6_route_add() function
+finishes setting up a new route in a section protected by RCU.
+This makes sure that no dev/nexthops can disappear during the operation.
+Because of this, the steps for setting up lwtunnels - i.e., calling
+lwtunnel_build_state() - are now done in a RCU lock section and not
+under the RTNL lock anymore.
 
-Fix this by declaring __r to be an array of __u8 of a proper size.
+However, creating and configuring a lwtunnel instance in an
+RCU-protected section can be problematic when that tunnel needs to
+allocate memory using the GFP_KERNEL flag.
+For example, the following trace shows what happens when an SRv6
+End.B6.Encaps behavior is instantiated after commit 169fd62799e8 ("ipv6:
+Get rid of RTNL for SIOCADDRT and RTM_NEWROUTE."):
 
-Fixes: 792001f4f7aa ("libbpf: Add user-space variants of BPF_CORE_READ() family of macros")
-Fixes: a4b09a9ef945 ("libbpf: Add non-CO-RE variants of BPF_CORE_READ() macro family")
-Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
+[ 3061.219696] BUG: sleeping function called from invalid context at ./include/linux/sched/mm.h:321
+[ 3061.226136] in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 445, name: ip
+[ 3061.232101] preempt_count: 0, expected: 0
+[ 3061.235414] RCU nest depth: 1, expected: 0
+[ 3061.238622] 1 lock held by ip/445:
+[ 3061.241458]  #0: ffffffff83ec64a0 (rcu_read_lock){....}-{1:3}, at: ip6_route_add+0x41/0x1e0
+[ 3061.248520] CPU: 1 UID: 0 PID: 445 Comm: ip Not tainted 6.15.0-rc3-micro-vm-dev-00590-ge527e891492d #2058 PREEMPT(full)
+[ 3061.248532] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1ubuntu1 04/01/2014
+[ 3061.248549] Call Trace:
+[ 3061.248620]  <TASK>
+[ 3061.248633]  dump_stack_lvl+0xa9/0xc0
+[ 3061.248846]  __might_resched+0x218/0x360
+[ 3061.248871]  __kmalloc_node_track_caller_noprof+0x332/0x4e0
+[ 3061.248889]  ? rcu_is_watching+0x3a/0x70
+[ 3061.248902]  ? parse_nla_srh+0x56/0xa0
+[ 3061.248938]  kmemdup_noprof+0x1c/0x40
+[ 3061.248952]  parse_nla_srh+0x56/0xa0
+[ 3061.248969]  seg6_local_build_state+0x2e0/0x580
+[ 3061.248992]  ? __lock_acquire+0xaff/0x1cd0
+[ 3061.249013]  ? do_raw_spin_lock+0x111/0x1d0
+[ 3061.249027]  ? __pfx_seg6_local_build_state+0x10/0x10
+[ 3061.249068]  ? lwtunnel_build_state+0xe1/0x3a0
+[ 3061.249274]  lwtunnel_build_state+0x10d/0x3a0
+[ 3061.249303]  fib_nh_common_init+0xce/0x1e0
+[ 3061.249337]  ? __pfx_fib_nh_common_init+0x10/0x10
+[ 3061.249352]  ? in6_dev_get+0xaf/0x1f0
+[ 3061.249369]  ? __rcu_read_unlock+0x64/0x2e0
+[ 3061.249392]  fib6_nh_init+0x290/0xc30
+[ 3061.249422]  ? __pfx_fib6_nh_init+0x10/0x10
+[ 3061.249447]  ? __lock_acquire+0xaff/0x1cd0
+[ 3061.249459]  ? _raw_spin_unlock_irqrestore+0x22/0x70
+[ 3061.249624]  ? ip6_route_info_create+0x423/0x520
+[ 3061.249641]  ? rcu_is_watching+0x3a/0x70
+[ 3061.249683]  ip6_route_info_create_nh+0x190/0x390
+[ 3061.249715]  ip6_route_add+0x71/0x1e0
+[ 3061.249730]  ? __pfx_inet6_rtm_newroute+0x10/0x10
+[ 3061.249743]  inet6_rtm_newroute+0x426/0xc50
+[ 3061.249764]  ? avc_has_perm_noaudit+0x13d/0x360
+[ 3061.249853]  ? __pfx_inet6_rtm_newroute+0x10/0x10
+[ 3061.249905]  ? __lock_acquire+0xaff/0x1cd0
+[ 3061.249962]  ? rtnetlink_rcv_msg+0x52f/0x890
+[ 3061.249996]  ? __pfx_inet6_rtm_newroute+0x10/0x10
+[ 3061.250012]  rtnetlink_rcv_msg+0x551/0x890
+[ 3061.250040]  ? __pfx_rtnetlink_rcv_msg+0x10/0x10
+[ 3061.250065]  ? __lock_acquire+0xaff/0x1cd0
+[ 3061.250092]  netlink_rcv_skb+0xbd/0x1f0
+[ 3061.250108]  ? __pfx_rtnetlink_rcv_msg+0x10/0x10
+[ 3061.250124]  ? __pfx_netlink_rcv_skb+0x10/0x10
+[ 3061.250179]  ? netlink_deliver_tap+0x10b/0x700
+[ 3061.250210]  netlink_unicast+0x2e7/0x410
+[ 3061.250232]  ? __pfx_netlink_unicast+0x10/0x10
+[ 3061.250241]  ? __lock_acquire+0xaff/0x1cd0
+[ 3061.250280]  netlink_sendmsg+0x366/0x670
+[ 3061.250306]  ? __pfx_netlink_sendmsg+0x10/0x10
+[ 3061.250313]  ? find_held_lock+0x2d/0xa0
+[ 3061.250344]  ? import_ubuf+0xbc/0xf0
+[ 3061.250370]  ? __pfx_netlink_sendmsg+0x10/0x10
+[ 3061.250381]  __sock_sendmsg+0x13e/0x150
+[ 3061.250420]  ____sys_sendmsg+0x33d/0x450
+[ 3061.250442]  ? __pfx_____sys_sendmsg+0x10/0x10
+[ 3061.250453]  ? __pfx_copy_msghdr_from_user+0x10/0x10
+[ 3061.250489]  ? __pfx_slab_free_after_rcu_debug+0x10/0x10
+[ 3061.250514]  ___sys_sendmsg+0xe5/0x160
+[ 3061.250530]  ? __pfx____sys_sendmsg+0x10/0x10
+[ 3061.250568]  ? __lock_acquire+0xaff/0x1cd0
+[ 3061.250617]  ? find_held_lock+0x2d/0xa0
+[ 3061.250678]  ? __virt_addr_valid+0x199/0x340
+[ 3061.250704]  ? preempt_count_sub+0xf/0xc0
+[ 3061.250736]  __sys_sendmsg+0xca/0x140
+[ 3061.250750]  ? __pfx___sys_sendmsg+0x10/0x10
+[ 3061.250786]  ? syscall_exit_to_user_mode+0xa2/0x1e0
+[ 3061.250825]  do_syscall_64+0x62/0x140
+[ 3061.250844]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+[ 3061.250855] RIP: 0033:0x7f0b042ef914
+[ 3061.250868] Code: 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b5 0f 1f 80 00 00 00 00 48 8d 05 e9 5d 0c 00 8b 00 85 c0 75 13 b8 2e 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 54 c3 0f 1f 00 41 54 41 89 d4 55 48 89 f5 53
+[ 3061.250876] RSP: 002b:00007ffc2d113ef8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+[ 3061.250885] RAX: ffffffffffffffda RBX: 00000000680f93fa RCX: 00007f0b042ef914
+[ 3061.250891] RDX: 0000000000000000 RSI: 00007ffc2d113f60 RDI: 0000000000000003
+[ 3061.250897] RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000008
+[ 3061.250902] R10: fffffffffffff26d R11: 0000000000000246 R12: 0000000000000001
+[ 3061.250907] R13: 000055a961f8a520 R14: 000055a961f63eae R15: 00007ffc2d115270
+[ 3061.250952]  </TASK>
+
+To solve this issue, we replace the GFP_KERNEL flag with the GFP_ATOMIC
+one in those SRv6 Endpoints that need to allocate memory during the
+setup phase. This change makes sure that memory allocations are handled
+in a way that works with RCU critical sections.
+
+[1] - https://lore.kernel.org/all/20250418000443.43734-1-kuniyu@amazon.com/
+
+Fixes: 169fd62799e8 ("ipv6: Get rid of RTNL for SIOCADDRT and RTM_NEWROUTE.")
+Signed-off-by: Andrea Mayer <andrea.mayer@uniroma2.it>
 ---
- tools/lib/bpf/bpf_core_read.h | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ net/ipv6/seg6_local.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/lib/bpf/bpf_core_read.h b/tools/lib/bpf/bpf_core_read.h
-index c0e13cdf9660..be556ccdc002 100644
---- a/tools/lib/bpf/bpf_core_read.h
-+++ b/tools/lib/bpf/bpf_core_read.h
-@@ -517,9 +517,9 @@ extern void *bpf_rdonly_cast(const void *obj, __u32 btf_id) __ksym __weak;
-  * than enough for any practical purpose.
-  */
- #define BPF_CORE_READ(src, a, ...) ({					    \
--	___type((src), a, ##__VA_ARGS__) __r;				    \
--	BPF_CORE_READ_INTO(&__r, (src), a, ##__VA_ARGS__);		    \
--	__r;								    \
-+	__u8 __r[sizeof(___type((src), a, ##__VA_ARGS__))];		    \
-+	BPF_CORE_READ_INTO(__r, (src), a, ##__VA_ARGS__);		    \
-+	*(___type((src), a, ##__VA_ARGS__) *)__r;			    \
- })
+diff --git a/net/ipv6/seg6_local.c b/net/ipv6/seg6_local.c
+index ac1dbd492c22..ee5e448cc7a8 100644
+--- a/net/ipv6/seg6_local.c
++++ b/net/ipv6/seg6_local.c
+@@ -1671,7 +1671,7 @@ static int parse_nla_srh(struct nlattr **attrs, struct seg6_local_lwt *slwt,
+ 	if (!seg6_validate_srh(srh, len, false))
+ 		return -EINVAL;
  
- /*
-@@ -533,16 +533,16 @@ extern void *bpf_rdonly_cast(const void *obj, __u32 btf_id) __ksym __weak;
-  * input argument.
-  */
- #define BPF_CORE_READ_USER(src, a, ...) ({				    \
--	___type((src), a, ##__VA_ARGS__) __r;				    \
--	BPF_CORE_READ_USER_INTO(&__r, (src), a, ##__VA_ARGS__);		    \
--	__r;								    \
-+	__u8 __r[sizeof(___type((src), a, ##__VA_ARGS__))];		    \
-+	BPF_CORE_READ_USER_INTO(__r, (src), a, ##__VA_ARGS__);		    \
-+	*(___type((src), a, ##__VA_ARGS__) *)__r;			    \
- })
+-	slwt->srh = kmemdup(srh, len, GFP_KERNEL);
++	slwt->srh = kmemdup(srh, len, GFP_ATOMIC);
+ 	if (!slwt->srh)
+ 		return -ENOMEM;
  
- /* Non-CO-RE variant of BPF_CORE_READ() */
- #define BPF_PROBE_READ(src, a, ...) ({					    \
--	___type((src), a, ##__VA_ARGS__) __r;				    \
--	BPF_PROBE_READ_INTO(&__r, (src), a, ##__VA_ARGS__);		    \
--	__r;								    \
-+	__u8 __r[sizeof(___type((src), a, ##__VA_ARGS__))];		    \
-+	BPF_PROBE_READ_INTO(__r, (src), a, ##__VA_ARGS__);		    \
-+	*(___type((src), a, ##__VA_ARGS__) *)__r;			    \
- })
+@@ -1911,7 +1911,7 @@ static int parse_nla_bpf(struct nlattr **attrs, struct seg6_local_lwt *slwt,
+ 	if (!tb[SEG6_LOCAL_BPF_PROG] || !tb[SEG6_LOCAL_BPF_PROG_NAME])
+ 		return -EINVAL;
  
- /*
-@@ -552,9 +552,9 @@ extern void *bpf_rdonly_cast(const void *obj, __u32 btf_id) __ksym __weak;
-  * not restricted to kernel types only.
-  */
- #define BPF_PROBE_READ_USER(src, a, ...) ({				    \
--	___type((src), a, ##__VA_ARGS__) __r;				    \
--	BPF_PROBE_READ_USER_INTO(&__r, (src), a, ##__VA_ARGS__);	    \
--	__r;								    \
-+	__u8 __r[sizeof(___type((src), a, ##__VA_ARGS__))];		    \
-+	BPF_PROBE_READ_USER_INTO(__r, (src), a, ##__VA_ARGS__);		    \
-+	*(___type((src), a, ##__VA_ARGS__) *)__r;			    \
- })
+-	slwt->bpf.name = nla_memdup(tb[SEG6_LOCAL_BPF_PROG_NAME], GFP_KERNEL);
++	slwt->bpf.name = nla_memdup(tb[SEG6_LOCAL_BPF_PROG_NAME], GFP_ATOMIC);
+ 	if (!slwt->bpf.name)
+ 		return -ENOMEM;
  
- #endif
+@@ -1994,7 +1994,7 @@ static int parse_nla_counters(struct nlattr **attrs,
+ 		return -EINVAL;
+ 
+ 	/* counters are always zero initialized */
+-	pcounters = seg6_local_alloc_pcpu_counters(GFP_KERNEL);
++	pcounters = seg6_local_alloc_pcpu_counters(GFP_ATOMIC);
+ 	if (!pcounters)
+ 		return -ENOMEM;
+ 
 -- 
-2.34.1
+2.20.1
 
 
