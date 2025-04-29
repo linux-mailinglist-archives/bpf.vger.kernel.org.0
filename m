@@ -1,45 +1,47 @@
-Return-Path: <bpf+bounces-56901-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56902-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51983AA02B1
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 08:13:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A37EAA02B4
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 08:13:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A9516482B39
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 06:13:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85F4B7A3DEF
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 06:12:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3DDF274FF7;
-	Tue, 29 Apr 2025 06:12:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56FF7274FF0;
+	Tue, 29 Apr 2025 06:12:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pG0gvPFe"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="G8K50aPa"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 746202749FA
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75222274FEF
 	for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 06:12:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745907159; cv=none; b=GfArdpukdp4SVgka/XeImQ5tEaMxJcotNE9u0vPwpMXUS127reQSRSpwVIUBvEbiSl2gema1nXsw0/g1hVA72Je8FgnlYQ7pdpTiwnq3sn3ULzBXf/PASdmsT+t5D2UTREvvYzyng+Cw6E4QpT8h6MHZx4ZxvytXZRPMTOIbLfQ=
+	t=1745907160; cv=none; b=rxz90fSAxLC+aAiLqiTX6KdCDn+b804QDgTiWJx9Sq8S557EhvyNkplO3005kpVBBrVtCRxiehGdmKZ3KsqZuv3V8TQ0xybfOORdK++JQYKguvUsSZm2as2RiNroedN1oCjJISrJVdCRpQfa3VmXojVvc/1XIW+owe7yh+7rwG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745907159; c=relaxed/simple;
-	bh=4ZARyn4Kvc4tIjl+hyyJXaOGuO29OJ0678GpGOFviKM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=B12h3fFrX9Hfa4f8PcnJ7yWngQRxmvRXO0a/DQBWUC6WieIs2xBTfH4S20pMWDB6rqFGayrMzWIhKPnmajdrr557oJ5aIVKEPTL4iOFOk4T7IbBj0jcBFNHy2kI7f30ql1Z0jSElqJhMfF097rQp5xL2A3ZKO+EC/OuMxF9aNsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pG0gvPFe; arc=none smtp.client-ip=95.215.58.187
+	s=arc-20240116; t=1745907160; c=relaxed/simple;
+	bh=W9SL5KFSJmqJZuSS/587Qh/rBTqa7zPcpqtTWeuTBIU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=sl0/AgAASMJj3BLDkzrV5qh1YLKcTOCZop5sHQPUXtLtkwiU24v0lR4w8gq9zrej2J2b9Jqwzo6j9+Zd4TWTi6JW8aKYkNtsf/0d8c/PdUC7tcDxn27++RSiSy1TzMM7FKrQBrEy33PFdOfGo802Qd1j4SLcxlkgIfH3QWWwC7w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=G8K50aPa; arc=none smtp.client-ip=91.218.175.185
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1745907145;
+	t=1745907155;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=1vGq4MwXGBU2BwGXIJqfgqUXOST/Ia51A5EY2pHZHj8=;
-	b=pG0gvPFeZ4aI6IFrQ53IlmNlS5nCGNRbVl9idb8bgNTJu0XQHdBl+OnndRmlRzyQmXVo3l
-	Qpuy+MJaig53kCsoHkQf6aKgfWvaUE66RjcoFxl3ENK0nLWRsPtYehD18FWL+zJZ98TTNI
-	YNz6T4Ci6WfaL1wHcbEbE2JCfs4OOEs=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y0GCrjGtquPsOI35plGdgUQW448xZcx6HHNt3mxji6M=;
+	b=G8K50aPalxCurXCs8MzqUCxqQtHVl+V5W1N6WLfUGShF4gMmsaZp5t2m85tfP429t0pyBD
+	vdHZ6EKbajUKl9WNEtwoLC8OHw67tekWbbtELBZOeKkCRAUdBwDEC2lRDp8XwDcykT/Nfg
+	2vP6HBmWrLpf01hxCtxfiMZrS+itV34=
 From: Shakeel Butt <shakeel.butt@linux.dev>
 To: Tejun Heo <tj@kernel.org>,
 	Andrew Morton <akpm@linux-foundation.org>,
@@ -58,9 +60,11 @@ Cc: Johannes Weiner <hannes@cmpxchg.org>,
 	cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Meta kernel team <kernel-team@meta.com>
-Subject: [RFC PATCH 0/3] cgroup: nmi safe css_rstat_updated
-Date: Mon, 28 Apr 2025 23:12:06 -0700
-Message-ID: <20250429061211.1295443-1-shakeel.butt@linux.dev>
+Subject: [RFC PATCH 1/3] llist: add list_add_iff_not_on_list()
+Date: Mon, 28 Apr 2025 23:12:07 -0700
+Message-ID: <20250429061211.1295443-2-shakeel.butt@linux.dev>
+In-Reply-To: <20250429061211.1295443-1-shakeel.butt@linux.dev>
+References: <20250429061211.1295443-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -70,33 +74,76 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-BPF programs can run in nmi context and may trigger memcg charged memory
-allocation in such context. Recently linux added support to nmi safe
-page allocation along with memcg charging of such allocations. However
-the kmalloc/slab support and corresponding memcg charging is still
-lacking,
+As the name implies, list_add_iff_not_on_list() adds the given node to
+the given only if the node is not on any list. Many CPUs can call this
+concurrently on the same node and only one of them will succeed.
 
-To provide nmi safe support for memcg charging for kmalloc/slab
-allocations, we need nmi safe memcg stats and for that we need nmi safe
-css_rstat_updated() which adds the given cgroup state whose stats are
-updated into the per-cpu per-ss update tree. This series took the aim to
-make css_rstat_updated() nmi safe.
+This is also useful to be used by different contexts like task, irq and
+nmi. In the case of failure either the node as already present on some
+list or the caller can lost the race to add the given node to a list.
+That node will eventually be added to a list by the winner.
 
-This series is based on [1].
+Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+---
+ include/linux/llist.h |  3 +++
+ lib/llist.c           | 30 ++++++++++++++++++++++++++++++
+ 2 files changed, 33 insertions(+)
 
-[1] http://lore.kernel.org/20250404011050.121777-1-inwardvessel@gmail.com
-
-Shakeel Butt (3):
-  llist: add list_add_iff_not_on_list()
-  cgroup: support to enable nmi-safe css_rstat_updated
-  cgroup: make css_rstat_updated nmi safe
-
- include/linux/cgroup-defs.h |   4 ++
- include/linux/llist.h       |   3 +
- kernel/cgroup/rstat.c       | 112 ++++++++++++++++++++++++++++--------
- lib/llist.c                 |  30 ++++++++++
- 4 files changed, 124 insertions(+), 25 deletions(-)
-
+diff --git a/include/linux/llist.h b/include/linux/llist.h
+index 2c982ff7475a..030cfec8778b 100644
+--- a/include/linux/llist.h
++++ b/include/linux/llist.h
+@@ -236,6 +236,9 @@ static inline bool __llist_add_batch(struct llist_node *new_first,
+ 	return new_last->next == NULL;
+ }
+ 
++extern bool llist_add_iff_not_on_list(struct llist_node *new,
++				      struct llist_head *head);
++
+ /**
+  * llist_add - add a new entry
+  * @new:	new entry to be added
+diff --git a/lib/llist.c b/lib/llist.c
+index f21d0cfbbaaa..9d743164720f 100644
+--- a/lib/llist.c
++++ b/lib/llist.c
+@@ -36,6 +36,36 @@ bool llist_add_batch(struct llist_node *new_first, struct llist_node *new_last,
+ }
+ EXPORT_SYMBOL_GPL(llist_add_batch);
+ 
++/**
++ * llist_add_iff_not_on_list - add an entry if it is not on list
++ * @new:	entry to be added
++ * @head:	the head for your lock-less list
++ *
++ * Adds the given entry to the given list only if the entry is not on any list.
++ * This is useful for cases where multiple CPUs tries to add the same node to
++ * the list or multiple contexts (process, irq or nmi) may add the same node to
++ * the list.
++ *
++ * Return true only if the caller has successfully added the given node to the
++ * list. Returns false if entry is already on some list or if another inserter
++ * wins the race to eventually add the given node to the list.
++ */
++bool llist_add_iff_not_on_list(struct llist_node *new, struct llist_head *head)
++{
++	struct llist_node *first = READ_ONCE(head->first);
++
++	if (llist_on_list(new))
++		return false;
++
++	if (cmpxchg(&new->next, new, first) != new)
++		return false;
++
++	while (!try_cmpxchg(&head->first, &first, new))
++		new->next = first;
++	return true;
++}
++EXPORT_SYMBOL_GPL(llist_add_iff_not_on_list);
++
+ /**
+  * llist_del_first - delete the first entry of lock-less list
+  * @head:	the head for your lock-less list
 -- 
 2.47.1
 
