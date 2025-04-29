@@ -1,62 +1,62 @@
-Return-Path: <bpf+bounces-56935-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56936-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D558AA0A6C
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 13:46:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77341AA0A71
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 13:47:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D77D0189A483
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 11:46:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C18A6179B35
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 11:47:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 584B72D869B;
-	Tue, 29 Apr 2025 11:42:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D07102C2AB8;
+	Tue, 29 Apr 2025 11:43:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DfPVVg6x"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cUB8ofSH"
 X-Original-To: bpf@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 059BC2D4B6E
-	for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 11:42:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BADFC2D0268
+	for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 11:43:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745926953; cv=none; b=ZDyVXbfm+VHI5NeO4FLlNH7Yiom1oNPr5dpy9BD/GXIAzfpDilsXk72lv4Zy365hlx7vpGQuYCyQ49Qe/wWKdCygKDcG3vQGm3ZgsCjXSfzSmdVoWkJfhwG56EBLN87W5Oi9bXaTEAbcIZDGOzwl4TzsCBdJ1g4w7ryew2auJvI=
+	t=1745926984; cv=none; b=ox+ZYP85DCJsgmoqaJWx+WNFI7PPqIcSfYITUc62acuRXLUn6gQ/z/kjVDDRfM2fVezVbMP04scQfx+MeJfVdNxWHruzq73k59xTH1FYVm7qS35S+hWkW6k3Ys0inZIGarBoYZRg6g+Ez/Qb8t/fmbTZxAOxcv9vBPRrFzHqxi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745926953; c=relaxed/simple;
-	bh=c+zFQjpOvcrIFPQrBfK1AGlkndEEv8ZnYH49Bqu+yoA=;
+	s=arc-20240116; t=1745926984; c=relaxed/simple;
+	bh=apD04pUdZyMk2ObFIQHJLHKGQEs48DRM9/gA4unUYAs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CnNFPWd8oqcDvNq+arktSIbgmUFjqwlm7Q01n4VBLnK3EuXsh3WHeJOIvzC4YhVQVRHA2JIde7mFGHosx71o9zojmvOWKLKSZOu0dY4ZDcEuUDSe9lRTf4nMEc3Rw8+WUP8aAGPZlqBj4dDVJhvWwEB1Ixoxe8pd++1/PJG+lBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DfPVVg6x; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=BYA1TlFEixRjm8AlklCEKTfJUVJPx17tWHCjtcMXR7g+BZcxuWt9INE/69TRIH23Rk/XAPugwlihPeqempJTfS6ywh3ND5x+3v272bk9XKs9oBlsJTalOlUenHenuJbYlvoYSI+QTv9UvTOitpEbYxj5Ixc1LxfN642ZHCoVawY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cUB8ofSH; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1745926951;
+	s=mimecast20190719; t=1745926982;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=2ERC4iHAopj7w7n3GYQADioGeTv15E5tv5xtE/u14EI=;
-	b=DfPVVg6xn4cHxMs+uA02FKj99Y8y/QWjUtsWVORjqSFRU5Hcqj1SecvKbIrc0wB4EWlaHu
-	YpouLMem+N8oeX4vZIiaocfxDa4rhvSjgXM0+rCDtHfam1znB3324UkLZjQSb45+nagoWG
-	/mHZh3nf5rgRkczWmA8CO/fnLdfVTJc=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+	bh=boHlb9VW5lBF1DESnR599lKlLKrAVEqa90mhXCcqUlU=;
+	b=cUB8ofSHFhJ75UMmXCcNRbw/+2HOYSuPUxgo96a3XcfHT0DC5IofSz3Ih8uZCoDAymC5UF
+	wYomIAt3vWCwOUh3JQi+UBdyInQoQrSixFhsWfG4gpWOa/ZKqgy7T0FU+KyoPsuRSIfUEI
+	WqTFjHY2feZ8BV1DDpWg+rjlKg7iIic=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-695-u7QFbanhM32YQonXELOb8w-1; Tue,
- 29 Apr 2025 07:42:26 -0400
-X-MC-Unique: u7QFbanhM32YQonXELOb8w-1
-X-Mimecast-MFC-AGG-ID: u7QFbanhM32YQonXELOb8w_1745926942
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-25-sPKCJ77MPxe-Wi8VmOXKtA-1; Tue,
+ 29 Apr 2025 07:42:56 -0400
+X-MC-Unique: sPKCJ77MPxe-Wi8VmOXKtA-1
+X-Mimecast-MFC-AGG-ID: sPKCJ77MPxe-Wi8VmOXKtA_1745926972
 Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B2406195608C;
-	Tue, 29 Apr 2025 11:42:22 +0000 (UTC)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 255621956077;
+	Tue, 29 Apr 2025 11:42:52 +0000 (UTC)
 Received: from vschneid-thinkpadt14sgen2i.remote.csb (unknown [10.45.225.102])
-	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id AEFB219560A3;
-	Tue, 29 Apr 2025 11:41:53 +0000 (UTC)
+	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 4BE4E19560A3;
+	Tue, 29 Apr 2025 11:42:23 +0000 (UTC)
 From: Valentin Schneider <vschneid@redhat.com>
 To: linux-kernel@vger.kernel.org,
 	virtualization@lists.linux.dev,
@@ -154,9 +154,9 @@ Cc: Juri Lelli <juri.lelli@redhat.com>,
 	Randy Dunlap <rdunlap@infradead.org>,
 	John Stultz <jstultz@google.com>,
 	Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: [PATCH v5 17/25] x86/speculation/mds: Mark mds_idle_clear key as allowed in .noinstr
-Date: Tue, 29 Apr 2025 13:32:34 +0200
-Message-ID: <20250429113242.998312-18-vschneid@redhat.com>
+Subject: [PATCH v5 18/25] sched/clock, x86: Mark __sched_clock_stable key as allowed in .noinstr
+Date: Tue, 29 Apr 2025 13:32:35 +0200
+Message-ID: <20250429113242.998312-19-vschneid@redhat.com>
 In-Reply-To: <20250429113242.998312-1-vschneid@redhat.com>
 References: <20250429113242.998312-1-vschneid@redhat.com>
 Precedence: bulk
@@ -172,30 +172,33 @@ Later commits will cause objtool to warn about static keys being used in
 .noinstr sections in order to safely defer instruction patching IPIs
 targeted at NOHZ_FULL CPUs.
 
-mds_idle_clear is used in .noinstr code, and can be modified at
-runtime (SMT hotplug). Suppressing the text_poke_sync() IPI has little
-benefits for this key, as hotplug implies eventually going through
-takedown_cpu() -> stop_machine_cpuslocked() which is going to cause
-interference on all online CPUs anyway.
+__sched_clock_stable is used in .noinstr code, and can be modified at
+runtime (e.g. time_cpufreq_notifier()). Suppressing the text_poke_sync()
+IPI has little benefits for this key, as NOHZ_FULL is incompatible with an
+unstable TSC anyway.
 
 Mark it to let objtool know not to warn about it.
 
 Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 ---
- arch/x86/kernel/cpu/bugs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/sched/clock.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index 362602b705cc4..59a77ca1bb14c 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -117,7 +117,7 @@ DEFINE_STATIC_KEY_FALSE(switch_vcpu_ibpb);
- EXPORT_SYMBOL_GPL(switch_vcpu_ibpb);
- 
- /* Control MDS CPU buffer clear before idling (halt, mwait) */
--DEFINE_STATIC_KEY_FALSE(mds_idle_clear);
-+DEFINE_STATIC_KEY_FALSE_NOINSTR(mds_idle_clear);
- EXPORT_SYMBOL_GPL(mds_idle_clear);
+diff --git a/kernel/sched/clock.c b/kernel/sched/clock.c
+index 200e5568b9894..e59986bc14a43 100644
+--- a/kernel/sched/clock.c
++++ b/kernel/sched/clock.c
+@@ -75,8 +75,11 @@ static DEFINE_STATIC_KEY_FALSE_RO(sched_clock_running);
+  *
+  * Similarly we start with __sched_clock_stable_early, thereby assuming we
+  * will become stable, such that there's only a single 1 -> 0 transition.
++ *
++ * Allowed in .noinstr as an unstable TLC is incompatible with NOHZ_FULL,
++ * thus the text patching IPI would be the least of our concerns.
+  */
+-static DEFINE_STATIC_KEY_FALSE(__sched_clock_stable);
++static DEFINE_STATIC_KEY_FALSE_NOINSTR(__sched_clock_stable);
+ static int __sched_clock_stable_early = 1;
  
  /*
 -- 
