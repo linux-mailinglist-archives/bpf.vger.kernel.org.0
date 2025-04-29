@@ -1,406 +1,345 @@
-Return-Path: <bpf+bounces-56959-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56960-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48447AA107A
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 17:28:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2967BAA1085
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 17:31:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D002466080
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 15:28:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 419CB46797E
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 15:31:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE4E122171A;
-	Tue, 29 Apr 2025 15:28:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99AE9221717;
+	Tue, 29 Apr 2025 15:31:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A89YHWQB"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="cZkkJ2Ko"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2047.outbound.protection.outlook.com [40.107.236.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F9CD21ABA6;
-	Tue, 29 Apr 2025 15:28:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745940503; cv=none; b=hFDUBsFNYAeXdRhCyDvSaNEsbfIx2CK0F90OyHKYAptQH0s+4h/wlOSirX1LOsgDZnijSAZ1lXDX8V1ISSxMn+JkvQ8uiDqoIGmLNibmxzlO0R+Xby5bwRQjaXe2iQnSXns/opTlpgzHq6DJD4GPxlTfZmtTVHs+D9eh4zxnt74=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745940503; c=relaxed/simple;
-	bh=GKDoPE5wVo0tvFoMnp2QEMrBMBHNnvcfAV6ozVMfKjM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OytckxnYL4QzRBZnkBxhaHB8HH5KAD9YHwx7xJFYEMBFUd3WldC7a81w4TEkHfJYA0wPALr6tr3qOGqgzyYSKKszoYSq77iAilsE9spRyFO9ll2PI+v/llBvpbPUu6xl1gqJcxbISB5XkLcLEZy2tQ0F6K+p1Vfadj9uXVaEWLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A89YHWQB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B602BC4CEEE;
-	Tue, 29 Apr 2025 15:28:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745940503;
-	bh=GKDoPE5wVo0tvFoMnp2QEMrBMBHNnvcfAV6ozVMfKjM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=A89YHWQBWZie2Qrt7QyyXd3blZM9jL8nJtei4Utc/6ZdOmhfjvAc6Id6lbaNjE9fH
-	 BTpgE4u9ZpBiL9K5WL9non63r58U2gyaP1/eDPcWFq6brsH7c/rUl2CnBz31hu2RNA
-	 jGZ+UqCs2z019Thy0mLHIzEw38N/c1O2TxCGlO9OqCasH+dd/rGLadtDWc47Jvhjwc
-	 XQkIs7kFFrmbP+XKR3CgZqT0Ln9EZMqQ/W+fDDxw2pZNjggjleJ3eGgq0TEa/aRnaO
-	 gAj8aR7L8FTOBo14cZ8NauaGGzIF1MjDMF+BAdPQXvWqWhC+aByEfPbI0IBLfdwNXz
-	 n2nD1bnkKVpOg==
-Date: Tue, 29 Apr 2025 12:28:07 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
-	bpf@vger.kernel.org, Stephane Eranian <eranian@google.com>,
-	linux-mm@kvack.org
-Subject: Re: [PATCH] perf lock contention: Symbolize zone->lock using BTF
-Message-ID: <aBDwB7b5dPL7REy8@x1>
-References: <20250401063055.7431-1-namhyung@kernel.org>
- <aA8HImKeUutpFoeD@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BDC537160
+	for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 15:31:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.47
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1745940703; cv=fail; b=gjU+Nii8lLMXxm+7zoANoXA+Y8eRbX2iMXZmkwCcjXrPbqNXiHuHFjBzRAIpiZX/W9wrhPHzKPPxNftwGxDjODTv6+M9r2kB1jbRdbfePsu7snbkSCB7qX2o+E1lShVNMKKYBjE9LFXnFGlFikw6RQAhUbFjf9Obr5/pUCMXQSU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1745940703; c=relaxed/simple;
+	bh=gUOcCPwPAVWsEm1mPHuuXLmChPVNA1FQx73Zc0IZQK8=;
+	h=Content-Type:Date:Message-Id:Subject:Cc:To:From:References:
+	 In-Reply-To:MIME-Version; b=kp4wD2S3dShBpjO2E0I+7Ruu7ABbq0UOozNdqpa2bBdDVA/uxXs/k9KFAaR4bV2JUSwHUNPa9F6sprdE5euHxHA1AE6/uEVTv5Zq9e+6epAEkf9V6vYeA6GpTi1M9d8tds5/rVPYLYAcK3d+Qb2CCUz/3hQuk98uvWZJPaYJ2w8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=cZkkJ2Ko; arc=fail smtp.client-ip=40.107.236.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=raFsSsvgMToIimA6+tsG86mtCk5KCiwyyq9fv7kNOZF5PbyDw4vUWJR0VmV7LKAh/dRW4Qk2jBXwFnNs3356VqlNPF0ChoDhvku83OIfSzpb3ih92FG07Gls9c9oS1JhDtvkFNIVVHKwAnQrSKauJJcmHjhq3p22RsgFaYoAVLaFdcrRTzO3BGWalZ39BQgiwskdN8Gh3P2uIhYBbliOMQkCUVkuB/aGIcQwl+nQE8m0GJ4hkQxPTZM3MoZ0EX7S+wO81XqypTliWxJ/5YTY2RrOhnn1aP6dpErTZ86ljsgpcgC6S5twWjBYrR0pwM51uJTgCT2ZNaGI6pAsayCkeg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=e5JLspYTG0fhLQsuyBbU8Sc/vdGcPYs8wl0Xl/Va6PE=;
+ b=nQZUtK+bBImiSqdDL3w8oFr38uuJUeUK1DEHNklkAjLPraqP7wHVU/lQYCC8Uh7OQiwui0YkaMoDmdYCPQhSufZ7fmTWJLArkoyVwcWWQlXZROl3w7s15X8RrJE4hQ8iV8W/1/OwP/KJog4jfcj6bUvFp1OrP0hP/3Eo2ON1hhp5MxUpkQyfhRQcQ9RaCkxVPfpRLwN8GBMLKDjKOMF8+JR0kvAWQIcpp0capi6Vcb2sQUCoedZ0g2XrtToDJKeniXwZb2kkKYML1MB53M4FlPlYxSPydRG3T2+2yieVmhU2cHjRfX1/3Xn2SoS8wb0kimZvdk7WliCmdsN958EDeA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=e5JLspYTG0fhLQsuyBbU8Sc/vdGcPYs8wl0Xl/Va6PE=;
+ b=cZkkJ2KoZppGLt7Nc1bSvftRIH9ujj5S5KmnnnXfMa0JHS7V/gdy8ZHlbinH0zCc4v1b3hVW7XiekxhmqM6GE1R2KchIbWQLwRWS7s55lj4i2IStEqndZuYyLQrK+rLGD3D7hyoABc8XBbvxqytNBv9YzN3pa8mRHhv4P0xJ+7d+ofB/rOXhRBp2py8otkbe/DZ6ohAfG/qe8nO+Kl3WUpUuxYfRIvegWOZBCHhjXwVWuKObbDxLVB/MiMlIGVj0R9n/iGf+OHz85rfGB6b4qp4f8ntKHKMDAmSdZir7Q13JaCWhpCSL/AIYuYVsMCR5Io+mMYGqAYb6vheExEqYIA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS7PR12MB9473.namprd12.prod.outlook.com (2603:10b6:8:252::5) by
+ LV2PR12MB5941.namprd12.prod.outlook.com (2603:10b6:408:172::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8678.33; Tue, 29 Apr
+ 2025 15:31:37 +0000
+Received: from DS7PR12MB9473.namprd12.prod.outlook.com
+ ([fe80::5189:ecec:d84a:133a]) by DS7PR12MB9473.namprd12.prod.outlook.com
+ ([fe80::5189:ecec:d84a:133a%5]) with mapi id 15.20.8678.028; Tue, 29 Apr 2025
+ 15:31:37 +0000
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 29 Apr 2025 11:31:35 -0400
+Message-Id: <D9J8BMXE7LDS.3HMRLBRFZJNO0@nvidia.com>
+Subject: Re: [RFC PATCH 2/4] mm: pass VMA parameter to
+ hugepage_global_{enabled,always}()
+Cc: <bpf@vger.kernel.org>, <linux-mm@kvack.org>
+To: "Yafang Shao" <laoar.shao@gmail.com>, <akpm@linux-foundation.org>,
+ <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>
+From: "Zi Yan" <ziy@nvidia.com>
+X-Mailer: aerc 0.20.1-60-g87a3b42daac6-dirty
+References: <20250429024139.34365-1-laoar.shao@gmail.com>
+ <20250429024139.34365-3-laoar.shao@gmail.com>
+In-Reply-To: <20250429024139.34365-3-laoar.shao@gmail.com>
+X-ClientProxiedBy: MN0PR03CA0011.namprd03.prod.outlook.com
+ (2603:10b6:208:52f::13) To DS7PR12MB9473.namprd12.prod.outlook.com
+ (2603:10b6:8:252::5)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aA8HImKeUutpFoeD@google.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB9473:EE_|LV2PR12MB5941:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7e7d9f83-da76-4c49-1af0-08dd8732ee3e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014|7053199007;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?TUNlSnQwS3d0bmFJdGdOcUhRb2RLaXhBQTdpaE1uMlRjQzdzUEJQRFdDS2Zy?=
+ =?utf-8?B?d1JvblZoNlgxeFhOaTk0RkRXM3ZnNFdlSm14THZDdmdwU0RWbFdCQTd3RjV5?=
+ =?utf-8?B?K3VRNVpEVU1zbHZXdGJId0xzWGZUVmlpMWhRemJXaUlhaU5QU2hWRUlkNk1V?=
+ =?utf-8?B?N1VwbnZsNWd3Z2I5YTVXZkk3dVhzYklVbHcxY2xpTXY2eVlKMGJYRVN4a1Zw?=
+ =?utf-8?B?OTVhb2g0ZXYvS0t6SUZ0ZEpTcHZ3L1pVK0s5OWNqNFRlQ1ZoSmdzUjAxb3Er?=
+ =?utf-8?B?M0Z3TjY3RTdGb1RXakEydys5WVNTTHFjSHQ0VGFVSVVWdUI4TlNGeENXWnNz?=
+ =?utf-8?B?eGNteFllZmlicXJRUElTTExPWi9JNFVGczV1SzY4V1lkNGZyNFIxaGk4N2hD?=
+ =?utf-8?B?Rll5dUJaeFRYSzVEQUxhaEFpU29yamxLcm9PMmNFOUszUk9Tak9SSzU0aU1R?=
+ =?utf-8?B?Rjg3SisvZHFxcUlwdDlKdHBNWGtHYmsrM2ZnTXVWYjhZb05uV1RVSFpNRGdu?=
+ =?utf-8?B?Wk9LWlh6aEIwRDRKbTJSa1BrZXhXbXc3R0pLbUFzbS81QVh1UGlJWkxJc25Q?=
+ =?utf-8?B?cEYyS2t4bEM4cU9zcnB4U0xub2wwaExXb3c0V0VtU1BPODdsTE84SDNzdE1a?=
+ =?utf-8?B?YnBWK0N5aGt2VDJtUDBnNGdwb2FhcUJvb1hocURMUTZDTkRKOGFjK0Q3TnlC?=
+ =?utf-8?B?bFRMVG1tdE0rd204UFIzaTQ4WW1rYlQ1aHlXZkk5U3BvR2NUSjRRczkzV0Rj?=
+ =?utf-8?B?a21ITmp5cVloVWhBczk3V2IrUnhKT0M3K3ArV3lBRWpEWXFBZFhwVFFwSWwx?=
+ =?utf-8?B?TjI4QW9keWUxNXVLMUdzc0xHVkxPV0QybFBOQVpqbStSOFdZaHFEUXU1aGN1?=
+ =?utf-8?B?TEE5QXVZSWlQUkFQdjlpTnRrc1dCcTVENUpuaDYzWmZlUW9OL0VvRFczeHc1?=
+ =?utf-8?B?dTBIQzRLNW5CaDVzSWRHanlwZzZYZm1DRHIyTGlYUjBLVC8wUWNmOUxDblh6?=
+ =?utf-8?B?cEFTU05aZTdJZEdKbUpFbDhnWnBEQ2NDUUk5aVVGT2tvNU9MQlUrb2JXdGxs?=
+ =?utf-8?B?SERjUDJYWkVoRktzWG9zR0JUMnBCZlhYdE9YU0ZJcFRtRTBZeDdrMGUrK0tl?=
+ =?utf-8?B?MHNBd3g3U2pQMUJoSElRTEExbS83T2o5QUYxaU9oL2l1c2F4TzFwbkpnWVEw?=
+ =?utf-8?B?enordi9DU1lNQWtrOTFWUmVrOWJZdytKUmJGV2UvaXBmQ2ZDK0xYY1o0R2V6?=
+ =?utf-8?B?S1NBeUFnamFIYktlcE8xU3ZrNmlBTkFINkR0T0lpL3lUQWFuTzh1MkdZTzM0?=
+ =?utf-8?B?T2s0OVo2ZFE0Y1JwTjRkaUxZWTBrZWptVkVoUm42R1l6dnZmaDhEREdDTEJy?=
+ =?utf-8?B?bml2T0pXbUh2ZW8zSVZBZUdMcENSSGozN0Q3cEE4aXQxdWFVcjVEMXVNeC9z?=
+ =?utf-8?B?ZVRZaFBzcFpwWTJZNk9RVDd1UGNQcTlycHlSRXI3ZUFRUEhJeERDdGtHekhy?=
+ =?utf-8?B?OHMzNE10L09TcDAwL1M4YXREeUhqZ05rOVUzLzNCWFZJK24vMEVlYkdPNTI0?=
+ =?utf-8?B?REpWbiswQlZQUHgrNDJUSE9ZbXdEcVNxcHdFcWdmOFdvZWlKRnZVWFQ4VTFE?=
+ =?utf-8?B?REZISkc5TURuK1czQjFMdGg5QjY1cjFJWWllU0JBNFVOdk9nSEtSNWNoVERx?=
+ =?utf-8?B?U3dTZWUzVHMxMEJYMnZiMFBNSitFemJNZkdRTDk1bkVhNUxTWTJMUEw4UzY0?=
+ =?utf-8?B?ODlST1ZCM1FTVFpjUkxkT1dTd25KMGhtSkg1YnJiQmhnTkpkaXloOFhzbDhT?=
+ =?utf-8?B?MFhLZU13YXJLMEI1Q1VkRTliK3pxL3czNzVHL0lUUnpOZE9iRDFGMzNic0NB?=
+ =?utf-8?B?ZkREQmpHUHBqS3J5Y3VLRE9Nb1dTTERRSGp6T0NaSW1VamxpQkRvdW5UaXlo?=
+ =?utf-8?Q?lZADkThDKr4=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB9473.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?eVM3d1BnL0hGTzdISThrdTdFSjZ1ZjQ4QkQ3WCt3TElpSzJXWTlnSk9pMWV6?=
+ =?utf-8?B?NUdta2w3eTdreE1TNGYrMnZmZVlDamRaTmxCYzBkYk1rdDRCVUw4ektLK3Z6?=
+ =?utf-8?B?NFhNS1lrYi9hQmRCWTYrc1NaVHNVRWpJbXhyM0QrMXdQci9Ib2lrL25Ja3h5?=
+ =?utf-8?B?T05HRTBROGZvSTVoMkJVNWhIUVF6NUNmU3ppNHJkSjI5Nk1NTkg4TzIvWUo4?=
+ =?utf-8?B?d1E2bXl3dE1OU2JDbi9wVGR3eTVDUUZnYytBTDBIWlBHdUtYTEdCdTlTOWRq?=
+ =?utf-8?B?WTZlNFA4Zlpidi9IQmdWellqOGptUitzb1BOQ1krc0hoYWlGQnV0aEdjelVh?=
+ =?utf-8?B?RXVWenRYQlYvdUNWSTR1Ui9aUWhOelpDQmVJYWVwSzY4U2FJNXhCdTBPMTlw?=
+ =?utf-8?B?a0RhOXl4NCtZODhReUxzcGsyMGk0Wldtclh2TkY0b25BbU40eVZRbWRBV2pR?=
+ =?utf-8?B?QjArK1F1UUdZWXpYVGg2TXdhc1FMYjF5bFVFTnhNemhrYm9PbUlzbUFZR3hQ?=
+ =?utf-8?B?U0Q0SjYzdm9MelB4UVR6RktjMlZIVXNYaS9yYVJoUlAzMTBRTmswSTUwRnEw?=
+ =?utf-8?B?NFI5MW9zcFFuZWpweTBwMW8vdWxpdlB6VnpkbjhlaGxsVm82SGJQL1NGaHhx?=
+ =?utf-8?B?aXQ1SzVVeTl0N1Jwck92M0VXZktNdU9NLzluQjNUZ3hsajFnSTNFTGNtZE1k?=
+ =?utf-8?B?NmZkUXZtN2phTm9kdEtRbS9SWnR0M2RZbGcyd0NxNXFJbUhjaTlCVnFNc2du?=
+ =?utf-8?B?bE8vYktwK1B5UWg5RVhmeVdxeUkvdmxPR1lienVPWmY3aGJjY3FzdlFRMnlX?=
+ =?utf-8?B?eWxuZ2JmSW1QVGs2NURkZ3lzU1pzbmJwSUYrTGszaTJ4RWxDRDNaT3NSSWkv?=
+ =?utf-8?B?bWRhbVBuYTRlc2VwbXJwNzE0UDVnYjRORnhsVnB4MEppTFp6aENpUW0xWVR2?=
+ =?utf-8?B?b2NOZEcraGJvVWtOdmpQME82bzlHY0NVY0Nua01aRjJGR05ORWVsSmhuc0N3?=
+ =?utf-8?B?QXhDSFp3bjZRSDEyY2JDeGNkVW1saW9nQmY4WGFSMWxUUm4zdlo4amFoZDV4?=
+ =?utf-8?B?Rk8xMjYxY0kxM2pMT1NMZVUvT0VTUmk3TmUyY1VpRGRxZXE2aHRaY2Z1dkJT?=
+ =?utf-8?B?WGhSNXNJQjREbmVMamxJMC96RnRGVmRWVU1oWlZqZHprZ0ZFNVptVE15TEFN?=
+ =?utf-8?B?bnBINlltR0JKaVIzUlBlaVVuSjVkUzVSNkR4SHgreEgyU3RWK2RBUFBBLysw?=
+ =?utf-8?B?aGczNS9rNjhHa0JQQmtLMktLYmNocVNBaUdqWkxVL2dTUlBtdFFqc2pQRWtU?=
+ =?utf-8?B?YldvZis5V3lNNUt2UzcwNGFUKzA4Qzh4VklZazdnMzdRejJZREg3U2Jwb2VS?=
+ =?utf-8?B?K2ZVaTYyMEV0S2hnZGhjVEMxc25IYXFwY01Ca3N2Z3UzTkFEVXFlbFhxTXo0?=
+ =?utf-8?B?Nmo1ZTVRUlhhWXFrUzhZM2dKbnJyWlhSK0dML3dPbktwaTBBNXhhMHdaNG8r?=
+ =?utf-8?B?UDRWZExxaGt4SUJuWDNiL0FEY0xqU1RpczdMRSt1MjhJWUJvNHdzeEJrOGEy?=
+ =?utf-8?B?bUlFMnFuQWVvYStzMGp5V0RwRlJ6bUQ2d2JuVUplTlpjZzdIVEVvQ1F0SGt0?=
+ =?utf-8?B?TUsyT0hmWTUyVzFybDBKbTR1QUViUzlKLzFyeVcwd0t0T0xRdGNNSVRjM0FF?=
+ =?utf-8?B?K2NRUmZEeGE2V1RIcm5CM1pLVVJtRnI1WDR3cnJHN2NsOHJEcS9OakIyUE5r?=
+ =?utf-8?B?SWZDRnlVY0pZSU5EUTV5YjFvZXFXTm4vU1grRXhFMUhsb0wxaElYektlV3J0?=
+ =?utf-8?B?Z2pHZkpMNHZNa2xVZ0F4Z1dOMm94bE9tMHZ4a1R6a09qM1FYcFJnckhVbzZQ?=
+ =?utf-8?B?UEtZaXdoVHZVdEpYbHphL2N0ZlNOQTFmd0ZXMDJKbWhIcHd3bTRiNkZUR1cw?=
+ =?utf-8?B?YmRmcmpHM0MvRmlzMTZRelJDVk05QldiblBGdUdTVTBmL1pxYm9VRElSdUk3?=
+ =?utf-8?B?RUhmM3JKVnZqWEhHcTIybElFU25heUxDdHJLeElCMW03NVU0Y3dxdHhjbVdV?=
+ =?utf-8?B?dCtFdmdzZzVQWlRjRis5NnZJQ1p3UXBKV3lNVUJxVjNwZllBckFmSkQxZWxR?=
+ =?utf-8?Q?R9MPihBSZjqgkMj52D/zbqX0i?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7e7d9f83-da76-4c49-1af0-08dd8732ee3e
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB9473.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2025 15:31:37.3089
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1nNMisjincWdTkEYC0511fTaRhkzvYprv5LU1BHZIy1bX5Z2th/JOzamsZFJf2Bd
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5941
 
-On Sun, Apr 27, 2025 at 09:42:10PM -0700, Namhyung Kim wrote:
-> Ping!
+On Mon Apr 28, 2025 at 10:41 PM EDT, Yafang Shao wrote:
+> We will use the new @vma parameter to determine whether THP can be used.
 
-Thanks!
+This is wrong and a completely hack. hugepage_global_*() are sytem-wide
+functions, so they do not take VMAs. Furthermore, the VMAs passed in
+are not used at all. I notice that in the later patch VMA is used by BPF
+hooks, but that does not justify the addition.
 
-Applied. :-)
+If you really want to do this, you can add new functions that take VMA
+as an input and check hugepage_global_*() to replace some of the if
+conditions below. Something like hugepage_vma_{enable,always}.
 
-- Arnaldo
- 
-> On Mon, Mar 31, 2025 at 11:30:55PM -0700, Namhyung Kim wrote:
-> > The struct zone is embedded in struct pglist_data which can be allocated
-> > for each NUMA node early in the boot process.  As it's not a slab object
-> > nor a global lock, this was not symbolized.
-> > 
-> > Since the zone->lock is often contended, it'd be nice if we can
-> > symbolize it.  On NUMA systems, node_data array will have pointers for
-> > struct pglist_data.  By following the pointer, it can calculate the
-> > address of each zone and its lock using BTF.  On UMA, it can just use
-> > contig_page_data and its zones.
-> > 
-> > The following example shows the zone lock contention at the end.
-> > 
-> >   $ sudo ./perf lock con -abl -E 5 -- ./perf bench sched messaging
-> >   # Running 'sched/messaging' benchmark:
-> >   # 20 sender and receiver processes per group
-> >   # 10 groups == 400 processes run
-> > 
-> >        Total time: 0.038 [sec]
-> >    contended   total wait     max wait     avg wait            address   symbol
-> > 
-> >         5167     18.17 ms     10.27 us      3.52 us   ffff953340052d00   &kmem_cache_node (spinlock)
-> >           38     11.75 ms    465.49 us    309.13 us   ffff95334060c480   &sock_inode_cache (spinlock)
-> >         3916     10.13 ms     10.43 us      2.59 us   ffff953342aecb40   &kmem_cache_node (spinlock)
-> >         2963     10.02 ms     13.75 us      3.38 us   ffff9533d2344098   &kmalloc-rnd-08-2k (spinlock)
-> >          216      5.05 ms     99.49 us     23.39 us   ffff9542bf7d65d0   zone_lock (spinlock)
-> > 
-> > Cc: linux-mm@kvack.org
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  tools/perf/util/bpf_lock_contention.c         | 88 +++++++++++++++++--
-> >  .../perf/util/bpf_skel/lock_contention.bpf.c  | 64 ++++++++++++++
-> >  tools/perf/util/bpf_skel/lock_data.h          |  1 +
-> >  tools/perf/util/bpf_skel/vmlinux/vmlinux.h    |  9 ++
-> >  tools/perf/util/lock-contention.h             |  1 +
-> >  5 files changed, 157 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
-> > index 5af8f6d1bc952613..98395667220e58ee 100644
-> > --- a/tools/perf/util/bpf_lock_contention.c
-> > +++ b/tools/perf/util/bpf_lock_contention.c
-> > @@ -12,6 +12,7 @@
-> >  #include "util/lock-contention.h"
-> >  #include <linux/zalloc.h>
-> >  #include <linux/string.h>
-> > +#include <api/fs/fs.h>
-> >  #include <bpf/bpf.h>
-> >  #include <bpf/btf.h>
-> >  #include <inttypes.h>
-> > @@ -35,28 +36,26 @@ static bool slab_cache_equal(long key1, long key2, void *ctx __maybe_unused)
-> >  
-> >  static void check_slab_cache_iter(struct lock_contention *con)
-> >  {
-> > -	struct btf *btf = btf__load_vmlinux_btf();
-> >  	s32 ret;
-> >  
-> >  	hashmap__init(&slab_hash, slab_cache_hash, slab_cache_equal, /*ctx=*/NULL);
-> >  
-> > -	if (btf == NULL) {
-> > +	con->btf = btf__load_vmlinux_btf();
-> > +	if (con->btf == NULL) {
-> >  		pr_debug("BTF loading failed: %s\n", strerror(errno));
-> >  		return;
-> >  	}
-> >  
-> > -	ret = btf__find_by_name_kind(btf, "bpf_iter__kmem_cache", BTF_KIND_STRUCT);
-> > +	ret = btf__find_by_name_kind(con->btf, "bpf_iter__kmem_cache", BTF_KIND_STRUCT);
-> >  	if (ret < 0) {
-> >  		bpf_program__set_autoload(skel->progs.slab_cache_iter, false);
-> >  		pr_debug("slab cache iterator is not available: %d\n", ret);
-> > -		goto out;
-> > +		return;
-> >  	}
-> >  
-> >  	has_slab_iter = true;
-> >  
-> >  	bpf_map__set_max_entries(skel->maps.slab_caches, con->map_nr_entries);
-> > -out:
-> > -	btf__free(btf);
-> >  }
-> >  
-> >  static void run_slab_cache_iter(void)
-> > @@ -109,6 +108,75 @@ static void exit_slab_cache_iter(void)
-> >  	hashmap__clear(&slab_hash);
-> >  }
-> >  
-> > +static void init_numa_data(struct lock_contention *con)
-> > +{
-> > +	struct symbol *sym;
-> > +	struct map *kmap;
-> > +	char *buf = NULL, *p;
-> > +	size_t len;
-> > +	long last = -1;
-> > +	int ret;
-> > +
-> > +	/*
-> > +	 * 'struct zone' is embedded in 'struct pglist_data' as an array.
-> > +	 * As we may not have full information of the struct zone in the
-> > +	 * (fake) vmlinux.h, let's get the actual size from BTF.
-> > +	 */
-> > +	ret = btf__find_by_name_kind(con->btf, "zone", BTF_KIND_STRUCT);
-> > +	if (ret < 0) {
-> > +		pr_debug("cannot get type of struct zone: %d\n", ret);
-> > +		return;
-> > +	}
-> > +
-> > +	ret = btf__resolve_size(con->btf, ret);
-> > +	if (ret < 0) {
-> > +		pr_debug("cannot get size of struct zone: %d\n", ret);
-> > +		return;
-> > +	}
-> > +	skel->rodata->sizeof_zone = ret;
-> > +
-> > +	/* UMA system doesn't have 'node_data[]' - just use contig_page_data. */
-> > +	sym = machine__find_kernel_symbol_by_name(con->machine,
-> > +						  "contig_page_data",
-> > +						  &kmap);
-> > +	if (sym) {
-> > +		skel->rodata->contig_page_data_addr = map__unmap_ip(kmap, sym->start);
-> > +		map__put(kmap);
-> > +		return;
-> > +	}
-> > +
-> > +	/*
-> > +	 * The 'node_data' is an array of pointers to struct pglist_data.
-> > +	 * It needs to follow the pointer for each node in BPF to get the
-> > +	 * address of struct pglist_data and its zones.
-> > +	 */
-> > +	sym = machine__find_kernel_symbol_by_name(con->machine,
-> > +						  "node_data",
-> > +						  &kmap);
-> > +	if (sym == NULL)
-> > +		return;
-> > +
-> > +	skel->rodata->node_data_addr = map__unmap_ip(kmap, sym->start);
-> > +	map__put(kmap);
-> > +
-> > +	/* get the number of online nodes using the last node number + 1 */
-> > +	ret = sysfs__read_str("devices/system/node/online", &buf, &len);
-> > +	if (ret < 0) {
-> > +		pr_debug("failed to read online node: %d\n", ret);
-> > +		return;
-> > +	}
-> > +
-> > +	p = buf;
-> > +	while (p && *p) {
-> > +		last = strtol(p, &p, 0);
-> > +
-> > +		if (p && (*p == ',' || *p == '-' || *p == '\n'))
-> > +			p++;
-> > +	}
-> > +	skel->rodata->nr_nodes = last + 1;
-> > +	free(buf);
-> > +}
-> > +
-> >  int lock_contention_prepare(struct lock_contention *con)
-> >  {
-> >  	int i, fd;
-> > @@ -218,6 +286,8 @@ int lock_contention_prepare(struct lock_contention *con)
-> >  
-> >  	bpf_map__set_max_entries(skel->maps.slab_filter, nslabs);
-> >  
-> > +	init_numa_data(con);
-> > +
-> >  	if (lock_contention_bpf__load(skel) < 0) {
-> >  		pr_err("Failed to load lock-contention BPF skeleton\n");
-> >  		return -1;
-> > @@ -505,6 +575,11 @@ static const char *lock_contention_get_name(struct lock_contention *con,
-> >  				return "rq_lock";
-> >  		}
-> >  
-> > +		if (!bpf_map_lookup_elem(lock_fd, &key->lock_addr_or_cgroup, &flags)) {
-> > +			if (flags == LOCK_CLASS_ZONE_LOCK)
-> > +				return "zone_lock";
-> > +		}
-> > +
-> >  		/* look slab_hash for dynamic locks in a slab object */
-> >  		if (hashmap__find(&slab_hash, flags & LCB_F_SLAB_ID_MASK, &slab_data)) {
-> >  			snprintf(name_buf, sizeof(name_buf), "&%s", slab_data->name);
-> > @@ -743,6 +818,7 @@ int lock_contention_finish(struct lock_contention *con)
-> >  	}
-> >  
-> >  	exit_slab_cache_iter();
-> > +	btf__free(con->btf);
-> >  
-> >  	return 0;
-> >  }
-> > diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> > index 69be7a4234e076e8..6f12c7d978a2e015 100644
-> > --- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> > +++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> > @@ -11,6 +11,9 @@
-> >  /* for collect_lock_syms().  4096 was rejected by the verifier */
-> >  #define MAX_CPUS  1024
-> >  
-> > +/* for collect_zone_lock().  It should be more than the actual zones. */
-> > +#define MAX_ZONES  10
-> > +
-> >  /* lock contention flags from include/trace/events/lock.h */
-> >  #define LCB_F_SPIN	(1U << 0)
-> >  #define LCB_F_READ	(1U << 1)
-> > @@ -801,6 +804,11 @@ int contention_end(u64 *ctx)
-> >  
-> >  extern struct rq runqueues __ksym;
-> >  
-> > +const volatile __u64 contig_page_data_addr;
-> > +const volatile __u64 node_data_addr;
-> > +const volatile int nr_nodes;
-> > +const volatile int sizeof_zone;
-> > +
-> >  struct rq___old {
-> >  	raw_spinlock_t lock;
-> >  } __attribute__((preserve_access_index));
-> > @@ -809,6 +817,59 @@ struct rq___new {
-> >  	raw_spinlock_t __lock;
-> >  } __attribute__((preserve_access_index));
-> >  
-> > +static void collect_zone_lock(void)
-> > +{
-> > +	__u64 nr_zones, zone_off;
-> > +	__u64 lock_addr, lock_off;
-> > +	__u32 lock_flag = LOCK_CLASS_ZONE_LOCK;
-> > +
-> > +	zone_off = offsetof(struct pglist_data, node_zones);
-> > +	lock_off = offsetof(struct zone, lock);
-> > +
-> > +	if (contig_page_data_addr) {
-> > +		struct pglist_data *contig_page_data;
-> > +
-> > +		contig_page_data = (void *)(long)contig_page_data_addr;
-> > +		nr_zones = BPF_CORE_READ(contig_page_data, nr_zones);
-> > +
-> > +		for (int i = 0; i < MAX_ZONES; i++) {
-> > +			__u64 zone_addr;
-> > +
-> > +			if (i >= nr_zones)
-> > +				break;
-> > +
-> > +			zone_addr = contig_page_data_addr + (sizeof_zone * i) + zone_off;
-> > +			lock_addr = zone_addr + lock_off;
-> > +
-> > +			bpf_map_update_elem(&lock_syms, &lock_addr, &lock_flag, BPF_ANY);
-> > +		}
-> > +	} else if (nr_nodes > 0) {
-> > +		struct pglist_data **node_data = (void *)(long)node_data_addr;
-> > +
-> > +		for (int i = 0; i < nr_nodes; i++) {
-> > +			struct pglist_data *pgdat = NULL;
-> > +			int err;
-> > +
-> > +			err = bpf_core_read(&pgdat, sizeof(pgdat), &node_data[i]);
-> > +			if (err < 0 || pgdat == NULL)
-> > +				break;
-> > +
-> > +			nr_zones = BPF_CORE_READ(pgdat, nr_zones);
-> > +			for (int k = 0; k < MAX_ZONES; k++) {
-> > +				__u64 zone_addr;
-> > +
-> > +				if (k >= nr_zones)
-> > +					break;
-> > +
-> > +				zone_addr = (__u64)(void *)pgdat + (sizeof_zone * k) + zone_off;
-> > +				lock_addr = zone_addr + lock_off;
-> > +
-> > +				bpf_map_update_elem(&lock_syms, &lock_addr, &lock_flag, BPF_ANY);
-> > +			}
-> > +		}
-> > +	}
-> > +}
-> > +
-> >  SEC("raw_tp/bpf_test_finish")
-> >  int BPF_PROG(collect_lock_syms)
-> >  {
-> > @@ -830,6 +891,9 @@ int BPF_PROG(collect_lock_syms)
-> >  		lock_flag = LOCK_CLASS_RQLOCK;
-> >  		bpf_map_update_elem(&lock_syms, &lock_addr, &lock_flag, BPF_ANY);
-> >  	}
-> > +
-> > +	collect_zone_lock();
-> > +
-> >  	return 0;
-> >  }
-> >  
-> > diff --git a/tools/perf/util/bpf_skel/lock_data.h b/tools/perf/util/bpf_skel/lock_data.h
-> > index 15f5743bd409f2f9..28c5e5aced7fcc91 100644
-> > --- a/tools/perf/util/bpf_skel/lock_data.h
-> > +++ b/tools/perf/util/bpf_skel/lock_data.h
-> > @@ -67,6 +67,7 @@ enum lock_aggr_mode {
-> >  enum lock_class_sym {
-> >  	LOCK_CLASS_NONE,
-> >  	LOCK_CLASS_RQLOCK,
-> > +	LOCK_CLASS_ZONE_LOCK,
-> >  };
-> >  
-> >  struct slab_cache_data {
-> > diff --git a/tools/perf/util/bpf_skel/vmlinux/vmlinux.h b/tools/perf/util/bpf_skel/vmlinux/vmlinux.h
-> > index 7b81d3173917fdb5..a59ce912be18cd0f 100644
-> > --- a/tools/perf/util/bpf_skel/vmlinux/vmlinux.h
-> > +++ b/tools/perf/util/bpf_skel/vmlinux/vmlinux.h
-> > @@ -203,4 +203,13 @@ struct bpf_iter__kmem_cache {
-> >  	struct kmem_cache *s;
-> >  } __attribute__((preserve_access_index));
-> >  
-> > +struct zone {
-> > +	spinlock_t lock;
-> > +} __attribute__((preserve_access_index));
-> > +
-> > +struct pglist_data {
-> > +	struct zone node_zones[6]; /* value for all possible config */
-> > +	int nr_zones;
-> > +} __attribute__((preserve_access_index));
-> > +
-> >  #endif // __VMLINUX_H
-> > diff --git a/tools/perf/util/lock-contention.h b/tools/perf/util/lock-contention.h
-> > index b5d916aa49df6424..d331ce8e3caad4cb 100644
-> > --- a/tools/perf/util/lock-contention.h
-> > +++ b/tools/perf/util/lock-contention.h
-> > @@ -142,6 +142,7 @@ struct lock_contention {
-> >  	struct lock_filter *filters;
-> >  	struct lock_contention_fails fails;
-> >  	struct rb_root cgroups;
-> > +	void *btf;
-> >  	unsigned long map_nr_entries;
-> >  	int max_stack;
-> >  	int stack_skip;
-> > -- 
-> > 2.49.0
-> > 
+>
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> ---
+>  mm/huge_memory.c |  8 ++++----
+>  mm/internal.h    |  8 ++++++--
+>  mm/khugepaged.c  | 18 +++++++++---------
+>  3 files changed, 19 insertions(+), 15 deletions(-)
+>
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 39afa14af2f2..7a4a968c7874 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -176,8 +176,8 @@ static unsigned long __thp_vma_allowable_orders(struc=
+t vm_area_struct *vma,
+>  		 * were already handled in thp_vma_allowable_orders().
+>  		 */
+>  		if (enforce_sysfs &&
+> -		    (!hugepage_global_enabled() || (!(vm_flags & VM_HUGEPAGE) &&
+> -						    !hugepage_global_always())))
+> +		    (!hugepage_global_enabled(vma) || (!(vm_flags & VM_HUGEPAGE) &&
+> +						      !hugepage_global_always(vma))))
+>  			return 0;
+> =20
+>  		/*
+> @@ -234,8 +234,8 @@ unsigned long thp_vma_allowable_orders(struct vm_area=
+_struct *vma,
+> =20
+>  		if (vm_flags & VM_HUGEPAGE)
+>  			mask |=3D READ_ONCE(huge_anon_orders_madvise);
+> -		if (hugepage_global_always() ||
+> -		    ((vm_flags & VM_HUGEPAGE) && hugepage_global_enabled()))
+> +		if (hugepage_global_always(vma) ||
+> +		    ((vm_flags & VM_HUGEPAGE) && hugepage_global_enabled(vma)))
+>  			mask |=3D READ_ONCE(huge_anon_orders_inherit);
+> =20
+>  		orders &=3D mask;
+> diff --git a/mm/internal.h b/mm/internal.h
+> index 462d85c2ba7b..aa698a11dd68 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -1626,14 +1626,18 @@ static inline bool reclaim_pt_is_enabled(unsigned=
+ long start, unsigned long end,
+>  #endif /* CONFIG_PT_RECLAIM */
+> =20
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> -static inline bool hugepage_global_enabled(void)
+> +/*
+> + * Checks whether a given @vma can use THP. If @vma is NULL, the check i=
+s
+> + * performed globally by khugepaged during a system-wide scan.
+> + */
+> +static inline bool hugepage_global_enabled(struct vm_area_struct *vma)
+>  {
+>  	return transparent_hugepage_flags &
+>  			((1<<TRANSPARENT_HUGEPAGE_FLAG) |
+>  			(1<<TRANSPARENT_HUGEPAGE_REQ_MADV_FLAG));
+>  }
+> =20
+> -static inline bool hugepage_global_always(void)
+> +static inline bool hugepage_global_always(struct vm_area_struct *vma)
+>  {
+>  	return transparent_hugepage_flags &
+>  			(1<<TRANSPARENT_HUGEPAGE_FLAG);
+> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+> index cc945c6ab3bd..b85e36ddd7db 100644
+> --- a/mm/khugepaged.c
+> +++ b/mm/khugepaged.c
+> @@ -413,7 +413,7 @@ static inline int hpage_collapse_test_exit_or_disable=
+(struct mm_struct *mm)
+>  	       test_bit(MMF_DISABLE_THP, &mm->flags);
+>  }
+> =20
+> -static bool hugepage_pmd_enabled(void)
+> +static bool hugepage_pmd_enabled(struct vm_area_struct *vma)
+>  {
+>  	/*
+>  	 * We cover the anon, shmem and the file-backed case here; file-backed
+> @@ -423,14 +423,14 @@ static bool hugepage_pmd_enabled(void)
+>  	 * except when the global shmem_huge is set to SHMEM_HUGE_DENY.
+>  	 */
+>  	if (IS_ENABLED(CONFIG_READ_ONLY_THP_FOR_FS) &&
+> -	    hugepage_global_enabled())
+> +	    hugepage_global_enabled(vma))
+>  		return true;
+>  	if (test_bit(PMD_ORDER, &huge_anon_orders_always))
+>  		return true;
+>  	if (test_bit(PMD_ORDER, &huge_anon_orders_madvise))
+>  		return true;
+>  	if (test_bit(PMD_ORDER, &huge_anon_orders_inherit) &&
+> -	    hugepage_global_enabled())
+> +	    hugepage_global_enabled(vma))
+>  		return true;
+>  	if (IS_ENABLED(CONFIG_SHMEM) && shmem_hpage_pmd_enabled())
+>  		return true;
+> @@ -473,7 +473,7 @@ void khugepaged_enter_vma(struct vm_area_struct *vma,
+>  			  unsigned long vm_flags)
+>  {
+>  	if (!test_bit(MMF_VM_HUGEPAGE, &vma->vm_mm->flags) &&
+> -	    hugepage_pmd_enabled()) {
+> +	    hugepage_pmd_enabled(vma)) {
+>  		if (thp_vma_allowable_order(vma, vm_flags, TVA_ENFORCE_SYSFS,
+>  					    PMD_ORDER))
+>  			__khugepaged_enter(vma->vm_mm);
+> @@ -2516,7 +2516,7 @@ static unsigned int khugepaged_scan_mm_slot(unsigne=
+d int pages, int *result,
+> =20
+>  static int khugepaged_has_work(void)
+>  {
+> -	return !list_empty(&khugepaged_scan.mm_head) && hugepage_pmd_enabled();
+> +	return !list_empty(&khugepaged_scan.mm_head) && hugepage_pmd_enabled(NU=
+LL);
+>  }
+> =20
+>  static int khugepaged_wait_event(void)
+> @@ -2589,7 +2589,7 @@ static void khugepaged_wait_work(void)
+>  		return;
+>  	}
+> =20
+> -	if (hugepage_pmd_enabled())
+> +	if (hugepage_pmd_enabled(NULL))
+>  		wait_event_freezable(khugepaged_wait, khugepaged_wait_event());
+>  }
+> =20
+> @@ -2620,7 +2620,7 @@ static void set_recommended_min_free_kbytes(void)
+>  	int nr_zones =3D 0;
+>  	unsigned long recommended_min;
+> =20
+> -	if (!hugepage_pmd_enabled()) {
+> +	if (!hugepage_pmd_enabled(NULL)) {
+>  		calculate_min_free_kbytes();
+>  		goto update_wmarks;
+>  	}
+> @@ -2670,7 +2670,7 @@ int start_stop_khugepaged(void)
+>  	int err =3D 0;
+> =20
+>  	mutex_lock(&khugepaged_mutex);
+> -	if (hugepage_pmd_enabled()) {
+> +	if (hugepage_pmd_enabled(NULL)) {
+>  		if (!khugepaged_thread)
+>  			khugepaged_thread =3D kthread_run(khugepaged, NULL,
+>  							"khugepaged");
+> @@ -2696,7 +2696,7 @@ int start_stop_khugepaged(void)
+>  void khugepaged_min_free_kbytes_update(void)
+>  {
+>  	mutex_lock(&khugepaged_mutex);
+> -	if (hugepage_pmd_enabled() && khugepaged_thread)
+> +	if (hugepage_pmd_enabled(NULL) && khugepaged_thread)
+>  		set_recommended_min_free_kbytes();
+>  	mutex_unlock(&khugepaged_mutex);
+>  }
+
+
+
+
+--=20
+Best Regards,
+Yan, Zi
+
 
