@@ -1,62 +1,62 @@
-Return-Path: <bpf+bounces-56918-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56919-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2EB3AA09D9
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 13:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 45A6BAA09EB
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 13:37:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 601BF1B65CD0
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 11:35:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D81DD188D365
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 11:36:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 653042C10A6;
-	Tue, 29 Apr 2025 11:34:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1456B2C2AB0;
+	Tue, 29 Apr 2025 11:35:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QsjuTlNc"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Q70mA/iJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1DF52BF3F0
-	for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 11:34:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED46929DB8D
+	for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 11:35:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745926467; cv=none; b=ixK/0k44LHe4fjpKlFDjyI8EutxGMxAW+sKEdmTBqWeUmP/ybTqATrx/k0txd4BmTmobXqUh+TFg20mTuu+DeuGPLcp8Uhed5/qx1rtIwFRlPiukn/5jfK+JduARnWYVbbvzAx8YtjUEtGKeyqKH3a5tr/rwQbrmKUrSkf1oem4=
+	t=1745926508; cv=none; b=ChI4g7NWSqN3lpF9UvjNMvZpbvDZWjCFY5O757A0KQQriAGI+lS8lSpadwhtbF2387Z0oSRc6sStEuTVCCF9TnwSRbGiAUAxQfHWmYBeQnd/lMrMjsPoXpG4vl18IJ/2+/knqsAGVIS1FyfRR3JZyRpFRE/i72yTU2MGaj+irzo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745926467; c=relaxed/simple;
-	bh=dZdSzDGgfI6bAYxUORTVtsqgOM9RHNFvz0lZogydzdQ=;
+	s=arc-20240116; t=1745926508; c=relaxed/simple;
+	bh=d13qd1WNSUQm8qp3HwLNRrZYjpaaBRb/9ezRPS8EVS8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=abK7zZc1+xVicL/d7k/82WgEBmPuY8lLcmd9BQcvlRt762xEN7q5AkrdPpsPmQqzw0djzjGm+bBwdGO2GN23DMmYz674hjkaocPywrxvHfLaIp51beguwCTMuZKV6+bHVKAQqDySEd3+OM/iExUJYl1HvkZqhAW8Usx42AJhUhw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QsjuTlNc; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=EMABhKS33CKnST7xI51H/qXUI1WwcDWPlDDrccq61afMdzigaYr+B4ghkMfmim/7z9xb0AnteCVzDjzUOzV8bW5F9oNeV10NeEvZ3U+iq5LNHfYbZwqZ9xddk+OSxpz7S4F/CZWeIpPz6diOGufSK4tSM/M4IzGCuQVqICXhjKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Q70mA/iJ; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1745926464;
+	s=mimecast20190719; t=1745926505;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=zg58JxmHKhWWUoDaZMgkLto/tyv23WpECMmjdzPtlcw=;
-	b=QsjuTlNc0nEgoSvzdvpRkqRPqFK5+zqHxGmUwhjrsDP5BGZaQJH67g2gPPY/DBgjibxYpF
-	kIJnbdU7QQGPhBs4oS6K3edodb0nPNK9KxYHU+DbbQk5ntAPAmdqU3nT5E3M92HjPv033i
-	L6bkEPjktd3M84VPcD3erehaRZwiXR0=
+	bh=4fhI5TePfIEfYXVWSc8B4XryshpfLsg/re+9OFrBpDI=;
+	b=Q70mA/iJmCaedxrug9HaQaKiSLcyV3b8ndYpDWtkLFbX4GvHJ0hvjBsESa35koNQyfIykn
+	atYTwUYsnu9SfR39tbJbFKeD8HDExs+0RuHfLSpPHruyYlKh2QP8EApwzy1Tm4prTlTQcw
+	DdSteiN1BrUH7+WE5tHYo77pNwZsJ9w=
 Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-493-3pHjQIe0MlKhWZ_jNury2w-1; Tue,
- 29 Apr 2025 07:34:21 -0400
-X-MC-Unique: 3pHjQIe0MlKhWZ_jNury2w-1
-X-Mimecast-MFC-AGG-ID: 3pHjQIe0MlKhWZ_jNury2w_1745926457
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-694-ElW5WbjgNq-AkbYuCPaPvg-1; Tue,
+ 29 Apr 2025 07:34:59 -0400
+X-MC-Unique: ElW5WbjgNq-AkbYuCPaPvg-1
+X-Mimecast-MFC-AGG-ID: ElW5WbjgNq-AkbYuCPaPvg_1745926494
 Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 679A11800264;
-	Tue, 29 Apr 2025 11:34:16 +0000 (UTC)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 679EE1800873;
+	Tue, 29 Apr 2025 11:34:53 +0000 (UTC)
 Received: from vschneid-thinkpadt14sgen2i.remote.csb (unknown [10.45.225.102])
-	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 20ACE19560AB;
-	Tue, 29 Apr 2025 11:33:43 +0000 (UTC)
+	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 00FBC19560AF;
+	Tue, 29 Apr 2025 11:34:16 +0000 (UTC)
 From: Valentin Schneider <vschneid@redhat.com>
 To: linux-kernel@vger.kernel.org,
 	virtualization@lists.linux.dev,
@@ -154,9 +154,9 @@ Cc: Josh Poimboeuf <jpoimboe@kernel.org>,
 	Randy Dunlap <rdunlap@infradead.org>,
 	John Stultz <jstultz@google.com>,
 	Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: [PATCH v5 01/25] objtool: Make validate_call() recognize indirect calls to pv_ops[]
-Date: Tue, 29 Apr 2025 13:32:18 +0200
-Message-ID: <20250429113242.998312-2-vschneid@redhat.com>
+Subject: [PATCH v5 02/25] objtool: Flesh out warning related to pv_ops[] calls
+Date: Tue, 29 Apr 2025 13:32:19 +0200
+Message-ID: <20250429113242.998312-3-vschneid@redhat.com>
 In-Reply-To: <20250429113242.998312-1-vschneid@redhat.com>
 References: <20250429113242.998312-1-vschneid@redhat.com>
 Precedence: bulk
@@ -168,75 +168,28 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
 
-call_dest_name() does not get passed the file pointer of validate_call(),
-which means its invocation of insn_reloc() will always return NULL. Make it
-take a file pointer.
-
-While at it, make sure call_dest_name() uses arch_dest_reloc_offset(),
-otherwise it gets the pv_ops[] offset wrong.
-
-Fabricating an intentional warning shows the change; previously:
-
-  vmlinux.o: warning: objtool: __flush_tlb_all_noinstr+0x4: call to {dynamic}() leaves .noinstr.text section
-
-now:
-
-  vmlinux.o: warning: objtool: __flush_tlb_all_noinstr+0x4: call to pv_ops[1]() leaves .noinstr.text section
+I had to look into objtool itself to understand what this warning was
+about; make it more explicit.
 
 Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 Acked-by: Josh Poimboeuf <jpoimboe@kernel.org>
 ---
- tools/objtool/check.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ tools/objtool/check.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 3a411064fa34b..973dfc8fde792 100644
+index 973dfc8fde792..08e73765059fc 100644
 --- a/tools/objtool/check.c
 +++ b/tools/objtool/check.c
-@@ -3319,7 +3319,7 @@ static inline bool func_uaccess_safe(struct symbol *func)
- 	return false;
- }
+@@ -3357,7 +3357,7 @@ static bool pv_call_dest(struct objtool_file *file, struct instruction *insn)
  
--static inline const char *call_dest_name(struct instruction *insn)
-+static inline const char *call_dest_name(struct objtool_file *file, struct instruction *insn)
- {
- 	static char pvname[19];
- 	struct reloc *reloc;
-@@ -3328,9 +3328,9 @@ static inline const char *call_dest_name(struct instruction *insn)
- 	if (insn_call_dest(insn))
- 		return insn_call_dest(insn)->name;
- 
--	reloc = insn_reloc(NULL, insn);
-+	reloc = insn_reloc(file, insn);
- 	if (reloc && !strcmp(reloc->sym->name, "pv_ops")) {
--		idx = (reloc_addend(reloc) / sizeof(void *));
-+		idx = (arch_dest_reloc_offset(reloc_addend(reloc)) / sizeof(void *));
- 		snprintf(pvname, sizeof(pvname), "pv_ops[%d]", idx);
- 		return pvname;
+ 	list_for_each_entry(target, &file->pv_ops[idx].targets, pv_target) {
+ 		if (!target->sec->noinstr) {
+-			WARN("pv_ops[%d]: %s", idx, target->name);
++			WARN("pv_ops[%d]: indirect call to %s() leaves .noinstr.text section", idx, target->name);
+ 			file->pv_ops[idx].clean = false;
+ 		}
  	}
-@@ -3409,17 +3409,19 @@ static int validate_call(struct objtool_file *file,
- {
- 	if (state->noinstr && state->instr <= 0 &&
- 	    !noinstr_call_dest(file, insn, insn_call_dest(insn))) {
--		WARN_INSN(insn, "call to %s() leaves .noinstr.text section", call_dest_name(insn));
-+		WARN_INSN(insn, "call to %s() leaves .noinstr.text section", call_dest_name(file, insn));
- 		return 1;
- 	}
- 
- 	if (state->uaccess && !func_uaccess_safe(insn_call_dest(insn))) {
--		WARN_INSN(insn, "call to %s() with UACCESS enabled", call_dest_name(insn));
-+		WARN_INSN(insn, "call to %s() with UACCESS enabled",
-+			  call_dest_name(file, insn));
- 		return 1;
- 	}
- 
- 	if (state->df) {
--		WARN_INSN(insn, "call to %s() with DF set", call_dest_name(insn));
-+		WARN_INSN(insn, "call to %s() with DF set",
-+			  call_dest_name(file, insn));
- 		return 1;
- 	}
- 
 -- 
 2.49.0
 
