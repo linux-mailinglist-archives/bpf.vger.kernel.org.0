@@ -1,199 +1,100 @@
-Return-Path: <bpf+bounces-56899-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56900-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B77A0AA01BD
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 07:23:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A5CEAA01FB
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 07:48:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 26D2B481995
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 05:23:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 912601B60130
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 05:48:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 465B123814C;
-	Tue, 29 Apr 2025 05:23:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C887F2144DE;
+	Tue, 29 Apr 2025 05:48:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nBjiG5rj"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Hun5pi1i"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADCE722371B
-	for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 05:23:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83C9117C21B
+	for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 05:48:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745904211; cv=none; b=h/giHNvmit6nc2Qj0yK16/rMj1ctaoz4+baNDcUSAp9WAp4ZMdca+cM9Ugh0PCXeWT6ZXPJfMNYs5/GPSdd9qbITZoyaNT0voHTd9uYgxKBI9kvvHpPwEJmZSOpmUuh6/qzHyRLk9QglU5KWDzEj36/OuaDL00LsbFgrM4GOczc=
+	t=1745905704; cv=none; b=FOy5D1HU+Mm0r5IBuQmsTGkR554TeG4tTZVSbLfrw3FCcJW++O3EOuZgewsgwoTkIQmXXB/LB3gd0Pl952nOMRYRvItBuwWcMoaaw1daVYuzE0CzXI06WThy9l41l7s1hdw8SMbjUA5lkaEVk7+eHh7biVZ+sD8rwtY/eJuYpCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745904211; c=relaxed/simple;
-	bh=HHmgpEroABzp2ffx9Nlts99YbN0fSxzHKeZhG8cZWbI=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=rmY3xK6r04lZJjdo35ox7sHVAGMfFtzJsawble7qHwPayA33KA7nnQOc+IK5+SYy8E68IHP7LSJN+lOLa5FX9xnscvgejBJmvcwN75I4QCikqAEXEVCKzAGV3OiQkMDVeriHuJHtXVOdGu11y+thPIB/gMPivpU21zHPxnyogsc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nBjiG5rj; arc=none smtp.client-ip=91.218.175.182
+	s=arc-20240116; t=1745905704; c=relaxed/simple;
+	bh=S2F9cy1P32D1MrCP40MrmJy0aXKoJEYRPzonUjlMoHQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oxdUXocnAni6pRpYWgof2o8Nkhe/EmNE+7QCvmC8x+pLHm6YYPpGmNCExGEvH72QoICfIYBeSidrXN+IpUwaYCUpMSzdSr0DsyzxQ3dzxw5pj51H0qE3aYpZVk9pCLNxi4A4kCasJXy3CejqeNd+OAuuHjdTWpNaH5VpPsj3Lds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Hun5pi1i; arc=none smtp.client-ip=91.218.175.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <0a25f585-de46-4e3e-8ec2-47df25947df1@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1745905690;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7LZcbrAMfCDd4lnWPi8BBDX0LHsvZTUM8X0yPk05FoE=;
+	b=Hun5pi1iblLS3Eb8YZyho/6ZdLG7pxP4GsGlQWTPl/rtedWkZJ5TejZ4IkSzXvQ4f04waS
+	O5R4upoh2OSNjAoJvLc6f05gDO2cQb0XyotSksGiSoiTf3hkO9ZeTZbw7dRDDpTJB5T465
+	I2y54h4bLxxvk8NCxsXoAHa0jqrBcCI=
+Date: Tue, 29 Apr 2025 13:48:01 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1745904197;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xzKVHcxUNgUZ3k5cuqFhdfyUp6ng16+RrHnkO59Dl68=;
-	b=nBjiG5rjSc42h9jBukLq9YEhF0bdYT/OukI1198vedefrPnmNqYaAJZjGJTPc+UjnqyxFU
-	0fZyQJFULfRypaSlU4GL1GSyxSRMSJr0LuWMLeU/DW8g4Ydwp14DSXJeYwGQYHAxYzv2ZZ
-	FWpIcyzWRE+8oPy14JNIo2vJy3LMqPs=
-Date: Tue, 29 Apr 2025 05:23:14 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next] libbpf: remove sample_period init in perf_buffer
+To: andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
+ daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Namhyung Kim <namhyung@kernel.org>
+References: <20250423163901.2983689-1-chen.dylane@linux.dev>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Jiayuan Chen" <jiayuan.chen@linux.dev>
-Message-ID: <8a5d5b162a1462568c4d342c93896c919950cbe9@linux.dev>
-TLS-Required: No
-Subject: Re: [PATCH bpf-next v1 1/3] bpf, sockmap: Introduce a new kfunc for
- sockmap
-To: "Cong Wang" <xiyou.wangcong@gmail.com>
-Cc: bpf@vger.kernel.org, mrpre@163.com, "Alexei Starovoitov"
- <ast@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>, "Andrii
- Nakryiko" <andrii@kernel.org>, "Martin KaFai Lau" <martin.lau@linux.dev>,
- "Eduard Zingerman" <eddyz87@gmail.com>, "Song Liu" <song@kernel.org>,
- "Yonghong Song" <yonghong.song@linux.dev>, "John Fastabend"
- <john.fastabend@gmail.com>, "KP Singh" <kpsingh@kernel.org>, "Stanislav
- Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>, "Jiri Olsa"
- <jolsa@kernel.org>, "Jonathan Corbet" <corbet@lwn.net>, "Jakub Sitnicki"
- <jakub@cloudflare.com>, "David S. Miller" <davem@davemloft.net>, "Eric
- Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
- "Paolo Abeni" <pabeni@redhat.com>, "Simon Horman" <horms@kernel.org>,
- "Kuniyuki Iwashima" <kuniyu@amazon.com>, "Willem de Bruijn"
- <willemb@google.com>, "Mykola Lysenko" <mykolal@fb.com>, "Shuah Khan"
- <shuah@kernel.org>, "Jiapeng Chong" <jiapeng.chong@linux.alibaba.com>,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, linux-kselftest@vger.kernel.org
-In-Reply-To: <aBAjtATRrVNegYjm@pop-os.localdomain>
-References: <20250428081744.52375-1-jiayuan.chen@linux.dev>
- <20250428081744.52375-2-jiayuan.chen@linux.dev>
- <aBAjtATRrVNegYjm@pop-os.localdomain>
+From: Tao Chen <chen.dylane@linux.dev>
+In-Reply-To: <20250423163901.2983689-1-chen.dylane@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-2025/4/29 08:56, "Cong Wang" <xiyou.wangcong@gmail.com> wrote:
+在 2025/4/24 00:39, Tao Chen 写道:
 
->=20
->=20On Mon, Apr 28, 2025 at 04:16:52PM +0800, Jiayuan Chen wrote:
->=20
->=20>=20
->=20> +bpf_sk_skb_set_redirect_cpu()
-> >=20
->=20>  +^^^^^^^^^^^^^^^^^^^^^^
-> >=20
->=20>  +.. code-block:: c
-> >=20
->=20>  +
-> >=20
->=20>  + int bpf_sk_skb_set_redirect_cpu(struct __sk_buff *s, int redir_c=
-pu)
-> >=20
->=20>  +
-> >=20
->=20>  +This kfunc ``bpf_sk_skb_set_redirect_cpu()`` is available to
-> >=20
->=20>  +``BPF_PROG_TYPE_SK_SKB`` BPF programs. It sets the CPU affinity, =
-allowing the
-> >=20
->=20>  +sockmap packet redirecting process to run on the specified CPU as=
- much as
-> >=20
->=20>  +possible, helping users reduce the interference between the sockm=
-ap redirecting
-> >=20
->=20>  +background thread and other threads.
-> >=20
->=20>  +
-> >=20
->=20
-> I am wondering if it is a better idea to use BPF_MAP_TYPE_CPUMAP for
->=20
->=20redirection here instead? Like we did for bpf_redirect_map(). At leas=
-t
->=20
->=20we would not need to store CPU in psock with this approach.
->=20
->=20Thanks.
->
+ping...
 
-You mean to use BPF_MAP_TYPE_CPUMAP with XDP to redirect packets to a
-specific CPU?
-
-I tested and found such overhead:
-1=E3=80=81Needing to parse the L4 header from the L2 header to obtain the=
- 5-tuple,
-  and then maintaining an additional map to store the relationship betwee=
-n
-  each five-tuple and process/CPU. Compared to multi-process scenario, wi=
-th
-  one process binding to one CPU and one map, I can directly use a global
-  variable to let the BPF program know which thread it should use, especi=
-ally
-  for programs that enable reuseport.
+> It seems that sample_period no used in perf buffer, actually only
+> wakeup_events valid about events aggregation for wakeup. So remove
+> it to avoid causing confusion.
+> 
+> Fixes: fb84b8224655 ("libbpf: add perf buffer API")
+> Acked-by: Jiri Olsa <jolsa@kernel.org>
+> Acked-by: Namhyung Kim <namhyung@kernel.org>
+> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+> ---
+>   tools/lib/bpf/libbpf.c | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 194809da5172..1830e3c011a5 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -13306,7 +13306,6 @@ struct perf_buffer *perf_buffer__new(int map_fd, size_t page_cnt,
+>   	attr.config = PERF_COUNT_SW_BPF_OUTPUT;
+>   	attr.type = PERF_TYPE_SOFTWARE;
+>   	attr.sample_type = PERF_SAMPLE_RAW;
+> -	attr.sample_period = sample_period;
+>   	attr.wakeup_events = sample_period;
+>   
+>   	p.attr = &attr;
 
 
-2=E3=80=81Furthermore, regarding performance, I tested with cpumap and th=
-e results
-   were lower than expected. This is because loopback only has xdp_generi=
-c
-   mode and the problem I described in cover letter is actually occurred
-   on loopback...
-
-Code:
-'''
-struct {
-      __uint(type, BPF_MAP_TYPE_CPUMAP);
-      __uint(key_size, sizeof(__u32));
-      __uint(value_size, sizeof(struct bpf_cpumap_val));
-      __uint(max_entries, 64);
-} cpu_map SEC(".maps");
-
-
-SEC("xdp")
-int  xdp_stats1_func(struct xdp_md *ctx)
-{
-      /* Real world:
-       * 1. get 5-tuple from ctx
-       * 2. get corresponding cpu of current skb through XX_MAP
-       */
-      int ret =3D bpf_redirect_map(&cpu_map, 3, 0); // redirct to 3
-      return ret;
-}
-'''
-
-Result:
-'''
-./bench sockmap -c 2 -p 1 -a --rx-verdict-ingress --no-verify
-Setting up benchmark 'sockmap'...
-create socket fd c1:14 p1:15 c2:16 p2:17
-Benchmark 'sockmap' started.
-Iter   0 ( 36.439us): Send Speed  561.496 MB/s ... Rcv Speed   33.264 MB/=
-s
-Iter   1 ( -7.448us): Send Speed  558.443 MB/s ... Rcv Speed   32.611 MB/=
-s
-Iter   2 ( -2.245us): Send Speed  557.131 MB/s ... Rcv Speed   33.004 MB/=
-s
-Iter   3 ( -2.845us): Send Speed  547.374 MB/s ... Rcv Speed   33.331 MB/=
-s
-Iter   4 (  0.745us): Send Speed  562.891 MB/s ... Rcv Speed   34.117 MB/=
-s
-Iter   5 ( -2.056us): Send Speed  560.994 MB/s ... Rcv Speed   33.069 MB/=
-s
-Iter   6 (  5.343us): Send Speed  562.038 MB/s ... Rcv Speed   33.200 MB/=
-s
-'''
-
-Instead, we can introduce a new kfunc to specify the CPU used by the
-backlog running thread, which can avoid using XDP. After all, this is a
-"problem" brought by the BPF L7 framework itself, and it's better to solv=
-e
-it ourselves.
+-- 
+Best Regards
+Tao Chen
 
