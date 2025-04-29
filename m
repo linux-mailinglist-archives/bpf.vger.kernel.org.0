@@ -1,188 +1,133 @@
-Return-Path: <bpf+bounces-56881-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56882-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 668F2A9FF48
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 03:57:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19E1BA9FFD2
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 04:34:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B8F6F462757
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 01:57:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76F1A1A86B3F
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 02:34:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D99A20E706;
-	Tue, 29 Apr 2025 01:57:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2047329CB43;
+	Tue, 29 Apr 2025 02:34:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BN1zu4gy"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="sguunp6I"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f67.google.com (mail-ed1-f67.google.com [209.85.208.67])
+Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E2967082D;
-	Tue, 29 Apr 2025 01:57:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E66E198845
+	for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 02:34:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745891855; cv=none; b=QrjEthlm0zZBhxKAWA1z0KsWs/Xd1YEh6tJSDi3NlZwt4Dz1japs+3VKm5VNLJI8mT/4oA+cfssn6zinTO8z4r+2HVfWfYOqfVpNe8IimVpCaf1mRM0l+ua7nxee9JYctMn1S1tJKlS6H66XSQVQ8Ln2gwHYMb0Nz7rN2rS+Ul8=
+	t=1745894045; cv=none; b=TGXK/6B2Kx6S6Jtmbu4okmJ+rPdahvfeDXwyL0CKZ2cw/kGA6K9EHDaTvCniQtLLrEqGZOUCJCAHO47+wsPhb7+QiPA+btay9zkCS+RFnF3BXyhT5eeDe0tgni3PDNUWc1fNcB6Q2Zyzy9b04fSl2KZICe53RDJ+TBbNqcvexRI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745891855; c=relaxed/simple;
-	bh=0aVd5JM1SATlQkOEKpKHvyBCifj+Y1pNPtszkHc0MDI=;
+	s=arc-20240116; t=1745894045; c=relaxed/simple;
+	bh=GEwqfrDo18i9rwBcepiUpI3TMCd/Z1oRhiO8n/y7VOc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ddsrt8+J6gsrr8/v8v7f87SuwUHoalQhj/k1rQlcxYwoR6kJDxglIK8BB1T0rzcBsu8WUALAqhd2fvhB91NLYTvmJuRpcvdCwLkHujcCarxqd0tIuf3A7XiMUt1D9BLCBQCodLYSOnDYEzALgRmhUhN7CKnFjcc1MgR8Dz0cwdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BN1zu4gy; arc=none smtp.client-ip=209.85.208.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f67.google.com with SMTP id 4fb4d7f45d1cf-5efe8d9ebdfso1047402a12.3;
-        Mon, 28 Apr 2025 18:57:32 -0700 (PDT)
+	 To:Cc:Content-Type; b=Ta1egSy2A7CMQcGMU84nOUPlgtXQPaZHknN/OauWzCRDaVjYB4FPU0ROF9zXip9YQOFlULKuRlmN+TMovzVdwRV811KJM5pEcPoBRbDrExkQnXY34FmTT5nBP0w+HizFq2lDu+6P5RuEf07/OL69CJBmYCSdEICb9kGsndR/zas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=sguunp6I; arc=none smtp.client-ip=209.85.160.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-47681dba807so54191cf.1
+        for <bpf@vger.kernel.org>; Mon, 28 Apr 2025 19:34:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745891851; x=1746496651; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=TcbnWyvi1dis9SuCZ1/SKbV8UgckR1GJ3YAyTppIVtA=;
-        b=BN1zu4gy69wbKMIWSNQdHqhc0ynSALiseJlBwd1Sl2pCK66t4N01jO022WPybXi6+E
-         EpX6R+RdrlYGC3d13KP/PpLzVS2Y72BxwmVW7irMlq2swAV1cM2MmZgVl/LwwPVCemUd
-         4qPZ2ORdbqIFNuEMBq2vd5NkT77BjTHVdbPvsd6iUXgadBea/xZA1o1IOav6qcl2coWM
-         kW6rRM3GGyfReLEyEE5n/3dO5sxSOH7adFSySsJWWHFVGjBb6yKn8JouWBUZNwlb90Ej
-         Fcf7lgeB8H6SoEIuAyVj7adL5db+J5fJT83WK1i4SasOrt5qRtxoqQJ3v8SFdPWYuiF9
-         ftdw==
+        d=google.com; s=20230601; t=1745894043; x=1746498843; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h24UD2kqcRugcg46PL1Xt9ZtaHWSydfY0GpN06+3MH4=;
+        b=sguunp6IRHxaJ6RlUuID1SUqny8jcR/JNW3gussqd0RssD8sYFfUaDxXzR3R8gaVqT
+         0Bdl+i5pZL5+abyGzSRmwugVzhxiiSE7WK9NqOboLniEa8T+x0XeDAM9KyBso/pchP+5
+         0hb8iX3lrCHQPsWcuHcifyIqeYRclKA67kRj64KkGB95ENBf3tpmXWB9TVbnvK/1VVoz
+         bQ0CW29FS9wbPL5F5CcOp2BaQ/MpNrNTX4XngF/XuLf1ppG7HLs/iHqWTpP68XrdewKC
+         CuJTpcKyRbpH16y6Eta13leE3muUnfYnlhZ6Xw1NQ9B4hi0D4D5VDQuYSPvk61NzHIzS
+         rN5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745891851; x=1746496651;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TcbnWyvi1dis9SuCZ1/SKbV8UgckR1GJ3YAyTppIVtA=;
-        b=MMfxlmAgifHGDQj5j95wI7bY0txppLNKr9vGmdGoV8v8iHLgKRqObr/KsTlBh8gBdf
-         x2S63K4253N4hwsoeIakrYYhrGVib2J25mlhzIZOLy1dxW9+c3aRYnhvUULgOTJH12N8
-         mBsSSFOCctMDGJetfBM3Tc7lg63kxuA3LxKtWLybjvUffBHm67rMoFchPZt/q65tCZ14
-         mj+zVISv1qhhX+gfKa5qeJSZc/Cra8Og6roQakRSFwtiJZ9psT78Ylss8+n1SFfTBQFe
-         vIbuEfsG/W6c7wxNsYhseaz3yV6AnvjfyQxslE+LQnrpDlIX9CWGdH3LMjhrADhkSEgi
-         MP3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCW1IZc3U3WeXDBhYu4TYPZFhPZvCIMfR+Ld7zoFGqY0k5qcdYCNzAuw2GFMr8Jd1FaLCM2z3t4+uA==@vger.kernel.org, AJvYcCWphEDOiJh91rikDOwlBCGy/hLEedCpNb4Fe41bdS8YlcVlyxUdrd3Ud+0UoVkZM2ZXCoM=@vger.kernel.org, AJvYcCXppP0grYV2baXsdPqTTc7PlvFmSWhtCfE8ZMbHtcGZW6f+NbuQ2CQOc3fr5i57Ats2BZIQ8LN7Kbcp8Z2t@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx71zmE8NGaXmfvpb8aqiyDhVYmQNPRKVBIx6TEyp1f/UoxQwV1
-	49F/lGnC9URLpUV//Zp0TSNq91pcwRKKy6bT0E9Fd4aRUV5wbasIvtLFKdmSsTl1G3iGupZuf7K
-	fwRczt3qplwYYRhaxYhEjrQS33qQ=
-X-Gm-Gg: ASbGncsP90bwqwLmQGDSCyF7MtBXSnHwoZPG9rZ8qRYT+qcf+UlIBqCDH4378iOrr+Z
-	YozU5Nn26H1kpwhmIynbxCqVhPhxrhUYAeYdx6eebN+VAdRMjfeA1Fhz+QzTAFboEHok59t9XkK
-	/WNwshpIuwxt/vuqKwdVzhPtycwXbIVDBg/B7GMsEGl+4=
-X-Google-Smtp-Source: AGHT+IGOWEHRraH/2R9p5mFTxnX5r73jmgvEf14qIKTjllHFXZonneNpk+KF0w0p4HhcLjQZwdv7Ae+C7fdY42nuL00=
-X-Received: by 2002:a05:6402:1d51:b0:5e5:cb92:e760 with SMTP id
- 4fb4d7f45d1cf-5f73960b9dfmr10033682a12.17.1745891851157; Mon, 28 Apr 2025
- 18:57:31 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1745894043; x=1746498843;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=h24UD2kqcRugcg46PL1Xt9ZtaHWSydfY0GpN06+3MH4=;
+        b=ijtqDJfXeaWLr9RVubY6htbb7YDA3brku1c1iLJRlg4/6SEZoCLoOyM7MhxX5F6EQu
+         qR16MoSZGgSp82uyppXl2DjYjDy94u2CiYb2amycwG8DMT919opxcA8MO7+AkHdSEqXT
+         4YgfWxwtHihtW+tLhZVbtB+OF3R8tvix7jNkX4H+KF+wgmxoswmMdpxrUQjfk34QjfdZ
+         jt29El9+ZnJUL/v0hgUTqimLJxJP9b4VKKwPQq0rMxmiAgrsfoNca7GBnHJUT0aFzb0e
+         qtqvEz3/QfTDC8RwTrsiQvNPoco28l8c+WqP29XRErdLyfmFHqaP6cIcpLfbe9/nqZqI
+         79rA==
+X-Forwarded-Encrypted: i=1; AJvYcCUGbwO8E9juO8ZAAx/AEmAlWsfHBsUs56AWByaWyQFyeo4pDoLJMGkhNffhbD5WUPLnJAo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwmasSP3YtPeui2ubhGZwt0aXBF8AqVIY+Tqnp2SHysG7fdO00C
+	MD+8QigYPIRgbwnzGE6Xz9gjxk11wAQiazIp/Lw3umyCC4EVFVT5s2hMKZ62qUZyWXQBzhMdY5D
+	icmulg8aqVKmkmLolzRBPVMpQp6eoW06O0NhM
+X-Gm-Gg: ASbGnctK0S4AdigQidaGitQszH6zuzxoXwXn0uGM5exJzuFiEZEbUKZ/qR++UkYOCXw
+	Npi8I4AFlGhXkflubfjgEjvoyIEM4A45WF9uIxFayVul4jNdKBgugiMjqjNiR29RVoJeos/1fOB
+	XqwAxtPgunhyN5AkT0vTfxiOfK4c0Orw/9Gvj7AYazrJPv35HR3BGiFQ==
+X-Google-Smtp-Source: AGHT+IGd1Vq2PpS4C822WzDBZt+4H5h8+8S8bRL+Npul5YH8In/RrEiCACZS+8xBAJNO2kLVC1o+FuzEgGcP7VJmm0U=
+X-Received: by 2002:ac8:5a8b:0:b0:477:2c12:9253 with SMTP id
+ d75a77b69052e-4885b57a7e0mr2380541cf.16.1745894042800; Mon, 28 Apr 2025
+ 19:34:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250428033617.3797686-1-roman.gushchin@linux.dev>
- <aA9bu7UJOCTQGk6L@google.com> <aA-5xX10nXE2C2Dn@google.com>
-In-Reply-To: <aA-5xX10nXE2C2Dn@google.com>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Tue, 29 Apr 2025 03:56:54 +0200
-X-Gm-Features: ATxdqUFdh-Baw2wdCT7Q9ZoFIPb0JFBuAYBmlyEh_Ms9YrPmoZBG5fJLOSMLFxg
-Message-ID: <CAP01T76Wv+swbT9xuQ-YhQ=-qOFggw6u1RziJNGjJBiNO233OQ@mail.gmail.com>
-Subject: Re: [PATCH rfc 00/12] mm: BPF OOM
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Matt Bobrowski <mattbobrowski@google.com>, linux-kernel@vger.kernel.org, 
-	Andrew Morton <akpm@linux-foundation.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Suren Baghdasaryan <surenb@google.com>, 
-	David Rientjes <rientjes@google.com>, Josh Don <joshdon@google.com>, 
-	Chuyi Zhou <zhouchuyi@bytedance.com>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	bpf@vger.kernel.org
+References: <20250422153602.54787-1-chia-yu.chang@nokia-bell-labs.com> <20250425173256.6880ece8@kernel.org>
+In-Reply-To: <20250425173256.6880ece8@kernel.org>
+From: Neal Cardwell <ncardwell@google.com>
+Date: Mon, 28 Apr 2025 22:33:46 -0400
+X-Gm-Features: ATxdqUGBiLgIadxV07HhwjXLweK5cAAHzKgUIwtsUOazWECetvT0S1dyvA2bLxI
+Message-ID: <CADVnQym9vWoDtL6T4kWAMaTiFeEPS3iyLYFYkjg0nAEMt9CjeA@mail.gmail.com>
+Subject: Re: [PATCH v5 net-next 00/15] AccECN protocol patch series
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: chia-yu.chang@nokia-bell-labs.com, horms@kernel.org, dsahern@kernel.org, 
+	kuniyu@amazon.com, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	dave.taht@gmail.com, pabeni@redhat.com, jhs@mojatatu.com, 
+	stephen@networkplumber.org, xiyou.wangcong@gmail.com, jiri@resnulli.us, 
+	davem@davemloft.net, edumazet@google.com, andrew+netdev@lunn.ch, 
+	donald.hunter@gmail.com, ast@fiberby.net, liuhangbin@gmail.com, 
+	shuah@kernel.org, linux-kselftest@vger.kernel.org, ij@kernel.org, 
+	koen.de_schepper@nokia-bell-labs.com, g.white@cablelabs.com, 
+	ingemar.s.johansson@ericsson.com, mirja.kuehlewind@ericsson.com, 
+	cheshire@apple.com, rs.ietf@gmx.at, Jason_Livingood@comcast.com, 
+	vidhi_goel@apple.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 28 Apr 2025 at 19:24, Roman Gushchin <roman.gushchin@linux.dev> wrote:
+On Fri, Apr 25, 2025 at 8:32=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
+ote:
 >
-> On Mon, Apr 28, 2025 at 10:43:07AM +0000, Matt Bobrowski wrote:
-> > On Mon, Apr 28, 2025 at 03:36:05AM +0000, Roman Gushchin wrote:
-> > > This patchset adds an ability to customize the out of memory
-> > > handling using bpf.
-> > >
-> > > It focuses on two parts:
-> > > 1) OOM handling policy,
-> > > 2) PSI-based OOM invocation.
-> > >
-> > > The idea to use bpf for customizing the OOM handling is not new, but
-> > > unlike the previous proposal [1], which augmented the existing task
-> > > ranking-based policy, this one tries to be as generic as possible and
-> > > leverage the full power of the modern bpf.
-> > >
-> > > It provides a generic hook which is called before the existing OOM
-> > > killer code and allows implementing any policy, e.g.  picking a victim
-> > > task or memory cgroup or potentially even releasing memory in other
-> > > ways, e.g. deleting tmpfs files (the last one might require some
-> > > additional but relatively simple changes).
-> > >
-> > > The past attempt to implement memory-cgroup aware policy [2] showed
-> > > that there are multiple opinions on what the best policy is.  As it's
-> > > highly workload-dependent and specific to a concrete way of organizing
-> > > workloads, the structure of the cgroup tree etc, a customizable
-> > > bpf-based implementation is preferable over a in-kernel implementation
-> > > with a dozen on sysctls.
-> > >
-> > > The second part is related to the fundamental question on when to
-> > > declare the OOM event. It's a trade-off between the risk of
-> > > unnecessary OOM kills and associated work losses and the risk of
-> > > infinite trashing and effective soft lockups.  In the last few years
-> > > several PSI-based userspace solutions were developed (e.g. OOMd [3] or
-> > > systemd-OOMd [4]). The common idea was to use userspace daemons to
-> > > implement custom OOM logic as well as rely on PSI monitoring to avoid
-> > > stalls. In this scenario the userspace daemon was supposed to handle
-> > > the majority of OOMs, while the in-kernel OOM killer worked as the
-> > > last resort measure to guarantee that the system would never deadlock
-> > > on the memory. But this approach creates additional infrastructure
-> > > churn: userspace OOM daemon is a separate entity which needs to be
-> > > deployed, updated, monitored. A completely different pipeline needs to
-> > > be built to monitor both types of OOM events and collect associated
-> > > logs. A userspace daemon is more restricted in terms on what data is
-> > > available to it. Implementing a daemon which can work reliably under a
-> > > heavy memory pressure in the system is also tricky.
-> > >
-> > > [1]: https://lwn.net/ml/linux-kernel/20230810081319.65668-1-zhouchuyi@bytedance.com/
-> > > [2]: https://lore.kernel.org/lkml/20171130152824.1591-1-guro@fb.com/
-> > > [3]: https://github.com/facebookincubator/oomd
-> > > [4]: https://www.freedesktop.org/software/systemd/man/latest/systemd-oomd.service.html
-> > >
-> > > ----
-> > >
-> > > This is an RFC version, which is not intended to be merged in the current form.
-> > > Open questions/TODOs:
-> > > 1) Program type/attachment type for the bpf_handle_out_of_memory() hook.
-> > >    It has to be able to return a value, to be sleepable (to use cgroup iterators)
-> > >    and to have trusted arguments to pass oom_control down to bpf_oom_kill_process().
-> > >    Current patchset has a workaround (patch "bpf: treat fmodret tracing program's
-> > >    arguments as trusted"), which is not safe. One option is to fake acquire/release
-> > >    semantics for the oom_control pointer. Other option is to introduce a completely
-> > >    new attachment or program type, similar to lsm hooks.
+> On Tue, 22 Apr 2025 17:35:47 +0200 chia-yu.chang@nokia-bell-labs.com
+> wrote:
+> > Chia-Yu Chang (1):
+> >   tcp: accecn: AccECN option failure handling
 > >
-> > Thinking out loud now, but rather than introducing and having a single
-> > BPF-specific function/interface, and BPF program for that matter,
-> > which can effectively be used to short-circuit steps from within
-> > out_of_memory(), why not introduce a
-> > tcp_congestion_ops/sched_ext_ops-like interface which essentially
-> > provides a multifaceted interface for controlling OOM killing
-> > (->select_bad_process, ->oom_kill_process, etc), optionally also from
-> > the context of a BPF program (BPF_PROG_TYPE_STRUCT_OPS)?
+> > Ilpo J=C3=A4rvinen (14):
+> >   tcp: reorganize SYN ECN code
+> >   tcp: fast path functions later
+> >   tcp: AccECN core
+> >   tcp: accecn: AccECN negotiation
+> >   tcp: accecn: add AccECN rx byte counters
+> >   tcp: accecn: AccECN needs to know delivered bytes
+> >   tcp: allow embedding leftover into option padding
+> >   tcp: sack option handling improvements
+> >   tcp: accecn: AccECN option
+> >   tcp: accecn: AccECN option send control
+> >   tcp: accecn: AccECN option ceb/cep heuristic
+> >   tcp: accecn: AccECN ACE field multi-wrap heuristic
+> >   tcp: accecn: try to fit AccECN option with SACK
+> >   tcp: try to avoid safer when ACKs are thinned
 >
-> It's certainly an option and I thought about it. I don't think we need a bunch
-> of hooks though. This patchset adds 2 and they belong to completely different
-> subsystems (mm and sched/psi), so Idk how well they can be gathered
-> into a single struct ops. But maybe it's fine.
->
-> The only potentially new hook I can envision now is one to customize
-> the oom reporting.
->
+> Hi Neal! Could you pass your judgment on these?
+> Given Eric is AFK / busy.
 
-If you're considering scoping it down to a particular cgroup (as you
-allude to in the TODO), or building a hierarchical interface, using
-struct_ops will be much better than fmod_ret etc., which is global in
-nature. Even if you don't support it now. I don't think a struct_ops
-is warranted only when you have more than a few callbacks. As an
-illustration, sched_ext started out without supporting hierarchical
-attachment, but will piggy-back on the struct_ops interface to do so
-in the near future.
+Hi Jakub,
 
-> Thanks for the suggestion!
->
->
+I'm a bit overloaded at the moment, but will try to get to these reviews AS=
+AP.
+
+Thanks!
+neal
 
