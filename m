@@ -1,103 +1,103 @@
-Return-Path: <bpf+bounces-56980-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56981-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C876FAA1CC9
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 23:19:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B618AAA395D
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 23:31:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E496A466BA7
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 21:19:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 778B27AE484
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 21:30:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67A5025A2B4;
-	Tue, 29 Apr 2025 21:19:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E1B225E47D;
+	Tue, 29 Apr 2025 21:31:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FO786ePk"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RpoLWHj9"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7FDB13AC1;
-	Tue, 29 Apr 2025 21:19:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5695E22A7ED
+	for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 21:31:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745961590; cv=none; b=qzubrQqMwRRNgjHOpD/+gISb5h5UIao6nfOUY0URyF4ny1dxfQ2e2Gigsps7GC6W6YzSzAsL38WEL5EYneYgbYRSm0xlRSxvNRmXLgKPmAO7VE/NkIWPSsPWFdIsp/u1dh/MdfxefweQoKGLOGkOcrt54GW1GYQKWUNJ8sEKvEc=
+	t=1745962306; cv=none; b=ckd6ozm63ArA9850JT1+8CSCV9rjuCnTUcu+G1L1ypcQVLCqj4EexhKSLiXla83Bk9J8IC+Mkjmn9bymXLx9N0XBKvMCLtHoYzs5mPJEnJG9jOTWi31MzyQyi/fhU4E5r2x33AyD7y2tCInVPENK4hmFlzAGCIW4JKdDxEcKevQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745961590; c=relaxed/simple;
-	bh=HzYtP5KUYS9gSWTsmkbwZQNkpSo91hivuUnjt4CIwlY=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=s7tzI+jkiRPGYiVYNM4sdNZde6tFWCREVbi8kVyDTZgGTysfqYqowtVxYU4+wkx0EQ9lRAGpLoEoygDPGxtkn6VUarGzqy2XIesueY8FHKygncoUIQhVMx6XVXInq6VfVvOm9HYMnB+6kQ1Cdj6BwWPLPLy7NI5i87rewNnOjWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FO786ePk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49E4CC4CEE3;
-	Tue, 29 Apr 2025 21:19:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745961589;
-	bh=HzYtP5KUYS9gSWTsmkbwZQNkpSo91hivuUnjt4CIwlY=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=FO786ePkoFUQPhXR4UyCYwEuxkAqnvj9InM1z7kYlYqYouqdaKLdjIhkPkVKe+Onp
-	 pYFtf6r4MpEOKhfPAvHqw4wNKXZQcmvtwX7ZRxtdOdyWzQHJIc95OObexboRWAsUVx
-	 6DSlVvjldq3qUV7S3ws4ZsZvQKYWk+mKY+ZHDcrEgc3vF8VIlzAisSprtgcYk5XdEx
-	 tK3WoLoLEF/QmmRD2FM3dyCAcj7p8geLwDbrpVUvN1eqW4hxwa/JAsCih0CZxG0D89
-	 mxzPark+LWsYxORnW1OQSGp1zSBOoC1Iubt9KEHYao6rDMQ050/F16AFAn3d8tQpef
-	 jxdjoSRYeNjaQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70FA23822D4E;
-	Tue, 29 Apr 2025 21:20:29 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1745962306; c=relaxed/simple;
+	bh=wNAc4aowVByIQ1+NzBaNnltNXcSYmk8rJfuBWl1IJ+Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EEGcP3H4tbUurUcTnliXqriG3w9taKyUirp6XBVXi57w8ccMGKDlYA8yt43i3tGWvXcv1pTopy5JkKKPAbx0EAj2iOyviIdtiJWgL0jEEVdgvaoBzjZcOAZ8xBk+NqwgxmWVCwY4DD/z8MBKNv/agxezpyVVd3kIyxsszPJwi7I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RpoLWHj9; arc=none smtp.client-ip=91.218.175.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Tue, 29 Apr 2025 21:31:35 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1745962301;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EhK44/8Ys5iZS1I95Gpf9TqiXTQ03StabhU2aIbnGz0=;
+	b=RpoLWHj9v72jkc+SsJKuznsirnepqqaYc4rnWbmg6qDrd5FNw/0Sv63lIssnA/dSZrIuF6
+	4Vh2ibWZ0VBPVCkglXEto1ilSA2wLvA1cTnU1hVqEeOJ3kuCmRavlPYIqyFm5wN4ZMURRr
+	nRjYlZqWCQ2NLIySrECZzILAU3jkntI=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Michal Hocko <mhocko@suse.com>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Suren Baghdasaryan <surenb@google.com>,
+	David Rientjes <rientjes@google.com>, Josh Don <joshdon@google.com>,
+	Chuyi Zhou <zhouchuyi@bytedance.com>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, bpf@vger.kernel.org
+Subject: Re: [PATCH rfc 10/12] mm: introduce bpf_out_of_memory() bpf kfunc
+Message-ID: <aBFFNyGjDAekx58J@google.com>
+References: <20250428033617.3797686-1-roman.gushchin@linux.dev>
+ <20250428033617.3797686-11-roman.gushchin@linux.dev>
+ <aBC7_2Fv3NFuad4R@tiehlicka>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix compilation errors
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <174596162825.1800330.14207050460197358125.git-patchwork-notify@kernel.org>
-Date: Tue, 29 Apr 2025 21:20:28 +0000
-References: <20250428033445.58113-1-yangfeng59949@163.com>
-In-Reply-To: <20250428033445.58113-1-yangfeng59949@163.com>
-To: Feng Yang <yangfeng59949@163.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
- shuah@kernel.org, toke@redhat.com, amery.hung@bytedance.com,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aBC7_2Fv3NFuad4R@tiehlicka>
+X-Migadu-Flow: FLOW_OUT
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (net)
-by Martin KaFai Lau <martin.lau@kernel.org>:
-
-On Mon, 28 Apr 2025 11:34:45 +0800 you wrote:
-> From: Feng Yang <yangfeng@kylinos.cn>
+On Tue, Apr 29, 2025 at 01:46:07PM +0200, Michal Hocko wrote:
+> On Mon 28-04-25 03:36:15, Roman Gushchin wrote:
+> > Introduce bpf_out_of_memory() bpf kfunc, which allows to declare
+> > an out of memory events and trigger the corresponding kernel OOM
+> > handling mechanism.
+> > 
+> > It takes a trusted memcg pointer (or NULL for system-wide OOMs)
+> > as an argument, as well as the page order.
+> > 
+> > Only one OOM can be declared and handled in the system at once,
+> > so if the function is called in parallel to another OOM handling,
+> > it bails out with -EBUSY.
 > 
-> If the CONFIG_NET_SCH_BPF configuration is not enabled,
-> the BPF test compilation will report the following error:
-> In file included from progs/bpf_qdisc_fq.c:39:
-> progs/bpf_qdisc_common.h:17:51: error: declaration of 'struct bpf_sk_buff_ptr' will not be visible outside of this function [-Werror,-Wvisibility]
->    17 | void bpf_qdisc_skb_drop(struct sk_buff *p, struct bpf_sk_buff_ptr *to_free) __ksym;
->       |                                                   ^
-> progs/bpf_qdisc_fq.c:309:14: error: declaration of 'struct bpf_sk_buff_ptr' will not be visible outside of this function [-Werror,-Wvisibility]
->   309 |              struct bpf_sk_buff_ptr *to_free)
->       |                     ^
-> progs/bpf_qdisc_fq.c:309:14: error: declaration of 'struct bpf_sk_buff_ptr' will not be visible outside of this function [-Werror,-Wvisibility]
-> progs/bpf_qdisc_fq.c:308:5: error: conflicting types for '____bpf_fq_enqueue'
-> 
-> [...]
+> This makes sense for the global OOM handler because concurrent handlers
+> are cooperative. But is this really correct for memcg ooms which could
+> happen for different hierarchies? Currently we do block on oom_lock in
+> that case to make sure one oom doesn't starve others. Do we want the
+> same behavior for custom OOM handlers?
 
-Here is the summary with links:
-  - [bpf-next] selftests/bpf: Fix compilation errors
-    https://git.kernel.org/bpf/bpf-next/c/1ce65102d2d3
+It's a good point and I had similar thoughts when I was working on it.
+But I think it's orthogonal to the customization of the oom handling.
+Even for the existing oom killer it makes no sense to serialize memcg ooms
+in independent memcg subtrees. But I'm worried about the dmesg reporting,
+it can become really messy for 2+ concurrent OOMs.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Also, some memory can be shared, so one OOM can eliminate a need for another
+OOM, even if they look independent.
 
+So my conclusion here is to leave things as they are until we'll get signs
+of real world problems with the (lack of) concurrency between ooms.
 
+Thanks
 
