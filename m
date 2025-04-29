@@ -1,62 +1,62 @@
-Return-Path: <bpf+bounces-56924-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56925-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F493AA0A15
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 13:39:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08135AA0A17
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 13:40:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56E1F166E3D
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 11:39:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C94018893E7
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 11:40:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 934AD2D0277;
-	Tue, 29 Apr 2025 11:37:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D43A02D1905;
+	Tue, 29 Apr 2025 11:38:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DO4NI3wJ"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YHE3Ybis"
 X-Original-To: bpf@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 804702C10B2
-	for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 11:37:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56BCD2C1E31
+	for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 11:38:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745926657; cv=none; b=RlRhTbpS0uPo2em81m8u1zferL4qd1rcHY7Ot442fCfwo2Dt7G820uuvARRzaQaO2BusTYebcJBUlttvlYgLA2CcEYJ2iu7RnkMeqHqg33WrbAMydnuxAUYm8EDTkAswsqvksDMcaYtSKA4cugdFAxiBBvcT8TabK+r6MbXAcM4=
+	t=1745926690; cv=none; b=hL7wJxy0plx3ZWKHcDSMf267GSVu65tQU9LFq+Nxde7b4VQfTmvUgR97MJ7KKeMTR2fVCwjMOSi4DnaDQFaNRI+TSwAEchr4OYTl7vJI9bVf1Ngtfh5LcBFGDy9MQIzl/ioBQl5SCJo6JUl1fHhb1MLRfkn6phCSRvYLlYJgLv0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745926657; c=relaxed/simple;
-	bh=4t8mjhHjI4WFUZm8B3myiCS567km+A7Sp7BJwIFtShc=;
+	s=arc-20240116; t=1745926690; c=relaxed/simple;
+	bh=zSgxmwhAv5JDcB9264ED1TbOlSsNUVAwzqABsWLkCRA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XoZTbwoM0PmNtb9xTREz7+F53fkpYdeKRk//Fn1DIDQ9rCHTTteqLZOSgomnEN3F0T+9cb3WuVJgs8GKIxUyaoOqHWLA+s3Ay+BGssDBhSf1qA0GNHaPG1kNVTpKQbiK6zReyZ+667AwqqSiJZ9UWe4tpQtBFhWQ21EQkvbXdcM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DO4NI3wJ; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=cElBRkvHwK8wsTMw0uEqINieQzF+PIqHoK1eFi88ROA/a6DMYopW08oTqECRKGVP84AnzJE0wpLuFOKo2wRLuWq/0tL5BjFEEXsAC6yv3VXC9aG+K3JroTUkgb6snjiMoKPdJYc0SudbhP2uWJwfxLSErbRsxoQHtXOzDCA8/Vw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YHE3Ybis; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1745926654;
+	s=mimecast20190719; t=1745926686;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=eR0LNq6vli/RlfjDhmC2Fkjj7DVoSbV7PEghl06/VsA=;
-	b=DO4NI3wJflXVfNkaCRA13BAIY4a3NPc7nktyO6b6wfCQMyoE08GDLnDpJOIZxVW+g8P3fI
-	h+9GEX5n5wvk9lqlBgEOc82MB7KY1XnzDwXskEDswjwmUcJpRaazPebnE3PLCoKbftTnPt
-	wJOKouaNkUICeE/PrrHLaO/U1Qwag+4=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+	bh=zIdMzqi05ENyrT+sofMzPcMpxbAubwN5RreZty44ENs=;
+	b=YHE3YbisT/cnx0Anlc/kNMk1rsTuQ4neuZaEaopntz+N66SJgvtG4z3DqUzWow88y7xemD
+	Oo3sCfBa2HII/xtwD5zdm+HiSO7/d5hbZb5nzj2BpvofNv3tRhpiRAotUJTF5GBrtfjqwH
+	bmCHY4dfICkMtibV4Y/0uDrUepYmNis=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-395-FbK6KddfOVC-PT8BrJ2mQA-1; Tue,
- 29 Apr 2025 07:37:31 -0400
-X-MC-Unique: FbK6KddfOVC-PT8BrJ2mQA-1
-X-Mimecast-MFC-AGG-ID: FbK6KddfOVC-PT8BrJ2mQA_1745926646
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-301-N3DTrp0xMiyUfELpmI5d3A-1; Tue,
+ 29 Apr 2025 07:38:01 -0400
+X-MC-Unique: N3DTrp0xMiyUfELpmI5d3A-1
+X-Mimecast-MFC-AGG-ID: N3DTrp0xMiyUfELpmI5d3A_1745926677
 Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 1FDE219560AA;
-	Tue, 29 Apr 2025 11:37:26 +0000 (UTC)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id C285D1956094;
+	Tue, 29 Apr 2025 11:37:56 +0000 (UTC)
 Received: from vschneid-thinkpadt14sgen2i.remote.csb (unknown [10.45.225.102])
-	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id CB2EE19560A3;
-	Tue, 29 Apr 2025 11:36:54 +0000 (UTC)
+	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 9AF0519560AB;
+	Tue, 29 Apr 2025 11:37:26 +0000 (UTC)
 From: Valentin Schneider <vschneid@redhat.com>
 To: linux-kernel@vger.kernel.org,
 	virtualization@lists.linux.dev,
@@ -154,9 +154,9 @@ Cc: Josh Poimboeuf <jpoimboe@kernel.org>,
 	Randy Dunlap <rdunlap@infradead.org>,
 	John Stultz <jstultz@google.com>,
 	Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: [PATCH v5 07/25] x86/paravirt: Mark pv_sched_clock static call as __ro_after_init
-Date: Tue, 29 Apr 2025 13:32:24 +0200
-Message-ID: <20250429113242.998312-8-vschneid@redhat.com>
+Subject: [PATCH v5 08/25] x86/idle: Mark x86_idle static call as __ro_after_init
+Date: Tue, 29 Apr 2025 13:32:25 +0200
+Message-ID: <20250429113242.998312-9-vschneid@redhat.com>
 In-Reply-To: <20250429113242.998312-1-vschneid@redhat.com>
 References: <20250429113242.998312-1-vschneid@redhat.com>
 Precedence: bulk
@@ -172,32 +172,30 @@ Later commits will cause objtool to warn about static calls being used in
 .noinstr sections in order to safely defer instruction patching IPIs
 targeted at NOHZ_FULL CPUs.
 
-pv_sched_clock is updated in:
-o __init vmware_paravirt_ops_setup()
-o __init xen_init_time_common()
-o kvm_sched_clock_init() <- __init kvmclock_init()
-o hv_setup_sched_clock() <- __init hv_init_tsc_clocksource()
+x86_idle is updated in:
+o xen_set_default_idle() <- __init xen_arch_setup()
+o __init select_idle_routine()
 
 IOW purely init context, and can thus be marked as __ro_after_init.
 
 Reported-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 ---
- arch/x86/kernel/paravirt.c | 2 +-
+ arch/x86/kernel/process.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
-index 1ccd05d8999f1..0da0ec6cdecfb 100644
---- a/arch/x86/kernel/paravirt.c
-+++ b/arch/x86/kernel/paravirt.c
-@@ -68,7 +68,7 @@ static u64 native_steal_clock(int cpu)
- }
+diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+index 962c3ce39323e..90f31f8526aa4 100644
+--- a/arch/x86/kernel/process.c
++++ b/arch/x86/kernel/process.c
+@@ -752,7 +752,7 @@ void __cpuidle default_idle(void)
+ EXPORT_SYMBOL(default_idle);
+ #endif
  
- DEFINE_STATIC_CALL(pv_steal_clock, native_steal_clock);
--DEFINE_STATIC_CALL(pv_sched_clock, native_sched_clock);
-+DEFINE_STATIC_CALL_RO(pv_sched_clock, native_sched_clock);
+-DEFINE_STATIC_CALL_NULL(x86_idle, default_idle);
++DEFINE_STATIC_CALL_NULL_RO(x86_idle, default_idle);
  
- void paravirt_set_sched_clock(u64 (*func)(void))
+ static bool x86_idle_set(void)
  {
 -- 
 2.49.0
