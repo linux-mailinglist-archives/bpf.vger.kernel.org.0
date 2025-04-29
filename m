@@ -1,232 +1,349 @@
-Return-Path: <bpf+bounces-56991-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56992-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F4B2AA3C5A
-	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 01:36:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7D2DAA3CF3
+	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 01:49:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8135E46386F
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 23:36:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B933F9A672B
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 23:48:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 146C12DCB51;
-	Tue, 29 Apr 2025 23:36:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89836280337;
+	Tue, 29 Apr 2025 23:47:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LuFwhruQ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JWzntBJg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBBEF215764;
-	Tue, 29 Apr 2025 23:36:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D5BC280304
+	for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 23:47:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745969803; cv=none; b=bDKRvMEdYMNIsLIWlFzuw7pV7T0hq1aeAxrMTS+ArqquQEPLmGsOpr/oJ3gaGQ1BeL9wPYiy3V46yCEg8Zfi5wfueq8RfG7rzsYVuMBPHtmVv6mC1UJ/OGV4zzHAr+YHHzq9xgtFbAUHTG8WD0WVmLXInN2JLxd0p9I/nW6fCL0=
+	t=1745970450; cv=none; b=VqjNVEyovjviALub5qXePFRpSbi2XeFvBeaoW9nIgHhRipnxs/tw2HC+RxxPILtFMRnav5jGlfA0t9NrVYu4IjuBYmJa1aNgF5sxpSEcbnWWgrEsWOZ8figIBkZMdzTPPRDwOOWq5tk1OCV54ZqjgJOJpzav11A4VygSQKZUQcU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745969803; c=relaxed/simple;
-	bh=dTDlc0RNRDq6ls57mSLglq8pKgc7tdJz5BTJPM02X4k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EeVPxw7iNappOPnfk4ir16BiuM2lfdZsLFLT2sEt7JUPciyNbor/V1ZbBoeHdc0iplI2RU26L/82RSrsB9FZWLFcwS5yl47j7GAX69pdQVWdi6Na9fPsoLaR6dw+qTlZhUFAqBBOhfcbac6x5/ZAuWyNYeMTWVgH02KkPpnZjZ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LuFwhruQ; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-39c0dfad22aso5154648f8f.2;
-        Tue, 29 Apr 2025 16:36:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745969800; x=1746574600; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TdcWfFDVkFMcbGeWeLR6ziRht7bZ+Qb5kttylyR1mnw=;
-        b=LuFwhruQ2/MYg8rM6zjzs57J2ig9Aa5tz5e+6gwe7r7SJZ0wMme2hisaq5dstgFEpt
-         zFDAud4kBFF4SohbEsvL95iGRFOubzktiFDA22rNEPEGVPiXGGZIfG+BPfIH4ZfdqQdF
-         xnehxnIiCDqtXIYyDjmzMbUsaemH7GbzOc/wfWMDB1jLVVb8BrxZ00P5f4MNqylDKL6Y
-         ljfJvlEzOYRDAFm0I7pA1LKKtKN8wJ+uxx2cTpbKQ3LhCiM2trQ5Ycup/xd0Ls9PePuG
-         +C4OHi99isQnhQdz1/YJnDkU69wc5MDLOGlQZM0JKcX5JrTee6bmywpSAO/hWRMQrY+T
-         zl2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745969800; x=1746574600;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TdcWfFDVkFMcbGeWeLR6ziRht7bZ+Qb5kttylyR1mnw=;
-        b=PBL82Bsp2km3mabl3X4E4rJ+hQyry6goLUUOwqMAaTvR9qZNZip4fe78Ead2l/k4I/
-         TPigNdU+7Rp/WPJrTkX+tKRFWaJ2Agd+cSi4WqqwEEeCoMtxwy29C4kiff+NP/t7Km+x
-         xLG7eCLGxXf3FsA/wwVFEAN8NnfZpNFgIgNSfkyuI8hnt7ehvKnZ63bgueNR/uGHeEp1
-         fNW0I6wxmMf9fYZjAbmQPosVpXhrpqfFlQE9J0wu2199ebzG/YGC1fnRRKgvr7aPm3Hs
-         ntFnNe1V5HqdE6fVoM+uaUGx2ev/WwO5ymNbDqhcyEsH1/Xsodz6oYcUb1ZYT2xRmwQX
-         cRnw==
-X-Forwarded-Encrypted: i=1; AJvYcCVDIJSh40ZL+W9cINeya6hcUeHzsuDKxjvW9VEmLWx5QnyRMybewmPjwU8tkGGAeVJwFOg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxCgOVNZ/plZV50q7AXANGKvBev5B48XNQIh0/8QZJjJbPWunbi
-	2mI7hFoR/HQtGulMsv8NrG26vVHAunhAIhlEGQRd6PWd3BooRehIbzzge58gWQxWMqzagi24ypY
-	T8aoRDWkSOSD+hTltfpdcb4HBl74zChV9
-X-Gm-Gg: ASbGnctHbYaPy2GMbfH6y6FPr5dNoZdf7hRfXur6x8GpFQnvUbypScXZ1IdLtij19PL
-	eiy2bQQL4F8pHrpCB9BeeKeJXFiPYHXUEHDvxLR6Twb1EpdMDjBx6X6faHzglb5bDDt6HUHUIWB
-	7JWaPELDBLPrpLngBfZBUoIMtaJzefZmL5ZBL6Bw==
-X-Google-Smtp-Source: AGHT+IFAjQigHug1u9Cny6toLPEtA9taavhyQrIwp+TOGB4qF7ytXjg4T06T9bltsGKoUlgESG2ZvHMJvCsskn6XXfQ=
-X-Received: by 2002:a5d:584f:0:b0:3a0:7a7c:235f with SMTP id
- ffacd0b85a97d-3a08f7c984fmr1004496f8f.40.1745969799926; Tue, 29 Apr 2025
- 16:36:39 -0700 (PDT)
+	s=arc-20240116; t=1745970450; c=relaxed/simple;
+	bh=WiN6SJk3AWab7zFnf6f8xMuf1kLWB+L7x2uNVj2xCHs=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=EYevBvYQjlzW4Q9UW3YnytQXMsuD1knF+AEkZzSQRW7QFut1/06SqrDRsoOmHxuCB5Lrg2r4kem3/fiorYxvsmQV1lIu1IOW1fnMuGqK1GglNaGzMJdTskGLzGbtHYpxYWCdrWSaUNyxz/SEixXkMEM6ndwFnQgpddX0l9wryaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JWzntBJg; arc=none smtp.client-ip=95.215.58.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250422-afabre-traits-010-rfc2-v2-0-92bcc6b146c9@arthurfabre.com>
- <20250422-afabre-traits-010-rfc2-v2-1-92bcc6b146c9@arthurfabre.com>
- <CAADnVQJeCC5j4_ss2+G2zjMbAcn=G3JLeAJCBZRC8uzfsVAjMA@mail.gmail.com> <D9FYTORERFI7.36F4WG8G3NHGX@arthurfabre.com>
-In-Reply-To: <D9FYTORERFI7.36F4WG8G3NHGX@arthurfabre.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 29 Apr 2025 16:36:28 -0700
-X-Gm-Features: ATxdqUHsjcnMvbGw0y-BKgs2qU3xHGG0im9y3FrSvjgq6BDw-DSMeOOiOMxnsyI
-Message-ID: <CAADnVQKe3Jfd+pVt868P32-m2a-moP4H7ms_kdZnrYALCxx53Q@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next v2 01/17] trait: limited KV store for packet metadata
-To: Arthur Fabre <arthur@arthurfabre.com>
-Cc: Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Jakub Sitnicki <jakub@cloudflare.com>, Jesper Dangaard Brouer <hawk@kernel.org>, Yan Zhai <yan@cloudflare.com>, 
-	jbrandeburg@cloudflare.com, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <thoiland@redhat.com>, 
-	lbiancon@redhat.com, Alexei Starovoitov <ast@kernel.org>, Jakub Kicinski <kuba@kernel.org>, 
-	Eric Dumazet <edumazet@google.com>
-Content-Type: text/plain; charset="UTF-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1745970444;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=s7l3FbdVPcG6RCgTPDoLsiddGdPB4VYPhMQrF7+5Tgc=;
+	b=JWzntBJgWoVk0WW+sRQOYkdhJo1BkSibXhMIqapLs5CAKRRQxantYCMWFiYy+mqrYMK7zH
+	CJ782uspQr5Qb/8vZdiUXhZ03/WjlxoV1w7tQDStPKMoC49ho4FqdVLNChr6CZOXWEWy0Q
+	va5rUKnCEA1xuuCpGDFdkcnnx2BnSD0=
+Date: Tue, 29 Apr 2025 23:47:20 +0000
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Jiayuan Chen" <jiayuan.chen@linux.dev>
+Message-ID: <6cc9ccc1339839559710efe94bbd1d61289bdaaf@linux.dev>
+TLS-Required: No
+Subject: Re: [PATCH bpf-next v1 0/3] bpf, sockmap: Improve performance with
+ CPU affinity
+To: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
+Cc: "bpf" <bpf@vger.kernel.org>, "Jiayuan Chen" <mrpre@163.com>, "Alexei
+ Starovoitov" <ast@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>,
+ "Andrii Nakryiko" <andrii@kernel.org>, "Martin KaFai Lau"
+ <martin.lau@linux.dev>, "Eduard Zingerman" <eddyz87@gmail.com>, "Song
+ Liu" <song@kernel.org>, "Yonghong Song" <yonghong.song@linux.dev>, "John
+ Fastabend" <john.fastabend@gmail.com>, "KP Singh" <kpsingh@kernel.org>,
+ "Stanislav Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>,
+ "Jiri Olsa" <jolsa@kernel.org>, "Jonathan Corbet" <corbet@lwn.net>,
+ "Jakub Sitnicki" <jakub@cloudflare.com>, "David S. Miller"
+ <davem@davemloft.net>, "Eric Dumazet" <edumazet@google.com>, "Jakub
+ Kicinski" <kuba@kernel.org>, "Paolo Abeni" <pabeni@redhat.com>, "Simon
+ Horman" <horms@kernel.org>, "Kuniyuki Iwashima" <kuniyu@amazon.com>,
+ "Willem de Bruijn" <willemb@google.com>, "Mykola Lysenko"
+ <mykolal@fb.com>, "Shuah Khan" <shuah@kernel.org>, "Jiapeng Chong"
+ <jiapeng.chong@linux.alibaba.com>, "open list:DOCUMENTATION"
+ <linux-doc@vger.kernel.org>, "LKML" <linux-kernel@vger.kernel.org>,
+ "Network Development" <netdev@vger.kernel.org>, "open list:KERNEL
+ SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+In-Reply-To: <CAADnVQLiqHUVZQ7MdqAfnUK+01D5fSt6sDR5nzon83w39ZBohA@mail.gmail.com>
+References: <20250428081744.52375-1-jiayuan.chen@linux.dev>
+ <CAADnVQLiqHUVZQ7MdqAfnUK+01D5fSt6sDR5nzon83w39ZBohA@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Apr 25, 2025 at 12:27=E2=80=AFPM Arthur Fabre <arthur@arthurfabre.c=
+April 30, 2025 at 07:26, "Alexei Starovoitov" <alexei.starovoitov@gmail.c=
 om> wrote:
+
+>=20
+>=20On Mon, Apr 28, 2025 at 1:18 AM Jiayuan Chen <jiayuan.chen@linux.dev>=
+ wrote:
+>=20
+>=20>=20
+>=20> Abstract
+> >=20
+>=20>  =3D=3D=3D
+> >=20
+>=20>  This patchset improves the performance of sockmap by providing CPU=
+ affinity,
+> >=20
+>=20>  resulting in a 1-10x increase in throughput.
+> >=20
+>=20>  Motivation
+> >=20
+>=20>  =3D=3D=3D
+> >=20
+>=20>  Traditional user-space reverse proxy:
+> >=20
+>=20>  Reserve Proxy
+> >=20
+>=20>  _________________
+> >=20
+>=20>  client -> | fd1 <-> fd2 | -> server
+> >=20
+>=20>  |_________________|
+> >=20
+>=20>  Using sockmap for reverse proxy:
+> >=20
+>=20>  Reserve Proxy
+> >=20
+>=20>  _________________
+> >=20
+>=20>  client -> | fd1 <-> fd2 | -> server
+> >=20
+>=20>  | |_________________| |
+> >=20
+>=20>  | | | |
+> >=20
+>=20>  | _________ |
+> >=20
+>=20>  | | sockmap | |
+> >=20
+>=20>  --> |_________| -->
+> >=20
+>=20>  By adding fds to sockmap and using a BPF program, we can quickly f=
+orward
+> >=20
+>=20>  data and avoid data copying between user space and kernel space.
+> >=20
+>=20>  Mainstream multi-process reverse proxy applications, such as Nginx=
+ and
+> >=20
+>=20>  HAProxy, support CPU affinity settings, which allow each process t=
+o be
+> >=20
+>=20>  pinned to a specific CPU, avoiding conflicts between data plane pr=
+ocesses
+> >=20
+>=20>  and other processes, especially in multi-tenant environments.
+> >=20
+>=20>  Current Issues
+> >=20
+>=20>  =3D=3D=3D
+> >=20
+>=20>  The current design of sockmap uses a workqueue to forward ingress_=
+skb and
+> >=20
+>=20>  wakes up the workqueue without specifying a CPU
+> >=20
+>=20>  (by calling schedule_delayed_work()). In the current implementatio=
+n of
+> >=20
+>=20>  schedule_delayed_work, it tends to run the workqueue on the curren=
+t CPU.
+> >=20
+>=20>  This approach has a high probability of running on the current CPU=
+, which
+> >=20
+>=20>  is the same CPU that handles the net rx soft interrupt, especially=
+ for
+> >=20
+>=20>  programs that access each other using local interfaces.
+> >=20
+>=20>  The loopback driver's transmit interface, loopback_xmit(), directl=
+y calls
+> >=20
+>=20>  __netif_rx() on the current CPU, which means that the CPU handling
+> >=20
+>=20>  sockmap's workqueue and the client's sending CPU are the same, res=
+ulting
+> >=20
+>=20>  in contention.
+> >=20
+>=20>  For a TCP flow, if the request or response is very large, the
+> >=20
+>=20>  psock->ingress_skb queue can become very long. When the workqueue
+> >=20
+>=20>  traverses this queue to forward the data, it can consume a signifi=
+cant
+> >=20
+>=20>  amount of CPU time.
+> >=20
+>=20>  Solution
+> >=20
+>=20>  =3D=3D=3D
+> >=20
+>=20>  Configuring RPS on a loopback interface can be useful, but it will=
+ trigger
+> >=20
+>=20>  additional softirq, and furthermore, it fails to achieve our expec=
+ted
+> >=20
+>=20>  effect of CPU isolation from other processes.
+> >=20
+>=20>  Instead, we provide a kfunc that allow users to specify the CPU on=
+ which
+> >=20
+>=20>  the workqueue runs through a BPF program.
+> >=20
+>=20>  We can use the existing benchmark to test the performance, which a=
+llows
+> >=20
+>=20>  us to evaluate the effectiveness of this optimization.
+> >=20
+>=20>  Because we use local interfaces for communication and the client c=
+onsumes
+> >=20
+>=20>  a significant amount of CPU when sending data, this prevents the w=
+orkqueue
+> >=20
+>=20>  from processing ingress_skb in a timely manner, ultimately causing=
+ the
+> >=20
+>=20>  server to fail to read data quickly.
+> >=20
+>=20>  Without cpu-affinity:
+> >=20
+>=20>  ./bench sockmap -c 2 -p 1 -a --rx-verdict-ingress --no-verify
+> >=20
+>=20>  Setting up benchmark 'sockmap'...
+> >=20
+>=20>  create socket fd c1:14 p1:15 c2:16 p2:17
+> >=20
+>=20>  Benchmark 'sockmap' started.
+> >=20
+>=20>  Iter 0 ( 36.031us): Send Speed 1143.693 MB/s ... Rcv Speed 109.572=
+ MB/s
+> >=20
+>=20>  Iter 1 ( 0.608us): Send Speed 1320.550 MB/s ... Rcv Speed 48.103 M=
+B/s
+> >=20
+>=20>  Iter 2 ( -5.448us): Send Speed 1314.790 MB/s ... Rcv Speed 47.842 =
+MB/s
+> >=20
+>=20>  Iter 3 ( -0.613us): Send Speed 1320.158 MB/s ... Rcv Speed 46.531 =
+MB/s
+> >=20
+>=20>  Iter 4 ( -3.441us): Send Speed 1319.375 MB/s ... Rcv Speed 46.662 =
+MB/s
+> >=20
+>=20>  Iter 5 ( 3.764us): Send Speed 1166.667 MB/s ... Rcv Speed 42.467 M=
+B/s
+> >=20
+>=20>  Iter 6 ( -4.404us): Send Speed 1319.508 MB/s ... Rcv Speed 47.973 =
+MB/s
+> >=20
+>=20>  Summary: total trans 7758 MB =C2=B1 1293.506 MB/s
+> >=20
+>=20>  Without cpu-affinity(RPS enabled):
+> >=20
+>=20>  ./bench sockmap -c 2 -p 1 -a --rx-verdict-ingress --no-verify
+> >=20
+>=20>  Setting up benchmark 'sockmap'...
+> >=20
+>=20>  create socket fd c1:14 p1:15 c2:16 p2:17
+> >=20
+>=20>  Benchmark 'sockmap' started.
+> >=20
+>=20>  Iter 0 ( 28.925us): Send Speed 1630.357 MB/s ... Rcv Speed 850.960=
+ MB/s
+> >=20
+>=20>  Iter 1 ( -2.042us): Send Speed 1644.564 MB/s ... Rcv Speed 822.478=
+ MB/s
+> >=20
+>=20>  Iter 2 ( 0.754us): Send Speed 1644.297 MB/s ... Rcv Speed 850.787 =
+MB/s
+> >=20
+>=20>  Iter 3 ( 0.159us): Send Speed 1644.429 MB/s ... Rcv Speed 850.198 =
+MB/s
+> >=20
+>=20>  Iter 4 ( -2.898us): Send Speed 1646.924 MB/s ... Rcv Speed 830.867=
+ MB/s
+> >=20
+>=20>  Iter 5 ( -0.210us): Send Speed 1649.410 MB/s ... Rcv Speed 824.246=
+ MB/s
+> >=20
+>=20>  Iter 6 ( -1.448us): Send Speed 1650.723 MB/s ... Rcv Speed 808.256=
+ MB/s
+> >=20
+>=20>  With cpu-affinity(RPS disabled):
+> >=20
+>=20>  ./bench sockmap -c 2 -p 1 -a --rx-verdict-ingress --no-verify --cp=
+u-affinity
+> >=20
+>=20>  Setting up benchmark 'sockmap'...
+> >=20
+>=20>  create socket fd c1:14 p1:15 c2:16 p2:17
+> >=20
+>=20>  Benchmark 'sockmap' started.
+> >=20
+>=20>  Iter 0 ( 36.051us): Send Speed 1883.437 MB/s ... Rcv Speed 1865.08=
+7 MB/s
+> >=20
+>=20>  Iter 1 ( 1.246us): Send Speed 1900.542 MB/s ... Rcv Speed 1761.737=
+ MB/s
+> >=20
+>=20>  Iter 2 ( -8.595us): Send Speed 1883.128 MB/s ... Rcv Speed 1860.71=
+4 MB/s
+> >=20
+>=20>  Iter 3 ( 7.033us): Send Speed 1890.831 MB/s ... Rcv Speed 1806.684=
+ MB/s
+> >=20
+>=20>  Iter 4 ( -8.397us): Send Speed 1884.700 MB/s ... Rcv Speed 1973.56=
+8 MB/s
+> >=20
+>=20>  Iter 5 ( -1.822us): Send Speed 1894.125 MB/s ... Rcv Speed 1775.04=
+6 MB/s
+> >=20
+>=20>  Iter 6 ( 4.936us): Send Speed 1877.597 MB/s ... Rcv Speed 1959.320=
+ MB/s
+> >=20
+>=20>  Summary: total trans 11328 MB =C2=B1 1888.507 MB/s
+> >=20
+>=20
+> This looks to me like an artificial benchmark.
+> Surely perf will be higher when wq is executed on free cpu.
+> In production all cpus likely have work to do, so this whole
+> approach 'lets ask wq to run on that cpu' isn't going to work.
+> Looks like RPS helps. Use that. I think it will scale and work
+> better when the whole server is loaded.
+> pw-bot: cr
 >
-> On Thu Apr 24, 2025 at 6:22 PM CEST, Alexei Starovoitov wrote:
-> > On Tue, Apr 22, 2025 at 6:23=E2=80=AFAM Arthur Fabre <arthur@arthurfabr=
-e.com> wrote:
-> > >
-> > > +/**
-> > > + * trait_set() - Set a trait key.
-> > > + * @traits: Start of trait store area.
-> > > + * @hard_end: Hard limit the trait store can currently grow up again=
-st.
-> > > + * @key: The key to set.
-> > > + * @val: The value to set.
-> > > + * @len: The length of the value.
-> > > + * @flags: Unused for now. Should be 0.
-> > > + *
-> > > + * Return:
-> > > + * * %0       - Success.
-> > > + * * %-EINVAL - Key or length invalid.
-> > > + * * %-EBUSY  - Key previously set with different length.
-> > > + * * %-ENOSPC - Not enough room left to store value.
-> > > + */
-> > > +static __always_inline
-> > > +int trait_set(void *traits, void *hard_end, u64 key, const void *val=
-, u64 len, u64 flags)
-> > > +{
-> > > +       if (!__trait_valid_key(key) || !__trait_valid_len(len))
-> > > +               return -EINVAL;
-> > > +
-> > > +       struct __trait_hdr *h =3D (struct __trait_hdr *)traits;
-> > > +
-> > > +       /* Offset of value of this key. */
-> > > +       int off =3D __trait_offset(*h, key);
-> > > +
-> > > +       if ((h->high & (1ull << key)) || (h->low & (1ull << key))) {
-> > > +               /* Key is already set, but with a different length */
-> > > +               if (__trait_total_length(__trait_and(*h, (1ull << key=
-))) !=3D len)
-> > > +                       return -EBUSY;
-> > > +       } else {
-> > > +               /* Figure out if we have enough room left: total leng=
-th of everything now. */
-> > > +               if (traits + sizeof(struct __trait_hdr) + __trait_tot=
-al_length(*h) + len > hard_end)
-> > > +                       return -ENOSPC;
-> >
-> > I'm still not excited about having two metadata-s
-> > in front of the packet.
-> > Why cannot traits use the same metadata space ?
-> >
-> > For trait_set() you already pass hard_end and have to check it
-> > at run-time.
-> > If you add the same hard_end to trait_get/del the kfuncs will deal
-> > with possible corruption of metadata by the program.
-> > Transition from xdp to skb will be automatic. The code won't care that =
-traits
-> > are there. It will just copy all metadata from xdp to skb. Corrupted or=
- not.
-> > bpf progs in xdp and skb might even use the same kfuncs
-> > (or two different sets if the verifier is not smart enough right now).
->
-> Good idea, that would solve the corruption problem.
->
-> But I think storing metadata at the "end" of the headroom (ie where
-> XDP metadata is today) makes it harder to persist in the SKB layer.
-> Functions like __skb_push() assume that skb_headroom() bytes are
-> available just before skb->data.
->
-> They can be updated to move XDP metadata out of the way, but this
-> assumption seems pretty pervasive.
 
-The same argument can be flipped.
-Why does the skb layer need to push?
-If it needs to encapsulate it will forward to tunnel device
-to go on the wire. At this point any kind of metadata is going
-to be lost on the wire. bpf prog would need to convert
-metadata into actual on the wire format or stash it
-or send to user space.
-I don't see a use case where skb layer would move medadata by N
-bytes, populate these N bytes with "???" and pass to next skb layer.
-skb layers strip (pop) the header when it goes from ip to tcp to user space=
-.
-No need to move metadata.
+Hi Alexei, you're right for requests coming from a remote host, all CPUs
+are running; in cloud-native scenarios where Sidecars are widely used,
+they access each other through loopback, but for requests accessing each
+other through loopback, the wq (workqueue) will definitely run on the CPU
+where the client is located (based on the implementation of loopback and =
+wq).
+Since the Sidecar itself is bound to a CPU, which means that in actual
+scenarios, the CPU bound to the gateway (reverse proxy) program using soc=
+kmap
+cannot be fully utilized.
 
-> By using the "front" of the headroom, we can hide that from the rest of
-> the SKB code. We could even update skb->head to completely hide the
-> space used at the front of the headroom.
-> It also avoids the cost of moving the metadata around (but maybe that
-> would be insignificant).
+Enabling RPS can alleviate the sockmap issue, but it will introduce an ex=
+tra
+software calculation, so from a performance perspective, we still expect =
+to
+have a solution that can achieve the highest performance.
 
-That's a theory. Do you actually have skb layers pushing things
-while metadata is there?
-
-> XDP metadata also doesn't work well with GRO (see below).
->
-> > Ideally we add hweight64 as new bpf instructions then maybe
-> > we won't need any kernel changes at all.
-> > bpf side will do:
-> > bpf_xdp_adjust_meta(xdp, -max_offset_for_largest_key);
-> > and then
-> > trait_set(xdp->data_meta /* pointer to trait header */, xdp->data /*
-> > hard end */, ...);
-> > can be implemented as bpf prog.
-> >
-> > Same thing for skb progs.
-> > netfilter/iptable can use another bpf prog to make decisions.
->
-> There are (at least) two reasons for wanting the kernel to understand the
-> format:
->
-> * GRO: With an opaque binary blob, the kernel can either forbid GRO when
->   the metadata differs (like XDP metadata today), or keep the entire blob
->   of one of the packets.
->   But maybe some users will want to keep a KV of the first packet, or
->   the last packet, eg for receive timestamps.
->   With a KV store we can have a sane default option for merging the
->   different KV stores, and even add a per KV policy in the future if
->   needed.
-
-We can have this default for metadata too.
-If all bytes in the metadata blob are the same -> let it GRO.
-
-I don't think it's a good idea to extend GRO with bpf to make it "smart".
-
-> * Hardware metadata: metadata exposed from NICs (like the receive
->   timestamp, 4 tuple hash...) is currently only exposed to XDP programs
->   (via kfuncs).
->   But that doesn't expose them to the rest of the stack.
->   Storing them in traits would allow XDP, other BPF programs, and the
->   kernel to access and modify them (for example to into account
->   decapsulating a packet).
-
-Sure. If traits =3D=3D existing metadata bpf prog in xdp can communicate
-with bpf prog in skb layer via that "trait" format.
-xdp can take tuple hash and store it as key=3D=3D0 in the trait.
-The kernel doesn't need to know how to parse that format.
+Thanks.
 
