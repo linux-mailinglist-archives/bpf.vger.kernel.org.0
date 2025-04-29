@@ -1,81 +1,78 @@
-Return-Path: <bpf+bounces-56955-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56956-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB029AA100C
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 17:10:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 279A5AA1016
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 17:14:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A636484026D
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 15:09:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 847CA1B6235D
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 15:14:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B32C21CFFD;
-	Tue, 29 Apr 2025 15:09:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E652921D3E9;
+	Tue, 29 Apr 2025 15:14:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="iqWBDe/y"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="LZEXcxcJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2063.outbound.protection.outlook.com [40.107.92.63])
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2070.outbound.protection.outlook.com [40.107.93.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C06CA2192E2
-	for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 15:09:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.63
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B82E478F44
+	for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 15:13:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.70
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745939391; cv=fail; b=savA5bb4icxaZ4eFy2jC1Woq9a7lLZX8kJ+GM/ShyIA74b8hmwHc7PBfOfUHsNhCZoGlOybX+4zffgVCJ8FnGkCWbzgujhvSn+wSvci0iSfbVw44IiogNpLwdC6kF7xdBiKtoTuPF1irOCSvrJuEFRvQPlkQbZZQQPWaNlQDdTI=
+	t=1745939640; cv=fail; b=hQjJ7Wsvvok82FM+/JAI3tzvxOQ0Z6cM5K7J4Unio7pJiGYMjcHGOaXjI8WHEIcXBKalu/JKbKq6KoxHU3j/Wp/HgdgXKofj66RQAEkVIxk/oltrjMWssi761MDAGaNs4K7Xcv3yMW5I6FoWSbOWllq7oZeOYI33vm3U8a1UxiE=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745939391; c=relaxed/simple;
-	bh=ePQyYN1JfjVBcXzJKL1+6u2NR5+CobtXRKZoLcRAt4Y=;
-	h=Content-Type:Date:Message-Id:Cc:To:From:Subject:References:
-	 In-Reply-To:MIME-Version; b=GDWJURSJN2lYPerhSW/Anq1XgaQ23Iiy4GFxKAq/rHVtVaZztQpexoP9ZR7/wVB111JTL0rK4fcqffXmkhQlLl50Ut0O9b7nr5lC7A1q/RT0/pMUMHGBKAY8NVjtu30GBVFQu9yqRfKrdUtskq40D/v0NFaGZYXatv5Rp8WZr4M=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=iqWBDe/y; arc=fail smtp.client-ip=40.107.92.63
+	s=arc-20240116; t=1745939640; c=relaxed/simple;
+	bh=WJHfVu+4j28cAzfZBVcrHzy35RQnHaUSedthdt27Q3g=;
+	h=Content-Type:Date:Message-Id:From:Subject:Cc:To:References:
+	 In-Reply-To:MIME-Version; b=YRwoqEuoSHwgd8jGWoSEKc86cE1ti1OsjU0y2gIrVswopFYUZ7KAmuyK1fKCkpWftmYBczxMPlD6ahbwMdCw2qvsASYtPKgp3ItZeEA58MiqANILZ0SC3Xx7gKT3lZs4B+M19jnAjnGpUY6PAE+sqyqiYKpb82OaWsKpuXlNKWY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=LZEXcxcJ; arc=fail smtp.client-ip=40.107.93.70
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=dTu7OrEZbKaCQkfJu9ZiErY62qELh271HQDRu7IeIZ6Y+zUODptZszzdqNKdZI2sdKcjhH+h9mJR6nq2A/XSUPyCRHrAFlmD0/Ji6gLbmY9DQwvInZK9nq+sac6GKIMuFca5gXUqbOsDmumrThtFguqewOtXSdjB0kyhBpwH2ydqGXSmTzKHqvvTgJ0TlRq1I6iOgcuVmu+z5MWU44c+GmyfbxR4Yqs0JDHRSHBEyOP8jOXVozbSovOP26v1UXOq+WMLoPkOt/yejHRx/RSsFTncDa/Oy0M37DjZcXW8fMfew2nhPyGWmlHm8NmnzSctJZRF1sAFupp0HzbhlNNgfA==
+ b=vqdhMSUFqZUCmoNbDiaTR+HaP1EXxZlkzloz8gUwYR/vTAWeNGnSEq5N+c9DI+N1lit7q3tlh095mJY7aO4RTSyoS9RKJhEp+DYUQAbgXsNy4WKCwoB7Q197OY4OqXrPKqGE+PZIwSEOUvrW62/8G+J4cv3XyrIlJN5bCstcNybFr4j9ZgLwGAslDYRFj+SHw1ECsa+8ou/AQJ2sIryh93tvjWr2Vb8t32f847K8R1CPat+hobUU8NfZJJBhnJv+kEiDYHXBaM6jcuCaFLxnBA+oFzl2u3SfAOrM5A5eljW02yFbj2N24UFrCcXBpyjTzNgnzjAqHDXcdW/1lBh8FA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vmLpCfZOyfTGHhmumthvslnO9rvY4roljJxrXUxYZY0=;
- b=Di+kex9HVlqloCiX8UhW+gXs+qappEee+TEJpHW64ZuWMa+A+IUBogJ31SKM61yro8u335XLoyWSpGzmbmrsNnEjpLPz050HO8YLMjiuQiRZbXKiL2TdOrqa3uV/hVINGxsOGv3FScYJEogxEiaMfQT42/Uy4DVszObRjPkhhGxLzvATQNitUZu0G+ZZztORo6xEtTG+eg3nIkF0JtOhY6ck3jqxqWuNetwp/cbcKKDKg1AMI4D1uunpDiwBXmslqTTyIkabst8PxoP4/eGo4+EHYili93tSlzd2GdU+oA79/ai59Qqonotef3jvmhanLSJmkdL/gRb/xr5CjiYByw==
+ bh=ghXbuEZXmJMYMlXD8Yk77nlF/z5ntWPRWZaN0Y//WD0=;
+ b=wZw86LUgqsSucR+likzJ3Cxy/xMWfFL+UWObUXhQergNLWxqAHpRQJ1Xbq3TCnxeqlLqTUy4GeoC96VXoQsaCqBdntHNIJ5gArrbsJYajoBfNK5nbScB3DWHfq9ArA3VkCfAV3NvKs9mm8gm1mQAjZjH0D9M0HzOTW4mO3OEwMfXR8D1vECYd0yveLwUt0dLW31lnRINylSeDaBBNOFeu0bglSSFKckqs3LLpDIRyB6LqLHlDc9kTpf6EYWT12F/6Q/TPFFHgWBiea4C1Ph1+CPapCaXI1FsNtHsOvIdeNOK/K6E7avdUIcPiITEApi4RccnnIL85bluDGCBRicqTw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vmLpCfZOyfTGHhmumthvslnO9rvY4roljJxrXUxYZY0=;
- b=iqWBDe/y1UZMSlDlF6h2FyPMzkR5vadi5/DFbi+msNollFv+cgDvo6tLNMm+7X5JHRfLNrC7f57x0KHHlZpRrNNhvK/ZbFQQkBLUbg0xR1KvRWmWpMC50yGLkC+Kri0wr09b+rC1FlOGUS3/sZQt+KQjwGt0LAjyaXP1X5wK1+dvwTTID9OeNH7eDeIEZQjjOg92sDyrZnTsunH6VRWfHKy1V+nunK9gHht3+mRFS6hPprCpLa8FdYpPDP0q+z/u1qWrNjnDvo4evsOkdzoiJ4l4XtZ5Tr5eim/x4aRXEGwuFp/Cq6X/IjTDpe7sOa4L1hs+QBVmvGR6Bwq9q8iC9w==
+ bh=ghXbuEZXmJMYMlXD8Yk77nlF/z5ntWPRWZaN0Y//WD0=;
+ b=LZEXcxcJ3eYZrKgjJ/pdD7jNxmiGTOSnolo/KCbSAq2wo1zfDYJ4CTO1E63uBq0hwZNDHSLMkPlScW0OiiwPkDvh/7PCeQ5OX3mKIoburw16xwSIHIFazMS6W2jGHyzV/fa2KwpFL+nt6xVnWymxCgDBY+JF81iVZTRNxclT00GPL2gmixSZnfyYC0CqDOrEq8jF4g8irwDio41Z+gnCknUIO6hy64IIpqPXpY53m9sfxA4upQnQpGjH+zmoLn628ertvRXoc9Y8VMNszsoD8gRzNfMQxuv2NOgT3Al0twI8ycEfOZzNbrm2EvHgQ8aigxc0SYqKcXjAyuGUsUS0Ng==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from DS7PR12MB9473.namprd12.prod.outlook.com (2603:10b6:8:252::5) by
  MW6PR12MB8836.namprd12.prod.outlook.com (2603:10b6:303:241::11) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8678.33; Tue, 29 Apr
- 2025 15:09:46 +0000
+ 2025 15:13:56 +0000
 Received: from DS7PR12MB9473.namprd12.prod.outlook.com
  ([fe80::5189:ecec:d84a:133a]) by DS7PR12MB9473.namprd12.prod.outlook.com
  ([fe80::5189:ecec:d84a:133a%5]) with mapi id 15.20.8678.028; Tue, 29 Apr 2025
- 15:09:46 +0000
+ 15:13:55 +0000
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Date: Tue, 29 Apr 2025 11:09:44 -0400
-Message-Id: <D9J7UWF1S5WH.285Y0GXSUD30W@nvidia.com>
+Date: Tue, 29 Apr 2025 11:13:54 -0400
+Message-Id: <D9J7Y3DKHQJI.2MBF33WKN1BH5@nvidia.com>
+From: "Zi Yan" <ziy@nvidia.com>
+Subject: Re: [RFC PATCH 1/4] mm: move hugepage_global_{enabled,always}() to
+ internal.h
 Cc: <bpf@vger.kernel.org>, <linux-mm@kvack.org>
 To: "Yafang Shao" <laoar.shao@gmail.com>, <akpm@linux-foundation.org>,
- <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>, "David
- Hildenbrand" <david@redhat.com>, "Baolin Wang"
- <baolin.wang@linux.alibaba.com>, "Lorenzo Stoakes"
- <lorenzo.stoakes@oracle.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>,
- "Nico Pache" <npache@redhat.com>, "Ryan Roberts" <ryan.roberts@arm.com>,
- "Dev Jain" <dev.jain@arm.com>
-From: "Zi Yan" <ziy@nvidia.com>
-Subject: Re: [RFC PATCH 0/4] mm, bpf: BPF based THP adjustment
+ <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>
 X-Mailer: aerc 0.20.1-60-g87a3b42daac6-dirty
 References: <20250429024139.34365-1-laoar.shao@gmail.com>
-In-Reply-To: <20250429024139.34365-1-laoar.shao@gmail.com>
-X-ClientProxiedBy: BN9PR03CA0431.namprd03.prod.outlook.com
- (2603:10b6:408:113::16) To DS7PR12MB9473.namprd12.prod.outlook.com
+ <20250429024139.34365-2-laoar.shao@gmail.com>
+In-Reply-To: <20250429024139.34365-2-laoar.shao@gmail.com>
+X-ClientProxiedBy: BN9PR03CA0038.namprd03.prod.outlook.com
+ (2603:10b6:408:fb::13) To DS7PR12MB9473.namprd12.prod.outlook.com
  (2603:10b6:8:252::5)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -85,191 +82,292 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DS7PR12MB9473:EE_|MW6PR12MB8836:EE_
-X-MS-Office365-Filtering-Correlation-Id: 020e9b26-cd52-4cfb-ba75-08dd872fe0bb
+X-MS-Office365-Filtering-Correlation-Id: 51035743-d331-4da8-c268-08dd873075a4
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|7416014|376014|366016|921020;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|366016|7053199007;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?ckhoNnVDLzd5SVA1SWllT2l3ZjZuOTk3Kzd1UFp3SGRGdnJicktuY1l2Qjd4?=
- =?utf-8?B?WVQ1M2dBcGtxMDhpYW9YYW93R0hJVmNDa3IvVmNSOW1XMTh1QTBTUkdLNStL?=
- =?utf-8?B?eDhxNloyZ2d4bFNYem9uazdoM0xxNTBaTkhzS2RGTDRhVWEwVC93RTUvWkN4?=
- =?utf-8?B?N3hRcHVjTEx6UW04N3VCem8rNjNZalJMaWhMVHBxUVNBU1Z0Z25qSkxEQXpZ?=
- =?utf-8?B?eXJEaU9BZUhXOS9IZHVHWFJuSUg2MWFqdWNXSUl5SnlnUHZRdkR4dGVoeGR5?=
- =?utf-8?B?RUVBQzNTbU9KNFhDRUZoT1BZRC9zcDBmV0dCN29IM013ZHRkMy9tbjlYVXB2?=
- =?utf-8?B?a1FvWklQdnZGRUF6VC90RkVDZVFkcEEyZktJejE1LzVwaklFc01hcTNRVkRi?=
- =?utf-8?B?bWFKdWpDbHpjekc1Q04rMUxKYkVpTnZ4NFJjRWNOelluZmJMRXRQNVlMNml4?=
- =?utf-8?B?Skl2dEREZEh3Zm9MQXZDWlNRRVNEc3E2UzB6UjFLbkh4L0hsbnNnTkxiYjRL?=
- =?utf-8?B?VXdRMm1qeWRLWUg2SXJwY1lwV0gycVlUSy82K2taS0VnWHhxSVJxTzZaSnVv?=
- =?utf-8?B?S3BrQnd4WlhhNXl5OC9nME9pdCt2ZGU4YUNnK1JWanVkZEtFczNKd1RmQ2NE?=
- =?utf-8?B?YVoyUHByQUUvRTBHdG5nQit4R3p4STFxeUxSNEdES04xU0c2Q2hyTmZZSVMz?=
- =?utf-8?B?RlQxOU12Mkgxd3R0aXcyVS9UVlZ2U2p1OUNvb0J6WWpXc0ZteVBJYnp0czg4?=
- =?utf-8?B?WjYrOHJiNTBqUTcwc1V2K2k5OG13Nzc0YXJhSkl5ZzkyRkpvYmtzRzBxTHZB?=
- =?utf-8?B?c0FFM2FzVDNUck53bXQ5bTJsUTduZkRKbVJ3OUVWQ1RXdlVJbXVoYkdaL2hV?=
- =?utf-8?B?d29Jc3lXQkFBYTZiZGJFaEpCcjR1RWJPV1lhV0lDdTUybGV3RmJWcnBUcFFX?=
- =?utf-8?B?SnVtSHNacWlYMGFVOThGK2ZiV0ZNU09tU094TytUcWdwV3g5SmpqZW9kSFU3?=
- =?utf-8?B?VngwdjVQM2I0TW9vNG9RSVV3bHZZdW5RYWs0UWFzRitlbHcya1Aya0tFeDVO?=
- =?utf-8?B?R2MvY2JDY0Y2OWh5NFF3cUFpdGh3SHhEeW5TaXh0bSthSHVOK21WVVlwM3RL?=
- =?utf-8?B?MWw3cEFVOUd2ZEt2QUs2MUE4bXU1QTg2NzdDMFJjN2ZoOXJVeUdUT1NJd0o3?=
- =?utf-8?B?eWRLYkRmUVlJL0M4OEcxSWJnaHpaM2dBM0lpOVZXNUVoNDhuRzkzZE9xL1Ju?=
- =?utf-8?B?STVCMm0zUEovMHhuLy9kckMyV0Z5RXRnR2JVZHhUa3d0ejNtRTdtbytmZnVk?=
- =?utf-8?B?cVJXOTdIRXRjamRjU1puSkNjRVZIcHRCZlVCaGpQTjEyS0oxcDNKV0VSSURU?=
- =?utf-8?B?eWExaDEwL1VsdldzRjVZRTkvRWhDYVU3NEoxbnVJV21kVlVZSkdlNDBIQlVt?=
- =?utf-8?B?YTJwUEgyN1Y5djNKSUt5ZlkwelpCTHZ5dmpEWFY4N0FYOTdiYnVMMjNtZ05Q?=
- =?utf-8?B?UzAzc0JncjErTFhzNWVkajV5bFhzSkJJZjA3OWlhYThtb1dEcHdmMUlhMU04?=
- =?utf-8?B?Zm56WDZXMkpjK1RuZkV0cTRRblE4dUFtOGRJRVNHbEU3UHg3Y3lhOXR2RXBq?=
- =?utf-8?B?b0V6TGp2aExZS2ZzaVJXTnJiY2pORnRHUGdicGthM1BIY3kxdm9JazRIL21j?=
- =?utf-8?B?T1VwUk5WWGUzYXJnclcyK0QxS1VSTzVIS1B1S1RQSU14YlhjcXIza0lUNDFw?=
- =?utf-8?B?L0RDMElOZ1Y1azJWK01VNmIvVWRWWk1WOFdsYnROeittQS9GUGIvR2xUcThJ?=
- =?utf-8?B?alBFV01LQ2VMV3c5VEdsYUFGb2FsRzVUM3ZVWEpXNzVaREtHMFNKZ2pIV2dE?=
- =?utf-8?B?Ky9tUFFvbGpHd0NvTENLL0dETk5RT0ZsaWl5SmxpdEFHRGtiTWRxZ3E3QkZa?=
- =?utf-8?B?Z3lTMWhYMmZBWHVqUzRWK2FVMFFLN3FwcFNZNFYzbFpMUGVlKzArRjM5c0N1?=
- =?utf-8?B?TTRHaGpseW9RPT0=?=
+	=?utf-8?B?Q1MvM0FRalpYR0F0ZS80NDBqSWQ2WHBUQVRRd29aN3FCeFBvZFBtaDhmbmd0?=
+ =?utf-8?B?aU5zOXF6SWlSQXZrMjJmOHN4YVgyS2U4MEJYUmJZRW41MFk5UXZzRHAvcFhi?=
+ =?utf-8?B?cXhleWd3TFZCakxldlRqNGdTbi9LWG1lUldWS1hsL3kzRGlzTEdNUEI2dVhu?=
+ =?utf-8?B?NWNRYTZaQ0F3Q0Rhd041cjJ6d05peXdqeWljUFpweTBTcDErVDBRTCt1c3Rk?=
+ =?utf-8?B?WnhTOGpnQ3MweUJ4aWl4YUdKQkRaUCtOTkhGVUxBZVJWdjU5SXpNc0hWbng4?=
+ =?utf-8?B?S050ampSbXpRTzJBR3lla2ZBSlVzTjRHSFZMZXpONTFxZ1lUdm93dElQK0I3?=
+ =?utf-8?B?U0pmL21aSmdLU3Rvejg5MHVmMEREYW1EM3F1VWszQlFPUmUwWi9YMXJsZThn?=
+ =?utf-8?B?eHVES0xONTZQSWNNU1R6eU0yNDhCdG5vRVJLbGs2emQzUENDdmsrNTZtdC9M?=
+ =?utf-8?B?WHh0VVBVQngvSDUxNXJkM0pVYlBTSk4vR1N6RS8yc2VVS2VaRXF5UVN2TStt?=
+ =?utf-8?B?M0ZpMUprUjRaOWtZeGppYnBCdm9LaHl6bHYrVy9OditSZ3V1dFM2TXJ1Z1NT?=
+ =?utf-8?B?amdkdU4wbUpuQ0s1VFNlV1pqMTVvMEdxSUpTaG5KMDMxb0RvSjNjdlBqL3pq?=
+ =?utf-8?B?NllwVGJYdXgvQkFyd1MrM2NlSkpTa3hORk9Bdjc0Ni84NzVLeXc1NUc5R2Fs?=
+ =?utf-8?B?QzJLUDBPV01IY1dXUlhvNm1ST2w0M2F6Q2tINFMxZFJkeElGYkd3blJwd2ta?=
+ =?utf-8?B?VDlMUm11REg0OHlzbkcyaFlqV0hna2JYL2ZyYk42c2t3ZDZpTGZXWXJGNHUv?=
+ =?utf-8?B?WG9aQWFFSkloa2xZSVF3SjllY2ZQd284N2tyS2NkQ3RnY2JESWlvMnFMUG4x?=
+ =?utf-8?B?QzRCUWVQVnBxSlE1WHEwdWh4YVBwb3VSMEhBUENFOVJMbHhYanprZEZEdnFt?=
+ =?utf-8?B?OHBxMDBqNkVVUENyNjFEU2s1UldnNGkvRDlSYWVGSzgrQ2pXOGxSZmNrR3d6?=
+ =?utf-8?B?RkRDbzljdDhvZFFoYS9RL2pHa3Yzb2hhVThQUVdoa3BwNmx6eXZsYWdGY1Rs?=
+ =?utf-8?B?WXBFbHg2Zm5YY0ZqSWNYdndIdTZmbUJFVVE4Rm9nTnZuRVdkeGo0M1l6d29p?=
+ =?utf-8?B?T3pOSy9EdWNZYmxPMXVxMHgzUkhHYlRUVjB2cWRHUllsbHRJT3NyeHZKdzFQ?=
+ =?utf-8?B?dG1ZUlE2dmMvNy9ZdGxpUE5BOW1DRTRZMGlJT3BiSzJ6dnRCd3pYSk9rMDds?=
+ =?utf-8?B?T01McUpKcGV6QXFMTDNNdEFsRVY4Q3dwRFBNZyt0ZnNIdFJBcEFIcXNuVjZo?=
+ =?utf-8?B?MklKdVM2SVJkTVpjYWcwTnl6NjRUR0JsdGhlYnVxcVN6OTZLRmV3TGEvVXcz?=
+ =?utf-8?B?L0kwVmEvVlBhT2Y2THFBVGpJMEdTQzc1aHM5enBTbUw2d09KcXNST2hZSDFK?=
+ =?utf-8?B?c3Q0cFJodjRaVHNKbkQvR3BQenpUcFJYQitWM3Z1dmNURjNwcVRUbnU5cEN6?=
+ =?utf-8?B?Mi9HYVdLRCtXbnBjOGVRajRnM0swOXRrNnE0ME5YMjJHNDI3di9hZVpTWHlx?=
+ =?utf-8?B?SWljODJ5K2ZOcC9LV0RWay9DMHVFL01rQWV1YUNzNkt5endRVFBXZ3Job3pa?=
+ =?utf-8?B?VHV5d1VzcHJML2ZIdkErcmhKVzRPZyszNXE5OU5keGVRcXRuQlIxb1ZMNUYv?=
+ =?utf-8?B?SncxTlVrMElXZnBCNUxxeHlyMTl1bHIxak5nVTVSRFp6MGl3bzkwL21lUWxC?=
+ =?utf-8?B?ZHIwNGpOL1BwMkZxMGhNdldiVDI4MW1aai9LNnJjLzQ0V3lQUDRNNS81L0Jv?=
+ =?utf-8?B?T2hPOFJKL1dpREprYm1vTGNTYzExYjdRZVRZTFBzVGhaTXNURDZTMER0dndv?=
+ =?utf-8?B?b1dDRGJOc2ZMaXFIRnNXeFppL21ESlZBNmhjNUlaN0dibTVUUzdPMGRWU251?=
+ =?utf-8?Q?gCcE6+CfJjs=3D?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB9473.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(366016)(921020);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB9473.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016)(7053199007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?d2Vxejc3OFVpVG5xVzkrZEhwWUpSV1lkL0NQKzI4Zk4zVWRPMlVDUHlLZVpo?=
- =?utf-8?B?Mm8wRkE3VGZ4K1hodjJFejNPMTJaejdtdG1GUStzYVVXUWxMUE5DVFhTVllH?=
- =?utf-8?B?UGMyY0JlRFBRY0k5djBSQ2MyMDd0MUFEVVpNRVU2YkNveFBzWlpFS2ZIenFn?=
- =?utf-8?B?Tm9sNGd2WXR4aUF6WjBTVExlemxMSWgxRXdBenhScldkNWZVWVhKMU80OUo0?=
- =?utf-8?B?WXloWEtSS3JseFRrRkpWNllBWklKWnRFbFlveVFVOWgyWWV6cmY3TWg3ZGJ0?=
- =?utf-8?B?QVgrd2NyY3h0QUlCaGtSM3Y5UVcwQWd2Q1luRitWUzdNYTUrQmpPeklWTVgx?=
- =?utf-8?B?emx0VEhRWVp1UkdrMUp3STQzRWR1VWNkRXJhUW1QKzd5U0RJQjdkN3VVaXIx?=
- =?utf-8?B?WW53S2M5eWtKVlRRZzR0VUFFV2xtVXRQY0lRNW5Ob1Q3M0NxUWlQZVd4ckZX?=
- =?utf-8?B?Z2Q3Y3IvaVIxaXZ5UG5IdWtrZURDL1ZOUVJ1cUZsOUJZODV4MjBPVE5HU1RH?=
- =?utf-8?B?dW5wSHBMMUhVMlVwTVQ5akg1QXJ4RDh0YzNwVmVGK0R3c0xQRFo1K1pUdUxl?=
- =?utf-8?B?c2x3aXo5b1AwNnhVQzdlMTd5MlF2dzdNNFZrVDNoK0RBa3JMRGlkQzhtbEFC?=
- =?utf-8?B?RjZLcmRuOTNjc2FZVkx5MFhPbFhnanlQcW5uMy95c2sxcllTUEw0V1VaYWQ3?=
- =?utf-8?B?UEVIQzlQaXRjUGF5dmpQVVVuSU9HWHVjeXRjZ3ZmMzI3VFlqczI4VHFTRFNV?=
- =?utf-8?B?Qk41dHhUR0VnaTRPSDJQU25NQnk2bWlFME0rWS9sZ3prc3krTllpN1Yyd0tT?=
- =?utf-8?B?L0M3b3hIajJsa1YwTDNielIzNUowU3pMeU5SUVd0RUtJbEkyalk5YklvUGVE?=
- =?utf-8?B?bW9YckhkUEVuR1RhVVphOTF4dE15SHJnWTN6eVd3dVo3NkhnUnJnUFhYYXdZ?=
- =?utf-8?B?RUc0TEpkVTFwRlpER0pFaitONEZROUt4ZzlKeVNJazQ0ZFhndFppR0NIWENa?=
- =?utf-8?B?MExDM21LdEdGL2NWaEN0Ylk2cldDeWFlb0R4S2FkeG1WNDhzaGpoMDNEaVZ2?=
- =?utf-8?B?c2F1OWhoRXJ4SDdOM3RaWStPdGlxWFRMSVJPUTRUZmJYenh6T20yWXU1MUJR?=
- =?utf-8?B?bnFPSVRhZE8vK3B6Mnl1L0NkMFhhR0E0MWdyeFFHUkdBQkFDRGJXdzNWcllt?=
- =?utf-8?B?bWYzbWkvVkRJcWYydVN4MEdBS1AyTVc2U3YvZjJjcm5VaHRpQ3U1R2xKTVJM?=
- =?utf-8?B?a2U4OHoxRzdPNHNodEhuMlVOOC9HWDBsYjcrRHFLWHZLYXp1ZDZxbHl2dHRT?=
- =?utf-8?B?SlBwajluY3RsQmhlNTllUDZQeGtuZE5BaDl5LzQ5NU5Ta0RHYmkrN3VscnNU?=
- =?utf-8?B?enBEeTQrME9GclNqaXNzdmdURFcrL1pQM3RZMk9OcVdDcXUvdDF6MU5IRk1i?=
- =?utf-8?B?NDFDaHNrbXBMNS9Ca2RsQlM2QUlEK2xJcndEZVVoT1hLYm55OUYxY3pWejJ2?=
- =?utf-8?B?V1lUNGdLTXVoRHJhZE5nOTV2WjFWYnpNNHJKMHNsR3RZWlN3WWpUVitBLzFi?=
- =?utf-8?B?OUx3cWU5Si9LWkJzSkh4MURqZUg2ZVRGalF0U0szSnUvWmw4TUF4cUJNbFVa?=
- =?utf-8?B?WnBtTkpWMCtpMFhxMWZxQUtGSVdzUGFaeHVzQ3ZGcVo5SEFxZTVFdVR6L25E?=
- =?utf-8?B?cUxjWnNMY0wzc2tjaUlXWjAwamVUYWc4UE5Fc2FhTGt2QkdwK2pDbSt1MUwy?=
- =?utf-8?B?OHJQdG9NelFoQWFMcmFEUGppWlZ4Yzh5YjlTbGdjT1ZLS2xjMGhoZlhrU1lk?=
- =?utf-8?B?Qm00VmlsckZZRmc2dlJ1Si81Y3lHQWJIL3BxR2UyeXlsWjV0YWpMR3R3MWVM?=
- =?utf-8?B?Ym4rdEdCYkNXNkVueUtBUnlqMS9qUnlqVE16dzcxVG1rWG92TnhxbHBTT2ps?=
- =?utf-8?B?T1ZZaTFtaXpPYjdhUXR3VFlYWWNSR2x4MW1NUnNVc0lXWGpvWEVLMzZnNTNE?=
- =?utf-8?B?bVM2bFJpUG1CWXFjM1c3ckNCcUI1UnBHVXovZlpQSTdKK2k5KzIrVjFoZ2lw?=
- =?utf-8?B?N1RKK1F2QVRTVUxGbTZyWVFjQ20xdndEb0xsWDk1TWNpVGxiSE5KUXh3K0F0?=
- =?utf-8?Q?ACXncLMkppW7ZFV/zU+grYNW3?=
+	=?utf-8?B?T0JiWXVvSDBvVmtkeGdjcmZBRGFWRFpFL2F0Yjk5emhpcUducUFwNlo2RVgr?=
+ =?utf-8?B?RGRXM3IyZXNuRDFCSmdCYXBFb2lVZmxobzlqcnIxd3M2aFhBRUR6Q1BPVUFq?=
+ =?utf-8?B?NUpyaXNOdHo4c2VmRXZKTlRtK3hNZXM3Kyt3dUdhOFM1ZVlCYVNJS0dYc3or?=
+ =?utf-8?B?czNSK0pwV1VyeEluQVlFRU05YUU3Q2JOR0pnT2M0Nmw0YnVVem1wZ3BIOFRa?=
+ =?utf-8?B?RjczOHJnelFKQXcxaG40UTVEMjZ3dFF3TEtZQ2l6YXpoVXMyb0hsWjJlOWhG?=
+ =?utf-8?B?YndBb29JVktWYTYxRzQ3bkJOOVg2dU1MNElYRGZYanN4eWhvQ2JMWndhdjZD?=
+ =?utf-8?B?RENaOU5Qem5WWXV0N09NRzRZeEEySXlRYXM2Q2dWWkI5TWZFb0E3VFBad3Uz?=
+ =?utf-8?B?Y3ArK1NVZW9HUGNDSWRWYVNTT0N3RnNmdlRaOHNLN3VGRCsxdmNGbFArU0l3?=
+ =?utf-8?B?ZkF6cmNQR0NNNG42NHBGVE5TTTdGOW13L2d2V3d6K213emQxUDltVkxIVUZQ?=
+ =?utf-8?B?bWpDU0Jaa1BjaGh0V3lSSFkzaEttckZMRXlMYmxMR2FYM3ZYbENzcHY0YVlq?=
+ =?utf-8?B?dWdFVldTRVBOb2h2RzA4TDRNa0RlcVRBMlY2NEpGVEJocWdZYit6dm1BbmhX?=
+ =?utf-8?B?RUZFeHJXK3dXSExDWUxCQTFiTFFPZElJUStUWitzeUV4MnMrV1hIbFRiQWVE?=
+ =?utf-8?B?a2RUa1FGaFN5aHhkZ3k1cHZaS0dDamNZTi9BcG81K00vZituWU5SZDNHL3ls?=
+ =?utf-8?B?M1hpZjBNek1UeU9oL1VkNHhBa3VpdzAvQ2ZhSVJqZFFKK0tkSGdtYW91VE5n?=
+ =?utf-8?B?V0s5ODlhVmlaYnhRemlUUWpCSWZiVkVUR0JqUnhvV3ZqMHJ1L2FoWkhrejAx?=
+ =?utf-8?B?TTZTT2t2bkpsVFdhVDJpcW80T2p1NVVXZ1pmUVJGUitGckdvZkpicm1NYzZU?=
+ =?utf-8?B?WHluN0pnVnJ5MXFmcjJxWUV1WUJPZzVwN0kxOVd1UHR4RDAxVmViYmZLSTI5?=
+ =?utf-8?B?dlAzaTVOVGVPRlR5Z0h3YlVwRmJRNWRVb3g1UGtWMG9SZ2JENE5veXJsVHpv?=
+ =?utf-8?B?RkU5OEc0ZERlSmZnRVoxVlRoNjh3SFh4ZllWR01pVVRxakVobjYzdjRpalRB?=
+ =?utf-8?B?WG9tcER6K2kwVFRjaGFmZXFFTEYyK1dRRVJKQnhjWUpYMUZidE9UQUF2WE5p?=
+ =?utf-8?B?TzFsWGI0ZWszYXpRT1dxUkxYZ3ZVMkFJcUE3TFY5cWdscjJxbFF3aU1GVXdW?=
+ =?utf-8?B?ck50Ulp5YjVkeXdUVjR0eHJLNW13aTl6bTJGd29zVHZkYjNDUmFtOU5UMzR0?=
+ =?utf-8?B?bEFlTVVvZ0VuUmxja0UvZDN3QzIxMndwanBQOE85bk9Zalpick9CWEJUN0pY?=
+ =?utf-8?B?QXZqOHBLZllveFZ4RjlKNWJoMUV6dEU4M1NMNlR1K0RZdkJ4ZFBGTHB6MFpV?=
+ =?utf-8?B?Mkh0UWI5eHVWTEE5YTFCY0VpVWx3SFk5QTJUbDdLMnFBM3RsKzRYb2E0MHIr?=
+ =?utf-8?B?bFpPOVphNWpCVlJSa1JDazVCSjZqZHNpaU0xck1ETlp0U2tJZ1JDcWdPU3Fl?=
+ =?utf-8?B?QXhsMC9pR1I3bUFZMHNUdkFhd0wwempqMkRGLzMwRDlrbFVmRC9jbzJZWDdp?=
+ =?utf-8?B?a2IwSWlHMm5mcXBySnVLNmpWY25CSE9RbndTcHZWN1ZNTStGVGhLMlhrSW9P?=
+ =?utf-8?B?RHBCcXBHcWVnT3JldjBRQm9TYlZYQ2NzRHJvVjV3U25zWGpUWTlZVmZ2bXlz?=
+ =?utf-8?B?NmNJMUI5eEVDRU1ESmJEOVBIbUMrRE1Ucm9JVmo0akMrK1Z4VWNVT3AyUXBy?=
+ =?utf-8?B?RXJHTjY1S3RRU2F0VCtpYWU4RnhEbWNXdjNTTk1VeW1hL0JjSG5RYno2Y2hS?=
+ =?utf-8?B?SHBHWlVibHdpdDJtYnZOL1ZpS2M3UzBoQXp1blZTeHcvNkU0RFNSa05XaGMw?=
+ =?utf-8?B?YUZIMEFwdzFrdHJwU0RvM1haZ3lPSjdBa0p3d1d6Rm95OWliTEtYOFllQklD?=
+ =?utf-8?B?OGhZbWNHWDBJK0UyRzZES2drTDc3MWQxeEhQLy93SVFEd2RMZmF6TjNxY0w3?=
+ =?utf-8?B?dHM5dkpwOFBRbUVOUmRyT29Cb0lwcDl5T2lVa3o2NEpYSldjVzdGS2tNTW5p?=
+ =?utf-8?Q?3yewCmxx92HqZDUwOUAaDn6yu?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 020e9b26-cd52-4cfb-ba75-08dd872fe0bb
+X-MS-Exchange-CrossTenant-Network-Message-Id: 51035743-d331-4da8-c268-08dd873075a4
 X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB9473.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2025 15:09:46.1316
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2025 15:13:55.9396
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fjldK3zD0+29QNoCwbxgqJeDAz9c02smWxc+N6COLgisM3/A6/NlgU6XeRRMKTte
+X-MS-Exchange-CrossTenant-UserPrincipalName: o0fYANImuijs/qUDwicEB9jQ6SXCwKIJ8L+aAsmDJuOW1xjA52Mlxs2So2jm4ARk
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB8836
 
-Hi Yafang,
-
-We recently added a new THP entry in MAINTAINERS file[1], do you mind ccing
-people there in your next version? (I added them here)
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git/tree/MAINTA=
-INERS?h=3Dmm-everything#n15589
-
 On Mon Apr 28, 2025 at 10:41 PM EDT, Yafang Shao wrote:
-> In our container environment, we aim to enable THP selectively=E2=80=94al=
-lowing
-> specific services to use it while restricting others. This approach is
-> driven by the following considerations:
->
-> 1. Memory Fragmentation
->    THP can lead to increased memory fragmentation, so we want to limit it=
-s
->    use across services.
-> 2. Performance Impact
->    Some services see no benefit from THP, making its usage unnecessary.
-> 3. Performance Gains
->    Certain workloads, such as machine learning services, experience
->    significant performance improvements with THP, so we enable it for the=
-m
->    specifically.=20
->
-> Since multiple services run on a single host in a containerized environme=
-nt,
-> enabling THP globally is not ideal. Previously, we set THP to madvise,
-> allowing selected services to opt in via MADV_HUGEPAGE. However, this
-> approach had limitation:
->
-> - Some services inadvertently used madvise(MADV_HUGEPAGE) through
->   third-party libraries, bypassing our restrictions.
+> The functions hugepage_global_{enabled,always}() are currently only used =
+in
+> mm/huge_memory.c, so we can move them to mm/internal.h. They will also be
+> exposed for BPF hooking in a future change.
 
-Basically, you want more precise control of THP enablement and the
-ability of overriding madvise() from userspace.
-
-In terms of overriding madvise(), do you have any concrete example of
-these third-party libraries? madvise() users are supposed to know what
-they are doing, so I wonder why they are causing trouble in your
-environment.
+Why cannot BPF include huge_mm.h instead?
 
 >
-> To address this issue, we initially hooked the __x64_sys_madvise() syscal=
-l,
-> which is error-injectable, to blacklist unwanted services. While this
-> worked, it was error-prone and ineffective for services needing always mo=
-de,
-> as modifying their code to use madvise was impractical.
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> ---
+>  include/linux/huge_mm.h | 54 +----------------------------------------
+>  mm/huge_memory.c        | 46 ++++++++++++++++++++++++++++++++---
+>  mm/internal.h           | 14 +++++++++++
+>  3 files changed, 57 insertions(+), 57 deletions(-)
 >
-> To achieve finer-grained control, we introduced an fmod_ret-based solutio=
-n.
-> Now, we dynamically adjust THP settings per service by hooking
-> hugepage_global_{enabled,always}() via BPF. This allows us to set THP to
-> enable or disable on a per-service basis without global impact.
-
-hugepage_global_*() are whole system knobs. How did you use it to
-achieve per-service control? In terms of per-service, does it mean
-you need per-memcg group (I assume each service has its own memcg) THP
-configuration?
-
->
-> The hugepage_global_{enabled,always}() functions currently share the same
-> BPF hook, which limits THP configuration to either always or never. While
-> this suffices for our specific use cases, full support for all three mode=
-s
-> (always, madvise, and never) would require splitting them into separate
-> hooks.
->
-> This is the initial RFC patch=E2=80=94feedback is welcome!
->
-> Yafang Shao (4):
->   mm: move hugepage_global_{enabled,always}() to internal.h
->   mm: pass VMA parameter to hugepage_global_{enabled,always}()
->   mm: add BPF hook for THP adjustment
->   selftests/bpf: Add selftest for THP adjustment
->
->  include/linux/huge_mm.h                       |  54 +-----
->  mm/Makefile                                   |   3 +
->  mm/bpf.c                                      |  36 ++++
->  mm/bpf.h                                      |  21 +++
->  mm/huge_memory.c                              |  50 ++++-
->  mm/internal.h                                 |  21 +++
->  mm/khugepaged.c                               |  18 +-
->  tools/testing/selftests/bpf/config            |   1 +
->  .../selftests/bpf/prog_tests/thp_adjust.c     | 176 ++++++++++++++++++
->  .../selftests/bpf/progs/test_thp_adjust.c     |  32 ++++
->  10 files changed, 344 insertions(+), 68 deletions(-)
->  create mode 100644 mm/bpf.c
->  create mode 100644 mm/bpf.h
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/thp_adjust.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust.c
+> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+> index e893d546a49f..5e92db48fc99 100644
+> --- a/include/linux/huge_mm.h
+> +++ b/include/linux/huge_mm.h
+> @@ -177,19 +177,6 @@ extern unsigned long huge_anon_orders_always;
+>  extern unsigned long huge_anon_orders_madvise;
+>  extern unsigned long huge_anon_orders_inherit;
+> =20
+> -static inline bool hugepage_global_enabled(void)
+> -{
+> -	return transparent_hugepage_flags &
+> -			((1<<TRANSPARENT_HUGEPAGE_FLAG) |
+> -			(1<<TRANSPARENT_HUGEPAGE_REQ_MADV_FLAG));
+> -}
+> -
+> -static inline bool hugepage_global_always(void)
+> -{
+> -	return transparent_hugepage_flags &
+> -			(1<<TRANSPARENT_HUGEPAGE_FLAG);
+> -}
+> -
+>  static inline int highest_order(unsigned long orders)
+>  {
+>  	return fls_long(orders) - 1;
+> @@ -260,49 +247,10 @@ static inline unsigned long thp_vma_suitable_orders=
+(struct vm_area_struct *vma,
+>  	return orders;
+>  }
+> =20
+> -unsigned long __thp_vma_allowable_orders(struct vm_area_struct *vma,
+> -					 unsigned long vm_flags,
+> -					 unsigned long tva_flags,
+> -					 unsigned long orders);
+> -
+> -/**
+> - * thp_vma_allowable_orders - determine hugepage orders that are allowed=
+ for vma
+> - * @vma:  the vm area to check
+> - * @vm_flags: use these vm_flags instead of vma->vm_flags
+> - * @tva_flags: Which TVA flags to honour
+> - * @orders: bitfield of all orders to consider
+> - *
+> - * Calculates the intersection of the requested hugepage orders and the =
+allowed
+> - * hugepage orders for the provided vma. Permitted orders are encoded as=
+ a set
+> - * bit at the corresponding bit position (bit-2 corresponds to order-2, =
+bit-3
+> - * corresponds to order-3, etc). Order-0 is never considered a hugepage =
+order.
+> - *
+> - * Return: bitfield of orders allowed for hugepage in the vma. 0 if no h=
+ugepage
+> - * orders are allowed.
+> - */
+> -static inline
+>  unsigned long thp_vma_allowable_orders(struct vm_area_struct *vma,
+>  				       unsigned long vm_flags,
+>  				       unsigned long tva_flags,
+> -				       unsigned long orders)
+> -{
+> -	/* Optimization to check if required orders are enabled early. */
+> -	if ((tva_flags & TVA_ENFORCE_SYSFS) && vma_is_anonymous(vma)) {
+> -		unsigned long mask =3D READ_ONCE(huge_anon_orders_always);
+> -
+> -		if (vm_flags & VM_HUGEPAGE)
+> -			mask |=3D READ_ONCE(huge_anon_orders_madvise);
+> -		if (hugepage_global_always() ||
+> -		    ((vm_flags & VM_HUGEPAGE) && hugepage_global_enabled()))
+> -			mask |=3D READ_ONCE(huge_anon_orders_inherit);
+> -
+> -		orders &=3D mask;
+> -		if (!orders)
+> -			return 0;
+> -	}
+> -
+> -	return __thp_vma_allowable_orders(vma, vm_flags, tva_flags, orders);
+> -}
+> +				       unsigned long orders);
+> =20
+>  struct thpsize {
+>  	struct kobject kobj;
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 2a47682d1ab7..39afa14af2f2 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -98,10 +98,10 @@ static inline bool file_thp_enabled(struct vm_area_st=
+ruct *vma)
+>  	return !inode_is_open_for_write(inode) && S_ISREG(inode->i_mode);
+>  }
+> =20
+> -unsigned long __thp_vma_allowable_orders(struct vm_area_struct *vma,
+> -					 unsigned long vm_flags,
+> -					 unsigned long tva_flags,
+> -					 unsigned long orders)
+> +static unsigned long __thp_vma_allowable_orders(struct vm_area_struct *v=
+ma,
+> +						unsigned long vm_flags,
+> +						unsigned long tva_flags,
+> +						unsigned long orders)
+>  {
+>  	bool smaps =3D tva_flags & TVA_SMAPS;
+>  	bool in_pf =3D tva_flags & TVA_IN_PF;
+> @@ -208,6 +208,44 @@ unsigned long __thp_vma_allowable_orders(struct vm_a=
+rea_struct *vma,
+>  	return orders;
+>  }
+> =20
+> +/**
+> + * thp_vma_allowable_orders - determine hugepage orders that are allowed=
+ for vma
+> + * @vma:  the vm area to check
+> + * @vm_flags: use these vm_flags instead of vma->vm_flags
+> + * @tva_flags: Which TVA flags to honour
+> + * @orders: bitfield of all orders to consider
+> + *
+> + * Calculates the intersection of the requested hugepage orders and the =
+allowed
+> + * hugepage orders for the provided vma. Permitted orders are encoded as=
+ a set
+> + * bit at the corresponding bit position (bit-2 corresponds to order-2, =
+bit-3
+> + * corresponds to order-3, etc). Order-0 is never considered a hugepage =
+order.
+> + *
+> + * Return: bitfield of orders allowed for hugepage in the vma. 0 if no h=
+ugepage
+> + * orders are allowed.
+> + */
+> +unsigned long thp_vma_allowable_orders(struct vm_area_struct *vma,
+> +				       unsigned long vm_flags,
+> +				       unsigned long tva_flags,
+> +				       unsigned long orders)
+> +{
+> +	/* Optimization to check if required orders are enabled early. */
+> +	if ((tva_flags & TVA_ENFORCE_SYSFS) && vma_is_anonymous(vma)) {
+> +		unsigned long mask =3D READ_ONCE(huge_anon_orders_always);
+> +
+> +		if (vm_flags & VM_HUGEPAGE)
+> +			mask |=3D READ_ONCE(huge_anon_orders_madvise);
+> +		if (hugepage_global_always() ||
+> +		    ((vm_flags & VM_HUGEPAGE) && hugepage_global_enabled()))
+> +			mask |=3D READ_ONCE(huge_anon_orders_inherit);
+> +
+> +		orders &=3D mask;
+> +		if (!orders)
+> +			return 0;
+> +	}
+> +
+> +	return __thp_vma_allowable_orders(vma, vm_flags, tva_flags, orders);
+> +}
+> +
+>  static bool get_huge_zero_page(void)
+>  {
+>  	struct folio *zero_folio;
+> diff --git a/mm/internal.h b/mm/internal.h
+> index e9695baa5922..462d85c2ba7b 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -1625,5 +1625,19 @@ static inline bool reclaim_pt_is_enabled(unsigned =
+long start, unsigned long end,
+>  }
+>  #endif /* CONFIG_PT_RECLAIM */
+> =20
+> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> +static inline bool hugepage_global_enabled(void)
+> +{
+> +	return transparent_hugepage_flags &
+> +			((1<<TRANSPARENT_HUGEPAGE_FLAG) |
+> +			(1<<TRANSPARENT_HUGEPAGE_REQ_MADV_FLAG));
+> +}
+> +
+> +static inline bool hugepage_global_always(void)
+> +{
+> +	return transparent_hugepage_flags &
+> +			(1<<TRANSPARENT_HUGEPAGE_FLAG);
+> +}
+> +#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+> =20
+>  #endif	/* __MM_INTERNAL_H */
 
 
 
