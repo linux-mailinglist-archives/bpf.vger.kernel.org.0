@@ -1,202 +1,124 @@
-Return-Path: <bpf+bounces-57072-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57074-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 933F8AA521C
-	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 18:53:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15F7DAA528B
+	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 19:21:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59C8D1BC12A5
-	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 16:53:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F11EE7B3B0D
+	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 17:20:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE674264A6E;
-	Wed, 30 Apr 2025 16:53:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j5+jhZFo"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1628226563F;
+	Wed, 30 Apr 2025 17:20:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0F171D7984;
-	Wed, 30 Apr 2025 16:53:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86AB52609C5;
+	Wed, 30 Apr 2025 17:20:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746032010; cv=none; b=tCRrLQEPBVKG91S4IYbEPgr/DtBTTG/L2PiAciDWyeyBwZR5DZKqaD9gaeCgihfW4i0rc5Ocdogcstc+iaV+NQl2imOBY99mPXKjCLO6N4NMPG+1ermQbcVyZFEhg2BDzZJopQ7DDpjeL6gSRYtK7V1Nxg0FSqIkZ37mF1leiV8=
+	t=1746033655; cv=none; b=po5KW45EueBSa+Ip5hdMDNBwI+m/dcFETDy4mNNzAL5zQPGniKI5t5dSnTYnGtIMxVWyLEPRC68OsV2yY1CBMO5bxP9o0/bdaE7x9ObePsQe8RVA/UtFMO5ZyNcCk5REATmZ+3Pqc89Z2HiEn5cldt0jppzqKzJDEXObsKX10ps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746032010; c=relaxed/simple;
-	bh=BBMsd/oizy20IUV96EPxJNmvZVs0GIKVqE5EGiMLivc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dtTx7XYG9NLeeVFdcBjJh4SrW4kUngxg3fLrN+7YgmnN2t4JU3c8RY93tffQSFBb6o+F+vUQmtQzzTAoKLCkWNVpNLyBLJqqBYidUjeipRxSRcXlyD2EVTrTOfkmBp5aK2tncIc4IYr2LiMwImpXRQrsD+O/166jlWOPWMOy0Q4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j5+jhZFo; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-39c1ef4ae3aso67523f8f.1;
-        Wed, 30 Apr 2025 09:53:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746032007; x=1746636807; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iyqoFwnx1rN119y/EQDLgAAtG+9Od9yyi7V0yRmYe1Y=;
-        b=j5+jhZFo1DiaCKv+6sWRLRfvn+bdSHbxC02gj9bjsob0pP/9GFhw8/33JlZGS/O/cx
-         3sLdfnkLHDX1D/kdvW2tUTYAufC14MELRGdGzxdGooMdR23PcNhd/7zDNL+GVNnhMx1Z
-         3/+5+BBnkzjMDnlPSJBHDbldm/IikqBdVqe86lqQha1Dnol71EpIqMshs+PCK2ItKKiE
-         HujqYIDHWypVsb7kHmCsiLbU/kqhXtZNt3T33Utt03JQP4Ln7giRCPCGl+F/CNkeDrH4
-         jOOGeSlD1U6nZh4rUY95PkIYFA5I6HGoItTCDXsSEY3GzbsWnKDV29nfEBpi5tIMEKR/
-         H6gQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746032007; x=1746636807;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iyqoFwnx1rN119y/EQDLgAAtG+9Od9yyi7V0yRmYe1Y=;
-        b=FFHjlgCEqfU5cCPAEV39tUsTIa9KSWb1puzn+NaLTGPaq7MbDdl7JhLsRopjcJ3cBB
-         JdKfWk4AssMkqUACxoF3DH8Kv4n+mL8AcqR5pQWo7/xbWZXhcHgJw2GMW9qlTjv/XyKA
-         XvHJTtVgEZQ+3K4381aUDP0ciu0g/ElePqSkXBnZxikeUB/K2fXv23GnuzbK0TBvlzow
-         2fET6zyjoC99WMeBkfPXH3cvKivmLtVWNa3LubCcQTcz1x1Zlei9Ud+PsRTzgH+aKdxA
-         MkH9eb0ERcl52gAPHoZdjwWaaxJ6Vr7LMA5gXmSxANPxPXBh65vbPtL8xZH2f4DnkHfb
-         w/NQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU2rupEOH1+xPm8eyOReT7gGoBRPNIYhB+yV+qn9xgusjpkdMEQYv+HuYTuulGuupjTsfQ=@vger.kernel.org, AJvYcCUB7XXtMfRJdfw9tU5RXX9dGbXSAc8yHR/eQdCIayYgyWwd+RUFENrp7E1HPWtxIZidM8ONMzkucukuZqgN@vger.kernel.org, AJvYcCV+BwuKtHcygL4Ho7Uw059D6/SsqJfx2NOynYpSwkWgRsvp35zrHZ9U3SSFb9L1zGhC0XFww2Sw@vger.kernel.org, AJvYcCXSkOr64L3kHRgID4O0gloeVd5I53p5js1attL++W0XkU1DU5rdVZh0AM1vTDOBNoEAEH4AJt3g3+vEPhEhHU1fB45L@vger.kernel.org, AJvYcCXyOICrzdowK6K6UaGFFpfNQI6wZOvSolGvYG4Xx1qeD35HIW0necr/fA3VWsBuQcueh7XkLIJKpfoPI+I4MSi3@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy/2TJax06/rkuF5WTzGloPodJ/RdpyGVkfWVyrRcWt41nFz8O/
-	r5UHjWUpKipofo9BJGa9vsRe+DCwO+sPsX934VhuDvHQiyMJsd3LH+KN9H5G8CDw0/zSkzl6C09
-	IqLQadg1j6FHs4KHTs4/5/J71TD0=
-X-Gm-Gg: ASbGnctlze7WOMKhjESb8wCcAj6rGAV5nQTbXzhPCl6Chs4KDbWJWGhVACHlAU/U8V4
-	Eu4dySs/cSX1q+fTHMJFdAZ8Kr+2ZNAYFDnzeFe4twV46BZRUf1xpaQ82gkolrgCYcCyPMY1TcH
-	caLrx+nyD2oMKIkm+nPIXvUuTi45E+c9pMyL8lPg==
-X-Google-Smtp-Source: AGHT+IGktp2atpBKpp4ur5fbFBTf4kR6IH2vBfdClEMDlfV8ktjOsDPmmtEvHUeJRGc4jX1Itzt6phHMVfWVJf1Cjrg=
-X-Received: by 2002:a05:6000:64a:b0:38d:ae1e:2f3c with SMTP id
- ffacd0b85a97d-3a092d0230cmr179055f8f.25.1746032006951; Wed, 30 Apr 2025
- 09:53:26 -0700 (PDT)
+	s=arc-20240116; t=1746033655; c=relaxed/simple;
+	bh=39KWSZA/+5ZTjQd4vRuOPIK2i+N4nybWhXUJllaBu/c=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=b5KntVeZGijtm27y0qoRBsKEEiFDMkIKwEvZM0FeCpVtTB54aV5+y+O5v2hyhZBSCsjWQVAw7nEzVvV5/Qmb0KAoEiU+o+OeCC8SjkJEB3be28rMTHxDNpWwUpG2iLO9pMjr2o4vb/8ZzBaKa5X2sLL0bWAcXuBH8s0RJTK3efY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD676C4CEEB;
+	Wed, 30 Apr 2025 17:20:43 +0000 (UTC)
+Date: Wed, 30 Apr 2025 13:20:47 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Dave Hansen <dave.hansen@intel.com>
+Cc: Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org,
+ virtualization@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+ loongarch@lists.linux.dev, linux-riscv@lists.infradead.org,
+ linux-perf-users@vger.kernel.org, kvm@vger.kernel.org,
+ linux-arch@vger.kernel.org, linux-modules@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, rcu@vger.kernel.org,
+ linux-hardening@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ bpf@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>, Marcelo Tosatti
+ <mtosatti@redhat.com>, Yair Podemsky <ypodemsk@redhat.com>, Josh Poimboeuf
+ <jpoimboe@kernel.org>, Daniel Wagner <dwagner@suse.de>, Petr Tesarik
+ <ptesarik@suse.com>, Nicolas Saenz Julienne <nsaenz@amazon.com>, Frederic
+ Weisbecker <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>,
+ Dave Hansen <dave.hansen@linux.intel.com>, Sean Christopherson
+ <seanjc@google.com>, Juergen Gross <jgross@suse.com>, Ajay Kaher
+ <ajay.kaher@broadcom.com>, Alexey Makhalov <alexey.amakhalov@broadcom.com>,
+ Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>, Russell King
+ <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will
+ Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui
+ <kernel@xen0n.name>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer
+ Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Alexandre
+ Ghiti <alex@ghiti.fr>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
+ <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, x86@kernel.org, "H.
+ Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim
+ <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander
+ Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa
+ <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, Adrian Hunter
+ <adrian.hunter@intel.com>, "Liang, Kan" <kan.liang@linux.intel.com>, Pawan
+ Gupta <pawan.kumar.gupta@linux.intel.com>, Paolo Bonzini
+ <pbonzini@redhat.com>, Arnd Bergmann <arnd@arndb.de>, Jason Baron
+ <jbaron@akamai.com>, Ard Biesheuvel <ardb@kernel.org>, Luis Chamberlain
+ <mcgrof@kernel.org>, Petr Pavlu <petr.pavlu@suse.com>, Sami Tolvanen
+ <samitolvanen@google.com>, Daniel Gomez <da.gomez@samsung.com>, Naveen N
+ Rao <naveen@kernel.org>, Anil S Keshavamurthy
+ <anil.s.keshavamurthy@intel.com>, "David S. Miller" <davem@davemloft.net>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Neeraj Upadhyay
+ <neeraj.upadhyay@kernel.org>, Joel Fernandes <joel@joelfernandes.org>, Josh
+ Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Uladzislau Rezki <urezki@gmail.com>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
+ Zqiang <qiang.zhang1211@gmail.com>, Vincent Guittot
+ <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Kees Cook
+ <kees@kernel.org>, Shuah Khan <shuah@kernel.org>, Masahiro Yamada
+ <masahiroy@kernel.org>, Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda
+ <ojeda@kernel.org>, "Mike Rapoport (Microsoft)" <rppt@kernel.org>, Rong Xu
+ <xur@google.com>, Rafael Aquini <aquini@redhat.com>, Song Liu
+ <song@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Dan Carpenter
+ <dan.carpenter@linaro.org>, Brian Gerst <brgerst@gmail.com>, "Kirill A.
+ Shutemov" <kirill.shutemov@linux.intel.com>, Benjamin Berg
+ <benjamin.berg@intel.com>, Vishal Annapurve <vannapurve@google.com>, Randy
+ Dunlap <rdunlap@infradead.org>, John Stultz <jstultz@google.com>, Tiezhu
+ Yang <yangtiezhu@loongson.cn>
+Subject: Re: [PATCH v5 00/25] context_tracking,x86: Defer some IPIs until a
+ user->kernel transition
+Message-ID: <20250430132047.01d48647@gandalf.local.home>
+In-Reply-To: <fefcd1a6-f146-4f3c-b28b-f907e7346ddd@intel.com>
+References: <20250429113242.998312-1-vschneid@redhat.com>
+	<fefcd1a6-f146-4f3c-b28b-f907e7346ddd@intel.com>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250426160027.177173-1-mannkafai@gmail.com> <20250426160027.177173-2-mannkafai@gmail.com>
- <CAADnVQ+DF18nKEf9i1RKEQN+ybH+duu7U-91YZDaa_PiqUx17g@mail.gmail.com>
- <CALqUS-6XtJ0Bb9jiykdC3jAY_OHjGuirj06Kzssjvo7eW_so2A@mail.gmail.com> <f951b81f-1b46-4219-82fd-0839e27ab3f3@linux.dev>
-In-Reply-To: <f951b81f-1b46-4219-82fd-0839e27ab3f3@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 30 Apr 2025 09:53:15 -0700
-X-Gm-Features: ATxdqUHCM_hgru1Pfc1BqXTKZ-VBkhd7Cw8k1b6R1YPnD0rN_9RdWCr9fvClEug
-Message-ID: <CAADnVQ+FANha0fO_BF+iHJ4iZSCPtDfoUkzR8mMFwOakw8+eCg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/4] bpf: Allow get_func_[arg|arg_cnt] helpers in
- raw tracepoint programs
-To: Leon Hwang <leon.hwang@linux.dev>
-Cc: Kafai Wan <mannkafai@gmail.com>, Song Liu <song@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Matt Bobrowski <mattbobrowski@google.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	bpf <bpf@vger.kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 30, 2025 at 8:55=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> w=
-rote:
->
->
->
-> On 2025/4/30 20:43, Kafai Wan wrote:
-> > On Wed, Apr 30, 2025 at 10:46=E2=80=AFAM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> >>
-> >> On Sat, Apr 26, 2025 at 9:00=E2=80=AFAM KaFai Wan <mannkafai@gmail.com=
-> wrote:
-> >>>
->
-> [...]
->
-> >>> @@ -2312,7 +2322,7 @@ void __bpf_trace_run(struct bpf_raw_tp_link *li=
-nk, u64 *args)
-> >>>  #define REPEAT(X, FN, DL, ...)         REPEAT_##X(FN, DL, __VA_ARGS_=
-_)
-> >>>
-> >>>  #define SARG(X)                u64 arg##X
-> >>> -#define COPY(X)                args[X] =3D arg##X
-> >>> +#define COPY(X)                args[X + 1] =3D arg##X
-> >>>
-> >>>  #define __DL_COM       (,)
-> >>>  #define __DL_SEM       (;)
-> >>> @@ -2323,9 +2333,10 @@ void __bpf_trace_run(struct bpf_raw_tp_link *l=
-ink, u64 *args)
-> >>>         void bpf_trace_run##x(struct bpf_raw_tp_link *link,          =
-   \
-> >>>                               REPEAT(x, SARG, __DL_COM, __SEQ_0_11)) =
-   \
-> >>>         {                                                            =
-   \
-> >>> -               u64 args[x];                                         =
-   \
-> >>> +               u64 args[x + 1];                                     =
-   \
-> >>> +               args[0] =3D x;                                       =
-     \
-> >>>                 REPEAT(x, COPY, __DL_SEM, __SEQ_0_11);               =
-   \
-> >>> -               __bpf_trace_run(link, args);                         =
-   \
-> >>> +               __bpf_trace_run(link, args + 1);                     =
-   \
-> >>
-> >> This is neat, but what is this for?
-> >> The program that attaches to a particular raw_tp knows what it is
-> >> attaching to and how many arguments are there,
-> >> so bpf_get_func_arg_cnt() is a 5th wheel.
-> >>
-> >> If the reason is "for completeness" then it's not a good reason
-> >> to penalize performance. Though it's just an extra 8 byte of stack
-> >> and a single store of a constant.
-> >>
-> > If we try to capture all arguments of a specific raw_tp in tracing prog=
-rams,
-> > We first obtain the arguments count from the format file in debugfs or =
-BTF
-> > and pass this count to the BPF program via .bss section or cookie (if
-> > available).
-> >
-> > If we store the count in ctx and get it via get_func_arg_cnt helper in
-> > the BPF program=EF=BC=8C
-> > a) It's easier and more efficient to get the arguments count in the BPF=
- program.
-> > b) It could use a single BPF program to capture arguments for multiple =
-raw_tps,
-> > reduce the number of BPF programs when massive tracing.
-> >
->
->
-> bpf_get_func_arg() will be very helpful for bpfsnoop[1] when tracing tp_b=
-tf.
->
-> In bpfsnoop, it can generate a small snippet of bpf instructions to use
-> bpf_get_func_arg() for retrieving and filtering arguments. For example,
-> with the netif_receive_skb tracepoint, bpfsnoop can use
-> bpf_get_func_arg() to filter the skb argument using pcap-filter(7)[2] or
-> a custom attribute-based filter. This will allow bpfsnoop to trace
-> multiple tracepoints using a single bpf program code.
+On Tue, 29 Apr 2025 09:11:57 -0700
+Dave Hansen <dave.hansen@intel.com> wrote:
 
-I doubt you thought it through end to end.
-When tracepoint prog attaches we have this check:
-        /*
-         * check that program doesn't access arguments beyond what's
-         * available in this tracepoint
-         */
-        if (prog->aux->max_ctx_offset > btp->num_args * sizeof(u64))
-                return -EINVAL;
+> I don't think we should do this series.
 
-So you cannot have a single bpf prog attached to many tracepoints
-to read many arguments as-is.
-You can hack around that limit with probe_read,
-but the values won't be trusted and you won't be able to pass
-such untrusted pointers into skb and other helpers/kfuncs.
+Could you provide more rationale for your decision.
+
+>=20
+> If folks want this functionality, they should get a new CPU that can
+> flush the TLB without IPIs.
+
+That's a pretty heavy handed response. I'm not sure that's always a
+feasible solution.
+
+=46rom my experience in the world, software has always been around to fix the
+hardware, not the other way around ;-)
+
+-- Steve
+
 
