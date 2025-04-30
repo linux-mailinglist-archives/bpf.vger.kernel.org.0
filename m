@@ -1,208 +1,142 @@
-Return-Path: <bpf+bounces-57060-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57061-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2D6CAA510D
-	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 18:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A6E2AA5128
+	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 18:06:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2ED979E56D0
-	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 16:00:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 088A03A89DF
+	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 16:05:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A78D2609FA;
-	Wed, 30 Apr 2025 16:00:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EADB2609EC;
+	Wed, 30 Apr 2025 16:05:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O2o2Gcns"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k8SE2eHm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 609E3288DA
-	for <bpf@vger.kernel.org>; Wed, 30 Apr 2025 16:00:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DADD25D534
+	for <bpf@vger.kernel.org>; Wed, 30 Apr 2025 16:05:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746028821; cv=none; b=GXAJE6WwHWGYKcvXpqu/dKfC44PeWadU5IytckGzi+B/17XnJuiqgCv6Tac+5a/dzigGydmiP1PKIjqka9+jZDg5rgqXhcVaHyJuXWVNHNRDz+I3V/iE9Tkc+6sagxkCtAZdGLKQKsGo95wLEs1Uoq2jOHqbWJsULo3LRiSfqvo=
+	t=1746029154; cv=none; b=HNevA5wrzUVRS/mA88/fiqUW4tJvCgWzRH3aBUzAXJNanz8TtMvHnoVipnem4N5LKZqeO2zxhVbA8FCGUPUgco/3Z2pu/7Z1LhojlWH26yHb6+7GP0NKecmr9CQ1F3Vt530lPJRIM+RfBsDKi/YFZ1Dill3PcuMLF5ZWJStMfwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746028821; c=relaxed/simple;
-	bh=srkawcBWrylY/MgSAtBOTpwRKpWlLlt2Y2bupFa33cs=;
+	s=arc-20240116; t=1746029154; c=relaxed/simple;
+	bh=MROiByPDyEz2DGLOzQYjP8EFlQ9oLDCUqpyLSI6Y0Gw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sbz1INGQ7Xau/eVVMn7NH69Kl2joy3xacJHZnEJzcX/1RQ71QClhvRmjC3WIPRBVpZ6TOjF7c4Zkow2HFIN2syKAuMnLJesU8GX+gRvXgxGJ83ODBQZd/rpc+E4xejduu0F89QMJGtDv0l0gZtKCkrX9EMosU3Fylo5/kVMRXqs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O2o2Gcns; arc=none smtp.client-ip=209.85.210.181
+	 To:Cc:Content-Type; b=PYgX7SfAxRoHDqxeEROnUz65/YXrVSQN2aVoyknhX4maaQ69kGKKFMiEpkJbginhiqa4mZNb+6oJ7bpn2JWkuA3tquu6eZ/cArf6O/nATx1wvbNHKu8x98b8LvMWsxWXQDSDZf9KPm++3JCZorpPSISaEAzv9lvXvG0kLcJ9AwE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k8SE2eHm; arc=none smtp.client-ip=209.85.210.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-7399a2dc13fso89877b3a.2
-        for <bpf@vger.kernel.org>; Wed, 30 Apr 2025 09:00:20 -0700 (PDT)
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-736c1138ae5so72214b3a.3
+        for <bpf@vger.kernel.org>; Wed, 30 Apr 2025 09:05:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746028819; x=1746633619; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1746029152; x=1746633952; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ck1jr3GV4JJ4ORq6nZiPwKyYtkCSUQsQHQFx1KIYVW0=;
-        b=O2o2GcnsFZJQInM6T+rZgqmbblLouvFtw75EsIBAZi41YAjlik5F63YZ7Yv+LBR8sg
-         jm/UJPyaq4i/RrcPwBBKOE8RPV3RnvSwyamrqCFJVZ4NwTHpxtRYLX9j7z8JtQcY770a
-         GSKXvmX6zvplcmG3radI7e9150Sv+9P/uApwQhkBbIpONu0B3W4te+hg07P43N9hkk3v
-         v9p47F9+wl19qXyra5ppS/vA7Si38StOmKIs70cFIDiYQqx4CdGmoyHq4rOyxJgZcs7x
-         6zNmHzfwVArlpZvqYzmsLPgduSXa7mpt3h6nds/hCJsE/q81ABAMUAWNP1TYhw1BhsMM
-         WW5g==
+        bh=hE7Da28zkRosKkvPfcU+TBlv2d44cgX1Ozn99gPET0Y=;
+        b=k8SE2eHmrSc/yv7/EZePiztE6tJ0aIwoq5Vk32is07qOcvTMa1aNOE6jrb3ndm7tXZ
+         lCBieQjMts1qzJNXKWp2MzrhrRcEqvVPaFn32n1XI1lqTrNlL+ledLvN2OkO3l/1eEVn
+         0bNUjVGZCAD/SNhwL7lTh4cgwD0q17URDBV19RsMS97wK3BXxHLsAmDLjfCbfuEOeOln
+         GPBiZ214HleS3g55Fd9seRsgYjtZ4eIpuUKhbKqwFB2yEBapuFbekhUo0ZXwxPnJdnjR
+         u3WLAgsIEhaEb6MnvV6EdCZUxBdxyfI51sj4p9BoVJjE/uCA82yVSkHrS3MZnPtXk7UK
+         jpqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746028819; x=1746633619;
+        d=1e100.net; s=20230601; t=1746029152; x=1746633952;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Ck1jr3GV4JJ4ORq6nZiPwKyYtkCSUQsQHQFx1KIYVW0=;
-        b=IW6WoEoFIC+ty7RsO//oxlKWOkBTjCkwd5+ao332gnDKTVHTufInYICeZHsYl9QcYf
-         Qe5FsTYQ3Ib68Ti6RVo3j7U7xh+41nHeyty7RCGacYO0GRl4MnT3SkPzPyggIs6+8L9Q
-         gIQcB/qCeGG5+GV1qTBGP0iZFVR1Q/3Ma2v0s/ggvOy7chMy1gC5qMZ3Wv61LV8sRYNZ
-         LJo5ScnzKsJJAII4HtNOQBGs+AIlLuASWJSnXqRyqJbizIb/xYvREZX2wUV3FQUaRtSr
-         ansXt6mv59cF0dleKCmDLcicpJ661yJDjrLaYl2kNiQNImx9dW+WAGEoRFBrQFjQJXqr
-         D6Ag==
-X-Gm-Message-State: AOJu0YzLKoOeu+KOe9Id0bA+Do8krI+KU+lPNz9oYZcvDCnZhTK6SreK
-	rFQPEAwQuO4JuSBgz5jMkPx305lfj2+znoJVfqYaN3YhKOWdEUoa+sw0haBB+HZc0mMd5gTKaFV
-	StJarv351UI06R6J6J3LmIuKJ5zO22NWb
-X-Gm-Gg: ASbGncs0FQaVDxt4mxxVmW09ERGvPEVI3B+WUQYxA/sAyr1Xwr3ClfbP3n02a1F2i1y
-	yF8tWZtd7P9QNjTOa/IH9JM3xteuQryWevpp3yCxPkYXx4tKtaXldIy8stYASaqbhlkIBT7K/s2
-	cYw0gKUJILveVXTBUYctFxt7VDaIrXZwU5376GEQ==
-X-Google-Smtp-Source: AGHT+IGtgmv+TCe999QjR0YS+OkMdZWgka7JpyhAfo49/g7cxWZn7KChVaM+P7px2agZMoaoNx2pShe2A0q/zkqG9cQ=
-X-Received: by 2002:a05:6a00:3497:b0:740:41eb:5850 with SMTP id
- d2e1a72fcca58-74041eb58c4mr2069299b3a.4.1746028819464; Wed, 30 Apr 2025
- 09:00:19 -0700 (PDT)
+        bh=hE7Da28zkRosKkvPfcU+TBlv2d44cgX1Ozn99gPET0Y=;
+        b=a9PdPKD035fkLWjH0ygGMhphJ7qe/WtNGN3+rjdZ17eAP6wlq+goRw5RUQr7E2/0up
+         UFdpmsMFBvr1AjBUhtpc58sctxGFQcoSi3N2Yvn7+GNvB9ygWobvQOlQ/0uBXXUIUbEC
+         eJq7IZWWek6GxEYypxFa9TwAR+j0au+nNjnwMoDErXIbbVy1Bt5GMfPi5MFGHd+8OkBG
+         NaZDAiEvVXiNggXTxoLBON6tiB9wfVDd3oZHoUp0P+L3oYKzm1QKAdrDYFljrv7emHVY
+         weSM5mRUnQGElFwlk1RlpnFkMKCAHT24HDNWF/i9KexYzFlpowtZLAj12J4CCzPIjzS0
+         5Xrw==
+X-Gm-Message-State: AOJu0YyKfPY0F9Drm43pS8EwKNwJdqoKHTr1ixoJHGanjl5DgejBAYbA
+	X4CiTKUrkpxDNVvmGksb8erTFIEmsZlUAa0L5URqIXtWP+onJqMSKCdCz66IpVcvFBnRkLZjstd
+	HOq+PKsrQFuEA94NRkN+eIKYcOJE=
+X-Gm-Gg: ASbGnctzCeABohyVhvIzVglE3MeqkGE4U/k9XZpnt48HSfSI9zTzVhgEaXgCjEhWxYR
+	DJ3wb8GGf5X8vqQovSA3U4iGqFOOCsF0mCidikrB60HdUSM8DXlJL2gTY++mMRNTYMINX4olMRI
+	MHrT+p63p166TfrHpfex1rkrAnMWg8f1o8lCVW4Q==
+X-Google-Smtp-Source: AGHT+IF1xS//OtwzMUgY5wUHCG/zRuoJXe3wyJ8yGPmcFUkvq4rWS1LJ6HnayRr9z6Hhp769YRFPKryM5ns4WqLcYIs=
+X-Received: by 2002:aa7:8895:0:b0:735:d89c:4b8e with SMTP id
+ d2e1a72fcca58-7403a75b24bmr4302600b3a.5.1746029152374; Wed, 30 Apr 2025
+ 09:05:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250429142241.1943022-1-a.s.protopopov@gmail.com>
-In-Reply-To: <20250429142241.1943022-1-a.s.protopopov@gmail.com>
+References: <20250430120820.2262053-1-a.s.protopopov@gmail.com>
+In-Reply-To: <20250430120820.2262053-1-a.s.protopopov@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 30 Apr 2025 09:00:07 -0700
-X-Gm-Features: ATxdqUHw8xG_hK8kGDcHKIj2_0RKJxceoYHceK-Ag_EwS0ihoJafzjs02vas4JE
-Message-ID: <CAEf4BzYeKLgqn+yq3Mt+Vv-9t6qmzQqimb31zD=y-Cw474LU5w@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] bpf: fix uninitialized values in BPF_{CORE,PROBE}_READ
+Date: Wed, 30 Apr 2025 09:05:40 -0700
+X-Gm-Features: ATxdqUF2qWOu_sZePi_c6p5-3e2sRd2-LIBn0Zn-GEWnRdouFQ43khbOn88ks3k
+Message-ID: <CAEf4BzYmNyBS-xofAagQ6diVkSEn3iT46kcRrBSM-_14fAmgzg@mail.gmail.com>
+Subject: Re: [PATCH v1 bpf] libbpf: use proper errno value in linker
 To: Anton Protopopov <a.s.protopopov@gmail.com>
-Cc: bpf@vger.kernel.org
+Cc: bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 29, 2025 at 7:19=E2=80=AFAM Anton Protopopov
+On Wed, Apr 30, 2025 at 5:03=E2=80=AFAM Anton Protopopov
 <a.s.protopopov@gmail.com> wrote:
 >
-> With the latest LLVM bpf selftests build will fail with
-> the following error message:
+> Return values of the linker_append_sec_data() and the
+> linker_append_elf_relos() functions are propagated all the
+> way up to users of libbpf API. In some error cases these
+> functions return -1 which will be seen as -EPERM from user's
+> point of view. Instead, return a more reasonable -EINVAL.
 >
->     progs/profiler.inc.h:710:31: error: default initialization of an obje=
-ct of type 'typeof ((parent_task)->real_cred->uid.val)' (aka 'const unsigne=
-d int') leaves the object uninitialized and is incompatible with C++ [-Werr=
-or,-Wdefault-const-init-unsafe]
-
-this is BPF-side code, what does C++ have to do with this, I'm confused...
-
-
-Also, why using __u8[] is suddenly ok, and using the actual type
-isn't? Eventually it all is initialized by bpf_probe_read_kernel(), so
-compiler is wrong or I am misunderstanding something... Can you please
-help me understand this?
-
->       710 |         proc_exec_data->parent_uid =3D BPF_CORE_READ(parent_t=
-ask, real_cred, uid.val);
->           |                                      ^
->     tools/testing/selftests/bpf/tools/include/bpf/bpf_core_read.h:520:35:=
- note: expanded from macro 'BPF_CORE_READ'
->       520 |         ___type((src), a, ##__VA_ARGS__) __r;                =
-               \
->           |                                          ^
->
-> Fix this by declaring __r to be an array of __u8 of a proper size.
->
-> Fixes: 792001f4f7aa ("libbpf: Add user-space variants of BPF_CORE_READ() =
-family of macros")
-> Fixes: a4b09a9ef945 ("libbpf: Add non-CO-RE variants of BPF_CORE_READ() m=
-acro family")
+> Fixes: faf6ed321cf6 ("libbpf: Add BPF static linker APIs")
 > Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
 > ---
->  tools/lib/bpf/bpf_core_read.h | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
+>  tools/lib/bpf/linker.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> diff --git a/tools/lib/bpf/bpf_core_read.h b/tools/lib/bpf/bpf_core_read.=
-h
-> index c0e13cdf9660..b7395b75658c 100644
-> --- a/tools/lib/bpf/bpf_core_read.h
-> +++ b/tools/lib/bpf/bpf_core_read.h
-> @@ -517,9 +517,9 @@ extern void *bpf_rdonly_cast(const void *obj, __u32 b=
-tf_id) __ksym __weak;
->   * than enough for any practical purpose.
->   */
->  #define BPF_CORE_READ(src, a, ...) ({                                   =
-   \
-> -       ___type((src), a, ##__VA_ARGS__) __r;                            =
-   \
-> +       __u8 __r[sizeof(___type((src), a, ##__VA_ARGS__))];              =
-   \
->         BPF_CORE_READ_INTO(&__r, (src), a, ##__VA_ARGS__);               =
-   \
-> -       __r;                                                             =
-   \
-> +       *(___type((src), a, ##__VA_ARGS__) *)__r;                        =
-   \
->  })
+> diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
+> index 56f5068e2eba..a469e5d4fee7 100644
+> --- a/tools/lib/bpf/linker.c
+> +++ b/tools/lib/bpf/linker.c
+> @@ -1376,7 +1376,7 @@ static int linker_append_sec_data(struct bpf_linker=
+ *linker, struct src_obj *obj
+>                 } else {
+>                         if (!secs_match(dst_sec, src_sec)) {
+>                                 pr_warn("ELF sections %s are incompatible=
+\n", src_sec->sec_name);
+> -                               return -1;
+> +                               return -EINVAL;
+>                         }
 >
->  /*
-> @@ -533,16 +533,16 @@ extern void *bpf_rdonly_cast(const void *obj, __u32=
- btf_id) __ksym __weak;
->   * input argument.
->   */
->  #define BPF_CORE_READ_USER(src, a, ...) ({                              =
-   \
-> -       ___type((src), a, ##__VA_ARGS__) __r;                            =
-   \
-> +       __u8 __r[sizeof(___type((src), a, ##__VA_ARGS__))];              =
-   \
->         BPF_CORE_READ_USER_INTO(&__r, (src), a, ##__VA_ARGS__);          =
-   \
-> -       __r;                                                             =
-   \
-> +       *(___type((src), a, ##__VA_ARGS__) *)__r;                        =
-   \
->  })
+>                         /* "license" and "version" sections are deduped *=
+/
+> @@ -2223,7 +2223,7 @@ static int linker_append_elf_relos(struct bpf_linke=
+r *linker, struct src_obj *ob
+>                         }
+>                 } else if (!secs_match(dst_sec, src_sec)) {
+>                         pr_warn("sections %s are not compatible\n", src_s=
+ec->sec_name);
+> -                       return -1;
+> +                       return -EINVAL;
+
+doh, not sure how that slipped through, thanks for the fix! I applied
+it to bpf-next.
+
+BTW, if you would be so kind, I think we have a similar issue with
+validate_nla() in nlattr.c, where -1 can be eventually returned as
+user-visible error code, it would be nice to fix this up like you did
+with linker APIs, thanks!
+
+>                 }
 >
->  /* Non-CO-RE variant of BPF_CORE_READ() */
->  #define BPF_PROBE_READ(src, a, ...) ({                                  =
-   \
-> -       ___type((src), a, ##__VA_ARGS__) __r;                            =
-   \
-> +       __u8 __r[sizeof(___type((src), a, ##__VA_ARGS__))];              =
-   \
->         BPF_PROBE_READ_INTO(&__r, (src), a, ##__VA_ARGS__);              =
-   \
-> -       __r;                                                             =
-   \
-> +       *(___type((src), a, ##__VA_ARGS__) *)__r;                        =
-   \
->  })
->
->  /*
-> @@ -552,9 +552,9 @@ extern void *bpf_rdonly_cast(const void *obj, __u32 b=
-tf_id) __ksym __weak;
->   * not restricted to kernel types only.
->   */
->  #define BPF_PROBE_READ_USER(src, a, ...) ({                             =
-   \
-> -       ___type((src), a, ##__VA_ARGS__) __r;                            =
-   \
-> +       __u8 __r[sizeof(___type((src), a, ##__VA_ARGS__))];              =
-   \
->         BPF_PROBE_READ_USER_INTO(&__r, (src), a, ##__VA_ARGS__);         =
-   \
-> -       __r;                                                             =
-   \
-> +       *(___type((src), a, ##__VA_ARGS__) *)__r;                        =
-   \
->  })
->
->  #endif
+>                 /* shdr->sh_link points to SYMTAB */
 > --
 > 2.34.1
->
 >
 
