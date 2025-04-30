@@ -1,126 +1,237 @@
-Return-Path: <bpf+bounces-57099-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57100-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D07CAA57F1
-	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 00:23:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64691AA5870
+	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 01:00:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F33AD50168E
-	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 22:23:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8B8D7BA3C5
+	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 22:59:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AF022253A7;
-	Wed, 30 Apr 2025 22:23:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBFA6227EA8;
+	Wed, 30 Apr 2025 23:00:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cBpAk7LL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UBA78vKv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 413AA224B08;
-	Wed, 30 Apr 2025 22:23:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EF00219EA5
+	for <bpf@vger.kernel.org>; Wed, 30 Apr 2025 23:00:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746051808; cv=none; b=Ns9YsFiZEvGEFGX0njosJZ4jtUGE2MMFP1iEnf/QcrdtSNExFoSKP2HT40Fkm9oZah02zu6BOwVsa0HZ2UazQ0/4wPcgnKqHcSGdAKMypR9+Dlejgqa7hTteFzKvjpPw44bETNsGf7azoiLsm6L3prJ8WrZQGdQXGnPdVBqLkfQ=
+	t=1746054015; cv=none; b=Ti0Kry6rSCTpnlptQVMEkIw1Vy8bOHPa+RYkHpPsua6z6uyvEs6Nf7ZPyND5TGUwvf6iTpugcMetd/7pqPbxrEddIS35kDLo/ixdxLDpXS2byZot96OSIe7NyGNFPnh4QyMA90rwAlAApncppEdhU4baWxxxLZ3FOzifSGAQBMo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746051808; c=relaxed/simple;
-	bh=VZuKXxzGldX9LzIaU6VctUQqnQ8tlMc4yK/+gYxDzoY=;
+	s=arc-20240116; t=1746054015; c=relaxed/simple;
+	bh=OzkT6LY6B/y1F976qo3q4Ou2yQeYAKUjBw1LzcMFgZI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZxvUSj2SEwh+3lzA0cHaCWb36OxIZScVzv1B3DVNgT4SFHoR3DLZdeSkLmw1dRJztQ+kPKYVqpnqYDfr5QTUvneT4F0rzAVHH+bO96L0H97xY0xQ5FjhhqUvMLDPPkop+PMRP2VnP9Sh1pwwOUqGEFrFE+1M/oMU5iiMOv58y/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cBpAk7LL; arc=none smtp.client-ip=209.85.221.44
+	 To:Cc:Content-Type; b=mUz0FXWmoWW+i7L3HBxDupEiTQyKCtO/yk8Pol4A8tfHGNA5sNbl+n3mA55NXLFAaHb5OCcx+HIeRN50Qp2Uw612BxC9pJZN6JU+l5fvXEIf7D70H0e6kPfIFRQVUvMddR6YSlqVbiRA72vq58ChhI0bQ//6A+ubj0EW2A7v0yI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UBA78vKv; arc=none smtp.client-ip=209.85.128.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3913d129c1aso275123f8f.0;
-        Wed, 30 Apr 2025 15:23:26 -0700 (PDT)
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-43690d4605dso2689375e9.0
+        for <bpf@vger.kernel.org>; Wed, 30 Apr 2025 16:00:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746051805; x=1746656605; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1746054012; x=1746658812; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rg0uI63O02c4p1iLFOA5sNNvoK/KA8q0xPwjloWtPkQ=;
-        b=cBpAk7LLEIVKo3+/2mS6/KRTi9nCm3Qx/6q3VLs78tUy+v72riDtmkpuknvS8JVNpT
-         ccK1qGwBx9r+VHUqfkFjHDgwBpRTYavR4Y1VMgba2KWsiwRvHNjJwlGo5Kgs8nwIS6md
-         XyZTbfzzOFLEbrU4GXtbOl9Uf5HAeVE36T+RJJTB7aoeMcrPNFd0DudAbybpueuIiPzX
-         F/X7MAz8o/E+1ERixz3rvEq3O09Pc2bH18AKu/yb5oZ6s4qb9ixlzWQ0gIlA6193O1dj
-         r2/cgHjAPXPOWWGp6WSGbcfvsyTmvi0A25gv28l/eSIApm0FnShOZA1d+PTzUw5ficSa
-         C3lg==
+        bh=bjXpZnnINzV1ph5z7IDKHaM28HM1sv5+Pa/L6zHaPpE=;
+        b=UBA78vKvcVmttmOEI/dBp7+hVenZIfW9+OuHC2bqDUaQAn5D6H3KJY0llgwxWodD0O
+         UdnSIMy0Q/0vAaHmreSWj+gn3cGyzLiFREaL3TklgPT99A9fw1XgWat/cXaTlag/AqBA
+         /y/kS7JMja5IgAhVnDWss62MoLNyTf6JYKy/LWdyA12vFJ0BMkVOn3I5Fuu2rCRfoadI
+         3EFA1WrqQ3zP8EERhNA7YoXg3mFY1ifrLMhkXpwB0EDYq5s8aP8mXgrVOro5ai5PrrZa
+         sLTf0AfRNDjIrnwYIcDIZvlN3JDLsSyQsJZVRVg9B/7DQrnv7Ym5eMFJKTw1UCO1B1KJ
+         2K8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746051805; x=1746656605;
+        d=1e100.net; s=20230601; t=1746054012; x=1746658812;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rg0uI63O02c4p1iLFOA5sNNvoK/KA8q0xPwjloWtPkQ=;
-        b=W12TUoYnfnD3IMArSEQu2g6yinP5yJtseZY/2wU7PRXR7b0Z0y4Uwz1U9R+Ww5Mbgu
-         3HRe9lFSasgfhnesPMZ/9fn62xP+jqpNpB62Y1ytyHCVjMm7Bv0xwTsO/iWxxA4j1Diu
-         VRMJde6Vr5y06t5NX9LpT9KpDA1qWwxgvFeZ7Bn14PnOFtncWe5PmoyzFbP6u5scsO66
-         kwURQ23N/JzbyHkDAXOc3s3IKFRGMjZ32mutzD0SsMdKVEoNFXtU4v5ZkXkA8cGwY5jC
-         F/Oyct6hVh/Rk9ILgVIRqXRTccbW7HMD4kNHiNQHOSjL6uwvOxNBCQ0lzYFiHIhquBD1
-         P5sw==
-X-Forwarded-Encrypted: i=1; AJvYcCVhRwnQ/nwF2+NDHf/RaGdz4mpszv2G6/4xQqGewIvJYzk+dTaWF9e97GygKnijJELiPyI=@vger.kernel.org, AJvYcCVt/a3Y6fjyQWuu4xNsp9AbIAkJtL6gsbN6NseLiPteL0bm74AQB61/fmhoIEhRwGnMOoKV1JEpWj3MG3bO@vger.kernel.org
-X-Gm-Message-State: AOJu0YzC6xxsgmFnKAmTwgkhoFJRjuPRZ6zJIpVNn40V8n/Unmd1H8Zt
-	OTQFRIMbKXdeFUvqK9dvJkA1Xl2jo6FNKJepb8BDvlexyu+DyCo3ZUevpyukz/CZAgV37abrH8T
-	nWH390/RKh4oAutaRW7z/wUcnL6g=
-X-Gm-Gg: ASbGncsGfYOiSOnXD5mfe80Bz0UDOdl8E000EWLxRBsNklDT4PIC7d9tPC87UL0gVo4
-	K8fMCk7CPZtmf4y3r0464TAZ2OZqh/AEs978L6jMxCqxuWS6ziUfhS05KBB71Au3mfgpo2e3v2r
-	A9Oh4dfJkOLkk4MJn78CyCghs+rX6OibJjthyNYw==
-X-Google-Smtp-Source: AGHT+IGG+ERnGBJDsqMmUKI+z3+e6TKmbtoa8e1pOeIPXcVWLGApDN892M/K5ZLlVJHpeA4YTuSuAAp910s9QJ1uPUE=
-X-Received: by 2002:a5d:5141:0:b0:39c:30f7:b6ad with SMTP id
- ffacd0b85a97d-3a0941d0e2amr73815f8f.18.1746051805238; Wed, 30 Apr 2025
- 15:23:25 -0700 (PDT)
+        bh=bjXpZnnINzV1ph5z7IDKHaM28HM1sv5+Pa/L6zHaPpE=;
+        b=SUilIwX9D96QnwxnjGARREgfHUqebxAeHE9Qt0nbL2pm4/W2lG0J8N9bY6kcPdUHD3
+         mdemtnk+IkU7Dphl3mZGDZoJLJWRlaJGGGAzTAM3cNNzpn5+u/+h+VelSI69CmdOrnUm
+         ccvoYeyLPauBp6hf0/5rRWLPDexrKqZi/XJ+XMXZW+Y2jffLELVBHXBq1NsxX+Kc07cx
+         kA11qeptF1OP7ZdI3KAZ2gbP56QW6VScEu0O94d1hd7Fu5ttL3Hn/k/Opw5lIH9Utiry
+         LGX4B0EQWA/uzwx/rndntlALYwRMEdM8bBqQYtsZ01/r267lf2l0o8ZKg+GchSTfCahF
+         8dbg==
+X-Gm-Message-State: AOJu0YyMRCJISzlzKu2O3sd794h6ezTerggd70FDi2z78CvvGf6YFAvR
+	h/9wSj7nocyn8/02vEQnTwNB3aGB7mFVo/oF/Kz3CrXHmTH4MW6WCUADXwS5mLsJuYJ4sBLMrtU
+	9vvdgqcQtF2fn+ZEZVCigmdS20z4=
+X-Gm-Gg: ASbGncv9wz7Iv6NXk0B0phIX7BtgX7HFsONnN21sLHvgcKw8sm9C5BwLNlB30oSev6T
+	hApEZepTih+kPAKAFMnqLm4VVb/tt9SGVKLooBbDC5ITzbgeA291e3lxnpbYQ2CgIdN8kNL2d9p
+	XWXZi3dzP5zwEtABUj9VEoNqNrfOgxa6hCb37QJw==
+X-Google-Smtp-Source: AGHT+IEdYll7XCQtw2TrCmK69PWM8/GY8f3f2c+jzsjMhozaBfuEaDUPp61LpWjPTnSqsOwj1fQBGgR93cn4TlUweWA=
+X-Received: by 2002:a05:6000:1847:b0:39e:cbca:7161 with SMTP id
+ ffacd0b85a97d-3a09303069bmr702335f8f.10.1746054011714; Wed, 30 Apr 2025
+ 16:00:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250430164608.3790552-1-chen.dylane@linux.dev>
- <20250430164608.3790552-3-chen.dylane@linux.dev> <4cabeaa5-0a6f-4be0-89c8-b7d0552b0dd0@oracle.com>
-In-Reply-To: <4cabeaa5-0a6f-4be0-89c8-b7d0552b0dd0@oracle.com>
+References: <PH7PR11MB652381F4B833B4B5CE2AEABAA9832@PH7PR11MB6523.namprd11.prod.outlook.com>
+In-Reply-To: <PH7PR11MB652381F4B833B4B5CE2AEABAA9832@PH7PR11MB6523.namprd11.prod.outlook.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 30 Apr 2025 15:23:13 -0700
-X-Gm-Features: ATxdqUGMrbdUTVhckpjhHQmx8C1KMqLLH-63CvU0GOSOJBqE-qFUAuM0Llfyoxk
-Message-ID: <CAADnVQKPLH7q2KcJM_Nkgc1z=OZmOPZes-0c8A-5gty1xEOKzA@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 2/2] bpf: Get fentry func addr from user when
- BTF info invalid
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: Tao Chen <chen.dylane@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Date: Wed, 30 Apr 2025 16:00:00 -0700
+X-Gm-Features: ATxdqUEvgAqrnMJkhyeX2kn2pz1yjaQYC8Ijy2nYIFN27WRSM0khYrGWqf5RctE
+Message-ID: <CAADnVQJ0aRud=VeQ7dWhFqEqVQQCozKqtP9mHwuHOj5ua+5J4A@mail.gmail.com>
+Subject: Re: Looking for feedback on kfuncs for dentry_path_raw, get_dentry_from_kiocb
+To: "Preble, Adam C" <adam.c.preble@intel.com>
+Cc: "bpf@vger.kernel.org" <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 30, 2025 at 10:57=E2=80=AFAM Alan Maguire <alan.maguire@oracle.=
-com> wrote:
-> > +
-> > +                     if (!addr && (prog->expected_attach_type =3D=3D B=
-PF_TRACE_FENTRY ||
-> > +                                     prog->expected_attach_type =3D=3D=
- BPF_TRACE_FEXIT)) {
-> > +                             fname =3D kallsyms_lookup((unsigned long)=
-prog->aux->fentry_func,
-> > +                                                     NULL, NULL, NULL,=
- trace_symbol);
-> > +                             if (fname)
-> > +                                     addr =3D (long)prog->aux->fentry_=
-func;
+On Wed, Apr 30, 2025 at 10:39=E2=80=AFAM Preble, Adam C <adam.c.preble@inte=
+l.com> wrote:
+>
+> I was trying to use an eBPF script to dump all paths being created, opene=
+d, modified, or deleted. I hit a wall when I couldn't figure out how to ext=
+ract the actual path from anything and figured exposing dentry_path_raw as =
+a BPF-accessible function would do it. I was thinking of sending this code =
+upstream, and I've included a patch, but I figure I should ask some questio=
+ns first:
+>
+> 1. Is this even the right place to be asking all this? I assume the d_pat=
+h.c maintainers would also have a word or two (probably linux-fsdevel), but=
+ I'm focusing on if these kfuncs are even sensible.
+> 2. Actually, could I have gotten the path from something without writing =
+any new code in the first place? I was kprobing various vfs_* functions tha=
+t would give me a dentry*.
+> 3. What's the etiquette on ignored pointers? I'm designating the dentry* =
+as an ignored type.
+> 4. Should functions like this hide behind a build configuration constant?
+> 5. What would be the proper workflow for formally submitting it as a patc=
+h? Is this mailing list the best entryway? I expect actual file maintainers=
+ have final say, but I wonder if other people get brought in for BPF stuff.
+>
+> This patch is based off my work on 6.13, but applies and on 6.15 (based o=
+n 8bac8898fe398ffa3e09075ecea2be511725fb0b). An allyesconfig build pukes at=
+ the vmlinux.o creation because 6.15 is really big for some reason, and it =
+does that for me regardless.
+>
+> From 2c8b5d111ad7c75f41b4c1ff330b1c856e535632 Mon Sep 17 00:00:00 2001
+> From: Adam Preble <adam.c.preble@intel.com>
+> Date: Tue, 1 Apr 2025 18:15:31 -0500
+> Subject: [PATCH] d_path: BPF kfuncs for dentry_path_raw, get_dentry_from_=
+kiocb
+>
+> We were trying to extract paths from dentry records when using a kprobe
+> eBPF program against the following functions:
+>
+> vfs_create
+> vfs_rmdir
+> vfs_mknod
+> vfs_symlink
+> vfs_link
+> vfs_unlink
+> vfs_mkdir
+> do_mkdirat
+> generic_write_checks
+> notify_change
+>
+> Most of these functions take in a dentry pointer, with
+> generic_write_checks taking in a kiocb pointer instead. We expose
+> dentry_path_raw and bpf_get_dentry_from_kiocb to extract these paths.
+> ---
+>  fs/d_path.c | 54 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 54 insertions(+)
+>
+> diff --git a/fs/d_path.c b/fs/d_path.c
+> index 5f4da5c8d5db..6487eac09596 100644
+> --- a/fs/d_path.c
+> +++ b/fs/d_path.c
+> @@ -1,5 +1,7 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+> +#include <linux/bpf.h>
+>  #include <linux/syscalls.h>
+> +#include <linux/dcache.h>
+>  #include <linux/export.h>
+>  #include <linux/uaccess.h>
+>  #include <linux/fs_struct.h>
+> @@ -368,6 +370,58 @@ char *dentry_path_raw(const struct dentry *dentry, c=
+har *buf, int buflen)
+>  }
+>  EXPORT_SYMBOL(dentry_path_raw);
+>
+> +__bpf_kfunc_start_defs();
+> +// The dentry argument needs to be ignored because the verifier can't ve=
+rify
+> +// the integrity of the pointer coming in from kprobes.
+
+Exactly.
+It's probably obvious that we're not going to allow
+unsafe kfuncs that can easily crash the kernel.
+
+> +__bpf_kfunc char *bpf_dentry_path_raw(struct dentry *dentry__ign,
+
+We can consider something like this (without __ign, of course),
+but if you insist on using kprobes we cannot help.
+
+You can walk dentry with probe_read-s instead,
+but don't expect correct paths all the time.
+
+> +                                     char *buf, int buf__sz)
+> +{
+> +       char *retvar =3D NULL;
+> +
+> +       dget(dentry__ign);
+> +       if (!dentry__ign)
+> +               return NULL;
+> +
+> +       retvar =3D dentry_path_raw(dentry__ign, buf, buf__sz);
+> +       dput(dentry__ign);
+> +
+> +       if (IS_ERR(retvar) || retvar < buf || retvar >=3D buf + buf__sz) =
+{
+> +               if (buf__sz > 0)
+> +                       buf[0] =3D '\0';
+> +       } else {
+> +               // dentry_path_raw starts at the end of the buffer and wo=
+rks
+> +               // back to the beginning. We need to bump it back to the =
+start.
+> +               memcpy(buf, retvar, buf + buf__sz - retvar);
+> +       }
+> +
+> +       return retvar;
+> +}
+> +
+> +__bpf_kfunc struct dentry *bpf_get_dentry_from_kiocb(struct kiocb *iocb_=
+_ign)
+> +{
+> +       struct file *file =3D iocb__ign->ki_filp;
+> +       struct dentry *d =3D file->f_path.dentry;
+> +       return d;
+> +}
+> +
+> +__bpf_kfunc_end_defs();
+> +BTF_KFUNCS_START(bpf_file_kfunc_set_ids)
+> +BTF_ID_FLAGS(func, bpf_dentry_path_raw, KF_TRUSTED_ARGS)
+> +BTF_ID_FLAGS(func, bpf_get_dentry_from_kiocb, KF_TRUSTED_ARGS)
+> +BTF_KFUNCS_END(bpf_file_kfunc_set_ids)
+> +
+> +static const struct btf_kfunc_id_set bpf_dentry_task_kfunc_set =3D {
+> +       .owner =3D THIS_MODULE,
+> +       .set   =3D &bpf_file_kfunc_set_ids,
+> +};
+> +
+> +static int init_subsystem(void)
+> +{
+> +       int ret =3D register_btf_kfunc_id_set(BPF_PROG_TYPE_KPROBE, &bpf_=
+dentry_task_kfunc_set);
+> +       return ret;
+> +}
+> +late_initcall(init_subsystem);
+> +
+>  char *dentry_path(const struct dentry *dentry, char *buf, int buflen)
+>  {
+>         DECLARE_BUFFER(b, buf, buflen);
+> --
+> 2.34.1
 >
 >
-> We should do some validation that the fname we get back matches the BTF
-> func name prefix (fname "foo.isra.0" matches "foo") I think?
-
-I don't think that will be enough.
-User space should not be able to pass a random kernel address
-and convince the kernel that it matches a particular btf_id.
-As discussed in the other thread matching based on name is
-breaking apart.
-pahole does all the safety check to make sure name/addr/btf_id
-are consistent.
-We shouldn't be adding workarounds like this because
-pahole/btf/kernel build is not smart enough.
-
-pw-bot: cr
 
