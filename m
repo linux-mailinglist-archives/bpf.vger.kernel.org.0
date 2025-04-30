@@ -1,127 +1,115 @@
-Return-Path: <bpf+bounces-57052-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57053-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE3B7AA4F9C
-	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 17:07:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01E72AA4FE1
+	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 17:14:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4ED7B16AEBC
-	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 15:04:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C23027AA81A
+	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 15:10:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 431671BD035;
-	Wed, 30 Apr 2025 15:03:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A90C620E313;
+	Wed, 30 Apr 2025 15:11:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GmqBvlf+"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="y7niSezD";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="b0y9yWDl"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB78C1B87E8
-	for <bpf@vger.kernel.org>; Wed, 30 Apr 2025 15:03:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF1A2190676;
+	Wed, 30 Apr 2025 15:11:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746025408; cv=none; b=d1iFBzUD1VmuBK/NW6+/Z0xmYx+29lv+YfxjIpNjipq1wr0yDbWsQbLCfan7jrNnd7RrPspBJxGCnj6b/40oWujR+3cDDIhbmX2mV4kpTOXslmWi6M21mmPWpg5sIpW4333zDf+ymwOj9DH2LCFlbKzlchjlwnHKFezfvltd7cM=
+	t=1746025913; cv=none; b=YnlleY3lFV7VjDzbwgwIcIDTvKp2UlJu0VApjvNNMsqKxv9oFfXlGxYC7fuT/rkG8KJZD7AfOObLfxJq0tdksRAzM+b59ZMmKtQmXe87s73kdwGahn7EtK1iTYZz5wCzRH1U8nS1QsmSuwTI57k6IzKTi7HCNsPmwXE5b3ptaQ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746025408; c=relaxed/simple;
-	bh=muQT55T9kWGWE8UK/cAEHnLmF1tVLjQwPxFANaeIuLw=;
+	s=arc-20240116; t=1746025913; c=relaxed/simple;
+	bh=gwNreDt2XmAk6fEeKAjvZndQq/2M8drfbIRxele9Qsc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RCBg5BGQah65DZM8Cs9EDRPtw+6tPjJo9iU9fwXM2uAsaOfslO9euHYh64zaQuNYbmp73p0WYeqJpf7uxilD9tZO/RLqpcsefQuN1UBR6DgVtIEfSHoM3SwJ93kS5uRkOhyozqSqpN0C45v7CmwL8y/BDn8+iLU1Cf/o+XolQZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GmqBvlf+; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 30 Apr 2025 08:03:09 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1746025394;
+	 Content-Type:Content-Disposition:In-Reply-To; b=JGZIGJvaFsrzvYg1ukcWXfzfLKbVc3oWpvHPxGG3Id1myxG98SoiuvNpp54yi+DVWHdGovxi1HqwaNPOX4Fc9Zbd1ExDPtPZFVyKnfVbOuVaKHNlimDLy2F954+yC5a9Fz7aH8NsrGHQ0qoktTRyUIHvtu/rK92LPi0rRsUOq1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=y7niSezD; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=b0y9yWDl; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Wed, 30 Apr 2025 17:11:48 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1746025910;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FtTmY7VNaauY8JAzhPRIMcx1YGjVMzAwEwdhfk28sUs=;
-	b=GmqBvlf+HvX3DHUEbaCHIs70ES6Y2F6pCwBPy9hYlXb9hB3Fj9XDAHWU+5l1He2vbKgK8M
-	21I10XnRsDe5ngHVPySdB8LcM8UvAn0AEnFBjHAW53NF8dHltqooKnIcfGV0nm4SLSQwAp
-	azE0DTPZY+CQsQv3ZV2CiyLtKXKHeT0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, linux-mm@kvack.org, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>, 
-	bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH 2/4] memcg: separate local_trylock for memcg and obj
-Message-ID: <s636pqlp5tfg6p2vt3argmqyysx5d72jtwjpekk5nj7yerbolf@vco5fbwicubb>
+	bh=2c3K2d5Af1MygOHpxIZVc/MSwzvBfxMXWYEj6fNYrpY=;
+	b=y7niSezDbu5dRuluihwjKJIoTeAwB2SEcHuOaSf6t6kTHInm3WEez8yl3FB+fcx+INymyg
+	X8V/iCDTVJLLp2G8T56aHRMbA+9a2crgjGwYMWCA/lX/1TK4LlBr+8gzK0svgJ43tQyeIY
+	1xbmj3lJD+ZtxcSdx61UxCOAvRioYdS2BNxBe5wwgMTOylqMl+a5XrpwTXZLJwjxU5jbqm
+	ITqpI14w2hIioGFqTbuw48gy6S3Ye0RT2kGTWo2nNCIZHs4IyiGFnL7CfzJqJ9rY4bGa5B
+	w4sXbNKSJQGOcPlOiZv3Rdni5jzEWrs0lWdHyhgZBIlezvZchoZrlxGuDBcqgA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1746025910;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2c3K2d5Af1MygOHpxIZVc/MSwzvBfxMXWYEj6fNYrpY=;
+	b=b0y9yWDlT5hm7iouGh2JxKI9KK4Ca+wXCLV8YKrB/X2zXUQhNg/r/VTv9e8Xg/OAjoWlGu
+	73a0+O7fBDpAwvDQ==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Meta kernel team <kernel-team@meta.com>, bpf@vger.kernel.org
+Subject: Re: [PATCH 1/4] memcg: simplify consume_stock
+Message-ID: <20250430151148.-SqLG7kP@linutronix.de>
 References: <20250429230428.1935619-1-shakeel.butt@linux.dev>
- <20250429230428.1935619-3-shakeel.butt@linux.dev>
- <a9977cb2-3dce-4be1-81a3-23e760082922@suse.cz>
+ <20250429230428.1935619-2-shakeel.butt@linux.dev>
+ <dvyyqubghf67b3qsuoreegqk4qnuuqfkk7plpfhhrck5yeeuic@xbn4c6c7yc42>
+ <ik3yjjt6evxexkaculyiibgrgxtvimwx7rzalpbecb75gpmmck@pcsmy6kxzynb>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <a9977cb2-3dce-4be1-81a3-23e760082922@suse.cz>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <ik3yjjt6evxexkaculyiibgrgxtvimwx7rzalpbecb75gpmmck@pcsmy6kxzynb>
 
-On Wed, Apr 30, 2025 at 01:42:47PM +0200, Vlastimil Babka wrote:
-> On 4/30/25 01:04, Shakeel Butt wrote:
-> > The per-cpu stock_lock protects cached memcg and cached objcg and their
-> > respective fields. However there is no dependency between these fields
-> > and it is better to have fine grained separate locks for cached memcg
-> > and cached objcg. This decoupling of locks allows us to make the memcg
-> > charge cache and objcg charge cache to be nmi safe independently.
+On 2025-04-29 21:37:26 [-0700], Shakeel Butt wrote:
+> > > -	if (gfpflags_allow_spinning(gfp_mask))
+> > > -		local_lock_irqsave(&memcg_stock.stock_lock, flags);
+> > > -	else if (!local_trylock_irqsave(&memcg_stock.stock_lock, flags))
+> > > +	if (nr_pages > MEMCG_CHARGE_BATCH ||
+> > > +	    !local_trylock_irqsave(&memcg_stock.stock_lock, flags))
 > > 
-> > At the moment, memcg charge cache is already nmi safe and this
-> > decoupling will allow to make memcg charge cache work without disabling
-> > irqs.
-> > 
-> > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> > ---
-> >  mm/memcontrol.c | 52 +++++++++++++++++++++++++++----------------------
-> >  1 file changed, 29 insertions(+), 23 deletions(-)
+> > I don't think it's a good idea.
+> > spin_trylock() will fail often enough in PREEMPT_RT.
+> > Even during normal boot I see preemption between tasks and they
+> > contend on the same cpu for the same local_lock==spin_lock.
+> > Making them take slow path is a significant behavior change
+> > that needs to be carefully considered.
 > 
-> > @@ -1883,19 +1885,22 @@ static void drain_local_stock(struct work_struct *dummy)
-> >  	struct memcg_stock_pcp *stock;
-> >  	unsigned long flags;
-> >  
-> > -	/*
-> > -	 * The only protection from cpu hotplug (memcg_hotplug_cpu_dead) vs.
-> > -	 * drain_stock races is that we always operate on local CPU stock
-> > -	 * here with IRQ disabled
-> > -	 */
-> > -	local_lock_irqsave(&memcg_stock.stock_lock, flags);
-> > +	if (WARN_ONCE(!in_task(), "drain in non-task context"))
-> > +		return;
-> >  
-> > +	preempt_disable();
-> >  	stock = this_cpu_ptr(&memcg_stock);
-> > +
-> > +	local_lock_irqsave(&memcg_stock.obj_lock, flags);
-> >  	drain_obj_stock(stock);
-> > +	local_unlock_irqrestore(&memcg_stock.obj_lock, flags);
-> > +
-> > +	local_lock_irqsave(&memcg_stock.memcg_lock, flags);
-> >  	drain_stock_fully(stock);
-> > -	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
-> > +	local_unlock_irqrestore(&memcg_stock.memcg_lock, flags);
-> >  
-> > -	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
-> > +	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
-> > +	preempt_enable();
-> 
-> This usage of preempt_disable() looks rather weird and makes RT unhappy as
-> the local lock is a mutex, so it gives you this:
-> 
-> BUG: sleeping function called from invalid context at
-> kernel/locking/spinlock_rt.c:48
-> 
-> I know the next patch removes it again but for bisectability purposes it
-> should be avoided. Instead of preempt_disable() we can extend the local lock
-> scope here?
-> 
+> I didn't really think too much about PREEMPT_RT kernels as I assume
+> performance is not top priority but I think I get your point. Let me
 
-Indeed and thanks for the suggestion, will fix in v2.
+Not sure if this is performance nor simply failing to allocate memory.
+
+> explain and correct me if I am wrong. On PREEMPT_RT kernel, the local
+> lock is a spin lock which is actually a mutex but with priority
+> inheritance. A task having the local lock can still get context switched
+> (but will remain on same CPU run queue) and the newer task can try to
+> acquire the memcg stock local lock. If we just do trylock, it will
+> always go to the slow path but if we do local_lock() then it will sleeps
+> and possibly gives its priority to the task owning the lock and possibly
+> make that task to get the CPU. Later the task slept on memcg stock lock
+> will wake up and go through fast path.
+
+So far correct. On PREEMPT_RT a task with spinlock_t or local_lock_t can
+get preempted while owning the lock. The local_lock_t is a per-CPU lock.
+
+Sebastian
 
