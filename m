@@ -1,136 +1,126 @@
-Return-Path: <bpf+bounces-57098-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57099-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13A61AA577D
-	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 23:35:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D07CAA57F1
+	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 00:23:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA9767BC65B
-	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 21:31:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F33AD50168E
+	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 22:23:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC6F12BD93C;
-	Wed, 30 Apr 2025 21:30:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AF022253A7;
+	Wed, 30 Apr 2025 22:23:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z5mboyPq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cBpAk7LL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C18AC21D3DD
-	for <bpf@vger.kernel.org>; Wed, 30 Apr 2025 21:30:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 413AA224B08;
+	Wed, 30 Apr 2025 22:23:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746048625; cv=none; b=AJLVE/zebT6lvyADMcbbCOnN2IKbt9zQhgMaUKy8fli6SLrWkquYqhvfNeKeJsT/+wkMb1op0c5oWY8CMkonSg5jWY9GOVDB2dQSnkl5m0ZGOu/9LbaGT2QGJ2SUOilG2ZTgVV4f/4XpfXJ1r40ffVzyTFXRmdd5rBP4SiZhSKw=
+	t=1746051808; cv=none; b=Ns9YsFiZEvGEFGX0njosJZ4jtUGE2MMFP1iEnf/QcrdtSNExFoSKP2HT40Fkm9oZah02zu6BOwVsa0HZ2UazQ0/4wPcgnKqHcSGdAKMypR9+Dlejgqa7hTteFzKvjpPw44bETNsGf7azoiLsm6L3prJ8WrZQGdQXGnPdVBqLkfQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746048625; c=relaxed/simple;
-	bh=RkwYVYcMO+yXrp5jMBy6VteDJKMOuKexvKfsN8SFLyo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=T6tZWh4lVBXyYx9a5pJ0BV8ZQ6sn7LNsq/PgB1AQ3LyMgddyczFKwNAQnwnukDn5Ksh9faKwqKS0/RQN9gkqcc9CjuaY9X4Q17v5yzE/xs58AbOX1LN6h1Vilg9JtfNL8pNX2Rmpn93JliG9/uhY/yf3JPjFhar1JOAfbTgkx2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z5mboyPq; arc=none smtp.client-ip=209.85.214.182
+	s=arc-20240116; t=1746051808; c=relaxed/simple;
+	bh=VZuKXxzGldX9LzIaU6VctUQqnQ8tlMc4yK/+gYxDzoY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZxvUSj2SEwh+3lzA0cHaCWb36OxIZScVzv1B3DVNgT4SFHoR3DLZdeSkLmw1dRJztQ+kPKYVqpnqYDfr5QTUvneT4F0rzAVHH+bO96L0H97xY0xQ5FjhhqUvMLDPPkop+PMRP2VnP9Sh1pwwOUqGEFrFE+1M/oMU5iiMOv58y/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cBpAk7LL; arc=none smtp.client-ip=209.85.221.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2255003f4c6so3977255ad.0
-        for <bpf@vger.kernel.org>; Wed, 30 Apr 2025 14:30:23 -0700 (PDT)
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3913d129c1aso275123f8f.0;
+        Wed, 30 Apr 2025 15:23:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746048623; x=1746653423; darn=vger.kernel.org;
-        h=mime-version:user-agent:message-id:date:references:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z5Qw/d8aWIJQfpYcL/gJDvq1nrLVDeffl7hz0H+ZEFU=;
-        b=Z5mboyPq+R3/Gz2fgVaBiQrMByluHwgUoLsUUNjHjxSkb619qt1TwoA7ZHfAlfdk1X
-         V8YDhR/AsKUeyI4WU21P84eiwDqGXgyQQKdw+rb3XZDK3D49P3bI8BgJ8IAEzFVTk3i5
-         JGqg8ePqTSIiKyQxmT8Cj93q3zpxOxEiJTb/wM+khk7xviecOzJDcUlwO1/Nu+QW18sC
-         KywCJHqQoofpPQc0FdUI0WM+3IHuzFv7osEaFzwIBkgWLaDRryekx9zXzkuZDV/N69eK
-         wEp1Wuq9q2cd17hmA0kX1mgih+ouovOxQTBCCsaZSTsFQZ7GHHsy4PiEQ8KDwcZHq3Gc
-         sJRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746048623; x=1746653423;
-        h=mime-version:user-agent:message-id:date:references:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1746051805; x=1746656605; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Z5Qw/d8aWIJQfpYcL/gJDvq1nrLVDeffl7hz0H+ZEFU=;
-        b=JEn2YSBHdeZt+1iBhoO3tWzqsQuCv2VoVYVV9Pc5lVm5/thYSpL35JBlhsoIYzaHt6
-         3dFXXH5XI9lIXwons+1BiDiy/nzKW/KhtS3Pc1nxG43njYkdpLrBjApJL+osMhqr9JuN
-         B7kfeR5MJNIXkVGr7CsN9FQt5DOFOKSRFgZPPzyzG1OQdmwYJnaEaqd8A4hrTF2MHM7r
-         M5THtVnx+qVwVGMcyxnlxx9n+fzOLRVr/Tc84zGSdHjoIqBsM2Vsu2+tJl1I4b1LP6c9
-         +UUeShpBk/cQmvIVTj7ezNf4yCVKhE1d3Wphr3ip5FUXB4QIuoCQyKvujhTtssi0OKjf
-         C3Vw==
-X-Forwarded-Encrypted: i=1; AJvYcCUQPepESPftjUt7o0STM5kL9CLqlTnDWOWzD4ztbda3Y1rXsUKMrt3pGPLB9KI9P6uE44M=@vger.kernel.org
-X-Gm-Message-State: AOJu0YysKjc+5WyzPXKtsWI2XgM7cGw8psVbbX7hvtgjGKa3+uFhohTG
-	bOEk0jvGEAM02jGVYP4HpaRk+HohwlOZrk5Z9kOVqFXw4qH8nDIlUZBZ2NVr
-X-Gm-Gg: ASbGncv90JtzS1xfvaXYQ/GEMiSz8Cpum9epYlcbvg7O7VGyx109v8/pIw3lkcYZA4G
-	x5Eh+SRD+19NYJjaXOwmKEy9UxbXNzqDanUXqXCfqF8IGerNvkP/tqAJMr25S48y/hHKEsAkOtN
-	GDaMwIv/saARdOIcPToGGyL5SrqJsZQmQj9gsFInKVdL9tyP/M0TScmgyTJ3yiHgTWEPWxDOLcm
-	bnV3Buuh7LSVfNX+6sqMGK3vJEQamjdtajWzJOs3ilBkxRTLvE+r9YWxoi9lusH3v62dgzz1Q7H
-	2EPjjaik9QdmW1ejjkDdQds3y+BbhosvbwZnhPO1Knak
-X-Google-Smtp-Source: AGHT+IHPY3r7M5Dd9V2r2P5GuYlApxPSGHu2CRK3wrd63CckAdyW1Fp5AWEPp5glnEvnKU6zZkzycg==
-X-Received: by 2002:a17:902:dacb:b0:224:910:23f6 with SMTP id d9443c01a7336-22e086484e1mr397175ad.45.1746048622771;
-        Wed, 30 Apr 2025 14:30:22 -0700 (PDT)
-Received: from ezingerman-mba ([2620:10d:c090:500::6:5b9b])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b15f7ec0bb2sm11113040a12.18.2025.04.30.14.30.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Apr 2025 14:30:22 -0700 (PDT)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: ast@kernel.org,  andrii@kernel.org,  daniel@iogearbox.net,
-  martin.lau@linux.dev,  song@kernel.org,  yonghong.song@linux.dev,
-  john.fastabend@gmail.com,  kpsingh@kernel.org,  sdf@fomichev.me,
-  haoluo@google.com,  jolsa@kernel.org,  mykolal@fb.com,
-  bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next] selftests/bpf: add btf dedup test covering
- module BTF dedup
-In-Reply-To: <20250430134249.2451066-1-alan.maguire@oracle.com> (Alan
-	Maguire's message of "Wed, 30 Apr 2025 14:42:49 +0100")
-References: <20250430134249.2451066-1-alan.maguire@oracle.com>
-Date: Wed, 30 Apr 2025 14:30:19 -0700
-Message-ID: <m2y0vhfic4.fsf@gmail.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        bh=rg0uI63O02c4p1iLFOA5sNNvoK/KA8q0xPwjloWtPkQ=;
+        b=cBpAk7LLEIVKo3+/2mS6/KRTi9nCm3Qx/6q3VLs78tUy+v72riDtmkpuknvS8JVNpT
+         ccK1qGwBx9r+VHUqfkFjHDgwBpRTYavR4Y1VMgba2KWsiwRvHNjJwlGo5Kgs8nwIS6md
+         XyZTbfzzOFLEbrU4GXtbOl9Uf5HAeVE36T+RJJTB7aoeMcrPNFd0DudAbybpueuIiPzX
+         F/X7MAz8o/E+1ERixz3rvEq3O09Pc2bH18AKu/yb5oZ6s4qb9ixlzWQ0gIlA6193O1dj
+         r2/cgHjAPXPOWWGp6WSGbcfvsyTmvi0A25gv28l/eSIApm0FnShOZA1d+PTzUw5ficSa
+         C3lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746051805; x=1746656605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rg0uI63O02c4p1iLFOA5sNNvoK/KA8q0xPwjloWtPkQ=;
+        b=W12TUoYnfnD3IMArSEQu2g6yinP5yJtseZY/2wU7PRXR7b0Z0y4Uwz1U9R+Ww5Mbgu
+         3HRe9lFSasgfhnesPMZ/9fn62xP+jqpNpB62Y1ytyHCVjMm7Bv0xwTsO/iWxxA4j1Diu
+         VRMJde6Vr5y06t5NX9LpT9KpDA1qWwxgvFeZ7Bn14PnOFtncWe5PmoyzFbP6u5scsO66
+         kwURQ23N/JzbyHkDAXOc3s3IKFRGMjZ32mutzD0SsMdKVEoNFXtU4v5ZkXkA8cGwY5jC
+         F/Oyct6hVh/Rk9ILgVIRqXRTccbW7HMD4kNHiNQHOSjL6uwvOxNBCQ0lzYFiHIhquBD1
+         P5sw==
+X-Forwarded-Encrypted: i=1; AJvYcCVhRwnQ/nwF2+NDHf/RaGdz4mpszv2G6/4xQqGewIvJYzk+dTaWF9e97GygKnijJELiPyI=@vger.kernel.org, AJvYcCVt/a3Y6fjyQWuu4xNsp9AbIAkJtL6gsbN6NseLiPteL0bm74AQB61/fmhoIEhRwGnMOoKV1JEpWj3MG3bO@vger.kernel.org
+X-Gm-Message-State: AOJu0YzC6xxsgmFnKAmTwgkhoFJRjuPRZ6zJIpVNn40V8n/Unmd1H8Zt
+	OTQFRIMbKXdeFUvqK9dvJkA1Xl2jo6FNKJepb8BDvlexyu+DyCo3ZUevpyukz/CZAgV37abrH8T
+	nWH390/RKh4oAutaRW7z/wUcnL6g=
+X-Gm-Gg: ASbGncsGfYOiSOnXD5mfe80Bz0UDOdl8E000EWLxRBsNklDT4PIC7d9tPC87UL0gVo4
+	K8fMCk7CPZtmf4y3r0464TAZ2OZqh/AEs978L6jMxCqxuWS6ziUfhS05KBB71Au3mfgpo2e3v2r
+	A9Oh4dfJkOLkk4MJn78CyCghs+rX6OibJjthyNYw==
+X-Google-Smtp-Source: AGHT+IGG+ERnGBJDsqMmUKI+z3+e6TKmbtoa8e1pOeIPXcVWLGApDN892M/K5ZLlVJHpeA4YTuSuAAp910s9QJ1uPUE=
+X-Received: by 2002:a5d:5141:0:b0:39c:30f7:b6ad with SMTP id
+ ffacd0b85a97d-3a0941d0e2amr73815f8f.18.1746051805238; Wed, 30 Apr 2025
+ 15:23:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20250430164608.3790552-1-chen.dylane@linux.dev>
+ <20250430164608.3790552-3-chen.dylane@linux.dev> <4cabeaa5-0a6f-4be0-89c8-b7d0552b0dd0@oracle.com>
+In-Reply-To: <4cabeaa5-0a6f-4be0-89c8-b7d0552b0dd0@oracle.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 30 Apr 2025 15:23:13 -0700
+X-Gm-Features: ATxdqUGMrbdUTVhckpjhHQmx8C1KMqLLH-63CvU0GOSOJBqE-qFUAuM0Llfyoxk
+Message-ID: <CAADnVQKPLH7q2KcJM_Nkgc1z=OZmOPZes-0c8A-5gty1xEOKzA@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 2/2] bpf: Get fentry func addr from user when
+ BTF info invalid
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: Tao Chen <chen.dylane@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Alan Maguire <alan.maguire@oracle.com> writes:
+On Wed, Apr 30, 2025 at 10:57=E2=80=AFAM Alan Maguire <alan.maguire@oracle.=
+com> wrote:
+> > +
+> > +                     if (!addr && (prog->expected_attach_type =3D=3D B=
+PF_TRACE_FENTRY ||
+> > +                                     prog->expected_attach_type =3D=3D=
+ BPF_TRACE_FEXIT)) {
+> > +                             fname =3D kallsyms_lookup((unsigned long)=
+prog->aux->fentry_func,
+> > +                                                     NULL, NULL, NULL,=
+ trace_symbol);
+> > +                             if (fname)
+> > +                                     addr =3D (long)prog->aux->fentry_=
+func;
+>
+>
+> We should do some validation that the fname we get back matches the BTF
+> func name prefix (fname "foo.isra.0" matches "foo") I think?
 
-> Recently issues were observed with module BTF deduplication failures
-> [1].  Add a dedup selftest that ensures that core kernel types are
-> referenced from split BTF as base BTF types.  To do this use bpf_testmod
-> functions which utilize core kernel types, specifically
->
-> ssize_t
-> bpf_testmod_test_write(struct file *file, struct kobject *kobj,
->                        struct bin_attribute *bin_attr,
->                        char *buf, loff_t off, size_t len);
->
-> __bpf_kfunc struct sock *bpf_kfunc_call_test3(struct sock *sk);
->
-> __bpf_kfunc void bpf_kfunc_call_test_pass_ctx(struct __sk_buff *skb);
->
-> For each of these ensure that the types they reference -
-> struct file, struct kobject, struct bin_attr etc - are in base BTF.
-> Note that because bpf_testmod.ko is built with distilled base BTF
-> the associated reference types - i.e. the PTR that points at a
-> "struct file" - will be in split BTF.  As a result the test resolves
-> typedef and pointer references and verifies the pointed-at or
-> typedef'ed type is in base BTF.  Because we use BTF from
-> /sys/kernel/btf/bpf_testmod relocation has occurred for the
-> referenced types and they will be base - not distilled base - types.
->
-> For large-scale dedup issues, we see such types appear in split BTF and
-> as a result this test fails.  Hence it is proposed as a test which will
-> fail when large-scale dedup issues have occurred.
->
-> [1] https://lore.kernel.org/dwarves/CAADnVQL+-LiJGXwxD3jEUrOonO-fX0SZC8496dVzUXvfkB7gYQ@mail.gmail.com/
->
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> ---
+I don't think that will be enough.
+User space should not be able to pass a random kernel address
+and convince the kernel that it matches a particular btf_id.
+As discussed in the other thread matching based on name is
+breaking apart.
+pahole does all the safety check to make sure name/addr/btf_id
+are consistent.
+We shouldn't be adding workarounds like this because
+pahole/btf/kernel build is not smart enough.
 
-The test passes for LLVM and fails for gcc 14, when using pahole w/o
-fixes discussed in [1].
-
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+pw-bot: cr
 
