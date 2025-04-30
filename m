@@ -1,223 +1,208 @@
-Return-Path: <bpf+bounces-57067-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57066-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27035AA51B3
-	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 18:30:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43A48AA51AE
+	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 18:29:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 228E21C20106
-	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 16:29:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 843CE3A2239
+	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 16:28:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D6F0126C05;
-	Wed, 30 Apr 2025 16:29:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F150325E821;
+	Wed, 30 Apr 2025 16:29:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gH0USNqy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FaLcnkSu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5048C2641D8;
-	Wed, 30 Apr 2025 16:29:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 941E5261589
+	for <bpf@vger.kernel.org>; Wed, 30 Apr 2025 16:29:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746030559; cv=none; b=AcZSsI7af2GksZ8BRSnG3WkFN0VugUbPglDTEFH2Fs7b/8rp7KxYmxttG3HzfDM9ZcqPru2e9sLk+GhLV8Aow+vnGdh3ZEodbmYXkOlY5MXYFbGhOySQ4bK8Pz+PJ3SfOCDKFJkI6XAKRlchHgESsKvAIA7O8WUCfA0cnmCbINs=
+	t=1746030544; cv=none; b=qFTvWR8k7lrBfBeansVujH+f1HIT9ELeecq/g0w623Uz7eJWcaw1e2o1VlaoEph7+ycPQeLSl4UIE2yQ3pgDq9iFUaMAWtuFH2DmSIOB5/XUnLx0VYStu60rBMrpxZrk7pz6QavGlqRjcvN9imXkhQ0O8/sicDeNlj5/LMOzxe8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746030559; c=relaxed/simple;
-	bh=u70XBbVPx5nQc5CRmhxK7SEVU/8+kQaEYawHPX70naA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Fm0TYxbJxaiBWi0HNfELRiat5mtZq0vbGN72FESVoZNdwIdh8CMtFxJ7hxUDpKbTbRswkxqWSFkFHPZidixFYUuXl9C6H7lFsxezEj8tBs5+aN6U+sz3KD77UfFUSv0xnuse1hKC0/XFpgzXJq8kS7jeyWW6ITHpxrzm3yewuRA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gH0USNqy; arc=none smtp.client-ip=209.85.128.43
+	s=arc-20240116; t=1746030544; c=relaxed/simple;
+	bh=ZDgC9wfqWIFNan5UahhvXdEw/QwETtkkhkF/4552tJ8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NvmoleF4OKIqglp8PKdNODTiOEzCM4cTDY86uo8KwgVb6mrLfdLoxr2ln1TQXNnnwKPDL6FVAPQveQCFStLWyGsHNqJueShoUZK5iv6WdDGZ6raiGZmEr/U5Lu9bfHtRNS8WhdQ8uOm9rqAgsmw0M+OVC2HKnRuqghS+rl4s7e8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FaLcnkSu; arc=none smtp.client-ip=209.85.218.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-43edecbfb46so33165e9.0;
-        Wed, 30 Apr 2025 09:29:16 -0700 (PDT)
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-ac2c663a3daso1490901566b.2
+        for <bpf@vger.kernel.org>; Wed, 30 Apr 2025 09:29:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746030555; x=1746635355; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vJZLV0Sll2PYEUOZWtyGELHHAeYU3ZMvyo1o32OOZOo=;
-        b=gH0USNqycEw+1dw8uKEvY4YBLBY7FglB4YUw4xwsgUNa+l3JyMytabzsraDTg6eSia
-         l4aZ6S9OB02lPBvsgqzQvgxBWDW2SoQCL5DD+tDOSOMC4axKsoXgdRpcWp+01D9cSnwx
-         0FPmdYEoIdqRnoouw8bRQFL6Jq2cCDVYnPD0+KZhdD+bBuZMdZ5SKCochAtOlJU2iPqw
-         iXe3E4eFeR+fmE7HHMHw0CTk+Ud1yrz2KpP+QQLJGpCkhz3ql2n7Ajq+BcZkpfWxuLdA
-         klEfqXrOQZImWDKhI+nqK9s5F6xrAqSGaBvts2towUvb2ihjeLwT4wutoHEN5Ysfc1PA
-         QWIA==
+        d=gmail.com; s=20230601; t=1746030541; x=1746635341; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=eJ0SDugrkPYnmzdNv4il7LJQGzJ57K0XWHq85uyqLfs=;
+        b=FaLcnkSuH1xb/ZoMLCKrZ0JT+xEzzO2zG1MACqpRFSEglbm1fcIWoHgYZmHNmW0PVx
+         1jaGNghgZ2kC2zyZVAy3FYb9jcM/u5Su+ApPXlwd6C9pKKAUv+JFuKpqnM23Jw1BYqyn
+         /4tb3uZAmwqIAFaAxqbPf1/0+288OgqLWjdyQykoDYXaevlN/rXC/U/4ymXJY27dm/+e
+         nBOoOpWB6idzeEJCDcoVPsXxrdNoz++6pwrKrdBYTIuaawDVB48ektM2sIeHl/xgWSgA
+         iCCAnVBQR2gaMd715cS7K+PYMh9kXcXnGzulrq9CgXZSPNKC4ZcI2hk4rZrSTBKD3/Cv
+         LFFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746030555; x=1746635355;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vJZLV0Sll2PYEUOZWtyGELHHAeYU3ZMvyo1o32OOZOo=;
-        b=XkQx8YzvarY5bLd/8czMPJ3JysJFezUPSBpYHbBUNgdJ1u9dEE1+qwZCgeSmjronfU
-         kjiul/VccP1DbaKCLFJSJ9TMNoXy5X+fbMWtsokm9fAfcrEQfSGcOIGsJ5VSWM0gf1sV
-         zMqw+holU26qcNKEDw8u3it2YI4rq3uNbXovrpM8jqcLzUJ7gy/XCVDbp0f67SDnZdw6
-         PLAuzVZ/VQJRJbWI1OffJh+LJlqXjli/meJ0FqLdPltF60+EXEi+ikdGqygiU9fMqkZI
-         THWT8hYDKUCJ4/+GWX3kIfQ1+iyUMQHazpZPzlSM0R8r9q7Uz2bYkHGHbC0n1q3zKTXK
-         ZxFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWGImrX+QFNCjBsoVbnVLVdNpJCcu01/urARlxVRDULEI+Ksy7Iev0gxXFLDqkWJ8qqyyE=@vger.kernel.org, AJvYcCWYqoRCaUoa+5PfGRhec6T6ijfZPlc4Lm0DhgVO/Yj3OQUXsgFlqPEPa+8EIn+tzrv3sBj+zaFv@vger.kernel.org
-X-Gm-Message-State: AOJu0YzWHzRy55Fjj0/j1/RsjFqGAG5tHCBytKZ1v1x2SrFW/1RSDBLS
-	ruy8p2PacyjA4GaSBfbmEs5d5XvEVD9MR5HmQ7Tym0piNxP+E4sFmh+Z98mNQktfCQZrvYBvFwr
-	jSNp+Qi/gv/oZqE1HS8kN5JoeBLM=
-X-Gm-Gg: ASbGncvPfZxvaR3HDeDWXHFwylvyNjL0L1nzGs9k/xn5KD2PCkxTJ612EXKEvxtXYET
-	rpmetiVeXr0+P6DERpN0UYi3aUhm98zCKBjD/0rg7T6UmaTTHmAXUEHKFBE1XxIKQAZBIC1KyzF
-	QVacFXRvILgFfhySovsKu4ZmlmuNOpDfTLzs090g==
-X-Google-Smtp-Source: AGHT+IHtfElgtG61hW/u6Xd1EZLtQ0iSGf0kTetWxLhfpufDWQSp+FSq5OoY16Z1ctreST2E4KRVyKDCaF5WzTUHDaM=
-X-Received: by 2002:a05:600c:4ecc:b0:43d:fa58:8378 with SMTP id
- 5b1f17b1804b1-441b2696cd2mr24821685e9.33.1746030555265; Wed, 30 Apr 2025
- 09:29:15 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1746030541; x=1746635341;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eJ0SDugrkPYnmzdNv4il7LJQGzJ57K0XWHq85uyqLfs=;
+        b=grGJrcdjdzTLV145+gy97yOuyMrkCicps/E5uWhokuCnNKMVF0/GXOAowL9Rd44kgr
+         Jh0hqOkOpS8zjsGlOBqutMgxQ6pEipPIfj+fqYJ2sJBP33vFcvx/NboRxXE+gDQm3vOa
+         0FylLXLhd3gsG8dH4Uu/Wly4tXp3GdiMzwS6pPpwOW83T50KD7O1Qj7b5gOuU1k8i5Sf
+         arog5C0Ud6jYXNbr46hIrse8zfPVd+E3XpPPPdvh8D++8L/wHByURIGIlc3tbYoaJQpd
+         fHcBE7aTL0MtG+OHrrK3vDiDPnj8y79OZNH3haamqB0c9P2bbiuIng41g/6PV44cXkip
+         jcBQ==
+X-Gm-Message-State: AOJu0YxMP2Y4X+sRHOWnDNDDqz0wbEpXm5zOZLu7cjvRIKGwz0zKkGx5
+	Ff1ZeBKDyqSpz/LGJFECBaxaMk14vZZb3HqlY3lBfyt7g4LHMQjuqBgWyg==
+X-Gm-Gg: ASbGnctVfbB+LM4BZ611iwahzYsxhoVNSqrwiHH7sc9xe4v5EVpcSpFgkVQsfUE2lHG
+	l4gY+putXC/suLp8+e47fB19NSys7W9rhgJxqw8t+PSueb7tyv7MEYQwjVQW5HeQCLoF+K/GNlz
+	TfFzhFB+qwwtLGHDS3LhCNBVlqAm0/IYWFFqStRhRSpcf0EX9/yQhU7nKXIXl7Cnq7IDTg7wVom
+	7RTryf48QFaWHevAbzZyxbVJTamWAi4LQUiRVLgNcDU9DPuTaE57R08+tB5q3mKVjh5e0YepT/C
+	K6J9PU8Y6Qg+vk1pklRObEpoWrJSF1efLvoVY9B1nfZFFUnTmAU=
+X-Google-Smtp-Source: AGHT+IF9m825J7//6TPNUna/HRSCeCiAi6+AO/YL1+i7Q7NyI1KcIjefYon6aEWDK5Ol0r2kE28VaQ==
+X-Received: by 2002:a17:907:1b09:b0:aca:f87d:126b with SMTP id a640c23a62f3a-acee241e3c9mr346149266b.35.1746030540642;
+        Wed, 30 Apr 2025 09:29:00 -0700 (PDT)
+Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ace6edb1ac8sm933484166b.182.2025.04.30.09.29.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Apr 2025 09:29:00 -0700 (PDT)
+Date: Wed, 30 Apr 2025 16:33:46 +0000
+From: Anton Protopopov <a.s.protopopov@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org
+Subject: Re: [PATCH v2 bpf-next] bpf: fix uninitialized values in
+ BPF_{CORE,PROBE}_READ
+Message-ID: <aBJQ6lsZfg8xlM5e@mail.gmail.com>
+References: <20250429142241.1943022-1-a.s.protopopov@gmail.com>
+ <CAEf4BzYeKLgqn+yq3Mt+Vv-9t6qmzQqimb31zD=y-Cw474LU5w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250422-afabre-traits-010-rfc2-v2-0-92bcc6b146c9@arthurfabre.com>
- <20250422-afabre-traits-010-rfc2-v2-1-92bcc6b146c9@arthurfabre.com>
- <CAADnVQJeCC5j4_ss2+G2zjMbAcn=G3JLeAJCBZRC8uzfsVAjMA@mail.gmail.com>
- <D9FYTORERFI7.36F4WG8G3NHGX@arthurfabre.com> <CAADnVQKe3Jfd+pVt868P32-m2a-moP4H7ms_kdZnrYALCxx53Q@mail.gmail.com>
- <87frhqnh0e.fsf@toke.dk>
-In-Reply-To: <87frhqnh0e.fsf@toke.dk>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 30 Apr 2025 09:29:04 -0700
-X-Gm-Features: ATxdqUErKzZImGgqgFULhi6t18jxh2W3jtQ4NzOOT9a4hopKuAG6uSJBEggZxVs
-Message-ID: <CAADnVQ+V3Tp1zgFb6yfZQgC8m9WhdQOZmmrAFetDb5sZNxXLQQ@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next v2 01/17] trait: limited KV store for packet metadata
-To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc: Arthur Fabre <arthur@arthurfabre.com>, Network Development <netdev@vger.kernel.org>, 
-	bpf <bpf@vger.kernel.org>, Jakub Sitnicki <jakub@cloudflare.com>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, Yan Zhai <yan@cloudflare.com>, jbrandeburg@cloudflare.com, 
-	lbiancon@redhat.com, Alexei Starovoitov <ast@kernel.org>, Jakub Kicinski <kuba@kernel.org>, 
-	Eric Dumazet <edumazet@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzYeKLgqn+yq3Mt+Vv-9t6qmzQqimb31zD=y-Cw474LU5w@mail.gmail.com>
 
-On Wed, Apr 30, 2025 at 2:19=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgensen <t=
-oke@redhat.com> wrote:
->
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
->
-> > On Fri, Apr 25, 2025 at 12:27=E2=80=AFPM Arthur Fabre <arthur@arthurfab=
-re.com> wrote:
-> >>
-> >> On Thu Apr 24, 2025 at 6:22 PM CEST, Alexei Starovoitov wrote:
-> >> > On Tue, Apr 22, 2025 at 6:23=E2=80=AFAM Arthur Fabre <arthur@arthurf=
-abre.com> wrote:
-> >> > >
-> >> > > +/**
-> >> > > + * trait_set() - Set a trait key.
-> >> > > + * @traits: Start of trait store area.
-> >> > > + * @hard_end: Hard limit the trait store can currently grow up ag=
-ainst.
-> >> > > + * @key: The key to set.
-> >> > > + * @val: The value to set.
-> >> > > + * @len: The length of the value.
-> >> > > + * @flags: Unused for now. Should be 0.
-> >> > > + *
-> >> > > + * Return:
-> >> > > + * * %0       - Success.
-> >> > > + * * %-EINVAL - Key or length invalid.
-> >> > > + * * %-EBUSY  - Key previously set with different length.
-> >> > > + * * %-ENOSPC - Not enough room left to store value.
-> >> > > + */
-> >> > > +static __always_inline
-> >> > > +int trait_set(void *traits, void *hard_end, u64 key, const void *=
-val, u64 len, u64 flags)
-> >> > > +{
-> >> > > +       if (!__trait_valid_key(key) || !__trait_valid_len(len))
-> >> > > +               return -EINVAL;
-> >> > > +
-> >> > > +       struct __trait_hdr *h =3D (struct __trait_hdr *)traits;
-> >> > > +
-> >> > > +       /* Offset of value of this key. */
-> >> > > +       int off =3D __trait_offset(*h, key);
-> >> > > +
-> >> > > +       if ((h->high & (1ull << key)) || (h->low & (1ull << key)))=
- {
-> >> > > +               /* Key is already set, but with a different length=
- */
-> >> > > +               if (__trait_total_length(__trait_and(*h, (1ull << =
-key))) !=3D len)
-> >> > > +                       return -EBUSY;
-> >> > > +       } else {
-> >> > > +               /* Figure out if we have enough room left: total l=
-ength of everything now. */
-> >> > > +               if (traits + sizeof(struct __trait_hdr) + __trait_=
-total_length(*h) + len > hard_end)
-> >> > > +                       return -ENOSPC;
-> >> >
-> >> > I'm still not excited about having two metadata-s
-> >> > in front of the packet.
-> >> > Why cannot traits use the same metadata space ?
-> >> >
-> >> > For trait_set() you already pass hard_end and have to check it
-> >> > at run-time.
-> >> > If you add the same hard_end to trait_get/del the kfuncs will deal
-> >> > with possible corruption of metadata by the program.
-> >> > Transition from xdp to skb will be automatic. The code won't care th=
-at traits
-> >> > are there. It will just copy all metadata from xdp to skb. Corrupted=
- or not.
-> >> > bpf progs in xdp and skb might even use the same kfuncs
-> >> > (or two different sets if the verifier is not smart enough right now=
-).
-> >>
-> >> Good idea, that would solve the corruption problem.
-> >>
-> >> But I think storing metadata at the "end" of the headroom (ie where
-> >> XDP metadata is today) makes it harder to persist in the SKB layer.
-> >> Functions like __skb_push() assume that skb_headroom() bytes are
-> >> available just before skb->data.
-> >>
-> >> They can be updated to move XDP metadata out of the way, but this
-> >> assumption seems pretty pervasive.
+On 25/04/30 09:00AM, Andrii Nakryiko wrote:
+> On Tue, Apr 29, 2025 at 7:19 AM Anton Protopopov
+> <a.s.protopopov@gmail.com> wrote:
 > >
-> > The same argument can be flipped.
-> > Why does the skb layer need to push?
-> > If it needs to encapsulate it will forward to tunnel device
-> > to go on the wire. At this point any kind of metadata is going
-> > to be lost on the wire. bpf prog would need to convert
-> > metadata into actual on the wire format or stash it
-> > or send to user space.
-> > I don't see a use case where skb layer would move medadata by N
-> > bytes, populate these N bytes with "???" and pass to next skb layer.
-> > skb layers strip (pop) the header when it goes from ip to tcp to user s=
-pace.
-> > No need to move metadata.
+> > With the latest LLVM bpf selftests build will fail with
+> > the following error message:
 > >
-> >> By using the "front" of the headroom, we can hide that from the rest o=
-f
-> >> the SKB code. We could even update skb->head to completely hide the
-> >> space used at the front of the headroom.
-> >> It also avoids the cost of moving the metadata around (but maybe that
-> >> would be insignificant).
+> >     progs/profiler.inc.h:710:31: error: default initialization of an object of type 'typeof ((parent_task)->real_cred->uid.val)' (aka 'const unsigned int') leaves the object uninitialized and is incompatible with C++ [-Werror,-Wdefault-const-init-unsafe]
+> 
+> this is BPF-side code, what does C++ have to do with this, I'm confused...
+
+This I am not sure about why exactly, but clang (wihout ++) emits this warning
+now (try smth like `clang -c -x c - <<<'void foo(void) {const int x;}'`).
+When sending patch, I though that CORE* macros also can be used by ++ progs.
+For C, maybe, this is a problem with clang that it enables -Wdefault-const-init-unsafe?
+
+> 
+> Also, why using __u8[] is suddenly ok, and using the actual type
+> isn't? Eventually it all is initialized by bpf_probe_read_kernel(), so
+> compiler is wrong or I am misunderstanding something... Can you please
+> help me understand this?
+
+So, when a const sneaks in, one have BPF_CORE_READ expanded into
+say smth like this:
+
+    ({
+    typeof(((parent_task)->real_cred->uid.val)) __r;
+    BPF_CORE_READ_INTO(&__r, (src), a, ##__VA_ARGS__);
+    __r;
+    })
+
+It happens that real_cred is a pointer to const, so __r becomes const,
+and thus the warning (if enabled) is legit.
+
+With __u8 this turns into (let T = typeof(((parent_task)->real_cred->uid.val)))
+
+    ({
+    __u8 __r[sizeof(T)];
+    BPF_CORE_READ_INTO(&__r, (src), a, ##__VA_ARGS__);
+    * (T *) __r;
+    })
+
+So here we do not care if T is const or not, as __r is not in any case.
+
+
+> 
+> >       710 |         proc_exec_data->parent_uid = BPF_CORE_READ(parent_task, real_cred, uid.val);
+> >           |                                      ^
+> >     tools/testing/selftests/bpf/tools/include/bpf/bpf_core_read.h:520:35: note: expanded from macro 'BPF_CORE_READ'
+> >       520 |         ___type((src), a, ##__VA_ARGS__) __r;                               \
+> >           |                                          ^
 > >
-> > That's a theory. Do you actually have skb layers pushing things
-> > while metadata is there?
->
-> Erm, any encapsulation? UDP tunnels, wireguard, WiFi, etc. There are
-> almost 1000 calls to skb_push() all over the kernel. One of the primary
-> use cases for traits is to tag a packet with an ID to follow it
-> throughout its lifetime inside the kernel. This absolutely includes
-> encapsulation; in fact, having the tracing ID survive these kinds of
-> transformations is one of the primary motivators for this work.
-
-and the assumption here is that placing traits in the front will
-be enough for all possible encaps that the stack can do?
-Hopefully not. Moving traits due to skb_push() is mandatory anyway.
-
-The other point you're arguing is that the current metadata approach
-is broken, since it doesn't work for encap?
-pskb_expand_head() does skb_metadata_clear().
-Though I don't remember anyone complaining of that behavior,
-let's assume it's a problem indeed.
-With traits in front the pskb_expand_head() should either fail or move
-traits when it runs out of room.
-Let's be consistent and do the same for regular metadata.
-
-My main point is we should not introduce a second kind of metadata.
-If the current metadata doesn't quite work, fix it instead of adding
-a new one.
+> > Fix this by declaring __r to be an array of __u8 of a proper size.
+> >
+> > Fixes: 792001f4f7aa ("libbpf: Add user-space variants of BPF_CORE_READ() family of macros")
+> > Fixes: a4b09a9ef945 ("libbpf: Add non-CO-RE variants of BPF_CORE_READ() macro family")
+> > Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
+> > ---
+> >  tools/lib/bpf/bpf_core_read.h | 16 ++++++++--------
+> >  1 file changed, 8 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/tools/lib/bpf/bpf_core_read.h b/tools/lib/bpf/bpf_core_read.h
+> > index c0e13cdf9660..b7395b75658c 100644
+> > --- a/tools/lib/bpf/bpf_core_read.h
+> > +++ b/tools/lib/bpf/bpf_core_read.h
+> > @@ -517,9 +517,9 @@ extern void *bpf_rdonly_cast(const void *obj, __u32 btf_id) __ksym __weak;
+> >   * than enough for any practical purpose.
+> >   */
+> >  #define BPF_CORE_READ(src, a, ...) ({                                      \
+> > -       ___type((src), a, ##__VA_ARGS__) __r;                               \
+> > +       __u8 __r[sizeof(___type((src), a, ##__VA_ARGS__))];                 \
+> >         BPF_CORE_READ_INTO(&__r, (src), a, ##__VA_ARGS__);                  \
+> > -       __r;                                                                \
+> > +       *(___type((src), a, ##__VA_ARGS__) *)__r;                           \
+> >  })
+> >
+> >  /*
+> > @@ -533,16 +533,16 @@ extern void *bpf_rdonly_cast(const void *obj, __u32 btf_id) __ksym __weak;
+> >   * input argument.
+> >   */
+> >  #define BPF_CORE_READ_USER(src, a, ...) ({                                 \
+> > -       ___type((src), a, ##__VA_ARGS__) __r;                               \
+> > +       __u8 __r[sizeof(___type((src), a, ##__VA_ARGS__))];                 \
+> >         BPF_CORE_READ_USER_INTO(&__r, (src), a, ##__VA_ARGS__);             \
+> > -       __r;                                                                \
+> > +       *(___type((src), a, ##__VA_ARGS__) *)__r;                           \
+> >  })
+> >
+> >  /* Non-CO-RE variant of BPF_CORE_READ() */
+> >  #define BPF_PROBE_READ(src, a, ...) ({                                     \
+> > -       ___type((src), a, ##__VA_ARGS__) __r;                               \
+> > +       __u8 __r[sizeof(___type((src), a, ##__VA_ARGS__))];                 \
+> >         BPF_PROBE_READ_INTO(&__r, (src), a, ##__VA_ARGS__);                 \
+> > -       __r;                                                                \
+> > +       *(___type((src), a, ##__VA_ARGS__) *)__r;                           \
+> >  })
+> >
+> >  /*
+> > @@ -552,9 +552,9 @@ extern void *bpf_rdonly_cast(const void *obj, __u32 btf_id) __ksym __weak;
+> >   * not restricted to kernel types only.
+> >   */
+> >  #define BPF_PROBE_READ_USER(src, a, ...) ({                                \
+> > -       ___type((src), a, ##__VA_ARGS__) __r;                               \
+> > +       __u8 __r[sizeof(___type((src), a, ##__VA_ARGS__))];                 \
+> >         BPF_PROBE_READ_USER_INTO(&__r, (src), a, ##__VA_ARGS__);            \
+> > -       __r;                                                                \
+> > +       *(___type((src), a, ##__VA_ARGS__) *)__r;                           \
+> >  })
+> >
+> >  #endif
+> > --
+> > 2.34.1
+> >
+> >
 
