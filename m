@@ -1,191 +1,145 @@
-Return-Path: <bpf+bounces-57011-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57012-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AE9CAA3FB2
-	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 02:44:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 172E9AA3FCA
+	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 02:49:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88BC83B43D1
-	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 00:39:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A1EF81887128
+	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 00:50:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 214421B7F4;
-	Wed, 30 Apr 2025 00:29:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CA0E2DC772;
+	Wed, 30 Apr 2025 00:49:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="B+HUEtDP"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fIkLe+gg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
+Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0737E2DC767
-	for <bpf@vger.kernel.org>; Wed, 30 Apr 2025 00:29:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A0B5B640
+	for <bpf@vger.kernel.org>; Wed, 30 Apr 2025 00:49:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745972954; cv=none; b=UuhBY1RpwI7LgUaQYn258tDB8xusdCZhOLDfOlrKMMOMcftVYT97kYBbkMnBv5gk1quxX9ojCiCC6AZM/ivx0un2ulit9G2b5CXy/rX59bsNE91SB0yy9LO0/c4gjY0AL9W0b3rLSNHwbI39Sq0EZ4EbN3Gv+E+mTq1Pgg+tR04=
+	t=1745974192; cv=none; b=f87Q/muXMNYGaUWbU7xVyvOmyyrKoqUaXmKe6yzzcWLeFaUYloVdK9/XtbPZiAzukDC/by0gwNtPIUG/DGF2mJmE7voONjPr+EbhvIHkzoEp2Omsgs5A1+F1NzXBWT6wd/Coq00UWcN7pW2xJqCWc4CmtKCAyC0mXH7BA7Nr3UE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745972954; c=relaxed/simple;
-	bh=rckdEsw4LI+2Q4VYEsNzqiOS7xxyq/0EBJvPBWu9bjo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sRoFp0v2QWTdfGpmbGDxrcoAbYN6A+iXA0Z0k5KLUW4GLmrUwKfyRP5+4KDQmpzgmNlGKC/3QjvRMiyAe/NCgxaTB44nTSZ0vy/saq8Zwwj3i78FkPl4oRAO94AWLMjXRW09XFOqpqvyJxpmOg9GwSSk7SibtldD158cVxVDcHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=B+HUEtDP; arc=none smtp.client-ip=209.85.160.181
+	s=arc-20240116; t=1745974192; c=relaxed/simple;
+	bh=yEUjYaeDDlAF5tuKvlWCruGq7x1qt3DIEsIyspyx7mY=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=SOWcVdUFzAuQCOSzeH93TwoY7wNrg71kcYLu2zv8IR/I3q0vvRXphvygjNtaDh9prN3jnFuYxCg7A2TDEVBKaHPOKW/AfBFHTkDkoapCI3fnp0bYgE9iQtE1cq3xz0Oz2dlO/ozmhEYqJ9Jkbtr9YVZAx9SwcJFCtF+IQKg6cs8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yepeilin.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fIkLe+gg; arc=none smtp.client-ip=209.85.214.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-47666573242so500001cf.0
-        for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 17:29:12 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yepeilin.bounces.google.com
+Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-227e2faab6dso54052885ad.1
+        for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 17:49:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1745972952; x=1746577752; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SET8sA9iAqxjHw6Ms59eY6Brr42Gs60ohd9HvBlI7Ok=;
-        b=B+HUEtDPnbQRVIZj2INCuc0Qeqf0iXm5Zn1bBgA1QDnMi4YJ+oELctz9VPs9HHM5dL
-         HtNo343gEFXv3Tlikn+CPejXj5Ia/4C8OQpxoiP2kuL1qJNttSFNXbvHlDnI0wlwPVJV
-         aL3JVvr9ewpnseJdudlCHvHm7Ws5WbVES000+6GVed7i7dmGDYKRCffL5U4aGjrpfrT8
-         0aPRhlKlFKS4IwcxjG5B4TZco4VJHFGbpFamYDlX8OPpaDZzsDcFocdh2sstzZgxkPoR
-         tSDCRrPhw3fe0Z21J6sFte7ZveqerUo1X8eUjbXcjv59cIPOBc/snPtXvODu+XjmODil
-         tv6A==
+        d=google.com; s=20230601; t=1745974191; x=1746578991; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=uVJn6R8AyLKP9RLCMrKJhUthQHLHAwUZd1bqoncqyPg=;
+        b=fIkLe+ggcIi+6TuyMiCt4ZNBYtMEGbqblGiQehLp+Y5NQIvUgKMlC9ZjjvCWzNn9oW
+         /fRutw8sRU2lr4ags0OtPTGyUd1uzWwE2NZVfisYub+3lhQM1RYtDOkqNMzTrobnmzJy
+         mfDPltJ6PebC8aUsGzzncAMBNkFrjWqVsZTNM/YZXopxo4t/bwGBT2K6UiPGf3UDmEyP
+         SfHzTymawBwl7i76tbzH55crCCPMWFQTBVwx5ikNWp5Va3odRenGMjxKH+vIBS+gAmLn
+         EKV7RZ19kUsiuHrIsz+meGSjd3nvvrRSs6nFAgrnkdiNbiqtcHeXaLkZe8obBN4/iZ9w
+         adzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745972952; x=1746577752;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SET8sA9iAqxjHw6Ms59eY6Brr42Gs60ohd9HvBlI7Ok=;
-        b=nKw8JqSDWWbhqn78mjpqbIdD+2uKpJKYiPNZazsjLw4V+zG637MSVj4B5e4SEQALwZ
-         PIp1SkSN9hhaJNxnarD1ovHMW5byVTqPVYzLecauNZf7g66TrO2aNFYpUV/64DTzikpr
-         1xGvBi8tT5JtVaLD5Od2xHRnDAL0MLaIbFtM3zu6iLsvbOXIlAmx6X1ud8yiGGYgXQnH
-         7rpIKRnFEj+tmg7qni1xzLSoo9kGQ4Z2d1s4awXiY1gwdWB/BXDFlbcMcwUdXxeP9SMR
-         2nY0nGOcHeeNAfQyYf47cLQOLsO353nEzGqQ4VeL5ebt3N5m0yMxwMCVKzamGLlGwgVA
-         OO0w==
-X-Forwarded-Encrypted: i=1; AJvYcCX9tTWVs/hoFJzJu1BYgSToFnrgKiPOSXav08GNKk9tu+Mrrsu8pq+bHLKyZtMdDzLMHv8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxP3Wgx9XakqtLPVoVt3BcAHl94TBcqO3SXPmoMXPkyG8PUowGW
-	Lx4R6uYeQPUmrDu4FWZViTWB8fsYha9pbUclD4ygyfdIJCW6y/O9ZZWFWLL/BQO7Jus8ey7T+b5
-	cbDN9Ua2d62yXOkTtRhgimcWPiqUcmhYvXDjr
-X-Gm-Gg: ASbGnctGKLA043IznFprjYbi6un9WvK8pGCqeoVdYIw4jl6QLOM1QScA8VBfDTobicB
-	sP+EyOb5fzGlnELGqa7v6FNjFXmZ5If9LNmdSLGQsSd/m/talS1QMPvxCMr211/2w8OUdsY1JJd
-	S82l2mPBXWF4jb0lB76QI6TH2dWGxpPZe6uGctCaE84XuNZM3qinYAYE5RZ7E4XRA=
-X-Google-Smtp-Source: AGHT+IGYYwIA/2/5KM/ug1jcPdIS8qPi3fGg3w/31Max0dqI27BtipvLcMKHWDfaI1D8DwJd48fBi1Tpym4pkltqpto=
-X-Received: by 2002:ac8:7e83:0:b0:486:9b6e:dd46 with SMTP id
- d75a77b69052e-489b993a5b3mr2073341cf.10.1745972951520; Tue, 29 Apr 2025
- 17:29:11 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1745974191; x=1746578991;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uVJn6R8AyLKP9RLCMrKJhUthQHLHAwUZd1bqoncqyPg=;
+        b=wz7TConARObcHx9fSZ3srx2X+AuVA3ZnLxjqm23lcjC1idB/wdQSE43w16b+m7B4+D
+         OocrQCByC1o1qLAgsFM0wucr8IDMnHM8TCnj8PDa9NuMk35o8M32DiRsViCCtFrk5V2l
+         dAAqytEVLO5fpcpcr2L6QiIUWudrbPXkuSEX8OSZ/22iB3ysPhz+bbeHBKoSuXFZ8Uhm
+         BH8xB4ltWT5TTfrI5UIzPT2ZnF2vXNpR0B16enBO6mg4JECuhRViIpT14Zsqb+lNT1wF
+         QI/345Pa04ICDTVHEi4pwMOs72rgSDpSrpr5fonMeqXJlxcjH34Qres6CPwirlb86rt6
+         1+Kg==
+X-Gm-Message-State: AOJu0YwuFI+cHwlYI95WQZJxkywqKv0YOcbiHMTh2/9O+0Z1lxHGEsqZ
+	q9wlb4rZIcNPamBOvn5ccA0D5p9GPeFibO9/93ZS/pji87Fb6JSyGlgq4YofT18xvrD43Sudtea
+	6kIyTwceH+F0nbo1pbiYQSZuMjH8uPNT0P0qWbPceceMgMozbH8T9RoisNB84QMUVpChuuDlc+x
+	naPQy6eT9n6tNfhUvK5pH05/nm4hUMJjfyV5kuR98=
+X-Google-Smtp-Source: AGHT+IF9zsphPMP1HajZC8Eo2sh2+VzDRKm+YZlHx2A2vQLcAL4BFROSnhFTkQQBucvMfF5NEp7t7fHg/OmYfg==
+X-Received: from pgbcr13.prod.google.com ([2002:a05:6a02:410d:b0:af2:4edb:7793])
+ (user=yepeilin job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a17:903:2ec8:b0:223:60ce:2451 with SMTP id d9443c01a7336-22df57a5cabmr8537185ad.15.1745974190699;
+ Tue, 29 Apr 2025 17:49:50 -0700 (PDT)
+Date: Wed, 30 Apr 2025 00:48:53 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250428033617.3797686-1-roman.gushchin@linux.dev> <20250428033617.3797686-10-roman.gushchin@linux.dev>
-In-Reply-To: <20250428033617.3797686-10-roman.gushchin@linux.dev>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Tue, 29 Apr 2025 17:28:59 -0700
-X-Gm-Features: ATxdqUHFz_05fXYir2rslhYlMwSd6Gi_vbBqhLqf6_eQZAIUdoejhM82LlPFoTU
-Message-ID: <CAJuCfpEdyZWac7diTUYV7JjkpAPDuy9hwT5sfE2AC2zDVPA9ZA@mail.gmail.com>
-Subject: Re: [PATCH rfc 09/12] sched: psi: bpf hook to handle psi events
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, David Rientjes <rientjes@google.com>, 
-	Josh Don <joshdon@google.com>, Chuyi Zhou <zhouchuyi@bytedance.com>, cgroups@vger.kernel.org, 
-	linux-mm@kvack.org, bpf@vger.kernel.org
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.49.0.901.g37484f566f-goog
+Message-ID: <cover.1745970908.git.yepeilin@google.com>
+Subject: [PATCH bpf-next 0/8] bpf, riscv64: Support load-acquire and
+ store-release instructions
+From: Peilin Ye <yepeilin@google.com>
+To: bpf@vger.kernel.org
+Cc: Peilin Ye <yepeilin@google.com>, linux-riscv@lists.infradead.org, 
+	Andrea Parri <parri.andrea@gmail.com>, 
+	"=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?=" <bjorn@kernel.org>, Pu Lehui <pulehui@huawei.com>, 
+	Puranjay Mohan <puranjay@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, Mykola Lysenko <mykolal@fb.com>, 
+	Shuah Khan <shuah@kernel.org>, Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>, 
+	Neel Natu <neelnatu@google.com>, Benjamin Segall <bsegall@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Apr 27, 2025 at 8:37=E2=80=AFPM Roman Gushchin <roman.gushchin@linu=
-x.dev> wrote:
->
-> Introduce a bpf hook to handle psi events. The primary intended
-> purpose of this hook is to declare OOM events based on the reaching
-> a certain memory pressure level, similar to what systemd-oomd and oomd
-> are doing in userspace.
+Hi all!
 
-It's a bit awkward that this requires additional userspace action to
-create PSI triggers. I have almost no experience with BPF, so this
-might be a stupid question, but maybe we could provide a bpf kfunc for
-the BPF handler to register its PSI trigger(s) upon handler
-registration?
+Patchset [1] introduced BPF load-acquire (BPF_LOAD_ACQ) and
+store-release (BPF_STORE_REL) instructions, and added x86-64 and arm64
+JIT compiler support.  As a follow-up, this patchset supports
+load-acquire and store-release instructions for the riscv64 JIT
+compiler, and introduces some related selftests/ changes.
 
+Specifically:
 
->
-> Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
-> ---
->  kernel/sched/psi.c | 36 +++++++++++++++++++++++++++++++++++-
->  1 file changed, 35 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-> index 1396674fa722..4c4eb4ead8f6 100644
-> --- a/kernel/sched/psi.c
-> +++ b/kernel/sched/psi.c
-> @@ -176,6 +176,32 @@ static void psi_avgs_work(struct work_struct *work);
->
->  static void poll_timer_fn(struct timer_list *t);
->
-> +#ifdef CONFIG_BPF_SYSCALL
-> +__bpf_hook_start();
-> +
-> +__weak noinline int bpf_handle_psi_event(struct psi_trigger *t)
-> +{
-> +       return 0;
-> +}
-> +
-> +__bpf_hook_end();
-> +
-> +BTF_KFUNCS_START(bpf_psi_hooks)
-> +BTF_ID_FLAGS(func, bpf_handle_psi_event, KF_SLEEPABLE)
-> +BTF_KFUNCS_END(bpf_psi_hooks)
-> +
-> +static const struct btf_kfunc_id_set bpf_psi_hook_set =3D {
-> +       .owner =3D THIS_MODULE,
-> +       .set   =3D &bpf_psi_hooks,
-> +};
-> +
-> +#else
-> +static inline int bpf_handle_psi_event(struct psi_trigger *t)
-> +{
-> +       return 0;
-> +}
-> +#endif
-> +
->  static void group_init(struct psi_group *group)
->  {
->         int cpu;
-> @@ -489,6 +515,7 @@ static void update_triggers(struct psi_group *group, =
-u64 now,
->
->                 /* Generate an event */
->                 if (cmpxchg(&t->event, 0, 1) =3D=3D 0) {
-> +                       bpf_handle_psi_event(t);
->                         if (t->of)
->                                 kernfs_notify(t->of->kn);
->                         else
-> @@ -1655,6 +1682,8 @@ static const struct proc_ops psi_irq_proc_ops =3D {
->
->  static int __init psi_proc_init(void)
->  {
-> +       int err =3D 0;
-> +
->         if (psi_enable) {
->                 proc_mkdir("pressure", NULL);
->                 proc_create("pressure/io", 0666, NULL, &psi_io_proc_ops);
-> @@ -1662,9 +1691,14 @@ static int __init psi_proc_init(void)
->                 proc_create("pressure/cpu", 0666, NULL, &psi_cpu_proc_ops=
-);
->  #ifdef CONFIG_IRQ_TIME_ACCOUNTING
->                 proc_create("pressure/irq", 0666, NULL, &psi_irq_proc_ops=
-);
-> +#endif
-> +#ifdef CONFIG_BPF_SYSCALL
-> +               err =3D register_btf_fmodret_id_set(&bpf_psi_hook_set);
-> +               if (err)
-> +                       pr_err("error while registering bpf psi hooks: %d=
-", err);
->  #endif
->         }
-> -       return 0;
-> +       return err;
->  }
->  module_init(psi_proc_init);
->
-> --
-> 2.49.0.901.g37484f566f-goog
->
+ * PATCH 1 makes insn_def_regno() handle load-acquires properly for
+   bpf_jit_needs_zext() (true for riscv64) architectures
+ * PATCH 2, 3 from Andrea Parri add the actual support to the riscv64
+   JIT compiler
+ * PATCH 4 optimizes code emission by skipping redundant zext
+   instructions inserted by the verifier
+ * PATCH 5, 6 and 7 are minor selftest/ improvements
+ * PATCH 8 enables (non-arena) load-acquire/store-release selftests for
+   riscv64
+
+Please refer to individual patches for details.  Thanks!
+
+[1] https://lore.kernel.org/all/cover.1741049567.git.yepeilin@google.com/
+
+Andrea Parri (2):
+  bpf, riscv64: Introduce emit_load_*() and emit_store_*()
+  bpf, riscv64: Support load-acquire and store-release instructions
+
+Peilin Ye (6):
+  bpf/verifier: Handle BPF_LOAD_ACQ instructions in insn_def_regno()
+  bpf, riscv64: Skip redundant zext instruction after load-acquire
+  selftests/bpf: Use CAN_USE_LOAD_ACQ_STORE_REL when appropriate
+  selftests/bpf: Avoid passing out-of-range values to __retval()
+  selftests/bpf: Verify zero-extension behavior in load-acquire tests
+  selftests/bpf: Enable non-arena load-acquire/store-release selftests
+    for riscv64
+
+ arch/riscv/net/bpf_jit.h                      |  15 +
+ arch/riscv/net/bpf_jit_comp64.c               | 334 ++++++++++++------
+ arch/riscv/net/bpf_jit_core.c                 |   3 +-
+ kernel/bpf/verifier.c                         |  11 +-
+ tools/testing/selftests/bpf/progs/bpf_misc.h  |   5 +-
+ .../bpf/progs/verifier_load_acquire.c         |  48 ++-
+ .../selftests/bpf/progs/verifier_precision.c  |   5 +-
+ .../bpf/progs/verifier_store_release.c        |  39 +-
+ 8 files changed, 314 insertions(+), 146 deletions(-)
+
+-- 
+2.49.0.901.g37484f566f-goog
+
 
