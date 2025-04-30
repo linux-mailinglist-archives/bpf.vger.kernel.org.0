@@ -1,213 +1,280 @@
-Return-Path: <bpf+bounces-57036-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57037-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C61B7AA4919
-	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 12:47:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AD6BAA4A4C
+	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 13:42:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A26387A3E1F
-	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 10:46:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E44F9A2663
+	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 11:42:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3B50235348;
-	Wed, 30 Apr 2025 10:47:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECDC0248F7B;
+	Wed, 30 Apr 2025 11:42:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RekcL09B"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="l54wFE/F";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5BKmIgpf";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="l54wFE/F";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5BKmIgpf"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2E241B5EB5
-	for <bpf@vger.kernel.org>; Wed, 30 Apr 2025 10:47:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D30C523507A
+	for <bpf@vger.kernel.org>; Wed, 30 Apr 2025 11:42:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746010042; cv=none; b=WrgIdagYZFUxQPTAMrsrhfOKzKHRcVCMvpCxjaX2k7BVd8Ts3BoLO9laWd8xeTZI3ZMeBOOtdk60+x3cWNbubmyuaeSNbSI1JU1J1sDRIjSY/rmdTDRXoTv2fxcQFa/c2q0JB3CjRSlrMfAoiDY27mFfJXEIZaVD5ZP24il8d2U=
+	t=1746013371; cv=none; b=I+uEeAVRM4H47Z+LSWUaT+GvOI1Bx4ESed//KO4XLSng00PPFU3CCb051aCuxNdHZpw5Zo93VnFXd7rYYzGObtsMTrs6Su9oEojURbcDmEnxKxwZ5wAhxU2grZK0NTiJcWdfAmfvFyPJeytjjZ3MpD/IkNYbbAGsWVQiatuE57E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746010042; c=relaxed/simple;
-	bh=R6qQ62Z8xlTyopXwXahv9z9FtUyLDe0of54tPFyN/vw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jkc8J28OkH4mtrzpVHJXQL+D8fTPUnm8i2i5zCF3l97Sic5lDwtfu4u0XEEnPXOkYgkbhW7OzmVeihaRpXbO19y+9DS1koWfyg1o5YGtE+7siVEMf+WVbvMEW2rdxmnb7cGzU9zReqkUYCVpNpyTxGNUHrDyGVDaKJfqkYjVE08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RekcL09B; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1746010039;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1746013371; c=relaxed/simple;
+	bh=w1HsfbiZ81GXZWTYVUQqkmtNBU8SZdyaw75xVYEcFPg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iLJVlP3qAuBOc7oh37RINTeDF1T6fLYyMBPwzrowFA3A/71NUo4B6hF1rkUr8mO8N1mx8GjhJsHoupo3My8Gf2hunxboUECayb4q1UbSUbOrzu6+w4a4eQLxbJ5O4vZaVt+Vp/nVUnPksJiTEIFIY11tbyDsY+GMzOsvLcbwcko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=l54wFE/F; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=5BKmIgpf; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=l54wFE/F; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=5BKmIgpf; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id C17BD21200;
+	Wed, 30 Apr 2025 11:42:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1746013367; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cWnivOs9W4+XLyEImwujBJd1shwdicbALn9+s1Jc+yg=;
-	b=RekcL09BJB5ldj8D/V1cU+Dj6HOUBqi3Y17l3bT1StDz2SGw8e+CvW+0IJdCESvfNcOuBw
-	DQRzpZIy4CCRuyTtFNODdiSTVfYPJf6lbH3EmjiYHDfwwvgIzAmd7jtdonu2pSYaBGRtQD
-	BFxVpwZVlqFjDskXuvOclDgbNzuQV/I=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-362-YzQ4-YTYNxOTjIC-ZFKAlw-1; Wed, 30 Apr 2025 06:47:18 -0400
-X-MC-Unique: YzQ4-YTYNxOTjIC-ZFKAlw-1
-X-Mimecast-MFC-AGG-ID: YzQ4-YTYNxOTjIC-ZFKAlw_1746010037
-Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-2ff7cf599beso6558263a91.0
-        for <bpf@vger.kernel.org>; Wed, 30 Apr 2025 03:47:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746010037; x=1746614837;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cWnivOs9W4+XLyEImwujBJd1shwdicbALn9+s1Jc+yg=;
-        b=jLo5Lx4lxbHOIEBbG7WGbw/bOwrkJx2elksogPT+77eEn4KZVlWq6M4zq+V0mSXkR2
-         cPPj467NlHglk8ve2yGG4H+zV0qoH3MCcEBnj+Nd4ozSnfieUsYmdUHFX4f6sCGlCSQD
-         An6glRHUVMPYYzf08GCyMav4yGDXfFy/uuxb3XVDMmK5DKWX12QrXnLE34dr9KlXCVAm
-         RWPUXCZPl2VecqLcpeC7n0Ct9NeYU/24GPKNeGYirFjLiCIu1HJolnx8Jcrk5sqn/aKs
-         Y8T34EFxNg7J+x9YSP5Y6CE41c3IQtPMnzhp2VkCzsgmYwdehnsd4GLxV14w+fskm6c3
-         F04Q==
-X-Gm-Message-State: AOJu0YwQgliZ7hpaizVkDnVB3HklSpCYKP3M/9gLTehS6Z70wdw3sY1+
-	Vmf5lvXWmZVVG2pnMDeipqR2kN+n/jZ0U0BSEzblrHI2REWqaXUQpZM3wea6wFuW4IsHNv9e1bR
-	rfzw4SRcAlSYe0osg9os3AYqJcb9s1722IgDkNuzLN3I6zIpeLLXcekulbnN3XHF5FCbjS9RCJm
-	UUHJP9Vudd4IXTsAIyi4XXLHjh
-X-Gm-Gg: ASbGncuYIkRld7rhtFzZ1179c5c7YZ3GIFvodxZRPp5+tAtS+Ng+pAOfvT6FVt3oyGH
-	lMVh5f2xBxsR0SuiIf991b6u7F++D32DfSdRxC82YSA4YfmXuZi9B/VgGWD2TV1MAYG0O/A==
-X-Received: by 2002:a17:90b:1cc8:b0:30a:fe:140f with SMTP id 98e67ed59e1d1-30a3335f481mr3880096a91.28.1746010037366;
-        Wed, 30 Apr 2025 03:47:17 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH5jQrm0WkaSuZ2pViWj2b9YtpHy88CCKCiVNRceMWGHYFLhtTmS/1fHotBLW4tYXZnPDikg1DTTIqp4/y5PJk=
-X-Received: by 2002:a17:90b:1cc8:b0:30a:fe:140f with SMTP id
- 98e67ed59e1d1-30a3335f481mr3880048a91.28.1746010036979; Wed, 30 Apr 2025
- 03:47:16 -0700 (PDT)
+	bh=DMdUf+G8z9UwnFqiI+Ohf1SNPY5q3W5xNuNqMGtKlLI=;
+	b=l54wFE/Fyyayk3OovslwsQ4asa1Pi4AgvAffXiZwgZOzttH/oxC6jk5LjGchupx3kPFXu3
+	1Dv6JpgyR2B2/d3tYnXBDgrPzVao0HiIpRChPS1nNLDwz7u75B57Bq7GzxtbiXk3IvA2IN
+	4HcJjTvXQVTQ/ds84rUN4C3XKP9jh3I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1746013367;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DMdUf+G8z9UwnFqiI+Ohf1SNPY5q3W5xNuNqMGtKlLI=;
+	b=5BKmIgpfXflKaDnFG8V+ORenoH4P1/jhNQAt+HptR/T4clMTesTivFo7cDDi58rCuVgla/
+	DwZdggVsGeegzCDA==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="l54wFE/F";
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=5BKmIgpf
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1746013367; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DMdUf+G8z9UwnFqiI+Ohf1SNPY5q3W5xNuNqMGtKlLI=;
+	b=l54wFE/Fyyayk3OovslwsQ4asa1Pi4AgvAffXiZwgZOzttH/oxC6jk5LjGchupx3kPFXu3
+	1Dv6JpgyR2B2/d3tYnXBDgrPzVao0HiIpRChPS1nNLDwz7u75B57Bq7GzxtbiXk3IvA2IN
+	4HcJjTvXQVTQ/ds84rUN4C3XKP9jh3I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1746013367;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DMdUf+G8z9UwnFqiI+Ohf1SNPY5q3W5xNuNqMGtKlLI=;
+	b=5BKmIgpfXflKaDnFG8V+ORenoH4P1/jhNQAt+HptR/T4clMTesTivFo7cDDi58rCuVgla/
+	DwZdggVsGeegzCDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A858F139E7;
+	Wed, 30 Apr 2025 11:42:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id K3zJKLcMEmhsUAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Wed, 30 Apr 2025 11:42:47 +0000
+Message-ID: <a9977cb2-3dce-4be1-81a3-23e760082922@suse.cz>
+Date: Wed, 30 Apr 2025 13:42:47 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250429041214.13291-1-piliu@redhat.com> <20250429041214.13291-5-piliu@redhat.com>
- <CAADnVQKTSubuisSBap_J=tgO15fCdtwF-NDY_1HLP_m6o28mhw@mail.gmail.com>
-In-Reply-To: <CAADnVQKTSubuisSBap_J=tgO15fCdtwF-NDY_1HLP_m6o28mhw@mail.gmail.com>
-From: Pingfan Liu <piliu@redhat.com>
-Date: Wed, 30 Apr 2025 18:47:05 +0800
-X-Gm-Features: ATxdqUHf-cFpaHNGaQnpHjY7Ol3gt6Pz5b1rkhWQt0CgtYPAvEmCJ_bnsVUsKMQ
-Message-ID: <CAF+s44QM55AtGyquKvj0XAzZAjOii7VJYWsGD50iK3+r6GZSmg@mail.gmail.com>
-Subject: Re: [RFCv2 4/7] bpf/kexec: Introduce three bpf kfunc for kexec
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, kexec@lists.infradead.org, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, Jeremy Linton <jeremy.linton@arm.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Ard Biesheuvel <ardb@kernel.org>, Simon Horman <horms@kernel.org>, Gerd Hoffmann <kraxel@redhat.com>, 
-	Vitaly Kuznetsov <vkuznets@redhat.com>, Philipp Rudo <prudo@redhat.com>, Viktor Malik <vmalik@redhat.com>, 
-	Jan Hendrik Farr <kernel@jfarr.cc>, Baoquan He <bhe@redhat.com>, Dave Young <dyoung@redhat.com>, 
-	Eric Biederman <ebiederm@xmission.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] memcg: separate local_trylock for memcg and obj
+Content-Language: en-US
+To: Shakeel Butt <shakeel.butt@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Muchun Song <muchun.song@linux.dev>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>, linux-mm@kvack.org,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Meta kernel team <kernel-team@meta.com>, bpf <bpf@vger.kernel.org>
+References: <20250429230428.1935619-1-shakeel.butt@linux.dev>
+ <20250429230428.1935619-3-shakeel.butt@linux.dev>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20250429230428.1935619-3-shakeel.butt@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: C17BD21200
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.51
+X-Spam-Flag: NO
 
-On Wed, Apr 30, 2025 at 8:04=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Mon, Apr 28, 2025 at 9:13=E2=80=AFPM Pingfan Liu <piliu@redhat.com> wr=
-ote:
->  +__bpf_kfunc struct mem_range_result *bpf_kexec_decompress(char
-> *image_gz_payload, int image_gz_sz,
-> > +                       unsigned int expected_decompressed_sz)
-> > +{
-> > +       decompress_fn decompressor;
-> > +       //todo, use flush to cap the memory size used by decompression
-> > +       long (*flush)(void*, unsigned long) =3D NULL;
-> > +       struct mem_range_result *range;
-> > +       const char *name;
-> > +       void *output_buf;
-> > +       char *input_buf;
-> > +       int ret;
-> > +
-> > +       range =3D kmalloc(sizeof(struct mem_range_result), GFP_KERNEL);
-> > +       if (!range) {
-> > +               pr_err("fail to allocate mem_range_result\n");
-> > +               return NULL;
-> > +       }
-> > +       refcount_set(&range->usage, 1);
-> > +
-> > +       input_buf =3D vmalloc(image_gz_sz);
-> > +       if (!input_buf) {
-> > +               pr_err("fail to allocate input buffer\n");
-> > +               kfree(range);
-> > +               return NULL;
-> > +       }
-> > +
-> > +       ret =3D copy_from_kernel_nofault(input_buf, image_gz_payload, i=
-mage_gz_sz);
-> > +       if (ret < 0) {
-> > +               pr_err("Error when copying from 0x%px, size:0x%x\n",
-> > +                               image_gz_payload, image_gz_sz);
-> > +               kfree(range);
-> > +               vfree(input_buf);
-> > +               return NULL;
-> > +       }
-> > +
-> > +       output_buf =3D vmalloc(expected_decompressed_sz);
-> > +       if (!output_buf) {
-> > +               pr_err("fail to allocate output buffer\n");
-> > +               kfree(range);
-> > +               vfree(input_buf);
-> > +               return NULL;
-> > +       }
-> > +
-> > +       decompressor =3D decompress_method(input_buf, image_gz_sz, &nam=
-e);
-> > +       if (!decompressor) {
-> > +               pr_err("Can not find decompress method\n");
-> > +               kfree(range);
-> > +               vfree(input_buf);
-> > +               vfree(output_buf);
-> > +               return NULL;
-> > +       }
-> > +       //to do, use flush
-> > +       ret =3D decompressor(image_gz_payload, image_gz_sz, NULL, NULL,
-> > +                               output_buf, NULL, NULL);
-> > +
-> > +       /* Update the range map */
-> > +       if (ret =3D=3D 0) {
-> > +               range->buf =3D output_buf;
-> > +               range->size =3D expected_decompressed_sz;
-> > +               range->status =3D 0;
-> > +       } else {
-> > +               pr_err("Decompress error\n");
-> > +               vfree(output_buf);
-> > +               kfree(range);
-> > +               return NULL;
-> > +       }
-> > +       pr_info("%s, return range 0x%lx\n", __func__, range);
-> > +       return range;
-> > +}
->
-> These kfuncs look like generic decompress routines.
-> They're not related to kexec and probably should be in kernel/bpf/helpers=
-.c
-> or kernel/bpf/compression.c instead of kernel/kexec_pe_image.c.
->
+On 4/30/25 01:04, Shakeel Butt wrote:
+> The per-cpu stock_lock protects cached memcg and cached objcg and their
+> respective fields. However there is no dependency between these fields
+> and it is better to have fine grained separate locks for cached memcg
+> and cached objcg. This decoupling of locks allows us to make the memcg
+> charge cache and objcg charge cache to be nmi safe independently.
+> 
+> At the moment, memcg charge cache is already nmi safe and this
+> decoupling will allow to make memcg charge cache work without disabling
+> irqs.
+> 
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> ---
+>  mm/memcontrol.c | 52 +++++++++++++++++++++++++++----------------------
+>  1 file changed, 29 insertions(+), 23 deletions(-)
 
-Thanks for your suggestion. I originally considered using these kfuncs
-only in kexec context (Later, introducing a dedicated BPF_PROG_TYPE
-for kexec). They are placed under a lock so that a malice attack can
-not exhaust the memory through repeatedly calling to the decompress
-kfunc.
+> @@ -1883,19 +1885,22 @@ static void drain_local_stock(struct work_struct *dummy)
+>  	struct memcg_stock_pcp *stock;
+>  	unsigned long flags;
+>  
+> -	/*
+> -	 * The only protection from cpu hotplug (memcg_hotplug_cpu_dead) vs.
+> -	 * drain_stock races is that we always operate on local CPU stock
+> -	 * here with IRQ disabled
+> -	 */
+> -	local_lock_irqsave(&memcg_stock.stock_lock, flags);
+> +	if (WARN_ONCE(!in_task(), "drain in non-task context"))
+> +		return;
+>  
+> +	preempt_disable();
+>  	stock = this_cpu_ptr(&memcg_stock);
+> +
+> +	local_lock_irqsave(&memcg_stock.obj_lock, flags);
+>  	drain_obj_stock(stock);
+> +	local_unlock_irqrestore(&memcg_stock.obj_lock, flags);
+> +
+> +	local_lock_irqsave(&memcg_stock.memcg_lock, flags);
+>  	drain_stock_fully(stock);
+> -	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
+> +	local_unlock_irqrestore(&memcg_stock.memcg_lock, flags);
+>  
+> -	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+> +	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
+> +	preempt_enable();
 
-To generalize these kfunc, I think I can add some boundary control of
-the memory usage to prevent such attacks.
+This usage of preempt_disable() looks rather weird and makes RT unhappy as
+the local lock is a mutex, so it gives you this:
 
-> They also must be KF_SLEEPABLE.
-> Please test your patches with all kernel debugs enabled.
-> Otherwise you would have seen all these "sleeping while atomic"
-> issues yourself.
->
+BUG: sleeping function called from invalid context at
+kernel/locking/spinlock_rt.c:48
 
-See, I will have all these debug options for the V3 test.
+I know the next patch removes it again but for bisectability purposes it
+should be avoided. Instead of preempt_disable() we can extend the local lock
+scope here?
 
-Appreciate your insight.
-
-Regards,
-
-Pingfan
+>  }
+>  
+>  static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+> @@ -1918,10 +1923,10 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+>  	VM_WARN_ON_ONCE(mem_cgroup_is_root(memcg));
+>  
+>  	if (nr_pages > MEMCG_CHARGE_BATCH ||
+> -	    !local_trylock_irqsave(&memcg_stock.stock_lock, flags)) {
+> +	    !local_trylock_irqsave(&memcg_stock.memcg_lock, flags)) {
+>  		/*
+>  		 * In case of larger than batch refill or unlikely failure to
+> -		 * lock the percpu stock_lock, uncharge memcg directly.
+> +		 * lock the percpu memcg_lock, uncharge memcg directly.
+>  		 */
+>  		memcg_uncharge(memcg, nr_pages);
+>  		return;
+> @@ -1953,7 +1958,7 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+>  		WRITE_ONCE(stock->nr_pages[i], nr_pages);
+>  	}
+>  
+> -	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+> +	local_unlock_irqrestore(&memcg_stock.memcg_lock, flags);
+>  }
+>  
+>  static bool is_drain_needed(struct memcg_stock_pcp *stock,
+> @@ -2028,11 +2033,12 @@ static int memcg_hotplug_cpu_dead(unsigned int cpu)
+>  
+>  	stock = &per_cpu(memcg_stock, cpu);
+>  
+> -	/* drain_obj_stock requires stock_lock */
+> -	local_lock_irqsave(&memcg_stock.stock_lock, flags);
+> +	/* drain_obj_stock requires obj_lock */
+> +	local_lock_irqsave(&memcg_stock.obj_lock, flags);
+>  	drain_obj_stock(stock);
+> -	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+> +	local_unlock_irqrestore(&memcg_stock.obj_lock, flags);
+>  
+> +	/* no need for the local lock */
+>  	drain_stock_fully(stock);
+>  
+>  	return 0;
+> @@ -2885,7 +2891,7 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
+>  	unsigned long flags;
+>  	bool ret = false;
+>  
+> -	local_lock_irqsave(&memcg_stock.stock_lock, flags);
+> +	local_lock_irqsave(&memcg_stock.obj_lock, flags);
+>  
+>  	stock = this_cpu_ptr(&memcg_stock);
+>  	if (objcg == READ_ONCE(stock->cached_objcg) && stock->nr_bytes >= nr_bytes) {
+> @@ -2896,7 +2902,7 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
+>  			__account_obj_stock(objcg, stock, nr_bytes, pgdat, idx);
+>  	}
+>  
+> -	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+> +	local_unlock_irqrestore(&memcg_stock.obj_lock, flags);
+>  
+>  	return ret;
+>  }
+> @@ -2985,7 +2991,7 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
+>  	unsigned long flags;
+>  	unsigned int nr_pages = 0;
+>  
+> -	local_lock_irqsave(&memcg_stock.stock_lock, flags);
+> +	local_lock_irqsave(&memcg_stock.obj_lock, flags);
+>  
+>  	stock = this_cpu_ptr(&memcg_stock);
+>  	if (READ_ONCE(stock->cached_objcg) != objcg) { /* reset if necessary */
+> @@ -3007,7 +3013,7 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
+>  		stock->nr_bytes &= (PAGE_SIZE - 1);
+>  	}
+>  
+> -	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+> +	local_unlock_irqrestore(&memcg_stock.obj_lock, flags);
+>  
+>  	if (nr_pages)
+>  		obj_cgroup_uncharge_pages(objcg, nr_pages);
 
 
