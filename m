@@ -1,141 +1,191 @@
-Return-Path: <bpf+bounces-57009-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57011-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93A43AA3E96
-	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 02:24:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AE9CAA3FB2
+	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 02:44:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3C0A4A7AD1
-	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 00:20:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88BC83B43D1
+	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 00:39:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10AB1231857;
-	Tue, 29 Apr 2025 23:58:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 214421B7F4;
+	Wed, 30 Apr 2025 00:29:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mrj/4LtP"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="B+HUEtDP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9F2B1D7E35;
-	Tue, 29 Apr 2025 23:58:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0737E2DC767
+	for <bpf@vger.kernel.org>; Wed, 30 Apr 2025 00:29:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745971114; cv=none; b=mkWTltIZ3nPEyd3E4Xh4FxWZUkervu4Hv7eA0Db0/EEfl1ZRNGAcWmyDn4yCWoKlTT3n27Q1e0axz+cHuS1IQ0yRyeByT1g6OWa3en7jwmdCSPL+GyS37p27PMVyjqMj/A1EpEJDa0ybmjFHbGpWgrta6F7ujENyQsCovBO9Mbw=
+	t=1745972954; cv=none; b=UuhBY1RpwI7LgUaQYn258tDB8xusdCZhOLDfOlrKMMOMcftVYT97kYBbkMnBv5gk1quxX9ojCiCC6AZM/ivx0un2ulit9G2b5CXy/rX59bsNE91SB0yy9LO0/c4gjY0AL9W0b3rLSNHwbI39Sq0EZ4EbN3Gv+E+mTq1Pgg+tR04=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745971114; c=relaxed/simple;
-	bh=iqnTYDmiTjRgfK3u/aUrzt5/5Q+gPJ2f+omyQFghhuA=;
+	s=arc-20240116; t=1745972954; c=relaxed/simple;
+	bh=rckdEsw4LI+2Q4VYEsNzqiOS7xxyq/0EBJvPBWu9bjo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o0ldEl3qL7nvUnj18moVyRzD8mB0DSYWCghtaCnUWz2v9RJBKhIVbgaX4q7Hcd0yYxWqlF20PvggchQNOhfxGce09fTuvWMaLaBNdmISID/CVM74H8AE/g6CdWMTYINNnNrIXzdJEqVK4h+P6VqfI1SXfHOxBxnegIZE9BeLOrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mrj/4LtP; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-39c1efc457bso4844991f8f.2;
-        Tue, 29 Apr 2025 16:58:32 -0700 (PDT)
+	 To:Cc:Content-Type; b=sRoFp0v2QWTdfGpmbGDxrcoAbYN6A+iXA0Z0k5KLUW4GLmrUwKfyRP5+4KDQmpzgmNlGKC/3QjvRMiyAe/NCgxaTB44nTSZ0vy/saq8Zwwj3i78FkPl4oRAO94AWLMjXRW09XFOqpqvyJxpmOg9GwSSk7SibtldD158cVxVDcHI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=B+HUEtDP; arc=none smtp.client-ip=209.85.160.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-47666573242so500001cf.0
+        for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 17:29:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745971111; x=1746575911; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1745972952; x=1746577752; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wlOXSV/LS6Wq6Zi28K/GY5AymAcLPtqx1WKW0bjot14=;
-        b=mrj/4LtPC304ulZBqFMmNUUbwiP0G0DsVAF/RH4Kj2DbMv43xKwQpOZ7pM4zt702IX
-         Sgbd0yr0yV6wSzccj5XgXibNQfsJ8KmQK3wjwteDbZr3gvhonS/ocnhOeTRhT9luTeqT
-         Rb1kbUYCu+H6u+wm/ivO6iMYrjbJoq24FBeX7X6QG3y0ZLHrc9w3pV3uhLUktzpsjLe2
-         XVBZjTAI8KJy/G17NzDTbEWB7TpeWZPnvQMgbF0Ex6vy0o3vujn+WlUAo5lOjCVUcUjC
-         /g86gtQj6cLKwjFMcD3wbLVfk8H0XfiDvhCwq+s1U9sa9CyeP194B7bn1nQQ6X/uufV4
-         wd8w==
+        bh=SET8sA9iAqxjHw6Ms59eY6Brr42Gs60ohd9HvBlI7Ok=;
+        b=B+HUEtDPnbQRVIZj2INCuc0Qeqf0iXm5Zn1bBgA1QDnMi4YJ+oELctz9VPs9HHM5dL
+         HtNo343gEFXv3Tlikn+CPejXj5Ia/4C8OQpxoiP2kuL1qJNttSFNXbvHlDnI0wlwPVJV
+         aL3JVvr9ewpnseJdudlCHvHm7Ws5WbVES000+6GVed7i7dmGDYKRCffL5U4aGjrpfrT8
+         0aPRhlKlFKS4IwcxjG5B4TZco4VJHFGbpFamYDlX8OPpaDZzsDcFocdh2sstzZgxkPoR
+         tSDCRrPhw3fe0Z21J6sFte7ZveqerUo1X8eUjbXcjv59cIPOBc/snPtXvODu+XjmODil
+         tv6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745971111; x=1746575911;
+        d=1e100.net; s=20230601; t=1745972952; x=1746577752;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wlOXSV/LS6Wq6Zi28K/GY5AymAcLPtqx1WKW0bjot14=;
-        b=pKe+LZN6DlsoxOqAercpIMTvk2aipkQHT+K8p62TOg8LCqUFjXYr0b+ckuw7S9jNVD
-         ReLo231bK8K9xW01Lh8LhnEsaQLO3DxgTajrIEBokm1355IBbmG4yQN3QoORrOdloH7U
-         1d85zwC5gGAj3P98wc57/DXpBRTx9AsXw+H47vNQSlj0lqG6nbitlo2vyXwhU6bZqTpz
-         Hy3F3sLFCTFMO0klpGgcnraXOtndiIPFoKNMOhcdPDR/7Kgf/r8rrdNOCOLfFzDWav3P
-         VEizhmCK7r/vAXRv5xlKNpGCl1eGlJwuuzHSkbvej2dIoxYffmEdqiGbN8/C5TfmANd0
-         T/mQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUG4DKHSS52WFAkgj7N3e3iiCt7qU97xF4iWXTgS38vQ6Ij2TOVOpBDAMAYJui5RQxhybk=@vger.kernel.org, AJvYcCUpiNeemyAzqPiNtF7TtMD12+ygSgwM5jpJuiKUw18B6pkAaMQ+yxfnnS7MnxLyFkqxxytoLYz5FA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxFsjeJSAKhxgKZIEL/HedpepLoL2ZWHnwPL2TIRxb0+Ohmi6MF
-	rdp11k8jH6JE37aoEJD5jfyvHGaVYjkXJGRXO759NSKUKgGyBhs2mK6GpC8aY0IeG+kMCI/SMsW
-	MczdKdZcOlRJQ/NQJkMmk66Uicc4=
-X-Gm-Gg: ASbGnct0c6M4BagOo0vXokydjSwN7CdZJsLb99n314uAlLO4BpSCGU4bJSbmiKVQcP9
-	84QUzYYzFaitoWy6JinhrBKd/MVLMYnou5pgfqecQIZQIWg3R6/yOmlKA3RgH6AOleG3rthYFe1
-	jN7f68jomadzRPnaYiJmlziiJmR7bLSXyxQK+Dhb7vh8eVf8Qy
-X-Google-Smtp-Source: AGHT+IGyHp8MouUJrcf0MLECDO1OlQtEeiMDNr4s8n4KnB0vT3uHxvxC4sUSNMZLjL9sGl8MKGcrJkP70xSXpIGGyuk=
-X-Received: by 2002:a05:6000:1844:b0:39e:e557:7d9 with SMTP id
- ffacd0b85a97d-3a08ff34cb5mr269882f8f.5.1745971111023; Tue, 29 Apr 2025
- 16:58:31 -0700 (PDT)
+        bh=SET8sA9iAqxjHw6Ms59eY6Brr42Gs60ohd9HvBlI7Ok=;
+        b=nKw8JqSDWWbhqn78mjpqbIdD+2uKpJKYiPNZazsjLw4V+zG637MSVj4B5e4SEQALwZ
+         PIp1SkSN9hhaJNxnarD1ovHMW5byVTqPVYzLecauNZf7g66TrO2aNFYpUV/64DTzikpr
+         1xGvBi8tT5JtVaLD5Od2xHRnDAL0MLaIbFtM3zu6iLsvbOXIlAmx6X1ud8yiGGYgXQnH
+         7rpIKRnFEj+tmg7qni1xzLSoo9kGQ4Z2d1s4awXiY1gwdWB/BXDFlbcMcwUdXxeP9SMR
+         2nY0nGOcHeeNAfQyYf47cLQOLsO353nEzGqQ4VeL5ebt3N5m0yMxwMCVKzamGLlGwgVA
+         OO0w==
+X-Forwarded-Encrypted: i=1; AJvYcCX9tTWVs/hoFJzJu1BYgSToFnrgKiPOSXav08GNKk9tu+Mrrsu8pq+bHLKyZtMdDzLMHv8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxP3Wgx9XakqtLPVoVt3BcAHl94TBcqO3SXPmoMXPkyG8PUowGW
+	Lx4R6uYeQPUmrDu4FWZViTWB8fsYha9pbUclD4ygyfdIJCW6y/O9ZZWFWLL/BQO7Jus8ey7T+b5
+	cbDN9Ua2d62yXOkTtRhgimcWPiqUcmhYvXDjr
+X-Gm-Gg: ASbGnctGKLA043IznFprjYbi6un9WvK8pGCqeoVdYIw4jl6QLOM1QScA8VBfDTobicB
+	sP+EyOb5fzGlnELGqa7v6FNjFXmZ5If9LNmdSLGQsSd/m/talS1QMPvxCMr211/2w8OUdsY1JJd
+	S82l2mPBXWF4jb0lB76QI6TH2dWGxpPZe6uGctCaE84XuNZM3qinYAYE5RZ7E4XRA=
+X-Google-Smtp-Source: AGHT+IGYYwIA/2/5KM/ug1jcPdIS8qPi3fGg3w/31Max0dqI27BtipvLcMKHWDfaI1D8DwJd48fBi1Tpym4pkltqpto=
+X-Received: by 2002:ac8:7e83:0:b0:486:9b6e:dd46 with SMTP id
+ d75a77b69052e-489b993a5b3mr2073341cf.10.1745972951520; Tue, 29 Apr 2025
+ 17:29:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250416-btf_inline-v1-0-e4bd2f8adae5@meta.com>
- <fcjioco2rdnrupme4gixd4vynh52paudcc7br7smqhmdhdr4js@5uolobs4ycsi>
- <CAADnVQJ1y1ktKDgORynENQLC73FZ162XXL2qMSshpb2gKXHBjw@mail.gmail.com> <D250DE71-922F-44B3-A123-9AFFBDC8051C@meta.com>
-In-Reply-To: <D250DE71-922F-44B3-A123-9AFFBDC8051C@meta.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 29 Apr 2025 16:58:19 -0700
-X-Gm-Features: ATxdqUGs0YtR9SphoYkAC395_OdAmP0hUasPd8l7SBgw_omBhzum-NRYB62o-V8
-Message-ID: <CAADnVQLseJTeYWGCU6o7L6Rb_NdymAPfg-_nMuZhwx077YfmKw@mail.gmail.com>
-Subject: Re: [PATCH RFC 0/3] list inline expansions in .BTF.inline
-To: Thierry Treyer <ttreyer@meta.com>
-Cc: Daniel Xu <dxu@dxuuu.xyz>, "dwarves@vger.kernel.org" <dwarves@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@meta.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Ihor Solodrai <ihor.solodrai@linux.dev>, 
-	Song Liu <songliubraving@meta.com>, Alan Maguire <alan.maguire@oracle.com>, 
-	Mykola Lysenko <mykolal@meta.com>
+References: <20250428033617.3797686-1-roman.gushchin@linux.dev> <20250428033617.3797686-10-roman.gushchin@linux.dev>
+In-Reply-To: <20250428033617.3797686-10-roman.gushchin@linux.dev>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Tue, 29 Apr 2025 17:28:59 -0700
+X-Gm-Features: ATxdqUHFz_05fXYir2rslhYlMwSd6Gi_vbBqhLqf6_eQZAIUdoejhM82LlPFoTU
+Message-ID: <CAJuCfpEdyZWac7diTUYV7JjkpAPDuy9hwT5sfE2AC2zDVPA9ZA@mail.gmail.com>
+Subject: Re: [PATCH rfc 09/12] sched: psi: bpf hook to handle psi events
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, David Rientjes <rientjes@google.com>, 
+	Josh Don <joshdon@google.com>, Chuyi Zhou <zhouchuyi@bytedance.com>, cgroups@vger.kernel.org, 
+	linux-mm@kvack.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 29, 2025 at 12:14=E2=80=AFPM Thierry Treyer <ttreyer@meta.com> =
-wrote:
+On Sun, Apr 27, 2025 at 8:37=E2=80=AFPM Roman Gushchin <roman.gushchin@linu=
+x.dev> wrote:
 >
-> > It looks to me we only need:
-> > - register
-> > - load_from_reg_plus_offset
-> > - constant
->
-> In that case, we can shorten the list of operators:
->
-> ### | Operator Name          | Operands[...]
-> ----+------------------------+-------------------------------------------
->   1 | LOC_SIGNED_CONST_1     |  s8: constant's value
->   2 | LOC_SIGNED_CONST_2     | s16: constant's value
->   3 | LOC_SIGNED_CONST_4     | s32: constant's value
->   4 | LOC_SIGNED_CONST_8     | s64: constant's value
->   5 | LOC_UNSIGNED_CONST_1   |  u8: constant's value
->   6 | LOC_UNSIGNED_CONST_2   | u16: constant's value
->   7 | LOC_UNSIGNED_CONST_4   | u32: constant's value
->   8 | LOC_UNSIGNED_CONST_8   | u64: constant's value
->   9 | LOC_REGISTER           |  u8: DWARF register number from the ABI
->  10 | LOC_REGISTER_OFFSET    |  u8: DWARF register number from the ABI
->                              | s64: offset added to the register's value
+> Introduce a bpf hook to handle psi events. The primary intended
+> purpose of this hook is to declare OOM events based on the reaching
+> a certain memory pressure level, similar to what systemd-oomd and oomd
+> are doing in userspace.
 
-Since we want to make the format compat let's use s32 for offset.
-We can even consider s16.
-Since that's typically stack and kernel stack is rarely above 2k.
+It's a bit awkward that this requires additional userspace action to
+create PSI triggers. I have almost no experience with BPF, so this
+might be a stupid question, but maybe we could provide a bpf kfunc for
+the BPF handler to register its PSI trigger(s) upon handler
+registration?
+
 
 >
-> > register vs register_offset is another artifact of dwarf.
-> > ...
-> > - load_from_reg_plus_offset
+> Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+> ---
+>  kernel/sched/psi.c | 36 +++++++++++++++++++++++++++++++++++-
+>  1 file changed, 35 insertions(+), 1 deletion(-)
 >
-> What is the difference between LOC_REGISTER_OFFSET
-> and load_from_reg_plus_offset?
-
-Just a different name, because LOC_REGISTER_OFFSET is confusing.
-LOC_REGISTER means that the value of the argument is in that register.
-LOC_REGISTER_OFFSET can be interpreted that the argument value
-is in the register plus constant.
-But that's not the case. reg+const is an address in memory when
-value is stored.
-So we need a different name.
-Probably load_from_reg_plus_offset is confusing too.
-How about
-LOC_ADDR_REGISTER_OFFSET
+> diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+> index 1396674fa722..4c4eb4ead8f6 100644
+> --- a/kernel/sched/psi.c
+> +++ b/kernel/sched/psi.c
+> @@ -176,6 +176,32 @@ static void psi_avgs_work(struct work_struct *work);
+>
+>  static void poll_timer_fn(struct timer_list *t);
+>
+> +#ifdef CONFIG_BPF_SYSCALL
+> +__bpf_hook_start();
+> +
+> +__weak noinline int bpf_handle_psi_event(struct psi_trigger *t)
+> +{
+> +       return 0;
+> +}
+> +
+> +__bpf_hook_end();
+> +
+> +BTF_KFUNCS_START(bpf_psi_hooks)
+> +BTF_ID_FLAGS(func, bpf_handle_psi_event, KF_SLEEPABLE)
+> +BTF_KFUNCS_END(bpf_psi_hooks)
+> +
+> +static const struct btf_kfunc_id_set bpf_psi_hook_set =3D {
+> +       .owner =3D THIS_MODULE,
+> +       .set   =3D &bpf_psi_hooks,
+> +};
+> +
+> +#else
+> +static inline int bpf_handle_psi_event(struct psi_trigger *t)
+> +{
+> +       return 0;
+> +}
+> +#endif
+> +
+>  static void group_init(struct psi_group *group)
+>  {
+>         int cpu;
+> @@ -489,6 +515,7 @@ static void update_triggers(struct psi_group *group, =
+u64 now,
+>
+>                 /* Generate an event */
+>                 if (cmpxchg(&t->event, 0, 1) =3D=3D 0) {
+> +                       bpf_handle_psi_event(t);
+>                         if (t->of)
+>                                 kernfs_notify(t->of->kn);
+>                         else
+> @@ -1655,6 +1682,8 @@ static const struct proc_ops psi_irq_proc_ops =3D {
+>
+>  static int __init psi_proc_init(void)
+>  {
+> +       int err =3D 0;
+> +
+>         if (psi_enable) {
+>                 proc_mkdir("pressure", NULL);
+>                 proc_create("pressure/io", 0666, NULL, &psi_io_proc_ops);
+> @@ -1662,9 +1691,14 @@ static int __init psi_proc_init(void)
+>                 proc_create("pressure/cpu", 0666, NULL, &psi_cpu_proc_ops=
+);
+>  #ifdef CONFIG_IRQ_TIME_ACCOUNTING
+>                 proc_create("pressure/irq", 0666, NULL, &psi_irq_proc_ops=
+);
+> +#endif
+> +#ifdef CONFIG_BPF_SYSCALL
+> +               err =3D register_btf_fmodret_id_set(&bpf_psi_hook_set);
+> +               if (err)
+> +                       pr_err("error while registering bpf psi hooks: %d=
+", err);
+>  #endif
+>         }
+> -       return 0;
+> +       return err;
+>  }
+>  module_init(psi_proc_init);
+>
+> --
+> 2.49.0.901.g37484f566f-goog
+>
 
