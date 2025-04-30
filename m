@@ -1,201 +1,240 @@
-Return-Path: <bpf+bounces-57025-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57027-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F31CAA4120
-	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 04:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 421F7AA412A
+	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 04:48:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CAE7E1BC5F66
-	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 02:46:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4FB11BC79BE
+	for <lists+bpf@lfdr.de>; Wed, 30 Apr 2025 02:49:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BC1D13957E;
-	Wed, 30 Apr 2025 02:46:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09497158DAC;
+	Wed, 30 Apr 2025 02:48:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mEePr3LU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EI0KVsBY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE9222111;
-	Wed, 30 Apr 2025 02:46:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F06392111
+	for <bpf@vger.kernel.org>; Wed, 30 Apr 2025 02:48:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745981181; cv=none; b=sjnDZX8icW86Tw4+Cv9v2/9QTVmeCKndGf4URaGBtUWJwdoC6Y33EXY1ow/uy+Dcm1GNqNgULNKhCVX5xv170J2nysD29TX19m1JAGjQyJYitn2ZAUUImMJjrKTJWvapDMzqLqXzxhn5KcytqjIooKYIptfNYbLaKXxIrXuOiek=
+	t=1745981330; cv=none; b=d+PFyX29Msvdx6XWte3Q1tYK6s2t8mW9XBPhCZxbcQshf2Bddox7s8hdpaq84mosxLqVehBnHRg8da8qMEjPfgYjLmtXpCWFlJOlFf3XVgld7goTF+g4aSrjhW55LT+0KrRFuAUk+V2TUWt4pjQ/3skjExEDQDUWL02AFvQaUSE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745981181; c=relaxed/simple;
-	bh=tZj+fajqPvkq+73cH8tXJlYZvR+o5VeoP5VRKaX/kYA=;
+	s=arc-20240116; t=1745981330; c=relaxed/simple;
+	bh=b4rtcByyK1Yp5FyBYhYVa2kWm3+0iJswdnQ4Q7PB0qQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MB+512tmcvm1Sx1W+CWuE5GUFMU/LwbY3TbX6nOPz0eO3GBQA6ml6JIVeSn6jameT+FQSRL6F2tg1Edh7kAzJdQRa8/uOb2LPcfz8P9krYe2l9VxkakdPbuu0KhPVBoI4YyBWxpWyroMLTSL+fjXgG7SLNQVarTcYfkDGXPyUWs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mEePr3LU; arc=none smtp.client-ip=209.85.221.47
+	 To:Cc:Content-Type; b=TY2A/hGAmq7KgeYB9IVppOHpb9NfFtW1GKzyvKUl2vMddRBSMxQoX6A5i3ABjO+nABIkQGHZDUgrNcNTZOff7tvgpPr6V/i2AusgI+sRY6nvOMYowvBsIzW7j7gfNL0d67aKrp0JWiRo3UZbHXf2OrF6miLzRZsuWxqkciGE0E0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EI0KVsBY; arc=none smtp.client-ip=209.85.219.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-39ee682e0ddso4613188f8f.1;
-        Tue, 29 Apr 2025 19:46:19 -0700 (PDT)
+Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-6e8f7019422so68344596d6.1
+        for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 19:48:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745981178; x=1746585978; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1745981328; x=1746586128; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IRoA1hn+ILrnaL3QGiypq6EmGKcTVkU7YdYU9NCLYKU=;
-        b=mEePr3LU84EtC9YaEi9hNKvUJIOZmFmn/Eo0/UTHWk0urD0ylMheKy1GZ/sStSeRil
-         Wr/Ze2udmPdC2hkMCXgDzIhMbmbaAXYZZsMNy7w8wy+OBBeaxWt1Cr84DBR8ezusVBuU
-         ZLFCNo/1oc/1in46B0jp7vAJILjNTltmXIUu+GCq0ra2fBNb2V/uqddrpZlskeMhuGaL
-         v4FF/dJat/j3W5V3/kYT+cqBZrYyQGZA9tMAWKZmX3BNEBhfS6+kC87bcGLlPDGoemNB
-         AymalL4OzLyFD7OUnLHESJWQpxgcUW1+uP5wJY1uVGRIibjmj8AOFGr5rXJdZtHmx6NX
-         m7PA==
+        bh=7xEji0aPCu4ufQeSz/hkiElJuERhNyl1TgZKIhegpo0=;
+        b=EI0KVsBYPliuPcScij2d+ZGb4XfE5vxif4N26eZJp7lqZyhkU7BIdan8yQw68j0nyM
+         ExlI5xue/3kj2GZT5jlBAquqXMIta77tXl6Na5p+a7VA+AOzudvOKGGbwXXVKk6Rl6uZ
+         IItzOvO72e5HI+g5BX4X6DN4nYOru7vNnipuo/8ujnUp25f/XQTMcBSxzLeE5fLP3y5Z
+         6Zl9a1NzaN8I8120jGxz9tHbDwe2TQXN8pAxEX+QOh3Mh53S0G0bFI94pXmgMxJoXXqU
+         MpGa0ODryIysxjHfXuSDNfj3llanb1QavNTwIz5AxeALCVQVuYolckd9RiQ0mCsqo6Lz
+         KUvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745981178; x=1746585978;
+        d=1e100.net; s=20230601; t=1745981328; x=1746586128;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IRoA1hn+ILrnaL3QGiypq6EmGKcTVkU7YdYU9NCLYKU=;
-        b=QIC0HTmi6Oek2SC8mdBKTZhgNvxHTX+myGHy1SAQyukzCYyJktwiFFKdSAyHzsDkac
-         NrnhrMJ5U17KybTaDzN/LQYQd4an2UPEhWnIuB7oeywWlVSfyI+K7AI/eEzKPtV4gi0s
-         yhplMj/HNIAxJYMijcgCVa9KXljez4W5CZ4zve4DY0ZAQgPRUjzG0Fwn06wQaR17C96M
-         KG7DBZAG6EGF4HtbjHaSMZg1REEpG/6L65BY2TQ16CEBepGlL84JHFi0DsxQchN94qR6
-         XTJ0SogE/KxDDdOQ9eAOrvLQ0ULNhvxaKKlcfYaqJ5PNjlH84qA/JLY6NQdoMhTWGcyo
-         HgBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU9A7LrTxqmLjDqG6bV6iYt/uj3ILLdRLDnsPO50ICpmHUxY3LFPauW+vuQiaTbHxFh+9zjeKNeRSdOZG79@vger.kernel.org, AJvYcCUAMHfQJuGEZB7mxYOdu6Vadi0XK/B1eo+OjDOrf0V8ESkeBjLWSiZoMZbDwALLa3lpCXAk1JEMUnkvNgbbDzEt@vger.kernel.org, AJvYcCUZlK77ziAXzRrY+i/GbiNLWfsIpuagwpFO7xLLhz6Oy2ZGUvaiRHK+Bqghj6LpskFWE6A=@vger.kernel.org, AJvYcCXF5oPIrrV+N3qT/HwrL9y5mnLWFggv+1jh3YhQqllsaSSklTHfkt9M7mZvnU+pgALsaQ4lpKNvz29q+555ueDmK5lq@vger.kernel.org, AJvYcCXTJWr0BEnSX28DlijCVyDsy2dib4Xoen3+inZX5Vclb8NhjNHlAx7o7M/Txk9C7+0M2PvNSC9x@vger.kernel.org
-X-Gm-Message-State: AOJu0YyuIYUPW2sOZtRPKmGs3eB/L0EIVbQrEp6mDK/+4UGIatlqk+cm
-	of36ArkLnoQ/Ly8evwfjrcGBu8qyGE7Ns1oxSjo7Em57Wavq4QNmWM7De2v5D5RPDSruJMIkB4q
-	tLHizz1pDorQ3993cvB5Fx14f83E=
-X-Gm-Gg: ASbGnctKC3FZYpKCl81deylRNJQp/JcqBivd8fVsawLBmGqUGdEEAe9CxJPnBOnHgFG
-	skQBBStPbEkPCZLHEuuEpTbzs2rONk7QTS2WxGlj1291TD3z3lJ2w6n/r5aLbJYvAgd2fFD6vh1
-	PwofZyxQMsEBq0MYyTZESJWCfT14NjOVPt0DlNUw==
-X-Google-Smtp-Source: AGHT+IEseH2I0pUjM+B8W45c5JTdHLZ05e9zXlXFhwq6KjuhDIGYFugjVOnMpqk2DxAdfmZQOfc3MHYNAs8vZ5GnN6A=
-X-Received: by 2002:a5d:64e5:0:b0:391:4bfd:6d5 with SMTP id
- ffacd0b85a97d-3a08ff5558emr512089f8f.52.1745981177742; Tue, 29 Apr 2025
- 19:46:17 -0700 (PDT)
+        bh=7xEji0aPCu4ufQeSz/hkiElJuERhNyl1TgZKIhegpo0=;
+        b=FlKr+DKkh/P/sTsC8eluAr8oyeD6EPvBa/4L7YqhFPRXafPKGe1CSEBp4V064wDtJN
+         QZKJQ8RH8uvI51fcTpK50qZsYXOTbEDt8RGr7YVXLvNzpug3zlRXx2xrJKLiFSLtXSgQ
+         4BYTRbeP2aaqz+2K++gOVWRb8I+zXxo3e86H4+r7PKYZ1U95V43LwahRd/JhFAIVwAEX
+         Utt+vcwat7s27DNmWiJtUb4vwQVbDaP34rmX6ELzch16oSA0AjP5N/rSZLPLVT4cEvvX
+         uz/fdFrkB4x3RcMXOJ5GTv8Nz1ASiYZ05Cf5HOnm7LVlpCo4fAK+1rf+L1ng0R+1BFsF
+         h4jg==
+X-Forwarded-Encrypted: i=1; AJvYcCUYIkM4NMD2h6eI9jQAxCNch+o3obT0cfcq7BKbMEN9nmxdHw7IkTBrGre5wHrPcWLUHos=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxAeo/+2btnvKGQ2ONUCXX8IBRxpO2GYnrxk0sIZ8xtDJFPjr20
+	LBKywjBD+hEtcudLhHyoglLUsyqNbzTkp7l7uZ1L2PKqoifAKXLd+KIcCAmvzKUB1Co5wDo/2nq
+	1UpiEwROT7gYu6J/wkiH/gDqW0Rw=
+X-Gm-Gg: ASbGncveRWoHEGYXQGYYsjIp1dtLW01dRAtPbw0fpNas6P7IfxH+Q/DcWnK/F/+N4h9
+	fljwdZ/Syy4zmwmxtd95leNBSgScbwDzykRoNszGKJImig9BcUdgt9TfUCecNBFMQ17pmQ+sc2E
+	QUgDYDHne5cVWU+Z+YaTBzEU0=
+X-Google-Smtp-Source: AGHT+IGzXDrLanqLfUNrRxT6C7Ik75q5yOi0GpuXGu/nkZML1mPpBPk244Lz+mSza57BSp0/bDrNJGdy4yUhB0hxdEM=
+X-Received: by 2002:ad4:5dc1:0:b0:6e8:f4e2:26ef with SMTP id
+ 6a1803df08f44-6f4fe105662mr20014996d6.31.1745981327764; Tue, 29 Apr 2025
+ 19:48:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250426160027.177173-1-mannkafai@gmail.com> <20250426160027.177173-2-mannkafai@gmail.com>
-In-Reply-To: <20250426160027.177173-2-mannkafai@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 29 Apr 2025 19:46:05 -0700
-X-Gm-Features: ATxdqUFMquDKYdhGCyZiHIRKlu07tHBastoNqC0uT60dUlJw9_rSYO-AjZ2fBT4
-Message-ID: <CAADnVQ+DF18nKEf9i1RKEQN+ybH+duu7U-91YZDaa_PiqUx17g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/4] bpf: Allow get_func_[arg|arg_cnt] helpers in
- raw tracepoint programs
-To: KaFai Wan <mannkafai@gmail.com>
-Cc: Song Liu <song@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Matt Bobrowski <mattbobrowski@google.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	bpf <bpf@vger.kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Leon Hwang <leon.hwang@linux.dev>
+References: <20250429024139.34365-1-laoar.shao@gmail.com> <20250429024139.34365-4-laoar.shao@gmail.com>
+ <CAADnVQJw2ou7mHtvp+kCxLi_kzN+j4UqXA5xvOR1gJDjA8iVfQ@mail.gmail.com>
+In-Reply-To: <CAADnVQJw2ou7mHtvp+kCxLi_kzN+j4UqXA5xvOR1gJDjA8iVfQ@mail.gmail.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Wed, 30 Apr 2025 10:48:11 +0800
+X-Gm-Features: ATxdqUGL5jXU36qe6VWfQi1M76XEbLnbQFXHuudVSmgEzj7hMolHpVblf2tLFvE
+Message-ID: <CALOAHbBrQDiVdwPkXB_5NAiwnjK1Wk713aDJbjDZJ_mYpK5RHw@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/4] mm: add BPF hook for THP adjustment
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	linux-mm <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Apr 26, 2025 at 9:00=E2=80=AFAM KaFai Wan <mannkafai@gmail.com> wro=
-te:
+On Tue, Apr 29, 2025 at 11:27=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> Adding support to use get_func_[arg|arg_cnt] helpers in raw_tp/tp_btf
-> programs.
+> On Mon, Apr 28, 2025 at 7:42=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com=
+> wrote:
+> >
+> > We will use the @vma parameter in BPF programs to determine whether THP=
+ can
+> > be used. The typical workflow is as follows:
+> >
+> > 1. Retrieve the mm_struct from the given @vma.
+> > 2. Obtain the task_struct associated with the mm_struct
+> >    It depends on CONFIG_MEMCG.
+> > 3. Adjust THP behavior dynamically based on task attributes
+> >    E.g., based on the task=E2=80=99s cgroup
+> >
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > ---
+> >  mm/Makefile   |  3 +++
+> >  mm/bpf.c      | 36 ++++++++++++++++++++++++++++++++++++
+> >  mm/bpf.h      | 21 +++++++++++++++++++++
+> >  mm/internal.h |  3 +++
+> >  4 files changed, 63 insertions(+)
+> >  create mode 100644 mm/bpf.c
+> >  create mode 100644 mm/bpf.h
+> >
+> > diff --git a/mm/Makefile b/mm/Makefile
+> > index e7f6bbf8ae5f..97055da04746 100644
+> > --- a/mm/Makefile
+> > +++ b/mm/Makefile
+> > @@ -99,6 +99,9 @@ obj-$(CONFIG_MIGRATION) +=3D migrate.o
+> >  obj-$(CONFIG_NUMA) +=3D memory-tiers.o
+> >  obj-$(CONFIG_DEVICE_MIGRATION) +=3D migrate_device.o
+> >  obj-$(CONFIG_TRANSPARENT_HUGEPAGE) +=3D huge_memory.o khugepaged.o
+> > +ifdef CONFIG_BPF_SYSCALL
+> > +obj-$(CONFIG_TRANSPARENT_HUGEPAGE) +=3D bpf.o
+> > +endif
+> >  obj-$(CONFIG_PAGE_COUNTER) +=3D page_counter.o
+> >  obj-$(CONFIG_MEMCG_V1) +=3D memcontrol-v1.o
+> >  obj-$(CONFIG_MEMCG) +=3D memcontrol.o vmpressure.o
+> > diff --git a/mm/bpf.c b/mm/bpf.c
+> > new file mode 100644
+> > index 000000000000..72eebcdbad56
+> > --- /dev/null
+> > +++ b/mm/bpf.c
+> > @@ -0,0 +1,36 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Author: Yafang Shao <laoar.shao@gmail.com>
+> > + */
+> > +
+> > +#include <linux/bpf.h>
+> > +#include <linux/mm_types.h>
+> > +
+> > +__bpf_hook_start();
+> > +
+> > +/* Checks if this @vma can use THP. */
+> > +__weak noinline int
+> > +mm_bpf_thp_vma_allowable(struct vm_area_struct *vma)
+> > +{
+> > +       /* At present, fmod_ret exclusively uses 0 to signify that the =
+return
+> > +        * value remains unchanged.
+> > +        */
+> > +       return 0;
+> > +}
+> > +
+> > +__bpf_hook_end();
+> > +
+> > +BTF_SET8_START(mm_bpf_fmod_ret_ids)
+> > +BTF_ID_FLAGS(func, mm_bpf_thp_vma_allowable)
+> > +BTF_SET8_END(mm_bpf_fmod_ret_ids)
+> > +
+> > +static const struct btf_kfunc_id_set mm_bpf_fmodret_set =3D {
+> > +       .owner =3D THIS_MODULE,
+> > +       .set   =3D &mm_bpf_fmod_ret_ids,
+> > +};
+> > +
+> > +static int __init bpf_mm_kfunc_init(void)
+> > +{
+> > +       return register_btf_fmodret_id_set(&mm_bpf_fmodret_set);
+> > +}
+> > +late_initcall(bpf_mm_kfunc_init);
+> > diff --git a/mm/bpf.h b/mm/bpf.h
+> > new file mode 100644
+> > index 000000000000..e03a38084b08
+> > --- /dev/null
+> > +++ b/mm/bpf.h
+> > @@ -0,0 +1,21 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-or-later */
+> > +#ifndef __MM_BPF_H
+> > +#define __MM_BPF_H
+> > +
+> > +#define MM_BPF_ALLOWABLE       (1)
+> > +#define MM_BPF_NOT_ALLOWABLE   (-1)
+> > +
+> > +#define MM_BPF_ALLOWABLE_HOOK(func, args...)   {       \
+> > +       int ret =3D func(args);                           \
+> > +                                                       \
+> > +       if (ret =3D=3D MM_BPF_ALLOWABLE)                    \
+> > +               return 1;                               \
+> > +       if (ret =3D=3D MM_BPF_NOT_ALLOWABLE)                \
+> > +               return 0;                               \
+> > +}
+> > +
+> > +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> > +int mm_bpf_thp_vma_allowable(struct vm_area_struct *vma);
+> > +#endif
+> > +
+> > +#endif
+> > diff --git a/mm/internal.h b/mm/internal.h
+> > index aa698a11dd68..c8bf405fa581 100644
+> > --- a/mm/internal.h
+> > +++ b/mm/internal.h
+> > @@ -21,6 +21,7 @@
+> >
+> >  /* Internal core VMA manipulation functions. */
+> >  #include "vma.h"
+> > +#include "bpf.h"
+> >
+> >  struct folio_batch;
+> >
+> > @@ -1632,6 +1633,7 @@ static inline bool reclaim_pt_is_enabled(unsigned=
+ long start, unsigned long end,
+> >   */
+> >  static inline bool hugepage_global_enabled(struct vm_area_struct *vma)
+> >  {
+> > +       MM_BPF_ALLOWABLE_HOOK(mm_bpf_thp_vma_allowable, vma);
+> >         return transparent_hugepage_flags &
+> >                         ((1<<TRANSPARENT_HUGEPAGE_FLAG) |
+> >                         (1<<TRANSPARENT_HUGEPAGE_REQ_MADV_FLAG));
+> > @@ -1639,6 +1641,7 @@ static inline bool hugepage_global_enabled(struct=
+ vm_area_struct *vma)
+> >
+> >  static inline bool hugepage_global_always(struct vm_area_struct *vma)
+> >  {
+> > +       MM_BPF_ALLOWABLE_HOOK(mm_bpf_thp_vma_allowable, vma);
 >
-> We can use get_func_[arg|ret|arg_cnt] helpers in fentry/fexit/fmod_ret
-> programs currently. If we try to use get_func_[arg|arg_cnt] helpers in
-> raw_tp/tp_btf programs, verifier will fail to load the program with:
->
-> ; __u64 cnt =3D bpf_get_func_arg_cnt(ctx);
-> 3: (85) call bpf_get_func_arg_cnt#185
-> unknown func bpf_get_func_arg_cnt#185
->
-> Adding get_func_[arg|arg_cnt] helpers in raw_tp_prog_func_proto and
-> tracing_prog_func_proto for raw tracepoint.
->
-> Adding 1 arg on ctx of raw tracepoint program and make it stores number o=
-f
-> arguments on ctx-8, so it's easy to verify argument index and find
-> argument's position.
->
-> Signed-off-by: KaFai Wan <mannkafai@gmail.com>
-> ---
->  kernel/trace/bpf_trace.c | 17 ++++++++++++++---
->  net/bpf/test_run.c       | 13 +++++--------
->  2 files changed, 19 insertions(+), 11 deletions(-)
->
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 52c432a44aeb..eb4c56013493 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -1892,6 +1892,10 @@ raw_tp_prog_func_proto(enum bpf_func_id func_id, c=
-onst struct bpf_prog *prog)
->                 return &bpf_get_stackid_proto_raw_tp;
->         case BPF_FUNC_get_stack:
->                 return &bpf_get_stack_proto_raw_tp;
-> +       case BPF_FUNC_get_func_arg:
-> +               return &bpf_get_func_arg_proto;
-> +       case BPF_FUNC_get_func_arg_cnt:
-> +               return &bpf_get_func_arg_cnt_proto;
->         case BPF_FUNC_get_attach_cookie:
->                 return &bpf_get_attach_cookie_proto_tracing;
->         default:
-> @@ -1950,10 +1954,16 @@ tracing_prog_func_proto(enum bpf_func_id func_id,=
- const struct bpf_prog *prog)
->         case BPF_FUNC_d_path:
->                 return &bpf_d_path_proto;
->         case BPF_FUNC_get_func_arg:
-> +               if (prog->type =3D=3D BPF_PROG_TYPE_TRACING &&
-> +                   prog->expected_attach_type =3D=3D BPF_TRACE_RAW_TP)
-> +                       return &bpf_get_func_arg_proto;
->                 return bpf_prog_has_trampoline(prog) ? &bpf_get_func_arg_=
-proto : NULL;
->         case BPF_FUNC_get_func_ret:
->                 return bpf_prog_has_trampoline(prog) ? &bpf_get_func_ret_=
-proto : NULL;
->         case BPF_FUNC_get_func_arg_cnt:
-> +               if (prog->type =3D=3D BPF_PROG_TYPE_TRACING &&
-> +                   prog->expected_attach_type =3D=3D BPF_TRACE_RAW_TP)
-> +                       return &bpf_get_func_arg_cnt_proto;
->                 return bpf_prog_has_trampoline(prog) ? &bpf_get_func_arg_=
-cnt_proto : NULL;
->         case BPF_FUNC_get_attach_cookie:
->                 if (prog->type =3D=3D BPF_PROG_TYPE_TRACING &&
-> @@ -2312,7 +2322,7 @@ void __bpf_trace_run(struct bpf_raw_tp_link *link, =
-u64 *args)
->  #define REPEAT(X, FN, DL, ...)         REPEAT_##X(FN, DL, __VA_ARGS__)
->
->  #define SARG(X)                u64 arg##X
-> -#define COPY(X)                args[X] =3D arg##X
-> +#define COPY(X)                args[X + 1] =3D arg##X
->
->  #define __DL_COM       (,)
->  #define __DL_SEM       (;)
-> @@ -2323,9 +2333,10 @@ void __bpf_trace_run(struct bpf_raw_tp_link *link,=
- u64 *args)
->         void bpf_trace_run##x(struct bpf_raw_tp_link *link,             \
->                               REPEAT(x, SARG, __DL_COM, __SEQ_0_11))    \
->         {                                                               \
-> -               u64 args[x];                                            \
-> +               u64 args[x + 1];                                        \
-> +               args[0] =3D x;                                           =
- \
->                 REPEAT(x, COPY, __DL_SEM, __SEQ_0_11);                  \
-> -               __bpf_trace_run(link, args);                            \
-> +               __bpf_trace_run(link, args + 1);                        \
+> Please define a clean struct_ops based interface and demonstrate
+> the generality of the api with both bpf prog and a kernel module.
+> Do not use fmod_ret since it's global while struct_ops can be made
+> scoped for use case. Ex: per cgroup.
 
-This is neat, but what is this for?
-The program that attaches to a particular raw_tp knows what it is
-attaching to and how many arguments are there,
-so bpf_get_func_arg_cnt() is a 5th wheel.
+Thank you for the suggestion. I'll give this careful consideration.
 
-If the reason is "for completeness" then it's not a good reason
-to penalize performance. Though it's just an extra 8 byte of stack
-and a single store of a constant.
-
-pw-bot: cr
+--=20
+Regards
+Yafang
 
