@@ -1,139 +1,217 @@
-Return-Path: <bpf+bounces-57136-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57137-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30C74AA627B
-	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 19:45:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE46CAA6281
+	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 19:47:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD3D99C2C63
-	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 17:45:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 564231BA6EBA
+	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 17:47:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52F7C21ABD5;
-	Thu,  1 May 2025 17:45:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E3E721C9E0;
+	Thu,  1 May 2025 17:47:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DPo9a+GX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XyF6HR2y"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6521A1D6DBC;
-	Thu,  1 May 2025 17:45:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B8391D54C0
+	for <bpf@vger.kernel.org>; Thu,  1 May 2025 17:47:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746121544; cv=none; b=WmM1Z6O/2bQDdKRHqB3y6ToIHvqQge03kpUpFlTdTz0W+uTMHyt4AvOk/rVDPxpNTp+P62bPUALedqwlp7Ffu1Afu8AbYJ6opQPfYuPt7F7xqPCrRnIaZ7BsuIcoo5cPrrETXpTDf1+LaK14IpNnek4SZiP0nxQjgtp0i/PCupk=
+	t=1746121643; cv=none; b=Wr1pZFcMMLtpioamxgeWttJhEMu1szeXplBUePyrirvWC1KeYoyM4ZCmHgHbfgx9hr0LBp/aCODJEcwoGmOSTvsTPyjUTUvTYQmw2humWMYWsg/JQmdELkUG+O3HeqCsqVtLVRcadSfoKPf6fDw+xmF/ZbCByGHTdeliQ4+WQ9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746121544; c=relaxed/simple;
-	bh=pqCUl1E1e2DoAqjUx3nS868gkprr/kaVWJsax4Gih78=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ogmu4WZpWwxsNLJoGxglyEhfJpX6dYYecsFJZB1rmKiejvYIigmvxHheNyXX5b8i/ui416dCNzvMF/xNujgOfnpbNrGBYnrY5D1zC6KovtCjNiK0WqcHjusOfpiX7v26Xfz4XMoyxoXMVj0LyIBGhMWBizD74Va2dlXxrVapfu0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DPo9a+GX; arc=none smtp.client-ip=209.85.216.42
+	s=arc-20240116; t=1746121643; c=relaxed/simple;
+	bh=7kk540T2f4687hgXmXF45uzP1io9qwySTfJCJoAwRqE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NytF0K7tvXJJVr9vV7OqqGYL5GoAVs4WFV6O4+GSiSbD4m6J4p00PN+fSOK+1hXu5zq7piI7lJtqlAvC1mxWjuMxFJrTMbEjnLCTlhKwKc4GLRdZfWvGLpwIrBe56l67fkVVoE31vCeer2iE/hxQyKh5REMf2X6zz9VRCOioVOk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XyF6HR2y; arc=none smtp.client-ip=209.85.210.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-30549dacd53so1157830a91.1;
-        Thu, 01 May 2025 10:45:43 -0700 (PDT)
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-736aaeed234so1288792b3a.0
+        for <bpf@vger.kernel.org>; Thu, 01 May 2025 10:47:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746121542; x=1746726342; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1746121641; x=1746726441; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pqCUl1E1e2DoAqjUx3nS868gkprr/kaVWJsax4Gih78=;
-        b=DPo9a+GXtAONEcTPT1+cVmgmZrOHCPwbsQyFKmsOQ7F0DCaCf07SCfkkoD3jkda9Ch
-         5HTaDjdOqIeskfdb5G03TXckO66/RhAOLOJtYeCKgQfJcP++ihHRtLLba4Hjau2KO7mS
-         J4J/pgjwSMxb+6QITPwGGoqQObg6D1aCd9LFwy1mDcVPJ+tOXxHBmuEE3O+Wa2BBCRQs
-         3W6kDFllGnTVIKpWc6tIKjlGAzbDCpcUfG4RJHxy9Io17aM1sinvWGWKazKO+vJvP6am
-         2I2/LxFuemi1HWk8sDls0tJVKXIuqgB2aiGGWC5AInpx6bQeh9DMf3Wh1/1I6mJ5pR8x
-         Hdmw==
+        bh=a5UADtM0W9+mi5Mi4RH5vv80GR87hJ2qZVMPt12dgiA=;
+        b=XyF6HR2ydaOR4rvVWvq8MZby0mmFEQm/5fl7DyyYY7Hj3KnFaCtrVTkBMijZAwqaUr
+         PV1oy6YBgkTyd/geLh6KzI0gWOCNKOPVn6VCgCeLJhCNnM0GKmm1AApk6Ui5gM8HR7jm
+         KxPVAZruHsljhpNyoZnf9rRqb2scv4W/afiSOkO0HhFWDqphs1X1N8/WD6BLPQkQb9XD
+         HH3reG8pCYtP0ru5YtevSzSuqo00PC3kXe53lycYPpWvQXs0EFTWGLrxB3s1o4OvmMNu
+         cweftapPqoOn2QE3NoHozcy2XRkxCchLZhmaORt21boBrJ9MTDYAjpoJ561m8LvMvmSu
+         DM4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746121542; x=1746726342;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=pqCUl1E1e2DoAqjUx3nS868gkprr/kaVWJsax4Gih78=;
-        b=jM74WRsSZIujjt0+nrErjOgy42Y9CCKDbWj5rlziZ4xtF4Mi8PvlApPelRDkQLMB66
-         12Z38mAutFcjwZOEmPlKlhQlnfoJgfJ9zKTeED6b+Pi9XQDNraEsPdl9c7E3PjHDywum
-         lLrSPwhqox/anwrsazSCQlwhMzkWrF8nMLZRt8Rb5NaBCob60banRqBbj/VpowuHrab/
-         dj8MnYbAsGA8UdhWxhltWKcvb//PFc5eOgJUHA3wht8qTyTMpiPAOmVjeeqIeeVQsfIt
-         Odsr4ADg3R7jDMEMPNFgSqMRVQ+sG2Y5bResjz2cs58TpiTpTClGEPMH/SZEIPB/6hGC
-         iG2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUwEskAkFllbprR5hBOgcfOv++Uhc7NBqP6GVvi1Mg9bVVKSuR8ojEF368GUFy6V/lVu2Vk6Q18vAf9Kn5kp2ea@vger.kernel.org, AJvYcCXAeO53qsb8lW8WHl0aNRlBCqmjTOpdhQSIG1DdqcWLc2KskCgrq0Cn+3FeNXzmsU/kCmQ=@vger.kernel.org, AJvYcCXAvw6Tod++Xt8mDzn2XbH04B9LbtALVSO3q5kzzanFa9GXOsOJvCb+sQHhx3tDTwI6JNXaAw1E6GGsMQ/S@vger.kernel.org
-X-Gm-Message-State: AOJu0YzV2FOzdnGGgH+4Ap1Wxzl4CRlDJCXQ9pasFZEU1YAVU/OtUK6i
-	FVZgFhfdg6NLb/iW1keOk2pWRyyUBFnd6h1Gnxy2YVZMFY4OLlUW
-X-Gm-Gg: ASbGncscrIem21CfveQgJLmLMb/5reNGNEk6NxBChhqdJh1p5D24OnxiJRoDSKGB7Pp
-	I/mS9/iTYEzdNLEnzFGit3FvFZwE9YEvF1F5Gw4T0AO+WmCCGPBWdmuWr+t+J+pkqoEMTJ/9wAh
-	vTqDTrxhmh6j/Se2d0OHslh3snk0DpSbfO1gEHsZP3t4ik4HdiMPWHSCOcQrllGSxNEiwIvATsJ
-	/SQ4hH7L8GwwDCvv90z7Jz2w7gH+c/ffgleiq0o4odkavL0Lr3PXVhjKk8CROGe5lcxqxP7RF2Y
-	q/JP2brCvIfNHN/ezaBenMFwZpkiE+/3hzsE45Xv+S1lLA8=
-X-Google-Smtp-Source: AGHT+IG1DZt+WbEs1H1vBv8On6YGa9H+fvBwkfvRfEpQp1ZKcph5zdItji4Y36KqTtQ8K03Lzl8Kow==
-X-Received: by 2002:a17:90b:3bce:b0:2ee:5c9b:35c0 with SMTP id 98e67ed59e1d1-30a4e1e6a93mr175707a91.9.1746121542286;
-        Thu, 01 May 2025 10:45:42 -0700 (PDT)
-Received: from [192.168.0.56] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-30a244bd4e2sm4706976a91.0.2025.05.01.10.45.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 May 2025 10:45:41 -0700 (PDT)
-Message-ID: <13fc0801bf4fd8e561cb35773a4c5f3f22d9d51f.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3 01/11] selftests/bpf: Fix caps for
- __xlated/jited_unpriv
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Luis Gerhorst <luis.gerhorst@fau.de>, Alexei Starovoitov
- <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,  Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend	
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev	 <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>,  Puranjay Mohan <puranjay@kernel.org>, Xu Kuohai
- <xukuohai@huaweicloud.com>, Catalin Marinas	 <catalin.marinas@arm.com>,
- Will Deacon <will@kernel.org>, Hari Bathini	 <hbathini@linux.ibm.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,  Naveen N Rao
- <naveen@kernel.org>, Madhavan Srinivasan <maddy@linux.ibm.com>, Michael
- Ellerman	 <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Mykola
- Lysenko	 <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, Henriette Herzog	
- <henriette.herzog@rub.de>, Saket Kumar Bhaskar <skb99@linux.ibm.com>, 
- Cupertino Miranda <cupertino.miranda@oracle.com>, Jiayuan Chen
- <mrpre@163.com>, Matan Shachnai <m.shachnai@gmail.com>,  Dimitar Kanaliev
- <dimitar.kanaliev@siteground.com>, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
- Daniel Xu <dxu@dxuuu.xyz>, 	bpf@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, 	linux-kernel@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, 	linux-kselftest@vger.kernel.org
-Date: Thu, 01 May 2025 10:45:39 -0700
-In-Reply-To: <20250501073603.1402960-2-luis.gerhorst@fau.de>
-References: <20250501073603.1402960-1-luis.gerhorst@fau.de>
-	 <20250501073603.1402960-2-luis.gerhorst@fau.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+        d=1e100.net; s=20230601; t=1746121641; x=1746726441;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=a5UADtM0W9+mi5Mi4RH5vv80GR87hJ2qZVMPt12dgiA=;
+        b=xPe/QfMX+T1cw0vMNWaRJ788yIz0Hq7u8vYXufCbtzeK15AEAlGSRB6emZRG5tbdt2
+         iwo3m7TixM4lUlY6JdPn+I3AQGk3cQEdqkSvMg9QslakqRvO76HY0esM2sosNbM81bWJ
+         PxQ+NMrIUw/0ON+zP2vSqQSOu8YWAYH+BVFKbtf5tGCubYSDeciWzcxTc7yyjWFw3mHg
+         YBEGyro5gIGTHLnFZ7TSXfGRDjGczMyrBQjZndepSJF4aLL/cPmmfLPfpeXfu32vUI4Z
+         Y/u2s+1QRXQYGxOtJysHC2WNu4X95RB8yjyuRtS9mitFEy6tYFU+KvgqGhC/aGFjigYP
+         hNdQ==
+X-Gm-Message-State: AOJu0YwcWmrotE1rEsXbY9+13+T1z05Slwct2qXwJ3AVlkMgRAEXvgqi
+	8AX5p/nFAGEVDIEMFcnBQ4fnnPUNn1V7RFOoNUEdAFmRF5qZLcZR3BHpJm+Kmb37fuJjgBYdHaG
+	w1KlFY4lQNRJBl/wvQ2UKJR6gCNw=
+X-Gm-Gg: ASbGnctfe3K/T/yu4K381RR4Ui9EwUUAwVAPDgklVh9Ea9fIOTXQsfpDv4RS6OozuTB
+	CIIkPEUQOAoaVY663rySiNnRICgOiaZne/8umXeGbd9ILVVhYzPT99AULfqB/lS8zAFEoSjLYAW
+	kgRN7cd8VskPTu8G3mGRY8z14vRBSOZfHrMKI8Mg==
+X-Google-Smtp-Source: AGHT+IEwIDxP3H03otZikuRu49XVOwTfygveMKY/LI4GC7U8JwFJPBK3kSetu/B7aASsE0bMqsn3FSg7Oqyl0e0RcCM=
+X-Received: by 2002:a05:6a00:3d55:b0:73e:23be:11fc with SMTP id
+ d2e1a72fcca58-7404927593emr4353284b3a.22.1746121641217; Thu, 01 May 2025
+ 10:47:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20250430174754.2576367-1-a.s.protopopov@gmail.com>
+In-Reply-To: <20250430174754.2576367-1-a.s.protopopov@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 1 May 2025 10:47:08 -0700
+X-Gm-Features: ATxdqUHS0Ol7eV6RqD_59Vyd3wZsgp9wGksusEhEbHWrmD6JnMGdBGToDehoc4o
+Message-ID: <CAEf4BzZNhS7eZ07ozSU4VJdYz3k3nnOs+gkdSio2-AmYOjwuBg@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next] bpf: fix uninitialized values in BPF_{CORE,PROBE}_READ
+To: Anton Protopopov <a.s.protopopov@gmail.com>
+Cc: bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2025-05-01 at 09:35 +0200, Luis Gerhorst wrote:
-> Currently, __xlated_unpriv and __jited_unpriv do not work because the
-> BPF syscall will overwrite info.jited_prog_len and info.xlated_prog_len
-> with 0 if the process is not bpf_capable(). This bug was not noticed
-> before, because there is no test that actually uses
-> __xlated_unpriv/__jited_unpriv.
->=20
-> To resolve this, simply restore the capabilities earlier (but still
-> after loading the program). Adding this here unconditionally is fine
-> because the function first checks that the capabilities were initialized
-> before attempting to restore them.
->=20
-> This will be important later when we add tests that check whether a
-> speculation barrier was inserted in the correct location.
->=20
-> Signed-off-by: Luis Gerhorst <luis.gerhorst@fau.de>
-> Fixes: 9c9f73391310 ("selftests/bpf: allow checking xlated programs in ve=
-rifier_* tests")
-> Fixes: 7d743e4c759c ("selftests/bpf: __jited test tag to check disassembl=
-y after jit")
+On Wed, Apr 30, 2025 at 10:43=E2=80=AFAM Anton Protopopov
+<a.s.protopopov@gmail.com> wrote:
+>
+> With the latest LLVM bpf selftests build will fail with
+> the following error message:
+>
+>     progs/profiler.inc.h:710:31: error: default initialization of an obje=
+ct of type 'typeof ((parent_task)->real_cred->uid.val)' (aka 'const unsigne=
+d int') leaves the object uninitialized and is incompatible with C++ [-Werr=
+or,-Wdefault-const-init-unsafe]
+>       710 |         proc_exec_data->parent_uid =3D BPF_CORE_READ(parent_t=
+ask, real_cred, uid.val);
+>           |                                      ^
+>     tools/testing/selftests/bpf/tools/include/bpf/bpf_core_read.h:520:35:=
+ note: expanded from macro 'BPF_CORE_READ'
+>       520 |         ___type((src), a, ##__VA_ARGS__) __r;                =
+               \
+>           |                                          ^
+>
+> This happens because BPF_CORE_READ (and other macro) declare the
+> variable __r using the ___type macro which can inherit const modifier
+> from intermediate types.
+>
+> Fix this by using __typeof_unqual__, when supported. (And when it
+> is not supported, the problem shouldn't appear, as older compilers
+> haven't complained.)
+>
+> Fixes: 792001f4f7aa ("libbpf: Add user-space variants of BPF_CORE_READ() =
+family of macros")
+> Fixes: a4b09a9ef945 ("libbpf: Add non-CO-RE variants of BPF_CORE_READ() m=
+acro family")
+> Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
 > ---
+>  tools/lib/bpf/bpf_core_read.h | 16 ++++++++++++----
+>  1 file changed, 12 insertions(+), 4 deletions(-)
+>
+> diff --git a/tools/lib/bpf/bpf_core_read.h b/tools/lib/bpf/bpf_core_read.=
+h
+> index c0e13cdf9660..a371213b7f3e 100644
+> --- a/tools/lib/bpf/bpf_core_read.h
+> +++ b/tools/lib/bpf/bpf_core_read.h
+> @@ -390,6 +390,14 @@ extern void *bpf_rdonly_cast(const void *obj, __u32 =
+btf_id) __ksym __weak;
+>
+>  #define ___type(...) typeof(___arrow(__VA_ARGS__))
+>
+> +#if defined(__clang__) && (__clang_major__ >=3D 19)
+> +#define ___type_unqual(...) __typeof_unqual__(___arrow(__VA_ARGS__))
+> +#elif defined(__GNUC__) && (__GNUC__ >=3D 14)
+> +#define ___type_unqual(...) __typeof_unqual__(___arrow(__VA_ARGS__))
+> +#else
+> +#define ___type_unqual(...) ___type(__VA_ARGS__)
+> +#endif
 
-My bad, thank you for fixing this omission.
+instead of defining both ___type_unqual and ___type, let's just define
+___type as either typeof or typeof_unqual and use it uniformly? I
+don't think we ever care about const/volatile/restrict stuff in
+___type usage
 
-Tested-by: Eduard Zingerman <eddyz87@gmail.com>
+pw-bot: cr
 
+> +
+>  #define ___read(read_fn, dst, src_type, src, accessor)                  =
+   \
+>         read_fn((void *)(dst), sizeof(*(dst)), &((src_type)(src))->access=
+or)
+>
+> @@ -517,7 +525,7 @@ extern void *bpf_rdonly_cast(const void *obj, __u32 b=
+tf_id) __ksym __weak;
+>   * than enough for any practical purpose.
+>   */
+>  #define BPF_CORE_READ(src, a, ...) ({                                   =
+   \
+> -       ___type((src), a, ##__VA_ARGS__) __r;                            =
+   \
+> +       ___type_unqual((src), a, ##__VA_ARGS__) __r;                     =
+   \
+>         BPF_CORE_READ_INTO(&__r, (src), a, ##__VA_ARGS__);               =
+   \
+>         __r;                                                             =
+   \
+>  })
+> @@ -533,14 +541,14 @@ extern void *bpf_rdonly_cast(const void *obj, __u32=
+ btf_id) __ksym __weak;
+>   * input argument.
+>   */
+>  #define BPF_CORE_READ_USER(src, a, ...) ({                              =
+   \
+> -       ___type((src), a, ##__VA_ARGS__) __r;                            =
+   \
+> +       ___type_unqual((src), a, ##__VA_ARGS__) __r;                     =
+   \
+>         BPF_CORE_READ_USER_INTO(&__r, (src), a, ##__VA_ARGS__);          =
+   \
+>         __r;                                                             =
+   \
+>  })
+>
+>  /* Non-CO-RE variant of BPF_CORE_READ() */
+>  #define BPF_PROBE_READ(src, a, ...) ({                                  =
+   \
+> -       ___type((src), a, ##__VA_ARGS__) __r;                            =
+   \
+> +       ___type_unqual((src), a, ##__VA_ARGS__) __r;                     =
+   \
+>         BPF_PROBE_READ_INTO(&__r, (src), a, ##__VA_ARGS__);              =
+   \
+>         __r;                                                             =
+   \
+>  })
+> @@ -552,7 +560,7 @@ extern void *bpf_rdonly_cast(const void *obj, __u32 b=
+tf_id) __ksym __weak;
+>   * not restricted to kernel types only.
+>   */
+>  #define BPF_PROBE_READ_USER(src, a, ...) ({                             =
+   \
+> -       ___type((src), a, ##__VA_ARGS__) __r;                            =
+   \
+> +       ___type_unqual((src), a, ##__VA_ARGS__) __r;                     =
+   \
+>         BPF_PROBE_READ_USER_INTO(&__r, (src), a, ##__VA_ARGS__);         =
+   \
+>         __r;                                                             =
+   \
+>  })
+> --
+> 2.34.1
+>
+>
 
