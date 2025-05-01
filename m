@@ -1,149 +1,125 @@
-Return-Path: <bpf+bounces-57133-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57134-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A640EAA6114
-	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 17:59:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB159AA619F
+	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 18:57:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 299429C1F04
-	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 15:59:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 278514A5581
+	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 16:57:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E324120C490;
-	Thu,  1 May 2025 15:59:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACAAF20E323;
+	Thu,  1 May 2025 16:56:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="cBpesFUx";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="kDYazz0g"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WV375bCF"
 X-Original-To: bpf@vger.kernel.org
-Received: from fout-b1-smtp.messagingengine.com (fout-b1-smtp.messagingengine.com [202.12.124.144])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f66.google.com (mail-ed1-f66.google.com [209.85.208.66])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CED861BF37;
-	Thu,  1 May 2025 15:59:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8105B1EB9E8;
+	Thu,  1 May 2025 16:56:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746115152; cv=none; b=hPKrMBNB/GYNwxOyBrlkRJ0pBh6JKOhXtP2adfW0KQfQK0/UDMtjliRcqUYbhfav23Xr0ahiA+Oa/4Tb6MUdTXeZ32X7zM3OlUCkirhnTXx1qPCiADKqbaDVsCcSG6X/4xMTA9h48XyryO0UGbpXAZY3+v13DdPQfMDkb9e50UQ=
+	t=1746118614; cv=none; b=hy7FoO4NC46uSWy+2hYJNnCRKsbgz85mFLDpx+FMU36mBrDkghefkLabPNRMr9vDIJWXOcQm67S7YP2tYqGfJNZM8LyhYZm73to1s+bstZmEq0DJWOnTSrBy9YDc4MHKoMtljVHDYgcm8tBbyluLvsPPKlR6ingCjzUXdiG9gQU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746115152; c=relaxed/simple;
-	bh=VLD7XIoD5ReEFcrucrl4apHEsDnocbY1koqmkGjrqzI=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=ZGfC5uQyBfLbpb36r2E8QYglNNgidc69odi4z0TA5yMUf94nWFxiXN4IdvHlMUrkCw1gVfkiQAPnb16VvhHX0rGMb13XqQRGDtE759IZxDo2jRuPuMPvsaE+JOnxJj+WY/qIGBhqOgQU/cYQgHhiF4AT9jqzPOR0egoh5uDBai8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=cBpesFUx; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=kDYazz0g; arc=none smtp.client-ip=202.12.124.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-02.internal (phl-compute-02.phl.internal [10.202.2.42])
-	by mailfout.stl.internal (Postfix) with ESMTP id 4B80D1140211;
-	Thu,  1 May 2025 11:59:08 -0400 (EDT)
-Received: from phl-imap-08 ([10.202.2.84])
-  by phl-compute-02.internal (MEProxy); Thu, 01 May 2025 11:59:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1746115148;
-	 x=1746201548; bh=P86Ohs1P8SRKraqsep0iM5Yj8o6Xx1WvCw4YHG9svg8=; b=
-	cBpesFUxaz35VLgm3m1KLq26nTfeI0q1EHxsP2VlI3m8DHgIN1iZTI8uAlI6Ay6g
-	FCXFhK/+FxI0xChhVi6/5gmlD6C0yfBUjxM00GOw6O39Q/27dSwLx9vYNsjj9bld
-	SyN6nnxb9yb0J6qqGHDIQ2hJeeKzopyNKz8cLoC1NkV8cIWRBDLNidO6xEKa0Bpj
-	R5EIIa3CaRCkKdi0/UsW9EXwSDOnRJ9+FgDn8OEFxQ5iMBKZHQ/Q/z8jEKmTQjuB
-	ICS2D6n1wLlj2REqwHAjY6FDi7QrvKzNTf0iJPRDpY2xosJ+RZVdpun1jUpp8wWC
-	J8f8oflTiYGSkk0dTmbVIw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1746115148; x=
-	1746201548; bh=P86Ohs1P8SRKraqsep0iM5Yj8o6Xx1WvCw4YHG9svg8=; b=k
-	DYazz0g6aKRC/z8NfoPGU+KkdcC62v8J0u+xl6oTsY24t1Rsw+8E/IYhKcC5wJnO
-	Cji5EXYwamcTlYQI55jx2FKTgZD/YrfrRLqAr3lMjKjxsBAmLSEORM1bksvP29IM
-	BL/RRSTsp3eUHVjpMH3ZzAaCSmMHPR+RjNyNNwYNzvD9PVwrsCRvOF8iN+n5Exe4
-	WmGhUEH0Ns1Kc4Gb83rQqbWEUUYI8PcfDuP8Nh7XZ6LqxxK152jQf9+/H9FYQy/0
-	vCXFtp0/0N8YkdI13fp7gV+ErhyxgdTtOCMOM7bAlQ79vIT34eIDscSwyvCCIykD
-	Ssx+IXL6mon3wvGTBiOpQ==
-X-ME-Sender: <xms:S5oTaInsvDTIj9-N1IsiVcsYDWfVTa4aDt7LeNcoM3yJGB1OMok-rA>
-    <xme:S5oTaH3oNVWRY_wg_K1dhi84O1Ej7BkeH6GaNt0rJTMW1yTA4h73SQrSNlwHNPb-r
-    cDuwni6DJNiSUSZoQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvjedttddtucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
-    gvnhhtshculddquddttddmnegfrhhlucfvnfffucdlfeehmdenucfjughrpefoggffhffv
-    vefkjghfufgtgfesthejredtredttdenucfhrhhomhepfdffrghnihgvlhcuighufdcuoe
-    gugihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeegleeifffhudduueek
-    hfeifefgffegudelveejfeffueekgfdtledvvdeffeeiudenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiiipdhn
-    sggprhgtphhtthhopedvtddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheprghrnh
-    gusegrrhhnuggsrdguvgdprhgtphhtthhopehmhihkohhlrghlsehfsgdrtghomhdprhgt
-    phhtthhopehsughfsehfohhmihgthhgvvhdrmhgvpdhrtghpthhtohepvgguugihiiekje
-    esghhmrghilhdrtghomhdprhgtphhtthhopehjohhhnhdrfhgrshhtrggsvghnugesghhm
-    rghilhdrtghomhdprhgtphhtthhopehhrgholhhuohesghhoohhglhgvrdgtohhmpdhrtg
-    hpthhtohepuggrnhhivghlsehiohhgvggrrhgsohigrdhnvghtpdhrtghpthhtoheplhhm
-    sgesihhsohhvrghlvghnthdrtghomhdprhgtphhtthhopegrnhgurhhiiheskhgvrhhnvg
-    hlrdhorhhg
-X-ME-Proxy: <xmx:S5oTaGqjcGfV9TrE7Kfky634s-JRoD6U6GoZpxcRb3ztJhj0dY89RQ>
-    <xmx:S5oTaEk8YhSeiDXcB1J2g0mhPoRjbK5vKjNsPXfzI7WOopDBbVZbHg>
-    <xmx:S5oTaG0FjQ16RRYs3xXu4uaYRht9-jYl9ferVGnyxrB32NcWcduBYQ>
-    <xmx:S5oTaLvZTX-3klhyGctryRehyXRO2A3wxJvNmVIJBp18WavEzcBKlA>
-    <xmx:TJoTaMuFENA3JfsvHkLNs8Gyi5He84zRZcEAHwzpet835-v-VST1daqA>
-Feedback-ID: i6a694271:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 54FA918A006B; Thu,  1 May 2025 11:59:07 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1746118614; c=relaxed/simple;
+	bh=pjITccKn52YoXHvMNHp0xjqzTUP9bb6Gv+c2QtvOV0Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=exQIE1KFZ4DV7UgO6TL2Cx1kAyIr4TlkHzdaPD5ee/lq4+ghPp1boBOpinOK6itTl1BBZtSnba90cFUR9fPMrg5wuqs93+MYeAVYsjWVyTuGLxwrAkSA7L4aSb9fWaTa6aFzx5EcJGRgiO91XvTUH6EF0JXmwKbQx+3E2lUzLSc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WV375bCF; arc=none smtp.client-ip=209.85.208.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f66.google.com with SMTP id 4fb4d7f45d1cf-5e5cded3e2eso1799646a12.0;
+        Thu, 01 May 2025 09:56:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1746118611; x=1746723411; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=pjITccKn52YoXHvMNHp0xjqzTUP9bb6Gv+c2QtvOV0Q=;
+        b=WV375bCFgwwzVhyyhJNB6bIj0B5JTHPxqjpKxUwym8T+M7nQpAHbjkLzPcQxOO7Zzc
+         03L6GTdaJowa5pbUEz4bAeqOY9EpshhabzMyLHHWusoXS8pBVp1BjtTja22xJYLA0l+5
+         yUGwL9PfC3sQJ4romrH4enMadaR2pDodAYvWn8tIcbE3Z+wrbBNFrbwlpdpsplSidUlB
+         p8Xi3Rov24W4im0NjHfovcljyfGWRAQscKLs81tMQpK16OdE5X84zHZwnlilhGlTKpg2
+         AT/IZM/3M9NAESqpRqxmatkloj+TnwoikhP3TtR4BGeB2YUoJbTQZu4hO2Xyb7fR5Mh0
+         UbPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746118611; x=1746723411;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pjITccKn52YoXHvMNHp0xjqzTUP9bb6Gv+c2QtvOV0Q=;
+        b=T/X3WyCDdF4Kzi3U4YsNTrIiONXPKfAdtvRVZ4UcCcZnxfFj2ruRnQl27LHXzQo/oj
+         WlPuY2X6Y7WLmSk1goePdsMj4FY1dljJiNI+dJ+kX2dBkyheUFiI6gqWaHysd+GE5spo
+         +MTUspMATtrsITsDV/tPVpF86BkwSjg4KGvCQ0oYP4Gd5zw43oL0cG5kqeBIqUNd7TO2
+         Zya6Wehk+W7ganl1Z0lYV9r8+UJjnx6j/MW9CRb3YcmFSHwVlHLd5NJ/sLYJcSQCYEb0
+         Bjoqwdjs9BCdNF1cn1MOM+3rUd5GHyX2NNglIb57EdArG8pAz6gwiVGrIW+MLEPjzgIM
+         QiGA==
+X-Forwarded-Encrypted: i=1; AJvYcCWQ2WawZoevyBhIQ8A13Hc2014pC9T1Nsy3PBYoxJjboRO3ijecGbjfb7r1rfnFtK0t/l0=@vger.kernel.org, AJvYcCWV3TyjRfCrOHnDPj9pX1MVs0+3ztqNehFW3JYcj9G4tJNSt+/V/Es6HqnzJmqAL7o4sG6x83drxgR3EmWJJ02B@vger.kernel.org, AJvYcCXK/NRePoNeTspExxjFcBS9FfnbOnQJrMc+DDKIumTOvLHHV9hXZhTj3lzF81kozOEygDk3Eb3t4O5u3xpv@vger.kernel.org
+X-Gm-Message-State: AOJu0YzFymd6qqDOxk3P8QH0Cw2w7JSYimHddH9mWgeHyI3UHo9+80U3
+	LyAdOAVbSTI9rJ+FWNjELcwWJ18otFowjg4S7/urkyw4AJo7jBxf+pG+C3HPLG1ALZabwEp0uxz
+	lkgnV/fwXHssQFRcw6jbjFU3hiyk=
+X-Gm-Gg: ASbGnct2tpD8Gj+oMf+0DZwIOQiWtbjjWjTiYwdVJSuCYTnjxPUj3S0K7qLx5ITDfHO
+	DiEzwGDo0nnYrWp0aRl9iyItC5qVd0pblbpM/0TsexmqO7mjQAi+GPDR9/zngjc4OqnkwZVJhFd
+	FW20SrlR2w2hBTiq2A6KcxfRCrBUy3znSxvdHtEfwM9KK5P3GCpMJ+ZA==
+X-Google-Smtp-Source: AGHT+IECEidvEo999oYKJS7UCLAVVBM0myFbAJ15E7tPIRmjavdQpBC/5/8mZ8iIClrt0F8kscmSCXQGalHJ9fnIAF0=
+X-Received: by 2002:a05:6402:524c:b0:5e6:de5:312f with SMTP id
+ 4fb4d7f45d1cf-5f913507c6dmr3187305a12.23.1746118610475; Thu, 01 May 2025
+ 09:56:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: T7116480ff90ddb52
-Date: Thu, 01 May 2025 08:58:46 -0700
-From: "Daniel Xu" <dxu@dxuuu.xyz>
-To: "Lorenz Bauer" <lmb@isovalent.com>, "Arnd Bergmann" <arnd@arndb.de>,
- "Alexei Starovoitov" <ast@kernel.org>,
- "Daniel Borkmann" <daniel@iogearbox.net>,
- "Andrii Nakryiko" <andrii@kernel.org>,
- "Martin KaFai Lau" <martin.lau@linux.dev>,
- "Eduard Zingerman" <eddyz87@gmail.com>, "Song Liu" <song@kernel.org>,
- "Yonghong Song" <yonghong.song@linux.dev>,
- "John Fastabend" <john.fastabend@gmail.com>, "KP Singh" <kpsingh@kernel.org>,
- "Stanislav Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>,
- "Jiri Olsa" <jolsa@kernel.org>, "Mykola Lysenko" <mykolal@fb.com>,
- "Shuah Khan" <shuah@kernel.org>
-Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>, linux-kselftest@vger.kernel.org
-Message-Id: <ec03896b-feac-4fa5-a213-7e9f57e15f72@app.fastmail.com>
-In-Reply-To: <20250501-vmlinux-mmap-v1-0-aa2724572598@isovalent.com>
-References: <20250501-vmlinux-mmap-v1-0-aa2724572598@isovalent.com>
-Subject: Re: [PATCH bpf-next 0/2] Allow mmap of /sys/kernel/btf/vmlinux
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+References: <20250501073603.1402960-1-luis.gerhorst@fau.de> <20250501073603.1402960-2-luis.gerhorst@fau.de>
+In-Reply-To: <20250501073603.1402960-2-luis.gerhorst@fau.de>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Thu, 1 May 2025 18:56:13 +0200
+X-Gm-Features: ATxdqUF2nyzuV4YsC3PXg7l3hGhLYkWnuNMDOdnMHwkg3TmNkQsrDO9p2L0Wm2o
+Message-ID: <CAP01T742Td_U8=fs4DDrxWSdQcXEpGE=T6+WfJqBw_bqpXhb+g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 01/11] selftests/bpf: Fix caps for __xlated/jited_unpriv
+To: Luis Gerhorst <luis.gerhorst@fau.de>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, 
+	Xu Kuohai <xukuohai@huaweicloud.com>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Hari Bathini <hbathini@linux.ibm.com>, 
+	Christophe Leroy <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, 
+	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
+	Nicholas Piggin <npiggin@gmail.com>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Henriette Herzog <henriette.herzog@rub.de>, Saket Kumar Bhaskar <skb99@linux.ibm.com>, 
+	Cupertino Miranda <cupertino.miranda@oracle.com>, Jiayuan Chen <mrpre@163.com>, 
+	Matan Shachnai <m.shachnai@gmail.com>, Dimitar Kanaliev <dimitar.kanaliev@siteground.com>, 
+	Shung-Hsi Yu <shung-hsi.yu@suse.com>, Daniel Xu <dxu@dxuuu.xyz>, bpf@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, May 1, 2025, at 7:28 AM, Lorenz Bauer wrote:
-> I'd like to cut down the memory usage of parsing vmlinux BTF in ebpf-go.
-> With some upcoming changes the library is sitting at 5MiB for a parse.
-> Most of that memory is simply copying the BTF blob into user space.
-> By allowing vmlinux BTF to be mmapped read-only into user space I can
-> cut memory usage by about 75%.
-
-Cool! Maybe teach libbpf to use this as well? So everyone else can pick up
-the win transparently.
-
+On Thu, 1 May 2025 at 09:39, Luis Gerhorst <luis.gerhorst@fau.de> wrote:
 >
-> Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
+> Currently, __xlated_unpriv and __jited_unpriv do not work because the
+> BPF syscall will overwrite info.jited_prog_len and info.xlated_prog_len
+> with 0 if the process is not bpf_capable(). This bug was not noticed
+> before, because there is no test that actually uses
+> __xlated_unpriv/__jited_unpriv.
+>
+> To resolve this, simply restore the capabilities earlier (but still
+> after loading the program). Adding this here unconditionally is fine
+> because the function first checks that the capabilities were initialized
+> before attempting to restore them.
+>
+> This will be important later when we add tests that check whether a
+> speculation barrier was inserted in the correct location.
+>
+> Signed-off-by: Luis Gerhorst <luis.gerhorst@fau.de>
+> Fixes: 9c9f73391310 ("selftests/bpf: allow checking xlated programs in verifier_* tests")
+> Fixes: 7d743e4c759c ("selftests/bpf: __jited test tag to check disassembly after jit")
 > ---
-> Lorenz Bauer (2):
->       btf: allow mmap of vmlinux btf
->       selftests: bpf: add a test for mmapable vmlinux BTF
->
->  include/asm-generic/vmlinux.lds.h                  |  3 +-
->  kernel/bpf/sysfs_btf.c                             | 25 ++++++-
->  tools/testing/selftests/bpf/prog_tests/btf_sysfs.c | 79 ++++++++++++++++++++++
->  3 files changed, 104 insertions(+), 3 deletions(-)
-> ---
-> base-commit: 38d976c32d85ef12dcd2b8a231196f7049548477
-> change-id: 20250501-vmlinux-mmap-2ec5563c3ef1
->
-> Best regards,
-> -- 
-> Lorenz Bauer <lmb@isovalent.com>
+
+Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 
