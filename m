@@ -1,202 +1,497 @@
-Return-Path: <bpf+bounces-57168-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57169-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8BFCAA6641
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 00:31:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FB44AA6667
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 00:53:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 980294C5ED8
-	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 22:31:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 346929A025A
+	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 22:53:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B196265CDE;
-	Thu,  1 May 2025 22:31:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0D612517BE;
+	Thu,  1 May 2025 22:53:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4o2lwDGH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t5/Guegb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E943C243969
-	for <bpf@vger.kernel.org>; Thu,  1 May 2025 22:31:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AD211F0990;
+	Thu,  1 May 2025 22:53:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746138668; cv=none; b=rYKTtHA5xB8UEIZHybh/cb+g1DWPoA6mob+LG/WpZnLmG5Eo7YCl26AjE0xfGmHnGvsLqgBZidORlgaAR04E0O/KHgoUtLbdYrNO5X6SngjXGxNrznTvh3uNak/UOc0L5UBMQyWaKFWY4ApT5PHIcRVbkJcN+SZxUzoRsP5Cuxw=
+	t=1746140019; cv=none; b=bR0LrZEjhASux5j2FhTGD4hG4ZOVwLVUmGWIQtdBmu/pzbDHhiQPqW/1GrbBniUp+bG3YJSDYWNzEIE/iKaipnWK6yzW/l/7myHMV2ZdmowBEh0M8kMrV7zsN18f6M1yg1GkJ8CzKUQRuUmE1Y63KbUgcb6i4GLhv82G7pk4G6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746138668; c=relaxed/simple;
-	bh=5jNJ7PmQ1iM85BfunoQWJC8Wakn+kZkigT1EU1plLbk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=p3zc64+OrQ899v/BqPV0Iq2eL97lOG9HdrjvybaZoFW3LCLLeMp/tl/PBE9gih6PjoxxoYmrqyZfIcZqSjDn/Q4XvCWGeiEIgwei1kJLZcaYNdCVLWDhTuNk8tcUFuROCMdv2ibBVH5+YWrwhEx3V76i5LzJWM8jPEpjpOSDRec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4o2lwDGH; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-43d5f10e1aaso22925e9.0
-        for <bpf@vger.kernel.org>; Thu, 01 May 2025 15:31:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1746138665; x=1746743465; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dvFaLMmnYAhkMr2ts1Qsuk8rmVsiL5MqMz1A00np0Ec=;
-        b=4o2lwDGHESt8qa0XytIneMFHN6s/vQODPWKQw6mFStTcl/luAHrWAQpkzVFsh6Ay1T
-         T/420YyACWf3yUtskamUNL1MGDDjvOrJuFVaGDP2qJS9vke2asQUVDdShwJ3lw20qleS
-         7ExFNgYYOElg0tZSJua8FeaKvGK85izzRoRVbLBMfsKkL8vEvs9ryiTxl3TGS0Wwj3I5
-         arHglnJ1zbqdaHXAnQdnJN6QWNYHye34ombteiMNvIadcc49nRSGB/C5sGDH8b8F5Apg
-         zZzKSzgNvsizfdhgEBqGofIb/qMZn3i+c80eCUY8V8oOxTLAjiJHTAJRq/dKlv5tQkzI
-         cv/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746138665; x=1746743465;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dvFaLMmnYAhkMr2ts1Qsuk8rmVsiL5MqMz1A00np0Ec=;
-        b=VBjg5/eqAJXHenvwEuqwzmS1vBSBPLUVpr4O/Tc1cf122AvMlKzUQcAAShFcuRvI92
-         BTARU115YYmOqVin82G3B1L0Pj7ri3fwjbsc48hvj4W4cV0b0ub5MHQ1OyTf7Gme7Ebq
-         rwLGayUBXP6vnNXF5dM01Ia7aYVqQAsGIerySHcjL5FTfocGGUNcNiKocNTZ4aO15tyg
-         VuojRYGtlIqc5EWhZ3P81m9AlYtiWJUn546zuRlN/hMebpYU2f+AezWypJudyuC76Sfh
-         yeDXKhjhmfmKweRbHPtzvltNtzcc9CMjntEjBoeMDLxXtroUXxEUvbwSxuvqFeWoAfDv
-         eIIg==
-X-Forwarded-Encrypted: i=1; AJvYcCX38+o6L0whVd1S1Q+SjR/I7o4PRAmK8i+cpPR88vnFZAaEnPpyboy7kMSeqmg1Xjo3I0U=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyWnYAiGO7G6PMlNl+innpkyXRDtfDjV44/9QOAHEcRB9NAXp5T
-	5U2V3u3gLEr7u4MYFuXxaD9pQ37UHSxY+U1YVa0NzqicSrQ49HiJg4owml4qvTNC5yXYIfqw6y4
-	rxL2BG9cOq1AIt8/h1QK4vy/pHOTbrbU8CMKS
-X-Gm-Gg: ASbGnctwK3MnPtqC+LHNak83A8Nkc7Cuw04Ho/xo883mb2qhrvA8gMx534yOAelSbnB
-	v3xnWaEbY68Y6AH8NcqfvsQm8byEo2NcVQ9I04EwN6ta1lZKHV02MV4RKyKunPTYbIwmqSC62P5
-	DLLJzrINLCasYWRC/+LlY=
-X-Google-Smtp-Source: AGHT+IHZeQVSjanU+gebjmksvGiFNo+T+ZOurPfQY2zHeFq43o/7AekSmeEL8Kr/40IywT61pNTgxPJ4rqdxiNUNxZw=
-X-Received: by 2002:a05:600c:3544:b0:441:aaa8:312e with SMTP id
- 5b1f17b1804b1-441b6499e1cmr2235995e9.6.1746138665030; Thu, 01 May 2025
- 15:31:05 -0700 (PDT)
+	s=arc-20240116; t=1746140019; c=relaxed/simple;
+	bh=YdG+crROlfIYXjtOnNn9BxIcBkzTZdpY/njpp4zMggY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LxqdIpjwaLU5kNyr3B7ur5+oBu3Q7B+76cN5EgLT8C5jBq9vY9+uW2Pbi5WJw3D21vAgXk97nypRjiseUUodjUt/Y7YYY0OMWGt3+mopCWvHPTmudAENh7Mbymhi1AuUT5LU4aEQXESQTOfBqe11K7HceOYb65WwI2zJArLhHXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t5/Guegb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DB00C4CEED;
+	Thu,  1 May 2025 22:53:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1746140018;
+	bh=YdG+crROlfIYXjtOnNn9BxIcBkzTZdpY/njpp4zMggY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=t5/Guegbjym/Hwj+y+fdEErwiQTb7z3bAczBlr9dpIpGbjxN+koKk0+DfhSk+v2pk
+	 M2anURJRol8gIzxcCJ19Ve5eQvsiQSa6GofK1NRolnpahzmnn8abyYtknxON18ugp1
+	 /sycGlHSXPhzrAveei8PSIM981s4260x3i9sZ6mpca8XUw5E4l9GK/VGVV5WmCrTTb
+	 zK+FivQmRlgoI5UAPV+kOoPe3wmOQWbzc6i9pnvXecCeyWmr+hDEY9i/mDoR9g70ZM
+	 ds6q/UzXELg3wgIkmoKPUd/gFedujE8dgh0cJ5YfYSrEk+2mWHmhwOuR91nFc9Q9it
+	 X8n9bu0L0OtfQ==
+From: Namhyung Kim <namhyung@kernel.org>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Kan Liang <kan.liang@linux.intel.com>
+Cc: Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org,
+	Song Liu <song@kernel.org>,
+	bpf@vger.kernel.org,
+	Howard Chu <howardchu95@gmail.com>
+Subject: [PATCH] perf trace: Support --summary-mode=cgroup
+Date: Thu,  1 May 2025 15:53:37 -0700
+Message-ID: <20250501225337.928470-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.49.0.906.g1f30a19c02-goog
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250428211536.1651456-1-zhuyifei@google.com> <CAEf4BzZXpWC8nWb4zF37PpDX0Y+Bk9=vw8iL5Ehqcjr-Bw=dNQ@mail.gmail.com>
- <55e5aab0-6aa7-4b79-908a-5cbfdc7bd7cd@kernel.org>
-In-Reply-To: <55e5aab0-6aa7-4b79-908a-5cbfdc7bd7cd@kernel.org>
-From: YiFei Zhu <zhuyifei@google.com>
-Date: Thu, 1 May 2025 15:30:53 -0700
-X-Gm-Features: ATxdqUG3KM0CyJNPsFvlqNwOATY_iVJ4iA3bVbkViPwufxCqrYOhktkaOa0y1kg
-Message-ID: <CAA-VZPmtxpRCB_o52vuEuGW4UeHgzc+xO+8JMA-2G04P1r3Pug@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpftool: Fix regression of "bpftool cgroup tree"
- EINVAL on older kernels
-To: Quentin Monnet <qmo@kernel.org>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Kenta Tada <tadakentaso@gmail.com>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Greg Thelen <gthelen@google.com>, 
-	Mahesh Bandewar <maheshb@google.com>, Minh-Anh Nguyen <minhanhdn@google.com>, 
-	Sagarika Sharma <sharmasagarika@google.com>, XuanYao Zhang <xuanyao@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, May 1, 2025 at 1:04=E2=80=AFPM Quentin Monnet <qmo@kernel.org> wrot=
-e:
->
-> 2025-05-01 10:54 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > On Mon, Apr 28, 2025 at 2:15=E2=80=AFPM YiFei Zhu <zhuyifei@google.com>=
- wrote:
-> >>
-> >> If cgroup_has_attached_progs queries an attach type not supported
-> >> by the running kernel, due to the kernel being older than the bpftool
-> >> build, it would encounter an -EINVAL from BPF_PROG_QUERY syscall.
-> >>
-> >> Prior to commit 98b303c9bf05 ("bpftool: Query only cgroup-related
-> >> attach types"), this EINVAL would be ignored by the function, allowing
-> >> the function to only consider supported attach types. The commit
-> >> changed so that, instead of querying all attach types, only attach
-> >> types from the array `cgroup_attach_types` is queried. The assumption
-> >> is that because these are only cgroup attach types, they should all
-> >> be supported. Unfortunately this assumption may be false when the
-> >> kernel is older than the bpftool build, where the attach types queried
-> >> by bpftool is not yet implemented in the kernel. This would result in
-> >> errors such as:
-> >>
-> >>   $ bpftool cgroup tree
-> >>   CgroupPath
-> >>   ID       AttachType      AttachFlags     Name
-> >>   Error: can't query bpf programs attached to /sys/fs/cgroup: Invalid =
-argument
-> >>
-> >> This patch restores the logic of ignoring EINVAL from prior to that pa=
-tch.
-> >>
-> >> Fixes: 98b303c9bf05 ("bpftool: Query only cgroup-related attach types"=
-)
-> >> Reported-by: Sagarika Sharma <sharmasagarika@google.com>
-> >> Reported-by: Minh-Anh Nguyen <minhanhdn@google.com>
-> >> Signed-off-by: YiFei Zhu <zhuyifei@google.com>
-> >> ---
-> >>  tools/bpf/bpftool/cgroup.c | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
-> >> index 93b139bfb9880..3f1d6be512151 100644
-> >> --- a/tools/bpf/bpftool/cgroup.c
-> >> +++ b/tools/bpf/bpftool/cgroup.c
-> >> @@ -221,7 +221,7 @@ static int cgroup_has_attached_progs(int cgroup_fd=
-)
-> >>         for (i =3D 0; i < ARRAY_SIZE(cgroup_attach_types); i++) {
-> >>                 int count =3D count_attached_bpf_progs(cgroup_fd, cgro=
-up_attach_types[i]);
-> >>
-> >> -               if (count < 0)
-> >> +               if (count < 0 && errno !=3D EINVAL)
-> >>                         return -1;
-> >
-> > let's maybe change count_attached_bpf_progs() to return error directly
-> > as returned by bpf_prog_query(), instead of translating that to -1 and
-> > then requiring relying on errno?
-> >
-> > so just
-> >
-> > if (ret)
-> >     return ret;
-> >
-> > and then just
-> >
-> > if (count < 0 && count !=3D -EINVAL)
-> >     return /* well whatever, I'd return error probably instead of -1 ag=
-ain */
-> >
-> > Thoughts?
->
-> It feels maybe slightly less intuitive to me to compare "count" - rather
-> than "errno" - with "-EINVAL", but I don't mind really. It does make
-> sense to check the return code from the function. Looks OK from my side.
+Add a new summary mode to collect stats for each cgroup.
 
-Hmm. I'm not strongly against it, but consider the current
-cgroup_has_attached_progs. If I see
+  $ sudo ./perf trace -as --bpf-summary --summary-mode=cgroup -- sleep 1
 
-    int count =3D count_attached_bpf_progs(cgroup_fd, type);
-    if (count < 0 && errno !=3D EINVAL)
-        return -1;
+   Summary of events:
 
-I know "negative is error, error number is propagated though errno".
-If instead, I see
+   cgroup /user.slice/user-657345.slice/user@657345.service/session.slice/org.gnome.Shell@x11.service, 535 events
 
-    int count =3D count_attached_bpf_progs(cgroup_fd, type);
-    if (count < 0 && count !=3D -EINVAL)
-        return count;
+     syscall            calls  errors  total       min       avg       max       stddev
+                                       (msec)    (msec)    (msec)    (msec)        (%)
+     --------------- --------  ------ -------- --------- --------- ---------     ------
+     ppoll                 15      0   373.600     0.004    24.907   197.491     55.26%
+     poll                  15      0     1.325     0.001     0.088     0.369     38.76%
+     close                 66      0     0.567     0.007     0.009     0.026      3.55%
+     write                150      0     0.471     0.001     0.003     0.010      3.29%
+     recvmsg               94     83     0.290     0.000     0.003     0.037     16.39%
+     ioctl                 26      0     0.237     0.001     0.009     0.096     50.13%
+     timerfd_create        66      0     0.236     0.003     0.004     0.024      8.92%
+     timerfd_settime       70      0     0.160     0.001     0.002     0.012      7.66%
+     writev                10      0     0.118     0.001     0.012     0.019     18.17%
+     read                   9      0     0.021     0.001     0.002     0.004     14.07%
+     getpid                14      0     0.019     0.000     0.001     0.004     20.28%
 
-I know "negative is error, error number is propagated though return
-value". So I would expect the caller to do
+   cgroup /system.slice/polkit.service, 94 events
 
-    has_attached_progs =3D cgroup_has_attached_progs(cgroup_fd);
-    if (has_attached_progs < 0) {
-        p_err("can't query bpf programs attached to %s: %s",
-              path, strerror(-has_attached_progs));
+     syscall            calls  errors  total       min       avg       max       stddev
+                                       (msec)    (msec)    (msec)    (msec)        (%)
+     --------------- --------  ------ -------- --------- --------- ---------     ------
+     ppoll                 22      0    19.811     0.000     0.900     9.273     63.88%
+     write                 30      0     0.040     0.001     0.001     0.003     12.09%
+     recvmsg               12      0     0.018     0.001     0.002     0.006     28.15%
+     read                  18      0     0.013     0.000     0.001     0.003     21.99%
+     poll                  12      0     0.006     0.000     0.001     0.001      4.48%
 
-(strerror(-has_attached_progs) rather than strerror(errno)). While I'm
-fine with such a change, it looks a bit extraneous for what was a
-simple one-line bug fix, and feels like it should be on a separate
-patch and probably on bpf-next and not bpf. Wdyt?
+   cgroup /user.slice/user-657345.slice/user@657345.service/app.slice/app-org.gnome.Terminal.slice/gnome-terminal-server.service, 21 events
 
-YiFei Zhu
+     syscall            calls  errors  total       min       avg       max       stddev
+                                       (msec)    (msec)    (msec)    (msec)        (%)
+     --------------- --------  ------ -------- --------- --------- ---------     ------
+     ppoll                  4      0    17.476     0.003     4.369    13.298     69.65%
+     recvmsg               15     12     0.068     0.002     0.005     0.014     26.53%
+     writev                 1      0     0.033     0.033     0.033     0.033      0.00%
+     poll                   1      0     0.005     0.005     0.005     0.005      0.00%
 
-> Thanks,
-> Quentin
+   ...
+
+It works only for --bpf-summary for now.
+
+Cc: Howard Chu <howardchu95@gmail.com>
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/Documentation/perf-trace.txt       |   3 +-
+ tools/perf/builtin-trace.c                    |  10 +-
+ tools/perf/util/bpf-trace-summary.c           | 123 +++++++++++++++++-
+ .../perf/util/bpf_skel/syscall_summary.bpf.c  |  43 +++++-
+ tools/perf/util/bpf_skel/syscall_summary.h    |   2 +
+ tools/perf/util/trace.h                       |   1 +
+ 6 files changed, 170 insertions(+), 12 deletions(-)
+
+diff --git a/tools/perf/Documentation/perf-trace.txt b/tools/perf/Documentation/perf-trace.txt
+index a8a0d8c33438fef7..c1fb6056a0d36dda 100644
+--- a/tools/perf/Documentation/perf-trace.txt
++++ b/tools/perf/Documentation/perf-trace.txt
+@@ -152,7 +152,8 @@ the thread executes on the designated CPUs. Default is to monitor all CPUs.
+ 
+ --summary-mode=mode::
+ 	To be used with -s or -S, to select how to show summary.  By default it'll
+-	show the syscall summary by thread.  Possible values are: thread, total.
++	show the syscall summary by thread.  Possible values are: thread, total,
++	cgroup.
+ 
+ --tool_stats::
+ 	Show tool stats such as number of times fd->pathname was discovered thru
+diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+index b2c5a9b765ab5d33..83c62c30d914306c 100644
+--- a/tools/perf/builtin-trace.c
++++ b/tools/perf/builtin-trace.c
+@@ -5301,6 +5301,8 @@ static int trace__parse_summary_mode(const struct option *opt, const char *str,
+ 		trace->summary_mode = SUMMARY__BY_THREAD;
+ 	} else if (!strcmp(str, "total")) {
+ 		trace->summary_mode = SUMMARY__BY_TOTAL;
++	} else if (!strcmp(str, "cgroup")) {
++		trace->summary_mode = SUMMARY__BY_CGROUP;
+ 	} else {
+ 		pr_err("Unknown summary mode: %s\n", str);
+ 		return -1;
+@@ -5460,7 +5462,7 @@ int cmd_trace(int argc, const char **argv)
+ 	OPT_BOOLEAN(0, "errno-summary", &trace.errno_summary,
+ 		    "Show errno stats per syscall, use with -s or -S"),
+ 	OPT_CALLBACK(0, "summary-mode", &trace, "mode",
+-		     "How to show summary: select thread (default) or total",
++		     "How to show summary: select thread (default), total or cgroup",
+ 		     trace__parse_summary_mode),
+ 	OPT_CALLBACK_DEFAULT('F', "pf", &trace.trace_pgfaults, "all|maj|min",
+ 		     "Trace pagefaults", parse_pagefaults, "maj"),
+@@ -5774,6 +5776,12 @@ int cmd_trace(int argc, const char **argv)
+ 		symbol_conf.keep_exited_threads = true;
+ 		if (trace.summary_mode == SUMMARY__NONE)
+ 			trace.summary_mode = SUMMARY__BY_THREAD;
++
++		if (!trace.summary_bpf && trace.summary_mode == SUMMARY__BY_CGROUP) {
++			pr_err("Error: --summary-mode=cgroup only works with --bpf-summary\n");
++			err = -EINVAL;
++			goto out;
++		}
+ 	}
+ 
+ 	if (output_name != NULL) {
+diff --git a/tools/perf/util/bpf-trace-summary.c b/tools/perf/util/bpf-trace-summary.c
+index 114d8d9ed9b2d3f3..69fb165da206b01f 100644
+--- a/tools/perf/util/bpf-trace-summary.c
++++ b/tools/perf/util/bpf-trace-summary.c
+@@ -6,10 +6,12 @@
+ 
+ #include "dwarf-regs.h" /* for EM_HOST */
+ #include "syscalltbl.h"
++#include "util/cgroup.h"
+ #include "util/hashmap.h"
+ #include "util/trace.h"
+ #include "util/util.h"
+ #include <bpf/bpf.h>
++#include <linux/rbtree.h>
+ #include <linux/time64.h>
+ #include <tools/libc_compat.h> /* reallocarray */
+ 
+@@ -18,6 +20,7 @@
+ 
+ 
+ static struct syscall_summary_bpf *skel;
++static struct rb_root cgroups = RB_ROOT;
+ 
+ int trace_prepare_bpf_summary(enum trace_summary_mode mode)
+ {
+@@ -29,9 +32,14 @@ int trace_prepare_bpf_summary(enum trace_summary_mode mode)
+ 
+ 	if (mode == SUMMARY__BY_THREAD)
+ 		skel->rodata->aggr_mode = SYSCALL_AGGR_THREAD;
++	else if (mode == SUMMARY__BY_CGROUP)
++		skel->rodata->aggr_mode = SYSCALL_AGGR_CGROUP;
+ 	else
+ 		skel->rodata->aggr_mode = SYSCALL_AGGR_CPU;
+ 
++	if (cgroup_is_v2("perf_event") > 0)
++		skel->rodata->use_cgroup_v2 = 1;
++
+ 	if (syscall_summary_bpf__load(skel) < 0) {
+ 		fprintf(stderr, "failed to load syscall summary bpf skeleton\n");
+ 		return -1;
+@@ -42,6 +50,9 @@ int trace_prepare_bpf_summary(enum trace_summary_mode mode)
+ 		return -1;
+ 	}
+ 
++	if (mode == SUMMARY__BY_CGROUP)
++		read_all_cgroups(&cgroups);
++
+ 	return 0;
+ }
+ 
+@@ -88,9 +99,13 @@ static double rel_stddev(struct syscall_stats *stat)
+  * per-cpu analysis so it's keyed by the syscall number to combine stats
+  * from different CPUs.  And syscall_data always has a syscall_node so
+  * it can effectively work as flat hierarchy.
++ *
++ * For per-cgroup stats, it uses two-level data structure like thread
++ * syscall_data is keyed by CGROUP and has an array of node which
++ * represents each syscall for the cgroup.
+  */
+ struct syscall_data {
+-	int key; /* tid if AGGR_THREAD, syscall-nr if AGGR_CPU */
++	u64 key; /* tid if AGGR_THREAD, syscall-nr if AGGR_CPU, cgroup if AGGR_CGROUP */
+ 	int nr_events;
+ 	int nr_nodes;
+ 	u64 total_time;
+@@ -191,7 +206,7 @@ static int print_thread_stat(struct syscall_data *data, FILE *fp)
+ 
+ 	qsort(data->nodes, data->nr_nodes, sizeof(*data->nodes), nodecmp);
+ 
+-	printed += fprintf(fp, " thread (%d), ", data->key);
++	printed += fprintf(fp, " thread (%d), ", (int)data->key);
+ 	printed += fprintf(fp, "%d events\n\n", data->nr_events);
+ 
+ 	printed += fprintf(fp, "   syscall            calls  errors  total       min       avg       max       stddev\n");
+@@ -283,6 +298,75 @@ static int print_total_stats(struct syscall_data **data, int nr_data, FILE *fp)
+ 	return printed;
+ }
+ 
++static int update_cgroup_stats(struct hashmap *hash, struct syscall_key *map_key,
++			       struct syscall_stats *map_data)
++{
++	struct syscall_data *data;
++	struct syscall_node *nodes;
++
++	if (!hashmap__find(hash, map_key->cgroup, &data)) {
++		data = zalloc(sizeof(*data));
++		if (data == NULL)
++			return -ENOMEM;
++
++		data->key = map_key->cgroup;
++		if (hashmap__add(hash, data->key, data) < 0) {
++			free(data);
++			return -ENOMEM;
++		}
++	}
++
++	/* update thread total stats */
++	data->nr_events += map_data->count;
++	data->total_time += map_data->total_time;
++
++	nodes = reallocarray(data->nodes, data->nr_nodes + 1, sizeof(*nodes));
++	if (nodes == NULL)
++		return -ENOMEM;
++
++	data->nodes = nodes;
++	nodes = &data->nodes[data->nr_nodes++];
++	nodes->syscall_nr = map_key->nr;
++
++	/* each thread has an entry for each syscall, just use the stat */
++	memcpy(&nodes->stats, map_data, sizeof(*map_data));
++	return 0;
++}
++
++static int print_cgroup_stat(struct syscall_data *data, FILE *fp)
++{
++	int printed = 0;
++	struct cgroup *cgrp = __cgroup__find(&cgroups, data->key);
++
++	qsort(data->nodes, data->nr_nodes, sizeof(*data->nodes), nodecmp);
++
++	if (cgrp)
++		printed += fprintf(fp, " cgroup %s,", cgrp->name);
++	else
++		printed += fprintf(fp, " cgroup id:%lu,", (unsigned long)data->key);
++
++	printed += fprintf(fp, " %d events\n\n", data->nr_events);
++
++	printed += fprintf(fp, "   syscall            calls  errors  total       min       avg       max       stddev\n");
++	printed += fprintf(fp, "                                     (msec)    (msec)    (msec)    (msec)        (%%)\n");
++	printed += fprintf(fp, "   --------------- --------  ------ -------- --------- --------- ---------     ------\n");
++
++	printed += print_common_stats(data, fp);
++	printed += fprintf(fp, "\n\n");
++
++	return printed;
++}
++
++static int print_cgroup_stats(struct syscall_data **data, int nr_data, FILE *fp)
++{
++	int printed = 0;
++
++	for (int i = 0; i < nr_data; i++)
++		printed += print_cgroup_stat(data[i], fp);
++
++	return printed;
++}
++
+ int trace_print_bpf_summary(FILE *fp)
+ {
+ 	struct bpf_map *map = skel->maps.syscall_stats_map;
+@@ -305,10 +389,19 @@ int trace_print_bpf_summary(FILE *fp)
+ 		struct syscall_stats stat;
+ 
+ 		if (!bpf_map__lookup_elem(map, &key, sizeof(key), &stat, sizeof(stat), 0)) {
+-			if (skel->rodata->aggr_mode == SYSCALL_AGGR_THREAD)
++			switch (skel->rodata->aggr_mode) {
++			case SYSCALL_AGGR_THREAD:
+ 				update_thread_stats(&schash, &key, &stat);
+-			else
++				break;
++			case SYSCALL_AGGR_CPU:
+ 				update_total_stats(&schash, &key, &stat);
++				break;
++			case SYSCALL_AGGR_CGROUP:
++				update_cgroup_stats(&schash, &key, &stat);
++				break;
++			default:
++				break;
++			}
+ 		}
+ 
+ 		prev_key = &key;
+@@ -325,10 +418,19 @@ int trace_print_bpf_summary(FILE *fp)
+ 
+ 	qsort(data, nr_data, sizeof(*data), datacmp);
+ 
+-	if (skel->rodata->aggr_mode == SYSCALL_AGGR_THREAD)
++	switch (skel->rodata->aggr_mode) {
++	case SYSCALL_AGGR_THREAD:
+ 		printed += print_thread_stats(data, nr_data, fp);
+-	else
++		break;
++	case SYSCALL_AGGR_CPU:
+ 		printed += print_total_stats(data, nr_data, fp);
++		break;
++	case SYSCALL_AGGR_CGROUP:
++		printed += print_cgroup_stats(data, nr_data, fp);
++		break;
++	default:
++		break;
++	}
+ 
+ 	for (i = 0; i < nr_data && data; i++) {
+ 		free(data[i]->nodes);
+@@ -343,5 +445,14 @@ int trace_print_bpf_summary(FILE *fp)
+ 
+ void trace_cleanup_bpf_summary(void)
+ {
++	if (!RB_EMPTY_ROOT(&cgroups)) {
++		struct cgroup *cgrp, *tmp;
++
++		rbtree_postorder_for_each_entry_safe(cgrp, tmp, &cgroups, node)
++			cgroup__put(cgrp);
++
++		cgroups = RB_ROOT;
++	}
++
+ 	syscall_summary_bpf__destroy(skel);
+ }
+diff --git a/tools/perf/util/bpf_skel/syscall_summary.bpf.c b/tools/perf/util/bpf_skel/syscall_summary.bpf.c
+index b25f53b3c1351392..1bcd066a5199a476 100644
+--- a/tools/perf/util/bpf_skel/syscall_summary.bpf.c
++++ b/tools/perf/util/bpf_skel/syscall_summary.bpf.c
+@@ -8,6 +8,7 @@
+ 
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
++#include <bpf/bpf_core_read.h>
+ 
+ /* This is to calculate a delta between sys-enter and sys-exit for each thread */
+ struct syscall_trace {
+@@ -35,10 +36,41 @@ struct syscall_stats_map {
+ int enabled; /* controlled from userspace */
+ 
+ const volatile enum syscall_aggr_mode aggr_mode;
++const volatile int use_cgroup_v2;
+ 
+-static void update_stats(int cpu_or_tid, int nr, s64 duration, long ret)
++int perf_subsys_id = -1;
++
++static inline __u64 get_current_cgroup_id(void)
++{
++	struct task_struct *task;
++	struct cgroup *cgrp;
++
++	if (use_cgroup_v2)
++		return bpf_get_current_cgroup_id();
++
++	task = bpf_get_current_task_btf();
++
++	if (perf_subsys_id == -1) {
++#if __has_builtin(__builtin_preserve_enum_value)
++		perf_subsys_id = bpf_core_enum_value(enum cgroup_subsys_id,
++						     perf_event_cgrp_id);
++#else
++		perf_subsys_id = perf_event_cgrp_id;
++#endif
++	}
++
++	cgrp = BPF_CORE_READ(task, cgroups, subsys[perf_subsys_id], cgroup);
++	return BPF_CORE_READ(cgrp, kn, id);
++}
++
++static void update_stats(int cpu_or_tid, u64 cgroup_id, int nr, s64 duration,
++			 long ret)
+ {
+-	struct syscall_key key = { .cpu_or_tid = cpu_or_tid, .nr = nr, };
++	struct syscall_key key = {
++		.cpu_or_tid = cpu_or_tid,
++		.cgroup = cgroup_id,
++		.nr = nr,
++	};
+ 	struct syscall_stats *stats;
+ 
+ 	stats = bpf_map_lookup_elem(&syscall_stats_map, &key);
+@@ -90,7 +122,8 @@ SEC("tp_btf/sys_exit")
+ int sys_exit(u64 *ctx)
+ {
+ 	int tid;
+-	int key;
++	int key = 0;
++	u64 cgroup = 0;
+ 	long ret = ctx[1]; /* return value of the syscall */
+ 	struct syscall_trace *st;
+ 	s64 delta;
+@@ -105,11 +138,13 @@ int sys_exit(u64 *ctx)
+ 
+ 	if (aggr_mode == SYSCALL_AGGR_THREAD)
+ 		key = tid;
++	else if (aggr_mode == SYSCALL_AGGR_CGROUP)
++		cgroup = get_current_cgroup_id();
+ 	else
+ 		key = bpf_get_smp_processor_id();
+ 
+ 	delta = bpf_ktime_get_ns() - st->timestamp;
+-	update_stats(key, st->nr, delta, ret);
++	update_stats(key, cgroup, st->nr, delta, ret);
+ 
+ 	bpf_map_delete_elem(&syscall_trace_map, &tid);
+ 	return 0;
+diff --git a/tools/perf/util/bpf_skel/syscall_summary.h b/tools/perf/util/bpf_skel/syscall_summary.h
+index 17f9ecba657088aa..72ccccb45925cd10 100644
+--- a/tools/perf/util/bpf_skel/syscall_summary.h
++++ b/tools/perf/util/bpf_skel/syscall_summary.h
+@@ -6,9 +6,11 @@
+ enum syscall_aggr_mode {
+ 	SYSCALL_AGGR_THREAD,
+ 	SYSCALL_AGGR_CPU,
++	SYSCALL_AGGR_CGROUP,
+ };
+ 
+ struct syscall_key {
++	u64 cgroup;
+ 	int cpu_or_tid;
+ 	int nr;
+ };
+diff --git a/tools/perf/util/trace.h b/tools/perf/util/trace.h
+index ef8361ed12c4edc1..fa8d480527a22cef 100644
+--- a/tools/perf/util/trace.h
++++ b/tools/perf/util/trace.h
+@@ -8,6 +8,7 @@ enum trace_summary_mode {
+ 	SUMMARY__NONE = 0,
+ 	SUMMARY__BY_TOTAL,
+ 	SUMMARY__BY_THREAD,
++	SUMMARY__BY_CGROUP,
+ };
+ 
+ #ifdef HAVE_BPF_SKEL
+-- 
+2.49.0.906.g1f30a19c02-goog
+
 
