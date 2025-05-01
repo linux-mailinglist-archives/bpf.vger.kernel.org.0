@@ -1,111 +1,159 @@
-Return-Path: <bpf+bounces-57159-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57160-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3BAFAA660D
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 00:10:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A13BAA6615
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 00:15:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8F369C2DD1
-	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 22:10:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2F6C4A628E
+	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 22:15:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA5CC26563C;
-	Thu,  1 May 2025 22:10:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A65B3264A95;
+	Thu,  1 May 2025 22:15:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VlvLn8k/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HILAeRP2"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f67.google.com (mail-ed1-f67.google.com [209.85.208.67])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C51521ABB6;
-	Thu,  1 May 2025 22:10:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E32E3D6A;
+	Thu,  1 May 2025 22:15:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746137432; cv=none; b=LjRWgz5+WzIbuiDwp8jaAsfFQlC90UhmqYHN0jma20L6nyl0jiwy27fkrikI0QoV5Npq7e1T3EISvZ+w/I5gXuEbbPnvyKMzODUPmAuizihfNejDzEMzuGKaRYDMnXZxJiynb3v8HBKu8P6plEoJbwNsDL9e4o7pAaAUgpNtuf0=
+	t=1746137723; cv=none; b=XAVY5IJIQmmNdpQ1Z0JvM69u5GpjKCY0WOqjXdYeHjEOVzWe9OLYMbuR/5ULevqcq0p4jfgjJyEqUqBaIZVBKNJUMtyRC/t+nfMpx3o2GK0En7Ue/SKbWyILSfdqMQrs7MgyXQiuTCBLm3Gdzn4d4ZECPwsVSekq0G/pqPaACC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746137432; c=relaxed/simple;
-	bh=mepdlPBGZNYZGwYzPCMYwzzQe9rNn+dnMwYfJnj0L3Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AoWtlwfPfO3H33+94l66IiWsXwzyDCcKzk+aay3HELonIASQsIYe24nNPEi9tP3bky3lY/O3ZugS2jZIu/lI308H+CjyeSoMgmtFJRXdbuXk16d7FgUX89+O4ZehSZvrrEEfKkJefNZhyHBwUEY+K4TWY1YSOtmiUUJ8uqJO/Bs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VlvLn8k/; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 1 May 2025 15:10:20 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1746137426;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T9+4ZPe0UgZes1pnp++1tI2QtV+cxnxhaX2/c7tDBlY=;
-	b=VlvLn8k/VaizfjSHHuJKoe+FM8bCo0MUjVMM8xxJLHmqJ1I7vmcUaHZ1r8GfG4IoTyTCWu
-	/l8qVCGbrkVRVkI6R5rmzHhuHbp4t+z+eYtOXOmBY5Bmdw/CvDQnJANONlovANVeac4xB2
-	X2VFpEXA8+16X/J09cmx94HZ00eRU20=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Yosry Ahmed <yosry.ahmed@linux.dev>
-Cc: Tejun Heo <tj@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Vlastimil Babka <vbabka@suse.cz>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
-	JP Kobryn <inwardvessel@gmail.com>, bpf@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>
-Subject: Re: [RFC PATCH 3/3] cgroup: make css_rstat_updated nmi safe
-Message-ID: <6u7ccequ5ye3e4iqblcdeqsigindo3xjpsvkdb6hyaw7cpjddc@u2ujv7ymlxc6>
-References: <20250429061211.1295443-1-shakeel.butt@linux.dev>
- <20250429061211.1295443-4-shakeel.butt@linux.dev>
- <aBIiNMXIl6vyaNQ6@Asmaa.>
+	s=arc-20240116; t=1746137723; c=relaxed/simple;
+	bh=hQTMxo2PdZs/kPdpXXgfvr8wVMIXmuEtB3ES2KzMuYs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nZ+HSnqyYSkntBALwxTT0QLRY3eC7BN/r+W495rp+ngpkJQWs1zdyE4wjxaT1/W+wvH5wbKHYzqP0TUnIM6G/hDojIjfrn2Qz4hUHtp5tjfQaYKg0G0R3FT3WmqAKYW0qpS8y2YudT5/EJ3rM1iZYeVLlq3E+wc2MjlzBPQUuQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HILAeRP2; arc=none smtp.client-ip=209.85.208.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f67.google.com with SMTP id 4fb4d7f45d1cf-5f4d0da2d2cso2706092a12.3;
+        Thu, 01 May 2025 15:15:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1746137720; x=1746742520; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/7Mfr+YCIEUC+WGMETL1yHxE2lGiThA8SMe4ul3SumM=;
+        b=HILAeRP2bwbSqteB6WEueK9oHL2WC8EEKlyv6T8Rcw4gjtgMeR4IqFrNbYGmn/Cqcl
+         A3+XRTMVURocV2XIradGDo62sKhGPkN/K7WVBrEVBQhb3fvq7GSNlInADagoTRUG9fza
+         J1Qu/3MTkhSTN72A4voU4zYSNlBYR4p+d3P1n+liY9xJMpMMyT6twhvy24BpUai1yXaG
+         EAVgG7UroOsfBw704oKLc1SO2SV50Y2nDU4sufiMoWp4NmfioKyhoJi41HIlSbANbTff
+         NBL2wr8ZeldnsPpc5liNM0k2CaffUw9me3SNwjQEHy1dZt89MSsmVW+64EGK8HLksBR5
+         ST3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746137720; x=1746742520;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/7Mfr+YCIEUC+WGMETL1yHxE2lGiThA8SMe4ul3SumM=;
+        b=ulQd/Y0l35jnOHfPYBVT2t+1SopBdr9Vp1+Cy7uWBkvywhZQkClJV7fwQDFy7iasj1
+         jmfwT1M9CpOO6FwXRNGYTk7a1jh7wnYivhq19SzJBRUgDun11lVuRh5xZV9+AYx34Ewl
+         0kW8GNuYZjVJ+ok5IPMZDQ6rP2+jtSCvEOd6XR2q48T/adkUsS4vxr63ZUBkTU1Alwpu
+         YDQh4zJEzKG4tR2P/l3VyMCICXdHa46AueSkIS82LQP5d14Wk5z6fkHOKgVHOBVoLxrF
+         zfukYjtiFTIuq752WLDItJuvTMn3f6FRK5VLSvFA1xIUrxLj4fFdrImWLbB3oK9nKBMa
+         1Ocg==
+X-Forwarded-Encrypted: i=1; AJvYcCVdQezp62E5x7TC91Y5VYAcGJqfqFOUR0bI0EgoLBJC1ylH2mKnlSDtKBcqI1fYwNz5cVDdqCVfV5ySidZdySe3@vger.kernel.org, AJvYcCWbHb0qPipsOhbtqr6JEQpV1SEv717T1bBHTlbfX5XLOKHemBz2RoiPjhj1OpJa0IJOrP7SKFYEuJfQHJsd@vger.kernel.org, AJvYcCX0g/C7RWs7vzY2EZbXmjAFoJpgiQPLl5aSTf3iiVByTpU2FuMRw2s+kd93fry1rsfgP2Y=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwUl7T7S3AlqKqT7j/Xy4APK4GXR7JUO1DMZr1ekJWxmsxYhja7
+	735YB6eKZAWPbXAiK2FytScGGO6qq/0wLyBJ1oS3k7A6GvqhhR1q3o8RWqlurOpMIQU+bTejAWA
+	1Vv5MsgjZuEuhSPdr52EM8uXwfTc=
+X-Gm-Gg: ASbGncsPwNUlXxcpjlYRh+lH073Jjx7c5ix8uRs6wqvNfAJK3Jc2QxqDMONNDFVinsq
+	7kzMNum3QzwawPVfNVBSoMkwLYBFaTBJQ3KQNcnqQ8hdyTsMYo1A496MCu/lUjpDPxlXJgKLRPM
+	HC661uMKuA8au9ecMjIbCUVzHOTUH7557R+g+H91QXlo4=
+X-Google-Smtp-Source: AGHT+IHxMI99F+IAtZWxOMYa1RyucSD8miaYHECSOpW4gS3Z55ThRLvG0fNtcGLqM04BGbFYK8mK+bgTTvgVJVDex7k=
+X-Received: by 2002:a05:6402:3591:b0:5f5:7c7e:40e1 with SMTP id
+ 4fb4d7f45d1cf-5fa788a2855mr314784a12.24.1746137719499; Thu, 01 May 2025
+ 15:15:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aBIiNMXIl6vyaNQ6@Asmaa.>
-X-Migadu-Flow: FLOW_OUT
+References: <20250501073603.1402960-1-luis.gerhorst@fau.de> <20250501073603.1402960-6-luis.gerhorst@fau.de>
+In-Reply-To: <20250501073603.1402960-6-luis.gerhorst@fau.de>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Fri, 2 May 2025 00:14:43 +0200
+X-Gm-Features: ATxdqUHQc0v79awdKG4uwMc53xWSprS6fNByWA3pwGc9veJx_oqCH0vQZ7i8uF0
+Message-ID: <CAP01T77v0vdKiqQSOk3X3t2R3xG97x13fXWE8QKF=7zX-8c_PA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 05/11] bpf, arm64, powerpc: Add bpf_jit_bypass_spec_v1/v4()
+To: Luis Gerhorst <luis.gerhorst@fau.de>, Xu Kuohai <xukuohai@huaweicloud.com>, 
+	Puranjay Mohan <puranjay@kernel.org>, Hari Bathini <hbathini@linux.ibm.com>, 
+	Naveen N Rao <naveen@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
+	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
+	Nicholas Piggin <npiggin@gmail.com>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Henriette Herzog <henriette.herzog@rub.de>, Saket Kumar Bhaskar <skb99@linux.ibm.com>, 
+	Cupertino Miranda <cupertino.miranda@oracle.com>, Jiayuan Chen <mrpre@163.com>, 
+	Matan Shachnai <m.shachnai@gmail.com>, Dimitar Kanaliev <dimitar.kanaliev@siteground.com>, 
+	Shung-Hsi Yu <shung-hsi.yu@suse.com>, Daniel Xu <dxu@dxuuu.xyz>, bpf@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, linux-kselftest@vger.kernel.org, 
+	Maximilian Ott <ott@cs.fau.de>, Milan Stephan <milan.stephan@fau.de>
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Apr 30, 2025 at 06:14:28AM -0700, Yosry Ahmed wrote:
-[...]
-> > +
-> > +	if (!_css_rstat_cpu_trylock(css, cpu, &flags)) {
-> 
-> 
-> IIUC this trylock will only fail if a BPF program runs in NMI context
-> and tries to update cgroup stats, interrupting a context that is already
-> holding the lock (i.e. updating or flushing stats).
-> 
+On Thu, 1 May 2025 at 09:51, Luis Gerhorst <luis.gerhorst@fau.de> wrote:
+>
+> JITs can set bpf_jit_bypass_spec_v1/v4() if they want the verifier to
+> skip analysis/patching for the respective vulnerability. For v4, this
+> will reduce the number of barriers the verifier inserts. For v1, it
+> allows more programs to be accepted.
+>
+> The primary motivation for this is to not regress unpriv BPF's
+> performance on ARM64 in a future commit where BPF_NOSPEC is also used
+> against Spectre v1.
+>
+> This has the user-visible change that v1-induced rejections on
+> non-vulnerable PowerPC CPUs are avoided.
+>
+> For now, this does not change the semantics of BPF_NOSPEC. It is still a
+> v4-only barrier and must not be implemented if bypass_spec_v4 is always
+> true for the arch. Changing it to a v1 AND v4-barrier is done in a
+> future commit.
+>
+> As an alternative to bypass_spec_v1/v4, one could introduce NOSPEC_V1
+> AND NOSPEC_V4 instructions and allow backends to skip their lowering as
+> suggested by commit f5e81d111750 ("bpf: Introduce BPF nospec instruction
+> for mitigating Spectre v4"). Adding bpf_jit_bypass_spec_v1/v4() was
+> found to be preferable for the following reason:
+>
+> * bypass_spec_v1/v4 benefits non-vulnerable CPUs: Always performing the
+>   same analysis (not taking into account whether the current CPU is
+>   vulnerable), needlessly restricts users of CPUs that are not
+>   vulnerable. The only use case for this would be portability-testing,
+>   but this can later be added easily when needed by allowing users to
+>   force bypass_spec_v1/v4 to false.
+>
+> * Portability is still acceptable: Directly disabling the analysis
+>   instead of skipping the lowering of BPF_NOSPEC(_V1/V4) might allow
+>   programs on non-vulnerable CPUs to be accepted while the program will
+>   be rejected on vulnerable CPUs. With the fallback to speculation
+>   barriers for Spectre v1 implemented in a future commit, this will only
+>   affect programs that do variable stack-accesses or are very complex.
+>
+> For PowerPC, the SEC_FTR checking in bpf_jit_bypass_spec_v4() is based
+> on the check that was previously located in the BPF_NOSPEC case.
+>
+> For LoongArch, it would likely be safe to set both
+> bpf_jit_bypass_spec_v1() and _v4() according to
+> commit a6f6a95f2580 ("LoongArch, bpf: Fix jit to skip speculation
+> barrier opcode"). This is omitted here as I am unable to do any testing
+> for LoongArch.
+>
+> Signed-off-by: Luis Gerhorst <luis.gerhorst@fau.de>
+> Cc: Henriette Herzog <henriette.herzog@rub.de>
+> Cc: Maximilian Ott <ott@cs.fau.de>
+> Cc: Milan Stephan <milan.stephan@fau.de>
+> ---
 
-Correct (though note that flushing side can be on a different CPU).
-
-> How often does this happen in practice tho? Is it worth the complexity?
-
-This is about correctness, so even a chance of occurance need the
-solution.
-
-> 
-> I wonder if it's better if we make css_rstat_updated() inherently
-> lockless instead.
-> 
-> What if css_rstat_updated() always just adds to a lockless tree,
-
-Here I assume you meant lockless list instead of tree.
-
-> and we
-> defer constructing the proper tree to the flushing side? This should
-> make updates generally faster and avoids locking or disabling interrupts
-> in the fast path. We essentially push more work to the flushing side.
-> 
-> We may be able to consolidate some of the code too if all the logic
-> manipulating the tree is on the flushing side.
-> 
-> WDYT? Am I missing something here?
-> 
-
-Yes this can be done but I don't think we need to tie that to current
-series. I think we can start with lockless in the nmi context and then
-iteratively make css_rstat_updated() lockless for all contexts.
-
+I think this and the next patch should have acks from arm and powerpc experts.
 
