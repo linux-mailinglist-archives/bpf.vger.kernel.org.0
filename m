@@ -1,139 +1,182 @@
-Return-Path: <bpf+bounces-57147-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57148-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58C4DAA648D
-	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 22:04:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AD8CAA64B8
+	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 22:27:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 17E301BA3177
-	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 20:04:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 422999848F5
+	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 20:26:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EAA824677E;
-	Thu,  1 May 2025 20:04:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B86A81EFF91;
+	Thu,  1 May 2025 20:26:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SocxuC8t"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TVXH4gYF"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB4011DB13A
-	for <bpf@vger.kernel.org>; Thu,  1 May 2025 20:04:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 899052505D2;
+	Thu,  1 May 2025 20:26:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746129878; cv=none; b=kWUz6uzi7E3yWjDgVgjl5t4CbQes877fBx+RZ/NOu7Ur2sLh08+0QwqkDH5JfNqMbrF9WMknt9QlcTZzRhJqzGiE/uTZWIWv0EglJ1IH4DBBeql2wG+9xfioJgouoc/KjmjIvyG9bwL6vEQV5Nl2aln5HriUuF3K0VB1TRYu86k=
+	t=1746131219; cv=none; b=N1NV/eJ/2I9YDuZRZpAgTXN57cu2zLr5z4DNSOh0eENvlXhhp4uVi42hhWpgTe6dRRcBxRxI6yNb2D5TUdgR+12phTUkU6OoN6ZlA/g/gHW7nLFgNls4nT0aKVsUgS6mksAANaEhCxdcqLnYI+u1ZMYZdbmRkkQSpEZFRNnVJok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746129878; c=relaxed/simple;
-	bh=cVXw+4zJ5Xuoq3BhdJoJtUHU2FPL5v1HrrGVn4410B4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ucEJNYCERK4xEI12tTjR623wp1OuAjI6ST6owQs3hHbxyYnsOrMzkfdrROabsAL4By0P9eG+lE/p5/UgkRHFef2oN3YwIxneD5P/8u9whALrRQx62g8Jp2oKLDT67tcmUsCDRwV/LJmER4ZAZqmrNnZjQrhNHHM2RBeojIcZIRw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SocxuC8t; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67719C4CEE3;
-	Thu,  1 May 2025 20:04:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746129878;
-	bh=cVXw+4zJ5Xuoq3BhdJoJtUHU2FPL5v1HrrGVn4410B4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=SocxuC8tG8Ma1pM061k3HCjxRdtbv/jgGo0G++FomhXKFyv6hMVMm63wi9+NBQc8I
-	 P3/2CP8AcUfpyFS/9cpt+hahQEbCAPES0Giv9FHa0M2CV4U3iQfMF4Q22MLxTerrA/
-	 qJzdYXC6mxPduubvl3xkzCtwl9w2hMD2oycPrMCoeJrq0tgdC43quVPU7WFrA6H+Sl
-	 M5DEileM4ASvpBj12h8EN7f5gUxRievwM0V+XykBEXu9GNqo2mr+9wKlb7IEyupmPw
-	 mQoKXOsTWvmY+shd8cd/ZeYxV2h6R9HGoGTLdTI5ZCIDvr2T3T0XTC9YLH7ejjum+A
-	 T3fWdCmm44Eww==
-Message-ID: <55e5aab0-6aa7-4b79-908a-5cbfdc7bd7cd@kernel.org>
-Date: Thu, 1 May 2025 21:04:34 +0100
+	s=arc-20240116; t=1746131219; c=relaxed/simple;
+	bh=ERI+uZsfRCrXXczPB24lqctJuTE3FABtXqF8FmU5CJs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Y/OQa8cz/q7nHwk0ggl4Tzt8JK8suB8FFEAbCCrKDyqdL8gs5J4s59ORUeQY1sM4e9PhkwwEu7KgDNsXdjR3CnGYDfkLXyJz5AsahTcoH9oQoNu+gfhiobRUzKrWbh5CdbYkuQ+3JLJuf7//0VeqU6hQy6Y3TeRCGvKa4Va1h7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TVXH4gYF; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-39c266c2dd5so1342304f8f.3;
+        Thu, 01 May 2025 13:26:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1746131216; x=1746736016; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/8CrQWlLzxb73F56MwUsevVcml0gCfK3bwjovrxEBe8=;
+        b=TVXH4gYFG6KL1xsXGDXhbQ7k7nkJoj4ciD1l7lEdkiqDhbOtMMyPK+pbODXEI2CFmw
+         CaJk6lJ7rqajA55zsObQUJvH0umezVX/vWNEJk7Z1BK0HnyECS9j9qSkbhBpgbVlkNwI
+         vxpMOBfTv+W/g8WNDqbWEikQxE0fk8L9Nuwcdo9rnBkCnlQFPTfdTctVB3XEmSedNnbU
+         ZSPuBKoRr7wGdFHOrxIl6tcEDMk5lcfC0te94Z6eLLVratKQquCUIhSvshzm65zGq+eN
+         rK1Px8q7L6GIAJdRe6S/aFtA8vxDyDI1FlyerUvxWbBjnYXmqJfMGui2QkY0HxBSjown
+         vjig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746131216; x=1746736016;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/8CrQWlLzxb73F56MwUsevVcml0gCfK3bwjovrxEBe8=;
+        b=OwdXHFHyP4NgbIFQ4SvG1RIc8Vnu/yG6fVsw7z2fBDW7kzH5Cf1s70tMQQJfF6dBZG
+         c1NwTNAL2i2rE288Cu00Qtwr1UyD9UconPJtI5B59acggMOLMXdsBOvIlq+bj2TFI8WO
+         0M93qAZFMxYhmdnasRFkEQQ+o1lv4GS+acYEW3OwTMwVKNjfmetwiEZHR/M4MzUP8h12
+         p8ZiS8C9gQAsdYH1CQCpsxOrvNbLpKl/LN5ZkNJJUBI/S7IYEUYTI2GM2HUS9PRWmmiy
+         HHXjQbxT/seWVnPYVawC1p7yKcyUesISj0FUymvi+7cjBxUr+NJ+84/iH2owFl+VSHXr
+         BslQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU1gIbRIdISClThlhIw5Qayhqb0U4Yt1+hFIBtiLD9cKXh7oGntMDt7sc8HXOmtGZ2l3631QnrsCvooDxpbzIo8@vger.kernel.org, AJvYcCWR5yRHVgew5ZFI2DZ2Dfgc4s7LJ9rUvvDlkuIxKwhpHy1/L8gMbZKjNTGgrN7suTuyjVTDMuekJHrAQrdk@vger.kernel.org, AJvYcCWv0AsLP7oNirfgfLdvTbLL1aiq+Y1kwF6LjXchvC5ErcHqE5E/09SoEi5KkQNi/4vjDShfusk9bzlLew==@vger.kernel.org, AJvYcCXBv7ED93Gz4vqQy4sw4xwvVet0hGUhPRdPNKCev9/CRjmOFBFbudZG21MerInRcoT556s=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzSWBH7d1FrErPoxSVHC1lOph7/kvA/scojsxorjA9Cf4vLGOYT
+	sIoYoc6g+DYQXZuFi9Sug+D4dELahPnl0Ud5qUcQrQ0kbrMu7Y1QVFB4ZdmfdTkWgKYMQk7tb9B
+	51kKYh4nhvFKLBFIui5XFobRBIRE=
+X-Gm-Gg: ASbGncv3YgPgp7+poMRAn17fXx2m8XhPoJkgoWVkXXbmI8LgcZRouLOspgU0o8GW5Cg
+	yneOwRtJ8B74E6fYeLN0ZWiMdNPhU6I6Mtw7Qartek5MKqALrwi9STVhj3ugAdGOM3Eg3MVJg2Y
+	zv8bk7GKoKAWvOU4vypL3HzmCDtK1RbdYTWxj1Xw==
+X-Google-Smtp-Source: AGHT+IFyyVNBhAK86S6/gTxF1u6RLF+ZnvJ2af6I4Dm6NW31PYqEKZ3qL024vehedXt1lvYARAGY/vlbgUEdQuGJNKc=
+X-Received: by 2002:a05:6000:2403:b0:3a0:831d:267c with SMTP id
+ ffacd0b85a97d-3a099ad95cfmr134236f8f.18.1746131215660; Thu, 01 May 2025
+ 13:26:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf] bpftool: Fix regression of "bpftool cgroup tree"
- EINVAL on older kernels
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
- YiFei Zhu <zhuyifei@google.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Kenta Tada <tadakentaso@gmail.com>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Ian Rogers <irogers@google.com>,
- Greg Thelen <gthelen@google.com>, Mahesh Bandewar <maheshb@google.com>,
- Minh-Anh Nguyen <minhanhdn@google.com>,
- Sagarika Sharma <sharmasagarika@google.com>,
- XuanYao Zhang <xuanyao@google.com>
-References: <20250428211536.1651456-1-zhuyifei@google.com>
- <CAEf4BzZXpWC8nWb4zF37PpDX0Y+Bk9=vw8iL5Ehqcjr-Bw=dNQ@mail.gmail.com>
-From: Quentin Monnet <qmo@kernel.org>
-Content-Language: en-GB
-In-Reply-To: <CAEf4BzZXpWC8nWb4zF37PpDX0Y+Bk9=vw8iL5Ehqcjr-Bw=dNQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20250501-vmlinux-mmap-v1-0-aa2724572598@isovalent.com> <20250501-vmlinux-mmap-v1-1-aa2724572598@isovalent.com>
+In-Reply-To: <20250501-vmlinux-mmap-v1-1-aa2724572598@isovalent.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 1 May 2025 13:26:44 -0700
+X-Gm-Features: ATxdqUG94EJ8b0Ioc6f73ltsWz7TlIo7AyQmedPU8WKJQgKrow8M--2t83OE_sg
+Message-ID: <CAADnVQK3hSgs_hic2Yuo84vR=2GZNtryki+TDNkNGY_7URsLiw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] btf: allow mmap of vmlinux btf
+To: Lorenz Bauer <lmb@isovalent.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	linux-arch <linux-arch@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-2025-05-01 10:54 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> On Mon, Apr 28, 2025 at 2:15 PM YiFei Zhu <zhuyifei@google.com> wrote:
->>
->> If cgroup_has_attached_progs queries an attach type not supported
->> by the running kernel, due to the kernel being older than the bpftool
->> build, it would encounter an -EINVAL from BPF_PROG_QUERY syscall.
->>
->> Prior to commit 98b303c9bf05 ("bpftool: Query only cgroup-related
->> attach types"), this EINVAL would be ignored by the function, allowing
->> the function to only consider supported attach types. The commit
->> changed so that, instead of querying all attach types, only attach
->> types from the array `cgroup_attach_types` is queried. The assumption
->> is that because these are only cgroup attach types, they should all
->> be supported. Unfortunately this assumption may be false when the
->> kernel is older than the bpftool build, where the attach types queried
->> by bpftool is not yet implemented in the kernel. This would result in
->> errors such as:
->>
->>   $ bpftool cgroup tree
->>   CgroupPath
->>   ID       AttachType      AttachFlags     Name
->>   Error: can't query bpf programs attached to /sys/fs/cgroup: Invalid argument
->>
->> This patch restores the logic of ignoring EINVAL from prior to that patch.
->>
->> Fixes: 98b303c9bf05 ("bpftool: Query only cgroup-related attach types")
->> Reported-by: Sagarika Sharma <sharmasagarika@google.com>
->> Reported-by: Minh-Anh Nguyen <minhanhdn@google.com>
->> Signed-off-by: YiFei Zhu <zhuyifei@google.com>
->> ---
->>  tools/bpf/bpftool/cgroup.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
->> index 93b139bfb9880..3f1d6be512151 100644
->> --- a/tools/bpf/bpftool/cgroup.c
->> +++ b/tools/bpf/bpftool/cgroup.c
->> @@ -221,7 +221,7 @@ static int cgroup_has_attached_progs(int cgroup_fd)
->>         for (i = 0; i < ARRAY_SIZE(cgroup_attach_types); i++) {
->>                 int count = count_attached_bpf_progs(cgroup_fd, cgroup_attach_types[i]);
->>
->> -               if (count < 0)
->> +               if (count < 0 && errno != EINVAL)
->>                         return -1;
-> 
-> let's maybe change count_attached_bpf_progs() to return error directly
-> as returned by bpf_prog_query(), instead of translating that to -1 and
-> then requiring relying on errno?
-> 
-> so just
-> 
-> if (ret)
->     return ret;
-> 
-> and then just
-> 
-> if (count < 0 && count != -EINVAL)
->     return /* well whatever, I'd return error probably instead of -1 again */
-> 
-> Thoughts?
+On Thu, May 1, 2025 at 7:28=E2=80=AFAM Lorenz Bauer <lmb@isovalent.com> wro=
+te:
+>
+> User space needs access to kernel BTF for many modern features of BPF.
+> Right now each process needs to read the BTF blob either in pieces or
+> as a whole. Allow mmaping the sysfs file so that processes can directly
+> access the memory allocated for it in the kernel.
+>
+> Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
+> ---
+>  include/asm-generic/vmlinux.lds.h |  3 ++-
+>  kernel/bpf/sysfs_btf.c            | 25 +++++++++++++++++++++++--
+>  2 files changed, 25 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmli=
+nux.lds.h
+> index 58a635a6d5bdf0c53c267c2a3d21a5ed8678ce73..1750390735fac7637cc4d2fa0=
+5f96cb2a36aa448 100644
+> --- a/include/asm-generic/vmlinux.lds.h
+> +++ b/include/asm-generic/vmlinux.lds.h
+> @@ -667,10 +667,11 @@ defined(CONFIG_AUTOFDO_CLANG) || defined(CONFIG_PRO=
+PELLER_CLANG)
+>   */
+>  #ifdef CONFIG_DEBUG_INFO_BTF
+>  #define BTF                                                            \
+> +       . =3D ALIGN(PAGE_SIZE);                                          =
+ \
+>         .BTF : AT(ADDR(.BTF) - LOAD_OFFSET) {                           \
+>                 BOUNDED_SECTION_BY(.BTF, _BTF)                          \
+>         }                                                               \
+> -       . =3D ALIGN(4);                                                  =
+ \
+> +       . =3D ALIGN(PAGE_SIZE);                                          =
+ \
+>         .BTF_ids : AT(ADDR(.BTF_ids) - LOAD_OFFSET) {                   \
+>                 *(.BTF_ids)                                             \
+>         }
+> diff --git a/kernel/bpf/sysfs_btf.c b/kernel/bpf/sysfs_btf.c
+> index 81d6cf90584a7157929c50f62a5c6862e7a3d081..7651f37b82c78b8afd9607856=
+7a5b6612f5f4d97 100644
+> --- a/kernel/bpf/sysfs_btf.c
+> +++ b/kernel/bpf/sysfs_btf.c
+> @@ -7,18 +7,39 @@
+>  #include <linux/kobject.h>
+>  #include <linux/init.h>
+>  #include <linux/sysfs.h>
+> +#include <linux/mm.h>
+> +#include <linux/io.h>
+>
+>  /* See scripts/link-vmlinux.sh, gen_btf() func for details */
+>  extern char __start_BTF[];
+>  extern char __stop_BTF[];
+>
+> +struct kobject *btf_kobj;
+> +
+> +static int btf_vmlinux_mmap(struct file *filp, struct kobject *kobj,
+> +                           const struct bin_attribute *attr,
+> +                           struct vm_area_struct *vma)
+> +{
+> +       size_t btf_size =3D __stop_BTF - __start_BTF;
+> +
+> +       if (kobj !=3D btf_kobj)
+> +               return -EINVAL;
+> +
+> +       if (vma->vm_flags & (VM_WRITE|VM_EXEC|VM_MAYSHARE))
+> +               return -EACCES;
+> +
+> +       vm_flags_clear(vma, VM_MAYEXEC);
+> +       vm_flags_clear(vma, VM_MAYWRITE);
 
-It feels maybe slightly less intuitive to me to compare "count" - rather
-than "errno" - with "-EINVAL", but I don't mind really. It does make
-sense to check the return code from the function. Looks OK from my side.
+Probably should set VM_DONTDUMP to avoid being in the core dump.
+vm_flags_mod() can set and clear in one operation.
 
-Thanks,
-Quentin
+> +
+> +       return vm_iomap_memory(vma, virt_to_phys(__start_BTF), btf_size);
+
+and this one should probably be vm_insert_pages().
+Since it's not an IO area.
+
+Overall I think it's a good idea.
+As Daniel suggested pls make use of it in libbpf too.
+That exercise will make sure that feature probing works
+with fallback.
+
+pw-bot: cr
 
