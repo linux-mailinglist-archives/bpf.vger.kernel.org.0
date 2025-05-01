@@ -1,267 +1,283 @@
-Return-Path: <bpf+bounces-57113-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57117-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73FAFAA5B6F
-	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 09:31:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6E77AA5B83
+	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 09:45:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35C559849C8
-	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 07:30:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A6CA1BC346C
+	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 07:45:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF5EF25B1C2;
-	Thu,  1 May 2025 07:30:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12748277026;
+	Thu,  1 May 2025 07:45:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b="GDmScT7O";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="RNSPIhTM"
+	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="ATedqVIn"
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh-a8-smtp.messagingengine.com (fhigh-a8-smtp.messagingengine.com [103.168.172.159])
+Received: from mx-rz-1.rrze.uni-erlangen.de (mx-rz-1.rrze.uni-erlangen.de [131.188.11.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C0E71C6FE0;
-	Thu,  1 May 2025 07:30:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F6BE2309B0;
+	Thu,  1 May 2025 07:45:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746084642; cv=none; b=dhn/zrccCP3IOey2Rj0A3fJwawIuHT4GE8FWT6QF4x4qvtmtpAxaMi4Gvl7UNVQU8V50weoAZvCHRHx6wnjPGxDoe2lWbuT4q8EbB328YKW71AqzCyN6Nfjk90KToOlSoCbJ66efcReJ3BPl78gWbc1eendOEjbK+8RtQ+4K108=
+	t=1746085526; cv=none; b=CY0WeDP64LsQQ3Hu9xdbpQdMwTHN2Tj3p0BbH8K91Q4pXWeCK2xPoiWDmZOLbTCwcwZdjKAyGXS+Gb20wUPj0IL0bEe5GkMObfl8yv6PRkRj/lWkr3y9v9n4eKJjoCn3bVE2sg84SzWNjPgDgiGvBFqie09HrRA455MLPJU74L8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746084642; c=relaxed/simple;
-	bh=JATCi4bN6VPJRBEP1Xow3xgEpojY4PSqBhQy7Z+3DII=;
-	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Cc:Subject:
-	 References:In-Reply-To; b=WFdJlFsFkspJQmnCFibBH2SFkEQ1E3/N4r9W1VCNgn/2ZQaJ7I5HvEiFx+bmT2o8YDuQpJD+yYNorf1m5ECRqSSxCKZKgo+st/gQs2p31aFSCGaAE9CfbIoe1xLrAFZlH7jFmcAdZuMDntr2IDM30+LkrZPhqTqGs0FksYGCIOk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arthurfabre.com; spf=pass smtp.mailfrom=arthurfabre.com; dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b=GDmScT7O; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=RNSPIhTM; arc=none smtp.client-ip=103.168.172.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arthurfabre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arthurfabre.com
-Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 58CC011401A4;
-	Thu,  1 May 2025 03:30:38 -0400 (EDT)
-Received: from phl-imap-13 ([10.202.2.103])
-  by phl-compute-05.internal (MEProxy); Thu, 01 May 2025 03:30:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arthurfabre.com;
-	 h=cc:cc:content-transfer-encoding:content-type:content-type
-	:date:date:from:from:in-reply-to:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=fm2;
-	 t=1746084638; x=1746171038; bh=OxHeUEtAiswWVkXNgQtC8XLvRBJsu356
-	sWD3VGaagxM=; b=GDmScT7OjycFDjF+XufZ2aOx4y1//zcUdbsyBYbTTFNZS5w4
-	/tytRQRorghTM70h14jzbENxoDvS4wt7gxhK9pQhf2ajeV49wGgK39jmGpfNyPTG
-	6rX3D+3je2HFCQIW+xUWBmTulGjXN08pZ6S5czWtw2Epcx8q/LP+6ENWPP15gU01
-	UMoq5ZuZLdWDCXjeEuAgdviwdzNgOGuIWnBmvjS5f18Bvsp5a7IxTypFBPEF6hwd
-	jGSviWCGPzg1FavwvtW03q0fBiXvSwaF3VzLzMJX74QjRiyR3ZffXwS9xCJ+R5qb
-	+mz1cAjLcIMYUx/IYrHv2rIwBb3a3xzVlA0exQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1746084638; x=
-	1746171038; bh=OxHeUEtAiswWVkXNgQtC8XLvRBJsu356sWD3VGaagxM=; b=R
-	NSPIhTMbWaTEuze+6exna8qqyl1U8rrEkAB1jubRdYRvHAq8rh9iAQUcKhfHSVZG
-	jAV5Uwv/T3xN2GUx4wUYhznixzmswKZHe5WbGywiHPyJKRDcoEd1GlvoRimJzDCl
-	23zzct8tfiAH8dgAV1pF9QSZedKZ+i6PMC5QWgli8t5gzK3yhCMnYYBomtat2Wom
-	eBepN5NtyFHKGmKu56ui3DQy50psUlGBg28CVWrTQL2XDdFMUUq49QWCjE1YV/fR
-	weNDc7sHBaPyzL4rm8MT2iiK2YJw85YSm6Oij5yViIUS1MEyk58b3oU5iNTGLZao
-	2V6t1dDqCDknrjzv0yecw==
-X-ME-Sender: <xms:HSMTaKqRuCmPvmoTqcFpJaeamEPxFf-edKoXANJ-hmdDSv9W5mWrvw>
-    <xme:HSMTaIrdIpN5yubg2ws1CFVzoTtfHpcAJ0Y6wFP4yLYio1zML-mgLeo4nV2kvgXae
-    YieBKsiimdgNpnkSjk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvieekleelucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
-    gvnhhtshculddquddttddmnecujfgurhepofgggfgtfffkhffvvefuofhfjgesthhqredt
-    redtjeenucfhrhhomhepfdetrhhthhhurhcuhfgrsghrvgdfuceorghrthhhuhhrsegrrh
-    hthhhurhhfrggsrhgvrdgtohhmqeenucggtffrrghtthgvrhhnpeetuedtveetfeejffeg
-    tddtgfekvdejgeevvdffuddvjefhhfefgfejhefhlefftdenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhthhhurhesrghrthhhuhhrfhgr
-    sghrvgdrtghomhdpnhgspghrtghpthhtohepuddvpdhmohguvgepshhmthhpohhuthdprh
-    gtphhtthhopehjrghkuhgssegtlhhouhgufhhlrghrvgdrtghomhdprhgtphhtthhopehj
-    sghrrghnuggvsghurhhgsegtlhhouhgufhhlrghrvgdrtghomhdprhgtphhtthhopeihrg
-    hnsegtlhhouhgufhhlrghrvgdrtghomhdprhgtphhtthhopegrlhgvgigvihdrshhtrghr
-    ohhvohhithhovhesghhmrghilhdrtghomhdprhgtphhtthhopegvughumhgriigvthesgh
-    hoohhglhgvrdgtohhmpdhrtghpthhtoheprghstheskhgvrhhnvghlrdhorhhgpdhrtghp
-    thhtohephhgrfihksehkvghrnhgvlhdrohhrghdprhgtphhtthhopehkuhgsrgeskhgvrh
-    hnvghlrdhorhhgpdhrtghpthhtoheplhgsihgrnhgtohhnsehrvgguhhgrthdrtghomh
-X-ME-Proxy: <xmx:HiMTaPOneteT_23pqtwWOX7lBaf8vabC1DC4GvyNvoJ5H-0WrbRZ6A>
-    <xmx:HiMTaJ5ABcVKxiZVyjtLLrYjaZWc-6cHAmcTyxMxU8sk5kF096E9lA>
-    <xmx:HiMTaJ47Nm0vvgIQVfK-3k0sdaqNnWzrm3dw5otTFFDpG-z9JlKn3A>
-    <xmx:HiMTaJjyNbSOAWiOIb86QhthXZMwMLCrWQXiK14lLwf3rhj2Hk17UQ>
-    <xmx:HiMTaCV7RGOwMSumtEUyYMVoBXOU0WPrRNb_b_zLsudjcqHNgu7_0Wu3>
-Feedback-ID: i9179493c:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id E2C821F00072; Thu,  1 May 2025 03:30:37 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1746085526; c=relaxed/simple;
+	bh=QTZ6U4fX9AbDc+bELt/R+cP87pvKLSXb27NFr9gyQlo=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=tP+id1KZeMtzhEQyiiTQ41CarQqZZn9KP1rGpIncE9zfUmKja8UAhLkDJcf21XCl3evapEKvzO9Uy8fW8mso3/eFqHQizH1hvJfv40sRyOIgTUuRXnwa4z/FWswruf9k/6zWXHHT5ZOH9LT9N4suTpstt72znoAzzgpy46Jz0XI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=ATedqVIn; arc=none smtp.client-ip=131.188.11.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
+	t=1746084968; bh=K7OHVYuZmHwzYYcyOkPMzX9Wbq0G6D2Zkg8HtjOYyi8=;
+	h=From:To:Subject:Date:From:To:CC:Subject;
+	b=ATedqVInRFreujHp4X2BHGTHkAKbtKurgYKV4vepneqBRNjUGLXDNJPPgcwaSf4YZ
+	 hbY08gJ2vjaoNjkuPiY1m3uwCZD0wE2dqRCV9/cwmMIyGuOCs83aJnOc7y0AauIe19
+	 03hNgRHKd/GbaN2np8Mx1NA6uHWVda7HlnctARMufcCwJFKtJLGazE1OOcrmUkHEel
+	 F2T0+KD94afn2c3I8Xq7zvNwKGuY6UpcrbGI3/4frfxU9g3rOMRDRoJH/jImee33ld
+	 68NtNNih5WHt8inQFfJhHk1BnnbKVBlbtbqeeNZF6/T0irnKiaEmdgfE9g7HZhzEWP
+	 buWFgfW1C5CWA==
+Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-rz-1.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4Zp5T35jYlz8sls;
+	Thu,  1 May 2025 09:36:07 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at boeck4.rrze.uni-erlangen.de (RRZE)
+X-RRZE-Flag: Not-Spam
+X-RRZE-Submit-IP: 2001:9e8:3636:a700:12b2:e53f:6cbc:f48c
+Received: from luis-tp.fritz.box (unknown [IPv6:2001:9e8:3636:a700:12b2:e53f:6cbc:f48c])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: U2FsdGVkX19pL7WFieYRy5yG8NPdAYH8gSfQgMR0Cx4=)
+	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4Zp5Sz4y7kz8sqL;
+	Thu,  1 May 2025 09:36:03 +0200 (CEST)
+From: Luis Gerhorst <luis.gerhorst@fau.de>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Puranjay Mohan <puranjay@kernel.org>,
+	Xu Kuohai <xukuohai@huaweicloud.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Hari Bathini <hbathini@linux.ibm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Naveen N Rao <naveen@kernel.org>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Luis Gerhorst <luis.gerhorst@fau.de>,
+	Henriette Herzog <henriette.herzog@rub.de>,
+	Saket Kumar Bhaskar <skb99@linux.ibm.com>,
+	Cupertino Miranda <cupertino.miranda@oracle.com>,
+	Jiayuan Chen <mrpre@163.com>,
+	Matan Shachnai <m.shachnai@gmail.com>,
+	Dimitar Kanaliev <dimitar.kanaliev@siteground.com>,
+	Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+	Daniel Xu <dxu@dxuuu.xyz>,
+	bpf@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next v3 00/11] bpf: Mitigate Spectre v1 using barriers
+Date: Thu,  1 May 2025 09:35:51 +0200
+Message-ID: <20250501073603.1402960-1-luis.gerhorst@fau.de>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date: Thu, 01 May 2025 09:30:36 +0200
-Message-Id: <D9KNCG5YG8DF.284WM1C7ABNNX@arthurfabre.com>
-From: "Arthur Fabre" <arthur@arthurfabre.com>
-To: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>,
- =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc: "Network Development" <netdev@vger.kernel.org>, "bpf"
- <bpf@vger.kernel.org>, "Jakub Sitnicki" <jakub@cloudflare.com>, "Jesper
- Dangaard Brouer" <hawk@kernel.org>, "Yan Zhai" <yan@cloudflare.com>,
- <jbrandeburg@cloudflare.com>, <lbiancon@redhat.com>, "Alexei Starovoitov"
- <ast@kernel.org>, "Jakub Kicinski" <kuba@kernel.org>, "Eric Dumazet"
- <edumazet@google.com>
-Subject: Re: [PATCH RFC bpf-next v2 01/17] trait: limited KV store for
- packet metadata
-X-Mailer: aerc 0.17.0
-References: <20250422-afabre-traits-010-rfc2-v2-0-92bcc6b146c9@arthurfabre.com> <20250422-afabre-traits-010-rfc2-v2-1-92bcc6b146c9@arthurfabre.com> <CAADnVQJeCC5j4_ss2+G2zjMbAcn=G3JLeAJCBZRC8uzfsVAjMA@mail.gmail.com> <D9FYTORERFI7.36F4WG8G3NHGX@arthurfabre.com> <CAADnVQKe3Jfd+pVt868P32-m2a-moP4H7ms_kdZnrYALCxx53Q@mail.gmail.com> <87frhqnh0e.fsf@toke.dk> <CAADnVQ+V3Tp1zgFb6yfZQgC8m9WhdQOZmmrAFetDb5sZNxXLQQ@mail.gmail.com>
-In-Reply-To: <CAADnVQ+V3Tp1zgFb6yfZQgC8m9WhdQOZmmrAFetDb5sZNxXLQQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed Apr 30, 2025 at 6:29 PM CEST, Alexei Starovoitov wrote:
-> On Wed, Apr 30, 2025 at 2:19=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgensen =
-<toke@redhat.com> wrote:
-> >
-> > Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-> >
-> > > On Fri, Apr 25, 2025 at 12:27=E2=80=AFPM Arthur Fabre <arthur@arthurf=
-abre.com> wrote:
-> > >>
-> > >> On Thu Apr 24, 2025 at 6:22 PM CEST, Alexei Starovoitov wrote:
-> > >> > On Tue, Apr 22, 2025 at 6:23=E2=80=AFAM Arthur Fabre <arthur@arthu=
-rfabre.com> wrote:
-> > >> > >
-> > >> > > +/**
-> > >> > > + * trait_set() - Set a trait key.
-> > >> > > + * @traits: Start of trait store area.
-> > >> > > + * @hard_end: Hard limit the trait store can currently grow up =
-against.
-> > >> > > + * @key: The key to set.
-> > >> > > + * @val: The value to set.
-> > >> > > + * @len: The length of the value.
-> > >> > > + * @flags: Unused for now. Should be 0.
-> > >> > > + *
-> > >> > > + * Return:
-> > >> > > + * * %0       - Success.
-> > >> > > + * * %-EINVAL - Key or length invalid.
-> > >> > > + * * %-EBUSY  - Key previously set with different length.
-> > >> > > + * * %-ENOSPC - Not enough room left to store value.
-> > >> > > + */
-> > >> > > +static __always_inline
-> > >> > > +int trait_set(void *traits, void *hard_end, u64 key, const void=
- *val, u64 len, u64 flags)
-> > >> > > +{
-> > >> > > +       if (!__trait_valid_key(key) || !__trait_valid_len(len))
-> > >> > > +               return -EINVAL;
-> > >> > > +
-> > >> > > +       struct __trait_hdr *h =3D (struct __trait_hdr *)traits;
-> > >> > > +
-> > >> > > +       /* Offset of value of this key. */
-> > >> > > +       int off =3D __trait_offset(*h, key);
-> > >> > > +
-> > >> > > +       if ((h->high & (1ull << key)) || (h->low & (1ull << key)=
-)) {
-> > >> > > +               /* Key is already set, but with a different leng=
-th */
-> > >> > > +               if (__trait_total_length(__trait_and(*h, (1ull <=
-< key))) !=3D len)
-> > >> > > +                       return -EBUSY;
-> > >> > > +       } else {
-> > >> > > +               /* Figure out if we have enough room left: total=
- length of everything now. */
-> > >> > > +               if (traits + sizeof(struct __trait_hdr) + __trai=
-t_total_length(*h) + len > hard_end)
-> > >> > > +                       return -ENOSPC;
-> > >> >
-> > >> > I'm still not excited about having two metadata-s
-> > >> > in front of the packet.
-> > >> > Why cannot traits use the same metadata space ?
-> > >> >
-> > >> > For trait_set() you already pass hard_end and have to check it
-> > >> > at run-time.
-> > >> > If you add the same hard_end to trait_get/del the kfuncs will deal
-> > >> > with possible corruption of metadata by the program.
-> > >> > Transition from xdp to skb will be automatic. The code won't care =
-that traits
-> > >> > are there. It will just copy all metadata from xdp to skb. Corrupt=
-ed or not.
-> > >> > bpf progs in xdp and skb might even use the same kfuncs
-> > >> > (or two different sets if the verifier is not smart enough right n=
-ow).
-> > >>
-> > >> Good idea, that would solve the corruption problem.
-> > >>
-> > >> But I think storing metadata at the "end" of the headroom (ie where
-> > >> XDP metadata is today) makes it harder to persist in the SKB layer.
-> > >> Functions like __skb_push() assume that skb_headroom() bytes are
-> > >> available just before skb->data.
-> > >>
-> > >> They can be updated to move XDP metadata out of the way, but this
-> > >> assumption seems pretty pervasive.
-> > >
-> > > The same argument can be flipped.
-> > > Why does the skb layer need to push?
-> > > If it needs to encapsulate it will forward to tunnel device
-> > > to go on the wire. At this point any kind of metadata is going
-> > > to be lost on the wire. bpf prog would need to convert
-> > > metadata into actual on the wire format or stash it
-> > > or send to user space.
-> > > I don't see a use case where skb layer would move medadata by N
-> > > bytes, populate these N bytes with "???" and pass to next skb layer.
-> > > skb layers strip (pop) the header when it goes from ip to tcp to user=
- space.
-> > > No need to move metadata.
-> > >
-> > >> By using the "front" of the headroom, we can hide that from the rest=
- of
-> > >> the SKB code. We could even update skb->head to completely hide the
-> > >> space used at the front of the headroom.
-> > >> It also avoids the cost of moving the metadata around (but maybe tha=
-t
-> > >> would be insignificant).
-> > >
-> > > That's a theory. Do you actually have skb layers pushing things
-> > > while metadata is there?
-> >
-> > Erm, any encapsulation? UDP tunnels, wireguard, WiFi, etc. There are
-> > almost 1000 calls to skb_push() all over the kernel. One of the primary
-> > use cases for traits is to tag a packet with an ID to follow it
-> > throughout its lifetime inside the kernel. This absolutely includes
-> > encapsulation; in fact, having the tracing ID survive these kinds of
-> > transformations is one of the primary motivators for this work.
->
-> and the assumption here is that placing traits in the front will
-> be enough for all possible encaps that the stack can do?
-> Hopefully not. Moving traits due to skb_push() is mandatory anyway.
+This improves the expressiveness of unprivileged BPF by inserting
+speculation barriers instead of rejecting the programs.
 
-The network stack seems to assume there is at least 32 bytes of headroom
-available, that's guaranteed by NET_SKB_PAD.
+The approach was previously presented at LPC'24 [1] and RAID'24 [2].
 
-Callers that need more seem to check if there's enough headroom
-available first, and pskb_expand_head() if not.
+To mitigate the Spectre v1 (PHT) vulnerability, the kernel rejects
+potentially-dangerous unprivileged BPF programs as of
+commit 9183671af6db ("bpf: Fix leakage under speculation on mispredicted
+branches"). In [2], we have analyzed 364 object files from open source
+projects (Linux Samples and Selftests, BCC, Loxilb, Cilium, libbpf
+Examples, Parca, and Prevail) and found that this affects 31% to 54% of
+programs.
 
-Placing traits at the front lets most of this work naturally if we leave
-NET_SKB_PAD headroom.
+To resolve this in the majority of cases this patchset adds a fall-back
+for mitigating Spectre v1 using speculation barriers. The kernel still
+optimistically attempts to verify all speculative paths but uses
+speculation barriers against v1 when unsafe behavior is detected. This
+allows for more programs to be accepted without disabling the BPF
+Spectre mitigations (e.g., by setting cpu_mitigations_off()).
 
-But I haven't looked at every single __skb_push() call, maybe there are
-cases I don't know about.
+For this, it relies on the fact that speculation barriers prevent all
+later instructions if the speculation was not correct:
 
->
-> The other point you're arguing is that the current metadata approach
-> is broken, since it doesn't work for encap?
-> pskb_expand_head() does skb_metadata_clear().
-> Though I don't remember anyone complaining of that behavior,
+* On x86_64, lfence acts as full speculation barrier, not only as a
+  load fence [3]:
 
-No one can complain yet, because metadata isn't accessible after TC
-today. It's limited to just XDP and TC, which avoids most of the SKB
-processing and these trickier cases.
+    An LFENCE instruction or a serializing instruction will ensure that
+    no later instructions execute, even speculatively, until all prior
+    instructions complete locally. [...] Inserting an LFENCE instruction
+    after a bounds check prevents later operations from executing before
+    the bound check completes.
 
-> let's assume it's a problem indeed.
-> With traits in front the pskb_expand_head() should either fail or move
-> traits when it runs out of room.
-> Let's be consistent and do the same for regular metadata.
->
-> My main point is we should not introduce a second kind of metadata.
-> If the current metadata doesn't quite work, fix it instead of adding
-> a new one.
+  This was experimentally confirmed in [4].
 
-I'll think about this more. It's tempting to just move the current
-metadata area to the front of the headroom, but that breaks things like
-AF_XDP that expect the metadata to be right before the packet data.
+* ARM's SB speculation barrier instruction also affects "any instruction
+  that appears later in the program order than the barrier" [5].
+
+In [1] we have measured the overhead of this approach relative to having
+mitigations off and including the upstream Spectre v4 mitigations. For
+event tracing and stack-sampling profilers, we found that mitigations
+increase BPF program execution time by 0% to 62%. For the Loxilb network
+load balancer, we have measured a 14% slowdown in SCTP performance but
+no significant slowdown for TCP. This overhead only applies to programs
+that were previously rejected.
+
+I reran the expressiveness-evaluation with v6.14 and made sure the main
+results still match those from [1] and [2] (which used v6.5).
+
+Main design decisions are:
+
+* Do not use separate bytecode insns for v1 and v4 barriers (inspired by
+  Daniel Borkmann's question at LPC). This simplifies the verifier
+  significantly and has the only downside that performance on PowerPC is
+  not as high as it could be.
+
+* Allow archs to still disable v1/v4 mitigations separately by setting
+  bpf_jit_bypass_spec_v1/v4(). This has the benefit that archs can
+  benefit from improved BPF expressiveness / performance if they are not
+  vulnerable (e.g., ARM64 for v4 in the kernel).
+
+* Do not remove the empty BPF_NOSPEC implementation for backends for
+  which it is unknown whether they are vulnerable to Spectre v1.
+
+[1] https://lpc.events/event/18/contributions/1954/ ("Mitigating
+    Spectre-PHT using Speculation Barriers in Linux eBPF")
+[2] https://arxiv.org/pdf/2405.00078 ("VeriFence: Lightweight and
+    Precise Spectre Defenses for Untrusted Linux Kernel Extensions")
+[3] https://www.intel.com/content/www/us/en/developer/articles/technical/software-security-guidance/technical-documentation/runtime-speculative-side-channel-mitigations.html
+    ("Managed Runtime Speculative Execution Side Channel Mitigations")
+[4] https://dl.acm.org/doi/pdf/10.1145/3359789.3359837 ("Speculator: a
+    tool to analyze speculative execution attacks and mitigations" -
+    Section 4.6 "Stopping Speculative Execution")
+[5] https://developer.arm.com/documentation/ddi0597/2020-12/Base-Instructions/SB--Speculation-Barrier-
+    ("SB - Speculation Barrier - Arm Armv8-A A32/T32 Instruction Set Architecture (2020-12)")
+
+Changes:
+
+* v2 -> v3:
+  - Fix
+    https://lore.kernel.org/oe-kbuild-all/202504212030.IF1SLhz6-lkp@intel.com/
+    and similar by moving the bpf_jit_bypass_spec_v1/v4() prototypes out
+    of the #ifdef CONFIG_BPF_SYSCALL. Decided not to move them to
+    filter.h (where similar bpf_jit_*() prototypes live) as they would
+    still have to be duplicated in bpf.h to be usable to
+    bpf_bypass_spec_v1/v4() (unless including filter.h in bpf.h is an
+    option).
+  - Fix
+    https://lore.kernel.org/oe-kbuild-all/202504220035.SoGveGpj-lkp@intel.com/
+    by moving the variable declarations out of the switch-case.
+  - Build touched C files with W=2 and bpf config on x86 to check that
+    there are no other warnings introduced.
+  - Found 3 more checkpatch warnings that can be fixed without degrading
+    readability.
+  - Rebase to bpf-next 2025-05-01
+  - Link to v2: https://lore.kernel.org/bpf/20250421091802.3234859-1-luis.gerhorst@fau.de/
+
+* v1 -> v2:
+  - Drop former commits 9 ("bpf: Return PTR_ERR from push_stack()") and 11
+    ("bpf: Fall back to nospec for spec path verification") as suggested
+    by Alexei. This series therefore no longer changes push_stack() to
+    return PTR_ERR.
+  - Add detailed explanation of how lfence works internally and how it
+    affects the algorithm.
+  - Add tests checking that nospec instructions are inserted in expected
+    locations using __xlated_unpriv as suggested by Eduard (also,
+    include a fix for __xlated_unpriv)
+  - Add a test for the mitigations from the description of
+    commit 9183671af6db ("bpf: Fix leakage under speculation on
+    mispredicted branches")
+  - Remove unused variables from do_check[_insn]() as suggested by
+    Eduard.
+  - Remove INSN_IDX_MODIFIED to improve readability as suggested by
+    Eduard. This also causes the nospec_result-check to run (and fail)
+    for jumping-ops. Add a warning to assert that this check must never
+    succeed in that case.
+  - Add details on the safety of patch 10 ("bpf: Allow nospec-protected
+    var-offset stack access") based on the feedback on v1.
+  - Rebase to bpf-next-250420
+  - Link to v1: https://lore.kernel.org/all/20250313172127.1098195-1-luis.gerhorst@fau.de/
+
+* RFC -> v1:
+  - rebase to bpf-next-250313
+  - tests: mark expected successes/new errors
+  - add bpt_jit_bypass_spec_v1/v4() to avoid #ifdef in
+    bpf_bypass_spec_v1/v4()
+  - ensure that nospec with v1-support is implemented for archs for
+    which GCC supports speculation barriers, except for MIPS
+  - arm64: emit speculation barrier
+  - powerpc: change nospec to include v1 barrier
+  - discuss potential security (archs that do not impl. BPF nospec) and
+    performance (only PowerPC) regressions
+  - Link to RFC: https://lore.kernel.org/bpf/20250224203619.594724-1-luis.gerhorst@fau.de/
+
+Luis Gerhorst (11):
+  selftests/bpf: Fix caps for __xlated/jited_unpriv
+  bpf: Move insn if/else into do_check_insn()
+  bpf: Return -EFAULT on misconfigurations
+  bpf: Return -EFAULT on internal errors
+  bpf, arm64, powerpc: Add bpf_jit_bypass_spec_v1/v4()
+  bpf, arm64, powerpc: Change nospec to include v1 barrier
+  bpf: Rename sanitize_stack_spill to nospec_result
+  bpf: Fall back to nospec for Spectre v1
+  selftests/bpf: Add test for Spectre v1 mitigation
+  bpf: Allow nospec-protected var-offset stack access
+  bpf: Fall back to nospec for sanitization-failures
+
+ arch/arm64/net/bpf_jit.h                      |   5 +
+ arch/arm64/net/bpf_jit_comp.c                 |  28 +-
+ arch/powerpc/net/bpf_jit_comp64.c             |  80 ++-
+ include/linux/bpf.h                           |  11 +-
+ include/linux/bpf_verifier.h                  |   3 +-
+ include/linux/filter.h                        |   2 +-
+ kernel/bpf/core.c                             |  32 +-
+ kernel/bpf/verifier.c                         | 653 ++++++++++--------
+ tools/testing/selftests/bpf/progs/bpf_misc.h  |   4 +
+ .../selftests/bpf/progs/verifier_and.c        |   8 +-
+ .../selftests/bpf/progs/verifier_bounds.c     |  66 +-
+ .../bpf/progs/verifier_bounds_deduction.c     |  45 +-
+ .../selftests/bpf/progs/verifier_map_ptr.c    |  20 +-
+ .../selftests/bpf/progs/verifier_movsx.c      |  16 +-
+ .../selftests/bpf/progs/verifier_unpriv.c     |  65 +-
+ .../bpf/progs/verifier_value_ptr_arith.c      | 101 ++-
+ tools/testing/selftests/bpf/test_loader.c     |  14 +-
+ .../selftests/bpf/verifier/dead_code.c        |   3 +-
+ tools/testing/selftests/bpf/verifier/jmp32.c  |  33 +-
+ tools/testing/selftests/bpf/verifier/jset.c   |  10 +-
+ 20 files changed, 771 insertions(+), 428 deletions(-)
+
+
+base-commit: 358b1c0f56ebb6996fcec7dcdcf6bae5dcbc8b6c
+-- 
+2.49.0
+
 
