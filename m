@@ -1,182 +1,418 @@
-Return-Path: <bpf+bounces-57148-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57149-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AD8CAA64B8
-	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 22:27:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B64B3AA64D2
+	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 22:37:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 422999848F5
-	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 20:26:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD5B49A67FB
+	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 20:37:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B86A81EFF91;
-	Thu,  1 May 2025 20:26:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E3F3251782;
+	Thu,  1 May 2025 20:37:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TVXH4gYF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L39/Degz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 899052505D2;
-	Thu,  1 May 2025 20:26:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CC25B674;
+	Thu,  1 May 2025 20:37:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746131219; cv=none; b=N1NV/eJ/2I9YDuZRZpAgTXN57cu2zLr5z4DNSOh0eENvlXhhp4uVi42hhWpgTe6dRRcBxRxI6yNb2D5TUdgR+12phTUkU6OoN6ZlA/g/gHW7nLFgNls4nT0aKVsUgS6mksAANaEhCxdcqLnYI+u1ZMYZdbmRkkQSpEZFRNnVJok=
+	t=1746131857; cv=none; b=msu/HsDxk1OpIcgDrV86hdcqarG1EW8tAWyksdNzUE7qulr7fJh+w6GhfEqsspEQUbxZa4cLvEzFqIJw4W7GWvB03BYiLssbANCgP88KLZq/2Uof5o1MBQXsxOyCZGuoim+vi0lFG/QutDPMJYxeYI4gLIMd44HnWi/D9sDIU1A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746131219; c=relaxed/simple;
-	bh=ERI+uZsfRCrXXczPB24lqctJuTE3FABtXqF8FmU5CJs=;
+	s=arc-20240116; t=1746131857; c=relaxed/simple;
+	bh=L/LIpFW3antBpbfi731c4Gfo1KH87MWLWTIGTfKQfhE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Y/OQa8cz/q7nHwk0ggl4Tzt8JK8suB8FFEAbCCrKDyqdL8gs5J4s59ORUeQY1sM4e9PhkwwEu7KgDNsXdjR3CnGYDfkLXyJz5AsahTcoH9oQoNu+gfhiobRUzKrWbh5CdbYkuQ+3JLJuf7//0VeqU6hQy6Y3TeRCGvKa4Va1h7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TVXH4gYF; arc=none smtp.client-ip=209.85.221.52
+	 To:Cc:Content-Type; b=eauovlAi6bOJwjQKDgmYbR6dflficaUmaAxgcjoznihOKirLBtI973cuMWxshwA39wVipgHsB0I7vWW3DaQShKAizBp/Yf9vrpOmYoYGpWI5k2AwrOxZFMdpfFXwAkkqI8CmmqO16dbaFexZG3WmPPABMxNbD+OQf4zJf/V0fKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L39/Degz; arc=none smtp.client-ip=209.85.214.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-39c266c2dd5so1342304f8f.3;
-        Thu, 01 May 2025 13:26:57 -0700 (PDT)
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-227c7e57da2so13020515ad.0;
+        Thu, 01 May 2025 13:37:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746131216; x=1746736016; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1746131855; x=1746736655; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/8CrQWlLzxb73F56MwUsevVcml0gCfK3bwjovrxEBe8=;
-        b=TVXH4gYFG6KL1xsXGDXhbQ7k7nkJoj4ciD1l7lEdkiqDhbOtMMyPK+pbODXEI2CFmw
-         CaJk6lJ7rqajA55zsObQUJvH0umezVX/vWNEJk7Z1BK0HnyECS9j9qSkbhBpgbVlkNwI
-         vxpMOBfTv+W/g8WNDqbWEikQxE0fk8L9Nuwcdo9rnBkCnlQFPTfdTctVB3XEmSedNnbU
-         ZSPuBKoRr7wGdFHOrxIl6tcEDMk5lcfC0te94Z6eLLVratKQquCUIhSvshzm65zGq+eN
-         rK1Px8q7L6GIAJdRe6S/aFtA8vxDyDI1FlyerUvxWbBjnYXmqJfMGui2QkY0HxBSjown
-         vjig==
+        bh=E8skB8WeVm57NEFs/qjIcRf3ilTMUq5Oyzva7gTT2r0=;
+        b=L39/DegzKpdojDreICO9ZMpwzmfUOlpxgB6XO4ZJUfbCr/jNItUPUN3tMvUXwwTFLe
+         un1d30ENNSckGVGtxgsGC1+2G0+/r1LyLJlqxejHG9hhHCYtlKEQr/vWwjlFXCXLaBQG
+         eZBUnXm4OOY005M2RK9B/8Y8DSEsF+U6+pH56Lr1m3uGnZ+jYdu+WHMxZyevdj7IY8m2
+         gvmCf8+CW2cJ//juBv41hkmRHfHu8SOMafTIEctxTGd+uf+Y61sgTNlrkuguGGcaD4L8
+         llcDMP2EoWX+qgZCswvBiarDHgMdPtZ4YUxBB3N9fhO14hsr5Sm+emGD02KW9x9rJRXS
+         fw5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746131216; x=1746736016;
+        d=1e100.net; s=20230601; t=1746131855; x=1746736655;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/8CrQWlLzxb73F56MwUsevVcml0gCfK3bwjovrxEBe8=;
-        b=OwdXHFHyP4NgbIFQ4SvG1RIc8Vnu/yG6fVsw7z2fBDW7kzH5Cf1s70tMQQJfF6dBZG
-         c1NwTNAL2i2rE288Cu00Qtwr1UyD9UconPJtI5B59acggMOLMXdsBOvIlq+bj2TFI8WO
-         0M93qAZFMxYhmdnasRFkEQQ+o1lv4GS+acYEW3OwTMwVKNjfmetwiEZHR/M4MzUP8h12
-         p8ZiS8C9gQAsdYH1CQCpsxOrvNbLpKl/LN5ZkNJJUBI/S7IYEUYTI2GM2HUS9PRWmmiy
-         HHXjQbxT/seWVnPYVawC1p7yKcyUesISj0FUymvi+7cjBxUr+NJ+84/iH2owFl+VSHXr
-         BslQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU1gIbRIdISClThlhIw5Qayhqb0U4Yt1+hFIBtiLD9cKXh7oGntMDt7sc8HXOmtGZ2l3631QnrsCvooDxpbzIo8@vger.kernel.org, AJvYcCWR5yRHVgew5ZFI2DZ2Dfgc4s7LJ9rUvvDlkuIxKwhpHy1/L8gMbZKjNTGgrN7suTuyjVTDMuekJHrAQrdk@vger.kernel.org, AJvYcCWv0AsLP7oNirfgfLdvTbLL1aiq+Y1kwF6LjXchvC5ErcHqE5E/09SoEi5KkQNi/4vjDShfusk9bzlLew==@vger.kernel.org, AJvYcCXBv7ED93Gz4vqQy4sw4xwvVet0hGUhPRdPNKCev9/CRjmOFBFbudZG21MerInRcoT556s=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzSWBH7d1FrErPoxSVHC1lOph7/kvA/scojsxorjA9Cf4vLGOYT
-	sIoYoc6g+DYQXZuFi9Sug+D4dELahPnl0Ud5qUcQrQ0kbrMu7Y1QVFB4ZdmfdTkWgKYMQk7tb9B
-	51kKYh4nhvFKLBFIui5XFobRBIRE=
-X-Gm-Gg: ASbGncv3YgPgp7+poMRAn17fXx2m8XhPoJkgoWVkXXbmI8LgcZRouLOspgU0o8GW5Cg
-	yneOwRtJ8B74E6fYeLN0ZWiMdNPhU6I6Mtw7Qartek5MKqALrwi9STVhj3ugAdGOM3Eg3MVJg2Y
-	zv8bk7GKoKAWvOU4vypL3HzmCDtK1RbdYTWxj1Xw==
-X-Google-Smtp-Source: AGHT+IFyyVNBhAK86S6/gTxF1u6RLF+ZnvJ2af6I4Dm6NW31PYqEKZ3qL024vehedXt1lvYARAGY/vlbgUEdQuGJNKc=
-X-Received: by 2002:a05:6000:2403:b0:3a0:831d:267c with SMTP id
- ffacd0b85a97d-3a099ad95cfmr134236f8f.18.1746131215660; Thu, 01 May 2025
- 13:26:55 -0700 (PDT)
+        bh=E8skB8WeVm57NEFs/qjIcRf3ilTMUq5Oyzva7gTT2r0=;
+        b=uGHTXh8i9qVleAEGX4LxcRvxYE57EscGkg2jwfSZ/oZLmFw5kFqnzzsLx/JG2gkvgl
+         zbGHDpu6wVHD11Vunn9rUWpnhza8aMgXKubRfAcKExXLU4oMD04vSm9Rok6LigxBCgSU
+         o9fKYS4QfFqDktqb7lbG1yD3xl41JxrAoyU9liwknWYp7kWlljAD1kXLXwGsyIW5jWm2
+         kfAsONEDd7FfJD1B/VrMN5EIMAdqNgbp8NlNcKVZTVuroMolKJvtsIVI0TEjtT/HGLra
+         wiFRUyCMCg0E9wdyAS5FOMHIDBepDFFV8pfhNMtcdtXCtQ2gPeoHqgRcMLUA4QKthelF
+         MEhw==
+X-Forwarded-Encrypted: i=1; AJvYcCVDiL7sJHOJ7YwnpdIlyr0HkbGJmYeBruFvpqwPqaVUa2WAzFzt2pOYB0ogH5bZ+yd21v/B7/o=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxJfwJALg4ZY7ZlNFL6Ys1rmV/aisjVl7YhTB5FxSWPn249XCLc
+	kU/m6v7da3bFuKV2TRbkC3O6cKXP1DgXDlSPEe3IkF1oQ2nCGBqKu5uYlxy7NL2irO+YVoN33o8
+	egR67M9X/m5jicd15zKhp3uAzJwA=
+X-Gm-Gg: ASbGncvdT/zBNUNDyatGv5qRFl3woHxCV2fBspkmMTQK3BGp0sjk2lPMQR9zEgmTCgj
+	GmeDHoaEMy0hTn9E7yiTPD4NTTGOyka2CQRm90oTr/iUl2p7j2VsKACrX/A3FmLpPzYE0DhPnlu
+	ycikiKxucd3gaND/Y5RlC+dUDN7wvIYik3n8rPUlMIJEAq6hJe
+X-Google-Smtp-Source: AGHT+IHb0CF+t0M6tMcTFU0dUcYjEwLejij2Knj4KQESfUO3PTEpdKTVVSJjHuZvoLH1HUA4DA3JoTkFwOY/C2zCa7k=
+X-Received: by 2002:a17:90b:5844:b0:2ff:5714:6a with SMTP id
+ 98e67ed59e1d1-30a4e5c19bcmr691783a91.19.1746131855201; Thu, 01 May 2025
+ 13:37:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250501-vmlinux-mmap-v1-0-aa2724572598@isovalent.com> <20250501-vmlinux-mmap-v1-1-aa2724572598@isovalent.com>
-In-Reply-To: <20250501-vmlinux-mmap-v1-1-aa2724572598@isovalent.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 1 May 2025 13:26:44 -0700
-X-Gm-Features: ATxdqUG94EJ8b0Ioc6f73ltsWz7TlIo7AyQmedPU8WKJQgKrow8M--2t83OE_sg
-Message-ID: <CAADnVQK3hSgs_hic2Yuo84vR=2GZNtryki+TDNkNGY_7URsLiw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] btf: allow mmap of vmlinux btf
-To: Lorenz Bauer <lmb@isovalent.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	linux-arch <linux-arch@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	bpf <bpf@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+References: <20250425214039.2919818-1-ameryhung@gmail.com>
+In-Reply-To: <20250425214039.2919818-1-ameryhung@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 1 May 2025 13:37:23 -0700
+X-Gm-Features: ATxdqUGdeJ8GnvgcC1CbUNR_FSSJuTbm-kRym7kgMQVKRhRelJirFUVPNTMODew
+Message-ID: <CAEf4BzYUNckc9pXcE7BawxWFVfY--p12c3ax8ySP1P+BEww91w@mail.gmail.com>
+Subject: Re: [PATCH RFC v3 0/2] Task local data API
+To: Amery Hung <ameryhung@gmail.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, alexei.starovoitov@gmail.com, 
+	andrii@kernel.org, daniel@iogearbox.net, tj@kernel.org, martin.lau@kernel.org, 
+	kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 1, 2025 at 7:28=E2=80=AFAM Lorenz Bauer <lmb@isovalent.com> wro=
-te:
+On Fri, Apr 25, 2025 at 2:40=E2=80=AFPM Amery Hung <ameryhung@gmail.com> wr=
+ote:
 >
-> User space needs access to kernel BTF for many modern features of BPF.
-> Right now each process needs to read the BTF blob either in pieces or
-> as a whole. Allow mmaping the sysfs file so that processes can directly
-> access the memory allocated for it in the kernel.
+> Hi,
 >
-> Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
-> ---
->  include/asm-generic/vmlinux.lds.h |  3 ++-
->  kernel/bpf/sysfs_btf.c            | 25 +++++++++++++++++++++++--
->  2 files changed, 25 insertions(+), 3 deletions(-)
+> This a respin of uptr KV store. It is renamed to task local data (TLD)
+> as the problem statement and the solution have changed, and it now draws
+> more similarities to pthread thread-specific data.
 >
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmli=
-nux.lds.h
-> index 58a635a6d5bdf0c53c267c2a3d21a5ed8678ce73..1750390735fac7637cc4d2fa0=
-5f96cb2a36aa448 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -667,10 +667,11 @@ defined(CONFIG_AUTOFDO_CLANG) || defined(CONFIG_PRO=
-PELLER_CLANG)
->   */
->  #ifdef CONFIG_DEBUG_INFO_BTF
->  #define BTF                                                            \
-> +       . =3D ALIGN(PAGE_SIZE);                                          =
- \
->         .BTF : AT(ADDR(.BTF) - LOAD_OFFSET) {                           \
->                 BOUNDED_SECTION_BY(.BTF, _BTF)                          \
->         }                                                               \
-> -       . =3D ALIGN(4);                                                  =
- \
-> +       . =3D ALIGN(PAGE_SIZE);                                          =
- \
->         .BTF_ids : AT(ADDR(.BTF_ids) - LOAD_OFFSET) {                   \
->                 *(.BTF_ids)                                             \
->         }
-> diff --git a/kernel/bpf/sysfs_btf.c b/kernel/bpf/sysfs_btf.c
-> index 81d6cf90584a7157929c50f62a5c6862e7a3d081..7651f37b82c78b8afd9607856=
-7a5b6612f5f4d97 100644
-> --- a/kernel/bpf/sysfs_btf.c
-> +++ b/kernel/bpf/sysfs_btf.c
-> @@ -7,18 +7,39 @@
->  #include <linux/kobject.h>
->  #include <linux/init.h>
->  #include <linux/sysfs.h>
-> +#include <linux/mm.h>
-> +#include <linux/io.h>
+> * Overview *
 >
->  /* See scripts/link-vmlinux.sh, gen_btf() func for details */
->  extern char __start_BTF[];
->  extern char __stop_BTF[];
+> This patchset is a continuation of the original UPTR work[0], which aims
+> to provide a fast way for user space programs to pass per-task hints to
+> sched_ext schedulers. UPTR built the foundation by supporting sharing
+> user pages with bpf programs through task local storage maps.
 >
-> +struct kobject *btf_kobj;
-> +
-> +static int btf_vmlinux_mmap(struct file *filp, struct kobject *kobj,
-> +                           const struct bin_attribute *attr,
-> +                           struct vm_area_struct *vma)
-> +{
-> +       size_t btf_size =3D __stop_BTF - __start_BTF;
-> +
-> +       if (kobj !=3D btf_kobj)
-> +               return -EINVAL;
-> +
-> +       if (vma->vm_flags & (VM_WRITE|VM_EXEC|VM_MAYSHARE))
-> +               return -EACCES;
-> +
-> +       vm_flags_clear(vma, VM_MAYEXEC);
-> +       vm_flags_clear(vma, VM_MAYWRITE);
+> Additionally, sched_ext would like to allow multiple developers to share
+> a storage without the need to explicitly agreeing on the layout of it.
+> This simplify code base management and makes experimenting easier.
+> While a centralized storage layout definition would have worked, the
+> friction of synchronizing it across different repos is not desirable.
+>
+> This patchset contains the user space plumbing so that user space and bpf
+> program developers can exchange per-task hints easily through simple
+> interfaces.
+>
+> * Design *
+>
+> BPF task local data is a simple API for sharing task-specific data
+> between user space and bpf programs, where data are refered to using
+> string keys. As shown in the following figure, user space programs can
+> define a task local data using bpf_tld_type_var(). The data is
+> effectively a variable declared with __thread, which every thread owns an
+> independent copy and can be directly accessed. On the bpf side, a task
+> local data first needs to be initialized for every new task once (e.g.,
+> in sched_ext_ops::init_task) using bpf_tld_init_var(). Then, other bpf
+> programs can get a pointer to the data using bpf_tld_lookup(). The task
+> local data APIs refer to data using string keys so developers
+> does not need to deal with addresses of data in a shared storage.
+>
+>  =E2=94=8C=E2=94=80 Application =E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=90
+>  =E2=94=82                          =E2=94=8C=E2=94=80 library A =E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=90 =E2=94=82
+>  =E2=94=82 bpf_tld_type_var(int, X) =E2=94=82 bpf_tld_type_var(int, Y) =
+=E2=94=82 =E2=94=82
+>  =E2=94=82                          =E2=94=94=E2=94=AC=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=98 =E2=94=
+=82
+>  =E2=94=94=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=AC=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=82=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=98
+>          =E2=94=82 X =3D 123;          =E2=94=82 Y =3D true;
 
-Probably should set VM_DONTDUMP to avoid being in the core dump.
-vm_flags_mod() can set and clear in one operation.
+bpf_tld_type_var() is *defining* variable (i.e., it allocates storage
+for it), right? I think for completeness we need also *declare* macro
+to access that variable from other compilation units
 
-> +
-> +       return vm_iomap_memory(vma, virt_to_phys(__start_BTF), btf_size);
 
-and this one should probably be vm_insert_pages().
-Since it's not an IO area.
+>          V                   V
+>  + =E2=94=80 Task local data =E2=94=80 =E2=94=80 =E2=94=80 =E2=94=80 =E2=
+=94=80 =E2=94=80 +
+>  | =E2=94=8C=E2=94=80 task_kvs_map =E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=90 |  =E2=94=8C=E2=94=80 sched_ext_ops::init_task =E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=90
+>  | =E2=94=82 BPF Task local storage    =E2=94=82 |  =E2=94=82 bpf_tld_ini=
+t_var(&kvs, X);      =E2=94=82
+>  | =E2=94=82  =E2=94=8C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=90    =E2=94=82 |<=
+=E2=94=80=E2=94=A4 bpf_tld_init_var(&kvs, Y);      =E2=94=82
+>  | =E2=94=82  =E2=94=82 __uptr *udata     =E2=94=82    =E2=94=82 |  =E2=
+=94=94=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=98
+>  | =E2=94=82  =E2=94=94=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=98    =E2=94=82 |
+>  | =E2=94=82  =E2=94=8C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=90    =E2=94=82 |  =
+=E2=94=8C=E2=94=80 Other sched_ext_ops op =E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=90
+>  | =E2=94=82  =E2=94=82 __uptr *umetadata =E2=94=82    =E2=94=82 |  =E2=
+=94=82 int *y;                         =E2=94=9C=E2=94=90
+>  | =E2=94=82  =E2=94=94=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=98    =E2=94=82 |<=
+=E2=94=80=E2=94=A4 y =3D bpf_tld_lookup(&kvs, Y, 1); =E2=94=82=E2=94=82
+>  | =E2=94=94=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=98 |  =E2=94=82 if (y)             =
+             =E2=94=82=E2=94=82
+>  | =E2=94=8C=E2=94=80 task_kvs_off_map =E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=90 |  =E2=94=82     /* do som=
+ething */          =E2=94=82=E2=94=82
+>  | =E2=94=82 BPF Task local storage    =E2=94=82 |  =E2=94=94=E2=94=AC=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=98=E2=94=
+=82
+>  | =E2=94=94=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=98 |   =E2=94=94=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=98
+>  + =E2=94=80 =E2=94=80 =E2=94=80 =E2=94=80 =E2=94=80 =E2=94=80 =E2=94=80 =
+=E2=94=80 =E2=94=80 =E2=94=80 =E2=94=80 =E2=94=80 =E2=94=80 =E2=94=80 =E2=
+=94=80 +
+>
+> * Implementation *
+>
+> Task local data API hides the memory management from the developers.
+> Internally, it shares user data with bpf programs through udata UPTRs.
+> Task local data from different compilation units are placed into a
+> custom "udata" section by the declaration API, bpf_tld_type_var(), so
+> that they are placed together in the memory. User space will need to
+> call bpf_tld_thread_init() for every new thread to pin udata pages to
+> kernel.
+>
+> The metadata used to address udata is stored in umetadata UPTR. It is
+> generated by constructors inserted by bpf_tld_type_var() and
+> bpf_tld_thread_init(). umetadata is an array of 64 metadata corresponding
+> to each data, which contains the key and the offset of data in udata.
+> During initialization, bpf_tld_init_var() will search umetadata for
+> a matching key and cache its offset in task_kvs_off_map. Later,
+> bpf_tld_lookup() will use the cached offset to retreive a pointer to
+> udata.
+>
+> * Limitation *
+>
+> Currently, it is assumed all key-value pairs are known as a program
+> starts. All compilation units using task local data should be statically
+> linked together so that values are all placed together in a udata section
+> and therefore can be shared with bpf through two UPTRs. The next
 
-Overall I think it's a good idea.
-As Daniel suggested pls make use of it in libbpf too.
-That exercise will make sure that feature probing works
-with fallback.
+Lack of support for shared libraries is a big limitation, IMO, so I
+think we should design for that support from the very beginning.
 
-pw-bot: cr
+FWIW, I think this compile-time static __thread variable definitions
+are unnecessarily limiting and add a non-trivial amount of complexity.
+I think it's more reasonable to go with a more dynamic approach, and
+I'll try to outline what an API (and some implementation details)
+might look like.
+
+Note, all this is related to the user-space side of things. BPF-side
+is unchanged, effectively, except you get a guarantee that all the
+data will definitely be page-aligned, so you won't need to do these
+two uptr pages handling.
+
+First, data structures. You'll have one per-process metadata structure
+describing known keys and their assigned "offsets":
+
+struct tld_metadata {
+    int cnt;
+    char keys[MAX_KEY_CNT];
+    __u16 offs[MAX_KEY_CNT];
+    __u16 szs[MAX_KEY_CNT];
+};
+
+Now, each thread will basically have just a blob of data, so,
+technically, per-thread we will just have:
+
+struct tld_data {
+    __u8 data[PAGE_SIZE];
+};
+
+By pre-allocating the entire page we avoid lots of complications, so I
+think it's worth doing.
+
+Now, we really need just two APIs on user-space (and I'll use the
+"opaque offset" type as I suggested on another patch):
+
+typedef struct { int off; } tld_off_t;
+
+tld_off_t tld_add_key_def(const char *key_name, size_t key_size);
+
+This API can be called just once per each key that process cares
+about. And this can be done at any point, really, very dynamically.
+The implementation will:
+  - (just once per process) open pinned BPF map, remember its FD;
+  - (just once) allocate struct tld_metadata, unless we define it as
+pre-allocated global variable;
+  - (locklessly) check if key_name is already in tld_metadata, if yes
+- return already assigned offset;
+  - (locklessly) if not, add this key and assign it offset that is
+offs[cnt - 1] + szs[cnt - 1] (i.e., we just tightly pack all the
+values (though we should take care of alignment requirements, of
+course);
+  - return newly assigned offset;
+
+Now, the second essential API is called for each participating thread
+for each different key. And again, this is all very dynamic. It's
+possible that some threads won't use any of this TLD stuff, in which
+case there will be no overhead (memory or CPU), and not even an entry
+in task local storage map for that thread. So, API:
+
+void *tld_resolve_key(tld_off_t key_off);
+
+This API will:
+   - (just once per thread, which is done trivially by using
+__thread-local global variable to keep track of this) allocate struct
+tld_data dynamically (with page alignment, alloc_aligned(PAGE_SIZE,
+PAGE_SIZE))
+   - (just once per thread as well) bpf_map_update_elem() for current
+thread, updating two uptrs: one pointing to global tld_metadata,
+another pointing to thread-local tld_data;
+   - return tld_data->data + key_off.off;
+
+That is, this API returns an absolute memory address of a value
+resolved in the context of the current thread.
+
+
+And let's look at how one can make use of this on the user-space side
+to optimally use this API.
+
+
+/* global variables */
+tld_off_t my_key1_off; /* struct my_val */
+tld_off_t my_key2_off; /* int */
+
+__thread struct my_val *my_val1;
+__thread int *my_val2;
+
+... somewhere in constructor ...
+
+my_key1_off =3D tld_add_key_def("my_key1", sizeof(struct my_val));
+my_key2_off =3D tld_add_key_def("my_key2", sizeof(int));
+
+... and then somewhere in the code that makes use of TLD stuff ...
+
+if (!my_val1) /* this can be initialized once per thread to avoid this
+check (or hidden in a helper accessor function) */
+    my_val1 =3D tld_resolve(my_key1_off);
+
+my_val1->blah_field =3D 123;
+
+if (!my_val2)
+   my_val2 =3D tld_resolve(my_key2_off);
+*my_val2 =3D 567;
+
+
+That's pretty much it, I think.
+
+In C++ code base, it should be possible to make this even more
+convenient by using a templated wrapper with thread-local inner
+variable with its own constructor. Adding operator overloading (e.g.,
+operator=3D and operator->) you get a very naturally looking definition
+and access patterns:
+
+/* global data */
+
+tld_variable<struct my_val> my_val1("my_key1");
+tld_variable<int> my_val2("my_key2");
+
+... now in the actual TLD-using code, we just do:
+
+my_val1->blah_field =3D 123;
+my_val2 =3D 567; /* I think C++ would allow this with operator overloading =
+*/
+
+I hope the example explains why it's still fast despite everything
+being dynamic. There is a pointer indirection and that page-sized
+allocation (so that we can cache thread-specific resolved pointers),
+but it seems absolutely fine from performance perspective.
+
+> iteration will explore how bpf task local data can work in dynamic
+> libraries. Maybe more udata UPTRs will be added to pin page of TLS
+> of dynamically loaded modules. Or maybe it will allocate memory for data
+> instead of relying on __thread, and change how user space interact with
+> task local data slightly. The later approach can also save some troubles
+> dealing with the restriction of UPTR.
+>
+> Some other limitations:
+>  - Total task local data cannot exceed a page
+>  - Only support 64 task local data
+>  - Some memory waste for data whose size is not power of two
+>    due to UPTR limitation
+>
+> [0] https://lore.kernel.org/bpf/20241023234759.860539-1-martin.lau@linux.=
+dev/
+>
+>
+> Amery Hung (2):
+>   selftests/bpf: Introduce task local data
+>   selftests/bpf: Test basic workflow of task local data
+>
+>  .../bpf/prog_tests/task_local_data.c          | 159 +++++++++++++++
+>  .../bpf/prog_tests/task_local_data.h          |  58 ++++++
+>  .../bpf/prog_tests/test_task_local_data.c     | 156 +++++++++++++++
+>  .../selftests/bpf/progs/task_local_data.h     | 181 ++++++++++++++++++
+>  .../bpf/progs/test_task_local_data_basic.c    |  78 ++++++++
+>  .../selftests/bpf/task_local_data_common.h    |  49 +++++
+>  6 files changed, 681 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/task_local_dat=
+a.c
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/task_local_dat=
+a.h
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_task_loca=
+l_data.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/task_local_data.h
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_task_local_dat=
+a_basic.c
+>  create mode 100644 tools/testing/selftests/bpf/task_local_data_common.h
+>
+> --
+> 2.47.1
+>
 
