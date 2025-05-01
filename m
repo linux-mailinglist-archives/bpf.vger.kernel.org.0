@@ -1,196 +1,279 @@
-Return-Path: <bpf+bounces-57170-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57171-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E5E0AA6765
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 01:27:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D05F3AA678F
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 01:52:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C7E04A7DA0
-	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 23:27:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A7AA4629AA
+	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 23:52:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1D81266B52;
-	Thu,  1 May 2025 23:27:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 371BC1DFDB9;
+	Thu,  1 May 2025 23:52:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yl5s4I/n"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EXErRMmH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73D4C16DEB3;
-	Thu,  1 May 2025 23:27:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B09F13D6A
+	for <bpf@vger.kernel.org>; Thu,  1 May 2025 23:52:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746142030; cv=none; b=U/2k1HjaJ0FIw/1mginYx8zbUVNEKGb2J/2GqKfCYZHibwMqQi6UsXRCM+9dFRBj4T8DYNhLhY9nJkNHJt3PlfnH2lSodfYmnf289jaWZtoyZ1IT8C/yZHy0A9oY4/YVZWP9LXqoQh8QYpRA6yiudn246CIbV3PrSZJ6ZcHZ8Yc=
+	t=1746143560; cv=none; b=R1jdxX3o20Uv3J8pnA/3UXNbBH2UUWQ3J6m2T3u7sAd+u72qjGgyFGW6LjShBs+pO/YeoLL+3VzMBNr9g9WjuiptrjYhDBhB8WLxKATnRxVZornqE5wrl7kDU65YC9eDoAWkaTxaonRZtrVdNhXftisld4zc9hbUknES6jqjPdU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746142030; c=relaxed/simple;
-	bh=C/tR8iH3JgobGC1X/r0fY9gZGUX3UyIegqXrh1P1mfo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UOIcgrgOhkfio28DwjR/tOKC2xQMX+Rk5AZsTEbR8/1wR11lecNf0o6CwHqaVqCWJZIs11VclpAYwfVdsrs4e5kzqqJjxkkqaRfnpLjEraX5z9bnR8crwPPCBgRwBuV990fl9S6IoafJ1tWbNvLSweZgEzQM+9a4DWqQepcsTR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yl5s4I/n; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-39c1efc457bso1020771f8f.2;
-        Thu, 01 May 2025 16:27:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746142027; x=1746746827; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DLGY/mmKFDMNfgWBTWZabnwNXPDwi/WRUsGT+xqswBU=;
-        b=Yl5s4I/n71i4PwMSEGk63rFXmYLvTIxWqB5Y0eCMOxK6H8kZhxVlzzrMd/+vqsfKly
-         nXU7zn9bs+bGJ4OM8BI3z2YjinDEcmhYizHuBc3HF5xlga9Ok+RCVDJtC+5Q+pjc/SFa
-         sQzVPxhAYR8ogvu3Ilrk3R+HQ3ju3X1wMbc+fKdoWY6IXqGNxh0dBq812VAlkWhMACe+
-         lCiAExEhLFg2h4vTeWQ1Xx3xNIVMpvdARm0U7ppQa41ylS6+/dVMPQZygAwnLO5mqx4B
-         7G6A9aUW7/4TSdv0kYFDwLyMRn/fYV6bGLYVlJM7seZm6WvMg6e9qhcUzGfXCYH/1FoF
-         1UJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746142027; x=1746746827;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DLGY/mmKFDMNfgWBTWZabnwNXPDwi/WRUsGT+xqswBU=;
-        b=NI9MvNudY3B4lcC44LNEFkKAeTHhRDGratDvVsg6EzD/XUr5Uz6i/uxmE1DNVfCmkP
-         j7XY1dCEbackhX0D/giYLvP9zBJjrY5hRNbllmlfWZoE1e2Jq1AfAkwcUBq9hKC6r4T5
-         eI+3x9C0K0ewdavPg7uVH/6NECwcUvaINVcyudZhb/k4BzKUCjpWZk65xjQT5c63Txt5
-         KUq9+ryNB9fJbLcLyCnZsZCtDvLkdWcHEKDN+2DkFSTXUWxhTD8FVqGLh48/HLRMzql9
-         qfNV0NHq4qPCdvh5XNq3obaEobypXQ+yCTavVU6RClrtmOVBj4mgN7IkUgSGsYtimXYp
-         vHdw==
-X-Forwarded-Encrypted: i=1; AJvYcCVQuLYxj0cEkTTScpMUmfoB9wbI54nxR5GGEVxB+hovG1u6DlJiHYudop7NjjqORbmfvYs=@vger.kernel.org, AJvYcCXYBXhmEXIgKcZnIoKWHtAX7BJTMQF3orjgZjk06y6cOYtUx9oJIK3o4/aCAtKH03yErjkhFFUt@vger.kernel.org
-X-Gm-Message-State: AOJu0YwmxpnCrScO6RdYZg+NMOiVSwaqDuf/jy2z6C1wbQq4R2/zNb38
-	1nAzqnfoe8olPuOLACxpYCZcHSiMC6c/N9rErMIpkrbDdZMuk2Rts/jMHLUaUvQb+MVURVbS8nh
-	7QCYIyA+ggPK7WKrktuxpJUrFLyay5ZrN
-X-Gm-Gg: ASbGncsynShK/g3lD8lkA25PFGyRitBkhpd5z4BYe7Uqp+COE28O4e+ouhNE0n/3Wc2
-	+cV0wm+B/EPqPiuv58j9WD13PccRXXLtIEuw1uqenmmvq5JY5RMcXbO8DST/bq8+5Uz0mCDqLjK
-	n69r8DTETJYu/14mUvvAw90U7zNrLKm7tWsOJnIgfKjMf6S7Yv
-X-Google-Smtp-Source: AGHT+IGqd+4X2KpejHE1K0XtSnAtmcd4kSkCrpeYEaLJ+Y++5vtsTd3EXl4p8MPupHm7XlL6B9j1WORo8J83lxJYSBM=
-X-Received: by 2002:a05:6000:2cb:b0:39e:e557:7d9 with SMTP id
- ffacd0b85a97d-3a099ad27c0mr397103f8f.5.1746142026420; Thu, 01 May 2025
- 16:27:06 -0700 (PDT)
+	s=arc-20240116; t=1746143560; c=relaxed/simple;
+	bh=2ECGobiWAIoYp+BvSvYTqwpPAYFyJ7KER55drs900ZQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ad8HV8MupplVpkLVfgxQSHQnLbPJKT7duVHiDlEruhyVbO4qhu2ejvNb+a4aznZ/1A2PUKLz6rzGnYxummDnWCfCvJaTR3JTC1y5ai2VTWKK9reZnWnaroV7rXymbqle/DpiAveC8EVn2uAgBdYWJYkG+PEAa+vT4b5z4GQiNHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EXErRMmH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BED1C4CEE3;
+	Thu,  1 May 2025 23:52:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1746143560;
+	bh=2ECGobiWAIoYp+BvSvYTqwpPAYFyJ7KER55drs900ZQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=EXErRMmHVKniD48nzLYyR/zCZDkcqd2z/xCRC9Y/1YvsEZLC6MXGIIJ4DHD7f/LBr
+	 PqHHghCrVeDWip9l4zaW6Cr515HRr/lMPSXjGUSXlNsmVOCtY1CKSvO3Cn9mEz2Olu
+	 wBGIP69z+hn5KBvsQeTQBzUdbCyQhJeaX/yhKGF/rlmtJ+RMOw3/vUzwaGMHObdETi
+	 FD8AKggbt2cEZSD4BQwWk9agFaHsNiy7uig5PlVV9ZiaJMVXcpBnzwNYjSuIRzWT/S
+	 DCYiJq/+rC6CQDIi+J4qmpaGAR4VwC+MvC25MQDx4q/VhPcauMop+nGmbzXBPnEhmZ
+	 a/Rx8mIq7eSdw==
+From: Andrii Nakryiko <andrii@kernel.org>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@kernel.org
+Cc: andrii@kernel.org,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next] libbpf: improve BTF dedup handling of "identical" BTF types
+Date: Thu,  1 May 2025 16:52:31 -0700
+Message-ID: <20250501235231.1339822-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250425214039.2919818-1-ameryhung@gmail.com> <CAEf4BzYUNckc9pXcE7BawxWFVfY--p12c3ax8ySP1P+BEww91w@mail.gmail.com>
-In-Reply-To: <CAEf4BzYUNckc9pXcE7BawxWFVfY--p12c3ax8ySP1P+BEww91w@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 1 May 2025 16:26:55 -0700
-X-Gm-Features: ATxdqUHLqvR1ZRadaKm8w3mkPqxKoCF_K5PZqYERxnA9XL-tD5EA4byk18z-IMM
-Message-ID: <CAADnVQL92e=-Nzr0O5Geev4y7cWG2m1UR_D7izF+Rd2ccPMNKQ@mail.gmail.com>
-Subject: Re: [PATCH RFC v3 0/2] Task local data API
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Amery Hung <ameryhung@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Tejun Heo <tj@kernel.org>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, May 1, 2025 at 1:37=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> Lack of support for shared libraries is a big limitation, IMO, so I
-> think we should design for that support from the very beginning.
->
-> FWIW, I think this compile-time static __thread variable definitions
-> are unnecessarily limiting and add a non-trivial amount of complexity.
-> I think it's more reasonable to go with a more dynamic approach, and
-> I'll try to outline what an API (and some implementation details)
-> might look like.
->
-> Note, all this is related to the user-space side of things. BPF-side
-> is unchanged, effectively, except you get a guarantee that all the
-> data will definitely be page-aligned, so you won't need to do these
-> two uptr pages handling.
->
-> First, data structures. You'll have one per-process metadata structure
-> describing known keys and their assigned "offsets":
->
-> struct tld_metadata {
->     int cnt;
->     char keys[MAX_KEY_CNT];
->     __u16 offs[MAX_KEY_CNT];
->     __u16 szs[MAX_KEY_CNT];
-> };
+BTF dedup has a strong assumption that compiler with deduplicate identical
+types within any given compilation unit (i.e., .c file). This property
+is used when establishing equilvalence of two subgraphs of types.
 
-In Amery's proposal it's
-u16 key_cnt;
-struct {
-  char key[TASK_LOCAL_DATA_KEY_LEN];
-  u16 off;
-} keys[];
+Unfortunately, this property doesn't always holds in practice. We've
+seen cases of having truly identical structs, unions, array definitions,
+and, most recently, even pointers to the same type being duplicated
+within CU.
 
-If we start allocation from the end of the page then we
-don't need 'szs' array.
+Previously, we mitigated this on a case-by-case basis, adding a few
+simple heuristics for validating that two BTF types (having two
+different type IDs) are structurally the same. But this approach scales
+poorly, and we can have more weird cases come up in the future.
 
-> typedef struct { int off; } tld_off_t;
+So let's take a half-step back, and implement a bit more generic
+structural equivalence check, recursively. We still limit it to
+reasonable depth to avoid long reference loops. Depth-wise limiting of
+potentially cyclical graph isn't great, but as I mentioned below doesn't
+seem to be detrimental performance-wise. We can always improve this in
+the future with per-type visited markers, if necessary.
 
-This is a good tweak.
+Performance-wise this doesn't seem too affect vmlinux BTF dedup, which
+makes sense because this logic kicks in not so frequently and only if we
+already established a canonical candidate type match, but suddenly find
+a different (but probably identical) type.
 
-> tld_off_t tld_add_key_def(const char *key_name, size_t key_size);
+On the other hand, this seems to help to reduce duplication across many
+kernel modules. In my local test, I had 639 kernel module built. Overall
+.BTF sections size goes down from 41MB bytes down to 5MB (!), which is
+pretty impressive for such a straightforward piece of logic added. But
+it would be nice to validate independently just in case my bash and
+Python-fu is broken.
 
-Dropping bpf_ prefix and sticking to tld_ is a good move too.
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ tools/lib/bpf/btf.c | 137 ++++++++++++++++++++++++++++----------------
+ 1 file changed, 89 insertions(+), 48 deletions(-)
 
-> This API can be called just once per each key that process cares
-> about. And this can be done at any point, really, very dynamically.
-> The implementation will:
->   - (just once per process) open pinned BPF map, remember its FD;
->   - (just once) allocate struct tld_metadata, unless we define it as
-> pre-allocated global variable;
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index b7513d4cce55..f18d7e6a453c 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -4356,59 +4356,109 @@ static inline __u16 btf_fwd_kind(struct btf_type *t)
+ 	return btf_kflag(t) ? BTF_KIND_UNION : BTF_KIND_STRUCT;
+ }
+ 
+-/* Check if given two types are identical ARRAY definitions */
+-static bool btf_dedup_identical_arrays(struct btf_dedup *d, __u32 id1, __u32 id2)
++static bool btf_dedup_identical_types(struct btf_dedup *d, __u32 id1, __u32 id2, int depth)
+ {
+ 	struct btf_type *t1, *t2;
++	int k1, k2;
++recur:
++	if (depth <= 0)
++		return false;
+ 
+ 	t1 = btf_type_by_id(d->btf, id1);
+ 	t2 = btf_type_by_id(d->btf, id2);
+-	if (!btf_is_array(t1) || !btf_is_array(t2))
++
++	k1 = btf_kind(t1);
++	k2 = btf_kind(t2);
++	if (k1 != k2)
+ 		return false;
+ 
+-	return btf_equal_array(t1, t2);
+-}
++	switch (k1) {
++	case BTF_KIND_UNKN: /* VOID */
++		return true;
++	case BTF_KIND_INT:
++		return btf_equal_int_tag(t1, t2);
++	case BTF_KIND_ENUM:
++	case BTF_KIND_ENUM64:
++		return btf_compat_enum(t1, t2);
++	case BTF_KIND_FWD:
++	case BTF_KIND_FLOAT:
++		return btf_equal_common(t1, t2);
++	case BTF_KIND_CONST:
++	case BTF_KIND_VOLATILE:
++	case BTF_KIND_RESTRICT:
++	case BTF_KIND_PTR:
++	case BTF_KIND_TYPEDEF:
++	case BTF_KIND_FUNC:
++	case BTF_KIND_TYPE_TAG:
++		if (t1->info != t2->info || t1->name_off != t2->name_off)
++			return false;
++		id1 = t1->type;
++		id2 = t2->type;
++		goto recur;
++	case BTF_KIND_ARRAY: {
++		struct btf_array *a1, *a2;
+ 
+-/* Check if given two types are identical STRUCT/UNION definitions */
+-static bool btf_dedup_identical_structs(struct btf_dedup *d, __u32 id1, __u32 id2)
+-{
+-	const struct btf_member *m1, *m2;
+-	struct btf_type *t1, *t2;
+-	int n, i;
++		if (!btf_compat_array(t1, t2))
++			return false;
+ 
+-	t1 = btf_type_by_id(d->btf, id1);
+-	t2 = btf_type_by_id(d->btf, id2);
++		a1 = btf_array(t1);
++		a2 = btf_array(t1);
+ 
+-	if (!btf_is_composite(t1) || btf_kind(t1) != btf_kind(t2))
+-		return false;
++		if (a1->index_type != a2->index_type &&
++		    !btf_dedup_identical_types(d, a1->index_type, a2->index_type, depth - 1))
++			return false;
+ 
+-	if (!btf_shallow_equal_struct(t1, t2))
+-		return false;
++		if (a1->type != a2->type &&
++		    !btf_dedup_identical_types(d, a1->type, a2->type, depth - 1))
++			return false;
+ 
+-	m1 = btf_members(t1);
+-	m2 = btf_members(t2);
+-	for (i = 0, n = btf_vlen(t1); i < n; i++, m1++, m2++) {
+-		if (m1->type != m2->type &&
+-		    !btf_dedup_identical_arrays(d, m1->type, m2->type) &&
+-		    !btf_dedup_identical_structs(d, m1->type, m2->type))
++		return true;
++	}
++	case BTF_KIND_STRUCT:
++	case BTF_KIND_UNION: {
++		const struct btf_member *m1, *m2;
++		int i, n;
++
++		if (!btf_shallow_equal_struct(t1, t2))
+ 			return false;
++
++		m1 = btf_members(t1);
++		m2 = btf_members(t2);
++		for (i = 0, n = btf_vlen(t1); i < n; i++, m1++, m2++) {
++			if (m1->type == m2->type)
++				continue;
++			if (!btf_dedup_identical_types(d, m1->type, m2->type, depth - 1))
++				return false;
++		}
++		return true;
+ 	}
+-	return true;
+-}
++	case BTF_KIND_FUNC_PROTO: {
++		const struct btf_param *p1, *p2;
++		int i, n;
+ 
+-static bool btf_dedup_identical_ptrs(struct btf_dedup *d, __u32 id1, __u32 id2)
+-{
+-	struct btf_type *t1, *t2;
++		if (!btf_compat_fnproto(t1, t2))
++			return false;
+ 
+-	t1 = btf_type_by_id(d->btf, id1);
+-	t2 = btf_type_by_id(d->btf, id2);
++		if (t1->type != t2->type &&
++		    !btf_dedup_identical_types(d, t1->type, t2->type, depth - 1))
++			return false;
+ 
+-	if (!btf_is_ptr(t1) || !btf_is_ptr(t2))
++		p1 = btf_params(t1);
++		p2 = btf_params(t2);
++		for (i = 0, n = btf_vlen(t1); i < n; i++, p1++, p2++) {
++			if (p1->type == p2->type)
++				continue;
++			if (!btf_dedup_identical_types(d, p1->type, p2->type, depth - 1))
++				return false;
++		}
++		return true;
++	}
++	default:
+ 		return false;
+-
+-	return t1->type == t2->type;
++	}
+ }
+ 
++
+ /*
+  * Check equivalence of BTF type graph formed by candidate struct/union (we'll
+  * call it "candidate graph" in this description for brevity) to a type graph
+@@ -4527,22 +4577,13 @@ static int btf_dedup_is_equiv(struct btf_dedup *d, __u32 cand_id,
+ 		 * different fields within the *same* struct. This breaks type
+ 		 * equivalence check, which makes an assumption that candidate
+ 		 * types sub-graph has a consistent and deduped-by-compiler
+-		 * types within a single CU. So work around that by explicitly
+-		 * allowing identical array types here.
++		 * types within a single CU. And similar situation can happen
++		 * with struct/union sometimes, and event with pointers.
++		 * So accommodate cases like this doing a structural
++		 * comparison recursively, but avoiding being stuck in endless
++		 * loops by limiting the depth up to which we check.
+ 		 */
+-		if (btf_dedup_identical_arrays(d, hypot_type_id, cand_id))
+-			return 1;
+-		/* It turns out that similar situation can happen with
+-		 * struct/union sometimes, sigh... Handle the case where
+-		 * structs/unions are exactly the same, down to the referenced
+-		 * type IDs. Anything more complicated (e.g., if referenced
+-		 * types are different, but equivalent) is *way more*
+-		 * complicated and requires a many-to-many equivalence mapping.
+-		 */
+-		if (btf_dedup_identical_structs(d, hypot_type_id, cand_id))
+-			return 1;
+-		/* A similar case is again observed for PTRs. */
+-		if (btf_dedup_identical_ptrs(d, hypot_type_id, cand_id))
++		if (btf_dedup_identical_types(d, hypot_type_id, cand_id, 16))
+ 			return 1;
+ 		return 0;
+ 	}
+-- 
+2.47.1
 
-The main advantage of the new scheme is support for shared libraries.
-That's a big plus, but the requirement that everything (shared libs,
-static libs, application itself) has to go through this library
-(it would have to be shared ?) is quite inconvenient imo.
-
-Let's tweak this proposal and make the kernel the source of truth.
-Then shared libs, static and application would only need to agree
-on the protocol of accessing bpf task local storage instead of
-being forced to use this "tld" library because it's stateful.
-"tld" library will be there, but it will be stateless.
-
-We may need to tweak the kernel uptr api a bit, but at a high level
-let all user space things assume that two __uptr-s in that special
-task local storage map are the source of truth.
-First, the user space (.so, .a or a.out) will do is
-map_lookup_elem(tls_map_fd) and if __uptr are pointing somewhere
-use that memory regardless of which part of this process allocated it
-(assuming that .so, .a or a.out won't be freeing it until exit).
-If __uptr udata is still NULL, allocate page-aligned page and
-map_update_elem(). The kernel doesn't need to deal with races
-here since it's a task local value.
-If __uptr umetadata is there after lookup, use that to find
-and add keys. Here we need some generic locking mechanism,
-since umetadata is per-process. Like test-and-set spinlock
-that sits within umetadata region and all .so-s, .a-s, a.out
-have the same algorithm to lock and access it.
-
-If not there, allocate a page of umetadata and map_update_elem().
-Here the kernel would need to deal with races, but I hope
-BPF_NOEXIST should already work correctly? I haven't checked.
-Worst case we'd need to add support for BPF_F_LOCK (if not already there).
-
->   - (locklessly) check if key_name is already in tld_metadata, if yes
-> - return already assigned offset;
->   - (locklessly) if not, add this key and assign it offset that is
-> offs[cnt - 1] + szs[cnt - 1] (i.e., we just tightly pack all the
-> values (though we should take care of alignment requirements, of
-> course);
-
-I'm not quite sure how different processes can do it locklessly.
-But if we allocate from the top of the page and there is only one
-'offset' field then we can do it lockless. Like:
-allocate(size sz)
-{
-       size_t old =3D atomic_read(&obj->offset);
-
-       if ((ssize_t)(old - sz) >=3D 0 &&
-           atomic_cmpxchg(&obj->offset, old, old - sz) =3D=3D old)
-               return ..; // success
-}
-
-No suggestions for the rest of the proposal.
 
