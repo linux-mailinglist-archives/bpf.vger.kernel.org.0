@@ -1,699 +1,180 @@
-Return-Path: <bpf+bounces-57124-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57126-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9F06AA5BF4
-	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 10:10:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFB26AA5D64
+	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 12:43:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 515711894A31
-	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 08:10:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43ADF1BC5847
+	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 10:43:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48A472638B4;
-	Thu,  1 May 2025 08:10:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97115221DB4;
+	Thu,  1 May 2025 10:43:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="v2eaCGiH"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IwNJAdbr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx-rz-1.rrze.uni-erlangen.de (mx-rz-1.rrze.uni-erlangen.de [131.188.11.20])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 518C540BF5;
-	Thu,  1 May 2025 08:09:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51F1C21D583
+	for <bpf@vger.kernel.org>; Thu,  1 May 2025 10:43:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746086999; cv=none; b=srRkJcu/6GsZTPRRecEOZnyytcwx9M01p/Uzk58YbxpGUdPrTY63Vw4eSs522gxXGamADzTme9ohZZ17SopuD1OY6nelP/tSvQvVK693MemZYyxT0aHneemZK3ssgQJ0khX5DMKz83osDBMDm37DwtLls9yMYIKyLPrGvdH9uWg=
+	t=1746096195; cv=none; b=aZoZgYqCW1d8mou/BBhbxPeJMPmle33bALRogrkXuZJpcZk8+jXMYQ7fSmj/9KIsEm5w4sfgt+uAfI+MKEi6exQO+IbT5YVTW+i+nx3/7Y2/lz7J0By685f1PueyyNwmRPm0zu2QTYTAaX+670RmpU7is6ghDLkARquOh6bRilo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746086999; c=relaxed/simple;
-	bh=1HXY39JVIEXS6vLbEMapjBR4A/vChvfGGc2vV0+7q3I=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=A1Y47hIDsd3eOnXwSUgdehij1E0/ZUtNUJ2X/NR6Pl68HQmkKYjPMqYNqSFa9F3bjJtPriKPLAa9VpcQkmK2/l7HUPxBhtORpQRnEsmjiVuNdy4qfIb3Mp2pFrB/3yRXslccWIPsgLqqXAGj4Zw6EZyhB8BwLIEEP5pIiQww0Co=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=v2eaCGiH; arc=none smtp.client-ip=131.188.11.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
-	t=1746086995; bh=T81bUDYg3AIbHN+XEX1p0nQSVESrmyNR+vjInq2XoJM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From:To:CC:
-	 Subject;
-	b=v2eaCGiHUz12K0N3ATfWMRpj8pU66TkrNi+rc46Ls0CkYRcaA0mA6VM9dCLnbeDbG
-	 2yqR7jtBPknBh7oHc+2Sq26z3M5r84DkaKHYOfBVznUHRuM3ZgoqFaqRnoS7OduMFk
-	 sgltEentHnWkHpySb64Z3z6de3blkwIebz0GFcTt6sZWFSAJReEE3wXAVZbPQ/6rk7
-	 eGsVpa3sB7/H7Jlz2zmNI8SKRYE2YU4E+zyqUhoEzx8bqslCva95vP88UCpKPKs90C
-	 MZ5WB6QUEql+iitFpv4K3bqCiY3PuSbfTum0oIgODOK5vdJdq+ijnfqnkib5/fGjgJ
-	 NvE8voBTz24YQ==
-Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-rz-1.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4Zp6D26Rybz8sqL;
-	Thu,  1 May 2025 10:09:54 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at boeck1.rrze.uni-erlangen.de (RRZE)
-X-RRZE-Flag: Not-Spam
-X-RRZE-Submit-IP: 2001:9e8:3636:a700:12b2:e53f:6cbc:f48c
-Received: from luis-tp.fritz.box (unknown [IPv6:2001:9e8:3636:a700:12b2:e53f:6cbc:f48c])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: U2FsdGVkX1+gNsWXDDuKBF0l9vZhtMoP3aID5Cev7Gc=)
-	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4Zp6Cy424Bz8shn;
-	Thu,  1 May 2025 10:09:50 +0200 (CEST)
-From: Luis Gerhorst <luis.gerhorst@fau.de>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Xu Kuohai <xukuohai@huaweicloud.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Hari Bathini <hbathini@linux.ibm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Naveen N Rao <naveen@kernel.org>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Luis Gerhorst <luis.gerhorst@fau.de>,
-	Henriette Herzog <henriette.herzog@rub.de>,
-	Saket Kumar Bhaskar <skb99@linux.ibm.com>,
-	Cupertino Miranda <cupertino.miranda@oracle.com>,
-	Jiayuan Chen <mrpre@163.com>,
-	Matan Shachnai <m.shachnai@gmail.com>,
-	Dimitar Kanaliev <dimitar.kanaliev@siteground.com>,
-	Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-	Daniel Xu <dxu@dxuuu.xyz>,
-	bpf@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-kselftest@vger.kernel.org
-Cc: Maximilian Ott <ott@cs.fau.de>,
-	Milan Stephan <milan.stephan@fau.de>
-Subject: [PATCH bpf-next v3 11/11] bpf: Fall back to nospec for sanitization-failures
-Date: Thu,  1 May 2025 09:36:02 +0200
-Message-ID: <20250501073603.1402960-12-luis.gerhorst@fau.de>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250501073603.1402960-1-luis.gerhorst@fau.de>
-References: <20250501073603.1402960-1-luis.gerhorst@fau.de>
+	s=arc-20240116; t=1746096195; c=relaxed/simple;
+	bh=uFwiqbBT7QiRct0/SRVF+W9Nz3gjwIgP+qqQUe/60xo=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=AG1XL0exFxJQRxA/MlvxsusJ69Xg2SvWLi3UrufgXWgyQnK2OvsEQUyILkSPPcZZnixNkR2gLknu6llzPKRTyAL1ahhRDyunaPBeBdH+imXvhTAEXWCKCRfGGB5LG2PH3SbdfYYQ5zrh+0/zLWJruVnxpPHDLLZqanUaXSlftBA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IwNJAdbr; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1746096193;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WiDFoQOB+YriU47Yf7CEanBcEHOAtpPsQZhUMA1nA84=;
+	b=IwNJAdbrwHE1I6TOjo9VCEKVc0YfUNzvuh9ZKMVWGxdxksAtDCKpO0gfBGH0mNfY9lngLC
+	mRse8op7N2Rt2NKFejwPhf1ciAgABglH6Gcv5LYCsd9NbnOuPtME/njsaAsSYvpQg4M6Zq
+	PcxBJBwny1t013ad7ZSpiu3TS3sC3Us=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-130-6ae-Q8TePGuE-_GNzjyWfA-1; Thu, 01 May 2025 06:43:12 -0400
+X-MC-Unique: 6ae-Q8TePGuE-_GNzjyWfA-1
+X-Mimecast-MFC-AGG-ID: 6ae-Q8TePGuE-_GNzjyWfA_1746096191
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-54c0a1ca4f7so367325e87.3
+        for <bpf@vger.kernel.org>; Thu, 01 May 2025 03:43:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746096190; x=1746700990;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WiDFoQOB+YriU47Yf7CEanBcEHOAtpPsQZhUMA1nA84=;
+        b=ojoIbl5+Ye18GrUDsZ4U9vD0vHwQHAXdvUeNe9ddkqTGoSDY/0jIR2mZnTw9XTIgwp
+         g42ub1BgjAzswBQxn5UBOj0kz3mMicM47epbngt5NEaSMEQDE7boop9L8Nh2AzCqncn+
+         MQsXEwEwGniYh6dg5saTWZBkWu/T41gW48SWjZr+VoxFsvX2xCVNsDrznYpqMZ+avLAi
+         jlILVpDClA2A6A6Bc+GXPTT51sdAZK6yoSI+xzfxQ2b99vfKa3elcSuw3V0hOz6OcZCU
+         YcQsZdObb6vAR1Ha4EJVaywM4n0/qBvj+vHWBCIgf4ZtNR+bMY7/JrxAEzMAIe+m4aHt
+         g2ew==
+X-Forwarded-Encrypted: i=1; AJvYcCVxAZ+sOQJcIQXFmPvlw8C+krD4zwPKlpyYYkQUJTx0HBwsj4sjmGo1umSbFQV+MhtdilY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzZ+efZFoIFdDvsKLQGCNoaS7JFVIOBgvr3QAWkt15dkHSzimwq
+	T2L+AlPRS/5uVpm+TsGcNn09u5N2A88Bda1yxysDQ80MhS/7ojTjq1SQV47MfcCF/Mvc8CKKEZJ
+	dfIkC06iMBi8kUFYbwjRNekn1kr/cThzadZkwBEfO1UxAR9yiEA==
+X-Gm-Gg: ASbGncu4bSEdys7fptxXVQx4XQIFeLAOlnYxlmk82zG2xifnNoGKHJXg005yLyk0MSJ
+	dCeI2NmMcNzBxPK9HWHSOOo9fBwXedX5DcmwnrhUqPpY+t8AU0z2MkFAunxynRkyJmCNynhR7QN
+	npNZgE+kk6RzN0a9KbFTxWjsIflNGxs6bVTtJL+RFCfDtNF1zqYoyJjhPnwWuK8H0V+RgYjPl24
+	3b1Ldj85A/KIQJ42z4G4bnXDhoXInwOIinYpsCDRywX2dgXRlGmFFE1c84G4onQPlOg1769qstk
+	q54nNlgc/5IdZ71+/rp6QcN019syh0D17EUP
+X-Received: by 2002:a05:6512:23a3:b0:549:66c9:d0d9 with SMTP id 2adb3069b0e04-54ea33b45f7mr2109626e87.53.1746096190497;
+        Thu, 01 May 2025 03:43:10 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHngkBRxO36POnN4Us1uA3Ii4VPY1PcVyxolJIqXZfmRksIwyZrazkF5hMgJ4+LQ7HoOSyNXQ==
+X-Received: by 2002:a05:6512:23a3:b0:549:66c9:d0d9 with SMTP id 2adb3069b0e04-54ea33b45f7mr2109614e87.53.1746096190075;
+        Thu, 01 May 2025 03:43:10 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-54ea94c08e7sm62779e87.73.2025.05.01.03.43.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 May 2025 03:43:09 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id C3EF91A0825C; Thu, 01 May 2025 12:43:07 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Jakub Sitnicki <jakub@cloudflare.com>, Alexei Starovoitov
+ <alexei.starovoitov@gmail.com>, Arthur Fabre <arthur@arthurfabre.com>
+Cc: Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+ Jesper Dangaard Brouer <hawk@kernel.org>, Yan Zhai <yan@cloudflare.com>,
+ jbrandeburg@cloudflare.com, lbiancon@redhat.com, Alexei Starovoitov
+ <ast@kernel.org>, Jakub Kicinski <kuba@kernel.org>, Eric Dumazet
+ <edumazet@google.com>, kernel-team@cloudflare.com
+Subject: Re: [PATCH RFC bpf-next v2 01/17] trait: limited KV store for
+ packet metadata
+In-Reply-To: <87ikmle9t4.fsf@cloudflare.com>
+References: <20250422-afabre-traits-010-rfc2-v2-0-92bcc6b146c9@arthurfabre.com>
+ <20250422-afabre-traits-010-rfc2-v2-1-92bcc6b146c9@arthurfabre.com>
+ <CAADnVQJeCC5j4_ss2+G2zjMbAcn=G3JLeAJCBZRC8uzfsVAjMA@mail.gmail.com>
+ <D9FYTORERFI7.36F4WG8G3NHGX@arthurfabre.com>
+ <CAADnVQKe3Jfd+pVt868P32-m2a-moP4H7ms_kdZnrYALCxx53Q@mail.gmail.com>
+ <87frhqnh0e.fsf@toke.dk> <87ikmle9t4.fsf@cloudflare.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Thu, 01 May 2025 12:43:07 +0200
+Message-ID: <875xik7gsk.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-ALU sanitization was introduced to ensure that a subsequent ptr access
-can never go OOB, even under speculation. This is required because we
-currently allow speculative scalar confusion. Spec. scalar confusion is
-possible because Spectre v4 sanitization only adds a nospec after
-critical stores (e.g., scalar overwritten with a pointer).
+Jakub Sitnicki <jakub@cloudflare.com> writes:
 
-If we add a nospec before the ALU op, none of the operands can be
-subject to scalar confusion. As an ADD/SUB can not introduce scalar
-confusion itself, the result will also not be subject to scalar
-confusion. Therefore, the subsequent ptr access is always safe.
+> On Wed, Apr 30, 2025 at 11:19 AM +02, Toke H=C3=B8iland-J=C3=B8rgensen wr=
+ote:
+>> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>>
+>>> On Fri, Apr 25, 2025 at 12:27=E2=80=AFPM Arthur Fabre <arthur@arthurfab=
+re.com> wrote:
+>>>>
+>>>> On Thu Apr 24, 2025 at 6:22 PM CEST, Alexei Starovoitov wrote:
+>>>> > On Tue, Apr 22, 2025 at 6:23=E2=80=AFAM Arthur Fabre <arthur@arthurf=
+abre.com> wrote:
+>
+> [...]
+>
+>>>> * Hardware metadata: metadata exposed from NICs (like the receive
+>>>>   timestamp, 4 tuple hash...) is currently only exposed to XDP programs
+>>>>   (via kfuncs).
+>>>>   But that doesn't expose them to the rest of the stack.
+>>>>   Storing them in traits would allow XDP, other BPF programs, and the
+>>>>   kernel to access and modify them (for example to into account
+>>>>   decapsulating a packet).
+>>>
+>>> Sure. If traits =3D=3D existing metadata bpf prog in xdp can communicate
+>>> with bpf prog in skb layer via that "trait" format.
+>>> xdp can take tuple hash and store it as key=3D=3D0 in the trait.
+>>> The kernel doesn't need to know how to parse that format.
+>>
+>> Yes it does, to propagate it to the skb later. I.e.,
+>>
+>> XDP prog on NIC: get HW hash, store in traits, redirect to CPUMAP
+>> CPUMAP: build skb, read hash from traits, populate skb hash
+>>
+>> Same thing for (at least) timestamps and checksums.
+>>
+>> Longer term, with traits available we could move more skb fields into
+>> traits to make struct sk_buff smaller (by moving optional fields to
+>> traits that don't take up any space if they're not set).
+>
+> Perhaps we can have the cake and eat it too.
+>
+> We could leave the traits encoding/decoding out of the kernel and, at
+> the same time, *expose it* to the network stack through BPF struct_ops
+> programs. At a high level, for example ->get_rx_hash(), not the
+> individual K/V access. The traits_ops vtable could grow as needed to
+> support new use cases.
+>
+> If you think about it, it's not so different from BPF-powered congestion
+> algorithms and scheduler extensions. They also expose some state, kept in
+> maps, that only the loaded BPF code knows how to operate on.
 
-We directly fall back to nospec for the sanitization errors
-REASON_BOUNDS, _TYPE, _PATHS, and _LIMIT, even if we are not on a
-speculative path.
+Right, the difference being that the kernel works perfectly well without
+an eBPF congestion control algorithm loaded because it has its own
+internal implementation that is used by default.
 
-For REASON_STACK, we return the error -ENOMEM directly now. Previously,
-sanitize_err() returned -EACCES for this case but we change it to
--ENOMEM because doing so prevents do_check() from falling back to a
-nospec if we are on a speculative path. This would not be a serious
-issue (the verifier would probably run into the -ENOMEM again shortly on
-the next non-speculative path and still abort verification), but -ENOMEM
-is more fitting here anyway. An alternative would be -EFAULT, which is
-also returned for some of the other cases where push_stack() fails, but
-this is more frequently used for verifier-internal bugs.
+Having a hard dependency on BPF for in-kernel functionality is a
+different matter, and limits the cases it can be used for.
 
-Signed-off-by: Luis Gerhorst <luis.gerhorst@fau.de>
-Acked-by: Henriette Herzog <henriette.herzog@rub.de>
-Cc: Maximilian Ott <ott@cs.fau.de>
-Cc: Milan Stephan <milan.stephan@fau.de>
----
- kernel/bpf/verifier.c                         | 89 ++++++-----------
- .../selftests/bpf/progs/verifier_bounds.c     |  5 +-
- .../bpf/progs/verifier_bounds_deduction.c     | 45 ++++++---
- .../selftests/bpf/progs/verifier_map_ptr.c    | 20 +++-
- .../bpf/progs/verifier_value_ptr_arith.c      | 97 ++++++++++++++++---
- 5 files changed, 160 insertions(+), 96 deletions(-)
+Besides, I don't really see the point of leaving the encoding out of the
+kernel? We keep the encoding kernel-internal anyway, and just expose a
+get/set API, so there's no constraint on changing it later (that's kinda
+the whole point of doing that). And with bulk get/set there's not an
+efficiency argument either. So what's the point, other than doing things
+in BPF for its own sake?
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 1fbafea3ed69..a3c105d87de5 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -13967,14 +13967,6 @@ static bool check_reg_sane_offset(struct bpf_verifier_env *env,
- 	return true;
- }
- 
--enum {
--	REASON_BOUNDS	= -1,
--	REASON_TYPE	= -2,
--	REASON_PATHS	= -3,
--	REASON_LIMIT	= -4,
--	REASON_STACK	= -5,
--};
--
- static int retrieve_ptr_limit(const struct bpf_reg_state *ptr_reg,
- 			      u32 *alu_limit, bool mask_to_left)
- {
-@@ -13997,11 +13989,13 @@ static int retrieve_ptr_limit(const struct bpf_reg_state *ptr_reg,
- 			     ptr_reg->umax_value) + ptr_reg->off;
- 		break;
- 	default:
--		return REASON_TYPE;
-+		/* Register has pointer with unsupported alu operation. */
-+		return -EOPNOTSUPP;
- 	}
- 
-+	/* Register tried access beyond pointer bounds. */
- 	if (ptr_limit >= max)
--		return REASON_LIMIT;
-+		return -EOPNOTSUPP;
- 	*alu_limit = ptr_limit;
- 	return 0;
- }
-@@ -14022,8 +14016,14 @@ static int update_alu_sanitation_state(struct bpf_insn_aux_data *aux,
- 	 */
- 	if (aux->alu_state &&
- 	    (aux->alu_state != alu_state ||
--	     aux->alu_limit != alu_limit))
--		return REASON_PATHS;
-+	     aux->alu_limit != alu_limit)) {
-+		/* Tried to perform alu op from different maps, paths or
-+		 * scalars.
-+		 */
-+		aux->nospec = true;
-+		aux->alu_state = 0;
-+		return 0;
-+	}
- 
- 	/* Corresponding fixup done in do_misc_fixups(). */
- 	aux->alu_state = alu_state;
-@@ -14104,16 +14104,26 @@ static int sanitize_ptr_alu(struct bpf_verifier_env *env,
- 
- 	if (!commit_window) {
- 		if (!tnum_is_const(off_reg->var_off) &&
--		    (off_reg->smin_value < 0) != (off_reg->smax_value < 0))
--			return REASON_BOUNDS;
-+		    (off_reg->smin_value < 0) != (off_reg->smax_value < 0)) {
-+			/* Register has unknown scalar with mixed signed
-+			 * bounds.
-+			 */
-+			aux->nospec = true;
-+			aux->alu_state = 0;
-+			return 0;
-+		}
- 
- 		info->mask_to_left = (opcode == BPF_ADD &&  off_is_neg) ||
- 				     (opcode == BPF_SUB && !off_is_neg);
- 	}
- 
- 	err = retrieve_ptr_limit(ptr_reg, &alu_limit, info->mask_to_left);
--	if (err < 0)
--		return err;
-+	if (err) {
-+		WARN_ON_ONCE(err != -EOPNOTSUPP);
-+		aux->nospec = true;
-+		aux->alu_state = 0;
-+		return 0;
-+	}
- 
- 	if (commit_window) {
- 		/* In commit phase we narrow the masking window based on
-@@ -14166,7 +14176,7 @@ static int sanitize_ptr_alu(struct bpf_verifier_env *env,
- 					env->insn_idx);
- 	if (!ptr_is_dst_reg && ret)
- 		*dst_reg = tmp;
--	return !ret ? REASON_STACK : 0;
-+	return !ret ? -ENOMEM : 0;
- }
- 
- static void sanitize_mark_insn_seen(struct bpf_verifier_env *env)
-@@ -14182,45 +14192,6 @@ static void sanitize_mark_insn_seen(struct bpf_verifier_env *env)
- 		env->insn_aux_data[env->insn_idx].seen = env->pass_cnt;
- }
- 
--static int sanitize_err(struct bpf_verifier_env *env,
--			const struct bpf_insn *insn, int reason,
--			const struct bpf_reg_state *off_reg,
--			const struct bpf_reg_state *dst_reg)
--{
--	static const char *err = "pointer arithmetic with it prohibited for !root";
--	const char *op = BPF_OP(insn->code) == BPF_ADD ? "add" : "sub";
--	u32 dst = insn->dst_reg, src = insn->src_reg;
--
--	switch (reason) {
--	case REASON_BOUNDS:
--		verbose(env, "R%d has unknown scalar with mixed signed bounds, %s\n",
--			off_reg == dst_reg ? dst : src, err);
--		break;
--	case REASON_TYPE:
--		verbose(env, "R%d has pointer with unsupported alu operation, %s\n",
--			off_reg == dst_reg ? src : dst, err);
--		break;
--	case REASON_PATHS:
--		verbose(env, "R%d tried to %s from different maps, paths or scalars, %s\n",
--			dst, op, err);
--		break;
--	case REASON_LIMIT:
--		verbose(env, "R%d tried to %s beyond pointer bounds, %s\n",
--			dst, op, err);
--		break;
--	case REASON_STACK:
--		verbose(env, "R%d could not be pushed for speculative verification, %s\n",
--			dst, err);
--		break;
--	default:
--		verbose(env, "verifier internal error: unknown reason (%d)\n",
--			reason);
--		break;
--	}
--
--	return -EACCES;
--}
--
- /* check that stack access falls within stack limits and that 'reg' doesn't
-  * have a variable offset.
-  *
-@@ -14386,7 +14357,7 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 		ret = sanitize_ptr_alu(env, insn, ptr_reg, off_reg, dst_reg,
- 				       &info, false);
- 		if (ret < 0)
--			return sanitize_err(env, insn, ret, off_reg, dst_reg);
-+			return ret;
- 	}
- 
- 	switch (opcode) {
-@@ -14514,7 +14485,7 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 		ret = sanitize_ptr_alu(env, insn, dst_reg, off_reg, dst_reg,
- 				       &info, true);
- 		if (ret < 0)
--			return sanitize_err(env, insn, ret, off_reg, dst_reg);
-+			return ret;
- 	}
- 
- 	return 0;
-@@ -15108,7 +15079,7 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
- 	if (sanitize_needed(opcode)) {
- 		ret = sanitize_val_alu(env, insn);
- 		if (ret < 0)
--			return sanitize_err(env, insn, ret, NULL, NULL);
-+			return ret;
- 	}
- 
- 	/* Calculate sign/unsigned bounds and tnum for alu32 and alu64 bit ops.
-diff --git a/tools/testing/selftests/bpf/progs/verifier_bounds.c b/tools/testing/selftests/bpf/progs/verifier_bounds.c
-index 30e16153fdf1..f2ee6d7febda 100644
---- a/tools/testing/selftests/bpf/progs/verifier_bounds.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_bounds.c
-@@ -47,9 +47,12 @@ SEC("socket")
- __description("subtraction bounds (map value) variant 2")
- __failure
- __msg("R0 min value is negative, either use unsigned index or do a if (index >=0) check.")
--__msg_unpriv("R1 has unknown scalar with mixed signed bounds")
-+__msg_unpriv("R0 pointer arithmetic of map value goes out of range, prohibited for !root")
- __naked void bounds_map_value_variant_2(void)
- {
-+	/* unpriv: nospec inserted to prevent "R1 has unknown scalar with mixed
-+	 * signed bounds".
-+	 */
- 	asm volatile ("					\
- 	r1 = 0;						\
- 	*(u64*)(r10 - 8) = r1;				\
-diff --git a/tools/testing/selftests/bpf/progs/verifier_bounds_deduction.c b/tools/testing/selftests/bpf/progs/verifier_bounds_deduction.c
-index c506afbdd936..24ecaf89004e 100644
---- a/tools/testing/selftests/bpf/progs/verifier_bounds_deduction.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_bounds_deduction.c
-@@ -8,22 +8,26 @@
- SEC("socket")
- __description("check deducing bounds from const, 1")
- __failure __msg("R0 tried to subtract pointer from scalar")
--__msg_unpriv("R1 has pointer with unsupported alu operation")
-+__failure_unpriv
- __naked void deducing_bounds_from_const_1(void)
- {
- 	asm volatile ("					\
- 	r0 = 1;						\
- 	if r0 s>= 1 goto l0_%=;				\
--l0_%=:	r0 -= r1;					\
-+l0_%=:	/* unpriv: nospec (inserted to prevent `R1 has pointer with unsupported alu operation`) */\
-+	r0 -= r1;					\
- 	exit;						\
- "	::: __clobber_all);
- }
- 
- SEC("socket")
- __description("check deducing bounds from const, 2")
--__success __failure_unpriv
--__msg_unpriv("R1 has pointer with unsupported alu operation")
-+__success __success_unpriv
- __retval(1)
-+#ifdef SPEC_V1
-+__xlated_unpriv("nospec") /* inserted to prevent `R1 has pointer with unsupported alu operation` */
-+__xlated_unpriv("r1 -= r0")
-+#endif
- __naked void deducing_bounds_from_const_2(void)
- {
- 	asm volatile ("					\
-@@ -40,22 +44,26 @@ l1_%=:	r1 -= r0;					\
- SEC("socket")
- __description("check deducing bounds from const, 3")
- __failure __msg("R0 tried to subtract pointer from scalar")
--__msg_unpriv("R1 has pointer with unsupported alu operation")
-+__failure_unpriv
- __naked void deducing_bounds_from_const_3(void)
- {
- 	asm volatile ("					\
- 	r0 = 0;						\
- 	if r0 s<= 0 goto l0_%=;				\
--l0_%=:	r0 -= r1;					\
-+l0_%=:	/* unpriv: nospec (inserted to prevent `R1 has pointer with unsupported alu operation`) */\
-+	r0 -= r1;					\
- 	exit;						\
- "	::: __clobber_all);
- }
- 
- SEC("socket")
- __description("check deducing bounds from const, 4")
--__success __failure_unpriv
--__msg_unpriv("R6 has pointer with unsupported alu operation")
-+__success __success_unpriv
- __retval(0)
-+#ifdef SPEC_V1
-+__xlated_unpriv("nospec") /* inserted to prevent `R6 has pointer with unsupported alu operation` */
-+__xlated_unpriv("r6 -= r0")
-+#endif
- __naked void deducing_bounds_from_const_4(void)
- {
- 	asm volatile ("					\
-@@ -73,12 +81,13 @@ l1_%=:	r6 -= r0;					\
- SEC("socket")
- __description("check deducing bounds from const, 5")
- __failure __msg("R0 tried to subtract pointer from scalar")
--__msg_unpriv("R1 has pointer with unsupported alu operation")
-+__failure_unpriv
- __naked void deducing_bounds_from_const_5(void)
- {
- 	asm volatile ("					\
- 	r0 = 0;						\
- 	if r0 s>= 1 goto l0_%=;				\
-+	/* unpriv: nospec (inserted to prevent `R1 has pointer with unsupported alu operation`) */\
- 	r0 -= r1;					\
- l0_%=:	exit;						\
- "	::: __clobber_all);
-@@ -87,14 +96,15 @@ l0_%=:	exit;						\
- SEC("socket")
- __description("check deducing bounds from const, 6")
- __failure __msg("R0 tried to subtract pointer from scalar")
--__msg_unpriv("R1 has pointer with unsupported alu operation")
-+__failure_unpriv
- __naked void deducing_bounds_from_const_6(void)
- {
- 	asm volatile ("					\
- 	r0 = 0;						\
- 	if r0 s>= 0 goto l0_%=;				\
- 	exit;						\
--l0_%=:	r0 -= r1;					\
-+l0_%=:	/* unpriv: nospec (inserted to prevent `R1 has pointer with unsupported alu operation`) */\
-+	r0 -= r1;					\
- 	exit;						\
- "	::: __clobber_all);
- }
-@@ -102,14 +112,15 @@ l0_%=:	r0 -= r1;					\
- SEC("socket")
- __description("check deducing bounds from const, 7")
- __failure __msg("dereference of modified ctx ptr")
--__msg_unpriv("R1 has pointer with unsupported alu operation")
-+__failure_unpriv
- __flag(BPF_F_ANY_ALIGNMENT)
- __naked void deducing_bounds_from_const_7(void)
- {
- 	asm volatile ("					\
- 	r0 = %[__imm_0];				\
- 	if r0 s>= 0 goto l0_%=;				\
--l0_%=:	r1 -= r0;					\
-+l0_%=:	/* unpriv: nospec (inserted to prevent `R1 has pointer with unsupported alu operation`) */\
-+	r1 -= r0;					\
- 	r0 = *(u32*)(r1 + %[__sk_buff_mark]);		\
- 	exit;						\
- "	:
-@@ -121,13 +132,14 @@ l0_%=:	r1 -= r0;					\
- SEC("socket")
- __description("check deducing bounds from const, 8")
- __failure __msg("negative offset ctx ptr R1 off=-1 disallowed")
--__msg_unpriv("R1 has pointer with unsupported alu operation")
-+__failure_unpriv
- __flag(BPF_F_ANY_ALIGNMENT)
- __naked void deducing_bounds_from_const_8(void)
- {
- 	asm volatile ("					\
- 	r0 = %[__imm_0];				\
- 	if r0 s>= 0 goto l0_%=;				\
-+	/* unpriv: nospec (inserted to prevent `R1 has pointer with unsupported alu operation`) */\
- 	r1 += r0;					\
- l0_%=:	r0 = *(u32*)(r1 + %[__sk_buff_mark]);		\
- 	exit;						\
-@@ -140,13 +152,14 @@ l0_%=:	r0 = *(u32*)(r1 + %[__sk_buff_mark]);		\
- SEC("socket")
- __description("check deducing bounds from const, 9")
- __failure __msg("R0 tried to subtract pointer from scalar")
--__msg_unpriv("R1 has pointer with unsupported alu operation")
-+__failure_unpriv
- __naked void deducing_bounds_from_const_9(void)
- {
- 	asm volatile ("					\
- 	r0 = 0;						\
- 	if r0 s>= 0 goto l0_%=;				\
--l0_%=:	r0 -= r1;					\
-+l0_%=:	/* unpriv: nospec (inserted to prevent `R1 has pointer with unsupported alu operation`) */\
-+	r0 -= r1;					\
- 	exit;						\
- "	::: __clobber_all);
- }
-diff --git a/tools/testing/selftests/bpf/progs/verifier_map_ptr.c b/tools/testing/selftests/bpf/progs/verifier_map_ptr.c
-index 11a079145966..a540f29b7532 100644
---- a/tools/testing/selftests/bpf/progs/verifier_map_ptr.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_map_ptr.c
-@@ -110,9 +110,17 @@ __naked void ptr_read_ops_field_accepted(void)
- 
- SEC("socket")
- __description("bpf_map_ptr: r = 0, map_ptr = map_ptr + r")
--__success __failure_unpriv
--__msg_unpriv("R1 has pointer with unsupported alu operation")
-+__success __success_unpriv
- __retval(0)
-+#ifdef SPEC_V1
-+__xlated_unpriv("r1 = 0x") /* r0 = %[map_hash_16b] ll */
-+/* This nospec is not really needed here, because there is no bypassable
-+ * branch/store that could lead to r0 not containing 0 when `r1 += r0` executes.
-+ * We still keep it like this to not complicate the verifier.
-+ */
-+__xlated_unpriv("nospec") /* inserted to prevent `R1 has pointer with unsupported alu operation` */
-+__xlated_unpriv("r1 += r0")
-+#endif
- __naked void map_ptr_map_ptr_r(void)
- {
- 	asm volatile ("					\
-@@ -134,9 +142,13 @@ __naked void map_ptr_map_ptr_r(void)
- 
- SEC("socket")
- __description("bpf_map_ptr: r = 0, r = r + map_ptr")
--__success __failure_unpriv
--__msg_unpriv("R0 has pointer with unsupported alu operation")
-+__success __success_unpriv
- __retval(0)
-+#ifdef SPEC_V1
-+__xlated_unpriv("r0 = 0x") /* r0 = %[map_hash_16b] ll */
-+__xlated_unpriv("nospec") /* inserted to prevent `R0 has pointer with unsupported alu operation` */
-+__xlated_unpriv("r1 += r0")
-+#endif
- __naked void _0_r_r_map_ptr(void)
- {
- 	asm volatile ("					\
-diff --git a/tools/testing/selftests/bpf/progs/verifier_value_ptr_arith.c b/tools/testing/selftests/bpf/progs/verifier_value_ptr_arith.c
-index fcea9819e359..a35090e3de2b 100644
---- a/tools/testing/selftests/bpf/progs/verifier_value_ptr_arith.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_value_ptr_arith.c
-@@ -41,9 +41,17 @@ struct {
- 
- SEC("socket")
- __description("map access: known scalar += value_ptr unknown vs const")
--__success __failure_unpriv
--__msg_unpriv("R1 tried to add from different maps, paths or scalars")
-+__success __success_unpriv
- __retval(1)
-+#ifdef SPEC_V1
-+__xlated_unpriv("r1 &= 7")
-+__xlated_unpriv("goto pc+1")
-+/* l3_%=: */
-+__xlated_unpriv("r1 = 3")
-+/* l4_%=: */
-+__xlated_unpriv("nospec") /* inserted to prevent `R1 tried to add from different maps, paths or scalars` */
-+__xlated_unpriv("r1 += r0")
-+#endif
- __naked void value_ptr_unknown_vs_const(void)
- {
- 	asm volatile ("					\
-@@ -79,9 +87,14 @@ l2_%=:	r0 = 1;						\
- 
- SEC("socket")
- __description("map access: known scalar += value_ptr const vs unknown")
--__success __failure_unpriv
--__msg_unpriv("R1 tried to add from different maps, paths or scalars")
-+__success __success_unpriv
- __retval(1)
-+#ifdef SPEC_V1
-+__xlated_unpriv("r1 &= 7")
-+/* l4_%=: */
-+__xlated_unpriv("nospec") /* inserted to prevent `R1 tried to add from different maps, paths or scalars` */
-+__xlated_unpriv("r1 += r0")
-+#endif
- __naked void value_ptr_const_vs_unknown(void)
- {
- 	asm volatile ("					\
-@@ -117,9 +130,16 @@ l2_%=:	r0 = 1;						\
- 
- SEC("socket")
- __description("map access: known scalar += value_ptr const vs const (ne)")
--__success __failure_unpriv
--__msg_unpriv("R1 tried to add from different maps, paths or scalars")
-+__success __success_unpriv
- __retval(1)
-+#ifdef SPEC_V1
-+__xlated_unpriv("goto pc+1") /* to l4, must not be pc+2 as this would skip nospec */
-+/* l3_%=: */
-+__xlated_unpriv("r1 = 5")
-+/* l4_%=: */
-+__xlated_unpriv("nospec") /* inserted to prevent `R1 tried to add from different maps, paths or scalars` */
-+__xlated_unpriv("r1 += r0")
-+#endif
- __naked void ptr_const_vs_const_ne(void)
- {
- 	asm volatile ("					\
-@@ -225,9 +245,18 @@ l2_%=:	r0 = 1;						\
- 
- SEC("socket")
- __description("map access: known scalar += value_ptr unknown vs unknown (lt)")
--__success __failure_unpriv
--__msg_unpriv("R1 tried to add from different maps, paths or scalars")
-+__success __success_unpriv
- __retval(1)
-+#ifdef SPEC_V1
-+__xlated_unpriv("r1 &= 3")
-+__xlated_unpriv("goto pc+3") /* must go to l4 (nospec) */
-+__xlated_unpriv("r1 = 6")
-+__xlated_unpriv("r1 = -r1")
-+__xlated_unpriv("r1 &= 7")
-+/* l4_%=: */
-+__xlated_unpriv("nospec") /* inserted to prevent `R1 tried to add from different maps, paths or scalars` */
-+__xlated_unpriv("r1 += r0")
-+#endif
- __naked void ptr_unknown_vs_unknown_lt(void)
- {
- 	asm volatile ("					\
-@@ -265,9 +294,14 @@ l2_%=:	r0 = 1;						\
- 
- SEC("socket")
- __description("map access: known scalar += value_ptr unknown vs unknown (gt)")
--__success __failure_unpriv
--__msg_unpriv("R1 tried to add from different maps, paths or scalars")
-+__success __success_unpriv
- __retval(1)
-+#ifdef SPEC_V1
-+__xlated_unpriv("r1 &= 3")
-+/* l4_%=: */
-+__xlated_unpriv("nospec") /* inserted to prevent `R1 tried to add from different maps, paths or scalars` */
-+__xlated_unpriv("r1 += r0")
-+#endif
- __naked void ptr_unknown_vs_unknown_gt(void)
- {
- 	asm volatile ("					\
-@@ -398,9 +432,27 @@ l2_%=:	r0 = 1;						\
- 
- SEC("socket")
- __description("map access: mixing value pointer and scalar, 1")
--__success __failure_unpriv
--__msg_unpriv("R2 tried to add from different maps, paths or scalars, pointer arithmetic with it prohibited for !root")
-+__success __success_unpriv
- __retval(0)
-+#ifdef SPEC_V1
-+__xlated_unpriv("goto pc+2") /* to l2, must not be pc+3 as this would skip nospec */
-+__xlated_unpriv("r2 = 0")
-+__xlated_unpriv("r3 = 1048576")
-+/* l2_%=: */
-+__xlated_unpriv("nospec") /* inserted to prevent `R2 tried to add from different maps, paths or scalars, pointer arithmetic with it prohibited for !root` */
-+__xlated_unpriv("r2 += r3")
-+__xlated_unpriv("if r1 != 0x0 goto pc+1")
-+__xlated_unpriv("goto pc+5") /* to l4 */
-+/* l3_%=: */
-+__xlated_unpriv("r0 = 322376503")
-+__xlated_unpriv("nospec") /* inserted to prevent `R2 pointer comparison prohibited` */
-+__xlated_unpriv("if r2 != 0x100000 goto pc+2") /* to l4 */
-+__xlated_unpriv("r0 = 0")
-+__xlated_unpriv("exit")
-+/* l4_%=: */
-+__xlated_unpriv("nospec")
-+__xlated_unpriv("r0 = *(u8 *)(r0 +0)")
-+#endif
- __naked void value_pointer_and_scalar_1(void)
- {
- 	asm volatile ("					\
-@@ -434,7 +486,6 @@ l2_%=:	/* common instruction */			\
- l3_%=:	/* branch B */					\
- 	r0 = 0x13371337;				\
- 	/* verifier follows fall-through */		\
--	/* unpriv: nospec (inserted to prevent `R2 pointer comparison prohibited`) */\
- 	if r2 != 0x100000 goto l4_%=;			\
- 	r0 = 0;						\
- 	exit;						\
-@@ -452,9 +503,24 @@ l4_%=:	/* fake-dead code; targeted from branch A to	\
- 
- SEC("socket")
- __description("map access: mixing value pointer and scalar, 2")
--__success __failure_unpriv
--__msg_unpriv("R2 tried to add from different maps, paths or scalars, pointer arithmetic with it prohibited for !root")
-+__success __success_unpriv
- __retval(0)
-+#ifdef SPEC_V1
-+__xlated_unpriv("goto pc+2")
-+__xlated_unpriv("r2 = r0")
-+__xlated_unpriv("r3 = 0")
-+__xlated_unpriv("nospec")
-+__xlated_unpriv("r2 += r3")
-+__xlated_unpriv("if r1 != 0x0 goto pc+1")
-+__xlated_unpriv("goto pc+5")
-+__xlated_unpriv("r0 = 322376503")
-+__xlated_unpriv("nospec")
-+__xlated_unpriv("if r2 != 0x100000 goto pc+2")
-+__xlated_unpriv("r0 = 0")
-+__xlated_unpriv("exit")
-+__xlated_unpriv("nospec") /* inserted to prevent `R0 invalid mem access 'scalar'` */
-+__xlated_unpriv("r0 = *(u8 *)(r0 +0)")
-+#endif
- __naked void value_pointer_and_scalar_2(void)
- {
- 	asm volatile ("					\
-@@ -495,7 +561,6 @@ l4_%=:	/* fake-dead code; targeted from branch A to	\
- 	 * prevent dead code sanitization, rejected	\
- 	 * via branch B however				\
- 	 */						\
--	/* unpriv: nospec (inserted to prevent `R0 invalid mem access 'scalar'`) */\
- 	r0 = *(u8*)(r0 + 0);				\
- 	r0 = 0;						\
- 	exit;						\
--- 
-2.49.0
+-Toke
 
 
