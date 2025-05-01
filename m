@@ -1,160 +1,130 @@
-Return-Path: <bpf+bounces-57155-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57156-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CEB9AA656B
-	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 23:27:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12F55AA6602
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 00:07:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B2371BC136E
-	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 21:27:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AFB5F7B073F
+	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 22:05:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 149C926157E;
-	Thu,  1 May 2025 21:26:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88A632609E2;
+	Thu,  1 May 2025 22:06:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b2JXC1RU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SfeeMg1K"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f66.google.com (mail-ed1-f66.google.com [209.85.208.66])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A73821C18D;
-	Thu,  1 May 2025 21:26:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2362211187;
+	Thu,  1 May 2025 22:06:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746134813; cv=none; b=BVvrB0yVK2yJCPpC2e36u3hG9hYIhpegQrEv6KLqjWDkcYunyNJ/V7MXfFeLjzfYuO8Sgv6rfMWoGaKbJP9psRj1RJB+IzSP2OJJpKbvaPAcrnHLTH/Ib2gqPf0coe1UsOsmZ8BM7fU9d7DzLXNt4gp1VAG7ZXBMhExICsWtNc0=
+	t=1746137211; cv=none; b=D2Oit5Y8VuRSuGQSdjpGaTZY/dd0B/6u5M2I3vXGSSIC8LqKfP51EXMOeKYKgySse2qeWmnW80VVHquZ61XKeHGR6sgZJwAamiwmBYCp8kYcv6g+wqxdQt1bTNaQdTewB6NTiUhUjARG+I12z7KPFG+eTELeHZGGJNqRP9HZWGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746134813; c=relaxed/simple;
-	bh=5a6iYKMZP0e8zdYj8kunSotenfvp2hS2NChe9i2pkIk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p6ATrWsqURFLLhmhIRP/Y1ig3Dy5Hrk1Ev4vgorJo0bEobL1ZCHUL73QHSLQZxcKSNW0/uZ7TrcXjx7F6doum7wL1KaCwYZPlbYpmvICBqp7/QtPqYeIwKQa3ClBKbG8KIBDFpwu3E1gsc5vqNZcDYX8Il2Twir6Z1x3CAIUnAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b2JXC1RU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A452DC4CEE3;
-	Thu,  1 May 2025 21:26:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746134812;
-	bh=5a6iYKMZP0e8zdYj8kunSotenfvp2hS2NChe9i2pkIk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=b2JXC1RU/MAlATfUJiGcr2iai8Qz0pZL74Fku2wXAYRo54BJa2BykzgDrZ6df/Cb4
-	 ovehe37wCJ75lzNzMa3qm3bgvytpg/FN3+KQVkksNl80e6nOE6lP/a3msBnGory+sy
-	 vNrqWwyjsS19iCtbCRLRIupC2bH1fX+vYqAtYIOnrR92Va9xEe9JyJ3lRkZ8kR4TMK
-	 YkL2YB3VL8qGQhNI12oIylvV18x2Mh4pAg3EpdpWP5cakS+spveNB9jqeRBFf+xem3
-	 W/BZMPJkQ8zSDZjmVD/orS7psM9CQTtkIpSXecqnDrfRdzd7v4e/bVVN53Ddf9f6Z2
-	 LnLHgkKRn0fLQ==
-Date: Thu, 1 May 2025 23:26:46 +0200
-From: Alejandro Colomar <alx@kernel.org>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org, Song Liu <songliubraving@fb.com>, 
-	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, 
-	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, 
-	David Laight <David.Laight@aculab.com>, Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>, 
-	Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH 22/22] man2: Add uprobe syscall page
-Message-ID: <cqih4qscx5jslfaq46bjcldt3dqoiyqg2dgbnif5eqa7ioygem@lorictjx3jrb>
-References: <20250421214423.393661-1-jolsa@kernel.org>
- <20250421214423.393661-23-jolsa@kernel.org>
- <42yzod7olktnj4meijj57j5peiojywo2d47d5gefnbmbwxfz4b@5ek6puondmck>
- <aAehVOlj-W5kVyW3@krava>
- <6rauz4mwgjpcmdbpny3pnh632t3wbequxni2iqdvs3bmjbzqzt@7cykilsvoggn>
+	s=arc-20240116; t=1746137211; c=relaxed/simple;
+	bh=tOjpypFIC1MFYfuSlXMzhrCrJGqjuZGfc32KsKpKFhQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Bclks+R0HYMqKy35o+yF5KVWb9LPcvRuujLSv6kihmKMywF4dFHG933QPW8dlj/qvCjzxywvLZzxVo1HZD5gC/cNPWFw3ak7MwBmjZiQudB0QCtY6cIj1G7P5hGlq+cl9seju04hXeSvsuajNXGLbJhriTubRcvuRtRLVPDwe4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SfeeMg1K; arc=none smtp.client-ip=209.85.208.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f66.google.com with SMTP id 4fb4d7f45d1cf-5f4d0da2d2cso2694651a12.3;
+        Thu, 01 May 2025 15:06:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1746137207; x=1746742007; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=tOjpypFIC1MFYfuSlXMzhrCrJGqjuZGfc32KsKpKFhQ=;
+        b=SfeeMg1KVNy8DpzYEXOt4oriWshI4Km675YOfkxWPU4SQAo4inN3TSk708R0ot/W4p
+         p0igw9jsc3kGqgFKNdMWiUVmJbBd4li2pP50ihnQOrpdL6VcvFGF+kD+i3OTjnkKMUNQ
+         oP2hXrEP8+Iu9U6HTmJ5Dm50lHrt/PrRNdm96yj9e79kaiH9bbgXIRtWjrnY5SzygQVf
+         DDUqPdLYSQbStPBOt5+ual/B+MMh/r8s7zLunXnDgUm3TJmhMLgUUhJKO1j0KCENa0Ny
+         BAJSK8yPkgRU/TpVv+EAykogJR1kyHGEi62EQN3qBhz0SV9CqdZwb1zmVzZSl/wmfLf3
+         ge0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746137207; x=1746742007;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tOjpypFIC1MFYfuSlXMzhrCrJGqjuZGfc32KsKpKFhQ=;
+        b=ptKTy0kAWQU6HIW02cxObdqepUevYd5NMP0BjcswC+/eBJPdIooHgg5n1GapTfeZ7b
+         yJaQmDzl0gIlKCjeiGYBg+XCskg/AP+Sb7uG7bVFisVF5aPE6Rkl3QICZhJlNmjFTLp3
+         8X1f7y8irKyxbcloDQBIzt5yJflVzzpwytGQP7Tc2Z2pL8pNEXKufzrvyVbjLp5qVypk
+         BR+3lohHSjJuVhhY9esU9WkBgRg4RrNEKxfHPEJ1mnmCKD3uAxwRPw9YpLT9qkfYDazu
+         i24MpYjlmaewB17vdNHa27g/ptK0SePCOT7NBLie96GZu7at77Npx0GLjQCV4AsoSHO9
+         O16Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUXYToFKylNv1P/0RAahJcomUJsI1h+h0IJTz14jtn+h1xYwS48BgMNt2bkinCt2srDOICM3L+ePTO5rWM6@vger.kernel.org, AJvYcCWTsKJxk0ty2uGw4U1Mqx96corly1Vsx9IiHiTlcca5PKieiuTXDMfa8tEu3hE2z4eDu6YtKrTErbPxmrzsjsl/@vger.kernel.org, AJvYcCX7dZE0hkhUjM4ZwS8JW6uWfG1qpGu2TPcSL6AWLTl3hYuiTx8QDulPql/tO0IUoDcn7Kg=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx/VwmY0/3uyctRFB0vzgUHAv2u4viVv1WwNP6trLO0FZHuUS9/
+	OqhBbc5cnMnoV/GipC0wLhxH1j1BOchf2Op/2pgpOU9qO9mjwwWkFNhfLzf5a5Qu7D+WgqmDOU+
+	tUGmJH7+rYOx1l4Ttmxr1HJkPack=
+X-Gm-Gg: ASbGncvSIk0/Y6sukGwo5eTXB3k9Z6nGfd+flmnaHpjatOPJD2AmhI9ZORVbkMDu0W4
+	umw1cS2u3TFwX8ahUG127pivULZThH8dks9VYacS3ozWwsySFBorXpJayT+DtBalHZSyndisAI0
+	NwjBGIzPbI/0sw4ve1ZSDaHI5FdaEbtd7KMG4+21rzMcypYW/4H/Fxew==
+X-Google-Smtp-Source: AGHT+IFdlZgpJIIOZwmEjMJEBEmVCQHnSyA+ervJFsjlZ4P4vNdH66g4BiTBr5V5jAKGV/k1Wwx3ddRiGr22IKP7V9w=
+X-Received: by 2002:a05:6402:90a:b0:5f4:d572:68a with SMTP id
+ 4fb4d7f45d1cf-5fa7801465dmr256726a12.12.1746137207142; Thu, 01 May 2025
+ 15:06:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="gzestemhmsuve7zo"
-Content-Disposition: inline
-In-Reply-To: <6rauz4mwgjpcmdbpny3pnh632t3wbequxni2iqdvs3bmjbzqzt@7cykilsvoggn>
+References: <20250501073603.1402960-1-luis.gerhorst@fau.de> <20250501073603.1402960-3-luis.gerhorst@fau.de>
+In-Reply-To: <20250501073603.1402960-3-luis.gerhorst@fau.de>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Fri, 2 May 2025 00:06:10 +0200
+X-Gm-Features: ATxdqUE3JDqCne76-GBuIfwNJ48-dE9we8FlVLpDVL25L4gVtlMzRXX74KP1XKg
+Message-ID: <CAP01T75pdQCFuMpHq0tB6DLs0xdmS9nqMMp5hfq4z2o3-e1-5Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 02/11] bpf: Move insn if/else into do_check_insn()
+To: Luis Gerhorst <luis.gerhorst@fau.de>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, 
+	Xu Kuohai <xukuohai@huaweicloud.com>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Hari Bathini <hbathini@linux.ibm.com>, 
+	Christophe Leroy <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, 
+	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
+	Nicholas Piggin <npiggin@gmail.com>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Henriette Herzog <henriette.herzog@rub.de>, Saket Kumar Bhaskar <skb99@linux.ibm.com>, 
+	Cupertino Miranda <cupertino.miranda@oracle.com>, Jiayuan Chen <mrpre@163.com>, 
+	Matan Shachnai <m.shachnai@gmail.com>, Dimitar Kanaliev <dimitar.kanaliev@siteground.com>, 
+	Shung-Hsi Yu <shung-hsi.yu@suse.com>, Daniel Xu <dxu@dxuuu.xyz>, bpf@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, linux-kselftest@vger.kernel.org, 
+	Maximilian Ott <ott@cs.fau.de>, Milan Stephan <milan.stephan@fau.de>
+Content-Type: text/plain; charset="UTF-8"
 
+On Thu, 1 May 2025 at 09:43, Luis Gerhorst <luis.gerhorst@fau.de> wrote:
+>
+> This is required to catch the errors later and fall back to a nospec if
+> on a speculative path.
+>
+> Eliminate the regs variable as it is only used once and insn_idx is not
+> modified in-between the definition and usage.
+>
+> Still pass insn simply to match the other check_*() functions. As Eduard
+> points out [1], insn is assumed to correspond to env->insn_idx in many
+> places (e.g, __check_reg_arg()).
+>
+> Move code into do_check_insn(), replace
+> * "continue" with "return 0" after modifying insn_idx
+> * "goto process_bpf_exit" with "return PROCESS_BPF_EXIT"
+> * "do_print_state = " with "*do_print_state = "
+>
+> [1] https://lore.kernel.org/all/293dbe3950a782b8eb3b87b71d7a967e120191fd.camel@gmail.com/
+>
+> Signed-off-by: Luis Gerhorst <luis.gerhorst@fau.de>
+> Acked-by: Henriette Herzog <henriette.herzog@rub.de>
+> Cc: Maximilian Ott <ott@cs.fau.de>
+> Cc: Milan Stephan <milan.stephan@fau.de>
+> ---
 
---gzestemhmsuve7zo
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-From: Alejandro Colomar <alx@kernel.org>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org, Song Liu <songliubraving@fb.com>, 
-	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, 
-	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, 
-	David Laight <David.Laight@aculab.com>, Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>, 
-	Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH 22/22] man2: Add uprobe syscall page
-References: <20250421214423.393661-1-jolsa@kernel.org>
- <20250421214423.393661-23-jolsa@kernel.org>
- <42yzod7olktnj4meijj57j5peiojywo2d47d5gefnbmbwxfz4b@5ek6puondmck>
- <aAehVOlj-W5kVyW3@krava>
- <6rauz4mwgjpcmdbpny3pnh632t3wbequxni2iqdvs3bmjbzqzt@7cykilsvoggn>
-MIME-Version: 1.0
-In-Reply-To: <6rauz4mwgjpcmdbpny3pnh632t3wbequxni2iqdvs3bmjbzqzt@7cykilsvoggn>
-
-Hi Jiri,
-
-On Tue, Apr 22, 2025 at 10:45:41PM +0200, Alejandro Colomar wrote:
-> On Tue, Apr 22, 2025 at 04:01:56PM +0200, Jiri Olsa wrote:
-> > > > +is an alternative to breakpoint instructions
-> > > > +for triggering entry uprobe consumers.
-> > >=20
-> > > What are breakpoint instructions?
-> >=20
-> > it's int3 instruction to trigger breakpoint (on x86_64)
->=20
-> I guess it's something that people who do that stuff understand.
-> I don't, but I guess your intended audience will be okay with it.  :)
->=20
-> > > The pages are almost identical.  Should we document both pages in the
-> > > same page?
-> >=20
-> > great, I was wondering this was an option, looks much better
-> > should we also add uprobe link, like below?
->=20
-> Yep, sure.  Thanks for the reminder!
-
-=46rom what I see, I should not yet merge the patch, right?  The kernel
-code is under review, right?
-
-
-Have a lovely night!
-Alex
-
->=20
->=20
-> Have a lovely night!
-> Alex
->=20
-> --=20
-> <https://www.alejandro-colomar.es/>
-
-
-
---=20
-<https://www.alejandro-colomar.es/>
-
---gzestemhmsuve7zo
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEES7Jt9u9GbmlWADAi64mZXMKQwqkFAmgT5xYACgkQ64mZXMKQ
-wqldaw/9GeFsRHndA9QnooP0EUAvXo9kh1+Pbs4G0ivMw/9tK4gffq+VxVykad5s
-27u3Ue739vh+GQJTkYGR6RL0I9AxSWF38DGGCXbXLvpPT+ALjT4NxvcbP+RXAK62
-yg05eKcniviBTMmDkFp0nX5Zr81UQeIGfjE68CKvL2AlwXOn56VcUeTuRcLXiRAS
-wtWWHmvlJ+TRGNqNaLU7bAxxeJSeZau5XkngB72Kc/1M1Z1X42yadwthEH2bZC7r
-XdnC0/+TS5A5K4t1ylp/MBp7gwnxy4Nv29fpt2mlxVexHg9MB12m32Jk9VsVPBOG
-JTJ4Q+XGASjbxqd331zNQKcA7zfrdr602Yf5Rs1wNTNV/ia/AQqL5ReMd+I36bcr
-7hNb4ychE2344hgKdOr2s8y7NLKBogCdcrWqSBldiQLZ7sAllcZfXQngiSQ4wqyI
-1TXoV1tFBJ3Bg8Ec9iDJITPp7KcHhY34C1lurGTjQWny+ONpqoSDTTdoyb5+9gk5
-+Ryed603G7J5pT2P+GCaqH9s5L63ZeAqx1ayFTmndnqRDh3yFI5SbqiqjxRkWk93
-IM0GZmvgfxjWbBaP5Hl51Ki1NcHptXsuVNKMsJO4aSpMUJTdzbmHdRZJVSMBnJDq
-suv2SaQMze4oAkrSlN8BwE5tbIqbs6558UVH+z0IbwO5vbI89QI=
-=oQPl
------END PGP SIGNATURE-----
-
---gzestemhmsuve7zo--
+Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 
