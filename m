@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-57110-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57111-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78514AA59F6
-	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 05:27:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53DCBAA59F7
+	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 05:27:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D53344E391C
-	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 03:27:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BF20189FE3F
+	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 03:28:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 029092309AF;
-	Thu,  1 May 2025 03:27:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 705B8230BD2;
+	Thu,  1 May 2025 03:27:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OWONbMw4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H0MDYNtK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E27D1A0BFE
-	for <bpf@vger.kernel.org>; Thu,  1 May 2025 03:27:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E9B31A0BFE
+	for <bpf@vger.kernel.org>; Thu,  1 May 2025 03:27:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746070065; cv=none; b=VFdGZeUObhNZYBomhGyH935WTaHqBkg0yjPW6otdgfI3ClOSePpDxrf3xbX5QtzTr9jCUccPOtPCWdfC8M6AbgLK4BcDh8pk/dfCdHEJ/VmfoUEgpOHctYVjtwtOWCA9lJgOw5Iul9h6Scmb81+bDHGwhNARvc/sKeSYoT1NenM=
+	t=1746070069; cv=none; b=VNc0ht/rKP42X/ViUwJ4pLOIunzucEPUr/Jj0n74SBhh4jJQdkIOcAL5nWagdS93AVH93xHx7DHWro/6zIBjIgRa5LX33PP2HWcKlVqN+753fmhxEUlD17+R1vaBnRU68TDY0VIR2GjNS+k5SOsPLHj4IX7wZcJt9CH+iBIiCXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746070065; c=relaxed/simple;
-	bh=3BfhELOfCluPVPOMvrYb7sV/DygqjLyikdfK5Cpkgq0=;
+	s=arc-20240116; t=1746070069; c=relaxed/simple;
+	bh=p6OGuOJBmHTJxRzgOuEGvyT0XSe/A3Eb78rbZV6bOw0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=BI/IvuLNQrukx3BzHtHEmYZAOjiM/Qe/R5qhxsDWe+D9fE+fEbiFwL60U0r0mfHJsLN/T1ragAfofXZgGYe5GWS/AvbQICAmzOitTnMlmt8uQc77nVtldnAhscYLnWi18+3bJBUv8dAf1U/t7steGmWfihoCI6VH4nYjVrg/6Gg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OWONbMw4; arc=none smtp.client-ip=209.85.215.181
+	 MIME-Version; b=erq2fsF0uPvV1k0M4QcHfF9i8JPf01XGKjIL51BdEQ4Ij/7ioY4Vhcrh/18zNdtnoD58iyCuZzRRo39PuDn5kt2+RF13Jsz01RtzYZ4zMdRxLRfcurGexAhY1EXFF68zmZjjLLTTjJQqOo0h9lrNW8pJA1zXAok8haeal5mxoKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H0MDYNtK; arc=none smtp.client-ip=209.85.210.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-af523f4511fso523169a12.0
-        for <bpf@vger.kernel.org>; Wed, 30 Apr 2025 20:27:42 -0700 (PDT)
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-72d3b48d2ffso593828b3a.2
+        for <bpf@vger.kernel.org>; Wed, 30 Apr 2025 20:27:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746070062; x=1746674862; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1746070066; x=1746674866; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wX6llm03C0LIofZKVhngpskpWSkctaSgtaEvqaJgRKA=;
-        b=OWONbMw4hMiehzenlOkoBxZsGJrR4o9XWbbecvg81yJwnCSE5ZqKQl3ymkIHn1rMEw
-         KWtfbXZzuIHXmPN+3rj4iT9wSIKOjN7C53g/HngsQAPrRQSexc4PS0WgunkaHR8BaFOq
-         /4Luibhw27SOPwXATVxU+4lvYf9r2GxOoM7nBGlmh/D2N+FQMSOFWzejP4AULrVcyliG
-         LugP7qW81E3mgUAwx+YW2mRILWDEGnc8lNZlMOiGOEQuqdZJbnvNCnWYbil7fPDByHkt
-         BdfqmQa+SBfCE3AXN06y30IpsURIjjK+V/byR8/CJozXGDPDw9NQHR9Vnpi105LP82ez
-         +68A==
+        bh=x+EUZuBpCtEkxSo+g5YTm/FD1JFtDCLsEwWX610EiQk=;
+        b=H0MDYNtK+8ipGA+pMr76Rq334tm8AzZtVx0msR5tRJdan1zcnhO6pjtRFb7apX83tu
+         ZFXTxsvK9oSEOiuxNQIo8k3Cv8X6+onDjDkxTMkAnslqM9EARUixzguhCEKJMB6oxWLd
+         CEWN53OnC1DX56SIEM2AtQgaTFt4e6QmKi8CyMOMwCnEofJB11zo4a+jpwIfEdfUWTCz
+         ctqRUHdbpq8ojTHfcheQRLWjiJyFGEgqQaJ3ApKSDzlACM35jLcbGROf/itHmj9J2IEf
+         KJU/zCXX4h7syyWult2i+FNmh7yb1zwAS9ktL1D0OGEwVcjmug6IK8dNIicoVE5hCoCG
+         xKcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746070062; x=1746674862;
+        d=1e100.net; s=20230601; t=1746070066; x=1746674866;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wX6llm03C0LIofZKVhngpskpWSkctaSgtaEvqaJgRKA=;
-        b=roVwn+b6gipF0YorpIj/1bBQgbEC58cD+CK2UApFMpqrY4N9Lw8FG2LY5k8MN5k6+d
-         eLHglgEKSlYdMV3C5UiujEMupjpDRTQZB+nbtI0Ei2UGAw4z4zh3+W1NxgTDlWV6Iafp
-         SwbLi3UZPjIf0jPx1pAWBfQ6d4P5T9kWjNovCiTtAHb5BHT7dSMdbdE36ONIbaXOZLix
-         S0R8eefGMTaPCVX0SPlnj34UrVmy6Ad6jIUC4CO/J3knWCLexdm+y/S5mj1V0fwNy136
-         lSvj7Jj5dkfZSE0k1xTMOLqPnoRKaAEAH2lgLq1WxOaLe5tSM00Qq3N4mToJAVRpBaKA
-         Tgzg==
-X-Gm-Message-State: AOJu0Yz+p7ECPWu2YMQHV+Iy7fs3KSxANLjkpBDX18safZ2gqBgkzLjO
-	4+erjfl5dIKpiSkfREnmQYrvWZVwZS1yfg3zKzj+vwdpIWbVJRGF82d5jQ==
-X-Gm-Gg: ASbGncszMkkzg2oxguUCtKBEPz7WK0XpTeqNnBtQRv9gEqiWwHkX9PjkCOTXxdyQLIF
-	MWhZ1GqB14HzN13oy6HxmOsLktoPkyWw/nIWFVPiXFuxCQTHvoppNzFk+pMSQUtW9HubaxYqVtt
-	f6+eKqPdKwc14tvEAiCvgkp8esN4tvgOUWKtTp3uS3r3GyLSAvhS97g/rd3g22Ps0Rye4NArqw+
-	2W5NO5p47oaNSjgIxQgyIRw8ui5IY8sMHBAXHP7IfXWpTo4kWdbNIbvdL4neTJ6tiwtXD2MODNz
-	tJKarAOQRJ8Izo5/KxsVH98T7mS1vURrGGxUJp0xTU/kxs9H4sjNpV5BAIrpfbvq+gAh
-X-Google-Smtp-Source: AGHT+IGnPb76TyUdO9Ok/eAIZ2iA6j3BcFpbdz59/hEoRzxhRnG5xDhSPIVqOw3bH3ISf3RLwvXNzw==
-X-Received: by 2002:a05:6a20:d705:b0:1f5:8262:2c0b with SMTP id adf61e73a8af0-20bd6656f44mr1758597637.2.1746070061886;
-        Wed, 30 Apr 2025 20:27:41 -0700 (PDT)
+        bh=x+EUZuBpCtEkxSo+g5YTm/FD1JFtDCLsEwWX610EiQk=;
+        b=kb5YsC5RtatN8s1ChyloJ9a7EM0pHZyHfgT2Xn7d7nmfqKxT64naFKfV/wVC3Kny65
+         iyHTXaQMSGkFTMOAsIfTVk3j6I0zw3m63k/RV1QQNiLlyp9WTBWxyJM6wJLM4aCqiume
+         J+DLEXLg+vEsT2ErOfRMlZmMF9oca2v+CMAcaC6XJ46F4EA4Z3gYVbAdUghQnYs3Pbbe
+         4AP9YwQbH/MiKLOLLO5Ky8llAaJOsaz74JhJXYZzxjLeEjPOGpmSyM/MUnI7gxLqTysA
+         Zc830kA9ygOgkFs4amOemWEn8j8gkm04Cyy9PLM9kH8mSEbZaOChHC6IYEnqS2e2WRwT
+         fJNw==
+X-Gm-Message-State: AOJu0Yw7PlZRtB9YxYalzncr/Tr5fdqX5cctkt9tk6y/ya9Q/9HSdhhe
+	miNO85HXaAMV7St4rbRdvrUEf191UZ7qK8i3JxRIFTl2TM+WDpOLHwI5Ww==
+X-Gm-Gg: ASbGncvz0aP4vqN5YV2sr9YuHRlPOx02kvadWqsReJPaxjXI0b2LCdZbp6tx79xSE1w
+	u3UcmQ41Ub0KQ+wgmSHWCWmZU/FK+CNbUMrDSPjFYW12YhDWpLebBxto3M56Ya/AdiJ7wUxL04J
+	JNfx/b6OPZaOmCm5DmeZwlBWeDBx90DVIiZGfLHeP2OV9OXv+QHb1bneiHyGOTB6DbdeXqzUw5B
+	9LlMPk1Y/ANH9FCoPa5x+u/N8yfHZ2C7ey15j7jehhWt49s7OaDqWdQOu8gR40fXzIrLsdARwdO
+	YVpKOyHAb731fx58AJ4hd6mzCxzhtxzFWXa3/3GToICJxh5cX3iYD+4ipveKcxj7GOJ9
+X-Google-Smtp-Source: AGHT+IHeLJ2NXP14CarSZr4yDkwP+sPREACfOArzqc/wYp/BDY0aljYBICiyQDeQSwmr+N9W4BBA8Q==
+X-Received: by 2002:a05:6a00:9282:b0:72d:3b2e:fef9 with SMTP id d2e1a72fcca58-7403a828934mr7589622b3a.20.1746070066598;
+        Wed, 30 Apr 2025 20:27:46 -0700 (PDT)
 Received: from localhost.localdomain ([2620:10d:c090:400::5:13f8])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-740398f9aa0sm2616253b3a.10.2025.04.30.20.27.39
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74039a8d256sm2512273b3a.157.2025.04.30.20.27.44
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Wed, 30 Apr 2025 20:27:41 -0700 (PDT)
+        Wed, 30 Apr 2025 20:27:46 -0700 (PDT)
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: bpf@vger.kernel.org,
 	linux-mm@kvack.org
@@ -86,9 +86,9 @@ Cc: vbabka@suse.cz,
 	rostedt@goodmis.org,
 	hannes@cmpxchg.org,
 	willy@infradead.org
-Subject: [PATCH 4/6] locking/local_lock: Introduce local_lock_irqsave_check()
-Date: Wed, 30 Apr 2025 20:27:16 -0700
-Message-Id: <20250501032718.65476-5-alexei.starovoitov@gmail.com>
+Subject: [PATCH 5/6] mm: Allow GFP_ACCOUNT and GFP_COMP to be used in alloc_pages_nolock().
+Date: Wed, 30 Apr 2025 20:27:17 -0700
+Message-Id: <20250501032718.65476-6-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 In-Reply-To: <20250501032718.65476-1-alexei.starovoitov@gmail.com>
 References: <20250501032718.65476-1-alexei.starovoitov@gmail.com>
@@ -102,83 +102,87 @@ Content-Transfer-Encoding: 8bit
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Introduce local_lock_irqsave_check() to check that local_lock is
-not taken recursively.
-In !PREEMPT_RT local_lock_irqsave() disables IRQ, but
-re-entrance is possible either from NMI or strategically placed
-kprobe. The code should call local_lock_is_locked() before proceeding
-to acquire a local_lock. Such local_lock_is_locked() might be called
-earlier in the call graph and there could be a lot of code
-between local_lock_is_locked() and local_lock_irqsave_check().
-
-Without CONFIG_DEBUG_LOCK_ALLOC the local_lock_irqsave_check()
-is equivalent to local_lock_irqsave().
+Allow __GFP_ACCOUNT and __GFP_COMP flags to be specified when calling
+alloc_pages_nolock(), since upcoming reentrant alloc_slab_page() needs
+to allocate __GFP_COMP pages while BPF infra needs __GFP_ACCOUNT.
 
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- include/linux/local_lock.h          | 13 +++++++++++++
- include/linux/local_lock_internal.h | 19 +++++++++++++++++++
- 2 files changed, 32 insertions(+)
+ include/linux/gfp.h  | 2 +-
+ kernel/bpf/syscall.c | 2 +-
+ mm/page_alloc.c      | 8 +++++---
+ 3 files changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/local_lock.h b/include/linux/local_lock.h
-index 092ce89b162a..0d6efb0fdd15 100644
---- a/include/linux/local_lock.h
-+++ b/include/linux/local_lock.h
-@@ -81,6 +81,19 @@
- #define local_trylock_irqsave(lock, flags)			\
- 	__local_trylock_irqsave(lock, flags)
+diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+index be160e8d8bcb..9afbe5b3aef6 100644
+--- a/include/linux/gfp.h
++++ b/include/linux/gfp.h
+@@ -354,7 +354,7 @@ static inline struct page *alloc_page_vma_noprof(gfp_t gfp,
+ }
+ #define alloc_page_vma(...)			alloc_hooks(alloc_page_vma_noprof(__VA_ARGS__))
  
-+/**
-+ * local_lock_irqsave_check - Acquire a per CPU local lock, save and disable
-+ *			      interrupts
-+ * @lock:	The lock variable
-+ * @flags:	Storage for interrupt flags
-+ *
-+ * This function checks that local_lock is not taken recursively.
-+ * In !PREEMPT_RT re-entrance is possible either from NMI or kprobe.
-+ * In PREEMPT_RT it checks that current task is not holding it.
-+ */
-+#define local_lock_irqsave_check(lock, flags)			\
-+	__local_lock_irqsave_check(lock, flags)
-+
- DEFINE_GUARD(local_lock, local_lock_t __percpu*,
- 	     local_lock(_T),
- 	     local_unlock(_T))
-diff --git a/include/linux/local_lock_internal.h b/include/linux/local_lock_internal.h
-index 263723a45ecd..7c4cc002bc68 100644
---- a/include/linux/local_lock_internal.h
-+++ b/include/linux/local_lock_internal.h
-@@ -168,6 +168,15 @@ do {								\
- /* preemption or migration must be disabled before calling __local_lock_is_locked */
- #define __local_lock_is_locked(lock) READ_ONCE(this_cpu_ptr(lock)->acquired)
+-struct page *alloc_pages_nolock_noprof(int nid, unsigned int order);
++struct page *alloc_pages_nolock_noprof(gfp_t gfp_flags, int nid, unsigned int order);
+ #define alloc_pages_nolock(...)			alloc_hooks(alloc_pages_nolock_noprof(__VA_ARGS__))
  
-+#define __local_lock_irqsave_check(lock, flags)					\
-+	do {									\
-+		if (IS_ENABLED(CONFIG_DEBUG_LOCK_ALLOC) &&			\
-+		    (!__local_lock_is_locked(lock) || in_nmi()))		\
-+			WARN_ON_ONCE(!__local_trylock_irqsave(lock, flags));	\
-+		else								\
-+			__local_lock_irqsave(lock, flags);			\
-+	} while (0)
-+
- #define __local_lock_release(lock)					\
- 	do {								\
- 		local_trylock_t *tl;					\
-@@ -293,4 +302,14 @@ do {								\
- #define __local_lock_is_locked(__lock)					\
- 	(rt_mutex_owner(&this_cpu_ptr(__lock)->lock) == current)
+ extern unsigned long get_free_pages_noprof(gfp_t gfp_mask, unsigned int order);
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index d0ddba2a952b..83af8fa9db3f 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -578,7 +578,7 @@ static bool can_alloc_pages(void)
+ static struct page *__bpf_alloc_page(int nid)
+ {
+ 	if (!can_alloc_pages())
+-		return alloc_pages_nolock(nid, 0);
++		return alloc_pages_nolock(__GFP_ACCOUNT, nid, 0);
  
-+#define __local_lock_irqsave_check(lock, flags)				\
-+	do {								\
-+		typecheck(unsigned long, flags);			\
-+		flags = 0;						\
-+		migrate_disable();					\
-+		if (IS_ENABLED(CONFIG_DEBUG_LOCK_ALLOC))		\
-+			WARN_ON_ONCE(__local_lock_is_locked(lock));	\
-+		spin_lock(this_cpu_ptr((lock)));			\
-+	} while (0)
-+
- #endif /* CONFIG_PREEMPT_RT */
+ 	return alloc_pages_node(nid,
+ 				GFP_KERNEL | __GFP_ZERO | __GFP_ACCOUNT
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 1d77a07b0659..303df205ca7d 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -7379,6 +7379,7 @@ static bool __free_unaccepted(struct page *page)
+ 
+ /**
+  * alloc_pages_nolock - opportunistic reentrant allocation from any context
++ * @gfp_flags: GFP flags. Only __GFP_ACCOUNT, __GFP_COMP allowed.
+  * @nid: node to allocate from
+  * @order: allocation order size
+  *
+@@ -7392,7 +7393,7 @@ static bool __free_unaccepted(struct page *page)
+  * Return: allocated page or NULL on failure. NULL does not mean EBUSY or EAGAIN.
+  * It means ENOMEM. There is no reason to call it again and expect !NULL.
+  */
+-struct page *alloc_pages_nolock_noprof(int nid, unsigned int order)
++struct page *alloc_pages_nolock_noprof(gfp_t gfp_flags, int nid, unsigned int order)
+ {
+ 	/*
+ 	 * Do not specify __GFP_DIRECT_RECLAIM, since direct claim is not allowed.
+@@ -7415,11 +7416,12 @@ struct page *alloc_pages_nolock_noprof(int nid, unsigned int order)
+ 	 * doesn't want to deplete reserves.
+ 	 */
+ 	gfp_t alloc_gfp = __GFP_NOWARN | __GFP_ZERO | __GFP_NOMEMALLOC
+-			| __GFP_ACCOUNT;
++			| gfp_flags;
+ 	unsigned int alloc_flags = ALLOC_TRYLOCK;
+ 	struct alloc_context ac = { };
+ 	struct page *page;
+ 
++	VM_WARN_ON_ONCE(gfp_flags & ~(__GFP_ACCOUNT | __GFP_COMP));
+ 	/*
+ 	 * In PREEMPT_RT spin_trylock() will call raw_spin_lock() which is
+ 	 * unsafe in NMI. If spin_trylock() is called from hard IRQ the current
+@@ -7462,7 +7464,7 @@ struct page *alloc_pages_nolock_noprof(int nid, unsigned int order)
+ 	if (page)
+ 		set_page_refcounted(page);
+ 
+-	if (memcg_kmem_online() && page &&
++	if (memcg_kmem_online() && page && (gfp_flags & __GFP_ACCOUNT) &&
+ 	    unlikely(__memcg_kmem_charge_page(page, alloc_gfp, order) != 0)) {
+ 		free_pages_nolock(page, order);
+ 		page = NULL;
 -- 
 2.47.1
 
