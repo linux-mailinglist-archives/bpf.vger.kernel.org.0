@@ -1,125 +1,94 @@
-Return-Path: <bpf+bounces-57134-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57135-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB159AA619F
-	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 18:57:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A994FAA626F
+	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 19:39:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 278514A5581
-	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 16:57:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB281467432
+	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 17:39:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACAAF20E323;
-	Thu,  1 May 2025 16:56:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C668218E96;
+	Thu,  1 May 2025 17:39:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WV375bCF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mZ+Qd8Gx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f66.google.com (mail-ed1-f66.google.com [209.85.208.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8105B1EB9E8;
-	Thu,  1 May 2025 16:56:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F3F02DC799;
+	Thu,  1 May 2025 17:39:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746118614; cv=none; b=hy7FoO4NC46uSWy+2hYJNnCRKsbgz85mFLDpx+FMU36mBrDkghefkLabPNRMr9vDIJWXOcQm67S7YP2tYqGfJNZM8LyhYZm73to1s+bstZmEq0DJWOnTSrBy9YDc4MHKoMtljVHDYgcm8tBbyluLvsPPKlR6ingCjzUXdiG9gQU=
+	t=1746121190; cv=none; b=V+EfLH0LxOX5pG5PK/TfZ5tHxe5h1IoM/lTcLy7mdHZWIUxQnvVljDkFeRLFsXFKAyMW6K4mrpVOTWpkQT137qhLFISdnITsrtxZzwwgU957OTvf9dQOavJGpVq1oEPfrDDtRl+WE5k01jGdc8Bmcyh6ogyYly9p0zXSXvBeV+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746118614; c=relaxed/simple;
-	bh=pjITccKn52YoXHvMNHp0xjqzTUP9bb6Gv+c2QtvOV0Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=exQIE1KFZ4DV7UgO6TL2Cx1kAyIr4TlkHzdaPD5ee/lq4+ghPp1boBOpinOK6itTl1BBZtSnba90cFUR9fPMrg5wuqs93+MYeAVYsjWVyTuGLxwrAkSA7L4aSb9fWaTa6aFzx5EcJGRgiO91XvTUH6EF0JXmwKbQx+3E2lUzLSc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WV375bCF; arc=none smtp.client-ip=209.85.208.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f66.google.com with SMTP id 4fb4d7f45d1cf-5e5cded3e2eso1799646a12.0;
-        Thu, 01 May 2025 09:56:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746118611; x=1746723411; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pjITccKn52YoXHvMNHp0xjqzTUP9bb6Gv+c2QtvOV0Q=;
-        b=WV375bCFgwwzVhyyhJNB6bIj0B5JTHPxqjpKxUwym8T+M7nQpAHbjkLzPcQxOO7Zzc
-         03L6GTdaJowa5pbUEz4bAeqOY9EpshhabzMyLHHWusoXS8pBVp1BjtTja22xJYLA0l+5
-         yUGwL9PfC3sQJ4romrH4enMadaR2pDodAYvWn8tIcbE3Z+wrbBNFrbwlpdpsplSidUlB
-         p8Xi3Rov24W4im0NjHfovcljyfGWRAQscKLs81tMQpK16OdE5X84zHZwnlilhGlTKpg2
-         AT/IZM/3M9NAESqpRqxmatkloj+TnwoikhP3TtR4BGeB2YUoJbTQZu4hO2Xyb7fR5Mh0
-         UbPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746118611; x=1746723411;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pjITccKn52YoXHvMNHp0xjqzTUP9bb6Gv+c2QtvOV0Q=;
-        b=T/X3WyCDdF4Kzi3U4YsNTrIiONXPKfAdtvRVZ4UcCcZnxfFj2ruRnQl27LHXzQo/oj
-         WlPuY2X6Y7WLmSk1goePdsMj4FY1dljJiNI+dJ+kX2dBkyheUFiI6gqWaHysd+GE5spo
-         +MTUspMATtrsITsDV/tPVpF86BkwSjg4KGvCQ0oYP4Gd5zw43oL0cG5kqeBIqUNd7TO2
-         Zya6Wehk+W7ganl1Z0lYV9r8+UJjnx6j/MW9CRb3YcmFSHwVlHLd5NJ/sLYJcSQCYEb0
-         Bjoqwdjs9BCdNF1cn1MOM+3rUd5GHyX2NNglIb57EdArG8pAz6gwiVGrIW+MLEPjzgIM
-         QiGA==
-X-Forwarded-Encrypted: i=1; AJvYcCWQ2WawZoevyBhIQ8A13Hc2014pC9T1Nsy3PBYoxJjboRO3ijecGbjfb7r1rfnFtK0t/l0=@vger.kernel.org, AJvYcCWV3TyjRfCrOHnDPj9pX1MVs0+3ztqNehFW3JYcj9G4tJNSt+/V/Es6HqnzJmqAL7o4sG6x83drxgR3EmWJJ02B@vger.kernel.org, AJvYcCXK/NRePoNeTspExxjFcBS9FfnbOnQJrMc+DDKIumTOvLHHV9hXZhTj3lzF81kozOEygDk3Eb3t4O5u3xpv@vger.kernel.org
-X-Gm-Message-State: AOJu0YzFymd6qqDOxk3P8QH0Cw2w7JSYimHddH9mWgeHyI3UHo9+80U3
-	LyAdOAVbSTI9rJ+FWNjELcwWJ18otFowjg4S7/urkyw4AJo7jBxf+pG+C3HPLG1ALZabwEp0uxz
-	lkgnV/fwXHssQFRcw6jbjFU3hiyk=
-X-Gm-Gg: ASbGnct2tpD8Gj+oMf+0DZwIOQiWtbjjWjTiYwdVJSuCYTnjxPUj3S0K7qLx5ITDfHO
-	DiEzwGDo0nnYrWp0aRl9iyItC5qVd0pblbpM/0TsexmqO7mjQAi+GPDR9/zngjc4OqnkwZVJhFd
-	FW20SrlR2w2hBTiq2A6KcxfRCrBUy3znSxvdHtEfwM9KK5P3GCpMJ+ZA==
-X-Google-Smtp-Source: AGHT+IECEidvEo999oYKJS7UCLAVVBM0myFbAJ15E7tPIRmjavdQpBC/5/8mZ8iIClrt0F8kscmSCXQGalHJ9fnIAF0=
-X-Received: by 2002:a05:6402:524c:b0:5e6:de5:312f with SMTP id
- 4fb4d7f45d1cf-5f913507c6dmr3187305a12.23.1746118610475; Thu, 01 May 2025
- 09:56:50 -0700 (PDT)
+	s=arc-20240116; t=1746121190; c=relaxed/simple;
+	bh=gUabOZNCoxnhBsGFUC7eUgc2+woyKqEf9pb93kB0e2o=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=uigwjNpB9xGk/YUet3BwuOEEscxbd6Hkwt/JB98/2YT+oiPnYuiBVY4i1tc4mzZZ1tP21pzPx7Prx2nEYX4wl6++IxqXfldRivuT9o3CAZDJeLU2s5PA1vHPQ34k1PKIgaH0oLIjHRo8IM3/U3mHi7zAoMdz3PWn7BkrXy9QCf0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mZ+Qd8Gx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FE36C4CEE3;
+	Thu,  1 May 2025 17:39:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1746121189;
+	bh=gUabOZNCoxnhBsGFUC7eUgc2+woyKqEf9pb93kB0e2o=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=mZ+Qd8Gx95g8Bzel8ErukaGTahaHipq/wpz48uBOz8ATClHxn9PNiowFlWirrAk7I
+	 OT2skGJzgrz2zFRuLuNBcYjji8en4B1Ox3axL9Wh/QFaa8C6QFQkovbt8QCrqCKPR7
+	 hhfRya7Gys0LHZYO8vRrDgId6c/WjNT0XE89ro3+RTuNx20XCJO1/9WM5bd41al63k
+	 lRa9OsgjOWffssWhW/Dr8YELAUUooD67U5scMfZ2EDKSRuhKKyrnoj2X1QYdAkpx7t
+	 DcxS4OwzLU9TyX8WCeelwMxIDRSYKLOvw6ek7BeGadbDjsBVWFYZhK9kGCz+YfmI24
+	 0w+CNO6WGcVZg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AE2323822D59;
+	Thu,  1 May 2025 17:40:29 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250501073603.1402960-1-luis.gerhorst@fau.de> <20250501073603.1402960-2-luis.gerhorst@fau.de>
-In-Reply-To: <20250501073603.1402960-2-luis.gerhorst@fau.de>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Thu, 1 May 2025 18:56:13 +0200
-X-Gm-Features: ATxdqUF2nyzuV4YsC3PXg7l3hGhLYkWnuNMDOdnMHwkg3TmNkQsrDO9p2L0Wm2o
-Message-ID: <CAP01T742Td_U8=fs4DDrxWSdQcXEpGE=T6+WfJqBw_bqpXhb+g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 01/11] selftests/bpf: Fix caps for __xlated/jited_unpriv
-To: Luis Gerhorst <luis.gerhorst@fau.de>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, 
-	Xu Kuohai <xukuohai@huaweicloud.com>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, Hari Bathini <hbathini@linux.ibm.com>, 
-	Christophe Leroy <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, 
-	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
-	Nicholas Piggin <npiggin@gmail.com>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	Henriette Herzog <henriette.herzog@rub.de>, Saket Kumar Bhaskar <skb99@linux.ibm.com>, 
-	Cupertino Miranda <cupertino.miranda@oracle.com>, Jiayuan Chen <mrpre@163.com>, 
-	Matan Shachnai <m.shachnai@gmail.com>, Dimitar Kanaliev <dimitar.kanaliev@siteground.com>, 
-	Shung-Hsi Yu <shung-hsi.yu@suse.com>, Daniel Xu <dxu@dxuuu.xyz>, bpf@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] bpf: Replace offsetof() with struct_size()
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <174612122851.3034920.4000294220028113213.git-patchwork-notify@kernel.org>
+Date: Thu, 01 May 2025 17:40:28 +0000
+References: <20250428210638.30219-2-thorsten.blum@linux.dev>
+In-Reply-To: <20250428210638.30219-2-thorsten.blum@linux.dev>
+To: Thorsten Blum <thorsten.blum@linux.dev>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 
-On Thu, 1 May 2025 at 09:39, Luis Gerhorst <luis.gerhorst@fau.de> wrote:
->
-> Currently, __xlated_unpriv and __jited_unpriv do not work because the
-> BPF syscall will overwrite info.jited_prog_len and info.xlated_prog_len
-> with 0 if the process is not bpf_capable(). This bug was not noticed
-> before, because there is no test that actually uses
-> __xlated_unpriv/__jited_unpriv.
->
-> To resolve this, simply restore the capabilities earlier (but still
-> after loading the program). Adding this here unconditionally is fine
-> because the function first checks that the capabilities were initialized
-> before attempting to restore them.
->
-> This will be important later when we add tests that check whether a
-> speculation barrier was inserted in the correct location.
->
-> Signed-off-by: Luis Gerhorst <luis.gerhorst@fau.de>
-> Fixes: 9c9f73391310 ("selftests/bpf: allow checking xlated programs in verifier_* tests")
-> Fixes: 7d743e4c759c ("selftests/bpf: __jited test tag to check disassembly after jit")
-> ---
+Hello:
 
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
+
+On Mon, 28 Apr 2025 23:06:39 +0200 you wrote:
+> Compared to offsetof(), struct_size() provides additional compile-time
+> checks for structs with flexible arrays (e.g., __must_be_array()).
+> 
+> No functional changes intended.
+> 
+> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next] bpf: Replace offsetof() with struct_size()
+    https://git.kernel.org/bpf/bpf-next/c/7b05f43155cb
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
