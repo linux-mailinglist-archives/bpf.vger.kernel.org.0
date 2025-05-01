@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-57162-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57163-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01AD4AA6635
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 00:30:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87DA9AA6637
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 00:30:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE33C1BA6568
-	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 22:30:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D435D9C7468
+	for <lists+bpf@lfdr.de>; Thu,  1 May 2025 22:30:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFD83265CDE;
-	Thu,  1 May 2025 22:30:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B61D2266B7F;
+	Thu,  1 May 2025 22:30:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dMrUlEMa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iP7XXbFO"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F24F12116F6;
-	Thu,  1 May 2025 22:30:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D25D1243969;
+	Thu,  1 May 2025 22:30:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746138629; cv=none; b=TEZ5kA0NYrcyfch7k0KZt0QbmY4ggmaYFmfLnRGghBDZCMxtotJkMsrqWcSJR0oq1Ro5YIp0pV24oItwg0P+kb+RjPyXj5wTpuUAfDGiGfmiq/gGbvyF1go5b/T5lkLoYCHDw+xwEZbCFOrMULBgMmio0VUqcSS46n8/Q71B07I=
+	t=1746138630; cv=none; b=fzj6yONiNDOvo8eKOUaO284GIMzjqpbqp0s1yWdL3q/i5VvtXoo0Q2o+hSKeRn+GrUPSMocYr1pmDaLON/R4+tZQyC4CAQV0lbESTwlhhC2wesQGLMiuB4O5yrsGF0hU0DBR/KRyQOfFbey7O06v5QYMEV298RcEN3bxHsi4svc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746138629; c=relaxed/simple;
-	bh=kLQep9bmg8wWr81k1RVnJWB8ytMKinxaaVMTlpawI0A=;
+	s=arc-20240116; t=1746138630; c=relaxed/simple;
+	bh=NFInLjUiODgwiMg6Mnpeh+6ZYqB1SRC9NlpbMWbg/4k=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jYFTvT247K2dKPKblsnu967pMT5/6Vg+aEefMSMXG0CGGmoaDIwbFjBuBMHVJqLLpTVm6c1oiLgQBF1jETcK0a6PGWN+icBtIoRkeJkgnb3YKbJL5qAhEOWDWXefk2QGJSCcOPikd3YihC2N3d7cqgh/0qpvaBSPUAgx6CvKYzs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dMrUlEMa; arc=none smtp.client-ip=209.85.214.176
+	 MIME-Version; b=VdH/WmlsSLXGUWvl2r+4HgpQLd4zQ351hftazcZ4tvE7thibbdb1ZeJ9RufJY4XSnoIkc6CmUJddY4cJWOUmnaHlSExFfsi7E9EIbNwtCB9RCQfynE9Iy6LLgs83CX6PMeyQv7eF/D6ymd04O251gOfQL1u7G5XGM+NRSQRxEB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iP7XXbFO; arc=none smtp.client-ip=209.85.214.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-227b828de00so14784225ad.1;
-        Thu, 01 May 2025 15:30:27 -0700 (PDT)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-227a8cdd241so19045235ad.3;
+        Thu, 01 May 2025 15:30:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746138627; x=1746743427; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1746138628; x=1746743428; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yINMlcUVIapP1RPSyKuCq1GbWCHImvFpLdfYGwlgNrw=;
-        b=dMrUlEMaNq0OSBd6m/y37kVTPsFwBjwnrhm0eT1RTyMpOVona2TMrC81YL6QzaSZvp
-         CqTv42gVIsfCTduPf36vILCcbPszcuGFZ2ETwtZz97c1R9nV4H8fqILtRtetPB9MiG9e
-         FChVUwjv1wgnVNENrsPhvGnszaPjjBkcB9Bzm54ST8nRtpEj9lKfuwlx/t36Me23zLEc
-         Dbw0hYdKore5Du6QmU46MYhB51TGJvqx8ySk9hOgW9LIF5jvc85s6B8OEKcwhbacFYqU
-         gyKWLBQGGDf6VrrQ2szEU7bmUQ+b5CeWT3sCIDMhPSB4VX1p4/XDljyBERns6z91bHxI
-         1cQQ==
+        bh=c3plIVAUbnGlwJ1tl0OtUjjCEb9eoxi+ebNBKQQl2Bg=;
+        b=iP7XXbFO1Bc5JvvF7ZPSOG/LYIWgSwN49wHwA175EyWqUU4cH2w4i8t2WBstm7q4f+
+         UhsH5VHSaHWWSj8fyjEiSkpA31nxRhQA2T+jX9ytg6pO3+MXBXEAlUM++O3TAkuSI9sW
+         5g//LpwrzHiN7RmKvGWNVKQVoodAgRL7kvMaejBDSipId4gVuwqvc1W7Zqw1Kasv6cmE
+         olaSjOzmXDLZVG1IilfUhcJ17Doz/3dYrFUe9G6UOtR2fTqQ9cQ4VHey/xF8j1Qs98nN
+         +/h4a9k6eJonhI/tNJGqgwTepyNELQW0run6s7P6VStO3EoZ1UV0oPZqeC4KDWZAAV8u
+         Twfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746138627; x=1746743427;
+        d=1e100.net; s=20230601; t=1746138628; x=1746743428;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yINMlcUVIapP1RPSyKuCq1GbWCHImvFpLdfYGwlgNrw=;
-        b=oFdy5kCpOVW3qPn9UHcPQVmZtY+C/nwvLhaEZv9+g78yIPXml2iT3YtydM9bUCwpq/
-         KfHNfnkQu5EsZg+/dLYtID8jecG6ZuTaX9rMnLhmNMB/ydRxSUia0bv3v9A9TRqDOD5W
-         4V7NtDGpx4mBrQRq5DDI+L2/f2kuMxw/tEVj7AU7a02rdtcFlXsDmDP4hbZJt+jaEXz3
-         pjvDOU5eXoVXZpiA3j1r0YesONZneyEWBo0Fw8t5W6DdpUyl0BcW6/dv9hgUQuy50ckZ
-         jHBDqQ9RKPfTax88unsl1uLt2exj3B+jcQsz28NDKVxZUZNXklZC5OpCnUxjeK4gOrpU
-         /PKQ==
-X-Gm-Message-State: AOJu0YxhCzwzHljNjxSwDnBlSIROqXgZ0SblUsta3x3WlGPdcK55tMM0
-	EwiKc9gYaqPSE9JZQ+50yIauT+hqD0vBwr7XJ63R764hjbQJVUmPHMqi0A==
-X-Gm-Gg: ASbGncsTsuEtUgeF9MI6b306yyEwzJX7LgIR4ewJ7U/fipNLXlI8Z4doeIvc+07Uk5Z
-	+Xja6C9I+F81YySC2K7cXvl8MrCg6V81Ewvxqzxq7t4hfMXwR+iB/ngrCkZw6lW7ggZd491HJHv
-	klJQ9L12tWNqajl606+4EBMYl/qZ8uqUOvQiJ8d+6vqBa2HjLGvmKYq1ahd/N5aKVOHS2WMcjx7
-	DBPqlR96aldxZ5FAl4AABLWgDTWQ5KYBcZuSGmDaCTY8LN6hjjIU8uhhWb8gpxbK6Do9J/dGSH2
-	o5r51+jxeSO0u02L5TCzllVLkv4JUHMtr4jUw/G8Wes=
-X-Google-Smtp-Source: AGHT+IF/SMFmWH5gx+rfK/8UZvxJdC1ATt7lo6NB5JaqFpkk0Y0bncxrb87ZkHGf5kUtZx/6fhqAMA==
-X-Received: by 2002:a17:903:3b86:b0:220:c813:dfce with SMTP id d9443c01a7336-22e1033c8c8mr10189015ad.39.1746138627042;
+        bh=c3plIVAUbnGlwJ1tl0OtUjjCEb9eoxi+ebNBKQQl2Bg=;
+        b=L+Cbb38ZppAxq4UkerIBtVnUGwRzv03tJlQ1B43YiiPxQuNmR8P6YT/0Po30knDCbH
+         DvK97TbQPra24Gu/u3oIMqnK0TNXEV8jmfb4HnRR+5V1AsBAVc7Ol/jD/LAAxYf6BW9E
+         mqhmuennsxYpSBduDWh3tdIqorTsEU0bQ5yu+61ljPuk3WlB7DxlLiVJM1v9Ai5RR+tU
+         OokqndW9mYRGBvZQlmCoaPORQHdqNxaERGP6wltjo/5Ywg/Qz8YKkP85xxYTwyMjXTSN
+         JduQdHG+yc1+XNeJAO6vyspDk6SeADfkxv0J7tQaV8EKk4lgDQcKB0rKPatqabs0DsBL
+         RVkA==
+X-Gm-Message-State: AOJu0Yx070PWFiI/i+l9IFfaY9P6dZF4xd3URcvU0fybFKSKJ9eyatvD
+	rOsMsub44LPUKjvP/JplqOdgRLrz31qvvEX4A4PMlh+8Py2ojkwNuatgQw==
+X-Gm-Gg: ASbGncuKG8lLXDqundfAML2jfpaCAq2PBdLeNbyf8+3WcY+HN1LuJL7uxm7hw5l8DBm
+	ej5p1E7MFUyOPLJyqs5c2Vt8rxgsxFisR5x5HUoWcQAqHboxO2Z3ESNt4Eixlqv61TcVuKMQU7I
+	TZ4TipX5PDUld4bVw56xdg7mG8MV8SctgEeUhdQT+8Msouh1H3gpBXmYMsAeOLRPRJjy50AZUbr
+	iCJxaKLNYBL1ZnbgrzNSOZEpr+4j/1xlCC+yMvVxqktz0GyWc3D203kcgAIblUdpBBm6wQA6Qmi
+	hLNZFzO4PnGAGZaJPnLt+vb35TPaixE=
+X-Google-Smtp-Source: AGHT+IH795Oje1HBdKkNUu4xxNRrQxcTYED8o/F44x70bVqlvp0dSmWteseMHb4sCIraFwNeedgWzw==
+X-Received: by 2002:a17:902:ea01:b0:215:94eb:adb6 with SMTP id d9443c01a7336-22e103b1e92mr9351915ad.40.1746138627974;
         Thu, 01 May 2025 15:30:27 -0700 (PDT)
-Received: from localhost ([2a03:2880:ff:73::])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22e108fd6a8sm1452715ad.133.2025.05.01.15.30.26
+Received: from localhost ([2a03:2880:ff:6::])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22e108fbc91sm1454845ad.114.2025.05.01.15.30.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 May 2025 15:30:26 -0700 (PDT)
+        Thu, 01 May 2025 15:30:27 -0700 (PDT)
 From: Amery Hung <ameryhung@gmail.com>
 To: bpf@vger.kernel.org
 Cc: netdev@vger.kernel.org,
@@ -80,9 +80,9 @@ Cc: netdev@vger.kernel.org,
 	martin.lau@kernel.org,
 	xiyou.wangcong@gmail.com,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next/net v1 1/5] bpf: net_sched: Fix bpf qdisc init prologue when set as default qdisc
-Date: Thu,  1 May 2025 15:30:21 -0700
-Message-ID: <20250501223025.569020-2-ameryhung@gmail.com>
+Subject: [PATCH bpf-next/net v1 2/5] selftests/bpf: Test setting and creating bpf qdisc as default qdisc
+Date: Thu,  1 May 2025 15:30:22 -0700
+Message-ID: <20250501223025.569020-3-ameryhung@gmail.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250501223025.569020-1-ameryhung@gmail.com>
 References: <20250501223025.569020-1-ameryhung@gmail.com>
@@ -94,53 +94,109 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Allow .init to proceed if qdisc_lookup() returns NULL as it only happens
-when called by qdisc_create_dflt() in mq/mqprio_init and the parent qdisc
-has not been added to qdisc_hash yet. In qdisc_create(), the caller,
-__tc_modify_qdisc(), would have made sure the parent qdisc already exist.
+First, test that bpf qdisc can be set as default qdisc. Then, attach
+an mq qdisc to see if bpf qdisc can be successfully created and grafted.
 
-In addition, call qdisc_watchdog_init() whether .init succeeds or not to
-prevent null-pointer dereference. In qdisc_create() and
-qdisc_create_dflt(), if .init fails, .destroy will be called. As a
-result, the destroy epilogue could call qdisc_watchdog_cancel() with an
-uninitialized timer, causing null-pointer deference in hrtimer_cancel().
+The test is a sequential test as net.core.default_qdisc is global.
 
-Fixes: Fixes: c8240344956e ("bpf: net_sched: Support implementation of Qdisc_ops in bpf")
 Signed-off-by: Amery Hung <ameryhung@gmail.com>
 ---
- net/sched/bpf_qdisc.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ .../selftests/bpf/prog_tests/bpf_qdisc.c      | 78 +++++++++++++++++++
+ 1 file changed, 78 insertions(+)
 
-diff --git a/net/sched/bpf_qdisc.c b/net/sched/bpf_qdisc.c
-index 9f32b305636f..a8efc3ff2b7e 100644
---- a/net/sched/bpf_qdisc.c
-+++ b/net/sched/bpf_qdisc.c
-@@ -234,18 +234,20 @@ __bpf_kfunc int bpf_qdisc_init_prologue(struct Qdisc *sch,
- 	struct net_device *dev = qdisc_dev(sch);
- 	struct Qdisc *p;
- 
-+	qdisc_watchdog_init(&q->watchdog, sch);
-+
- 	if (sch->parent != TC_H_ROOT) {
-+		/* If qdisc_lookup() returns NULL, it means .init is called by
-+		 * qdisc_create_dflt() in mq/mqprio_init and the parent qdisc
-+		 * has not been added to qdisc_hash yet.
-+		 */
- 		p = qdisc_lookup(dev, TC_H_MAJ(sch->parent));
--		if (!p)
--			return -ENOENT;
--
--		if (!(p->flags & TCQ_F_MQROOT)) {
-+		if (p && !(p->flags & TCQ_F_MQROOT)) {
- 			NL_SET_ERR_MSG(extack, "BPF qdisc only supported on root or mq");
- 			return -EINVAL;
- 		}
- 	}
- 
--	qdisc_watchdog_init(&q->watchdog, sch);
- 	return 0;
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_qdisc.c b/tools/testing/selftests/bpf/prog_tests/bpf_qdisc.c
+index c9a54177c84e..c954cc2ae64f 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_qdisc.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_qdisc.c
+@@ -159,6 +159,79 @@ static void test_qdisc_attach_to_non_root(void)
+ 	bpf_qdisc_fifo__destroy(fifo_skel);
  }
  
++static int get_default_qdisc(char *qdisc_name)
++{
++	FILE *f;
++	int num;
++
++	f = fopen("/proc/sys/net/core/default_qdisc", "r");
++	if (!f)
++		return -errno;
++
++	num = fscanf(f, "%s", qdisc_name);
++	fclose(f);
++
++	return num == 1 ? 0 : -EFAULT;
++}
++
++static void test_default_qdisc_attach_to_mq(void)
++{
++	struct bpf_qdisc_fifo *fifo_skel;
++	char default_qdisc[IFNAMSIZ];
++	struct netns_obj *netns;
++	char tc_qdisc_show[64];
++	struct bpf_link *link;
++	char *str_ret;
++	FILE *tc;
++	int err;
++
++	fifo_skel = bpf_qdisc_fifo__open_and_load();
++	if (!ASSERT_OK_PTR(fifo_skel, "bpf_qdisc_fifo__open_and_load"))
++		return;
++
++	link = bpf_map__attach_struct_ops(fifo_skel->maps.fifo);
++	if (!ASSERT_OK_PTR(link, "bpf_map__attach_struct_ops")) {
++		bpf_qdisc_fifo__destroy(fifo_skel);
++		return;
++	}
++
++	err = get_default_qdisc(default_qdisc);
++	if (!ASSERT_OK(err, "read sysctl net.core.default_qdisc"))
++		goto out;
++
++	err = write_sysctl("/proc/sys/net/core/default_qdisc", "bpf_fifo");
++	if (!ASSERT_OK(err, "write sysctl net.core.default_qdisc"))
++		goto out;
++
++	netns = netns_new("bpf_qdisc_ns", true);
++	if (!ASSERT_OK_PTR(netns, "netns_new"))
++		goto out;
++
++	SYS(out_restore_dflt_qdisc, "ip link add veth0 type veth peer veth1");
++	SYS(out_delete_netns, "tc qdisc add dev veth0 root handle 1: mq");
++
++	tc = popen("tc qdisc show dev veth0 parent 1:1", "r");
++	if (!ASSERT_OK_PTR(tc, "tc qdisc show dev veth0 parent 1:1"))
++		goto out_delete_netns;
++
++	str_ret = fgets(tc_qdisc_show, sizeof(tc_qdisc_show), tc);
++	if (!ASSERT_OK_PTR(str_ret, "tc qdisc show dev veth0 parent 1:1"))
++		goto out_delete_netns;
++
++	str_ret = strstr(tc_qdisc_show, "qdisc bpf_fifo");
++	if (!ASSERT_OK_PTR(str_ret, "check if bpf_fifo is created"))
++		goto out_delete_netns;
++
++	SYS(out_delete_netns, "tc qdisc delete dev veth0 root mq");
++out_delete_netns:
++	netns_free(netns);
++out_restore_dflt_qdisc:
++	write_sysctl("/proc/sys/net/core/default_qdisc", default_qdisc);
++out:
++	bpf_link__destroy(link);
++	bpf_qdisc_fifo__destroy(fifo_skel);
++}
++
+ void test_bpf_qdisc(void)
+ {
+ 	struct netns_obj *netns;
+@@ -178,3 +251,8 @@ void test_bpf_qdisc(void)
+ 
+ 	netns_free(netns);
+ }
++
++void serial_test_bpf_qdisc_default(void)
++{
++	test_default_qdisc_attach_to_mq();
++}
 -- 
 2.47.1
 
