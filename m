@@ -1,170 +1,151 @@
-Return-Path: <bpf+bounces-57285-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57286-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E282FAA7AFA
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 22:39:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C685AA7B37
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 23:00:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 439F47AA2D6
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 20:38:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C9651892B02
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 21:01:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35CB01FBC90;
-	Fri,  2 May 2025 20:39:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F775202F7B;
+	Fri,  2 May 2025 21:00:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YhEtOdnV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ExgqAER2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FBFB42A87;
-	Fri,  2 May 2025 20:39:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90315376;
+	Fri,  2 May 2025 21:00:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746218352; cv=none; b=aygqdAEI+ixIC43oNOytq1JSclfujmNkoTSQrxeW6YzyzZW3wXrBqSnP+76OQ/rJiK/vLHeaSa9NtkB08aT0IRfM5Y0ZA998mloktkLvbTxXWhFnG1BPmcXMDSi5cw+wDeC35uPEWskcdUmNJ3R3VeXsGFl7UXU3yafounAURDQ=
+	t=1746219647; cv=none; b=phzoEtbcGEGn3mUDUBB7FwD/KfaAWIwxUUTuIKSBWSpeiufcXldLRtVGCIur6591Hm9az0EGrbVAAXAo1besStUOWwAQwktSGpkEJbDxHBCOcX/ACqL45TGQ2W+T8LF56OcdBKha0BKJD32TvmjRkCNaIksPQkfR7KP/NkvjiCs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746218352; c=relaxed/simple;
-	bh=mC6wWHTE9kA9KjUHJt89lPkMmrC9D8rcD91mVEwMFg0=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JYcM9jX4+WUMqV4IFuGlnxkYKuY1SWNBk0T4Hfp8T6b6p/pmIVN+ApLotm2ajtYGnqZ86bseliyISlRG0S5+VWEMnupNQsCndXb7UdXlLIkm6U9AUxkfwIDMkMtyq3BGGrou1NX/2ACVGGzuGZzPr8xW98B9KTnfAmkhm99Hm94=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YhEtOdnV; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-22423adf751so30631265ad.2;
-        Fri, 02 May 2025 13:39:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746218350; x=1746823150; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8z3EqYcsGR+MlwLPd6CssGqOcAitR+EUhBxjEUIwY2Y=;
-        b=YhEtOdnVYCxKtwUi0Kd16EDridlXCZxSo434c+SXn4cjZdtRG4+SzQK/uTnZBWA7Rg
-         a/YXxAeFygLBp+IlDTpaCyMAH77+lBS5LogFQ4L6MwAsMnRQcSya5iK/PG+Y5JhP7Qef
-         ddgREaahYTrnNoNlDDZXTjtsn6xgh1NK5Exm7OHDFE2yhEMN26YH2MfmdG4Xpw6Voaf8
-         40NVqxTJwX6kJHNILHVN85GnqVysNQjdoSooT19a5GqYX9u1fKAT8WB2OF6p96PSesUy
-         pZlUPqWc5LpotpeUrPj85BywWebEjrywZziC7X+AEbMtngzzse0CbhwtrZwd3zFlqmGE
-         T82A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746218350; x=1746823150;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8z3EqYcsGR+MlwLPd6CssGqOcAitR+EUhBxjEUIwY2Y=;
-        b=haR0NdImp1ieQCxKhJjPqKNo/k+VWYr191W3qK3cWme0tiOxbBKq05ajxVKYtAUiDp
-         wVqPeLRi8i1o7fse9LSLugCfGV3kwSChQxvUiVuuztVdM5VFTlWgogmbJtwJuyuK9lFw
-         pSRfb9bMldtmBiVeqgINfh2ulnnK7T267Wld8SdgvuboKO1GD6AtJlMVUBy5bZo7h7Yt
-         hZwvEol/dggTlgfEyjjZEw8hyfLxpdMbELBEsDvfpuRDBLZbauTLoPF8SJB7VpjGn9BW
-         vlbrOBFPpK7kbmGZZnvMFm9DW47EFUCorq0Ji9QMx/pzjjjvOX2hpVJUCmX91pRQCahb
-         cVCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUsoHoc7hMKm+b1qwO6O2DcK3gzm+fU+nq8J4CKkvvn1kT9IqFQBf7Z9k0sB+bZ2WE4cR0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxmqNj3AN4kAk2gOGchFZfe5hDZgWCyiusT1gbeFaAmX025KY59
-	kL8B/f5CoAbgpfru7nkXuRUjDFWlSAjOD7SR1u2n+qArhhKDv2u/c54HHQ==
-X-Gm-Gg: ASbGnctpNgM8/BmnqQXbZWZVEXUDDkCIdt/lcirYzyrhpPdxZKFfIpa/Awc//wDHs4h
-	sNyy/t6LarWlN6b4pA/PCCoLxJIYDvEfal6jkXAhVQygZpZGyjkSVVRmxZUJ9Ry+itn5eykluNG
-	LFdVsYddWdaDCULc7gBP7a5oxxzHIEe5CFJ2y3UIjA97D7pYFhrvjr4JImlsYJDoxpOeeXcSW2r
-	Tfb/zxelmZxwuuPb5RiO7CqrZxdqry3JXZdjemKQV799tH6ptll0QuCrPi7GJWFzkDRlM85RdFL
-	uVLoBqrIMr/cexJ89Wz6q7dAAB//ZufhThzsWiOFWja+QRfpxPIbdHwzfDiPgPVPEaHQ7K/rTgo
-	lIXkQPtk=
-X-Google-Smtp-Source: AGHT+IHniOfOSqTOmPAS7DiJOHlNwUmqf0kAdZOQBzBUu02x64sF946oV7HZy1W33fp2frTy3yO35w==
-X-Received: by 2002:a17:903:2405:b0:215:4a4e:9262 with SMTP id d9443c01a7336-22e102b84cbmr61883965ad.8.1746218350368;
-        Fri, 02 May 2025 13:39:10 -0700 (PDT)
-Received: from kodidev-ubuntu (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22e1521fc03sm12066605ad.157.2025.05.02.13.39.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 May 2025 13:39:10 -0700 (PDT)
-From: Tony Ambardar <tony.ambardar@gmail.com>
-X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
-Date: Fri, 2 May 2025 13:39:07 -0700
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: dwarves@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: BUG in pahole?: strange error in tests/flexible_arrays.sh
-Message-ID: <aBUta5R8y+OX6sKB@kodidev-ubuntu>
-References: <aBQwRduNwBFciGkq@kodidev-ubuntu>
- <3b19f6a5-a5f5-4872-b38d-018165b5edd7@oracle.com>
+	s=arc-20240116; t=1746219647; c=relaxed/simple;
+	bh=QV74l1IOGVbOqoSkpgRlO6NEjTmym0E/wjU2qkQ32fw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=KO0Zaakx+DGRRTjtd+4TylIF+aoWeOynM2ZrvbgROptKx2KbvkZMV5B6R0SDbL1L63EJuIGE5f+RbFgh1B4t3B8Fw4yNcCuaudHf3EIFNmTCl6YwQha9XUu3tsNJnZmFecTN8i4ECzrpt4KRS1/cLZQ0dzWbsMk5XzYY3pkIpCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ExgqAER2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DCBAC4CEE4;
+	Fri,  2 May 2025 21:00:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1746219647;
+	bh=QV74l1IOGVbOqoSkpgRlO6NEjTmym0E/wjU2qkQ32fw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=ExgqAER2CsxrCnnAMm6jRg6gINgp9LGlOtbpHezQgKA+SlqChKBhWB5JTT3F8BKcz
+	 WyBu8J75GKcBiBoM493HVF8pnLHXaYp6WJzC0Sbxf8kv72/jKkJsmWg37D3/E6DH9x
+	 AVMJ/pp3eIG8LdZs9D/W1CiAOFAC3NhB8+3+QS2zaYnHn+HpmNaNfYeALRPcqkW/8K
+	 dVgYMpGiSWtxAIENr8F9WMYO1YCTIdNL3WBIxgpMQPFCzktf4xO/PaZtyphqAiNU9n
+	 3OzuLYfo5zx6WMa/dh7nLZo3pf9Love+B/Ys5wJLPmSUhMMraXMrOReDrSZuvwz5Li
+	 L/yI/DomKf2lw==
+From: KP Singh <kpsingh@kernel.org>
+To: bboscaccy@linux.microsoft.com
+Cc: James.Bottomley@hansenpartnership.com,
+	bpf@vger.kernel.org,
+	code@tyhicks.com,
+	corbet@lwn.net,
+	davem@davemloft.net,
+	dhowells@redhat.com,
+	gnoack@google.com,
+	herbert@gondor.apana.org.au,
+	jarkko@kernel.org,
+	jmorris@namei.org,
+	jstancek@redhat.com,
+	justinstitt@google.com,
+	keyrings@vger.kernel.org,
+	linux-crypto@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	llvm@lists.linux.dev,
+	masahiroy@kernel.org,
+	mic@digikod.net,
+	morbo@google.com,
+	nathan@kernel.org,
+	neal@gompa.dev,
+	nick.desaulniers+lkml@gmail.com,
+	nicolas@fjasle.eu,
+	nkapron@google.com,
+	paul@paul-moore.com,
+	roberto.sassu@huawei.com,
+	serge@hallyn.com,
+	shuah@kernel.org,
+	teknoraver@meta.com,
+	xiyou.wangcong@gmail.com,
+	KP Singh <kpsingh@kernel.org>
+Subject: Re: [PATCH v3 0/4] Introducing Hornet LSM
+Date: Fri,  2 May 2025 23:00:34 +0200
+Message-ID: <20250502210034.284051-1-kpsingh@kernel.org>
+X-Mailer: git-send-email 2.49.0.906.g1f30a19c02-goog
+In-Reply-To: <20250502184421.1424368-1-bboscaccy@linux.microsoft.com>
+References: <20250502184421.1424368-1-bboscaccy@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3b19f6a5-a5f5-4872-b38d-018165b5edd7@oracle.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, May 02, 2025 at 09:18:56AM +0100, Alan Maguire wrote:
-> On 02/05/2025 03:39, Tony Ambardar wrote:
-> > Hello all,
-> > 
-> > I ran into the following running the latest pahole tests:
-> > 
-> >   $ vmlinux=~/linux/vmlinux ./tests/tests
-> >     1: Validation of BTF encoding of functions; this may take some time: Ok
-> >     2: Default BTF on a system without BTF: Ok
-> >     3: Flexible arrays accounting: pahole: type 'bpf_empty_prog_array' not found
-> >   pahole: type 'kstatmount' not found
-> >   pahole: type 'crypto_lskcipher' not found
-> >   pahole: type 'crypto_sig' not found
-> >   pahole: type 'hash_ctx' not found
-> >   pahole: type 'scsi_stream_status_header' not found
-> >   pahole: type 'virtnet_info' not found
-> >   pahole: type 'geneve_dev' not found
-> >   pahole: type 'geneve_config' not found
-> >   pahole: type 'lirc_fh' not found
-> >   pahole: type 'scmi_registered_events_desc' not found
-> >   pahole: type 'events_queue' not found
-> >   pahole: type 'hid_debug_list' not found
-> >   pahole: type 'flow_offload_action' not found
-> >   pahole: type 'nft_rule_dp_last' not found
-> >   pahole: type 'nft_rhash_elem' not found
-> >   pahole: type 'nft_hash_elem' not found
-> >   pahole: type 'nft_bitmap_elem' not found
-> >   pahole: type 'nft_rbtree_elem' not found
-> >   pahole: type 'nft_pipapo_elem' not found
-> >   pahole: type 'xt_standard_target' not found
-> >   pahole: type 'xt_error_target' not found
-> >   pahole: type 'ipt_standard' not found
-> >   pahole: type 'ipt_error' not found
-> >   pahole: type 'ip6t_standard' not found
-> >   pahole: type 'ip6t_error' not found
-> > 
-> > This is simple to reproduce (e.g. code in flexible_arrays.sh):
-> > 
-> >   $ pahole kstatmount ~/linux/vmlinux
-> >   pahole: type 'kstatmount' not found
-> > 
-> > But despite the above:
-> > 
-> >   $ bpftool btf dump file ~/linux/vmlinux format raw|grep kstatmount
-> >   [13145] STRUCT 'kstatmount' size=624 vlen=8
-> > 
-> > And:
-> >   
-> >   $ pahole -C kstatmount ~/linux/vmlinux
-> >   struct kstatmount {
-> >           struct statmount *         buf;                  /*     0     4 */
-> >   ...
-> >   };
-> > 
-> > Has this been seen before? Am I missing something? Any insight folks have
-> > would be appreciated.
-> > 
-> > The same behaviour is also seen with '.tmp_vmlinux1.btf.o', which I attach.
-> > 
-> > Many thanks,
-> > Tony Ambardar
-> 
-> hi Tony, I've seen this too (with a slightly different cast of
-> characters); I keep meaning to look into it but haven't had a chance yet
-> so thanks for doing some investigation! Seems like it is a bug in type
-> display rather than in BTF generation at least..
-> 
-> Alan
+> This patch series introduces the Hornet LSM. The goal of Hornet is to provide
+> a signature verification mechanism for eBPF programs.
+>
 
-Thanks for confirming this -- I was worried it might be a side-effect of
-my function-encoding patch. Out of curiosity, how does option "-C" affect
-BTF parsing or pahole operation? It wasn't clear to me just what "Show
-just this class" means/implies...
+[...]
 
-Cheers,
-Tony
+>
+> References: [1]
+> https://lore.kernel.org/bpf/20220209054315.73833-1-alexei.starovoitov@gmail.com/
+> [2]
+> https://lore.kernel.org/bpf/CAADnVQ+wPK1KKZhCgb-Nnf0Xfjk8M1UpX5fnXC=cBzdEYbv_kg@mail.gmail.com/
+>
+> Change list: - v2 -> v3 - Remove any and all usage of proprietary bpf APIs
+
+BPF APIs are not proprietary, but you cannot implement BPF program signing
+for BPF users without aligning with the BPF maintainers and the community.
+Signed programs are a UAPI and a key part of how developers experience BPF
+and this is not how we would like signing to be experienced by BPF users.
+
+Some more feedback (which should be pretty obvious) but explicitly:
+
+* Hacks like if (current->pid == 1) return 0; also break your threat model
+  about root being untrusted. This is all the more reason I think signing
+  should be integrated into other LSMs, only a proper LSM policy can breathe
+  life into the root / kernel boundary. 
+
+* You also did not take the feedback into account:
+
+   new = map->ops->map_lookup_elem(map, &key);
+
+  This is not okay without having the BPF maintainers aligned, the same way as 
+
+  https://patchwork.kernel.org/project/netdevbpf/patch/20240629084331.3807368-4-kpsingh@kernel.org/#25928981
+
+  was not okay. Let's not have double standards.
+
+* And you copy pasted tools/testing/selftests/hornet/frozen_skel.h which
+  is what you expect users to do? Not acceptable either.
+
+So for this approach, it's a:
+
+Nacked-by: KP Singh <kpsingh@kernel.org>
+
+Now if you really care about the use-case and want to work with the maintainers
+and implement signing for the community, here's how we think it should be done:
+
+* The core signing logic and the tooling stays in BPF, something that the users
+  are already using. No new tooling.
+* The policy decision on the effect of signing can be built into various
+  existing LSMs. I don't think we need a new LSM for it.
+* A simple UAPI (emphasis on UAPI!) change to union bpf_attr in uapi/bpf.h in
+  the BPF_PROG_LOAD command:
+
+__aligned_u64 signature; 
+__u32 signature_size;
+
 
