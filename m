@@ -1,572 +1,193 @@
-Return-Path: <bpf+bounces-57248-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57249-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9EE0AA7705
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 18:17:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 376D8AA776E
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 18:38:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB6BA3B0BF8
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 16:16:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A5591BC77E4
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 16:38:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C6BC267393;
-	Fri,  2 May 2025 16:15:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6EA3265CC0;
+	Fri,  2 May 2025 16:38:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b="ZOOd5Nrz"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LGx84i8k"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C858264A69
-	for <bpf@vger.kernel.org>; Fri,  2 May 2025 16:15:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 320A025E835
+	for <bpf@vger.kernel.org>; Fri,  2 May 2025 16:38:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746202547; cv=none; b=qIgI45HU1S2MmQjDDg6WIOf4B7nG9Fo3y1lP+Kkq/u0t2RkVGxihfkoI2/0KBpSEz8ExFtIlLx0smjFuCb4prGT0TXw8W/Si16cscIlybFirDtZFZ9D5MACd9Yxs+Y2uSx8bXlkS3LcLibvOjYbeBw1aQjyEkAOSvW/u6nnjJdo=
+	t=1746203902; cv=none; b=NKXbXWZGd0u+XC+89vsjkVyFfEIyUtn47N4CDzaSbmhxOSc+PVgIG/lLOshG7d9zrDc6RMaLB3iZctMDYv/47ro5e98JMbKVev/sv252QiieuminircIl3jI3Q9G1tWRb4fjItsoXZJOtrZ7C785uE3s/GmnyCk2PXvWHzlds3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746202547; c=relaxed/simple;
-	bh=FHvYqUpVTPs9XCr3oJStBpt6MzaYfNbA/UgwrvXGvaU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=O3jtin9vbk33wPqZ5rXF7EPSYoLgeCoGg0qtZuHS86FXhEM5AMlu+0jkaRPX8jCyedVRfVb8d4MaGoYjULGQw49yaIksjvqXn8oQJAuL1inwwfHZE5J6lcGa5MA1bWvdMnWNRLwM0SLERDhheo+NbPtdV9LNWlUXUGEZ3WJhGI4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io; spf=none smtp.mailfrom=jrife.io; dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b=ZOOd5Nrz; arc=none smtp.client-ip=209.85.215.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=jrife.io
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-b1f2a3bf3c8so318519a12.1
-        for <bpf@vger.kernel.org>; Fri, 02 May 2025 09:15:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jrife-io.20230601.gappssmtp.com; s=20230601; t=1746202545; x=1746807345; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z/P/P/GINYseRBHAVHr2wKLhCx3TVjCIpz42FLgfZ60=;
-        b=ZOOd5NrzjR4dXBQYCqKuJrjl2oMwU/vyFAOytNFX1Zo11kPm/oaV9VQAtuMUS59RC6
-         3O68nAMYRPI3QK0Fog0732Q8YaYQ6J+1CRkbtqHh565DnLtxEzWppGMPuEWRtNak+PU8
-         Xb05ay1eWefqTVo5fHbhxD9nqPwgz5xMXu+96Rd57MBd/UtvlA+lwBvWkgWmCp2VGzSX
-         h5xKmfM+OS2W3ZmWHU+MvHsf1AEJ8wmv2ieZpHwLG4CReMZpm0CCUHDPH7F/e6x8d6iY
-         D3KiRi6SGoNUOpsgbkzJANUS/dtKWlBRlHaLry6qENNvANu27ZOKep94DM889pqhwNd7
-         ii8Q==
+	s=arc-20240116; t=1746203902; c=relaxed/simple;
+	bh=XsE7SiV+aikMHOLaaXZ7a8kPrkm9AwB5yoxuMKmx1sQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Gbc4ILc5kf5+d5IbDgMhb0kO41YYLQj9z0cXeNh9nxYOH/NyCWyZ1VSFg401vQsq6VGx25HC4CvjQmKzN5cR1DxUD7NooZ9q9ejwmvupDoa0dxgcECq1s6+qH5v4sdJXJvslgPco4/dREE/iYMtJJMjHVnbXEsOXhR/Zc7USVB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LGx84i8k; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1746203899;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=14Itu0wJcqKS8hAd7pT4xJxMeQ8wSKPFd/cQcnRkK64=;
+	b=LGx84i8kY2T9BL6D2VoQo0QYzwa8M4yyYSExh5iRfV1rsE9uHChD1roDYYFdHGuht9riKZ
+	FJki0wdvR/faRBACcD4WqchHsYNYUdBGWw4kBA0OsOyX6cp/Q+nkC2V7b+WTbYh56R4nx6
+	Sn/M2Z4wR1fVH9HhG206Wl/DlMtHpXY=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-45-fAQ7E3kgOHuM1POuWC1yDw-1; Fri, 02 May 2025 12:38:17 -0400
+X-MC-Unique: fAQ7E3kgOHuM1POuWC1yDw-1
+X-Mimecast-MFC-AGG-ID: fAQ7E3kgOHuM1POuWC1yDw_1746203897
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-43ceeaf1524so9537235e9.1
+        for <bpf@vger.kernel.org>; Fri, 02 May 2025 09:38:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746202545; x=1746807345;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z/P/P/GINYseRBHAVHr2wKLhCx3TVjCIpz42FLgfZ60=;
-        b=FAhYi0dGwkAVe+M4SYeIEv6Ks8qNKxqxjSL0nt/Gyt533nYMY9iDjBMI0NmSuFsgR0
-         eg2UC6ozYYJkHtzgT9Mof7uQmeVR9zK5vGSN9HqV6UkoaCbx/+a2Z/BVjA5dDQiJ/PJF
-         Qouqe+D6wMb0H4ZaBP66WW2zxAPQL3Zv7Lk5NbR7m21FjPRLBNPBY1pFWgSaQDToGn3/
-         xJ9lhEpgJp/uGPiqai6hdNR7C147Ivnp72+xho/A9er6fl2Ne3i8vGnM4kHG4dfuoveu
-         uiPWpcfX82631VA3A7qp9G/oTcC89WyS+ZlLenarV8Lx7MSSpWk/wwFnlt0wsLlk6hNG
-         Jc2A==
-X-Forwarded-Encrypted: i=1; AJvYcCWLO+Z2hhyy/cdbCK6h5YNpW95fi0+nsUbRhzbSYB3MfPtCtmipIkSrADShVsyXxtnNtS8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywaonu/ELkcvz6kbC4Deqe3JkM2qbdvI26P1fKVoxwOI5rIFq7S
-	O3werfFabJf3KTaoDvOaFORCi2mdCGMvAB8eWBEkSxx4OJvMV+e6AdEr+AiwLag=
-X-Gm-Gg: ASbGncvKSv627NksbA93nb0tn2reRaSpvKprexSEz9f3HC3V60xfWTDSHMcZD5XmAlQ
-	/P1qKoelabyGRRIdrNi3mF7vkzMYbPU/uzr6EwN8XasUFZEM9xZGPK7e319ffTm4PEvzp/B/4Yd
-	LfoblGTvdCYfAkxmFKplwZPtDBvEB3nwqKCG8Sw+j6wMddM/l95p5XIiziYsjhZW8A3Qci3cJ9D
-	rmYouc+VO06JfgayajzyKPW3zQbfQi7CGDUumTEQHw0T2VRjzdgv0sTqi3QnAcLDeTeLUeu8To1
-	xMqMq8JSLID0ZbUeSig1fxTq6DLIUQ==
-X-Google-Smtp-Source: AGHT+IEdohJtY0HYOWs3Z2RgoAZ5iL3haHUJyN1yma3LLVNFgzJ/KD8gVX7eIJksyQrqGmWHyQNKFA==
-X-Received: by 2002:a17:903:2444:b0:215:2bfb:3cd7 with SMTP id d9443c01a7336-22e1032d222mr21704695ad.10.1746202544580;
-        Fri, 02 May 2025 09:15:44 -0700 (PDT)
-Received: from t14.. ([2001:5a8:4528:b100:7676:294c:90a5:2828])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22e151e95c3sm9572135ad.68.2025.05.02.09.15.43
+        d=1e100.net; s=20230601; t=1746203897; x=1746808697;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=14Itu0wJcqKS8hAd7pT4xJxMeQ8wSKPFd/cQcnRkK64=;
+        b=G9C/uAmghQELUfBNnvCnXqz/AdE2Yyxju3LuZIiy1GGNfEmzNpmTxCKzvkZaRvHRkC
+         k/IEDpCddSGpZ7YU5opX5YEziaHvc8wv1MKkNX7Wq7Q+/6j5BRPze6652lLHuV8EH9Nm
+         5biN5TjgAN1MoZ6vqpeOdcis99TBK6lrvITpdOi8wcxaDDQtI8nA95yzekXHzlcht13k
+         KN3LE+4wnXatgdhnBPr98gyaFHFIJc4EvIs4AdCk/TwZypPnL7YnPWPM8xC8FeoJqcWd
+         JW6EN0oxI8z5KT0Hvk5/xmb+WOOe6vFiuDos4aYKpKGdU+lpyXnt7EjD3koIIt68trvb
+         RRJg==
+X-Forwarded-Encrypted: i=1; AJvYcCWEUWbvWpZmfOFFgoQ9lTUSxk/woOCyWaZj2HLvDWpr0tKib27w2jhMsgLp+3ADV6kGVa4=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz2oDiSgFwDfWzQUgTALLtpENUJ1U317GwZQ2d+QF0pc9ShUR6L
+	kPMPVYYMcT2+4fuw5NNMzQa5/mI04b4DEaPD5HgTXwbYEtBLNTnI1A7PjcuVEhBPO+wSLKdl7bG
+	vonCENxNqaNzEw+KcbwA1vV/1fbA3/g8bfhvk75BtoRPkHc5EpA==
+X-Gm-Gg: ASbGncvdsqyhZs9JEGijZIm83JYaP9qeHq4uoIFftq7SzECBP/spL5vWcg/Pi84z8Be
+	H/aP2xAgeqK76dpzR9+j5UvuXGdGENOJjt2bEluSMudHgCz4H+G1tQdR4FohTE3OnKPv8SRinP0
+	mppxtnrnyZ/VAkKQyGPFGL52OXwprbVTt4cK5hTIEDCrzvXNwpEeCkSEJoZAxPFaSoVk3pZ9HQw
+	wf3pwfsd+uuS4x+pNCPoWqWbATw6UlcKys7qVuWSph+86DpZk14Zj5qR9R+EnPXiOVH2W57fjDp
+	VcS08K1oXVsgN0m+4GzJlxXrKpHPHh+ZU2PYnb0dMXzvu/UJ
+X-Received: by 2002:a05:600c:528f:b0:43b:c857:e9d7 with SMTP id 5b1f17b1804b1-441bb852744mr33829405e9.5.1746203896750;
+        Fri, 02 May 2025 09:38:16 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEMHXR/p+bYllCeFUiu3mvj1rpI7ZOiyLrHoitDd00Nmz4qAV27N+1EVZD+X61FQi8x3pEBZA==
+X-Received: by 2002:a05:600c:528f:b0:43b:c857:e9d7 with SMTP id 5b1f17b1804b1-441bb852744mr33828185e9.5.1746203896267;
+        Fri, 02 May 2025 09:38:16 -0700 (PDT)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb ([2001:861:43c1:5950:3e51:b684:9982:d4a2])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-441b2b28732sm94362125e9.37.2025.05.02.09.38.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 May 2025 09:15:44 -0700 (PDT)
-From: Jordan Rife <jordan@jrife.io>
-To: netdev@vger.kernel.org,
-	bpf@vger.kernel.org
-Cc: Jordan Rife <jordan@jrife.io>,
-	Aditi Ghag <aditi.ghag@isovalent.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Kuniyuki Iwashima <kuniyu@amazon.com>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Subject: [PATCH v7 bpf-next 7/7] selftests/bpf: Add tests for bucket resume logic in UDP socket iterators
-Date: Fri,  2 May 2025 09:15:26 -0700
-Message-ID: <20250502161528.264630-8-jordan@jrife.io>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250502161528.264630-1-jordan@jrife.io>
-References: <20250502161528.264630-1-jordan@jrife.io>
+        Fri, 02 May 2025 09:38:15 -0700 (PDT)
+From: Valentin Schneider <vschneid@redhat.com>
+To: Dave Hansen <dave.hansen@intel.com>, Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
+ linux-riscv@lists.infradead.org, linux-perf-users@vger.kernel.org,
+ kvm@vger.kernel.org, linux-arch@vger.kernel.org,
+ linux-modules@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ rcu@vger.kernel.org, linux-hardening@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, bpf@vger.kernel.org, Juri Lelli
+ <juri.lelli@redhat.com>, Marcelo Tosatti <mtosatti@redhat.com>, Yair
+ Podemsky <ypodemsk@redhat.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
+ Daniel Wagner <dwagner@suse.de>, Petr Tesarik <ptesarik@suse.com>, Nicolas
+ Saenz Julienne <nsaenz@amazon.com>, Frederic Weisbecker
+ <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, Dave
+ Hansen <dave.hansen@linux.intel.com>, Sean Christopherson
+ <seanjc@google.com>, Juergen Gross <jgross@suse.com>, Ajay Kaher
+ <ajay.kaher@broadcom.com>, Alexey Makhalov
+ <alexey.amakhalov@broadcom.com>, Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>, Russell King
+ <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will
+ Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui
+ <kernel@xen0n.name>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer
+ Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Alexandre
+ Ghiti <alex@ghiti.fr>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
+ <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, x86@kernel.org, "H.
+ Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim
+ <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander
+ Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa
+ <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, Adrian Hunter
+ <adrian.hunter@intel.com>, "Liang, Kan" <kan.liang@linux.intel.com>, Pawan
+ Gupta <pawan.kumar.gupta@linux.intel.com>, Paolo Bonzini
+ <pbonzini@redhat.com>, Arnd Bergmann <arnd@arndb.de>, Jason Baron
+ <jbaron@akamai.com>, Ard Biesheuvel <ardb@kernel.org>, Luis Chamberlain
+ <mcgrof@kernel.org>, Petr Pavlu <petr.pavlu@suse.com>, Sami Tolvanen
+ <samitolvanen@google.com>, Daniel Gomez <da.gomez@samsung.com>, Naveen N
+ Rao <naveen@kernel.org>, Anil S Keshavamurthy
+ <anil.s.keshavamurthy@intel.com>, "David S. Miller" <davem@davemloft.net>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Neeraj Upadhyay
+ <neeraj.upadhyay@kernel.org>, Joel Fernandes <joel@joelfernandes.org>,
+ Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Uladzislau Rezki <urezki@gmail.com>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
+ Zqiang <qiang.zhang1211@gmail.com>, Vincent Guittot
+ <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Kees Cook
+ <kees@kernel.org>, Shuah Khan <shuah@kernel.org>, Masahiro Yamada
+ <masahiroy@kernel.org>, Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda
+ <ojeda@kernel.org>, "Mike Rapoport (Microsoft)" <rppt@kernel.org>, Rong Xu
+ <xur@google.com>, Rafael Aquini <aquini@redhat.com>, Song Liu
+ <song@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Dan Carpenter
+ <dan.carpenter@linaro.org>, Brian Gerst <brgerst@gmail.com>, "Kirill A.
+ Shutemov" <kirill.shutemov@linux.intel.com>, Benjamin Berg
+ <benjamin.berg@intel.com>, Vishal Annapurve <vannapurve@google.com>, Randy
+ Dunlap <rdunlap@infradead.org>, John Stultz <jstultz@google.com>, Tiezhu
+ Yang <yangtiezhu@loongson.cn>
+Subject: Re: [PATCH v5 00/25] context_tracking,x86: Defer some IPIs until a
+ user->kernel transition
+In-Reply-To: <34535b8c-35c8-4a7f-8363-f5a9c5a69023@intel.com>
+References: <20250429113242.998312-1-vschneid@redhat.com>
+ <fefcd1a6-f146-4f3c-b28b-f907e7346ddd@intel.com>
+ <20250430132047.01d48647@gandalf.local.home>
+ <019f6713-cfbd-466b-8fb5-dcd982cf8644@intel.com>
+ <20250430154228.1d6306b4@gandalf.local.home>
+ <a6b3a331-1ff3-4490-b300-a62b3c21578d@intel.com>
+ <xhsmhr0179w1i.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <34535b8c-35c8-4a7f-8363-f5a9c5a69023@intel.com>
+Date: Fri, 02 May 2025 18:38:12 +0200
+Message-ID: <xhsmho6wb9de3.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-Introduce a set of tests that exercise various bucket resume scenarios:
+On 02/05/25 06:53, Dave Hansen wrote:
+> On 5/2/25 02:55, Valentin Schneider wrote:
+>> My gripe with that was having two separate mechanisms
+>> - super early entry around SWITCH_TO_KERNEL_CR3)
+>> - later entry at context tracking
+>
+> What do you mean by "later entry"?
+>
 
-* remove_seen resumes iteration after removing a socket from the bucket
-  that we've already processed. Before, with the offset-based approach,
-  this test would have skipped an unseen socket after resuming
-  iteration. With the cookie-based approach, we now see all sockets
-  exactly once.
-* remove_unseen exercises the condition where the next socket that we
-  would have seen is removed from the bucket before we resume iteration.
-  This tests the scenario where we need to scan past the first cookie in
-  our remembered cookies list to find the socket from which to resume
-  iteration.
-* remove_all exercises the condition where all sockets we remembered
-  were removed from the bucket to make sure iteration terminates and
-  returns no more results.
-* add_some exercises the condition where a few, but not enough to
-  trigger a realloc, sockets are added to the head of the current bucket
-  between reads. Before, with the offset-based approach, this test would
-  have repeated sockets we've already seen. With the cookie-based
-  approach, we now see all sockets exactly once.
-* force_realloc exercises the condition that we need to realloc the
-  batch on a subsequent read, since more sockets than can be held in the
-  current batch array were added to the current bucket. This exercies
-  the logic inside bpf_iter_udp_realloc_batch that copies cookies into
-  the new batch to make sure nothing is skipped or repeated.
+I meant the point at which the deferred operation is run in the current
+patches, i.e. ct_kernel_enter() - kernel entry from the PoV of context
+tracking.
 
-Signed-off-by: Jordan Rife <jordan@jrife.io>
----
- .../bpf/prog_tests/sock_iter_batch.c          | 414 ++++++++++++++++++
- 1 file changed, 414 insertions(+)
+> All of the paths to enter the kernel from userspace have some
+> SWITCH_TO_KERNEL_CR3 variant. If they didn't, the userspace that they
+> entered from could have attacked the kernel with Meltdown.
+>
+> I'm theorizing that if this is _just_ about avoiding TLB flush IPIs that
+> you can get away with a single mechanism.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sock_iter_batch.c b/tools/testing/selftests/bpf/prog_tests/sock_iter_batch.c
-index 74dbe91806a0..a4517bee34d5 100644
---- a/tools/testing/selftests/bpf/prog_tests/sock_iter_batch.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sock_iter_batch.c
-@@ -7,6 +7,7 @@
- 
- #define TEST_NS "sock_iter_batch_netns"
- 
-+static const int init_batch_size = 16;
- static const int nr_soreuse = 4;
- 
- struct iter_out {
-@@ -14,6 +15,418 @@ struct iter_out {
- 	__u64 cookie;
- } __packed;
- 
-+struct sock_count {
-+	__u64 cookie;
-+	int count;
-+};
-+
-+static int insert(__u64 cookie, struct sock_count counts[], int counts_len)
-+{
-+	int insert = -1;
-+	int i = 0;
-+
-+	for (; i < counts_len; i++) {
-+		if (!counts[i].cookie) {
-+			insert = i;
-+		} else if (counts[i].cookie == cookie) {
-+			insert = i;
-+			break;
-+		}
-+	}
-+	if (insert < 0)
-+		return insert;
-+
-+	counts[insert].cookie = cookie;
-+	counts[insert].count++;
-+
-+	return counts[insert].count;
-+}
-+
-+static int read_n(int iter_fd, int n, struct sock_count counts[],
-+		  int counts_len)
-+{
-+	struct iter_out out;
-+	int nread = 1;
-+	int i = 0;
-+
-+	for (; nread > 0 && (n < 0 || i < n); i++) {
-+		nread = read(iter_fd, &out, sizeof(out));
-+		if (!nread || !ASSERT_EQ(nread, sizeof(out), "nread"))
-+			break;
-+		ASSERT_GE(insert(out.cookie, counts, counts_len), 0, "insert");
-+	}
-+
-+	ASSERT_TRUE(n < 0 || i == n, "n < 0 || i == n");
-+
-+	return i;
-+}
-+
-+static __u64 socket_cookie(int fd)
-+{
-+	__u64 cookie;
-+	socklen_t cookie_len = sizeof(cookie);
-+
-+	if (!ASSERT_OK(getsockopt(fd, SOL_SOCKET, SO_COOKIE, &cookie,
-+				  &cookie_len), "getsockopt(SO_COOKIE)"))
-+		return 0;
-+	return cookie;
-+}
-+
-+static bool was_seen(int fd, struct sock_count counts[], int counts_len)
-+{
-+	__u64 cookie = socket_cookie(fd);
-+	int i = 0;
-+
-+	for (; cookie && i < counts_len; i++)
-+		if (cookie == counts[i].cookie)
-+			return true;
-+
-+	return false;
-+}
-+
-+static int get_seen_socket(int *fds, struct sock_count counts[], int n)
-+{
-+	int i = 0;
-+
-+	for (; i < n; i++)
-+		if (was_seen(fds[i], counts, n))
-+			return i;
-+	return -1;
-+}
-+
-+static int get_nth_socket(int *fds, int fds_len, struct bpf_link *link, int n)
-+{
-+	int i, nread, iter_fd;
-+	int nth_sock_idx = -1;
-+	struct iter_out out;
-+
-+	iter_fd = bpf_iter_create(bpf_link__fd(link));
-+	if (!ASSERT_OK_FD(iter_fd, "bpf_iter_create"))
-+		return -1;
-+
-+	for (; n >= 0; n--) {
-+		nread = read(iter_fd, &out, sizeof(out));
-+		if (!nread || !ASSERT_GE(nread, 1, "nread"))
-+			goto done;
-+	}
-+
-+	for (i = 0; i < fds_len && nth_sock_idx < 0; i++)
-+		if (fds[i] >= 0 && socket_cookie(fds[i]) == out.cookie)
-+			nth_sock_idx = i;
-+done:
-+	close(iter_fd);
-+	return nth_sock_idx;
-+}
-+
-+static int get_seen_count(int fd, struct sock_count counts[], int n)
-+{
-+	__u64 cookie = socket_cookie(fd);
-+	int count = 0;
-+	int i = 0;
-+
-+	for (; cookie && !count && i < n; i++)
-+		if (cookie == counts[i].cookie)
-+			count = counts[i].count;
-+
-+	return count;
-+}
-+
-+static void check_n_were_seen_once(int *fds, int fds_len, int n,
-+				   struct sock_count counts[], int counts_len)
-+{
-+	int seen_once = 0;
-+	int seen_cnt;
-+	int i = 0;
-+
-+	for (; i < fds_len; i++) {
-+		/* Skip any sockets that were closed or that weren't seen
-+		 * exactly once.
-+		 */
-+		if (fds[i] < 0)
-+			continue;
-+		seen_cnt = get_seen_count(fds[i], counts, counts_len);
-+		if (seen_cnt && ASSERT_EQ(seen_cnt, 1, "seen_cnt"))
-+			seen_once++;
-+	}
-+
-+	ASSERT_EQ(seen_once, n, "seen_once");
-+}
-+
-+static void remove_seen(int family, int sock_type, const char *addr, __u16 port,
-+			int *socks, int socks_len, struct sock_count *counts,
-+			int counts_len, struct bpf_link *link, int iter_fd)
-+{
-+	int close_idx;
-+
-+	/* Iterate through the first socks_len - 1 sockets. */
-+	read_n(iter_fd, socks_len - 1, counts, counts_len);
-+
-+	/* Make sure we saw socks_len - 1 sockets exactly once. */
-+	check_n_were_seen_once(socks, socks_len, socks_len - 1, counts,
-+			       counts_len);
-+
-+	/* Close a socket we've already seen to remove it from the bucket. */
-+	close_idx = get_seen_socket(socks, counts, counts_len);
-+	if (!ASSERT_GE(close_idx, 0, "close_idx"))
-+		return;
-+	close(socks[close_idx]);
-+	socks[close_idx] = -1;
-+
-+	/* Iterate through the rest of the sockets. */
-+	read_n(iter_fd, -1, counts, counts_len);
-+
-+	/* Make sure the last socket wasn't skipped and that there were no
-+	 * repeats.
-+	 */
-+	check_n_were_seen_once(socks, socks_len, socks_len - 1, counts,
-+			       counts_len);
-+}
-+
-+static void remove_unseen(int family, int sock_type, const char *addr,
-+			  __u16 port, int *socks, int socks_len,
-+			  struct sock_count *counts, int counts_len,
-+			  struct bpf_link *link, int iter_fd)
-+{
-+	int close_idx;
-+
-+	/* Iterate through the first socket. */
-+	read_n(iter_fd, 1, counts, counts_len);
-+
-+	/* Make sure we saw a socket from fds. */
-+	check_n_were_seen_once(socks, socks_len, 1, counts, counts_len);
-+
-+	/* Close what would be the next socket in the bucket to exercise the
-+	 * condition where we need to skip past the first cookie we remembered.
-+	 */
-+	close_idx = get_nth_socket(socks, socks_len, link, 1);
-+	if (!ASSERT_GE(close_idx, 0, "close_idx"))
-+		return;
-+	close(socks[close_idx]);
-+	socks[close_idx] = -1;
-+
-+	/* Iterate through the rest of the sockets. */
-+	read_n(iter_fd, -1, counts, counts_len);
-+
-+	/* Make sure the remaining sockets were seen exactly once and that we
-+	 * didn't repeat the socket that was already seen.
-+	 */
-+	check_n_were_seen_once(socks, socks_len, socks_len - 1, counts,
-+			       counts_len);
-+}
-+
-+static void remove_all(int family, int sock_type, const char *addr,
-+		       __u16 port, int *socks, int socks_len,
-+		       struct sock_count *counts, int counts_len,
-+		       struct bpf_link *link, int iter_fd)
-+{
-+	int close_idx, i;
-+
-+	/* Iterate through the first socket. */
-+	read_n(iter_fd, 1, counts, counts_len);
-+
-+	/* Make sure we saw a socket from fds. */
-+	check_n_were_seen_once(socks, socks_len, 1, counts, counts_len);
-+
-+	/* Close all remaining sockets to exhaust the list of saved cookies and
-+	 * exit without putting any sockets into the batch on the next read.
-+	 */
-+	for (i = 0; i < socks_len - 1; i++) {
-+		close_idx = get_nth_socket(socks, socks_len, link, 1);
-+		if (!ASSERT_GE(close_idx, 0, "close_idx"))
-+			return;
-+		close(socks[close_idx]);
-+		socks[close_idx] = -1;
-+	}
-+
-+	/* Make sure there are no more sockets returned */
-+	ASSERT_EQ(read_n(iter_fd, -1, counts, counts_len), 0, "read_n");
-+}
-+
-+static void add_some(int family, int sock_type, const char *addr, __u16 port,
-+		     int *socks, int socks_len, struct sock_count *counts,
-+		     int counts_len, struct bpf_link *link, int iter_fd)
-+{
-+	int *new_socks = NULL;
-+
-+	/* Iterate through the first socks_len - 1 sockets. */
-+	read_n(iter_fd, socks_len - 1, counts, counts_len);
-+
-+	/* Make sure we saw socks_len - 1 sockets exactly once. */
-+	check_n_were_seen_once(socks, socks_len, socks_len - 1, counts,
-+			       counts_len);
-+
-+	/* Double the number of sockets in the bucket. */
-+	new_socks = start_reuseport_server(family, sock_type, addr, port, 0,
-+					   socks_len);
-+	if (!ASSERT_OK_PTR(new_socks, "start_reuseport_server"))
-+		goto done;
-+
-+	/* Iterate through the rest of the sockets. */
-+	read_n(iter_fd, -1, counts, counts_len);
-+
-+	/* Make sure each of the original sockets was seen exactly once. */
-+	check_n_were_seen_once(socks, socks_len, socks_len, counts,
-+			       counts_len);
-+done:
-+	free_fds(new_socks, socks_len);
-+}
-+
-+static void force_realloc(int family, int sock_type, const char *addr,
-+			  __u16 port, int *socks, int socks_len,
-+			  struct sock_count *counts, int counts_len,
-+			  struct bpf_link *link, int iter_fd)
-+{
-+	int *new_socks = NULL;
-+
-+	/* Iterate through the first socket just to initialize the batch. */
-+	read_n(iter_fd, 1, counts, counts_len);
-+
-+	/* Double the number of sockets in the bucket to force a realloc on the
-+	 * next read.
-+	 */
-+	new_socks = start_reuseport_server(family, sock_type, addr, port, 0,
-+					   socks_len);
-+	if (!ASSERT_OK_PTR(new_socks, "start_reuseport_server"))
-+		goto done;
-+
-+	/* Iterate through the rest of the sockets. */
-+	read_n(iter_fd, -1, counts, counts_len);
-+
-+	/* Make sure each socket from the first set was seen exactly once. */
-+	check_n_were_seen_once(socks, socks_len, socks_len, counts,
-+			       counts_len);
-+done:
-+	free_fds(new_socks, socks_len);
-+}
-+
-+struct test_case {
-+	void (*test)(int family, int sock_type, const char *addr, __u16 port,
-+		     int *socks, int socks_len, struct sock_count *counts,
-+		     int counts_len, struct bpf_link *link, int iter_fd);
-+	const char *description;
-+	int init_socks;
-+	int max_socks;
-+	int sock_type;
-+	int family;
-+};
-+
-+static struct test_case resume_tests[] = {
-+	{
-+		.description = "udp: resume after removing a seen socket",
-+		.init_socks = nr_soreuse,
-+		.max_socks = nr_soreuse,
-+		.sock_type = SOCK_DGRAM,
-+		.family = AF_INET6,
-+		.test = remove_seen,
-+	},
-+	{
-+		.description = "udp: resume after removing one unseen socket",
-+		.init_socks = nr_soreuse,
-+		.max_socks = nr_soreuse,
-+		.sock_type = SOCK_DGRAM,
-+		.family = AF_INET6,
-+		.test = remove_unseen,
-+	},
-+	{
-+		.description = "udp: resume after removing all unseen sockets",
-+		.init_socks = nr_soreuse,
-+		.max_socks = nr_soreuse,
-+		.sock_type = SOCK_DGRAM,
-+		.family = AF_INET6,
-+		.test = remove_all,
-+	},
-+	{
-+		.description = "udp: resume after adding a few sockets",
-+		.init_socks = nr_soreuse,
-+		.max_socks = nr_soreuse,
-+		.sock_type = SOCK_DGRAM,
-+		/* Use AF_INET so that new sockets are added to the head of the
-+		 * bucket's list.
-+		 */
-+		.family = AF_INET,
-+		.test = add_some,
-+	},
-+	{
-+		.description = "udp: force a realloc to occur",
-+		.init_socks = init_batch_size,
-+		.max_socks = init_batch_size * 2,
-+		.sock_type = SOCK_DGRAM,
-+		/* Use AF_INET6 so that new sockets are added to the tail of the
-+		 * bucket's list, needing to be added to the next batch to force
-+		 * a realloc.
-+		 */
-+		.family = AF_INET6,
-+		.test = force_realloc,
-+	},
-+};
-+
-+static void do_resume_test(struct test_case *tc)
-+{
-+	struct sock_iter_batch *skel = NULL;
-+	static const __u16 port = 10001;
-+	struct bpf_link *link = NULL;
-+	struct sock_count *counts;
-+	int err, iter_fd = -1;
-+	const char *addr;
-+	int *fds = NULL;
-+	int local_port;
-+
-+	counts = calloc(tc->max_socks, sizeof(*counts));
-+	if (!ASSERT_OK_PTR(counts, "counts"))
-+		goto done;
-+	skel = sock_iter_batch__open();
-+	if (!ASSERT_OK_PTR(skel, "sock_iter_batch__open"))
-+		goto done;
-+
-+	/* Prepare a bucket of sockets in the kernel hashtable */
-+	addr = tc->family == AF_INET6 ? "::1" : "127.0.0.1";
-+	fds = start_reuseport_server(tc->family, tc->sock_type, addr, port, 0,
-+				     tc->init_socks);
-+	if (!ASSERT_OK_PTR(fds, "start_reuseport_server"))
-+		goto done;
-+	local_port = get_socket_local_port(*fds);
-+	if (!ASSERT_GE(local_port, 0, "get_socket_local_port"))
-+		goto done;
-+	skel->rodata->ports[0] = ntohs(local_port);
-+	skel->rodata->sf = tc->family;
-+
-+	err = sock_iter_batch__load(skel);
-+	if (!ASSERT_OK(err, "sock_iter_batch__load"))
-+		goto done;
-+
-+	link = bpf_program__attach_iter(tc->sock_type == SOCK_STREAM ?
-+					skel->progs.iter_tcp_soreuse :
-+					skel->progs.iter_udp_soreuse,
-+					NULL);
-+	if (!ASSERT_OK_PTR(link, "bpf_program__attach_iter"))
-+		goto done;
-+
-+	iter_fd = bpf_iter_create(bpf_link__fd(link));
-+	if (!ASSERT_OK_FD(iter_fd, "bpf_iter_create"))
-+		goto done;
-+
-+	tc->test(tc->family, tc->sock_type, addr, port, fds, tc->init_socks,
-+		 counts, tc->max_socks, link, iter_fd);
-+done:
-+	free(counts);
-+	free_fds(fds, tc->init_socks);
-+	if (iter_fd >= 0)
-+		close(iter_fd);
-+	bpf_link__destroy(link);
-+	sock_iter_batch__destroy(skel);
-+}
-+
-+static void do_resume_tests(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(resume_tests); i++) {
-+		if (test__start_subtest(resume_tests[i].description)) {
-+			do_resume_test(&resume_tests[i]);
-+		}
-+	}
-+}
-+
- static void do_test(int sock_type, bool onebyone)
- {
- 	int err, i, nread, to_read, total_read, iter_fd = -1;
-@@ -135,6 +548,7 @@ void test_sock_iter_batch(void)
- 		do_test(SOCK_DGRAM, true);
- 		do_test(SOCK_DGRAM, false);
- 	}
-+	do_resume_tests();
- 	close_netns(nstoken);
- 
- done:
--- 
-2.43.0
+So right now there would indeed be the TLB flush IPIs, but also the
+text_poke() ones (sync_core() after patching text).
+
+These are the two NOHZ-breaking IPIs that show up on my HP box, and that I
+also got reports for from folks using NOHZ_FULL + CPU isolation in
+production, mostly on SPR "edge enhanced" type of systems.
+
+There's been some other sources of IPIs that have been fixed with an ad-hoc
+solution - disable the mechanism for NOHZ_FULL CPUs or do it differently
+such that an IPI isn't required, e.g.
+
+  https://lore.kernel.org/lkml/ZJtBrybavtb1x45V@tpad/
+
+While I don't expect the list to grow much, it's unfortunately not just the
+TLB flush IPIs.
 
 
