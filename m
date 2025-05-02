@@ -1,139 +1,146 @@
-Return-Path: <bpf+bounces-57260-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57261-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F066AA7946
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 20:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6088FAA794A
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 20:33:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 513C11C01A24
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 18:29:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20EB71BA1087
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 18:33:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77AA723FC41;
-	Fri,  2 May 2025 18:29:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 295151D63D3;
+	Fri,  2 May 2025 18:33:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CO6IWdf8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h9EYs+9H"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B663C15350B;
-	Fri,  2 May 2025 18:29:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 020C9376
+	for <bpf@vger.kernel.org>; Fri,  2 May 2025 18:33:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746210571; cv=none; b=oKgQPQQ2KdgiKUEJ0cs1L4nAHDcG1ZnHOO8W82rmE3v2X1ktN2yOwHLNi++piItLIesat89wNt7pxU0vCr0FCD1fpS58auy17mIzS6VUic4BPRCobjuOvl07XsDptUytYXsb5rX2vLqktLLCiJybhFuU45QvUHEL6Hf03TKcQdA=
+	t=1746210819; cv=none; b=iIzMRmetbXAc0KhWd1JyCec4MkY/48/O0I75POHKc+7Gg4Wfnuovo7ycolsxd0ZK8MIrs4mbbqoNaX9hRhjc17xHiAyb8EpB5m9h5jXuIO6a+tPTSVTThfv2EZ7ARVWdS8XIRBCenYGVHtElpaP63F9sdMBTK6fzNPogZ31q8fk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746210571; c=relaxed/simple;
-	bh=mQDY/AJR/89Z2jexEMxyjLo7VznybV3SxIwQ6cA0Cl0=;
+	s=arc-20240116; t=1746210819; c=relaxed/simple;
+	bh=xyM8CQozs8nj8XquxrsfRrkj4nT7HfioAGkRj55pPmk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=C6U36SatgYwMqCVOlRCwINpmAUrVtGpgbAJXOveoWj5qsYt466K5SnlTlfYwKeT0J3mROTMQNbCXp+my6ZENzofXxUPDAiLaXJ+fjZpjav9nZyusPq6BoAqdghmH4aP8LfR5DtOHHoby5LJURAvr8EJWmlrHuMGUfHr2mkxINz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CO6IWdf8; arc=none smtp.client-ip=209.85.221.49
+	 To:Cc:Content-Type; b=eJXi37q43xmwjQacPRYP4TLZOrOaegMm9s2Fol8d4chnfVunG8mAOue0J5iA2SJ4JBxB2SaZY0z1GwVBxiZNfTmczLZXZAFQ2f6R0UGzKSYZwzG7TWgNzkrJvwa0cAdy2Vm8DasyjqXRUlbVa9OEDSaFtL9DwfKwQvbMAri/ZUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h9EYs+9H; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-39ee5a5bb66so1379521f8f.3;
-        Fri, 02 May 2025 11:29:28 -0700 (PDT)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4394a823036so22332775e9.0
+        for <bpf@vger.kernel.org>; Fri, 02 May 2025 11:33:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746210567; x=1746815367; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1746210816; x=1746815616; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zFHm1tfv35vyjBSvb7AN3OxjMGjn0tT8+FpYF9gx+rc=;
-        b=CO6IWdf8gARLteDIxormqgTLFueeulguIjXR4CQ0CnGKiD/fodsI8DzFKJO5yt+rjQ
-         CI2YMD9YE1DPtK+/qoIHm6xNQLLIYZLI5zge/WAvIimlrX+k5wtlt3kLfUoOHyyMEL8+
-         qgL+0/oJhCBxxvFlzZSeMFpMVA9hpahmjjsoptIds7QiMncrrY3AQbgmVVvtHURwE/Fd
-         vW4Sgw1i1UdnD1TcPevyi/mOmlaRq8aWI3Qkbw7PQU7hd/h+3Lj/gzLMBOwygqwU4InR
-         Sv+4aSarK+jA/Oc7Aak7nf+Fg635+/OIAXhW4rPy2MSjwIaTuFbO+TvNb85JgKLbC0w+
-         9vEw==
+        bh=xyM8CQozs8nj8XquxrsfRrkj4nT7HfioAGkRj55pPmk=;
+        b=h9EYs+9H+hlrVp+YVU9w/OhgCbBbFzNRZejmykJkP7MDllMyxnVtd3Ihdhl5LJ9VF2
+         p6RJu373Mekr9HGvBlWIufxzeRTs4HJZDr4z/AzjvLeJf4Te360FsosrHFnL/7WQ5nyj
+         TwYJ/mf3H9SPPfA9RwOInDahSEOPtMgYgjYSXYAvJwntoI3yXGH2MHWDfR0VQi7hDJLc
+         o2nTyx8oJINJ/rGWnKTFJownb9Wa72ek4/IACFP7TOimjSk3rlo7wT7DiRsg2RA/PDFs
+         Gn2P/BYT5onJumSlEP8CsJYSWWOdOxDy79rep7ybI/7gXB/oyUQsJMfuW8CLBZglzJkD
+         AWfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746210567; x=1746815367;
+        d=1e100.net; s=20230601; t=1746210816; x=1746815616;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zFHm1tfv35vyjBSvb7AN3OxjMGjn0tT8+FpYF9gx+rc=;
-        b=P8kTxn6a1+/KuDszcw+XXlFHg954PBbHVdwUihsFdY9N2AXDD1nu2vQgerSLMXH6ge
-         xbhPVLeFAi0Qpmg7ETh3bE7g6Y5j1EZniUNoGO+nPK7HHd7WrKB08BNc1vZrvC4FGFgl
-         NtSapb0x0u6zR8ILA3CyNiGht188dGQgmYWo3rMipKMqBj3Fnp5oImXbVrG7kNodiETI
-         MHwyRcubz9GiqLwVItbFpWBRAqX0bXUpyuBFfsKsCrcOGpH9pGr54vLiTnEeupOodwUK
-         kJuSHsAN6L9E0fjrG7dEPlTorC33sK6kazhKgWHwn1mF0TTYhejh2stRKA3Gg8OdIz0/
-         U/dg==
-X-Forwarded-Encrypted: i=1; AJvYcCU185cVMm+M6y52mmCiJPHCqzbMIfCESXK71udifi+r2677VTRY/Fm288z8iIc5hWsQob0lOCHKjg==@vger.kernel.org, AJvYcCUm3w5zmKCm1yLB4YnwsWmU7lxCEAYKelbIORzwK6eJome8OwxnbWqtPim5jvy1rvHYylo=@vger.kernel.org, AJvYcCVBVXEusKS2CaoPUze5bSBE84uKXh6/NmBvDo2AaO5l2ZkMWARXbZCVVL24I9YihhzfYv7fqf44WaspSzpZ@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywttq/gCdx2McM95OUsmsh77RIdbvVNc5z8LZqBah9ZhmKwAc+F
-	e7wKiKr3myTLRoApEPS6iVr30Ce1bPC1+D0KxHOXloDaSPC1/8jz0X9ANGqiNVhQDrrH9yFgLKe
-	N/rJnccbch8veTN1uc+q/Ho8FIXg=
-X-Gm-Gg: ASbGnctuNh074oKK3JuPpKOGMHxq+BDacB63BYrCEiC3zk6JCz2OS/R04N4yeFAHQNg
-	9zL5JyNYup5saTh1ZU1OSo/US+6Of13q6Da8km6O8fCUO5esDLyTDlIcu3Z/o9r1h674vztp4DS
-	bphqKs4b6ybakHRTSBwge5+JWvCLjHu0IstbfpSA==
-X-Google-Smtp-Source: AGHT+IGZDVjNbQY0k7XiguUPy1qRwoEN4lzehDc7xAB6HtEldTcvHbiAVFR6uTiVw4aghdr0oalOFquu/9roPKdUkII=
-X-Received: by 2002:a5d:5984:0:b0:3a0:99e9:bcd7 with SMTP id
- ffacd0b85a97d-3a09cea72c1mr184420f8f.5.1746210566946; Fri, 02 May 2025
- 11:29:26 -0700 (PDT)
+        bh=xyM8CQozs8nj8XquxrsfRrkj4nT7HfioAGkRj55pPmk=;
+        b=kzsXNI0iO516SMdPJCmEGu6NSeKzFQfRyyMg5FwPbYfHoaF27nHpjsMU2TRb9TcDmD
+         OoWUe3uJQWDKQmxyIk2XEocPBqzJEfp53MaIsUdvOrcToj+/7k1kwVpWyeix4+lCWEU4
+         +6vaNSPLU9Upucj7iuCT6vXMOZmdBQEC94qnACtZyDxWM/ZBT0a5NtXS/PTQwUKACm3w
+         eY/1CMxEryd0YDIB4yjBA1fIUZ5ALpbGNQGsAgIdg3aqGIkGl/u2UtT2PLzcmC6C73pz
+         RPutRoi9vqzzQL+r9oyhNG8Km8HMdgdMtCA6Y5Cwgr7ZAwiqewDpnpHmV0bQLKqoqhB4
+         Fbug==
+X-Gm-Message-State: AOJu0YwumPez41fk8pNXk2erfLa/Ah27uz5qclK4zIraKPwGFO5wYBk4
+	FMSIgBUansE9SEPUI7ZksB21Sd9a7vEzO+fjWCNtDJKbfx/boLM7bHVkA9/qBwHFgRji9iJtllD
+	W+BuiQ27TEMshLIxXbH8XOOXpWCs=
+X-Gm-Gg: ASbGncu9+QGArxRBrcmRe8l66hnAZ2Z8F6a2vD//0VLKBUeNyHYTOvV2uZClpcan+SY
+	0E8+T+V+XJxaLejSCJFLUtnKUO0lhcJlNOu3xcXgXl2WgZzSYYYlFDwYuAJ7ZlB36P9cSTDfXi1
+	LdwJgMnLcYfTHvdWhJaupSXe6fb4dwvbzkiD59Pw==
+X-Google-Smtp-Source: AGHT+IH6uwxaWpb7d5jiphQg9nVi9tOvfaokSAw0/eiLPTUS73cmOA30Ax77K+59gI4wF4zq8K43SUpTt5T+hNpDGQk=
+X-Received: by 2002:a05:600c:1c16:b0:440:6852:5b31 with SMTP id
+ 5b1f17b1804b1-441c1ce8c8emr347185e9.10.1746210815917; Fri, 02 May 2025
+ 11:33:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250502001742.3087558-1-shakeel.butt@linux.dev> <20250502001742.3087558-4-shakeel.butt@linux.dev>
-In-Reply-To: <20250502001742.3087558-4-shakeel.butt@linux.dev>
+References: <PH7PR11MB652381F4B833B4B5CE2AEABAA9832@PH7PR11MB6523.namprd11.prod.outlook.com>
+ <CAADnVQJ0aRud=VeQ7dWhFqEqVQQCozKqtP9mHwuHOj5ua+5J4A@mail.gmail.com> <b40406d4b9a3bcc826d68a35af05112fb3bef8c9.camel@intel.com>
+In-Reply-To: <b40406d4b9a3bcc826d68a35af05112fb3bef8c9.camel@intel.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 2 May 2025 11:29:16 -0700
-X-Gm-Features: ATxdqUHqug0Pj9O_29hq5eWY4vn7NLIM1dbUiX1mC592l5Jn0vudNn1sTCMtTQE
-Message-ID: <CAADnVQJ-XEEwVppk-qY2mmGB4R18_nqH-wdv5nuJf2LST5=Aaw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] memcg: no irq disable for memcg stock lock
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>, linux-mm <linux-mm@kvack.org>, 
-	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, Meta kernel team <kernel-team@meta.com>, 
-	Vlastimil Babka <vbabka@suse.cz>
+Date: Fri, 2 May 2025 11:33:24 -0700
+X-Gm-Features: ATxdqUEmxqFRoSr2d4zvkdrlokkzPzl9tb_tBFTzq_QTNi2buXXDLs4FWikZtVA
+Message-ID: <CAADnVQ+YsR=dH4VksVxBeKyVSXDp-Ce8qa9Z6u_79sigCpcLHQ@mail.gmail.com>
+Subject: Re: Looking for feedback on kfuncs for dentry_path_raw, get_dentry_from_kiocb
+To: "Preble, Adam C" <adam.c.preble@intel.com>
+Cc: "bpf@vger.kernel.org" <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 1, 2025 at 5:18=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.dev=
-> wrote:
+On Thu, May 1, 2025 at 7:09=E2=80=AFPM Preble, Adam C <adam.c.preble@intel.=
+com> wrote:
 >
-> There is no need to disable irqs to use memcg per-cpu stock, so let's
-> just not do that. One consequence of this change is if the kernel while
-> in task context has the memcg stock lock and that cpu got interrupted.
-> The memcg charges on that cpu in the irq context will take the slow path
-> of memcg charging. However that should be super rare and should be fine
-> in general.
+> On Wed, 2025-04-30 at 16:00 -0700, Alexei Starovoitov wrote:
+> > > +// The dentry argument needs to be ignored because the verifier
+> > > can't verify
+> > > +// the integrity of the pointer coming in from kprobes.
+> >
+> > Exactly.
+> > It's probably obvious that we're not going to allow
+> > unsafe kfuncs that can easily crash the kernel.
 >
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  mm/memcontrol.c | 17 +++++++----------
->  1 file changed, 7 insertions(+), 10 deletions(-)
+> Yes--I wanted this confirmation. I was kicking myself for leaving that
+> comment in the patch, but I'm glad it turned out to be useful.
 >
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index cd81c70d144b..f8b9c7aa6771 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -1858,7 +1858,6 @@ static bool consume_stock(struct mem_cgroup *memcg,=
- unsigned int nr_pages,
->  {
->         struct memcg_stock_pcp *stock;
->         uint8_t stock_pages;
-> -       unsigned long flags;
->         bool ret =3D false;
->         int i;
+> >
+> > > +__bpf_kfunc char *bpf_dentry_path_raw(struct dentry *dentry__ign,
+> >
+> > We can consider something like this (without __ign, of course),
+> > but if you insist on using kprobes we cannot help.
 >
-> @@ -1866,8 +1865,8 @@ static bool consume_stock(struct mem_cgroup *memcg,=
- unsigned int nr_pages,
->                 return ret;
+> I don't know how I could call dentry_path_raw without suppressing
+> checks on the pointer. My previous experience with any kind of managed
+> runtime stuff would imply wrapping the dentry pointer in a safe
+> container, but doing that from a pointer coming straight from a kprobe
+> just kicks the can down to wherever it gets wrapped.
 >
->         if (gfpflags_allow_spinning(gfp_mask))
-> -               local_lock_irqsave(&memcg_stock.lock, flags);
-> -       else if (!local_trylock_irqsave(&memcg_stock.lock, flags))
-> +               local_lock(&memcg_stock.lock);
-> +       else if (!local_trylock(&memcg_stock.lock))
->                 return ret;
+> I wouldn't say I am insisting on using kprobes, but it's all I could
+> figure out to get all the events for the file/directory
+> create/open/modify/delete events that I wanted. I was surprised there
+> already wasn't some kind of special event type for that already. Is
+> there? Should there be?
 
-I don't think it works.
-When there is a normal irq and something doing regular GFP_NOWAIT
-allocation gfpflags_allow_spinning() will be true and
-local_lock() will reenter and complain that lock->acquired is
-already set... but only with lockdep on.
+At the last lsfmm there was an agreement to carefully add
+few vfs tracepoints.
+
+> I have this future science project to try to extract PCI traffic, so if
+> there needs to be a different type of trace for file system accesses,
+> maybe that makes for a warmup.
+>
+> > You can walk dentry with probe_read-s instead,
+> > but don't expect correct paths all the time.
+>
+> Let me make sure I understand then. Is the idea to basically safely
+> derefence the pointer by using the probe_read functions to acquire the
+> memory? So presumably I'd be writing an equivalent of dentry_path_raw
+> in my bpf program using those copy operations. I'm guessing it's a lot
+> like using copy_from_user in ioctls on any pointers that are coming in.
+>
+> I can give this a shot, but I don't think I was able to get any paths
+> on the dentry pointers until I first called dget() on the dentry. I'm
+> not actually a filesystem guy so I don't know if this is actually
+> required.
+
+Sounds like it's best effort tracing, so the best is to use
+bpf_probe_read_kernel() in bpf prog directly that follows the same
+logic as dentry_path_raw() but with probe reads.
 
