@@ -1,89 +1,50 @@
-Return-Path: <bpf+bounces-57286-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57287-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C685AA7B37
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 23:00:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B54C9AA7B4E
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 23:20:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C9651892B02
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 21:01:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C90294639F0
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 21:20:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F775202F7B;
-	Fri,  2 May 2025 21:00:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05B19202998;
+	Fri,  2 May 2025 21:20:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ExgqAER2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lts24kuA"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90315376;
-	Fri,  2 May 2025 21:00:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C40029408;
+	Fri,  2 May 2025 21:19:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746219647; cv=none; b=phzoEtbcGEGn3mUDUBB7FwD/KfaAWIwxUUTuIKSBWSpeiufcXldLRtVGCIur6591Hm9az0EGrbVAAXAo1besStUOWwAQwktSGpkEJbDxHBCOcX/ACqL45TGQ2W+T8LF56OcdBKha0BKJD32TvmjRkCNaIksPQkfR7KP/NkvjiCs=
+	t=1746220799; cv=none; b=DjJl/PADZKIT8WmF71E7HhcoSKbm3cCVUhalVaOSoahdFBlMeaPI19iFs2Su9NTEzgRjZZMiOig46yu6Ld94j/N8WDxGSBXDHsa1nWrXuareDPAZtO6tiGknFa50GoVm3uF04uiZp4VQZ/DqogPUegJD+3agxkiiFq0eTHaq1E4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746219647; c=relaxed/simple;
-	bh=QV74l1IOGVbOqoSkpgRlO6NEjTmym0E/wjU2qkQ32fw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KO0Zaakx+DGRRTjtd+4TylIF+aoWeOynM2ZrvbgROptKx2KbvkZMV5B6R0SDbL1L63EJuIGE5f+RbFgh1B4t3B8Fw4yNcCuaudHf3EIFNmTCl6YwQha9XUu3tsNJnZmFecTN8i4ECzrpt4KRS1/cLZQ0dzWbsMk5XzYY3pkIpCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ExgqAER2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DCBAC4CEE4;
-	Fri,  2 May 2025 21:00:40 +0000 (UTC)
+	s=arc-20240116; t=1746220799; c=relaxed/simple;
+	bh=vyEZ6nMZaoKb7M5ISRJVJUgjz/XqqOwtQKjmWCFXSSo=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=CJ/t+pyv0EIiAt/69qvUwr1PRxDeIeZMFfPzkJhdHNkNKRLlUHYjhobx14H0ruGYdM/PBXeU74chPQBAwJBQ+lF6Ttp3qfDTDXqSvY2pE0tXyOAMe5s9V3gt3HHJSc5wQcH+I0m4Loplohhl54iK17a0sgqsnqaPXSmDCR/KM9Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lts24kuA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59C80C4CEE4;
+	Fri,  2 May 2025 21:19:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746219647;
-	bh=QV74l1IOGVbOqoSkpgRlO6NEjTmym0E/wjU2qkQ32fw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ExgqAER2CsxrCnnAMm6jRg6gINgp9LGlOtbpHezQgKA+SlqChKBhWB5JTT3F8BKcz
-	 WyBu8J75GKcBiBoM493HVF8pnLHXaYp6WJzC0Sbxf8kv72/jKkJsmWg37D3/E6DH9x
-	 AVMJ/pp3eIG8LdZs9D/W1CiAOFAC3NhB8+3+QS2zaYnHn+HpmNaNfYeALRPcqkW/8K
-	 dVgYMpGiSWtxAIENr8F9WMYO1YCTIdNL3WBIxgpMQPFCzktf4xO/PaZtyphqAiNU9n
-	 3OzuLYfo5zx6WMa/dh7nLZo3pf9Love+B/Ys5wJLPmSUhMMraXMrOReDrSZuvwz5Li
-	 L/yI/DomKf2lw==
-From: KP Singh <kpsingh@kernel.org>
-To: bboscaccy@linux.microsoft.com
-Cc: James.Bottomley@hansenpartnership.com,
-	bpf@vger.kernel.org,
-	code@tyhicks.com,
-	corbet@lwn.net,
-	davem@davemloft.net,
-	dhowells@redhat.com,
-	gnoack@google.com,
-	herbert@gondor.apana.org.au,
-	jarkko@kernel.org,
-	jmorris@namei.org,
-	jstancek@redhat.com,
-	justinstitt@google.com,
-	keyrings@vger.kernel.org,
-	linux-crypto@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kbuild@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	llvm@lists.linux.dev,
-	masahiroy@kernel.org,
-	mic@digikod.net,
-	morbo@google.com,
-	nathan@kernel.org,
-	neal@gompa.dev,
-	nick.desaulniers+lkml@gmail.com,
-	nicolas@fjasle.eu,
-	nkapron@google.com,
-	paul@paul-moore.com,
-	roberto.sassu@huawei.com,
-	serge@hallyn.com,
-	shuah@kernel.org,
-	teknoraver@meta.com,
-	xiyou.wangcong@gmail.com,
-	KP Singh <kpsingh@kernel.org>
-Subject: Re: [PATCH v3 0/4] Introducing Hornet LSM
-Date: Fri,  2 May 2025 23:00:34 +0200
-Message-ID: <20250502210034.284051-1-kpsingh@kernel.org>
-X-Mailer: git-send-email 2.49.0.906.g1f30a19c02-goog
-In-Reply-To: <20250502184421.1424368-1-bboscaccy@linux.microsoft.com>
-References: <20250502184421.1424368-1-bboscaccy@linux.microsoft.com>
+	s=k20201202; t=1746220799;
+	bh=vyEZ6nMZaoKb7M5ISRJVJUgjz/XqqOwtQKjmWCFXSSo=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=lts24kuAvDKGht6ZhvzQARcSbpLCvKVsNLH5cH7k8EHPEcUW55FouyU/9v2DyJ2Pq
+	 D6jSjXq3Tc13OdkYkdWdG0rW6j7jbzdcvGJ5/VukN95hAxLO6/Ya3Eor0KHQ/zZtfQ
+	 nCGn38AbpLSCBYaW4Fw4LArZItEoxbqnL+8/5zTKtX8NsbehJ3U67h29OK0wbIUXZP
+	 nbqvXsUunV5EIU4tKuU2i6nUDkVJHXWCOgoyucZGzj78KfrycRDRdOLUGgFLK4ADWB
+	 je5UlCdlg3BBCnU0CM9z1+g8n+COPg0S8G2QIC/CmQ3s5zsJ0uIerUpsh3nYCG6eQN
+	 DFw6mPYUlIZ3A==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AE471380DBE9;
+	Fri,  2 May 2025 21:20:39 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -91,61 +52,60 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v7 bpf-next 0/7] bpf: udp: Exactly-once socket iteration
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <174622083850.3731637.6479069584548815355.git-patchwork-notify@kernel.org>
+Date: Fri, 02 May 2025 21:20:38 +0000
+References: <20250502161528.264630-1-jordan@jrife.io>
+In-Reply-To: <20250502161528.264630-1-jordan@jrife.io>
+To: Jordan Rife <jordan@jrife.io>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, aditi.ghag@isovalent.com,
+ daniel@iogearbox.net, martin.lau@linux.dev, willemdebruijn.kernel@gmail.com,
+ kuniyu@amazon.com, alexei.starovoitov@gmail.com
 
-> This patch series introduces the Hornet LSM. The goal of Hornet is to provide
-> a signature verification mechanism for eBPF programs.
->
+Hello:
 
-[...]
+This series was applied to bpf/bpf-next.git (net)
+by Martin KaFai Lau <martin.lau@kernel.org>:
 
->
-> References: [1]
-> https://lore.kernel.org/bpf/20220209054315.73833-1-alexei.starovoitov@gmail.com/
-> [2]
-> https://lore.kernel.org/bpf/CAADnVQ+wPK1KKZhCgb-Nnf0Xfjk8M1UpX5fnXC=cBzdEYbv_kg@mail.gmail.com/
->
-> Change list: - v2 -> v3 - Remove any and all usage of proprietary bpf APIs
+On Fri,  2 May 2025 09:15:19 -0700 you wrote:
+> Both UDP and TCP socket iterators use iter->offset to track progress
+> through a bucket, which is a measure of the number of matching sockets
+> from the current bucket that have been seen or processed by the
+> iterator. On subsequent iterations, if the current bucket has
+> unprocessed items, we skip at least iter->offset matching items in the
+> bucket before adding any remaining items to the next batch. However,
+> iter->offset isn't always an accurate measure of "things already seen"
+> when the underlying bucket changes between reads which can lead to
+> repeated or skipped sockets. Instead, this series remembers the cookies
+> of the sockets we haven't seen yet in the current bucket and resumes
+> from the first cookie in that list that we can find on the next
+> iteration. This series focuses on UDP socket iterators, but a later
+> series will apply a similar approach to TCP socket iterators.
+> 
+> [...]
 
-BPF APIs are not proprietary, but you cannot implement BPF program signing
-for BPF users without aligning with the BPF maintainers and the community.
-Signed programs are a UAPI and a key part of how developers experience BPF
-and this is not how we would like signing to be experienced by BPF users.
+Here is the summary with links:
+  - [v7,bpf-next,1/7] bpf: udp: Make mem flags configurable through bpf_iter_udp_realloc_batch
+    (no matching commit)
+  - [v7,bpf-next,2/7] bpf: udp: Make sure iter->batch always contains a full bucket snapshot
+    https://git.kernel.org/bpf/bpf-next/c/66d454e99d71
+  - [v7,bpf-next,3/7] bpf: udp: Get rid of st_bucket_done
+    https://git.kernel.org/bpf/bpf-next/c/3fae8959cda5
+  - [v7,bpf-next,4/7] bpf: udp: Use bpf_udp_iter_batch_item for bpf_udp_iter_state batch items
+    (no matching commit)
+  - [v7,bpf-next,5/7] bpf: udp: Avoid socket skips and repeats during iteration
+    (no matching commit)
+  - [v7,bpf-next,6/7] selftests/bpf: Return socket cookies from sock_iter_batch progs
+    https://git.kernel.org/bpf/bpf-next/c/4a0614e18c2d
+  - [v7,bpf-next,7/7] selftests/bpf: Add tests for bucket resume logic in UDP socket iterators
+    https://git.kernel.org/bpf/bpf-next/c/c58dcc1dbe30
 
-Some more feedback (which should be pretty obvious) but explicitly:
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-* Hacks like if (current->pid == 1) return 0; also break your threat model
-  about root being untrusted. This is all the more reason I think signing
-  should be integrated into other LSMs, only a proper LSM policy can breathe
-  life into the root / kernel boundary. 
-
-* You also did not take the feedback into account:
-
-   new = map->ops->map_lookup_elem(map, &key);
-
-  This is not okay without having the BPF maintainers aligned, the same way as 
-
-  https://patchwork.kernel.org/project/netdevbpf/patch/20240629084331.3807368-4-kpsingh@kernel.org/#25928981
-
-  was not okay. Let's not have double standards.
-
-* And you copy pasted tools/testing/selftests/hornet/frozen_skel.h which
-  is what you expect users to do? Not acceptable either.
-
-So for this approach, it's a:
-
-Nacked-by: KP Singh <kpsingh@kernel.org>
-
-Now if you really care about the use-case and want to work with the maintainers
-and implement signing for the community, here's how we think it should be done:
-
-* The core signing logic and the tooling stays in BPF, something that the users
-  are already using. No new tooling.
-* The policy decision on the effect of signing can be built into various
-  existing LSMs. I don't think we need a new LSM for it.
-* A simple UAPI (emphasis on UAPI!) change to union bpf_attr in uapi/bpf.h in
-  the BPF_PROG_LOAD command:
-
-__aligned_u64 signature; 
-__u32 signature_size;
 
 
