@@ -1,95 +1,106 @@
-Return-Path: <bpf+bounces-57237-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57238-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3353EAA7651
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 17:43:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D708AA76BC
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 18:09:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A4B74C780B
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 15:43:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CCC877B0858
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 16:07:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A6FE2580C6;
-	Fri,  2 May 2025 15:43:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E44425D526;
+	Fri,  2 May 2025 16:08:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MkmjeN3K"
+	dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b="piUpZvaz"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A116323B0
-	for <bpf@vger.kernel.org>; Fri,  2 May 2025 15:43:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D78425D53A
+	for <bpf@vger.kernel.org>; Fri,  2 May 2025 16:08:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746200609; cv=none; b=LB0dlofKdPLene3b4bMeYnmcOA5GRX5E9cv16ST1vpuu9Vq7mJgC8LbT/BwqAGiRVxO7psLUfZDGEwukarnwayWcampHjK2nzM7tEbbYXTD/GrnBQ5zTetjYA5cMl54rAfByg16g7ALHmMyzgu4zQWN8eIlqGuBNenK+GfdGjGk=
+	t=1746202119; cv=none; b=Ct25ONChp0lK4+uCeja4tuFLISdPgjZY4gqdanaXF7mj0MzREb9IT7kAnbq1i13Rpk2gXGhszZfmApr9L4M1XV5qzvEUyP82GFWUBj29RYZyyqQkfzj5ES0lY/r0Eb9ixBKcaLLpshvxx8QuWnYNf3Ikd3y/Q+wS42MTYTofsb4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746200609; c=relaxed/simple;
-	bh=PaItWjYHU68Rvu/xvxI3f6ix8BVJ19mHeHVfLkaSsdA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=a22L+IBPCAQiNkuyBsejhbN59MraKtvMGmvSewS3f7r9iC49WYFEdq4dK1FD4nCTnSoW4J0XzIFmgAqImQueEQQ73osmfWp/UbpDn0PcDuo1FfMmJjX40jnSH3MLkMeXyjSgYfkauaCw4iPLy5rX3QZK/ZeqLuDJuB4m/tkPuyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MkmjeN3K; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43187C4CEE4;
-	Fri,  2 May 2025 15:43:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746200609;
-	bh=PaItWjYHU68Rvu/xvxI3f6ix8BVJ19mHeHVfLkaSsdA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=MkmjeN3KNBGp/nvpHQT+G00nR7HO3/PS2cau7Gwc82eEO4oy2yV/Z6kdOWKa1GZWj
-	 LOGK6QrNozcOBI3tFRA4HI9Jkhksi2kM/EPsVYMrOmHyM4MfGkP2g0CYvXfQMKq1qE
-	 72v1+q8VABRsP7Ww0rMXQb6GjeBJsoxnouaW4k1bgqIAGGPfIJ+V3/bjYLzwpT9qhH
-	 tMeF5hC2iuK9EC51ttERbSNEqfNRT5k5ApY7rupFlEVCqcQru5kANRPlnIqh/liwey
-	 O3L3Pau0WBPbhIc0nLBkCQiAsQi0OgnqXz10ti7ElCFGyjK2+TgUWVcrJ9ypWsqat7
-	 2UKLymflx5MuQ==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Peilin Ye <yepeilin@google.com>, bpf@vger.kernel.org
-Cc: Peilin Ye <yepeilin@google.com>, linux-riscv@lists.infradead.org, Andrea
- Parri <parri.andrea@gmail.com>, Pu Lehui <pulehui@huawei.com>, Puranjay
- Mohan <puranjay@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Luke Nelson <luke.r.nels@gmail.com>, Xi Wang
- <xi.wang@gmail.com>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer
- Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Alexandre
- Ghiti <alex@ghiti.fr>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan
- <shuah@kernel.org>, Josh Don <joshdon@google.com>, Barret Rhoden
- <brho@google.com>, Neel Natu <neelnatu@google.com>, Benjamin Segall
- <bsegall@google.com>
-Subject: Re: [PATCH bpf-next 0/8] bpf, riscv64: Support load-acquire and
- store-release instructions
-In-Reply-To: <cover.1745970908.git.yepeilin@google.com>
-References: <cover.1745970908.git.yepeilin@google.com>
-Date: Fri, 02 May 2025 17:43:25 +0200
-Message-ID: <87ldrfm31e.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1746202119; c=relaxed/simple;
+	bh=qFW90J9T8RJ+7GYrvlnNFaoJarkTqvcieznVTo0kQ7w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HUNPuFcOfa27twrJBkMGNVcBA2edgSqzopPF33ubh3EfFJ5Kr6FrJgqZdGWUeK+zug4ZL89tO+LORznjJlPGVngf7VZcOMmiacyabXq66kh/dkTVrhu23780KqV8WriilYa/+Ktfq/UvTZzFuXV9EDQSQfV5VSmnwqAp+GdqYdg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io; spf=none smtp.mailfrom=jrife.io; dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b=piUpZvaz; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=jrife.io
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-224104a9230so3660475ad.1
+        for <bpf@vger.kernel.org>; Fri, 02 May 2025 09:08:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jrife-io.20230601.gappssmtp.com; s=20230601; t=1746202116; x=1746806916; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Gj3NocPP0YximFiD8TQzgbDDNI2dofYflmIdPP6lA+Q=;
+        b=piUpZvazM6bIO/u4AQnv+Oir0bi7zRpTo4vbWpksRqYNKyuDw9llfKA1DoWtTtR/wd
+         Cp/8+JJpPSMd+L+IJ2ip7fvgjZVJG2s24jHjw+Dgh52kKPyDN6IUdbvD5fxMMyxWDYzK
+         XsvInhh2bkDWdAFdGB7HwUSg6bbbmx7RLATPrc20yU79W8rilQ2Dp85C1dMu90nEiKHZ
+         uVSh8SS1Kn9Ol9s9s7VzeDVajzvPIuP5GLbamX6cggzi/3koGsnnMICdu5QKxSaPsWIa
+         +iky5jafM+m+aYTv8Q78ZqZjwAwzvPpDTI64wLNzrRe/MsbIQRO4a39+QLQzfPQMtlBA
+         gbyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746202116; x=1746806916;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Gj3NocPP0YximFiD8TQzgbDDNI2dofYflmIdPP6lA+Q=;
+        b=NsnI5D3NUtMI8gS8TwYffR93Le2Ce37MHKiRYR8SAEDuGikQ7pQh0ANpB4jJRvama/
+         mc3+NhFdUnryTWIpxzF7LoVmPEh/oflgRP+52xg34b0rlBYZN5z0Dqxh14Kng4g4TqFf
+         ZudlDXZWpIMTZc05HIBAAlQZjIlfyy3telDRBkFLrN81+eEtx19m/xihPf06ILsUL6Ln
+         FHUcENH31O6IbaAR2uEQs93baKwVqnWZOIldVvu/Tt9Efm3rlHiqq0cgW/VlKS6ZDDHz
+         ryC0giUBfItkoK93vPQ9WJdmmDdEbOMVw17X8sxgcL/klBCf5gFk0L1PgT/4AJ9Lwg9a
+         lBWA==
+X-Forwarded-Encrypted: i=1; AJvYcCVpUUoriF+rjwbyks0uY32M5z7obJjlPSrt3Hj3Qf3QIbQSGeUFTIVMeLm5KpDJD3nWPWE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzbYACJCBXBO5wvsmoPLQYDqyR4qWkP4czSknEJESr+Be02JYmH
+	KoydvgD5vMPGPQAOtKrcW7KkJiEQzO0CLhLRuogv9NzmUmHQuNqsi9hAOWKLSk8=
+X-Gm-Gg: ASbGncuIdPD0+DPrjRiYWSsfxOcC/mDooIsxWZPZcouqeoYkxQyqCq8IE79N1Q7yacg
+	AhPtOnfW0aMNej0fk4BbJ1DDBXXmV9Ctn15WAG5KaN79yvMW/nSqUV33KsnPocqxx2+sdWalqGB
+	osA40jmpRkcPZylhZNahQkhaWnjjpmD8NqAoOi1gOOeEbuN82X9NKj3gEjr7biSdLUaAjNfgfGd
+	NCfUuZ2/lrKwWtVAqw8PF/KIuYFCngWo8gm/X0Iy2s78OKIiMdkGXWXxwOXA9B6Cn4GjqecTKEa
+	a4ynQKd/F9MZtVMifOONGUrs1pI=
+X-Google-Smtp-Source: AGHT+IEx2hIRACQD4vGbjeB7Sd8QKVmVcIAMoL1DlBjtzG/ltHk7Rttj9zTdUNlhvywKnKU5ZyPKYQ==
+X-Received: by 2002:a17:903:2343:b0:224:10b0:4ee5 with SMTP id d9443c01a7336-22e10236f31mr21466155ad.0.1746202116504;
+        Fri, 02 May 2025 09:08:36 -0700 (PDT)
+Received: from t14 ([2001:5a8:4528:b100:7676:294c:90a5:2828])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22e151e98desm9439475ad.55.2025.05.02.09.08.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 May 2025 09:08:36 -0700 (PDT)
+Date: Fri, 2 May 2025 09:08:32 -0700
+From: Jordan Rife <jordan@jrife.io>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Aditi Ghag <aditi.ghag@isovalent.com>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+	Kuniyuki Iwashima <kuniyu@amazon.com>, Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+	netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v6 bpf-next 4/7] bpf: udp: Use bpf_udp_iter_batch_item
+ for bpf_udp_iter_state batch items
+Message-ID: <a4iluxons4k536rz3ynmlpuaqkjpyi2gt2acm4o7bcns43q64j@f5qmwmg3x5bf>
+References: <20250428180036.369192-1-jordan@jrife.io>
+ <20250428180036.369192-5-jordan@jrife.io>
+ <2ccb3470-0218-4bca-af17-4f9bd1e758a3@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2ccb3470-0218-4bca-af17-4f9bd1e758a3@linux.dev>
 
-Andrea/Peilin!
+> A nit. just noticed this.
+> 
+> Since it needs a respin, rename the pointer from "sock" to "sk". It should
+> be more consistent with most other places on the "struct socket *sock" /
+> "struct sock *sk" naming.
 
-Peilin Ye <yepeilin@google.com> writes:
+Sure, will do.
 
-> Hi all!
->
-> Patchset [1] introduced BPF load-acquire (BPF_LOAD_ACQ) and
-> store-release (BPF_STORE_REL) instructions, and added x86-64 and arm64
-> JIT compiler support.  As a follow-up, this patchset supports
-> load-acquire and store-release instructions for the riscv64 JIT
-> compiler, and introduces some related selftests/ changes.
-
-Thanks a bunch for working on this!
-
-For the series:
-Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
-Tested-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com> # QEMU/RVA23
-
+Jordan
 
