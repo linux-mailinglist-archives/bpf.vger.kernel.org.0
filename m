@@ -1,120 +1,139 @@
-Return-Path: <bpf+bounces-57259-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57260-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EB69AA7921
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 20:10:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F066AA7946
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 20:29:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F6681C047BD
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 18:10:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 513C11C01A24
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 18:29:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 938D8267393;
-	Fri,  2 May 2025 18:09:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77AA723FC41;
+	Fri,  2 May 2025 18:29:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DLmnvIl+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CO6IWdf8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76F6F42A87
-	for <bpf@vger.kernel.org>; Fri,  2 May 2025 18:09:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B663C15350B;
+	Fri,  2 May 2025 18:29:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746209395; cv=none; b=VmQam/8motYUSylLCpiPy72nqsQW++PjdrS27PzaNKNoG2HTtHC+m6mBYSVEHnE35dZ8wdjOkRzBU8UAEpfoWPHbh2E/ZtkBwFot9Hr60Ox9vmYoMecrwXLrMfpFzQgFc13VHyWeGrxt7k+BDp6nXqEjcoN1etiXcaLkvGYVGq0=
+	t=1746210571; cv=none; b=oKgQPQQ2KdgiKUEJ0cs1L4nAHDcG1ZnHOO8W82rmE3v2X1ktN2yOwHLNi++piItLIesat89wNt7pxU0vCr0FCD1fpS58auy17mIzS6VUic4BPRCobjuOvl07XsDptUytYXsb5rX2vLqktLLCiJybhFuU45QvUHEL6Hf03TKcQdA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746209395; c=relaxed/simple;
-	bh=rcCrLN/kccrQypKJkRdAp4NIqaNnzfTtnN/k8NiaJCU=;
+	s=arc-20240116; t=1746210571; c=relaxed/simple;
+	bh=mQDY/AJR/89Z2jexEMxyjLo7VznybV3SxIwQ6cA0Cl0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qc0JMI1hB4nD7DaXzfwf+NqfnYZQ5iJ3Uz8Lj6XwBxqunRa2/ARK6VBTYQVLm/9latpDIXPofAkSsjvVyEa2r7+EmqFEjqeIq/v0LJSPguySZJO57Rmucfz0hjM8wITU0GyRtkaY97Hbt/AxcNIyXQtznORczxhwWP3KYxrfcu0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DLmnvIl+; arc=none smtp.client-ip=209.85.221.41
+	 To:Cc:Content-Type; b=C6U36SatgYwMqCVOlRCwINpmAUrVtGpgbAJXOveoWj5qsYt466K5SnlTlfYwKeT0J3mROTMQNbCXp+my6ZENzofXxUPDAiLaXJ+fjZpjav9nZyusPq6BoAqdghmH4aP8LfR5DtOHHoby5LJURAvr8EJWmlrHuMGUfHr2mkxINz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CO6IWdf8; arc=none smtp.client-ip=209.85.221.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-39c13fa05ebso1299708f8f.0
-        for <bpf@vger.kernel.org>; Fri, 02 May 2025 11:09:53 -0700 (PDT)
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-39ee5a5bb66so1379521f8f.3;
+        Fri, 02 May 2025 11:29:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746209392; x=1746814192; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1746210567; x=1746815367; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rcCrLN/kccrQypKJkRdAp4NIqaNnzfTtnN/k8NiaJCU=;
-        b=DLmnvIl+LICAIfoeTPj1/Ll6x/nQytRu8CcRsJRyhDviNHUGPl3e17YPMVbCkyS432
-         OnYd6H7PapoajeN6l3t2k/zyDcOL2zaAnYW0imF4WOi5Q/4OqXEseNXsahVVziHqKUd4
-         XVcVzVLqMRKAEdYypOx+mZ5hiytkzYTmy+ouKetZ97zgrA5bZ0dSORkfVzqOm2oau3gY
-         LR7sBQ+j2hqABb++IyVy24lhSbhpchtpNnHpJSQh23SXij3ievkNDHpl5nDHXsYcBnuz
-         WbJp7rhtNyrP3ta3StZ1yGjuGxuufQHuTT9rPeEn7PCev+e+c1xrvsBoG3NYO2XiG7uX
-         BZ5g==
+        bh=zFHm1tfv35vyjBSvb7AN3OxjMGjn0tT8+FpYF9gx+rc=;
+        b=CO6IWdf8gARLteDIxormqgTLFueeulguIjXR4CQ0CnGKiD/fodsI8DzFKJO5yt+rjQ
+         CI2YMD9YE1DPtK+/qoIHm6xNQLLIYZLI5zge/WAvIimlrX+k5wtlt3kLfUoOHyyMEL8+
+         qgL+0/oJhCBxxvFlzZSeMFpMVA9hpahmjjsoptIds7QiMncrrY3AQbgmVVvtHURwE/Fd
+         vW4Sgw1i1UdnD1TcPevyi/mOmlaRq8aWI3Qkbw7PQU7hd/h+3Lj/gzLMBOwygqwU4InR
+         Sv+4aSarK+jA/Oc7Aak7nf+Fg635+/OIAXhW4rPy2MSjwIaTuFbO+TvNb85JgKLbC0w+
+         9vEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746209392; x=1746814192;
+        d=1e100.net; s=20230601; t=1746210567; x=1746815367;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rcCrLN/kccrQypKJkRdAp4NIqaNnzfTtnN/k8NiaJCU=;
-        b=jfoqpEqODkcnm/Cuz8/r8lsfWLieoOnQ4kKeWKb7aZ25UGYtg6mV3DFxXUadiA0OKp
-         4nkcenfJxEj4ki4jzxFhEuq3EnTglcwooFK6Zh/AWsEXl7wsNUe2bzi2fjglwjj6iy4l
-         BCrq5AStCEn+InQqVVlLWW3zlbP+GFRUf6nzNfXRZA225ABpLgqNpZ4pkeuU1aq4nO8D
-         QOwljlI+MiWEcNmnmpBF4ILm510+HpmvT8t+x/hjNlgTvPkkjp479lJ6GKkg19fTMXcB
-         AbZGPYTgIEn8SZNfdoZLpnsgHRDd9ZhDIdDKwG6ZtCkYnoqCPTND3KOhd6egzFN0ZYST
-         XsEw==
-X-Forwarded-Encrypted: i=1; AJvYcCUXNzioEE1LvVS1B6AsCzJLdGLqYkRqMX8VT5JiOhnmEirssBW7GRlmG8LWOPET47ntKpE=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw7uHOSW0ydjoZR/zxlfXBC6zmeSxe5awaqeCHe9GHfBlyaSBFx
-	qMhUT8oD//2pNWVWNXkB+kyv+11yMfgQe2gcSwmOP8RQZEGh++z7A6FFgv/BrsvyowESGAqyXuV
-	2bhC35lI+igiUm/r980nXCPEI8wA=
-X-Gm-Gg: ASbGncuofWgYUw/wxslowDCfu6NmgjDvAzVMho/4BCUjgyNmIJfD19rugyOXUtOuHlA
-	lWmohO6sdv2e3/v5dZEQxuI3SS0NFLpmKI00iw01uC3yTpb7n8ZuTVUYSkYK+GvX+JFdpNij29t
-	Qleb9smOjOT3yeAEWYcFnLWLI6ST4WHI/TBpEvjA==
-X-Google-Smtp-Source: AGHT+IERZpTPi48vK1COoBZDo40VpESY8BnwHPo9gotesMSWbuhX8X9OdFZ99aGxsszftm+FR4GnSBZuMDHku5xSeKo=
-X-Received: by 2002:a05:6000:430d:b0:391:3f4f:a169 with SMTP id
- ffacd0b85a97d-3a099add0b7mr2977978f8f.32.1746209391676; Fri, 02 May 2025
- 11:09:51 -0700 (PDT)
+        bh=zFHm1tfv35vyjBSvb7AN3OxjMGjn0tT8+FpYF9gx+rc=;
+        b=P8kTxn6a1+/KuDszcw+XXlFHg954PBbHVdwUihsFdY9N2AXDD1nu2vQgerSLMXH6ge
+         xbhPVLeFAi0Qpmg7ETh3bE7g6Y5j1EZniUNoGO+nPK7HHd7WrKB08BNc1vZrvC4FGFgl
+         NtSapb0x0u6zR8ILA3CyNiGht188dGQgmYWo3rMipKMqBj3Fnp5oImXbVrG7kNodiETI
+         MHwyRcubz9GiqLwVItbFpWBRAqX0bXUpyuBFfsKsCrcOGpH9pGr54vLiTnEeupOodwUK
+         kJuSHsAN6L9E0fjrG7dEPlTorC33sK6kazhKgWHwn1mF0TTYhejh2stRKA3Gg8OdIz0/
+         U/dg==
+X-Forwarded-Encrypted: i=1; AJvYcCU185cVMm+M6y52mmCiJPHCqzbMIfCESXK71udifi+r2677VTRY/Fm288z8iIc5hWsQob0lOCHKjg==@vger.kernel.org, AJvYcCUm3w5zmKCm1yLB4YnwsWmU7lxCEAYKelbIORzwK6eJome8OwxnbWqtPim5jvy1rvHYylo=@vger.kernel.org, AJvYcCVBVXEusKS2CaoPUze5bSBE84uKXh6/NmBvDo2AaO5l2ZkMWARXbZCVVL24I9YihhzfYv7fqf44WaspSzpZ@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywttq/gCdx2McM95OUsmsh77RIdbvVNc5z8LZqBah9ZhmKwAc+F
+	e7wKiKr3myTLRoApEPS6iVr30Ce1bPC1+D0KxHOXloDaSPC1/8jz0X9ANGqiNVhQDrrH9yFgLKe
+	N/rJnccbch8veTN1uc+q/Ho8FIXg=
+X-Gm-Gg: ASbGnctuNh074oKK3JuPpKOGMHxq+BDacB63BYrCEiC3zk6JCz2OS/R04N4yeFAHQNg
+	9zL5JyNYup5saTh1ZU1OSo/US+6Of13q6Da8km6O8fCUO5esDLyTDlIcu3Z/o9r1h674vztp4DS
+	bphqKs4b6ybakHRTSBwge5+JWvCLjHu0IstbfpSA==
+X-Google-Smtp-Source: AGHT+IGZDVjNbQY0k7XiguUPy1qRwoEN4lzehDc7xAB6HtEldTcvHbiAVFR6uTiVw4aghdr0oalOFquu/9roPKdUkII=
+X-Received: by 2002:a5d:5984:0:b0:3a0:99e9:bcd7 with SMTP id
+ ffacd0b85a97d-3a09cea72c1mr184420f8f.5.1746210566946; Fri, 02 May 2025
+ 11:29:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250501235231.1339822-1-andrii@kernel.org> <95dbb7e5-c2aa-4114-bdb9-9d9ea53653f0@oracle.com>
-In-Reply-To: <95dbb7e5-c2aa-4114-bdb9-9d9ea53653f0@oracle.com>
+References: <20250502001742.3087558-1-shakeel.butt@linux.dev> <20250502001742.3087558-4-shakeel.butt@linux.dev>
+In-Reply-To: <20250502001742.3087558-4-shakeel.butt@linux.dev>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 2 May 2025 11:09:40 -0700
-X-Gm-Features: ATxdqUEUE8C9h8mdl0APuNkYe9fO_JFfLUhM53EtMS_hwWQdAov-S396h6WPzOU
-Message-ID: <CAADnVQKmQKVTkf28Ex6T8Y03xDQ6-3o-rEcOM3vGZcVHGcrfSA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: improve BTF dedup handling of
- "identical" BTF types
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>
+Date: Fri, 2 May 2025 11:29:16 -0700
+X-Gm-Features: ATxdqUHqug0Pj9O_29hq5eWY4vn7NLIM1dbUiX1mC592l5Jn0vudNn1sTCMtTQE
+Message-ID: <CAADnVQJ-XEEwVppk-qY2mmGB4R18_nqH-wdv5nuJf2LST5=Aaw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] memcg: no irq disable for memcg stock lock
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>, linux-mm <linux-mm@kvack.org>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, Meta kernel team <kernel-team@meta.com>, 
+	Vlastimil Babka <vbabka@suse.cz>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 2, 2025 at 2:32=E2=80=AFAM Alan Maguire <alan.maguire@oracle.co=
-m> wrote:
+On Thu, May 1, 2025 at 5:18=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.dev=
+> wrote:
 >
-> >
-> > On the other hand, this seems to help to reduce duplication across many
-> > kernel modules. In my local test, I had 639 kernel module built. Overal=
-l
-> > .BTF sections size goes down from 41MB bytes down to 5MB (!), which is
-> > pretty impressive for such a straightforward piece of logic added. But
-> > it would be nice to validate independently just in case my bash and
-> > Python-fu is broken.
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> There is no need to disable irqs to use memcg per-cpu stock, so let's
+> just not do that. One consequence of this change is if the kernel while
+> in task context has the memcg stock lock and that cpu got interrupted.
+> The memcg charges on that cpu in the irq context will take the slow path
+> of memcg charging. However that should be super rare and should be fine
+> in general.
 >
-> Looks great!
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
+>  mm/memcontrol.c | 17 +++++++----------
+>  1 file changed, 7 insertions(+), 10 deletions(-)
 >
-> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index cd81c70d144b..f8b9c7aa6771 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -1858,7 +1858,6 @@ static bool consume_stock(struct mem_cgroup *memcg,=
+ unsigned int nr_pages,
+>  {
+>         struct memcg_stock_pcp *stock;
+>         uint8_t stock_pages;
+> -       unsigned long flags;
+>         bool ret =3D false;
+>         int i;
 >
-> Should have some numbers on the module size differences with this change
-> by Monday, had to dash before my build completed.
+> @@ -1866,8 +1865,8 @@ static bool consume_stock(struct mem_cgroup *memcg,=
+ unsigned int nr_pages,
+>                 return ret;
+>
+>         if (gfpflags_allow_spinning(gfp_mask))
+> -               local_lock_irqsave(&memcg_stock.lock, flags);
+> -       else if (!local_trylock_irqsave(&memcg_stock.lock, flags))
+> +               local_lock(&memcg_stock.lock);
+> +       else if (!local_trylock(&memcg_stock.lock))
+>                 return ret;
 
-I'm curious what BTF sizes you'll see.
-
-Sounds like dwarf has more cases of "same type but different id"
-than we expected.
-So existing workarounds are working only because we have very
-few modules that rely on proper dedup of kernel types.
-Beyond array/struct/ptrs, I wonder, what else is there.
+I don't think it works.
+When there is a normal irq and something doing regular GFP_NOWAIT
+allocation gfpflags_allow_spinning() will be true and
+local_lock() will reenter and complain that lock->acquired is
+already set... but only with lockdep on.
 
