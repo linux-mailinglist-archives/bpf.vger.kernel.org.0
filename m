@@ -1,178 +1,85 @@
-Return-Path: <bpf+bounces-57209-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57210-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34774AA6E2F
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 11:32:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 871B6AA6E31
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 11:32:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3B791B66F95
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 09:32:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C11164C09B6
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 09:32:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DA3A22E3FD;
-	Fri,  2 May 2025 09:32:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD58022E3F0;
+	Fri,  2 May 2025 09:32:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="u1V8An0E"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nXRbj5ZM"
 X-Original-To: bpf@vger.kernel.org
-Received: from fllvem-ot03.ext.ti.com (fllvem-ot03.ext.ti.com [198.47.19.245])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B775213248;
-	Fri,  2 May 2025 09:32:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.245
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D92F1C1F22;
+	Fri,  2 May 2025 09:32:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746178350; cv=none; b=MdEGQOhgr1HrXIMTPOuiDq1mv5yXdBso9A1at3AC/nP2EcpzBjyQvavAhygT1AsXiPkQ0QFjpLRA48BYtzkxA8jtHqpqeBO1SSIy7IRkyRGEUVme/MAB1MP62vfkXHXL/nLVqko+ysypL0ozpkS77ijCjU2DCWm9frgsko7tULo=
+	t=1746178366; cv=none; b=P+bvbJkG7vm2nEP1PtYrLCzBeL6mxN8lNX31cPNIGNdCYH+lj4L/E6Aev3LcDrox08OakYPI2EmcQlutEMs7Ebnjuve+eBXRQGMI+gFieHQwCwUDHGDMbPpA+yDO1MahM6uQXXcQql3T182mvIG7f38wFYf4Yo0E9Fbmwz76s38=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746178350; c=relaxed/simple;
-	bh=Wp41p70BSqgZEyuE3IVb+/E/nl+P9ml2u0e92dLqWrE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=FsgMqbDC2T3UsD+c+8lMMwx5SRRFnY30H6VsJAa2AWlYKDN7ucBbduxUmyOLo5e8DCoAAkl/ybQRtWU0x7PPsgOyH3kYwuHdpWzdJjCY0lBhzWJ/mf/MYyaYin+HOW4eZGRcsY5sxx2MFkIIcgH6cCZokuTYEbJy7NG34nrXVDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=u1V8An0E; arc=none smtp.client-ip=198.47.19.245
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllvem-ot03.ext.ti.com (8.15.2/8.15.2) with ESMTPS id 5429W0Sr3831866
-	(version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 2 May 2025 04:32:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1746178320;
-	bh=PkqMSSAZ2mWgrwjBraBF0CvV/vcdXHZByR+N3CA5B7U=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=u1V8An0Eca85G1KbNdjiH+NJt7Acs5JHIvVkI1gWjzkKeg8SixvJFs/y8/1bgwUsF
-	 RIzz6Nwif+Ev2S72UjJn9g2moNYfSqAG5n4nyirydyjHo7Wv1zE+4xRWmDzILJS146
-	 GeTJPsn5gXUX+EznEjjSy+30ULGC4pY5XWlYu8kA=
-Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 5429W05f003807
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 2 May 2025 04:32:00 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 2
- May 2025 04:32:00 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 2 May 2025 04:32:00 -0500
-Received: from [172.24.30.16] (lt9560gk3.dhcp.ti.com [172.24.30.16])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 5429VssE080397;
-	Fri, 2 May 2025 04:31:55 -0500
-Message-ID: <7e91a1c1-237d-463d-8045-eb7ca9e8c8df@ti.com>
-Date: Fri, 2 May 2025 15:01:53 +0530
+	s=arc-20240116; t=1746178366; c=relaxed/simple;
+	bh=0vDGwkRxEHpSPWuymvoAUvdjVGevzUbu6/dHyqaRLQQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=F2O+gbDAwdVORWrvQD0Tglgkzh1l8OsOpTXLrb3ngSEylE2m11xVxcrHQGLiow38Fa2o6GCsJVdBwNmg7+dnBpSv039nj8WWRIiZxuhvggsxUMxB+fW9dCtJCyMswhiC8VjKWKh93wg9C4FNjKrW+v/D7ZefynnaufRDmsA6ndY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nXRbj5ZM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74B19C4CEE4;
+	Fri,  2 May 2025 09:32:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1746178364;
+	bh=0vDGwkRxEHpSPWuymvoAUvdjVGevzUbu6/dHyqaRLQQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nXRbj5ZMzy5nqzaMnI8DqiW+nO1n+daIaDg+6cZu5ASlx8PMIfETiqnKBEN39XRqJ
+	 pGgNCk5YHP8LCTAQ/U15ERsC9Yzvl89RyHS292x2WuJ4zQXpWUFmHbzDkywQBoCYMu
+	 Z6kGND7AVBw0aDI1v+KlKsSpDKiIn70PaQ8JFCXPwhZnpbjHEAoBo6YebFJjUMy5+q
+	 ek/8R0TWG/Xq6viAsOAF1mpixsYNDVJ0yP3NOnKeZLldO/USWKCJqHQE06odLrcXqR
+	 vNUTjgNQFKwYBmI7zLnafZ7lgtBJlgz/WnIzKr0IvpQm4EtF4+QDHiPsG887mmCXqf
+	 J58IQUQSkncKA==
+Date: Fri, 2 May 2025 10:32:39 +0100
+From: Simon Horman <horms@kernel.org>
+To: Amery Hung <ameryhung@gmail.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
+	alexei.starovoitov@gmail.com, andrii@kernel.org,
+	daniel@iogearbox.net, martin.lau@kernel.org,
+	xiyou.wangcong@gmail.com, kernel-team@meta.com
+Subject: Re: [PATCH bpf-next/net v1 1/5] bpf: net_sched: Fix bpf qdisc init
+ prologue when set as default qdisc
+Message-ID: <20250502093239.GD3339421@horms.kernel.org>
+References: <20250501223025.569020-1-ameryhung@gmail.com>
+ <20250501223025.569020-2-ameryhung@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 3/4] net: ti: icssg-prueth: Fix race condition for
- traffic from different network sockets
-To: Jakub Kicinski <kuba@kernel.org>
-CC: <dan.carpenter@linaro.org>, <john.fastabend@gmail.com>, <hawk@kernel.org>,
-        <daniel@iogearbox.net>, <ast@kernel.org>, <pabeni@redhat.com>,
-        <edumazet@google.com>, <davem@davemloft.net>, <andrew+netdev@lunn.ch>,
-        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <srk@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Roger Quadros
-	<rogerq@kernel.org>, <danishanwar@ti.com>
-References: <20250428120459.244525-1-m-malladi@ti.com>
- <20250428120459.244525-4-m-malladi@ti.com>
- <20250501075615.34573158@kernel.org>
-Content-Language: en-US
-From: "Malladi, Meghana" <m-malladi@ti.com>
-In-Reply-To: <20250501075615.34573158@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250501223025.569020-2-ameryhung@gmail.com>
 
-Hi Jakub,
-
-On 5/1/2025 8:26 PM, Jakub Kicinski wrote:
-> On Mon, 28 Apr 2025 17:34:58 +0530 Meghana Malladi wrote:
->> When dealing with transmitting traffic from different network
->> sockets to a single Tx channel, freeing the DMA descriptors can lead
->> to kernel panic with the following error:
->>
->> [  394.602494] ------------[ cut here ]------------
->> [  394.607134] kernel BUG at lib/genalloc.c:508!
->> [  394.611485] Internal error: Oops - BUG: 00000000f2000800 [#1] PREEMPT SMP
->>
->> logs: https://gist.github.com/MeghanaMalladiTI/ad1d1da3b6e966bc6962c105c0b1d0b6
->>
->> The above error was reproduced when sending XDP traffic from XSK
->> socket along with network traffic from BSD socket. This causes
->> a race condition leading to corrupted DMA descriptors. Fix this
->> by adding spinlock protection while accessing the DMA descriptors
->> of a Tx ring.
+On Thu, May 01, 2025 at 03:30:21PM -0700, Amery Hung wrote:
+> Allow .init to proceed if qdisc_lookup() returns NULL as it only happens
+> when called by qdisc_create_dflt() in mq/mqprio_init and the parent qdisc
+> has not been added to qdisc_hash yet. In qdisc_create(), the caller,
+> __tc_modify_qdisc(), would have made sure the parent qdisc already exist.
 > 
-> IDK how XSK vs normal sockets matters after what is now patch 4.
-> The only possible race you may be protecting against is pushing
-> work vs completion. Please double check this is even needed,
-> and if so fix the commit msg.
-
-I can think of race conditions happening in the following cases:
-1. Multiport use cases where traffic is being handled on more than one 
-interface to a single Tx channel.
-2. Having emac_xmit_xdp_frame() and icssg_ndo_start_xmit(), two 
-different traffics being transmitted over a single interface to a single 
-tx channel.
-
-In both of the above scenarios Tx channel is a common resource which 
-needs to be protected from any race conditions, which might happen 
-during Tx descriptor push/pop. As suggested by you, I am currently 
-excluding this patch and doing some stress testing. Regardless 
-conceptually I still think spinlock is needed, please do correct me if I 
-am wrong.
-
+> In addition, call qdisc_watchdog_init() whether .init succeeds or not to
+> prevent null-pointer dereference. In qdisc_create() and
+> qdisc_create_dflt(), if .init fails, .destroy will be called. As a
+> result, the destroy epilogue could call qdisc_watchdog_cancel() with an
+> uninitialized timer, causing null-pointer deference in hrtimer_cancel().
 > 
->> Fixes: 62aa3246f462 ("net: ti: icssg-prueth: Add XDP support")
->> Signed-off-by: Meghana Malladi <m-malladi@ti.com>
->> ---
->>   drivers/net/ethernet/ti/icssg/icssg_common.c | 7 +++++++
->>   drivers/net/ethernet/ti/icssg/icssg_prueth.h | 1 +
->>   2 files changed, 8 insertions(+)
->>
->> diff --git a/drivers/net/ethernet/ti/icssg/icssg_common.c b/drivers/net/ethernet/ti/icssg/icssg_common.c
->> index 4f45f2b6b67f..a120ff6fec8f 100644
->> --- a/drivers/net/ethernet/ti/icssg/icssg_common.c
->> +++ b/drivers/net/ethernet/ti/icssg/icssg_common.c
->> @@ -157,7 +157,9 @@ int emac_tx_complete_packets(struct prueth_emac *emac, int chn,
->>   	tx_chn = &emac->tx_chns[chn];
->>   
->>   	while (true) {
->> +		spin_lock(&tx_chn->lock);
->>   		res = k3_udma_glue_pop_tx_chn(tx_chn->tx_chn, &desc_dma);
->> +		spin_unlock(&tx_chn->lock);
->>   		if (res == -ENODATA)
->>   			break;
->>   
->> @@ -325,6 +327,7 @@ int prueth_init_tx_chns(struct prueth_emac *emac)
->>   		snprintf(tx_chn->name, sizeof(tx_chn->name),
->>   			 "tx%d-%d", slice, i);
->>   
->> +		spin_lock_init(&tx_chn->lock);
->>   		tx_chn->emac = emac;
->>   		tx_chn->id = i;
->>   		tx_chn->descs_num = PRUETH_MAX_TX_DESC;
->> @@ -627,7 +630,9 @@ u32 emac_xmit_xdp_frame(struct prueth_emac *emac,
->>   	cppi5_hdesc_set_pktlen(first_desc, xdpf->len);
->>   	desc_dma = k3_cppi_desc_pool_virt2dma(tx_chn->desc_pool, first_desc);
->>   
->> +	spin_lock_bh(&tx_chn->lock);
->>   	ret = k3_udma_glue_push_tx_chn(tx_chn->tx_chn, first_desc, desc_dma);
->> +	spin_unlock_bh(&tx_chn->lock);
-> 
-> I'm afraid this needs to be some form of spin_lock_irq
-> The completions may run from hard irq context when netpoll/netconsole
-> is used.
+> Fixes: Fixes: c8240344956e ("bpf: net_sched: Support implementation of Qdisc_ops in bpf")
 
-Didn't know system can handle network interrupts in a hard IRQ context. 
-Ok I will update to spin_lock_irq() if this patch is necessary.
+nit: One "Fixes: " is enough.
 
--- 
-Thanks,
-Meghana Malladi
+> Signed-off-by: Amery Hung <ameryhung@gmail.com>
 
+...
 
