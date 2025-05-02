@@ -1,99 +1,134 @@
-Return-Path: <bpf+bounces-57275-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57274-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB7C8AA7A34
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 21:27:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FA60AA7A33
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 21:26:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E8754C73D2
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 19:27:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD6D43A5968
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 19:25:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A0F81F03D6;
-	Fri,  2 May 2025 19:27:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE0BC1F1522;
+	Fri,  2 May 2025 19:26:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="as9CrXay"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m9bFra7m"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AA27185B73
-	for <bpf@vger.kernel.org>; Fri,  2 May 2025 19:27:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD60A185B73
+	for <bpf@vger.kernel.org>; Fri,  2 May 2025 19:25:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746214051; cv=none; b=sjy/0ZvawhGS7I6oCmrMGttjq5rfqjwIm8EXluTVf+Wcznekkr94gMizZTaX1OEyWA66HFJqYCn6ouZbddXprGAgMq51XB4sxoiCCzm4BNshD2OhuY0aIOw7eq99nfFFitlP/z7tRlUtR8l0upnQ3v1EMf1ijjw8myci1KZfTmE=
+	t=1746213960; cv=none; b=C0bDo0PhdY7Bb40kkJQNyMJNoMPzNjOxQoY09K0GXihP8XS0rERLsDsB4EyHGo1EnDfJC0StFJXShUxgm2B5ZuZx95yvvpFA5hhrSRpS3JGH67uvfxE4TaH4Cfnvsk5wvCDi1He/BTKQIIYPMQ6EAXRkgkCVpPf2xylQa8vBQbw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746214051; c=relaxed/simple;
-	bh=m5FsUSrgqJnJFyAJzio3wLwFf348gmKj5VWnE5R+NNE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GZUxufmpEbejGH4n0LIjghbPGO2DgE7VnKD/t1T4ZekjZ6gnldQUAfioTa/E6uX25w/RFMK94ZugJ67vfYukvt+60wMrT9Yug9QcR9ZB2j9qXALazGT1iKqfyHDJLqT+l3n5mKDTT9nkKXC75a/pBJSIN4DK59ur4m+ZC2oRmhU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=as9CrXay; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ec91dcac-d2d0-4705-aca1-8cdc1954aa11@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1746214045;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eU9YI+kwmmrvaRkJDXEgoYcoQAkayKzj4/4m5F6kUMI=;
-	b=as9CrXayscBUB5dUnza31hDRWYt6QiLEeCKvmo16By9vRl+wWh4E4XV2WH+8TXPXCtwosT
-	Cx931JbpQ40nIgU4TUq9sZ5MIcYCHPPVMMb9PePGz0knBC3gdyG3bZBNDqmEUhHecTGucA
-	xUB0G4SwxlotLJvrzcNF5o0+zSbqTQo=
-Date: Fri, 2 May 2025 12:27:20 -0700
+	s=arc-20240116; t=1746213960; c=relaxed/simple;
+	bh=17Bz4Yr0oR6iT1B0MkY+g4Tmq58uGwIfJVNTMVL2Qa8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RHlqQCXluzS7I2gC1qTsHje0KXtVi47uGXb44LXZWgJAptIKjZswfSN+XoyhiQnLV3NRxxCzSE7EXawUqqRK5vGwzFitlGSsHzSvJztYhxr0jVu9rWujvoSMhyPOMO03sYXVNt9lRUXm0LLH+3nHAc/Nz1XbD8/owmCT+CoYKhs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m9bFra7m; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-ace94273f0dso518893366b.3
+        for <bpf@vger.kernel.org>; Fri, 02 May 2025 12:25:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1746213956; x=1746818756; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2E+gcjbMN2PyFmrACbuhCiuGXgFmKEb2T5uF5Km1ABQ=;
+        b=m9bFra7mSb4PuNb/K79xWiLya2PX4gtsxmY9fkAKunXT75FeOqVmdwv31DNgijZ8bM
+         dtbfCOmCnaoXVeJjz8WNRhaIh+Xl7FioFDRhYwiYxaMP7GtS7Gk4S4JY5BEBxQhgxEeN
+         KioKUbiE6DsEbKH2MGB+RiEWSYZ6KjkG3tGOOGYLS0gYK4LumlJzj5v8JJEC1Dz10N9a
+         UwQr/86/FJxgyz7JcFdHnNvVGhYhy5yPMCYXgo5H420/bAO19FUllfofJvVt5Oa0PCkW
+         0hGNPOX7hCgJx8tbdnuk/AmNSoFd1Aaw31GOC/VgMais/8PBYEnVU+LBoi8ScgLHRJcD
+         lENw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746213956; x=1746818756;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2E+gcjbMN2PyFmrACbuhCiuGXgFmKEb2T5uF5Km1ABQ=;
+        b=eLdtaHnS2QVTFWVz4UWPo+JAIExOytSX2Zkp6Ja1RYqJ9P+81QJZG/igbHEK9VWeU4
+         q4tO1VVp//Hiny+KazlYXUYe3tu5wjsBpEjGBbVv5mN6/XZeJZ3FlOtpaXFXVKIG7bkz
+         hvb1xCmvvm86ZUh5MU2aFnBhKXae59jNdj0NMRzgBc+2WYt/jlxQ3QCs4qqwrF69wSHt
+         9flDZp2HaDPeucz/P2h2cQF6RkOJ0YE65JqaupPjczCnTsPDriKS3CpAD6soHYlhd+uh
+         Ia5XYtAL3HguPWdavzIjHjrztWZZuyqwGRSx/IT8dIumRhu+LDUfCjSbAXvUiCMCG0Mj
+         1rmg==
+X-Gm-Message-State: AOJu0YyakSJIAhycMQsYoAr493aYHzDslcI1HQveya23c1FtdM7I/iYi
+	lNAqz2qKgTUQvzzkLiZxUbisND+hVBSwSSzX4fKZURUism3gSkGYPLcD5Q==
+X-Gm-Gg: ASbGncvz1clxw7ICDmsGtq7Pdu9Q4KWNJ+SgicGv14hniS22JZJUcwpHC96iHLyXGyL
+	UAAn08G30qkLj1kph41DRDEoEwXy82AM+S+1A8Ods287oJT0OfFnhDWPnCRpO1FiMKZQu6iqP+k
+	iD6jhNKeEHBxN8LKvHZS1wUBM+GRWlHomtJZzOKzGi4ihUz5SgnPT1StxVnrz7V06P5rKA//VxP
+	B2zvlM0BcoqXRhpATzF3ccP1o6k1jwUaSqD+1aWyy7NshJE5mW4s3nd01FHWllXatGaN6ZUzQj+
+	8Di9AgVqZ5SWbF5sjFYRFxEWu9l5xRaUjT/NscTEoLz0mHP0INxNaafRXFWrmlqrFMB+Qks=
+X-Google-Smtp-Source: AGHT+IG3bLGnURUUuRBT2o4XbScaAKZkcgsL7EMGMfwQhye74+hOlP0jJcwnVfI+DZuRQlgvlxxP+Q==
+X-Received: by 2002:a17:907:3d4e:b0:ad1:7858:a775 with SMTP id a640c23a62f3a-ad17addc0e3mr376645166b.28.1746213956232;
+        Fri, 02 May 2025 12:25:56 -0700 (PDT)
+Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ad1894c3853sm89235966b.94.2025.05.02.12.25.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 May 2025 12:25:55 -0700 (PDT)
+From: Anton Protopopov <a.s.protopopov@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Anton Protopopov <a.s.protopopov@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH v4 bpf-next] bpf: fix uninitialized values in BPF_{CORE,PROBE}_READ
+Date: Fri,  2 May 2025 19:30:31 +0000
+Message-Id: <20250502193031.3522715-1-a.s.protopopov@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next/net v1 2/5] selftests/bpf: Test setting and
- creating bpf qdisc as default qdisc
-To: Amery Hung <ameryhung@gmail.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
- alexei.starovoitov@gmail.com, andrii@kernel.org, daniel@iogearbox.net,
- martin.lau@kernel.org, xiyou.wangcong@gmail.com, kernel-team@meta.com
-References: <20250501223025.569020-1-ameryhung@gmail.com>
- <20250501223025.569020-3-ameryhung@gmail.com>
- <83c8f387-c4a9-4293-9996-fec285d34c94@linux.dev>
- <CAMB2axO2Jkc4Ec051+BYhju2Vr_GwzZL6yhHGuohMdg2q6WLRQ@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CAMB2axO2Jkc4Ec051+BYhju2Vr_GwzZL6yhHGuohMdg2q6WLRQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On 5/2/25 10:52 AM, Amery Hung wrote:
->>> +static void test_default_qdisc_attach_to_mq(void)
->>> +{
->>> +     struct bpf_qdisc_fifo *fifo_skel;
->>> +     char default_qdisc[IFNAMSIZ];
->>> +     struct netns_obj *netns;
->>> +     char tc_qdisc_show[64];
->>> +     struct bpf_link *link;
->>> +     char *str_ret;
->>> +     FILE *tc;
->>> +     int err;
->>> +
->>> +     fifo_skel = bpf_qdisc_fifo__open_and_load();
->>> +     if (!ASSERT_OK_PTR(fifo_skel, "bpf_qdisc_fifo__open_and_load"))
->>> +             return;
->>> +
->>> +     link = bpf_map__attach_struct_ops(fifo_skel->maps.fifo);
->>
->>          fifo_skel->links.fifo = bpf_map__attach_struct_ops(....);
->>
->> Then no need to bpf_link__destroy(link). bpf_qdisc_fifo__destroy() should do.
->>
-> 
-> I see. I assume it will also be okay to set autoattach and call
-> bpf_qdisc_fifo__attach()?
+With the latest LLVM bpf selftests build will fail with
+the following error message:
 
-Good point. bpf_qdisc_fifo__attach() will be even simpler. I thought the 
-autoattach is true by default. Please check.
+    progs/profiler.inc.h:710:31: error: default initialization of an object of type 'typeof ((parent_task)->real_cred->uid.val)' (aka 'const unsigned int') leaves the object uninitialized and is incompatible with C++ [-Werror,-Wdefault-const-init-unsafe]
+      710 |         proc_exec_data->parent_uid = BPF_CORE_READ(parent_task, real_cred, uid.val);
+          |                                      ^
+    tools/testing/selftests/bpf/tools/include/bpf/bpf_core_read.h:520:35: note: expanded from macro 'BPF_CORE_READ'
+      520 |         ___type((src), a, ##__VA_ARGS__) __r;                               \
+          |                                          ^
+
+This happens because BPF_CORE_READ (and other macro) declare the
+variable __r using the ___type macro which can inherit const modifier
+from intermediate types.
+
+Fix this by using __typeof_unqual__, when supported. (And when it
+is not supported, the problem shouldn't appear, as older compilers
+haven't complained.)
+
+Fixes: 792001f4f7aa ("libbpf: Add user-space variants of BPF_CORE_READ() family of macros")
+Fixes: a4b09a9ef945 ("libbpf: Add non-CO-RE variants of BPF_CORE_READ() macro family")
+Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
+---
+ tools/lib/bpf/bpf_core_read.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/tools/lib/bpf/bpf_core_read.h b/tools/lib/bpf/bpf_core_read.h
+index c0e13cdf9660..b997c68bd945 100644
+--- a/tools/lib/bpf/bpf_core_read.h
++++ b/tools/lib/bpf/bpf_core_read.h
+@@ -388,7 +388,13 @@ extern void *bpf_rdonly_cast(const void *obj, __u32 btf_id) __ksym __weak;
+ #define ___arrow10(a, b, c, d, e, f, g, h, i, j) a->b->c->d->e->f->g->h->i->j
+ #define ___arrow(...) ___apply(___arrow, ___narg(__VA_ARGS__))(__VA_ARGS__)
+ 
++#if defined(__clang__) && (__clang_major__ >= 19)
++#define ___type(...) __typeof_unqual__(___arrow(__VA_ARGS__))
++#elif defined(__GNUC__) && (__GNUC__ >= 14)
++#define ___type(...) __typeof_unqual__(___arrow(__VA_ARGS__))
++#else
+ #define ___type(...) typeof(___arrow(__VA_ARGS__))
++#endif
+ 
+ #define ___read(read_fn, dst, src_type, src, accessor)			    \
+ 	read_fn((void *)(dst), sizeof(*(dst)), &((src_type)(src))->accessor)
+-- 
+2.34.1
 
 
