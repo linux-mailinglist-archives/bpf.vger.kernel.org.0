@@ -1,85 +1,86 @@
-Return-Path: <bpf+bounces-57293-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57294-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3230AAA7B66
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 23:32:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5102FAA7B68
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 23:35:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB8A43BE69E
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 21:32:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A341F4E044C
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 21:35:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CD89204588;
-	Fri,  2 May 2025 21:32:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 669AC204588;
+	Fri,  2 May 2025 21:35:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="laR2mPY/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c+3whUke"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09E9E1F1513
-	for <bpf@vger.kernel.org>; Fri,  2 May 2025 21:32:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 216051F1513
+	for <bpf@vger.kernel.org>; Fri,  2 May 2025 21:35:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746221546; cv=none; b=ah8zoymlUTaYNcL18tmhUkgmZ2+gOsgdJfjZE5yRjke54kisKr3LWNcSd2NbN6YpC5+oEFu7DXIlxiB6QD1AI+1V4To+HOm7rX4QxtfeLvRuQfTRgLR8ucS5gSXPGn+0vnrIDyNyxAthEv4b9r31Iy2oBmLYbsDWnkVqE8M/f/o=
+	t=1746221712; cv=none; b=E4ARxwnRHtixGpFQEevEo95c8iGVMYeOtWN575DgzKdoaxOUV787s8GQCdKAv50p38TQKzHCI8jlbqv7oFav5TkvM8P3R6LXa/LOWbR8lr5bF1oQwz9tXjV+axOOLL0y0lGumLxoCTvMeTODwBB1P1Vzj6HgUK2z/CBd0OD+XbQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746221546; c=relaxed/simple;
-	bh=vzEu2VtE65vamiky2nJM6w4ho54L+QB8h2yQlNg4C4o=;
+	s=arc-20240116; t=1746221712; c=relaxed/simple;
+	bh=VObZ0pV+lDx35uqkXsAsHXdSKGhIC0soMKo/MTJdQw8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Cb9gSWb4pjx9t10TDYu/Z++668uhHyHjBFTDTLqG5rerNANm/QEHk2LdtRtQWdso2web4c0nu/WqHE70iPLYslwd1dKLNVA3g3rrUbY2iN8OLkD8vq3zKM1brpeNr6K/pwoCWqpjMGD9xTzv4YBMt00AjMglRmidngKApHlcq4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=laR2mPY/; arc=none smtp.client-ip=209.85.128.51
+	 To:Cc:Content-Type; b=GW7WDxtArhZ9UwmTHdJYzVieYEac4CoF+oSYIBvPn/4g/FW//TA8GpFkiQ1s2GxTpzaz+0JTso2UnrKSmUooTjgsbOVvXDcynd4TtFrvUcMqO1YRu+64Pd4VoL4YO472by0kNrRHY5C5nWjwt2o3nnO6bjM8e/jfMzaQdqQVVJg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c+3whUke; arc=none smtp.client-ip=209.85.221.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-43ea40a6e98so20317315e9.1
-        for <bpf@vger.kernel.org>; Fri, 02 May 2025 14:32:24 -0700 (PDT)
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-39c30d9085aso1656798f8f.1
+        for <bpf@vger.kernel.org>; Fri, 02 May 2025 14:35:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746221543; x=1746826343; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1746221709; x=1746826509; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LkVkVHGIvjVYMZnNyOFSNOqyjyGgSqqIjMnGQOB0Mtg=;
-        b=laR2mPY/00vpVVo3N2YE54vuEvDladqn3frTcVbb55diS4QUn9ZHch3134dUxiOyOZ
-         1uwR1EvFWPUthsbNJvQX25Fnw7L704fMgziur6fFIbWlS5DGRgXFYUKKs4OlR+bbMggq
-         JjLrsfvgC0z5UVyn2veaO4+THkEpb6gZOaMcdM29FsBNXOiiqmNAtqQB4ugaxj+UCFnw
-         DyibvUQQDHnkQWrJJmY2are/O8Tg3sSuseN8Pl7j2UqqdFV4An0h6Snlah9ye1o8jqvM
-         lJtf/7V4QqVpGaL8CMT8sOJMHccWGMTir7oZClc+JJEEnMVSKMagvhc4vz3r+Go8NP+x
-         1Aog==
+        bh=SDCuSVE19VHPf3irciu/ZQZDdx1w2zfhcJcCZrk/Sl0=;
+        b=c+3whUkelJ4Hb6vDgR+r2dOle8GL3GZ66mOcv6T+sxIJJ2eTeCeBkxDvx3jkvDRuvz
+         HkAcnOTgmyqA9mofaXrJl6m3M+/npN7sgyatb2C9ZlwkPZkAp22eEwqW+Q990WP/ZLUo
+         fGTFBbnLykb+2YjTqFM5+trp2SyY/5x7+9OYADH0pu1/XVIcAyhT32MQwuVlctZmcqtF
+         yW511iSEHT7hg+48cxkjx/Ksp04qDrie01NUeESu386PUfwIlfZ1xRo2MokddtOb9FYO
+         xWW1+vcHTLcnbAzha0g8TSGUFCPSSdcWFDNc6fdGmVHDVJkPkgI+XdM2nviJEavLmm1s
+         G5AA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746221543; x=1746826343;
+        d=1e100.net; s=20230601; t=1746221709; x=1746826509;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LkVkVHGIvjVYMZnNyOFSNOqyjyGgSqqIjMnGQOB0Mtg=;
-        b=ISFDBRWKRmdtc1LkDlyeSqVOqvAHV+RfOWcD0I9v9kLpDoRt60GDUOf/wDa4y/P6wj
-         8ltG8zpJNm48dBsGFhn4sxHrKDKnMrnL/vPzXlUJ1kSfZU0woGDIsGiVoMNeExkAyimb
-         AmcROoBcoSo+D6Q2sM7H2YUZ8PmqbqeVLoeuDkmzkh+ynlczYmYoGnJJ4b1opdxySJkW
-         QjWVv1gTQgSwVEYAsShH5XPbTmoc1ilBkpG0FvkY1I2m1e86MIGEuVMRdLmAOyxI8wfo
-         IUmSNIVxIIWag9pgJiNhDLW6vkZLpYEQLJkA7NBs5ZVVNUwdSi99CfV15Egg9UIS0UCL
-         RxlA==
-X-Gm-Message-State: AOJu0Yy0F8tc+pS/uNMaR/N5oOWxE9gwcrnELvJFembSr36xu/AczDSw
-	+LS+P4fMrGiWdLTCTiYcm6nYwsD9cg1SxoOVNQlzC+rm0BPf4jwlx6zCP7RBinWp1orkEyrkrKK
-	P2ONfbtVJXOHi7RoYu13Op5Oi7sc=
-X-Gm-Gg: ASbGnctkzvmhT3bBDn1fdE993DNAhuEbuVhoeR6LEksuQgeUZq6uBEmXhLL83Nz77/m
-	yPhn0O42nl3FyE15Bh/OF3schBlAcPqCUoSgT5H5SoO1L3ZvmDuhelrcrUOadhM3nbIy4N3b83C
-	KaqRjiL6FTmBozbm+b8XnECk1B6TCsGdUQ05yP0zZZpo7JVsKlvA==
-X-Google-Smtp-Source: AGHT+IFNrZr/gKTX+PH1qaFriF6kFkrLDt2iY9pxoQEbgd+NlNa74zaR4dxQB6Yf25h10T939YIa5uLIpNKpPqmN3rU=
-X-Received: by 2002:a5d:5f84:0:b0:3a0:89f4:9b02 with SMTP id
- ffacd0b85a97d-3a09ceaf889mr589855f8f.14.1746221542960; Fri, 02 May 2025
- 14:32:22 -0700 (PDT)
+        bh=SDCuSVE19VHPf3irciu/ZQZDdx1w2zfhcJcCZrk/Sl0=;
+        b=V0/M12JuknZ8K9yZlobujU1kfTBppgxAzh55Bz9GcflgFC/h6aqoHqxd9Z21iEMHGn
+         hf2AQiOmO4bJs7ByNBhog7458sKxvjzexERWivV5mzj/WANR/npqX72CA6M7wApfi0Lu
+         D6GF26yGzqU+Est79a2Z76tb7yZaGpbpaQHi2ZuXdKkURnTfmk2aeCD92XzWI58s7GoM
+         DNu2oWW1Iow8nS/D7aY5bLjpIXI+FSA7eH5lesl17RCAw+MGkh4PtvMuhKji1nBLxyn9
+         hXfbI+53n8yXiip4/kjm0AQ9G/7viqa2HtUbIPya5NRhfDbaXXLZ00f3aBtvgOaXXUzL
+         DDHA==
+X-Gm-Message-State: AOJu0Yy557lrzzaAs87Bw+jYPiYwEf171PSiGhFekwS6yCLavNqxmdSS
+	6X0aDOL3UmTEfJM8FwAWN1Q7dnZ0RMl730gNYzbIRn8YLbiS36pLB5F3gZ6JBxxWamiG4LY9XWK
+	BGrOlQ92hp3jM2oSY3kFcWK3v8iZ1AFc+
+X-Gm-Gg: ASbGncvIQlITEI9x6TbjQmr92M0B9SXeGCvXqE1PmYWehD2QWRQwDju4Ft4EjXBGrm0
+	Jbfzy5IxFHj2LgzrE32Ei4RWSn3WXO4bL+73DTJ9IcYzkYDclCLHoTdUSZueU9llngxrSaGKCTZ
+	Z5FrlK2TQFFNZxjxifMDfX/yw50w/StYr+Brg41fBm1sWISu3b2siOmXhudGZN
+X-Google-Smtp-Source: AGHT+IERrIwVUaOF//jHNT6q1M841AR+hKlvIx9A5l3rfZByix8O3XIbyEqNdep8mj/Q6MEj/DvmLOIYoiB3fywt9NM=
+X-Received: by 2002:a05:6000:40da:b0:3a0:8330:3377 with SMTP id
+ ffacd0b85a97d-3a099aea737mr3735120f8f.44.1746221709199; Fri, 02 May 2025
+ 14:35:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250502190621.41549-1-mykyta.yatsenko5@gmail.com> <20250502190621.41549-3-mykyta.yatsenko5@gmail.com>
-In-Reply-To: <20250502190621.41549-3-mykyta.yatsenko5@gmail.com>
+References: <20250502190621.41549-1-mykyta.yatsenko5@gmail.com> <20250502190621.41549-4-mykyta.yatsenko5@gmail.com>
+In-Reply-To: <20250502190621.41549-4-mykyta.yatsenko5@gmail.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 2 May 2025 14:32:11 -0700
-X-Gm-Features: ATxdqUGKkqpAz0vGT3rwMKfI25EkLCsww_psafXbvqP3fWrC9aTNiFIx_P-np_w
-Message-ID: <CAADnVQ+PyzpJutq44dWtfX+YfkKuzRtmLTB7f7vgFtY+P-rjog@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/3] bpf: implement dynptr copy kfuncs
+Date: Fri, 2 May 2025 14:34:58 -0700
+X-Gm-Features: ATxdqUGp93Tl9vn4c1gmsxyoQ9VVBeA4l9OiDyqnAPTzFCj6ChCm7yBI0oW4SM0
+Message-ID: <CAADnVQKLvOeN6sRctgna7BjU=3HeK+6Y1E-f1rmHEH7V8T00dw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/3] selftests/bpf: introduce tests for dynptr
+ copy kfuncs
 To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
 Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
 	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin Lau <kafai@meta.com>, 
@@ -93,222 +94,173 @@ On Fri, May 2, 2025 at 12:06=E2=80=AFPM Mykyta Yatsenko
 >
 > From: Mykyta Yatsenko <yatsenko@meta.com>
 >
-> This patch introduces a new set of kfuncs for working with dynptrs in
-> BPF programs, enabling reading variable-length user or kernel data
-> into dynptr directly. To enable memory-safety, verifier allows only
-> constant-sized reads via existing bpf_probe_read_{user|kernel} etc.
-> kfuncs, dynptr-based kfuncs allow dynamically-sized reads without memory
-> safety shortcomings.
+> Introduce selftests verifying newly-added dynptr copy kfuncs.
+> Covering contiguous and non-contiguous memory backed dynptrs.
 >
-> The following kfuncs are introduced:
-> * `bpf_probe_read_kernel_dynptr()`: probes kernel-space data into a dynpt=
-r
-> * `bpf_probe_read_user_dynptr()`: probes user-space data into a dynptr
-> * `bpf_probe_read_kernel_str_dynptr()`: probes kernel-space string into
-> a dynptr
-> * `bpf_probe_read_user_str_dynptr()`: probes user-space string into a
-> dynptr
-> * `bpf_copy_from_user_dynptr()`: sleepable, copies user-space data into
-> a dynptr for the current task
-> * `bpf_copy_from_user_str_dynptr()`: sleepable, copies user-space string
-> into a dynptr for the current task
-> * `bpf_copy_from_user_task_dynptr()`: sleepable, copies user-space data
-> of the task into a dynptr
-> * `bpf_copy_from_user_task_str_dynptr()`: sleepable, copies user-space
-> string of the task into a dynptr
+> Disable test_probe_read_user_str_dynptr that triggers bug in
+> strncpy_from_user_nofault. Patch to fix the issue [1].
 >
-> The implementation is built on two generic functions:
->  * __bpf_dynptr_copy
->  * __bpf_dynptr_copy_str
-> These functions take function pointers as arguments, enabling the
-> copying of data from various sources, including both kernel and user
-> space. Notably, these indirect calls are typically inlined.
+> [1] https://patchwork.kernel.org/project/linux-mm/patch/20250422131449.57=
+177-1-mykyta.yatsenko5@gmail.com/
 >
-> Reviewed-by: Andrii Nakryiko <andrii@kernel.org>
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
 > Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
 > ---
->  kernel/bpf/helpers.c     |   8 ++
->  kernel/trace/bpf_trace.c | 199 +++++++++++++++++++++++++++++++++++++++
->  2 files changed, 207 insertions(+)
+>  tools/testing/selftests/bpf/DENYLIST          |   1 +
+>  .../testing/selftests/bpf/prog_tests/dynptr.c |  13 ++
+>  .../selftests/bpf/progs/dynptr_success.c      | 201 ++++++++++++++++++
+>  3 files changed, 215 insertions(+)
 >
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 2aad7c57425b..7d72d3e87324 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -3294,6 +3294,14 @@ BTF_ID_FLAGS(func, bpf_iter_kmem_cache_next, KF_IT=
-ER_NEXT | KF_RET_NULL | KF_SLE
->  BTF_ID_FLAGS(func, bpf_iter_kmem_cache_destroy, KF_ITER_DESTROY | KF_SLE=
-EPABLE)
->  BTF_ID_FLAGS(func, bpf_local_irq_save)
->  BTF_ID_FLAGS(func, bpf_local_irq_restore)
-> +BTF_ID_FLAGS(func, bpf_probe_read_user_dynptr)
-> +BTF_ID_FLAGS(func, bpf_probe_read_kernel_dynptr)
-> +BTF_ID_FLAGS(func, bpf_probe_read_user_str_dynptr)
-> +BTF_ID_FLAGS(func, bpf_probe_read_kernel_str_dynptr)
-> +BTF_ID_FLAGS(func, bpf_copy_from_user_dynptr, KF_SLEEPABLE)
-> +BTF_ID_FLAGS(func, bpf_copy_from_user_str_dynptr, KF_SLEEPABLE)
-> +BTF_ID_FLAGS(func, bpf_copy_from_user_task_dynptr, KF_SLEEPABLE)
-> +BTF_ID_FLAGS(func, bpf_copy_from_user_task_str_dynptr, KF_SLEEPABLE)
-
-They need to have KF_TRUSTED_ARGS, otherwise legacy ptr_to_btf_id
-can be passed in.
-
->  BTF_KFUNCS_END(common_btf_ids)
+> diff --git a/tools/testing/selftests/bpf/DENYLIST b/tools/testing/selftes=
+ts/bpf/DENYLIST
+> index f748f2c33b22..1789a61d0a9b 100644
+> --- a/tools/testing/selftests/bpf/DENYLIST
+> +++ b/tools/testing/selftests/bpf/DENYLIST
+> @@ -1,5 +1,6 @@
+>  # TEMPORARY
+>  # Alphabetical order
+> +dynptr/test_probe_read_user_str_dynptr # disabled until https://patchwor=
+k.kernel.org/project/linux-mm/patch/20250422131449.57177-1-mykyta.yatsenko5=
+@gmail.com/ makes it into the bpf-next
+>  get_stack_raw_tp    # spams with kernel warnings until next bpf -> bpf-n=
+ext merge
+>  stacktrace_build_id
+>  stacktrace_build_id_nmi
+> diff --git a/tools/testing/selftests/bpf/prog_tests/dynptr.c b/tools/test=
+ing/selftests/bpf/prog_tests/dynptr.c
+> index e29cc16124c2..62e7ec775f24 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/dynptr.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/dynptr.c
+> @@ -33,10 +33,19 @@ static struct {
+>         {"test_dynptr_skb_no_buff", SETUP_SKB_PROG},
+>         {"test_dynptr_skb_strcmp", SETUP_SKB_PROG},
+>         {"test_dynptr_skb_tp_btf", SETUP_SKB_PROG_TP},
+> +       {"test_probe_read_user_dynptr", SETUP_XDP_PROG},
+> +       {"test_probe_read_kernel_dynptr", SETUP_XDP_PROG},
+> +       {"test_probe_read_user_str_dynptr", SETUP_XDP_PROG},
+> +       {"test_probe_read_kernel_str_dynptr", SETUP_XDP_PROG},
+> +       {"test_copy_from_user_dynptr", SETUP_SYSCALL_SLEEP},
+> +       {"test_copy_from_user_str_dynptr", SETUP_SYSCALL_SLEEP},
+> +       {"test_copy_from_user_task_dynptr", SETUP_SYSCALL_SLEEP},
+> +       {"test_copy_from_user_task_str_dynptr", SETUP_SYSCALL_SLEEP},
+>  };
 >
->  static const struct btf_kfunc_id_set common_kfunc_set =3D {
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 52c432a44aeb..52926d572006 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -3499,6 +3499,147 @@ static int __init bpf_kprobe_multi_kfuncs_init(vo=
-id)
+>  static void verify_success(const char *prog_name, enum test_setup_type s=
+etup_type)
+>  {
+> +       char user_data[384] =3D {[0 ... 382] =3D 'a', '\0'};
+>         struct dynptr_success *skel;
+>         struct bpf_program *prog;
+>         struct bpf_link *link;
+> @@ -58,6 +67,10 @@ static void verify_success(const char *prog_name, enum=
+ test_setup_type setup_typ
+>         if (!ASSERT_OK(err, "dynptr_success__load"))
+>                 goto cleanup;
 >
->  late_initcall(bpf_kprobe_multi_kfuncs_init);
->
-> +typedef int (*copy_fn_t)(void *dst, const void *src, u32 size, struct ta=
-sk_struct *tsk);
+> +       skel->bss->user_ptr =3D user_data;
+> +       skel->data->test_len[0] =3D sizeof(user_data);
+> +       memcpy(skel->bss->expected_str, user_data, sizeof(user_data));
 > +
-> +static __always_inline int __bpf_dynptr_copy_str(struct bpf_dynptr *dptr=
-, u32 doff, u32 size,
+>         switch (setup_type) {
+>         case SETUP_SYSCALL_SLEEP:
+>                 link =3D bpf_program__attach(prog);
+> diff --git a/tools/testing/selftests/bpf/progs/dynptr_success.c b/tools/t=
+esting/selftests/bpf/progs/dynptr_success.c
+> index e1fba28e4a86..753d35eb47d9 100644
+> --- a/tools/testing/selftests/bpf/progs/dynptr_success.c
+> +++ b/tools/testing/selftests/bpf/progs/dynptr_success.c
+> @@ -680,3 +680,204 @@ int test_dynptr_copy_xdp(struct xdp_md *xdp)
+>         bpf_ringbuf_discard_dynptr(&ptr_buf, 0);
+>         return XDP_DROP;
+>  }
+> +
+> +void *user_ptr;
+> +char expected_str[384]; /* Contains the copy of the data pointed by user=
+_ptr */
 
-why always_inline?
+what so magic about 384?
 
-patch 1 already adds overhead in non-LTO build,
-since small helper bpf_dynptr_check_off_len() will not be inlined.
-This __always_inline looks odd and probably wrong
-from optimizations pov.
+> +__u32 test_len[7] =3D {0/* placeholder */, 0, 1, 2, 255, 256, 257};
+> +
+> +typedef int (*bpf_read_dynptr_fn_t)(struct bpf_dynptr *dptr, u32 off,
+> +                                   u32 size, const void *unsafe_ptr);
+> +
+> +static __always_inline void test_dynptr_probe(void *ptr, bpf_read_dynptr=
+_fn_t bpf_read_dynptr_fn)
 
-All other __always_inline look wrong too.
+More __always_inline in the prog too?
+Why?
 
-
-> +                                                const void __user *unsaf=
-e_src,
-> +                                                copy_fn_t str_copy_fn,
-> +                                                struct task_struct *tsk)
 > +{
-> +       struct bpf_dynptr_kern *dst;
-> +       u32 chunk_sz, off;
-> +       void *dst_slice;
-> +       int cnt, err;
-> +       char buf[256];
+> +       char buf[sizeof(expected_str)];
+> +       struct bpf_dynptr ptr_buf;
+> +       int i;
 > +
-> +       dst_slice =3D bpf_dynptr_slice_rdwr(dptr, doff, NULL, size);
-> +       if (likely(dst_slice))
-> +               return str_copy_fn(dst_slice, unsafe_src, size, tsk);
+> +       err =3D bpf_ringbuf_reserve_dynptr(&ringbuf, sizeof(buf), 0, &ptr=
+_buf);
 > +
-> +       dst =3D (struct bpf_dynptr_kern *)dptr;
-> +       if (bpf_dynptr_check_off_len(dst, doff, size))
-> +               return -E2BIG;
+> +       bpf_for(i, 0, ARRAY_SIZE(test_len)) {
+> +               __u32 len =3D test_len[i];
 > +
-> +       for (off =3D 0; off < size; off +=3D chunk_sz - 1) {
-> +               chunk_sz =3D min_t(u32, sizeof(buf), size - off);
-> +               /* Expect str_copy_fn to return count of copied bytes, in=
-cluding
-> +                * zero terminator. Next iteration increment off by chunk=
-_sz - 1 to
-> +                * overwrite NUL.
-> +                */
-> +               cnt =3D str_copy_fn(buf, unsafe_src + off, chunk_sz, tsk)=
+> +               err =3D err ?: bpf_read_dynptr_fn(&ptr_buf, 0, test_len[i=
+], ptr);
+> +               if (len > sizeof(buf))
+> +                       break;
+> +               err =3D err ?: bpf_dynptr_read(&buf, len, &ptr_buf, 0, 0)=
 ;
-> +               if (cnt < 0)
-> +                       return cnt;
-> +               err =3D __bpf_dynptr_write(dst, doff + off, buf, cnt, 0);
-> +               if (err)
-> +                       return err;
-> +               if (cnt < chunk_sz || chunk_sz =3D=3D 1) /* we are done *=
-/
-> +                       return off + cnt;
+> +
+> +               if (err || bpf_memcmp(expected_str, buf, len))
+> +                       err =3D 1;
+> +
+> +               /* Reset buffer and dynptr */
+> +               __builtin_memset(buf, 0, sizeof(buf));
+> +               err =3D err ?: bpf_dynptr_write(&ptr_buf, 0, buf, len, 0)=
+;
 > +       }
-> +       return off;
+> +       bpf_ringbuf_discard_dynptr(&ptr_buf, 0);
 > +}
 > +
-> +static __always_inline int __bpf_dynptr_copy(const struct bpf_dynptr *dp=
-tr, u32 doff,
-> +                                            u32 size, const void __user =
-*unsafe_src,
-> +                                            copy_fn_t copy_fn, struct ta=
-sk_struct *tsk)
+> +static __always_inline void test_dynptr_probe_str(void *ptr,
+> +                                                 bpf_read_dynptr_fn_t bp=
+f_read_dynptr_fn)
 > +{
-> +       struct bpf_dynptr_kern *dst;
-> +       void *dst_slice;
-> +       char buf[256];
-> +       u32 off, chunk_sz;
-> +       int err;
+> +       char buf[sizeof(expected_str)];
+> +       struct bpf_dynptr ptr_buf;
+> +       __u32 cnt, i;
 > +
-> +       dst_slice =3D bpf_dynptr_slice_rdwr(dptr, doff, NULL, size);
-> +       if (likely(dst_slice))
-> +               return copy_fn(dst_slice, unsafe_src, size, tsk);
+> +       bpf_ringbuf_reserve_dynptr(&ringbuf, sizeof(buf), 0, &ptr_buf);
 > +
-> +       dst =3D (struct bpf_dynptr_kern *)dptr;
-> +       if (bpf_dynptr_check_off_len(dst, doff, size))
-> +               return -E2BIG;
+> +       bpf_for(i, 0, ARRAY_SIZE(test_len)) {
+> +               __u32 len =3D test_len[i];
 > +
-> +       for (off =3D 0; off < size; off +=3D chunk_sz) {
-> +               chunk_sz =3D min_t(u32, sizeof(buf), size - off);
-> +               err =3D copy_fn(buf, unsafe_src + off, chunk_sz, tsk);
-> +               if (err)
-> +                       return err;
-> +               err =3D __bpf_dynptr_write(dst, doff + off, buf, chunk_sz=
-, 0);
-> +               if (err)
-> +                       return err;
+> +               cnt =3D bpf_read_dynptr_fn(&ptr_buf, 0, len, ptr);
+> +               if (cnt !=3D len)
+> +                       err =3D 1;
+> +
+> +               if (len > sizeof(buf))
+> +                       continue;
+> +               err =3D err ?: bpf_dynptr_read(&buf, len, &ptr_buf, 0, 0)=
+;
+> +               if (!len)
+> +                       continue;
+> +               if (err || bpf_memcmp(expected_str, buf, len - 1) || buf[=
+len - 1] !=3D '\0')
+> +                       err =3D 1;
 > +       }
-> +       return 0;
+> +       bpf_ringbuf_discard_dynptr(&ptr_buf, 0);
 > +}
 > +
-> +static __always_inline int copy_user_data_nofault(void *dst, const void =
-__user *unsafe_src,
-> +                                                 u32 size, struct task_s=
-truct *tsk)
+> +static __always_inline void test_dynptr_probe_xdp(struct xdp_md *xdp, vo=
+id *ptr,
+> +                                                 bpf_read_dynptr_fn_t bp=
+f_read_dynptr_fn)
 > +{
-> +       if (WARN_ON_ONCE(tsk))
-> +               return -EFAULT;
+> +       struct bpf_dynptr ptr_xdp;
+> +       char buf[sizeof(expected_str)];
+> +       __u32 off, i;
 > +
-> +       return copy_from_user_nofault(dst, unsafe_src, size);
-> +}
-> +
-> +static __always_inline int copy_user_data_sleepable(void *dst, const voi=
-d __user *unsafe_src,
-> +                                                   u32 size, struct task=
-_struct *tsk)
-> +{
-> +       int ret;
-> +
-> +       if (!tsk) /* Read from the current task */
-> +               return copy_from_user(dst, unsafe_src, size);
-> +
-> +       ret =3D access_process_vm(tsk, (unsigned long)unsafe_src, dst, si=
-ze, 0);
-> +       if (ret !=3D size)
-> +               return -EFAULT;
-> +       return 0;
-> +}
-> +
-> +static __always_inline int copy_kernel_data_nofault(void *dst, const voi=
-d *unsafe_src,
-> +                                                   u32 size, struct task=
-_struct *tsk)
-> +{
-> +       if (WARN_ON_ONCE(tsk))
-> +               return -EFAULT;
+> +       /* Set offset near the seam between buffers */
+> +       off =3D 3500;
 
-Why ? Let's not do defensive programming.
-The caller clearly passes NULL.
-Just drop this line.
-
-> +
-> +       return copy_from_kernel_nofault(dst, unsafe_src, size);
-> +}
-> +
-> +static __always_inline int copy_user_str_nofault(void *dst, const void _=
-_user *unsafe_src,
-> +                                                u32 size, struct task_st=
-ruct *tsk)
-> +{
-> +       if (WARN_ON_ONCE(tsk))
-> +               return -EFAULT;
-
-same here and further down.
-
-pw-bot: cr
+what is 3500 ?
 
