@@ -1,232 +1,186 @@
-Return-Path: <bpf+bounces-57256-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57257-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67528AA78E3
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 19:55:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0DD6AA78E5
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 19:56:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67BE11C06075
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 17:55:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 60F2F1C02976
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 17:56:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31471261579;
-	Fri,  2 May 2025 17:55:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74915261589;
+	Fri,  2 May 2025 17:55:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="drWIecNg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q16HuOAp"
 X-Original-To: bpf@vger.kernel.org
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B16A79D2;
-	Fri,  2 May 2025 17:55:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5052C42A87;
+	Fri,  2 May 2025 17:55:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746208504; cv=none; b=T6SdYAOU7P+MCIH/7f6TtfNsbwTJy0jrTlTlTG9n6DkerE2P+9+cC4IUPXqYOrlm4PnQeovV7YSXSrc7o+jaruAfZi0oEZRqso/5jeORYoW/MUNqytz9JpGUcLHR36e2aWCrmneR7w1aEwLjRB2YVpvPwEmUsjqp5hOt3rhdA9c=
+	t=1746208556; cv=none; b=O2uPm5nk3aE0I9OigU8mr1YJzfPlYqdDyiPCv9YBPmaJlq6cgQ9qUvtOccTs8e8H/AHnMTYqV6HU5myFRcxJLrYcd3y3lNxGI+/2/ZH41GYA/brRsTX6Z9UKOlQosCYHp0Cz+Pz2HciCv3ORShobpMToOf3WkMLbQxcefmKMywE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746208504; c=relaxed/simple;
-	bh=yP36yvy+bxukpM2Mm+8RP/ArZCNVp/cYEZ4y0Rk0UgY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kNAH/280dNjC9j330Uy0vb/Fl1gjFxn1axZs+KsUUolOzhOaRuhDW0laHaMtBLkzWm6RCL2RTJdzygkJR9fjIXorSWLwfId3Y6qwgNzl8A8kBxgu/bgABOdEFIaRFzZF25A6VBBHt6ajwn/ormV3PuweuV7fU8kT5/MLakjlHD4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=drWIecNg; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=gXNNDPdZb2Mvvv9l4U0qnaw+JsmJmG680iJnfO61RQ0=; b=drWIecNg8gz9iVU7R4SbsnNC4G
-	OT+gaz2JAollchQiDnxPvMENCLtRfCnY/KiSO97PdVcgLiMk7OCUoMLZbwQairLtNUWRytnnYcFrd
-	9/v7gYhCHD/48M8bSMa275bj70kY+oJe5NLjmfS1yrf9YAroP0dm7wuZa6zJLyJX2bX5TJFiYjYxQ
-	rm95uOLHeXAc7+LDiUYhyo8m1BWM53IZ5flM/iAtkFVBo6zEpNcvn5C/08Q+cMfcuvVVSFfTly0AZ
-	HvmokMsKGp0KPgpwV6MoB6FY+sewh4jj8ga1Y4dn8f+jDdulRkjDj1b7R0ZIpOinKe5dHIn/tWTGD
-	qOdbDESA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43400)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1uAub8-0001h2-1h;
-	Fri, 02 May 2025 18:54:54 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.96)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1uAub4-0000s1-0M;
-	Fri, 02 May 2025 18:54:50 +0100
-Date: Fri, 2 May 2025 18:54:49 +0100
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Heiner Kallweit <hkallweit1@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrew Lunn <andrew+netdev@lunn.ch>, bpf@vger.kernel.org,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Jon Hunter <jonathanh@nvidia.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
-	Paolo Abeni <pabeni@redhat.com>,
-	Thierry Reding <treding@nvidia.com>
-Subject: Re: [PATCH net-next v2 2/4] net: stmmac: call phylink_carrier_*() in
- XDP functions
-Message-ID: <aBUG6Z_Crs31W45x@shell.armlinux.org.uk>
-References: <aBTKOBKnhoz3rrlQ@shell.armlinux.org.uk>
- <E1uAqYC-002D3p-UO@rmk-PC.armlinux.org.uk>
- <ed54d4e5-ecc3-4327-8739-3d41ca41211e@lunn.ch>
+	s=arc-20240116; t=1746208556; c=relaxed/simple;
+	bh=Lyw78FzLF5l9cEh9Dgtvhw7XnisV/EdGEAE4Tbtjpco=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=D3/YVbxpCl0XKxg/LqQqoJcm9N5d0s1fLxWsJxae65ImWrfLmkgiOpLnklIC1nEtaBPhDzb0n7Psyg5mr3hshNSsYUB2dHLAedVRhE3hiDFpiiQI0SF13M/lMJBBEwQ1fqremdCy3e9Mt3dPgtDTYPzRxvbMsD3cN2OdJbz6H2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q16HuOAp; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-39c13fa05ebso1292334f8f.0;
+        Fri, 02 May 2025 10:55:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1746208551; x=1746813351; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rJuPjJpIf6+ibnlHaAEOHWVIs1EFJfC5yfPtDzkxsfQ=;
+        b=Q16HuOApJAOHQhCvYWyMAyKMWWhwa4Ppi7F6HWariUKfKXVPgoInGd6T6sfca2LOuL
+         7hVM3MqWog+hVW5Ew6UvUDJB5yz/yiOSAiA3HMDXqGLqbxhROcf+avYCpmL9gzhg8jhF
+         n2vD3ihwAqx0RP5QH6Iu6x9qlYa58VEGqwy2NJVD3kKXijDGkalWY7w4NP03vucrPBAl
+         EzSarCV+M0W0bLpV6Xdcf3+W0w04NJvlJlWS6SBK5/G5wqqHeeyPskPsVtdqKRxY4QOS
+         0mCkxOj/P6NztB2A+Qc4PeyUp7SCxtL+xjx2PWSMcUPkRfv4LjxG6MkDPkq3hP4h6fIf
+         49Aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746208551; x=1746813351;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rJuPjJpIf6+ibnlHaAEOHWVIs1EFJfC5yfPtDzkxsfQ=;
+        b=MVLtX/p2Alx8jTRarhDXw/j8xlvHqvoJQJWNPX08QMbbZXcm3/j8QGFb2zvlPSfGTe
+         OekFke/g5TdKdPXTue24OGSwR0mN6xq+jk/AKseL2lcIgQ/pX7BBKV3772jtWMgkFuk/
+         8HtEiURnVEW2sTtJ87OJ8z5SfGgjoWN58TDw+moFhfMuEgh40vVrCSYwvleU7OeyvCgq
+         b1PpjEO2lM24T7m0WXlenrHFQyZEOMgqzkGRdW53zAeAs0cuypOaJ0+NXHXXeL21mUTO
+         A4mOxsLoH5+GqkVyaP9KG7h8Xi9TBkmm/3lXW6tuVIXPdh8daGOEobk4H6qnfKq8xfFA
+         8gCA==
+X-Forwarded-Encrypted: i=1; AJvYcCWviZ2q6Ao3y7+DiXHMGMVj9XyctLUEA0laZPyMVfMiwaQdBpGSaBCl6Yjuy5Ujn5yMzMI=@vger.kernel.org, AJvYcCX44Z8Yg3jeVRMQ6LbKS1Rd3ZeyU8r3Jeiexa2JiNtJmy6JXRQrdYda4xiQMhOp8j+nSA4RdLAW@vger.kernel.org
+X-Gm-Message-State: AOJu0YwrNLMEQjHsQzeQFKC/y0n7B97GkUNTxZ1dt0g/UDb1UZv+Rv8I
+	uQrzo6Y63Yuqk9zCtiwEBREagw87a7FyfzEmIjRNh8yF2CwHLaLbXyFMskd1Rj3gRI/Cvar9mPY
+	ED+M6G+ILSFDBnQZHlsW5AX0vekZaZA==
+X-Gm-Gg: ASbGncuYrdfB01l+hjjZtjlbmaWCwcTFP9JPsuAQjeuOhOYleHTZkXwNkaMHjDhNosz
+	H24g5ljPoeIy5iyZz9LSdGxHIJlNGCnRi9+Z8+lF2oauDTPw/GBPN+eAbr8z//rzG4CU5+JpC6y
+	JzZbVr5AAb64QNaID8Z3NO750uATyIE6eO1khDjA==
+X-Google-Smtp-Source: AGHT+IH5V8PPEU6zhjakxr4Xawb2hEbsxq1Z5YXvZgsgkqc/W7ihRkh5IG8IjekFk2ZXqhZE3CXbqzB1L2xcddMOxA8=
+X-Received: by 2002:a05:6000:3113:b0:38d:de45:bf98 with SMTP id
+ ffacd0b85a97d-3a099ad28bdmr2847869f8f.8.1746208551512; Fri, 02 May 2025
+ 10:55:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ed54d4e5-ecc3-4327-8739-3d41ca41211e@lunn.ch>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+References: <20250425214039.2919818-1-ameryhung@gmail.com> <CAEf4BzYUNckc9pXcE7BawxWFVfY--p12c3ax8ySP1P+BEww91w@mail.gmail.com>
+ <CAADnVQL92e=-Nzr0O5Geev4y7cWG2m1UR_D7izF+Rd2ccPMNKQ@mail.gmail.com> <CAEf4BzY3oYWkUshYD7ybiB5bcGoLnQxukYObmgRtRZoEi=ZMTw@mail.gmail.com>
+In-Reply-To: <CAEf4BzY3oYWkUshYD7ybiB5bcGoLnQxukYObmgRtRZoEi=ZMTw@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 2 May 2025 10:55:40 -0700
+X-Gm-Features: ATxdqUEjFdDyn8-TRi76naztcBPR2U_uvQEO-qMff_V_2nOUiKnChv3TEixoinE
+Message-ID: <CAADnVQ+N5u8KTtcsKOWcDmQ4X=OmvTf+LfLhY=VLQJ7q-=Li7Q@mail.gmail.com>
+Subject: Re: [PATCH RFC v3 0/2] Task local data API
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Amery Hung <ameryhung@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Tejun Heo <tj@kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 02, 2025 at 05:29:21PM +0200, Andrew Lunn wrote:
-> On Fri, May 02, 2025 at 02:35:36PM +0100, Russell King (Oracle) wrote:
-> > Phylink does not permit drivers to mess with the netif carrier, as
-> > this will de-synchronise phylink with the MAC driver. Moreover,
-> > setting and clearing the TE and RE bits via stmmac_mac_set() in this
-> > path is also wrong as the link may not be up.
-> > 
-> > Replace the netif_carrier_on(), netif_carrier_off() and
-> > stmmac_mac_set() calls with the appropriate phylink_carrier_block() and
-> > phylink_carrier_unblock() calls, thereby allowing phylink to manage the
-> > netif carrier and TE/RE bits through the .mac_link_up() and
-> > .mac_link_down() methods.
-> > 
-> > This change will have the side effect of printing link messages to
-> > the kernel log, even though the physical link hasn't changed state.
-> > This matches the carrier state that userspace sees, which has always
-> > "bounced".
-> > 
-> > Note that RE should only be set after the DMA is ready to avoid the
-> > receive FIFO between the MAC and DMA blocks overflowing, so
-> > phylink_start() needs to be placed after DMA has been started.
-> > 
-> > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> > ---
-> >  .../net/ethernet/stmicro/stmmac/stmmac_main.c | 20 +++++++++++--------
-> >  1 file changed, 12 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> > index f59a2363f150..ac27ea679b23 100644
-> > --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> > +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> > @@ -6922,6 +6922,11 @@ void stmmac_xdp_release(struct net_device *dev)
-> >  	/* Ensure tx function is not running */
-> >  	netif_tx_disable(dev);
-> >  
-> > +	/* Take down the software link. stmmac_xdp_open() must be called after
-> > +	 * this function to release this block.
-> > +	 */
-> > +	phylink_carrier_block(priv->phylink);
-> > +
-> >  	/* Disable NAPI process */
-> >  	stmmac_disable_all_queues(priv);
-> >  
-> > @@ -6937,14 +6942,10 @@ void stmmac_xdp_release(struct net_device *dev)
-> >  	/* Release and free the Rx/Tx resources */
-> >  	free_dma_desc_resources(priv, &priv->dma_conf);
-> >  
-> > -	/* Disable the MAC Rx/Tx */
-> > -	stmmac_mac_set(priv, priv->ioaddr, false);
-> > -
-> >  	/* set trans_start so we don't get spurious
-> >  	 * watchdogs during reset
-> >  	 */
-> >  	netif_trans_update(dev);
-> > -	netif_carrier_off(dev);
-> >  }
-> >  
-> 
-> >  int stmmac_xdp_open(struct net_device *dev)
-> > @@ -7026,25 +7027,28 @@ int stmmac_xdp_open(struct net_device *dev)
-> >  		hrtimer_setup(&tx_q->txtimer, stmmac_tx_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-> >  	}
-> >  
-> > -	/* Enable the MAC Rx/Tx */
-> > -	stmmac_mac_set(priv, priv->ioaddr, true);
-> > -
-> >  	/* Start Rx & Tx DMA Channels */
-> >  	stmmac_start_all_dma(priv);
-> >  
-> > +	/* Allow phylink to bring the software link back up.
-> > +	 * stmmac_xdp_release() must have been called prior to this.
-> > +	 */
-> 
-> This is counter intuitive. Why is release called before open?
+On Thu, May 1, 2025 at 7:22=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> I wasn't trying to optimize those few bytes taken by szs, tbh.
+> Allocating from the end of the page bakes in the assumption that we
+> won't ever need more than one page. I don't know if I'd do that. But
+> we can just track "next available offset" instead, so it doesn't
+> really matter much.
 
-Indeed - and that should've been caught in the review where XDP was
-being added.
+Right. That works too.
 
-> Looking into stmmac_xdp_set_prog() i think i get it. Even if there is
-> not a running XDP prog, stmmac_xdp_release() is called, and then
-> stmmac_xdp_open().
 
-If there is a change of "do we have an XDP prog" state, then
-stmmac_xdp_release() is called to free all the current contexts to
-do with queue/descriptor management, and then stmmac_xdp_open() is
-called thereafter. These are doing a subset of .ndo_open/.ndo_release
-and I think that's where they're getting their naming from.
+> >
+> > I'm not quite sure how different processes can do it locklessly.
+>
+> There are no different processes, it's all one process, many
+> threads... Or is that what you meant? tld_metadata is *per process*,
+> tld_data is *per thread*. Processes don't need to coordinate anything
+> between themselves, only threads within the process.
 
-The only possible sequence is:
+Yeah. I confused myself thinking that we need to support this
+through fork/exec. Since they will be different processes
+they will have their own task local storage map elements,
+so any kind of signaling into a child needs to be done in user space.
+Using bpf tls map won't work.
 
-	stmmac_open()
-then, on each XDP prog addition or removal, but not replacement:
-		stmmac_xdp_release()
-		stmmac_xdp_open()
-finally,
-	stmmac_release()
+So using one "tld" library in multiple threads within a single
+process works. No need to complicate things by asking kernel tls map.
+"tld" library can keep whatever state it needs,
+centralized locking, etc.
 
-> Maybe these two functions need better names? prepare and commit?
+> As for how I'd do offset allocation and key addition locklessly. You
+> are right that it can't be done completely locklessly, but just
+> looping and yielding probably would be fine.
+> =3D
+>
+> Then the sequence of adding the key would be something like below.
+> I've modified tld_metadata a bit to make this simpler and more
+> economical (and I fixed definition of keys array of array of chars,
+> oops):
+>
+> struct tld_metadata {
+>     int cnt;
+>     int next_off;
+>     char keys[MAX_KEY_CNT][MAX_KEY_LEN];
+>     __u16 offs[MAX_KEY_CNT];
+> };
+>
+> struct tld_metadata *m =3D ...;
+> const char *new_key =3D ...;
+> int i =3D 0;
+>
+> /* all m->offs[i] are set to -1 on creation */
+> again:
+>
+>     int key_cnt =3D m->cnt;
+>     for (; i < key_cnt; i++) {
+>        while (m->offs[i] < 0) /* update in progress */
+>             sched_yield();
+>
+>        if (strcmp(m->keys[i], new_key) =3D=3D 0)
+>             return m->offs[i];
+>
+>        if (!cmpxchg(*m->cnt, key_cnt, key_cnt + 1)) {
+>             goto again; /* we raced, key might have been added
+> already, recheck, but keep i */
+>
+>        /* slot key_cnt is ours, we need to calculate and assign offset */
+>        int new_off =3D m->next_off;
+>        m->next_off =3D new_off + key_sz;
+>
+>        m->keys[key_cnt][0] =3D '\0';
+>        strncat(m->keys[key_cnt], new_key, MAX_KEY_LEN);
+>
+>        /* MEMORY BARRIERS SHOULD BE CAREFULLY CONSIDERED */
+>
+>        m->offs[key_cnt] =3D new_off; /* this is finalizing key -> offset
+> assignment */
+>
+>        /* MEMORY BARRIERS SHOULD BE CAREFULLY CONSIDERED */
+>
+>        return new_off; /* we are done */
+>     }
+>
+> Something like that. There is that looping and yield to not miss
+> someone else winning the race and adding a key, so that's the locking
+> part. But given that adding a key definition is supposed to be one
+> time operation (per key), I don't think we should be fancy with
+> locking.
 
-Yes, it's all counter intuitive, and there are various things about the
-XDP code that make it hard to follow.
-
-For example, stmmac_xdp_set_prog() leads you to think, because of the
-way the need_update variable is set, that looking for references to
-xdp_prog would show one where all the dependents are, but no, there's
-stmmac_xdp_is_enabled(), which is nice and readable, but could've
-been used in stmmac_xdp_set_prog() to make it more obvious what to
-grep for.
-
-Incidentally, if stmmac_xdp_open() fails to re-grab the interrupts,
-then it calls phylink_stop(), stmmac_hw_teardown(), and
-free_dma_desc_resources().
-
-If one then set the interface administratively down, stmmac_release()
-gets called, which again calls phylink_stop(), free_dma_desc_resources()
-and stmmac_release_ptp().
-
-stmmac_release_ptp() disables/unprepares clk_ptp_ref, and unregisters
-the PTP stuff. stmmac_hw_teardown() also disables/unprepares
-clk_ptp_ref, so we probably unbalance the clk API in this case...
-and probably much other stuff.
-
-Calling free_dma_desc_resources() twice calls functios such as 
-free_dma_tx_desc_resources() twice, and it looks like that's not going
-to be healthy, calling dma_free_coherent() with the same arguments,
-double-releasing memory. Same for kfree(). Probably same for the RX
-stuff.
-
-Basically, if one messes with XDP in this driver, expect things to go
-bang and kill the kernel if something goes wrong with the whole
-xdp_release+xdp_open dance.
-
-Honestly, this needs a rewrite, but I currently know nowt about XDP.
-
-So, I'd suggest that the names of these functions is the least of the
-problems here.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+something like that should work.
+I wish there was some trivial futex wrapper in .h
+that can be used instead of pthread_mutex baggage.
 
