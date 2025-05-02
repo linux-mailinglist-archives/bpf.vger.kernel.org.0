@@ -1,74 +1,74 @@
-Return-Path: <bpf+bounces-57282-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57283-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 711A6AA7ABB
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 22:17:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A148AA7AC0
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 22:17:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 899901781B8
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 20:17:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE78D3BACE9
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 20:16:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12B941E7C1C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED92E20B80E;
 	Fri,  2 May 2025 20:16:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g1DbSHXP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hAjbmTay"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 345FC1FFC4B;
-	Fri,  2 May 2025 20:16:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0532520296A;
+	Fri,  2 May 2025 20:16:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746216990; cv=none; b=RXhiSUSRKQe1ezuZEjl9jmIH1e/o919SSEwc5vHSfP010+kpJhVwvlopjvxmLHkHx1JxV9zPpTEvT1rxIBN+XRuZ6vBz4AOl6pYVMzk/zh9tWt+5il5d61Vjjh/VcdgwKb+Fwwjn48ueDOQ/NhCipbZLsJRedeMoxXUcc1M01us=
+	t=1746216991; cv=none; b=eV2fGyXnK41RphMGa6LlgllN0+2Pk9341UbYSKHZG888ESIdlD8CIGc98nnZWD88pIjkmZAudJ9axMTme7RngVIVZttP3mnrvaRjuI2ok7/6kjjmF3JUOg7gV+6J9isX6IHEojlsCCIZtug9J7ft6wZkax6f98ZiwfW+DZKoRZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746216990; c=relaxed/simple;
-	bh=sPAoZ5v8EV5ThIzG5JgSPL/BClqB1gRZR2TqojgG7zg=;
+	s=arc-20240116; t=1746216991; c=relaxed/simple;
+	bh=5KnQXCT7ejePp4D/koH4CcHyOlt9TzJIHL6G8oWa7RU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eWXeIw/jDyMQk/jwYWRIBdH2ME+5CxSYgzD+oygZBJ2xipx1JE4eRvFuWCZBjwVXlWQwg7wZ8rBbQc2lyGCecV9kDn9JfNy/87Bh+wV6TCJP5bisb3qqhqAO3hyATNeKkeb4jhWQGF7OUDChkhzDljw2Q2sgPWNHd757mFLRLyk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g1DbSHXP; arc=none smtp.client-ip=209.85.210.180
+	 MIME-Version; b=RrH9cNXojDOU7NE3sFbbIMhMJUSTB85Fq21yCKb4cvC01B8OO8FD9YSMsRq0FSOs3A8tQOd45Ihwa1N9zOYA+/sKouyhz/os7jx9q/X0017ubfXOXJXoNPNJk9tX8e/7aJlQMmqsifr7gOmOUYTLZJDVxU4XgT0pl/XnxUcqzF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hAjbmTay; arc=none smtp.client-ip=209.85.214.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-73c17c770a7so3705168b3a.2;
-        Fri, 02 May 2025 13:16:28 -0700 (PDT)
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-22928d629faso25668615ad.3;
+        Fri, 02 May 2025 13:16:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746216988; x=1746821788; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1746216989; x=1746821789; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=h17nlqMT8L80P7Q8ICigMmkP2aNT4tFSiFhkeYN/QUo=;
-        b=g1DbSHXPNYW4aUxmpx2wyW5hSAM/mxq9ShOtV3yRzGUwe19Zcwmrnji/X/w1ptiHKz
-         ItPV567+jlm5sdjW6yO1VxLDXmB9HKwNXdU+CFDCvP4pG7uwHpELUL715mwDhmbIvzob
-         l5XZRXy8/JHamXcYe5PFtlopPLaNVRSPB/xdX1WdUHWIr2P066hVRehtGaAm6Ac4Pw0V
-         2aCVw1l9C7rVTe1VNOlS0/KhmmwnRHoelEjAX3/dKunGJMALmixSb9vLHGEKf58A2Lgi
-         ohwCY+8h50XgZ2jdHK231XmFws8NadIwhOvxI5jMQi7XiyHe2ZU5ZwsVTQP6Cp1G+/WP
-         tqhw==
+        bh=WuHOzyNA2PQ350q2S15Rqa7sytaGDQgGFBAky3x5h30=;
+        b=hAjbmTayXkDmc3E6iXH8DyMyFN2YJnXjw+TyQ7WMGJPyOdSs+LraYCN4Fl21driqPI
+         iBdWxINPh+ezaGssBKazHbyWsoYOCIC0pg/6DvrZWPrU9TmcB7AKycE5Jd4iHN078Iyc
+         8Fq4ZMpfpnHY2KcQzHfHOFEhZj0ijgU2QuAI4qBSOTlZyzCzgOZRHx8Sxjq28A+90Npr
+         svqTgUTkElgx9QxMr8MYRp8/QEjwo/RnTnxzLc6ihPykVHV25KC9VoQ4VVF8ZSCFSB91
+         lY+Qr9wF5baNh8npAq2XLENxX1lNbo5YE6GLMUT62nZDlsi5svdzyQvmqRFPkhVn4lSy
+         x19g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746216988; x=1746821788;
+        d=1e100.net; s=20230601; t=1746216989; x=1746821789;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=h17nlqMT8L80P7Q8ICigMmkP2aNT4tFSiFhkeYN/QUo=;
-        b=aOIwFqBt+QUqxgY+9cgAazzweNUqexpOmWcU8AHdJmHbdZHPgi4iVbQfpp2/YX+DE+
-         Bz2z4GZWaQY1S4O2vc8s7NTca3EhQOQFD8cjOJ/DgwxwAnqwDPbjhQsJe4ILsWgGoSpA
-         q/8hhU0S+9Zp3T5gk0niCR/dMAcUugCq030p6/wiXCd1dq773l7fY/H/vP3w95ZZPOVs
-         8adiYxYpVV9butfy5deUmvbZ3vrhLV1MIV/9Xi9iRVaHVuMYcZdYto7rZKrd2sKBX/b2
-         OQl/Vz1+mISEid1pZx7vxAYUTMytFnUC+W89Fe0GzpfbIlCCeyJm3BKyARZfCjyIgs7K
-         FaKg==
-X-Gm-Message-State: AOJu0Yxhmq2T0ZdHGaoFtWAz49ZHjlXKD4oR+a+mcB8++Kq/dt3NvJb3
-	4l8aSqZhZDXcjJrOgStd4zZokykxAZmVExBeabwgJB3GnMOYvAYQRe2jFQ==
-X-Gm-Gg: ASbGncstAHvdQVoyhHKpKudqUN90F2cGxbetAatEVJ8WANrU2LNUbTf9CjHJUMaheF5
-	oYBCSdlW92KW0GHRY/eIN4xNaIgcCINR4k3QflHyKSQ1oyxKYYEhFYtH1ZLnKfoZOL0NQqP6j3g
-	zV506NsJ3d2q4oA/zotsoM/7caQYI7SyHZCdQgQ8/+uNcxW9pafJ7qZGjoAVTspyq+Iyg4NrY6s
-	trlRUHHdvpGN5qgxr6HAdWRtkGu7qza08SyOeyzoipLv3QA0H6vP1CjP++8KEsRvDP9C0w/GMHY
-	2cd29cKDl7KGwVUqfAv9Mh0EEfpWzxU=
-X-Google-Smtp-Source: AGHT+IEweH86uC30havCbwPr7p/9th8o3uUonZ5IEWyhYFlhgnCY/i2I6HwJc/6nvJPhreoN+isVpg==
-X-Received: by 2002:a05:6a21:1fc8:b0:1f5:86f2:ba57 with SMTP id adf61e73a8af0-20cdfdf4e04mr7997679637.30.1746216988315;
-        Fri, 02 May 2025 13:16:28 -0700 (PDT)
-Received: from localhost ([2a03:2880:ff:4::])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b1fb3b7c5b8sm1051444a12.39.2025.05.02.13.16.27
+        bh=WuHOzyNA2PQ350q2S15Rqa7sytaGDQgGFBAky3x5h30=;
+        b=FNnbVP12UgRP8duLFfA+wupxxUYsY0+plvmRh0WQQYVVFlZYdKDSzjM3TKXaEG3rkx
+         sS6fG30QHHG1ViSbNTXGJaBe98Ax69z3F2No35lKpe32t0fpc0HH+i7usYj6cY5tPudE
+         fckmq70L9GtHHrY8HSODun54dm7aLDoF2SyW+TbvYexKpKJtugLiAQ23aedZSojhQQPS
+         /If+Tdm1dMzHKZboPEaJMlU9hcWdOw0fxFmw3O8IFZ4KEtOA04NbL/512UXKYnE0UeHE
+         cueP9GDpp16BEvuMAmFsm2+4f5hUB2xr2uLC3MRo2SnN8YJKGLmqC8mRRD061qH4Iiya
+         l4Rw==
+X-Gm-Message-State: AOJu0YxJdk+qqLjc/NzpBldE0WNglmgabo85iX2vOSopIdfOXA2up3TI
+	R9DCWZqKBnt4LlbUNSkIDREBr0xnGCWHKSaJB84AClRH5HtCkmxnwiAJcA==
+X-Gm-Gg: ASbGncsTqYcBKu+zXPH2ns9Uk8KW5AmnjUVGHIxLV/Dt5ungsGiCMJABUIhTDrHKAUn
+	PsBvH+wbOHqpQEa/KpoerPGFTIsly82YJscMNShifokNzkCEP98iH0NsgS9NKrwgWqRbOcYS/8j
+	cbaL3OAo6anPs40SwD1VR7IBOey4rHrWio5TR8UR0Tgt6D6Hc1AnIF5fQMD+772zlo653t51QZQ
+	tq+HCysGeYiYhpNJ6+7Uqjg42iA76zzHVbCjPgcCrEKpUp7ijNJ5jjzFuo0YThPzSu+i8zuZ03N
+	EXNsTunRJv1Y7At6rvIVudgrB5H8dYg=
+X-Google-Smtp-Source: AGHT+IFcHJn1guNW5j7eZevl595iYvgl4376sGpGqCqCF6FcLlVFuSpVE+MaO3snBfuij3QKpe3WpQ==
+X-Received: by 2002:a17:902:e546:b0:224:26f2:97d7 with SMTP id d9443c01a7336-22e1030c94emr57582485ad.8.1746216989200;
+        Fri, 02 May 2025 13:16:29 -0700 (PDT)
+Received: from localhost ([2a03:2880:ff:d::])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b1fb3b7cfefsm1202288a12.36.2025.05.02.13.16.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 02 May 2025 13:16:28 -0700 (PDT)
 From: Amery Hung <ameryhung@gmail.com>
@@ -80,9 +80,9 @@ Cc: netdev@vger.kernel.org,
 	martin.lau@kernel.org,
 	xiyou.wangcong@gmail.com,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next/net v2 3/5] bpf: net_sched: Make some Qdisc_ops ops mandatory
-Date: Fri,  2 May 2025 13:16:22 -0700
-Message-ID: <20250502201624.3663079-4-ameryhung@gmail.com>
+Subject: [PATCH bpf-next/net v2 4/5] selftests/bpf: Test attaching a bpf qdisc with incomplete operators
+Date: Fri,  2 May 2025 13:16:23 -0700
+Message-ID: <20250502201624.3663079-5-ameryhung@gmail.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250502201624.3663079-1-ameryhung@gmail.com>
 References: <20250502201624.3663079-1-ameryhung@gmail.com>
@@ -94,53 +94,157 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The patch makes all currently supported Qdisc_ops (i.e., .enqueue,
-.dequeue, .init, .reset, and .destroy) mandatory.
+Implement .destroy in bpf_fq and bpf_fifo as it is now mandatory.
 
-Make .init, .reset and .destroy mandatory as bpf qdisc relies on prologue
-and epilogue to check attach points and correctly initialize/cleanup
-resources. The prologue/epilogue will only be generated for an struct_ops
-operator only if users implement the operator.
+Test attaching a bpf qdisc with a missing operator .init. This is not
+allowed as bpf qdisc qdisc_watchdog_cancel() could have been called with
+an uninitialized timer.
 
-Make .enqueue and .dequeue mandatory as bpf qdisc infra does not provide
-a default data path.
-
-Fixes: c8240344956e ("bpf: net_sched: Support implementation of Qdisc_ops in bpf")
 Signed-off-by: Amery Hung <ameryhung@gmail.com>
 ---
- net/sched/bpf_qdisc.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ .../selftests/bpf/prog_tests/bpf_qdisc.c      | 19 +++++++++
+ .../bpf/progs/bpf_qdisc_fail__incompl_ops.c   | 41 +++++++++++++++++++
+ .../selftests/bpf/progs/bpf_qdisc_fifo.c      |  6 +++
+ .../selftests/bpf/progs/bpf_qdisc_fq.c        |  6 +++
+ 4 files changed, 72 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_qdisc_fail__incompl_ops.c
 
-diff --git a/net/sched/bpf_qdisc.c b/net/sched/bpf_qdisc.c
-index a8efc3ff2b7e..7ea8b54b2ab1 100644
---- a/net/sched/bpf_qdisc.c
-+++ b/net/sched/bpf_qdisc.c
-@@ -395,6 +395,17 @@ static void bpf_qdisc_unreg(void *kdata, struct bpf_link *link)
- 	return unregister_qdisc(kdata);
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_qdisc.c b/tools/testing/selftests/bpf/prog_tests/bpf_qdisc.c
+index a22008fd31d2..53154544b28c 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_qdisc.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_qdisc.c
+@@ -7,6 +7,7 @@
+ #include "network_helpers.h"
+ #include "bpf_qdisc_fifo.skel.h"
+ #include "bpf_qdisc_fq.skel.h"
++#include "bpf_qdisc_fail__incompl_ops.skel.h"
+ 
+ #define LO_IFINDEX 1
+ 
+@@ -159,6 +160,22 @@ static void test_qdisc_attach_to_non_root(void)
+ 	bpf_qdisc_fifo__destroy(fifo_skel);
  }
  
-+static int bpf_qdisc_validate(void *kdata)
++static void test_incompl_ops(void)
 +{
-+	struct Qdisc_ops *ops = (struct Qdisc_ops *)kdata;
++	struct bpf_qdisc_fail__incompl_ops *skel;
++	struct bpf_link *link;
 +
-+	if (!ops->enqueue || !ops->dequeue || !ops->init ||
-+	    !ops->reset || !ops->destroy)
-+		return -EINVAL;
++	skel = bpf_qdisc_fail__incompl_ops__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "bpf_qdisc_fifo__open_and_load"))
++		return;
 +
-+	return 0;
++	link = bpf_map__attach_struct_ops(skel->maps.test);
++	if (!ASSERT_ERR_PTR(link, "bpf_map__attach_struct_ops"))
++		bpf_link__destroy(link);
++
++	bpf_qdisc_fail__incompl_ops__destroy(skel);
 +}
 +
- static int Qdisc_ops__enqueue(struct sk_buff *skb__ref, struct Qdisc *sch,
- 			      struct sk_buff **to_free)
+ static int get_default_qdisc(char *qdisc_name)
  {
-@@ -432,6 +443,7 @@ static struct bpf_struct_ops bpf_Qdisc_ops = {
- 	.verifier_ops = &bpf_qdisc_verifier_ops,
- 	.reg = bpf_qdisc_reg,
- 	.unreg = bpf_qdisc_unreg,
-+	.validate = bpf_qdisc_validate,
- 	.init_member = bpf_qdisc_init_member,
- 	.init = bpf_qdisc_init,
- 	.name = "Qdisc_ops",
+ 	FILE *f;
+@@ -231,6 +248,8 @@ void test_bpf_qdisc(void)
+ 		test_qdisc_attach_to_mq();
+ 	if (test__start_subtest("attach to non root"))
+ 		test_qdisc_attach_to_non_root();
++	if (test__start_subtest("incompl_ops"))
++		test_incompl_ops();
+ 
+ 	netns_free(netns);
+ }
+diff --git a/tools/testing/selftests/bpf/progs/bpf_qdisc_fail__incompl_ops.c b/tools/testing/selftests/bpf/progs/bpf_qdisc_fail__incompl_ops.c
+new file mode 100644
+index 000000000000..49d790d2ea03
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/bpf_qdisc_fail__incompl_ops.c
+@@ -0,0 +1,41 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <vmlinux.h>
++#include "bpf_experimental.h"
++#include "bpf_qdisc_common.h"
++
++char _license[] SEC("license") = "GPL";
++
++SEC("struct_ops/bpf_qdisc_test_enqueue")
++int BPF_PROG(bpf_qdisc_test_enqueue, struct sk_buff *skb, struct Qdisc *sch,
++	     struct bpf_sk_buff_ptr *to_free)
++{
++	bpf_qdisc_skb_drop(skb, to_free);
++	return NET_XMIT_DROP;
++}
++
++SEC("struct_ops/bpf_qdisc_test_dequeue")
++struct sk_buff *BPF_PROG(bpf_qdisc_test_dequeue, struct Qdisc *sch)
++{
++	return NULL;
++}
++
++SEC("struct_ops/bpf_qdisc_test_reset")
++void BPF_PROG(bpf_qdisc_test_reset, struct Qdisc *sch)
++{
++}
++
++SEC("struct_ops/bpf_qdisc_test_destroy")
++void BPF_PROG(bpf_qdisc_test_destroy, struct Qdisc *sch)
++{
++}
++
++SEC(".struct_ops")
++struct Qdisc_ops test = {
++	.enqueue   = (void *)bpf_qdisc_test_enqueue,
++	.dequeue   = (void *)bpf_qdisc_test_dequeue,
++	.reset     = (void *)bpf_qdisc_test_reset,
++	.destroy   = (void *)bpf_qdisc_test_destroy,
++	.id        = "bpf_qdisc_test",
++};
++
+diff --git a/tools/testing/selftests/bpf/progs/bpf_qdisc_fifo.c b/tools/testing/selftests/bpf/progs/bpf_qdisc_fifo.c
+index 571fa7233ec0..bb91b04113a6 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_qdisc_fifo.c
++++ b/tools/testing/selftests/bpf/progs/bpf_qdisc_fifo.c
+@@ -109,12 +109,18 @@ void BPF_PROG(bpf_fifo_reset, struct Qdisc *sch)
+ 	sch->q.qlen = 0;
+ }
+ 
++SEC("struct_ops/bpf_fifo_destroy")
++void BPF_PROG(bpf_fifo_destroy, struct Qdisc *sch)
++{
++}
++
+ SEC(".struct_ops")
+ struct Qdisc_ops fifo = {
+ 	.enqueue   = (void *)bpf_fifo_enqueue,
+ 	.dequeue   = (void *)bpf_fifo_dequeue,
+ 	.init      = (void *)bpf_fifo_init,
+ 	.reset     = (void *)bpf_fifo_reset,
++	.destroy   = (void *)bpf_fifo_destroy,
+ 	.id        = "bpf_fifo",
+ };
+ 
+diff --git a/tools/testing/selftests/bpf/progs/bpf_qdisc_fq.c b/tools/testing/selftests/bpf/progs/bpf_qdisc_fq.c
+index 7c110a156224..72c9f4aefbcf 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_qdisc_fq.c
++++ b/tools/testing/selftests/bpf/progs/bpf_qdisc_fq.c
+@@ -740,11 +740,17 @@ int BPF_PROG(bpf_fq_init, struct Qdisc *sch, struct nlattr *opt,
+ 	return 0;
+ }
+ 
++SEC("struct_ops/bpf_fq_destroy")
++void BPF_PROG(bpf_fq_destroy, struct Qdisc *sch)
++{
++}
++
+ SEC(".struct_ops")
+ struct Qdisc_ops fq = {
+ 	.enqueue   = (void *)bpf_fq_enqueue,
+ 	.dequeue   = (void *)bpf_fq_dequeue,
+ 	.reset     = (void *)bpf_fq_reset,
+ 	.init      = (void *)bpf_fq_init,
++	.destroy   = (void *)bpf_fq_destroy,
+ 	.id        = "bpf_fq",
+ };
 -- 
 2.47.1
 
