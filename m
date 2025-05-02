@@ -1,112 +1,150 @@
-Return-Path: <bpf+bounces-57239-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57240-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A95A2AA76CB
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 18:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F310BAA76E7
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 18:15:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88DA7986F79
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 16:10:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB6149A0BAC
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 16:15:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EB772609CE;
-	Fri,  2 May 2025 16:10:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B38C725DCEA;
+	Fri,  2 May 2025 16:15:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b="A/cmgzMJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ekSXBxOS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAB3525F98B
-	for <bpf@vger.kernel.org>; Fri,  2 May 2025 16:10:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB8AF256C88;
+	Fri,  2 May 2025 16:15:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746202230; cv=none; b=fOkCWN47jz0sPnu0t2SrnZStdT7Dk5GYjxFNUIUHz1xj8OGT/5pEJ9mNXz1tT+cg9flftZ5bAzL+pKSajiVl+8Knge4LYc+Y9KRuzqo8W84gZEXrNaz0zElMgnVAgjkukc3iWB55wNVOCPcmyZhwskO/TCtv5DyYQ6gymujkIdU=
+	t=1746202502; cv=none; b=lmGRa1d5SyMtagZ00di1tHv5Gwwbly1xh5kKHjvHxJfgbLgPzv5aDn+kXW+mztNUsGG9mK5hejPAeIGX3fmv9i64N/d4VOjlLt0D8WXtX3KpU0hxoQp3Zbac3RWh2GrjahP6Yr9Q4iCyI1l1CYEQoTpjHSOWleswEhDZy6TwDbg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746202230; c=relaxed/simple;
-	bh=STzdz//9G0dhNLiISy2sFQP89uqRGd0K01sEhFygNOo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l2L83KheUgd9WxFA89d9Z7gg96iuvMhCjG1QhHYzzZ1x486rzuyhscIHnFcgohmd2+7chxAP5VS80Q5xlpfFbN1VR14M0coU6OcAfwsQJNCy67EahuN+wjzS4LU2fKYUQVFE3bRD7dwjaqJP1kUZpg/NEhAUWFUTL5VzzTGEk+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io; spf=none smtp.mailfrom=jrife.io; dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b=A/cmgzMJ; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=jrife.io
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-227e29b6c55so3977985ad.1
-        for <bpf@vger.kernel.org>; Fri, 02 May 2025 09:10:28 -0700 (PDT)
+	s=arc-20240116; t=1746202502; c=relaxed/simple;
+	bh=SukgM/UQNKAzoQ0iUfrpP+w7ksRhCsC54/qXkl058Tg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UbHVnj79tKtOr/tIJF3I4hcMxyZLIowHc3CP4PPnCgdwU7/mwd0R6qTLJkP2aSnkrZZjywWkOOS0ndFFIBhkzkOjErrsaPrfj+ddyvXlBejFTKAM1BdAyu5aJMzdrcqv3rB1vGz09lrMFsPNrd3k+fT83NF/HpcOejlTue3cWXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ekSXBxOS; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-301c4850194so1967387a91.2;
+        Fri, 02 May 2025 09:15:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jrife-io.20230601.gappssmtp.com; s=20230601; t=1746202228; x=1746807028; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3NPigxL25T4qIBNGnTF7GwUQLswGW01oEgqaPa7QHo8=;
-        b=A/cmgzMJOsA30uhsoKqxozIIuqHp/h/Y3fsVn1nYZQT9HHEwEhvzNpdpHPhdL3jBl4
-         35+GvHmIJ9aLB88apjXmX+hqAQGUIy8+22+few2IMr0Sp+qyH14agiV0lPa81PW4aEpT
-         hwZKNVs8ozggKm/irOMgDWTaKN7FFVnNlRMU/ptXda+ZDywi34NA7zUZdswHZogFWS1F
-         yCsF9koy7THmeMMzRNEsl5SkCVyV1xsocOTfsvGOaolad4qZIML1THrkoEHIoYpqCDL6
-         0SMEIMUG1gMenmY6m5WLEHr0ZGpOMlKHdASXkxaf3aKPLVA5mnqj5Qpme5WhlybBZyQE
-         aNIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746202228; x=1746807028;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1746202500; x=1746807300; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3NPigxL25T4qIBNGnTF7GwUQLswGW01oEgqaPa7QHo8=;
-        b=VntvCyQtqZjPW2rMnwoyIspurrMRfrYZwKhOm/MocDbLCowV2lL2eYM6Huo+O2Nbwc
-         Krz17Qbo/v9SeZjgL6uVf8zNMhXFKQ0Sl/p4wXU7ubJ6vFPV/PW0DRYpi3d3JynDDEBO
-         HwhLZydu6hUmy/iYHB43sl6EF2EOYTFIrj0VwnAc18ptaqZGC0HLAczVDZBo7ETCH9+t
-         10L4KhJl3DHMM1lra2EzjOjKPPy9ag/nalOZXGk2AOdPdhrVgOhDC9/RNBQwiozFb8P3
-         wkCaGUhY0n196pFfhue4TD3VlVf33FDd/ArQYYwnFNPbMP9URlqxEFjkQlteafrQVgMk
-         g27Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUgwshZS6R82QrQprrZbBnSsTCCHiZPD5ER4mIVp5xhlc2UQFm6THNv0UGOjKZw14smQ2U=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwhxDXece+UBogUnbSx/5Ds+OCsHXktqrbRacGq47yBJy8VAe7Q
-	e8L35tBLMlO8GfoOcDBQQ3f+NvmFclK3kBc3cPzV8l5IICPd/0cdZtk25CsXFpo=
-X-Gm-Gg: ASbGncuQX1zYS39f9xihsT3D8xyf9Y413GljwiXLOQcjOimQJGRHAoIt2sJrciLo6OY
-	QToCsSfcKSevWNkZBMKQg0yyEigHS0SO1+BJfJtK3V64jc9yQ9DL3/n+dmvnWtz2oJsFE175nt1
-	9aL+zRyEiPMV4yTMfQOkpFXtnl1euut4cSsF0NEG0lPEFjUP3P96Rf4pApC3uNI3mEqaZA/tJo5
-	MO2MXq7ov+yXPZeDi3tlTMZ6TWFxREv+s43pfC17CNB+UKPCha020mRuy8JfhNbhJZUC6heaJ7k
-	oob5nIJW3GPnPVAsgx5mh3cSGmA=
-X-Google-Smtp-Source: AGHT+IHnLthcyFMTGW20+a70VHCf9+KwUYGvIpkxMpmE/YRgWNmaM9vmqqg0PaVXJdiPh6WURr7Oyg==
-X-Received: by 2002:a17:902:f68f:b0:212:48f0:5b6f with SMTP id d9443c01a7336-22e10327483mr18231135ad.9.1746202227961;
-        Fri, 02 May 2025 09:10:27 -0700 (PDT)
-Received: from t14 ([2001:5a8:4528:b100:7676:294c:90a5:2828])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22e152291eesm9284455ad.192.2025.05.02.09.10.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 May 2025 09:10:27 -0700 (PDT)
-Date: Fri, 2 May 2025 09:10:24 -0700
-From: Jordan Rife <jordan@jrife.io>
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Aditi Ghag <aditi.ghag@isovalent.com>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
-	Kuniyuki Iwashima <kuniyu@amazon.com>, Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
-	netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v6 bpf-next 5/7] bpf: udp: Avoid socket skips and repeats
- during iteration
-Message-ID: <t4r7dunrdv43bkq56nz4kl4igjstcfzg5kkauygocxbxpzeynb@druey6eb4bco>
-References: <20250428180036.369192-1-jordan@jrife.io>
- <20250428180036.369192-6-jordan@jrife.io>
- <44fa2bcd-d35e-44bc-b782-ed1b9a8ba8b9@linux.dev>
+        bh=5U8daFb5FdrcIFtShOeiDSKS9nURK52nGKQOfwg2Gc0=;
+        b=ekSXBxOSBVRYhtuqnch7LWix+xedHI8JsLXWCr8N+3TWCs4Uo2AxBnNoMF+l1J/eHJ
+         E1KIxrEFgWDGQayrGH9wkqHlrayurVRy4+5ybUgIDdKGD3BrRtCdit5NtYO91VS/9Hep
+         JJmIsfySPUSM42sjNg++duvF2wpTJ5Zn0rmd+d4Qf5hdG29r3vnVm2Bw4DLG60mojPKS
+         q11zvi7h7qFt57/kqdEFIaLhBwRAzSeuHs9uBMfB+RnRzNn940Y7DQX+Hl45WG6C9mxq
+         eX/J4q/pMieT8Mfa9wCH2kwvYAOvqyamVtiHC1AdCdT9DSkK/3UovPtZn9yowHxTyskp
+         WZUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746202500; x=1746807300;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5U8daFb5FdrcIFtShOeiDSKS9nURK52nGKQOfwg2Gc0=;
+        b=LPqxDNmGwdX3H21bsMIreHlBizMR0B2mwn+gN+pwv5nVHpJ7RjlyCID2AvXxGfLN7+
+         bYw7cYjkIe2RsbvjzuV4yQW9TmPhBefH9zEewiYkpjFRyfKgBZHY6JY9cOa7LXg4e+gw
+         Sxe2UJ17KHWejmOU4jE8GfnUT3HVaokMsJdA/dENO2UYCWQILmbDfbFLA+rHdPDpJwOY
+         1hxC4wfo7YYPAAD6ADIrPPsCE0bsYVroJVnbW8YYUrOnJrtUK0iE8nVG1+aVy7ClTxeA
+         pAesSIFVTbXU7C1bQ3r+l3VF7sR3jrYBgkZ3k4rxINrbIZ7LrhTRVS5ykoNFnuIaXHpB
+         OeZg==
+X-Forwarded-Encrypted: i=1; AJvYcCX6QMKbOCi42uckavhzYT/R/VaT0Z1+fzqxs7P7TTwDzXeNk2IXwkLrfLhVRSftcT2Fh74aFuQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyZkGAnxcvlb9SWahNquabiyzMJxB04NkYS8b+lUyyLOO3dTFET
+	NE5RfedFVNrD54rLeYGBiSrdOmiRZQFn17sAAApnFWVdg2DEkctAYdsGV+9vBU/BKV96+OxNroC
+	ygqeHcqGgHCvYpEm5fGlePQNZtBs=
+X-Gm-Gg: ASbGncvb2NmfSExoQJqFx3KvJIJCbGDYexWMOo7qoKgkbViS2UDGis1wEfa8+to92gR
+	9lOptEdb0GpjGGl/8C1FM6amlAG0DMJKvlLX6MksRKxLe97+aA9604Uw0NLScklU2Y1WDpQFHk6
+	vSvnmC/d1o0Dhx/RQDkk/BdYaXVhk9kAglEzhimg==
+X-Google-Smtp-Source: AGHT+IEfei7LR33fvupbVqaG/xmAwuT7Z3yG8veVRITSh7EfBgL+wlVnQnUB00IxqjtixJON2nFwbFYYNWrMb80ZKo4=
+X-Received: by 2002:a17:90b:4fc3:b0:309:ebe3:1ef9 with SMTP id
+ 98e67ed59e1d1-30a4e5ae182mr6781292a91.12.1746202499929; Fri, 02 May 2025
+ 09:14:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <44fa2bcd-d35e-44bc-b782-ed1b9a8ba8b9@linux.dev>
+References: <20250425214039.2919818-1-ameryhung@gmail.com> <CAEf4BzYUNckc9pXcE7BawxWFVfY--p12c3ax8ySP1P+BEww91w@mail.gmail.com>
+ <CAMB2axMbAjYVB3+bMuwOszqAn153_9S_vG6iN26-J-n67NGwPQ@mail.gmail.com>
+In-Reply-To: <CAMB2axMbAjYVB3+bMuwOszqAn153_9S_vG6iN26-J-n67NGwPQ@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 2 May 2025 09:14:47 -0700
+X-Gm-Features: ATxdqUGwdEwzC9NDd_O2NWuS834DkuNRiLHTe0-rfJMbu_gn2ZmfZzLi1BRBffA
+Message-ID: <CAEf4BzZ=HORw6JnQz=pguoaUSc=swFiaG9mzQLxqLZgTamc1qA@mail.gmail.com>
+Subject: Re: [PATCH RFC v3 0/2] Task local data API
+To: Amery Hung <ameryhung@gmail.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, alexei.starovoitov@gmail.com, 
+	andrii@kernel.org, daniel@iogearbox.net, tj@kernel.org, martin.lau@kernel.org, 
+	kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> > @@ -3895,6 +3922,8 @@ static int bpf_iter_init_udp(void *priv_data, struct bpf_iter_aux_info *aux)
-> >   	if (ret)
-> >   		bpf_iter_fini_seq_net(priv_data);
-> > +	iter->state.bucket = -1;
-> 
-> ah. I think this can be moved to patch 3.
-> 
-> > +
-> >   	return ret;
-> >   }
-> 
+On Thu, May 1, 2025 at 9:26=E2=80=AFPM Amery Hung <ameryhung@gmail.com> wro=
+te:
+>
+> On Thu, May 1, 2025 at 1:37=E2=80=AFPM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Fri, Apr 25, 2025 at 2:40=E2=80=AFPM Amery Hung <ameryhung@gmail.com=
+> wrote:
+> > >
+> > > Hi,
+> > >
+> > > This a respin of uptr KV store. It is renamed to task local data (TLD=
+)
+> > > as the problem statement and the solution have changed, and it now dr=
+aws
+> > > more similarities to pthread thread-specific data.
+> > >
 
-Good point, I will move this change there.
+[...]
 
-Jordan
+> >
+> > This API can be called just once per each key that process cares
+> > about. And this can be done at any point, really, very dynamically.
+> > The implementation will:
+> >   - (just once per process) open pinned BPF map, remember its FD;
+> >   - (just once) allocate struct tld_metadata, unless we define it as
+> > pre-allocated global variable;
+> >   - (locklessly) check if key_name is already in tld_metadata, if yes
+> > - return already assigned offset;
+> >   - (locklessly) if not, add this key and assign it offset that is
+> > offs[cnt - 1] + szs[cnt - 1] (i.e., we just tightly pack all the
+> > values (though we should take care of alignment requirements, of
+> > course);
+> >   - return newly assigned offset;
+> >
+> > Now, the second essential API is called for each participating thread
+> > for each different key. And again, this is all very dynamic. It's
+> > possible that some threads won't use any of this TLD stuff, in which
+> > case there will be no overhead (memory or CPU), and not even an entry
+> > in task local storage map for that thread. So, API:
+> >
+>
+> The advantage of no memory wasted for threads that are not using TLD
+> doesn't seem to be that definite to me. If users add per-process
+> hints, then this scheme can potentially use a lot more memory (i.e.,
+> PAGE_SIZE * number of threads). Maybe we need another uptr for
+> per-process data? Or do you think this is out of the scope of TLD and
+> we should recommend other solutions?
+>
+
+I'd keep it simple. One page per thread isn't a big deal at all, in my
+mind. If the application has a few threads, then a bunch of kilobytes
+is not a big deal. If the application has thousands of threads, then a
+few megabytes for this is the least of that application's concern,
+it's already heavy-weight as hell. I think we are overpivoting on
+saving a few bytes here.
+
+[...]
 
