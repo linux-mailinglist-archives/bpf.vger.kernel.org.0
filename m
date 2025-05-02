@@ -1,170 +1,107 @@
-Return-Path: <bpf+bounces-57289-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57290-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68DF4AA7B59
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 23:23:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0EC4AA7B5E
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 23:29:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B150F3B013F
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 21:23:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B45C9A1237
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 21:29:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12934202C46;
-	Fri,  2 May 2025 21:23:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03ADB202C46;
+	Fri,  2 May 2025 21:29:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GGEPYJjB"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vtMEVTZD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10E0829408;
-	Fri,  2 May 2025 21:23:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61939376
+	for <bpf@vger.kernel.org>; Fri,  2 May 2025 21:29:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746221029; cv=none; b=IHAqRy0RuatdsYmefkk/nbQKt39w/9UeSVnr4D7HSOQBdEV/cnpPj8lcFQ4/fT55BcodCRhC5ASJWoesRguw4fcR98WoybeTqth6YAPi3aiQcpRpfr2Ict8eNfL8MW3TxYyopS6ghHStzD3hxbz56iGcHDb9SFhhXNEXZRAgl/0=
+	t=1746221363; cv=none; b=tUlT0sD09BeAbz+O5PmvYgYNzz73GH4JdRMCJMnLrGOkcfsRAogdXxothnqbI4YM61Qop7MLcKe5qeVXYCHzzElcSWQmfvn40E9frhBcjD9E1M/unJ6uO1yB/9Slf4BD6oexNmnboY/P50l2ELtbLzcjy5Y9UTO7ws0HFr3tX40=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746221029; c=relaxed/simple;
-	bh=FyN1Jxvx9vWF/1rHBCBRBSb/jRwJ0LrUfPuIFZ02pnQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HWnKFc6KvE/AvDsHGHVDislGySRgt9bdRJxu78ZVEGlvOSbJ0HVeizF/Qlqrk0VdoM5YUhr8G78SuNMDVxAGJG8Q4OWTRsdwK+C5iBugs1iEDsnE/oIDtXS9aND3L7QUAQDGuhOodWzv3ydbTMF2DtsN5D6dkMRbX95ivR69+cY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GGEPYJjB; arc=none smtp.client-ip=209.85.128.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-708d90aa8f9so6983247b3.3;
-        Fri, 02 May 2025 14:23:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746221027; x=1746825827; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FyN1Jxvx9vWF/1rHBCBRBSb/jRwJ0LrUfPuIFZ02pnQ=;
-        b=GGEPYJjBARq4v62941Yi3q1lHW986cMAqraE7qJ9qOVpcY3Cn+xNA15W4mbqSOwCb0
-         EZy/Dlyc6smPTwbsdnNpH9UXxehCIcBP91bJCM7Mfhpg+lKcYwp90qps8mI4q1DkCIRR
-         GysrsthnHfaLH7eDjs2CiLh1MgtHNFhwEwpBcvsQjI/r98g66Aymix+zkYFAp5iB1eaY
-         owxPnZNhkQgVXjscELrU45pxxLuPACDf8a/qlO5yuTxAcsu6ZmMzey17XPWkDfsuFXIG
-         B+ZWGg64mIAGHTFWP2y7YjUJTQLU4Y59YVCBZEmfVj0TWkZo4QHjK9sKXPmEgKuBHn5L
-         61tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746221027; x=1746825827;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FyN1Jxvx9vWF/1rHBCBRBSb/jRwJ0LrUfPuIFZ02pnQ=;
-        b=L75aDMEKy8rEkRtd+mrbh6DbGM3OiSp6QyQh6zmx5HL/6mHmj/jonWu6v434qKr039
-         DOUCJC8qcx5rVzmqa93UMRwR5thGXRFyuUKzhtN+fNATthGmSvpmqoTemNhx9BWpaDqk
-         vQFTZeghgftuKw/yPe2i48HH8EkLiuUKHBKCMSNmADuPsfuVP2t7pI9wZDJzUJ1uQrG0
-         N0b02WbnsTMUxlDKKgWJLZJ74xuCCWO14+FuVEECSXDCgSSWb8VIsh2Um9w1nqHjkxBY
-         2u7M6d5vDyyp288NsXwVG2aiWFcTXSXSNvygGez9WhL+ebNhcze19l1vIjKGnSK71nhn
-         H/wQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVvZppm8BnDQW/elxYyD7StspGFRHiFHKwfffZURl/yavbYSsIDQElpdk6HedBa5zXIezh4WhcB@vger.kernel.org, AJvYcCXAkoB87smoZmybduA2bS8hie6uAMn6099I1uv19cUFytcXbS1h3ZYH8fJIJOpZJ1M1Li0=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzfj+0OV9seTZG8xfVZiGyBEezlGPDeGv54wa/tsqshY2KCYCyx
-	h4gSKFqBhnhyXO0KleAWx1TZk63v8gn0k55V2udgAhYMFVZL7k2Igt9VD1M+yd12rHmsenVpwLs
-	2rH+SymK4tMKuioLVnru5XlG4L+A=
-X-Gm-Gg: ASbGncszDjxwssEb2ekgyEVWYk2emY0fGFHseskSw82CD9OcJNgup9+zMDyo4AUg5Zx
-	mz1oKRI+mFXlFpFiDbYQSkLj8t/VWfsD8x4CbBHBa/pBqpKcudOx9kcokhqVn3AIoiSbwjXRJNa
-	mJxuLTjwp+UvFHf0NaPk0PIw==
-X-Google-Smtp-Source: AGHT+IH9mmZ04BzDBsqABy5EIDb0pYDBrR/hgs0DaFu5Gu7HcfGFB8uW6wVKeXJmZ/HdNAZrW+XVgsLhncs5uUxpuro=
-X-Received: by 2002:a05:690c:b15:b0:703:d7a6:6266 with SMTP id
- 00721157ae682-708e11b531amr9275217b3.10.1746221026857; Fri, 02 May 2025
- 14:23:46 -0700 (PDT)
+	s=arc-20240116; t=1746221363; c=relaxed/simple;
+	bh=PZgYDufMY+jvzsidTEwrW0spRw9hJQX+FATyPYtpefQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=SDevbYRMdCV419BdYAGq+zmNhx2Zr4LTRMOQFl1hAgv9zyzBuDkjnNd3Cc2hhJlTj2N7vwBklpnU38UcL5cTqOPA9MTTvxsnMXnSYYur49G3pFrxPj1pGNj69d9LscgpdBdFALcaKH1gvjDVakYwg9ZmMtvgZIAFouucqNVuhgo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vtMEVTZD; arc=none smtp.client-ip=91.218.175.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <1aff3b57-d125-4ca4-b56a-e47ff1de6094@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1746221348;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6Y/KcTWKQvHwcO912E6Fo9633dWVKvc9p1szhXjF09I=;
+	b=vtMEVTZDhef1vthBTOzMhT+cmdghWOhcATZ4awfds/5q5sfme82KhIK+tIYJQ96oNZg5+q
+	kXqGOznfnrvSvWuiRsARYVfKJHeMv4T91zMGCX1ARZcWE0Gc61D6xbctm+mhvtUZgjaxx8
+	8G2gMMFYT+/AM6EIu6j5W6NfrEuQCIg=
+Date: Fri, 2 May 2025 14:29:04 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250425214039.2919818-1-ameryhung@gmail.com> <CAEf4BzYUNckc9pXcE7BawxWFVfY--p12c3ax8ySP1P+BEww91w@mail.gmail.com>
- <CAMB2axMbAjYVB3+bMuwOszqAn153_9S_vG6iN26-J-n67NGwPQ@mail.gmail.com>
- <CAEf4BzZ=HORw6JnQz=pguoaUSc=swFiaG9mzQLxqLZgTamc1qA@mail.gmail.com>
- <aBUQpPFemrUYxyO6@slm.duckdns.org> <CAEf4BzYMvYN5aPrdE6i=CTv8dfb1zoDQqngxN6Aj33XN_ryUZg@mail.gmail.com>
-In-Reply-To: <CAEf4BzYMvYN5aPrdE6i=CTv8dfb1zoDQqngxN6Aj33XN_ryUZg@mail.gmail.com>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Fri, 2 May 2025 14:23:35 -0700
-X-Gm-Features: ATxdqUF_BncPl1_JMxTKSlDRd5NzAMjaORegBCJgCuxvfbhv5sJB1ychdSQr6S8
-Message-ID: <CAMB2axPBsi=D3c+ddH0wcmOCC1SV=oMyZPM=+WXCqCnuDforsQ@mail.gmail.com>
-Subject: Re: [PATCH RFC v3 0/2] Task local data API
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Tejun Heo <tj@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	alexei.starovoitov@gmail.com, andrii@kernel.org, daniel@iogearbox.net, 
-	martin.lau@kernel.org, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v7 bpf-next 5/7] bpf: udp: Avoid socket skips and repeats
+ during iteration
+To: Jordan Rife <jordan@jrife.io>
+Cc: Aditi Ghag <aditi.ghag@isovalent.com>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Kuniyuki Iwashima <kuniyu@amazon.com>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>, netdev@vger.kernel.org,
+ bpf@vger.kernel.org
+References: <20250502161528.264630-1-jordan@jrife.io>
+ <20250502161528.264630-6-jordan@jrife.io>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20250502161528.264630-6-jordan@jrife.io>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, May 2, 2025 at 1:11=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Fri, May 2, 2025 at 11:36=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
-> >
-> > Hello,
-> >
-> > On Fri, May 02, 2025 at 09:14:47AM -0700, Andrii Nakryiko wrote:
-> > > > The advantage of no memory wasted for threads that are not using TL=
-D
-> > > > doesn't seem to be that definite to me. If users add per-process
-> > > > hints, then this scheme can potentially use a lot more memory (i.e.=
-,
-> > > > PAGE_SIZE * number of threads). Maybe we need another uptr for
-> > > > per-process data? Or do you think this is out of the scope of TLD a=
-nd
-> > > > we should recommend other solutions?
-> > >
-> > > I'd keep it simple. One page per thread isn't a big deal at all, in m=
-y
-> > > mind. If the application has a few threads, then a bunch of kilobytes
-> > > is not a big deal. If the application has thousands of threads, then =
-a
-> > > few megabytes for this is the least of that application's concern,
-> > > it's already heavy-weight as hell. I think we are overpivoting on
-> > > saving a few bytes here.
-> >
-> > It could well be that 4k is a price worth paying but there will be case=
-s
-> > where this matters. With 100k threads - not common but not unheard of
-> > either, that's ~400MB. If the data needed to be shared is small and mos=
-t of
-> > that is wasted, that's not an insignificant amount. uptr supports sub-p=
-age
-> > sizing, right? If keeping sizing dynamic is too complex, can't a proces=
-s
-> > just set the max size to what it deems appropriate?
-> >
->
-> One page was just a maximum supportable size due to uptr stuff. But it
-> can absolutely be (much) smaller than that, of course. The main
-> simplification from having a single fixed-sized data area allocation
-> is that an application can permanently cache an absolute pointer
-> returned from tld_resolve_key(). If we allow resizing the data area,
-> all previously returned pointers could be invalidated. So that's the
-> only thing. But yeah, if we know that we won't need more than, say 64
-> bytes, nothing prevents us from allocating just those 64 bytes (per
-> participating thread) instead of an entire page.
->
+On 5/2/25 9:15 AM, Jordan Rife wrote:
+>   static struct sock *bpf_iter_udp_batch(struct seq_file *seq)
+>   {
+>   	struct bpf_udp_iter_state *iter = seq->private;
+>   	struct udp_iter_state *state = &iter->state;
+> +	unsigned int find_cookie, end_cookie = 0;
 
-Since users can add keys on the fly, I feel it is natural to also
-allocate data area dynamically. Otherwise, there is going to be this
-hard trade-off between data size limit and waste of memory.
+A nit. I removed the zero initialization in the "end_cookie". Like 
+"find_cookie", both of them will be initialized by iter->cur_sk and iter->end_sk 
+later.
 
-We can tweak the implementation to make it allocate data dynamically.
-The two user space APIs can remain almost the same, but users should
-not cache the pointer returned from tld_resolve_ptr(). The only
-difference is changing tld_off_t to the metadata index.
+Applied. Thanks.
 
-void *tld_resolve_ptr(tld_off_t idx) will allocate data area lazily.
-- Record total tld data size in tld_metadata, data_sz.
-- Use a __thread variable, th_data_sz, to keep track of allocated
-memory for the thread (can be a small number or 0 initially)
-- If offs[idx] + szs[idx] > th_data_sz, resize the memory based on sum
-(can be exactly the same or roundup to the next power of 2 to prevent
-frequent reallocation)
-- If offs[idx] + szs[idx] <=3D th_data_sz, return tld->data + offs[idx]
-(fast path)
-
-The downside is data access overhead as pointers cannot be cached, but
-I think it is an okay middle ground.
-
-> > Thanks.
-> >
-> > --
-> > tejun
+>   	struct net *net = seq_file_net(seq);
+> -	int resume_bucket, resume_offset;
+>   	struct udp_table *udptable;
+>   	unsigned int batch_sks = 0;
+> +	int resume_bucket;
+>   	int resizes = 0;
+>   	struct sock *sk;
+>   	int err = 0;
+>   
+>   	resume_bucket = state->bucket;
+> -	resume_offset = iter->offset;
+>   
+>   	/* The current batch is done, so advance the bucket. */
+>   	if (iter->cur_sk == iter->end_sk)
+> @@ -3434,6 +3452,8 @@ static struct sock *bpf_iter_udp_batch(struct seq_file *seq)
+>   	 * before releasing the bucket lock. This allows BPF programs that are
+>   	 * called in seq_show to acquire the bucket lock if needed.
+>   	 */
+> +	find_cookie = iter->cur_sk;
+> +	end_cookie = iter->end_sk;
+>   	iter->cur_sk = 0;
+>   	iter->end_sk = 0;
+>   	batch_sks = 0;
 
