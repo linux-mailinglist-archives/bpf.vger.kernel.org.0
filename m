@@ -1,106 +1,181 @@
-Return-Path: <bpf+bounces-57295-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57296-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEC3CAA7B6F
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 23:41:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12FA9AA7C29
+	for <lists+bpf@lfdr.de>; Sat,  3 May 2025 00:26:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38D503AA6E9
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 21:40:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 717B61732F9
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 22:26:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ED1720B7FB;
-	Fri,  2 May 2025 21:41:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B609721A428;
+	Fri,  2 May 2025 22:26:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="F5BeHLyK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fSrAZ1GK"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B30729408
-	for <bpf@vger.kernel.org>; Fri,  2 May 2025 21:41:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0A091E32D5;
+	Fri,  2 May 2025 22:25:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746222070; cv=none; b=udr+AkKesaeyl70su9WKrAPyzvJsOlGDaDWdfLa+xvdQFwhxGXMngeQAWn/76bqEtHzfGoEsWaqLI0Xrs1SJM6gXOLTNGfuoOTM3K8I230sUhdV2v9/xxz/uEYIKjgEQyBKGlVuEgi7JC3Un9aFSdk28DAjyXkgeibfAR0OpMUo=
+	t=1746224761; cv=none; b=Bpn8ECMfAOC1JRHx+wKTFRpt8hBVvnSBxGQQM1zFrrpalspYhoctVyYC8GL1c3NgXjd1SdqUgUt5GQDVb3rY7jfylDkLSBtsMDp9Bsnj9FH2Ipq4qYrM6lCtmXL6q9eT9N4K/UIuE8YK4jRnxiSzjHNz5Eqgk4Sec/X67mm6NW0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746222070; c=relaxed/simple;
-	bh=z8ZRMLZtLHsJaTmMyIaxVIeYlIp5HL/M7mAQfbIvtGE=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:Cc:
-	 In-Reply-To:Content-Type; b=NTJ8ZrIqyuIudmD07NxB+X4QjfNQFZyW40xT6F9UTFrvnHY39k1/NtRTK4mZES6aau4h91R6m4ng5BKghEmBSB+SYVgRhr1ei6RycWEiG/EymHoAYPtgZrzmldU7zqnCLGYnYdOZTqtwBx2Bl6nkxKtN1LEMyfmsgNcTEDg/reM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=F5BeHLyK; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <0a039ded-b67d-4a0c-a851-e3aafff57321@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1746222053;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iitgyLfWSO5Stim9LQ1kMUkOc0KG4iKI2UtGkMOuXLE=;
-	b=F5BeHLyKbi+x6pQRA0oLRaVxncLBIldvXz2FFI+yUiA5LUasAkjKkKrL09eLbaTyiL1ONV
-	RH3ZvBOqRIV7sxMpJIa4apL/kd9bgLr5Du0kDrt7HfJ15Dk29v3Ubqsob78eUPePvTxIYd
-	dHkVLf2KM/EDZnoL5k9C9R/+PipPM+A=
-Date: Fri, 2 May 2025 14:40:45 -0700
+	s=arc-20240116; t=1746224761; c=relaxed/simple;
+	bh=YSdmhLhG8KrobaZfywtAbZBouJ+Bne6ACUrBx0W+rCs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gSkzyLr9pSBYDdM5Hy5cdskW/3jz+YnAIHYRVsqxpHDADBR2G0uo6Xd6zkuxlmh22Tm1BM2M5iQdIca32wqgvhiC2iFZh/vBLlaE/EVK6U09OUxhh7FfS3bKBsCS5VUqfZe0FWFdr5DrficJ0a6QpyDzn4hfN3o5CjL9wX1LfCI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fSrAZ1GK; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-301918a4e3bso2725143a91.3;
+        Fri, 02 May 2025 15:25:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1746224759; x=1746829559; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YSdmhLhG8KrobaZfywtAbZBouJ+Bne6ACUrBx0W+rCs=;
+        b=fSrAZ1GKjdFEzPJ07wBX2RMc60Rpn9XGyWkt05v/FXzx/7VUzKYaGFZqMN320d7EgO
+         8gzpzedu66azrO2BIumkWgcKduepT9IgvicDeIzOuwmJsh5OgArENnBM3vQ2BgmNGekf
+         rJWXxoTXGxzUSDwzRoRVr9CTqcil1kie0/WDB2Qy1ZkIkxbtCdvuk3tCozW0Q3HmBjLD
+         T+vxLr9xbHy6pnt3aa4+fhW7gtOp04djmQJQk9Z69Iy5mcDQVis1M1UFP1EiLU3FIZ9z
+         JR2pU51uWByh1uWXNzY1S3kpOCrLkacNsoo9rq7bJFN1+eDJ7HdJ/1VaUXQBlDPlSnoB
+         5hUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746224759; x=1746829559;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YSdmhLhG8KrobaZfywtAbZBouJ+Bne6ACUrBx0W+rCs=;
+        b=MWn9UGWlKhXa5MbDb3k3tgwgbZ+xuh8MIQLSyhjv5VpOXKafegzS6euTViAmLpMru7
+         Ot01tSjxrmsgbyIgInXlXomSck1Qz1THEPrSEoGmGzKxHVxf0eI4B8pDSvm7amw78rcp
+         6rPn3g3HrqfYc7GCy0OhMRqs9DqOf+1csXnvmXeGKblW2t7faJ1SN839i3e5zNpbDvq0
+         oojG1SiLrGFTU2ZCMfh21Sm6HSuMRrrnsAF8xSGuMGTsWSH4hOhrDo+vVksQdTt2Ckhr
+         H8nyux1S3Bs8O2NxMGHJfAzxhNLRk2MK0zc0iZ/GzKHLxMlGjzUpdFCJtNSaQqAbyXcq
+         oQcg==
+X-Forwarded-Encrypted: i=1; AJvYcCUR75k0+tNHOjvhzGtUJSM9Z3zUoSLMxtvd8D9cA4t4BVkP7+mtUmx03QSjfHJbZkUt7Nz1l2pH@vger.kernel.org, AJvYcCVHXnORXtWFehMRKi4YYuauJveffVOuQJ1rCEPsrZ5JN4WDxZub0F3q2TZonsy7kAX0S+A=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzRTMtwUIdPfNBtLRJ2xFoZmjO5NcS+Q/VVgKM82sCw7i57t9Tu
+	0oX1B6oPZQNeWKf7XVjTeOhdgJBpIMsTanxFgkY57+J3Ze2a+uU+YTsmtq5GPa1oNtXBBzo3+nn
+	FFVWJbrxTdBwSqugBB165IXlHSXk=
+X-Gm-Gg: ASbGncvFMHAcUOOzXeM0Wrc+EzqKBB9V+S5/5FK/+rWm1HG2gaf9qcGNL0ujmgDTSX4
+	jzMMzi64z/6U3QzsCdN/PWTF3VIEFJ9CQUXVSZLUnualAnjuvaZ73OApHMxU0c5rlploU+i5NFq
+	HfVg1gcR4+Pz/YUqeHBR8B1uhhsC2VnpFis+j7QaKp7ZKLk8fd
+X-Google-Smtp-Source: AGHT+IEAvBwSPL2GnSmo2ePWLc3d01jv1CzdHrQvMcC1uCQZ0BVfOo/bwvng8FolBxqy1PL3xQ5KOo5w/h+SDXaUpJY=
+X-Received: by 2002:a17:90b:1f8f:b0:2fc:3264:3657 with SMTP id
+ 98e67ed59e1d1-30a4e411e56mr8512184a91.0.1746224758818; Fri, 02 May 2025
+ 15:25:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: selftests/sched_ext: testing on BPF CI
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-To: Tejun Heo <tj@kernel.org>, Andrea Righi <arighi@nvidia.com>,
- Changwoo Min <changwoo@igalia.com>, Alexei Starovoitov <ast@kernel.org>
-References: <3fb44500b87b0f1d8360bc7a1f3ae972d3c5282f@linux.dev>
-Content-Language: en-US
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <3fb44500b87b0f1d8360bc7a1f3ae972d3c5282f@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250425214039.2919818-1-ameryhung@gmail.com> <CAEf4BzYUNckc9pXcE7BawxWFVfY--p12c3ax8ySP1P+BEww91w@mail.gmail.com>
+ <CAMB2axMbAjYVB3+bMuwOszqAn153_9S_vG6iN26-J-n67NGwPQ@mail.gmail.com>
+ <CAEf4BzZ=HORw6JnQz=pguoaUSc=swFiaG9mzQLxqLZgTamc1qA@mail.gmail.com>
+ <aBUQpPFemrUYxyO6@slm.duckdns.org> <CAEf4BzYMvYN5aPrdE6i=CTv8dfb1zoDQqngxN6Aj33XN_ryUZg@mail.gmail.com>
+ <CAMB2axPBsi=D3c+ddH0wcmOCC1SV=oMyZPM=+WXCqCnuDforsQ@mail.gmail.com>
+In-Reply-To: <CAMB2axPBsi=D3c+ddH0wcmOCC1SV=oMyZPM=+WXCqCnuDforsQ@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 2 May 2025 15:25:46 -0700
+X-Gm-Features: ATxdqUFvlwwSICPGVgrj-XKi2KzfxPwN6f-EIyqJoAmXNDSn3jq_rBttoPl66uI
+Message-ID: <CAEf4Bza=7s7kBA882YWKoZSfgaeYTXaAO2DXfDdHhm4P-kPMWA@mail.gmail.com>
+Subject: Re: [PATCH RFC v3 0/2] Task local data API
+To: Amery Hung <ameryhung@gmail.com>
+Cc: Tejun Heo <tj@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	alexei.starovoitov@gmail.com, andrii@kernel.org, daniel@iogearbox.net, 
+	martin.lau@kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2025-01-28 4:21 p.m., Ihor Solodrai wrote:
-> Hi Tejun, Andrea.
-> 
-> I tested a couple of variants of bpf-next + sched_ext source tree,
-> just sharing the results.
-> 
-> I found a working state: BPF CI pipeline ran successfully twice
-> (that's 8 build + run of selftests/sched_ext/runner in total).
-> 
-> Working state requires most patches between sched_ext/master and
-> sched_ext/for-6.14-fixes [1], and also the patch
->    "tools/sched_ext: Receive updates from SCX repo" [2]
-> 
-> On plain bpf-next the dsp_local_on test fails [3].
-> Without the patch [2] there is a build error [4]: missing
-> SCX_ENUM_INIT definition.
-> 
-> We probably don't want to enable selftests/sched_ext on BPF CI with
-> that many "temporary" patches. I suggest to wait until all of this is
-> merged upstream.
-> 
+On Fri, May 2, 2025 at 2:23=E2=80=AFPM Amery Hung <ameryhung@gmail.com> wro=
+te:
+>
+> On Fri, May 2, 2025 at 1:11=E2=80=AFPM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Fri, May 2, 2025 at 11:36=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote=
+:
+> > >
+> > > Hello,
+> > >
+> > > On Fri, May 02, 2025 at 09:14:47AM -0700, Andrii Nakryiko wrote:
+> > > > > The advantage of no memory wasted for threads that are not using =
+TLD
+> > > > > doesn't seem to be that definite to me. If users add per-process
+> > > > > hints, then this scheme can potentially use a lot more memory (i.=
+e.,
+> > > > > PAGE_SIZE * number of threads). Maybe we need another uptr for
+> > > > > per-process data? Or do you think this is out of the scope of TLD=
+ and
+> > > > > we should recommend other solutions?
+> > > >
+> > > > I'd keep it simple. One page per thread isn't a big deal at all, in=
+ my
+> > > > mind. If the application has a few threads, then a bunch of kilobyt=
+es
+> > > > is not a big deal. If the application has thousands of threads, the=
+n a
+> > > > few megabytes for this is the least of that application's concern,
+> > > > it's already heavy-weight as hell. I think we are overpivoting on
+> > > > saving a few bytes here.
+> > >
+> > > It could well be that 4k is a price worth paying but there will be ca=
+ses
+> > > where this matters. With 100k threads - not common but not unheard of
+> > > either, that's ~400MB. If the data needed to be shared is small and m=
+ost of
+> > > that is wasted, that's not an insignificant amount. uptr supports sub=
+-page
+> > > sizing, right? If keeping sizing dynamic is too complex, can't a proc=
+ess
+> > > just set the max size to what it deems appropriate?
+> > >
+> >
+> > One page was just a maximum supportable size due to uptr stuff. But it
+> > can absolutely be (much) smaller than that, of course. The main
+> > simplification from having a single fixed-sized data area allocation
+> > is that an application can permanently cache an absolute pointer
+> > returned from tld_resolve_key(). If we allow resizing the data area,
+> > all previously returned pointers could be invalidated. So that's the
+> > only thing. But yeah, if we know that we won't need more than, say 64
+> > bytes, nothing prevents us from allocating just those 64 bytes (per
+> > participating thread) instead of an entire page.
+> >
+>
+> Since users can add keys on the fly, I feel it is natural to also
+> allocate data area dynamically. Otherwise, there is going to be this
+> hard trade-off between data size limit and waste of memory.
+>
+> We can tweak the implementation to make it allocate data dynamically.
+> The two user space APIs can remain almost the same, but users should
+> not cache the pointer returned from tld_resolve_ptr(). The only
+> difference is changing tld_off_t to the metadata index.
+>
+> void *tld_resolve_ptr(tld_off_t idx) will allocate data area lazily.
+> - Record total tld data size in tld_metadata, data_sz.
+> - Use a __thread variable, th_data_sz, to keep track of allocated
+> memory for the thread (can be a small number or 0 initially)
+> - If offs[idx] + szs[idx] > th_data_sz, resize the memory based on sum
+> (can be exactly the same or roundup to the next power of 2 to prevent
+> frequent reallocation)
+> - If offs[idx] + szs[idx] <=3D th_data_sz, return tld->data + offs[idx]
+> (fast path)
+>
+> The downside is data access overhead as pointers cannot be cached, but
+> I think it is an okay middle ground.
 
-Hi everyone. I tried enabling sched_ext selftests on CI today, and there
-are no issues on bpf-next tip (f263336a41da).
+If it's for something like hinting whether the lock is held or not,
+I'd prioritize caching of this pointer and performance, over trying to
+save a few bytes.
 
-https://github.com/kernel-patches/vmtest/actions/runs/14802453691
-
-If there are no objections, I'm going to push this to BPF CI on Monday.
-
-As a reminder, this means that selftests/sched_ext test runner will be 
-built and executed for pending BPF patches, and BPF CI pipeline will 
-fail in case of problems there.
-
-> You can check the full list of patches here:
-> https://github.com/kernel-patches/vmtest/pull/332/files
-> 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/tj/sched_ext.git/log/?h=for-6.14-fixes
-> [2] https://lore.kernel.org/all/Z1ucTqJP8IeIXZql@slm.duckdns.org/
-> [3] https://github.com/kernel-patches/vmtest/actions/runs/13019837022
-> [4] https://github.com/kernel-patches/vmtest/actions/runs/13020458479
-
+>
+> > > Thanks.
+> > >
+> > > --
+> > > tejun
 
