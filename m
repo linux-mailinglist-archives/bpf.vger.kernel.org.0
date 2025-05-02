@@ -1,181 +1,149 @@
-Return-Path: <bpf+bounces-57296-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57297-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12FA9AA7C29
-	for <lists+bpf@lfdr.de>; Sat,  3 May 2025 00:26:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEA89AA7C97
+	for <lists+bpf@lfdr.de>; Sat,  3 May 2025 01:03:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 717B61732F9
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 22:26:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59F731C02C9E
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 23:04:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B609721A428;
-	Fri,  2 May 2025 22:26:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A3D82222DB;
+	Fri,  2 May 2025 23:03:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fSrAZ1GK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FYw4ls3w"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com [209.85.221.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0A091E32D5;
-	Fri,  2 May 2025 22:25:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61FBC13D2B2;
+	Fri,  2 May 2025 23:03:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746224761; cv=none; b=Bpn8ECMfAOC1JRHx+wKTFRpt8hBVvnSBxGQQM1zFrrpalspYhoctVyYC8GL1c3NgXjd1SdqUgUt5GQDVb3rY7jfylDkLSBtsMDp9Bsnj9FH2Ipq4qYrM6lCtmXL6q9eT9N4K/UIuE8YK4jRnxiSzjHNz5Eqgk4Sec/X67mm6NW0=
+	t=1746227024; cv=none; b=I5CCfs8WdidUMrFc9I+sOZoefFinSn9ElR7tRGRsVrujEgmygCBQw6kE/tT6Oh/h+0O8mktmaHHriNs4Q72ZSVCWYeXdCyq0pJLCL5ktgImgXG4YJXXwbF+i50gea9o4B6haL3WH0gU8/IhYXkHwMwYpapibm7etozcXSY4/WI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746224761; c=relaxed/simple;
-	bh=YSdmhLhG8KrobaZfywtAbZBouJ+Bne6ACUrBx0W+rCs=;
+	s=arc-20240116; t=1746227024; c=relaxed/simple;
+	bh=AA77U6GaO4Q5u74/L2BeK+b6h057OPxO33+46ch81wk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gSkzyLr9pSBYDdM5Hy5cdskW/3jz+YnAIHYRVsqxpHDADBR2G0uo6Xd6zkuxlmh22Tm1BM2M5iQdIca32wqgvhiC2iFZh/vBLlaE/EVK6U09OUxhh7FfS3bKBsCS5VUqfZe0FWFdr5DrficJ0a6QpyDzn4hfN3o5CjL9wX1LfCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fSrAZ1GK; arc=none smtp.client-ip=209.85.216.48
+	 To:Cc:Content-Type; b=sbPC596NwRHVxhAU+6hNhw859n+A3MrFD2HEezdWnJcuNB5a9oGZibT+p83PS4ql13h17S+bDqB2FQfJcbRkMdWM584BEvEHq/eZo7rr0izdvSRsPyJcWxMAEDc3iQ722j0Iuez96GxjnmBvQ7V3W4vU3ca26OX/F9Z/s19UrRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FYw4ls3w; arc=none smtp.client-ip=209.85.221.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-301918a4e3bso2725143a91.3;
-        Fri, 02 May 2025 15:25:59 -0700 (PDT)
+Received: by mail-vk1-f182.google.com with SMTP id 71dfb90a1353d-523eb86b31aso750415e0c.0;
+        Fri, 02 May 2025 16:03:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746224759; x=1746829559; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1746227021; x=1746831821; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YSdmhLhG8KrobaZfywtAbZBouJ+Bne6ACUrBx0W+rCs=;
-        b=fSrAZ1GKjdFEzPJ07wBX2RMc60Rpn9XGyWkt05v/FXzx/7VUzKYaGFZqMN320d7EgO
-         8gzpzedu66azrO2BIumkWgcKduepT9IgvicDeIzOuwmJsh5OgArENnBM3vQ2BgmNGekf
-         rJWXxoTXGxzUSDwzRoRVr9CTqcil1kie0/WDB2Qy1ZkIkxbtCdvuk3tCozW0Q3HmBjLD
-         T+vxLr9xbHy6pnt3aa4+fhW7gtOp04djmQJQk9Z69Iy5mcDQVis1M1UFP1EiLU3FIZ9z
-         JR2pU51uWByh1uWXNzY1S3kpOCrLkacNsoo9rq7bJFN1+eDJ7HdJ/1VaUXQBlDPlSnoB
-         5hUg==
+        bh=Pn6B3AHvvMcr6eolpyjW+81XwXKNxRn60ZK+73/n3uo=;
+        b=FYw4ls3wnphprKwaQDtsSOVoX/YwdnWUXUAyFfbLOIWT7vRD0M797blbD/a4319X3X
+         90ApRQ4pwfwnijEbYbkJ/qiDUQbfLSCcdQub11kFqyfTEX1iN4KwCr0qdwDXLnQlhxqd
+         ejmUwoSIwZ0fHPN+m6d0Bx8IBfvZ4aLGHFd3nZQXb2C5+uApp06fOJEL6R/GcBXI1Uzg
+         tv8pR0mwbkgrfVYzfkjRI2XKvJ3AhodLMsB2rIb7Q2pF8vy8Xcd1VByrJ47MCxSQQqSY
+         PwYO4zsPv09YRSYsyQK2SXJ/C9BnISG1R49lNC0OtSutOGBiukKXM1LxKIDq8yQ7Rasa
+         I2yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746224759; x=1746829559;
+        d=1e100.net; s=20230601; t=1746227021; x=1746831821;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YSdmhLhG8KrobaZfywtAbZBouJ+Bne6ACUrBx0W+rCs=;
-        b=MWn9UGWlKhXa5MbDb3k3tgwgbZ+xuh8MIQLSyhjv5VpOXKafegzS6euTViAmLpMru7
-         Ot01tSjxrmsgbyIgInXlXomSck1Qz1THEPrSEoGmGzKxHVxf0eI4B8pDSvm7amw78rcp
-         6rPn3g3HrqfYc7GCy0OhMRqs9DqOf+1csXnvmXeGKblW2t7faJ1SN839i3e5zNpbDvq0
-         oojG1SiLrGFTU2ZCMfh21Sm6HSuMRrrnsAF8xSGuMGTsWSH4hOhrDo+vVksQdTt2Ckhr
-         H8nyux1S3Bs8O2NxMGHJfAzxhNLRk2MK0zc0iZ/GzKHLxMlGjzUpdFCJtNSaQqAbyXcq
-         oQcg==
-X-Forwarded-Encrypted: i=1; AJvYcCUR75k0+tNHOjvhzGtUJSM9Z3zUoSLMxtvd8D9cA4t4BVkP7+mtUmx03QSjfHJbZkUt7Nz1l2pH@vger.kernel.org, AJvYcCVHXnORXtWFehMRKi4YYuauJveffVOuQJ1rCEPsrZ5JN4WDxZub0F3q2TZonsy7kAX0S+A=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzRTMtwUIdPfNBtLRJ2xFoZmjO5NcS+Q/VVgKM82sCw7i57t9Tu
-	0oX1B6oPZQNeWKf7XVjTeOhdgJBpIMsTanxFgkY57+J3Ze2a+uU+YTsmtq5GPa1oNtXBBzo3+nn
-	FFVWJbrxTdBwSqugBB165IXlHSXk=
-X-Gm-Gg: ASbGncvFMHAcUOOzXeM0Wrc+EzqKBB9V+S5/5FK/+rWm1HG2gaf9qcGNL0ujmgDTSX4
-	jzMMzi64z/6U3QzsCdN/PWTF3VIEFJ9CQUXVSZLUnualAnjuvaZ73OApHMxU0c5rlploU+i5NFq
-	HfVg1gcR4+Pz/YUqeHBR8B1uhhsC2VnpFis+j7QaKp7ZKLk8fd
-X-Google-Smtp-Source: AGHT+IEAvBwSPL2GnSmo2ePWLc3d01jv1CzdHrQvMcC1uCQZ0BVfOo/bwvng8FolBxqy1PL3xQ5KOo5w/h+SDXaUpJY=
-X-Received: by 2002:a17:90b:1f8f:b0:2fc:3264:3657 with SMTP id
- 98e67ed59e1d1-30a4e411e56mr8512184a91.0.1746224758818; Fri, 02 May 2025
- 15:25:58 -0700 (PDT)
+        bh=Pn6B3AHvvMcr6eolpyjW+81XwXKNxRn60ZK+73/n3uo=;
+        b=aPZey9i4XHTHoC15qK5NwpajK4qtUVUJsVp8ZkrOUwgdHdE22xmhu4HCsBOBQoe7A8
+         GlyefX7/HyQIkXjMqDszrJp7BiESVmPBJisF8NnEO+lRHJa5Qe3LRiMauwzBvgwVi7vm
+         edKEi0vYg5wL9lu8iXp7C6HOwU9rt03amLvw/I5NdIibYDzNAB5kc0i7XoTDp8BWiRWa
+         pvmP/5CQ2oTKQK/oKeqlW11ZnG+u6eMc/uXaqw8GU1WgP5n4VZgwuwoIfbSwTn61b2vD
+         4okJMQ7vy3OK6YV0CX9K5JKkGJs1RQx4D6F/cyT+qVN/E/7twsVqFkL5cxJrf+XyEqRi
+         v/Kw==
+X-Forwarded-Encrypted: i=1; AJvYcCUPh9SgrxzaMH66zi0+heO4RaZBKw4PPTdURBO7Z9uaDNvWop0x1qNC5c9unLOd3jtLqHc=@vger.kernel.org, AJvYcCV/GCWbMXVD8tixODDzIXoes6EQ7B3y6XSYj4P+5Q+jseDBkwW483e9/YExtV/pKP8dwr1tvy+vhM3MWbTS@vger.kernel.org, AJvYcCX4Vxs2Qy4W4/wdW/foPYTzeJJytRnTLTOOXf5y9TbW0DzIpfbn+67zkbcTfhDKFa/93Z3WbxnLtA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxf/sPFzQg9TzxqHsXiRdmHHdK2Sa1LyYVEQIslVxpq83tutwHD
+	+X9xkdPJ592da09dn3qhFVmEx89grnunsb+JfZ0fALId4B+yB42v0AFBPrgyMrMuwr0whSZTeLu
+	K+fjBV8lsCPFIKJSqpsGG9VvOr06etBpD
+X-Gm-Gg: ASbGncsxedOxQuJku1hRFk1qYAHZ/MmHOjMWE/CNmG7mk1R5Go06FZDAcsOTdR9wbJa
+	d8VQp0Y0Ma4qj9oFGJToKQrlNPcDYpWzjGWbGYaMMOnfuWHGL8pqFIqdDNxEv529cuYk0bxID5u
+	ucaslId+FqkbHxIUmN6opu
+X-Google-Smtp-Source: AGHT+IH0G2Id9h8FEqIRpgtn2ZoY4qQbTOve2FCfTKv5oCcss4LUJcLa2DiY24B4LnysMDQ6AB3BXkTiLNNCUDvEeIc=
+X-Received: by 2002:a05:6102:2c02:b0:4c1:8e07:40b8 with SMTP id
+ ada2fe7eead31-4dafb50ae95mr3743942137.6.1746227021087; Fri, 02 May 2025
+ 16:03:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250425214039.2919818-1-ameryhung@gmail.com> <CAEf4BzYUNckc9pXcE7BawxWFVfY--p12c3ax8ySP1P+BEww91w@mail.gmail.com>
- <CAMB2axMbAjYVB3+bMuwOszqAn153_9S_vG6iN26-J-n67NGwPQ@mail.gmail.com>
- <CAEf4BzZ=HORw6JnQz=pguoaUSc=swFiaG9mzQLxqLZgTamc1qA@mail.gmail.com>
- <aBUQpPFemrUYxyO6@slm.duckdns.org> <CAEf4BzYMvYN5aPrdE6i=CTv8dfb1zoDQqngxN6Aj33XN_ryUZg@mail.gmail.com>
- <CAMB2axPBsi=D3c+ddH0wcmOCC1SV=oMyZPM=+WXCqCnuDforsQ@mail.gmail.com>
-In-Reply-To: <CAMB2axPBsi=D3c+ddH0wcmOCC1SV=oMyZPM=+WXCqCnuDforsQ@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 2 May 2025 15:25:46 -0700
-X-Gm-Features: ATxdqUFvlwwSICPGVgrj-XKi2KzfxPwN6f-EIyqJoAmXNDSn3jq_rBttoPl66uI
-Message-ID: <CAEf4Bza=7s7kBA882YWKoZSfgaeYTXaAO2DXfDdHhm4P-kPMWA@mail.gmail.com>
-Subject: Re: [PATCH RFC v3 0/2] Task local data API
-To: Amery Hung <ameryhung@gmail.com>
-Cc: Tejun Heo <tj@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	alexei.starovoitov@gmail.com, andrii@kernel.org, daniel@iogearbox.net, 
-	martin.lau@kernel.org, kernel-team@meta.com
+References: <20250502001742.3087558-1-shakeel.butt@linux.dev>
+ <20250502001742.3087558-4-shakeel.butt@linux.dev> <CAADnVQJ-XEEwVppk-qY2mmGB4R18_nqH-wdv5nuJf2LST5=Aaw@mail.gmail.com>
+In-Reply-To: <CAADnVQJ-XEEwVppk-qY2mmGB4R18_nqH-wdv5nuJf2LST5=Aaw@mail.gmail.com>
+From: Shakeel Butt <shakeel.butt@gmail.com>
+Date: Fri, 2 May 2025 16:03:30 -0700
+X-Gm-Features: ATxdqUGOxZaBfVWDvGw-HOQP1Qz6sM7a4hg3SGcagADyQ1g6wE-GXDaWYVMh1tc
+Message-ID: <CAGj-7pWqvtWj2nSOaQwoLbwUrVcLfKc0U2TcmxuSB87dWmZcgQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] memcg: no irq disable for memcg stock lock
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>, linux-mm <linux-mm@kvack.org>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, Meta kernel team <kernel-team@meta.com>, 
+	Vlastimil Babka <vbabka@suse.cz>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 2, 2025 at 2:23=E2=80=AFPM Amery Hung <ameryhung@gmail.com> wro=
-te:
+On Fri, May 2, 2025 at 11:29=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> On Fri, May 2, 2025 at 1:11=E2=80=AFPM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
+> On Thu, May 1, 2025 at 5:18=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.d=
+ev> wrote:
 > >
-> > On Fri, May 2, 2025 at 11:36=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote=
-:
-> > >
-> > > Hello,
-> > >
-> > > On Fri, May 02, 2025 at 09:14:47AM -0700, Andrii Nakryiko wrote:
-> > > > > The advantage of no memory wasted for threads that are not using =
-TLD
-> > > > > doesn't seem to be that definite to me. If users add per-process
-> > > > > hints, then this scheme can potentially use a lot more memory (i.=
-e.,
-> > > > > PAGE_SIZE * number of threads). Maybe we need another uptr for
-> > > > > per-process data? Or do you think this is out of the scope of TLD=
- and
-> > > > > we should recommend other solutions?
-> > > >
-> > > > I'd keep it simple. One page per thread isn't a big deal at all, in=
- my
-> > > > mind. If the application has a few threads, then a bunch of kilobyt=
-es
-> > > > is not a big deal. If the application has thousands of threads, the=
-n a
-> > > > few megabytes for this is the least of that application's concern,
-> > > > it's already heavy-weight as hell. I think we are overpivoting on
-> > > > saving a few bytes here.
-> > >
-> > > It could well be that 4k is a price worth paying but there will be ca=
-ses
-> > > where this matters. With 100k threads - not common but not unheard of
-> > > either, that's ~400MB. If the data needed to be shared is small and m=
-ost of
-> > > that is wasted, that's not an insignificant amount. uptr supports sub=
--page
-> > > sizing, right? If keeping sizing dynamic is too complex, can't a proc=
-ess
-> > > just set the max size to what it deems appropriate?
-> > >
+> > There is no need to disable irqs to use memcg per-cpu stock, so let's
+> > just not do that. One consequence of this change is if the kernel while
+> > in task context has the memcg stock lock and that cpu got interrupted.
+> > The memcg charges on that cpu in the irq context will take the slow pat=
+h
+> > of memcg charging. However that should be super rare and should be fine
+> > in general.
 > >
-> > One page was just a maximum supportable size due to uptr stuff. But it
-> > can absolutely be (much) smaller than that, of course. The main
-> > simplification from having a single fixed-sized data area allocation
-> > is that an application can permanently cache an absolute pointer
-> > returned from tld_resolve_key(). If we allow resizing the data area,
-> > all previously returned pointers could be invalidated. So that's the
-> > only thing. But yeah, if we know that we won't need more than, say 64
-> > bytes, nothing prevents us from allocating just those 64 bytes (per
-> > participating thread) instead of an entire page.
+> > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> > Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> > ---
+> >  mm/memcontrol.c | 17 +++++++----------
+> >  1 file changed, 7 insertions(+), 10 deletions(-)
 > >
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index cd81c70d144b..f8b9c7aa6771 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -1858,7 +1858,6 @@ static bool consume_stock(struct mem_cgroup *memc=
+g, unsigned int nr_pages,
+> >  {
+> >         struct memcg_stock_pcp *stock;
+> >         uint8_t stock_pages;
+> > -       unsigned long flags;
+> >         bool ret =3D false;
+> >         int i;
+> >
+> > @@ -1866,8 +1865,8 @@ static bool consume_stock(struct mem_cgroup *memc=
+g, unsigned int nr_pages,
+> >                 return ret;
+> >
+> >         if (gfpflags_allow_spinning(gfp_mask))
+> > -               local_lock_irqsave(&memcg_stock.lock, flags);
+> > -       else if (!local_trylock_irqsave(&memcg_stock.lock, flags))
+> > +               local_lock(&memcg_stock.lock);
+> > +       else if (!local_trylock(&memcg_stock.lock))
+> >                 return ret;
 >
-> Since users can add keys on the fly, I feel it is natural to also
-> allocate data area dynamically. Otherwise, there is going to be this
-> hard trade-off between data size limit and waste of memory.
->
-> We can tweak the implementation to make it allocate data dynamically.
-> The two user space APIs can remain almost the same, but users should
-> not cache the pointer returned from tld_resolve_ptr(). The only
-> difference is changing tld_off_t to the metadata index.
->
-> void *tld_resolve_ptr(tld_off_t idx) will allocate data area lazily.
-> - Record total tld data size in tld_metadata, data_sz.
-> - Use a __thread variable, th_data_sz, to keep track of allocated
-> memory for the thread (can be a small number or 0 initially)
-> - If offs[idx] + szs[idx] > th_data_sz, resize the memory based on sum
-> (can be exactly the same or roundup to the next power of 2 to prevent
-> frequent reallocation)
-> - If offs[idx] + szs[idx] <=3D th_data_sz, return tld->data + offs[idx]
-> (fast path)
->
-> The downside is data access overhead as pointers cannot be cached, but
-> I think it is an okay middle ground.
+> I don't think it works.
+> When there is a normal irq and something doing regular GFP_NOWAIT
+> allocation gfpflags_allow_spinning() will be true and
+> local_lock() will reenter and complain that lock->acquired is
+> already set... but only with lockdep on.
 
-If it's for something like hinting whether the lock is held or not,
-I'd prioritize caching of this pointer and performance, over trying to
-save a few bytes.
-
->
-> > > Thanks.
-> > >
-> > > --
-> > > tejun
+Yes indeed. I dropped the first patch and didn't fix this one
+accordingly. I think the fix can be as simple as checking for
+in_task() here instead of gfp_mask. That should work for both RT and
+non-RT kernels.
 
