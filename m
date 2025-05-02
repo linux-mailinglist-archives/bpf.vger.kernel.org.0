@@ -1,668 +1,192 @@
-Return-Path: <bpf+bounces-57267-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57268-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A04A3AA7984
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 20:46:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25744AA798E
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 20:52:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A22274C8150
-	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 18:45:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D6DA177733
+	for <lists+bpf@lfdr.de>; Fri,  2 May 2025 18:52:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D80B226B949;
-	Fri,  2 May 2025 18:44:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB1251DE3AD;
+	Fri,  2 May 2025 18:52:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="cAN2uzHP"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="JPYY1KKp"
 X-Original-To: bpf@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56E6826B0A5;
-	Fri,  2 May 2025 18:44:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B01F6194080
+	for <bpf@vger.kernel.org>; Fri,  2 May 2025 18:52:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746211487; cv=none; b=ki5zS9oEl7VGvmfCHGVky8Z5x7LNYnxRBvnpKjRgPU8oqxbSIqH8PiDP5NtN/KcuGkhQiz0or6Lyb8D8WkNy+Qc031Wz2ufrGw1Q5JMcOGcfzg6jxVQ0Mt/oIP4ZqYHX2ciIC9epodG+7Xr4sZ/4tqUXaafiHIoKO6MonOSlNgc=
+	t=1746211954; cv=none; b=lUi8SnnJEPcMsJV3VLb1Xaa3OjP9Yf/fbfckwCCMFvBsrU1ybxYesmqfkz2gCNh7g99mmhB6AN/skh3v71Yy89DY28TcPi2WbgLsQ2giKilbQpNQdiGO4nYOVgtueGMdRz7x+OOlxMqUPQya/KWRMsBz8buAeVCGCoyU7032ltM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746211487; c=relaxed/simple;
-	bh=GHtkcdoMipqroo96Z8uijMYVHzBUYw4q+ie4QEzeaX0=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oo05sjWZYObYEoo9t0fZvYRvlJrb0UI6ZUeDuH+o3wLcXv4EdWWgDn/aWLeCmi3b4QencnNtiu/72XgKrjzZj+pwniydPHLcfIVY+VW6jEa8IS9e2gvZ4V4x9OVp0kdgnrZGEGqRTTYECCXFnlrUeY7P0anXGsaGft/y63XTNyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=cAN2uzHP; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from narnia.corp.microsoft.com (unknown [40.78.12.133])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 8236B2111579;
-	Fri,  2 May 2025 11:44:42 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8236B2111579
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1746211485;
-	bh=NVHQjdfft+hrHrxn7DVxnFoxKReeTcOZP4lnIwYQJdw=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=cAN2uzHP4EGxS6F+7VOXl7nPl/14iaE5Roa54xPpP3Zsa9hlA7TaJTrGC3WdThMfP
-	 GW+pcLRnOkMC1m0vRV6epf/zskmD/bi5CJ2TFrwdrajGFdDscWgfjpSBachobJWbZo
-	 bW45CKL4S+AqmttPc1FoE+L3+7BTdTrHloRgasTY=
-From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
-To: Jonathan Corbet <corbet@lwn.net>,
-	David Howells <dhowells@redhat.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	Paul Moore <paul@paul-moore.com>,
-	James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	Shuah Khan <shuah@kernel.org>,
-	=?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-	=?UTF-8?q?G=C3=BCnther=20Noack?= <gnoack@google.com>,
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Blaise Boscaccy <bboscaccy@linux.microsoft.com>,
-	Jarkko Sakkinen <jarkko@kernel.org>,
-	Jan Stancek <jstancek@redhat.com>,
-	Neal Gompa <neal@gompa.dev>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	keyrings@vger.kernel.org,
-	linux-crypto@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	linux-kbuild@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	bpf@vger.kernel.org,
-	llvm@lists.linux.dev,
-	nkapron@google.com,
-	teknoraver@meta.com,
-	roberto.sassu@huawei.com,
-	xiyou.wangcong@gmail.com,
-	Tyler Hicks <code@tyhicks.com>,
-	James Bottomley <James.Bottomley@hansenpartnership.com>
-Subject: [PATCH v3 4/4] selftests/hornet: Add a selftest for the Hornet LSM
-Date: Fri,  2 May 2025 11:44:10 -0700
-Message-ID: <20250502184421.1424368-5-bboscaccy@linux.microsoft.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250502184421.1424368-1-bboscaccy@linux.microsoft.com>
-References: <20250502184421.1424368-1-bboscaccy@linux.microsoft.com>
+	s=arc-20240116; t=1746211954; c=relaxed/simple;
+	bh=WwFHPpYiJtPWSvVKRAQ6LCXVIkNWRRF6DXqHpHiRv3I=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=CzK8xUCaqhjBRwnfXZEXoPVVPLhTYGm28fZz6PCZVDo0GDeJOCbjK20BPUf45jhEY+BIvxLifS4V/ctRZu8zZkVOM9qRmq77MGIZ1jjiCh1l/09awwu5qM7avWBMxV3GZp4Wf6JDLzmTUJQadf2BOv+z7EnXg4bqN6QShufgENw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=JPYY1KKp; arc=none smtp.client-ip=67.231.153.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+	by m0089730.ppops.net (8.18.1.2/8.18.1.2) with ESMTP id 542F0htj011027
+	for <bpf@vger.kernel.org>; Fri, 2 May 2025 11:52:31 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=s2048-2021-q4; bh=/jbLj2IuHQv5eYqx6c
+	C7dtGQdy7Uy1+CLaJsfU1UcxM=; b=JPYY1KKpI9L5b1YkAnT7U+9/jvIBIsu1hv
+	9D8kRZxa4gUEPfOOrTE86mmus+iwnj+9ZatJv4WOWlzfx3N7/TBdJOOmcH1Lfflg
+	5UsBotT1jeZRN67kRgYSv8DnaF5f6PIKrz7OQSp/38IGMtEVMJxLzHHo+aVs3rNd
+	H6omfh9oxpIUMsMb/hY2eXLx70J5pFl0pfgoFFQNo4ZTx+EMiLVG4Qn+SJr4yzyr
+	JAh8aWCI4UUdEt/yTVZ61+HbHXvTtBOXE1BZV+eaPdsoZ43H35aH33n8jaJydFmU
+	Lxwz6wykE1HFKQ2D/OE84UMKtOTICigmPoTcM5j5Ug2cGAei/OAQ==
+Received: from mail.thefacebook.com ([163.114.134.16])
+	by m0089730.ppops.net (PPS) with ESMTPS id 46cjpyy6nd-9
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Fri, 02 May 2025 11:52:31 -0700 (PDT)
+Received: from twshared35278.32.frc3.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c08b:78::2ac9) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1748.10; Fri, 2 May 2025 18:52:25 +0000
+Received: by devvm14721.vll0.facebook.com (Postfix, from userid 669379)
+	id 61EF122C0376; Fri,  2 May 2025 11:52:23 -0700 (PDT)
+From: Ihor Solodrai <isolodrai@meta.com>
+To: <ast@kernel.org>, <andrii@kernel.org>, <daniel@iogearbox.net>,
+        <eddyz87@gmail.com>
+CC: <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <kuba@kernel.org>,
+        <jiayuan.chen@linux.dev>, <mykolal@fb.com>, <kernel-team@meta.com>
+Subject: [PATCH bpf-next v2] selftests/bpf: remove sockmap_ktls disconnect_after_delete test
+Date: Fri, 2 May 2025 11:52:21 -0700
+Message-ID: <20250502185221.1556192-1-isolodrai@meta.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTAyMDE1MSBTYWx0ZWRfXz9j3rtTw4dnn neV/G3Hs3V1YSvZwLoVZGplP5OO8WWEYILIl0MdHk3C9TUCG+6gBPe7aMgpeOyiUfFv1ZPNdbkj UU8mnk9k5x0IaZQTcM7dT2oeOCRmiikz4k6wwHxGgm9TSBq1dgzZPpdJVRbnPiv2IztaiIk3pX3
+ 8bsvNTLiHoI1KXgKBXm5ynsRU4j2jTDe8qrZ3L28ifyGklC776XvIW8uJH+26gSai2xzaGct80f DqUjkrOrXx0OSxQJByqRQz3/+UpY0U5vVpnsHSIIoAfcBDqV7mnV/Za8hLHkEADjJedjiaifLw2 wm4PDR1+od2EJdKxcz0RYJIKgmQl//wbFQjVcu9fgx2Owf90iTqL0m4dHR88/4LF/DOKDrCCnyE
+ /cSnqnjYV7nZ3b9+qg5EJmVfobI8A1xVcjuWEno5UKN6sQXqV9ixNvbjDJMcvafMWxHqLiWB
+X-Proofpoint-GUID: OK8I8z2hU5KH6TPFPVlqH4wLRbW8Zm5J
+X-Proofpoint-ORIG-GUID: OK8I8z2hU5KH6TPFPVlqH4wLRbW8Zm5J
+X-Authority-Analysis: v=2.4 cv=NM/V+16g c=1 sm=1 tr=0 ts=6815146f cx=c_pps a=CB4LiSf2rd0gKozIdrpkBw==:117 a=CB4LiSf2rd0gKozIdrpkBw==:17 a=dt9VzEwgFbYA:10 a=VwQbUJbxAAAA:8 a=VabnemYjAAAA:8 a=wzi3Pb8H_usUsDU_QI0A:9 a=gKebqoRLp9LExxC7YDUY:22
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-05-02_04,2025-04-30_01,2025-02-21_01
 
-This selftest contains a testcase that utilizes light skeleton eBPF
-loaders. One version of the light skeleton is signed with the
-autogenerated module signing key, another is not. A test driver
-attempts to load the programs. With Hornet enabled, the signed version
-should successfully be loaded, and the unsigned version should fail.
+"sockmap_ktls disconnect_after_delete" is effectively moot after
+disconnect has been disabled for TLS [1][2]. Remove the test
+completely.
 
-Signed-off-by: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+[1] https://lore.kernel.org/bpf/20250416170246.2438524-1-ihor.solodrai@li=
+nux.dev/
+[2] https://lore.kernel.org/netdev/20250404180334.3224206-1-kuba@kernel.o=
+rg/
+
+Signed-off-by: Ihor Solodrai <isolodrai@meta.com>
 ---
- tools/testing/selftests/Makefile              |   1 +
- tools/testing/selftests/hornet/Makefile       |  58 +++
- tools/testing/selftests/hornet/fail_loader.sh |   3 +
- tools/testing/selftests/hornet/frozen_skel.h  | 393 ++++++++++++++++++
- tools/testing/selftests/hornet/loader.c       |  22 +
- tools/testing/selftests/hornet/trivial.bpf.c  |  33 ++
- 6 files changed, 510 insertions(+)
- create mode 100644 tools/testing/selftests/hornet/Makefile
- create mode 100755 tools/testing/selftests/hornet/fail_loader.sh
- create mode 100644 tools/testing/selftests/hornet/frozen_skel.h
- create mode 100644 tools/testing/selftests/hornet/loader.c
- create mode 100644 tools/testing/selftests/hornet/trivial.bpf.c
+ .../selftests/bpf/prog_tests/sockmap_ktls.c   | 67 -------------------
+ 1 file changed, 67 deletions(-)
 
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index c77c8c8e3d9b..14f5d8ede199 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -42,6 +42,7 @@ TARGETS += ftrace
- TARGETS += futex
- TARGETS += gpio
- TARGETS += hid
-+TARGETS += hornet
- TARGETS += intel_pstate
- TARGETS += iommu
- TARGETS += ipc
-diff --git a/tools/testing/selftests/hornet/Makefile b/tools/testing/selftests/hornet/Makefile
-new file mode 100644
-index 000000000000..cd6902918564
---- /dev/null
-+++ b/tools/testing/selftests/hornet/Makefile
-@@ -0,0 +1,58 @@
-+# SPDX-License-Identifier: GPL-2.0
-+include ../../../build/Build.include
-+include ../../../scripts/Makefile.arch
-+include ../../../scripts/Makefile.include
-+
-+CLANG ?= clang
-+CFLAGS := -g -O2 -Wall
-+BPFTOOL ?= bpftool
-+SCRIPTSDIR := $(abspath ../../../../scripts/hornet)
-+TOOLSDIR := $(abspath ../../..)
-+LIBDIR := $(TOOLSDIR)/lib
-+BPFDIR := $(LIBDIR)/bpf
-+TOOLSINCDIR := $(TOOLSDIR)/include
-+APIDIR := $(TOOLSINCDIR)/uapi
-+CERTDIR := $(abspath ../../../../certs)
-+PKG_CONFIG ?= $(CROSS_COMPILE)pkg-config
-+
-+TEST_GEN_PROGS_EXTENDED := loader
-+TEST_GEN_PROGS := signed_loader
-+TEST_PROGS := fail_loader.sh
-+TEST_GEN_FILES := vmlinux.h loader.h trivial.bin trivial.bpf.o
-+$(TEST_GEN_PROGS): LDLIBS += -lbpf
-+$(TEST_GEN_PROGS): $(TEST_GEN_FILES)
-+
-+include ../lib.mk
-+
-+BPF_CFLAGS := -target bpf \
-+	-D__TARGET_ARCH_$(ARCH) \
-+	-I/usr/include/$(shell uname -m)-linux-gnu \
-+	$(KHDR_INCLUDES)
-+
-+vmlinux.h:
-+	$(BPFTOOL) btf dump file /sys/kernel/btf/vmlinux format c > vmlinux.h
-+
-+trivial.bpf.o: trivial.bpf.c vmlinux.h
-+	$(CLANG) $(CFLAGS) $(BPF_CFLAGS) -c $< -o $@
-+
-+loader.h: trivial.bpf.o
-+	$(BPFTOOL) gen skeleton -L $< name trivial > $@
-+
-+trivial.bin: loader.h
-+	$(SCRIPTSDIR)/extract-skel.sh $< $@
-+
-+loader: loader.c loader.h
-+	$(CC) $(CFLAGS) -I$(LIBDIR) -I$(APIDIR) $< -o $@ -lbpf
-+
-+$(OUTPUT)/sign-ebpf: ../../../../scripts/hornet/sign-ebpf.c
-+	$(call msg,SIGN-EBPF,,$@)
-+	$(Q)$(CC) $(shell $(PKG_CONFIG) --cflags libcrypto 2> /dev/null) \
-+		  $< -o $@ \
-+		  $(shell $(PKG_CONFIG) --libs libcrypto 2> /dev/null || echo -lcrypto)
-+
-+signed_loader: trivial.bin loader $(OUTPUT)/sign-ebpf
-+	$(OUTPUT)/sign-ebpf sha256 $(CERTDIR)/signing_key.pem  $(CERTDIR)/signing_key.x509 \
-+		trivial.bin loader signed_loader
-+	chmod u+x $@
-+
-+EXTRA_CLEAN = $(OUTPUT)/sign-ebpf
-diff --git a/tools/testing/selftests/hornet/fail_loader.sh b/tools/testing/selftests/hornet/fail_loader.sh
-new file mode 100755
-index 000000000000..99314369f5de
---- /dev/null
-+++ b/tools/testing/selftests/hornet/fail_loader.sh
-@@ -0,0 +1,3 @@
-+#!/bin/bash
-+
-+./loader && exit 1; exit 0
-diff --git a/tools/testing/selftests/hornet/frozen_skel.h b/tools/testing/selftests/hornet/frozen_skel.h
-new file mode 100644
-index 000000000000..2e31a52f41c2
---- /dev/null
-+++ b/tools/testing/selftests/hornet/frozen_skel.h
-@@ -0,0 +1,393 @@
-+/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
-+/* Copyright (c) 2021 Facebook */
-+#ifndef __SKEL_INTERNAL_H
-+#define __SKEL_INTERNAL_H
-+
-+#ifdef __KERNEL__
-+#include <linux/fdtable.h>
-+#include <linux/mm.h>
-+#include <linux/mman.h>
-+#include <linux/slab.h>
-+#include <linux/bpf.h>
-+#else
-+#include <unistd.h>
-+#include <sys/syscall.h>
-+#include <sys/mman.h>
-+#include <stdlib.h>
-+#include <bpf/bpf.h>
-+#endif
-+
-+#ifndef __NR_bpf
-+# if defined(__mips__) && defined(_ABIO32)
-+#  define __NR_bpf 4355
-+# elif defined(__mips__) && defined(_ABIN32)
-+#  define __NR_bpf 6319
-+# elif defined(__mips__) && defined(_ABI64)
-+#  define __NR_bpf 5315
-+# endif
-+#endif
-+
-+/* This file is a base header for auto-generated *.lskel.h files.
-+ * Its contents will change and may become part of auto-generation in the future.
-+ *
-+ * The layout of bpf_[map|prog]_desc and bpf_loader_ctx is feature dependent
-+ * and will change from one version of libbpf to another and features
-+ * requested during loader program generation.
-+ */
-+struct bpf_map_desc {
-+	/* output of the loader prog */
-+	int map_fd;
-+	/* input for the loader prog */
-+	__u32 max_entries;
-+	__aligned_u64 initial_value;
-+};
-+struct bpf_prog_desc {
-+	int prog_fd;
-+};
-+
-+enum {
-+	BPF_SKEL_KERNEL = (1ULL << 0),
-+};
-+
-+struct bpf_loader_ctx {
-+	__u32 sz;
-+	__u32 flags;
-+	__u32 log_level;
-+	__u32 log_size;
-+	__u64 log_buf;
-+};
-+
-+struct bpf_load_and_run_opts {
-+	struct bpf_loader_ctx *ctx;
-+	const void *data;
-+	const void *insns;
-+	__u32 data_sz;
-+	__u32 insns_sz;
-+	const char *errstr;
-+};
-+
-+long kern_sys_bpf(__u32 cmd, void *attr, __u32 attr_size);
-+
-+static inline int skel_sys_bpf(enum bpf_cmd cmd, union bpf_attr *attr,
-+			  unsigned int size)
-+{
-+#ifdef __KERNEL__
-+	return kern_sys_bpf(cmd, attr, size);
-+#else
-+	return syscall(__NR_bpf, cmd, attr, size);
-+#endif
-+}
-+
-+#ifdef __KERNEL__
-+static inline int close(int fd)
-+{
-+	return close_fd(fd);
-+}
-+
-+static inline void *skel_alloc(size_t size)
-+{
-+	struct bpf_loader_ctx *ctx = kzalloc(size, GFP_KERNEL);
-+
-+	if (!ctx)
-+		return NULL;
-+	ctx->flags |= BPF_SKEL_KERNEL;
-+	return ctx;
-+}
-+
-+static inline void skel_free(const void *p)
-+{
-+	kfree(p);
-+}
-+
-+/* skel->bss/rodata maps are populated the following way:
-+ *
-+ * For kernel use:
-+ * skel_prep_map_data() allocates kernel memory that kernel module can directly access.
-+ * Generated lskel stores the pointer in skel->rodata and in skel->maps.rodata.initial_value.
-+ * The loader program will perform probe_read_kernel() from maps.rodata.initial_value.
-+ * skel_finalize_map_data() sets skel->rodata to point to actual value in a bpf map and
-+ * does maps.rodata.initial_value = ~0ULL to signal skel_free_map_data() that kvfree
-+ * is not necessary.
-+ *
-+ * For user space:
-+ * skel_prep_map_data() mmaps anon memory into skel->rodata that can be accessed directly.
-+ * Generated lskel stores the pointer in skel->rodata and in skel->maps.rodata.initial_value.
-+ * The loader program will perform copy_from_user() from maps.rodata.initial_value.
-+ * skel_finalize_map_data() remaps bpf array map value from the kernel memory into
-+ * skel->rodata address.
-+ *
-+ * The "bpftool gen skeleton -L" command generates lskel.h that is suitable for
-+ * both kernel and user space. The generated loader program does
-+ * either bpf_probe_read_kernel() or bpf_copy_from_user() from initial_value
-+ * depending on bpf_loader_ctx->flags.
-+ */
-+static inline void skel_free_map_data(void *p, __u64 addr, size_t sz)
-+{
-+	if (addr != ~0ULL)
-+		kvfree(p);
-+	/* When addr == ~0ULL the 'p' points to
-+	 * ((struct bpf_array *)map)->value. See skel_finalize_map_data.
-+	 */
-+}
-+
-+static inline void *skel_prep_map_data(const void *val, size_t mmap_sz, size_t val_sz)
-+{
-+	void *addr;
-+
-+	addr = kvmalloc(val_sz, GFP_KERNEL);
-+	if (!addr)
-+		return NULL;
-+	memcpy(addr, val, val_sz);
-+	return addr;
-+}
-+
-+static inline void *skel_finalize_map_data(__u64 *init_val, size_t mmap_sz, int flags, int fd)
-+{
-+	struct bpf_map *map;
-+	void *addr = NULL;
-+
-+	kvfree((void *) (long) *init_val);
-+	*init_val = ~0ULL;
-+
-+	/* At this point bpf_load_and_run() finished without error and
-+	 * 'fd' is a valid bpf map FD. All sanity checks below should succeed.
-+	 */
-+	map = bpf_map_get(fd);
-+	if (IS_ERR(map))
-+		return NULL;
-+	if (map->map_type != BPF_MAP_TYPE_ARRAY)
-+		goto out;
-+	addr = ((struct bpf_array *)map)->value;
-+	/* the addr stays valid, since FD is not closed */
-+out:
-+	bpf_map_put(map);
-+	return addr;
-+}
-+
-+#else
-+
-+static inline void *skel_alloc(size_t size)
-+{
-+	return calloc(1, size);
-+}
-+
-+static inline void skel_free(void *p)
-+{
-+	free(p);
-+}
-+
-+static inline void skel_free_map_data(void *p, __u64 addr, size_t sz)
-+{
-+	munmap(p, sz);
-+}
-+
-+static inline void *skel_prep_map_data(const void *val, size_t mmap_sz, size_t val_sz)
-+{
-+	void *addr;
-+
-+	addr = mmap(NULL, mmap_sz, PROT_READ | PROT_WRITE,
-+		    MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-+	if (addr == (void *) -1)
-+		return NULL;
-+	memcpy(addr, val, val_sz);
-+	return addr;
-+}
-+
-+static inline void *skel_finalize_map_data(__u64 *init_val, size_t mmap_sz, int flags, int fd)
-+{
-+	void *addr;
-+
-+	addr = mmap((void *) (long) *init_val, mmap_sz, flags, MAP_SHARED | MAP_FIXED, fd, 0);
-+	if (addr == (void *) -1)
-+		return NULL;
-+	return addr;
-+}
-+#endif
-+
-+static inline int skel_closenz(int fd)
-+{
-+	if (fd > 0)
-+		return close(fd);
-+	return -EINVAL;
-+}
-+
-+#ifndef offsetofend
-+#define offsetofend(TYPE, MEMBER) \
-+	(offsetof(TYPE, MEMBER)	+ sizeof((((TYPE *)0)->MEMBER)))
-+#endif
-+
-+static inline int skel_map_create(enum bpf_map_type map_type,
-+				  const char *map_name,
-+				  __u32 key_size,
-+				  __u32 value_size,
-+				  __u32 max_entries)
-+{
-+	const size_t attr_sz = offsetofend(union bpf_attr, map_extra);
-+	union bpf_attr attr;
-+
-+	memset(&attr, 0, attr_sz);
-+
-+	attr.map_type = map_type;
-+	strncpy(attr.map_name, map_name, sizeof(attr.map_name));
-+	attr.key_size = key_size;
-+	attr.value_size = value_size;
-+	attr.max_entries = max_entries;
-+
-+	return skel_sys_bpf(BPF_MAP_CREATE, &attr, attr_sz);
-+}
-+
-+static inline int skel_map_update_elem(int fd, const void *key,
-+				       const void *value, __u64 flags)
-+{
-+	const size_t attr_sz = offsetofend(union bpf_attr, flags);
-+	union bpf_attr attr;
-+
-+	memset(&attr, 0, attr_sz);
-+	attr.map_fd = fd;
-+	attr.key = (long) key;
-+	attr.value = (long) value;
-+	attr.flags = flags;
-+
-+	return skel_sys_bpf(BPF_MAP_UPDATE_ELEM, &attr, attr_sz);
-+}
-+
-+static inline int skel_map_delete_elem(int fd, const void *key)
-+{
-+	const size_t attr_sz = offsetofend(union bpf_attr, flags);
-+	union bpf_attr attr;
-+
-+	memset(&attr, 0, attr_sz);
-+	attr.map_fd = fd;
-+	attr.key = (long)key;
-+
-+	return skel_sys_bpf(BPF_MAP_DELETE_ELEM, &attr, attr_sz);
-+}
-+
-+static inline int skel_map_freeze(int fd)
-+{
-+	const size_t attr_sz = offsetofend(union bpf_attr, map_fd);
-+	union bpf_attr attr;
-+
-+	memset(&attr, 0, attr_sz);
-+	attr.map_fd = fd;
-+
-+	return skel_sys_bpf(BPF_MAP_FREEZE, &attr, attr_sz);
-+}
-+
-+static inline int skel_map_get_fd_by_id(__u32 id)
-+{
-+	const size_t attr_sz = offsetofend(union bpf_attr, flags);
-+	union bpf_attr attr;
-+
-+	memset(&attr, 0, attr_sz);
-+	attr.map_id = id;
-+
-+	return skel_sys_bpf(BPF_MAP_GET_FD_BY_ID, &attr, attr_sz);
-+}
-+
-+static inline int skel_raw_tracepoint_open(const char *name, int prog_fd)
-+{
-+	const size_t attr_sz = offsetofend(union bpf_attr, raw_tracepoint.prog_fd);
-+	union bpf_attr attr;
-+
-+	memset(&attr, 0, attr_sz);
-+	attr.raw_tracepoint.name = (long) name;
-+	attr.raw_tracepoint.prog_fd = prog_fd;
-+
-+	return skel_sys_bpf(BPF_RAW_TRACEPOINT_OPEN, &attr, attr_sz);
-+}
-+
-+static inline int skel_link_create(int prog_fd, int target_fd,
-+				   enum bpf_attach_type attach_type)
-+{
-+	const size_t attr_sz = offsetofend(union bpf_attr, link_create.iter_info_len);
-+	union bpf_attr attr;
-+
-+	memset(&attr, 0, attr_sz);
-+	attr.link_create.prog_fd = prog_fd;
-+	attr.link_create.target_fd = target_fd;
-+	attr.link_create.attach_type = attach_type;
-+
-+	return skel_sys_bpf(BPF_LINK_CREATE, &attr, attr_sz);
-+}
-+
-+#ifdef __KERNEL__
-+#define set_err
-+#else
-+#define set_err err = -errno
-+#endif
-+
-+static inline int bpf_load_and_run(struct bpf_load_and_run_opts *opts)
-+{
-+	const size_t prog_load_attr_sz = offsetofend(union bpf_attr, fd_array);
-+	const size_t test_run_attr_sz = offsetofend(union bpf_attr, test);
-+	int map_fd = -1, prog_fd = -1, key = 0, err;
-+	union bpf_attr attr;
-+
-+	err = map_fd = skel_map_create(BPF_MAP_TYPE_ARRAY, "__loader.map", 4, opts->data_sz, 1);
-+	if (map_fd < 0) {
-+		opts->errstr = "failed to create loader map";
-+		set_err;
-+		goto out;
-+	}
-+
-+	err = skel_map_update_elem(map_fd, &key, opts->data, 0);
-+	if (err < 0) {
-+		opts->errstr = "failed to update loader map";
-+		set_err;
-+		goto out;
-+	}
-+
-+	err = skel_map_freeze(map_fd);
-+	if (err < 0) {
-+		opts->errstr = "failed to freeze map";
-+		set_err;
-+		goto out;
-+	}
-+
-+	memset(&attr, 0, prog_load_attr_sz);
-+	attr.prog_type = BPF_PROG_TYPE_SYSCALL;
-+	attr.insns = (long) opts->insns;
-+	attr.insn_cnt = opts->insns_sz / sizeof(struct bpf_insn);
-+	attr.license = (long) "Dual BSD/GPL";
-+	memcpy(attr.prog_name, "__loader.prog", sizeof("__loader.prog"));
-+	attr.fd_array = (long) &map_fd;
-+	attr.log_level = opts->ctx->log_level;
-+	attr.log_size = opts->ctx->log_size;
-+	attr.log_buf = opts->ctx->log_buf;
-+	attr.prog_flags = BPF_F_SLEEPABLE;
-+	err = prog_fd = skel_sys_bpf(BPF_PROG_LOAD, &attr, prog_load_attr_sz);
-+	if (prog_fd < 0) {
-+		opts->errstr = "failed to load loader prog";
-+		set_err;
-+		goto out;
-+	}
-+
-+	memset(&attr, 0, test_run_attr_sz);
-+	attr.test.prog_fd = prog_fd;
-+	attr.test.ctx_in = (long) opts->ctx;
-+	attr.test.ctx_size_in = opts->ctx->sz;
-+	err = skel_sys_bpf(BPF_PROG_RUN, &attr, test_run_attr_sz);
-+	if (err < 0 || (int)attr.test.retval < 0) {
-+		if (err < 0) {
-+			opts->errstr = "failed to execute loader prog";
-+			set_err;
-+		} else {
-+			opts->errstr = "error returned by loader prog";
-+			err = (int)attr.test.retval;
-+#ifndef __KERNEL__
-+			errno = -err;
-+#endif
-+		}
-+		goto out;
-+	}
-+	err = 0;
-+out:
-+	if (map_fd >= 0)
-+		close(map_fd);
-+	if (prog_fd >= 0)
-+		close(prog_fd);
-+	return err;
-+}
-+
-+#endif
-diff --git a/tools/testing/selftests/hornet/loader.c b/tools/testing/selftests/hornet/loader.c
-new file mode 100644
-index 000000000000..548b50a0c1fe
---- /dev/null
-+++ b/tools/testing/selftests/hornet/loader.c
-@@ -0,0 +1,22 @@
-+// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
-+
-+#include <stdio.h>
-+#include <unistd.h>
-+#include <stddef.h>
-+#include <sys/resource.h>
-+#include <bpf/libbpf.h>
-+#include <errno.h>
-+#include "frozen_skel.h"
-+#include  "loader.h"
-+
-+int main(int argc, char **argv)
-+{
-+	struct trivial *skel;
-+
-+	skel = trivial__open_and_load();
-+	if (!skel)
-+		return -1;
-+
-+	trivial__destroy(skel);
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/hornet/trivial.bpf.c b/tools/testing/selftests/hornet/trivial.bpf.c
-new file mode 100644
-index 000000000000..d38c5b53ff93
---- /dev/null
-+++ b/tools/testing/selftests/hornet/trivial.bpf.c
-@@ -0,0 +1,33 @@
-+// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
-+
-+#include "vmlinux.h"
-+
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_core_read.h>
-+
-+char LICENSE[] SEC("license") = "Dual BSD/GPL";
-+
-+int monitored_pid = 0;
-+
-+SEC("tracepoint/syscalls/sys_enter_unlinkat")
-+int handle_enter_unlink(struct trace_event_raw_sys_enter *ctx)
-+{
-+	char filename[128] = { 0 };
-+	struct task_struct *task;
-+	unsigned long start_time = 0;
-+	int pid = bpf_get_current_pid_tgid() >> 32;
-+	char *pathname_ptr = (char *) BPF_CORE_READ(ctx, args[1]);
-+
-+	bpf_probe_read_str(filename, sizeof(filename), pathname_ptr);
-+	task = (struct task_struct *)bpf_get_current_task();
-+	start_time = BPF_CORE_READ(task, start_time);
-+
-+	bpf_printk("BPF triggered unlinkat by PID: %d, start_time %ld. pathname = %s",
-+		   pid, start_time, filename);
-+
-+	if (monitored_pid == pid)
-+		bpf_printk("target pid found");
-+
-+	return 0;
-+}
--- 
-2.48.1
+diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_ktls.c b/tool=
+s/testing/selftests/bpf/prog_tests/sockmap_ktls.c
+index 71b18fb1f719..3044f54b16d6 100644
+--- a/tools/testing/selftests/bpf/prog_tests/sockmap_ktls.c
++++ b/tools/testing/selftests/bpf/prog_tests/sockmap_ktls.c
+@@ -61,71 +61,6 @@ static int create_ktls_pairs(int family, int sotype, i=
+nt *c, int *p)
+ 	return 0;
+ }
+=20
+-static int tcp_server(int family)
+-{
+-	int err, s;
+-
+-	s =3D socket(family, SOCK_STREAM, 0);
+-	if (!ASSERT_GE(s, 0, "socket"))
+-		return -1;
+-
+-	err =3D listen(s, SOMAXCONN);
+-	if (!ASSERT_OK(err, "listen"))
+-		return -1;
+-
+-	return s;
+-}
+-
+-static int disconnect(int fd)
+-{
+-	struct sockaddr unspec =3D { AF_UNSPEC };
+-
+-	return connect(fd, &unspec, sizeof(unspec));
+-}
+-
+-/* Disconnect (unhash) a kTLS socket after removing it from sockmap. */
+-static void test_sockmap_ktls_disconnect_after_delete(int family, int ma=
+p)
+-{
+-	struct sockaddr_storage addr =3D {0};
+-	socklen_t len =3D sizeof(addr);
+-	int err, cli, srv, zero =3D 0;
+-
+-	srv =3D tcp_server(family);
+-	if (srv =3D=3D -1)
+-		return;
+-
+-	err =3D getsockname(srv, (struct sockaddr *)&addr, &len);
+-	if (!ASSERT_OK(err, "getsockopt"))
+-		goto close_srv;
+-
+-	cli =3D socket(family, SOCK_STREAM, 0);
+-	if (!ASSERT_GE(cli, 0, "socket"))
+-		goto close_srv;
+-
+-	err =3D connect(cli, (struct sockaddr *)&addr, len);
+-	if (!ASSERT_OK(err, "connect"))
+-		goto close_cli;
+-
+-	err =3D bpf_map_update_elem(map, &zero, &cli, 0);
+-	if (!ASSERT_OK(err, "bpf_map_update_elem"))
+-		goto close_cli;
+-
+-	err =3D setsockopt(cli, IPPROTO_TCP, TCP_ULP, "tls", strlen("tls"));
+-	if (!ASSERT_OK(err, "setsockopt(TCP_ULP)"))
+-		goto close_cli;
+-
+-	err =3D bpf_map_delete_elem(map, &zero);
+-	if (!ASSERT_OK(err, "bpf_map_delete_elem"))
+-		goto close_cli;
+-
+-	err =3D disconnect(cli);
+-
+-close_cli:
+-	close(cli);
+-close_srv:
+-	close(srv);
+-}
+-
+ static void test_sockmap_ktls_update_fails_when_sock_has_ulp(int family,=
+ int map)
+ {
+ 	struct sockaddr_storage addr =3D {};
+@@ -313,8 +248,6 @@ static void run_tests(int family, enum bpf_map_type m=
+ap_type)
+ 	if (!ASSERT_GE(map, 0, "bpf_map_create"))
+ 		return;
+=20
+-	if (test__start_subtest(fmt_test_name("disconnect_after_delete", family=
+, map_type)))
+-		test_sockmap_ktls_disconnect_after_delete(family, map);
+ 	if (test__start_subtest(fmt_test_name("update_fails_when_sock_has_ulp",=
+ family, map_type)))
+ 		test_sockmap_ktls_update_fails_when_sock_has_ulp(family, map);
+=20
+--=20
+2.47.1
 
 
