@@ -1,59 +1,50 @@
-Return-Path: <bpf+bounces-57308-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57309-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C75EAA7F83
-	for <lists+bpf@lfdr.de>; Sat,  3 May 2025 10:50:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C8B2AA8159
+	for <lists+bpf@lfdr.de>; Sat,  3 May 2025 17:16:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D827F1BA2DB4
-	for <lists+bpf@lfdr.de>; Sat,  3 May 2025 08:51:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6F781B602ED
+	for <lists+bpf@lfdr.de>; Sat,  3 May 2025 15:16:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCB7E1C701C;
-	Sat,  3 May 2025 08:50:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67190DDD2;
+	Sat,  3 May 2025 15:16:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="Ps7tzs1O"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oPvmRh2d"
 X-Original-To: bpf@vger.kernel.org
-Received: from xry111.site (xry111.site [89.208.246.23])
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AADA4C98;
-	Sat,  3 May 2025 08:50:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1CF01D516F
+	for <bpf@vger.kernel.org>; Sat,  3 May 2025 15:15:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746262250; cv=none; b=t058AqOmK3HSX/csjg9YpdncBGPu1ysygFTiKmHZIoyeaRrhv56q2TZvEVBU23F1N5TJqI2afpc+RgoKMy8ks24L/9TKX1jdI1Hcg+BK6DFspgz2ZAPCIRshb9os8rxqNQ4jjTAZzaF4o8Iow2UZMllYPOWzqVMfMmOo5KdCiGI=
+	t=1746285359; cv=none; b=qMw1XBZTOgMJUGwDQqIL5qDhk2XWku/8bSvHHCrKhioiNGkymZmXTm3TuWjNIMPEoGfXdS1D0yPjQb8y1hf6jghiaQRcYEIqnJ7yAxm5pswxNw3wHIkCLj/KvWGwWeuO4wL1KJFwuUKHjOZiaKYkS80t2wLDJXerk0wGjrtfo/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746262250; c=relaxed/simple;
-	bh=bRhZX7qJzEylBDKKpnJJPz7YbZmQ68Vz6HGR/JF11xc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=L1+0bmkNViow3l7elHKRgyU9zM4LZ5coKbQpMx0aj9HG0MYjZ7OZBLdrtRRbE0OMM75Kz7Va7kTijlQSbE+uM3XMFbDaNzJXkoUFk7Sj1tp9IRFXefTn+m5+yDeu/nWd/Zsf3CAxX8/p9Owx0ro/MGh+BGZCl+LxCQaH7stY8X0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=Ps7tzs1O; arc=none smtp.client-ip=89.208.246.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xry111.site;
-	s=default; t=1746262239;
-	bh=o/Ut0OjC7st/CMVCyN/mvb1GP04XULU8ewBoN+Ftf2E=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Ps7tzs1OmXTYnkSYMNQYFcIAOWCyGgtBEL/GAilrSeCGyUT3pMemGBECLGtlKuvFf
-	 NNMCZbxJygqEDxS6vSsTcZhakLqpGbVAXN26sylnQEhG6sGpWney0PSs3rmfsctTA/
-	 o0tH7EPTqwNjhcJYNXptdwCNueCIVM+7RhlxD5Z8=
-Received: from stargazer.. (unknown [113.200.174.7])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
-	(Client did not present a certificate)
-	(Authenticated sender: xry111@xry111.site)
-	by xry111.site (Postfix) with ESMTPSA id 6039D65992;
-	Sat,  3 May 2025 04:50:36 -0400 (EDT)
-From: Xi Ruoyao <xry111@xry111.site>
-To: Sasha Levin <sashal@kernel.org>
-Cc: stable@vger.kernel.org,
-	Xi Ruoyao <xry111@xry111.site>,
-	Mingcong Bai <jeffbai@aosc.io>,
-	Alex Davis <alex47794@gmail.com>,
+	s=arc-20240116; t=1746285359; c=relaxed/simple;
+	bh=I7e3GB6IUa/XuLF7Kd9aD7odrpym0DqX1XI6f3QWp10=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=K9TDOQUCKf/qT+pm8wpUv04ZwLWM/fadH/aQ64uOjJMlce8fW4eZmAtMsEn2Qk3es9vcZi6klQ796ZGwfp9zMJEkZmdn85WMkXbrREIoa10b4fKGGXVxaqyLMYRS+P94om8gEzvu/tCA4kUvGtA8TUFHImFGaIBtycHP7A0KPlo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oPvmRh2d; arc=none smtp.client-ip=95.215.58.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1746285352;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=qtU2w2qO3IG5Z29H4TSJsKZX1m7pA3HLi2M7q0PaMbg=;
+	b=oPvmRh2deE3U8i7xyX2iKc1V19tQ3RUfnAyXm8lbx6+c51oSPMGTCCOPRt9FB9ajcPs8IU
+	oj6X2PDjp1UgxrMav/l7q8tXSP7/JB8hyK+ltHq0uKU3+v3ApAlZ4pTUANlrJS3ytK1KsQ
+	OMY/tdtLqT30hqS6Poo/sXTHBiZ5FeI=
+From: Thorsten Blum <thorsten.blum@linux.dev>
+To: Martin KaFai Lau <martin.lau@linux.dev>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
 	Eduard Zingerman <eddyz87@gmail.com>,
 	Song Liu <song@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
@@ -61,14 +52,13 @@ Cc: stable@vger.kernel.org,
 	KP Singh <kpsingh@kernel.org>,
 	Stanislav Fomichev <sdf@fomichev.me>,
 	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Jiri Olsa <jolsa@kernel.org>
+Cc: Thorsten Blum <thorsten.blum@linux.dev>,
 	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 6.12.y] bpf: Fix BPF_INTERNAL namespace import
-Date: Sat,  3 May 2025 16:50:31 +0800
-Message-ID: <20250503085031.118222-1-xry111@xry111.site>
-X-Mailer: git-send-email 2.49.0
+Subject: [PATCH bpf-next] bpf: Replace offsetof() with struct_size()
+Date: Sat,  3 May 2025 17:15:13 +0200
+Message-ID: <20250503151513.343931-2-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,38 +66,104 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-The commit cdd30ebb1b9f ("module: Convert symbol namespace to string
-literal") makes the grammar of MODULE_IMPORT_NS and EXPORT_SYMBOL_NS
-different between the stable branches and the mainline.  But when
-the commit 955f9ede52b8 ("bpf: Add namespace to BPF internal symbols")
-was backported from mainline, only EXPORT_SYMBOL_NS instances are
-adapted, leaving the MODULE_IMPORT_NS instance with the "new" grammar
-and causing the module fails to build:
+Compared to offsetof(), struct_size() provides additional compile-time
+checks for structs with flexible arrays (e.g., __must_be_array()).
 
-    ERROR: modpost: module bpf_preload uses symbol bpf_link_get_from_fd from namespace BPF_INTERNAL, but does not import it.
-    ERROR: modpost: module bpf_preload uses symbol kern_sys_bpf from namespace BPF_INTERNAL, but does not import it.
+No functional changes intended.
 
-Reported-by: Mingcong Bai <jeffbai@aosc.io>
-Reported-by: Alex Davis <alex47794@gmail.com>
-Closes: https://lore.kernel.org/all/CADiockBKBQTVqjA5G+RJ9LBwnEnZ8o0odYnL=LBZ_7QN=_SZ7A@mail.gmail.com/
-Fixes: 955f9ede52b8 ("bpf: Add namespace to BPF internal symbols")
-Signed-off-by: Xi Ruoyao <xry111@xry111.site>
+Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
 ---
- kernel/bpf/preload/bpf_preload_kern.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/bpf/btf.c | 19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
 
-diff --git a/kernel/bpf/preload/bpf_preload_kern.c b/kernel/bpf/preload/bpf_preload_kern.c
-index 56a81df7a9d7..fdad0eb308fe 100644
---- a/kernel/bpf/preload/bpf_preload_kern.c
-+++ b/kernel/bpf/preload/bpf_preload_kern.c
-@@ -89,5 +89,5 @@ static void __exit fini(void)
- }
- late_initcall(load);
- module_exit(fini);
--MODULE_IMPORT_NS("BPF_INTERNAL");
-+MODULE_IMPORT_NS(BPF_INTERNAL);
- MODULE_LICENSE("GPL");
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 16ba36f34dfa..58a6092a7ff8 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -26,6 +26,7 @@
+ #include <linux/bsearch.h>
+ #include <linux/kobject.h>
+ #include <linux/sysfs.h>
++#include <linux/overflow.h>
+ 
+ #include <net/netfilter/nf_bpf_link.h>
+ 
+@@ -3957,7 +3958,7 @@ struct btf_record *btf_parse_fields(const struct btf *btf, const struct btf_type
+ 	/* This needs to be kzalloc to zero out padding and unused fields, see
+ 	 * comment in btf_record_equal.
+ 	 */
+-	rec = kzalloc(offsetof(struct btf_record, fields[cnt]), GFP_KERNEL | __GFP_NOWARN);
++	rec = kzalloc(struct_size(rec, fields, cnt), GFP_KERNEL | __GFP_NOWARN);
+ 	if (!rec)
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -5583,7 +5584,7 @@ btf_parse_struct_metas(struct bpf_verifier_log *log, struct btf *btf)
+ 		if (id < 0)
+ 			continue;
+ 
+-		new_aof = krealloc(aof, offsetof(struct btf_id_set, ids[aof->cnt + 1]),
++		new_aof = krealloc(aof, struct_size(new_aof, ids, aof->cnt + 1),
+ 				   GFP_KERNEL | __GFP_NOWARN);
+ 		if (!new_aof) {
+ 			ret = -ENOMEM;
+@@ -5610,7 +5611,7 @@ btf_parse_struct_metas(struct bpf_verifier_log *log, struct btf *btf)
+ 		if (ret != BTF_FIELD_FOUND)
+ 			continue;
+ 
+-		new_aof = krealloc(aof, offsetof(struct btf_id_set, ids[aof->cnt + 1]),
++		new_aof = krealloc(aof, struct_size(new_aof, ids, aof->cnt + 1),
+ 				   GFP_KERNEL | __GFP_NOWARN);
+ 		if (!new_aof) {
+ 			ret = -ENOMEM;
+@@ -5647,7 +5648,7 @@ btf_parse_struct_metas(struct bpf_verifier_log *log, struct btf *btf)
+ 		continue;
+ 	parse:
+ 		tab_cnt = tab ? tab->cnt : 0;
+-		new_tab = krealloc(tab, offsetof(struct btf_struct_metas, types[tab_cnt + 1]),
++		new_tab = krealloc(tab, struct_size(new_tab, types, tab_cnt + 1),
+ 				   GFP_KERNEL | __GFP_NOWARN);
+ 		if (!new_tab) {
+ 			ret = -ENOMEM;
+@@ -8563,7 +8564,7 @@ static int btf_populate_kfunc_set(struct btf *btf, enum btf_kfunc_hook hook,
+ 
+ 	/* Grow set */
+ 	set = krealloc(tab->sets[hook],
+-		       offsetof(struct btf_id_set8, pairs[set_cnt + add_set->cnt]),
++		       struct_size(set, pairs, set_cnt + add_set->cnt),
+ 		       GFP_KERNEL | __GFP_NOWARN);
+ 	if (!set) {
+ 		ret = -ENOMEM;
+@@ -8849,7 +8850,7 @@ int register_btf_id_dtor_kfuncs(const struct btf_id_dtor_kfunc *dtors, u32 add_c
+ 	}
+ 
+ 	tab = krealloc(btf->dtor_kfunc_tab,
+-		       offsetof(struct btf_id_dtor_kfunc_tab, dtors[tab_cnt + add_cnt]),
++		       struct_size(tab, dtors, tab_cnt + add_cnt),
+ 		       GFP_KERNEL | __GFP_NOWARN);
+ 	if (!tab) {
+ 		ret = -ENOMEM;
+@@ -9407,8 +9408,7 @@ btf_add_struct_ops(struct btf *btf, struct bpf_struct_ops *st_ops,
+ 
+ 	tab = btf->struct_ops_tab;
+ 	if (!tab) {
+-		tab = kzalloc(offsetof(struct btf_struct_ops_tab, ops[4]),
+-			      GFP_KERNEL);
++		tab = kzalloc(struct_size(tab, ops, 4), GFP_KERNEL);
+ 		if (!tab)
+ 			return -ENOMEM;
+ 		tab->capacity = 4;
+@@ -9421,8 +9421,7 @@ btf_add_struct_ops(struct btf *btf, struct bpf_struct_ops *st_ops,
+ 
+ 	if (tab->cnt == tab->capacity) {
+ 		new_tab = krealloc(tab,
+-				   offsetof(struct btf_struct_ops_tab,
+-					    ops[tab->capacity * 2]),
++				   struct_size(tab, ops, tab->capacity * 2),
+ 				   GFP_KERNEL);
+ 		if (!new_tab)
+ 			return -ENOMEM;
 -- 
 2.49.0
 
