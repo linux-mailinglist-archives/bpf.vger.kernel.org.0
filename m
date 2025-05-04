@@ -1,194 +1,166 @@
-Return-Path: <bpf+bounces-57311-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57312-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6908AA83CB
-	for <lists+bpf@lfdr.de>; Sun,  4 May 2025 05:47:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64803AA85E4
+	for <lists+bpf@lfdr.de>; Sun,  4 May 2025 12:24:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0AEB1179052
-	for <lists+bpf@lfdr.de>; Sun,  4 May 2025 03:47:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2180A189A624
+	for <lists+bpf@lfdr.de>; Sun,  4 May 2025 10:24:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AFAC146D65;
-	Sun,  4 May 2025 03:47:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 185E31A265E;
+	Sun,  4 May 2025 10:24:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.itouring.de (mail.itouring.de [85.10.202.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F77DAD24
-	for <bpf@vger.kernel.org>; Sun,  4 May 2025 03:47:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.208
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF32DA923;
+	Sun,  4 May 2025 10:24:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.10.202.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746330449; cv=none; b=ebZIefFqaF0N80iJsZgu+3lHGUShlIYEvBzTOdhyPAxGZg+JnA+fMVnxELrp5MTlJX6p2vYb7Y3yVBeyEtnWeR5XMcwXc/W6RH5Ou9gwZlaY0kAYi7IIdDziVKzSTua0gD62jnvOBi8+EAIK28y8Z7BJb24jXD644KpsdFneebI=
+	t=1746354277; cv=none; b=rzR4FBansk0TLtWO4l3uFy7uvbEiIXUJuWTp+8D43eyWMam6UO4CFUDirL5IplXj0Y5kMZtw9CpZzOLazwcB2EXKfta9YbQXyTHdbVXhA0Asxy5a95Gpy+XowNMOkMw/XlD7FzmGX1yZUZAToWyIC7nrHD/1AMD9y1mhz7hE5d4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746330449; c=relaxed/simple;
-	bh=VVHbpS+aW41BhtWvQG0K5cKf1+fGMGKPO5Uk3Njlb8E=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=eLwRnJOgvln1LDd4XjMB+JesjhTcqC93Sib5TLLNoIurlIhHolpWs/VdzPL4rW+iLrPPtaMV1vACIgBCahEGJxwx89ySbhvV13jucTqz9T7rD6llhTMGgMS6H4E5grygkD/zXBTqsrT+CU3iPkbWqJZX5/6RIBbRP0Uy86yCu64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.208
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-3d9099f9056so48538545ab.2
-        for <bpf@vger.kernel.org>; Sat, 03 May 2025 20:47:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746330446; x=1746935246;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=b2qKXyJva4LTr+e08+BalZ6zbfJm13uIF15vWKahR20=;
-        b=YHpGlA9Gx9ZYYV54PI9SHIRxBdMg6VKHod0NR2bvhQJuNUHRfFBgKjpkIoiPIM5kcT
-         cXQxVCjhWUvOlN/R/wDFrp/+9yUJrSChtnD1cIMLe8TQF2EPI5WUelxAI5PAZ/b9Q+Lh
-         h005IFAoBLjr5a2pvfOXwDskKwq62DWifmLwdRqRcfor3Kxd/Fw+iWH2V/55ktN5arJA
-         /VDKVP4SQgtZEE0uXuuHEk53/wm57ZBoVPwg+cWbyrxl8Tn4AGHhzx1htcoXopRriUDi
-         vq+PeMPYi52ZJWKwvG4fW1Yarvoq6jQzJbuXHM5tNB/DmC+SL8/drcW19706iKiIeZjm
-         Kd/w==
-X-Forwarded-Encrypted: i=1; AJvYcCUFgqiF2K1hG8gtYvxPL3zjds8dtq7SU8LDnyPc1Ug+DsAh33fkPU8Ubvre2qjO3WXIntA=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw4CYvl5sfDs5UmB7D4EQyMpJuNJMidYRDCe3Qg57PazklNBOhy
-	3WhbOPEATlZsK1o7ekIfZUvCr77pJkAJq9Cltxx8QiS7Ag3Gp0vC5tzXvr2N6EaWCrAVFqhrLdF
-	/xgZPiawBlMuDZvnPDx475U6OY4K+uKblXoI7NALWxxzCN1dtzI11ak8=
-X-Google-Smtp-Source: AGHT+IHp2dsJUruiVcjG+lkcJTYcLayX6++Adsb6kx/CiFEu+bs7FetM/ZQWeB2w811RtI8R8S4q8IvHgC7BQzRzH6dhS3B0g3AP
+	s=arc-20240116; t=1746354277; c=relaxed/simple;
+	bh=Y6s+YCa9iFiGT4eVBBAezJ3E3VgNlItLt0N+jj37zow=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=cWVOGb2KROYlM5SVB4IF+6v1A7RJ+pG/jqRXxcm76CiPXNTfSiDfgR06b9N9cmpzoUAXRh563EFR+qTLeKYHUts4Zwfz2VID5LwCAEl5pcC8HtUp0mzdYjUcX6uwkWAHCljvWtLnqyEB+HnrEjgVHKn1AGyTIg4fywzcwjsP+SE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=applied-asynchrony.com; spf=pass smtp.mailfrom=applied-asynchrony.com; arc=none smtp.client-ip=85.10.202.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=applied-asynchrony.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=applied-asynchrony.com
+Received: from tux.applied-asynchrony.com (p5b07e9b7.dip0.t-ipconnect.de [91.7.233.183])
+	by mail.itouring.de (Postfix) with ESMTPSA id 0C2B9103765;
+	Sun, 04 May 2025 12:24:26 +0200 (CEST)
+Received: from [192.168.100.223] (ragnarok.applied-asynchrony.com [192.168.100.223])
+	by tux.applied-asynchrony.com (Postfix) with ESMTP id B1C5C60187F0A;
+	Sun, 04 May 2025 12:24:25 +0200 (CEST)
+Subject: Re: [PATCH] bpftool: build bpf bits with -std=gnu11
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Quentin Monnet <qmo@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>
+References: <20250502085710.3980-1-holger@applied-asynchrony.com>
+ <7326223e-0cb9-4d22-872f-cbf1ff42227d@kernel.org>
+ <913f66a8-6745-0e30-b5b8-96d23bf05b90@applied-asynchrony.com>
+ <CAADnVQLpyNiyghWLMq5AxkBgZX4J9VfX5j4ToNh6UsrQ=4yndg@mail.gmail.com>
+From: =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
+Organization: Applied Asynchrony, Inc.
+Message-ID: <2a8208af-bc4b-f1bd-af0b-f5db485ed1f0@applied-asynchrony.com>
+Date: Sun, 4 May 2025 12:24:25 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a02:b0:3d9:6485:39f0 with SMTP id
- e9e14a558f8ab-3da5691c069mr41746445ab.9.1746330446641; Sat, 03 May 2025
- 20:47:26 -0700 (PDT)
-Date: Sat, 03 May 2025 20:47:26 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6816e34e.a70a0220.254cdc.002c.GAE@google.com>
-Subject: [syzbot] [bpf?] WARNING in __bpf_prog_ret0_warn
-From: syzbot <syzbot+0903f6d7f285e41cdf10@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me, 
-	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAADnVQLpyNiyghWLMq5AxkBgZX4J9VfX5j4ToNh6UsrQ=4yndg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 
-Hello,
+On 2025-05-03 04:36, Alexei Starovoitov wrote:
+> On Fri, May 2, 2025 at 2:53 AM Holger Hoffstätte
+> <holger@applied-asynchrony.com> wrote:
+>>
+>> On 2025-05-02 11:26, Quentin Monnet wrote:
+>>> On 02/05/2025 09:57, Holger Hoffstätte wrote:
+>>>> A gcc-15-based bpf toolchain defaults to C23 and fails to compile various
+>>>> kernel headers due to their use of a custom 'bool' type.
+>>>> Explicitly using -std=gnu11 works with both clang and bpf-toolchain.
+>>>>
+>>>> Signed-off-by: Holger Hoffstätte <holger@applied-asynchrony.com>
+>>>
+>>> Thanks! I tested that it still works with clang.
+>>>
+>>> Acked-by: Quentin Monnet <qmo@kernel.org>
+>>
+>> Thanks!
+>>
+>>> I didn't manage to compile with gcc, though. I tried with gcc 15.1.1 but
+>>> option '--target=bpf' is apparently unrecognised by the gcc version on
+>>> my setup.
+>>>
+>>> Out of curiosity, how did you build using gcc for the skeleton? Was it
+>>> enough to run "CLANG=gcc make"? Does it pass the clang-bpf-co-re build
+>>> probe successfully?
+>>
+>> I'm on Gentoo where we have a gcc-14/15 based "bpf-toolchain" package,
+>> which is just gcc configured & packaged for the bpf target.
+>> Our bpftool package can be built with clang (default) or without, in
+>> which case it depend on the bpf-toolchain. The idea is to gradually
+>> allow bpf/xdp tooling to build/run without requiring clang.
+>>
+>> The --target definition is conditional and removed when not using clang:
+>> https://gitweb.gentoo.org/repo/gentoo.git/tree/dev-util/bpftool/bpftool-7.5.0.ebuild?id=bf70fbf7b0dc97fbc97af579954ea81a8df36113#n94
+>>
+>> The bug for building with the new gcc-15 based toolchain where this
+>> patch originated is here: https://bugs.gentoo.org/955156
+> 
+> So you're fixing this build error:
+> 
+> bpf-unknown-none-gcc \
+>          -I. \
+>          -I/var/tmp/portage/dev-util/bpftool-7.5.0/work/bpftool-libbpf-v7.5.0-sources/include/uapi/
+> \
+>          -I/var/tmp/portage/dev-util/bpftool-7.5.0/work/bpftool-libbpf-v7.5.0-sources/src/bootstrap/libbpf/include
+> \
+>          -g -O2 -Wall -fno-stack-protector \
+>           -c skeleton/profiler.bpf.c -o profiler.bpf.o
+> In file included from skeleton/profiler.bpf.c:3:
+> ./vmlinux.h:5: warning: ignoring '#pragma clang attribute' [-Wunknown-pragmas]
+>      5 | #pragma clang attribute push
+> (__attribute__((preserve_access_index)), apply_to = record)
+> ./vmlinux.h:9845:9: error: cannot use keyword 'false' as enumeration constant
+>   9845 |         false = 0,
+>        |         ^~~~~
+> ./vmlinux.h:9845:9: note: 'false' is a keyword with '-std=c23' onwards
+> ./vmlinux.h:31137:15: error: 'bool' cannot be defined via 'typedef'
+> 31137 | typedef _Bool bool;
+>        |               ^~~~
+> 
+> with -std=gnu11 flag and
 
-syzbot found the following issue on:
+Yes, correct. This is the same as all over the kernel or the bpf tests
+for handling C23. I fully understand that this particular patch is only
+one piece of the puzzle.
 
-HEAD commit:    8bac8898fe39 Merge tag 'mmc-v6.15-rc1' of git://git.kernel..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10f03774580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=541aa584278da96c
-dashboard link: https://syzkaller.appspot.com/bug?extid=0903f6d7f285e41cdf10
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1550ca70580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17d10f74580000
+> ignoring an important warning ?
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-8bac8898.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/5f7c2d7e1cd1/vmlinux-8bac8898.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/77a157d2769a/bzImage-8bac8898.xz
+Nobody is (or was) ignoring the warning - it was under discussion when
+I posted the patch. After reaching out to Oracle to verify, we have now
+added the BPF_NO_PRESERVE_ACCESS_INDEX define when building with gcc-bpf;
+this resolves the warning, just like in the bpf self-tests.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0903f6d7f285e41cdf10@syzkaller.appspotmail.com
+You are right that such an addition to the in-kernel bpftool build is
+still missing. If you have a suggestion on how best to do that via the
+existing Makefile I'm all ears.
 
-------------[ cut here ]------------
-WARNING: CPU: 3 PID: 217 at kernel/bpf/core.c:2357 __bpf_prog_ret0_warn+0xa/0x20 kernel/bpf/core.c:2357
-Modules linked in:
-CPU: 3 UID: 0 PID: 217 Comm: kworker/u32:6 Not tainted 6.15.0-rc4-syzkaller-00040-g8bac8898fe39 #0 PREEMPT(full) 
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-Workqueue: ipv6_addrconf addrconf_dad_work
-RIP: 0010:__bpf_prog_ret0_warn+0xa/0x20 kernel/bpf/core.c:2357
-Code: f3 0f 1e fa e8 a7 c7 f0 ff 31 c0 c3 cc cc cc cc 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa e8 87 c7 f0 ff 90 <0f> 0b 90 31 c0 c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 90
-RSP: 0018:ffffc900031f6c18 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffffc9000006e000 RCX: 1ffff9200000dc06
-RDX: ffff8880234ba440 RSI: ffffffff81ca6979 RDI: ffff888031e93040
-RBP: ffffc900031f6cb8 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff88802b61e010
-R13: ffff888031e93040 R14: 00000000000000a0 R15: ffff88802c3d4800
-FS:  0000000000000000(0000) GS:ffff8880d6ce2000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055557b6d2ca8 CR3: 000000002473e000 CR4: 0000000000352ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- bpf_dispatcher_nop_func include/linux/bpf.h:1316 [inline]
- __bpf_prog_run include/linux/filter.h:718 [inline]
- bpf_prog_run include/linux/filter.h:725 [inline]
- cls_bpf_classify+0x74a/0x1110 net/sched/cls_bpf.c:105
- tc_classify include/net/tc_wrapper.h:197 [inline]
- __tcf_classify net/sched/cls_api.c:1764 [inline]
- tcf_classify+0x7ef/0x1380 net/sched/cls_api.c:1860
- htb_classify net/sched/sch_htb.c:245 [inline]
- htb_enqueue+0x2f6/0x12d0 net/sched/sch_htb.c:624
- dev_qdisc_enqueue net/core/dev.c:3984 [inline]
- __dev_xmit_skb net/core/dev.c:4080 [inline]
- __dev_queue_xmit+0x2142/0x43e0 net/core/dev.c:4595
- dev_queue_xmit include/linux/netdevice.h:3350 [inline]
- neigh_hh_output include/net/neighbour.h:523 [inline]
- neigh_output include/net/neighbour.h:537 [inline]
- ip_finish_output2+0xc38/0x21a0 net/ipv4/ip_output.c:235
- __ip_finish_output net/ipv4/ip_output.c:313 [inline]
- __ip_finish_output+0x49e/0x950 net/ipv4/ip_output.c:295
- ip_finish_output+0x35/0x380 net/ipv4/ip_output.c:323
- NF_HOOK_COND include/linux/netfilter.h:303 [inline]
- ip_output+0x13b/0x2a0 net/ipv4/ip_output.c:433
- dst_output include/net/dst.h:459 [inline]
- ip_local_out+0x33e/0x4a0 net/ipv4/ip_output.c:129
- iptunnel_xmit+0x5d5/0xa00 net/ipv4/ip_tunnel_core.c:82
- geneve_xmit_skb drivers/net/geneve.c:921 [inline]
- geneve_xmit+0x2bc5/0x5610 drivers/net/geneve.c:1046
- __netdev_start_xmit include/linux/netdevice.h:5203 [inline]
- netdev_start_xmit include/linux/netdevice.h:5212 [inline]
- xmit_one net/core/dev.c:3776 [inline]
- dev_hard_start_xmit+0x93/0x740 net/core/dev.c:3792
- __dev_queue_xmit+0x7eb/0x43e0 net/core/dev.c:4629
- dev_queue_xmit include/linux/netdevice.h:3350 [inline]
- neigh_hh_output include/net/neighbour.h:523 [inline]
- neigh_output include/net/neighbour.h:537 [inline]
- ip6_finish_output2+0xe98/0x2020 net/ipv6/ip6_output.c:141
- __ip6_finish_output net/ipv6/ip6_output.c:215 [inline]
- ip6_finish_output+0x3f9/0x1360 net/ipv6/ip6_output.c:226
- NF_HOOK_COND include/linux/netfilter.h:303 [inline]
- ip6_output+0x1f9/0x540 net/ipv6/ip6_output.c:247
- dst_output include/net/dst.h:459 [inline]
- NF_HOOK include/linux/netfilter.h:314 [inline]
- NF_HOOK include/linux/netfilter.h:308 [inline]
- mld_sendpack+0x9e9/0x1220 net/ipv6/mcast.c:1868
- mld_send_initial_cr.part.0+0x1a1/0x260 net/ipv6/mcast.c:2285
- mld_send_initial_cr include/linux/refcount.h:291 [inline]
- ipv6_mc_dad_complete+0x22c/0x2b0 net/ipv6/mcast.c:2293
- addrconf_dad_completed+0xd8a/0x10d0 net/ipv6/addrconf.c:4341
- addrconf_dad_work+0x84d/0x14e0 net/ipv6/addrconf.c:4269
- process_one_work+0x9cc/0x1b70 kernel/workqueue.c:3238
- process_scheduled_works kernel/workqueue.c:3319 [inline]
- worker_thread+0x6c8/0xf10 kernel/workqueue.c:3400
- kthread+0x3c2/0x780 kernel/kthread.c:464
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:153
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
- </TASK>
+As for the remaining warnings - we are also very aware of the ongoing
+upstream work to support btf_type_tag:
+https://gcc.gnu.org/pipermail/gcc-patches/2025-April/682340.html.
 
+> End result: partially functional bpftool,
+> and users will have no idea why some features of bpftool are not working.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+First of all this is never shipped to any users; using gcc-bpf requires
+active opt-in by developers or users, and now also warns that such a setup
+may result in unexpected bugs due to ongoing work in both Linux and bpftool.
+Like I said before, by default everyone builds with clang and that is also
+true for our distributed binaries.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+If you think adding the -std=gnu11 bit is inappropriate at this time then
+just ignore this patch for now. Sooner or later the bpftool build will have
+to be adapted with BPF_CFLAGS (liek in the selftests) and hopefuilly an
+abstracted BPF_CC so that we no longer have to pretend to be clang when
+using gcc.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+cheers
+Holger
 
