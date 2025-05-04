@@ -1,131 +1,179 @@
-Return-Path: <bpf+bounces-57315-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57316-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC8E9AA893A
-	for <lists+bpf@lfdr.de>; Sun,  4 May 2025 22:19:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FD84AA89C3
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 00:42:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8F3B189402E
-	for <lists+bpf@lfdr.de>; Sun,  4 May 2025 20:19:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AC303B2117
+	for <lists+bpf@lfdr.de>; Sun,  4 May 2025 22:42:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AD4E24A066;
-	Sun,  4 May 2025 20:19:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90A75248894;
+	Sun,  4 May 2025 22:42:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZLE6C/nu"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zCPNMwB7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A943F1DED42;
-	Sun,  4 May 2025 20:19:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 653311A8F60
+	for <bpf@vger.kernel.org>; Sun,  4 May 2025 22:42:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746389961; cv=none; b=UmryOoTne5nw1jfdImfM4fW8hpDM/xgxJsQ2kOuj6HBe/OdJ+S6w8w/2V6rJL3QZtmxV9nF39isUtmTWqjsFBDrWsTlOgKACINlHD35sDH3qCHdUcAmTfoKv1fy9j1RtSnk/Ar6I62w80nn2Gdg2rAuON0hZgvSZgWaJ33gxcKU=
+	t=1746398547; cv=none; b=qiWIwvq1ItF+2D1sPcUEZ8ajJt0gkZn3OXC32LFEzR38Jmo3JOyRBwDCfHQEzy+CRlNpK76i49Fci54H5QKRa6G4IiDju+pHFhpC8OcsbNj4LVvKrOhFRZKXSbNBB4Xg0RNCqV28lSlGZtHp2a94snNulUyykHXI/punwBj7PZg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746389961; c=relaxed/simple;
-	bh=kWouH9PcHn1yDE6oVME8ha/Tnp5GTGTxgWeh4wVEHCM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VaUNUFxtCAN592y8MmxLPdTtUD6WoFKZXKCe0nO4BU9PUel5zKGwlKVFs22hXxilcu0a57TFBX35bdXhH1xTXeI5boVKr3jjiKCugcg/78kekX4Zqg4m+uilIGZNVTJn0wT5dQ9gRN4MRZRU/rOfXdlcTFW/Jp9K0OOnu61lpEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZLE6C/nu; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-74068f95d9fso920667b3a.0;
-        Sun, 04 May 2025 13:19:19 -0700 (PDT)
+	s=arc-20240116; t=1746398547; c=relaxed/simple;
+	bh=qh7v4iKytSvBhnNzPm/US2EOynFq0Kz2NyjqK3T9F5k=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=IIj1bNkCPAGtUhtlOouoWOqJuUMH3smYqH0HV2lU/cUeilmFiYddtWqD3/pTj18aY2a89dgYTtqTdiSe9tg3zgIZh0xDyQrnNiVjWG9s1wrnv8dpzMdS3G6t0jKPytoJglBuRFcrTkOJ0czMelrkVAIVY30rpxqfSwJBWnMOWbQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zCPNMwB7; arc=none smtp.client-ip=209.85.214.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-22c31b55ac6so55692345ad.0
+        for <bpf@vger.kernel.org>; Sun, 04 May 2025 15:42:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746389959; x=1746994759; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2UvegomJiMh6nIQI/2J4Ao0uKJD2zSYoWW1qFQAs5Yg=;
-        b=ZLE6C/nuGxEesrvb+tRjV9caO4+r+wCxv25dmc9DJ6Syjtl8gnsFq7eXZXXwl6Yk8J
-         DA62ySssVw+UrIYHsTnqE2ezldav7Gi2bERRr4fLC4xNd+w0DuihmsR5fJmPtXmNMCgG
-         N6PrNoQbIe2Q2mhLHhYsxCo4hNvADQBzJlkdbcgF0ztpN8Gm49a5SYYLwA2sZs4RmooN
-         a7iL9AVK2uh064dgXy4VPPDuEGoPI52WPcGYsKZEc/fnroK6guuHyHlmbT/A9b/B6szh
-         qHjHm7qm+2ijrudBamNK1j15jzkmETPc1YUDqTYe/0V3xR7x9LGd8n+3AS83131Gyoso
-         De6g==
+        d=google.com; s=20230601; t=1746398544; x=1747003344; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=h2Ves7K5HSdZ8gJm7O2bxGfv8D+1P/iEs4NcrGFZQAU=;
+        b=zCPNMwB7YoBlPuL4HJjlj6NHvoEb6db8fnR9gX0GLVPnwydsqeSZmqNP+hSzdvgRDS
+         gMaqG1B3PdPIla4+KGaeCxt3roc8Cqmaah1zWvCmg+lyBbblGwqhv40yaEl5XeQJIjvl
+         3UIsn+o9qnB9G1q8i1XORq8nNw9uWjzPdvQacJ3N7Jy+H9jwkB3APmBMD4tW1nHsme12
+         EcEA5GgIsNPai3ZE4QCPvq95rn4eCs9bJ+3ppHfervgp76RNSplVsaZ2irxmTyNEJhJv
+         idKwtqEpHf/thwbm9GCY/CV/D1AwrKzqKxs19yU6nuyKLoDrPuyTwg6Y6PO0NXuJeZji
+         1aiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746389959; x=1746994759;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1746398544; x=1747003344;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2UvegomJiMh6nIQI/2J4Ao0uKJD2zSYoWW1qFQAs5Yg=;
-        b=RQk83kqtxPHmxzB/PZ9omCR0ohrkdPmGgunwyNnmv0omTHsyNrIswmfpiBiS5Qya5O
-         2G3D/VlTGsiZdz8Qj5ntQ6Qsx74gVV2S5DQj9m+gXCjBNcEHzL4M0+gWQOTfhmmZtjZ6
-         WfKkY6IIj9RXanVsqTWgLRsAJiuOAkG+vLaqcln5A0O0OF0A/DLOofGB0L4hjloD7KbE
-         //tx8+Y/rXkxGOo7ZzWAkkOFVBI7ZY1HDEm+fMiH8xQMEj8Dp5OrMy/xkB13xUHG6Uow
-         JbsM0NedvmktfKONaM73sYmo95uRvt0MSmFIPdoe/JSinVj4Am1gWL/KiGkjA2pNan4K
-         pVPg==
-X-Forwarded-Encrypted: i=1; AJvYcCWNUpTjp8ZftkwdSwLltaBVYU6GWxqCNmWEd/lry1QxpKg/JMGOS0+fxDLSEH7mFlO8apzwmcDV@vger.kernel.org, AJvYcCWsnYmFJyl6JC+Ap6uSH3WDXgzBI3M/thT1ggRX6pVYH9b3D6L84GP5UJLHxYYe2CIr4u1oitCg3RSD1fs=@vger.kernel.org, AJvYcCXQa5YaVvzmjBdvNJ8Pad+lolwy3AGZPrNoXd5klkgzNlSVavtmHJtcNNaeEOI3M76EFhB7ipkoTcxIU8aFZUnd@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw4u36kFSs2szty8uKH/P40iaqCyjW/2zRNn67FzxuPFTZt1MV9
-	utLLYhO/UOVnGBeUk4VJK8UtBdMgQ2pK2tOeBO7fvW112Hf7y69M
-X-Gm-Gg: ASbGncuWeyCfRxI8UfTRmV8RVP7dLDWfxG/ypIPVz1jb/Ze8sa0NNmRf0Vw+ZdYHE5r
-	l9CREvINfFSBdUplKl6lmjERmm2ua02RZlAuBHI1m3sHqsUf8GG/x1eFRZ0HPluYENoV1cqn0Sv
-	viwl7Je7KlpdaLkb+hXzEciOkyCQHHyO9yeWxaUb1znsDN+qYClqmsxVI+DFA9hLY+W63aBojS7
-	kAknxq+Y8O07h29DFHH1VDKZANsDb1ZJSAGWQZ/7QvFEQ4YfMMNQULF8PVkWDQcr1WVwtU9Fd8w
-	wmDs9tkSxpasIY4BiGZQusw+mCINCNMR6pvVdjNxSgc=
-X-Google-Smtp-Source: AGHT+IHjm56528yNjjRibNiMtXVYmxhFuk9RepbfihANhB0sy0XIXdsZY6QgN882IXegmTERmbZiTw==
-X-Received: by 2002:a05:6a00:ab0d:b0:73f:e8c:1aac with SMTP id d2e1a72fcca58-7406f08a579mr6611979b3a.2.1746389958935;
-        Sun, 04 May 2025 13:19:18 -0700 (PDT)
-Received: from localhost ([66.205.136.11])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74058d7a47esm5246607b3a.29.2025.05.04.13.19.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 May 2025 13:19:18 -0700 (PDT)
-Date: Sun, 4 May 2025 13:19:16 -0700
-From: Cong Wang <xiyou.wangcong@gmail.com>
-To: Jiayuan Chen <jiayuan.chen@linux.dev>
-Cc: bpf@vger.kernel.org, mrpre@163.com, Boris Pismenny <borisp@nvidia.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next v1 1/2] ktls, sockmap: Fix missing uncharge
- operation
-Message-ID: <aBfLxMus8jgK7JgU@pop-os.localdomain>
-References: <20250425060015.6968-1-jiayuan.chen@linux.dev>
- <20250425060015.6968-2-jiayuan.chen@linux.dev>
+        bh=h2Ves7K5HSdZ8gJm7O2bxGfv8D+1P/iEs4NcrGFZQAU=;
+        b=rOXf6mT1XS/XGy/3J2J32IQX1zp4WwT7Y0idi+K9naKyJgePETBPH1ypDO8X5ZNNz6
+         pfV5/Se72NLJ8wSh1CJSUEJlS9aX7Llox3grXXXDcFDZNKD8CqmjXWsVWMD52vlyRhiO
+         lZRMKQV0pGrfWiL1pdLSE+Bv95+YQOauPEaPjcxuF9Axo86+YdWV0Te05g/HyIM76DIc
+         Az3iIrDz0GYgPZZEA75n+rXJdsPiG5djR6DZHiLh/q+gj6bbELu4cP4kvHX2seKqeBR3
+         k4Ex+rXzULvcpkjMpwxd85arIZ/BxJFjxEo9JwXYFF4mLwknWuuSZ3WFZEPzAruF4L+i
+         6UOA==
+X-Forwarded-Encrypted: i=1; AJvYcCUiX46gf2u9c7FncQPupN/DbK+/SI9060mSuzrqclP8jFC2IXHNm79xJlZckcFd5EC7o5s=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzi8I4Q7WnhdFxsBbHjHUJ9ZDt3PT9QYSZ/zg0wMpISVJHsIT1K
+	svCgwevEFN1kQg28R26tiMuWwYZyaVTBUYl2aqgmay5Ku7QqQQKYKdltDIwz+za8tmmkeXMGm2Z
+	z3QNUhyPjMEx/9A==
+X-Google-Smtp-Source: AGHT+IG3s83AHDeqTtbeNWFu9VJHl3WJY2PIPoEJXseXQ3szKVonPVO7le0fvgXadvoDti/xd87e1NfGDxlroAA=
+X-Received: from plbmk14.prod.google.com ([2002:a17:903:2bce:b0:21f:4f0a:c7e2])
+ (user=tjmercier job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a17:903:2350:b0:220:d078:eb33 with SMTP id d9443c01a7336-22e18c0dda7mr103753045ad.36.1746398543674;
+ Sun, 04 May 2025 15:42:23 -0700 (PDT)
+Date: Sun,  4 May 2025 22:41:36 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250425060015.6968-2-jiayuan.chen@linux.dev>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.49.0.906.g1f30a19c02-goog
+Message-ID: <20250504224149.1033867-1-tjmercier@google.com>
+Subject: [PATCH v2 0/6] Replace CONFIG_DMABUF_SYSFS_STATS with BPF
+From: "T.J. Mercier" <tjmercier@google.com>
+To: sumit.semwal@linaro.org, christian.koenig@amd.com, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
+	skhan@linuxfoundation.org, song@kernel.org, alexei.starovoitov@gmail.com
+Cc: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org, 
+	linux-doc@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, android-mm@google.com, simona@ffwll.ch, 
+	corbet@lwn.net, eddyz87@gmail.com, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	jolsa@kernel.org, mykolal@fb.com, "T.J. Mercier" <tjmercier@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 25, 2025 at 01:59:57PM +0800, Jiayuan Chen wrote:
-> When we specify apply_bytes, we divide the msg into multiple segments,
-> each with a length of 'send', and every time we send this part of the data
-> using tcp_bpf_sendmsg_redir(), we use sk_msg_return_zero() to uncharge the
-> memory of the specified 'send' size.
-> 
-> However, if the first segment of data fails to send, for example, the
-> peer's buffer is full, we need to release all of the msg. When releasing
-> the msg, we haven't uncharged the memory of the subsequent segments.
-> 
-> This modification does not make significant logical changes, but only
-> fills in the missing uncharge places.
-> 
-> This issue has existed all along, until it was exposed after we added the
-> apply test in test_sockmap:
-> commit 3448ad23b34e ("selftests/bpf: Add apply_bytes test to test_txmsg_redir_wait_sndmem in test_sockmap")
-> 
-> Reported-by: Cong Wang <xiyou.wangcong@gmail.com>
+Until CONFIG_DMABUF_SYSFS_STATS was added [1] it was only possible to
+perform per-buffer accounting with debugfs which is not suitable for
+production environments. Eventually we discovered the overhead with
+per-buffer sysfs file creation/removal was significantly impacting
+allocation and free times, and exacerbated kernfs lock contention. [2]
+dma_buf_stats_setup() is responsible for 39% of single-page buffer
+creation duration, or 74% of single-page dma_buf_export() duration when
+stressing dmabuf allocations and frees.
 
-Reviewed-by: Cong Wang <xiyou.wangcong@gmail.com>
+I prototyped a change from per-buffer to per-exporter statistics with a
+RCU protected list of exporter allocations that accommodates most (but
+not all) of our use-cases and avoids almost all of the sysfs overhead.
+While that adds less overhead than per-buffer sysfs, and less even than
+the maintenance of the dmabuf debugfs_list, it's still *additional*
+overhead on top of the debugfs_list and doesn't give us per-buffer info.
 
-Thanks!
+This series uses the existing dmabuf debugfs_list to implement a BPF
+dmabuf iterator, which adds no overhead to buffer allocation/free and
+provides per-buffer info. The list has been moved outside of
+CONFIG_DEBUG_FS scope so that it is always populated. The BPF program
+loaded by userspace that extracts per-buffer information gets to define
+its own interface which avoids the lack of ABI stability with debugfs.
+
+As this is a replacement for our use of CONFIG_DMABUF_SYSFS_STATS, the
+last patch is a RFC for removing it from the kernel. Please see my
+suggestion there regarding the timeline for that.
+
+[1] https://lore.kernel.org/linux-media/20201210044400.1080308-1-hridya@goo=
+gle.com
+[2] https://lore.kernel.org/all/20220516171315.2400578-1-tjmercier@google.c=
+om
+
+v1: https://lore.kernel.org/all/20250414225227.3642618-1-tjmercier@google.c=
+om
+
+v1 -> v2:
+Make the DMA buffer list independent of CONFIG_DEBUG_FS per Christian K=C3=
+=B6nig
+Add CONFIG_DMA_SHARED_BUFFER check to kernel/bpf/Makefile per kernel test r=
+obot
+Use BTF_ID_LIST_SINGLE instead of BTF_ID_LIST_GLOBAL_SINGLE per Song Liu
+Fixup comment style, mixing code/declarations, and use ASSERT_OK_FD in self=
+test per Song Liu
+Add BPF_ITER_RESCHED feature to bpf_dmabuf_reg_info per Alexei Starovoitov
+Add open-coded iterator and selftest per Alexei Starovoitov
+Add a second test buffer from the system dmabuf heap to selftests
+Use the BPF program we'll use in production for selftest per Alexei Starovo=
+itov
+  https://r.android.com/c/platform/system/bpfprogs/+/3616123/2/dmabufIter.c
+  https://r.android.com/c/platform/system/memory/libmeminfo/+/3614259/1/lib=
+dmabufinfo/dmabuf_bpf_stats.cpp
+
+T.J. Mercier (6):
+  dma-buf: Rename and expose debugfs symbols
+  bpf: Add dmabuf iterator
+  bpf: Add open coded dmabuf iterator
+  selftests/bpf: Add test for dmabuf_iter
+  selftests/bpf: Add test for open coded dmabuf_iter
+  RFC: dma-buf: Remove DMA-BUF statistics
+
+ .../ABI/testing/sysfs-kernel-dmabuf-buffers   |  24 --
+ Documentation/driver-api/dma-buf.rst          |   5 -
+ drivers/dma-buf/Kconfig                       |  15 -
+ drivers/dma-buf/Makefile                      |   1 -
+ drivers/dma-buf/dma-buf-sysfs-stats.c         | 202 --------------
+ drivers/dma-buf/dma-buf-sysfs-stats.h         |  35 ---
+ drivers/dma-buf/dma-buf.c                     |  58 +---
+ include/linux/dma-buf.h                       |   6 +-
+ kernel/bpf/Makefile                           |   3 +
+ kernel/bpf/dmabuf_iter.c                      | 177 ++++++++++++
+ kernel/bpf/helpers.c                          |   5 +
+ .../testing/selftests/bpf/bpf_experimental.h  |   5 +
+ tools/testing/selftests/bpf/config            |   3 +
+ .../selftests/bpf/prog_tests/dmabuf_iter.c    | 258 ++++++++++++++++++
+ .../testing/selftests/bpf/progs/dmabuf_iter.c |  91 ++++++
+ 15 files changed, 561 insertions(+), 327 deletions(-)
+ delete mode 100644 Documentation/ABI/testing/sysfs-kernel-dmabuf-buffers
+ delete mode 100644 drivers/dma-buf/dma-buf-sysfs-stats.c
+ delete mode 100644 drivers/dma-buf/dma-buf-sysfs-stats.h
+ create mode 100644 kernel/bpf/dmabuf_iter.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/dmabuf_iter.c
+ create mode 100644 tools/testing/selftests/bpf/progs/dmabuf_iter.c
+
+
+base-commit: 0af2f6be1b4281385b618cb86ad946eded089ac8
+--=20
+2.49.0.906.g1f30a19c02-goog
+
 
