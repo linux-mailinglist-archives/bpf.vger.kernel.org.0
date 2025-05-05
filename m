@@ -1,343 +1,225 @@
-Return-Path: <bpf+bounces-57370-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57371-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07D59AA9D06
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 22:14:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C29DEAA9D6C
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 22:41:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA7601A80127
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 20:14:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B2B9176661
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 20:41:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A45BE26F467;
-	Mon,  5 May 2025 20:13:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08A2A2741D4;
+	Mon,  5 May 2025 20:41:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MxXJYa9Y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Owhl5LDL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f65.google.com (mail-ej1-f65.google.com [209.85.218.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 202A634CF5
-	for <bpf@vger.kernel.org>; Mon,  5 May 2025 20:13:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EC93270EB2
+	for <bpf@vger.kernel.org>; Mon,  5 May 2025 20:41:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746476039; cv=none; b=mG6x4ZrVpNbtyu8RgCmccFtekq7A7liOsMTPPWEtQIyqxBBLYPRONw+D3VbYvKIvMP/vhE7ZElKjauXxuhRcTU+6VKov3sO72z3PRifZf3oeiV28mtKCyLYXhveLE4Va5vymmW21C6IPhdqny9Fxg9yjQYiU8P8ey44uSnBx0yo=
+	t=1746477677; cv=none; b=RMpAd34ioSjC2cuGNgritJmDOrO2jEBysDJLQVuP5VyUAX502GB8+7DfCVW9LdVxrLjvU96Zwv7UOCjtP3hk4wbzndLvg6JbSwv4V5of2SQH3ZlVARyZKABTR85gRxz+2+uj4zlnq3ODkXLniu4ZhYcofs7mg24byaIHv33Q81k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746476039; c=relaxed/simple;
-	bh=y83qAev3wceKeMkxXL3aTqcx5UQtZ2qQrirquqrESzg=;
+	s=arc-20240116; t=1746477677; c=relaxed/simple;
+	bh=d8LfDvKjYkgCUCdFIUw90/ekiXyN5J8SQRenxzuFPN0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qudBVrfuto1iAs7X2EYNVTzaPu0xl8OqBM1VX64QNcojLcfqVkB4UvVVlcphiv637M+tEikNuPwGjSbJphSEP0brjSscFYZYbCGgZjt+Pzx7yppbD00L0W+UlF+R8KhTxvtYCoSqFeRDCcGnuvZdSJtK6xysWkg3nKU1Pol6GHU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MxXJYa9Y; arc=none smtp.client-ip=209.85.218.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f65.google.com with SMTP id a640c23a62f3a-ad1d1f57a01so84943966b.2
-        for <bpf@vger.kernel.org>; Mon, 05 May 2025 13:13:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746476035; x=1747080835; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oLGH7LODGXFX7I8+tUIfnPKORxVjJrT+mvzf58pwyhU=;
-        b=MxXJYa9YTy1dnxAtYk5YTI7rVIy6jPJL6j1YoS84g+AhzlrBdPaZbUipL2LpbdYVkv
-         wzoEWYDVDRpW7lbxZjfwyUkH6zKJCHsqiX9ATdjbqDq9HIZ5rfR9WNCmw8t7YFNr0yv9
-         nbKlOIhJ4SOVw7VqWO9+37y/fOi+Ky8AxGaignSHNTUSSd1UnsUe7kcCGcEPB6OYjg28
-         KInJ3ot3cSCW4T71gmxKHwYf2CIJ0XfIf41tW0b9zYio5xZt219ehs5JZvXBdI+f0XX1
-         TOGs3xUMGYT9qSI2AZYhaoyh7hUFkc5op+EKuBNcg4JtL0x6wO56topGqPoOzYAfPjwn
-         uuLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746476035; x=1747080835;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oLGH7LODGXFX7I8+tUIfnPKORxVjJrT+mvzf58pwyhU=;
-        b=d4cEe2Z0f70bhaWuG6Yj/XD2rjdmnKbmpCcTiFlE6ac9+lVoo6fVLtn8hK/S1gM+m8
-         1J5C029zmCnJJ/WTbanh+4ex+5x6st7m62kCAUAjTc+ItiMk96dQG/p2xVAYwLHtKXkw
-         po5/OIT5TPCuAoxDFeLPPZneuzFX4ueokLjig5m0FU92V2ORbLNEqo8SaiztdOMw2aNV
-         T4wYINgbzipJmflSU/l0pDxFazAj/iHoe6QQMTmMg9pGigub01sWDlhnOTEZRc8QsuuR
-         xUfsbpcYufPpkXbG4894l+EjHuWOQyok+C2uNzULWIOB5rvk6bH+nFH+r9D+X+Quuavw
-         3Lqw==
-X-Gm-Message-State: AOJu0Yzp87H9uMCEcRTqqkCiZH4KSWL7H9S39CqxDwNxsJurROp9Cs/u
-	KJs9Yepc/WqAh/weTW8CNKIIbqFGkx1wnH55wbFDZvf+H44qC48DWtg5W515SV+IpRUfFnuj0P/
-	aJlukcWrRgbSyZTZW6BQe/s4p0o8=
-X-Gm-Gg: ASbGncvMIllsTByB7WtDgsKcrsVKJdEY6JiLPUL4WPEDIfI68LdtvfnkvVry6Ow7VpU
-	SEPkeMq/NEo9i9ZlNlOr69/+20E3xVHX1FqNvTUWLT4DEc3eu2ikYmVfavsNOohDbxLdiZzL67v
-	aLtktpCq1tVFXPsGJToaL68Srhw1BrfzZccIt6GN5UG/ghZ5nyei1b7peG
-X-Google-Smtp-Source: AGHT+IFTb40HhujQNeVgViwpGDk92ejoX+cIuhjNpl5TFc7wnzpSVK7n50+zuWbjTo0PoNAx4Q0Wj6ZmrzRFhSEUzhA=
-X-Received: by 2002:a17:907:c04:b0:ac3:bd68:24f0 with SMTP id
- a640c23a62f3a-ad17b470a90mr1401118566b.7.1746476035035; Mon, 05 May 2025
- 13:13:55 -0700 (PDT)
+	 To:Cc:Content-Type; b=e9mth9pJ0npqoXBr9GARc56RkNmDc1T3x+CWobI+sii59TGLyEJfbYSA/Kc+ALC3W4llAobDdmhnGOsiJ8NDIHi9ZZrWg4XWsQeglPItJaO5o1fL3i8dprVTee/+faR7IZJOcw1C3x1rZmOiex3wuFRS9pqlsDolUiuhAoqrc5g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Owhl5LDL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0326AC4CEEE
+	for <bpf@vger.kernel.org>; Mon,  5 May 2025 20:41:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1746477677;
+	bh=d8LfDvKjYkgCUCdFIUw90/ekiXyN5J8SQRenxzuFPN0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Owhl5LDLXkQNX7x4a0Z1G/aYlPwj725dS3lGDTCV+pR8BnaB+NmYGY89SDeQF3QeH
+	 QMcVS3pTVG7yr2bHdU7lOtM3GpgOBxthge8YONACDjcAlhOe4HTfIekToeKwPz3N+F
+	 SCvS1XUDNBQ9JydjTGHjI6amf0i1/NdehRIliJtQfQsIDhOYJyq9LDTsKQRHtbU2Kp
+	 VJmnHLfuSDXWtz/sjL8WEX+OzJduJRaezfIl3m0tVpYtQRnTmvcqfk+BJYCfe69Lou
+	 ij+YIV+P9kP38iUmIsVH/8hUm/82tum1XfYpsYxGLZYH5aF361BOrdowd6cGN/CkIz
+	 DWjJWz4Jh2/JQ==
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5e6c18e2c7dso8872231a12.3
+        for <bpf@vger.kernel.org>; Mon, 05 May 2025 13:41:16 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXkDrvqvAsv7KD63NecmUK5VxUcS00g4e/Pf62SDoVFe0M9DkmbmPQmhcePSx8o2NNKXxk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YygnWO8S2LXtDUNITD/CXM321J+ICkQpr+5mxqewuIsEDqi4fRs
+	vu/p5VhYviMnlZujguHz8DR9iVRGne568Q11+J9KGuVQuB0K4m2BiNYv+5yyC0H0g1snmNFkzUQ
+	mZ1EG3QAyeNK+Akhi+rjsMB2jLKfiDjjLIH3e
+X-Google-Smtp-Source: AGHT+IFfJkERYqcbzT4YQQTS+Mj+93sXv0WPP/4xBqB2yT0tfFb61yLhT9GQEjqTDYpKCZHUl0y2flUvtx0O/XgDMu4=
+X-Received: by 2002:a05:6402:280d:b0:5f9:dbc6:d363 with SMTP id
+ 4fb4d7f45d1cf-5fb70d52af5mr319781a12.32.1746477675536; Mon, 05 May 2025
+ 13:41:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250420105524.2115690-1-rjsu26@gmail.com>
-In-Reply-To: <20250420105524.2115690-1-rjsu26@gmail.com>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Mon, 5 May 2025 22:13:17 +0200
-X-Gm-Features: ATxdqUELFVaCha6IpBdCwGAnIzDWNLneNabADliO6wdIABUjJaTBndp35g1diWU
-Message-ID: <CAP01T75B87Vnq-kdq6gaNXj5xeOOiah-onm4weEZA=jm8W8JVQ@mail.gmail.com>
-Subject: Re: [RFC bpf-next 0/4] bpf: Fast-Path approach for BPF program Termination
-To: Raj Sahu <rjsu26@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, djwillia@vt.edu, 
-	miloc@vt.edu, ericts@vt.edu, rahult@vt.edu, doniaghazy@vt.edu, 
-	quanzhif@vt.edu, jinghao7@illinois.edu, sidchintamaneni@gmail.com
+References: <20250502184421.1424368-1-bboscaccy@linux.microsoft.com>
+ <20250502210034.284051-1-kpsingh@kernel.org> <87o6w7ge3o.fsf@microsoft.com>
+In-Reply-To: <87o6w7ge3o.fsf@microsoft.com>
+From: KP Singh <kpsingh@kernel.org>
+Date: Mon, 5 May 2025 22:41:04 +0200
+X-Gmail-Original-Message-ID: <CACYkzJ7Ur4kFaGZTDvcFJpn0ZwJ9V+=3ZefUURtkrQGfa68zLg@mail.gmail.com>
+X-Gm-Features: ATxdqUF8uthsI1M39wdVx3o5QcABchfWwSxBzLmXfLY2I-_y9VLmlQgWs2T9bB0
+Message-ID: <CACYkzJ7Ur4kFaGZTDvcFJpn0ZwJ9V+=3ZefUURtkrQGfa68zLg@mail.gmail.com>
+Subject: Re: [PATCH v3 0/4] Introducing Hornet LSM
+To: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+Cc: James.Bottomley@hansenpartnership.com, bpf@vger.kernel.org, 
+	code@tyhicks.com, corbet@lwn.net, davem@davemloft.net, dhowells@redhat.com, 
+	gnoack@google.com, herbert@gondor.apana.org.au, jarkko@kernel.org, 
+	jmorris@namei.org, jstancek@redhat.com, justinstitt@google.com, 
+	keyrings@vger.kernel.org, linux-crypto@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, llvm@lists.linux.dev, 
+	masahiroy@kernel.org, mic@digikod.net, morbo@google.com, nathan@kernel.org, 
+	neal@gompa.dev, nick.desaulniers+lkml@gmail.com, nicolas@fjasle.eu, 
+	nkapron@google.com, paul@paul-moore.com, roberto.sassu@huawei.com, 
+	serge@hallyn.com, shuah@kernel.org, teknoraver@meta.com, 
+	xiyou.wangcong@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, 20 Apr 2025 at 12:56, Raj Sahu <rjsu26@gmail.com> wrote:
+On Mon, May 5, 2025 at 7:30=E2=80=AFPM Blaise Boscaccy
+<bboscaccy@linux.microsoft.com> wrote:
 >
-> From: Raj <rjsu26@gmail.com>
+> KP Singh <kpsingh@kernel.org> writes:
 >
-> Motivation:
-> We propose an enhancement to the BPF infrastructure to address the
-> critical issue of long-running BPF programs [1,2,3,4]. While the verifier
-> ensures termination by restricting instruction count and backward edges, =
-the
-> total execution time of BPF programs is not bounded. Certain helper funct=
-ions
-> and iterators can result in extended runtimes, affecting system performan=
-ce.
+> [...]
 >
-> The existing BPF infrastructure verifies that programs will not indefinit=
-ely
-> loop or leak resources. However, helper functions such as `bpf_loop`,
-> `bpf_for_each_map_elem`, and other iterative or expensive kernel interact=
-ions
-> can cause runtimes that significantly degrade system performance [6]. Cur=
-rent
-> detaching mechanisms do not immediately terminate running instances,
-> monopolizing CPU. Therefore, a termination solution is necessary to swift=
-ly
-> terminate execution while safely releasing resources.
+> > Now if you really care about the use-case and want to work with the mai=
+ntainers
+> > and implement signing for the community, here's how we think it should =
+be done:
+> >
+> > * The core signing logic and the tooling stays in BPF, something that t=
+he users
+> >   are already using. No new tooling.
+> > * The policy decision on the effect of signing can be built into variou=
+s
+> >   existing LSMs. I don't think we need a new LSM for it.
+> > * A simple UAPI (emphasis on UAPI!) change to union bpf_attr in uapi/bp=
+f.h in
+> >   the BPF_PROG_LOAD command:
+> >
+> > __aligned_u64 signature;
+> > __u32 signature_size;
+>
+> I think having some actual details on the various parties' requirements
+> here would be helpful. KP, I do look forward to seeing your design;
+> however, having code signing proposals where the capabilities are
+> dictated from above and any dissent is dismissed as "you're doing it
+> wrong" isn't going to be helpful to anyone that needs to use this in
+> practice.
 
-Thanks for sending out the code and cover letter, much appreciated!
+Please don't misrepresent the facts, you got feedback from Alexei in
+various threads, but you chose to argue on the points that were
+convenient for you (i.e. usage of BPF internal APIs) and yet you claim
+to "work with the BPF community and maintainers" by arguing instead of
+collaborating and paying attention to the feedback given to you.
 
-I will keep aside opinions on which of 'fast execute' vs
-'panic/unwind' feel semantically cleaner, since it's hard to have an
-objective discussion on that. One can argue about abstract concepts
-like complexity vs clean design either way.
+1. https://lore.kernel.org/bpf/CAADnVQKF+B_YYwOCFsPBbrTBGKe4b22WVJFb8C0PHGm=
+RAjbusQ@mail.gmail.com/
 
-Instead just some questions/comments on the design.
+  Your solution to address the ELF loader specific issue was to just
+allow list systemd? You totally ignored the part about loaders in
+golang and Rust that do not use ELF. How is this    "directive from
+above?"
+
+2. Alexei suggested to you in
+https://lore.kernel.org/bpf/87plhhjwqy.fsf@microsoft.com/
+
+  "A signature for the map plus a signature for the prog
+  that is tied to a map might be a better option.
+  At map creation time the contents can be checked,
+  the map is frozen, and then the verifier can proceed
+  with prog's signature checking."
+
+You never replied to this.
+
+3. To signing the attachment points, you replied
+
+> That statement is quite questionable. Yes, IIRC you brought that up. And
+> again, runtime policy enforcement has nothing to do with proving code
+> provenance. They are completely independent concerns.
+
+The place where the BPF program is attached is a key part of the
+provenance of the BPF program and its security (and other) effects can
+vary greatly based on that. (e.g. imagine a reject all LSM program
+that is attached to the wrong LSM hook). This is why it's not the same
+as module loading.
+
+4. https://lore.kernel.org/bpf/CAADnVQKF+B_YYwOCFsPBbrTBGKe4b22WVJFb8C0PHGm=
+RAjbusQ@mail.gmail.com/
+
+Programs can still access maps, now if you combine the issue of
+ELF-less loaders and that maps are writeable from other programs as
+freezing only affects userspace (i.e. when a binary gets an FD to a
+map and tries to modify it with syscalls) your implementation fails.
+
+The reply there about trusted user-space still needs to come with
+better guarantees from the kernel, and the kernel can indeed give
+better guarantees, which we will share. The reason for this is that
+your trusted binary is not immune to attacks, and once an attacker
+gains code execution as this trusted binary, there is no containing
+the compromise.
+
+- KP
 
 >
-> Existing termination approach like the BPF Exception or Runtime hooks [5]=
- have
-> the issue of either lack of dynamism or having runtime overheads: BPF
-> Exceptions: Introduces bpf_throw() and exception callbacks, requiring sta=
-ck
-> unwinding and exception state management.
-
-I feel there is an equal amount of state management here, it's just
-that it's not apparent directly, and not reified into tables etc.
-One of the (valid) concerns with unwinding is that preparing tables of
-objects that need to be released requires the verifier/runtime to be
-aware of each resource acquiring functions.
-Every time you add a new kfunc that acquires some resource, you'd have
-to update some place in the kernel to make sure it gets tracked for
-clean up too.
-
-But that would be equally true for this case:
-- The verifier must know which functions acquire resources, so that it
-can replace them with stubs in the cloned text.
-- Thus, every time a new kfunc is added, one must introduce its noop
-stub and add it to _some_ mapping to acquire kfuncs with their stubs.
-
-> Cleanup can only be done for pre-defined cancellation points.
-
-But can you terminate the program at any arbitrary point with this? It
-doesn't seem likely to me. You still have designated points where you
-stub empty calls instead of ones which return resources. You will jump
-to the return address into the cloned stub on return from an interrupt
-that gives you control of the CPU where the program is running. But
-apart from the stub functions, everything else would be kept the same.
-
-I think you are conflating the mechanism to clean up resources
-(unwinding, this (speed-run-to-exit/fast-execute), runtime log of
-resources), with the mechanism to enforce termination.
-
-Both are mutually exclusive, and any strategy (probing a memory
-location from the program with strategically placed instrumentation,
-watchdog timers, probing rdtsc to do more granular and precise
-accounting of time spent, etc.) can be combined with any mechanism to
-perform cleanup. There is no necessity to bind one with the other.
-Depending on different program types, we may need multiple strategies
-to terminate them with the right amount of precision.
-
-We may do something coarse for now (like watchdogs), but separation of
-concerns keeps doors open.
-
-> Design:
-> We introduce the Fast-Path termination mechanism, leveraging the
-> verifier's guarantees regarding control flow and resource management. The
-> approach dynamically patches running BPF programs with a stripped-down ve=
-rsion
-> that accelerates termination. This can be used to terminate any given ins=
-tance
-> of a BPF execution. Key elements include:
+> Also, I don't think anyone actually cares, at least I don't, who calls
+> verify_pkcs7_signature or whatnot. Verifying signed binary blobs with a
+> private key is a solved problem and isn't really interesting.
 >
-> - Implicit Lifetime Management: Utilizing the verifier=E2=80=99s inherent=
- control flow
->   and resource cleanup paths encoded within the BPF program structure,
->   eliminating the need for explicit garbage collection or unwinding table=
-s.
+> Our requirements for code signing are just an extension of secure boot
+> and module signing logic:
 >
-> - Dynamic Program Patching: At runtime, BPF programs are atomically patch=
-ed,
->   replacing expensive helper calls with stubbed versions (fast fall-throu=
-gh
->   implementations). This ensures swift termination without compromising s=
-afety
->   or leaking resources.
+> * Prove all code running in ring zero has been signed
+> * Not trivially defeatable by root
+> * Ultimately, no trusted userspace components
+> * Secure from and not vulnerable to TOCTOU attacks
+> * Shouldn't be overly vulnerable to supply-chain attacks
+> * The signature checking logic and control paths should be human-readable
+> * Work easily and be backportable to stable kernels
+> * There should be a simple kconfig option to turn this on or off
+> * This solution needs to be in the mainline kernel
 >
-> - Helper Function Adjustments: Certain helper functions (e.g., `bpf_loop`=
-,
->   `bpf_for_each_map_elem`) include  mechanisms to facilitate early exits =
-through
->   modified return values.
+> Hornet was implemented to meet those requirements, living in the LSM
+> subsystem, written in C. As of today, one cannot accomplish those
+> requirements via BPF-LSM, which is why C was chosen.
 >
-> TODOs:
-> - Termination support for nested BPF programs.
-
-What's the plan for this?
-What do you do if e.g. I attach to some kfunc that you don't stub out?
-E.g. you may stub out bpf_sk_lookup, but I can attach something to
-bpf_get_prandom_u32 called after it in the stub which is not stubbed
-out and stall.
-
-Will you stub out every kfunc with a noop? If so, how do we reason
-about correctness when the kfunc introduces side effects on program
-state?
-
-> - Policy enforcements to control runtime of BPF programs in a system:
-> - Timer based termination (watchdog)
->         - Userspace management to detect low-performing BPF program and
->           terminated them
+> One can easily realize there is absolutely no way to have a single
+> one-size-fits-all signing solution for everything listed in
+> https://ebpf.io/applications/.
 >
-
-I think one of the things I didn't see reasoned about so far is how
-would you handle tail calls or extension programs?
-Or in general, control flow being extended dynamically by program attachmen=
-ts?
-
-Since you execute until the end of the program, someone could
-construct a chain of 32 chained programs that individually expire the
-watchdog timer, breaking your limit and inflating it by limit x 32
-etc.
-
-Perhaps you just fail direct/indirect calls? They're already something
-that can be skipped because of the recursion counter, so it probably
-won't break things.
-
-Extension programs are different, most likely they don't appear as
-attached when the program is loaded, so it's an empty global function
-call in the original program and the stub. So I presume you don't
-attach them to the stub and it's the original empty function that
-executes in the stub?
-
-It will be a more difficult question to answer once we have indirect
-function calls, and possibly allow calling from the BPF program to
-another as long as signatures match correctly.
-
-Say a hierarchical BPF scheduler, where indirect function calls are
-used to dispatch to leaves. Each indirect call target may be a
-separate program attached into the original one (say
-application-specific schedulers). By making the program continue
-executing, the second program invoked from the first one could begin
-to stall, and this could happen recursively, again breaching your
-limit on the parent that called into them.
-
-It doesn't have to be indirect calls, it may be a kernel function that
-does this propagation down the tree (like sched-ext plans to do now).
-Possibly will have to stub out these kfuncs as well. But then we have
-to be mindful if the program depends on side effects vs if they are
-pure.
-
-So I think the conclusion is that we need to reason about and stub all
-functions (apart from those that acquire resources) that can in turn
-invoke more BPF programs, so that the parent calling into them
-transitively isn't stalled while it's fast executing, which doesn't
-seem easy.
-
-It's the same problem as with nested program execution. On the path
-where we are terminating, we allow yet another program to come in and
-stall the kernel.
-
-I think it's just a consequence of "keep executing until exit" vs
-"stop executing and return" that such a problem would come up. It's
-much easier to reason about and notrace the few bits needed to unwind
-and return control to the kernel vs controlling it for every possible
-suffix of the program where the stub is invoked.
-
-But perhaps you have given thought to these question, and may have
-solutions in mind.
-Will it be some kind of bpf_prog_active() check that avoids invoking
-more programs on the 'fast-execute' path?
-It may interfere with other programs that interrupt the fast-execute
-termination and try to run (e.g. XDP in an interrupt where a
-fast-execute in task context was in progress) and lead to surprises.
-
-> We haven=E2=80=99t added any selftests in the POC as this mail is mainly =
-to get
-> feedback on the design. Attaching link to sample BPF programs to
-> validate the POC [7].  Styling will be taken care in next iteration.
+> If you want to go the UAPI route, I would wholeheartedly recommend
+> making it extensible and having this data be available to the policy
+> LSMs.
 >
-> References:
-> 1. https://lpc.events/event/17/contributions/1610/attachments/1229/2505/L=
-PC_BPF_termination_Raj_Sahu.pdf
-> 2. https://vtechworks.lib.vt.edu/server/api/core/bitstreams/f0749daa-4560=
--41c9-9f36-6aa618161665/content
-> 3. https://lore.kernel.org/bpf/AM6PR03MB508011599420DB53480E8BF799F72@AM6=
-PR03MB5080.eurprd03.prod.outlook.com/T/
-> 4. https://vtechworks.lib.vt.edu/server/api/core/bitstreams/7fb70c04-0736=
--4e2d-b48b-2d8d012bacfc/content
-> 5. https://lwn.net/ml/all/AM6PR03MB5080513BFAEB54A93CC70D4399FE2@AM6PR03M=
-B5080.eurprd03.prod.outlook.com/#t
-> 6. https://people.cs.vt.edu/djwillia/papers/ebpf23-runtime.pdf
-> 7. https://github.com/sidchintamaneni/os-dev-env/tree/main/bpf-programs-c=
-atalog/research/termination/patch_gen_testing
+> enum bpf_signature_type {
+>   /* x509 signature check against program instructions only */
+>   BPF_SIGNATURE_PROG_ONLY =3D 0,
+>   /* x509 combined signature check against program instructions and used =
+maps */
+>   BPF_SIGNATURE_PROG_USED_MAPS =3D 1,
+>   /* more of these to be determined via usage */
+>   ...
+> };
 >
->  arch/x86/kernel/smp.c          |   4 +-
->  include/linux/bpf.h            |  18 ++
->  include/linux/filter.h         |  16 ++
->  include/linux/smp.h            |   2 +-
->  include/uapi/linux/bpf.h       |  13 ++
->  kernel/bpf/bpf_iter.c          |  65 ++++++
->  kernel/bpf/core.c              |  45 ++++
->  kernel/bpf/helpers.c           |   8 +
->  kernel/bpf/syscall.c           | 375 +++++++++++++++++++++++++++++++++
->  kernel/bpf/verifier.c          |  16 +-
->  kernel/smp.c                   |  22 +-
->  tools/bpf/bpftool/prog.c       |  40 ++++
->  tools/include/uapi/linux/bpf.h |   5 +
->  tools/lib/bpf/bpf.c            |  15 ++
->  tools/lib/bpf/bpf.h            |  10 +
->  tools/lib/bpf/libbpf.map       |   1 +
->  16 files changed, 643 insertions(+), 12 deletions(-)
+> _aligned_u64 signature;
+> __u32 signature_size;
+> __u32 signature_type;
 >
-
-All of this said, I think the patches need more work. The arch
-specific bits can be moved into arch/*/net/bpf_* files and you can
-dispatch to them using __weak functions in kernel/bpf/core.c. A
-complete version of stubbing that handles both kfuncs and helpers
-would be better.
-
-I don't think bpftool support for termination is necessary, it should
-be kicked in by the kernel automatically once a stall is detected.
-So you can drop the bpf(2) syscall command being added.
-
-For now, we can also keep the enforcement of termination bits out and
-just focus on termination bits, both can land separately (the
-enforcement will require more discussion, so it'd be better to keep
-focus on and not mix both IMO).
-
-
-> --
-> 2.43.0
+> The other option for solving this in the general is in-kernel
+> loaders. That's gotten pushback as well.
+>
+> -blaise
+>
+>
+>
+>
 >
 
