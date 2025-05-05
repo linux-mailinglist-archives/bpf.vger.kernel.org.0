@@ -1,170 +1,179 @@
-Return-Path: <bpf+bounces-57372-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57373-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2740BAA9D84
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 22:46:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50FB2AA9D8D
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 22:50:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11C9F1A8165D
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 20:46:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F3A1189DF8C
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 20:50:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0C7320966B;
-	Mon,  5 May 2025 20:46:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3946626F47D;
+	Mon,  5 May 2025 20:50:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MqD7tais"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ahAcf858"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f67.google.com (mail-ej1-f67.google.com [209.85.218.67])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 698955680;
-	Mon,  5 May 2025 20:46:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62571801
+	for <bpf@vger.kernel.org>; Mon,  5 May 2025 20:50:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746477975; cv=none; b=NkR3xp2wsiVloX2vgdm68i0Uw9EZlBvffOZJhr1FAHZGLzekFNwyApghzVziFIHwv4cEY2l68yiR157vnEtrKqimGNr60CIavlY76ZSF6ywkUzbgrleli3QB2wtcOot6sbmmxf7kMDn4c5lWI2M6we5YJ9DPdewKKgSMjaCatYo=
+	t=1746478210; cv=none; b=dgbubipvyVLhv7IT0YYxQYSOq4vRRNhCR67yg38JbQUHnuZwtubcffbU8F+bvq+XYLZA+EpQKcLuU3O7KaLD4rXZkcn5w5c2BqfH/H19wRGmHRBDTB/Ax4eUkX56sP+KWlgTRBon/5kdx0J65tP/vkkhNbwR4wEyh/a09IqtFnM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746477975; c=relaxed/simple;
-	bh=GYCgYxHNKqU6EEr7JY7HlY6hgLPVmcWr69EXEM+HrQc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ghfzqchFZfjoNXqwO/sBNcmIDue4Jv/28ciYOSm3Zn1jlL3+rpHItWNg1r0OyjQeP9sjH7G5ciPu9/lFVV9ccCNkLqfQXrbTwMSj9+86yBMCbUrFyF8aZG2F2zhq6zPsVRGMB8sJa/lubXrCBwlcn008L4sR5MTVoImrSdUhohM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MqD7tais; arc=none smtp.client-ip=209.85.218.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f67.google.com with SMTP id a640c23a62f3a-acb39c45b4eso785329566b.1;
-        Mon, 05 May 2025 13:46:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746477972; x=1747082772; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tybCDQgbYv/YcqEFOas0tcjmYlNZGGrI6YJEE/TM6nk=;
-        b=MqD7taisksdcWw062hZrMFlwLet9a1iKtdFZSe0ut6uuoE7M6KkyBFb+L/svpp6V48
-         AFltEqUIXlXFfBVdUXhUaVfwOSwXG09Njqio/Vhm80HD0QfFPOzJrAGCTekn91GLbXIS
-         3JpJeD0YdfqH3mBzDyQi9IcXWtqAp7NTrikotnEHpq+WZNdyZb69GpgC/qumnCAApZo9
-         OF95/sKnFvQZidBWQ1+dAT35EH4sEJRgCB7XQ+/CCjFJGOGJOrLg4e2ujvE7JGmjmTn1
-         QrxyRJi72HiAOI0TJhCWjoEqATG2dxUDE+y94F1hP1YECMzcsL4T70oZSZAx4Z8czokC
-         rMbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746477972; x=1747082772;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tybCDQgbYv/YcqEFOas0tcjmYlNZGGrI6YJEE/TM6nk=;
-        b=qynrM4LBXRlFF0ASKZltSjQ7RHHRhSNnvxh37EqXMCafitzlInl6fMHuZ4hwaAMnQ2
-         5xeW2iYrZNsWHeIhkCszkKEx3JMI9RK3fotVkoW7nRw6zIkfhx+ZKvGf0UfLE9yuzs/h
-         6zItjKay+C3rZpZNypyeGEgLVjdJa592Yff044MprmIg1shH4tPLi3GwhqSCgsg7op7O
-         51+cJU8c4/dOzVRHKP/bLmJCb/WY/PQQvaYOfZURR7uj9HJJaB+1DO80mihjXfWutkIl
-         a1YWWvSPPqQpEX4l8bdvOU/dszaEAijQELLs53q5H5/WbFWca/dLNXkLYJuQnETa/uo8
-         ahSg==
-X-Forwarded-Encrypted: i=1; AJvYcCVpVt9+DjESJ7bTr5vn9ZtgcEJu9jXq8NABn5ACv9jEa7Flp1Vypp+tIPvcLM75Sz0cCy0=@vger.kernel.org, AJvYcCWRp1mFYV6DeSc6ocuFJNoOn/Fx2KH8rc9kVRwn7ppAU8rY13PELcvUUbt9rnIGZ0qx27AVZzmjALkRo9H7@vger.kernel.org
-X-Gm-Message-State: AOJu0YzQOQ6imKAAGfqbea/CWjAc9Fnq9AigXazah3G/xoI6awqD7Sd9
-	WmkfpurFqArq79Zp0oHp0tgYKFcpLEyfWdopL8w6I8OdYWOtS2u4sgDDAJkH+aJqwOID7YQW/PH
-	UToNCExlR0+V7hiDXZ8hKD0zeaTQHZ5TU
-X-Gm-Gg: ASbGnctHFs4o8t9NZlQkmri9TBJ3Btzj70yZiqJSb9Il5dmZdN5dCbIBtHH9kR3+EMk
-	cLecmqkL7oLjjc2GSMVs+EawiqPYL9jOfvpkXwlUizN2A43p+gyerfwzdjp4NTr6l5TKpaTvYTZ
-	Uzqi6Pt/DtAea5T8DBc7VCYFhuyeOMRpHUvKlowlgIKxfOSJrJiYmm58RT
-X-Google-Smtp-Source: AGHT+IFaoqY71pVRRJ7P+HRGZj3SOTKvX2Bacc/R5kHHu8emAV4IQZMSOIuhMj/lCAmrBkYAx8BjwvJXUajJimq1MLs=
-X-Received: by 2002:a17:907:7eaa:b0:ace:6703:3cd5 with SMTP id
- a640c23a62f3a-ad17b5aa887mr1473094466b.19.1746477971517; Mon, 05 May 2025
- 13:46:11 -0700 (PDT)
+	s=arc-20240116; t=1746478210; c=relaxed/simple;
+	bh=lbYOOzUdlsyvOpHixDp0NGqXVE2yy85/aWguybOWo8U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SxFzQjfy9bc/a+qYvKssPywUwEapRBOa69ixa8uOqk1rRE5P0BJtLNvoGQHJmwNl63pu6RnbL6h/YsgEtVnPKEIzDz8hJWM7LGVc2faj+37ALrEfN2md5JgqFDbQv87Dxle6Dc6srAiRFWd/P5Me+e3tGACgd8+K7TFa6DCGn+I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ahAcf858; arc=none smtp.client-ip=95.215.58.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 5 May 2025 13:49:46 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1746478194;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OXnskhOWpeWI0e/0mm8lMZ5XqD+oRKL2LPwz4l/PMBI=;
+	b=ahAcf858/5Hm3ezeiisZ4WTTLdRS5hJGHpFzbfKMCqqLIuBQj7tciw3L3RZcPfd5PO1gTK
+	QWLKGxM8ABZv/l4euaYLcdZIjUPgP2i0nYO7qmvo4IZcAubQH3T6+48kFKU9m3oHGuVZdL
+	mmRjo4RYH9HxPCzyMhWBRplB2m/AAzM=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Shakeel Butt <shakeel.butt@gmail.com>, 
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Alexei Starovoitov <ast@kernel.org>, linux-mm <linux-mm@kvack.org>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Meta kernel team <kernel-team@meta.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] memcg: no irq disable for memcg stock lock
+Message-ID: <jilyoryfq7cg6xp4cxbipct5vfbhu7ivp2jmzzigufqd6r5uss@h2cmibfg3fdf>
+References: <20250502001742.3087558-1-shakeel.butt@linux.dev>
+ <20250502001742.3087558-4-shakeel.butt@linux.dev>
+ <CAADnVQJ-XEEwVppk-qY2mmGB4R18_nqH-wdv5nuJf2LST5=Aaw@mail.gmail.com>
+ <CAGj-7pWqvtWj2nSOaQwoLbwUrVcLfKc0U2TcmxuSB87dWmZcgQ@mail.gmail.com>
+ <81a2e692-dd10-4253-afbc-062e0be67ca4@suse.cz>
+ <ek6ptpggcmnp5kyt37ytriu6d4gj5grpfwcok3rupu5tbjoil3@6cqmoj43bsum>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250505063918.3320164-1-senozhatsky@chromium.org> <CAEf4BzZkVg39JqGeuAjypf=WXsOG8JVDS8SSkVLDjHUuHzxoow@mail.gmail.com>
-In-Reply-To: <CAEf4BzZkVg39JqGeuAjypf=WXsOG8JVDS8SSkVLDjHUuHzxoow@mail.gmail.com>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Mon, 5 May 2025 22:45:34 +0200
-X-Gm-Features: ATxdqUGyV175Iz8wUrQeZgFbma2bBdb8CE0GxiTDzIoLvf4w6Vmp-tKnEzQZwmg
-Message-ID: <CAP01T754qZJNS7N8Q3dTB-2ApCRPbG1sUU2RpxT4ePFbv9-8=g@mail.gmail.com>
-Subject: Re: [PATCH] bpf: add bpf_msleep_interruptible()
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ek6ptpggcmnp5kyt37ytriu6d4gj5grpfwcok3rupu5tbjoil3@6cqmoj43bsum>
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, 5 May 2025 at 21:57, Andrii Nakryiko <andrii.nakryiko@gmail.com> wr=
-ote:
->
-> On Sun, May 4, 2025 at 11:40=E2=80=AFPM Sergey Senozhatsky
-> <senozhatsky@chromium.org> wrote:
-> >
-> > bpf_msleep_interruptible() puts a calling context into an
-> > interruptible sleep.  This function is expected to be used
-> > for testing only (perhaps in conjunction with fault-injection)
-> > to simulate various execution delays or timeouts.
->
-> I'm a bit worried that we'll be opening a bit too much of an
-> opportunity to arbitrarily slow down kernel in a way that would be
-> actually pretty hard to detect (CPU profilers won't see this, you'd
-> need to rely on off-CPU profiling, which is not as developed as far as
-> profilers go).
->
-> I understand the appeal, don't get me wrong, but we have no way to
-> enforce "is expected to be used for testing only". It's also all too
-> easy to sleep for a really long time, and there isn't really any
-> reasonable limit that would mitigate this, IMO.
->
-> If I had to do this for my own testing/fuzzing needs, I'd probably try
-> to go with a custom kfunc provided by my small and trivial kernel
-> module (modules can extend BPF with custom kfuncs). And see if it's
-> useful.
->
-> One other alternative to enforce the "for testing only" aspect might
-> be a custom kernel config, that would be expected to not make it into
-> production. Though I'd start with the kernel module approach first,
-> probably.
->
-> P.S. BPF's "sleepable" is really "faultable", where a BPF program
-> might wait (potentially for a long time) for kernel to fault memory
-> in, but that's a bit more well-defined sleeping behavior. Here it's
-> just a random amount of time to put whatever task the BPF program
-> happened to run in the context of, which seems like a much bigger
-> leap. So while we do have sleepable BPF programs, they can't just
-> arbitrarily and voluntarily sleep (at least today).
->
-> P.P.S. And when you think about this, we do rely on sleepable/trace
-> RCU grace periods to be not controlled so directly and arbitrarily by
-> any one BPF program, while here with bpf_msleep_interruptible() we'll
-> be giving a lot of control to one BPF program to delay resource
-> freeing of all other BPF programs (and not just sleepable ones, mind
-> you: think sleepable hooks running non-sleepable BPF programs, like
-> with sleepable tracepoints of uprobes).
->
+On Mon, May 05, 2025 at 10:13:37AM -0700, Shakeel Butt wrote:
+> Ccing networking folks.
+> 
+> Background: https://lore.kernel.org/dvyyqubghf67b3qsuoreegqk4qnuuqfkk7plpfhhrck5yeeuic@xbn4c6c7yc42/
+> 
+> On Mon, May 05, 2025 at 12:28:43PM +0200, Vlastimil Babka wrote:
+> > On 5/3/25 01:03, Shakeel Butt wrote:
+> > >> > index cd81c70d144b..f8b9c7aa6771 100644
+> > >> > --- a/mm/memcontrol.c
+> > >> > +++ b/mm/memcontrol.c
+> > >> > @@ -1858,7 +1858,6 @@ static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages,
+> > >> >  {
+> > >> >         struct memcg_stock_pcp *stock;
+> > >> >         uint8_t stock_pages;
+> > >> > -       unsigned long flags;
+> > >> >         bool ret = false;
+> > >> >         int i;
+> > >> >
+> > >> > @@ -1866,8 +1865,8 @@ static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages,
+> > >> >                 return ret;
+> > >> >
+> > >> >         if (gfpflags_allow_spinning(gfp_mask))
+> > >> > -               local_lock_irqsave(&memcg_stock.lock, flags);
+> > >> > -       else if (!local_trylock_irqsave(&memcg_stock.lock, flags))
+> > >> > +               local_lock(&memcg_stock.lock);
+> > >> > +       else if (!local_trylock(&memcg_stock.lock))
+> > >> >                 return ret;
+> > >>
+> > >> I don't think it works.
+> > >> When there is a normal irq and something doing regular GFP_NOWAIT
+> > >> allocation gfpflags_allow_spinning() will be true and
+> > >> local_lock() will reenter and complain that lock->acquired is
+> > >> already set... but only with lockdep on.
+> > > 
+> > > Yes indeed. I dropped the first patch and didn't fix this one
+> > > accordingly. I think the fix can be as simple as checking for
+> > > in_task() here instead of gfp_mask. That should work for both RT and
+> > > non-RT kernels.
+> > 
+> > These in_task() checks seem hacky to me. I think the patch 1 in v1 was the
+> > correct way how to use the local_trylock() to avoid these.
+> > 
+> > As for the RT concerns, AFAIK RT isn't about being fast, but about being
+> > preemptible, and the v1 approach didn't violate that - taking the slowpaths
+> > more often shouldn't be an issue.
+> > 
+> > Let me quote Shakeel's scenario from the v1 thread:
+> > 
+> > > I didn't really think too much about PREEMPT_RT kernels as I assume
+> > > performance is not top priority but I think I get your point. Let me
+> > 
+> > Agreed.
+> > 
+> > > explain and correct me if I am wrong. On PREEMPT_RT kernel, the local
+> > > lock is a spin lock which is actually a mutex but with priority
+> > > inheritance. A task having the local lock can still get context switched
+> > 
+> > Let's say (seems implied already) this is a low prio task.
+> > 
+> > > (but will remain on same CPU run queue) and the newer task can try to
+> > 
+> > And this is a high prio task.
+> > 
+> > > acquire the memcg stock local lock. If we just do trylock, it will
+> > > always go to the slow path but if we do local_lock() then it will sleeps
+> > > and possibly gives its priority to the task owning the lock and possibly
+> > > make that task to get the CPU. Later the task slept on memcg stock lock
+> > > will wake up and go through fast path.
+> > 
+> > I think from RT latency perspective it could very much be better for the
+> > high prio task just skip the fast path and go for the slowpath, instead of
+> > going to sleep while boosting the low prio task to let the high prio task
+> > use the fast path later. It's not really a fast path anymore I'd say.
+> 
+> Thanks Vlastimil, this is actually a very good point. Slow path of memcg
+> charging is couple of atomic operations while the alternative here is at
+> least two context switches (and possibly scheduler delay). So, it does
+> not seem like a fast path anymore.
+> 
+> I have cc'ed networking folks to get their take as well. Orthogonally I
+> will do some netperf benchmarking on v1 with RT kernel.
 
-I agree with the sentiment, but I think it's already possible such that
-adding this will neither worsen or improve the status quo.
+Let me share the result with PREEMPT_RT config on next-20250505 with and
+without the v1 of this series.
 
-You can have a userfaultfd in user space, and do a bpf_copy_from_user
-on the address such that you can trap the fault for as long as you
-wish (with rcu_tasks_trace read section open) [0]. I used it in the
-past to reconstruct race conditions.
+I ran varying number of netperf clients in different cgroups on a 72 CPU
+machine.
 
-  [0]: https://lore.kernel.org/bpf/20220114163953.1455836-11-memxor@gmail.c=
-om.
+ $ netserver -6
+ $ netperf -6 -H ::1 -l 60 -t TCP_SENDFILE -- -m 10K
 
-So we probably need a solution to this problem even for 'faulting'
-sleep, perhaps by scoping the read section to the program with SRCU,
-or something similar.
+number of clients | Without series | With series
+  6               | 38559.1 Mbps   | 38652.6 Mbps
+  12              | 37388.8 Mbps   | 37560.1 Mbps
+  18              | 30707.5 Mbps   | 31378.3 Mbps
+  24              | 25908.4 Mbps   | 26423.9 Mbps
+  30              | 22347.7 Mbps   | 22326.5 Mbps
+  36              | 20235.1 Mbps   | 20165.0 Mbps
 
+I don't see any significant performance difference for the network
+intensive workload with this series.
 
-> >
-> > Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> > ---
-> >  include/linux/bpf.h            |  1 +
-> >  include/uapi/linux/bpf.h       |  9 +++++++++
-> >  kernel/bpf/helpers.c           | 13 +++++++++++++
-> >  kernel/trace/bpf_trace.c       |  2 ++
-> >  tools/include/uapi/linux/bpf.h |  9 +++++++++
-> >  5 files changed, 34 insertions(+)
-> >
->
-> [...]
->
+I am going to send out v3 which will be rebased version of v1 with all
+these details unless someone has concerns about this.
 
