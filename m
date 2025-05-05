@@ -1,212 +1,152 @@
-Return-Path: <bpf+bounces-57325-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57326-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 162FAAA8C5C
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 08:40:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D24FAA8DDB
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 10:09:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE1FF18909F8
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 06:40:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C48A03B48B2
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 08:08:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C9D71C6FF7;
-	Mon,  5 May 2025 06:40:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B06D11E32C6;
+	Mon,  5 May 2025 08:08:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Gkluw95P"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="HVafOWoC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78A9B1A0711
-	for <bpf@vger.kernel.org>; Mon,  5 May 2025 06:40:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FBB51DFE20
+	for <bpf@vger.kernel.org>; Mon,  5 May 2025 08:08:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746427204; cv=none; b=kWunKxum5tlzKfVlC+kBm6zKW9AihL7JK0Eh/rJPOP7H+xy2wnwIi8HQTgXEU7bQc2GG4/j3As+80GjqoFkQ4i/jbfXltBNvA4g4wBy5zAVWExDPRy7AtMhKA/bUscM9xSUmlZsva5ABDBaehbWuIsNjPb16ujWyNhBdwhBm8b8=
+	t=1746432538; cv=none; b=YNfwrU6eNG31YbJmVKdhWLrvirenuQn1meARF7qKn9fe/gjaGZ43yNCERoGLCFVm1021+9vxU7M9s31+mnjDdH9B7lwuPmWc63cXojmcAvrQlNr51RS+hY7WdgyGyUaQ37MkSrBkm5bLAGQIsVkA8b1zx74HUDEIMJJ9Hp3gFdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746427204; c=relaxed/simple;
-	bh=BzXwhpUfNn6f4eLnDujcuZfj0ErF1elnNF0U29kQwfo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Uqdtb2cpaD1P9BOJq5ZY5MHot5p4QDZncinSCSuprYKBWQxsczeB3Gj8KyP8aL1OKf6+GCOTe3Er+kfT4mPS5bXcj6ywJx64hP0PY4ZalZtj6mvydzVcx7VjwzGKray6e2gTFEvhTszmaWyL2otedYLXyHOcUD4SU8PKK4yBBno=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Gkluw95P; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-223f4c06e9fso35570685ad.1
-        for <bpf@vger.kernel.org>; Sun, 04 May 2025 23:40:02 -0700 (PDT)
+	s=arc-20240116; t=1746432538; c=relaxed/simple;
+	bh=fpiegDdPN4vJSsUvTfFDScdpNUKB1Bs1LE0KbvzE0rk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=teZH/LauV0gy+/qr8LhZJ9OkmeOx2Axnr02Bz7FNMdNwFlScJgEDGEFxRJyg0rKvgTVlJ195kRFOsmSLzikNJjxGAf+PrnuKMHC7h/mggvFQIPWG4+oLuz2cDHCIMf9fRlPgR7d9Pr+uAjXXc5ciayxy97k3rGo2N2KpwyJW62I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=HVafOWoC; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-43ce70f9afbso34819215e9.0
+        for <bpf@vger.kernel.org>; Mon, 05 May 2025 01:08:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1746427202; x=1747032002; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vZIihCIcuu5AMbDW8ah1E1Hif57SVfjWhRQz55gYlZM=;
-        b=Gkluw95Pce3l7ZBHaBDkgDYnrTsg2f1I8SPDgqBo2GyM8ivomY3rNn7ZIgFxDiEw5Y
-         KayuwYPEyEdf9Wc/RylbPlbPapN4cCcEWxLRpciyVuDeFcY9x4wInNiA5bZmG2I+kZmF
-         okQlprtevfReNKtQoHSE8c+pjmnt9SP4zw6j8=
+        d=suse.com; s=google; t=1746432534; x=1747037334; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ih3NqDpNYxVnwTqQNjr/HduzzcPs128fQGA7XiiKKbU=;
+        b=HVafOWoC3/jTLo7x3AKPu38ObO0NpLhvPQlSV0JtoLhc9wxHQ+1W5I+dnDU4hkzZwV
+         mKPvK74grtYJdMwaYlCHhmMgnpVou62xl1TzmRrw+BuAd2mH+cUSFVnXenRuzLo4w9OU
+         c37Rt7N7RflYon88Jqmt+y2eYJ4YtlSUQpFVMTqpHpdjgiwfAMC8/62/VG7SCWs03mFO
+         rMAufkA5YrHuPP41kGT7uEZN8ZcXDcSxncQj/jWMS4VYXiAJKokIIHUGp7X9YpP4tyny
+         JI/ZEn7gV3l+GOLzusAGkHSxAP9vOU4/3ZeMrW5TQAqUxEZPzHGR0Oas9ym6yQw9I0ZN
+         Smtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746427202; x=1747032002;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vZIihCIcuu5AMbDW8ah1E1Hif57SVfjWhRQz55gYlZM=;
-        b=DZPYLoJ5SA1im2nUu1cYymdBq09NTzNf2GNijzQsrADosHQYcFuOMMvL7LHDo73bJx
-         FkKbPHhPAeEX5x2lBXkn5rTlWk/NkFG/IuK8xIjKLi0rpHp1b1Ze0LJSA5C1Vhl4nkeE
-         NOHSgp5GWRUuOxRRj3q6GCODn5D5J5f/nGaxWXD4BBxtGexXcyQucJrLTBaKnK83Gp/9
-         pAb7cqhkwWWyY+qqf3eFmCP4NX+u+DMn/L11CsrofSYiaaXw0KtgyUJWq+syHKzlrnmv
-         JGu8/7sPeti9jVgISn5X3mya2XdIR5zop/ABvOJj8+ZtcXdm8icQ0iVQ4DXDipSVJhXB
-         bElA==
-X-Forwarded-Encrypted: i=1; AJvYcCVTFlI5yv1Ww5pDjz/ceNTF4KCFG2dT8lRtvETHqLGUxW4vlD4ZUpVt1L4A43QAVestqCM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy/isMpuFdMcf1rU9M1tF1kQfmV2PFpapLZx9NX4VnQvgOcpClQ
-	CrUXHoRFOBFHmiPfnYumjL+6u7yhF1PtEyRcHhg5iPBMC7WgaEAxFw0VNedQBg==
-X-Gm-Gg: ASbGncvaAt4wCP6rTYCVuyaR/oAauA8Djyzg1HPyguFd92X99IPGmH1lLSjsVeeRh4M
-	8OPkyCw8w4TA+l3JqP92SkfLu1v07zTjYWQgBVYSQbBRyoJn2BTi0bNVtnl3xJZEfc3my793kWa
-	7omoZ0wnpvsIbSeZt2H1D2//c2mmYuE9DJkKEPFxdr1TQF69qTLu+q0iemu3cyDAn2Y4kvtbTIf
-	UiUh/bOi07lij2Q0AWbHxRWzEWhzzDkIBp7uHcDV+Wfu1Z35QVZ99Sa5xdjuPT3r9ngoUXg6wRJ
-	Ev1AS++61mTMFSQKSLeHdtF4IO7S4Nh4auZQ1VqftQuJmzsIW9lGlyqKE4P0EM2/Axg=
-X-Google-Smtp-Source: AGHT+IEnEli/LI1stPovIbi7sLoVDFcDnxEOS2ugJJweFE5zvm4Vwi5t3dop2M1JHJiXs6/Cz9v1TQ==
-X-Received: by 2002:a17:902:db06:b0:215:a56f:1e50 with SMTP id d9443c01a7336-22e100505d0mr173484605ad.8.1746427201577;
-        Sun, 04 May 2025 23:40:01 -0700 (PDT)
-Received: from tigerii.tok.corp.google.com ([2401:fa00:8f:203:4dd5:88f9:86cd:18ef])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22e150eb212sm47522725ad.38.2025.05.04.23.39.59
+        d=1e100.net; s=20230601; t=1746432534; x=1747037334;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ih3NqDpNYxVnwTqQNjr/HduzzcPs128fQGA7XiiKKbU=;
+        b=bsceOTehEn65Z4/5/UnXGhVA3OUmg1Yv6adrsnBPVAY3tN6LfqpiFNapUbIPEqCnf1
+         MaVEMnYt+buraj+oVhM36aEeXpSzT87zj+i47kr33EvD+sghuNNGCNvcRNkevze4n/40
+         PWfisLEQDUsGmrv79/LLddM1NcMoa2VYoB93yHbgElyK5vzNO1csE6cVEou9T1U8HmHV
+         eQ7KJeui0jp0qGQRb6T3/ueO2eLBMSKm1ry+FxsftWeFbuILlXrHlZS4L/ewzwgn5CmU
+         UOmIltnFsBT6Co3u97TXur7m03C1cdnvE6cOpH/JJ6T7wwd/uR0lXrN9YoYcr2XwECON
+         P6iw==
+X-Forwarded-Encrypted: i=1; AJvYcCUkbAFFL1NJhlUpWQ/dei2byUE3K397y4dx67YcmC1Fw3TbAm7hRbMupFJequOL6aTJDOQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxj1MfKbCxTWeNHrw/eYM5CpFs1Mh5rVxmo7ApSTwiKV/UrLQnm
+	Yo0A0DX4jaN2XqNOTgAG/k8l+EQ2DngMH3N5grsNrLy32J9DCt4wnt36tokAWCI=
+X-Gm-Gg: ASbGncu6pH9HC8TrKaKZQJPybw2FKZlaKTjWV5mrIvW5FdRrdVumVOZYGq6rpJzxhNK
+	whxQSXuPiMcKpHdqIIPq6EY8Uzt+1ed8sTZIsOCvX9NngBgomcZz1+kdK6Uia0ybBTJGFt6MMGu
+	j2jtngMEcAPkwk3Jj4Cu6FK0dTOlvZEe9G0p+xo9dgxYoW3CB/Lp+Q64rskKPnT+qCX/SobwtEe
+	259ldv8G7ybfUAKrjFRN1KKfXbpF857rV9pY63/YLWgqWFNScYGbAqB9Lk6SIocahWM13JjNIal
+	WcLAstlGimCRnq0VS6pgA869SQVNWEmKZyfcQkEKI1SEyUqkGkU=
+X-Google-Smtp-Source: AGHT+IEurvdHsB2rKDl3Rsu/uufeIj/T+2DXVXCdsFmbDaGBcEViq6YlhktTwiTRJwVY7SSU0p4HUg==
+X-Received: by 2002:a05:600c:5124:b0:43c:fe15:41cb with SMTP id 5b1f17b1804b1-441c48c1d07mr44823985e9.15.1746432534171;
+        Mon, 05 May 2025 01:08:54 -0700 (PDT)
+Received: from localhost (109-81-80-21.rct.o2.cz. [109.81.80.21])
+        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-441b2af4546sm172441785e9.22.2025.05.05.01.08.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 May 2025 23:40:01 -0700 (PDT)
-From: Sergey Senozhatsky <senozhatsky@chromium.org>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCH] bpf: add bpf_msleep_interruptible()
-Date: Mon,  5 May 2025 15:38:59 +0900
-Message-ID: <20250505063918.3320164-1-senozhatsky@chromium.org>
-X-Mailer: git-send-email 2.49.0.906.g1f30a19c02-goog
+        Mon, 05 May 2025 01:08:53 -0700 (PDT)
+Date: Mon, 5 May 2025 10:08:53 +0200
+From: Michal Hocko <mhocko@suse.com>
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Suren Baghdasaryan <surenb@google.com>,
+	David Rientjes <rientjes@google.com>, Josh Don <joshdon@google.com>,
+	Chuyi Zhou <zhouchuyi@bytedance.com>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, bpf@vger.kernel.org
+Subject: Re: [PATCH rfc 10/12] mm: introduce bpf_out_of_memory() bpf kfunc
+Message-ID: <aBhyFQje85fPhIiM@tiehlicka>
+References: <20250428033617.3797686-1-roman.gushchin@linux.dev>
+ <20250428033617.3797686-11-roman.gushchin@linux.dev>
+ <aBC7_2Fv3NFuad4R@tiehlicka>
+ <aBFFNyGjDAekx58J@google.com>
+ <aBHQ69_rCqjnDaDl@tiehlicka>
+ <aBI5fh28P1Qgi2zZ@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aBI5fh28P1Qgi2zZ@google.com>
 
-bpf_msleep_interruptible() puts a calling context into an
-interruptible sleep.  This function is expected to be used
-for testing only (perhaps in conjunction with fault-injection)
-to simulate various execution delays or timeouts.
+On Wed 30-04-25 14:53:50, Roman Gushchin wrote:
+> On Wed, Apr 30, 2025 at 09:27:39AM +0200, Michal Hocko wrote:
+> > On Tue 29-04-25 21:31:35, Roman Gushchin wrote:
+> > > On Tue, Apr 29, 2025 at 01:46:07PM +0200, Michal Hocko wrote:
+> > > > On Mon 28-04-25 03:36:15, Roman Gushchin wrote:
+> > > > > Introduce bpf_out_of_memory() bpf kfunc, which allows to declare
+> > > > > an out of memory events and trigger the corresponding kernel OOM
+> > > > > handling mechanism.
+> > > > > 
+> > > > > It takes a trusted memcg pointer (or NULL for system-wide OOMs)
+> > > > > as an argument, as well as the page order.
+> > > > > 
+> > > > > Only one OOM can be declared and handled in the system at once,
+> > > > > so if the function is called in parallel to another OOM handling,
+> > > > > it bails out with -EBUSY.
+> > > > 
+> > > > This makes sense for the global OOM handler because concurrent handlers
+> > > > are cooperative. But is this really correct for memcg ooms which could
+> > > > happen for different hierarchies? Currently we do block on oom_lock in
+> > > > that case to make sure one oom doesn't starve others. Do we want the
+> > > > same behavior for custom OOM handlers?
+> > > 
+> > > It's a good point and I had similar thoughts when I was working on it.
+> > > But I think it's orthogonal to the customization of the oom handling.
+> > > Even for the existing oom killer it makes no sense to serialize memcg ooms
+> > > in independent memcg subtrees. But I'm worried about the dmesg reporting,
+> > > it can become really messy for 2+ concurrent OOMs.
+> > > 
+> > > Also, some memory can be shared, so one OOM can eliminate a need for another
+> > > OOM, even if they look independent.
+> > > 
+> > > So my conclusion here is to leave things as they are until we'll get signs
+> > > of real world problems with the (lack of) concurrency between ooms.
+> > 
+> > How do we learn about that happening though? I do not think we have any
+> > counters to watch to suspect that some oom handlers cannot run.
+> 
+> The bpf program which declares an OOM can handle this: e.g. retry, wait
+> and retry, etc. We can also try to mimick the existing behavior and wait
+> on oom_lock (potentially splitting it into multiple locks to support
+> concurrent ooms in various memcgs). Do you think it's preferable?
 
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
----
- include/linux/bpf.h            |  1 +
- include/uapi/linux/bpf.h       |  9 +++++++++
- kernel/bpf/helpers.c           | 13 +++++++++++++
- kernel/trace/bpf_trace.c       |  2 ++
- tools/include/uapi/linux/bpf.h |  9 +++++++++
- 5 files changed, 34 insertions(+)
+Yes, I would just provide different callbacks for global and memcg ooms
+and do the blockin for the latter. It will be consistent with the in
+kernel implementation (therefore less surprising behavior).
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 3f0cc89c0622..85bd1daaa7df 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -3392,6 +3392,7 @@ extern const struct bpf_func_proto bpf_get_retval_proto;
- extern const struct bpf_func_proto bpf_user_ringbuf_drain_proto;
- extern const struct bpf_func_proto bpf_cgrp_storage_get_proto;
- extern const struct bpf_func_proto bpf_cgrp_storage_delete_proto;
-+extern const struct bpf_func_proto bpf_msleep_interruptible_proto;
- 
- const struct bpf_func_proto *tracing_prog_func_proto(
-   enum bpf_func_id func_id, const struct bpf_prog *prog);
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 71d5ac83cf5d..cbbb6d70a7a3 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -5814,6 +5814,14 @@ union bpf_attr {
-  *		0 on success.
-  *
-  *		**-ENOENT** if the bpf_local_storage cannot be found.
-+ *
-+ * long bpf_msleep_interruptible(long timeout)
-+ *	Description
-+ *		Make the current task sleep until *timeout* milliseconds have
-+ *		elapsed or until a signal is received.
-+ *
-+ *	Return
-+ *		The remaining time of the sleep duration in milliseconds.
-  */
- #define ___BPF_FUNC_MAPPER(FN, ctx...)			\
- 	FN(unspec, 0, ##ctx)				\
-@@ -6028,6 +6036,7 @@ union bpf_attr {
- 	FN(user_ringbuf_drain, 209, ##ctx)		\
- 	FN(cgrp_storage_get, 210, ##ctx)		\
- 	FN(cgrp_storage_delete, 211, ##ctx)		\
-+	FN(msleep_interruptible, 212, ##ctx)		\
- 	/* This helper list is effectively frozen. If you are trying to	\
- 	 * add a new helper, you should add a kfunc instead which has	\
- 	 * less stability guarantees. See Documentation/bpf/kfuncs.rst	\
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index e3a2662f4e33..0a3449c282f2 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1905,6 +1905,19 @@ static const struct bpf_func_proto bpf_dynptr_data_proto = {
- 	.arg3_type	= ARG_CONST_ALLOC_SIZE_OR_ZERO,
- };
- 
-+BPF_CALL_1(bpf_msleep_interruptible, long, timeout)
-+{
-+	return msleep_interruptible(timeout);
-+}
-+
-+const struct bpf_func_proto bpf_msleep_interruptible_proto = {
-+	.func		= bpf_msleep_interruptible,
-+	.gpl_only	= false,
-+	.might_sleep	= true,
-+	.ret_type	= RET_INTEGER,
-+	.arg1_type	= ARG_ANYTHING,
-+};
-+
- const struct bpf_func_proto bpf_get_current_task_proto __weak;
- const struct bpf_func_proto bpf_get_current_task_btf_proto __weak;
- const struct bpf_func_proto bpf_probe_read_user_proto __weak;
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 52c432a44aeb..8a0b96aed0c0 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1475,6 +1475,8 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_get_branch_snapshot_proto;
- 	case BPF_FUNC_find_vma:
- 		return &bpf_find_vma_proto;
-+	case BPF_FUNC_msleep_interruptible:
-+		return &bpf_msleep_interruptible_proto;
- 	default:
- 		break;
- 	}
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 71d5ac83cf5d..cbbb6d70a7a3 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -5814,6 +5814,14 @@ union bpf_attr {
-  *		0 on success.
-  *
-  *		**-ENOENT** if the bpf_local_storage cannot be found.
-+ *
-+ * long bpf_msleep_interruptible(long timeout)
-+ *	Description
-+ *		Make the current task sleep until *timeout* milliseconds have
-+ *		elapsed or until a signal is received.
-+ *
-+ *	Return
-+ *		The remaining time of the sleep duration in milliseconds.
-  */
- #define ___BPF_FUNC_MAPPER(FN, ctx...)			\
- 	FN(unspec, 0, ##ctx)				\
-@@ -6028,6 +6036,7 @@ union bpf_attr {
- 	FN(user_ringbuf_drain, 209, ##ctx)		\
- 	FN(cgrp_storage_get, 210, ##ctx)		\
- 	FN(cgrp_storage_delete, 211, ##ctx)		\
-+	FN(msleep_interruptible, 212, ##ctx)		\
- 	/* This helper list is effectively frozen. If you are trying to	\
- 	 * add a new helper, you should add a kfunc instead which has	\
- 	 * less stability guarantees. See Documentation/bpf/kfuncs.rst	\
 -- 
-2.49.0.906.g1f30a19c02-goog
-
+Michal Hocko
+SUSE Labs
 
