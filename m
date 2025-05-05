@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-57400-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57401-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 971B0AAA58A
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 01:52:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43118AAA55F
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 01:49:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB6C71885E68
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 23:49:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6710117267B
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 23:49:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 116183146C7;
-	Mon,  5 May 2025 22:30:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52A4727F73B;
+	Mon,  5 May 2025 22:30:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wyl32Uc3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ax9zkSZF"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81A493146AD;
-	Mon,  5 May 2025 22:30:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C63EA3146D1;
+	Mon,  5 May 2025 22:30:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746484220; cv=none; b=i/O92AITGgkwJqBcglDjbuGuN6oXoX9qFdXllaxa3bre3/4fEfYRuUEe52VFWC5XVsDy64Us0B33a6wS9ioffqfhZsr/PH/diHjBa/ilEPuNamBTcXBAIBpE+2Q6y+KFSGJdWoGvZtDQYbt+rFRY/pNipvubapnl3p/gjmougcQ=
+	t=1746484221; cv=none; b=IiDLFaYl5xH4P4igBlTs+HZ0ynzmm/ywlo/HhIDNP/D8Od/Y30xXjonM2UhxSqTh/iDE/2hgr1iPGem8kgv4aITC/ImsXWXzO6DWlt7IHWmO2E3LsMKSOj1l+JxTzZgrzvHcgwwqc88/CEIP30aFzH1xKikpnYbEp9nElYxmtRQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746484220; c=relaxed/simple;
-	bh=pN19U5GexfpUfJs301Z3WJb90/7HhGH4vgB1dxv/6/Y=;
+	s=arc-20240116; t=1746484221; c=relaxed/simple;
+	bh=3twF76xqdfJ9X9Jww1ym6dYWJmuo43Q5mdhzfW3SvEs=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=eRWba5SCCaPOQnCqG4kXHaofnLXjQ7cPQjZWwaEo5v+afFgDz404CZoyza9hKiwGQZ/cnmZCliitl/ZGkMm4Rn2tCV/WEy186krUIZ60pGejIBav3Vq6KySOjkV3uRAvbqAIsv4HQ1OkcN9/D1WQceGrNHTp2Vxeb2h5GUD6BHA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wyl32Uc3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BA42C4CEEF;
-	Mon,  5 May 2025 22:30:19 +0000 (UTC)
+	 MIME-Version; b=CxXUOUOeZpaAH9CFw+k9lqibT3JbbhKjnJUvymaeDBC6M/XykPsxSSOneF5e9US6GRbCfpRS1/R4fVqrL8kEPMfvwK9D5Vi/HdUePYnCHdthH7WOeEonuwpHI05Bb/Cfruk0VKgov0KbTQUNvkenkUo/qzIk7qVsHzSMW6ItVqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ax9zkSZF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C33E3C4CEE4;
+	Mon,  5 May 2025 22:30:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746484220;
-	bh=pN19U5GexfpUfJs301Z3WJb90/7HhGH4vgB1dxv/6/Y=;
+	s=k20201202; t=1746484221;
+	bh=3twF76xqdfJ9X9Jww1ym6dYWJmuo43Q5mdhzfW3SvEs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Wyl32Uc3kRfN29Uhn2rLmQ2bDMxxwSgWUnMxqN4xFHSd8lTv32tV9cBmuP/qf5CsP
-	 kkzZUb/obfmSTdPzZTxl2lB/otCWwZqP1qmpQj0mRRffjvC9tw8w2BS3TGW5hjRKH1
-	 6CqgJ1Ke6v9hx5vYYOh6s3Lg75IsR5eB8tw7W+grHIvfZk4jw3u3e7cNZsA9Gf6PGA
-	 W08Y4neN+WEjE7FuPcE+uGCP7XK1U0HA02lufaSufPnNIiSDy/hSLqCuK7LlGvl5dU
-	 6Q+wlWdwR/D175SzcCbS6aQqR4qAWnjT5vgYJMJPIkdQ0UqaLs8+yzE2cLB7x1vQ9V
-	 bYCyvsqyo/ibg==
+	b=Ax9zkSZFub2XvhMBxAkAkmPV044929KuyAC70EkrMv5Ybly9H1JPjM0PVEtxyOHDy
+	 k7VhvT283WrmIWMRG7BpA+vAD8WQ0jmwAvLWSl0Jlq78szZjtMXVkIekPFkVG2Wxie
+	 TZL8/n4ZVy7Zm5fMcNO6Wz2JoQ4HPTsSO+k44B5I8WJpLKpNc0SN4qq25Z3mUIjV0b
+	 +vG76EvReDIkrYCRVQ4ZMg1raF6okisgUjVlBB2tdzdcQSh1iR9Jegj6+ugZ0b8Lze
+	 2qn9b18+xFmcu0vEeIw/VCGy6clri7B9HBuqjVdepiFsvu7TDgeg0i+veqCYw1UfWB
+	 EuLTNGUqALPaw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -50,9 +50,9 @@ Cc: Eduard Zingerman <eddyz87@gmail.com>,
 	daniel@iogearbox.net,
 	andrii@kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.14 394/642] bpf: don't do clean_live_states when state->loop_entry->branches > 0
-Date: Mon,  5 May 2025 18:10:10 -0400
-Message-Id: <20250505221419.2672473-394-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.14 395/642] bpf: copy_verifier_state() should copy 'loop_entry' field
+Date: Mon,  5 May 2025 18:10:11 -0400
+Message-Id: <20250505221419.2672473-395-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250505221419.2672473-1-sashal@kernel.org>
 References: <20250505221419.2672473-1-sashal@kernel.org>
@@ -69,100 +69,85 @@ Content-Transfer-Encoding: 8bit
 
 From: Eduard Zingerman <eddyz87@gmail.com>
 
-[ Upstream commit 9e63fdb0cbdf3268c86638a8274f4d5549a82820 ]
+[ Upstream commit bbbc02b7445ebfda13e4847f4f1413c6480a85a9 ]
 
-verifier.c:is_state_visited() uses RANGE_WITHIN states comparison rules
-for cached states that have loop_entry with non-zero branches count
-(meaning that loop_entry's verification is not yet done).
+The bpf_verifier_state.loop_entry state should be copied by
+copy_verifier_state(). Otherwise, .loop_entry values from unrelated
+states would poison env->cur_state.
 
-The RANGE_WITHIN rules in regsafe()/stacksafe() require register and
-stack objects types to be identical in current and old states.
+Additionally, env->stack should not contain any states with
+.loop_entry != NULL. The states in env->stack are yet to be verified,
+while .loop_entry is set for states that reached an equivalent state.
+This means that env->cur_state->loop_entry should always be NULL after
+pop_stack().
 
-verifier.c:clean_live_states() replaces registers and stack spills
-with NOT_INIT/STACK_INVALID marks, if these registers/stack spills are
-not read in any child state. This means that clean_live_states() works
-against loop convergence logic under some conditions. See selftest in
-the next patch for a specific example.
+See the selftest in the next commit for an example of the program that
+is not safe yet is accepted by verifier w/o this fix.
 
-Mitigate this by prohibiting clean_verifier_state() when
-state->loop_entry->branches > 0.
+This change has some verification performance impact for selftests:
 
-This undoes negative verification performance impact of the
-copy_verifier_state() fix from the previous patch.
-Below is comparison between master and current patch.
+File                                Program                       Insns (A)  Insns (B)  Insns   (DIFF)  States (A)  States (B)  States (DIFF)
+----------------------------------  ----------------------------  ---------  ---------  --------------  ----------  ----------  -------------
+arena_htab.bpf.o                    arena_htab_llvm                     717        426  -291 (-40.59%)          57          37  -20 (-35.09%)
+arena_htab_asm.bpf.o                arena_htab_asm                      597        445  -152 (-25.46%)          47          37  -10 (-21.28%)
+arena_list.bpf.o                    arena_list_del                      309        279    -30 (-9.71%)          23          14   -9 (-39.13%)
+iters.bpf.o                         iter_subprog_check_stacksafe        155        141    -14 (-9.03%)          15          14    -1 (-6.67%)
+iters.bpf.o                         iter_subprog_iters                 1094       1003    -91 (-8.32%)          88          83    -5 (-5.68%)
+iters.bpf.o                         loop_state_deps2                    479        725  +246 (+51.36%)          46          63  +17 (+36.96%)
+kmem_cache_iter.bpf.o               open_coded_iter                      63         59     -4 (-6.35%)           7           6   -1 (-14.29%)
+verifier_bits_iter.bpf.o            max_words                            92         84     -8 (-8.70%)           8           7   -1 (-12.50%)
+verifier_iterating_callbacks.bpf.o  cond_break2                         113        107     -6 (-5.31%)          12          12    +0 (+0.00%)
 
-selftests:
+And significant negative impact for sched_ext:
 
-File                                Program                       Insns (A)  Insns (B)  Insns    (DIFF)  States (A)  States (B)  States  (DIFF)
-----------------------------------  ----------------------------  ---------  ---------  ---------------  ----------  ----------  --------------
-arena_htab.bpf.o                    arena_htab_llvm                     717        423   -294 (-41.00%)          57          37   -20 (-35.09%)
-arena_htab_asm.bpf.o                arena_htab_asm                      597        445   -152 (-25.46%)          47          37   -10 (-21.28%)
-arena_list.bpf.o                    arena_list_add                     1493       1822   +329 (+22.04%)          30          37    +7 (+23.33%)
-arena_list.bpf.o                    arena_list_del                      309        261    -48 (-15.53%)          23          15    -8 (-34.78%)
-iters.bpf.o                         checkpoint_states_deletion        18125      22154  +4029 (+22.23%)         818         918  +100 (+12.22%)
-iters.bpf.o                         iter_nested_deeply_iters            593        367   -226 (-38.11%)          67          43   -24 (-35.82%)
-iters.bpf.o                         iter_nested_iters                   813        772     -41 (-5.04%)          79          72     -7 (-8.86%)
-iters.bpf.o                         iter_subprog_check_stacksafe        155        135    -20 (-12.90%)          15          14     -1 (-6.67%)
-iters.bpf.o                         iter_subprog_iters                 1094        808   -286 (-26.14%)          88          68   -20 (-22.73%)
-iters.bpf.o                         loop_state_deps2                    479        356   -123 (-25.68%)          46          35   -11 (-23.91%)
-iters.bpf.o                         triple_continue                      35         31     -4 (-11.43%)           3           3     +0 (+0.00%)
-kmem_cache_iter.bpf.o               open_coded_iter                      63         59      -4 (-6.35%)           7           6    -1 (-14.29%)
-mptcp_subflow.bpf.o                 _getsockopt_subflow                 501        446    -55 (-10.98%)          25          23     -2 (-8.00%)
-pyperf600_iter.bpf.o                on_event                          12339       6379  -5960 (-48.30%)         441         286  -155 (-35.15%)
-verifier_bits_iter.bpf.o            max_words                            92         84      -8 (-8.70%)           8           7    -1 (-12.50%)
-verifier_iterating_callbacks.bpf.o  cond_break2                         113        192    +79 (+69.91%)          12          21    +9 (+75.00%)
+File               Program                 Insns (A)  Insns (B)  Insns         (DIFF)  States (A)  States (B)  States      (DIFF)
+-----------------  ----------------------  ---------  ---------  --------------------  ----------  ----------  ------------------
+bpf.bpf.o          lavd_init                    7039      14723      +7684 (+109.16%)         490        1139     +649 (+132.45%)
+bpf.bpf.o          layered_dispatch            11485      10548         -937 (-8.16%)         848         762       -86 (-10.14%)
+bpf.bpf.o          layered_dump                 7422    1000001  +992579 (+13373.47%)         681       31178  +30497 (+4478.27%)
+bpf.bpf.o          layered_enqueue             16854      71127     +54273 (+322.02%)        1611        6450    +4839 (+300.37%)
+bpf.bpf.o          p2dq_dispatch                 665        791        +126 (+18.95%)          68          78       +10 (+14.71%)
+bpf.bpf.o          p2dq_init                    2343       2980        +637 (+27.19%)         201         237       +36 (+17.91%)
+bpf.bpf.o          refresh_layer_cpumasks      16487     674760   +658273 (+3992.68%)        1770       65370  +63600 (+3593.22%)
+bpf.bpf.o          rusty_select_cpu             1937      40872    +38935 (+2010.07%)         177        3210   +3033 (+1713.56%)
+scx_central.bpf.o  central_dispatch              636       2687      +2051 (+322.48%)          63         227     +164 (+260.32%)
+scx_nest.bpf.o     nest_init                     636        815        +179 (+28.14%)          60          73       +13 (+21.67%)
+scx_qmap.bpf.o     qmap_dispatch                2393       3580       +1187 (+49.60%)         196         253       +57 (+29.08%)
+scx_qmap.bpf.o     qmap_dump                     233        318         +85 (+36.48%)          22          30        +8 (+36.36%)
+scx_qmap.bpf.o     qmap_init                   16367      17436        +1069 (+6.53%)         603         669       +66 (+10.95%)
 
-sched_ext:
-
-File               Program                 Insns (A)  Insns (B)  Insns      (DIFF)  States (A)  States (B)  States    (DIFF)
------------------  ----------------------  ---------  ---------  -----------------  ----------  ----------  ----------------
-bpf.bpf.o          layered_dispatch            11485       9039    -2446 (-21.30%)         848         662    -186 (-21.93%)
-bpf.bpf.o          layered_dump                 7422       5022    -2400 (-32.34%)         681         298    -383 (-56.24%)
-bpf.bpf.o          layered_enqueue             16854      13753    -3101 (-18.40%)        1611        1308    -303 (-18.81%)
-bpf.bpf.o          layered_init              1000001       5549  -994452 (-99.45%)       84672         523  -84149 (-99.38%)
-bpf.bpf.o          layered_runnable             3149       1899    -1250 (-39.70%)         288         151    -137 (-47.57%)
-bpf.bpf.o          p2dq_init                    2343       1936     -407 (-17.37%)         201         170     -31 (-15.42%)
-bpf.bpf.o          refresh_layer_cpumasks      16487       1285   -15202 (-92.21%)        1770         120   -1650 (-93.22%)
-bpf.bpf.o          rusty_select_cpu             1937       1386     -551 (-28.45%)         177         125     -52 (-29.38%)
-scx_central.bpf.o  central_dispatch              636        600       -36 (-5.66%)          63          59       -4 (-6.35%)
-scx_central.bpf.o  central_init                  913        632     -281 (-30.78%)          48          39      -9 (-18.75%)
-scx_nest.bpf.o     nest_init                     636        601       -35 (-5.50%)          60          58       -2 (-3.33%)
-scx_pair.bpf.o     pair_dispatch             1000001       1914  -998087 (-99.81%)       58169         142  -58027 (-99.76%)
-scx_qmap.bpf.o     qmap_dispatch                2393       2187      -206 (-8.61%)         196         174     -22 (-11.22%)
-scx_qmap.bpf.o     qmap_init                   16367      22777    +6410 (+39.16%)         603         768    +165 (+27.36%)
-
-'layered_init' and 'pair_dispatch' hit 1M on master, but are verified
-ok with this patch.
+Note 'layered_dump' program, which now hits 1M instructions limit.
+This impact would be mitigated in the next patch.
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-Link: https://lore.kernel.org/r/20250215110411.3236773-4-eddyz87@gmail.com
+Link: https://lore.kernel.org/r/20250215110411.3236773-2-eddyz87@gmail.com
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/verifier.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ kernel/bpf/verifier.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index e2801472c0ae4..68715b18df5e2 100644
+index 68715b18df5e2..0752e8e556389 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -17830,12 +17830,16 @@ static void clean_verifier_state(struct bpf_verifier_env *env,
- static void clean_live_states(struct bpf_verifier_env *env, int insn,
- 			      struct bpf_verifier_state *cur)
- {
-+	struct bpf_verifier_state *loop_entry;
- 	struct bpf_verifier_state_list *sl;
- 
- 	sl = *explored_state(env, insn);
- 	while (sl) {
- 		if (sl->state.branches)
- 			goto next;
-+		loop_entry = get_loop_entry(&sl->state);
-+		if (loop_entry && loop_entry->branches)
-+			goto next;
- 		if (sl->state.insn_idx != insn ||
- 		    !same_callsites(&sl->state, cur))
- 			goto next;
+@@ -1661,6 +1661,7 @@ static int copy_verifier_state(struct bpf_verifier_state *dst_state,
+ 	dst_state->callback_unroll_depth = src->callback_unroll_depth;
+ 	dst_state->used_as_loop_entry = src->used_as_loop_entry;
+ 	dst_state->may_goto_depth = src->may_goto_depth;
++	dst_state->loop_entry = src->loop_entry;
+ 	for (i = 0; i <= src->curframe; i++) {
+ 		dst = dst_state->frame[i];
+ 		if (!dst) {
+@@ -19264,6 +19265,8 @@ static int do_check(struct bpf_verifier_env *env)
+ 						return err;
+ 					break;
+ 				} else {
++					if (WARN_ON_ONCE(env->cur_state->loop_entry))
++						env->cur_state->loop_entry = NULL;
+ 					do_print_state = true;
+ 					continue;
+ 				}
 -- 
 2.39.5
 
