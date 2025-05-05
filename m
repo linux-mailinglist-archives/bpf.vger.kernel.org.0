@@ -1,368 +1,223 @@
-Return-Path: <bpf+bounces-57443-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57448-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD260AAB22D
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 06:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D3A89AAB333
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 06:40:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCCEF18895E9
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 04:13:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39EF8188B6B9
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 04:37:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6077136732D;
-	Tue,  6 May 2025 00:29:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53C78223DE2;
+	Tue,  6 May 2025 00:35:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cmgBmD6e"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AxSzXVny"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A9782D5D0C;
-	Mon,  5 May 2025 22:54:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4CC7390CCC;
+	Mon,  5 May 2025 23:02:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746485676; cv=none; b=UeYDoGizwdwqOvRJoB395FXnthqKBq5bC6XmcjbCRlH55pUdAOp2gP9CAKDBZzm4MtaFCvdyjgbbbJgacWEBX55TuYXH4TMrZfXtXWVOjssPYfnhEpMIUTKGwqORTQmO1qAqrQxaGH4buu4EKeDnKm0jX59YVT9fYZqV0Kq+d4Y=
+	t=1746486158; cv=none; b=hSs1uo9lAqeZOuZ+rFSXL/nefK8rQGn0L0JJXrKq5Skb+TbuDpIxBOTvPm3zZE3nzpW8Mo+A4rEuy5W1OFVOz5oUM06qouqat99+UhZ7v01KxWuf0pzChzn2zNPrg3leN0cnIFkwkng0Vr6gXyFaUtOhN/hUON+PWCjCYaHJDkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746485676; c=relaxed/simple;
-	bh=5TVo7ZSmhgN3LYeiSwaALQnkXbpb+sb65opx3Pb3mHI=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=iF7pzWJ92adFuMZ4zG3eJppyETHQM5a6q86TfJxqvkgEW5JHALOSO60OUynwXc3mQAHhMoH6b21kepRuQMen4TBcSJPOgPX0Wk6gZyiHEHHf2IX9wx1Bk6LWxGkTxv7xcIdkGoJ9mbyj77zFkjD3p0/deSlwt11idte/krkiUI4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cmgBmD6e; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDF22C4CEED;
-	Mon,  5 May 2025 22:54:34 +0000 (UTC)
+	s=arc-20240116; t=1746486158; c=relaxed/simple;
+	bh=Ia5E7TQy0zLN8DqNtu+puo4aYy/lDJ410iTlh1z3Ak8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=iiVxj9NQphsVBXraE3ejzcZchpEpOO7ase09Wrjz236XGAvlZrvlR70F3szEiws1TmVTEQJiF/Qzrps7ZQZXfX+nUYqcgL6DcczGQdJCSceBEcGIGp0DEBgI5hyRgMofPLBRhTzIX0hOUrRBfhek1rd/QiLSbz+/+SFCrozYw1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AxSzXVny; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F23C5C4CEE4;
+	Mon,  5 May 2025 23:02:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746485675;
-	bh=5TVo7ZSmhgN3LYeiSwaALQnkXbpb+sb65opx3Pb3mHI=;
-	h=From:Date:To:cc:Subject:In-Reply-To:References:From;
-	b=cmgBmD6emuuZ1c7FzF7NwT50mtds5sTK43JOzd9jCGaiNdtboGBCZXt0WRTCJoGSA
-	 V9ON+syeTz1a24Fs9KG/fUpIK3BkfxFVCA4tV4+Lr68owKqldqgTwHiVk6T9/xvGde
-	 8IWAsGMU1GcArtNCbRMyK8FW9Nyg+bJtbri9lqU56PYezHYbmDyEJJ/IfFlEKDfnDi
-	 AjH5ehTb9SrnEkW6w/MQaMpi9ElHo2d+ocuztcR7fHu795Gq3M74DGUfV6QX/nn6w3
-	 ZIT9TgO+YK64L8LM+mo6iwYnyCVCY/xUifMfWmd6vp8b+jxOGS+tugRQDeauIai6YC
-	 jh8ZBPlJxnPcw==
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ij@kernel.org>
-Date: Tue, 6 May 2025 01:54:29 +0300 (EEST)
-To: Paolo Abeni <pabeni@redhat.com>
-cc: chia-yu.chang@nokia-bell-labs.com, horms@kernel.org, dsahern@kernel.org, 
-    kuniyu@amazon.com, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-    dave.taht@gmail.com, jhs@mojatatu.com, kuba@kernel.org, 
-    stephen@networkplumber.org, xiyou.wangcong@gmail.com, jiri@resnulli.us, 
-    davem@davemloft.net, edumazet@google.com, andrew+netdev@lunn.ch, 
-    donald.hunter@gmail.com, ast@fiberby.net, liuhangbin@gmail.com, 
-    shuah@kernel.org, linux-kselftest@vger.kernel.org, ncardwell@google.com, 
-    koen.de_schepper@nokia-bell-labs.com, g.white@cablelabs.com, 
-    ingemar.s.johansson@ericsson.com, mirja.kuehlewind@ericsson.com, 
-    cheshire@apple.com, rs.ietf@gmx.at, Jason_Livingood@comcast.com, 
-    vidhi_goel@apple.com
-Subject: Re: [PATCH v5 net-next 09/15] tcp: accecn: AccECN option
-In-Reply-To: <d0969c3d-e33c-472e-815d-70b333990b39@redhat.com>
-Message-ID: <412724ed-f5a0-9749-8c50-4dd76afd4140@kernel.org>
-References: <20250422153602.54787-1-chia-yu.chang@nokia-bell-labs.com> <20250422153602.54787-10-chia-yu.chang@nokia-bell-labs.com> <d0969c3d-e33c-472e-815d-70b333990b39@redhat.com>
+	s=k20201202; t=1746486157;
+	bh=Ia5E7TQy0zLN8DqNtu+puo4aYy/lDJ410iTlh1z3Ak8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=AxSzXVnyoBuCkNCbWhKOI6PD6i6501wzVbb3tJKTkk+SxMKQ+CbuhhJM9U0REbZGJ
+	 EpGgOlEbjLl5NmvUxeiVAqTdNZ0Z6J9IJo/duPZ2GVO81fVi7oObb/k4PR9U17M6s/
+	 0YuIdgpwz/gv8TT+epngaygGjWkkRjxlMeIu2l8nX54fW8wdBvcuPN4m2Pv26IM7wB
+	 u8Yg2Ouvb7XNNvl2n1EOAAqH7SbojiuyXiRqO9X1a66cepRrgrAWegLDNnKG5agT3W
+	 gIJT0Rm7P+KAMEic0Lkko896lxTWdFSbaqqHjUYPjlmeMUxxf1q9pogIEm8LadxyiA
+	 OgenANXHrhB6Q==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Jason Xing <kerneljasonxing@gmail.com>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	edumazet@google.com,
+	ncardwell@google.com,
+	davem@davemloft.net,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	martin.lau@linux.dev,
+	dsahern@kernel.org,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 183/294] bpf: Prevent unsafe access to the sock fields in the BPF timestamping callback
+Date: Mon,  5 May 2025 18:54:43 -0400
+Message-Id: <20250505225634.2688578-183-sashal@kernel.org>
+X-Mailer: git-send-email 2.39.5
+In-Reply-To: <20250505225634.2688578-1-sashal@kernel.org>
+References: <20250505225634.2688578-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.6.89
+Content-Transfer-Encoding: 8bit
 
-On Tue, 29 Apr 2025, Paolo Abeni wrote:
+From: Jason Xing <kerneljasonxing@gmail.com>
 
-> On 4/22/25 5:35 PM, chia-yu.chang@nokia-bell-labs.com wrote:
-> > @@ -302,10 +303,13 @@ struct tcp_sock {
-> >  	u32	snd_up;		/* Urgent pointer		*/
-> >  	u32	delivered;	/* Total data packets delivered incl. rexmits */
-> >  	u32	delivered_ce;	/* Like the above but only ECE marked packets */
-> > +	u32	delivered_ecn_bytes[3];
-> 
-> This new fields do not belong to this cacheline group. I'm unsure they
-> belong to fast-path at all. Also u32 will wrap-around very soon.
-> 
-> [...]
-> > diff --git a/include/uapi/linux/tcp.h b/include/uapi/linux/tcp.h
-> > index dc8fdc80e16b..74ac8a5d2e00 100644
-> > --- a/include/uapi/linux/tcp.h
-> > +++ b/include/uapi/linux/tcp.h
-> > @@ -298,6 +298,13 @@ struct tcp_info {
-> >  	__u32	tcpi_snd_wnd;	     /* peer's advertised receive window after
-> >  				      * scaling (bytes)
-> >  				      */
-> > +	__u32	tcpi_received_ce;    /* # of CE marks received */
-> > +	__u32	tcpi_delivered_e1_bytes;  /* Accurate ECN byte counters */
-> > +	__u32	tcpi_delivered_e0_bytes;
-> > +	__u32	tcpi_delivered_ce_bytes;
-> > +	__u32	tcpi_received_e1_bytes;
-> > +	__u32	tcpi_received_e0_bytes;
-> > +	__u32	tcpi_received_ce_bytes;
-> 
-> This will break uAPI: new fields must be addded at the end, or must fill
-> existing holes. Also u32 set in stone in uAPI for a byte counter looks
-> way too small.
-> 
-> > @@ -5100,7 +5113,7 @@ static void __init tcp_struct_check(void)
-> >  	/* 32bit arches with 8byte alignment on u64 fields might need padding
-> >  	 * before tcp_clock_cache.
-> >  	 */
-> > -	CACHELINE_ASSERT_GROUP_SIZE(struct tcp_sock, tcp_sock_write_txrx, 109 + 7);
-> > +	CACHELINE_ASSERT_GROUP_SIZE(struct tcp_sock, tcp_sock_write_txrx, 122 + 6);
-> 
-> The above means an additional cacheline in fast-path WRT the current
-> status. IMHO should be avoided.
-> 
-> > diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-> > index 5bd7fc9bcf66..41e45b9aff3f 100644
-> > --- a/net/ipv4/tcp_input.c
-> > +++ b/net/ipv4/tcp_input.c
-> > @@ -70,6 +70,7 @@
-> >  #include <linux/sysctl.h>
-> >  #include <linux/kernel.h>
-> >  #include <linux/prefetch.h>
-> > +#include <linux/bitops.h>
-> >  #include <net/dst.h>
-> >  #include <net/tcp.h>
-> >  #include <net/proto_memory.h>
-> > @@ -499,6 +500,144 @@ static bool tcp_ecn_rcv_ecn_echo(const struct tcp_sock *tp, const struct tcphdr
-> >  	return false;
-> >  }
-> >  
-> > +/* Maps IP ECN field ECT/CE code point to AccECN option field number, given
-> > + * we are sending fields with Accurate ECN Order 1: ECT(1), CE, ECT(0).
-> > + */
-> > +static u8 tcp_ecnfield_to_accecn_optfield(u8 ecnfield)
-> > +{
-> > +	switch (ecnfield) {
-> > +	case INET_ECN_NOT_ECT:
-> > +		return 0;	/* AccECN does not send counts of NOT_ECT */
-> > +	case INET_ECN_ECT_1:
-> > +		return 1;
-> > +	case INET_ECN_CE:
-> > +		return 2;
-> > +	case INET_ECN_ECT_0:
-> > +		return 3;
-> > +	default:
-> > +		WARN_ONCE(1, "bad ECN code point: %d\n", ecnfield);
-> 
-> No WARN_ONCE() above please: either the 'ecnfield' data is masked vs
-> INET_ECN_MASK and the WARN_ONCE should not be possible or a remote
-> sender can deterministically trigger a WARN() which nowadays will in
-> turn raise a CVE...
-> 
-> [...]
-> > +static u32 tcp_accecn_field_init_offset(u8 ecnfield)
-> > +{
-> > +	switch (ecnfield) {
-> > +	case INET_ECN_NOT_ECT:
-> > +		return 0;	/* AccECN does not send counts of NOT_ECT */
-> > +	case INET_ECN_ECT_1:
-> > +		return TCP_ACCECN_E1B_INIT_OFFSET;
-> > +	case INET_ECN_CE:
-> > +		return TCP_ACCECN_CEB_INIT_OFFSET;
-> > +	case INET_ECN_ECT_0:
-> > +		return TCP_ACCECN_E0B_INIT_OFFSET;
-> > +	default:
-> > +		WARN_ONCE(1, "bad ECN code point: %d\n", ecnfield);
-> 
-> Same as above.
-> 
-> > +	}
-> > +	return 0;
-> > +}
-> > +
-> > +/* Maps AccECN option field #nr to IP ECN field ECT/CE bits */
-> > +static unsigned int tcp_accecn_optfield_to_ecnfield(unsigned int optfield,
-> > +						    bool order)
-> > +{
-> > +	u8 tmp;
-> > +
-> > +	optfield = order ? 2 - optfield : optfield;
-> > +	tmp = optfield + 2;
-> > +
-> > +	return (tmp + (tmp >> 2)) & INET_ECN_MASK;
-> > +}
-> > +
-> > +/* Handles AccECN option ECT and CE 24-bit byte counters update into
-> > + * the u32 value in tcp_sock. As we're processing TCP options, it is
-> > + * safe to access from - 1.
-> > + */
-> > +static s32 tcp_update_ecn_bytes(u32 *cnt, const char *from, u32 init_offset)
-> > +{
-> > +	u32 truncated = (get_unaligned_be32(from - 1) - init_offset) &
-> > +			0xFFFFFFU;
-> > +	u32 delta = (truncated - *cnt) & 0xFFFFFFU;
-> > +
-> > +	/* If delta has the highest bit set (24th bit) indicating
-> > +	 * negative, sign extend to correct an estimation using
-> > +	 * sign_extend32(delta, 24 - 1)
-> > +	 */
-> > +	delta = sign_extend32(delta, 23);
-> > +	*cnt += delta;
-> > +	return (s32)delta;
-> > +}
-> > +
-> > +/* Returns true if the byte counters can be used */
-> > +static bool tcp_accecn_process_option(struct tcp_sock *tp,
-> > +				      const struct sk_buff *skb,
-> > +				      u32 delivered_bytes, int flag)
-> > +{
-> > +	u8 estimate_ecnfield = tp->est_ecnfield;
-> > +	bool ambiguous_ecn_bytes_incr = false;
-> > +	bool first_changed = false;
-> > +	unsigned int optlen;
-> > +	unsigned char *ptr;
+[ Upstream commit fd93eaffb3f977b23bc0a48d4c8616e654fcf133 ]
 
-u8 would we more appropriate type for binary data.
+The subsequent patch will implement BPF TX timestamping. It will
+call the sockops BPF program without holding the sock lock.
 
-> > +	bool order1, res;
-> > +	unsigned int i;
-> > +
-> > +	if (!(flag & FLAG_SLOWPATH) || !tp->rx_opt.accecn) {
-> > +		if (estimate_ecnfield) {
-> > +			u8 ecnfield = estimate_ecnfield - 1;
-> > +
-> > +			tp->delivered_ecn_bytes[ecnfield] += delivered_bytes;
-> > +			return true;
-> > +		}
-> > +		return false;
-> > +	}
-> > +
-> > +	ptr = skb_transport_header(skb) + tp->rx_opt.accecn;
-> > +	optlen = ptr[1] - 2;
-> 
-> This assumes optlen is greater then 2, but I don't see the relevant
-> check.
+This breaks the current assumption that all sock ops programs will
+hold the sock lock. The sock's fields of the uapi's bpf_sock_ops
+requires this assumption.
 
-The options parser should check that, please see the "silly options" 
-check.
+To address this, a new "u8 is_locked_tcp_sock;" field is added. This
+patch sets it in the current sock_ops callbacks. The "is_fullsock"
+test is then replaced by the "is_locked_tcp_sock" test during
+sock_ops_convert_ctx_access().
 
-> Are tcp options present at all?
+The new TX timestamping callbacks added in the subsequent patch will
+not have this set. This will prevent unsafe access from the new
+timestamping callbacks.
 
-There is !tp->rx_opt.accecn check above which should ensure we're 
-processing only AccECN Option that is present.
+Potentially, we could allow read-only access. However, this would
+require identifying which callback is read-safe-only and also requires
+additional BPF instruction rewrites in the covert_ctx. Since the BPF
+program can always read everything from a socket (e.g., by using
+bpf_core_cast), this patch keeps it simple and disables all read
+and write access to any socket fields through the bpf_sock_ops
+UAPI from the new TX timestamping callback.
 
-> > +	WARN_ON_ONCE(ptr[0] != TCPOPT_ACCECN0 && ptr[0] != TCPOPT_ACCECN1);
-> 
-> Please, don't warn for arbitrary wrong data sent from the peer.
+Moreover, note that some of the fields in bpf_sock_ops are specific
+to tcp_sock, and sock_ops currently only supports tcp_sock. In
+the future, UDP timestamping will be added, which will also break
+this assumption. The same idea used in this patch will be reused.
+Considering that the current sock_ops only supports tcp_sock, the
+variable is named is_locked_"tcp"_sock.
 
-If there isn't AccECN option at ptr, there's bug elsewhere in the code 
-(in the option parse code). So this is an internal sanity check that 
-tp->rx_opt.accecn points to AccECN option for real like it should.
+Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
+Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+Link: https://patch.msgid.link/20250220072940.99994-4-kerneljasonxing@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ include/linux/filter.h | 1 +
+ include/net/tcp.h      | 1 +
+ net/core/filter.c      | 8 ++++----
+ net/ipv4/tcp_input.c   | 2 ++
+ net/ipv4/tcp_output.c  | 2 ++
+ 5 files changed, 10 insertions(+), 4 deletions(-)
 
-If you still want that removed, no problem but it's should not be 
-arbitrary data at this point because the options parsing code should
-have validated this condition already, thus WARN_ON_ONCE() seemed 
-appropriate to me.
-
-> > +	order1 = (ptr[0] == TCPOPT_ACCECN1);
-> > +	ptr += 2;
-> > +
-> > +	res = !!estimate_ecnfield;
-> > +	for (i = 0; i < 3; i++) {
-> > +		if (optlen >= TCPOLEN_ACCECN_PERFIELD) {
-
-It's easy to reverse logic here and use continue, which buys one level of 
-indentation.
-
-> > +			u32 init_offset;
-> > +			u8 ecnfield;
-> > +			s32 delta;
-> > +			u32 *cnt;
-> > +
-> > +			ecnfield = tcp_accecn_optfield_to_ecnfield(i, order1);
-> > +			init_offset = tcp_accecn_field_init_offset(ecnfield);
-> > +			cnt = &tp->delivered_ecn_bytes[ecnfield - 1];
-> > +			delta = tcp_update_ecn_bytes(cnt, ptr, init_offset);
-> > +			if (delta) {
-> > +				if (delta < 0) {
-> > +					res = false;
-> > +					ambiguous_ecn_bytes_incr = true;
-> > +				}
-> > +				if (ecnfield != estimate_ecnfield) {
-> > +					if (!first_changed) {
-> > +						tp->est_ecnfield = ecnfield;
-> > +						first_changed = true;
-> > +					} else {
-> > +						res = false;
-> > +						ambiguous_ecn_bytes_incr = true;
-> > +					}
-> 
-> At least 2 indentation levels above the maximum readable.
-> 
-> [...]
-> > @@ -4378,6 +4524,7 @@ void tcp_parse_options(const struct net *net,
-> >  
-> >  	ptr = (const unsigned char *)(th + 1);
-> >  	opt_rx->saw_tstamp = 0;
-> > +	opt_rx->accecn = 0;
-> >  	opt_rx->saw_unknown = 0;
-> 
-> It would be good to be able to zero both 'accecn' and 'saw_unknown' with
-> a single statement.
-> 
-> [...]
-> > @@ -766,6 +769,47 @@ static void tcp_options_write(struct tcphdr *th, struct tcp_sock *tp,
-> >  		*ptr++ = htonl(opts->tsecr);
-> >  	}
-> >  
-> > +	if (OPTION_ACCECN & options) {
-> > +		const u8 ect0_idx = INET_ECN_ECT_0 - 1;
-> > +		const u8 ect1_idx = INET_ECN_ECT_1 - 1;
-> > +		const u8 ce_idx = INET_ECN_CE - 1;
-> > +		u32 e0b;
-> > +		u32 e1b;
-> > +		u32 ceb;
-> > +		u8 len;
-> > +
-> > +		e0b = opts->ecn_bytes[ect0_idx] + TCP_ACCECN_E0B_INIT_OFFSET;
-> > +		e1b = opts->ecn_bytes[ect1_idx] + TCP_ACCECN_E1B_INIT_OFFSET;
-> > +		ceb = opts->ecn_bytes[ce_idx] + TCP_ACCECN_CEB_INIT_OFFSET;
-> > +		len = TCPOLEN_ACCECN_BASE +
-> > +		      opts->num_accecn_fields * TCPOLEN_ACCECN_PERFIELD;
-> > +
-> > +		if (opts->num_accecn_fields == 2) {
-> > +			*ptr++ = htonl((TCPOPT_ACCECN1 << 24) | (len << 16) |
-> > +				       ((e1b >> 8) & 0xffff));
-> > +			*ptr++ = htonl(((e1b & 0xff) << 24) |
-> > +				       (ceb & 0xffffff));
-> > +		} else if (opts->num_accecn_fields == 1) {
-> > +			*ptr++ = htonl((TCPOPT_ACCECN1 << 24) | (len << 16) |
-> > +				       ((e1b >> 8) & 0xffff));
-> > +			leftover_bytes = ((e1b & 0xff) << 8) |
-> > +					 TCPOPT_NOP;
-> > +			leftover_size = 1;
-> > +		} else if (opts->num_accecn_fields == 0) {
-> > +			leftover_bytes = (TCPOPT_ACCECN1 << 8) | len;
-> > +			leftover_size = 2;
-> > +		} else if (opts->num_accecn_fields == 3) {
-> > +			*ptr++ = htonl((TCPOPT_ACCECN1 << 24) | (len << 16) |
-> > +				       ((e1b >> 8) & 0xffff));
-> > +			*ptr++ = htonl(((e1b & 0xff) << 24) |
-> > +				       (ceb & 0xffffff));
-> > +			*ptr++ = htonl(((e0b & 0xffffff) << 8) |
-> > +				       TCPOPT_NOP);
-> 
-> The above chunck and the contents of patch 7 must be in the same patch.
-> This split makes the review even harder.
-> 
-> [...]
-> > @@ -1117,6 +1235,17 @@ static unsigned int tcp_established_options(struct sock *sk, struct sk_buff *skb
-> >  		opts->num_sack_blocks = 0;
-> >  	}
-> >  
-> > +	if (tcp_ecn_mode_accecn(tp) &&
-> > +	    sock_net(sk)->ipv4.sysctl_tcp_ecn_option) {
-> > +		int saving = opts->num_sack_blocks > 0 ? 2 : 0;
-> > +		int remaining = MAX_TCP_OPTION_SPACE - size;
-> 
-> AFACS the above means tcp_options_fit_accecn() must clear any already
-> set options, but apparently it does not do so. Have you tested with
-> something adding largish options like mptcp?
-
-This "fitting" for AccEcn option is not to make room for the option but to 
-check if AccECN option fits and in what length, and how it can take 
-advantage of some nop bytes when available to save option space.
-
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index 5090e940ba3e4..fa43d343b298b 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -1303,6 +1303,7 @@ struct bpf_sock_ops_kern {
+ 	void	*skb_data_end;
+ 	u8	op;
+ 	u8	is_fullsock;
++	u8	is_locked_tcp_sock;
+ 	u8	remaining_opt_len;
+ 	u64	temp;			/* temp and everything after is not
+ 					 * initialized to 0 before calling
+diff --git a/include/net/tcp.h b/include/net/tcp.h
+index a6def0aab3ed3..658551a64e2a5 100644
+--- a/include/net/tcp.h
++++ b/include/net/tcp.h
+@@ -2462,6 +2462,7 @@ static inline int tcp_call_bpf(struct sock *sk, int op, u32 nargs, u32 *args)
+ 	memset(&sock_ops, 0, offsetof(struct bpf_sock_ops_kern, temp));
+ 	if (sk_fullsock(sk)) {
+ 		sock_ops.is_fullsock = 1;
++		sock_ops.is_locked_tcp_sock = 1;
+ 		sock_owned_by_me(sk);
+ 	}
+ 
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 39eef3370d800..79165e181d418 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -10304,10 +10304,10 @@ static u32 sock_ops_convert_ctx_access(enum bpf_access_type type,
+ 		}							      \
+ 		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(			      \
+ 						struct bpf_sock_ops_kern,     \
+-						is_fullsock),		      \
++						is_locked_tcp_sock),	      \
+ 				      fullsock_reg, si->src_reg,	      \
+ 				      offsetof(struct bpf_sock_ops_kern,      \
+-					       is_fullsock));		      \
++					       is_locked_tcp_sock));	      \
+ 		*insn++ = BPF_JMP_IMM(BPF_JEQ, fullsock_reg, 0, jmp);	      \
+ 		if (si->dst_reg == si->src_reg)				      \
+ 			*insn++ = BPF_LDX_MEM(BPF_DW, reg, si->src_reg,	      \
+@@ -10392,10 +10392,10 @@ static u32 sock_ops_convert_ctx_access(enum bpf_access_type type,
+ 					       temp));			      \
+ 		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(			      \
+ 						struct bpf_sock_ops_kern,     \
+-						is_fullsock),		      \
++						is_locked_tcp_sock),	      \
+ 				      reg, si->dst_reg,			      \
+ 				      offsetof(struct bpf_sock_ops_kern,      \
+-					       is_fullsock));		      \
++					       is_locked_tcp_sock));	      \
+ 		*insn++ = BPF_JMP_IMM(BPF_JEQ, reg, 0, 2);		      \
+ 		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(			      \
+ 						struct bpf_sock_ops_kern, sk),\
+diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+index a172248b66783..4bed6f9923059 100644
+--- a/net/ipv4/tcp_input.c
++++ b/net/ipv4/tcp_input.c
+@@ -168,6 +168,7 @@ static void bpf_skops_parse_hdr(struct sock *sk, struct sk_buff *skb)
+ 	memset(&sock_ops, 0, offsetof(struct bpf_sock_ops_kern, temp));
+ 	sock_ops.op = BPF_SOCK_OPS_PARSE_HDR_OPT_CB;
+ 	sock_ops.is_fullsock = 1;
++	sock_ops.is_locked_tcp_sock = 1;
+ 	sock_ops.sk = sk;
+ 	bpf_skops_init_skb(&sock_ops, skb, tcp_hdrlen(skb));
+ 
+@@ -184,6 +185,7 @@ static void bpf_skops_established(struct sock *sk, int bpf_op,
+ 	memset(&sock_ops, 0, offsetof(struct bpf_sock_ops_kern, temp));
+ 	sock_ops.op = bpf_op;
+ 	sock_ops.is_fullsock = 1;
++	sock_ops.is_locked_tcp_sock = 1;
+ 	sock_ops.sk = sk;
+ 	/* sk with TCP_REPAIR_ON does not have skb in tcp_finish_connect */
+ 	if (skb)
+diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
+index 3771ed22c2f56..2cd96fdeeefdb 100644
+--- a/net/ipv4/tcp_output.c
++++ b/net/ipv4/tcp_output.c
+@@ -522,6 +522,7 @@ static void bpf_skops_hdr_opt_len(struct sock *sk, struct sk_buff *skb,
+ 		sock_owned_by_me(sk);
+ 
+ 		sock_ops.is_fullsock = 1;
++		sock_ops.is_locked_tcp_sock = 1;
+ 		sock_ops.sk = sk;
+ 	}
+ 
+@@ -567,6 +568,7 @@ static void bpf_skops_write_hdr_opt(struct sock *sk, struct sk_buff *skb,
+ 		sock_owned_by_me(sk);
+ 
+ 		sock_ops.is_fullsock = 1;
++		sock_ops.is_locked_tcp_sock = 1;
+ 		sock_ops.sk = sk;
+ 	}
+ 
 -- 
- i.
+2.39.5
 
 
