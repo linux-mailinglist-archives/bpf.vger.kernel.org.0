@@ -1,343 +1,221 @@
-Return-Path: <bpf+bounces-57353-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57354-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79FE7AA9A24
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 19:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6333AAA9A27
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 19:09:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBA5218960BB
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 17:08:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00DA01896319
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 17:09:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D43626B959;
-	Mon,  5 May 2025 17:08:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B348626A0B0;
+	Mon,  5 May 2025 17:09:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Qh47oUWq"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="TRj5RRVb";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="lCqJRbC1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCC5B2638A9
-	for <bpf@vger.kernel.org>; Mon,  5 May 2025 17:08:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746464899; cv=none; b=EaTtuHscHZA5UQM6VDj7e3mo5GRrCCwwnSf1t3gQl/tJ/FHrjP3yMbjzxyGokiE8lxQ+f7UyULrtsgaupcFJKJVMmGAThsk9TqTMbMaxzt0XmNrJJHDP87Ojpja8zJOUMCd4zVcIVaTgGJ3tHjYYiVm3jxoJwGsjeyTuDrn/uPQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746464899; c=relaxed/simple;
-	bh=Jtak9U7cc0PM/YZ1tVgC2DmN5i2AOKL8/qKOSE5THgM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cpBpoqSqH9aHxNsKDqfmjQLUaWpZp6mJBrOTf0OE9EZdn2/U2irb0zE4BmnLyDbGLi2Rh9uRPj/TIXgbUWhr4lSaWVnGJlOG7iv17Sfc/gbfGtqxMK78W+0ArRJnXaFgvagHEQKcVe/uJt0GTssmY9k5a/ODoRQ6WCE0NA+7tiw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Qh47oUWq; arc=none smtp.client-ip=209.85.160.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-4774611d40bso16051cf.0
-        for <bpf@vger.kernel.org>; Mon, 05 May 2025 10:08:15 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79E6419DF9A;
+	Mon,  5 May 2025 17:09:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1746464949; cv=fail; b=a1ZaBX0XbR2js9fHAUazXTqKsiBNMhpxOJTxy1Cc0rL8fpPkAnbEgKkGT5MJIt5vl07uT0QQOkYLrKUAbt1TkFX2i2j0XHNFsuJfGdAo5ekhrP+9tR2nBllvc1zw+XQ/xz9RHFA6i08YhzE2IA9cxymmMJH6r6KQA+rpmJPeo38=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1746464949; c=relaxed/simple;
+	bh=WY2Cx5LjMd0R0fipQ0joqu0WZq2MQIZhOdhzpa3c3+A=;
+	h=References:From:To:Cc:Subject:In-reply-to:Date:Message-ID:
+	 Content-Type:MIME-Version; b=ju2/JGimaPYMR+Idl+Odnzh9ptK9H1ku03KF1tJfa6+32JryGaFOEQezGSnLK9JOtClIKx8lpLnJJEb0VSqLeoeG6GjjukMYt96wjIGufUh+uUhGnfVwrLnzs4sGpEmsyldzfXfz9OwYVj5Um6cHohyRPC1cuWvj9EEM2bhfmuQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=TRj5RRVb; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=lCqJRbC1; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 545H2vjw031927;
+	Mon, 5 May 2025 17:08:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=corp-2025-04-25; bh=WY2Cx5LjMd0R0fipQ0
+	joqu0WZq2MQIZhOdhzpa3c3+A=; b=TRj5RRVbRVcPMY6l6IovQ+Be2aQ7mI0leH
+	3l8nLAio64VRsnZUjzDtISLDbj+61S1DE1o6vSg2rC9J2cfvsJ2R6WHIFg1+ANuF
+	hl4rxwsQprvtMZR3TJ2JTK+a6VbWKeA6e5LxGfVPlNUC8HV3jKa66FJQIsMvIz+X
+	T3WseUOMiaWiE4wPS4GAlDpWbeneWsiPCRCBLiRKjZgQQYmsG2tfNQppp4RS9KkF
+	4m6veSPbzOZUHjBc8a19GDxzdYaZur9BxTilO10/ONKzJY0GnWddXBaIoA4qvxZg
+	9hugXQtIWptdHmBlECvQEq9MXLxWm8Z5QhoNGj1SLYeSoRFMMN+g==
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 46f1ccg0hv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 05 May 2025 17:08:37 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 545FWIJP025117;
+	Mon, 5 May 2025 17:08:36 GMT
+Received: from co1pr03cu002.outbound.protection.outlook.com (mail-westus2azlp17010003.outbound.protection.outlook.com [40.93.10.3])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 46d9ke6mjv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 05 May 2025 17:08:36 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=QjaPbI0bPkprF2boSQPMk5oh/Ks/FVHpljo35QYsmlGq3DhMEP1FQjtZURs0ikUVj1KuD4Tc9zCYeXfpC4aR2zBuqGy++7be0VFPFPZqcnqDYSSXun8cUUPkByY1bHnxkm9FV4222SyWqVLLllqq4C6qGii4WpVy0YDw5ibePBrDTw7X9mMSdzD4Pk6EuhCGCVKCR1ALG4dzUpG9d5+EjQCvpoiOrYY/E8+3z8U1oS/tnDXuf8t4VHWHZ0UsWgGt8kR7+Tl7SoWijrmM1L8NiATdAv9ZtHaUkUu3HlNkSlKTD1iuY2ICstdbjloFSIUIjQDJKPJHFdOA54FYv44e8A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WY2Cx5LjMd0R0fipQ0joqu0WZq2MQIZhOdhzpa3c3+A=;
+ b=QpqejFx7ZtEc15ZAJ54+jiyCLj6ikJ0I2plx5hdQ2yMq6lQojrrnJOSfQWJMuxR04ChZyZdMGE5vqw58PRGdeMHWiTm2H2MqyC9Rtam91WDMuJ08TOQe3UZQhoCeNIRReh8XRnRJbB2uI7uaFw/iaWmH8j1if4jsIaeUJTxTWHP4wlTiZ7sZUyGqukw1+JftJJrI3hXwcT8u0511Pb70AWQxdpXtEv1juek+End89opHDCRpE0R7DrhEzRt8MiQoPJ9EE857lTR6u0EQvzHlOYXRRFaorLb6H/4lrcifQfFyeZNtI07CongmMuLCq6cILQGX/DduYhZc28iT3EnTZw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1746464894; x=1747069694; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9Sl5qlzaLwkLoa7IyezxtoDVMCMI6oXTbeuYg/AGNhM=;
-        b=Qh47oUWqZAEM6/wEzyHqVYuvVlg74wdDTYSxMiFQsqWyrhM6l0kMewxO5T0BMNc0Lc
-         iZYwmq4cyCXM5s3VDFBzsyXYBwlh1DBdLEjL0RXxXTSKO7KodzEMhQU7O39eEOYv6EXr
-         qvuwPQG28TxxkbxjdYqTuHxEevBdnsUAOslFxn9CATq5EZnnrC+53451EyjMKH+3Bf76
-         27KcZZfiLvQC7yEi5d4SAavQwHaVrdMnn5jRoZH2TlFRA071sj/8v5fETGa1irlwHYbw
-         ZftaL9If0HjYQN2VR/5GR6+pEaUCp8e5NU0Eo8qJ0sVEM+KH6x60oQoA7MZd1okMWH0X
-         VePw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746464894; x=1747069694;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9Sl5qlzaLwkLoa7IyezxtoDVMCMI6oXTbeuYg/AGNhM=;
-        b=pns9YKPObXttSuMZX5XQ92GwmzBU9BlCmWPjtw+b4lcCyBd1Zq65FxeAHGqsCNVCHr
-         os1GpqhbxcpWYTpyL60QHIiN7d5g5K4YFhTzOUArHJgwCq61gTsCrvCOLFbt/iXER5Ls
-         2vhk+gy1AjsIXwHVHg6JjjYdvhaXUUCIQag9+IMlgXrZEfUmvrUbpRH7XmUAPLFpTflh
-         FRnwNBz4/IKAnZV7CmnrQZeqJIFEw8vUyIP6zzY5MSrwhx+B4iJXi02Ju7KNmO1Ph4XP
-         4Az/82GjHVMnaQYCixPkgJd5bLUsbg2GFq9lJ8EDWLhu8qDcUWRnWaYhU8kU2vxBIJ2j
-         xXdQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU2xh3N+s/b4ChO/8KBWE03pGEnvmcsMbQfCs8cQgFnkwZdpaXsdwckNf9VGr+IsmFKdrI=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzt1zlyPZSw7G5bayhImw360EVS03T75Hkrn5VtXPczma+O3O3S
-	27/O6qmr8hnM9Q68+tR1OpuBrSRZYwXAVD2qEM78TMrAJSno+ir/bmITs6RRk/NNLVKCaxtqstU
-	LM4NqZx2c94mDzCUORbw7haGu4C9tzORXAwdG
-X-Gm-Gg: ASbGncvQ13TbQ4cAD+tSI0A1DzBqE0m9jDLlao+zMnQJxnHqbaAUNF7GHJ9Pp5nuc7b
-	TjzzPaemk+vqwvVBQVh0TFEX/hrOkTqqnPPz2Ts2W6UjLCIm/bceqEyZfrXM1Puog8xdSecW2YK
-	bGVhLXSI+yQPatYSZokLYi
-X-Google-Smtp-Source: AGHT+IG9RbCE3tWojEKNPQx5yfnmDPTu6+mJWO90vxaZ+aQ1eZ9nWwk/u1wfl/9Tse3jgXBFSeLavdU4iiR/L3XP6AA=
-X-Received: by 2002:a05:622a:586:b0:474:b44f:bb88 with SMTP id
- d75a77b69052e-490cdae6128mr590541cf.27.1746464894049; Mon, 05 May 2025
- 10:08:14 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WY2Cx5LjMd0R0fipQ0joqu0WZq2MQIZhOdhzpa3c3+A=;
+ b=lCqJRbC1G4XaIPE7kjrEDAVCVeo+svrwDTC3bmCo350/HBGpbvE5Gde8stPoxWEK6xp0BprX14a/fpUySODHNFaBgvQxj3MqXwRVxgkNAK0bva5qJkG6pXO0Sg0hIvmksc+pgMaZDvIelGMbKT9Xc7JzA16/LtDmNwKIh5WpXgc=
+Received: from CO6PR10MB5409.namprd10.prod.outlook.com (2603:10b6:5:357::14)
+ by MN6PR10MB8117.namprd10.prod.outlook.com (2603:10b6:208:4f1::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8699.24; Mon, 5 May
+ 2025 17:08:27 +0000
+Received: from CO6PR10MB5409.namprd10.prod.outlook.com
+ ([fe80::25a9:32c2:a7b0:de9e]) by CO6PR10MB5409.namprd10.prod.outlook.com
+ ([fe80::25a9:32c2:a7b0:de9e%6]) with mapi id 15.20.8678.028; Mon, 5 May 2025
+ 17:08:27 +0000
+References: <20250502085223.1316925-1-ankur.a.arora@oracle.com>
+ <a85fbebe-aa44-5ca0-f8ad-f997ea7e6622@gentwo.org>
+ <87selmok1y.fsf@oracle.com>
+ <6181ff8b-bb81-4dd0-f8ec-0f9d0944885e@gentwo.org>
+User-agent: mu4e 1.4.10; emacs 27.2
+From: Ankur Arora <ankur.a.arora@oracle.com>
+To: "Christoph Lameter (Ampere)" <cl@gentwo.org>
+Cc: Ankur Arora <ankur.a.arora@oracle.com>, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        bpf@vger.kernel.org, arnd@arndb.de, catalin.marinas@arm.com,
+        will@kernel.org, peterz@infradead.org, akpm@linux-foundation.org,
+        mark.rutland@arm.com, harisokn@amazon.com, ast@kernel.org,
+        memxor@gmail.com, zhenglifeng1@huawei.com, xueshuai@linux.alibaba.com,
+        joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
+        konrad.wilk@oracle.com
+Subject: Re: [PATCH v2 0/7] barrier: introduce smp_cond_load_*_timewait()
+In-reply-to: <6181ff8b-bb81-4dd0-f8ec-0f9d0944885e@gentwo.org>
+Date: Mon, 05 May 2025 10:08:25 -0700
+Message-ID: <87o6w7nfxy.fsf@oracle.com>
+Content-Type: text/plain
+X-ClientProxiedBy: MW2PR16CA0033.namprd16.prod.outlook.com (2603:10b6:907::46)
+ To CO6PR10MB5409.namprd10.prod.outlook.com (2603:10b6:5:357::14)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250504224149.1033867-1-tjmercier@google.com>
- <20250504224149.1033867-3-tjmercier@google.com> <26ca8ddf-0d78-462f-a47d-a1128b2e058f@amd.com>
- <CABdmKX2iNk22h-KxUr4yvZO80yeRRjMfoC7yjiZ-aR_f1k402g@mail.gmail.com> <ec43f447-095e-4baf-8610-8279b565f162@amd.com>
-In-Reply-To: <ec43f447-095e-4baf-8610-8279b565f162@amd.com>
-From: "T.J. Mercier" <tjmercier@google.com>
-Date: Mon, 5 May 2025 10:07:59 -0700
-X-Gm-Features: ATxdqUF0j9WeLA-MxEEKVNTEyhm3r86boN77kWA0rwIEETtFwZuRS9Ux9s2lLAY
-Message-ID: <CABdmKX2Tpv8vpDDZ+wcdrWuijfC1wkNhJQxVSC9trPkzBLN4tA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/6] bpf: Add dmabuf iterator
-To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc: sumit.semwal@linaro.org, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, martin.lau@linux.dev, skhan@linuxfoundation.org, 
-	song@kernel.org, alexei.starovoitov@gmail.com, linux-kernel@vger.kernel.org, 
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	linaro-mm-sig@lists.linaro.org, linux-doc@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, android-mm@google.com, 
-	simona@ffwll.ch, corbet@lwn.net, eddyz87@gmail.com, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	jolsa@kernel.org, mykolal@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO6PR10MB5409:EE_|MN6PR10MB8117:EE_
+X-MS-Office365-Filtering-Correlation-Id: 687f3a8e-8aff-4b98-462d-08dd8bf773ac
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|366016|1800799024|376014|7416014|7053199007;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?eUtFOgqz3qXu7cPEF5wo9FNh0Z4wetpM0RUjnDx9wRYeyswCYwh6OTR2gb1r?=
+ =?us-ascii?Q?M+ppDdVhGXNl/FgKeltd156mNUQoQ4tJ7fY2P2jiOkhsSp7AbC+YuhVtKD5a?=
+ =?us-ascii?Q?qpdK1CSKUdy5G+6YWrhgoaXGbZZyiTl/T1jufVlBgix5gV7mz/dLCyfGOnBF?=
+ =?us-ascii?Q?/8EhzBz1wfvpVbX7LS9TFMlbRPTK83MTMHpoO4zS59gW/Mt7FRa6kbZ9fJ8V?=
+ =?us-ascii?Q?oI4nOq9OV8dW2bJaGVG9kcRCGTa2MbeN6vSfK3RzTCJJmgmiid4J3DWHUVGh?=
+ =?us-ascii?Q?cyOtjAqK05mkXp8GCD17G/rGbNZDULirmo8n04uKnXDBSPgHMTEz5/Xk3OHs?=
+ =?us-ascii?Q?6TxWKheNX4MSq42KA/QzmeWlqke7buIztEptrjeHCbxL9psFhQvEBS+sPSiT?=
+ =?us-ascii?Q?AtWX/n2DBdmkMfZf7CIRRTonGOQcqk9kI803wUb0ub40N1YtZyGXG4R19CLO?=
+ =?us-ascii?Q?BTWWO3GFSVUyboMy0QTpd522/GxZo7Ln4XamfZzWb4yB+a900iZByp9GVHcQ?=
+ =?us-ascii?Q?9ddJ2G7UuYsu5rvRjqG+JULiZFwpqPjXbRTti7pZyvDYFkRwY/cqcB4cdMQO?=
+ =?us-ascii?Q?DySSGkjJqr78Bgg+G3XBHs4/kUeGvLY8tjb5pvoWHtuzc6avb5tYo6nhD0kC?=
+ =?us-ascii?Q?Me4sC5Nt9r0WUhIh/kycknJoQGmwZz6y7p8/x13M6jEhUYtgJ8oFE+LUAqVO?=
+ =?us-ascii?Q?jnGbnlgPPsFRpBiZzJ46eRam8c7Fv7ig0b7mj3HPpa/PfFPW+3AS+BSjtguM?=
+ =?us-ascii?Q?Mf1+ttdG1k8bbAvCtu3O4yKyrpY0Ax+4ZQnw17mqTnpjM8OyPC6FZFKnBNVx?=
+ =?us-ascii?Q?zbzDEvwz4YhIpNv2KFreAqtANXaEYGz6vtpXlgXVb3MHHXO5fCjhz8ZNNTpt?=
+ =?us-ascii?Q?1ishRz8SWpBvXJIdR8Ow7qqvyJH+32GWQYZ3oW7zw0F7Vuc0qC4m3kWHhutr?=
+ =?us-ascii?Q?GshCBsd28oh+96B0Twg2ngf7xSOYjE3VXTPtvcmSbkPKS/x1NgTCQKwii0lQ?=
+ =?us-ascii?Q?bBoj5ebSsV6+qBk5FwJPtnH8J2Sb3FXQ6HTZYLfHDS7YfsfH38gfK3QLFZBH?=
+ =?us-ascii?Q?dy1IDndRD0vQ0YO5j8eOzO93hTyehfxO6iz06xtyjg4dyO9XKwzOyDobdOuB?=
+ =?us-ascii?Q?dFN20jEEDIhpMsMIZ8mz32UWV9sBL8UQmXe6elME7zEWou/Zi/oUT1pvg4t6?=
+ =?us-ascii?Q?yjpQKft19yJfjwQaRIrhfyplARVUN0G1YSK6DRntUVYeDMAlZHwop1cH3bGY?=
+ =?us-ascii?Q?mRe6QeCWokwQT1BtkfHUyNGUmUBd5EhbRs4dfjSs+omZp/GO+9YlyeSnBhxZ?=
+ =?us-ascii?Q?V6sNUJnnYntHtRnAzLWd2GZNIM6vAKWtAK3pYrT2byTnqvdUb8q3HX5udkXa?=
+ =?us-ascii?Q?6xlVzR4uO5oR3O30sZ8nTutbnjk3r23ZjvraKObvHk/q4zcxc7gcd5vpR4hh?=
+ =?us-ascii?Q?9oe0tkNLno0=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR10MB5409.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?1GeO89a4jFTww3Sg2GQJa4X0OBgw2r5r1YPZlNulUz9jod3s2U/BsxTDYX7/?=
+ =?us-ascii?Q?NDgENJu0WEUaDHbe3FAy4txBCpTXuxlQkW87T9cLI4VEhQASU0NWNWL5gxK4?=
+ =?us-ascii?Q?7pJ6lvvZeDmtVDXrkdzbidzq8KRH8KToQRmk8kHk/cRS2t33M/VwjtBLO4N+?=
+ =?us-ascii?Q?sc7juGziq9SI7pkG+LVcUihEdXBahDh+PVmn9rvqdXcjzIUD1RVGv0rHZJfF?=
+ =?us-ascii?Q?QP+NLcrR9PDX0ebHm4iIvjrFGPhY2OWKsUGygtqOns+6GTQGo/BRw/MgLzgg?=
+ =?us-ascii?Q?TqQJf1diJkQVA/+wctKN+cpyal7ROpyHwPgt+VsXKdR+854ZJOg55IOQzdbj?=
+ =?us-ascii?Q?wYHC8FCXPaacj7f+bH6XvbZptgcGqZIY3yIwO/jBgGPbPmhZAOr+WrtYu/SU?=
+ =?us-ascii?Q?Bw097ZKDnYYUC+PvRfiw+IOlW4SUMg3XvSlC7HHSOI1y3JRv+ZA31u9Grp0H?=
+ =?us-ascii?Q?lvJphN0Wml9BmODGNEhsePPSY6OglqEWugWY7TuuKAo+419y9xckk/sxNXoA?=
+ =?us-ascii?Q?Ofq3r4Zy2SYrv40rWoXPp/OT/NgW1awPIAFjbpiKaX92FoG99V3hdwJytsNQ?=
+ =?us-ascii?Q?ARt16BaDdfe/V+0rcf19TXAcLMHJmtsNJuzb1dPrBmTSsv5oj9XjBkJ/Y5Cm?=
+ =?us-ascii?Q?npuYNXlko08nhMASUH4I2zd7DPY9XJ4ffiAVg2P/Hs4lt7FGUd+0TYSQukxV?=
+ =?us-ascii?Q?XTT6QuYbvFpS/lCvDzokPc1zmDFBQMlCw1h21o6V5auhCV9klEBUyXanaPSo?=
+ =?us-ascii?Q?8UyfEpdApDFidaV6rfHEVo9gz33jgUKfj/IRmBfb9dms0U0HxDB2obh59QdI?=
+ =?us-ascii?Q?yf41kcOoATGzgGqjT4VXBd4T5+sSByhH4phL2YkNRiGn9E/ltrTrr4qybxij?=
+ =?us-ascii?Q?ugft0HrF5um7tSrXqwauCCRM6Np+dHHu1cxaXT8ClimAni47AxeI50tgSF+C?=
+ =?us-ascii?Q?VO3UWtev/xT3x3pAZv1iDGQnCDSJpGzdc79Lovet0Dkj//rlmyIU19aRT0fD?=
+ =?us-ascii?Q?SR+KY2RrJsmfjQuIzeDik13aF7ZSuma1JNiK9msz60Lm9U5CeKAaJguBq0oL?=
+ =?us-ascii?Q?Dsef2mVFYhnswXT+4izX1xyCYsY9ZTPBd225xOHDbfaFFbYTxdeb8k4txIaC?=
+ =?us-ascii?Q?ZD67XWVSAzOOD4B8d28qf119D9sXoVQh1qBzWag4tbyMcL3+R59AltRDFs69?=
+ =?us-ascii?Q?sWyKfmRiXCRgFRARq61dawxw+iQdp0NXD7kxpgKW5jxNLKtFpD2hKz0aPPDU?=
+ =?us-ascii?Q?KK/aoVpsUodVEyOLV661U6DzpcXc6tEiC3Uiou1eAA+8sfgX0Xih2VTPm3PS?=
+ =?us-ascii?Q?ULhwAR9l/HJLZfznA1SrYNrhxmi/BghrFpcnd8Ha5zsxmdCfcB2BYd8RahZm?=
+ =?us-ascii?Q?hdQty3LckCArqlb30Tt8Bp6nlMOjBFlMJjw22Lo1ICXIFymfR3m+UrfVf7f0?=
+ =?us-ascii?Q?9dw2jISZH7bBcvf5lg5w6ysOrWGX26uXS5FQvic3S/+POxhgINs6e2fyBCjD?=
+ =?us-ascii?Q?2eNl98snMfH7wVbUvbqf5Ti1un4IleUTH7EheDY8mECu7ngcOMIDhzIFdXGs?=
+ =?us-ascii?Q?O7I9WjCUSmEHGJIo/qcOhtIltCDc+4Y4XcrK6GPtzELNg+G2j28nEVibOpuY?=
+ =?us-ascii?Q?lw=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	FRFvEdidlJZrAsLc2x2R/brnMXEi8FuvwW59mnsG2gEzaSBH3ICf2jC0QqfvPW8O09kGhkCL3G+xg+6h8LkIYq6D8aDWtwc24nQ0Ou37yrkgjhzDSB3S3YhwykAmzib4eaR3VbwPLtN8QrUk4g8uEJleoL2+e6ja0ZTK/iy7V9+lNCchqtnKUUj+lbqFw3v9itS35fwlzgWbT1b2TQdoCiOqljo5I5YoRAWIEq0GDFQYWxuA1A40XhE6iCEpMjpJ4iSPjqBab4wu/vAb8wWJZxJXiGx9qRPDmMTYrHMtGlwjaraW1nBc48w+B1fSNBqmRSclZvK3j1jBnohb2CJr3lkWJ8ngTruOtD+iXp3t1DN3BiKTOiMLSG6vsNs/LYVGy/XG4QuVtHxobvtlEaxOTzkH4XCXHZS6c23ijVjJidcshNeVuW/9eYSRVGCC13esK48v1XId4KHZb1mEFlr0NmlXS/ZA1+D7A4O0zx8qBQN4iSNKgVAI1Hi0J3CXp07pjeFKQsLocVRJMzUOISKvOaLRJmwWoizb/8lI+ylFpJHGLXO1fTkukLnl+pgytzqusYLKIYij051TLc0DP19g/LmeE9VDyZJF11TW+spBe6I=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 687f3a8e-8aff-4b98-462d-08dd8bf773ac
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR10MB5409.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 May 2025 17:08:27.1954
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0jv27ypDnWMxuN141c2Xib5SAk1uLzOGPaJ+TMoBmBCfE2hEWkGKNz/wKj76wU4YbSF8hXfqw476K1ZZ59xLbULJMWhWfH1HdsKTzyR8+yc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN6PR10MB8117
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-05-05_07,2025-05-05_01,2025-02-21_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 phishscore=0
+ malwarescore=0 mlxlogscore=636 mlxscore=0 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2504070000
+ definitions=main-2505050162
+X-Proofpoint-GUID: NSv48o77LeMeSZ_0q9zTAbqPz7893onl
+X-Authority-Analysis: v=2.4 cv=F79XdrhN c=1 sm=1 tr=0 ts=6818f095 b=1 cx=c_pps a=zPCbziy225d3KhSqZt3L1A==:117 a=zPCbziy225d3KhSqZt3L1A==:17 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19 a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19
+ a=xqWC_Br6kY4A:10 a=dt9VzEwgFbYA:10 a=GoEa3M9JfhUA:10 a=PuvxfXWCAAAA:8 a=MlrTIZBMXMT8pGsMYdkA:9 a=NqO74GWdXPXpGKcKHaDJD/ajO6k=:19 a=uAr15Ul7AJ1q7o2wzYQp:22 cc=ntf awl=host:13129
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTA1MDE2MSBTYWx0ZWRfX/+o1MBTC0N+l xK3wZgzFD0ENPOFkQoimsv8ck1LGXfpgmzb+5KrTM+LA8Q1nVCZgV7XxYs/k61MvD04sWPD1xp+ CQs5OjMeM5xK8aUlnyIcq7Y7P54p6LA7RqVTky3TagFMw+dtj+lNz+Rq/V3U0KcAf6XMqlS6AnN
+ Ed7426KQSZY88dXjVrAF2tDl23actUTReZQv8RCMHHYjOEJjTDNbLUGf03iefLim2VFY6bqvpfa bMpIoybEgPefl3GDlAODiAW3+bpy+XqEroD+qMfNfzXoIYKDBEmaWy3e5P6g0mp2fWkxjcGVEIk ez3s/H4qjMvk3jacuzXeSLREv7ShxS58q+NjO8usYk/2Gqs5RzloRqhDxkawnbRtIDHOFalg6hg
+ Ayr+S5lNfkafaqHkb7Hc0xVd++AVoW7NnsYb7qveBF/4aYmLlbPoceVZCS4SDgNoCOTrvBXz
+X-Proofpoint-ORIG-GUID: NSv48o77LeMeSZ_0q9zTAbqPz7893onl
 
-On Mon, May 5, 2025 at 9:56=E2=80=AFAM Christian K=C3=B6nig <christian.koen=
-ig@amd.com> wrote:
->
-> On 5/5/25 18:33, T.J. Mercier wrote:
-> > On Mon, May 5, 2025 at 4:17=E2=80=AFAM Christian K=C3=B6nig <christian.=
-koenig@amd.com> wrote:
-> >>
-> >> On 5/5/25 00:41, T.J. Mercier wrote:
-> >>> The dmabuf iterator traverses the list of all DMA buffers.
-> >>>
-> >>> DMA buffers are refcounted through their associated struct file. A
-> >>> reference is taken on each buffer as the list is iterated to ensure e=
-ach
-> >>> buffer persists for the duration of the bpf program execution without
-> >>> holding the list mutex.
-> >>>
-> >>> Signed-off-by: T.J. Mercier <tjmercier@google.com>
-> >>> ---
-> >>>  kernel/bpf/Makefile      |   3 +
-> >>>  kernel/bpf/dmabuf_iter.c | 134 +++++++++++++++++++++++++++++++++++++=
-++
-> >>>  2 files changed, 137 insertions(+)
-> >>>  create mode 100644 kernel/bpf/dmabuf_iter.c
-> >>>
-> >>> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-> >>> index 70502f038b92..3a335c50e6e3 100644
-> >>> --- a/kernel/bpf/Makefile
-> >>> +++ b/kernel/bpf/Makefile
-> >>> @@ -53,6 +53,9 @@ obj-$(CONFIG_BPF_SYSCALL) +=3D relo_core.o
-> >>>  obj-$(CONFIG_BPF_SYSCALL) +=3D btf_iter.o
-> >>>  obj-$(CONFIG_BPF_SYSCALL) +=3D btf_relocate.o
-> >>>  obj-$(CONFIG_BPF_SYSCALL) +=3D kmem_cache_iter.o
-> >>> +ifeq ($(CONFIG_DMA_SHARED_BUFFER),y)
-> >>> +obj-$(CONFIG_BPF_SYSCALL) +=3D dmabuf_iter.o
-> >>> +endif
-> >>>
-> >>>  CFLAGS_REMOVE_percpu_freelist.o =3D $(CC_FLAGS_FTRACE)
-> >>>  CFLAGS_REMOVE_bpf_lru_list.o =3D $(CC_FLAGS_FTRACE)
-> >>> diff --git a/kernel/bpf/dmabuf_iter.c b/kernel/bpf/dmabuf_iter.c
-> >>> new file mode 100644
-> >>> index 000000000000..968762e11f73
-> >>> --- /dev/null
-> >>> +++ b/kernel/bpf/dmabuf_iter.c
-> >>> @@ -0,0 +1,134 @@
-> >>> +// SPDX-License-Identifier: GPL-2.0-only
-> >>> +/* Copyright (c) 2025 Google LLC */
-> >>> +#include <linux/bpf.h>
-> >>> +#include <linux/btf_ids.h>
-> >>> +#include <linux/dma-buf.h>
-> >>> +#include <linux/kernel.h>
-> >>> +#include <linux/seq_file.h>
-> >>> +
-> >>> +BTF_ID_LIST_SINGLE(bpf_dmabuf_btf_id, struct, dma_buf)
-> >>> +DEFINE_BPF_ITER_FUNC(dmabuf, struct bpf_iter_meta *meta, struct dma_=
-buf *dmabuf)
-> >>> +
-> >>> +static struct dma_buf *get_next_dmabuf(struct dma_buf *dmabuf)
-> >>> +{
-> >>> +     struct dma_buf *ret =3D NULL;
-> >>> +
-> >>> +     /*
-> >>> +      * Look for the first/next buffer we can obtain a reference to.
-> >>> +      *
-> >>> +      * The list mutex does not protect a dmabuf's refcount, so it c=
-an be
-> >>> +      * zeroed while we are iterating. We cannot call get_dma_buf() =
-since the
-> >>> +      * caller of this program may not already own a reference to th=
-e buffer.
-> >>> +      */
-> >>> +     mutex_lock(&dmabuf_list_mutex);
-> >>> +     if (dmabuf) {
-> >>
-> >> That looks like you try to mangle the start and next functionality in =
-just one function.
-> >>
-> >> I would just inline that into the dmabuf_iter_seq_start() and dmabuf_i=
-ter_seq_next() functions.
-> >
-> > Primarily this is to share between the open coded iterator (next
-> > patch) and this normal iterator since I didn't want to duplicate the
-> > same list traversal code across both of them.
->
-> Ah, ok that makes a bit more sense. It would still be nicer if it's in tw=
-o functions since the logic doesn't share anything common except for taking=
- the lock as far as I can seee.
->
-> >>
-> >>
-> >>> +             dma_buf_put(dmabuf);
-> >>> +             list_for_each_entry_continue(dmabuf, &dmabuf_list, list=
-_node) {
-> >>
-> >> That you can put the DMA-buf and then still uses it in list_for_each_e=
-ntry_continue() only works because the mutex is locked in the destroy path.
-> >
-> > Yup, this was deliberate.
-> >>
-> >>
-> >> I strongly suggest to just put those two functions into drivers/dma-bu=
-f/dma-buf.c right next to the __dma_buf_debugfs_list_add() and __dma_buf_de=
-bugfs_list_del() functions.
-> >
-> > By two functions, you mean a get_first_dmabuf(void) and a
-> > get_next_dmabuf(struct dma_buf*)? To make the dma_buf_put() call a
-> > little less scary since all the mutex ops are right there?
->
-> Yes, exactly that's the idea. The comment above is good to have as well, =
-but it only works one way.
->
-> If somebody changes the DMA-buf code without looking at this here we are =
-busted.
 
-Sounds good, will do. Thanks.
+Christoph Lameter (Ampere) <cl@gentwo.org> writes:
 
+> On Fri, 2 May 2025, Ankur Arora wrote:
 >
-> Regards,
-> Christian.
+>> AFAICT the vast majority of arm64 processors in the wild don't yet
+>> support WFET. For instance I haven't been able to find a single one
+>> to test my WFET changes with ;).
 >
-> >>
-> >>
-> >> Apart from those style suggestions looks good to me from the technical=
- side, but I'm not an expert for the BPF stuff.
-> >>
-> >> Regards,
-> >> Christian.
-> >
-> > Thanks for your comments and reviews!
-> >
-> >>> +                     if (file_ref_get(&dmabuf->file->f_ref)) {
-> >>> +                             ret =3D dmabuf;
-> >>> +                             break;
-> >>> +                     }
-> >>> +             }
-> >>> +     } else {
-> >>> +             list_for_each_entry(dmabuf, &dmabuf_list, list_node) {
-> >>> +                     if (file_ref_get(&dmabuf->file->f_ref)) {
-> >>> +                             ret =3D dmabuf;
-> >>> +                             break;
-> >>> +                     }
-> >>> +             }
-> >>> +     }
-> >>> +     mutex_unlock(&dmabuf_list_mutex);
-> >>> +     return ret;
-> >>> +}
-> >>> +
-> >>> +static void *dmabuf_iter_seq_start(struct seq_file *seq, loff_t *pos=
-)
-> >>> +{
-> >>> +     if (*pos)
-> >>> +             return NULL;
-> >>> +
-> >>> +     return get_next_dmabuf(NULL);
-> >>> +}
-> >>> +
-> >>> +static void *dmabuf_iter_seq_next(struct seq_file *seq, void *v, lof=
-f_t *pos)
-> >>> +{
-> >>> +     struct dma_buf *dmabuf =3D v;
-> >>> +
-> >>> +     ++*pos;
-> >>> +
-> >>> +     return get_next_dmabuf(dmabuf);
-> >>> +}
-> >>> +
-> >>> +struct bpf_iter__dmabuf {
-> >>> +     __bpf_md_ptr(struct bpf_iter_meta *, meta);
-> >>> +     __bpf_md_ptr(struct dma_buf *, dmabuf);
-> >>> +};
-> >>> +
-> >>> +static int __dmabuf_seq_show(struct seq_file *seq, void *v, bool in_=
-stop)
-> >>> +{
-> >>> +     struct bpf_iter_meta meta =3D {
-> >>> +             .seq =3D seq,
-> >>> +     };
-> >>> +     struct bpf_iter__dmabuf ctx =3D {
-> >>> +             .meta =3D &meta,
-> >>> +             .dmabuf =3D v,
-> >>> +     };
-> >>> +     struct bpf_prog *prog =3D bpf_iter_get_info(&meta, in_stop);
-> >>> +
-> >>> +     if (prog)
-> >>> +             return bpf_iter_run_prog(prog, &ctx);
-> >>> +
-> >>> +     return 0;
-> >>> +}
-> >>> +
-> >>> +static int dmabuf_iter_seq_show(struct seq_file *seq, void *v)
-> >>> +{
-> >>> +     return __dmabuf_seq_show(seq, v, false);
-> >>> +}
-> >>> +
-> >>> +static void dmabuf_iter_seq_stop(struct seq_file *seq, void *v)
-> >>> +{
-> >>> +     struct dma_buf *dmabuf =3D v;
-> >>> +
-> >>> +     if (dmabuf)
-> >>> +             dma_buf_put(dmabuf);
-> >>> +}
-> >>> +
-> >>> +static const struct seq_operations dmabuf_iter_seq_ops =3D {
-> >>> +     .start  =3D dmabuf_iter_seq_start,
-> >>> +     .next   =3D dmabuf_iter_seq_next,
-> >>> +     .stop   =3D dmabuf_iter_seq_stop,
-> >>> +     .show   =3D dmabuf_iter_seq_show,
-> >>> +};
-> >>> +
-> >>> +static void bpf_iter_dmabuf_show_fdinfo(const struct bpf_iter_aux_in=
-fo *aux,
-> >>> +                                     struct seq_file *seq)
-> >>> +{
-> >>> +     seq_puts(seq, "dmabuf iter\n");
-> >>> +}
-> >>> +
-> >>> +static const struct bpf_iter_seq_info dmabuf_iter_seq_info =3D {
-> >>> +     .seq_ops                =3D &dmabuf_iter_seq_ops,
-> >>> +     .init_seq_private       =3D NULL,
-> >>> +     .fini_seq_private       =3D NULL,
-> >>> +     .seq_priv_size          =3D 0,
-> >>> +};
-> >>> +
-> >>> +static struct bpf_iter_reg bpf_dmabuf_reg_info =3D {
-> >>> +     .target                 =3D "dmabuf",
-> >>> +     .feature                =3D BPF_ITER_RESCHED,
-> >>> +     .show_fdinfo            =3D bpf_iter_dmabuf_show_fdinfo,
-> >>> +     .ctx_arg_info_size      =3D 1,
-> >>> +     .ctx_arg_info           =3D {
-> >>> +             { offsetof(struct bpf_iter__dmabuf, dmabuf),
-> >>> +               PTR_TO_BTF_ID_OR_NULL },
-> >>> +     },
-> >>> +     .seq_info               =3D &dmabuf_iter_seq_info,
-> >>> +};
-> >>> +
-> >>> +static int __init dmabuf_iter_init(void)
-> >>> +{
-> >>> +     bpf_dmabuf_reg_info.ctx_arg_info[0].btf_id =3D bpf_dmabuf_btf_i=
-d[0];
-> >>> +     return bpf_iter_reg_target(&bpf_dmabuf_reg_info);
-> >>> +}
-> >>> +
-> >>> +late_initcall(dmabuf_iter_init);
-> >>
+> Ok then for patch 1-6:
 >
+> Reviewed-by: Christoph Lameter (Ampere) <cl@gentwo.org>
+
+Great. Thanks Christoph!
+
+--
+ankur
 
