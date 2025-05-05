@@ -1,62 +1,65 @@
-Return-Path: <bpf+bounces-57387-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57388-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BA73AA9E80
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 23:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C7471AA9E86
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 23:59:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DB4B17BB1F
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 21:59:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A868F17B086
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 21:59:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A0A0274FE0;
-	Mon,  5 May 2025 21:59:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44E12275113;
+	Mon,  5 May 2025 21:59:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="Rzj3csR+"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="i1VtwmnL"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-fw-9106.amazon.com (smtp-fw-9106.amazon.com [207.171.188.206])
+Received: from smtp-fw-80009.amazon.com (smtp-fw-80009.amazon.com [99.78.197.220])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D91B41F3FDC;
-	Mon,  5 May 2025 21:59:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.171.188.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3628D187332;
+	Mon,  5 May 2025 21:59:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.220
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746482358; cv=none; b=hV8HlGWZw6vKAjL7t2Gujkq22Uuez/6C1PZUNNHDZ2Nm/rLe7suTGmTkEiQwGvdaTKEqZix01lUtpPhDzqe/x6TPfzaxZ2tFkVRjmCKgsw5FLganmPppHkRQijkLL7HTgXQ6fOs5XGInNaQKwczB7K+5KjEl7eFmU/CQ/xlqQ2c=
+	t=1746482380; cv=none; b=Ft/U2+a9v49eeMZo8AbpuM1wrugKQ0oSD61TwVRiTp+jokwPGB/PcJSMTay/zyt3lHK6sPF/RpK9W2FkDgFQODytKeOo7apVeJ63gvDZvr6zGA4jvE8CSYOHN3LPjJ+M99dKl22m4pAUaMZNu0DcuTX4BuJij7Ok2DTnVadsnFk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746482358; c=relaxed/simple;
-	bh=C9KLVq9cVjRJ4wYT4c/blaxdTuuP10Z/pPI7HGen4BA=;
+	s=arc-20240116; t=1746482380; c=relaxed/simple;
+	bh=p2xEU8kJj4Nq4KhqwLGFMsBx3/btPiklo5yi6B7eOKA=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=r2hNLN4OohDXpLHA9jfv91QlsxD/DK4O9mfF89Tarh0LjfCafKaMUpATpUcqYD0fzREt+LxKOSvQLHsXTGWG3O3gd4X66BSq2hO3Z87WkcMH+Dw6HhbFvZRQg6oYDrBvXigMBRWjO3MUj5tMnv3rmJeRnFC2gYYPTdcLQ1YuWzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=Rzj3csR+; arc=none smtp.client-ip=207.171.188.206
+	 MIME-Version:Content-Type; b=Optvj99HfaU/NOI8tX618WjqyUu+rmchKgbTMUJ37XnBSBQJGMkE/RIR0S0pjGtk7TzlrfsqVvdW3USypCzbrCGz8lAVQ/v9R3P2OMGfdBxexv6dFl144I2l6WHM98CpLAUq2nWBEn7+O/sX+HWqM/ZuI5+LvjKJhqRnnDZMyNo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=i1VtwmnL; arc=none smtp.client-ip=99.78.197.220
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1746482358; x=1778018358;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1746482379; x=1778018379;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=OOf8CsFSvcDfLD2W22m5/ufzA23qNJ8NtKdvdVy8JNs=;
-  b=Rzj3csR+HcVJpB9+qz8S8F0BnYx+IDP5xDQQOqjFZ2792asWl/8ZqNEB
-   3dBnTxYEkZRMvOECr3LVCyLnCMtUvEBGOIcX8Y7cM+kDUgMCeETu5n1jo
-   4Iv/hgh1XfCKH/DdtzaZDWJyRy7q4z7w6dxAbw8W6btgXycBPaDtKcIAs
-   g=;
+  bh=uZa4XnC7N5rvwSXWDUdM+Gh157CJi2xhXR/N3zvSyBU=;
+  b=i1VtwmnL3WyTZHc0/VaoJRGzC+w/ENFp6AiXwsov4lerS0Gp5NVW14r5
+   E8gM1OIsNEUCjoreCQcLjLfPBacJTRjA963I31I38JYBXX+aSki4tOqdb
+   dOn8mhJe9diHWoJlVOnLwkwx2rOHD94xoCfz+UnIv3pWGfYuvotjxpsH2
+   sSoAWWWKUb3AFTyWRpu1lbIhX/AJX/bUxQgO6l4HzOaZzjSSych5oh9BM
+   s6sXPgd6N103m9POlaKSQ3rGfqwZDLY8x6BdUNlfHD/iNdIAwM+28aMSA
+   Tu+V1EftcxcNnv/4bweHI+gI4b0EtFdmNnmEC8MlH7uej/gYDeULOFuEy
+   Q==;
 X-IronPort-AV: E=Sophos;i="6.15,264,1739836800"; 
-   d="scan'208";a="822043681"
+   d="scan'208";a="197572439"
 Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.210])
-  by smtp-border-fw-9106.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2025 21:59:11 +0000
-Received: from EX19MTAUWC002.ant.amazon.com [10.0.38.20:40062]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.33.6:2525] with esmtp (Farcaster)
- id eb3131df-808c-47d1-8552-93ba7ad15fa2; Mon, 5 May 2025 21:59:10 +0000 (UTC)
-X-Farcaster-Flow-ID: eb3131df-808c-47d1-8552-93ba7ad15fa2
+  by smtp-border-fw-80009.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2025 21:59:37 +0000
+Received: from EX19MTAUWA001.ant.amazon.com [10.0.7.35:20413]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.21.231:2525] with esmtp (Farcaster)
+ id 7f39e0ad-c560-419a-b9f9-230905d6065f; Mon, 5 May 2025 21:59:36 +0000 (UTC)
+X-Farcaster-Flow-ID: 7f39e0ad-c560-419a-b9f9-230905d6065f
 Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ EX19MTAUWA001.ant.amazon.com (10.250.64.204) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
- Mon, 5 May 2025 21:59:09 +0000
+ Mon, 5 May 2025 21:59:36 +0000
 Received: from 6c7e67bfbae3.amazon.com (10.187.170.18) by
  EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
- Mon, 5 May 2025 21:59:04 +0000
+ Mon, 5 May 2025 21:59:31 +0000
 From: Kuniyuki Iwashima <kuniyu@amazon.com>
 To: Martin KaFai Lau <martin.lau@linux.dev>, Daniel Borkmann
 	<daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, "Alexei
@@ -73,9 +76,9 @@ CC: Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
  Iwashima <kuniyu@amazon.com>, Kuniyuki Iwashima <kuni1840@gmail.com>,
 	<bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
 	<linux-security-module@vger.kernel.org>, <selinux@vger.kernel.org>
-Subject: [PATCH v1 bpf-next 2/5] af_unix: Pass skb to security_unix_may_send().
-Date: Mon, 5 May 2025 14:56:47 -0700
-Message-ID: <20250505215802.48449-3-kuniyu@amazon.com>
+Subject: [PATCH v1 bpf-next 3/5] af_unix: Remove redundant scm->fp check in __scm_destroy().
+Date: Mon, 5 May 2025 14:56:48 -0700
+Message-ID: <20250505215802.48449-4-kuniyu@amazon.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250505215802.48449-1-kuniyu@amazon.com>
 References: <20250505215802.48449-1-kuniyu@amazon.com>
@@ -87,197 +90,103 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: EX19D041UWA002.ant.amazon.com (10.13.139.121) To
+X-ClientProxiedBy: EX19D035UWA004.ant.amazon.com (10.13.139.109) To
  EX19D004ANA001.ant.amazon.com (10.37.240.138)
 
-As long as recvmsg() or recvmmsg() is used with cmsg, it is not
-possible to avoid receiving file descriptors via SCM_RIGHTS.
+__scm_destroy() is called from __scm_recv_common() or
+scm_destroy(), and both of which check if scm->fp is NULL.
 
-This behaviour has occasionally been flagged as problematic.
+Let's remove the redundant scm->fp check in __scm_destroy().
 
-For instance, as noted on the uAPI Group page [0], an untrusted peer
-could send a file descriptor pointing to a hung NFS mount and then
-close it.  Once the receiver calls recvmsg() with msg_control, the
-descriptor is automatically installed, and then the responsibility
-for the final close() now falls on the receiver, which may result
-in blocking the process for a long time.
+While at it, we remove EXPORT_SYMBOL() for it and rename it
+to scm_fp_destroy() to make the following patch clearer.
 
-Let's pass the skb to security_unix_may_send() so that BPF LSM can
-inspect it and selectively prevent such a sendmsg().
-
-Note that only the LSM_HOOK() macro uses the __nullable suffix for
-skb to inform the verifier that the skb could be NULL at connect().
-Without it, I was able to load a bpf prog without NULL check
-against skb.
-
-Sample:
-
-SEC("lsm/unix_may_send")
-int BPF_PROG(unix_refuse_scm_rights,
-	     struct socket *sock, struct socket *other, struct sk_buff *skb)
-{
-	struct unix_skb_parms *cb;
-
-	if (!skb)
-		return 0;
-
-	cb = (struct unix_skb_parms *)skb->cb;
-	if (!cb->fp)
-		return 0;
-
-	return -EPERM;
-}
-
-Link: https://uapi-group.org/kernel-features/#disabling-reception-of-scm_rights-for-af_unix-sockets #[0]
 Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
 ---
-I guess there is no generic version of raw_tp_null_args[] ?
----
- include/linux/lsm_hook_defs.h | 3 ++-
- include/linux/security.h      | 5 +++--
- net/unix/af_unix.c            | 8 ++++----
- security/landlock/task.c      | 3 ++-
- security/security.c           | 5 +++--
- security/selinux/hooks.c      | 3 ++-
- security/smack/smack_lsm.c    | 3 ++-
- 7 files changed, 18 insertions(+), 12 deletions(-)
+ include/net/scm.h |  5 +++--
+ net/compat.c      |  2 +-
+ net/core/scm.c    | 19 +++++++++----------
+ 3 files changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-index bf3bbac4e02a..762c7f2f7dee 100644
---- a/include/linux/lsm_hook_defs.h
-+++ b/include/linux/lsm_hook_defs.h
-@@ -318,7 +318,8 @@ LSM_HOOK(int, 0, watch_key, struct key *key)
+diff --git a/include/net/scm.h b/include/net/scm.h
+index 22bb49589fde..058688a16a63 100644
+--- a/include/net/scm.h
++++ b/include/net/scm.h
+@@ -53,7 +53,7 @@ struct scm_cookie {
+ void scm_detach_fds(struct msghdr *msg, struct scm_cookie *scm);
+ void scm_detach_fds_compat(struct msghdr *msg, struct scm_cookie *scm);
+ int __scm_send(struct socket *sock, struct msghdr *msg, struct scm_cookie *scm);
+-void __scm_destroy(struct scm_cookie *scm);
++void scm_fp_destroy(struct scm_cookie *scm);
+ struct scm_fp_list *scm_fp_dup(struct scm_fp_list *fpl);
+ 
  #ifdef CONFIG_SECURITY_NETWORK
- LSM_HOOK(int, 0, unix_stream_connect, struct sock *sock, struct sock *other,
- 	 struct sock *newsk)
--LSM_HOOK(int, 0, unix_may_send, struct socket *sock, struct socket *other)
-+LSM_HOOK(int, 0, unix_may_send, struct socket *sock, struct socket *other,
-+	 struct sk_buff *skb__nullable)
- LSM_HOOK(int, 0, socket_create, int family, int type, int protocol, int kern)
- LSM_HOOK(int, 0, socket_post_create, struct socket *sock, int family, int type,
- 	 int protocol, int kern)
-diff --git a/include/linux/security.h b/include/linux/security.h
-index cc9b54d95d22..5de77accee80 100644
---- a/include/linux/security.h
-+++ b/include/linux/security.h
-@@ -1630,7 +1630,7 @@ static inline int security_watch_key(struct key *key)
- #ifdef CONFIG_SECURITY_NETWORK
- 
- int security_unix_stream_connect(struct sock *sock, struct sock *other, struct sock *newsk);
--int security_unix_may_send(struct socket *sock,  struct socket *other);
-+int security_unix_may_send(struct socket *sock,  struct socket *other, struct sk_buff *skb);
- int security_socket_create(int family, int type, int protocol, int kern);
- int security_socket_post_create(struct socket *sock, int family,
- 				int type, int protocol, int kern);
-@@ -1692,7 +1692,8 @@ static inline int security_unix_stream_connect(struct sock *sock,
+@@ -84,8 +84,9 @@ static __inline__ void scm_destroy_cred(struct scm_cookie *scm)
+ static __inline__ void scm_destroy(struct scm_cookie *scm)
+ {
+ 	scm_destroy_cred(scm);
++
+ 	if (scm->fp)
+-		__scm_destroy(scm);
++		scm_fp_destroy(scm);
  }
  
- static inline int security_unix_may_send(struct socket *sock,
--					 struct socket *other)
-+					 struct socket *other,
-+					 struct sk_buff *skb)
- {
- 	return 0;
- }
-diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-index 769db3f8f41b..692cce579c89 100644
---- a/net/unix/af_unix.c
-+++ b/net/unix/af_unix.c
-@@ -1447,7 +1447,7 @@ static int unix_dgram_connect(struct socket *sock, struct sockaddr *addr,
- 		if (!unix_may_send(sk, other))
- 			goto out_unlock;
- 
--		err = security_unix_may_send(sk->sk_socket, other->sk_socket);
-+		err = security_unix_may_send(sk->sk_socket, other->sk_socket, NULL);
- 		if (err)
- 			goto out_unlock;
- 
-@@ -2101,7 +2101,7 @@ static int unix_dgram_sendmsg(struct socket *sock, struct msghdr *msg,
- 		goto out_unlock;
- 	}
- 
--	err = security_unix_may_send(sk->sk_socket, other->sk_socket);
-+	err = security_unix_may_send(sk->sk_socket, other->sk_socket, skb);
- 	if (err)
- 		goto out_unlock;
- 
-@@ -2204,7 +2204,7 @@ static int queue_oob(struct socket *sock, struct msghdr *msg, struct sock *other
- 	}
- 
- 	if (!fds_sent) {
--		err = security_unix_may_send(sock, other->sk_socket);
-+		err = security_unix_may_send(sock, other->sk_socket, skb);
- 		if (err)
- 			goto out_unlock;
- 	}
-@@ -2326,7 +2326,7 @@ static int unix_stream_sendmsg(struct socket *sock, struct msghdr *msg,
- 			goto out_pipe_unlock;
- 
- 		if (!fds_sent) {
--			err = security_unix_may_send(sock, other->sk_socket);
-+			err = security_unix_may_send(sock, other->sk_socket, skb);
- 			if (err) {
- 				unix_state_unlock(other);
- 				goto out_free;
-diff --git a/security/landlock/task.c b/security/landlock/task.c
-index f15e6b0c56f8..aeb712d3fa8f 100644
---- a/security/landlock/task.c
-+++ b/security/landlock/task.c
-@@ -295,7 +295,8 @@ static int hook_unix_stream_connect(struct sock *const sock,
+ static __inline__ int scm_send(struct socket *sock, struct msghdr *msg,
+diff --git a/net/compat.c b/net/compat.c
+index 485db8ee9b28..6689a4f37bcf 100644
+--- a/net/compat.c
++++ b/net/compat.c
+@@ -326,7 +326,7 @@ void scm_detach_fds_compat(struct msghdr *msg, struct scm_cookie *scm)
+ 	 * All of the files that fit in the message have had their usage counts
+ 	 * incremented, so we just free the list.
+ 	 */
+-	__scm_destroy(scm);
++	scm_fp_destroy(scm);
  }
  
- static int hook_unix_may_send(struct socket *const sock,
--			      struct socket *const other)
-+			      struct socket *const other,
-+			      struct sk_buff *skb)
- {
- 	size_t handle_layer;
- 	const struct landlock_cred_security *const subject =
-diff --git a/security/security.c b/security/security.c
-index fb57e8fddd91..875dbc7ba34f 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -4531,9 +4531,10 @@ EXPORT_SYMBOL(security_unix_stream_connect);
-  *
-  * Return: Returns 0 if permission is granted.
-  */
--int security_unix_may_send(struct socket *sock,  struct socket *other)
-+int security_unix_may_send(struct socket *sock,  struct socket *other,
-+			   struct sk_buff *skb)
- {
--	return call_int_hook(unix_may_send, sock, other);
-+	return call_int_hook(unix_may_send, sock, other, skb);
- }
- EXPORT_SYMBOL(security_unix_may_send);
- 
-diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-index 9fb4cd442ffd..fcf14fb76e7f 100644
---- a/security/selinux/hooks.c
-+++ b/security/selinux/hooks.c
-@@ -5099,7 +5099,8 @@ static int selinux_socket_unix_stream_connect(struct sock *sock,
+ /* Argument list sizes for compat_sys_socketcall */
+diff --git a/net/core/scm.c b/net/core/scm.c
+index 733c0cbd393d..bef8d008f910 100644
+--- a/net/core/scm.c
++++ b/net/core/scm.c
+@@ -130,20 +130,19 @@ static int scm_fp_copy(struct cmsghdr *cmsg, struct scm_fp_list **fplp)
+ 	return num;
  }
  
- static int selinux_socket_unix_may_send(struct socket *sock,
--					struct socket *other)
-+					struct socket *other,
-+					struct sk_buff *skb)
+-void __scm_destroy(struct scm_cookie *scm)
++void scm_fp_destroy(struct scm_cookie *scm)
  {
- 	struct sk_security_struct *ssec = selinux_sock(sock->sk);
- 	struct sk_security_struct *osec = selinux_sock(other->sk);
-diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
-index 00aa1e7513c1..33827f4c5c76 100644
---- a/security/smack/smack_lsm.c
-+++ b/security/smack/smack_lsm.c
-@@ -3890,7 +3890,8 @@ static int smack_unix_stream_connect(struct sock *sock,
-  * Return 0 if a subject with the smack of sock could access
-  * an object with the smack of other, otherwise an error code
-  */
--static int smack_unix_may_send(struct socket *sock, struct socket *other)
-+static int smack_unix_may_send(struct socket *sock, struct socket *other,
-+			       struct sk_buff *skb)
+ 	struct scm_fp_list *fpl = scm->fp;
+ 	int i;
+ 
+-	if (fpl) {
+-		scm->fp = NULL;
+-		for (i=fpl->count-1; i>=0; i--)
+-			fput(fpl->fp[i]);
+-		free_uid(fpl->user);
+-		kfree(fpl);
+-	}
++	scm->fp = NULL;
++
++	for (i = fpl->count - 1; i >= 0; i--)
++		fput(fpl->fp[i]);
++
++	free_uid(fpl->user);
++	kfree(fpl);
+ }
+-EXPORT_SYMBOL(__scm_destroy);
+ 
+ int __scm_send(struct socket *sock, struct msghdr *msg, struct scm_cookie *p)
  {
- 	struct socket_smack *ssp = smack_sock(sock->sk);
- 	struct socket_smack *osp = smack_sock(other->sk);
+@@ -375,7 +374,7 @@ void scm_detach_fds(struct msghdr *msg, struct scm_cookie *scm)
+ 	 * All of the files that fit in the message have had their usage counts
+ 	 * incremented, so we just free the list.
+ 	 */
+-	__scm_destroy(scm);
++	scm_fp_destroy(scm);
+ }
+ EXPORT_SYMBOL(scm_detach_fds);
+ 
 -- 
 2.49.0
 
