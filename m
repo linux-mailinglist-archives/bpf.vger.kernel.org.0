@@ -1,144 +1,332 @@
-Return-Path: <bpf+bounces-57343-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57346-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 424A2AA9600
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 16:37:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F31AAA97F3
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 17:52:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E23E188C416
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 14:37:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 53EE8189A27E
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 15:52:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2DAC25C829;
-	Mon,  5 May 2025 14:37:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="SwbIR0eu"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42F7C25E46E;
+	Mon,  5 May 2025 15:51:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dediextern.your-server.de (dediextern.your-server.de [85.10.215.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B058F25C807
-	for <bpf@vger.kernel.org>; Mon,  5 May 2025 14:37:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 626D01F9F70;
+	Mon,  5 May 2025 15:51:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.10.215.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746455835; cv=none; b=Lp6lnpc5VNkmWnp5hcNBJPhdxgpz3EwZ3L0bJH3uTZgRbWGIeEcJJgOrYtH5jGCC96Af+fL1O+TD39dixHcqxGloLLpNcRyRQ9q8J+M+KepfzsEHXQ5qpkFWL2VxHBoLwEL13neY4M0V5RHsa/62oWpUG82rrmhRMiz0DaFJPWY=
+	t=1746460303; cv=none; b=tJR58gqIgrytrNtUq+UxNIuwMrO4Xgt5XRfYvPtT1+BQmn1PFPlQACRfVZWrzBbHreCff8UxSWZYn++iheX0wKKEsN4uxGV0NxwCc3r29uKB5vBxVG0y7d1hyi5tSauymNJTvVNJSYcH5t6yBQTyXkop19+7kD37/JyHwVk1Qp4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746455835; c=relaxed/simple;
-	bh=JmucSS8yHIGvXEbtSfgsHVr9r5nyIh34DSUF08JyRTI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MXPuYxmFKa8qnBraty+js2bPKbLyuLLCW2x1qFx9JH8Ctlah8oZLAAlhXaq37cD9pKVgigrmOf1kvCPKsEtW/CsX1sQ1uvJPqwewLT4unUNtZnncE3OFNE1aW29MPLLsEgXzmwt6b92fn3ciHV/eVbPlOtnqovLz5bhMCgMD0AE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=SwbIR0eu; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-39c266c1389so3324274f8f.1
-        for <bpf@vger.kernel.org>; Mon, 05 May 2025 07:37:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1746455832; x=1747060632; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5IlruZqZzq0+fswkpFmPD6JiolgWVetZjDH4ysB+h9A=;
-        b=SwbIR0eugaKz+3A1KOLmvmgO179zctaCTI5qb4gHCL+WYiXHTVjEB9R0DBgixqPSn7
-         0SqG91H9Thil0rDawmRmFx1GyLesRZ+aLS+TB9Xrhc+9rwWDpT6dotUrMC2/3qMdBmJr
-         rZj9OKHYoJDsNgn85h5ZBkf+cJAUL2HUIEHrVrxHVtLc/lWLIZPh30rwxM5TuZdFJ+MR
-         SKWnKyhTW4hdkOJslRzh0BG0Pc7KnE2vszNApv45nKiS5NdwxBY3XW9lPipjLmz0OCNv
-         8OD70zOb8BTeyHKaRDnQGnNYa6wFTx5YTBFcdvHeHqUp/g2mNcfMgC79l94giqtVxiUI
-         0Ppg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746455832; x=1747060632;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5IlruZqZzq0+fswkpFmPD6JiolgWVetZjDH4ysB+h9A=;
-        b=bFnxJM/w2CKQtNA73d8A8M0wyxgWUrj94+Pf39Uy8+sLrwLsiFzTnxOvqsJVdpAf6q
-         WLM1/lRflOIl9sGpJenC9ygEdLQd+80/UlQ9ifdl1MmbB3U9H5T+YSic6sv7c/6K1eQx
-         eynRFFcRteXdh3qEnIzbr0rdGeoMCtADWLjiS+YrsbD0PZ1S0A1zidi0t8CAlBtwucqP
-         qSTjIiabgRfHI1ue2NwOsAxqEIEU8QB26N+1ogjqaY3SWm9UCYe+gI21uNQc6bQtzUNX
-         TqPw5Uj5SL/RuD+C/lwfGmoO2kGlLDanHsMXMhCBViOVB76tXblRyiU/lYxq06p7GEix
-         68oQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXf92bu1raAA+yyPaWgv7FIW9hRf7W7DzZVN7VNl40BvAMtLtnmy2XnHr2mDBoW+lo2TYw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yybr4tYu+oCoKxzLfQpz+Mb0nh9gXjZpkAOsl7oFeHt7BanKw7T
-	KfdqXjpX+wAr9RCYcbEbfGQanbEJRVBx54ZKAP6BYGoAUp6W8mMUDgJJQ+NMHzCKqA1oXO8TiVt
-	8rmHKNYmfH004miyRmNv/Zh5lWpXxluFSqlJxzVzejdt5j+eHAEE=
-X-Gm-Gg: ASbGnct/0yMPuRgHdU800pu2SUhiVW9rmHIgKC0OUb2viQx8OpJkbEyhUmDk5dTqK9+
-	DGIWZyBjooubRr/g3i8Ntz5ygOmNm1cyYZYHaCnTyrkFM7XknykmYEYpj8Rl+puLz1eshfubaiJ
-	5FlHiiep0ZL7r3KODbQBe8lGBbd0u8nuinHiVdt6CpPTLBZQ==
-X-Google-Smtp-Source: AGHT+IGRryQZey4md2gCZKMAPgpPKfd6jIR1elEkmSqIVQ7Rm5RNzJwqA82lZIzpIZ7of6EckvnAb00PhWCAFAg43Lo=
-X-Received: by 2002:a05:6000:2284:b0:39c:1257:dbaa with SMTP id
- ffacd0b85a97d-3a09fdde004mr5248186f8f.58.1746455831960; Mon, 05 May 2025
- 07:37:11 -0700 (PDT)
+	s=arc-20240116; t=1746460303; c=relaxed/simple;
+	bh=qHjAcr3nYJoV5hBvliPhfYmGgK0qY2hPpf/DNDCyw3w=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=cwbu9Ly9PngMEjaScWFvp7DMMK0hZD7JJOSIFSf0AUpEoWUfOCz+9zdH7InxALa4yJf3vpVuWHJj6Mx0lO6Ux6WexTKXWLPs+Dpw04SPbg85sAp3xIHLqxD4AFCvzpBoQznzB77vX/wDDpFD4zvxyk0VM4LqV0a9YgZXQ/LaSMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hetzner-cloud.de; spf=pass smtp.mailfrom=hetzner-cloud.de; arc=none smtp.client-ip=85.10.215.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hetzner-cloud.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hetzner-cloud.de
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+	by dediextern.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <tobias.boehm@hetzner-cloud.de>)
+	id 1uBxep-000NE8-6S; Mon, 05 May 2025 17:23:03 +0200
+Received: from [2003:f6:af22:6538:f6a8:dff:fe1e:4c1d]
+	by sslproxy06.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <tobias.boehm@hetzner-cloud.de>)
+	id 1uBxeo-0003en-0Z;
+	Mon, 05 May 2025 17:23:02 +0200
+Message-ID: <1713bf39-2bcb-4a43-94c7-a61ff97e2522@hetzner-cloud.de>
+Date: Mon, 5 May 2025 17:23:02 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250502-vmlinux-mmap-v2-0-95c271434519@isovalent.com>
- <20250502-vmlinux-mmap-v2-1-95c271434519@isovalent.com> <CAADnVQ+dMwAFPO-ASojjYPxODpCKf_9FCLjUvn2HeHigL53JdQ@mail.gmail.com>
-In-Reply-To: <CAADnVQ+dMwAFPO-ASojjYPxODpCKf_9FCLjUvn2HeHigL53JdQ@mail.gmail.com>
-From: Lorenz Bauer <lmb@isovalent.com>
-Date: Mon, 5 May 2025 15:37:00 +0100
-X-Gm-Features: ATxdqUFASGpQMncGff41_zyVmbKXRgRyXvQdozB20vSAY52iy8F4VaheL5-kBFM
-Message-ID: <CAN+4W8jLdcJbVvQ_YaPVqP0EB6reFgt8S0AZh_w3K80tsJvX5Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/3] btf: allow mmap of vmlinux btf
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	linux-arch <linux-arch@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	bpf <bpf@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [BUG] ixgbe: Detected Tx Unit Hang (XDP)
+From: =?UTF-8?Q?Tobias_B=C3=B6hm?= <tobias.boehm@hetzner-cloud.de>
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
+Cc: Michal Kubiak <michal.kubiak@intel.com>,
+ Tony Nguyen <anthony.l.nguyen@intel.com>, Jay Vosburgh <jv@jvosburgh.net>,
+ Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, intel-wired-lan@lists.osuosl.org,
+ netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ sdn@hetzner-cloud.de
+References: <d33f0ab4-4dc4-49cd-bbd0-055f58dd6758@hetzner-cloud.de>
+ <Z/fWHYETBYQuCno5@localhost.localdomain>
+ <ff7ca6ea-a122-4d7d-9ef2-d091cbdd96d2@hetzner-cloud.de>
+ <Z/jPgceDT4gRu9/R@localhost.localdomain> <aAEUcXIRnWolGWnA@boxer>
+ <b06ede77-541b-453f-9e7a-79f3e5591f66@hetzner-cloud.de>
+ <aAkz/+Rx5w3OHH4/@boxer>
+ <eca1880f-253a-4955-afe6-732d7c6926ee@hetzner-cloud.de>
+Content-Language: en-US
+Autocrypt: addr=tobias.boehm@hetzner-cloud.de; keydata=
+ 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
+ p0ms75naziM=
+Organization: Hetzner Cloud GmbH
+In-Reply-To: <eca1880f-253a-4955-afe6-732d7c6926ee@hetzner-cloud.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: tobias.boehm@hetzner-cloud.de
+X-Virus-Scanned: Clear (ClamAV 1.0.7/27629/Mon May  5 10:35:28 2025)
 
-On Fri, May 2, 2025 at 6:15=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
-> remap_pfn_range() should be avoided.
-> See big comment in kernel/events/core.c in map_range().
->
-> The following seems to work:
+Am 24.04.25 um 12:19 schrieb Tobias Böhm:
+> Am 23.04.25 um 20:39 schrieb Maciej Fijalkowski:
+>> On Wed, Apr 23, 2025 at 04:20:07PM +0200, Marcus Wichelmann wrote:
+>>> Am 17.04.25 um 16:47 schrieb Maciej Fijalkowski:
+>>>> On Fri, Apr 11, 2025 at 10:14:57AM +0200, Michal Kubiak wrote:
+>>>>> On Thu, Apr 10, 2025 at 04:54:35PM +0200, Marcus Wichelmann wrote:
+>>>>>> Am 10.04.25 um 16:30 schrieb Michal Kubiak:
+>>>>>>> On Wed, Apr 09, 2025 at 05:17:49PM +0200, Marcus Wichelmann wrote:
+>>>>>>>> Hi,
+>>>>>>>>
+>>>>>>>> in a setup where I use native XDP to redirect packets to a 
+>>>>>>>> bonding interface
+>>>>>>>> that's backed by two ixgbe slaves, I noticed that the ixgbe 
+>>>>>>>> driver constantly
+>>>>>>>> resets the NIC with the following kernel output:
+>>>>>>>>
+>>>>>>>>    ixgbe 0000:01:00.1 ixgbe-x520-2: Detected Tx Unit Hang (XDP)
+>>>>>>>>      Tx Queue             <4>
+>>>>>>>>      TDH, TDT             <17e>, <17e>
+>>>>>>>>      next_to_use          <181>
+>>>>>>>>      next_to_clean        <17e>
+>>>>>>>>    tx_buffer_info[next_to_clean]
+>>>>>>>>      time_stamp           <0>
+>>>>>>>>      jiffies              <10025c380>
+>>>>>>>>    ixgbe 0000:01:00.1 ixgbe-x520-2: tx hang 19 detected on queue 
+>>>>>>>> 4, resetting adapter
+>>>>>>>>    ixgbe 0000:01:00.1 ixgbe-x520-2: initiating reset due to tx 
+>>>>>>>> timeout
+>>>>>>>>    ixgbe 0000:01:00.1 ixgbe-x520-2: Reset adapter
+>>>>>>>>
+>>>>>>>> This only occurs in combination with a bonding interface and 
+>>>>>>>> XDP, so I don't
+>>>>>>>> know if this is an issue with ixgbe or the bonding driver.
+>>>>>>>> I first discovered this with Linux 6.8.0-57, but kernel 6.14.0 
+>>>>>>>> and 6.15.0-rc1
+>>>>>>>> show the same issue.
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> I managed to reproduce this bug in a lab environment. Here are 
+>>>>>>>> some details
+>>>>>>>> about my setup and the steps to reproduce the bug:
+>>>>>>>>
+>>>>>>>> [...]
+>>>>>>>>
+>>>>>>>> Do you have any ideas what may be causing this issue or what I 
+>>>>>>>> can do to
+>>>>>>>> diagnose this further?
+>>>>>>>>
+>>>>>>>> Please let me know when I should provide any more information.
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> Thanks!
+>>>>>>>> Marcus
+>>>>>>>>
+>>>>>>>
+>>>>> [...]
+>>>>>
+>>>>> Hi Marcus,
+>>>>>
+>>>>>> thank you for looking into it. And not even 24 hours after my 
+>>>>>> report, I'm
+>>>>>> very impressed! ;)
+>>>>>
+>>>>> Thanks! :-)
+>>>>>
+>>>>>> Interesting. I just tried again but had no luck yet with 
+>>>>>> reproducing it
+>>>>>> without a bonding interface. May I ask how your setup looks like?
+>>>>>
+>>>>> For now, I've just grabbed the first available system with the HW
+>>>>> controlled by the "ixgbe" driver. In my case it was:
+>>>>>
+>>>>>    Ethernet controller: Intel Corporation Ethernet Controller X550
+>>>>>
+>>>>> Also, for my first attempt, I didn't use the upstream kernel - I 
+>>>>> just tried
+>>>>> the kernel installed on that system. It was the Fedora kernel:
+>>>>>
+>>>>>    6.12.8-200.fc41.x86_64
+>>>>>
+>>>>>
+>>>>> I think that may be the "beauty" of timing issues - sometimes you 
+>>>>> can change
+>>>>> just one piece in your system and get a completely different 
+>>>>> replication ratio.
+>>>>> Anyway, the higher the repro probability, the easier it is to debug
+>>>>> the timing problem. :-)
+>>>>
+>>>> Hi Marcus, to break the silence could you try to apply the diff 
+>>>> below on
+>>>> your side?
+>>>
+>>> Hi, thank you for the patch. We've tried it and with your changes we 
+>>> can no
+>>> longer trigger the error and the NIC is no longer being reset.
+>>>
+>>>> We see several issues around XDP queues in ixgbe, but before we
+>>>> proceed let's this small change on your side.
+>>>
+>>> How confident are you that this patch is sufficient to make things 
+>>> stable enough
+>>> for production use? Was it just the Tx hang detection that was 
+>>> misbehaving for
+>>> the XDP case, or is there an underlying issue with the XDP queues 
+>>> that is not
+>>> solved by disabling the detection for it?
+>>
+>> I believe that correct way to approach this is to move the Tx hang
+>> detection onto ixgbe_tx_timeout() as that is the place where this logic
+>> belongs to. By doing so I suppose we would kill two birds with one stone
+>> as mentioned ndo is called under netdev watchdog which is not a subject
+>> for XDP Tx queues.
+>>
+>>>
+>>> With our current setup we cannot verify accurately, that we have no 
+>>> packet loss
+>>> or stuck queues. We can do additional tests to verify that.
+> 
+> 
+> Hi Maciej,
+> 
+> I'm a colleague of Marcus and involved in the testing as well.
+>>>> Additional question, do you have enabled pause frames on your setup?
+>>>
+>>> Pause frames were enabled, but we can also reproduce it after 
+>>> disabling them,
+>>> without your patch.
+>>
+>> Please give your setup a go with pause frames enabled and applied patch
+>> that i shared previously and let us see the results. As said above I do
+>> not think it is correct to check for hung queues in Tx descriptor 
+>> cleaning
+>> routine. This is a job of ndo_tx_timeout callback.
+>>
+> 
+> We have tested with pause frames enabled and applied patch and can not 
+> trigger the error anymore in our lab setup.
+> 
+>>>
+>>> Thanks!
+>>
+>> Thanks for feedback and testing. I'll provide a proper fix tomorrow 
+>> and CC
+>> you so you could take it for a spin.
+>>
+> 
+> That sounds great. We'd be happy to test with the proper fix in our 
+> original setup.
 
-Thanks, this helped a lot.
+Hi,
 
-> but this part is puzzling:
->         trailing =3D page_size - (btf_size % page_size) % page_size;
+During further testing with this patch applied we noticed new warnings 
+that show up. We've also tested with the new patch sent ("[PATCH 
+iwl-net] ixgbe: fix ndo_xdp_xmit() workloads") and see the same warnings.
 
-The intention is to calculate how many bytes of trailing zeroes to
-expect while accounting for the case where btf_size % page_size =3D=3D 0.
-I could replace this with a check
+I'm sending this observation to this thread because I'm not sure if it 
+is related to those patches or if it was already present but hidden by 
+the resets of the original issue reported by Marcus.
 
-    end =3D btf_size + (page_size - 1) / page_size * page_size;
-    for (i =3D btf_size; i < end; i++) ...
+After processing test traffic (~10kk packets as described in Marcus' 
+reproducer setup) and idling for a minute the following warnings keep 
+being logged as long as the NIC idles:
 
-Better?
+   page_pool_release_retry() stalled pool shutdown: id 968, 2 inflight 
+60 sec
+   page_pool_release_retry() stalled pool shutdown: id 963, 2 inflight 
+60 sec
+   page_pool_release_retry() stalled pool shutdown: id 968, 2 inflight 
+120 sec
+   page_pool_release_retry() stalled pool shutdown: id 963, 2 inflight 
+120 sec
+   page_pool_release_retry() stalled pool shutdown: id 968, 2 inflight 
+181 sec
+   page_pool_release_retry() stalled pool shutdown: id 963, 2 inflight 
+181 sec
+   page_pool_release_retry() stalled pool shutdown: id 968, 2 inflight 
+241 sec
+   page_pool_release_retry() stalled pool shutdown: id 963, 2 inflight 
+241 sec
 
-In the meantime I've looked at allowing mmap of kmods. I'm not sure
-it's worth the effort:
+Just sending a single packet makes the warnings stop being logged.
 
-1. Allocations of btf->data in btf_parse_module() would have to use
-vmalloc_user() so that allocations are page aligned and zeroed
-appropriately. This will be a bit more expensive on systems with large
-pages and / or many small kmod BTFs. We could only allow mmap of BTF
->=3D PAGE_SIZE, at additional complexity.
+After sending heavy test traffic again new warnings start to be logged 
+after a minute of idling:
 
-2. We need to hold a refcount on struct btf for each mmapped kernel
-module, so that btf->data doesn't get freed. Taking the refcount can
-happen in the sysfs mmap handler, but dropping it is tricky. kernfs /
-sysfs doesn't allow using vm_ops->close (see kernfs_fop_mmap). It
-seems possible to use struct kernfs_ops->release(), but I don't
-understand at all how that deals with multiple mmaps of the same file
-in a single process. Also makes me wonder what happens when a process
-mmaps the kmod BTF, the module is unloaded and then the process
-attempts to access the mmap. My cursory understanding is that this
-would raise a fault, which isn't great at all.
+   page_pool_release_retry() stalled pool shutdown: id 987, 2 inflight 
+60 sec
+   page_pool_release_retry() stalled pool shutdown: id 979, 2 inflight 
+60 sec
+   page_pool_release_retry() stalled pool shutdown: id 987, 2 inflight 
+120 sec
+   page_pool_release_retry() stalled pool shutdown: id 979, 2 inflight 
+120 sec
 
-If nobody objects / has solutions I'll send a v3 of my original patch
-with reviews addressed but without being able to mmap kmods.
+Detaching the XDP program stops the warnings as well.
 
-Thanks
-Lorenz
+As before pause frames were enabled.
+
+Just like with the original issue we were not always successful to 
+reproduce those warnings. With more traffic chances seem to be higher to 
+trigger it.
+
+Please let me know if I should provide any further information.
+
+Thanks,
+Tobias
 
