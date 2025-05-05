@@ -1,59 +1,63 @@
-Return-Path: <bpf+bounces-57397-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57398-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17389AAA4EC
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 01:38:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72C29AAA4E5
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 01:37:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 817221B60A12
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 23:36:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E17F846487F
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 23:37:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C006305F37;
-	Mon,  5 May 2025 22:28:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E86728A3E2;
+	Mon,  5 May 2025 22:28:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rjVdFHkB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YVxc0Y8f"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F36428A1E8;
-	Mon,  5 May 2025 22:28:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E930B307954;
+	Mon,  5 May 2025 22:28:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746484081; cv=none; b=vFr+hg4MaZSfmOJrIy2lGdkjMiOuQIzEtQ01pdIfvkg2lQTORV4Iiitloswwdsg4VqaHyzcLEjHBh8ow/e//7N1mWYiWevr677kdUBPUB0zuoqgILZGepeL2MIsU3II8lM3GLPhdCsPVbsMYUbYlgGfMkQ49ZvQSEbOlC78Sxb4=
+	t=1746484090; cv=none; b=EIKkYFmoe2CD0TeVKHmWI+Ulm3HM/HrAgGNSRRSzcGDoFYc4M778LWzu9ZiSkdGFp/V96Ju65zY2aImB9eRON2OXPYBeDEI7lpjWfmv2rnSb0JPpEzAoCivOe6XQfScRBWBW06SWKY4xMoBPkLmV/b8YO+CM3uhdOWNYHZ9WDPU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746484081; c=relaxed/simple;
-	bh=wttWyXaQxRhpbHgkxP0KWBPlqCAEhUh8aI7oF4j4C88=;
+	s=arc-20240116; t=1746484090; c=relaxed/simple;
+	bh=pa0KwOgvcTdl4NeBIz0JuwFGhxRnO/vyrgpOmB9ZJ5Q=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=fJjLYAkxcFo48PEP4g8KerZsVftyBoUfbTbgUjEPBZcOTSpglJJB1GcfUrSK6Am9ON1gq0cLig8G7iO4m32MW2UOva2OeYztHhffcKgDKn7B5eZ8IzTWHTQms/C01+rG/JWT6pkydW9pGdGi0DeDtwY19NxOGfoJbBXHj/Msktg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rjVdFHkB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C08FC4CEED;
-	Mon,  5 May 2025 22:27:59 +0000 (UTC)
+	 MIME-Version; b=rD2quTzVXJsTS/l0XqJ/DPPnSfdajrrCW1RMso6dIivmIEem06V53c1e1UAjpvWTM5sPKwBzKJKLbLs4uxweVt8LW3exBvGs3lkntcl9KLEu9AglRkGMPS5r/aYZUtH3uNpjSMboTVg1CoeppPjSd57z2Gni9w0lxqJJOVxiipY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YVxc0Y8f; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B7DFC4CEE4;
+	Mon,  5 May 2025 22:28:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746484080;
-	bh=wttWyXaQxRhpbHgkxP0KWBPlqCAEhUh8aI7oF4j4C88=;
+	s=k20201202; t=1746484089;
+	bh=pa0KwOgvcTdl4NeBIz0JuwFGhxRnO/vyrgpOmB9ZJ5Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rjVdFHkB+xHwQgBkY+1CSP+lW0Bncd4Oub8L8hOA+d0UdxcSPeN52Ba8cuKICkx6T
-	 Tkyb+MvNH5hknhX4d2Y+DQTTeHB/LOIC6b0TwSIlrAzQjz2wqU3I5oubA0fijMiseS
-	 d5tw2WZQGzYxJDdGuUQdKft4WoUxG2Ict87a8mXFKaJwtkEkCwAoRrUXc16IWR1g9Q
-	 IraGF5ayMYZzLXkkk9rkST0baOepoJNOZ1nncawcZnukokbJJ5ZlT3SU1KybLVAlXK
-	 1GUvM3IuVQ/ozyAZxv1vRU5feb7BkyiLh5cl9nSCtmMqrh6jIw+gJ7wft2jlysKEg9
-	 GK6dO6EMkEpuQ==
+	b=YVxc0Y8foZWuHbYD2WQb2kxdUQsUBMk+70CX6YJ4n8ZXiQES+O47apdkqoNsboP45
+	 tT5b7ot0HiDmlKXxUzz+A+qx8zt+W0ePfb6g+2nSx6o2EnttmuOHMMQRwUCOLUBpkd
+	 XRm0n7JB5sXVghplkOLQPRz6Olg6Y9BEh1N97ecBENu84FpLfcb8zBb283wLXMpXEG
+	 qgILhzVGjzr1eIwaN5mk8Y+VLrEJNNlrlJLrzqsCG8NX0jnu9N6B2Hj6MZzUwTNpyj
+	 gkRF6CVBIfJP5cer3tRiBM/ZgRTcPO9n9PpmgQrQCiFkoiQvn+yfsmK0L8uTmFWVp4
+	 RLSi4CKnwZJkA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Nandakumar Edamana <nandakumar@nandakumar.co.in>,
-	Andrii Nakryiko <andrii@kernel.org>,
+Cc: Song Liu <song@kernel.org>,
+	Breno Leitao <leitao@debian.org>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	eddyz87@gmail.com,
-	ast@kernel.org,
 	daniel@iogearbox.net,
-	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.14 339/642] libbpf: Fix out-of-bound read
-Date: Mon,  5 May 2025 18:09:15 -0400
-Message-Id: <20250505221419.2672473-339-sashal@kernel.org>
+	andrii@kernel.org,
+	puranjay@kernel.org,
+	catalin.marinas@arm.com,
+	will@kernel.org,
+	bpf@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.14 345/642] bpf: arm64: Silence "UBSAN: negation-overflow" warning
+Date: Mon,  5 May 2025 18:09:21 -0400
+Message-Id: <20250505221419.2672473-345-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250505221419.2672473-1-sashal@kernel.org>
 References: <20250505221419.2672473-1-sashal@kernel.org>
@@ -68,41 +72,58 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.14.5
 Content-Transfer-Encoding: 8bit
 
-From: Nandakumar Edamana <nandakumar@nandakumar.co.in>
+From: Song Liu <song@kernel.org>
 
-[ Upstream commit 236d3910117e9f97ebf75e511d8bcc950f1a4e5f ]
+[ Upstream commit 239860828f8660e2be487e2fbdae2640cce3fd67 ]
 
-In `set_kcfg_value_str`, an untrusted string is accessed with the assumption
-that it will be at least two characters long due to the presence of checks for
-opening and closing quotes. But the check for the closing quote
-(value[len - 1] != '"') misses the fact that it could be checking the opening
-quote itself in case of an invalid input that consists of just the opening
-quote.
+With UBSAN, test_bpf.ko triggers warnings like:
 
-This commit adds an explicit check to make sure the string is at least two
-characters long.
+UBSAN: negation-overflow in arch/arm64/net/bpf_jit_comp.c:1333:28
+negation of -2147483648 cannot be represented in type 's32' (aka 'int'):
 
-Signed-off-by: Nandakumar Edamana <nandakumar@nandakumar.co.in>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20250221210110.3182084-1-nandakumar@nandakumar.co.in
+Silence these warnings by casting imm to u32 first.
+
+Reported-by: Breno Leitao <leitao@debian.org>
+Signed-off-by: Song Liu <song@kernel.org>
+Tested-by: Breno Leitao <leitao@debian.org>
+Link: https://lore.kernel.org/r/20250218080240.2431257-1-song@kernel.org
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/libbpf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/net/bpf_jit_comp.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 6b436ec872b0f..1791a12b1aac5 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -2106,7 +2106,7 @@ static int set_kcfg_value_str(struct extern_desc *ext, char *ext_val,
- 	}
- 
- 	len = strlen(value);
--	if (value[len - 1] != '"') {
-+	if (len < 2 || value[len - 1] != '"') {
- 		pr_warn("extern (kcfg) '%s': invalid string config '%s'\n",
- 			ext->name, value);
- 		return -EINVAL;
+diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+index 8446848edddb8..7409c8acbde35 100644
+--- a/arch/arm64/net/bpf_jit_comp.c
++++ b/arch/arm64/net/bpf_jit_comp.c
+@@ -272,7 +272,7 @@ static inline void emit_a64_add_i(const bool is64, const int dst, const int src,
+ {
+ 	if (is_addsub_imm(imm)) {
+ 		emit(A64_ADD_I(is64, dst, src, imm), ctx);
+-	} else if (is_addsub_imm(-imm)) {
++	} else if (is_addsub_imm(-(u32)imm)) {
+ 		emit(A64_SUB_I(is64, dst, src, -imm), ctx);
+ 	} else {
+ 		emit_a64_mov_i(is64, tmp, imm, ctx);
+@@ -1159,7 +1159,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
+ 	case BPF_ALU64 | BPF_SUB | BPF_K:
+ 		if (is_addsub_imm(imm)) {
+ 			emit(A64_SUB_I(is64, dst, dst, imm), ctx);
+-		} else if (is_addsub_imm(-imm)) {
++		} else if (is_addsub_imm(-(u32)imm)) {
+ 			emit(A64_ADD_I(is64, dst, dst, -imm), ctx);
+ 		} else {
+ 			emit_a64_mov_i(is64, tmp, imm, ctx);
+@@ -1330,7 +1330,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
+ 	case BPF_JMP32 | BPF_JSLE | BPF_K:
+ 		if (is_addsub_imm(imm)) {
+ 			emit(A64_CMP_I(is64, dst, imm), ctx);
+-		} else if (is_addsub_imm(-imm)) {
++		} else if (is_addsub_imm(-(u32)imm)) {
+ 			emit(A64_CMN_I(is64, dst, -imm), ctx);
+ 		} else {
+ 			emit_a64_mov_i(is64, tmp, imm, ctx);
 -- 
 2.39.5
 
