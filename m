@@ -1,177 +1,343 @@
-Return-Path: <bpf+bounces-57369-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57370-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67599AA9CF2
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 22:01:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07D59AA9D06
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 22:14:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EC7F1A80489
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 20:02:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA7601A80127
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 20:14:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5F1C1C84BB;
-	Mon,  5 May 2025 20:01:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A45BE26F467;
+	Mon,  5 May 2025 20:13:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m5G7d19k"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MxXJYa9Y"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-ej1-f65.google.com (mail-ej1-f65.google.com [209.85.218.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74C1B19C546
-	for <bpf@vger.kernel.org>; Mon,  5 May 2025 20:01:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 202A634CF5
+	for <bpf@vger.kernel.org>; Mon,  5 May 2025 20:13:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746475305; cv=none; b=MYTKbkFLxF9qgts5nbu7BXT0HrGK47clFBlr9nw29CHBRdSGZUneTUMtLN5q1jJEU54HctNuBdVkotXhZTqA684MikX0YISQHeuMUhnk/HHicstPYeQNrp2i5ky5fjRY0RPXJbXFA4qeSysuFo7Miowcf4nGqQMjfOV6BEc/SLs=
+	t=1746476039; cv=none; b=mG6x4ZrVpNbtyu8RgCmccFtekq7A7liOsMTPPWEtQIyqxBBLYPRONw+D3VbYvKIvMP/vhE7ZElKjauXxuhRcTU+6VKov3sO72z3PRifZf3oeiV28mtKCyLYXhveLE4Va5vymmW21C6IPhdqny9Fxg9yjQYiU8P8ey44uSnBx0yo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746475305; c=relaxed/simple;
-	bh=8QI/3dgz8DIggakHprhW9h/+ykI44G36bJy/DUHtUIM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r9jUjiImIIVtwwqvUySaiB6vreH8vlb95WBr85KZvkHD8rQep8a2E96woZa9fl8JweiQg0NIqUtQr+6xCilhislqhr4OPTXPzG3AEyFc0TzMiSrEXe8MK3qwvBBfxKxz56g/HY7AYHpyUnf1zutQKcaishASRGjYjuXb5gPMi3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m5G7d19k; arc=none smtp.client-ip=209.85.128.43
+	s=arc-20240116; t=1746476039; c=relaxed/simple;
+	bh=y83qAev3wceKeMkxXL3aTqcx5UQtZ2qQrirquqrESzg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qudBVrfuto1iAs7X2EYNVTzaPu0xl8OqBM1VX64QNcojLcfqVkB4UvVVlcphiv637M+tEikNuPwGjSbJphSEP0brjSscFYZYbCGgZjt+Pzx7yppbD00L0W+UlF+R8KhTxvtYCoSqFeRDCcGnuvZdSJtK6xysWkg3nKU1Pol6GHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MxXJYa9Y; arc=none smtp.client-ip=209.85.218.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-441ab63a415so48285395e9.3
-        for <bpf@vger.kernel.org>; Mon, 05 May 2025 13:01:42 -0700 (PDT)
+Received: by mail-ej1-f65.google.com with SMTP id a640c23a62f3a-ad1d1f57a01so84943966b.2
+        for <bpf@vger.kernel.org>; Mon, 05 May 2025 13:13:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746475301; x=1747080101; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=x4aezVgabNl59hwj6ORvsnrBWCYGW2e7Q84gLAXYLac=;
-        b=m5G7d19kxX54Np2pL0QmBcl3/4wA0wcT+fCHM3jhOXwKGaRvLB2K2QIJGzrtxcm6tP
-         aCye25wq069d/RfSanq/DkptvEHRQ0406mgnBobnmg08f6Ab3eAkZqoq+mTXYDBXo61b
-         M+s4NQQHaK0dDeikYt1H2HiSVdegAKXH95uVZNrG9V3nRQagakuQaSQyL+WC/zlM8d1/
-         M5x2fA2pRi+fUYPW5/RgVzJJDElJvkKbMFh0x3xCXCvR3PlK2R+1EvaN48ZqDVFYWPlq
-         aRCZzcY6CrVOLuaMg2XlgZn+PH2DklkfI5GGtd4utup4Kihiczky/w5h0nxctDf9o4fA
-         S2WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746475301; x=1747080101;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1746476035; x=1747080835; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=x4aezVgabNl59hwj6ORvsnrBWCYGW2e7Q84gLAXYLac=;
-        b=dyZH/CdKgg5w5YWNfLeFmSzseQDXqW1Z/TlTnKxYDINIagQb2mpbZFVct2D7M7ETfk
-         gp8NWSv/j+ff91viBLhE2btcDkz1V8J84EXnl1p9pql3Td6dKRALHZw2d8pnvLdlqj0d
-         kSaTUBFAusFXPH5Wh3m3kttKucyuZnbFN6wNPxDkA5RetL7xuIc6BiFcnX4mhcQfIfPV
-         OFjhkPRhNrOb8W0fU2xYOy5FV28WtH2RrhENsBg1i1VdbA94FBGlw5SSaXRRxKq1mD9z
-         dKQJcHcMLdmLmYthFsTbdKU4F0c0T5ZNwIoqTnv59XUDi0Q1hOuINOAkk8Yn2huRtZgI
-         ejCQ==
-X-Gm-Message-State: AOJu0YwRF5koFCX/GJ6S/vjTvtdMKTijSLudBPhycgOxM1+9KnWXLx9l
-	7VSnG5poXZmM0b04ycCFzuikE/OLX0OLXvD/F5gDGkKe5XfFq6ul
-X-Gm-Gg: ASbGncsPj7Fzjr91+X5bcdTZNZ5QyONPqfTLHWg9NS7HVVIuQK1rkRlOfQl1WpUXW0J
-	Yi5LXtP+DHcgZSovyEiZpVdF7adZFFmGuQrC5+3yt4KAlLeKz8Z4SEfzpQuC+N61anib7ADqOJa
-	DJwg7XPSerAkNDzP0QPj4rgrP8LEOHs5K1Q6Kfj8gipwjNMH6M8lIvZtccj/1seKi3QzXDW2Vvp
-	HX951bk/V2QUG1prUVjhUisn+UEDKKUg5JqTjasFy3BGdjeoJAEyjVHXhIhmIASD1kgRpCfXgyU
-	0G8nf9FfiJwaAZ23fzEog1hla6E8o6Z1jaM71E91xOnGoltHzcfUwh3fDjwh0SuZcidIY0cLhqH
-	Q6mDB4XfXjN28D2DoTnUiqN3aHBC0Dtm94CeLUw==
-X-Google-Smtp-Source: AGHT+IGYQX3b1rxCvkiuRTb3FIA3LYlLBUGPXML2aR+lZJP9/vABJ5PL7BSB2uxDT+EbMvDEnz4NfA==
-X-Received: by 2002:a05:600c:5007:b0:43d:40b0:5b with SMTP id 5b1f17b1804b1-441d100a8a1mr942015e9.25.1746475301136;
-        Mon, 05 May 2025 13:01:41 -0700 (PDT)
-Received: from mail.gmail.com (2a01cb0889497e0001c990b81d371cc8.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:1c9:90b8:1d37:1cc8])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-441b8a286b9sm142851595e9.28.2025.05.05.13.01.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 May 2025 13:01:40 -0700 (PDT)
-Date: Mon, 5 May 2025 22:01:38 +0200
-From: Paul Chaignon <paul.chaignon@gmail.com>
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH bpf] bpf: Scrub packet on bpf_redirect_peer
-Message-ID: <aBkZIoqBaClS71tn@mail.gmail.com>
-References: <aBiJdTDs_YP0AYVb@mail.gmail.com>
- <11ea4e28-4653-4061-9226-fbee3d5b9f32@iogearbox.net>
+        bh=oLGH7LODGXFX7I8+tUIfnPKORxVjJrT+mvzf58pwyhU=;
+        b=MxXJYa9YTy1dnxAtYk5YTI7rVIy6jPJL6j1YoS84g+AhzlrBdPaZbUipL2LpbdYVkv
+         wzoEWYDVDRpW7lbxZjfwyUkH6zKJCHsqiX9ATdjbqDq9HIZ5rfR9WNCmw8t7YFNr0yv9
+         nbKlOIhJ4SOVw7VqWO9+37y/fOi+Ky8AxGaignSHNTUSSd1UnsUe7kcCGcEPB6OYjg28
+         KInJ3ot3cSCW4T71gmxKHwYf2CIJ0XfIf41tW0b9zYio5xZt219ehs5JZvXBdI+f0XX1
+         TOGs3xUMGYT9qSI2AZYhaoyh7hUFkc5op+EKuBNcg4JtL0x6wO56topGqPoOzYAfPjwn
+         uuLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746476035; x=1747080835;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oLGH7LODGXFX7I8+tUIfnPKORxVjJrT+mvzf58pwyhU=;
+        b=d4cEe2Z0f70bhaWuG6Yj/XD2rjdmnKbmpCcTiFlE6ac9+lVoo6fVLtn8hK/S1gM+m8
+         1J5C029zmCnJJ/WTbanh+4ex+5x6st7m62kCAUAjTc+ItiMk96dQG/p2xVAYwLHtKXkw
+         po5/OIT5TPCuAoxDFeLPPZneuzFX4ueokLjig5m0FU92V2ORbLNEqo8SaiztdOMw2aNV
+         T4wYINgbzipJmflSU/l0pDxFazAj/iHoe6QQMTmMg9pGigub01sWDlhnOTEZRc8QsuuR
+         xUfsbpcYufPpkXbG4894l+EjHuWOQyok+C2uNzULWIOB5rvk6bH+nFH+r9D+X+Quuavw
+         3Lqw==
+X-Gm-Message-State: AOJu0Yzp87H9uMCEcRTqqkCiZH4KSWL7H9S39CqxDwNxsJurROp9Cs/u
+	KJs9Yepc/WqAh/weTW8CNKIIbqFGkx1wnH55wbFDZvf+H44qC48DWtg5W515SV+IpRUfFnuj0P/
+	aJlukcWrRgbSyZTZW6BQe/s4p0o8=
+X-Gm-Gg: ASbGncvMIllsTByB7WtDgsKcrsVKJdEY6JiLPUL4WPEDIfI68LdtvfnkvVry6Ow7VpU
+	SEPkeMq/NEo9i9ZlNlOr69/+20E3xVHX1FqNvTUWLT4DEc3eu2ikYmVfavsNOohDbxLdiZzL67v
+	aLtktpCq1tVFXPsGJToaL68Srhw1BrfzZccIt6GN5UG/ghZ5nyei1b7peG
+X-Google-Smtp-Source: AGHT+IFTb40HhujQNeVgViwpGDk92ejoX+cIuhjNpl5TFc7wnzpSVK7n50+zuWbjTo0PoNAx4Q0Wj6ZmrzRFhSEUzhA=
+X-Received: by 2002:a17:907:c04:b0:ac3:bd68:24f0 with SMTP id
+ a640c23a62f3a-ad17b470a90mr1401118566b.7.1746476035035; Mon, 05 May 2025
+ 13:13:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <11ea4e28-4653-4061-9226-fbee3d5b9f32@iogearbox.net>
+References: <20250420105524.2115690-1-rjsu26@gmail.com>
+In-Reply-To: <20250420105524.2115690-1-rjsu26@gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Mon, 5 May 2025 22:13:17 +0200
+X-Gm-Features: ATxdqUELFVaCha6IpBdCwGAnIzDWNLneNabADliO6wdIABUjJaTBndp35g1diWU
+Message-ID: <CAP01T75B87Vnq-kdq6gaNXj5xeOOiah-onm4weEZA=jm8W8JVQ@mail.gmail.com>
+Subject: Re: [RFC bpf-next 0/4] bpf: Fast-Path approach for BPF program Termination
+To: Raj Sahu <rjsu26@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, djwillia@vt.edu, 
+	miloc@vt.edu, ericts@vt.edu, rahult@vt.edu, doniaghazy@vt.edu, 
+	quanzhif@vt.edu, jinghao7@illinois.edu, sidchintamaneni@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, May 05, 2025 at 12:01:30PM +0200, Daniel Borkmann wrote:
-> On 5/5/25 11:48 AM, Paul Chaignon wrote:
-> > When bpf_redirect_peer is used to redirect packets to a device in
-> > another network namespace, the skb isn't scrubbed. That can lead skb
-> > information from one namespace to be "misused" in another namespace.
-> > 
-> > As one example, this is causing Cilium to drop traffic when using
-> > bpf_redirect_peer to redirect packets that just went through IPsec
-> > decryption to a container namespace. The following pwru trace shows (1)
-> > the packet path from the host's XFRM layer to the container's XFRM
-> > layer where it's dropped and (2) the number of active skb extensions at
-> > each function.
-> > 
-> >      NETNS       MARK  IFACE  TUPLE                                FUNC
-> >      4026533547  d00   eth0   10.244.3.124:35473->10.244.2.158:53  xfrm_rcv_cb
-> >                               .active_extensions = (__u8)2,
-> >      4026533547  d00   eth0   10.244.3.124:35473->10.244.2.158:53  xfrm4_rcv_cb
-> >                               .active_extensions = (__u8)2,
-> >      4026533547  d00   eth0   10.244.3.124:35473->10.244.2.158:53  gro_cells_receive
-> >                               .active_extensions = (__u8)2,
-> >      [...]
-> >      4026533547  0     eth0   10.244.3.124:35473->10.244.2.158:53  skb_do_redirect
-> >                               .active_extensions = (__u8)2,
-> >      4026534999  0     eth0   10.244.3.124:35473->10.244.2.158:53  ip_rcv
-> >                               .active_extensions = (__u8)2,
-> >      4026534999  0     eth0   10.244.3.124:35473->10.244.2.158:53  ip_rcv_core
-> >                               .active_extensions = (__u8)2,
-> >      [...]
-> >      4026534999  0     eth0   10.244.3.124:35473->10.244.2.158:53  udp_queue_rcv_one_skb
-> >                               .active_extensions = (__u8)2,
-> >      4026534999  0     eth0   10.244.3.124:35473->10.244.2.158:53  __xfrm_policy_check
-> >                               .active_extensions = (__u8)2,
-> >      4026534999  0     eth0   10.244.3.124:35473->10.244.2.158:53  __xfrm_decode_session
-> >                               .active_extensions = (__u8)2,
-> >      4026534999  0     eth0   10.244.3.124:35473->10.244.2.158:53  security_xfrm_decode_session
-> >                               .active_extensions = (__u8)2,
-> >      4026534999  0     eth0   10.244.3.124:35473->10.244.2.158:53  kfree_skb_reason(SKB_DROP_REASON_XFRM_POLICY)
-> >                               .active_extensions = (__u8)2,
-> > 
-> > In this case, there are no XFRM policies in the container's network
-> > namespace so the drop is unexpected. When we decrypt the IPsec packet,
-> > the XFRM state used for decryption is set in the skb extensions. This
-> > information is preserved across the netns switch. When we reach the
-> > XFRM policy check in the container's netns, __xfrm_policy_check drops
-> > the packet with LINUX_MIB_XFRMINNOPOLS because a (container-side) XFRM
-> > policy can't be found that matches the (host-side) XFRM state used for
-> > decryption.
-> > 
-> > This patch fixes this by scrubbing the packet when using
-> > bpf_redirect_peer, as is done on typical netns switches via veth
-> > devices.
-> > 
-> > Fixes: 9aa1206e8f482 ("bpf: Add redirect_peer helper")
-> > Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
-> > ---
-> >   net/core/filter.c | 1 +
-> >   1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/net/core/filter.c b/net/core/filter.c
-> > index 79cab4d78dc3..12b6b8dbeb51 100644
-> > --- a/net/core/filter.c
-> > +++ b/net/core/filter.c
-> > @@ -2509,6 +2509,7 @@ int skb_do_redirect(struct sk_buff *skb)
-> >   			goto out_drop;
-> >   		skb->dev = dev;
-> >   		dev_sw_netstats_rx_add(dev, skb->len);
-> > +		skb_scrub_packet(skb, true);
-> 
-> This should be set to false, and defer the clearing of mark/tstamp
-> iff needed to the BPF program in the host given this has been out
-> for quite some time to avoid breakage if someone actively has been
-> using BPF like that to transfer this information to apps in the
-> target namespace.
+On Sun, 20 Apr 2025 at 12:56, Raj Sahu <rjsu26@gmail.com> wrote:
+>
+> From: Raj <rjsu26@gmail.com>
+>
+> Motivation:
+> We propose an enhancement to the BPF infrastructure to address the
+> critical issue of long-running BPF programs [1,2,3,4]. While the verifier
+> ensures termination by restricting instruction count and backward edges, =
+the
+> total execution time of BPF programs is not bounded. Certain helper funct=
+ions
+> and iterators can result in extended runtimes, affecting system performan=
+ce.
+>
+> The existing BPF infrastructure verifies that programs will not indefinit=
+ely
+> loop or leak resources. However, helper functions such as `bpf_loop`,
+> `bpf_for_each_map_elem`, and other iterative or expensive kernel interact=
+ions
+> can cause runtimes that significantly degrade system performance [6]. Cur=
+rent
+> detaching mechanisms do not immediately terminate running instances,
+> monopolizing CPU. Therefore, a termination solution is necessary to swift=
+ly
+> terminate execution while safely releasing resources.
 
-Thanks for the review! I've sent a v2 with the suggested change and
-added a commit to explain in the helper description that those two
-fields are not cleared.
+Thanks for sending out the code and cover letter, much appreciated!
 
-> 
-> >   		return -EAGAIN;
-> >   	}
-> >   	return flags & BPF_F_NEIGH ?
-> 
+I will keep aside opinions on which of 'fast execute' vs
+'panic/unwind' feel semantically cleaner, since it's hard to have an
+objective discussion on that. One can argue about abstract concepts
+like complexity vs clean design either way.
+
+Instead just some questions/comments on the design.
+
+>
+> Existing termination approach like the BPF Exception or Runtime hooks [5]=
+ have
+> the issue of either lack of dynamism or having runtime overheads: BPF
+> Exceptions: Introduces bpf_throw() and exception callbacks, requiring sta=
+ck
+> unwinding and exception state management.
+
+I feel there is an equal amount of state management here, it's just
+that it's not apparent directly, and not reified into tables etc.
+One of the (valid) concerns with unwinding is that preparing tables of
+objects that need to be released requires the verifier/runtime to be
+aware of each resource acquiring functions.
+Every time you add a new kfunc that acquires some resource, you'd have
+to update some place in the kernel to make sure it gets tracked for
+clean up too.
+
+But that would be equally true for this case:
+- The verifier must know which functions acquire resources, so that it
+can replace them with stubs in the cloned text.
+- Thus, every time a new kfunc is added, one must introduce its noop
+stub and add it to _some_ mapping to acquire kfuncs with their stubs.
+
+> Cleanup can only be done for pre-defined cancellation points.
+
+But can you terminate the program at any arbitrary point with this? It
+doesn't seem likely to me. You still have designated points where you
+stub empty calls instead of ones which return resources. You will jump
+to the return address into the cloned stub on return from an interrupt
+that gives you control of the CPU where the program is running. But
+apart from the stub functions, everything else would be kept the same.
+
+I think you are conflating the mechanism to clean up resources
+(unwinding, this (speed-run-to-exit/fast-execute), runtime log of
+resources), with the mechanism to enforce termination.
+
+Both are mutually exclusive, and any strategy (probing a memory
+location from the program with strategically placed instrumentation,
+watchdog timers, probing rdtsc to do more granular and precise
+accounting of time spent, etc.) can be combined with any mechanism to
+perform cleanup. There is no necessity to bind one with the other.
+Depending on different program types, we may need multiple strategies
+to terminate them with the right amount of precision.
+
+We may do something coarse for now (like watchdogs), but separation of
+concerns keeps doors open.
+
+> Design:
+> We introduce the Fast-Path termination mechanism, leveraging the
+> verifier's guarantees regarding control flow and resource management. The
+> approach dynamically patches running BPF programs with a stripped-down ve=
+rsion
+> that accelerates termination. This can be used to terminate any given ins=
+tance
+> of a BPF execution. Key elements include:
+>
+> - Implicit Lifetime Management: Utilizing the verifier=E2=80=99s inherent=
+ control flow
+>   and resource cleanup paths encoded within the BPF program structure,
+>   eliminating the need for explicit garbage collection or unwinding table=
+s.
+>
+> - Dynamic Program Patching: At runtime, BPF programs are atomically patch=
+ed,
+>   replacing expensive helper calls with stubbed versions (fast fall-throu=
+gh
+>   implementations). This ensures swift termination without compromising s=
+afety
+>   or leaking resources.
+>
+> - Helper Function Adjustments: Certain helper functions (e.g., `bpf_loop`=
+,
+>   `bpf_for_each_map_elem`) include  mechanisms to facilitate early exits =
+through
+>   modified return values.
+>
+> TODOs:
+> - Termination support for nested BPF programs.
+
+What's the plan for this?
+What do you do if e.g. I attach to some kfunc that you don't stub out?
+E.g. you may stub out bpf_sk_lookup, but I can attach something to
+bpf_get_prandom_u32 called after it in the stub which is not stubbed
+out and stall.
+
+Will you stub out every kfunc with a noop? If so, how do we reason
+about correctness when the kfunc introduces side effects on program
+state?
+
+> - Policy enforcements to control runtime of BPF programs in a system:
+> - Timer based termination (watchdog)
+>         - Userspace management to detect low-performing BPF program and
+>           terminated them
+>
+
+I think one of the things I didn't see reasoned about so far is how
+would you handle tail calls or extension programs?
+Or in general, control flow being extended dynamically by program attachmen=
+ts?
+
+Since you execute until the end of the program, someone could
+construct a chain of 32 chained programs that individually expire the
+watchdog timer, breaking your limit and inflating it by limit x 32
+etc.
+
+Perhaps you just fail direct/indirect calls? They're already something
+that can be skipped because of the recursion counter, so it probably
+won't break things.
+
+Extension programs are different, most likely they don't appear as
+attached when the program is loaded, so it's an empty global function
+call in the original program and the stub. So I presume you don't
+attach them to the stub and it's the original empty function that
+executes in the stub?
+
+It will be a more difficult question to answer once we have indirect
+function calls, and possibly allow calling from the BPF program to
+another as long as signatures match correctly.
+
+Say a hierarchical BPF scheduler, where indirect function calls are
+used to dispatch to leaves. Each indirect call target may be a
+separate program attached into the original one (say
+application-specific schedulers). By making the program continue
+executing, the second program invoked from the first one could begin
+to stall, and this could happen recursively, again breaching your
+limit on the parent that called into them.
+
+It doesn't have to be indirect calls, it may be a kernel function that
+does this propagation down the tree (like sched-ext plans to do now).
+Possibly will have to stub out these kfuncs as well. But then we have
+to be mindful if the program depends on side effects vs if they are
+pure.
+
+So I think the conclusion is that we need to reason about and stub all
+functions (apart from those that acquire resources) that can in turn
+invoke more BPF programs, so that the parent calling into them
+transitively isn't stalled while it's fast executing, which doesn't
+seem easy.
+
+It's the same problem as with nested program execution. On the path
+where we are terminating, we allow yet another program to come in and
+stall the kernel.
+
+I think it's just a consequence of "keep executing until exit" vs
+"stop executing and return" that such a problem would come up. It's
+much easier to reason about and notrace the few bits needed to unwind
+and return control to the kernel vs controlling it for every possible
+suffix of the program where the stub is invoked.
+
+But perhaps you have given thought to these question, and may have
+solutions in mind.
+Will it be some kind of bpf_prog_active() check that avoids invoking
+more programs on the 'fast-execute' path?
+It may interfere with other programs that interrupt the fast-execute
+termination and try to run (e.g. XDP in an interrupt where a
+fast-execute in task context was in progress) and lead to surprises.
+
+> We haven=E2=80=99t added any selftests in the POC as this mail is mainly =
+to get
+> feedback on the design. Attaching link to sample BPF programs to
+> validate the POC [7].  Styling will be taken care in next iteration.
+>
+> References:
+> 1. https://lpc.events/event/17/contributions/1610/attachments/1229/2505/L=
+PC_BPF_termination_Raj_Sahu.pdf
+> 2. https://vtechworks.lib.vt.edu/server/api/core/bitstreams/f0749daa-4560=
+-41c9-9f36-6aa618161665/content
+> 3. https://lore.kernel.org/bpf/AM6PR03MB508011599420DB53480E8BF799F72@AM6=
+PR03MB5080.eurprd03.prod.outlook.com/T/
+> 4. https://vtechworks.lib.vt.edu/server/api/core/bitstreams/7fb70c04-0736=
+-4e2d-b48b-2d8d012bacfc/content
+> 5. https://lwn.net/ml/all/AM6PR03MB5080513BFAEB54A93CC70D4399FE2@AM6PR03M=
+B5080.eurprd03.prod.outlook.com/#t
+> 6. https://people.cs.vt.edu/djwillia/papers/ebpf23-runtime.pdf
+> 7. https://github.com/sidchintamaneni/os-dev-env/tree/main/bpf-programs-c=
+atalog/research/termination/patch_gen_testing
+>
+>  arch/x86/kernel/smp.c          |   4 +-
+>  include/linux/bpf.h            |  18 ++
+>  include/linux/filter.h         |  16 ++
+>  include/linux/smp.h            |   2 +-
+>  include/uapi/linux/bpf.h       |  13 ++
+>  kernel/bpf/bpf_iter.c          |  65 ++++++
+>  kernel/bpf/core.c              |  45 ++++
+>  kernel/bpf/helpers.c           |   8 +
+>  kernel/bpf/syscall.c           | 375 +++++++++++++++++++++++++++++++++
+>  kernel/bpf/verifier.c          |  16 +-
+>  kernel/smp.c                   |  22 +-
+>  tools/bpf/bpftool/prog.c       |  40 ++++
+>  tools/include/uapi/linux/bpf.h |   5 +
+>  tools/lib/bpf/bpf.c            |  15 ++
+>  tools/lib/bpf/bpf.h            |  10 +
+>  tools/lib/bpf/libbpf.map       |   1 +
+>  16 files changed, 643 insertions(+), 12 deletions(-)
+>
+
+All of this said, I think the patches need more work. The arch
+specific bits can be moved into arch/*/net/bpf_* files and you can
+dispatch to them using __weak functions in kernel/bpf/core.c. A
+complete version of stubbing that handles both kfuncs and helpers
+would be better.
+
+I don't think bpftool support for termination is necessary, it should
+be kicked in by the kernel automatically once a stall is detected.
+So you can drop the bpf(2) syscall command being added.
+
+For now, we can also keep the enforcement of termination bits out and
+just focus on termination bits, both can land separately (the
+enforcement will require more discussion, so it'd be better to keep
+focus on and not mix both IMO).
+
+
+> --
+> 2.43.0
+>
 
