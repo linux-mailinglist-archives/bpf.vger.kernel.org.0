@@ -1,95 +1,62 @@
-Return-Path: <bpf+bounces-57326-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57327-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D24FAA8DDB
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 10:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A470DAA8EA2
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 10:55:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C48A03B48B2
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 08:08:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E5333B7C98
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 08:55:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B06D11E32C6;
-	Mon,  5 May 2025 08:08:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18B491F470E;
+	Mon,  5 May 2025 08:55:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="HVafOWoC"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="sy7TwSLa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FBB51DFE20
-	for <bpf@vger.kernel.org>; Mon,  5 May 2025 08:08:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 528F71C8619;
+	Mon,  5 May 2025 08:55:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746432538; cv=none; b=YNfwrU6eNG31YbJmVKdhWLrvirenuQn1meARF7qKn9fe/gjaGZ43yNCERoGLCFVm1021+9vxU7M9s31+mnjDdH9B7lwuPmWc63cXojmcAvrQlNr51RS+hY7WdgyGyUaQ37MkSrBkm5bLAGQIsVkA8b1zx74HUDEIMJJ9Hp3gFdE=
+	t=1746435317; cv=none; b=VTskD/FyVuSXSAfsAVZ+qAfwsTWdKYXJGAy9WNkje3c0oirDO1gRB/ipmI97/GrtoXRpr7HiCLB0wL7BwnrgWA8B+aMFp6hnAMxmbFkIVamkVu2MaOC7MKQgT7jGcWqqLaQHHmUDaISUmpAd/qRSujKVnRXdDzq+Oj4imkXkDhk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746432538; c=relaxed/simple;
-	bh=fpiegDdPN4vJSsUvTfFDScdpNUKB1Bs1LE0KbvzE0rk=;
+	s=arc-20240116; t=1746435317; c=relaxed/simple;
+	bh=aZVYqeezCVcvz3UxPsyzeGLsLXp0o5X5SkWC2AuILwc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=teZH/LauV0gy+/qr8LhZJ9OkmeOx2Axnr02Bz7FNMdNwFlScJgEDGEFxRJyg0rKvgTVlJ195kRFOsmSLzikNJjxGAf+PrnuKMHC7h/mggvFQIPWG4+oLuz2cDHCIMf9fRlPgR7d9Pr+uAjXXc5ciayxy97k3rGo2N2KpwyJW62I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=HVafOWoC; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-43ce70f9afbso34819215e9.0
-        for <bpf@vger.kernel.org>; Mon, 05 May 2025 01:08:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1746432534; x=1747037334; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ih3NqDpNYxVnwTqQNjr/HduzzcPs128fQGA7XiiKKbU=;
-        b=HVafOWoC3/jTLo7x3AKPu38ObO0NpLhvPQlSV0JtoLhc9wxHQ+1W5I+dnDU4hkzZwV
-         mKPvK74grtYJdMwaYlCHhmMgnpVou62xl1TzmRrw+BuAd2mH+cUSFVnXenRuzLo4w9OU
-         c37Rt7N7RflYon88Jqmt+y2eYJ4YtlSUQpFVMTqpHpdjgiwfAMC8/62/VG7SCWs03mFO
-         rMAufkA5YrHuPP41kGT7uEZN8ZcXDcSxncQj/jWMS4VYXiAJKokIIHUGp7X9YpP4tyny
-         JI/ZEn7gV3l+GOLzusAGkHSxAP9vOU4/3ZeMrW5TQAqUxEZPzHGR0Oas9ym6yQw9I0ZN
-         Smtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746432534; x=1747037334;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ih3NqDpNYxVnwTqQNjr/HduzzcPs128fQGA7XiiKKbU=;
-        b=bsceOTehEn65Z4/5/UnXGhVA3OUmg1Yv6adrsnBPVAY3tN6LfqpiFNapUbIPEqCnf1
-         MaVEMnYt+buraj+oVhM36aEeXpSzT87zj+i47kr33EvD+sghuNNGCNvcRNkevze4n/40
-         PWfisLEQDUsGmrv79/LLddM1NcMoa2VYoB93yHbgElyK5vzNO1csE6cVEou9T1U8HmHV
-         eQ7KJeui0jp0qGQRb6T3/ueO2eLBMSKm1ry+FxsftWeFbuILlXrHlZS4L/ewzwgn5CmU
-         UOmIltnFsBT6Co3u97TXur7m03C1cdnvE6cOpH/JJ6T7wwd/uR0lXrN9YoYcr2XwECON
-         P6iw==
-X-Forwarded-Encrypted: i=1; AJvYcCUkbAFFL1NJhlUpWQ/dei2byUE3K397y4dx67YcmC1Fw3TbAm7hRbMupFJequOL6aTJDOQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxj1MfKbCxTWeNHrw/eYM5CpFs1Mh5rVxmo7ApSTwiKV/UrLQnm
-	Yo0A0DX4jaN2XqNOTgAG/k8l+EQ2DngMH3N5grsNrLy32J9DCt4wnt36tokAWCI=
-X-Gm-Gg: ASbGncu6pH9HC8TrKaKZQJPybw2FKZlaKTjWV5mrIvW5FdRrdVumVOZYGq6rpJzxhNK
-	whxQSXuPiMcKpHdqIIPq6EY8Uzt+1ed8sTZIsOCvX9NngBgomcZz1+kdK6Uia0ybBTJGFt6MMGu
-	j2jtngMEcAPkwk3Jj4Cu6FK0dTOlvZEe9G0p+xo9dgxYoW3CB/Lp+Q64rskKPnT+qCX/SobwtEe
-	259ldv8G7ybfUAKrjFRN1KKfXbpF857rV9pY63/YLWgqWFNScYGbAqB9Lk6SIocahWM13JjNIal
-	WcLAstlGimCRnq0VS6pgA869SQVNWEmKZyfcQkEKI1SEyUqkGkU=
-X-Google-Smtp-Source: AGHT+IEurvdHsB2rKDl3Rsu/uufeIj/T+2DXVXCdsFmbDaGBcEViq6YlhktTwiTRJwVY7SSU0p4HUg==
-X-Received: by 2002:a05:600c:5124:b0:43c:fe15:41cb with SMTP id 5b1f17b1804b1-441c48c1d07mr44823985e9.15.1746432534171;
-        Mon, 05 May 2025 01:08:54 -0700 (PDT)
-Received: from localhost (109-81-80-21.rct.o2.cz. [109.81.80.21])
-        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-441b2af4546sm172441785e9.22.2025.05.05.01.08.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 May 2025 01:08:53 -0700 (PDT)
-Date: Mon, 5 May 2025 10:08:53 +0200
-From: Michal Hocko <mhocko@suse.com>
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=WXJPNN2ceFertGF2yZ9u4ejPOOm/SH+XFzPK5H1IlkGp3iY6KWOWKhBa68Bo2ZJyie1vNEa/X60XddVliHMEwwUYana0Xw2FkCOyffw+COyKd7Fv4akJeLAaKhVlB00NyguY0fPTeXOCwf/6a+RqzGyuqbebYleoAmmUmanSaOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=sy7TwSLa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32ED1C4CEE4;
+	Mon,  5 May 2025 08:55:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1746435316;
+	bh=aZVYqeezCVcvz3UxPsyzeGLsLXp0o5X5SkWC2AuILwc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sy7TwSLax8aOzpWbglDpctcQWiCVFTd351UPI1HOsilk6i3xqgtJUZ7aD0kiweoQL
+	 Z/+fEHj+XMpV1dByhkllA2HDuGqS5tWdQC86I/kYrEki5HdezkuuuAgYE7rtevwBZW
+	 R6TEjwtRF6auTKoiIauPssA1SBJuLyqRvlpO5aFk=
+Date: Mon, 5 May 2025 10:55:13 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Xi Ruoyao <xry111@xry111.site>
+Cc: Sasha Levin <sashal@kernel.org>, stable@vger.kernel.org,
+	Mingcong Bai <jeffbai@aosc.io>, Alex Davis <alex47794@gmail.com>,
 	Alexei Starovoitov <ast@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Suren Baghdasaryan <surenb@google.com>,
-	David Rientjes <rientjes@google.com>, Josh Don <joshdon@google.com>,
-	Chuyi Zhou <zhouchuyi@bytedance.com>, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, bpf@vger.kernel.org
-Subject: Re: [PATCH rfc 10/12] mm: introduce bpf_out_of_memory() bpf kfunc
-Message-ID: <aBhyFQje85fPhIiM@tiehlicka>
-References: <20250428033617.3797686-1-roman.gushchin@linux.dev>
- <20250428033617.3797686-11-roman.gushchin@linux.dev>
- <aBC7_2Fv3NFuad4R@tiehlicka>
- <aBFFNyGjDAekx58J@google.com>
- <aBHQ69_rCqjnDaDl@tiehlicka>
- <aBI5fh28P1Qgi2zZ@google.com>
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6.12.y] bpf: Fix BPF_INTERNAL namespace import
+Message-ID: <2025050535-cargo-transpose-2099@gregkh>
+References: <20250503085031.118222-1-xry111@xry111.site>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -98,55 +65,46 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aBI5fh28P1Qgi2zZ@google.com>
+In-Reply-To: <20250503085031.118222-1-xry111@xry111.site>
 
-On Wed 30-04-25 14:53:50, Roman Gushchin wrote:
-> On Wed, Apr 30, 2025 at 09:27:39AM +0200, Michal Hocko wrote:
-> > On Tue 29-04-25 21:31:35, Roman Gushchin wrote:
-> > > On Tue, Apr 29, 2025 at 01:46:07PM +0200, Michal Hocko wrote:
-> > > > On Mon 28-04-25 03:36:15, Roman Gushchin wrote:
-> > > > > Introduce bpf_out_of_memory() bpf kfunc, which allows to declare
-> > > > > an out of memory events and trigger the corresponding kernel OOM
-> > > > > handling mechanism.
-> > > > > 
-> > > > > It takes a trusted memcg pointer (or NULL for system-wide OOMs)
-> > > > > as an argument, as well as the page order.
-> > > > > 
-> > > > > Only one OOM can be declared and handled in the system at once,
-> > > > > so if the function is called in parallel to another OOM handling,
-> > > > > it bails out with -EBUSY.
-> > > > 
-> > > > This makes sense for the global OOM handler because concurrent handlers
-> > > > are cooperative. But is this really correct for memcg ooms which could
-> > > > happen for different hierarchies? Currently we do block on oom_lock in
-> > > > that case to make sure one oom doesn't starve others. Do we want the
-> > > > same behavior for custom OOM handlers?
-> > > 
-> > > It's a good point and I had similar thoughts when I was working on it.
-> > > But I think it's orthogonal to the customization of the oom handling.
-> > > Even for the existing oom killer it makes no sense to serialize memcg ooms
-> > > in independent memcg subtrees. But I'm worried about the dmesg reporting,
-> > > it can become really messy for 2+ concurrent OOMs.
-> > > 
-> > > Also, some memory can be shared, so one OOM can eliminate a need for another
-> > > OOM, even if they look independent.
-> > > 
-> > > So my conclusion here is to leave things as they are until we'll get signs
-> > > of real world problems with the (lack of) concurrency between ooms.
-> > 
-> > How do we learn about that happening though? I do not think we have any
-> > counters to watch to suspect that some oom handlers cannot run.
+On Sat, May 03, 2025 at 04:50:31PM +0800, Xi Ruoyao wrote:
+> The commit cdd30ebb1b9f ("module: Convert symbol namespace to string
+> literal") makes the grammar of MODULE_IMPORT_NS and EXPORT_SYMBOL_NS
+> different between the stable branches and the mainline.  But when
+> the commit 955f9ede52b8 ("bpf: Add namespace to BPF internal symbols")
+> was backported from mainline, only EXPORT_SYMBOL_NS instances are
+> adapted, leaving the MODULE_IMPORT_NS instance with the "new" grammar
+> and causing the module fails to build:
 > 
-> The bpf program which declares an OOM can handle this: e.g. retry, wait
-> and retry, etc. We can also try to mimick the existing behavior and wait
-> on oom_lock (potentially splitting it into multiple locks to support
-> concurrent ooms in various memcgs). Do you think it's preferable?
+>     ERROR: modpost: module bpf_preload uses symbol bpf_link_get_from_fd from namespace BPF_INTERNAL, but does not import it.
+>     ERROR: modpost: module bpf_preload uses symbol kern_sys_bpf from namespace BPF_INTERNAL, but does not import it.
+> 
+> Reported-by: Mingcong Bai <jeffbai@aosc.io>
+> Reported-by: Alex Davis <alex47794@gmail.com>
+> Closes: https://lore.kernel.org/all/CADiockBKBQTVqjA5G+RJ9LBwnEnZ8o0odYnL=LBZ_7QN=_SZ7A@mail.gmail.com/
+> Fixes: 955f9ede52b8 ("bpf: Add namespace to BPF internal symbols")
+> Signed-off-by: Xi Ruoyao <xry111@xry111.site>
+> ---
+>  kernel/bpf/preload/bpf_preload_kern.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/bpf/preload/bpf_preload_kern.c b/kernel/bpf/preload/bpf_preload_kern.c
+> index 56a81df7a9d7..fdad0eb308fe 100644
+> --- a/kernel/bpf/preload/bpf_preload_kern.c
+> +++ b/kernel/bpf/preload/bpf_preload_kern.c
+> @@ -89,5 +89,5 @@ static void __exit fini(void)
+>  }
+>  late_initcall(load);
+>  module_exit(fini);
+> -MODULE_IMPORT_NS("BPF_INTERNAL");
+> +MODULE_IMPORT_NS(BPF_INTERNAL);
+>  MODULE_LICENSE("GPL");
 
-Yes, I would just provide different callbacks for global and memcg ooms
-and do the blockin for the latter. It will be consistent with the in
-kernel implementation (therefore less surprising behavior).
+Ick, sorry about that, I thought I had fixed this all up.  Odd it never
+showed up in anyone's build testing, I wonder why.
 
--- 
-Michal Hocko
-SUSE Labs
+I'll go do a quick release with just this fix in it now to get this
+resolved, thanks!
+
+greg k-h
 
