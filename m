@@ -1,62 +1,68 @@
-Return-Path: <bpf+bounces-57425-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57415-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93C44AAAB1C
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 03:52:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D756AAADCA
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 04:42:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CA28174C62
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 01:51:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1CECA7AC998
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 02:41:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E9CE3ABD09;
-	Mon,  5 May 2025 23:18:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F6FD35FAED;
+	Mon,  5 May 2025 22:45:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="euUTsRuP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GgonBQZZ"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B1FC3703D1;
-	Mon,  5 May 2025 23:03:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CCAC359E1B;
+	Mon,  5 May 2025 22:43:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746486219; cv=none; b=Zqcvevu4TthWHne/DsZ4lUpsN4WlV76Ja1FWCIvWcrhVi7YHi3hHb/TDNTZeIE1XbDiKioJcUt03TSqyDcT+a+P5LwtzAUWkEOvffyr0HNYUJAvDBUdy6EF9uPY+MwyGLPBsTR6WfnaOkAJbN56v4QsWFSxi2xirQTaLB+OHeZg=
+	t=1746484988; cv=none; b=cHdwFBqlef912idnmGjVytxxQIDilNPKUX4wzpe3T3bOTLv0HbgEFpibuGhXFwgmZ0NoYKCo8wa9iFzkjX3auZk5481Ud0iAqT5GXihlyJYGA/kHuMTqm0RTAaV+VZ6Jo0+7p7VhJ9TPSqK0ao9g4L4iyXOdiJcgfu0BCYno54U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746486219; c=relaxed/simple;
-	bh=nGvdlCDrWtO7xRo/70W+vOcOv8cOxCWboXoNzYTDJTI=;
+	s=arc-20240116; t=1746484988; c=relaxed/simple;
+	bh=dvlCy08zdaOJqomi5ZL/jvRfDyJk8aYgEPcgEyiNyhI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ekuGJz+KEV1zCqkT4WdaBEvfMTUX4u5jR1wMAbweYJX4hXYnRj473KV20w5Rdf416oY3ZZ9YC8S1C0edPOWUvP0vG5dPshM/3jQ+pUiMV0sR9vTE+WEbx+wOU4hgvgrz4aSyWV2i2P2LSTK94hvz9d+8kdHAGU+kzie+psEPvy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=euUTsRuP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2ED57C4CEF1;
-	Mon,  5 May 2025 23:03:37 +0000 (UTC)
+	 MIME-Version; b=hqafBxBIF3HFo8kN64Og3XPbws/FWeNnfws3xQwxEf0wolX4578/YPl7HpTWO2642hOq2YhB38uwDp2IuPKPHmoPPSMYNg4MD/oECzyu3f3gXd8Yklz9xF70FD3+jfrox/hu47xGRK7+hYK4cIUZx6tBDvzHa48jTqzjrUE1VOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GgonBQZZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3F9FC4CEE4;
+	Mon,  5 May 2025 22:43:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746486218;
-	bh=nGvdlCDrWtO7xRo/70W+vOcOv8cOxCWboXoNzYTDJTI=;
+	s=k20201202; t=1746484987;
+	bh=dvlCy08zdaOJqomi5ZL/jvRfDyJk8aYgEPcgEyiNyhI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=euUTsRuPjt8Rkwe95Tfoal9PSRYLN/7NkGXA2l9pPLR/t6pjsUWQN1qJCKn3qQuc4
-	 4HGvHxLDFFVy8iQ1o/xZqr+LVP4MvqLOLmwFoPfMIqgX/4XaLVtxj1FlXW0b5BrtDH
-	 n6tVN/cWmoiuCIRXXCkW+YuZY8+oGUufAeseS/5ehOmZcr2qBY+P496g8n9mDfJf9n
-	 OGsUDd1tcHHaM+zi9yqH06zheU361JrvPK7OFzLm2nzOPtICCP9Uzr5zCC/2Nhac3Z
-	 YSUxIDq9Nq0WtphKJGzQqwT2lWqQhRyBkdWBWs2AnTITGEllmsao6sebgjLjeOWkyY
-	 V0G7JVIZDRLbA==
+	b=GgonBQZZMHEzR9r6/2MfWQhzYu4oSM/cDaHXKjYLMGXeIeNe/HBdBLdhfJnr3RiJ5
+	 g/bcecd1bz6JphUs2duFF4qspMKhdPmxn1F4efScQbQXm7a1J/oVIn2AiajEfDLclV
+	 3FsD8mLaoHBysGKFhtOKWOrOIh9hLWyOF39dHVubyXLwgW1vQN39hDPFI9GH6PdC/8
+	 rBCfcAKL9LfLDkhxBWD6wznbQPLE4OOJ7mmPyW65rgGOV0i5tdW2CefUL87e7KRHPD
+	 MxY3jZLT38iiGRWPDEpz3KxbBnH+rO4xMG6jwqdbqHg05oFbgkJLyj+/vVR9B//TSo
+	 LepQjuUa8wcow==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Andrii Nakryiko <andrii@kernel.org>,
-	Emil Tsalapatis <emil@etsalapatis.com>,
-	Eduard Zingerman <eddyz87@gmail.com>,
+Cc: Yonghong Song <yonghong.song@linux.dev>,
+	Andrii Nakryiko <andrii@kernel.org>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
 	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	willemb@google.com,
+	kerneljasonxing@gmail.com,
+	quic_abchauha@quicinc.com,
+	aspsk@isovalent.com,
+	linux@jordanrome.com,
+	martin.kelly@crowdstrike.com,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 213/294] libbpf: fix LDX/STX/ST CO-RE relocation size adjustment logic
-Date: Mon,  5 May 2025 18:55:13 -0400
-Message-Id: <20250505225634.2688578-213-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.12 111/486] bpf: Allow pre-ordering for bpf cgroup progs
+Date: Mon,  5 May 2025 18:33:07 -0400
+Message-Id: <20250505223922.2682012-111-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250505225634.2688578-1-sashal@kernel.org>
-References: <20250505225634.2688578-1-sashal@kernel.org>
+In-Reply-To: <20250505223922.2682012-1-sashal@kernel.org>
+References: <20250505223922.2682012-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -65,93 +71,224 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.89
+X-stable-base: Linux 6.12.26
 Content-Transfer-Encoding: 8bit
 
-From: Andrii Nakryiko <andrii@kernel.org>
+From: Yonghong Song <yonghong.song@linux.dev>
 
-[ Upstream commit 06096d19ee3897a7e70922580159607fe315da7a ]
+[ Upstream commit 4b82b181a26cff8bf7adc3a85a88d121d92edeaf ]
 
-Libbpf has a somewhat obscure feature of automatically adjusting the
-"size" of LDX/STX/ST instruction (memory store and load instructions),
-based on originally recorded access size (u8, u16, u32, or u64) and the
-actual size of the field on target kernel. This is meant to facilitate
-using BPF CO-RE on 32-bit architectures (pointers are always 64-bit in
-BPF, but host kernel's BTF will have it as 32-bit type), as well as
-generally supporting safe type changes (unsigned integer type changes
-can be transparently "relocated").
+Currently for bpf progs in a cgroup hierarchy, the effective prog array
+is computed from bottom cgroup to upper cgroups (post-ordering). For
+example, the following cgroup hierarchy
+    root cgroup: p1, p2
+        subcgroup: p3, p4
+have BPF_F_ALLOW_MULTI for both cgroup levels.
+The effective cgroup array ordering looks like
+    p3 p4 p1 p2
+and at run time, progs will execute based on that order.
 
-One issue that surfaced only now, 5 years after this logic was
-implemented, is how this all works when dealing with fields that are
-arrays. This isn't all that easy and straightforward to hit (see
-selftests that reproduce this condition), but one of sched_ext BPF
-programs did hit it with innocent looking loop.
+But in some cases, it is desirable to have root prog executes earlier than
+children progs (pre-ordering). For example,
+  - prog p1 intends to collect original pkt dest addresses.
+  - prog p3 will modify original pkt dest addresses to a proxy address for
+    security reason.
+The end result is that prog p1 gets proxy address which is not what it
+wants. Putting p1 to every child cgroup is not desirable either as it
+will duplicate itself in many child cgroups. And this is exactly a use case
+we are encountering in Meta.
 
-Long story short, libbpf used to calculate entire array size, instead of
-making sure to only calculate array's element size. But it's the element
-that is loaded by LDX/STX/ST instructions (1, 2, 4, or 8 bytes), so
-that's what libbpf should check. This patch adjusts the logic for
-arrays and fixed the issue.
+To fix this issue, let us introduce a flag BPF_F_PREORDER. If the flag
+is specified at attachment time, the prog has higher priority and the
+ordering with that flag will be from top to bottom (pre-ordering).
+For example, in the above example,
+    root cgroup: p1, p2
+        subcgroup: p3, p4
+Let us say p2 and p4 are marked with BPF_F_PREORDER. The final
+effective array ordering will be
+    p2 p4 p3 p1
 
-Reported-by: Emil Tsalapatis <emil@etsalapatis.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-Link: https://lore.kernel.org/r/20250207014809.1573841-1-andrii@kernel.org
+Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+Link: https://lore.kernel.org/r/20250224230116.283071-1-yonghong.song@linux.dev
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/relo_core.c | 24 ++++++++++++++++++++----
- 1 file changed, 20 insertions(+), 4 deletions(-)
+ include/linux/bpf-cgroup.h     |  1 +
+ include/uapi/linux/bpf.h       |  1 +
+ kernel/bpf/cgroup.c            | 33 +++++++++++++++++++++++++--------
+ kernel/bpf/syscall.c           |  3 ++-
+ tools/include/uapi/linux/bpf.h |  1 +
+ 5 files changed, 30 insertions(+), 9 deletions(-)
 
-diff --git a/tools/lib/bpf/relo_core.c b/tools/lib/bpf/relo_core.c
-index 63a4d5ad12d1a..26cde1b27174b 100644
---- a/tools/lib/bpf/relo_core.c
-+++ b/tools/lib/bpf/relo_core.c
-@@ -683,7 +683,7 @@ static int bpf_core_calc_field_relo(const char *prog_name,
+diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
+index ce91d9b2acb9f..7e029c82ae45f 100644
+--- a/include/linux/bpf-cgroup.h
++++ b/include/linux/bpf-cgroup.h
+@@ -111,6 +111,7 @@ struct bpf_prog_list {
+ 	struct bpf_prog *prog;
+ 	struct bpf_cgroup_link *link;
+ 	struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE];
++	u32 flags;
+ };
+ 
+ int cgroup_bpf_inherit(struct cgroup *cgrp);
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 4a939c90dc2e4..552fd633f8200 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1206,6 +1206,7 @@ enum bpf_perf_event_type {
+ #define BPF_F_BEFORE		(1U << 3)
+ #define BPF_F_AFTER		(1U << 4)
+ #define BPF_F_ID		(1U << 5)
++#define BPF_F_PREORDER		(1U << 6)
+ #define BPF_F_LINK		BPF_F_LINK /* 1 << 13 */
+ 
+ /* If BPF_F_STRICT_ALIGNMENT is used in BPF_PROG_LOAD command, the
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index 025d7e2214aeb..c0d606c40195d 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -369,7 +369,7 @@ static struct bpf_prog *prog_list_prog(struct bpf_prog_list *pl)
+ /* count number of elements in the list.
+  * it's slow but the list cannot be long
+  */
+-static u32 prog_list_length(struct hlist_head *head)
++static u32 prog_list_length(struct hlist_head *head, int *preorder_cnt)
  {
- 	const struct bpf_core_accessor *acc;
- 	const struct btf_type *t;
--	__u32 byte_off, byte_sz, bit_off, bit_sz, field_type_id;
-+	__u32 byte_off, byte_sz, bit_off, bit_sz, field_type_id, elem_id;
- 	const struct btf_member *m;
- 	const struct btf_type *mt;
- 	bool bitfield;
-@@ -706,8 +706,14 @@ static int bpf_core_calc_field_relo(const char *prog_name,
- 	if (!acc->name) {
- 		if (relo->kind == BPF_CORE_FIELD_BYTE_OFFSET) {
- 			*val = spec->bit_offset / 8;
--			/* remember field size for load/store mem size */
--			sz = btf__resolve_size(spec->btf, acc->type_id);
-+			/* remember field size for load/store mem size;
-+			 * note, for arrays we care about individual element
-+			 * sizes, not the overall array size
-+			 */
-+			t = skip_mods_and_typedefs(spec->btf, acc->type_id, &elem_id);
-+			while (btf_is_array(t))
-+				t = skip_mods_and_typedefs(spec->btf, btf_array(t)->type, &elem_id);
-+			sz = btf__resolve_size(spec->btf, elem_id);
- 			if (sz < 0)
- 				return -EINVAL;
- 			*field_sz = sz;
-@@ -767,7 +773,17 @@ static int bpf_core_calc_field_relo(const char *prog_name,
- 	case BPF_CORE_FIELD_BYTE_OFFSET:
- 		*val = byte_off;
- 		if (!bitfield) {
--			*field_sz = byte_sz;
-+			/* remember field size for load/store mem size;
-+			 * note, for arrays we care about individual element
-+			 * sizes, not the overall array size
-+			 */
-+			t = skip_mods_and_typedefs(spec->btf, field_type_id, &elem_id);
-+			while (btf_is_array(t))
-+				t = skip_mods_and_typedefs(spec->btf, btf_array(t)->type, &elem_id);
-+			sz = btf__resolve_size(spec->btf, elem_id);
-+			if (sz < 0)
-+				return -EINVAL;
-+			*field_sz = sz;
- 			*type_id = field_type_id;
+ 	struct bpf_prog_list *pl;
+ 	u32 cnt = 0;
+@@ -377,6 +377,8 @@ static u32 prog_list_length(struct hlist_head *head)
+ 	hlist_for_each_entry(pl, head, node) {
+ 		if (!prog_list_prog(pl))
+ 			continue;
++		if (preorder_cnt && (pl->flags & BPF_F_PREORDER))
++			(*preorder_cnt)++;
+ 		cnt++;
+ 	}
+ 	return cnt;
+@@ -400,7 +402,7 @@ static bool hierarchy_allows_attach(struct cgroup *cgrp,
+ 
+ 		if (flags & BPF_F_ALLOW_MULTI)
+ 			return true;
+-		cnt = prog_list_length(&p->bpf.progs[atype]);
++		cnt = prog_list_length(&p->bpf.progs[atype], NULL);
+ 		WARN_ON_ONCE(cnt > 1);
+ 		if (cnt == 1)
+ 			return !!(flags & BPF_F_ALLOW_OVERRIDE);
+@@ -423,12 +425,12 @@ static int compute_effective_progs(struct cgroup *cgrp,
+ 	struct bpf_prog_array *progs;
+ 	struct bpf_prog_list *pl;
+ 	struct cgroup *p = cgrp;
+-	int cnt = 0;
++	int i, j, cnt = 0, preorder_cnt = 0, fstart, bstart, init_bstart;
+ 
+ 	/* count number of effective programs by walking parents */
+ 	do {
+ 		if (cnt == 0 || (p->bpf.flags[atype] & BPF_F_ALLOW_MULTI))
+-			cnt += prog_list_length(&p->bpf.progs[atype]);
++			cnt += prog_list_length(&p->bpf.progs[atype], &preorder_cnt);
+ 		p = cgroup_parent(p);
+ 	} while (p);
+ 
+@@ -439,20 +441,34 @@ static int compute_effective_progs(struct cgroup *cgrp,
+ 	/* populate the array with effective progs */
+ 	cnt = 0;
+ 	p = cgrp;
++	fstart = preorder_cnt;
++	bstart = preorder_cnt - 1;
+ 	do {
+ 		if (cnt > 0 && !(p->bpf.flags[atype] & BPF_F_ALLOW_MULTI))
+ 			continue;
+ 
++		init_bstart = bstart;
+ 		hlist_for_each_entry(pl, &p->bpf.progs[atype], node) {
+ 			if (!prog_list_prog(pl))
+ 				continue;
+ 
+-			item = &progs->items[cnt];
++			if (pl->flags & BPF_F_PREORDER) {
++				item = &progs->items[bstart];
++				bstart--;
++			} else {
++				item = &progs->items[fstart];
++				fstart++;
++			}
+ 			item->prog = prog_list_prog(pl);
+ 			bpf_cgroup_storages_assign(item->cgroup_storage,
+ 						   pl->storage);
+ 			cnt++;
  		}
- 		break;
++
++		/* reverse pre-ordering progs at this cgroup level */
++		for (i = bstart + 1, j = init_bstart; i < j; i++, j--)
++			swap(progs->items[i], progs->items[j]);
++
+ 	} while ((p = cgroup_parent(p)));
+ 
+ 	*array = progs;
+@@ -663,7 +679,7 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
+ 		 */
+ 		return -EPERM;
+ 
+-	if (prog_list_length(progs) >= BPF_CGROUP_MAX_PROGS)
++	if (prog_list_length(progs, NULL) >= BPF_CGROUP_MAX_PROGS)
+ 		return -E2BIG;
+ 
+ 	pl = find_attach_entry(progs, prog, link, replace_prog,
+@@ -698,6 +714,7 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
+ 
+ 	pl->prog = prog;
+ 	pl->link = link;
++	pl->flags = flags;
+ 	bpf_cgroup_storages_assign(pl->storage, storage);
+ 	cgrp->bpf.flags[atype] = saved_flags;
+ 
+@@ -1073,7 +1090,7 @@ static int __cgroup_bpf_query(struct cgroup *cgrp, const union bpf_attr *attr,
+ 							      lockdep_is_held(&cgroup_mutex));
+ 			total_cnt += bpf_prog_array_length(effective);
+ 		} else {
+-			total_cnt += prog_list_length(&cgrp->bpf.progs[atype]);
++			total_cnt += prog_list_length(&cgrp->bpf.progs[atype], NULL);
+ 		}
+ 	}
+ 
+@@ -1105,7 +1122,7 @@ static int __cgroup_bpf_query(struct cgroup *cgrp, const union bpf_attr *attr,
+ 			u32 id;
+ 
+ 			progs = &cgrp->bpf.progs[atype];
+-			cnt = min_t(int, prog_list_length(progs), total_cnt);
++			cnt = min_t(int, prog_list_length(progs, NULL), total_cnt);
+ 			i = 0;
+ 			hlist_for_each_entry(pl, progs, node) {
+ 				prog = prog_list_prog(pl);
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index fc048d3c0e69f..ab74a226e3d6d 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -4042,7 +4042,8 @@ static int bpf_prog_attach_check_attach_type(const struct bpf_prog *prog,
+ #define BPF_F_ATTACH_MASK_BASE	\
+ 	(BPF_F_ALLOW_OVERRIDE |	\
+ 	 BPF_F_ALLOW_MULTI |	\
+-	 BPF_F_REPLACE)
++	 BPF_F_REPLACE |	\
++	 BPF_F_PREORDER)
+ 
+ #define BPF_F_ATTACH_MASK_MPROG	\
+ 	(BPF_F_REPLACE |	\
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 4a939c90dc2e4..552fd633f8200 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1206,6 +1206,7 @@ enum bpf_perf_event_type {
+ #define BPF_F_BEFORE		(1U << 3)
+ #define BPF_F_AFTER		(1U << 4)
+ #define BPF_F_ID		(1U << 5)
++#define BPF_F_PREORDER		(1U << 6)
+ #define BPF_F_LINK		BPF_F_LINK /* 1 << 13 */
+ 
+ /* If BPF_F_STRICT_ALIGNMENT is used in BPF_PROG_LOAD command, the
 -- 
 2.39.5
 
