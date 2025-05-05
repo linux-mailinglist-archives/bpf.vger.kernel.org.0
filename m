@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-57377-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57378-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F28CAA9E23
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 23:28:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C167AA9E29
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 23:29:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0AFC3A4D9A
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 21:28:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 203C43A7BE6
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 21:29:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2F812741C0;
-	Mon,  5 May 2025 21:28:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39D7C157A48;
+	Mon,  5 May 2025 21:29:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="reKuU5Jm"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="gCIU9MUn"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FBD12701BD
-	for <bpf@vger.kernel.org>; Mon,  5 May 2025 21:28:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9A6D27467D
+	for <bpf@vger.kernel.org>; Mon,  5 May 2025 21:29:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746480530; cv=none; b=TtbhsZ0bQ9vNjCjoFEZV79hxyNgKpUMeQmR/9s/y0pVAP/yiTd4DFerUCiKnDS+zglnp0VZJdBGdqOYyZiRw2OAS0CWTTNLtizKS7lMKUADKajII/jFE0T5/JXuG4jUioaOgG17UT4R05DrxVXqEvNxUtu8xASRMvfj1SXdwp1c=
+	t=1746480550; cv=none; b=S43kAAtAUS9QLo5OCb4FujhVDJU+xkFIv8DSwE4jFgt8C8QA8YtTfJn/q6I9PeaBfkLiqkizz5THo5/q1+q+gCqHOG6X2jSyNrTUwoXB7UoGrCjec+BjnOo5Wkf4VOgRTcsmh6jUsENqjOXGicCph1JHr21dig81uL5SDYLWVN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746480530; c=relaxed/simple;
-	bh=X/iNt5SPBw1NxkT1OKCPANnd5Cy5J78Wzaoq9W4AI/I=;
+	s=arc-20240116; t=1746480550; c=relaxed/simple;
+	bh=+a9mLqcJLqgSFWbpcciv9TgtfPRuzxvW2YpCY0m6DAU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VeQSyCRJnhXVgu1Jn4mSxgbwOkpo8hXrhNyaD+iP0mQbjAQv5fYLKCUmDqqB7JWWSYZW5GwBPB3SBk4AqwZQDndaOCRTQVMEC2p08C0A1ReAMK1Wp7ShlzgSSbmaUI1luD8Ewh812QcfunBkthpz28mgqyNfBmYVYnlwJsbNhRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=reKuU5Jm; arc=none smtp.client-ip=213.133.104.62
+	 In-Reply-To:Content-Type; b=kBK8CeVjN0sN43ctE/Hs9YxB4w1vVk6kjt6NveGrexiKIW5FNBg+C7U7gurjgnlEnT8g33SB/pX6voIcBRZTzIc1HlUDw4vx7P5JiBUQVq/asx6BIAlwEYssDo3TOPbTUXlLLl2dbhQOMZ8NxoZzyKJxvL8FE0WoQn1fIgwCjWU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=gCIU9MUn; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,26 +36,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=8PgbbR+j3fY8/x58UQ4b+XyDf++JdRx33b/0lqil/k4=; b=reKuU5JmoZLyXd5vBXD8/Cmn7v
-	oZ08fNO8wCCqgAWEqM+ACZw68yvYMWGu8sTxuBqgxlW+s0q6yDugLHjHS1RQcHzOD9mYK231jEE4Y
-	Bya1ZuXOa4H1hWCFPfAGb4WqbzJJ4RF5PcwJjaO/aUep1VFKrDSRbRtx5D72SfmIDv44eqWXrLD9A
-	vdDg32gpGUvhd433XIWv1jehK637UuQF+ghyFsrWEfZr94MjKX/kqa9Q0jPqBcLdezkOX1PH9WVaq
-	138kTcf6mRdCo2Jb3jLkNRxXwucxz0+MzPoV9n7Chus7TvoVGm4jFdLVQSRKZWZrugR3kUaLE7UkL
-	SpylV+6g==;
+	bh=RyGyLPak851IAMKGt2h0SrWK0D0UhC4W4cPw1VRwpdk=; b=gCIU9MUnk+VI8BVrao4HeZ8H1f
+	0tMnN9EvXLm3cXX0kZIL4+CK6Lb+9MlcXjh+6MJLsUtDOx9fdL1JJCIznohRip2myGkX0acrp5nM4
+	KFCk3ADlhBevtAnV/1FOgQSr9Nb1pwXuarRXHb9eFRbymVpGWnI9n6E9+CJjXNT/M3zVS8iZw54PZ
+	Tqtd9NUunjw5WkGL3UDto6950sWsb7+TmOKWM5H4ES3DhemxzOxybQOGp+/qRFz757qb9dbMvEXbD
+	fYDOEbi2pgp916ATl76Skk5IPjX3CijXLnbPeRKrjaXZh31mx/tOrpwC1dkGltcoRY/MQF/uVdLtu
+	no87Mf/A==;
 Received: from sslproxy01.your-server.de ([78.46.139.224])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1uC3Mg-0008DY-29;
-	Mon, 05 May 2025 23:28:43 +0200
+	id 1uC3N0-0008Fa-2i;
+	Mon, 05 May 2025 23:29:03 +0200
 Received: from [85.195.247.12] (helo=[192.168.1.114])
 	by sslproxy01.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1uC3Mg-0006SA-2z;
-	Mon, 05 May 2025 23:28:42 +0200
-Message-ID: <4acbb1b4-8b3b-4347-ac67-7b673e0c17e5@iogearbox.net>
-Date: Mon, 5 May 2025 23:28:42 +0200
+	id 1uC3N1-0007XK-0P;
+	Mon, 05 May 2025 23:29:02 +0200
+Message-ID: <a768bd42-80cd-473d-93f7-f743fb895bbb@iogearbox.net>
+Date: Mon, 5 May 2025 23:29:02 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,11 +63,13 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf v2 1/2] bpf: Scrub packet on bpf_redirect_peer
+Subject: Re: [PATCH bpf v2 2/2] bpf: Clarify handling of mark and tstamp by
+ redirect_peer
 To: Paul Chaignon <paul.chaignon@gmail.com>, bpf@vger.kernel.org
 Cc: Martin KaFai Lau <martin.lau@linux.dev>,
  Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>
 References: <1728ead5e0fe45e7a6542c36bd4e3ca07a73b7d6.1746460653.git.paul.chaignon@gmail.com>
+ <ccc86af26d43c5c0b776bcba2601b7479c0d46d0.1746460653.git.paul.chaignon@gmail.com>
 Content-Language: en-US
 From: Daniel Borkmann <daniel@iogearbox.net>
 Autocrypt: addr=daniel@iogearbox.net; keydata=
@@ -113,64 +115,18 @@ Autocrypt: addr=daniel@iogearbox.net; keydata=
  rUD9YI1Je/WifL/HbIubHCCdK8/N7rblgUrZJMG3W+7vAvZsOh/6VTZeP4wCe7Gs/cJhE2gI
  DmGcR+7rQvbFQC4zQxEjo8fNaTwjpzLM9NIp4vG9SDIqAm20MXzLBAeVkofixCsosUWUODxP
  owLbpg7pFRJGL9YyEHpS7MGPb3jSLzucMAFXgoI8rVqoq6si2sxr2l0VsNH5o3NgoAgJNIg=
-In-Reply-To: <1728ead5e0fe45e7a6542c36bd4e3ca07a73b7d6.1746460653.git.paul.chaignon@gmail.com>
+In-Reply-To: <ccc86af26d43c5c0b776bcba2601b7479c0d46d0.1746460653.git.paul.chaignon@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 1.0.7/27629/Mon May  5 10:35:28 2025)
 
 On 5/5/25 9:58 PM, Paul Chaignon wrote:
-> When bpf_redirect_peer is used to redirect packets to a device in
-> another network namespace, the skb isn't scrubbed. That can lead skb
-> information from one namespace to be "misused" in another namespace.
+> When switching network namespaces with the bpf_redirect_peer helper, the
+> skb->mark and skb->tstamp fields are not zeroed out like they can be on
+> a typical netns switch. This patch clarifies that in the helper
+> description.
 > 
-> As one example, this is causing Cilium to drop traffic when using
-> bpf_redirect_peer to redirect packets that just went through IPsec
-> decryption to a container namespace. The following pwru trace shows (1)
-> the packet path from the host's XFRM layer to the container's XFRM
-> layer where it's dropped and (2) the number of active skb extensions at
-> each function.
-> 
->      NETNS       MARK  IFACE  TUPLE                                FUNC
->      4026533547  d00   eth0   10.244.3.124:35473->10.244.2.158:53  xfrm_rcv_cb
->                               .active_extensions = (__u8)2,
->      4026533547  d00   eth0   10.244.3.124:35473->10.244.2.158:53  xfrm4_rcv_cb
->                               .active_extensions = (__u8)2,
->      4026533547  d00   eth0   10.244.3.124:35473->10.244.2.158:53  gro_cells_receive
->                               .active_extensions = (__u8)2,
->      [...]
->      4026533547  0     eth0   10.244.3.124:35473->10.244.2.158:53  skb_do_redirect
->                               .active_extensions = (__u8)2,
->      4026534999  0     eth0   10.244.3.124:35473->10.244.2.158:53  ip_rcv
->                               .active_extensions = (__u8)2,
->      4026534999  0     eth0   10.244.3.124:35473->10.244.2.158:53  ip_rcv_core
->                               .active_extensions = (__u8)2,
->      [...]
->      4026534999  0     eth0   10.244.3.124:35473->10.244.2.158:53  udp_queue_rcv_one_skb
->                               .active_extensions = (__u8)2,
->      4026534999  0     eth0   10.244.3.124:35473->10.244.2.158:53  __xfrm_policy_check
->                               .active_extensions = (__u8)2,
->      4026534999  0     eth0   10.244.3.124:35473->10.244.2.158:53  __xfrm_decode_session
->                               .active_extensions = (__u8)2,
->      4026534999  0     eth0   10.244.3.124:35473->10.244.2.158:53  security_xfrm_decode_session
->                               .active_extensions = (__u8)2,
->      4026534999  0     eth0   10.244.3.124:35473->10.244.2.158:53  kfree_skb_reason(SKB_DROP_REASON_XFRM_POLICY)
->                               .active_extensions = (__u8)2,
-> 
-> In this case, there are no XFRM policies in the container's network
-> namespace so the drop is unexpected. When we decrypt the IPsec packet,
-> the XFRM state used for decryption is set in the skb extensions. This
-> information is preserved across the netns switch. When we reach the
-> XFRM policy check in the container's netns, __xfrm_policy_check drops
-> the packet with LINUX_MIB_XFRMINNOPOLS because a (container-side) XFRM
-> policy can't be found that matches the (host-side) XFRM state used for
-> decryption.
-> 
-> This patch fixes this by scrubbing the packet when using
-> bpf_redirect_peer, as is done on typical netns switches via veth
-> devices except skb->mark and skb->tstamp are not zeroed.
-> 
-> Fixes: 9aa1206e8f482 ("bpf: Add redirect_peer helper")
 > Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
 
 Acked-by: Daniel Borkmann <daniel@iogearbox.net>
