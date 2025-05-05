@@ -1,230 +1,199 @@
-Return-Path: <bpf+bounces-57333-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57334-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3AE9AA900F
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 11:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EC54AA907E
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 12:01:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 711FE3AB77E
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 09:49:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20DAB3AC26E
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 10:01:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 708DB1FDA6A;
-	Mon,  5 May 2025 09:49:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C90C11F4285;
+	Mon,  5 May 2025 10:01:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cvzRzO5V"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="MZVDOiRp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D2811FBE83
-	for <bpf@vger.kernel.org>; Mon,  5 May 2025 09:49:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39A771A8F98
+	for <bpf@vger.kernel.org>; Mon,  5 May 2025 10:01:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746438567; cv=none; b=kKUKojXA3hf3vcBtVLJmmm1k/t/xdsjV7nzXdjCtyS/iAXZ9/hB0SdryTpNxgWsfSqgNoWN8Vzeo0hW8WepmZsuF6bKueiWsOGU6jq/aXWnVKWBCGzdyljS9nQyrrWaBPqJgZ94wDjH0lQ/A34n8zIp8VA/Fsk0q2UULLdc1/9s=
+	t=1746439299; cv=none; b=mGkL7j3co1ZfLKLiKKOXMzQdC6rWVihN558wtZJGL+2PdJK59djVNYoNBQK1cIBXVIIBIRIPSR+gJTUysYRMihOwZ3muhD7H9Hn4qGyV/r8US8uTcR0adXq6G6tvV9/HBIoQXa9EmGnsHUD7OxNH3OMnqlIcesUvbjpD3jwNMA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746438567; c=relaxed/simple;
-	bh=gvzkYTs5rtpmqTb8VcPZ2BZt4c/wz+av7Ml2LLrsOrY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XuQXFlLAJhNK03vPJqszulyUq295ahRbZz7BZwt7e6ukwCFA/1Tb27paBNYX2Gl3T4puWw3GqAClF70GAgb1z37DoM0EI9se+jyZXuCz8qfTn/vOo2k03/96s7S25q6rM1/2nuBWojI33wu5XuTm/P8kPX3xxy50V4V8AZBlO/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cvzRzO5V; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-ac28e66c0e1so462711666b.0
-        for <bpf@vger.kernel.org>; Mon, 05 May 2025 02:49:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1746438563; x=1747043363; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1BnBvCblRkYEN9Ha75Czu/UHxSFQXfVj92v2hVXdBmw=;
-        b=cvzRzO5VSdzYYdu8zwdQc5dPP6cTQ1lEMaSiaO6qdXVWS1vFQyL9eDw6UqSPkpQc7m
-         +KVIb95ry0t+iYcjGVzONhlgBoqVi8zXejSnJQxvnT/ucsnAxzc2zeFmh6bx7w/TxyLT
-         pSdTJRdsfAz5XdnmHVcppVa4ZlZJmdu81RoVZ1SJFFGaq45p8cLIJMc7zV1Zge7Bd19R
-         yCACTwN12kXdhgaNpzTXEFW9HV+XcqnrAUo27YLBMr0CT+7qqQI0bGxHx4YS6+TKulL2
-         ansZLDCY4ZlFE+ZyHBve2RELwQiQL2PuMPsq4/eV0dMeeHexBOmlK6WnQIWdk0kCQpRD
-         iGyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746438563; x=1747043363;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1BnBvCblRkYEN9Ha75Czu/UHxSFQXfVj92v2hVXdBmw=;
-        b=Z7h5C/XIuDsTWTaYxY1461zITcLLGQ0sUkhjDug4a8RByfCmk+yl8xV3rvyCDI1ylU
-         yF/NjbF0ZyEsyCcHYP1iJbIHtBLcPGnlstwJejRJWeTqJJ0k+WTAYKSJ0fvuBJ8v/e4X
-         TnYCe8ZzaPj4MNBpPqWVfHi9imn9m5Y6M1TmpkAf4CmMoHdP/eNiZ7eu3LLU96Mx8HIA
-         qrkPcSKWakkN2TMuqaAUMTGgEOTjLw9/qIRZWdfTQ5kzNJMjKS/xcsQM1CUDvTRDSSV5
-         v7E0qP/0ga/MkKUDx+uxL12ThZ0ALkfZQnf85Pn0a2Gdftoprf0+jhQRFODwP5W7HyXs
-         xr8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVe84iefavBj0JADgFwWdxIADF+yeeXqiZFLMgRsWqXtKUvKeVWyYNEcv02ItZDkhJK47s=@vger.kernel.org
-X-Gm-Message-State: AOJu0YylBbPner2vzcuMkDH9v9NQaMOp77pj0G51IzGoViXSrWffOJWX
-	0lhhjmGfuIHGxP/FZTBocuLlDzS4eBf7yfJAHeEY3ZYO/d1MCkfqwAiLpkoTng==
-X-Gm-Gg: ASbGncudVloPn89F9RSqEuVBNt+C/7Xw2eBqXqjQgHJH4g4cWSMsBa229Tkltf4ncd3
-	W+x/kKkaFqBk7ULNsIjORquWcYq4vnA9gf/LfyscIFn5vqojfKznXKO7/0fKibLspmdvr2HpZEq
-	Ga5Na+uR/nL8Yp6w4y1Yq5aTjysG8WISBSN5p5YsgdKAVX0SEQRDs92CFTlM0KHlsz3ZGrcRtHE
-	KXKYvHyiHKpA8ayA7Lr0e/xELG4GbhXix0eOXNh4iuDvwuoLErXhrcqf+ZpP6gERHQUET85XbwH
-	0iB6hVwPQvC21fkzFftwgb3R/A6Vjea2lDAwQcI2r1MBbaXymckhiV6OcmmHCZcQNQSsgEhTLbG
-	XYPK5GvrbbSYvMU2Ohg==
-X-Google-Smtp-Source: AGHT+IFYGMgq5KfTLL8HI20N+F541w/zDb+X8QB3oV7HJE3GRuklU1l2cXFO8FZH21KvDjj0U5xzlg==
-X-Received: by 2002:a17:907:9411:b0:ace:c50a:f87 with SMTP id a640c23a62f3a-ad1a4b040f5mr560069966b.46.1746438563048;
-        Mon, 05 May 2025 02:49:23 -0700 (PDT)
-Received: from google.com (201.31.90.34.bc.googleusercontent.com. [34.90.31.201])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ad18950ace4sm463710566b.153.2025.05.05.02.49.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 May 2025 02:49:22 -0700 (PDT)
-Date: Mon, 5 May 2025 09:49:17 +0000
-From: Matt Bobrowski <mattbobrowski@google.com>
-To: Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bpf: add bpf_msleep_interruptible()
-Message-ID: <aBiJnR5MEL5hVXXC@google.com>
-References: <20250505063918.3320164-1-senozhatsky@chromium.org>
+	s=arc-20240116; t=1746439299; c=relaxed/simple;
+	bh=Yu6NykVCvbLVoIbqDEo1zGNJ1dwoiBds4aQkIcWYTnw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=h+hpeI4DLcow104sDgcsoy7fsZu9admCoxDBEPjEVaoswlc5vHpy9D/N4PYJ/0iJEVt0d4b1eS1QZeXrqS2SHIWF6gO2LP07Btv6q04GAUn5/Tg/OlJF+HElVVJfDj26C+xDyx6/AfpMaN4I9CWOXIOFFSFJioHaaUMSQzm6krU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=MZVDOiRp; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=Xng61055T2JpY8qLEFOVqAKJRkzfdSz9c4P8Q8gH8dM=; b=MZVDOiRpujzogE2r9Oqa4M7p0l
+	gLAYLVgaavaOfzRu2KtBq1eIHpYwUdYbq1J0j+lOD1hlSGT+fWujWwkg4lmbEwlBRGr7c3UhRDqw2
+	sgJA1UonnITEtzOftPpxuI1QQlkCYbli+ZKM3dUiFfSTvsZbbd+yyDndRxTKuFk6ZEgmLRd7LYLkr
+	dVc6Mfk2zmZgMRdSM7+R27zJoJxDA1r2xi0/AyIGnFAnbP3wAUCVq84KDSNwbB2qOGr+g1XDroQKV
+	3BK9o8Bhps+DRUuBCOHpHx4BTlTUjPSi5Bjmg8yFOxod5RwIO58ZPPvbIVxKJ9wD1DNa0Qb78k8Ix
+	5pgN8oHA==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1uBsde-000L7y-20;
+	Mon, 05 May 2025 12:01:31 +0200
+Received: from [85.195.247.12] (helo=[192.168.1.114])
+	by sslproxy02.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1uBsde-000GfI-1N;
+	Mon, 05 May 2025 12:01:30 +0200
+Message-ID: <11ea4e28-4653-4061-9226-fbee3d5b9f32@iogearbox.net>
+Date: Mon, 5 May 2025 12:01:30 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250505063918.3320164-1-senozhatsky@chromium.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf] bpf: Scrub packet on bpf_redirect_peer
+To: Paul Chaignon <paul.chaignon@gmail.com>, bpf@vger.kernel.org
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+References: <aBiJdTDs_YP0AYVb@mail.gmail.com>
+Content-Language: en-US
+From: Daniel Borkmann <daniel@iogearbox.net>
+Autocrypt: addr=daniel@iogearbox.net; keydata=
+ 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
+In-Reply-To: <aBiJdTDs_YP0AYVb@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 1.0.7/27629/Mon May  5 10:35:28 2025)
 
-On Mon, May 05, 2025 at 03:38:59PM +0900, Sergey Senozhatsky wrote:
-> bpf_msleep_interruptible() puts a calling context into an
-> interruptible sleep.  This function is expected to be used
-> for testing only (perhaps in conjunction with fault-injection)
-> to simulate various execution delays or timeouts.
->
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+On 5/5/25 11:48 AM, Paul Chaignon wrote:
+> When bpf_redirect_peer is used to redirect packets to a device in
+> another network namespace, the skb isn't scrubbed. That can lead skb
+> information from one namespace to be "misused" in another namespace.
+> 
+> As one example, this is causing Cilium to drop traffic when using
+> bpf_redirect_peer to redirect packets that just went through IPsec
+> decryption to a container namespace. The following pwru trace shows (1)
+> the packet path from the host's XFRM layer to the container's XFRM
+> layer where it's dropped and (2) the number of active skb extensions at
+> each function.
+> 
+>      NETNS       MARK  IFACE  TUPLE                                FUNC
+>      4026533547  d00   eth0   10.244.3.124:35473->10.244.2.158:53  xfrm_rcv_cb
+>                               .active_extensions = (__u8)2,
+>      4026533547  d00   eth0   10.244.3.124:35473->10.244.2.158:53  xfrm4_rcv_cb
+>                               .active_extensions = (__u8)2,
+>      4026533547  d00   eth0   10.244.3.124:35473->10.244.2.158:53  gro_cells_receive
+>                               .active_extensions = (__u8)2,
+>      [...]
+>      4026533547  0     eth0   10.244.3.124:35473->10.244.2.158:53  skb_do_redirect
+>                               .active_extensions = (__u8)2,
+>      4026534999  0     eth0   10.244.3.124:35473->10.244.2.158:53  ip_rcv
+>                               .active_extensions = (__u8)2,
+>      4026534999  0     eth0   10.244.3.124:35473->10.244.2.158:53  ip_rcv_core
+>                               .active_extensions = (__u8)2,
+>      [...]
+>      4026534999  0     eth0   10.244.3.124:35473->10.244.2.158:53  udp_queue_rcv_one_skb
+>                               .active_extensions = (__u8)2,
+>      4026534999  0     eth0   10.244.3.124:35473->10.244.2.158:53  __xfrm_policy_check
+>                               .active_extensions = (__u8)2,
+>      4026534999  0     eth0   10.244.3.124:35473->10.244.2.158:53  __xfrm_decode_session
+>                               .active_extensions = (__u8)2,
+>      4026534999  0     eth0   10.244.3.124:35473->10.244.2.158:53  security_xfrm_decode_session
+>                               .active_extensions = (__u8)2,
+>      4026534999  0     eth0   10.244.3.124:35473->10.244.2.158:53  kfree_skb_reason(SKB_DROP_REASON_XFRM_POLICY)
+>                               .active_extensions = (__u8)2,
+> 
+> In this case, there are no XFRM policies in the container's network
+> namespace so the drop is unexpected. When we decrypt the IPsec packet,
+> the XFRM state used for decryption is set in the skb extensions. This
+> information is preserved across the netns switch. When we reach the
+> XFRM policy check in the container's netns, __xfrm_policy_check drops
+> the packet with LINUX_MIB_XFRMINNOPOLS because a (container-side) XFRM
+> policy can't be found that matches the (host-side) XFRM state used for
+> decryption.
+> 
+> This patch fixes this by scrubbing the packet when using
+> bpf_redirect_peer, as is done on typical netns switches via veth
+> devices.
+> 
+> Fixes: 9aa1206e8f482 ("bpf: Add redirect_peer helper")
+> Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
 > ---
->  include/linux/bpf.h            |  1 +
->  include/uapi/linux/bpf.h       |  9 +++++++++
->  kernel/bpf/helpers.c           | 13 +++++++++++++
->  kernel/trace/bpf_trace.c       |  2 ++
->  tools/include/uapi/linux/bpf.h |  9 +++++++++
->  5 files changed, 34 insertions(+)
+>   net/core/filter.c | 1 +
+>   1 file changed, 1 insertion(+)
 > 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 3f0cc89c0622..85bd1daaa7df 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -3392,6 +3392,7 @@ extern const struct bpf_func_proto bpf_get_retval_proto;
->  extern const struct bpf_func_proto bpf_user_ringbuf_drain_proto;
->  extern const struct bpf_func_proto bpf_cgrp_storage_get_proto;
->  extern const struct bpf_func_proto bpf_cgrp_storage_delete_proto;
-> +extern const struct bpf_func_proto bpf_msleep_interruptible_proto;
->  
->  const struct bpf_func_proto *tracing_prog_func_proto(
->    enum bpf_func_id func_id, const struct bpf_prog *prog);
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 71d5ac83cf5d..cbbb6d70a7a3 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -5814,6 +5814,14 @@ union bpf_attr {
->   *		0 on success.
->   *
->   *		**-ENOENT** if the bpf_local_storage cannot be found.
-> + *
-> + * long bpf_msleep_interruptible(long timeout)
-> + *	Description
-> + *		Make the current task sleep until *timeout* milliseconds have
-> + *		elapsed or until a signal is received.
-> + *
-> + *	Return
-> + *		The remaining time of the sleep duration in milliseconds.
->   */
->  #define ___BPF_FUNC_MAPPER(FN, ctx...)			\
->  	FN(unspec, 0, ##ctx)				\
-> @@ -6028,6 +6036,7 @@ union bpf_attr {
->  	FN(user_ringbuf_drain, 209, ##ctx)		\
->  	FN(cgrp_storage_get, 210, ##ctx)		\
->  	FN(cgrp_storage_delete, 211, ##ctx)		\
-> +	FN(msleep_interruptible, 212, ##ctx)		\
->  	/* This helper list is effectively frozen. If you are trying to	\
->  	 * add a new helper, you should add a kfunc instead which has	\
->  	 * less stability guarantees. See Documentation/bpf/kfuncs.rst	\
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 79cab4d78dc3..12b6b8dbeb51 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -2509,6 +2509,7 @@ int skb_do_redirect(struct sk_buff *skb)
+>   			goto out_drop;
+>   		skb->dev = dev;
+>   		dev_sw_netstats_rx_add(dev, skb->len);
+> +		skb_scrub_packet(skb, true);
 
-I noticed that you've written the newly proposed BPF helper in the
-legacy BPF helper form, which I believe is now discouraged, as also
-stated within the above comment. You probably want to respin this
-patch series having written this newly proposed BPF helper in BPF
-kfuncs [0] form instead.
+This should be set to false, and defer the clearing of mark/tstamp
+iff needed to the BPF program in the host given this has been out
+for quite some time to avoid breakage if someone actively has been
+using BPF like that to transfer this information to apps in the
+target namespace.
 
-Additionally, as part of your patch series I think you'll also want to
-include some selftests.
+>   		return -EAGAIN;
+>   	}
+>   	return flags & BPF_F_NEIGH ?
 
-[0] https://docs.kernel.org/bpf/kfuncs.html
-
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index e3a2662f4e33..0a3449c282f2 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -1905,6 +1905,19 @@ static const struct bpf_func_proto bpf_dynptr_data_proto = {
->  	.arg3_type	= ARG_CONST_ALLOC_SIZE_OR_ZERO,
->  };
->  
-> +BPF_CALL_1(bpf_msleep_interruptible, long, timeout)
-> +{
-> +	return msleep_interruptible(timeout);
-> +}
-> +
-> +const struct bpf_func_proto bpf_msleep_interruptible_proto = {
-> +	.func		= bpf_msleep_interruptible,
-> +	.gpl_only	= false,
-> +	.might_sleep	= true,
-> +	.ret_type	= RET_INTEGER,
-> +	.arg1_type	= ARG_ANYTHING,
-> +};
-> +
->  const struct bpf_func_proto bpf_get_current_task_proto __weak;
->  const struct bpf_func_proto bpf_get_current_task_btf_proto __weak;
->  const struct bpf_func_proto bpf_probe_read_user_proto __weak;
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 52c432a44aeb..8a0b96aed0c0 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -1475,6 +1475,8 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->  		return &bpf_get_branch_snapshot_proto;
->  	case BPF_FUNC_find_vma:
->  		return &bpf_find_vma_proto;
-> +	case BPF_FUNC_msleep_interruptible:
-> +		return &bpf_msleep_interruptible_proto;
->  	default:
->  		break;
->  	}
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> index 71d5ac83cf5d..cbbb6d70a7a3 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -5814,6 +5814,14 @@ union bpf_attr {
->   *		0 on success.
->   *
->   *		**-ENOENT** if the bpf_local_storage cannot be found.
-> + *
-> + * long bpf_msleep_interruptible(long timeout)
-> + *	Description
-> + *		Make the current task sleep until *timeout* milliseconds have
-> + *		elapsed or until a signal is received.
-> + *
-> + *	Return
-> + *		The remaining time of the sleep duration in milliseconds.
->   */
->  #define ___BPF_FUNC_MAPPER(FN, ctx...)			\
->  	FN(unspec, 0, ##ctx)				\
-> @@ -6028,6 +6036,7 @@ union bpf_attr {
->  	FN(user_ringbuf_drain, 209, ##ctx)		\
->  	FN(cgrp_storage_get, 210, ##ctx)		\
->  	FN(cgrp_storage_delete, 211, ##ctx)		\
-> +	FN(msleep_interruptible, 212, ##ctx)		\
->  	/* This helper list is effectively frozen. If you are trying to	\
->  	 * add a new helper, you should add a kfunc instead which has	\
->  	 * less stability guarantees. See Documentation/bpf/kfuncs.rst	\
-> -- 
-> 2.49.0.906.g1f30a19c02-goog
-> 
 
