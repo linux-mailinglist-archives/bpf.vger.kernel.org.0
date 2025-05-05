@@ -1,190 +1,177 @@
-Return-Path: <bpf+bounces-57376-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57377-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64E36AA9DEB
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 23:19:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F28CAA9E23
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 23:28:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A1A5189F348
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 21:19:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0AFC3A4D9A
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 21:28:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2956626FA50;
-	Mon,  5 May 2025 21:19:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2F812741C0;
+	Mon,  5 May 2025 21:28:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KgBgUvqV"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="reKuU5Jm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 287201F5858;
-	Mon,  5 May 2025 21:19:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FBD12701BD
+	for <bpf@vger.kernel.org>; Mon,  5 May 2025 21:28:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746479966; cv=none; b=Q/ds8jN2nClN3miO/AZfaJ0pyF5eFNfsa0IwF3wGPzec9njBILNm+ELK0nN/BaWtBEFiwUSQCmdsCtVaGMyZrLtuNh6r2BHl4UP1tpuU5RXe81iQaczdUdjr7bQcZFExqTo45CqNQScap1EVZqTEkO/lfAbVlcQtdtSTiBzKARA=
+	t=1746480530; cv=none; b=TtbhsZ0bQ9vNjCjoFEZV79hxyNgKpUMeQmR/9s/y0pVAP/yiTd4DFerUCiKnDS+zglnp0VZJdBGdqOYyZiRw2OAS0CWTTNLtizKS7lMKUADKajII/jFE0T5/JXuG4jUioaOgG17UT4R05DrxVXqEvNxUtu8xASRMvfj1SXdwp1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746479966; c=relaxed/simple;
-	bh=WA6A66jbSumBpnvo1CcnCAQKj8o6kE3NizSJHiWr8+Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IcR+EMkNiAMqrlFG0lBQ/xuNyVQU5CgEvX1XPMnV2jQOl9aRvTUdfTOQs5uIcG2OR6Vx5sPzarT5e8P0iLvJLZI4BXGGPczud5nwsqNhoSox5JpRs7MNNjB6Ejn/qATIoZ3th4rBkrn4H4OwKuAqXf2CH42JyYlFFxw90dadozE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KgBgUvqV; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-22435603572so61713785ad.1;
-        Mon, 05 May 2025 14:19:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746479964; x=1747084764; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UTF79k6zfut3vyuBRV47WUrLWL2J4fqa+kyc5623FDw=;
-        b=KgBgUvqVbfGFdxwPJ4IJTDSFugR1QnpmiFh7M95txjFwZgt7V2hdwY57hJHjJzj1sy
-         ExRXVarYWTt5fUJu3eEPr+aTz7k0yrmc+P42MteoKkwcVY0SLc0aiuM/6q74jtdBGjOH
-         BPuWKcH8pjX8GY6mBajQWEbh5W1hrkgDyxwOXd3M7oHOsFDRZFq3ev0l3H3fl149z5SP
-         kaxSO2EQpj2uQ1FxVUCgT2zmfarEvaePt1sxGAqjbzuCG6ATLcKt6Dr15vcPYcjIGNEp
-         7l1XmkGy/G8jn6Xwp+sGoYWR3kD4jlvEKt+E87+A8mFhiMtClY1uxXziYpMQUEuNZr3i
-         txdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746479964; x=1747084764;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UTF79k6zfut3vyuBRV47WUrLWL2J4fqa+kyc5623FDw=;
-        b=Ap1bBzlTGzy2RADPB8Vkt9wzQw/F4I70pyjt9H64/O3cmnQ5fzNjCElMYJF0x2bWr9
-         2ZvU33/Se2gOuBIVe7SiiVmvpIvBJPu1gPzG7xK7McyPVNsYMynR1GYVh0vBkEWmrWM2
-         7YkpLZNyeQ8xKc/7d7zOUSrXvKVaPJ72/u0WNuFRDaTa4CgEjioexD+E9sgyHW4GP9A5
-         snZnTZInMX6+KjE4XU/n2m9ykTcrhqaYqKEj6DHa/oTjSPUHdG0T34TVktitQPD+wpRR
-         JqcKxIsEz+mtZ/hfZMb3Hjvzr0HStu5zkvujfjOkyms5YPuUU24QWyYnlZfEwYf/3yR0
-         WVVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV59dtHAT0a2v8hU1UwbpgSZ4qUtmD1hhUk2mxKqrWxBV8PePmHxA577IId8juvzn8DpznbBl+ZeWxuwJes@vger.kernel.org, AJvYcCVdVVfM+g96T5Y21B6agQOHds420jM+DRgZat8/E+eZ87B6UkkbNb+VbSEKhMvaC0gqUBE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwhvrItW/eKKd0wCFSBz9lFYozrS97oKAjHZj/wXUYESZmkpe/x
-	OfzHxdwpHwrcVd4oiTpZfgZzN16k7NxnqS5/i9y8uy+5epbmQulTaYKudhIGZcz3dGmr/Ml+HBO
-	neqkbda/IjqXVciNswGSmH/AXtxs=
-X-Gm-Gg: ASbGncuzw9azzlKHS8qIgJvMCc2ns3FE5fkwpHqwcT16iKm938qG8pp2LGyxSl8iadZ
-	CeDlv69c/tnFxMRkcQA3zneHdftIc0PpNDAa92NP11auuNM7U6BUY5ea/Dji8nOZ755GL9eZnK4
-	PS0DToS/P2xfRWyNYRLZn3zFc8GuZ7R+fnRejA+w==
-X-Google-Smtp-Source: AGHT+IF8sIfP+b2pX+6nGVhu6p6m8YWE3x1NnyOUcdFc5sb94pwg4KCarjU2wYpAJD1ujHcVYnKTRwkgMKocHg8P61Q=
-X-Received: by 2002:a17:903:3ba6:b0:22d:b305:e097 with SMTP id
- d9443c01a7336-22e1eac746emr118775325ad.50.1746479964318; Mon, 05 May 2025
- 14:19:24 -0700 (PDT)
+	s=arc-20240116; t=1746480530; c=relaxed/simple;
+	bh=X/iNt5SPBw1NxkT1OKCPANnd5Cy5J78Wzaoq9W4AI/I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VeQSyCRJnhXVgu1Jn4mSxgbwOkpo8hXrhNyaD+iP0mQbjAQv5fYLKCUmDqqB7JWWSYZW5GwBPB3SBk4AqwZQDndaOCRTQVMEC2p08C0A1ReAMK1Wp7ShlzgSSbmaUI1luD8Ewh812QcfunBkthpz28mgqyNfBmYVYnlwJsbNhRc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=reKuU5Jm; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=8PgbbR+j3fY8/x58UQ4b+XyDf++JdRx33b/0lqil/k4=; b=reKuU5JmoZLyXd5vBXD8/Cmn7v
+	oZ08fNO8wCCqgAWEqM+ACZw68yvYMWGu8sTxuBqgxlW+s0q6yDugLHjHS1RQcHzOD9mYK231jEE4Y
+	Bya1ZuXOa4H1hWCFPfAGb4WqbzJJ4RF5PcwJjaO/aUep1VFKrDSRbRtx5D72SfmIDv44eqWXrLD9A
+	vdDg32gpGUvhd433XIWv1jehK637UuQF+ghyFsrWEfZr94MjKX/kqa9Q0jPqBcLdezkOX1PH9WVaq
+	138kTcf6mRdCo2Jb3jLkNRxXwucxz0+MzPoV9n7Chus7TvoVGm4jFdLVQSRKZWZrugR3kUaLE7UkL
+	SpylV+6g==;
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1uC3Mg-0008DY-29;
+	Mon, 05 May 2025 23:28:43 +0200
+Received: from [85.195.247.12] (helo=[192.168.1.114])
+	by sslproxy01.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1uC3Mg-0006SA-2z;
+	Mon, 05 May 2025 23:28:42 +0200
+Message-ID: <4acbb1b4-8b3b-4347-ac67-7b673e0c17e5@iogearbox.net>
+Date: Mon, 5 May 2025 23:28:42 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250505063918.3320164-1-senozhatsky@chromium.org>
- <CAEf4BzZkVg39JqGeuAjypf=WXsOG8JVDS8SSkVLDjHUuHzxoow@mail.gmail.com> <CAP01T754qZJNS7N8Q3dTB-2ApCRPbG1sUU2RpxT4ePFbv9-8=g@mail.gmail.com>
-In-Reply-To: <CAP01T754qZJNS7N8Q3dTB-2ApCRPbG1sUU2RpxT4ePFbv9-8=g@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 5 May 2025 14:19:12 -0700
-X-Gm-Features: ATxdqUEFZfPbUvdt1GunL_wNNl67r443_SdCxbHf8qX8sPZXXMALz5XG2wrkRLg
-Message-ID: <CAEf4BzZWTS6QhgdEGVrkeuJCB26ySaKW1VRgCOgtrB-FG-WdSQ@mail.gmail.com>
-Subject: Re: [PATCH] bpf: add bpf_msleep_interruptible()
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf v2 1/2] bpf: Scrub packet on bpf_redirect_peer
+To: Paul Chaignon <paul.chaignon@gmail.com>, bpf@vger.kernel.org
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+References: <1728ead5e0fe45e7a6542c36bd4e3ca07a73b7d6.1746460653.git.paul.chaignon@gmail.com>
+Content-Language: en-US
+From: Daniel Borkmann <daniel@iogearbox.net>
+Autocrypt: addr=daniel@iogearbox.net; keydata=
+ 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
+In-Reply-To: <1728ead5e0fe45e7a6542c36bd4e3ca07a73b7d6.1746460653.git.paul.chaignon@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 1.0.7/27629/Mon May  5 10:35:28 2025)
 
-On Mon, May 5, 2025 at 1:46=E2=80=AFPM Kumar Kartikeya Dwivedi <memxor@gmai=
-l.com> wrote:
->
-> On Mon, 5 May 2025 at 21:57, Andrii Nakryiko <andrii.nakryiko@gmail.com> =
-wrote:
-> >
-> > On Sun, May 4, 2025 at 11:40=E2=80=AFPM Sergey Senozhatsky
-> > <senozhatsky@chromium.org> wrote:
-> > >
-> > > bpf_msleep_interruptible() puts a calling context into an
-> > > interruptible sleep.  This function is expected to be used
-> > > for testing only (perhaps in conjunction with fault-injection)
-> > > to simulate various execution delays or timeouts.
-> >
-> > I'm a bit worried that we'll be opening a bit too much of an
-> > opportunity to arbitrarily slow down kernel in a way that would be
-> > actually pretty hard to detect (CPU profilers won't see this, you'd
-> > need to rely on off-CPU profiling, which is not as developed as far as
-> > profilers go).
-> >
-> > I understand the appeal, don't get me wrong, but we have no way to
-> > enforce "is expected to be used for testing only". It's also all too
-> > easy to sleep for a really long time, and there isn't really any
-> > reasonable limit that would mitigate this, IMO.
-> >
-> > If I had to do this for my own testing/fuzzing needs, I'd probably try
-> > to go with a custom kfunc provided by my small and trivial kernel
-> > module (modules can extend BPF with custom kfuncs). And see if it's
-> > useful.
-> >
-> > One other alternative to enforce the "for testing only" aspect might
-> > be a custom kernel config, that would be expected to not make it into
-> > production. Though I'd start with the kernel module approach first,
-> > probably.
-> >
-> > P.S. BPF's "sleepable" is really "faultable", where a BPF program
-> > might wait (potentially for a long time) for kernel to fault memory
-> > in, but that's a bit more well-defined sleeping behavior. Here it's
-> > just a random amount of time to put whatever task the BPF program
-> > happened to run in the context of, which seems like a much bigger
-> > leap. So while we do have sleepable BPF programs, they can't just
-> > arbitrarily and voluntarily sleep (at least today).
-> >
-> > P.P.S. And when you think about this, we do rely on sleepable/trace
-> > RCU grace periods to be not controlled so directly and arbitrarily by
-> > any one BPF program, while here with bpf_msleep_interruptible() we'll
-> > be giving a lot of control to one BPF program to delay resource
-> > freeing of all other BPF programs (and not just sleepable ones, mind
-> > you: think sleepable hooks running non-sleepable BPF programs, like
-> > with sleepable tracepoints of uprobes).
-> >
->
-> I agree with the sentiment, but I think it's already possible such that
-> adding this will neither worsen or improve the status quo.
->
-> You can have a userfaultfd in user space, and do a bpf_copy_from_user
-> on the address such that you can trap the fault for as long as you
-> wish (with rcu_tasks_trace read section open) [0]. I used it in the
-> past to reconstruct race conditions.
+On 5/5/25 9:58 PM, Paul Chaignon wrote:
+> When bpf_redirect_peer is used to redirect packets to a device in
+> another network namespace, the skb isn't scrubbed. That can lead skb
+> information from one namespace to be "misused" in another namespace.
+> 
+> As one example, this is causing Cilium to drop traffic when using
+> bpf_redirect_peer to redirect packets that just went through IPsec
+> decryption to a container namespace. The following pwru trace shows (1)
+> the packet path from the host's XFRM layer to the container's XFRM
+> layer where it's dropped and (2) the number of active skb extensions at
+> each function.
+> 
+>      NETNS       MARK  IFACE  TUPLE                                FUNC
+>      4026533547  d00   eth0   10.244.3.124:35473->10.244.2.158:53  xfrm_rcv_cb
+>                               .active_extensions = (__u8)2,
+>      4026533547  d00   eth0   10.244.3.124:35473->10.244.2.158:53  xfrm4_rcv_cb
+>                               .active_extensions = (__u8)2,
+>      4026533547  d00   eth0   10.244.3.124:35473->10.244.2.158:53  gro_cells_receive
+>                               .active_extensions = (__u8)2,
+>      [...]
+>      4026533547  0     eth0   10.244.3.124:35473->10.244.2.158:53  skb_do_redirect
+>                               .active_extensions = (__u8)2,
+>      4026534999  0     eth0   10.244.3.124:35473->10.244.2.158:53  ip_rcv
+>                               .active_extensions = (__u8)2,
+>      4026534999  0     eth0   10.244.3.124:35473->10.244.2.158:53  ip_rcv_core
+>                               .active_extensions = (__u8)2,
+>      [...]
+>      4026534999  0     eth0   10.244.3.124:35473->10.244.2.158:53  udp_queue_rcv_one_skb
+>                               .active_extensions = (__u8)2,
+>      4026534999  0     eth0   10.244.3.124:35473->10.244.2.158:53  __xfrm_policy_check
+>                               .active_extensions = (__u8)2,
+>      4026534999  0     eth0   10.244.3.124:35473->10.244.2.158:53  __xfrm_decode_session
+>                               .active_extensions = (__u8)2,
+>      4026534999  0     eth0   10.244.3.124:35473->10.244.2.158:53  security_xfrm_decode_session
+>                               .active_extensions = (__u8)2,
+>      4026534999  0     eth0   10.244.3.124:35473->10.244.2.158:53  kfree_skb_reason(SKB_DROP_REASON_XFRM_POLICY)
+>                               .active_extensions = (__u8)2,
+> 
+> In this case, there are no XFRM policies in the container's network
+> namespace so the drop is unexpected. When we decrypt the IPsec packet,
+> the XFRM state used for decryption is set in the skb extensions. This
+> information is preserved across the netns switch. When we reach the
+> XFRM policy check in the container's netns, __xfrm_policy_check drops
+> the packet with LINUX_MIB_XFRMINNOPOLS because a (container-side) XFRM
+> policy can't be found that matches the (host-side) XFRM state used for
+> decryption.
+> 
+> This patch fixes this by scrubbing the packet when using
+> bpf_redirect_peer, as is done on typical netns switches via veth
+> devices except skb->mark and skb->tstamp are not zeroed.
+> 
+> Fixes: 9aa1206e8f482 ("bpf: Add redirect_peer helper")
+> Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
 
-That's true, but a) you can disable userfaultfd if you can't accept
-user-space arbitrarily delaying kernel page fault code path, and b)
-you'd have to jump through quite a lot of hoops to achieve this. So
-yes, similar issue exists with userfaultfd, but here it's quite a lot
-easier to accidentally misuse.
-
->
->   [0]: https://lore.kernel.org/bpf/20220114163953.1455836-11-memxor@gmail=
-.com.
->
-> So we probably need a solution to this problem even for 'faulting'
-> sleep, perhaps by scoping the read section to the program with SRCU,
-> or something similar.
-
-The problem is that whatever flavor of RCU we use, it can't be just
-bound to individual programs. RCU is used to protect maps from being
-freed too soon, and maps are a shared resource across BPF programs (in
-arbitrary configurations that are completely user dependent). So the
-solution would have to be a bit more nuanced than just using a
-separate RCU domain for a given program or a group of programs,
-probably.
-
->
->
-> > >
-> > > Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> > > ---
-> > >  include/linux/bpf.h            |  1 +
-> > >  include/uapi/linux/bpf.h       |  9 +++++++++
-> > >  kernel/bpf/helpers.c           | 13 +++++++++++++
-> > >  kernel/trace/bpf_trace.c       |  2 ++
-> > >  tools/include/uapi/linux/bpf.h |  9 +++++++++
-> > >  5 files changed, 34 insertions(+)
-> > >
-> >
-> > [...]
-> >
+Acked-by: Daniel Borkmann <daniel@iogearbox.net>
 
