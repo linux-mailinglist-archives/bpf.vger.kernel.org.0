@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-57379-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57380-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 161E3AA9E2B
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 23:29:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECE57AA9E2C
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 23:30:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA7023A5B7C
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 21:29:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6062C16E022
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 21:30:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBF0F2741C0;
-	Mon,  5 May 2025 21:29:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26F1C27467A;
+	Mon,  5 May 2025 21:29:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KyliViz5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YbNP2go3"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BB53157A48;
-	Mon,  5 May 2025 21:29:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A05C927465A;
+	Mon,  5 May 2025 21:29:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746480591; cv=none; b=nrNLtY6L7W13uawYBY+oScQ1UiOzN9Lsro73pNaCqKT+7D0IvpKwW94GMFo4lYanLcSvjN+1XI5ukVOMJ4x5k/La9hPsa9MjMkxvcEItutARGyeFINoPmnPfG+epzLUE7joZYcp1GpV157l3h83TyU7jAmre4i72q95mXpnQTe0=
+	t=1746480592; cv=none; b=sIDzEofbWft5kazTpciXrAKs05NfL1KBf3JBzPRprUdycQfaJvh2xgWT3BIhOozFyA5f2n63SNEt2l8b2ISypvsjkKDYB3qjQaIDhYU8wq4TWhA13/CcNBVN53kqkuP2hLDrhvZj5U7s8uTC24DxbuBIjVw9VfkNGiExS5vbJF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746480591; c=relaxed/simple;
-	bh=XIwqPi7eiunKHhtXkr8+q/z08C5YP+xmW68hNjNRPtA=;
+	s=arc-20240116; t=1746480592; c=relaxed/simple;
+	bh=/Ain24s739aGvnZz4WCmIN8M9wK3tBJPtL2EuL9Rocw=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=Qw+6WD62sRVZHsavYE3Yv7Pp6BODMTtyReQtOAht9huUdiG9UykhAHyevJXoxelvtYlEsWQS/750EKpsnQoz0H6Yc6run2uo5s1tkECd2y1WaBPbJG/HNVfe5t7HMeU3WodxrQ6Hs6o8OjM8eStr1GErTWUePYyOg+BYpm3t02I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KyliViz5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37F33C4CEE4;
-	Mon,  5 May 2025 21:29:51 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=LWVis9zaq6hGzkGbQbqUmZhyYi9+H+wuos0zi2CLOs7n3W4dSFIBfbHaH8EDVE906QfuwjkNxpFQ1FbTjxciDDA8hzFpVb9EOu5JzsxoFo1orQ5T8gVwd6K2TmYqdcB6VamzpKsbya1IIyznSdlDWaZ5flg7uzO6O7nxbWWmg5g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YbNP2go3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74AB3C4CEE4;
+	Mon,  5 May 2025 21:29:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746480591;
-	bh=XIwqPi7eiunKHhtXkr8+q/z08C5YP+xmW68hNjNRPtA=;
+	s=k20201202; t=1746480592;
+	bh=/Ain24s739aGvnZz4WCmIN8M9wK3tBJPtL2EuL9Rocw=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=KyliViz5Wi645nbtNZFHvs3j6SOdjzhpv5/uDDkf1xmNsSJBefNAYDi0GIICialug
-	 aQ4Vw7FKc9iFoIbAtwEMiZ1cQ/mS30BXqYQr6QKsuwSxCMeKpBSvpEYX7ozsY99zJ4
-	 OIFrebS7FeqFizD+cLRb6t4gs/CivS/L+wOKn26wyiTxnBlgq5zHLT3NE2SwDgu+LZ
-	 lr0vTSV9zBUlb5XpRx+F9CGhE+pIvd358FdkWxszMA0v8dVqAc8YGlrJDnZ/JUtdOc
-	 VHddmH8K9Ed6P8+T82mQeIWq8neFYshalA3woT0mu3owHGrC26JBzkiN5I+Qip46kk
-	 WPd0o7JAeTegw==
+	b=YbNP2go344+igjigYBmVrFFPb/jaH7sau9r8GCvfvkYfFTXIlZOZ+/UWLNk9V/2R7
+	 4acG4be9+eLtEIEIiYVXeYCoYRluR5Oy7J/pukSrCNNJrXNwtV2B3B2VVOmeLZVuvS
+	 W7cSXpYyumrLGCnDpf9y+lQha7U2NQ2lEptsAtRgwyuxrsEe/aU9b4ZgaTc1fP6VB7
+	 3B6Tghh4Pdhg3sQqKXEV/c+N4ZkyTEC1HfCcIZzmgz5YzPt60iegFFccyRZfHhYEiY
+	 OddBE0lMpXxhDCSoc70ay7DnJCQjENJnSx1k6VZhDUO6XX5/CA7ubD3r5eKfRV5v8S
+	 8999h0yG6vpBg==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADE7C39D60BC;
-	Mon,  5 May 2025 21:30:31 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EADDA39D60BC;
+	Mon,  5 May 2025 21:30:32 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,37 +52,38 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: remove sockmap_ktls
- disconnect_after_delete test
+Subject: Re: [PATCH bpf-next] bpf: Replace offsetof() with struct_size()
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <174648063050.894801.1036879291071725008.git-patchwork-notify@kernel.org>
-Date: Mon, 05 May 2025 21:30:30 +0000
-References: <20250502185221.1556192-1-isolodrai@meta.com>
-In-Reply-To: <20250502185221.1556192-1-isolodrai@meta.com>
-To: Ihor Solodrai <isolodrai@meta.com>
-Cc: ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
- eddyz87@gmail.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
- kuba@kernel.org, jiayuan.chen@linux.dev, mykolal@fb.com, kernel-team@meta.com
+ <174648063174.894801.9510082135983077383.git-patchwork-notify@kernel.org>
+Date: Mon, 05 May 2025 21:30:31 +0000
+References: <20250503151513.343931-2-thorsten.blum@linux.dev>
+In-Reply-To: <20250503151513.343931-2-thorsten.blum@linux.dev>
+To: Thorsten Blum <thorsten.blum@linux.dev>
+Cc: martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 
 Hello:
 
 This patch was applied to bpf/bpf-next.git (master)
 by Andrii Nakryiko <andrii@kernel.org>:
 
-On Fri, 2 May 2025 11:52:21 -0700 you wrote:
-> "sockmap_ktls disconnect_after_delete" is effectively moot after
-> disconnect has been disabled for TLS [1][2]. Remove the test
-> completely.
+On Sat,  3 May 2025 17:15:13 +0200 you wrote:
+> Compared to offsetof(), struct_size() provides additional compile-time
+> checks for structs with flexible arrays (e.g., __must_be_array()).
 > 
-> [1] https://lore.kernel.org/bpf/20250416170246.2438524-1-ihor.solodrai@linux.dev/
-> [2] https://lore.kernel.org/netdev/20250404180334.3224206-1-kuba@kernel.org/
+> No functional changes intended.
+> 
+> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next,v2] selftests/bpf: remove sockmap_ktls disconnect_after_delete test
-    https://git.kernel.org/bpf/bpf-next/c/a28fe3160362
+  - [bpf-next] bpf: Replace offsetof() with struct_size()
+    https://git.kernel.org/bpf/bpf-next/c/41948afcf503
 
 You are awesome, thank you!
 -- 
