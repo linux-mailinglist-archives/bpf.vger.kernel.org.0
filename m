@@ -1,62 +1,62 @@
-Return-Path: <bpf+bounces-57390-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57391-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3A8AAA9EA2
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 00:00:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BA85AA9EA6
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 00:00:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCC8F5A0D37
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 22:00:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A515B1A81306
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 22:00:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99209274FF8;
-	Mon,  5 May 2025 22:00:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6552274FF8;
+	Mon,  5 May 2025 22:00:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="FasTKodH"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="ABdbB6Cs"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp-fw-52002.amazon.com (smtp-fw-52002.amazon.com [52.119.213.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BD1A2750E0;
-	Mon,  5 May 2025 22:00:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3439F129A78;
+	Mon,  5 May 2025 22:00:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746482414; cv=none; b=B0GT0tQ2FccEByiFAPJAtqf4ghPiHP5aAHho0nK8Q7za77u8j+cvyHaOMkkc2mUolfAfAAtPlhNqaH3jLSAJHXZsk49WwistY2v7/L+EDZ2qmabmqn0WBnEE5yb4h/dXY13zSNSKnjUtgWYTtKa8VEBJalufY2DGpBPp9/DGrT4=
+	t=1746482437; cv=none; b=IKkJi5p4807hHpHlLsXOh6axz/O427eYxT8YQitD0ZFyhKhwZEcyDWgBfqOtiafh3uaY1FhuJhS8Xj+grS87suNHrIHpFaCRFXV+8c9YTRusTaqofwburAZP38SynUCi3fs1CDH4IMlB7fIG3FtXaRVbidcsbDjbEMge1Q5dd7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746482414; c=relaxed/simple;
-	bh=dIG1lFkZH1VQRRMcBsApKEzI7KytVO8tC1HzPbDi1iw=;
+	s=arc-20240116; t=1746482437; c=relaxed/simple;
+	bh=ZtzVn3vhfHHrZyvMML07cCet17koomvjLqult12hZfQ=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=aJ1Z4XWGzd9d62vNOpocTgXncbQpEHvz7xNy6HyE/2itO8spVnfk2gKfa7wVl17dMac8bQKHpTgaSCEH0Sm7DaAXZnUfzTWcladg3lOQ9hc2yi3qicQ0n/FD2NlZZxWaaNFFvb9Xn7q9Z+c/WYTNSIMElwamB3zznsv4TDmF9+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=FasTKodH; arc=none smtp.client-ip=52.119.213.150
+	 MIME-Version:Content-Type; b=P8qO8/6A6c1xKat2LpblLoBFr1AePHCQrbphASSCzwhXQg4j7vtd0mtNcP7OHqafkElnloSFM50ZgFDhZPS1p9JsaYMCIGcr8UsgFZ+iTwrJadWyH+O/x1l4z+keWzopL7CExng1FiOPw29IDRjGQ1I/Hrmg4YrA+0X+G6JzVug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=ABdbB6Cs; arc=none smtp.client-ip=52.119.213.150
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1746482412; x=1778018412;
+  t=1746482435; x=1778018435;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=ScYdW67L2XR5HVeiblIKyx3fz8lNqUnjqziFN00NBU4=;
-  b=FasTKodHu2TMNeZpXjlQsQUnagxp/2+pMWcz2BmF8np77iDLitOZwbif
-   VXCWpSP+Of4ebYyHLbqkU3We3sNIr5tVl2F3VndlixWU4xlutjjnh5ZiY
-   Va4QA8ben4N+yWZYYFrLC2oGh85UdRN9JHEBEZkWgDeehDHNQCg76HbZO
-   0=;
+  bh=EXF8Pa46OdfY42qSofeY7OfevWcwLJJFEHFJJRca7Jk=;
+  b=ABdbB6Cs+6GXHbLPNCGqrqKRf4ceO3UjFKDpVYU83/3pcAISpqs3vTgN
+   OCw665fyXlbm5hzLAzWwAZy5ReyrzAiptQvvn07EEjT5BWwg3ZxOSrDpG
+   GUhZHb3SQyx7ZijAKly/7iBTwYc2YCgZR3LHKsZJUSmtNvkhCQU8iz7Mj
+   Q=;
 X-IronPort-AV: E=Sophos;i="6.15,264,1739836800"; 
-   d="scan'208";a="719980188"
+   d="scan'208";a="719980326"
 Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
-  by smtp-border-fw-52002.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2025 22:00:07 +0000
-Received: from EX19MTAUWB002.ant.amazon.com [10.0.7.35:62154]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.10.32:2525] with esmtp (Farcaster)
- id b68b5096-9918-4ccc-b1a9-3fe5fd6b477c; Mon, 5 May 2025 22:00:06 +0000 (UTC)
-X-Farcaster-Flow-ID: b68b5096-9918-4ccc-b1a9-3fe5fd6b477c
+  by smtp-border-fw-52002.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2025 22:00:32 +0000
+Received: from EX19MTAUWA002.ant.amazon.com [10.0.38.20:20457]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.38.92:2525] with esmtp (Farcaster)
+ id cb57f3a2-fd3a-446b-92da-422b317c23d6; Mon, 5 May 2025 22:00:31 +0000 (UTC)
+X-Farcaster-Flow-ID: cb57f3a2-fd3a-446b-92da-422b317c23d6
 Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
+ EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
- Mon, 5 May 2025 22:00:03 +0000
+ Mon, 5 May 2025 22:00:29 +0000
 Received: from 6c7e67bfbae3.amazon.com (10.187.170.18) by
  EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
- Mon, 5 May 2025 21:59:58 +0000
+ Mon, 5 May 2025 22:00:24 +0000
 From: Kuniyuki Iwashima <kuniyu@amazon.com>
 To: Martin KaFai Lau <martin.lau@linux.dev>, Daniel Borkmann
 	<daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, "Alexei
@@ -73,9 +73,9 @@ CC: Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
  Iwashima <kuniyu@amazon.com>, Kuniyuki Iwashima <kuni1840@gmail.com>,
 	<bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
 	<linux-security-module@vger.kernel.org>, <selinux@vger.kernel.org>
-Subject: [PATCH v1 bpf-next 4/5] bpf: Add kfunc to scrub SCM_RIGHTS at security_unix_may_send().
-Date: Mon, 5 May 2025 14:56:49 -0700
-Message-ID: <20250505215802.48449-5-kuniyu@amazon.com>
+Subject: [PATCH v1 bpf-next 5/5] selftest: bpf: Add test for bpf_unix_scrub_fds().
+Date: Mon, 5 May 2025 14:56:50 -0700
+Message-ID: <20250505215802.48449-6-kuniyu@amazon.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250505215802.48449-1-kuniyu@amazon.com>
 References: <20250505215802.48449-1-kuniyu@amazon.com>
@@ -87,146 +87,240 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: EX19D035UWB004.ant.amazon.com (10.13.138.104) To
+X-ClientProxiedBy: EX19D042UWB004.ant.amazon.com (10.13.139.150) To
  EX19D004ANA001.ant.amazon.com (10.37.240.138)
 
-As Christian Brauner said [0], systemd calls cmsg_close_all() [1] after
-each recvmsg() to close() unwanted file descriptors sent via SCM_RIGHTS.
+This test performs the following for all AF_UNIX socket types
 
-However, this cannot work around the issue that close() for unwanted file
-descriptors could block longer because the last fput() could occur on
-the receiver side once sendmsg() with SCM_RIGHTS succeeds.
+  1. Create a socket pair (sender and receiver)
+  2. Send the receiver's fd from the sender to the receiver
+  3. Receive the fd
+  4. Attach a BPF LSM prog that scrubs SCM_RIGHTS fds
+  5. Send the receiver's fd from the sender to the receiver
+  6. Check if the fd was scrubbed
+  7. Detach the LSM prog
 
-Also, even filtering by LSM at recvmsg() does not work for the same reason.
+How to run:
 
-Thus, we need a better way to filter SCM_RIGHTS on the sender side.
+  # make -C tools/testing/selftests/bpf/
+  # ./tools/testing/selftests/bpf/test_progs -t lsm_unix_may_send
+  ...
+  #175/1   lsm_unix_may_send/SOCK_STREAM:OK
+  #175/2   lsm_unix_may_send/SOCK_DGRAM:OK
+  #175/3   lsm_unix_may_send/SOCK_SEQPACKET:OK
+  #175     lsm_unix_may_send:OK
+  Summary: 1/3 PASSED, 0 SKIPPED, 0 FAILED
 
-Let's add a new kfunc to scrub all file descriptors from skb in
-sendmsg().
-
-This allows the receiver to keep recv()ing the bare data and disallows
-the sender to impose the potential slowness of the last fput().
-
-If necessary, we can add more granular filtering per file descriptor
-after refactoring GC code and adding some fd-to-file helpers for BPF.
-
-Sample:
-
-SEC("lsm/unix_may_send")
-int BPF_PROG(unix_scrub_scm_rights,
-             struct socket *sock, struct socket *other, struct sk_buff *skb)
-{
-        struct unix_skb_parms *cb;
-
-        if (skb && bpf_unix_scrub_fds(skb))
-                return -EPERM;
-
-        return 0;
-}
-
-Link: https://lore.kernel.org/netdev/20250502-fanden-unbeschadet-89973225255f@brauner/ #[0]
-Link: https://github.com/systemd/systemd/blob/v257.5/src/basic/fd-util.c#L612-L628 #[1]
 Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
 ---
- include/net/af_unix.h |  1 +
- net/core/filter.c     | 19 +++++++++++++++++--
- net/unix/af_unix.c    | 15 +++++++++++++++
- 3 files changed, 33 insertions(+), 2 deletions(-)
+ .../bpf/prog_tests/lsm_unix_may_send.c        | 160 ++++++++++++++++++
+ .../selftests/bpf/progs/lsm_unix_may_send.c   |  30 ++++
+ 2 files changed, 190 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/lsm_unix_may_send.c
+ create mode 100644 tools/testing/selftests/bpf/progs/lsm_unix_may_send.c
 
-diff --git a/include/net/af_unix.h b/include/net/af_unix.h
-index 1af1841b7601..109f92df2de2 100644
---- a/include/net/af_unix.h
-+++ b/include/net/af_unix.h
-@@ -58,4 +58,5 @@ struct unix_sock {
- #define unix_state_lock(s)	spin_lock(&unix_sk(s)->lock)
- #define unix_state_unlock(s)	spin_unlock(&unix_sk(s)->lock)
- 
-+int unix_scrub_fds(struct sk_buff *skb);
- #endif
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 79cab4d78dc3..a9c46584da10 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -82,7 +82,7 @@
- #include <net/mptcp.h>
- #include <net/netfilter/nf_conntrack_bpf.h>
- #include <net/netkit.h>
--#include <linux/un.h>
-+#include <net/af_unix.h>
- #include <net/xdp_sock_drv.h>
- #include <net/inet_dscp.h>
- 
-@@ -12153,6 +12153,11 @@ __bpf_kfunc int bpf_sock_ops_enable_tx_tstamp(struct bpf_sock_ops_kern *skops,
- 	return 0;
- }
- 
-+__bpf_kfunc int bpf_unix_scrub_fds(struct sk_buff *skb)
-+{
-+	return unix_scrub_fds(skb);
-+}
+diff --git a/tools/testing/selftests/bpf/prog_tests/lsm_unix_may_send.c b/tools/testing/selftests/bpf/prog_tests/lsm_unix_may_send.c
+new file mode 100644
+index 000000000000..50b2547e63cf
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/lsm_unix_may_send.c
+@@ -0,0 +1,160 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright Amazon.com Inc. or its affiliates. */
 +
- __bpf_kfunc_end_defs();
- 
- int bpf_dynptr_from_skb_rdonly(struct __sk_buff *skb, u64 flags,
-@@ -12190,6 +12195,10 @@ BTF_KFUNCS_START(bpf_kfunc_check_set_sock_ops)
- BTF_ID_FLAGS(func, bpf_sock_ops_enable_tx_tstamp, KF_TRUSTED_ARGS)
- BTF_KFUNCS_END(bpf_kfunc_check_set_sock_ops)
- 
-+BTF_KFUNCS_START(bpf_kfunc_check_set_scm_rights)
-+BTF_ID_FLAGS(func, bpf_unix_scrub_fds, KF_TRUSTED_ARGS)
-+BTF_KFUNCS_END(bpf_kfunc_check_set_scm_rights)
++#include "test_progs.h"
++#include "lsm_unix_may_send.skel.h"
 +
- static const struct btf_kfunc_id_set bpf_kfunc_set_skb = {
- 	.owner = THIS_MODULE,
- 	.set = &bpf_kfunc_check_set_skb,
-@@ -12215,6 +12224,11 @@ static const struct btf_kfunc_id_set bpf_kfunc_set_sock_ops = {
- 	.set = &bpf_kfunc_check_set_sock_ops,
- };
- 
-+static const struct btf_kfunc_id_set bpf_kfunc_set_scm_rights = {
-+	.owner = THIS_MODULE,
-+	.set = &bpf_kfunc_check_set_scm_rights,
++#define MSG_HELLO "Hello"
++#define MSG_WORLD "World"
++#define MSG_LEN 5
++
++struct scm_rights {
++	struct cmsghdr cmsghdr;
++	int fd;
 +};
 +
- static int __init bpf_kfunc_init(void)
- {
- 	int ret;
-@@ -12234,7 +12248,8 @@ static int __init bpf_kfunc_init(void)
- 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_CGROUP_SOCK_ADDR,
- 					       &bpf_kfunc_set_sock_addr);
- 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, &bpf_kfunc_set_tcp_reqsk);
--	return ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SOCK_OPS, &bpf_kfunc_set_sock_ops);
-+	ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SOCK_OPS, &bpf_kfunc_set_sock_ops);
-+	return ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_LSM, &bpf_kfunc_set_scm_rights);
- }
- late_initcall(bpf_kfunc_init);
- 
-diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-index 692cce579c89..4c088316dfb7 100644
---- a/net/unix/af_unix.c
-+++ b/net/unix/af_unix.c
-@@ -1885,6 +1885,21 @@ static int unix_scm_to_skb(struct scm_cookie *scm, struct sk_buff *skb, bool sen
- 	return err;
- }
- 
-+int unix_scrub_fds(struct sk_buff *skb)
++static int send_fd(int sender_fd, int receiver_fd)
 +{
-+	struct scm_cookie scm = {};
++	struct scm_rights cmsg = {};
++	struct msghdr msg = {};
++	struct iovec iov = {};
++	int ret;
 +
-+	if (skb->destructor != unix_destruct_scm)
++	msg.msg_iov = &iov;
++	msg.msg_iovlen = 1;
++	msg.msg_control = &cmsg;
++	msg.msg_controllen = CMSG_SPACE(sizeof(cmsg.fd));
++
++	iov.iov_base = MSG_HELLO;
++	iov.iov_len = MSG_LEN;
++
++	cmsg.cmsghdr.cmsg_len = CMSG_LEN(sizeof(cmsg.fd));
++	cmsg.cmsghdr.cmsg_level = SOL_SOCKET;
++	cmsg.cmsghdr.cmsg_type = SCM_RIGHTS;
++	cmsg.fd = receiver_fd;
++
++	ret = sendmsg(sender_fd, &msg, 0);
++	if (!ASSERT_EQ(ret, MSG_LEN, "sendmsg(Hello)"))
 +		return -EINVAL;
 +
-+	if (UNIXCB(skb).fp) {
-+		unix_detach_fds(&scm, skb);
-+		scm_fp_destroy(&scm);
-+	}
++	ret = send(sender_fd, MSG_WORLD, MSG_LEN, 0);
++	if (!ASSERT_EQ(ret, MSG_LEN, "sendmsg(World)"))
++		return -EINVAL;
 +
 +	return 0;
 +}
 +
- static bool unix_passcred_enabled(const struct socket *sock,
- 				  const struct sock *other)
- {
++static int recv_fd(int receiver_fd, bool lsm_attached)
++{
++	struct scm_rights cmsg = {};
++	struct msghdr msg = {};
++	char buf[MSG_LEN] = {};
++	struct iovec iov = {};
++	int ret;
++
++	msg.msg_iov = &iov;
++	msg.msg_iovlen = 1;
++	msg.msg_control = &cmsg;
++	msg.msg_controllen = CMSG_SPACE(sizeof(cmsg.fd));
++
++	iov.iov_base = buf;
++	iov.iov_len = sizeof(buf);
++
++	ret = recvmsg(receiver_fd, &msg, 0);
++	if (!ASSERT_EQ(ret, MSG_LEN, "recvmsg(Hello) length") ||
++	    !ASSERT_STRNEQ(buf, MSG_HELLO, MSG_LEN, "recvmsg(Hello) data"))
++		return -EINVAL;
++
++	if (lsm_attached) {
++		if (!ASSERT_ERR_PTR(CMSG_FIRSTHDR(&msg), "cmsg filtered"))
++			return -EINVAL;
++	} else {
++		if (!ASSERT_OK_PTR(CMSG_FIRSTHDR(&msg), "cmsg sent") ||
++		    !ASSERT_EQ(cmsg.cmsghdr.cmsg_len, CMSG_LEN(sizeof(cmsg.fd)), "cmsg_len") ||
++		    !ASSERT_EQ(cmsg.cmsghdr.cmsg_level, SOL_SOCKET, "cmsg_level") ||
++		    !ASSERT_EQ(cmsg.cmsghdr.cmsg_type, SCM_RIGHTS, "cmsg_type"))
++			return -EINVAL;
++
++		receiver_fd = cmsg.fd;
++	}
++
++	memset(buf, 0, sizeof(buf));
++
++	ret = recv(receiver_fd, buf, sizeof(buf), 0);
++	if (!ASSERT_EQ(ret, MSG_LEN, "recvmsg(World) length") ||
++	    !ASSERT_STRNEQ(buf, MSG_WORLD, MSG_LEN, "recvmsg(World) data"))
++		return -EINVAL;
++
++	return 0;
++}
++
++static void test_scm_rights(struct lsm_unix_may_send *skel, int type)
++{
++	struct bpf_link *link;
++	int socket_fds[2];
++	int err;
++
++	err = socketpair(AF_UNIX, type, 0, socket_fds);
++	if (!ASSERT_EQ(err, 0, "socketpair"))
++		return;
++
++	err = send_fd(socket_fds[0], socket_fds[1]);
++	if (err)
++		goto close;
++
++	err = recv_fd(socket_fds[1], false);
++	if (err)
++		goto close;
++
++	link = bpf_program__attach_lsm(skel->progs.unix_scrub_scm_rights);
++	if (!ASSERT_OK_PTR(link, "attach lsm"))
++		goto close;
++
++	err = send_fd(socket_fds[0], socket_fds[1]);
++	if (err)
++		goto close;
++
++	err = recv_fd(socket_fds[1], true);
++	if (err)
++		goto close;
++
++	err = bpf_link__destroy(link);
++	ASSERT_EQ(err, 0, "destroy lsm");
++close:
++	close(socket_fds[0]);
++	close(socket_fds[1]);
++}
++
++struct sk_type {
++	char name[16];
++	int type;
++} sk_types[] = {
++	{
++		.name = "SOCK_STREAM",
++		.type = SOCK_STREAM,
++	},
++	{
++		.name = "SOCK_DGRAM",
++		.type = SOCK_DGRAM,
++	},
++	{
++		.name = "SOCK_SEQPACKET",
++		.type = SOCK_SEQPACKET,
++	},
++};
++
++void test_lsm_unix_may_send(void)
++{
++	struct lsm_unix_may_send *skel;
++	int i;
++
++	skel = lsm_unix_may_send__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "load skel"))
++		return;
++
++	for (i = 0; i < ARRAY_SIZE(sk_types); i++)
++		if (test__start_subtest(sk_types[i].name))
++			test_scm_rights(skel, sk_types[i].type);
++
++	lsm_unix_may_send__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/lsm_unix_may_send.c b/tools/testing/selftests/bpf/progs/lsm_unix_may_send.c
+new file mode 100644
+index 000000000000..c2459ba2c33d
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/lsm_unix_may_send.c
+@@ -0,0 +1,30 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright Amazon.com Inc. or its affiliates. */
++
++#include "vmlinux.h"
++#include <bpf/bpf_tracing.h>
++
++#ifndef EPERM
++#define EPERM 1
++#endif
++
++SEC("lsm/unix_may_send")
++int BPF_PROG(unix_scrub_scm_rights,
++	     struct socket *sock, struct socket *other, struct sk_buff *skb)
++{
++	struct unix_skb_parms *cb;
++
++	if (!skb)
++		return 0;
++
++	cb = (struct unix_skb_parms *)skb->cb;
++	if (!cb->fp)
++		return 0;
++
++	if (bpf_unix_scrub_fds(skb))
++		return -EPERM;
++
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.49.0
 
