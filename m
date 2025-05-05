@@ -1,61 +1,68 @@
-Return-Path: <bpf+bounces-57419-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57421-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F1C2AAAA22
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 03:29:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 33D14AAAA97
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 03:41:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59594463C9C
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 01:29:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF6534C0D6D
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 01:40:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B4EF380966;
-	Mon,  5 May 2025 23:00:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F0D739527D;
+	Mon,  5 May 2025 23:04:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IPoqathE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ioVw71SJ"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C414128313D;
-	Mon,  5 May 2025 22:50:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D337F2DF56E;
+	Mon,  5 May 2025 22:58:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746485437; cv=none; b=IeutrWnmlTrgOpPd84EPHouKGxqZiJNiWD6SoVtrDEs9ZDzMdo4d0pyeVaT9izS++4NU0hMh0fIJeIr4c6VvPJXwnxQpFtsAmptH7F5PLnSYajCJVr+TEM9EOKQ+cV654YTAwXnYc8EYMuv23zvLM/v4d6rVPuPsXPUqcoIfnC4=
+	t=1746485925; cv=none; b=KBqB6ZO12/VuRqpc8r9krT2uP8+KUfeSIqqLV3KYZkkL68osRfO6MknQrxlMg8nLlg+ZwOg6lvv+s2kELOW56+l/6wgpQyrHyjTwQAzIit0Qq1LRpcNB7agIikGuzevONHnr14u9B+RkIQHN4vV+mQjTACik7aOHgR4V1dEGC3Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746485437; c=relaxed/simple;
-	bh=Q/z1OYzbZGZh4Ae9QR7+MOtWA0d3XI9Jhx7OzIAuTVI=;
+	s=arc-20240116; t=1746485925; c=relaxed/simple;
+	bh=usvPw7nqCAX2pVXygCv6nngmUogbMFYPb265aAce7AA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QkDSTOe/DeP5oLLNu8+5zhfQa5f1RfqFjyFd1JpzzXmcO8gmrwEhpKpspHa3VIodmUFuVIPr1kCj13L7bkybMC1Czh8mhi2k80AaX1BC7qUVnOnbLH/I6XbkP1E3WOlAeIzXrHDMYVlibPT0vEGLFbUPxWsUi56Zpw+FSmLaEqo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IPoqathE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 658A4C4CEED;
-	Mon,  5 May 2025 22:50:35 +0000 (UTC)
+	 MIME-Version; b=D6zsJH8VNM2UiRwZIN3T7SsIN0wSENDzXdiXZPFFdOwEav3Xm2RZae984mnBGgYsQvtTQls8Qu/eEdNwp9iDpvi8XSDk2e0cZ1oAY7l0nm/Bfd7AkqWzGbSde2wm8LG9IWQ1fr5Z2c6ivIUaA42q5OogeYhq3QGJRtRWE2V5i5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ioVw71SJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D51FC4CEED;
+	Mon,  5 May 2025 22:58:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746485436;
-	bh=Q/z1OYzbZGZh4Ae9QR7+MOtWA0d3XI9Jhx7OzIAuTVI=;
+	s=k20201202; t=1746485924;
+	bh=usvPw7nqCAX2pVXygCv6nngmUogbMFYPb265aAce7AA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IPoqathEoGXA71ZgPo4yf0280owY942NMg98fTwg7zIl1e4SvygPZs7TAZ+Ull8Oo
-	 5Lsa3HFYE1a+6NFMl4Q71jAdP2ZQssD2LZCjg76a1siwJ0o7c1KkXxqXiWStrE17O2
-	 6UhYacXVroUjo5lpRrt+AALklNA8Ylt78jHKe29938q/CF20bhXjqhEPv1UacT2tbB
-	 v3FyVolHRl3prY/aNYDU4lOAu5yZqS+UYHpYP9ivKRIxPGJtNurRP6nDl5d7SVet+4
-	 T1TzB/QRtOJzDgl53k65+re1Ocl/mZLpBULn+gDXJCvLKAcoaxihSMnMcTu2+6UTeb
-	 ywFVfTa/1eGVw==
+	b=ioVw71SJOy8+zBvWOiD21WW6A+D8vfvtzlK4vjT0WJ73xLsaaTxqfUaetIetDnFSx
+	 CEly6Ba4gMFAq9um+lpjFQwLLOGY6LfoaPf1u99vV+C1dgZqHY0RdPhsd5dt3ATF7s
+	 V3y2cORGuVImCyUo/xne753JHNyEQhh2YLSXuFkHPBwb3zlHnluWtB4RwXBDCAgVLs
+	 3XWQWvGJAJ88HFk5cAtQXQQJgptWbQ1dRs7XeTmna6/paGhgc4DXwXlsf0xMLrdhTr
+	 SpvRDng8UzqK3+G/kEVK5K++7zKVZj4svTsQHtNViMg6Rt0wEjQhYeVTHa5pM17cHS
+	 9TED0MlDd0Rdg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Eduard Zingerman <eddyz87@gmail.com>,
+Cc: Yonghong Song <yonghong.song@linux.dev>,
+	Andrii Nakryiko <andrii@kernel.org>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
 	daniel@iogearbox.net,
-	andrii@kernel.org,
+	martin.lau@linux.dev,
+	willemb@google.com,
+	kerneljasonxing@gmail.com,
+	quic_abchauha@quicinc.com,
+	aspsk@isovalent.com,
+	linux@jordanrome.com,
+	martin.kelly@crowdstrike.com,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.12 310/486] bpf: don't do clean_live_states when state->loop_entry->branches > 0
-Date: Mon,  5 May 2025 18:36:26 -0400
-Message-Id: <20250505223922.2682012-310-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 068/294] bpf: Allow pre-ordering for bpf cgroup progs
+Date: Mon,  5 May 2025 18:52:48 -0400
+Message-Id: <20250505225634.2688578-68-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250505223922.2682012-1-sashal@kernel.org>
-References: <20250505223922.2682012-1-sashal@kernel.org>
+In-Reply-To: <20250505225634.2688578-1-sashal@kernel.org>
+References: <20250505225634.2688578-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -64,105 +71,224 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.12.26
+X-stable-base: Linux 6.6.89
 Content-Transfer-Encoding: 8bit
 
-From: Eduard Zingerman <eddyz87@gmail.com>
+From: Yonghong Song <yonghong.song@linux.dev>
 
-[ Upstream commit 9e63fdb0cbdf3268c86638a8274f4d5549a82820 ]
+[ Upstream commit 4b82b181a26cff8bf7adc3a85a88d121d92edeaf ]
 
-verifier.c:is_state_visited() uses RANGE_WITHIN states comparison rules
-for cached states that have loop_entry with non-zero branches count
-(meaning that loop_entry's verification is not yet done).
+Currently for bpf progs in a cgroup hierarchy, the effective prog array
+is computed from bottom cgroup to upper cgroups (post-ordering). For
+example, the following cgroup hierarchy
+    root cgroup: p1, p2
+        subcgroup: p3, p4
+have BPF_F_ALLOW_MULTI for both cgroup levels.
+The effective cgroup array ordering looks like
+    p3 p4 p1 p2
+and at run time, progs will execute based on that order.
 
-The RANGE_WITHIN rules in regsafe()/stacksafe() require register and
-stack objects types to be identical in current and old states.
+But in some cases, it is desirable to have root prog executes earlier than
+children progs (pre-ordering). For example,
+  - prog p1 intends to collect original pkt dest addresses.
+  - prog p3 will modify original pkt dest addresses to a proxy address for
+    security reason.
+The end result is that prog p1 gets proxy address which is not what it
+wants. Putting p1 to every child cgroup is not desirable either as it
+will duplicate itself in many child cgroups. And this is exactly a use case
+we are encountering in Meta.
 
-verifier.c:clean_live_states() replaces registers and stack spills
-with NOT_INIT/STACK_INVALID marks, if these registers/stack spills are
-not read in any child state. This means that clean_live_states() works
-against loop convergence logic under some conditions. See selftest in
-the next patch for a specific example.
+To fix this issue, let us introduce a flag BPF_F_PREORDER. If the flag
+is specified at attachment time, the prog has higher priority and the
+ordering with that flag will be from top to bottom (pre-ordering).
+For example, in the above example,
+    root cgroup: p1, p2
+        subcgroup: p3, p4
+Let us say p2 and p4 are marked with BPF_F_PREORDER. The final
+effective array ordering will be
+    p2 p4 p3 p1
 
-Mitigate this by prohibiting clean_verifier_state() when
-state->loop_entry->branches > 0.
-
-This undoes negative verification performance impact of the
-copy_verifier_state() fix from the previous patch.
-Below is comparison between master and current patch.
-
-selftests:
-
-File                                Program                       Insns (A)  Insns (B)  Insns    (DIFF)  States (A)  States (B)  States  (DIFF)
-----------------------------------  ----------------------------  ---------  ---------  ---------------  ----------  ----------  --------------
-arena_htab.bpf.o                    arena_htab_llvm                     717        423   -294 (-41.00%)          57          37   -20 (-35.09%)
-arena_htab_asm.bpf.o                arena_htab_asm                      597        445   -152 (-25.46%)          47          37   -10 (-21.28%)
-arena_list.bpf.o                    arena_list_add                     1493       1822   +329 (+22.04%)          30          37    +7 (+23.33%)
-arena_list.bpf.o                    arena_list_del                      309        261    -48 (-15.53%)          23          15    -8 (-34.78%)
-iters.bpf.o                         checkpoint_states_deletion        18125      22154  +4029 (+22.23%)         818         918  +100 (+12.22%)
-iters.bpf.o                         iter_nested_deeply_iters            593        367   -226 (-38.11%)          67          43   -24 (-35.82%)
-iters.bpf.o                         iter_nested_iters                   813        772     -41 (-5.04%)          79          72     -7 (-8.86%)
-iters.bpf.o                         iter_subprog_check_stacksafe        155        135    -20 (-12.90%)          15          14     -1 (-6.67%)
-iters.bpf.o                         iter_subprog_iters                 1094        808   -286 (-26.14%)          88          68   -20 (-22.73%)
-iters.bpf.o                         loop_state_deps2                    479        356   -123 (-25.68%)          46          35   -11 (-23.91%)
-iters.bpf.o                         triple_continue                      35         31     -4 (-11.43%)           3           3     +0 (+0.00%)
-kmem_cache_iter.bpf.o               open_coded_iter                      63         59      -4 (-6.35%)           7           6    -1 (-14.29%)
-mptcp_subflow.bpf.o                 _getsockopt_subflow                 501        446    -55 (-10.98%)          25          23     -2 (-8.00%)
-pyperf600_iter.bpf.o                on_event                          12339       6379  -5960 (-48.30%)         441         286  -155 (-35.15%)
-verifier_bits_iter.bpf.o            max_words                            92         84      -8 (-8.70%)           8           7    -1 (-12.50%)
-verifier_iterating_callbacks.bpf.o  cond_break2                         113        192    +79 (+69.91%)          12          21    +9 (+75.00%)
-
-sched_ext:
-
-File               Program                 Insns (A)  Insns (B)  Insns      (DIFF)  States (A)  States (B)  States    (DIFF)
------------------  ----------------------  ---------  ---------  -----------------  ----------  ----------  ----------------
-bpf.bpf.o          layered_dispatch            11485       9039    -2446 (-21.30%)         848         662    -186 (-21.93%)
-bpf.bpf.o          layered_dump                 7422       5022    -2400 (-32.34%)         681         298    -383 (-56.24%)
-bpf.bpf.o          layered_enqueue             16854      13753    -3101 (-18.40%)        1611        1308    -303 (-18.81%)
-bpf.bpf.o          layered_init              1000001       5549  -994452 (-99.45%)       84672         523  -84149 (-99.38%)
-bpf.bpf.o          layered_runnable             3149       1899    -1250 (-39.70%)         288         151    -137 (-47.57%)
-bpf.bpf.o          p2dq_init                    2343       1936     -407 (-17.37%)         201         170     -31 (-15.42%)
-bpf.bpf.o          refresh_layer_cpumasks      16487       1285   -15202 (-92.21%)        1770         120   -1650 (-93.22%)
-bpf.bpf.o          rusty_select_cpu             1937       1386     -551 (-28.45%)         177         125     -52 (-29.38%)
-scx_central.bpf.o  central_dispatch              636        600       -36 (-5.66%)          63          59       -4 (-6.35%)
-scx_central.bpf.o  central_init                  913        632     -281 (-30.78%)          48          39      -9 (-18.75%)
-scx_nest.bpf.o     nest_init                     636        601       -35 (-5.50%)          60          58       -2 (-3.33%)
-scx_pair.bpf.o     pair_dispatch             1000001       1914  -998087 (-99.81%)       58169         142  -58027 (-99.76%)
-scx_qmap.bpf.o     qmap_dispatch                2393       2187      -206 (-8.61%)         196         174     -22 (-11.22%)
-scx_qmap.bpf.o     qmap_init                   16367      22777    +6410 (+39.16%)         603         768    +165 (+27.36%)
-
-'layered_init' and 'pair_dispatch' hit 1M on master, but are verified
-ok with this patch.
-
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-Link: https://lore.kernel.org/r/20250215110411.3236773-4-eddyz87@gmail.com
+Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+Link: https://lore.kernel.org/r/20250224230116.283071-1-yonghong.song@linux.dev
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/verifier.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ include/linux/bpf-cgroup.h     |  1 +
+ include/uapi/linux/bpf.h       |  1 +
+ kernel/bpf/cgroup.c            | 33 +++++++++++++++++++++++++--------
+ kernel/bpf/syscall.c           |  3 ++-
+ tools/include/uapi/linux/bpf.h |  1 +
+ 5 files changed, 30 insertions(+), 9 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 294fbafbeba75..592ee3b47635b 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -17282,12 +17282,16 @@ static void clean_verifier_state(struct bpf_verifier_env *env,
- static void clean_live_states(struct bpf_verifier_env *env, int insn,
- 			      struct bpf_verifier_state *cur)
- {
-+	struct bpf_verifier_state *loop_entry;
- 	struct bpf_verifier_state_list *sl;
+diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
+index d4f2c8706042c..2331cd8174fe3 100644
+--- a/include/linux/bpf-cgroup.h
++++ b/include/linux/bpf-cgroup.h
+@@ -106,6 +106,7 @@ struct bpf_prog_list {
+ 	struct bpf_prog *prog;
+ 	struct bpf_cgroup_link *link;
+ 	struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE];
++	u32 flags;
+ };
  
- 	sl = *explored_state(env, insn);
- 	while (sl) {
- 		if (sl->state.branches)
- 			goto next;
-+		loop_entry = get_loop_entry(&sl->state);
-+		if (loop_entry && loop_entry->branches)
-+			goto next;
- 		if (sl->state.insn_idx != insn ||
- 		    !same_callsites(&sl->state, cur))
- 			goto next;
+ int cgroup_bpf_inherit(struct cgroup *cgrp);
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 431bc700bcfb9..c7f904a72af21 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1140,6 +1140,7 @@ enum bpf_perf_event_type {
+ #define BPF_F_BEFORE		(1U << 3)
+ #define BPF_F_AFTER		(1U << 4)
+ #define BPF_F_ID		(1U << 5)
++#define BPF_F_PREORDER		(1U << 6)
+ #define BPF_F_LINK		BPF_F_LINK /* 1 << 13 */
+ 
+ /* If BPF_F_STRICT_ALIGNMENT is used in BPF_PROG_LOAD command, the
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index cf2eb0895d403..684fb450ad086 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -369,7 +369,7 @@ static struct bpf_prog *prog_list_prog(struct bpf_prog_list *pl)
+ /* count number of elements in the list.
+  * it's slow but the list cannot be long
+  */
+-static u32 prog_list_length(struct hlist_head *head)
++static u32 prog_list_length(struct hlist_head *head, int *preorder_cnt)
+ {
+ 	struct bpf_prog_list *pl;
+ 	u32 cnt = 0;
+@@ -377,6 +377,8 @@ static u32 prog_list_length(struct hlist_head *head)
+ 	hlist_for_each_entry(pl, head, node) {
+ 		if (!prog_list_prog(pl))
+ 			continue;
++		if (preorder_cnt && (pl->flags & BPF_F_PREORDER))
++			(*preorder_cnt)++;
+ 		cnt++;
+ 	}
+ 	return cnt;
+@@ -400,7 +402,7 @@ static bool hierarchy_allows_attach(struct cgroup *cgrp,
+ 
+ 		if (flags & BPF_F_ALLOW_MULTI)
+ 			return true;
+-		cnt = prog_list_length(&p->bpf.progs[atype]);
++		cnt = prog_list_length(&p->bpf.progs[atype], NULL);
+ 		WARN_ON_ONCE(cnt > 1);
+ 		if (cnt == 1)
+ 			return !!(flags & BPF_F_ALLOW_OVERRIDE);
+@@ -423,12 +425,12 @@ static int compute_effective_progs(struct cgroup *cgrp,
+ 	struct bpf_prog_array *progs;
+ 	struct bpf_prog_list *pl;
+ 	struct cgroup *p = cgrp;
+-	int cnt = 0;
++	int i, j, cnt = 0, preorder_cnt = 0, fstart, bstart, init_bstart;
+ 
+ 	/* count number of effective programs by walking parents */
+ 	do {
+ 		if (cnt == 0 || (p->bpf.flags[atype] & BPF_F_ALLOW_MULTI))
+-			cnt += prog_list_length(&p->bpf.progs[atype]);
++			cnt += prog_list_length(&p->bpf.progs[atype], &preorder_cnt);
+ 		p = cgroup_parent(p);
+ 	} while (p);
+ 
+@@ -439,20 +441,34 @@ static int compute_effective_progs(struct cgroup *cgrp,
+ 	/* populate the array with effective progs */
+ 	cnt = 0;
+ 	p = cgrp;
++	fstart = preorder_cnt;
++	bstart = preorder_cnt - 1;
+ 	do {
+ 		if (cnt > 0 && !(p->bpf.flags[atype] & BPF_F_ALLOW_MULTI))
+ 			continue;
+ 
++		init_bstart = bstart;
+ 		hlist_for_each_entry(pl, &p->bpf.progs[atype], node) {
+ 			if (!prog_list_prog(pl))
+ 				continue;
+ 
+-			item = &progs->items[cnt];
++			if (pl->flags & BPF_F_PREORDER) {
++				item = &progs->items[bstart];
++				bstart--;
++			} else {
++				item = &progs->items[fstart];
++				fstart++;
++			}
+ 			item->prog = prog_list_prog(pl);
+ 			bpf_cgroup_storages_assign(item->cgroup_storage,
+ 						   pl->storage);
+ 			cnt++;
+ 		}
++
++		/* reverse pre-ordering progs at this cgroup level */
++		for (i = bstart + 1, j = init_bstart; i < j; i++, j--)
++			swap(progs->items[i], progs->items[j]);
++
+ 	} while ((p = cgroup_parent(p)));
+ 
+ 	*array = progs;
+@@ -663,7 +679,7 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
+ 		 */
+ 		return -EPERM;
+ 
+-	if (prog_list_length(progs) >= BPF_CGROUP_MAX_PROGS)
++	if (prog_list_length(progs, NULL) >= BPF_CGROUP_MAX_PROGS)
+ 		return -E2BIG;
+ 
+ 	pl = find_attach_entry(progs, prog, link, replace_prog,
+@@ -698,6 +714,7 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
+ 
+ 	pl->prog = prog;
+ 	pl->link = link;
++	pl->flags = flags;
+ 	bpf_cgroup_storages_assign(pl->storage, storage);
+ 	cgrp->bpf.flags[atype] = saved_flags;
+ 
+@@ -1073,7 +1090,7 @@ static int __cgroup_bpf_query(struct cgroup *cgrp, const union bpf_attr *attr,
+ 							      lockdep_is_held(&cgroup_mutex));
+ 			total_cnt += bpf_prog_array_length(effective);
+ 		} else {
+-			total_cnt += prog_list_length(&cgrp->bpf.progs[atype]);
++			total_cnt += prog_list_length(&cgrp->bpf.progs[atype], NULL);
+ 		}
+ 	}
+ 
+@@ -1105,7 +1122,7 @@ static int __cgroup_bpf_query(struct cgroup *cgrp, const union bpf_attr *attr,
+ 			u32 id;
+ 
+ 			progs = &cgrp->bpf.progs[atype];
+-			cnt = min_t(int, prog_list_length(progs), total_cnt);
++			cnt = min_t(int, prog_list_length(progs, NULL), total_cnt);
+ 			i = 0;
+ 			hlist_for_each_entry(pl, progs, node) {
+ 				prog = prog_list_prog(pl);
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 5a8c5a4ef1134..b66349f892f25 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3900,7 +3900,8 @@ static int bpf_prog_attach_check_attach_type(const struct bpf_prog *prog,
+ #define BPF_F_ATTACH_MASK_BASE	\
+ 	(BPF_F_ALLOW_OVERRIDE |	\
+ 	 BPF_F_ALLOW_MULTI |	\
+-	 BPF_F_REPLACE)
++	 BPF_F_REPLACE |	\
++	 BPF_F_PREORDER)
+ 
+ #define BPF_F_ATTACH_MASK_MPROG	\
+ 	(BPF_F_REPLACE |	\
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 977ec094bc2a6..2a90f04a4160d 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1140,6 +1140,7 @@ enum bpf_perf_event_type {
+ #define BPF_F_BEFORE		(1U << 3)
+ #define BPF_F_AFTER		(1U << 4)
+ #define BPF_F_ID		(1U << 5)
++#define BPF_F_PREORDER		(1U << 6)
+ #define BPF_F_LINK		BPF_F_LINK /* 1 << 13 */
+ 
+ /* If BPF_F_STRICT_ALIGNMENT is used in BPF_PROG_LOAD command, the
 -- 
 2.39.5
 
