@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-57414-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57416-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AA9FAAA946
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 03:11:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A8E7AAA99B
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 03:17:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7D22188C232
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 01:09:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 377B918872E9
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 01:15:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C65E35C841;
-	Mon,  5 May 2025 22:45:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7305035A768;
+	Mon,  5 May 2025 22:46:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UKritnJ0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LZDp6su/"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13D00359DEF;
-	Mon,  5 May 2025 22:42:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C5A8359DF4;
+	Mon,  5 May 2025 22:42:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746484968; cv=none; b=EzVtng/8JQx10jm9Dh6yx7sy8b06+dLR5yI+g+XLFeNmSd7UFqMNEQhuasYj4dKPwpH9rbKhQgDms/yLOmEG7Wv0bfSMhBzIoI9jEjGdgnoaS2p4mBRrpi43aw15zEao3ZU66NPIsVwlng7Y1uZMGCz56M00iELESPopEFs5YhM=
+	t=1746484969; cv=none; b=hM16aItbwxNDcj0LocMUxa0sFI9tEnYoLVgzG/vNm1z4hvA2gEN8QOp163sSukkDtN7v5zo024Hnfkt04BGw6VNsJ/tQ8Jey8pHv0IHF0X3wevwzNj2Ta7IBGQ8bXX7fHS4D8TNIGwhFO606X3+YYwT224GOno1KWrruBmrOyGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746484968; c=relaxed/simple;
-	bh=JJcnTav/B57LRjZcyMnJaQ1BBOSK50JyeLIQUKjXqQs=;
+	s=arc-20240116; t=1746484969; c=relaxed/simple;
+	bh=yVGBpTjBCfvZxXBpqe0Kw6YV/IDInWxub7cJTiGyZsc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=dKCZiybFHYDIJ2JkvIltWNTqau04Fn7VXluMaIEYHVXEl7hO+dHQuX75CRYMoNFcg4qebfkQnzXBrO7hNytbKnAjNTZDrZw+SKzW83Y/bLNoJVI8SJw6xppLVrsIb1Y1fEZCep/IOdiPPbh1KerMC4fMKp5c8Id+MMlmjUxF5uk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UKritnJ0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5A8CC4CEED;
-	Mon,  5 May 2025 22:42:45 +0000 (UTC)
+	 MIME-Version; b=N6wPmBHXoKrqa4YbvpMUCYuN9Rh7rB3aZg7iiFo6NMhATLsQSU5xIKBcx4C21r8UmSnE+4cDaVxHNpQtRqaj0Jgl7Z0ryq5tRRrOK3DxkW+lHUtU0KmU/HBzt4OxyDhEbZcmOliTXleWnQk44sko0cmcacXV7kIS2zM8Xv3GqZg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LZDp6su/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54BC1C4CEF1;
+	Mon,  5 May 2025 22:42:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746484966;
-	bh=JJcnTav/B57LRjZcyMnJaQ1BBOSK50JyeLIQUKjXqQs=;
+	s=k20201202; t=1746484968;
+	bh=yVGBpTjBCfvZxXBpqe0Kw6YV/IDInWxub7cJTiGyZsc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UKritnJ0qfo4DoOjkRJ+SL83tHbMF9wwRtbpjs8l6KHGTFlaojITuQ421V9JGO/EF
-	 3laM+l8KY3bZXtzYeUWurTkV1pfOTqRlB+FGzPmg/ZT6vp2Fx+yb5D40HKkzhedvHz
-	 G9J6ONMHYQHFx8eJ1L+ClQwtPBJFcI9rgpppdmR4vx3qvqOuJJydrC2EFTYhgOC6TI
-	 CwNhzSgOm9l/ihkq/jBsBSTOm+LuQdQ1mL6MbGxIE6h+LFWz6rO5IPozdfKKP2whgN
-	 42fdf65WXVgRfR8bHlKgV4ieSx+p6BqXyBtEDDQHbGcW10K1rm9/cm1KvQp4kerP6J
-	 /MNAqlmo0z0Tg==
+	b=LZDp6su/4ct4WCWsOjkgjeB0vbVGP2oDZrC8E+TQn8rmj/Mggo4nzmgEQ26tJ3Csh
+	 IHdz5x2phMpXvKRBe5cBjrlydor8XpUEFW3nmpT082WRouqfTJvqfXByW2XcC/mx/L
+	 RwX6zGU/A6rKpXAz7S/9h0Al+pDv9vg8mGhilhhfIU6hQjoxg2EWZtCfD6hBwoem4Z
+	 /U891HtTW5IJE+XhdDCd+oYdOHvVC1MVe3953ABQ5pWbQkNvwzsoUKh7dpR4AB28b4
+	 J/5On5OPEgPASAv4kWp/UOqSmfZ5E7s4tS47SGGe1myI+tss2aoMDfqydRHpIk2PPX
+	 6FudB8Isp8gQA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -50,11 +50,10 @@ Cc: Mykyta Yatsenko <yatsenko@meta.com>,
 	Sasha Levin <sashal@kernel.org>,
 	ast@kernel.org,
 	daniel@iogearbox.net,
-	eddyz87@gmail.com,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.12 099/486] libbpf: Pass BPF token from find_prog_btf_id to BPF_BTF_GET_FD_BY_ID
-Date: Mon,  5 May 2025 18:32:55 -0400
-Message-Id: <20250505223922.2682012-99-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.12 100/486] bpf: Return prog btf_id without capable check
+Date: Mon,  5 May 2025 18:32:56 -0400
+Message-Id: <20250505223922.2682012-100-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250505223922.2682012-1-sashal@kernel.org>
 References: <20250505223922.2682012-1-sashal@kernel.org>
@@ -71,162 +70,43 @@ Content-Transfer-Encoding: 8bit
 
 From: Mykyta Yatsenko <yatsenko@meta.com>
 
-[ Upstream commit 974ef9f0d23edc1a802691c585b84514b414a96d ]
+[ Upstream commit 07651ccda9ff10a8ca427670cdd06ce2c8e4269c ]
 
-Pass BPF token from bpf_program__set_attach_target to
-BPF_BTF_GET_FD_BY_ID bpf command.
-When freplace program attaches to target program, it needs to look up
-for BTF of the target, this may require BPF token, if, for example,
-running from user namespace.
+Return prog's btf_id from bpf_prog_get_info_by_fd regardless of capable
+check. This patch enables scenario, when freplace program, running
+from user namespace, requires to query target prog's btf.
 
 Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 Acked-by: Yonghong Song <yonghong.song@linux.dev>
-Link: https://lore.kernel.org/bpf/20250317174039.161275-4-mykyta.yatsenko5@gmail.com
+Link: https://lore.kernel.org/bpf/20250317174039.161275-3-mykyta.yatsenko5@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/bpf.c             |  3 ++-
- tools/lib/bpf/bpf.h             |  3 ++-
- tools/lib/bpf/btf.c             | 15 +++++++++++++--
- tools/lib/bpf/libbpf.c          | 10 +++++-----
- tools/lib/bpf/libbpf_internal.h |  1 +
- 5 files changed, 23 insertions(+), 9 deletions(-)
+ kernel/bpf/syscall.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index 2a4c71501a17d..72470acce67b7 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -1095,7 +1095,7 @@ int bpf_map_get_fd_by_id(__u32 id)
- int bpf_btf_get_fd_by_id_opts(__u32 id,
- 			      const struct bpf_get_fd_by_id_opts *opts)
- {
--	const size_t attr_sz = offsetofend(union bpf_attr, open_flags);
-+	const size_t attr_sz = offsetofend(union bpf_attr, fd_by_id_token_fd);
- 	union bpf_attr attr;
- 	int fd;
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 977c084577565..fc048d3c0e69f 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -4606,6 +4606,8 @@ static int bpf_prog_get_info_by_fd(struct file *file,
+ 	info.recursion_misses = stats.misses;
  
-@@ -1105,6 +1105,7 @@ int bpf_btf_get_fd_by_id_opts(__u32 id,
- 	memset(&attr, 0, attr_sz);
- 	attr.btf_id = id;
- 	attr.open_flags = OPTS_GET(opts, open_flags, 0);
-+	attr.fd_by_id_token_fd = OPTS_GET(opts, token_fd, 0);
+ 	info.verified_insns = prog->aux->verified_insns;
++	if (prog->aux->btf)
++		info.btf_id = btf_obj_id(prog->aux->btf);
  
- 	fd = sys_bpf_fd(BPF_BTF_GET_FD_BY_ID, &attr, attr_sz);
- 	return libbpf_err_errno(fd);
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index a4a7b1ad1b631..b93d00968cba1 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -484,9 +484,10 @@ LIBBPF_API int bpf_link_get_next_id(__u32 start_id, __u32 *next_id);
- struct bpf_get_fd_by_id_opts {
- 	size_t sz; /* size of this struct for forward/backward compatibility */
- 	__u32 open_flags; /* permissions requested for the operation on fd */
-+	__u32 token_fd;
- 	size_t :0;
- };
--#define bpf_get_fd_by_id_opts__last_field open_flags
-+#define bpf_get_fd_by_id_opts__last_field token_fd
- 
- LIBBPF_API int bpf_prog_get_fd_by_id(__u32 id);
- LIBBPF_API int bpf_prog_get_fd_by_id_opts(__u32 id,
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 27e7bfae953bd..3a7e0ba9f5923 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -1618,12 +1618,18 @@ struct btf *btf_get_from_fd(int btf_fd, struct btf *base_btf)
- 	return btf;
- }
- 
--struct btf *btf__load_from_kernel_by_id_split(__u32 id, struct btf *base_btf)
-+struct btf *btf_load_from_kernel(__u32 id, struct btf *base_btf, int token_fd)
- {
- 	struct btf *btf;
- 	int btf_fd;
-+	LIBBPF_OPTS(bpf_get_fd_by_id_opts, opts);
-+
-+	if (token_fd) {
-+		opts.open_flags |= BPF_F_TOKEN_FD;
-+		opts.token_fd = token_fd;
-+	}
- 
--	btf_fd = bpf_btf_get_fd_by_id(id);
-+	btf_fd = bpf_btf_get_fd_by_id_opts(id, &opts);
- 	if (btf_fd < 0)
- 		return libbpf_err_ptr(-errno);
- 
-@@ -1633,6 +1639,11 @@ struct btf *btf__load_from_kernel_by_id_split(__u32 id, struct btf *base_btf)
- 	return libbpf_ptr(btf);
- }
- 
-+struct btf *btf__load_from_kernel_by_id_split(__u32 id, struct btf *base_btf)
-+{
-+	return btf_load_from_kernel(id, base_btf, 0);
-+}
-+
- struct btf *btf__load_from_kernel_by_id(__u32 id)
- {
- 	return btf__load_from_kernel_by_id_split(id, NULL);
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 5ff643e60d09c..5b45f76059296 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -9936,7 +9936,7 @@ int libbpf_find_vmlinux_btf_id(const char *name,
- 	return libbpf_err(err);
- }
- 
--static int libbpf_find_prog_btf_id(const char *name, __u32 attach_prog_fd)
-+static int libbpf_find_prog_btf_id(const char *name, __u32 attach_prog_fd, int token_fd)
- {
- 	struct bpf_prog_info info;
- 	__u32 info_len = sizeof(info);
-@@ -9956,7 +9956,7 @@ static int libbpf_find_prog_btf_id(const char *name, __u32 attach_prog_fd)
- 		pr_warn("The target program doesn't have BTF\n");
- 		goto out;
- 	}
--	btf = btf__load_from_kernel_by_id(info.btf_id);
-+	btf = btf_load_from_kernel(info.btf_id, NULL, token_fd);
- 	err = libbpf_get_error(btf);
- 	if (err) {
- 		pr_warn("Failed to get BTF %d of the program: %d\n", info.btf_id, err);
-@@ -10039,7 +10039,7 @@ static int libbpf_find_attach_btf_id(struct bpf_program *prog, const char *attac
- 			pr_warn("prog '%s': attach program FD is not set\n", prog->name);
- 			return -EINVAL;
+ 	if (!bpf_capable()) {
+ 		info.jited_prog_len = 0;
+@@ -4752,8 +4754,6 @@ static int bpf_prog_get_info_by_fd(struct file *file,
  		}
--		err = libbpf_find_prog_btf_id(attach_name, attach_prog_fd);
-+		err = libbpf_find_prog_btf_id(attach_name, attach_prog_fd, prog->obj->token_fd);
- 		if (err < 0) {
- 			pr_warn("prog '%s': failed to find BPF program (FD %d) BTF ID for '%s': %d\n",
- 				 prog->name, attach_prog_fd, attach_name, err);
-@@ -12804,7 +12804,7 @@ struct bpf_link *bpf_program__attach_freplace(const struct bpf_program *prog,
- 	if (target_fd) {
- 		LIBBPF_OPTS(bpf_link_create_opts, target_opts);
+ 	}
  
--		btf_id = libbpf_find_prog_btf_id(attach_func_name, target_fd);
-+		btf_id = libbpf_find_prog_btf_id(attach_func_name, target_fd, prog->obj->token_fd);
- 		if (btf_id < 0)
- 			return libbpf_err_ptr(btf_id);
- 
-@@ -13629,7 +13629,7 @@ int bpf_program__set_attach_target(struct bpf_program *prog,
- 
- 	if (attach_prog_fd) {
- 		btf_id = libbpf_find_prog_btf_id(attach_func_name,
--						 attach_prog_fd);
-+						 attach_prog_fd, prog->obj->token_fd);
- 		if (btf_id < 0)
- 			return libbpf_err(btf_id);
- 	} else {
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-index 408df59e07719..bd7adb8594d40 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -408,6 +408,7 @@ int libbpf__load_raw_btf(const char *raw_types, size_t types_len,
- int btf_load_into_kernel(struct btf *btf,
- 			 char *log_buf, size_t log_sz, __u32 log_level,
- 			 int token_fd);
-+struct btf *btf_load_from_kernel(__u32 id, struct btf *base_btf, int token_fd);
- 
- struct btf *btf_get_from_fd(int btf_fd, struct btf *base_btf);
- void btf_get_kernel_prefix_kind(enum bpf_attach_type attach_type,
+-	if (prog->aux->btf)
+-		info.btf_id = btf_obj_id(prog->aux->btf);
+ 	info.attach_btf_id = prog->aux->attach_btf_id;
+ 	if (attach_btf)
+ 		info.attach_btf_obj_id = btf_obj_id(attach_btf);
 -- 
 2.39.5
 
