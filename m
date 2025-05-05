@@ -1,81 +1,82 @@
-Return-Path: <bpf+bounces-57359-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57360-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26C34AA9BB3
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 20:40:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85CB2AA9BBA
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 20:40:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05CBC189DF83
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 18:40:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2B297ABA21
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 18:39:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 640002701B4;
-	Mon,  5 May 2025 18:39:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1082B2701DB;
+	Mon,  5 May 2025 18:39:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="Pw6op1kV"
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="iiTwDxYY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DB6F26B097
-	for <bpf@vger.kernel.org>; Mon,  5 May 2025 18:39:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37CF926F444
+	for <bpf@vger.kernel.org>; Mon,  5 May 2025 18:39:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746470385; cv=none; b=r86HAKgx1yiJvO2uQ2rUn+wtQ4Do4tBo6n8LVAmWRaPA6+oM7kIfYLxCJAvxyd04BXHcRJ4vVhB5pTAYR7f67RLMZskKTdAQx1F3gVv29riULWVMqTyJweRpmmJCuHdbqbcETVFszzYw2U09u6918xZctR0PDXs81aB7zu9Lvc8=
+	t=1746470386; cv=none; b=HefO7Cq5/NvkoeNxoAXc0eJ0M/EQwG6mEAn7ytmq4E7fOOgt05NJpRChXuH0obWCi55hO+YTG2BeCYOcnGiLmSYObgKKak7afLPE1UlZ26VnbnDVW1EeVY6BzqTG9zP/d7cm2k9KVDQEuuSutuQPTIbzwPH3mkFljObCwXDiMnc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746470385; c=relaxed/simple;
-	bh=ZClhDwB5pKTOs2/ZgKiqPI5f9N+Z5HIqj+FZtgA9DiM=;
+	s=arc-20240116; t=1746470386; c=relaxed/simple;
+	bh=CztS+KUwtw99mOFMGWop7TTlPlQPx0Dh4oY50Ajoq88=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=UaMr3PpCSmQoVeiRao87qqnV3scbiDQWLnhNURlkvlRf+WvqMc6vRPmNbiEHGmbW2xKQy0QsOMjPwyVLEgwBB8t89PWc+0HSNnME5Xt1Gg4035/jnb8kW/2YhlhJ57uTEQ0DL0MjeJojkjdwgaMnhSVy0jCpFZprVJh48PV4xRk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=Pw6op1kV; arc=none smtp.client-ip=209.85.221.51
+	 In-Reply-To:To:Cc; b=beGGBMOcylZdUG0ZOfCLyPwLToYAXO9tm4pqN4GW9QORmw3mvsD2Z9bWCdyB1RhIY7gckZEL9zYh/HRu2JFBeWNCTBlTESrAkkFl51CUkEXDP7uBQSHmYqGQft9WD7FMHbnpt4UTysVHusa3Qbm9ibpPXYcq5U5FQojP5So3bQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=iiTwDxYY; arc=none smtp.client-ip=209.85.128.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-39c1ee0fd43so5058702f8f.0
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-43d0782d787so29408805e9.0
         for <bpf@vger.kernel.org>; Mon, 05 May 2025 11:39:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent.com; s=google; t=1746470381; x=1747075181; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=eRFMs6tsARxEnBbmhIs7BbWLHMkMmA06v2O0FY8OvzE=;
-        b=Pw6op1kV2XvmGZ2CtyJAhTuDnhbYOhJgX9LsTlZoNtM+k/mcewNs17ywS5+U9MxLZb
-         nexq0UP/jHUjRgwtXx0tr5VsK8hPp53njSQRJNlnD3s+qnTJqEfJ4zzAoPlLQMzUZNcV
-         jIUIEhfE+xe7LwwkyN0mMXFHz+roSSzir72nvuQorU2vOuqXDAHwXiXbcezzkq6/vfSh
-         LAkWJ6C3AXASplBwHo0yeIR0uJxHh/g2a1V2WShS9dijBY7pr7LY5Q6DOdi+upFz39D4
-         68dFho3ebUD8NQHow1LHAS+79LCUIcNQ3ESEYRTnjOkgKWc9wyolOisOH1yZY0j3Dp4G
-         SyUQ==
+        bh=OzNe6C0edsjyIWPceeV4C4p+25KcQZ/7bKBRPqQnHyY=;
+        b=iiTwDxYY4ymP7BQOSu5mxaqnasgJaQdF3cqryvZ/dRTGG5nDgk6AAEgZ1FHEbw46J6
+         HicIP7thkUanFXMxBkFdMajvwBFtV5+0PY5QEAMw3q6ELKBoKj1hqSfWsVYY4pRRJ4ga
+         dIRv/n0TP0YTJfDJN6CglfVNLO9Z53H60+o5hQE0UiIoOHlMrGwsF5qOdsBRS0HpXEgt
+         vb5LRK+3+Iak5+t3Rz576OdRUfvqao2SRbqwDot0x6mzS0bx+AjVeHcA6Me6DEF5iquA
+         K4io8QAaGH1TljgXNermtvZVbcmFBzagwN3AuwPhowHlU7Z80A4DyPv1swdyuT341r9n
+         7X9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1746470381; x=1747075181;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=eRFMs6tsARxEnBbmhIs7BbWLHMkMmA06v2O0FY8OvzE=;
-        b=dratus8kbiCXc0INh4z1bVCaoG2J4IJKyev0UJQeGfa89AJI347CZS30Nmr3ymCBNW
-         AvuqkTok0GurGLQKCpuDXUiyVTV59vKDG4Yj+0CuLpx3htUr2cj/uq8CkY8QqO4m6JXY
-         2z7bGFPRojViTDef4kFnXHdYB8xiC7u0k8wJS+9LxPo7Y4LCPBzeO0l71VYYu8BUvGDz
-         FBjbYyGludC65TncADeLWHUlHC9ZNrkx+0r9ZWlWrlF+biosv7ugLdr5QZbGTiafwBKT
-         c6JlCXPdg3mpMYhhX8Swv2PqhhtjEfTcWVmAJzptriPJ+qCY+G1yhJhJbrPI/ThJgskm
-         T8Ig==
-X-Forwarded-Encrypted: i=1; AJvYcCWNDu+s2Wpx8XxrYSK22Nxeb1YzJHj8tSqVujUd1mjZYov9HRqzufWb7poTOlZMYIRPBaI=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx+X0T+UaWyFKH9x49129jPOzNoqNCx8GQHD+uLkzivoY/EQOqN
-	Hp9mMnA9k2G0sjVVxV1wfyIX+p8oXOELt2JP0tVG7q1NOBfXNF6A8tSmRKnSij8=
-X-Gm-Gg: ASbGncsAWpx4dspt1CUtuxqAIcoo2AwfHdcEzLjzjOgA9u7+I/RwoRp15jS2LJD8YIZ
-	aApepCXe2HsC7QfuUOqYwn85KULL0OzM/9P0ucz2XOWIGlCZBU1HellRngRCYijBiFcUEvlt8eF
-	t3sVznVdf5BJuJXcjzEPq/W28Izgi3QQTEAyYYMMwhe6b+Dbc3tO0rJpaDEIblveM7+ynbRkbYH
-	1Q9rtCMWNxNyc5pm6W58xj4PNpXzbRQbjWm4+2c/NuHZEZBowoLdr0wQ/U37IbsRKbIUFOGB6qX
-	LZwcs+UL64j3QXpuwnPNG9mwayVpbNxQSz+3ygt6JACSW9aP+iuSo/c3pJF9OQGfNBtYRYThfhZ
-	jBSIfv535Fmq+t6KpXA+9HZKA7CPuLaFdPTAe
-X-Google-Smtp-Source: AGHT+IETFDMIX2vSVQRWaZR0sw5Q/4vDACHJukED/hYw/JW8aw+9tSZ25bM1BT52bl+76K67jrDsNQ==
-X-Received: by 2002:a05:6000:2204:b0:39c:2665:2c13 with SMTP id ffacd0b85a97d-3a0ac3eb32cmr60486f8f.54.1746470380849;
-        Mon, 05 May 2025 11:39:40 -0700 (PDT)
+        bh=OzNe6C0edsjyIWPceeV4C4p+25KcQZ/7bKBRPqQnHyY=;
+        b=Gjpk22PVjWzEkJ09W5Ur+3O414Q2eS95Px75YNo0b17RWYRI4AEvhCZgI8rIj3sGG6
+         DI9nvGa+43cVPWKz60sGCdeGLT1CLUNlkUcdgeU7XCxs8tC/0Iljqbi6XbZ0R3dHgtUr
+         umwTy8kDelnPq7kl6gcqKxZFniHDUXnSc8+e5FhhbkObkazr4zxkrEMi2hnzqWh40U4t
+         TEM7n6ehjF5Bqgubww634lOavQBRzcrpsWYV8yJ08T0mN5JlW6k2UngIeg97D70+AMJe
+         75268i+tMp5rYJfnObBcWTh+l91zVmVia6eGUIFsUyuYuTEL3gHXiUIGxkZ/6N5TDOH0
+         CaNw==
+X-Forwarded-Encrypted: i=1; AJvYcCXWcIcZFsm51FYOWsoaq/EBLsTtS1D2hzG4Ov271O4Lfu0G6YV48K/6p+ThRXf2zF4hnZc=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz0JDNfC+2VAC30BopwV62SIk3Afm77+4WLTpyaA7SN4nt52uPC
+	kykHRKDx/lc22Jb1XP9EZ5NocWnx5kcj3GqJNHiNMQuQypnSO6r+gsKAhoVCs08=
+X-Gm-Gg: ASbGncs8RmbSuGZyLww2ldz1cIQyYDx/ni/2zoxSDgR/Nl2nToo6bTPEAQGf5DniMri
+	hTQJGm2WPG9RKrI/AXxS6sjBzaGU9OmmIstErxxy4wYvygGTaluki/B4Ph0bdeLWmaJEu+R6+K4
+	g7T9BY3pmRI8egnIeHJLIDJZ+jDHxmopTFMK9o4mAZSL/2/+WwxVkT2vhHOqbIHNBTK9T/xyqf5
+	TydBhuKg2d2kYKsdWlPOfKqmjbsUaYwd/zGtFwNPgWWVn38qFgHqPh099WCylNOXLwRYzAp+dHB
+	ZoyAGG0utiRQNB3QT0QZljDYrtM2FznD6GfZ7xu5yveIlbiS4y3wmMf7blMAd8yxO7fj3GiiPdV
+	8hDa4q/6fbICK1LPDuybSHHV4TP7xzKCecU7q
+X-Google-Smtp-Source: AGHT+IGwUA9SurKLxWLh45mHH6adoDU7MQ2Biah9osWdbgtkUBvKKSZQdOCU6OvgAcD3Wg09VVAOEA==
+X-Received: by 2002:a05:6000:18ae:b0:3a0:aa06:1d8d with SMTP id ffacd0b85a97d-3a0aa061dafmr1084271f8f.46.1746470381511;
+        Mon, 05 May 2025 11:39:41 -0700 (PDT)
 Received: from [192.168.1.240] (0.0.6.0.0.0.0.0.0.0.0.0.0.0.0.0.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff::600])
         by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a099ae8117sm11328877f8f.56.2025.05.05.11.39.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 May 2025 11:39:40 -0700 (PDT)
+        Mon, 05 May 2025 11:39:41 -0700 (PDT)
 From: Lorenz Bauer <lmb@isovalent.com>
-Date: Mon, 05 May 2025 19:38:43 +0100
-Subject: [PATCH bpf-next v3 1/3] btf: allow mmap of vmlinux btf
+Date: Mon, 05 May 2025 19:38:44 +0100
+Subject: [PATCH bpf-next v3 2/3] selftests: bpf: add a test for mmapable
+ vmlinux BTF
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -84,7 +85,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250505-vmlinux-mmap-v3-1-5d53afa060e8@isovalent.com>
+Message-Id: <20250505-vmlinux-mmap-v3-2-5d53afa060e8@isovalent.com>
 References: <20250505-vmlinux-mmap-v3-0-5d53afa060e8@isovalent.com>
 In-Reply-To: <20250505-vmlinux-mmap-v3-0-5d53afa060e8@isovalent.com>
 To: Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, 
@@ -101,90 +102,104 @@ Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
  Lorenz Bauer <lmb@isovalent.com>
 X-Mailer: b4 0.14.2
 
-User space needs access to kernel BTF for many modern features of BPF.
-Right now each process needs to read the BTF blob either in pieces or
-as a whole. Allow mmaping the sysfs file so that processes can directly
-access the memory allocated for it in the kernel.
+Add a basic test for the ability to mmap /sys/kernel/btf/vmlinux. Since
+libbpf doesn't have an API to parse BTF from memory we do some basic
+sanity checks ourselves.
 
 Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
 ---
- include/asm-generic/vmlinux.lds.h |  3 ++-
- kernel/bpf/sysfs_btf.c            | 37 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 39 insertions(+), 1 deletion(-)
+ tools/testing/selftests/bpf/prog_tests/btf_sysfs.c | 83 ++++++++++++++++++++++
+ 1 file changed, 83 insertions(+)
 
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index 58a635a6d5bdf0c53c267c2a3d21a5ed8678ce73..1750390735fac7637cc4d2fa05f96cb2a36aa448 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -667,10 +667,11 @@ defined(CONFIG_AUTOFDO_CLANG) || defined(CONFIG_PROPELLER_CLANG)
-  */
- #ifdef CONFIG_DEBUG_INFO_BTF
- #define BTF								\
-+	. = ALIGN(PAGE_SIZE);						\
- 	.BTF : AT(ADDR(.BTF) - LOAD_OFFSET) {				\
- 		BOUNDED_SECTION_BY(.BTF, _BTF)				\
- 	}								\
--	. = ALIGN(4);							\
-+	. = ALIGN(PAGE_SIZE);						\
- 	.BTF_ids : AT(ADDR(.BTF_ids) - LOAD_OFFSET) {			\
- 		*(.BTF_ids)						\
- 	}
-diff --git a/kernel/bpf/sysfs_btf.c b/kernel/bpf/sysfs_btf.c
-index 81d6cf90584a7157929c50f62a5c6862e7a3d081..37278d7f38ae72f2d7efcfa859e86aaf12e39a25 100644
---- a/kernel/bpf/sysfs_btf.c
-+++ b/kernel/bpf/sysfs_btf.c
-@@ -7,14 +7,51 @@
- #include <linux/kobject.h>
- #include <linux/init.h>
- #include <linux/sysfs.h>
-+#include <linux/mm.h>
-+#include <linux/io.h>
-+#include <linux/btf.h>
- 
- /* See scripts/link-vmlinux.sh, gen_btf() func for details */
- extern char __start_BTF[];
- extern char __stop_BTF[];
- 
-+static int btf_sysfs_vmlinux_mmap(struct file *filp, struct kobject *kobj,
-+				  const struct bin_attribute *attr,
-+				  struct vm_area_struct *vma)
+diff --git a/tools/testing/selftests/bpf/prog_tests/btf_sysfs.c b/tools/testing/selftests/bpf/prog_tests/btf_sysfs.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..3319cf758897d46cefa8ca25e16acb162f4e9889
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/btf_sysfs.c
+@@ -0,0 +1,83 @@
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
++/* Copyright (c) 2025 Isovalent */
++
++#include <test_progs.h>
++#include <bpf/btf.h>
++#include <sys/stat.h>
++#include <sys/mman.h>
++#include <fcntl.h>
++#include <unistd.h>
++
++static void test_btf_mmap_sysfs(const char *path, struct btf *base)
 +{
-+	unsigned long pages = PAGE_ALIGN(attr->size) >> PAGE_SHIFT;
-+	size_t vm_size = vma->vm_end - vma->vm_start;
-+	unsigned long addr = (unsigned long)attr->private;
-+	int i, err = 0;
++	struct stat st;
++	__u64 btf_size, end;
++	void *raw_data = NULL;
++	int fd = -1;
++	long page_size;
++	struct btf *btf = NULL;
 +
-+	if (addr != (unsigned long)__start_BTF || !PAGE_ALIGNED(addr))
-+		return -EINVAL;
++	page_size = sysconf(_SC_PAGESIZE);
++	if (!ASSERT_GE(page_size, 0, "get_page_size"))
++		goto cleanup;
 +
-+	if (vma->vm_pgoff)
-+		return -EINVAL;
++	if (!ASSERT_OK(stat(path, &st), "stat_btf"))
++		goto cleanup;
 +
-+	if (vma->vm_flags & (VM_WRITE | VM_EXEC | VM_MAYSHARE))
-+		return -EACCES;
++	btf_size = st.st_size;
++	end = (btf_size + page_size - 1) / page_size * page_size;
 +
-+	if (vm_size >> PAGE_SHIFT > pages)
-+		return -EINVAL;
++	fd = open(path, O_RDONLY);
++	if (!ASSERT_GE(fd, 0, "open_btf"))
++		goto cleanup;
 +
-+	vm_flags_mod(vma, VM_DONTDUMP, VM_MAYEXEC | VM_MAYWRITE);
++	raw_data = mmap(NULL, btf_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
++	if (!ASSERT_EQ(raw_data, MAP_FAILED, "mmap_btf_writable"))
++		goto cleanup;
 +
-+	for (i = 0; i < pages && !err; i++, addr += PAGE_SIZE)
-+		err = vm_insert_page(vma, vma->vm_start + i * PAGE_SIZE,
-+				     virt_to_page(addr));
++	raw_data = mmap(NULL, btf_size, PROT_READ, MAP_SHARED, fd, 0);
++	if (!ASSERT_EQ(raw_data, MAP_FAILED, "mmap_btf_shared"))
++		goto cleanup;
 +
-+	if (err)
-+		zap_vma_pages(vma);
++	raw_data = mmap(NULL, end + 1, PROT_READ, MAP_PRIVATE, fd, 0);
++	if (!ASSERT_EQ(raw_data, MAP_FAILED, "mmap_btf_invalid_size"))
++		goto cleanup;
 +
-+	return err;
++	raw_data = mmap(NULL, end, PROT_READ, MAP_PRIVATE, fd, 0);
++	if (!ASSERT_NEQ(raw_data, MAP_FAILED, "mmap_btf"))
++		goto cleanup;
++
++	if (!ASSERT_EQ(mprotect(raw_data, btf_size, PROT_READ | PROT_WRITE), -1,
++	    "mprotect_writable"))
++		goto cleanup;
++
++	if (!ASSERT_EQ(mprotect(raw_data, btf_size, PROT_READ | PROT_EXEC), -1,
++	    "mprotect_executable"))
++		goto cleanup;
++
++	/* Check padding is zeroed */
++	for (int i = btf_size; i < end; i++) {
++		if (((__u8 *)raw_data)[i] != 0) {
++			PRINT_FAIL("tail of BTF is not zero at page offset %d\n", i);
++			goto cleanup;
++		}
++	}
++
++	btf = btf__new_split(raw_data, btf_size, base);
++	if (!ASSERT_NEQ(btf, NULL, "parse_btf"))
++		goto cleanup;
++
++cleanup:
++	if (raw_data && raw_data != MAP_FAILED)
++		munmap(raw_data, btf_size);
++	if (btf)
++		btf__free(btf);
++	if (fd >= 0)
++		close(fd);
 +}
 +
- static struct bin_attribute bin_attr_btf_vmlinux __ro_after_init = {
- 	.attr = { .name = "vmlinux", .mode = 0444, },
- 	.read_new = sysfs_bin_attr_simple_read,
-+	.mmap = btf_sysfs_vmlinux_mmap,
- };
- 
- struct kobject *btf_kobj;
++void test_btf_sysfs(void)
++{
++	if (test__start_subtest("vmlinux"))
++		test_btf_mmap_sysfs("/sys/kernel/btf/vmlinux", NULL);
++}
 
 -- 
 2.49.0
