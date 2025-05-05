@@ -1,276 +1,199 @@
-Return-Path: <bpf+bounces-57361-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57362-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55C29AA9BB8
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 20:40:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34BB5AA9BDA
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 20:46:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FAB0189E1ED
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 18:40:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D45D07A5AA2
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 18:45:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24AF026F464;
-	Mon,  5 May 2025 18:39:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04A151B3955;
+	Mon,  5 May 2025 18:46:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="Ez5ZNQhB"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DC4qa+a3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32F6526F461
-	for <bpf@vger.kernel.org>; Mon,  5 May 2025 18:39:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46335EEC3
+	for <bpf@vger.kernel.org>; Mon,  5 May 2025 18:46:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746470386; cv=none; b=o2e7nqOPtj9vDnBPD5mj8g52PnB/acWzQ8RxfK+GdvRytH+cqnFM/eJKNe7dKRK7oEBDDBNgOXj/6N0R2umnoylYaVfAiDZp6uEOeEPrairWH9D69VboUBYEPRIhKXPEhg4rotYlMHU42pfrLznl30OLJOi/T57u5qUEy5tEqgc=
+	t=1746470800; cv=none; b=ZiBl4H3/Mf+Kq7lJw6dWFHWUjJe07Vu59nNEcAf/nL1FS4tSnJEaJ6BX6Dm6Z5ve4iyjlNVFU+H0C1pHkCklj7qYRqXSmk8AT2nGbf9amWFQSK+TwzFSpo+u1LrKoJrJfk+k5gjPeoYQA6w8iUZFdZvsvV4MdQM8F6X/NOZlGSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746470386; c=relaxed/simple;
-	bh=up9a1YM4tArFppHFNdrFADc8/CKFM14Jqw3tI56B5t0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=cIhEhisYDUabL/AQ/nd+E6n3EsKqw0oxqyj5bq1wmefaHdt6vSEC/yHZf9aj6jkbmE6Y7S73cGq9NVoL1bXmhkgv+Ic/jPpwmnMekAmMlkOZ9Q9R1Ab+wLdymLhSLVsje3ZTyifJ8N5YnOUH/X1RkLt87hs+S7fn70CzOcinck0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=Ez5ZNQhB; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-39c266c2dd5so5717992f8f.3
-        for <bpf@vger.kernel.org>; Mon, 05 May 2025 11:39:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1746470382; x=1747075182; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qvnaQmeST1mheRYMccMqZNEEW84cIcZjY0Sub0+nVyg=;
-        b=Ez5ZNQhB2DPtSJ/ev1UVhohZo9QZBU6MvtM5gk7cYrJ55DfwwTb3fa7h1ulvav6xsD
-         2hJ3Bb85POmNr2B1OmJz03iY6iOA+w6aHUHwG734N2TpRTuvKMPyBq4QXQN5Q5yWxavb
-         Odzg0h5CmFR/qMdNtSfZ0Y7rG/Tcl0sHRMXnE/OXemN+EQq+GpZsN198oOBDxUJguWHO
-         K9jekQtMIVjIYCi1zcSOVRJGoXCGgCPszScJWyklfV5bzxMOPmnNvHiTnOAMicltDlCl
-         xLJieyIHaP3U9UlTgmV0fu7Cq0wwSZj2GxOCK/AC/6RrYanfVr2uOQevurx8qDr5o+H9
-         9PFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746470382; x=1747075182;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qvnaQmeST1mheRYMccMqZNEEW84cIcZjY0Sub0+nVyg=;
-        b=UbTRJNpOBJDgs2g3QC1VvtCC14bjAsYDqwsoJ233j4Rl8MsR9vP9CV8H/iwWkqOZWZ
-         pssS76HLAX4VDm4R91ImxjCogEQdrbngnNAqyQaS5acojKp//gYlirXC9ZTCLV+cC60j
-         mQKfq95JTht0wOAiuhTf47hfx+ZymfQYODDXJSCVPGE1EqQ/A6RgIQCDSuqH1MI/uQF1
-         08Ofmnj8mPjz2tNS4vNWb9kUZgxkyo9QfXCaFbflLWxGWreypsWnV68BZXCu9PB1qGSl
-         oQAjLIaF9UA2jJ1vKdb2/0/wE1X4tjqdH38Kjsv4SprwHwEwsdzRj6Clp6pw++TcP1+9
-         kNhA==
-X-Forwarded-Encrypted: i=1; AJvYcCUO96GAhc9yDNwoZOLFiMqSdy52tnVzB27Wa+hfIlERG381BTT3QT72vdeEPtAvmsknkKs=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy1RcV08VpBd/0yXpLEaRRF6wdhr36YlSheBcvI1FjMaT0u0JF9
-	mq4ELZrGWSB2EWC9N9uYdbnnHqKzPtK9svp/F7PZgITmjv5dqhjhz1dosJty2ls=
-X-Gm-Gg: ASbGnctXgI0z49dJcwyozJAf2HRHCjkyJ6Nttow5Hi1E254N9Mr+wWJfRrzF7B0Yuc7
-	E3QmifZsib5KikblOQIg8PiL+LpjRv+xW74JSScFWVtOfh9HgQCS/sPLNHRWJG+jCrPMoepIw/l
-	SnqfFJKGyNlRaK6MwwpcMjumJmdoaTDZV57gzRrJQ4QvGxJybtCriCU+7pYP4ps7MK4w/Fo1hCZ
-	SmVvJdbvK3y9gZ0P5Ay6zVqFbvvWH98MTGLn8pfDR9ETAi7J18PETTS33dMUaYaK+PhMqgYh0h+
-	ksD0jXmFIoDJrZeGFQFXgpUvFgKkkvPSKu0HAVLj34aLBZmyXl6MwtzhReVqH6XOVoArPzYxIyk
-	L6svVNjsogQJjLjN6E+TUrhyUpsiM0Sc5+HOz
-X-Google-Smtp-Source: AGHT+IGaP9tNm2c0RziJEdBKRZpIsFJ5xqDJC0msO6dFV0yZufxPJ59rvap8ssGSpPlqeWLjv0NnQA==
-X-Received: by 2002:a05:6000:1887:b0:38f:4acd:975c with SMTP id ffacd0b85a97d-3a09fd96325mr7274351f8f.27.1746470382270;
-        Mon, 05 May 2025 11:39:42 -0700 (PDT)
-Received: from [192.168.1.240] (0.0.6.0.0.0.0.0.0.0.0.0.0.0.0.0.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff::600])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a099ae8117sm11328877f8f.56.2025.05.05.11.39.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 May 2025 11:39:42 -0700 (PDT)
-From: Lorenz Bauer <lmb@isovalent.com>
-Date: Mon, 05 May 2025 19:38:45 +0100
-Subject: [PATCH bpf-next v3 3/3] libbpf: Use mmap to parse vmlinux BTF from
- sysfs
+	s=arc-20240116; t=1746470800; c=relaxed/simple;
+	bh=AegFSyOOv4grWdByZkfKeWyg0oWxgN/qlLF/4qdJ7fo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TrO8eQ0Sfb+FuB8Y7jYxCnNbbrXIWz7rURF6qWOjn4aXnb4uAbFjQR/zSL/ML13Q+C7vQthEp+t3VClJF1qtP46Gl/zjqGy51I9wqL2ZsliAWDI00B8dxBQ9n/9EaylahedoEGAJ36ln2h2jpX2+auNdS71RMwZp3WxEP9vraqY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DC4qa+a3; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 5 May 2025 11:46:28 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1746470795;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VnKxsV2L2fffvIQfQUdFUlww7mT05ivEl4wH2LZkKqU=;
+	b=DC4qa+a3IVGQtg+5iEP1lHix3GfsKejrm/X2uAXD887G8EBSEms8BiKVwvaYqezI4Sr5z3
+	XZ/PiFmCfecMxGquEk73+I4tiKYDs/SzcC+d7RilXQNgo0Tz1gVyoCenuX4eNzhrgdyGgE
+	yZIWWdVl3udUJT04Z0RIWOgmj2R9NYk=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf@vger.kernel.org, linux-mm@kvack.org, vbabka@suse.cz, 
+	harry.yoo@oracle.com, mhocko@suse.com, bigeasy@linutronix.de, andrii@kernel.org, 
+	memxor@gmail.com, akpm@linux-foundation.org, peterz@infradead.org, 
+	rostedt@goodmis.org, hannes@cmpxchg.org, willy@infradead.org
+Subject: Re: [PATCH 6/6] slab: Introduce kmalloc_nolock() and kfree_nolock().
+Message-ID: <a74hjevi7tyq36vekcft7mlfdgwtcg6ddvr3bekb3amcf4fiuc@z7xszkyjcrbb>
+References: <20250501032718.65476-1-alexei.starovoitov@gmail.com>
+ <20250501032718.65476-7-alexei.starovoitov@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250505-vmlinux-mmap-v3-3-5d53afa060e8@isovalent.com>
-References: <20250505-vmlinux-mmap-v3-0-5d53afa060e8@isovalent.com>
-In-Reply-To: <20250505-vmlinux-mmap-v3-0-5d53afa060e8@isovalent.com>
-To: Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
- Shuah Khan <shuah@kernel.org>
-Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, 
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- Lorenz Bauer <lmb@isovalent.com>
-X-Mailer: b4 0.14.2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250501032718.65476-7-alexei.starovoitov@gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-Teach libbpf to use mmap when parsing vmlinux BTF from /sys. We don't
-apply this to fall-back paths on the regular file system because there
-is no way to ensure that modifications underlying the MAP_PRIVATE
-mapping are not visible to the process.
+On Wed, Apr 30, 2025 at 08:27:18PM -0700, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
+> 
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -595,7 +595,13 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
+>  	if (!val)
+>  		return;
+>  
+> -	cgroup_rstat_updated(memcg->css.cgroup, cpu);
+> +	/*
+> +	 * If called from NMI via kmalloc_nolock -> memcg_slab_post_alloc_hook
+> +	 * -> obj_cgroup_charge -> mod_memcg_state,
+> +	 * then delay the update.
+> +	 */
+> +	if (!in_nmi())
+> +		cgroup_rstat_updated(memcg->css.cgroup, cpu);
 
-Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
----
- tools/lib/bpf/btf.c | 83 ++++++++++++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 72 insertions(+), 11 deletions(-)
+I don't think we can just ignore cgroup_rstat_updated() for nmi as there
+is a chance (though very small) that we will loose these stats updates.
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index b7513d4cce55b263310c341bc254df6364e829d9..3006c1ebb97ed899eb519b10927491d87ccdaca5 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -12,6 +12,7 @@
- #include <sys/utsname.h>
- #include <sys/param.h>
- #include <sys/stat.h>
-+#include <sys/mman.h>
- #include <linux/kernel.h>
- #include <linux/err.h>
- #include <linux/btf.h>
-@@ -120,6 +121,9 @@ struct btf {
- 	/* whether base_btf should be freed in btf_free for this instance */
- 	bool owns_base;
- 
-+	/* whether raw_data is a (read-only) mmap */
-+	bool raw_data_is_mmap;
-+
- 	/* BTF object FD, if loaded into kernel */
- 	int fd;
- 
-@@ -951,6 +955,17 @@ static bool btf_is_modifiable(const struct btf *btf)
- 	return (void *)btf->hdr != btf->raw_data;
- }
- 
-+static void btf_free_raw_data(struct btf *btf)
-+{
-+	if (btf->raw_data_is_mmap) {
-+		munmap(btf->raw_data, btf->raw_size);
-+		btf->raw_data_is_mmap = false;
-+	} else {
-+		free(btf->raw_data);
-+	}
-+	btf->raw_data = NULL;
-+}
-+
- void btf__free(struct btf *btf)
- {
- 	if (IS_ERR_OR_NULL(btf))
-@@ -970,7 +985,7 @@ void btf__free(struct btf *btf)
- 		free(btf->types_data);
- 		strset__free(btf->strs_set);
- 	}
--	free(btf->raw_data);
-+	btf_free_raw_data(btf);
- 	free(btf->raw_data_swapped);
- 	free(btf->type_offs);
- 	if (btf->owns_base)
-@@ -1030,7 +1045,7 @@ struct btf *btf__new_empty_split(struct btf *base_btf)
- 	return libbpf_ptr(btf_new_empty(base_btf));
- }
- 
--static struct btf *btf_new(const void *data, __u32 size, struct btf *base_btf)
-+static struct btf *btf_new_no_copy(void *data, __u32 size, struct btf *base_btf)
- {
- 	struct btf *btf;
- 	int err;
-@@ -1050,12 +1065,7 @@ static struct btf *btf_new(const void *data, __u32 size, struct btf *base_btf)
- 		btf->start_str_off = base_btf->hdr->str_len;
- 	}
- 
--	btf->raw_data = malloc(size);
--	if (!btf->raw_data) {
--		err = -ENOMEM;
--		goto done;
--	}
--	memcpy(btf->raw_data, data, size);
-+	btf->raw_data = data;
- 	btf->raw_size = size;
- 
- 	btf->hdr = btf->raw_data;
-@@ -1081,6 +1091,24 @@ static struct btf *btf_new(const void *data, __u32 size, struct btf *base_btf)
- 	return btf;
- }
- 
-+static struct btf *btf_new(const void *data, __u32 size, struct btf *base_btf)
-+{
-+	struct btf *btf;
-+	void *raw_data;
-+
-+	raw_data = malloc(size);
-+	if (!raw_data)
-+		return ERR_PTR(-ENOMEM);
-+
-+	memcpy(raw_data, data, size);
-+
-+	btf = btf_new_no_copy(raw_data, size, base_btf);
-+	if (IS_ERR(btf))
-+		free(raw_data);
-+
-+	return btf;
-+}
-+
- struct btf *btf__new(const void *data, __u32 size)
- {
- 	return libbpf_ptr(btf_new(data, size, NULL));
-@@ -1354,6 +1382,37 @@ struct btf *btf__parse_raw_split(const char *path, struct btf *base_btf)
- 	return libbpf_ptr(btf_parse_raw(path, base_btf));
- }
- 
-+static struct btf *btf_parse_raw_mmap(const char *path, struct btf *base_btf)
-+{
-+	struct stat st;
-+	void *data;
-+	struct btf *btf;
-+	int fd;
-+
-+	fd = open(path, O_RDONLY);
-+	if (fd < 0)
-+		return libbpf_err_ptr(-errno);
-+
-+	if (fstat(fd, &st) < 0) {
-+		close(fd);
-+		return libbpf_err_ptr(-errno);
-+	}
-+
-+	data = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
-+	close(fd);
-+
-+	if (data == MAP_FAILED)
-+		return NULL;
-+
-+	btf = btf_new_no_copy(data, st.st_size, base_btf);
-+	if (!btf)
-+		munmap(data, st.st_size);
-+	else
-+		btf->raw_data_is_mmap = true;
-+
-+	return btf;
-+}
-+
- static struct btf *btf_parse(const char *path, struct btf *base_btf, struct btf_ext **btf_ext)
- {
- 	struct btf *btf;
-@@ -1659,8 +1718,7 @@ struct btf *btf__load_from_kernel_by_id(__u32 id)
- static void btf_invalidate_raw_data(struct btf *btf)
- {
- 	if (btf->raw_data) {
--		free(btf->raw_data);
--		btf->raw_data = NULL;
-+		btf_free_raw_data(btf);
- 	}
- 	if (btf->raw_data_swapped) {
- 		free(btf->raw_data_swapped);
-@@ -5290,7 +5348,10 @@ struct btf *btf__load_vmlinux_btf(void)
- 		pr_warn("kernel BTF is missing at '%s', was CONFIG_DEBUG_INFO_BTF enabled?\n",
- 			sysfs_btf_path);
- 	} else {
--		btf = btf__parse(sysfs_btf_path, NULL);
-+		btf = btf_parse_raw_mmap(sysfs_btf_path, NULL);
-+		if (IS_ERR_OR_NULL(btf))
-+			btf = btf__parse(sysfs_btf_path, NULL);
-+
- 		if (!btf) {
- 			err = -errno;
- 			pr_warn("failed to read kernel BTF from '%s': %s\n",
+In addition, memcg_rstat_updated() itself is not reentrant safe along
+with couple of functions leading to it like __mod_memcg_lruvec_state().
 
--- 
-2.49.0
+>  	statc = this_cpu_ptr(memcg->vmstats_percpu);
+>  	for (; statc; statc = statc->parent) {
+>  		/*
+> @@ -2895,7 +2901,7 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
+>  	unsigned long flags;
+>  	bool ret = false;
+>  
+> -	local_lock_irqsave(&memcg_stock.stock_lock, flags);
+> +	local_lock_irqsave_check(&memcg_stock.stock_lock, flags);
+>  
+>  	stock = this_cpu_ptr(&memcg_stock);
+>  	if (objcg == READ_ONCE(stock->cached_objcg) && stock->nr_bytes >= nr_bytes) {
+> @@ -2995,7 +3001,7 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
+>  	unsigned long flags;
+>  	unsigned int nr_pages = 0;
+>  
+> -	local_lock_irqsave(&memcg_stock.stock_lock, flags);
+> +	local_lock_irqsave_check(&memcg_stock.stock_lock, flags);
+>  
+>  	stock = this_cpu_ptr(&memcg_stock);
+>  	if (READ_ONCE(stock->cached_objcg) != objcg) { /* reset if necessary */
+> @@ -3088,6 +3094,27 @@ static inline size_t obj_full_size(struct kmem_cache *s)
+>  	return s->size + sizeof(struct obj_cgroup *);
+>  }
+>  
+> +/*
+> + * Try subtract from nr_charged_bytes without making it negative
+> + */
+> +static bool obj_cgroup_charge_atomic(struct obj_cgroup *objcg, gfp_t flags, size_t sz)
+> +{
+> +	size_t old = atomic_read(&objcg->nr_charged_bytes);
+> +	u32 nr_pages = sz >> PAGE_SHIFT;
+> +	u32 nr_bytes = sz & (PAGE_SIZE - 1);
+> +
+> +	if ((ssize_t)(old - sz) >= 0 &&
+> +	    atomic_cmpxchg(&objcg->nr_charged_bytes, old, old - sz) == old)
+> +		return true;
+> +
+> +	nr_pages++;
+> +	if (obj_cgroup_charge_pages(objcg, flags, nr_pages))
+> +		return false;
+> +
+> +	atomic_add(PAGE_SIZE - nr_bytes, &objcg->nr_charged_bytes);
+> +	return true;
+> +}
+> +
+>  bool __memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
+>  				  gfp_t flags, size_t size, void **p)
+>  {
+> @@ -3128,6 +3155,21 @@ bool __memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
+>  			return false;
+>  	}
+>  
+> +	if (!gfpflags_allow_spinning(flags)) {
+> +		if (local_lock_is_locked(&memcg_stock.stock_lock)) {
+> +			/*
+> +			 * Cannot use
+> +			 * lockdep_assert_held(this_cpu_ptr(&memcg_stock.stock_lock));
+> +			 * since lockdep might not have been informed yet
+> +			 * of lock acquisition.
+> +			 */
+> +			return obj_cgroup_charge_atomic(objcg, flags,
+> +							size * obj_full_size(s));
 
+We can not just ignore the stat updates here.
+
+> +		} else {
+> +			lockdep_assert_not_held(this_cpu_ptr(&memcg_stock.stock_lock));
+> +		}
+> +	}
+> +
+>  	for (i = 0; i < size; i++) {
+>  		slab = virt_to_slab(p[i]);
+>  
+> @@ -3162,8 +3204,12 @@ bool __memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
+>  void __memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+>  			    void **p, int objects, struct slabobj_ext *obj_exts)
+>  {
+> +	bool lock_held = local_lock_is_locked(&memcg_stock.stock_lock);
+>  	size_t obj_size = obj_full_size(s);
+>  
+> +	if (likely(!lock_held))
+> +		lockdep_assert_not_held(this_cpu_ptr(&memcg_stock.stock_lock));
+> +
+>  	for (int i = 0; i < objects; i++) {
+>  		struct obj_cgroup *objcg;
+>  		unsigned int off;
+> @@ -3174,8 +3220,12 @@ void __memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+>  			continue;
+>  
+>  		obj_exts[off].objcg = NULL;
+> -		refill_obj_stock(objcg, obj_size, true, -obj_size,
+> -				 slab_pgdat(slab), cache_vmstat_idx(s));
+> +		if (unlikely(lock_held)) {
+> +			atomic_add(obj_size, &objcg->nr_charged_bytes);
+
+objcg->nr_charged_bytes is stats ignorant and the relevant stats need to
+be updated before putting stuff into it.
+
+> +		} else {
+> +			refill_obj_stock(objcg, obj_size, true, -obj_size,
+> +					 slab_pgdat(slab), cache_vmstat_idx(s));
+> +		}
+>  		obj_cgroup_put(objcg);
+>  	}
+>  }
+
+I am actually working on making this whole call chain (i.e.
+kmalloc/kmem_cache_alloc to memcg [un]charging) reentrant/nmi safe.
 
