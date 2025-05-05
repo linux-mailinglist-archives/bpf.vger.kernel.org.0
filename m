@@ -1,62 +1,62 @@
-Return-Path: <bpf+bounces-57431-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57432-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80BA1AAAFEC
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 05:28:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3B30AAAD43
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 04:32:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BF3B3AE708
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 03:23:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 568BF1883348
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 02:28:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FA9D301147;
-	Mon,  5 May 2025 23:29:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B93E3E8D85;
+	Mon,  5 May 2025 23:34:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uvdyx/lY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DCW1soBz"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CACE3A91D5;
-	Mon,  5 May 2025 23:18:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 417B928B400;
+	Mon,  5 May 2025 23:20:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746487086; cv=none; b=Ewuh9hglnBtDCkr9Y1Y95CV7EgcaATPgWLPTsQOhuMdoTuVmcBemWia9XASCCyAZQq87wElOlytmWbydoFsLx/yB6f6kKQTHdDauds2iOAXq9Bmyz0FTnDRNlQDTBRMP3JKRE173Q4E5t6ktJTsERnRg4VfzRNth4X+Am/qiA4w=
+	t=1746487230; cv=none; b=c/vFKP2VKQ6xRNfPZ8AQ7/lFejvWIzssVj84C6QGoCY0V7anHXe7fz1ECzNvWh2sEtM7OjNtdyC4LQMBe74wEEFS68tMsz/xBKWYu4AbIjqgQ2Md4LD+Fl0A0rpxSw+5V0j25wz5XbQ3ue+d3Evk90tXckCHOLCxTJgdcjzJYvE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746487086; c=relaxed/simple;
-	bh=sCRF0bOX0We3UPuKxBWiR1cOc+j4HkGJU7wJ+k2QiZU=;
+	s=arc-20240116; t=1746487230; c=relaxed/simple;
+	bh=vqnvNS9eSoUsYXNZeDhxKTBqZfo8233lKjz1aoDaY1s=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=g8BUZ35bYwbSlO+GIak2Wjgvmb7yDa2nYJ6tWYf8dSQGtffrOSZuLLa0WguAv7gCGe8G9VF9p1t2OmCLuYLhrdWqp6JVPYzy4Ucr0qV6KaBkcEtrLrRmaixcJLPJwMUft4lfomRhLICP7Q+y+JK+IhEncEELWr7UuogTfglCjNE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uvdyx/lY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54627C4CEEF;
-	Mon,  5 May 2025 23:18:04 +0000 (UTC)
+	 MIME-Version; b=fadktpMguBGjoQ2Buf6VvFNph+CiReq96sdwJ2sy8Y4rA2kJpSLPfwo0TY4pSS97OFB0tosQrjtMPRhG8hsO0ZNKowvnZQBJ4PaHdc/kGUDKqldX3BF0ZKJan2BdIB7iSVr0HY7Y7/s/zIaoInw6A6ZnB8SW+orgoVBwACpTPdQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DCW1soBz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 277D4C4CEE4;
+	Mon,  5 May 2025 23:20:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746487085;
-	bh=sCRF0bOX0We3UPuKxBWiR1cOc+j4HkGJU7wJ+k2QiZU=;
+	s=k20201202; t=1746487229;
+	bh=vqnvNS9eSoUsYXNZeDhxKTBqZfo8233lKjz1aoDaY1s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uvdyx/lYR2+554zg6e9D3o4UkPGPRVZQjcZj81o4Aoda1Hrhh/F0eaHSw9En1dv/r
-	 IbqPiwGYb4Q+LkmBiCYdex0DW2O3mRV/i0L+afuk1ZNj5cwQVJAKDfJH5yJBKUom3y
-	 CEH6p/ByrlAum5PhvZcG+AbthtwaR8xyIVtV+w/BJWdbIT3aVYLgtx/7HeHS3Dgrog
-	 5U3S7+NFskXsOCAO65z4q1CpYlEPxi6hAa0PBl1jwb4lw0Gssdw/gL4otZGM65hNgV
-	 ZmsmTplp3Y/lu+deJPybF5n6cENA+eM7+QbVmaKOfw6TzLs0ke9ZU/+xFaC6a6R41s
-	 fDgJUFQXTs6PA==
+	b=DCW1soBzcLP2Y0fOS/MTVpkUL8Bea+/MJ7zam7gkINSe1okGIvB3JkxRrxaqShK2W
+	 gtUw12qtZc1zIIuCUyt+lBndPR6QeiMkQBr8zYhgv4PLNazHU74j75rXHEBIKi8duK
+	 94aSXmGA9jmen+5FjkCqPez1aB3DMreUp3VUoY0YKpxV35SFHxKwbcQgJRAgU5p39Y
+	 vanfKK/MHQzHuacyQaF0KJVfaUeiCpLDmyaDepL/gJXTfzELwnG07nolWzcCHySaAN
+	 S3RS/7XLXPa13H1yE3519IfqKAaC544G8zdWafvYhoG17pUX99KevRfPmhi4ZRhLjC
+	 YGWOJt8oDLFCQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Viktor Malik <vmalik@redhat.com>,
+Cc: Nandakumar Edamana <nandakumar@nandakumar.co.in>,
 	Andrii Nakryiko <andrii@kernel.org>,
-	Quentin Monnet <qmo@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
+	eddyz87@gmail.com,
+	ast@kernel.org,
 	daniel@iogearbox.net,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 146/153] bpftool: Fix readlink usage in get_fd_type
-Date: Mon,  5 May 2025 19:13:13 -0400
-Message-Id: <20250505231320.2695319-146-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 067/114] libbpf: Fix out-of-bound read
+Date: Mon,  5 May 2025 19:17:30 -0400
+Message-Id: <20250505231817.2697367-67-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250505231320.2695319-1-sashal@kernel.org>
-References: <20250505231320.2695319-1-sashal@kernel.org>
+In-Reply-To: <20250505231817.2697367-1-sashal@kernel.org>
+References: <20250505231817.2697367-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -65,50 +65,44 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.181
+X-stable-base: Linux 5.10.237
 Content-Transfer-Encoding: 8bit
 
-From: Viktor Malik <vmalik@redhat.com>
+From: Nandakumar Edamana <nandakumar@nandakumar.co.in>
 
-[ Upstream commit 0053f7d39d491b6138d7c526876d13885cbb65f1 ]
+[ Upstream commit 236d3910117e9f97ebf75e511d8bcc950f1a4e5f ]
 
-The `readlink(path, buf, sizeof(buf))` call reads at most sizeof(buf)
-bytes and *does not* append null-terminator to buf. With respect to
-that, fix two pieces in get_fd_type:
+In `set_kcfg_value_str`, an untrusted string is accessed with the assumption
+that it will be at least two characters long due to the presence of checks for
+opening and closing quotes. But the check for the closing quote
+(value[len - 1] != '"') misses the fact that it could be checking the opening
+quote itself in case of an invalid input that consists of just the opening
+quote.
 
-1. Change the truncation check to contain sizeof(buf) rather than
-   sizeof(path).
-2. Append null-terminator to buf.
+This commit adds an explicit check to make sure the string is at least two
+characters long.
 
-Reported by Coverity.
-
-Signed-off-by: Viktor Malik <vmalik@redhat.com>
+Signed-off-by: Nandakumar Edamana <nandakumar@nandakumar.co.in>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Reviewed-by: Quentin Monnet <qmo@kernel.org>
-Link: https://lore.kernel.org/bpf/20250129071857.75182-1-vmalik@redhat.com
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Link: https://lore.kernel.org/bpf/20250221210110.3182084-1-nandakumar@nandakumar.co.in
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/bpf/bpftool/common.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ tools/lib/bpf/libbpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
-index e4c65d34fe74f..2b4773e00ab68 100644
---- a/tools/bpf/bpftool/common.c
-+++ b/tools/bpf/bpftool/common.c
-@@ -318,10 +318,11 @@ int get_fd_type(int fd)
- 		p_err("can't read link type: %s", strerror(errno));
- 		return -1;
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 33cdcfe106344..f65e03e7cf944 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -1503,7 +1503,7 @@ static int set_kcfg_value_str(struct extern_desc *ext, char *ext_val,
  	}
--	if (n == sizeof(path)) {
-+	if (n == sizeof(buf)) {
- 		p_err("can't read link type: path too long!");
- 		return -1;
- 	}
-+	buf[n] = '\0';
  
- 	if (strstr(buf, "bpf-map"))
- 		return BPF_OBJ_MAP;
+ 	len = strlen(value);
+-	if (value[len - 1] != '"') {
++	if (len < 2 || value[len - 1] != '"') {
+ 		pr_warn("extern (kcfg) '%s': invalid string config '%s'\n",
+ 			ext->name, value);
+ 		return -EINVAL;
 -- 
 2.39.5
 
