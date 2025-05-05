@@ -1,146 +1,139 @@
-Return-Path: <bpf+bounces-57374-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57375-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D8EAAA9DC3
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 23:05:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29C80AA9DDC
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 23:10:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B23E17E6E1
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 21:05:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31CF9189192B
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 21:10:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F28C02741CF;
-	Mon,  5 May 2025 21:05:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9822A270563;
+	Mon,  5 May 2025 21:10:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="WhgsSo9J"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BmLvHy3Q"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 910652701D7
-	for <bpf@vger.kernel.org>; Mon,  5 May 2025 21:04:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 910C2262FD3
+	for <bpf@vger.kernel.org>; Mon,  5 May 2025 21:10:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746479101; cv=none; b=jVNVLQFidHSmDReWTRPCAO8VSZOpnAV9M0BM3KPJxXpQw9TQ3Ico622sLmpqZZExjdbkebOQAmmvlrpuF7PR/MyJaXbT1LJ4JZRAce3mTN0nJ+fsuy1gGuDAdMjR5vZaTil2qW2rTi2uKvw+P9T94w91Krz5L6Jyf0eDa4UC4p8=
+	t=1746479420; cv=none; b=ObllTYgOTdJFJBfDUNRYsSJ3WynxvS1XgYNKJdRl5cbNdwjQkfWc1qJR6ZN3citaNjz6n7k2tQrZb+YDw9RxfHFsvawi4axra0uZ4hztIaTMjAhi2UZsZF9tlggPTly/R5BO8rqyqcVP5UOdyTK7xXanzao78S0ZxhUEV8HC5lA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746479101; c=relaxed/simple;
-	bh=pvJm4iJToWGX01vWFAWNiClNkhuZHWWKlI9oy7VPwrk=;
+	s=arc-20240116; t=1746479420; c=relaxed/simple;
+	bh=95tjT8TAdAf99Hw45paYyTwvOqu+G7TfW4lJXekDKqI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=j0E4dXJcGEFeFnM64IqjO5kkRpQ/kSjEU7IIcCrm4mKbcc7d7DJsroJXGqIXjNGl+UgoOuaUO9kFrz7mrq1U6Yu4AG4lJ5FswVOHl4OPGUN4GlZvO7VKoKSPMGwZyrY0nFDaATFRXPZSXdM+wP7n0uaq+OMvwAJFiUoB4wtHBug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=WhgsSo9J; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-7080dd5fe92so41026997b3.3
-        for <bpf@vger.kernel.org>; Mon, 05 May 2025 14:04:59 -0700 (PDT)
+	 To:Cc:Content-Type; b=oJkgS3x0QgEJ5fFkMCbolJLfMHVxglBZ0gASUtVZGTxXUGRD77xM8TX+Xf38usDknsczLNDoyRkrRlYvGCxTYcpq7Q2q02u6UzOEBtE3vToh0/swbDJMbqAw8Oa6cSQeRJRfSjpbRqTYZ2gq4J5LR/pPQq9f/x2kL7kSSQSFgQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BmLvHy3Q; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-72d3b48d2ffso5230521b3a.2
+        for <bpf@vger.kernel.org>; Mon, 05 May 2025 14:10:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1746479098; x=1747083898; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1746479418; x=1747084218; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qV6Ehr5flIzxPNkBJYbjhBPm/Nie/yPzlaQWxf1OGLY=;
-        b=WhgsSo9JWV48EKUKRmgKeuu2vJsYMPLJ1pLf+ibrUGTWn2+WkRrraD+IuzYDCHdsgi
-         TTDKbg3e0i/eTbdgI7l2QVK9n+kI6ObrZPtfmtNfL6qlZz7+41N8oEYLIPnbj2iALqTn
-         Q/Cbc8qsYJ5YdcG1kADDtxqU59toKqXSim9JJDVAhrJ9jSOKR2EUyWklInE1QZftyxzS
-         Xy5L+DZJtUBnNvNxpVf7D0wvIpluIpP8tW0iRyAtZ+KsLBR8uXQ38omd9fXF9QzLJJWM
-         Jm0W5mbRYgTmCH2APZteUpOA4pIIyDAfPbaFAL4S+GSuat4CMUTYEnHGbaXEHzMdZXO3
-         5wfA==
+        bh=95tjT8TAdAf99Hw45paYyTwvOqu+G7TfW4lJXekDKqI=;
+        b=BmLvHy3QtWqgW9kX3NtyUYPwzZwGnAQlHnP8Z31qI2cg/t5NhVIALBIGKOkITo8Bw7
+         L5TBZjiya2lV+YJ+bzDHmiIPjWOXBovQbzoj+hnYLtZAThVu0laCU/uytPx3d4myxL/S
+         JMIxt6NJZgkIt9/zfTLxDH5GLt0YyF11/fbnEkfFmoGSJOdgzHWptucKumky5Z2r6sO7
+         /GHmvO/yHMgE3PhSsplwqtEtqjpCvw/0dFcI2S5XQlSJYukdOG7pYx28SKryVrMDf0WC
+         qeW1aRZkcl3j6ZHRSalDjB3WXPKFHhy4bMCeCwxjLFBmh890mVBCjwqCUA4rszp/cwhS
+         5VTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746479098; x=1747083898;
+        d=1e100.net; s=20230601; t=1746479418; x=1747084218;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qV6Ehr5flIzxPNkBJYbjhBPm/Nie/yPzlaQWxf1OGLY=;
-        b=gdhZCXxH9i8UPi0ZDIi7vFw6hcs83pKJSIK3hEPRYGBeuqTKd5vyd0Ijn/ObYNKpsy
-         78fkXc5L3q7Y/iPyV43+Ovyva9Bbo7h6TOYIod4hLYDia/O+GA5jqcFUKChjDbCE/8b9
-         2YFxzeImJecAQUBgXJ3gMXeaAvdk1GzEO2IWN1AL1z/nWOq69r5Oh4RqiCcg3b5g+nkM
-         pFF1W05nArkv7DtUPqpTpVJysX40mOterMh1N6EDYCS47fx/+h2gpyvNlldsE8QhDrkI
-         qZA5X1H2KeDEvfCPsrEHT//9+IXX8BbmuB3Y8S02EGwZ4Jr/1uKynlaoEJ09SKvTSArn
-         wVOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWdRFHKATlE5CjkOJE0M33/BFJ8fTuxdxuG4bS2OaCePMLTlDlkf+IL/OmfYim0pFhdfWs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwWQVdchIqCXRcvV/B9KOtl0iB9B3kwTSvSZF4xiegdVhl85m69
-	MRTZ9fLC0sMMoHzvzliheqttvs3NN2KMyTFAZity3UIM9/bpIg9OVP8MgqKWBic8fcKVfGeCBA3
-	hGcSe4me57WM33hu3w5tSw5VkU/PNqGDWvQFQ
-X-Gm-Gg: ASbGncs3VoEK3DQKFTt/UETgSph43EfP5hetxiSkN+PN5PpMomB4hZLgqAekvPcZf/Y
-	p3Q4qHR0CbSLqOAMsiKd+83iwKfNPz0ZAL2IjWXIVE+JC6SqABUVQZugZdjA1J7uxH86kv05ugZ
-	I0HO/O6RhU1LSf+iiw4tiI9w==
-X-Google-Smtp-Source: AGHT+IFmAkNEdgI8Usf/OOS6czpCIUfjzjMmDrrLFeB8TbVt16spO751vhSxBgmbdO5FhYFLhIwyiyfP8SeItQ5Z+90=
-X-Received: by 2002:a05:690c:368b:b0:703:c3ed:1f61 with SMTP id
- 00721157ae682-708eaeef043mr127166017b3.20.1746479098491; Mon, 05 May 2025
- 14:04:58 -0700 (PDT)
+        bh=95tjT8TAdAf99Hw45paYyTwvOqu+G7TfW4lJXekDKqI=;
+        b=pjRZzZJdbu5swtUM3WcUwEDOI5VZih6apKOjMW2Ax3xiU9oIlbrrpqJvYXX51k17XR
+         +oZ7BODYfJ70HpkftPmWZQQd27Cevh8NIMOBSCky40sJMksc3MhnegPdsjguR9j3tvLJ
+         CT4YAd+McL0l0Yrzv3RB8c1VHPRaXMxDwg1dkINy1Ie8322wQIm9/KCkcWZwkoW4J2LB
+         1Lws4VmqiKUQCmhth05OwwnSNKBfd8bBFSdhGgwpSvPX6tq+PDbDAaLg9I++Xw5/G2uy
+         BFmcCEf2Am/1XTSgd+fpvouQHRTT+vpXkaEI/WELgr+cMJVQAq/YubZFIjaN7zumP/Xu
+         qjEw==
+X-Forwarded-Encrypted: i=1; AJvYcCWdBUdz0UAAMnutOqpPZ6u4fFHty+XMlOEmy33MP2YBSk9kpPjlKpHg/VJMk0pZmv/IXCw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YybD8eUCzJHYuqXWlkJRdGUYYvV8wTVNpprsZH3xEUGJ8oBfoBP
+	WEMkELR1/Z31xag0yuA0zDcbVtttsuwukbLGIVkhHJnKHm5z9wJF+X4Qp2ywBXNDgx4aqJmRI/n
+	KP0Vj97UEC6I4zylzLvhCSnmSO7I=
+X-Gm-Gg: ASbGncvTvJsqt/imeulIh/V/+TuJwjqWkQtlFE4TNjzfs/YpdPiehC+YFB3XBLnW6d1
+	OOhAkeHwlsIAFC65E1ymRTlk3vICX3e25c6Q3PHR+itGGwN7PaZ0no4XaQsoWNJvdGU9bQmsUAv
+	ZpnrUnKq9bxV1xJZvonpDZPKCSx8hI4GItACQ6ZA==
+X-Google-Smtp-Source: AGHT+IGk6VqbwhI/JQddaeU0H/bAjlLnPVWY+KlT6YoPkDY7gBQG0L93fKYyIT+lgEjxmVyolcFAYcNPsSh1swEIFPQ=
+X-Received: by 2002:a05:6a20:4321:b0:1f5:8153:93fb with SMTP id
+ adf61e73a8af0-21180b6a0bamr760313637.10.1746479417761; Mon, 05 May 2025
+ 14:10:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250502184421.1424368-1-bboscaccy@linux.microsoft.com>
- <20250502210034.284051-1-kpsingh@kernel.org> <87o6w7ge3o.fsf@microsoft.com> <CACYkzJ7Ur4kFaGZTDvcFJpn0ZwJ9V+=3ZefUURtkrQGfa68zLg@mail.gmail.com>
-In-Reply-To: <CACYkzJ7Ur4kFaGZTDvcFJpn0ZwJ9V+=3ZefUURtkrQGfa68zLg@mail.gmail.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Mon, 5 May 2025 17:04:47 -0400
-X-Gm-Features: ATxdqUH7QOdmAmbomuCBMV4FUrVw8a-HbJeWUtKQ1wX8nnex6ppuCCrqNPrIXY8
-Message-ID: <CAHC9VhRwpvQQyMmFTeiQaos0+yJDkuCkt03QcYdnsxUvBXAtVA@mail.gmail.com>
-Subject: Re: [PATCH v3 0/4] Introducing Hornet LSM
-To: KP Singh <kpsingh@kernel.org>
-Cc: Blaise Boscaccy <bboscaccy@linux.microsoft.com>, James.Bottomley@hansenpartnership.com, 
-	bpf@vger.kernel.org, code@tyhicks.com, corbet@lwn.net, davem@davemloft.net, 
-	dhowells@redhat.com, gnoack@google.com, herbert@gondor.apana.org.au, 
-	jarkko@kernel.org, jmorris@namei.org, jstancek@redhat.com, 
-	justinstitt@google.com, keyrings@vger.kernel.org, 
-	linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	llvm@lists.linux.dev, masahiroy@kernel.org, mic@digikod.net, morbo@google.com, 
-	nathan@kernel.org, neal@gompa.dev, nick.desaulniers+lkml@gmail.com, 
-	nicolas@fjasle.eu, nkapron@google.com, roberto.sassu@huawei.com, 
-	serge@hallyn.com, shuah@kernel.org, teknoraver@meta.com, 
-	xiyou.wangcong@gmail.com
+References: <20250501235231.1339822-1-andrii@kernel.org> <95dbb7e5-c2aa-4114-bdb9-9d9ea53653f0@oracle.com>
+ <CAADnVQKmQKVTkf28Ex6T8Y03xDQ6-3o-rEcOM3vGZcVHGcrfSA@mail.gmail.com>
+In-Reply-To: <CAADnVQKmQKVTkf28Ex6T8Y03xDQ6-3o-rEcOM3vGZcVHGcrfSA@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 5 May 2025 14:10:05 -0700
+X-Gm-Features: ATxdqUEaQWxhl4F3hB-v98pFoy73H0_LjpmJ4_OruTUW91V4x7rnwgkiLI8t37Y
+Message-ID: <CAEf4BzZ-3ovbCEO+Jnn30xNsxE4nBnGtqL9FZ0O7JkUa=t0YuQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: improve BTF dedup handling of
+ "identical" BTF types
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alan Maguire <alan.maguire@oracle.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Kernel Team <kernel-team@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, May 5, 2025 at 4:41=E2=80=AFPM KP Singh <kpsingh@kernel.org> wrote:
-> On Mon, May 5, 2025 at 7:30=E2=80=AFPM Blaise Boscaccy
-> <bboscaccy@linux.microsoft.com> wrote:
-> >
-> > KP Singh <kpsingh@kernel.org> writes:
-> >
-> > [...]
-> >
-> > > Now if you really care about the use-case and want to work with the m=
-aintainers
-> > > and implement signing for the community, here's how we think it shoul=
-d be done:
-> > >
-> > > * The core signing logic and the tooling stays in BPF, something that=
- the users
-> > >   are already using. No new tooling.
-> > > * The policy decision on the effect of signing can be built into vari=
-ous
-> > >   existing LSMs. I don't think we need a new LSM for it.
-> > > * A simple UAPI (emphasis on UAPI!) change to union bpf_attr in uapi/=
-bpf.h in
-> > >   the BPF_PROG_LOAD command:
-> > >
-> > > __aligned_u64 signature;
-> > > __u32 signature_size;
-> >
-> > I think having some actual details on the various parties' requirements
-> > here would be helpful. KP, I do look forward to seeing your design;
-> > however, having code signing proposals where the capabilities are
-> > dictated from above and any dissent is dismissed as "you're doing it
-> > wrong" isn't going to be helpful to anyone that needs to use this in
-> > practice.
+On Fri, May 2, 2025 at 11:09=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> Please don't misrepresent the facts ...
+> On Fri, May 2, 2025 at 2:32=E2=80=AFAM Alan Maguire <alan.maguire@oracle.=
+com> wrote:
+> >
+> > >
+> > > On the other hand, this seems to help to reduce duplication across ma=
+ny
+> > > kernel modules. In my local test, I had 639 kernel module built. Over=
+all
+> > > .BTF sections size goes down from 41MB bytes down to 5MB (!), which i=
+s
+> > > pretty impressive for such a straightforward piece of logic added. Bu=
+t
+> > > it would be nice to validate independently just in case my bash and
+> > > Python-fu is broken.
+> > >
+> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> >
+> > Looks great!
+> >
+> > Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+> >
+> > Should have some numbers on the module size differences with this chang=
+e
+> > by Monday, had to dash before my build completed.
+>
+> I'm curious what BTF sizes you'll see.
+>
+> Sounds like dwarf has more cases of "same type but different id"
+> than we expected.
+> So existing workarounds are working only because we have very
+> few modules that rely on proper dedup of kernel types.
+> Beyond array/struct/ptrs, I wonder, what else is there.
 
-KP, I believe the most constructive thing at this point is to share
-your design idea with this thread as previously requested so everyone
-can review it.  We can continue to argue about how we got to where we
-are at if you like, but that isn't likely to help us move towards a
-solution.  If you are unable to share your design idea, either in a
-couple of paragraphs or in some form of PoC, please let us know.
-
---=20
-paul-moore.com
+Well, turns out I screwed up the measurements. I thought that I used
+libbpf version with Alan's patch applied as a baseline, but it turned
+out it was libbpf without his patch. So all the measurements (41MB ->
+5MB) are actually due to Alan's identical pointers fix. My patches
+have no effect on module BTF sizes (which is good and a bit more
+sensible, I should have double checked before submitting). So, if we
+are going to apply the patch, it's probably better to just drop that
+paragraph. Or I can send v2 with an adjusted commit message, whatever
+is better.
 
