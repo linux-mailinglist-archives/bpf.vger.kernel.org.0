@@ -1,173 +1,144 @@
-Return-Path: <bpf+bounces-57342-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57343-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89641AA95D4
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 16:28:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 424A2AA9600
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 16:37:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6611916E980
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 14:28:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E23E188C416
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 14:37:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72E7625C70B;
-	Mon,  5 May 2025 14:28:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2DAC25C829;
+	Mon,  5 May 2025 14:37:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="FAEmofIC"
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="SwbIR0eu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 551B720A5C4
-	for <bpf@vger.kernel.org>; Mon,  5 May 2025 14:27:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B058F25C807
+	for <bpf@vger.kernel.org>; Mon,  5 May 2025 14:37:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746455282; cv=none; b=rQWn59A0B5xkclmBKk3E1j9Ick3TeAFoFk0U54wGv6+p0N44sSaIcmi08ypj1HTTZrkUuDB7IOat7ANqUXM7vz8MXnfN+XSIbwq8bKenvDzjRk2f7Dl1i5xWUeOwxDNsNhKBNw2jA9n+y2G+MUBPynx9JAHpk35OBD/+T1yaRr0=
+	t=1746455835; cv=none; b=Lp6lnpc5VNkmWnp5hcNBJPhdxgpz3EwZ3L0bJH3uTZgRbWGIeEcJJgOrYtH5jGCC96Af+fL1O+TD39dixHcqxGloLLpNcRyRQ9q8J+M+KepfzsEHXQ5qpkFWL2VxHBoLwEL13neY4M0V5RHsa/62oWpUG82rrmhRMiz0DaFJPWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746455282; c=relaxed/simple;
-	bh=8bG+q9cvIxNRKMt+IdST9BOBQGsJ4SSG4cIoMmhVp70=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UhMlJacUF852ywzAE032KTizsiSa0s+/xNWnSXUfKwm3NkH5+COgEE8hu7gksYKrSw09oU464dF4GyEeRKm4LCGiyAJ+iaWwbAbUqy3BhFG+gFdMtz0bOGnwpW9nJSdrHcaIIPI2sVjrgTlCNw8QVFwxyRT3KsNw49FTXHCVt1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=FAEmofIC; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5e8be1c6ff8so7330937a12.1
-        for <bpf@vger.kernel.org>; Mon, 05 May 2025 07:27:59 -0700 (PDT)
+	s=arc-20240116; t=1746455835; c=relaxed/simple;
+	bh=JmucSS8yHIGvXEbtSfgsHVr9r5nyIh34DSUF08JyRTI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MXPuYxmFKa8qnBraty+js2bPKbLyuLLCW2x1qFx9JH8Ctlah8oZLAAlhXaq37cD9pKVgigrmOf1kvCPKsEtW/CsX1sQ1uvJPqwewLT4unUNtZnncE3OFNE1aW29MPLLsEgXzmwt6b92fn3ciHV/eVbPlOtnqovLz5bhMCgMD0AE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=SwbIR0eu; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-39c266c1389so3324274f8f.1
+        for <bpf@vger.kernel.org>; Mon, 05 May 2025 07:37:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1746455278; x=1747060078; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VBzMpH2jBdczGJAGi07riCizg5SErgbDrt1biXSYE6I=;
-        b=FAEmofIC0oMM+HqGX1QdwjAskqxFoWHqsDymqlRLBS/KhXeZxE+mwWfJq29JUleahh
-         vKT2odpe77T24da5PV0EMgZ19hC2eRe4ZrMkJVRQRz0eIKE20NtNaupb7t2dlnTladb6
-         4mHbjKw5IN4P2WzraDyaCPW1q3P+ecfzDwBrl6jMs7w3fpy/jYI+5rBEE66Agxn9GF77
-         g4Y8NWq5b6bnb9NlFU8Pc/my94E230XqMhM79g5fUvX3TSlwsiVK2ibWES8kafcBxZG4
-         tnLTBER/EMzZktt84zMYVCpiHMTBHreMBiFItt1ZWyOn+8aGousocxWBWePautMA2OGz
-         bc2Q==
+        d=isovalent.com; s=google; t=1746455832; x=1747060632; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5IlruZqZzq0+fswkpFmPD6JiolgWVetZjDH4ysB+h9A=;
+        b=SwbIR0eugaKz+3A1KOLmvmgO179zctaCTI5qb4gHCL+WYiXHTVjEB9R0DBgixqPSn7
+         0SqG91H9Thil0rDawmRmFx1GyLesRZ+aLS+TB9Xrhc+9rwWDpT6dotUrMC2/3qMdBmJr
+         rZj9OKHYoJDsNgn85h5ZBkf+cJAUL2HUIEHrVrxHVtLc/lWLIZPh30rwxM5TuZdFJ+MR
+         SKWnKyhTW4hdkOJslRzh0BG0Pc7KnE2vszNApv45nKiS5NdwxBY3XW9lPipjLmz0OCNv
+         8OD70zOb8BTeyHKaRDnQGnNYa6wFTx5YTBFcdvHeHqUp/g2mNcfMgC79l94giqtVxiUI
+         0Ppg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746455278; x=1747060078;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VBzMpH2jBdczGJAGi07riCizg5SErgbDrt1biXSYE6I=;
-        b=isCrcPQz/6cfYDBobZtbjfISL6h0hBnxXx8aliErvrCcHpXDJrhGlzTqmnaENmjWtq
-         4bODSwG67i7r0mAV+/fMztb1Xj7LXUZwWPaY50zvfuGrvyXEK1cwtX4CG3Y33Q84jwQV
-         aW+RPtsS1MwJqxLVV0g8KyWlfgDW/Us/Htu9SNqAXOhAwPirElXLLeEhdM50HCYOue0K
-         S9LJ6QrJ0KwNeDqNpFM6QD8bl9lHjWlIECk8nVO/SMlKAOQIR+KG5Ko5v26SAK7i8Cgc
-         m03w6BQRCyf+IdI990ZZztPXe5iAdhLFUmxNufSoE/SW2CZDL9UeHqC90kW/XbCdqq/r
-         aHIQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWbuqgitkwctpEqzXAFq2J7PfyfD7PaOHL3ZraObsTeZpd/1bB7Y+yZGk/KejCwHdEekwo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyJJ5livCf0UvNA41zBZ54aCJ3xqN2St/94vA+cLIe/47+8DIV2
-	0zxaop8xD3IelhO6/J6De5SkPMTo+zdfN6hZBwX99oVyHFnSWbsG/U71/EMLHZE=
-X-Gm-Gg: ASbGnctuNgT1Y0HmupFrFcjIlbIcXjiXnLRgXMjDLqgvkdbhW1ILO0yF5cekBtNzocP
-	FH+mvS6QTCthitkIi6xiK+41OPSr7bhslQQiOnhGHijqg21tnO64Q+3uUAMwXSvgxvyom87Ee4y
-	J3P+i7yRwgRKuGNRVzHV67VLZx0v4jX/gQbKpPnzegWWUJ/PuG1xZM5FEug94Am8+G9ZIEujEGO
-	Blu3OdhBvVqED5KgtOsztod0VFUw9DfkPZ1dvyEJcSWcxdHNo+6bJJoLOjn0OY30KLf3s1QiRsk
-	l0f+iL6vS9Gq7zVHMeu0kUXUg4emaaxHObwwqIZBUTdGE9qQno4B/w==
-X-Google-Smtp-Source: AGHT+IExfE0hcX78gw0nn1iPLAnLmMN0HdxWQnnSN8VNB89rL2yQ8NHWy4t+WCuJ1B8DNVSnVHuwAg==
-X-Received: by 2002:a17:906:c115:b0:ad0:c6ae:c0c9 with SMTP id a640c23a62f3a-ad1a4ab7f0dmr731420066b.40.1746455277537;
-        Mon, 05 May 2025 07:27:57 -0700 (PDT)
-Received: from [10.100.51.48] ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ad1891a1f2dsm498974566b.40.2025.05.05.07.27.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 May 2025 07:27:57 -0700 (PDT)
-Message-ID: <68e762ec-d320-4077-b321-63eefefe6d7d@suse.com>
-Date: Mon, 5 May 2025 16:27:54 +0200
+        d=1e100.net; s=20230601; t=1746455832; x=1747060632;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5IlruZqZzq0+fswkpFmPD6JiolgWVetZjDH4ysB+h9A=;
+        b=bFnxJM/w2CKQtNA73d8A8M0wyxgWUrj94+Pf39Uy8+sLrwLsiFzTnxOvqsJVdpAf6q
+         WLM1/lRflOIl9sGpJenC9ygEdLQd+80/UlQ9ifdl1MmbB3U9H5T+YSic6sv7c/6K1eQx
+         eynRFFcRteXdh3qEnIzbr0rdGeoMCtADWLjiS+YrsbD0PZ1S0A1zidi0t8CAlBtwucqP
+         qSTjIiabgRfHI1ue2NwOsAxqEIEU8QB26N+1ogjqaY3SWm9UCYe+gI21uNQc6bQtzUNX
+         TqPw5Uj5SL/RuD+C/lwfGmoO2kGlLDanHsMXMhCBViOVB76tXblRyiU/lYxq06p7GEix
+         68oQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXf92bu1raAA+yyPaWgv7FIW9hRf7W7DzZVN7VNl40BvAMtLtnmy2XnHr2mDBoW+lo2TYw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yybr4tYu+oCoKxzLfQpz+Mb0nh9gXjZpkAOsl7oFeHt7BanKw7T
+	KfdqXjpX+wAr9RCYcbEbfGQanbEJRVBx54ZKAP6BYGoAUp6W8mMUDgJJQ+NMHzCKqA1oXO8TiVt
+	8rmHKNYmfH004miyRmNv/Zh5lWpXxluFSqlJxzVzejdt5j+eHAEE=
+X-Gm-Gg: ASbGnct/0yMPuRgHdU800pu2SUhiVW9rmHIgKC0OUb2viQx8OpJkbEyhUmDk5dTqK9+
+	DGIWZyBjooubRr/g3i8Ntz5ygOmNm1cyYZYHaCnTyrkFM7XknykmYEYpj8Rl+puLz1eshfubaiJ
+	5FlHiiep0ZL7r3KODbQBe8lGBbd0u8nuinHiVdt6CpPTLBZQ==
+X-Google-Smtp-Source: AGHT+IGRryQZey4md2gCZKMAPgpPKfd6jIR1elEkmSqIVQ7Rm5RNzJwqA82lZIzpIZ7of6EckvnAb00PhWCAFAg43Lo=
+X-Received: by 2002:a05:6000:2284:b0:39c:1257:dbaa with SMTP id
+ ffacd0b85a97d-3a09fdde004mr5248186f8f.58.1746455831960; Mon, 05 May 2025
+ 07:37:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 22/25] module: Remove outdated comment about text_size
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
- linux-riscv@lists.infradead.org, linux-perf-users@vger.kernel.org,
- kvm@vger.kernel.org, linux-arch@vger.kernel.org,
- linux-modules@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- rcu@vger.kernel.org, linux-hardening@vger.kernel.org,
- linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
- Juri Lelli <juri.lelli@redhat.com>, Marcelo Tosatti <mtosatti@redhat.com>,
- Yair Podemsky <ypodemsk@redhat.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
- Daniel Wagner <dwagner@suse.de>, Petr Tesarik <ptesarik@suse.com>,
- Nicolas Saenz Julienne <nsaenz@amazon.com>,
- Frederic Weisbecker <frederic@kernel.org>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Dave Hansen <dave.hansen@linux.intel.com>,
- Sean Christopherson <seanjc@google.com>, Juergen Gross <jgross@suse.com>,
- Ajay Kaher <ajay.kaher@broadcom.com>,
- Alexey Makhalov <alexey.amakhalov@broadcom.com>,
- Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>, Russell King
- <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>,
- Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
- WANG Xuerui <kernel@xen0n.name>, Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Alexandre Ghiti <alex@ghiti.fr>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
- Peter Zijlstra <peterz@infradead.org>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- "Liang, Kan" <kan.liang@linux.intel.com>,
- Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
- Paolo Bonzini <pbonzini@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
- Jason Baron <jbaron@akamai.com>, Steven Rostedt <rostedt@goodmis.org>,
- Ard Biesheuvel <ardb@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>,
- Petr Pavlu <petr.pavlu@suse.com>, Sami Tolvanen <samitolvanen@google.com>,
- Daniel Gomez <da.gomez@samsung.com>, Naveen N Rao <naveen@kernel.org>,
- Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
- "David S. Miller" <davem@davemloft.net>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Joel Fernandes <joel@joelfernandes.org>,
- Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Uladzislau Rezki <urezki@gmail.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>, Ben Segall
- <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
- Kees Cook <kees@kernel.org>, Shuah Khan <shuah@kernel.org>,
- Masahiro Yamada <masahiroy@kernel.org>, Alice Ryhl <aliceryhl@google.com>,
- Miguel Ojeda <ojeda@kernel.org>, "Mike Rapoport (Microsoft)"
- <rppt@kernel.org>, Rong Xu <xur@google.com>,
- Rafael Aquini <aquini@redhat.com>, Song Liu <song@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Dan Carpenter
- <dan.carpenter@linaro.org>, Brian Gerst <brgerst@gmail.com>,
- "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
- Benjamin Berg <benjamin.berg@intel.com>,
- Vishal Annapurve <vannapurve@google.com>,
- Randy Dunlap <rdunlap@infradead.org>, John Stultz <jstultz@google.com>,
- Tiezhu Yang <yangtiezhu@loongson.cn>
-References: <20250429113242.998312-1-vschneid@redhat.com>
- <20250429113242.998312-23-vschneid@redhat.com>
-Content-Language: en-US
-From: Petr Pavlu <petr.pavlu@suse.com>
-In-Reply-To: <20250429113242.998312-23-vschneid@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20250502-vmlinux-mmap-v2-0-95c271434519@isovalent.com>
+ <20250502-vmlinux-mmap-v2-1-95c271434519@isovalent.com> <CAADnVQ+dMwAFPO-ASojjYPxODpCKf_9FCLjUvn2HeHigL53JdQ@mail.gmail.com>
+In-Reply-To: <CAADnVQ+dMwAFPO-ASojjYPxODpCKf_9FCLjUvn2HeHigL53JdQ@mail.gmail.com>
+From: Lorenz Bauer <lmb@isovalent.com>
+Date: Mon, 5 May 2025 15:37:00 +0100
+X-Gm-Features: ATxdqUFASGpQMncGff41_zyVmbKXRgRyXvQdozB20vSAY52iy8F4VaheL5-kBFM
+Message-ID: <CAN+4W8jLdcJbVvQ_YaPVqP0EB6reFgt8S0AZh_w3K80tsJvX5Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/3] btf: allow mmap of vmlinux btf
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	linux-arch <linux-arch@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 4/29/25 13:32, Valentin Schneider wrote:
-> The text_size bit referred to by the comment has been removed as of commit
-> 
->   ac3b43283923 ("module: replace module_layout with module_memory")
-> 
-> and is thus no longer relevant. Remove it and comment about the contents of
-> the masks array instead.
-> 
-> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
+On Fri, May 2, 2025 at 6:15=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+> remap_pfn_range() should be avoided.
+> See big comment in kernel/events/core.c in map_range().
+>
+> The following seems to work:
 
-This comment cleanup is independent of the rest of the series. I've
-picked it separately on modules-next.
+Thanks, this helped a lot.
 
--- 
-Thanks,
-Petr
+> but this part is puzzling:
+>         trailing =3D page_size - (btf_size % page_size) % page_size;
+
+The intention is to calculate how many bytes of trailing zeroes to
+expect while accounting for the case where btf_size % page_size =3D=3D 0.
+I could replace this with a check
+
+    end =3D btf_size + (page_size - 1) / page_size * page_size;
+    for (i =3D btf_size; i < end; i++) ...
+
+Better?
+
+In the meantime I've looked at allowing mmap of kmods. I'm not sure
+it's worth the effort:
+
+1. Allocations of btf->data in btf_parse_module() would have to use
+vmalloc_user() so that allocations are page aligned and zeroed
+appropriately. This will be a bit more expensive on systems with large
+pages and / or many small kmod BTFs. We could only allow mmap of BTF
+>=3D PAGE_SIZE, at additional complexity.
+
+2. We need to hold a refcount on struct btf for each mmapped kernel
+module, so that btf->data doesn't get freed. Taking the refcount can
+happen in the sysfs mmap handler, but dropping it is tricky. kernfs /
+sysfs doesn't allow using vm_ops->close (see kernfs_fop_mmap). It
+seems possible to use struct kernfs_ops->release(), but I don't
+understand at all how that deals with multiple mmaps of the same file
+in a single process. Also makes me wonder what happens when a process
+mmaps the kmod BTF, the module is unloaded and then the process
+attempts to access the mmap. My cursory understanding is that this
+would raise a fault, which isn't great at all.
+
+If nobody objects / has solutions I'll send a v3 of my original patch
+with reviews addressed but without being able to mmap kmods.
+
+Thanks
+Lorenz
 
