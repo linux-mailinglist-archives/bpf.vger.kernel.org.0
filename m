@@ -1,61 +1,59 @@
-Return-Path: <bpf+bounces-57403-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57404-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44C5AAAA59D
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 01:53:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 190D4AAA5E0
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 02:00:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B66807ADB09
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 23:50:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B7F11886B89
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 23:59:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70C3D314416;
-	Mon,  5 May 2025 22:30:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E26531A0CA;
+	Mon,  5 May 2025 22:31:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HwTYpfAb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JdrjVgXT"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFB50314407;
-	Mon,  5 May 2025 22:30:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13949319A7E;
+	Mon,  5 May 2025 22:31:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746484241; cv=none; b=cAzJKPr2F3E8F0UwQxCtfnLeVXqMjghGiV+4Sjeysa3pzSXcWlmtumEn48fzFT5jVnV0os3HA0b6FfI+wXZ0dY8XE3FW/tvjt/TVp0Z54790JFK/+VA+MkO1ElVVFJkE+d1lCNLTfsNUlBxdqmxAHwzUmNdziNTTjV/kdrbBF/A=
+	t=1746484283; cv=none; b=butpdBNZ5Vuay2SQLe2iDGKeLHJAtjRqq3qtvteKi08T61iqgTga3eSAls0AREjvFhSwwa5Coz+PHWRYN1rbYghgXQBxyx3UxEHnqbNXVm+KQGYU61EYSGDVTNp+MzMrRXnbvl4L3PIUgT/Bs5WjXI2nT5IYO/3QYPRkZyac9Bc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746484241; c=relaxed/simple;
-	bh=kC+v/c4j7TFaDOunHRudJUgpVFOc4RqLB4Jd/KJ2/Rs=;
+	s=arc-20240116; t=1746484283; c=relaxed/simple;
+	bh=G12M4CtKtx7qFHucINM394sfRrI8vnfPPtR1s1+9uxw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=RvukP7sUcok/HCcJqmfjqrfJ1/P8IHusDe7u/8Hpk3HG+udTUJMCewH4t+/yoda/nXpaAc+xt20NW0Mx1coxmKIkEg/y0aJS28L5FqxPlf4NQ2QXCHLB+fRKVFx28QHfheh1aUmKe9JUTOkXL3OTR33+brLahqctEzx82uhNJZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HwTYpfAb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A41DC4CEE4;
-	Mon,  5 May 2025 22:30:40 +0000 (UTC)
+	 MIME-Version; b=tlwNeAioLzEFascJELwCsBXstvxUplX/Qm104FTvmpOvbfl3SaIY0CyrsXD5TArloekD2Wqp8E/FpV0LFrTxSV5jLH1nohLdAbVn/c7mB13Dp44OAmW2NHI9iQf8u2nqiruRTdmrycXlr0QAdFXFq0Su15sl5/HJlZULoSvnfwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JdrjVgXT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87637C4CEEF;
+	Mon,  5 May 2025 22:31:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746484241;
-	bh=kC+v/c4j7TFaDOunHRudJUgpVFOc4RqLB4Jd/KJ2/Rs=;
+	s=k20201202; t=1746484282;
+	bh=G12M4CtKtx7qFHucINM394sfRrI8vnfPPtR1s1+9uxw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HwTYpfAb1IVN822ulmoIOkwlZMRCMA5rqnGK4Jy6L7rFUT696G2+MwCYATij+ma9f
-	 kZ5bJ+o/OwnM9pr/SbChaoMBrhpaGN5VBGugsYE4i9UJ+ypJC14crqOf2iTwqa0cw7
-	 i7ZEhIdtGx8D3Sl0ibqn5y3Js12ze4nW+Z4SzS1iiDFUzKJ6Dv8mMaPbv6FXEytdhS
-	 zN5umnCiB6NJRM2j5KuPltUo2p6xzax8g9B0ZAKfIE1d62IU2LuVaCqdHeStacQQi5
-	 dxuvnURI0k5IrbRVxDwtQO42Pa4P5UPoFPzCAs6nEb2h2d2E6i3QDa6DerxKJAWdVx
-	 1ogi+wfEfL4vQ==
+	b=JdrjVgXTC3DCIBOtvGAPgt4XVRp5Yo1MQg2X3p37ilRbREMJQAceORGOAPqmtA4Gb
+	 gu4C15U8PMVspWDwjEMO5Y/PMuj/hI19rowP7+R1755B9eOtBt9nTHTCUQymhu8d3w
+	 dLQZV5k/9u5z6t/BaXNOO9ksRVtAZvrtkZ8MZ/TSdqBg/I4+UMFulItbAi6xf4Xcgk
+	 0Klx9BWePWDKjJ0XaWf1haAfd4PGR1wSBQshyYZql4URve2o+QZrwbaJtizkndX4cS
+	 vWAMs8+ZOemMR/vCkjYoc0ONZssVTCO+q8pyRw3fJgv4fN4f73M5u7ElIQ0kVcSeRB
+	 Iw6mZ+/i0/8kA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Amery Hung <ameryhung@gmail.com>,
+Cc: Andrii Nakryiko <andrii@kernel.org>,
+	Emil Tsalapatis <emil@etsalapatis.com>,
 	Eduard Zingerman <eddyz87@gmail.com>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
 	daniel@iogearbox.net,
-	andrii@kernel.org,
-	yonghong.song@linux.dev,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.14 406/642] bpf: Make every prog keep a copy of ctx_arg_info
-Date: Mon,  5 May 2025 18:10:22 -0400
-Message-Id: <20250505221419.2672473-406-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.14 433/642] libbpf: fix LDX/STX/ST CO-RE relocation size adjustment logic
+Date: Mon,  5 May 2025 18:10:49 -0400
+Message-Id: <20250505221419.2672473-433-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250505221419.2672473-1-sashal@kernel.org>
 References: <20250505221419.2672473-1-sashal@kernel.org>
@@ -70,170 +68,90 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.14.5
 Content-Transfer-Encoding: 8bit
 
-From: Amery Hung <ameryhung@gmail.com>
+From: Andrii Nakryiko <andrii@kernel.org>
 
-[ Upstream commit 432051806f614ca512da401b80257b95b2a2241e ]
+[ Upstream commit 06096d19ee3897a7e70922580159607fe315da7a ]
 
-Currently, ctx_arg_info is read-only in the view of the verifier since
-it is shared among programs of the same attach type. Make each program
-have their own copy of ctx_arg_info so that we can use it to store
-program specific information.
+Libbpf has a somewhat obscure feature of automatically adjusting the
+"size" of LDX/STX/ST instruction (memory store and load instructions),
+based on originally recorded access size (u8, u16, u32, or u64) and the
+actual size of the field on target kernel. This is meant to facilitate
+using BPF CO-RE on 32-bit architectures (pointers are always 64-bit in
+BPF, but host kernel's BTF will have it as 32-bit type), as well as
+generally supporting safe type changes (unsigned integer type changes
+can be transparently "relocated").
 
-In the next patch where we support acquiring a referenced kptr through a
-struct_ops argument tagged with "__ref", ctx_arg_info->ref_obj_id will
-be used to store the unique reference object id of the argument. This
-avoids creating a requirement in the verifier that "__ref" tagged
-arguments must be the first set of references acquired [0].
+One issue that surfaced only now, 5 years after this logic was
+implemented, is how this all works when dealing with fields that are
+arrays. This isn't all that easy and straightforward to hit (see
+selftests that reproduce this condition), but one of sched_ext BPF
+programs did hit it with innocent looking loop.
 
-[0] https://lore.kernel.org/bpf/20241220195619.2022866-2-amery.hung@gmail.com/
+Long story short, libbpf used to calculate entire array size, instead of
+making sure to only calculate array's element size. But it's the element
+that is loaded by LDX/STX/ST instructions (1, 2, 4, or 8 bytes), so
+that's what libbpf should check. This patch adjusts the logic for
+arrays and fixed the issue.
 
-Signed-off-by: Amery Hung <ameryhung@gmail.com>
+Reported-by: Emil Tsalapatis <emil@etsalapatis.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-Acked-by: Martin KaFai Lau <martin.lau@kernel.org>
-Link: https://lore.kernel.org/r/20250217190640.1748177-2-ameryhung@gmail.com
+Link: https://lore.kernel.org/r/20250207014809.1573841-1-andrii@kernel.org
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/bpf.h   |  7 +++++--
- kernel/bpf/bpf_iter.c | 13 ++++++-------
- kernel/bpf/syscall.c  |  1 +
- kernel/bpf/verifier.c | 22 ++++++++++++----------
- 4 files changed, 24 insertions(+), 19 deletions(-)
+ tools/lib/bpf/relo_core.c | 24 ++++++++++++++++++++----
+ 1 file changed, 20 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index f3f50e29d6392..f4df39e8c7357 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1507,7 +1507,7 @@ struct bpf_prog_aux {
- 	u32 max_rdonly_access;
- 	u32 max_rdwr_access;
- 	struct btf *attach_btf;
--	const struct bpf_ctx_arg_aux *ctx_arg_info;
-+	struct bpf_ctx_arg_aux *ctx_arg_info;
- 	void __percpu *priv_stack_ptr;
- 	struct mutex dst_mutex; /* protects dst_* pointers below, *after* prog becomes visible */
- 	struct bpf_prog *dst_prog;
-@@ -1945,6 +1945,9 @@ static inline void bpf_struct_ops_desc_release(struct bpf_struct_ops_desc *st_op
- 
- #endif
- 
-+int bpf_prog_ctx_arg_info_init(struct bpf_prog *prog,
-+			       const struct bpf_ctx_arg_aux *info, u32 cnt);
-+
- #if defined(CONFIG_CGROUP_BPF) && defined(CONFIG_BPF_LSM)
- int bpf_trampoline_link_cgroup_shim(struct bpf_prog *prog,
- 				    int cgroup_atype);
-@@ -2546,7 +2549,7 @@ struct bpf_iter__bpf_map_elem {
- 
- int bpf_iter_reg_target(const struct bpf_iter_reg *reg_info);
- void bpf_iter_unreg_target(const struct bpf_iter_reg *reg_info);
--bool bpf_iter_prog_supported(struct bpf_prog *prog);
-+int bpf_iter_prog_supported(struct bpf_prog *prog);
- const struct bpf_func_proto *
- bpf_iter_get_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog);
- int bpf_iter_link_attach(const union bpf_attr *attr, bpfptr_t uattr, struct bpf_prog *prog);
-diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
-index 106735145948b..380e9a7cac75d 100644
---- a/kernel/bpf/bpf_iter.c
-+++ b/kernel/bpf/bpf_iter.c
-@@ -335,7 +335,7 @@ static void cache_btf_id(struct bpf_iter_target_info *tinfo,
- 	tinfo->btf_id = prog->aux->attach_btf_id;
- }
- 
--bool bpf_iter_prog_supported(struct bpf_prog *prog)
-+int bpf_iter_prog_supported(struct bpf_prog *prog)
+diff --git a/tools/lib/bpf/relo_core.c b/tools/lib/bpf/relo_core.c
+index 7632e9d418271..2b83c98a11372 100644
+--- a/tools/lib/bpf/relo_core.c
++++ b/tools/lib/bpf/relo_core.c
+@@ -683,7 +683,7 @@ static int bpf_core_calc_field_relo(const char *prog_name,
  {
- 	const char *attach_fname = prog->aux->attach_func_name;
- 	struct bpf_iter_target_info *tinfo = NULL, *iter;
-@@ -344,7 +344,7 @@ bool bpf_iter_prog_supported(struct bpf_prog *prog)
- 	int prefix_len = strlen(prefix);
- 
- 	if (strncmp(attach_fname, prefix, prefix_len))
--		return false;
-+		return -EINVAL;
- 
- 	mutex_lock(&targets_mutex);
- 	list_for_each_entry(iter, &targets, list) {
-@@ -360,12 +360,11 @@ bool bpf_iter_prog_supported(struct bpf_prog *prog)
- 	}
- 	mutex_unlock(&targets_mutex);
- 
--	if (tinfo) {
--		prog->aux->ctx_arg_info_size = tinfo->reg_info->ctx_arg_info_size;
--		prog->aux->ctx_arg_info = tinfo->reg_info->ctx_arg_info;
--	}
-+	if (!tinfo)
-+		return -EINVAL;
- 
--	return tinfo != NULL;
-+	return bpf_prog_ctx_arg_info_init(prog, tinfo->reg_info->ctx_arg_info,
-+					  tinfo->reg_info->ctx_arg_info_size);
- }
- 
- const struct bpf_func_proto *
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 8c42c094f0d1e..32a8d5fd98612 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2314,6 +2314,7 @@ static void __bpf_prog_put_noref(struct bpf_prog *prog, bool deferred)
- 	kvfree(prog->aux->jited_linfo);
- 	kvfree(prog->aux->linfo);
- 	kfree(prog->aux->kfunc_tab);
-+	kfree(prog->aux->ctx_arg_info);
- 	if (prog->aux->attach_btf)
- 		btf_put(prog->aux->attach_btf);
- 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 0752e8e556389..4392436ba7511 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -22429,6 +22429,15 @@ static void print_verification_stats(struct bpf_verifier_env *env)
- 		env->peak_states, env->longest_mark_read_walk);
- }
- 
-+int bpf_prog_ctx_arg_info_init(struct bpf_prog *prog,
-+			       const struct bpf_ctx_arg_aux *info, u32 cnt)
-+{
-+	prog->aux->ctx_arg_info = kmemdup_array(info, cnt, sizeof(*info), GFP_KERNEL);
-+	prog->aux->ctx_arg_info_size = cnt;
-+
-+	return prog->aux->ctx_arg_info ? 0 : -ENOMEM;
-+}
-+
- static int check_struct_ops_btf_id(struct bpf_verifier_env *env)
- {
- 	const struct btf_type *t, *func_proto;
-@@ -22509,17 +22518,12 @@ static int check_struct_ops_btf_id(struct bpf_verifier_env *env)
- 		return -EACCES;
- 	}
- 
--	/* btf_ctx_access() used this to provide argument type info */
--	prog->aux->ctx_arg_info =
--		st_ops_desc->arg_info[member_idx].info;
--	prog->aux->ctx_arg_info_size =
--		st_ops_desc->arg_info[member_idx].cnt;
--
- 	prog->aux->attach_func_proto = func_proto;
- 	prog->aux->attach_func_name = mname;
- 	env->ops = st_ops->verifier_ops;
- 
--	return 0;
-+	return bpf_prog_ctx_arg_info_init(prog, st_ops_desc->arg_info[member_idx].info,
-+					  st_ops_desc->arg_info[member_idx].cnt);
- }
- #define SECURITY_PREFIX "security_"
- 
-@@ -22996,9 +23000,7 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
- 		prog->aux->attach_btf_trace = true;
- 		return 0;
- 	} else if (prog->expected_attach_type == BPF_TRACE_ITER) {
--		if (!bpf_iter_prog_supported(prog))
--			return -EINVAL;
--		return 0;
-+		return bpf_iter_prog_supported(prog);
- 	}
- 
- 	if (prog->type == BPF_PROG_TYPE_LSM) {
+ 	const struct bpf_core_accessor *acc;
+ 	const struct btf_type *t;
+-	__u32 byte_off, byte_sz, bit_off, bit_sz, field_type_id;
++	__u32 byte_off, byte_sz, bit_off, bit_sz, field_type_id, elem_id;
+ 	const struct btf_member *m;
+ 	const struct btf_type *mt;
+ 	bool bitfield;
+@@ -706,8 +706,14 @@ static int bpf_core_calc_field_relo(const char *prog_name,
+ 	if (!acc->name) {
+ 		if (relo->kind == BPF_CORE_FIELD_BYTE_OFFSET) {
+ 			*val = spec->bit_offset / 8;
+-			/* remember field size for load/store mem size */
+-			sz = btf__resolve_size(spec->btf, acc->type_id);
++			/* remember field size for load/store mem size;
++			 * note, for arrays we care about individual element
++			 * sizes, not the overall array size
++			 */
++			t = skip_mods_and_typedefs(spec->btf, acc->type_id, &elem_id);
++			while (btf_is_array(t))
++				t = skip_mods_and_typedefs(spec->btf, btf_array(t)->type, &elem_id);
++			sz = btf__resolve_size(spec->btf, elem_id);
+ 			if (sz < 0)
+ 				return -EINVAL;
+ 			*field_sz = sz;
+@@ -767,7 +773,17 @@ static int bpf_core_calc_field_relo(const char *prog_name,
+ 	case BPF_CORE_FIELD_BYTE_OFFSET:
+ 		*val = byte_off;
+ 		if (!bitfield) {
+-			*field_sz = byte_sz;
++			/* remember field size for load/store mem size;
++			 * note, for arrays we care about individual element
++			 * sizes, not the overall array size
++			 */
++			t = skip_mods_and_typedefs(spec->btf, field_type_id, &elem_id);
++			while (btf_is_array(t))
++				t = skip_mods_and_typedefs(spec->btf, btf_array(t)->type, &elem_id);
++			sz = btf__resolve_size(spec->btf, elem_id);
++			if (sz < 0)
++				return -EINVAL;
++			*field_sz = sz;
+ 			*type_id = field_type_id;
+ 		}
+ 		break;
 -- 
 2.39.5
 
