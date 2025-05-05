@@ -1,67 +1,95 @@
-Return-Path: <bpf+bounces-57356-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57357-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05E44AA9A8A
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 19:30:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AB9FAA9B93
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 20:32:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7FDF7ABA6F
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 17:29:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A25D189BDD9
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 18:32:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D029626D4C8;
-	Mon,  5 May 2025 17:30:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0900E26C39B;
+	Mon,  5 May 2025 18:32:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="kOvVcZpQ"
+	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="yW8pmccQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C733217C98;
-	Mon,  5 May 2025 17:30:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mx-rz-1.rrze.uni-erlangen.de (mx-rz-1.rrze.uni-erlangen.de [131.188.11.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29C0B34CF5;
+	Mon,  5 May 2025 18:32:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746466209; cv=none; b=gkdzIXxMmHH/iFY11c/1tHzGeiK1CgGKWpdn6RqBZt3La/0bpSY7o073uLbs4+4N1gmDYGbrvqJ/tmPTEAcBiuBVmgirKwfxVixuqXmboOPCaM4WgddEMI6KpjqlNJPcw4xT8bfMBDAP38BPiiTziYMYlSEtk2FrV+hOVTZBWC8=
+	t=1746469929; cv=none; b=mTbaXv/FVBmzD+k31Oo5aBYbgvE7uWPDz46rS7opVRJgs6DLUujC3192bQeZuDe0xRw8x1B6L1OJwoOJFGa8JdTOmkLeyOhGJ5agRnamacGn2RL7OBx1kXtO7iS1nDVg/nb/7rVlThFHy8OlOAXwXalzsZr08nWtSgD0fPKokdc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746466209; c=relaxed/simple;
-	bh=R+GwlfGZoPlwh3YnWX8HPEVZTkofAG51fiG2PtNEH88=;
+	s=arc-20240116; t=1746469929; c=relaxed/simple;
+	bh=ACllVkeRB54mPbV0n/ddahc+zIQT7n0unxJjD/9IsiM=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Zn56ai+URqSKDxhppg1FKTtIfObTBWCuNCvpzMtYwTETffr1K7Ds+xQsOLOcdLkfR9JYUhxoOm2QAZRtu3BQNDNevBiYq4nVKVJ+zxNa19wFaBqdIv9G1V5igVuQbuXR9P2JOdSOnc62dAjT9vjNlh7H1hheZrPXLT7kphS5OGc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=kOvVcZpQ; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from narnia (unknown [40.78.12.133])
-	by linux.microsoft.com (Postfix) with ESMTPSA id E0D5F2115DC3;
-	Mon,  5 May 2025 10:30:04 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E0D5F2115DC3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1746466207;
-	bh=L5eUFsHvaH45uDsjDJjMZQptT9OSECb9z18nACTP45M=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=kOvVcZpQ3T9sSH7pJ/HqSNP3wky0HxKFyWnu3+U7tjF1uLifCwAjeQCk7o7kn4hxM
-	 TFP3TzAMaTUbH/qAfIWuql1lE8KMJwB3+zRXEdgn3Dflf/I2scqy3aWQzbYogVDthy
-	 x3GkXKAcpGXd74KgoFzFnVhX8w1D1WUABHFiQ5dY=
-From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
-To: KP Singh <kpsingh@kernel.org>
-Cc: James.Bottomley@hansenpartnership.com, bpf@vger.kernel.org,
- code@tyhicks.com, corbet@lwn.net, davem@davemloft.net,
- dhowells@redhat.com, gnoack@google.com, herbert@gondor.apana.org.au,
- jarkko@kernel.org, jmorris@namei.org, jstancek@redhat.com,
- justinstitt@google.com, keyrings@vger.kernel.org,
- linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-security-module@vger.kernel.org,
- llvm@lists.linux.dev, masahiroy@kernel.org, mic@digikod.net,
- morbo@google.com, nathan@kernel.org, neal@gompa.dev,
- nick.desaulniers+lkml@gmail.com, nicolas@fjasle.eu, nkapron@google.com,
- paul@paul-moore.com, roberto.sassu@huawei.com, serge@hallyn.com,
- shuah@kernel.org, teknoraver@meta.com, xiyou.wangcong@gmail.com, KP Singh
- <kpsingh@kernel.org>
-Subject: Re: [PATCH v3 0/4] Introducing Hornet LSM
-In-Reply-To: <20250502210034.284051-1-kpsingh@kernel.org>
-References: <20250502184421.1424368-1-bboscaccy@linux.microsoft.com>
- <20250502210034.284051-1-kpsingh@kernel.org>
-Date: Mon, 05 May 2025 10:30:03 -0700
-Message-ID: <87o6w7ge3o.fsf@microsoft.com>
+	 MIME-Version:Content-Type; b=mrR2gsaQKlh6ATgh0oAqGJyCJBO1mz1BzN6mm8eh3ecMKET0a0ccxHLzxrWFTzBh/fnke8022s91xnwluiGfFY02jGw+Lwk1GA1ytY7RFkoKsVy5TaDCvrhVEdyEQbqmYsk9HveBITkDMjx71rgfjCGK8gHrsq7MLhRdI4yCq9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=yW8pmccQ; arc=none smtp.client-ip=131.188.11.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
+	t=1746469919; bh=G+rx5YkRQB2m3RpX0Dkv55899VOEaYs/uah1PbfJoNU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From:To:CC:
+	 Subject;
+	b=yW8pmccQZmfxN/uiui/GsNvYsuT03rI5l+mrjcdBr8Ba/sIQtV3vWyU7uepeyBqlU
+	 Fv991SaO8f4A9H4Cs8LHYsaEcvP8iZRw+qZ9sYJmOzltJQexukPzSArDcZ7Rduh3cl
+	 evsmAIf4OEVEGBDNIzUEWaCy2Dle4rlovBLNzZrCCWl+KbdfPIlLdK+eGkIvjVfNue
+	 0ddGuOxWrA9BnMQxJI7zuSyzVSkw0f+S3FI4ONcmlBPsDt0TG7nyCgq44GGWwq9YLH
+	 DV6JcUf0p1lcLcmIG/I/jjQJ6fj+56LZ4DZ+Ie6WbrtZmmetbjEfZhii7Gc6WQWMla
+	 S8vi6tD+TLzsg==
+Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-rz-1.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4Zrqqy6XMDz8sgT;
+	Mon,  5 May 2025 20:31:58 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at boeck1.rrze.uni-erlangen.de (RRZE)
+X-RRZE-Flag: Not-Spam
+X-RRZE-Submit-IP: 2001:9e8:360f:4200:9271:67e3:d4db:9352
+Received: from localhost (unknown [IPv6:2001:9e8:360f:4200:9271:67e3:d4db:9352])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: U2FsdGVkX18Yw8S/8gEWPxucUMHgztU2l/wqL20Lctk=)
+	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4Zrqqv4bwgz8t5P;
+	Mon,  5 May 2025 20:31:55 +0200 (CEST)
+From: Luis Gerhorst <luis.gerhorst@fau.de>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,  Daniel Borkmann
+ <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>,  Martin
+ KaFai Lau <martin.lau@linux.dev>,  Song Liu <song@kernel.org>,  Yonghong
+ Song <yonghong.song@linux.dev>,  John Fastabend
+ <john.fastabend@gmail.com>,  KP Singh <kpsingh@kernel.org>,  Stanislav
+ Fomichev <sdf@fomichev.me>,  Hao Luo <haoluo@google.com>,  Jiri Olsa
+ <jolsa@kernel.org>,  Puranjay Mohan <puranjay@kernel.org>,  Xu Kuohai
+ <xukuohai@huaweicloud.com>,  Catalin Marinas <catalin.marinas@arm.com>,
+  Will Deacon <will@kernel.org>,  Hari Bathini <hbathini@linux.ibm.com>,
+  Christophe Leroy <christophe.leroy@csgroup.eu>,  Naveen N Rao
+ <naveen@kernel.org>,  Madhavan Srinivasan <maddy@linux.ibm.com>,  Michael
+ Ellerman <mpe@ellerman.id.au>,  Nicholas Piggin <npiggin@gmail.com>,
+  Mykola Lysenko <mykolal@fb.com>,  Shuah Khan <shuah@kernel.org>,
+  Henriette Herzog <henriette.herzog@rub.de>,  Saket Kumar Bhaskar
+ <skb99@linux.ibm.com>,  Cupertino Miranda <cupertino.miranda@oracle.com>,
+  Jiayuan Chen <mrpre@163.com>,  Matan Shachnai <m.shachnai@gmail.com>,
+  Dimitar Kanaliev <dimitar.kanaliev@siteground.com>,  Shung-Hsi Yu
+ <shung-hsi.yu@suse.com>,  Daniel Xu <dxu@dxuuu.xyz>,  bpf@vger.kernel.org,
+  linux-arm-kernel@lists.infradead.org,  linux-kernel@vger.kernel.org,
+  linuxppc-dev@lists.ozlabs.org,  linux-kselftest@vger.kernel.org,
+  Maximilian Ott <ott@cs.fau.de>,  Milan Stephan <milan.stephan@fau.de>
+Subject: Re: [PATCH bpf-next v3 02/11] bpf: Move insn if/else into
+ do_check_insn()
+In-Reply-To: <15294d369d94cf005c9aa722967e5ddb1fa8cee3.camel@gmail.com>
+	(Eduard Zingerman's message of "Thu, 01 May 2025 11:22:53 -0700")
+References: <20250501073603.1402960-1-luis.gerhorst@fau.de>
+	<20250501073603.1402960-3-luis.gerhorst@fau.de>
+	<15294d369d94cf005c9aa722967e5ddb1fa8cee3.camel@gmail.com>
+User-Agent: mu4e 1.12.8; emacs 30.1
+Date: Mon, 05 May 2025 20:31:54 +0200
+Message-ID: <87tt5yhpt1.fsf@fau.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -70,79 +98,21 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
 
-KP Singh <kpsingh@kernel.org> writes:
+Eduard Zingerman <eddyz87@gmail.com> writes:
 
-[...]
-
-> Now if you really care about the use-case and want to work with the maintainers
-> and implement signing for the community, here's how we think it should be done:
+> On Thu, 2025-05-01 at 09:35 +0200, Luis Gerhorst wrote:
+> 
+>> +		dst_reg_type = cur_regs(env)[insn->dst_reg].type;
 >
-> * The core signing logic and the tooling stays in BPF, something that the users
->   are already using. No new tooling.
-> * The policy decision on the effect of signing can be built into various
->   existing LSMs. I don't think we need a new LSM for it.
-> * A simple UAPI (emphasis on UAPI!) change to union bpf_attr in uapi/bpf.h in
->   the BPF_PROG_LOAD command:
+> Implicitly relying on `insn == &env->prog->insnsi[env->cur_idx]`
+> is weird. Still think that `insn` parameter should be dropped and
+> computed inside this function instead.
 >
-> __aligned_u64 signature; 
-> __u32 signature_size;
+>> +				return -EINVAL;
+>> +			}
+>> +process_bpf_exit_full:
+>
+> Nit: since we are refactoring I'd extract this as a function instead of goto.
 
-I think having some actual details on the various parties' requirements
-here would be helpful. KP, I do look forward to seeing your design;
-however, having code signing proposals where the capabilities are
-dictated from above and any dissent is dismissed as "you're doing it
-wrong" isn't going to be helpful to anyone that needs to use this in
-practice.
-
-Also, I don't think anyone actually cares, at least I don't, who calls
-verify_pkcs7_signature or whatnot. Verifying signed binary blobs with a
-private key is a solved problem and isn't really interesting.
-
-Our requirements for code signing are just an extension of secure boot
-and module signing logic:
-
-* Prove all code running in ring zero has been signed
-* Not trivially defeatable by root
-* Ultimately, no trusted userspace components
-* Secure from and not vulnerable to TOCTOU attacks
-* Shouldn't be overly vulnerable to supply-chain attacks
-* The signature checking logic and control paths should be human-readable
-* Work easily and be backportable to stable kernels
-* There should be a simple kconfig option to turn this on or off
-* This solution needs to be in the mainline kernel
-
-Hornet was implemented to meet those requirements, living in the LSM
-subsystem, written in C. As of today, one cannot accomplish those
-requirements via BPF-LSM, which is why C was chosen.
-
-One can easily realize there is absolutely no way to have a single
-one-size-fits-all signing solution for everything listed in
-https://ebpf.io/applications/.
-
-If you want to go the UAPI route, I would wholeheartedly recommend
-making it extensible and having this data be available to the policy
-LSMs.
-
-enum bpf_signature_type {
-  /* x509 signature check against program instructions only */
-  BPF_SIGNATURE_PROG_ONLY = 0,
-  /* x509 combined signature check against program instructions and used maps */
-  BPF_SIGNATURE_PROG_USED_MAPS = 1,
-  /* more of these to be determined via usage */ 
-  ...
-};
-
-_aligned_u64 signature; 
-__u32 signature_size;
-__u32 signature_type;
-
-The other option for solving this in the general is in-kernel
-loaders. That's gotten pushback as well. 
-
--blaise
-
-
-
-
-
+Both done, thanks again for the review and testing!
 
