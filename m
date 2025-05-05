@@ -1,67 +1,58 @@
-Return-Path: <bpf+bounces-57399-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57400-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE1E8AAA538
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 01:44:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 971B0AAA58A
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 01:52:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C20B317956F
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 23:44:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB6C71885E68
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 23:49:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C749030E680;
-	Mon,  5 May 2025 22:29:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 116183146C7;
+	Mon,  5 May 2025 22:30:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MLkH9D8a"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wyl32Uc3"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43A5830DE3B;
-	Mon,  5 May 2025 22:29:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81A493146AD;
+	Mon,  5 May 2025 22:30:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746484149; cv=none; b=C4rJndIdHpdzk1227RsPtReJTPMqK8Kwb92pb2lMOMaqUztd2p1W/fkM4UkWQeyv/nfbaoIcLqSfGnZ9uWblPFgsfCyniOtkLJoBED6mlE+bXHyNMQc5ZxAhr1yKm5MSqc8iu7MsO+Nw2DKJG+B2/yS4sDp1p3ouaXQpuvEaE+c=
+	t=1746484220; cv=none; b=i/O92AITGgkwJqBcglDjbuGuN6oXoX9qFdXllaxa3bre3/4fEfYRuUEe52VFWC5XVsDy64Us0B33a6wS9ioffqfhZsr/PH/diHjBa/ilEPuNamBTcXBAIBpE+2Q6y+KFSGJdWoGvZtDQYbt+rFRY/pNipvubapnl3p/gjmougcQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746484149; c=relaxed/simple;
-	bh=+NGM2ARLj6oBXNjiFLOXDlNgO6++BB6IQRHibvF3vXE=;
+	s=arc-20240116; t=1746484220; c=relaxed/simple;
+	bh=pN19U5GexfpUfJs301Z3WJb90/7HhGH4vgB1dxv/6/Y=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=DCfSY+oFq0jMGLgPsLPoO+73V69gxw3PX+EMyO9mizUwpvMw1KaA2ViJR4qhM5IP5aP+43nNuHcH7rpAWfprpj/HtUxdd32ZbSUsCuDASM6BXcMljqX9P0Z+WkZ7sMLfxEPD+k+LQ9HpbNj5Q5Bgi0IOc2ARIBvivmI8CGGSEoc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MLkH9D8a; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E9D4C4CEED;
-	Mon,  5 May 2025 22:29:07 +0000 (UTC)
+	 MIME-Version; b=eRWba5SCCaPOQnCqG4kXHaofnLXjQ7cPQjZWwaEo5v+afFgDz404CZoyza9hKiwGQZ/cnmZCliitl/ZGkMm4Rn2tCV/WEy186krUIZ60pGejIBav3Vq6KySOjkV3uRAvbqAIsv4HQ1OkcN9/D1WQceGrNHTp2Vxeb2h5GUD6BHA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wyl32Uc3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BA42C4CEEF;
+	Mon,  5 May 2025 22:30:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746484149;
-	bh=+NGM2ARLj6oBXNjiFLOXDlNgO6++BB6IQRHibvF3vXE=;
+	s=k20201202; t=1746484220;
+	bh=pN19U5GexfpUfJs301Z3WJb90/7HhGH4vgB1dxv/6/Y=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MLkH9D8aK8aUXEcOj4PwOs7JldWpxNR4Y9ZEE+dIp4DieuXlitLAU4IBjT0iL44CI
-	 VInd74mRW6mq0rAwUIR2Jfeg734mvtmj73sAcMOJ1QZo22s/4IIXSrMkN2tGhoviSY
-	 1kjG/KqNsIFozSU2CiOBC9//U7WrDi3WExO+f6QnUP7t+bNQxUnp7ZnGtII0jewJPg
-	 n4nMA/0pGc5NOiTEsn5UFzo/Rhfvvw+QX1G8R6BIW+9TmEK4Yvcb5KnHRBHVWvQTZF
-	 labZXV84E2repOs0HpXg0ky2GQDwLQ6fXPo1FeFSYNbqJw7ZbTK/1sIfHMjKNEkWKd
-	 D5tj5aMAxgkUg==
+	b=Wyl32Uc3kRfN29Uhn2rLmQ2bDMxxwSgWUnMxqN4xFHSd8lTv32tV9cBmuP/qf5CsP
+	 kkzZUb/obfmSTdPzZTxl2lB/otCWwZqP1qmpQj0mRRffjvC9tw8w2BS3TGW5hjRKH1
+	 6CqgJ1Ke6v9hx5vYYOh6s3Lg75IsR5eB8tw7W+grHIvfZk4jw3u3e7cNZsA9Gf6PGA
+	 W08Y4neN+WEjE7FuPcE+uGCP7XK1U0HA02lufaSufPnNIiSDy/hSLqCuK7LlGvl5dU
+	 6Q+wlWdwR/D175SzcCbS6aQqR4qAWnjT5vgYJMJPIkdQ0UqaLs8+yzE2cLB7x1vQ9V
+	 bYCyvsqyo/ibg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jason Xing <kerneljasonxing@gmail.com>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
+Cc: Eduard Zingerman <eddyz87@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	ast@kernel.org,
 	daniel@iogearbox.net,
 	andrii@kernel.org,
-	edumazet@google.com,
-	ncardwell@google.com,
-	davem@davemloft.net,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	martin.lau@linux.dev,
-	dsahern@kernel.org,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.14 375/642] bpf: Prevent unsafe access to the sock fields in the BPF timestamping callback
-Date: Mon,  5 May 2025 18:09:51 -0400
-Message-Id: <20250505221419.2672473-375-sashal@kernel.org>
+	bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.14 394/642] bpf: don't do clean_live_states when state->loop_entry->branches > 0
+Date: Mon,  5 May 2025 18:10:10 -0400
+Message-Id: <20250505221419.2672473-394-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250505221419.2672473-1-sashal@kernel.org>
 References: <20250505221419.2672473-1-sashal@kernel.org>
@@ -76,147 +67,102 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.14.5
 Content-Transfer-Encoding: 8bit
 
-From: Jason Xing <kerneljasonxing@gmail.com>
+From: Eduard Zingerman <eddyz87@gmail.com>
 
-[ Upstream commit fd93eaffb3f977b23bc0a48d4c8616e654fcf133 ]
+[ Upstream commit 9e63fdb0cbdf3268c86638a8274f4d5549a82820 ]
 
-The subsequent patch will implement BPF TX timestamping. It will
-call the sockops BPF program without holding the sock lock.
+verifier.c:is_state_visited() uses RANGE_WITHIN states comparison rules
+for cached states that have loop_entry with non-zero branches count
+(meaning that loop_entry's verification is not yet done).
 
-This breaks the current assumption that all sock ops programs will
-hold the sock lock. The sock's fields of the uapi's bpf_sock_ops
-requires this assumption.
+The RANGE_WITHIN rules in regsafe()/stacksafe() require register and
+stack objects types to be identical in current and old states.
 
-To address this, a new "u8 is_locked_tcp_sock;" field is added. This
-patch sets it in the current sock_ops callbacks. The "is_fullsock"
-test is then replaced by the "is_locked_tcp_sock" test during
-sock_ops_convert_ctx_access().
+verifier.c:clean_live_states() replaces registers and stack spills
+with NOT_INIT/STACK_INVALID marks, if these registers/stack spills are
+not read in any child state. This means that clean_live_states() works
+against loop convergence logic under some conditions. See selftest in
+the next patch for a specific example.
 
-The new TX timestamping callbacks added in the subsequent patch will
-not have this set. This will prevent unsafe access from the new
-timestamping callbacks.
+Mitigate this by prohibiting clean_verifier_state() when
+state->loop_entry->branches > 0.
 
-Potentially, we could allow read-only access. However, this would
-require identifying which callback is read-safe-only and also requires
-additional BPF instruction rewrites in the covert_ctx. Since the BPF
-program can always read everything from a socket (e.g., by using
-bpf_core_cast), this patch keeps it simple and disables all read
-and write access to any socket fields through the bpf_sock_ops
-UAPI from the new TX timestamping callback.
+This undoes negative verification performance impact of the
+copy_verifier_state() fix from the previous patch.
+Below is comparison between master and current patch.
 
-Moreover, note that some of the fields in bpf_sock_ops are specific
-to tcp_sock, and sock_ops currently only supports tcp_sock. In
-the future, UDP timestamping will be added, which will also break
-this assumption. The same idea used in this patch will be reused.
-Considering that the current sock_ops only supports tcp_sock, the
-variable is named is_locked_"tcp"_sock.
+selftests:
 
-Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
-Link: https://patch.msgid.link/20250220072940.99994-4-kerneljasonxing@gmail.com
+File                                Program                       Insns (A)  Insns (B)  Insns    (DIFF)  States (A)  States (B)  States  (DIFF)
+----------------------------------  ----------------------------  ---------  ---------  ---------------  ----------  ----------  --------------
+arena_htab.bpf.o                    arena_htab_llvm                     717        423   -294 (-41.00%)          57          37   -20 (-35.09%)
+arena_htab_asm.bpf.o                arena_htab_asm                      597        445   -152 (-25.46%)          47          37   -10 (-21.28%)
+arena_list.bpf.o                    arena_list_add                     1493       1822   +329 (+22.04%)          30          37    +7 (+23.33%)
+arena_list.bpf.o                    arena_list_del                      309        261    -48 (-15.53%)          23          15    -8 (-34.78%)
+iters.bpf.o                         checkpoint_states_deletion        18125      22154  +4029 (+22.23%)         818         918  +100 (+12.22%)
+iters.bpf.o                         iter_nested_deeply_iters            593        367   -226 (-38.11%)          67          43   -24 (-35.82%)
+iters.bpf.o                         iter_nested_iters                   813        772     -41 (-5.04%)          79          72     -7 (-8.86%)
+iters.bpf.o                         iter_subprog_check_stacksafe        155        135    -20 (-12.90%)          15          14     -1 (-6.67%)
+iters.bpf.o                         iter_subprog_iters                 1094        808   -286 (-26.14%)          88          68   -20 (-22.73%)
+iters.bpf.o                         loop_state_deps2                    479        356   -123 (-25.68%)          46          35   -11 (-23.91%)
+iters.bpf.o                         triple_continue                      35         31     -4 (-11.43%)           3           3     +0 (+0.00%)
+kmem_cache_iter.bpf.o               open_coded_iter                      63         59      -4 (-6.35%)           7           6    -1 (-14.29%)
+mptcp_subflow.bpf.o                 _getsockopt_subflow                 501        446    -55 (-10.98%)          25          23     -2 (-8.00%)
+pyperf600_iter.bpf.o                on_event                          12339       6379  -5960 (-48.30%)         441         286  -155 (-35.15%)
+verifier_bits_iter.bpf.o            max_words                            92         84      -8 (-8.70%)           8           7    -1 (-12.50%)
+verifier_iterating_callbacks.bpf.o  cond_break2                         113        192    +79 (+69.91%)          12          21    +9 (+75.00%)
+
+sched_ext:
+
+File               Program                 Insns (A)  Insns (B)  Insns      (DIFF)  States (A)  States (B)  States    (DIFF)
+-----------------  ----------------------  ---------  ---------  -----------------  ----------  ----------  ----------------
+bpf.bpf.o          layered_dispatch            11485       9039    -2446 (-21.30%)         848         662    -186 (-21.93%)
+bpf.bpf.o          layered_dump                 7422       5022    -2400 (-32.34%)         681         298    -383 (-56.24%)
+bpf.bpf.o          layered_enqueue             16854      13753    -3101 (-18.40%)        1611        1308    -303 (-18.81%)
+bpf.bpf.o          layered_init              1000001       5549  -994452 (-99.45%)       84672         523  -84149 (-99.38%)
+bpf.bpf.o          layered_runnable             3149       1899    -1250 (-39.70%)         288         151    -137 (-47.57%)
+bpf.bpf.o          p2dq_init                    2343       1936     -407 (-17.37%)         201         170     -31 (-15.42%)
+bpf.bpf.o          refresh_layer_cpumasks      16487       1285   -15202 (-92.21%)        1770         120   -1650 (-93.22%)
+bpf.bpf.o          rusty_select_cpu             1937       1386     -551 (-28.45%)         177         125     -52 (-29.38%)
+scx_central.bpf.o  central_dispatch              636        600       -36 (-5.66%)          63          59       -4 (-6.35%)
+scx_central.bpf.o  central_init                  913        632     -281 (-30.78%)          48          39      -9 (-18.75%)
+scx_nest.bpf.o     nest_init                     636        601       -35 (-5.50%)          60          58       -2 (-3.33%)
+scx_pair.bpf.o     pair_dispatch             1000001       1914  -998087 (-99.81%)       58169         142  -58027 (-99.76%)
+scx_qmap.bpf.o     qmap_dispatch                2393       2187      -206 (-8.61%)         196         174     -22 (-11.22%)
+scx_qmap.bpf.o     qmap_init                   16367      22777    +6410 (+39.16%)         603         768    +165 (+27.36%)
+
+'layered_init' and 'pair_dispatch' hit 1M on master, but are verified
+ok with this patch.
+
+Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+Link: https://lore.kernel.org/r/20250215110411.3236773-4-eddyz87@gmail.com
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/filter.h | 1 +
- include/net/tcp.h      | 1 +
- net/core/filter.c      | 8 ++++----
- net/ipv4/tcp_input.c   | 2 ++
- net/ipv4/tcp_output.c  | 2 ++
- 5 files changed, 10 insertions(+), 4 deletions(-)
+ kernel/bpf/verifier.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index a3ea462815957..d36d5d5180b11 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -1508,6 +1508,7 @@ struct bpf_sock_ops_kern {
- 	void	*skb_data_end;
- 	u8	op;
- 	u8	is_fullsock;
-+	u8	is_locked_tcp_sock;
- 	u8	remaining_opt_len;
- 	u64	temp;			/* temp and everything after is not
- 					 * initialized to 0 before calling
-diff --git a/include/net/tcp.h b/include/net/tcp.h
-index 2d08473a6dc00..33c50ea976c88 100644
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -2671,6 +2671,7 @@ static inline int tcp_call_bpf(struct sock *sk, int op, u32 nargs, u32 *args)
- 	memset(&sock_ops, 0, offsetof(struct bpf_sock_ops_kern, temp));
- 	if (sk_fullsock(sk)) {
- 		sock_ops.is_fullsock = 1;
-+		sock_ops.is_locked_tcp_sock = 1;
- 		sock_owned_by_me(sk);
- 	}
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index e2801472c0ae4..68715b18df5e2 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -17830,12 +17830,16 @@ static void clean_verifier_state(struct bpf_verifier_env *env,
+ static void clean_live_states(struct bpf_verifier_env *env, int insn,
+ 			      struct bpf_verifier_state *cur)
+ {
++	struct bpf_verifier_state *loop_entry;
+ 	struct bpf_verifier_state_list *sl;
  
-diff --git a/net/core/filter.c b/net/core/filter.c
-index b0df9b7d16d3f..5fc520c815aee 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -10366,10 +10366,10 @@ static u32 sock_ops_convert_ctx_access(enum bpf_access_type type,
- 		}							      \
- 		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(			      \
- 						struct bpf_sock_ops_kern,     \
--						is_fullsock),		      \
-+						is_locked_tcp_sock),	      \
- 				      fullsock_reg, si->src_reg,	      \
- 				      offsetof(struct bpf_sock_ops_kern,      \
--					       is_fullsock));		      \
-+					       is_locked_tcp_sock));	      \
- 		*insn++ = BPF_JMP_IMM(BPF_JEQ, fullsock_reg, 0, jmp);	      \
- 		if (si->dst_reg == si->src_reg)				      \
- 			*insn++ = BPF_LDX_MEM(BPF_DW, reg, si->src_reg,	      \
-@@ -10454,10 +10454,10 @@ static u32 sock_ops_convert_ctx_access(enum bpf_access_type type,
- 					       temp));			      \
- 		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(			      \
- 						struct bpf_sock_ops_kern,     \
--						is_fullsock),		      \
-+						is_locked_tcp_sock),	      \
- 				      reg, si->dst_reg,			      \
- 				      offsetof(struct bpf_sock_ops_kern,      \
--					       is_fullsock));		      \
-+					       is_locked_tcp_sock));	      \
- 		*insn++ = BPF_JMP_IMM(BPF_JEQ, reg, 0, 2);		      \
- 		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(			      \
- 						struct bpf_sock_ops_kern, sk),\
-diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-index 1b09b4d76c296..d1ed4ac74e1d0 100644
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -169,6 +169,7 @@ static void bpf_skops_parse_hdr(struct sock *sk, struct sk_buff *skb)
- 	memset(&sock_ops, 0, offsetof(struct bpf_sock_ops_kern, temp));
- 	sock_ops.op = BPF_SOCK_OPS_PARSE_HDR_OPT_CB;
- 	sock_ops.is_fullsock = 1;
-+	sock_ops.is_locked_tcp_sock = 1;
- 	sock_ops.sk = sk;
- 	bpf_skops_init_skb(&sock_ops, skb, tcp_hdrlen(skb));
- 
-@@ -185,6 +186,7 @@ static void bpf_skops_established(struct sock *sk, int bpf_op,
- 	memset(&sock_ops, 0, offsetof(struct bpf_sock_ops_kern, temp));
- 	sock_ops.op = bpf_op;
- 	sock_ops.is_fullsock = 1;
-+	sock_ops.is_locked_tcp_sock = 1;
- 	sock_ops.sk = sk;
- 	/* sk with TCP_REPAIR_ON does not have skb in tcp_finish_connect */
- 	if (skb)
-diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-index 6031d7f7f5198..2398b0fc62225 100644
---- a/net/ipv4/tcp_output.c
-+++ b/net/ipv4/tcp_output.c
-@@ -525,6 +525,7 @@ static void bpf_skops_hdr_opt_len(struct sock *sk, struct sk_buff *skb,
- 		sock_owned_by_me(sk);
- 
- 		sock_ops.is_fullsock = 1;
-+		sock_ops.is_locked_tcp_sock = 1;
- 		sock_ops.sk = sk;
- 	}
- 
-@@ -570,6 +571,7 @@ static void bpf_skops_write_hdr_opt(struct sock *sk, struct sk_buff *skb,
- 		sock_owned_by_me(sk);
- 
- 		sock_ops.is_fullsock = 1;
-+		sock_ops.is_locked_tcp_sock = 1;
- 		sock_ops.sk = sk;
- 	}
- 
+ 	sl = *explored_state(env, insn);
+ 	while (sl) {
+ 		if (sl->state.branches)
+ 			goto next;
++		loop_entry = get_loop_entry(&sl->state);
++		if (loop_entry && loop_entry->branches)
++			goto next;
+ 		if (sl->state.insn_idx != insn ||
+ 		    !same_callsites(&sl->state, cur))
+ 			goto next;
 -- 
 2.39.5
 
