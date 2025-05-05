@@ -1,154 +1,148 @@
-Return-Path: <bpf+bounces-57355-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57356-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02C76AA9A34
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 19:14:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05E44AA9A8A
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 19:30:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CEA451899DB1
-	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 17:14:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7FDF7ABA6F
+	for <lists+bpf@lfdr.de>; Mon,  5 May 2025 17:29:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83A0A26AAAB;
-	Mon,  5 May 2025 17:14:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D029626D4C8;
+	Mon,  5 May 2025 17:30:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RVkChGu3"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="kOvVcZpQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8FB025C6EA
-	for <bpf@vger.kernel.org>; Mon,  5 May 2025 17:14:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C733217C98;
+	Mon,  5 May 2025 17:30:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746465245; cv=none; b=DFr+GnLEv7PUPSZzPvlKR/Cy7sE0XhjQVYif90LsSpgqY4G0RuhcwIdbmt+XAwKo2vkT83Nu68KmiazXRMS9aK+MfZ5dCrIgPFHfTGmQ53+4ZpnW/T3DuRKdma1i4TYbTsFW0HgfILQB+KthGtLC3Rd+VX2pEvTMz8yRNpwVYIY=
+	t=1746466209; cv=none; b=gkdzIXxMmHH/iFY11c/1tHzGeiK1CgGKWpdn6RqBZt3La/0bpSY7o073uLbs4+4N1gmDYGbrvqJ/tmPTEAcBiuBVmgirKwfxVixuqXmboOPCaM4WgddEMI6KpjqlNJPcw4xT8bfMBDAP38BPiiTziYMYlSEtk2FrV+hOVTZBWC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746465245; c=relaxed/simple;
-	bh=y3a34D/WISysEXLW2dRH40jIrBVqXYZwMPGPzgPMSn4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MWQ8LwPgyTfM3AzKCAXXAInnWyQrOY0ab3j6I55ZzjpTICBWLiglR3WKv69jUqjZCv65FuCWZjn6ubJf2Ez7FXSbYi28dA+UDXRp8VEpKgvAFhHAamM+TwE6m8UPQkcQn5PnykqqRH4UOxr/Om71gc0OlLaEBib5UBEp6aIg7ag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RVkChGu3; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 5 May 2025 10:13:37 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1746465240;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=E24kJ44em7O2f1doQqPbEivgystWHS55cv/k6/FiNHU=;
-	b=RVkChGu3assQs6W1YgJ8JLKqafWbJ8czNHoU+CkVNLUBbODpPY6e+XqelKnVrzU9BU8iij
-	LcYaVyHMe0FBpZqEyrwYQKb/sUb4+kIZWP7lE+CQ4uO1QgwSmemHaFdI5YcujOlenDLHZX
-	AZbpHvkoU4tK17yCZRuDSP3iNMC9Vhw=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Shakeel Butt <shakeel.butt@gmail.com>, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	Alexei Starovoitov <ast@kernel.org>, linux-mm <linux-mm@kvack.org>, 
-	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Meta kernel team <kernel-team@meta.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] memcg: no irq disable for memcg stock lock
-Message-ID: <ek6ptpggcmnp5kyt37ytriu6d4gj5grpfwcok3rupu5tbjoil3@6cqmoj43bsum>
-References: <20250502001742.3087558-1-shakeel.butt@linux.dev>
- <20250502001742.3087558-4-shakeel.butt@linux.dev>
- <CAADnVQJ-XEEwVppk-qY2mmGB4R18_nqH-wdv5nuJf2LST5=Aaw@mail.gmail.com>
- <CAGj-7pWqvtWj2nSOaQwoLbwUrVcLfKc0U2TcmxuSB87dWmZcgQ@mail.gmail.com>
- <81a2e692-dd10-4253-afbc-062e0be67ca4@suse.cz>
+	s=arc-20240116; t=1746466209; c=relaxed/simple;
+	bh=R+GwlfGZoPlwh3YnWX8HPEVZTkofAG51fiG2PtNEH88=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Zn56ai+URqSKDxhppg1FKTtIfObTBWCuNCvpzMtYwTETffr1K7Ds+xQsOLOcdLkfR9JYUhxoOm2QAZRtu3BQNDNevBiYq4nVKVJ+zxNa19wFaBqdIv9G1V5igVuQbuXR9P2JOdSOnc62dAjT9vjNlh7H1hheZrPXLT7kphS5OGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=kOvVcZpQ; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from narnia (unknown [40.78.12.133])
+	by linux.microsoft.com (Postfix) with ESMTPSA id E0D5F2115DC3;
+	Mon,  5 May 2025 10:30:04 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E0D5F2115DC3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1746466207;
+	bh=L5eUFsHvaH45uDsjDJjMZQptT9OSECb9z18nACTP45M=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=kOvVcZpQ3T9sSH7pJ/HqSNP3wky0HxKFyWnu3+U7tjF1uLifCwAjeQCk7o7kn4hxM
+	 TFP3TzAMaTUbH/qAfIWuql1lE8KMJwB3+zRXEdgn3Dflf/I2scqy3aWQzbYogVDthy
+	 x3GkXKAcpGXd74KgoFzFnVhX8w1D1WUABHFiQ5dY=
+From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+To: KP Singh <kpsingh@kernel.org>
+Cc: James.Bottomley@hansenpartnership.com, bpf@vger.kernel.org,
+ code@tyhicks.com, corbet@lwn.net, davem@davemloft.net,
+ dhowells@redhat.com, gnoack@google.com, herbert@gondor.apana.org.au,
+ jarkko@kernel.org, jmorris@namei.org, jstancek@redhat.com,
+ justinstitt@google.com, keyrings@vger.kernel.org,
+ linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-security-module@vger.kernel.org,
+ llvm@lists.linux.dev, masahiroy@kernel.org, mic@digikod.net,
+ morbo@google.com, nathan@kernel.org, neal@gompa.dev,
+ nick.desaulniers+lkml@gmail.com, nicolas@fjasle.eu, nkapron@google.com,
+ paul@paul-moore.com, roberto.sassu@huawei.com, serge@hallyn.com,
+ shuah@kernel.org, teknoraver@meta.com, xiyou.wangcong@gmail.com, KP Singh
+ <kpsingh@kernel.org>
+Subject: Re: [PATCH v3 0/4] Introducing Hornet LSM
+In-Reply-To: <20250502210034.284051-1-kpsingh@kernel.org>
+References: <20250502184421.1424368-1-bboscaccy@linux.microsoft.com>
+ <20250502210034.284051-1-kpsingh@kernel.org>
+Date: Mon, 05 May 2025 10:30:03 -0700
+Message-ID: <87o6w7ge3o.fsf@microsoft.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <81a2e692-dd10-4253-afbc-062e0be67ca4@suse.cz>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain
 
-Ccing networking folks.
+KP Singh <kpsingh@kernel.org> writes:
 
-Background: https://lore.kernel.org/dvyyqubghf67b3qsuoreegqk4qnuuqfkk7plpfhhrck5yeeuic@xbn4c6c7yc42/
+[...]
 
-On Mon, May 05, 2025 at 12:28:43PM +0200, Vlastimil Babka wrote:
-> On 5/3/25 01:03, Shakeel Butt wrote:
-> >> > index cd81c70d144b..f8b9c7aa6771 100644
-> >> > --- a/mm/memcontrol.c
-> >> > +++ b/mm/memcontrol.c
-> >> > @@ -1858,7 +1858,6 @@ static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages,
-> >> >  {
-> >> >         struct memcg_stock_pcp *stock;
-> >> >         uint8_t stock_pages;
-> >> > -       unsigned long flags;
-> >> >         bool ret = false;
-> >> >         int i;
-> >> >
-> >> > @@ -1866,8 +1865,8 @@ static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages,
-> >> >                 return ret;
-> >> >
-> >> >         if (gfpflags_allow_spinning(gfp_mask))
-> >> > -               local_lock_irqsave(&memcg_stock.lock, flags);
-> >> > -       else if (!local_trylock_irqsave(&memcg_stock.lock, flags))
-> >> > +               local_lock(&memcg_stock.lock);
-> >> > +       else if (!local_trylock(&memcg_stock.lock))
-> >> >                 return ret;
-> >>
-> >> I don't think it works.
-> >> When there is a normal irq and something doing regular GFP_NOWAIT
-> >> allocation gfpflags_allow_spinning() will be true and
-> >> local_lock() will reenter and complain that lock->acquired is
-> >> already set... but only with lockdep on.
-> > 
-> > Yes indeed. I dropped the first patch and didn't fix this one
-> > accordingly. I think the fix can be as simple as checking for
-> > in_task() here instead of gfp_mask. That should work for both RT and
-> > non-RT kernels.
-> 
-> These in_task() checks seem hacky to me. I think the patch 1 in v1 was the
-> correct way how to use the local_trylock() to avoid these.
-> 
-> As for the RT concerns, AFAIK RT isn't about being fast, but about being
-> preemptible, and the v1 approach didn't violate that - taking the slowpaths
-> more often shouldn't be an issue.
-> 
-> Let me quote Shakeel's scenario from the v1 thread:
-> 
-> > I didn't really think too much about PREEMPT_RT kernels as I assume
-> > performance is not top priority but I think I get your point. Let me
-> 
-> Agreed.
-> 
-> > explain and correct me if I am wrong. On PREEMPT_RT kernel, the local
-> > lock is a spin lock which is actually a mutex but with priority
-> > inheritance. A task having the local lock can still get context switched
-> 
-> Let's say (seems implied already) this is a low prio task.
-> 
-> > (but will remain on same CPU run queue) and the newer task can try to
-> 
-> And this is a high prio task.
-> 
-> > acquire the memcg stock local lock. If we just do trylock, it will
-> > always go to the slow path but if we do local_lock() then it will sleeps
-> > and possibly gives its priority to the task owning the lock and possibly
-> > make that task to get the CPU. Later the task slept on memcg stock lock
-> > will wake up and go through fast path.
-> 
-> I think from RT latency perspective it could very much be better for the
-> high prio task just skip the fast path and go for the slowpath, instead of
-> going to sleep while boosting the low prio task to let the high prio task
-> use the fast path later. It's not really a fast path anymore I'd say.
+> Now if you really care about the use-case and want to work with the maintainers
+> and implement signing for the community, here's how we think it should be done:
+>
+> * The core signing logic and the tooling stays in BPF, something that the users
+>   are already using. No new tooling.
+> * The policy decision on the effect of signing can be built into various
+>   existing LSMs. I don't think we need a new LSM for it.
+> * A simple UAPI (emphasis on UAPI!) change to union bpf_attr in uapi/bpf.h in
+>   the BPF_PROG_LOAD command:
+>
+> __aligned_u64 signature; 
+> __u32 signature_size;
 
-Thanks Vlastimil, this is actually a very good point. Slow path of memcg
-charging is couple of atomic operations while the alternative here is at
-least two context switches (and possibly scheduler delay). So, it does
-not seem like a fast path anymore.
+I think having some actual details on the various parties' requirements
+here would be helpful. KP, I do look forward to seeing your design;
+however, having code signing proposals where the capabilities are
+dictated from above and any dissent is dismissed as "you're doing it
+wrong" isn't going to be helpful to anyone that needs to use this in
+practice.
 
-I have cc'ed networking folks to get their take as well. Orthogonally I
-will do some netperf benchmarking on v1 with RT kernel.
+Also, I don't think anyone actually cares, at least I don't, who calls
+verify_pkcs7_signature or whatnot. Verifying signed binary blobs with a
+private key is a solved problem and isn't really interesting.
+
+Our requirements for code signing are just an extension of secure boot
+and module signing logic:
+
+* Prove all code running in ring zero has been signed
+* Not trivially defeatable by root
+* Ultimately, no trusted userspace components
+* Secure from and not vulnerable to TOCTOU attacks
+* Shouldn't be overly vulnerable to supply-chain attacks
+* The signature checking logic and control paths should be human-readable
+* Work easily and be backportable to stable kernels
+* There should be a simple kconfig option to turn this on or off
+* This solution needs to be in the mainline kernel
+
+Hornet was implemented to meet those requirements, living in the LSM
+subsystem, written in C. As of today, one cannot accomplish those
+requirements via BPF-LSM, which is why C was chosen.
+
+One can easily realize there is absolutely no way to have a single
+one-size-fits-all signing solution for everything listed in
+https://ebpf.io/applications/.
+
+If you want to go the UAPI route, I would wholeheartedly recommend
+making it extensible and having this data be available to the policy
+LSMs.
+
+enum bpf_signature_type {
+  /* x509 signature check against program instructions only */
+  BPF_SIGNATURE_PROG_ONLY = 0,
+  /* x509 combined signature check against program instructions and used maps */
+  BPF_SIGNATURE_PROG_USED_MAPS = 1,
+  /* more of these to be determined via usage */ 
+  ...
+};
+
+_aligned_u64 signature; 
+__u32 signature_size;
+__u32 signature_type;
+
+The other option for solving this in the general is in-kernel
+loaders. That's gotten pushback as well. 
+
+-blaise
+
+
+
+
+
 
