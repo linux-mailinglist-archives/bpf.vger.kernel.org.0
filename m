@@ -1,74 +1,69 @@
-Return-Path: <bpf+bounces-57405-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57409-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77BC1AAA657
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 02:11:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28433AAA70B
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 02:24:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 68F7E18861BF
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 00:10:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0168B3BB597
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 00:18:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42874290BDF;
-	Mon,  5 May 2025 22:34:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF5EF32DAB4;
+	Mon,  5 May 2025 22:35:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wj1mzDKf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lcx3CuAx"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC9E43255B3;
-	Mon,  5 May 2025 22:34:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55CEF32DAA0;
+	Mon,  5 May 2025 22:35:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746484470; cv=none; b=TzaqatbkrmKpuDxXPD4Fa4IGD/KXMlXgq7G9CniiN28XeILsF+cQ6LeiQ1ctlQVbhMCOoDPSOhYDzZcB96/ngyqlisv6K5C1MhxjnJOJA59XTC/03uqOZT9/rpuMEk0kLYX23O7PCC7UNm+HjFIrowFlmU4vnbBWMbzROxfPCDM=
+	t=1746484526; cv=none; b=SThNHqzK2J84Pu0eVaHHkRJy9Rms4q1jmOM7SC3OtICW0Rm9s03DMcvrKXZfKcePBUG1OA0hhP6naU/h1OAx+6TAxqRGlapJ2ofaHWw0anTKCl3r8NpYzCEuw9iY1dJk28oUT0hN0E7jv3QmkYy2ZUhKEY5Dfldq4RpxGzmW79A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746484470; c=relaxed/simple;
-	bh=uOgHKiA5D55Iyyjn9p88omrm1ZVMGUUXunLFlvK/boA=;
+	s=arc-20240116; t=1746484526; c=relaxed/simple;
+	bh=rPXg2sY7ZfWVK8DP/KT2YWCX2cEprik+eD4oek2lEXE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=YEmmijIxnUNQx5aWbhiiHzKLC1hL2y97uZeUL1TYAk9t8NN+ZH3KI3Seu6K9ewk7opm8xN/RA7I2sfn0oUHJpbCmTtVExsKdjwWO+MIE1ZcGEs0BFbc0gppyyy3jrXdyXRvhTmeU36SUPEzgLl5jIWY/GECsoQJ5i5H3fy3kvro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wj1mzDKf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B91D9C4CEE4;
-	Mon,  5 May 2025 22:34:27 +0000 (UTC)
+	 MIME-Version; b=nPlZOplectM9zc7nz4wes3U88m2wQn1EDcmHcxX2zkEVX0ZRlgYNVoyRSQRNyR7fR7Bv5lLyK9EI42eQbLUlOWPTWqBeUajBpWkNV1IqYsEAmxiW5w9J098LmT5UgDyLd7j9vdNaokLqP/ILbAp5P2gnXY5kToIZzFUz0WBJoBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lcx3CuAx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F9EFC4CEEE;
+	Mon,  5 May 2025 22:35:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746484470;
-	bh=uOgHKiA5D55Iyyjn9p88omrm1ZVMGUUXunLFlvK/boA=;
+	s=k20201202; t=1746484526;
+	bh=rPXg2sY7ZfWVK8DP/KT2YWCX2cEprik+eD4oek2lEXE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Wj1mzDKfwdFwv2YW0bW8TYOnb1GfRdV3fbIt4DPz+6+9VA91jR3mWnvXoP9e8sPbz
-	 8uIy4B+TWcP5JrZVXNIbI19SoP2JKwUL1SxAS216XeUn0vnVPXGO6IzxLHVFty+7mQ
-	 L3dnk05FU2ruUCD7TExWO/ct3S2XYqWzlQdoYuWPcvs+HFUbtoy6uDA3cKRSpxXRC+
-	 R6LVS8L9k/qQBYaolPD+JqQ0oi2VkvkblPIvuKWzkH6XjIsT7PdJf7uNzElrWi2TJe
-	 AppkFGNV1fzBYaT2vh9Dc1j06cDC++sKdjZgoWHgWg4PX8LDvmbqDxHW4Os89JN54Q
-	 vVxNGsRAGpxuQ==
+	b=lcx3CuAx9kWyuEf2iKhiRmkR2AU9epXvIs6wb49zwtGVQcWH95qSsP3yEIY/3rDkH
+	 N6hDyUP/dua2oFC4cYy1V7XtsyiaN92GQDa9jS4kTPOLYbB8IulRp83sdKeEuQGs0n
+	 GoQ8QTUcl5NXZv2IMcMxJq7bG1LjhPNY2VkTB6rD49A+o5J+zdUFKjWIR82UzP7b+V
+	 Wd0KZkqW/bv9i4mPy8W4W+h9ERwAVCE9zFP+piRP2WW4j0lqUJWiFwcEclRxHBOato
+	 N5nJJvMXAQyiRqoWsKhU8kLP5hJEJ5uRMZ1DncSzHtz1HcpLC1hXad/IZbTbY2dT48
+	 0oHVBzSzOKJCA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Alexei Lazar <alazar@nvidia.com>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Jakub Kicinski <kuba@kernel.org>,
+Cc: Song Yoong Siang <yoong.siang.song@intel.com>,
+	Avigail Dahan <avigailx.dahan@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
-	saeedm@nvidia.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	pabeni@redhat.com,
 	ast@kernel.org,
 	daniel@iogearbox.net,
+	davem@davemloft.net,
+	kuba@kernel.org,
 	hawk@kernel.org,
 	john.fastabend@gmail.com,
-	dtatulea@nvidia.com,
-	witu@nvidia.com,
-	yorayz@nvidia.com,
-	lkayal@nvidia.com,
-	mbloch@nvidia.com,
-	cratiu@nvidia.com,
+	przemyslaw.kitszel@intel.com,
+	andrew+netdev@lunn.ch,
+	edumazet@google.com,
+	pabeni@redhat.com,
 	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.14 486/642] net/mlx5: XDP, Enable TX side XDP multi-buffer support
-Date: Mon,  5 May 2025 18:11:42 -0400
-Message-Id: <20250505221419.2672473-486-sashal@kernel.org>
+	bpf@vger.kernel.org,
+	intel-wired-lan@lists.osuosl.org
+Subject: [PATCH AUTOSEL 6.14 515/642] igc: Avoid unnecessary link down event in XDP_SETUP_PROG process
+Date: Mon,  5 May 2025 18:12:11 -0400
+Message-Id: <20250505221419.2672473-515-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250505221419.2672473-1-sashal@kernel.org>
 References: <20250505221419.2672473-1-sashal@kernel.org>
@@ -83,204 +78,134 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.14.5
 Content-Transfer-Encoding: 8bit
 
-From: Alexei Lazar <alazar@nvidia.com>
+From: Song Yoong Siang <yoong.siang.song@intel.com>
 
-[ Upstream commit 1a9304859b3a4119579524c293b902a8927180f3 ]
+[ Upstream commit be324b790368c1522f07c6bb5654122e07b5e588 ]
 
-In XDP scenarios, fragmented packets can occur if the MTU is larger
-than the page size, even when the packet size fits within the linear
-part.
-If XDP multi-buffer support is disabled, the fragmented part won't be
-handled in the TX flow, leading to packet drops.
+The igc_close()/igc_open() functions are too drastic for installing a new
+XDP prog because they cause undesirable link down event and device reset.
 
-Since XDP multi-buffer support is always available, this commit removes
-the conditional check for enabling it.
-This ensures that XDP multi-buffer support is always enabled,
-regardless of the `is_xdp_mb` parameter, and guarantees the handling of
-fragmented packets in such scenarios.
+To avoid delays in Ethernet traffic, improve the XDP_SETUP_PROG process by
+using the same sequence as igc_xdp_setup_pool(), which performs only the
+necessary steps, as follows:
+ 1. stop the traffic and clean buffer
+ 2. stop NAPI
+ 3. install the XDP program
+ 4. resume NAPI
+ 5. allocate buffer and resume the traffic
 
-Signed-off-by: Alexei Lazar <alazar@nvidia.com>
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-Link: https://patch.msgid.link/20250209101716.112774-16-tariqt@nvidia.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+This patch has been tested using the 'ip link set xdpdrv' command to attach
+a simple XDP prog that always returns XDP_PASS.
+
+Before this patch, attaching xdp program will cause ptp4l to lose sync for
+few seconds, as shown in ptp4l log below:
+  ptp4l[198.082]: rms    4 max    8 freq   +906 +/-   2 delay    12 +/-   0
+  ptp4l[199.082]: rms    3 max    4 freq   +906 +/-   3 delay    12 +/-   0
+  ptp4l[199.536]: port 1 (enp2s0): link down
+  ptp4l[199.536]: port 1 (enp2s0): SLAVE to FAULTY on FAULT_DETECTED (FT_UNSPECIFIED)
+  ptp4l[199.600]: selected local clock 22abbc.fffe.bb1234 as best master
+  ptp4l[199.600]: port 1 (enp2s0): assuming the grand master role
+  ptp4l[199.600]: port 1 (enp2s0): master state recommended in slave only mode
+  ptp4l[199.600]: port 1 (enp2s0): defaultDS.priority1 probably misconfigured
+  ptp4l[202.266]: port 1 (enp2s0): link up
+  ptp4l[202.300]: port 1 (enp2s0): FAULTY to LISTENING on INIT_COMPLETE
+  ptp4l[205.558]: port 1 (enp2s0): new foreign master 44abbc.fffe.bb2144-1
+  ptp4l[207.558]: selected best master clock 44abbc.fffe.bb2144
+  ptp4l[207.559]: port 1 (enp2s0): LISTENING to UNCALIBRATED on RS_SLAVE
+  ptp4l[208.308]: port 1 (enp2s0): UNCALIBRATED to SLAVE on MASTER_CLOCK_SELECTED
+  ptp4l[208.933]: rms  742 max 1303 freq   -195 +/- 682 delay    12 +/-   0
+  ptp4l[209.933]: rms  178 max  274 freq   +387 +/- 243 delay    12 +/-   0
+
+After this patch, attaching xdp program no longer cause ptp4l to lose sync,
+as shown in ptp4l log below:
+  ptp4l[201.183]: rms    1 max    3 freq   +959 +/-   1 delay     8 +/-   0
+  ptp4l[202.183]: rms    1 max    3 freq   +961 +/-   2 delay     8 +/-   0
+  ptp4l[203.183]: rms    2 max    3 freq   +958 +/-   2 delay     8 +/-   0
+  ptp4l[204.183]: rms    3 max    5 freq   +961 +/-   3 delay     8 +/-   0
+  ptp4l[205.183]: rms    2 max    4 freq   +964 +/-   3 delay     8 +/-   0
+
+Besides, before this patch, attaching xdp program will causes flood ping to
+lose 10 packets, as shown in ping statistics below:
+  --- 169.254.1.2 ping statistics ---
+  100000 packets transmitted, 99990 received, +6 errors, 0.01% packet loss, time 34001ms
+  rtt min/avg/max/mdev = 0.028/0.301/3104.360/13.838 ms, pipe 10, ipg/ewma 0.340/0.243 ms
+
+After this patch, attaching xdp program no longer cause flood ping to loss
+any packets, as shown in ping statistics below:
+  --- 169.254.1.2 ping statistics ---
+  100000 packets transmitted, 100000 received, 0% packet loss, time 32326ms
+  rtt min/avg/max/mdev = 0.027/0.231/19.589/0.155 ms, pipe 2, ipg/ewma 0.323/0.322 ms
+
+On the other hand, this patch has been tested with tools/testing/selftests/
+bpf/xdp_hw_metadata app to make sure AF_XDP zero-copy is working fine with
+XDP Tx and Rx metadata. Below is the result of last packet after received
+10000 UDP packets with interval 1 ms:
+  poll: 1 (0) skip=0 fail=0 redir=10000
+  xsk_ring_cons__peek: 1
+  0x55881c7ef7a8: rx_desc[9999]->addr=8f110 addr=8f110 comp_addr=8f110 EoP
+  rx_hash: 0xFB9BB6A3 with RSS type:0x1
+  HW RX-time:   1733923136269470866 (sec:1733923136.2695) delta to User RX-time sec:0.0000 (43.280 usec)
+  XDP RX-time:   1733923136269482482 (sec:1733923136.2695) delta to User RX-time sec:0.0000 (31.664 usec)
+  No rx_vlan_tci or rx_vlan_proto, err=-95
+  0x55881c7ef7a8: ping-pong with csum=ab19 (want 315b) csum_start=34 csum_offset=6
+  0x55881c7ef7a8: complete tx idx=9999 addr=f010
+  HW TX-complete-time:   1733923136269591637 (sec:1733923136.2696) delta to User TX-complete-time sec:0.0001 (108.571 usec)
+  XDP RX-time:   1733923136269482482 (sec:1733923136.2695) delta to User TX-complete-time sec:0.0002 (217.726 usec)
+  HW RX-time:   1733923136269470866 (sec:1733923136.2695) delta to HW TX-complete-time sec:0.0001 (120.771 usec)
+  0x55881c7ef7a8: complete rx idx=10127 addr=8f110
+
+Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
+Tested-by: Avigail Dahan <avigailx.dahan@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en.h  |  1 -
- .../ethernet/mellanox/mlx5/core/en/params.c   |  1 -
- .../ethernet/mellanox/mlx5/core/en/params.h   |  1 -
- .../mellanox/mlx5/core/en/reporter_tx.c       |  1 -
- .../net/ethernet/mellanox/mlx5/core/en/xdp.c  | 49 ++++++++-----------
- .../net/ethernet/mellanox/mlx5/core/en_main.c | 29 -----------
- 6 files changed, 21 insertions(+), 61 deletions(-)
+ drivers/net/ethernet/intel/igc/igc_xdp.c | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-index 979fc56205e1f..8f9ec48ecc06d 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-@@ -386,7 +386,6 @@ enum {
- 	MLX5E_SQ_STATE_VLAN_NEED_L2_INLINE,
- 	MLX5E_SQ_STATE_PENDING_XSK_TX,
- 	MLX5E_SQ_STATE_PENDING_TLS_RX_RESYNC,
--	MLX5E_SQ_STATE_XDP_MULTIBUF,
- 	MLX5E_NUM_SQ_STATES, /* Must be kept last */
- };
+diff --git a/drivers/net/ethernet/intel/igc/igc_xdp.c b/drivers/net/ethernet/intel/igc/igc_xdp.c
+index 869815f48ac1d..9eb47b4beb062 100644
+--- a/drivers/net/ethernet/intel/igc/igc_xdp.c
++++ b/drivers/net/ethernet/intel/igc/igc_xdp.c
+@@ -14,6 +14,7 @@ int igc_xdp_set_prog(struct igc_adapter *adapter, struct bpf_prog *prog,
+ 	bool if_running = netif_running(dev);
+ 	struct bpf_prog *old_prog;
+ 	bool need_update;
++	unsigned int i;
  
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/params.c b/drivers/net/ethernet/mellanox/mlx5/core/en/params.c
-index 31eb99f09c63c..8c4d710e85675 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/params.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/params.c
-@@ -1242,7 +1242,6 @@ void mlx5e_build_xdpsq_param(struct mlx5_core_dev *mdev,
- 	mlx5e_build_sq_param_common(mdev, param);
- 	MLX5_SET(wq, wq, log_wq_sz, params->log_sq_size);
- 	param->is_mpw = MLX5E_GET_PFLAG(params, MLX5E_PFLAG_XDP_TX_MPWQE);
--	param->is_xdp_mb = !mlx5e_rx_is_linear_skb(mdev, params, xsk);
- 	mlx5e_build_tx_cq_param(mdev, params, &param->cqp);
- }
+ 	if (dev->mtu > ETH_DATA_LEN) {
+ 		/* For now, the driver doesn't support XDP functionality with
+@@ -24,8 +25,13 @@ int igc_xdp_set_prog(struct igc_adapter *adapter, struct bpf_prog *prog,
+ 	}
  
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/params.h b/drivers/net/ethernet/mellanox/mlx5/core/en/params.h
-index 3f8986f9d8629..bd5877acc5b1e 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/params.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/params.h
-@@ -33,7 +33,6 @@ struct mlx5e_sq_param {
- 	struct mlx5_wq_param       wq;
- 	bool                       is_mpw;
- 	bool                       is_tls;
--	bool                       is_xdp_mb;
- 	u16                        stop_room;
- };
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c
-index 09433b91be176..532c7fa94d172 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c
-@@ -16,7 +16,6 @@ static const char * const sq_sw_state_type_name[] = {
- 	[MLX5E_SQ_STATE_VLAN_NEED_L2_INLINE] = "vlan_need_l2_inline",
- 	[MLX5E_SQ_STATE_PENDING_XSK_TX] = "pending_xsk_tx",
- 	[MLX5E_SQ_STATE_PENDING_TLS_RX_RESYNC] = "pending_tls_rx_resync",
--	[MLX5E_SQ_STATE_XDP_MULTIBUF] = "xdp_multibuf",
- };
- 
- static int mlx5e_wait_for_sq_flush(struct mlx5e_txqsq *sq)
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-index 94b2916620873..7a6cc0f4002ea 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-@@ -546,6 +546,7 @@ mlx5e_xmit_xdp_frame(struct mlx5e_xdpsq *sq, struct mlx5e_xmit_data *xdptxd,
- 	bool inline_ok;
- 	bool linear;
- 	u16 pi;
-+	int i;
- 
- 	struct mlx5e_xdpsq_stats *stats = sq->stats;
- 
-@@ -612,41 +613,33 @@ mlx5e_xmit_xdp_frame(struct mlx5e_xdpsq *sq, struct mlx5e_xmit_data *xdptxd,
- 
- 	cseg->opmod_idx_opcode = cpu_to_be32((sq->pc << 8) | MLX5_OPCODE_SEND);
- 
--	if (test_bit(MLX5E_SQ_STATE_XDP_MULTIBUF, &sq->state)) {
--		int i;
--
--		memset(&cseg->trailer, 0, sizeof(cseg->trailer));
--		memset(eseg, 0, sizeof(*eseg) - sizeof(eseg->trailer));
--
--		eseg->inline_hdr.sz = cpu_to_be16(inline_hdr_sz);
-+	memset(&cseg->trailer, 0, sizeof(cseg->trailer));
-+	memset(eseg, 0, sizeof(*eseg) - sizeof(eseg->trailer));
- 
--		for (i = 0; i < num_frags; i++) {
--			skb_frag_t *frag = &xdptxdf->sinfo->frags[i];
--			dma_addr_t addr;
-+	eseg->inline_hdr.sz = cpu_to_be16(inline_hdr_sz);
- 
--			addr = xdptxdf->dma_arr ? xdptxdf->dma_arr[i] :
--				page_pool_get_dma_addr(skb_frag_page(frag)) +
--				skb_frag_off(frag);
-+	for (i = 0; i < num_frags; i++) {
-+		skb_frag_t *frag = &xdptxdf->sinfo->frags[i];
-+		dma_addr_t addr;
- 
--			dseg->addr = cpu_to_be64(addr);
--			dseg->byte_count = cpu_to_be32(skb_frag_size(frag));
--			dseg->lkey = sq->mkey_be;
--			dseg++;
--		}
-+		addr = xdptxdf->dma_arr ? xdptxdf->dma_arr[i] :
-+			page_pool_get_dma_addr(skb_frag_page(frag)) +
-+			skb_frag_off(frag);
- 
--		cseg->qpn_ds = cpu_to_be32((sq->sqn << 8) | ds_cnt);
-+		dseg->addr = cpu_to_be64(addr);
-+		dseg->byte_count = cpu_to_be32(skb_frag_size(frag));
-+		dseg->lkey = sq->mkey_be;
-+		dseg++;
+ 	need_update = !!adapter->xdp_prog != !!prog;
+-	if (if_running && need_update)
+-		igc_close(dev);
++	if (if_running && need_update) {
++		for (i = 0; i < adapter->num_rx_queues; i++) {
++			igc_disable_rx_ring(adapter->rx_ring[i]);
++			igc_disable_tx_ring(adapter->tx_ring[i]);
++			napi_disable(&adapter->rx_ring[i]->q_vector->napi);
++		}
 +	}
  
--		sq->db.wqe_info[pi] = (struct mlx5e_xdp_wqe_info) {
--			.num_wqebbs = num_wqebbs,
--			.num_pkts = 1,
--		};
-+	cseg->qpn_ds = cpu_to_be32((sq->sqn << 8) | ds_cnt);
+ 	old_prog = xchg(&adapter->xdp_prog, prog);
+ 	if (old_prog)
+@@ -36,8 +42,13 @@ int igc_xdp_set_prog(struct igc_adapter *adapter, struct bpf_prog *prog,
+ 	else
+ 		xdp_features_clear_redirect_target(dev);
  
--		sq->pc += num_wqebbs;
--	} else {
--		cseg->fm_ce_se = 0;
-+	sq->db.wqe_info[pi] = (struct mlx5e_xdp_wqe_info) {
-+		.num_wqebbs = num_wqebbs,
-+		.num_pkts = 1,
-+	};
+-	if (if_running && need_update)
+-		igc_open(dev);
++	if (if_running && need_update) {
++		for (i = 0; i < adapter->num_rx_queues; i++) {
++			napi_enable(&adapter->rx_ring[i]->q_vector->napi);
++			igc_enable_tx_ring(adapter->tx_ring[i]);
++			igc_enable_rx_ring(adapter->rx_ring[i]);
++		}
++	}
  
--		sq->pc++;
--	}
-+	sq->pc += num_wqebbs;
- 
- 	xsk_tx_metadata_request(meta, &mlx5e_xsk_tx_metadata_ops, eseg);
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index c748fb07fbd22..1ba133c53fbd9 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -2023,41 +2023,12 @@ int mlx5e_open_xdpsq(struct mlx5e_channel *c, struct mlx5e_params *params,
- 	csp.min_inline_mode = sq->min_inline_mode;
- 	set_bit(MLX5E_SQ_STATE_ENABLED, &sq->state);
- 
--	if (param->is_xdp_mb)
--		set_bit(MLX5E_SQ_STATE_XDP_MULTIBUF, &sq->state);
--
- 	err = mlx5e_create_sq_rdy(c->mdev, param, &csp, 0, &sq->sqn);
- 	if (err)
- 		goto err_free_xdpsq;
- 
- 	mlx5e_set_xmit_fp(sq, param->is_mpw);
- 
--	if (!param->is_mpw && !test_bit(MLX5E_SQ_STATE_XDP_MULTIBUF, &sq->state)) {
--		unsigned int ds_cnt = MLX5E_TX_WQE_EMPTY_DS_COUNT + 1;
--		unsigned int inline_hdr_sz = 0;
--		int i;
--
--		if (sq->min_inline_mode != MLX5_INLINE_MODE_NONE) {
--			inline_hdr_sz = MLX5E_XDP_MIN_INLINE;
--			ds_cnt++;
--		}
--
--		/* Pre initialize fixed WQE fields */
--		for (i = 0; i < mlx5_wq_cyc_get_size(&sq->wq); i++) {
--			struct mlx5e_tx_wqe      *wqe  = mlx5_wq_cyc_get_wqe(&sq->wq, i);
--			struct mlx5_wqe_ctrl_seg *cseg = &wqe->ctrl;
--			struct mlx5_wqe_eth_seg  *eseg = &wqe->eth;
--
--			sq->db.wqe_info[i] = (struct mlx5e_xdp_wqe_info) {
--				.num_wqebbs = 1,
--				.num_pkts   = 1,
--			};
--
--			cseg->qpn_ds = cpu_to_be32((sq->sqn << 8) | ds_cnt);
--			eseg->inline_hdr.sz = cpu_to_be16(inline_hdr_sz);
--		}
--	}
--
  	return 0;
- 
- err_free_xdpsq:
+ }
 -- 
 2.39.5
 
