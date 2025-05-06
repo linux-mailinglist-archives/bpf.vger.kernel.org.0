@@ -1,152 +1,148 @@
-Return-Path: <bpf+bounces-57468-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57469-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3E5CAAB851
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 08:31:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A514AAB9BD
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 09:03:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D1F4460800
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 06:29:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 108693B542E
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 06:45:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 873EB27B4E5;
-	Tue,  6 May 2025 04:00:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD09F283FF9;
+	Tue,  6 May 2025 04:01:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="djTqms9E"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3737296701;
-	Tue,  6 May 2025 01:36:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26DF82F37B2
+	for <bpf@vger.kernel.org>; Tue,  6 May 2025 01:51:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746495421; cv=none; b=E50JCwes7xJl/EppIFsf9wH2iGqfL/B0S8OWMJqL8D1SI6w2MNb3njAVkGbwmE0kWr5DG7VeQn0O+isCJEaW72xa5KA7m2Y1q8c4klWjblTCPzxFif58vpOriM8MNheb/0FKlcCSWPhjGauHjWTTGPPqifEXu7ZSeJsGhmFLuYI=
+	t=1746496303; cv=none; b=hptocfB+okBhCv7JRkLIP4Pedxmi9G7n6BZiLW9shPbddGD9Ovg6/zSAu0gXhBtNa6DeHYIrBgju6bIGWxldyCp7WvgEzt7HL4Kse2Ekh0V+BDC0B38TVHEB4eThLLUy6dTUOE9CAkUdsYCMgPzWdZzMExDc7s3MJxlZWl3Vc9E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746495421; c=relaxed/simple;
-	bh=DDFvjlDdt/4/U7VLsOKo1z0oIiNAqnlHhQNmb/lVbug=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iv9C0ERs3YAwMzM+DlvoHAeUJDfz2grpzd8kVx0vyMoWYZooRrv9C0/Qtknwukbo4uh0AkPJY9avgO3LnK27t8/MFM1IEcqAIHfNY9sUbG6JUjV3OM6rWJG5WgwxrTg7bMbMOlLcsZzBPVwxM3H2dZPe4bp9Drj9fbxDYQCRKTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Zs1Fw007Yz4f3jt8;
-	Tue,  6 May 2025 09:36:35 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 344C11A12C6;
-	Tue,  6 May 2025 09:36:55 +0800 (CST)
-Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP2 (Coremail) with SMTP id Syh0CgDHhGedZxloAPfmLQ--.7835S2;
-	Tue, 06 May 2025 09:36:55 +0800 (CST)
-Message-ID: <84f3e74b-42ae-4cee-aace-c1e77372b940@huaweicloud.com>
-Date: Tue, 6 May 2025 09:36:28 +0800
+	s=arc-20240116; t=1746496303; c=relaxed/simple;
+	bh=zTRdSmyxakIlLdqpNr+79OX1puNgm56DfCZS1keGS3s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oQ0vSVp32LCVguQ4yvO1fbMy3jSTmhgDr/OaW4vyTXqfsLhuVxXZk7EXnLpJJRNHZbIv7I83FBoCSCtdC/kb13u3YMMRPKKXwXiOtvPRJFKjxLPGytzne1TWPv7I37EpxM3BbfSoLSUkGZxJ60WI2nzoRhigAUZDDzs/2RE+CVc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=djTqms9E; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-39141ffa9fcso5428442f8f.0
+        for <bpf@vger.kernel.org>; Mon, 05 May 2025 18:51:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1746496299; x=1747101099; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7H7lP+OfFuV82z4byYiWduCN6Aj2w+LOfoyqwUntDCY=;
+        b=djTqms9EBOtz9bMYv9oROGPDvN7lg+X3dH49HbQm1qD9WLlqCCHpcrSAl1JL4bVkjY
+         rUDw2BFsGTujJsbv4Al7YwPSHshay1gaE09KVbQfW2w0dQrKhPVkH4nv4PdzS7q2Y7sK
+         kdZCi3HhCxIwplKd3WnMF9kmFJnIydtSVl8bPNfkDCjryzsHEfz7mB0K0XTKHDu8Q/pk
+         J4hzvI/+AufgNbwKNGXGixlacV2eHDWBIV3fq+Ja/0V/HbJVm7W7Lu/ExNpmFqet2k7j
+         pNwGa7FqlOsMuNoHqxKZY7DoYV7SGxblBC9yvM0iZAdHwcQlaJ2s6TlY8ce97dS2xVs8
+         SB+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746496299; x=1747101099;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7H7lP+OfFuV82z4byYiWduCN6Aj2w+LOfoyqwUntDCY=;
+        b=Fjl+VOr6n2MZbfX0TFPnhNyCP8ycdM5XKlSH4ZpGlbiFytUHw9PEVap74c+TQK1xzQ
+         sG+6DWqaxa2OTLrhzSMpXW6hb2dyCWpK60wNb5rl9dV1ZGAovQ+2sCWmRbntikfOWgRI
+         fCvclzQJxICugr3c245J0x5tZ3tiEUdM1v+Z1ezxrDuQeOKs74nO3fugDnP9JRcToe8P
+         BMAnZZHtVTUOZxpcf6QdeFMpk5dI60hUwJKiGjXr1IDjZxuT8twbZ1ZqUdmNS7lDa59Q
+         orkC29RahPeUsbMdPrt1/9pZV+0qId3OvFpMi6wmHwTRKU26g14P7GD8B8mzUNlzr0uu
+         yl1w==
+X-Gm-Message-State: AOJu0Yyls9/CyjWantzlSWsXLGFbxNUWZIS4s4L0iv5rjT7GIc6xptwk
+	nz7B1YO+FlrsgWPAj6GhkRljv+h7mAdE5Wu7qfAqHqtnPHRkokqb1C5tVkjjvax8bMWDTKyblwL
+	fsUUDQfB9KWj7TLx12Ro0v2aAYk8=
+X-Gm-Gg: ASbGncuFxH6P4H7MorAc79djdUeZuBCwGf3d04yFsp7n3KqH0JGRPnxrDFSAIxutAu0
+	7QVdl65P2v8ct5qJPavi49jb/ToUQAytXrYdLJVsAWL2+67mxoRnegzLPVviSSKXcQ3zjVDGsoH
+	qXTSOcnxY5idLEctLS8ShYUHK9/CEYHVXdFYtwu1Pdh9y+eJfWJBfw86ZOkPsG
+X-Google-Smtp-Source: AGHT+IFDcCZwuHXLg3cDGco1tYcZCgUrmFBpVVgyLG4uKJb2mrd62/NrCLMz72epsG6y7uMquv+fBVUBAJjORJOEVYQ=
+X-Received: by 2002:a05:6000:2287:b0:39c:1258:7e18 with SMTP id
+ ffacd0b85a97d-3a0ac3eb21amr803741f8f.57.1746496299258; Mon, 05 May 2025
+ 18:51:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] cgroup/cpuset: remove kernfs active break
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: tj@kernel.org, hannes@cmpxchg.org, longman@redhat.com,
- roman.gushchin@linux.dev, cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org, chenridong@huawei.com,
- wangweiyang2@huawei.com
-References: <20241220013106.3603227-1-chenridong@huaweicloud.com>
- <6zxqs3ms52uvgsyryubna64xy5a6zxogssomsgiyhzishwmfbd@lylwjd6cdkli>
- <6bdac218-a18a-4cb5-b10e-c369d90b502c@huaweicloud.com>
- <kmmrseckjctb4gxcx2rdminrjnq2b4ipf7562nvfd432ld5v5m@2byj5eedkb2o>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <kmmrseckjctb4gxcx2rdminrjnq2b4ipf7562nvfd432ld5v5m@2byj5eedkb2o>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgDHhGedZxloAPfmLQ--.7835S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7AF47JrykWFy7urWxuryUKFg_yoW8KFWDpF
-	Z5KF1Yyr4kArn5C397AF4xZ348tanrGFW7Xw1rW3sYva9093Z5A34rWF4rurWUKrs8Jr1Y
-	vwnFqwsIqa15CaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUrs
-	qXDUUUU
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+References: <20250501032718.65476-1-alexei.starovoitov@gmail.com>
+ <20250501032718.65476-7-alexei.starovoitov@gmail.com> <a74hjevi7tyq36vekcft7mlfdgwtcg6ddvr3bekb3amcf4fiuc@z7xszkyjcrbb>
+ <CAADnVQ+OroM-auGvC7GPzaOUz90zHktF545BC7wRz5s_tW6z4w@mail.gmail.com> <d25b6lxjjzi3zqbotlrapx57ukjl7frmyvg2lgx5omos3zqg4m@ukkod2jdmieb>
+In-Reply-To: <d25b6lxjjzi3zqbotlrapx57ukjl7frmyvg2lgx5omos3zqg4m@ukkod2jdmieb>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 5 May 2025 18:51:28 -0700
+X-Gm-Features: ATxdqUETKCF09rFxYnbNd2Uigo46QCB2dDIo7qshx6pNuJyDWgxlGcta7qwz5WU
+Message-ID: <CAADnVQJt3aRCcG=Zgt+-hwKdeDcvE0Gvcc3fSKXURr0d+7OU8A@mail.gmail.com>
+Subject: Re: [PATCH 6/6] slab: Introduce kmalloc_nolock() and kfree_nolock().
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
+	Vlastimil Babka <vbabka@suse.cz>, Harry Yoo <harry.yoo@oracle.com>, Michal Hocko <mhocko@suse.com>, 
+	Sebastian Sewior <bigeasy@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, May 5, 2025 at 6:25=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.dev=
+> wrote:
+>
+> > > >               obj_exts[off].objcg =3D NULL;
+> > > > -             refill_obj_stock(objcg, obj_size, true, -obj_size,
+> > > > -                              slab_pgdat(slab), cache_vmstat_idx(s=
+));
+> > > > +             if (unlikely(lock_held)) {
+> > > > +                     atomic_add(obj_size, &objcg->nr_charged_bytes=
+);
+> > >
+> > > objcg->nr_charged_bytes is stats ignorant and the relevant stats need=
+ to
+> > > be updated before putting stuff into it.
+> >
+> > I'm not following.
+> > It's functionally equivalent to refill_obj_stock() without
+> > __account_obj_stock().
+> > And the stats are not ignored.
+> > The next __memcg_slab_free_hook() from good context will update
+> > them. It's only a tiny delay in update.
+> > I don't see why it's an issue.
+>
+> For the slab object of size obj_size which is being freed here, we need
+> to update NR_SLAB_RECLAIMABLE_B or NR_SLAB_UNRECLAIMABLE_B stat for the
+> corresponding objcg by the amount of obj_size. If we don't call
+> __account_obj_stock() here we will loose the context and information to
+> update these stats later.
 
+Lose context?
+pgdat has to match objcg, so I don't think we lose anything.
+Later refill_obj_stock() will take objcg->nr_charged_bytes and
+apply to appropriate NR_SLAB_[UN]RECLAIMABLE_B.
+The patch introduces a delay in update to stats.
+I still think it's correct, but I agree it's harder to reason about it,
+since stats may not reflect the real numbers at that very instance.
+But seeing how rstat flush is periodic and racy too I don't see
+how it's a problem in practice.
 
-On 2025/5/1 2:33, Michal Koutný wrote:
-> On Fri, Jan 03, 2025 at 10:22:33AM +0800, Chen Ridong <chenridong@huaweicloud.com> wrote:
->> I think the commit 76bb5ab8f6e3 ("cpuset: break kernfs active protection
->> in cpuset_write_resmask()") is causing the warning I observed.
-> 
-> 
-> I was considering
-> bdb2fd7fc56e1 ("kernfs: Skip kernfs_drain_open_files() more aggressively") 
-> in conjunction (the warning didn't exist back then).
-> 
+>
+> The css_rstat_updated() is the new name of cgroup_rstat_updated() and it
+> is only a piece of the puzzle. My plan is to memcg stats reentrant which
+> would allow to call __account_obj_stock (or whatever new name would be)
+> in nmi context and then comsume_obj_stock() and refill_obj_stock() would
+> work very similar to consume_stock() and refill_stock().
+>
+> Please give me couple of days and I can share the full RFC of the memcg
+> side.
 
-Thank you, Michal, I added two fixes:
-Fixes: bdb2fd7fc56e ("kernfs: Skip kernfs_drain_open_files() more
-aggressively")
-Fixes: 76bb5ab8f6e3 ("cpuset: break kernfs active protection in
-cpuset_write_resmask()")
-
-The patch "kernfs: Relax constraint in draining guard" makes sense to me.
-
-Thanks,
-Ridong
-
-> 
->> writing to 'cpuset_write_resmask' cannot avoid concurrent removal of
->> the cgroup directory. Therefore, this could cause the warning.
->>
->>> As I read kernfs_break_active_protection() comment, I don't see cpuset
->>> code violating its conditions:
->>> a) it's broken/unbroken from withing a kernfs file operation handler,
->>> b) it pins the needed struct cpuset independently of kernfs_node (it's
->>>    ok to be removed)
->>>
->> I am not sure if it is safe to call
->> kernfs_unbreak_active_protection(atomic_inc(&kn->active)); after the
->> 'kn' has been removed. 
-> 
-> Thit'd render the break/unbreak mechanism useless if unbreak cannot be
-> safely used. Users of unbreak know that they may get an inactive
-> reference. IOW in this part of the race:
-> 
->                                                                          kernfs_unbreak_active_protection
->                                                                          // active = 0x80000002
->     ...
->     kernfs_should_drain_open_files
->     WARN_ON_ONCE(atomic_read(&kn->active) != KN_DEACTIVATED_BIAS);
->                                                                          kernfs_put_active
-> 
-> the WARN_ON_ONCE seems misplaced if there are expected users of
-> inactivated reference.
-> 
-> For your concern about atomic_inc(&kn->active)); after the 'kn' has been
-> removed -- that's a different reference tracking (kn->count) and that
-> should be enshured by generic VFS due to existence of inode that pins
-> inode->i_private form kerfs_init_node().
-> 
-> All in all, the patch makes sense as a code cleanup (the deadlock is
-> gone already) but it doesn't tackle any reference underflow (I'm
-> bringing this up again because of CVE-2025-21634).
-> 
-> If anything, the warning in kernfs_should_drain_open_files() should be
-> reviewed. 
-> 
-> WDYT?
-> 
-> Michal
-
+Sure thing. I don't insist on this particular way of charge/uncharge.
+Sounds like I should drop mm/memcontrol.c bits, since your approach
+will address the same re-entrance issue but in a more synchronous
+(easier to reason about) way. Thanks!
 
