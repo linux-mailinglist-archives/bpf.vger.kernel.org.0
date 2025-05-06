@@ -1,151 +1,208 @@
-Return-Path: <bpf+bounces-57460-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57461-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04E26AAB811
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 08:25:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E17E8AAB853
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 08:32:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9223A7B7C09
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 06:24:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 697981892C20
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 06:26:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F33A9257427;
-	Tue,  6 May 2025 01:30:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5C9D2DF55F;
+	Tue,  6 May 2025 01:44:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e84uC+Dv"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="dMMzqUNW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-fw-52005.amazon.com (smtp-fw-52005.amazon.com [52.119.213.156])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B27A9291169;
-	Tue,  6 May 2025 00:13:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A841241C49E;
+	Tue,  6 May 2025 00:28:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746490427; cv=none; b=Oq7r2NQNgO2hTBXbf6SchZdxsmI0/O6PIZJHlUemQgTJLUS7S4vHDDgfjMajQaW+U80C7JG38VXaqixE56Ii5am5IixVQYkCAYcWjC3vx1FlsIk2aca/9M6K1sIX3jDfnGzePEQnjpplmB+XCTL/gxB15GTiyqoACeSnBqVCp3E=
+	t=1746491315; cv=none; b=rgih/tXm/SAXPGi1+0/Bp497FpL4MGCqPpBV9xg7x2oXDsBvWT5GAbWQbrzmwt/AzPRCKPCD/BZMVUC0OoZENeoZutZxozOb1Mc+0MNn42sTTxi871fPo/uBgJfZLvZK8mg3UBxkJNWIQ6J9RuRTsIY+nQ0a2Mlgko3hzeS8QZo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746490427; c=relaxed/simple;
-	bh=/a5HUImWEz5BNoM2c/V6GMmjpxb9mo6IzTfiwYmZEzE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mnN32p+pLnNUCugt71iVV3dqnuj0szJbaeF5UXRItPudu1mD5Vt06Qtz6k50EjBhsKc08pmfF7C355OkX5lhNRO3LH302d7IjaDm7q0oekCXn1FdNaLjWQCFa9kQ5HKQ4YZgYGZZXiGyFDxnvkTWTHOmxST0SoRTO/217NwCsfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e84uC+Dv; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-39ee5a5bb66so3245093f8f.3;
-        Mon, 05 May 2025 17:13:45 -0700 (PDT)
+	s=arc-20240116; t=1746491315; c=relaxed/simple;
+	bh=eF+gNBjOxLKhwFhrMZg53t7zwD/CWXXQi/+cXTRSx+0=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=E105q9O8iEf6PB5RCRX6gR/xCMQMFzgCMi75X11glyXALYfc6Pbca3tEByaLo+yieW3blhyuwWd5uEjkRhLP22TzX+ssjCkKjqInED4X4R2us8oiHFYQlsISfMMK/En6VG6YAbvp3EmGydXWoVHS84I6kyUjkeT1ap5DVd7z/Bw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=dMMzqUNW; arc=none smtp.client-ip=52.119.213.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746490424; x=1747095224; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nCZcI8hRIGhtmr+XrzrGBpNOJtpgJzfmfNLi2ExujFk=;
-        b=e84uC+DvZAAWhE4LwLudInwlZCBELsHVxUETkVk29uRMNF5CxdC+kW0G55fNBC7VIQ
-         LZ85jK0sYnHWGIAwRJKoSvcgllf4/RiRkOJgg5VHMtbpbuT2HIBqkht5KncemKX82tep
-         JFV21cN9OsOI4MuA53lMi9lk4mefCD5/G99XFqzwSusijFVpgJXQEGJ2V9RX5Mk8Itx4
-         KdQGn40FfOY85svxJbpb0DaquXRr1jI70Nu78Od2/CfEm4BPwsnJCskhOI184dcxLHSD
-         JRFdodBSaBAkO8k6u8bxU5ARKnKSX/CkRDcWk/K8QAwP6H0rZvsAxi0UrGm6NTKqfC+K
-         xaEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746490424; x=1747095224;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nCZcI8hRIGhtmr+XrzrGBpNOJtpgJzfmfNLi2ExujFk=;
-        b=je9s4Ar4BOYONP2yIaOK+KT/igIlEB8P0quP2AzoezrHSJgRs6e07LIsQFM8HS8hy+
-         B+crBDhMGipkISxhOKFmf+h7ZxDpJCCVXr7o2XyhrtEaQj34VXBWDOpVX+KEyVWu0/ZK
-         KbNKqc6gC1FGURki8lXJliaXfkCogZu3zeSZzIMHvv7vZaNdA5zzhldp/k5IF0vxi+dD
-         LWebzBwBbu+iWuOcIdX35KeN9U3gNyLZZrxRNO2+A6kSX22fur/OdIcKcXjBJrqyiIeF
-         lHohBiQIvLnnTel1vVLk6fKuxb0M0aui0On4gCTyJ89RxCT4Wq0GbJ4ifJlS0xXabUov
-         RFdQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUZkv35sYFE/D9e5E8uBrALAsGVGijx1E89NAccBhYTU4ELLoh4bVEP+9tA99Apj2BeopaSLbbY@vger.kernel.org, AJvYcCVM7EbiVxIJmzfCQsUiO++JOCgvcalgGtpfCgdxSgPDUed7lCImJGQkPS/BNV1jRkq18Wh+p8Wyh8BOS/1z0utFMN6dBE3m@vger.kernel.org, AJvYcCVNxJDS7VD+urojTze+1pFSuAe+tEs3xVDJf1QI3DCVe6ZKNNw4AFfTMyIk020iKd5EKlDApAjysg==@vger.kernel.org, AJvYcCXSzJGXKAYck4U/zfeaegmmZu6KqDXSqpj8sw5m+AZohpQEeLznYxtLZV1q6idLmkA1qMo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzpXFtFSGcyjk2PlWJw3zTRAYXvtTeGPPvreq2KyrFuSTHf+11o
-	HFVQp0N0V2gaLYXXsSJZd2OyC4tnDibZc5oMhy+8IU5AFRrh1ENUJp4zXJ+w9Ixi3iI2CwFisC/
-	Fsq7ONxdptW4SZ/7gg5BDjgqvRuY=
-X-Gm-Gg: ASbGncuXbxKsk61sjfflG1o5FcOgE4mHhJ9sBpvQSuBehhAckgdiDeJDB3XkkXa+GXB
-	Z0KcRmzidlw9sU2fF3WDte0vXapuohpiF89AEQh6m3NlKzwS++cwB+8VnrVXpSgMBFBq2xZ4d/8
-	+iBhb0YoA9lzgGGGySzADfBj2shRFtU4/bw3AfWvTKFgrNksjDhA==
-X-Google-Smtp-Source: AGHT+IHtR3NK79m98E82oD8fxUdsdIMD2+E/BoT1WNiN+De/07b37d4mUBO96NJP8mK7JNtbitfE0cyUL27jUzuaEtc=
-X-Received: by 2002:a5d:64c7:0:b0:3a0:7d82:d454 with SMTP id
- ffacd0b85a97d-3a0ac0da24bmr615835f8f.20.1746490423634; Mon, 05 May 2025
- 17:13:43 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1746491314; x=1778027314;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=E0aenAy0eD64Xs5FaiMQor/yEM13BIeMpBetrAePIGU=;
+  b=dMMzqUNWUYi80yhDS2pl83l61sCiKXZQiDbXpZ0Sn+GhKluItuLomEvH
+   MKnBFzfmYH4+fa8pL4u6NmKhNq20bSSRPMIgovKj/kaRNVekeusNRtgEs
+   ZsrOtC+p0e3DJYyPH0lBPwPyHOo9A8/1hb6N7FfLpKtjiNPqXCTimZ5vT
+   s=;
+X-IronPort-AV: E=Sophos;i="6.15,264,1739836800"; 
+   d="scan'208";a="741839383"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
+  by smtp-border-fw-52005.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2025 00:28:28 +0000
+Received: from EX19MTAUWA001.ant.amazon.com [10.0.21.151:41035]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.10.32:2525] with esmtp (Farcaster)
+ id 6243d7f0-d118-4e51-afcb-f54cd88bd55f; Tue, 6 May 2025 00:28:27 +0000 (UTC)
+X-Farcaster-Flow-ID: 6243d7f0-d118-4e51-afcb-f54cd88bd55f
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWA001.ant.amazon.com (10.250.64.218) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
+ Tue, 6 May 2025 00:28:26 +0000
+Received: from 6c7e67bfbae3.amazon.com (10.187.170.18) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
+ Tue, 6 May 2025 00:28:21 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+	<brauner@kernel.org>, <casey@schaufler-ca.com>, <daniel@iogearbox.net>,
+	<eddyz87@gmail.com>, <gnoack@google.com>, <haoluo@google.com>,
+	<jmorris@namei.org>, <john.fastabend@gmail.com>, <jolsa@kernel.org>,
+	<kpsingh@kernel.org>, <kuni1840@gmail.com>, <kuniyu@amazon.com>,
+	<linux-security-module@vger.kernel.org>, <martin.lau@linux.dev>,
+	<mic@digikod.net>, <netdev@vger.kernel.org>, <omosnace@redhat.com>,
+	<paul@paul-moore.com>, <sdf@fomichev.me>, <selinux@vger.kernel.org>,
+	<serge@hallyn.com>, <song@kernel.org>, <stephen.smalley.work@gmail.com>,
+	<yonghong.song@linux.dev>
+Subject: Re: [PATCH v1 bpf-next 0/5] af_unix: Allow BPF LSM to scrub SCM_RIGHTS at sendmsg().
+Date: Mon, 5 May 2025 17:21:27 -0700
+Message-ID: <20250506002813.65225-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.49.0
+In-Reply-To: <CAP01T77STmncrPt=BsFfEY6SX1+oYNXhPeZ1HC9J=S2jhOwQoQ@mail.gmail.com>
+References: <CAP01T77STmncrPt=BsFfEY6SX1+oYNXhPeZ1HC9J=S2jhOwQoQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250505215802.48449-1-kuniyu@amazon.com> <20250505215802.48449-5-kuniyu@amazon.com>
-In-Reply-To: <20250505215802.48449-5-kuniyu@amazon.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 5 May 2025 17:13:32 -0700
-X-Gm-Features: ATxdqUGbYmn4h1itPnw6EEMlK8NpKkCA51KDAl4WX7ehRvESdQez3TCD3r_RdFE
-Message-ID: <CAADnVQK1t3ZqERODdHJM_HaZDMm+JH4OFvwTsLNqZG0=4SQQcA@mail.gmail.com>
-Subject: Re: [PATCH v1 bpf-next 4/5] bpf: Add kfunc to scrub SCM_RIGHTS at security_unix_may_send().
-To: Kuniyuki Iwashima <kuniyu@amazon.com>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
-	=?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>, 
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, Stephen Smalley <stephen.smalley.work@gmail.com>, 
-	Ondrej Mosnacek <omosnace@redhat.com>, Casey Schaufler <casey@schaufler-ca.com>, 
-	Christian Brauner <brauner@kernel.org>, Kuniyuki Iwashima <kuni1840@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, LSM List <linux-security-module@vger.kernel.org>, 
-	selinux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D036UWB004.ant.amazon.com (10.13.139.170) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
 
-On Mon, May 5, 2025 at 3:00=E2=80=AFPM Kuniyuki Iwashima <kuniyu@amazon.com=
-> wrote:
->
-> As Christian Brauner said [0], systemd calls cmsg_close_all() [1] after
-> each recvmsg() to close() unwanted file descriptors sent via SCM_RIGHTS.
->
-> However, this cannot work around the issue that close() for unwanted file
-> descriptors could block longer because the last fput() could occur on
-> the receiver side once sendmsg() with SCM_RIGHTS succeeds.
->
-> Also, even filtering by LSM at recvmsg() does not work for the same reaso=
-n.
->
-> Thus, we need a better way to filter SCM_RIGHTS on the sender side.
->
-> Let's add a new kfunc to scrub all file descriptors from skb in
-> sendmsg().
->
-> This allows the receiver to keep recv()ing the bare data and disallows
-> the sender to impose the potential slowness of the last fput().
->
-> If necessary, we can add more granular filtering per file descriptor
-> after refactoring GC code and adding some fd-to-file helpers for BPF.
->
-> Sample:
->
-> SEC("lsm/unix_may_send")
-> int BPF_PROG(unix_scrub_scm_rights,
->              struct socket *sock, struct socket *other, struct sk_buff *s=
-kb)
-> {
->         struct unix_skb_parms *cb;
->
->         if (skb && bpf_unix_scrub_fds(skb))
->                 return -EPERM;
->
->         return 0;
-> }
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Tue, 6 May 2025 00:49:11 +0200
+> On Mon, 5 May 2025 at 23:58, Kuniyuki Iwashima <kuniyu@amazon.com> wrote:
+> >
+> > As long as recvmsg() or recvmmsg() is used with cmsg, it is not
+> > possible to avoid receiving file descriptors via SCM_RIGHTS.
+> >
+> > This behaviour has occasionally been flagged as problematic.
+> >
+> > For instance, as noted on the uAPI Group page [0], an untrusted peer
+> > could send a file descriptor pointing to a hung NFS mount and then
+> > close it.  Once the receiver calls recvmsg() with msg_control, the
+> > descriptor is automatically installed, and then the responsibility
+> > for the final close() now falls on the receiver, which may result
+> > in blocking the process for a long time.
+> >
+> > systemd calls cmsg_close_all() [1] after each recvmsg() to close()
+> > unwanted file descriptors sent via SCM_RIGHTS.
+> >
+> > However, this cannot work around the issue because the last fput()
+> > could occur on the receiver side once sendmsg() with SCM_RIGHTS
+> > succeeds.  Also, even filtering by LSM at recvmsg() does not work
+> > for the same reason.
+> >
+> > Thus, we need a better way to filter SCM_RIGHTS on the sender side.
+> >
+> > This series allows BPF LSM to inspect skb at sendmsg() and scrub
+> > SCM_RIGHTS fds by kfunc.
+> >
+> > Link: https://uapi-group.org/kernel-features/#disabling-reception-of-scm_rights-for-af_unix-sockets #[0]
+> > Link: https://github.com/systemd/systemd/blob/v257.5/src/basic/fd-util.c#L612-L628 #[1]
+> >
+> 
+> This sounds pretty useful!
+> 
+> I think you should mention the cases of possible DoS on close() or
+> flooding, e.g. with FUSE controlled fd/NFS hangs in the commit log
+> itself.
+> I think it's been an open problem for a while now with no good solution.
+> Currently systemd's FDSTORE=1 for PID 1 is susceptible to the same
+> problem, even if the underlying service isn't root.
 
-Any other programmability do you need there?
+Good point, will add the description in v2.
 
-If not and above is all that is needed then what Jann proposed
-sounds like better path to me:
-"
-I think the thorough fix would probably be to introduce a socket
-option (controlled via setsockopt()) that already blocks the peer's
-sendmsg().
-"
 
-Easier to operate and upriv process can use such setsockopt() too.
+> 
+> I think it is also useful for restricting what individual file
+> descriptors can be passed around by a process.
+> Say restricting usage of an fd to a process and its children, but not
+> allowing it to be shared with others.
+> Send side hook is the right point to enforce it.
+
+Agreed.
+
+Actually, I tried per-fd filtering first and failed somehow so
+wanted some advice from BPF folks :)
+
+For example, I implemented kfunc like:
+
+__bpf_kfunc int bpf_unix_scrub_file(struct sk_buff *skb, struct file *filp)
+{
+	/* scrub fd matching file if exists */
+}
+
+and tried filp == NULL -> scrub all so that I can gradually extend
+the functionality, but verifier didn't allow passing NULL.
+
+Also, once a fd is scrubbed, I do not want to leave the array entry
+empty to avoid adding unnecessary "if (fpl->fp[i] == -1)" test in
+other places.
+
+       struct scm_fp_list *fpl = UNIXCB(skb).fp;
+
+       /* scrubbed fpl->fp[i] here. */
+
+       fpl->fp[i] = fpl->fp[fpl->count - 1];
+       fpl->count--;
+
+But this could confuse BPF prog if it was iterating fpl->fp[] in for
+loop and I was wondering how the interface should be like.
+
+  * Keep the empty index and ignore at core code ?
+  * Provide a fd iterator ?
+  * Scrub based on index ? matching fd ? or struct file ?
+    * -1 works as ALL_INDEX or ALL_FDS but NULL doesn't
+  * Invoke BPF LSM per-fd ?
+    * Maybe no as sender/receiver pair is always same for the same skb
+
+I guess keeping the empty index as is and index based scrubbing
+would be simpler and cleaner ?
+
+
+> 
+> Therefore exercising scm_fp_list would be a good idea.
+> We should provide some more examples of the filtering policy in the selftests.
+> Maybe a simple example, e.g. only memfd or a pipe fd can be passed,
+> and nothing else.
+> It would require checking file->f_ops.
+
+Yes, and I thought we need fd-to-file kfunc or BPF helper, but I was
+not sure which would be better as both functionality should be stable.
+But given the user needs to inspect the raw scm_fp_list, kfunc is better ?
+
+* bpf_fd_to_file()
+or
+* bpf_unix_get_scm_rights() -> return struct file ?
+
+plus
+
+* bpf_unix_scrub_scm_rights() -> scrub based on fd or file ?
+
+
+> 
+> I don't think "scrub all file descriptors" is the only possible usage scenario.
+> In the case of FDSTORE=1, it might be "everything except fuse or NFS fds" etc.
+> 
+> Eventually if file local storage happens, more interesting policies
+> may be possible.
+> 
 
