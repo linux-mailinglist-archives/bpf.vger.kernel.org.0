@@ -1,305 +1,159 @@
-Return-Path: <bpf+bounces-57541-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57542-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E537AACA8E
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 18:11:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44DBAAACABB
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 18:20:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9453E1C42E77
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 16:11:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AFD83AB2E2
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 16:20:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB57A28467C;
-	Tue,  6 May 2025 16:11:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDA21252282;
+	Tue,  6 May 2025 16:20:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="STdT2Amc"
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="h5lcqooA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67852283FF6
-	for <bpf@vger.kernel.org>; Tue,  6 May 2025 16:11:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A1C24B1E6E
+	for <bpf@vger.kernel.org>; Tue,  6 May 2025 16:20:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746547884; cv=none; b=OiFMC924/zxBsbwcYQo/Q6T0cy0vyw2bFD/JwV/z9p52SNhklHCNH/Ls9F1RGFYQa67WyyYewf4ViIhukwzTiKhfTBrRWnZLyEO6bazkkgn6gObIMt2QLdTSAdk6bI2TBXkl6NbIRld6KHsFlXn7kktPc/nVZEb1+x7Tu+lhRfM=
+	t=1746548412; cv=none; b=CBHJLW+DNYIxLo0W4xjNHuzOIsnaBe4/66fh1jlEQr5EiSf4rubgeozn1OlNpoDjY6v9NLWw/uH30BWQSgzftGPKoiGsuWxTsZBMQQdIMfyr1Xiw3/CsbkRZHGBvEoNjNset9FXalNHxhIepfI/QJMSw+3Dcw/DoWosS/RgHWbM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746547884; c=relaxed/simple;
-	bh=ho0cgeGuKVieGKvFsBHWQ128D7S38+qYmGO013D8/zk=;
+	s=arc-20240116; t=1746548412; c=relaxed/simple;
+	bh=MWyyMDTMqlr1guj53M2ZrYMA6BQcHQLTqHaXOxwuZl0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tuP2iRSKubn/xXqa15QUgpuCCHzcfkj9IBfeEIQlq9+qY7qWi874aBwZmw21+iqJQkirHmsqHSQJbOmWtVYdZlM9FhR5E+JmNhLAq3SPASkqkK++KwCvS8K3zWZfs9z0uyapqaUmYhL41Sn0/PRXbe1BmALN1jQqIS1Vje0+EzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=STdT2Amc; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-39ee57c0b8cso5316823f8f.0
-        for <bpf@vger.kernel.org>; Tue, 06 May 2025 09:11:22 -0700 (PDT)
+	 Cc:Content-Type; b=KQH/fFSBOTJe+Gidq+tWwK4yZ3IpHOmedi02wb6N1PNGvWyiJPoV/qERF7l+xzT7z+ZFi3MVo+Yizw6FilzYwWR3F0yXQn4e1fKaV2HiA2COa2U3fAmyXYTxjfaas0zBuucItAkA+R6xunFkFgWoyO6CuNm+U3p95b2GjcIOfuY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=h5lcqooA; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-39bf44be22fso4011406f8f.0
+        for <bpf@vger.kernel.org>; Tue, 06 May 2025 09:20:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746547881; x=1747152681; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+        d=isovalent.com; s=google; t=1746548409; x=1747153209; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Bsmopngm2SLQ7W7DDO0tBHk4cgyWNfeMlB0+ANyvB+M=;
-        b=STdT2AmcIoQjWLwJZAmS84immWcs3z5APwJyPMZkglKNQns5EK9FKYpbXxpvATKweu
-         DgfGp7FSnim2t8RDHkzNrs3uFhpifbfJ05R6re+rNwu62o4vlL4cRC/l85chNO+41+1Q
-         VgsOBbpTd/MgLzetJHYs4o/mgkFYiNI+GtiixKXbxNjGnSDIQ4FrTieYTwfrHriPMSoc
-         Ao0c3PwV7ZCS7/LjLJrwzdpnfIonZTqtaKlBmV0RwzjvLBwMnOCRexfPN/PU34pmFBWI
-         AYRNpa7Ys5Qan57lTZyXiFTScSC4285gqvdSFoybApeeWbx8DNk4dqvu6jCdcCmTAe7X
-         9xpQ==
+        bh=1nlGw1DoH5GpCpdT2CGs9E8kVgbap9T0vLjtXdo8eos=;
+        b=h5lcqooAJBW/p9SmIggp6xjyW3dkEvNPilx5F0DRyqOP6JC7e5ml9Ic+5yUSpNspTF
+         YS5ECRm/H/mT03B+b+si1viHhsgcTZBQ8Fr4U90NYVKvHS0zqLv/KbXX88PWMdn20toP
+         xyLW4ozWYj+pIrX6HFxfH8axTbrTHNcFwyaJ/X/L/yshDpNAsXE/9P+Hev6VvU9IKu+3
+         32fuJnBAresVT6yIAjBp38HjrWt/+lVHcCG762/bNgcVPUx5Fh0RbIuJJ+eP5JvKu4rd
+         lJN5wHzHcvtBo55W+1ZFik1uI/mndv486PAZLSNBDYnUxvogf4uwoIZydSGLTQHkbMHP
+         kEEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746547881; x=1747152681;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+        d=1e100.net; s=20230601; t=1746548409; x=1747153209;
+        h=content-transfer-encoding:cc:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Bsmopngm2SLQ7W7DDO0tBHk4cgyWNfeMlB0+ANyvB+M=;
-        b=Tt9VoKj6u7bTIGMP4H8VPOmIR/8ZQMh9qad3AItJzFxicv1CViQXCZUCgmaBfdtzbi
-         b9YabvY8ZJnQD2m5XTDMaz7sDJrFbhGKQ3GtxHvuplaeNXnvB+dLARNTjyRGvmS0qbpl
-         2XMdoxcjLtuQJxoOGCtuJS0Nnkcrt5UZ0XQFUFn0ptwdqH+nVWLJirQn3CGAgpjirLNV
-         pGMJ3ycRk/8GyeiXUtgmKmXdbEWtiQ98J51GtvJDll7gfKKhL/Jtg2itnUQ1L2Fgmycp
-         HMWQqosnZGNRu/p+2uj56m74EHsFjVkYA7hhqi0ogE2XhaR7m5cXxNtL8CWWKejBWoaM
-         c72w==
-X-Gm-Message-State: AOJu0YyUGcPuTfae3ZIWvPYy58lxe1YMA8SHtlHmCLHfrHBTr2JhE3g6
-	HVVeTQaXSMqgXL2tESLhwWRp6nGW0PaXErCQmwE7vSCG9kQIRZOnqd4R8tk+06jkm5fgvVdD7ZN
-	bdOgRdo8u5QVap+wx14yjOtq6BXo=
-X-Gm-Gg: ASbGncs8OhnahElnerR+TTOqPqF3NpD9amypB/fHW41wMRRh/lKg/ldLhEwUKZoBqMM
-	ILZNAzZTTgENNxB/C39nlj35aa0lAv0GHXsdKmZQF7YcbZB1l1JSgd4iJmIEfa/6pTvQVjmht1V
-	vKBzBzdX28YARNQ98GsK+WqRSSQH/XFUhJG6AmOA==
-X-Google-Smtp-Source: AGHT+IHzJvHpwpTe38dch8/4Mt8b1Rip2Zgm/TujI7PiV31GaTuXoVaqW7clnV8q5ATfTaBanGKM5D9wGFLs178SIaA=
-X-Received: by 2002:a05:6000:420f:b0:391:4914:3c6a with SMTP id
- ffacd0b85a97d-3a0b49b2c01mr61009f8f.29.1746547880473; Tue, 06 May 2025
- 09:11:20 -0700 (PDT)
+        bh=1nlGw1DoH5GpCpdT2CGs9E8kVgbap9T0vLjtXdo8eos=;
+        b=Q5aPoC2CubeKx36mruIyPb/zpzwp436HU3W8aJ3J56Y71Zaj0yc7UGLmcfdPO5mU8t
+         +xjJWWBH/Zfgi/sOaIDVWy15YjWZQqe83ZV51/8SQuWKj8WyP0deAKrpNawCXACNjB6l
+         0brXkMzkUIvaUtrGLUArX2KZIiAM0mW4MgEKDt4lBZIB+6dWkDoYyVmJkBbwhcDTnPjy
+         z9NJZlBL/z/RdqcaU1nk5qqaKTQP5dDaP1hpeYutPglvzMqFLiW1u4Sgqll+RoH4olZc
+         JIMk2qglekbH4u+l6lvLLQ359wDNunnuv9v+fAKYJhN4ALlJzQEfc10zcuNn4gpYOHsI
+         oJrA==
+X-Forwarded-Encrypted: i=1; AJvYcCVmyff5Fjz0umzmPY/fmzE7jK7lvkK8jP0R+noRkrzH9gP5f+EoTEeBzPHs2qt/DNeaFRE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YznqctYHalUSvI3MPbbuzuNPCmhsN2ha6CvqklO2hDv9YFfsAzz
+	GATaXWVJNGq5dlAMlugL0E7FSfIJ7J0W2AueZ7fL1dy2lCG/xrxsm8DSn0NGlpssYJqQxWZiZZd
+	FXNqSGSBMuAkmuW06VgkDjekQnSL/QDJhcuDSZg==
+X-Gm-Gg: ASbGncsODRK80dnUxbU3xEuZDsaLOkxu5hnxFUy8uxMqbS/ZBn79B3UWsbxjv2SJljW
+	gCUJymPA4tDgzE4N7lR5TzDf08YsFFjqzEj4bwcnTtLWDTruEnwt4luaGBHavKJEiWG01xzs14Z
+	Od5XSPGM2ZVHBVl+sKLo6ufTPcZcCH2b6L9fU=
+X-Received: by 2002:a5d:5885:0:b0:391:952:c728 with SMTP id
+ ffacd0b85a97d-3a0b499c89bmt89540f8f.4.1746548408716; Tue, 06 May 2025
+ 09:20:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250502190621.41549-1-mykyta.yatsenko5@gmail.com>
- <20250502190621.41549-4-mykyta.yatsenko5@gmail.com> <CAADnVQKLvOeN6sRctgna7BjU=3HeK+6Y1E-f1rmHEH7V8T00dw@mail.gmail.com>
- <e4555bd4-4830-4708-911e-e3cb48fa5815@gmail.com>
-In-Reply-To: <e4555bd4-4830-4708-911e-e3cb48fa5815@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 6 May 2025 09:11:08 -0700
-X-Gm-Features: ATxdqUFQjqotOkpUBfh_AQ-R3IVyXmk-roQcwMdqys573Lp5ZxCAFb9WTXTRV-c
-Message-ID: <CAADnVQKMDw8F3Qv3OFSLNKWrN4djzpbD5C2WWzY2KHfbd0M+eQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/3] selftests/bpf: introduce tests for dynptr
- copy kfuncs
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin Lau <kafai@meta.com>, 
-	Kernel Team <kernel-team@meta.com>, Eduard <eddyz87@gmail.com>, 
-	Mykyta Yatsenko <yatsenko@meta.com>
+References: <20250505-vmlinux-mmap-v3-0-5d53afa060e8@isovalent.com> <729dc77d091967d9496abda4ab793033f3979b2681da287f8bbf2df3de705dbf@mail.kernel.org>
+In-Reply-To: <729dc77d091967d9496abda4ab793033f3979b2681da287f8bbf2df3de705dbf@mail.kernel.org>
+From: Lorenz Bauer <lmb@isovalent.com>
+Date: Tue, 6 May 2025 17:19:56 +0100
+X-Gm-Features: ATxdqUF37z_diu00PV7TN54FeQ-OZ98K3aAFNIZx_zAyBZw3MOZX_hEiKRLxDyo
+Message-ID: <CAN+4W8hDMdUnXitHuqUxA=mFOb=-QRQrejY8Koqb5mk0z-q9zQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 0/3] Allow mmap of /sys/kernel/btf/vmlinux
+Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
+	Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, May 6, 2025 at 6:32=E2=80=AFAM Mykyta Yatsenko
-<mykyta.yatsenko5@gmail.com> wrote:
+On Mon, May 5, 2025 at 8:01=E2=80=AFPM <bot+bpf-ci@kernel.org> wrote:
 >
-> On 02/05/2025 22:34, Alexei Starovoitov wrote:
-> > On Fri, May 2, 2025 at 12:06=E2=80=AFPM Mykyta Yatsenko
-> > <mykyta.yatsenko5@gmail.com> wrote:
-> >> From: Mykyta Yatsenko <yatsenko@meta.com>
-> >>
-> >> Introduce selftests verifying newly-added dynptr copy kfuncs.
-> >> Covering contiguous and non-contiguous memory backed dynptrs.
-> >>
-> >> Disable test_probe_read_user_str_dynptr that triggers bug in
-> >> strncpy_from_user_nofault. Patch to fix the issue [1].
-> >>
-> >> [1] https://patchwork.kernel.org/project/linux-mm/patch/20250422131449=
-.57177-1-mykyta.yatsenko5@gmail.com/
-> >>
-> >> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> >> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
-> >> ---
-> >>   tools/testing/selftests/bpf/DENYLIST          |   1 +
-> >>   .../testing/selftests/bpf/prog_tests/dynptr.c |  13 ++
-> >>   .../selftests/bpf/progs/dynptr_success.c      | 201 ++++++++++++++++=
-++
-> >>   3 files changed, 215 insertions(+)
-> >>
-> >> diff --git a/tools/testing/selftests/bpf/DENYLIST b/tools/testing/self=
-tests/bpf/DENYLIST
-> >> index f748f2c33b22..1789a61d0a9b 100644
-> >> --- a/tools/testing/selftests/bpf/DENYLIST
-> >> +++ b/tools/testing/selftests/bpf/DENYLIST
-> >> @@ -1,5 +1,6 @@
-> >>   # TEMPORARY
-> >>   # Alphabetical order
-> >> +dynptr/test_probe_read_user_str_dynptr # disabled until https://patch=
-work.kernel.org/project/linux-mm/patch/20250422131449.57177-1-mykyta.yatsen=
-ko5@gmail.com/ makes it into the bpf-next
-> >>   get_stack_raw_tp    # spams with kernel warnings until next bpf -> b=
-pf-next merge
-> >>   stacktrace_build_id
-> >>   stacktrace_build_id_nmi
-> >> diff --git a/tools/testing/selftests/bpf/prog_tests/dynptr.c b/tools/t=
-esting/selftests/bpf/prog_tests/dynptr.c
-> >> index e29cc16124c2..62e7ec775f24 100644
-> >> --- a/tools/testing/selftests/bpf/prog_tests/dynptr.c
-> >> +++ b/tools/testing/selftests/bpf/prog_tests/dynptr.c
-> >> @@ -33,10 +33,19 @@ static struct {
-> >>          {"test_dynptr_skb_no_buff", SETUP_SKB_PROG},
-> >>          {"test_dynptr_skb_strcmp", SETUP_SKB_PROG},
-> >>          {"test_dynptr_skb_tp_btf", SETUP_SKB_PROG_TP},
-> >> +       {"test_probe_read_user_dynptr", SETUP_XDP_PROG},
-> >> +       {"test_probe_read_kernel_dynptr", SETUP_XDP_PROG},
-> >> +       {"test_probe_read_user_str_dynptr", SETUP_XDP_PROG},
-> >> +       {"test_probe_read_kernel_str_dynptr", SETUP_XDP_PROG},
-> >> +       {"test_copy_from_user_dynptr", SETUP_SYSCALL_SLEEP},
-> >> +       {"test_copy_from_user_str_dynptr", SETUP_SYSCALL_SLEEP},
-> >> +       {"test_copy_from_user_task_dynptr", SETUP_SYSCALL_SLEEP},
-> >> +       {"test_copy_from_user_task_str_dynptr", SETUP_SYSCALL_SLEEP},
-> >>   };
-> >>
-> >>   static void verify_success(const char *prog_name, enum test_setup_ty=
-pe setup_type)
-> >>   {
-> >> +       char user_data[384] =3D {[0 ... 382] =3D 'a', '\0'};
-> >>          struct dynptr_success *skel;
-> >>          struct bpf_program *prog;
-> >>          struct bpf_link *link;
-> >> @@ -58,6 +67,10 @@ static void verify_success(const char *prog_name, e=
-num test_setup_type setup_typ
-> >>          if (!ASSERT_OK(err, "dynptr_success__load"))
-> >>                  goto cleanup;
-> >>
-> >> +       skel->bss->user_ptr =3D user_data;
-> >> +       skel->data->test_len[0] =3D sizeof(user_data);
-> >> +       memcpy(skel->bss->expected_str, user_data, sizeof(user_data));
-> >> +
-> >>          switch (setup_type) {
-> >>          case SETUP_SYSCALL_SLEEP:
-> >>                  link =3D bpf_program__attach(prog);
-> >> diff --git a/tools/testing/selftests/bpf/progs/dynptr_success.c b/tool=
-s/testing/selftests/bpf/progs/dynptr_success.c
-> >> index e1fba28e4a86..753d35eb47d9 100644
-> >> --- a/tools/testing/selftests/bpf/progs/dynptr_success.c
-> >> +++ b/tools/testing/selftests/bpf/progs/dynptr_success.c
-> >> @@ -680,3 +680,204 @@ int test_dynptr_copy_xdp(struct xdp_md *xdp)
-> >>          bpf_ringbuf_discard_dynptr(&ptr_buf, 0);
-> >>          return XDP_DROP;
-> >>   }
-> >> +
-> >> +void *user_ptr;
-> >> +char expected_str[384]; /* Contains the copy of the data pointed by u=
-ser_ptr */
-> > what so magic about 384?
-> It's MAX_BPF_STACK, but leaving some space for other things (temp buffer
-> of this size is allocated on stack of each bpf prog)
-> The reason to use large buffer, is because when kfunc implementation
-> falls back onto copying data chunk by chunk, the length of
-> chunk is 256 bytes, so I'm trying to force it copy more than 1 chunk.
-> >> +__u32 test_len[7] =3D {0/* placeholder */, 0, 1, 2, 255, 256, 257};
-> >> +
-> >> +typedef int (*bpf_read_dynptr_fn_t)(struct bpf_dynptr *dptr, u32 off,
-> >> +                                   u32 size, const void *unsafe_ptr);
-> >> +
-> >> +static __always_inline void test_dynptr_probe(void *ptr, bpf_read_dyn=
-ptr_fn_t bpf_read_dynptr_fn)
-> > More __always_inline in the prog too?
-> > Why?
-> This one is a little bit tricky:
-> When removing always_inline, the generated bpf code does indirect call
-> into bpf_read_dynptr_fn_t,
-> which errors out with "unknown opcode 8d", when trying to load the progra=
-m.
-> An example of the generated code that fails to load:
+> Dear patch submitter,
 >
-> 89: 79 a5 58 fe 00 00 00 00 r5 =3D *(u64 *)(r10 - 0x1a8) 90: 8d 05 00 00
-> 00 00 00 00 callx r5
+> CI has tested the following submission:
+> Status:     FAILURE
+> Name:       [bpf-next,v3,0/3] Allow mmap of /sys/kernel/btf/vmlinux
+> Patchwork:  https://patchwork.kernel.org/project/netdevbpf/list/?series=
+=3D959736&state=3D*
+> Matrix:     https://github.com/kernel-patches/bpf/actions/runs/1484381142=
+4
 >
-> I could not find another way of fixing this, I'll appreciate any
-> alternative.
+> Failed jobs:
+> sched_ext-aarch64-gcc-14: https://github.com/kernel-patches/bpf/actions/r=
+uns/14843811424/job/41673133374
+> test_maps-aarch64-gcc-14: https://github.com/kernel-patches/bpf/actions/r=
+uns/14843811424/job/41673133358
+> test_progs-aarch64-gcc-14: https://github.com/kernel-patches/bpf/actions/=
+runs/14843811424/job/41673133413
+> test_progs_cpuv4-aarch64-gcc-14: https://github.com/kernel-patches/bpf/ac=
+tions/runs/14843811424/job/41673133375
+> test_progs_no_alu32-aarch64-gcc-14: https://github.com/kernel-patches/bpf=
+/actions/runs/14843811424/job/41673133323
+> test_verifier-aarch64-gcc-14: https://github.com/kernel-patches/bpf/actio=
+ns/runs/14843811424/job/41673133333
 
-So the always inline is to avoid indirect call?
-That makes sense. Please add a comment.
+The failure on aarch64 is the following:
 
->
-> >> +{
-> >> +       char buf[sizeof(expected_str)];
-> >> +       struct bpf_dynptr ptr_buf;
-> >> +       int i;
-> >> +
-> >> +       err =3D bpf_ringbuf_reserve_dynptr(&ringbuf, sizeof(buf), 0, &=
-ptr_buf);
-> >> +
-> >> +       bpf_for(i, 0, ARRAY_SIZE(test_len)) {
-> >> +               __u32 len =3D test_len[i];
-> >> +
-> >> +               err =3D err ?: bpf_read_dynptr_fn(&ptr_buf, 0, test_le=
-n[i], ptr);
-> >> +               if (len > sizeof(buf))
-> >> +                       break;
-> >> +               err =3D err ?: bpf_dynptr_read(&buf, len, &ptr_buf, 0,=
- 0);
-> >> +
-> >> +               if (err || bpf_memcmp(expected_str, buf, len))
-> >> +                       err =3D 1;
-> >> +
-> >> +               /* Reset buffer and dynptr */
-> >> +               __builtin_memset(buf, 0, sizeof(buf));
-> >> +               err =3D err ?: bpf_dynptr_write(&ptr_buf, 0, buf, len,=
- 0);
-> >> +       }
-> >> +       bpf_ringbuf_discard_dynptr(&ptr_buf, 0);
-> >> +}
-> >> +
-> >> +static __always_inline void test_dynptr_probe_str(void *ptr,
-> >> +                                                 bpf_read_dynptr_fn_t=
- bpf_read_dynptr_fn)
-> >> +{
-> >> +       char buf[sizeof(expected_str)];
-> >> +       struct bpf_dynptr ptr_buf;
-> >> +       __u32 cnt, i;
-> >> +
-> >> +       bpf_ringbuf_reserve_dynptr(&ringbuf, sizeof(buf), 0, &ptr_buf)=
-;
-> >> +
-> >> +       bpf_for(i, 0, ARRAY_SIZE(test_len)) {
-> >> +               __u32 len =3D test_len[i];
-> >> +
-> >> +               cnt =3D bpf_read_dynptr_fn(&ptr_buf, 0, len, ptr);
-> >> +               if (cnt !=3D len)
-> >> +                       err =3D 1;
-> >> +
-> >> +               if (len > sizeof(buf))
-> >> +                       continue;
-> >> +               err =3D err ?: bpf_dynptr_read(&buf, len, &ptr_buf, 0,=
- 0);
-> >> +               if (!len)
-> >> +                       continue;
-> >> +               if (err || bpf_memcmp(expected_str, buf, len - 1) || b=
-uf[len - 1] !=3D '\0')
-> >> +                       err =3D 1;
-> >> +       }
-> >> +       bpf_ringbuf_discard_dynptr(&ptr_buf, 0);
-> >> +}
-> >> +
-> >> +static __always_inline void test_dynptr_probe_xdp(struct xdp_md *xdp,=
- void *ptr,
-> >> +                                                 bpf_read_dynptr_fn_t=
- bpf_read_dynptr_fn)
-> >> +{
-> >> +       struct bpf_dynptr ptr_xdp;
-> >> +       char buf[sizeof(expected_str)];
-> >> +       __u32 off, i;
-> >> +
-> >> +       /* Set offset near the seam between buffers */
-> >> +       off =3D 3500;
-> > what is 3500 ?
-> This is an offset into the xdp-backed dynptr that is close to the end of
-> the first fragment.
-> As far as I understand the size of the fragment is: `max_data_sz =3D 4096
-> - headroom - tailroom;`,
-> I found it in `bpf_prog_test_run_xdp()` from net/bpf/test_run.c. I'd
-> like my writes to go into multiple
-> fragments so that dynptr does not have a contiguous buffer of the
-> requested size and chunking logic is hit.
+Unable to handle kernel paging request at virtual address ffffffffc2058b88
+Mem abort info:
+ESR =3D 0x0000000096000006
+EC =3D 0x25: DABT (current EL), IL =3D 32 bits
+SET =3D 0, FnV =3D 0
+EA =3D 0, S1PTW =3D 0
+FSC =3D 0x06: level 2 translation fault
+Data abort info:
+ISV =3D 0, ISS =3D 0x00000006, ISS2 =3D 0x00000000
+CM =3D 0, WnR =3D 0, TnD =3D 0, TagAccess =3D 0
+GCS =3D 0, Overlay =3D 0, DirtyBit =3D 0, Xs =3D 0
+swapper pgtable: 4k pages, 48-bit VAs, pgdp=3D0000000041c91000
+[ffffffffc2058b88] pgd=3D0000000000000000, p4d=3D000000004250f403,
+pud=3D0000000042510403, pmd=3D0000000000000000
+Internal error: Oops: 0000000096000006 [#1] SMP
+Modules linked in: bpf_testmod(OE)
+CPU: 0 UID: 0 PID: 105 Comm: test_progs Tainted: G OE
+6.15.0-rc4-gcf5bf38d19e3-dirty #2 NONE
+Tainted: [O]=3DOOT_MODULE, [E]=3DUNSIGNED_MODULE
+Hardware name: linux,dummy-virt (DT)
+pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=3D--)
+pc : validate_page_before_insert+0xc/0xf0
+lr : insert_page+0x54/0x160
+sp : ffff800084e4b7e0
+x29: ffff800084e4b7f0 x28: 0000000000000000 x27: ffff0000c0ca5500
+x26: ffffc1ffc0000000 x25: 0000000000001000 x24: 0000000000000458
+x23: 0000000000000000 x22: 0060000000000fc3 x21: 0000ffff8cfe6000
+x20: ffff0000c26a1f00 x19: ffffffffc2058b80 x18: 0000000000000000
+x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
+x14: 0000000000000000 x13: 0000000000000000 x12: ffff800082a651d0
+x11: 0000000000000323 x10: 0000000000000323 x9 : ffff80008037d21c
+x8 : 0000000000040324 x7 : 000000002193fe5d x6 : ffff80008231b0b8
+x5 : ffff0000c1fa2f80 x4 : ffff0000c26a1f00 x3 : 0060000000000fc3
+x2 : ffffffffc2058b80 x1 : ffffffffc2058b80 x0 : ffff0000c26a1f00
+Call trace:
+validate_page_before_insert+0xc/0xf0 (P)
+vm_insert_page+0xc0/0x130
+btf_sysfs_vmlinux_mmap+0xec/0x1a0
 
-That's far from obvious. A detailed comment is necessary.
-Also, I recall, there were some patches to fix:
-max_data_sz =3D 4096 - headroom - tailroom;
-since it's wrong on archs with different page size.
+Clearly I'm doing something which is ok on x86_64, but not on aarch64.
+Any hints how to fix this would be much appreciated.
 
-Would be good to make it more robust.
+Lorenz
 
