@@ -1,304 +1,165 @@
-Return-Path: <bpf+bounces-57575-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57576-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B75EAAD108
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 00:35:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F01A8AAD117
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 00:45:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F83C3B04EA
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 22:35:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 916ED4E68FA
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 22:45:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14BAF21ABA4;
-	Tue,  6 May 2025 22:35:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0018621ABA3;
+	Tue,  6 May 2025 22:45:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="c++79TcM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="icnWH/Yn"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80223218ADD
-	for <bpf@vger.kernel.org>; Tue,  6 May 2025 22:35:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAFBD18C034
+	for <bpf@vger.kernel.org>; Tue,  6 May 2025 22:45:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746570902; cv=none; b=oB1BomXjmglHl8I5pDudBUews6YuzIGc5epbVJIfddyEimcHZrjQTsLmom8bvOwxVfKhyAtgmo3Bbyhi/7C/Pxw6bhmnLueSwDgzKz349x5ZEOG2KtCNExGz2nCUBD8yTNMalhJGxaAmcoffNMfqfjMRE3uNTNp4eYSbfpB7DRE=
+	t=1746571534; cv=none; b=rkV7WN6UnXWxFVKMj7kg96WxftBOdFQAI8OsoOqBfgjMMNmvT6u91RmOq9N2i2JVmhOsopc05k5qMecSrcJpUr3JSJD1VNlaIHvIc+rfx1nrv6Yr8faqyRy5NJo21krbsKJzsCcTbIncoGhp6gUfzDA7iH9m8IcCYqb+N2PMHOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746570902; c=relaxed/simple;
-	bh=7FiQFw0htw/k7PeAFWnJY445mbkU+AWLhZMUElnjbDg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TD4/+ROkyW27Kw9MsSyAVMFKvbgkxlQqTz82YJQ0xnLw3cmouhS9TUN48c91co5rxTdXFqrykk/fJEQp14+d7sc0QUh4yKoDZPV3AeErCEN2hvlhHiWlZ7yxaD5rbbDHj32Ha/9fHgKyAm60/VchGiEgya+PIgt2oR2flaDs1Ks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=c++79TcM; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <f5084334-d3d4-4e4c-94aa-30afc9e87a11@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1746570888;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=h07s3C6UB1DBwL0iC2nHUyp7lKmxW6PTQ955Zo+K6l8=;
-	b=c++79TcMhoJjZx8bmIDRUtrR3egHBDg/oh641dQqZljpaxrc1vqjWEHpE4OMeK/mwvtmh9
-	L4TkvugNYnug019+Qhwh+6mCU6rCaiUAFoJ9CeCzkLkqzZvz3PIJncGc0zLyRYxMlkCI/v
-	QXYI8GSOQ+o192A2kSCpjdz/Miqq7ZU=
-Date: Tue, 6 May 2025 15:34:35 -0700
+	s=arc-20240116; t=1746571534; c=relaxed/simple;
+	bh=ItF5bpElyejTv9OmoXazSp/LOydS6iVrC0CMr9QhzcQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rb4xlcV5nI/JngLVhsEmiaoxYOlJgrAZ3fqmfLXxGeck3gE6n/4C3t2wzfIpa5ZCMprGmuV+/GqLd+7H0MlVXvTL+yHsTfF+HdM1iFfhMqOC/10SKemnq57Yve+KDN/D1eLNqh5m6DwZagHeRR5g5DyWEUMZdpEx9QWAw3OM+Kg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=icnWH/Yn; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-43cf58eea0fso28204445e9.0
+        for <bpf@vger.kernel.org>; Tue, 06 May 2025 15:45:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1746571531; x=1747176331; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qQDRAa0gDw2vyxx39TvTrNUdPJBKQDWdaFQqgsQb94I=;
+        b=icnWH/Yn+k/Twkx3WEABsAEw0shlol4vgcCz8EUDORTEc2K9SGqmix+wAyID0KWOiy
+         vgYMmQNBAeiQ1t88QdA49sUY1TGBgfPmOJBzbGT4YoyEIet7wK2d8M06Hy+I8CmzzH6q
+         tx3x+rE4PZ6xLMAerC78wwHSo6pgPgM/Pm/+aFUO3jsewhqEW5YLPyLwhjRzhlrq6LHT
+         L5sUh1+OiGi+V3Jz9Rz+eaNE3sTKAmIYp9cQ8akMbeBgDCUZfgOYQq2ivuEk4nKVCtl2
+         tzvi/ZfkXP94Xvs+w38jtjMtHwivzvXacb+j+niFNl3B5NlJlTfMZlzWweUReEP7iOIY
+         DQTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746571531; x=1747176331;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qQDRAa0gDw2vyxx39TvTrNUdPJBKQDWdaFQqgsQb94I=;
+        b=DGQ4c6L1YC8TOABOKz3SQQRX03jR9VL9pd+9P/jS8J2JMaFt/ww0GQOnAVllF7ah0j
+         0WU1qUhkJNJ0n0osAZM2X0L4WComU4tlXYwZ15ei3RZDkisk/EyAmqT/o/fT/0dkb734
+         tLg+MejQL4z4ITLy0OWL/U0IIdKfiai47gupCyZ/LZ8FaKHzpm7sOnUKErD84gjwmbBy
+         wJTGunEPqn9aLi79+9AZZeduUDQ68RxoMw7cSrfWkVmIgCZ9T2nB5tQgnrBG+xQgzoRt
+         7yYrMS7GdITXGUtT2sJOJ3qWb2S6WNB2z1xvHgA+gIdS3Wkn0k7LY56zJaMRxHZVD/Io
+         PE6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXWbLata2WuvnGsSPbk+D0bUsJ0dNuLIGCqG9ujLsKXQV/GRpDRPuVkioQA649YLmv8s4w=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwsmipBjMgxGdmhibEtyQEswk8qJtkOFBMHef3/Rr7QGKqFYQ7Y
+	F2EjAjx+1EhmjT1+I3j96ohx+pAATt/lBr5jhrKf1RuI92SedQhnpVuVMW93NP2oglajV0TJFhR
+	AgbI6TWWEriMH6kxg6TTq64yZfkI=
+X-Gm-Gg: ASbGncui/rsuSjedaUREiWIcEJc9YdD8rrKeDG0R4KAUUgRlBTO7KExE/kkJ25FwBnK
+	uI1egaZDQvtufRp5kvMqZLJXcMbuYsuhvwAIpsGCB6AB2yAyYr7wTpErrx6J4ciW6Cw26B/BEzY
+	OYHnNL04Hzc7rxnnoOkBkbqBeVkReq57hFPfMAKNWXZHv6TGijbemfbC59fmK0
+X-Google-Smtp-Source: AGHT+IF7SSrRC0WDkscLJAfJt1TKgOwuj33O3cjXi5mKWWhUh3bepT5wyOlVmhZ/9GyrbMYa5v9s9FetJMchz7eS/Ok=
+X-Received: by 2002:a05:600c:3b8e:b0:43c:e9f7:d6a3 with SMTP id
+ 5b1f17b1804b1-441d44c473cmr4406095e9.13.1746571530593; Tue, 06 May 2025
+ 15:45:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] bpftool: build bpf bits with -std=gnu11
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: =?UTF-8?Q?Holger_Hoffst=C3=A4tte?= <holger@applied-asynchrony.com>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Quentin Monnet <qmo@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>
-References: <20250502085710.3980-1-holger@applied-asynchrony.com>
- <7326223e-0cb9-4d22-872f-cbf1ff42227d@kernel.org>
- <913f66a8-6745-0e30-b5b8-96d23bf05b90@applied-asynchrony.com>
- <CAADnVQLpyNiyghWLMq5AxkBgZX4J9VfX5j4ToNh6UsrQ=4yndg@mail.gmail.com>
- <2a8208af-bc4b-f1bd-af0b-f5db485ed1f0@applied-asynchrony.com>
- <CAEf4BzYLYJtcehZhB22YsxRXZBcVnunNx-rm9CfTcDZFiY10jQ@mail.gmail.com>
- <e5122286-68f0-4173-8549-a0705c4ca4b1@linux.dev>
- <CAEf4BzZKKd+0Hwok=BxyBsWMUnBBTUGj-ZfJK-voMXowRKPgNQ@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-In-Reply-To: <CAEf4BzZKKd+0Hwok=BxyBsWMUnBBTUGj-ZfJK-voMXowRKPgNQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250420105524.2115690-1-rjsu26@gmail.com> <CAP01T75B87Vnq-kdq6gaNXj5xeOOiah-onm4weEZA=jm8W8JVQ@mail.gmail.com>
+ <CAM6KYsuk060Fv43Djp4q57AwBcmmkHBitGgfSsCJZwbGqRmQEA@mail.gmail.com>
+In-Reply-To: <CAM6KYsuk060Fv43Djp4q57AwBcmmkHBitGgfSsCJZwbGqRmQEA@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 6 May 2025 15:45:18 -0700
+X-Gm-Features: ATxdqUHY8F-Gcug1FeD2U7vqMtI_SrWEVlzoAI9TUb6Ooe7eWlftLwSQmdeupPE
+Message-ID: <CAADnVQL_+5FiOwNEnaYZ-i52r4jDiStboWxA9VycARFboOjx6Q@mail.gmail.com>
+Subject: Re: [RFC bpf-next 0/4] bpf: Fast-Path approach for BPF program Termination
+To: Raj Sahu <rjsu26@gmail.com>
+Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Dan Williams <djwillia@vt.edu>, miloc@vt.edu, ericts@vt.edu, rahult@vt.edu, 
+	doniaghazy@vt.edu, quanzhif@vt.edu, Jinghao Jia <jinghao7@illinois.edu>, 
+	Siddharth Chintamaneni <sidchintamaneni@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2025-05-06 3:23 p.m., Andrii Nakryiko wrote:
-> On Tue, May 6, 2025 at 2:41 PM Ihor Solodrai <ihor.solodrai@linux.dev> wrote:
->>
->> On 2025-05-06 2:04 p.m., Andrii Nakryiko wrote:
->>   > On Sun, May 4, 2025 at 3:24 AM Holger Hoffstätte
->>   > <holger@applied-asynchrony.com> wrote:
->>   >>
->>   >> On 2025-05-03 04:36, Alexei Starovoitov wrote:
->>   >>> On Fri, May 2, 2025 at 2:53 AM Holger Hoffstätte
->>   >>> <holger@applied-asynchrony.com> wrote:
->>   >>>>
->>   >>>> On 2025-05-02 11:26, Quentin Monnet wrote:
->>   >>>>> On 02/05/2025 09:57, Holger Hoffstätte wrote:
->>   >>>>>> A gcc-15-based bpf toolchain defaults to C23 and fails to
->> compile various
->>   >>>>>> kernel headers due to their use of a custom 'bool' type.
->>   >>>>>> Explicitly using -std=gnu11 works with both clang and bpf-toolchain.
->>   >>>>>>
->>   >>>>>> Signed-off-by: Holger Hoffstätte <holger@applied-asynchrony.com>
->>   >>>>>
->>   >>>>> Thanks! I tested that it still works with clang.
->>   >>>>>
->>   >>>>> Acked-by: Quentin Monnet <qmo@kernel.org>
->>   >>>>
->>   >>>> Thanks!
->>   >>>>
->>   >>>>> I didn't manage to compile with gcc, though. I tried with gcc
->> 15.1.1 but
->>   >>>>> option '--target=bpf' is apparently unrecognised by the gcc
->> version on
->>   >>>>> my setup.
->>   >>>>>
->>   >>>>> Out of curiosity, how did you build using gcc for the skeleton?
->> Was it
->>   >>>>> enough to run "CLANG=gcc make"? Does it pass the clang-bpf-co-re
->> build
->>   >>>>> probe successfully?
->>   >>>>
->>   >>>> I'm on Gentoo where we have a gcc-14/15 based "bpf-toolchain" package,
->>   >>>> which is just gcc configured & packaged for the bpf target.
->>   >>>> Our bpftool package can be built with clang (default) or without, in
->>   >>>> which case it depend on the bpf-toolchain. The idea is to gradually
->>   >>>> allow bpf/xdp tooling to build/run without requiring clang.
->>   >>>>
->>   >>>> The --target definition is conditional and removed when not using
->> clang:
->>   >>>>
->> https://gitweb.gentoo.org/repo/gentoo.git/tree/dev-util/bpftool/bpftool-7.5.0.ebuild?id=bf70fbf7b0dc97fbc97af579954ea81a8df36113#n94
->>   >>>>
->>   >>>> The bug for building with the new gcc-15 based toolchain where this
->>   >>>> patch originated is here: https://bugs.gentoo.org/955156
->>   >>>
->>   >>> So you're fixing this build error:
->>   >>>
->>   >>> bpf-unknown-none-gcc \
->>   >>>           -I. \
->>   >>>
->> -I/var/tmp/portage/dev-util/bpftool-7.5.0/work/bpftool-libbpf-v7.5.0-sources/include/uapi/
->>   >>> \
->>   >>>
->> -I/var/tmp/portage/dev-util/bpftool-7.5.0/work/bpftool-libbpf-v7.5.0-sources/src/bootstrap/libbpf/include
->>   >>> \
->>   >>>           -g -O2 -Wall -fno-stack-protector \
->>   >>>            -c skeleton/profiler.bpf.c -o profiler.bpf.o
->>   >>> In file included from skeleton/profiler.bpf.c:3:
->>   >>> ./vmlinux.h:5: warning: ignoring '#pragma clang attribute'
->> [-Wunknown-pragmas]
->>   >>>       5 | #pragma clang attribute push
->>   >>> (__attribute__((preserve_access_index)), apply_to = record)
->>   >>> ./vmlinux.h:9845:9: error: cannot use keyword 'false' as
->> enumeration constant
->>   >>>    9845 |         false = 0,
->>   >>>         |         ^~~~~
->>   >>> ./vmlinux.h:9845:9: note: 'false' is a keyword with '-std=c23' onwards
->>   >>> ./vmlinux.h:31137:15: error: 'bool' cannot be defined via 'typedef'
->>   >>> 31137 | typedef _Bool bool;
->>   >>>         |               ^~~~
->>   >>>
->>   >>> with -std=gnu11 flag and
->>   >>
->>   >> Yes, correct. This is the same as all over the kernel or the bpf tests
->>   >> for handling C23. I fully understand that this particular patch is only
->>   >> one piece of the puzzle.
->>   >>
->>   >
->>   > What's the best way to detect (at compile time) whether bool, false,
->>   > and true are treated as reserved keywords? To solve this properly
->>   > vmlinux.h would have to be adjusted by vmlinux.h to avoid emitting
->>   > bool/false/true *iff* compiler version/mode doesn't like that
->>
->> I ran into this when adding GCC BPF to CI [1].
->>
->> One can do something like:
->>
->>        #if __STDC_VERSION__ < 202311L
->>        enum {
->>            false = 0,
->>            true = 1,
->>        };
->>        #endif
->>
->> But in case of vmlinux.h this would require hacking bpftool, and so for
->> selftests/bpf we decided to pass -std=gnu11 [2].
-> 
-> We can adjust btf_dump_is_blacklisted() to ignore bool typedef
-> (unconditionally), and we'll need to ignore anon enum with false/true
-> (which is annoying), and then bpftool will unconditionally add the
-> above block plus typedef _Bool bool.
-> 
-> Would that work?
+On Mon, May 5, 2025 at 10:55=E2=80=AFPM Raj Sahu <rjsu26@gmail.com> wrote:
+>
+>       2. A BPF prog is attached to a function called by another BPF progr=
+am.
+>              - This is the interesting case.
+>
+> > What do you do if e.g. I attach to some kfunc that you don't stub out?
+> > E.g. you may stub out bpf_sk_lookup, but I can attach something to
+> > bpf_get_prandom_u32 called after it in the stub which is not stubbed
+> > out and stall.
+>
+> We have thought of 2 components to deal with unintended nesting:
+> 1. Have a per-CPU variable to indicate a termination is in-progress.
+>     If this is set, any new nesting won't occur.
+> 2. Stub the entire nesting chain:
+>     For example,
+>     prog1
+>          -> prog2
+>                 -> prog3
+>
+>    Say prog3 is long-running and violates the runtime policy of prog2.
+>    The watchdog will be triggered for prog2, in that case we walk
+> through the stack
+>    and stub all BPF programs leading up to prog2 (In this case prog3
+> and prog2 will
+>    get stubbed).
 
-I think yes, but then the question is why do all this work in bpftool 
-instead of passing -std=gnu11 to the compiler? Especially given that 
-kernel is built with such flags:
+I feel that concerns about fentry/freplace consuming too much
+while parent prog is fast-exiting are overblown.
+If child prog is slow it will get flagged by the watchdog sooner or later.
+But fentry and tailcall cases are good examples that highlight
+that fast-execute is a better path forward.
+Manual stack unwind through bpf trampoline and tail call logic
+is going to be quite complex, error prone, architecture specific
+and hard to keep consistent with changes.
+We have complicated lifetime rules for bpf trampoline.
+See comment in bpf_tramp_image_put().
+Doing that manually in stack unwinder is not practical.
+iirc bpf_throw() stops at the first non-bpf_prog frame including
+bpf trampoline.
+But if we want to, the fast execute approach can unwind through fentry.
+Say hw watchdog tells us that CPU is stuck in:
+bpf_prog_A
+   bpf_subprog_1
+     kfunc
+       fentry
+          bpf_prog_B
 
-$ grep -r --include="[Mm]akefile" 'std=gnu'
+since every bpf prog in the system will be cloned and prepared
+for fast execute we can replace return addresses everywhere
+in the above and fast execute will take us all the way to kernel proper.
 
-     arch/arm64/kernel/vdso32/Makefile:               -std=gnu11
-     arch/loongarch/vdso/Makefile:   -std=gnu11 -O2 -g 
--fno-strict-aliasing -fno-common -fno-builtin \
-     arch/s390/Makefile:KBUILD_CFLAGS_DECOMPRESSOR := $(CLANG_FLAGS) 
--m64 -O2 -mpacked-stack -std=gnu11
-     arch/s390/purgatory/Makefile:KBUILD_CFLAGS := -std=gnu11 
--fno-strict-aliasing -Wall -Wstrict-prototypes
-     arch/x86/Makefile:REALMODE_CFLAGS       := -std=gnu11 -m16 -g -Os 
--DDISABLE_BRANCH_PROFILING -D__DISABLE_EXPORTS \
-     arch/x86/boot/compressed/Makefile:KBUILD_CFLAGS += -std=gnu11
-     drivers/firmware/efi/libstub/Makefile:cflags-$(CONFIG_X86) 
-     += -m$(BITS) -D__KERNEL__ -std=gnu11 \
-     tools/build/feature/Makefile:   $(BUILDXX) -std=gnu++11
-     tools/build/feature/Makefile:   $(BUILDXX) -std=gnu++17 
-                     \
-     tools/build/feature/Makefile:   $(BUILDXX) -std=gnu++17 
-                     \
-     tools/build/feature/Makefile:   $(BUILDXX) -std=gnu++17 
-                     \
-     tools/lib/api/Makefile:CFLAGS += -ggdb3 -Wall -Wextra -std=gnu99 
--U_FORTIFY_SOURCE -fPIC
-     tools/lib/bpf/Makefile:override CFLAGS += -std=gnu89
-     tools/lib/subcmd/Makefile:CFLAGS := -ggdb3 -Wall -Wextra -std=gnu99 
--fPIC
-     tools/lib/symbol/Makefile:CFLAGS += -ggdb3 -Wall -Wextra -std=gnu11 
--U_FORTIFY_SOURCE -fPIC
-     tools/net/ynl/generated/Makefile:CFLAGS += -std=gnu11 -O2 -W -Wall 
--Wextra -Wno-unused-parameter -Wshadow \
-     tools/net/ynl/lib/Makefile:CFLAGS += -std=gnu11 -O2 -W -Wall 
--Wextra -Wno-unused-parameter -Wshadow
-     tools/net/ynl/samples/Makefile:CFLAGS += -std=gnu11 -O2 -W -Wall 
--Wextra -Wno-unused-parameter -Wshadow \
-     tools/testing/selftests/arm64/gcs/Makefile:             -std=gnu99 
--I../.. -g \
-     tools/testing/selftests/arm64/mte/Makefile:CFLAGS += -std=gnu99 -I. 
--pthread
-     tools/testing/selftests/arm64/signal/Makefile:CFLAGS += -std=gnu99 -I.
-     tools/testing/selftests/bpf/Makefile:CFLAGS += -g $(OPT_FLAGS) 
--rdynamic -std=gnu11                             \
-     tools/testing/selftests/bpf/Makefile:        -std=gnu11 
-                                     \
-     tools/testing/selftests/bpf/Makefile:CXXFLAGS := $(subst 
--std=gnu11,-std=gnu++11,$(CXXFLAGS))
-     tools/testing/selftests/capabilities/Makefile:CFLAGS += -O2 -g 
--std=gnu99 -Wall $(KHDR_INCLUDES)
-     tools/testing/selftests/clone3/Makefile:CFLAGS += -g -std=gnu99 
-$(KHDR_INCLUDES)
-     tools/testing/selftests/riscv/mm/Makefile:CFLAGS += -std=gnu99 -I.
-     tools/testing/selftests/sync/Makefile:CFLAGS += -O2 -g -std=gnu89 
--pthread -Wall -Wextra
-     tools/testing/selftests/vDSO/Makefile:CFLAGS := -std=gnu99 -O2
-     tools/testing/selftests/wireguard/qemu/Makefile:        $(CC) -o $@ 
-$(CFLAGS) $(LDFLAGS) -std=gnu11 $<
-     tools/testing/selftests/x86/Makefile:CFLAGS := -O2 -g -std=gnu99 
--pthread -Wall $(KHDR_INCLUDES)
-     Makefile:                        -O2 -fomit-frame-pointer -std=gnu11
-     Makefile:KBUILD_CFLAGS += -std=gnu11
+Re: prog cloning.
+I think the mechanism in this patch is incorrect.
+It clones the prog before bpf_check(). That will break when
+the verifier does different logic for stubbed helpers/kfuncs
+vs original. The bpf progs will not be identical and JITed code
+will be different.
+Instead the verifier should collect all code points where
+kfunc/helper should be replaced, then clone and patch
+after the verifier is done, and then compare JIT artifacts for both.
+JITed sizes must be the same, and prog->aux->jit_data should
+be equivalent. We will need an arch specific function to
+compare jit_data.
 
-> 
->>
->> [1]
->> https://lore.kernel.org/bpf/CAADnVQKNqdLW1bpvCpVV3yNizwra0cCkBnAbsNp3rTmi8WFcvQ@mail.gmail.com/
->> [2]
->> https://lore.kernel.org/bpf/20250107235813.2964472-1-ihor.solodrai@pm.me/
->>
->>   >
->>   >>> ignoring an important warning ?
->>   >>
->>   >> Nobody is (or was) ignoring the warning - it was under discussion when
->>   >> I posted the patch. After reaching out to Oracle to verify, we have now
->>   >> added the BPF_NO_PRESERVE_ACCESS_INDEX define when building with
->> gcc-bpf;
->>   >> this resolves the warning, just like in the bpf self-tests.
->>   >>
->>   >> You are right that such an addition to the in-kernel bpftool build is
->>   >> still missing. If you have a suggestion on how best to do that via the
->>   >> existing Makefile I'm all ears.
->>   >>
->>   >> As for the remaining warnings - we are also very aware of the ongoing
->>   >> upstream work to support btf_type_tag:
->>   >> https://gcc.gnu.org/pipermail/gcc-patches/2025-April/682340.html.
->>   >>
->>   >>> End result: partially functional bpftool,
->>   >>> and users will have no idea why some features of bpftool are not
->> working.
->>   >>
->>   >> First of all this is never shipped to any users; using gcc-bpf requires
->>   >> active opt-in by developers or users, and now also warns that such a
->> setup
->>   >> may result in unexpected bugs due to ongoing work in both Linux and
->> bpftool.
->>   >> Like I said before, by default everyone builds with clang and that
->> is also
->>   >> true for our distributed binaries.
->>   >>
->>   >> If you think adding the -std=gnu11 bit is inappropriate at this time
->> then
->>   >> just ignore this patch for now. Sooner or later the bpftool build
->> will have
->>   >> to be adapted with BPF_CFLAGS (liek in the selftests) and hopefuilly an
->>   >> abstracted BPF_CC so that we no longer have to pretend to be clang when
->>   >> using gcc.
->>   >>
->>   >> cheers
->>   >> Holger
-
+imo that is the next step in terms of code.
+watchdog/trigger_of_abort details are secondary.
 
