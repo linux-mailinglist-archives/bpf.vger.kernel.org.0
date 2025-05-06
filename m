@@ -1,173 +1,159 @@
-Return-Path: <bpf+bounces-57464-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57463-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77766AAB882
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 08:36:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26D6CAAB860
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 08:33:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C12B11746A1
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 06:34:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03DCE1884FE9
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 06:27:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BDB0286D4E;
-	Tue,  6 May 2025 03:34:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 340ED35AFF0;
+	Tue,  6 May 2025 02:58:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bsoh4J+9"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="m0N4EUYC"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp-fw-6002.amazon.com (smtp-fw-6002.amazon.com [52.95.49.90])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A94B242D6D
-	for <bpf@vger.kernel.org>; Tue,  6 May 2025 00:38:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8B87347357;
+	Tue,  6 May 2025 00:46:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.95.49.90
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746491887; cv=none; b=l3K+iIVB+hm7fUnXC52vgWm86e0an9ZFamncjTv0MUZe3Iy38mJ7mwtq5oaVoECjpaT+ouUqTVn0xQ6oQfzVXg0b2L6mlDWnkW2UAUfr9hIYYnDJjfOd3R2MOxIn4jziVgpifMLgWhzipiOf7UoBr5jtaWFgq0xcgNXcVBcWGZI=
+	t=1746492374; cv=none; b=lylfz8bjvnCNLsbCUiyRjcMfumOsqxSpsw+EhkoM/8YSqui77IDLLBu5bvF7gWZikOlMHOVQCcP2nkr3ARxr9334G5HuC2N/MWiJyR+YryuQ3uTsMW0cU1331st0WEkeRjnsGw70BKrNRaXpJl46FXo0yjHwRemmmOJfgyQdPtU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746491887; c=relaxed/simple;
-	bh=3Thda7S7fTrK58T1VG3G41HE8TXjtD6eOvBZWs1UCRo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=m8uchO/n4tdj7ogcK7SAr6hT/xPfBx49dKPZjNcATGdy/Qn2YCx94dieMhegnrdjamiJm2K84eIRcXdA8kcgHWAtbIiapCv959B33x/8fxQlFuwvIExALawDoxkvOZ/9Wg/Y/A8zIzr7n5tv+vxnp+e1bQppd7aGDWOtWBCEe5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bsoh4J+9; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1746491883;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3Thda7S7fTrK58T1VG3G41HE8TXjtD6eOvBZWs1UCRo=;
-	b=bsoh4J+9UWmEoBZtIBWq15xSj7aO3d8r06w7YiTIDaVdFadaZZynEeOBgfp4smbS4yu3ZA
-	oSj3+XoGvUQwxKKAO+ddRoWSWIpKs63qurdFi7Gok+hRbkKXv6ewkZ2rLaDHsnZrBJxORA
-	CnB5QZxOeIZdSU4aT1bUIRpE3KSYiaE=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-605-pyDyRX6gPv64ET2qbB0KkQ-1; Mon, 05 May 2025 20:38:02 -0400
-X-MC-Unique: pyDyRX6gPv64ET2qbB0KkQ-1
-X-Mimecast-MFC-AGG-ID: pyDyRX6gPv64ET2qbB0KkQ_1746491882
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-2ff798e8c3bso4466998a91.2
-        for <bpf@vger.kernel.org>; Mon, 05 May 2025 17:38:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746491881; x=1747096681;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3Thda7S7fTrK58T1VG3G41HE8TXjtD6eOvBZWs1UCRo=;
-        b=q0jPzhnbiL07FdkUpbZnG5CJKWuctNM2UBuKZlHCbGPLEtS7dUUvSPVEbLeaV5iwvV
-         z+PE5+BEw6UhKbWhQbzMVRMEyxVdJZwG/iIUF2QwSb4SFjFisbuG3X0YXvftR8ZK6cnH
-         S8a6O2pK1ZB6TFiYHfhTqF91KY3fR37+fuLCiJvqvy1gDKTwefFmbQL8Kf/05DhFhbkT
-         7yXwXL8HMLjirMT+Coljd3bDe0ldbVmYSvRHvUtktGgvhexv1BlD6tfwXZNT2lWD+6xg
-         rrdVeW/nLq4GObOSRZ1So1v9aE2OucXqAaYUQMxYI6PS9ZL2k+kFGVBSpPRPjkWNGmSl
-         rdpA==
-X-Gm-Message-State: AOJu0Ywg/mlTTrQlBecyt22elQG0UIL+Nb3vGaCtDggIbhRl9I+jbkiR
-	E4QMhTlfl+lqntMLk/qKsK02dIyVCbpvGynSHXIMNf9wSrMeoU7DoRzDEuEYu759xQw0mOySFJk
-	v0D0hZOnwGnsQ98Oa2Rzxr4y9y9PeoGc3SOrlds5ftarYsr+ZCbwYfcW921p8YvT6WOHjp7Y68x
-	+FiCtRS+hj+IU5nFKYg1sGH/Is
-X-Gm-Gg: ASbGnct5l3mcI7SX6/lm5ZrkEyebkd50u4v4bnUM7Y0SW2vcwarSrlgleagm1m951L+
-	7d9EuPjA6myl6iArIJxmePLLuFkdKCOdDCw2hVBu2hUgcaX5YjMXSkFUx6w3kI6Qd0eGDqw==
-X-Received: by 2002:a17:90a:e706:b0:306:b78a:e22d with SMTP id 98e67ed59e1d1-30a619a1979mr13444667a91.20.1746491881623;
-        Mon, 05 May 2025 17:38:01 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFq92lKdPDOjXTASCfCpZmgjp6GAkt6aAzy0xoeRkNlGPRkJ1vsPpEtKqMuRudM0xPVKmHs5+Hmx/dzYXboDxY=
-X-Received: by 2002:a17:90a:e706:b0:306:b78a:e22d with SMTP id
- 98e67ed59e1d1-30a619a1979mr13444646a91.20.1746491881257; Mon, 05 May 2025
- 17:38:01 -0700 (PDT)
+	s=arc-20240116; t=1746492374; c=relaxed/simple;
+	bh=K7YCRWUV0AHkeSy9BuUH5yxL7FnYdu26K+6m2SqhOJU=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=uJ4udoCciWdDmZoczZ2vG02+A+3bVKwUdH0HoX69olDmr0u1R1gaSE0ibC5JhZGGUGh220gvVAZcLHp1aTCG7CJM2uwIDZdpfT8cJHY7oBM0KIIWHeiU/R0pRsXkX9BS5yXJKUWaeNPZqUcQdwJqywrUzqYfNUBsntgKUwJLjJM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=m0N4EUYC; arc=none smtp.client-ip=52.95.49.90
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1746492370; x=1778028370;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=RSYOunfmEVpq0TlU48zdEU3dFvnuc8YiW73w9xJwoHY=;
+  b=m0N4EUYC9P3oVS01PjtkeTnwsSF7J3GaKkZROqA/ovgP/R2APfL1yUNB
+   h5DqRJ5LvprUA3lwVJcZE14GaYoT7Z21h7Zjw3b34uT0sG5pz3xJ0HQtI
+   hfnil6QMcyJ8fTWsEMGWeDIOmx3fBL5z4hNhwJNj2soXzSLsznGnyIZGM
+   w=;
+X-IronPort-AV: E=Sophos;i="6.15,265,1739836800"; 
+   d="scan'208";a="495784027"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
+  by smtp-border-fw-6002.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2025 00:46:04 +0000
+Received: from EX19MTAUWC002.ant.amazon.com [10.0.7.35:29537]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.38.92:2525] with esmtp (Farcaster)
+ id 33fef85d-7f2b-40d4-8855-07d747e2fb6e; Tue, 6 May 2025 00:46:03 +0000 (UTC)
+X-Farcaster-Flow-ID: 33fef85d-7f2b-40d4-8855-07d747e2fb6e
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
+ Tue, 6 May 2025 00:46:03 +0000
+Received: from 6c7e67bfbae3.amazon.com (10.187.170.18) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
+ Tue, 6 May 2025 00:45:58 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: <ast@kernel.org>
+CC: <andrii@kernel.org>, <bpf@vger.kernel.org>, <brauner@kernel.org>,
+	<casey@schaufler-ca.com>, <daniel@iogearbox.net>, <eddyz87@gmail.com>,
+	<gnoack@google.com>, <haoluo@google.com>, <jmorris@namei.org>,
+	<john.fastabend@gmail.com>, <jolsa@kernel.org>, <kpsingh@kernel.org>,
+	<kuni1840@gmail.com>, <kuniyu@amazon.com>,
+	<linux-security-module@vger.kernel.org>, <martin.lau@linux.dev>,
+	<mic@digikod.net>, <netdev@vger.kernel.org>, <omosnace@redhat.com>,
+	<paul@paul-moore.com>, <sdf@fomichev.me>, <selinux@vger.kernel.org>,
+	<serge@hallyn.com>, <song@kernel.org>, <stephen.smalley.work@gmail.com>,
+	<yonghong.song@linux.dev>
+Subject: Re: [PATCH v1 bpf-next 4/5] bpf: Add kfunc to scrub SCM_RIGHTS at security_unix_may_send().
+Date: Mon, 5 May 2025 17:44:13 -0700
+Message-ID: <20250506004550.67917-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.49.0
+In-Reply-To: <CAADnVQK1t3ZqERODdHJM_HaZDMm+JH4OFvwTsLNqZG0=4SQQcA@mail.gmail.com.txt>
+References: <CAADnVQK1t3ZqERODdHJM_HaZDMm+JH4OFvwTsLNqZG0=4SQQcA@mail.gmail.com.txt>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250429041214.13291-1-piliu@redhat.com> <20250429041214.13291-5-piliu@redhat.com>
- <CAADnVQKTSubuisSBap_J=tgO15fCdtwF-NDY_1HLP_m6o28mhw@mail.gmail.com>
- <CAF+s44QM55AtGyquKvj0XAzZAjOii7VJYWsGD50iK3+r6GZSmg@mail.gmail.com> <CAADnVQKKr7C+eRin=efg5umLumghGfYJst2MwDwpB5bEtt4rSA@mail.gmail.com>
-In-Reply-To: <CAADnVQKKr7C+eRin=efg5umLumghGfYJst2MwDwpB5bEtt4rSA@mail.gmail.com>
-From: Pingfan Liu <piliu@redhat.com>
-Date: Tue, 6 May 2025 08:37:50 +0800
-X-Gm-Features: ATxdqUFuTVAhoinefB-V1imhTA7ZCVA5NjxlNSYorcyBkyCWXUw-XhLHlUTVcvc
-Message-ID: <CAF+s44RC4UfSwckLR6tHJo=Owv8jvaBp-wN3PRGbYC3G3EoHYg@mail.gmail.com>
-Subject: Re: [RFCv2 4/7] bpf/kexec: Introduce three bpf kfunc for kexec
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, kexec@lists.infradead.org, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, Jeremy Linton <jeremy.linton@arm.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Ard Biesheuvel <ardb@kernel.org>, Simon Horman <horms@kernel.org>, Gerd Hoffmann <kraxel@redhat.com>, 
-	Vitaly Kuznetsov <vkuznets@redhat.com>, Philipp Rudo <prudo@redhat.com>, Viktor Malik <vmalik@redhat.com>, 
-	Jan Hendrik Farr <kernel@jfarr.cc>, Baoquan He <bhe@redhat.com>, Dave Young <dyoung@redhat.com>, 
-	Eric Biederman <ebiederm@xmission.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: EX19D032UWB003.ant.amazon.com (10.13.139.165) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
 
-Hi Alexei,
-
-Sorry to reply late since I just got back from holiday.
-
-On Thu, May 1, 2025 at 12:16=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Apr 30, 2025 at 3:47=E2=80=AFAM Pingfan Liu <piliu@redhat.com> wr=
-ote:
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 5 May 2025 17:13:32 -0700
+> On Mon, May 5, 2025 at 3:00 PM Kuniyuki Iwashima <kuniyu@amazon.com> wrote:
 > >
-> > On Wed, Apr 30, 2025 at 8:04=E2=80=AFAM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-[...]
-
+> > As Christian Brauner said [0], systemd calls cmsg_close_all() [1] after
+> > each recvmsg() to close() unwanted file descriptors sent via SCM_RIGHTS.
 > >
-> > Thanks for your suggestion. I originally considered using these kfuncs
-> > only in kexec context (Later, introducing a dedicated BPF_PROG_TYPE
-> > for kexec).
->
-> We do not add new prog types anymore.
-> They're frozen just like the list of helpers.
->
-
-Got it.
-
-> > They are placed under a lock so that a malice attack can
-> > not exhaust the memory through repeatedly calling to the decompress
-> > kfunc.
->
-> attack? This is all root only anyway and all memory is counted
-> towards memcg.
-> Make sure to use GFP_KERNEL_ACCOUNT and something similar
-> to bpf_map_get_memcg.
->
-
-Your clarification makes sense. I will follow that guide.
-
-> > To generalize these kfunc, I think I can add some boundary control of
-> > the memory usage to prevent such attacks.
->
-> Don't reinvent the wheel. memcg is the mechanism.
->
-
-Sure. Thanks for your insight. It is helpful.
-
-Best Regards,
-
-Pingfan
-
-> > > They also must be KF_SLEEPABLE.
-> > > Please test your patches with all kernel debugs enabled.
-> > > Otherwise you would have seen all these "sleeping while atomic"
-> > > issues yourself.
-> > >
+> > However, this cannot work around the issue that close() for unwanted file
+> > descriptors could block longer because the last fput() could occur on
+> > the receiver side once sendmsg() with SCM_RIGHTS succeeds.
 > >
-> > See, I will have all these debug options for the V3 test.
+> > Also, even filtering by LSM at recvmsg() does not work for the same reason.
 > >
-> > Appreciate your insight.
+> > Thus, we need a better way to filter SCM_RIGHTS on the sender side.
 > >
-> > Regards,
+> > Let's add a new kfunc to scrub all file descriptors from skb in
+> > sendmsg().
 > >
-> > Pingfan
+> > This allows the receiver to keep recv()ing the bare data and disallows
+> > the sender to impose the potential slowness of the last fput().
 > >
->
+> > If necessary, we can add more granular filtering per file descriptor
+> > after refactoring GC code and adding some fd-to-file helpers for BPF.
+> >
+> > Sample:
+> >
+> > SEC("lsm/unix_may_send")
+> > int BPF_PROG(unix_scrub_scm_rights,
+> >              struct socket *sock, struct socket *other, struct sk_buff *skb)
+> > {
+> >         struct unix_skb_parms *cb;
+> >
+> >         if (skb && bpf_unix_scrub_fds(skb))
+> >                 return -EPERM;
+> >
+> >         return 0;
+> > }
+> 
+> Any other programmability do you need there?
 
+This is kind of PoC, and as Kumar mentioned, per-fd scrubbing
+is ideal to cover the real use cases.
+
+https://lore.kernel.org/netdev/CAP01T77STmncrPt=BsFfEY6SX1+oYNXhPeZ1HC9J=S2jhOwQoQ@mail.gmail.com/
+
+for example:
+https://uapi-group.org/kernel-features/#filtering-on-received-file-descriptors
+
+"""
+An alternative to the previous item could be if some form of filtering
+could be enforced on the file descriptors suitable for enqueuing on the
+AF_UNIX socket. i.e. allow filtering by superblock type or similar, so
+that policies such as “only memfds are OK to be received” may be
+expressed. (BPF?).
+"""
+
+I think Christian can add more scenarios if needed.
+
+
+
+> 
+> If not and above is all that is needed then what Jann proposed
+> sounds like better path to me:
+> "
+> I think the thorough fix would probably be to introduce a socket
+> option (controlled via setsockopt()) that already blocks the peer's
+> sendmsg().
+> "
+> 
+> Easier to operate and upriv process can use such setsockopt() too.
 
