@@ -1,189 +1,207 @@
-Return-Path: <bpf+bounces-57568-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57569-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81449AAD065
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 23:56:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78E47AAD0C6
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 00:07:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47A6F986BB3
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 21:52:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6AA0F1B688C9
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 22:07:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1689121D591;
-	Tue,  6 May 2025 21:43:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28140219305;
+	Tue,  6 May 2025 22:07:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nMcHW0du"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LUwBce3U"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C2A121D018
-	for <bpf@vger.kernel.org>; Tue,  6 May 2025 21:43:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38AB44B1E60
+	for <bpf@vger.kernel.org>; Tue,  6 May 2025 22:07:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746567808; cv=none; b=Mm/tWprpRhpHQIiSg3qITQWBTBIayNJVELqgeXAMlhlAuvPL4ssVyobpWPLQLkNH4Hay9DxIxXWjIW4RXwzVu2eTYrZBqtV6sOo89EvzeG3Ig5LDS2jNjo2DxAcfRihES9xgILWWO/G51SWSfKtgnBNu+1NUHlSLicsxf5j8ypg=
+	t=1746569253; cv=none; b=YXUkiON/2q3WrVWp/b2c8UMiaqG6sh1hCKdOj25tOXXqQ5IgsXQZrBXBWN5wjrCWR2Cp5oVlG5ST98aEqUr85kJ0X1O/nf6z9ctTLXPyr8S3v/7iJWJ3uERT0TaU9Zaquv7kStMFXrHtiyeDrNeNOd2qBaFl+Vx8ZA/9CDKDzHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746567808; c=relaxed/simple;
-	bh=C+IzuzqxA9/CxMX37DsPTmXJsupGHjEEmX9bz8YcPmM=;
+	s=arc-20240116; t=1746569253; c=relaxed/simple;
+	bh=wTsmTUGM0m00k3UF0GhYayLQei5ZfQt/Z00/lwpqhqk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FN801OpnO3XOdUPeriNbtuNFtHi6AN6C54wa7fqhTS5C0YFbmVXGhJydMKHil+3Y/AXcoyb/dJvaI80C2eD+pBguhRhpD3UHKxracjq49pbZTgfnJKFmYkEGnSbvvzCkJR1Wa0IZyfjUGBsc4IC7ALK4BtBiFi4a4pFVP4Xl8fE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nMcHW0du; arc=none smtp.client-ip=209.85.210.172
+	 To:Cc:Content-Type; b=dKVThByDmZ+BfZ3K14eoYrtBHKdDBsxigJh9saO7fPLlDgdRnIVYcWwNjUc/7CUkvO4vcRG1XVJ3/bmBBAy2MR2baLOHqfzQljjhgc5HmLQo4YmLutubN37liwka7UUqrLnTa1kTO2txq0RsH6YbHTPanFrGazePk5jyrDKD6h0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LUwBce3U; arc=none smtp.client-ip=209.85.216.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-736c277331eso293397b3a.1
-        for <bpf@vger.kernel.org>; Tue, 06 May 2025 14:43:26 -0700 (PDT)
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-30863b48553so282612a91.0
+        for <bpf@vger.kernel.org>; Tue, 06 May 2025 15:07:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746567806; x=1747172606; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1746569251; x=1747174051; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=S3Yx+ATiIpwZP5uEBViF+60tzvvBieVhJfJ/9yAy/NQ=;
-        b=nMcHW0duXHjT6o3D031Yh4mYDw5qyDOR+aM/SrCc9AjeOnFLqf4yu8cNeJ+sVSCwOh
-         E7ZQ5SWYN0lOQ/lmYwlRkbIrxg4uvysq+NnSGAtR3gVIW0fcHbeOlyzH53oTTbbmuWn/
-         fDeke7NehB6OzQHsV02Ad1z0C1s+MTd6vVearcZdxYAHlweipBqN8p53qRWphCN/gbM5
-         Xsh4nqXCEM83mIWq6mX2Q+YYs96K9y1yBQBCet2aUO4QjYRS3NTGi1M6etawz3wyNdju
-         7+cD7EiPuBs8yTqZYabRVm8DS65h4QXtz9E2RQjGQtCmveqnDOt2iM5xkWAkAMJOXsvh
-         UHQw==
+        bh=sSLvbG29Aw1AkpA9ZNlQGj9spqPWIutINEfDJ5xrRHQ=;
+        b=LUwBce3U4o9pvFTCN4Z+6VxcpOfW/W/LsE9HamWE3fFuYc71m0cVNp4zY94L7Ts+DP
+         KGO+jZqtBwXMJIY0f20IHd6QPDQRggamW5dz23fIsFMkeJYL+UXpbUbFe9Krl1RmYRcy
+         ukNSFnsnwpls+PRbSGloVI4JZ2hzbAtbwOlKM9+TXo+O6hz6F77TlGKu6NmTLrzeW6pr
+         5u/7jY4WRrsdtqzLNEmurIWR1waujmLh1uFBcmVJYkEKQFU4dZd+l0bwWiip3fsLn/pi
+         XWQYivJWTqLclSWOYHbazm4+nlivzBSCblzoRtgboo2O7F4qPBnomIo8vANo3aT56l21
+         GcWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746567806; x=1747172606;
+        d=1e100.net; s=20230601; t=1746569251; x=1747174051;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=S3Yx+ATiIpwZP5uEBViF+60tzvvBieVhJfJ/9yAy/NQ=;
-        b=lwfcJ5EJgVu6pCaStCUTng+WTT5yuJAgitOgW2DBP9EOITaTEBLqa9eocqJfAzf4TU
-         lwo3AuBIWQmAqEqdk3TBWlYFfC4eXFyqBpPeYP6wN1ka6kyD8KXThvQ/RFTHH4WlIHc5
-         gw73p+KEsNCY0kt868TtrdKFmwNvSS292Xkr9jpkO8kcWg6FWXVALkXu+5FCcVCXj6SQ
-         y/979h0mjqWuFMVpVyDhhk5PJv2DBGMtXj+udPsGBUL4UR3fcoZziQMhhYilCIlvtD/v
-         mNAyNa9JGl7uuw18zrZ8UuL+0DL3u7wEqL6H4Sj7uJlWatu2dDfODY0CFjRp8JTauWWO
-         LZ7w==
-X-Forwarded-Encrypted: i=1; AJvYcCUfclpJT67ch3ZbgwfaD2S0bSAcYV4umKXtmJXJ4NFouRRTKyuTKA/BrgafQ4GgqNGqwFk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw4dFiRx5OmbyfSc4wIQDtlXrGOw1oF7KHUwAkL4MNBT8ynQZYt
-	E1V/ZghhyilR1YNKu8yKSJ4cdAcJboXYaHradyZ7c90HElijbWeAQ+44Qd2hiahIB1LYHfyqp4U
-	RPuVXdydwP4SPjaIiDCrq4x9NZaU=
-X-Gm-Gg: ASbGncv+AsnAR4j1PfGE7NhohmE+uFRsUhTb9YYyDaaUIs95Q/wP/1Fiy8hFWp4mlpF
-	qy7WWfblwZjPVOmAhy/kwDbdB3T21X6Wh9ECDNQ6xn9XlFeaXDm9TjmcQZ2ZEVpVLzB5UyXwc/5
-	Zo9v1m1HbL9tMghgF1LvRE9KZvLSPUcUfk7zdlLw==
-X-Google-Smtp-Source: AGHT+IGkP53PDaq7JFXWSPCrZiRglZvFGbI8VAXhTQClIQDIW2xfNNrRaw+0eUW3qrjIDMdieFbyjfEZ8cIZblE9C+s=
-X-Received: by 2002:a05:6a00:ac86:b0:736:4d05:2e35 with SMTP id
- d2e1a72fcca58-7409cfb10cemr963323b3a.3.1746567806238; Tue, 06 May 2025
- 14:43:26 -0700 (PDT)
+        bh=sSLvbG29Aw1AkpA9ZNlQGj9spqPWIutINEfDJ5xrRHQ=;
+        b=VV+5yBSzCA2Le86HqqgP4JVdQPNSyApnY2MxBLLrc6QMrUQP1Qlu6/sJf3cVQxKE5V
+         TrbgkCa+3+BmWJ+EdyVjsqCX/1lD8dGyYBNbCKIT8rwt3SU+5jzjeEk2lzkpx3UybFEy
+         PEYUHAilC5d7vclscDw9I8ArZSVLXlth6/4t5sCtEz7cjdyDNxXuC7yVx5LyIT4aJHR2
+         ySojWsJq224Dq+4xlD5eAyqadgR5b9dic3XvlNhhKVyB3nOTMBTeab1YsfoXPYkpAIuI
+         NVKaTwH4HIyhs+yJp/J5z/rytckKe/BQcv3sgZt+Iht7RqiaZTDlIQWAZfKxr94DiNV/
+         +YlQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWUBBkSZNBOWmiBYaaz2XMOEFgRfmTzW3RZqMI7CVmfv1S64s1msO1odZ+jYxOQB0HoFK8=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw65tFRVT2l3QL7e2vIzHdMZZwKm7a536aSHZ4BKpzC3Mu6xM+L
+	Tb8AnWFKIc+aD2yyd1Kfq6AWJTavzeotX9iMNWMa2xeBmCDaO6ZeXPbezcd25t+r/XwR9W9Qf7f
+	F3S5ifOFAlh5UTpAWmQ0gD5LUZqg=
+X-Gm-Gg: ASbGncvITfkc/UW0lePlZ9KlrQxX8cHIjlKuKIrwvC2flh6eJnagWllaUyGRG6hybQX
+	HzzDyq0c56ZhN6P+hIBKzFbKFQXDz9qT1/POF61Ea7C6gikHTq+Am3QG6+qFIoOqCgvT5Nkf8yM
+	/hs1GalmqxMNd4XeuAzIsYPLQUSWbRISwupbn0Iw==
+X-Google-Smtp-Source: AGHT+IG5ZusKhJ4SbDhR0TF8x+n3HyJqLpL2BHH1uiX3h/OUmCUa/LfmV+T/6vaGrKHhVndI7fPm5U6x1WX062YDjq8=
+X-Received: by 2002:a17:90b:2e45:b0:30a:9feb:1e0f with SMTP id
+ 98e67ed59e1d1-30aaecdc652mr1074678a91.5.1746569251188; Tue, 06 May 2025
+ 15:07:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250501235231.1339822-1-andrii@kernel.org> <95dbb7e5-c2aa-4114-bdb9-9d9ea53653f0@oracle.com>
- <CAADnVQKmQKVTkf28Ex6T8Y03xDQ6-3o-rEcOM3vGZcVHGcrfSA@mail.gmail.com>
- <CAEf4BzZ-3ovbCEO+Jnn30xNsxE4nBnGtqL9FZ0O7JkUa=t0YuQ@mail.gmail.com> <b8d256a2-66d4-4342-be55-6ec54d79ef96@oracle.com>
-In-Reply-To: <b8d256a2-66d4-4342-be55-6ec54d79ef96@oracle.com>
+References: <20250506000605.497296-1-isolodrai@meta.com>
+In-Reply-To: <20250506000605.497296-1-isolodrai@meta.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 6 May 2025 14:43:14 -0700
-X-Gm-Features: ATxdqUHQaYSsdiYzUVyFFg-n8hWyj1GfTpaO6Go_aXvnDVjeHzBFl39Z2g1mkbg
-Message-ID: <CAEf4BzaT0uqwDtauHvC9MOfkUr1U=1=vR8JBGrt0tc34=dYJLw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: improve BTF dedup handling of
- "identical" BTF types
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Kernel Team <kernel-team@meta.com>
+Date: Tue, 6 May 2025 15:07:18 -0700
+X-Gm-Features: ATxdqUEktU8GT8HwG732y1SgrH2fapncrwr3z08vWQzxLmUpNYyUmP59IpxqLHc
+Message-ID: <CAEf4BzYY6mPto_9MwPp0zH+MvWScjQPxLdHLSGd+c2QjvJyNsA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] scripts/bpf_doc.py: implement json output for helpers
+To: ihor.solodrai@linux.dev, Quentin Monnet <qmo@kernel.org>
+Cc: ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, eddyz87@gmail.com, 
+	bpf@vger.kernel.org, mykolal@fb.com, kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, May 6, 2025 at 3:15=E2=80=AFAM Alan Maguire <alan.maguire@oracle.co=
-m> wrote:
+On Mon, May 5, 2025 at 5:06=E2=80=AFPM Ihor Solodrai <isolodrai@meta.com> w=
+rote:
 >
-> On 05/05/2025 22:10, Andrii Nakryiko wrote:
-> > On Fri, May 2, 2025 at 11:09=E2=80=AFAM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> >>
-> >> On Fri, May 2, 2025 at 2:32=E2=80=AFAM Alan Maguire <alan.maguire@orac=
-le.com> wrote:
-> >>>
-> >>>>
-> >>>> On the other hand, this seems to help to reduce duplication across m=
-any
-> >>>> kernel modules. In my local test, I had 639 kernel module built. Ove=
-rall
-> >>>> .BTF sections size goes down from 41MB bytes down to 5MB (!), which =
-is
-> >>>> pretty impressive for such a straightforward piece of logic added. B=
-ut
-> >>>> it would be nice to validate independently just in case my bash and
-> >>>> Python-fu is broken.
-> >>>>
-> >>>> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> >>>
-> >>> Looks great!
-> >>>
-> >>> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
-> >>>
-> >>> Should have some numbers on the module size differences with this cha=
-nge
-> >>> by Monday, had to dash before my build completed.
-> >>
-> >> I'm curious what BTF sizes you'll see.
-> >>
-> >> Sounds like dwarf has more cases of "same type but different id"
-> >> than we expected.
-> >> So existing workarounds are working only because we have very
-> >> few modules that rely on proper dedup of kernel types.
-> >> Beyond array/struct/ptrs, I wonder, what else is there.
-> >
-> > Well, turns out I screwed up the measurements. I thought that I used
-> > libbpf version with Alan's patch applied as a baseline, but it turned
-> > out it was libbpf without his patch. So all the measurements (41MB ->
-> > 5MB) are actually due to Alan's identical pointers fix. My patches
-> > have no effect on module BTF sizes (which is good and a bit more
-> > sensible, I should have double checked before submitting). So, if we
-> > are going to apply the patch, it's probably better to just drop that
-> > paragraph. Or I can send v2 with an adjusted commit message, whatever
-> > is better.
-> >
+> bpf_doc.py parses bpf.h header to collect information about various
+> functions (such as BPF helpers) and dump them in one of the supported
+> forms: rst docs and a C header.
 >
-> I did see some small changes, so the fact that you've added additional
-> cases here definitely helps; with ~3000 modules built I got ~50Mb of
-> module BTF in total both before and after the change, but comparing the
-> results using latest pahole (with the pointer-specific fix) and your
-> change (the more general fix) we do see some size reductions:
+> It's useful for external tools to be able to consume information about
+> BPF helpers - list of helpers and their args - in an easy-to-parse
+> format such as JSON. Given that bpf_doc.py already does the work of
+> searching and collecting the helpers, implement trivial JSON printer
+> and add --json option for helpers target.
 >
-> $ find . -name '*.ko' -print |sort|xargs objdump -h --section=3D".BTF" >
-> /tmp/modout.base
-> $ awk '/file format/ { printf $1" " } / .BTF/ { print strtonum("0x" $3)
-> }'  /tmp/modout.base > /tmp/modout.base.sizes
-> # rebuild pahole with Andrii's change
-> $ rm vmlinux
-> $ make -j$(nproc)
-> $ find . -name '*.ko' -print |sort|xargs objdump -h --section=3D".BTF" >
-> /tmp/modout.test
-> $ awk '/file format/ { printf $1" " } /tmp/modout.test / .BTF/ { print
-> strtonum("0x" $3) }' > /tmp/modout.test.sizes
->
-> $ diff /tmp/modout.base.sizes /tmp/modout.test.sizes
-> 198c198
-> < ./drivers/char/ipmi/ipmi_si.ko: 11575
+> Signed-off-by: Ihor Solodrai <isolodrai@meta.com>
 > ---
-> > ./drivers/char/ipmi/ipmi_si.ko: 11539
-> 1810c1810
-> < ./drivers/platform/x86/ideapad-laptop.ko: 7122
-> ---
-> > ./drivers/platform/x86/ideapad-laptop.ko: 7086
-> 1952c1952
-> < ./drivers/scsi/mpi3mr/mpi3mr.ko: 52625
-> ---
-> > ./drivers/scsi/mpi3mr/mpi3mr.ko: 52589
+>  scripts/bpf_doc.py | 42 +++++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 37 insertions(+), 5 deletions(-)
 >
-> So while numerically it isn't huge, it definitely validates the
-> principle of making the identical type handling less specific to the
-> cases we had encountered. If you want to resync libbpf github again I
-> can update the submodule commit in pahole. Thanks!
 
-given how small the change in size is, it's probably const/volatile
-PTR cases or something similar. Well, good to know it does make a bit
-of a difference in some situations, thanks for confirming!
+Ihor, do you have an example on how JSON output would look like?
 
+Quentin, can you please take a look? Do you have any objections?
+
+> diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
+> index e74a01a85070..15d83ff5d2bd 100755
+> --- a/scripts/bpf_doc.py
+> +++ b/scripts/bpf_doc.py
+> @@ -8,6 +8,7 @@
+>  from __future__ import print_function
 >
-> Alan
+>  import argparse
+> +import json
+>  import re
+>  import sys, os
+>  import subprocess
+> @@ -675,7 +676,7 @@ COMMANDS
+>          self.print_elem(command)
+>
+>
+> -class PrinterHelpers(Printer):
+> +class PrinterHelpersHeader(Printer):
+>      """
+>      A printer for dumping collected information about helpers as C heade=
+r to
+>      be included from BPF program.
+> @@ -896,6 +897,27 @@ class PrinterHelpers(Printer):
+>          print(') =3D (void *) %d;' % helper.enum_val)
+>          print('')
+>
+> +
+> +class PrinterHelpersJSON(Printer):
+> +    """
+> +    A printer for dumping collected information about helpers as a JSON =
+file.
+> +    @parser: A HeaderParser with Helper objects to print to standard out=
+put
+> +    """
+> +
+> +    def __init__(self, parser):
+> +        self.elements =3D parser.helpers
+> +        self.elem_number_check(
+> +            parser.desc_unique_helpers,
+> +            parser.define_unique_helpers,
+> +            "helper",
+> +            "___BPF_FUNC_MAPPER",
+> +        )
+> +
+> +    def print_all(self):
+> +        protos =3D [helper.proto_break_down() for helper in self.element=
+s]
+> +        out_dict =3D {"helpers": protos}
+> +        print(json.dumps(out_dict, indent=3D4))
+> +
+>  ########################################################################=
+#######
+>
+>  # If script is launched from scripts/ from kernel tree and can access
+> @@ -917,6 +939,8 @@ rst2man utility.
+>  """)
+>  argParser.add_argument('--header', action=3D'store_true',
+>                         help=3D'generate C header file')
+> +argParser.add_argument("--json", action=3D"store_true",
+> +                       help=3D"generate a JSON with information about he=
+lpers")
+>  if (os.path.isfile(bpfh)):
+>      argParser.add_argument('--filename', help=3D'path to include/uapi/li=
+nux/bpf.h',
+>                             default=3Dbpfh)
+> @@ -930,11 +954,19 @@ args =3D argParser.parse_args()
+>  headerParser =3D HeaderParser(args.filename)
+>  headerParser.run()
+>
+> -# Print formatted output to standard output.
+> +if args.header and args.json:
+> +    print("bpf_doc.py: Use --header or --json, not both")
+> +    exit(1)
+> +if args.target !=3D "helpers" and (args.header or args.json):
+> +    print("bpf_doc.py: Only helpers header/json generation is supported"=
+)
+> +    exit(1)
+> +
+>  if args.header:
+> -    if args.target !=3D 'helpers':
+> -        raise NotImplementedError('Only helpers header generation is sup=
+ported')
+> -    printer =3D PrinterHelpers(headerParser)
+> +    printer =3D PrinterHelpersHeader(headerParser)
+> +elif args.json:
+> +    printer =3D PrinterHelpersJSON(headerParser)
+>  else:
+>      printer =3D printers[args.target](headerParser)
+> +
+> +# Print formatted output to standard output.
+>  printer.print_all()
+> --
+> 2.47.1
+>
 
