@@ -1,227 +1,105 @@
-Return-Path: <bpf+bounces-57478-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57479-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 607B0AAB938
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 08:52:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46200AAB945
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 08:54:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A216B1C24B9C
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 06:47:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 011471C26D7E
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 06:49:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A539028EA46;
-	Tue,  6 May 2025 04:01:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08A62236430;
+	Tue,  6 May 2025 04:01:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mZjVU8Vf"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="gfrsILBB"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EBBC307235
-	for <bpf@vger.kernel.org>; Tue,  6 May 2025 01:59:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F2812FF2BD
+	for <bpf@vger.kernel.org>; Tue,  6 May 2025 02:20:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746496769; cv=none; b=DRxVlJMI76t3gFcS0Jznwq2wrC+vB2qr7YoFOhrzJdC3K04WBli6kpkZTUY177mb9R46mfKF41CBiXzDaruNANvud3ztydomYjfpzcynFbswnvD/ss883AnLegwVkyj+0ydCcQPWUG/u4ekfMj/KJLjtu+RuxY2anXUyHcTaX8c=
+	t=1746498043; cv=none; b=gwRIS2Z/GOQbgRKy/VRZoM24LdlWxw9HVQUFizcdcUNauZNmG/qUZoyt+l77TNUucdxLnF10N668yRNAZVNDFtuOmmbK0k1nR9vD9PKnB7JvSwCe5us3FjphTbd49sCfwem+aZ1BeXAoFc3UylNhQsyTUp6LvorcygKpbTZGakU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746496769; c=relaxed/simple;
-	bh=sGXEJ9UzTKTJ6orUxxf20O42nPHtvGlhnGXRezZo6OY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dy+E11YW2pQCKU3G2OF9z6lcBQMzzKuLiaREdlkweOkqQFvOggPQER80ocUEFX7Da2hAwXz2YPVSpHKjfgW/nbs2T5iseSz4beXNaKkEYprpmKhQjUhqJ1pwgkuB6K9uwvpbQP7uRyTggXaAqeITzVJqvKfTeJ0c8B/2mNWND0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mZjVU8Vf; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1746496765;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rKYIeM0rTydpOKf0DepkQmkMK1bRwSRWPs+8CNcvjiE=;
-	b=mZjVU8VfpLD0DMw0NQOXY3R3xtev2q7dX2YpkrgCAONrABzRUKOcjxPcJ4bmcGYY62Lsp1
-	iSg1QvAft4+GxqBYSMsWXOllhZqsWgln7HbRfz2RvIe6mxTygK3XpOQu697pkIArpMOx+Z
-	TNC8cakKxAnkWyKgmd2yYqnqN6gW6c4=
-From: Martin KaFai Lau <martin.lau@linux.dev>
-To: bpf@vger.kernel.org
-Cc: 'Alexei Starovoitov ' <ast@kernel.org>,
-	'Andrii Nakryiko ' <andrii@kernel.org>,
-	'Daniel Borkmann ' <daniel@iogearbox.net>,
-	'Kumar Kartikeya Dwivedi ' <memxor@gmail.com>,
-	'Amery Hung ' <ameryhung@gmail.com>,
-	netdev@vger.kernel.org,
-	kernel-team@meta.com
-Subject: [PATCH v2 bpf-next 8/8] selftests/bpf: Add test for bpf_list_{front,back}
-Date: Mon,  5 May 2025 18:58:55 -0700
-Message-ID: <20250506015857.817950-9-martin.lau@linux.dev>
-In-Reply-To: <20250506015857.817950-1-martin.lau@linux.dev>
-References: <20250506015857.817950-1-martin.lau@linux.dev>
+	s=arc-20240116; t=1746498043; c=relaxed/simple;
+	bh=pB/2z9gfgk2QzpmlM92q8FYnfovHFOn4LHn8HHtn3ZY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UrytcPFVRXZsRD+0gepEg0uJJVRNiv2XM6VpMdBZHuVUmXiYnAdhEy4P+wjd3ChfxYuYj5ibsf6tfIZoePPw+g+w0JR0mHF1Bl9VNPeSWQA/6ONxpIVWvsvbKu9dr9wj0aEAa5K5IN9m2hWHZddSMpOCwPX+pVpH6tpZRPyr7yY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=gfrsILBB; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-7390d21bb1cso5382595b3a.2
+        for <bpf@vger.kernel.org>; Mon, 05 May 2025 19:20:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1746498041; x=1747102841; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YCRivcMyKZAjTDZHcc+7HA18fyk8T4lAA8XlsxUQKdQ=;
+        b=gfrsILBBHx+up9yBXju5DXqKwSz/MMQeUd6C6UtCfmtCvjzCRf1VWLut1v644DXEvB
+         hRSALIMzGS1Uyo5IQMx+omHlKfLuyEzx0K7XfxXFnR/jq+EU0oeNPchAKky5gSm8REAA
+         J04iZKRcGiPPibX9D260oqUxvVQsxbZo4hR6o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746498041; x=1747102841;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YCRivcMyKZAjTDZHcc+7HA18fyk8T4lAA8XlsxUQKdQ=;
+        b=OGo/4sgEdy7AGfLhMa8zw2bxXzyZEfPex93Ciu/aW4L9dap3VUhrt80SAHNlNP0qBd
+         C950rTnaZtHMJlTOGX67Kv2Gi0mjmgJPEfSaRT7vmpW9V8w1qGArEC+BdoZefOr/gVNf
+         pAyMca2RgjCH+s1Uz5EdDar4qpzDK1dPm4FgAZmgW6xPm2UVIzLa8RF1q96RiWdzxglV
+         nlOqtL1ZieETuIaS90CGHoyJ/sYk+kX49f5YjLtkwSYPpWAxF6p9Yrs3nVpN/km53GTF
+         KD1+lpSh/WmGexBinAG8hZ6aArDwe3Xfvj9JGnZ9ZVnmHt5/IJTQoB0BBAjfIrOUzE06
+         3TcA==
+X-Forwarded-Encrypted: i=1; AJvYcCX7XWwab6ky3tuas6s8q+x9clEq/qidnSqGcKpTPW/9ndXf+VLU/wbsNxUI2fj+rz2t9aA=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzj/eLyoulZRTbw2mi4ckhyYy5GAxLtay5hP/itRd1kJkgo2O/X
+	LiixHqBJLZqT21jk/U/NxribwnVi8uee/Dv4oNeUFkVc/isLlSVprdX6O678HA==
+X-Gm-Gg: ASbGnctj6T/YPBhKqAahL5bMH4lTsnqHh8aK2goT89Ez0IMtiuQuAt+H6Jf4PEvxVm4
+	FrfNe0AuMvHKBhixT7BYMMM6Fk+q6hu0UzztBCDrBymPZ2iPxjP7WEcICzga+QRN/JHUIFBWcKG
+	NRoXqgIPzVIpz2an1CJW5ZlICJIEv6tAzetyOJbMpSlKV+qD8ErSS6ZOQ4ZLu2e2nsi4R0NENEb
+	eFITbvldGCvhvR2mrqKNl49uFpIBxJlnj7NQ4D9WuBVbNUMaKAe7P1tG7AbkDIgHfHpIs9SUMyv
+	+S4QNkmXPx9d7Di56eoeLUJax6IzhbGmVuH/lPx2EBLq
+X-Google-Smtp-Source: AGHT+IGh1OnULhXn2xtFUOqy1BCdiiwtDwGquTntDY3zBj6xTjRCCRtPqb5UQgHUOHJ7rl2HYeeMFQ==
+X-Received: by 2002:a05:6a20:2452:b0:1ee:b8bc:3d2e with SMTP id adf61e73a8af0-20cde373ebbmr24382308637.8.1746498040820;
+        Mon, 05 May 2025 19:20:40 -0700 (PDT)
+Received: from google.com ([2401:fa00:8f:203:4dd5:88f9:86cd:18ef])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b1fb3c3bfabsm6327470a12.62.2025.05.05.19.20.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 May 2025 19:20:40 -0700 (PDT)
+Date: Tue, 6 May 2025 11:20:35 +0900
+From: Sergey Senozhatsky <senozhatsky@chromium.org>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, Song Liu <song@kernel.org>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bpf: add bpf_msleep_interruptible()
+Message-ID: <6g5d4y7ahyjcrlixjkzwgn473klmdhib376q5vvvfp2kelkk6t@yz6sipuhe2lt>
+References: <20250505063918.3320164-1-senozhatsky@chromium.org>
+ <CAPhsuW7-jkU+KiunvZw9-NsxT+7ohcHQtJ6JSXNU4aDPxJLWwQ@mail.gmail.com>
+ <CAP01T74_fCpuqwPpqs0tVWAUwO3rm6D-PRC0MZjiGyqf=oXRPQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP01T74_fCpuqwPpqs0tVWAUwO3rm6D-PRC0MZjiGyqf=oXRPQ@mail.gmail.com>
 
-From: Martin KaFai Lau <martin.lau@kernel.org>
+On (25/05/05 21:30), Kumar Kartikeya Dwivedi wrote:
+> On Mon, 5 May 2025 at 21:07, Song Liu <song@kernel.org> wrote:
+> > Please keep in mind that BPF programs run in not sleepable
+> > contexts, including NMIs. Maybe udelay() is a better option?
 
-This patch adds the "list_peek" test to use the new
-bpf_list_{front,back} kfunc.
+If we want to timeout various SCSI operations, for instance, I think
+we need to sleep for seconds.  udelay() won't probably work for that.
 
-The test_{front,back}* tests ensure that the return value
-is a non_own_ref node pointer and requires the spinlock to be held.
+> Or mark the kfunc KF_SLEEPABLE, IIUC the intention is to use it from
+> hooks which are sleepable.
 
-Suggested-by: Kumar Kartikeya Dwivedi <memxor@gmail.com> # check non_own_ref marking
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
----
- .../selftests/bpf/prog_tests/linked_list.c    |   6 +
- .../selftests/bpf/progs/linked_list_peek.c    | 113 ++++++++++++++++++
- 2 files changed, 119 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/linked_list_peek.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/linked_list.c b/tools/testing/selftests/bpf/prog_tests/linked_list.c
-index 77d07e0a4a55..5266c7022863 100644
---- a/tools/testing/selftests/bpf/prog_tests/linked_list.c
-+++ b/tools/testing/selftests/bpf/prog_tests/linked_list.c
-@@ -7,6 +7,7 @@
- 
- #include "linked_list.skel.h"
- #include "linked_list_fail.skel.h"
-+#include "linked_list_peek.skel.h"
- 
- static char log_buf[1024 * 1024];
- 
-@@ -805,3 +806,8 @@ void test_linked_list(void)
- 	test_linked_list_success(LIST_IN_LIST, true);
- 	test_linked_list_success(TEST_ALL, false);
- }
-+
-+void test_linked_list_peek(void)
-+{
-+	RUN_TESTS(linked_list_peek);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/linked_list_peek.c b/tools/testing/selftests/bpf/progs/linked_list_peek.c
-new file mode 100644
-index 000000000000..264e81bfb287
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/linked_list_peek.c
-@@ -0,0 +1,113 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+#include "bpf_experimental.h"
-+
-+struct node_data {
-+	struct bpf_list_node l;
-+	int key;
-+};
-+
-+#define private(name) SEC(".data." #name) __hidden __attribute__((aligned(8)))
-+private(A) struct bpf_spin_lock glock;
-+private(A) struct bpf_list_head ghead __contains(node_data, l);
-+
-+#define list_entry(ptr, type, member) container_of(ptr, type, member)
-+#define NR_NODES 16
-+
-+int zero = 0;
-+
-+SEC("syscall")
-+__retval(0)
-+long list_peek(void *ctx)
-+{
-+	struct bpf_list_node *l_n;
-+	struct node_data *n;
-+	int i, err = 0;
-+
-+	bpf_spin_lock(&glock);
-+	l_n = bpf_list_front(&ghead);
-+	bpf_spin_unlock(&glock);
-+	if (l_n)
-+		return __LINE__;
-+
-+	bpf_spin_lock(&glock);
-+	l_n = bpf_list_back(&ghead);
-+	bpf_spin_unlock(&glock);
-+	if (l_n)
-+		return __LINE__;
-+
-+	for (i = zero; i < NR_NODES && can_loop; i++) {
-+		n = bpf_obj_new(typeof(*n));
-+		if (!n)
-+			return __LINE__;
-+		n->key = i;
-+		bpf_spin_lock(&glock);
-+		bpf_list_push_back(&ghead, &n->l);
-+		bpf_spin_unlock(&glock);
-+	}
-+
-+	bpf_spin_lock(&glock);
-+
-+	l_n = bpf_list_front(&ghead);
-+	if (!l_n) {
-+		err = __LINE__;
-+		goto done;
-+	}
-+
-+	n = list_entry(l_n, struct node_data, l);
-+	if (n->key != 0) {
-+		err = __LINE__;
-+		goto done;
-+	}
-+
-+	l_n = bpf_list_back(&ghead);
-+	if (!l_n) {
-+		err = __LINE__;
-+		goto done;
-+	}
-+
-+	n = list_entry(l_n, struct node_data, l);
-+	if (n->key != NR_NODES - 1) {
-+		err = __LINE__;
-+		goto done;
-+	}
-+
-+done:
-+	bpf_spin_unlock(&glock);
-+	return err;
-+}
-+
-+#define TEST_FB(op, dolock)					\
-+SEC("syscall")							\
-+__failure __msg(MSG)						\
-+long test_##op##_spinlock_##dolock(void *ctx)			\
-+{								\
-+	struct bpf_list_node *l_n;				\
-+	__u64 jiffies = 0;					\
-+								\
-+	if (dolock)						\
-+		bpf_spin_lock(&glock);				\
-+	l_n = bpf_list_##op(&ghead);				\
-+	if (l_n)						\
-+		jiffies = bpf_jiffies64();			\
-+	if (dolock)						\
-+		bpf_spin_unlock(&glock);			\
-+								\
-+	return !!jiffies;					\
-+}
-+
-+#define MSG "call bpf_list_{{(front|back).+}}; R0{{(_w)?}}=ptr_or_null_node_data(id={{[0-9]+}},non_own_ref"
-+TEST_FB(front, true)
-+TEST_FB(back, true)
-+#undef MSG
-+
-+#define MSG "bpf_spin_lock at off=0 must be held for bpf_list_head"
-+TEST_FB(front, false)
-+TEST_FB(back, false)
-+#undef MSG
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.47.1
-
+I think it is already marked as KF_SLEEPABLE.
 
