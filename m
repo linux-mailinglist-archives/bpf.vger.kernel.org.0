@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-57518-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57519-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0985CAAC71E
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 15:57:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4D47AAC71F
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 15:57:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F146500EEA
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 13:57:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B0AB4A78A4
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 13:58:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85B1F281369;
-	Tue,  6 May 2025 13:57:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF0BE281358;
+	Tue,  6 May 2025 13:57:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="crFuRmYe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X9uMmFz+"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F04B128031F;
-	Tue,  6 May 2025 13:57:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 439F0280A3D;
+	Tue,  6 May 2025 13:57:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746539864; cv=none; b=sqAVaW3pkvqhLqAM6qwnQ1cctfV2k02+LsbLYZDW1vwTJH5iJD8lv6jRv7OdxUnjvBTebY64XB8a1l7lsWqC9Oad5z8PH/b8AFfCC8VTvtB7Wf+Lkpl7SC400LeM8ve2cYcyNCY7BzplxezdFNKWSH4sQ5cRSSl+SxkAqMFrtVw=
+	t=1746539873; cv=none; b=i71lewrwUf5JJKCBpGGvAgSx9g/Us0ngOBL6jZzL6RVxWWqZxkfy7UMQkSN13EsdvTfOpoclHG5epiBkENZJGXzgkBMR2YDwpnvKLcGu1kH8zMtpm/4Ql3IEOxhDcRVgE2Ca62UICXTf8VCwTrV4OMV9IJmnujN7PcudzfKnKhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746539864; c=relaxed/simple;
-	bh=sW13kym7zx4ViDbOcnm3+ukXceFDUUFLgexbLiiJ7iw=;
+	s=arc-20240116; t=1746539873; c=relaxed/simple;
+	bh=gR4OD8QUFHK7s24r6f84weBoj6MO4n2JSGsb1Lnw4lI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=o+LEFVsY3DzruL6nuUC4MUELK4TC7O107nn22xoFnZESj5eXTxtKz2Qp7aqxPIJKxbkZczUFtCc4A6GpVZovDQNowgkXCABIGC3xH0wO7FTaGGMWo8pSTb3Ttp99VBbJ0JU3cxpZz5RuAfIOjjhAfa7k5obhgyYJy6CUC7f6Guk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=crFuRmYe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 897DAC4CEE4;
-	Tue,  6 May 2025 13:57:39 +0000 (UTC)
+	 MIME-Version; b=IOM0MvxWYUFlDz/USV8St7C8aoNZDsEAuk7xX60YHTXzqwyr3hSlOsqyLFhmk9V7bXeSpyxywxT4XVcYRIlUjDSuVbiM7PyDtEQfdA/k5TncB1KXWmk2wOa9f7SfxdSGy5Hf/P7HJYvn+sLMVkIsmzqtsWqDjk2ta8n5Mnwtqcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X9uMmFz+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB82AC4CEE4;
+	Tue,  6 May 2025 13:57:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746539862;
-	bh=sW13kym7zx4ViDbOcnm3+ukXceFDUUFLgexbLiiJ7iw=;
+	s=k20201202; t=1746539872;
+	bh=gR4OD8QUFHK7s24r6f84weBoj6MO4n2JSGsb1Lnw4lI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=crFuRmYeD62bNWCi1p2/vdyxVh6Zc6qzw7So6XMPd18NGPKZGmz60G9X4W6XVut86
-	 u3hfQV2zF/DSNQmzxxpZGD1AGLcK3pVQQ3X9V0KFz5ZqIwZKuaY82DHWjpIxhZlSMf
-	 WydW6Y9QXYWgY66EovgD9uaq0YwgYPQVqIwYDjgZAaizyiTrn0HmK1aIxzvNoojGHA
-	 G50LlKk6wNJzyGBFMbcVuZnJoya2J+ag3D6LQBO+casJwprE149uLxuqWvgSXRDgAk
-	 G4iWfJdsGWA5SPcyePT/AOSWMm/uVHaijMtmmX93tuwZnJW3gnTrE/7Xceo5lBZ2C9
-	 41U34XExgjPnQ==
+	b=X9uMmFz+gEb5AgQP96J0nUfFQzHhLATeAPThd63TBqMpUIkQWgHXOoABfa0IohQMr
+	 FzqDx4bTlTgjMxS0RyMB/XlEaecxXQE/9p7SI7WUhOQh/J6dGzYlgTa0/xQI3yFOh1
+	 7lULbn5ztvWrEKIsBTvUaaUQx8WR1rpvxK8E5Hg46/maJKexNvw6KZ12E2tun2WiTQ
+	 OcMICuZnZUIXBfHYGUJbWai4oDHDi8bXU0UttHjVxJyKywF5S6lGjsKrMP8p5hi4Qw
+	 LhdHGnTfRei89i0FE80neuXtP9Dt0+KfqLMpMbPFnoPVlcgsCxNLsTHaQcZqqUr1xI
+	 Jbts+6DsaXrOQ==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -54,9 +54,9 @@ Cc: bpf@vger.kernel.org,
 	Hao Luo <haoluo@google.com>,
 	Yafang Shao <laoar.shao@gmail.com>,
 	Quentin Monnet <qmo@kernel.org>
-Subject: [PATCH bpf-next 1/3] bpf: Add support to retrieve ref_ctr_offset for uprobe perf link
-Date: Tue,  6 May 2025 15:57:25 +0200
-Message-ID: <20250506135727.3977467-2-jolsa@kernel.org>
+Subject: [PATCH bpf-next 2/3] selftests/bpf: Add link info test for ref_ctr_offset retrieval
+Date: Tue,  6 May 2025 15:57:26 +0200
+Message-ID: <20250506135727.3977467-3-jolsa@kernel.org>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250506135727.3977467-1-jolsa@kernel.org>
 References: <20250506135727.3977467-1-jolsa@kernel.org>
@@ -68,83 +68,69 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding support to retrieve ref_ctr_offset for uprobe perf link,
-which got somehow omitted from the initial uprobe link info changes.
+Adding link info test for ref_ctr_offset retrieval for both
+uprobe and uretprobe probes.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- include/uapi/linux/bpf.h       | 1 +
- kernel/bpf/syscall.c           | 5 +++--
- kernel/trace/trace_uprobe.c    | 2 +-
- tools/include/uapi/linux/bpf.h | 1 +
- 4 files changed, 6 insertions(+), 3 deletions(-)
+ .../selftests/bpf/prog_tests/fill_link_info.c  | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 71d5ac83cf5d..16e95398c91c 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -6724,6 +6724,7 @@ struct bpf_link_info {
- 					__u32 name_len;
- 					__u32 offset; /* offset from file_name */
- 					__u64 cookie;
-+					__u64 ref_ctr_offset;
- 				} uprobe; /* BPF_PERF_EVENT_UPROBE, BPF_PERF_EVENT_URETPROBE */
- 				struct {
- 					__aligned_u64 func_name; /* in/out */
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index df33d19c5c3b..4b5f29168618 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -3800,14 +3800,14 @@ static int bpf_perf_link_fill_kprobe(const struct perf_event *event,
- static int bpf_perf_link_fill_uprobe(const struct perf_event *event,
- 				     struct bpf_link_info *info)
+diff --git a/tools/testing/selftests/bpf/prog_tests/fill_link_info.c b/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
+index e59af2aa6601..e40114620751 100644
+--- a/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
++++ b/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
+@@ -37,6 +37,7 @@ static noinline void uprobe_func(void)
+ static int verify_perf_link_info(int fd, enum bpf_perf_event_type type, long addr,
+ 				 ssize_t offset, ssize_t entry_offset)
  {
-+	u64 ref_ctr_offset, offset;
- 	char __user *uname;
--	u64 addr, offset;
- 	u32 ulen, type;
- 	int err;
++	ssize_t ref_ctr_offset = entry_offset /* ref_ctr_offset for uprobes */;
+ 	struct bpf_link_info info;
+ 	__u32 len = sizeof(info);
+ 	char buf[PATH_MAX];
+@@ -97,6 +98,7 @@ static int verify_perf_link_info(int fd, enum bpf_perf_event_type type, long add
+ 	case BPF_PERF_EVENT_UPROBE:
+ 	case BPF_PERF_EVENT_URETPROBE:
+ 		ASSERT_EQ(info.perf_event.uprobe.offset, offset, "uprobe_offset");
++		ASSERT_EQ(info.perf_event.uprobe.ref_ctr_offset, ref_ctr_offset, "uprobe_ref_ctr_offset");
  
- 	uname = u64_to_user_ptr(info->perf_event.uprobe.file_name);
- 	ulen = info->perf_event.uprobe.name_len;
--	err = bpf_perf_link_fill_common(event, uname, &ulen, &offset, &addr,
-+	err = bpf_perf_link_fill_common(event, uname, &ulen, &offset, &ref_ctr_offset,
- 					&type, NULL);
- 	if (err)
- 		return err;
-@@ -3819,6 +3819,7 @@ static int bpf_perf_link_fill_uprobe(const struct perf_event *event,
- 	info->perf_event.uprobe.name_len = ulen;
- 	info->perf_event.uprobe.offset = offset;
- 	info->perf_event.uprobe.cookie = event->bpf_cookie;
-+	info->perf_event.uprobe.ref_ctr_offset = ref_ctr_offset;
- 	return 0;
+ 		ASSERT_EQ(info.perf_event.uprobe.name_len, strlen(UPROBE_FILE) + 1,
+ 				  "name_len");
+@@ -241,20 +243,32 @@ static void test_uprobe_fill_link_info(struct test_fill_link_info *skel,
+ 		.retprobe = type == BPF_PERF_EVENT_URETPROBE,
+ 		.bpf_cookie = PERF_EVENT_COOKIE,
+ 	);
++	const char *sema[1] = {
++		"uprobe_link_info_sema_1",
++	};
++	__u64 *ref_ctr_offset;
+ 	struct bpf_link *link;
+ 	int link_fd, err;
+ 
++	err = elf_resolve_syms_offsets("/proc/self/exe", 1, sema,
++				       (unsigned long **) &ref_ctr_offset, STT_OBJECT);
++	if (!ASSERT_OK(err, "elf_resolve_syms_offsets_object"))
++		return;
++
++	opts.ref_ctr_offset = *ref_ctr_offset;
+ 	link = bpf_program__attach_uprobe_opts(skel->progs.uprobe_run,
+ 					       0, /* self pid */
+ 					       UPROBE_FILE, uprobe_offset,
+ 					       &opts);
+ 	if (!ASSERT_OK_PTR(link, "attach_uprobe"))
+-		return;
++		goto out;
+ 
+ 	link_fd = bpf_link__fd(link);
+-	err = verify_perf_link_info(link_fd, type, 0, uprobe_offset, 0);
++	err = verify_perf_link_info(link_fd, type, 0, uprobe_offset, *ref_ctr_offset);
+ 	ASSERT_OK(err, "verify_perf_link_info");
+ 	bpf_link__destroy(link);
++out:
++	free(ref_ctr_offset);
  }
- #endif
-diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-index 3386439ec9f6..d9cf6ed2c106 100644
---- a/kernel/trace/trace_uprobe.c
-+++ b/kernel/trace/trace_uprobe.c
-@@ -1489,7 +1489,7 @@ int bpf_get_uprobe_info(const struct perf_event *event, u32 *fd_type,
- 				    : BPF_FD_TYPE_UPROBE;
- 	*filename = tu->filename;
- 	*probe_offset = tu->offset;
--	*probe_addr = 0;
-+	*probe_addr = tu->ref_ctr_offset;
- 	return 0;
- }
- #endif	/* CONFIG_PERF_EVENTS */
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 71d5ac83cf5d..16e95398c91c 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -6724,6 +6724,7 @@ struct bpf_link_info {
- 					__u32 name_len;
- 					__u32 offset; /* offset from file_name */
- 					__u64 cookie;
-+					__u64 ref_ctr_offset;
- 				} uprobe; /* BPF_PERF_EVENT_UPROBE, BPF_PERF_EVENT_URETPROBE */
- 				struct {
- 					__aligned_u64 func_name; /* in/out */
+ 
+ static int verify_kmulti_link_info(int fd, bool retprobe, bool has_cookies)
 -- 
 2.49.0
 
