@@ -1,294 +1,165 @@
-Return-Path: <bpf+bounces-57465-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57466-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E550AAB8D0
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 08:43:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB120AAB91F
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 08:50:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CA4B1C236DA
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 06:35:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 473C53B0DE6
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 06:36:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D351A2C0861;
-	Tue,  6 May 2025 03:50:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D18332B2BC;
+	Tue,  6 May 2025 03:53:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wn4LPFD0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NWPsFDxv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06A8734B1C6
-	for <bpf@vger.kernel.org>; Tue,  6 May 2025 00:49:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB719350156;
+	Tue,  6 May 2025 00:57:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746492602; cv=none; b=eNxBcvu9RFJyOsuHLCnLakPCHnc4soHjQNHT9r4ySeoO4zpOgX3AMA6vtY3WSLY9vB8/GAAR5PPE2WXWzVYB1yXNfWIaaozeCR4OCFcJwglmjJAtGUsoOBWlnWMDaF58P0kEwU57nw2GOlbfqsuKuoIOpQCwHD5q2bbTDClCCZc=
+	t=1746493024; cv=none; b=ClXDU069teHgpXzffefqYCX8IMPHXldQ0QNTG9PatTC917fW24yDrElDlu/R9cv45VD7JWmti0IL/u4LXw9aK1lojVKs72166Npa8rfMiiOUineIDcDtYJQhv2Fih+T0MpG9YzD3QOtNZRb0Thz9OJucfChZ7P8u4hu/mfklx/M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746492602; c=relaxed/simple;
-	bh=ROqN3bqj9DMJkHiAwBT1hk9SChj1QsDOOzZ1LMkNcss=;
+	s=arc-20240116; t=1746493024; c=relaxed/simple;
+	bh=WJ5N3hpgmYKXtAvoAQtuBt6dpWd9vR5puNnmvUo5hIA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LA5wsacWJhHip7n6A7Uql72NrJdVKpfLH/xIuP7Cf4dfqyAT4hSzwCD6xQPkCTUy5bKEUwAiUlZ5wmjeBnjG43QwNAU86V5eg3Xz8XxaZvQI1zzFAG6o11J8vrDH4e+B50u+6FmmrSXpdhsN079l5JLLbzNiJ6X2zEw0gL2+Z1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Wn4LPFD0; arc=none smtp.client-ip=209.85.221.54
+	 To:Cc:Content-Type; b=lA9OVbxUiKdHGusdK5dL3PUHnnWuDh2a3F8J4syFAGDDSzdR31c2W6EFjWSXJuIlCWmOEBAxQysOQsywXMrFlezOsNM6v8GFNfCPd6tE8W3CwX8iCA03KBybZqx8iCGsFTsmmOPpudZ9OzIYgHrMZ9tNJDzkmM1/EoFZj2LnCnw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NWPsFDxv; arc=none smtp.client-ip=209.85.221.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-39c1ee0fd43so5313755f8f.0
-        for <bpf@vger.kernel.org>; Mon, 05 May 2025 17:49:59 -0700 (PDT)
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-39bf44be22fso3389146f8f.0;
+        Mon, 05 May 2025 17:57:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746492598; x=1747097398; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1746493020; x=1747097820; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3kYkFCBBmPy4T85wpFGmROsEJALC7bO/4xMlhN5NF/o=;
-        b=Wn4LPFD0CgpVfoYedP8aljX//rpB9kuehV/hF0LYtijUNEP8PEZeyoIE2juGAr7VNK
-         yTD57Wb06HYgS3tAq5FFCIm5CAd4RB/O/mIu4ycihGdCSaLq3eEw69o7riZcrjwpjzMF
-         DCnkdw49GD/wuWvPNe31Y3kRhAp9QubvBFDyGkIJt5yBDPehjvMSmew88TsblcmpVQdw
-         2fxrXCexAELFhxB7mS1zyw1usNpsH7Eb7z1swLDgClDt9Uk0I9Xfw7pKydr1o43Bzc9k
-         OLWsBU4gQdMbwrz3mPAU6vNcBT1VHJirhGjCqBymigJUOxNJi9ODUq6Pl0gti4nyVpKk
-         oDEw==
+        bh=NG56sgydZqZDSI93ssWFt8es69R/8NDv+wgZ7H1Zg5M=;
+        b=NWPsFDxvwAAbihX7mz9EpN5XcLam1G2od3qcy2QZS9vdDgaQ+Y78UvcyWg/hBYjt0q
+         gIcqyTxQ9FeNucPcagNVXHBV+rc8AM5sZ0b+kpc7AG4sov4FeZPoPJnFiVKP/NAHGFdA
+         FB/H0Zf7UfoJuE3cu0nS6jhEzXjq54BE3t6J/xvFDzIv7E2SYqfwH7qRgbvvlTy+sB4k
+         Lwt8AiEZ1+RY8TmDa966crOHew617mt5vOsI8dui7dNIYAQyjdaHVZD+xNDwMmn78F26
+         6EbKYSDi6q6uZbIItsNiwbGhiIwk0JPh+GLF1fAbVz4N5uRk57aWadBOaoSq/DTHuov9
+         0gWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746492598; x=1747097398;
+        d=1e100.net; s=20230601; t=1746493020; x=1747097820;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3kYkFCBBmPy4T85wpFGmROsEJALC7bO/4xMlhN5NF/o=;
-        b=Bc+h6q0raO39HEVKl7oOVyWRgK/TJGJe0kMEValOn6dxjZfHWntORoFFUY5/5unN/8
-         uhbh8Y3+tbznpJSOk+Hzb7zUADoBHDZfrZ3DQ8Q2lOcVbq2vgVqoYQty/hTELbhT5bAw
-         2d5eBN59Bb52GsfHJdvFqMZhzkGX/44DKIAGOgM9h2Zeba0JEVDK1RSSHX4oA2YFbI+d
-         3kUIt/u5NzoTeHwCPNOwztCeHXnVTLVvMRSGpRvPlBI6Tte3w/dJQzsa5IkBG7sL/flP
-         OPR3L3lJfe6Hqj3ZYuKmYVRc5CWuh1vJkdjJpQU5QQRlaKUcmAAsdiuKv4jnX/u+HswY
-         9pJQ==
-X-Gm-Message-State: AOJu0YwIF0AZPPPvDAShNa1By2y48Jt15UZzU5z5/ZmF4pjBwwOT/+6t
-	boDLZUpLAj4h5tyrjGxa0oYUPH9uy00tu/p745ZVDLuLY1PZM2h/VKvslvSiFCngBlyH3tuwDt0
-	Sez3mF0PVvrGKV1tDD8/Xfj9nA9A=
-X-Gm-Gg: ASbGncu9RwXFyJ8H0l9KZ7QHsNGtJNQBcDQlRvp5GNcZu8wzeMbgf91OrS2ZbdA9RIL
-	N4NtFbTUu8YexBNzjvCLnt5aDinM9RcUGHpnhwy6+g0CfrfnMT2FQX7RYOe87GV++hZ9JuteSvT
-	fLJmMci5BxmJEl4EEfQotytEoFZ13nTcRh4Bp4z8rDBmhFag8IbdvkcQw5LHHO
-X-Google-Smtp-Source: AGHT+IGtZ9BU5HYCpKD3bvs4zRGF35ibOXCV2qyV/g+kztcZM0YAg1VBYIQuGLc1PUJI/IOlo0HLJG/oqSWKY280NX8=
-X-Received: by 2002:a05:6000:1449:b0:3a0:80bf:b4e3 with SMTP id
- ffacd0b85a97d-3a0ac3ec4d6mr622651f8f.58.1746492598119; Mon, 05 May 2025
- 17:49:58 -0700 (PDT)
+        bh=NG56sgydZqZDSI93ssWFt8es69R/8NDv+wgZ7H1Zg5M=;
+        b=WIdjygJ8gPQO8WxeOFahqkFDd6aCME0VOgxdzRuo5p7FQTwMEhH/ZW1DlyrtYX2s2/
+         CXkoCYV7bVgnCRXkxR0l5yyhw32jLnI1ge9qnQgLVy5qC5Q9LhxV7EOMPCjCAYkIW1PJ
+         +zch4K7VYfm5WltxwHHABIY/cPpHuYSo/gGMysnhbFKeSMJbPL32zw58+LfLCTfVnkYY
+         3H4XsD9x62V/YOb7OlEbk6toD4kNdTqIjhqLT56VXdaiiSuk6Ad4yh7YAKbn9UDnsS7r
+         LTAKgKv4PYs56vP5Xlq01I7OGJXYgROmaqKLGyebjdw8qhB3VMaypMlvY0YOlX/WXkT7
+         syTw==
+X-Forwarded-Encrypted: i=1; AJvYcCVMaL4CAZp0gDTJVo8pOJYx7BTMTFsW3ABWfpLVpD5ksnhccHDiohlpN+wUX4T9m3gPTD5C1tRnCA==@vger.kernel.org, AJvYcCWJhZYUTzxPiS9e7oOeUrsAe0mhGt2YSw5UP3LxAnVKHGYByX8BABZPcnBSzSYgy+aSFvw=@vger.kernel.org, AJvYcCXjh61v2fcrjhYaimWg0iruAngTV1uIAgmHKg3Vhmwsn8Iuf0Nlxt9iZnCGX3rmuuO3uO6syZPS@vger.kernel.org, AJvYcCXlorQzWl74yOvMjyfxIkWtAccmU+htrkgz/P9zYV8mZHRSLhrTMYZ9JHBQvffCimsBvieXyloKG/vOLzgjq/jZEeOO1Jp7@vger.kernel.org
+X-Gm-Message-State: AOJu0YxfpF007L7xBDWrTBAtn0ovSFwxfAw+U8hmRtBNZ3wfwy8maVWn
+	TlXsdTYflyhHFt/zIeIE5qy+bMCvhIHMmTo4PHxJQ5sTa9sPGdG8lwsAghKdhUUfbT4MrpaF7Tt
+	ow/DO77UEbvpHLBb1rzX+ScIkdu8=
+X-Gm-Gg: ASbGnctTXiu/ErsJKHU5OWThKfRjytp9OHK/e/oNt2W4BuBodpoTfxIpiflDJACwfWQ
+	X1ZcAHxbfWEvScuRADiRADp3rk903S/3exDgNVfV39m8hYmLKz851lFvHdH0Sk5/ojfSoAbHUDM
+	we9iKHfveUVtLdI7su0MAgY8cqb5kI5YPDxeNmFDkpujyPlsVijU8Q+kF29Pq1
+X-Google-Smtp-Source: AGHT+IFmq92gXDyJ4tG7YRwzhLFbPsIymRx1JYkBfkuzkB8bzfB0NsMIXg9vTiXFzK0daiHD2Viir2BOAVh6NAVWprM=
+X-Received: by 2002:a05:6000:18af:b0:39c:30f9:339c with SMTP id
+ ffacd0b85a97d-3a0ac0ec442mr710518f8f.28.1746493019898; Mon, 05 May 2025
+ 17:56:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250501032718.65476-1-alexei.starovoitov@gmail.com>
- <20250501032718.65476-7-alexei.starovoitov@gmail.com> <a74hjevi7tyq36vekcft7mlfdgwtcg6ddvr3bekb3amcf4fiuc@z7xszkyjcrbb>
-In-Reply-To: <a74hjevi7tyq36vekcft7mlfdgwtcg6ddvr3bekb3amcf4fiuc@z7xszkyjcrbb>
+References: <CAADnVQK1t3ZqERODdHJM_HaZDMm+JH4OFvwTsLNqZG0=4SQQcA@mail.gmail.com.txt>
+ <20250506004550.67917-1-kuniyu@amazon.com>
+In-Reply-To: <20250506004550.67917-1-kuniyu@amazon.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 5 May 2025 17:49:47 -0700
-X-Gm-Features: ATxdqUHN4s32Fei5KXYAx2bOJLl9c4dX97Sy3yVQojA0qLJvMHYB9wpx_n7B3WE
-Message-ID: <CAADnVQ+OroM-auGvC7GPzaOUz90zHktF545BC7wRz5s_tW6z4w@mail.gmail.com>
-Subject: Re: [PATCH 6/6] slab: Introduce kmalloc_nolock() and kfree_nolock().
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
-	Vlastimil Babka <vbabka@suse.cz>, Harry Yoo <harry.yoo@oracle.com>, Michal Hocko <mhocko@suse.com>, 
-	Sebastian Sewior <bigeasy@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Matthew Wilcox <willy@infradead.org>
+Date: Mon, 5 May 2025 17:56:49 -0700
+X-Gm-Features: ATxdqUE--sGACWHpoTDfN6Z19YjKVfIMpJPMpn9rpWA5hJnc1H25_PoxJfzy7Ls
+Message-ID: <CAADnVQ+bk8Qt=Zo4S2MZxB+O4G4q_EXB4P0BtJ3LjgbJuY_9_w@mail.gmail.com>
+Subject: Re: [PATCH v1 bpf-next 4/5] bpf: Add kfunc to scrub SCM_RIGHTS at security_unix_may_send().
+To: Kuniyuki Iwashima <kuniyu@amazon.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Christian Brauner <brauner@kernel.org>, Casey Schaufler <casey@schaufler-ca.com>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Eduard <eddyz87@gmail.com>, 
+	=?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>, 
+	Hao Luo <haoluo@google.com>, James Morris <jmorris@namei.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
+	KP Singh <kpsingh@kernel.org>, Kuniyuki Iwashima <kuni1840@gmail.com>, 
+	LSM List <linux-security-module@vger.kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
+	Network Development <netdev@vger.kernel.org>, Ondrej Mosnacek <omosnace@redhat.com>, 
+	Paul Moore <paul@paul-moore.com>, Stanislav Fomichev <sdf@fomichev.me>, selinux@vger.kernel.org, 
+	"Serge E . Hallyn" <serge@hallyn.com>, Song Liu <song@kernel.org>, 
+	Stephen Smalley <stephen.smalley.work@gmail.com>, Yonghong Song <yonghong.song@linux.dev>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, May 5, 2025 at 11:46=E2=80=AFAM Shakeel Butt <shakeel.butt@linux.de=
-v> wrote:
+On Mon, May 5, 2025 at 5:46=E2=80=AFPM Kuniyuki Iwashima <kuniyu@amazon.com=
+> wrote:
 >
-> On Wed, Apr 30, 2025 at 08:27:18PM -0700, Alexei Starovoitov wrote:
-> > From: Alexei Starovoitov <ast@kernel.org>
+> From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> Date: Mon, 5 May 2025 17:13:32 -0700
+> > On Mon, May 5, 2025 at 3:00=E2=80=AFPM Kuniyuki Iwashima <kuniyu@amazon=
+.com> wrote:
+> > >
+> > > As Christian Brauner said [0], systemd calls cmsg_close_all() [1] aft=
+er
+> > > each recvmsg() to close() unwanted file descriptors sent via SCM_RIGH=
+TS.
+> > >
+> > > However, this cannot work around the issue that close() for unwanted =
+file
+> > > descriptors could block longer because the last fput() could occur on
+> > > the receiver side once sendmsg() with SCM_RIGHTS succeeds.
+> > >
+> > > Also, even filtering by LSM at recvmsg() does not work for the same r=
+eason.
+> > >
+> > > Thus, we need a better way to filter SCM_RIGHTS on the sender side.
+> > >
+> > > Let's add a new kfunc to scrub all file descriptors from skb in
+> > > sendmsg().
+> > >
+> > > This allows the receiver to keep recv()ing the bare data and disallow=
+s
+> > > the sender to impose the potential slowness of the last fput().
+> > >
+> > > If necessary, we can add more granular filtering per file descriptor
+> > > after refactoring GC code and adding some fd-to-file helpers for BPF.
+> > >
+> > > Sample:
+> > >
+> > > SEC("lsm/unix_may_send")
+> > > int BPF_PROG(unix_scrub_scm_rights,
+> > >              struct socket *sock, struct socket *other, struct sk_buf=
+f *skb)
+> > > {
+> > >         struct unix_skb_parms *cb;
+> > >
+> > >         if (skb && bpf_unix_scrub_fds(skb))
+> > >                 return -EPERM;
+> > >
+> > >         return 0;
+> > > }
 > >
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -595,7 +595,13 @@ static inline void memcg_rstat_updated(struct mem_=
-cgroup *memcg, int val)
-> >       if (!val)
-> >               return;
-> >
-> > -     cgroup_rstat_updated(memcg->css.cgroup, cpu);
-> > +     /*
-> > +      * If called from NMI via kmalloc_nolock -> memcg_slab_post_alloc=
-_hook
-> > +      * -> obj_cgroup_charge -> mod_memcg_state,
-> > +      * then delay the update.
-> > +      */
-> > +     if (!in_nmi())
-> > +             cgroup_rstat_updated(memcg->css.cgroup, cpu);
+> > Any other programmability do you need there?
 >
-> I don't think we can just ignore cgroup_rstat_updated() for nmi as there
-> is a chance (though very small) that we will loose these stats updates.
-
-I'm failing to understand why it's an issue.
-Not doing cgroup_rstat_updated() can only cause updated_next link
-to stay NULL when it should be set,
-but it should be harmless, and no different from racy check
-that the code already doing:
-if (data_race(cgroup_rstat_cpu(cgrp, cpu)->updated_next))
-  return;
-
-Imaging it was !NULL, the code would return,
-but then preemption, something clears it to NULL,
-and here we're skipping a set of updated_next.
-
-> In addition, memcg_rstat_updated() itself is not reentrant safe along
-> with couple of functions leading to it like __mod_memcg_lruvec_state().
-
-Sure. __mod_memcg_lruvec_state() is not reentrant,
-but it's not an issue for kmalloc_nolock(), since objcg/memcg
-charge/uncharge from slub is not calling it (as far as I can tell).
-
+> This is kind of PoC, and as Kumar mentioned, per-fd scrubbing
+> is ideal to cover the real use cases.
 >
-> >       statc =3D this_cpu_ptr(memcg->vmstats_percpu);
-> >       for (; statc; statc =3D statc->parent) {
-> >               /*
-> > @@ -2895,7 +2901,7 @@ static bool consume_obj_stock(struct obj_cgroup *=
-objcg, unsigned int nr_bytes,
-> >       unsigned long flags;
-> >       bool ret =3D false;
-> >
-> > -     local_lock_irqsave(&memcg_stock.stock_lock, flags);
-> > +     local_lock_irqsave_check(&memcg_stock.stock_lock, flags);
-> >
-> >       stock =3D this_cpu_ptr(&memcg_stock);
-> >       if (objcg =3D=3D READ_ONCE(stock->cached_objcg) && stock->nr_byte=
-s >=3D nr_bytes) {
-> > @@ -2995,7 +3001,7 @@ static void refill_obj_stock(struct obj_cgroup *o=
-bjcg, unsigned int nr_bytes,
-> >       unsigned long flags;
-> >       unsigned int nr_pages =3D 0;
-> >
-> > -     local_lock_irqsave(&memcg_stock.stock_lock, flags);
-> > +     local_lock_irqsave_check(&memcg_stock.stock_lock, flags);
-> >
-> >       stock =3D this_cpu_ptr(&memcg_stock);
-> >       if (READ_ONCE(stock->cached_objcg) !=3D objcg) { /* reset if nece=
-ssary */
-> > @@ -3088,6 +3094,27 @@ static inline size_t obj_full_size(struct kmem_c=
-ache *s)
-> >       return s->size + sizeof(struct obj_cgroup *);
-> >  }
-> >
-> > +/*
-> > + * Try subtract from nr_charged_bytes without making it negative
-> > + */
-> > +static bool obj_cgroup_charge_atomic(struct obj_cgroup *objcg, gfp_t f=
-lags, size_t sz)
-> > +{
-> > +     size_t old =3D atomic_read(&objcg->nr_charged_bytes);
-> > +     u32 nr_pages =3D sz >> PAGE_SHIFT;
-> > +     u32 nr_bytes =3D sz & (PAGE_SIZE - 1);
-> > +
-> > +     if ((ssize_t)(old - sz) >=3D 0 &&
-> > +         atomic_cmpxchg(&objcg->nr_charged_bytes, old, old - sz) =3D=
-=3D old)
-> > +             return true;
-> > +
-> > +     nr_pages++;
-> > +     if (obj_cgroup_charge_pages(objcg, flags, nr_pages))
-> > +             return false;
-> > +
-> > +     atomic_add(PAGE_SIZE - nr_bytes, &objcg->nr_charged_bytes);
-> > +     return true;
-> > +}
-> > +
-> >  bool __memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lr=
-u *lru,
-> >                                 gfp_t flags, size_t size, void **p)
-> >  {
-> > @@ -3128,6 +3155,21 @@ bool __memcg_slab_post_alloc_hook(struct kmem_ca=
-che *s, struct list_lru *lru,
-> >                       return false;
-> >       }
-> >
-> > +     if (!gfpflags_allow_spinning(flags)) {
-> > +             if (local_lock_is_locked(&memcg_stock.stock_lock)) {
-> > +                     /*
-> > +                      * Cannot use
-> > +                      * lockdep_assert_held(this_cpu_ptr(&memcg_stock.=
-stock_lock));
-> > +                      * since lockdep might not have been informed yet
-> > +                      * of lock acquisition.
-> > +                      */
-> > +                     return obj_cgroup_charge_atomic(objcg, flags,
-> > +                                                     size * obj_full_s=
-ize(s));
+> https://lore.kernel.org/netdev/CAP01T77STmncrPt=3DBsFfEY6SX1+oYNXhPeZ1HC9=
+J=3DS2jhOwQoQ@mail.gmail.com/
 >
-> We can not just ignore the stat updates here.
->
-> > +             } else {
-> > +                     lockdep_assert_not_held(this_cpu_ptr(&memcg_stock=
-.stock_lock));
-> > +             }
-> > +     }
-> > +
-> >       for (i =3D 0; i < size; i++) {
-> >               slab =3D virt_to_slab(p[i]);
-> >
-> > @@ -3162,8 +3204,12 @@ bool __memcg_slab_post_alloc_hook(struct kmem_ca=
-che *s, struct list_lru *lru,
-> >  void __memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
-> >                           void **p, int objects, struct slabobj_ext *ob=
-j_exts)
-> >  {
-> > +     bool lock_held =3D local_lock_is_locked(&memcg_stock.stock_lock);
-> >       size_t obj_size =3D obj_full_size(s);
-> >
-> > +     if (likely(!lock_held))
-> > +             lockdep_assert_not_held(this_cpu_ptr(&memcg_stock.stock_l=
-ock));
-> > +
-> >       for (int i =3D 0; i < objects; i++) {
-> >               struct obj_cgroup *objcg;
-> >               unsigned int off;
-> > @@ -3174,8 +3220,12 @@ void __memcg_slab_free_hook(struct kmem_cache *s=
-, struct slab *slab,
-> >                       continue;
-> >
-> >               obj_exts[off].objcg =3D NULL;
-> > -             refill_obj_stock(objcg, obj_size, true, -obj_size,
-> > -                              slab_pgdat(slab), cache_vmstat_idx(s));
-> > +             if (unlikely(lock_held)) {
-> > +                     atomic_add(obj_size, &objcg->nr_charged_bytes);
->
-> objcg->nr_charged_bytes is stats ignorant and the relevant stats need to
-> be updated before putting stuff into it.
+> for example:
+> https://uapi-group.org/kernel-features/#filtering-on-received-file-descri=
+ptors
 
-I'm not following.
-It's functionally equivalent to refill_obj_stock() without
-__account_obj_stock().
-And the stats are not ignored.
-The next __memcg_slab_free_hook() from good context will update
-them. It's only a tiny delay in update.
-I don't see why it's an issue.
-
-> > +             } else {
-> > +                     refill_obj_stock(objcg, obj_size, true, -obj_size=
-,
-> > +                                      slab_pgdat(slab), cache_vmstat_i=
-dx(s));
-> > +             }
-> >               obj_cgroup_put(objcg);
-> >       }
-> >  }
->
-> I am actually working on making this whole call chain (i.e.
-> kmalloc/kmem_cache_alloc to memcg [un]charging) reentrant/nmi safe.
-
-Thank you for working on it!
-You mean this set:
-https://lore.kernel.org/all/20250429061211.1295443-1-shakeel.butt@linux.dev=
-/
-?
-it's making css_rstat_updated() re-entrant,
-which is renamed/reworked version of memcg_rstat_updated().
-That's good, but not enough from slub pov.
-It removes the need for the first hunk in this patch from mm/memcontrol.c
-+ if (!in_nmi())
-+               cgroup_rstat_updated(...);
-
-but hunks in __memcg_slab_post_alloc_hook() and __memcg_slab_free_hook()
-are still needed.
-And I think the obj_cgroup_charge_atomic() approach in this patch is correc=
-t.
-The delay in rstat update seems fine.
-Please help me understand what I'm missing.
+Fair enough.
+Would be great to have them as selftests to make sure that advanced
+use cases are actually working.
 
