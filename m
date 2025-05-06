@@ -1,227 +1,148 @@
-Return-Path: <bpf+bounces-57572-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57573-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1046AAD0F3
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 00:26:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0A67AAD100
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 00:31:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D037998266A
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 22:25:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFFA3982D38
+	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 22:30:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C17D218ACA;
-	Tue,  6 May 2025 22:25:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCFB121A94F;
+	Tue,  6 May 2025 22:30:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h0FNQCVi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jelULrxF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56D377262C
-	for <bpf@vger.kernel.org>; Tue,  6 May 2025 22:25:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E443A4B1E7D;
+	Tue,  6 May 2025 22:30:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746570354; cv=none; b=fKH0Snbug32iuZuQyQOTf/VRKH6bXZrzOc1KIeg6OrxAL5g0g4NdEoqz2CNYcH7Ai4DbW2lBqT48GpWtVUE1kkfFbBrkyJcKcjDxc8bb+FLeh5LyBcEAUQDhUA7iRJq8IFZp+K6SpvFSa5EfJM4Xa3I9JOVhVZcVi2xFX2R/yhI=
+	t=1746570655; cv=none; b=leWWxq7v3FoKUOIg94O1y0wFi7ZUEjgoVDVgzgIlBd3aBcCn3/U0k1A+390mVuKRmReIZB7e324XAmVFVElLq6eL3j4sv/DysjwSk7DSdmL6UDna+vYRa3MDaTlEQOZHWsSE0VK9ijH307pPZ3LavaqU3U9gAs2/zjcdjF+9hos=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746570354; c=relaxed/simple;
-	bh=0MrGuka3GERohYt1U8Q7vQb7hq1nFXezqxDlrgIGBkE=;
+	s=arc-20240116; t=1746570655; c=relaxed/simple;
+	bh=M6LPnQq+WZYUyd/hIR9a4L+W+SEAzNA+KptcRWHRs2w=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AlNLA9cb2vzZhDQEfZwA7VC3ifTZqxnOsN173m7kNiXYSE77T4FJle4RJIkvCMw0J+BAGuZAdE0P8GF2ZfgivgFAVR4MawpLVIjpiWfWqYoJBas339MjHeZ9Ya+JXmjBNklTgruG+D0i5nYarymEbXXNh5kxJFBMxdIFoXjr414=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h0FNQCVi; arc=none smtp.client-ip=209.85.210.175
+	 To:Cc:Content-Type; b=kRvebPRNrX5eK8zruHm+oyvJIrWgSo2LrmkDiZuFjS4wC73R4ipT31gBnNDp2wBqip1jNECYGmyNUVcmHveROKM+G79c/gOTJIo3DmMLoVrkNVMZzNwTi4kn9pWAsy7HEzBRdShbdteelYt2NBI9CtxCot+yoJXRtRDF9JPVGlc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jelULrxF; arc=none smtp.client-ip=209.85.210.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-736a72220edso6865928b3a.3
-        for <bpf@vger.kernel.org>; Tue, 06 May 2025 15:25:53 -0700 (PDT)
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-736b350a22cso5192137b3a.1;
+        Tue, 06 May 2025 15:30:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746570352; x=1747175152; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1746570652; x=1747175452; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zBPBfKOfca+HbSGM0bLzdDCAmc9BqSH1JRVQo+J5Yrk=;
-        b=h0FNQCViI5DwmD6ngovuvyar12MzMs7KloKFGVuySwugLS1QUHIuX/UQlfLhXAIgbw
-         KO5L9bEaJv2oRJVUi9xN91GmmDCHgzOBscHOV/KgAX+GNhdDxnuqbfEURd1IjcP22Za3
-         KqLi5q/sqh1hqLYCBqNjq2m2j0w8W5zkPMuqzQkaSYWyq/g646X6aChdvn2kV4yUGLYt
-         ixPPrsahCzZCdJupFsFCazdpstW7yhj22EGFXT8QixXv0CJcONThqQe31GULvrsxlwEF
-         v/sSVYyDC4Nk8X7aOOnSgJh0CAytGQzUIBhHvYssyYyraPjzcIoRrREjDQS6vBpB2Wgg
-         iAEQ==
+        bh=RGwmKF5kjz2CGDdNgVyzlfucliVOYpgZZQ98I4N81Zs=;
+        b=jelULrxFiOwsgHIvuMbYc4HwMJMbjQVbDkURwqCYfSL6lsgEb7B8JXxZzT+SDgIskM
+         POzmUR+WyFC88WBQ9M3xK1+Rn2eq9LbPKtbVnTozk2Dbtr/8HHEf6UZjhAeyaT9n76XM
+         Hsp0S6sgEZjFTf/jUSEfTX9Ni95WTEPEfb/gFzk0d//ezJJrpQvUzz99I57CUSHaU85o
+         V/Z7fz3C7TToX0pMiT2vNS46XKOzktj+BVrgxgMeG6k0Yzds2njCX+ZxnWlxPrBYd1bV
+         QDKL714X8sp89ec3sQ4bPAqpeZ7mubYNwKHlrVHtpsuMtemC/friNXLJw/dUxMK1kfbg
+         3QrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746570352; x=1747175152;
+        d=1e100.net; s=20230601; t=1746570652; x=1747175452;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zBPBfKOfca+HbSGM0bLzdDCAmc9BqSH1JRVQo+J5Yrk=;
-        b=sJOEGsQKUZPFNCcdg1ycMrgRXLYECJxqQRyClW4S7k3XQklpKZbbWulu0cFwKPLb8d
-         FoY3DSeyYbrIL2BsrpRtsfKD9CYq+YNOgTDM/eTczLz7D3dn+5qcTu8oTkEV7myTrajR
-         efVahE2TjMtWsOJOPu9NMy8gPozccR/aUg1sPyU9/0MXOrBEpCq6ffl5e28oNec6TKDN
-         74aYIYZz0D0FJqKQT9vxu3Tivw2hxoP7GiX/akSVBfcLxTQuf6MTJmE2k+2YWCNX0y31
-         cHdzendCc2SiOZ/Z8mhvWO/x3XbgQVsV4nczznNwHUX9GVykL3i69R5dm4iovayYgOvo
-         h/6g==
-X-Forwarded-Encrypted: i=1; AJvYcCVDabCIhomrmw9RXrdvuWRLL5AHxgfkFspt3Av65y7692RrNjAy8D8me5VlsuXF5sB1icU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxVzU1K9/UqP678vw9iEK7CtBw6vB7MY+ZvWIzjTe7ymFHJvtfY
-	zTaJ3zCI0drfltyVmAnb6f5g9JbPCr74VOC63ug0LEWABdzt5fenmQifovqLesBqXa0qhEfJpBp
-	RHl5YTGAUGXhs5nfGyQu4OZHfits=
-X-Gm-Gg: ASbGncsCQiYeAgfclaaspwJz8dwTaPFuzL6CjgA193e8fuOdg1CoXbujWxV2A4ZXDEN
-	a2QBI4/6aHjB0+8E5TfJgpJir2qxr1NyIDVq0+LC1BBU3bhCNqOyZCenrab2nd4CBfS4Yoja715
-	gpXLsCsIklPxrLVFnwGmRtoQ9mxVGJCZzh6v2IMw==
-X-Google-Smtp-Source: AGHT+IERtORtedqs8qqH6NV2mmcCava4I/qPL25bASF3Z2sqjzsZBVYhl0i+XH76qaPwLyHFWPenAci6kC1/qAbjb0g=
-X-Received: by 2002:aa7:9a84:0:b0:730:99cb:7c2f with SMTP id
- d2e1a72fcca58-7409cefeab1mr1116416b3a.6.1746570352484; Tue, 06 May 2025
- 15:25:52 -0700 (PDT)
+        bh=RGwmKF5kjz2CGDdNgVyzlfucliVOYpgZZQ98I4N81Zs=;
+        b=uqwB0jACQatIoj1V7O4UtytMQ9tk4K5m/I2bmmoKZWgAomwfc8mZcFDp9pZ5Pia+GU
+         5LXt5w2xnCLAF2ZrzBWP/K/j5d24hCk9ZHWQ/i/MP9XgglhSJ5rlbN+kLguaGRNrmrgo
+         JJP5jos/hljkRayaxRgQ5X4n47ylKU4Qqt7kb5nvmCqHrYpdhzjxhuUfUpS2RM23OZfD
+         xHc2DbVeTUwyXIT2YrjzDYWPV3M5drTdweIgFIteS2dQEwLyPbQWdPpm6QqCgerxyvzx
+         p1v+R004+7sjO4jNDRDWxJ5ovVBYxSHmtlf8ScRCI+yqhQPLC/kDUuJ0Cd87L/Ls0MCr
+         uZew==
+X-Forwarded-Encrypted: i=1; AJvYcCUIwLYuhm7wCSjuIlnmNUCARWvpL7RUlWn/x2xSCLA2Nmg2xBpINI/jhu8Fm+oFLPApBgn8jZDUKpLh2+SkOzBoPaFT@vger.kernel.org, AJvYcCVlwXGeWtCB6pDuvSGGFvXdt1smin3GcvctCc4ulFJP7iL8RXetsRHf6wojawQ0t3lTZ2VXuwGYKcmZu3rn@vger.kernel.org, AJvYcCW7Zy22mL/d3BhEoPAKq8QgBkt6HuzhD2zqnEACgX/lCYVYpmmgprMWkz/X+2+T6zgWyMQ3Tf/i@vger.kernel.org, AJvYcCXUoz0Q4JbMrOJHTRFY5THFhKw4KA9IcZ7J1LebRI76WaRFXJlYlk43Mn59AOPrZ738slY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx9ihxq7NkGNWufX6OxEM+oIvZjjz9jjd9G1/q/MrdN+QBVLUv5
+	a6OIy3F18K9UYf+eGbYWBe4KqBllgJmTxjcGtJxl27Z5KwY/Y96fHEgNfOICtvyFowgLex7LVJ9
+	PQncs78MfzRKSD1T+D4JEO4JGP8U=
+X-Gm-Gg: ASbGncsIzE4Elqr3GUKXtt0BRVX+YRwQnkrk0UyktH2aAVR52s/7OEo3DlsLIoNwTuC
+	iOHp32fgi6cpfHPOTbIAb/uZ0O+n2MUSYaM5YNmFdlyTVOQUG1pauHNvAToAdC3FINL8nxCpZuW
+	8lVvyf0mbGxAqq7E8ECVD/z35AU6OkqUChUJ8PBQ==
+X-Google-Smtp-Source: AGHT+IFRT4bPAgK8JDFFq+i2BzaYK8yMh7nBwFrls+mABRH23bU5PRPSRFhkLVlyskG4/ta/vyXqg25SsaMHZwnf+KI=
+X-Received: by 2002:a05:6a20:6f87:b0:203:c461:dd36 with SMTP id
+ adf61e73a8af0-2148b113868mr1327166637.6.1746570652156; Tue, 06 May 2025
+ 15:30:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250506000605.497296-1-isolodrai@meta.com> <CAEf4BzYY6mPto_9MwPp0zH+MvWScjQPxLdHLSGd+c2QjvJyNsA@mail.gmail.com>
- <659400eb-13d6-48ed-a8cf-66a79fc139b7@linux.dev>
-In-Reply-To: <659400eb-13d6-48ed-a8cf-66a79fc139b7@linux.dev>
+References: <20250506061434.94277-1-yangfeng59949@163.com> <20250506061434.94277-3-yangfeng59949@163.com>
+In-Reply-To: <20250506061434.94277-3-yangfeng59949@163.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 6 May 2025 15:25:40 -0700
-X-Gm-Features: ATxdqUG6lPMqt1vzPTMAaEWwSyU2Qqdq8xOyFjdt_MRHtGgnbKJJg52QEG1-JPE
-Message-ID: <CAEf4Bza4GDrccUy+nRJ8p4t6=bhGpFDi049xibd48DkR12ODVg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] scripts/bpf_doc.py: implement json output for helpers
-To: Ihor Solodrai <ihor.solodrai@linux.dev>
-Cc: Quentin Monnet <qmo@kernel.org>, ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, 
-	eddyz87@gmail.com, bpf@vger.kernel.org, mykolal@fb.com, kernel-team@meta.com
+Date: Tue, 6 May 2025 15:30:39 -0700
+X-Gm-Features: ATxdqUETSD4zY0Brjmdir8LRxVrgW6L6sBojvZaIC7oDoprK2jltvmYBmRuBIeI
+Message-ID: <CAEf4BzbqrvgD11M5nTwP=oJeNph6n63qAZfW8Qu=MB9k3h_-ow@mail.gmail.com>
+Subject: Re: [PATCH v3 sched_ext 2/2] sched_ext: Remove bpf_scx_get_func_proto
+To: Feng Yang <yangfeng59949@163.com>, tj@kernel.org
+Cc: martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, 
+	mattbobrowski@google.com, rostedt@goodmis.org, mhiramat@kernel.org, 
+	mathieu.desnoyers@efficios.com, davem@davemloft.net, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, May 6, 2025 at 3:18=E2=80=AFPM Ihor Solodrai <ihor.solodrai@linux.d=
-ev> wrote:
+On Mon, May 5, 2025 at 11:15=E2=80=AFPM Feng Yang <yangfeng59949@163.com> w=
+rote:
 >
-> On 2025-05-06 3:07 p.m., Andrii Nakryiko wrote:
-> > On Mon, May 5, 2025 at 5:06=E2=80=AFPM Ihor Solodrai <isolodrai@meta.co=
-m> wrote:
-> >>
-> >> bpf_doc.py parses bpf.h header to collect information about various
-> >> functions (such as BPF helpers) and dump them in one of the supported
-> >> forms: rst docs and a C header.
-> >>
-> >> It's useful for external tools to be able to consume information about
-> >> BPF helpers - list of helpers and their args - in an easy-to-parse
-> >> format such as JSON. Given that bpf_doc.py already does the work of
-> >> searching and collecting the helpers, implement trivial JSON printer
-> >> and add --json option for helpers target.
-> >>
-> >> Signed-off-by: Ihor Solodrai <isolodrai@meta.com>
-> >> ---
-> >>   scripts/bpf_doc.py | 42 +++++++++++++++++++++++++++++++++++++-----
-> >>   1 file changed, 37 insertions(+), 5 deletions(-)
-> >>
-> >
-> > Ihor, do you have an example on how JSON output would look like?
+> From: Feng Yang <yangfeng@kylinos.cn>
 >
-> Sure. I already use it:
+> task_storage_{get,delete} has been moved to bpf_base_func_proto.
 >
-> https://github.com/libbpf/bpfvv/blob/master/bpf-helpers.json
+> Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Signed-off-by: Feng Yang <yangfeng@kylinos.cn>
+> ---
+>  kernel/sched/ext.c | 15 +--------------
+>  1 file changed, 1 insertion(+), 14 deletions(-)
 >
-> I only wanted function names and arg list, so the current output is good
-> enough for my use-case.
 
-Nice, thanks! We also have doc comments, right? I'd add them for
-completeness (maybe your tool will show it when hovering over the
-helper call instruction or something...)
+Given this has dependency on patch #1, we should either route this
+patch through bpf-next, or we'll have to delay and resend it after
+merge window.
 
+Tejun, any preferences?
+
+> diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
+> index fdbf249d1c68..cc628b009e11 100644
+> --- a/kernel/sched/ext.c
+> +++ b/kernel/sched/ext.c
+> @@ -5586,21 +5586,8 @@ static int bpf_scx_btf_struct_access(struct bpf_ve=
+rifier_log *log,
+>         return -EACCES;
+>  }
 >
-> >
-> > Quentin, can you please take a look? Do you have any objections?
-> >
-> >> diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
-> >> index e74a01a85070..15d83ff5d2bd 100755
-> >> --- a/scripts/bpf_doc.py
-> >> +++ b/scripts/bpf_doc.py
-> >> @@ -8,6 +8,7 @@
-> >>   from __future__ import print_function
-> >>
-> >>   import argparse
-> >> +import json
-> >>   import re
-> >>   import sys, os
-> >>   import subprocess
-> >> @@ -675,7 +676,7 @@ COMMANDS
-> >>           self.print_elem(command)
-> >>
-> >>
-> >> -class PrinterHelpers(Printer):
-> >> +class PrinterHelpersHeader(Printer):
-> >>       """
-> >>       A printer for dumping collected information about helpers as C h=
-eader to
-> >>       be included from BPF program.
-> >> @@ -896,6 +897,27 @@ class PrinterHelpers(Printer):
-> >>           print(') =3D (void *) %d;' % helper.enum_val)
-> >>           print('')
-> >>
-> >> +
-> >> +class PrinterHelpersJSON(Printer):
-> >> +    """
-> >> +    A printer for dumping collected information about helpers as a JS=
-ON file.
-> >> +    @parser: A HeaderParser with Helper objects to print to standard =
-output
-> >> +    """
-> >> +
-> >> +    def __init__(self, parser):
-> >> +        self.elements =3D parser.helpers
-> >> +        self.elem_number_check(
-> >> +            parser.desc_unique_helpers,
-> >> +            parser.define_unique_helpers,
-> >> +            "helper",
-> >> +            "___BPF_FUNC_MAPPER",
-> >> +        )
-> >> +
-> >> +    def print_all(self):
-> >> +        protos =3D [helper.proto_break_down() for helper in self.elem=
-ents]
-> >> +        out_dict =3D {"helpers": protos}
-> >> +        print(json.dumps(out_dict, indent=3D4))
-> >> +
-> >>   ####################################################################=
-###########
-> >>
-> >>   # If script is launched from scripts/ from kernel tree and can acces=
-s
-> >> @@ -917,6 +939,8 @@ rst2man utility.
-> >>   """)
-> >>   argParser.add_argument('--header', action=3D'store_true',
-> >>                          help=3D'generate C header file')
-> >> +argParser.add_argument("--json", action=3D"store_true",
-> >> +                       help=3D"generate a JSON with information about=
- helpers")
-> >>   if (os.path.isfile(bpfh)):
-> >>       argParser.add_argument('--filename', help=3D'path to include/uap=
-i/linux/bpf.h',
-> >>                              default=3Dbpfh)
-> >> @@ -930,11 +954,19 @@ args =3D argParser.parse_args()
-> >>   headerParser =3D HeaderParser(args.filename)
-> >>   headerParser.run()
-> >>
-> >> -# Print formatted output to standard output.
-> >> +if args.header and args.json:
-> >> +    print("bpf_doc.py: Use --header or --json, not both")
-> >> +    exit(1)
-> >> +if args.target !=3D "helpers" and (args.header or args.json):
-> >> +    print("bpf_doc.py: Only helpers header/json generation is support=
-ed")
-> >> +    exit(1)
-> >> +
-> >>   if args.header:
-> >> -    if args.target !=3D 'helpers':
-> >> -        raise NotImplementedError('Only helpers header generation is =
-supported')
-> >> -    printer =3D PrinterHelpers(headerParser)
-> >> +    printer =3D PrinterHelpersHeader(headerParser)
-> >> +elif args.json:
-> >> +    printer =3D PrinterHelpersJSON(headerParser)
-> >>   else:
-> >>       printer =3D printers[args.target](headerParser)
-> >> +
-> >> +# Print formatted output to standard output.
-> >>   printer.print_all()
-> >> --
-> >> 2.47.1
-> >>
+> -static const struct bpf_func_proto *
+> -bpf_scx_get_func_proto(enum bpf_func_id func_id, const struct bpf_prog *=
+prog)
+> -{
+> -       switch (func_id) {
+> -       case BPF_FUNC_task_storage_get:
+> -               return &bpf_task_storage_get_proto;
+> -       case BPF_FUNC_task_storage_delete:
+> -               return &bpf_task_storage_delete_proto;
+> -       default:
+> -               return bpf_base_func_proto(func_id, prog);
+> -       }
+> -}
+> -
+>  static const struct bpf_verifier_ops bpf_scx_verifier_ops =3D {
+> -       .get_func_proto =3D bpf_scx_get_func_proto,
+> +       .get_func_proto =3D bpf_base_func_proto,
+>         .is_valid_access =3D bpf_scx_is_valid_access,
+>         .btf_struct_access =3D bpf_scx_btf_struct_access,
+>  };
+> --
+> 2.43.0
 >
 
