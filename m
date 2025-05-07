@@ -1,283 +1,153 @@
-Return-Path: <bpf+bounces-57697-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57698-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D89DBAAE908
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 20:28:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58AD3AAEB3D
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 21:05:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94ED69848E3
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 18:28:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E58171C08BC4
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 19:05:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B350528DF41;
-	Wed,  7 May 2025 18:28:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D3CE28E56F;
+	Wed,  7 May 2025 19:04:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="XZZpl9Ih"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lhRh0Bgp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58697153BD9
-	for <bpf@vger.kernel.org>; Wed,  7 May 2025 18:28:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71B2F28BA9F;
+	Wed,  7 May 2025 19:04:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746642510; cv=none; b=M7o5sR79J+Yz5SxwW4WxM0hPcl22R66TpOiNI8S9NGmge/ZMgZHPlxMbmHOFlJTZzo4xe5/26p142CW4SIdb566+0l63zP50gkLFWpUzbjHqWTMqcou/6woc/j3R7HKxHgFJmWTZubZJzky58b1ckwFI1vB4fI8aN6ljLkom01M=
+	t=1746644698; cv=none; b=gSBqzQ9BS6i2iBgMn6ta6RXCr/79osjVLCFoaiLHtIIBroXOlr+AmXmwv2Sr9AhfzWJuWaDfTLLLbIRGrVhwwbE1BfsApZ0OcLvanK/tHVg9kNrj2SuqA7xRET8SoCYkBjDBhNXA7amPaYJmxrH52Itlmp6T/ykRwSZucbxOcxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746642510; c=relaxed/simple;
-	bh=ay05SH27R9JpyzwhArYpQHmR7kdQQbPFMOj10oNJcOU=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZkpPTEIlNnGcNhhUyrQAfn1jq6ZWX7aEjp3A5C0UJPs75vbO20GJ1RrJvFr5IfqdSy+MD886DS/EReM20Po60rSRMOdVZo2G51XomP3ZNRJv4LjOzprbpb6UJiHeRiz6fm5veG12q/fbIDuKvfFTOMTm/MUG4ZNyho+Gd3Ti+3A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=XZZpl9Ih; arc=none smtp.client-ip=67.231.145.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 547IPAQx000443
-	for <bpf@vger.kernel.org>; Wed, 7 May 2025 11:28:27 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
-	:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:reply-to:subject:to; s=s2048-2021-q4; bh=7Kd/X836R
-	t+WG27gxn04OvVfNvyrcqaqCEtXXFnIecs=; b=XZZpl9Ihr07WzLxXCdcJcyXAg
-	SeoyOGh/awOP8sO3G14VyDe7zXNC6qSvkDHIiGvefGQr7VqDFcz3b9ZnhFbA7xsS
-	KD24VuU34hYIGcKrLRtuiuAzhJdkKkRQ17f5T8v/eO1IKlMXQOeeUFCtlmvNl0ch
-	tfG4JdkpMSyPYjiQnXuTi6V//DczCvqumFjisj2GblYvjwNlbsl81kEofe3WafNR
-	p/OBvjSYm2JjShytCD5huKOXS2qy5Cr100uzr+Sq9YJbzU/Mg2T+h0cQo6OmS8Rr
-	7MdxiZptO9Khfj6J8ajQtkKaPJpIFwv2bfnVUsZ6O2cJJPtZUFJfzi3//Pteg==
-Received: from mail.thefacebook.com ([163.114.134.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 46g26ycpw9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Wed, 07 May 2025 11:28:27 -0700 (PDT)
-Received: from twshared0377.32.frc3.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c08b:78::2ac9) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1748.10; Wed, 7 May 2025 18:28:26 +0000
-Received: by devvm14721.vll0.facebook.com (Postfix, from userid 669379)
-	id 108672758DA2; Wed,  7 May 2025 11:28:19 -0700 (PDT)
-From: Ihor Solodrai <isolodrai@meta.com>
-To: <qmo@kernel.org>, <andrii@kernel.org>
-CC: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <eddyz87@gmail.com>, <mykolal@fb.com>, <dylan.reimerink@isovalent.com>,
-        <kernel-team@meta.com>
-Subject: [PATCH bpf-next v2] scripts/bpf_doc.py: implement json output format
-Date: Wed, 7 May 2025 11:28:02 -0700
-Message-ID: <20250507182802.3833349-1-isolodrai@meta.com>
-X-Mailer: git-send-email 2.47.1
-Reply-To: <ihor.solodrai@linux.dev>
+	s=arc-20240116; t=1746644698; c=relaxed/simple;
+	bh=CRCiIABz/kFgdTeK7BF7RrV6jJF7IbV0KFOhjFLNr0o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eld+dsa8vz31mjm/uGV8UsUEuJI7MuxokMO7baw4Prxk7gIF/LPDnqBQjnw6wVdqC6Ulvp8/b2tuDOb944sDTVRv9t4Aq7jx0Ne433apCfNBRsfm4Im9u2XFQGBWzwbfdLg5Pcp09XRO+JxEPXdtP4srOMR29N/u4WZwcAv9smY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lhRh0Bgp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D653FC4CEE2;
+	Wed,  7 May 2025 19:04:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1746644698;
+	bh=CRCiIABz/kFgdTeK7BF7RrV6jJF7IbV0KFOhjFLNr0o=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=lhRh0BgpAtDuVzNTHwJeeIpZV8B/fvJdYcifpSbxeLTlR4qy4A9r+y4pzZ8G8SwIq
+	 CSIscRiuqpRioY9xkq9ah4CoAGvtS52bMQn/IrpYa6s5DtvDZvPe/BGr119Socc93Q
+	 6LtsrF4ntJJJpjELtxY8qmqyAUP2mcsha+jHKZ9jLCxshFATtyP9oH1uaI3NbXkd2T
+	 T4TOR34KmE6bNQZ6kdLnw1vR5X9dn/jLMYyUyAhtAm/j9yxUdf+b+PD738FEq85M/s
+	 aUaS15NG0gL0jr7L671fyi3WPfSu8xB+Y4zsO83HLOjHfDFLXydEO+j5dFM8DnJwGI
+	 cE1Z69pdf4/1w==
+Message-ID: <e4cf6912-74fb-441f-ad05-82ea99d81020@kernel.org>
+Date: Wed, 7 May 2025 21:04:51 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Authority-Analysis: v=2.4 cv=eaI9f6EH c=1 sm=1 tr=0 ts=681ba64b cx=c_pps a=CB4LiSf2rd0gKozIdrpkBw==:117 a=CB4LiSf2rd0gKozIdrpkBw==:17 a=dt9VzEwgFbYA:10 a=VwQbUJbxAAAA:8 a=VabnemYjAAAA:8 a=TUK-sHZvkfHu8wW5X5UA:9 a=gKebqoRLp9LExxC7YDUY:22
-X-Proofpoint-ORIG-GUID: bSb31qgqFina9AaepWb8SgKIuA5DaNnb
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTA3MDE2NyBTYWx0ZWRfX5QNpgKMlw7r7 Q5NL0WQX43MCWq9gn3ZbA1B31lAFg9gpXCyw+QzzfBreyS7bjsPDHzpnujGYBP0+eLdyWdVNl1j ntgEkTe+opOkrrxoTjltdbjHZ6khum58r000zyRMLaZnYCvBuMO2dSF6X6AvamZfPTpwuAGuSHl
- pDncyO5DictbrnEwMMFo7CvfKrzVINEZD4PntkcGwlE3tiU2Z6w8n+eP4+08dENHA5QAvhcMdUB ijo0p3tgDhiGyq1+K2A2PgtCyThU9dTF2X/SnyigZtsXgQ5Ea85m0d1r/DlvQ6BKBN0YI1hWG1k dGUPXosq1lcQSo2KOLoEnurjYJXvFFHpov5buht5QwCeW0f+vyZT+t+9fR8Njym6/tZIVrpcXQQ
- BGIEqIjyCdPoCYz9Mhn8ly9j3EapgGAYnefOFZANxrHCgrUNqyhAGIR2DKF2n5sRxaNqydap
-X-Proofpoint-GUID: bSb31qgqFina9AaepWb8SgKIuA5DaNnb
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-05-07_06,2025-05-06_01,2025-02-21_01
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v3] xdp: Add helpers for head length, headroom,
+ and metadata length
+To: Jon Kohler <jon@nutanix.com>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: Zvi Effron <zeffron@riotgames.com>,
+ Stanislav Fomichev <stfomichev@gmail.com>, Jason Wang <jasowang@redhat.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>, Simon Horman <horms@kernel.org>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+ Jacob Keller <jacob.e.keller@intel.com>
+References: <20250506125242.2685182-1-jon@nutanix.com>
+ <aBpKLNPct95KdADM@mini-arch>
+ <681b603ac8473_1e4406294a6@willemb.c.googlers.com.notmuch>
+ <c8ad3f65-f70e-4c6e-9231-0ae709e87bfe@kernel.org>
+ <CAC1LvL3nE14cbQx7Me6oWS88EdpGP4Gx2A0Um4g-Vuxk4m_7Rw@mail.gmail.com>
+ <062e886f-7c83-4d46-97f1-ebbce3ca8212@kernel.org>
+ <681b96abe7ae4_1f6aad294c9@willemb.c.googlers.com.notmuch>
+ <B4F050C6-610F-4D04-88D7-7EF581DA7DF1@nutanix.com>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <B4F050C6-610F-4D04-88D7-7EF581DA7DF1@nutanix.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-bpf_doc.py parses bpf.h header to collect information about various
-API elements (such as BPF helpers) and then dump them in one of the
-supported formats: rst docs and a C header.
 
-It's useful for external tools to be able to consume this information
-in an easy-to-parse format such as JSON. Implement JSON printers and
-add --json command line argument.
 
-v1: https://lore.kernel.org/bpf/20250506000605.497296-1-isolodrai@meta.co=
-m/
+On 07/05/2025 19.47, Jon Kohler wrote:
+> 
+> 
+>> On May 7, 2025, at 1:21 PM, Willem de Bruijn <willemdebruijn.kernel@gmail.com> wrote:
+>>
+>>
+>> Jesper Dangaard Brouer wrote:
+>>>
+>>>
+>>> On 07/05/2025 19.02, Zvi Effron wrote:
+>>>> On Wed, May 7, 2025 at 9:37 AM Jesper Dangaard Brouer <hawk@kernel.org> wrote:
+>>>>>
+>>>>>
+>>>>>
+>>>>> On 07/05/2025 15.29, Willem de Bruijn wrote:
+>>>>>> Stanislav Fomichev wrote:
+>>>>>>> On 05/06, Jon Kohler wrote:
+>>>>>>>> Introduce new XDP helpers:
+>>>>>>>> - xdp_headlen: Similar to skb_headlen
+>>>>>
+>>>>> I really dislike xdp_headlen(). This "headlen" originates from an SKB
+>>>>> implementation detail, that I don't think we should carry over into XDP
+>>>>> land.
+>>>>> We need to come up with something that isn't easily mis-read as the
+>>>>> header-length.
+>>>>
+>>>> ... snip ...
+>>>>
+>>>>>>> + * xdp_headlen - Calculate the length of the data in an XDP buffer
+>>>>
+>>>> How about xdp_datalen()?
+>>>
+>>> Yes, I like xdp_datalen() :-)
+>>
+>> This is confusing in that it is the inverse of skb->data_len:
+>> which is exactly the part of the data not in the skb head.
+>>
+>> There is value in consistent naming. I've never confused headlen
+>> with header len.
+>>
+>> But if diverging, at least let's choose something not
+>> associated with skbs with a different meaning.
+> 
+> Brainstorming a few options:
+> - xdp_head_datalen() ?
+> - xdp_base_datalen() ?
+> - xdp_base_headlen() ?
+> - xdp_buff_datalen() ?
+> - xdp_buff_headlen() ?
+> - xdp_datalen() ? (ZivE, JesperB)
+> - xdp_headlen() ? (WillemB, JonK, StanislavF, JacobK, DanielB)
+> 
 
-Signed-off-by: Ihor Solodrai <isolodrai@meta.com>
----
- scripts/bpf_doc.py | 112 +++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 98 insertions(+), 14 deletions(-)
+What about keeping it really simple: xdp_buff_len() ?
 
-diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
-index e74a01a85070..d669a0e16bf2 100755
---- a/scripts/bpf_doc.py
-+++ b/scripts/bpf_doc.py
-@@ -8,6 +8,7 @@
- from __future__ import print_function
-=20
- import argparse
-+import json
- import re
- import sys, os
- import subprocess
-@@ -43,6 +44,14 @@ class APIElement(object):
-         self.ret =3D ret
-         self.attrs =3D attrs
-=20
-+    def to_dict(self):
-+        return {
-+            'proto': self.proto,
-+            'desc': self.desc,
-+            'ret': self.ret,
-+            'attrs': self.attrs
-+        }
-+
-=20
- class Helper(APIElement):
-     """
-@@ -81,6 +90,11 @@ class Helper(APIElement):
-=20
-         return res
-=20
-+    def to_dict(self):
-+        d =3D super().to_dict()
-+        d.update(self.proto_break_down())
-+        return d
-+
-=20
- ATTRS =3D {
-     '__bpf_fastcall': 'bpf_fastcall'
-@@ -675,7 +689,7 @@ COMMANDS
-         self.print_elem(command)
-=20
-=20
--class PrinterHelpers(Printer):
-+class PrinterHelpersHeader(Printer):
-     """
-     A printer for dumping collected information about helpers as C heade=
-r to
-     be included from BPF program.
-@@ -896,6 +910,43 @@ class PrinterHelpers(Printer):
-         print(') =3D (void *) %d;' % helper.enum_val)
-         print('')
-=20
-+
-+class PrinterHelpersJSON(Printer):
-+    """
-+    A printer for dumping collected information about helpers as a JSON =
-file.
-+    @parser: A HeaderParser with Helper objects
-+    """
-+
-+    def __init__(self, parser):
-+        self.elements =3D parser.helpers
-+        self.elem_number_check(
-+            parser.desc_unique_helpers,
-+            parser.define_unique_helpers,
-+            "helper",
-+            "___BPF_FUNC_MAPPER",
-+        )
-+
-+    def print_all(self):
-+        helper_dicts =3D [helper.to_dict() for helper in self.elements]
-+        out_dict =3D {'helpers': helper_dicts}
-+        print(json.dumps(out_dict, indent=3D4))
-+
-+
-+class PrinterSyscallJSON(Printer):
-+    """
-+    A printer for dumping collected syscall information as a JSON file.
-+    @parser: A HeaderParser with APIElement objects
-+    """
-+
-+    def __init__(self, parser):
-+        self.elements =3D parser.commands
-+        self.elem_number_check(parser.desc_syscalls, parser.enum_syscall=
-s, 'syscall', 'bpf_cmd')
-+
-+    def print_all(self):
-+        syscall_dicts =3D [syscall.to_dict() for syscall in self.element=
-s]
-+        out_dict =3D {'syscall': syscall_dicts}
-+        print(json.dumps(out_dict, indent=3D4))
-+
- ########################################################################=
-#######
-=20
- # If script is launched from scripts/ from kernel tree and can access
-@@ -910,6 +961,19 @@ printers =3D {
-         'syscall': PrinterSyscallRST,
- }
-=20
-+# target -> output format -> printer
-+printers =3D {
-+    'helpers': {
-+        'rst': PrinterHelpersRST,
-+        'json': PrinterHelpersJSON,
-+        'header': PrinterHelpersHeader,
-+    },
-+    'syscall': {
-+        'rst': PrinterSyscallRST,
-+        'json': PrinterSyscallJSON
-+    },
-+}
-+
- argParser =3D argparse.ArgumentParser(description=3D"""
- Parse eBPF header file and generate documentation for the eBPF API.
- The RST-formatted output produced can be turned into a manual page with =
-the
-@@ -917,6 +981,8 @@ rst2man utility.
- """)
- argParser.add_argument('--header', action=3D'store_true',
-                        help=3D'generate C header file')
-+argParser.add_argument('--json', action=3D'store_true',
-+                       help=3D'generate a JSON')
- if (os.path.isfile(bpfh)):
-     argParser.add_argument('--filename', help=3D'path to include/uapi/li=
-nux/bpf.h',
-                            default=3Dbpfh)
-@@ -924,17 +990,35 @@ else:
-     argParser.add_argument('--filename', help=3D'path to include/uapi/li=
-nux/bpf.h')
- argParser.add_argument('target', nargs=3D'?', default=3D'helpers',
-                        choices=3Dprinters.keys(), help=3D'eBPF API targe=
-t')
--args =3D argParser.parse_args()
--
--# Parse file.
--headerParser =3D HeaderParser(args.filename)
--headerParser.run()
-=20
--# Print formatted output to standard output.
--if args.header:
--    if args.target !=3D 'helpers':
--        raise NotImplementedError('Only helpers header generation is sup=
-ported')
--    printer =3D PrinterHelpers(headerParser)
--else:
--    printer =3D printers[args.target](headerParser)
--printer.print_all()
-+def error_die(message: str):
-+    argParser.print_usage(file=3Dsys.stderr)
-+    print('Error: {}'.format(message), file=3Dsys.stderr)
-+    exit(1)
-+
-+def parse_and_dump():
-+    args =3D argParser.parse_args()
-+
-+    # Parse file.
-+    headerParser =3D HeaderParser(args.filename)
-+    headerParser.run()
-+
-+    if args.header and args.json:
-+        error_die('Use either --header or --json, not both')
-+
-+    output_format =3D 'rst'
-+    if args.header:
-+        output_format =3D 'header'
-+    elif args.json:
-+        output_format =3D 'json'
-+
-+    try:
-+        printer =3D printers[args.target][output_format](headerParser)
-+        # Print formatted output to standard output.
-+        printer.print_all()
-+    except KeyError:
-+        error_die('Unsupported target/format combination: "{}", "{}"'
-+                    .format(args.target, output_format))
-+
-+if __name__ =3D=3D "__main__":
-+    parse_and_dump()
---=20
-2.47.1
+Or even simpler: xdp_len() as the function documentation already
+describe this doesn't include frags.
 
+To Jon, you seems to be on a cleanup spree:
+For SKBs netstack have this diagram documented [1].  Which also explains
+the concept of a "head" buffer, which isn't a concept for XDP.  I would
+really like to see a diagram documenting both xdp_buff and xdp_frame
+data structures via ascii art, like the one for SKBs. (Hint, this is
+actually defined in the header file include/linux/skbuff.h, but
+converted to RST/HTML format.)
+
+[1] https://docs.kernel.org/networking/skbuff.html
+
+--Jesper
 
