@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-57618-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57619-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71037AAD429
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 05:43:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54CBAAAD42A
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 05:43:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79FD3983F27
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 03:42:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F9AA1BA73B1
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 03:43:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78E4218D656;
-	Wed,  7 May 2025 03:43:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 888F31C1AAA;
+	Wed,  7 May 2025 03:43:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="g02OlIKX"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cIzDSZUa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C2911B422A
-	for <bpf@vger.kernel.org>; Wed,  7 May 2025 03:43:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 986731BFE00
+	for <bpf@vger.kernel.org>; Wed,  7 May 2025 03:43:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746589387; cv=none; b=bIhaKTOXZlVXAHSJrpv01pmW9Q3AqA0TVtKpe+FMEE6zv9wi7etXgOfNX4bzDnIPUk7YmZfASOcjTHWIl8xhlA7kI0cQqI3awoyWQFihgkkWk2VWD06VzcqUtHGpNWa5Rbgwvw8/pr5E7OkXjuNxUydothfwlSnFOvm3kviFyqI=
+	t=1746589393; cv=none; b=doexUe+/WOY0EIP8FUXmLHeopCZx/ZA8uyfT3/t2DVVwfP5cr8PBfwwsBdChVqxadlNC+TXthDZLbbDIDjoOq5uV4yYpuplm99lEgGuYPudsO/EJJ5Aaa8Y/IjfZivH+3U4ZTfbmsy7bAslE3MKkpF+JxsUfw1RL0RqAI4AGq94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746589387; c=relaxed/simple;
-	bh=fHSXJ2ROG5aUkKzH1Slv6j+YF920rqEanoUYY12rcUQ=;
+	s=arc-20240116; t=1746589393; c=relaxed/simple;
+	bh=GlOTeG7w2UZXtMqz9n86jvtIuS+YSJuPF3GHrKLPJZQ=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=onaqGelSVVscTE2g0IbYxDpvayJDoAXQjO8CYN6KL0OlKnQ07Ksu/L6YNQTK4RMBf4+/lPLlOvv5f120TVmy+B9C/GZ19GGf7IvYbJDwdTN45xd8NsjBkukX2ZWIrL61+rEnGr3F+MlshlPRN1JZilC/u5nmug2/ZsdVDLdv3yk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yepeilin.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=g02OlIKX; arc=none smtp.client-ip=209.85.215.201
+	 To:Cc:Content-Type; b=t6BWK7QEtaOgOjfgbj6M5lvtWc9srYub7ebhnmJkqaeC7Q0rX7Anvd3BGjIHhha6qHmYXrLAqqDkyytGFmOu/SgS0/e3hQzS9CLuUwH5JFIFZWLQsaioIqQmoLCb43kStrnRYZKa4jEV/10b2TR10jczz3AODVauUdmCZ71mz9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yepeilin.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cIzDSZUa; arc=none smtp.client-ip=209.85.215.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yepeilin.bounces.google.com
-Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-af8d8e0689eso6521612a12.2
-        for <bpf@vger.kernel.org>; Tue, 06 May 2025 20:43:05 -0700 (PDT)
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-b090c7c2c6aso3441257a12.0
+        for <bpf@vger.kernel.org>; Tue, 06 May 2025 20:43:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1746589385; x=1747194185; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1746589391; x=1747194191; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:from:subject:message-id:references
          :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=XZ9+VVlu9UVnVt8rYB8A7FfAZEwt5x79n4OT+/YhqGE=;
-        b=g02OlIKXuheLJ1f/GDltoKYWmjLbyHWRqe2CzelpCSK3IOLCT+0TG6GrsivS5j/X94
-         HfL6zhA6pW2C0e0aqXfX31FQxZsl3UsHlgf0OCg5jQ2vq47vm/WGhcURsahJWI9h8q+F
-         hB1+fPrhpOH1zwwLLYjWTI54Xh1hhkEhFQ8A2JEMHlfV09oHW/rlnDYnJ6sS7Q6kThnx
-         9++rW9QMLSKm7Rti8PgiIKS1QjXDPapL5/Wt87JUPf3iVQtcJytUw7dLGMM99ee3+0h+
-         ZFh+ddDZogTpi1PuRUXH3ERJ6J/JZQIIUqAn1s5icVPhtbV60DIDJm8cncAly66gVmc7
-         uo+g==
+        bh=uxEgqRWNnCIbxPFGHN0DtpWce+dYhTac5Yxo7QchO30=;
+        b=cIzDSZUa778yYGuHHj0Bq3T/LoWGjEMa9z65L7dRvCkAlxgXrViN9w7QONquISxG2x
+         0ltWRPgL4iWbPJ7eOUEWu6Tz46mOdwjYsZYW98OIlq/Aypb/F5TH6Hs59QUVwjrSYtF9
+         bzInTksekgJvUGjLsk7QmOLsJ7t+2FbJ/J7m+F0G5mHts3fPlj1ENM8uhNwucme2lEfu
+         eAt433ewTgCg0Jorw4k4W4ECxCr3Ovsz8nlgZULCqMcbwO2q5/035LSQrUeipz7QZSsa
+         wef2ISgT2rLAxdfNluiGfVd+Q1NUnIRHJz52tAJCJ2CAOKo6+u/6dtZOkLUzJDWCbCF0
+         15Fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746589385; x=1747194185;
+        d=1e100.net; s=20230601; t=1746589391; x=1747194191;
         h=content-transfer-encoding:cc:to:from:subject:message-id:references
          :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=XZ9+VVlu9UVnVt8rYB8A7FfAZEwt5x79n4OT+/YhqGE=;
-        b=KF1s6u1Xl4ERaoq5SkIYJoVe8Kbrl9sTTBf1Qzyt8sAsEF2xFuCYlpp54y6/z5NtoI
-         DlHFb6ivx010Wb+lqj+5Ci59R4yTwMVImoPgYoACUY8xuMu6zwqJudfnzyZs4jPH5qnR
-         w0gxUNwTfcP/WBobUn+Jfj9u7FRMkUPAkWne58tUChmMW7vYhSK20osCA/BIXRVeCCHX
-         ksD2jdCmRz0zrpdQ+Deo/AGG59bmZRXaCbfaqY6Ff/b9WVcITctW0LxqhlJWMWSm5ZKj
-         SU/aFnOFT/sjk3TQ+wVrIKy2ucvPeHsC6JAqD+B7Fw+5S8ixHst9W8KcbJ67yev3JgeJ
-         QceQ==
-X-Gm-Message-State: AOJu0Yyv4Wj2d7XV3DgnR4kQjBtDw8GUQWJYCESA1iUH05AZpokBtWm5
-	RphySRYBXngf+GgEOzFOvyUMqkAso6AIGHKA5xpzOKyeQXnK5TN6GuKGub88XNL7EwWIYBOZ1xj
-	RqyL2NOB+UIhusylsXmYmz144WPpGngy+dQ0+3kLMqN5r4FD7BM5Atz7KNMqfTd9AdlEJ8TamQO
-	uJ9mVnI88US5wtpiyByUvnzkT+zXtsagixYeGKoxU=
-X-Google-Smtp-Source: AGHT+IHdddzj77XHhSHINniLU11jO45Ia6D6O+Nfkg/uiniU8HQiKK7yRkvfJa8QrxS3/oIfYMIff4ezEHlJYw==
-X-Received: from pjbsc5.prod.google.com ([2002:a17:90b:5105:b0:2fc:2c9c:880])
+        bh=uxEgqRWNnCIbxPFGHN0DtpWce+dYhTac5Yxo7QchO30=;
+        b=AqllyI9u2NPqySyl3O4kE+zwdnFPZ7xE4JxYuwlSe87WEFHL+CjtQmfmrwpW7Th8sL
+         aBe+UdVEm5LNqbNcVO9kCB+2BtFTtVkwqql0OFvCzm664nxEcYL8u0PCilB8pkCa5qp6
+         typlr8tIJs7Wb2fXt2Ak3eEf0cMEISOBn4cooaVd/DPZlb5Cm96Sn1tjaCdBiPrPEV4z
+         MCmH8pLkH0gnvuyRz3hOTslQc6GeKdxycVCLjT2zlA6GfVeQmQ8NDH32C7U3PeQBE3b0
+         mWHRAV5Su3Zhd/EANXpMooBtdoEiJfD050qzXAIdCCBLFg+SXR1U863fjYVFKktgJ4BQ
+         IMtg==
+X-Gm-Message-State: AOJu0Yx5IlcX1LYq2MXVLDTR8zQjKtiwHRG0GggbyvAH8t0Whx4+U0vf
+	LgMIofKtFJVuKSWLw3yGj2AukP3cnP8Q6G9mGptcTtq9SaDqHqnAzAxzPpyjph60OI0yXLRdzsn
+	74wpaeY3AQf3L9u2DKYiJLHDJKflqkHZcQkuLiUJsPH046nvd3t8P/2JbkSAgS46GovPD5+0oXF
+	2hMvv50q5cA5vLnzv3IG2rgxIPOk0ZzrNqvaa6eeg=
+X-Google-Smtp-Source: AGHT+IHKxBND9jCab6HFwe4pJvHSVydGb2+kTstOAcdiQFsFXY5M29PHXlkh+RljB/HINF75zl2pV/LqwLoMZQ==
+X-Received: from pjbdj15.prod.google.com ([2002:a17:90a:d2cf:b0:2fe:800f:23a])
  (user=yepeilin job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:903:2343:b0:22e:421b:49ad with SMTP id d9443c01a7336-22e5edf7a66mr25507985ad.46.1746589384548;
- Tue, 06 May 2025 20:43:04 -0700 (PDT)
-Date: Wed,  7 May 2025 03:43:01 +0000
+ 2002:a17:90b:384f:b0:2fa:13d9:39c with SMTP id 98e67ed59e1d1-30aac19d7e0mr3239110a91.14.1746589390718;
+ Tue, 06 May 2025 20:43:10 -0700 (PDT)
+Date: Wed,  7 May 2025 03:43:07 +0000
 In-Reply-To: <cover.1746588351.git.yepeilin@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -76,12 +76,13 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <cover.1746588351.git.yepeilin@google.com>
 X-Mailer: git-send-email 2.49.0.967.g6a0df3ecc3-goog
-Message-ID: <3059c560e537ad43ed19055d2ebbd970c698095a.1746588351.git.yepeilin@google.com>
-Subject: [PATCH bpf-next v2 3/8] bpf, riscv64: Support load-acquire and
- store-release instructions
+Message-ID: <10e90e0eab042f924d35ad0d1c1f7ca29f673152.1746588351.git.yepeilin@google.com>
+Subject: [PATCH bpf-next v2 4/8] bpf, riscv64: Skip redundant zext instruction
+ after load-acquire
 From: Peilin Ye <yepeilin@google.com>
 To: bpf@vger.kernel.org
-Cc: Andrea Parri <parri.andrea@gmail.com>, linux-riscv@lists.infradead.org, 
+Cc: Peilin Ye <yepeilin@google.com>, linux-riscv@lists.infradead.org, 
+	Andrea Parri <parri.andrea@gmail.com>, 
 	"=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?=" <bjorn@kernel.org>, Pu Lehui <pulehui@huawei.com>, 
 	Puranjay Mohan <puranjay@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
 	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
@@ -93,203 +94,116 @@ Cc: Andrea Parri <parri.andrea@gmail.com>, linux-riscv@lists.infradead.org,
 	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
 	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, Mykola Lysenko <mykolal@fb.com>, 
 	Shuah Khan <shuah@kernel.org>, Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>, 
-	Neel Natu <neelnatu@google.com>, Benjamin Segall <bsegall@google.com>, 
-	Peilin Ye <yepeilin@google.com>
+	Neel Natu <neelnatu@google.com>, Benjamin Segall <bsegall@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-From: Andrea Parri <parri.andrea@gmail.com>
+Currently, the verifier inserts a zext instruction right after every 8-,
+16- or 32-bit load-acquire, which is already zero-extending.  Skip such
+redundant zext instructions.
 
-Support BPF load-acquire (BPF_LOAD_ACQ) and store-release
-(BPF_STORE_REL) instructions in the riscv64 JIT compiler.  For example,
-consider the following 64-bit load-acquire (assuming little-endian):
+While we are here, update that already-obsolete comment about "skip the
+next instruction" in build_body().  Also change emit_atomic_rmw()'s
+parameters to keep it consistent with emit_atomic_ld_st().
 
-  db 10 00 00 00 01 00 00  r1 =3D load_acquire((u64 *)(r1 + 0x0))
-  95 00 00 00 00 00 00 00  exit
-
-  opcode (0xdb): BPF_ATOMIC | BPF_DW | BPF_STX
-  imm (0x00000100): BPF_LOAD_ACQ
-
-The JIT compiler will emit an LD instruction followed by a FENCE R,RW
-instruction for the above, e.g.:
-
-  ld x7,0(x6)
-  fence r,rw
-
-Similarly, consider the following 16-bit store-release:
-
-  cb 21 00 00 10 01 00 00  store_release((u16 *)(r1 + 0x0), w2)
-  95 00 00 00 00 00 00 00  exit
-
-  opcode (0xcb): BPF_ATOMIC | BPF_H | BPF_STX
-  imm (0x00000110): BPF_STORE_REL
-
-A FENCE RW,W instruction followed by an SH instruction will be emitted,
-e.g.:
-
-  fence rw,w
-  sh x2,0(x4)
-
-8-bit and 16-bit load-acquires are zero-extending (cf., LBU, LHU).  The
-verifier always rejects misaligned load-acquires/store-releases (even if
-BPF_F_ANY_ALIGNMENT is set), so the emitted load and store instructions
-are guaranteed to be single-copy atomic.
-
-Introduce primitives to emit the relevant (and the most common/used in
-the kernel) fences, i.e. fences with R -> RW, RW -> W and RW -> RW.
-
-Rename emit_atomic() to emit_atomic_rmw() to make it clear that it only
-handles RMW atomics, and replace its is64 parameter to allow to perform
-the required checks on the opsize (BPF_SIZE(code)).
+Note that checking 'insn[1]' relies on 'insn' not being the last
+instruction, which should have been guaranteed by the verifier; we
+already use 'insn[1]' elsewhere in the file for similar purposes.
+Additionally, we don't check if 'insn[1]' is actually a zext for our
+load-acquire's dst_reg, or some other registers - in other words, here
+we are relying on the verifier to always insert a redundant zext right
+after a 8/16/32-bit load-acquire, for its dst_reg.
 
 Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
+Reviewed-by: Pu Lehui <pulehui@huawei.com>
 Tested-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com> # QEMU/RVA23
-Signed-off-by: Andrea Parri <parri.andrea@gmail.com>
-Co-developed-by: Peilin Ye <yepeilin@google.com>
 Signed-off-by: Peilin Ye <yepeilin@google.com>
 ---
- arch/riscv/net/bpf_jit.h        | 15 +++++++
- arch/riscv/net/bpf_jit_comp64.c | 75 ++++++++++++++++++++++++++++++---
- 2 files changed, 85 insertions(+), 5 deletions(-)
+ arch/riscv/net/bpf_jit_comp64.c | 23 ++++++++++++++++++-----
+ arch/riscv/net/bpf_jit_core.c   |  3 +--
+ 2 files changed, 19 insertions(+), 7 deletions(-)
 
-diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
-index 1d1c78d4cff1..e7b032dfd17f 100644
---- a/arch/riscv/net/bpf_jit.h
-+++ b/arch/riscv/net/bpf_jit.h
-@@ -608,6 +608,21 @@ static inline u32 rv_fence(u8 pred, u8 succ)
- 	return rv_i_insn(imm11_0, 0, 0, 0, 0xf);
- }
-=20
-+static inline void emit_fence_r_rw(struct rv_jit_context *ctx)
-+{
-+	emit(rv_fence(0x2, 0x3), ctx);
-+}
-+
-+static inline void emit_fence_rw_w(struct rv_jit_context *ctx)
-+{
-+	emit(rv_fence(0x3, 0x1), ctx);
-+}
-+
-+static inline void emit_fence_rw_rw(struct rv_jit_context *ctx)
-+{
-+	emit(rv_fence(0x3, 0x3), ctx);
-+}
-+
- static inline u32 rv_nop(void)
- {
- 	return rv_i_insn(0, 0, 0, 0, 0x13);
 diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp6=
 4.c
-index 953b6a20c69f..8767f032f2de 100644
+index 8767f032f2de..10e01ff06312 100644
 --- a/arch/riscv/net/bpf_jit_comp64.c
 +++ b/arch/riscv/net/bpf_jit_comp64.c
-@@ -607,11 +607,65 @@ static void emit_store_64(u8 rd, s32 off, u8 rs, stru=
-ct rv_jit_context *ctx)
+@@ -607,8 +607,13 @@ static void emit_store_64(u8 rd, s32 off, u8 rs, struc=
+t rv_jit_context *ctx)
  	emit_sd(RV_REG_T1, 0, rs, ctx);
  }
 =20
--static void emit_atomic(u8 rd, u8 rs, s16 off, s32 imm, bool is64,
--			struct rv_jit_context *ctx)
-+static int emit_atomic_ld_st(u8 rd, u8 rs, s16 off, s32 imm, u8 code, stru=
+-static int emit_atomic_ld_st(u8 rd, u8 rs, s16 off, s32 imm, u8 code, stru=
 ct rv_jit_context *ctx)
-+{
-+	switch (imm) {
-+	/* dst_reg =3D load_acquire(src_reg + off16) */
-+	case BPF_LOAD_ACQ:
-+		switch (BPF_SIZE(code)) {
-+		case BPF_B:
-+			emit_load_8(false, rd, off, rs, ctx);
-+			break;
-+		case BPF_H:
-+			emit_load_16(false, rd, off, rs, ctx);
-+			break;
-+		case BPF_W:
-+			emit_load_32(false, rd, off, rs, ctx);
-+			break;
-+		case BPF_DW:
-+			emit_load_64(false, rd, off, rs, ctx);
-+			break;
-+		}
-+		emit_fence_r_rw(ctx);
-+		break;
-+	/* store_release(dst_reg + off16, src_reg) */
-+	case BPF_STORE_REL:
-+		emit_fence_rw_w(ctx);
-+		switch (BPF_SIZE(code)) {
-+		case BPF_B:
-+			emit_store_8(rd, off, rs, ctx);
-+			break;
-+		case BPF_H:
-+			emit_store_16(rd, off, rs, ctx);
-+			break;
-+		case BPF_W:
-+			emit_store_32(rd, off, rs, ctx);
-+			break;
-+		case BPF_DW:
-+			emit_store_64(rd, off, rs, ctx);
-+			break;
-+		}
-+		break;
-+	default:
-+		pr_err_once("bpf-jit: invalid atomic load/store opcode %02x\n", imm);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int emit_atomic_rmw(u8 rd, u8 rs, s16 off, s32 imm, u8 code,
-+			   struct rv_jit_context *ctx)
++static int emit_atomic_ld_st(u8 rd, u8 rs, const struct bpf_insn *insn,
++			     struct rv_jit_context *ctx)
  {
- 	u8 r0;
- 	int jmp_offset;
-+	bool is64;
++	u8 code =3D insn->code;
++	s32 imm =3D insn->imm;
++	s16 off =3D insn->off;
 +
-+	if (BPF_SIZE(code) !=3D BPF_W && BPF_SIZE(code) !=3D BPF_DW) {
-+		pr_err_once("bpf-jit: 1- and 2-byte RMW atomics are not supported\n");
-+		return -EINVAL;
-+	}
-+	is64 =3D BPF_SIZE(code) =3D=3D BPF_DW;
-=20
- 	if (off) {
- 		if (is_12b_int(off)) {
-@@ -688,9 +742,14 @@ static void emit_atomic(u8 rd, u8 rs, s16 off, s32 imm=
-, bool is64,
- 		     rv_sc_w(RV_REG_T3, rs, rd, 0, 1), ctx);
- 		jmp_offset =3D ninsns_rvoff(-6);
- 		emit(rv_bne(RV_REG_T3, 0, jmp_offset >> 1), ctx);
--		emit(rv_fence(0x3, 0x3), ctx);
-+		emit_fence_rw_rw(ctx);
+ 	switch (imm) {
+ 	/* dst_reg =3D load_acquire(src_reg + off16) */
+ 	case BPF_LOAD_ACQ:
+@@ -627,6 +632,12 @@ static int emit_atomic_ld_st(u8 rd, u8 rs, s16 off, s3=
+2 imm, u8 code, struct rv_
+ 			break;
+ 		}
+ 		emit_fence_r_rw(ctx);
++
++		/* If our next insn is a redundant zext, return 1 to tell
++		 * build_body() to skip it.
++		 */
++		if (BPF_SIZE(code) !=3D BPF_DW && insn_is_zext(&insn[1]))
++			return 1;
  		break;
-+	default:
-+		pr_err_once("bpf-jit: invalid atomic RMW opcode %02x\n", imm);
-+		return -EINVAL;
- 	}
-+
-+	return 0;
+ 	/* store_release(dst_reg + off16, src_reg) */
+ 	case BPF_STORE_REL:
+@@ -654,10 +665,12 @@ static int emit_atomic_ld_st(u8 rd, u8 rs, s16 off, s=
+32 imm, u8 code, struct rv_
+ 	return 0;
  }
 =20
- #define BPF_FIXUP_OFFSET_MASK   GENMASK(26, 0)
-@@ -1962,10 +2021,16 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, =
-struct rv_jit_context *ctx,
- 	case BPF_STX | BPF_MEM | BPF_DW:
- 		emit_store_64(rd, off, rs, ctx);
- 		break;
-+	case BPF_STX | BPF_ATOMIC | BPF_B:
-+	case BPF_STX | BPF_ATOMIC | BPF_H:
+-static int emit_atomic_rmw(u8 rd, u8 rs, s16 off, s32 imm, u8 code,
++static int emit_atomic_rmw(u8 rd, u8 rs, const struct bpf_insn *insn,
+ 			   struct rv_jit_context *ctx)
+ {
+-	u8 r0;
++	u8 r0, code =3D insn->code;
++	s16 off =3D insn->off;
++	s32 imm =3D insn->imm;
+ 	int jmp_offset;
+ 	bool is64;
+=20
+@@ -2026,9 +2039,9 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, st=
+ruct rv_jit_context *ctx,
  	case BPF_STX | BPF_ATOMIC | BPF_W:
  	case BPF_STX | BPF_ATOMIC | BPF_DW:
--		emit_atomic(rd, rs, off, imm,
--			    BPF_SIZE(code) =3D=3D BPF_DW, ctx);
-+		if (bpf_atomic_is_load_store(insn))
-+			ret =3D emit_atomic_ld_st(rd, rs, off, imm, code, ctx);
-+		else
-+			ret =3D emit_atomic_rmw(rd, rs, off, imm, code, ctx);
-+		if (ret)
-+			return ret;
+ 		if (bpf_atomic_is_load_store(insn))
+-			ret =3D emit_atomic_ld_st(rd, rs, off, imm, code, ctx);
++			ret =3D emit_atomic_ld_st(rd, rs, insn, ctx);
+ 		else
+-			ret =3D emit_atomic_rmw(rd, rs, off, imm, code, ctx);
++			ret =3D emit_atomic_rmw(rd, rs, insn, ctx);
+ 		if (ret)
+ 			return ret;
  		break;
+diff --git a/arch/riscv/net/bpf_jit_core.c b/arch/riscv/net/bpf_jit_core.c
+index f8cd2f70a7fb..f6ca5cfa6b2f 100644
+--- a/arch/riscv/net/bpf_jit_core.c
++++ b/arch/riscv/net/bpf_jit_core.c
+@@ -26,9 +26,8 @@ static int build_body(struct rv_jit_context *ctx, bool ex=
+tra_pass, int *offset)
+ 		int ret;
 =20
- 	case BPF_STX | BPF_PROBE_MEM32 | BPF_B:
+ 		ret =3D bpf_jit_emit_insn(insn, ctx, extra_pass);
+-		/* BPF_LD | BPF_IMM | BPF_DW: skip the next instruction. */
+ 		if (ret > 0)
+-			i++;
++			i++; /* skip the next instruction */
+ 		if (offset)
+ 			offset[i] =3D ctx->ninsns;
+ 		if (ret < 0)
 --=20
 2.49.0.967.g6a0df3ecc3-goog
 
