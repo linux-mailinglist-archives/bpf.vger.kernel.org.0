@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-57622-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57623-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E95DAAD42D
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 05:43:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 934E9AAD42E
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 05:43:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D72B983F48
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 03:43:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF8E21BA73D4
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 03:43:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 657971B4257;
-	Wed,  7 May 2025 03:43:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 947711C1F0D;
+	Wed,  7 May 2025 03:43:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="X+FbghFE"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CtgUtUdw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
+Received: from mail-oa1-f74.google.com (mail-oa1-f74.google.com [209.85.160.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A9DF1B85CC
-	for <bpf@vger.kernel.org>; Wed,  7 May 2025 03:43:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C04B11B85CC
+	for <bpf@vger.kernel.org>; Wed,  7 May 2025 03:43:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746589410; cv=none; b=OdjP0ELL9vDM1/+gsRYqGiSz08/Y3q9pklQbX0JgrosTcw1qejoJiyOz8J149nkbh9pTet1KjO+nVNQrt/keEAZR/Hqq7fIeijwZZvT0Ew3G3FmZfyVDixYyC4+r3Z0i3x4ueOJeN6E+sWYiUGLxqS28HSIQpvipmRHt4Xk01YA=
+	t=1746589417; cv=none; b=aH8kFJvWSRakhr1bEl93uW8+xN++3JIsc9eIXR/x3woXmY/fzyvH6xx0zjKIaPIwXp/UFDzOzHrnis7joHUsZpORRAQ6Fa28uj38tu0Z579ySOEhfG45t0QctAMVeJM/Py7s6YIs8U2jLa7DsRGMiKKgfgjyRemF4H6lMbUyANs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746589410; c=relaxed/simple;
-	bh=S3f5tEuGuwgXgYYoz2dazVzLSGi2L09TYchlj4Cb4sg=;
+	s=arc-20240116; t=1746589417; c=relaxed/simple;
+	bh=N1rmArSH8OQBJ2ZMuIxX6qjPi0FYZUbIRq8nzyX88Z0=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=unPURKBRxb2RYhpQJu4fM6xfktcbPKhB6NzeQBSt/eRmtZaYmJ/GrHsPtzn7OLrJmVEG437HEeMnBDjgRI4wvobf6eHLIxO4+iM2aUKf5TMn4FCdihMeQEbvpeD8bZOq+2vZmcICbrbkX/deNnpxdqQ48rTrO6aCtW6wIBw5LkA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yepeilin.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=X+FbghFE; arc=none smtp.client-ip=209.85.214.202
+	 To:Cc:Content-Type; b=mpELR+1Y4G3BZOGbsM9iVMsXWMdIqA8Wg1l0u8u+Rh/FJrc4ZVxkP7lpjCd9AsPOIrX0wHXmgcCqH+EIM5LD3qAVsLKnCRZQQLSNrF1V4zXL1EGEHLyOdle2GEZFye9RHJqlJXEZDrIUDkSXRU7EEIVrU0jJUjKQJhgF1y7ofkw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yepeilin.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CtgUtUdw; arc=none smtp.client-ip=209.85.160.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yepeilin.bounces.google.com
-Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-225ab228a37so50397315ad.2
-        for <bpf@vger.kernel.org>; Tue, 06 May 2025 20:43:29 -0700 (PDT)
+Received: by mail-oa1-f74.google.com with SMTP id 586e51a60fabf-2c2b6cc2f94so4421399fac.1
+        for <bpf@vger.kernel.org>; Tue, 06 May 2025 20:43:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1746589409; x=1747194209; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1746589415; x=1747194215; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:from:subject:message-id:references
          :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Xzvwhqpet2wKikEpSs/exbZDwf74+YM6WPqZRUaUv4c=;
-        b=X+FbghFE1uPgtNd2f4eCoEPsRJ4CtBvQCmzmZZMe6gHsuSaVgDKkRJkOP34CYui7dJ
-         pmGjeW9l/M2MaIKr/tqKuDMAL7h1HDwzlPB0/+0A7NE5sBi9twUC/kHQRNQuYVkZak4V
-         rccDvW/f3M2y84E66sZjhjqWuslJ/AMoXMqfB7iwjH1tN9j74gYGuxcNouDWagSzSInS
-         rcXZfOVEWNv5G56n6jjya1F4NzN5yUB4/97rI5R2w4dfjgdArQFTSEk/K+FrG70Kot+Q
-         DOCXNYjHb+chscg89SYxv1sYo5/MPINtoiIl51WFxbf43fKUdvx9Z9pKqKERWtv2NJks
-         Vk8g==
+        bh=iZn1GgGAG7mdxhx9lSWnDHMjgG27axMC/yttL1kxmb4=;
+        b=CtgUtUdw3lecLOA5Z/KwrREMSxq58KeRPeuGHRiIetPJFWWbyd8M3Wni9z5DYmN/f8
+         Wq2cnMugf0mHrFserLgiBYbkxoaHi4kNVlYFGWZRLpbbGXstd/YGATp+uhWNU/LextfY
+         /+mpNAf1ICE7j66ATN3SxLQpR1e4jbYHK9be7OfSkgzjlvk4XgxdRNk6VIrUNVqEiIZp
+         ilswXxos8PVFPdsmzGjBgdefB/S7sa7cUts9RIdQ7hoDUqyU4bagWVtBAdDvlaAxnSTb
+         pc5fhBJMvHoIWQlV5Z5Jzg0AEZyhjzanYjy+k2Xg6tfvFEXi7AuT05ePbIBOK2P11ABJ
+         56XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746589409; x=1747194209;
+        d=1e100.net; s=20230601; t=1746589415; x=1747194215;
         h=content-transfer-encoding:cc:to:from:subject:message-id:references
          :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=Xzvwhqpet2wKikEpSs/exbZDwf74+YM6WPqZRUaUv4c=;
-        b=lLjszrteY7pEfggXsS1wzqL19Amg5hlscjk1o7lq6Zoomb32sa8HTTjvIsLyVrKcyw
-         XoO+nlBy8/qfjNDDj0cVTiNGLV6XK4Z5OUaBpKy53LnmYryDCyVgvLjottpnYj6MT7Vm
-         YreN0bqfpHu8OZpUhUg6qnOOlOtCqrwf/b22MIBR9kV8RgddUnEQhUL5Mw70hH2ggzGY
-         VE0Ckz2juUffgy8oxPZZBk4qc8/y7sIehnWqAfcFBRQzPb0sVUez9phAm8PoJPPJVDnN
-         evKyWHB/pGKaW7Xg8QDgqyVlALGAryO37YnRff4ijaR1MIVeqj/mfzr3MzuVcxmRl5h/
-         BQTw==
-X-Gm-Message-State: AOJu0YxILP0YDPl8MJzk8/1pvZXKqvoo5JQe6QtuQR3CArkfCA6AcdQq
-	m9DxChkMZI2Dtnitx/7QUykiXxjH+tHndWG5PDh4P7KYGjBLJFmAqmW02VwAgFOAtW0Li19q0td
-	zLpqPqKbBYDoi1YsK+7bIbs7xE17cypwXbrgLp457DE5smndSaFTEyaH9r9tOPq72Q0KVB1hhC6
-	5kmSxSHeEkR/h/kbwNC0LYIGjH/ApbyEolaNjYex8=
-X-Google-Smtp-Source: AGHT+IEtoQx5D2S9W7WAmHeQNr3gJVW7PqfCB40WHN0EShgVdc/0yI0wAxRoW5BJaCzOHqdGbwsUKwFn2rFGAA==
-X-Received: from plbkr8.prod.google.com ([2002:a17:903:808:b0:223:f441:fcaa])
+        bh=iZn1GgGAG7mdxhx9lSWnDHMjgG27axMC/yttL1kxmb4=;
+        b=UuFTwF7FI8FrWlMRgDLZgTkHRveqIE7rbcTw0+d+5We3AughHyZVCigOToe/7//+zc
+         pJS3TPuJH41IpXSq9WJ7kK9mxFNkiGTP31IFy0ulnbpotUnDpGsTkaE6TX5VrguoqDMv
+         lmE2aIAW9neF8DG/lFrtpql9+qNcHYZD2n6WVXSM8Vfc8xB+y872i6Y5ZwEdaf6jHCff
+         2cH4dHQixfDAhjemPcrqe2HUlzLBcpMioiCS6JiC8HdacG96b+zPyPX/oZ06yG9ElIiY
+         E3+mj0xxdmxiP4d7AzeEBjn6XmBtcsOBoOe8A1TAyomGWGZC+HGRjxckkKPhALe+wVPn
+         IXfg==
+X-Gm-Message-State: AOJu0Yw7xJzC3rZFu5mZRCmCBYXQPIVlx8Suvu0t6xn1yx6redm3/N6y
+	38rHh9EeT+X4+oStQFclGCgepLiWCAkH7DS7xnh2r3jOhSzNxU8r/gV5V3VM4qvDVYLCERAcpvL
+	5JVE34wFmCjGUj/cJ2SwXNdkXbKoGp8eNn9ev4Axhj6jXIJUcsSdoHP6pCO/VxNUgi/ZGtp/tFj
+	U7Yl3bMzboRAIwzgsCfC481YwqA3y0/xkg1vMoArU=
+X-Google-Smtp-Source: AGHT+IGifRIHZ6qcU64u73ukgqSP22FlKicCrm9bweMfqYF2kqYgj7WzkdgP+PxImBJxxCpzzgu9q1HpZCCfVQ==
+X-Received: from oabrb11.prod.google.com ([2002:a05:6871:618b:b0:2da:6d76:b15c])
  (user=yepeilin job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:902:f54b:b0:22c:33e4:fa5a with SMTP id d9443c01a7336-22e5ea1d27emr23509275ad.9.1746589408717;
- Tue, 06 May 2025 20:43:28 -0700 (PDT)
-Date: Wed,  7 May 2025 03:43:25 +0000
+ 2002:a05:6870:e243:b0:29e:24c7:2861 with SMTP id 586e51a60fabf-2db5be312b8mr1163209fac.13.1746589414619;
+ Tue, 06 May 2025 20:43:34 -0700 (PDT)
+Date: Wed,  7 May 2025 03:43:31 +0000
 In-Reply-To: <cover.1746588351.git.yepeilin@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -76,9 +76,9 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <cover.1746588351.git.yepeilin@google.com>
 X-Mailer: git-send-email 2.49.0.967.g6a0df3ecc3-goog
-Message-ID: <11097fd515f10308b3941469ee4c86cb8872db3f.1746588351.git.yepeilin@google.com>
-Subject: [PATCH bpf-next v2 7/8] selftests/bpf: Verify zero-extension behavior
- in load-acquire tests
+Message-ID: <9d878fa99a72626208a8eed3c04c4140caf77fda.1746588351.git.yepeilin@google.com>
+Subject: [PATCH bpf-next v2 8/8] selftests/bpf: Enable non-arena
+ load-acquire/store-release selftests for riscv64
 From: Peilin Ye <yepeilin@google.com>
 To: bpf@vger.kernel.org
 Cc: Peilin Ye <yepeilin@google.com>, linux-riscv@lists.infradead.org, 
@@ -98,59 +98,35 @@ Cc: Peilin Ye <yepeilin@google.com>, linux-riscv@lists.infradead.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Verify that 8-, 16- and 32-bit load-acquires are zero-extending by using
-immediate values with their highest bit set.  Do the same for the 64-bit
-variant to keep the style consistent.
+For riscv64, enable all BPF_{LOAD_ACQ,STORE_REL} selftests except the
+arena_atomics/* ones (not guarded behind CAN_USE_LOAD_ACQ_STORE_REL),
+since arena access is not yet supported.
 
 Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
 Reviewed-by: Pu Lehui <pulehui@huawei.com>
 Tested-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com> # QEMU/RVA23
 Signed-off-by: Peilin Ye <yepeilin@google.com>
 ---
- tools/testing/selftests/bpf/progs/verifier_load_acquire.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ tools/testing/selftests/bpf/progs/bpf_misc.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_load_acquire.c b/to=
-ols/testing/selftests/bpf/progs/verifier_load_acquire.c
-index a696ab84bfd6..74f4f19c10b8 100644
---- a/tools/testing/selftests/bpf/progs/verifier_load_acquire.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_load_acquire.c
-@@ -15,7 +15,7 @@ __naked void load_acquire_8(void)
- {
- 	asm volatile (
- 	"r0 =3D 0;"
--	"w1 =3D 0x12;"
-+	"w1 =3D 0xfe;"
- 	"*(u8 *)(r10 - 1) =3D w1;"
- 	".8byte %[load_acquire_insn];" // w2 =3D load_acquire((u8 *)(r10 - 1));
- 	"if r2 =3D=3D r1 goto 1f;"
-@@ -35,7 +35,7 @@ __naked void load_acquire_16(void)
- {
- 	asm volatile (
- 	"r0 =3D 0;"
--	"w1 =3D 0x1234;"
-+	"w1 =3D 0xfedc;"
- 	"*(u16 *)(r10 - 2) =3D w1;"
- 	".8byte %[load_acquire_insn];" // w2 =3D load_acquire((u16 *)(r10 - 2));
- 	"if r2 =3D=3D r1 goto 1f;"
-@@ -55,7 +55,7 @@ __naked void load_acquire_32(void)
- {
- 	asm volatile (
- 	"r0 =3D 0;"
--	"w1 =3D 0x12345678;"
-+	"w1 =3D 0xfedcba09;"
- 	"*(u32 *)(r10 - 4) =3D w1;"
- 	".8byte %[load_acquire_insn];" // w2 =3D load_acquire((u32 *)(r10 - 4));
- 	"if r2 =3D=3D r1 goto 1f;"
-@@ -75,7 +75,7 @@ __naked void load_acquire_64(void)
- {
- 	asm volatile (
- 	"r0 =3D 0;"
--	"r1 =3D 0x1234567890abcdef ll;"
-+	"r1 =3D 0xfedcba0987654321 ll;"
- 	"*(u64 *)(r10 - 8) =3D r1;"
- 	".8byte %[load_acquire_insn];" // r2 =3D load_acquire((u64 *)(r10 - 8));
- 	"if r2 =3D=3D r1 goto 1f;"
+diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/s=
+elftests/bpf/progs/bpf_misc.h
+index 863df7c0fdd0..6e208e24ba3b 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_misc.h
++++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
+@@ -225,8 +225,9 @@
+ #define CAN_USE_BPF_ST
+ #endif
+=20
+-#if __clang_major__ >=3D 18 && defined(ENABLE_ATOMICS_TESTS) && \
+-	(defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86))
++#if __clang_major__ >=3D 18 && defined(ENABLE_ATOMICS_TESTS) &&		\
++	(defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86) ||	\
++	 (defined(__TARGET_ARCH_riscv) && __riscv_xlen =3D=3D 64))
+ #define CAN_USE_LOAD_ACQ_STORE_REL
+ #endif
+=20
 --=20
 2.49.0.967.g6a0df3ecc3-goog
 
