@@ -1,162 +1,374 @@
-Return-Path: <bpf+bounces-57648-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57649-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 713EDAADBA5
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 11:42:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38D81AADCB5
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 12:44:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0A1F7B0585
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 09:40:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C70C09A4066
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 10:43:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29A961FBEBE;
-	Wed,  7 May 2025 09:41:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECD26215062;
+	Wed,  7 May 2025 10:44:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="jriVKSFM";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wD+lLREZ";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="jriVKSFM";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wD+lLREZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f77.google.com (mail-io1-f77.google.com [209.85.166.77])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32CC81FDA61
-	for <bpf@vger.kernel.org>; Wed,  7 May 2025 09:41:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9892A4414
+	for <bpf@vger.kernel.org>; Wed,  7 May 2025 10:43:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746610890; cv=none; b=ozwJzz1+n+/KgtJwprCzSUX9JIZQPLr7uAdA10rFR17tFh7jtGvpW5PTqo61STmNN5r3fsV3KyPHYZ8pQPyzXkRIwqNpy3tHJ7cQp2vBPGCKIG7jjOHdFoW3jS0SsNdMbftCpS62DrW5cH/j5Ev95qjWgU811P07lbzZ1xN3Qvg=
+	t=1746614642; cv=none; b=gkYhmiTxHoRb/JVksZlxXRUbAD1TyLWE6rfBHvvUYuIUNdYCVMympcJC9l+sINjD42xyk7XNaH9m7wjoNeKKJ/F9lascBwgWmbkUlZwUohise00l0fiCeqQ0JxZsnZF0nUzfVEFhMZJBieSs3VRumzCYfqDYB2HPfmc+PuQN7zw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746610890; c=relaxed/simple;
-	bh=ldds1xXL712yRRlZ4v84n8NxDHsbG08SZ7FT1QvRugk=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=AQs2SRL3zlys9E7BS/Q/iF6KxrskmBr5zs0s8ZlYPpQPAdAQdQf9saUuMrizYSJRrjlGE+G1LiyNTPa0CFze9TogidYZ3uNkG25vXMwkms+VINxAxLqvztoIyK8917y+TpSGp74pRxGasNGNUFlwiOfmVd34fep7DcVXxJ5qN8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f77.google.com with SMTP id ca18e2360f4ac-85b4dc23f03so649047339f.1
-        for <bpf@vger.kernel.org>; Wed, 07 May 2025 02:41:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746610888; x=1747215688;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0ZMjv4BurL96WWI1Ah+T5YGLK8CWMBp4tYVhTItOUNc=;
-        b=AmpGtyfEJrxrHottYb18ngx8FzcqlPGkU+SAvT10DLZGVKWx8caRBqHBs0VjU8xHZd
-         gbPT0ol4YVIZnwYLW5N4eAFch9mOsTA3cpGZoBJlROlQPq1ukn4nL6grMVud6TaDcuzV
-         /yv0dwvLw+/Dx8jDCMRfTecXMGJdxf1/z9WR9Jr+Ik+6xO8sKesti6mURy3hfnMrpBkH
-         4Vl2x7du/H3zIPMu6Pd4yls2iKoJUA/ZnRhLW1nJrUdHiQhU+G9roLP9XerXnb0AYtP1
-         oX7Br6oGKAQHqmx7fP231yq9Q3ZcyuTzl9ys6l41ZhsBXbNJsz76W6xSD0LWfc13AA0j
-         YbPQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXBfVUlIjZiS3eGY/EkeynvC+SMtNqqokU4KFSdYNHOPUahcKy3Hs5C6maZ2IwqIdubxDA=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx0zMMx+btxZZxLwjh/ZU9AFkBGTYR8aKRQtMtkkawIdFjIZa+L
-	FlLhzgSrF6nkkUCVinx5lgzr7iu3YHSANEM9so5tFNGJZbIm8B6NuQESH04mzK8B7pWqWom8bxx
-	LlPfoBSl/vNKXXHvzpK9pC/bIsWF1Z3mCEThy12Ky1akZq3zo+oWVGog=
-X-Google-Smtp-Source: AGHT+IH4sxk5cFz5pId1g24UR8NnF/1YrG3vp1Gov//BexhCUncELV1XS248RMcVnTmXLmOWNzfF+fVCRZYnXWgWBZhwhY6owPUs
+	s=arc-20240116; t=1746614642; c=relaxed/simple;
+	bh=n1jOv9mejaHfB3WCqSXaWjfRv6gD+H5NnnF++BTyy0Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Q5PYB5lGq706Vf4Ha6wyMQ/q2quSCPtegxeqqpW1YIUVupTpFUqcyKtUeyHQpGi4qZKK1Bguto7pgQdfX0NC6CSMPCtJwP8fMR3LBmo4sf+U8QQx/nhYMMlDLw9M7+8+AYe0b8TL829aZmwh169++a30Z/5FH/MCTxQXFj4aSoY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=jriVKSFM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=wD+lLREZ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=jriVKSFM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=wD+lLREZ; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 1491A1F394;
+	Wed,  7 May 2025 10:43:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1746614632; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cX1wthXScZPfty4tSrb4aP4ON71P4G5AoJJQZT5lRSk=;
+	b=jriVKSFM0KRBsG9g5R0chIx6T7G4FS0XRZN994vHaSXtNFNv+HIF5B1VB2artqUFZyMyMa
+	pbAsohoKtFlfx4lxuDkDQCffUe0sM2nb8tU55ww9b2tOh5naVkVcMKt0b0S6OH3PxWgMSK
+	cpamfSn18/5ym1WoGQv8oeGVfYVX9KQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1746614632;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cX1wthXScZPfty4tSrb4aP4ON71P4G5AoJJQZT5lRSk=;
+	b=wD+lLREZBvT+VU9GDuro74F5psFI25KYvPxTUPc0TFV5Z2D/T6oVjc6jpEUAAbM+LBRbm5
+	enCO3vrvV40IKdBA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=jriVKSFM;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=wD+lLREZ
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1746614632; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cX1wthXScZPfty4tSrb4aP4ON71P4G5AoJJQZT5lRSk=;
+	b=jriVKSFM0KRBsG9g5R0chIx6T7G4FS0XRZN994vHaSXtNFNv+HIF5B1VB2artqUFZyMyMa
+	pbAsohoKtFlfx4lxuDkDQCffUe0sM2nb8tU55ww9b2tOh5naVkVcMKt0b0S6OH3PxWgMSK
+	cpamfSn18/5ym1WoGQv8oeGVfYVX9KQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1746614632;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cX1wthXScZPfty4tSrb4aP4ON71P4G5AoJJQZT5lRSk=;
+	b=wD+lLREZBvT+VU9GDuro74F5psFI25KYvPxTUPc0TFV5Z2D/T6oVjc6jpEUAAbM+LBRbm5
+	enCO3vrvV40IKdBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F0D0A139D9;
+	Wed,  7 May 2025 10:43:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id /6mEOmc5G2iREgAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Wed, 07 May 2025 10:43:51 +0000
+Message-ID: <b6f69981-f851-4c6f-a19d-5f8d13994087@suse.cz>
+Date: Wed, 7 May 2025 12:44:24 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1987:b0:3d9:6d52:5483 with SMTP id
- e9e14a558f8ab-3da7390d6bfmr25328335ab.11.1746610888278; Wed, 07 May 2025
- 02:41:28 -0700 (PDT)
-Date: Wed, 07 May 2025 02:41:28 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <681b2ac8.050a0220.a19a9.001d.GAE@google.com>
-Subject: [syzbot] [bpf?] BUG: soft lockup in bpf_prog_free_deferred
-From: syzbot <syzbot+05fc8ab5779d08c3dc9b@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me, 
-	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6/6] slab: Introduce kmalloc_nolock() and kfree_nolock().
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+ Harry Yoo <harry.yoo@oracle.com>, Shakeel Butt <shakeel.butt@linux.dev>,
+ Michal Hocko <mhocko@suse.com>, Sebastian Sewior <bigeasy@linutronix.de>,
+ Andrii Nakryiko <andrii@kernel.org>,
+ Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, Matthew Wilcox <willy@infradead.org>
+References: <20250501032718.65476-1-alexei.starovoitov@gmail.com>
+ <20250501032718.65476-7-alexei.starovoitov@gmail.com>
+ <4d3e5d4b-502b-459b-9779-c0bf55ef2a03@suse.cz>
+ <CAADnVQLO9YX2_0wEZshHbwXoJY2-wv3OgVGvN-hgf6mK0_ipxw@mail.gmail.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+Content-Language: en-US
+In-Reply-To: <CAADnVQLO9YX2_0wEZshHbwXoJY2-wv3OgVGvN-hgf6mK0_ipxw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: 1491A1F394
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_DN_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	ARC_NA(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,oracle.com,linux.dev,suse.com,linutronix.de,kernel.org,gmail.com,linux-foundation.org,infradead.org,goodmis.org,cmpxchg.org];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid,suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Spam-Score: -2.01
 
-Hello,
+On 5/7/25 4:20 AM, Alexei Starovoitov wrote:
+> On Tue, May 6, 2025 at 5:01 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+>>
+>> On 5/1/25 05:27, Alexei Starovoitov wrote:
+>>> From: Alexei Starovoitov <ast@kernel.org>
+>>>
+>>> kmalloc_nolock() relies on ability of local_lock to detect the situation
+>>> when it's locked.
+>>> In !PREEMPT_RT local_lock_is_locked() is true only when NMI happened in
+>>> irq saved region that protects _that specific_ per-cpu kmem_cache_cpu.
+>>> In that case retry the operation in a different kmalloc bucket.
+>>> The second attempt will likely succeed, since this cpu locked
+>>> different kmem_cache_cpu.
+>>> When lock_local_is_locked() sees locked memcg_stock.stock_lock
+>>> fallback to atomic operations.
+>>>
+>>> Similarly, in PREEMPT_RT local_lock_is_locked() returns true when
+>>> per-cpu rt_spin_lock is locked by current task. In this case re-entrance
+>>> into the same kmalloc bucket is unsafe, and kmalloc_nolock() tries
+>>> a different bucket that is most likely is not locked by current
+>>> task. Though it may be locked by a different task it's safe to
+>>> rt_spin_lock() on it.
+>>>
+>>> Similar to alloc_pages_nolock() the kmalloc_nolock() returns NULL
+>>> immediately if called from hard irq or NMI in PREEMPT_RT.
+>>>
+>>> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+>>
+>> In general I'd prefer if we could avoid local_lock_is_locked() usage outside
+>> of debugging code. It just feels hacky given we have local_trylock()
+>> operations. But I can see how this makes things simpler so it's probably
+>> acceptable.
+> 
+> local_lock_is_locked() is not for debugging.
+> It's gating further calls into slub internals.
+> If a particular bucket is locked the logic will use a different one.
+> There is no local_trylock() at all here.
 
-syzbot found the following issue on:
+It could be, but I can see how it would complicate things. Not worth it,
+especially in case we manage to replace the current percpu scheme with
+sheaves later.
 
-HEAD commit:    2bfcee565c3a Merge tag 'bcachefs-2025-05-01' of git://evil..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=171498d4580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=32cdb22fd6b8418b
-dashboard link: https://syzkaller.appspot.com/bug?extid=05fc8ab5779d08c3dc9b
-compiler:       aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
+> In that sense it's very different from alloc_pages_nolock().
+> There we trylock first and if not successful go for plan B.
+> For kmalloc_nolock() we first check whether local_lock_is_locked(),
+> if not then proceed and do
+> local_lock_irqsave_check() instead of local_lock_irqsave().
+> Both are unconditional and exactly the same without
+> CONFIG_DEBUG_LOCK_ALLOC.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Right.
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/384ffdcca292/non_bootable_disk-2bfcee56.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/02554dd7daf4/vmlinux-2bfcee56.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a7f9d70a155d/Image-2bfcee56.gz.xz
+> Extra checks are there in _check() version for debugging,
+> since local_lock_is_locked() is called much earlier in the call chain
+> and far from local_lock_irqsave. So not trivial to see by just
+> code reading.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+05fc8ab5779d08c3dc9b@syzkaller.appspotmail.com
+Right, we rely on the implication that once we find
+local_lock_is_locked() is false, it cannot become suddenly locked later
+even if we re-enable preemption in the meanwhile.
 
-watchdog: BUG: soft lockup - CPU#1 stuck for 22s! [kworker/1:4:3595]
-Modules linked in:
-irq event stamp: 150378
-hardirqs last  enabled at (150377): [<ffff80008545c1e8>] __exit_to_kernel_mode arch/arm64/kernel/entry-common.c:85 [inline]
-hardirqs last  enabled at (150377): [<ffff80008545c1e8>] exit_to_kernel_mode+0x38/0x118 arch/arm64/kernel/entry-common.c:95
-hardirqs last disabled at (150378): [<ffff80008545e390>] __el1_irq arch/arm64/kernel/entry-common.c:557 [inline]
-hardirqs last disabled at (150378): [<ffff80008545e390>] el1_interrupt+0x24/0x54 arch/arm64/kernel/entry-common.c:575
-softirqs last  enabled at (150376): [<ffff8000801b6c10>] softirq_handle_end kernel/softirq.c:425 [inline]
-softirqs last  enabled at (150376): [<ffff8000801b6c10>] handle_softirqs+0x88c/0xdb4 kernel/softirq.c:607
-softirqs last disabled at (150361): [<ffff800080010760>] __do_softirq+0x14/0x20 kernel/softirq.c:613
-CPU: 1 UID: 0 PID: 3595 Comm: kworker/1:4 Not tainted 6.15.0-rc4-syzkaller-00189-g2bfcee565c3a #0 PREEMPT 
-Hardware name: linux,dummy-virt (DT)
-Workqueue: events bpf_prog_free_deferred
-pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : __kasan_check_read+0x0/0x2c mm/kasan/shadow.c:30
-lr : csd_lock_wait kernel/smp.c:340 [inline]
-lr : smp_call_function_many_cond+0x38c/0x1528 kernel/smp.c:885
-sp : ffff8000a07c7770
-x29: ffff8000a07c7770 x28: 1fffe0000d41ac31 x27: dfff800000000000
-x26: 0000000000000000 x25: dfff800000000000 x24: ffff8000870c13a8
-x23: 0000000000000000 x22: ffffffffffffffff x21: ffff00006a0d6180
-x20: ffff00006a0b8c48 x19: 1ffff000140f8f0c x18: 0000000000000000
-x17: 0000000000000000 x16: 0000000000000000 x15: 0000ffffd0f80258
-x14: ffff00006a0c05b0 x13: 0000000000000000 x12: ffff60000d41718a
-x11: 1fffe0000d417189 x10: ffff60000d417189 x9 : dfff800000000000
-x8 : ffff00006a0b8c4b x7 : 0000000000000001 x6 : ffff60000d417189
-x5 : ffff00006a0b8c48 x4 : ffff60000d41718a x3 : ffff80008044d488
-x2 : 0000000000000000 x1 : 0000000000000004 x0 : ffff00006a0b8c48
-Call trace:
- __kasan_check_read+0x0/0x2c (P)
- smp_call_function_many kernel/smp.c:909 [inline]
- smp_call_function kernel/smp.c:931 [inline]
- kick_all_cpus_sync+0x3c/0x94 kernel/smp.c:1076
- flush_icache_range arch/arm64/include/asm/cacheflush.h:103 [inline]
- __text_poke+0xbc/0xdc arch/arm64/kernel/patching.c:130
- aarch64_insn_set+0x30/0x4c arch/arm64/kernel/patching.c:177
- bpf_arch_text_invalidate+0x1c/0x34 arch/arm64/net/bpf_jit_comp.c:250
- bpf_prog_pack_free+0x160/0x43c kernel/bpf/core.c:1014
- bpf_jit_binary_pack_free+0x4c/0x80 kernel/bpf/core.c:1212
- bpf_jit_free+0xe4/0x1d4 arch/arm64/net/bpf_jit_comp.c:2794
- bpf_prog_free_deferred+0x344/0x4c4 kernel/bpf/core.c:2886
- process_one_work+0x7cc/0x18d4 kernel/workqueue.c:3238
- process_scheduled_works kernel/workqueue.c:3319 [inline]
- worker_thread+0x734/0xb84 kernel/workqueue.c:3400
- kthread+0x348/0x5fc kernel/kthread.c:464
- ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:862
-Sending NMI from CPU 1 to CPUs 0:
+> If local_lock_is_locked() says that it's locked
+> we go for a different bucket which is pretty much guaranteed to
+> be unlocked.
 
+OK.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+>>> +             folio = (struct folio *)p;
+>>> +     } else if (node == NUMA_NO_NODE)
+>>>               folio = (struct folio *)alloc_frozen_pages(flags, order);
+>>>       else
+>>>               folio = (struct folio *)__alloc_frozen_pages(flags, order, node, NULL);
+>>
+>> <snip>
+>>
+>>> @@ -3958,8 +3989,28 @@ static void *__slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+>>>        */
+>>>       c = slub_get_cpu_ptr(s->cpu_slab);
+>>>  #endif
+>>> +     if (unlikely(!gfpflags_allow_spinning(gfpflags))) {
+>>> +             struct slab *slab;
+>>> +
+>>> +             slab = c->slab;
+>>> +             if (slab && !node_match(slab, node))
+>>> +                     /* In trylock mode numa node is a hint */
+>>> +                     node = NUMA_NO_NODE;
+>>> +
+>>> +             if (!local_lock_is_locked(&s->cpu_slab->lock)) {
+>>> +                     lockdep_assert_not_held(this_cpu_ptr(&s->cpu_slab->lock));
+>>> +             } else {
+>>> +                     /*
+>>> +                      * EBUSY is an internal signal to kmalloc_nolock() to
+>>> +                      * retry a different bucket. It's not propagated further.
+>>> +                      */
+>>> +                     p = ERR_PTR(-EBUSY);
+>>> +                     goto out;
+>>
+>> Am I right in my reasoning as follows?
+>>
+>> - If we're on RT and "in_nmi() || in_hardirq()" is true then
+>> kmalloc_nolock_noprof() would return NULL immediately and we never reach
+>> this code
+> 
+> correct.
+> 
+>> - local_lock_is_locked() on RT tests if the current process is the lock
+>> owner. This means (in absence of double locking bugs) that we locked it as
+>> task (or hardirq) and now we're either in_hardirq() (doesn't change current
+>> AFAIK?) preempting task, or in_nmi() preempting task or hardirq.
+> 
+> not quite.
+> There could be re-entrance due to kprobe/fentry/tracepoint.
+> Like trace_contention_begin().
+> The code is still preemptable.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Hm right. Glad that I asked then and thanks for making me realize.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+>> - so local_lock_is_locked() will never be true here on RT
+> 
+> hehe :)
+> 
+> To have good coverage I fuzz test this patch set with:
+> 
+> +extern void (*debug_callback)(void);
+> +#define local_unlock_irqrestore(lock, flags) \
+> + do { \
+> + if (debug_callback) debug_callback(); \
+> + __local_unlock_irqrestore(lock, flags); \
+> + } while (0)
+> 
+> and randomly re-enter everywhere from debug_callback().
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+Oh cool :)
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+>>
+>> <snip>
+>>
+>>>  /*
+>>>   * Fastpath with forced inlining to produce a kfree and kmem_cache_free that
+>>>   * can perform fastpath freeing without additional function calls.
+>>> @@ -4605,10 +4762,36 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
+>>>       barrier();
+>>>
+>>>       if (unlikely(slab != c->slab)) {
+>>
+>> Note this unlikely() is actually a lie. It's actually unlikely that the free
+>> will happen on the same cpu and with the same slab still being c->slab,
+>> unless it's a free following shortly a temporary object allocation.
+> 
+> I didn't change it, since you would have called it
+> an unrelated change in the patch :)
 
-If you want to undo deduplication, reply with:
-#syz undup
+Right I'm not suggesting to change it here and now, just that it might
+be misleading in that this is a slowpath and we're fine doing expensive
+things here - I'm arguing we should be careful.
+
+> I can prepare a separate single line patch to remove unlikely() here,
+> but it's a micro optimization unrelated to this set.
+> 
+>>> -             __slab_free(s, slab, head, tail, cnt, addr);
+>>> +             /* cnt == 0 signals that it's called from kfree_nolock() */
+>>> +             if (unlikely(!cnt)) {
+>>> +                     /*
+>>> +                      * Use llist in cache_node ?
+>>> +                      * struct kmem_cache_node *n = get_node(s, slab_nid(slab));
+>>> +                      */
+>>> +                     /*
+>>> +                      * __slab_free() can locklessly cmpxchg16 into a slab,
+>>> +                      * but then it might need to take spin_lock or local_lock
+>>> +                      * in put_cpu_partial() for further processing.
+>>> +                      * Avoid the complexity and simply add to a deferred list.
+>>> +                      */
+>>> +                     llist_add(head, &s->defer_free_objects);
+>>> +             } else {
+>>> +                     free_deferred_objects(&s->defer_free_objects, addr);
+>>
+>> So I'm a bit vary that this is actually rather a fast path that might
+>> contend on the defer_free_objects from all cpus.
+> 
+> Well, in my current stress test I could only get this list
+> to contain a single digit number of objects.
+
+My worry isn't the list would get long, but that we'd be checking it on
+almost any kfree() (that's not lucky enough to be slab == c->slab) from
+all cpus. And every kfree_nolock() will have to make the cache line of
+s->defer_free_objects exclusive to that cpu in the llist_add(), and then
+all other cpus doing kfree() will have to refetch it while making it
+shared again...
+
+>> I'm wondering if we could make the list part of kmem_cache_cpu to distribute
+>> it,
+> 
+> doable, but kmem_cache_cpu *c = raw_cpu_ptr(s->cpu_slab);
+> is preemptable, so there is a risk that
+> llist_add(.. , &c->defer_free_objects);
+> will be accessing per-cpu memory of another cpu.
+> llist_add() will work correctly, but cache line bounce is possible.
+
+The cache line bounce due to occasional preemption should be much more
+rare than on the single s->defer_free_objects cache line as described above.
+
+> In kmem_cache I placed defer_free_objects after cpu_partial and oo,
+> so it should be cache hot.
+
+OTOH it would make the bouncing worse?
+
+>> and hook the flushing e.g. to places where we do deactivate_slab() which
+>> should be much slower path,
+> 
+> I don't follow the idea.
+> If we don't process kmem_cache_cpu *c right here in do_slab_free()
+> this llist will get large.
+
+I'd hope deativate_slab() should be frequent enough, it means mainly the
+local cpu's slab was exhausted. If there are many frees there are
+probably many allocations too.
+
+But ok, maybe having the llist local to the cpu would be sufficient to
+make it feasible to check it every kfree() cheaply enough.
+
 
