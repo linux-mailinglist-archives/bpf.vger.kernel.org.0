@@ -1,122 +1,255 @@
-Return-Path: <bpf+bounces-57645-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57646-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B2B4AADB2D
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 11:19:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B98FAADB7E
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 11:32:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11D9C4E5BEC
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 09:18:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0080D3ABA34
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 09:31:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 383BE237717;
-	Wed,  7 May 2025 09:14:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B2FE1F2BAB;
+	Wed,  7 May 2025 09:31:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="NbjeaoSq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uT/hERq+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC1EC231857
-	for <bpf@vger.kernel.org>; Wed,  7 May 2025 09:14:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04DAF4B1E47
+	for <bpf@vger.kernel.org>; Wed,  7 May 2025 09:31:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746609256; cv=none; b=T4HCrsrTetv6A8EUDZk40KZV/rdLcqNmQ+JXy2VGrj63tkoK9DjkAtY3sUZAbAP0QTvb01zpCqWurnfW64wLH/9jE3cy0xD7XE2MGJn+AixjlESS+rbaOqS5D3Ikna1Jh75Bo8aavBMKm+sIIS0AIPtp4UEcdcI4vnHOYJNIMt4=
+	t=1746610318; cv=none; b=VAM5Od+lhdT211JNEaqWYI+xRYB8NNO601jAmcSG/1YVcM9pie7ztZc87m5plkwq6MTMXwKzX4H+vfWaAZhq7J97DuquUEo/968yL4EijydI/MZXIYSy/eiElf54JeW6pupPh3UzszZl6JT7KSHVUySlB/JEFcQ3W5T1RAAYgFA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746609256; c=relaxed/simple;
-	bh=5I48oKIcAHh2GX/ijoBH8labwdpNZfuRysT+WXcajI8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Za3bImDanhrNDj5Q/Jl40dOVOt/Tyl9UFMyfR+ge4pz026DfsRGZCoCfhJ9wom51EKZqfgH1JqBiP5zPRXS9K3TbzV0QwIqls7bPmUsQ2OQkR9lTaisTkT3zCwTDG7tkrth/V4o3X4qmEq7avEtr8RxUejlcblbesEtIROYeWPI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=NbjeaoSq; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-39129fc51f8so4454571f8f.0
-        for <bpf@vger.kernel.org>; Wed, 07 May 2025 02:14:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1746609253; x=1747214053; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ENAdlxNQCNsPp1Cx5U8ECxKNHpix70L4dcI8KPfbfOg=;
-        b=NbjeaoSqEClPkNMCmliMvm9U3cL8CMVHTSSTKQfp4idXY9xotgO2RsiLjHNLDQ5d7z
-         mXByncE4JOiTRaqSyyc8Oj5nmGxVxa7Atcwc/gbj3+NidFUeAr8SLD9Th+FB8sjC1oeY
-         qepsYXxQLAj9tD2cdshlzHldZTRZBeEbcTHiFnHzhoJmKjH4rAKQNaIscblBBy0Gi0xj
-         MbLwb0Bnfxg2ThfYemtwhJ999YePEaQEj6P4kPVLpxHCjgyww5oB8h4qs2pX8FfAScWe
-         frJWKIXVBvIIkzL/zB5Uyz7sgEZyjXxcO+aR74KJWczcsrRhpkimnPZQ2ArpFwIqUMXN
-         RnYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746609253; x=1747214053;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ENAdlxNQCNsPp1Cx5U8ECxKNHpix70L4dcI8KPfbfOg=;
-        b=TJtZ8uOmDAGuyTqHKticg5nCnHHV09gkqqbDXEaGOGRJNA7TYqcfxXnviLiiexZ5HO
-         AkPko8bi5Ge681F4WMR4xdEQa/I0oAynvWZCZlEzm6T5es3X9lkQSXrRDm2ua5j5TLb/
-         EAfW66QhS3K0g3Qo+yq1sj0sQxCmvqzlzyABiS+ffTlPfSzWXf8dTmiv+P0fYjyO91N0
-         MqbJCsWgDfsJF42vsVBxZoaVnFAK3SWst7k6FhmWEFIQdL1AIVcpXzZxJwgQJSSyn8m5
-         kshvcBxvZrh+vYGWB7YKALSO2usDKBojUAPT4f+qSLpj3T1Qp2PDr3YoVWKp0hYqGvbD
-         m6Yw==
-X-Forwarded-Encrypted: i=1; AJvYcCXsAPosfbSQACgrJ5bYibJx/VNFC+CpZ5hSfzgGyHkmypAYFriyR+L1PFIkv8DpBg9lJnM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy/afAAYasiJ7J69pkRGpoVS/Iz5lNuZV2LyB3r/v9D+xMF4QdR
-	XDhyEyYlWP5yhXwxnQ8u4f+p2/X9uZ8Ct3qdhBOU5ugzvJk/rr+Kw52lbwcY2LCLNFroWy4I7/G
-	+eiUSwNQ1N90otu/o+G7/5sCMXCeHJKxBqaROaA==
-X-Gm-Gg: ASbGnctj+TjUJjtP2TycMcvCuw75K1cEc+Em6kA2zSnnQeUe1fUIcKl7X8i4jV68NJZ
-	Ojce3MjpUI1hovGeJncc8Alwqt1hHOvQMFZ4tZZIe4Ufj6jb92JQ6QCY7hr1JPGptteNEoO7KWW
-	DdsGw81TPKhbF1iO+GH2QsgIhV8cQ/mC14oBk=
-X-Google-Smtp-Source: AGHT+IG55r4ND4dVvtN1+EUD95gs+uLnOj8rk8ZPFKEZxOHPG2ZvKCFr/wsjoTjPwlfHjBOMB6jQXJeqBT+RbwDRfOw=
-X-Received: by 2002:a5d:64e8:0:b0:39c:1257:ccae with SMTP id
- ffacd0b85a97d-3a0b4a1c722mr1959843f8f.57.1746609253168; Wed, 07 May 2025
- 02:14:13 -0700 (PDT)
+	s=arc-20240116; t=1746610318; c=relaxed/simple;
+	bh=iqv0N9S9PpST1QayNZHL7YyTLoc2+sgs2RbOwc2emVw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RwiZHwclPnSi99lezp1TQr3IXGcr4w6Noh7yCFrEYrKY6UBwebRm9BjOhFJ96gE92ZmNgSkxeeYA0qw3HAKdiEJyJNMA0ztmx9dRGMuQ1hqzZD5k8K5BVLTFzjTc8n+8ABRlA7Uo3NI9Z+tyxAuNGm9lo5bzP5uqn/CWjYa982Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uT/hERq+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB04AC4CEE7;
+	Wed,  7 May 2025 09:31:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1746610317;
+	bh=iqv0N9S9PpST1QayNZHL7YyTLoc2+sgs2RbOwc2emVw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=uT/hERq+I35wGDyOCwGq7fEV3c0QxebDX4/IKcHvhSYyvhgLgBAkAQNJqtJ8wYb1e
+	 MFjSzkw3MEqRXRxjkKZMElFsq0F8DbGme5bLXZlx4J7X5fCgwZueIwY0G4k2iEDmzo
+	 mfd4GR9mSHsja7uSaEy6vOfUm+Y7Dq4k/CeVg7Mtv2lNhBjUF3JaTlbk2c+KfJFsww
+	 QREVzEg3MhJHlKtDKzUaNxMTxdLd1m/chpRyWTrgmiBq7jgi154j4+TygTa28oqkII
+	 kg/G21rZoN5QV4uiuA5eRQO6RGvgyxR2nssdgOv14G9ddkiIIVzjJdIl+qiuskzEPC
+	 Rn9vyWdfSMGMg==
+Message-ID: <79805e30-498e-4c2e-ba2c-8e180b49b716@kernel.org>
+Date: Wed, 7 May 2025 10:31:54 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250505-vmlinux-mmap-v3-0-5d53afa060e8@isovalent.com>
- <20250505-vmlinux-mmap-v3-2-5d53afa060e8@isovalent.com> <CAEf4BzboH-au2bNCWYk1nYbQ61kGbUXuvTxftDPAEGF1Pc=TLw@mail.gmail.com>
-In-Reply-To: <CAEf4BzboH-au2bNCWYk1nYbQ61kGbUXuvTxftDPAEGF1Pc=TLw@mail.gmail.com>
-From: Lorenz Bauer <lmb@isovalent.com>
-Date: Wed, 7 May 2025 10:14:02 +0100
-X-Gm-Features: ATxdqUE4g8lO60eqVT-NBjEfrxMu9rtdzVq9hr1BOEdsu4jEty7BLc1dL2Y9oKc
-Message-ID: <CAN+4W8gcquJRkZw+Knt=vqwR4YM8w5RbRNO-XyfE+DAyiEWANw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/3] selftests: bpf: add a test for mmapable
- vmlinux BTF
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next] scripts/bpf_doc.py: implement json output for
+ helpers
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+ Ihor Solodrai <ihor.solodrai@linux.dev>
+Cc: ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+ eddyz87@gmail.com, bpf@vger.kernel.org, mykolal@fb.com,
+ kernel-team@meta.com, Dylan Reimerink <dylan.reimerink@isovalent.com>
+References: <20250506000605.497296-1-isolodrai@meta.com>
+ <CAEf4BzYY6mPto_9MwPp0zH+MvWScjQPxLdHLSGd+c2QjvJyNsA@mail.gmail.com>
+ <659400eb-13d6-48ed-a8cf-66a79fc139b7@linux.dev>
+ <CAEf4Bza4GDrccUy+nRJ8p4t6=bhGpFDi049xibd48DkR12ODVg@mail.gmail.com>
+From: Quentin Monnet <qmo@kernel.org>
+Content-Language: en-GB
+In-Reply-To: <CAEf4Bza4GDrccUy+nRJ8p4t6=bhGpFDi049xibd48DkR12ODVg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, May 6, 2025 at 10:39=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+2025-05-06 15:25 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> On Tue, May 6, 2025 at 3:18 PM Ihor Solodrai <ihor.solodrai@linux.dev> wrote:
+>>
+>> On 2025-05-06 3:07 p.m., Andrii Nakryiko wrote:
+>>> On Mon, May 5, 2025 at 5:06 PM Ihor Solodrai <isolodrai@meta.com> wrote:
+>>>>
+>>>> bpf_doc.py parses bpf.h header to collect information about various
+>>>> functions (such as BPF helpers) and dump them in one of the supported
+>>>> forms: rst docs and a C header.
+>>>>
+>>>> It's useful for external tools to be able to consume information about
+>>>> BPF helpers - list of helpers and their args - in an easy-to-parse
+>>>> format such as JSON. Given that bpf_doc.py already does the work of
+>>>> searching and collecting the helpers, implement trivial JSON printer
+>>>> and add --json option for helpers target.
+>>>>
+>>>> Signed-off-by: Ihor Solodrai <isolodrai@meta.com>
+>>>> ---
+>>>>   scripts/bpf_doc.py | 42 +++++++++++++++++++++++++++++++++++++-----
+>>>>   1 file changed, 37 insertions(+), 5 deletions(-)
+>>>>
+>>>
+>>> Ihor, do you have an example on how JSON output would look like?
+>>
+>> Sure. I already use it:
+>>
+>> https://github.com/libbpf/bpfvv/blob/master/bpf-helpers.json
+>>
+>> I only wanted function names and arg list, so the current output is good
+>> enough for my use-case.
+> 
+> Nice, thanks! We also have doc comments, right? I'd add them for
+> completeness (maybe your tool will show it when hovering over the
+> helper call instruction or something...)
+> 
+>>
+>>>
+>>> Quentin, can you please take a look? Do you have any objections?
 
-> > +       raw_data =3D mmap(NULL, end, PROT_READ, MAP_PRIVATE, fd, 0);
-> > +       if (!ASSERT_NEQ(raw_data, MAP_FAILED, "mmap_btf"))
->
-> ASSERT_OK_PTR()?
 
-Don't think that mmap follows libbpf_get_error conventions? I'd keep
-it as it is.
+I'd missed this patch, thank you Andrii.
 
-> > +       btf =3D btf__new_split(raw_data, btf_size, base);
-> > +       if (!ASSERT_NEQ(btf, NULL, "parse_btf"))
->
-> ASSERT_OK_PTR()
+No objection, I think JSON support for the script is a nice addition,
+thanks for this! Cc Dylan, not sure if this could be of interest for
+your docs.
 
-Ack.
+I agree with Andrii, we should just as well add the comments to the JSON
+file. I'd even add support for printing syscalls info as JSON? It should
+be easy to do too.
 
-> Do you intend to add more subtests? if not, why even using a subtest stru=
-cture
 
-The original intention was to add kmod support, but that didn't pan
-out, see my discussion with Alexei. I can drop the subtest if you
-want, but I'd probably keep the helper as it is.
+>>>
+>>>> diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
+>>>> index e74a01a85070..15d83ff5d2bd 100755
+>>>> --- a/scripts/bpf_doc.py
+>>>> +++ b/scripts/bpf_doc.py
+>>>> @@ -8,6 +8,7 @@
+>>>>   from __future__ import print_function
+>>>>
+>>>>   import argparse
+>>>> +import json
+>>>>   import re
+>>>>   import sys, os
+>>>>   import subprocess
+>>>> @@ -675,7 +676,7 @@ COMMANDS
+>>>>           self.print_elem(command)
+>>>>
+>>>>
+>>>> -class PrinterHelpers(Printer):
+>>>> +class PrinterHelpersHeader(Printer):
+>>>>       """
+>>>>       A printer for dumping collected information about helpers as C header to
+>>>>       be included from BPF program.
+>>>> @@ -896,6 +897,27 @@ class PrinterHelpers(Printer):
+>>>>           print(') = (void *) %d;' % helper.enum_val)
+>>>>           print('')
+>>>>
+>>>> +
+>>>> +class PrinterHelpersJSON(Printer):
+>>>> +    """
+>>>> +    A printer for dumping collected information about helpers as a JSON file.
+>>>> +    @parser: A HeaderParser with Helper objects to print to standard output
+>>>> +    """
+>>>> +
+>>>> +    def __init__(self, parser):
+>>>> +        self.elements = parser.helpers
+>>>> +        self.elem_number_check(
+>>>> +            parser.desc_unique_helpers,
+>>>> +            parser.define_unique_helpers,
+>>>> +            "helper",
+>>>> +            "___BPF_FUNC_MAPPER",
+>>>> +        )
+>>>> +
+>>>> +    def print_all(self):
+>>>> +        protos = [helper.proto_break_down() for helper in self.elements]
+>>>> +        out_dict = {"helpers": protos}
+>>>> +        print(json.dumps(out_dict, indent=4))
+>>>> +
+>>>>   ###############################################################################
+>>>>
+>>>>   # If script is launched from scripts/ from kernel tree and can access
+
+
+Then we could add a dimension for formatting in the "printers" dictionary:
+
+    printers = {
+            'helpers': {
+                'rst': PrinterHelpersRST,
+                'json': PrinterHelpersJSON,
+                'header': PrinterHelpersHeader,
+            },
+            'syscall': {
+                'rst': PrinterSyscallRST,
+                # JSON here?
+            },
+    }
+
+
+>>>> @@ -917,6 +939,8 @@ rst2man utility.
+>>>>   """)
+>>>>   argParser.add_argument('--header', action='store_true',
+>>>>                          help='generate C header file')
+>>>> +argParser.add_argument("--json", action="store_true",
+>>>> +                       help="generate a JSON with information about helpers")
+>>>>   if (os.path.isfile(bpfh)):
+>>>>       argParser.add_argument('--filename', help='path to include/uapi/linux/bpf.h',
+>>>>                              default=bpfh)
+>>>> @@ -930,11 +954,19 @@ args = argParser.parse_args()
+>>>>   headerParser = HeaderParser(args.filename)
+>>>>   headerParser.run()
+>>>>
+>>>> -# Print formatted output to standard output.
+>>>> +if args.header and args.json:
+>>>> +    print("bpf_doc.py: Use --header or --json, not both")
+>>>> +    exit(1)
+
+
+Could we change this to recall the usage and print to stderr, please?
+
+    argParser.print_usage(file=sys.stderr)
+    print("Use either --header or --json, not both",
+          file=sys.stderr)
+
+
+>>>> +if args.target != "helpers" and (args.header or args.json):
+>>>> +    print("bpf_doc.py: Only helpers header/json generation is supported")
+>>>> +    exit(1)
+>>>> +
+>>>>   if args.header:
+>>>> -    if args.target != 'helpers':
+>>>> -        raise NotImplementedError('Only helpers header generation is supported')
+>>>> -    printer = PrinterHelpers(headerParser)
+>>>> +    printer = PrinterHelpersHeader(headerParser)
+>>>> +elif args.json:
+>>>> +    printer = PrinterHelpersJSON(headerParser)
+>>>>   else:
+>>>>       printer = printers[args.target](headerParser)
+>>>> +
+>>>> +# Print formatted output to standard output.
+>>>>   printer.print_all()
+
+With the change to the "printers" dictionary we could error out if we
+don't find the target/format combination:
+
+    output_format = 'rst'
+    if args.header:
+        output_format = 'header'
+    elif args.json:
+        output_format = 'json'
+
+    try:
+        printer = printers[args.target][output_format](headerParser)
+    except KeyError:
+        argParser.print_usage(file=sys.stderr)
+        print("Unsupported target/format combination: '%s', '%s'" %
+              (args.target, output_format), file=sys.stderr)
+        exit(1)
+
+    # Print formatted output to standard output.
+    printer.print_all()
+
+What do you think?
+
+Thanks,
+Quentin
 
