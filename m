@@ -1,199 +1,261 @@
-Return-Path: <bpf+bounces-57628-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57630-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E3FDAAD4D0
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 07:09:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C40C5AAD644
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 08:39:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E1351B681F3
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 05:09:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 613801B68BFC
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 06:39:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 879511E04AD;
-	Wed,  7 May 2025 05:09:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E463A2135B8;
+	Wed,  7 May 2025 06:38:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mko7YDkT"
+	dkim=pass (2048-bit key) header.d=altera.com header.i=@altera.com header.b="Lr8stW/l"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from CO1PR03CU002.outbound.protection.outlook.com (mail-westus2azon11010067.outbound.protection.outlook.com [52.101.46.67])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D7E21DF742;
-	Wed,  7 May 2025 05:09:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746594552; cv=none; b=UIAGavYhBIPGKULGacmOagd4WmfGuymux6A+QT/6UOctSDj+S4HJyC8m/EbRvVB0rHM9dm2cBuBEdDuW4brYw/G+cdNnniY9E7vULfT2b4U3FGRz7O7xICIYi/pmKIs4nkEZd0w6X1tDY2IKwNvGRwGZtbhtkd9NskKq0Ou4QYk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746594552; c=relaxed/simple;
-	bh=Cg3lNgNXXlY3tbGP5L2tCy8t6w10UD5L5/hDeNrXlh8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rJ3/M+X9YVQGGWBHQ9kakyQCFDyjB0arDL16pBLwJHbpk5MGqeYa4eZxtKyTzUjNjDhyGsAMdYPgDZ9++0tnKZZ/xyHwoSnQ1GSXGaJZAZi8YbE8l9uUvBWVGK9uCfXIuR829aaK8OEnHOsRq/Y5ZI5dOK6ktU6+HZiPK0te1Ks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Mko7YDkT; arc=none smtp.client-ip=209.85.216.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-30a509649e3so3791743a91.2;
-        Tue, 06 May 2025 22:09:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746594549; x=1747199349; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=qDfFaWqi7aHktXrAOXgC9kWrCSEA1y5g+C1t+ku3vxY=;
-        b=Mko7YDkTZNpD12w+iwfQJK2Z4a0Kdbb1Ehd7eqTQnYrEb8/qipYNqReb4YcytRg+Tf
-         8XBxBXeeNhC1shujpfoUk027AJEE5tHuMjOW39IoP98bZY2TkVT7+QAicgGBPyfCnWog
-         4+bugis547EVPXTLlsZliZuRqIZXqWidQXEu17XHa9+yCEzB2bvg+X2T+JoW4UZSdqK0
-         o5BsvAOlE7A7exnsGRpYE9GpmaTNHJ8jZhb2d4ZkexUrmbYtQ+LWZEEA9FXNVY6HEGVT
-         UPkXFP5SJ+EEp5hFrqJBBxkzm7G7LTTbrVazJhftfghfXXGSeBDCo2Oks3jxwNEboKQS
-         Fjlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746594549; x=1747199349;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qDfFaWqi7aHktXrAOXgC9kWrCSEA1y5g+C1t+ku3vxY=;
-        b=OXhWZB3ZYx7ogQvFkdMhrudwtjF+7P9hjDzyVIdUyBAl3pGd7At5Eo3t/gTOL0np1s
-         x7cs2ChPsQQ+mgzInX6NqkeVc/iFgxmLj7yfsjEdW2yYLKd1xMvyyi5J65P6ZfPr5MKe
-         FtX+P/MqVbXmHnJpEX3DK7yneI15mFDP8azm4IUu2wawHuLV9pK7nyjIyxyT2HgfpIVw
-         ydLofPJDJsx35wPp7H5uAADuvjCFmecI5mZdCCUYK5Pc2WIOWIKarEtIxnwnGkRfgbOM
-         lw/drHelm9VsRe/HIDw6zneJPziLN3xGVFvWhNVUGyfmvqmZkbep19nM5XMKyPLF21nf
-         CekA==
-X-Forwarded-Encrypted: i=1; AJvYcCUwezCLQdlQY1rsRvq2XjoTZaGrdq2Yo+Cvy/sT5gt5GwMKsAlrYu33TKEdDTwWLXua44c=@vger.kernel.org, AJvYcCWS97lFshWuhG9ap/sxqvpI6I8/nPGy1uflb6HyY3PcQfkK1eZWu9vM/vUKUks1z3vYseRFQAQy8MH74/0XxQ5g0fTV@vger.kernel.org, AJvYcCXRvTA+BhSbm90KFTCnC5Fum0Auv+QEr5TJInk6cYBWsgX36zzALT0gKsNZIgUq9b59FsQWG2GS@vger.kernel.org, AJvYcCXgBZvGwsI9lk4rBW+JXb7hNAV3omaRFnVKoGfeQRSBLRfDP/yUJPfm1k7+Ud3gWgOUAeQvJi6sS+ySC7m8@vger.kernel.org
-X-Gm-Message-State: AOJu0YxlUKN4ND+mryru0TvGHuwxdVCWk4Mim5PGtHxlRNk4gDEh0sLb
-	v2vX0fCWbXqX94KzgPhP6JhQsL/E+T3cnTZq9OfiXTPBk98Lb05G
-X-Gm-Gg: ASbGncvjKzFxBtKbCZDD80wD3Ls4ZGbPLQSxzLiBnHICkLcPyx5BRmDTuVDfzhbbxNi
-	ZMt39as3GaPaVB5jevaMpXpzV18QCi9JgEqCpCX5uKn4D/dhP9gA7igG2k+bT7GqtyvEAKQxhL0
-	j9r2B8wtzbkohx1CQ3w+ytk3mzbShhpFNeR247Gy4O4mw0dbMtR4HTzb486AP8dlzXxK9jeyWxS
-	cKI/73CaxHPigl+93iyTRUGblp6AszP84WzbhM8l8OphKVeeTS39lnsbu1M6IMk0g7myeNbczBi
-	IOrug25WaKqvmOozY3aB4vR/JOPvCC37h4S7HoYpCw==
-X-Google-Smtp-Source: AGHT+IHy0jV4YgMxOHksPhxh53RpeJAZ/E8UFT1rKsUGw11pv+I+0YyJ9AE3+lffwugInqcy6tb7uA==
-X-Received: by 2002:a17:90b:4ad0:b0:2ea:a9ac:eee1 with SMTP id 98e67ed59e1d1-30aac19d49bmr3325171a91.10.1746594549416;
-        Tue, 06 May 2025 22:09:09 -0700 (PDT)
-Received: from gmail.com ([98.97.36.253])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22e61f3ad8asm7010665ad.211.2025.05.06.22.09.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 May 2025 22:09:08 -0700 (PDT)
-Date: Tue, 6 May 2025 22:08:35 -0700
-From: John Fastabend <john.fastabend@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Jiayuan Chen <jiayuan.chen@linux.dev>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Jakub Sitnicki <jakub@cloudflare.com>,
-	Cong Wang <xiyou.wangcong@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C97F2116E7;
+	Wed,  7 May 2025 06:38:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.46.67
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1746599936; cv=fail; b=CZcE0Kpc8BmLFTAX2rZaxN+oFgRgef+WTf/4pmX91XoYsfc/j5LhRbwCwj0PiaJ/qySnb8pyK0m6q3D/3uJLnXaX/RhAN8IXiAZv+B2LXMZl4zKsEV3PEB4nM2UniEHHzUOlDqx4OVf7ONyBaUjvm/Hid665TWFH02gU5cZmluE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1746599936; c=relaxed/simple;
+	bh=a0L0PtEmWIJfiiYUMxVsqLrtmh1QAgjBAwTfrJR3UD4=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=nIc6WqeXzd8y6nVRJYSAK8aJSUCJXQ1TFKvD33e5l7rPF33vPpWnE/+nRwqPsK4XCFxmfKM8RxVboqVivx02vo5AB8KE0J1jEjbEwlnRtuzKuJkPUaUVXvsFHNJq+xUzpHg1VkjJzucYldknGyvze1sjFfjDd8bfywycugXFbv8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=altera.com; spf=pass smtp.mailfrom=altera.com; dkim=pass (2048-bit key) header.d=altera.com header.i=@altera.com header.b=Lr8stW/l; arc=fail smtp.client-ip=52.101.46.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=altera.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altera.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Rxjy9DU8dHrQuNYGc/dLZzKQSkyVeiVaLli1RUd7Y3XM6nV+7F7nCSBuzsRPJ7i+dQMUjJZjkuTe/miHE812hrULcF7CkW8r2LMk2JSepPGfdtfGU8ulIJCQvlnPqAaG2PXfeGRFyUMnjgFN7AORiO1S+x1kFdekvcS8m0qe1rO2iGTD+kMzT1ARdHF/2DVjM9juGMAzxOg0NuwflhVBubyFbfJ/rXDKnDCvmo5vr/0imuatEQ44qr06DAyaVDpURlQcV6UgWqvxlahMhW/GhSeudaSe7H2GomjTTLX8fmjc2A6JxElZuG9UyynBRTCPTXk5tXPaVga4AHjm2GEzOw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZNxjzMym31Dkt5m0qKaKtv36Zob1B2C5xUffWxlYWqY=;
+ b=jV3QO3W3h06+CvcKZ1UBpbW27pAmwduTlex9G1pNK8SkrpH2+AIdfMRVe2Tu8j01ZBnljv/73cRCbBCul5+jj+ktNWDKd0IJkKUPCnhG2zxdm5BB9Tae5ZqbmAERmMMTXNdeh9c6BcLot0ojK3ipu+0eBXJZbVUQMUIUVdU1fPJbaVSXPbw4/iqFN1z+zoob9MO9Js5nqe6AZjwgYX0AT6VabTET+Nhh+ol3JBrvFJweAq3QMoYOxbv23Q4KTqQsM6Tyc54dGi9ecLn+9bGezVeOCyF7cpBQSJyD7prmTYNT10xSEcK+c4dio8QvSVpmnHATyrO0rpxEUKWP9U6PlA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=altera.com; dmarc=pass action=none header.from=altera.com;
+ dkim=pass header.d=altera.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=altera.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZNxjzMym31Dkt5m0qKaKtv36Zob1B2C5xUffWxlYWqY=;
+ b=Lr8stW/lDkf1yUjkn2cFnL7AFLyY+lW9ulCgy7SFEaiX5duRhzK0IYrmO/slZqsf4QbNE/bP0F8UvbH4lmDGFoiF0qqDS1lJZudUSj2FphjcX2JGDNI3Pvp/HXQQxDV9rpq7vB6KdlcgzYk0GN+5ydLFs4zKqgFy+Mhi8YGL+FxX1orc0S7kNsv+7sRUeuxOb+mo7e5dxoKoGQTerpSpRTpQb+GcrigXoLlfcHxk7wvBH4pLv9LlZiO8txK41JoVDWi+g7J+ywWgj2xYe1LF1bxaQcVfMbFE/pphOyTKF7XAhRe1doTmK3+fKmrebMd0YsFFPjrMkJ+Irq0hm5FH+w==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=altera.com;
+Received: from BN8PR03MB5073.namprd03.prod.outlook.com (2603:10b6:408:dc::21)
+ by MN2PR03MB5088.namprd03.prod.outlook.com (2603:10b6:208:1b0::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8699.26; Wed, 7 May
+ 2025 06:38:33 +0000
+Received: from BN8PR03MB5073.namprd03.prod.outlook.com
+ ([fe80::7483:7886:9e3d:f62a]) by BN8PR03MB5073.namprd03.prod.outlook.com
+ ([fe80::7483:7886:9e3d:f62a%5]) with mapi id 15.20.8699.022; Wed, 7 May 2025
+ 06:38:32 +0000
+From: Boon Khai Ng <boon.khai.ng@altera.com>
+To: netdev@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Cc: Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Russell King <linux@armlinux.org.uk>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
 	Jesper Dangaard Brouer <hawk@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-	Network Development <netdev@vger.kernel.org>,
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>
-Subject: Re: [RESEND PATCH bpf-next v4 1/2] bpf, sockmap: Introduce tracing
- capability for sockmap
-Message-ID: <20250507050835.4seu6rz35v2uqret@gmail.com>
-References: <20250506025131.136929-1-jiayuan.chen@linux.dev>
- <b776fa07-de4b-44be-ae68-8bc8c362ea81@linux.dev>
- <9c311d9944fa57cec75e06cde94496d782fe4980@linux.dev>
- <CAADnVQKK87UV9rH_YviePfUmOO3mGXQmYfN-Q9Ax5AYv+xE8zw@mail.gmail.com>
+	John Fastabend <john.fastabend@gmail.com>,
+	Furong Xu <0x1207@gmail.com>,
+	Matthew Gerlach <matthew.gerlach@altera.com>,
+	Tien Sung Ang <tien.sung.ang@altera.com>,
+	Mun Yew Tham <mun.yew.tham@altera.com>,
+	G Thomas Rohan <rohan.g.thomas@altera.com>,
+	Boon Khai Ng <boon.khai.ng@altera.com>
+Subject: [PATCH net-next v5 0/3] Refactoring designware VLAN code. 
+Date: Wed,  7 May 2025 14:38:09 +0800
+Message-Id: <20250507063812.34000-1-boon.khai.ng@altera.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BY3PR05CA0012.namprd05.prod.outlook.com
+ (2603:10b6:a03:254::17) To BN8PR03MB5073.namprd03.prod.outlook.com
+ (2603:10b6:408:dc::21)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQKK87UV9rH_YviePfUmOO3mGXQmYfN-Q9Ax5AYv+xE8zw@mail.gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR03MB5073:EE_|MN2PR03MB5088:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1fa56f71-27e7-4af6-ca70-08dd8d31c923
+X-MS-Exchange-AtpMessageProperties: SA
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|366016|376014|7416014|1800799024|13003099007;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?y+JW40tgzDps5bmw/z5X0DzqJfcULlrgvORutdLxOllnXFlJgvAEHxpiFZn1?=
+ =?us-ascii?Q?5dgKVr1t+vN+2xK4upukVUJZbU2d6mG54GPuko659XscTO5mkDaduldyM5ta?=
+ =?us-ascii?Q?MFAywO3ohbqo98SK37CFDOxLCviOREGyciX+KaBVAIutpvaPEnfPcUe+qKTS?=
+ =?us-ascii?Q?CjO4e4DMncE4beQ3+SSvgK+1nNpwvysmNHcE/doAHfv2+pEHNFhjzOBCZHdD?=
+ =?us-ascii?Q?XHaa52AOCp061mQiREhIhDYsyZfokG0zhq/ybkqjJ5RwCnD3WwBNhqDeTVY5?=
+ =?us-ascii?Q?Fw4q/7/Qk8aFg8mVolBmWYMWA6u4VQtDuYJDPJ+KMDk7cMMDonwYQ7RnBUK1?=
+ =?us-ascii?Q?PwkwkmLzdlVnzenTE/8dYdo7mvlQwrige0IrVQPx6xjeqRQ/xQp4d3ZohvDl?=
+ =?us-ascii?Q?ZrIYM7ENcrNAg3eiB4Ty9yCcNyazJviq7Tiw4N0o27QOLlLe7vTZVh9ac/nb?=
+ =?us-ascii?Q?oahZkCgUBpIGZJ63FvBMdj/FdATgJR4K0F48NNX/PtO6PtwN5Q5sxCGKNv++?=
+ =?us-ascii?Q?TqoQY/YgEyH7iOo9Q8XLUq4wvkr/CVGoivypqBUwVNVgOkrtyMcR7diwmAes?=
+ =?us-ascii?Q?AmIYJ6+f90cITHrVrU1fjjTSfN5ahgUpf57rA5v6F8mAFnvVkvTCmJum61Ld?=
+ =?us-ascii?Q?tnV4qi6vBcqvjul5qwcQ8ZZP3PTfCkcFwNYzKotlRJ5kIHBT/5+iikVfeyWD?=
+ =?us-ascii?Q?RNAW9Bw/RcGtA3MCBlfAFC9iSflF4VLHz38nx8bDjolpu8XzbNb/NxvWZUYE?=
+ =?us-ascii?Q?n+OwEQkk9wtojLDlTAaXHhGx9m2zviEG4kbjTgTXTYusA3G6POuc/J/MEDh4?=
+ =?us-ascii?Q?NsS2dekutFGk+WFqkNE2ZY3rgvzCdeKpf1w/JFxsZzzJAzm4K1Bj+nV723EY?=
+ =?us-ascii?Q?WoHB19wUSoJPdPYvq1sNp6AuTbI9cWdbh0Oqib3pxXgzBOSWn9WhtEVpvlD1?=
+ =?us-ascii?Q?IJyHgjq1Q4Smb6wqUuq/n984LxKF89+kKocwJuJode25HBeCdmg2SjYSw9R/?=
+ =?us-ascii?Q?XXBYAtyeL2rXdI4GNsoJ79DCcgiWY/guQYaH7RwQcKmqqqC5HKksoUUNyLlB?=
+ =?us-ascii?Q?PgoQDPhabcyGFUENe50Wp+oWqldTmGeheHQJgkzJLjS5bd47bKKm7SvShjX1?=
+ =?us-ascii?Q?BRDy+jUdGEYyUon3QLWjRtRgFmTGxLW2dQw4nLxDoF41cs6qnwS0JZ3X/N76?=
+ =?us-ascii?Q?xgH42TevFESZziLWyoFlPIj4Y4fbWV3nCm7TtMTk1Av9+Fgvw9Cyhp5uQWMG?=
+ =?us-ascii?Q?FQePuxmJEabwv9ZaW8FaXlrOTbtJv226GLIy2OS6wZMHHmUAKn0K009nZUMw?=
+ =?us-ascii?Q?A/I7jO+Xc5eD5XqYJAZUqtnVkUfBg3NaRlIAdaHVzpW5FrviCkAOP6g6YUVO?=
+ =?us-ascii?Q?Oh2FuV8=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR03MB5073.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024)(13003099007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?VXeVpM8jq5nLjC4S3FCNEPUT1I4CHznFm78NzBYPHXhhrzf/+PrMmv7MUqwh?=
+ =?us-ascii?Q?nRTyk56bihA7tDbosGVQVqcWLyurocUaEBYnDk1gHASo9zq7DBh3ndTQo9Dl?=
+ =?us-ascii?Q?J61ZIELCAFQo/tq+F46aYgxIvX8qs0NttsY0BcHH3Ob9MuTQWi7L6LA3rlx1?=
+ =?us-ascii?Q?fP+eK5zaGylo43CsAgd9rTC9Ps7dziX202bTkYDlv0wWdpkt/3oYUrONQqNA?=
+ =?us-ascii?Q?F0boD3qvcF/MPIF7oq62pKEbz624IWpAl2xeBhD3zUnQKjpBmgP7BcTbNzMV?=
+ =?us-ascii?Q?fUiLkV8SNAwN1//FqnSWVZjrK3pVsLCCfFA8OWFdgTJ7Qw6L8YejZMeRFMOY?=
+ =?us-ascii?Q?A5G3PLAJvJaXHcLI82g41lHMVdKaaNk4ZVXIWQHVVXhbQGDPceKW4jSNzCtw?=
+ =?us-ascii?Q?5YM781XHWd9TtAhTvYbVjwDczzLZ2Aek+kVrMdV1P4755BAdiked4ljUaX6E?=
+ =?us-ascii?Q?zUtMbJPjVveyY6508r584Dd/9okTsdDE3sPGTHeFt3i3kpMnthvT6MRk34KN?=
+ =?us-ascii?Q?kuWsb+ZuclgmgYNjTTv+f0LRKFGOop+2Ecjmj5lGP/oxcFYRFnoeNQ8LEB2p?=
+ =?us-ascii?Q?JdO11Rjz+ocSAM0E0ryvBPkP096F7FFwkphTqD/lE8aCs++kRnESmv87RjRm?=
+ =?us-ascii?Q?7NmgfT84MjjQ4noyqYdBsKDHOHvVfIw6sXYLUshOXquWkWGeiHMxfPG/wuEZ?=
+ =?us-ascii?Q?vW0NbhFpkgpinDEkT6C5T0zpMcyZ7Er1zB/4mpQEgx/yXSriQylTKZBQ5n1j?=
+ =?us-ascii?Q?kXuVlUQS2su74Ed55BY6qptfYCEfP229lhXGHsc7cvgwNPtdtooM9Wl4YnnG?=
+ =?us-ascii?Q?A9ZYNo7vhH08G6BnmaRK2zLlw384V3C7UWS9/sB4NiGf/JKiZ5SJ6fV1daaR?=
+ =?us-ascii?Q?YrV4kMifAR77jASAgpd1AoebGnkxtXvBx2irQL3sCxdPvIRadKR9+bBlCIlL?=
+ =?us-ascii?Q?b3m/u2K/Qub6vmt56bMjXlVta4IK66FzfY2oNQWFk6b5HnLo0+NK0Po+vtoK?=
+ =?us-ascii?Q?wopqr+CUT5kz7tRIvV3GMKG51c3Cts1XfmnxNRnG84Ux/X4v+zAvSAH0LliM?=
+ =?us-ascii?Q?P3nhjBlMKi+jly09CKpZOWhsffudvQo5sTo6SvvKGDicl9XfQ7llwTsH3com?=
+ =?us-ascii?Q?oGJ5aRjNEMZG40N5gyW5vAHiQU+zdIGknFlAowTEZuKLUeLVGYs0FQAEuyyk?=
+ =?us-ascii?Q?dDiXV0Mnj+ol+bE4WzNsvfqe6YYEXmxZPzIllmmaQ8AABpqRF0wsFTBpqbtG?=
+ =?us-ascii?Q?BUyhWp9s7qlGBZ/O8Tpj1AO2fzu5MQd900s3FOlDJR73WmfkIN2LREKs4xaq?=
+ =?us-ascii?Q?OEBhaXFx/4lkF9wXfYSTVVwQ0zCgyc01k5rF55v+JtYJ+CQBXhEC36+UOAqs?=
+ =?us-ascii?Q?xNEPNHYfIeMDbEMnW/ILsYZTkL7mJ3T2YbdvIZJ80ssy8Jk5O1c5NJkHEsaj?=
+ =?us-ascii?Q?4GfbhS7BuAHyl859L8RdJTc7s8kzgmlcebV2QI/gmuifUz+CyveZ41QwM0i+?=
+ =?us-ascii?Q?iGlVtAD2Y15EsMwn0xdxIa+X/lR/dqlzife6aIYgSwkBiwWOEkHe+C9MIwaS?=
+ =?us-ascii?Q?ETXSoBrMtRdQdUcAWvnLkY0hRmkkpPC1vAqJqwxCIcISd+rsjU9QV48yB3ZP?=
+ =?us-ascii?Q?Lg=3D=3D?=
+X-OriginatorOrg: altera.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1fa56f71-27e7-4af6-ca70-08dd8d31c923
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR03MB5073.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 May 2025 06:38:32.7441
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fbd72e03-d4a5-4110-adce-614d51f2077a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ImrEv9ujmNZY/JgrMxGit2OSgHq7UIThP8I3AOXTcvTOF+tS4pFxDUfwn6gkvwtGXLcaxRjfYlQ/mDyNdyftlQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR03MB5088
 
-On 2025-05-06 20:43:43, Alexei Starovoitov wrote:
-> On Tue, May 6, 2025 at 8:37 PM Jiayuan Chen <jiayuan.chen@linux.dev> wrote:
-> >
-> > May 7, 2025 at 04:24, "Martin KaFai Lau" <martin.lau@linux.dev> wrote:
-> >
-> > >
-> > > On 5/5/25 7:51 PM, Jiayuan Chen wrote:
-> > >
-> > > >
-> > > > Sockmap has the same high-performance forwarding capability as XDP, but
-> > > >
-> > > >  operates at Layer 7.
-> > > >
-> > > >  Introduce tracing capability for sockmap, to trace the execution results
-> > > >
-> > > >  of BPF programs without modifying the programs themselves, similar to
-> > > >
-> > > >  the existing trace_xdp_redirect{_map}.
-> > > >
-> > >
-> > > There were advancements in bpf tracing since the trace_xdp_xxx additions.
-> > >
-> > > Have you considered the fexit bpf prog and why it is not sufficient ?
-> > >
-> >
-> > 1.This patchset prints a large amount of information (e.g. inode ID, etc.),
-> > some of which require kernel-internal helpers to access. These helpers are
-> > not currently available as kfuncs, making it difficult to implement
-> > equivalent functionality with fentry/fexit.
+Refactoring designware VLAN code and introducing support for
+hardware-accelerated VLAN stripping for dwxgmac2 IP,
+the current patch set consists of two key changes:
 
-If the data is useful and can't be read normally having kfuncs/etc to
-get the data makes a lot of sense to me. Then it would be useful for
-everyone presumably.
+1) Refactoring VLAN Functions:
+The first change involves moving common VLAN-related functions
+of the DesignWare Ethernet MAC into a dedicated file, stmmac_vlan.c.
+This refactoring aims to improve code organization and maintainability
+by centralizing VLAN handling logic.
 
-> >
-> > 2. skb->_sk_redir implicitly stores both a redir action and the socket address
-> > in a single field. Decoding this structure in fentry/fexit would require
-> > duplicating kernel-internal logic in BPF programs. This creates maintenance
-> > risks, as any future changes to the kernel's internal representation would
-> > necessitate corresponding updates to the BPF programs.
+2) Renaming all the functions, symbols and macro into more
+generic name and consolidate the same function pointer into one.
 
-If its needed we could build BPF code somewhere that decoded these
-correctly for all kernels.
+3) Enabling VLAN for 10G Ethernet MAC IP:
+The second change enables VLAN support specifically
+for the 10G Ethernet MAC IP. This enhancement leverages
+the hardware capabilities of the to perform VLAN stripping,
 
-> >
-> > 3. Similar to the debate between using built-in tracepoints vs kprobes/fentry,
-> > each approach has its tradeoffs. The key advantage of a built-in tracepoint is
-> > seamless integration with existing tools like perf and bpftrace, which natively
-> > support tracepoint-based tracing. For example, simply executing
-> > 'perf trace -e 'sockmap:*' ./producer' could provide sufficient visibility
-> > without custom BPF programs.
+Changes from previous submmited patches.
+v5:
+a) Divided the refactor patch in to two patches,
+first patch is to move the code into the separate file
+and second patch to update the symbol name
 
-We could likely teach bpftrace a new syntax if we care?
+b) get the dwmac4 vlan function up to date and port to
+stmmac_vlan.c
 
-bpftrace -e 'skmsg:sendmsg: { @[socket, pid] = count_bytes(); }'
+c) remove the inline function in function pointer and
+use only static function defeination.
 
-might be interesting.
+d) Remove the outer parenthese that is not needed
+on the 1 line return statement.
 
+v4:
+a) Updated the commit message to explain the descriptors
+behaviour on different hardware.
 
-> Similar to Martin I don't buy these excuses.
-> For your own debugging you can write bpftrace prog that will
-> print exact same stats and numbers without adding any kernel code.
-> 
-> We add tracepoints when they're in the path that is hard to get to
-> with tracing tools. Like functions are partially inlined.
-> Here it's not the case.
-> You want to add a tracepoint right after your own bpf prog
-> finished. All these debugging could have been part of your
-> skmsg program.
+b) Updated the perfect_match variable with the correct
+byte order.
+Link: https://lore.kernel.org/lkml/
+20250421162930.10237-1-boon.khai.ng@altera.com/
 
-I tend to agree. We've on our side found it extremely useful to have
-DEBUG infra in our BPF codes and easy ways to turn it off/on. 
-If this DEBUG is in your BPF program and you have the pretty printers
-to read it yuo can get lots of specifics about your paticular program
-logic that can't be put in the tracepoint.
+v3:
+Seperating the VLAN functionality into common code:
+Link: https://lore.kernel.org/lkml/
+20250408081354.25881-1-boon.khai.ng@altera.com
 
-Thanks,
-John
+v2:
+The hardware VLAN enablement switch was detached from the
+device tree source (DTS). Instead, the hardware VLAN enablement
+is now dynamically determined in stmmac_main.c based on the
+currently running IP.
+Link: https://lore.kernel.org/lkml/BL3PR11MB5748AC693D9D61FB56DB7313C1F32
+@BL3PR11MB5748.namprd11.prod.outlook.com/
 
-> 
-> pw-bot: cr
+v1:
+The initial submission introduced hardware VLAN support for the
+10G Ethernet MAC IP.
+Link: https://lore.kernel.org/netdev/DM8PR11MB5751E5388AEFCFB80BCB483FC13FA
+@DM8PR11MB5751.namprd11.prod.outlook.com/
+
+Boon Khai Ng (3):
+  net: stmmac: Refactor VLAN implementation
+  net: stmmac: stmmac_vlan: rename VLAN functions and symbol to generic
+    symbol.
+  net: stmmac: dwxgmac2: Add support for HW-accelerated VLAN stripping
+
+ drivers/net/ethernet/stmicro/stmmac/Makefile  |   2 +-
+ drivers/net/ethernet/stmicro/stmmac/common.h  |   1 +
+ drivers/net/ethernet/stmicro/stmmac/dwmac4.h  |  40 --
+ .../net/ethernet/stmicro/stmmac/dwmac4_core.c | 295 +-------------
+ .../net/ethernet/stmicro/stmmac/dwxgmac2.h    |  25 +-
+ .../ethernet/stmicro/stmmac/dwxgmac2_core.c   |  89 +----
+ .../ethernet/stmicro/stmmac/dwxgmac2_descs.c  |  18 +
+ drivers/net/ethernet/stmicro/stmmac/hwif.c    |   9 +
+ drivers/net/ethernet/stmicro/stmmac/hwif.h    |  62 +--
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c |   2 +-
+ .../net/ethernet/stmicro/stmmac/stmmac_vlan.c | 374 ++++++++++++++++++
+ .../net/ethernet/stmicro/stmmac/stmmac_vlan.h |  64 +++
+ 12 files changed, 517 insertions(+), 464 deletions(-)
+ create mode 100644 drivers/net/ethernet/stmicro/stmmac/stmmac_vlan.c
+ create mode 100644 drivers/net/ethernet/stmicro/stmmac/stmmac_vlan.h
+
+-- 
+2.25.1
+
 
