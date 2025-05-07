@@ -1,132 +1,138 @@
-Return-Path: <bpf+bounces-57694-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57695-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 099AFAAE8DE
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 20:19:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B05F7AAE8E4
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 20:20:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C31FE1BA28EF
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 18:19:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BC784A1A55
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 18:18:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ED6D28E561;
-	Wed,  7 May 2025 18:18:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3D1728E57C;
+	Wed,  7 May 2025 18:18:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BvKTBGUB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fbRtG7Q2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F47928B4F9;
-	Wed,  7 May 2025 18:18:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 211687263D;
+	Wed,  7 May 2025 18:18:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746641910; cv=none; b=dMbnH7wb56Ev5uIwYBK9Gh+k5ht8AkyZ4Vy3hf0R4bDiM0AQPHrQHpY5c4Y0v6Hv1EQxJWvvSbSewlsSvFN3DJWV9FYXFIL0IIoKM1mFykA4Bi5tDBLUBlWEMCtYcrKyn9LK5laQngbHUAaY/oINwkuez3A03Z5dJvPM5b14Ee8=
+	t=1746641916; cv=none; b=XE6QTurLnqTY6GQ6mXZ7m4QTvmvGCa4O3/pw5S/xTPWicyPoi1jBkQTO5mjNtVhH9SQZeCDNu5sG6IVO8mlHa3btRNHG/V1ubolfFYCLafoHDDITaMmbLvtBfN/eThClzMmoW4UCCoQSij1Et25sDwdYyn+eSTV1i5dT4RVCnuA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746641910; c=relaxed/simple;
-	bh=F+Xnu6PQbi3T4Wkg/GHyn4Jj0vjwAEy6UneJsbqIPv8=;
+	s=arc-20240116; t=1746641916; c=relaxed/simple;
+	bh=KMYWzqgC8ALedbSK7njrAUiFbyvgeOiiKXcBjlb8zD8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=O73L03vYX/cLO9JUDsYTxeIolz0h/SI/CQ34ve6p4hGFRjG+hh3soUzqGuENuakz/Ep41zej65br5XugtTcILiNDu+5te60zhVa4wZmeNc45WRCpoq2wq/8+Rs5nnPHk5lu3RYDu5/pPUm4fNueJ7p7KSaLFylhByurywQWDoCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BvKTBGUB; arc=none smtp.client-ip=209.85.210.179
+	 To:Cc:Content-Type; b=rwis+/xyQVsiowmf7PuFKjHYJP1vY3WlRMwPRuLsM3ixc1kAyqnLX8/ULqqp1JZ7O6JarNRXm8ScULc7lQ7uEftznCTYCsdI6aiHBnjYdkqMPqaM2oA64uepcdYZVc9Cp2JZJMOyDKlKKftFvkzEZV90Yvo7x2sPahMrR6NvWcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fbRtG7Q2; arc=none smtp.client-ip=209.85.210.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-736aaeed234so245646b3a.0;
-        Wed, 07 May 2025 11:18:28 -0700 (PDT)
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-736aaeed234so245732b3a.0;
+        Wed, 07 May 2025 11:18:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746641908; x=1747246708; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1746641914; x=1747246714; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+ykkdjkXW3JCGwoicQaugKr7maJVyx5Tj8MypKlbh5U=;
-        b=BvKTBGUB/0OVdnk9LHX2NxYkzqjFlnlURZ/wEqLOpGMk6FiO7OpYgyShq8GCAxJ9ly
-         RP1OZ+9lUHDvqadyJwWWhN2D99LEUMOh9Uaw3ms+ruwOygaFrrmZTBmrPUJ2zOs5P1u+
-         hUODuj8bcTirqiYNnWB/CcR7jbV0agXjbpD8jtIMej8K60Fnfli6UWsSVOz/LrnQqcgo
-         uyU4kR0MeJwTkatvkkRsSIYRvJA9lFbBpfLEQpuUIi0hK5SaZrsd1/KRQib8kgmbtWEI
-         oksxeUzLSfEJw+kvIypXzWM0+bIO53XrErHVjVuqjSlIoyTOSxYf7LKIsIL0m4t9X2r/
-         ioNQ==
+        bh=Y/b9kLOJyNOOgXTAvMvRZx+q9I+LG3sxWJKTuz4qb4Y=;
+        b=fbRtG7Q2oQIcCWGOsk6hf1VvLVp80Pr+FHl6vZkUII44UghULt2O2i6HsZpLrxsEV9
+         O6cgtTSqtPmkPconeVYr3i+nw1JKZBErZye82IEdxHpMinUTpt0Tc2WD0Okm5G1wyDKX
+         d/aJM2oJkT3thODK6OcWzpIPvUk3xLFEdOzJfZJTEkCnirBFEqR1ytCOQdgmcZRU0ucY
+         UxQpr/CpCEdMFKjGY2tTzlkWu3nhaiRZmbRT2noUHvxKXIWcG5UVlLhShLXF3HXrG6id
+         bK8JpmVydqu1+mIW69nres1W2Kv/aKOdwdotEbtpKC5rZqNd0RiAnLy9+MSl6KuIh+mM
+         8nXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746641908; x=1747246708;
+        d=1e100.net; s=20230601; t=1746641914; x=1747246714;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+ykkdjkXW3JCGwoicQaugKr7maJVyx5Tj8MypKlbh5U=;
-        b=pmmasT7Z9rm9gHPoo8CobJ/qnO1ICHdBBLQ4t7jdO+kgCZGPIDk1jIw9HvW7tX4zHD
-         TljsqWJsGSz0pHsjmIJdqsVEa1mFXfBGobHiEeRN2SIA+AI70qqppsRxZSQ3AY8SVhNT
-         /C70VyqvaqT5GydNFOfs0J8/za92RNLyNosYA2CMeJvdSmhVfkOFmyDA6dEKOeZ0dVvE
-         dm5FJnknvmnzdL4GlmMD9fciJ2RjgOqcskAxtwHlcaHWwT0vCDlN8esY+4Mg10t0+CRw
-         FQ8m5yrbMDhUh3pEpYpoivZ4t5vCBL4/kEVAZhzE/s4APeEiNGynZOJpV0rvFx8pu2AL
-         sewA==
-X-Forwarded-Encrypted: i=1; AJvYcCV2yN2oOAUMIanOlUvAvfiT/U/hJ59v1ZM7OBPxmKaTMO16stV8J1BKDKMzUjZzWLGXPNy4gTEO7i0VgE3OHV6pdQ==@vger.kernel.org, AJvYcCWrnu1wnARoM/RgVrU3M0ZI6FbRpfWRxdFhBjTScE5z0cXqGV6MhVWVsL1OcdvGwHqYTE8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwDU8LQsBQm/7jSUEwgP13lDlXZQ7jqscfrrdUXogjQoFLOb20B
-	Fz0oBetuXQ5eKv7KkFwWsWZgeAGe7yqnYTtEzaDE9HAMkfqF7JNuXDZ+5j/2y7M513/kb7olOcL
-	aReRSj04B9rI6jGEjyzHeIJWa9k4=
-X-Gm-Gg: ASbGncv44jEsHF6D4cof92udIsSLeC7r52YPrTZssn7IxjQVUqApkR5gcJiBkgPnkvF
-	YpSVRI6Wuik/gGruXPC3Jd1S/mDPKSzjj2TqrgxU0se+etRnbPAPNjsTbM24TcRwSiPDkxbKpf+
-	7KwWrI9rmPdnFAUCw0k2psQcxnQoJgCQJUJFo2JFVnwu4TlYl6
-X-Google-Smtp-Source: AGHT+IEwrG04KfvN0Sm5IMEbJ31M92rsLJW5TODK5sQZ2RUKu4hFOhM/oejl+e88Nd9DQsT8cYykc74cVHm/k8rNnEQ=
-X-Received: by 2002:a05:6a20:3952:b0:1f5:5b77:3818 with SMTP id
- adf61e73a8af0-2159b01b23bmr280952637.27.1746641908429; Wed, 07 May 2025
- 11:18:28 -0700 (PDT)
+        bh=Y/b9kLOJyNOOgXTAvMvRZx+q9I+LG3sxWJKTuz4qb4Y=;
+        b=p9GWRRI3onIailsiXd5djRXxZIZr0+lM3R1lnoeQ6JBYBQNxKsG+FnEf9r+1ybh7q1
+         ut5RNR6kd+3kzn14cSb6WE6g6nfxBnHrfwqvTslCa1AslWCcTvwn8UHUMx/l5vqdQkOJ
+         N5YazeiJ/h0YY0cM+uhUx6AJoh4+hhyk2f9gV0Uxn8JF11KwkbIxBVn0vds6rXwJ/Z5p
+         UNVveYn2oGsWqGWSxxLxu4+XDQsr3uNQRlu62zDojvHEak9nVYA/WxRhDefcq/A4nZLl
+         6J57KPxscF+BmKfgeN0vAdjsjb83uNELaAZfIo3ESiF2M/P/g4uUwnpk3D1iR0KkmOZh
+         gh9A==
+X-Forwarded-Encrypted: i=1; AJvYcCUTo+Z1+zh2pvqCxrEc3DgYBzd9MbFmhItUR4UsexFLTW/bueeFrdwh9ZAl5jsc6QWjkJ8=@vger.kernel.org, AJvYcCV9Db6OvNaWKr4P53xUDcwtUpWhE649cj/eYy1pWyb4yfGWIeNmj/FgE12dEB33G3doPbqPA4x8lYeFb7K4mliq@vger.kernel.org, AJvYcCWK3ejLdzjd8G3a1qsIab5rRqIZvNIDdDBuHEDx4QRxltxEDrKHOalnV7FWzY2P+LvTm7RYzQxjspFKpg==@vger.kernel.org, AJvYcCWYYRPOmzi4lzYEVYaPP+Kn7afE1ZyPiMiq/o81mvOd07Nssdt3NnP2kj3ePe36gn7Q7Zr+J9ErxxOhcbgK@vger.kernel.org
+X-Gm-Message-State: AOJu0YztFnW6QWM6NjOkmJowxeSAmtvN1SWz2pOTO1wWIYiJmIhePH6c
+	jtCGLsXvkDhqE2mUBurAYPY2uxRyj23ZFuNUkN2+G/mqkMbL+irydlaPQhtGptBA6+F3vTEQZyE
+	OUZPDwIHWdbvCd6xvQLpsOog0bKE=
+X-Gm-Gg: ASbGncvMyWe9ofj7unepjYOmwibk+dptpSuYga+w7AaHUgt+WHuOqlqJHy/RnF8LLVn
+	fE5fodTXYvHCBvEhNNEADY2Y92xJyfedrQORKSRvS6Qz2fs0Cv6zM26zaf5wOWu0HRIeDIW3Xvb
+	bbq89lLjVN8I6qmTtEHAdvBYvXTOQ3MvE5p+ZSzxYkykGSjuRY
+X-Google-Smtp-Source: AGHT+IErQi2Er7r17YhBc/+o6xGPrWkIlSLUIKchIAzkOkxgoMQkvfSEziYBzRgcNHcxELm+ZTC0AxHxR340ziV44Pc=
+X-Received: by 2002:a05:6a20:c706:b0:1f5:87a0:60ed with SMTP id
+ adf61e73a8af0-2159af9c759mr321957637.19.1746641914136; Wed, 07 May 2025
+ 11:18:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250506135727.3977467-1-jolsa@kernel.org> <20250506135727.3977467-4-jolsa@kernel.org>
- <CAEf4Bzbpn8kQV8ORoBv7iDR1VxT0uUf=qqjanFQFtFx1fSjrQQ@mail.gmail.com>
- <aBsgQw1kzJsRzM5p@krava> <1392a5c9-f67b-49fe-9f05-f2bc63fe01bb@kernel.org>
-In-Reply-To: <1392a5c9-f67b-49fe-9f05-f2bc63fe01bb@kernel.org>
+References: <20250505-vmlinux-mmap-v3-0-5d53afa060e8@isovalent.com>
+ <20250505-vmlinux-mmap-v3-2-5d53afa060e8@isovalent.com> <CAEf4BzboH-au2bNCWYk1nYbQ61kGbUXuvTxftDPAEGF1Pc=TLw@mail.gmail.com>
+ <CAN+4W8gcquJRkZw+Knt=vqwR4YM8w5RbRNO-XyfE+DAyiEWANw@mail.gmail.com>
+In-Reply-To: <CAN+4W8gcquJRkZw+Knt=vqwR4YM8w5RbRNO-XyfE+DAyiEWANw@mail.gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 7 May 2025 11:18:15 -0700
-X-Gm-Features: ATxdqUG9qEGa0gANWEJhzjvfK9b_Pt_XTKW096PXo3aMsFz6Rq3SZcpdKwec2Wg
-Message-ID: <CAEf4Bzar5Ai5WdaFvSPR_z8izoTE_Wejo-pewaH2FtQbm=nd7w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/3] bpftool: Display ref_ctr_offset for uprobe
- link info
-To: Quentin Monnet <qmo@kernel.org>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Hao Luo <haoluo@google.com>, 
-	Yafang Shao <laoar.shao@gmail.com>
+Date: Wed, 7 May 2025 11:18:20 -0700
+X-Gm-Features: ATxdqUHkJPgp2jd7mdL1fCg-FDYV5M7we5uV-H2O4mH6XB9PR-oIz2Kv8LBAT2o
+Message-ID: <CAEf4BzZ85DyEj2ey7y46tRHd=kP4xvqn5z8H3NO3bRTXZ2Mbaw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/3] selftests: bpf: add a test for mmapable
+ vmlinux BTF
+To: Lorenz Bauer <lmb@isovalent.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 7, 2025 at 2:40=E2=80=AFAM Quentin Monnet <qmo@kernel.org> wrot=
-e:
+On Wed, May 7, 2025 at 2:14=E2=80=AFAM Lorenz Bauer <lmb@isovalent.com> wro=
+te:
 >
-> 2025-05-07 10:56 UTC+0200 ~ Jiri Olsa <olsajiri@gmail.com>
-> > On Tue, May 06, 2025 at 03:33:33PM -0700, Andrii Nakryiko wrote:
-> >> On Tue, May 6, 2025 at 6:58=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wr=
-ote:
-> >>>
-> >>> Adding support to display ref_ctr_offset in link output, like:
-> >>>
-> >>>   # bpftool link
-> >>>   ...
-> >>>   42: perf_event  prog 174
-> >>>           uprobe /proc/self/exe+0x102f13  cookie 3735928559  ref_ctr_=
-offset 50500538
-> >>
-> >> let's use hex for ref_ctr_offset?
+> On Tue, May 6, 2025 at 10:39=E2=80=AFPM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+>
+> > > +       raw_data =3D mmap(NULL, end, PROT_READ, MAP_PRIVATE, fd, 0);
+> > > +       if (!ASSERT_NEQ(raw_data, MAP_FAILED, "mmap_btf"))
 > >
-> > I had that, then I saw cookie was dec ;-) either way is fine for me
+> > ASSERT_OK_PTR()?
 >
-> I'm fine either way, but let's use the same base for the two values
-> please. If you want to change the cookie to hexa (in the plain output)
-> for better readability, that's OK as well (JSON output needs to remain a
-> decimal in both cases, of course).
+> Don't think that mmap follows libbpf_get_error conventions? I'd keep
+> it as it is.
 
-Why should cookie and offset use the same base? Offset is always
-address-like, so hex makes most sense there, 100%. But a cookie is
-most probably going to be some small value (index into array, or small
-number representing attachment point number, etc), so decimal is most
-natural. Importantly, BPF cookie can't really be a pointer (what will
-you do with it on BPF side?), so it's something a bit more
-human-driven, and thus decimal seems like a better default.
+ASSERT_OK_PTR() isn't libbpf specific (and libbpf is actually
+returning a NULL or valid pointer for all public APIs, since libbpf
+1.0). But if you look at the implementation, "an OK" pointer is a
+non-NULL pointer that is also not a small negative value. NULL is a
+bad pointer, -1 (MAP_FAILED) is a bad pointer, and so on. So it's a
+pretty universal check for anything pointer-related. Please do use
+OK_PTR, it's semantically better in tests
 
 >
-> Quentin
+> > > +       btf =3D btf__new_split(raw_data, btf_size, base);
+> > > +       if (!ASSERT_NEQ(btf, NULL, "parse_btf"))
+> >
+> > ASSERT_OK_PTR()
+>
+> Ack.
+>
+> > Do you intend to add more subtests? if not, why even using a subtest st=
+ructure
+>
+> The original intention was to add kmod support, but that didn't pan
+> out, see my discussion with Alexei. I can drop the subtest if you
+> want, but I'd probably keep the helper as it is.
+
+yeah, let's drop the subtest, it's a bit easier to work with
+non-subtest tests, IMO
 
