@@ -1,174 +1,115 @@
-Return-Path: <bpf+bounces-57643-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57644-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 068A8AADA94
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 10:57:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E0AAAADAB5
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 11:07:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCBC5188E87E
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 08:57:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44A609A15F3
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 09:07:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D184E204097;
-	Wed,  7 May 2025 08:56:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7707E230BD4;
+	Wed,  7 May 2025 09:07:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JJMZeHPK"
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="XySpEsOl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B642B193062;
-	Wed,  7 May 2025 08:56:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51B822309A3
+	for <bpf@vger.kernel.org>; Wed,  7 May 2025 09:07:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746608201; cv=none; b=h9150QpqXgG0xaJ00wkC+fRDaULqg+ScmN+4SjzPP08LJjQYzIAerE1tlWn8SbQi/XB31bdsFsD4oNPCOs7QETC0Xq45n+0dPk2MMDN0+uMxbIiHHUIxiaR2FmHLw52XBuo6AfQq6+ic1t0Zn+0VD881UadiyThjsR0qF135Mrg=
+	t=1746608832; cv=none; b=MuuvLMR/wLRqyXM+YPsloZGZI+kdjtT2AUvMQWRlpJBn9fhg+eyHKuQo0rVM2gPPTwOJUGPZM/kzvgHDcOVLjPPuUjy3K8pW/IGDGz9ca/l8RZCzfiWOmpeXjgmwqe06SdFlLANqhKUpeXtYJzaK38zqbhaUAuMEaD1pO1Oe/fU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746608201; c=relaxed/simple;
-	bh=YF0XBybdGev5P5laamOGvx0yuMkyeOtbHYbsvXl924w=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mkW1WUOzKaUmnVOJH1Gksxh5Q/m1hP4XnwwNdcw5jrNWUURPlHQKZmby33TRaPDcI66xL2i1n6ej4cfip16cSHbUyfuZnMV+HjgOOldqPCWagA9s1brqWSvfmwBEHibxusc4i9fhBG84F/suyJOz19klF0py2sac3HAbrSBrUbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JJMZeHPK; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5fbee929e83so678244a12.3;
-        Wed, 07 May 2025 01:56:39 -0700 (PDT)
+	s=arc-20240116; t=1746608832; c=relaxed/simple;
+	bh=hZC5f+b9USatNoguTDEhrP+OZA4hqYVfUftEwfqtpBM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QoktVUEerkC3SI/g7kpsNqlcvEd218zTQs6pu/DF3+gAPUnLABHUVaIFxqiMFepPhNdXqGaWET3s9EJSLKRK2btdTvBdWNpKQ9Irhh2Xap7Tj02rydEGrLyWogwgHFjkks9eC6RYKeUk1asTjzfRPZUxgjrvhc0n3qfhpv1IS8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=XySpEsOl; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3912d2c89ecso5358678f8f.2
+        for <bpf@vger.kernel.org>; Wed, 07 May 2025 02:07:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746608198; x=1747212998; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=RtJrNEhTxPpRyYlS5ximO0nluwO8bWEvvP6btnNB21E=;
-        b=JJMZeHPKcibRmqMPIVAh+As1HV8FA7KXR1UslVcLladEtlFxZNjyiYScb8EwdaarzC
-         S5GJo7KwXiRUUnaY0HbsI+yfOsxGbQqTYWa0f+dkp85GucaSj+pd7E+s75SJ27zo7zff
-         Q/PJgHcseohQ0v8pVf29+aHlnXp6nYAKPTaKSuNqn+v9MK946KwKW/qPEorz620+ALLJ
-         8SEHqP05B8KSSpAMl0/Jf/FqA/VyriMUfOO2Wu3e0EgtqneSr+ch6QG7/x2eq2oujAtz
-         ZEmORYQ4UyH4/KlNscIoVD9M6BSYKEh709sX9HZV3fwKt5mfzhF6hKV0Q+YwwDDQaxxu
-         r/uA==
+        d=isovalent.com; s=google; t=1746608828; x=1747213628; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HzWczKOtRNdv6oYCcCWTL1fK96+7hkuKcZ+yQdI7Ga8=;
+        b=XySpEsOlzlx9BD3K2I9sACRU4+r0ads2Re2zrMJ7l6xo3twTSfpUI+XMqOAro488Sp
+         HJyIveFJ5K/xgN2mWon3CGl2I4Q8f4AUE1QM03KjTqtnubf2CKFhen3Hw79q84Mq2uBD
+         8L2CHY9NC/0+O24r0S9Mdz7RvY1PVXkRO5JIm+E50bPNkJgyw7C6gBt5HYUEy7yA0p3s
+         q+vmBnKqYAqhe5RLLJTjjQPEK+QhL9IYE/2LI+WyJFQsRbcZmopd0Pqj0QqzxZI0iy6H
+         wmOeddQlzxyEvInfUdTvZGUJoEBJtszTvfhhnKlgCR5qzAjcGfYmrqZSSUzqUdHEgMmU
+         N6xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746608198; x=1747212998;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RtJrNEhTxPpRyYlS5ximO0nluwO8bWEvvP6btnNB21E=;
-        b=UYzEU3yE7eQJfcM4eDNaD/8csl+fHqVUDwt9+738pu0TYj24/pyc6mfuogzjDfF/Sa
-         n+ib6ZknD3P/yzYje78edhO7p0qL+cnHL3t9LHip9FB52OZB7P6wlcYWr8NuUeje+pNK
-         Ko27CtCJM+Slvv626cNctci1x3roWVccFhdgd0u4FKv9WZfrBbQyenl6ckVN+6wCYQxI
-         cX60dUO1iWhoOXB0vRTIavMaRSeZS02hQ7UjxCA303tl98RRIjs0LXbbRZ50ms1ghvPM
-         l0laf8ZWoIWlJ4sWeor4+O3exCp27RZztkJlLrcw5B64WEHqvSSNohLkzV2aqb6XwAr1
-         rgBg==
-X-Forwarded-Encrypted: i=1; AJvYcCWH5MJXSkopgdgv8a9OzeCLfApdVoaBqyCmbdwk//UOOsDX2rl/GIDXU6Fyw4JzeH6L1z/dv5dDHGm3wdzy+Mz/Jg==@vger.kernel.org, AJvYcCXGyswD4+eDlZmsKrYPymhTB3epaX3dXFebgSatwbiFNFx9A3HdMtzierWaKUz19VUpO60=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyJ9CkWLACawDtYkzYoTmPYb89Qaer2QroBmnKbzSPwes2y8tTO
-	ybvnQH0HDJGmhSRi8QjljRH3wq8DvHZgK294RtaslfBavd2DN48S
-X-Gm-Gg: ASbGnctb2xLTtS8PH0qUfDv6JpwUJusNfDtvv1om7d+lNYzIrc93ZWd4Vg8ugyp8vsj
-	pCzafzROpUWJUVLXh01bozT5cuD7p6EX6RTKN8Srefe31t549NNeCN7UnYBk9vTddtz35ukS23g
-	eaQioXeUJu9zGxwmGJN+CIshJa1aA8UVLG2a/EAnJYQdwkca/OgJ0L4+tmw9vaQallsxOIBFfZE
-	XB1aiHm2JFQbko7zaf+N7l7m38nHxDPiReZ4IYi2gqrAmu9p+8lUlXtMLJMzmEXeOFZWn90IjZ/
-	JhLJfKHNs0jxwBdCs/ZRCLiKZNE=
-X-Google-Smtp-Source: AGHT+IGkqNN7KP/S/TA1argQXXGqtucTueWdiZvttJsrEcaRwxPxXI3wgtYKoiS0qQb8Z5uO5jIjYA==
-X-Received: by 2002:a17:907:2ce6:b0:ac7:b8d0:86c0 with SMTP id a640c23a62f3a-ad1e8b936c7mr252997266b.9.1746608197607;
-        Wed, 07 May 2025 01:56:37 -0700 (PDT)
-Received: from krava ([173.38.220.40])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ad189146f61sm866955566b.9.2025.05.07.01.56.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 May 2025 01:56:37 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 7 May 2025 10:56:35 +0200
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Hao Luo <haoluo@google.com>, Yafang Shao <laoar.shao@gmail.com>,
-	Quentin Monnet <qmo@kernel.org>
-Subject: Re: [PATCH bpf-next 3/3] bpftool: Display ref_ctr_offset for uprobe
- link info
-Message-ID: <aBsgQw1kzJsRzM5p@krava>
-References: <20250506135727.3977467-1-jolsa@kernel.org>
- <20250506135727.3977467-4-jolsa@kernel.org>
- <CAEf4Bzbpn8kQV8ORoBv7iDR1VxT0uUf=qqjanFQFtFx1fSjrQQ@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1746608828; x=1747213628;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HzWczKOtRNdv6oYCcCWTL1fK96+7hkuKcZ+yQdI7Ga8=;
+        b=uJcfY30W5zm23Ye/fVAYEO+4BjFV73gZHu0oTt8FMXmgROd2kg+j3AI2Xmsa49ISaY
+         lcyRj2gMro8OwUH7qvBflfCxXeIDQH7Bxkq8QNsM03+GOzLPSbXBhx60BPzXqWTiI5IM
+         ixIEy8uR0FJMEeqyhrXsWrIVD1Hg3G9gzxsFOhcvzdnZ6NtOYpCarWtNkgDVqS1oNc2L
+         zgVgdCDDW504H/eTlpiO2rVJFOwSDQCBp6wyYd+1GXjvYHKQesxuavZ9xkFBwWkVaoxU
+         GZWu5UBU3KxFSnGpAWstC2+jqi9pfuOzmJWSdGmN+LqvYpJ0CaMMzCyXQusX2PhRuy/c
+         94Pw==
+X-Forwarded-Encrypted: i=1; AJvYcCUQ96eclU8ihW1yuAWxrZG1LCpuVzoBSePuFwdZaatZcMueCZ4tpGBXJvT+62e2YNQTiIo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzOGe73UAPAGW35Iht1i/rRGsvdq4L4pXuq35pDwdQREWGydENI
+	nSAtxZkOs9jfwuTOIfvhZMUmKb4KrUP5o18LaACwiqlvgIsuZPukoarsqJSoBwoV7LzIjFtS8J0
+	1UzTzogpl1n9i+XHDCesIsp5xGB/mrCidWq9gfw==
+X-Gm-Gg: ASbGncs8uEN2eCH1Sv6m0ArzmYC1ULYooVlbmNDKCShF1DqNsjKnClZrTYw9TbGp8Ak
+	jw67Q0g9UT0JjKUhUFfbyph1gr8xiqa/asD02xkh36GI82+KKbWdSYPPNnQKEeEt+8xgihgXPZI
+	/I1472vxpe0zy823W7WsIPwSzitU7Uau39iS0xZqzpsg0XrA==
+X-Google-Smtp-Source: AGHT+IHjbkLnacbos9jg8MSNrNqfZgtfYSx+9ggUbfHgSlwtKGIOIJuAXx/CFfKUFlefpe1UhB48Y5x5Uo8a3HvYMaw=
+X-Received: by 2002:a05:6000:2210:b0:3a0:830a:3d63 with SMTP id
+ ffacd0b85a97d-3a0b4997fc5mr1984898f8f.9.1746608828586; Wed, 07 May 2025
+ 02:07:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4Bzbpn8kQV8ORoBv7iDR1VxT0uUf=qqjanFQFtFx1fSjrQQ@mail.gmail.com>
+References: <20250505-vmlinux-mmap-v3-0-5d53afa060e8@isovalent.com>
+ <20250505-vmlinux-mmap-v3-1-5d53afa060e8@isovalent.com> <CAEf4BzbsLJgbnuLj6sYFgH7sUZPfn3SqRf_5edTSGuo2oYXN4A@mail.gmail.com>
+In-Reply-To: <CAEf4BzbsLJgbnuLj6sYFgH7sUZPfn3SqRf_5edTSGuo2oYXN4A@mail.gmail.com>
+From: Lorenz Bauer <lmb@isovalent.com>
+Date: Wed, 7 May 2025 10:06:57 +0100
+X-Gm-Features: ATxdqUF-AtJKaQ86AR2mJxx8_Qq77605VMH3v3VHVteQJKjxM9Yh70Gg0ik9GJQ
+Message-ID: <CAN+4W8j-s3YSj-Ct7pNiXkhVnsVkv_bWx22WCnkGYf3mjRf_Fw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/3] btf: allow mmap of vmlinux btf
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, May 06, 2025 at 03:33:33PM -0700, Andrii Nakryiko wrote:
-> On Tue, May 6, 2025 at 6:58 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > Adding support to display ref_ctr_offset in link output, like:
-> >
-> >   # bpftool link
-> >   ...
-> >   42: perf_event  prog 174
-> >           uprobe /proc/self/exe+0x102f13  cookie 3735928559  ref_ctr_offset 50500538
-> 
-> let's use hex for ref_ctr_offset?
+On Tue, May 6, 2025 at 10:39=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> > +       if (vma->vm_pgoff)
+> > +               return -EINVAL;
+>
+> any particular reason to not allow vm_pgoff?
 
-I had that, then I saw cookie was dec ;-) either way is fine for me
+Doesn't seem particularly useful because the header is at offset 0,
+and I don't trust myself to get the overflow checks done right.
 
-> 
-> and also, why do we have bpf_cookie and cookie emitted? Are they different?
+> it's certainly subjective, but I find this error handling with !err in
+> for loop condition hard to follow. What's wrong with arguably more
+> straightforward (and as you can see I'm not a big fan of mutated addr
+> but calculated vma->vm_start + i * PAGE_SIZE: pick one style one
+> follow it for both entities?):
 
-hum, right.. so there's bpf_cookie retrieval from perf_link through the
-task_file iterator:
-
-  cbdaf71f7e65 bpftool: Add bpf_cookie to link output
-
-I guess it was added before we decided to have bpf_link_info.perf_event
-interface, which seems easier to me
-
-jirka
-
-> 
-> >           bpf_cookie 3735928559
-> >           pids test_progs(1820)
-> >
-> >   # bpftool link -j | jq
-> >   [
-> >     ...
-> >     {
-> >       "id": 42,
-> >        ...
-> >       "ref_ctr_offset": 50500538,
-> >     }
-> >   ]
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  tools/bpf/bpftool/link.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
-> > index 52fd2c9fac56..b09aae3a191e 100644
-> > --- a/tools/bpf/bpftool/link.c
-> > +++ b/tools/bpf/bpftool/link.c
-> > @@ -380,6 +380,7 @@ show_perf_event_uprobe_json(struct bpf_link_info *info, json_writer_t *wtr)
-> >                            u64_to_ptr(info->perf_event.uprobe.file_name));
-> >         jsonw_uint_field(wtr, "offset", info->perf_event.uprobe.offset);
-> >         jsonw_uint_field(wtr, "cookie", info->perf_event.uprobe.cookie);
-> > +       jsonw_uint_field(wtr, "ref_ctr_offset", info->perf_event.uprobe.ref_ctr_offset);
-> >  }
-> >
-> >  static void
-> > @@ -823,6 +824,8 @@ static void show_perf_event_uprobe_plain(struct bpf_link_info *info)
-> >         printf("%s+%#x  ", buf, info->perf_event.uprobe.offset);
-> >         if (info->perf_event.uprobe.cookie)
-> >                 printf("cookie %llu  ", info->perf_event.uprobe.cookie);
-> > +       if (info->perf_event.uprobe.ref_ctr_offset)
-> > +               printf("ref_ctr_offset %llu  ", info->perf_event.uprobe.ref_ctr_offset);
-> >  }
-> >
-> >  static void show_perf_event_tracepoint_plain(struct bpf_link_info *info)
-> > --
-> > 2.49.0
-> >
+Yeah that's nicer, I was just going off of what Alexei proposed.
 
