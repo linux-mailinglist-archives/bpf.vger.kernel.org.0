@@ -1,109 +1,144 @@
-Return-Path: <bpf+bounces-57715-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57716-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72305AAEDE9
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 23:30:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A822AAEEAA
+	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 00:20:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ADAF71BA8F2F
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 21:31:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A9E79C38EE
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 22:20:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A36AC2040B2;
-	Wed,  7 May 2025 21:30:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EECC0219A7A;
+	Wed,  7 May 2025 22:20:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kCdFvXaF"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="HHidIfVq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CD0623DE
-	for <bpf@vger.kernel.org>; Wed,  7 May 2025 21:30:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1567231A3B;
+	Wed,  7 May 2025 22:20:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746653454; cv=none; b=T5IkMN/UovMmyvgNbSsaKy0p1Pf3XPmLvQS5wh2ncoqdHfgvV/bDuM2caoTYIZY2hmv0dDb/Q7iEwmzqBXIkhWxS2HJOTeink+XaHThCXxFSQVeBaItwjI/2HluydVVsZMex1kca9gFjssc6qOos/gNgKLldNFq3nL8aee+weYM=
+	t=1746656435; cv=none; b=StXUwDvkpr7sUeXgGof1Ipo0mMlMdSX0moZTH2DIOOYQDL3e36+etdAFyxz2MEujYhyyM8uSdoOIkT6jxryrKIpVLaiG26d8hoeAtTjhWWLBvfsKmGDdq3r0jPJo8dbqCHztNOnuTMd+QkAhYJntC6jD6ZSNfPyILgpdtnfkNqQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746653454; c=relaxed/simple;
-	bh=al1tSQnbe8goX+rnyBPk9zdbefwDs8Unyc8hKbgj6Uc=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=WBPqJs7mj4Qi5UY+4IYk03Nevororjx7finlqFyrZ27TjRH2WXNUjnIdIyfl3UtRalRjNbCSwgYRp6RMVBZT/Kmw0qTwoVq2HUYxDn9W2y5xLL0JrQiYMyE0bQ3gdRMyubXvRuvuVc8lKbuxDjMffNv+6ka6BuWOHVrYBUoQteI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kCdFvXaF; arc=none smtp.client-ip=209.85.219.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-6f5499c21bbso6432956d6.3
-        for <bpf@vger.kernel.org>; Wed, 07 May 2025 14:30:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746653451; x=1747258251; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=OHdHT6sJbThl3pfYyLFv/2Hv99pNOUYCOQlGojSpGng=;
-        b=kCdFvXaFoRGIdB3iEjSbfxNBqbJKhT/tyamYoeW3SA/a+lhiK+Ono/OgggIxrspu9P
-         7AXWwly1H+O3lDNnU6hj0UMrhfYANGR1DldxWOcQxO/yeqQW7I7ZzfTajdOAdKjOKsbL
-         tWw4gh1CDLbdFjdnTnRyVeBidixu+HYotcfvsh4N7IGx6pIf3QLDWgnaeuDdOrvBC1zS
-         ibDR37+KliC1OoqOeIZfhdRVfuCXyL0kUNE8Nbt5aC32iplGP3G6h/eLU1Dk5V+UBl4+
-         l4yPfoE7WZuS3ecRrVhJjOHlnVkYXzl5zUUubNzqRt8nGdrvM/PjRo1N88KM/dAQdaHh
-         E6FQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746653451; x=1747258251;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OHdHT6sJbThl3pfYyLFv/2Hv99pNOUYCOQlGojSpGng=;
-        b=Hts7o6AF8VePeniwnhuiw25SKuh9JWfSa4znVqEQTi1z6Rytz9sUkvK0MmUmiGstbd
-         8P9DJcDZ1tUFiTywQsLIg9jyK3m+5WcpUmx2uEbGTyCaF8M6Z4M4zxmcmxmP2EeqFcyQ
-         Z5MxaC3lWgYiD8TMf7QOV7O212taBiLhFCG3L2h+GUQVqQcOJig0nhQtD4F0DuTnbI36
-         Qj/+nXOQKZT71WcFmzlxCRF26E2YjJqCoxFlyUdhdl3d1LLFdWDEAP9J+iEnPpFnqoI8
-         v749U5HjKQeKUNI023kLM/48VMR1U9dtyEa21FS45GLAum+pmre1fQZz95ptxjL88Hk1
-         uWLw==
-X-Forwarded-Encrypted: i=1; AJvYcCVv3sKpXvchFzAcOoOP5P8qCxmJnmg3xJYOD0HbxBFc5fa0qtoxXB5FEsOInFUnOyPue4w=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzEkubIM0rLmvg6tCzSffe5AyFIOrriIDe5LiYmRXIrPR8w4mtY
-	C5j2rWsfoU1A2KVyO1mUzsG7PteiQhNooe3yU/FMN+HAg5DvVEBMyBFp4ewOuLkyUkPDsNJ8oal
-	6m9o/fhrlmiSpwZbmbq8jjaadrViD2Qi0
-X-Gm-Gg: ASbGncvVeI/hMhmdXFhMtWZgh5jozByBRP9QEAxgcPvCjHz8h7nbLTma9YmsF5MIcT8
-	2IQYwqnKqWq7Cl50PEOUnMngULxxzAGnymhB/G8ZAXWqtEwYqgUzkB7/3/J9aFWNHl82lJ7xyjc
-	blAxWTRQOaPzkCKhEjR8jZfrU=
-X-Google-Smtp-Source: AGHT+IHt1+zx/IBUEMpNCsYMY+Ou6aTB386blQSTuYtECzq9pw7XCvz0jwz83seqBc6ZfkxJtHNIY6oqgDW3AE3/qao=
-X-Received: by 2002:a05:6214:29eb:b0:6d4:dae:6250 with SMTP id
- 6a1803df08f44-6f542aa3215mr76103456d6.34.1746653440451; Wed, 07 May 2025
- 14:30:40 -0700 (PDT)
+	s=arc-20240116; t=1746656435; c=relaxed/simple;
+	bh=mLymb9m1Aamh6w9wXRY8bm3iLfvFqm2zCOEODZIwCHY=;
+	h=Content-Type:Date:Message-Id:Cc:Subject:From:To:Mime-Version:
+	 References:In-Reply-To; b=bgcLYSVQgq0t9XgI8k6FKenMRdwy/jiCHCTbTEidi+fM9LZlVVwcXzwFpl67XBuKVSj/wxuKsBcqIjqoEp9BDCShzsMTRDk/A2/YxmWFwo7ThCgQ3vGtVGN3163U3pwqqP0Z6HuAd/oLnR2H2NNPwFlRXlFfDAiNSKPBDiiyhIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=HHidIfVq; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 5780B43969;
+	Wed,  7 May 2025 22:20:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1746656430;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xwXyFQMqk6Dz3xysP6Qan9loJGBSspmDNGXagmKMr7s=;
+	b=HHidIfVqd1xpJy0qJEs8nlSaspY3IRVsFG3h9lSYVZHXdIGwQn+gS2dr+3617xZdMxAlUT
+	GRjF8MsBo2Y50uUL9ciDRl2gzj540aG/uCo0j/lFdegmW1SWOp7jeE01yeHI1aNc81WntT
+	dUPMd95WCerz7GQcfazBNPQXtqfZQ8GVTant2HGWs4WXfJ5e0Hw3JNQjYkYM/Oling4eK+
+	awCYtgSUeh9TuoVE0dzcokv4bPJksErtxL3/NhScBHS+btf5ofdUhobc9Oqauw1zNc9RSH
+	LpM2rPcB4KAR2f7J+hGZ3NA87/Un98NiQn5bCiYi8BGOV/DVdNVuL0Qs6EwVpw==
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 08 May 2025 00:20:30 +0200
+Message-Id: <D9QA12O1IQU9.3AVBN6BI611LL@bootlin.com>
+Cc: "Arnaldo Carvalho de Melo" <acme@kernel.org>, "Alan Maguire"
+ <alan.maguire@oracle.com>, <bpf@vger.kernel.org>, <dwarves@vger.kernel.org>
+Subject: Re: Pahole/BTF issue with __int128
+From: =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+To: "Tony Ambardar" <tony.ambardar@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-From: Vincent Li <vincent.mc.li@gmail.com>
-Date: Wed, 7 May 2025 14:30:29 -0700
-X-Gm-Features: ATxdqUFfQKKYyJauQ7BMy05pT0Ja3iBMbptRZS1m9IGykxzLMmgGsCWcmTFks5E
-Message-ID: <CAK3+h2wo3KidH9yrGSNsV522BSkUJyn2TUp==tSv62937xPDMw@mail.gmail.com>
-Subject: [QUESTION] Loongarch bpf selftest liburandom_read.so build error
-To: loongarch@lists.linux.dev, bpf <bpf@vger.kernel.org>, 
-	Tiezhu Yang <yangtiezhu@loongson.cn>, Hengqi Chen <hengqi.chen@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: aerc 0.20.1-0-g2ecb8770224a
+References: <D9Q73OTLEOU4.LNAO9K4POETM@bootlin.com>
+ <aBvE++cyskZTfAo5@kodidev-ubuntu>
+In-Reply-To: <aBvE++cyskZTfAo5@kodidev-ubuntu>
+X-GND-State: clean
+X-GND-Score: -100
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvkeektdegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpegtfffkvefuhffvggfgofhfjgesthhqredtredtjeenucfhrhhomheptehlvgigihhsucfnohhthhhorhoruceorghlvgigihhsrdhlohhthhhorhgvsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeekveevvdekieeihffftefgieffvedvhfehgfehkeeuudfhveeufffgffejiefhueenucffohhmrghinhepkhgvrhhnvghlrdhorhhgpdgsohhothhlihhnrdgtohhmnecukfhppedvrgdtvdemkeegvdekmehfleegtgemvgdttdemmeguieehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvdgrtddvmeekgedvkeemfhelgegtmegvtddtmeemugeihedphhgvlhhopehlohgtrghlhhhoshhtpdhmrghilhhfrhhomheprghlvgigihhsrdhlohhthhhorhgvsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopeehpdhrtghpthhtohepthhonhihrdgrmhgsrghruggrrhesghhmrghilhdrtghomhdprhgtphhtthhopegrtghmvgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghlrghnrdhmrghguhhirhgvsehorhgrtghlvgdrtghomhdprhgtphhtthhopegsphhfs
+ ehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepugifrghrvhgvshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-GND-Sasl: alexis.lothore@bootlin.com
 
-Hi,
+Hi Tony,
+thanks a lot for the prompt answer !
 
-I tried to build kernel 6.15-rc5 bpf selftests on Loongarch machine
-running Fedora, the bpf test programs seems built ok, but I got
-liburandom_read.so build error below:
+On Wed May 7, 2025 at 10:39 PM CEST, Tony Ambardar wrote:
+> On Wed, May 07, 2025 at 10:02:51PM +0200, Alexis Lothor=C3=A9 wrote:
+>> Hello,
 
-  LIB      liburandom_read.so
+[...]
 
-/usr/bin/ld: cannot find crtbeginS.o: No such file or directory
+> Hi Alexis,
+>
+>> Am I missing some constraint or limitation that would prevent the case 2
+>> function from being described with BTF info ? If not, any advice about h=
+ow
+>> to debug this further ?
+>>=20
+>
+> I suspect this might be related to an issue I ran into where pahole may
+> mis-encode types larger than register-size [1]. Out of curiosity, could
+> you try rebuilding and using a pahole with my latest patch [2]?
+>
+> 1: https://lore.kernel.org/dwarves/20250410083359.198724-1-tony.ambardar@=
+gmail.com/
+> 2: https://lore.kernel.org/dwarves/20250502070318.1561924-1-tony.ambardar=
+@gmail.com/
 
-/usr/bin/ld: cannot find -lstdc++: No such file or directory
+I gave a try to your patch on top of pahole 1.30, and indeed it seems that
+my issue is fixed with your solution. I now have some BTF info for my
+bpf_testmod_test_struct_arg_11 func:
 
-/usr/bin/ld: cannot find -lgcc: No such file or directory
+  [...]
+  [370] FUNC_PROTO '(anon)' ret_type_id=3D6 vlen=3D6
+          'a' type_id=3D10
+          'b' type_id=3D10
+          'c' type_id=3D10
+          'd' type_id=3D10
+          'e' type_id=3D5
+          'f' type_id=3D10
+  [371] FUNC 'bpf_testmod_test_struct_arg_11' type_id=3D370 linkage=3Dstati=
+c
+  [...]
 
-/usr/bin/ld: cannot find -lgcc_s: No such file or directory
+I also did some quick tests around Alan's request in your series, I'll
+report to your series' thread.
 
-clang: error: linker command failed with exit code 1 (use -v to see invocation)
+Thanks for the help !
 
-make: *** [Makefile:253:
-/usr/src/linux/tools/testing/selftests/bpf/liburandom_read.so] Error 1
+Alexis
 
-Am I missing  gcc tools for Fedora loongarch?
 
-Thanks,
+>
+> Cheers,
+> Tony
+>
+>> Thanks,
+>>=20
+>> Alexis
+>>=20
+>> --=20
+>> Alexis Lothor=C3=A9, Bootlin
+>> Embedded Linux and Kernel engineering
+>> https://bootlin.com
 
-Vincent
+
+
+
+--=20
+Alexis Lothor=C3=A9, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
 
