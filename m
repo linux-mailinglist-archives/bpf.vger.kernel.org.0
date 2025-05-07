@@ -1,80 +1,79 @@
-Return-Path: <bpf+bounces-57682-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57683-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12140AAE799
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 19:17:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74957AAE79A
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 19:18:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0527D3ADE55
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 17:17:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC7784E6AA7
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 17:18:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCD7628C5B7;
-	Wed,  7 May 2025 17:17:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51B7728C5B6;
+	Wed,  7 May 2025 17:17:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XL8xz+1F"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VX8iBf+9"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-wr1-f68.google.com (mail-wr1-f68.google.com [209.85.221.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ED2B28C2C1
-	for <bpf@vger.kernel.org>; Wed,  7 May 2025 17:17:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE6CA28B509
+	for <bpf@vger.kernel.org>; Wed,  7 May 2025 17:17:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746638260; cv=none; b=holLc3ZHd3DYDFZ87ME/DTCz293ewBGD8SvNiiq5fR/jIrW6ccim8f0rt/9y8SEknWuC5BJwV1j+HbfEKEn4LEpVr/c0aHd7oLuYdMFVysMLLHRWBIc+LPlb5uSaJb/ZOQc2C2Y09RuVwGirYOxtsSnxosCcWu9BtE9XALVNVLw=
+	t=1746638261; cv=none; b=H8kaj7qBjVoG9fufmK1vF3LnrXXvCP5W+Mj/bn226ptljAY/AXp6gxE5yDfDSC7lUNyyWk5X0C+XY/8JX4nfQG/80/eRElK6GT+NRDOoejrCpAgvlmnS1CjjWi8UJX8We9WCnnX36t1p0hPGUU+YJUMG6rkzxonXXpL4g+Lc0js=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746638260; c=relaxed/simple;
-	bh=WhbQJiQmhN/GRwyk5nNRX6N+xFEDf6b7sa8zMN3wTYs=;
+	s=arc-20240116; t=1746638261; c=relaxed/simple;
+	bh=Rd4RWUQ21T8NqvcF8OU/Rgeuune/dHxtsoMzGoe2VSk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oyJjxOtkK6E1gCR7CYUIYcNqXeYUOjvZcbdLgjHgxSquv1G1ldMjcq3L9Yav5nPNaDg5xr+FVwOcoztuuLceBoxBHFbu1bLicZA/rNpC/PVF5cOBKn+SrIdCNzJNCBeMjEp7jvq4zxgZNy0NFP62M798ZXPcaUJVNLZXvWNfa1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XL8xz+1F; arc=none smtp.client-ip=209.85.221.68
+	 MIME-Version; b=L+QbzOUy2t95oDZxuaOj5Uhi3W3cFtTKarq/5z3RdrVnDe14zY/HncyrQ1Y7suuSWKtUwfO0POtxThQdvb1dsjcZ8LSUksyYLEajAOA6PvKzBnw7eafgTQB7kmOutCDBtaGgSpn4h9wUJZPIjnU5DI8pBhURZJdjjXgiaAhstrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VX8iBf+9; arc=none smtp.client-ip=209.85.221.68
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f68.google.com with SMTP id ffacd0b85a97d-3a0b7fbdde7so93985f8f.2
-        for <bpf@vger.kernel.org>; Wed, 07 May 2025 10:17:38 -0700 (PDT)
+Received: by mail-wr1-f68.google.com with SMTP id ffacd0b85a97d-39c0dfad22aso108481f8f.2
+        for <bpf@vger.kernel.org>; Wed, 07 May 2025 10:17:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746638256; x=1747243056; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1746638258; x=1747243058; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gzt4hq4cSPSXuynuwR+uIRWcpYvSvlH3VA2tKCzraoM=;
-        b=XL8xz+1FUvBW0van87D/LobZbvr4kGXgTrYT2eYnAv4cPvQ2R7lwOC7VMQkUpP5JRO
-         SDKBzi4q5F7dpFXwajFP+rc/ZRQsdIh+0x2XDicHbYILsHkvZ1XDxSJR14N/MyB/ffd8
-         VNrbyoVR2dN9LA2tNM0KJ8a/aPqWYLLHkvq8l5lfR/vqdf4Z5ix5Whjj6vPcR77GiKlb
-         l5CuU7xbNbB6LBoLsBQvGiOwg0DMP3dxx0wYxMGfdH2wmHZgA/cuPwE3VRAmrpYX5Ig0
-         Cy2sy+8Pq6x3a/Mt3+ipDZz41ouWCYL0t+tMNcNocP7KkRxdmCKjer80263DlwLCeml8
-         jHTg==
+        bh=aqxFoKSZ/6Z+uqkCTEyZsLmCqvrPwHJq2R70yDfw+uw=;
+        b=VX8iBf+9OxQpFT0WGByKYOJVtPZMPjYRa+fMuX7AmSnIBEx6F9ZqHjxjgUiK3f3syd
+         qBXhxKSBLV/VunElZDYt7bgTxkNLBXiWfh+VGxlG2jgL7phy49eygWzexxLYWqTIaWWN
+         wYRrnDQMdpiwb3G8d4/PIoPeGpVXIm3Jx0DL/wIZiV0F9rj07GaSACQBUJc4NnM13K1S
+         hj3g8Fp71ieOtpzUHq4ROCdA+L5notqBUXMGeUT/4e7uMKsfC/vzwy/91XeBiO0V4MQ8
+         JZLJCHWurEtDYzH6Jtvd5Dz+BtniRQYUEdQP6ZvbaZ+T73UhNB/lyFG6czfUAOHcbTHa
+         5mfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746638256; x=1747243056;
+        d=1e100.net; s=20230601; t=1746638258; x=1747243058;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gzt4hq4cSPSXuynuwR+uIRWcpYvSvlH3VA2tKCzraoM=;
-        b=PrHnCbTI9ZndGDidZFT9KVYXRg4qrl8jNXhO0AKxw6I4HgCoqaFQtCBO/1hd89l32R
-         bbPM+qa1XXQeMuuZ0YPi6k7Y7Ij/ZOg0sxK6pty+H+ozZl4nCqCcXM6XRr5E/D5XziFI
-         Xi8sLYdfhIxVX3OtmEAtBocpktljAEn/UwaqN0pEZhqLMXAkDZkeYkss2DTiG6Zy04nB
-         NRHtB/TwxW2uFgjcRU+qa/4PHrN1f84klHNXr0ES1s6vYg23BbPM+WqVaIFtD0cSUMtU
-         w+io6INmEhEmkeX0mr7+SLiU/UrfnXOp/hKMe8LgAZRrtp2I+w1X4Nhp7lWaFnK2zht3
-         xhvw==
-X-Gm-Message-State: AOJu0YwUDBZDHtxTlp8j9Q8GMXoQ3dhrRAawt7CCuGxrqrHRCr2FBjc1
-	TbPFoxLTMegxqbo2oiQXBjpS/VZM66YQLxLWm7metnk/FSC34TcLs+4xfKQRbm0=
-X-Gm-Gg: ASbGnctYf/GelkEW8JKwoeJxbt7UvdojJtXWzpTKujZya70DuoeEJAJj2JyDs+gcUBW
-	67BGMQjvNkN+2zV/jNjc+mC71N4T0y7knel6Wu72+mcmnA3UmJ1mHzLlOFjRibJrDHbt4HLSrKr
-	y/0CMTUvcqKhmzjgPJPlwu6BqVQ/0+oLglHoT44Xlxvge+3BuE51PX5YyvWodVhsytqCDe1igWJ
-	+ej5EcrONsCZzXfnQJbK+pZqnbSSJ+ZvrxqYJDkKE5/kt3BVjEWJm5IhyfHUEbhGSjaW8jNkF0A
-	/b0ULzsyr/uIp1Ma7JKeNtPy07EoeA==
-X-Google-Smtp-Source: AGHT+IEcNfjC/p+4tHuqWeP3ebdlexLQiqtZVwRjHeRY2VG0zVftknUxNG3MFpkOP6yM75d/mXrrHQ==
-X-Received: by 2002:a5d:588e:0:b0:3a0:8598:8e7c with SMTP id ffacd0b85a97d-3a0b49967b2mr3330345f8f.6.1746638255891;
-        Wed, 07 May 2025 10:17:35 -0700 (PDT)
-Received: from localhost ([2a03:2880:31ff:9::])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a099b16ec6sm17060232f8f.83.2025.05.07.10.17.35
+        bh=aqxFoKSZ/6Z+uqkCTEyZsLmCqvrPwHJq2R70yDfw+uw=;
+        b=LJluKkl+JMH2RLPLABk63nsfhn/sSSTTHZIp3yHEwb3BK12Q6qQgsK/byxS1dO0XqM
+         lyftpV3opbhZKJtID5sNHqXrAJ7wZq5b+qxSh3xMrbhTfpASCXAN9RWNbjKzKRvLALPR
+         OQ3zKQ0V4PZKTowxbrstHVXV8dTtMvlQyq944f324U2CKn4UhtrCzYbQhmXtrulW6CFT
+         xHIrEX2RClFpmw0VOGT9cohOC1+zwJJGb2P2UCzY0P8b3dR5eBeqqTRDwSC0ct8Wc4fd
+         HR5vfJWyRhFoAMynbSFvm5Qch1qefao0jSFVUziMp0aq+VFy6b9a2KruHsOQcbLoWor9
+         Cs6Q==
+X-Gm-Message-State: AOJu0YzlGLig4F2ZnHNJ+JNn8GzOVIC6HiGDKXdLx3q6Yrz6Ek02TbWl
+	A4HnoCLrZA/5OE7R9ZVZ1Yxxe/N8VWje8pRLp6O6rlPnCDK8kKRrjSn3QO0fURE=
+X-Gm-Gg: ASbGnctg7CHMZMYtN2L8kXOMw3uM1MJZbKGapqpqRZlSZHVfNeQdF2lXe+kG2J87sh1
+	9kvpcxoXdMPon67FbtyCua+7O9UkKZOAjfvsKLiMdkpVe3HjmK0kSfv4z3xlCZ0bihZ3aoX4VC2
+	Gv13KYeonJ9VA6YPdwoI5yRMtSjvvAfzGPDiXb+7iECKAJh1jvrELJp2FSrSnyda5+KWnFBE6vY
+	vmf0DU/dZroVwwSq9AYJ/TUneFGxy2RJFneD8iYBhl6tIhVuOVzS88nPGhnui/vxgqYPTUOvzJn
+	swo8ddrBtcy0JlTOL286t5eVnyZVgfQ=
+X-Google-Smtp-Source: AGHT+IFR3fDXz2qz7Y9KPM5sRKiVG8JZEPWB/nkpX+bxwDDsfrZbliB4zO6JXUWstbNQliYvcLfLmA==
+X-Received: by 2002:a05:6000:1ace:b0:39f:e7b:2c87 with SMTP id ffacd0b85a97d-3a0b4a22c7fmr3630676f8f.29.1746638257609;
+        Wed, 07 May 2025 10:17:37 -0700 (PDT)
+Received: from localhost ([2a03:2880:31ff:70::])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a099ae0c31sm17708579f8f.10.2025.05.07.10.17.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 May 2025 10:17:35 -0700 (PDT)
+        Wed, 07 May 2025 10:17:36 -0700 (PDT)
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To: bpf@vger.kernel.org
-Cc: Quentin Monnet <qmo@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
+Cc: Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Martin KaFai Lau <martin.lau@kernel.org>,
@@ -84,9 +83,9 @@ Cc: Quentin Monnet <qmo@kernel.org>,
 	Matt Bobrowski <mattbobrowski@google.com>,
 	kkd@meta.com,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v1 10/11] bpftool: Add support for dumping streams
-Date: Wed,  7 May 2025 10:17:19 -0700
-Message-ID: <20250507171720.1958296-11-memxor@gmail.com>
+Subject: [PATCH bpf-next v1 11/11] selftests/bpf: Add tests for prog streams
+Date: Wed,  7 May 2025 10:17:20 -0700
+Message-ID: <20250507171720.1958296-12-memxor@gmail.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250507171720.1958296-1-memxor@gmail.com>
 References: <20250507171720.1958296-1-memxor@gmail.com>
@@ -96,284 +95,366 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=8831; h=from:subject; bh=WhbQJiQmhN/GRwyk5nNRX6N+xFEDf6b7sa8zMN3wTYs=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBoG5WK7AicxDxVfzifpDeD/TOGMaVU3TUbTopsU3fA HPlc2wSJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCaBuVigAKCRBM4MiGSL8RyqGjD/ wIoht+CcTJy8oWKU8+Z+gvelv75DoZuEjmvO6mj63CERPBXuIU5nmPqMsTGN7ADAbUOSiQl9T1pavn yfMGUan1WbnSRweNJG/Zo1r5wK84nP98wy9B8lSNy8R8692wY7Z+jTb+TZYXYby/6dG9BrFGFBfFXm 2SZJWGHJ+I241r5+XKxrs+2y7aVF/CIAJTr2PskWATQ/Xg5kv5sQHwD2yhvjiGyO9GFyIJNXIKKcL3 ASE9uNOPFMoFumfveTKS5e0ODdn0DtWnhENNk6O5b0exI6lFAtOncpP3LKQfGcJ5h86DhTLQT60Gsf HUjwGi4ZimairlN/1WDvMUJXTfO2OufFzTGq+fOnQwvsNYYjrTTmAQDRsg0rj/RLTQKCREnJsd2iZm Z7YU8XFhlGtkDtG46iky7cDKRaRp2lcGIsC++BSFCDYjaucrG/DRvAIirIvhcK+6/2ks7x6sCBqgQm Q+LX4QMkxJWGmwGG3R4xS19YpzAJDz4Ww2yRH/N19h8kOIgcUkCzDY3e7UlZfMRbS7CB20uxn6yjbj 7LZFnDAdEK6GkpSdBVPBPEkXbxwze3HgCpEPd1fTeyIe/T4bJQz1Coc5JnqBRwSKr0ZgpsBegCAbI5 AOe4U3q8yzVyhIBtuS/jwUiIzcaUhKYpZgd4eQbQbmDiqKZOzVyQqYsvKJuQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=9391; h=from:subject; bh=Rd4RWUQ21T8NqvcF8OU/Rgeuune/dHxtsoMzGoe2VSk=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBoG5WKLaQNieDcLnvCOEf8QTDtmFLigqJcPVD+9g8q uNKuYNCJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCaBuVigAKCRBM4MiGSL8RylbAD/ 0YqJ5Q/sS7YijE2JCI25fL6xjuhOuL6xmYqOwUw6tLte/EiE9QP5R8xnEHtr+Mcv2UV+lktV7/JMsg Ws2/f37K+Bud+PCjl0+H+XBObgkdQtJyb3V1YAg2Xe6di72SMpV/S5l9gVDOg4EidR2TSP5u8iMuN4 Czx2loWJxvq9W+Im2wzWvpW5KVWeO2sxi1T1VlCnKO66KsF5GLXUkdELqqooGKhPTEX+KNlYlPdKFW nPD2jwHzLTlIEYm+yiGP3e//FtoBY66r2xk4bm/5JkFtW5QJCsctoT+q9L1qPWR3gLVVrG0HNGK6mF vkxGutuz9g9ynTVuCspP4HThvXbGY6ARIv9pRq/1ATk0unOn8+Ybc1Rx9DGouy9VZoSr5P99XeAizx 4CpUSgxeJczrVhQGcXQIY5+FA9mmjCZeK9FTgYVBhAKpLIL5OCkbbdQyEn8icAdFRWePeRFwav/6Kr OYHA91hTK87hRM7Y4vy0nsHHqp8CuzR4LWeKEeR/QVJn65QspDMccrOShnpYltTRImAjYUOQP414KN um4ybxIgvuDkKsV0byF9ZC+9LXJwWcRViGGGOtX0jF4fWkm1ei6Q3BhA6GVqveW74Td8F/2QeRscsu sWrR+DkjZS9IPi2QxW2HLIp7wR1mHXF3sK0Jv46PdnoTtGD8TuQefgzZohDw==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 
-Add bpftool support for dumping streams of a given BPF program.
-The syntax is `bpftool prog tracelog { stdout | stderr } PROG`.
-The stdout is dumped to stdout, stderr is dumped to stderr.
+Add selftests to stress test the various facets of the stream API,
+memory allocation pattern, and ensuring dumping support is tested and
+functional. Create symlink to bpftool stream.bpf.c and use it to test
+the support to dump messages to ringbuf in user space, and verify
+output.
 
-Cc: Quentin Monnet <qmo@kernel.org>
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- .../bpftool/Documentation/bpftool-prog.rst    |  6 ++
- tools/bpf/bpftool/Makefile                    |  2 +-
- tools/bpf/bpftool/bash-completion/bpftool     | 16 +++-
- tools/bpf/bpftool/prog.c                      | 88 ++++++++++++++++++-
- tools/bpf/bpftool/skeleton/stream.bpf.c       | 69 +++++++++++++++
- 5 files changed, 178 insertions(+), 3 deletions(-)
- create mode 100644 tools/bpf/bpftool/skeleton/stream.bpf.c
+ .../testing/selftests/bpf/prog_tests/stream.c |  95 +++++++++++++
+ tools/testing/selftests/bpf/progs/stream.c    | 127 ++++++++++++++++++
+ .../selftests/bpf/progs/stream_bpftool.c      |   1 +
+ .../testing/selftests/bpf/progs/stream_fail.c |  90 +++++++++++++
+ 4 files changed, 313 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/stream.c
+ create mode 100644 tools/testing/selftests/bpf/progs/stream.c
+ create mode 120000 tools/testing/selftests/bpf/progs/stream_bpftool.c
+ create mode 100644 tools/testing/selftests/bpf/progs/stream_fail.c
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-prog.rst b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-index d6304e01afe0..258e16ee8def 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-@@ -173,6 +173,12 @@ bpftool prog tracelog
-     purposes. For streaming data from BPF programs to user space, one can use
-     perf events (see also **bpftool-map**\ (8)).
- 
-+bpftool prog tracelog { stdout | stderr } *PROG*
-+    Dump the BPF stream of the program. BPF programs can write to these streams
-+    at runtime with the **bpf_stream_vprintk**\ () kfunc. The kernel may write
-+    error messages to the standard error stream. This facility should be used
-+    only for debugging purposes.
+diff --git a/tools/testing/selftests/bpf/prog_tests/stream.c b/tools/testing/selftests/bpf/prog_tests/stream.c
+new file mode 100644
+index 000000000000..7b97b783ff1f
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/stream.c
+@@ -0,0 +1,95 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
++#include <test_progs.h>
++#include <sys/mman.h>
 +
- bpftool prog run *PROG* data_in *FILE* [data_out *FILE* [data_size_out *L*]] [ctx_in *FILE* [ctx_out *FILE* [ctx_size_out *M*]]] [repeat *N*]
-     Run BPF program *PROG* in the kernel testing infrastructure for BPF,
-     meaning that the program works on the data and context provided by the
-diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-index 9e9a5f006cd2..eb908223c3bb 100644
---- a/tools/bpf/bpftool/Makefile
-+++ b/tools/bpf/bpftool/Makefile
-@@ -234,7 +234,7 @@ $(OUTPUT)%.bpf.o: skeleton/%.bpf.c $(OUTPUT)vmlinux.h $(LIBBPF_BOOTSTRAP)
- $(OUTPUT)%.skel.h: $(OUTPUT)%.bpf.o $(BPFTOOL_BOOTSTRAP)
- 	$(QUIET_GEN)$(BPFTOOL_BOOTSTRAP) gen skeleton $< > $@
- 
--$(OUTPUT)prog.o: $(OUTPUT)profiler.skel.h
-+$(OUTPUT)prog.o: $(OUTPUT)profiler.skel.h $(OUTPUT)stream.skel.h
- 
- $(OUTPUT)pids.o: $(OUTPUT)pid_iter.skel.h
- 
-diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-index 1ce409a6cbd9..c7c0bf3aee24 100644
---- a/tools/bpf/bpftool/bash-completion/bpftool
-+++ b/tools/bpf/bpftool/bash-completion/bpftool
-@@ -518,7 +518,21 @@ _bpftool()
-                     esac
-                     ;;
-                 tracelog)
--                    return 0
-+                    case $prev in
-+                        $command)
-+                            COMPREPLY+=( $( compgen -W "stdout stderr" -- \
-+                                "$cur" ) )
-+                            return 0
-+                            ;;
-+                        stdout|stderr)
-+                            COMPREPLY=( $( compgen -W "$PROG_TYPE" -- \
-+                                "$cur" ) )
-+                            return 0
-+                            ;;
-+                        *)
-+                            return 0
-+                            ;;
-+                    esac
-                     ;;
-                 profile)
-                     case $cword in
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index f010295350be..7abe4698c86c 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -35,6 +35,8 @@
- #include "main.h"
- #include "xlated_dumper.h"
- 
 +#include "stream.skel.h"
++#include "stream_fail.skel.h"
 +
- #define BPF_METADATA_PREFIX "bpf_metadata_"
- #define BPF_METADATA_PREFIX_LEN (sizeof(BPF_METADATA_PREFIX) - 1)
- 
-@@ -697,6 +699,15 @@ static int do_show(int argc, char **argv)
- 	return err;
- }
- 
-+static int process_stream_sample(void *ctx, void *data, size_t len)
++#include "stream_bpftool.skel.h"
++
++void test_stream_failure(void)
 +{
-+	FILE *file = ctx;
-+
-+	fprintf(file, "%s", (char *)data);
-+	fflush(file);
-+	return 0;
++	RUN_TESTS(stream_fail);
 +}
 +
- static int
- prog_dump(struct bpf_prog_info *info, enum dump_mode mode,
- 	  char *filepath, bool opcodes, bool visual, bool linum)
-@@ -1113,6 +1124,80 @@ static int do_detach(int argc, char **argv)
- 	return 0;
- }
- 
-+enum prog_tracelog_mode {
-+	TRACE_STDOUT,
-+	TRACE_STDERR,
-+};
-+
-+static int
-+prog_tracelog_stream(struct bpf_prog_info *info, enum prog_tracelog_mode mode)
++void test_stream_success(void)
 +{
-+	FILE *file = mode == TRACE_STDOUT ? stdout : stderr;
++	RUN_TESTS(stream);
++	RUN_TESTS(stream_bpftool);
++	return;
++}
++
++typedef int (*sample_cb_t)(void *, void *, size_t);
++
++static void stream_ringbuf_output(int prog_id, sample_cb_t sample_cb)
++{
 +	LIBBPF_OPTS(bpf_test_run_opts, opts);
 +	struct ring_buffer *ringbuf;
-+	struct stream_bpf *skel;
-+	int map_fd, ret = -1;
++	struct stream_bpftool *skel;
++	int fd, ret;
 +
-+	__u32 prog_id = info->id;
-+	__u32 stream_id = mode == TRACE_STDOUT ? 1 : 2;
++	skel = stream_bpftool__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "stream_bpftool_open_and_load"))
++		return;
 +
-+	skel = stream_bpf__open_and_load();
-+	if (!skel)
-+		return -errno;
-+	skel->bss->prog_id = prog_id;
-+	skel->bss->stream_id = stream_id;
++	fd = bpf_map__fd(skel->maps.ringbuf);
 +
-+	map_fd = bpf_map__fd(skel->maps.ringbuf);
-+	ringbuf = ring_buffer__new(map_fd, process_stream_sample, file, NULL);
-+	if (!ringbuf) {
-+		ret = -errno;
++	ringbuf = ring_buffer__new(fd, sample_cb, NULL, NULL);
++	if (!ASSERT_OK_PTR(ringbuf, "ringbuf_new"))
 +		goto end;
-+	}
++
++	skel->bss->prog_id = prog_id;
++	skel->bss->stream_id = 1;
 +	do {
 +		skel->bss->written_count = skel->bss->written_size = 0;
 +		ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.bpftool_dump_prog_stream), &opts);
-+		if (ring_buffer__consume_n(ringbuf, skel->bss->written_count) != skel->bss->written_count) {
-+			ret = -EINVAL;
-+			goto end;
-+		}
-+	} while (!ret && opts.retval == EAGAIN);
++		if (ret)
++			break;
++		ret = ring_buffer__consume_n(ringbuf, skel->bss->written_count);
++		if (!ASSERT_EQ(ret, skel->bss->written_count, "consume"))
++			break;
++		ret = 0;
++	} while (opts.retval == EAGAIN);
 +
-+	if (opts.retval != 0)
-+		ret = -EINVAL;
++	ASSERT_OK(ret, "ret");
++	ASSERT_EQ(opts.retval, 0, "retval");
++
 +end:
-+	stream_bpf__destroy(skel);
-+	return ret;
++	stream_bpftool__destroy(skel);
 +}
 +
++int cnt = 0;
 +
-+static int do_tracelog_any(int argc, char **argv)
++static int process_sample(void *ctx, void *data, size_t len)
 +{
-+	enum prog_tracelog_mode mode;
-+	struct bpf_prog_info info;
-+	__u32 info_len = sizeof(info);
-+	int fd, err;
++	char buf[64];
 +
-+	if (argc == 0)
-+		return do_tracelog(argc, argv);
-+	if (!is_prefix(*argv, "stdout") && !is_prefix(*argv, "stderr"))
-+		usage();
-+	mode = is_prefix(*argv, "stdout") ? TRACE_STDOUT : TRACE_STDERR;
-+	NEXT_ARG();
-+
-+	if (!REQ_ARGS(2))
-+		return -1;
-+
-+	fd = prog_parse_fd(&argc, &argv);
-+	if (fd < 0)
-+		return -1;
-+
-+	err = bpf_prog_get_info_by_fd(fd, &info, &info_len);
-+	if (err < 0)
-+		return -1;
-+
-+	return prog_tracelog_stream(&info, mode);
++	snprintf(buf, sizeof(buf), "num=%d\n", cnt++);
++	ASSERT_TRUE(strcmp(buf, (char *)data) == 0, "sample strcmp");
++	return 0;
 +}
 +
- static int check_single_stdin(char *file_data_in, char *file_ctx_in)
- {
- 	if (file_data_in && file_ctx_in &&
-@@ -2483,6 +2568,7 @@ static int do_help(int argc, char **argv)
- 		"                         [repeat N]\n"
- 		"       %1$s %2$s profile PROG [duration DURATION] METRICs\n"
- 		"       %1$s %2$s tracelog\n"
-+		"       %1$s %2$s tracelog { stdout | stderr } PROG\n"
- 		"       %1$s %2$s help\n"
- 		"\n"
- 		"       " HELP_SPEC_MAP "\n"
-@@ -2522,7 +2608,7 @@ static const struct cmd cmds[] = {
- 	{ "loadall",	do_loadall },
- 	{ "attach",	do_attach },
- 	{ "detach",	do_detach },
--	{ "tracelog",	do_tracelog },
-+	{ "tracelog",	do_tracelog_any },
- 	{ "run",	do_run },
- 	{ "profile",	do_profile },
- 	{ 0 }
-diff --git a/tools/bpf/bpftool/skeleton/stream.bpf.c b/tools/bpf/bpftool/skeleton/stream.bpf.c
++void test_stream_output(void)
++{
++	LIBBPF_OPTS(bpf_test_run_opts, opts);
++	struct bpf_prog_info info = {};
++	__u32 info_len = sizeof(info);
++	struct stream *skel;
++	int ret;
++
++	skel = stream__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "stream__open_and_load"))
++		return;
++
++	ASSERT_OK(bpf_prog_get_info_by_fd(bpf_program__fd(skel->progs.stream_test_output), &info, &info_len), "get info");
++	ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.stream_test_output), &opts);
++	ASSERT_OK(ret, "ret");
++	ASSERT_OK(opts.retval, "retval");
++	stream_ringbuf_output(info.id, process_sample);
++
++	ASSERT_EQ(cnt, 1000, "cnt");
++
++	stream__destroy(skel);
++	return;
++}
+diff --git a/tools/testing/selftests/bpf/progs/stream.c b/tools/testing/selftests/bpf/progs/stream.c
 new file mode 100644
-index 000000000000..910315959144
+index 000000000000..14cb8690824f
 --- /dev/null
-+++ b/tools/bpf/bpftool/skeleton/stream.bpf.c
-@@ -0,0 +1,69 @@
-+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++++ b/tools/testing/selftests/bpf/progs/stream.c
+@@ -0,0 +1,127 @@
++// SPDX-License-Identifier: GPL-2.0
 +/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
 +#include <vmlinux.h>
 +#include <bpf/bpf_tracing.h>
 +#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
 +
-+struct {
-+	__uint(type, BPF_MAP_TYPE_RINGBUF);
-+	__uint(max_entries, 1024 * 1024);
-+} ringbuf SEC(".maps");
++#define _STR "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 +
-+int written_size;
-+int written_count;
-+int stream_id;
-+int prog_id;
++#define STREAM_STR (u64)(_STR _STR _STR _STR)
 +
-+#define ENOENT 2
-+#define EAGAIN 11
-+#define EFAULT 14
++static __noinline int stream_exercise(int id, int N)
++{
++	struct bpf_stream_elem *elem, *earr[56] = {};
++	struct bpf_stream *stream;
++	int ret;
++	u32 i;
++
++	if (N > 56)
++		return 56;
++
++	stream = bpf_stream_get(id, NULL);
++	if (!stream)
++		return 1;
++	for (i = 0; i < N; i++)
++		if ((ret = bpf_stream_vprintk(stream, "%llu%s", &(u64[]){i, STREAM_STR}, 16)) < 0) {
++			bpf_printk("bpf_stream_vprintk ret=%d", ret);
++			return 2;
++		}
++	ret = 0;
++	for (i = 0; i < N; i++) {
++		elem = bpf_stream_next_elem(stream);
++		if (!elem) {
++			ret = 4;
++			break;
++		}
++		earr[i] = elem;
++	}
++	elem = bpf_stream_next_elem(stream);
++	if (elem) {
++		bpf_stream_free_elem(elem);
++		ret = 5;
++	}
++	for (i = 0; i < N; i++)
++		if (earr[i])
++			bpf_stream_free_elem(earr[i]);
++	return ret;
++}
++
++static __noinline int stream_exercise_nums(int id)
++{
++	int ret = 0;
++
++	ret = ret ?: stream_exercise(id, 56);
++	ret = ret ?: stream_exercise(id, 42);
++	ret = ret ?: stream_exercise(id, 28);
++	ret = ret ?: stream_exercise(id, 10);
++	ret = ret ?: stream_exercise(id, 1);
++
++	return ret;
++}
 +
 +SEC("syscall")
-+int bpftool_dump_prog_stream(void *ctx)
++__success __retval(0)
++int stream_test(void *ctx)
 +{
-+	struct bpf_stream_elem *elem;
-+	struct bpf_stream *stream;
-+	bool cont = false;
-+	bool ret = 0;
++	unsigned long flags;
++	int ret;
 +
-+	stream = bpf_prog_stream_get(stream_id, prog_id);
++	bpf_local_irq_save(&flags);
++	bpf_repeat(50) {
++		ret = stream_exercise_nums(BPF_STDOUT);
++		if (ret)
++			break;
++	}
++	if (ret) {
++		bpf_local_irq_restore(&flags);
++		return ret;
++	}
++	bpf_repeat(100) {
++		ret = stream_exercise_nums(BPF_STDERR);
++		if (ret)
++			break;
++	}
++	bpf_local_irq_restore(&flags);
++
++	if (ret)
++		return ret;
++
++	ret = stream_exercise_nums(BPF_STDOUT);
++	if (ret)
++		return ret;
++	return stream_exercise_nums(BPF_STDERR);
++}
++
++SEC("syscall")
++__success __retval(0)
++int stream_test_output(void *ctx)
++{
++	for (int i = 0; i < 1000; i++)
++		bpf_stream_printk(BPF_STDOUT, "num=%d\n", i);
++	return 0;
++}
++
++SEC("syscall")
++__success __retval(0)
++int stream_test_limit(void *ctx)
++{
++	struct bpf_stream *stream;
++	bool failed = false;
++
++	stream = bpf_stream_get(BPF_STDOUT, NULL);
 +	if (!stream)
-+		return ENOENT;
++		return 2;
 +
 +	bpf_repeat(BPF_MAX_LOOPS) {
-+		struct bpf_dynptr dst_dptr, src_dptr;
-+		int size;
-+
-+		elem = bpf_stream_next_elem(stream);
-+		if (!elem)
-+			break;
-+		size = elem->mem_slice.len;
-+
-+		if (bpf_dynptr_from_mem_slice(&elem->mem_slice, 0, &src_dptr))
-+			ret = EFAULT;
-+		if (bpf_ringbuf_reserve_dynptr(&ringbuf, size, 0, &dst_dptr))
-+			ret = EFAULT;
-+		if (bpf_dynptr_copy(&dst_dptr, 0, &src_dptr, 0, size))
-+			ret = EFAULT;
-+		bpf_ringbuf_submit_dynptr(&dst_dptr, 0);
-+
-+		written_count++;
-+		written_size += size;
-+
-+		bpf_stream_free_elem(elem);
-+
-+		/* Probe and exit if no more space, probe for twice the typical size. */
-+		if (bpf_ringbuf_reserve_dynptr(&ringbuf, 2048, 0, &dst_dptr))
-+			cont = true;
-+		bpf_ringbuf_discard_dynptr(&dst_dptr, 0);
-+
-+		if (ret || cont)
++		failed = bpf_stream_vprintk(stream, "%s%s%s", &(u64[]){STREAM_STR, STREAM_STR}, 16) != 0;
++		if (failed)
 +			break;
 +	}
 +
-+	bpf_prog_stream_put(stream);
-+
-+	return ret ? ret : (cont ? EAGAIN : 0);
++	if (failed)
++		return 0;
++	return 1;
 +}
 +
-+char _license[] SEC("license") = "Dual BSD/GPL";
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/stream_bpftool.c b/tools/testing/selftests/bpf/progs/stream_bpftool.c
+new file mode 120000
+index 000000000000..5904c0d92edc
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/stream_bpftool.c
+@@ -0,0 +1 @@
++../../../../bpf/bpftool/skeleton/stream.bpf.c
+\ No newline at end of file
+diff --git a/tools/testing/selftests/bpf/progs/stream_fail.c b/tools/testing/selftests/bpf/progs/stream_fail.c
+new file mode 100644
+index 000000000000..50f70b9878b8
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/stream_fail.c
+@@ -0,0 +1,90 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
++#include <vmlinux.h>
++#include <bpf/bpf_tracing.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_core_read.h>
++#include "bpf_misc.h"
++
++SEC("syscall")
++__failure __msg("R1 type=trusted_ptr_or_null_ expected=")
++int stream_get_trusted(void *ctx) {
++	struct bpf_stream *stream;
++
++	stream = bpf_stream_get(BPF_STDOUT, NULL);
++	bpf_this_cpu_ptr(stream);
++	return 0;
++}
++
++SEC("tc")
++__failure __msg("calling kernel function bpf_prog_stream_get is not allowed")
++int stream_get_prog_fail(void *ctx) {
++	struct bpf_stream *stream;
++
++	stream = bpf_prog_stream_get(BPF_STDOUT, 0);
++	if (!stream)
++		return 0;
++	bpf_this_cpu_ptr(stream);
++	return 0;
++}
++
++SEC("syscall")
++__failure __msg("R1 type=ptr_or_null_ expected=")
++int stream_get_prog_trusted(void *ctx) {
++	struct bpf_stream *stream;
++
++	stream = bpf_prog_stream_get(BPF_STDOUT, 0);
++	bpf_this_cpu_ptr(stream);
++	return 0;
++}
++
++SEC("syscall")
++__failure __msg("Unreleased reference")
++int stream_get_put_missing(void *ctx) {
++	struct bpf_stream *stream;
++
++	stream = bpf_prog_stream_get(BPF_STDOUT, 0);
++	if (!stream)
++		return 0;
++	return 0;
++}
++
++SEC("syscall")
++__failure __msg("R1 must be referenced or trusted")
++int stream_next_untrusted_arg(void *ctx)
++{
++	struct bpf_stream *stream;
++
++	stream = bpf_core_cast((void *)0xdeadbeef, typeof(*stream));
++	bpf_stream_next_elem(stream);
++	return 0;
++}
++
++SEC("syscall")
++__failure __msg("Possibly NULL pointer passed")
++int stream_next_null_arg(void *ctx)
++{
++	bpf_stream_next_elem(NULL);
++	return 0;
++}
++
++SEC("syscall")
++__failure __msg("R1 must be referenced or trusted")
++int stream_vprintk_untrusted_arg(void *ctx)
++{
++	struct bpf_stream *stream;
++
++	stream = bpf_core_cast((void *)0xfaceb00c, typeof(*stream));
++	bpf_stream_vprintk(stream, "", NULL, 0);
++	return 0;
++}
++
++SEC("syscall")
++__failure __msg("Possibly NULL pointer passed")
++int stream_vprintk_null_arg(void *ctx)
++{
++	bpf_stream_vprintk(NULL, "", NULL, 0);
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.47.1
 
