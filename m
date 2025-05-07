@@ -1,48 +1,48 @@
-Return-Path: <bpf+bounces-57698-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57699-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58AD3AAEB3D
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 21:05:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53892AAEC38
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 21:35:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E58171C08BC4
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 19:05:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 458043AFE85
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 19:35:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D3CE28E56F;
-	Wed,  7 May 2025 19:04:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30DC228E57F;
+	Wed,  7 May 2025 19:35:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lhRh0Bgp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GfU0DTYb"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71B2F28BA9F;
-	Wed,  7 May 2025 19:04:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7E161CF5C6;
+	Wed,  7 May 2025 19:35:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746644698; cv=none; b=gSBqzQ9BS6i2iBgMn6ta6RXCr/79osjVLCFoaiLHtIIBroXOlr+AmXmwv2Sr9AhfzWJuWaDfTLLLbIRGrVhwwbE1BfsApZ0OcLvanK/tHVg9kNrj2SuqA7xRET8SoCYkBjDBhNXA7amPaYJmxrH52Itlmp6T/ykRwSZucbxOcxg=
+	t=1746646538; cv=none; b=s4lNqNVQhyNnzx8KEnRFN9KvKAD84EITqbJ9iBKFz9mEX3JlP9ggrgm31bF+7foiqNGZlmitp1+37sTqZEAVg4iiMNtx9Fqic0cf9nRZA4gHCNhC21TwmU0kANPJEYgcDrSP43W1JTf+O/3bWGKjyVbHsBXPvY7jw3pAZz/mgo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746644698; c=relaxed/simple;
-	bh=CRCiIABz/kFgdTeK7BF7RrV6jJF7IbV0KFOhjFLNr0o=;
+	s=arc-20240116; t=1746646538; c=relaxed/simple;
+	bh=3U+k0XSCpGPoosXxxOjJ/gLC+g6xVEgE1bJQNKlZEiI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eld+dsa8vz31mjm/uGV8UsUEuJI7MuxokMO7baw4Prxk7gIF/LPDnqBQjnw6wVdqC6Ulvp8/b2tuDOb944sDTVRv9t4Aq7jx0Ne433apCfNBRsfm4Im9u2XFQGBWzwbfdLg5Pcp09XRO+JxEPXdtP4srOMR29N/u4WZwcAv9smY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lhRh0Bgp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D653FC4CEE2;
-	Wed,  7 May 2025 19:04:53 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=u/GRLevPdJ9aapgsRRREWtIy4Y892vk2Fq5v9g/D39BTzP/+uqFhpr7B0g/2VK+8dnrOSiUKqu+YCYpZOV9hrx6kdBd+iDrFZ/ccRX786xP9CCTpCEMAnGMCUzMGReI6kTmfDfp7F3MD+OXMgnxzmV9QcW6VeiMOmD/r5v8tT0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GfU0DTYb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AC47C4CEE2;
+	Wed,  7 May 2025 19:35:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746644698;
-	bh=CRCiIABz/kFgdTeK7BF7RrV6jJF7IbV0KFOhjFLNr0o=;
+	s=k20201202; t=1746646538;
+	bh=3U+k0XSCpGPoosXxxOjJ/gLC+g6xVEgE1bJQNKlZEiI=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=lhRh0BgpAtDuVzNTHwJeeIpZV8B/fvJdYcifpSbxeLTlR4qy4A9r+y4pzZ8G8SwIq
-	 CSIscRiuqpRioY9xkq9ah4CoAGvtS52bMQn/IrpYa6s5DtvDZvPe/BGr119Socc93Q
-	 6LtsrF4ntJJJpjELtxY8qmqyAUP2mcsha+jHKZ9jLCxshFATtyP9oH1uaI3NbXkd2T
-	 T4TOR34KmE6bNQZ6kdLnw1vR5X9dn/jLMYyUyAhtAm/j9yxUdf+b+PD738FEq85M/s
-	 aUaS15NG0gL0jr7L671fyi3WPfSu8xB+Y4zsO83HLOjHfDFLXydEO+j5dFM8DnJwGI
-	 cE1Z69pdf4/1w==
-Message-ID: <e4cf6912-74fb-441f-ad05-82ea99d81020@kernel.org>
-Date: Wed, 7 May 2025 21:04:51 +0200
+	b=GfU0DTYbhjcfUkbAJY2YTYubRb26Ow6kBw3+202p+XcADRGxHt6Bsw8xPZWOleiV3
+	 s7o7muc8TUlQo1l+gu/hNRNPtD9qt8krDfHfuZVBjImhG1kqvZopDNW3dh9x+Xf/kI
+	 lfoYAOEE2kq+Mk7rpP/Qy2kvJq5ual/BsDVmAqNgPgyYU3VjRqEFCYYrhKj0WSxDw1
+	 DWK3pP1FipXg4NDIMaxyISQQh+pYLvibtjfu8mAXRu/+2ChfXscXQgOQJMNt8e4XXA
+	 RzODJfl0gdGm5QTB1w7lCuSwSu5zB/In9OUC/dVe5B1g+PDOtd3SazAVeJGziyQzeS
+	 ZB1yhD7uaGlog==
+Message-ID: <3fcd891d-1719-4c53-baf0-4ae0db39991e@kernel.org>
+Date: Wed, 7 May 2025 20:35:32 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -50,104 +50,58 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v3] xdp: Add helpers for head length, headroom,
- and metadata length
-To: Jon Kohler <jon@nutanix.com>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: Zvi Effron <zeffron@riotgames.com>,
- Stanislav Fomichev <stfomichev@gmail.com>, Jason Wang <jasowang@redhat.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>, Simon Horman <horms@kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- Jacob Keller <jacob.e.keller@intel.com>
-References: <20250506125242.2685182-1-jon@nutanix.com>
- <aBpKLNPct95KdADM@mini-arch>
- <681b603ac8473_1e4406294a6@willemb.c.googlers.com.notmuch>
- <c8ad3f65-f70e-4c6e-9231-0ae709e87bfe@kernel.org>
- <CAC1LvL3nE14cbQx7Me6oWS88EdpGP4Gx2A0Um4g-Vuxk4m_7Rw@mail.gmail.com>
- <062e886f-7c83-4d46-97f1-ebbce3ca8212@kernel.org>
- <681b96abe7ae4_1f6aad294c9@willemb.c.googlers.com.notmuch>
- <B4F050C6-610F-4D04-88D7-7EF581DA7DF1@nutanix.com>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <B4F050C6-610F-4D04-88D7-7EF581DA7DF1@nutanix.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH bpf-next 3/3] bpftool: Display ref_ctr_offset for uprobe
+ link info
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+ Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+ Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
+ Hao Luo <haoluo@google.com>, Yafang Shao <laoar.shao@gmail.com>
+References: <20250506135727.3977467-1-jolsa@kernel.org>
+ <20250506135727.3977467-4-jolsa@kernel.org>
+ <CAEf4Bzbpn8kQV8ORoBv7iDR1VxT0uUf=qqjanFQFtFx1fSjrQQ@mail.gmail.com>
+ <aBsgQw1kzJsRzM5p@krava> <1392a5c9-f67b-49fe-9f05-f2bc63fe01bb@kernel.org>
+ <CAEf4Bzar5Ai5WdaFvSPR_z8izoTE_Wejo-pewaH2FtQbm=nd7w@mail.gmail.com>
+From: Quentin Monnet <qmo@kernel.org>
+Content-Language: en-GB
+In-Reply-To: <CAEf4Bzar5Ai5WdaFvSPR_z8izoTE_Wejo-pewaH2FtQbm=nd7w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-
-
-On 07/05/2025 19.47, Jon Kohler wrote:
-> 
-> 
->> On May 7, 2025, at 1:21 PM, Willem de Bruijn <willemdebruijn.kernel@gmail.com> wrote:
+2025-05-07 11:18 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> On Wed, May 7, 2025 at 2:40 AM Quentin Monnet <qmo@kernel.org> wrote:
 >>
->>
->> Jesper Dangaard Brouer wrote:
->>>
->>>
->>> On 07/05/2025 19.02, Zvi Effron wrote:
->>>> On Wed, May 7, 2025 at 9:37 AM Jesper Dangaard Brouer <hawk@kernel.org> wrote:
+>> 2025-05-07 10:56 UTC+0200 ~ Jiri Olsa <olsajiri@gmail.com>
+>>> On Tue, May 06, 2025 at 03:33:33PM -0700, Andrii Nakryiko wrote:
+>>>> On Tue, May 6, 2025 at 6:58 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >>>>>
+>>>>> Adding support to display ref_ctr_offset in link output, like:
 >>>>>
->>>>>
->>>>> On 07/05/2025 15.29, Willem de Bruijn wrote:
->>>>>> Stanislav Fomichev wrote:
->>>>>>> On 05/06, Jon Kohler wrote:
->>>>>>>> Introduce new XDP helpers:
->>>>>>>> - xdp_headlen: Similar to skb_headlen
->>>>>
->>>>> I really dislike xdp_headlen(). This "headlen" originates from an SKB
->>>>> implementation detail, that I don't think we should carry over into XDP
->>>>> land.
->>>>> We need to come up with something that isn't easily mis-read as the
->>>>> header-length.
+>>>>>   # bpftool link
+>>>>>   ...
+>>>>>   42: perf_event  prog 174
+>>>>>           uprobe /proc/self/exe+0x102f13  cookie 3735928559  ref_ctr_offset 50500538
 >>>>
->>>> ... snip ...
->>>>
->>>>>>> + * xdp_headlen - Calculate the length of the data in an XDP buffer
->>>>
->>>> How about xdp_datalen()?
+>>>> let's use hex for ref_ctr_offset?
 >>>
->>> Yes, I like xdp_datalen() :-)
+>>> I had that, then I saw cookie was dec ;-) either way is fine for me
 >>
->> This is confusing in that it is the inverse of skb->data_len:
->> which is exactly the part of the data not in the skb head.
->>
->> There is value in consistent naming. I've never confused headlen
->> with header len.
->>
->> But if diverging, at least let's choose something not
->> associated with skbs with a different meaning.
+>> I'm fine either way, but let's use the same base for the two values
+>> please. If you want to change the cookie to hexa (in the plain output)
+>> for better readability, that's OK as well (JSON output needs to remain a
+>> decimal in both cases, of course).
 > 
-> Brainstorming a few options:
-> - xdp_head_datalen() ?
-> - xdp_base_datalen() ?
-> - xdp_base_headlen() ?
-> - xdp_buff_datalen() ?
-> - xdp_buff_headlen() ?
-> - xdp_datalen() ? (ZivE, JesperB)
-> - xdp_headlen() ? (WillemB, JonK, StanislavF, JacobK, DanielB)
-> 
+> Why should cookie and offset use the same base? Offset is always
+> address-like, so hex makes most sense there, 100%. But a cookie is
+> most probably going to be some small value (index into array, or small
+> number representing attachment point number, etc), so decimal is most
+> natural. Importantly, BPF cookie can't really be a pointer (what will
+> you do with it on BPF side?), so it's something a bit more
+> human-driven, and thus decimal seems like a better default.
 
-What about keeping it really simple: xdp_buff_len() ?
+OK my bad, I take it back, then :)
 
-Or even simpler: xdp_len() as the function documentation already
-describe this doesn't include frags.
-
-To Jon, you seems to be on a cleanup spree:
-For SKBs netstack have this diagram documented [1].  Which also explains
-the concept of a "head" buffer, which isn't a concept for XDP.  I would
-really like to see a diagram documenting both xdp_buff and xdp_frame
-data structures via ascii art, like the one for SKBs. (Hint, this is
-actually defined in the header file include/linux/skbuff.h, but
-converted to RST/HTML format.)
-
-[1] https://docs.kernel.org/networking/skbuff.html
-
---Jesper
+Quentin
 
