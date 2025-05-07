@@ -1,178 +1,177 @@
-Return-Path: <bpf+bounces-57585-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57586-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3312AAD1A0
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 01:42:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53371AAD1DF
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 02:10:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D8A6500B52
-	for <lists+bpf@lfdr.de>; Tue,  6 May 2025 23:42:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B3109848DE
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 00:10:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81BD021D3E7;
-	Tue,  6 May 2025 23:42:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC1704A35;
+	Wed,  7 May 2025 00:10:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d8I+sUb6"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="z6zE1Wh1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f65.google.com (mail-ej1-f65.google.com [209.85.218.65])
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 495153D994
-	for <bpf@vger.kernel.org>; Tue,  6 May 2025 23:42:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC7B44A2D
+	for <bpf@vger.kernel.org>; Wed,  7 May 2025 00:10:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746574940; cv=none; b=eSn/OtLbRqXftbqE14c0ZDcj8Xc3CBnsuI8XRT9JvVDYl1DglBj3SmCOMqRqWyysxJTEBX9i0T6Jzn4BBAdo2wUflCiX5UlNZsOsiKVx3hSWiMgA2BOC4T4pJIdiGqocjCmIDHQhz9MQwI+syLrw5zPRxoV7juU17kV+CSRzURM=
+	t=1746576644; cv=none; b=knVC588BAK0gwFQTyAjjTyowpxwLe8xuRc9NfPiFdB0GZ2LWORoXCycQDc8OsRJuqrnZ4ZhaN428moxTiTxY4Km+xS+mLnHxxuJ/x2GsNcH9hOG6LiOn0s7H/OHVx+WEladuw9YvxdESy6KN4P7/KtIteiG4iAXDszob2Ufudrk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746574940; c=relaxed/simple;
-	bh=Xlws3IFX+QTJmj+pAK22806H4P9aPVRJwBpyBnhHXWc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KBZD8Va9pB3Nc47kU5M6z7mdQDO4vK7kw45UWpdMJSXziN2nXA0Tk98b7UiE3QmU69ZSWDQi+y+ZafnmA7DAZuyqy/Sg/eJlBtpQYWFug8C2UUlI2CKKjljfaAi+TiCNUXAShoKBjI5msCWHtHs/pDRwibCN9CICL8DCG7E7ZZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d8I+sUb6; arc=none smtp.client-ip=209.85.218.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f65.google.com with SMTP id a640c23a62f3a-ad1a87d93f7so561523166b.0
-        for <bpf@vger.kernel.org>; Tue, 06 May 2025 16:42:16 -0700 (PDT)
+	s=arc-20240116; t=1746576644; c=relaxed/simple;
+	bh=JWPtOoz4EA9bjCWVXaVjCq9xtrf9Nr3J1ZEFcVK7PCQ=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=XpsPTDXjma/R4mqgqBz5UYbEjSAQEmN2abaXtTQUSBVPwgt4JpMr9pq4FzOkYzK/+JIqWWZpIM9nRE8XkfahO/ktux3y3LjPG10LE0kAxxvE71U95LJGSolXSWQKxBnnbleowhSu9LXFn1aAc9tsWUZ4/xmYOx5pUjKX77P09aM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=z6zE1Wh1; arc=none smtp.client-ip=209.85.216.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-306b590faaeso4465087a91.3
+        for <bpf@vger.kernel.org>; Tue, 06 May 2025 17:10:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746574935; x=1747179735; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=RoPAhtGpRCTBrddVifllERVp2EL4jyGM5xd+AHR+x3U=;
-        b=d8I+sUb6vzbVLwQgTEX6g7i5vqXQ+jf9aaX5H63WXz93d9TbqPkSUJrAtJ+QLUeIZp
-         goE/O2RpZQCHhdV2j3eZ/s9I/uB9gf7hTM5a6p2vFXiFIYLewr+A4vGsdsOni5kbRAY3
-         9Yp3OxH7KcoxKVDUZJekfBSntbRlUBjElSvUNV5cf1r2lasQAfK/MNVFj8ttAvJzM2Lb
-         cntHsNONkXONp/niFFKEB1HYLBFUDuzFNeNxJFTV0LDmbEI9VzVjN6YjGZd87j13MttG
-         yeMJtDs7MOxyecrtANiZS/YZOlVqfma5ldakE0eM6jRwud2OVcc61k9iYZYn06pnstc2
-         AVsQ==
+        d=google.com; s=20230601; t=1746576642; x=1747181442; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XbM0hT4nN9Qi5ds4e0j9GLdbgAxkWG3cIrhqKGc4+Co=;
+        b=z6zE1Wh1jqc1zVo2RKxx5qf3UqRp3AivPx8ywhzMdyJpeVk+detvcZNfuzJo2lsQWi
+         Uk8vMN9KkyX/ROSP6ZzObgY8GbTVz3MK107TuH7V+humhGnKbNXGL5FGRY1BahJBvjC0
+         v8vktJ/qKjsLNPuyFEJP2INkYu9AylF53V8Xl875YOGRJQQ4LPhlsgEGiBCkci/YWaqy
+         jtr/CE8WHzFCZJ2Nd5XHSxlgHlqp7/QWyZXYDK7soDp81xoqQ05CeU4/YU5EF2BYCxvG
+         GyZf1eGLtZsCx0SxSoHJsTI8zBml9GPoisCl77nosoteyTSwfz2Mcbc7GZVJOhAXhkYR
+         19oA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746574935; x=1747179735;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RoPAhtGpRCTBrddVifllERVp2EL4jyGM5xd+AHR+x3U=;
-        b=kWaVv3XzzHtqhJnaOIP6mCo2vX9rWR9hag+KoY2F15t6xrp0skvUpC7HvarArddb5D
-         Ky1jgFsQHilyamkBADLYa93MwSMNmb6HypfhvPSJ0rZkoj6qmroXiN+kJmAJY16hAkXI
-         xBNSNU1nHbPNspZtiTtAKZYx+EgIjoQODJqJjKXbWnwKl9y+N5vjVFwwkFRYYMShx2wn
-         rug4IgiSDMfGfqpg1apBaqm8KCCN5wTvoOUSw4URnmySoyFSjwPJfA3hjyN7kKvih6vU
-         onQZ6VfWt7qXQTzGww735hcXrXBaoevh5J4BCiYgVAAws0DWLqLbdG/Fn1blE8/F2sHQ
-         B1Pg==
-X-Gm-Message-State: AOJu0YymS+/fRTo4mie7ALSzAFMMG+xnB1FKS3QrbfDWij8QGa1murCx
-	elsA37KPVSs11yhDsuLwS7otNTIiYQ2N+Ydqskr/5JnA0TX4oo1XC1qPH7+xx5OqdQjqKj6ml9n
-	OEb4IN92Xhg7DDRjShOY/Ey8C1Pc=
-X-Gm-Gg: ASbGnctF3ZuRGtsc+7oaTSZxAwgg0YLOWpXp2QSOI7uvyxgv6HZS4nqp+ps6KCUeegJ
-	Qua2eUeYr84zlyVpgG/EG4zjpDp6PeaQpLidLLYEb8mwBo9nBMCx5hAUXKdnSsJinn9NvkpnbFp
-	Av3LTUUf0iMDvKa91dPN7//KVZc7AdekNnbKQRVWDg4c9/dqILn77ayTVe
-X-Google-Smtp-Source: AGHT+IHkGmPkUw97in8gu8KGKSeVm2v94oSDaJaj87C4a2UOck7ICIPvtqTaapswhjdAhZHAJsM68Eug36ZAZabaxYM=
-X-Received: by 2002:a17:907:7e8c:b0:ace:d994:3cc3 with SMTP id
- a640c23a62f3a-ad1e8d9b3a6mr113578466b.51.1746574935415; Tue, 06 May 2025
- 16:42:15 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1746576642; x=1747181442;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XbM0hT4nN9Qi5ds4e0j9GLdbgAxkWG3cIrhqKGc4+Co=;
+        b=gUskTSvDuot00WtEHdnendZcvXP43NGefsNrQTrrox/a9zjBlrg7yrjKvPANWO+ZNA
+         OyY3zf1oUzDdukD5tooZKfLQCvibWBw55A+bEzm/4paEDapvr77tUhfFRFIqTi31nkl2
+         D/U8dNIQ70Bq2VDVlXiD2JWvVNQM/poPKVTcXf8SnCSQS8LqcycpGUTzS8aQQp5Jl8lq
+         3OtI6GEatE8eBnihwt7OvIdVWhN3TLuv3rxmCZgKqtH1W86VK3n+U+YQ0VI5qwZUcrGp
+         /UB1tmW+oc/ut2abbM8znkKlqqLPQXAVOBIzLkGsUOz6+AOcEk6hdiUwovGPOQ+paYZ+
+         DXOA==
+X-Forwarded-Encrypted: i=1; AJvYcCV1QtL0b2zbbVhWCJBnXk+h25UDZPlRPajhTylT0eppP8QWFFwhSYIzu2bNAoDM1Oy1IIU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxH71i1n0hoqxQZnu80/r62HEJlpncAUKMHQ258WA+j0/qYIBoI
+	kGrvfK8nmuAYpgaLsiHG79ES8cDAPt0Nv6wP32MnBdG7n67mqd7lbaGvg8dKcxXQ7isM8aujwa0
+	quMnIzAc1aXmNDw==
+X-Google-Smtp-Source: AGHT+IGgh9HyAs9Nj/w00VjUmiwsbbsyaNDbuDxCtSFIr9y5AQvyC41+3cohLwHox+GxYYqlbWOuGxl6mDGD8Sc=
+X-Received: from pjbpt3.prod.google.com ([2002:a17:90b:3d03:b0:2fa:15aa:4d1e])
+ (user=tjmercier job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a17:90b:3d8c:b0:2ee:e317:69ab with SMTP id 98e67ed59e1d1-30aabf6f73emr2662572a91.0.1746576642184;
+ Tue, 06 May 2025 17:10:42 -0700 (PDT)
+Date: Wed,  7 May 2025 00:10:31 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250506232313.1752842-1-andrii@kernel.org>
-In-Reply-To: <20250506232313.1752842-1-andrii@kernel.org>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Wed, 7 May 2025 01:41:38 +0200
-X-Gm-Features: ATxdqUGn6iEmZLQQVIGmSJ5qo-HzEzM6hcW9GXK1M4D_KScVZnvErm7LhyfUmPI
-Message-ID: <CAP01T77a2iJbq7OBn2J1bY55AagsGZZPhAM3YsT42gvWvbZu+A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf, docs: document open-coded BPF iterators
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	martin.lau@kernel.org, tj@kernel.org, kernel-team@meta.com
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.49.0.1045.g170613ef41-goog
+Message-ID: <20250507001036.2278781-1-tjmercier@google.com>
+Subject: [PATCH bpf-next v3 0/5] Replace CONFIG_DMABUF_SYSFS_STATS with BPF
+From: "T.J. Mercier" <tjmercier@google.com>
+To: sumit.semwal@linaro.org, christian.koenig@amd.com, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
+	skhan@linuxfoundation.org, alexei.starovoitov@gmail.com, song@kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org, 
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, android-mm@google.com, 
+	simona@ffwll.ch, eddyz87@gmail.com, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	jolsa@kernel.org, mykolal@fb.com, "T.J. Mercier" <tjmercier@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 7 May 2025 at 01:23, Andrii Nakryiko <andrii@kernel.org> wrote:
->
-> Extract BPF open-coded iterators documentation spread out across a few
-> original commit messages ([0], [1]) into a dedicated doc section under
-> Documentation/bpf/bpf_iterators.rst. Also make explicit expectation that
-> BPF iterator program type should be accompanied by a corresponding
-> open-coded BPF iterator implementation, going forward.
->
->   [0] https://lore.kernel.org/all/20230308184121.1165081-3-andrii@kernel.org/
->   [1] https://lore.kernel.org/all/20230308184121.1165081-4-andrii@kernel.org/
->
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
+Until CONFIG_DMABUF_SYSFS_STATS was added [1] it was only possible to
+perform per-buffer accounting with debugfs which is not suitable for
+production environments. Eventually we discovered the overhead with
+per-buffer sysfs file creation/removal was significantly impacting
+allocation and free times, and exacerbated kernfs lock contention. [2]
+dma_buf_stats_setup() is responsible for 39% of single-page buffer
+creation duration, or 74% of single-page dma_buf_export() duration when
+stressing dmabuf allocations and frees.
 
-Some typos below, but:
+I prototyped a change from per-buffer to per-exporter statistics with a
+RCU protected list of exporter allocations that accommodates most (but
+not all) of our use-cases and avoids almost all of the sysfs overhead.
+While that adds less overhead than per-buffer sysfs, and less even than
+the maintenance of the dmabuf debugfs_list, it's still *additional*
+overhead on top of the debugfs_list and doesn't give us per-buffer info.
 
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+This series uses the existing dmabuf debugfs_list to implement a BPF
+dmabuf iterator, which adds no overhead to buffer allocation/free and
+provides per-buffer info. The list has been moved outside of
+CONFIG_DEBUG_FS scope so that it is always populated. The BPF program
+loaded by userspace that extracts per-buffer information gets to define
+its own interface which avoids the lack of ABI stability with debugfs.
 
->  Documentation/bpf/bpf_iterators.rst | 115 +++++++++++++++++++++++++++-
->  1 file changed, 112 insertions(+), 3 deletions(-)
->
-> diff --git a/Documentation/bpf/bpf_iterators.rst b/Documentation/bpf/bpf_iterators.rst
-> index 385cd05aabf5..f3e9c8894c30 100644
-> --- a/Documentation/bpf/bpf_iterators.rst
-> +++ b/Documentation/bpf/bpf_iterators.rst
-> @@ -2,10 +2,119 @@
->  BPF Iterators
->  =============
->
-> +--------
-> +Overview
-> +--------
-> +
-> +BPF supports two separate entities collectively known as "BPF iterators": BPF
-> +iterator *program type* and *open-coded* BPF iterators. The former is
-> +a stand-alone BPF program type which, when attached and activated by user,
-> +will be called once for each entity (task_struct, cgroup, etc) that is being
-> +iterated. The latter is a set of BPF-side APIs implementing iterator
-> +functionalirt and available across multiple BPF program types. Open-coded
+This will allow us to replace our use of CONFIG_DMABUF_SYSFS_STATS, and
+the plan is to remove it from the kernel after the next longterm stable
+release.
 
-typo: functionality
+[1] https://lore.kernel.org/linux-media/20201210044400.1080308-1-hridya@goo=
+gle.com
+[2] https://lore.kernel.org/all/20220516171315.2400578-1-tjmercier@google.c=
+om
 
-> +iterators provide similar functionality to BPF iterator programs, but gives
-> +more flexiblity and control to all other BPF program types. BPF iterator
+v1: https://lore.kernel.org/all/20250414225227.3642618-1-tjmercier@google.c=
+om
+v1 -> v2:
+Make the DMA buffer list independent of CONFIG_DEBUG_FS per Christian K=C3=
+=B6nig
+Add CONFIG_DMA_SHARED_BUFFER check to kernel/bpf/Makefile per kernel test r=
+obot
+Use BTF_ID_LIST_SINGLE instead of BTF_ID_LIST_GLOBAL_SINGLE per Song Liu
+Fixup comment style, mixing code/declarations, and use ASSERT_OK_FD in self=
+test per Song Liu
+Add BPF_ITER_RESCHED feature to bpf_dmabuf_reg_info per Alexei Starovoitov
+Add open-coded iterator and selftest per Alexei Starovoitov
+Add a second test buffer from the system dmabuf heap to selftests
+Use the BPF program we'll use in production for selftest per Alexei Starovo=
+itov
+  https://r.android.com/c/platform/system/bpfprogs/+/3616123/2/dmabufIter.c
+  https://r.android.com/c/platform/system/memory/libmeminfo/+/3614259/1/lib=
+dmabufinfo/dmabuf_bpf_stats.cpp
+v2: https://lore.kernel.org/all/20250504224149.1033867-1-tjmercier@google.c=
+om
+v2 -> v3:
+Rebase onto bpf-next/master
+Move get_next_dmabuf() into drivers/dma-buf/dma-buf.c, along with the
+  new get_first_dmabuf(). This avoids having to expose the dmabuf list
+  and mutex to the rest of the kernel, and keeps the dmabuf mutex
+  operations near each other in the same file. (Christian K=C3=B6nig)
+Add Christian's RB to dma-buf: Rename debugfs symbols
+Drop RFC: dma-buf: Remove DMA-BUF statistics
 
-typo: flexibility
+T.J. Mercier (5):
+  dma-buf: Rename debugfs symbols
+  bpf: Add dmabuf iterator
+  bpf: Add open coded dmabuf iterator
+  selftests/bpf: Add test for dmabuf_iter
+  selftests/bpf: Add test for open coded dmabuf_iter
 
-> +programs, on the other hand, can be used to implement anonymous or BPF
-> +FS-mounted special files, whose contents is generated by attached BPF iterator
+ drivers/dma-buf/dma-buf.c                     |  94 +++++--
+ include/linux/dma-buf.h                       |   5 +-
+ kernel/bpf/Makefile                           |   3 +
+ kernel/bpf/dmabuf_iter.c                      | 149 ++++++++++
+ kernel/bpf/helpers.c                          |   5 +
+ .../testing/selftests/bpf/bpf_experimental.h  |   5 +
+ tools/testing/selftests/bpf/config            |   3 +
+ .../selftests/bpf/prog_tests/dmabuf_iter.c    | 258 ++++++++++++++++++
+ .../testing/selftests/bpf/progs/dmabuf_iter.c |  91 ++++++
+ 9 files changed, 591 insertions(+), 22 deletions(-)
+ create mode 100644 kernel/bpf/dmabuf_iter.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/dmabuf_iter.c
+ create mode 100644 tools/testing/selftests/bpf/progs/dmabuf_iter.c
 
-typo: contents are generated?
 
-> +program, backed by seq_file functionality. Both are useful depending on
-> +specific needs.
-> +
-> +When adding a new BPF iterator program, it is expected that similar
-> +functionality will be added as open-coded iterator for maximum flexibility.
-> +It's also expected that iteration logic and code will be maximally shared and
-> +reused between two iterator API surfaces.
->
-> -----------
-> -Motivation
-> -----------
-> +------------------------
-> +Open-coded BPF Iterators
-> +------------------------
-> +
-> +Open-coded BPF iterators are implemented as tightly-coupled trios of kfuncs
-> +(constructor, next element fetch, destructor) and iterator-specific type
-> +describing on-the-stack iterator state, which is guaranteed by the BPF
-> +verifier to not be tampered with outside of the corresponding
-> +constructor/destructor/next APIs.
-> +
-> +Each kind of open-coded BPF iterator has its own associated struct
-> +bpf_iter_<type>, where <type> denotes a specific type of iterator. struct
-> +bpf_iter_<type> state is supposed to live on BPF program stack, so there will
-> +be no way to change its size later on without breaking backwards
-> +compatibility, so choose wisely! But given this struct is specific to a given
-> +<type> of iterator, this allows a lot of flexibility: simple iterators could
-> +be fine with just one stack slot (8 bytes), like numbers iterator is, while
-> +some other more complicated iterators might need way more to keep their
-> +iterator state. Either way, such design allows to avoid runtime memory
-> +allocations, which otherwise would be necessary if we fixed on-the-stack size
-> +and it turned out to be too small for a given iterator implementation.
-> +
-> +All kfuncs (constructor, next, destructor) have to be named consistenly as
+base-commit: 43745d11bfd9683abdf08ad7a5cc403d6a9ffd15
+--=20
+2.49.0.1045.g170613ef41-goog
 
-typo: consistently
-
-> +bpf_iter_<type>_{new,next,destroy}(), respectively. <type> represents iterator
-> [...]
 
