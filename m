@@ -1,48 +1,61 @@
-Return-Path: <bpf+bounces-57713-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57714-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2C38AAED84
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 22:58:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FE9CAAED88
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 23:00:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB6083BBBDD
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 20:58:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF8C01BC7E6F
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 21:01:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 978F928FFCB;
-	Wed,  7 May 2025 20:58:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A2591D6DB9;
+	Wed,  7 May 2025 21:00:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vDUi6ys7"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="W8eSoUYm"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F45F28F930;
-	Wed,  7 May 2025 20:58:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B81954B1E7F;
+	Wed,  7 May 2025 21:00:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746651523; cv=none; b=VMGgnvqqmz/6nEG0gzqy5k05k9x9wEtYXC2s951e5SmO0j9ysMJgLyNBPZGluBquivMVJEPUc0aAwMSzT5HdoAGv0lsLfGDXDWkr9+NKhp1rDIIbRDo5YWf5knpcB9U+bXG8uAnxDXjjHLtQ28kOeWu66WeSOMOESHR2ngXGw5c=
+	t=1746651650; cv=none; b=tS2Xi7A/H+ZhIrglC1sC9ik9BU4SeHYNg1VJsQsvog3tFYujtmYB+w03TCG+cP1TXH/W9nd9rqEHEnT03xFnZWLaIDpKjUpbfVeZuf+8bLMa9lvQSSunxBc1U/LpK4PbhhTUjK0xrmI+AW/yM9ZQACtYOslBJJrEl7KZ7/es2DA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746651523; c=relaxed/simple;
-	bh=mdg9PRWN4cq2FGKqhaePByKFmIZPYYxT7Jr2c7f5fxk=;
+	s=arc-20240116; t=1746651650; c=relaxed/simple;
+	bh=cb28rFM1Q3MgVClxSie3e3Go9B/WXW264uT+wrwPPBA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=L8xiA0O3yp7LnHq4MLRXPFJY6pgcin+SZiuZhamiRoDLJlQjKnIZc1+c1tSLONGrt+Fu8RkIvfU3hEmi3AJu5JlFqnKdZjMiYwoIFrzIBmZKt+mccPYGSfq0kFJr0yjG97bxeTbmFVCW4R/LaN6wAGF7BgPkeQ7mzM5JkW09xuY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vDUi6ys7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69153C4CEE2;
-	Wed,  7 May 2025 20:58:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746651520;
-	bh=mdg9PRWN4cq2FGKqhaePByKFmIZPYYxT7Jr2c7f5fxk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=vDUi6ys7pZr49+eqFiJXYBqhtb7N1vvucMIA5yqItXEu8cvIDm3E7jgwgIlMLT/1D
-	 PZxOVvnI5CA0lFt/8mRyyALkiwyfL01q4N3OutcgjoBnIMV0TaSM6jnvnVgbfyQ/Lt
-	 gM8hkqnDcWI+NefPhadzqwi5LTgCCRhf4YJ8ZvR4STjA7XAyDX89giy/JiKQTdMjQK
-	 T4Khos88Aqtaq1kclR4c5x0CeCLfNJYo7WECINhhtyo4hc3FVzdIvZ6R8XdZCRF+0e
-	 OzNh14iCODTQi9Zxb45LHE9Gbbk9dHgOlVMXXcC45x6s1NpXy0ruHUUKf4n8CFNQAO
-	 4qOoGF8FtJexA==
-Message-ID: <b99b73e8-0957-45f8-bd54-6c50640706df@kernel.org>
-Date: Wed, 7 May 2025 22:58:33 +0200
+	 In-Reply-To:Content-Type; b=MVsEJ7LpZ+H/ojJTM0ksp6LG766iJ7EFJJIhf/HMg0/7oQ4k6lWEsiwsg6s0Ix3vGU63Avuw8XkCHqW2HQGMsrGyb4fjP/ZXAuDlPiKPtglGdNHQFk9N207jlPJS5gHjAQvQX4e8IAifkxsT29fa1kvH2aXjfixaRO38k0gagFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=W8eSoUYm; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=4DmtByt5jx3xv6qMrvol3wZEgDes7iqKgB/eQt+9uJA=; b=W8eSoUYmCHBBgxRml+1I00T6WB
+	P77kl/nXTMYY6oGk3JA/ktNvRyfhh1+rhx06AdimCrHxK5/7DcwayFaiebtv0hRP9aDLUr52P6mN3
+	VjY9K8bkO1WO9Kbofij4eQP7Y5wUIeOGMww8VdnKJzYd2BIokDpympghG2/9DWsPUs55r5NJq23xI
+	5860ydpyJU7uZUDSR+0x+KxqV+cNDnzV/uPXYTygtG9T7EdQOFsQnkTzxLL5B4Pia/OS/OZpRvO75
+	N7HXmdu8nenD8bVPmf10Jw0RwaJuYKoYmeGbeyLCOgmYYetfkN1Cb+rfjtDksA72buDMLiKWSzk7T
+	nRgCokDw==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1uClsf-000Kqu-14;
+	Wed, 07 May 2025 23:00:41 +0200
+Received: from [85.195.247.12] (helo=[192.168.1.114])
+	by sslproxy02.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1uClsf-0009HS-00;
+	Wed, 07 May 2025 23:00:41 +0200
+Message-ID: <dcada116-20c7-45d6-8a94-8492d87f026e@iogearbox.net>
+Date: Wed, 7 May 2025 23:00:40 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -50,160 +63,105 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v3] xdp: Add helpers for head length, headroom,
- and metadata length
-To: Jon Kohler <jon@nutanix.com>
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Zvi Effron <zeffron@riotgames.com>, Stanislav Fomichev
- <stfomichev@gmail.com>, Jason Wang <jasowang@redhat.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>, Simon Horman <horms@kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- Jacob Keller <jacob.e.keller@intel.com>
-References: <20250506125242.2685182-1-jon@nutanix.com>
- <aBpKLNPct95KdADM@mini-arch>
- <681b603ac8473_1e4406294a6@willemb.c.googlers.com.notmuch>
- <c8ad3f65-f70e-4c6e-9231-0ae709e87bfe@kernel.org>
- <CAC1LvL3nE14cbQx7Me6oWS88EdpGP4Gx2A0Um4g-Vuxk4m_7Rw@mail.gmail.com>
- <062e886f-7c83-4d46-97f1-ebbce3ca8212@kernel.org>
- <681b96abe7ae4_1f6aad294c9@willemb.c.googlers.com.notmuch>
- <B4F050C6-610F-4D04-88D7-7EF581DA7DF1@nutanix.com>
- <e4cf6912-74fb-441f-ad05-82ea99d81020@kernel.org>
- <6FF98F38-2AE5-4000-8827-81369C3FB429@nutanix.com>
+Subject: Re: [PATCH bpf-next] bpftool: Fix cgroup command to only show cgroup
+ bpf programs
+To: Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org
+Cc: 'Alexei Starovoitov ' <ast@kernel.org>,
+ 'Andrii Nakryiko ' <andrii@kernel.org>, netdev@vger.kernel.org,
+ kernel-team@meta.com, Quentin Monnet <qmo@kernel.org>,
+ Takshak Chahande <ctakshak@meta.com>
+References: <20250507203232.1420762-1-martin.lau@linux.dev>
 Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <6FF98F38-2AE5-4000-8827-81369C3FB429@nutanix.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Autocrypt: addr=daniel@iogearbox.net; keydata=
+ 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
+In-Reply-To: <20250507203232.1420762-1-martin.lau@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 1.0.7/27630/Tue May  6 11:43:15 2025)
 
-
-
-On 07/05/2025 21.57, Jon Kohler wrote:
+On 5/7/25 10:32 PM, Martin KaFai Lau wrote:
+> From: Martin KaFai Lau <martin.lau@kernel.org>
 > 
+> The netkit program is not a cgroup bpf program and should not be shown
+> in the output of the "bpftool cgroup show" command.
 > 
->> On May 7, 2025, at 3:04 PM, Jesper Dangaard Brouer <hawk@kernel.org> wrote:
->>
->>
->>
->> On 07/05/2025 19.47, Jon Kohler wrote:
->>>> On May 7, 2025, at 1:21 PM, Willem de Bruijn <willemdebruijn.kernel@gmail.com> wrote:
->>>>
->>>>
->>>> Jesper Dangaard Brouer wrote:
->>>>>
->>>>>
->>>>> On 07/05/2025 19.02, Zvi Effron wrote:
->>>>>> On Wed, May 7, 2025 at 9:37 AM Jesper Dangaard Brouer <hawk@kernel.org> wrote:
->>>>>>>
->>>>>>>
->>>>>>>
->>>>>>> On 07/05/2025 15.29, Willem de Bruijn wrote:
->>>>>>>> Stanislav Fomichev wrote:
->>>>>>>>> On 05/06, Jon Kohler wrote:
->>>>>>>>>> Introduce new XDP helpers:
->>>>>>>>>> - xdp_headlen: Similar to skb_headlen
->>>>>>>
->>>>>>> I really dislike xdp_headlen(). This "headlen" originates from an SKB
->>>>>>> implementation detail, that I don't think we should carry over into XDP
->>>>>>> land.
->>>>>>> We need to come up with something that isn't easily mis-read as the
->>>>>>> header-length.
->>>>>>
->>>>>> ... snip ...
->>>>>>
->>>>>>>>> + * xdp_headlen - Calculate the length of the data in an XDP buffer
->>>>>>
->>>>>> How about xdp_datalen()?
->>>>>
->>>>> Yes, I like xdp_datalen() :-)
->>>>
->>>> This is confusing in that it is the inverse of skb->data_len:
->>>> which is exactly the part of the data not in the skb head.
->>>>
->>>> There is value in consistent naming. I've never confused headlen
->>>> with header len.
->>>>
->>>> But if diverging, at least let's choose something not
->>>> associated with skbs with a different meaning.
->>> Brainstorming a few options:
->>> - xdp_head_datalen() ?
->>> - xdp_base_datalen() ?
->>> - xdp_base_headlen() ?
->>> - xdp_buff_datalen() ?
->>> - xdp_buff_headlen() ?
->>> - xdp_datalen() ? (ZivE, JesperB)
->>> - xdp_headlen() ? (WillemB, JonK, StanislavF, JacobK, DanielB)
->>
->> What about keeping it really simple: xdp_buff_len() ?
+> However, if the netkit device happens to have ifindex 3,
+> the "bpftool cgroup show" command will output the netkit
+> bpf program as well:
 > 
-> This is suspiciously close to xdp_get_buff_len(), so there could be some
-> confusion there, since that takes paged/frags into account transparently.
-
-Good point.
-
->>
->> Or even simpler: xdp_len() as the function documentation already
->> describe this doesn't include frags.
+>> ip -d link show dev nk1
+> 3: nk1@if2: ...
+>      link/ether ...
+>      netkit mode ...
 > 
-> There is a neat hint from Lorenzo’s change in bpf.h for bpf_xdp_get_buff_len()
-> that talks about both linear and paged length. Also, xdp_buff_flags’s
-> XDP_FLAGS_HAS_FRAGS says non-linear xdp buff.
+>> bpftool net show
+> tc:
+> nk1(3) netkit/peer tw_ns_nk2phy prog_id 469447
 > 
-> Taking those hints, what about:
-> xdp_linear_len() == xdp->data_end - xdp->data
-> xdp_paged_len() == sinfo->xdp_frags_size
-> xdp_get_buff_len() == xdp_linear_len() + xdp_paged_len()
+>> bpftool cgroup show /sys/fs/cgroup/...
+> ID       AttachType      AttachFlags     Name
+> ...      ...                             ...
+> 469447   netkit_peer                     tw_ns_nk2phy
 > 
-
-I like xdp_linear_len() as it is descriptive/clear.
-
-
-> Just a thought. If not, that’s ok. I’m happy to do xdp_len, but do you then have a
-> suggestion about getting the non-linear size only?
->
-
-I've not checked if we have API users that need to get the non-linear 
-size only...
-
-A history rant:
-XDP started out as being limited to one-page ("packet-pages" was my
-original bad name).  With a fixed XDP_HEADROOM of 256 bytes and reserved
-tailroom of 320 bytes sizeof(skb_shared_info) to be compatible with
-creating an SKB (that can use this as a "head" page).  Limiting max MTU
-to be 3502 (assuming Eth(14)+2 VLAN headers=18).
-These constraints were why XDP was so fast.  As time goes on we continue
-to add features and performance paper-cuts. Today, XDP_HEADROOM have
-become variable, leading to checks all over.  With XDP multi-buffer
-support getting more features, we also have to add check all over for that.
-WARNING to end-users: XDP programs that use xdp.frags and the associated
-helpers are really SLOW (as these helper need to copy out data to stack
-or elsewhere).  XDP is only fast if your XDP prog read the linear path
-with the older helpers (direct access) and ignore if packet have frags.
-We are slowly but surely making XDP slower and slower by paper-cuts.
-Guess, we should clearly document that, such that people don't think XDP
-multi-buffer access is fast.  Sorry for the rant.
-
-
->>
->> To Jon, you seems to be on a cleanup spree:
->> For SKBs netstack have this diagram documented [1].  Which also explains
->> the concept of a "head" buffer, which isn't a concept for XDP.  I would
->> really like to see a diagram documenting both xdp_buff and xdp_frame
->> data structures via ascii art, like the one for SKBs. (Hint, this is
->> actually defined in the header file include/linux/skbuff.h, but
->> converted to RST/HTML format.)
->>
->> [1] https://docs.kernel.org/networking/skbuff.html
+> The reason is that the target_fd (which is the cgroup_fd here) and
+> the target_ifindex are in a union in the uapi/linux/bpf.h. The bpftool
+> iterates all values in "enum bpf_attach_type" which includes
+> non cgroup attach types like netkit. The cgroup_fd is usually 3 here,
+> so the bug is triggered when the netkit ifindex just happens
+> to be 3 as well.
 > 
-> I certainly am in a cleanup sort of mood, happy to help here. I see what
-> you're talking about, I’ll take a stab at this in a separate patch. Thanks
-> for the push and tip!
+> The bpftool's cgroup.c already has a list of cgroup-only attach type
+> defined in "cgroup_attach_types[]". This patch fixes it by iterating
+> over "cgroup_attach_types[]" instead of "__MAX_BPF_ATTACH_TYPE".
+> 
+> Cc: Quentin Monnet <qmo@kernel.org>
+> Reported-by: Takshak Chahande <ctakshak@meta.com>
+> Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
 
-Thanks for the cleanups.
---Jesper
+Outch, good catch!
+
+Acked-by: Daniel Borkmann <daniel@iogearbox.net>
 
