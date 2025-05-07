@@ -1,167 +1,109 @@
-Return-Path: <bpf+bounces-57714-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57715-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FE9CAAED88
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 23:00:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72305AAEDE9
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 23:30:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF8C01BC7E6F
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 21:01:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ADAF71BA8F2F
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 21:31:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A2591D6DB9;
-	Wed,  7 May 2025 21:00:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A36AC2040B2;
+	Wed,  7 May 2025 21:30:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="W8eSoUYm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kCdFvXaF"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B81954B1E7F;
-	Wed,  7 May 2025 21:00:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CD0623DE
+	for <bpf@vger.kernel.org>; Wed,  7 May 2025 21:30:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746651650; cv=none; b=tS2Xi7A/H+ZhIrglC1sC9ik9BU4SeHYNg1VJsQsvog3tFYujtmYB+w03TCG+cP1TXH/W9nd9rqEHEnT03xFnZWLaIDpKjUpbfVeZuf+8bLMa9lvQSSunxBc1U/LpK4PbhhTUjK0xrmI+AW/yM9ZQACtYOslBJJrEl7KZ7/es2DA=
+	t=1746653454; cv=none; b=T5IkMN/UovMmyvgNbSsaKy0p1Pf3XPmLvQS5wh2ncoqdHfgvV/bDuM2caoTYIZY2hmv0dDb/Q7iEwmzqBXIkhWxS2HJOTeink+XaHThCXxFSQVeBaItwjI/2HluydVVsZMex1kca9gFjssc6qOos/gNgKLldNFq3nL8aee+weYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746651650; c=relaxed/simple;
-	bh=cb28rFM1Q3MgVClxSie3e3Go9B/WXW264uT+wrwPPBA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MVsEJ7LpZ+H/ojJTM0ksp6LG766iJ7EFJJIhf/HMg0/7oQ4k6lWEsiwsg6s0Ix3vGU63Avuw8XkCHqW2HQGMsrGyb4fjP/ZXAuDlPiKPtglGdNHQFk9N207jlPJS5gHjAQvQX4e8IAifkxsT29fa1kvH2aXjfixaRO38k0gagFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=W8eSoUYm; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=4DmtByt5jx3xv6qMrvol3wZEgDes7iqKgB/eQt+9uJA=; b=W8eSoUYmCHBBgxRml+1I00T6WB
-	P77kl/nXTMYY6oGk3JA/ktNvRyfhh1+rhx06AdimCrHxK5/7DcwayFaiebtv0hRP9aDLUr52P6mN3
-	VjY9K8bkO1WO9Kbofij4eQP7Y5wUIeOGMww8VdnKJzYd2BIokDpympghG2/9DWsPUs55r5NJq23xI
-	5860ydpyJU7uZUDSR+0x+KxqV+cNDnzV/uPXYTygtG9T7EdQOFsQnkTzxLL5B4Pia/OS/OZpRvO75
-	N7HXmdu8nenD8bVPmf10Jw0RwaJuYKoYmeGbeyLCOgmYYetfkN1Cb+rfjtDksA72buDMLiKWSzk7T
-	nRgCokDw==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1uClsf-000Kqu-14;
-	Wed, 07 May 2025 23:00:41 +0200
-Received: from [85.195.247.12] (helo=[192.168.1.114])
-	by sslproxy02.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1uClsf-0009HS-00;
-	Wed, 07 May 2025 23:00:41 +0200
-Message-ID: <dcada116-20c7-45d6-8a94-8492d87f026e@iogearbox.net>
-Date: Wed, 7 May 2025 23:00:40 +0200
+	s=arc-20240116; t=1746653454; c=relaxed/simple;
+	bh=al1tSQnbe8goX+rnyBPk9zdbefwDs8Unyc8hKbgj6Uc=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=WBPqJs7mj4Qi5UY+4IYk03Nevororjx7finlqFyrZ27TjRH2WXNUjnIdIyfl3UtRalRjNbCSwgYRp6RMVBZT/Kmw0qTwoVq2HUYxDn9W2y5xLL0JrQiYMyE0bQ3gdRMyubXvRuvuVc8lKbuxDjMffNv+6ka6BuWOHVrYBUoQteI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kCdFvXaF; arc=none smtp.client-ip=209.85.219.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-6f5499c21bbso6432956d6.3
+        for <bpf@vger.kernel.org>; Wed, 07 May 2025 14:30:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1746653451; x=1747258251; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=OHdHT6sJbThl3pfYyLFv/2Hv99pNOUYCOQlGojSpGng=;
+        b=kCdFvXaFoRGIdB3iEjSbfxNBqbJKhT/tyamYoeW3SA/a+lhiK+Ono/OgggIxrspu9P
+         7AXWwly1H+O3lDNnU6hj0UMrhfYANGR1DldxWOcQxO/yeqQW7I7ZzfTajdOAdKjOKsbL
+         tWw4gh1CDLbdFjdnTnRyVeBidixu+HYotcfvsh4N7IGx6pIf3QLDWgnaeuDdOrvBC1zS
+         ibDR37+KliC1OoqOeIZfhdRVfuCXyL0kUNE8Nbt5aC32iplGP3G6h/eLU1Dk5V+UBl4+
+         l4yPfoE7WZuS3ecRrVhJjOHlnVkYXzl5zUUubNzqRt8nGdrvM/PjRo1N88KM/dAQdaHh
+         E6FQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746653451; x=1747258251;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OHdHT6sJbThl3pfYyLFv/2Hv99pNOUYCOQlGojSpGng=;
+        b=Hts7o6AF8VePeniwnhuiw25SKuh9JWfSa4znVqEQTi1z6Rytz9sUkvK0MmUmiGstbd
+         8P9DJcDZ1tUFiTywQsLIg9jyK3m+5WcpUmx2uEbGTyCaF8M6Z4M4zxmcmxmP2EeqFcyQ
+         Z5MxaC3lWgYiD8TMf7QOV7O212taBiLhFCG3L2h+GUQVqQcOJig0nhQtD4F0DuTnbI36
+         Qj/+nXOQKZT71WcFmzlxCRF26E2YjJqCoxFlyUdhdl3d1LLFdWDEAP9J+iEnPpFnqoI8
+         v749U5HjKQeKUNI023kLM/48VMR1U9dtyEa21FS45GLAum+pmre1fQZz95ptxjL88Hk1
+         uWLw==
+X-Forwarded-Encrypted: i=1; AJvYcCVv3sKpXvchFzAcOoOP5P8qCxmJnmg3xJYOD0HbxBFc5fa0qtoxXB5FEsOInFUnOyPue4w=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzEkubIM0rLmvg6tCzSffe5AyFIOrriIDe5LiYmRXIrPR8w4mtY
+	C5j2rWsfoU1A2KVyO1mUzsG7PteiQhNooe3yU/FMN+HAg5DvVEBMyBFp4ewOuLkyUkPDsNJ8oal
+	6m9o/fhrlmiSpwZbmbq8jjaadrViD2Qi0
+X-Gm-Gg: ASbGncvVeI/hMhmdXFhMtWZgh5jozByBRP9QEAxgcPvCjHz8h7nbLTma9YmsF5MIcT8
+	2IQYwqnKqWq7Cl50PEOUnMngULxxzAGnymhB/G8ZAXWqtEwYqgUzkB7/3/J9aFWNHl82lJ7xyjc
+	blAxWTRQOaPzkCKhEjR8jZfrU=
+X-Google-Smtp-Source: AGHT+IHt1+zx/IBUEMpNCsYMY+Ou6aTB386blQSTuYtECzq9pw7XCvz0jwz83seqBc6ZfkxJtHNIY6oqgDW3AE3/qao=
+X-Received: by 2002:a05:6214:29eb:b0:6d4:dae:6250 with SMTP id
+ 6a1803df08f44-6f542aa3215mr76103456d6.34.1746653440451; Wed, 07 May 2025
+ 14:30:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next] bpftool: Fix cgroup command to only show cgroup
- bpf programs
-To: Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org
-Cc: 'Alexei Starovoitov ' <ast@kernel.org>,
- 'Andrii Nakryiko ' <andrii@kernel.org>, netdev@vger.kernel.org,
- kernel-team@meta.com, Quentin Monnet <qmo@kernel.org>,
- Takshak Chahande <ctakshak@meta.com>
-References: <20250507203232.1420762-1-martin.lau@linux.dev>
-Content-Language: en-US
-From: Daniel Borkmann <daniel@iogearbox.net>
-Autocrypt: addr=daniel@iogearbox.net; keydata=
- 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
-In-Reply-To: <20250507203232.1420762-1-martin.lau@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 1.0.7/27630/Tue May  6 11:43:15 2025)
+From: Vincent Li <vincent.mc.li@gmail.com>
+Date: Wed, 7 May 2025 14:30:29 -0700
+X-Gm-Features: ATxdqUFfQKKYyJauQ7BMy05pT0Ja3iBMbptRZS1m9IGykxzLMmgGsCWcmTFks5E
+Message-ID: <CAK3+h2wo3KidH9yrGSNsV522BSkUJyn2TUp==tSv62937xPDMw@mail.gmail.com>
+Subject: [QUESTION] Loongarch bpf selftest liburandom_read.so build error
+To: loongarch@lists.linux.dev, bpf <bpf@vger.kernel.org>, 
+	Tiezhu Yang <yangtiezhu@loongson.cn>, Hengqi Chen <hengqi.chen@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 5/7/25 10:32 PM, Martin KaFai Lau wrote:
-> From: Martin KaFai Lau <martin.lau@kernel.org>
-> 
-> The netkit program is not a cgroup bpf program and should not be shown
-> in the output of the "bpftool cgroup show" command.
-> 
-> However, if the netkit device happens to have ifindex 3,
-> the "bpftool cgroup show" command will output the netkit
-> bpf program as well:
-> 
->> ip -d link show dev nk1
-> 3: nk1@if2: ...
->      link/ether ...
->      netkit mode ...
-> 
->> bpftool net show
-> tc:
-> nk1(3) netkit/peer tw_ns_nk2phy prog_id 469447
-> 
->> bpftool cgroup show /sys/fs/cgroup/...
-> ID       AttachType      AttachFlags     Name
-> ...      ...                             ...
-> 469447   netkit_peer                     tw_ns_nk2phy
-> 
-> The reason is that the target_fd (which is the cgroup_fd here) and
-> the target_ifindex are in a union in the uapi/linux/bpf.h. The bpftool
-> iterates all values in "enum bpf_attach_type" which includes
-> non cgroup attach types like netkit. The cgroup_fd is usually 3 here,
-> so the bug is triggered when the netkit ifindex just happens
-> to be 3 as well.
-> 
-> The bpftool's cgroup.c already has a list of cgroup-only attach type
-> defined in "cgroup_attach_types[]". This patch fixes it by iterating
-> over "cgroup_attach_types[]" instead of "__MAX_BPF_ATTACH_TYPE".
-> 
-> Cc: Quentin Monnet <qmo@kernel.org>
-> Reported-by: Takshak Chahande <ctakshak@meta.com>
-> Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+Hi,
 
-Outch, good catch!
+I tried to build kernel 6.15-rc5 bpf selftests on Loongarch machine
+running Fedora, the bpf test programs seems built ok, but I got
+liburandom_read.so build error below:
 
-Acked-by: Daniel Borkmann <daniel@iogearbox.net>
+  LIB      liburandom_read.so
+
+/usr/bin/ld: cannot find crtbeginS.o: No such file or directory
+
+/usr/bin/ld: cannot find -lstdc++: No such file or directory
+
+/usr/bin/ld: cannot find -lgcc: No such file or directory
+
+/usr/bin/ld: cannot find -lgcc_s: No such file or directory
+
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+make: *** [Makefile:253:
+/usr/src/linux/tools/testing/selftests/bpf/liburandom_read.so] Error 1
+
+Am I missing  gcc tools for Fedora loongarch?
+
+Thanks,
+
+Vincent
 
