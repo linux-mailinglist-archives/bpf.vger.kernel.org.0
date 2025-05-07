@@ -1,235 +1,203 @@
-Return-Path: <bpf+bounces-57599-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57601-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41979AAD28A
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 03:15:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07F34AAD295
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 03:18:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4EA22983A5A
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 01:15:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 749167B5B04
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 01:16:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28BFE78F3A;
-	Wed,  7 May 2025 01:15:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECD181482F2;
+	Wed,  7 May 2025 01:17:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wifdi2vt"
+	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="BwjSrewc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D07328F5E
-	for <bpf@vger.kernel.org>; Wed,  7 May 2025 01:15:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.8])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36C5878F5D;
+	Wed,  7 May 2025 01:17:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746580527; cv=none; b=T3hOApPQByNfO2wDCw1nQBLNCg3NvonQa1WgQfxrDGkqVyhuO4NLuxd2k9uFJ82hjnA3Tny+TQh4d+L01kvIpdd0KwHfxsSRqkCmtlQGLWIAs5XnOKztlLtzHbQ43vDOE2KBiYzHi1zGOwr4IrGRylQIaxHHBzi7RFTaF0Jom0w=
+	t=1746580678; cv=none; b=ZVDVj+WqetCDyzrUN+PcjHmDXwHbFAZqnl8TK6P0lmbRCMmccuOiqWCX8g3/sE+5DTWN9KCE1p+eLR5i1qtU6jaOtb3FG4J9Z8okUgfIKgdgneEiSUOlaBxCbNsv7izx+88iZ9wy6nBNdwn5m1Ls/MJ/3Os676feuUSaaxQBSzE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746580527; c=relaxed/simple;
-	bh=jb3VKBeevjhqI3Xh+0fxysqkqj5AQpslCS67+9qs6qs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LSeV9660ukKx9NjEYpgv05KkI8sOmSobQYRM7tsFVv3cJwIyduvqlVtU0ENBANR4QFkkf8Xf3RltG0KshNOk8g3T7UL3HYJWTvMYY4N+PlAE0MhwA24aD9fVfqnMwm6+m/fxvVpNVRPUOlNWfCwHK0uWjQy9qHKkoS2ah8bdYJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Wifdi2vt; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-441d437cfaaso2249655e9.1
-        for <bpf@vger.kernel.org>; Tue, 06 May 2025 18:15:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746580524; x=1747185324; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6oWcgAVxcGB2zyvnKRgkhJDcwpCqaqMn3wuwHBaY4Kw=;
-        b=Wifdi2vtAhRP+b37lAsY1h23QW7JHceQlkBpJeTYk4fE9rwJHLJy0UOquyNkiT3TCu
-         dfRZvZeu0diGAc90AcVmIovNIKYoy3reMqqseuY/QnWmLGTvTVmwzJFj+9cq1qs3+FGQ
-         m9G4hoKpTDUez8XYv8V7mpM1QNPVa+mHDM+WS49xpjO2MAC7GxWsH1onbp0XuxD8TzMY
-         2g1w0gGdAaZiuFtDHjLC1s7DyQeSNGUSxxVTfd70eRh+fmf9sHN9IHs2Y15fztw6+USa
-         sBl4PcUr04qfl9nXPUxrQ7StNAvu/nvNjZauyvlujAH5hIcIeFo+OermQ7I60om/z8ax
-         WPZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746580524; x=1747185324;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6oWcgAVxcGB2zyvnKRgkhJDcwpCqaqMn3wuwHBaY4Kw=;
-        b=BX0RVHP3+a9iFjqti2ugtGhG0ZUauDHSduhRFSawVnFtSCrIqNIOpx31MwPKobLcnY
-         sy0KaYj9miZ/EIQa+5QiJR72JssPj5m8somgt1Sti7LoQU7pB3GLGRf8ARkaM2QiRxX7
-         uCZ5d9sx4EMPeu+27Nwaq+KM8CsTNqnheS3qB51wlHg6cx1y6I81U065NNamEzLY6ffF
-         9rUhyoJmBND8DJwRt84X2LMK2B7hhS+vbELNgcjSG/IbncpTo6DAl/ecs4NZNmwlyw/M
-         4ic15UYU0tlJagcLR7a+B97GWsMSM4Z4BWQT4rFmEL0qRbvWVZYlWdvMFw26UN886NzW
-         vftg==
-X-Forwarded-Encrypted: i=1; AJvYcCUc6z4qse+ilDk+lNIHQELgV8txYi2hhm2s0521b+SVBnAmNTgs5FJXbR57qLAmAO7A0e4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzSjTZcUGN6t40oCMl0tD9I313go7MPgeyCkKYXidITlouCDzZ4
-	+tK3S9Kt/qcbmr2zq4bhzWj4NmfQvaZUtP8YfVINPIdMiXyLF7urV/EL0z9aKyXoyImrZtr34bX
-	lTI1jdIVguf6N0y+qAJo2WbIwRFE=
-X-Gm-Gg: ASbGnct6W3HIHBtlHwDo9HpEWn9Vg259eKlb2q3HhtG/LQmDm5yjLLAoiwFJxQ6aapk
-	zDCwGxBs1YURB5Kdrh6dwRCh4CGpNG00K6Eiim+KT1NXD0imZhh3bLjHG9mDq4gYYLzvxEkJK1U
-	OrHl5JEZ5j7mGTlJ6FtZCUGe/96vuTPwCGiWuDsnQQ36YlWP2Yiw==
-X-Google-Smtp-Source: AGHT+IGkUWRBZdLoGPC4PL80rAevTqmrmLPcv3fj5ZvIqWAhZ6vtz3dvTqbfSARqPIpzf9ReYypijfiR8giMZQq7Y9A=
-X-Received: by 2002:a05:600c:8509:b0:43d:224:86b5 with SMTP id
- 5b1f17b1804b1-441d44bc62emr9063055e9.4.1746580523740; Tue, 06 May 2025
- 18:15:23 -0700 (PDT)
+	s=arc-20240116; t=1746580678; c=relaxed/simple;
+	bh=sRTYYXi+q6YFmn2CM84PAr5Xq+GZZ+uf1kwrPa8hsxQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=qr5QcBLFxR5QF4GKLu1MdXBBSFdDPpqzDi6tIkm2WgLSnrqOQZqbqEw6bdtZjQgTSgVroXiPLZquXpQ1FbsedHIj0XBxXWOtcPVHdI6cCDa7jfcwxOIlTAUDzU0ge8vu/enZSmQDyR921cA97qs8i5yqOWurJXFiizVSppuNPKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com; spf=pass smtp.mailfrom=126.com; dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b=BwjSrewc; arc=none smtp.client-ip=220.197.31.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=dfDAl
+	NI7Mtaa7Np1mFi7q1dvflRvIlHpBBi3IZLBURw=; b=BwjSrewc35f/WCXjZKAg/
+	iHn2LToVJW6fdPOUw1ijtdxCl4pS3E+1oMZDM0JyY9M6QqG4PU82CioSyI82+2Lo
+	Xad0avGIBAoq6vlT2JNJD3RKEn36uWaJECQhoPab+9HZiWiC5sHr9276AreI/3mu
+	Cgw2lxPkN1vIXQjJl6yyvc=
+Received: from localhost.localdomain (unknown [])
+	by gzga-smtp-mtada-g1-3 (Coremail) with SMTP id _____wD3P8x2tBpocz5dBw--.62210S3;
+	Wed, 07 May 2025 09:16:41 +0800 (CST)
+From: Honglei Wang <jameshongleiwang@126.com>
+To: tj@kernel.org,
+	void@manifault.com,
+	arighi@nvidia.com,
+	changwoo@igalia.com
+Cc: mingo@redhat.com,
+	peterz@infradead.org,
+	juri.lelli@redhat.com,
+	vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com,
+	rostedt@goodmis.org,
+	bsegall@google.com,
+	mgorman@suse.de,
+	vschneid@redhat.com,
+	joshdon@google.com,
+	brho@google.com,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	jameshongleiwang@126.com
+Subject: [RESEND PATCH v2 1/2] sched_ext: change the variable name for slice refill event
+Date: Wed,  7 May 2025 09:16:36 +0800
+Message-Id: <20250507011637.77589-2-jameshongleiwang@126.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+In-Reply-To: <20250507011637.77589-1-jameshongleiwang@126.com>
+References: <20250507011637.77589-1-jameshongleiwang@126.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250420105524.2115690-1-rjsu26@gmail.com> <CAP01T75B87Vnq-kdq6gaNXj5xeOOiah-onm4weEZA=jm8W8JVQ@mail.gmail.com>
- <CAM6KYsuk060Fv43Djp4q57AwBcmmkHBitGgfSsCJZwbGqRmQEA@mail.gmail.com>
- <CAADnVQL_+5FiOwNEnaYZ-i52r4jDiStboWxA9VycARFboOjx6Q@mail.gmail.com>
- <CAP01T757KLkBx3FMAK8-7vYTO0v=RtWvkQpztS1Zugd8tHSnHA@mail.gmail.com>
- <CAADnVQKzgELtqZ_4pce7sOegE1i3azcija0w6Bn5OWH0LgpbQg@mail.gmail.com> <CAP01T75O90bgYeb1q1ot+=D9MxN3UXyji5T6mA+UsnPwQUF52g@mail.gmail.com>
-In-Reply-To: <CAP01T75O90bgYeb1q1ot+=D9MxN3UXyji5T6mA+UsnPwQUF52g@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 6 May 2025 18:15:11 -0700
-X-Gm-Features: ATxdqUERyq3_2Gr11xWTjS4xb9lkseOMr41Sk3NEGoyZdVVvCWWuvcSO4bPx9eY
-Message-ID: <CAADnVQKsjGFhqsZ6s8SRNbv=Fr3oU=o3GquvOwqg27S9m8B02w@mail.gmail.com>
-Subject: Re: [RFC bpf-next 0/4] bpf: Fast-Path approach for BPF program Termination
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: Raj Sahu <rjsu26@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Dan Williams <djwillia@vt.edu>, miloc@vt.edu, ericts@vt.edu, rahult@vt.edu, 
-	doniaghazy@vt.edu, quanzhif@vt.edu, Jinghao Jia <jinghao7@illinois.edu>, 
-	Siddharth Chintamaneni <sidchintamaneni@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wD3P8x2tBpocz5dBw--.62210S3
+X-Coremail-Antispam: 1Uf129KBjvJXoW3Gr4DXrW8Aw4Dtw4fAF1rtFb_yoW7Zr45p3
+	W5G345tr48t3y2vrWFqF4ku3WaqrWFqw1qkF95W393ZF1jgwnYyFyYyr4aqFyYgrsYkF1S
+	kw4UKF43ArZY9rDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UjYLkUUUUU=
+X-CM-SenderInfo: 5mdpv2pkrqwzphlzt0bj6rjloofrz/1tbiYBVGrWgatD0D8gAEsQ
 
-On Tue, May 6, 2025 at 5:39=E2=80=AFPM Kumar Kartikeya Dwivedi <memxor@gmai=
-l.com> wrote:
->
-> On Wed, 7 May 2025 at 02:33, Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Tue, May 6, 2025 at 4:00=E2=80=AFPM Kumar Kartikeya Dwivedi <memxor@=
-gmail.com> wrote:
-> > >
-> > > On Wed, 7 May 2025 at 00:45, Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
-> > > >
-> > > > On Mon, May 5, 2025 at 10:55=E2=80=AFPM Raj Sahu <rjsu26@gmail.com>=
- wrote:
-> > > > >
-> > > > >       2. A BPF prog is attached to a function called by another B=
-PF program.
-> > > > >              - This is the interesting case.
-> > > > >
-> > > > > > What do you do if e.g. I attach to some kfunc that you don't st=
-ub out?
-> > > > > > E.g. you may stub out bpf_sk_lookup, but I can attach something=
- to
-> > > > > > bpf_get_prandom_u32 called after it in the stub which is not st=
-ubbed
-> > > > > > out and stall.
-> > > > >
-> > > > > We have thought of 2 components to deal with unintended nesting:
-> > > > > 1. Have a per-CPU variable to indicate a termination is in-progre=
-ss.
-> > > > >     If this is set, any new nesting won't occur.
-> > > > > 2. Stub the entire nesting chain:
-> > > > >     For example,
-> > > > >     prog1
-> > > > >          -> prog2
-> > > > >                 -> prog3
-> > > > >
-> > > > >    Say prog3 is long-running and violates the runtime policy of p=
-rog2.
-> > > > >    The watchdog will be triggered for prog2, in that case we walk
-> > > > > through the stack
-> > > > >    and stub all BPF programs leading up to prog2 (In this case pr=
-og3
-> > > > > and prog2 will
-> > > > >    get stubbed).
-> > > >
-> > > > I feel that concerns about fentry/freplace consuming too much
-> > > > while parent prog is fast-exiting are overblown.
-> > > > If child prog is slow it will get flagged by the watchdog sooner or=
- later.
-> > >
-> > > No, there's some difference:
-> > > It becomes more common because we're continuing to execute the suffix
-> > > of the program in the stub.
-> > > Compared to stopping executing and returning control immediately.
-> > >
-> > > > But fentry and tailcall cases are good examples that highlight
-> > > > that fast-execute is a better path forward.
-> > > > Manual stack unwind through bpf trampoline and tail call logic
-> > > > is going to be quite complex, error prone, architecture specific
-> > > > and hard to keep consistent with changes.
-> > > > We have complicated lifetime rules for bpf trampoline.
-> > > > See comment in bpf_tramp_image_put().
-> > > > Doing that manually in stack unwinder is not practical.
-> > > > iirc bpf_throw() stops at the first non-bpf_prog frame including
-> > > > bpf trampoline.
-> > > > But if we want to, the fast execute approach can unwind through fen=
-try.
-> > > > Say hw watchdog tells us that CPU is stuck in:
-> > > > bpf_prog_A
-> > > >    bpf_subprog_1
-> > > >      kfunc
-> > > >        fentry
-> > > >           bpf_prog_B
-> > > >
-> > > > since every bpf prog in the system will be cloned and prepared
-> > > > for fast execute we can replace return addresses everywhere
-> > > > in the above and fast execute will take us all the way to kernel pr=
-oper.
-> > >
-> > > The same will be true for unwinding, we can just unwind all the way t=
-o
-> > > the top of the stack trace in case of cancellation-triggered
-> > > unwinding.
-> > > If trampoline calls some program, it will see it as a return from the
-> > > called BPF program just like stubs would return.
-> > >
-> > > You're essentially going to replace return addresses to jump control
-> > > to stubs, we can do that same for jumping into some unwinding code
-> > > that can continue the process.
-> > > Be it unwinding or stubs, once control goes back to kernel and clean
-> > > up must continue, we will have to pass control back to code for both.
-> > >
-> > > Conceptually, both approaches are going to do something to clean up r=
-esources,
-> > > that can be executing stub code or calling release handlers for
-> > > objects on stack.
-> >
-> > I feel you're missing my point.
-> > For unwinding to work through bpf trampoline the unwinder needs
-> > to execute very specific trampoline _exit_ procedure that is arch
-> > specific and hard coded during the generation of trampoline.
-> > That's a ton of extra complexity in unwinder.
-> > It's not just calling destructors for objects.
-> > Depending on trampoline and the progs in there it's one or more
-> > __bpf_prog_exit*, percpu_ref_put(),
-> > and extra headache due to bpf_stats_enabled_key(),
-> > and who knows what else that I'm forgetting.
->
-> What I'm saying is that we don't have to do all that.
-> It's just overcomplication for the sake of it.
+SCX_EV_ENQ_SLICE_DFL gives the impression that the event only occurs
+when the tasks were enqueued, which seems not accurate. What it actually
+means is the refilling with defalt slice, and this can occur either when
+enqueue or pick_task. Let's change the variable to
+SCX_EV_REFILL_SLICE_DFL.
 
-So you discarded this use case because the unwind approach
-cannot deal with it?
-And then claim that within this limited scope they're equivalent?
-:)
-prog -> trampoline -> prog was just one example.
-unwinder is helpless when there is any kernel code between progs.
-sched-ext will have hierarchical scheds eventually.
-prog->kfunc->prog
-Unwinding inner prog only is imo broken, since we need to abort
-the whole thing.
-Even simpler case:
-prog->for_each->subprog_callback.
-That callback is likely tiny and unwinding into for_each kfunc
-doesn't really abort the prog.
-Unwind approach works in higher level languages because the compiler
-sees the whole control flow from main entry till the leaf.
-The verifier is blind to kernel code, so unwind is limited
-to progs only and doing it poorly. We still don't have support
-for bpf_throw with object cleanup and at this point we should
-align all efforts into fast execute, since it's clearly the winner.
-bpf_throw may stay as a kfunc with fast execute underneath or
-we may remove it, since it has no users anyway.
+Signed-off-by: Honglei Wang <jameshongleiwang@126.com>
+---
+v2:
+- refine the comments base on Andrea's suggestion.
+---
+ kernel/sched/ext.c             | 22 +++++++++++-----------
+ tools/sched_ext/scx_qmap.bpf.c |  4 ++--
+ 2 files changed, 13 insertions(+), 13 deletions(-)
+
+diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
+index 66bcd40a28ca..2a091ea23328 100644
+--- a/kernel/sched/ext.c
++++ b/kernel/sched/ext.c
+@@ -1517,10 +1517,10 @@ struct scx_event_stats {
+ 	s64		SCX_EV_ENQ_SKIP_MIGRATION_DISABLED;
+ 
+ 	/*
+-	 * The total number of tasks enqueued (or pick_task-ed) with a
+-	 * default time slice (SCX_SLICE_DFL).
++	 * Total number of times a task's time slice was refilled with the
++	 * default value (SCX_SLICE_DFL).
+ 	 */
+-	s64		SCX_EV_ENQ_SLICE_DFL;
++	s64		SCX_EV_REFILL_SLICE_DFL;
+ 
+ 	/*
+ 	 * The total duration of bypass modes in nanoseconds.
+@@ -2197,7 +2197,7 @@ static void do_enqueue_task(struct rq *rq, struct task_struct *p, u64 enq_flags,
+ 	 */
+ 	touch_core_sched(rq, p);
+ 	p->scx.slice = SCX_SLICE_DFL;
+-	__scx_add_event(SCX_EV_ENQ_SLICE_DFL, 1);
++	__scx_add_event(SCX_EV_REFILL_SLICE_DFL, 1);
+ local_norefill:
+ 	dispatch_enqueue(&rq->scx.local_dsq, p, enq_flags);
+ 	return;
+@@ -2205,7 +2205,7 @@ static void do_enqueue_task(struct rq *rq, struct task_struct *p, u64 enq_flags,
+ global:
+ 	touch_core_sched(rq, p);	/* see the comment in local: */
+ 	p->scx.slice = SCX_SLICE_DFL;
+-	__scx_add_event(SCX_EV_ENQ_SLICE_DFL, 1);
++	__scx_add_event(SCX_EV_REFILL_SLICE_DFL, 1);
+ 	dispatch_enqueue(find_global_dsq(p), p, enq_flags);
+ }
+ 
+@@ -3296,7 +3296,7 @@ static struct task_struct *pick_task_scx(struct rq *rq)
+ 		p = prev;
+ 		if (!p->scx.slice) {
+ 			p->scx.slice = SCX_SLICE_DFL;
+-			__scx_add_event(SCX_EV_ENQ_SLICE_DFL, 1);
++			__scx_add_event(SCX_EV_REFILL_SLICE_DFL, 1);
+ 		}
+ 	} else {
+ 		p = first_local_task(rq);
+@@ -3313,7 +3313,7 @@ static struct task_struct *pick_task_scx(struct rq *rq)
+ 				scx_warned_zero_slice = true;
+ 			}
+ 			p->scx.slice = SCX_SLICE_DFL;
+-			__scx_add_event(SCX_EV_ENQ_SLICE_DFL, 1);
++			__scx_add_event(SCX_EV_REFILL_SLICE_DFL, 1);
+ 		}
+ 	}
+ 
+@@ -3399,7 +3399,7 @@ static int select_task_rq_scx(struct task_struct *p, int prev_cpu, int wake_flag
+ 		if (cpu >= 0) {
+ 			p->scx.slice = SCX_SLICE_DFL;
+ 			p->scx.ddsp_dsq_id = SCX_DSQ_LOCAL;
+-			__scx_add_event(SCX_EV_ENQ_SLICE_DFL, 1);
++			__scx_add_event(SCX_EV_REFILL_SLICE_DFL, 1);
+ 		} else {
+ 			cpu = prev_cpu;
+ 		}
+@@ -4413,7 +4413,7 @@ static ssize_t scx_attr_events_show(struct kobject *kobj,
+ 	at += scx_attr_event_show(buf, at, &events, SCX_EV_DISPATCH_KEEP_LAST);
+ 	at += scx_attr_event_show(buf, at, &events, SCX_EV_ENQ_SKIP_EXITING);
+ 	at += scx_attr_event_show(buf, at, &events, SCX_EV_ENQ_SKIP_MIGRATION_DISABLED);
+-	at += scx_attr_event_show(buf, at, &events, SCX_EV_ENQ_SLICE_DFL);
++	at += scx_attr_event_show(buf, at, &events, SCX_EV_REFILL_SLICE_DFL);
+ 	at += scx_attr_event_show(buf, at, &events, SCX_EV_BYPASS_DURATION);
+ 	at += scx_attr_event_show(buf, at, &events, SCX_EV_BYPASS_DISPATCH);
+ 	at += scx_attr_event_show(buf, at, &events, SCX_EV_BYPASS_ACTIVATE);
+@@ -5148,7 +5148,7 @@ static void scx_dump_state(struct scx_exit_info *ei, size_t dump_len)
+ 	scx_dump_event(s, &events, SCX_EV_DISPATCH_KEEP_LAST);
+ 	scx_dump_event(s, &events, SCX_EV_ENQ_SKIP_EXITING);
+ 	scx_dump_event(s, &events, SCX_EV_ENQ_SKIP_MIGRATION_DISABLED);
+-	scx_dump_event(s, &events, SCX_EV_ENQ_SLICE_DFL);
++	scx_dump_event(s, &events, SCX_EV_REFILL_SLICE_DFL);
+ 	scx_dump_event(s, &events, SCX_EV_BYPASS_DURATION);
+ 	scx_dump_event(s, &events, SCX_EV_BYPASS_DISPATCH);
+ 	scx_dump_event(s, &events, SCX_EV_BYPASS_ACTIVATE);
+@@ -7313,7 +7313,7 @@ __bpf_kfunc void scx_bpf_events(struct scx_event_stats *events,
+ 		scx_agg_event(&e_sys, e_cpu, SCX_EV_DISPATCH_KEEP_LAST);
+ 		scx_agg_event(&e_sys, e_cpu, SCX_EV_ENQ_SKIP_EXITING);
+ 		scx_agg_event(&e_sys, e_cpu, SCX_EV_ENQ_SKIP_MIGRATION_DISABLED);
+-		scx_agg_event(&e_sys, e_cpu, SCX_EV_ENQ_SLICE_DFL);
++		scx_agg_event(&e_sys, e_cpu, SCX_EV_REFILL_SLICE_DFL);
+ 		scx_agg_event(&e_sys, e_cpu, SCX_EV_BYPASS_DURATION);
+ 		scx_agg_event(&e_sys, e_cpu, SCX_EV_BYPASS_DISPATCH);
+ 		scx_agg_event(&e_sys, e_cpu, SCX_EV_BYPASS_ACTIVATE);
+diff --git a/tools/sched_ext/scx_qmap.bpf.c b/tools/sched_ext/scx_qmap.bpf.c
+index 26c40ca4f36c..c3cd9a17d48e 100644
+--- a/tools/sched_ext/scx_qmap.bpf.c
++++ b/tools/sched_ext/scx_qmap.bpf.c
+@@ -784,8 +784,8 @@ static int monitor_timerfn(void *map, int *key, struct bpf_timer *timer)
+ 		   scx_read_event(&events, SCX_EV_DISPATCH_KEEP_LAST));
+ 	bpf_printk("%35s: %lld", "SCX_EV_ENQ_SKIP_EXITING",
+ 		   scx_read_event(&events, SCX_EV_ENQ_SKIP_EXITING));
+-	bpf_printk("%35s: %lld", "SCX_EV_ENQ_SLICE_DFL",
+-		   scx_read_event(&events, SCX_EV_ENQ_SLICE_DFL));
++	bpf_printk("%35s: %lld", "SCX_EV_REFILL_SLICE_DFL",
++		   scx_read_event(&events, SCX_EV_REFILL_SLICE_DFL));
+ 	bpf_printk("%35s: %lld", "SCX_EV_BYPASS_DURATION",
+ 		   scx_read_event(&events, SCX_EV_BYPASS_DURATION));
+ 	bpf_printk("%35s: %lld", "SCX_EV_BYPASS_DISPATCH",
+-- 
+2.45.2
+
 
