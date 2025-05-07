@@ -1,128 +1,265 @@
-Return-Path: <bpf+bounces-57657-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57658-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC35FAADFD7
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 14:55:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 317BFAADFFC
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 15:02:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF77D3AA6BC
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 12:54:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50ACE1C03523
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 13:02:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D93892868A9;
-	Wed,  7 May 2025 12:54:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8300A1D5CD4;
+	Wed,  7 May 2025 13:02:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="cpbc1w0H"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="f5bHeXDW";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jXfX7Fjc";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="f5bHeXDW";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jXfX7Fjc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5959B286886
-	for <bpf@vger.kernel.org>; Wed,  7 May 2025 12:54:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DFDDBA34
+	for <bpf@vger.kernel.org>; Wed,  7 May 2025 13:02:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746622482; cv=none; b=L3tPldXkXJv+sCKdzNcIClYdu4T9fhOb9lY545vgQVAo8XFfh/dryqgLSDwKzlO/5pxRredX5b8oGrVUrRFNzjmZ+0BRGymTiw/WNY7NkyApaVF1C9MeFTozzJFEDsxMDRc0S1E7UWMaHDsLg7hNh7lFMgbEcxORZZf5PNG0ngo=
+	t=1746622929; cv=none; b=j3oBGna0QsRR0aYB5xDD37pqR7L10+lP0c4lwWOjQ0iSU9oxt1td8EGEYrWeSU8Nciw9a7A/EkVthFD8s7RLQMV8YGMloH2WYfR2ARLDGYggyN7vWEWS+TSCJKj1qAPbPce9veFZlmcwyHoRk1HVFxRgjaYX2PXeoiz/2gXx9rE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746622482; c=relaxed/simple;
-	bh=rlYkutOJbTy9t4vetbaK1MFW9+WsC8kSGvqRmbg4uTo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dn95KbHjTBi6YjNj0lbuHXx4L4xdtD/y2hoIrfWcTxt0aWw4iH2NpyQdLWK3VbBdl1AwEZUSbQPGbM1yjoxiRfvyqo59YTcc1WvmyGQL6yeXcxRWGjzhli0jLZiMURAqnOOlXXQBzX1bBUDk+Kv6EVlQkkp1wlbN7FQmscO8Sjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=cpbc1w0H; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5f4d28d9fd8so9335201a12.3
-        for <bpf@vger.kernel.org>; Wed, 07 May 2025 05:54:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1746622479; x=1747227279; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ypa3PBqDtPswGp9XxxvAriQxh6M+XVug4d/DpMvuJqc=;
-        b=cpbc1w0HT5jJVcnOIZARwe65ENA/wBt8HAeVVLLGwrET9+DSO4Ct2ym0k4055jrD6V
-         C4mvf8jki2Jq8PMjqH4b+ju368Y8yfU26u2/ttxrIeNPWkM0X3GD4s9thvLTlJ4LSZV0
-         CkwP4EzhZRhnrdNCI4+KjH+DfGV0pPj0hFSKHkUs+CWRDSoYDV47040U0QuyfK40Kbn6
-         LmB6qUpRp1D4pFuIjdOYrAEly0Vz+rrrwVYAJ3zuKv1b0lJTd+xIOCBruHejD5Q1wUuR
-         w4W1fj9pYxXr6z/vWbmAX83yat4c9TxP7k3hi7HxCiMYzNedlM/9jxJgjnU3+XRVn4qf
-         V7lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746622479; x=1747227279;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ypa3PBqDtPswGp9XxxvAriQxh6M+XVug4d/DpMvuJqc=;
-        b=OjWDvLsLlnDBHt9tkXewlU3yH/yeUbWtPON3gQdAITQGL2YuZrdUkSiwpaPe0HxPY1
-         AUDYifmTe4JTVTMYwrjNpBgzW6hysYROD3k+EIkbc8EHw9zOnypUMRT2SLMjjcZ3RuyO
-         rw7IblPeZaCInuFz6Pc3aDnk0ujLw9NK6QyeUjsd2qJ8S8y5xpoq6zwyta+8t9Fc8Jnt
-         2wKSgrUODON/SW0iGPBewQ8n8nQfPU08H2JAfIP/8e+5fB2hUY8SFqqVEAkR8giSTnLG
-         cisUDkfL0RYxcbvUAaxOIxE2WGAowZK8jayDvY/2BLVEjhd7cNdsT3erhEaUOXT5wSVa
-         zZ9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUOWXQ2+PlYXKfjQ53M5eeChfWObkBTYpTeZTFiB3gjicK0t+tFIuWV/Uil0GchYRpWcjc=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxdrk3iHg10Kwp5SQTRn68D1HMF3xCDHnpOumufCaY3nhd5zPmC
-	uO91xaACQTBWLq2Rmdgcs0KJPR6oFm8HK5rRZnApdSS30e4aNzM1PLGiYSrZT04=
-X-Gm-Gg: ASbGncsusjkTf4m4bU7zxwaaD+bdsXZBBzgdU5+brc13p3qmZPiYi/QnNv7dugkhErY
-	OJq5fmbxEohHn5RR49Vi5bsB6E5E2SgLxcr5vgS1oQz1gepFeayA+OXGpIEgb9OlYh023v8bMno
-	XgOSOfKcPUqEYMttO4UGFynUpL+pDjj5zJQGRkDqkUnUwlYFl1FfYG/w3onJa9cK0lW0KPM+oqo
-	fncZjMvDXmYJ4W3Lviw9DSJzVvwWI66G46IDh+45VFBMuKD0iuh4rDRf4370LFmOv18+spXFYrU
-	eyvCRtXmftMjVSpqsdF+ga3qXS460/1Yq2w36Nw/Bxs6jJsQSro=
-X-Google-Smtp-Source: AGHT+IEEHI/oSTREUk8HTc9X/nZpZu+JH0JNL8Ix0W8ZxxBaMoWEfgZFH93pE+NmBTNHIMjXerli4Q==
-X-Received: by 2002:a05:6402:2547:b0:5f6:252b:f361 with SMTP id 4fb4d7f45d1cf-5fbe9dbbe1amr2731807a12.11.1746622478474;
-        Wed, 07 May 2025 05:54:38 -0700 (PDT)
-Received: from pathway.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5fa77b914b4sm9354161a12.51.2025.05.07.05.54.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 May 2025 05:54:38 -0700 (PDT)
-Date: Wed, 7 May 2025 14:54:36 +0200
-From: Petr Mladek <pmladek@suse.com>
-To: Bhupesh <bhupesh@igalia.com>
-Cc: akpm@linux-foundation.org, kernel-dev@igalia.com,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org, oliver.sang@intel.com, lkp@intel.com,
-	laoar.shao@gmail.com, rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
-	alexei.starovoitov@gmail.com, andrii.nakryiko@gmail.com,
-	mirq-linux@rere.qmqm.pl, peterz@infradead.org, willy@infradead.org,
-	david@redhat.com, viro@zeniv.linux.org.uk, keescook@chromium.org,
-	ebiederm@xmission.com, brauner@kernel.org, jack@suse.cz,
-	mingo@redhat.com, juri.lelli@redhat.com, bsegall@google.com,
-	mgorman@suse.de, vschneid@redhat.com
-Subject: Re: [PATCH v3 3/3] exec: Add support for 64 byte 'tsk->real_comm'
-Message-ID: <aBtYDGOAVbLHeTHF@pathway.suse.cz>
-References: <20250507110444.963779-1-bhupesh@igalia.com>
- <20250507110444.963779-4-bhupesh@igalia.com>
+	s=arc-20240116; t=1746622929; c=relaxed/simple;
+	bh=Suk5ywM8pKmpgd48J/aGB5TNN0oigi8WDh1FyejKaHE=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=YUrtjAU/CHPTvxLOTp017wcXIxUJpUlF+3eX+i5R5ALZvuXQuO8QCYJ9rECkGAXu/VCOS6gFwtRUrrpnML8wsyaa03yVff8cqfaGT+dOjnNAR//f5PNaFJkft62E/UW+p7B506NZzJ+6SVHD8kGidVIr2PMHWcOP52g2j+pioog=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=f5bHeXDW; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jXfX7Fjc; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=f5bHeXDW; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jXfX7Fjc; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 0394D1F441;
+	Wed,  7 May 2025 13:02:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1746622925; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=p9tESCeBbULja3MOUysra++fStjGsyG4dYt4IVq2Mio=;
+	b=f5bHeXDWyMTl8DDt5IWzt3+ZnNpMLCBSDGvwSiGwfkRy2wi6r/OODHanl650INna3IYpW8
+	7GO2jMpqweFk63WwxpsW0jqXXxqNdXYQwNecFc74wkUIt5SngMN+GZ9Crlx6gfDi2jM4O2
+	gYD/A+Ex6UHpZn3YP5HPw7yXH2BagJQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1746622925;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=p9tESCeBbULja3MOUysra++fStjGsyG4dYt4IVq2Mio=;
+	b=jXfX7FjceKQLA4qJf9VbS1Mx5xED8A4g91rZI+iyghZmmbSBK5UV7GRoXWNPKIcRajj0jx
+	i/Te8EZIOR7P1NDA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=f5bHeXDW;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=jXfX7Fjc
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1746622925; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=p9tESCeBbULja3MOUysra++fStjGsyG4dYt4IVq2Mio=;
+	b=f5bHeXDWyMTl8DDt5IWzt3+ZnNpMLCBSDGvwSiGwfkRy2wi6r/OODHanl650INna3IYpW8
+	7GO2jMpqweFk63WwxpsW0jqXXxqNdXYQwNecFc74wkUIt5SngMN+GZ9Crlx6gfDi2jM4O2
+	gYD/A+Ex6UHpZn3YP5HPw7yXH2BagJQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1746622925;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=p9tESCeBbULja3MOUysra++fStjGsyG4dYt4IVq2Mio=;
+	b=jXfX7FjceKQLA4qJf9VbS1Mx5xED8A4g91rZI+iyghZmmbSBK5UV7GRoXWNPKIcRajj0jx
+	i/Te8EZIOR7P1NDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E1B5413882;
+	Wed,  7 May 2025 13:02:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id /4N9NsxZG2h4PAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Wed, 07 May 2025 13:02:04 +0000
+Message-ID: <395ce5cd-5557-4312-b60f-8d1cedfb86e6@suse.cz>
+Date: Wed, 7 May 2025 15:02:35 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250507110444.963779-4-bhupesh@igalia.com>
+User-Agent: Mozilla Thunderbird
+From: Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH 4/6] locking/local_lock: Introduce
+ local_lock_irqsave_check()
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org,
+ linux-mm@kvack.org
+Cc: harry.yoo@oracle.com, shakeel.butt@linux.dev, mhocko@suse.com,
+ bigeasy@linutronix.de, andrii@kernel.org, memxor@gmail.com,
+ akpm@linux-foundation.org, peterz@infradead.org, rostedt@goodmis.org,
+ hannes@cmpxchg.org, willy@infradead.org
+References: <20250501032718.65476-1-alexei.starovoitov@gmail.com>
+ <20250501032718.65476-5-alexei.starovoitov@gmail.com>
+Content-Language: en-US
+In-Reply-To: <20250501032718.65476-5-alexei.starovoitov@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: 0394D1F441
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com,vger.kernel.org,kvack.org];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[oracle.com,linux.dev,suse.com,linutronix.de,kernel.org,gmail.com,linux-foundation.org,infradead.org,goodmis.org,cmpxchg.org];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Spam-Score: -2.01
 
-On Wed 2025-05-07 16:34:44, Bhupesh wrote:
-> Historically due to the 16-byte length of TASK_COMM_LEN, the
-> users of 'tsk->comm' are restricted to use a fixed-size target
-> buffer also of TASK_COMM_LEN for 'memcpy()' like use-cases.
+On 5/1/25 5:27 AM, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
 > 
-> To fix the same, Linus suggested in [1] that we can add the
-> following union inside 'task_struct':
->        union {
->                char    comm[TASK_COMM_LEN];
->                char    real_comm[REAL_TASK_COMM_LEN];
->        };
+> Introduce local_lock_irqsave_check() to check that local_lock is
+> not taken recursively.
+> In !PREEMPT_RT local_lock_irqsave() disables IRQ, but
+> re-entrance is possible either from NMI or strategically placed
+> kprobe. The code should call local_lock_is_locked() before proceeding
+> to acquire a local_lock. Such local_lock_is_locked() might be called
+> earlier in the call graph and there could be a lot of code
+> between local_lock_is_locked() and local_lock_irqsave_check().
+> 
+> Without CONFIG_DEBUG_LOCK_ALLOC the local_lock_irqsave_check()
+> is equivalent to local_lock_irqsave().
+> 
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 
-Nit: IMHO, the prefix "real_" is misleading. The buffer size is still
-      limited and the name might be shrinked. I would suggest
-      something like:
+While I agree with the principle, what I think is less ideal:
 
-	char    comm_ext[TASK_COMM_EXT_LEN];
-or
-	char    comm_64[TASK_COMM_64_LEN]
+- it's an opt-in new API local_lock_irqsave_check() so requires to
+change the callers that want the check enabled, even though it's
+controlled by a debug config. We could just do the check in every
+local_lock_*() operation? Perhaps it would be checking something that
+can't ever trigger for instances that never use local_lock_is_locked()
+(or local_trylock()) to determine the code flow. But maybe we can be
+surprised, and the cost of the check everywhere is fine to pay with a
+debug option.
 
-> and then modify '__set_task_comm()' to pass 'tsk->real_comm'
-> to the existing users.
+Yes the check only supports local_trylock_t (on !RT) but we could handle
+that with _Generic(), or maybe even turn local_lock's to full
+local_trylock's to include the acquired field, when the debug option is
+enabled?
 
-Best Regards,
-Petr
+- CONFIG_DEBUG_LOCK_ALLOC seems like a wrong config given its
+name+description, isn't there something more fitting in the lock related
+debugging ecosystem?
+
+- shouldn't lockdep just handle this already because this is about not
+locking something that's already locked by us?
+
+- a question below for the implementation:
+
+> ---
+>  include/linux/local_lock.h          | 13 +++++++++++++
+>  include/linux/local_lock_internal.h | 19 +++++++++++++++++++
+>  2 files changed, 32 insertions(+)
+> 
+> diff --git a/include/linux/local_lock.h b/include/linux/local_lock.h
+> index 092ce89b162a..0d6efb0fdd15 100644
+> --- a/include/linux/local_lock.h
+> +++ b/include/linux/local_lock.h
+> @@ -81,6 +81,19 @@
+>  #define local_trylock_irqsave(lock, flags)			\
+>  	__local_trylock_irqsave(lock, flags)
+>  
+> +/**
+> + * local_lock_irqsave_check - Acquire a per CPU local lock, save and disable
+> + *			      interrupts
+> + * @lock:	The lock variable
+> + * @flags:	Storage for interrupt flags
+> + *
+> + * This function checks that local_lock is not taken recursively.
+> + * In !PREEMPT_RT re-entrance is possible either from NMI or kprobe.
+> + * In PREEMPT_RT it checks that current task is not holding it.
+> + */
+> +#define local_lock_irqsave_check(lock, flags)			\
+> +	__local_lock_irqsave_check(lock, flags)
+> +
+>  DEFINE_GUARD(local_lock, local_lock_t __percpu*,
+>  	     local_lock(_T),
+>  	     local_unlock(_T))
+> diff --git a/include/linux/local_lock_internal.h b/include/linux/local_lock_internal.h
+> index 263723a45ecd..7c4cc002bc68 100644
+> --- a/include/linux/local_lock_internal.h
+> +++ b/include/linux/local_lock_internal.h
+> @@ -168,6 +168,15 @@ do {								\
+>  /* preemption or migration must be disabled before calling __local_lock_is_locked */
+>  #define __local_lock_is_locked(lock) READ_ONCE(this_cpu_ptr(lock)->acquired)
+>  
+> +#define __local_lock_irqsave_check(lock, flags)					\
+> +	do {									\
+> +		if (IS_ENABLED(CONFIG_DEBUG_LOCK_ALLOC) &&			\
+> +		    (!__local_lock_is_locked(lock) || in_nmi()))		\
+> +			WARN_ON_ONCE(!__local_trylock_irqsave(lock, flags));	\
+
+I'm wondering about the conditions here. If local_lock_is_locked() is
+true and we're not in nmi, we just do nothing here, but that means thies
+just silently ignores the situation where we would lock in the task and
+then try locking again in irq?
+Shouldn't we just always trylock and warn if it fails? (but back to my
+lockdep point this might be just duplicating what it already does?)
+
+> +		else								\
+> +			__local_lock_irqsave(lock, flags);			\
+> +	} while (0)
+> +
+>  #define __local_lock_release(lock)					\
+>  	do {								\
+>  		local_trylock_t *tl;					\
+> @@ -293,4 +302,14 @@ do {								\
+>  #define __local_lock_is_locked(__lock)					\
+>  	(rt_mutex_owner(&this_cpu_ptr(__lock)->lock) == current)
+>  
+> +#define __local_lock_irqsave_check(lock, flags)				\
+> +	do {								\
+> +		typecheck(unsigned long, flags);			\
+> +		flags = 0;						\
+> +		migrate_disable();					\
+> +		if (IS_ENABLED(CONFIG_DEBUG_LOCK_ALLOC))		\
+> +			WARN_ON_ONCE(__local_lock_is_locked(lock));	\
+> +		spin_lock(this_cpu_ptr((lock)));			\
+> +	} while (0)
+> +
+>  #endif /* CONFIG_PREEMPT_RT */
+
 
