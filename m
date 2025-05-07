@@ -1,157 +1,111 @@
-Return-Path: <bpf+bounces-57625-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57626-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E15CAAD43D
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 05:46:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09DFCAAD484
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 06:39:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 998FA1BA758B
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 03:46:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 153803B48BD
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 04:38:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF6F118C937;
-	Wed,  7 May 2025 03:46:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D6041D7E5C;
+	Wed,  7 May 2025 04:39:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UnpJSbOI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AbzYG7om"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20BD3610D
-	for <bpf@vger.kernel.org>; Wed,  7 May 2025 03:46:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C58AFBF6
+	for <bpf@vger.kernel.org>; Wed,  7 May 2025 04:39:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746589581; cv=none; b=oc2Spg5k2E6Yhybbaoq3g+B1+X90byQ4pwQvrWLtAT2wbKGvsyNXhOusKunZC8bHkdQb6J7xViPZM1g9GLV91iVajM8WM325da3uop8GtSWIYpw/gxD2YTg8ijYjsDi3CxaavV0O28vMXLY87Tj9xPJhBms0RGuykcTMD7XKU0E=
+	t=1746592742; cv=none; b=nDOEvXicgSgRXsJd6PvIoWdNXrtG6cS1WR/FCaruSIQppYt5FD16J4AZDIfT5WGsG/yauvqxrppTRzhddjpTax97fCkDrPNXZH7HNFIyuj9HehiyX9RQsuzukgeJkWYjAFnO4USF3iV/msg8GVr+2UyQcbyC42xM5PjgK0K4iXI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746589581; c=relaxed/simple;
-	bh=Aea/tbOHkfb6PZk0DrA2Rji75ejDh2Y5DsZeTeIkR3E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZT12YZ29If0VTtYS3TQ6r09GECw3Yuv6AEcfqyS9cQFe09Jvfi0E9N6zCU57G8C9cz/J26yNNLUGB9PmbwMRBmko1AuRUUypZ0ZXA1hA+vbfuxcoE3KK0FvxH0nxpm/sT8JNKC/By2H3G1Y9+jgODjv2xh3zIRIUndKyOEJ1Zv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UnpJSbOI; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-22e39fbad5fso71265ad.1
-        for <bpf@vger.kernel.org>; Tue, 06 May 2025 20:46:19 -0700 (PDT)
+	s=arc-20240116; t=1746592742; c=relaxed/simple;
+	bh=wbvgiNZ8j4uW1tRLx+Z1/3Xl5HEbg2TIGMagSDKaxFg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ojftKJqRxBay0qntp0s78eAN0XuuJDdbwJs27EODC5DjnaWOYTuTuYFRuCWuFguEH8+fzQ4J3A63bdT8w91QmQBCsx+0GiEaxqrjLXUn8UcL7SXGxdbo71xSw6JvL06xSKbIkls1VX1wzjrSL6hFzeLpKKQHT7pk+KNwuOADhCI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AbzYG7om; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-441ab63a415so64076585e9.3
+        for <bpf@vger.kernel.org>; Tue, 06 May 2025 21:39:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1746589578; x=1747194378; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=CprdoLUso6rbsqIqPABR3Bwu/KBPakjt6caNQFlDa9s=;
-        b=UnpJSbOIyCOfkNtxo8uVv//Ybku08nxEYOjuNNwAUOS+n5L7yVQkSNSG5IloYJRFKV
-         9AXZVn84jS5On5SjVSR9uSXKIhxPbryY03WaYvxVnzuQKV1SBk6pe+qFKACiEktMx38O
-         d7Iz5E7hj7He0l+RH0OLB8Q8XsNcAWFLd5a3pAu2fZ/VKEhUhNQe8Q6Sy0A1OzTZI9/d
-         HocyxfLKsjXULkp6wQCIun+Ur3Yyw9eU6kdb2iLX/zLKR6jCHahK4ZEOO3JaYXOFnnHn
-         RGNUjUhkcyB7izNdIM5GWegSSHYilGiF40Xqwxl3P4yIu88lmd/gQkamlfiDo8i/HmHD
-         37pQ==
+        d=gmail.com; s=20230601; t=1746592739; x=1747197539; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wbvgiNZ8j4uW1tRLx+Z1/3Xl5HEbg2TIGMagSDKaxFg=;
+        b=AbzYG7omianWoSf5t5pHorkCiqCTGeku5NDQsnlmJttAzf8gYWZweJ1hHXwY9uLWhr
+         lkkikoMezNDcRlfBF8DmVJkj3Konyw145kZwKAsVJEB0QH5/7gfUW4XpLt8EN1C0BZbZ
+         m5dcBN/0P/emfOZ+DFqWQHFd9GGr78j1C5pKPN9tyUQ3XLnNzhGaOAfadlnzKNDodRz1
+         wZED41+5cDDPHaiushgzfvVNbDd6eshxT2ly/4ZYwl0xEVcTxEQ7B/uFDkNpfpFSowza
+         7wZC98g9K8rYnSYei7htRXhk1geSXmwWt1e6ZXEm3aOROsUhHJmv8Mt9VcM/OiL721gw
+         Injg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746589578; x=1747194378;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CprdoLUso6rbsqIqPABR3Bwu/KBPakjt6caNQFlDa9s=;
-        b=MvAmJkzzDSMP2s5rqqUH0eumBz91cjmWq5DVc+CcRzdVxoAA04XnELQDqlNx2r61uw
-         eMQtZsTB+O5JROAB9SsfTTALvUv0TxV9R4V9opwInYX9lUdRtAEp/nXbAQlu7od/ZRNc
-         mHPElB4hlLisltUKe7V5DmuTz1TZiXmcL0c80Vus2erHsginPtqyPu8XADBNqeldHNfo
-         BUufnK1ZCO23h5673LK8jXyYsZsFLr1n6a06JvHTmsYDaO8bLK066a67XHaXIvR0e6bX
-         yUXmf+0yg5qlkoDKdKzKOt/80VqovFgLsrG0a0rgAJ5ysSEZ1e9FhuD3dQkFw9FP8Hql
-         AhKg==
-X-Gm-Message-State: AOJu0YwOnmjDGe59nOw0cunC8DiDT6wY0sQ5aypDEkip3x2GIb1qggMJ
-	MhfkXgchKoBNM4amqp4zaez9zdySyqfqGp7ldHKtGQ98Sjchj29jxFAV4wKX+E4/5TMmRFXHfs1
-	WIg==
-X-Gm-Gg: ASbGncvIsMMTgzjnqoOWX3pbRAJHc3VMc1smkur8bLxNk231pK6QNz8ULoeTnG9cqVC
-	ZxCKCEON6Nc7UU1Lw/7h3bJVF5yrRlEBUfWu7atptLdNP9Db8woEEY6BtDd3pjKkzp7Nw4zebRz
-	VtxBi4PJMVFJSvd29+dmYL8oQIAo5Ru4ufqmstAQ0iFAKtqRt2zm04FtAYyuIY/IZgrtTLX1HxE
-	xgE8QKaqwFyPBoeyX4CU5Kwmx/gkIATQ4uXn8kB00dJW/6ZpDDqwl/GahF/DwG3NU68k2vms+fa
-	jgvUc2xlaPxWeTA5ecFDlVzZlktXYw02Kla8prza6oUVo9HSG6NjibRVshNQWizIn2TDAxQI+rp
-	VLGe5rQ==
-X-Google-Smtp-Source: AGHT+IGBb8IZ+p4eSssPzIozOCBP9geGZhXA8XOl5UScfnTahE2nYrYHiyIiwfXFxk5ASUPHxlM5IA==
-X-Received: by 2002:a17:902:ccc7:b0:223:5696:44f5 with SMTP id d9443c01a7336-22e5ee8bfdemr1866575ad.12.1746589578269;
-        Tue, 06 May 2025 20:46:18 -0700 (PDT)
-Received: from google.com (202.108.125.34.bc.googleusercontent.com. [34.125.108.202])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b1fb3c6c4a4sm8409572a12.73.2025.05.06.20.46.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 May 2025 20:46:17 -0700 (PDT)
-Date: Wed, 7 May 2025 03:46:12 +0000
-From: Peilin Ye <yepeilin@google.com>
-To: bpf@vger.kernel.org
-Cc: linux-riscv@lists.infradead.org, Andrea Parri <parri.andrea@gmail.com>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-	Pu Lehui <pulehui@huawei.com>, Puranjay Mohan <puranjay@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>,
-	Neel Natu <neelnatu@google.com>,
-	Benjamin Segall <bsegall@google.com>
-Subject: Re: [PATCH bpf-next v2 0/8] bpf, riscv64: Support load-acquire and
- store-release instructions
-Message-ID: <aBrXhK_Tv1M5ON-e@google.com>
-References: <cover.1746588351.git.yepeilin@google.com>
+        d=1e100.net; s=20230601; t=1746592739; x=1747197539;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wbvgiNZ8j4uW1tRLx+Z1/3Xl5HEbg2TIGMagSDKaxFg=;
+        b=qVUNA36JAgXmPFYNzLextGeDfl+y0wudZ/wmUvGHTGNkXTzfOlJ7rqoKaOWBVBzhMx
+         xuvMVcL8+Zylm7TdWrwcHdxdupqGy9TU5epe+fPbuDVh8/TsAddHEcPtKdLSNJ1NI4yY
+         zwqJJC1Jd6jRcF53mQ1/nYyhXaGzb4g8+PBzrDrEyYxeHOHQdlsruqjjxgKURvlV7e4B
+         XupGyU5832q5cfau6rx5+bHQiHNJIMnywNFuTNW9yukWkNAGaHi4Ka63nEQJiSIRZfZa
+         NwKa9z+jLrnw0NahOJSYbZRHutkcLKmLli218rjU4ZLqUzqvf7FjcO/vDxVRH7R2yoRy
+         Vffg==
+X-Gm-Message-State: AOJu0YxypIMtokxLzjEisS3ww2Vc/BXcIL93nwwkJU4+N68b/H6NIDX7
+	TNOdXJy5wFu27poY9SpLnF4zIAWPEfjAXLqV/8iC1ICG7S/tmapZAPDvhl4fhFQqx79O3zjF9DU
+	cpE4dVO98OD4/h/twaQ+4x5cpOuo=
+X-Gm-Gg: ASbGnctc/Dc9iaVafP4FCU50zwbUtTiw0GfU8ocVC0Xt9N8yWBO/geaH2nBu67ADdKo
+	Ca7cwedWxMtrtxi0kh8juJsIRXOMIXJh1zV7c7PS4W4uM0jyHx5Dt7oxaVGgEurV9fRu+XEQrAr
+	+RoGJA2zkVg4wDTkNOQXULDxqpuPvvciEGSfRqGzUv+yqGHehTVO+6j0tzRPyw
+X-Google-Smtp-Source: AGHT+IFVxpz8decI1WdrYOU4zVDUzelCK1q5QGiG9yzgBmW4/W1mlqo3U8xojIJVUhPrKQlLwk5b2O6QY6ztmJNuXss=
+X-Received: by 2002:a05:600c:3115:b0:43d:1824:aadc with SMTP id
+ 5b1f17b1804b1-441d44e0c7fmr9914965e9.29.1746592739240; Tue, 06 May 2025
+ 21:38:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cover.1746588351.git.yepeilin@google.com>
+References: <20250506232313.1752842-1-andrii@kernel.org>
+In-Reply-To: <20250506232313.1752842-1-andrii@kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 6 May 2025 21:38:47 -0700
+X-Gm-Features: ATxdqUFgJoUuL7vtOXbtTbvcp10jt2apDp5EXo3KLETSxbIaIxC6IboO0nASNBY
+Message-ID: <CAADnVQKTeZ_M+9fXNuLpXmukaV4e7qwQQAySax7S9j1=29+66w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf, docs: document open-coded BPF iterators
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, Tejun Heo <tj@kernel.org>, 
+	Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Lehui,
+On Tue, May 6, 2025 at 4:23=E2=80=AFPM Andrii Nakryiko <andrii@kernel.org> =
+wrote:
+>
+> +be fine with just one stack slot (8 bytes), like numbers iterator is, wh=
+ile
+> +some other more complicated iterators might need way more to keep their
+> +iterator state. Either way, such design allows to avoid runtime memory
+> +allocations, which otherwise would be necessary if we fixed on-the-stack=
+ size
+> +and it turned out to be too small for a given iterator implementation.
 
-On Wed, May 07, 2025 at 03:42:29AM +0000, Peilin Ye wrote:
-> v1: https://lore.kernel.org/bpf/cover.1745970908.git.yepeilin@google.com/
-> Changes since v1:
-> 
->  * add Acked-by:, Reviewed-by: and Tested-by: tags from Lehui and Björn
->  * simplify code logic in PATCH 1 (Lehui)
->  * in PATCH 3, avoid changing 'return 0;' to 'return ret;' at the end of
->    bpf_jit_emit_insn() (Lehui)
-> 
-> Please refer to individual patches for details.  Thanks!
-> 
-> [1] https://lore.kernel.org/all/cover.1741049567.git.yepeilin@google.com/
-> 
-> Andrea Parri (2):
->   bpf, riscv64: Introduce emit_load_*() and emit_store_*()
->   bpf, riscv64: Support load-acquire and store-release instructions
-> 
-> Peilin Ye (6):
->   bpf/verifier: Handle BPF_LOAD_ACQ instructions in insn_def_regno()
->   bpf, riscv64: Skip redundant zext instruction after load-acquire
->   selftests/bpf: Use CAN_USE_LOAD_ACQ_STORE_REL when appropriate
->   selftests/bpf: Avoid passing out-of-range values to __retval()
->   selftests/bpf: Verify zero-extension behavior in load-acquire tests
->   selftests/bpf: Enable non-arena load-acquire/store-release selftests
->     for riscv64
-> 
->  arch/riscv/net/bpf_jit.h                      |  15 +
->  arch/riscv/net/bpf_jit_comp64.c               | 332 ++++++++++++------
->  arch/riscv/net/bpf_jit_core.c                 |   3 +-
->  kernel/bpf/verifier.c                         |  12 +-
->  tools/testing/selftests/bpf/progs/bpf_misc.h  |   5 +-
->  .../bpf/progs/verifier_load_acquire.c         |  48 ++-
->  .../selftests/bpf/progs/verifier_precision.c  |   5 +-
->  .../bpf/progs/verifier_store_release.c        |  39 +-
->  8 files changed, 313 insertions(+), 146 deletions(-)
+This part is a bit unclear.
+I think in "if we fixed on-the-stack size" you meant that
+"if all iterator types had fixed on stack size ..." ?
 
-Please take another look at v2 PATCH 1/8 and 3/8, thanks!
-
-Peilin Ye
-
+I think it's too much information. The doc can just say that
+sizeof(struct bpf_iter_<type>) should be small enough to fit
+in the bpf prog stack.
+It probably can also recommend that _new() should avoid memory
+allocation when possible and use the stack, but it can allocate
+if there is no other option and the state is big.
 
