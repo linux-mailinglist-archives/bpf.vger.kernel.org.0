@@ -1,133 +1,171 @@
-Return-Path: <bpf+bounces-57623-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57624-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 934E9AAD42E
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 05:43:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C498CAAD435
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 05:44:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF8E21BA73D4
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 03:43:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A96116E57E
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 03:44:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 947711C1F0D;
-	Wed,  7 May 2025 03:43:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF9E31C84AA;
+	Wed,  7 May 2025 03:43:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CtgUtUdw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MAPrLagE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oa1-f74.google.com (mail-oa1-f74.google.com [209.85.160.74])
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C04B11B85CC
-	for <bpf@vger.kernel.org>; Wed,  7 May 2025 03:43:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C446F1BC07A;
+	Wed,  7 May 2025 03:43:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746589417; cv=none; b=aH8kFJvWSRakhr1bEl93uW8+xN++3JIsc9eIXR/x3woXmY/fzyvH6xx0zjKIaPIwXp/UFDzOzHrnis7joHUsZpORRAQ6Fa28uj38tu0Z579ySOEhfG45t0QctAMVeJM/Py7s6YIs8U2jLa7DsRGMiKKgfgjyRemF4H6lMbUyANs=
+	t=1746589437; cv=none; b=MXJefBHI+Sh2vYloqKrVi3M7HWOy7AV4AZQYM0+1FaKlb6O103EZAoXmwxX87olkmvpab+jbQa+X88ohongrj9T9z9WTgVI0kF2OFSasgfI97ChYZmgWchSONrPI7Y/WJQ8hECwCu5scvzbPgVr2GT5olkZRvh02TLKsfJZyk/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746589417; c=relaxed/simple;
-	bh=N1rmArSH8OQBJ2ZMuIxX6qjPi0FYZUbIRq8nzyX88Z0=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=mpELR+1Y4G3BZOGbsM9iVMsXWMdIqA8Wg1l0u8u+Rh/FJrc4ZVxkP7lpjCd9AsPOIrX0wHXmgcCqH+EIM5LD3qAVsLKnCRZQQLSNrF1V4zXL1EGEHLyOdle2GEZFye9RHJqlJXEZDrIUDkSXRU7EEIVrU0jJUjKQJhgF1y7ofkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yepeilin.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CtgUtUdw; arc=none smtp.client-ip=209.85.160.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yepeilin.bounces.google.com
-Received: by mail-oa1-f74.google.com with SMTP id 586e51a60fabf-2c2b6cc2f94so4421399fac.1
-        for <bpf@vger.kernel.org>; Tue, 06 May 2025 20:43:35 -0700 (PDT)
+	s=arc-20240116; t=1746589437; c=relaxed/simple;
+	bh=1/TV6tMl2gNlog8KxmmJQ9ScMhNwTlfXsz6pi42aGTk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TYhOLNyhuDCt8614pCJZKbADTxE9ZlFbOkAZd1wZEN0N317wQroKHmIq8ehHH5eQcD/t7YGplv4CN+N5pONHjW93jritzx9RRPllVEAR6a7nuRcxHsx17qw+650cuafCqwYk/CxtR3Wj8E7k08GBtqiuKpG0LeCVWrRvPtI9pH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MAPrLagE; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-441ab63a415so63816045e9.3;
+        Tue, 06 May 2025 20:43:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1746589415; x=1747194215; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iZn1GgGAG7mdxhx9lSWnDHMjgG27axMC/yttL1kxmb4=;
-        b=CtgUtUdw3lecLOA5Z/KwrREMSxq58KeRPeuGHRiIetPJFWWbyd8M3Wni9z5DYmN/f8
-         Wq2cnMugf0mHrFserLgiBYbkxoaHi4kNVlYFGWZRLpbbGXstd/YGATp+uhWNU/LextfY
-         /+mpNAf1ICE7j66ATN3SxLQpR1e4jbYHK9be7OfSkgzjlvk4XgxdRNk6VIrUNVqEiIZp
-         ilswXxos8PVFPdsmzGjBgdefB/S7sa7cUts9RIdQ7hoDUqyU4bagWVtBAdDvlaAxnSTb
-         pc5fhBJMvHoIWQlV5Z5Jzg0AEZyhjzanYjy+k2Xg6tfvFEXi7AuT05ePbIBOK2P11ABJ
-         56XA==
+        d=gmail.com; s=20230601; t=1746589434; x=1747194234; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EKjjpWzv48U9LX3EX2sY4j22d7QCieaYoLqSyYGhmYE=;
+        b=MAPrLagEqcyWEV7L8kkenHgxQfXOSr6ZrSWQThVkNLdze8dC3EVQ1Y/y7x04FRO710
+         oMZxFrtI5sc0STAjdgpKSsUXpBi7hFkNKOoZ3lOrTFUf8r9q4w7Hr+sZdubJj81/S6fN
+         tXAgeUM79mg4lSsRqunPubQdR7HYnC5lTwLxT+BNS40uNcYUpH4YCFsWH9pXQJ7sZQ7S
+         H0BJU9HjtW57XH1MF5NRe+i3cGtQitGkj3wZ5FuqZg0uisnMpczTeyhUgSSYCD/mTCyE
+         jP0OwFI25OcOnLmH+Ez0uJAPyhTBEafO1iuVKfHtJXoi+fOmQ8MhDdR4X4z7Tq+OwiVX
+         rgIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746589415; x=1747194215;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=iZn1GgGAG7mdxhx9lSWnDHMjgG27axMC/yttL1kxmb4=;
-        b=UuFTwF7FI8FrWlMRgDLZgTkHRveqIE7rbcTw0+d+5We3AughHyZVCigOToe/7//+zc
-         pJS3TPuJH41IpXSq9WJ7kK9mxFNkiGTP31IFy0ulnbpotUnDpGsTkaE6TX5VrguoqDMv
-         lmE2aIAW9neF8DG/lFrtpql9+qNcHYZD2n6WVXSM8Vfc8xB+y872i6Y5ZwEdaf6jHCff
-         2cH4dHQixfDAhjemPcrqe2HUlzLBcpMioiCS6JiC8HdacG96b+zPyPX/oZ06yG9ElIiY
-         E3+mj0xxdmxiP4d7AzeEBjn6XmBtcsOBoOe8A1TAyomGWGZC+HGRjxckkKPhALe+wVPn
-         IXfg==
-X-Gm-Message-State: AOJu0Yw7xJzC3rZFu5mZRCmCBYXQPIVlx8Suvu0t6xn1yx6redm3/N6y
-	38rHh9EeT+X4+oStQFclGCgepLiWCAkH7DS7xnh2r3jOhSzNxU8r/gV5V3VM4qvDVYLCERAcpvL
-	5JVE34wFmCjGUj/cJ2SwXNdkXbKoGp8eNn9ev4Axhj6jXIJUcsSdoHP6pCO/VxNUgi/ZGtp/tFj
-	U7Yl3bMzboRAIwzgsCfC481YwqA3y0/xkg1vMoArU=
-X-Google-Smtp-Source: AGHT+IGifRIHZ6qcU64u73ukgqSP22FlKicCrm9bweMfqYF2kqYgj7WzkdgP+PxImBJxxCpzzgu9q1HpZCCfVQ==
-X-Received: from oabrb11.prod.google.com ([2002:a05:6871:618b:b0:2da:6d76:b15c])
- (user=yepeilin job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:6870:e243:b0:29e:24c7:2861 with SMTP id 586e51a60fabf-2db5be312b8mr1163209fac.13.1746589414619;
- Tue, 06 May 2025 20:43:34 -0700 (PDT)
-Date: Wed,  7 May 2025 03:43:31 +0000
-In-Reply-To: <cover.1746588351.git.yepeilin@google.com>
+        d=1e100.net; s=20230601; t=1746589434; x=1747194234;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EKjjpWzv48U9LX3EX2sY4j22d7QCieaYoLqSyYGhmYE=;
+        b=A6xmXgKJHNgyd4AdL6HmI6D4zExZaMezh/Dy8YCrMJTMEeXeXNPQeV5FvFr8LofOcB
+         NZOjfFyrKOx+95jdiRP+UpAPamSrFd015KerHacaO+KDw9ACgCGaPovVBJ2roN7sq9+o
+         HXqerhyDn6t0PPQHaOJEoj4iljEfeTgqY86ST74qjXlb5s+k5flIL5UaCvymk46cJnyK
+         0sbopWNy7Y3PS3ar8tN48OqVUwMoEy1PUT5wxW6gA/P71YATjXaGrlSDYPV7b3VC6S/o
+         IZwG1YGo/8smBKZPoGPyNlGrbbZXOekcBIITXMCoV87K1X/KHT52x4pBsIUnNntTMkfC
+         t07A==
+X-Forwarded-Encrypted: i=1; AJvYcCUfNO3Up6J4/RSFna8EcKDSOxwgPUVMR0hRlo15riSK8IGISsonLKLIoglXeS3TQgjvW37c4XFt38gizj3U@vger.kernel.org, AJvYcCUwW3pQ3fWU4duwj/8c8J1pMUQKeOuR3wJVkE5Z/MHYpQDFwXMYySyEn062Br0T6UHn6mMWjrGe@vger.kernel.org, AJvYcCVjIjzf4J8WGZO2G1R/f3Q3CrJg76Mp3OWpyVPdXsBLVMqRVKlAJDlv+5DxrfPWgk/PVls=@vger.kernel.org, AJvYcCXR34x1TQByDKF6FxBH2Vc1Uvc+OmwV1ah3rRA1HivSTl6/4OdsaIik1ymKarELf+pdcYdM3WGE3WKUIx8BTPqi9DXH@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx7j5W1o/CgCRM1H4hhNtYIGY7vvscjvzpJAJhiwzotXBWlrS2u
+	Y9Jn9JNzW8GAmr2xAJr/hDHDLFQCI9gs7aeJky7f6lEJPJHGlP8Y+2YrLldH3xDqtxuC64J+H+Y
+	Fh69juD9YQffiJQEMT/Bj7jthiOE=
+X-Gm-Gg: ASbGncvjFufBKdqKqKSeGMdyXLFPfrShfmW1t0I/O5hEylb9aAv9PokszcFw1/FJ6Uo
+	nvOViq/sW0QimeB3C5AifKoMeJSs4zJo3rBijbSSr0sMYpuBAtHYB6EM+1iNHMFb63MaQ0LCwt0
+	mARZMevYOj0Z2ExF93m1KPTyp3UcQ0bC1B6oTx+uKptPzVnrB3qg==
+X-Google-Smtp-Source: AGHT+IGEG3zUsL0Hq6HZDsiJfGiMiVQhydWmd7Hclu84WAzBoZfmF3OvFbXv3SSqQyG4o6d2sB5Gmpt0wlD2gHsBZ3w=
+X-Received: by 2002:a05:6000:1a8b:b0:3a0:9de8:8a45 with SMTP id
+ ffacd0b85a97d-3a0b49d2755mr1212225f8f.32.1746589433881; Tue, 06 May 2025
+ 20:43:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <cover.1746588351.git.yepeilin@google.com>
-X-Mailer: git-send-email 2.49.0.967.g6a0df3ecc3-goog
-Message-ID: <9d878fa99a72626208a8eed3c04c4140caf77fda.1746588351.git.yepeilin@google.com>
-Subject: [PATCH bpf-next v2 8/8] selftests/bpf: Enable non-arena
- load-acquire/store-release selftests for riscv64
-From: Peilin Ye <yepeilin@google.com>
-To: bpf@vger.kernel.org
-Cc: Peilin Ye <yepeilin@google.com>, linux-riscv@lists.infradead.org, 
-	Andrea Parri <parri.andrea@gmail.com>, 
-	"=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?=" <bjorn@kernel.org>, Pu Lehui <pulehui@huawei.com>, 
-	Puranjay Mohan <puranjay@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+MIME-Version: 1.0
+References: <20250506025131.136929-1-jiayuan.chen@linux.dev>
+ <b776fa07-de4b-44be-ae68-8bc8c362ea81@linux.dev> <9c311d9944fa57cec75e06cde94496d782fe4980@linux.dev>
+In-Reply-To: <9c311d9944fa57cec75e06cde94496d782fe4980@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 6 May 2025 20:43:43 -0700
+X-Gm-Features: ATxdqUFaoJtwVj0z2KLyes9UtmvTMsURQNshsCTGx3BUOtVxeWC_uBDz5fClPus
+Message-ID: <CAADnVQKK87UV9rH_YviePfUmOO3mGXQmYfN-Q9Ax5AYv+xE8zw@mail.gmail.com>
+Subject: Re: [RESEND PATCH bpf-next v4 1/2] bpf, sockmap: Introduce tracing
+ capability for sockmap
+To: Jiayuan Chen <jiayuan.chen@linux.dev>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>, Jakub Sitnicki <jakub@cloudflare.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Cong Wang <xiyou.wangcong@gmail.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Alexei Starovoitov <ast@kernel.org>, 
 	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, Mykola Lysenko <mykolal@fb.com>, 
-	Shuah Khan <shuah@kernel.org>, Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>, 
-	Neel Natu <neelnatu@google.com>, Benjamin Segall <bsegall@google.com>
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, 
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-For riscv64, enable all BPF_{LOAD_ACQ,STORE_REL} selftests except the
-arena_atomics/* ones (not guarded behind CAN_USE_LOAD_ACQ_STORE_REL),
-since arena access is not yet supported.
+On Tue, May 6, 2025 at 8:37=E2=80=AFPM Jiayuan Chen <jiayuan.chen@linux.dev=
+> wrote:
+>
+> May 7, 2025 at 04:24, "Martin KaFai Lau" <martin.lau@linux.dev> wrote:
+>
+> >
+> > On 5/5/25 7:51 PM, Jiayuan Chen wrote:
+> >
+> > >
+> > > Sockmap has the same high-performance forwarding capability as XDP, b=
+ut
+> > >
+> > >  operates at Layer 7.
+> > >
+> > >  Introduce tracing capability for sockmap, to trace the execution res=
+ults
+> > >
+> > >  of BPF programs without modifying the programs themselves, similar t=
+o
+> > >
+> > >  the existing trace_xdp_redirect{_map}.
+> > >
+> >
+> > There were advancements in bpf tracing since the trace_xdp_xxx addition=
+s.
+> >
+> > Have you considered the fexit bpf prog and why it is not sufficient ?
+> >
+>
+> 1.This patchset prints a large amount of information (e.g. inode ID, etc.=
+),
+> some of which require kernel-internal helpers to access. These helpers ar=
+e
+> not currently available as kfuncs, making it difficult to implement
+> equivalent functionality with fentry/fexit.
+>
+> 2. skb->_sk_redir implicitly stores both a redir action and the socket ad=
+dress
+> in a single field. Decoding this structure in fentry/fexit would require
+> duplicating kernel-internal logic in BPF programs. This creates maintenan=
+ce
+> risks, as any future changes to the kernel's internal representation woul=
+d
+> necessitate corresponding updates to the BPF programs.
+>
+> 3. Similar to the debate between using built-in tracepoints vs kprobes/fe=
+ntry,
+> each approach has its tradeoffs. The key advantage of a built-in tracepoi=
+nt is
+> seamless integration with existing tools like perf and bpftrace, which na=
+tively
+> support tracepoint-based tracing. For example, simply executing
+> 'perf trace -e 'sockmap:*' ./producer' could provide sufficient visibilit=
+y
+> without custom BPF programs.
 
-Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
-Reviewed-by: Pu Lehui <pulehui@huawei.com>
-Tested-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com> # QEMU/RVA23
-Signed-off-by: Peilin Ye <yepeilin@google.com>
----
- tools/testing/selftests/bpf/progs/bpf_misc.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Similar to Martin I don't buy these excuses.
+For your own debugging you can write bpftrace prog that will
+print exact same stats and numbers without adding any kernel code.
 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/s=
-elftests/bpf/progs/bpf_misc.h
-index 863df7c0fdd0..6e208e24ba3b 100644
---- a/tools/testing/selftests/bpf/progs/bpf_misc.h
-+++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
-@@ -225,8 +225,9 @@
- #define CAN_USE_BPF_ST
- #endif
-=20
--#if __clang_major__ >=3D 18 && defined(ENABLE_ATOMICS_TESTS) && \
--	(defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86))
-+#if __clang_major__ >=3D 18 && defined(ENABLE_ATOMICS_TESTS) &&		\
-+	(defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86) ||	\
-+	 (defined(__TARGET_ARCH_riscv) && __riscv_xlen =3D=3D 64))
- #define CAN_USE_LOAD_ACQ_STORE_REL
- #endif
-=20
---=20
-2.49.0.967.g6a0df3ecc3-goog
+We add tracepoints when they're in the path that is hard to get to
+with tracing tools. Like functions are partially inlined.
+Here it's not the case.
+You want to add a tracepoint right after your own bpf prog
+finished. All these debugging could have been part of your
+skmsg program.
 
+pw-bot: cr
 
