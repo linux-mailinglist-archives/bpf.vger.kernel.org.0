@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-57677-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57679-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D34D3AAE794
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 19:17:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12474AAE796
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 19:17:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 217894E683D
-	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 17:17:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A3241C01D9B
+	for <lists+bpf@lfdr.de>; Wed,  7 May 2025 17:18:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D81D128C5D0;
-	Wed,  7 May 2025 17:17:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68F4328C5DB;
+	Wed,  7 May 2025 17:17:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CYRbwkUN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XVZyFeHy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f67.google.com (mail-wr1-f67.google.com [209.85.221.67])
+Received: from mail-wm1-f66.google.com (mail-wm1-f66.google.com [209.85.128.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B64A01D5ABA
-	for <bpf@vger.kernel.org>; Wed,  7 May 2025 17:17:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44F9428B509
+	for <bpf@vger.kernel.org>; Wed,  7 May 2025 17:17:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746638254; cv=none; b=moIRaG6U9Gyr1MN6juYM5n8otNRrX7SLDaZ19O93GmiptTZ4PdjKmWm7DSfn+1pNo9nh7taXnCnUtQlAJAyTqBQ9U45sY4zVquPmBjqfmqBXFnSL9jm1KyQx0G0Rm5h0ctBrUxWZjqlGRKjtIGgNWQpaUGl6N7CU3g4EoFKmkAI=
+	t=1746638256; cv=none; b=nOzOG6zkcdmWq3lKsdGMN87L2v9BFMCQSsT2I0nnegcKccekzeTgcmSQSejijb5yx8eSzzIXORyjtg+KHeAgR1HuX0M+nY2yrir9pLtHqryY41c0fNWnrMdEysoT5qXRnM/P963Vw/1yxK0uKwHfa3LLYF3xZCUTDiMt4RiBepQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746638254; c=relaxed/simple;
-	bh=zJdgrVS4WPKNsMv/n923x4hX2eFFZRCXrz7VowKS1cU=;
+	s=arc-20240116; t=1746638256; c=relaxed/simple;
+	bh=wSRaX8acuUEfv5DpSh1axk9fQZNPA17hfl7LY0eZLWc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pc0NLXrEt20aHfeZDsXtacxR2obXWKxhFG7MgbcP2INdBQSZ+WhUdtcWWSHTYxUp12nzF3I1MJ0pidRxf1wx4UUu3npB03nwRoYTx3yOe/VuiC3UxZTgKC7QjZ/w2Oy4mutq6y6XJZByjh4pq4FbtBREm3QQ0bNiscBbbQHGurw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CYRbwkUN; arc=none smtp.client-ip=209.85.221.67
+	 MIME-Version; b=E+NgGUJ3IKaBxUl5eYcIoPP+HXDXYhcgbWF5YsiTVhjwewnF5askT43JyWZH1yJwAHQv66wdEGCE0x1ADq0XRLxh/ny7sJU2dcQrvNIQ92S+sPuQyfQGIdwUCB3AU2xkx7whKiyrLlAg3G0J74FJNCkZ8T2IM0p38ovUnmrzfFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XVZyFeHy; arc=none smtp.client-ip=209.85.128.66
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f67.google.com with SMTP id ffacd0b85a97d-39ee5a5bb66so78674f8f.3
-        for <bpf@vger.kernel.org>; Wed, 07 May 2025 10:17:32 -0700 (PDT)
+Received: by mail-wm1-f66.google.com with SMTP id 5b1f17b1804b1-43ce71582e9so854715e9.1
+        for <bpf@vger.kernel.org>; Wed, 07 May 2025 10:17:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746638251; x=1747243051; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1746638252; x=1747243052; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Kf2a/uhJsacZ2V037A5YffZ38/QWJBiN/SKNkr4IUpg=;
-        b=CYRbwkUNwVhnuErnprN7MMoaefL3gHVtix1lmSlaBiK+BnaDLLBKyNiCbKLDRK2OrA
-         TxBgP8wXco+3we1qMsgPTJLo/rwQR7Nnn+lLdicxW+UO5dOVTt1PrLbbQTG1lOZ5yU1B
-         0/dhRtEpCUrb2Vx4n95ZrHoMUgaS/qU5hIe3jVOWuWn0lzLS40R/GCNlZiCX58GTMJWa
-         ftsDwqgOyMENuUmDFoHz2UxHL3uDJIh2kb2VwIWckgVZviknRHjF6Nqt1aGknVEapxcd
-         lR4Q4bLKqvkYulleBXSfN/SOD0oPkiefGcQg30LeBjN0ZggjAx0LZtbDNkRb8deanVya
-         A0GQ==
+        bh=JSx4ax8t9jkQjP3ygZFfKfpLKGK7b22nNpBj72Yehi0=;
+        b=XVZyFeHyq7DzOSmSRXN7BEb+A6P7eCUfTqtyhA1SHdWYLm+bW5m2lUnO7KdvxmsmZn
+         GkwfMiBJsgkLR39Z1helKfoxG3AT4hZcU6xm02WcMTm/XovGj/PGDZZ1grxov/O3N7nF
+         6bQYu2ZBiAV/SYMVQr6+aJ+rZ4cJhricfz3izdfK8nDLG+XiUbiLBColiODIvuqa079N
+         9gLznn77/xoJYEOeR4ngxB87QLVju2U5iNTnXQugqxy+fPi6M66WbxrnZ9hD76iSA1M+
+         Qt/kEZg9f6sqayGkjJeQmtzfjmiQEP3yqgMmMld9cPTuFgKd43CC0GFcVwkk31u6F4Hu
+         d7AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746638251; x=1747243051;
+        d=1e100.net; s=20230601; t=1746638252; x=1747243052;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Kf2a/uhJsacZ2V037A5YffZ38/QWJBiN/SKNkr4IUpg=;
-        b=hTDajahIHGYbCn5ykzluAs8PDwGT/5+tE5lPsRpWOS0A0U3wX3Gc6WHyiZmV6wplfK
-         ke/KjZ/l1M3X6X9Xw2MY9Ftbtuj7KJNOsAFFp+vIECVI15GLr9Z0gjriYFrDHMA/9m0k
-         rBr2/bp/Q9EvZu3xstNVRUGyD8aj7NtwCpEqfCA/c9oC3rBCLzp932AHn1StsQQlmYk9
-         CDxebSiZWj8xMaXjZJtzHTHp+Fl6koUn2dEW1qEubRKSlPQGEdGFaA4YVDrnhDfPYXBU
-         JVIJjvwJate2PZXvuVFudemDflNMFGkmKdDvTcdYOcrgnQWRf3jaN6Wxdw4d6b4dF5nI
-         Oinw==
-X-Gm-Message-State: AOJu0YzVygFRFhjUW8Te1PXIWXISZ5HvLlSKqqlIrpzYZJuweqikXcxo
-	MfdvWtknrJWh09rCqnzTBNVEjEzYJGfmYJtNdN9kYCGBXbaLqVbpH+oXf7v4nGw=
-X-Gm-Gg: ASbGnctDeoRFUezBCC3seO4uECDET1sflccPjoSdbhvunRTFQXaFEUR4klQ+QaU9km2
-	m0rEriKYWsjp96MdU+ewGs1VC4Bmrq/Nv/SuQuxefxVt/wEB7BLZ2+rJ3B0i73+0j82fclUsWWm
-	xcuzfmSWrpQ2Wv2YBVE+68uEjebVAGqAGcCFwZv17NgQkgw/ocKgpweCesw5C+4L99Tjzosl//F
-	IWF5fGsy7WRwoNKRnDc1ekKmbJ/llhkbfBZ/fXDLM+DtsGHUNruO0a2sEdKGY37WVrG5Ke0jYqj
-	tffjqjKBB4x7X2BCp6pNBoyIL2PJvc10OR3Xiz3/FA==
-X-Google-Smtp-Source: AGHT+IEJAyCSGnhvI8XzzZ9OGEleyAixKULwqS1EZj0RMt4zr3fIvRlxl/vRnGAZ4/5Yhm8PvRWBbw==
-X-Received: by 2002:a5d:64e8:0:b0:3a0:7d82:d454 with SMTP id ffacd0b85a97d-3a0b49ac335mr3501732f8f.20.1746638250767;
-        Wed, 07 May 2025 10:17:30 -0700 (PDT)
-Received: from localhost ([2a03:2880:31ff:4b::])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-442cd350cebsm7391735e9.17.2025.05.07.10.17.29
+        bh=JSx4ax8t9jkQjP3ygZFfKfpLKGK7b22nNpBj72Yehi0=;
+        b=uJ2b1wU1r3Zt6KKTnHdzqdBizmoiAWDsFyyJhaW6CcBy/lNw3CbrKUhjuxdjASIH44
+         n/eiJf58uT+kB3lxsZ3BPigC7ggmNgQloWp7Luy5pr24fjndDIUFqFYiGxmoFm+csT75
+         VSCeKe2d8HijANn9R0ziF+Cx0Er/hH/HCuGDIG+ZVZlorIL9W+RYizLIFbS2lqOwkqTu
+         GzrVGxgqFarSR/0qidjgnIiLMz6+n2qnDKHh3ZNEG/wq0UgTG1YEIOfE//UK1b4ODhfF
+         +2LR9mbQCPFkDKvMqzaDwyTTslj2mJ3XxKCl7bJqfX7AsaaDyBz6fmmR7/KudRHW2l9n
+         UyQA==
+X-Gm-Message-State: AOJu0Yx2dY9DtDJdWpqTRl04NnMNjV8amLHQlTTWUbrB69+KsJQhA/Tu
+	cqen2DhfIB6oBmVYCtMJDzLuumWgzAUsFm3Je1Ic633uEr4HS1sl2cc5l9AR0sk=
+X-Gm-Gg: ASbGncu4gUHPVvQkg2jIMC2o8Ze+X0HIhYdc/JRgvzuxQlgcTPLQ7VPMTGtdswi0BGm
+	9O96jsZNPmddy81C/qR3huHRBc6qZxEEd4WCChPqTfeVQ8pqKnA6RhzznS857GRsswqU5Lbigdw
+	S9JgSGMuoswDOQrrJu/IexosT8+nHARrYE2vnRCLvar+usy6rLaiEk0ZPXBQU6T5XxtJU+y/AEn
+	ivwNiuLB60QP4aR7FAc+8vSRVksAKO5mSie2osnpH1Bwe/lgEcxyb1n/V8h0Dba9rCeSoDIMckW
+	ZjVqBsZZbTFjsH4pHgtsH/FdzbhzTes=
+X-Google-Smtp-Source: AGHT+IFegEuIxXbEgAlMp7xwEt9UzJRojyPUiDqhDymel+dKLP1IPoB3kpjJxHCQKTzZn+6smQodsg==
+X-Received: by 2002:a05:600c:3844:b0:43c:f050:fed3 with SMTP id 5b1f17b1804b1-442d02ed387mr2624115e9.11.1746638251936;
+        Wed, 07 May 2025 10:17:31 -0700 (PDT)
+Received: from localhost ([2a03:2880:31ff:74::])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a0b55d2a1dsm3046763f8f.11.2025.05.07.10.17.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 May 2025 10:17:29 -0700 (PDT)
+        Wed, 07 May 2025 10:17:31 -0700 (PDT)
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -83,9 +83,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Matt Bobrowski <mattbobrowski@google.com>,
 	kkd@meta.com,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v1 06/11] bpf: Report may_goto timeout to BPF stderr
-Date: Wed,  7 May 2025 10:17:15 -0700
-Message-ID: <20250507171720.1958296-7-memxor@gmail.com>
+Subject: [PATCH bpf-next v1 07/11] bpf: Report rqspinlock deadlocks/timeout to BPF stderr
+Date: Wed,  7 May 2025 10:17:16 -0700
+Message-ID: <20250507171720.1958296-8-memxor@gmail.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250507171720.1958296-1-memxor@gmail.com>
 References: <20250507171720.1958296-1-memxor@gmail.com>
@@ -95,120 +95,65 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4162; h=from:subject; bh=zJdgrVS4WPKNsMv/n923x4hX2eFFZRCXrz7VowKS1cU=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBoG5WJrmQvCTYcr+T8H1y4EmzIdyl5yRYjnD55kIc+ qlFS+f6JAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCaBuViQAKCRBM4MiGSL8RypQBEA CsuikSSENz7m44Q70Ty5hKOCg0VL7ckz1M7hVUAy4oFSQyeEntrVX/MvNYkL/rlb+x3gBpFgvumIHX 87OOs+TWQTkC8d3bJq90Q0kqOJ3UQR0Gwe64qIRGF+lS+ESciR8j1EP609OfzF9BIpmkOB2ifAQcP0 uoy42BHHiDmTEJrzpAEdD4218YEAFYzHHLgcJbjahtoEW9P4DI8P033IONa0oVRTVZAEMqeAiCpEnQ iMAjuQwhJJX8OvFymNl1jzcPCDi7z5IKFc7L1DyKDg5i5sTQMpB6ibFSJEUH8rFSU9d8nRRthtj6Ae 8cbqIsWMbChR8hzd5XhDfTdRN5EacWb6JpJe30EWewjzBnMAuQczb610BA57go566Dqzq/cun+SxTb wwlQRf1DdV6SMSZG3RUhZ0J3iPvpOfWqh7ERfbTJXuFDJQwsa+C4rirki1WLsD0AKBZvtRhvdqMCst Jl7Yh5muVGWVShqugpbPZcuOfKgnqM7Kcrl+s/59uXuxrVETkhCMYiPu8tpeL8uJ9VHimdHTIMt74p x5ggIQGwkc2d70mz41o0ov4TmmuRsAGJWWhXoc25AjvfUW8xZKJoJ1JTujWjcxT4sDXQ9kJoVeDDW2 8fiuM1tz6t3a7w5LcJOkVhl1FSnDyYghqhEA2fM+bxaHqMYemE0ZHPPxsT3w==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2037; h=from:subject; bh=wSRaX8acuUEfv5DpSh1axk9fQZNPA17hfl7LY0eZLWc=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBoG5WKQhUakXlKEsMntfYNNnIeeBMDjYUl6FCAzYJE 0QlgHwSJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCaBuVigAKCRBM4MiGSL8Ryoa/EA CzDh4oh9fMfzW9nrXfW2OBKdxXa5mDHihEgxGQXG4dOz5mvCOD2cA6H5Z/qKOsRf0kcpEycOx8MGVv +RGD3XmVG7SvjgxxvRPC5lPxsGXuypYnXIr9XYiGZ6RNbxwE9sVFVL3eoCaRGp9NnWdwdpby4tYefv iqckX9GkxHWgdxBgMoyzHN9Fhc3uP4AARcf5DQD8mdF+z5eOjHRk/tzeovziIXLo+bXfJ0O4cihQSC AGnhbyq2iWq2+xDmmenSMxHyI7glndMGvkIEO1y0DwmkniRBKEqSaR1aear20S46Cm0UgvBfcC2sjf rHmuv+LyAZKcB2ENXJ3V2dQi9DXGpQ/ohQNPnXmFCnaokSdywxfGLdxWv78C/c78a9acNau4TIL6sL pfq5eJHLXdBb45rqL8APwvyMdj1jc2yjX3G3JlJVN49ZIgwzXz5sUpL/hoD9ya9vOGuYSR0KSoEtVU zFptdqtCwhHeH6hK7LEucr//s2KoCbJiiFyQ1+ywVYM3P0gprQFWSmZ8Qlf+97YuwtEsY/FO+qsMv9 Wd+HpnHGsqLr3psSW8cjikn70OmRu8azUy+jdoL74CqlhWkKO/zJoMbFsb8U/0XRMNTwY01Irc50pj 5mo/1087rjbEuazfH1GUD45EpdKW0964XxPjpPDfcdLNnSl2MK7C9rs/HWWQ==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 
-Begin reporting may_goto timeouts to BPF program's stderr stream.
-Make sure that we don't end up spamming too many errors if the
-program keeps failing repeatedly and filling up the stream, hence
-emit at most 512 error messages from the kernel for a given stream.
+Begin reporting rqspinlock deadlocks and timeout to BPF program's
+stderr.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- include/linux/bpf.h | 21 ++++++++++++++-------
- kernel/bpf/core.c   | 17 ++++++++++++++++-
- kernel/bpf/stream.c |  5 +++++
- 3 files changed, 35 insertions(+), 8 deletions(-)
+ kernel/bpf/rqspinlock.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 46ce05aad0ed..daf95333be78 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1667,6 +1667,7 @@ struct bpf_prog_aux {
- 		struct rcu_head	rcu;
- 	};
- 	struct bpf_stream stream[2];
-+	atomic_t stream_error_cnt;
- };
+diff --git a/kernel/bpf/rqspinlock.c b/kernel/bpf/rqspinlock.c
+index 338305c8852c..888c8e2f9061 100644
+--- a/kernel/bpf/rqspinlock.c
++++ b/kernel/bpf/rqspinlock.c
+@@ -666,6 +666,26 @@ EXPORT_SYMBOL_GPL(resilient_queued_spin_lock_slowpath);
  
- struct bpf_prog {
-@@ -3589,6 +3590,8 @@ void bpf_bprintf_cleanup(struct bpf_bprintf_data *data);
- int bpf_try_get_buffers(struct bpf_bprintf_buffers **bufs);
- void bpf_put_buffers(void);
+ __bpf_kfunc_start_defs();
  
-+#define BPF_PROG_STREAM_ERROR_CNT 512
-+
- void bpf_prog_stream_init(struct bpf_prog *prog);
- void bpf_prog_stream_free(struct bpf_prog *prog);
- 
-@@ -3600,16 +3603,20 @@ int bpf_stream_stage_commit(struct bpf_stream_stage *ss, struct bpf_prog *prog,
- 			    enum bpf_stream_id stream_id);
- int bpf_stream_stage_dump_stack(struct bpf_stream_stage *ss);
- 
-+bool bpf_prog_stream_error_limit(struct bpf_prog *prog);
-+
- #define bpf_stream_printk(...) bpf_stream_stage_printk(&__ss, __VA_ARGS__)
- #define bpf_stream_dump_stack() bpf_stream_stage_dump_stack(&__ss)
- 
--#define bpf_stream_stage(prog, stream_id, expr)                  \
--	({                                                       \
--		struct bpf_stream_stage __ss;                    \
--		bpf_stream_stage_init(&__ss);                    \
--		(expr);                                          \
--		bpf_stream_stage_commit(&__ss, prog, stream_id); \
--		bpf_stream_stage_free(&__ss);                    \
-+#define bpf_stream_stage(prog, stream_id, expr)                          \
-+	({                                                               \
-+		struct bpf_stream_stage __ss;                            \
-+		if (!bpf_prog_stream_error_limit(prog)) {                \
-+			bpf_stream_stage_init(&__ss);                    \
-+			(expr);                                          \
-+			bpf_stream_stage_commit(&__ss, prog, stream_id); \
-+			bpf_stream_stage_free(&__ss);                    \
-+		}                                                        \
- 	})
- 
- #ifdef CONFIG_BPF_LSM
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index dcb665bff22f..d21c304fe829 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -3156,6 +3156,19 @@ u64 __weak arch_bpf_timed_may_goto(void)
- 	return 0;
- }
- 
-+static noinline void bpf_prog_report_may_goto_violation(void)
++static void bpf_prog_report_rqspinlock_violation(const char *str, void *lock, bool irqsave)
 +{
++	struct rqspinlock_held *rqh = this_cpu_ptr(&rqspinlock_held_locks);
 +	struct bpf_prog *prog;
 +
 +	prog = bpf_prog_find_from_stack();
 +	if (!prog)
 +		return;
 +	bpf_stream_stage(prog, BPF_STDERR, ({
-+		bpf_stream_printk("ERROR: Timeout detected for may_goto instruction\n");
++		bpf_stream_printk("ERROR: %s for bpf_res_spin_lock%s\n", str, irqsave ? "_irqsave" : "");
++		bpf_stream_printk("Attempted lock   = 0x%px\n", lock);
++		bpf_stream_printk("Total held locks = %d\n", rqh->cnt);
++		for (int i = 0; i < min(RES_NR_HELD, rqh->cnt); i++)
++			bpf_stream_printk("Held lock[%2d] = 0x%px\n", i, rqh->locks[i]);
 +		bpf_stream_dump_stack();
 +	}));
 +}
 +
- u64 bpf_check_timed_may_goto(struct bpf_timed_may_goto *p)
- {
- 	u64 time = ktime_get_mono_fast_ns();
-@@ -3166,8 +3179,10 @@ u64 bpf_check_timed_may_goto(struct bpf_timed_may_goto *p)
- 		return BPF_MAX_TIMED_LOOPS;
- 	}
- 	/* Check if we've exhausted our time slice, and zero count. */
--	if (time - p->timestamp >= (NSEC_PER_SEC / 4))
-+	if (unlikely(time - p->timestamp >= (NSEC_PER_SEC / 4))) {
-+		bpf_prog_report_may_goto_violation();
- 		return 0;
-+	}
- 	/* Refresh the count for the stack frame. */
- 	return BPF_MAX_TIMED_LOOPS;
- }
-diff --git a/kernel/bpf/stream.c b/kernel/bpf/stream.c
-index a921fb1de319..eaf0574866b1 100644
---- a/kernel/bpf/stream.c
-+++ b/kernel/bpf/stream.c
-@@ -539,3 +539,8 @@ int bpf_stream_stage_dump_stack(struct bpf_stream_stage *ss)
- 	ret = ret ?: ctx.err;
- 	return ret ?: bpf_stream_stage_printk(ss, "\n");
- }
++#define REPORT_STR(ret) ({ (ret) == -ETIMEDOUT ? "Timeout detected" : "AA or ABBA deadlock detected"; })
 +
-+bool bpf_prog_stream_error_limit(struct bpf_prog *prog)
-+{
-+	return atomic_fetch_add(1, &prog->aux->stream_error_cnt) >= BPF_PROG_STREAM_ERROR_CNT;
-+}
+ __bpf_kfunc int bpf_res_spin_lock(struct bpf_res_spin_lock *lock)
+ {
+ 	int ret;
+@@ -676,6 +696,7 @@ __bpf_kfunc int bpf_res_spin_lock(struct bpf_res_spin_lock *lock)
+ 	preempt_disable();
+ 	ret = res_spin_lock((rqspinlock_t *)lock);
+ 	if (unlikely(ret)) {
++		bpf_prog_report_rqspinlock_violation(REPORT_STR(ret), lock, false);
+ 		preempt_enable();
+ 		return ret;
+ 	}
+@@ -698,6 +719,7 @@ __bpf_kfunc int bpf_res_spin_lock_irqsave(struct bpf_res_spin_lock *lock, unsign
+ 	local_irq_save(flags);
+ 	ret = res_spin_lock((rqspinlock_t *)lock);
+ 	if (unlikely(ret)) {
++		bpf_prog_report_rqspinlock_violation(REPORT_STR(ret), lock, true);
+ 		local_irq_restore(flags);
+ 		preempt_enable();
+ 		return ret;
 -- 
 2.47.1
 
