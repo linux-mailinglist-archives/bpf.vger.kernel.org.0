@@ -1,36 +1,36 @@
-Return-Path: <bpf+bounces-57812-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57810-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6952AB0602
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 00:35:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8653AB05FF
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 00:35:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F6201C22AD0
-	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 22:36:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BE7C9E5386
+	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 22:35:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AC7C229B27;
-	Thu,  8 May 2025 22:35:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EEC4227BA9;
+	Thu,  8 May 2025 22:35:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from 69-171-232-180.mail-mxout.facebook.com (69-171-232-180.mail-mxout.facebook.com [69.171.232.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A3E224B28
-	for <bpf@vger.kernel.org>; Thu,  8 May 2025 22:35:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03C62229B27
+	for <bpf@vger.kernel.org>; Thu,  8 May 2025 22:35:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746743753; cv=none; b=BvdAMnNp5bJ1be2jHXKnIFpZMCtnRIg3qr4rShhj0vCSvHMc/sAjmPn1KQzlyYlX2qvkj3LWdVG88WTJRKCmwENz1Zqgff5sQUoJMxaCVBld9+0f3+v9vFhDwn+c775ms0zmSfs/EVtyU+jWtFl32syNzgEKgKREqJ5FLyNVIKM=
+	t=1746743747; cv=none; b=pw8j9GDChOwFdh1Z6PcxGMkuK26EIONjBMm4gnUOTQHOGFGL/Dzc1gxBWmNdoIezxbhJithW2En0ubDp2iYinFLLX/1oXFFpieXaxfjZS0cdq9GT/goaXOC2U7xNoHG3NpdGDSmxWN3Ss3kPfzYz7CyhKPislMtjnjClmX5idik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746743753; c=relaxed/simple;
-	bh=kF6+srUmbh3ZuSQTdunjoPS3symZK33D+/6jiu6YeCw=;
+	s=arc-20240116; t=1746743747; c=relaxed/simple;
+	bh=sKSf6WUjwIqMAxlzggcJLMqsC4MECwBj4KXvz+otc2E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NEC0mwcMRUCJ5oOq1U06fD2nPgvy3pAMqT8Xavs4nVkbkJwbveht5JEJFPzprCYUH7htllFEXVM3PA7zs/PCiQxZ/Dupfcfxm4z355LiV+2628AX1bNxgJLJx2R/PBXtYitHuj+gdrj6W2eVdYPwpzRfBjAqHqtBO2UhOyLMv1E=
+	 MIME-Version; b=dZLLRwFADZqZfJu8+gLxFmqApx3B0yaHJf2726GUh/L4xik5DdYswLaG0VBAIULdkCZejAaknNCTY8duv9Ine0CMwTkNoPcUw/ADrchNtSDgIMlryIOhgFm2yE6+bs3K7/N7pBFmsH+s1/jw63atzhWbt2xgFqPg7irVh7o94yQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
 Received: by devvm16039.vll0.facebook.com (Postfix, from userid 128203)
-	id 7518472233CA; Thu,  8 May 2025 15:35:39 -0700 (PDT)
+	id 8D1017223478; Thu,  8 May 2025 15:35:44 -0700 (PDT)
 From: Yonghong Song <yonghong.song@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -38,9 +38,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	kernel-team@fb.com,
 	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v2 3/4] libbpf: Support link-based cgroup attach with options
-Date: Thu,  8 May 2025 15:35:39 -0700
-Message-ID: <20250508223539.489045-1-yonghong.song@linux.dev>
+Subject: [PATCH bpf-next v2 4/4] selftests/bpf: Add two selftests for mprog API based cgroup progs
+Date: Thu,  8 May 2025 15:35:44 -0700
+Message-ID: <20250508223544.489804-1-yonghong.song@linux.dev>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250508223524.487875-1-yonghong.song@linux.dev>
 References: <20250508223524.487875-1-yonghong.song@linux.dev>
@@ -52,185 +52,924 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Currently libbpf supports bpf_program__attach_cgroup() with signature:
-  LIBBPF_API struct bpf_link *
-  bpf_program__attach_cgroup(const struct bpf_program *prog, int cgroup_f=
-d);
+Two tests are added:
+  - cgroup_mprog_opts, which mimics tc_opts.c ([1]). Both prog and link
+    attach are tested. Some negative tests are also included.
+  - cgroup_mprog_ordering, which actually runs the program with some mpro=
+g
+    API flags.
 
-To support mprog style attachment, additionsl fields like flags,
-relative_{fd,id} and expected_revision are needed.
-
-Add a new API:
-  LIBBPF_API struct bpf_link *
-  bpf_program__attach_cgroup_opts(const struct bpf_program *prog, int cgr=
-oup_fd,
-                                  const struct bpf_cgroup_opts *opts);
-where bpf_cgroup_opts contains all above needed fields.
+  [1] https://github.com/torvalds/linux/blob/master/tools/testing/selftes=
+ts/bpf/prog_tests/tc_opts.c
 
 Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 ---
- tools/lib/bpf/bpf.c      | 44 ++++++++++++++++++++++++++++++++++++++++
- tools/lib/bpf/bpf.h      |  5 +++++
- tools/lib/bpf/libbpf.c   | 28 +++++++++++++++++++++++++
- tools/lib/bpf/libbpf.h   | 15 ++++++++++++++
- tools/lib/bpf/libbpf.map |  1 +
- 5 files changed, 93 insertions(+)
+ .../bpf/prog_tests/cgroup_mprog_opts.c        | 752 ++++++++++++++++++
+ .../bpf/prog_tests/cgroup_mprog_ordering.c    |  77 ++
+ .../selftests/bpf/progs/cgroup_mprog.c        |  30 +
+ 3 files changed, 859 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_mprog_o=
+pts.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_mprog_o=
+rdering.c
+ create mode 100644 tools/testing/selftests/bpf/progs/cgroup_mprog.c
 
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index a9c3e33d0f8a..6eb421ccf91b 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -837,6 +837,50 @@ int bpf_link_create(int prog_fd, int target_fd,
- 		if (!OPTS_ZEROED(opts, netkit))
- 			return libbpf_err(-EINVAL);
- 		break;
-+	case BPF_CGROUP_INET_INGRESS:
-+	case BPF_CGROUP_INET_EGRESS:
-+	case BPF_CGROUP_INET_SOCK_CREATE:
-+	case BPF_CGROUP_INET_SOCK_RELEASE:
-+	case BPF_CGROUP_INET4_BIND:
-+	case BPF_CGROUP_INET6_BIND:
-+	case BPF_CGROUP_INET4_POST_BIND:
-+	case BPF_CGROUP_INET6_POST_BIND:
-+	case BPF_CGROUP_INET4_CONNECT:
-+	case BPF_CGROUP_INET6_CONNECT:
-+	case BPF_CGROUP_UNIX_CONNECT:
-+	case BPF_CGROUP_INET4_GETPEERNAME:
-+	case BPF_CGROUP_INET6_GETPEERNAME:
-+	case BPF_CGROUP_UNIX_GETPEERNAME:
-+	case BPF_CGROUP_INET4_GETSOCKNAME:
-+	case BPF_CGROUP_INET6_GETSOCKNAME:
-+	case BPF_CGROUP_UNIX_GETSOCKNAME:
-+	case BPF_CGROUP_UDP4_SENDMSG:
-+	case BPF_CGROUP_UDP6_SENDMSG:
-+	case BPF_CGROUP_UNIX_SENDMSG:
-+	case BPF_CGROUP_UDP4_RECVMSG:
-+	case BPF_CGROUP_UDP6_RECVMSG:
-+	case BPF_CGROUP_UNIX_RECVMSG:
-+	case BPF_CGROUP_SOCK_OPS:
-+	case BPF_CGROUP_DEVICE:
-+	case BPF_CGROUP_SYSCTL:
-+	case BPF_CGROUP_GETSOCKOPT:
-+	case BPF_CGROUP_SETSOCKOPT:
-+	case BPF_LSM_CGROUP:
-+		relative_fd =3D OPTS_GET(opts, cgroup.relative_fd, 0);
-+		relative_id =3D OPTS_GET(opts, cgroup.relative_id, 0);
-+		if (relative_fd && relative_id)
-+			return libbpf_err(-EINVAL);
-+		if (relative_id) {
-+			attr.link_create.cgroup.relative_id =3D relative_id;
-+			attr.link_create.flags |=3D BPF_F_ID;
-+		} else {
-+			attr.link_create.cgroup.relative_fd =3D relative_fd;
-+		}
-+		attr.link_create.cgroup.expected_revision =3D
-+			OPTS_GET(opts, cgroup.expected_revision, 0);
-+		if (!OPTS_ZEROED(opts, cgroup))
-+			return libbpf_err(-EINVAL);
-+		break;
- 	default:
- 		if (!OPTS_ZEROED(opts, flags))
- 			return libbpf_err(-EINVAL);
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index 777627d33d25..1342564214c8 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -438,6 +438,11 @@ struct bpf_link_create_opts {
- 			__u32 relative_id;
- 			__u64 expected_revision;
- 		} netkit;
-+		struct {
-+			__u32 relative_fd;
-+			__u32 relative_id;
-+			__u64 expected_revision;
-+		} cgroup;
- 	};
- 	size_t :0;
- };
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 617cfb9a7ff5..90b0e5e4e2d6 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -12837,6 +12837,34 @@ struct bpf_link *bpf_program__attach_xdp(const s=
-truct bpf_program *prog, int ifi
- 	return bpf_program_attach_fd(prog, ifindex, "xdp", NULL);
- }
-=20
-+struct bpf_link *
-+bpf_program__attach_cgroup_opts(const struct bpf_program *prog, int cgro=
-up_fd,
-+				const struct bpf_cgroup_opts *opts)
+diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_mprog_opts.c b=
+/tools/testing/selftests/bpf/prog_tests/cgroup_mprog_opts.c
+new file mode 100644
+index 000000000000..a8374ea2267b
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/cgroup_mprog_opts.c
+@@ -0,0 +1,752 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
++#include <test_progs.h>
++#include "cgroup_helpers.h"
++#include "cgroup_mprog.skel.h"
++
++static __u32 id_from_prog_fd(int fd)
 +{
-+	LIBBPF_OPTS(bpf_link_create_opts, link_create_opts);
-+	__u32 relative_id;
-+	int relative_fd;
++	struct bpf_prog_info prog_info =3D {};
++	__u32 prog_info_len =3D sizeof(prog_info);
++	int err;
 +
-+	if (!OPTS_VALID(opts, bpf_cgroup_opts))
-+		return libbpf_err_ptr(-EINVAL);
++	err =3D bpf_obj_get_info_by_fd(fd, &prog_info, &prog_info_len);
++	if (!ASSERT_OK(err, "id_from_prog_fd"))
++		return 0;
 +
-+	relative_id =3D OPTS_GET(opts, relative_id, 0);
-+	relative_fd =3D OPTS_GET(opts, relative_fd, 0);
-+
-+	if (relative_fd && relative_id) {
-+		pr_warn("prog '%s': relative_fd and relative_id cannot be set at the s=
-ame time\n",
-+			prog->name);
-+		return libbpf_err_ptr(-EINVAL);
-+	}
-+
-+	link_create_opts.cgroup.expected_revision =3D OPTS_GET(opts, expected_r=
-evision, 0);
-+	link_create_opts.cgroup.relative_fd =3D relative_fd;
-+	link_create_opts.cgroup.relative_id =3D relative_id;
-+	link_create_opts.flags =3D OPTS_GET(opts, flags, 0);
-+
-+	return bpf_program_attach_fd(prog, cgroup_fd, "cgroup", &link_create_op=
-ts);
++	ASSERT_NEQ(prog_info.id, 0, "prog_info.id");
++	return prog_info.id;
 +}
 +
- struct bpf_link *
- bpf_program__attach_tcx(const struct bpf_program *prog, int ifindex,
- 			const struct bpf_tcx_opts *opts)
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index d39f19c8396d..622de1b932ee 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -877,6 +877,21 @@ LIBBPF_API struct bpf_link *
- bpf_program__attach_netkit(const struct bpf_program *prog, int ifindex,
- 			   const struct bpf_netkit_opts *opts);
-=20
-+struct bpf_cgroup_opts {
-+	/* size of this struct, for forward/backward compatibility */
-+	size_t sz;
-+	__u32 flags;
-+	__u32 relative_fd;
-+	__u32 relative_id;
-+	__u64 expected_revision;
-+	size_t :0;
-+};
-+#define bpf_cgroup_opts__last_field expected_revision
++static void assert_mprog_count(int cg, int atype, int expected)
++{
++	__u32 count =3D 0, attach_flags =3D 0;
++	int err;
 +
-+LIBBPF_API struct bpf_link *
-+bpf_program__attach_cgroup_opts(const struct bpf_program *prog, int cgro=
-up_fd,
-+				const struct bpf_cgroup_opts *opts);
++	err =3D bpf_prog_query(cg, atype, 0, &attach_flags,
++			     NULL, &count);
++	ASSERT_EQ(count, expected, "count");
++	ASSERT_EQ(err, 0, "prog_query");
++}
 +
- struct bpf_map;
-=20
- LIBBPF_API struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_=
-map *map);
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 1205f9a4fe04..c7fc0bde5648 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -437,6 +437,7 @@ LIBBPF_1.6.0 {
- 		bpf_linker__add_fd;
- 		bpf_linker__new_fd;
- 		bpf_object__prepare;
-+		bpf_program__attach_cgroup_opts;
- 		bpf_program__func_info;
- 		bpf_program__func_info_cnt;
- 		bpf_program__line_info;
++static void test_prog_attach_detach(int atype)
++{
++	LIBBPF_OPTS(bpf_prog_attach_opts, opta);
++	LIBBPF_OPTS(bpf_prog_detach_opts, optd);
++	LIBBPF_OPTS(bpf_prog_query_opts, optq);
++	__u32 fd1, fd2, fd3, fd4, id1, id2, id3, id4;
++	struct cgroup_mprog *skel;
++	__u32 prog_ids[10];
++	int cg, err;
++
++	cg =3D test__join_cgroup("/prog_attach_detach");
++	if (!ASSERT_GE(cg, 0, "join_cgroup /prog_attach_detach"))
++		return;
++
++	skel =3D cgroup_mprog__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "skel_load"))
++		goto cleanup;
++
++	fd1 =3D bpf_program__fd(skel->progs.getsockopt_1);
++	fd2 =3D bpf_program__fd(skel->progs.getsockopt_2);
++	fd3 =3D bpf_program__fd(skel->progs.getsockopt_3);
++	fd4 =3D bpf_program__fd(skel->progs.getsockopt_4);
++
++	id1 =3D id_from_prog_fd(fd1);
++	id2 =3D id_from_prog_fd(fd2);
++	id3 =3D id_from_prog_fd(fd3);
++	id4 =3D id_from_prog_fd(fd4);
++
++	assert_mprog_count(cg, atype, 0);
++
++	LIBBPF_OPTS_RESET(opta,
++		.flags =3D BPF_F_ALLOW_MULTI,
++		.expected_revision =3D 1,
++	);
++
++	/* ordering: [fd1] */
++	err =3D bpf_prog_attach_opts(fd1, cg, atype, &opta);
++	if (!ASSERT_EQ(err, 0, "prog_attach"))
++		goto cleanup;
++
++	assert_mprog_count(cg, atype, 1);
++
++	LIBBPF_OPTS_RESET(opta,
++		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_BEFORE,
++		.expected_revision =3D 2,
++	);
++
++	/* ordering: [fd2, fd1] */
++	err =3D bpf_prog_attach_opts(fd2, cg, atype, &opta);
++	if (!ASSERT_EQ(err, 0, "prog_attach"))
++		goto cleanup1;
++
++	assert_mprog_count(cg, atype, 2);
++
++	LIBBPF_OPTS_RESET(opta,
++		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_AFTER,
++		.relative_fd =3D fd2,
++		.expected_revision =3D 3,
++	);
++
++	/* ordering: [fd2, fd3, fd1] */
++	err =3D bpf_prog_attach_opts(fd3, cg, atype, &opta);
++	if (!ASSERT_EQ(err, 0, "prog_attach"))
++		goto cleanup2;
++
++	assert_mprog_count(cg, atype, 3);
++
++	LIBBPF_OPTS_RESET(opta,
++		.flags =3D BPF_F_ALLOW_MULTI,
++		.expected_revision =3D 4,
++	);
++
++	/* ordering: [fd2, fd3, fd1, fd4] */
++	err =3D bpf_prog_attach_opts(fd4, cg, atype, &opta);
++	if (!ASSERT_EQ(err, 0, "prog_attach"))
++		goto cleanup3;
++
++	assert_mprog_count(cg, atype, 4);
++
++	/* retrieve optq.prog_cnt */
++	err =3D bpf_prog_query_opts(cg, atype, &optq);
++	if (!ASSERT_OK(err, "prog_query"))
++		goto cleanup4;
++
++	/* optq.prog_cnt will be used in below query */
++	memset(prog_ids, 0, sizeof(prog_ids));
++	optq.prog_ids =3D prog_ids;
++	err =3D bpf_prog_query_opts(cg, atype, &optq);
++	if (!ASSERT_OK(err, "prog_query"))
++		goto cleanup4;
++
++	ASSERT_EQ(optq.count, 4, "count");
++	ASSERT_EQ(optq.revision, 5, "revision");
++	ASSERT_EQ(optq.prog_ids[0], id2, "prog_ids[0]");
++	ASSERT_EQ(optq.prog_ids[1], id3, "prog_ids[1]");
++	ASSERT_EQ(optq.prog_ids[2], id1, "prog_ids[2]");
++	ASSERT_EQ(optq.prog_ids[3], id4, "prog_ids[3]");
++	ASSERT_EQ(optq.prog_ids[4], 0, "prog_ids[4]");
++	ASSERT_EQ(optq.link_ids, NULL, "link_ids");
++
++cleanup4:
++	optd.expected_revision =3D 5;
++	err =3D bpf_prog_detach_opts(fd4, cg, atype, &optd);
++	ASSERT_OK(err, "prog_detach");
++	assert_mprog_count(cg, atype, 3);
++
++cleanup3:
++	LIBBPF_OPTS_RESET(optd);
++	err =3D bpf_prog_detach_opts(fd3, cg, atype, &optd);
++	ASSERT_OK(err, "prog_detach");
++	assert_mprog_count(cg, atype, 2);
++
++	/* Check revision after two detach operations */
++	err =3D bpf_prog_query_opts(cg, atype, &optq);
++	ASSERT_OK(err, "prog_query");
++	ASSERT_EQ(optq.revision, 7, "revision");
++
++cleanup2:
++	err =3D bpf_prog_detach_opts(fd2, cg, atype, &optd);
++	ASSERT_OK(err, "prog_detach");
++	assert_mprog_count(cg, atype, 1);
++
++cleanup1:
++	err =3D bpf_prog_detach_opts(fd1, cg, atype, &optd);
++	ASSERT_OK(err, "prog_detach");
++	assert_mprog_count(cg, atype, 0);
++
++cleanup:
++	cgroup_mprog__destroy(skel);
++	close(cg);
++}
++
++static void test_link_attach_detach(int atype)
++{
++	LIBBPF_OPTS(bpf_cgroup_opts, opta);
++	LIBBPF_OPTS(bpf_cgroup_opts, optd);
++	LIBBPF_OPTS(bpf_prog_query_opts, optq);
++	struct bpf_link *link1, *link2, *link3, *link4;
++	__u32 fd1, fd2, fd3, fd4, id1, id2, id3, id4;
++	struct cgroup_mprog *skel;
++	__u32 prog_ids[10];
++	int cg, err;
++
++	cg =3D test__join_cgroup("/link_attach_detach");
++	if (!ASSERT_GE(cg, 0, "join_cgroup /link_attach_detach"))
++		return;
++
++	skel =3D cgroup_mprog__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "skel_load"))
++		goto cleanup;
++
++	fd1 =3D bpf_program__fd(skel->progs.getsockopt_1);
++	fd2 =3D bpf_program__fd(skel->progs.getsockopt_2);
++	fd3 =3D bpf_program__fd(skel->progs.getsockopt_3);
++	fd4 =3D bpf_program__fd(skel->progs.getsockopt_4);
++
++	id1 =3D id_from_prog_fd(fd1);
++	id2 =3D id_from_prog_fd(fd2);
++	id3 =3D id_from_prog_fd(fd3);
++	id4 =3D id_from_prog_fd(fd4);
++
++	assert_mprog_count(cg, atype, 0);
++
++	LIBBPF_OPTS_RESET(opta,
++		.expected_revision =3D 1,
++	);
++
++	/* ordering: [fd1] */
++	link1 =3D bpf_program__attach_cgroup_opts(skel->progs.getsockopt_1, cg,=
+ &opta);
++	if (!ASSERT_OK_PTR(link1, "link_attach"))
++		goto cleanup;
++
++	assert_mprog_count(cg, atype, 1);
++
++	LIBBPF_OPTS_RESET(opta,
++		.flags =3D BPF_F_BEFORE,
++		.expected_revision =3D 2,
++	);
++
++	/* ordering: [fd2, fd1] */
++	link2 =3D bpf_program__attach_cgroup_opts(skel->progs.getsockopt_2, cg,=
+ &opta);
++	if (!ASSERT_OK_PTR(link2, "link_attach"))
++		goto cleanup1;
++
++	assert_mprog_count(cg, atype, 2);
++
++	LIBBPF_OPTS_RESET(opta,
++		.flags =3D BPF_F_AFTER,
++		.relative_fd =3D fd2,
++		.expected_revision =3D 3,
++	);
++
++	/* ordering: [fd2, fd3, fd1] */
++	link3 =3D bpf_program__attach_cgroup_opts(skel->progs.getsockopt_3, cg,=
+ &opta);
++	if (!ASSERT_OK_PTR(link3, "link_attach"))
++		goto cleanup2;
++
++	assert_mprog_count(cg, atype, 3);
++
++	LIBBPF_OPTS_RESET(opta,
++		.expected_revision =3D 4,
++	);
++
++	/* ordering: [fd2, fd3, fd1, fd4] */
++	link4 =3D bpf_program__attach_cgroup_opts(skel->progs.getsockopt_4, cg,=
+ &opta);
++	if (!ASSERT_OK_PTR(link4, "link_attach"))
++		goto cleanup3;
++
++	assert_mprog_count(cg, atype, 4);
++
++	/* retrieve optq.prog_cnt */
++	err =3D bpf_prog_query_opts(cg, atype, &optq);
++	if (!ASSERT_OK(err, "prog_query"))
++		goto cleanup4;
++
++	/* optq.prog_cnt will be used in below query */
++	memset(prog_ids, 0, sizeof(prog_ids));
++	optq.prog_ids =3D prog_ids;
++	err =3D bpf_prog_query_opts(cg, atype, &optq);
++	if (!ASSERT_OK(err, "prog_query"))
++		goto cleanup4;
++
++	ASSERT_EQ(optq.count, 4, "count");
++	ASSERT_EQ(optq.revision, 5, "revision");
++	ASSERT_EQ(optq.prog_ids[0], id2, "prog_ids[0]");
++	ASSERT_EQ(optq.prog_ids[1], id3, "prog_ids[1]");
++	ASSERT_EQ(optq.prog_ids[2], id1, "prog_ids[2]");
++	ASSERT_EQ(optq.prog_ids[3], id4, "prog_ids[3]");
++	ASSERT_EQ(optq.prog_ids[4], 0, "prog_ids[4]");
++	ASSERT_EQ(optq.link_ids, NULL, "link_ids");
++
++cleanup4:
++	bpf_link__destroy(link4);
++	assert_mprog_count(cg, atype, 3);
++
++cleanup3:
++	bpf_link__destroy(link3);
++	assert_mprog_count(cg, atype, 2);
++
++	/* Check revision after two detach operations */
++	err =3D bpf_prog_query_opts(cg, atype, &optq);
++	ASSERT_OK(err, "prog_query");
++	ASSERT_EQ(optq.revision, 7, "revision");
++
++cleanup2:
++	bpf_link__destroy(link2);
++	assert_mprog_count(cg, atype, 1);
++
++cleanup1:
++	bpf_link__destroy(link1);
++	assert_mprog_count(cg, atype, 0);
++
++cleanup:
++	cgroup_mprog__destroy(skel);
++	close(cg);
++}
++
++static void test_mix_attach_detach(int atype)
++{
++	LIBBPF_OPTS(bpf_cgroup_opts, lopta);
++	LIBBPF_OPTS(bpf_cgroup_opts, loptd);
++	LIBBPF_OPTS(bpf_prog_attach_opts, opta);
++	LIBBPF_OPTS(bpf_prog_detach_opts, optd);
++	LIBBPF_OPTS(bpf_prog_query_opts, optq);
++	__u32 fd1, fd2, fd3, fd4, id1, id2, id3, id4;
++	struct bpf_link *link2, *link4;
++	struct cgroup_mprog *skel;
++	__u32 prog_ids[10];
++	int cg, err;
++
++	cg =3D test__join_cgroup("/mix_attach_detach");
++	if (!ASSERT_GE(cg, 0, "join_cgroup /mix_attach_detach"))
++		return;
++
++	skel =3D cgroup_mprog__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "skel_load"))
++		goto cleanup;
++
++	fd1 =3D bpf_program__fd(skel->progs.getsockopt_1);
++	fd2 =3D bpf_program__fd(skel->progs.getsockopt_2);
++	fd3 =3D bpf_program__fd(skel->progs.getsockopt_3);
++	fd4 =3D bpf_program__fd(skel->progs.getsockopt_4);
++
++	id1 =3D id_from_prog_fd(fd1);
++	id2 =3D id_from_prog_fd(fd2);
++	id3 =3D id_from_prog_fd(fd3);
++	id4 =3D id_from_prog_fd(fd4);
++
++	assert_mprog_count(cg, atype, 0);
++
++	LIBBPF_OPTS_RESET(opta,
++		.flags =3D BPF_F_ALLOW_MULTI,
++		.expected_revision =3D 1,
++	);
++
++	/* ordering: [fd1] */
++	err =3D bpf_prog_attach_opts(fd1, cg, atype, &opta);
++	if (!ASSERT_EQ(err, 0, "prog_attach"))
++		goto cleanup;
++
++	assert_mprog_count(cg, atype, 1);
++
++	LIBBPF_OPTS_RESET(lopta,
++		.flags =3D BPF_F_BEFORE,
++		.expected_revision =3D 2,
++	);
++
++	/* ordering: [fd2, fd1] */
++	link2 =3D bpf_program__attach_cgroup_opts(skel->progs.getsockopt_2, cg,=
+ &lopta);
++	if (!ASSERT_OK_PTR(link2, "link_attach"))
++		goto cleanup1;
++
++	assert_mprog_count(cg, atype, 2);
++
++	LIBBPF_OPTS_RESET(opta,
++		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_AFTER,
++		.relative_fd =3D fd2,
++		.expected_revision =3D 3,
++	);
++
++	/* ordering: [fd2, fd3, fd1] */
++	err =3D bpf_prog_attach_opts(fd3, cg, atype, &opta);
++	if (!ASSERT_EQ(err, 0, "prog_attach"))
++		goto cleanup2;
++
++	assert_mprog_count(cg, atype, 3);
++
++	LIBBPF_OPTS_RESET(lopta,
++		.expected_revision =3D 4,
++	);
++
++	/* ordering: [fd2, fd3, fd1, fd4] */
++	link4 =3D bpf_program__attach_cgroup_opts(skel->progs.getsockopt_4, cg,=
+ &lopta);
++	if (!ASSERT_OK_PTR(link4, "link_attach"))
++		goto cleanup3;
++
++	assert_mprog_count(cg, atype, 4);
++
++	/* retrieve optq.prog_cnt */
++	err =3D bpf_prog_query_opts(cg, atype, &optq);
++	if (!ASSERT_OK(err, "prog_query"))
++		goto cleanup4;
++
++	/* optq.prog_cnt will be used in below query */
++	memset(prog_ids, 0, sizeof(prog_ids));
++	optq.prog_ids =3D prog_ids;
++	err =3D bpf_prog_query_opts(cg, atype, &optq);
++	if (!ASSERT_OK(err, "prog_query"))
++		goto cleanup4;
++
++	ASSERT_EQ(optq.count, 4, "count");
++	ASSERT_EQ(optq.revision, 5, "revision");
++	ASSERT_EQ(optq.prog_ids[0], id2, "prog_ids[0]");
++	ASSERT_EQ(optq.prog_ids[1], id3, "prog_ids[1]");
++	ASSERT_EQ(optq.prog_ids[2], id1, "prog_ids[2]");
++	ASSERT_EQ(optq.prog_ids[3], id4, "prog_ids[3]");
++	ASSERT_EQ(optq.prog_ids[4], 0, "prog_ids[4]");
++	ASSERT_EQ(optq.link_ids, NULL, "link_ids");
++
++cleanup4:
++	bpf_link__destroy(link4);
++	assert_mprog_count(cg, atype, 3);
++
++cleanup3:
++	err =3D bpf_prog_detach_opts(fd3, cg, atype, &optd);
++	ASSERT_OK(err, "prog_detach");
++	assert_mprog_count(cg, atype, 2);
++
++	/* Check revision after two detach operations */
++	err =3D bpf_prog_query_opts(cg, atype, &optq);
++	ASSERT_OK(err, "prog_query");
++	ASSERT_EQ(optq.revision, 7, "revision");
++
++cleanup2:
++	bpf_link__destroy(link2);
++	assert_mprog_count(cg, atype, 1);
++
++cleanup1:
++	err =3D bpf_prog_detach_opts(fd1, cg, atype, &optd);
++	ASSERT_OK(err, "prog_detach");
++	assert_mprog_count(cg, atype, 0);
++
++cleanup:
++	cgroup_mprog__destroy(skel);
++	close(cg);
++}
++
++static void test_preorder_prog_attach_detach(int atype)
++{
++	LIBBPF_OPTS(bpf_prog_attach_opts, opta);
++	LIBBPF_OPTS(bpf_prog_detach_opts, optd);
++	__u32 fd1, fd2, fd3, fd4;
++	struct cgroup_mprog *skel;
++	int cg, err;
++
++	cg =3D test__join_cgroup("/preorder_prog_attach_detach");
++	if (!ASSERT_GE(cg, 0, "join_cgroup /preorder_prog_attach_detach"))
++		return;
++
++	skel =3D cgroup_mprog__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "skel_load"))
++		goto cleanup;
++
++	fd1 =3D bpf_program__fd(skel->progs.getsockopt_1);
++	fd2 =3D bpf_program__fd(skel->progs.getsockopt_2);
++	fd3 =3D bpf_program__fd(skel->progs.getsockopt_3);
++	fd4 =3D bpf_program__fd(skel->progs.getsockopt_4);
++
++	assert_mprog_count(cg, atype, 0);
++
++	LIBBPF_OPTS_RESET(opta,
++		.flags =3D BPF_F_ALLOW_MULTI,
++		.expected_revision =3D 1,
++	);
++
++	/* ordering: [fd1] */
++	err =3D bpf_prog_attach_opts(fd1, cg, atype, &opta);
++	if (!ASSERT_EQ(err, 0, "prog_attach"))
++		goto cleanup;
++
++	assert_mprog_count(cg, atype, 1);
++
++	LIBBPF_OPTS_RESET(opta,
++		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_PREORDER,
++		.expected_revision =3D 2,
++	);
++
++	/* ordering: [fd1, fd2] */
++	err =3D bpf_prog_attach_opts(fd2, cg, atype, &opta);
++	if (!ASSERT_EQ(err, 0, "prog_attach"))
++		goto cleanup1;
++
++	assert_mprog_count(cg, atype, 2);
++
++	LIBBPF_OPTS_RESET(opta,
++		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_AFTER,
++		.relative_fd =3D fd2,
++		.expected_revision =3D 3,
++	);
++
++	err =3D bpf_prog_attach_opts(fd3, cg, atype, &opta);
++	if (!ASSERT_EQ(err, -EINVAL, "prog_attach"))
++		goto cleanup2;
++
++	assert_mprog_count(cg, atype, 2);
++
++	LIBBPF_OPTS_RESET(opta,
++		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_AFTER | BPF_F_PREORDER,
++		.relative_fd =3D fd2,
++		.expected_revision =3D 3,
++	);
++
++	/* ordering: [fd1, fd2, fd3] */
++	err =3D bpf_prog_attach_opts(fd3, cg, atype, &opta);
++	if (!ASSERT_EQ(err, 0, "prog_attach"))
++		goto cleanup2;
++
++	assert_mprog_count(cg, atype, 3);
++
++	LIBBPF_OPTS_RESET(opta,
++		.flags =3D BPF_F_ALLOW_MULTI,
++		.expected_revision =3D 4,
++	);
++
++	/* ordering: [fd2, fd3, fd1, fd4] */
++	err =3D bpf_prog_attach_opts(fd4, cg, atype, &opta);
++	if (!ASSERT_EQ(err, 0, "prog_attach"))
++		goto cleanup3;
++
++	assert_mprog_count(cg, atype, 4);
++
++	err =3D bpf_prog_detach_opts(fd4, cg, atype, &optd);
++	ASSERT_OK(err, "prog_detach");
++	assert_mprog_count(cg, atype, 3);
++
++cleanup3:
++	err =3D bpf_prog_detach_opts(fd3, cg, atype, &optd);
++	ASSERT_OK(err, "prog_detach");
++	assert_mprog_count(cg, atype, 2);
++
++cleanup2:
++	err =3D bpf_prog_detach_opts(fd2, cg, atype, &optd);
++	ASSERT_OK(err, "prog_detach");
++	assert_mprog_count(cg, atype, 1);
++
++cleanup1:
++	err =3D bpf_prog_detach_opts(fd1, cg, atype, &optd);
++	ASSERT_OK(err, "prog_detach");
++	assert_mprog_count(cg, atype, 0);
++
++cleanup:
++	cgroup_mprog__destroy(skel);
++	close(cg);
++}
++
++static void test_preorder_link_attach_detach(int atype)
++{
++	LIBBPF_OPTS(bpf_cgroup_opts, opta);
++	struct bpf_link *link1, *link2, *link3, *link4;
++	struct cgroup_mprog *skel;
++	__u32 fd2;
++	int cg;
++
++	cg =3D test__join_cgroup("/preorder_link_attach_detach");
++	if (!ASSERT_GE(cg, 0, "join_cgroup /preorder_link_attach_detach"))
++		return;
++
++	skel =3D cgroup_mprog__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "skel_load"))
++		goto cleanup;
++
++	fd2 =3D bpf_program__fd(skel->progs.getsockopt_2);
++
++	assert_mprog_count(cg, atype, 0);
++
++	LIBBPF_OPTS_RESET(opta,
++		.expected_revision =3D 1,
++	);
++
++	/* ordering: [fd1] */
++	link1 =3D bpf_program__attach_cgroup_opts(skel->progs.getsockopt_1, cg,=
+ &opta);
++	if (!ASSERT_OK_PTR(link1, "link_attach"))
++		goto cleanup;
++
++	assert_mprog_count(cg, atype, 1);
++
++	LIBBPF_OPTS_RESET(opta,
++		.flags =3D BPF_F_PREORDER,
++		.expected_revision =3D 2,
++	);
++
++	/* ordering: [fd1, fd2] */
++	link2 =3D bpf_program__attach_cgroup_opts(skel->progs.getsockopt_2, cg,=
+ &opta);
++	if (!ASSERT_OK_PTR(link2, "link_attach"))
++		goto cleanup1;
++
++	assert_mprog_count(cg, atype, 2);
++
++	LIBBPF_OPTS_RESET(opta,
++		.flags =3D BPF_F_AFTER,
++		.relative_fd =3D fd2,
++		.expected_revision =3D 3,
++	);
++
++	link3 =3D bpf_program__attach_cgroup_opts(skel->progs.getsockopt_3, cg,=
+ &opta);
++	if (!ASSERT_ERR_PTR(link3, "link_attach"))
++		goto cleanup2;
++
++	assert_mprog_count(cg, atype, 2);
++
++	LIBBPF_OPTS_RESET(opta,
++		.flags =3D BPF_F_AFTER | BPF_F_PREORDER,
++		.relative_fd =3D fd2,
++		.expected_revision =3D 3,
++	);
++
++	/* ordering: [fd1, fd2, fd3] */
++	link3 =3D bpf_program__attach_cgroup_opts(skel->progs.getsockopt_3, cg,=
+ &opta);
++	if (!ASSERT_OK_PTR(link3, "link_attach"))
++		goto cleanup2;
++
++	assert_mprog_count(cg, atype, 3);
++
++	LIBBPF_OPTS_RESET(opta,
++		.expected_revision =3D 4,
++	);
++
++	/* ordering: [fd2, fd3, fd1, fd4] */
++	link4 =3D bpf_program__attach_cgroup_opts(skel->progs.getsockopt_4, cg,=
+ &opta);
++	if (!ASSERT_OK_PTR(link4, "prog_attach"))
++		goto cleanup3;
++
++	assert_mprog_count(cg, atype, 4);
++
++	bpf_link__destroy(link4);
++	assert_mprog_count(cg, atype, 3);
++
++cleanup3:
++	bpf_link__destroy(link3);
++	assert_mprog_count(cg, atype, 2);
++
++cleanup2:
++	bpf_link__destroy(link2);
++	assert_mprog_count(cg, atype, 1);
++
++cleanup1:
++	bpf_link__destroy(link1);
++	assert_mprog_count(cg, atype, 0);
++
++cleanup:
++	cgroup_mprog__destroy(skel);
++	close(cg);
++}
++
++static void test_invalid_attach_detach(int atype)
++{
++	LIBBPF_OPTS(bpf_prog_attach_opts, opta);
++	__u32 fd1, fd2, id2;
++	struct cgroup_mprog *skel;
++	int cg, err;
++
++	cg =3D test__join_cgroup("/invalid_attach_detach");
++	if (!ASSERT_GE(cg, 0, "join_cgroup /invalid_attach_detach"))
++		return;
++
++	skel =3D cgroup_mprog__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "skel_load"))
++		goto cleanup;
++
++	fd1 =3D bpf_program__fd(skel->progs.getsockopt_1);
++	fd2 =3D bpf_program__fd(skel->progs.getsockopt_2);
++
++	id2 =3D id_from_prog_fd(fd2);
++
++	assert_mprog_count(cg, atype, 0);
++
++	LIBBPF_OPTS_RESET(opta,
++		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_BEFORE | BPF_F_AFTER,
++	);
++
++	err =3D bpf_prog_attach_opts(fd1, cg, atype, &opta);
++	ASSERT_EQ(err, -EINVAL, "prog_attach");
++	assert_mprog_count(cg, atype, 0);
++
++	LIBBPF_OPTS_RESET(opta,
++		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_BEFORE | BPF_F_ID,
++	);
++
++	err =3D bpf_prog_attach_opts(fd1, cg, atype, &opta);
++	ASSERT_EQ(err, -ENOENT, "prog_attach");
++	assert_mprog_count(cg, atype, 0);
++
++	LIBBPF_OPTS_RESET(opta,
++		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_AFTER | BPF_F_ID,
++	);
++
++	err =3D bpf_prog_attach_opts(fd1, cg, atype, &opta);
++	ASSERT_EQ(err, -ENOENT, "prog_attach");
++	assert_mprog_count(cg, atype, 0);
++
++	LIBBPF_OPTS_RESET(opta,
++		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_BEFORE | BPF_F_AFTER,
++		.relative_id =3D id2,
++	);
++
++	err =3D bpf_prog_attach_opts(fd1, cg, atype, &opta);
++	ASSERT_EQ(err, -EINVAL, "prog_attach");
++	assert_mprog_count(cg, atype, 0);
++
++	LIBBPF_OPTS_RESET(opta,
++		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_ID,
++		.relative_id =3D id2,
++	);
++
++	err =3D bpf_prog_attach_opts(fd1, cg, atype, &opta);
++	ASSERT_EQ(err, -EINVAL, "prog_attach");
++	assert_mprog_count(cg, atype, 0);
++
++	LIBBPF_OPTS_RESET(opta,
++		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_BEFORE,
++		.relative_fd =3D fd1,
++	);
++
++	err =3D bpf_prog_attach_opts(fd1, cg, atype, &opta);
++	ASSERT_EQ(err, -ENOENT, "prog_attach");
++	assert_mprog_count(cg, atype, 0);
++
++	LIBBPF_OPTS_RESET(opta,
++		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_AFTER,
++		.relative_fd =3D fd1,
++	);
++
++	err =3D bpf_prog_attach_opts(fd1, cg, atype, &opta);
++	ASSERT_EQ(err, -ENOENT, "prog_attach");
++	assert_mprog_count(cg, atype, 0);
++
++	LIBBPF_OPTS_RESET(opta,
++		.flags =3D BPF_F_ALLOW_MULTI,
++	);
++
++	err =3D bpf_prog_attach_opts(fd1, cg, atype, &opta);
++	if (!ASSERT_EQ(err, 0, "prog_attach"))
++		goto cleanup;
++	assert_mprog_count(cg, atype, 1);
++
++	LIBBPF_OPTS_RESET(opta,
++		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_AFTER,
++	);
++
++	err =3D bpf_prog_attach_opts(fd1, cg, atype, &opta);
++	ASSERT_EQ(err, -EINVAL, "prog_attach");
++	assert_mprog_count(cg, atype, 1);
++
++	LIBBPF_OPTS_RESET(opta,
++		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_REPLACE | BPF_F_AFTER,
++		.replace_prog_fd =3D fd1,
++	);
++
++	err =3D bpf_prog_attach_opts(fd1, cg, atype, &opta);
++	ASSERT_EQ(err, -EINVAL, "prog_attach");
++	assert_mprog_count(cg, atype, 1);
++cleanup:
++	cgroup_mprog__destroy(skel);
++	close(cg);
++}
++
++void test_cgroup_mprog_opts(void)
++{
++	if (test__start_subtest("prog_attach_detach"))
++		test_prog_attach_detach(BPF_CGROUP_GETSOCKOPT);
++	if (test__start_subtest("link_attach_detach"))
++		test_link_attach_detach(BPF_CGROUP_GETSOCKOPT);
++	if (test__start_subtest("mix_attach_detach"))
++		test_mix_attach_detach(BPF_CGROUP_GETSOCKOPT);
++	if (test__start_subtest("preorder_prog_attach_detach"))
++		test_preorder_prog_attach_detach(BPF_CGROUP_GETSOCKOPT);
++	if (test__start_subtest("preorder_link_attach_detach"))
++		test_preorder_link_attach_detach(BPF_CGROUP_GETSOCKOPT);
++	if (test__start_subtest("invalid_attach_detach"))
++		test_invalid_attach_detach(BPF_CGROUP_GETSOCKOPT);
++}
+diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_mprog_ordering=
+.c b/tools/testing/selftests/bpf/prog_tests/cgroup_mprog_ordering.c
+new file mode 100644
+index 000000000000..4a4e9710b474
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/cgroup_mprog_ordering.c
+@@ -0,0 +1,77 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
++#include <test_progs.h>
++#include "cgroup_helpers.h"
++#include "cgroup_preorder.skel.h"
++
++static int run_getsockopt_test(int cg_parent, int sock_fd, bool has_rela=
+tive_fd)
++{
++	LIBBPF_OPTS(bpf_prog_attach_opts, opts);
++	enum bpf_attach_type prog_p_atype, prog_p2_atype;
++	int prog_p_fd, prog_p2_fd;
++	struct cgroup_preorder *skel =3D NULL;
++	struct bpf_program *prog;
++	__u8 *result, buf;
++	socklen_t optlen;
++	int err =3D 0;
++
++	skel =3D cgroup_preorder__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "cgroup_preorder__open_and_load"))
++		return 0;
++
++	LIBBPF_OPTS_RESET(opts);
++	opts.flags =3D BPF_F_ALLOW_MULTI;
++	prog =3D skel->progs.parent;
++	prog_p_fd =3D bpf_program__fd(prog);
++	prog_p_atype =3D bpf_program__expected_attach_type(prog);
++	err =3D bpf_prog_attach_opts(prog_p_fd, cg_parent, prog_p_atype, &opts)=
+;
++	if (!ASSERT_OK(err, "bpf_prog_attach_opts-parent"))
++		goto close_skel;
++
++	opts.flags =3D BPF_F_ALLOW_MULTI | BPF_F_BEFORE;
++	if (has_relative_fd)
++		opts.relative_fd =3D prog_p_fd;
++	prog =3D skel->progs.parent_2;
++	prog_p2_fd =3D bpf_program__fd(prog);
++	prog_p2_atype =3D bpf_program__expected_attach_type(prog);
++	err =3D bpf_prog_attach_opts(prog_p2_fd, cg_parent, prog_p2_atype, &opt=
+s);
++	if (!ASSERT_OK(err, "bpf_prog_attach_opts-parent_2"))
++		goto detach_parent;
++
++	err =3D getsockopt(sock_fd, SOL_IP, IP_TOS, &buf, &optlen);
++	if (!ASSERT_OK(err, "getsockopt"))
++		goto detach_parent_2;
++
++	result =3D skel->bss->result;
++	ASSERT_TRUE(result[0] =3D=3D 4 && result[1] =3D=3D 3, "result values");
++
++detach_parent_2:
++	ASSERT_OK(bpf_prog_detach2(prog_p2_fd, cg_parent, prog_p2_atype),
++		  "bpf_prog_detach2-parent_2");
++detach_parent:
++	ASSERT_OK(bpf_prog_detach2(prog_p_fd, cg_parent, prog_p_atype),
++		  "bpf_prog_detach2-parent");
++close_skel:
++	cgroup_preorder__destroy(skel);
++	return err;
++}
++
++void test_cgroup_mprog_ordering(void)
++{
++	int cg_parent =3D -1, sock_fd =3D -1;
++
++	cg_parent =3D test__join_cgroup("/parent");
++	if (!ASSERT_GE(cg_parent, 0, "join_cgroup /parent"))
++		goto out;
++
++	sock_fd =3D socket(AF_INET, SOCK_STREAM, 0);
++	if (!ASSERT_GE(sock_fd, 0, "socket"))
++		goto out;
++
++	ASSERT_OK(run_getsockopt_test(cg_parent, sock_fd, false), "getsockopt_t=
+est_1");
++	ASSERT_OK(run_getsockopt_test(cg_parent, sock_fd, true), "getsockopt_te=
+st_2");
++
++out:
++	close(sock_fd);
++	close(cg_parent);
++}
+diff --git a/tools/testing/selftests/bpf/progs/cgroup_mprog.c b/tools/tes=
+ting/selftests/bpf/progs/cgroup_mprog.c
+new file mode 100644
+index 000000000000..6a0ea02c4de2
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/cgroup_mprog.c
+@@ -0,0 +1,30 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
++#include <vmlinux.h>
++#include <bpf/bpf_helpers.h>
++
++char _license[] SEC("license") =3D "GPL";
++
++SEC("cgroup/getsockopt")
++int getsockopt_1(struct bpf_sockopt *ctx)
++{
++	return 1;
++}
++
++SEC("cgroup/getsockopt")
++int getsockopt_2(struct bpf_sockopt *ctx)
++{
++	return 1;
++}
++
++SEC("cgroup/getsockopt")
++int getsockopt_3(struct bpf_sockopt *ctx)
++{
++	return 1;
++}
++
++SEC("cgroup/getsockopt")
++int getsockopt_4(struct bpf_sockopt *ctx)
++{
++	return 1;
++}
 --=20
 2.47.1
 
