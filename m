@@ -1,166 +1,118 @@
-Return-Path: <bpf+bounces-57773-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57774-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9310DAB00CC
-	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 19:00:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 470AEAB0133
+	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 19:18:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6211B9E5FFE
-	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 16:59:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DDA61BA48BF
+	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 17:19:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E622284B2F;
-	Thu,  8 May 2025 17:00:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9195C286439;
+	Thu,  8 May 2025 17:18:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zw+iZhll"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qc7sXeGe"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF1A7278E42;
-	Thu,  8 May 2025 17:00:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62CE22857DB
+	for <bpf@vger.kernel.org>; Thu,  8 May 2025 17:18:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746723601; cv=none; b=T0XsUdqBa1eXMP4mTnmxzwEiegh2Okz/b0qLStB2DHtoQNUIh3PhU322EZ4Oz4+y61Jst+sSZ2vuT9PWGq02gS05Qnt8muSUQ2MouOzokasSHDjWCBLU8zwkISVLzdqUq2Y6tpDfEd1TuOrGo/ljhrUtvSr/60sL3cL0PHkMzC8=
+	t=1746724709; cv=none; b=lh3tN/am7tJkIPhWjoysG7jWLYi6HNxGDiZ07K0HQRceayz3cy869+Gh8UFJQa1tZfk2ZHinj4TEnHMU24qtY4e6wL0G/rv9gaWo23X51bTdR+dvcbkShXwWiXKx7Nt6Nn3+/RWKn/jzKW7B/VItzQvSkuuDAEbFAq//PPrvciQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746723601; c=relaxed/simple;
-	bh=+Ka9rQw2rJQtjCbggdFmFhBKb7v7zD+weIv/zWdBCFM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MTPx6sgy/lCs52yASktcEXY5e3F0DAbisx1x7ld/0uaNUwFr32FjioVEevCGRU91SEpkOYzkVphr39Yo8Z8xYGPNU78isrl4aHSCl0T0Kx016MtONl1VEMeGph6HMB2AtBpzEdioriJmzIA4Zr+a1pQBAShepBI0rt9OM3T4vVA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zw+iZhll; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62A98C4CEEB;
-	Thu,  8 May 2025 16:59:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746723601;
-	bh=+Ka9rQw2rJQtjCbggdFmFhBKb7v7zD+weIv/zWdBCFM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Zw+iZhlltYfFRLAYBj4A+NCyynTRu1LpOM4cJpmKK4XR/uaYcXClSLoQDgffCbcXW
-	 3van7TqNKBpJP252o+x70ihXkIxVcZh6fdI6pkVzYCqr3QuqFzoSOM2TbGAKJtto6u
-	 NzT2ZPDMsnN8mbDpVWOo5onjBWKIBRkqAUAEPbIVLLS8iWdNc1tHzIt49xOG5hqDeS
-	 lbpejbhpmc+aDE/Vdu13ceJiSFlt3ImtvHsc2BFJ/RpfjhJ+xfhNfD77MZpGKI2D4k
-	 syHDTQr5dIZFfC+hn9rqhn9OzDnFjHofVFpkKzFw68DNTBEQysatKsHNn5O7nq2XkB
-	 fYSeYDVM31+XA==
-Message-ID: <3fed59c6-e959-4863-b1c5-1927ef0d61df@kernel.org>
-Date: Thu, 8 May 2025 18:59:54 +0200
+	s=arc-20240116; t=1746724709; c=relaxed/simple;
+	bh=HE8TRSvFA3HhTCthoL6NLbaTdhlJClwbkdTsmBtcveA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Lg5XdFCXB2kPu6UUJsiDQYaAOygbSVmKJPEAQrwsNC6sHDLVvbTywVHiuNLoE/tvDCxOYlMPujPkK52osGBVDenV75ZcnKXUaoKtkA7e0uKtav858V/Ju/G+VHIp6zKMgN3OTcQaiGqzOxMyx6eyVvGt6VqyuZcjho+nrladS84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qc7sXeGe; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3a1d8c09683so290097f8f.0
+        for <bpf@vger.kernel.org>; Thu, 08 May 2025 10:18:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1746724705; x=1747329505; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=z5t0c0WQs4dd6GTjzNN9izSd8ZyS6dC5eniHhd9VVaM=;
+        b=Qc7sXeGedAWvpbxukttCiWZVYYLXY4w4LzbXzdXqleDuGdptbOCWVjPrDHrzvgO4aM
+         o6KoK2ymzjsHUNYeIGEJpiC6qVpQpUjxJVKN+OJH+eSGKmO4vxXV56ynyTjIpQqSxiDo
+         gL1YKoIhuaCQLMpBP5dNz9OASof6MA2OF8V3ebya922cP1NiiutrVueG6rtR58TFUrlx
+         zM/2CyiTzkQvCegQjF7V9Hb9uu/HsBQj9gh/0y1+6rWL9ZoAEJYnbp2jmb1w4dQkRyGI
+         VI1TWQvnnzFE+sIAF0joC2g+IW34XrZbVPBjZbCQ1UBF+ecAQjMSDW1YvaOPooDKVzAd
+         YGGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746724705; x=1747329505;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=z5t0c0WQs4dd6GTjzNN9izSd8ZyS6dC5eniHhd9VVaM=;
+        b=PBs5c9fx2sW2rfwVzXYw+FZp/nStwbRI3nRweq+KkNYz/lEFfy1/RgEayN9x+yXeAh
+         trzXej1lCB4f86Qs499Q1CEaxnDumh8AlVtH8LGiHoMwA+H5DneXRgcHv8ej6hLM6KD3
+         o8k61DJjlidSIqyT9DMsYRVAKZDawaFplyiACiiHey61FZ6VvJbY3RDe8qVGNWRyLMXL
+         bDR+tTwgU85AwUwe4KTuXgKowWGaSgy1baPsMV2Q1Za6G3dueTTMvq5PsWzPZ1iTEnW7
+         SGzWuO1HwS3IUPO0bRJF64rhf2lTQlxYTMtK9C73RWVTMRa2L4HT0tM8vbUtUq9IdRzY
+         AwIQ==
+X-Gm-Message-State: AOJu0YwNXbiWzdJi17Td0dNMZyJKWnqgeL3AkxiTQx/mRFP0ACcwRrpx
+	ihoFIHwU54LPBHPFXIzNrcS9r5AifSNPJrvGXMj5+87p4C+Nk6At3E9YLw==
+X-Gm-Gg: ASbGncvB5dq1rZuTSk5MyIF6PO15JvHEezqCJm/RU2s9zQNC4UGGjvtO1U/ied2bFb2
+	C0XUbUzANAnzikvYXHVxkK7kH/NlY6Nbd6ToImxmTIiN3bnMLePARxKP85OjKpsCr35qsF6XeAr
+	CYjOjEVauYSAIJB0vPh0Hs3f0NitinM5ympUEZ2oHWSxinwrU/zR/pEtwGPf0/JHSgXPZjaLsah
+	+TTyYmBzWtLUWiGfJHO6NWJFFxToKPMQpJKFN9lumQ1sq6+mYqkLeCUyC4PPApZI9aWOf0I+NrB
+	/v6AIka5t0ABHPJQnK/P40EszwW1TFXWw64lrI7FdnlDiAOBVMLcNJcku3I=
+X-Google-Smtp-Source: AGHT+IG0eFBnLgDbULhdmrOrItwqERxKa9jchFq7dZfMTjrIxROObUcw0jAfSWdbNzEJSje1/kaNfQ==
+X-Received: by 2002:a05:6000:22c5:b0:390:f738:246b with SMTP id ffacd0b85a97d-3a1f643112dmr335089f8f.15.1746724705423;
+        Thu, 08 May 2025 10:18:25 -0700 (PDT)
+Received: from msi-laptop.mynet ([2a01:4b00:bf28:2e00:ff96:2dac:a39:3e10])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a1f5a2d2d3sm528261f8f.63.2025.05.08.10.18.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 May 2025 10:18:25 -0700 (PDT)
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	kafai@meta.com,
+	kernel-team@meta.com,
+	eddyz87@gmail.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+Subject: [PATCH bpf-next v2 0/3] Introduce kfuncs for memory reads into dynptrs
+Date: Thu,  8 May 2025 18:18:19 +0100
+Message-ID: <20250508171822.152266-1-mykyta.yatsenko5@gmail.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v3] xdp: Add helpers for head length, headroom,
- and metadata length
-To: Jon Kohler <jon@nutanix.com>
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Zvi Effron <zeffron@riotgames.com>, Stanislav Fomichev
- <stfomichev@gmail.com>, Jason Wang <jasowang@redhat.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>, Simon Horman <horms@kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- Jacob Keller <jacob.e.keller@intel.com>
-References: <20250506125242.2685182-1-jon@nutanix.com>
- <aBpKLNPct95KdADM@mini-arch>
- <681b603ac8473_1e4406294a6@willemb.c.googlers.com.notmuch>
- <c8ad3f65-f70e-4c6e-9231-0ae709e87bfe@kernel.org>
- <CAC1LvL3nE14cbQx7Me6oWS88EdpGP4Gx2A0Um4g-Vuxk4m_7Rw@mail.gmail.com>
- <062e886f-7c83-4d46-97f1-ebbce3ca8212@kernel.org>
- <681b96abe7ae4_1f6aad294c9@willemb.c.googlers.com.notmuch>
- <B4F050C6-610F-4D04-88D7-7EF581DA7DF1@nutanix.com>
- <e4cf6912-74fb-441f-ad05-82ea99d81020@kernel.org>
- <6FF98F38-2AE5-4000-8827-81369C3FB429@nutanix.com>
- <b99b73e8-0957-45f8-bd54-6c50640706df@kernel.org>
- <B864BCB8-AEAE-4802-AB46-176D2CEEE862@nutanix.com>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <B864BCB8-AEAE-4802-AB46-176D2CEEE862@nutanix.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
+From: Mykyta Yatsenko <yatsenko@meta.com>
 
+This patch adds new kfuncs that enable reading variable-length
+user or kernel data directly into dynptrs.
+These kfuncs provide a way to perform dynamically-sized reads
+while maintaining memory safety. Unlike existing
+`bpf_probe_read_{user|kernel}` APIs, which are limited to constant-sized
+reads, these new kfuncs allow for more flexible data access.
 
+Mykyta Yatsenko (3):
+  helpers: make few bpf helpers public
+  bpf: implement dynptr copy kfuncs
+  selftests/bpf: introduce tests for dynptr copy kfuncs
 
-On 08/05/2025 05.18, Jon Kohler wrote:
-> 
->> On May 7, 2025, at 4:58 PM, Jesper Dangaard Brouer<hawk@kernel.org>  wrote:
->>
->> On 07/05/2025 21.57, Jon Kohler wrote:
->>>> On May 7, 2025, at 3:04 PM, Jesper Dangaard Brouer<hawk@kernel.org>  wrote:
->>>>
->>>> On 07/05/2025 19.47, Jon Kohler wrote:
->>>>>> On May 7, 2025, at 1:21 PM, Willem de Bruijn<willemdebruijn.kernel@gmail.com>  wrote:
->>>>>>
->>>>>> Jesper Dangaard Brouer wrote:
->>>>>>>
->>>>>>> On 07/05/2025 19.02, Zvi Effron wrote:
->>>>>>>> On Wed, May 7, 2025 at 9:37 AM Jesper Dangaard Brouer<hawk@kernel.org>  wrote:
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> On 07/05/2025 15.29, Willem de Bruijn wrote:
->>>>>>>>>> Stanislav Fomichev wrote:
->>>>>>>>>>> On 05/06, Jon Kohler wrote:
->>>>>>>>>>>> Introduce new XDP helpers:
->>>>>>>>>>>> - xdp_headlen: Similar to skb_headlen
->>>>>>>>> I really dislike xdp_headlen(). This "headlen" originates from an SKB
->>>>>>>>> implementation detail, that I don't think we should carry over into XDP
->>>>>>>>> land.
->>>>>>>>> We need to come up with something that isn't easily mis-read as the
->>>>>>>>> header-length.
->>>>>>>> ... snip ...
->>>>>>>>
->>>>>>>>>>> + * xdp_headlen - Calculate the length of the data in an XDP buffer
->>>>>>>> How about xdp_datalen()?
->>>>>>> Yes, I like xdp_datalen() 🙂
->>>>>> This is confusing in that it is the inverse of skb->data_len:
->>>>>> which is exactly the part of the data not in the skb head.
->>>>>>
->>>>>> There is value in consistent naming. I've never confused headlen
->>>>>> with header len.
->>>>>>
->>>>>> But if diverging, at least let's choose something not
->>>>>> associated with skbs with a different meaning.
->>>>> Brainstorming a few options:
->>>>> - xdp_head_datalen() ?
->>>>> - xdp_base_datalen() ?
->>>>> - xdp_base_headlen() ?
->>>>> - xdp_buff_datalen() ?
->>>>> - xdp_buff_headlen() ?
->>>>> - xdp_datalen() ? (ZivE, JesperB)
->>>>> - xdp_headlen() ? (WillemB, JonK, StanislavF, JacobK, DanielB)
->>>> What about keeping it really simple: xdp_buff_len() ?
->>> This is suspiciously close to xdp_get_buff_len(), so there could be some
->>> confusion there, since that takes paged/frags into account transparently.
->> Good point.
->>
->>>> Or even simpler: xdp_len() as the function documentation already
->>>> describe this doesn't include frags.
->>> There is a neat hint from Lorenzo’s change in bpf.h for bpf_xdp_get_buff_len()
->>> that talks about both linear and paged length. Also, xdp_buff_flags’s
->>> XDP_FLAGS_HAS_FRAGS says non-linear xdp buff.
->>> Taking those hints, what about:
->>> xdp_linear_len() == xdp->data_end - xdp->data
->>> xdp_paged_len() == sinfo->xdp_frags_size
->>> xdp_get_buff_len() == xdp_linear_len() + xdp_paged_len()
->> I like xdp_linear_len() as it is descriptive/clear.
- >
-> Ok thanks, I’ll send out a v4 to codify that.
+ include/linux/bpf.h                           |  14 ++
+ kernel/bpf/helpers.c                          |  22 +-
+ kernel/trace/bpf_trace.c                      | 193 ++++++++++++++++
+ tools/testing/selftests/bpf/DENYLIST          |   1 +
+ .../testing/selftests/bpf/prog_tests/dynptr.c |  13 ++
+ .../selftests/bpf/progs/dynptr_success.c      | 218 ++++++++++++++++++
+ 6 files changed, 449 insertions(+), 12 deletions(-)
 
-I'll ack a V4 with that change.
-
-I do notice Jakub isn't a fan of the patch in general, but it seems
-quite popular given the other high profile kernel developers that acked
-in V3.  I think it increase code readability for people that are less
-familiar with XDP code and meaning of the pointers (e.g. data_hard_start
-vs. data_end vs. data vs. data_meta). (We don't even have some ascii art
-showing these pointers).
-
---Jesper
-
+-- 
+2.49.0
 
 
