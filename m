@@ -1,228 +1,125 @@
-Return-Path: <bpf+bounces-57752-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57753-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1196EAAF9B2
-	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 14:22:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27208AAFB38
+	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 15:23:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 355E13BF05A
-	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 12:21:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DA964C4694
+	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 13:23:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B04322540F;
-	Thu,  8 May 2025 12:22:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39C0222A800;
+	Thu,  8 May 2025 13:23:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fvg8W6fF"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="GBq6Lzks"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33BF7222568;
-	Thu,  8 May 2025 12:22:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FCCC17BA5;
+	Thu,  8 May 2025 13:22:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746706925; cv=none; b=ENq4ZPN9nAGj6QxjC8DoAx2BgDGC4uND3w/NZuYlj+Atg38LuUa4YA7tCzShep0zB/y5DUnGF9tDeA3PMgrVKhrqSxvSEydW6YeMTxkAcelflyKRLCLn9WPMIDwxkiAI8Q3MJf0BPtELQZNlxwGHQcBIaKlIeVuT5T9sT4E5daI=
+	t=1746710581; cv=none; b=SETV/pheiHAngO/DqppnFbBkIvL+qMrK1sTh4re7RxIxumIovXykKvGomOVvEUxAI72JmjheuR7njvUD/gtSS0xLaC8nL5Gnlw17ZfLhCArOqnAno0Iff5BizCEhpX6o/9KenQMuPYbZn3T52TP02Y9jN5cDNuWtIz52vuOEc7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746706925; c=relaxed/simple;
-	bh=2B1VAFopbYwqp+cWfaNd09XKHhaCO5pZWfe0iB09SgM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ol/vA+3ZYfV7ZlluZ5pnzRGu5SLJZlWh8gnZTLlOVXILX2Qomb1nyoDXfROiQK4etJ2DfURMOXey1K0EgrMqYVQSv//lUQD+uWCN4soffuuSImVZg912VpiLsxMY6oFaaWUvSiOqS3AP5dKdeSoX2nIf2zDT1k8IQDreBuyboYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fvg8W6fF; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1746706923; x=1778242923;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2B1VAFopbYwqp+cWfaNd09XKHhaCO5pZWfe0iB09SgM=;
-  b=fvg8W6fFX0jCwofd3cAD9yDFMcGxUA6kK1Fov4/d9PhhksbjxEFLDKs1
-   hqBJ0yxvVtcdqXQIeb+UolfnA+rB3BDAhLmebjnFv7F7Zl9hTTsvxFaBg
-   t1i5x48yVFIIbmDHG/tl3bKwXDDVYVolyrHgIEUQRCzSI+fCKrnyUvHtM
-   60LpBs/76HvWVR/1m9g8cfqrjNWOIXN7NjCvFTik2lINHzIUo854lsWQl
-   qzBJk2bQy4sZvDvfXaJ+O4QtzuQQbwXPCEKLyxl/VMqOjRy+ikGUH70ZX
-   3aMHqlXA2hcf0kFEQdDLHfRA9PhyGijE4/1sMQlp8KISL29wH7H/rLZAs
-   Q==;
-X-CSE-ConnectionGUID: taG/2HaDQx2mYpNdL15sIw==
-X-CSE-MsgGUID: iCP6sg5HRq2qV1yxpLJC/w==
-X-IronPort-AV: E=McAfee;i="6700,10204,11426"; a="59883099"
-X-IronPort-AV: E=Sophos;i="6.15,272,1739865600"; 
-   d="scan'208";a="59883099"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2025 05:22:02 -0700
-X-CSE-ConnectionGUID: M/O0ahs2QSSbInJwpZqolg==
-X-CSE-MsgGUID: 18OfEl75RnKfUN8GeVzMFg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,272,1739865600"; 
-   d="scan'208";a="141492373"
-Received: from lkp-server01.sh.intel.com (HELO 1992f890471c) ([10.239.97.150])
-  by fmviesa004.fm.intel.com with ESMTP; 08 May 2025 05:21:56 -0700
-Received: from kbuild by 1992f890471c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uD0G9-000Ax1-2X;
-	Thu, 08 May 2025 12:21:53 +0000
-Date: Thu, 8 May 2025 20:21:32 +0800
-From: kernel test robot <lkp@intel.com>
-To: Bhupesh <bhupesh@igalia.com>, akpm@linux-foundation.org
-Cc: oe-kbuild-all@lists.linux.dev, bhupesh@igalia.com,
-	kernel-dev@igalia.com, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	oliver.sang@intel.com, lkp@intel.com, laoar.shao@gmail.com,
-	pmladek@suse.com, rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
-	alexei.starovoitov@gmail.com, andrii.nakryiko@gmail.com,
-	mirq-linux@rere.qmqm.pl, peterz@infradead.org, willy@infradead.org,
-	david@redhat.com, viro@zeniv.linux.org.uk, keescook@chromium.org,
-	ebiederm@xmission.com, brauner@kernel.org, jack@suse.cz,
-	mingo@redhat.com, juri.lelli@redhat.com, bsegall@google.com,
-	mgorman@suse.de
-Subject: Re: [PATCH v3 2/3] treewide: Switch memcpy() users of 'task->comm'
- to a more safer implementation
-Message-ID: <202505082038.A5ejhbR4-lkp@intel.com>
-References: <20250507110444.963779-3-bhupesh@igalia.com>
+	s=arc-20240116; t=1746710581; c=relaxed/simple;
+	bh=UxJOqCbbzUBkE2SE3OZT0jv5PUQOk/QsXezrDsZp2lU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lmPjNmybzPoiJv1a0/P51e3Kuvk3jCO0D14Hyd34IpCt7BloEHQ979m47/BwGuNDld8LztWjaq/szn/xTRrzOTr68XFLKmlccYQbPzXu6uoYs+jfEbh22lbxIoBiCDJKL0DTc66783AmPIzCbytzEW+zFI+7rh5R4giRL3kTHtE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=GBq6Lzks; arc=none smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 548DCIbk003664;
+	Thu, 8 May 2025 13:22:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=corp-2025-04-25; bh=tWqiE7mUbEZx7KuE6cfvjk4yvwZhK
+	5C/gXWPt5+QTGg=; b=GBq6Lzks2s4YSSaEgI7Foyizp4qI586U3NiMqWVjCpAJT
+	KIFockvzdVBa6SB8Cql4262hGbY3jGeTCi+tYlcNCgT9hy3kxBs/unBfPxPNEsLr
+	qGjAYAVKJtK3b/0/MVY3vVar0qiT8G104bt9lmz0u7WUgYq1pHdRVgXDKV4F/ymR
+	MieyPNGcR5zRdiv7gHYrEP5mjnIykZWw9qCByRlAzkchDv+6ZbCBjZn+wueLgwgD
+	Tj+z4aKTovS2e9+aVQQFDn7SizA4Edik4KyEfFuc2KRHaKxbP/nYhPnDT8Udpetm
+	SGh75PRZU2LdY+285PKbJK4+/rdghu2bkuh6jCKTw==
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 46gw9nr0ub-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 08 May 2025 13:22:43 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 548C6l7Y035564;
+	Thu, 8 May 2025 13:22:42 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 46d9kcedn6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 08 May 2025 13:22:42 +0000
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 548DMgb7024112;
+	Thu, 8 May 2025 13:22:42 GMT
+Received: from bpf.uk.oracle.com (dhcp-10-154-49-250.vpn.oracle.com [10.154.49.250])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 46d9kcedkj-1;
+	Thu, 08 May 2025 13:22:41 +0000
+From: Alan Maguire <alan.maguire@oracle.com>
+To: martin.lau@linux.dev, ast@kernel.org, andrii@kernel.org,
+        tony.ambardar@gmail.com, alexis.lothore@bootlin.com
+Cc: eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+        haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+        bpf@vger.kernel.org, dwarves@vger.kernel.org,
+        Alan Maguire <alan.maguire@oracle.com>
+Subject: [RFC bpf-next 0/3] bpf: handle 0-sized structs properly
+Date: Thu,  8 May 2025 14:22:34 +0100
+Message-ID: <20250508132237.1817317-1-alan.maguire@oracle.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250507110444.963779-3-bhupesh@igalia.com>
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-05-08_04,2025-05-07_02,2025-02-21_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxlogscore=716
+ suspectscore=0 adultscore=0 phishscore=0 mlxscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2504070000
+ definitions=main-2505080112
+X-Proofpoint-GUID: 5eZR7jLxYmuuHlbe47f-t6XWT1WU9KAb
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTA4MDExMiBTYWx0ZWRfX9N4DQJSKWXH5 /gSAOtx3OeQ3QOyobOfnjrEk9RUhNsmfcHVzW4uOZmPboosEzMX2D+ah2cdXFGWiE7y0Wlegul4 pA3G86jRFiuakzVW/3yRUWh27BfMCGY1ToxLClvXrP7o0qkUzPdkHJ2iApnsdpqHa4/Wz5KjXQB
+ qosghYhbb3EMUDC93fUBvoosV2aUjxj+fQCsKLVV97bsZyz4iC73PgL/GgAFmpMRaI/ZCTy06lR FHBMzfHncR1bqlS6d+AxZmEinbRkNyDCsL1UZ648om+NVDQFVquYHrXeAzmmyBdJHepJVJUXois Rq8NoGMG5uMvua/Edxnh6SjXY7s6+25QwUZjJtY35+L8Ob35WyfGeva9iBQy/rOKNTzAcWzlDP+
+ usOg79Cn8fUtWXQbZc3O5W1ymrdVz3XYANg8FZHZQwO0x7Xiz0OLXZpmjPsK5CRWWJEXezA6
+X-Authority-Analysis: v=2.4 cv=SKdCVPvH c=1 sm=1 tr=0 ts=681cb023 cx=c_pps a=OOZaFjgC48PWsiFpTAqLcw==:117 a=OOZaFjgC48PWsiFpTAqLcw==:17 a=dt9VzEwgFbYA:10 a=VwQbUJbxAAAA:8 a=pGLkceISAAAA:8 a=6g8IY-ITpH_eT7mAbvkA:9
+X-Proofpoint-ORIG-GUID: 5eZR7jLxYmuuHlbe47f-t6XWT1WU9KAb
 
-Hi Bhupesh,
+When testing v1 of [1] we noticed that functions with 0-sized structs
+as parameters were not part of BTF encoding; this was fixed in v2.
+However we need to make sure we handle such zero-sized structs
+correctly since they confound the calling convention expectations -
+no registers are used for the empty struct so this has knock-on effects
+for subsequent register-parameter matching.
 
-kernel test robot noticed the following build errors:
+Patch 1 updates BPF_PROG2() to handle the zero-sized struct case.
+Patch 2 makes 0-sized structs a special case, allowing them to exist
+as parameter representations in BTF without failing verification.
+Patch 3 is a selftest that ensures the parameters after the 0-sized
+struct are represented correctly.
 
-[auto build test ERROR on trace/for-next]
-[also build test ERROR on tip/sched/core akpm-mm/mm-everything linus/master v6.15-rc5 next-20250508]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+[1] https://lore.kernel.org/dwarves/20250502070318.1561924-1-tony.ambardar@gmail.com/
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Bhupesh/exec-Remove-obsolete-comments/20250507-190740
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace for-next
-patch link:    https://lore.kernel.org/r/20250507110444.963779-3-bhupesh%40igalia.com
-patch subject: [PATCH v3 2/3] treewide: Switch memcpy() users of 'task->comm' to a more safer implementation
-config: x86_64-defconfig (https://download.01.org/0day-ci/archive/20250508/202505082038.A5ejhbR4-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250508/202505082038.A5ejhbR4-lkp@intel.com/reproduce)
+Alan Maguire (3):
+  libbpf: update BPF_PROG2() to handle empty structs
+  bpf: allow 0-sized structs as function parameters
+  selftests/bpf: add 0-length struct testing to tracing_struct tests
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202505082038.A5ejhbR4-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from include/trace/define_trace.h:119,
-                    from include/trace/events/sched.h:856,
-                    from kernel/sched/core.c:84:
-   include/trace/events/sched.h: In function 'do_trace_event_raw_event_sched_switch':
->> include/trace/events/sched.h:245:24: error: 'struct trace_event_raw_sched_switch' has no member named 'comm'
-     245 |                 __entry->comm[TASK_COMM_LEN - 1] = '\0';
-         |                        ^~
-   include/trace/trace_events.h:427:11: note: in definition of macro '__DECLARE_EVENT_CLASS'
-     427 |         { assign; }                                                     \
-         |           ^~~~~~
-   include/trace/trace_events.h:435:23: note: in expansion of macro 'PARAMS'
-     435 |                       PARAMS(assign), PARAMS(print))                    \
-         |                       ^~~~~~
-   include/trace/trace_events.h:40:9: note: in expansion of macro 'DECLARE_EVENT_CLASS'
-      40 |         DECLARE_EVENT_CLASS(name,                              \
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/trace/trace_events.h:44:30: note: in expansion of macro 'PARAMS'
-      44 |                              PARAMS(assign),                   \
-         |                              ^~~~~~
-   include/trace/events/sched.h:224:1: note: in expansion of macro 'TRACE_EVENT'
-     224 | TRACE_EVENT(sched_switch,
-         | ^~~~~~~~~~~
-   include/trace/events/sched.h:243:9: note: in expansion of macro 'TP_fast_assign'
-     243 |         TP_fast_assign(
-         |         ^~~~~~~~~~~~~~
-   In file included from include/trace/define_trace.h:120,
-                    from include/trace/events/sched.h:856,
-                    from kernel/sched/core.c:84:
-   include/trace/events/sched.h: In function 'do_perf_trace_sched_switch':
->> include/trace/events/sched.h:245:24: error: 'struct trace_event_raw_sched_switch' has no member named 'comm'
-     245 |                 __entry->comm[TASK_COMM_LEN - 1] = '\0';
-         |                        ^~
-   include/trace/perf.h:51:11: note: in definition of macro '__DECLARE_EVENT_CLASS'
-      51 |         { assign; }                                                     \
-         |           ^~~~~~
-   include/trace/perf.h:67:23: note: in expansion of macro 'PARAMS'
-      67 |                       PARAMS(assign), PARAMS(print))                    \
-         |                       ^~~~~~
-   include/trace/trace_events.h:40:9: note: in expansion of macro 'DECLARE_EVENT_CLASS'
-      40 |         DECLARE_EVENT_CLASS(name,                              \
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/trace/trace_events.h:44:30: note: in expansion of macro 'PARAMS'
-      44 |                              PARAMS(assign),                   \
-         |                              ^~~~~~
-   include/trace/events/sched.h:224:1: note: in expansion of macro 'TRACE_EVENT'
-     224 | TRACE_EVENT(sched_switch,
-         | ^~~~~~~~~~~
-   include/trace/events/sched.h:243:9: note: in expansion of macro 'TP_fast_assign'
-     243 |         TP_fast_assign(
-         |         ^~~~~~~~~~~~~~
-
-
-vim +245 include/trace/events/sched.h
-
-   225	
-   226		TP_PROTO(bool preempt,
-   227			 struct task_struct *prev,
-   228			 struct task_struct *next,
-   229			 unsigned int prev_state),
-   230	
-   231		TP_ARGS(preempt, prev, next, prev_state),
-   232	
-   233		TP_STRUCT__entry(
-   234			__array(	char,	prev_comm,	TASK_COMM_LEN	)
-   235			__field(	pid_t,	prev_pid			)
-   236			__field(	int,	prev_prio			)
-   237			__field(	long,	prev_state			)
-   238			__array(	char,	next_comm,	TASK_COMM_LEN	)
-   239			__field(	pid_t,	next_pid			)
-   240			__field(	int,	next_prio			)
-   241		),
-   242	
-   243		TP_fast_assign(
-   244			memcpy(__entry->prev_comm, prev->comm, TASK_COMM_LEN);
- > 245			__entry->comm[TASK_COMM_LEN - 1] = '\0';
-   246			__entry->prev_pid	= prev->pid;
-   247			__entry->prev_prio	= prev->prio;
-   248			__entry->prev_state	= __trace_sched_switch_state(preempt, prev_state, prev);
-   249			memcpy(__entry->next_comm, next->comm, TASK_COMM_LEN);
-   250			__entry->next_comm[TASK_COMM_LEN - 1] = '\0';
-   251			__entry->next_pid	= next->pid;
-   252			__entry->next_prio	= next->prio;
-   253			/* XXX SCHED_DEADLINE */
-   254		),
-   255	
-   256		TP_printk("prev_comm=%s prev_pid=%d prev_prio=%d prev_state=%s%s ==> next_comm=%s next_pid=%d next_prio=%d",
-   257			__entry->prev_comm, __entry->prev_pid, __entry->prev_prio,
-   258	
-   259			(__entry->prev_state & (TASK_REPORT_MAX - 1)) ?
-   260			  __print_flags(__entry->prev_state & (TASK_REPORT_MAX - 1), "|",
-   261					{ TASK_INTERRUPTIBLE, "S" },
-   262					{ TASK_UNINTERRUPTIBLE, "D" },
-   263					{ __TASK_STOPPED, "T" },
-   264					{ __TASK_TRACED, "t" },
-   265					{ EXIT_DEAD, "X" },
-   266					{ EXIT_ZOMBIE, "Z" },
-   267					{ TASK_PARKED, "P" },
-   268					{ TASK_DEAD, "I" }) :
-   269			  "R",
-   270	
-   271			__entry->prev_state & TASK_REPORT_MAX ? "+" : "",
-   272			__entry->next_comm, __entry->next_pid, __entry->next_prio)
-   273	);
-   274	
+ kernel/bpf/btf.c                                     |  2 +-
+ tools/lib/bpf/bpf_tracing.h                          |  6 ++++--
+ .../selftests/bpf/prog_tests/tracing_struct.c        |  2 ++
+ tools/testing/selftests/bpf/progs/tracing_struct.c   | 11 +++++++++++
+ tools/testing/selftests/bpf/test_kmods/bpf_testmod.c | 12 ++++++++++++
+ 5 files changed, 30 insertions(+), 3 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.3
+
 
