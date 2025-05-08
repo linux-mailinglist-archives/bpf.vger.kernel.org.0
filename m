@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-57737-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57738-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E551BAAF52A
-	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 10:08:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57CA5AAF55E
+	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 10:18:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42CC34E6C78
-	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 08:08:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE8691897779
+	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 08:18:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CF7F2222CF;
-	Thu,  8 May 2025 08:08:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34356224239;
+	Thu,  8 May 2025 08:17:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="jryb730/"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="JcwEIG9f"
 X-Original-To: bpf@vger.kernel.org
 Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72F4D21D596;
-	Thu,  8 May 2025 08:08:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B107F21ABC8;
+	Thu,  8 May 2025 08:17:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746691717; cv=none; b=bZ+c93YfNvDZBvz2W/Mnp5TkTNhs4ziuXTrjcJDOZxG6gEcCGx1YCAic2paF7BjLS9u09X9z8OPsIr4NPYUAhSu3jok4Hij47/ztR0KrJPCN0qtgj62aEGDrjKtVjSgxfT3NxzY7USDnim/MXH3FnMyJPMKCcY0cOmz2tDH0Kc8=
+	t=1746692278; cv=none; b=k+voEp/smmZgYch7NAVih+eARlC4B1LyQkzFgDHGPbveV4appGwCh2Zx9Qh8fG1IABCjy/qtlM5uqtnJox2px2hA11Ao8W2HfpgnfOpCMyN5Z7VBVLnNu1m0IOhIJwdriWgbObJsYWRni/mqOn2dA0ShFd9pkUBMsNyhybF/Ozo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746691717; c=relaxed/simple;
-	bh=/O0T5gj+l3SiG8/jOeA1XTgLwp+ic/gfHfsw9rQ2A78=;
+	s=arc-20240116; t=1746692278; c=relaxed/simple;
+	bh=97pZaaaOitR15IX70aZeTjwWGkyDhPG3TUeJZ458ayI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qyqYExtLmJlx0/qjuAWQOML0POMnQOpoBG/ofw4atBwOCAJgTACiGgPAUfreHiil7L33RMbwRkJ1hO37k7D9ymtmOANvcoGpQsmbfdRNIPoCF+xrs4pgCwpIzmBZKdTGRB0Mb93h6baJ5GiG8R9L9KJSBg8mRpeBVTIfdID7dFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=jryb730/; arc=none smtp.client-ip=213.97.179.56
+	 In-Reply-To:Content-Type; b=CsXtmBXteoqY3h4dUc5tUzuqrEzjhcDJq6lTVVyG1NPtslRXyWDiCFh4gLu4Hoh1duSSe1IZ3f2iNjJNXTZfGJWa7qaPOfnIIShPEWa0PZXKQD9OsFHLIUMdfbiVVTJQ/YRuMuTaLhI5MGY2coWfAcIBTjNzzZvpMDJCcs89qfY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=JcwEIG9f; arc=none smtp.client-ip=213.97.179.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
@@ -37,18 +37,18 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
 	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=5LiG6Zuwrq9CMULY5+p0T63SktsHI9fzOPt2+pi9YiU=; b=jryb730/yRHkyy3N0TAzZsGYt0
-	CFzbHqWvzqB7bvj7NbQfo5bIe/9bE0UysKCrJZDhFqhj55taSjrR+AyXnFFi9wCdEEqzwc4+e8HnY
-	9Jl6zuFiHs7PgZUac9AbcnZDxylpAmtstdqx4sgYgFPNOKkbSkyVegegUid5vO8vtK1BmxvsWzi+F
-	nZY84ndyoN4j1BzTOalkqueg1IPAeefuv4QD3fxIpggcFRm2wiYqT5CmNLS4e/VSIjvVZnBtDJ5X3
-	HYtusZgOIWKj/7XID/fEQl88m3Gark+/Xj6KeID1mogTaN++I5ejbwm1PnVXQrC6wFcyMvPdWyrEm
-	7cLr9omg==;
+	bh=er/gua2nYuCh2IM1eayDWyD5dOHJb+gewaGKUa5cYd4=; b=JcwEIG9fbF8SMGx3VlGe/u3emv
+	Qukc17KRhhGWrk3XIc9BvHW0Ff6fiF1ULIKDsrpBZxw63iFYVx7G3Xd5fnr61FmvDp0KMRENKKU03
+	l6qSZ9pIAkZeZzsB07BQzcm5HNniFhMzITTMfS2vWfB86pvU8j6LMzLfh2cA6dM9ZmBBy85v6/Zr+
+	Y9O0Osieqwj9NYOnENzWQl50hJdHYNVC/ifNGLVzW4h+eu8UQHZYHgXeQRbzdgmlEgLzlB+hQGvbZ
+	JRc4ngc+QX5Ij/JoRF1cPbwwkyzClFiGPIsgV1l776q3euPcIPmyn5RyZ5PwXdW6igeXXVdiN1kkE
+	M+ZeX5Sw==;
 Received: from [223.233.71.203] (helo=[192.168.1.12])
 	by fanzine2.igalia.com with esmtpsa 
 	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1uCwEk-005681-4c; Thu, 08 May 2025 10:08:22 +0200
-Message-ID: <751a4217-a506-ecf9-ac9f-1733c7c7c8d9@igalia.com>
-Date: Thu, 8 May 2025 13:38:11 +0530
+	id 1uCwNs-0056Oz-Ou; Thu, 08 May 2025 10:17:48 +0200
+Message-ID: <4af48ad5-1aa7-46d0-bfca-7779294e355c@igalia.com>
+Date: Thu, 8 May 2025 13:47:39 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -57,14 +57,15 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.5.0
-Subject: Re: [PATCH v3 3/3] exec: Add support for 64 byte 'tsk->real_comm'
+Subject: Re: [PATCH v3 2/3] treewide: Switch memcpy() users of 'task->comm' to
+ a more safer implementation
 Content-Language: en-US
-To: Steven Rostedt <rostedt@goodmis.org>, Petr Mladek <pmladek@suse.com>
-Cc: Bhupesh <bhupesh@igalia.com>, akpm@linux-foundation.org,
- kernel-dev@igalia.com, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+To: Petr Mladek <pmladek@suse.com>, Bhupesh <bhupesh@igalia.com>
+Cc: akpm@linux-foundation.org, kernel-dev@igalia.com,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
  linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  linux-mm@kvack.org, oliver.sang@intel.com, lkp@intel.com,
- laoar.shao@gmail.com, mathieu.desnoyers@efficios.com,
+ laoar.shao@gmail.com, rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
  arnaldo.melo@gmail.com, alexei.starovoitov@gmail.com,
  andrii.nakryiko@gmail.com, mirq-linux@rere.qmqm.pl, peterz@infradead.org,
  willy@infradead.org, david@redhat.com, viro@zeniv.linux.org.uk,
@@ -72,41 +73,90 @@ Cc: Bhupesh <bhupesh@igalia.com>, akpm@linux-foundation.org,
  jack@suse.cz, mingo@redhat.com, juri.lelli@redhat.com, bsegall@google.com,
  mgorman@suse.de, vschneid@redhat.com
 References: <20250507110444.963779-1-bhupesh@igalia.com>
- <20250507110444.963779-4-bhupesh@igalia.com>
- <aBtYDGOAVbLHeTHF@pathway.suse.cz>
- <20250507132302.4aed1cf0@gandalf.local.home>
+ <20250507110444.963779-3-bhupesh@igalia.com>
+ <aBtSK5dFmtFXUaOE@pathway.suse.cz>
 From: Bhupesh Sharma <bhsharma@igalia.com>
-In-Reply-To: <20250507132302.4aed1cf0@gandalf.local.home>
+In-Reply-To: <aBtSK5dFmtFXUaOE@pathway.suse.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+Hi Petr,
 
-On 5/7/25 10:53 PM, Steven Rostedt wrote:
-> On Wed, 7 May 2025 14:54:36 +0200
-> Petr Mladek <pmladek@suse.com> wrote:
->
->>> To fix the same, Linus suggested in [1] that we can add the
->>> following union inside 'task_struct':
->>>         union {
->>>                 char    comm[TASK_COMM_LEN];
->>>                 char    real_comm[REAL_TASK_COMM_LEN];
->>>         };
->> Nit: IMHO, the prefix "real_" is misleading. The buffer size is still
->>        limited and the name might be shrinked. I would suggest
-> Agreed.
->
->>        something like:
+On 5/7/25 5:59 PM, Petr Mladek wrote:
+> On Wed 2025-05-07 16:34:43, Bhupesh wrote:
+>> As Linus mentioned in [1], currently we have several memcpy() use-cases
+>> which use 'current->comm' to copy the task name over to local copies.
+>> For an example:
 >>
->> 	char    comm_ext[TASK_COMM_EXT_LEN];
->> or
->> 	char    comm_64[TASK_COMM_64_LEN]
-> I prefer "comm_ext" as I don't think we want to hard code the actual size.
-> Who knows, in the future we may extend it again!
+>>   ...
+>>   char comm[TASK_COMM_LEN];
+>>   memcpy(comm, current->comm, TASK_COMM_LEN);
+>>   ...
+>>
+>> These should be modified so that we can later implement approaches
+>> to handle the task->comm's 16-byte length limitation (TASK_COMM_LEN)
+>> is a more modular way (follow-up patches do the same):
+>>
+>>   ...
+>>   char comm[TASK_COMM_LEN];
+>>   memcpy(comm, current->comm, TASK_COMM_LEN);
+>>   comm[TASK_COMM_LEN - 1] = 0;
+>>   ...
+>>
+>> The relevant 'memcpy()' users were identified using the following search
+>> pattern:
+>>   $ git grep 'memcpy.*->comm\>'
+>>
+>> [1]. https://lore.kernel.org/all/CAHk-=wjAmmHUg6vho1KjzQi2=psR30+CogFd4aXrThr2gsiS4g@mail.gmail.com/
+>>
+>> --- a/include/linux/coredump.h
+>> +++ b/include/linux/coredump.h
+>> @@ -53,7 +53,8 @@ extern void do_coredump(const kernel_siginfo_t *siginfo);
+>>   	do {	\
+>>   		char comm[TASK_COMM_LEN];	\
+>>   		/* This will always be NUL terminated. */ \
+>> -		memcpy(comm, current->comm, sizeof(comm)); \
+>> +		memcpy(comm, current->comm, TASK_COMM_LEN); \
+>> +		comm[TASK_COMM_LEN] = '\0'; \
+> I would expect that we replace this with a helper function/macro
+> which would do the right thing.
+>
+> Why is get_task_comm() not used here, please?
+>
+>>   		printk_ratelimited(Level "coredump: %d(%*pE): " Format "\n",	\
+> Also the name seems to be used for printing a debug information.
+> I would expect that we could use the bigger buffer here and print
+> the "full" name. Is this planed, please?
+>
+>>   			task_tgid_vnr(current), (int)strlen(comm), comm, ##__VA_ARGS__);	\
+>>   	} while (0)	\
+>> diff --git a/include/trace/events/block.h b/include/trace/events/block.h
+>> index bd0ea07338eb..94a941ac2034 100644
+>> --- a/include/trace/events/block.h
+>> +++ b/include/trace/events/block.h
+>> @@ -214,6 +214,7 @@ DECLARE_EVENT_CLASS(block_rq,
+>>   		blk_fill_rwbs(__entry->rwbs, rq->cmd_flags);
+>>   		__get_str(cmd)[0] = '\0';
+>>   		memcpy(__entry->comm, current->comm, TASK_COMM_LEN);
+>> +		__entry->comm[TASK_COMM_LEN - 1] = '\0';
+> Same for all other callers.
+>
+> That said, I am not sure if the larger buffer is save in all situations.
+>
+>>   	),
 >
 
-Ok, let me use 'comm_64' instead in v4.
+Thanks for the review, I agree on using the helper / wrapper function to 
+replace this open-coded memcpy + set last entry as '\0'.
 
-Thanks for the review.
+However I see that Steven has already shared a RFC approach (see [1]), 
+to use __string() instead of fixed lengths for 'task->comm' for tracing 
+events.
+I plan to  rebase my v4 on top of his RFC, which might mean that this 
+patch would no longer be needed in the v4.
+
+[1]. 
+https://lore.kernel.org/linux-trace-kernel/20250507133458.51bafd95@gandalf.local.home/
 
 Regards,
 Bhupesh
