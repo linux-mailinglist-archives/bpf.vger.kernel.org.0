@@ -1,101 +1,97 @@
-Return-Path: <bpf+bounces-57718-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57719-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 740FDAAEFE1
-	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 02:18:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CA63AAF0AD
+	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 03:40:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB5EC4A7CFB
-	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 00:18:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D69944C80EE
+	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 01:40:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B13B66F2F2;
-	Thu,  8 May 2025 00:18:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46D561A5B93;
+	Thu,  8 May 2025 01:40:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kLY0meii"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L5hvKBjA"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E5EB28691;
-	Thu,  8 May 2025 00:18:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8C204B1E6F
+	for <bpf@vger.kernel.org>; Thu,  8 May 2025 01:40:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746663513; cv=none; b=UcN5/YkC71VBC2g1NQWVKlDckOwVpiVSs5cVzoscHW63cesdBr79yH1WlVPFC0YS2evZkvKjauzm08kuW/7nZcmLZ2V6FQXGxorlWYewBtaEMbrVXKe1lxEaGOYnp99A6AL3qHcPoJe/EhuSRQdSzSOG/x1xhA92Wf0AGK3icOY=
+	t=1746668406; cv=none; b=NiWqRS1Ls4WRDADaz0mRuRB5ETK2K9HVJxfMPBpFuvxhQfnm+xfwR2Rz+ievREQPTC5WTqz8sbsgwv2dKDiDL36GlQgig4MZJXG+2sRCEeIy/ETJwZqueYnSZASADoHFC9IPlB3PWlUbZIxnY6YhdAJ94lwh4UnpnJYPGjbZf/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746663513; c=relaxed/simple;
-	bh=o/r3Crhq07EKv5wPTB5TLDFeP5lJ10MUGwPxhG8uu0I=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DPHNGFUNhwFEaJZcSdI3r+VBdQ418E3DEXW9pwW3H0H7fQIahZoY0GBghTkAz/rt6JoNRPEU7OjeBmlkijBaENP9lUMdF7aDB8nS63fVy9k5x4RV7ksX5hBSIojrKTE6z+lYzN3WAF9zSS7puHpojqMp2byPlsLsQbjHJDzSN0U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kLY0meii; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CAC1C4CEE2;
-	Thu,  8 May 2025 00:18:31 +0000 (UTC)
+	s=arc-20240116; t=1746668406; c=relaxed/simple;
+	bh=KRgPOEb3fH3DzHcSA5uZQJ5Tk9UMiIqCLgcS0Tg5vV4=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=Mm8Se38czwqy4krtH7zcPL0RNDAZCw8xagCC3v887OyKjg9MExPbupycMqf5JA0/g8ULq4bShGItqjWmywbjxddq/qt12lH5W3mAYJ6kY085ZMEZDBt+or0mbRt47AIdeKF2sNGtanlg0ddGY0Bd+oy2hxBQKdpyY+UqVoBLS9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L5hvKBjA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C00CC4CEE2;
+	Thu,  8 May 2025 01:40:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746663511;
-	bh=o/r3Crhq07EKv5wPTB5TLDFeP5lJ10MUGwPxhG8uu0I=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=kLY0meiiGNAwrS6pokJqsAWF/7XG5lR/2y7UJ9VoYtmEzeh97Lio4vCRAPKQIsAU7
-	 trjhAIylZDGWHSl/Y9Cd14E+khHoHasDU2rDE6dCjJcrVM/XuPa7BdWfl+aiCBeRbE
-	 h3kXpG7FBMf4+BSEog6WyocZv+HtNV03PfQC2ashh90tfh7VoH/97NtyctwHlSNIJx
-	 tEAiFpx205sUMpHZ4r852ku4NF5s+LJY23w28C6CqlaE7gdQgazvTN8TQCyrm2FwLA
-	 zsOXSxICoikHuzeF+BSEARBDNj+JaP2zX3ohVr1G73OVZRD2RHVpfU+5qpSHzYnbDm
-	 NOSM5XSVF3ggA==
-Date: Wed, 7 May 2025 17:18:29 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: Jon Kohler <jon@nutanix.com>, Willem de Bruijn
- <willemdebruijn.kernel@gmail.com>, Zvi Effron <zeffron@riotgames.com>,
- Stanislav Fomichev <stfomichev@gmail.com>, Jason Wang
- <jasowang@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David S.
- Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo
- Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>,
- Simon Horman <horms@kernel.org>, "netdev@vger.kernel.org"
- <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "bpf@vger.kernel.org"
- <bpf@vger.kernel.org>, Jacob Keller <jacob.e.keller@intel.com>
-Subject: Re: [PATCH net-next v3] xdp: Add helpers for head length, headroom,
- and metadata length
-Message-ID: <20250507171829.3e8f8a76@kernel.org>
-In-Reply-To: <b99b73e8-0957-45f8-bd54-6c50640706df@kernel.org>
-References: <20250506125242.2685182-1-jon@nutanix.com>
-	<aBpKLNPct95KdADM@mini-arch>
-	<681b603ac8473_1e4406294a6@willemb.c.googlers.com.notmuch>
-	<c8ad3f65-f70e-4c6e-9231-0ae709e87bfe@kernel.org>
-	<CAC1LvL3nE14cbQx7Me6oWS88EdpGP4Gx2A0Um4g-Vuxk4m_7Rw@mail.gmail.com>
-	<062e886f-7c83-4d46-97f1-ebbce3ca8212@kernel.org>
-	<681b96abe7ae4_1f6aad294c9@willemb.c.googlers.com.notmuch>
-	<B4F050C6-610F-4D04-88D7-7EF581DA7DF1@nutanix.com>
-	<e4cf6912-74fb-441f-ad05-82ea99d81020@kernel.org>
-	<6FF98F38-2AE5-4000-8827-81369C3FB429@nutanix.com>
-	<b99b73e8-0957-45f8-bd54-6c50640706df@kernel.org>
+	s=k20201202; t=1746668406;
+	bh=KRgPOEb3fH3DzHcSA5uZQJ5Tk9UMiIqCLgcS0Tg5vV4=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=L5hvKBjAeRasUfKbmwZMltCpe0VTwjf2wyodWnPxsR6uULqjt4QG5p02hSkkQz9vg
+	 NU5SVsR+xf/oD+nIinTfuRfPqzQ/i5x/nfMy7eqyJoJNOZKCr5jMd627agyzDR+rsG
+	 z7XDzE/BBr6tCrq7wByxCrbwNlI8vlzLuCWH/5Rn/kgrqBdQ9tjO5CuNbTkMAGNkk7
+	 ncQ4WlPgUbQyQxIQl8woqpKyXfR2LNPp/dvigaaqu+VkL7UOSs6nHr24Fx0l6Kj0D+
+	 TR3MD5MJ8bkyrkJ+ocokFyBBfd3cue3qatNjizY5eA+c0b1YbsvHYZW2i+fMpJllK0
+	 MD6ZmRJxXZMnA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33EF7380AA70;
+	Thu,  8 May 2025 01:40:46 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf v2 1/2] bpf: Scrub packet on bpf_redirect_peer
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <174666844500.2418694.3924867515434420953.git-patchwork-notify@kernel.org>
+Date: Thu, 08 May 2025 01:40:45 +0000
+References: <1728ead5e0fe45e7a6542c36bd4e3ca07a73b7d6.1746460653.git.paul.chaignon@gmail.com>
+In-Reply-To: <1728ead5e0fe45e7a6542c36bd4e3ca07a73b7d6.1746460653.git.paul.chaignon@gmail.com>
+To: Paul Chaignon <paul.chaignon@gmail.com>
+Cc: bpf@vger.kernel.org, martin.lau@linux.dev, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org
 
-On Wed, 7 May 2025 22:58:33 +0200 Jesper Dangaard Brouer wrote:
-> > There is a neat hint from Lorenzo=E2=80=99s change in bpf.h for bpf_xdp=
-_get_buff_len()
-> > that talks about both linear and paged length. Also, xdp_buff_flags=E2=
-=80=99s
-> > XDP_FLAGS_HAS_FRAGS says non-linear xdp buff.
-> >=20
-> > Taking those hints, what about:
-> > xdp_linear_len() =3D=3D xdp->data_end - xdp->data
-> > xdp_paged_len() =3D=3D sinfo->xdp_frags_size
-> > xdp_get_buff_len() =3D=3D xdp_linear_len() + xdp_paged_len()
->=20
-> I like xdp_linear_len() as it is descriptive/clear.
+Hello:
 
-FWIW I don't feel strongly but my very weak preference would be=20
-not to merge this. I already know I'll be looking at the definitions
-every time. Is it obvious to everyone in this thread whether "headroom"
-includes the metadata length? It's not obvious to me. But the patch
-seems quite popular so =F0=9F=A4=B7=EF=B8=8F
+This series was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Mon, 5 May 2025 21:58:04 +0200 you wrote:
+> When bpf_redirect_peer is used to redirect packets to a device in
+> another network namespace, the skb isn't scrubbed. That can lead skb
+> information from one namespace to be "misused" in another namespace.
+> 
+> As one example, this is causing Cilium to drop traffic when using
+> bpf_redirect_peer to redirect packets that just went through IPsec
+> decryption to a container namespace. The following pwru trace shows (1)
+> the packet path from the host's XFRM layer to the container's XFRM
+> layer where it's dropped and (2) the number of active skb extensions at
+> each function.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf,v2,1/2] bpf: Scrub packet on bpf_redirect_peer
+    https://git.kernel.org/netdev/net/c/c43272299488
+  - [bpf,v2,2/2] bpf: Clarify handling of mark and tstamp by redirect_peer
+    https://git.kernel.org/netdev/net/c/f5c79ffdc250
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
