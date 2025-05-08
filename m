@@ -1,86 +1,86 @@
-Return-Path: <bpf+bounces-57816-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57817-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99361AB067E
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 01:30:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F1C5AB067F
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 01:30:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 007761C257D2
-	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 23:30:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 95BB84C6165
+	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 23:30:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5867E230BD9;
-	Thu,  8 May 2025 23:30:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3A022153D3;
+	Thu,  8 May 2025 23:30:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Hw7VpgQb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F4/Ss5TK"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-ej1-f67.google.com (mail-ej1-f67.google.com [209.85.218.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B592221D88
-	for <bpf@vger.kernel.org>; Thu,  8 May 2025 23:30:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCB542557C
+	for <bpf@vger.kernel.org>; Thu,  8 May 2025 23:30:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746747001; cv=none; b=G6W7L1fuPAu+m9uu/u/j01dWaqDL34CqQFiqjuKXf3hwp68zrY780hLcyIRu3bBt0Lf2XFlWvMGq9XV0Bn/Nd3mNKEHC1zBuV7N1bK16dpzjDoP1qI5ZHsO2a5bAPsX/XjBSO5sO4d6jZUpLSI+hMSujT1qp3u+cmaAf+Fsqkf4=
+	t=1746747023; cv=none; b=ukGPS7IoG2wHtrgMhdnlOpF9317k14HM2FlwHBzfVntEYl+di7YU/UuPfgcAVcp2Ls6xBIUWxoxePaA/C13YA13JhOpKUTK1Dhlug3TmNkKzF7ngKC8ggeTneao+Rh15GKnNRdj9J4mivnj30bXDYGW6A42xSuMvRVb6Ezn8gYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746747001; c=relaxed/simple;
-	bh=tWm97DKt6SLp1KvDyqx+xBYLmIXfxo/4buW22YhTvZM=;
+	s=arc-20240116; t=1746747023; c=relaxed/simple;
+	bh=7e9r7Qu2vPCOI11t4h7S6OTA5B7RXmjcIxPDpThbcB0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kISOKVI3KuCwQHDPQlhQ+Elm6TvgMJJ8CUFAG2VikUXyR7ojzfHpVl691pWDwzeis+5WqsCfFbhRH3W3v08c66kvAsM+vl9GNs+E0SufA83VLziQlvp06GdaicZpDAxCwzLZofgVPmpZNeprDi5FIwHYGIkJtHLnTMGLw76D80g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Hw7VpgQb; arc=none smtp.client-ip=209.85.218.67
+	 To:Cc:Content-Type; b=c9p8ovCog5HkV09AxvSRAOXEJ2tXgfuMtdxpljiVExa35o+mI7cfJk617mwn+aPm+Mhg3UsmgS18UMlavNxaOhfnUm1rl2B+k90d3A+XjsC2uDINbOlYyZNyb3yWG1kcPVAaRgJPucVCPh20cKVQyXMm04cqpZ3JS9LjphmV7XI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F4/Ss5TK; arc=none smtp.client-ip=209.85.218.67
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f67.google.com with SMTP id a640c23a62f3a-ad1e8e2ad6bso306188666b.0
-        for <bpf@vger.kernel.org>; Thu, 08 May 2025 16:29:59 -0700 (PDT)
+Received: by mail-ej1-f67.google.com with SMTP id a640c23a62f3a-ad216a5a59cso71243566b.3
+        for <bpf@vger.kernel.org>; Thu, 08 May 2025 16:30:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746746998; x=1747351798; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1746747020; x=1747351820; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=l1zUsQbJbjAtQGhovnVyCEpCeilmX9zDKCeBjuv8taI=;
-        b=Hw7VpgQbaQ0hEMTiGRmv9KGEkALlF7SH+Wnj6Lvnk9zpY2jB4ZqvXG2fijskGGun+p
-         hYQE4TGJBnAqGcShQFQeY6nwfb9NOjTdpKadfBQbIo+GykcWa9DDs18OlQjJYHOEfplF
-         rh2yQOlun8HrSep0IFnOeOyGYe9CeFZTfzPefFhMbA3pFlPBo9wKsMrgeYRIf/85JqGM
-         qbU7F6xi4cBEMHCV+ouasPKuhBIvVVaoqldhnkUShaptUPAXe9BdxopF2g1PdTfiW4fe
-         6qmvos14l80xVgfeP0egtdhctaO8juteLAa9PVRHRKKeLJjHYX+QGJpfINZRl/ZKgQh1
-         4YQg==
+        bh=nAEqILxJMrgaHw8P+5Bb3j8jE37bco0r2yORoNgWHi8=;
+        b=F4/Ss5TK9SChAgfx5VSCsU6lYilr0ouguubQwH5hMHVCoFSpoB6taxYxYJTJC2sca7
+         cLcUYaJLW8mG0rOeHiSN/NThRW9/yJZfvVodoJAzp1TMT1xmhwg3nh1umEHiB8kH3zrP
+         0pKD0mc1f3Pc0kdCWQKcMJnFAqt0FWLAOV8Tf+VU+dNgwViNLQu329HWjjuRW+X0UXUN
+         PLAT823ens/UxadE+ZKydWL27yt0/SfvXMLVaAfD9KnFJ69I8kA7oyjI1TZVW6RLlkh0
+         5mgvPrTtf1Ahc05Ch7wpnftQlnTJ7W7UeKS6xcFl3Q3p8EdUyYxMERPgTSg9hD+rmOWK
+         np9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746746998; x=1747351798;
+        d=1e100.net; s=20230601; t=1746747020; x=1747351820;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=l1zUsQbJbjAtQGhovnVyCEpCeilmX9zDKCeBjuv8taI=;
-        b=i5z3cb887uRX2AMx9XBUI9yXGUbQgT9S5ZV60sEQHzylEjQ9OAPsjsHMDNd/3opYaw
-         g+hCLFBPCqpOvDNxHk9FksOyBmLwzbLuvJ7YbjMBAj8I+DLDi/QaKokq5k2WIO5HSJIC
-         soqZxF4wcmGU+bd//Dj5OOYHX+4uJafapa3DPsuC4FbhGwvfpVK40/4X9wwcdN6qfJRO
-         scoN4qjyFCV186q1LADyy/tf6U/ngMYB2lEZ01j9K24Is4vgDIltXpIqHwcXhcGO/iiw
-         D9bWUMUVHxLEaJx/n2BMY+ooXmdAkM8U7KF9R875E9wG4gXwuogJV1CPHvFRYhfoiMZ2
-         qGLQ==
-X-Gm-Message-State: AOJu0YyCE95k4pGScmADAeAIIC9HzTms/VCu8VWfIRm2WMuUk0ECV4vl
-	w4WVgXsJevgqa8FZbzDGUcTaHoJBllNuDyr0rTBh452IwYg+Jn/FHSSZRgbwMVVmVj5Oaflo6Fh
-	DO/QdsSNz4+GyLdN/K9v9Gzw6Es8=
-X-Gm-Gg: ASbGncsC3i+rjyBMqXBGSs/HkVLi2DB/SaKvi+wW0U6TLN+8Ak2D/iiwFbx2Url204K
-	FkrI3LxZyJti4snqcveMX7qie7eN8MzGckIOVUEVEttXZ7OPoQkhgeUIfzQxBcxlD6o7gdzviMz
-	4ec5mkbBJXmh+qM9EnLfOL1SC1VJrrAUWY1Mkawwm8qPEKzaSK2/SYCizP
-X-Google-Smtp-Source: AGHT+IGLkKVQ0PFfaSV3bQWZwaZo+FTi5vLvnDcL4ltMgXk8laDGgxH1b0omhoO0DocoH0UcBCNUx8SRN3EAY6R+V3Y=
-X-Received: by 2002:a17:907:96a4:b0:ac7:971b:ffd with SMTP id
- a640c23a62f3a-ad218e5358cmr153316366b.10.1746746998282; Thu, 08 May 2025
- 16:29:58 -0700 (PDT)
+        bh=nAEqILxJMrgaHw8P+5Bb3j8jE37bco0r2yORoNgWHi8=;
+        b=o7/02I/XhjvPDq69rQxj7046trK3CZyevnYnXdDklugRmhDEO03/D6gka/sT1w0o/P
+         B0gEC3tZngtxAuiTklQpGhgPNR5JNj4A+I4OKTMZ/3gY4Ymos1aTy7+91NnB3H806EXw
+         u+r3YKu+D9mxO764xqQAFiST0RvRz8QnwT6JnVjZUzuB0m/04Z/eayqPolE3T3ln78/c
+         RCcOdqQQa/JW2PJt3jFeckN/iaBoDv4c/3m0Jl8zl6kNkrqI3Im5QrTfDw1iACLffNQ1
+         rJH9Jnu5N5aj2zS0SkWEhooji3NUofCpTShZM+lffitACR5Uc6TaU4Nr5YEO04fxoLXi
+         6rQQ==
+X-Gm-Message-State: AOJu0YxqId2ibEsU0lZu4dIHyQSm+PnyFWbU8TWt/z5/TuU8J3GpQRPY
+	FKRhcMZd9dtVjjBcS0yJAX0G/EWJ1AnDgZjFRv/Lk/Npm22Yj7J9NNMrO5Pw477YDO2tDcDNr91
+	uqKHkEj+t/iMxQ2CDOjEXjaG4DZw=
+X-Gm-Gg: ASbGncs1kwdpI0ar32nmQlkfmeu0LEvN1ZXXfNU0t+6fvOhVHhGlKf0DDcx0/cRXYBa
+	gbMoxIwYfGrU3YRsfWwVxsKQNCGh3GtTRRKngc2CTEiYqvrPu3egJfimRsX4G0WrB7w+kkaJaSd
+	a2uXfnZrfWt5+BPYaP9bm6h+p49bXwLteKsDsaw0VpHCpnYBrXqN0iYo7+
+X-Google-Smtp-Source: AGHT+IFyon3gtl9nCotDM7++PNZw0AAPxqjFhIk0/7CCcLHaA2HzBhTO36v7baUlaXzmpeN68TfwVPbBG9yuFh0o1FM=
+X-Received: by 2002:a17:907:8e07:b0:ace:3ede:9d26 with SMTP id
+ a640c23a62f3a-ad21900b400mr131080466b.27.1746747019945; Thu, 08 May 2025
+ 16:30:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250507171720.1958296-1-memxor@gmail.com> <20250507171720.1958296-6-memxor@gmail.com>
- <d2d0c67e57cc14bcc186f4a5b744ec1a01630721.camel@gmail.com>
-In-Reply-To: <d2d0c67e57cc14bcc186f4a5b744ec1a01630721.camel@gmail.com>
+References: <20250507171720.1958296-1-memxor@gmail.com> <20250507171720.1958296-5-memxor@gmail.com>
+ <43ab09ea0150f8d987106604235886f28a73ebd8.camel@gmail.com>
+In-Reply-To: <43ab09ea0150f8d987106604235886f28a73ebd8.camel@gmail.com>
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Fri, 9 May 2025 01:29:21 +0200
-X-Gm-Features: AX0GCFt0hm9dUlm6rVxIxc3KgvXYnLZv0ctMcVS_3C8ufI6KPCJJmGHwQdjsqHw
-Message-ID: <CAP01T77+LmWBhL3_stoS0hzTM4_Lrvh8-s1F1m6Q3P2fL7WbHQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 05/11] bpf: Add dump_stack() analogue to print
- to BPF stderr
+Date: Fri, 9 May 2025 01:29:43 +0200
+X-Gm-Features: AX0GCFtttvQJd4chSWatfkPvX1gSGoZwz62sOQwNacuAo6m6MlrHx_jP3jVawaQ
+Message-ID: <CAP01T75QAq4Em7NL3Nw-3OC+cfkV_Yy69E88dxA2q9T9yDwA6w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 04/11] bpf: Add function to find program from
+ stack trace
 To: Eduard Zingerman <eddyz87@gmail.com>
 Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
 	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
@@ -89,41 +89,75 @@ Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
 	kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 9 May 2025 at 00:38, Eduard Zingerman <eddyz87@gmail.com> wrote:
+On Fri, 9 May 2025 at 01:07, Eduard Zingerman <eddyz87@gmail.com> wrote:
 >
 > On Wed, 2025-05-07 at 10:17 -0700, Kumar Kartikeya Dwivedi wrote:
+> > In preparation of figuring out the closest program that led to the
+> > current point in the kernel, implement a function that scans through the
+> > stack trace and finds out the closest BPF program when walking down the
+> > stack trace.
+> >
+> > Special care needs to be taken to skip over kernel and BPF subprog
+> > frames. We basically scan until we find a BPF main prog frame. The
+> > assumption is that if a program calls into us transitively, we'll
+> > hit it along the way. If not, we end up returning NULL.
+> >
+> > Contextually the function will be used in places where we know the
+> > program may have called into us.
+> >
+> > Due to reliance on arch_bpf_stack_walk(), this function only works on
+> > x86 with CONFIG_UNWINDER_ORC, arm64, and s390. Remove the warning from
+> > arch_bpf_stack_walk as well since we call it outside bpf_throw()
+> > context.
+> >
+> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > ---
+>
+> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 >
 > [...]
 >
-> > +static bool dump_stack_cb(void *cookie, u64 ip, u64 sp, u64 bp)
-> > +{
-> > +     struct dump_stack_ctx *ctxp = cookie;
-> > +     const char *file = "", *line = "";
-> > +     struct bpf_prog *prog;
-> > +     int num;
+> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> > index df1bae084abd..dcb665bff22f 100644
+> > --- a/kernel/bpf/core.c
+> > +++ b/kernel/bpf/core.c
+> > @@ -3244,3 +3244,29 @@ int bpf_prog_get_file_line(struct bpf_prog *prog, unsigned long ip, const char *
+> >               *linep += 1;
+> >       return BPF_LINE_INFO_LINE_NUM(linfo[idx].line_col);
+> >  }
 > > +
-> > +     if (is_bpf_text_address(ip)) {
-> > +             prog = bpf_prog_ksym_find(ip);
-> > +             num = bpf_prog_get_file_line(prog, ip, &file, &line);
-> > +             if (num == -1)
-> > +                     goto end;
+> > +struct walk_stack_ctx {
+> > +     struct bpf_prog *prog;
+> > +};
+> > +
+> > +static bool find_from_stack_cb(void *cookie, u64 ip, u64 sp, u64 bp)
+> > +{
+> > +     struct walk_stack_ctx *ctxp = cookie;
+> > +     struct bpf_prog *prog;
+> > +
+> > +     if (!is_bpf_text_address(ip))
+> > +             return true;
+> > +     prog = bpf_prog_ksym_find(ip);
 >
-> Should this be `num < 0` ?
-> bpf_prog_get_file_line() can return -EINVAL and -ENOENT.
-
-My bad, I modified the error code when cleaning it up but forgot to
-change caller, thanks for catching it.
-
+> Nit: both bpf_prog_ksym_find() and is_bpf_text_address()
+>      use bpf_ksym_find(), so it ends up called twice.
 >
-> > +             ctxp->err = bpf_stream_stage_printk(ctxp->ss, "%pS\n  %s @ %s:%d\n",
-> > +                                                 (void *)ip, line, file, num);
-> > +             return !ctxp->err;
-> > +     }
-> > +end:
-> > +     ctxp->err = bpf_stream_stage_printk(ctxp->ss, "%pS\n", (void *)ip);
-> > +     return !ctxp->err;
+
+Good point, will fix.
+
+> > +     if (bpf_is_subprog(prog))
+> > +             return true;
+> > +     ctxp->prog = prog;
+> > +     return false;
+> > +}
+> > +
+> > +struct bpf_prog *bpf_prog_find_from_stack(void)
+> > +{
+> > +     struct walk_stack_ctx ctx = {};
+> > +
+> > +     arch_bpf_stack_walk(find_from_stack_cb, &ctx);
+> > +     return ctx.prog;
 > > +}
 >
-> [...]
 >
 
