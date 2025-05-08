@@ -1,122 +1,619 @@
-Return-Path: <bpf+bounces-57745-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57746-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BBB0AAF6E1
-	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 11:38:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4BFCAAF6F1
+	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 11:42:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B26B1C048FC
-	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 09:38:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E816F4E5E81
+	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 09:42:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36BEB2641E8;
-	Thu,  8 May 2025 09:38:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E12F264A9E;
+	Thu,  8 May 2025 09:42:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="jdIWhOqJ"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="x3P+h+XL"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEC0E256D;
-	Thu,  8 May 2025 09:38:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A281A263F4E
+	for <bpf@vger.kernel.org>; Thu,  8 May 2025 09:42:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746697094; cv=none; b=VF7AmJrq21WBWt4yrZgfjShHeClQUwRF6d6SzjCp3dgRSb7rQHebFUYRzlFFv7p/DXEDU4juld7omBe6dUdAlR29ZwY2HN+iqMEaT2iaJKH3NlPgglHnrpyAiEVKXW4ik1fTy0ioeGsTGwDMl0ZQGkDQDqum/gPamEgZoVoQEfE=
+	t=1746697328; cv=none; b=tUu1zyKjxlAxYWDFsZW56DKv4+2Q76WUP+R0xzgl6FA/Oa6doP242uFd/BuPi+pFhF2MSY0vb1mT1ls26ZRfVDsIzJ7RqiRiOEAX5BRYEfKuuGNyQQ/CNqHi97m69qwwSjKSCMIy0HgQf4HXEVhNSXFbBSbIoyUpifHOgz06dk0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746697094; c=relaxed/simple;
-	bh=SaXVJVqCe8qEoYe4/DuliBjSR0HDjrjWq27uDIX9Nco=;
-	h=Content-Type:Date:Message-Id:Subject:From:To:Cc:Mime-Version:
-	 References:In-Reply-To; b=KiXUHor0Gy5XM7Qr3WTlfuY2k4MJB0r2fVlbWfFy3HZu4iV2s3zI9yn8J0LqwtxqTHeFX4bA93Gcv6m8EEW+1OD9xkGYOyd4pXYQwL2NIcCCs3MxIpHyWko83g1JL5o2cFhunB6CpliTzFMJGiwkTXfIToK3WTZzgfUnOpYJGQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=jdIWhOqJ; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4220D439EB;
-	Thu,  8 May 2025 09:38:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1746697087;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=p0b3+napmc38ovl9hoUwfu3ONlhB8xiw4jdwMaPzEcs=;
-	b=jdIWhOqJy3XbvgQFPrqfGBwg7SVIJGCcPraTUF5QQel2GUOsPF/UUbvlPzyZoo0Qayn4Tg
-	pWdQAA9szKfe82OTAXwwAmUt7j5kRLavFiCmPx8hNQsDTyF3sMsv6nMoAZ2rkMKODIyV+7
-	QDngj4QIEvSOGcP8RZ+j9r0TH9AWjzV5Tm7b+DKziUuoeaN5rJo5rpzslXhe8VjJypyIsx
-	bmoUt6Lw7//v0nfgxe6xVB0GCj6Piu7xCA+oJ1HkHlJ8pH8VwgkSvrRseB8nAGMlmG7O0/
-	RPeR5/uRR+xBzBpSnUu+5Uf4/eEh2vi3pCpYu4ggcd+ISc9vizIVb7feSKbyBw==
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 08 May 2025 11:38:06 +0200
-Message-Id: <D9QOFW6WEIT0.2AJBVJINZRRBV@bootlin.com>
-Subject: Re: [PATCH dwarves v2] dwarf_loader: Fix skipped encoding of
- function BTF on 32-bit systems
-From: =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-To: "Tony Ambardar" <tony.ambardar@gmail.com>, <dwarves@vger.kernel.org>,
- <bpf@vger.kernel.org>
-Cc: "Alan Maguire" <alan.maguire@oracle.com>, "Arnaldo Carvalho de Melo"
- <acme@kernel.org>, "Andrii Nakryiko" <andrii@kernel.org>, "Alexei
- Starovoitov" <ast@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>
+	s=arc-20240116; t=1746697328; c=relaxed/simple;
+	bh=J067uXZvi44Be/SgOzzTwDN+a6z8Q/IT4jrx7NJWnK8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UOlIQEsSNgeBvkA1H6UAOiqyHNBOakXJlo2zF3b7CixyxuFkwclZHIki84f9yOPitDEEApCZ7cqHqF/+YWqNwPbpPpGaQPQaP4KYGFzCGj9kCNs9rUvZRTdmmbbybqIYtFAJgae6bHTfz1Z3zGkd4ucArIPp+YUvpjGiMLv053A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=x3P+h+XL; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5f6fb95f431so3590452a12.0
+        for <bpf@vger.kernel.org>; Thu, 08 May 2025 02:42:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1746697324; x=1747302124; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=liejZjw7pIEpAq6TRxpWI/WghoIaNsbactZpU4edoXU=;
+        b=x3P+h+XLWedDcb8dOkmRs+T1r59v6m/A7+q+9jgkTZwqT3DGC8PoGuWwUujTGSL5qD
+         dko9H/tP4YpXnvLL2oMaMTnj3rSGISDVdxbg7z+Z7cHSCOLxqFsoOTvwOyYmIUJnYJIR
+         ahY96dlbUPrM+f+PW8i+tQyRzLalO+45MViMBKf+DZSxPPu8lvvVxuMiWuzqfHg0Dno0
+         VakbSGVIOpSA0LcaRm9LJWA69ab+LxjgmytrV/q+PYk8TD84DSmxYOB/1O7KkFuEZ6wM
+         yVn0GJFUze6ISlMvugeAVoUMHtKSsJWIqOzbnlEeGL5JgkCR8/SyOW3MHraQEE9fAuZd
+         NUsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746697324; x=1747302124;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=liejZjw7pIEpAq6TRxpWI/WghoIaNsbactZpU4edoXU=;
+        b=UPbAujTf3jBImaNV0uqVZ9FbDGta+ZO1UGu0yH9TfYctxFqc/YHeWp0bZDAvu/4C7b
+         GjC/70pzfg6iHqQ9LeDCZWR4vRSc7boXmuukgSaSRsQAPceiLvZ4+5oojDdtnE6pWOCv
+         /Hh4c6n4oElwBbIq1eSYhAGEOSSlHGXbRNNAfjB3GQwoRXbHyOktCNpOeWf5SF4Elx8+
+         PUb7cQMe/ZzVaObm7HOJadDE/3DCwuZlhDyuVEmJHO4NTTapeE4W5FfgYb2ra1qHVcXa
+         K/gn62K3kQXwYfstm6/XdFlYiqBhW0p94HyynhmnHf9HR/WCBQd7VdYrLFTSSxZwfN+j
+         90hg==
+X-Gm-Message-State: AOJu0YxqIBL6Lb9rVgypMy5XpLcz+Gkzx9yiHKPEyHK/BVBRSUo1W9pf
+	4yAs7wJnmf2OwUHihYC88P4HMD+KJRVQjrEWq4l81rZOI0+aSbzuZ63wBhEmzA==
+X-Gm-Gg: ASbGncudJaYmo0ZGEcwjfl4AExIFL4s4zSROQPv3yfnxcZJiAIZW3DZJBvOyypLXYPo
+	Bll6dv69PofSC6nSP0UspcR0kBbx8V0goYFN/QCQ1KaoVJyqvrr71Ehs1Uq7l/gGXw8HPG0L0jQ
+	vuOT9cau4DY79UGymWJ4aZiCeJy2BRCA+G6h2V2Gj8P17tMHjr+2NRPwrRSIKFNjYj+J6WpjeTw
+	UHfYHLi0P8ahQiW/NHkTKWwEgsGvlcApl4rBPWGJaIfnQ9kLwgPvGvypqbBmd7ee8sEoSL76cXD
+	KhBK8mmAMAg84HNl0msyzcoOQ4VNlY31U7HVYcm+TM+8vmiimR0Rl6cZkwPR83XevQDF25odjUW
+	ipLsarMrPtuLvaGpgrg==
+X-Google-Smtp-Source: AGHT+IFVkO48ehe9jh0t7Bs7msdSn9xoh8j+AbhH9spLI8J10SOVC795RwzfUps1US0K/zCU3WnNMA==
+X-Received: by 2002:a17:907:3cc2:b0:ace:be7c:11df with SMTP id a640c23a62f3a-ad1fcb5aa75mr286359166b.6.1746697323617;
+        Thu, 08 May 2025 02:42:03 -0700 (PDT)
+Received: from google.com (201.31.90.34.bc.googleusercontent.com. [34.90.31.201])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ad1895087d1sm1054180766b.128.2025.05.08.02.42.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 May 2025 02:42:02 -0700 (PDT)
+Date: Thu, 8 May 2025 09:41:58 +0000
+From: Matt Bobrowski <mattbobrowski@google.com>
+To: Viktor Malik <vmalik@redhat.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [PATCH bpf-next v4 3/4] bpf: Add kfuncs for read-only string
+ operations
+Message-ID: <aBx8Zjux0bSgtV04@google.com>
+References: <cover.1746598898.git.vmalik@redhat.com>
+ <19913411da8c08170d959207e28262efc0a5d813.1746598898.git.vmalik@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: aerc 0.20.1-0-g2ecb8770224a
-References: <Z/+HZ3w2KmbK5OAi@kodidev-ubuntu>
- <20250502070318.1561924-1-tony.ambardar@gmail.com>
-In-Reply-To: <20250502070318.1561924-1-tony.ambardar@gmail.com>
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvkeelgedtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpegtfffkuffhvfevggfgofhfjgesthhqredtredtjeenucfhrhhomheptehlvgigihhsucfnohhthhhorhoruceorghlvgigihhsrdhlohhthhhorhgvsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeffkefgfedvvdfhhfevjedvjedtvedvhfeileekgfdtfefhfedtgeekkeehffdtjeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgpdgsohhothhlihhnrdgtohhmnecukfhppedvrgdtvdemkeegvdekmehfleegtgemvgdttdemmehfkeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvdgrtddvmeekgedvkeemfhelgegtmegvtddtmeemfhekhedphhgvlhhopehlohgtrghlhhhoshhtpdhmrghilhhfrhhomheprghlvgigihhsrdhlohhthhhorhgvsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopeekpdhrtghpthhtohepthhonhihrdgrmhgsrghruggrrhesghhmrghilhdrtghomhdprhgtphhtthhopegufigrrhhvvghssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepsghpfhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhop
- egrlhgrnhdrmhgrghhuihhrvgesohhrrggtlhgvrdgtohhmpdhrtghpthhtoheprggtmhgvsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrnhgurhhiiheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghstheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlsehiohhgvggrrhgsohigrdhnvght
-X-GND-Sasl: alexis.lothore@bootlin.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <19913411da8c08170d959207e28262efc0a5d813.1746598898.git.vmalik@redhat.com>
 
-Hello,
+On Wed, May 07, 2025 at 08:40:38AM +0200, Viktor Malik wrote:
+> String operations are commonly used so this exposes the most common ones
+> to BPF programs. For now, we limit ourselves to operations which do not
+> copy memory around.
+> 
+> Unfortunately, most in-kernel implementations assume that strings are
+> %NUL-terminated, which is not necessarily true, and therefore we cannot
+> use them directly in the BPF context. Instead, we open-code them using
+> __get_kernel_nofault instead of plain dereference to make them safe and
+> limit the strings length to XATTR_SIZE_MAX to make sure the functions
+> terminate. When __get_kernel_nofault fails, functions return -EFAULT.
+> Similarly, when the size bound is reached, the functions return -E2BIG.
 
-On Fri May 2, 2025 at 9:03 AM CEST, Tony Ambardar wrote:
-> I encountered an issue building BTF kernels for 32-bit armhf, where many
-> functions are missing in BTF data:
+Curious, why was XATTR_SIZE_MAX chosen as the upper bounds here? Just
+an arbitrary value that felt large enough?
 
-[...]
+> At the moment, strings can be passed to the kfuncs in three forms:
+> - string literals (i.e. pointers to read-only maps)
+> - global variables (i.e. pointers to read-write maps)
+> - stack-allocated buffers
+> 
+> Note that currently, it is not possible to pass strings from the BPF
+> program context (like function args) as the verifier doesn't treat them
+> as neither PTR_TO_MEM nor PTR_TO_BTF_ID.
+> 
+> Suggested-by: Alexei Starovoitov <ast@kernel.org>
+> Signed-off-by: Viktor Malik <vmalik@redhat.com>
+> ---
+>  kernel/bpf/helpers.c | 440 +++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 440 insertions(+)
+> 
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index e3a2662f4e33..8fb7c2ca7ac0 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -23,6 +23,7 @@
+>  #include <linux/btf_ids.h>
+>  #include <linux/bpf_mem_alloc.h>
+>  #include <linux/kasan.h>
+> +#include <linux/uaccess.h>
+>  
+>  #include "../../lib/kstrtox.h"
+>  
+> @@ -3194,6 +3195,433 @@ __bpf_kfunc void bpf_local_irq_restore(unsigned long *flags__irq_flag)
+>  	local_irq_restore(*flags__irq_flag);
+>  }
+>  
+> +/* Kfuncs for string operations.
+> + *
+> + * Since strings are not necessarily %NUL-terminated, we cannot directly call
+> + * in-kernel implementations. Instead, we open-code the implementations using
+> + * __get_kernel_nofault instead of plain dereference to make them safe.
+> + */
 
-> Fixes: a53c58158b76 ("dwarf_loader: Mark functions that do not use expect=
-ed registers for params")
-> Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
+Returning an -EFAULT error code for supplied arguments which are
+deemed to be invalid is just a very weird semantic IMO. As a BPF
+program author, I totally wouldn't expect a BPF kfunc to return
+-EINVAL if I had supplied it something that it couldn't quite possibly
+handle to begin with. Look at the prior art, being pre-existing BPF
+kfuncs, and you'll see how they handle invalidly supplied arguments. I
+totally understand that attempting to dereference a NULL-pointer would
+ultimately result in a fault being raised, so it may feel rather
+natural to also report an -EFAULT error code upon doing some
+NULL-pointer checks that hold true, but from an API usability POV it
+just seems awkward and wrong.
 
-I encountered some issues with pahole 1.30 when trying to generate BTF data
-for functions having some __int128 values ([1]), and have been redirected
-here by Tony. I gave a try to the patch below and confirm that it fixes my
-issue: BTF data is now properly generated for my target function, so:
+Another thing that I noticed was that none of these BPF kfunc
+arguments make use of the parameter suffixes i.e. __str, __sz. Why is
+that exactly? Will leaning on those break you in some way?
 
-Tested-by: Alexis Lothor=C3=A9 <alexis.lothore@bootlin.com>
+> +/**
+> + * bpf_strcmp - Compare two strings
+> + * @s1: One string
+> + * @s2: Another string
+> + *
+> + * Return:
+> + * * %0       - Strings are equal
+> + * * %-1      - @s1 is smaller
+> + * * %1       - @s2 is smaller
+> + * * %-EFAULT - Cannot read one of the strings
+> + * * %-E2BIG  - One of strings is too large
+> + */
+> +__bpf_kfunc int bpf_strcmp(const char *s1, const char *s2)
+> +{
+> +	char c1, c2;
+> +	int i;
+> +
+> +	if (!s1 || !s2)
+> +		return -EFAULT;
+> +
+> +	guard(pagefault)();
+> +	for (i = 0; i < XATTR_SIZE_MAX; i++) {
+> +		__get_kernel_nofault(&c1, s1, char, err_out);
+> +		__get_kernel_nofault(&c2, s2, char, err_out);
+> +		if (c1 != c2)
+> +			return c1 < c2 ? -1 : 1;
+> +		if (c1 == '\0')
+> +			return 0;
+> +		s1++;
+> +		s2++;
+> +	}
+> +	return -E2BIG;
+> +err_out:
+> +	return -EFAULT;
+> +}
+> +
+> +/**
+> + * bpf_strchr - Find the first occurrence of a character in a string
+> + * @s: The string to be searched
+> + * @c: The character to search for
+> + *
+> + * Note that the %NUL-terminator is considered part of the string, and can
+> + * be searched for.
+> + *
+> + * Return:
+> + * * const char * - Pointer to the first occurrence of @c within @s
+> + * * %NULL        - @c not found in @s
+> + * * %-EFAULT     - Cannot read @s
+> + * * %-E2BIG      - @s too large
+> + */
+> +__bpf_kfunc const char *bpf_strchr(const char *s, char c)
+> +{
+> +	char sc;
+> +	int i;
+> +
+> +	if (!s)
+> +		return ERR_PTR(-EFAULT);
+> +
+> +	guard(pagefault)();
+> +	for (i = 0; i < XATTR_SIZE_MAX; i++) {
+> +		__get_kernel_nofault(&sc, s, char, err_out);
+> +		if (sc == c)
+> +			return s;
+> +		if (sc == '\0')
+> +			return NULL;
+> +		s++;
+> +	}
+> +	return ERR_PTR(-E2BIG);
+> +err_out:
+> +	return ERR_PTR(-EFAULT);
+> +}
+> +
+> +/**
+> + * bpf_strnchr - Find a character in a length limited string
+> + * @s: The string to be searched
+> + * @count: The number of characters to be searched
+> + * @c: The character to search for
+> + *
+> + * Note that the %NUL-terminator is considered part of the string, and can
+> + * be searched for.
+> + *
+> + * Return:
+> + * * const char * - Pointer to the first occurrence of @c within @s
+> + * * %NULL        - @c not found in the first @count characters of @s
+> + * * %-EFAULT     - Cannot read @s
+> + * * %-E2BIG      - @s too large
+> + */
+> +__bpf_kfunc const char *bpf_strnchr(const char *s, size_t count, char c)
+> +{
+> +	char sc;
+> +	int i;
+> +
+> +	if (!s)
+> +		return ERR_PTR(-EFAULT);
+> +
+> +	guard(pagefault)();
+> +	for (i = 0; i < count && i < XATTR_SIZE_MAX; i++) {
+> +		__get_kernel_nofault(&sc, s, char, err_out);
+> +		if (sc == c)
+> +			return s;
+> +		if (sc == '\0')
+> +			return NULL;
+> +		s++;
+> +	}
+> +	return i == XATTR_SIZE_MAX ? ERR_PTR(-E2BIG) : NULL;
+> +err_out:
+> +	return ERR_PTR(-EFAULT);
+> +}
+> +
+> +/**
+> + * bpf_strchrnul - Find and return a character in a string, or end of string
+> + * @s: The string to be searched
+> + * @c: The character to search for
+> + *
+> + * Return:
+> + * * const char * - Pointer to the first occurrence of @c within @s or pointer
+> + *                  to the null byte at the end of @s when @c is not found
+> + * * %-EFAULT     - Cannot read @s
+> + * * %-E2BIG      - @s too large
+> + */
+> +__bpf_kfunc const char *bpf_strchrnul(const char *s, char c)
+> +{
+> +	char sc;
+> +	int i;
+> +
+> +	if (!s)
+> +		return ERR_PTR(-EFAULT);
+> +
+> +	guard(pagefault)();
+> +	for (i = 0; i < XATTR_SIZE_MAX; i++) {
+> +		__get_kernel_nofault(&sc, s, char, err_out);
+> +		if (sc == '\0' || sc == c)
+> +			return s;
+> +		s++;
+> +	}
+> +	return ERR_PTR(-E2BIG);
+> +err_out:
+> +	return ERR_PTR(-EFAULT);
+> +}
+> +
+> +/**
+> + * bpf_strrchr - Find the last occurrence of a character in a string
+> + * @s: The string to be searched
+> + * @c: The character to search for
+> + *
+> + * Return:
+> + * * const char * - Pointer to the last occurrence of @c within @s
+> + * * %NULL        - @c not found in @s
+> + * * %-EFAULT     - Cannot read @s
+> + * * %-E2BIG      - @s too large
+> + */
+> +__bpf_kfunc const char *bpf_strrchr(const char *s, int c)
+> +{
+> +	const char *last = NULL;
+> +	char sc;
+> +	int i;
+> +
+> +	if (!s)
+> +		return ERR_PTR(-EFAULT);
+> +
+> +	guard(pagefault)();
+> +	for (i = 0; i < XATTR_SIZE_MAX; i++) {
+> +		__get_kernel_nofault(&sc, s, char, err_out);
+> +		if (sc == '\0')
+> +			return last;
+> +		if (sc == c)
+> +			last = s;
+> +		s++;
+> +	}
+> +	return ERR_PTR(-E2BIG);
+> +err_out:
+> +	return ERR_PTR(-EFAULT);
+> +}
+> +
+> +/**
+> + * bpf_strlen - Calculate the length of a string
+> + * @s: The string
+> + *
+> + * Return:
+> + * * >=0      - The length of @s
+> + * * %-EFAULT - Cannot read @s
+> + * * %-E2BIG  - @s too large
+> + */
+> +__bpf_kfunc int bpf_strlen(const char *s)
+> +{
+> +	char c;
+> +	int i;
+> +
+> +	if (!s)
+> +		return -EFAULT;
+> +
+> +	guard(pagefault)();
+> +	for (i = 0; i < XATTR_SIZE_MAX; i++) {
+> +		__get_kernel_nofault(&c, s, char, err_out);
+> +		if (c == '\0')
+> +			return i;
+> +		s++;
+> +	}
+> +	return -E2BIG;
+> +err_out:
+> +	return -EFAULT;
+> +}
+> +
+> +/**
+> + * bpf_strlen - Calculate the length of a length-limited string
+> + * @s: The string
+> + * @count: The maximum number of characters to count
+> + *
+> + * Return:
+> + * * >=0      - The length of @s
+> + * * %-EFAULT - Cannot read @s
+> + * * %-E2BIG  - @s too large
+> + */
+> +__bpf_kfunc int bpf_strnlen(const char *s, size_t count)
+> +{
+> +	char c;
+> +	int i;
+> +
+> +	if (!s)
+> +		return -EFAULT;
+> +
+> +	guard(pagefault)();
+> +	for (i = 0; i < count && i < XATTR_SIZE_MAX; i++) {
+> +		__get_kernel_nofault(&c, s, char, err_out);
+> +		if (c == '\0')
+> +			return i;
+> +		s++;
+> +	}
+> +	return i == XATTR_SIZE_MAX ? -E2BIG : i;
+> +err_out:
+> +	return -EFAULT;
+> +}
+> +
+> +/**
+> + * bpf_strspn - Calculate the length of the initial substring of @s which only
+> + *              contains letters in @accept
+> + * @s: The string to be searched
+> + * @accept: The string to search for
+> + *
+> + * Return:
+> + * * >=0      - The length of the initial substring of @s which only contains
+> + *              letter in @accept
+> + * * %-EFAULT - Cannot read @s
+> + * * %-E2BIG  - @s too large
+v> + */
+> +__bpf_kfunc int bpf_strspn(const char *s, const char *accept)
+> +{
+> +	const char *p;
+> +	char c;
+> +	int i;
+> +
+> +	if (!s || !accept)
+> +		return -EFAULT;
+> +
+> +	guard(pagefault)();
+> +	for (i = 0; i < XATTR_SIZE_MAX; i++) {
+> +		__get_kernel_nofault(&c, s, char, err_out);
+> +		p = bpf_strchr(accept, c);
+> +		if (IS_ERR(p))
+> +			return PTR_ERR(p);
+> +		if (c == '\0' || !p)
+> +			return i;
+> +		s++;
+> +	}
+> +	return -E2BIG;
+> +err_out:
+> +	return -EFAULT;
+> +}
+> +
+> +/**
+> + * strcspn - Calculate the length of the initial substring of @s which does not
+> + *           contain letters in @reject
+> + * @s: The string to be searched
+> + * @reject: The string to avoid
+> + *
+> + * Return:
+> + * * >=0      - The length of the initial substring of @s which does not contain
+> + *              letters from @reject
+> + * * %-EFAULT - Cannot read @s
+> + * * %-E2BIG  - @s too large
+> + */
+> +__bpf_kfunc int bpf_strcspn(const char *s, const char *reject)
+> +{
+> +	const char *p;
+> +	char c;
+> +	int i;
+> +
+> +	if (!s || !reject)
+> +		return -EFAULT;
+> +
+> +	guard(pagefault)();
+> +	for (i = 0; i < XATTR_SIZE_MAX; i++) {
+> +		__get_kernel_nofault(&c, s, char, err_out);
+> +		p = bpf_strchr(reject, c);
+> +		if (IS_ERR(p))
+> +			return PTR_ERR(p);
+> +		if (c == '\0' || p)
+> +			return i;
+> +		s++;
+> +	}
+> +	return -E2BIG;
+> +err_out:
+> +	return -EFAULT;
+> +}
+> +
+> +/**
+> + * bpf_strpbrk - Find the first occurrence of a set of characters
+> + * @s: The string to be searched
+> + * @accept: The characters to search for
+> + *
+> + * Return:
+> + * * const char * - Pointer to the first occurrence of a character from @accept
+> + *                  within @s
+> + * * %NULL        - No character from @accept found in @s
+> + * * %-EFAULT     - Cannot read one of the strings
+> + * * %-E2BIG      - One of the strings is too large
+> + */
+> +__bpf_kfunc const char *bpf_strpbrk(const char *s, const char *accept)
+> +{
+> +	const char *p;
+> +	char c;
+> +	int i;
+> +
+> +	if (!s || !accept)
+> +		return ERR_PTR(-EFAULT);
+> +
+> +	guard(pagefault)();
+> +	for (i = 0; i < XATTR_SIZE_MAX; i++) {
+> +		__get_kernel_nofault(&c, s, char, err_out);
+> +		if (c == '\0')
+> +			return NULL;
+> +		p = bpf_strchr(accept, c);
+> +		if (IS_ERR(p))
+> +			return p;
+> +		if (p)
+> +			return s;
+> +		s++;
+> +	}
+> +	return ERR_PTR(-E2BIG);
+> +err_out:
+> +	return ERR_PTR(-EFAULT);
+> +}
+> +
+> +/**
+> + * bpf_strstr - Find the first substring in a string
+> + * @s1: The string to be searched
+> + * @s2: The string to search for
+> + *
+> + * Return:
+> + * * const char * - Pointer to the first occurrence of @s2 within @s1
+> + * * %NULL        - @s2 is not a substring of @s1
+> + * * %-EFAULT     - Cannot read one of the strings
+> + * * %-E2BIG      - One of the strings is too large
+> + */
+> +__bpf_kfunc const char *bpf_strstr(const char *s1, const char *s2)
+> +{
+> +	char c1, c2;
+> +	int i, j;
+> +
+> +	if (!s1 || !s2)
+> +		return ERR_PTR(-EFAULT);
+> +
+> +	guard(pagefault)();
+> +	for (i = 0; i < XATTR_SIZE_MAX; i++) {
+> +		for (j = 0; j < XATTR_SIZE_MAX; j++) {
+> +			__get_kernel_nofault(&c1, s1 + j, char, err_out);
+> +			__get_kernel_nofault(&c2, s2 + j, char, err_out);
+> +			if (c2 == '\0')
+> +				return s1;
+> +			if (c1 == '\0')
+> +				return NULL;
+> +			if (c1 != c2)
+> +				break;
+> +		}
+> +		if (j == XATTR_SIZE_MAX)
+> +			return ERR_PTR(-E2BIG);
+> +		s1++;
+> +	}
+> +	return ERR_PTR(-E2BIG);
+> +err_out:
+> +	return ERR_PTR(-EFAULT);
+> +}
+> +
+> +/**
+> + * bpf_strnstr - Find the first substring in a length-limited string
+> + * @s1: The string to be searched
+> + * @s2: The string to search for
+> + * @len: the maximum number of characters to search
 
-While at it, to follow-up on Alan's request for more testing, I did the
-following:
-- build kernel and bpf selftests with pahole 1.30, extract BTF raw data
-  with bpftool
-- repeat with pahole 1.30 + Tony's patch
-- I build my kernel for arm64, it is based on bpf-next_base and I use a
-  defconfig very close to the one used in BPF CI (so based on
-  tools/testing/selftests/bpf/config*)
+Return: ...?
 
-I observe the following when comparing the resulting BTF data with/without
-Tony's patch:
-- There is no difference on vmlinux BTF data
-- For bpf_testmod.ko, there is a slight shift in the first BTF ID (first ID
-  is 46 with pristine pahole, 47 with patched pahole), which in turns makes
-  a lot of noise in the diff, but the actual diff seems to be about two new
-  BTF entries related to my custom function now being properly detected
-  (BTF_KIND_FUNC and BTF_KIND_FUNC_PROTO)
-
-Alexis
-
-[1] https://lore.kernel.org/bpf/D9Q73OTLEOU4.LNAO9K4POETM@bootlin.com/
-
---=20
-Alexis Lothor=C3=A9, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
+> + */
+> +__bpf_kfunc const char *bpf_strnstr(const char *s1, const char *s2, size_t len)
+> +{
+> +	char c1, c2;
+> +	int i, j;
+> +
+> +	if (!s1 || !s2)
+> +		return ERR_PTR(-EFAULT);
+> +
+> +	guard(pagefault)();
+> +	for (i = 0; i < XATTR_SIZE_MAX; i++) {
+> +		for (j = 0; i + j < len && j < XATTR_SIZE_MAX; j++) {
+> +			__get_kernel_nofault(&c1, s1 + j, char, err_out);
+> +			__get_kernel_nofault(&c2, s2 + j, char, err_out);
+> +			if (c2 == '\0')
+> +				return s1;
+> +			if (c1 == '\0')
+> +				return NULL;
+> +			if (c1 != c2)
+> +				break;
+> +		}
+> +		if (j == XATTR_SIZE_MAX)
+> +			return ERR_PTR(-E2BIG);
+> +		if (i + j == len)
+> +			return NULL;
+> +		s1++;
+> +	}
+> +	return ERR_PTR(-E2BIG);
+> +err_out:
+> +	return ERR_PTR(-EFAULT);
+> +}
+> +
+>  __bpf_kfunc_end_defs();
+>  
+>  BTF_KFUNCS_START(generic_btf_ids)
+> @@ -3294,6 +3722,18 @@ BTF_ID_FLAGS(func, bpf_iter_kmem_cache_next, KF_ITER_NEXT | KF_RET_NULL | KF_SLE
+>  BTF_ID_FLAGS(func, bpf_iter_kmem_cache_destroy, KF_ITER_DESTROY | KF_SLEEPABLE)
+>  BTF_ID_FLAGS(func, bpf_local_irq_save)
+>  BTF_ID_FLAGS(func, bpf_local_irq_restore)
+> +BTF_ID_FLAGS(func, bpf_strcmp);
+> +BTF_ID_FLAGS(func, bpf_strchr, KF_RET_NULL);
+> +BTF_ID_FLAGS(func, bpf_strchrnul);
+> +BTF_ID_FLAGS(func, bpf_strnchr, KF_RET_NULL);
+> +BTF_ID_FLAGS(func, bpf_strrchr, KF_RET_NULL);
+> +BTF_ID_FLAGS(func, bpf_strlen);
+> +BTF_ID_FLAGS(func, bpf_strnlen);
+> +BTF_ID_FLAGS(func, bpf_strspn);
+> +BTF_ID_FLAGS(func, bpf_strcspn);
+> +BTF_ID_FLAGS(func, bpf_strpbrk, KF_RET_NULL);
+> +BTF_ID_FLAGS(func, bpf_strstr, KF_RET_NULL);
+> +BTF_ID_FLAGS(func, bpf_strnstr, KF_RET_NULL);
+>  BTF_KFUNCS_END(common_btf_ids)
+>  
+>  static const struct btf_kfunc_id_set common_kfunc_set = {
+> -- 
+> 2.49.0
+> 
 
