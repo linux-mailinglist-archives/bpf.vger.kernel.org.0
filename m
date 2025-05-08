@@ -1,264 +1,308 @@
-Return-Path: <bpf+bounces-57799-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57800-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9677AB0463
-	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 22:15:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8AB6AB04C4
+	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 22:40:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CFC627A2E0E
-	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 20:14:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B26EB1BA33C2
+	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 20:40:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D28A828A3E1;
-	Thu,  8 May 2025 20:15:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6FCA221DB7;
+	Thu,  8 May 2025 20:40:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XBFiqAyo"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="aOA6lMZG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD8B624B26
-	for <bpf@vger.kernel.org>; Thu,  8 May 2025 20:15:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FD5828A1ED
+	for <bpf@vger.kernel.org>; Thu,  8 May 2025 20:40:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746735334; cv=none; b=dxQyAKHirNSUOSV1+jkgrKaMP1cQzz8KbKwokox243w6o1p19mkjiNnp85nhpXho1FWRQDAqKH7Z1pdwrpz0KdmYKDdkG1z67u96Be1DY36cGFInUi94iRqyWzgVYlZrQ4ljh9yht9sx9PP0NaPe3XsLd2jD0ylHt0y2xtvTUMY=
+	t=1746736827; cv=none; b=DU2q/8L4LpvUY4qeFhDEggoZr8U5wGnbjRybBV+OfOrXzeewNFknPZAIAefoEy84QOrqCqNUtlUb/jr7ot9LJ4QTf2MuoZTmcpKHhB8mfbCQ+TviQi5i8J5II2ZCvQLAPYd4q87y3HL0n5397c3WBXUF/AXBHbbXfybhrD0g/YI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746735334; c=relaxed/simple;
-	bh=ebO4FaIk9OFxBBB21yqrPWRpUVJ27ZIe6D2F+7hSLh4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=GpGeATNIKOqNHhsCVAJokLi0mYKzIjgc09uip9jAd7rNZFukIBw1MG/JCoVPfmKtfIYhA9hY/YKr0ulgXFQezxQ1aQ+snbhdveMEC/xt7Pn8U8NuGHaE56f7s0TKSTgphzwdeecNQnSQ3ZnpKXDi7BGv3GsnxEoiLEhuPdJxGPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XBFiqAyo; arc=none smtp.client-ip=209.85.216.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-30820167b47so1305378a91.0
-        for <bpf@vger.kernel.org>; Thu, 08 May 2025 13:15:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746735332; x=1747340132; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=jNZYhjlmXP9BSh2D/su/C5EWEdYTYp0uSlcy0r8crJc=;
-        b=XBFiqAyo1KR5BhV7u2xyC38B2F/Gf2P3Jfcb4invxeSPOJM4fuUmy2TruhQfrcejSm
-         9RMRO42tqJ2RGT5IC1ELWqX+lpjqZ+iEHO3trlUfojatBIuwP2obllAP0MSiEXgTkLbu
-         7/YkHKiiW9YVzS/3hRwW+wqksT7VAvotq/jYEXlwhKs1bn/OPktDst0zDfaxoK2qDfKr
-         ewMPhNwIdnhD0gViIVv/VYGzt4YxxFamdM1rwA5ac1lR9h0dC94ZWFykQHSm0IV9dshL
-         qZy+hYAAhmz4YnmwCasAvGZPXHzkkx9KboKdK8qgivkCIP0BO/wKysTx/ssmR6cW8U5g
-         zHgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746735332; x=1747340132;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jNZYhjlmXP9BSh2D/su/C5EWEdYTYp0uSlcy0r8crJc=;
-        b=QVVw5ss80EiiDjZpEYzXWnFjvcVizLzRe6jjn38ubDiDa7XFvgHLASZ6FQdba0ezZO
-         w6W/NlHRj9iAJUuKs4hCt/1YqEolM02COnEhfP45I0SP5BfhlWZO7ET65tZeSrsKQZPf
-         WHUa3/djp1O7t8HG+HPzeGm1oh7TdTzOaxKmvFpDk6CPKT090kmerRRv1HCBCkY9HgXw
-         GayfhDFQRkmUqH32BtYe0UB0RkoK3bcPMTvMHyulOhNt5TOxnf9NUmiq90y79GXe3VP8
-         +wwnggGTIT1j4RYm08TjopfwCUTD2wrVxmtMJwMBP2iXFyPgcqzir/KBHKrYs8Iu4OH2
-         /AJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWpwFfUUnKypzy5GJnWfEmo2Z99nUCg4cB4tDDo+1PwZqB9DeNXLZFKgVBE9a5o8gIqUjw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwsfG7svFimUoaLFqkBD9okkxejaoHRz+SCKVb6NYsC3/eYMT6l
-	+uuvhBEh3W7M5/E3ViLTpHZj/uOZQabotDPTJRiIsr3tq3ZcxftJ
-X-Gm-Gg: ASbGncuECamwOu3mf2s2BZ8HGUfNqaHmEoU3SBJYPpD310ROo0cH8793mcJjfqhLzhI
-	gikHyB6iWL4h0MMB/h3Tk+8aFuzLLBu5Y38hFIoM4ybHCKeGAw8XELDuV2eaggguZxp9cM3Yl2w
-	L3HwAqHIgvKK8Vi2syTowViNg6O82ZmkU8Zag86hkUPJ8G+Wkbtqk74QMFelnM7F12tDUzwY+/B
-	4zl0izPBFsk1WQDIa4FZqXIyWfGlRtXa32xPIfTwO1QB/ajssnh0GW17ow8myQ///ChiD19tDnQ
-	EAm4ZKgJMdyqI0bJ92tqZAA6uHJz0iRtpGUK
-X-Google-Smtp-Source: AGHT+IFm1A71Pd6jdK7KK4pWJqx57kVgUjiU3o41FQbH1s4EccnsYGo/8K4uGTTyvBLGTln3y5BpsQ==
-X-Received: by 2002:a17:90b:5104:b0:2fe:93be:7c9d with SMTP id 98e67ed59e1d1-30c3fa0d66emr1033648a91.7.1746735331900;
-        Thu, 08 May 2025 13:15:31 -0700 (PDT)
-Received: from [192.168.0.56] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-30c39dc88a8sm427277a91.3.2025.05.08.13.15.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 May 2025 13:15:31 -0700 (PDT)
-Message-ID: <45fb527a493c7aae4307512cda0ded0efb1dd563.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v1 03/11] bpf: Add function to extract program
- source info
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
- <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai
- Lau <martin.lau@kernel.org>, Emil Tsalapatis	 <emil@etsalapatis.com>,
- Barret Rhoden <brho@google.com>, Matt Bobrowski	
- <mattbobrowski@google.com>, kkd@meta.com, kernel-team@meta.com
-Date: Thu, 08 May 2025 13:15:29 -0700
-In-Reply-To: <20250507171720.1958296-4-memxor@gmail.com>
-References: <20250507171720.1958296-1-memxor@gmail.com>
-	 <20250507171720.1958296-4-memxor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+	s=arc-20240116; t=1746736827; c=relaxed/simple;
+	bh=e0iDt70Q3Ax0AAu5nBa4SSyFAMjne+0lNDOB3zT9lkQ=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=FzR2iS4ejhcZ97mgd1En+D3sEzF2NFDjk3KnFE2aEuryQIOcHN2TXouZAKVOrhmLHvt4LAkK4njTuYcT/FTfXQRWEnyDPYtaAZq0SgQeH884lkc3uF/gKQakLIQT3hwHQSg+bFRRsHTurcvbZ3GQo1SpoMWqlemYHWR1RQkymr8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=aOA6lMZG; arc=none smtp.client-ip=67.231.153.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+	by m0001303.ppops.net (8.18.1.2/8.18.1.2) with ESMTP id 548I6nNc000986
+	for <bpf@vger.kernel.org>; Thu, 8 May 2025 13:40:24 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:reply-to:subject:to; s=s2048-2021-q4; bh=+E1WXx+GU
+	BCacCp2it3VtDXufcr3DRRf7DZWAN5cRhs=; b=aOA6lMZGQT66474ZY2FsunUKJ
+	Zmc+y49G2LgUZ0n8eK5ZUVE6v0T0ohtxovKd4RaG2LiE8bMh1hU4+zL/4fEqFQEp
+	QIn5cQilFie9ELmq11KsD6bRS9PzJou8gktq8rbBsTQAwFDYZAVuS3aZIyLK1THW
+	DoHPNGLLetreQYYUDtncSCSYhkXYvbeUmyBgMJ+/FfmdQQZhTx2u4sZao6Kq4adE
+	4dM5bYtaxiHaO7v3wnVx8u0Zpitwf0xN+oHGXjIRnUAyYo3Gkb+vu9/mZaj6LPmY
+	lKouAdGlmkCFKMLb7nErAJkjw6nIJJQPiyYvRqtrq8ZyJJMX6qndntxQaiwuw==
+Received: from maileast.thefacebook.com ([163.114.135.16])
+	by m0001303.ppops.net (PPS) with ESMTPS id 46gtup4mq6-4
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Thu, 08 May 2025 13:40:23 -0700 (PDT)
+Received: from twshared29376.33.frc3.facebook.com (2620:10d:c0a8:fe::f072) by
+ mail.thefacebook.com (2620:10d:c0a9:6f::237c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1748.10; Thu, 8 May 2025 20:40:21 +0000
+Received: by devvm14721.vll0.facebook.com (Postfix, from userid 669379)
+	id 97C5E2831B60; Thu,  8 May 2025 13:37:17 -0700 (PDT)
+From: Ihor Solodrai <isolodrai@meta.com>
+To: <qmo@kernel.org>, <andrii@kernel.org>
+CC: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <eddyz87@gmail.com>, <mykolal@fb.com>, <dylan.reimerink@isovalent.com>,
+        <kernel-team@meta.com>
+Subject: [PATCH bpf-next v4] scripts/bpf_doc.py: implement json output format
+Date: Thu, 8 May 2025 13:37:08 -0700
+Message-ID: <20250508203708.2520847-1-isolodrai@meta.com>
+X-Mailer: git-send-email 2.47.1
+Reply-To: <ihor.solodrai@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Authority-Analysis: v=2.4 cv=a+cw9VSF c=1 sm=1 tr=0 ts=681d16b7 cx=c_pps a=MfjaFnPeirRr97d5FC5oHw==:117 a=MfjaFnPeirRr97d5FC5oHw==:17 a=dt9VzEwgFbYA:10 a=VwQbUJbxAAAA:8 a=VabnemYjAAAA:8 a=9SOExajgYcFn7ivU8_IA:9 a=gKebqoRLp9LExxC7YDUY:22
+X-Proofpoint-ORIG-GUID: 3D1PyWkWwp3AZLXjH15wFsuM9UVbcvFi
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTA4MDE4NiBTYWx0ZWRfXz0dSuscLqnrx Eqgv/LWzkBFrK+3YFzIqufyZ8d3ekB6anIaakqRqWSKhJy2gnaW9lPE9QjDdAON6ZGTQwKC57fF OZSmBfG3wuAaX5EKuPgkoPIP5PoJrX8DYyi7Uz1DVQPz8b1YIq4OdA4eArGPtisnPx+BdsOzt3m
+ ifXAIindDAA8g6afBn2cCzkEwOwwsL2xpz8IV661/N85Jsm5hUnM6irAynViD6uYYDjznP06LCm DLV0UkrPOc6qaZSd2V13iSa9BmhBCBc4Lq/742gGegkrbtYzHP3P54Mx0XyN6BPwcehtMiDzIjK KRf2rwC2iT056Vq67tSvqU5c6Id3wiwvIJE2RrGAaG+a0yQzBsPQTRUKOWCwld4MtWdd96YRoY3
+ +oOdA3JVt6i/ICukE4dEKOQF9IkbRwoBq79mgALM83v8+s+9Z+VdCQklJ3G0jISjHCc7ts0s
+X-Proofpoint-GUID: 3D1PyWkWwp3AZLXjH15wFsuM9UVbcvFi
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-05-08_06,2025-05-08_04,2025-02-21_01
 
-On Wed, 2025-05-07 at 10:17 -0700, Kumar Kartikeya Dwivedi wrote:
-> Prepare a function for use in future patches that can extract the file
-> info, line info, and the source line number for a given BPF program
-> provided it's program counter.
->=20
-> Only the basename of the file path is provided, given it can be
-> excessively long in some cases.
->=20
-> This will be used in later patches to print source info to the BPF
-> stream. The source line number is indicated by the return value, and the
-> file and line info are provided through out parameters.
->=20
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
+bpf_doc.py parses bpf.h header to collect information about various
+API elements (such as BPF helpers) and then dump them in one of the
+supported formats: rst docs and a C header.
 
-Hi Kumar,
+It's useful for external tools to be able to consume this information
+in an easy-to-parse format such as JSON. Implement JSON printers and
+add --json command line argument.
 
-I did a silly test for this function by calling it for every ip in the
-program at the and of the program load. See patch at the end of the
-email. The goal was to compare its output with output of the `bpftool
-prog dump jited`.
+v3->v4: refactor attrs to only be a helper's field
+v2->v3: nit cleanup
+v1->v2: add json printer for syscall target
 
-Next, I used pyperf600_iter.bpf.o as a guinea pig:
+v3: https://lore.kernel.org/bpf/20250507203034.270428-1-isolodrai@meta.co=
+m/
+v2: https://lore.kernel.org/bpf/20250507182802.3833349-1-isolodrai@meta.c=
+om/
+v1: https://lore.kernel.org/bpf/20250506000605.497296-1-isolodrai@meta.co=
+m/
 
-  bpftool prog load <kernel>/tools/testing/selftests/bpf/pyperf600_iter.bpf=
-.o /sys/fs/bpf/dbg-prog
-  bpftool prog dump jited pinned /sys/fs/bpf/dbg-prog
+Signed-off-by: Ihor Solodrai <isolodrai@meta.com>
+---
+ scripts/bpf_doc.py | 119 +++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 99 insertions(+), 20 deletions(-)
 
-Overall, the bpftool output looks coherent to what is shown by printk.
-However, I see an off-by-one difference, e.g.:
-
-  // bpftool output
-
-  void * get_thread_state(void * tls_base, PidData * pidData):
-  bpf_prog_2af5b1ca414a1163_get_thread_state:
-  ; static void *get_thread_state(void *tls_base, PidData *pidData)
-     0:	endbr64
-     ...
-  ; bpf_probe_read_user(&key, sizeof(key), (void*)(long)pidData->tls_key_ad=
-dr);
-    1f:	movl	4(%rsi), %edx
-    ...
-  ; bpf_probe_read_user(&key, sizeof(key), (void*)(long)pidData->tls_key_ad=
-dr);
-    29:	movl	$4, %esi
-    ...
-  ; tls_base + 0x310 + key * 0x10 + 0x08);
-    33:	movl	-12(%rbp), %edi
-    ...
-  ; bpf_probe_read_user(&thread_state, sizeof(thread_state),
-    52:	movl	$8, %esi
-    ...
-  ; return thread_state;
-    5f:	movq	-8(%rbp), %rax
-    ...
- =20
-  // printk
-
-  [  114.506237] func[2] jited_len=3D106
-  [  114.506306] ip=3D0, file=3D'(null)', line=3D'(null)', line_num=3D-2
-  [  114.506395] ip=3D1, file=3D'pyperf.h', line=3D'static void *get_thread=
-_state(void *tls_base, PidData *pidData)', line_num=3D77
-  [  114.506571] ip=3D20, file=3D'pyperf.h', line=3D'bpf_probe_read_user(&k=
-ey, sizeof(key), (void*)(long)pidData->tls_key_addr);', line_num=3D82
-  [  114.506765] ip=3D34, file=3D'pyperf.h', line=3D'tls_base + 0x310 + key=
- * 0x10 + 0x08);', line_num=3D84
-  [  114.506919] ip=3D53, file=3D'pyperf.h', line=3D'bpf_probe_read_user(&t=
-hread_state, sizeof(thread_state),', line_num=3D83
-  [  114.507096] ip=3D60, file=3D'pyperf.h', line=3D'return thread_state;',=
- line_num=3D85
- =20
-Note that ip for each printk entry is +1 compared to bpftool output.
-
-Also, there is a BUG splat from KASAN in the end:
-
-  [    2.343160] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-  [    2.343277] BUG: KASAN: slab-out-of-bounds in bpf_prog_get_file_line (=
-kernel/bpf/core.c:3213)=20
-  [    2.343397] Read of size 4 at addr ffff88810b5ea810 by task veristat/1=
-45
-  [    2.343496]=20
-  [    2.343542] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1=
-.16.3-3.fc41 04/01/2014
-  [    2.343544] Call Trace:
-  ...
-  [    2.343592] bpf_prog_get_file_line (kernel/bpf/core.c:3213)=20
-  [    2.343598] ?bpf_prog_2af5b1ca414a1163_get_thread_state+0x64/0x6a 85=
+diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
+index e74a01a85070..c77dc40f7689 100755
+--- a/scripts/bpf_doc.py
++++ b/scripts/bpf_doc.py
+@@ -8,6 +8,7 @@
+ from __future__ import print_function
 =20
-  [    2.343602] bpf_prog_load (kernel/bpf/syscall.c:3014)=20
-  ...
-  [    2.343686]=20
-  [    2.346851] Allocated by task 145:
-  [    2.346912] kasan_save_track (mm/kasan/common.c:48 mm/kasan/common.c:6=
-8)=20
-  [    2.346974] __kasan_kmalloc (mm/kasan/common.c:398)=20
-  [    2.347036] __kvmalloc_node_noprof (mm/slub.c:4342 mm/slub.c:5026)=20
-  [    2.347117] check_btf_info (kernel/bpf/verifier.c:17908 kernel/bpf/ver=
-ifier.c:18120)=20
-  [    2.347179] bpf_check (kernel/bpf/verifier.c:24004)=20
-  [    2.347240] bpf_prog_load (kernel/bpf/syscall.c:2971)=20
-  [    2.347301] __sys_bpf (kernel/bpf/syscall.c:5897)=20
-  [    2.347363] __x64_sys_bpf (kernel/bpf/syscall.c:5958 kernel/bpf/syscal=
-l.c:5956 kernel/bpf/syscall.c:5956)=20
-  [    2.347423] do_syscall_64 (arch/x86/entry/syscall_64.c:0)=20
-  [    2.347484] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:=
-130)=20
-  [    2.347566]=20
-  [    2.347607] The buggy address belongs to the object at ffff88810b5ea00=
-0
-  [    2.347607]  which belongs to the cache kmalloc-4k of size 4096
-  [    2.347782] The buggy address is located 0 bytes to the right of
-  [    2.347782]  allocated 2064-byte region [ffff88810b5ea000, ffff88810b5=
-ea810)
-
-Am I doing something stupid or there is an issue?
-
---- 8< -------------------------------------------
-
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 4664ab5e8cc7..467ae79f77a1 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -3188,6 +3188,7 @@ EXPORT_SYMBOL(bpf_stats_enabled_key);
- EXPORT_TRACEPOINT_SYMBOL_GPL(xdp_exception);
- EXPORT_TRACEPOINT_SYMBOL_GPL(xdp_bulk_tx);
-=20
-+__attribute__((optnone)) // to see line numbers after decode_stacktrace
- int bpf_prog_get_file_line(struct bpf_prog *prog, unsigned long ip, const =
-char **filep, const char **linep)
- {
-        int idx =3D -1, insn_start, insn_end, len;
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 64c3393e8270..d1777b8c5558 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -3001,6 +3001,23 @@ static int bpf_prog_load(union bpf_attr *attr, bpfpt=
-r_t uattr, u32 uattr_size)
-        err =3D bpf_prog_new_fd(prog);
-        if (err < 0)
-                bpf_prog_put(prog);
-+       for (int fidx =3D 0; fidx < prog->aux->func_cnt; ++fidx) {
-+               struct bpf_prog *fprog =3D prog->aux->func[fidx];
-+               int line_num, prev_line_num;
-+               const char *filep, *linep;
+ import argparse
++import json
+ import re
+ import sys, os
+ import subprocess
+@@ -37,11 +38,17 @@ class APIElement(object):
+     @desc: textual description of the symbol
+     @ret: (optional) description of any associated return value
+     """
+-    def __init__(self, proto=3D'', desc=3D'', ret=3D'', attrs=3D[]):
++    def __init__(self, proto=3D'', desc=3D'', ret=3D''):
+         self.proto =3D proto
+         self.desc =3D desc
+         self.ret =3D ret
+-        self.attrs =3D attrs
 +
-+               prev_line_num =3D -1;
-+               printk("func[%d] jited_len=3D%d\n", fidx, fprog->jited_len)=
-;
-+               for (u32 ip =3D 0; ip < fprog->jited_len; ++ip) {
-+                       filep =3D NULL;
-+                       linep =3D NULL;
-+                       line_num =3D bpf_prog_get_file_line(fprog, (u64)fpr=
-og->bpf_func + ip, &filep, &linep);
-+                       if (line_num !=3D prev_line_num)
-+                               printk("ip=3D%x, file=3D'%s', line=3D'%s', =
-line_num=3D%d\n",
-+                                      ip, filep, linep, line_num);
-+                       prev_line_num =3D line_num;
-+               }
-+       }
-        return err;
-------------------------------------------- >8 ---
++    def to_dict(self):
++        return {
++            'proto': self.proto,
++            'desc': self.desc,
++            'ret': self.ret
++        }
+=20
+=20
+ class Helper(APIElement):
+@@ -51,8 +58,9 @@ class Helper(APIElement):
+     @desc: textual description of the helper function
+     @ret: description of the return value of the helper function
+     """
+-    def __init__(self, *args, **kwargs):
+-        super().__init__(*args, **kwargs)
++    def __init__(self, proto=3D'', desc=3D'', ret=3D'', attrs=3D[]):
++        super().__init__(proto, desc, ret)
++        self.attrs =3D attrs
+         self.enum_val =3D None
+=20
+     def proto_break_down(self):
+@@ -81,6 +89,12 @@ class Helper(APIElement):
+=20
+         return res
+=20
++    def to_dict(self):
++        d =3D super().to_dict()
++        d["attrs"] =3D self.attrs
++        d.update(self.proto_break_down())
++        return d
++
+=20
+ ATTRS =3D {
+     '__bpf_fastcall': 'bpf_fastcall'
+@@ -675,7 +689,7 @@ COMMANDS
+         self.print_elem(command)
+=20
+=20
+-class PrinterHelpers(Printer):
++class PrinterHelpersHeader(Printer):
+     """
+     A printer for dumping collected information about helpers as C heade=
+r to
+     be included from BPF program.
+@@ -896,6 +910,43 @@ class PrinterHelpers(Printer):
+         print(') =3D (void *) %d;' % helper.enum_val)
+         print('')
+=20
++
++class PrinterHelpersJSON(Printer):
++    """
++    A printer for dumping collected information about helpers as a JSON =
+file.
++    @parser: A HeaderParser with Helper objects
++    """
++
++    def __init__(self, parser):
++        self.elements =3D parser.helpers
++        self.elem_number_check(
++            parser.desc_unique_helpers,
++            parser.define_unique_helpers,
++            "helper",
++            "___BPF_FUNC_MAPPER",
++        )
++
++    def print_all(self):
++        helper_dicts =3D [helper.to_dict() for helper in self.elements]
++        out_dict =3D {'helpers': helper_dicts}
++        print(json.dumps(out_dict, indent=3D4))
++
++
++class PrinterSyscallJSON(Printer):
++    """
++    A printer for dumping collected syscall information as a JSON file.
++    @parser: A HeaderParser with APIElement objects
++    """
++
++    def __init__(self, parser):
++        self.elements =3D parser.commands
++        self.elem_number_check(parser.desc_syscalls, parser.enum_syscall=
+s, 'syscall', 'bpf_cmd')
++
++    def print_all(self):
++        syscall_dicts =3D [syscall.to_dict() for syscall in self.element=
+s]
++        out_dict =3D {'syscall': syscall_dicts}
++        print(json.dumps(out_dict, indent=3D4))
++
+ ########################################################################=
+#######
+=20
+ # If script is launched from scripts/ from kernel tree and can access
+@@ -905,9 +956,17 @@ script =3D os.path.abspath(sys.argv[0])
+ linuxRoot =3D os.path.dirname(os.path.dirname(script))
+ bpfh =3D os.path.join(linuxRoot, 'include/uapi/linux/bpf.h')
+=20
++# target -> output format -> printer
+ printers =3D {
+-        'helpers': PrinterHelpersRST,
+-        'syscall': PrinterSyscallRST,
++    'helpers': {
++        'rst': PrinterHelpersRST,
++        'json': PrinterHelpersJSON,
++        'header': PrinterHelpersHeader,
++    },
++    'syscall': {
++        'rst': PrinterSyscallRST,
++        'json': PrinterSyscallJSON
++    },
+ }
+=20
+ argParser =3D argparse.ArgumentParser(description=3D"""
+@@ -917,6 +976,8 @@ rst2man utility.
+ """)
+ argParser.add_argument('--header', action=3D'store_true',
+                        help=3D'generate C header file')
++argParser.add_argument('--json', action=3D'store_true',
++                       help=3D'generate a JSON')
+ if (os.path.isfile(bpfh)):
+     argParser.add_argument('--filename', help=3D'path to include/uapi/li=
+nux/bpf.h',
+                            default=3Dbpfh)
+@@ -924,17 +985,35 @@ else:
+     argParser.add_argument('--filename', help=3D'path to include/uapi/li=
+nux/bpf.h')
+ argParser.add_argument('target', nargs=3D'?', default=3D'helpers',
+                        choices=3Dprinters.keys(), help=3D'eBPF API targe=
+t')
+-args =3D argParser.parse_args()
+-
+-# Parse file.
+-headerParser =3D HeaderParser(args.filename)
+-headerParser.run()
+=20
+-# Print formatted output to standard output.
+-if args.header:
+-    if args.target !=3D 'helpers':
+-        raise NotImplementedError('Only helpers header generation is sup=
+ported')
+-    printer =3D PrinterHelpers(headerParser)
+-else:
+-    printer =3D printers[args.target](headerParser)
+-printer.print_all()
++def error_die(message: str):
++    argParser.print_usage(file=3Dsys.stderr)
++    print('Error: {}'.format(message), file=3Dsys.stderr)
++    exit(1)
++
++def parse_and_dump():
++    args =3D argParser.parse_args()
++
++    # Parse file.
++    headerParser =3D HeaderParser(args.filename)
++    headerParser.run()
++
++    if args.header and args.json:
++        error_die('Use either --header or --json, not both')
++
++    output_format =3D 'rst'
++    if args.header:
++        output_format =3D 'header'
++    elif args.json:
++        output_format =3D 'json'
++
++    try:
++        printer =3D printers[args.target][output_format](headerParser)
++        # Print formatted output to standard output.
++        printer.print_all()
++    except KeyError:
++        error_die('Unsupported target/format combination: "{}", "{}"'
++                    .format(args.target, output_format))
++
++if __name__ =3D=3D "__main__":
++    parse_and_dump()
+--=20
+2.47.1
 
 
