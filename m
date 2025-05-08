@@ -1,35 +1,36 @@
-Return-Path: <bpf+bounces-57808-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57809-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D864AB05FE
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 00:35:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 767C8AB0600
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 00:35:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AE8A3BC79C
-	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 22:35:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3CC347B2E0D
+	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 22:34:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60116224AF2;
-	Thu,  8 May 2025 22:35:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C37D22A4E9;
+	Thu,  8 May 2025 22:35:45 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from 66-220-144-179.mail-mxout.facebook.com (66-220-144-179.mail-mxout.facebook.com [66.220.144.179])
+Received: from 69-171-232-180.mail-mxout.facebook.com (69-171-232-180.mail-mxout.facebook.com [69.171.232.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96EBE24B28
-	for <bpf@vger.kernel.org>; Thu,  8 May 2025 22:35:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.144.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8DDE24B28
+	for <bpf@vger.kernel.org>; Thu,  8 May 2025 22:35:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746743740; cv=none; b=ATt6DN1HItxFQXbkltWfgpZpAJDt3jhaF1STHzNOQVn9d/JkQZL/LiYV9K7dixEMzTCwXyks4rXMT56h2F5F16Bg9WmKgaDhat67HHRKcGEadg052NvwsN4GayJ9YSQ9RJeSJusFxXnCKbwZ31GlUB0FS2qRMoOzMj5E/2qZe0U=
+	t=1746743744; cv=none; b=pIQnhUCdLVeJZ0tmoC/23kx3czdUCz4b2XBidQAJSYtmBzfcx7pdLW+F2jJjchJEj0gpRRRAVI3GfG6BDpJKsHzf2ELP5NcRLilO/TpyNnHxFz1GCc7bKwT3LZAgqPFW2ZV+1fD9CUPPaGBlP8RPklHjBjqVFgeoie/RfSLTfBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746743740; c=relaxed/simple;
-	bh=20pTxcgjOkKiPiT7gW3UetRQbzU/AqVD6qXVGkqm9LY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eHNg8v5Ijc1u0n8mvunImEvlQBInXK+Z/LagqGLJO6lzQEwtkqVDSyB35IVVgnBzseO/f83MHwccpEqphwYVihF6h1zRo0ZL48XIqqLjZivzz+lsMLzh65TRgxf9lHycX8uIkchdscHxYmMtSiufoleog8MXZo3wULh0PbvWQbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.144.179
+	s=arc-20240116; t=1746743744; c=relaxed/simple;
+	bh=Ks5zMotgV8KOUyx/ZnvE6x6sQa94Z8/PlgjKRRGrjfU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=AS6WBSLbTIS8U8nE0p0vv6WrWlOcbm5dgmsd+kGqW1rBTBXsmKuHl4hHci3IyVD41P1IPyHEhcN0S9z55SSg3DcLX60Qm9WBOw2ORGL1d8fbyKk5X0MKLZKnxBXeTkDn6Y5SnRIBznxltWjDIgM1O2bDzNG1/xvMfaI/8xV6UU4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
 Received: by devvm16039.vll0.facebook.com (Postfix, from userid 128203)
-	id 33810722317F; Thu,  8 May 2025 15:35:24 -0700 (PDT)
+	id 457E0722319E; Thu,  8 May 2025 15:35:29 -0700 (PDT)
 From: Yonghong Song <yonghong.song@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -37,10 +38,12 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	kernel-team@fb.com,
 	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v2 0/4] bpf: Implement mprog API on top of existing cgroup progs
-Date: Thu,  8 May 2025 15:35:24 -0700
-Message-ID: <20250508223524.487875-1-yonghong.song@linux.dev>
+Subject: [PATCH bpf-next v2 1/4] cgroup: Add bpf prog revisions to struct cgroup_bpf
+Date: Thu,  8 May 2025 15:35:29 -0700
+Message-ID: <20250508223529.488295-1-yonghong.song@linux.dev>
 X-Mailer: git-send-email 2.47.1
+In-Reply-To: <20250508223524.487875-1-yonghong.song@linux.dev>
+References: <20250508223524.487875-1-yonghong.song@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -49,83 +52,50 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Current cgroup prog ordering is appending at attachment time. This is not
-ideal. In some cases, users want specific ordering at a particular cgroup
-level. For example, in Meta, we have a case where three different
-applications all have cgroup/setsockopt progs and they require specific
-ordering. Current approach is to use a bpfchainer where one bpf prog
-contains multiple global functions and each global function can be
-freplaced by a prog for a specific application. The ordering of global
-functions decides the ordering of those application specific bpf progs.
-Using bpfchainer is a centralized approach and is not desirable as
-one of applications acts as a daemon. The decentralized attachment
-approach is more favorable for those applications.
+One of key items in mprog API is revision for prog list. The revision
+number will be increased if the prog list changed, e.g., attach, detach
+or replace.
 
-To address this, the existing mprog API ([2]) seems an ideal solution wit=
-h
-supporting BPF_F_BEFORE and BPF_F_AFTER flags on top of existing cgroup
-bpf implementation. More specifically, the support is added for prog/link
-attachment with BPF_F_BEFORE and BPF_F_AFTER. The kernel mprog
-interface ([2]) is not used and the implementation is directly done in
-cgroup bpf code base. The mprog 'revision' is also implemented in
-attach/detach/replace, so users can query revision number to check the
-change of cgroup prog list.
+Add 'revisions' field to struct cgroup_bpf, representing revisions for
+all cgroup related attachment types. The initial revision value is
+set to 1, the same as kernel mprog implementations.
 
-The patch set contains 4 patches. Patch 1 adds revision support for
-cgroup bpf progs. Patch 2 implements mprog API implementation for
-prog/link attach and revision update. Patch 3 adds a new libbpf
-API to do cgroup link attach with flags like BPF_F_BEFORE/BPF_F_AFTER.
-Patch 4 adds two tests to validate the implementation.
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+---
+ include/linux/bpf-cgroup-defs.h | 1 +
+ kernel/cgroup/cgroup.c          | 5 +++++
+ 2 files changed, 6 insertions(+)
 
-  [1] https://lore.kernel.org/r/20250224230116.283071-1-yonghong.song@lin=
-ux.dev
-  [2] https://lore.kernel.org/r/20230719140858.13224-2-daniel@iogearbox.n=
-et
-
-Changelogs:
-  v1 -> v2:
-    - v1: https://lore.kernel.org/bpf/20250411011523.1838771-1-yonghong.s=
-ong@linux.dev/
-    - Change cgroup_bpf.revisions from atomic64_t to u64.
-    - Added missing bpf_prog_put in various places.
-    - Rename get_cmp_prog() to get_anchor_prog(). The implementation trie=
-s to
-      find the anchor prog regardless of whether id_or_fd is non-NULL or =
-not.
-    - Rename bpf_cgroup_prog_attached() to is_cgroup_prog_type() and hand=
-le
-      BPF_PROG_TYPE_LSM properly (with BPF_LSM_CGROUP attach type).
-    - I kept 'id || id_or_fd' condition as the condition 'id' is also use=
-d
-      in mprog.c so I assume it is okay in cgroup.c as well.
-
-Yonghong Song (4):
-  cgroup: Add bpf prog revisions to struct cgroup_bpf
-  bpf: Implement mprog API on top of existing cgroup progs
-  libbpf: Support link-based cgroup attach with options
-  selftests/bpf: Add two selftests for mprog API based cgroup progs
-
- include/linux/bpf-cgroup-defs.h               |   1 +
- include/uapi/linux/bpf.h                      |   7 +
- kernel/bpf/cgroup.c                           | 144 +++-
- kernel/bpf/syscall.c                          |  44 +-
- kernel/cgroup/cgroup.c                        |   5 +
- tools/include/uapi/linux/bpf.h                |   7 +
- tools/lib/bpf/bpf.c                           |  44 +
- tools/lib/bpf/bpf.h                           |   5 +
- tools/lib/bpf/libbpf.c                        |  28 +
- tools/lib/bpf/libbpf.h                        |  15 +
- tools/lib/bpf/libbpf.map                      |   1 +
- .../bpf/prog_tests/cgroup_mprog_opts.c        | 752 ++++++++++++++++++
- .../bpf/prog_tests/cgroup_mprog_ordering.c    |  77 ++
- .../selftests/bpf/progs/cgroup_mprog.c        |  30 +
- 14 files changed, 1123 insertions(+), 37 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_mprog_o=
-pts.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_mprog_o=
-rdering.c
- create mode 100644 tools/testing/selftests/bpf/progs/cgroup_mprog.c
-
+diff --git a/include/linux/bpf-cgroup-defs.h b/include/linux/bpf-cgroup-d=
+efs.h
+index 0985221d5478..c9e6b26abab6 100644
+--- a/include/linux/bpf-cgroup-defs.h
++++ b/include/linux/bpf-cgroup-defs.h
+@@ -63,6 +63,7 @@ struct cgroup_bpf {
+ 	 */
+ 	struct hlist_head progs[MAX_CGROUP_BPF_ATTACH_TYPE];
+ 	u8 flags[MAX_CGROUP_BPF_ATTACH_TYPE];
++	u64 revisions[MAX_CGROUP_BPF_ATTACH_TYPE];
+=20
+ 	/* list of cgroup shared storages */
+ 	struct list_head storages;
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 63e5b90da1f3..260ce8fc4ea4 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -2071,6 +2071,11 @@ static void init_cgroup_housekeeping(struct cgroup=
+ *cgrp)
+ 	for_each_subsys(ss, ssid)
+ 		INIT_LIST_HEAD(&cgrp->e_csets[ssid]);
+=20
++#ifdef CONFIG_CGROUP_BPF
++	for (int i =3D 0; i < ARRAY_SIZE(cgrp->bpf.revisions); i++)
++		cgrp->bpf.revisions[i] =3D 1;
++#endif
++
+ 	init_waitqueue_head(&cgrp->offline_waitq);
+ 	INIT_WORK(&cgrp->release_agent_work, cgroup1_release_agent);
+ }
 --=20
 2.47.1
 
