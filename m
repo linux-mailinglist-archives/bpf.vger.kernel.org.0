@@ -1,107 +1,95 @@
-Return-Path: <bpf+bounces-57793-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57794-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B6FDAB02FE
-	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 20:38:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28255AB030C
+	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 20:40:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 227FC3BAA40
-	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 18:38:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 140F9506F05
+	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 18:40:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45BF5286D61;
-	Thu,  8 May 2025 18:38:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46F8A287512;
+	Thu,  8 May 2025 18:40:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wb1c9fzI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pASPS2Ae"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D949286D50
-	for <bpf@vger.kernel.org>; Thu,  8 May 2025 18:38:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7779286D50;
+	Thu,  8 May 2025 18:40:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746729509; cv=none; b=EJOkczGNE4FQXbPJKwqhXpdTQsHIvwx5hr3j1yIdLy8d9bWg/YTPKx4lc1SC8x7fHjuTjnVI37FDipH0Ol2w7TnRcPV0W5DSCTMM5+n/3VBzYrSvc7IB1c8vq2IWdt3rGsV+Kb2lWhqtzAIBTo01PLZzyeqExh8aj21wja3tKZQ=
+	t=1746729602; cv=none; b=ZSlLy6iJBGm2kDujQQBocZdrSTnM8vx9W4PQp5tfA8gV6+ULNndJ3w0lbbcnYCIsmfEyiifwemI93G0mXsY/HfVRHG0FJpg/cVo2TTDy/ltekefRzbYjNaSkqetrX8bfj6SLJsvd7Y6GCQYJKpMHgSoIjiyMKFnxQmtgSCjOyHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746729509; c=relaxed/simple;
-	bh=eLmGoDV5azfhVr/Ity8x+Ax3Rfb/Ellr5dsJoIV6Yak=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=npWi+x7CTv8TyWMpJWVZiD97+B0xvRnyFY2d6OfuKVTZePt/kQhsW/L/0JPBRg5WSQMAHvQ+zJgajvBysvjkT3RwqjNTLt/5f6IEv2rIReQqFZnAz/J2WXmCN7SJy3eW0l6fQNdng/pnYsumYsaWUrJc3q7sWR3ZeLie48sspYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Wb1c9fzI; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3a0b9625662so871911f8f.3
-        for <bpf@vger.kernel.org>; Thu, 08 May 2025 11:38:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746729506; x=1747334306; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E7Vt6IAAlvqcJxjnO9zIry8jY7r1g7sVt4ggWZO+ol0=;
-        b=Wb1c9fzILAEM5xnKyXwRgdsRq9rkcvKdSSKgwwQAe/KwYLtPHOv/xWuJ6LUcg3VydL
-         YAcqunz+VbiMv7AkW57mi5afIb8dMmDslHfx8HPhLeGasnYy1Wfic7maHHSX7aV9EZAb
-         dHBQQs212Jp/prE2U+0yVsQM7D9YpGQ7w/1knVK9ww0th9kCv+esDu1DeW37mSS4U3mm
-         WXvbt1dZEOEB5l7TokEvcyUZzZOV/Gwbb6jvyDH98FLDgK3DtQ10s8RcVB0Uo4jW6Jn3
-         Rs3tvV9eAWkdo75k44WUkl/3O2Qnt7C9qhz9kQfIjMHqm14la4CsQTc5q1n9r8LebvmQ
-         jPMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746729506; x=1747334306;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E7Vt6IAAlvqcJxjnO9zIry8jY7r1g7sVt4ggWZO+ol0=;
-        b=ZUUgEi1qOOYsIA3uwhcm/URCvuuRns6kE0nj81oA8KfcVOIOagJffFiS15qS2GiAoa
-         uEsaf6OfO1PXRchZY+aUQ/WhNvn8wGjpbH5h2VjAYCX3j4ytLV7lUdVDwCm+QHJdiJvH
-         h7BkFZKoNYfMekGUbVU2bK0OKO7OsaNzrPQPngL4QBQE+H6gAaFsiT4TrrELpk7n735K
-         G9vx7gbfzSmLR6YLRAywOg604IUBmPFfu8/5ehhKU6oYrKcLiicDmJSfw1HFWTjiBybP
-         7SFbcnRH1OmisafgVCipZIVsb/KB/J7JKo5shfLYZnEgkHcJoXyi+TvwrX1qhh+hNIiJ
-         3s6w==
-X-Forwarded-Encrypted: i=1; AJvYcCXcDLQx/wVa3HXVKctelxQJVROpC3X0fLNNsJYhgJ43Xt+o7N1Qx5C6t/KE3bucpUtXAHQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxK/HhBab7DAQc8OmoEdvp1rbhGt2U2kLrclbqXutfGuYV5n1N+
-	1jxYZzbGLwYdP1AXnpnuGRmfLscW7fgyuPjtWjsAhiSvJjbgoM4F2O2UxWI428cAz6D9BA5BNcC
-	486CpCPP/87DOTV9c2nxuxXzwxyHmJw==
-X-Gm-Gg: ASbGncvyKy7XGg71sTkt/4QVcudLEiwMKrjey28IH3KAfD6ohTZdeIqs/TioqVO59ri
-	qJWZTq2xwZViWXgqlfNw1VStTMukSzKwFW/EdQPYWNB2zVGHrBf9hkM4DnC2EgguXGL5In9nAKT
-	e8cNN6/JZ8Zl/GuIWabwS64BTQHQ1n7v4oWn8xbQ==
-X-Google-Smtp-Source: AGHT+IGYn38rMNTKrB1s0jj7olHZCrPfyGiFVEg/p+XytHwj5UwquxQehbT8u/LGBRUnRlbwY4x/QUM0qhuag6NLxVQ=
-X-Received: by 2002:a05:6000:188c:b0:3a0:ad55:c9f2 with SMTP id
- ffacd0b85a97d-3a1f643a75dmr456796f8f.1.1746729506459; Thu, 08 May 2025
- 11:38:26 -0700 (PDT)
+	s=arc-20240116; t=1746729602; c=relaxed/simple;
+	bh=BP5gg62J52gJfbuerk6jATuo7cDeaEweaijouBM+HwM=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=gpbRM2Bl2P8b13rERaPCuL1v9ORYd5EcfqmwOXZy55cucgVNneGuB2p6sDhJjUbsK+n0fg+YBu9UXmkuwUg+t7ZMLo9pjU4VOSHGEUIlYnQk1yfWp10EgmSQpkF5S7ZPh5FkXI6P/FIKggOD1ciIrJqzcA9PTeqDeKLrt8uTqLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pASPS2Ae; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 183E6C4CEE7;
+	Thu,  8 May 2025 18:40:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1746729602;
+	bh=BP5gg62J52gJfbuerk6jATuo7cDeaEweaijouBM+HwM=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=pASPS2Aefpzco7YR8QcBAELUeDROGSr0GqviYpZeB36YJkwfv8FxBnN0SvikghUh8
+	 plAEJ+vXHRVhWsvPj6EvRsn56g+UxnrqdYdcqjrmEYlk84vOrt8ZfG+yh5Xpnsdkl8
+	 M5hzcvcx4i2bhrSRGCVDsSlhoZOHM7lGCXkZb6FgbNPCTNw6YiGW2Qkz3YYgYkYWda
+	 SAAQeQ4iH9/NpUfxDUcenzG3fezdX8LJZtwD9GbhEiQb1yrtBHr1Sqq1gI2DTAxStX
+	 rmCNPo94PODuKVH1YsSQWJC1eF/FF9ZcK8cSEgTCX22ftLWC/lkPIrA6rY35RTK/mq
+	 HnHa3NdLgcedg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB54F380AA70;
+	Thu,  8 May 2025 18:40:41 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250508113804.304665-1-iii@linux.ibm.com>
-In-Reply-To: <20250508113804.304665-1-iii@linux.ibm.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 8 May 2025 11:38:15 -0700
-X-Gm-Features: ATxdqUF-K8cUCeXjKkiIN-gihq_yYzkqKa-p3ZkgMtkoyPHgYO6FZ0ojNAxTe7k
-Message-ID: <CAADnVQ+kGcRrLOaA5ic6cYG+1vHJm0bBD1GRfUaYpaOGa3Vx0g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix "expression result unused" warnings
-To: Ilya Leoshkevich <iii@linux.ibm.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] bpftool: Fix cgroup command to only show cgroup bpf
+ programs
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <174672964049.3007694.10087671758774364033.git-patchwork-notify@kernel.org>
+Date: Thu, 08 May 2025 18:40:40 +0000
+References: <20250507203232.1420762-1-martin.lau@linux.dev>
+In-Reply-To: <20250507203232.1420762-1-martin.lau@linux.dev>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, netdev@vger.kernel.org, kernel-team@meta.com,
+ qmo@kernel.org, ctakshak@meta.com
 
-On Thu, May 8, 2025 at 4:38=E2=80=AFAM Ilya Leoshkevich <iii@linux.ibm.com>=
- wrote:
->
-> clang-21 complains about unused expressions in a few progs.
-> Fix by explicitly casting the respective expressions to void.
+Hello:
 
-...
->         if (val & _Q_LOCKED_MASK)
-> -               smp_cond_load_acquire_label(&lock->locked, !VAL, release_=
-err);
-> +               (void)smp_cond_load_acquire_label(&lock->locked, !VAL, re=
-lease_err);
+This patch was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-Hmm. I'm on clang-21 too and I don't see them.
-What warnings do you see ?
+On Wed,  7 May 2025 13:32:32 -0700 you wrote:
+> From: Martin KaFai Lau <martin.lau@kernel.org>
+> 
+> The netkit program is not a cgroup bpf program and should not be shown
+> in the output of the "bpftool cgroup show" command.
+> 
+> However, if the netkit device happens to have ifindex 3,
+> the "bpftool cgroup show" command will output the netkit
+> bpf program as well:
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next] bpftool: Fix cgroup command to only show cgroup bpf programs
+    https://git.kernel.org/bpf/bpf-next/c/b69d4413aa19
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
