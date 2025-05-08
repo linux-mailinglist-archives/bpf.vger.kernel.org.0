@@ -1,308 +1,294 @@
-Return-Path: <bpf+bounces-57800-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57801-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8AB6AB04C4
-	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 22:40:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06168AB04C5
+	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 22:40:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B26EB1BA33C2
-	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 20:40:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 163144E2C8B
+	for <lists+bpf@lfdr.de>; Thu,  8 May 2025 20:40:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6FCA221DB7;
-	Thu,  8 May 2025 20:40:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6697328C027;
+	Thu,  8 May 2025 20:40:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="aOA6lMZG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tj9orTPP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FD5828A1ED
-	for <bpf@vger.kernel.org>; Thu,  8 May 2025 20:40:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 024A421B9FF
+	for <bpf@vger.kernel.org>; Thu,  8 May 2025 20:40:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746736827; cv=none; b=DU2q/8L4LpvUY4qeFhDEggoZr8U5wGnbjRybBV+OfOrXzeewNFknPZAIAefoEy84QOrqCqNUtlUb/jr7ot9LJ4QTf2MuoZTmcpKHhB8mfbCQ+TviQi5i8J5II2ZCvQLAPYd4q87y3HL0n5397c3WBXUF/AXBHbbXfybhrD0g/YI=
+	t=1746736836; cv=none; b=FAZA1KvrCkXfxdcJ8Fskm3gwbyQkKRNkVlpbV8txgariuEw10uCCfU1AlAI6oRHKYeczUizxzgO5wWqGaTThRv8o20pFZ64xV2lPaGaUnekWIeLxnFUPHv7zbj90jWDBDxQqirOggon2pCW/i1kPM1KSGRsDaCMy7wmO4vJXQ5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746736827; c=relaxed/simple;
-	bh=e0iDt70Q3Ax0AAu5nBa4SSyFAMjne+0lNDOB3zT9lkQ=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=FzR2iS4ejhcZ97mgd1En+D3sEzF2NFDjk3KnFE2aEuryQIOcHN2TXouZAKVOrhmLHvt4LAkK4njTuYcT/FTfXQRWEnyDPYtaAZq0SgQeH884lkc3uF/gKQakLIQT3hwHQSg+bFRRsHTurcvbZ3GQo1SpoMWqlemYHWR1RQkymr8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=aOA6lMZG; arc=none smtp.client-ip=67.231.153.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-	by m0001303.ppops.net (8.18.1.2/8.18.1.2) with ESMTP id 548I6nNc000986
-	for <bpf@vger.kernel.org>; Thu, 8 May 2025 13:40:24 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
-	:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:reply-to:subject:to; s=s2048-2021-q4; bh=+E1WXx+GU
-	BCacCp2it3VtDXufcr3DRRf7DZWAN5cRhs=; b=aOA6lMZGQT66474ZY2FsunUKJ
-	Zmc+y49G2LgUZ0n8eK5ZUVE6v0T0ohtxovKd4RaG2LiE8bMh1hU4+zL/4fEqFQEp
-	QIn5cQilFie9ELmq11KsD6bRS9PzJou8gktq8rbBsTQAwFDYZAVuS3aZIyLK1THW
-	DoHPNGLLetreQYYUDtncSCSYhkXYvbeUmyBgMJ+/FfmdQQZhTx2u4sZao6Kq4adE
-	4dM5bYtaxiHaO7v3wnVx8u0Zpitwf0xN+oHGXjIRnUAyYo3Gkb+vu9/mZaj6LPmY
-	lKouAdGlmkCFKMLb7nErAJkjw6nIJJQPiyYvRqtrq8ZyJJMX6qndntxQaiwuw==
-Received: from maileast.thefacebook.com ([163.114.135.16])
-	by m0001303.ppops.net (PPS) with ESMTPS id 46gtup4mq6-4
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Thu, 08 May 2025 13:40:23 -0700 (PDT)
-Received: from twshared29376.33.frc3.facebook.com (2620:10d:c0a8:fe::f072) by
- mail.thefacebook.com (2620:10d:c0a9:6f::237c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1748.10; Thu, 8 May 2025 20:40:21 +0000
-Received: by devvm14721.vll0.facebook.com (Postfix, from userid 669379)
-	id 97C5E2831B60; Thu,  8 May 2025 13:37:17 -0700 (PDT)
-From: Ihor Solodrai <isolodrai@meta.com>
-To: <qmo@kernel.org>, <andrii@kernel.org>
-CC: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <eddyz87@gmail.com>, <mykolal@fb.com>, <dylan.reimerink@isovalent.com>,
-        <kernel-team@meta.com>
-Subject: [PATCH bpf-next v4] scripts/bpf_doc.py: implement json output format
-Date: Thu, 8 May 2025 13:37:08 -0700
-Message-ID: <20250508203708.2520847-1-isolodrai@meta.com>
-X-Mailer: git-send-email 2.47.1
-Reply-To: <ihor.solodrai@linux.dev>
+	s=arc-20240116; t=1746736836; c=relaxed/simple;
+	bh=eC4B5nCJ6ESCtQmTC296vBIOJEdeKMPKbmLOzkLiaA4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=dKSaOP1zqncUfhcTwt36vkM/i0eAqqgLthvR0i2839ackhgU2VcWAuATtgeSwu9JFApVkwlPQZtKUqV76PL7mUMJZuStHjCoczaE8BZKVifQdbyVMmedG505j6PLXi7nExRHNHqDTB1Q+dq2Tn2mDBOqIdfqTFOCkwm96mGbGsg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tj9orTPP; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-39ee5a5bb66so1003278f8f.3
+        for <bpf@vger.kernel.org>; Thu, 08 May 2025 13:40:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1746736832; x=1747341632; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Sv9HPwpn4Z9qOn8jH6ZuE6pC6mqHJczutSAMZpCq9n0=;
+        b=Tj9orTPPJBVRSG+Cx9En/xYw3nxbf+g7n9T+yoqS2E6MoWQDZ+0R9U0cyK9cyXA4uT
+         U69Z0UI7hThE2PMoiqRu3DeAkxGpoRY7sUPNUfG8bS/jLjlNHRBFH9T5xhvRcGBcdKrg
+         jsV3GMedzluVKaWEKR1YrX3LKjRZItmLVgmfV6j9/BgBzgW7SAWpeoLQr3JFPPf6hAPn
+         GB1RECpyw81MnGq4iqNspnLv0ggBBv7RjZRplD/qMwcGJzrGkN9RHkLEv6oVuOGIEaPK
+         yQWHN0dEnXdxDmW19ayjRe7BNN2coAnw8rQ/UkpgPl/88M6mW2x2IuT9spVukeLeUDxI
+         OfZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746736832; x=1747341632;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Sv9HPwpn4Z9qOn8jH6ZuE6pC6mqHJczutSAMZpCq9n0=;
+        b=vxXv9TVn/YtYa/ZcS7Ruf7HnzOzBEAqRau/orffRTlUn9OzEYjEY3MjuI7wvWOt8oF
+         Ms9e9anyV1g/9NTYy7HU3ejFNVFOmiA920zqFt2gbAswA7JvOm6URe2RT7qrP6s5WPSy
+         R1JEkPXaE//J3PcTROlM6ivjLj+gwKppRl245PfbqaF3iG0mWHzWOsKmy0Twm1uCmAey
+         qlRQXCmU3HO65v/Jrt2eiidyLxRVwQoMaGgoQkeilTXfgmeDcwmoE1eYrRftiwIhcOpU
+         3f3MsK2V7qqEXM4x+x4io0evLqsCndmzTIOnTsf5yq4vqIBmQd6xCc9GN7TcJTyP6Iku
+         Kpmg==
+X-Gm-Message-State: AOJu0YymZzyoOp28Qo2nUNto3C8fpM4jtQ0RtTrjflYkwd9p3f12+9wx
+	BPCjrExTJMocEInYCmmjOd1Gx2f+4NAkvW28vDIjwNclUSIcMahrNPufzQ==
+X-Gm-Gg: ASbGncu2gGjSKux0GxU7O1OChH4eTdy9R5y1Vf6X7VDpmw0RZw99Lc7nmWF9dwmHz9j
+	53MgbTQop1p6GihMounfSJk+8e6C8Zq4T0sspMqGkhqTuMsVPuA8iD7gIcbGNILdBsT8B19FYdV
+	41fV/oAbk0+mXXtp+aasCu14o5SfI7Z4O8ZdJd6iHOVxBr3BaNq3ijmtptO8+fljyKHqs5pPLhe
+	sm4elaSDzH0qXLgFaUCxc0l8dec3trgXtq3sO6jBbiWEIT7GwlAZxSFjiXt1m2seX3I2VzZuk5S
+	hD+SQrshj4LBmb45GIfYPaV/Kz9mejzVoIIPE+dZy7NpThwh5kbYjl50LbMRduPEscssrUtm8bO
+	nQPeVIDl3X/JUEewnDjxHPBQ7twfVAx34aTQGFA==
+X-Google-Smtp-Source: AGHT+IFFR07wB62hvTR0dGf7UQ+Z0z1nHNNql1McwnIG06Ggvgn312vZ/3wYtOZWCuoB1AdQTnbN0A==
+X-Received: by 2002:a05:6000:2284:b0:3a1:f537:9064 with SMTP id ffacd0b85a97d-3a1f6443c25mr803273f8f.25.1746736831918;
+        Thu, 08 May 2025 13:40:31 -0700 (PDT)
+Received: from mail.gmail.com (2a01cb0889497e00dd4887210ee31c89.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:dd48:8721:ee3:1c89])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a1f5a4d21esm979164f8f.99.2025.05.08.13.40.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 May 2025 13:40:31 -0700 (PDT)
+Date: Thu, 8 May 2025 22:40:29 +0200
+From: Paul Chaignon <paul.chaignon@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH bpf-next] bpf: Always WARN_ONCE on verifier bugs
+Message-ID: <aB0WvXLMx5DIivc-@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Authority-Analysis: v=2.4 cv=a+cw9VSF c=1 sm=1 tr=0 ts=681d16b7 cx=c_pps a=MfjaFnPeirRr97d5FC5oHw==:117 a=MfjaFnPeirRr97d5FC5oHw==:17 a=dt9VzEwgFbYA:10 a=VwQbUJbxAAAA:8 a=VabnemYjAAAA:8 a=9SOExajgYcFn7ivU8_IA:9 a=gKebqoRLp9LExxC7YDUY:22
-X-Proofpoint-ORIG-GUID: 3D1PyWkWwp3AZLXjH15wFsuM9UVbcvFi
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTA4MDE4NiBTYWx0ZWRfXz0dSuscLqnrx Eqgv/LWzkBFrK+3YFzIqufyZ8d3ekB6anIaakqRqWSKhJy2gnaW9lPE9QjDdAON6ZGTQwKC57fF OZSmBfG3wuAaX5EKuPgkoPIP5PoJrX8DYyi7Uz1DVQPz8b1YIq4OdA4eArGPtisnPx+BdsOzt3m
- ifXAIindDAA8g6afBn2cCzkEwOwwsL2xpz8IV661/N85Jsm5hUnM6irAynViD6uYYDjznP06LCm DLV0UkrPOc6qaZSd2V13iSa9BmhBCBc4Lq/742gGegkrbtYzHP3P54Mx0XyN6BPwcehtMiDzIjK KRf2rwC2iT056Vq67tSvqU5c6Id3wiwvIJE2RrGAaG+a0yQzBsPQTRUKOWCwld4MtWdd96YRoY3
- +oOdA3JVt6i/ICukE4dEKOQF9IkbRwoBq79mgALM83v8+s+9Z+VdCQklJ3G0jISjHCc7ts0s
-X-Proofpoint-GUID: 3D1PyWkWwp3AZLXjH15wFsuM9UVbcvFi
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-05-08_06,2025-05-08_04,2025-02-21_01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-bpf_doc.py parses bpf.h header to collect information about various
-API elements (such as BPF helpers) and then dump them in one of the
-supported formats: rst docs and a C header.
+Throughout the verifier's logic, there are multiple checks for
+inconsistent states that should never happen and would indicate a
+verifier bug. These bugs are typically logged in the verifier logs and
+sometimes preceded by a WARN_ONCE.
 
-It's useful for external tools to be able to consume this information
-in an easy-to-parse format such as JSON. Implement JSON printers and
-add --json command line argument.
+This patch reworks these checks to consistently emit a verifier log AND
+a warning. The consistent use of WARN_ONCE should help fuzzers (ex.
+syzkaller) expose any situation where they are actually able to reach
+one of those buggy verifier states.
 
-v3->v4: refactor attrs to only be a helper's field
-v2->v3: nit cleanup
-v1->v2: add json printer for syscall target
-
-v3: https://lore.kernel.org/bpf/20250507203034.270428-1-isolodrai@meta.co=
-m/
-v2: https://lore.kernel.org/bpf/20250507182802.3833349-1-isolodrai@meta.c=
-om/
-v1: https://lore.kernel.org/bpf/20250506000605.497296-1-isolodrai@meta.co=
-m/
-
-Signed-off-by: Ihor Solodrai <isolodrai@meta.com>
+Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
 ---
- scripts/bpf_doc.py | 119 +++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 99 insertions(+), 20 deletions(-)
+ kernel/bpf/verifier.c | 63 +++++++++++++++++++++++--------------------
+ 1 file changed, 34 insertions(+), 29 deletions(-)
 
-diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
-index e74a01a85070..c77dc40f7689 100755
---- a/scripts/bpf_doc.py
-+++ b/scripts/bpf_doc.py
-@@ -8,6 +8,7 @@
- from __future__ import print_function
-=20
- import argparse
-+import json
- import re
- import sys, os
- import subprocess
-@@ -37,11 +38,17 @@ class APIElement(object):
-     @desc: textual description of the symbol
-     @ret: (optional) description of any associated return value
-     """
--    def __init__(self, proto=3D'', desc=3D'', ret=3D'', attrs=3D[]):
-+    def __init__(self, proto=3D'', desc=3D'', ret=3D''):
-         self.proto =3D proto
-         self.desc =3D desc
-         self.ret =3D ret
--        self.attrs =3D attrs
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 99aa2c890e7b..521acbba2fda 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -196,6 +196,12 @@ struct bpf_verifier_stack_elem {
+ 
+ #define BPF_PRIV_STACK_MIN_SIZE		64
+ 
++#define verifier_bug(env, fmt, args...)				\
++	do {							\
++		WARN_ONCE(1, "verifier bug: " fmt, ##args);	\
++		verbose(env, "verifier bug: " fmt, ##args);	\
++	} while (0)
 +
-+    def to_dict(self):
-+        return {
-+            'proto': self.proto,
-+            'desc': self.desc,
-+            'ret': self.ret
-+        }
-=20
-=20
- class Helper(APIElement):
-@@ -51,8 +58,9 @@ class Helper(APIElement):
-     @desc: textual description of the helper function
-     @ret: description of the return value of the helper function
-     """
--    def __init__(self, *args, **kwargs):
--        super().__init__(*args, **kwargs)
-+    def __init__(self, proto=3D'', desc=3D'', ret=3D'', attrs=3D[]):
-+        super().__init__(proto, desc, ret)
-+        self.attrs =3D attrs
-         self.enum_val =3D None
-=20
-     def proto_break_down(self):
-@@ -81,6 +89,12 @@ class Helper(APIElement):
-=20
-         return res
-=20
-+    def to_dict(self):
-+        d =3D super().to_dict()
-+        d["attrs"] =3D self.attrs
-+        d.update(self.proto_break_down())
-+        return d
-+
-=20
- ATTRS =3D {
-     '__bpf_fastcall': 'bpf_fastcall'
-@@ -675,7 +689,7 @@ COMMANDS
-         self.print_elem(command)
-=20
-=20
--class PrinterHelpers(Printer):
-+class PrinterHelpersHeader(Printer):
-     """
-     A printer for dumping collected information about helpers as C heade=
-r to
-     be included from BPF program.
-@@ -896,6 +910,43 @@ class PrinterHelpers(Printer):
-         print(') =3D (void *) %d;' % helper.enum_val)
-         print('')
-=20
-+
-+class PrinterHelpersJSON(Printer):
-+    """
-+    A printer for dumping collected information about helpers as a JSON =
-file.
-+    @parser: A HeaderParser with Helper objects
-+    """
-+
-+    def __init__(self, parser):
-+        self.elements =3D parser.helpers
-+        self.elem_number_check(
-+            parser.desc_unique_helpers,
-+            parser.define_unique_helpers,
-+            "helper",
-+            "___BPF_FUNC_MAPPER",
-+        )
-+
-+    def print_all(self):
-+        helper_dicts =3D [helper.to_dict() for helper in self.elements]
-+        out_dict =3D {'helpers': helper_dicts}
-+        print(json.dumps(out_dict, indent=3D4))
-+
-+
-+class PrinterSyscallJSON(Printer):
-+    """
-+    A printer for dumping collected syscall information as a JSON file.
-+    @parser: A HeaderParser with APIElement objects
-+    """
-+
-+    def __init__(self, parser):
-+        self.elements =3D parser.commands
-+        self.elem_number_check(parser.desc_syscalls, parser.enum_syscall=
-s, 'syscall', 'bpf_cmd')
-+
-+    def print_all(self):
-+        syscall_dicts =3D [syscall.to_dict() for syscall in self.element=
-s]
-+        out_dict =3D {'syscall': syscall_dicts}
-+        print(json.dumps(out_dict, indent=3D4))
-+
- ########################################################################=
-#######
-=20
- # If script is launched from scripts/ from kernel tree and can access
-@@ -905,9 +956,17 @@ script =3D os.path.abspath(sys.argv[0])
- linuxRoot =3D os.path.dirname(os.path.dirname(script))
- bpfh =3D os.path.join(linuxRoot, 'include/uapi/linux/bpf.h')
-=20
-+# target -> output format -> printer
- printers =3D {
--        'helpers': PrinterHelpersRST,
--        'syscall': PrinterSyscallRST,
-+    'helpers': {
-+        'rst': PrinterHelpersRST,
-+        'json': PrinterHelpersJSON,
-+        'header': PrinterHelpersHeader,
-+    },
-+    'syscall': {
-+        'rst': PrinterSyscallRST,
-+        'json': PrinterSyscallJSON
-+    },
- }
-=20
- argParser =3D argparse.ArgumentParser(description=3D"""
-@@ -917,6 +976,8 @@ rst2man utility.
- """)
- argParser.add_argument('--header', action=3D'store_true',
-                        help=3D'generate C header file')
-+argParser.add_argument('--json', action=3D'store_true',
-+                       help=3D'generate a JSON')
- if (os.path.isfile(bpfh)):
-     argParser.add_argument('--filename', help=3D'path to include/uapi/li=
-nux/bpf.h',
-                            default=3Dbpfh)
-@@ -924,17 +985,35 @@ else:
-     argParser.add_argument('--filename', help=3D'path to include/uapi/li=
-nux/bpf.h')
- argParser.add_argument('target', nargs=3D'?', default=3D'helpers',
-                        choices=3Dprinters.keys(), help=3D'eBPF API targe=
-t')
--args =3D argParser.parse_args()
--
--# Parse file.
--headerParser =3D HeaderParser(args.filename)
--headerParser.run()
-=20
--# Print formatted output to standard output.
--if args.header:
--    if args.target !=3D 'helpers':
--        raise NotImplementedError('Only helpers header generation is sup=
-ported')
--    printer =3D PrinterHelpers(headerParser)
--else:
--    printer =3D printers[args.target](headerParser)
--printer.print_all()
-+def error_die(message: str):
-+    argParser.print_usage(file=3Dsys.stderr)
-+    print('Error: {}'.format(message), file=3Dsys.stderr)
-+    exit(1)
-+
-+def parse_and_dump():
-+    args =3D argParser.parse_args()
-+
-+    # Parse file.
-+    headerParser =3D HeaderParser(args.filename)
-+    headerParser.run()
-+
-+    if args.header and args.json:
-+        error_die('Use either --header or --json, not both')
-+
-+    output_format =3D 'rst'
-+    if args.header:
-+        output_format =3D 'header'
-+    elif args.json:
-+        output_format =3D 'json'
-+
-+    try:
-+        printer =3D printers[args.target][output_format](headerParser)
-+        # Print formatted output to standard output.
-+        printer.print_all()
-+    except KeyError:
-+        error_die('Unsupported target/format combination: "{}", "{}"'
-+                    .format(args.target, output_format))
-+
-+if __name__ =3D=3D "__main__":
-+    parse_and_dump()
---=20
-2.47.1
+ static int acquire_reference(struct bpf_verifier_env *env, int insn_idx);
+ static int release_reference_nomark(struct bpf_verifier_state *state, int ref_obj_id);
+ static int release_reference(struct bpf_verifier_env *env, int ref_obj_id);
+@@ -1924,8 +1930,7 @@ static struct bpf_verifier_state *get_loop_entry(struct bpf_verifier_env *env,
+ 
+ 	while (topmost && topmost->loop_entry) {
+ 		if (steps++ > st->dfs_depth) {
+-			WARN_ONCE(true, "verifier bug: infinite loop in get_loop_entry\n");
+-			verbose(env, "verifier bug: infinite loop in get_loop_entry()\n");
++			verifier_bug(env, "infinite loop in get_loop_entry\n");
+ 			return ERR_PTR(-EFAULT);
+ 		}
+ 		topmost = topmost->loop_entry;
+@@ -3460,9 +3465,9 @@ static int mark_reg_read(struct bpf_verifier_env *env,
+ 		if (writes && state->live & REG_LIVE_WRITTEN)
+ 			break;
+ 		if (parent->live & REG_LIVE_DONE) {
+-			verbose(env, "verifier BUG type %s var_off %lld off %d\n",
+-				reg_type_str(env, parent->type),
+-				parent->var_off.value, parent->off);
++			verifier_bug(env, "type %s var_off %lld off %d\n",
++				     reg_type_str(env, parent->type),
++				     parent->var_off.value, parent->off);
+ 			return -EFAULT;
+ 		}
+ 		/* The first condition is more likely to be true than the
+@@ -6562,13 +6567,13 @@ static int check_max_stack_depth_subprog(struct bpf_verifier_env *env, int idx,
+ 		next_insn = i + insn[i].imm + 1;
+ 		sidx = find_subprog(env, next_insn);
+ 		if (sidx < 0) {
+-			WARN_ONCE(1, "verifier bug. No program starts at insn %d\n",
+-				  next_insn);
++			verifier_bug(env, "No program starts at insn %d\n",
++				     next_insn);
+ 			return -EFAULT;
+ 		}
+ 		if (subprog[sidx].is_async_cb) {
+ 			if (subprog[sidx].has_tail_call) {
+-				verbose(env, "verifier bug. subprog has tail_call and async cb\n");
++				verifier_bug(env, "subprog has tail_call and async cb\n");
+ 				return -EFAULT;
+ 			}
+ 			/* async callbacks don't increase bpf prog stack size unless called directly */
+@@ -6676,8 +6681,8 @@ static int get_callee_stack_depth(struct bpf_verifier_env *env,
+ 
+ 	subprog = find_subprog(env, start);
+ 	if (subprog < 0) {
+-		WARN_ONCE(1, "verifier bug. No program starts at insn %d\n",
+-			  start);
++		verifier_bug(env, "No program starts at insn %d\n",
++			     start);
+ 		return -EFAULT;
+ 	}
+ 	return env->subprog_info[subprog].stack_depth;
+@@ -7984,7 +7989,7 @@ static int check_stack_range_initialized(
+ 		slot = -i - 1;
+ 		spi = slot / BPF_REG_SIZE;
+ 		if (state->allocated_stack <= slot) {
+-			verbose(env, "verifier bug: allocated_stack too small\n");
++			verbose(env, "allocated_stack too small\n");
+ 			return -EFAULT;
+ 		}
+ 
+@@ -8413,7 +8418,7 @@ static int process_timer_func(struct bpf_verifier_env *env, int regno,
+ 		return -EINVAL;
+ 	}
+ 	if (meta->map_ptr) {
+-		verbose(env, "verifier bug. Two map pointers in a timer helper\n");
++		verifier_bug(env, "Two map pointers in a timer helper\n");
+ 		return -EFAULT;
+ 	}
+ 	meta->map_uid = reg->map_uid;
+@@ -10285,8 +10290,8 @@ static int setup_func_entry(struct bpf_verifier_env *env, int subprog, int calls
+ 	}
+ 
+ 	if (state->frame[state->curframe + 1]) {
+-		verbose(env, "verifier bug. Frame %d already allocated\n",
+-			state->curframe + 1);
++		verifier_bug(env, "Frame %d already allocated\n",
++			     state->curframe + 1);
+ 		return -EFAULT;
+ 	}
+ 
+@@ -10400,8 +10405,8 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env, int subprog,
+ 			if (err)
+ 				return err;
+ 		} else {
+-			bpf_log(log, "verifier bug: unrecognized arg#%d type %d\n",
+-				i, arg->arg_type);
++			verifier_bug(env, "unrecognized arg#%d type %d\n",
++				     i, arg->arg_type);
+ 			return -EFAULT;
+ 		}
+ 	}
+@@ -10464,13 +10469,13 @@ static int push_callback_call(struct bpf_verifier_env *env, struct bpf_insn *ins
+ 	env->subprog_info[subprog].is_cb = true;
+ 	if (bpf_pseudo_kfunc_call(insn) &&
+ 	    !is_callback_calling_kfunc(insn->imm)) {
+-		verbose(env, "verifier bug: kfunc %s#%d not marked as callback-calling\n",
+-			func_id_name(insn->imm), insn->imm);
++		verifier_bug(env, "kfunc %s#%d not marked as callback-calling\n",
++			     func_id_name(insn->imm), insn->imm);
+ 		return -EFAULT;
+ 	} else if (!bpf_pseudo_kfunc_call(insn) &&
+ 		   !is_callback_calling_function(insn->imm)) { /* helper */
+-		verbose(env, "verifier bug: helper %s#%d not marked as callback-calling\n",
+-			func_id_name(insn->imm), insn->imm);
++		verifier_bug(env, "helper %s#%d not marked as callback-calling\n",
++			     func_id_name(insn->imm), insn->imm);
+ 		return -EFAULT;
+ 	}
+ 
+@@ -10523,7 +10528,7 @@ static int check_func_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ 	target_insn = *insn_idx + insn->imm + 1;
+ 	subprog = find_subprog(env, target_insn);
+ 	if (subprog < 0) {
+-		verbose(env, "verifier bug. No program starts at insn %d\n", target_insn);
++		verifier_bug(env, "No program starts at insn %d\n", target_insn);
+ 		return -EFAULT;
+ 	}
+ 
+@@ -11124,7 +11129,7 @@ static int check_bpf_snprintf_call(struct bpf_verifier_env *env,
+ 	err = fmt_map->ops->map_direct_value_addr(fmt_map, &fmt_addr,
+ 						  fmt_map_off);
+ 	if (err) {
+-		verbose(env, "verifier bug\n");
++		verbose(env, "failed to retrieve map value address\n");
+ 		return -EFAULT;
+ 	}
+ 	fmt = (char *)(long)fmt_addr + fmt_map_off;
+@@ -19689,8 +19694,8 @@ static int do_check(struct bpf_verifier_env *env)
+ 						return err;
+ 					break;
+ 				} else {
+-					if (WARN_ON_ONCE(env->cur_state->loop_entry)) {
+-						verbose(env, "verifier bug: env->cur_state->loop_entry != NULL\n");
++					if (unlikely(env->cur_state->loop_entry)) {
++						verifier_bug(env, "env->cur_state->loop_entry != NULL\n");
+ 						return -EFAULT;
+ 					}
+ 					do_print_state = true;
+@@ -20750,8 +20755,8 @@ static int opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
+ 		if (bpf_pseudo_kfunc_call(&insn))
+ 			continue;
+ 
+-		if (WARN_ON(load_reg == -1)) {
+-			verbose(env, "verifier bug. zext_dst is set, but no reg is defined\n");
++		if (unlikely(load_reg == -1)) {
++			verifier_bug(env, "zext_dst is set, but no reg is defined\n");
+ 			return -EFAULT;
+ 		}
+ 
+@@ -21071,8 +21076,8 @@ static int jit_subprogs(struct bpf_verifier_env *env)
+ 		 */
+ 		subprog = find_subprog(env, i + insn->imm + 1);
+ 		if (subprog < 0) {
+-			WARN_ONCE(1, "verifier bug. No program starts at insn %d\n",
+-				  i + insn->imm + 1);
++			verifier_bug(env, "No program starts at insn %d\n",
++				     i + insn->imm + 1);
+ 			return -EFAULT;
+ 		}
+ 		/* temporarily remember subprog id inside insn instead of
+@@ -22433,7 +22438,7 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+ 			continue;
+ 		/* We need two slots in case timed may_goto is supported. */
+ 		if (stack_slots > slots) {
+-			verbose(env, "verifier bug: stack_slots supports may_goto only\n");
++			verifier_bug(env, "stack_slots supports may_goto only\n");
+ 			return -EFAULT;
+ 		}
+ 
+-- 
+2.43.0
 
 
