@@ -1,329 +1,170 @@
-Return-Path: <bpf+bounces-57951-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57952-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B69A5AB1F34
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 23:43:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7600BAB1F5F
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 23:51:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA2DF1C44FBE
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 21:43:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AA7F1C462FB
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 21:50:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0377E2609F2;
-	Fri,  9 May 2025 21:43:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1DA82609E9;
+	Fri,  9 May 2025 21:49:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UE0E/qKC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L9gLSumS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E6B82609D5
-	for <bpf@vger.kernel.org>; Fri,  9 May 2025 21:43:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0C8825FA24;
+	Fri,  9 May 2025 21:49:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746827005; cv=none; b=NajK15BZjnOEhPqrbTI9QwpY3t46pH3Tyz78aLzf/Fo2SEC5X/eKZOFMq0ZEzHRir8ElWOLvIW6rDFmWV5iXMRVW+AUNtcwian0P4JzdcX2DDoSVCYhByKYLWILL3NNIDFyVkG+Ao9B7bz2sdlDYBpzPw2eWAQ3vXoNJrqXW9RM=
+	t=1746827392; cv=none; b=lFMFZx5lZbl7LtUgm5GFngyBM2TGq34iYrFy8QjCXis5sk5CIj6CRjUovG6Ve7z6iHw9MIy5QYXCKC6kcfQTy8pSjsz9vlWWddxC+e+1plF/N151UhAg3LGOWAeg67wr4M8R/lCtQD+0pGU9/hb00PnU0vGmBRb02Idb7hJW3U0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746827005; c=relaxed/simple;
-	bh=d+W04rz5R6BtxFOPPwdUXW9CdbhpNWKgPp4Gf6m8JPk=;
+	s=arc-20240116; t=1746827392; c=relaxed/simple;
+	bh=ZinlNdkiyCNzwk3CZlDqG9cAdnhvkAgo9icgRAJn/rU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pZlWqh9t+EahGGkjYIROHqbXsDSLKYrL2x3fNugiZMAABVZF21DZQSKs23qqDhRzoNowUrH3xDwJ72QaHzkbLpcqK4Ocqed/iQo/aNij3t54yqhoP+QE5OGntcOq5dIvJ9xAw+7cmkTv4h+UPL06BUhbSkXZFY74qKxWuR9V48c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UE0E/qKC; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-43ef83a6bfaso6515e9.1
-        for <bpf@vger.kernel.org>; Fri, 09 May 2025 14:43:23 -0700 (PDT)
+	 To:Cc:Content-Type; b=S+urO5OB2IN4cYa4I4F1FId25DUnpn5mrmTDgOrmhjHZ1xLqNgnTdObotKyPngjXX3AOI+A72fRxK88QMuUL/6siwjvIM4QsfzWVO2kUz9LnrNubMhDAY5UpihPkrWFeY/JcraeBdamFsUT/5dVj5nWDaLNYYIJpippMTbDLXDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L9gLSumS; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-7399a2dc13fso3733933b3a.2;
+        Fri, 09 May 2025 14:49:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1746827002; x=1747431802; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1746827390; x=1747432190; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fZfju7WUz5Yl04mbuyXvvdOSNmKPyLT8Rq8aUyjFmsM=;
-        b=UE0E/qKC2d1CbG4lC0lb/YZTt3/K2oEwieIBCnjwzpeNHiYBX4yowJ6W+nd0RaFCCk
-         GzinV0O66x2EICVt1D4esfk95yLyl3lHwE+4BozaqCD4gJ6KAkD1hcArn4SCGVSBt9HP
-         6MEcQuHrkJXTtejStHOGJyvgnPzWDhap6Vjz+5ju6cGtRrv6TrEdOCSmNezN9+dd0LBD
-         RNACVY68NkJ2qiLUt07pBEQsypRC7Knzgbyhnse/oy2gBiUYiWQ6WvuvkA5MtcyZVnaY
-         STNichk+o4hvjKsMtBwNj06yFZgEzCk4JkD2huJRrm2a1DwQK5X7Yod0QFirDKppIVAC
-         JggQ==
+        bh=/U9lcKW0lXABVXy+mgpMzNoe/NTD2evxfu2sRExNzas=;
+        b=L9gLSumSx0yIxUYbgEy1stex4IDy6WP+DJVbK/+vJ+R16cxCA/gC86FHIz+/ocy3wW
+         WRL6lfia1kWLvI4ZDVDZMCNGhlfpveRJezzEMOdSbLEeixbAFijAB8jSV0gxcA63ZLMc
+         rz3eK2howQtwj6o1+bYDdtXHNdj4bvnCvaeUR5sphp0reZErAHwm21jtu9q9hTE3izqY
+         2nZoMyeVk3Jslh1jICwDZWlpmUELz/nsIV66tr45ogFdTaKl68qmL8Sh3A0pQCRHkUCn
+         W9If5YXJJogYEdN2Q7UWHSOK5B9nrsBTiOtGTqngqPCKC3qwkV7mtF2Tc/K6gUrLn8E0
+         MdgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746827002; x=1747431802;
+        d=1e100.net; s=20230601; t=1746827390; x=1747432190;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fZfju7WUz5Yl04mbuyXvvdOSNmKPyLT8Rq8aUyjFmsM=;
-        b=JZg44y4y+8Eeix51TVVFhQ7wux5BZqvtLh2/iM7zoWjct8cIhEtJaepIvl6OwXq+xC
-         xIvUAgvnQ6lI0E9LFVlIPOpeCQ738qqXHt0XPqnGV2jgaVEGK9D45an2p4nact84DgoX
-         d7cBiNLpxGpGO1zkMx3z0E266XwLkXwEI62sMe6Lz2XEFcCC+ib8+Kn/kohzgZ/numao
-         ImkflVzbLGh2SO5rMxBJozGs8U4T54+lokxC0xcxLRwFo/gpTNU743yayQixNv8qzzee
-         WJvmz5c75yhjV07cBCMeN3Y6F4G+aCfNe9Z0NFO9fYuBhSDmf0tnYLAMFw9wtla7wePc
-         dHXg==
-X-Forwarded-Encrypted: i=1; AJvYcCU4cYounG1lYj1wPuaIN+SpqYcaNsInRgKaaBAP6/zqOOOrP4vbNdt2SFIe+a3Tt/2ohCk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzMXnH5+P224mxW3s+v0YAZV0MR2RG0Qi/0oyiuy9N+fsTvIS/I
-	7l7hHKsW2z16RrN41rdatnA5wUOSHa+9WToXR6fR1oXtKSi4jWhqi47AE2i5rk1lYIprQmuXYae
-	CC4QwCndHATjX0WrndKBxp6nHE0Ck5s1znTCW
-X-Gm-Gg: ASbGncsYM513qx6IfkZxur7kkzPvHFf+62HgXzVMGkO9SkfqzRwec/dcHqg8GndG8XG
-	gw6MgPC/j6tTBSwxCLAyOCItZG2+EN7/JulatrRksROagp0EVQKHkR8ApD0NRAwT1IY+RROUrTI
-	xQJ6Bp5hSg0tr4OwurnSV4ezQ09aSOrv4=
-X-Google-Smtp-Source: AGHT+IEsv5HI2i1ZZ/585hqiXPrI+miXZcW/PcnQi9f4aA5/TPapqTvWiJ8fo1Pxmugr4vWjKMzxQzqUzh4HLjZ9xoE=
-X-Received: by 2002:a05:600c:6058:b0:441:d438:1c1f with SMTP id
- 5b1f17b1804b1-442e03adbdemr15755e9.7.1746827001461; Fri, 09 May 2025 14:43:21
- -0700 (PDT)
+        bh=/U9lcKW0lXABVXy+mgpMzNoe/NTD2evxfu2sRExNzas=;
+        b=BRJ2SWI6Qlr/eljl0TLC2Lo93rafNwqaY1bYhljGCMo2u/gh5/fU5ij26WBjj34PUv
+         OAP5J31Bu/8RI54doMk0juTgkJOWhGAXIX9pvd1JMjVolGeTjdVVslqA0KJ38OKR+gjw
+         qYF3Ix2plsIlGU2+JC3Iw0YqOCIF8SPPQr28tdGcAgJ5eJzfzebqlVXeP+dkCS3XcKlD
+         FLwE0G7HE0WmE2nEVx6kyvsEBmDbXMPmY83+us7tU5wSPk8odV0BgJUF+8ve392mZKqO
+         rVe44eXXw0n83Y27q9J4vR6oZiKacVdazI/Bt/1dkZbyZqT97xjEsWzlY+YghZP4MlSj
+         uP8A==
+X-Forwarded-Encrypted: i=1; AJvYcCV0DEgm8962/El4StREmG/7F28b/vg8wN+bPkBlUyrzB6nqJMcfIubj/ck/pivKLlSrYeQ=@vger.kernel.org, AJvYcCVtBn9NbUeyg/t/LfyNyRW9OebKddzRzqW+sAX7WDkLkWmzNjOutgNb67QJBf06Ds2QZ+ml9VeycihbeAmuf80BMTVS@vger.kernel.org
+X-Gm-Message-State: AOJu0YyAN5urKOOHG8EXGXTk32b0MaWjpxZZfT1mFywDd0oiFXzBmJrs
+	ILPPA40svyNgwEXFiDHiKj53F4H6s4KjOx+iFTXTU+731AvPew8OErPr22wcW83tCU1pMapjITR
+	MLgKOzynqpP17ontc2xF0DsUSYK/NqhDx
+X-Gm-Gg: ASbGncsxzrLSK/s3+ckxG9TcigRsPouIgLmvGc6KxnYFtr6gvJ7/YDxrR9aToqPdMNm
+	5tXOwF0OB9mh0Y6dAb3M+IJy9ffoAz9WkHE7jC6nKwM6vQtnz6oaqY0SeXczUiirmgjmtwPj7Xp
+	EMFOpFoYW3Ch/oXHsRYjH28If1+x53SxMrCCKSrBfPNBenOeOBNvE5k6Rk2x0=
+X-Google-Smtp-Source: AGHT+IHPkwZR/8rn5sjyBGB0IOcQSZZ0Evw9rc/ZNuaIe7vZL0Xarx0Fw1QKpg7ximsYUdfxO7khqTgJocYUArU4xsI=
+X-Received: by 2002:a05:6a21:3182:b0:1f5:8a1d:3904 with SMTP id
+ adf61e73a8af0-215abace343mr8147447637.7.1746827389935; Fri, 09 May 2025
+ 14:49:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250508182025.2961555-1-tjmercier@google.com>
- <20250508182025.2961555-6-tjmercier@google.com> <CAPhsuW5WOmyfPqBc_Hn7ApGWP_2uz_cJwyaDWF_VwiHJu9s_1A@mail.gmail.com>
-In-Reply-To: <CAPhsuW5WOmyfPqBc_Hn7ApGWP_2uz_cJwyaDWF_VwiHJu9s_1A@mail.gmail.com>
-From: "T.J. Mercier" <tjmercier@google.com>
-Date: Fri, 9 May 2025 14:43:09 -0700
-X-Gm-Features: AX0GCFvkQQHihmvnaG3BMibV3EQ_CyOSSZ1huizs69M9NO065M7pYtXEQ0sH-Zc
-Message-ID: <CABdmKX2h5cGjNbJshGkQ+2XJ7eOnM+VfbmVr5Pj5c0qfxQA-qg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 5/5] selftests/bpf: Add test for open coded dmabuf_iter
-To: Song Liu <song@kernel.org>
-Cc: sumit.semwal@linaro.org, christian.koenig@amd.com, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
-	skhan@linuxfoundation.org, alexei.starovoitov@gmail.com, 
-	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org, 
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, android-mm@google.com, 
-	simona@ffwll.ch, eddyz87@gmail.com, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org
+References: <20250509164524.448387100@goodmis.org> <20250509165155.628873521@goodmis.org>
+In-Reply-To: <20250509165155.628873521@goodmis.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 9 May 2025 14:49:37 -0700
+X-Gm-Features: ATxdqUEPWK1bzutKtWy6yxNmKdLWMZCU9skVB9Dn5IFiwho3pByZS297XPGSPQI
+Message-ID: <CAEf4Bzb7MCv87ZEPXvH7APk9yvmtCWvuUO5ShEaLvz_DLfNqpw@mail.gmail.com>
+Subject: Re: [PATCH v8 12/18] unwind deferred: Use SRCU unwind_deferred_task_work()
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, x86@kernel.org, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Josh Poimboeuf <jpoimboe@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 9, 2025 at 11:46=E2=80=AFAM Song Liu <song@kernel.org> wrote:
+On Fri, May 9, 2025 at 9:54=E2=80=AFAM Steven Rostedt <rostedt@goodmis.org>=
+ wrote:
 >
-> On Thu, May 8, 2025 at 11:21=E2=80=AFAM T.J. Mercier <tjmercier@google.co=
-m> wrote:
-> >
-> > Use the same test buffers as the traditional iterator and a new BPF map
-> > to verify the test buffers can be found with the open coded dmabuf
-> > iterator.
+> From: Steven Rostedt <rostedt@goodmis.org>
 >
-> The way we split 4/5 and 5/5 makes the code tricker to follow. I guess
-> the motivation is to back port default iter along to older kernels. But I
-> think we can still make the code cleaner.
+> Instead of using the callback_mutex to protect the link list of callbacks
+> in unwind_deferred_task_work(), use SRCU instead. This gets called every
+> time a task exits that has to record a stack trace that was requested.
+> This can happen for many tasks on several CPUs at the same time. A mutex
+> is a bottleneck and can cause a bit of contention and slow down performan=
+ce.
 >
-> >
-> > Signed-off-by: T.J. Mercier <tjmercier@google.com>
-> > ---
-> [...]
+> As the callbacks themselves are allowed to sleep, regular RCU can not be
+> used to protect the list. Instead use SRCU, as that still allows the
+> callbacks to sleep and the list can be read without needing to hold the
+> callback_mutex.
 >
-> >
-> > -static int create_udmabuf(void)
-> > +static int create_udmabuf(int map_fd)
-> >  {
-> >         struct udmabuf_create create;
-> >         int dev_udmabuf;
-> > +       bool f =3D false;
-> >
-> >         udmabuf_test_buffer_size =3D 10 * getpagesize();
-> >
-> > @@ -63,10 +64,10 @@ static int create_udmabuf(void)
-> >         if (!ASSERT_OK(ioctl(udmabuf, DMA_BUF_SET_NAME_B, udmabuf_test_=
-buffer_name), "name"))
-> >                 return 1;
-> >
-> > -       return 0;
-> > +       return bpf_map_update_elem(map_fd, udmabuf_test_buffer_name, &f=
-, BPF_ANY);
+> Link: https://lore.kernel.org/all/ca9bd83a-6c80-4ee0-a83c-224b9d60b755@ef=
+ficios.com/
 >
-> We don't really need this bpf_map_update_elem() inside
-> create_udmabuf(), right?
+> Suggested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+>  kernel/unwind/deferred.c | 33 +++++++++++++++++++++++++--------
+>  1 file changed, 25 insertions(+), 8 deletions(-)
 >
-> >  }
-> >
-> > -static int create_sys_heap_dmabuf(void)
-> > +static int create_sys_heap_dmabuf(int map_fd)
-> >  {
-> >         sysheap_test_buffer_size =3D 20 * getpagesize();
-> >
-> > @@ -77,6 +78,7 @@ static int create_sys_heap_dmabuf(void)
-> >                 .heap_flags =3D 0,
-> >         };
-> >         int heap_fd, ret;
-> > +       bool f =3D false;
-> >
-> >         if (!ASSERT_LE(sizeof(sysheap_test_buffer_name), DMA_BUF_NAME_L=
-EN, "NAMETOOLONG"))
-> >                 return 1;
-> > @@ -95,18 +97,18 @@ static int create_sys_heap_dmabuf(void)
-> >         if (!ASSERT_OK(ioctl(sysheap_dmabuf, DMA_BUF_SET_NAME_B, syshea=
-p_test_buffer_name), "name"))
-> >                 return 1;
-> >
-> > -       return 0;
-> > +       return bpf_map_update_elem(map_fd, sysheap_test_buffer_name, &f=
-, BPF_ANY);
+> diff --git a/kernel/unwind/deferred.c b/kernel/unwind/deferred.c
+> index 7ae0bec5b36a..5d6976ee648f 100644
+> --- a/kernel/unwind/deferred.c
+> +++ b/kernel/unwind/deferred.c
+> @@ -13,10 +13,11 @@
 >
-> Same for this bpf_map_update_elem(), we can call this directly from
-> create_test_buffers().
+>  #define UNWIND_MAX_ENTRIES 512
 >
-> >  }
-> >
-> > -static int create_test_buffers(void)
-> > +static int create_test_buffers(int map_fd)
-> >  {
-> >         int ret;
-> >
-> > -       ret =3D create_udmabuf();
-> > +       ret =3D create_udmabuf(map_fd);
-> >         if (ret)
-> >                 return ret;
-> >
-> > -       return create_sys_heap_dmabuf();
-> > +       return create_sys_heap_dmabuf(map_fd);
+> -/* Guards adding to and reading the list of callbacks */
+> +/* Guards adding to or removing from the list of callbacks */
+>  static DEFINE_MUTEX(callback_mutex);
+>  static LIST_HEAD(callbacks);
+>  static unsigned long unwind_mask;
+> +DEFINE_STATIC_SRCU(unwind_srcu);
 >
-> Personally, I would prefer we just merge all the logic of
-> create_udmabuf() and create_sys_heap_dmabuf()
-> into create_test_buffers().
+>  /*
+>   * Read the task context timestamp, if this is the first caller then
+> @@ -108,6 +109,7 @@ static void unwind_deferred_task_work(struct callback=
+_head *head)
+>         struct unwind_work *work;
+>         u64 timestamp;
+>         struct task_struct *task =3D current;
+> +       int idx;
+>
+>         if (WARN_ON_ONCE(!info->pending))
+>                 return;
+> @@ -133,13 +135,15 @@ static void unwind_deferred_task_work(struct callba=
+ck_head *head)
+>
+>         timestamp =3D info->timestamp;
+>
+> -       guard(mutex)(&callback_mutex);
+> -       list_for_each_entry(work, &callbacks, list) {
+> +       idx =3D srcu_read_lock(&unwind_srcu);
 
-That's a lot of different stuff to put in one place. How about
-returning file descriptors from the buffer create functions while
-having them clean up after themselves:
+nit: you could have used guard(srcu)(&unwind_srcu) ?
 
--static int memfd, udmabuf;
-+static int udmabuf;
- static const char udmabuf_test_buffer_name[DMA_BUF_NAME_LEN] =3D
-"udmabuf_test_buffer_for_iter";
- static size_t udmabuf_test_buffer_size;
- static int sysheap_dmabuf;
- static const char sysheap_test_buffer_name[DMA_BUF_NAME_LEN] =3D
-"sysheap_test_buffer_for_iter";
- static size_t sysheap_test_buffer_size;
+> +       list_for_each_entry_srcu(work, &callbacks, list,
+> +                                srcu_read_lock_held(&unwind_srcu)) {
+>                 if (task->unwind_mask & (1UL << work->bit)) {
+>                         work->func(work, &trace, timestamp);
+>                         clear_bit(work->bit, &current->unwind_mask);
+>                 }
+>         }
+> +       srcu_read_unlock(&unwind_srcu, idx);
+>  }
+>
+>  static int unwind_deferred_request_nmi(struct unwind_work *work, u64 *ti=
+mestamp)
 
--static int create_udmabuf(int map_fd)
-+static int create_udmabuf(void)
- {
-        struct udmabuf_create create;
--       int dev_udmabuf;
--       bool f =3D false;
-+       int dev_udmabuf, memfd, udmabuf;
-
-        udmabuf_test_buffer_size =3D 10 * getpagesize();
-
-        if (!ASSERT_LE(sizeof(udmabuf_test_buffer_name),
-DMA_BUF_NAME_LEN, "NAMETOOLONG"))
--               return 1;
-+               return -1;
-
-        memfd =3D memfd_create("memfd_test", MFD_ALLOW_SEALING);
-        if (!ASSERT_OK_FD(memfd, "memfd_create"))
--               return 1;
-+               return -1;
-
-        if (!ASSERT_OK(ftruncate(memfd, udmabuf_test_buffer_size), "ftrunca=
-te"))
--               return 1;
-+               goto close_memfd;
-
-        if (!ASSERT_OK(fcntl(memfd, F_ADD_SEALS, F_SEAL_SHRINK), "seal"))
--               return 1;
-+               goto close_memfd;
-
-        dev_udmabuf =3D open("/dev/udmabuf", O_RDONLY);
-        if (!ASSERT_OK_FD(dev_udmabuf, "open udmabuf"))
--               return 1;
-+               goto close_memfd;
-
-        create.memfd =3D memfd;
-        create.flags =3D UDMABUF_FLAGS_CLOEXEC;
-@@ -59,15 +58,21 @@ static int create_udmabuf(int map_fd)
-        udmabuf =3D ioctl(dev_udmabuf, UDMABUF_CREATE, &create);
-        close(dev_udmabuf);
-        if (!ASSERT_OK_FD(udmabuf, "udmabuf_create"))
--               return 1;
-+               goto close_memfd;
-
-        if (!ASSERT_OK(ioctl(udmabuf, DMA_BUF_SET_NAME_B,
-udmabuf_test_buffer_name), "name"))
--               return 1;
-+               goto close_udmabuf;
-+
-+       return udmabuf;
-
--       return bpf_map_update_elem(map_fd, udmabuf_test_buffer_name,
-&f, BPF_ANY);
-+close_udmabuf:
-+       close(udmabuf);
-+close_memfd:
-+       close(memfd);
-+       return -1;
- }
-
--static int create_sys_heap_dmabuf(int map_fd)
-+static int create_sys_heap_dmabuf(void)
- {
-        sysheap_test_buffer_size =3D 20 * getpagesize();
-
-@@ -78,43 +83,46 @@ static int create_sys_heap_dmabuf(int map_fd)
-                .heap_flags =3D 0,
-        };
-        int heap_fd, ret;
--       bool f =3D false;
-
-        if (!ASSERT_LE(sizeof(sysheap_test_buffer_name),
-DMA_BUF_NAME_LEN, "NAMETOOLONG"))
--               return 1;
-+               return -1;
-
-        heap_fd =3D open("/dev/dma_heap/system", O_RDONLY);
-        if (!ASSERT_OK_FD(heap_fd, "open dma heap"))
--               return 1;
-+               return -1;
-
-        ret =3D ioctl(heap_fd, DMA_HEAP_IOCTL_ALLOC, &data);
-        close(heap_fd);
-        if (!ASSERT_OK(ret, "syheap alloc"))
--               return 1;
-+               return -1;
-
--       sysheap_dmabuf =3D data.fd;
-+       if (!ASSERT_OK(ioctl(data.fd, DMA_BUF_SET_NAME_B,
-sysheap_test_buffer_name), "name"))
-+               goto close_sysheap_dmabuf;
-
--       if (!ASSERT_OK(ioctl(sysheap_dmabuf, DMA_BUF_SET_NAME_B,
-sysheap_test_buffer_name), "name"))
--               return 1;
-+       return data.fd;
-
--       return bpf_map_update_elem(map_fd, sysheap_test_buffer_name,
-&f, BPF_ANY);
-+close_sysheap_dmabuf:
-+       close(data.fd);
-+       return -1;
- }
-
- static int create_test_buffers(int map_fd)
- {
--       int ret;
-+       bool f =3D false;
-+
-+       udmabuf =3D create_udmabuf();
-+       sysheap_dmabuf =3D create_sys_heap_dmabuf();
-
--       ret =3D create_udmabuf(map_fd);
--       if (ret)
--               return ret;
-+       if (udmabuf < 0 || sysheap_dmabuf < 0)
-+               return -1;
-
--       return create_sys_heap_dmabuf(map_fd);
-+       return bpf_map_update_elem(map_fd, udmabuf_test_buffer_name,
-&f, BPF_ANY) ||
-+              bpf_map_update_elem(map_fd, sysheap_test_buffer_name,
-&f, BPF_ANY);
- }
-
- static void destroy_test_buffers(void)
- {
-        close(udmabuf);
--       close(memfd);
-        close(sysheap_dmabuf);
- }
+[...]
 
