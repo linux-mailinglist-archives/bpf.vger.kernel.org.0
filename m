@@ -1,158 +1,162 @@
-Return-Path: <bpf+bounces-57953-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57954-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66F13AB1F71
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 23:53:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA585AB1F77
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 23:59:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF40616A107
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 21:53:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F9721C459DA
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 21:59:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04CA92609EB;
-	Fri,  9 May 2025 21:53:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15A1926138F;
+	Fri,  9 May 2025 21:58:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nb40qvkT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wj/Ji3eS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C59425D1FC;
-	Fri,  9 May 2025 21:53:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D13A25D1FC;
+	Fri,  9 May 2025 21:58:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746827632; cv=none; b=a3fwbLK+XOX+wx+KZqL4ostwltCCLotqraey5ibIQJUxuIsMzfguAMJzZIk/zzAZCFM/JFPgqyFQPaJ0zhGtNWAv9G3jMPRpYm4Pi0tD+Io9vGhmXkUlVZPcDQfeeSxTFqJn44tz9Y8iyAcGyIZa3xzp+tf6hG1iZ9aZT7KTVkQ=
+	t=1746827935; cv=none; b=P7CNXpS8DFzGJ+gDy3ooI2HDKVaMDnmrFsfRe/sBGlRv/4DUyRiKv2YuR5TiqjeHzLPs5aPiRt7LYRqK3ybFRnbJtNlG6i0A1VyFKfPKzX2BydZPQRzcyXLwOKR5hPyo+TpKTd1BU6rnBKBtRyIIuAiuTHruwFHeGlHyT1LmcaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746827632; c=relaxed/simple;
-	bh=NiH+k6IfoKNrv7kJjvq02SqgFB+0uIsB7zsh4/p7lUs=;
+	s=arc-20240116; t=1746827935; c=relaxed/simple;
+	bh=bod7OgH9FMLNk7FKdLh8z63aV2T+h8TH6ReCA7jp2gc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=udPRXC7X1Ghenr3Puig3sDoHBIq6voeJHPJ8idBymSoLGGErnuSRogG9Ircu6rni+Y6CfDC6SsrW6GHl2vhJYHoAX3wh5Ef04ZvyU8k3gV3VP35z2nRrbHufVrHtaDN2CgWya2mOXwLlMajtbjazy8vO3IV+/E/rdFSH5GR+Wf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Nb40qvkT; arc=none smtp.client-ip=209.85.216.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-30c35ac35dfso1763033a91.1;
-        Fri, 09 May 2025 14:53:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746827630; x=1747432430; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yHkbQJC2vfZe+igN8ZKegJaL309MbUilfmbTINeRmN0=;
-        b=Nb40qvkT96ockENj/wdkrX39vXT3XOeTwxNnYKGpQLUtm0haWz3iV3RUf3mos9W3t6
-         DZNyqW4eAhb4GSanA6F3beQiofcY3uVPOPIrvSW+n3Hct71jKmpwFZUklRHJ1HSl+5aw
-         HAbM+F2iy/jTQtBI3WQh6haYJY2rR8+1/YwIPbOuOfdMXf8bSyfI4rtvlIN+uPz+ggPt
-         X7wDMckMedYHDU7D9i7u2lhOm3gJNbDyd4xG8Rd6Wdqz7avabEsFcLeLhpKPKMh4hz3T
-         d85EC1S8lvNZujndGQFHlXkUQP3rOG8dTDnqxhNa5ZxN0SBMbxTe3F9qnJ9Yz0LlRkuz
-         DjCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746827630; x=1747432430;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yHkbQJC2vfZe+igN8ZKegJaL309MbUilfmbTINeRmN0=;
-        b=U+FMNe+hKyeEZ1M5wLzyz1QP2OK4gHF2GjIUi8h855wF/i7SxHfjxAK++Ji7wcv6Bx
-         Sxz1/JQhgLEtTOzaf2lw/IyyPn50hKh0S5W3SYbF/GNiJCp2e/3njmcvUOomCfX3mcBQ
-         2Alpax9jLJAGoHnGecYC/2hdtjRYPWDGRQxFcwVEsgWKI63KFVENmgq4qnA70xIasIRk
-         5yrYtk58cMzE3Jo9C+COsiIKJH8SNYyQUaCgoKhr0R7ll4sCctLyUkfTtRCWz9tjbzyZ
-         CYK0EJv/IECNXl5cdB2izESyWKR7QWyR7VeSm/thAUIHi7itv/YMHxNanZgw6FU0o6A3
-         jeHw==
-X-Forwarded-Encrypted: i=1; AJvYcCWTfNhr57gmXxqdEy1jC3WxKordTvdGvlM69ddTDGBTEEsdA1eIszUs0XdWFLwxXqE6rn8TJGTQDFLvLd7YdzlWKHZf@vger.kernel.org, AJvYcCWjv9RjItfB6f7ml+KRbhg8xirldeEvnkz4PN8tc9jcJxwq9Pv1pvSQ/4zi4vMh0CGZVCY=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy91Il2HT+T6GsNY5gEPeTrI28GYfeS9P5HDl2fLhYMjQJ8NfbX
-	G6F9gm/jtmlbm6omm7efZZb8++7nKJNHK04udQYWZdutPzsCh5czR+P8crEbC1eamEVbc8N//qS
-	cdTPqs+JFxbtFTU1YYm6LsUKVeEA=
-X-Gm-Gg: ASbGncsY9yTIrUG4ONIiNVrqiPqMq07gXJRhmo8ogUHSSzhUAwHf+NSfls+ZyskVnCE
-	bWOJ9I15TA/lpcMyJhcxEdPnSGjM7Ihw47YApLhjW3bUhE+Ldx9PjCHLEdLu/Zt3Ms3j5GWT9dO
-	ywHH6AZsugUdPT0SS2dij04KVbtBfyC0WZQdGxl3cUPzCRyJ8k
-X-Google-Smtp-Source: AGHT+IHOtgUxXnIkOjOIbpTNdvhRDUXpWuB9CdApfqdlPxp6khEaQW6lLupeh/DHx2cTjBU6h2YZAVwr8RxMvgysjME=
-X-Received: by 2002:a17:90a:e7ce:b0:30a:fe:140f with SMTP id
- 98e67ed59e1d1-30c3d62c6dcmr7476368a91.28.1746827630268; Fri, 09 May 2025
- 14:53:50 -0700 (PDT)
+	 To:Cc:Content-Type; b=nT1nuZqvHX1aDgo1g+u7tnHQDC/bZuE3ObN/LGk5AV6V4WAIR++jwPqKnhYpqv+IYW5wONUCFoHW9GAr748wC/unRJ2RfwgxEw4Je4tPJerSUt0vovfxd4eMqdTAndJnHuNTOoUOXDYff1ci+4RdcH6w4B49D6kNYKVo9e714Vk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wj/Ji3eS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E579DC4CEF0;
+	Fri,  9 May 2025 21:58:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1746827934;
+	bh=bod7OgH9FMLNk7FKdLh8z63aV2T+h8TH6ReCA7jp2gc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Wj/Ji3eSP+f9K5/OX8IPyTGVC+hKeww3Yl6QUod6tkbAtAu7U0Wz1PbqtNRVOjwFv
+	 9ihr6xIkNld8R2eg3D/qwKFTzKCB44sM/wo7FZxVdNmFG35vJbswp9WpRB4g9YpQkp
+	 559m5BktWJFZGo4x7zXB4pbEKV/NEhnPJI2p03xGmYJoo/0q9PeX5NKUMQ1D2NrYUd
+	 hD6VA7olwNYII6sChdMP9QvKoVAyyCPZlZ+LN+HGDbh/0tPkMmT8IK/5JM1F/UfEWO
+	 vBcf7l+pLMpJuVSflbkhtlCrXN+JM03dQsJTV8H4aaugOqzs+a7UvfS5j8IFoiCTa6
+	 oIMMaIkNxRk+A==
+Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-47692b9d059so41514821cf.3;
+        Fri, 09 May 2025 14:58:54 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCURDqUH2FtghFfzt3Rf2haB8dz/ZkaS7o1n5bdVx0yGpclf1/jqPgpQYiaiF4wODoS35Q1SCjJV6/a5sdo=@vger.kernel.org, AJvYcCVBpAKD4MoCFRAuOJ8H9Rqi+i7aQHs4hZIzUxJUgPC91+FuFM+ut+VpHw4wrvqHJsP7C4nUkulCiz0wEJXL@vger.kernel.org, AJvYcCVQE25E9K26TKlT2F7rSuTv4qvp/ruijmamJXipLRlJYWt8zIBYTiybocGSWUfVDhX14ag=@vger.kernel.org, AJvYcCXxOgSPrlrOfxuKxLjg6YU3PrRDq/1+QbaNAHHY0BQ02oysOrjoKLhk9Fm5bvB97ovhrJFF2uvqoo0phH8ni8nd@vger.kernel.org
+X-Gm-Message-State: AOJu0YyAMwpQJzUVa+8JfjRvbx3oA+oRMmLf8F2xZKjhiXFWMmj+Ekn8
+	1AzZdS6gt8U0mIVm3pGflVjdqhw/vwDTDhxP9ix4tXaqWOJTCXNFuakiFsNAVLF2BlkADzhrV2L
+	OaflshGsQo1qxBXzXslo9FLuxrgM=
+X-Google-Smtp-Source: AGHT+IEgw/OIWDWXmJWHEkTR/5DcaJ04lcLlTsKykO84AozF3RympSmmA4dzDH25HCRL4W/HlqroK6FilrCD1i+wCWA=
+X-Received: by 2002:ad4:5cc7:0:b0:6d4:238e:35b0 with SMTP id
+ 6a1803df08f44-6f6e47bd8a3mr77458376d6.17.1746827933963; Fri, 09 May 2025
+ 14:58:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250509164524.448387100@goodmis.org> <20250509165156.135430576@goodmis.org>
-In-Reply-To: <20250509165156.135430576@goodmis.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 9 May 2025 14:53:38 -0700
-X-Gm-Features: ATxdqUG7vyKh6ckuiVc80QVrYGdO5Dyfg62nDuY0zs4zFQaHfF1xoIZCrXuqiWQ
-Message-ID: <CAEf4BzaKfvCu2T+jJ2e-CCt0N50urfx+p6kQfV899_jkmT_XKQ@mail.gmail.com>
-Subject: Re: [PATCH v8 15/18] perf: Have get_perf_callchain() return NULL if
- crosstask and user are set
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, x86@kernel.org, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Josh Poimboeuf <jpoimboe@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>
+References: <20250508182025.2961555-1-tjmercier@google.com>
+ <20250508182025.2961555-6-tjmercier@google.com> <CAPhsuW5WOmyfPqBc_Hn7ApGWP_2uz_cJwyaDWF_VwiHJu9s_1A@mail.gmail.com>
+ <CABdmKX2h5cGjNbJshGkQ+2XJ7eOnM+VfbmVr5Pj5c0qfxQA-qg@mail.gmail.com>
+In-Reply-To: <CABdmKX2h5cGjNbJshGkQ+2XJ7eOnM+VfbmVr5Pj5c0qfxQA-qg@mail.gmail.com>
+From: Song Liu <song@kernel.org>
+Date: Fri, 9 May 2025 14:58:42 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7BM=X06Tr+HURsCbD8LwAO=Fdu+ZfKDy6RNK=UNNC1Rg@mail.gmail.com>
+X-Gm-Features: ATxdqUHtjHO0cnNYi6P788wo4nENW6QfEqucHX0SCFZlWpdcEK8f_Ki_Hjh7ovQ
+Message-ID: <CAPhsuW7BM=X06Tr+HURsCbD8LwAO=Fdu+ZfKDy6RNK=UNNC1Rg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 5/5] selftests/bpf: Add test for open coded dmabuf_iter
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: sumit.semwal@linaro.org, christian.koenig@amd.com, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
+	skhan@linuxfoundation.org, alexei.starovoitov@gmail.com, 
+	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org, 
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, android-mm@google.com, 
+	simona@ffwll.ch, eddyz87@gmail.com, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 9, 2025 at 9:52=E2=80=AFAM Steven Rostedt <rostedt@goodmis.org>=
- wrote:
+On Fri, May 9, 2025 at 2:43=E2=80=AFPM T.J. Mercier <tjmercier@google.com> =
+wrote:
 >
-> From: Josh Poimboeuf <jpoimboe@kernel.org>
+[...]
+> >
+> > Personally, I would prefer we just merge all the logic of
+> > create_udmabuf() and create_sys_heap_dmabuf()
+> > into create_test_buffers().
 >
-> get_perf_callchain() doesn't support cross-task unwinding for user space
-> stacks, have it return NULL if both the crosstask and user arguments are
-> set.
->
-> Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> ---
->  kernel/events/callchain.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/kernel/events/callchain.c b/kernel/events/callchain.c
-> index b0f5bd228cd8..abf258913ab6 100644
-> --- a/kernel/events/callchain.c
-> +++ b/kernel/events/callchain.c
-> @@ -224,6 +224,10 @@ get_perf_callchain(struct pt_regs *regs, bool kernel=
-, bool user,
->         struct perf_callchain_entry_ctx ctx;
->         int rctx, start_entry_idx;
->
-> +       /* crosstask is not supported for user stacks */
-> +       if (crosstask && user)
-> +               return NULL;
+> That's a lot of different stuff to put in one place. How about
+> returning file descriptors from the buffer create functions while
+> having them clean up after themselves:
 
-I think get_perf_callchain() supports requesting both user and kernel
-stack traces, and if it's crosstask, you can still get kernel (but not
-user) stack, if I'm reading the code correctly.
+I do like this version better. Some nitpicks though.
 
-So by just returning NULL early you will change this behavior, no?
+>
+> -static int memfd, udmabuf;
+> +static int udmabuf;
 
+About this, and ...
+
+>  static const char udmabuf_test_buffer_name[DMA_BUF_NAME_LEN] =3D
+> "udmabuf_test_buffer_for_iter";
+>  static size_t udmabuf_test_buffer_size;
+>  static int sysheap_dmabuf;
+>  static const char sysheap_test_buffer_name[DMA_BUF_NAME_LEN] =3D
+> "sysheap_test_buffer_for_iter";
+>  static size_t sysheap_test_buffer_size;
+>
+> -static int create_udmabuf(int map_fd)
+> +static int create_udmabuf(void)
+>  {
+>         struct udmabuf_create create;
+> -       int dev_udmabuf;
+> -       bool f =3D false;
+> +       int dev_udmabuf, memfd, udmabuf;
+.. here.
+
+It is not ideal to have a global udmabuf and a local udmabuf.
+If we want the global version, let's rename the local one.
+
+[...]
+
+>
+>  static int create_test_buffers(int map_fd)
+>  {
+> -       int ret;
+> +       bool f =3D false;
 > +
->         entry =3D get_callchain_entry(&rctx);
->         if (!entry)
->                 return NULL;
-> @@ -249,9 +253,6 @@ get_perf_callchain(struct pt_regs *regs, bool kernel,=
- bool user,
->                 }
+> +       udmabuf =3D create_udmabuf();
+> +       sysheap_dmabuf =3D create_sys_heap_dmabuf();
 >
->                 if (regs) {
-> -                       if (crosstask)
-> -                               goto exit_put;
-> -
->                         if (add_mark)
->                                 perf_callchain_store_context(&ctx, PERF_C=
-ONTEXT_USER);
+> -       ret =3D create_udmabuf(map_fd);
+> -       if (ret)
+> -               return ret;
+> +       if (udmabuf < 0 || sysheap_dmabuf < 0)
+> +               return -1;
+
+We also need destroy_test_buffers() on the error path here,
+or at the caller.
+
 >
-> @@ -261,7 +262,6 @@ get_perf_callchain(struct pt_regs *regs, bool kernel,=
- bool user,
->                 }
->         }
+> -       return create_sys_heap_dmabuf(map_fd);
+> +       return bpf_map_update_elem(map_fd, udmabuf_test_buffer_name,
+> &f, BPF_ANY) ||
+> +              bpf_map_update_elem(map_fd, sysheap_test_buffer_name,
+> &f, BPF_ANY);
+>  }
 >
-> -exit_put:
->         put_callchain_entry(rctx);
->
->         return entry;
-> --
-> 2.47.2
->
->
->
+>  static void destroy_test_buffers(void)
+>  {
+>         close(udmabuf);
+> -       close(memfd);
+>         close(sysheap_dmabuf);
+
+For the two global fds, let's reset them to -1 right after close().
+
+Thanks,
+Song
 
