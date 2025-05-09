@@ -1,146 +1,139 @@
-Return-Path: <bpf+bounces-57911-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57912-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBF1DAB1C84
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 20:41:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E51B4AB1C87
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 20:43:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F35616A92B
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 18:41:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1434F1C4679E
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 18:43:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D391523F26A;
-	Fri,  9 May 2025 18:41:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8FCD2405F8;
+	Fri,  9 May 2025 18:43:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KmgASslS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vm/k/4Ok"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 043DB23BCFA;
-	Fri,  9 May 2025 18:41:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E8C123F403;
+	Fri,  9 May 2025 18:43:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746816063; cv=none; b=j0YcjJZNdpDApNWxm/h1nCi+gJJy70pFWbOhlPKW6Pl2P9jPwLWoWTtvjMnETZYnOpIoAj9Mqnx/A9CEwKUV9dBj0GvAzFb/Z4ktuljIuePuZbk93U/TWnZNGxX2bkXn0788jekOzJRQ2jWepQO1UrdcEJ6/dzsQDMhJ80WfqI8=
+	t=1746816195; cv=none; b=b42C3Tkb/0EWdZz4Yaatct8VnAwaounrdMl4n3kNtEdcg0s4fDTwNv0g64PFJo29keCoUGT5wC4Zc9vX91J1x1/rzPhofGoguMKKSRBpjNVCadI5sAxL/biNrOH1uw5qITTkmhOd7Ecu5mF27Bs32zISg5YIUQ5weuPUbHumu4o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746816063; c=relaxed/simple;
-	bh=ZFnT+rzuIarsD0rGVmAFtrNtNGfRhiitqCzBkZwC6iA=;
+	s=arc-20240116; t=1746816195; c=relaxed/simple;
+	bh=kTXI392AIWCcX6IwQJjg488ofl6n7uPgIy2BdveO6Rw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nuYvMEmECDn0DEUm0A+NJnTpoH50r6+uqEE6l7a3XhUiMBGVsqZACvgiuS60DXXQZR4r7bzO7xJjhzTAMW/M+fJqTcEgo/XDKaRRVB2yAG7rFLDheixRqDfsxknz7VKT/7t/ZnjQW5fQUQGDB4vW0SzS8wAyzKijekWCY9E+15E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KmgASslS; arc=none smtp.client-ip=209.85.216.45
+	 To:Cc:Content-Type; b=AJ3N88c58M4ROaNkDpCQAgP/YlO0jX4XR1iEwdg0hnnfeNemgNbMQaWw48iWLaiuXqG1nway1gy/2YA8pV0n9LjVprUeZORXfCQfae5r0G/8c+srbWJg6z2/iLt2X21SgZoA/h2vB7ZWayfivA8o9/0W5ajHJmCF4Bs8FQRBLbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vm/k/4Ok; arc=none smtp.client-ip=209.85.221.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-30a894cc07cso2541759a91.2;
-        Fri, 09 May 2025 11:41:01 -0700 (PDT)
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3a1f5d2d91eso943389f8f.1;
+        Fri, 09 May 2025 11:43:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746816061; x=1747420861; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1746816192; x=1747420992; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=H+jrfAc92NCVuy2+u3wPc+sAATavWi3G6nTuuXlgyeM=;
-        b=KmgASslSVBq2IvyiDL5Byq7qxQzcgKhW6lB3SVHQRkgn1AZJfOplJ1diS/3Zz4Kq5h
-         Np4TPHNQn5HsyVJJzyxZ4JM5RDcI1HYkDp8LByG7MUOVT6lBMtQG+RaMXGpxQgZdB/U/
-         7FAhwfo/ID9aIKgr8JAGmBfN7fS3oadEhh/OjBiZ3tlYD+UF65oQHzo9/3QK4/86HCyU
-         gGP2NGu/7NgSwWHFqPD1OhBm+zrXdakXQBPu+yRrH9yNWgWAlzjk226JIVVTNljXZxUq
-         GnmWbaIk8WajVDNJumDZZFTVETbtApTg/2wjZFRjW1zzaeb9YVhZRE4VEQ7HmIrdzoiD
-         HOoA==
+        bh=3ndxIwpqni0a6tDVrjZprOorINLiqY/weaUCp02laXM=;
+        b=Vm/k/4Ok6HVaxBcG0/spAXYRSx7oIvgBgdHe5R5JQ/Y/atYyKb4PxeP/2QiEuO/b3k
+         0JMSSEtr/3jOZmgDYCQRZBxC38S6xi69zBohaAboVp60wyAf5c4WG9Qc+Ix/VNe/XTn2
+         FB/x7SfcqcDyJ8HrfVCsKR5F/0/5y3Xij9qrSVBI5QBO7OYtdL/u6roX/nrhUYMusqfN
+         /WBBNDoV+zzDRBlYfVyU76P4M2F1f0zf1B7OxzxQbF4qiTUvF4MMEJzBCWbXsoNm9sQS
+         ghITenQIDcVm4LAI+82Gd+eqqlnEOh8ZH/jYWELLdEDNIYLguni+/9Izf610ecMhN31g
+         tIvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746816061; x=1747420861;
+        d=1e100.net; s=20230601; t=1746816192; x=1747420992;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=H+jrfAc92NCVuy2+u3wPc+sAATavWi3G6nTuuXlgyeM=;
-        b=NIQ0hQHa4/25Ck2ZdTJgFKBuVSoABZGRZ8wQr+cnfNS2nVsfMQHAreBro8oX9Dxr31
-         fCjmjdONq9C2s2ijCoiK3tBupoYnqHycmbKo6LFRyXDkhl0AViGaWfGc6xqLErr3jrzO
-         gs6PEhzpCNOQTB3Chz+Sb7B/bWkdBaDMUGx1YPquzdMp51DGNALO04x5DRhr8uvpn6f9
-         hTLDNNuymzsh+su9wM5xJ1iYwGC7vh5KUsHbXOv3JsW8hoQhpQ13MYoekH+6xJCKnAB8
-         M8BRh6rXBWqsXHbF1n+4W4YUt+/rqNP8njD38OqMssaOp2qS0J7BOqHKoXuyEt/Byt9z
-         n6/g==
-X-Forwarded-Encrypted: i=1; AJvYcCW8mI2uYRNkffNFgfH6dGPJNxap9/A+wPiuDkUTVHpzynz7t7V3qkEENd4PLIdKlAVjR1NU1flglg==@vger.kernel.org, AJvYcCX8FhspMARPKyx3ccEay6xVxZFpMbs+v66EE6WdaJPVPqg/FcKFnuxU5oAjZ682B7p5KiE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxNB1RNQiK6UYfskJI0fUhiFrIGxdizMIrPoVvkFEXubX1NOUvu
-	sESwJjZn/waj8dZm7NGVhF1XBUf5kHRzidG623orq/JrutqfdAwDweiEw/JRDoSsB/Ee8P409fp
-	Iqzc7TgTv1qEbu+y8ZUP6CoTyvzI=
-X-Gm-Gg: ASbGncthYTARC3kubvwiFk+bsKccgT6kcLSQ6xvoNxw9vfYosz+Ml3AfF12wgKSNjVi
-	4lIJZ705xY9DCOTM0FgX57Y2o8zrUeaXzabh7RC7yQpsAlthssUCmTarViBiwjzxuwVETbq+rHf
-	fV5xL5k04bP/LP/+RKTH6gNPyKwMrJbki1o9gW/CKm9hTriiNx
-X-Google-Smtp-Source: AGHT+IGP1WoR2seY6CN/wBEOtYt3baFEoEZBxvVvlEVXkKGKA7QEpz9mB1pmf817U2aZYLXeOnf4fEKGZEr81FaCaHg=
-X-Received: by 2002:a17:90a:d2ce:b0:2ee:e113:815d with SMTP id
- 98e67ed59e1d1-30c3ce034f7mr7160350a91.8.1746816061228; Fri, 09 May 2025
- 11:41:01 -0700 (PDT)
+        bh=3ndxIwpqni0a6tDVrjZprOorINLiqY/weaUCp02laXM=;
+        b=FicPztgK0sgoVhDgB6cD5lLOAdgBuG7cuAI0jai3cQ/o8yR5XA/9DvxpBhnqF+xRzn
+         LBBKwacL2dy1JbjLutvDWCQdL9VvUfwrzdL9AfSqkEKWSq62Z845GDud6cXs0psyyqTX
+         ka1h3BN8E7wkyAJIMlvJ0yjLKe/sjrC+E2l/BnFhdA0D6bBMo2Ugcn0vpE7tGsrO7Ee4
+         aUGFCeoao3X2WnBOU1r0jY43SCF6FLU3ZFrzLu/DBiLoOKIATgwJMtbcxmB9yV5fLeGR
+         IVgimLEY0FOdObEtpsB8qqMU13fkCKD5ZF9HQ0mATXyXT9op8Vdvd9it2zBoa9/S4lyL
+         /frA==
+X-Forwarded-Encrypted: i=1; AJvYcCW3+OR7JLCESADqusVi90HczFYZD4iC55qsh2wnrd+OZ+NbYIX00KMV7Y8E5qkXfzWwYFc=@vger.kernel.org, AJvYcCWm5wxKamZNQx4KEvwc9USEdRKv7aZmnc2JmmDakNAIZaTfBd1nPSDSYgue2PgBHRpWHU2kEAZuQRt5cOcxN6w7@vger.kernel.org, AJvYcCXm7+kGkl8lNwkV8hVcenpMQhnSm9/V+EZjIzvkAz05Diju6EypqXCopKJ4/SoOVSQJz2QMgwOJ2JmD4V+G@vger.kernel.org
+X-Gm-Message-State: AOJu0YyZlQlRLI/a6M30qaM8gnYFPei172lm6yJw9oA0ivJeGehL/qgm
+	H9J/5QiwJgwUp6BiHKpsNB7zW/RFKaZqR4IpKcjSnZvSKd/3mHZ1XqlvB7Te1irLv3/oXjLevT2
+	3Y1bYkI9s73w36TBtVrRmFqa7Zos=
+X-Gm-Gg: ASbGncsAUWW7t9EJ6sJl1RCBFhdYw0u5Sc+3miG+KQK9YtTOBQZyFK7cjxa6o26qFX/
+	8j9iYXWqaZ8baRR1wynVG4pXxbVWMAG5jeo5neEyb2IxwBs7PDIUdcANGgDecpaZLAXAObd/yrv
+	D0MjQRcp511aqWlFavCPxWKApgoOSt/qLYSDLpzeSLfafpRsFN
+X-Google-Smtp-Source: AGHT+IFYnZD9y+hjO9CRH7JbZRqwYwFvCe82Ke5Lt/BeQLTVkbi1WQsCzGbxCZtrM0Gj1TEWNbFMvXBqV8FmzAVdtuA=
+X-Received: by 2002:a05:6000:2506:b0:391:22a9:4408 with SMTP id
+ ffacd0b85a97d-3a1f64386eemr3845245f8f.16.1746816191780; Fri, 09 May 2025
+ 11:43:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250508132237.1817317-1-alan.maguire@oracle.com>
-In-Reply-To: <20250508132237.1817317-1-alan.maguire@oracle.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 9 May 2025 11:40:47 -0700
-X-Gm-Features: ATxdqUGAyGuycGLqLaIVu58nBWFcD0TGIr9rfq41lS2I4338xwWi5cElhZwpFN4
-Message-ID: <CAEf4BzZfFixwy4vQG8jrUBtAOUFx=t1KG2F+AtKPVNCsMz0vQw@mail.gmail.com>
-Subject: Re: [RFC bpf-next 0/3] bpf: handle 0-sized structs properly
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: martin.lau@linux.dev, ast@kernel.org, andrii@kernel.org, 
-	tony.ambardar@gmail.com, alexis.lothore@bootlin.com, eddyz87@gmail.com, 
-	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, 
-	mykolal@fb.com, bpf@vger.kernel.org, dwarves@vger.kernel.org
+References: <20250501073603.1402960-1-luis.gerhorst@fau.de> <174681603001.3715348.12288999798860158953.git-patchwork-notify@kernel.org>
+In-Reply-To: <174681603001.3715348.12288999798860158953.git-patchwork-notify@kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 9 May 2025 11:43:00 -0700
+X-Gm-Features: AX0GCFvLVth5qvdC1z-BgTiCYbsMNaP7ne4n5tL7wLi4uocO_ruonz0SxGJeZGA
+Message-ID: <CAADnVQJ+=Tip0ocob2aWe4G0BTs4F7veMtM-DD7f-zGKncAa_g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 00/11] bpf: Mitigate Spectre v1 using barriers
+To: patchwork-bot+netdevbpf@kernel.org
+Cc: Luis Gerhorst <luis.gerhorst@fau.de>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, 
+	Xu Kuohai <xukuohai@huaweicloud.com>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Hari Bathini <hbathini@linux.ibm.com>, 
+	Christophe Leroy <christophe.leroy@csgroup.eu>, "Naveen N. Rao" <naveen@kernel.org>, 
+	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
+	Nicholas Piggin <npiggin@gmail.com>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Henriette Herzog <henriette.herzog@rub.de>, Saket Kumar Bhaskar <skb99@linux.ibm.com>, 
+	Cupertino Miranda <cupertino.miranda@oracle.com>, Jiayuan Chen <mrpre@163.com>, 
+	Matan Shachnai <m.shachnai@gmail.com>, Dimitar Kanaliev <dimitar.kanaliev@siteground.com>, 
+	Shung-Hsi Yu <shung-hsi.yu@suse.com>, Daniel Xu <dxu@dxuuu.xyz>, bpf <bpf@vger.kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
+	ppc-dev <linuxppc-dev@lists.ozlabs.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 8, 2025 at 6:22=E2=80=AFAM Alan Maguire <alan.maguire@oracle.co=
-m> wrote:
+On Fri, May 9, 2025 at 11:39=E2=80=AFAM <patchwork-bot+netdevbpf@kernel.org=
+> wrote:
 >
-> When testing v1 of [1] we noticed that functions with 0-sized structs
-> as parameters were not part of BTF encoding; this was fixed in v2.
-> However we need to make sure we handle such zero-sized structs
-> correctly since they confound the calling convention expectations -
-> no registers are used for the empty struct so this has knock-on effects
-> for subsequent register-parameter matching.
+> Hello:
+>
+> This series was applied to bpf/bpf-next.git (master)
+> by Alexei Starovoitov <ast@kernel.org>:
+>
+> On Thu,  1 May 2025 09:35:51 +0200 you wrote:
+> > This improves the expressiveness of unprivileged BPF by inserting
+> > speculation barriers instead of rejecting the programs.
+> >
+> > The approach was previously presented at LPC'24 [1] and RAID'24 [2].
+> >
+> > To mitigate the Spectre v1 (PHT) vulnerability, the kernel rejects
+> > potentially-dangerous unprivileged BPF programs as of
+> > commit 9183671af6db ("bpf: Fix leakage under speculation on mispredicte=
+d
+> > branches"). In [2], we have analyzed 364 object files from open source
+> > projects (Linux Samples and Selftests, BCC, Loxilb, Cilium, libbpf
+> > Examples, Parca, and Prevail) and found that this affects 31% to 54% of
+> > programs.
+> >
+> > [...]
+>
+> Here is the summary with links:
+>   - [bpf-next,v3,01/11] selftests/bpf: Fix caps for __xlated/jited_unpriv
+>     https://git.kernel.org/bpf/bpf-next/c/cf15cdc0f0f3
+>   - [bpf-next,v3,02/11] bpf: Move insn if/else into do_check_insn()
+>     (no matching commit)
 
-Do you have a list (or at least an example) of the function we are
-talking about, just curious to see what's that.
-
-The question I have is whether it's safe to assume that regardless of
-architecture we can assume that zero-sized struct has no effect on
-register allocation (which would seem logical, but is that true for
-all ABIs).
-
-BTW, while looking at patch #2, I noticed that
-btf_distill_func_proto() disallows functions returning
-struct-by-value, which seems overly aggressive, at least for structs
-of up to 8 bytes. So maybe if we can validate that both cases are not
-introducing any new quirks across all supported architectures, we can
-solve both limitations?
-
-P.S., oh, and s390x selftest (test_struct_args) isn't happy, please check.
-
-
->
-> Patch 1 updates BPF_PROG2() to handle the zero-sized struct case.
-> Patch 2 makes 0-sized structs a special case, allowing them to exist
-> as parameter representations in BTF without failing verification.
-> Patch 3 is a selftest that ensures the parameters after the 0-sized
-> struct are represented correctly.
->
-> [1] https://lore.kernel.org/dwarves/20250502070318.1561924-1-tony.ambarda=
-r@gmail.com/
->
-> Alan Maguire (3):
->   libbpf: update BPF_PROG2() to handle empty structs
->   bpf: allow 0-sized structs as function parameters
->   selftests/bpf: add 0-length struct testing to tracing_struct tests
->
->  kernel/bpf/btf.c                                     |  2 +-
->  tools/lib/bpf/bpf_tracing.h                          |  6 ++++--
->  .../selftests/bpf/prog_tests/tracing_struct.c        |  2 ++
->  tools/testing/selftests/bpf/progs/tracing_struct.c   | 11 +++++++++++
->  tools/testing/selftests/bpf/test_kmods/bpf_testmod.c | 12 ++++++++++++
->  5 files changed, 30 insertions(+), 3 deletions(-)
->
-> --
-> 2.39.3
->
+Applied the first patch only.
+Waiting for respin of the rest.
 
