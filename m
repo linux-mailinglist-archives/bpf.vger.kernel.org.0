@@ -1,136 +1,144 @@
-Return-Path: <bpf+bounces-57900-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57901-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52CE0AB1B97
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 19:32:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50C8EAB1BD7
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 19:58:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50219176526
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 17:32:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C12B04A52FE
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 17:58:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6406723C397;
-	Fri,  9 May 2025 17:31:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1B60215060;
+	Fri,  9 May 2025 17:58:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F8hghNlV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GS3XVLfJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A2D523A993
-	for <bpf@vger.kernel.org>; Fri,  9 May 2025 17:31:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 815E822CBF6
+	for <bpf@vger.kernel.org>; Fri,  9 May 2025 17:58:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746811911; cv=none; b=XuFdjPQpv8eZwgExpoNbYQOeFKVAjrGspbvX8JGJyGvcY5xbCSjX3+ThSeuwNNEinm9yenOGZ1NeJn97/kfyUuG43wj8vLnIJOyRmTu/hAnaXnllLZJeJAvs7JD5Aok+ItWFm3jAFHPsXKoBriEqV7sGV64A2lqpHSDjgM2oGJY=
+	t=1746813495; cv=none; b=JWweKOrlLazsGE4ysjrnY5GVFm13ALMaLVNN/zp/3sschQTealDnW7/b0CfMmiQNCZZuc1vt6RF1UT4G65RQqDS9e5sHMIUSJv+E9r1cRs6dqBd19513mCrY/16YW9uUZhu2PohNuYKsnQVu+b/SKSEIM3XKH5FhAvlVO0Oz9vM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746811911; c=relaxed/simple;
-	bh=zQ+K19xlwhwtdv5LzV2CeYJpz+yzZXcD+SSAQ0k7QCw=;
+	s=arc-20240116; t=1746813495; c=relaxed/simple;
+	bh=OmrylIdl1ejTJ1IY3F1XNmOPA7lXudYqAJw+rFLTCbM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QTNj52VpEvX2X4p3hRaifkoiYeTeR6oAKz+cZ4qbOTnikzDRc5rPFILkWXiuTzOTEIVRFpEHXPCwDQVdMcclNLVxN8rn11d7yj6W9WWTzxsQzFCeWrxWXMdwD2/QBArfzoJLmClM1PS0wVakBOMypW4ZEi51B5XY2lgMC+DfkLs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F8hghNlV; arc=none smtp.client-ip=209.85.128.54
+	 To:Cc:Content-Type; b=Cbaak28+KQxPuTp6yE8szPzIFsA1uvmQ8eIXATeRa4IbBnSrO7pYcU1kyH2vku+4trqhbiEEZBSqZyfMPkq1JXKRqwOTgrtQ+sVKHWOOW9Q9uRqTz2npaaz6uLSvD9t7XbD9vNcsYx/MQ8IHpmjzwQ8VlJrxlL2qLzL6bQ/1w/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GS3XVLfJ; arc=none smtp.client-ip=209.85.221.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-43d04ea9d9aso13136315e9.3
-        for <bpf@vger.kernel.org>; Fri, 09 May 2025 10:31:49 -0700 (PDT)
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3a0b646eff7so1951348f8f.2
+        for <bpf@vger.kernel.org>; Fri, 09 May 2025 10:58:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746811908; x=1747416708; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1746813492; x=1747418292; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NoWkmCeOWNeHi09x8ZRD2uFMEAsGEc60rYxmJ5s4ZWQ=;
-        b=F8hghNlVGY0BU9CP42y8UEB535VMlxWZL4upm1ITAuTy9Qd6JVHMBHW+gLY89BgEeM
-         A5zH4UKHSmkG2/1nXb18PLk1GTHerj/XDpeFDTDxuv4XXGlTMNwHJI4nv0BNmtN+t4te
-         eR9BUkzd9tTMbn3CcOWgsKXLG3Es4BFz+o2O6r8bWTnYhOjc4qeVR06+pLAFT0nGnp3T
-         7Csu4yt/BXm972e7TjXyWCy0MZkb2aHBf+BHUIUx+pusu75PDBMV9NutdfehQpQ23ClT
-         VEPnRHX9H0dZxoMfUr0s7jbfDjS3IGN4fC1QHK2NLLJOFhsAsIe16GgNJ2MhbO+ZGNhn
-         MDqA==
+        bh=OmrylIdl1ejTJ1IY3F1XNmOPA7lXudYqAJw+rFLTCbM=;
+        b=GS3XVLfJSCr9uocXyScUsI6BWQhCkPn5vCzt9nzDsb+BWWEdeUk+eT94ZBw+9vbQCG
+         4Dyhptj5Hf0bEzkdTg0pDGQR7P7JqhRVI/XWkJA9Ccjnkqm0KHTbOfvo82P9MMxdE6DP
+         rh0UPp6u/aEaHOM9pFrydW0TLY6ENBS2CVB1/93n5hjPFaJxdqZbiBsWO5Vr/iajZn2k
+         f26DdVpi4Ni9EajGUYhbBtiED1P2qxj9ohO0hZT0CEladNOTdgb98LcTmsBXgIQPJEG8
+         K/31nRB4eF1Yu40Rd5szHXW740mx6CKADMPEMjYx3d0S/1oyAj35H608byU7siCClwt4
+         FnGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746811908; x=1747416708;
+        d=1e100.net; s=20230601; t=1746813492; x=1747418292;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NoWkmCeOWNeHi09x8ZRD2uFMEAsGEc60rYxmJ5s4ZWQ=;
-        b=KCjPSPnyGHnmlLeBs5+p5CS4SJ1wrvOX62KUGmKB8XtrZh3EZBKQEYIeVVwsltZtFK
-         LJ2TkSQREvA4jza9bSmUKPMwhXVArHtsAyFQzWaIYTIwkZB4iNnZEXqB3cFiCTKyWFgE
-         mP/TvKzb/HDejj/5CcxuCchz6j/8DGUP5FNOAWRBvo91EOSMa60kgDhA1ZS47O03tpi6
-         tSuOuQvvJGvoKD6ifSbf9KmNVKagtNskhbqMTpRrm+7aFxjdR7KakHe/xvuV7z5aWGfk
-         /rszflXJJdLzzi7i+hPiZO+pbR+u9cv7gloQMjjSeUrk6uFb3Y5TkQPNjidUpfVkbN5W
-         OFrg==
-X-Forwarded-Encrypted: i=1; AJvYcCWAFdKuPAp7tfEdXF0PKCerxLhdRxloFEPAccxeQ0fg3UU2LM/m0pXOgeaZGzgVJ8GOq9Y=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx9fFZWJwRmdPXRwv5mIy7BsSQL2RcEHa4WSu8t7AYsxuPeF6yY
-	PsSQRq0bs5RoAms/CDgJov8o8fzLW8EenzyeTqQTqCMvP0VN39ykYM0ILM4/klYOFM+guyAKw2s
-	vF/YrRyf8ZKZ/Ml9KBVdrnkAwheQ=
-X-Gm-Gg: ASbGncsZFdUuIfbAHO2eDLbh+E5/qDCzUHyXJtd2Brh3LmDduAoCsYa671X9ji8FA+p
-	TcanvNPlcLkDo4HlzWmYcCJYx6OLMAOcQiv3+2sNzTkr0K5PDOJO/DpT649F3bGVvtSJy6qzda/
-	w8W7ssDKXfvRjFo96bNn18yuFLLg0hJYUJyhzioQ==
-X-Google-Smtp-Source: AGHT+IFxuZ4zpjLq57co3gLRd4zPTaTs7ozjCbsCNBHnN9Wq11a5GxqC2eHS2VSAVYQW8BJDVwS4Ap11h6AI4nH6wTU=
-X-Received: by 2002:a05:6000:1847:b0:391:2fe3:24ec with SMTP id
- ffacd0b85a97d-3a1f647bdd1mr3850898f8f.14.1746811908430; Fri, 09 May 2025
- 10:31:48 -0700 (PDT)
+        bh=OmrylIdl1ejTJ1IY3F1XNmOPA7lXudYqAJw+rFLTCbM=;
+        b=ja3PJqVP0MsBlpZeqgDS6xM5kRUB5rpFuOOiP7LFtCgd13uKmORUhSRdqpB+T8Stt3
+         srCimKgLkkfxr6PAyTAqggOuM34qN3hLzCHkefrQnznSPsJPynXdS8ZSAMD/Y34oDvas
+         hs6v6onJIz7rRtJBJAA/ec6djMzGsexLthzbhDuA0GK6V8qoLke8ud7PvGuYbBkRYFAL
+         16uGY0ntK4LtqfvW71j6kJgYw7vl7OpVyyyc3v5FSn47TSBIDAPyAbDAoEQYK829YnRw
+         Jg+jtiDc3Jt+Fa90mz665JznkSw7aTCigGW++4DNr/zSkZCNwSFwIkb3JsPPBRgfwOnx
+         0FkQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXhjAwXwsAr8vUrUdC6MiG2YibXK/aAUyKQ4y1Vm5dzFl2FgVNnzJ9/FX6ihm/px6GddWc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyBtUw9wqm1LPqk8HDDv0WQMGBHQsMzdi87whelX7h6hqIJ6h1b
+	Gswix//oXmzLxsY72he8AZdhDdlQ0nJZm26t9VKRUVfgGSEyBVURid37bkyvaEMflUbTEOXkNWh
+	XEVnjUhiZMkrunM5/ZFPr2TKV5+M=
+X-Gm-Gg: ASbGncuifMEi5PafHdrcpgHgqSF2B6qWk1xo+3eFjFR0LGQwXyJDaHSas2j6JTdY2Mq
+	sm+VgGl7k6yo5lVKoVlHH2WEppkwdWdPLqd4OtfesqJz/6gJEVDVlpKtuICv5Bkhd+F4nNwqcbE
+	2gt7MXJkvZjPfYoV1Am8C8DtBaxWsbAW7khS5F8w==
+X-Google-Smtp-Source: AGHT+IFcd5Jh4PFzIo712x84NHzk77k+wmldU1UuDQ1ovZt5VUoTIOUqiZfFCKhQ9moynTaoB26M0m8qy9huh386uMc=
+X-Received: by 2002:a05:6000:2502:b0:3a0:aed9:e39 with SMTP id
+ ffacd0b85a97d-3a1f646c6e3mr4016474f8f.28.1746813491657; Fri, 09 May 2025
+ 10:58:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250507171720.1958296-1-memxor@gmail.com> <20250507171720.1958296-11-memxor@gmail.com>
- <04332abfa1e08376c10c2830373638d545fba180.camel@gmail.com>
-In-Reply-To: <04332abfa1e08376c10c2830373638d545fba180.camel@gmail.com>
+References: <aB0WvXLMx5DIivc-@mail.gmail.com> <CAADnVQK7m=B7qg_uWV_GguG7NA+H4Wk-Rz7XNckUw0fww8zW9A@mail.gmail.com>
+ <1a803587-508c-4e73-9c06-344fb9330023@iogearbox.net>
+In-Reply-To: <1a803587-508c-4e73-9c06-344fb9330023@iogearbox.net>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 9 May 2025 10:31:37 -0700
-X-Gm-Features: AX0GCFtu73H3_e7HHi0dELSN8_V2rs3SSdMjDX9ILspbL0KDKPXS1SGvF-3EGHc
-Message-ID: <CAADnVQKN2S=yb_7NUO8bsu+7CxnaGyTML6gKcPS61EnCZtvG5g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 10/11] bpftool: Add support for dumping streams
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Quentin Monnet <qmo@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Emil Tsalapatis <emil@etsalapatis.com>, Barret Rhoden <brho@google.com>, 
-	Matt Bobrowski <mattbobrowski@google.com>, kkd@meta.com, Kernel Team <kernel-team@meta.com>
+Date: Fri, 9 May 2025 10:58:00 -0700
+X-Gm-Features: AX0GCFvcJEN0orkv_U4sp5y-5d8T6ZAFfokJOxBDvPmTJcZvDuTbuKVQ6SUufB8
+Message-ID: <CAADnVQJySbzjgMVC7+ENW=dXuU-CpN+XKHPgb+Q4twuMadmOMA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Always WARN_ONCE on verifier bugs
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Paul Chaignon <paul.chaignon@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 8, 2025 at 11:21=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
+On Fri, May 9, 2025 at 1:26=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.ne=
+t> wrote:
 >
-> On Wed, 2025-05-07 at 10:17 -0700, Kumar Kartikeya Dwivedi wrote:
-> > Add bpftool support for dumping streams of a given BPF program.
-> > The syntax is `bpftool prog tracelog { stdout | stderr } PROG`.
-> > The stdout is dumped to stdout, stderr is dumped to stderr.
+> On 5/9/25 12:31 AM, Alexei Starovoitov wrote:
+> > On Thu, May 8, 2025 at 1:40=E2=80=AFPM Paul Chaignon <paul.chaignon@gma=
+il.com> wrote:
+> >>
+> >> Throughout the verifier's logic, there are multiple checks for
+> >> inconsistent states that should never happen and would indicate a
+> >> verifier bug. These bugs are typically logged in the verifier logs and
+> >> sometimes preceded by a WARN_ONCE.
+> >>
+> >> This patch reworks these checks to consistently emit a verifier log AN=
+D
+> >> a warning. The consistent use of WARN_ONCE should help fuzzers (ex.
+> >> syzkaller) expose any situation where they are actually able to reach
+> >> one of those buggy verifier states.
 > >
-> > Cc: Quentin Monnet <qmo@kernel.org>
-> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > ---
+> > No. We cannot do it.
+> > WARN_ONCE is for kernel level issues.
+> > In some configs use panic_on_warn=3D1 too.
+> > Whereas a verifier bug is contained within a verifier.
+> > It will not bring the kernel down.
 >
-> Do we want some utility functions for access to streams in libbpf?
-> I'd say that this would be useful, otherwise many applications
-> would need to reinvent their own bpftool_dump_prog_stream().
+> Agree.
+>
+> > We should remove most of the existing WARN_ONCE instead.
+> > Potentially replace them with pr_info_once().
+>
+> Just a thought, maybe one potential avenue could be to have an equivalent=
+ of
+> CONFIG_DEBUG_NET which we make a hard dependency of CONFIG_DEBUG_KERNEL s=
+o that
+> /noone/ enables this anywhere in production, and then fuzzers could use i=
+t
+> to their advantage. The default case for a DEBUG_BPF_WARN_ONCE would then=
+ fall
+> to BUILD_BUG_ON_INVALID() which lets compiler check validity but not gene=
+rate
+> code.
 
-Since we're positioning streams as analogous to stdout/stderr
-we have to expect that user space applications will be routinely
-accessing it, so we need an easy way to read the streams.
+Good idea.
+but I'm not a fan of the new kconfig.
+I'd rather combine some of them.
+Like make CONFIG_BPF_JIT depend on CONFIG_BPF_SYSCALL.
+That would remove a ton of empty static inline helpers.
 
-I don't think we can ship syscall bpf prog with libbpf.
-When it's part of bpftool, it's fine, but being part of the library
-is taking non-uapi stance too far.
+For this case doing WARN_ON only when IS_ENABLED(CONFIG_DEBUG_KERNEL)
+should be fine.
 
-How about we extend BPF_OBJ_GET_INFO_BY_FD to return stream data?
-Or add a new command ?
-
-Then the question regarding:
-- bpf_prog_stream_get()
-  - bpf_stream_next_elem()
-  - bpf_stream_free_elem()
-- bpf_prog_stream_put()
-
-vs
-
-bpf_stream_read()
-
-will disappear.
-For now at least. New command will copy from stream into user space.
-
-We wouldn't need to introduce mem_slice right now as well.
-It can be added later when needed.
+I guess we can introduce BPF_WARN_ONCE() and friends family of macros
+and use them everywhere in kernel/bpf/ where the warning is not
+harmful to the kernel ?
 
