@@ -1,152 +1,138 @@
-Return-Path: <bpf+bounces-57948-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57949-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D68DAB1F17
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 23:33:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFF93AB1F1A
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 23:36:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BEC791C28897
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 21:33:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 585EE1C28876
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 21:36:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF1F023F413;
-	Fri,  9 May 2025 21:33:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9444225D21D;
+	Fri,  9 May 2025 21:36:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WPfLLelG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nbc4TacB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E17B8231A21
-	for <bpf@vger.kernel.org>; Fri,  9 May 2025 21:33:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6C2E235072
+	for <bpf@vger.kernel.org>; Fri,  9 May 2025 21:36:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746826402; cv=none; b=ERmH3SUVObGuaeK+mF+er82IGmJTgw8lHXAOomOIS1SYhJphUzIKERS1Zma727nOkM1/ORvf8gE5PCprsc3DYSV6pW8xX3fcIf3vPDcuOV6nvmqhZ/TGRJT/QlgGEVo/k/5BoFKi7g6h7MNTOP+y6uhAl+UD1vo48UB5ph93XGM=
+	t=1746826578; cv=none; b=NH7mKGOPlz/7qL05BI55NbFldRoEM2WuH+FnggT/SgiXS1scCcfRTKuJlgZHKJsa3CHE7354RB+sehGIt/2z4U7VWeQUSqEdehm7GgqSRknFypKIQP3mx73peorzNvTHhfRcu5HQzs35tiAf+TrhPh0bhXkERtdrA5dpufjwJGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746826402; c=relaxed/simple;
-	bh=w9YoJU/TOByOQLeKPYVdr5SXijM2TnOVpsZcUTu6kVU=;
+	s=arc-20240116; t=1746826578; c=relaxed/simple;
+	bh=b4+j9wEJYIwos8bofD+YLPonhYur0aOJ7kxItTX5log=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nGHQr4VoSBiDV+Hg//17mz2LSiDDJ6mxeNFSZwws9RZ+G8qLQf4chTVoX8wcnYrIEAlkRo9MMOPF1jFY3spnrBhrOOGd7TitzJqzc+yEkPm9VORckGHQVM+c1h3I2kmvtKhl9InmFycjWM+JhZOB8DjI4rvoglzmG8rUf9ly9a8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WPfLLelG; arc=none smtp.client-ip=209.85.210.181
+	 To:Cc:Content-Type; b=bocoJDNQBMsiN7xtjr2vktLvkOZ5gfrd8ye6qpTqthlsmgPYxnX5WZNlsmwg5FDTWF5I2wnI3BDYwdBcveYd+voba++z3z79dB+yXfTpobnsmbIM9jCePpTdMpKvAPi9lHtsGvqRQ0430uRDJejQ0ydiEvWcYK+DjGo8PbL6TIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nbc4TacB; arc=none smtp.client-ip=209.85.215.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-7399838db7fso2664024b3a.0
-        for <bpf@vger.kernel.org>; Fri, 09 May 2025 14:33:20 -0700 (PDT)
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-b1fb650bdf7so1621287a12.1
+        for <bpf@vger.kernel.org>; Fri, 09 May 2025 14:36:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746826400; x=1747431200; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1746826576; x=1747431376; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xUPiGKi4FgEC1gqnQJCPadFndmGnDEz5spwL7ERF0B8=;
-        b=WPfLLelG5D0qxchZ423t9ZDMrn/VH3DcPwEWJu4LpTuw2s5Nx49qw1D1HZOh86aa7R
-         NMJbuHFrfYkchZosicawcKCI/BUkHL/BS8F7eE6WraYLo3PRF5lfArgrELYm3t3cS9Lz
-         QfXXeotL3OProF/UkbAoeHTnDCmu2pLfO5Hsy2Tj8xhM9B/2rQ29Y6NgcTz99Ppa9MVM
-         oCh9S2Og6NLdGVkAt3mEBcsRfPSO6UVCSqNXDMHGWVorkaFlJnFa4+Ffk3r7VGcPS9Ae
-         zGKm25Wb+MIH2nccSCtgo6TL6/AOBsqglAcCRdkHNQyiWRJzMe3kuWYD8mG14cYDsFWd
-         thAQ==
+        bh=l2fxBH4HLVj/j3bIV2Hr0mDDgRA2FIrAHXXFX2oeVSA=;
+        b=nbc4TacBJLCSw+7/xWFuBm3r6MsuVeIMZABEVwFTDTfNbXOVGKha5V6zFcsoPLHXdK
+         OqP5hQ9g3rRWc6kPHV2lf63ECYyZ0aEb+2UKTk9RvC+WO1jfh7T7NpK5VMlHciVJi49h
+         IRbVmpMc/RWNOxeBDMLiGREYhSWEwCB5vFvSwefhwYoxqCPZKigG/0J+qyL9oa6UeABk
+         BJ6+kThYPLeo5B9+1OnePKc3M/2pFgeB5xzspxXvhaBGVUPq7CmejL6ChWRFrB+n5d7i
+         RwJotlzJ15VH8pKIK+4bwA9Ver9CVbYMfu6v6G2yfFQ3v2bFGU40vM7YdM5bcQRl4QJp
+         iWXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746826400; x=1747431200;
+        d=1e100.net; s=20230601; t=1746826576; x=1747431376;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xUPiGKi4FgEC1gqnQJCPadFndmGnDEz5spwL7ERF0B8=;
-        b=TTUJJpf68RbtWPsPKc8EM/M0DErTcILli0mzpHWzAJt8h1IKHLudLRU/yQG04V1SgL
-         upUNjS0Lc0fOLirt3n6MryywLE81XKGrxhVyeCHe+VSLDOKPakqkv9czzGnknV5lnjND
-         HKoXLrB91mtIUGdNCWty3fWtq8kLRBxLWDZZ8ilX90Co+mN3HyIZLTjQ3kCbF1aBjDbZ
-         PRQ8YqOaaoi6EdBH1B/ggHkGIE+Kp0iIpc/dW66fmdwmWuu5C7u0c6IsLZlvin2VShtp
-         F1IeMTmSgPRIVPVHshPnUH+QHgjHXimOOJTIZme6VX7vedj/QZzVaDBX9NpoDnBcIi7k
-         2lMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUbCuKT+LSGUdrlXQe5H+glTzFHh9opnwi6N3eegE59B9/pO+j4iq2LEnhjuRtUlu80S4w=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywtd0+B535zfFkMyYAUlfQfiDSprqFz1Iz8DbhF+l0tomHCzVZ0
-	LSw0Mbzmdn/P2hjPOET1gGx0ipEzUat6VHPynTJ6SW0l+OLs1VeYkLC6bg+QuvBBwpZt3lUt7DK
-	HABtBjAyTNgXEUh8wVfwRmcNhSOuFA65n
-X-Gm-Gg: ASbGncus61BuPVSSIcx0JUZWSS5JcPY/cgJncSQN1Ws/VNnNOC6WWxiS8E0867p33B3
-	3omOQGIpdNDbFwOtDmDI0o+C+mNAwSVWN45o4xNwhlOIzCOpTmce+cJ+c9995lKvt1MyWkvhV/Y
-	0CWDtNT6/6jvUsxFtfLKEwnvxUo/5o6Vj/pT8vcwNYGkJzwcncbX9CXLoDN7A=
-X-Google-Smtp-Source: AGHT+IFTz0yau7cJxBXu8tO0Xx0e53CMagzb2z1jxfVL509Qz18unkTNboRR0xYVmaSsl0hSLCDAVF5c/biTQO8h78A=
-X-Received: by 2002:a05:6a21:3384:b0:1ee:b5f4:b1d7 with SMTP id
- adf61e73a8af0-215ab51e3e0mr7576505637.7.1746826399984; Fri, 09 May 2025
- 14:33:19 -0700 (PDT)
+        bh=l2fxBH4HLVj/j3bIV2Hr0mDDgRA2FIrAHXXFX2oeVSA=;
+        b=gBa7MkNL4igFmreyuXYQScCrcwGaGRn29zAUxG2b/eN1bIEcJf/96fgZUAijugXPSK
+         kN+MpNd0zqmoci6VuwGYrKlXhWyeY6u3QTQIdq5k/mhiIMCkMTBbfr6LL3mmWGTvt6jV
+         LZypddm5gzpnJSta1jbh+PWLf+2yun4GgjK38/OET0H1hqrhkw6dcQ5j0k7Ma4FWuw+u
+         KwlHpRqsljBnvF0bqDp8ETHDxMh/+heNv0N0BcSTfPLBLHAlxMUal89WcoorqDBE0QiU
+         STUGtxTbDA6QAgLS3AfimShdNVkhT0WJ8J3JFB2q7dEVZwHBEBaISk8jTswizCH/t9JL
+         u0nA==
+X-Forwarded-Encrypted: i=1; AJvYcCURyEaQm5HN+uT7UIBLL25fOpCoFfP6h5w8VTiEXe2LvdFzOwvERzo30+zQ0tZMnVFChQk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwO1cF1eHSZIgfl9qk3c8UER/3txSUGcemhSGv1bdheaUhGD3+b
+	7LSIoAmWBoEcLPxuc6PwkU1xYEPBOhLGojIvz2Wq7puBjMHXZ7+5qrxV186d1gz1QRr/SDhbp+7
+	JsgthR28dozlQDZ4IWfbhggvbkpA=
+X-Gm-Gg: ASbGncuy8mn0zrjIPL6bWc+vQ4MtrYBXSm1VipYQr1tQ7nUPMnBjATg64jXWhmNBmWh
+	8pHl7jlzMRSIDGvb3UYMmnI5JG0x4JpbjNfvKeNyJbPjmg+ER56P0+T7CZ0S8Fg5gJqSlI0IEvv
+	pCelXH0kLL9O5VST7jD/TRRZgd8zpYoLs7TOwaJTl8lye63GBVar408R053uc=
+X-Google-Smtp-Source: AGHT+IF4pn81GoY9yzz6SQ/3lMhq9eZKrSDLa2BE88k24ygobxOebSYkuxLSAiovt/ufBtxGVyzcTYJuakDKNC5hfmY=
+X-Received: by 2002:a17:903:187:b0:224:194c:694c with SMTP id
+ d9443c01a7336-22fc8b592c5mr81201035ad.28.1746826575834; Fri, 09 May 2025
+ 14:36:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250507171720.1958296-1-memxor@gmail.com> <20250507171720.1958296-11-memxor@gmail.com>
- <04332abfa1e08376c10c2830373638d545fba180.camel@gmail.com>
- <CAADnVQKN2S=yb_7NUO8bsu+7CxnaGyTML6gKcPS61EnCZtvG5g@mail.gmail.com>
- <9f417b403ef541af5bc8497897e4fbf88bd4023f.camel@gmail.com> <CAADnVQLOjzmhf1d81Nr9n0zXL1hj7CGeG5_8BySuNY0HxYanSg@mail.gmail.com>
-In-Reply-To: <CAADnVQLOjzmhf1d81Nr9n0zXL1hj7CGeG5_8BySuNY0HxYanSg@mail.gmail.com>
+References: <20230728011143.3710005-1-yonghong.song@linux.dev>
+ <20230728011231.3716103-1-yonghong.song@linux.dev> <Z/8q3xzpU59CIYQE@ly-workstation>
+ <763cbfb4-b1a0-4752-8428-749bb12e2103@linux.dev> <33a03235-638d-4c63-811d-ec44872654b3@linux.dev>
+ <CAADnVQJBgEDXnsRjTC0BUPAqfiHoH+ZL6vk1Me-+QcXbT811jg@mail.gmail.com> <342054de8fb765780b1856e5b3b81b4e0a531620.camel@gmail.com>
+In-Reply-To: <342054de8fb765780b1856e5b3b81b4e0a531620.camel@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 9 May 2025 14:33:06 -0700
-X-Gm-Features: ATxdqUFyZETNojKHLzbbClFk-Imjj3ePtshrH7J465ZQfG1eewSGd9XHHtfW7d4
-Message-ID: <CAEf4BzanV6=_HHVVNxC1Vfsg6R7XYPxsCdEqVXsyBvA4zrGzbw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 10/11] bpftool: Add support for dumping streams
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Quentin Monnet <qmo@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+Date: Fri, 9 May 2025 14:36:00 -0700
+X-Gm-Features: ATxdqUGiFplJdWseflvFpZPHTZSgkaMNIe3Xy2SkyJLBjNzqokmur9l19Dw2sN0
+Message-ID: <CAEf4Bzbgci5pOmHmYoAYTe6cYdwJ4ju=5LuT0VQzsu+aKQ1AgQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 07/17] bpf: Support new 32bit offset jmp instruction
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	Andrii Nakryiko <andrii@kernel.org>, "Lai, Yi" <yi1.lai@linux.intel.com>, 
+	Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
 	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Emil Tsalapatis <emil@etsalapatis.com>, Barret Rhoden <brho@google.com>, 
-	Matt Bobrowski <mattbobrowski@google.com>, kkd@meta.com, Kernel Team <kernel-team@meta.com>
+	David Faust <david.faust@oracle.com>, "Jose E . Marchesi" <jose.marchesi@oracle.com>, 
+	Kernel Team <kernel-team@fb.com>, yi1.lai@intel.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 9, 2025 at 11:48=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Fri, May 9, 2025 at 1:50=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
+ wrote:
 >
-> On Fri, May 9, 2025 at 11:31=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.c=
-om> wrote:
-> >
-> > On Fri, 2025-05-09 at 10:31 -0700, Alexei Starovoitov wrote:
-> >
-> > [...]
-> >
-> > > How about we extend BPF_OBJ_GET_INFO_BY_FD to return stream data?
-> > > Or add a new command ?
-> >
-> > You mean like this:
-> >
-> > diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/=
-bpf.h
-> > index 71d5ac83cf5d..25ac28d11af5 100644
-> > --- a/tools/include/uapi/linux/bpf.h
-> > +++ b/tools/include/uapi/linux/bpf.h
-> > @@ -6610,6 +6610,10 @@ struct bpf_prog_info {
-> >         __u32 verified_insns;
-> >         __u32 attach_btf_obj_id;
-> >         __u32 attach_btf_id;
-> > +       __u32 stdout_len; /* length of the buffer passed in 'stdout' */
-> > +       __u32 stderr_len; /* length of the buffer passed in 'stderr' */
-> > +       __aligned_u64 stdout;
-> > +       __aligned_u64 stderr;
-> >  } __attribute__((aligned(8)));
-> >
-> > And return -EAGAIN if there is more data to read?
+> On Fri, 2025-05-09 at 10:21 -0700, Alexei Starovoitov wrote:
 >
-> Exactly.
-> The only concern that all other __aligned_u64 will probably be zero,
-> but kernel will still fill in all other non-pointer fields and
-> that information will be re-populated again and again,
-> so new command might be cleaner.
-
-+1, but I'd allow reading only either stdout or stderr per each
-command invocation to keep things simple API-wise (e.g., which stream
-got EAGAIN, if you asked for both?) I haven't read carefully enough to
-know if we'll allow creating custom streams beyond stderr/stdout, but
-this would scale to that more naturally as well.
-
-
-
+> [...]
 >
-> > Imo, having this in syscall is more convenient for the end users.
+> > hmm.
+> > We probably should filter out r10 somehow,
+> > since the following:
+> > > mark_precise: frame1: regs=3Dr2 stack=3D before 7: (bd) if r2 <=3D r1=
+0 goto pc-1
+> > > mark_precise: frame1: regs=3Dr2,r10 stack=3D before 6: (06) gotol pc+=
+0
 > >
-> > Alternatively, are files in bpffs considered to be stable API?
-> > E.g. having something like /sys/fs/bpf/<prog-id>/std{err,out} .
+> > is already odd.
 >
-> yeah. Ideally the user would just 'cat /sys/.../stdout',
-> but we don't auto create pseudo files when progs are loaded.
-> Maybe we should.
-> 'bpftool prog show' will become 'ls' in some directory.
+> Not Andrii, but here are my 5 cents.
+>
+> check_cond_jmp() allows comparing pointers with scalars.
+> is_branch_taken() predicts jumps for null comparisons.
+> Hence, tracking precision of the r2 above is correct.
+> backtrack_insn() does not know the types of the registers when
+> processing `r2 <=3D r10` and thus adds r10 to the tracked set.
+> Whenever a scalar is added to a PTR_TO_STACK such scalar is marked as pre=
+cise.
+> This means that there is no need to track precision for constituents
+> of the PTR_TO_STACK values.
+>
+> Given above, I think that filtering out r10 should be safe.
+
+Yeah, it makes no sense to track r10. It's always "precise", effectively.
+
+> In case if sequence of instructions would be more complex, e.g.:
+>
+>         r9 =3D r10
+>         if r2 <=3D r9 goto -1; \
+>
+> backtrack_insn() would still eventually get to r10 and stop
+> propagation.
+>
 
