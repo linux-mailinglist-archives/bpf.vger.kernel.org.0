@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-57828-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57829-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEB2BAB0703
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 02:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C8E6DAB0710
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 02:28:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 388B81BC7E17
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 00:28:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E609A1BC7D55
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 00:29:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6939BBA36;
-	Fri,  9 May 2025 00:27:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82884BA53;
+	Fri,  9 May 2025 00:28:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iIzIvUJw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B/hZksUx"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8BCC1FB3;
-	Fri,  9 May 2025 00:27:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9D75B640;
+	Fri,  9 May 2025 00:28:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746750470; cv=none; b=YcgGDkLzgLBt/KzExacD5lyGAPUXtngzDafjVMBmf0nZIAf+/ktDJr0faMhat5Nhjw4wcR6FZDoZPemAdJllQ8dd1xAsIf7GeJ/lsoJAsV4PvJMi4oUJrXJ9c3VOYwQY/Zw1zUUO6EQ7sn5jNX33CKJVQ+f4UyVPSjF5/oMIpeM=
+	t=1746750531; cv=none; b=YxR9BQUrPFOeA6wmBt3Ot7lkh54aR2ESwE3LEG2jwigztMhDGsumoP381mn7FN/dRcVAPVW+Ths5YVrpfb8lAeY4zlUIot0mX+Wo93/gZguc9GsoEVntu4VYP1bV6NNxA73/B5rNnmZm9BJUSB8WUVdIrh03dq3/a3ofV3pu/7Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746750470; c=relaxed/simple;
-	bh=EofVU9RaJO8fFSn090qY+nSJVNAGtpdF7uvKRTJZyCs=;
+	s=arc-20240116; t=1746750531; c=relaxed/simple;
+	bh=KihOfUg/9XwuGh7JrvWssx/WPXQw1u4V1nnzLZ17ROI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Qy0zsjtLSqA+8BcsjaprfWVvNd/q+aaCL7gAyHDqswfU+hOXM9uvaON1lLV1wKE040yzUUSjsZuFORLxO2dV/vU6w4SuSmpz49YSERfND1vPAi2BX4NHo1SATP52kyucOgtjgASVKySKAQBhff4Ie7FR4nqMILCucU5Nqf7n3a0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iIzIvUJw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B371C4AF09;
-	Fri,  9 May 2025 00:27:50 +0000 (UTC)
+	 To:Cc:Content-Type; b=LDSGvpLX3sW1+M/i8RSuNpGibPofDTuTEF21giR/V7hlMrdk/Eny/V3QE6aSuiIfJ8vfRJxwonxR9EOh+ok/P/H4Avk9jtnilQxwm7EwSNqUJJE/4JYRdwcg9cqrgJcr/ptXtiY8bhkW++rNwoPSXowPfRScbqwiV5lHKuc15D0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B/hZksUx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62509C4AF0C;
+	Fri,  9 May 2025 00:28:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746750470;
-	bh=EofVU9RaJO8fFSn090qY+nSJVNAGtpdF7uvKRTJZyCs=;
+	s=k20201202; t=1746750530;
+	bh=KihOfUg/9XwuGh7JrvWssx/WPXQw1u4V1nnzLZ17ROI=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=iIzIvUJwP5AMW2em5ZJsd52tw11N98vBKEYEDrLaBkj23sKr3I+MrpV7tDox2rHuw
-	 UBXJGjlXh5bwdY+FCnjTYV03Fth9rGsuRQZWecWJGLc07olIm0NnH37N56oARbKjDO
-	 vcye/to9Ue9TtPjoKWM9ul8xczvD7j4cDoZ89XhVpCvhKhaj6DLl6TWTPq0GLXjBdR
-	 WPHkHhwmcNZ3SAS9dRDEzgUehWm7CnBJWIT5pGMA1ON7Q7H+AH2ukMCCig3ZSSBIUj
-	 r7Tmy5EFJXr1gbILGVn81rw0svUglpjf2N8JsRRFVtsWEcxxJ9bPabf6N4DYN6yluM
-	 Gk71TN4L2NvCg==
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-6f0c30a1ca3so19592126d6.1;
-        Thu, 08 May 2025 17:27:50 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUesAccW7fTQck1SBPkAaKbi8rHQPJlmSp51Wr3KqmDvt57JGunHulh4z+KHYI1qpgBbLg=@vger.kernel.org, AJvYcCVUEk8qW6XkkxJBXbztQjwYwEX3EgSyI8D3T73wuS4WVfnxCGV0IhPwv8iv3/z2/sX1g1IakAYWVCp897Ab@vger.kernel.org, AJvYcCW9TE6pgnZJed1P2ZUIp7uG3gMNhdU9ZyNFuVoJxVVF43DHTE9trJ20TcdoBwvN1O6Q3gcxUCg1BgzeV9yQ2L95@vger.kernel.org, AJvYcCXgQ0JmWKsYqgVyPNUnDGzt+kvzju+utSb5VodgzyMV/0GQaofGQ9Etd9IQkB0pXh7QY8IzGh27TefWmMI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzERT/4SiMyVPeC5DEzuvnuZGSkzb/pNljlFCvpfxOpOFJBTUg+
-	vfG/OfieT28CBKQyMaec9vEAo0GNyvonGuvhULlbwCaQ0OpsoBGiJJBFt5txL7YBmAKbPwSAKLA
-	LZCSxkJXP0rYDLOBoRazzKTQL/V4=
-X-Google-Smtp-Source: AGHT+IGvlO4MI8GcZbzVx7jsPcMoZXRxilbdcz9LupGWaeI1mxIAZKH4cl4q1xWroFyqcUQ97CJgUfidPRz8wpMqFwI=
-X-Received: by 2002:a05:6214:1c0e:b0:6e4:407c:fcfc with SMTP id
- 6a1803df08f44-6f6e47b9989mr19117996d6.4.1746750469293; Thu, 08 May 2025
- 17:27:49 -0700 (PDT)
+	b=B/hZksUx85KQAzQgyJhcLud896d9a0FViZp+yrXcyNtZYKKoJTFoWFVtkFFei4nsG
+	 xHgG1MtzZ2YUL555H2MMWXMhyGuzxxquOFXx7YRCG2BGsPXLoK7TAorEpMX63sADY1
+	 n1g06vqVgx3UsLudWNEzoMuLUjel0A8Ab9GvipbQNbrYFpN/6UzprB+jyQFzAyH1+l
+	 4Vmcuj9/h8uMBxCr7aRBf/tDv92n1DICPin9/rVr8u0xUosuVGmx+HXa1at3KaZGwD
+	 xaORDd9OGsff+yrtvgVCNW4LDy9UAmpod1NXKo3Manf7hPp0Ppo4mpscfy2qtZpw2Y
+	 DfSTxT9IQjOgQ==
+Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-6f5496972d3so15311236d6.0;
+        Thu, 08 May 2025 17:28:50 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUV6L0rOBntQUjzdrufsMSiK7/Y9D3XrQQaP8nwBE6ICHy1948TaVoTPH3bvkps5p9kBgmaoh84bFUPODzuTQ3H@vger.kernel.org, AJvYcCUiOR0S6otmeE+JMnQFUB3rVtnaseRqt5jDzXiVd1vHnj2pBx0eNNibcAsqBHsAA2e9YI6Nc/ZowJgZMGs=@vger.kernel.org, AJvYcCUoMVy2+wAfp/wIAhPoZRRewQCMpsoSChRtxY4j4gNWfK7up6MrStqYCBDVh6IlfCjXADc=@vger.kernel.org, AJvYcCWr7xzd7YII5GeP4Jd0OHglaii6xmpmI5J+OxSlnCdP9IY+sD2DyVs7fS+Edq+LF2YS79kq4IHoFFeFEMT3@vger.kernel.org
+X-Gm-Message-State: AOJu0YyjDKnCF98RKi0qOngBjkdusWA/JpDlSr8T8pDeMaHqC2uYnX6k
+	Rh4ME5ljH+kEAu8FdNgTNWgxm907FPxqgOWCgu2bc/4A+WAihGTQPKgSa9FyWSGs+pQJHXzyWIW
+	VUG9sbf1Qq5Pg5pBGFcqZB3+yHT0=
+X-Google-Smtp-Source: AGHT+IEZjmUuPnl3walRWvq2j8HrpCkOTj0Aad+6bRr9r/jSlB1hm5+VFIy5a/r9RnYh6bQmLPVS3BOr516ElNPcGNk=
+X-Received: by 2002:a05:6214:62c:b0:6e8:97f6:3229 with SMTP id
+ 6a1803df08f44-6f6e47e74a5mr24782636d6.16.1746750529582; Thu, 08 May 2025
+ 17:28:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250508182025.2961555-1-tjmercier@google.com> <20250508182025.2961555-3-tjmercier@google.com>
-In-Reply-To: <20250508182025.2961555-3-tjmercier@google.com>
+References: <20250508182025.2961555-1-tjmercier@google.com> <20250508182025.2961555-4-tjmercier@google.com>
+In-Reply-To: <20250508182025.2961555-4-tjmercier@google.com>
 From: Song Liu <song@kernel.org>
-Date: Thu, 8 May 2025 17:27:38 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW6cTCEwnbfRNX0KDGGs7M+N3xf+EP9FfS5Y_OHyXqs_Qw@mail.gmail.com>
-X-Gm-Features: ATxdqUEzd3jkJFL3dYflNlv-tch_Y5Oz2sEMRRKvmSAFIy8j243R28FNueVT7eQ
-Message-ID: <CAPhsuW6cTCEwnbfRNX0KDGGs7M+N3xf+EP9FfS5Y_OHyXqs_Qw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 2/5] bpf: Add dmabuf iterator
+Date: Thu, 8 May 2025 17:28:38 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW613T4biUPER9zR9DdQA_wscN4-i3vV4efoOKUZ7pkTeA@mail.gmail.com>
+X-Gm-Features: ATxdqUEx--2NHG96PqiywIn23M7lRslvlpezfrP_cxwU4xbMt6X3lm7qXfvmTG8
+Message-ID: <CAPhsuW613T4biUPER9zR9DdQA_wscN4-i3vV4efoOKUZ7pkTeA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 3/5] bpf: Add open coded dmabuf iterator
 To: "T.J. Mercier" <tjmercier@google.com>
 Cc: sumit.semwal@linaro.org, christian.koenig@amd.com, ast@kernel.org, 
 	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
@@ -81,79 +81,48 @@ Content-Transfer-Encoding: quoted-printable
 On Thu, May 8, 2025 at 11:20=E2=80=AFAM T.J. Mercier <tjmercier@google.com>=
  wrote:
 >
-> The dmabuf iterator traverses the list of all DMA buffers.
->
-> DMA buffers are refcounted through their associated struct file. A
-> reference is taken on each buffer as the list is iterated to ensure each
-> buffer persists for the duration of the bpf program execution without
-> holding the list mutex.
+> This open coded iterator allows for more flexibility when creating BPF
+> programs. It can support output in formats other than text. With an open
+> coded iterator, a single BPF program can traverse multiple kernel data
+> structures (now including dmabufs), allowing for more efficient analysis
+> of kernel data compared to multiple reads from procfs, sysfs, or
+> multiple traditional BPF iterator invocations.
 >
 > Signed-off-by: T.J. Mercier <tjmercier@google.com>
-> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
 
 Acked-by: Song Liu <song@kernel.org>
 
-With one nitpick below.
+With one nitpick below:
 
 > ---
-[...]
-> diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-> index 8ff4add71f88..7af2ea839f58 100644
-> --- a/include/linux/dma-buf.h
-> +++ b/include/linux/dma-buf.h
-> @@ -634,4 +634,6 @@ int dma_buf_vmap(struct dma_buf *dmabuf, struct iosys=
-_map *map);
->  void dma_buf_vunmap(struct dma_buf *dmabuf, struct iosys_map *map);
->  int dma_buf_vmap_unlocked(struct dma_buf *dmabuf, struct iosys_map *map)=
-;
->  void dma_buf_vunmap_unlocked(struct dma_buf *dmabuf, struct iosys_map *m=
-ap);
-> +struct dma_buf *dma_buf_iter_begin(void);
-> +struct dma_buf *dma_buf_iter_next(struct dma_buf *dmbuf);
->  #endif /* __DMA_BUF_H__ */
-> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-> index 70502f038b92..3a335c50e6e3 100644
-> --- a/kernel/bpf/Makefile
-> +++ b/kernel/bpf/Makefile
-> @@ -53,6 +53,9 @@ obj-$(CONFIG_BPF_SYSCALL) +=3D relo_core.o
->  obj-$(CONFIG_BPF_SYSCALL) +=3D btf_iter.o
->  obj-$(CONFIG_BPF_SYSCALL) +=3D btf_relocate.o
->  obj-$(CONFIG_BPF_SYSCALL) +=3D kmem_cache_iter.o
-> +ifeq ($(CONFIG_DMA_SHARED_BUFFER),y)
-> +obj-$(CONFIG_BPF_SYSCALL) +=3D dmabuf_iter.o
-> +endif
+>  kernel/bpf/dmabuf_iter.c | 47 ++++++++++++++++++++++++++++++++++++++++
+>  kernel/bpf/helpers.c     |  5 +++++
+>  2 files changed, 52 insertions(+)
 >
->  CFLAGS_REMOVE_percpu_freelist.o =3D $(CC_FLAGS_FTRACE)
->  CFLAGS_REMOVE_bpf_lru_list.o =3D $(CC_FLAGS_FTRACE)
 > diff --git a/kernel/bpf/dmabuf_iter.c b/kernel/bpf/dmabuf_iter.c
-> new file mode 100644
-> index 000000000000..96b4ba7f0b2c
-> --- /dev/null
+> index 96b4ba7f0b2c..8049bdbc9efc 100644
+> --- a/kernel/bpf/dmabuf_iter.c
 > +++ b/kernel/bpf/dmabuf_iter.c
-> @@ -0,0 +1,102 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/* Copyright (c) 2025 Google LLC */
-> +#include <linux/bpf.h>
-> +#include <linux/btf_ids.h>
-> +#include <linux/dma-buf.h>
-> +#include <linux/kernel.h>
-> +#include <linux/seq_file.h>
+> @@ -100,3 +100,50 @@ static int __init dmabuf_iter_init(void)
+>  }
+>
+>  late_initcall(dmabuf_iter_init);
 > +
-> +BTF_ID_LIST_SINGLE(bpf_dmabuf_btf_id, struct, dma_buf)
-> +DEFINE_BPF_ITER_FUNC(dmabuf, struct bpf_iter_meta *meta, struct dma_buf =
-*dmabuf)
+> +struct bpf_iter_dmabuf {
+> +       /* opaque iterator state; having __u64 here allows to preserve co=
+rrect
+> +        * alignment requirements in vmlinux.h, generated from BTF
+> +        */
 
-nit: It is better to move these two lines later, to where they
-are about to be used.
+nit: comment style.
 
+> +       __u64 __opaque[1];
+> +} __aligned(8);
 > +
-> +static void *dmabuf_iter_seq_start(struct seq_file *seq, loff_t *pos)
-> +{
-> +       if (*pos)
-> +               return NULL;
-> +
-> +       return dma_buf_iter_begin();
-> +}
+> +/* Non-opaque version of bpf_iter_dmabuf */
+> +struct bpf_iter_dmabuf_kern {
+> +       struct dma_buf *dmabuf;
+> +} __aligned(8);
 > +
 [...]
 
