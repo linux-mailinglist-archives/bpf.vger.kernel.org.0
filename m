@@ -1,114 +1,89 @@
-Return-Path: <bpf+bounces-57844-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57845-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81BE5AB0D30
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 10:34:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87711AB0E2C
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 11:05:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 493C99C10DA
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 08:33:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1926D1C23790
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 09:05:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC9FC272E55;
-	Fri,  9 May 2025 08:34:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A120E274FFE;
+	Fri,  9 May 2025 09:05:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="CTT/mrY0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q4aIxehk"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D206335280;
-	Fri,  9 May 2025 08:33:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26D76274FCA
+	for <bpf@vger.kernel.org>; Fri,  9 May 2025 09:05:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746779641; cv=none; b=ONFSAtxy48iR2cvP3oc1llYS4HFQnqAzDjD8BgwnXOadUkRuLuzPxpS6WwSMED0C3gOWKRp33HEZAyGWut9qCWAEAJE2Zq/3ZusP1nfg4XCIsIo9Zyc1Ldi2LP7EMi0s+L16FZUFpG1Xrj40vOQyNGBVK92gIbDYx8QpD/n18cE=
+	t=1746781513; cv=none; b=QYxNlOE9dLgH4UcZPNY50tB16MOnCs0hhmSF07OUhmq6sPQGuhCTYrdU6him+Itw5Ss8STj0XQvdo6475j0YU/KiQzUfJyaXaBLNiQDzvRjJJ8fq0QXVCctXMr7OBAEGUhmPfHVh/xY+YDB3H/8lyWwp0P/MtQQiUt/qRzO21Hw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746779641; c=relaxed/simple;
-	bh=o5hr7FGhY4b4G6SxA3gQOQR0SDXj9Zf8g5CJwZ6Ct6g=;
-	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Cc:Subject:
-	 References:In-Reply-To; b=LwDSZ2QlpHALFTBGc6fgHp/wIadDBS1WqqRKqBmXhsH4Uc59oBH/DcV4uyqQT+xwvq9sD0bUnCIFIaqL4b/bvYbGp+zK98Duc35Fp+RfL1h+4veHK+ih6RrIZ+GCm/TJj962LNbL0h0T5Kcx5r5Oe95xyHzOiFETq5hQSipaTzg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=CTT/mrY0; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 93FD141C84;
-	Fri,  9 May 2025 08:33:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1746779631;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=94DVZcbTpVhuih5h+lFAVS5FnBjZEMqUpSyD4fdPpC4=;
-	b=CTT/mrY0NKsnAxcMLdD0y4N7a3pkExkoyEfMCCebyatb1anNf+ppTzD0YSA+WhRiwm7CHx
-	2jZKlDkJAhB0m5I0jBkL5ZshmRRAwusRhM4NMxZD5RlyFn+RI3v1g6kV2XeiK2N4JDuDQ6
-	WFwCJ3+tP4Rr46cj8hdyCFj68/ZCCzUizKSCyxKS5ua7NcvyXZC+Z4PvPZoR3kYj/vEkKh
-	3bPFUQxLNZl33lu9B1b/bPPbgjZJ1qXHqUP7he+Yzq9jHmWSYv00l2WRLYCWOEsWcCvkQD
-	ElvrvVdPTcDI0nRtPHXAQC2wb6nVF7ygoeg4t0YmUDmszMKXsumohU+/e/IhaQ==
+	s=arc-20240116; t=1746781513; c=relaxed/simple;
+	bh=trUsVSs1iOFkx4vC0pQuauaGDAtPMOnT3SxD3P3Zv4M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZZxvQ3p7ZMru8quH7rFKujd7yMXz/BKALoeBv9U9fJ4EHAXjyEjIneuBw6N3lI0DaU0nGXxdfAcv6I3VcA2SqYlso3bR1GD1pC1yHM4PKIEN7qbf7Pw8Ak6b8PsxZW/Cx2SaBQ11CjucET3BIzpkR/zVtuBIQK89vm/X1n19UHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q4aIxehk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32ADCC4CEE4;
+	Fri,  9 May 2025 09:05:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1746781512;
+	bh=trUsVSs1iOFkx4vC0pQuauaGDAtPMOnT3SxD3P3Zv4M=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Q4aIxehkHwcsU58tU0ykdIz7HAXWcZUFStCes+DCUrv+jMur6/o4D5IjmNfNoxpGX
+	 Vl2aWITirY/zpiDawuH+lLLmA2ktlpuD+Hi5JH8cRbHq2MT/d0JmsTyPH8hj3tvaYj
+	 zdZkCQbKru7l9V5g7XGS9JQi0QUZxmXhZTov5EfFsEI6z3I73O+vmuSxZwdL/NuZz5
+	 fs6nI+/RPj/SR1moeAsh8DWCY7Ng/X5UbBdIxVHKPiq6nApBHbV66TbACUIMGTdEgu
+	 Fc42khm2I84s0kRPQQS94WRMBYUCWlaRP9Kd5Z7RGzXMYsDhZoX5LGYk3/NAxW0eUu
+	 wSUV3Ts4fuIew==
+Message-ID: <cf2c78d2-3a7d-40bb-b7f1-5503e052cfae@kernel.org>
+Date: Fri, 9 May 2025 10:05:09 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v4] scripts/bpf_doc.py: implement json output
+ format
+To: ihor.solodrai@linux.dev, andrii@kernel.org
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ eddyz87@gmail.com, mykolal@fb.com, dylan.reimerink@isovalent.com,
+ kernel-team@meta.com
+References: <20250508203708.2520847-1-isolodrai@meta.com>
+From: Quentin Monnet <qmo@kernel.org>
+Content-Language: en-GB
+In-Reply-To: <20250508203708.2520847-1-isolodrai@meta.com>
 Content-Type: text/plain; charset=UTF-8
-Date: Fri, 09 May 2025 10:33:50 +0200
-Message-Id: <D9RHP83CJA32.1LGMU4SC9QJ1K@bootlin.com>
-From: =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-To: "Tony Ambardar" <tony.ambardar@gmail.com>
-Cc: <dwarves@vger.kernel.org>, <bpf@vger.kernel.org>, "Alan Maguire"
- <alan.maguire@oracle.com>, "Arnaldo Carvalho de Melo" <acme@kernel.org>,
- "Andrii Nakryiko" <andrii@kernel.org>, "Alexei Starovoitov"
- <ast@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>
-Subject: Re: [PATCH dwarves v2] dwarf_loader: Fix skipped encoding of
- function BTF on 32-bit systems
-X-Mailer: aerc 0.20.1-0-g2ecb8770224a
-References: <Z/+HZ3w2KmbK5OAi@kodidev-ubuntu>
- <20250502070318.1561924-1-tony.ambardar@gmail.com>
- <D9QOFW6WEIT0.2AJBVJINZRRBV@bootlin.com> <aB2Q3ylln95YFTCD@kodidev-ubuntu>
-In-Reply-To: <aB2Q3ylln95YFTCD@kodidev-ubuntu>
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvledvudehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpegggfgtfffkhffvvefuofhfjgesthhqredtredtjeenucfhrhhomheptehlvgigihhsucfnohhthhhorhoruceorghlvgigihhsrdhlohhthhhorhgvsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpedvheeffeekieevfeehfeetkeetudfgudekteetieeigefhleffgfejudelffehvdenucffohhmrghinhepsghoohhtlhhinhdrtghomhenucfkphepvdgrtddvmeekgedvkeemfhelgegtmegvtddtmeemfhekheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvrgdtvdemkeegvdekmehfleegtgemvgdttdemmehfkeehpdhhvghloheplhhotggrlhhhohhsthdpmhgrihhlfhhrohhmpegrlhgvgihishdrlhhothhhohhrvgessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepkedprhgtphhtthhopehtohhnhidrrghmsggrrhgurghrsehgmhgrihhlrdgtohhmpdhrtghpthhtohepugifrghrvhgvshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegsphhfsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghlrghnrdhmrghguhhir
- hgvsehorhgrtghlvgdrtghomhdprhgtphhtthhopegrtghmvgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghnughrihhisehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhesihhoghgvrghrsghogidrnhgvth
-X-GND-Sasl: alexis.lothore@bootlin.com
+Content-Transfer-Encoding: 7bit
 
-On Fri May 9, 2025 at 7:21 AM CEST, Tony Ambardar wrote:
-> Hi Alexis,
->
-> On Thu, May 08, 2025 at 11:38:06AM +0200, Alexis Lothor=C3=A9 wrote:
->> Hello,
+2025-05-08 13:37 UTC-0700 ~ Ihor Solodrai <isolodrai@meta.com>
+> bpf_doc.py parses bpf.h header to collect information about various
+> API elements (such as BPF helpers) and then dump them in one of the
+> supported formats: rst docs and a C header.
+> 
+> It's useful for external tools to be able to consume this information
+> in an easy-to-parse format such as JSON. Implement JSON printers and
+> add --json command line argument.
+> 
+> v3->v4: refactor attrs to only be a helper's field
+> v2->v3: nit cleanup
+> v1->v2: add json printer for syscall target
+> 
+> v3: https://lore.kernel.org/bpf/20250507203034.270428-1-isolodrai@meta.com/
+> v2: https://lore.kernel.org/bpf/20250507182802.3833349-1-isolodrai@meta.com/
+> v1: https://lore.kernel.org/bpf/20250506000605.497296-1-isolodrai@meta.com/
+> 
+> Signed-off-by: Ihor Solodrai <isolodrai@meta.com>
 
-[...]
+Thanks a lot for this!
 
-> Nice! I notice bootlin has worked on several BPF testing contributions,
-> and was wondering if your build is some new standard buildroot/yocto
-> config tailored for BPF testing, and what archs it might support? Reason
-> for asking is I have a large stack of WIP patches for enabling use of
-> test_progs across 64/32-bit archs and cross-compilation, and I'm keen to
-> see other examples of configs, root images, etc. (especially for 32-bit)
-> At the moment I'm targeting 32-bit armhf support to make progress..
-
-No,  that's really a custom, minimal setup that I am using, based on
-buildroot. My workflow is roughly the following:
-- use buildroot to download an arm64 toolchain and build a minimal rootfs.
-  No specific defconfig used, it is a configuration from scratch, with
-  additional tools for development and debugging
-- configure a kernel for arm64 testing:
-$ cat tools/testing/selftest/bpf/{config,config.vm,config.aarch64} >
-.config
-- use the toolchain downloaded by buildroot to build the kernel
-- build the selftests with the same toolchain (so I am cross-building those
-  directly from my host, I am not really using vmtest)
-- run all of those in qemu, and run the selftests directly with test_progs
-  in there
-
-Alexis
-
---=20
-Alexis Lothor=C3=A9, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
+Tested-by: Quentin Monnet <qmo@kernel.org>
+Reviewed-by: Quentin Monnet <qmo@kernel.org>
 
