@@ -1,62 +1,65 @@
-Return-Path: <bpf+bounces-57859-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57860-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D916AAB18D4
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 17:36:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BABEAB18D5
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 17:36:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7D3B5247A1
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 15:35:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 540951BA229C
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 15:36:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F37B22E3FD;
-	Fri,  9 May 2025 15:35:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66E7E22F764;
+	Fri,  9 May 2025 15:36:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jNrR1p77"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pJsqWgUg"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11F4A21B9CE;
-	Fri,  9 May 2025 15:35:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8D4022F166;
+	Fri,  9 May 2025 15:36:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746804948; cv=none; b=s6cLPz1c9F0mQNgCPVfJmklW/hh/xoJVbRWPVpJvhAiD8m5NX0qw5oVOM2KbgtfJPS8w6FpGSDMezeT6Ri0dKq/Vy0onC2wfa2ETWKqpMIrA2Iipa2ONIlBAj628VVnCl678NWEvKHJdrcv2O77kUjQij3x0buJnUcHgiG8WZLI=
+	t=1746804962; cv=none; b=pOqcFtOOYYv97r0Y7YI3Qt7sRbKC/VfC2hrXqyuslrWmrEXQQB8WamNk4ZR1sbuSSDoDL60v6Zclrpm0czL2vxvKRjPPZO5nPd5fBm2Mb7kQJR06Evs0+x0UUwCXodZ/8I5fMH0sZVz8lytTMZm52v4mHDurFzXr0v8RP7jisu0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746804948; c=relaxed/simple;
-	bh=WED+U0og4n1pWlHE7/mRpnZjg78tmmAnOvhGMNoOyQ0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JrPzHrZYFclrvFE11EyWBPjcZ3SPkLuH0gHQp+3Ib+e94hk1jXDLMKeeTshKcV+9KAUeTzxm8P8w0H4v4jHJo94G3oIh+iFANkBMX3jZ5ZhismrxwKvL5LPKuANxsHGynGhI1xe6AiaVr9QEPlGz50npbjm+0QJoBqFKorarFMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jNrR1p77; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 084ECC4CEED;
-	Fri,  9 May 2025 15:35:42 +0000 (UTC)
+	s=arc-20240116; t=1746804962; c=relaxed/simple;
+	bh=4zIqPekil3Gn1cy+8PVvvu6qmWr6DsChIb/OZqLzFM0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=k6dOMU6yApvz+JY+symok8W9E4Bks6G0cVkk/WMOcMec52vUtU3DW0RRukYGnpPb9SbALlRTbXAi9yjqQlJaotMEBZi099nXnx254iEZplaBJxOyUzuucG1IpPCCFP5CE8XH45RSL0HfMsglLlssEReSjHYbHOQqQOcnQ3arrSw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pJsqWgUg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6F78C4CEE4;
+	Fri,  9 May 2025 15:35:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746804947;
-	bh=WED+U0og4n1pWlHE7/mRpnZjg78tmmAnOvhGMNoOyQ0=;
-	h=From:To:Cc:Subject:Date:From;
-	b=jNrR1p77t1XFr5fWb4nb1IRsJ6RD3WYdmdA7YJhjBSs58ej0HRafQR6fcLiZyaY70
-	 JG3IQ7boPFTtvddClOemzMj1wfQqs6JYmQ9zEeuzHtGdqP0x6+VNNjQc0KtVi9cP3+
-	 ETjCF7NpEfhKlFTTsTW4s9ZSlEZqezgNPPfC8TplBy051Ak1b2w/zU3Odr8xpKm3Yv
-	 Qy+mvzcRQS+r8VRlE8RAKUFq/v6r/mDUry4mMYTTTmIg7dPIkRmViDhdtAXy/p7aAh
-	 OUapD2RCHS6tWgzU9H47qP7fU6i8lN6bWLywUjD71JESeJgz9dSa24KBAcgkYUeSWp
-	 2e8lXxGHeNLpw==
+	s=k20201202; t=1746804961;
+	bh=4zIqPekil3Gn1cy+8PVvvu6qmWr6DsChIb/OZqLzFM0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=pJsqWgUgSpp3UFkelufKPH5GL59Yg+W75F9Az3JIzvO6OxJPHNODKoAzpfADw2eya
+	 BoO/Ma5yxg47SiiyB6G1U9wLpVkj68Rg1LtjjR0dZ1YDwE5bNYoPX0lG0vmX7lCz1K
+	 UGIkzMdF7uOmI2jRMWeRogDDPcSYQN4k6d4mWL3hiRS0XMgT1KJnqWgLgqCXxDlp/w
+	 8EXXtEw4RuO2GlzhpcCUcm/2jUs6dmpspBAbT4kyMzwoZM4MXdB7FE2WAj5azsHySg
+	 dbVyXU/7pXGxYIa2zKYsjHmzbn6C6ffSkdGZHIsCnMdILjtIQefiZxo3gOul3f1K7T
+	 IunX7AamzM0Rw==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org,
+Cc: Yafang Shao <laoar.shao@gmail.com>,
+	bpf@vger.kernel.org,
 	linux-perf-users@vger.kernel.org,
 	Martin KaFai Lau <kafai@fb.com>,
 	Song Liu <songliubraving@fb.com>,
 	Yonghong Song <yhs@fb.com>,
 	John Fastabend <john.fastabend@gmail.com>,
 	Hao Luo <haoluo@google.com>,
-	Yafang Shao <laoar.shao@gmail.com>,
 	Quentin Monnet <qmo@kernel.org>
-Subject: [PATCHv2 bpf-next 0/3] bpf: Retrieve ref_ctr_offset from uprobe perf link
-Date: Fri,  9 May 2025 17:35:36 +0200
-Message-ID: <20250509153539.779599-1-jolsa@kernel.org>
+Subject: [PATCHv2 bpf-next 1/3] bpf: Add support to retrieve ref_ctr_offset for uprobe perf link
+Date: Fri,  9 May 2025 17:35:37 +0200
+Message-ID: <20250509153539.779599-2-jolsa@kernel.org>
 X-Mailer: git-send-email 2.49.0
+In-Reply-To: <20250509153539.779599-1-jolsa@kernel.org>
+References: <20250509153539.779599-1-jolsa@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -65,28 +68,85 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-hi,
-adding ref_ctr_offset retrieval for uprobe perf link info.
+Adding support to retrieve ref_ctr_offset for uprobe perf link,
+which got somehow omitted from the initial uprobe link info changes.
 
-v2 changes:
-  - display ref_ctr_offset as hex number [Andrii]
-  - added acks
-
-thanks,
-jirka
-
-
+Acked-by: Yafang Shao <laoar.shao@gmail.com>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
-Jiri Olsa (3):
-      bpf: Add support to retrieve ref_ctr_offset for uprobe perf link
-      selftests/bpf: Add link info test for ref_ctr_offset retrieval
-      bpftool: Display ref_ctr_offset for uprobe link info
+ include/uapi/linux/bpf.h       | 1 +
+ kernel/bpf/syscall.c           | 5 +++--
+ kernel/trace/trace_uprobe.c    | 2 +-
+ tools/include/uapi/linux/bpf.h | 1 +
+ 4 files changed, 6 insertions(+), 3 deletions(-)
 
- include/uapi/linux/bpf.h                                |  1 +
- kernel/bpf/syscall.c                                    |  5 +++--
- kernel/trace/trace_uprobe.c                             |  2 +-
- tools/bpf/bpftool/link.c                                |  3 +++
- tools/include/uapi/linux/bpf.h                          |  1 +
- tools/testing/selftests/bpf/prog_tests/fill_link_info.c | 18 ++++++++++++++++--
- 6 files changed, 25 insertions(+), 5 deletions(-)
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 71d5ac83cf5d..16e95398c91c 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -6724,6 +6724,7 @@ struct bpf_link_info {
+ 					__u32 name_len;
+ 					__u32 offset; /* offset from file_name */
+ 					__u64 cookie;
++					__u64 ref_ctr_offset;
+ 				} uprobe; /* BPF_PERF_EVENT_UPROBE, BPF_PERF_EVENT_URETPROBE */
+ 				struct {
+ 					__aligned_u64 func_name; /* in/out */
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index df33d19c5c3b..4b5f29168618 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3800,14 +3800,14 @@ static int bpf_perf_link_fill_kprobe(const struct perf_event *event,
+ static int bpf_perf_link_fill_uprobe(const struct perf_event *event,
+ 				     struct bpf_link_info *info)
+ {
++	u64 ref_ctr_offset, offset;
+ 	char __user *uname;
+-	u64 addr, offset;
+ 	u32 ulen, type;
+ 	int err;
+ 
+ 	uname = u64_to_user_ptr(info->perf_event.uprobe.file_name);
+ 	ulen = info->perf_event.uprobe.name_len;
+-	err = bpf_perf_link_fill_common(event, uname, &ulen, &offset, &addr,
++	err = bpf_perf_link_fill_common(event, uname, &ulen, &offset, &ref_ctr_offset,
+ 					&type, NULL);
+ 	if (err)
+ 		return err;
+@@ -3819,6 +3819,7 @@ static int bpf_perf_link_fill_uprobe(const struct perf_event *event,
+ 	info->perf_event.uprobe.name_len = ulen;
+ 	info->perf_event.uprobe.offset = offset;
+ 	info->perf_event.uprobe.cookie = event->bpf_cookie;
++	info->perf_event.uprobe.ref_ctr_offset = ref_ctr_offset;
+ 	return 0;
+ }
+ #endif
+diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+index 3386439ec9f6..d9cf6ed2c106 100644
+--- a/kernel/trace/trace_uprobe.c
++++ b/kernel/trace/trace_uprobe.c
+@@ -1489,7 +1489,7 @@ int bpf_get_uprobe_info(const struct perf_event *event, u32 *fd_type,
+ 				    : BPF_FD_TYPE_UPROBE;
+ 	*filename = tu->filename;
+ 	*probe_offset = tu->offset;
+-	*probe_addr = 0;
++	*probe_addr = tu->ref_ctr_offset;
+ 	return 0;
+ }
+ #endif	/* CONFIG_PERF_EVENTS */
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 71d5ac83cf5d..16e95398c91c 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -6724,6 +6724,7 @@ struct bpf_link_info {
+ 					__u32 name_len;
+ 					__u32 offset; /* offset from file_name */
+ 					__u64 cookie;
++					__u64 ref_ctr_offset;
+ 				} uprobe; /* BPF_PERF_EVENT_UPROBE, BPF_PERF_EVENT_URETPROBE */
+ 				struct {
+ 					__aligned_u64 func_name; /* in/out */
+-- 
+2.49.0
+
 
