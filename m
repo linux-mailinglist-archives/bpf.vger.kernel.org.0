@@ -1,129 +1,314 @@
-Return-Path: <bpf+bounces-57905-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57906-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DD59AB1C2E
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 20:21:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EB39BAB1C30
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 20:21:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED573504C8C
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 18:21:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB857504EEC
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 18:21:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A1F323C50E;
-	Fri,  9 May 2025 18:21:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C41D523BCE7;
+	Fri,  9 May 2025 18:21:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k29KyEDc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eAemBLen"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E9BA23717F;
-	Fri,  9 May 2025 18:21:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACFE023717F
+	for <bpf@vger.kernel.org>; Fri,  9 May 2025 18:21:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746814864; cv=none; b=Pz5Fw7cVSVe+LoGu9vMI3gmVBTqhknzEzYEveO/neQpibMcVClg2DoBzi98cO53tvjqkG0yVe6JGiPG5x0QhLV0nTd+iclQI+wUwLkRMSbPnXNc+dAM+TQX2nAioUVXu4cZDPX7x5utSJdANoP1fbOek13Y1pqsbJq3uoDOmjgI=
+	t=1746814870; cv=none; b=EwjB9NaO0KriQt6k9/jUNp5/ppiBIzAH3UtgAx1JtndmkScjYFGhuoh+xCiwG0HDc/T87EeKC5U/ZKn499Kuqd++CIv43vIVxW7IvyvDhfxAqvV8tCmzithbuzjr1UpZxrE9y0z42/kgx7REb8MGIo54gjxpzJJ/Rt8GjP5F/U0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746814864; c=relaxed/simple;
-	bh=4qGf+LVCHq9Re0HaJNst9Sr+cVcbEf1KtVPrSG6+e7U=;
+	s=arc-20240116; t=1746814870; c=relaxed/simple;
+	bh=VtftV+TruY9vtIRrHtbzfO1wpUZxWlyDZt5F7/CbjdY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bWgA5Pj2kDoLTZtDPioS9ItXcoBFbl0JZnp3GsrG9brlCAWLjMaXwfRJ7n1C3e3oetTbEw/RmNdPi1egTFL+xZLMesPoL4ldXLLV8OcRwSypHyCGO07/tpHIpHy1XtywcdLMabeMTgk/AAhOpJbgr/7B5YQEiv65DtFjqCficRI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k29KyEDc; arc=none smtp.client-ip=209.85.216.42
+	 To:Cc:Content-Type; b=k8NGaa1O7wVQDosk/sjWW3F1wF1E8D3rPsHuGQltV64KjQowEJocXlP5+dW0orWMwzekuqJ8nzwUIyEijU9zbChX+sqLpCXMpJCGEmytdpekyEEvogJ3VWWnJ5Qjrd0qJzSz6URpVzmXg8p9PLNdv9/1IPuSD5lNEBFMqdJxfKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eAemBLen; arc=none smtp.client-ip=209.85.210.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-30ac55f595fso2401247a91.2;
-        Fri, 09 May 2025 11:21:02 -0700 (PDT)
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-736c062b1f5so2675792b3a.0
+        for <bpf@vger.kernel.org>; Fri, 09 May 2025 11:21:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746814862; x=1747419662; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1746814868; x=1747419668; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=X5E5gBHYUotVCXygYJ7CZEIFVsARQjSCRuzkPt94fVY=;
-        b=k29KyEDcWsTabm3nNJL7PdrSTbSKjuTvrdN2nLu2wk0Rx4dT4Vg7Wwrr17mE0M4wsm
-         gZsoFV7PtwDpVbacyleuZCQCBZkL4j3Qs6NNqRZO0qCrMJvMrMkJKK/ljN9fkJI8Mb3D
-         9BeX4ZU1MG6IjVBkvQOUTAXvp0XuMZ2Hf0HcqGjygghtlOfoUaITMH6CX9R4WBZ9X8M5
-         XTLTPpXDc+L1yKiIhXnLz/5o3EOtraE+Mv8XLcPmKKSfAQc72GJWaPqHgLiSmzCfP4g9
-         1HhXOkwdFjHpoUpJwEuWf6i0cfu2XvXxMfJfs0AyrBJBzfh5zj4Bnabpd/Rh60BP8K8c
-         H6Xg==
+        bh=+qYRE79HASpUAwbHUgWaD2KiN5HoEGcppPa3eACv14o=;
+        b=eAemBLensIVy8+HcVhRIlyEyiCGGn5tinyTl8WhUw/+5HRjMYJy1gaTJLoyjYGUBfy
+         A0EANoC8sC00a1nZPVRi9j0ZXErNQ4g6Jsn8x7mL7gVM3ES9DaaeVE5HwNx2gx9/K8Yi
+         qMEq0p7Z23mZE1GEPf+QlS4hT348rbQdfmBxWBuxKq7ybSV8yfFobA7DbiMdxmJLoc+R
+         jyrC0ZQ2TtaQ2c1RS495jc/EC3OSEndgb4T+3r8+EYXjQHJ91zsSQ///mPUvtfAfBIfg
+         G+OUvV4G+QnSQiM/M+GkFV5M+MxciqUOcFpTtm84wL4yrgDVp2Bb3Cm3Fg4CClCKkpY3
+         diMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746814862; x=1747419662;
+        d=1e100.net; s=20230601; t=1746814868; x=1747419668;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=X5E5gBHYUotVCXygYJ7CZEIFVsARQjSCRuzkPt94fVY=;
-        b=pAO2SnrYH5bwKb2LI+kB6AIV9g8+PQ1H7D+86LX7dgQZZeVR+3hNDZYZxrochSX8b+
-         F9NGv5sUWusl662rfQnlxywQsEvHw3yyqlvLUd1IHofmo5d225IxDP/a3f7QPRTWJ5RE
-         xIA/fshvvtOJAyb6r+Yn8s9CuQGEZVwtcTaSGSSdMcRa7LJfBlgMiXrS91hnpsZze+4w
-         RzBuXUaQ3uB07GgCwtcXGmqL5k0I8ikmfdLV2qRuFqIY9LWDrbKcSGzE8g2Efk6xHA/E
-         KGKbgE3PEMYC47SbOvLvUFdc+dSPV0zNT1obzV2kzjKg94Z2l7qM9qUGT/KRVmxxSTOd
-         f4Ng==
-X-Forwarded-Encrypted: i=1; AJvYcCVcRaSHdQ0huNT/48PVDOK1sf6l4cWLu4zlNd37ffDLVnLo3Sv0SIY6+FcnMC4B40N8OGHMy8DWjhzauPiS@vger.kernel.org, AJvYcCXqY0JUO1SUrSEk43r93hb1EGHqrmZhudKJ+O2YkxGfl3CzdNAUKCUY8oJ5uu2JyPt4bv0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwciU7jfLYbTCSLooYDHqrDDkLJm9y/QhxdxWYS9rvLG/1Q3T50
-	8SC6/3lFGKwMIDz0SCwvZ6RMYwI9fmY6HSefp3Qwvs1d8C3hxVNkR0TLvkAAzz3b8m78LbzdDt5
-	xMe9lWgkouzs4DqGGOGMYiFMwrIEJ5qdglL4=
-X-Gm-Gg: ASbGncuzIaI6J5akZqZu3jhKYtj1BLVWEj5lw0pzy01gOHgvjd+ZXI74XDWQ2jXzcHe
-	BzaCU+sOawZ+B5XrlRfeMiLI8vDAiN8GcW8AtjuH8waaQ2R2D3MiQxNDSGZDb5TbaTcyQN/7wjy
-	lLQSVwcvtcHhRIAEeNEl7ja0qyRXo2K1ZvLuuomwGhx/D/G/t7
-X-Google-Smtp-Source: AGHT+IEp8o0jmBeHS6EkmRW9IH2ThKoCdRcI6N4ukVYGmrH04cq4u3PUUlIdplw1/VK6DrAHolZFw/HzQy7XzBcG53E=
-X-Received: by 2002:a17:90b:1fcd:b0:305:5f25:59a5 with SMTP id
- 98e67ed59e1d1-30c3d65e740mr6497432a91.35.1746814862365; Fri, 09 May 2025
- 11:21:02 -0700 (PDT)
+        bh=+qYRE79HASpUAwbHUgWaD2KiN5HoEGcppPa3eACv14o=;
+        b=ppE9s+hIZLJtedPPIwOeCA59SYqpxc6HITwYTjuPUsX+n74rBzN/S6mIgEndutm2Em
+         GpOJVRozaFoq9DcQQIfVqbHKKKHRjj5GvlUfTBpoUhq59UkTYPLxnTfLwhl6jRA9EFQE
+         RvLe9FSCu8fn7Ufva3iSZd8N+mQNxZR0r6BRObnigyXXMB572Eo7lqWObElQrpnO3Bku
+         ArkkigPiu3KB0LO01LKaWFFdW7lpbQ4j5QyItzuzNFZ2Hz1tYQx0DHbtxoShIRihM/G4
+         VQsM07DW+ra69RaL43l3OcwD+UXMIGtnHte8j0GgQjX4spRy0CqJuD2ctB0nrZSyhhC9
+         Rp6Q==
+X-Gm-Message-State: AOJu0YywxpCDGHGm82UQ4VIn1WFMu0uG+u0Vui3HahjxE+ALm+gdmpYD
+	UxVhaxag2e231+OQIBuIy5pEMiuhj/lDD06q0c3fTUGllzTBOSK3NrUxgg3Sut18iEpIfQVd6nz
+	D5qj719vdFe1fiFOnT3zQBUrOyhQ=
+X-Gm-Gg: ASbGnctuj0pawGDA0PQ/cMxodsf4KMftbhqtZLECrNDXkvd314WPqMrRD0lAEo2064b
+	Oftijk5ldNdehHYPfXeAun8T6ZUbO3a8JChGxFKXcWypiYDumydai/rJZdrR3I79do3P8u+Xz2x
+	Kp8Kg160+FHBCNzQINmdIrWgaDmoQSaDeuOXrjOL9MAMbnWZrp
+X-Google-Smtp-Source: AGHT+IEHbyOvfmgryy1eyjqG6/rSq8k9hLyM/+lwoLkU/9iE12rGan1qNFp2JBsISmHAX/e1H7PcRsXZszoyyRiYOR4=
+X-Received: by 2002:a05:6a20:e617:b0:203:bb3b:5f03 with SMTP id
+ adf61e73a8af0-215ababd0d6mr6312259637.6.1746814867790; Fri, 09 May 2025
+ 11:21:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1746598898.git.vmalik@redhat.com> <39416cac1d011661601caffc6ac38195c82ede86.1746598898.git.vmalik@redhat.com>
- <aByA1wael6H4tMo8@google.com>
-In-Reply-To: <aByA1wael6H4tMo8@google.com>
+References: <cover.1746598898.git.vmalik@redhat.com> <19913411da8c08170d959207e28262efc0a5d813.1746598898.git.vmalik@redhat.com>
+In-Reply-To: <19913411da8c08170d959207e28262efc0a5d813.1746598898.git.vmalik@redhat.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 9 May 2025 11:20:48 -0700
-X-Gm-Features: ATxdqUF9WK-pNGPDCZayEa-Xkx20a9zhOeb-2sf3yHNgsZfGklVmpEfNjfiQrqM
-Message-ID: <CAEf4BzbggjOmEziyLjSRSsEQzLMMXQGoEJ6SODVF2exLR1S9UQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 2/4] uaccess: Define pagefault lock guard
-To: Matt Bobrowski <mattbobrowski@google.com>
-Cc: Viktor Malik <vmalik@redhat.com>, bpf@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+Date: Fri, 9 May 2025 11:20:55 -0700
+X-Gm-Features: ATxdqUFUvzrsyDctcjpwvITXHud4TvnhV76FsEIm7xYhJX-lVIEAbU7S0x6W8MQ
+Message-ID: <CAEf4BzZBB3rD0gfxq3ZC0_RuBjXHBMqdXxw3DcEyuYhmh7n5HA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 3/4] bpf: Add kfuncs for read-only string operations
+To: Viktor Malik <vmalik@redhat.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
 	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
 	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org
+	Jiri Olsa <jolsa@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 8, 2025 at 3:01=E2=80=AFAM Matt Bobrowski <mattbobrowski@google=
-.com> wrote:
+On Tue, May 6, 2025 at 11:41=E2=80=AFPM Viktor Malik <vmalik@redhat.com> wr=
+ote:
 >
-> On Wed, May 07, 2025 at 08:40:37AM +0200, Viktor Malik wrote:
-> > Define a pagefault lock guard which allows to simplify functions that
-> > need to disable page faults.
-> >
-> > Signed-off-by: Viktor Malik <vmalik@redhat.com>
-> > ---
-> >  include/linux/uaccess.h | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
-> > index 7c06f4795670..1beb5b395d81 100644
-> > --- a/include/linux/uaccess.h
-> > +++ b/include/linux/uaccess.h
-> > @@ -296,6 +296,8 @@ static inline bool pagefault_disabled(void)
-> >   */
-> >  #define faulthandler_disabled() (pagefault_disabled() || in_atomic())
-> >
-> > +DEFINE_LOCK_GUARD_0(pagefault, pagefault_disable(), pagefault_enable()=
-)
+> String operations are commonly used so this exposes the most common ones
+> to BPF programs. For now, we limit ourselves to operations which do not
+> copy memory around.
 >
-> I can't help but mention that naming this scope-based cleanup helper
-> `pagefault` just seems overly ambiguous. That's just me though...
+> Unfortunately, most in-kernel implementations assume that strings are
+> %NUL-terminated, which is not necessarily true, and therefore we cannot
+> use them directly in the BPF context. Instead, we open-code them using
+> __get_kernel_nofault instead of plain dereference to make them safe and
+> limit the strings length to XATTR_SIZE_MAX to make sure the functions
+> terminate. When __get_kernel_nofault fails, functions return -EFAULT.
+> Similarly, when the size bound is reached, the functions return -E2BIG.
+>
+> At the moment, strings can be passed to the kfuncs in three forms:
+> - string literals (i.e. pointers to read-only maps)
+> - global variables (i.e. pointers to read-write maps)
+> - stack-allocated buffers
+>
+> Note that currently, it is not possible to pass strings from the BPF
+> program context (like function args) as the verifier doesn't treat them
+> as neither PTR_TO_MEM nor PTR_TO_BTF_ID.
+>
+> Suggested-by: Alexei Starovoitov <ast@kernel.org>
+> Signed-off-by: Viktor Malik <vmalik@redhat.com>
+> ---
+>  kernel/bpf/helpers.c | 440 +++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 440 insertions(+)
+>
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index e3a2662f4e33..8fb7c2ca7ac0 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -23,6 +23,7 @@
+>  #include <linux/btf_ids.h>
+>  #include <linux/bpf_mem_alloc.h>
+>  #include <linux/kasan.h>
+> +#include <linux/uaccess.h>
+>
+>  #include "../../lib/kstrtox.h"
+>
+> @@ -3194,6 +3195,433 @@ __bpf_kfunc void bpf_local_irq_restore(unsigned l=
+ong *flags__irq_flag)
+>         local_irq_restore(*flags__irq_flag);
+>  }
+>
+> +/* Kfuncs for string operations.
+> + *
+> + * Since strings are not necessarily %NUL-terminated, we cannot directly=
+ call
+> + * in-kernel implementations. Instead, we open-code the implementations =
+using
+> + * __get_kernel_nofault instead of plain dereference to make them safe.
+> + */
+> +
+> +/**
+> + * bpf_strcmp - Compare two strings
+> + * @s1: One string
+> + * @s2: Another string
+> + *
+> + * Return:
+> + * * %0       - Strings are equal
+> + * * %-1      - @s1 is smaller
+> + * * %1       - @s2 is smaller
+> + * * %-EFAULT - Cannot read one of the strings
+> + * * %-E2BIG  - One of strings is too large
+> + */
+> +__bpf_kfunc int bpf_strcmp(const char *s1, const char *s2)
+> +{
+> +       char c1, c2;
+> +       int i;
+> +
+> +       if (!s1 || !s2)
+> +               return -EFAULT;
+> +
+> +       guard(pagefault)();
+> +       for (i =3D 0; i < XATTR_SIZE_MAX; i++) {
+> +               __get_kernel_nofault(&c1, s1, char, err_out);
+> +               __get_kernel_nofault(&c2, s2, char, err_out);
+> +               if (c1 !=3D c2)
+> +                       return c1 < c2 ? -1 : 1;
+> +               if (c1 =3D=3D '\0')
+> +                       return 0;
+> +               s1++;
+> +               s2++;
+> +       }
+> +       return -E2BIG;
+> +err_out:
+> +       return -EFAULT;
+> +}
+> +
+> +/**
+> + * bpf_strchr - Find the first occurrence of a character in a string
+> + * @s: The string to be searched
+> + * @c: The character to search for
+> + *
+> + * Note that the %NUL-terminator is considered part of the string, and c=
+an
+> + * be searched for.
+> + *
+> + * Return:
+> + * * const char * - Pointer to the first occurrence of @c within @s
+> + * * %NULL        - @c not found in @s
+> + * * %-EFAULT     - Cannot read @s
+> + * * %-E2BIG      - @s too large
+> + */
+> +__bpf_kfunc const char *bpf_strchr(const char *s, char c)
 
-I do see the concern, but
+so let's say we found the character, we return a pointer to it, and
+that memory goes away (because we never owned it, so we don't really
+know what and when will happen with it). Question, will verifier allow
+BPF program to dereference this pointer? If yes, that's a problem. But
+if not, then I'm not sure there is much point in returning a pointer.
 
-DEFINE_LOCK_GUARD_0(preempt, preempt_disable(), preempt_enable())
-DEFINE_LOCK_GUARD_0(irq, local_irq_disable(), local_irq_enable())
 
-so we are just staying consistent here? But also "guard (against) the
-pagefault" does (internally) read somewhat meaningfully, no?
+I'm just trying to imply that in BPF world integer-based APIs work
+better/safer, overall? For strings, we can switch any
+pointer-returning API to position-returning (or negative error) API
+and it would more or less naturally fit into BPF API surface, no?
+
+> +{
+> +       char sc;
+> +       int i;
+> +
+> +       if (!s)
+> +               return ERR_PTR(-EFAULT);
+> +
+> +       guard(pagefault)();
+> +       for (i =3D 0; i < XATTR_SIZE_MAX; i++) {
+> +               __get_kernel_nofault(&sc, s, char, err_out);
+> +               if (sc =3D=3D c)
+> +                       return s;
+> +               if (sc =3D=3D '\0')
+> +                       return NULL;
+> +               s++;
+> +       }
+> +       return ERR_PTR(-E2BIG);
+> +err_out:
+> +       return ERR_PTR(-EFAULT);
+
+this implementation can be replaced with just `return bpf_strnchr(s,
+XATTR_SIZE_MAX, c);`, no?
+
+> +}
+> +
+> +/**
+> + * bpf_strnchr - Find a character in a length limited string
+> + * @s: The string to be searched
+> + * @count: The number of characters to be searched
+> + * @c: The character to search for
+> + *
+> + * Note that the %NUL-terminator is considered part of the string, and c=
+an
+> + * be searched for.
+> + *
+> + * Return:
+> + * * const char * - Pointer to the first occurrence of @c within @s
+> + * * %NULL        - @c not found in the first @count characters of @s
+> + * * %-EFAULT     - Cannot read @s
+> + * * %-E2BIG      - @s too large
+> + */
+> +__bpf_kfunc const char *bpf_strnchr(const char *s, size_t count, char c)
+> +{
+> +       char sc;
+> +       int i;
+> +
+> +       if (!s)
+> +               return ERR_PTR(-EFAULT);
+> +
+> +       guard(pagefault)();
+> +       for (i =3D 0; i < count && i < XATTR_SIZE_MAX; i++) {
+> +               __get_kernel_nofault(&sc, s, char, err_out);
+> +               if (sc =3D=3D c)
+> +                       return s;
+> +               if (sc =3D=3D '\0')
+> +                       return NULL;
+> +               s++;
+> +       }
+> +       return i =3D=3D XATTR_SIZE_MAX ? ERR_PTR(-E2BIG) : NULL;
+> +err_out:
+> +       return ERR_PTR(-EFAULT);
+> +}
+> +
+
+[...]
+
+> +/**
+> + * bpf_strlen - Calculate the length of a string
+> + * @s: The string
+> + *
+> + * Return:
+> + * * >=3D0      - The length of @s
+> + * * %-EFAULT - Cannot read @s
+> + * * %-E2BIG  - @s too large
+> + */
+> +__bpf_kfunc int bpf_strlen(const char *s)
+> +{
+> +       char c;
+> +       int i;
+> +
+> +       if (!s)
+> +               return -EFAULT;
+> +
+> +       guard(pagefault)();
+> +       for (i =3D 0; i < XATTR_SIZE_MAX; i++) {
+> +               __get_kernel_nofault(&c, s, char, err_out);
+> +               if (c =3D=3D '\0')
+> +                       return i;
+> +               s++;
+> +       }
+> +       return -E2BIG;
+> +err_out:
+> +       return -EFAULT;
+
+
+return bpf_strnlen(s, XATTR_SIZE_MAX)?
+
+You get the idea.
+
+[...]
 
