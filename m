@@ -1,98 +1,133 @@
-Return-Path: <bpf+bounces-57922-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57923-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23EE1AB1DA7
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 22:05:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0F22AB1DB0
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 22:07:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A320C3A71FD
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 20:04:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20AAE52214D
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 20:07:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FC4025E839;
-	Fri,  9 May 2025 20:05:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87D8625E83E;
+	Fri,  9 May 2025 20:07:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FdOVVAJK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MOOWOs16"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F6F523E342;
-	Fri,  9 May 2025 20:04:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEE5F21A45C
+	for <bpf@vger.kernel.org>; Fri,  9 May 2025 20:07:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746821100; cv=none; b=BbJLcL/K3UBsrY4kHLLxVFs9J+Pv6pJmDW8LXHHw17lr9RSVdJHPfo/cVN/sh+mI5BhpB1xqTrwbsT8XpNANr0r4o479GSIa22kPjq2N8UDF5HL6DdqhuGa13cA+506LqpfjklOXSKSYhrF8vxUMITjTvK7Vcrcnnkdhgt/cQaY=
+	t=1746821238; cv=none; b=i1wIzgkAXCi1GOcCYZGPloxWTzNXIl19UGi1+BbKTDlU5YK/R2AAxQjgEJg2BoVEZEVXAS5dSYBUL2+Y2tbmlRFgqkalNGY/Rr4K53pfEQetdQeUS4yteUkNVkQNZ8J/hSTiuRg7OQZWPiZ1kXH8vWvCSHKylPUONIQnavpZchg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746821100; c=relaxed/simple;
-	bh=G9Ob1A7TrPbdEg2c0WtIfJ5OWg0wMqZQyRyWphK8hx0=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=ARJpgrwFvCX+SXk6BPiLXP/WRjNhA6ahNjKJmsFJJkZoGQjcrDA7f5M4XlHsOhp8dLQz4d1HeoMl3/EAVmRGYOJ2ygxb//zSL6VEFQX7h82zzWe+Uil2REUeZfTyMNe2czSlqWZpV3ynPfwgafvuesDO4EDaLvQQU5JcVtnoiew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FdOVVAJK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EB75C4CEE4;
-	Fri,  9 May 2025 20:04:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746821099;
-	bh=G9Ob1A7TrPbdEg2c0WtIfJ5OWg0wMqZQyRyWphK8hx0=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=FdOVVAJKMotY/6SzERHTMGsHx5dQJwGTw0cg+EDfDqh1yG6ktIPGJz6wUmlaoqfQT
-	 pZ1n5d+JaA04RsAaDTgC83pIpGDhZLkQHJ1GDR68owza/ndLO2XlwiC5pGVX03z7j6
-	 Vho1KNGGJSX5evfkqpopU3Rjsqpz2El6/f2JenEullo0B3zbngXU82KcxZRy8F2HjE
-	 bi0J6cqoKdkKqpQ8Dbt8HEtmYye7HxBK3MPUnu3cJET9aM4aiY+4H3YeHz6q0DiRmO
-	 YRqW0uv/5fr8x7Oe0Ya8x+LKLWmQxUhoOe8Tmh5TcwQYgcBK4HnllrmP4dFGOB7nv9
-	 L2ELehVzd29bw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33CF439D61FF;
-	Fri,  9 May 2025 20:05:39 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1746821238; c=relaxed/simple;
+	bh=rMKgUDyemaKRv0zcy/DXws6hNbNk+50DDO/J0ryyOJw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=MN7L2B5HJLpHjQjDafi1Xm4RFp3nKixj21GolNDDD2wkl+5GZ3zRXS7AQvvB+7vRQYAGk1HvklZdIpAJceAKdNDcsp6pJuqQSo0QFZE8PxMDGJb2gqPOmkwuLDvdTTti79juUjjNMTYyQ2r+7bJidPQrAg5WhCmKiWu5NfORIQ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MOOWOs16; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-73bf1cef6ceso2669571b3a.0
+        for <bpf@vger.kernel.org>; Fri, 09 May 2025 13:07:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1746821236; x=1747426036; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=F8VeWO2Ffbdj9gdoWovA3XKkHloLN+Lip1VxaGbMPn0=;
+        b=MOOWOs165PpYaIaOkpZaFYAyXxBvwadCSA8dUzSKJ9Bpz/PMMW4pixf0Q7RWOxwNwY
+         LNkRh8F3qlT3pk4r1glq38wp5Qbr67yfloqkKZMVO2iG/uJNO25Y64W+CdrZ5n8noEd7
+         Jdd0sso17Iwd15pOLYpnqB33k4g7Udu8CwZGzQWV7OtSBvkxyFGrMIwwiOZRc2+KGFVQ
+         quVvJR4aCT7eRMRIXZMH9qKI2Y+He9xS22LYoGzC3Kjm9yi+RGb3pm02Y95YfNchV0Ez
+         hlNPfVomxAcX4YLwfaHmsmiE5EWfr19mCMsDwK18/yJNtpOtW9HQauBbLR8SfZcLPypV
+         cGUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746821236; x=1747426036;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=F8VeWO2Ffbdj9gdoWovA3XKkHloLN+Lip1VxaGbMPn0=;
+        b=ExFUdBDqHM7v1HavB2UDqz59tOizBbIaIdPFXBqkSqp1iKU/iM/8P8n87qPoXMGxiZ
+         wkaDkVScZHnD7GyyYOCOR3cFfwj8MgGHliWarhX+jtSaKSkiJSO4/ycYQu2XMX3tQpcf
+         9IDk6TpA8/f036lkqboaWRaIkHvbIyja0zteQwknAutkvlGaRBWoYybETja3Xq5pcCO2
+         V5lTS/mYmHGDsIrGZ5P1r9zyp1/GG44FraPSdERFscdrCZr2PfhZtdtYHPHP0P0a9H02
+         WsQl+Y8FdgVsq95QKeYVjvtqeH/Vt3GWDOmGP/YWM1VHuOe24YGC6Z1paaYL9PdHiDp+
+         owkg==
+X-Gm-Message-State: AOJu0YyYfIFBXPoPDe4GvxPQNgxlY2Cb4ttNvEumqWyyZGNAfIV69tC+
+	nkhTzKKc0/Em2q6nCuqeHcTyFb9yEJuCpLeZ/VTbNjVe4WsRRkxg
+X-Gm-Gg: ASbGncuH2nrYWM67y8N6pvPzEEaqEUsNOf1jYELp6O8btI68AhxJJefmeH0AIlSNn8H
+	RD1ZIOXNcVm1CVAlLAU690J4VuWoSnOz0a+Lh5rMkjP3Z3Hlzk1fo/3ZvULKgZFth8UvbCbB3yq
+	1X7h4lClBsTmCiz6aJ5HOXWTttCnniWfTd4DZ4HPIfMitsEcNZ/MFIDdvybWtn4iI4opS7QTXA0
+	05nPHFv4qX77UGk2Gw0VELKUgXicvrGF83SPCLEsxVVojgFQWqz8mg/YPPgh1yBPBJYROPjbEuf
+	ZQAPsh4eDjiRiEK+mabgvNOeWA6yJHqcVPuQVWPsAlIfuRc=
+X-Google-Smtp-Source: AGHT+IGmvQfpeoREK+9YC6Y63/v+wEWPc2MW5SCkdLfAR66la1qdcRYmLHJmt8HnBqTY9lqzdaXV7Q==
+X-Received: by 2002:a17:902:ecc2:b0:22e:9f5:6f17 with SMTP id d9443c01a7336-22fc8b32d0amr53204585ad.13.1746821235936;
+        Fri, 09 May 2025 13:07:15 -0700 (PDT)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22fc75469d3sm21519735ad.41.2025.05.09.13.07.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 May 2025 13:07:15 -0700 (PDT)
+Message-ID: <e78b2cf09f6931ec8e7791e35c8b49f19bf1d4b5.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v1 08/11] bpf: Report arena faults to BPF stderr
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Andrii
+ Nakryiko	 <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau	 <martin.lau@kernel.org>, Emil Tsalapatis
+ <emil@etsalapatis.com>, Barret Rhoden	 <brho@google.com>, Matt Bobrowski
+ <mattbobrowski@google.com>, kkd@meta.com, 	kernel-team@meta.com
+Date: Fri, 09 May 2025 13:07:13 -0700
+In-Reply-To: <CAP01T74uq5Uyy6VHXyA_yVeO9rdU7svnQv90Z7auerApjbRfQA@mail.gmail.com>
+References: <20250507171720.1958296-1-memxor@gmail.com>
+	 <20250507171720.1958296-9-memxor@gmail.com>
+	 <a071c33a195642de5530f897880e44bc1416a86b.camel@gmail.com>
+	 <CAP01T74uq5Uyy6VHXyA_yVeO9rdU7svnQv90Z7auerApjbRfQA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCHv2 bpf-next 0/3] bpf: Retrieve ref_ctr_offset from uprobe perf
- link
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <174682113774.3728367.17943068400837968863.git-patchwork-notify@kernel.org>
-Date: Fri, 09 May 2025 20:05:37 +0000
-References: <20250509153539.779599-1-jolsa@kernel.org>
-In-Reply-To: <20250509153539.779599-1-jolsa@kernel.org>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- bpf@vger.kernel.org, linux-perf-users@vger.kernel.org, kafai@fb.com,
- songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
- haoluo@google.com, laoar.shao@gmail.com, qmo@kernel.org
 
-Hello:
+On Fri, 2025-05-09 at 22:01 +0200, Kumar Kartikeya Dwivedi wrote:
 
-This series was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+[...]
 
-On Fri,  9 May 2025 17:35:36 +0200 you wrote:
-> hi,
-> adding ref_ctr_offset retrieval for uprobe perf link info.
-> 
-> v2 changes:
->   - display ref_ctr_offset as hex number [Andrii]
->   - added acks
-> 
-> [...]
+> > >  bool ex_handler_bpf(const struct exception_table_entry *x, struct pt=
+_regs *regs)
+> > >  {
+> > > -     u32 reg =3D x->fixup >> 8;
+> > > +     u32 arena_reg =3D (x->fixup >> 8) & 0xff;
+> > > +     bool is_arena =3D !!arena_reg;
+> > > +     u32 reg =3D x->fixup >> 16;
+> > > +     unsigned long addr;
+> > > +
+> > > +     /* Read here, if src_reg is dst_reg for load, we'll write 0 to =
+it. */
+> > > +     if (is_arena)
+> > > +             addr =3D *(unsigned long *)((void *)regs + arena_reg);
+> >=20
+> > Is it necessary to also take offset into account when calculating addre=
+ss?
+> >=20
+>=20
+> Not sure what you mean? "arena_reg" is basically the offset of the
+> register holding the arena address within pt_regs.
 
-Here is the summary with links:
-  - [PATCHv2,bpf-next,1/3] bpf: Add support to retrieve ref_ctr_offset for uprobe perf link
-    https://git.kernel.org/bpf/bpf-next/c/823153334042
-  - [PATCHv2,bpf-next,2/3] selftests/bpf: Add link info test for ref_ctr_offset retrieval
-    https://git.kernel.org/bpf/bpf-next/c/d57293db64f5
-  - [PATCHv2,bpf-next,3/3] bpftool: Display ref_ctr_offset for uprobe link info
-    https://git.kernel.org/bpf/bpf-next/c/97596edfec01
+Arena access is translated as an instruction with three operands, e.g.:
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+  `movzx <dst>, byte ptr [<src> + r12 + <off>]`
 
+As far as I understand the code, currently `addr` takes into account
+`<src>` value, but not the `<off>` value.
+
+[...]
 
 
