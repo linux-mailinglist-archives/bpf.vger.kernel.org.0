@@ -1,111 +1,175 @@
-Return-Path: <bpf+bounces-57867-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57868-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B238AB1A65
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 18:25:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1BDBAB1A71
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 18:28:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 554DD1BA0C9E
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 16:21:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D3CB1896E6D
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 16:26:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E821221555;
-	Fri,  9 May 2025 16:21:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2456A2367DD;
+	Fri,  9 May 2025 16:26:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yy5IB319"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="oLANYEub"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68303235BF1
-	for <bpf@vger.kernel.org>; Fri,  9 May 2025 16:21:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03F2822ACEF;
+	Fri,  9 May 2025 16:26:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746807668; cv=none; b=PkGMTFnq8l5ElyF7D1ihGF2eV4AKhIWFfftMl/+IFvhOzTHQbqmGzmmkEbaCEo5CGIyPy4XaVid1Yi/g0XCmCfAkaEjn/yxvyGpx/IxvOHFK9XtblwvjhfjMLJaP1x6HJRke0xS9xw7RwL4r04jF78gdExngt7AEOs3wOsFf5M0=
+	t=1746807985; cv=none; b=NykyCUiCotxtyTL+7zc/Mifj2yEd9RJIZU8YL88lvOljk4lMDIkQfuX3IfiBeSQQnfxjcj1npDGOrw4cXg0j+1OmnoXy+8Xy/dV21HB4pXRJ6td+w6Rdgg1BCzeZMvx+BJ89QbLA/TBLZBg8DP4NAZCf5urw1cBqa2koUAqDu/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746807668; c=relaxed/simple;
-	bh=7d3te/IkIX2bt/bAY3VVheOuZ7MxIGEYFidQKWsaAa8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZE4FrLBAoO00lJuXwKt19WvLlgFjefmA8b6zFXgeTngAz0F2D/mOTFwuFqyX4iXrZxAJBn0ay7Foyt75xt95auspe4M2CwBayY0Tn4wWR+LqE5CH4kUdh5zpJbMBLDUkms6ngX0/2czK2kXRX+c6UzEY6GEmwp1tdWyaAIDuIKo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yy5IB319; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3a1d8c0966fso1097981f8f.1
-        for <bpf@vger.kernel.org>; Fri, 09 May 2025 09:21:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746807664; x=1747412464; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wkqBwUVLqU2Vns/z0wrnWibbZxs7vugGHRzSTQ3DLoY=;
-        b=Yy5IB3198AVsQi/0UuZyaJmlBCFQDb2PGri+5qx/FYWtaq5zVtTYp6iEtctf3iZ0/Z
-         H06m0YCrEpJrrIa3iWfaQXz9BaVaxcYpGv5PN+SqedtcC/pGnAqCn4nmON3wuR0dn4xG
-         Bc7pt9KcmKSCiJEJO7ot+0xzuAF47Wp2drIXw19EbIbAZw3zPhWSg9IJh/oflohQJ3TX
-         9eMK4+IP+C1NZNfxGMkM6XvfywreJHoJ1y5KX0koAjetnWXrIsVaqYNyLBh3ULXf+9VU
-         OfTSmOkCJmniIWymduZ2AWwwgHbx6Vk2SBI05uPsfqwDI3EGB7qvWcd+qqfoDD6Jx+Zx
-         glww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746807665; x=1747412465;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wkqBwUVLqU2Vns/z0wrnWibbZxs7vugGHRzSTQ3DLoY=;
-        b=BNqW2hkCUS4eWZDQ643OtRp8VJ/F6tYT101UsQ1ND8yOFs8x1xH/+vcGRiY0CrrzNQ
-         vaUydbbbPhpkiMdkS3zH93yvyO5XI1+3doIRguyZqMaFgApaw667kLYmys4bcB3Fzvs/
-         zPAmgC/hJA/tgBc/eLLsQwFs/CRh33EHTQ/iprPGRcpReCwkLDq3x6puLtmCYsBXr65E
-         ZOh5r+tiOtxyZk34EtzdZRhaDYVABd8qgSOVQvKw0UprRUOQP7eZtORKroS3yblFpR8+
-         uG4nLjD/dYCC0UZObU3ZoIZafwV5gXY3slbUc1WcrR2gzAW0z/pwUZ4mJgwPvmDrya78
-         /DHw==
-X-Forwarded-Encrypted: i=1; AJvYcCV/sjNTpH96DvHdcri3JWFCdqHK2bVdKBb4uB4LGZFggIuNClCTYlKsjanH0nrbAk5J/8M=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywke6yxPwiLagjnLk9GUhsnJcjVzC0XOHbqJ3LmJsC5d6Fk4vr9
-	rrB31+BVNdmtrDGqShUd6c7WnNhYdmfXtIytYDLg6bXyrPU8HqI7gatJQRXK7g73VqaAXsj1kya
-	KlDk5JFA2zSALUCk8723gMYefQiM=
-X-Gm-Gg: ASbGncsBU+7I00q+ixEwxaCpZOVvLccL1nIeVA/BNFZtqL2J/hZz1X7gkMunmkpyxP+
-	5zxARFfJx7dFdpVZKJOjzKTOwE6o9Q1Fl6iszQhsde/BcfTzLljXs2jcnnA5z2pIuxXb1szY/ZK
-	Byz9gGkwPtLyOemWIT5hCZxRzBjCoSgk6yDSWHfQ==
-X-Google-Smtp-Source: AGHT+IEXOBxalvMv6t0v7CAJtIZU+3oMtzGOU8ypQmg6a+ES/CIiFwvhd0/9r1GmXbFMlSnCHFB21QntXcj2uq3s1b8=
-X-Received: by 2002:a05:6000:2502:b0:3a0:af41:f92f with SMTP id
- ffacd0b85a97d-3a0b9941d91mr7722042f8f.20.1746807664487; Fri, 09 May 2025
- 09:21:04 -0700 (PDT)
+	s=arc-20240116; t=1746807985; c=relaxed/simple;
+	bh=lnR1y+zHULWTqrlJAQ5R+4+2iYh8oJTzze9UjaZi2Eo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=L5hXdmu5hme8fj4+EwCEAE3JrzSmn1LPZzusZUdn46GFTDw+oW03H3l69Ma96+SNCn1dhkk1qijIa86zWIDvG9cQOjdwh2eyvSmjLgJoMRsN9etMQbIzFU0KDAcmAPIsh6iXoHZFuqmyWYKyp7JBDc0+/JCK0Bp2q6szRFt+6os=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=oLANYEub; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 549EYAvH031612;
+	Fri, 9 May 2025 16:25:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=pDz77u
+	zBNO2nIiR2GXoB/HFEY5WV+wPEqr0qWm3PIiA=; b=oLANYEubYSQ8/6vdHfuGIi
+	+bffgxTLERPaLCv+6i6gshdUphuva+xjnshn0qcK/vRGddOgY/4VX2851VCqHENE
+	9WzLtuGpYpQdp13kE6ucgl9o8DDz6RIEJpqJyQxx5WgiWhv+TO9vpUumOoxZGXgD
+	azi9MhjomFnazCqlIpfwXFcX7ESbCytiiNzGtzNkii8a8rqmviXTNt3kz4XREObY
+	hD7sJ9+oB7FRB270gpdEvAvWz/vObD34VZNQ0EFbpj9YOozyc+VChMxcXHyVeZGH
+	S1gdQA+w7fSvaVpGcEhpVCS8YxpO+cI0hQ+c4NJ/btaVSLuQo9f0C5z22odT41eg
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46h4rwd0mq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 09 May 2025 16:25:54 +0000 (GMT)
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 549GPoqY024125;
+	Fri, 9 May 2025 16:25:54 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46h4rwd0mj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 09 May 2025 16:25:54 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 549EsvJP001304;
+	Fri, 9 May 2025 16:25:53 GMT
+Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 46dwftvk2r-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 09 May 2025 16:25:53 +0000
+Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
+	by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 549GPqBP24642072
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 9 May 2025 16:25:52 GMT
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4943858062;
+	Fri,  9 May 2025 16:25:52 +0000 (GMT)
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D19845805E;
+	Fri,  9 May 2025 16:25:43 +0000 (GMT)
+Received: from [9.61.252.85] (unknown [9.61.252.85])
+	by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Fri,  9 May 2025 16:25:43 +0000 (GMT)
+Message-ID: <10152245-9d67-4a4a-acf8-b743bcf42254@linux.ibm.com>
+Date: Fri, 9 May 2025 21:55:42 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1746598898.git.vmalik@redhat.com> <1497b70f2a948fe29559c6bfb03551a7cc8638f1.1746598898.git.vmalik@redhat.com>
- <aBx0qmVvL84Jb3rf@google.com>
-In-Reply-To: <aBx0qmVvL84Jb3rf@google.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 9 May 2025 09:20:53 -0700
-X-Gm-Features: AX0GCFt_pMwGxaxSiTenX32H2Vn2ypF7pQ-bMfKvi9N0McXxCFLF20DzoG_m5rc
-Message-ID: <CAADnVQJD3dQfuT2ExXL5iGeVj0TJ9L5KWGovmsSz5giKft4ryQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 1/4] bpf: Teach vefier to handle const ptrs as
- args to kfuncs
-To: Matt Bobrowski <mattbobrowski@google.com>
-Cc: Viktor Malik <vmalik@redhat.com>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] selftests/bpf: Fix bpf selftest build warning
+Content-Language: en-GB
+To: Saket Kumar Bhaskar <skb99@linux.ibm.com>, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-next@vger.kernel.org
+Cc: hbathini@linux.ibm.com, maddy@linux.ibm.com, daniel@iogearbox.net,
+        mykolal@fb.com, yoong.siang.song@intel.com, martin.lau@linux.dev,
+        song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
+        jolsa@kernel.org, shuah@kernel.org
+References: <20250509123802.695574-1-skb99@linux.ibm.com>
+From: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+In-Reply-To: <20250509123802.695574-1-skb99@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=QIxoRhLL c=1 sm=1 tr=0 ts=681e2c92 cx=c_pps a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17 a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=QyXUC8HyAAAA:8 a=cjiv8ubDXIRvis6Dy9MA:9
+ a=QEXdDO2ut3YA:10
+X-Proofpoint-GUID: onYZqRvaz-xhmNZgpDBhA0Bg_2NVAFhw
+X-Proofpoint-ORIG-GUID: R0MOMKTa911bxpp-gYxhSAy3BRFk7zNT
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTA5MDE1OSBTYWx0ZWRfX56xS6pVkJ/Op AaqU0y3/vQntVE+eZlL6/1dkIfyGf7qZ6RZRpbH5IsxvCZ5rF0vWmRYyD3t8I+UY/kPHe1uyfIu CLJAstUPaw7QscwWXHsaBP9UclX5UsgNEW17mBs8BwrAbacx7f0TWlrTD+Mkw7tvD6TbLYaPszL
+ 9foTXF/T5W67d/d7XLbMgmf/uBtlWaL2UDvWUI0gt9VD4/w43iKs2Nvo2z8eUOTmyCkufXSScnf 8JxSz3kQOHNMsSWVFVsokh8mbFlptYo/8bHz2FCod1tTi52uB92Hw14HyuBMER6T8jSiLtNOxi1 d3nllFmF58bJThX1PqY/P9ez9+fjwLL96lqqGpGZ+Y4zeBP8n3nw/zEp15jm2lH81B3+t6F3BRx
+ aq0uoowGdTO3+cynumusKOrTZR5AROAgx0IlABQAYi8+NnNLnGng8qiykVizDYDZojsRqj4M
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-05-09_06,2025-05-09_01,2025-02-21_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ suspectscore=0 lowpriorityscore=0 phishscore=0 clxscore=1011
+ malwarescore=0 bulkscore=0 adultscore=0 mlxlogscore=941 spamscore=0
+ priorityscore=1501 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2504070000
+ definitions=main-2505090159
 
-On Thu, May 8, 2025 at 2:09=E2=80=AFAM Matt Bobrowski <mattbobrowski@google=
-.com> wrote:
->
-> >
-> >  static int check_mem_reg(struct bpf_verifier_env *env, struct bpf_reg_=
-state *reg,
-> > -                      u32 regno, u32 mem_size)
-> > +                      u32 regno, u32 mem_size, bool read_only)
->
-> Maybe s/read_only/write_mem_access?
 
-'bool' arguments are not readable at the callsite.
-Let's use enum bpf_access_type BPF_READ|WRITE here
-or introduce another enum ?
+On 09/05/25 6:08 pm, Saket Kumar Bhaskar wrote:
+> On linux-next, build for bpf selftest displays a warning:
+>
+> Warning: Kernel ABI header at 'tools/include/uapi/linux/if_xdp.h'
+> differs from latest version at 'include/uapi/linux/if_xdp.h'.
+>
+> Commit 8066e388be48 ("net: add UAPI to the header guard in various network headers")
+> changed the header guard from _LINUX_IF_XDP_H to _UAPI_LINUX_IF_XDP_H
+> in include/uapi/linux/if_xdp.h.
+>
+> To resolve the warning, update tools/include/uapi/linux/if_xdp.h
+> to align with the changes in include/uapi/linux/if_xdp.h
+>
+> Reported-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+> Closes: https://lore.kernel.org/all/c2bc466d-dff2-4d0d-a797-9af7f676c065@linux.ibm.com/
+> Signed-off-by: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+> ---
+>   tools/include/uapi/linux/if_xdp.h | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/tools/include/uapi/linux/if_xdp.h b/tools/include/uapi/linux/if_xdp.h
+> index 42869770776e..44f2bb93e7e6 100644
+> --- a/tools/include/uapi/linux/if_xdp.h
+> +++ b/tools/include/uapi/linux/if_xdp.h
+> @@ -7,8 +7,8 @@
+>    *	      Magnus Karlsson <magnus.karlsson@intel.com>
+>    */
+>   
+> -#ifndef _LINUX_IF_XDP_H
+> -#define _LINUX_IF_XDP_H
+> +#ifndef _UAPI_LINUX_IF_XDP_H
+> +#define _UAPI_LINUX_IF_XDP_H
+>   
+>   #include <linux/types.h>
+>   
+> @@ -180,4 +180,4 @@ struct xdp_desc {
+>   /* TX packet carries valid metadata. */
+>   #define XDP_TX_METADATA (1 << 1)
+>   
+> -#endif /* _LINUX_IF_XDP_H */
+> +#endif /* _UAPI_LINUX_IF_XDP_H */
+
+
+This patch fixes the reported issue. Hence,
+
+
+Tested-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+
+
+
+Regards,
+
+Venkat.
+
 
