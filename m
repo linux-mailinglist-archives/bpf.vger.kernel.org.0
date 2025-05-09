@@ -1,153 +1,113 @@
-Return-Path: <bpf+bounces-57894-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57895-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16304AB1B74
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 19:14:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CE03AB1B7A
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 19:18:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E990A5232E1
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 17:14:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 941AE1C440E2
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 17:18:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 659D2239E6E;
-	Fri,  9 May 2025 17:14:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D945238C10;
+	Fri,  9 May 2025 17:18:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Qp8pTehg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aCSHeMYN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37879239090
-	for <bpf@vger.kernel.org>; Fri,  9 May 2025 17:14:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8FA386337
+	for <bpf@vger.kernel.org>; Fri,  9 May 2025 17:18:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746810852; cv=none; b=P/lFHYAunUK1N26OyS5INsZyrNjoknKk9+xr9O1ICCEvMHmgKy41P+/Jg8JwGSPQyqL8jYGmtZhQq37ypHHrgPTUE4DK/vMx5SniVfs5EIb4gaIXQacH1H53+6kO7arJxWocOoe0piEnbcBW2VdszWurFo9VC4WXiaIpMdesN7Q=
+	t=1746811116; cv=none; b=gOW7YdX5C1Zt+KO6KM/QHnCrLHAiFQmd6nbYG/yOnGZWg5WfmcEWjGT0kDug9CkDH589zcQ9j+ANlU0A6Pt5PFS8QdwLnumnsMbaXTqSP2LlXQqyM117hm1Nw426LkhE4fXAXg5R8oODyG8Xr+HnR0CdJ7BU6tQvedRjuavbPGU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746810852; c=relaxed/simple;
-	bh=smM82pNC+KSoX+27bEVUeyoSpZ4hnMM+We8D5KWbT6U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gzemtA/4UUPessWSKOJcp5MT49mmhVhU4TQU3W+dsAXuddQX96dokNDEAeVRUnAEnCi7kvkI53VO870UpIbtslz6K2+k/kpwdvRxTwvICut/zmMxZEQqM9oLwIpWWgts7ia+fHx8SnAZJl5WdJ6CDpcZW9KPsZrJLdnjfFipROY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Qp8pTehg; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-43d5f10e1aaso2355e9.0
-        for <bpf@vger.kernel.org>; Fri, 09 May 2025 10:14:09 -0700 (PDT)
+	s=arc-20240116; t=1746811116; c=relaxed/simple;
+	bh=wpIg7KRbq0VNadhDPcZGM731tCiXlcKJVthvm8QJl6U=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=V81Z+9jnpvCv+rTBzwsAHCwIJGck9Vzzvp74E48wsfXwo+bq7bzP5mWemplejM6kPexSiLMZll7vTPkRiHfcUcZM6ysxwFK/vc/NeKp62CU3viOxERhYbbZLEiCI4quQPvIBXYXyOZJ680+/pVOz16XlZc4tvd8iJAYKEFIdjhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aCSHeMYN; arc=none smtp.client-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-30a9718de94so2348150a91.0
+        for <bpf@vger.kernel.org>; Fri, 09 May 2025 10:18:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1746810848; x=1747415648; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=smM82pNC+KSoX+27bEVUeyoSpZ4hnMM+We8D5KWbT6U=;
-        b=Qp8pTehgDCzFuzCaQcXNT3tbomqQRLWhf6UY6+SlEnADW0y9q6VBSyKv7LCaIG+CeN
-         r+JDzh4tlGmqBYYO7LXZoov+MtjRLgBmy+NXJNraEGfMZHtTcCBNlEKa1FBLztps7d0y
-         Ue2EXlQ6EwbURpD8q7k+SmAAylDBeGXbhwovA0fKWl8ziUL/yCmD8VetNkHi9kS3bGPP
-         zO04pFK8D2VLZsaLRDbJKnU4J9vg9iloj7q34oPCqufykSZMnDRKG8J1ltXibyrHkSX9
-         OLl0aPREiImtCq/V4vpXdUQ0NFqLY0BMli5aChtLZyQvVr4npqUt91n5cGBNrr87REnW
-         JI1w==
+        d=gmail.com; s=20230601; t=1746811114; x=1747415914; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=wpIg7KRbq0VNadhDPcZGM731tCiXlcKJVthvm8QJl6U=;
+        b=aCSHeMYNieCxc2uh/W4LdLuCzhgRi4uG8QchmJtgrQPlWp2T3OH4Cts94TPRCpCQJe
+         AuvZSqH7WQbQtT2Gxc++t54tXMLQGaGujKVklmWUdxU81UhUsTOnYqmntasdtPhApiy1
+         b5aT2Y+T4gBxQCSWxWZNLKO4bLVsZGRsQptTxDJFgmTnegps6p+/qj0fJ9MwCJOgKipq
+         KxbQT4UCfOtfrHrCdVQ+tcKrqFxzZJ8gLvs7L7+SfxsrdyjI6ot2Hr5eTaDLMibqMYYO
+         zX85bG0Rp4pqAd/BBfC4J6Y18DtpYZz9lmVcugQwHCxhQDfcrtiqYSqjnkiLdF+1xXrb
+         3nzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746810848; x=1747415648;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=smM82pNC+KSoX+27bEVUeyoSpZ4hnMM+We8D5KWbT6U=;
-        b=eVTqJGHUpHqKFHNRAgy9+hpcQJFY0m8ZtHyilpvye5l7DW/B/N/qKEk1+XeZlB2Z8E
-         4Es7061WSb+gI1UtkDTAGXURAPX7dyEaY4DlBDqx8jP8PcCLDgwmDvPzqpsr1mugGTrp
-         xyIyxslRr8BVfeMLlflWITQRUP4lGCMFCvk0M7I4aGmdASPssfv9UZ0jaoH82GEsjKbg
-         xa8rlI9Zahe5ipHvPW3wFTznGU3w1wAucJndy0dIkWvmT3WhM+BzYjnYIfjWW7jCCSgF
-         4KwtkP54mFvB4Z3GAx6deqt1+W2+dx5USg1OI/i8vTmaspxV98TF1RERJqg3bU8TNEIs
-         Ts9A==
-X-Forwarded-Encrypted: i=1; AJvYcCXgGnGWJ78GjXUx8/3dFCfsk3dpHzv3ahnp4C+6F8/CKlLpgBMZG71PW5HS0awRk0PJqnk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx1tWUYfBvDp/Nt8gXmg3s4yDsqFBU2N/bH4dwGeMtcIO66dY1o
-	8lblR2A31s1nEYCSSYhJTzuaQ4xmjAeVBqbaMt9BlCQvrAqm+4twtEEe5KdeXU1GRj37bNDs5fJ
-	ej2bIxY6R7/rlmGAV2JHHL5XQwMX4FjO5eD0p
-X-Gm-Gg: ASbGnctPP7Us1vcXEiYHVmUaeQUeDmHNqOYyCiGr/TO4IeVXx2rxdvEO4ciaUcCSx25
-	Bd0bRS2JdUj6Cz98EM8pV5ICVaMbT2cJtsxe+o/SdT2NrPQzczXKVbSZiYMame5n4EFCSpSf9vX
-	aMf8GRxUdqXaScgU9lPzQj
-X-Google-Smtp-Source: AGHT+IH40mARNMU/tf7BP0uCdyGA5liGBuBykAAd7c4WUrmrx1q7itlR5BUHqvu/mY8+HZhP0nMjqB2T+rpZhsONAQE=
-X-Received: by 2002:a05:600c:1ca1:b0:439:8d84:32ff with SMTP id
- 5b1f17b1804b1-442d7c36971mr1213425e9.3.1746810848319; Fri, 09 May 2025
- 10:14:08 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1746811114; x=1747415914;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wpIg7KRbq0VNadhDPcZGM731tCiXlcKJVthvm8QJl6U=;
+        b=nuNBoBkJm6hSZRnN0rdh3AvCkpZdQDAPLD4hYFM49W4XXhs8cnAD/EmekZSp43Sb4Z
+         AGQ4E64zNA5ALLrF32Dw1QHz8ka7OFn/4JUHxQs5b92p4pLHN6bA8qF17FWdvmAPNjt9
+         scYyN39gacITgm87i1GN7OHFU3abbWrBWw0xlEevJ8YwtZQhJZJbCBkUaDVqdsa5TsJj
+         JUq8DTejhOV7r0EwygR/sMqYFzkWRRe+rp8c++semiTY/8YDCIP0mu5n/JnlPYQijueV
+         /uwahHriCpesqsGssIeEivH/RMjW9U7F4pw+VdLuqNDYzNWuWdGjEr+YlLuTqz1HIm8R
+         xkLQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXcyY75MeUkpjHjS8IpJOA18EZJKKScvftBjSK0CSp0JPzmI6ksPNP+tttbvGs3ydsq4aY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx1rR7WAKG/PFo35uZ5IQV+vw6fvaQo9zg59C8f4iwDqZurCv5A
+	vuoD10EuJwsMzvf9FdbxqgmQ4oV198y/TN1gIp9RXL0rWSGX6aNz
+X-Gm-Gg: ASbGncvxdZat3nLfkJPGpRuEmhTO6cJzoG4+KuxBS2vGJpGikA46dLnyJPc6/mDvcpO
+	VwiGoEOxcLAjrGFj3wsh4QqvV/noOdXpne+WTzofHh+36jMk20wjj+79vDqG2RLT6IAUB8vaCbW
+	PmwfhKquVH6WVTF5d8pb9E9biQUr27ttxQiA0t/33534CNIoRzqUwUhgnHNWKX7sXoR63rmswuJ
+	/yPzDeW8YfYzOkXpKB5jlcxTuUGHerXcPrQyQEqT04zXgKNaAKV3iLJv6PbPDE3n4mzHZ346DJE
+	26ochh9SBwDbVMBYdNKkavXzFzvAOCFhee0K
+X-Google-Smtp-Source: AGHT+IE2RIdr6mxU+Klolb3YygYluJ/MwSc8x+KRqZvMKd8OwZj2iAQUUrdi9ltwQp2u9ikWtQIrcg==
+X-Received: by 2002:a17:90b:38c9:b0:30a:2162:c76a with SMTP id 98e67ed59e1d1-30c3d62c666mr6359633a91.25.1746811113760;
+        Fri, 09 May 2025 10:18:33 -0700 (PDT)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-30c39dc883bsm2097897a91.1.2025.05.09.10.18.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 May 2025 10:18:33 -0700 (PDT)
+Message-ID: <2a3cd48268044afdb6f285bbfaf33887d2e46cb3.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v1 11/11] selftests/bpf: Add tests for prog
+ streams
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
+ <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai
+ Lau <martin.lau@kernel.org>, Emil Tsalapatis	 <emil@etsalapatis.com>,
+ Barret Rhoden <brho@google.com>, Matt Bobrowski	
+ <mattbobrowski@google.com>, kkd@meta.com, kernel-team@meta.com
+Date: Fri, 09 May 2025 10:18:30 -0700
+In-Reply-To: <20250507171720.1958296-12-memxor@gmail.com>
+References: <20250507171720.1958296-1-memxor@gmail.com>
+	 <20250507171720.1958296-12-memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250508182025.2961555-1-tjmercier@google.com>
- <20250508182025.2961555-5-tjmercier@google.com> <CAPhsuW6z90sErDTA97_MN2=QKHc96Ge3HwGD1ZoMYj6Sh7GYVA@mail.gmail.com>
-In-Reply-To: <CAPhsuW6z90sErDTA97_MN2=QKHc96Ge3HwGD1ZoMYj6Sh7GYVA@mail.gmail.com>
-From: "T.J. Mercier" <tjmercier@google.com>
-Date: Fri, 9 May 2025 10:13:56 -0700
-X-Gm-Features: AX0GCFu8BoOcyJCPnA7QXYP7Ly2ZIBuYiyNl-jSbUErDvQFnq_Cx4tGRHuAx2Fg
-Message-ID: <CABdmKX1A0Ard1yoV9SAV4jZfrD3tvMz2cftcuFPhQgkAKDk58w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 4/5] selftests/bpf: Add test for dmabuf_iter
-To: Song Liu <song@kernel.org>
-Cc: sumit.semwal@linaro.org, christian.koenig@amd.com, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
-	skhan@linuxfoundation.org, alexei.starovoitov@gmail.com, 
-	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org, 
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, android-mm@google.com, 
-	simona@ffwll.ch, eddyz87@gmail.com, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 8, 2025 at 5:36=E2=80=AFPM Song Liu <song@kernel.org> wrote:
->
-> On Thu, May 8, 2025 at 11:20=E2=80=AFAM T.J. Mercier <tjmercier@google.co=
-m> wrote:
-> [...]
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/dmabuf_iter.c b/too=
-ls/testing/selftests/bpf/prog_tests/dmabuf_iter.c
-> > new file mode 100644
-> > index 000000000000..35745f4ce0f8
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/dmabuf_iter.c
-> > @@ -0,0 +1,224 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/* Copyright (c) 2025 Google */
-> > +
-> > +#include <test_progs.h>
-> > +#include <bpf/libbpf.h>
-> > +#include <bpf/btf.h>
-> > +#include "dmabuf_iter.skel.h"
-> > +
-> > +#include <fcntl.h>
-> > +#include <stdbool.h>
-> > +#include <stdio.h>
-> > +#include <stdlib.h>
-> > +#include <string.h>
-> > +#include <sys/ioctl.h>
-> > +#include <sys/mman.h>
-> > +#include <unistd.h>
-> > +
-> > +#include <linux/dma-buf.h>
-> > +#include <linux/dma-heap.h>
-> > +#include <linux/udmabuf.h>
-> > +
-> > +static int memfd, udmabuf;
->
-> Global fds are weird. AFAICT, we don't really need them
-> to be global? If we really need them to be global, please
-> initialize them to -1, just in case we close(0) by accident.
+On Wed, 2025-05-07 at 10:17 -0700, Kumar Kartikeya Dwivedi wrote:
+> Add selftests to stress test the various facets of the stream API,
+> memory allocation pattern, and ensuring dumping support is tested and
+> functional. Create symlink to bpftool stream.bpf.c and use it to test
+> the support to dump messages to ringbuf in user space, and verify
+> output.
+>=20
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
 
-Hmm, no we don't really need them to be global but I didn't really
-want to pass all these variables around to all the setup and test
-functions. The fd lifetimes are nearly the whole program lifetime
-anyways, and just need to exist without actually being used for
-anything. I'll add the -1 initialization as you suggest. If udmabuf
-creation failed, we would have done a close(0) in
-destroy_test_buffers() on the sysheap_dmabuf fd.
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
+[...]
 
-> > +static const char udmabuf_test_buffer_name[DMA_BUF_NAME_LEN] =3D "udma=
-buf_test_buffer_for_iter";
-> > +static size_t udmabuf_test_buffer_size;
-> > +static int sysheap_dmabuf;
-> > +static const char sysheap_test_buffer_name[DMA_BUF_NAME_LEN] =3D "sysh=
-eap_test_buffer_for_iter";
-> > +static size_t sysheap_test_buffer_size;
 
