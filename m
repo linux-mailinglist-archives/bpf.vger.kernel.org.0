@@ -1,149 +1,176 @@
-Return-Path: <bpf+bounces-57916-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57917-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6173FAB1D22
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 21:06:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDDEBAB1D45
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 21:28:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21DE93B5584
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 19:05:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 616557AF222
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 19:27:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4174C24290C;
-	Fri,  9 May 2025 19:05:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 900EA25D1FE;
+	Fri,  9 May 2025 19:28:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UpamvVxO"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E01F92367CB;
-	Fri,  9 May 2025 19:05:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A06AD24061F
+	for <bpf@vger.kernel.org>; Fri,  9 May 2025 19:28:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746817555; cv=none; b=YAiV6+pMKMCGli3RRJGgEhvDDPuO1Cgm9Ac3cueklOE9FqNRg8xrYwpo5Eps8GnGnmdy+dv8ufqimfsjy9siqb6Zr1PSqb19KLI5rpfYbTdc8iHBdsOutdJ8Hm+PamuR/0r2nG7t2tp+uAXiHgV3i4LzGKXjv0LftyKIReh+MKo=
+	t=1746818924; cv=none; b=p4BI5i1RZLmwsyl+8qmAkb7QlMVZtz3/1ucbJ9mqldBgPsdtPwp5qtrbT9b45SCwOeQonEPhLnLcaiKXXAsPUDDdqdDk9gxDafPsXfXOBAGsGDUE4t1X2ph81+PTt/imYt5H/AG/NaYT4lEL0GFXdVsGoKLZIOB+7cZ3l6+XuSg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746817555; c=relaxed/simple;
-	bh=6qekO40XHU+e21rQEBlBsBg67fGBnBKtjTzK+qcS46c=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=YAm+hEN6mncbQy4iz4bIQgsJX3NCsPkqZ8g+PR+C12oQNjlcIDYsGPe28MFpjCFSfRL5NP4SnVDwk7kVY0BOZWaqWTu4jFbwrPWH4ucwX2rkncH7I/dqBQ3dmqYumSAQU5+xhTHPEBL0dBLMT5NWxg1zkiOLoenG77f9RMnQKas=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0166C4CEE4;
-	Fri,  9 May 2025 19:05:53 +0000 (UTC)
-Date: Fri, 9 May 2025 15:06:09 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, bpf@vger.kernel.org, netdev
- <netdev@vger.kernel.org>, Jiri Olsa <olsajiri@gmail.com>, Peter Zijlstra
- <peterz@infradead.org>, David Ahern <dsahern@kernel.org>, Juri Lelli
- <juri.lelli@gmail.com>, Breno Leitao <leitao@debian.org>, Alexei
- Starovoitov <alexei.starovoitov@gmail.com>, Gabriele Monaco
- <gmonaco@redhat.com>, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH v2] tracepoint: Have tracepoints created with
- DECLARE_TRACE() have _tp suffix
-Message-ID: <20250509150609.5cb7c7a8@gandalf.local.home>
-In-Reply-To: <CAEf4BzZxDPpsTnger+UXL9wbrpK5gf_9YD2fD0VNA1nC7bcwUg@mail.gmail.com>
-References: <20250507162049.30a3ccae@gandalf.local.home>
-	<CAEf4BzZxDPpsTnger+UXL9wbrpK5gf_9YD2fD0VNA1nC7bcwUg@mail.gmail.com>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1746818924; c=relaxed/simple;
+	bh=jv5wl0bqoNIbsTdcNGwQ1U9dLQCnieUS2IPZoEXmnbU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=g6by+GR1DEGrx9ag+JXUlsryLGbN5KZX/9Ne6R6dRJHEqkat43Z7VUt5AdS3AJ2NTFzn/NwI68flk9/+AipcoYErKOizNWudfnisxAbARjpet2U2CL3zCru3U6iSzdaUqv5AgwmZcrKCQ+ZxiJR9Kz/vErPnTDJTV2g4xbs32NQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UpamvVxO; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-30a8c9906e5so3202767a91.1
+        for <bpf@vger.kernel.org>; Fri, 09 May 2025 12:28:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1746818922; x=1747423722; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=57CgntzLAx+GelZm2us4TxGqwZ3997NQuG5gamqDxg8=;
+        b=UpamvVxO9dt38d3aFztkMjZq2zoEvMAxLuTfvCW4GOja07Oc30dANB8HD+QZjhwFiI
+         64xVSQIfcngTU+QA482ErdIsGqrFzCEX7yKjx1OQyizWFF1OQhuIYnys4tq8vUlF7HvX
+         KcJzUtck4LSC1CUHVBfp+2z5/z6oYDywyNNzAPl3WZw6at+4Zpi8YwpcYCxhiggfcaFs
+         vGiHZpVlT/ja+VudkzzNtagrsNjQfv46P5Vgb3uy5ml6aao6NW+anTABM5a2AYwE0Bt5
+         G4S8Tzk5lfUOgn8CJcks7MIsVNtGEru5INn7tyKlhmUq3FzNBSrfcHr/r5oLXSpnFSZ4
+         dAfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746818922; x=1747423722;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=57CgntzLAx+GelZm2us4TxGqwZ3997NQuG5gamqDxg8=;
+        b=ZnWMcF8bBnPjb0+6g1gEMjavBgM14FB/wFTyTYmMaZLkp7zbrU9gbRfCSoL5lK4VKh
+         v7uJwaiy+gpgXA0YRe/R3HC26AWFbbeT2fCpSumDlr1LI7eQ+h5429WLJQFYsoV59JhS
+         aSS70ch+q+cJQB7iHvHB4Eg4PRVp14I/DDvhOuIkutvzIYuz6Aq0jbFX7FwOCPlX90y3
+         egQAN0i298oSmIrCGSxkF39cSGYxYbX9YLDcMDLy01RR2gsmfU85aQc6oNYs51wLVBZO
+         m0ZbBmUUVA5S9WPZNbC7cgorwviXn7Wmr/iovoUHVsB83g0harbNwwA0YHeWvvJlFdlS
+         kieQ==
+X-Forwarded-Encrypted: i=1; AJvYcCULuDId6KbhOJ5bcx+qH6gQ/lPY38NuHEYdPM8r/mlLJSYXvkqheiqAewCOnshjEuICzH8=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx+kRtLJ9SuR5WqyBx2qJwVwiAywKw1NWvVbk+hXmYWesuMNMwx
+	SPUzPP1QbnvKzYHdBCVF3wo12Nc+sArRLQr18NCcmaFtBehohH6L
+X-Gm-Gg: ASbGncv3CSeW/4y1cPylZOvfVyIrETCIhF039O26qjNXktO+mr1AgSqaxvLbzQp+yHI
+	snijHCJeYL3L6+gSF4YwLeKOMYEubYrT21zYG8Jjnu50bNDZ8bNmdS+IfippPWP90Ubbwekc8n9
+	yNpw67mSRYCZPd7oZtasZ60sF2nZpCgLyzs7ng8eUT90tZNr4mmlrDjY0GzI9VprXLeSfCYPn+x
+	IToO+BL/zTkEUjzJSKRwvFhK63DgjbKvgDObR8LJjFg0fHDRc6M5h873bTuwT6LQG+4hZkOpFgG
+	/GcK+A9lEseSAYJdHpTOK/ejIw/I1+unq4cLw5nuKa+hczg=
+X-Google-Smtp-Source: AGHT+IEBxlSa9cr2RhnB+3A4dcrSO5rs4zymsNKCwFxZcZNWEnGoBZ9208QB+ZgkUVLa/RQ5CEMeJw==
+X-Received: by 2002:a17:90b:2688:b0:301:1bce:c258 with SMTP id 98e67ed59e1d1-30c3d64711emr6415421a91.22.1746818921758;
+        Fri, 09 May 2025 12:28:41 -0700 (PDT)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-30c39e760casm2209364a91.45.2025.05.09.12.28.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 May 2025 12:28:41 -0700 (PDT)
+Message-ID: <a071c33a195642de5530f897880e44bc1416a86b.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v1 08/11] bpf: Report arena faults to BPF stderr
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
+ <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai
+ Lau <martin.lau@kernel.org>, Emil Tsalapatis	 <emil@etsalapatis.com>,
+ Barret Rhoden <brho@google.com>, Matt Bobrowski	
+ <mattbobrowski@google.com>, kkd@meta.com, kernel-team@meta.com
+Date: Fri, 09 May 2025 12:28:39 -0700
+In-Reply-To: <20250507171720.1958296-9-memxor@gmail.com>
+References: <20250507171720.1958296-1-memxor@gmail.com>
+	 <20250507171720.1958296-9-memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 
-On Fri, 9 May 2025 11:27:22 -0700
-Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+On Wed, 2025-05-07 at 10:17 -0700, Kumar Kartikeya Dwivedi wrote:
+> Begin reporting arena page faults and the faulting address to BPF
+> program's stderr, for now limited to x86, but arm64 support should
+> be easy to add.
+>=20
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
 
-> > diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_testmod-events.h b/tools/testing/selftests/bpf/test_kmods/bpf_testmod-events.h
-> > index aeef86b3da74..2bac14ef507f 100644
-> > --- a/tools/testing/selftests/bpf/test_kmods/bpf_testmod-events.h
-> > +++ b/tools/testing/selftests/bpf/test_kmods/bpf_testmod-events.h
-> > @@ -42,7 +42,7 @@ DECLARE_TRACE(bpf_testmod_test_nullable_bare,
-> >
-> >  struct sk_buff;
-> >
-> > -DECLARE_TRACE(bpf_testmod_test_raw_tp_null,
-> > +DECLARE_TRACE(bpf_testmod_test_raw_null,  
-> 
-> here "raw_tp" is actually part of the name (we are testing raw
-> tracepoints with NULL argument), so I'd suggest to not change it here,
-> we'll just have trace_bpf_testmod_test_raw_tp_null_tp() below, however
-> odd it might be looking :)
+I think this needs a corresponding test case that would check
+backtrace structure and address in the message.
 
-Thanks for letting me know.
+>  arch/x86/net/bpf_jit_comp.c | 21 ++++++++++++++++++---
+>  include/linux/bpf.h         |  1 +
+>  kernel/bpf/arena.c          | 14 ++++++++++++++
+>  3 files changed, 33 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index 17693ee6bb1a..dbb0feeec701 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -1384,15 +1384,27 @@ static int emit_atomic_ld_st_index(u8 **pprog, u3=
+2 atomic_op, u32 size,
+>  }
+> =20
+>  #define DONT_CLEAR 1
+> +#define ARENA_FAULT (1 << 8)
+> =20
+>  bool ex_handler_bpf(const struct exception_table_entry *x, struct pt_reg=
+s *regs)
+>  {
+> -	u32 reg =3D x->fixup >> 8;
+> +	u32 arena_reg =3D (x->fixup >> 8) & 0xff;
+> +	bool is_arena =3D !!arena_reg;
+> +	u32 reg =3D x->fixup >> 16;
+> +	unsigned long addr;
+> +
+> +	/* Read here, if src_reg is dst_reg for load, we'll write 0 to it. */
+> +	if (is_arena)
+> +		addr =3D *(unsigned long *)((void *)regs + arena_reg);
 
-> 
-> >         TP_PROTO(struct sk_buff *skb),
-> >         TP_ARGS(skb)
-> >  );
-> > diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-> > index 3220f1d28697..fd40c1180b09 100644
-> > --- a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-> > +++ b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-> > @@ -413,7 +413,7 @@ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
-> >
-> >         (void)bpf_testmod_test_arg_ptr_to_struct(&struct_arg1_2);
-> >
-> > -       (void)trace_bpf_testmod_test_raw_tp_null(NULL);
-> > +       (void)trace_bpf_testmod_test_raw_null_tp(NULL);
-> >
-> >         bpf_testmod_test_struct_ops3();
-> >
-> > @@ -431,14 +431,14 @@ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
-> >         if (bpf_testmod_loop_test(101) > 100)
-> >                 trace_bpf_testmod_test_read(current, &ctx);
-> >
-> > -       trace_bpf_testmod_test_nullable_bare(NULL);
-> > +       trace_bpf_testmod_test_nullable_bare_tp(NULL);
-> >
-> >         /* Magic number to enable writable tp */
-> >         if (len == 64) {
-> >                 struct bpf_testmod_test_writable_ctx writable = {
-> >                         .val = 1024,
-> >                 };
-> > -               trace_bpf_testmod_test_writable_bare(&writable);
-> > +               trace_bpf_testmod_test_writable_bare_tp(&writable);
-> >                 if (writable.early_ret)
-> >                         return snprintf(buf, len, "%d\n", writable.val);
-> >         }
-> > @@ -470,7 +470,7 @@ bpf_testmod_test_write(struct file *file, struct kobject *kobj,
-> >                 .len = len,
-> >         };
-> >
-> > -       trace_bpf_testmod_test_write_bare(current, &ctx);
-> > +       trace_bpf_testmod_test_write_bare_tp(current, &ctx);
-> >  
-> 
-> please update the following three lines in selftests to match new names:
+Is it necessary to also take offset into account when calculating address?
 
-Will do.
+> =20
+>  	/* jump over faulting load and clear dest register */
+>  	if (reg !=3D DONT_CLEAR)
+>  		*(unsigned long *)((void *)regs + reg) =3D 0;
+>  	regs->ip +=3D x->fixup & 0xff;
+> +
+> +	if (is_arena)
+> +		bpf_prog_report_arena_violation(reg =3D=3D DONT_CLEAR, addr);
+> +
+>  	return true;
+>  }
+> =20
+> @@ -2043,7 +2055,10 @@ st:			if (is_imm8(insn->off))
+>  				ex->data =3D EX_TYPE_BPF;
+> =20
+>  				ex->fixup =3D (prog - start_of_ldx) |
+> -					((BPF_CLASS(insn->code) =3D=3D BPF_LDX ? reg2pt_regs[dst_reg] : DON=
+T_CLEAR) << 8);
+> +					((BPF_CLASS(insn->code) =3D=3D BPF_LDX ? reg2pt_regs[dst_reg] : DON=
+T_CLEAR) << 16)
+> +					| ((BPF_CLASS(insn->code) =3D=3D BPF_LDX ? reg2pt_regs[src_reg] : r=
+eg2pt_regs[dst_reg])<< 8);
+> +				/* Ensure src_reg offset fits in 1 byte. */
+> +				BUILD_BUG_ON(sizeof(struct pt_regs) > U8_MAX);
 
-Will put together a v3.
+The ex->fixup field structure should be better documented, at the
+moment docstring does not say anything about registers being encoded
+within it. Also, maybe add a comment why `prog - start_of_ldx` is
+guaranteed to be small.
 
-Thanks for the review!
+>  			}
+>  			break;
+> =20
 
--- Steve
-
-> 
-> progs/test_module_attach.c
-> 22:SEC("raw_tp/bpf_testmod_test_write_bare")
-> 
-> progs/test_tp_btf_nullable.c
-> 9:SEC("tp_btf/bpf_testmod_test_nullable_bare")
-> 16:SEC("tp_btf/bpf_testmod_test_nullable_bare")
-> 
-> 
-> just add that "_tp" suffix everywhere and CI should be happy
-> 
-> >         return -EIO; /* always fail */
-> >  }
-> > --
-> > 2.47.2
-> >  
+[...]
 
 
