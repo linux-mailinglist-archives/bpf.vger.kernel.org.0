@@ -1,133 +1,132 @@
-Return-Path: <bpf+bounces-57923-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57924-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0F22AB1DB0
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 22:07:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A895AB1DBE
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 22:11:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20AAE52214D
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 20:07:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 105EF3B06C0
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 20:10:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87D8625E83E;
-	Fri,  9 May 2025 20:07:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 773BB25EF88;
+	Fri,  9 May 2025 20:10:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MOOWOs16"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b+ARQcWF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+Received: from mail-ej1-f65.google.com (mail-ej1-f65.google.com [209.85.218.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEE5F21A45C
-	for <bpf@vger.kernel.org>; Fri,  9 May 2025 20:07:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D6072376F2
+	for <bpf@vger.kernel.org>; Fri,  9 May 2025 20:10:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746821238; cv=none; b=i1wIzgkAXCi1GOcCYZGPloxWTzNXIl19UGi1+BbKTDlU5YK/R2AAxQjgEJg2BoVEZEVXAS5dSYBUL2+Y2tbmlRFgqkalNGY/Rr4K53pfEQetdQeUS4yteUkNVkQNZ8J/hSTiuRg7OQZWPiZ1kXH8vWvCSHKylPUONIQnavpZchg=
+	t=1746821453; cv=none; b=ms2Tn+L0fYGhUVSxzp4aCsfxD9+47QCGfpfZK4qYxEl/MGhho3C6q9LSrlMM4H6uWnXOdnYA2+khsO0aGhRy9nXFbiGSO9ew4X2yUz19eqtBPyn0LkI8fVk2s6if8s2FW8L+I3gFG0+1LEiQ/Bh/dsJvxj9CcwDMjEuy73ki+qM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746821238; c=relaxed/simple;
-	bh=rMKgUDyemaKRv0zcy/DXws6hNbNk+50DDO/J0ryyOJw=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=MN7L2B5HJLpHjQjDafi1Xm4RFp3nKixj21GolNDDD2wkl+5GZ3zRXS7AQvvB+7vRQYAGk1HvklZdIpAJceAKdNDcsp6pJuqQSo0QFZE8PxMDGJb2gqPOmkwuLDvdTTti79juUjjNMTYyQ2r+7bJidPQrAg5WhCmKiWu5NfORIQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MOOWOs16; arc=none smtp.client-ip=209.85.210.178
+	s=arc-20240116; t=1746821453; c=relaxed/simple;
+	bh=fM2230YVqIytnWJu4Bl4dM77ZtiRykf/Ys/VqyQLms4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PT3y2+0OuzvCSJTCgb4DCX3z0BGSSFTnsNV/2wtvUEfisjuaK07/Mi7TjGoAVCACnebfKu7y5PKvOVNHCu/BV6dgiKhTiERHjDUeULemNoJgvTWHx5lj1fzMnMkjHskIM/gWDaxQcC6bk9DT3U7HQGua3DF3sdxmd4Cvb5eT8UI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b+ARQcWF; arc=none smtp.client-ip=209.85.218.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-73bf1cef6ceso2669571b3a.0
-        for <bpf@vger.kernel.org>; Fri, 09 May 2025 13:07:16 -0700 (PDT)
+Received: by mail-ej1-f65.google.com with SMTP id a640c23a62f3a-ac289147833so490421566b.2
+        for <bpf@vger.kernel.org>; Fri, 09 May 2025 13:10:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746821236; x=1747426036; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=F8VeWO2Ffbdj9gdoWovA3XKkHloLN+Lip1VxaGbMPn0=;
-        b=MOOWOs165PpYaIaOkpZaFYAyXxBvwadCSA8dUzSKJ9Bpz/PMMW4pixf0Q7RWOxwNwY
-         LNkRh8F3qlT3pk4r1glq38wp5Qbr67yfloqkKZMVO2iG/uJNO25Y64W+CdrZ5n8noEd7
-         Jdd0sso17Iwd15pOLYpnqB33k4g7Udu8CwZGzQWV7OtSBvkxyFGrMIwwiOZRc2+KGFVQ
-         quVvJR4aCT7eRMRIXZMH9qKI2Y+He9xS22LYoGzC3Kjm9yi+RGb3pm02Y95YfNchV0Ez
-         hlNPfVomxAcX4YLwfaHmsmiE5EWfr19mCMsDwK18/yJNtpOtW9HQauBbLR8SfZcLPypV
-         cGUA==
+        d=gmail.com; s=20230601; t=1746821449; x=1747426249; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=IjQQ9RCoiPN+i2GBiOYJ/AtWB8eFMtcGIf4eL6zjF10=;
+        b=b+ARQcWFEnn0RpaHTfEmek6b2HEP56Cx6NIFs0yFDbwAoqCwQ53jyqMm9Lm+Wu5dpU
+         +G4tvhO05S7b2HQdyF3q3JzN++uIOoflhlISUTD9kfQ5/IkuZB4fsQQkfp6TB6nTrqpy
+         K85h2V/meojMGchgMMTKaHX2qiDLE9LCFM53uHPyK7zy8TJAIglpvB/bbAQp8BsugjWy
+         mOkDiLTm5IwbjgJS9SzS2hA65igxf4VHij3fN8NgRD42F3FEmYitOqgHQVqLIChPRbFx
+         F195kI0S+PlpMpTpbLx/1lrhcNJDV+9fNFuDqmFMI5HDQHNlPswC3fjoQbgEZFKANu6f
+         Jr8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746821236; x=1747426036;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=F8VeWO2Ffbdj9gdoWovA3XKkHloLN+Lip1VxaGbMPn0=;
-        b=ExFUdBDqHM7v1HavB2UDqz59tOizBbIaIdPFXBqkSqp1iKU/iM/8P8n87qPoXMGxiZ
-         wkaDkVScZHnD7GyyYOCOR3cFfwj8MgGHliWarhX+jtSaKSkiJSO4/ycYQu2XMX3tQpcf
-         9IDk6TpA8/f036lkqboaWRaIkHvbIyja0zteQwknAutkvlGaRBWoYybETja3Xq5pcCO2
-         V5lTS/mYmHGDsIrGZ5P1r9zyp1/GG44FraPSdERFscdrCZr2PfhZtdtYHPHP0P0a9H02
-         WsQl+Y8FdgVsq95QKeYVjvtqeH/Vt3GWDOmGP/YWM1VHuOe24YGC6Z1paaYL9PdHiDp+
-         owkg==
-X-Gm-Message-State: AOJu0YyYfIFBXPoPDe4GvxPQNgxlY2Cb4ttNvEumqWyyZGNAfIV69tC+
-	nkhTzKKc0/Em2q6nCuqeHcTyFb9yEJuCpLeZ/VTbNjVe4WsRRkxg
-X-Gm-Gg: ASbGncuH2nrYWM67y8N6pvPzEEaqEUsNOf1jYELp6O8btI68AhxJJefmeH0AIlSNn8H
-	RD1ZIOXNcVm1CVAlLAU690J4VuWoSnOz0a+Lh5rMkjP3Z3Hlzk1fo/3ZvULKgZFth8UvbCbB3yq
-	1X7h4lClBsTmCiz6aJ5HOXWTttCnniWfTd4DZ4HPIfMitsEcNZ/MFIDdvybWtn4iI4opS7QTXA0
-	05nPHFv4qX77UGk2Gw0VELKUgXicvrGF83SPCLEsxVVojgFQWqz8mg/YPPgh1yBPBJYROPjbEuf
-	ZQAPsh4eDjiRiEK+mabgvNOeWA6yJHqcVPuQVWPsAlIfuRc=
-X-Google-Smtp-Source: AGHT+IGmvQfpeoREK+9YC6Y63/v+wEWPc2MW5SCkdLfAR66la1qdcRYmLHJmt8HnBqTY9lqzdaXV7Q==
-X-Received: by 2002:a17:902:ecc2:b0:22e:9f5:6f17 with SMTP id d9443c01a7336-22fc8b32d0amr53204585ad.13.1746821235936;
-        Fri, 09 May 2025 13:07:15 -0700 (PDT)
-Received: from [192.168.0.56] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22fc75469d3sm21519735ad.41.2025.05.09.13.07.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 May 2025 13:07:15 -0700 (PDT)
-Message-ID: <e78b2cf09f6931ec8e7791e35c8b49f19bf1d4b5.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v1 08/11] bpf: Report arena faults to BPF stderr
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Andrii
- Nakryiko	 <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau	 <martin.lau@kernel.org>, Emil Tsalapatis
- <emil@etsalapatis.com>, Barret Rhoden	 <brho@google.com>, Matt Bobrowski
- <mattbobrowski@google.com>, kkd@meta.com, 	kernel-team@meta.com
-Date: Fri, 09 May 2025 13:07:13 -0700
-In-Reply-To: <CAP01T74uq5Uyy6VHXyA_yVeO9rdU7svnQv90Z7auerApjbRfQA@mail.gmail.com>
-References: <20250507171720.1958296-1-memxor@gmail.com>
-	 <20250507171720.1958296-9-memxor@gmail.com>
-	 <a071c33a195642de5530f897880e44bc1416a86b.camel@gmail.com>
-	 <CAP01T74uq5Uyy6VHXyA_yVeO9rdU7svnQv90Z7auerApjbRfQA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+        d=1e100.net; s=20230601; t=1746821449; x=1747426249;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IjQQ9RCoiPN+i2GBiOYJ/AtWB8eFMtcGIf4eL6zjF10=;
+        b=mh9QtIYgTRNxT0BU5C65dh30Ucohje8Ef92oZT/SWQ+r/rcTluvHqnLEFkXIIi/s+F
+         0AkCNWcnvPfcpBaBD1CyjkCVgmUhvysO/jBUM7dlKPwYQ3sJmodS74dWHiinZNNRDGgO
+         BBYI3tk3Tz9Dyz0cZDm2d6QfAKofnB9Zkar1PER+KgsroGvJODpQaUBwfGos909zye0j
+         prtopJ+JLR5TAxKjmnUEdb0sYb6z5IlJ6Q2iVgWna2q3C+QjN8Hv2WmBWCbrhiL/tJEu
+         ZoEROLaZjA9/c5/rcDKmjy5ClsLw4MJoMEB1ZEaBeS9gaLn8J+HXLzLLf4XrdvwUyqcI
+         UdvA==
+X-Gm-Message-State: AOJu0YzLS/vVpjNaImvGbL3yXiFs3K66uLO+BaNO7HAc7A8/etjrDwYM
+	p3mooHUM8yfBxqhuUpeAZ03E8YJc6dxp1QyhMHe8CKXQnFt2sFnExcTW8bcriQ5T1yu6mu5oo4k
+	bMrmYI7w4NCVqIYtHBpn+EvJkXsw=
+X-Gm-Gg: ASbGncv4y184BvU1VR/bdkP8e0Kfd2PP/HpW5s68gt+S1WqSjk/Lqj/pZRUkN6+b1zI
+	6D7TUbAJcvqhUgPDZh9x7Wit5k+1kUAVbmOFf1/JvRqKzfv95YL3waKAttPnw6lkD03r9of7tby
+	LxMhh0xsdRLm+85HCg95z5L6IFiOtkxSegA0M063YU2AFAv/wZcvDqmsbY6nJ5GBwRzEA=
+X-Google-Smtp-Source: AGHT+IFXqFlut0L5hwr1vGWFq77w6SUPxG6WxgUUcTj3lVsz4WOo6QLA4qGTgmQv5qeUXGCY1UjyOEZXPcfwqTpN910=
+X-Received: by 2002:a17:907:969f:b0:ace:bead:5ee1 with SMTP id
+ a640c23a62f3a-ad219131246mr478173066b.42.1746821449407; Fri, 09 May 2025
+ 13:10:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20250507171720.1958296-1-memxor@gmail.com> <20250507171720.1958296-9-memxor@gmail.com>
+ <a071c33a195642de5530f897880e44bc1416a86b.camel@gmail.com>
+ <CAP01T74uq5Uyy6VHXyA_yVeO9rdU7svnQv90Z7auerApjbRfQA@mail.gmail.com> <e78b2cf09f6931ec8e7791e35c8b49f19bf1d4b5.camel@gmail.com>
+In-Reply-To: <e78b2cf09f6931ec8e7791e35c8b49f19bf1d4b5.camel@gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Fri, 9 May 2025 22:10:11 +0200
+X-Gm-Features: AX0GCFtED2IsrvxCbQdnAzpJGVcrRFUYwKcuIilJHhmmrMBOGkv0kf1eFS3ByMg
+Message-ID: <CAP01T770Qt4-S6hVvxzMsyDhsOm3-fEJ1+HgsjikdBfkUjdyFg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 08/11] bpf: Report arena faults to BPF stderr
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Emil Tsalapatis <emil@etsalapatis.com>, 
+	Barret Rhoden <brho@google.com>, Matt Bobrowski <mattbobrowski@google.com>, kkd@meta.com, 
+	kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 2025-05-09 at 22:01 +0200, Kumar Kartikeya Dwivedi wrote:
+On Fri, 9 May 2025 at 22:07, Eduard Zingerman <eddyz87@gmail.com> wrote:
+>
+> On Fri, 2025-05-09 at 22:01 +0200, Kumar Kartikeya Dwivedi wrote:
+>
+> [...]
+>
+> > > >  bool ex_handler_bpf(const struct exception_table_entry *x, struct pt_regs *regs)
+> > > >  {
+> > > > -     u32 reg = x->fixup >> 8;
+> > > > +     u32 arena_reg = (x->fixup >> 8) & 0xff;
+> > > > +     bool is_arena = !!arena_reg;
+> > > > +     u32 reg = x->fixup >> 16;
+> > > > +     unsigned long addr;
+> > > > +
+> > > > +     /* Read here, if src_reg is dst_reg for load, we'll write 0 to it. */
+> > > > +     if (is_arena)
+> > > > +             addr = *(unsigned long *)((void *)regs + arena_reg);
+> > >
+> > > Is it necessary to also take offset into account when calculating address?
+> > >
+> >
+> > Not sure what you mean? "arena_reg" is basically the offset of the
+> > register holding the arena address within pt_regs.
+>
+> Arena access is translated as an instruction with three operands, e.g.:
+>
+>   `movzx <dst>, byte ptr [<src> + r12 + <off>]`
+>
+> As far as I understand the code, currently `addr` takes into account
+> `<src>` value, but not the `<off>` value.
 
-[...]
+Ah, good point. We could certainly reconstruct it.
+I'll look into it.
+For prog authors I think giving them src + off in the output is the clearest?
+IIUC that's what they'll see when they bpf_printk the pointer, too, right?
+LLVM wouldn't insert cast insns unless the pointer is being loaded from.
 
-> > >  bool ex_handler_bpf(const struct exception_table_entry *x, struct pt=
-_regs *regs)
-> > >  {
-> > > -     u32 reg =3D x->fixup >> 8;
-> > > +     u32 arena_reg =3D (x->fixup >> 8) & 0xff;
-> > > +     bool is_arena =3D !!arena_reg;
-> > > +     u32 reg =3D x->fixup >> 16;
-> > > +     unsigned long addr;
-> > > +
-> > > +     /* Read here, if src_reg is dst_reg for load, we'll write 0 to =
-it. */
-> > > +     if (is_arena)
-> > > +             addr =3D *(unsigned long *)((void *)regs + arena_reg);
-> >=20
-> > Is it necessary to also take offset into account when calculating addre=
-ss?
-> >=20
->=20
-> Not sure what you mean? "arena_reg" is basically the offset of the
-> register holding the arena address within pt_regs.
-
-Arena access is translated as an instruction with three operands, e.g.:
-
-  `movzx <dst>, byte ptr [<src> + r12 + <off>]`
-
-As far as I understand the code, currently `addr` takes into account
-`<src>` value, but not the `<off>` value.
-
-[...]
-
+>
+> [...]
+>
 
