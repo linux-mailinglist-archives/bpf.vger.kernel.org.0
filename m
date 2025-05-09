@@ -1,138 +1,145 @@
-Return-Path: <bpf+bounces-57949-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57950-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFF93AB1F1A
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 23:36:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8A29AB1F1D
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 23:37:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 585EE1C28876
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 21:36:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 662ABA07706
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 21:37:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9444225D21D;
-	Fri,  9 May 2025 21:36:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B22025F961;
+	Fri,  9 May 2025 21:37:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nbc4TacB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FotGgfyd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6C2E235072
-	for <bpf@vger.kernel.org>; Fri,  9 May 2025 21:36:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 890CB231A21
+	for <bpf@vger.kernel.org>; Fri,  9 May 2025 21:37:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746826578; cv=none; b=NH7mKGOPlz/7qL05BI55NbFldRoEM2WuH+FnggT/SgiXS1scCcfRTKuJlgZHKJsa3CHE7354RB+sehGIt/2z4U7VWeQUSqEdehm7GgqSRknFypKIQP3mx73peorzNvTHhfRcu5HQzs35tiAf+TrhPh0bhXkERtdrA5dpufjwJGY=
+	t=1746826659; cv=none; b=WZdQPMQ8UJnJtX9w9S5/8dKDw/RuOcRA5lnVV9spT4vqDicIal2L17p9xh5fUz7RCEEeqG9a5Zpf0FTxgsCo/XdqwslVwAPRyfDGexgpbMh+b1vuscvsgkXZ8iBrAgJAeuNd3E51Wtyuv6VwyURn/5A/F2GGuCOwqQDjneXGHHc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746826578; c=relaxed/simple;
-	bh=b4+j9wEJYIwos8bofD+YLPonhYur0aOJ7kxItTX5log=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bocoJDNQBMsiN7xtjr2vktLvkOZ5gfrd8ye6qpTqthlsmgPYxnX5WZNlsmwg5FDTWF5I2wnI3BDYwdBcveYd+voba++z3z79dB+yXfTpobnsmbIM9jCePpTdMpKvAPi9lHtsGvqRQ0430uRDJejQ0ydiEvWcYK+DjGo8PbL6TIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nbc4TacB; arc=none smtp.client-ip=209.85.215.178
+	s=arc-20240116; t=1746826659; c=relaxed/simple;
+	bh=mFTo7P8rFrVjqvrhwM21tODlgv7pbk42ubeTJFB1MdI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=KDMWI+dv3/7I5XWWPbHgEwKcRa9ipZANaLTbSpCxYH8WA/NmugIHBW7lTPmUY39UKTTEjDvDgYtK9E0LaBxUcsMa+zdEjplTF7Yqi6yVt4s214GI1A2LSk9goMHqzsY4bt+3GUyUQMn+pumLloCbQo6Z1laBepjgRr0oYGzzpsc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FotGgfyd; arc=none smtp.client-ip=209.85.216.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-b1fb650bdf7so1621287a12.1
-        for <bpf@vger.kernel.org>; Fri, 09 May 2025 14:36:16 -0700 (PDT)
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-30aa3980af5so3210222a91.0
+        for <bpf@vger.kernel.org>; Fri, 09 May 2025 14:37:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746826576; x=1747431376; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l2fxBH4HLVj/j3bIV2Hr0mDDgRA2FIrAHXXFX2oeVSA=;
-        b=nbc4TacBJLCSw+7/xWFuBm3r6MsuVeIMZABEVwFTDTfNbXOVGKha5V6zFcsoPLHXdK
-         OqP5hQ9g3rRWc6kPHV2lf63ECYyZ0aEb+2UKTk9RvC+WO1jfh7T7NpK5VMlHciVJi49h
-         IRbVmpMc/RWNOxeBDMLiGREYhSWEwCB5vFvSwefhwYoxqCPZKigG/0J+qyL9oa6UeABk
-         BJ6+kThYPLeo5B9+1OnePKc3M/2pFgeB5xzspxXvhaBGVUPq7CmejL6ChWRFrB+n5d7i
-         RwJotlzJ15VH8pKIK+4bwA9Ver9CVbYMfu6v6G2yfFQ3v2bFGU40vM7YdM5bcQRl4QJp
-         iWXw==
+        d=gmail.com; s=20230601; t=1746826657; x=1747431457; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Ovxev8qi3tiyXOybK8CdZg4R4PYh1bE6BmClnW15vzc=;
+        b=FotGgfydIsPflUFwM+ktbuQQw+gz4o34zhgWgW179qtv4Drr92aW4vlMZ/ax1orxwC
+         eBV3iV6HB2XGBFHjMqGXBKU1a2cP3zJ4j0wWnVes4f/0BVWPpqDoAOVq5wR3R7I9oSnt
+         6p4/dV7VvmCNWFR7/z7vny31rHTktaFXrNvhVWneaIaEq/CE1NBDbRm5MEjcaKxO4W2F
+         VetcSu6aEGiD/xXbqS0SFOCtdDZ7ii+u/aNF7L8jJQD5SzGkgWd+1BLUP9QfJGf5ermU
+         a/Qgh5QW1M0S4LNLilNPxDqNiybGVith9q7DeyKAd2dTLp3lkXDIJbK9nuBMs0w6yOFN
+         7F+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746826576; x=1747431376;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l2fxBH4HLVj/j3bIV2Hr0mDDgRA2FIrAHXXFX2oeVSA=;
-        b=gBa7MkNL4igFmreyuXYQScCrcwGaGRn29zAUxG2b/eN1bIEcJf/96fgZUAijugXPSK
-         kN+MpNd0zqmoci6VuwGYrKlXhWyeY6u3QTQIdq5k/mhiIMCkMTBbfr6LL3mmWGTvt6jV
-         LZypddm5gzpnJSta1jbh+PWLf+2yun4GgjK38/OET0H1hqrhkw6dcQ5j0k7Ma4FWuw+u
-         KwlHpRqsljBnvF0bqDp8ETHDxMh/+heNv0N0BcSTfPLBLHAlxMUal89WcoorqDBE0QiU
-         STUGtxTbDA6QAgLS3AfimShdNVkhT0WJ8J3JFB2q7dEVZwHBEBaISk8jTswizCH/t9JL
-         u0nA==
-X-Forwarded-Encrypted: i=1; AJvYcCURyEaQm5HN+uT7UIBLL25fOpCoFfP6h5w8VTiEXe2LvdFzOwvERzo30+zQ0tZMnVFChQk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwO1cF1eHSZIgfl9qk3c8UER/3txSUGcemhSGv1bdheaUhGD3+b
-	7LSIoAmWBoEcLPxuc6PwkU1xYEPBOhLGojIvz2Wq7puBjMHXZ7+5qrxV186d1gz1QRr/SDhbp+7
-	JsgthR28dozlQDZ4IWfbhggvbkpA=
-X-Gm-Gg: ASbGncuy8mn0zrjIPL6bWc+vQ4MtrYBXSm1VipYQr1tQ7nUPMnBjATg64jXWhmNBmWh
-	8pHl7jlzMRSIDGvb3UYMmnI5JG0x4JpbjNfvKeNyJbPjmg+ER56P0+T7CZ0S8Fg5gJqSlI0IEvv
-	pCelXH0kLL9O5VST7jD/TRRZgd8zpYoLs7TOwaJTl8lye63GBVar408R053uc=
-X-Google-Smtp-Source: AGHT+IF4pn81GoY9yzz6SQ/3lMhq9eZKrSDLa2BE88k24ygobxOebSYkuxLSAiovt/ufBtxGVyzcTYJuakDKNC5hfmY=
-X-Received: by 2002:a17:903:187:b0:224:194c:694c with SMTP id
- d9443c01a7336-22fc8b592c5mr81201035ad.28.1746826575834; Fri, 09 May 2025
- 14:36:15 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1746826657; x=1747431457;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ovxev8qi3tiyXOybK8CdZg4R4PYh1bE6BmClnW15vzc=;
+        b=E2E0KMZC5xuoKX/Gx/nhS2NSCaTIOITsd6BSNt3W2ONEcBYj2fsB28fU0jBLMII3/T
+         X8QSj+X8YJLdSfHrUoy7CrKy7K5TQRAW6PXRieHkECxDV8hXmjHS0DMhJCwldGvJvHPg
+         BYtp+3uW+CmMs3LlxpKrZaIXcF8wc7tpeCctRtQYVg9eJRNTzQgjjYTJ02BwIlqPNUXe
+         Zk2Tywr0RffpZAaerKhDpj/h1i9h4H/5FeImvh9ZfSsi134dL8TLnXOH06qfvELpXKL9
+         W/sZbeUm8ulWrkUvA8NqYWrXsJGZvu6cv51sMYxEEtVioMMoNos9EzcCNOeIF5GnxUqf
+         bOqw==
+X-Gm-Message-State: AOJu0Yy4jo7Bav9Xa0kh+hYF8I6mKKxmfrHj4iEVZaYU2MUFQLUoKhHN
+	V4TAXIbdLkwOMTz/vebSt6xKpHBf1EjjCdesuiqc9XrxrH4aeOnybTkvLw==
+X-Gm-Gg: ASbGncv2iSPXIf8VQOnzrw/+3Ltz/m+BRjt9Q0bjhaUf445GJKBVlQo02DJdOsdJxnH
+	yoZArfEQhzFNP0sJKL2iK3sR5w8z+hrE7hoImcE6A6MpmQNHZ4bMvsaetXYpZ6PJ2WE5Ah2rpKY
+	e4q80B2vuFupJzPeySPF4MU1jSaVN0Vi/yMsuhtmC5aVTjQSpBUvLkNcc6KY/OawHU9tjoTBpQL
+	uAQ6JgProfepquGON0hl5Qs1ecaWu2n+piileoXNXyxtytABPC3woMrV1KmjnGiMnIlCNplN7tb
+	EMLjlxd03Oe8h5LUUT5V4uVjvW+hhvrmcMYGajtwTDSYwAzy0lFn+ZEuhA==
+X-Google-Smtp-Source: AGHT+IG6RUlmpj9cLAOkLMIfXWeW8vFZQK77XAE05s30/O/V5JwuiZcFk6eDJjL2ofLec6d3vAG3nA==
+X-Received: by 2002:a17:90b:1c05:b0:30a:2173:9f0b with SMTP id 98e67ed59e1d1-30c3d62e5b8mr7937767a91.28.1746826656653;
+        Fri, 09 May 2025 14:37:36 -0700 (PDT)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b234922e4ecsm1955172a12.8.2025.05.09.14.37.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 May 2025 14:37:36 -0700 (PDT)
+Message-ID: <e1bb9c33b8852e1d3575f7cefe50aca266a8ff2b.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v4 3/4] bpf: Add kfuncs for read-only string
+ operations
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Viktor Malik
+	 <vmalik@redhat.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann	 <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau	 <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song	 <yonghong.song@linux.dev>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh	 <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@fomichev.me>, Hao Luo	 <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>
+Date: Fri, 09 May 2025 14:37:34 -0700
+In-Reply-To: <CAEf4BzZBB3rD0gfxq3ZC0_RuBjXHBMqdXxw3DcEyuYhmh7n5HA@mail.gmail.com>
+References: <cover.1746598898.git.vmalik@redhat.com>
+	 <19913411da8c08170d959207e28262efc0a5d813.1746598898.git.vmalik@redhat.com>
+	 <CAEf4BzZBB3rD0gfxq3ZC0_RuBjXHBMqdXxw3DcEyuYhmh7n5HA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230728011143.3710005-1-yonghong.song@linux.dev>
- <20230728011231.3716103-1-yonghong.song@linux.dev> <Z/8q3xzpU59CIYQE@ly-workstation>
- <763cbfb4-b1a0-4752-8428-749bb12e2103@linux.dev> <33a03235-638d-4c63-811d-ec44872654b3@linux.dev>
- <CAADnVQJBgEDXnsRjTC0BUPAqfiHoH+ZL6vk1Me-+QcXbT811jg@mail.gmail.com> <342054de8fb765780b1856e5b3b81b4e0a531620.camel@gmail.com>
-In-Reply-To: <342054de8fb765780b1856e5b3b81b4e0a531620.camel@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 9 May 2025 14:36:00 -0700
-X-Gm-Features: ATxdqUGiFplJdWseflvFpZPHTZSgkaMNIe3Xy2SkyJLBjNzqokmur9l19Dw2sN0
-Message-ID: <CAEf4Bzbgci5pOmHmYoAYTe6cYdwJ4ju=5LuT0VQzsu+aKQ1AgQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 07/17] bpf: Support new 32bit offset jmp instruction
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	Andrii Nakryiko <andrii@kernel.org>, "Lai, Yi" <yi1.lai@linux.intel.com>, 
-	Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	David Faust <david.faust@oracle.com>, "Jose E . Marchesi" <jose.marchesi@oracle.com>, 
-	Kernel Team <kernel-team@fb.com>, yi1.lai@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 9, 2025 at 1:50=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
- wrote:
->
-> On Fri, 2025-05-09 at 10:21 -0700, Alexei Starovoitov wrote:
->
-> [...]
->
-> > hmm.
-> > We probably should filter out r10 somehow,
-> > since the following:
-> > > mark_precise: frame1: regs=3Dr2 stack=3D before 7: (bd) if r2 <=3D r1=
-0 goto pc-1
-> > > mark_precise: frame1: regs=3Dr2,r10 stack=3D before 6: (06) gotol pc+=
-0
-> >
-> > is already odd.
->
-> Not Andrii, but here are my 5 cents.
->
-> check_cond_jmp() allows comparing pointers with scalars.
-> is_branch_taken() predicts jumps for null comparisons.
-> Hence, tracking precision of the r2 above is correct.
-> backtrack_insn() does not know the types of the registers when
-> processing `r2 <=3D r10` and thus adds r10 to the tracked set.
-> Whenever a scalar is added to a PTR_TO_STACK such scalar is marked as pre=
-cise.
-> This means that there is no need to track precision for constituents
-> of the PTR_TO_STACK values.
->
-> Given above, I think that filtering out r10 should be safe.
+On Fri, 2025-05-09 at 11:20 -0700, Andrii Nakryiko wrote:
 
-Yeah, it makes no sense to track r10. It's always "precise", effectively.
+[...]
 
-> In case if sequence of instructions would be more complex, e.g.:
->
->         r9 =3D r10
->         if r2 <=3D r9 goto -1; \
->
-> backtrack_insn() would still eventually get to r10 and stop
-> propagation.
->
+> > +/**
+> > + * bpf_strchr - Find the first occurrence of a character in a string
+> > + * @s: The string to be searched
+> > + * @c: The character to search for
+> > + *
+> > + * Note that the %NUL-terminator is considered part of the string, and=
+ can
+> > + * be searched for.
+> > + *
+> > + * Return:
+> > + * * const char * - Pointer to the first occurrence of @c within @s
+> > + * * %NULL        - @c not found in @s
+> > + * * %-EFAULT     - Cannot read @s
+> > + * * %-E2BIG      - @s too large
+> > + */
+> > +__bpf_kfunc const char *bpf_strchr(const char *s, char c)
+>=20
+> so let's say we found the character, we return a pointer to it, and
+> that memory goes away (because we never owned it, so we don't really
+> know what and when will happen with it). Question, will verifier allow
+> BPF program to dereference this pointer? If yes, that's a problem. But
+> if not, then I'm not sure there is much point in returning a pointer.
+>=20
+>=20
+> I'm just trying to imply that in BPF world integer-based APIs work
+> better/safer, overall? For strings, we can switch any
+> pointer-returning API to position-returning (or negative error) API
+> and it would more or less naturally fit into BPF API surface, no?
+
+Integer based API solves the problem with memory access but is not
+really ergonomic. W/o special logic in verifier the returned int would
+be unbounded, hence the user would have to compare it with string
+length before using.
+
+It looks like some verifier logic is necessary regardless of API being
+integer or pointer based. In any case verifier needs additional rules
+for each pointer type to adjust bounds on the return value or its refobj_id=
+.
+
 
