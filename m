@@ -1,93 +1,97 @@
-Return-Path: <bpf+bounces-57926-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57927-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F1CFAB1DD5
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 22:18:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47F22AB1E8D
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 22:50:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AC4B4C6DB1
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 20:18:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06AA83BE423
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 20:50:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12BA32609E9;
-	Fri,  9 May 2025 20:17:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3425E25F78D;
+	Fri,  9 May 2025 20:50:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PqWkfo0w"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hEjCIcnR"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CA1225F968
-	for <bpf@vger.kernel.org>; Fri,  9 May 2025 20:17:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EE777F7FC
+	for <bpf@vger.kernel.org>; Fri,  9 May 2025 20:50:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746821868; cv=none; b=XDmaDrrFAVycn68rjLa63beoMF93gHKAUjpJx2ilMDGjvciKrxB4Q3SzEywPnYSF3eKB2sF4IFbq8TaqrMXAodMFXrl2Vob5zbDlNDEZCIuwnJYiWzoL99107GOOkXv2MIJlOsoeTMMUbJfUHG92n4sLyRadtwz8MxCRaivSa24=
+	t=1746823829; cv=none; b=TkHXfmweqqaH/tr+fuNBxF4U7+7xJd30Wf1ZbM744X4UidYEvY36J1kosjFry5s4NOxzNfYEU+d7Ih+qzqNldPRXybk9Cb9Dmh/mz2RzK5Nogxt/img6luBhct66qBT8mxaPei3E/CCb0cKFkq7/czs+TJDui8Nf/3N9QlRiXqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746821868; c=relaxed/simple;
-	bh=aXaYtOilDbcJPJ+W0IptEWoUeSslZypmpojlegsMbk8=;
+	s=arc-20240116; t=1746823829; c=relaxed/simple;
+	bh=VEaELEfWzy2VOV/pObng/qspqCv6qbfHZ25soDTAGHE=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=F/+fyvXjPlSI6/zinzQEub2LgknFg395ld+N6HpC1liCkVgtbpb6YnVfeVW8bcQ3fhXf9cZhJY5+d4aDDKKlyckewY98Yredge142DQFWvPe3zU/+wXLeTZ0BCGv6ydgt/Iu7ZcbRRym1rvgjse+RyDZImhI4JctdjJaTHEu9Xw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PqWkfo0w; arc=none smtp.client-ip=209.85.210.182
+	 Content-Type:MIME-Version; b=mzEmgq+xQxmIvgEiO7BsFjx8GrfBwvy5eXxRyhFXvkOqkosW9h3eajAfXvoSMnusnOIanbDRinDUj4+EEhGiKsLm2069j3F8U0Um+4/nJMiJ9gw6vxU8DbS6cAh3P8GilfF+UpNz8Xz9TIUoFUl0XhUq990Hj/OxixySiBLXwLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hEjCIcnR; arc=none smtp.client-ip=209.85.210.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-7394945d37eso2379863b3a.3
-        for <bpf@vger.kernel.org>; Fri, 09 May 2025 13:17:46 -0700 (PDT)
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-73bf1cef6ceso2695397b3a.0
+        for <bpf@vger.kernel.org>; Fri, 09 May 2025 13:50:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746821866; x=1747426666; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1746823827; x=1747428627; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=1Q8eMfVKF4jbKtQwlxfFfb4HKuvQkI7DFY4bLdLNB7g=;
-        b=PqWkfo0w1zr6uOpxQKqnggT8O2YkyJfSp23RZJ/skp5Did/2h69JWQB8446GYjf7f9
-         MPtHZ+kv/xcRKyYASypqmN6XsAiotRrG/NNu5ZOJN9sBPs14+kM9eDET5iHTGqRZM8s/
-         9i5jP0l6uoiJqSC05g2mGkisJUp8jEke0VwFMRRAekIHl5lYLgnpDi0YI0oL9LJVvQZh
-         fzLNsEmPZH9rfQ1D1USJxL5N/gyO15lHBy/jGyhaaKcgIiC+D481sJBrlFO82yt7v6BO
-         p4mdDyPKTq85XAbZ4To7idX1law0jp6Eag18fBSHecGvzxHdRpQCQotDaw+HMAo/WRbN
-         mtvg==
+        bh=Xhnyj0tgRQstqWR5MXsGggEYjgU9NlA8t7NnKuIfKfg=;
+        b=hEjCIcnRxDE1zogh5dqd78jBND6UXqyDwM/KtdM8VQH43HUsbwWaMyl6C9lBL4g5Hx
+         hEjXkv7udoi+Nw1cyvv6CByCn/bg9XsMSTcmNMfyxbWbg45q8RN/xskKZcjh6wgsWtbQ
+         +upiNyxH3U8vD9qfM9y6Ui0OxmiY/MUgK4l2sYrbAVCZ5IebOAFuBLlUIKpftTS89ts+
+         bzIELRB8aIOsbGvjH4wfaqqoZqcPu8Woy1H6qtvvn2hDddI5AFx4miHT2yNnP5HI45KF
+         TDQbeidI5xB4QbuLz3wYXWTaRQ4mnodpt4jofojuqrY39DqfmXh2W4uONvMzOOqfzLjl
+         HL2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746821866; x=1747426666;
+        d=1e100.net; s=20230601; t=1746823827; x=1747428627;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=1Q8eMfVKF4jbKtQwlxfFfb4HKuvQkI7DFY4bLdLNB7g=;
-        b=oYSnUiJLtripFzWMrHEvL+vLVlGinPJIuKKkiNU2aURJjMeSiy+9YXPaAFJmDGbEUK
-         ybPFeTxXOFs1EkOI09rvVfCVOB1OBsYjYxnpMHHpx1AlVsvuPRAQ4tXj8DBtq7f5QYP7
-         Ldfd0P1FefF4KyphRd71SXCXQoRvUKJnXp2G2piAe0TnQdiFBcwRxkhcs1yJFEI3sGw2
-         ijHpgIZ3MAxWpZYg6aedNOi8JTTxfm+RE51Hr0qTXbKjAFecyk3uZjUROfLV6IzDMfCq
-         WtijVCsnV33MF4qDTIzTuYqNZh9a5Oom+zx6JlWu4W8onvrI9wwzLu8b/HISRxd2BDX+
-         F68g==
-X-Gm-Message-State: AOJu0Yz3oG/oBaehVS+pNCCBMNFt1SFo9AXwECUWDN7CuLz4rlRDkS4N
-	lbSI6gshgzPBy90opUznSejwXuADo25IDONbfUtF1OszWnnPzYjdnoR6xQ==
-X-Gm-Gg: ASbGncs3RvApw1o+l42A1OOLplGF36jmGM8FdZUsdWQKGdJwGnRDONUs0ZfHG1vneSM
-	DCqtzkk0Waz3bZjSojPT6DVUPuqsP7IfYjJ9YmXF6cn3Vd8yPCZiFGkWRdJUROA3aVFcFrGNlz6
-	GqiVim4aK/9nmAYHQHNR69KDuRRZpz7JvBxjv4b+OxIULDXq9+gFmUhkekwTo3TTs1O+zeSxFUC
-	rLuSBavok+tf5u9QB27sOzU511HvgfnNOKni+8h8B0hC6wsLVYIznaVl7YsFoHkJeKwNqi+zKkf
-	Bgjobf6L9Oua3AIEqf2TTUww4f15vTUUuvpwxjWS+8/6u7M=
-X-Google-Smtp-Source: AGHT+IEyORV935qBRcaChcFeC6THk9mSeMtqRzgbAWx8/847CAzL4odiU7b34XwJ5DNsepO9qoH44w==
-X-Received: by 2002:a05:6a00:2e1e:b0:740:596e:1489 with SMTP id d2e1a72fcca58-7423c09fbc0mr6595205b3a.23.1746821866311;
-        Fri, 09 May 2025 13:17:46 -0700 (PDT)
+        bh=Xhnyj0tgRQstqWR5MXsGggEYjgU9NlA8t7NnKuIfKfg=;
+        b=jABr5Gb3cDxpw20zy0gqvUNuKk/8CgTgKps5W2cxvPS6pZqhEuvkVO3JwdNU8JueKv
+         JiJ0hRInhUgfohfu/OGnxF0rDCQY4vRZEhuF8+3n34C2HfvxC/nsy0WlEJ7WsZl1PmVz
+         xhsMPcGu2Un8wSwcFj6rSi1EFaNPBlgCZDWRW0w0Z3Ti76X8wUpPKSENATTRZOUJzQCg
+         r9+0881xrCZvL9nfUTj1L4oEoLMSmO3dt0wGEI45ysJR+ffkPKtS6qQ+B0ZL8hYP55vb
+         veIo8ISON7+XPABDmgi2XrVRmm716pFtj0PGeP5BZJXk1Rsrb+efK+bLi257k7sfvmle
+         frSw==
+X-Forwarded-Encrypted: i=1; AJvYcCXtsyHi+mPkMbW3BY8WDDE5Bp316Bl2YPgkHQsJ1v7vDBFE/xttf/+RxqwlPPIQrafuw88=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz4KKqsq/bnVzhr1J3GliGUnsgcZtl2YSZ1n4P5Ta6meqcoz5R6
+	v00jjNP/yMsfFGNG4EIEtH4n0bKKp/Ucgt4UaeyD+h7ZoWVxknzB
+X-Gm-Gg: ASbGncuwa+lT9dDQc2rOoALBuQwta0isWx8tUDSV0s6y0qe8vHBBAlAGKAiez41NNEy
+	OzenhDUKAKmslPOGm/spUlyrGNBf04wdFBSabIaiXgTtHxdLguYx67+0u1hRxAyraSLurNyZnop
+	i9DWbVAElg9JCuI1tRza64ZDyRmfqMe2uSszxLyU60x0iRcePGTI+T0ss3powLJvA/mAri49p8d
+	fY0zheiuI5Gh8szX/Jr5I5VOrKlPVblJjLRxeXCS3Mt5VgVw/VZXr5zsYO7oRm1UBAY35/ANWym
+	58w+iZ1dBwjISOzOHm4D6n234RCWVu4bj426LEqmO7OOIA2bg33SpdeCQg==
+X-Google-Smtp-Source: AGHT+IGLeV/9xJR40aE0Zj7L5jyufrYNxMyPtHAZesaZU71b4iutmmy12EVRGcNEClxiaybg1soZRA==
+X-Received: by 2002:a05:6a00:1488:b0:736:57cb:f2b6 with SMTP id d2e1a72fcca58-7423bfc355cmr6914757b3a.12.1746823827322;
+        Fri, 09 May 2025 13:50:27 -0700 (PDT)
 Received: from [192.168.0.56] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74237a8efa2sm2131436b3a.165.2025.05.09.13.17.45
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74237a8f520sm2222894b3a.172.2025.05.09.13.50.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 May 2025 13:17:46 -0700 (PDT)
-Message-ID: <e83130562a65c3112d0428d4d1b83ec4dd16e8e1.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v1 08/11] bpf: Report arena faults to BPF stderr
+        Fri, 09 May 2025 13:50:27 -0700 (PDT)
+Message-ID: <342054de8fb765780b1856e5b3b81b4e0a531620.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v5 07/17] bpf: Support new 32bit offset jmp
+ instruction
 From: Eduard Zingerman <eddyz87@gmail.com>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Andrii
- Nakryiko	 <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau	 <martin.lau@kernel.org>, Emil Tsalapatis
- <emil@etsalapatis.com>, Barret Rhoden	 <brho@google.com>, Matt Bobrowski
- <mattbobrowski@google.com>, kkd@meta.com, 	kernel-team@meta.com
-Date: Fri, 09 May 2025 13:17:44 -0700
-In-Reply-To: <CAP01T770Qt4-S6hVvxzMsyDhsOm3-fEJ1+HgsjikdBfkUjdyFg@mail.gmail.com>
-References: <20250507171720.1958296-1-memxor@gmail.com>
-	 <20250507171720.1958296-9-memxor@gmail.com>
-	 <a071c33a195642de5530f897880e44bc1416a86b.camel@gmail.com>
-	 <CAP01T74uq5Uyy6VHXyA_yVeO9rdU7svnQv90Z7auerApjbRfQA@mail.gmail.com>
-	 <e78b2cf09f6931ec8e7791e35c8b49f19bf1d4b5.camel@gmail.com>
-	 <CAP01T770Qt4-S6hVvxzMsyDhsOm3-fEJ1+HgsjikdBfkUjdyFg@mail.gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Yonghong Song
+	 <yonghong.song@linux.dev>, Andrii Nakryiko <andrii@kernel.org>
+Cc: "Lai, Yi" <yi1.lai@linux.intel.com>, Alexei Starovoitov
+ <ast@kernel.org>,  bpf <bpf@vger.kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Martin KaFai Lau	 <martin.lau@kernel.org>, David
+ Faust <david.faust@oracle.com>, "Jose E . Marchesi"
+ <jose.marchesi@oracle.com>, Kernel Team <kernel-team@fb.com>,
+ yi1.lai@intel.com
+Date: Fri, 09 May 2025 13:50:25 -0700
+In-Reply-To: <CAADnVQJBgEDXnsRjTC0BUPAqfiHoH+ZL6vk1Me-+QcXbT811jg@mail.gmail.com>
+References: <20230728011143.3710005-1-yonghong.song@linux.dev>
+	 <20230728011231.3716103-1-yonghong.song@linux.dev>
+	 <Z/8q3xzpU59CIYQE@ly-workstation>
+	 <763cbfb4-b1a0-4752-8428-749bb12e2103@linux.dev>
+	 <33a03235-638d-4c63-811d-ec44872654b3@linux.dev>
+	 <CAADnVQJBgEDXnsRjTC0BUPAqfiHoH+ZL6vk1Me-+QcXbT811jg@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
@@ -98,36 +102,38 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Fri, 2025-05-09 at 22:10 +0200, Kumar Kartikeya Dwivedi wrote:
+On Fri, 2025-05-09 at 10:21 -0700, Alexei Starovoitov wrote:
 
 [...]
 
-> > Arena access is translated as an instruction with three operands, e.g.:
-> >=20
-> >   `movzx <dst>, byte ptr [<src> + r12 + <off>]`
-> >=20
-> > As far as I understand the code, currently `addr` takes into account
-> > `<src>` value, but not the `<off>` value.
+> hmm.
+> We probably should filter out r10 somehow,
+> since the following:
+> > mark_precise: frame1: regs=3Dr2 stack=3D before 7: (bd) if r2 <=3D r10 =
+goto pc-1
+> > mark_precise: frame1: regs=3Dr2,r10 stack=3D before 6: (06) gotol pc+0
 >=20
-> Ah, good point. We could certainly reconstruct it.
-> I'll look into it.
-> For prog authors I think giving them src + off in the output is the clear=
-est?
-> IIUC that's what they'll see when they bpf_printk the pointer, too, right=
-?
+> is already odd.
 
-Yes, the final address where access occurred.
+Not Andrii, but here are my 5 cents.
 
-> LLVM wouldn't insert cast insns unless the pointer is being loaded from.
+check_cond_jmp() allows comparing pointers with scalars.
+is_branch_taken() predicts jumps for null comparisons.
+Hence, tracking precision of the r2 above is correct.
+backtrack_insn() does not know the types of the registers when
+processing `r2 <=3D r10` and thus adds r10 to the tracked set.
+Whenever a scalar is added to a PTR_TO_STACK such scalar is marked as preci=
+se.
+This means that there is no need to track precision for constituents
+of the PTR_TO_STACK values.
 
-I think so, have the following docstring in the BPFCheckAndAdjustIR.cpp:
+Given above, I think that filtering out r10 should be safe.
+In case if sequence of instructions would be more complex, e.g.:
 
-// Support for BPF address spaces:
-// - for each function in the module M, update pointer operand of
-//   each memory access instruction (load/store/cmpxchg/atomicrmw)
-//   by casting it from non-zero address space to zero address space, e.g:
-//
-//   (load (ptr addrspace (N) %p) ...)
-//     -> (load (addrspacecast ptr addrspace (N) %p to ptr))
+	r9 =3D r10
+	if r2 <=3D r9 goto -1; \
+
+backtrack_insn() would still eventually get to r10 and stop
+propagation.
 
 
