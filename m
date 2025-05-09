@@ -1,86 +1,87 @@
-Return-Path: <bpf+bounces-57952-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57953-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7600BAB1F5F
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 23:51:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66F13AB1F71
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 23:53:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AA7F1C462FB
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 21:50:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF40616A107
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 21:53:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1DA82609E9;
-	Fri,  9 May 2025 21:49:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04CA92609EB;
+	Fri,  9 May 2025 21:53:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L9gLSumS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nb40qvkT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0C8825FA24;
-	Fri,  9 May 2025 21:49:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C59425D1FC;
+	Fri,  9 May 2025 21:53:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746827392; cv=none; b=lFMFZx5lZbl7LtUgm5GFngyBM2TGq34iYrFy8QjCXis5sk5CIj6CRjUovG6Ve7z6iHw9MIy5QYXCKC6kcfQTy8pSjsz9vlWWddxC+e+1plF/N151UhAg3LGOWAeg67wr4M8R/lCtQD+0pGU9/hb00PnU0vGmBRb02Idb7hJW3U0=
+	t=1746827632; cv=none; b=a3fwbLK+XOX+wx+KZqL4ostwltCCLotqraey5ibIQJUxuIsMzfguAMJzZIk/zzAZCFM/JFPgqyFQPaJ0zhGtNWAv9G3jMPRpYm4Pi0tD+Io9vGhmXkUlVZPcDQfeeSxTFqJn44tz9Y8iyAcGyIZa3xzp+tf6hG1iZ9aZT7KTVkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746827392; c=relaxed/simple;
-	bh=ZinlNdkiyCNzwk3CZlDqG9cAdnhvkAgo9icgRAJn/rU=;
+	s=arc-20240116; t=1746827632; c=relaxed/simple;
+	bh=NiH+k6IfoKNrv7kJjvq02SqgFB+0uIsB7zsh4/p7lUs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=S+urO5OB2IN4cYa4I4F1FId25DUnpn5mrmTDgOrmhjHZ1xLqNgnTdObotKyPngjXX3AOI+A72fRxK88QMuUL/6siwjvIM4QsfzWVO2kUz9LnrNubMhDAY5UpihPkrWFeY/JcraeBdamFsUT/5dVj5nWDaLNYYIJpippMTbDLXDE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L9gLSumS; arc=none smtp.client-ip=209.85.210.170
+	 To:Cc:Content-Type; b=udPRXC7X1Ghenr3Puig3sDoHBIq6voeJHPJ8idBymSoLGGErnuSRogG9Ircu6rni+Y6CfDC6SsrW6GHl2vhJYHoAX3wh5Ef04ZvyU8k3gV3VP35z2nRrbHufVrHtaDN2CgWya2mOXwLlMajtbjazy8vO3IV+/E/rdFSH5GR+Wf0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Nb40qvkT; arc=none smtp.client-ip=209.85.216.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-7399a2dc13fso3733933b3a.2;
-        Fri, 09 May 2025 14:49:50 -0700 (PDT)
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-30c35ac35dfso1763033a91.1;
+        Fri, 09 May 2025 14:53:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746827390; x=1747432190; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1746827630; x=1747432430; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/U9lcKW0lXABVXy+mgpMzNoe/NTD2evxfu2sRExNzas=;
-        b=L9gLSumSx0yIxUYbgEy1stex4IDy6WP+DJVbK/+vJ+R16cxCA/gC86FHIz+/ocy3wW
-         WRL6lfia1kWLvI4ZDVDZMCNGhlfpveRJezzEMOdSbLEeixbAFijAB8jSV0gxcA63ZLMc
-         rz3eK2howQtwj6o1+bYDdtXHNdj4bvnCvaeUR5sphp0reZErAHwm21jtu9q9hTE3izqY
-         2nZoMyeVk3Jslh1jICwDZWlpmUELz/nsIV66tr45ogFdTaKl68qmL8Sh3A0pQCRHkUCn
-         W9If5YXJJogYEdN2Q7UWHSOK5B9nrsBTiOtGTqngqPCKC3qwkV7mtF2Tc/K6gUrLn8E0
-         MdgA==
+        bh=yHkbQJC2vfZe+igN8ZKegJaL309MbUilfmbTINeRmN0=;
+        b=Nb40qvkT96ockENj/wdkrX39vXT3XOeTwxNnYKGpQLUtm0haWz3iV3RUf3mos9W3t6
+         DZNyqW4eAhb4GSanA6F3beQiofcY3uVPOPIrvSW+n3Hct71jKmpwFZUklRHJ1HSl+5aw
+         HAbM+F2iy/jTQtBI3WQh6haYJY2rR8+1/YwIPbOuOfdMXf8bSyfI4rtvlIN+uPz+ggPt
+         X7wDMckMedYHDU7D9i7u2lhOm3gJNbDyd4xG8Rd6Wdqz7avabEsFcLeLhpKPKMh4hz3T
+         d85EC1S8lvNZujndGQFHlXkUQP3rOG8dTDnqxhNa5ZxN0SBMbxTe3F9qnJ9Yz0LlRkuz
+         DjCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746827390; x=1747432190;
+        d=1e100.net; s=20230601; t=1746827630; x=1747432430;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/U9lcKW0lXABVXy+mgpMzNoe/NTD2evxfu2sRExNzas=;
-        b=BRJ2SWI6Qlr/eljl0TLC2Lo93rafNwqaY1bYhljGCMo2u/gh5/fU5ij26WBjj34PUv
-         OAP5J31Bu/8RI54doMk0juTgkJOWhGAXIX9pvd1JMjVolGeTjdVVslqA0KJ38OKR+gjw
-         qYF3Ix2plsIlGU2+JC3Iw0YqOCIF8SPPQr28tdGcAgJ5eJzfzebqlVXeP+dkCS3XcKlD
-         FLwE0G7HE0WmE2nEVx6kyvsEBmDbXMPmY83+us7tU5wSPk8odV0BgJUF+8ve392mZKqO
-         rVe44eXXw0n83Y27q9J4vR6oZiKacVdazI/Bt/1dkZbyZqT97xjEsWzlY+YghZP4MlSj
-         uP8A==
-X-Forwarded-Encrypted: i=1; AJvYcCV0DEgm8962/El4StREmG/7F28b/vg8wN+bPkBlUyrzB6nqJMcfIubj/ck/pivKLlSrYeQ=@vger.kernel.org, AJvYcCVtBn9NbUeyg/t/LfyNyRW9OebKddzRzqW+sAX7WDkLkWmzNjOutgNb67QJBf06Ds2QZ+ml9VeycihbeAmuf80BMTVS@vger.kernel.org
-X-Gm-Message-State: AOJu0YyAN5urKOOHG8EXGXTk32b0MaWjpxZZfT1mFywDd0oiFXzBmJrs
-	ILPPA40svyNgwEXFiDHiKj53F4H6s4KjOx+iFTXTU+731AvPew8OErPr22wcW83tCU1pMapjITR
-	MLgKOzynqpP17ontc2xF0DsUSYK/NqhDx
-X-Gm-Gg: ASbGncsxzrLSK/s3+ckxG9TcigRsPouIgLmvGc6KxnYFtr6gvJ7/YDxrR9aToqPdMNm
-	5tXOwF0OB9mh0Y6dAb3M+IJy9ffoAz9WkHE7jC6nKwM6vQtnz6oaqY0SeXczUiirmgjmtwPj7Xp
-	EMFOpFoYW3Ch/oXHsRYjH28If1+x53SxMrCCKSrBfPNBenOeOBNvE5k6Rk2x0=
-X-Google-Smtp-Source: AGHT+IHPkwZR/8rn5sjyBGB0IOcQSZZ0Evw9rc/ZNuaIe7vZL0Xarx0Fw1QKpg7ximsYUdfxO7khqTgJocYUArU4xsI=
-X-Received: by 2002:a05:6a21:3182:b0:1f5:8a1d:3904 with SMTP id
- adf61e73a8af0-215abace343mr8147447637.7.1746827389935; Fri, 09 May 2025
- 14:49:49 -0700 (PDT)
+        bh=yHkbQJC2vfZe+igN8ZKegJaL309MbUilfmbTINeRmN0=;
+        b=U+FMNe+hKyeEZ1M5wLzyz1QP2OK4gHF2GjIUi8h855wF/i7SxHfjxAK++Ji7wcv6Bx
+         Sxz1/JQhgLEtTOzaf2lw/IyyPn50hKh0S5W3SYbF/GNiJCp2e/3njmcvUOomCfX3mcBQ
+         2Alpax9jLJAGoHnGecYC/2hdtjRYPWDGRQxFcwVEsgWKI63KFVENmgq4qnA70xIasIRk
+         5yrYtk58cMzE3Jo9C+COsiIKJH8SNYyQUaCgoKhr0R7ll4sCctLyUkfTtRCWz9tjbzyZ
+         CYK0EJv/IECNXl5cdB2izESyWKR7QWyR7VeSm/thAUIHi7itv/YMHxNanZgw6FU0o6A3
+         jeHw==
+X-Forwarded-Encrypted: i=1; AJvYcCWTfNhr57gmXxqdEy1jC3WxKordTvdGvlM69ddTDGBTEEsdA1eIszUs0XdWFLwxXqE6rn8TJGTQDFLvLd7YdzlWKHZf@vger.kernel.org, AJvYcCWjv9RjItfB6f7ml+KRbhg8xirldeEvnkz4PN8tc9jcJxwq9Pv1pvSQ/4zi4vMh0CGZVCY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy91Il2HT+T6GsNY5gEPeTrI28GYfeS9P5HDl2fLhYMjQJ8NfbX
+	G6F9gm/jtmlbm6omm7efZZb8++7nKJNHK04udQYWZdutPzsCh5czR+P8crEbC1eamEVbc8N//qS
+	cdTPqs+JFxbtFTU1YYm6LsUKVeEA=
+X-Gm-Gg: ASbGncsY9yTIrUG4ONIiNVrqiPqMq07gXJRhmo8ogUHSSzhUAwHf+NSfls+ZyskVnCE
+	bWOJ9I15TA/lpcMyJhcxEdPnSGjM7Ihw47YApLhjW3bUhE+Ldx9PjCHLEdLu/Zt3Ms3j5GWT9dO
+	ywHH6AZsugUdPT0SS2dij04KVbtBfyC0WZQdGxl3cUPzCRyJ8k
+X-Google-Smtp-Source: AGHT+IHOtgUxXnIkOjOIbpTNdvhRDUXpWuB9CdApfqdlPxp6khEaQW6lLupeh/DHx2cTjBU6h2YZAVwr8RxMvgysjME=
+X-Received: by 2002:a17:90a:e7ce:b0:30a:fe:140f with SMTP id
+ 98e67ed59e1d1-30c3d62c6dcmr7476368a91.28.1746827630268; Fri, 09 May 2025
+ 14:53:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250509164524.448387100@goodmis.org> <20250509165155.628873521@goodmis.org>
-In-Reply-To: <20250509165155.628873521@goodmis.org>
+References: <20250509164524.448387100@goodmis.org> <20250509165156.135430576@goodmis.org>
+In-Reply-To: <20250509165156.135430576@goodmis.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 9 May 2025 14:49:37 -0700
-X-Gm-Features: ATxdqUEPWK1bzutKtWy6yxNmKdLWMZCU9skVB9Dn5IFiwho3pByZS297XPGSPQI
-Message-ID: <CAEf4Bzb7MCv87ZEPXvH7APk9yvmtCWvuUO5ShEaLvz_DLfNqpw@mail.gmail.com>
-Subject: Re: [PATCH v8 12/18] unwind deferred: Use SRCU unwind_deferred_task_work()
+Date: Fri, 9 May 2025 14:53:38 -0700
+X-Gm-Features: ATxdqUG7vyKh6ckuiVc80QVrYGdO5Dyfg62nDuY0zs4zFQaHfF1xoIZCrXuqiWQ
+Message-ID: <CAEf4BzaKfvCu2T+jJ2e-CCt0N50urfx+p6kQfV899_jkmT_XKQ@mail.gmail.com>
+Subject: Re: [PATCH v8 15/18] perf: Have get_perf_callchain() return NULL if
+ crosstask and user are set
 To: Steven Rostedt <rostedt@goodmis.org>
 Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
 	bpf@vger.kernel.org, x86@kernel.org, Masami Hiramatsu <mhiramat@kernel.org>, 
@@ -90,81 +91,68 @@ Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 9, 2025 at 9:54=E2=80=AFAM Steven Rostedt <rostedt@goodmis.org>=
+On Fri, May 9, 2025 at 9:52=E2=80=AFAM Steven Rostedt <rostedt@goodmis.org>=
  wrote:
 >
-> From: Steven Rostedt <rostedt@goodmis.org>
+> From: Josh Poimboeuf <jpoimboe@kernel.org>
 >
-> Instead of using the callback_mutex to protect the link list of callbacks
-> in unwind_deferred_task_work(), use SRCU instead. This gets called every
-> time a task exits that has to record a stack trace that was requested.
-> This can happen for many tasks on several CPUs at the same time. A mutex
-> is a bottleneck and can cause a bit of contention and slow down performan=
-ce.
+> get_perf_callchain() doesn't support cross-task unwinding for user space
+> stacks, have it return NULL if both the crosstask and user arguments are
+> set.
 >
-> As the callbacks themselves are allowed to sleep, regular RCU can not be
-> used to protect the list. Instead use SRCU, as that still allows the
-> callbacks to sleep and the list can be read without needing to hold the
-> callback_mutex.
->
-> Link: https://lore.kernel.org/all/ca9bd83a-6c80-4ee0-a83c-224b9d60b755@ef=
-ficios.com/
->
-> Suggested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 > ---
->  kernel/unwind/deferred.c | 33 +++++++++++++++++++++++++--------
->  1 file changed, 25 insertions(+), 8 deletions(-)
+>  kernel/events/callchain.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 >
-> diff --git a/kernel/unwind/deferred.c b/kernel/unwind/deferred.c
-> index 7ae0bec5b36a..5d6976ee648f 100644
-> --- a/kernel/unwind/deferred.c
-> +++ b/kernel/unwind/deferred.c
-> @@ -13,10 +13,11 @@
+> diff --git a/kernel/events/callchain.c b/kernel/events/callchain.c
+> index b0f5bd228cd8..abf258913ab6 100644
+> --- a/kernel/events/callchain.c
+> +++ b/kernel/events/callchain.c
+> @@ -224,6 +224,10 @@ get_perf_callchain(struct pt_regs *regs, bool kernel=
+, bool user,
+>         struct perf_callchain_entry_ctx ctx;
+>         int rctx, start_entry_idx;
 >
->  #define UNWIND_MAX_ENTRIES 512
->
-> -/* Guards adding to and reading the list of callbacks */
-> +/* Guards adding to or removing from the list of callbacks */
->  static DEFINE_MUTEX(callback_mutex);
->  static LIST_HEAD(callbacks);
->  static unsigned long unwind_mask;
-> +DEFINE_STATIC_SRCU(unwind_srcu);
->
->  /*
->   * Read the task context timestamp, if this is the first caller then
-> @@ -108,6 +109,7 @@ static void unwind_deferred_task_work(struct callback=
-_head *head)
->         struct unwind_work *work;
->         u64 timestamp;
->         struct task_struct *task =3D current;
-> +       int idx;
->
->         if (WARN_ON_ONCE(!info->pending))
->                 return;
-> @@ -133,13 +135,15 @@ static void unwind_deferred_task_work(struct callba=
-ck_head *head)
->
->         timestamp =3D info->timestamp;
->
-> -       guard(mutex)(&callback_mutex);
-> -       list_for_each_entry(work, &callbacks, list) {
-> +       idx =3D srcu_read_lock(&unwind_srcu);
+> +       /* crosstask is not supported for user stacks */
+> +       if (crosstask && user)
+> +               return NULL;
 
-nit: you could have used guard(srcu)(&unwind_srcu) ?
+I think get_perf_callchain() supports requesting both user and kernel
+stack traces, and if it's crosstask, you can still get kernel (but not
+user) stack, if I'm reading the code correctly.
 
-> +       list_for_each_entry_srcu(work, &callbacks, list,
-> +                                srcu_read_lock_held(&unwind_srcu)) {
->                 if (task->unwind_mask & (1UL << work->bit)) {
->                         work->func(work, &trace, timestamp);
->                         clear_bit(work->bit, &current->unwind_mask);
+So by just returning NULL early you will change this behavior, no?
+
+> +
+>         entry =3D get_callchain_entry(&rctx);
+>         if (!entry)
+>                 return NULL;
+> @@ -249,9 +253,6 @@ get_perf_callchain(struct pt_regs *regs, bool kernel,=
+ bool user,
+>                 }
+>
+>                 if (regs) {
+> -                       if (crosstask)
+> -                               goto exit_put;
+> -
+>                         if (add_mark)
+>                                 perf_callchain_store_context(&ctx, PERF_C=
+ONTEXT_USER);
+>
+> @@ -261,7 +262,6 @@ get_perf_callchain(struct pt_regs *regs, bool kernel,=
+ bool user,
 >                 }
 >         }
-> +       srcu_read_unlock(&unwind_srcu, idx);
->  }
 >
->  static int unwind_deferred_request_nmi(struct unwind_work *work, u64 *ti=
-mestamp)
-
-[...]
+> -exit_put:
+>         put_callchain_entry(rctx);
+>
+>         return entry;
+> --
+> 2.47.2
+>
+>
+>
 
