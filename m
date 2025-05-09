@@ -1,172 +1,154 @@
-Return-Path: <bpf+bounces-57849-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57850-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F7F2AB1307
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 14:10:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 572F6AB1343
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 14:25:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B984A1BC6225
-	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 12:10:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FA475258EA
+	for <lists+bpf@lfdr.de>; Fri,  9 May 2025 12:24:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CFB628FFF0;
-	Fri,  9 May 2025 12:10:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7F1D290BAA;
+	Fri,  9 May 2025 12:24:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="DvAaN53H"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="amXmW6E4"
 X-Original-To: bpf@vger.kernel.org
 Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 247DC2343AB;
-	Fri,  9 May 2025 12:10:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B767228FFD8;
+	Fri,  9 May 2025 12:24:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746792612; cv=none; b=K5jnRdrQhLwiaUgfDo7xkpmumhraipKKmDp0+il98u3aYSQmTf3Q3N+o9VL0eBuix4C/5Qa9D/9gxQ1cXnVOsyia9ZLwKppSIyEha7wdm/x5uCKgTZM7GFvwl01Kp40SahMle5Nzh7wcs3bn58sTs0O4+gCkK2l49df90/pKD4E=
+	t=1746793479; cv=none; b=YRkTuA9t+ghcbQ9383WSudYTDZubFwoRo2+qVl1ytiCdXS9WbC/H+Kyg8ZVNWdurDB+OzBe5guuR0HMnIIPGU0ss+45O0AIxxKA1ulC6VkwqT2jdohtoQn/NOubhpfQvXISe6oJ3Sjki/HOObj9jRdepehDTnoThpHlV9/P8vi4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746792612; c=relaxed/simple;
-	bh=SOI76tgCUJ+Y11Q+7lolXSJLZXVccVKHAsH+Rzp5Fmo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Qo4zIAcNE9tTy5GQOIz2GLYFh4On8vJFhwlb2PFHreEWjudu9rfvwd/BwcuWg6Ck6a3MJITiZCe1HOAkyzdCPxE2a/lxgtq5/NS2C1pqk6VgYeM+aQ/v4rGsMY30GayLIG6k5b/jEN6q8j4QtaUzUXfwpfnlZazGkQVBLTakQ8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=DvAaN53H; arc=none smtp.client-ip=148.163.158.5
+	s=arc-20240116; t=1746793479; c=relaxed/simple;
+	bh=m+uUAXXGE4Lr9Okw8z3WDklkWM6X4LF6ceFNaNvBI+o=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tgFlOy+5OgTmWl4r0rFIWz9Ut86nhahDPce7bmTC3l+heql56V0xxYuc5UfO+3rYCSnlW6+U1oU+k91yg1nAB3acBZmV30E2KimhE6SzugLQBOEdYOMPua/Ukdug0KZaWIASNEfybEFY9JioLwl9f9uSXv39imdtEITRzDEPXGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=amXmW6E4; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 549AeqmE004095;
-	Fri, 9 May 2025 12:10:10 GMT
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5494Bwcx029454;
+	Fri, 9 May 2025 12:24:03 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=Xexgts
-	bf4P9VHYi9XNPZsQvdz/8xdMsfQwZ/VbOuKtc=; b=DvAaN53H292fAkTvqGr3fV
-	ecLZ0J3XazXXC8WMqPfbuXa6LwK88/BVpIeCXLVdWg5CGHt8FIPkZJ2KLF5gYgrR
-	K7rx8Q+ONKutk2WmFb18Vzhi3AacUYPo4dBouM9GVqerJC3cmp4Kog8BN0heBxLt
-	ep2ZpI4w5ccoTzGfDVf5uy7Wgtf0oZ1nZkWj86QbIDwHY168zWt6yaKxOGYwEZuJ
-	07JKMA6mZiRbZfTgBeHpd3yz5UReWdJPsq87SmTLn9PJIku37JQ9xI+7Nc1H2xFp
-	U9BIxl0ZrDwnur9xJ3ydUBbb/rJRxqBLanbnq1OEjEy0V6OgL4hrWBtJETVTlfBQ
-	==
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46hg5sgba9-1
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=BIWzfxgWixiWNzTzbbOf2zuEQuUDcbIqjDgQNNpK+
+	VQ=; b=amXmW6E4eMCuwJxWMOUI7XURM4xDKTx0o4nd6jfRW+UKXHEZh+noqZBB0
+	v6uzBXx9sqpaKwhdKlHpoAQVRzN+bqOMCjJVQJnhHQXprwC2IzpUHXaUmEY31MLZ
+	Ekts88oAoiwvtajHQKXJSQiigbmn+EuhywZjmohiiq3Hfkc/d8K479cmhKtEWib+
+	g9sG0b69LYNLdsr6H85g7hUpWa0o8cc43F2huk3HQNM5IVBXNNQ1iXbKkMrLYCnp
+	Z1kHJLjK4BE9iw7juJKE+X9DB30UYemRWZIHYB6H46ILDhZaAlLl/XqRQ8YE0hGw
+	XzxvF398V7yEgnD2B+4SsxFL/wIPQ==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46h6k0k745-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 09 May 2025 12:10:09 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5498Hw80004235;
-	Fri, 9 May 2025 12:10:09 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 46fjb2fvev-1
+	Fri, 09 May 2025 12:24:02 +0000 (GMT)
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 549CO2h0027104;
+	Fri, 9 May 2025 12:24:02 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46h6k0k743-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 09 May 2025 12:10:09 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 549CA5QA27984552
+	Fri, 09 May 2025 12:24:02 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 549AFS7L013861;
+	Fri, 9 May 2025 12:24:01 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 46e062tx06-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 09 May 2025 12:24:01 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 549CNvgx33555104
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 9 May 2025 12:10:05 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2A2EE20177;
-	Fri,  9 May 2025 12:10:05 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 586ED20175;
-	Fri,  9 May 2025 12:10:03 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.43.107.211])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Fri,  9 May 2025 12:10:03 +0000 (GMT)
-Date: Fri, 9 May 2025 17:40:00 +0530
+	Fri, 9 May 2025 12:23:57 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9E09A2009B;
+	Fri,  9 May 2025 12:23:57 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id EA26120099;
+	Fri,  9 May 2025 12:23:51 +0000 (GMT)
+Received: from li-621bac4c-27c7-11b2-a85c-c2bf7c4b3c07.ibm.com.com (unknown [9.43.107.211])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri,  9 May 2025 12:23:51 +0000 (GMT)
 From: Saket Kumar Bhaskar <skb99@linux.ibm.com>
-To: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
-Cc: Hari Bathini <hbathini@linux.ibm.com>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: [linux-next] selftests/bpf fails to build
-Message-ID: <aB3wmPosqkyNL749@linux.ibm.com>
-References: <e915da49-2b9a-4c4c-a34f-877f378129f6@linux.ibm.com>
+To: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com, linux-next@vger.kernel.org
+Cc: ast@kernel.org, hbathini@linux.ibm.com, maddy@linux.ibm.com,
+        andrii@kernel.org, daniel@iogearbox.net, mykolal@fb.com,
+        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+        haoluo@google.com, jolsa@kernel.org, shuah@kernel.org
+Subject: [PATCH] selftests/bpf: Fix bpf selftest build error
+Date: Fri,  9 May 2025 17:53:48 +0530
+Message-ID: <20250509122348.649064-1-skb99@linux.ibm.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <e915da49-2b9a-4c4c-a34f-877f378129f6@linux.ibm.com>
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Em6hpMnRa8qdkjwAjzKbdYktNcGTY6o5
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTA5MDExOCBTYWx0ZWRfX0K4MPA0LLCcf MpPCeQCkDKphxF0p/Q4kiK8hhqrSpXO+4Jo3wWoG30CxSzk0WSIuQbNsX8105Ekpj4t30Gt2S+7 05yLhRQZcURDRalwNnnZlnSgddKEJ4XbFsyH7LUs+prOmgonuaXGhw/h/xiDRKqwAktxfIqmM62
- XomM0cXXWa8WNsI52ME1W/yIOSsToSz4MjURiEmLVSAj0rb8rV5xKGxSYYseRH/G/heVrYAHzX0 nIGKspz2Ea9sHdQnA5D+oYamsWT+0HQ0TRc6TktsnSJVH4Sz6sgkkdqvh8hGSilhRYYyZSEItSD nQaHleMRgV9DFzE126j/ESDUT6VqyzPb4QHaM8nK6jO3iOChOkaZEaYfyx6OFOc3UoCrN6ZltPP
- T4ulmIIn+IQ8ozr8TmYKCwHdellS1dNB4QgdnMi6SdU7+g25+PjAt+JpeNce3SMMKa5aFnTO
-X-Proofpoint-ORIG-GUID: Em6hpMnRa8qdkjwAjzKbdYktNcGTY6o5
-X-Authority-Analysis: v=2.4 cv=NrjRc9dJ c=1 sm=1 tr=0 ts=681df0a1 cx=c_pps a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17 a=8nJEP1OIZ-IA:10 a=dt9VzEwgFbYA:10 a=VnNF1IyMAAAA:8 a=A-zPWIDjgNZkkrHnjKoA:9 a=3ZKOabzyN94A:10 a=wPNLvfGTeEIA:10
+X-Proofpoint-GUID: i5SEaNzYtik8Y7JXup7kYmp9eCCzylWM
+X-Proofpoint-ORIG-GUID: b_ML1_eoJUq3_Toq-K4bzpjQu5N0dnqS
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTA5MDExOCBTYWx0ZWRfX0ffVYNaLjUR4 ELARAE7ViwMsTSdlETP+ZMrMWO1v8K/aJT4JUhLJwWe4ja7fSeu2C48q+t2X+vu7ZnademuQrAo UXRh/Ma8UthKWI+ZeWa365a7a73o3D1xVUVRl2yW9775b1oJ/gc64UQkEm6CQgfs3bj492CUgcO
+ OWisNVxz+gKsG/v7AJ2phqIAR7UZS6JqRXaPay7vJchxmgBfv3juhbjx/nUazgZBdMJGOpUe4L9 E95zqFGoyYkcKZKD8WVtkgSErf+n6GS4mYyT7AOcviw+k6jqHFDkDTarbVdNs5aH+I4aVhNXl34 9ju68rjmvWOz/cRxYignETqHB+p0Q+5nsFEXDFkBcGbb6ef3G1CjnuCu4mW+QK2pGfT5sYoi1uH
+ ZvsZr/4jIj0n16ckWGlu1iJXfGlFiaFT69yuS4VcTDicFXYx68NLf9MrMi3IhEYAQ+6w/z54
+X-Authority-Analysis: v=2.4 cv=OcCYDgTY c=1 sm=1 tr=0 ts=681df3e2 cx=c_pps a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17 a=dt9VzEwgFbYA:10 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=jh_1Je4BJys6wSEZv6QA:9
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
  definitions=2025-05-09_04,2025-05-08_04,2025-02-21_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 adultscore=0 suspectscore=0 impostorscore=0 bulkscore=0
- mlxscore=0 mlxlogscore=729 malwarescore=0 clxscore=1011 lowpriorityscore=0
- spamscore=0 classifier=spam authscore=0 authtc=n/a authcc= route=outbound
- adjust=0 reason=mlx scancount=1 engine=8.19.0-2504070000
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 phishscore=0 spamscore=0 bulkscore=0 impostorscore=0
+ malwarescore=0 clxscore=1011 mlxscore=0 priorityscore=1501 adultscore=0
+ mlxlogscore=800 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2504070000
  definitions=main-2505090118
 
-On Fri, May 09, 2025 at 05:32:51PM +0530, Venkat Rao Bagalkote wrote:
-> Hello,
-> 
-> 
-> I am observing selftests/bpf fails to build on the next-20250508 kernel.
-> 
-> 
-> Errors:
-> 
-> 
->  GEN
-> /root/linux-next/tools/testing/selftests/bpf/tools/build/bpftool/vmlinux.h
-> bpf_testmod.c:494:17: error: initialization of 'ssize_t (*)(struct file *,
-> struct kobject *, const struct bin_attribute *, char *, loff_t,  size_t)'
-> {aka 'long int (*)(struct file *, struct kobject *, const struct
-> bin_attribute *, char *, long long int,  long unsigned int)'} from
-> incompatible pointer type 'ssize_t (*)(struct file *, struct kobject *,
-> struct bin_attribute *, char *, loff_t, size_t)' {aka 'long int (*)(struct
-> file *, struct kobject *, struct bin_attribute *, char *, long long int, 
-> long unsigned int)'} [-Wincompatible-pointer-types]
->   494 |         .read = bpf_testmod_test_read,
->       |                 ^~~~~~~~~~~~~~~~~~~~~
-> bpf_testmod.c:494:17: note: (near initialization for
-> 'bin_attr_bpf_testmod_file.read')
-> bpf_testmod.c:495:18: error: initialization of 'ssize_t (*)(struct file *,
-> struct kobject *, const struct bin_attribute *, char *, loff_t,  size_t)'
-> {aka 'long int (*)(struct file *, struct kobject *, const struct
-> bin_attribute *, char *, long long int,  long unsigned int)'} from
-> incompatible pointer type 'ssize_t (*)(struct file *, struct kobject *,
-> struct bin_attribute *, char *, loff_t, size_t)' {aka 'long int (*)(struct
-> file *, struct kobject *, struct bin_attribute *, char *, long long int, 
-> long unsigned int)'} [-Wincompatible-pointer-types]
->   495 |         .write = bpf_testmod_test_write,
->       |                  ^~~~~~~~~~~~~~~~~~~~~~
-> bpf_testmod.c:495:18: note: (near initialization for
-> 'bin_attr_bpf_testmod_file.write')
-> make[4]: *** [/root/linux-next/scripts/Makefile.build:203: bpf_testmod.o]
-> Error 1
-> make[3]: *** [/root/linux-next/Makefile:2009: .] Error 2
-> make[2]: *** [Makefile:248: __sub-make] Error 2
-> make[1]: *** [Makefile:18: all] Error 2
-> make: *** [Makefile:282: test_kmods/bpf_testmod.ko] Error 2
-> make: *** Waiting for unfinished jobs...
-> 
-> 
-> If you happen to fix this, please add below tag.
-> 
-> 
-> Reported-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
-> 
-> 
-> 
-> Regards,
-> 
-> Venkat.
-> 
-Hi Venkat, thanks for reporting this. This is due to Commit 
-97d06802d10a ("sysfs: constify bin_attribute argument of bin_attribute::read/write()")
-that changed the required type for struct bin_attribute to const struct bin_attribute.
+On linux-next, build for bpf selftest displays an error due to
+mismatch in the expected function signature of bpf_testmod_test_read
+and bpf_testmod_test_write.
 
-Will send out a patch to fix this, shortly.
+Commit 97d06802d10a ("sysfs: constify bin_attribute argument of bin_attribute::read/write()")
+changed the required type for struct bin_attribute to const struct bin_attribute.
 
-Thanks,
-Saket
+To resolve the error, update corresponding signature for the callback.
+
+Reported-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+Closes: https://lore.kernel.org/all/e915da49-2b9a-4c4c-a34f-877f378129f6@linux.ibm.com/
+Signed-off-by: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+---
+ tools/testing/selftests/bpf/test_kmods/bpf_testmod.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
+index 2e54b95ad898..194c442580ee 100644
+--- a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
++++ b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
+@@ -385,7 +385,7 @@ int bpf_testmod_fentry_ok;
+ 
+ noinline ssize_t
+ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
+-		      struct bin_attribute *bin_attr,
++		      const struct bin_attribute *bin_attr,
+ 		      char *buf, loff_t off, size_t len)
+ {
+ 	struct bpf_testmod_test_read_ctx ctx = {
+@@ -465,7 +465,7 @@ ALLOW_ERROR_INJECTION(bpf_testmod_test_read, ERRNO);
+ 
+ noinline ssize_t
+ bpf_testmod_test_write(struct file *file, struct kobject *kobj,
+-		      struct bin_attribute *bin_attr,
++		      const struct bin_attribute *bin_attr,
+ 		      char *buf, loff_t off, size_t len)
+ {
+ 	struct bpf_testmod_test_write_ctx ctx = {
+-- 
+2.43.5
+
 
