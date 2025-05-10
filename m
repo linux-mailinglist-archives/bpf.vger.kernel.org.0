@@ -1,147 +1,147 @@
-Return-Path: <bpf+bounces-57982-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57983-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CFC7AB24E8
-	for <lists+bpf@lfdr.de>; Sat, 10 May 2025 20:16:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E288AB24F0
+	for <lists+bpf@lfdr.de>; Sat, 10 May 2025 20:23:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C71504A111B
-	for <lists+bpf@lfdr.de>; Sat, 10 May 2025 18:16:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF4C51BA0513
+	for <lists+bpf@lfdr.de>; Sat, 10 May 2025 18:24:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C8C51D7E52;
-	Sat, 10 May 2025 18:16:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8560D2750ED;
+	Sat, 10 May 2025 18:23:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gX9ZS34V"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c0sAH1Xr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 045A41552E0
-	for <bpf@vger.kernel.org>; Sat, 10 May 2025 18:16:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FFC819F419
+	for <bpf@vger.kernel.org>; Sat, 10 May 2025 18:23:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746900972; cv=none; b=jxYZGKp7kzfP0uT/EaY736euGRKnQDpzL5FT52UaMNLIB/Ovg8fdJvdMCxsK2lbsb/23hT3Ht3ZD+t7aYM8CIVPOp5AvLXIFUc1pjEa9IeGzd4roSzyb4k15zxTgH+5zp3LVxc5O4R5WEfdot5gPL0I/y9+8VQmB+TUt9hGrApg=
+	t=1746901433; cv=none; b=DA/lpjSSewi+vB2LxQz7osnEQpZCcrdWYRM07ysDo7K4YyiTyJLont+6EgmYaF8XMxjPH6w6fARZ2nyW93Btxb1w8wKTmrxrg9jzUspvb/CrNDS05uPjbU6UU3x9aifEzpakRhOfIm6oHfkr6dUHPSKXMooGwQ5pSguGRblObPU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746900972; c=relaxed/simple;
-	bh=T5XbU+6KWzC4M8jHVlT+TegcX1H7aOqQipzDrBsER+I=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NOyW4ycN/TBnyjUqe8RTE4XWbm1jfDQbFavfJEmK7L5XK1xjcWmNef2fNdB62fkJJ8MNymkx+jp6Xd5yN12WUNQ543vnd4LskBXhToe4/qMtg9OO730SLsGwYJFB7H2QZUCsEjKAjKHGCLEI8ZU5VZRMzGPK+pkLnDyHd3LE5VI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gX9ZS34V; arc=none smtp.client-ip=209.85.218.44
+	s=arc-20240116; t=1746901433; c=relaxed/simple;
+	bh=XLesCVB6GTqITLPdw/kqrwTA9yIidiXmTz5dGqwoPwE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=H1AGSATF82NWnIA6Q416WzIM9xT9RYAthE7IBgEMuvmFee5iYTVExHLbPsiZ5CeEV8OtEWUHpYGWS5gljGz4Mi2VpEo/tTVZhdg0eqly5pHtKTIJsn0KuCTFcHXiDzyvGuBBTjARu8sUYIrkZoTBoBDc4bC1bxMczOlgiRTlkXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c0sAH1Xr; arc=none smtp.client-ip=209.85.208.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-ad2216ef31cso268802866b.1
-        for <bpf@vger.kernel.org>; Sat, 10 May 2025 11:16:10 -0700 (PDT)
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5fbf29d0ff1so4872922a12.0
+        for <bpf@vger.kernel.org>; Sat, 10 May 2025 11:23:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746900969; x=1747505769; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=sk+K6g3TP6Ovtzr5rVi68SwvUOVK4EZ5PhGpw0WK5QU=;
-        b=gX9ZS34VAyGfWUg4zHNbyvu89NhS2RMCGUpmQgMuUwj8GN5SHKDUogFAF9/bDQ2FBT
-         npxqu3II9YaZD5p6Dwr6ATl/lhJAucs3nwFvnapu/FWKU913pTsdiapKroz73yfjXbxd
-         7uWopy7vV1K34Wdigs+q886LkXzrbLN/itNhX6wtdYKa1mHDHWh0ubUEqfwj67WWhI8k
-         b0uCOCDCzJZbjX8d64c76Z5oQBV+75mOKwmMt7FchkLu9lJwAlo2VLJCjXVs01Yfb6CP
-         s6xE0pKPYZRAqAyQTm/1gLWjxRHUnEpaS/IE/DqV3ugOiCBMzAWCYzSVSx3K07S3pXz1
-         jYvg==
+        d=gmail.com; s=20230601; t=1746901429; x=1747506229; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=EfoyEEer3zPvT8SIq2qSt5fxalLDGHJYs7P7w51urLU=;
+        b=c0sAH1XruY6Ot0K20HZRPSq/piCYDFZbvwJfZhV9CjrWn4GtzG2M1lBdW1R0OKbXCe
+         TCsp5bpANW+UZj+qRSZGEvx4lPd/h3YdVYfBCywP2FJsYjd2d+H+ya0g2+IQ+i6qlkVt
+         FgvFoniqZldLxl/+ZDRAHkocmuZIRJiy1dnI+D3GvXc9inDGLdGJeyZ/upcXqdfABtyW
+         NNgp3iNpm6org5l5PUglh/xCdCDuOeo9pJEl+2pf3bISLvMuESRiaW/JdBHpF3sY5sy/
+         IolfGbazgpO7k5SJlIiyrUdil3XBlee5hKDT2z7o+yD/eJev2dkl21jPwgstmTqHK9dr
+         MTPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746900969; x=1747505769;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sk+K6g3TP6Ovtzr5rVi68SwvUOVK4EZ5PhGpw0WK5QU=;
-        b=VBTdBtZgI+WQ+P0XfEjy/YmoZ1VlPWw7HXdCdvP32aOC8CkHdzG82GAwASaNN87ea0
-         OJoI501CXFDiXWGG8twH7axlObxU5h+kSpfiEJSHPQQuVlEOiEa+GuNBuEwnwzVAhWJi
-         Mm7+zWCGs0br0QZTYU4SjgDDgVha8qviUgKCJI5RI4w9HchlaDI+23H4X/bpe/rpDCbF
-         BUVWZRz1XEQKZ9aHi1krqKMuFJQIo/cA7OHdrEWnGKHFMXaHverRLTcsis+yW+wqb3Gv
-         JzndriOLpsRUuKmOy0w+wuFXMAg59zzaCZl07RMoK/eujK3oH2cqqP9a/JB+q6+s3t+q
-         Krig==
-X-Gm-Message-State: AOJu0Yxc2aeD3TbAb8dZ24+ZTDEFZKUwbOHkUZL0um5Wl8i7oz2LU3Na
-	cFsEW9IkFZHbzPv0voqWVAe2XZdhp+2nGNqkJuht3kSw4oXaIyhTy77hrA==
-X-Gm-Gg: ASbGncuKliTtNSlxoeWrzP11AF6AyrPRsTQ8UhsSs1CpXocWAUkr9W4afI5FhVk1ExB
-	hQXPBt90GQqRUvjMsy3q1tqhdmskzosrCx5WPntHAQph1riDQ5IelG2dk5THXJlpPIQ6owFSOWE
-	fADB3ePXxdUAcCav07xzCTC0lcXlQTQDmCgghHlNwpiAcjD9KPpSngtGSWL5vLrAr6zEAwHVfJQ
-	LiL/Li20sL46PrI3XvGWHJLSSe4vbCXaG6PcjNtkc0rkrC5pMPk6tzhNwFpDBnxn2fWnssqh/It
-	th43e+n8J/mZJlTvz7TpDbwvwOU2qxGVhgR2JvJT4VNzS6tBE4UROLY00HWWHoelmZWmNog=
-X-Google-Smtp-Source: AGHT+IHCRdft6beLOMlCAfvE5UcHCPF13zWAnrwALM3RnPeSzjBy2m+KqPBPsBgs7sYxhX0xzXj1Kg==
-X-Received: by 2002:a17:907:1b07:b0:ac7:e815:6e12 with SMTP id a640c23a62f3a-ad219106375mr717055966b.33.1746900968573;
-        Sat, 10 May 2025 11:16:08 -0700 (PDT)
-Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ad22fccc23esm190879866b.4.2025.05.10.11.16.07
+        d=1e100.net; s=20230601; t=1746901429; x=1747506229;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EfoyEEer3zPvT8SIq2qSt5fxalLDGHJYs7P7w51urLU=;
+        b=dY+rOQtA1nDVOGJW7k5wdXIXID7R9CAkn52pH2jOj/yxjceHz7hvkQozXipG7Inyis
+         5BB21OXrAhxiWLeloM8Dhi4ZavfdZF658nskOw/uNQYkCKAsMAlTXlsRwpXYB1vWL3a5
+         FcECJBGkPUPEyADp5HzszDKy9Mve55+dZ932A79za3rKHW3M65Rd4CPaKbAQ/a3KraUy
+         wLl+aORJ8qsXe/dKDQmuBUBZODsivExDsH4vijLKDN8bAX3kHEOPwfaDtdTOli0u5M3P
+         mvTFCeLM1VEorWmNWXgbQ2CWU1Jlf5WSsrei44at5NBlJkGWi0+yIB2e7cJxFGZcRz5I
+         jQ0Q==
+X-Gm-Message-State: AOJu0Yz1vodlBfZU2goGf3+8maOnvPhgJU2Yrg4AitwdSkHV9OYzib/x
+	OfHBMEibCf7B+pe+Is8P/VjlVfRhEejEvMM65G75+5wJORTDx9OacuH1Vg==
+X-Gm-Gg: ASbGncuGMGCBf3eLQ5LdAyIBUBHlFqEIeslJgFZOE1jhK5fmIzzGT4heBIQsBOYP/OS
+	FHO/Zpp0UUMdcWi4wekGdXeB3p5m3y7Psy9Q/e/dV6azPtLw4bnjGZ7mLUx48tEUnwo1PtcVXp7
+	4F8qk8NR6gVAHNZQnwL4ZviTVYdtsMYIU7Mz1KpGX7Np7zRyPKYpO48QIH3gQwI0O41rlcY7BbF
+	H5uH4rZ+vDW84fnsWasmgLBK8ODAmhUfOpOdBgEgypOVQrbDOOt43dqEx7TGpzhTEeaSHAxFaHy
+	muiv2iulxXmXBPl8+Qt/JZcFe4wAYYkBVjb4MaoMmj8Sr/7oibEf1ILaSxJlmw==
+X-Google-Smtp-Source: AGHT+IEmThEwTL496ENxg/pL6d34Z+/9zBvfqsDzZyui9C/SN2cOGxZpkl6IznvkN7c+3Y3RaRUJxA==
+X-Received: by 2002:a17:907:9710:b0:ad2:3fff:7bf with SMTP id a640c23a62f3a-ad23fff0965mr161800066b.37.1746901429363;
+        Sat, 10 May 2025 11:23:49 -0700 (PDT)
+Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ad2197bddbesm346056366b.134.2025.05.10.11.23.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 May 2025 11:16:08 -0700 (PDT)
+        Sat, 10 May 2025 11:23:48 -0700 (PDT)
+Date: Sat, 10 May 2025 18:28:06 +0000
 From: Anton Protopopov <a.s.protopopov@gmail.com>
-To: bpf@vger.kernel.org
-Cc: Anton Protopopov <a.s.protopopov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH v1 bpf-next] libbpf: Use proper errno value in nlattr
-Date: Sat, 10 May 2025 18:20:11 +0000
-Message-Id: <20250510182011.2246631-1-a.s.protopopov@gmail.com>
-X-Mailer: git-send-email 2.34.1
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH v1 bpf] libbpf: use proper errno value in linker
+Message-ID: <aB+atmcK/L53R40i@mail.gmail.com>
+References: <20250430120820.2262053-1-a.s.protopopov@gmail.com>
+ <CAEf4BzYmNyBS-xofAagQ6diVkSEn3iT46kcRrBSM-_14fAmgzg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzYmNyBS-xofAagQ6diVkSEn3iT46kcRrBSM-_14fAmgzg@mail.gmail.com>
 
-Return value of the validate_nla() function can be propagated all the
-way up to users of libbpf API. In case of error this libbpf version
-of validate_nla returns -1 which will be seen as -EPERM from user's
-point of view. Instead, return a more reasonable -EINVAL.
+On 25/04/30 09:05AM, Andrii Nakryiko wrote:
+> On Wed, Apr 30, 2025 at 5:03 AM Anton Protopopov
+> <a.s.protopopov@gmail.com> wrote:
+> >
+> > Return values of the linker_append_sec_data() and the
+> > linker_append_elf_relos() functions are propagated all the
+> > way up to users of libbpf API. In some error cases these
+> > functions return -1 which will be seen as -EPERM from user's
+> > point of view. Instead, return a more reasonable -EINVAL.
+> >
+> > Fixes: faf6ed321cf6 ("libbpf: Add BPF static linker APIs")
+> > Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
+> > ---
+> >  tools/lib/bpf/linker.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
+> > index 56f5068e2eba..a469e5d4fee7 100644
+> > --- a/tools/lib/bpf/linker.c
+> > +++ b/tools/lib/bpf/linker.c
+> > @@ -1376,7 +1376,7 @@ static int linker_append_sec_data(struct bpf_linker *linker, struct src_obj *obj
+> >                 } else {
+> >                         if (!secs_match(dst_sec, src_sec)) {
+> >                                 pr_warn("ELF sections %s are incompatible\n", src_sec->sec_name);
+> > -                               return -1;
+> > +                               return -EINVAL;
+> >                         }
+> >
+> >                         /* "license" and "version" sections are deduped */
+> > @@ -2223,7 +2223,7 @@ static int linker_append_elf_relos(struct bpf_linker *linker, struct src_obj *ob
+> >                         }
+> >                 } else if (!secs_match(dst_sec, src_sec)) {
+> >                         pr_warn("sections %s are not compatible\n", src_sec->sec_name);
+> > -                       return -1;
+> > +                       return -EINVAL;
+> 
+> doh, not sure how that slipped through, thanks for the fix! I applied
+> it to bpf-next.
+> 
+> BTW, if you would be so kind, I think we have a similar issue with
+> validate_nla() in nlattr.c, where -1 can be eventually returned as
+> user-visible error code, it would be nice to fix this up like you did
+> with linker APIs, thanks!
 
-Fixes: bbf48c18ee0c ("libbpf: add error reporting in XDP")
-Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
----
- tools/lib/bpf/nlattr.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+Sent it. It fixes the return value in validate_nla.  But just wanted
+to add a note here, that I am not signing for fixing all the return
+paths in nlattr.c and netlink.c :)
 
-diff --git a/tools/lib/bpf/nlattr.c b/tools/lib/bpf/nlattr.c
-index 975e265eab3b..0ba527d33ce4 100644
---- a/tools/lib/bpf/nlattr.c
-+++ b/tools/lib/bpf/nlattr.c
-@@ -63,16 +63,16 @@ static int validate_nla(struct nlattr *nla, int maxtype,
- 		minlen = nla_attr_minlen[pt->type];
- 
- 	if (libbpf_nla_len(nla) < minlen)
--		return -1;
-+		return -EINVAL;
- 
- 	if (pt->maxlen && libbpf_nla_len(nla) > pt->maxlen)
--		return -1;
-+		return -EINVAL;
- 
- 	if (pt->type == LIBBPF_NLA_STRING) {
- 		char *data = libbpf_nla_data(nla);
- 
- 		if (data[libbpf_nla_len(nla) - 1] != '\0')
--			return -1;
-+			return -EINVAL;
- 	}
- 
- 	return 0;
-@@ -118,7 +118,7 @@ int libbpf_nla_parse(struct nlattr *tb[], int maxtype, struct nlattr *head,
- 		if (policy) {
- 			err = validate_nla(nla, maxtype, policy);
- 			if (err < 0)
--				goto errout;
-+				return err;
- 		}
- 
- 		if (tb[type])
-@@ -128,9 +128,7 @@ int libbpf_nla_parse(struct nlattr *tb[], int maxtype, struct nlattr *head,
- 		tb[type] = nla;
- 	}
- 
--	err = 0;
--errout:
--	return err;
-+	return 0;
- }
- 
- /**
--- 
-2.34.1
-
+> >                 }
+> >
+> >                 /* shdr->sh_link points to SYMTAB */
+> > --
+> > 2.34.1
+> >
 
