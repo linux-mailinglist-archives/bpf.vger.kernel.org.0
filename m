@@ -1,121 +1,126 @@
-Return-Path: <bpf+bounces-57963-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57964-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48828AB206B
-	for <lists+bpf@lfdr.de>; Sat, 10 May 2025 02:01:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99FC5AB2079
+	for <lists+bpf@lfdr.de>; Sat, 10 May 2025 02:25:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD8A31C262D0
-	for <lists+bpf@lfdr.de>; Sat, 10 May 2025 00:01:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43096982840
+	for <lists+bpf@lfdr.de>; Sat, 10 May 2025 00:24:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3C6238B;
-	Sat, 10 May 2025 00:01:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB5FF44C94;
+	Sat, 10 May 2025 00:24:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="S9JCE690"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RQDhA/nJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE565184
-	for <bpf@vger.kernel.org>; Sat, 10 May 2025 00:01:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86201944F
+	for <bpf@vger.kernel.org>; Sat, 10 May 2025 00:24:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746835274; cv=none; b=D9UOvygLSdP5sgP9ZWy/j9Yc9q/I3mZvfr5o3OX1qjo1Vs3QOW8fF5UVq06BoyK0FS785B405smc5U3vAxHRXSwxZ5QZnrzPjX6j4lXA+9GxV8ZSxqvMPWf6prA4YVKf0fBTIRkc6sGl7TgtIg2iXKJbs7wut0ICvAI0+4WMlVQ=
+	t=1746836697; cv=none; b=nsEq7uZ9/myWzgNBqf/OTnHJWBl6mWmcmyiZZpkaJCghML5ppfExAuk0cqoye2hT5upC9t7JGYjyTkhdtZxUZI80yIh7esyRRSzN+zvwmRXMhVgXMk/C0MLFfVV3HfkLXX30eq4Ga+DikD+dFyv4f4h0jBCeVl7kL/3oCP5Gdvo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746835274; c=relaxed/simple;
-	bh=bzHojvGJXfKfrCmjqiTDizZgHXYSrsTm0PuXbD9H59Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ud8wqaQ7n0lP1htCkaAHUbhPErFtmui/n6V7VOHHFTcAleiHu/HW9SwawxBHBOSSrXntfv3bydHilTitDptQRwersGDY0rbrPFPZkLEHtUW+BBP5QbNpWiTEF5TjAkb5M0pZAY1KRykxY5KP6lJFzHOdwFLo3HbMyF0SNqJQZcY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=S9JCE690; arc=none smtp.client-ip=95.215.58.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <d18b3908-de58-4db6-9b0e-e075e48c64e5@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1746835269;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kqGICKR0J8kaSqihoAuGNQEpzMu6vFRsCKY6VhMIAeY=;
-	b=S9JCE690w7MexHS5XWfhOglm8oB63CfB8RWeF85ZzaLmKHO1UW90tqnUvOQczhiwdgJgTl
-	R0nvHkcjkxTl0e9g6pkvCe0yXdNxvVeYVw+obLX3p0Lig8WT3MDDloz3SyCwUEiDAnfsG4
-	gB/ck3t1iN8oEXLEnzXc2Gl0B3Zu/NU=
-Date: Fri, 9 May 2025 17:01:02 -0700
+	s=arc-20240116; t=1746836697; c=relaxed/simple;
+	bh=/VsMM64Na1sw/g7S0NAdjQKW6L53wiR1kcmRZOdmD/c=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZBbiaN3khssGUsHZoGPQkvziHbWT/oC45ohxntS/lhew2g3LLwL0/ORG4nB8FacHqYBuywTEvRutY8LQp41OEGvG/Y6xBjmae6+ILliGoM5n+E6pu2vyHU3shBB0bVi1SALDWeyP7VTsaqyIlXtEKbVMUpc1Bj9QD+evMat3vFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RQDhA/nJ; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3a1b8e8b2b2so1177195f8f.2
+        for <bpf@vger.kernel.org>; Fri, 09 May 2025 17:24:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1746836694; x=1747441494; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1Ad58mGNCB9cNtZ1DXUTUG/VpnnqCkWI+ofAgq5MPQo=;
+        b=RQDhA/nJC3S0vRNHo459iJuYEty/yTda2B+bngZCyvi4wJav7Zrh0zASQOOkmQm3XR
+         VddpSaX5KQMZ6tuC0FkTSBRkbDn5FSR6+JwzFEpReiJTexqbKSYPvyCbFR0n0493clWb
+         3JmKiCsg90gun+Irs2WPsoaep+zjY9kUgVdMGl2Une4REXHZEF8ME84GWvIYg4kgDYNz
+         NwXw5ygqu+dYHfFZuoRp75XYoDIua4ma9ziSQXa/enzXO1LlNMP6oda51epVwqjYmRKV
+         Av1H6vln1D5zpCgZy+Yind+oKR67YwcrjkwHHeZ5UrSJSMPG5Zwud51xEpxn0VKS2jPv
+         yVgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746836694; x=1747441494;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1Ad58mGNCB9cNtZ1DXUTUG/VpnnqCkWI+ofAgq5MPQo=;
+        b=kt41jhSrZ9eDbPTxaHLaga6pB9Xba5A38kS6+WB4Dx+UizBhgaOHOX3TX4sEhKLKq1
+         ewjPZ3tyfowuA2CuxvjHkXb0FnsET8Yw0Nl2nYvAPt0yyRXuGjkjX98v7zD6ep4XQIP1
+         Ypaekrmxy1atTf/75dtvozLglWTVyPbLGj5y2X7FEULCTnKNpnbteDu3DOdvnVGwmVVP
+         TI/mNTU2nOnaed7ayDxuHIPGARJNtlh8FhT8SsZ8XBXhW46N7KI9buhlNxzBF3lGrUYC
+         trtBXR2dZO1lBHw1XI74wwdHI9+XI7bIHSdazl7IRzMlCsRH1xes52Mb4FFbzL12LfqN
+         zAsg==
+X-Gm-Message-State: AOJu0YyjSs6TEsh4ixofXR/JnCNwATpj0EgTebHvqPsRBvOVB1YJGG0k
+	wEj0iYXQ71GiZf9UA/QxmHOMHQUPAekRkVYrutAVlZvfJpV0Fd+l1zof+A==
+X-Gm-Gg: ASbGncvw2zypBp6VSxPbzc7UYCNdpd7b8M87ORHoP0aZ4vqoY/yOa1oofRebMBEeFBa
+	LwBgapJYRWXNKp36EM95xuI4AfW5TNtnxlCr4+/cFXrRA0kNj2YnZAxLw/bN9aZDwyxUzZpP9Gi
+	Z+Kb5XpwteMiokmlwkTeT/PweahmNP9g7VoBMXeDnKYOCaV6YBh0gpThVq2mYFEFhkkF7KXRbIc
+	lRWGS/PBKdPq4As4XHT95NmURjjGMaQjgHKgssb4oFC7HpWd9O15+DSmhIVAdV/k/cRNEziIx6j
+	5O3klOGIH8B06ANkffp66And+I1EhZhRsmdlvRSgnMD14soFP7grbcfkTMJRfTNlABwqwg==
+X-Google-Smtp-Source: AGHT+IGmsqOVV4ZhrKv0SGFanzP+yhCnhXnYPH31luOLqs0UJk414ejUBF/Wac5PzpFdOCf4yIkCFQ==
+X-Received: by 2002:a05:6000:2207:b0:39a:ca04:3e4d with SMTP id ffacd0b85a97d-3a1f6427683mr4604024f8f.7.1746836693429;
+        Fri, 09 May 2025 17:24:53 -0700 (PDT)
+Received: from msi-laptop.mynet ([2a01:4b00:bf28:2e00:ff96:2dac:a39:3e10])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a1f57ddde0sm4857878f8f.14.2025.05.09.17.24.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 May 2025 17:24:53 -0700 (PDT)
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	kafai@meta.com,
+	kernel-team@meta.com,
+	eddyz87@gmail.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+Subject: [PATCH bpf-next] selftests/bpf: allow skipping docs compilation
+Date: Sat, 10 May 2025 01:24:50 +0100
+Message-ID: <20250510002450.365613-1-mykyta.yatsenko5@gmail.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v5 07/17] bpf: Support new 32bit offset jmp
- instruction
-Content-Language: en-GB
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
- Eduard Zingerman <eddyz87@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, "Lai, Yi" <yi1.lai@linux.intel.com>,
- Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@kernel.org>,
- David Faust <david.faust@oracle.com>,
- "Jose E . Marchesi" <jose.marchesi@oracle.com>,
- Kernel Team <kernel-team@fb.com>, yi1.lai@intel.com
-References: <20230728011143.3710005-1-yonghong.song@linux.dev>
- <20230728011231.3716103-1-yonghong.song@linux.dev>
- <Z/8q3xzpU59CIYQE@ly-workstation>
- <763cbfb4-b1a0-4752-8428-749bb12e2103@linux.dev>
- <33a03235-638d-4c63-811d-ec44872654b3@linux.dev>
- <CAADnVQJBgEDXnsRjTC0BUPAqfiHoH+ZL6vk1Me-+QcXbT811jg@mail.gmail.com>
- <342054de8fb765780b1856e5b3b81b4e0a531620.camel@gmail.com>
- <CAEf4Bzbgci5pOmHmYoAYTe6cYdwJ4ju=5LuT0VQzsu+aKQ1AgQ@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAEf4Bzbgci5pOmHmYoAYTe6cYdwJ4ju=5LuT0VQzsu+aKQ1AgQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
+From: Mykyta Yatsenko <yatsenko@meta.com>
 
+Currently rst2man is required to build bpf selftests, as the tool is
+used by Makefile.docs. rst2man may be missing in some build
+environments and is not essential for selftests. It makes sense to
+allow user to skip building docs.
 
-On 5/9/25 5:36 AM, Andrii Nakryiko wrote:
-> On Fri, May 9, 2025 at 1:50 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
->> On Fri, 2025-05-09 at 10:21 -0700, Alexei Starovoitov wrote:
->>
->> [...]
->>
->>> hmm.
->>> We probably should filter out r10 somehow,
->>> since the following:
->>>> mark_precise: frame1: regs=r2 stack= before 7: (bd) if r2 <= r10 goto pc-1
->>>> mark_precise: frame1: regs=r2,r10 stack= before 6: (06) gotol pc+0
->>> is already odd.
->> Not Andrii, but here are my 5 cents.
->>
->> check_cond_jmp() allows comparing pointers with scalars.
->> is_branch_taken() predicts jumps for null comparisons.
->> Hence, tracking precision of the r2 above is correct.
->> backtrack_insn() does not know the types of the registers when
->> processing `r2 <= r10` and thus adds r10 to the tracked set.
->> Whenever a scalar is added to a PTR_TO_STACK such scalar is marked as precise.
->> This means that there is no need to track precision for constituents
->> of the PTR_TO_STACK values.
->>
->> Given above, I think that filtering out r10 should be safe.
-> Yeah, it makes no sense to track r10. It's always "precise", effectively.
+This patch adds SKIP_DOCS variable into bpf selftests Makefile that when
+set to 1 allows skipping building docs, for example:
+make -C tools/testing/selftests TARGETS=bpf SKIP_DOCS=1
 
-This does make sense. I will craft a patch to fix it (not tracking r10
-during precision backtrack) soon.
+Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+---
+ tools/testing/selftests/bpf/Makefile | 2 ++
+ 1 file changed, 2 insertions(+)
 
->
->> In case if sequence of instructions would be more complex, e.g.:
->>
->>          r9 = r10
->>          if r2 <= r9 goto -1; \
->>
->> backtrack_insn() would still eventually get to r10 and stop
->> propagation.
->>
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 03663222a0a5..0d04cf54068e 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -358,7 +358,9 @@ $(CROSS_BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile)	\
+ 		    prefix= DESTDIR=$(SCRATCH_DIR)/ install-bin
+ endif
+ 
++ifneq ($(SKIP_DOCS),1)
+ all: docs
++endif
+ 
+ docs:
+ 	$(Q)RST2MAN_OPTS="--exit-status=1" $(MAKE) $(submake_extras)	\
+-- 
+2.49.0
 
 
