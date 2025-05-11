@@ -1,35 +1,36 @@
-Return-Path: <bpf+bounces-57989-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57990-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78E1AAB2A3E
-	for <lists+bpf@lfdr.de>; Sun, 11 May 2025 20:28:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DBF9AB2A3F
+	for <lists+bpf@lfdr.de>; Sun, 11 May 2025 20:28:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED71E16FBB1
-	for <lists+bpf@lfdr.de>; Sun, 11 May 2025 18:28:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F223F16FBC7
+	for <lists+bpf@lfdr.de>; Sun, 11 May 2025 18:28:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AA3C25B1EF;
-	Sun, 11 May 2025 18:28:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5080325D53A;
+	Sun, 11 May 2025 18:28:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from 66-220-144-179.mail-mxout.facebook.com (66-220-144-179.mail-mxout.facebook.com [66.220.144.179])
+Received: from 69-171-232-180.mail-mxout.facebook.com (69-171-232-180.mail-mxout.facebook.com [69.171.232.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0AD543169
-	for <bpf@vger.kernel.org>; Sun, 11 May 2025 18:27:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.144.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CDE543169
+	for <bpf@vger.kernel.org>; Sun, 11 May 2025 18:28:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746988081; cv=none; b=SHtPyHGuWzWlXM46Qi6NHW2b73nNpGWhg3SOvkP+1hGYsBfW5jWcwwTakf0hy28EwCsGVQs0BQlC9rmM2b/4MKgdNuri/6S/qoeZFZrIoK0QiMMwdyQYrZEAHwdBw5UEWd7RthGnRdrT0gNn3OFiWyBlH7nrEo4PJCpPZEGUc9k=
+	t=1746988087; cv=none; b=ZcNduFyXCxEBqvoWeWqK0UfJOg9AGDofeSR7KlTXA7Ok9jWAgTItrQJnLkaaLr/9YClv1zm9mn480MSVLC26Edv4VuKG3Av8rbB/PiZa4HBnbfk71O1F2DOay5cP+ye4bDQKtgzzshvLO7glY+mg6H24EiF1ncGBzfmU6su8uE0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746988081; c=relaxed/simple;
-	bh=bEomkCCMpJXvHwazxgoA2bpzuNNpboY38Nj9nDNkx3I=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=fGgS5Av51Qpwym4tZEy41Alz4BQHKKEG2Ol1fx2VRDmP+f0yvLNfUkBK30MGTuoyjqSdYOsWwWTTc/k4Ro/61FvW6+/T/sM2ANWhcez8HZUwEYGZ4l3A6NpQJ33Cg+VMoG9iKdOLk9T+8MJD/5aDlvpxt0dgkrOihyPbzHf83zs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.144.179
+	s=arc-20240116; t=1746988087; c=relaxed/simple;
+	bh=krmkp5gbduqFYFWtNeuW6bgpXOQiX8RBB/4KrLRZEWA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=npxShr0E5OndeVVRxjaKTphu1wsUyQIXqajYXFaCLz5qifd0t4WritXGvXTZYsjERb2ZH1MeaFgMn+j1juHgPVEYgw1q7OfbE6DU0Z9qewg/9VFHuJDO1y4amioKdGUvIYkWHkV1v8KhGmy+NsLJyAmUhU7ARY6gk+2Q7BRdZdo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
 Received: by devvm16039.vll0.facebook.com (Postfix, from userid 128203)
-	id 85B0374F5F0F; Sun, 11 May 2025 11:27:44 -0700 (PDT)
+	id 9895F74F5F41; Sun, 11 May 2025 11:27:49 -0700 (PDT)
 From: Yonghong Song <yonghong.song@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -37,10 +38,12 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	kernel-team@fb.com,
 	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next 1/2] bpf: Warn with new bpf_unreachable() kfunc maybe due to uninitialized var
-Date: Sun, 11 May 2025 11:27:44 -0700
-Message-ID: <20250511182744.1806792-1-yonghong.song@linux.dev>
+Subject: [PATCH bpf-next 2/2] selftests/bpf: Add a test with bpf_unreachable() kfunc
+Date: Sun, 11 May 2025 11:27:49 -0700
+Message-ID: <20250511182749.1807380-1-yonghong.song@linux.dev>
 X-Mailer: git-send-email 2.47.1
+In-Reply-To: <20250511182744.1806792-1-yonghong.song@linux.dev>
+References: <20250511182744.1806792-1-yonghong.song@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -50,135 +53,291 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-Marc Su=C3=B1=C3=A9 (Isovalent, part of Cisco) reported an issue where an
-uninitialized variable caused generating bpf prog binary code not
-working as expected. The reproducer is in [1] where the flags
-=E2=80=9C-Wall -Werror=E2=80=9D are enabled, but there is no warning and =
-compiler
-may take advantage of uninit variable to do aggressive optimization.
+The test case is from [1] reported by Marc Su=C3=B1=C3=A9. When compiled =
+with [2],
+the object code looks like:
 
-In llvm internals, uninitialized variable usage may generate
-'unreachable' IR insn and these 'unreachable' IR insns may indicate
-uninit var impact on code optimization. With clang21 patch [2],
-those 'unreachable' IR insn are converted to func bpf_unreachable().
+  0000000000000000 <repro>:
+  ; {
+       0:       bf 16 00 00 00 00 00 00 r6 =3D r1
+  ;       bpf_printk("Start");
+       1:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 =3D 0x=
+0 ll
+                0000000000000008:  R_BPF_64_64  .rodata
+       3:       b4 02 00 00 06 00 00 00 w2 =3D 0x6
+       4:       85 00 00 00 06 00 00 00 call 0x6
+  ; DEFINE_FUNC_CTX_POINTER(data)
+       5:       61 61 4c 00 00 00 00 00 w1 =3D *(u32 *)(r6 + 0x4c)
+  ;       bpf_printk("pre ipv6_hdrlen_offset");
+       6:       18 01 00 00 06 00 00 00 00 00 00 00 00 00 00 00 r1 =3D 0x=
+6 ll
+                0000000000000030:  R_BPF_64_64  .rodata
+       8:       b4 02 00 00 17 00 00 00 w2 =3D 0x17
+       9:       85 00 00 00 06 00 00 00 call 0x6
+      10:       85 10 00 00 ff ff ff ff call -0x1
+                0000000000000050:  R_BPF_64_32  bpf_unreachable
 
-In kernel, a new kfunc bpf_unreachable() is added. If this kfunc
-(generated by [2]) is the last insn in the main prog or a subprog,
-the verifier will suggest the verification failure may be due to
-uninitialized var, so user can check their source code to find the
-root cause.
-
-Without this patch, the verifier will output
-  last insn is not an exit or jmp
-and user will not know what is the potential root cause and
-it will take more time to debug this verification failure.
+You can see the last insn is bpf_unreachable() func and bpf verifier
+can take advantage of such information and emits the following error
+message:
+  (85) call bpf_unreachable#74465
+  last insn is bpf_unreachable, due to uninitialized var?
 
   [1] https://github.com/msune/clang_bpf/blob/main/Makefile#L3
   [2] https://github.com/llvm/llvm-project/pull/131731
 
 Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 ---
- kernel/bpf/helpers.c  |  5 +++++
- kernel/bpf/verifier.c | 17 ++++++++++++++++-
- 2 files changed, 21 insertions(+), 1 deletion(-)
+ .../selftests/bpf/prog_tests/verifier.c       |   2 +
+ .../selftests/bpf/progs/verifier_uninit_var.c | 203 ++++++++++++++++++
+ 2 files changed, 205 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_uninit_var=
+.c
 
-In order to compile kernel successfully with the above [2], the following
-change is needed due to clang21 changes:
-
-  --- a/Makefile
-  +++ b/Makefile
-  @@ -852,7 +852,7 @@ endif
-   endif # may-sync-config
-   endif # need-config
-=20
-  -KBUILD_CFLAGS  +=3D -fno-delete-null-pointer-checks
-  +KBUILD_CFLAGS  +=3D -fno-delete-null-pointer-checks -Wno-default-const=
--init-field-unsafe
-
-  --- a/scripts/Makefile.extrawarn
-  +++ b/scripts/Makefile.extrawarn
-  @@ -19,6 +19,7 @@ KBUILD_CFLAGS +=3D $(call cc-disable-warning, frame-a=
-ddress)
-   KBUILD_CFLAGS +=3D $(call cc-disable-warning, address-of-packed-member=
+diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/te=
+sting/selftests/bpf/prog_tests/verifier.c
+index e66a57970d28..bc2765d130c0 100644
+--- a/tools/testing/selftests/bpf/prog_tests/verifier.c
++++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+@@ -87,6 +87,7 @@
+ #include "verifier_tailcall_jit.skel.h"
+ #include "verifier_typedef.skel.h"
+ #include "verifier_uninit.skel.h"
++#include "verifier_uninit_var.skel.h"
+ #include "verifier_unpriv.skel.h"
+ #include "verifier_unpriv_perf.skel.h"
+ #include "verifier_value_adj_spill.skel.h"
+@@ -220,6 +221,7 @@ void test_verifier_subreg(void)               { RUN(v=
+erifier_subreg); }
+ void test_verifier_tailcall_jit(void)         { RUN(verifier_tailcall_ji=
+t); }
+ void test_verifier_typedef(void)              { RUN(verifier_typedef); }
+ void test_verifier_uninit(void)               { RUN(verifier_uninit); }
++void test_verifier_uninit_var(void)           { RUN(verifier_uninit_var)=
+; }
+ void test_verifier_unpriv(void)               { RUN(verifier_unpriv); }
+ void test_verifier_unpriv_perf(void)          { RUN(verifier_unpriv_perf=
+); }
+ void test_verifier_value_adj_spill(void)      { RUN(verifier_value_adj_s=
+pill); }
+diff --git a/tools/testing/selftests/bpf/progs/verifier_uninit_var.c b/to=
+ols/testing/selftests/bpf/progs/verifier_uninit_var.c
+new file mode 100644
+index 000000000000..5ec01b492623
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/verifier_uninit_var.c
+@@ -0,0 +1,203 @@
++#include <linux/bpf.h>
++#include <linux/pkt_cls.h>
++#include <linux/if_ether.h>
++#include <linux/in.h>
++#include <linux/ip.h>
++#include <linux/ipv6.h>
++#include <linux/udp.h>
++#include <linux/tcp.h>
++#include <stdbool.h>
++#include <linux/icmpv6.h>
++#include <linux/in.h>
++
++#include <bpf/bpf_endian.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include "bpf_misc.h"
++
++union macaddr {
++	struct {
++		__u32 p1;
++		__u16 p2;
++	};
++	__u8 addr[6];
++};
++
++union v6addr {
++	struct {
++		__u32 p1;
++		__u32 p2;
++		__u32 p3;
++		__u32 p4;
++	};
++	struct {
++		__u64 d1;
++		__u64 d2;
++	};
++	__u8 addr[16];
++};
++
++/* Number of extension headers that can be skipped */
++#define IPV6_MAX_HEADERS 4
++
++#define NEXTHDR_HOP             0       /* Hop-by-hop option header. */
++#define NEXTHDR_TCP             6       /* TCP segment. */
++#define NEXTHDR_UDP             17      /* UDP message. */
++#define NEXTHDR_IPV6            41      /* IPv6 in IPv6 */
++#define NEXTHDR_ROUTING         43      /* Routing header. */
++#define NEXTHDR_FRAGMENT        44      /* Fragmentation/reassembly head=
+er. */
++#define NEXTHDR_GRE             47      /* GRE header. */
++#define NEXTHDR_ESP             50      /* Encapsulating security payloa=
+d. */
++#define NEXTHDR_AUTH            51      /* Authentication header. */
++#define NEXTHDR_ICMP            58      /* ICMP for IPv6. */
++#define NEXTHDR_NONE            59      /* No next header */
++#define NEXTHDR_DEST            60      /* Destination options header. *=
+/
++#define NEXTHDR_SCTP            132     /* SCTP message. */
++#define NEXTHDR_MOBILITY        135     /* Mobility header. */
++
++#define NEXTHDR_MAX             255
++
++#define IPV6_SADDR_OFF		offsetof(struct ipv6hdr, saddr)
++#define IPV6_DADDR_OFF		offsetof(struct ipv6hdr, daddr)
++
++#define NEXTHDR_ICMP 58
++#define ICMP6_NS_MSG_TYPE		135
++
++#define DROP_INVALID		-134
++#define DROP_INVALID_EXTHDR	-156
++#define DROP_FRAG_NOSUPPORT	-157
++
++#define ctx_load_bytes		skb_load_bytes
++
++#define DEFINE_FUNC_CTX_POINTER(FIELD)						\
++static __always_inline void *							\
++ctx_ ## FIELD(const struct __sk_buff *ctx)					\
++{										\
++	void *ptr;								\
++										\
++	/* LLVM may generate u32 assignments of ctx->{data,data_end,data_meta}.=
+	\
++	 * With this inline asm, LLVM loses track of the fact this field is on	=
+\
++	 * 32 bits.								\
++	 */									\
++	asm volatile("%0 =3D *(u32 *)(%1 + %2)"					\
++		     : "=3Dr"(ptr)						\
++		     : "r"(ctx), "i"(offsetof(struct __sk_buff, FIELD)));	\
++	return ptr;								\
++}
++/* This defines ctx_data(). */
++DEFINE_FUNC_CTX_POINTER(data)
++#undef DEFINE_FUNC_CTX_POINTER
++
++
++static __always_inline int ipv6_optlen(const struct ipv6_opt_hdr *opthdr=
 )
-   KBUILD_CFLAGS +=3D -Wmissing-declarations
-   KBUILD_CFLAGS +=3D -Wmissing-prototypes
-  +KBUILD_CFLAGS +=3D -Wno-default-const-init-var-unsafe
-
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index fed53da75025..6048d7e19d4c 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -3283,6 +3283,10 @@ __bpf_kfunc void bpf_local_irq_restore(unsigned lo=
-ng *flags__irq_flag)
- 	local_irq_restore(*flags__irq_flag);
- }
-=20
-+__bpf_kfunc void bpf_unreachable(void)
 +{
++	return (opthdr->hdrlen + 1) << 3;
 +}
 +
- __bpf_kfunc_end_defs();
-=20
- BTF_KFUNCS_START(generic_btf_ids)
-@@ -3388,6 +3392,7 @@ BTF_ID_FLAGS(func, bpf_iter_kmem_cache_next, KF_ITE=
-R_NEXT | KF_RET_NULL | KF_SLE
- BTF_ID_FLAGS(func, bpf_iter_kmem_cache_destroy, KF_ITER_DESTROY | KF_SLE=
-EPABLE)
- BTF_ID_FLAGS(func, bpf_local_irq_save)
- BTF_ID_FLAGS(func, bpf_local_irq_restore)
-+BTF_ID_FLAGS(func, bpf_unreachable)
- BTF_KFUNCS_END(common_btf_ids)
-=20
- static const struct btf_kfunc_id_set common_kfunc_set =3D {
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 28f5a7899bd6..d26aec0a90d0 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -206,6 +206,7 @@ static int ref_set_non_owning(struct bpf_verifier_env=
- *env,
- static void specialize_kfunc(struct bpf_verifier_env *env,
- 			     u32 func_id, u16 offset, unsigned long *addr);
- static bool is_trusted_reg(const struct bpf_reg_state *reg);
-+static void verbose_insn(struct bpf_verifier_env *env, struct bpf_insn *=
-insn);
-=20
- static bool bpf_map_ptr_poisoned(const struct bpf_insn_aux_data *aux)
- {
-@@ -3398,7 +3399,10 @@ static int check_subprogs(struct bpf_verifier_env =
-*env)
- 	int i, subprog_start, subprog_end, off, cur_subprog =3D 0;
- 	struct bpf_subprog_info *subprog =3D env->subprog_info;
- 	struct bpf_insn *insn =3D env->prog->insnsi;
-+	bool is_bpf_unreachable =3D false;
- 	int insn_cnt =3D env->prog->len;
-+	const struct btf_type *t;
-+	const char *tname;
-=20
- 	/* now check that all jumps are within the same subprog */
- 	subprog_start =3D subprog[cur_subprog].start;
-@@ -3433,7 +3437,18 @@ static int check_subprogs(struct bpf_verifier_env =
-*env)
- 			if (code !=3D (BPF_JMP | BPF_EXIT) &&
- 			    code !=3D (BPF_JMP32 | BPF_JA) &&
- 			    code !=3D (BPF_JMP | BPF_JA)) {
--				verbose(env, "last insn is not an exit or jmp\n");
-+				verbose_insn(env, &insn[i]);
-+				if (btf_vmlinux && insn[i].code =3D=3D (BPF_CALL | BPF_JMP) &&
-+				    insn[i].src_reg =3D=3D BPF_PSEUDO_KFUNC_CALL) {
-+					t =3D btf_type_by_id(btf_vmlinux, insn[i].imm);
-+					tname =3D btf_name_by_offset(btf_vmlinux, t->name_off);
-+					if (strcmp(tname, "bpf_unreachable") =3D=3D 0)
-+						is_bpf_unreachable =3D true;
-+				}
-+				if (is_bpf_unreachable)
-+					verbose(env, "last insn is bpf_unreachable, due to uninitialized va=
-r?\n");
-+				else
-+					verbose(env, "last insn is not an exit or jmp\n");
- 				return -EINVAL;
- 			}
- 			subprog_start =3D subprog_end;
++static __always_inline int ipv6_authlen(const struct ipv6_opt_hdr *opthd=
+r)
++{
++	return (opthdr->hdrlen + 2) << 2;
++}
++
++static __always_inline int ipv6_hdrlen_offset(struct __sk_buff *ctx,
++					      __u8 *nexthdr, int l3_off)
++{
++	int i, len =3D sizeof(struct ipv6hdr);
++	struct ipv6_opt_hdr opthdr __attribute__((aligned(8)));
++	__u8 nh =3D *nexthdr;
++
++#pragma unroll
++	for (i =3D 0; i < IPV6_MAX_HEADERS; i++) {
++		switch (nh) {
++		case NEXTHDR_NONE:
++			return DROP_INVALID_EXTHDR;
++
++		case NEXTHDR_FRAGMENT:
++			return DROP_FRAG_NOSUPPORT;
++
++		case NEXTHDR_HOP:
++		case NEXTHDR_ROUTING:
++		case NEXTHDR_AUTH:
++		case NEXTHDR_DEST:
++			if (bpf_skb_load_bytes(ctx, l3_off + len, &opthdr,
++					   sizeof(opthdr)) < 0)
++				return DROP_INVALID;
++
++			if (nh =3D=3D NEXTHDR_AUTH)
++				len +=3D ipv6_authlen(&opthdr);
++			else
++				len +=3D ipv6_optlen(&opthdr);
++
++			nh =3D opthdr.nexthdr;
++			break;
++
++		default:
++			bpf_printk("OKOK %d, len: %d", *nexthdr, len);
++			*nexthdr =3D nh;
++			return len;
++		}
++	}
++
++	bpf_printk("KO INVALID EXTHDR");
++
++	/* Reached limit of supported extension headers */
++	return DROP_INVALID_EXTHDR;
++}
++static __always_inline
++bool icmp6_ndisc_validate(struct __sk_buff *ctx, struct ipv6hdr *ip6,
++			  union macaddr *mac, union macaddr *smac,
++			  union v6addr *sip, union v6addr *tip)
++{
++	__u8 nexthdr;
++	struct icmp6hdr *icmp;
++	int l3_off, l4_off;
++
++	l3_off =3D (__u8 *)ip6 - (__u8 *)ctx_data(ctx);
++	bpf_printk("pre ipv6_hdrlen_offset");
++	l4_off =3D ipv6_hdrlen_offset(ctx, &nexthdr, l3_off);
++	bpf_printk("post ipv6_hdrlen_offset");
++
++	if (l4_off < 0 || nexthdr !=3D NEXTHDR_ICMP) {
++		bpf_printk("KO 1");
++		return false;
++	}
++
++	icmp =3D (struct icmp6hdr *)((__u8 *)ctx_data(ctx) + l4_off);
++	if (icmp->icmp6_type !=3D ICMP6_NS_MSG_TYPE) {
++		bpf_printk("KO 2");
++		return false;
++	}
++
++	/* Extract fields */
++#if 0
++	eth_load_saddr(ctx, &smac->addr[0], 0);
++	eth_load_daddr(ctx, &mac->addr[0], 0);
++	ipv6_load_saddr(ctx, l3_off, sip);
++	ipv6_load_daddr(ctx, l3_off, tip);
++#endif
++	bpf_printk("ACK ");
++
++	return true;
++}
++
++SEC("classifier")
++__description("agressive optimization due to uninitialized variable")
++#if __clang_major__ >=3D 21
++__failure __msg("last insn is bpf_unreachable, due to uninitialized var"=
+)
++#else
++__failure __msg("last insn is not an exit or jmp")
++#endif
++int classifier_uninit_var(struct __sk_buff *skb)
++{
++	struct ipv6hdr* ip6 =3D NULL;
++	union macaddr mac, smac;
++	union v6addr sip, tip;
++
++	bpf_printk("Start");
++	icmp6_ndisc_validate(skb, ip6, &mac, &smac, &sip, &tip);
++	bpf_printk("End");
++
++	return 0;
++}
++
++char _license[] SEC("license") =3D "GPL";
 --=20
 2.47.1
 
