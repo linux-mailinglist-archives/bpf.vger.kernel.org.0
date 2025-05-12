@@ -1,240 +1,232 @@
-Return-Path: <bpf+bounces-57995-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57996-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40A1BAB2E39
-	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 05:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 582EBAB2E3F
+	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 05:56:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFB393B6CC5
-	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 03:54:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E6923B1A31
+	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 03:56:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D24B1254AF1;
-	Mon, 12 May 2025 03:54:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="piKulDmQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1425D254878;
+	Mon, 12 May 2025 03:56:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f79.google.com (mail-io1-f79.google.com [209.85.166.79])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EF9B944F;
-	Mon, 12 May 2025 03:54:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0DD0253F20
+	for <bpf@vger.kernel.org>; Mon, 12 May 2025 03:56:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.79
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747022093; cv=none; b=WilzXW+1Pww6PWoSRe9mxHNzJsyhpMxecKoSmP6+AySZ3so9Q7fn1uHq6hUtT5CMXruVT6qYcg3BMQEltlftZKdyC6NksZ/zal4Jb90mpH3CyqtlmLxttKULDeyfvqcCoiE9ln/owclC7yvsUOR1ls2bbPLEenBIyZYH3/1WYDI=
+	t=1747022192; cv=none; b=uI1G5hmCke/vGaWqK0wX3Y0tEs4auz3NzqaW/QJMTOVufNho6p6von4CQo4fYppEqxysLPoN2lJ6u2r4iQAS53mtUySiaQ7KJRHSjU5txWTaXj5G3ltcM9tF9mGiE+SKQPr9FnaJ8Z7nMoJmf9A+IZNWoBFsWsGC8NAMRkToyZ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747022093; c=relaxed/simple;
-	bh=0v9W9RBPsn5Fo6KgpbwzBT/xhGWK6pHDmicDk+tWJw8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=C9ZCuRqsl47FGS9m2kzAZTw57KaP+ALZWZcmxVvzwdhO88tbrrOnG8VL5bEycY48uiEs0Fzp2UMBx7bESFisKKsgBqhgqmcXJj+b/+umyY4XJs6+Yjc0MgL2ZSJcO+18mxG84i8svjeunc846qaTD+uIcOrXA28kdWS71bc6GnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=piKulDmQ; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54BIftvB020816;
-	Mon, 12 May 2025 03:54:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=QKYhG7
-	3DgTzdzGbCDN3buAMRRvqorJzXDUPZ8hgusWg=; b=piKulDmQFceuNnPByx+JJK
-	NFwRc//jrMpfzH/+Qi7AKY8dTwt7IvHZAzjz5sm4FzEo5nHu57rvHkRK2sJDuwEH
-	4NlwIvp9uVrYEHZgK2CuZnrtx4dLEd96ro1txixgXCE7G6EKaUI1NJZBkwJzGH1c
-	lYUPWw9D9wblqlgR0b5DqVnBJWgQcIUrOkS7M7EotdhjtEsCxzDEoAJ2z2lW0ncb
-	I/6Fq56SFaOFS+hS9gZQnSd5r5XIovYcUfaiF3MpkjRU9bHDSVzEHjbTyt8oDgzn
-	Y7NDrlQqumZ0GbPngQfuv/U3YcuGcle3LZRCPQc3p21dbhvL7EqZSxaJSyYgVvPA
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46jue6a1yd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 May 2025 03:54:23 +0000 (GMT)
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 54C3lJmk029084;
-	Mon, 12 May 2025 03:54:23 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46jue6a1ya-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 May 2025 03:54:23 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 54C0UGDc024537;
-	Mon, 12 May 2025 03:54:22 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 46jjmkv3ev-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 May 2025 03:54:22 +0000
-Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
-	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 54C3sKRD21234270
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 12 May 2025 03:54:21 GMT
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A6BC958052;
-	Mon, 12 May 2025 03:54:20 +0000 (GMT)
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A404258056;
-	Mon, 12 May 2025 03:54:12 +0000 (GMT)
-Received: from [9.61.250.60] (unknown [9.61.250.60])
-	by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 12 May 2025 03:54:12 +0000 (GMT)
-Message-ID: <fb39efbc-9045-4fbd-a5d6-ababc320b9ef@linux.ibm.com>
-Date: Mon, 12 May 2025 09:24:10 +0530
+	s=arc-20240116; t=1747022192; c=relaxed/simple;
+	bh=0RKem1urBY7NYFGEXH4inqXZR4bo+YozOaH1bEt3BsM=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ggzb0TN7W/aBRezoMM/MxPCXEHeZd9I+ozrQoG9BgkbYmNlcMuxCNy3NobVbSDPwOLA1izw89ecGgI8szx4H1vmaNsViGSnSAl78SvQOG6L4B+CV0RsyBn63HEZR3YQbjFBoWL2owSzmm2TRxm5hrEvCfsduZqLyUiMyMoteXNY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.79
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f79.google.com with SMTP id ca18e2360f4ac-869e9667f58so157080139f.3
+        for <bpf@vger.kernel.org>; Sun, 11 May 2025 20:56:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747022190; x=1747626990;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NV860LwlNmWdIlSKFfzsJHQhslmNi+R9+Xj59lYo/oo=;
+        b=bC+GfnT0uqzJgypPV9YEbKHeyiZJ3cmS3V8EhTkTRTMk8Y+1DL0jz179qSNyRlBjy/
+         zfMnR8OP1HJqXq6pvNrdSOnlmHb1F2+lg+M55F6KlnfYNFLqr2jdeu0algZJgBcw0IoA
+         3oodfz03dM6SYWCgz3ZHyYNR8VwpgwRCsIEysK2sUdIaHTxPkdQMO943J31uSd1Gltx6
+         ZOKOFgAGo15clzMkgayCjIclq2+3XZeP0Y9RadyVWPsfuj6wwhjTe1zgrJSEhuaJqH7L
+         vZmWLzx1eEsM/Wi4OvYeUMB88yT2D3bjvO+zYFGRHBBg/TLTwt9j+lI2unbHfRcMX0pt
+         PpNA==
+X-Forwarded-Encrypted: i=1; AJvYcCXuT/s3JCswrkiTzDUQjs2nfOKvZf3Z3MAh/hgPd1PrfGGFGODBbJp2wL/9/bgsvm4nkd0=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy878x7VihRR9PnronA4aA0BEg6KxYSBDVeVR7m7vXIzvmFswfQ
+	dfdEtDC9Mae2maUC3nLImESa77SJtsKdBMbVD8KYv2ygYFwQNYHYqG+ny8feie+Gvzd15MGqJBY
+	7zl6vqRnzKUko1pvNIIS6cTDSVqIaKLuKeVcwWjCO4cQyccP5rIZaouo=
+X-Google-Smtp-Source: AGHT+IHYBXgZUSOZq/Efikl9lNORbCSYoF1xd9RUs0nDlMA0xakDHDYSg8JO5IFhCu0em0htlRfz70TF0vhBJFZ/h+6lbP7LUv8A
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] selftests/bpf: Fix bpf selftest build error
-Content-Language: en-GB
-To: Saket Kumar Bhaskar <skb99@linux.ibm.com>, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com, linux-next@vger.kernel.org
-Cc: ast@kernel.org, hbathini@linux.ibm.com, maddy@linux.ibm.com,
-        andrii@kernel.org, daniel@iogearbox.net, mykolal@fb.com,
-        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
-        haoluo@google.com, jolsa@kernel.org, shuah@kernel.org
-References: <20250509122348.649064-1-skb99@linux.ibm.com>
-From: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
-In-Reply-To: <20250509122348.649064-1-skb99@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: dwbpe1-9DBWSf9jxrLtyGxDhLR4w5eDv
-X-Authority-Analysis: v=2.4 cv=TbmWtQQh c=1 sm=1 tr=0 ts=682170ef cx=c_pps a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17 a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=rOUgymgbAAAA:8 a=CcSt_Cs7RvpnTRKdI0oA:9
- a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=MP9ZtiD8KjrkvI0BhSjB:22
-X-Proofpoint-GUID: SeUpvmWKQ7SNL2oqQIzFx069GANDB4xi
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTEyMDAzNSBTYWx0ZWRfX3J8rMnm/4r9H a0X0lU/EeRTB1mLTX2WUe+0QgUN24/RoQqRhs0vDdGXUqwTH8/+iz1Ua0KqbDUcJTds7p/U7QzT +LOPZE8lLZ2ukU2lmI2LSuln9WJorDH68S4U64NIMm2fFORAGCWIsxtVC8Awm5lja8kefPVK2DS
- 5s4aVMViIYF9KhffoOMF3xMo/rB/Qk8EiobUYCWvElyT3TXqn36hHcQJjmXd8RnOyq4KAunfKsM JUzo3Oqe5gketyDlF/2f0wqwmg9fWMzl1XbhjE5yRQ9DYG5w4+BCIdraYT4u6IWhpPX7iAYqto6 22QraxsSY620kNR1hv6Eq3h1bS/SBOcJlDVDMv4cuVB3Y4WS9OSnZevp+nPoR+sXTX9W/uoNH6P
- TeCleuUGv/7/4MCJV5YaavhL1dCPphxr44dIEgQdvHVRPwohTAWsN4Bb6lvmqGC5YSqkNIzj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-05-12_01,2025-05-09_01,2025-02-21_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1011
- malwarescore=0 phishscore=0 priorityscore=1501 impostorscore=0
- adultscore=0 spamscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2504070000
- definitions=main-2505120035
+X-Received: by 2002:a05:6e02:1648:b0:3d0:10a6:99aa with SMTP id
+ e9e14a558f8ab-3da7e1dcc61mr123319415ab.4.1747022190053; Sun, 11 May 2025
+ 20:56:30 -0700 (PDT)
+Date: Sun, 11 May 2025 20:56:30 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6821716e.050a0220.f2294.004a.GAE@google.com>
+Subject: [syzbot] [bpf?] [trace?] WARNING in get_bpf_raw_tp_regs
+From: syzbot <syzbot+45b0c89a0fc7ae8dbadc@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	martin.lau@linux.dev, mathieu.desnoyers@efficios.com, 
+	mattbobrowski@google.com, mhiramat@kernel.org, rostedt@goodmis.org, 
+	sdf@fomichev.me, song@kernel.org, syzkaller-bugs@googlegroups.com, 
+	yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    707df3375124 Merge tag 'media/v6.15-2' of git://git.kernel..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15010768580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b39cb28b0a399ed3
+dashboard link: https://syzkaller.appspot.com/bug?extid=45b0c89a0fc7ae8dbadc
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10b28670580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=159698f4580000
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-707df337.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/f71d162685b9/vmlinux-707df337.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/940cb473e515/bzImage-707df337.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+45b0c89a0fc7ae8dbadc@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 3 PID: 5971 at kernel/trace/bpf_trace.c:1861 get_bpf_raw_tp_regs+0xa4/0x100 kernel/trace/bpf_trace.c:1861
+Modules linked in:
+CPU: 3 UID: 0 PID: 5971 Comm: syz-executor205 Not tainted 6.15.0-rc5-syzkaller-00038-g707df3375124 #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+RIP: 0010:get_bpf_raw_tp_regs+0xa4/0x100 kernel/trace/bpf_trace.c:1861
+Code: 48 83 fb 03 77 64 48 8d 04 9b 48 8d 04 83 48 8d 5c c5 00 e8 7e 76 f4 ff 48 89 d8 5b 5d 41 5c c3 cc cc cc cc e8 6d 76 f4 ff 90 <0f> 0b 90 65 ff 0d b2 5b de 11 e8 5d 76 f4 ff 48 c7 c3 f0 ff ff ff
+RSP: 0018:ffffc90003636fa8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000003 RCX: ffffffff81c6bc4c
+RDX: ffff888032efc880 RSI: ffffffff81c6bc83 RDI: 0000000000000005
+RBP: ffff88806a730860 R08: 0000000000000005 R09: 0000000000000003
+R10: 0000000000000004 R11: 0000000000000000 R12: 0000000000000004
+R13: 0000000000000001 R14: ffffc90003637008 R15: 0000000000000900
+FS:  0000000000000000(0000) GS:ffff8880d6cdf000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f7baee09130 CR3: 0000000029f5a000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ ____bpf_get_stack_raw_tp kernel/trace/bpf_trace.c:1934 [inline]
+ bpf_get_stack_raw_tp+0x24/0x160 kernel/trace/bpf_trace.c:1931
+ bpf_prog_ec3b2eefa702d8d3+0x43/0x47
+ bpf_dispatcher_nop_func include/linux/bpf.h:1316 [inline]
+ __bpf_prog_run include/linux/filter.h:718 [inline]
+ bpf_prog_run include/linux/filter.h:725 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2363 [inline]
+ bpf_trace_run3+0x23f/0x5a0 kernel/trace/bpf_trace.c:2405
+ __bpf_trace_mmap_lock_acquire_returned+0xfc/0x140 include/trace/events/mmap_lock.h:47
+ __traceiter_mmap_lock_acquire_returned+0x79/0xc0 include/trace/events/mmap_lock.h:47
+ __do_trace_mmap_lock_acquire_returned include/trace/events/mmap_lock.h:47 [inline]
+ trace_mmap_lock_acquire_returned include/trace/events/mmap_lock.h:47 [inline]
+ __mmap_lock_do_trace_acquire_returned+0x138/0x1f0 mm/mmap_lock.c:35
+ __mmap_lock_trace_acquire_returned include/linux/mmap_lock.h:36 [inline]
+ mmap_read_trylock include/linux/mmap_lock.h:204 [inline]
+ stack_map_get_build_id_offset+0x535/0x6f0 kernel/bpf/stackmap.c:157
+ __bpf_get_stack+0x307/0xa10 kernel/bpf/stackmap.c:483
+ ____bpf_get_stack kernel/bpf/stackmap.c:499 [inline]
+ bpf_get_stack+0x32/0x40 kernel/bpf/stackmap.c:496
+ ____bpf_get_stack_raw_tp kernel/trace/bpf_trace.c:1941 [inline]
+ bpf_get_stack_raw_tp+0x124/0x160 kernel/trace/bpf_trace.c:1931
+ bpf_prog_ec3b2eefa702d8d3+0x43/0x47
+ bpf_dispatcher_nop_func include/linux/bpf.h:1316 [inline]
+ __bpf_prog_run include/linux/filter.h:718 [inline]
+ bpf_prog_run include/linux/filter.h:725 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2363 [inline]
+ bpf_trace_run3+0x23f/0x5a0 kernel/trace/bpf_trace.c:2405
+ __bpf_trace_mmap_lock_acquire_returned+0xfc/0x140 include/trace/events/mmap_lock.h:47
+ __traceiter_mmap_lock_acquire_returned+0x79/0xc0 include/trace/events/mmap_lock.h:47
+ __do_trace_mmap_lock_acquire_returned include/trace/events/mmap_lock.h:47 [inline]
+ trace_mmap_lock_acquire_returned include/trace/events/mmap_lock.h:47 [inline]
+ __mmap_lock_do_trace_acquire_returned+0x138/0x1f0 mm/mmap_lock.c:35
+ __mmap_lock_trace_acquire_returned include/linux/mmap_lock.h:36 [inline]
+ mmap_read_trylock include/linux/mmap_lock.h:204 [inline]
+ stack_map_get_build_id_offset+0x535/0x6f0 kernel/bpf/stackmap.c:157
+ __bpf_get_stack+0x307/0xa10 kernel/bpf/stackmap.c:483
+ ____bpf_get_stack kernel/bpf/stackmap.c:499 [inline]
+ bpf_get_stack+0x32/0x40 kernel/bpf/stackmap.c:496
+ ____bpf_get_stack_raw_tp kernel/trace/bpf_trace.c:1941 [inline]
+ bpf_get_stack_raw_tp+0x124/0x160 kernel/trace/bpf_trace.c:1931
+ bpf_prog_ec3b2eefa702d8d3+0x43/0x47
+ bpf_dispatcher_nop_func include/linux/bpf.h:1316 [inline]
+ __bpf_prog_run include/linux/filter.h:718 [inline]
+ bpf_prog_run include/linux/filter.h:725 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2363 [inline]
+ bpf_trace_run3+0x23f/0x5a0 kernel/trace/bpf_trace.c:2405
+ __bpf_trace_mmap_lock_acquire_returned+0xfc/0x140 include/trace/events/mmap_lock.h:47
+ __traceiter_mmap_lock_acquire_returned+0x79/0xc0 include/trace/events/mmap_lock.h:47
+ __do_trace_mmap_lock_acquire_returned include/trace/events/mmap_lock.h:47 [inline]
+ trace_mmap_lock_acquire_returned include/trace/events/mmap_lock.h:47 [inline]
+ __mmap_lock_do_trace_acquire_returned+0x138/0x1f0 mm/mmap_lock.c:35
+ __mmap_lock_trace_acquire_returned include/linux/mmap_lock.h:36 [inline]
+ mmap_read_trylock include/linux/mmap_lock.h:204 [inline]
+ stack_map_get_build_id_offset+0x535/0x6f0 kernel/bpf/stackmap.c:157
+ __bpf_get_stack+0x307/0xa10 kernel/bpf/stackmap.c:483
+ ____bpf_get_stack kernel/bpf/stackmap.c:499 [inline]
+ bpf_get_stack+0x32/0x40 kernel/bpf/stackmap.c:496
+ ____bpf_get_stack_raw_tp kernel/trace/bpf_trace.c:1941 [inline]
+ bpf_get_stack_raw_tp+0x124/0x160 kernel/trace/bpf_trace.c:1931
+ bpf_prog_ec3b2eefa702d8d3+0x43/0x47
+ bpf_dispatcher_nop_func include/linux/bpf.h:1316 [inline]
+ __bpf_prog_run include/linux/filter.h:718 [inline]
+ bpf_prog_run include/linux/filter.h:725 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2363 [inline]
+ bpf_trace_run3+0x23f/0x5a0 kernel/trace/bpf_trace.c:2405
+ __bpf_trace_mmap_lock_acquire_returned+0xfc/0x140 include/trace/events/mmap_lock.h:47
+ __traceiter_mmap_lock_acquire_returned+0x79/0xc0 include/trace/events/mmap_lock.h:47
+ __do_trace_mmap_lock_acquire_returned include/trace/events/mmap_lock.h:47 [inline]
+ trace_mmap_lock_acquire_returned include/trace/events/mmap_lock.h:47 [inline]
+ __mmap_lock_do_trace_acquire_returned+0x138/0x1f0 mm/mmap_lock.c:35
+ __mmap_lock_trace_acquire_returned include/linux/mmap_lock.h:36 [inline]
+ mmap_read_lock include/linux/mmap_lock.h:185 [inline]
+ exit_mm kernel/exit.c:565 [inline]
+ do_exit+0xf72/0x2c30 kernel/exit.c:940
+ do_group_exit+0xd3/0x2a0 kernel/exit.c:1102
+ __do_sys_exit_group kernel/exit.c:1113 [inline]
+ __se_sys_exit_group kernel/exit.c:1111 [inline]
+ __x64_sys_exit_group+0x3e/0x50 kernel/exit.c:1111
+ x64_sys_call+0x1530/0x1730 arch/x86/include/generated/asm/syscalls_64.h:232
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xcd/0x260 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f7baed8cfb9
+Code: 90 49 c7 c0 b8 ff ff ff be e7 00 00 00 ba 3c 00 00 00 eb 12 0f 1f 44 00 00 89 d0 0f 05 48 3d 00 f0 ff ff 77 1c f4 89 f0 0f 05 <48> 3d 00 f0 ff ff 76 e7 f7 d8 64 41 89 00 eb df 0f 1f 80 00 00 00
+RSP: 002b:00007ffd9d933998 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f7baed8cfb9
+RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
+RBP: 00007f7baee082b0 R08: ffffffffffffffb8 R09: 0000000000000000
+R10: 0000000000000012 R11: 0000000000000246 R12: 00007f7baee082b0
+R13: 0000000000000000 R14: 00007f7baee08d20 R15: 00007f7baed5e160
+ </TASK>
 
 
-On 09/05/25 5:53 pm, Saket Kumar Bhaskar wrote:
-> On linux-next, build for bpf selftest displays an error due to
-> mismatch in the expected function signature of bpf_testmod_test_read
-> and bpf_testmod_test_write.
->
-> Commit 97d06802d10a ("sysfs: constify bin_attribute argument of bin_attribute::read/write()")
-> changed the required type for struct bin_attribute to const struct bin_attribute.
->
-> To resolve the error, update corresponding signature for the callback.
->
-> Reported-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
-> Closes: https://lore.kernel.org/all/e915da49-2b9a-4c4c-a34f-877f378129f6@linux.ibm.com/
-> Signed-off-by: Saket Kumar Bhaskar <skb99@linux.ibm.com>
-> ---
->   tools/testing/selftests/bpf/test_kmods/bpf_testmod.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-> index 2e54b95ad898..194c442580ee 100644
-> --- a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-> +++ b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-> @@ -385,7 +385,7 @@ int bpf_testmod_fentry_ok;
->   
->   noinline ssize_t
->   bpf_testmod_test_read(struct file *file, struct kobject *kobj,
-> -		      struct bin_attribute *bin_attr,
-> +		      const struct bin_attribute *bin_attr,
->   		      char *buf, loff_t off, size_t len)
->   {
->   	struct bpf_testmod_test_read_ctx ctx = {
-> @@ -465,7 +465,7 @@ ALLOW_ERROR_INJECTION(bpf_testmod_test_read, ERRNO);
->   
->   noinline ssize_t
->   bpf_testmod_test_write(struct file *file, struct kobject *kobj,
-> -		      struct bin_attribute *bin_attr,
-> +		      const struct bin_attribute *bin_attr,
->   		      char *buf, loff_t off, size_t len)
->   {
->   	struct bpf_testmod_test_write_ctx ctx = {
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-Tested this patch by applying on top of next-20250508 and if fixes the 
-build issue. Hence,
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
-Tested-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-commit f48887a98b78880b7711aca311fbbbcaad6c4e3b (tag: next-20250508, 
-origin/master, origin/HEAD, bpf_arena)
-Author: Stephen Rothwell <sfr@canb.auug.org.au>
-Date:   Thu May 8 18:45:50 2025 +1000
-
-     Add linux-next specific files for 20250508
-
-
-After this patch:
-
-
-   TEST-OBJ [test_progs-cpuv4] xdp_flowtable.test.o
-   TEST-OBJ [test_progs-cpuv4] xdp_info.test.o
-   TEST-OBJ [test_progs-cpuv4] xdp_link.test.o
-   TEST-OBJ [test_progs-cpuv4] xdp_metadata.test.o
-   TEST-OBJ [test_progs-cpuv4] xdp_noinline.test.o
-   TEST-OBJ [test_progs-cpuv4] xdp_perf.test.o
-   TEST-OBJ [test_progs-cpuv4] xdp_synproxy.test.o
-   TEST-OBJ [test_progs-cpuv4] xdp_vlan.test.o
-   TEST-OBJ [test_progs-cpuv4] xdpwall.test.o
-   TEST-OBJ [test_progs-cpuv4] xfrm_info.test.o
-   BINARY   bench
-   BINARY   test_maps
-   BINARY   test_progs
-   BINARY   test_progs-no_alu32
-   BINARY   test_progs-cpuv4
-
-
-
-Before this patch:
-
-
-   CLANG 
-/root/linux-next/tools/testing/selftests/bpf/tools/build/bpftool/profiler.bpf.o
-bpf_testmod.c:494:17: error: initialization of ‘ssize_t (*)(struct file 
-*, struct kobject *, const struct bin_attribute *, char *, loff_t,  
-size_t)’ {aka ‘long int (*)(struct file *, struct kobject *, const 
-struct bin_attribute *, char *, long long int,  long unsigned int)’} 
-from incompatible pointer type ‘ssize_t (*)(struct file *, struct 
-kobject *, struct bin_attribute *, char *, loff_t, size_t)’ {aka ‘long 
-int (*)(struct file *, struct kobject *, struct bin_attribute *, char *, 
-long long int,  long unsigned int)’} [-Wincompatible-pointer-types]
-   494 |         .read = bpf_testmod_test_read,
-       |                 ^~~~~~~~~~~~~~~~~~~~~
-bpf_testmod.c:494:17: note: (near initialization for 
-‘bin_attr_bpf_testmod_file.read’)
-bpf_testmod.c:495:18: error: initialization of ‘ssize_t (*)(struct file 
-*, struct kobject *, const struct bin_attribute *, char *, loff_t,  
-size_t)’ {aka ‘long int (*)(struct file *, struct kobject *, const 
-struct bin_attribute *, char *, long long int,  long unsigned int)’} 
-from incompatible pointer type ‘ssize_t (*)(struct file *, struct 
-kobject *, struct bin_attribute *, char *, loff_t, size_t)’ {aka ‘long 
-int (*)(struct file *, struct kobject *, struct bin_attribute *, char *, 
-long long int,  long unsigned int)’} [-Wincompatible-pointer-types]
-   495 |         .write = bpf_testmod_test_write,
-       |                  ^~~~~~~~~~~~~~~~~~~~~~
-bpf_testmod.c:495:18: note: (near initialization for 
-‘bin_attr_bpf_testmod_file.write’)
-make[4]: *** [/root/linux-next/scripts/Makefile.build:203: 
-bpf_testmod.o] Error 1
-make[3]: *** [/root/linux-next/Makefile:2009: .] Error 2
-make[2]: *** [Makefile:248: __sub-make] Error 2
-make[1]: *** [Makefile:18: all] Error 2
-make: *** [Makefile:282: test_kmods/bpf_testmod.ko] Error 2
-
-
-Regards,
-
-Venkat.
-
+If you want to undo deduplication, reply with:
+#syz undup
 
