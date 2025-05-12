@@ -1,79 +1,83 @@
-Return-Path: <bpf+bounces-58034-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58035-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A43F5AB3F57
-	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 19:41:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CAA7AB3F60
+	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 19:41:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B2437A3362
-	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 17:39:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F04514655C4
+	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 17:41:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60AC9296D36;
-	Mon, 12 May 2025 17:40:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77A76296FD4;
+	Mon, 12 May 2025 17:40:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lVbHoNju"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xUKH2PtK"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7093129614C
-	for <bpf@vger.kernel.org>; Mon, 12 May 2025 17:40:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60542296FA1
+	for <bpf@vger.kernel.org>; Mon, 12 May 2025 17:40:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747071652; cv=none; b=kiknjOHfIsFsTvGGkmCdNDzyG+WaJ+SGrLeyTIriQiIZgdf7TTWyw/Nnm4dVLk3vJXHdfuZfnz2bd5SFILv8uDcpzxiV/qbcCfC1m3JktJNO5tdLD2v+EsDAMGJ+Q/MIwbkvE1c5fvTy3PMG6yewN2j///LewrPIooaDE8oZVts=
+	t=1747071656; cv=none; b=NQMcvRF0vhCkMqu46wc7gsLgD2DjhHlJFpzPyReR2CF82yMpkj+82PaW85/81zMAGeN6FGuRFTu7O69r5LaB5wXH0Tfxa+a/BBoKYx4gl5SRNI3Tgy9OM89BvMPIsWj8cHGyX5WF13KWjlmI4cJaOwagudmJXGNtAlf272SGv6Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747071652; c=relaxed/simple;
-	bh=YG5ad+PrUTXpbhaNPVc/UH5K2lqsFYPckT+HG7VIWJQ=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=Zfbp6qrtxVxyJGYLv90xWCPmCUjARgq0cQR/TD2eanMvuP/0xbzRzVRfriKD3A1ElLfAguhbLZuLsQQbCVGU9wfHvDesZOGy4Y3AS/ZPSV9Qy6TLLHhaBgEMzgubTohPFXOwou/99zYAZZR5vxzQlle+FnejE/BTTIVQ+HPcWkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lVbHoNju; arc=none smtp.client-ip=209.85.216.74
+	s=arc-20240116; t=1747071656; c=relaxed/simple;
+	bh=Af5UIWE0qy22f6c2JL3nAMlI/7xnmUsXK/UfA5VmQlA=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=hZ2BElpAQjAd7+W2HzzApmjQj4KFNzOdEMg3rjkBWgjiKQXS6e4OX+8D1+Z6xHMlLq/hzvd7NbaPocq0cVYFJSg0Oiy7IYgshtBoyEgsw6U7TZzgDICJ+c+gH5Yb3fNOPpdhUObnWGgWmVCKvyOOc6P3lznRUjmEcT4K+9iVURI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xUKH2PtK; arc=none smtp.client-ip=209.85.216.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-30ac9abbd4bso7428278a91.3
-        for <bpf@vger.kernel.org>; Mon, 12 May 2025 10:40:51 -0700 (PDT)
+Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-30abb33d1d2so7484944a91.0
+        for <bpf@vger.kernel.org>; Mon, 12 May 2025 10:40:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1747071650; x=1747676450; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=eBYOHelJunIHuJksv+29i3wZCe50rVCOEbtcj9aAZWE=;
-        b=lVbHoNjuRmQbfa3vgasLVrIHPQJzi3QvKTkh70tYBry8mbQxAM6HNlwVr64C6DjEkk
-         OzbE+G0dnYh1tyHUGLZLpryGdonw5e8VSo3e8GDESdjsHCXetkwD9u70NGY2hAvUvTY7
-         OrJ1cAFHEOxcy+6xdcnvfu2jyKJFOBA8Rknkdp0UNbWueR/EyEFIecb2vhMyi7H3K6VS
-         we0gTXEBfZrByVsMQJxOs/z7b9pOv460xKbXPYqYwb+k0lP2GLSwnP6q635gwPST6Q2T
-         +L3qb/01UT5h2tMQRb9gakp0FRZ8fwZaEnS57mhk9C5/6TFgJuV8HfGMuyWIRjqiT4f3
-         fJCQ==
+        d=google.com; s=20230601; t=1747071654; x=1747676454; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SCXgFCr4xFu2oZbXQwI8tdtBERd+L0LdxpvvyzEsoGU=;
+        b=xUKH2PtKVRCbSSxBX3u+LqucX1d7mx5xFxpIkehZB6j1NSkj9Xkox6vxDuTjbeCaRH
+         dpRBNbqvKGHRi2tHcjLUsoicdJTSt+0sQVRPyLhHSl3mohhC9Onf5/BrAoHgLzkRRRhj
+         M8pkxPjxtmHXQTK0y0L5vrHQOqr+pAXqf0ul0gsvt0XdNeubotc5Z3l4KILIWewYBULv
+         OHgEjBoNmcXRN0WhXQ7uPRsGDgZWRRyI3rZXL8cypXAKCnMUvunjtIPa+/Y6pW6gT3U1
+         19xEjGPSM24XxgHv6FRhC+NMhHy9+VV3zj+yzP9t74oxOKCD4RxDyhkyx0WlvYE6D/9c
+         6iEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747071650; x=1747676450;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eBYOHelJunIHuJksv+29i3wZCe50rVCOEbtcj9aAZWE=;
-        b=g+VGRPXmuhaSNZ//PQs9jzL18aeJJjYlgVwoqmsyVIY7GxD4Vuw1IsLTW3BerexhZp
-         VRjnkXsaYS01/NZfI3LIrwkktW6rXGrka4NTKtTF6RTjesXSz8214kviP//qusMU8zaC
-         jQKNY/1UWvPl7a79Z3xJtgMyXBo9ZzdYQ6MgKnqaUudVfyYCLe1yNbkRJuTTgcHrQzwr
-         it1t+lM6P95o2SMTqq5lZlQGZ7wLHfUJKAedPuroHRxHAc0Ozu6RZdwpckUKXEpzwGg6
-         UeiTuEgH5CcpsZi4uH+OthY+9fQlbtxM339Li3PYdxZ0oFXXZ3BuHKyo5uQOB8uxKu1w
-         fOuA==
-X-Forwarded-Encrypted: i=1; AJvYcCUQzlG+Ewoui/m4r5MhZfFtKUj6H9lCO2LcOQJm25dZlsQBLzZMzZOwf6uocawjibNJBqI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyXuKnTC1AO12/5oKHwjKQ6BFcpQQ6FGbuSXZOLJdrRN/tOl3QC
-	gKf2Sv4TopOZrGR5JqcuDCSnwsAGuVcdTd6m/0BD+eeA0UsYl/bv4bIcP0/sdAWXsbW/qRMVbJE
-	7tz/7kfY3gKE2CA==
-X-Google-Smtp-Source: AGHT+IFzMCh38Oc1kAsUKXxU9hlKM203yvfUD0dvHa7bGIfNoTLZ2frsFjS+If3JtUJ6jRpxlO+Sx3tWCnqzocM=
-X-Received: from pjbse15.prod.google.com ([2002:a17:90b:518f:b0:308:64af:7bb9])
+        d=1e100.net; s=20230601; t=1747071654; x=1747676454;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=SCXgFCr4xFu2oZbXQwI8tdtBERd+L0LdxpvvyzEsoGU=;
+        b=EI6ZBof7xTTxHmi+BeEw9YnIg6pHCKQTTuWptsrBz1S7DIMX+JD8rszuhR1jakOW5E
+         Kn3VTN+5dkFvT/pMgRSzrmnP5xyGmdg84DAMFywnBZuIIXEjdsg9FQVJEady2ZaC5mO/
+         cYiJjBizvvGqr1FHCXgKXHY1qzXtpH4m3FUSjxLKKiGQHzW9tYOedzRDGV+mKwx1/dzU
+         OlU7D/IIJjNsVUPi7RTcNWsUaacMOuZCttIZaZxFeKerOaDixpZ/pVOAps62Gj4jjK+R
+         9e6ZtlhyA0m3EpbYQv+jxr6MWCk8pnoDVMvMA633PCqm3hQk/P6wiKlR4pjqXsgGFp8H
+         stDw==
+X-Forwarded-Encrypted: i=1; AJvYcCWbTgzSeTbq6Y582pYT9Qk5y+bJMufgmyk0msU4VuW/iSkE9PTukmJNPqK6wyEi+aLmdq0=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz3Q77VujaeWoLaBcfv/Gjt+NoTI9KDjXAUiXH0fRc63HkJi+Qw
+	Dy2HC6v3K2CXc5QdeBxURrzAGVx/FWcn8MGKVj0Q+sdcAadFps4myiujgm2jPfptbFazME5lo2j
+	fVAEuNIcf0YodqA==
+X-Google-Smtp-Source: AGHT+IF+K6tr0ALF03p76hnqtxjQG6z4jM2ZpShKDCGXLdx2mjPqO4XOd82ZqZJQpw8W2LdE/0X1xEUeMkQ1hsU=
+X-Received: from pjbpm17.prod.google.com ([2002:a17:90b:3c51:b0:30a:a05c:6e7d])
  (user=tjmercier job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:90b:4c8e:b0:2fa:1851:a023 with SMTP id 98e67ed59e1d1-30c3d657026mr21415776a91.35.1747071650573;
- Mon, 12 May 2025 10:40:50 -0700 (PDT)
-Date: Mon, 12 May 2025 17:40:31 +0000
+ 2002:a17:90b:4c8e:b0:2fa:1851:a023 with SMTP id 98e67ed59e1d1-30c3d657026mr21415976a91.35.1747071653565;
+ Mon, 12 May 2025 10:40:53 -0700 (PDT)
+Date: Mon, 12 May 2025 17:40:32 +0000
+In-Reply-To: <20250512174036.266796-1-tjmercier@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20250512174036.266796-1-tjmercier@google.com>
 X-Mailer: git-send-email 2.49.0.1045.g170613ef41-goog
-Message-ID: <20250512174036.266796-1-tjmercier@google.com>
-Subject: [PATCH bpf-next v5 0/5] Replace CONFIG_DMABUF_SYSFS_STATS with BPF
+Message-ID: <20250512174036.266796-2-tjmercier@google.com>
+Subject: [PATCH bpf-next v5 1/5] dma-buf: Rename debugfs symbols
 From: "T.J. Mercier" <tjmercier@google.com>
 To: sumit.semwal@linaro.org, christian.koenig@amd.com, ast@kernel.org, 
 	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
@@ -88,110 +92,138 @@ Cc: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Until CONFIG_DMABUF_SYSFS_STATS was added [1] it was only possible to
-perform per-buffer accounting with debugfs which is not suitable for
-production environments. Eventually we discovered the overhead with
-per-buffer sysfs file creation/removal was significantly impacting
-allocation and free times, and exacerbated kernfs lock contention. [2]
-dma_buf_stats_setup() is responsible for 39% of single-page buffer
-creation duration, or 74% of single-page dma_buf_export() duration when
-stressing dmabuf allocations and frees.
+Rename the debugfs list and mutex so it's clear they are now usable
+without the need for CONFIG_DEBUG_FS. The list will always be populated
+to support the creation of a BPF iterator for dmabufs.
 
-I prototyped a change from per-buffer to per-exporter statistics with a
-RCU protected list of exporter allocations that accommodates most (but
-not all) of our use-cases and avoids almost all of the sysfs overhead.
-While that adds less overhead than per-buffer sysfs, and less even than
-the maintenance of the dmabuf debugfs_list, it's still *additional*
-overhead on top of the debugfs_list and doesn't give us per-buffer info.
+Signed-off-by: T.J. Mercier <tjmercier@google.com>
+Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
+Acked-by: Song Liu <song@kernel.org>
+---
+ drivers/dma-buf/dma-buf.c | 40 +++++++++++++++------------------------
+ include/linux/dma-buf.h   |  2 --
+ 2 files changed, 15 insertions(+), 27 deletions(-)
 
-This series uses the existing dmabuf debugfs_list to implement a BPF
-dmabuf iterator, which adds no overhead to buffer allocation/free and
-provides per-buffer info. The list has been moved outside of
-CONFIG_DEBUG_FS scope so that it is always populated. The BPF program
-loaded by userspace that extracts per-buffer information gets to define
-its own interface which avoids the lack of ABI stability with debugfs.
-
-This will allow us to replace our use of CONFIG_DMABUF_SYSFS_STATS, and
-the plan is to remove it from the kernel after the next longterm stable
-release.
-
-[1] https://lore.kernel.org/linux-media/20201210044400.1080308-1-hridya@goo=
-gle.com
-[2] https://lore.kernel.org/all/20220516171315.2400578-1-tjmercier@google.c=
-om
-
-v1: https://lore.kernel.org/all/20250414225227.3642618-1-tjmercier@google.c=
-om
-v1 -> v2:
-Make the DMA buffer list independent of CONFIG_DEBUG_FS per Christian
-  K=C3=B6nig
-Add CONFIG_DMA_SHARED_BUFFER check to kernel/bpf/Makefile per kernel
-  test robot
-Use BTF_ID_LIST_SINGLE instead of BTF_ID_LIST_GLOBAL_SINGLE per Song Liu
-Fixup comment style, mixing code/declarations, and use ASSERT_OK_FD in
-  selftest per Song Liu
-Add BPF_ITER_RESCHED feature to bpf_dmabuf_reg_info per Alexei
-  Starovoitov
-Add open-coded iterator and selftest per Alexei Starovoitov
-Add a second test buffer from the system dmabuf heap to selftests
-Use the BPF program we'll use in production for selftest per Alexei
-  Starovoitov
-  https://r.android.com/c/platform/system/bpfprogs/+/3616123/2/dmabufIter.c
-  https://r.android.com/c/platform/system/memory/libmeminfo/+/3614259/1/lib=
-dmabufinfo/dmabuf_bpf_stats.cpp
-v2: https://lore.kernel.org/all/20250504224149.1033867-1-tjmercier@google.c=
-om
-v2 -> v3:
-Rebase onto bpf-next/master
-Move get_next_dmabuf() into drivers/dma-buf/dma-buf.c, along with the
-  new get_first_dmabuf(). This avoids having to expose the dmabuf list
-  and mutex to the rest of the kernel, and keeps the dmabuf mutex
-  operations near each other in the same file. (Christian K=C3=B6nig)
-Add Christian's RB to dma-buf: Rename debugfs symbols
-Drop RFC: dma-buf: Remove DMA-BUF statistics
-v3: https://lore.kernel.org/all/20250507001036.2278781-1-tjmercier@google.c=
-om
-v3 -> v4:
-Fix selftest BPF program comment style (not kdoc) per Alexei Starovoitov
-Fix dma-buf.c kdoc comment style per Alexei Starovoitov
-Rename get_first_dmabuf / get_next_dmabuf to dma_buf_iter_begin /
-  dma_buf_iter_next per Christian K=C3=B6nig
-Add Christian's RB to bpf: Add dmabuf iterator
-v4: https://lore.kernel.org/all/20250508182025.2961555-1-tjmercier@google.c=
-om
-v4 -> v5:
-Add Christian's Acks to all patches
-Add Song Liu's Acks
-Move BTF_ID_LIST_SINGLE and DEFINE_BPF_ITER_FUNC closer to usage per
-  Song Liu
-Fix open-coded iterator comment style per Song Liu
-Move iterator termination check to its own subtest per Song Liu
-Rework selftest buffer creation per Song Liu
-Fix spacing in sanitize_string per BPF CI
-
-T.J. Mercier (5):
-  dma-buf: Rename debugfs symbols
-  bpf: Add dmabuf iterator
-  bpf: Add open coded dmabuf iterator
-  selftests/bpf: Add test for dmabuf_iter
-  selftests/bpf: Add test for open coded dmabuf_iter
-
- drivers/dma-buf/dma-buf.c                     |  98 +++++--
- include/linux/dma-buf.h                       |   4 +-
- kernel/bpf/Makefile                           |   3 +
- kernel/bpf/dmabuf_iter.c                      | 150 ++++++++++
- kernel/bpf/helpers.c                          |   5 +
- .../testing/selftests/bpf/bpf_experimental.h  |   5 +
- tools/testing/selftests/bpf/config            |   3 +
- .../selftests/bpf/prog_tests/dmabuf_iter.c    | 276 ++++++++++++++++++
- .../testing/selftests/bpf/progs/dmabuf_iter.c |  91 ++++++
- 9 files changed, 613 insertions(+), 22 deletions(-)
- create mode 100644 kernel/bpf/dmabuf_iter.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/dmabuf_iter.c
- create mode 100644 tools/testing/selftests/bpf/progs/dmabuf_iter.c
-
-
-base-commit: 43745d11bfd9683abdf08ad7a5cc403d6a9ffd15
+diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+index 5baa83b85515..8d151784e302 100644
+--- a/drivers/dma-buf/dma-buf.c
++++ b/drivers/dma-buf/dma-buf.c
+@@ -35,35 +35,25 @@
+=20
+ static inline int is_dma_buf_file(struct file *);
+=20
+-#if IS_ENABLED(CONFIG_DEBUG_FS)
+-static DEFINE_MUTEX(debugfs_list_mutex);
+-static LIST_HEAD(debugfs_list);
++static DEFINE_MUTEX(dmabuf_list_mutex);
++static LIST_HEAD(dmabuf_list);
+=20
+-static void __dma_buf_debugfs_list_add(struct dma_buf *dmabuf)
++static void __dma_buf_list_add(struct dma_buf *dmabuf)
+ {
+-	mutex_lock(&debugfs_list_mutex);
+-	list_add(&dmabuf->list_node, &debugfs_list);
+-	mutex_unlock(&debugfs_list_mutex);
++	mutex_lock(&dmabuf_list_mutex);
++	list_add(&dmabuf->list_node, &dmabuf_list);
++	mutex_unlock(&dmabuf_list_mutex);
+ }
+=20
+-static void __dma_buf_debugfs_list_del(struct dma_buf *dmabuf)
++static void __dma_buf_list_del(struct dma_buf *dmabuf)
+ {
+ 	if (!dmabuf)
+ 		return;
+=20
+-	mutex_lock(&debugfs_list_mutex);
++	mutex_lock(&dmabuf_list_mutex);
+ 	list_del(&dmabuf->list_node);
+-	mutex_unlock(&debugfs_list_mutex);
++	mutex_unlock(&dmabuf_list_mutex);
+ }
+-#else
+-static void __dma_buf_debugfs_list_add(struct dma_buf *dmabuf)
+-{
+-}
+-
+-static void __dma_buf_debugfs_list_del(struct dma_buf *dmabuf)
+-{
+-}
+-#endif
+=20
+ static char *dmabuffs_dname(struct dentry *dentry, char *buffer, int bufle=
+n)
+ {
+@@ -115,7 +105,7 @@ static int dma_buf_file_release(struct inode *inode, st=
+ruct file *file)
+ 	if (!is_dma_buf_file(file))
+ 		return -EINVAL;
+=20
+-	__dma_buf_debugfs_list_del(file->private_data);
++	__dma_buf_list_del(file->private_data);
+=20
+ 	return 0;
+ }
+@@ -689,7 +679,7 @@ struct dma_buf *dma_buf_export(const struct dma_buf_exp=
+ort_info *exp_info)
+ 	file->f_path.dentry->d_fsdata =3D dmabuf;
+ 	dmabuf->file =3D file;
+=20
+-	__dma_buf_debugfs_list_add(dmabuf);
++	__dma_buf_list_add(dmabuf);
+=20
+ 	return dmabuf;
+=20
+@@ -1630,7 +1620,7 @@ static int dma_buf_debug_show(struct seq_file *s, voi=
+d *unused)
+ 	size_t size =3D 0;
+ 	int ret;
+=20
+-	ret =3D mutex_lock_interruptible(&debugfs_list_mutex);
++	ret =3D mutex_lock_interruptible(&dmabuf_list_mutex);
+=20
+ 	if (ret)
+ 		return ret;
+@@ -1639,7 +1629,7 @@ static int dma_buf_debug_show(struct seq_file *s, voi=
+d *unused)
+ 	seq_printf(s, "%-8s\t%-8s\t%-8s\t%-8s\texp_name\t%-8s\tname\n",
+ 		   "size", "flags", "mode", "count", "ino");
+=20
+-	list_for_each_entry(buf_obj, &debugfs_list, list_node) {
++	list_for_each_entry(buf_obj, &dmabuf_list, list_node) {
+=20
+ 		ret =3D dma_resv_lock_interruptible(buf_obj->resv, NULL);
+ 		if (ret)
+@@ -1676,11 +1666,11 @@ static int dma_buf_debug_show(struct seq_file *s, v=
+oid *unused)
+=20
+ 	seq_printf(s, "\nTotal %d objects, %zu bytes\n", count, size);
+=20
+-	mutex_unlock(&debugfs_list_mutex);
++	mutex_unlock(&dmabuf_list_mutex);
+ 	return 0;
+=20
+ error_unlock:
+-	mutex_unlock(&debugfs_list_mutex);
++	mutex_unlock(&dmabuf_list_mutex);
+ 	return ret;
+ }
+=20
+diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+index 36216d28d8bd..8ff4add71f88 100644
+--- a/include/linux/dma-buf.h
++++ b/include/linux/dma-buf.h
+@@ -370,10 +370,8 @@ struct dma_buf {
+ 	 */
+ 	struct module *owner;
+=20
+-#if IS_ENABLED(CONFIG_DEBUG_FS)
+ 	/** @list_node: node for dma_buf accounting and debugging. */
+ 	struct list_head list_node;
+-#endif
+=20
+ 	/** @priv: exporter specific private data for this buffer object. */
+ 	void *priv;
 --=20
 2.49.0.1045.g170613ef41-goog
 
