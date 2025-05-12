@@ -1,244 +1,246 @@
-Return-Path: <bpf+bounces-57993-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-57994-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90287AB2CAC
-	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 02:31:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BBA4AB2DFE
+	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 05:19:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D826A1757B1
-	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 00:31:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC140178594
+	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 03:19:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4B7227456;
-	Mon, 12 May 2025 00:31:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DWhMxDNe"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97BAE1AAE08;
+	Mon, 12 May 2025 03:19:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 693A47E9
-	for <bpf@vger.kernel.org>; Mon, 12 May 2025 00:30:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F3ACC2F2;
+	Mon, 12 May 2025 03:19:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.178.238
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747009861; cv=none; b=Bdlswx4gkrG9C5Xcgnd11L5yy7IU1mG/Lw2fDuDSgRYGWZmmPZ9po61w7suN+CHvKyK8yLMPhvEkX7tj/yEJAPniinzu0bLFz9axJniHo3q+qMxmjuKVvm0O20aui0j0cTeWPg+KKazEawbFSB8gKYQFz//eruaJnPAFomGXBbA=
+	t=1747019970; cv=none; b=g2If08IEU+s8ctOdePVxUDyY6ts9trb25gzOtgLSE99afVIYBXyi3JTpm2255i576zPFKWif7sttDb0is2DsBhYnjb7Ze984Ref8r/oPg5fP5x1ZNANOx8SxJZ13n0tHKDfibuJJtcUaCdYqrcdzrBh1PqHNNMLoL+v4szOI8eQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747009861; c=relaxed/simple;
-	bh=QIvJwS+o8sBcxeH1fPjDHIOjw/VQUuN1TnPkZusc++k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cGjaKKOSVrPWQtFQnGGyh4tKO7hwZ3beDvdA6y/rvHPvV52X3H4nPBVzpIVp7usqIuje5vse26WIAgm8TyL/bUpsNTR601TcQu6hUJmDbT96tDlH5LmlvnMtlIvffKMfGq1pcWbAQzOTvGfjW+LYtCFz49tPE8P3iPFndmx+RfY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DWhMxDNe; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-43ede096d73so26881035e9.2
-        for <bpf@vger.kernel.org>; Sun, 11 May 2025 17:30:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747009857; x=1747614657; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9SjPpFi6iJ8MjTceRjPlxkTzqqukagHq9VfzVIXZ81I=;
-        b=DWhMxDNe643jEkfsZWlL/7VYQiVq6v1srjGqklkh6loaw89fjJjMlszj4CzpK9HrEE
-         ACrqrF2tfGSlVsZsesvdSpT2NDq3Gqbmq3xJ/n5h8NNL07aXdQju6hLmhjB6ZjhNSPM0
-         kTUSswxzNJ4VlAGUxsyb9eccyaqRrIxawgvsTw+apMP9Chz+lQbiYb9iZ7wlVdx/OZuj
-         z0vG29jIB/j4DI6r+MPdiDNjoEj5HEaecKDG188uDv+TSYMcMnnvGSEnQSc7aQpd5kGw
-         btUUFdsLZmfns/a3osGTWCBC2PfyG8G+ulBDXECYbp9lLse9uQwNRbngk2mwcSc+ejct
-         L5YQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747009857; x=1747614657;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9SjPpFi6iJ8MjTceRjPlxkTzqqukagHq9VfzVIXZ81I=;
-        b=HpWDvQb0+HDBTdMczKKfZjuAVZaox3J3YiL4+dM0nt4WCbyaknrjaYAJUZ7jlGUvY6
-         1FA4RIlfcByWKJkm4+3+n1D81ufOU2LP9peNuqE1bf9y4xTlTJI5hXSXvQ7sChMf5aoF
-         btfiDbRK2KK7eJwpCTRzI53eEDynjPhEN3/Tfh6tKbnQWfMTcpB07qBsdLWUxOpjkcXY
-         llk2vLgUEYA6uE6h3NR/GgHURBmYkKf36ExQjR4BPOxMhbPxXvjqxEBRREXpcPYUMbiY
-         XU4RvznbN5A9ZJ/Ylxf7bTuJ83bk4eJ/9uTuuudPOT4QsB9K2T/7iW9RBwcZwoHPOBBB
-         lZ7g==
-X-Gm-Message-State: AOJu0YxbEUJkyfivAd9a1vLw6mVxmgexfYyypAe2/Mu5otQGVMyKQC2R
-	A60sTXYsBzerWeEa6KZX/NHtBBciIRz9eLpHORTe7yIlPcdXlwhAJVg0VCg2Vn8624YiekqkCt+
-	YG7u9T6PPOKlmK5oCleLRDqKsxRo=
-X-Gm-Gg: ASbGncswYI22CWTjJicMwVQzCjFJjX3q4hXy+q7klNR7gs19mB6jvPCqeVYKNEQ2GX/
-	BFrVujKeuPb6JgnN8XPT7/KxHj7o3YG8VM6xJMDEJazIp0l0FBn5FCKjPHgB7RdsH5tp3Ym03e4
-	/t37YM0DqbXDAMQMgRjbu8ALBY7ft8sO3EfrP1vz/ey/xIh87I1QRrAgfAGThq
-X-Google-Smtp-Source: AGHT+IHFspm4vOnqs5UaVa/5pa5UfBkXxzcHaPJfJ9/vO2l9LXDZNCNTdNdBycYZ5qKVGTHxPo9/I/rMBXSfMWQAzpw=
-X-Received: by 2002:a05:6000:3113:b0:3a0:7d15:1d8a with SMTP id
- ffacd0b85a97d-3a1f6488436mr9187395f8f.38.1747009857430; Sun, 11 May 2025
- 17:30:57 -0700 (PDT)
+	s=arc-20240116; t=1747019970; c=relaxed/simple;
+	bh=OA4Hw06E2Cdb16C5vZkhnOCcZQj4egfXWOx3Iqw3nlk=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=bwAOXepv8Noe0k5d0puUKGoWfFlV3befTp8iYp9IN78BQ8SnqGCVOlFzBaFOE9DFyzPswPSd+RQKyP7f94vX7wFObJ0K26GW3SEZrC2BFJxpUMB+RoAt4ReMn+c/lV2x9NaMnWE93qZ5VTrATIbRvx4AGS4OZyU+d8tRkipo9C0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; arc=none smtp.client-ip=205.220.178.238
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
+Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
+	by mx0a-0064b401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54C27nYk004464;
+	Mon, 12 May 2025 03:18:55 GMT
+Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [147.11.82.254])
+	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 46hws89991-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Mon, 12 May 2025 03:18:54 +0000 (GMT)
+Received: from ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) by
+ ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.43; Sun, 11 May 2025 20:18:53 -0700
+Received: from pek-lpg-core1.wrs.com (147.11.136.210) by
+ ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server id
+ 15.1.2507.43 via Frontend Transport; Sun, 11 May 2025 20:18:48 -0700
+From: <jianqi.ren.cn@windriver.com>
+To: <gregkh@linuxfoundation.org>, <stable@vger.kernel.org>
+CC: <patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        <jianqi.ren.cn@windriver.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
+        <andrii@kernel.org>, <martin.lau@linux.dev>, <song@kernel.org>,
+        <yhs@fb.com>, <kpsingh@kernel.org>, <sdf@google.com>,
+        <haoluo@google.com>, <jolsa@kernel.org>, <rostedt@goodmis.org>,
+        <mhiramat@kernel.org>, <laoar.shao@gmail.com>, <bpf@vger.kernel.org>
+Subject: [PATCH 6.1.y] bpf: support deferring bpf_link dealloc to after RCU grace period
+Date: Mon, 12 May 2025 11:18:47 +0800
+Message-ID: <20250512031847.3331135-1-jianqi.ren.cn@windriver.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250511182744.1806792-1-yonghong.song@linux.dev>
-In-Reply-To: <20250511182744.1806792-1-yonghong.song@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Sun, 11 May 2025 17:30:45 -0700
-X-Gm-Features: AX0GCFtENy5JQsWIA90r21ZMgjNo5LRr9a0V5F64WG1RnnZ69ZZjdPuujkVydNA
-Message-ID: <CAADnVQKi30n+BkRpWKztBnFJ1tsejJYE6f=XtGUodvozZar6PA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Warn with new bpf_unreachable() kfunc
- maybe due to uninitialized var
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: dYoj7KhBQdfsw-CznJjOh4EvUqLC69iQ
+X-Proofpoint-GUID: dYoj7KhBQdfsw-CznJjOh4EvUqLC69iQ
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTEyMDAzMyBTYWx0ZWRfX6AXKM2FIPhlt OOb9cbfvvpb6LIEf2yGA5J+fKwr4sethcyhIVqiPCtGVENFLmWFVqOej4/Ui9ueDTRmNVZJ9H44 jZgEjKm8UWFUOc4pLo0g3MLtjfqZ+XjVGk5p2cylpxd2wsKV3/PN0Xyhc6qwGdS8MdtVnGPHnKD
+ 2il+SPuicbVf3OjRIjK+1wP4FWP0842LpiPSmbftzkl4+G2RYCjJZA97n1cRgLNyiNfosQ1o4Zu TSxVp7XA4KypMHgyMVGhUF8VL1Q4jzputCK18ZuSMXXiA6OJL1dD/oXB9S9YRFpAY6e7JtaGxPO uXIdePIdI7n+d7Ra4sdPxi/XFYKhEHTHrS2dk8cGcOiu38YjlkQ1Fg3YTHjCO/8ke8qNZq/r+CI
+ lCdZ8PlPe3pIl/XW496JvjqSZ9fFDKphjvqeZX1COJhJ3PF2eWsSmiGLxHAJsPSXoVJ+H5Lw
+X-Authority-Analysis: v=2.4 cv=Q+HS452a c=1 sm=1 tr=0 ts=6821689e cx=c_pps a=K4BcnWQioVPsTJd46EJO2w==:117 a=K4BcnWQioVPsTJd46EJO2w==:17 a=dt9VzEwgFbYA:10 a=VwQbUJbxAAAA:8 a=hSkVLCK3AAAA:8 a=t7CeM3EgAAAA:8 a=TqKKbRrxTIIqW3QnL98A:9 a=cQPPKAXgyycSBL8etih5:22
+ a=FdTzh2GWekK77mhwV6Dw:22
+X-Sensitive_Customer_Information: Yes
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-05-12_01,2025-05-09_01,2025-02-21_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ phishscore=0 mlxlogscore=999 bulkscore=0 lowpriorityscore=0 spamscore=0
+ clxscore=1011 suspectscore=0 adultscore=0 malwarescore=0 impostorscore=0
+ mlxscore=0 classifier=spam authscore=0 authtc=n/a authcc= route=outbound
+ adjust=0 reason=mlx scancount=1 engine=8.21.0-2504070000
+ definitions=main-2505120033
 
-On Sun, May 11, 2025 at 11:28=E2=80=AFAM Yonghong Song <yonghong.song@linux=
-.dev> wrote:
->
-> Marc Su=C3=B1=C3=A9 (Isovalent, part of Cisco) reported an issue where an
-> uninitialized variable caused generating bpf prog binary code not
-> working as expected. The reproducer is in [1] where the flags
-> =E2=80=9C-Wall -Werror=E2=80=9D are enabled, but there is no warning and =
-compiler
-> may take advantage of uninit variable to do aggressive optimization.
->
-> In llvm internals, uninitialized variable usage may generate
-> 'unreachable' IR insn and these 'unreachable' IR insns may indicate
-> uninit var impact on code optimization. With clang21 patch [2],
-> those 'unreachable' IR insn are converted to func bpf_unreachable().
->
-> In kernel, a new kfunc bpf_unreachable() is added. If this kfunc
-> (generated by [2]) is the last insn in the main prog or a subprog,
-> the verifier will suggest the verification failure may be due to
-> uninitialized var, so user can check their source code to find the
-> root cause.
->
-> Without this patch, the verifier will output
->   last insn is not an exit or jmp
-> and user will not know what is the potential root cause and
-> it will take more time to debug this verification failure.
->
->   [1] https://github.com/msune/clang_bpf/blob/main/Makefile#L3
->   [2] https://github.com/llvm/llvm-project/pull/131731
->
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-> ---
->  kernel/bpf/helpers.c  |  5 +++++
->  kernel/bpf/verifier.c | 17 ++++++++++++++++-
->  2 files changed, 21 insertions(+), 1 deletion(-)
->
-> In order to compile kernel successfully with the above [2], the following
-> change is needed due to clang21 changes:
->
->   --- a/Makefile
->   +++ b/Makefile
->   @@ -852,7 +852,7 @@ endif
->    endif # may-sync-config
->    endif # need-config
->
->   -KBUILD_CFLAGS  +=3D -fno-delete-null-pointer-checks
->   +KBUILD_CFLAGS  +=3D -fno-delete-null-pointer-checks -Wno-default-const=
--init-field-unsafe
->
->   --- a/scripts/Makefile.extrawarn
->   +++ b/scripts/Makefile.extrawarn
->   @@ -19,6 +19,7 @@ KBUILD_CFLAGS +=3D $(call cc-disable-warning, frame-a=
-ddress)
->    KBUILD_CFLAGS +=3D $(call cc-disable-warning, address-of-packed-member=
-)
->    KBUILD_CFLAGS +=3D -Wmissing-declarations
->    KBUILD_CFLAGS +=3D -Wmissing-prototypes
->   +KBUILD_CFLAGS +=3D -Wno-default-const-init-var-unsafe
->
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index fed53da75025..6048d7e19d4c 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -3283,6 +3283,10 @@ __bpf_kfunc void bpf_local_irq_restore(unsigned lo=
-ng *flags__irq_flag)
->         local_irq_restore(*flags__irq_flag);
->  }
->
-> +__bpf_kfunc void bpf_unreachable(void)
-> +{
-> +}
+From: Andrii Nakryiko <andrii@kernel.org>
 
-Does it have to be an actual function with the body?
-Can it be a kfunc that doesn't consume any .text ?
+commit 1a80dbcb2dbaf6e4c216e62e30fa7d3daa8001ce upstream.
 
-> +
->  __bpf_kfunc_end_defs();
->
->  BTF_KFUNCS_START(generic_btf_ids)
-> @@ -3388,6 +3392,7 @@ BTF_ID_FLAGS(func, bpf_iter_kmem_cache_next, KF_ITE=
-R_NEXT | KF_RET_NULL | KF_SLE
->  BTF_ID_FLAGS(func, bpf_iter_kmem_cache_destroy, KF_ITER_DESTROY | KF_SLE=
-EPABLE)
->  BTF_ID_FLAGS(func, bpf_local_irq_save)
->  BTF_ID_FLAGS(func, bpf_local_irq_restore)
-> +BTF_ID_FLAGS(func, bpf_unreachable)
->  BTF_KFUNCS_END(common_btf_ids)
->
->  static const struct btf_kfunc_id_set common_kfunc_set =3D {
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 28f5a7899bd6..d26aec0a90d0 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -206,6 +206,7 @@ static int ref_set_non_owning(struct bpf_verifier_env=
- *env,
->  static void specialize_kfunc(struct bpf_verifier_env *env,
->                              u32 func_id, u16 offset, unsigned long *addr=
-);
->  static bool is_trusted_reg(const struct bpf_reg_state *reg);
-> +static void verbose_insn(struct bpf_verifier_env *env, struct bpf_insn *=
-insn);
->
->  static bool bpf_map_ptr_poisoned(const struct bpf_insn_aux_data *aux)
->  {
-> @@ -3398,7 +3399,10 @@ static int check_subprogs(struct bpf_verifier_env =
-*env)
->         int i, subprog_start, subprog_end, off, cur_subprog =3D 0;
->         struct bpf_subprog_info *subprog =3D env->subprog_info;
->         struct bpf_insn *insn =3D env->prog->insnsi;
-> +       bool is_bpf_unreachable =3D false;
->         int insn_cnt =3D env->prog->len;
-> +       const struct btf_type *t;
-> +       const char *tname;
->
->         /* now check that all jumps are within the same subprog */
->         subprog_start =3D subprog[cur_subprog].start;
-> @@ -3433,7 +3437,18 @@ static int check_subprogs(struct bpf_verifier_env =
-*env)
->                         if (code !=3D (BPF_JMP | BPF_EXIT) &&
->                             code !=3D (BPF_JMP32 | BPF_JA) &&
->                             code !=3D (BPF_JMP | BPF_JA)) {
-> -                               verbose(env, "last insn is not an exit or=
- jmp\n");
-> +                               verbose_insn(env, &insn[i]);
-> +                               if (btf_vmlinux && insn[i].code =3D=3D (B=
-PF_CALL | BPF_JMP) &&
-> +                                   insn[i].src_reg =3D=3D BPF_PSEUDO_KFU=
-NC_CALL) {
-> +                                       t =3D btf_type_by_id(btf_vmlinux,=
- insn[i].imm);
-> +                                       tname =3D btf_name_by_offset(btf_=
-vmlinux, t->name_off);
-> +                                       if (strcmp(tname, "bpf_unreachabl=
-e") =3D=3D 0)
+BPF link for some program types is passed as a "context" which can be
+used by those BPF programs to look up additional information. E.g., for
+multi-kprobes and multi-uprobes, link is used to fetch BPF cookie values.
 
-the check by name is not pretty.
+Because of this runtime dependency, when bpf_link refcnt drops to zero
+there could still be active BPF programs running accessing link data.
 
-> +                                               is_bpf_unreachable =3D tr=
-ue;
-> +                               }
-> +                               if (is_bpf_unreachable)
-> +                                       verbose(env, "last insn is bpf_un=
-reachable, due to uninitialized var?\n");
-> +                               else
-> +                                       verbose(env, "last insn is not an=
- exit or jmp\n");
+This patch adds generic support to defer bpf_link dealloc callback to
+after RCU GP, if requested. This is done by exposing two different
+deallocation callbacks, one synchronous and one deferred. If deferred
+one is provided, bpf_link_free() will schedule dealloc_deferred()
+callback to happen after RCU GP.
 
-This is too specific imo.
-add_subprog_and_kfunc() -> add_kfunc_call()
-should probably handle it instead,
-and print that error.
-It doesn't matter that call bpf_unreachable is the last insn
-of a program or subprogram.
-I suspect llvm can emit it anywhere.
+BPF is using two flavors of RCU: "classic" non-sleepable one and RCU
+tasks trace one. The latter is used when sleepable BPF programs are
+used. bpf_link_free() accommodates that by checking underlying BPF
+program's sleepable flag, and goes either through normal RCU GP only for
+non-sleepable, or through RCU tasks trace GP *and* then normal RCU GP
+(taking into account rcu_trace_implies_rcu_gp() optimization), if BPF
+program is sleepable.
+
+We use this for multi-kprobe and multi-uprobe links, which dereference
+link during program run. We also preventively switch raw_tp link to use
+deferred dealloc callback, as upcoming changes in bpf-next tree expose
+raw_tp link data (specifically, cookie value) to BPF program at runtime
+as well.
+
+Fixes: 0dcac2725406 ("bpf: Add multi kprobe link")
+Fixes: 89ae89f53d20 ("bpf: Add multi uprobe link")
+Reported-by: syzbot+981935d9485a560bfbcb@syzkaller.appspotmail.com
+Reported-by: syzbot+2cb5a6c573e98db598cc@syzkaller.appspotmail.com
+Reported-by: syzbot+62d8b26793e8a2bd0516@syzkaller.appspotmail.com
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+Link: https://lore.kernel.org/r/20240328052426.3042617-2-andrii@kernel.org
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+[fixed conflicts due to missing commits 89ae89f53d20
+ ("bpf: Add multi uprobe link")]
+Signed-off-by: Jianqi Ren <jianqi.ren.cn@windriver.com>
+Signed-off-by: He Zhe <zhe.he@windriver.com>
+---
+Verified the build test
+---
+ include/linux/bpf.h      | 16 +++++++++++++++-
+ kernel/bpf/syscall.c     | 35 ++++++++++++++++++++++++++++++++---
+ kernel/trace/bpf_trace.c |  2 +-
+ 3 files changed, 48 insertions(+), 5 deletions(-)
+
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index e9c1338851e3..1cf8c7037289 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1293,12 +1293,26 @@ struct bpf_link {
+ 	enum bpf_link_type type;
+ 	const struct bpf_link_ops *ops;
+ 	struct bpf_prog *prog;
+-	struct work_struct work;
++	/* rcu is used before freeing, work can be used to schedule that
++	 * RCU-based freeing before that, so they never overlap
++	 */
++	union {
++		struct rcu_head rcu;
++		struct work_struct work;
++	};
+ };
+ 
+ struct bpf_link_ops {
+ 	void (*release)(struct bpf_link *link);
++	/* deallocate link resources callback, called without RCU grace period
++	 * waiting
++	 */
+ 	void (*dealloc)(struct bpf_link *link);
++	/* deallocate link resources callback, called after RCU grace period;
++	 * if underlying BPF program is sleepable we go through tasks trace
++	 * RCU GP and then "classic" RCU GP
++	 */
++	void (*dealloc_deferred)(struct bpf_link *link);
+ 	int (*detach)(struct bpf_link *link);
+ 	int (*update_prog)(struct bpf_link *link, struct bpf_prog *new_prog,
+ 			   struct bpf_prog *old_prog);
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 27fdf1b2fc46..1cc9b28b065a 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2750,17 +2750,46 @@ void bpf_link_inc(struct bpf_link *link)
+ 	atomic64_inc(&link->refcnt);
+ }
+ 
++static void bpf_link_defer_dealloc_rcu_gp(struct rcu_head *rcu)
++{
++	struct bpf_link *link = container_of(rcu, struct bpf_link, rcu);
++
++	/* free bpf_link and its containing memory */
++	link->ops->dealloc_deferred(link);
++}
++
++static void bpf_link_defer_dealloc_mult_rcu_gp(struct rcu_head *rcu)
++{
++	if (rcu_trace_implies_rcu_gp())
++		bpf_link_defer_dealloc_rcu_gp(rcu);
++	else
++		call_rcu(rcu, bpf_link_defer_dealloc_rcu_gp);
++}
++
+ /* bpf_link_free is guaranteed to be called from process context */
+ static void bpf_link_free(struct bpf_link *link)
+ {
++	bool sleepable = false;
++
+ 	bpf_link_free_id(link->id);
+ 	if (link->prog) {
++		sleepable = link->prog->aux->sleepable;
+ 		/* detach BPF program, clean up used resources */
+ 		link->ops->release(link);
+ 		bpf_prog_put(link->prog);
+ 	}
+-	/* free bpf_link and its containing memory */
+-	link->ops->dealloc(link);
++	if (link->ops->dealloc_deferred) {
++		/* schedule BPF link deallocation; if underlying BPF program
++		 * is sleepable, we need to first wait for RCU tasks trace
++		 * sync, then go through "classic" RCU grace period
++		 */
++		if (sleepable)
++			call_rcu_tasks_trace(&link->rcu, bpf_link_defer_dealloc_mult_rcu_gp);
++		else
++			call_rcu(&link->rcu, bpf_link_defer_dealloc_rcu_gp);
++	}
++	if (link->ops->dealloc)
++		link->ops->dealloc(link);
+ }
+ 
+ static void bpf_link_put_deferred(struct work_struct *work)
+@@ -3246,7 +3275,7 @@ static int bpf_raw_tp_link_fill_link_info(const struct bpf_link *link,
+ 
+ static const struct bpf_link_ops bpf_raw_tp_link_lops = {
+ 	.release = bpf_raw_tp_link_release,
+-	.dealloc = bpf_raw_tp_link_dealloc,
++	.dealloc_deferred = bpf_raw_tp_link_dealloc,
+ 	.show_fdinfo = bpf_raw_tp_link_show_fdinfo,
+ 	.fill_link_info = bpf_raw_tp_link_fill_link_info,
+ };
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 7254c808b27c..989b6843069e 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -2564,7 +2564,7 @@ static void bpf_kprobe_multi_link_dealloc(struct bpf_link *link)
+ 
+ static const struct bpf_link_ops bpf_kprobe_multi_link_lops = {
+ 	.release = bpf_kprobe_multi_link_release,
+-	.dealloc = bpf_kprobe_multi_link_dealloc,
++	.dealloc_deferred = bpf_kprobe_multi_link_dealloc,
+ };
+ 
+ static void bpf_kprobe_multi_cookie_swap(void *a, void *b, int size, const void *priv)
+-- 
+2.34.1
+
 
