@@ -1,102 +1,154 @@
-Return-Path: <bpf+bounces-58040-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58041-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51DA3AB401E
-	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 19:50:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D074AB4430
+	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 20:58:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2FD619E1068
-	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 17:50:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 187D18623B8
+	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 18:58:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B588255222;
-	Mon, 12 May 2025 17:49:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0123D297138;
+	Mon, 12 May 2025 18:58:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QexmsXYM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aI81sbtS"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A01D2550A3
-	for <bpf@vger.kernel.org>; Mon, 12 May 2025 17:49:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66CFD258CC1;
+	Mon, 12 May 2025 18:58:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747072197; cv=none; b=SDwhIPLNNQ7FbNFwywbmnPvMpgJq1SQjRryh3Mp1juEosBbkOmLyoRMjkiY2p3OqJccBJo2J/oLkSqel7vTvebbS7KoBIFK+Zgaooz8EEJfU/7vLhMzUL/aeq5tEz1Gp07ARmza1+N5oUxzZWwt6H1luS5RT3H7e/d93GhnnuP8=
+	t=1747076302; cv=none; b=uRCQre4E0ZOokHaaUXAHV3OmbepLRJjuVSRx++dAHkyB/5BB4nNBF3eI2fglXrMYhzYbelhD0MdcgRYzphJ+LxBYeH8yeAC4dZb68UMpDKDEVhs3F/NsehlVNfLGs2r/wpPzOGRR4fOuk00qrIsKFeJj2BV5I0dNqpNhbasiLNw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747072197; c=relaxed/simple;
-	bh=S4q4nDw1iH7472rL+wG++fjWQE0nz1FdkDJBJpJHy/M=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=SYEyikITdPt/Kw6uuW25BSMWKnkZhfotvnrPkEBHT7nNmbEXn2WwddVFCAF7TvjZhv1LiK3i4/brvuV2QIMuwdlkK9EBtgGNJ3OpkbA1wpLrMpPRam98rhi92GaPOnbhZuv08Wy/6nXQfx5TX22M+SDmj/xrLiWe9iEW1XxNx/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QexmsXYM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36E2DC4CEEF;
-	Mon, 12 May 2025 17:49:57 +0000 (UTC)
+	s=arc-20240116; t=1747076302; c=relaxed/simple;
+	bh=DhqQMJeCz7KcqMO9pFZZ9SLZWQgVIgwsMsQ5GbkfyLE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ukXD/kkaQYHohT0n36KxMptRkRSxC63iUYeAdbzj0+KJS+iGAu7e67Nw1C1yi8bCfFHPwAh5mzbMCyGmrIQYZxjeas0mQVFHqaOoI/N5nLwfsAiMM7iy8IGTAmcukELMSB9/psho11gvBPPn5EOkVrUTilyt2/V9SUt4f9pfFUA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aI81sbtS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB0B7C4CEE7;
+	Mon, 12 May 2025 18:58:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747072197;
-	bh=S4q4nDw1iH7472rL+wG++fjWQE0nz1FdkDJBJpJHy/M=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=QexmsXYMMN0jWRagA36WkakOTWHPWF5eCN3FgZWxIb+1YizncStbVFGObXGr7COWj
-	 0xlPJdUJ6aZ85l8kTzHoTTlRjwgZ9G+LXv6n2ET8aGsnT2lV7ucMu8W75tSW97uv/m
-	 l3VlGbA6FO7V2MPtzQChrU6ZhLD1pl3eT3m2f5BW1vIw0XEHK8kPTZtGcPkOn9sfri
-	 /gAWi0KsoZkCtUFmRtVDWMieZOr7Q12Gj3QciTXOVdJDaOMSnpVFvxYRor4uPrlhH1
-	 F218xwuGBhKm+WjdVMadNsfQpkwmh1S4y67vOouegTalcSgvZH/SbuBvQkjOMWUKsZ
-	 ayKZJeUBzotPQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 3419B39D6555;
-	Mon, 12 May 2025 17:50:36 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1747076301;
+	bh=DhqQMJeCz7KcqMO9pFZZ9SLZWQgVIgwsMsQ5GbkfyLE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=aI81sbtSYxp4ZUFqKIdL8tPZyBnf7zssH2SFPfSa0SIJFYJz67c0ycT734TIISYJe
+	 voB4FpdUmvI5jCKlBayoenOgfCh0jSLg/AQtcefz/t1E4haqPDpLhMyrjiLjBNS4GG
+	 aRepWJ37m/l4ofO8hKelcnK/eCIxAKN7wHLZB5E/Qqzj0qpEQYtOD09jXEQjBgOl88
+	 wLh1a26PSJGASXkDVEqp7SyG6BKdLBL3s43vQcnlMoxklJgpXywBNgz9D7yWtDO+QI
+	 9dvvjAQxE9RG1vETmpuf3+icNC0Gk6LEJ9jnJ3/ouoam8Eh/KDqBdrCOfkFAhTExxX
+	 MiuHB4kIAWDCQ==
+Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-6f2c45ecaffso51182266d6.2;
+        Mon, 12 May 2025 11:58:21 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUBKIhGX1yRAfu22fZbezZKUHwcGk8sTjaUp4ddS2cixJ1nyVqZvrkgrp/twEUjyII2RoDhbUSvTWmkJVsGzVxP@vger.kernel.org, AJvYcCUzwWfh96GGUe5Pnqcf8QtUf2aEp+DdMDWa9/pChQjAv9gyb8Ce0hIIviy4fpnddcoEReDeLVw7v0eyUZ2H@vger.kernel.org, AJvYcCV8ZHASOxLqmCqAbHP4Zk8wIuID+OpB7XPuNG9tGv9EaxexQ3hwXympBbAwhisTF+KdkCk=@vger.kernel.org, AJvYcCXK5xq8IOUjIOxgkwBsM8W137v7eBbR4G6jN2QnEwfiUh7TZ2TvdP8EJUU6xchKt+PH58RGF1VWpB/ZIVI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyKY9/ZLM1hGneUGBoM2iAYXlPigGT2HHggPZOHMiljDnjGfyHi
+	yx4VQnnxVj0qHqybxHXNmdOw8SSNZhzPGb5NLT1m1Bm38VZJC/cBk6GsC0wTJ7ISdu+YOWVMkWL
+	Ju16L73dvLddsh7m6c1zvuamL46E=
+X-Google-Smtp-Source: AGHT+IFyd6yL6raX/sTg46CKX63s6TNC5S7yKKUcNYsUtZqJrEQZJsF0fn7Rhu83nX52qQ9gtfsjefq2LxgweTQn6ss=
+X-Received: by 2002:a05:6214:f6d:b0:6e8:fee2:aae6 with SMTP id
+ 6a1803df08f44-6f6e48151b9mr222853596d6.41.1747076300958; Mon, 12 May 2025
+ 11:58:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next 0/2] Fix verifier test failures in verbose mode
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <174707223500.1030716.12222750851162988689.git-patchwork-notify@kernel.org>
-Date: Mon, 12 May 2025 17:50:35 +0000
-References: <cover.1747058195.git.grbell@redhat.com>
-In-Reply-To: <cover.1747058195.git.grbell@redhat.com>
-To: Gregory Bell <grbell@redhat.com>
-Cc: bpf@vger.kernel.org, andrii@kernel.org, eddyz87@gmail.com, mykolal@fb.com,
- ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, shuah@kernel.org
+References: <20250512174036.266796-1-tjmercier@google.com> <20250512174036.266796-5-tjmercier@google.com>
+In-Reply-To: <20250512174036.266796-5-tjmercier@google.com>
+From: Song Liu <song@kernel.org>
+Date: Mon, 12 May 2025 11:58:09 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6TUogokra2mJQG6jeuZ1_RZPwr4xGbBOUJZBUg9AqW3g@mail.gmail.com>
+X-Gm-Features: AX0GCFvByoV9AZSi2Y8neroJoSZ_eSUedTGCmZtmiP0XEcoch5fMWNH94wsBues
+Message-ID: <CAPhsuW6TUogokra2mJQG6jeuZ1_RZPwr4xGbBOUJZBUg9AqW3g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 4/5] selftests/bpf: Add test for dmabuf_iter
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: sumit.semwal@linaro.org, christian.koenig@amd.com, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
+	skhan@linuxfoundation.org, alexei.starovoitov@gmail.com, 
+	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org, 
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, android-mm@google.com, 
+	simona@ffwll.ch, eddyz87@gmail.com, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Mon, May 12, 2025 at 10:41=E2=80=AFAM T.J. Mercier <tjmercier@google.com=
+> wrote:
+[...]
+> +
+> +static int udmabuf;
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+static int udmabuf =3D -1;
 
-On Mon, 12 May 2025 10:04:11 -0400 you wrote:
-> This patch series fixes two issues that cause false failures in the
-> BPF verifier test suite when run with verbose output (`-v`).
-> 
-> The following tests fail only when running the test_verifier in
-> verbose.
-> 
-> #458/p ld_dw: xor semi-random 64 bit imms, test 5 FAIL
-> #494/p precise: test 1 FAIL
-> #495/p precise: test 2 FAIL
-> #497/p precise: ST zero to stack insn is supported FAIL
-> #498/p precise: STX insn causing spi > allocated_stack FAIL
-> #501/p scale: scale test 1 FAIL
-> #502/p scale: scale test 2 FAIL
-> 
-> [...]
+> +static const char udmabuf_test_buffer_name[DMA_BUF_NAME_LEN] =3D "udmabu=
+f_test_buffer_for_iter";
+> +static size_t udmabuf_test_buffer_size;
+> +static int sysheap_dmabuf;
 
-Here is the summary with links:
-  - [bpf-next,1/2] selftests/bpf: test_verifier verbose causes erroneous failures
-    https://git.kernel.org/bpf/bpf-next/c/c5bcc8c78127
-  - [bpf-next,2/2] selftests/bpf: test_verifier verbose log overflows
-    https://git.kernel.org/bpf/bpf-next/c/af8a5125a04c
+static int sysheap_dmabuf =3D -1;
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> +static const char sysheap_test_buffer_name[DMA_BUF_NAME_LEN] =3D "syshea=
+p_test_buffer_for_iter";
+> +static size_t sysheap_test_buffer_size;
+> +
+> +static int create_udmabuf(void)
+> +{
+> +       struct udmabuf_create create;
 
+nit: zero initialize create to be future proof.
 
+> +       int dev_udmabuf, memfd, local_udmabuf;
+> +
+> +       udmabuf_test_buffer_size =3D 10 * getpagesize();
+
+[...]
+
+> +static void subtest_dmabuf_iter_check_default_iter(struct dmabuf_iter *s=
+kel)
+> +{
+> +       bool found_test_sysheap_dmabuf =3D false;
+> +       bool found_test_udmabuf =3D false;
+> +       struct DmabufInfo bufinfo;
+> +       size_t linesize =3D 0;
+> +       char *line =3D NULL;
+> +       FILE *iter_file;
+> +       int iter_fd, f =3D INODE;
+> +
+> +       iter_fd =3D bpf_iter_create(bpf_link__fd(skel->links.dmabuf_colle=
+ctor));
+> +       ASSERT_OK_FD(iter_fd, "iter_create");
+
+Should we check ASSERT_OK_FD() and exit early on
+failures?
+
+> +
+> +       iter_file =3D fdopen(iter_fd, "r");
+> +       ASSERT_OK_PTR(iter_file, "fdopen");
+
+Same here.
+[...]
+> +/*
+> + * Fields output by this iterator are delimited by newlines. Convert any
+> + * newlines in user-provided printed strings to spaces.
+> + */
+> +static void sanitize_string(char *src, size_t size)
+> +{
+> +       for (char *c =3D src; c && (size_t)(c - src) < size; ++c)
+
+Should this be:
+
+  for (char *c =3D src; *c && (size_t)(c - src) < size; ++c)
+
+?
+
+Thanks,
+Song
+
+[...]
 
