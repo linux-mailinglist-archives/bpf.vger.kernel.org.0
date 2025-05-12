@@ -1,218 +1,275 @@
-Return-Path: <bpf+bounces-58006-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58007-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33B6AAB35BD
-	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 13:15:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38780AB368F
+	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 14:06:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A31C188C658
-	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 11:16:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5B111742FB
+	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 12:04:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3BC928DF27;
-	Mon, 12 May 2025 11:15:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9AF329293E;
+	Mon, 12 May 2025 12:04:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B+oG+GST"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="h/driVAb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B10E828DF0F;
-	Mon, 12 May 2025 11:15:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B2FB266B6F
+	for <bpf@vger.kernel.org>; Mon, 12 May 2025 12:04:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747048548; cv=none; b=gT1ZTziiH14s51ZXjRx8/Vl0odwUFy04JMODCkLtiTfl+b+rFZYwDCRSInagpHNnKN7nnHC1c0rsOKloAVuERsgczVZKXMB6gkNOcMqlTtS9amguUhpAoKWjC9D914pakX6cKFqg9H89Swl+k7x8eYyb0ty4/OFSXDNPASUqZOM=
+	t=1747051484; cv=none; b=sufNyDJfYUy4ryid/WtNg4Mgr6tYwsrLDpNinpviOPD4G5fOc3GKYWJAiTiRSCmsLtnFX7kdEoyse13JrNGKjWsIbqQeFgUeDK2EY01Nr1KeaX8+teHAtEP9b4BOzcqqAXGL7e9KEpSNDSXrf19FxXdKkPV5bskml+SwJatqk4k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747048548; c=relaxed/simple;
-	bh=oT8B8PuPRmFZoKB8QPD4DQ56LMUoF01HMVZAtrTjxkk=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Pkjrh+CzL7T2jxut2RqSEwm16Fsy9iz1tbWgKm9VjxISBQ3OLJR0JRhFfC/L3VzPcFmQZp86YnCIAD7cUTMqV6tEYvznRCq9CAmFgn/4jHu3AWOzsO3X01tWIN0iw1IuHR532iUdBapC8u8WCnaEA/F90zX3HIkz3HB3MoY5V5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B+oG+GST; arc=none smtp.client-ip=209.85.215.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-b13e0471a2dso2942681a12.2;
-        Mon, 12 May 2025 04:15:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747048546; x=1747653346; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=hIKni9pPLOHu4o+QrtpE1+aCnaxZVOBceumrlQ5KJ4s=;
-        b=B+oG+GSTDqyR61M6jx4xHYpmTTYsQn99iw6i3h1DjlkCyHxvKCMtV11goAyQpJ8tW7
-         ySOv1jiAMOOVQo/06oR7Q0+Nl9k22HzNNxGsaerTL+ztwiI88oZrYoqTGJFOJhO3mDdR
-         uzM3aIol4c/oM59YIc+q6FbpCa0Af8PVnvBedbnlXqyGTxbQ7asDUrsjwx24Xd8MEF/q
-         a87xuPrKnVjOMuXoct2QqN1kFWOGE1G4QhgHnfIXuCLdnc2ADAfCVx4OpaayEQuAhBq/
-         AaIzkt9nXVHhBQbbbLuVepxCDlwv91T0L/cmigFGxpImh7C+oJfaXDB/zx9HK5AggjwE
-         eLrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747048546; x=1747653346;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hIKni9pPLOHu4o+QrtpE1+aCnaxZVOBceumrlQ5KJ4s=;
-        b=qNgGfpNT3hEtV+gat9qxVgoOtQr49aUsOxu0MmyuVsHt13py2gT0ePeyRvDgj3bgi/
-         Rv+ikf1PwPypRMZc9Amp2P3whxmr1VsMtecGQJqDg88qrI2IFwdjwusSZv0hZW9koQGG
-         8j7x7J1wMIiObQY0mgcK9jH4XEw1oUTNxQgswau/7WBU5cDaiYOwl2JqHOR79T8EW5de
-         kkTRPlI4+NJ3wceLUxZbP8JJ2GIeuDcjmhqmsRTYrXkN/x3xPdA/3ZQFcDQL1dVgWAvg
-         Sen0K9WusMBllBdd6duZVeJEVMAkZWRZMAIHCSlsSBV1QB4kHxTm0mTtVFmRdSyGKNTT
-         ut5g==
-X-Forwarded-Encrypted: i=1; AJvYcCU2uQowPZX624VF2GUr75EIfx7rTjdfEQvE05YB/fc9wW8f3DtjQmWwuW1pSizwLeScfm8=@vger.kernel.org, AJvYcCURz1RWQvtQBE/ewxGxFGXDTC1A8ha2CVrX56aOfgZIlDpk1KENb5v8kJ1pu/qMymCiEviquYmovGRPOJH6@vger.kernel.org, AJvYcCUxapXB5ohVH6fsnlRss1GaLrfN1m0iDzzIfpBBq0vdBX7e4SfkB6Kxwt1iJe1aZ7wJDfDXHeHDL4hmLBm7b9v1@vger.kernel.org, AJvYcCUzIbCF0iMTbyJrw7Qw9hbWFEiEZO5O9pPVWASnIidei+nxoSHhVsO5Hrp4S4MJlBQ8MgZU1MB/r7PpVQ==@vger.kernel.org, AJvYcCWTedt14Ggle3J82NASJ82u9oPmGdT27kjotoiUAxDYiWvlW11omBi/0mBiEJXbaWoVfNuyavLYNG2oGfSS@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw60UDO3YXY6fCkWr8t9RIRl3Qo/5gL2f1xifti3sCUVXliPwM7
-	DayurJwj+YpG1xz5rpoFWvDCmx+EVm9ziCtAaoPr6iEhHPedxPo1
-X-Gm-Gg: ASbGncsCxq8+AbIdmJAhDSmZSAaEtmhLusFtlzJJnkkKDt50QJnqQKgON8AsfMmDGxr
-	RRmaCauiXXQfD0q1vJfEEtsFh6WM1NVcfZnNYVBUSjrj9DeLVY4uzXegGGW48+SwSO9lT7GtOAy
-	tGRgtTK/6G5cm5PL5P7pGIclF85dyGtG2Q16GmfCfP+4Or9xBea2SYF+4kfipcBi5wB/rq5CWaj
-	wpzB05zWuAtR96tjwFzS0EGrw0Zxh+Iru97lbYAxFG6MY2K6IRKtiYLDBktayadl3BRbxPT75JF
-	XhBL5jurHpDM3hHol6+Q41BeTJ+ImvUWormi5JcBBDfUCGZvX2ukRKsLft97/hJFDPiq7pZab4L
-	/Wi5XrwAZVypSCBgNcA==
-X-Google-Smtp-Source: AGHT+IGdhYPbJPcGMDw80qXe6ASIagaqClZ9iXMY9/sIldXOZU7oATP4AwtW7JWEzAYHF6iI2UMfDA==
-X-Received: by 2002:a17:902:dac6:b0:21f:768:cced with SMTP id d9443c01a7336-22fc8aff07cmr157726675ad.8.1747048545743;
-        Mon, 12 May 2025 04:15:45 -0700 (PDT)
-Received: from kodidev-ubuntu (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22fc774134fsm60669495ad.56.2025.05.12.04.15.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 May 2025 04:15:45 -0700 (PDT)
-From: Tony Ambardar <tony.ambardar@gmail.com>
-X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
-Date: Mon, 12 May 2025 04:15:40 -0700
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Stephen Brennan <stephen.s.brennan@oracle.com>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>, Kees Cook <kees@kernel.org>,
-	KP Singh <kpsingh@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	linux-arch <linux-arch@vger.kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Pasha Tatashin <pasha.tatashin@soleen.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Jann Horn <jannh@google.com>, Ard Biesheuvel <ardb@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Hao Luo <haoluo@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Nathan Chancellor <nathan@kernel.org>,
-	linux-debuggers@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>, Song Liu <song@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH 2/2] btf: Add the option to include global variable types
-Message-ID: <aCHYXFXOA74TkU5S@kodidev-ubuntu>
-References: <20250207012045.2129841-1-stephen.s.brennan@oracle.com>
- <20250207012045.2129841-3-stephen.s.brennan@oracle.com>
- <CAADnVQLiyezBW34dhkwZw+mWmkFAYMZUdHbOa4uYCdPbgS10SQ@mail.gmail.com>
- <83a42276-22cc-4642-8ce6-7ef16fa93d9c@oracle.com>
+	s=arc-20240116; t=1747051484; c=relaxed/simple;
+	bh=oJ1oCFBuNC5sbmX9Qnlw2EQfdmKj6oypBdfP5iwUyHc=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=PMuQx8LKxx/vr/umOT+AlAGsAj/umV3gmP7xAmOobziQWuBArYe3Erpsd/UNGDpUhD/JEg6/UYwzpeM0MW3jfmqkHjuu9SSgdiV83Xm9ltJ/mJ+VwIwQA1LDoAmJWJO5B1LkxHAti4ElGwhMpjWmlezpOzG7RNzAW0bFbA3rn1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=h/driVAb; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54CAUMMx019052;
+	Mon, 12 May 2025 12:03:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=oJ1oCF
+	BuNC5sbmX9Qnlw2EQfdmKj6oypBdfP5iwUyHc=; b=h/driVAbw++05Cx44enYUT
+	4BcCatynqMYL/Yn38Yer9M6htcx068RcQmosjo2bJSInWK4KyMFdRCeY4Hsa8b6V
+	PJeiwJoTbFz//+uJgQar9JxgqiRdxbiWwK4GhuAUJuhIt9GM/hHMpuSkv7CaQn/k
+	TPRHAtqotNF2L5bNXveffL4inWQHKWJ2bwhEc/4Hdd6zF3w7HgjcXaxWHZb7KhQe
+	BaPSHTtiZ6BMPrGAnjT1p2Bf5Aj7FooaT3Sj+aVTEaJjP9u9WHiveY+Bhyj0XNxX
+	2OfiZnKz2oR1sMKP4jo0Lx05uSpdj3pKGdmT8igjRC+fiO9lKgg27QKTodHEE6Vw
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46k1h8b524-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 May 2025 12:03:16 +0000 (GMT)
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 54CBtnSb032690;
+	Mon, 12 May 2025 12:03:15 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46k1h8b51s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 May 2025 12:03:15 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 54C8sY0Q016937;
+	Mon, 12 May 2025 12:03:14 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 46jhgywxw1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 May 2025 12:03:14 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 54CC3CkX57934098
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 12 May 2025 12:03:12 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 6CCE32018D;
+	Mon, 12 May 2025 12:03:12 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id BFAD720188;
+	Mon, 12 May 2025 12:03:11 +0000 (GMT)
+Received: from [127.0.0.1] (unknown [9.152.108.100])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 12 May 2025 12:03:11 +0000 (GMT)
+Message-ID: <bde230fc4444a3d8bb07172042b5392a3f04d1e3.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Do not include r10 in precision
+ backtracking bookkeeping
+From: Ilya Leoshkevich <iii@linux.ibm.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Yonghong Song
+	 <yonghong.song@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii
+ Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>
+Date: Mon, 12 May 2025 14:03:11 +0200
+In-Reply-To: <CAADnVQLi8dP9uOTcs7qt_9Y42go9NVu4FSEk_eB_=egP3kCraA@mail.gmail.com>
+References: <20250511162758.281071-1-yonghong.song@linux.dev>
+	 <CAADnVQLi8dP9uOTcs7qt_9Y42go9NVu4FSEk_eB_=egP3kCraA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-2.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <83a42276-22cc-4642-8ce6-7ef16fa93d9c@oracle.com>
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=fq3cZE4f c=1 sm=1 tr=0 ts=6821e384 cx=c_pps a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17 a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10 a=QyXUC8HyAAAA:8 a=U7VPO1jWWpv39uoOsucA:9 a=QEXdDO2ut3YA:10
+X-Proofpoint-GUID: h1ugEra7S4ygimPYNp1xGHq71T-X_DIj
+X-Proofpoint-ORIG-GUID: rxQ1s6smRphn6c211wNh-ofcb9pENXbT
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTEyMDEyMiBTYWx0ZWRfX+eOa1AMjVrN9 eWDHvCPRgvJMOgj9iKApiud5kHB+iaPQ25PQK7pFWN4lkhUVaxZPhi7pmerl2/CSX3HOAF8ZY3u Dpovz3y4atcXRLsYWpH/NOTG0gUybF7EBk7LOLsOJEJsRgVW3JB/FeqVN6HMgmdr2f4yZt/eOUP
+ Cm74AOK8GdtiKKvwIeChOt6RB5Y+qxoaFZHGN/MdApEr8x9AoeeEo2pTzJPoJv2zRzW2SNGI54q 1oP3S7w4izLOwRt7F1kZw/xUsec7OznKcKc7tm4/YwHfbHWvd9eyLlsFYvE9F2Tz2r1kOzHQRXg 9/iV9rG9ZUvBDHqMWWY3if3bsEuqRO2sHhadYwiIpdFXBk3o48jVziSHiSPiEVwNB5qgUyfm51R
+ 6zxz4cMBBumkS+tPl+ctV0XLb4XYnPFe3pM1bXJcF59iFlfJ0xKAPVEd2Sb2SPe45QeDJOc1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-05-12_04,2025-05-09_01,2025-02-21_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ lowpriorityscore=0 mlxlogscore=999 phishscore=0 clxscore=1011 spamscore=0
+ suspectscore=0 impostorscore=0 adultscore=0 bulkscore=0 priorityscore=1501
+ mlxscore=0 classifier=spam authscore=0 authtc=n/a authcc= route=outbound
+ adjust=0 reason=mlx scancount=1 engine=8.19.0-2504070000
+ definitions=main-2505120122
 
-On Tue, Feb 25, 2025 at 10:01:27AM +0000, Alan Maguire wrote:
-> On 07/02/2025 23:50, Alexei Starovoitov wrote:
-> > On Thu, Feb 6, 2025 at 5:21 PM Stephen Brennan
-> > <stephen.s.brennan@oracle.com> wrote:
-> >> When the feature was implemented in pahole, my measurements indicated
-> >> that vmlinux BTF size increased by about 25.8%, and module BTF size
-> >> increased by 53.2%. Due to these increases, the feature is implemented
-> >> behind a new config option, allowing users sensitive to increased memory
-> >> usage to disable it.
-> >>
-> > 
-> > ...
-> >> +config DEBUG_INFO_BTF_GLOBAL_VARS
-> >> +       bool "Generate BTF type information for all global variables"
-> >> +       default y
-> >> +       depends on DEBUG_INFO_BTF && PAHOLE_VERSION >= 128
-> >> +       help
-> >> +         Include type information for all global variables in the BTF. This
-> >> +         increases the size of the BTF information, which increases memory
-> >> +         usage at runtime. With global variable types available, runtime
-> >> +         debugging and tracers may be able to provide more detail.
-> > 
-> > This is not a solution.
-> > Even if it's changed to 'default n' distros will enable it
-> > like they enable everything and will suffer a regression.
-> > 
-> > We need to add a new module like vmlinux_btf.ko that will contain
-> > this additional BTF data. For global vars and everything else we might need.
-> > 
->
+On Sun, 2025-05-11 at 15:33 -0700, Alexei Starovoitov wrote:
+> On Sun, May 11, 2025 at 9:28=E2=80=AFAM Yonghong Song
+> <yonghong.song@linux.dev> wrote:
+> >=20
+> > Reported by: Yi Lai <yi1.lai@linux.intel.com>
+> > Fixes: 407958a0e980 ("bpf: encapsulate precision backtracking
+> > bookkeeping")
+> > Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+> > ---
+> > =C2=A0kernel/bpf/verifier.c | 6 ++++--
+> > =C2=A01 file changed, 4 insertions(+), 2 deletions(-)
+> >=20
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 28f5a7899bd6..1cb4d80d15c1 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -4413,8 +4413,10 @@ static int backtrack_insn(struct
+> > bpf_verifier_env *env, int idx, int subseq_idx,
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ * before it would be equally necessary to
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ * propagate it to dreg.
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ */
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bt_set_reg(=
+bt, dreg);
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bt_set_reg(=
+bt, sreg);
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (dreg !=
+=3D BPF_REG_FP)
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bt_set_reg(bt, dreg);
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (sreg !=
+=3D BPF_REG_FP)
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bt_set_reg(bt, sreg);
+>=20
+> The fix makes sense to me.
+>=20
+> but it crashes on s390 according to CI:
+>=20
+> 2025-05-11T16:48:18.5929491Z #401=C2=A0=C2=A0=C2=A0=C2=A0 struct_ops_refc=
+ounted:OK
+> 2025-05-11T16:48:18.7330807Z ------------[ cut here ]------------
+> 2025-05-11T16:48:18.7333824Z kernel BUG at kernel/bpf/core.c:533!
+> 2025-05-11T16:48:18.7335154Z monitor event: 0040 ilc:2 [#1]SMP
+> 2025-05-11T16:48:18.7336972Z Modules linked in: bpf_testmod(OE) [last
+> unloaded: bpf_test_no_cfi(OE)]
+> 2025-05-11T16:48:18.7341000Z CPU: 0 UID: 0 PID: 109 Comm: new_name
+> Tainted: G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 OE=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 6.15.0-rc4-ga9827e5c6a13-dirty #13 NON=
+E
+> 2025-05-11T16:48:18.7343245Z Tainted: [O]=3DOOT_MODULE,
+> [E]=3DUNSIGNED_MODULE
+> 2025-05-11T16:48:18.7344697Z Hardware name: IBM 8561 LT1 400
+> (KVM/Linux)
+> 2025-05-11T16:48:18.7347056Z Krnl PSW : 0704d00180000000
+> 000003320039d8ca (bpf_patch_insn_single+0x29a/0x2a0)
+> 2025-05-11T16:48:18.7349372Z=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 R:0 T:1 IO:1 EX:1 Key:0 M:1
+> W:0 P:0 AS:3 CC:1 PM:0 RI:0 EA:3
+> 2025-05-11T16:48:18.7351910Z Krnl GPRS: 000002b200000016
+> ffffffff7ffffffe ffffffffffffffde 00000000ffffffde
+> 2025-05-11T16:48:18.7354602Z=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 0000000000000003
+> 0000000000000005 0000000000000000 000002b2000b5048
+> 2025-05-11T16:48:18.7356934Z=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 0000000000000018
+> 000002b2000b5000 0000000000000003 0000000000000002
+> 2025-05-11T16:48:18.7359164Z=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 000003ff81badf98
+> 0000000000000002 000003320039d738 000002b200687840
+> 2025-05-11T16:48:18.7361217Z Krnl Code: 000003320039d8bc:
+> e3005ff0ff50
+> sty %r0,-16(%r5)
+> 2025-05-11T16:48:18.7363048Z=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 000003320039d8c2: a7f4ffc6
+> brc
+> 15,000003320039d84e
+> 2025-05-11T16:48:18.7364611Z=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 #000003320039d8c6: af000000 mc
+> 0,0
+> 2025-05-11T16:48:18.7366106Z=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 >000003320039d8ca: 0707 bcr
+> 0,%r7
+> 2025-05-11T16:48:18.7367449Z=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 000003320039d8cc: 0707 bcr
+> 0,%r7
+> 2025-05-11T16:48:18.7368855Z=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 000003320039d8ce: 0707 bcr
+> 0,%r7
+> 2025-05-11T16:48:18.7403748Z=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 000003320039d8d0:
+> c004004bdc60
+> brcl 0,0000033200d19190
+> 2025-05-11T16:48:18.7407899Z=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 000003320039d8d6:
+> eb6ff0480024
+> stmg %r6,%r15,72(%r15)
+> 2025-05-11T16:48:18.7410576Z Call Trace:
+> 2025-05-11T16:48:18.7411713Z=C2=A0 [<000003320039d8ca>]
+> bpf_patch_insn_single+0x29a/0x2a0
+> 2025-05-11T16:48:18.7413433Z ([<000003320039d738>]
+> bpf_patch_insn_single+0x108/0x2a0)
+> 2025-05-11T16:48:18.7415210Z=C2=A0 [<000003320039eb72>]
+> bpf_jit_blind_constants+0xd2/0x1b0
+> 2025-05-11T16:48:18.7416879Z=C2=A0 [<000003320020b5ee>]
+> bpf_int_jit_compile+0x46/0x448
+> 2025-05-11T16:48:18.7418417Z=C2=A0 [<00000332003c12d4>]
+> jit_subprogs+0x594/0xbe0
+> 2025-05-11T16:48:18.7419782Z=C2=A0 [<00000332003dacc8>]
+> bpf_check+0xe28/0x14b0
+> 2025-05-11T16:48:18.7421128Z=C2=A0 [<00000332003a9328>]
+> bpf_prog_load+0x4d8/0xba0
+> 2025-05-11T16:48:18.7422570Z=C2=A0 [<00000332003ab976>]
+> __sys_bpf+0x98e/0xdd0
+> 2025-05-11T16:48:18.7423887Z=C2=A0 [<00000332003abdfc>]
+> __s390x_sys_bpf+0x44/0x50
+> 2025-05-11T16:48:18.7425227Z=C2=A0 [<0000033200ce61b2>]
+> __do_syscall+0x132/0x260
+> 2025-05-11T16:48:18.7426522Z=C2=A0 [<0000033200cf162c>]
+> system_call+0x74/0x98
+>=20
+>=20
+> Ilya,
+>=20
+> Could you please verify whether the fix is related or not ?
 
-Hi Alan,
+I assume what crashes here is subprogs_and_jit_harden.
+I could reproduce this neither using the build artifacts, nor in my
+own development setup with this series applied.
 
-> In this area, I've been exploring adding support for
-> CONFIG_DEBUG_INFO_BTF=m , so that the BTF info for vmlinux is delivered
-> via a module. From the consumer side, everything looks identical
-> (/sys/kernel/btf/vmlinux is there etc), it is just that the .BTF section
-> is delivered via btf_vmlinux.ko instead. The original need for this was
-> that embedded folks noted that because in the current situation BTF data
-> is in vmlinux, they cannot enable BTF because such small-footprint
-> systems do not support a large vmlinux binary. However they could
-> potentially use kernel BTF if it was delivered via a module. The other
-> nice thing about module delivery in the general case is we can make use
-> of module compression. In experiments I see a 5.8Mb vmlinux BTF reduce
-> to a 1.8Mb btf_vmlinux.ko.gz module on-disk.
-> 
+subprogs_and_jit_harden is trying to induce a race condition by
+constantly toggling bpf_jit_harden. Running it in a loop for a while
+does not lead to any failures.
 
-Thank you very much for working on this. I was keen to see this since you
-first mentioned it a few years back [1], and have been meaning to ping
-you on where things stand. Your summary of motivations above is spot on,
-and I can add some context w.r.t. OpenWrt, often used on small consumer
-Linux routers to: improve security after support ends, expand
-functionality, and increase lifetime/reduce e-waste.
+I also cannot see how this can create problems with the existing code
+structure. bpf_jit_harden is used by bpf_jit_blinding_enabled() and
+bpf_jit_kallsyms_enabled(), each of which has only one call site. When
+these two see different values of bpf_jit_harden, nothing bad should
+happen.
 
-This lifetime is already constrained by the limited kernel binary storage
-of some devices and ever increasing kernel sizes. The biggest mitigation
-is heavy use of loadable modules to avoid using kernel storage and also
-reduce the kernel BTF.  Even so, the (compressed) kernel BTF is ~400 KB,
-and over the years I've seen kernel sizes grow by ~200 KB per annual LTS
-release.
-
-These rates can amount to penalizing BTF usage with _two years of reduced
-lifetime_, which is a key obstacle to enabling BTF by default on such
-small systems IMO. Having a module-based kernel BTF would be a huge
-improvement!
-
-> The challenge in delivering vmlinux BTF in a module is that on module
-> load during boot other modules expect vmlinux BTF to be there when
-> adding their own BTF to /sys/kernel/btf. And kfunc registration from
-> kernel and modules expects this also. So support for deferred BTF module
-> load/kfunc registration is required too. I've implemented the former and
-> now am working on the latter. Hope to have some RFC patches ready soon,
-> but it looks feasible at this point.
-> 
-
-That sounds great. I'm looking forward to seeing and trying this out. If
-there's anything you can share at this time please let me know.
-
-Thanks,
-Tony
- 
-1: https://lore.kernel.org/bpf/43fd3775-e796-6802-17f0-5c9fdbf368f5@oracle.com/ 
-
-> Assuming such an option was available to small-footprint systems, should
-> we consider adding global variables to core vmlinux BTF along with
-> per-cpu variables? Then vmlinux BTF extras could be used for some of the
-> additional optional representations like function site-specific data
-> (inlines etc)? Or are there other factors other than on-disk footprint
-> that we need to consider? Thanks!
-> 
-> Alan
-> 
-> > pw-bot: cr
-> > 
-> 
+I suspect that this must an existing intermittently occurring issue.
+Can we re-run the CI to see if the BUG() is reproducible in the GHA
+environment?
 
