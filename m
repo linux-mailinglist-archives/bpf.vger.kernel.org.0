@@ -1,203 +1,216 @@
-Return-Path: <bpf+bounces-58044-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58045-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C163AB44C1
-	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 21:18:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DF1EAB44F8
+	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 21:32:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F3A621895018
-	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 19:18:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97572460EA1
+	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 19:31:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F06E297A60;
-	Mon, 12 May 2025 19:17:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EACC4299931;
+	Mon, 12 May 2025 19:30:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="Ua+mzMWE"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VyT1eic4"
 X-Original-To: bpf@vger.kernel.org
-Received: from bee.tesarici.cz (bee.tesarici.cz [37.205.15.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f65.google.com (mail-ed1-f65.google.com [209.85.208.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06820296D32;
-	Mon, 12 May 2025 19:17:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.205.15.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0F79298C10
+	for <bpf@vger.kernel.org>; Mon, 12 May 2025 19:29:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747077434; cv=none; b=MQUpRyXG+qchCSoZ5bQelZOTzNwvFdmPLXPSKdgffUI5P6wcCyx173cjdYmMSkYeg6ENXXiXxcAOOQy0VbsKbkWpxcSJ0v9xlGxji2erZN1xGIcF3zz/XazL8ASRnK+SZHoJV/JrhnVcySGxbxcb0URbE3ce80NapvQhEQC53/k=
+	t=1747078201; cv=none; b=uwYOw+IOm0u1Fj+kCG3zl/1SWkz4tgUxaswVvt97QE5l155R0gpgSEWJTsk+hYeJtrb4uj9XRCR7D3pnJxx+AbAumnPcJV8H8RD+JRXikUjvM7sGxYeLuCsGRQ3OJR4k3PyEakjI7KGxjjpOpDVqnWTjD7pTbQVpg/eHhz3iBy8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747077434; c=relaxed/simple;
-	bh=JYFMfi6NvvswXPKWzX0gygRa/IzGaP7udvSOKwN43uQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=E+wJfVUMUjrIlg6zldRDtQbRG23PBmxVddh5J1MQEo5QvhpxGRN3Gof0nR3ttJzGAiy9d7AhO5lBXJmyxDGiMk3j9HcOnCnMN4w5bbmbohdI6Lh3XXUpJ1TxUxbFflBPfnoPaFumGQ9cAkUwdVu1mB/CpTA+cV/1IO9IoDvhRkI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=Ua+mzMWE; arc=none smtp.client-ip=37.205.15.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by bee.tesarici.cz (Postfix) with ESMTPSA id 96F8222156E;
-	Mon, 12 May 2025 21:17:09 +0200 (CEST)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
-	t=1747077429; bh=afmavmvu6ERDtlMiPPJ+izaGZ9Iq701zLO8sCs2tIco=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Ua+mzMWEms8yJSGpZYB7PR0OKMcs0mWSl8mpJqWvwlyX6kgNqi9DWBmmxFNAatcvg
-	 pq54hTcVWvsU0lVlvm7aX3sMUK9KLhdEhi64XCWeEE70XNHoCdqAl9CKvD4kuk8Fc/
-	 14GJVTlMTUJbJXzZs9uqXG4+iPl+GyPbpSob24Rd5RXKThSO43pA1fLypjHrFRGsIx
-	 qU4pbZjlhKzlPGkkGdhRP9/EP4c+ZhBvqclXvTFPsV4nkLFNtnq2vyvT8XWmfJXuFx
-	 DWvZErJJi1as2fbfvJTl5/+FaEzkeqNMAXo1+LE+VnxzLCMj5R7OIajbwJrIJUVhXK
-	 Jezc4JcM6dXKA==
-Date: Mon, 12 May 2025 21:17:08 +0200
-From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To: Rong Zhang <i@rong.moe>
-Cc: Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires <bentiss@kernel.org>,
- linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, Brian Gerst <brgerst@gmail.com>, Borislav Petkov
- <bp@alien8.de>, bugzilla-daemon@kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] HID: bpf: abort dispatch if device destroyed
-Message-ID: <20250512211708.35a0d8df@meshulam.tesarici.cz>
-In-Reply-To: <20250512152420.87441-1-i@rong.moe>
-References: <20250506145548.GGaBoi9Jzp3aeJizTR@fat_crate.local>
-	<20250512152420.87441-1-i@rong.moe>
-X-Mailer: Claws Mail 4.3.1 (GTK 3.24.50; x86_64-suse-linux-gnu)
+	s=arc-20240116; t=1747078201; c=relaxed/simple;
+	bh=0i411t71ziBb7mfIj2vpsg1UT8kDVAgg1QEik/Xu3NE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MfvrslyU/jDr4WE7ydkTSvMM8P3Z+lb1oVw1ma7DRWJV+0ifeFLO61JZ60B+dL1Q35e/V72eGHaafvyKXzqMkoMhlzpKo71KWvf4wWVFXCUYiXY4yCqL6bKwAoNFrrSs8GJAE5HDv/TGR/Vr0zTXxQMUiZQ7pvfs3qB4lrmpUlI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VyT1eic4; arc=none smtp.client-ip=209.85.208.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f65.google.com with SMTP id 4fb4d7f45d1cf-5fbfdf7d353so6402265a12.0
+        for <bpf@vger.kernel.org>; Mon, 12 May 2025 12:29:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747078198; x=1747682998; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FKiEFJzVwPSqHWbjsTwSt4cr/R4Son2CynGQm62HkXg=;
+        b=VyT1eic4O8vb2531l1Byyik2xvgyqj40VCOzFmxI2EgpJp/JuUQoyTlcxkwFWkx+G1
+         WXnK8DImg7aT8gunB45may/nbsqycdWwFEmn+s3SmFFt7utj5eLheHUDzgCvam4k6j5i
+         P+4GPAsKxqHeJZH/JWmV5JCjK4Lb3LiOX7sRhgUKzBflfatpLGlUZxUzBWP2DYcQ1b95
+         vedVwqR5AvzbV4Esw+dvex/sWXC6UfC/KdnezjwB2bcbufGGw5pVOwijnZgrCBGp7L+q
+         iWP4hg4E0wDlARmoCml+6MVUqzJ/bgXRfm4TUc+Rt9VEQQTvln2l1RE1p7WT1WU25ORM
+         Ti4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747078198; x=1747682998;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FKiEFJzVwPSqHWbjsTwSt4cr/R4Son2CynGQm62HkXg=;
+        b=lApNZ+5E7ktSxloJeWB0m9R3UZdetLBjit19u3sS6rORUzHh8YCN0lKkE9RjK2r/xa
+         lXEvY434JeKTLZ9V3/f9HkZmU2h2G/xNQqGdhzf6ZAoSkE8DOOzcdA821x1WFa1MFBcD
+         uIWLd/B+C5ulV25/rEU7l2061Or31Qwnqa/G/7mg8/+l53gHfmceFFT82ljpIyLZHpcI
+         Gthp4zFJOEVQ9Qc/b5uWoed6SqlMrPKfLTB7y2/C8EgaNHkaoA5kZvDG5Y+O884jXBJs
+         X7D3g193C7xm9b9rUk1ND7q8zkUb44NNYxdfNs2fLHv1vV1wJRs4vLNygCDJJ+Ip2LbR
+         tdCw==
+X-Forwarded-Encrypted: i=1; AJvYcCXnlYUeSqenPf2GUq2s1IyXe8NLvBrkPt7n/vGxJ40p2D8QNmrAEgZy63z5Sj/XPwSSdQo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyiGjQJKc5XNBzgAth1eIJKwd5VthM1Z3zhedJjZ5AxVXxtoKfT
+	Y2Lw+ymnEEjqgmh3+9imSBjrnW3VqZnRct/dg87E3vIj0XlFD6bujecU5LzYBOeAKBv+8DddOot
+	1tM72lAwQO9gJBkT+VspFBBkALvo=
+X-Gm-Gg: ASbGnct/YPDAqAnPh/pGL+2ag9ZQ49yA3n6LF6OS+iDxFWr3F4orR6/WdnxJcTfA2oh
+	1QTUd5M63w0+0a+wUyqpnq4L4s7FA7Ebq7HujcSVARY9yYYRllK6tRsQPnB3e7Has/Ea/yt9idi
+	KY9gB+wWfNMU5Dr+W0BZy9dvPPvoSSKzVgZQ==
+X-Google-Smtp-Source: AGHT+IG9UgKTm04Imzp/kUC9/HJnjZDfTgcStHoB3bvL6gB3aD9OJrk/0ldlr/JKDV0CwYAv86LGW/+jfhWZf2fMFis=
+X-Received: by 2002:a17:907:7f21:b0:ad1:7858:a74c with SMTP id
+ a640c23a62f3a-ad218fc1f1fmr1249994266b.22.1747078197439; Mon, 12 May 2025
+ 12:29:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20250508113804.304665-1-iii@linux.ibm.com> <CAADnVQ+kGcRrLOaA5ic6cYG+1vHJm0bBD1GRfUaYpaOGa3Vx0g@mail.gmail.com>
+ <15bf9a71b8185006c8d19a3aefb331a2765629c5.camel@linux.ibm.com>
+ <CAADnVQL6Q+QRv3_JwEd26biwGpFYcwD_=BjBJWLAtpgOP9CKRw@mail.gmail.com>
+ <7a242102eecdd17b4d35c1e4f7d01ea15cb8066a.camel@linux.ibm.com> <CAADnVQ+5h9UESAgNA58HEQ-0zwxn=c0+ibH++NF9farR5-JB8g@mail.gmail.com>
+In-Reply-To: <CAADnVQ+5h9UESAgNA58HEQ-0zwxn=c0+ibH++NF9farR5-JB8g@mail.gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Mon, 12 May 2025 15:29:19 -0400
+X-Gm-Features: AX0GCFs9IrNPeGH3MeR_08igt_3-0nArCfjAmZePqP2Uishy9NvuPOC16sqJMDw
+Message-ID: <CAP01T74iix8HvmVYowFyrG98tDRw8JMOck7HQLD57nuo7SyuoA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix "expression result unused" warnings
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Ilya Leoshkevich <iii@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 12 May 2025 23:24:19 +0800
-Rong Zhang <i@rong.moe> wrote:
+On Mon, 12 May 2025 at 12:41, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, May 12, 2025 at 5:22=E2=80=AFAM Ilya Leoshkevich <iii@linux.ibm.c=
+om> wrote:
+> >
+> > On Fri, 2025-05-09 at 09:51 -0700, Alexei Starovoitov wrote:
+> > > On Thu, May 8, 2025 at 12:21=E2=80=AFPM Ilya Leoshkevich <iii@linux.i=
+bm.com>
+> > > wrote:
+> > > >
+> > > > On Thu, 2025-05-08 at 11:38 -0700, Alexei Starovoitov wrote:
+> > > > > On Thu, May 8, 2025 at 4:38=E2=80=AFAM Ilya Leoshkevich
+> > > > > <iii@linux.ibm.com>
+> > > > > wrote:
+> > > > > >
+> > > > > > clang-21 complains about unused expressions in a few progs.
+> > > > > > Fix by explicitly casting the respective expressions to void.
+> > > > >
+> > > > > ...
+> > > > > >         if (val & _Q_LOCKED_MASK)
+> > > > > > -               smp_cond_load_acquire_label(&lock->locked,
+> > > > > > !VAL,
+> > > > > > release_err);
+> > > > > > +               (void)smp_cond_load_acquire_label(&lock-
+> > > > > > >locked,
+> > > > > > !VAL, release_err);
+> > > > >
+> > > > > Hmm. I'm on clang-21 too and I don't see them.
+> > > > > What warnings do you see ?
+> > > >
+> > > > In file included from progs/arena_spin_lock.c:7:
+> > > > progs/bpf_arena_spin_lock.h:305:1756: error: expression result
+> > > > unused
+> > > > [-Werror,-Wunused-value]
+> > > >   305 |   ({ typeof(_Generic((*&lock->locked), char: (char)0,
+> > > > unsigned
+> > > > char : (unsigned char)0, signed char : (signed char)0, unsigned
+> > > > short :
+> > > > (unsigned short)0, signed short : (signed short)0, unsigned int :
+> > > > (unsigned int)0, signed int : (signed int)0, unsigned long :
+> > > > (unsigned
+> > > > long)0, signed long : (signed long)0, unsigned long long :
+> > > > (unsigned
+> > > > long long)0, signed long long : (signed long long)0, default:
+> > > > (typeof(*&lock->locked))0)) __val =3D ({ typeof(&lock->locked) __pt=
+r
+> > > > =3D
+> > > > (&lock->locked); typeof(_Generic((*(&lock->locked)), char: (char)0,
+> > > > unsigned char : (unsigned char)0, signed char : (signed char)0,
+> > > > unsigned short : (unsigned short)0, signed short : (signed short)0,
+> > > > unsigned int : (unsigned int)0, signed int : (signed int)0,
+> > > > unsigned
+> > > > long : (unsigned long)0, signed long : (signed long)0, unsigned
+> > > > long
+> > > > long : (unsigned long long)0, signed long long : (signed long
+> > > > long)0,
+> > > > default: (typeof(*(&lock->locked)))0)) VAL; for (;;) { VAL =3D
+> > > > (typeof(_Generic((*(&lock->locked)), char: (char)0, unsigned char :
+> > > > (unsigned char)0, signed char : (signed char)0, unsigned short :
+> > > > (unsigned short)0, signed short : (signed short)0, unsigned int :
+> > > > (unsigned int)0, signed int : (signed int)0, unsigned long :
+> > > > (unsigned
+> > > > long)0, signed long : (signed long)0, unsigned long long :
+> > > > (unsigned
+> > > > long long)0, signed long long : (signed long long)0, default:
+> > > > (typeof(*(&lock->locked)))0)))(*(volatile typeof(*__ptr)
+> > > > *)&(*__ptr));
+> > > > if (!VAL) break; ({ __label__ l_break, l_continue; asm volatile
+> > > > goto("may_goto %l[l_break]" :::: l_break); goto l_continue;
+> > > > l_break:
+> > > > goto release_err; l_continue:; }); ({}); } (typeof(*(&lock-
+> > > > > locked)))VAL; }); ({ ({ if (!CONFIG_X86_64) ({ unsigned long
+> > > > > __val;
+> > > > __sync_fetch_and_add(&__val, 0); }); else asm volatile("" :::
+> > > > "memory"); }); }); (typeof(*(&lock->locked)))__val; });
+> > > >       |
+> > > > ^                         ~~~~~
+> > > > 1 error generated.
+> > >
+> > > hmm. The error is impossible to read.
+> > >
+> > > Kumar,
+> > >
+> > > Do you see a way to silence it differently ?
+> > >
+> > > Without adding (void)...
+> > >
+> > > Things like:
+> > > -       bpf_obj_new(..
+> > > +       (void)bpf_obj_new(..
+> > >
+> > > are good to fix, and if we could annotate
+> > > bpf_obj_new_impl kfunc with __must_check we would have done it,
+> > >
+> > > but
+> > > -               arch_mcs_spin_lock...
+> > > +               (void)arch_mcs_spin_lock...
+> > >
+> > > is odd.
+> >
+> > What do you think about moving (void) to the definition of
+> > arch_mcs_spin_lock_contended_label()? I can send a v2 if this is
+> > better.
+>
+> Kumar,
+>
+> thoughts?
 
-> The current HID bpf implementation assumes no output report/request will
-> go through it after hid_bpf_destroy_device() has been called. This leads
-> to a bug that unplugging certain types of HID devices causes a cleaned-
-> up SRCU to be accessed. The bug was previously a hidden failure until a
-> recent x86 percpu change [1] made it access not-present pages.
-> 
-> The bug will be triggered if the conditions below are met:
-> 
-> A) a device under the driver has some LEDs on
-> B) hid_ll_driver->request() is uninplemented (e.g., logitech-djreceiver)
-> 
-> If condition A is met, hidinput_led_worker() is always scheduled *after*
-> hid_bpf_destroy_device().
-> 
-> hid_destroy_device
-> ` hid_bpf_destroy_device
->   ` cleanup_srcu_struct(&hdev->bpf.srcu)
-> ` hid_remove_device
->   ` ...
->     ` led_classdev_unregister
->       ` led_trigger_set(led_cdev, NULL)
->         ` led_set_brightness(led_cdev, LED_OFF)
->           ` ...
->             ` input_inject_event
->               ` input_event_dispose
->                 ` hidinput_input_event
->                   ` schedule_work(&hid->led_work) [hidinput_led_worker]
-> 
-> This is fine when condition B is not met, where hidinput_led_worker()
-> calls hid_ll_driver->request(). This is the case for most HID drivers,
-> which implement it or use the generic one from usbhid. The driver itself
-> or an underlying driver will then abort processing the request.
-> 
-> Otherwise, hidinput_led_worker() tries hid_hw_output_report() and leads
-> to the bug.
-> 
-> hidinput_led_worker
-> ` hid_hw_output_report
->   ` dispatch_hid_bpf_output_report
->     ` srcu_read_lock(&hdev->bpf.srcu)
->     ` srcu_read_unlock(&hdev->bpf.srcu, idx)
-> 
-> The bug has existed since the introduction [2] of
-> dispatch_hid_bpf_output_report(). However, the same bug also exists in
-> dispatch_hid_bpf_raw_requests(), and I've reproduced (no visible effect
-> because of the lack of [1], but confirmed bpf.destroyed == 1) the bug
-> against the commit (i.e., the Fixes:) introducing the function. This is
-> because hidinput_led_worker() falls back to hid_hw_raw_request() when
-> hid_ll_driver->output_report() is uninplemented (e.g., logitech-
-> djreceiver).
-> 
-> hidinput_led_worker
-> ` hid_hw_output_report: -ENOSYS
-> ` hid_hw_raw_request
->   ` dispatch_hid_bpf_raw_requests
->     ` srcu_read_lock(&hdev->bpf.srcu)
->     ` srcu_read_unlock(&hdev->bpf.srcu, idx)
-> 
-> Fix the issue by returning early in the two mentioned functions if
-> hid_bpf has been marked as destroyed. Though
-> dispatch_hid_bpf_device_event() handles input events, and there is no
-> evidence that it may be called after the destruction, the same check, as
-> a safety net, is also added to it to maintain the consistency among all
-> dispatch functions.
-> 
-> The impact of the bug on other architectures is unclear. Even if it acts
-> as a hidden failure, this is still dangerous because it corrupts
-> whatever is on the address calculated by SRCU. Thus, CC'ing the stable
-> list.
-> 
-> [1]: commit 9d7de2aa8b41 ("x86/percpu/64: Use relative percpu offsets")
-> [2]: commit 9286675a2aed ("HID: bpf: add HID-BPF hooks for
-> hid_hw_output_report")
-> 
-> Closes: https://lore.kernel.org/all/20250506145548.GGaBoi9Jzp3aeJizTR@fat_crate.local/
-> Fixes: 8bd0488b5ea5 ("HID: bpf: add HID-BPF hooks for hid_hw_raw_requests")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Rong Zhang <i@rong.moe>
+Sorry for the delay, I was afk.
 
-Yes, this patch fixes the BUG and subsequent lock-ups in my scenario
-(suspend with a Bluetooth keyboard). Thank you!
+The warning seems a bit aggressive, in the kernel we have users which
+do and do not use the value and it's fine.
+I think moving (void) inside the macro is a problem since at least
+rqspinlock like algorithm would want to inspect the result of the
+locked bit.
+No such users exist for now, of course. So maybe we can silence it
+until we do end up depending on the value.
 
-Tested-by: Petr Tesarik <petr@tesarici.cz>
-
-Petr T
-
-> ---
->  drivers/hid/bpf/hid_bpf_dispatch.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/drivers/hid/bpf/hid_bpf_dispatch.c
-> b/drivers/hid/bpf/hid_bpf_dispatch.c index 2e96ec6a3073..9a06f9b0e4ef
-> 100644 --- a/drivers/hid/bpf/hid_bpf_dispatch.c
-> +++ b/drivers/hid/bpf/hid_bpf_dispatch.c
-> @@ -38,6 +38,9 @@ dispatch_hid_bpf_device_event(struct hid_device
-> *hdev, enum hid_report_type type struct hid_bpf_ops *e;
->  	int ret;
->  
-> +	if (unlikely(hdev->bpf.destroyed))
-> +		return ERR_PTR(-ENODEV);
-> +
->  	if (type >= HID_REPORT_TYPES)
->  		return ERR_PTR(-EINVAL);
->  
-> @@ -93,6 +96,9 @@ int dispatch_hid_bpf_raw_requests(struct hid_device
-> *hdev, struct hid_bpf_ops *e;
->  	int ret, idx;
->  
-> +	if (unlikely(hdev->bpf.destroyed))
-> +		return -ENODEV;
-> +
->  	if (rtype >= HID_REPORT_TYPES)
->  		return -EINVAL;
->  
-> @@ -130,6 +136,9 @@ int dispatch_hid_bpf_output_report(struct
-> hid_device *hdev, struct hid_bpf_ops *e;
->  	int ret, idx;
->  
-> +	if (unlikely(hdev->bpf.destroyed))
-> +		return -ENODEV;
-> +
->  	idx = srcu_read_lock(&hdev->bpf.srcu);
->  	list_for_each_entry_srcu(e, &hdev->bpf.prog_list, list,
->  				 srcu_read_lock_held(&hdev->bpf.srcu))
-> {
-> 
-> base-commit: 82f2b0b97b36ee3fcddf0f0780a9a0825d52fec3
-
+I will give a try with clang-21, but I think probably (void) in the
+source is better if we do need to silence it.
 
