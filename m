@@ -1,323 +1,218 @@
-Return-Path: <bpf+bounces-58005-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58006-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A45AAB35B1
-	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 13:13:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33B6AAB35BD
+	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 13:15:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B73F3BBE9C
-	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 11:12:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A31C188C658
+	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 11:16:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98B762882D4;
-	Mon, 12 May 2025 11:12:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3BC928DF27;
+	Mon, 12 May 2025 11:15:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Mf7H3Ufq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B+oG+GST"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21788287518
-	for <bpf@vger.kernel.org>; Mon, 12 May 2025 11:12:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B10E828DF0F;
+	Mon, 12 May 2025 11:15:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747048344; cv=none; b=BMHXtmNYX7R4x96TTdvG1AnfBNUoLCvNLbE8CWoHVGzELncU2UeKJ6omF79YFK/KpNIcN21bLqgV8wQLmBIIZJC+G2iuvmmA/01p1zi3tAQnxUfiiiR6hnrvdUAul8u+kT8wl8w78eTEREyh8BYbLD5Hf3K+83K6Fan5Jb+UQaw=
+	t=1747048548; cv=none; b=gT1ZTziiH14s51ZXjRx8/Vl0odwUFy04JMODCkLtiTfl+b+rFZYwDCRSInagpHNnKN7nnHC1c0rsOKloAVuERsgczVZKXMB6gkNOcMqlTtS9amguUhpAoKWjC9D914pakX6cKFqg9H89Swl+k7x8eYyb0ty4/OFSXDNPASUqZOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747048344; c=relaxed/simple;
-	bh=ko7Q9qbhYNYPvYA7LVk3TXue899YIv1qyRy0EJufnh8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QUv29C1Ub0Q1OlfKkzoNVRb1EJFUGmQ3Fb26ZZoefaNgZxPSFQtl98R43tQlfBbKZnfIawUCxJ2NN0ZzYMFFwvsMzoyjA9jDyJ92m1vdgO7JZhJRWfpK7gfR6wwfgFMrTXIyQbuzIuLV5ShjMQQOrvlLKyhVifHUn5qWFeepMG0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Mf7H3Ufq; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <16eafae1-5014-42a9-b6c4-8be40b26cf31@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1747048339;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=77hYgmLIC7yLFMAWuJ8WWRqfKmeQfFFtha5TvnJkXHE=;
-	b=Mf7H3UfqXNL+8ByS9N/IjYMBcjOfeZyyG2JVX60LIiCuwnp0SKaZwgs0WFbVaiSvprVNXS
-	EnotFEhb+U5mp/CjW+iGtzDGzsZE3NtKj6IxG8BgSRxTgwbJAsGusplrUbY1cWf6FAVpcf
-	QmoKyw604efUa0L7qFeuHzNoDZjV/IQ=
-Date: Mon, 12 May 2025 19:12:07 +0800
+	s=arc-20240116; t=1747048548; c=relaxed/simple;
+	bh=oT8B8PuPRmFZoKB8QPD4DQ56LMUoF01HMVZAtrTjxkk=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Pkjrh+CzL7T2jxut2RqSEwm16Fsy9iz1tbWgKm9VjxISBQ3OLJR0JRhFfC/L3VzPcFmQZp86YnCIAD7cUTMqV6tEYvznRCq9CAmFgn/4jHu3AWOzsO3X01tWIN0iw1IuHR532iUdBapC8u8WCnaEA/F90zX3HIkz3HB3MoY5V5g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B+oG+GST; arc=none smtp.client-ip=209.85.215.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-b13e0471a2dso2942681a12.2;
+        Mon, 12 May 2025 04:15:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747048546; x=1747653346; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=hIKni9pPLOHu4o+QrtpE1+aCnaxZVOBceumrlQ5KJ4s=;
+        b=B+oG+GSTDqyR61M6jx4xHYpmTTYsQn99iw6i3h1DjlkCyHxvKCMtV11goAyQpJ8tW7
+         ySOv1jiAMOOVQo/06oR7Q0+Nl9k22HzNNxGsaerTL+ztwiI88oZrYoqTGJFOJhO3mDdR
+         uzM3aIol4c/oM59YIc+q6FbpCa0Af8PVnvBedbnlXqyGTxbQ7asDUrsjwx24Xd8MEF/q
+         a87xuPrKnVjOMuXoct2QqN1kFWOGE1G4QhgHnfIXuCLdnc2ADAfCVx4OpaayEQuAhBq/
+         AaIzkt9nXVHhBQbbbLuVepxCDlwv91T0L/cmigFGxpImh7C+oJfaXDB/zx9HK5AggjwE
+         eLrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747048546; x=1747653346;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hIKni9pPLOHu4o+QrtpE1+aCnaxZVOBceumrlQ5KJ4s=;
+        b=qNgGfpNT3hEtV+gat9qxVgoOtQr49aUsOxu0MmyuVsHt13py2gT0ePeyRvDgj3bgi/
+         Rv+ikf1PwPypRMZc9Amp2P3whxmr1VsMtecGQJqDg88qrI2IFwdjwusSZv0hZW9koQGG
+         8j7x7J1wMIiObQY0mgcK9jH4XEw1oUTNxQgswau/7WBU5cDaiYOwl2JqHOR79T8EW5de
+         kkTRPlI4+NJ3wceLUxZbP8JJ2GIeuDcjmhqmsRTYrXkN/x3xPdA/3ZQFcDQL1dVgWAvg
+         Sen0K9WusMBllBdd6duZVeJEVMAkZWRZMAIHCSlsSBV1QB4kHxTm0mTtVFmRdSyGKNTT
+         ut5g==
+X-Forwarded-Encrypted: i=1; AJvYcCU2uQowPZX624VF2GUr75EIfx7rTjdfEQvE05YB/fc9wW8f3DtjQmWwuW1pSizwLeScfm8=@vger.kernel.org, AJvYcCURz1RWQvtQBE/ewxGxFGXDTC1A8ha2CVrX56aOfgZIlDpk1KENb5v8kJ1pu/qMymCiEviquYmovGRPOJH6@vger.kernel.org, AJvYcCUxapXB5ohVH6fsnlRss1GaLrfN1m0iDzzIfpBBq0vdBX7e4SfkB6Kxwt1iJe1aZ7wJDfDXHeHDL4hmLBm7b9v1@vger.kernel.org, AJvYcCUzIbCF0iMTbyJrw7Qw9hbWFEiEZO5O9pPVWASnIidei+nxoSHhVsO5Hrp4S4MJlBQ8MgZU1MB/r7PpVQ==@vger.kernel.org, AJvYcCWTedt14Ggle3J82NASJ82u9oPmGdT27kjotoiUAxDYiWvlW11omBi/0mBiEJXbaWoVfNuyavLYNG2oGfSS@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw60UDO3YXY6fCkWr8t9RIRl3Qo/5gL2f1xifti3sCUVXliPwM7
+	DayurJwj+YpG1xz5rpoFWvDCmx+EVm9ziCtAaoPr6iEhHPedxPo1
+X-Gm-Gg: ASbGncsCxq8+AbIdmJAhDSmZSAaEtmhLusFtlzJJnkkKDt50QJnqQKgON8AsfMmDGxr
+	RRmaCauiXXQfD0q1vJfEEtsFh6WM1NVcfZnNYVBUSjrj9DeLVY4uzXegGGW48+SwSO9lT7GtOAy
+	tGRgtTK/6G5cm5PL5P7pGIclF85dyGtG2Q16GmfCfP+4Or9xBea2SYF+4kfipcBi5wB/rq5CWaj
+	wpzB05zWuAtR96tjwFzS0EGrw0Zxh+Iru97lbYAxFG6MY2K6IRKtiYLDBktayadl3BRbxPT75JF
+	XhBL5jurHpDM3hHol6+Q41BeTJ+ImvUWormi5JcBBDfUCGZvX2ukRKsLft97/hJFDPiq7pZab4L
+	/Wi5XrwAZVypSCBgNcA==
+X-Google-Smtp-Source: AGHT+IGdhYPbJPcGMDw80qXe6ASIagaqClZ9iXMY9/sIldXOZU7oATP4AwtW7JWEzAYHF6iI2UMfDA==
+X-Received: by 2002:a17:902:dac6:b0:21f:768:cced with SMTP id d9443c01a7336-22fc8aff07cmr157726675ad.8.1747048545743;
+        Mon, 12 May 2025 04:15:45 -0700 (PDT)
+Received: from kodidev-ubuntu (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22fc774134fsm60669495ad.56.2025.05.12.04.15.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 May 2025 04:15:45 -0700 (PDT)
+From: Tony Ambardar <tony.ambardar@gmail.com>
+X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
+Date: Mon, 12 May 2025 04:15:40 -0700
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Stephen Brennan <stephen.s.brennan@oracle.com>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>, Kees Cook <kees@kernel.org>,
+	KP Singh <kpsingh@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	linux-arch <linux-arch@vger.kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Pasha Tatashin <pasha.tatashin@soleen.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Jann Horn <jannh@google.com>, Ard Biesheuvel <ardb@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Hao Luo <haoluo@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Nathan Chancellor <nathan@kernel.org>,
+	linux-debuggers@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>, Song Liu <song@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH 2/2] btf: Add the option to include global variable types
+Message-ID: <aCHYXFXOA74TkU5S@kodidev-ubuntu>
+References: <20250207012045.2129841-1-stephen.s.brennan@oracle.com>
+ <20250207012045.2129841-3-stephen.s.brennan@oracle.com>
+ <CAADnVQLiyezBW34dhkwZw+mWmkFAYMZUdHbOa4uYCdPbgS10SQ@mail.gmail.com>
+ <83a42276-22cc-4642-8ce6-7ef16fa93d9c@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 1/4] bpf: Allow get_func_[arg|arg_cnt] helpers in
- raw tracepoint programs
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Kafai Wan <mannkafai@gmail.com>, Song Liu <song@kernel.org>,
- Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Matt Bobrowski <mattbobrowski@google.com>,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- bpf <bpf@vger.kernel.org>,
- linux-trace-kernel <linux-trace-kernel@vger.kernel.org>,
- Network Development <netdev@vger.kernel.org>,
- "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-References: <20250426160027.177173-1-mannkafai@gmail.com>
- <20250426160027.177173-2-mannkafai@gmail.com>
- <CAADnVQ+DF18nKEf9i1RKEQN+ybH+duu7U-91YZDaa_PiqUx17g@mail.gmail.com>
- <CALqUS-6XtJ0Bb9jiykdC3jAY_OHjGuirj06Kzssjvo7eW_so2A@mail.gmail.com>
- <f951b81f-1b46-4219-82fd-0839e27ab3f3@linux.dev>
- <CAADnVQ+FANha0fO_BF+iHJ4iZSCPtDfoUkzR8mMFwOakw8+eCg@mail.gmail.com>
- <f1f23c1a-f4a8-4807-8028-87e247775ec8@linux.dev>
- <CAEf4BzZcuCrK4UVv2qpp7LAL=uXg+YqFopNW3EzCCpUBNPq-ag@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Leon Hwang <leon.hwang@linux.dev>
-In-Reply-To: <CAEf4BzZcuCrK4UVv2qpp7LAL=uXg+YqFopNW3EzCCpUBNPq-ag@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <83a42276-22cc-4642-8ce6-7ef16fa93d9c@oracle.com>
 
+On Tue, Feb 25, 2025 at 10:01:27AM +0000, Alan Maguire wrote:
+> On 07/02/2025 23:50, Alexei Starovoitov wrote:
+> > On Thu, Feb 6, 2025 at 5:21 PM Stephen Brennan
+> > <stephen.s.brennan@oracle.com> wrote:
+> >> When the feature was implemented in pahole, my measurements indicated
+> >> that vmlinux BTF size increased by about 25.8%, and module BTF size
+> >> increased by 53.2%. Due to these increases, the feature is implemented
+> >> behind a new config option, allowing users sensitive to increased memory
+> >> usage to disable it.
+> >>
+> > 
+> > ...
+> >> +config DEBUG_INFO_BTF_GLOBAL_VARS
+> >> +       bool "Generate BTF type information for all global variables"
+> >> +       default y
+> >> +       depends on DEBUG_INFO_BTF && PAHOLE_VERSION >= 128
+> >> +       help
+> >> +         Include type information for all global variables in the BTF. This
+> >> +         increases the size of the BTF information, which increases memory
+> >> +         usage at runtime. With global variable types available, runtime
+> >> +         debugging and tracers may be able to provide more detail.
+> > 
+> > This is not a solution.
+> > Even if it's changed to 'default n' distros will enable it
+> > like they enable everything and will suffer a regression.
+> > 
+> > We need to add a new module like vmlinux_btf.ko that will contain
+> > this additional BTF data. For global vars and everything else we might need.
+> > 
+>
 
+Hi Alan,
 
-On 2025/5/7 05:01, Andrii Nakryiko wrote:
-> On Fri, May 2, 2025 at 7:26 AM Leon Hwang <leon.hwang@linux.dev> wrote:
->>
->>
->>
->> On 2025/5/1 00:53, Alexei Starovoitov wrote:
->>> On Wed, Apr 30, 2025 at 8:55 AM Leon Hwang <leon.hwang@linux.dev> wrote:
->>>>
->>>>
->>>>
->>>> On 2025/4/30 20:43, Kafai Wan wrote:
->>>>> On Wed, Apr 30, 2025 at 10:46 AM Alexei Starovoitov
->>>>> <alexei.starovoitov@gmail.com> wrote:
->>>>>>
->>>>>> On Sat, Apr 26, 2025 at 9:00 AM KaFai Wan <mannkafai@gmail.com> wrote:
->>>>>>>
->>>>
->>
->> [...]
->>
->>>>
->>>>
->>>> bpf_get_func_arg() will be very helpful for bpfsnoop[1] when tracing tp_btf.
->>>>
->>>> In bpfsnoop, it can generate a small snippet of bpf instructions to use
->>>> bpf_get_func_arg() for retrieving and filtering arguments. For example,
->>>> with the netif_receive_skb tracepoint, bpfsnoop can use
->>>> bpf_get_func_arg() to filter the skb argument using pcap-filter(7)[2] or
->>>> a custom attribute-based filter. This will allow bpfsnoop to trace
->>>> multiple tracepoints using a single bpf program code.
->>>
->>> I doubt you thought it through end to end.
->>> When tracepoint prog attaches we have this check:
->>>         /*
->>>          * check that program doesn't access arguments beyond what's
->>>          * available in this tracepoint
->>>          */
->>>         if (prog->aux->max_ctx_offset > btp->num_args * sizeof(u64))
->>>                 return -EINVAL;
->>>
->>> So you cannot have a single bpf prog attached to many tracepoints
->>> to read many arguments as-is.
->>> You can hack around that limit with probe_read,
->>> but the values won't be trusted and you won't be able to pass
->>> such untrusted pointers into skb and other helpers/kfuncs.
->>
->> I understand that a single bpf program cannot be attached to multiple
->> tracepoints using tp_btf. However, the same bpf code can be reused to
->> create multiple bpf programs, each attached to a different tracepoint.
->>
->> For example:
->>
->> SEC("fentry")
->> int BPF_PROG(fentry_fn)
->> {
->>         /* ... */
->>         return BPF_OK;
->> }
->>
->> The above fentry code can be compiled into multiple bpf programs to
->> trace different kernel functions. Each program can then use the
->> bpf_get_func_arg() helper to access the arguments of the traced function.
->>
->> With this patch, tp_btf will gain similar flexibility. For example:
->>
->> SEC("tp_btf")
->> int BPF_PROG(tp_btf_fn)
->> {
->>         /* ... */
->>         return BPF_OK;
->> }
->>
->> Here, bpf_get_func_arg() can be used to access tracepoint arguments.
->>
->> Currently, due to the lack of bpf_get_func_arg() support in tp_btf,
->> bpfsnoop[1] uses bpf_probe_read_kernel() to read tracepoint arguments.
->> This is also used when filtering specific argument attributes.
->>
->> For instance, to filter the skb argument of the netif_receive_skb
->> tracepoint by 'skb->dev->ifindex == 2', the translated bpf instructions
->> with bpf_probe_read_kernel() would look like this:
->>
->> bool filter_arg(__u64 * args):
->> ; filter_arg(__u64 *args)
->>  209: (79) r1 = *(u64 *)(r1 +0) /* all tracepoint's argument has been
->> read into args using bpf_probe_read_kernel() */
->>  210: (bf) r3 = r1
->>  211: (07) r3 += 16
->>  212: (b7) r2 = 8
->>  213: (bf) r1 = r10
->>  214: (07) r1 += -8
->>  215: (85) call bpf_probe_read_kernel#-125280
->>  216: (79) r3 = *(u64 *)(r10 -8)
->>  217: (15) if r3 == 0x0 goto pc+10
->>  218: (07) r3 += 224
->>  219: (b7) r2 = 8
->>  220: (bf) r1 = r10
->>  221: (07) r1 += -8
->>  222: (85) call bpf_probe_read_kernel#-125280
->>  223: (79) r3 = *(u64 *)(r10 -8)
->>  224: (67) r3 <<= 32
->>  225: (77) r3 >>= 32
->>  226: (b7) r0 = 1
->>  227: (15) if r3 == 0x2 goto pc+1
->>  228: (af) r0 ^= r0
->>  229: (95) exit
->>
->> If bpf_get_func_arg() is supported in tp_btf, the bpf program will
->> instead look like:
->>
->> static __noinline bool
->> filter_skb(void *ctx)
->> {
->>     struct sk_buff *skb;
->>
->>     (void) bpf_get_func_arg(ctx, 0, (__u64 *) &skb);
->>     return skb->dev->ifindex == 2;
->> }
->>
->> This will simplify the generated code and eliminate the need for
->> bpf_probe_read_kernel() calls. However, in my tests (on kernel
->> 6.8.0-35-generic, Ubuntu 24.04 LTS), the pointer returned by
->> bpf_get_func_arg() is marked as a scalar rather than a trusted pointer:
->>
->>         0: R1=ctx() R10=fp0
->>         ; if (!filter_skb(ctx))
->>         0: (85) call pc+3
->>         caller:
->>          R10=fp0
->>         callee:
->>          frame1: R1=ctx() R10=fp0
->>         4: frame1: R1=ctx() R10=fp0
->>         ; filter_skb(void *ctx)
->>         4: (bf) r3 = r10                      ; frame1: R3_w=fp0 R10=fp0
->>         ;
->>         5: (07) r3 += -8                      ; frame1: R3_w=fp-8
->>         ; (void) bpf_get_func_arg(ctx, 0, (__u64 *) &skb);
->>         6: (b7) r2 = 0                        ; frame1: R2_w=0
->>         7: (85) call bpf_get_func_arg#183     ; frame1: R0_w=scalar()
->>         ; return skb->dev->ifindex == 2;
->>         8: (79) r1 = *(u64 *)(r10 -8)         ; frame1: R1_w=scalar() R10=fp0
->> fp-8=mmmmmmmm
->>         ; return skb->dev->ifindex == 2;
->>         9: (79) r1 = *(u64 *)(r1 +16)
->>         R1 invalid mem access 'scalar'
->>         processed 7 insns (limit 1000000) max_states_per_insn 0 total_states 0
->> peak_states 0 mark_read 0
->>
->> If the returned skb is a trusted pointer, the verifier will accept
->> something like:
->>
->> static __noinline bool
->> filter_skb(struct sk_buff *skb)
->> {
->>     return skb->dev->ifindex == 2;
->> }
->>
->> Which will compile into much simpler and more efficient instructions:
->>
->> bool filter_skb(struct sk_buff * skb):
->> ; return skb->dev->ifindex == 2;
->>   92: (79) r1 = *(u64 *)(r1 +16)
->> ; return skb->dev->ifindex == 2;
->>   93: (61) r1 = *(u32 *)(r1 +224)
->>   94: (b7) r0 = 1
->> ; return skb->dev->ifindex == 2;
->>   95: (15) if r1 == 0x2 goto pc+1
->>   96: (b7) r0 = 0
->> ; return skb->dev->ifindex == 2;
->>   97: (95) exit
->>
->> In conclusion:
->>
->> 1. It will be better if the pointer returned by bpf_get_func_arg() is
->> trusted, only when the argument index is a known constant.
-> 
-> bpf_get_func_arg() was never meant to return trusted arguments, so
-> this, IMO, is pushing it too far.
-> 
->> 2. Adding bpf_get_func_arg() support to tp_btf will significantly
->> simplify and improve tools like bpfsnoop.
-> 
-> "Significantly simplify and improve" is a bit of an exaggeration,
-> given BPF cookies can be used for getting number of arguments of
-> tp_btf, as for the getting rid of bpf_probe_read_kernel(), tbh, more
-> generally useful addition would be an untyped counterpart to
-> bpf_core_cast(), which wouldn't need BTF type information, but will
-> treat all accessed memory as raw bytes (but will still install
-> exception handler just like with bpf_core_cast()).
+> In this area, I've been exploring adding support for
+> CONFIG_DEBUG_INFO_BTF=m , so that the BTF info for vmlinux is delivered
+> via a module. From the consumer side, everything looks identical
+> (/sys/kernel/btf/vmlinux is there etc), it is just that the .BTF section
+> is delivered via btf_vmlinux.ko instead. The original need for this was
+> that embedded folks noted that because in the current situation BTF data
+> is in vmlinux, they cannot enable BTF because such small-footprint
+> systems do not support a large vmlinux binary. However they could
+> potentially use kernel BTF if it was delivered via a module. The other
+> nice thing about module delivery in the general case is we can make use
+> of module compression. In experiments I see a 5.8Mb vmlinux BTF reduce
+> to a 1.8Mb btf_vmlinux.ko.gz module on-disk.
 > 
 
-Cool! The bpf_rdonly_cast() kfunc used by the bpf_core_cast() macro
-works well in bpfsnoop.
+Thank you very much for working on this. I was keen to see this since you
+first mentioned it a few years back [1], and have been meaning to ping
+you on where things stand. Your summary of motivations above is spot on,
+and I can add some context w.r.t. OpenWrt, often used on small consumer
+Linux routers to: improve security after support ends, expand
+functionality, and increase lifetime/reduce e-waste.
 
-The expression 'skb->dev->ifindex == 2' is translated into:
+This lifetime is already constrained by the limited kernel binary storage
+of some devices and ever increasing kernel sizes. The biggest mitigation
+is heavy use of loadable modules to avoid using kernel storage and also
+reduce the kernel BTF.  Even so, the (compressed) kernel BTF is ~400 KB,
+and over the years I've seen kernel sizes grow by ~200 KB per annual LTS
+release.
 
-bool filter_arg(__u64 * args):
-; filter_arg(__u64 *args)
- 209: (bf) r9 = r1
- 210: (79) r8 = *(u64 *)(r9 +0)
- 211: (bf) r1 = r8
- 212: (b7) r2 = 6973
- 213: (bf) r0 = r1
- 214: (79) r1 = *(u64 *)(r0 +16)
- 215: (15) if r1 == 0x0 goto pc+12
- 216: (07) r1 += 224
- 217: (bf) r3 = r1
- 218: (b7) r2 = 8
- 219: (bf) r1 = r10
- 220: (07) r1 += -8
- 221: (85) call bpf_probe_read_kernel#-125280
- 222: (79) r8 = *(u64 *)(r10 -8)
- 223: (67) r8 <<= 32
- 224: (77) r8 >>= 32
- 225: (55) if r8 != 0x2 goto pc+2
- 226: (b7) r8 = 1
- 227: (05) goto pc+1
- 228: (af) r8 ^= r8
- 229: (bf) r0 = r8
- 230: (95) exit
+These rates can amount to penalizing BTF usage with _two years of reduced
+lifetime_, which is a key obstacle to enabling BTF by default on such
+small systems IMO. Having a module-based kernel BTF would be a huge
+improvement!
 
-However, since bpf_rdonly_cast() is a kfunc, it causes registers r1–r5
-to be considered volatile.
+> The challenge in delivering vmlinux BTF in a module is that on module
+> load during boot other modules expect vmlinux BTF to be there when
+> adding their own BTF to /sys/kernel/btf. And kfunc registration from
+> kernel and modules expects this also. So support for deferred BTF module
+> load/kfunc registration is required too. I've implemented the former and
+> now am working on the latter. Hope to have some RFC patches ready soon,
+> but it looks feasible at this point.
+> 
 
-If the verifier could trust the pointer fetched by bpf_get_func_arg(),
-this extra cost from bpf_rdonly_cast() could be avoided.
+That sounds great. I'm looking forward to seeing and trying this out. If
+there's anything you can share at this time please let me know.
 
 Thanks,
-Leon
+Tony
+ 
+1: https://lore.kernel.org/bpf/43fd3775-e796-6802-17f0-5c9fdbf368f5@oracle.com/ 
 
-
+> Assuming such an option was available to small-footprint systems, should
+> we consider adding global variables to core vmlinux BTF along with
+> per-cpu variables? Then vmlinux BTF extras could be used for some of the
+> additional optional representations like function site-specific data
+> (inlines etc)? Or are there other factors other than on-disk footprint
+> that we need to consider? Thanks!
+> 
+> Alan
+> 
+> > pw-bot: cr
+> > 
+> 
 
