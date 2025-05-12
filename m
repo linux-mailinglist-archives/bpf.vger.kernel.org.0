@@ -1,145 +1,114 @@
-Return-Path: <bpf+bounces-58012-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58013-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3988AB3976
-	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 15:38:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CB6EAB39F8
+	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 16:04:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E18871893C7D
-	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 13:38:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7E5A168E6F
+	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 14:04:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BA60265632;
-	Mon, 12 May 2025 13:38:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75D331DF72C;
+	Mon, 12 May 2025 14:04:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ctEUfa1H"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gX1kpk/O";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="WqDC6E+p"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AF1E25A2B7
-	for <bpf@vger.kernel.org>; Mon, 12 May 2025 13:38:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 674A21DC1A7
+	for <bpf@vger.kernel.org>; Mon, 12 May 2025 14:04:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747057088; cv=none; b=GETvcdUIsOdsnjhVGfKJ+rZ+AWXm5TR5HnRE3obMAbC5o1yuMjeNWgK8nOSvX2JmGHQmjwueKTyYdCyJ9mGDoDwm5tcK9tWqINc0Ii4JGvGJl4Gz6Y4mNS4s6zdOX16k9hCQCaNvyT4bnvsMJz/+2U0bIMefWfoWjVaw1UrslxM=
+	t=1747058645; cv=none; b=EiufeoZqcFYm5LJjsRDE9GM+EanKsVNBfvkO/CTpCIvXjw8oh2DK5x0k1kg3XvxygZmFV7MwWLFlSJhXm573ixpih1zn9E+KTh5H7wkxpEZz4ZLG2bbedhsWtp/1pe+a2A/5dqPQP6JbyvaK1vc43inajH1NAJMFOdxlzxR8RpY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747057088; c=relaxed/simple;
-	bh=BjHjOPeyL4nVfAzamk7y35XVKWRnvl/ucSKe+ZQSA5I=;
+	s=arc-20240116; t=1747058645; c=relaxed/simple;
+	bh=fflCw+J3avP7UdzL6YIk0Ir9WULJ99NyQ8/1hC/nPFM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MBlAzPQqnIjxWXoxdSiQ02kb0C0Z3lT7R9iwy9wCXYzOOJaWtbQ9uwWanoEoI2abAko3o41R6qGkk7sSlnxiPVNlJqLs7srms6MJ1YZ+1EMyiZElK9R7AeQV1VamxitDB23WE8S8CKGILLx7XL8JKMpWdkZJjkF2RozMoH5XhS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ctEUfa1H; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1747057086;
+	 Content-Type:Content-Disposition:In-Reply-To; b=R5notXVnqdXGXglHYVx3qf7bPa0h92IiLJMv6OoWOCvZBxpxrr4NkvRPBeVNDlOAf/S0IA6o9COW0W7YvcYgTcnkKegojARbDHkceoxc0+ZCbhUOcV/Xm+62kuqTJnx0L5x8F7DrMkljKhHqkXWmPRc/JRvl8FBMPI7rDleRwRM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=gX1kpk/O; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=WqDC6E+p; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Mon, 12 May 2025 16:03:59 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1747058641;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=N+d4pcIzBQG+0dzsibKX47VMF4utPM2RH2ZFFbMKIl0=;
-	b=ctEUfa1HLGPguLgLcEVNa8n0YG4mLM7hn1r1pv2ar/CLV3MwraOcx6aptVW/Eb2TexiizD
-	JwOoNIlAJv8wHoKw+Vfhv3xEfcrLdwNXa9ftY7+kAiDdZc6cs0eZ/mNGL2otb8b4OicirT
-	cDzOmBY1N1VkGPuEwAJMFpHG4amnqbs=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-688-bYSc778lMimWzCbSrEbjVQ-1; Mon,
- 12 May 2025 09:38:02 -0400
-X-MC-Unique: bYSc778lMimWzCbSrEbjVQ-1
-X-Mimecast-MFC-AGG-ID: bYSc778lMimWzCbSrEbjVQ_1747057080
-Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 6BCA21956094;
-	Mon, 12 May 2025 13:37:59 +0000 (UTC)
-Received: from fedora (unknown [10.45.226.238])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 290DB180148F;
-	Mon, 12 May 2025 13:37:52 +0000 (UTC)
-Received: by fedora (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Mon, 12 May 2025 15:37:58 +0200 (CEST)
-Date: Mon, 12 May 2025 15:37:51 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Peter Zijlstra <peterz@infradead.org>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	x86@kernel.org, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	David Laight <David.Laight@aculab.com>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>,
-	Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH perf/core 03/22] uprobes: Move ref_ctr_offset update out
- of uprobe_write_opcode
-Message-ID: <aCH5r9yuyKT1yKMS@redhat.com>
-References: <20250421214423.393661-1-jolsa@kernel.org>
- <20250421214423.393661-4-jolsa@kernel.org>
- <20250427141335.GA9350@redhat.com>
- <aA9dzY-2V3dCpMDq@krava>
- <aBoKnP4L-k8CweMy@krava>
- <aBoWEydkftHO_q1N@redhat.com>
- <aB02m4ZdPGJOWatx@krava>
+	bh=HmMAbGSzMPoi/yrVNLZojsOJT87/A8we2IirP3fKdC4=;
+	b=gX1kpk/OUGarG2wpwKpK0LVUVFaT+rWyDNbwuBqv+bMhEaBsvQOBrvPno9vtzIHHXGGqa1
+	vUyIUY1RhlV8TomdkGXzY20i2Xt0HTN6GgPrg7xR5gYUzBJjlyaWp1hmJpcQ4t7t3r3U1Q
+	AHJ15GVMBhO2/dhTrRSyiuwj725L/a3VFKTQ78DyxPR+JsXiO1a0jVupTwNVsITwYxThmf
+	Z7taya+TSLq8f4NWuUVRKaQodtX/h4n/0P/FyODTdX0h180qYwneYa3KvvQrnXmgd8vjjF
+	S78Uo319YgASpmsukBmtNxWvkZeyYr22w5c6Q/4COGbZtETlfl09j2RzxRpxDQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1747058641;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HmMAbGSzMPoi/yrVNLZojsOJT87/A8we2IirP3fKdC4=;
+	b=WqDC6E+pwICdOIUhoy6gsg249fKFw2Y1mo2s5TCM7OwpuzJ+jg4FXu3/U8zoGMJpLfTbDe
+	chJvi7odiAjskpBA==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf@vger.kernel.org, linux-mm@kvack.org, vbabka@suse.cz,
+	harry.yoo@oracle.com, shakeel.butt@linux.dev, mhocko@suse.com,
+	andrii@kernel.org, memxor@gmail.com, akpm@linux-foundation.org,
+	peterz@infradead.org, rostedt@goodmis.org, hannes@cmpxchg.org,
+	willy@infradead.org
+Subject: Re: [PATCH 4/6] locking/local_lock: Introduce
+ local_lock_irqsave_check()
+Message-ID: <20250512140359.CDEasCj3@linutronix.de>
+References: <20250501032718.65476-1-alexei.starovoitov@gmail.com>
+ <20250501032718.65476-5-alexei.starovoitov@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <aB02m4ZdPGJOWatx@krava>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
+In-Reply-To: <20250501032718.65476-5-alexei.starovoitov@gmail.com>
 
-I am still traveling, will actually read your email when I get back...
+On 2025-04-30 20:27:16 [-0700], Alexei Starovoitov wrote:
+> --- a/include/linux/local_lock_internal.h
+> +++ b/include/linux/local_lock_internal.h
+> @@ -168,6 +168,15 @@ do {								\
+>  /* preemption or migration must be disabled before calling __local_lock_is_locked */
+>  #define __local_lock_is_locked(lock) READ_ONCE(this_cpu_ptr(lock)->acquired)
+>  
+> +#define __local_lock_irqsave_check(lock, flags)					\
+> +	do {									\
+> +		if (IS_ENABLED(CONFIG_DEBUG_LOCK_ALLOC) &&			\
+> +		    (!__local_lock_is_locked(lock) || in_nmi()))		\
+> +			WARN_ON_ONCE(!__local_trylock_irqsave(lock, flags));	\
+> +		else								\
+> +			__local_lock_irqsave(lock, flags);			\
+> +	} while (0)
+> +
 
-On 05/09, Jiri Olsa wrote:
->
-> On Tue, May 06, 2025 at 04:01:45PM +0200, Oleg Nesterov wrote:
-> >
-> > - uprobe_unregister() is called again and this time it succeeds. In this case
-> >   ref_ctr is changed from 0 to -1. IIRC, we even have some warning for this
-> >   case.
->
-> AFAICS that should not happen, there's check below in __update_ref_ctr:
->
->         if (unlikely(*ptr + d < 0)) {
->                 pr_warn("ref_ctr going negative. vaddr: 0x%lx, "
->                         "curr val: %d, delta: %d\n", vaddr, *ptr, d);
->                 ret = -EINVAL;
->                 goto out;
->         }
+Hmm. If I see this right in SLUB then this is called from preemptible
+context. Therefore the this_cpu_ptr() from __local_lock_is_locked()
+should trigger a warning here.
 
-OK,
+This check variant provides only additional debugging and otherwise
+behaves as local_lock_irqsave(). Therefore the in_nmi() should return
+immediately with a WARN_ON() regardless if the lock is available or not
+because the non-try variant should never be invoked from an NMI. 
 
-> few things first..
->
->  - how do you make uprobe_unregister fail after succesful uprobe_register?
->    I had to instrument the code to do that for me
+This looks like additional debug infrastructure that should be part of
+local_lock_irqsave() itself, maybe hidden behind a debug switch which is
+forced now from one of the current user. I don't think we need an extra
+interface for this. It might be restricted to the trylock_test variant
+if it makes sense but I wouldn't introduce an extra function for that.
 
-I guess _unregister() should not fail "in practice" after
-get_user_page + verify_opcode, yet I think we should not rely on this, if possible.
+>  #define __local_lock_release(lock)					\
+>  	do {								\
+>  		local_trylock_t *tl;					\
 
-But I won't argue if you think we can ignore this "impossible" failures, just
-this should be documented. Same for update_ref_ctr(), iirc it should "never"
-fail if ref_offset is correct.
-
-> --- a/kernel/events/uprobes.c
-> +++ b/kernel/events/uprobes.c
-> @@ -589,8 +589,8 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
->
->  out:
->  	/* Revert back reference counter if instruction update failed. */
-> -	if (ret < 0 && is_register && ref_ctr_updated)
-> -		update_ref_ctr(uprobe, mm, -1);
-> +	if (ret < 0 && ref_ctr_updated)
-> +		update_ref_ctr(uprobe, mm, is_register ? -1 : 1);
-
-Yes, this is what I meant.
-
-Oleg.
-
+Sebastian
 
