@@ -1,124 +1,151 @@
-Return-Path: <bpf+bounces-58016-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58017-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09ABAAB3A06
-	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 16:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id ACBEFAB3A43
+	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 16:16:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A0B319E04F1
-	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 14:05:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F326719E0D32
+	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 14:16:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38A4A1B0F3C;
-	Mon, 12 May 2025 14:05:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5942F1EF0BA;
+	Mon, 12 May 2025 14:15:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="POHC/H9v"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k8djEoCP"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3393A1E4110
-	for <bpf@vger.kernel.org>; Mon, 12 May 2025 14:05:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC7E91E505;
+	Mon, 12 May 2025 14:15:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747058712; cv=none; b=rU5Rnml0Eo2NDd7Sw2RtVvm2mbEl+9RT+Ax5KTf12N9JeP82Y78tv5ZUSXJ73KZYlRuUB4eVcxF0Q+0NI3hC/ldhfSgQbYsCSpKV/nsQVfNCCUitwLtVKmUHl4V6eLODHNc1AU5XB2QRqCkLrvTaipKX650fGpRx2f1wi0w5ySE=
+	t=1747059354; cv=none; b=uhonIVZLbqSrQEAwroBwT1ldu4wrabkxdvXeSjVtYZybK3AFOMr2a8Nci7Rg3ptqn9Xx3pUqrJoECGzQ1ZgnJLHXhj9Neu3Z5yJQItj7K2+58M1CGqb7zhaUsHkqnjQke+uf8qcgHzDiwQ1gy0ZjBj+OZAX3t2manY6A96QuYBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747058712; c=relaxed/simple;
-	bh=0gwWx9irmOMthFADpUZAspVuOnxq1Msl3Vnd5VBRxng=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=J5YzpPblZEg6KQJAn07cv5rBFMEPZ34WMKYnexCPSkLFaMNkakMANBf8Giu3ecf4SFuWyrzPUV5pKik6zf/UO4BT6x4sDJUn13YcTNc2dyY8aLQY71EURFnerTA+pWrfuiUfrHWAoF8GtckXlS39y4LQsK5VvCT1xVjOUwEDzLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=POHC/H9v; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1747058710;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aKUKTM+Uls808I6r5VI2ZZha/bbLBqgJvDLDm/bGgqY=;
-	b=POHC/H9vO+EoNq+ou2eFvfnWT7UJZ0yfidyo+hIW+fwH+YDUJOBHpc0o+ROmS7WMrPkSwQ
-	CXCT+crsEqnVOdrgdBWrUZy8ZR4shLXTdC8VPUrlPIeqgjYotMCAFQ0uSPP3DVQQp3qe8f
-	unCEWgm1jVDK2g+MtNLs5RzwJYwJsJ4=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-56-xo2CYtBqOrmFUV3fYzVTCw-1; Mon,
- 12 May 2025 10:05:05 -0400
-X-MC-Unique: xo2CYtBqOrmFUV3fYzVTCw-1
-X-Mimecast-MFC-AGG-ID: xo2CYtBqOrmFUV3fYzVTCw_1747058703
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 015C21800373;
-	Mon, 12 May 2025 14:05:03 +0000 (UTC)
-Received: from grbell-thinkpadx1carbongen9.rmtusnh.csb (unknown [10.22.88.193])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 649A91801A42;
-	Mon, 12 May 2025 14:04:59 +0000 (UTC)
-From: Gregory Bell <grbell@redhat.com>
-To: bpf@vger.kernel.org
-Cc: andrii@kernel.org,
-	eddyz87@gmail.com,
-	mykolal@fb.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	shuah@kernel.org,
-	Gregory Bell <grbell@redhat.com>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: test_verifier verbose log overflows
-Date: Mon, 12 May 2025 10:04:13 -0400
-Message-ID: <e49267100f07f099a5877a3a5fc797b702bbaf0c.1747058195.git.grbell@redhat.com>
-In-Reply-To: <cover.1747058195.git.grbell@redhat.com>
-References: <cover.1747058195.git.grbell@redhat.com>
+	s=arc-20240116; t=1747059354; c=relaxed/simple;
+	bh=MEHGyJSZV6ZmVvbm4C4hI9TFH3oY2U0jBbfKq+YT31I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=C4QHtIWcYNjDfBWQWdSsNq0vY15cJCVDSkM7MRtpN4SEF6cTY2zRvf2zV5ZXnDP7Hj3eHCz29NDiYgjQ2gL4WKQL+8n72e4czrwf/WgeEw8xuyTghNSN9aMmT7wXDLn04Z/+NzjZAGyVVkoM2qQXtNG1a6bt/dafujZWkazZbQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k8djEoCP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97AACC4CEEF;
+	Mon, 12 May 2025 14:15:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747059353;
+	bh=MEHGyJSZV6ZmVvbm4C4hI9TFH3oY2U0jBbfKq+YT31I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=k8djEoCPjVGyQx42aTZVSbqgQDZkJ/Bj5aRHJUHgLcQd/mnl/eY5cWr5F1P4swDmb
+	 lzG6JLGZU0Ux1ZZs5sjKcv5w4aTYiilPh5dzD717eImtSkvgPEpRmCKwi9n93zKQV0
+	 UKaX8fY2iUpJgoVN7Qf78dmv80A95BDTKkzqIE5TXbeFEh/O+sRPUc6YO8UxSq4o8n
+	 SlQne8XGIR0WeijFfGryo85ElqzfZXctr8HKG1FebB3u6NGhfAhjEefVEI01K1wp9R
+	 VMQDo7Zvn7Kd7dGauwJtfURxUSALzYzHGi5P79HmdlQAgQRlKnLZ30P6zhm0cKOiW1
+	 9mLZbKqtKN/CA==
+Date: Mon, 12 May 2025 15:15:46 +0100
+From: Simon Horman <horms@kernel.org>
+To: Haiyang Zhang <haiyangz@microsoft.com>
+Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+	decui@microsoft.com, stephen@networkplumber.org, kys@microsoft.com,
+	paulros@microsoft.com, olaf@aepfle.de, vkuznets@redhat.com,
+	davem@davemloft.net, wei.liu@kernel.org, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, leon@kernel.org,
+	longli@microsoft.com, ssengar@linux.microsoft.com,
+	linux-rdma@vger.kernel.org, daniel@iogearbox.net,
+	john.fastabend@gmail.com, bpf@vger.kernel.org, ast@kernel.org,
+	hawk@kernel.org, tglx@linutronix.de,
+	shradhagupta@linux.microsoft.com, andrew+netdev@lunn.ch,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next,v2] net: mana: Add handler for hardware
+ servicing events
+Message-ID: <20250512141546.GI3339421@horms.kernel.org>
+References: <1746832603-4340-1-git-send-email-haiyangz@microsoft.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1746832603-4340-1-git-send-email-haiyangz@microsoft.com>
 
-Tests:
- - 458/p ld_dw: xor semi-random 64-bit imms, test 5
- - 501/p scale: scale test 1
- - 502/p scale: scale test 2
+On Fri, May 09, 2025 at 04:16:43PM -0700, Haiyang Zhang wrote:
+> To collaborate with hardware servicing events, upon receiving the special
+> EQE notification from the HW channel, remove the devices on this bus.
+> Then, after a waiting period based on the device specs, rescan the parent
+> bus to recover the devices.
+> 
+> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+> ---
+> v2: 
+> Added dev_dbg for service type as suggested by Shradha Gupta.
+> Added driver cap bit.
+> 
+> ---
+>  .../net/ethernet/microsoft/mana/gdma_main.c   | 63 +++++++++++++++++++
+>  include/net/mana/gdma.h                       | 11 +++-
+>  2 files changed, 72 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
 
-fail in verbose mode due to bpf_vlog[] overflowing. These tests
-generate large verifier logs that exceed the current buffer size,
-causing them to fail to load.
+...
 
-Increase the size of the bpf_vlog[] buffer to accommodate larger
-logs and prevent false failures during test runs with verbose output.
+> +static void mana_serv_func(struct work_struct *w)
+> +{
+> +	struct mana_serv_work *mns_wk = container_of(w, struct mana_serv_work, serv_work);
+> +	struct pci_dev *pdev = mns_wk->pdev;
+> +	struct pci_bus *bus, *parent;
 
-Signed-off-by: Gregory Bell <grbell@redhat.com>
----
- tools/testing/selftests/bpf/test_verifier.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Please avoid lines wider than 80 columns in Networking code.  In this case
+I would suggest separating the declaration and initialisation of mns_wk and
+pdev.  Something like this (completely untested!):
 
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index 2d13e862b078..27db34ecf3f5 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -734,7 +734,7 @@ static __u32 btf_raw_types[] = {
- 	BTF_MEMBER_ENC(71, 13, 128), /* struct prog_test_member __kptr *ptr; */
- };
- 
--static char bpf_vlog[UINT_MAX >> 8];
-+static char bpf_vlog[UINT_MAX >> 5];
- 
- static int load_btf_spec(__u32 *types, int types_len,
- 			 const char *strings, int strings_len)
+	struct mana_serv_work *mns_wk;
+	struct pci_bus *bus, *parent;
+	struct pci_dev *pdev;
+
+	mns_wk = container_of(w, struct mana_serv_work, serv_work);
+	pdev = mns_wk->pdev;
+
+
+...
+
+> @@ -400,6 +441,28 @@ static void mana_gd_process_eqe(struct gdma_queue *eq)
+>  		eq->eq.callback(eq->eq.context, eq, &event);
+>  		break;
+>  
+> +	case GDMA_EQE_HWC_FPGA_RECONFIG:
+> +	case GDMA_EQE_HWC_SOCMANA_CRASH:
+> +		dev_dbg(gc->dev, "Recv MANA service type:%d\n", type);
+> +
+> +		if (gc->in_service) {
+> +			dev_info(gc->dev, "Already in service\n");
+> +			break;
+> +		}
+> +
+> +		mns_wk = kzalloc(sizeof(*mns_wk), GFP_ATOMIC);
+> +		if (!mns_wk) {
+> +			dev_err(gc->dev, "Fail to alloc mana_serv_work\n");
+
+The memory allocator will log a message on error.
+So please don't also do so here.
+
+> +			break;
+> +		}
+> +
+> +		dev_info(gc->dev, "Start MANA service type:%d\n", type);
+> +		gc->in_service = true;
+> +		mns_wk->pdev = to_pci_dev(gc->dev);
+> +		INIT_WORK(&mns_wk->serv_work, mana_serv_func);
+> +		schedule_work(&mns_wk->serv_work);
+> +		break;
+> +
+>  	default:
+>  		break;
+>  	}
+
+...
+
 -- 
-2.49.0
-
+pw-bot: changes-requested
 
