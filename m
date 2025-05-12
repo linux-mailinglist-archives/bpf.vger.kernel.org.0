@@ -1,198 +1,153 @@
-Return-Path: <bpf+bounces-58030-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58031-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13547AB3DDA
-	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 18:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D8842AB3E03
+	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 18:46:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02A361884E71
-	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 16:42:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6A0E1886CD5
+	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 16:46:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3F60251782;
-	Mon, 12 May 2025 16:41:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D9772522BA;
+	Mon, 12 May 2025 16:46:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BEliYjjv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aq3fTPeL"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 989D3246781
-	for <bpf@vger.kernel.org>; Mon, 12 May 2025 16:41:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7281B1C84DE
+	for <bpf@vger.kernel.org>; Mon, 12 May 2025 16:46:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747068106; cv=none; b=eRV2JCPrezp5NX6yNRmnrxeclxt8O2gFsPBs50B/uc3EuLschQSwhMdFa2KBgg9GqV5X0EbqFPbPZg5Vmih0qoAcgjamTqdGWeQCZ1Imw4+/UYGNjTZOHt8UUs7PCWrtvKbR49gcbRysCEJ1xm9Xn6WB5VB28LS5sh9y1/UbbZ4=
+	t=1747068394; cv=none; b=tItpGzherviKLEIVcwPD2QgTwTb3z+8CGaZlXXwlShYS3sWbCMeMQFuXcnyd3TQBk3KtXdJ4qiCQVD5ESB/oYvECmiwZBj4iC046a7ErtxqW7NMmet0UuF1F30ug1IkuABL1mZfU6iLiUrgOvIFLllO/28MgZf6poiT3X6jUd8c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747068106; c=relaxed/simple;
-	bh=Ke9svJo1JUwx35PjMFO/vPgWlyBavkCjwqNpJwF3TMs=;
+	s=arc-20240116; t=1747068394; c=relaxed/simple;
+	bh=kLJLt7lRaEN17+miqQE71xDYWbLzElUM6uqPwQ6PUdQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ROszHSdtwNrWSldNwh37ChNoN7t/MU1b8nCGJr8qORmTlwWmjkvlAB3FKW3kkw9xCXeEnlurTRwssXUmthGTRGHO7yurW2RlgTgNnaILWxmf9UepC+ka01SHrMqtmigGe71PpQdtsvu/pjIKGQlR+9AlXWcQBLA6XOY+tmJZE/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BEliYjjv; arc=none smtp.client-ip=209.85.221.47
+	 To:Cc:Content-Type; b=BYctFzCHI0u9PimVLpbecPlXmNqGdVX13SPS9uUF7tjrIW6Gw9GuyqsGt9HfcE1fDi/Q01m2GSZD6skPZXBRT8Yd5+XfoR1bX/rx5NlRzZJkDA/1c/lA0I2EBedGOFSv4BA69ma5S9DKS5Exozs47JFUY9vp05Gu3kMg6yK6wMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aq3fTPeL; arc=none smtp.client-ip=209.85.221.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3a0b291093fso3592620f8f.0
-        for <bpf@vger.kernel.org>; Mon, 12 May 2025 09:41:44 -0700 (PDT)
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3a1fa0d8884so2016637f8f.3
+        for <bpf@vger.kernel.org>; Mon, 12 May 2025 09:46:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747068103; x=1747672903; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1747068390; x=1747673190; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=uSoEmYmQVVzxDszqZ2dPYweDQszXJMx/oUy6UD19jw0=;
-        b=BEliYjjvXbxqflNDSSurjQ1cC6u65ZzBzbY5IO2T4BhBkT6zsw7zWte4jltC/zkV2F
-         1nXzdpPREr+/NtzO6rHvacxEabIch2Qr84OnqxB1YALe5ZrIrC+GtSUfyNPzJ1OheZIJ
-         UgqNJ2c73i3g7lzzABw57QdejAcgur6TwGdPVea+SC0kK93TX+MP41e3uRlmkmHV8CJi
-         WT8DkKUcIp/Embc1pdKYfWm/uhdcY016Q2m0ZvLSlFgTLj52riSejmMiI6M1OmuMCKy9
-         yn8qZCP55Iv994ahCWjnWXfSbtCqVjWjmcRad34A4ou2CROX/7kANQpCzzXMJBwYElJ0
-         6u/w==
+        bh=oX6B+3os2H1hrlDtdqIsj8ZH39Q6D7xnbdhYaLSgq6Y=;
+        b=aq3fTPeLu3mnhm3cBbHrDdPAdZg6vF20Yb3CvYUcyz0iIR0zwTdCt57i+06SKNKT9M
+         x81G4FCLF+pQkpYiGNiFMRJpxG9D/7Nuo9ryngnkcHDIFDC/Li94c7Qe4PeRpzs2Sgsi
+         z9Oop0R7Yl6JYgRzDeGcvdA5MYyRZJxuHBlh/TJ46zsGpFghq2L1NRk6nNuj3U1vjZz3
+         8mjhDsxUtMS5Qxwhv8tdbzHHUcNxRSe5ViIaS+GthsuXP2At9HMy0HucGTJF2jYtgAbK
+         QZWSU8cWhQPHE9svdPY92AlPa35cqqOcrNi3WFCUKNwxhOzvN0KwIQGmDtDbeSnYp03f
+         juVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747068103; x=1747672903;
+        d=1e100.net; s=20230601; t=1747068390; x=1747673190;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=uSoEmYmQVVzxDszqZ2dPYweDQszXJMx/oUy6UD19jw0=;
-        b=FmZK2LeQMkv4UTQGn+HZP3G+rVCAsNidAAxUG0Ae1MsomBwMS0qEZVpJsNwSJavDMf
-         85CbUjFetVpn6sSUR7rPVwgfJOFnmsjrSrUNGE+Ppz8mqdoVNDigiVVlXFcl8NKiMp2e
-         tOwCKWv0BlfJauwXq4QX752IVLhabmDKzCtSJtMTzOEVkOrE13w5eubgZ3L77JfnmFrR
-         SN3KcSvZ1+Nw72D/K9T/ZWmoxg6MgnIx/0UOSD+8ykrlb7gYBQwpoWsa7EDMjs717Q8x
-         hjcSQCLMsmGTZlWCjFoAcSfZdYU7Ij2UqnS7nWzfYKTu/JQZb1a7qZY79i3vNPyOryFd
-         q6kw==
-X-Forwarded-Encrypted: i=1; AJvYcCXC9LMx7N5Gx3h/unbrxWYWE8ubqUferm7MFI6HgKPiCuj8yo/GMsP5ILxJ2p78iES7iMQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyfxzmEvzN6jmROEu/DS9xcKRXJ4rNboF/A7AiYdU9Xsx11yq/a
-	4S6Ojcz+D7XjzcZFL1rzX2gAgT7zo2q32kp+WuouRvmJEyN+xPf4760QFAkR7hOyb4DiCP7vv8U
-	8dJuKPeBUQ+QdXUhgee2iTjQbWgg=
-X-Gm-Gg: ASbGncumDqQcEJHjl9Q9euV3RUhglI4OY2nHsRGlXo3a3OSelCYNS44UDQ02s8Pu+mM
-	fY1+cY9JOH55EH9nA30anuyr1iIR65MvJ5BP/Zeozul7cyhvWZbOEt14m/z/scPuqfgTNtLGdeM
-	eVewaEk63iAYQNaaqQsWHHDCsc0piQhWPlQShVVe6Sor1Q8GtG
-X-Google-Smtp-Source: AGHT+IG/oY4t6Jl01VR1F+w8qoFJ/DhIlM+SvhAEFS/jBMkGEu75zxf8Kdgtgn4jEN3IiysTnVkVceenSuMxwpA95gU=
-X-Received: by 2002:a5d:47a7:0:b0:3a0:b1f7:c1e9 with SMTP id
- ffacd0b85a97d-3a340d15397mr192241f8f.1.1747068102794; Mon, 12 May 2025
- 09:41:42 -0700 (PDT)
+        bh=oX6B+3os2H1hrlDtdqIsj8ZH39Q6D7xnbdhYaLSgq6Y=;
+        b=hH8lA6UxS5TeHLGAqlCNkjGqiw+5yKDSoHu7XI6sYLqwjJRFrHzwtsN1FL46tuCYxQ
+         WWdA0iLkfE1gelRfJEbj41HuG6R6dqCSfkI8+cmY3etAldCcov1xFXhUXf1YL5DZVdtx
+         tD4oQJI+/bT7ZllMmjulekLK1F7+wFCLu1voO0w12O0oeoKyZ3WXujNRs0wsuic79wQ3
+         QVmqrXNWEOM0n5R6C7Cb1VZyEqsBWOIsBFWf6JbJYqw9TWKzFTHkXRjaCuvuBHtkiZpo
+         RqWeVDuz4/un931jEniVg2ghU0V0lMRW8ZHEYn+8ncJU1JFzTbKBNlLWtsQWbn4xpWUq
+         5rPg==
+X-Gm-Message-State: AOJu0YyaNZwWjgsb1HKBG/yGcmO6yRp9f9IVYn6aOttgTeNu8snOmpw4
+	k5d2K4Unj1htXo24HxKZ3XJLMsNBHnrukxon6bsoEI0b6N+u6vfYCj/jt4JaDRti8cEEbTd9Zj3
+	Iz7BN+Jv3FtVtRkYEyaKd5n18v80=
+X-Gm-Gg: ASbGncuAEm71jb/himPHu3AD9R5xcx+pcHdfjSaJn1vRoX9bLIdpGZw8y/zZ+8Xn7hb
+	8LUtf8nsFwLrr5izkNbrEoCxCPzifSB7x0awqFy0Loe6WGALRLGuyqMi+I9KZz18gdan1NjIDRs
+	PVvLqKJJx9IxK589RSKY8muKfy3Po6EujW83c3AROroKkUOyih
+X-Google-Smtp-Source: AGHT+IFM5nT873/utvA++/Y7NVoK0iS7GvPOeDGmqobCWQ8UTq0xILkGccvcH0VKOkoa1yWs0+PYeRg87TlNXsB7lro=
+X-Received: by 2002:a05:6000:290f:b0:39a:c9c1:5453 with SMTP id
+ ffacd0b85a97d-3a1f64b5e7amr10997886f8f.49.1747068389443; Mon, 12 May 2025
+ 09:46:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250508113804.304665-1-iii@linux.ibm.com> <CAADnVQ+kGcRrLOaA5ic6cYG+1vHJm0bBD1GRfUaYpaOGa3Vx0g@mail.gmail.com>
- <15bf9a71b8185006c8d19a3aefb331a2765629c5.camel@linux.ibm.com>
- <CAADnVQL6Q+QRv3_JwEd26biwGpFYcwD_=BjBJWLAtpgOP9CKRw@mail.gmail.com> <7a242102eecdd17b4d35c1e4f7d01ea15cb8066a.camel@linux.ibm.com>
-In-Reply-To: <7a242102eecdd17b4d35c1e4f7d01ea15cb8066a.camel@linux.ibm.com>
+References: <20250501032718.65476-1-alexei.starovoitov@gmail.com>
+ <20250501032718.65476-3-alexei.starovoitov@gmail.com> <20250512132654.4MCqyeG6@linutronix.de>
+In-Reply-To: <20250512132654.4MCqyeG6@linutronix.de>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 12 May 2025 09:41:31 -0700
-X-Gm-Features: AX0GCFv4G5SD_qBzBHioShso1cZ9DanUsOuyzK37gTW-YpuF9z-YxRJB26ryboQ
-Message-ID: <CAADnVQ+5h9UESAgNA58HEQ-0zwxn=c0+ibH++NF9farR5-JB8g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix "expression result unused" warnings
-To: Ilya Leoshkevich <iii@linux.ibm.com>
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>
+Date: Mon, 12 May 2025 09:46:18 -0700
+X-Gm-Features: AX0GCFvMkQZi7JNk52ueFN8_-In0Mlpxv3ktsW4FzqyRjYnhPo4dZRQqyYc1Eto
+Message-ID: <CAADnVQ+38d58osQYze6Sqy8HJ_piQoEspNfr47pSwFxQi1m4sQ@mail.gmail.com>
+Subject: Re: [PATCH 2/6] locking/local_lock: Expose dep_map in local_trylock_t.
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
+	Vlastimil Babka <vbabka@suse.cz>, Harry Yoo <harry.yoo@oracle.com>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Michal Hocko <mhocko@suse.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Matthew Wilcox <willy@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, May 12, 2025 at 5:22=E2=80=AFAM Ilya Leoshkevich <iii@linux.ibm.com=
-> wrote:
+On Mon, May 12, 2025 at 6:26=E2=80=AFAM Sebastian Andrzej Siewior
+<bigeasy@linutronix.de> wrote:
 >
-> On Fri, 2025-05-09 at 09:51 -0700, Alexei Starovoitov wrote:
-> > On Thu, May 8, 2025 at 12:21=E2=80=AFPM Ilya Leoshkevich <iii@linux.ibm=
-.com>
-> > wrote:
-> > >
-> > > On Thu, 2025-05-08 at 11:38 -0700, Alexei Starovoitov wrote:
-> > > > On Thu, May 8, 2025 at 4:38=E2=80=AFAM Ilya Leoshkevich
-> > > > <iii@linux.ibm.com>
-> > > > wrote:
-> > > > >
-> > > > > clang-21 complains about unused expressions in a few progs.
-> > > > > Fix by explicitly casting the respective expressions to void.
-> > > >
-> > > > ...
-> > > > >         if (val & _Q_LOCKED_MASK)
-> > > > > -               smp_cond_load_acquire_label(&lock->locked,
-> > > > > !VAL,
-> > > > > release_err);
-> > > > > +               (void)smp_cond_load_acquire_label(&lock-
-> > > > > >locked,
-> > > > > !VAL, release_err);
-> > > >
-> > > > Hmm. I'm on clang-21 too and I don't see them.
-> > > > What warnings do you see ?
-> > >
-> > > In file included from progs/arena_spin_lock.c:7:
-> > > progs/bpf_arena_spin_lock.h:305:1756: error: expression result
-> > > unused
-> > > [-Werror,-Wunused-value]
-> > >   305 |   ({ typeof(_Generic((*&lock->locked), char: (char)0,
-> > > unsigned
-> > > char : (unsigned char)0, signed char : (signed char)0, unsigned
-> > > short :
-> > > (unsigned short)0, signed short : (signed short)0, unsigned int :
-> > > (unsigned int)0, signed int : (signed int)0, unsigned long :
-> > > (unsigned
-> > > long)0, signed long : (signed long)0, unsigned long long :
-> > > (unsigned
-> > > long long)0, signed long long : (signed long long)0, default:
-> > > (typeof(*&lock->locked))0)) __val =3D ({ typeof(&lock->locked) __ptr
-> > > =3D
-> > > (&lock->locked); typeof(_Generic((*(&lock->locked)), char: (char)0,
-> > > unsigned char : (unsigned char)0, signed char : (signed char)0,
-> > > unsigned short : (unsigned short)0, signed short : (signed short)0,
-> > > unsigned int : (unsigned int)0, signed int : (signed int)0,
-> > > unsigned
-> > > long : (unsigned long)0, signed long : (signed long)0, unsigned
-> > > long
-> > > long : (unsigned long long)0, signed long long : (signed long
-> > > long)0,
-> > > default: (typeof(*(&lock->locked)))0)) VAL; for (;;) { VAL =3D
-> > > (typeof(_Generic((*(&lock->locked)), char: (char)0, unsigned char :
-> > > (unsigned char)0, signed char : (signed char)0, unsigned short :
-> > > (unsigned short)0, signed short : (signed short)0, unsigned int :
-> > > (unsigned int)0, signed int : (signed int)0, unsigned long :
-> > > (unsigned
-> > > long)0, signed long : (signed long)0, unsigned long long :
-> > > (unsigned
-> > > long long)0, signed long long : (signed long long)0, default:
-> > > (typeof(*(&lock->locked)))0)))(*(volatile typeof(*__ptr)
-> > > *)&(*__ptr));
-> > > if (!VAL) break; ({ __label__ l_break, l_continue; asm volatile
-> > > goto("may_goto %l[l_break]" :::: l_break); goto l_continue;
-> > > l_break:
-> > > goto release_err; l_continue:; }); ({}); } (typeof(*(&lock-
-> > > > locked)))VAL; }); ({ ({ if (!CONFIG_X86_64) ({ unsigned long
-> > > > __val;
-> > > __sync_fetch_and_add(&__val, 0); }); else asm volatile("" :::
-> > > "memory"); }); }); (typeof(*(&lock->locked)))__val; });
-> > >       |
-> > > ^                         ~~~~~
-> > > 1 error generated.
+> On 2025-04-30 20:27:14 [-0700], Alexei Starovoitov wrote:
+> > From: Alexei Starovoitov <ast@kernel.org>
 > >
-> > hmm. The error is impossible to read.
+> > lockdep_is_held() macro assumes that "struct lockdep_map dep_map;"
+> > is a top level field of any lock that participates in LOCKDEP.
+> > Make it so for local_trylock_t.
 > >
-> > Kumar,
+> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> > ---
+> >  include/linux/local_lock_internal.h | 9 ++++++---
+> >  1 file changed, 6 insertions(+), 3 deletions(-)
 > >
-> > Do you see a way to silence it differently ?
+> > diff --git a/include/linux/local_lock_internal.h b/include/linux/local_=
+lock_internal.h
+> > index bf2bf40d7b18..29df45f95843 100644
+> > --- a/include/linux/local_lock_internal.h
+> > +++ b/include/linux/local_lock_internal.h
+> > @@ -17,7 +17,10 @@ typedef struct {
 > >
-> > Without adding (void)...
-> >
-> > Things like:
-> > -       bpf_obj_new(..
-> > +       (void)bpf_obj_new(..
-> >
-> > are good to fix, and if we could annotate
-> > bpf_obj_new_impl kfunc with __must_check we would have done it,
-> >
-> > but
-> > -               arch_mcs_spin_lock...
-> > +               (void)arch_mcs_spin_lock...
-> >
-> > is odd.
+> >  /* local_trylock() and local_trylock_irqsave() only work with local_tr=
+ylock_t */
+> >  typedef struct {
+> > -     local_lock_t    llock;
+> > +#ifdef CONFIG_DEBUG_LOCK_ALLOC
+> > +     struct lockdep_map      dep_map;
+> > +     struct task_struct      *owner;
+> > +#endif
+> >       u8              acquired;
+> >  } local_trylock_t;
 >
-> What do you think about moving (void) to the definition of
-> arch_mcs_spin_lock_contended_label()? I can send a v2 if this is
-> better.
+> So this trick should make it work. I am not sure it is worth it. It
+> would avoid the cast down the road=E2=80=A6
+>
+> diff --git a/include/linux/local_lock_internal.h b/include/linux/local_lo=
+ck_internal.h
+> --- a/include/linux/local_lock_internal.h
+> +++ b/include/linux/local_lock_internal.h
+> @@ -17,10 +17,17 @@ typedef struct {
+>
+>  /* local_trylock() and local_trylock_irqsave() only work with local_tryl=
+ock_t */
+>  typedef struct {
+> +       union   {
+> +               local_lock_t            llock;
+>  #ifdef CONFIG_DEBUG_LOCK_ALLOC
+> -       struct lockdep_map      dep_map;
+> -       struct task_struct      *owner;
+> +# define LOCK_PAD_SIZE (offsetof(local_lock_t, dep_map))
+> +               struct {
+> +                       u8 __padding[LOCK_PAD_SIZE];
+> +                       struct lockdep_map      dep_map;
+> +               };
+> +#undef LOCK_PAD_SIZE
 
-Kumar,
-
-thoughts?
+I don't like it. It obfuscates the layout.
 
