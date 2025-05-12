@@ -1,159 +1,164 @@
-Return-Path: <bpf+bounces-58066-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58067-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C82ACAB473F
-	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 00:27:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5C78AB4742
+	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 00:29:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3027219E55DB
-	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 22:27:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36CA9175B95
+	for <lists+bpf@lfdr.de>; Mon, 12 May 2025 22:29:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17EA2299AB2;
-	Mon, 12 May 2025 22:27:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1E6F29A304;
+	Mon, 12 May 2025 22:29:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="egu2svIu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MpVjwt1P"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FAEFB660;
-	Mon, 12 May 2025 22:27:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F11761C84BA;
+	Mon, 12 May 2025 22:29:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747088838; cv=none; b=q0v5YFRbwXpxZP/euBrnLBoh4W3vGo6T5TYIX0Qmp+sr0BhMXTlCKMPyFRnrsb7iMsfZ0bVVigMfhlRgMUOSK2KC4f+Z0AZBzeiF05ECM2V9OvfZ1CKrtD2Eg7MJRxcpZ4SenxOrHol25bbZUeg5QNcPe9Bp0fZNPYsuuVIsXL4=
+	t=1747088966; cv=none; b=kNNeEWbI2Vmq5eSJmQr4TBY5RZoLx3XDCddNtp/rR94oMEfapLkR10oX8kOeMGj2SQ4DtYi1nu0T58uEMeB+kTKSkhFKbCUL5iWU1ry3fVxgeiVMy2JPQRSzAEdXmsx8P84dT3YpIWhqeG4C/B1+t2BEgT1xafaENj2FqI1DTkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747088838; c=relaxed/simple;
-	bh=rKQkiS/el7HATPnJ2TWIlVdg9qiHDDSgYAUaIWkXLeA=;
+	s=arc-20240116; t=1747088966; c=relaxed/simple;
+	bh=l2xeO2rkOB0/oqLU3KotW45xj64QhuSGVliez2qkXUA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YtWrECnUP1VYwpIbe447p3X7RnPKY08cAI/AmCvPPbjAJov01skDBo6G6rspAfZi0e+Od8GOBhOp/2CGlcl5lDck8hvBadrM34m3+oWajlC3zlVyF9A2sneuAvmaqR0zY4ERgjaiLfVd1vEn3hVzGruZ/Bw8LXkg22YBX/494x8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=egu2svIu; arc=none smtp.client-ip=209.85.216.50
+	 To:Cc:Content-Type; b=YZSDbbtErJaV+Toc+8v1IE4DdSNzilMLkXhzgkGxwIGbHzmHPUJm+F/6Sk3JSufjq05npszvZL7DAUB9e6pbYGKlbWTmCwYaelTqeEkoLP/etWcHqmGogVGiLxcrbjgrr77gD8nNLi1ZexX/U3/FeBnMRnOBiuHdwxOt4FWnTEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MpVjwt1P; arc=none smtp.client-ip=209.85.216.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-3081fe5987eso4489349a91.3;
-        Mon, 12 May 2025 15:27:16 -0700 (PDT)
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-30a9718de94so4769786a91.0;
+        Mon, 12 May 2025 15:29:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747088836; x=1747693636; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1747088964; x=1747693764; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bM6KcY7eMbe/zblTyCzfcoYGgVPiUUzuBb8zFtfYZ4w=;
-        b=egu2svIuITAlnKx5VVk3+xESUwWgWBl8nuGbz4syBhIJ9NVKP3A7PMnugIhdvrwFRw
-         erDQvH9ATObM032sWeCD011MW+e5X5CEC0tElMLsJkK7BbyYyxGZQxtO60/M+XMKcV7N
-         hdHlkxj8oKXWGuRcVXWb4RMNJWAxWL9QwgbWNrZUALVV+pCULMOejL1qJjGWotRWXeKT
-         K7b2n9o9d76suV7IXRZ7npBNDRXrzqMYDl60SzyxgX4TqV8AFb65BUKNdujvZJS6P/oI
-         wKQ0atiyXd7H5QkhnaHPhjSzmTOYx4HST6+QVMvkfSEWIoYdEzoy1poAG8vCKfqo0ZiK
-         azYA==
+        bh=fYwVPWq3J6N1zilnpGZGRbtewnVJ2UNrxWn55cB7mUU=;
+        b=MpVjwt1PoAlTrwiNt1NVkuosAeT0MZj00PK6a5CFl0idFsjU3LqJzo0lnIPiPR0vLD
+         Zmzq9WAlmc0x3/FSjlSC6Zur0HtoFnXvLwgiGvhHeBv4EU9KzoMWxXf7/CXRsKT3vf/G
+         do77v62PWbZhhWrUkXaFbuSewjUhSbmDXIzWauL160jPQn7Wb3/y17xlL40/Qf4NlVm8
+         Zc5u58bRolLh12zdc807Izw6b/3DIy/2oT7CHmV1famCrNOcTxTEDe2eF5I4ZiIYWjuN
+         VuD0mkzD0Fmyh40ZWAum8Wh5bRrkP0+m9ZOJPLHDji9o1rDSqep+IOMGCcN/sdAhsCsH
+         bVvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747088836; x=1747693636;
+        d=1e100.net; s=20230601; t=1747088964; x=1747693764;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bM6KcY7eMbe/zblTyCzfcoYGgVPiUUzuBb8zFtfYZ4w=;
-        b=YNR3w5tYEQdWH6rlCcFK38CgMM9SVAegvl1ieWJK9abyTb1kHcgU5mvbCVOZNyMVH3
-         MtmMhvduFJxS/SsJWTER6NlvHNLjwUskQ8ryeMPrS1TBW9jKlDFWJrTmjyG3yfW0GdmL
-         Yo9eqACWqzBy/A8AcsKuNQXy8S7maXj4FVS4BLzjZRkTgWLbkT8Cb4j0JNAgDJoUUbco
-         Zo0xNte2CRm79L7CHucTJctPb+LY2AR/D4j6yhQ8RFDTcS2IyOaGdU+uCqVc3oh9h2Ho
-         Hds6kVY0emV/0DmOgXKPAlnz4xW5khm8HwS4sSRnPzM/x46QU6Hc2ymMbYb9gWCLDKTL
-         lNiw==
-X-Forwarded-Encrypted: i=1; AJvYcCUD1PITFBtpjHLjHT2FbijXalKLqEXzcbk6NUcCgnaTSLgsshQHorCtphMmpnCrNEJBHYXctiJnOQQOl6FvRYeInK3b@vger.kernel.org, AJvYcCWvbHokLr7KNNexq2Y0qimcedrPCZiBoenEy0ia1S79Qd5ycJQSDCE6HKBes6l0rtG1iTU=@vger.kernel.org, AJvYcCX4DhmvkP4CVjn5h+zxBnJ+2Gn3v1LaiDAnw5Clngdr8k5UHgzhXAWfHAZz6aZPoy20kipz9kMJifZnBDQ/@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzk3PlUx4AHLUNOeZFjDrwfrRM/z6e8GW4b3EVVeGoctHmiz0dM
-	Ubr1osG5gzSBHcPo54sv3mlYz7ikAnXKIOFkvxLdVPd1HGow4UgMzNBbmiOjVOuMES/RIbyPsvj
-	glbpaKqVT37lCiWrNKgq+c7In2GUbR+su
-X-Gm-Gg: ASbGncv5aUOJNbJplv0SMAZ8AQRUJnAkpSDeIAmf7D6yy0Ifmg08SQcPZ3Ry/Hz0Mb8
-	g7G8xzi2MBd5jc+E/7SMjyt5nKwKWEw/WCtaf0L7PsDcS2WIagR+KeNsgzXrt2+HJ+BNuWKJHze
-	CHvY62Io2n3Z+Xx165StMdftVU2sa+8AWydNpb3jwl+P2k5Lfu
-X-Google-Smtp-Source: AGHT+IF/Qs1+S2EQ1LzRXHj0K73ykpa4yeY/isl/c+DiHNEaGZUKO6jP78FAb0Pe8JKUlQtAczAm+p9vq0y3KwORV/U=
-X-Received: by 2002:a17:90b:4c52:b0:30a:255c:9d10 with SMTP id
- 98e67ed59e1d1-30c3cff49ffmr22190446a91.8.1747088836387; Mon, 12 May 2025
- 15:27:16 -0700 (PDT)
+        bh=fYwVPWq3J6N1zilnpGZGRbtewnVJ2UNrxWn55cB7mUU=;
+        b=bc3XeJ81MRnLCKJbIE4WU90gP1zkWfmQAyyB1y1yEV/2YVg89lXpQbTZlD0I9HZn6R
+         5se21oihRXU1L/eWKVAK/Gz+YRczk79QujzVVU54bsga2PS/C7A0nuEj4jc1eMC8qGx1
+         juW4ZF7P7QBAcLHsVzXe9+Phc9rSG90g/Woi7+hDwNFtvc/Qh06Gvoza8EFs9hHokIw1
+         TKLEIUwqBDLZHoKgZdaAOUkWVTpkjqEQj7KMDmVYc6hBILkKexCaVub4cINbxVyxjPz4
+         GPYeFHaVD+5Ox7amfyHJqfGD+yflQkqfHNj+aJJBmSwNAPKxGNSFYynEzQ8hug/du4FJ
+         4prA==
+X-Forwarded-Encrypted: i=1; AJvYcCUCfN36SQd4VvLSYmvwawjba+G4v3SxDMgZxl65BD4PxBlWEexl6qD5+u0dzGQtI9/KKhdqw8eo@vger.kernel.org, AJvYcCUZTqMiFaX/1p4cvRNV2MQ1WfnBw4UUP/Sokww2ap47aprcWbWUlXonYf6g42jC9TWAOtw=@vger.kernel.org, AJvYcCXRWBpJg2luUIqP7x9oJ8N1atLLFiklpi2MRc2fO/SKioYyXqXhOxa3bi2QtYHLLPFxgVHpXa335ijuMweHbo8XzpCv@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzwpy4sjtqBSxNA/WeVQEYKuadA2BKMaOEIAV8NYDTar1mTODj+
+	QjmnSbLPjUHbK9IJMGqRW1wPxz9Rj2gFgO41T1G4Vqif1bq7allVACW4u0kwMWPgWjhqNELzN2H
+	G3Lau9fXE8gnZU2ed4L1KwOnmSr4=
+X-Gm-Gg: ASbGncs6VrzzmI1+BWSvyxItI3To+cW89OA7Gkp54g4yVqx44Q9SGsilKoCLn08DPdj
+	PDUS1zWy/NNXj+6ZLNqvSd8UCzb01Z6BkiXowSleKou6ljBn+btUVhPmDVtzs71MQ/3KbaubwE4
+	nt4s6BK36nibKNTe+V61duSk6/D2QH3uC5ToBYe+6nHYmQEsQ3
+X-Google-Smtp-Source: AGHT+IG0iT25hedkTym++cqk89LT1uIJwoUyiWgWvV+ksUhWI84bYUpkdd5XowLKkuyq/vfitLDh2fIfw22A4/9cIJE=
+X-Received: by 2002:a17:90b:3908:b0:2fe:99cf:f566 with SMTP id
+ 98e67ed59e1d1-30c3cefe5cfmr23091186a91.13.1747088963951; Mon, 12 May 2025
+ 15:29:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250509164524.448387100@goodmis.org> <20250509165156.135430576@goodmis.org>
- <CAEf4BzaKfvCu2T+jJ2e-CCt0N50urfx+p6kQfV899_jkmT_XKQ@mail.gmail.com> <ak36qadrkrplficbyceqx4cadgokxwolyyu3slgq4ag2kfjif5@7bxxiipqgdam>
-In-Reply-To: <ak36qadrkrplficbyceqx4cadgokxwolyyu3slgq4ag2kfjif5@7bxxiipqgdam>
+References: <20250510163730.092fad5b@gandalf.local.home>
+In-Reply-To: <20250510163730.092fad5b@gandalf.local.home>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 12 May 2025 15:27:02 -0700
-X-Gm-Features: AX0GCFuWwVBmhXJFv-IBlcqVh6U9vhEVnbHdoYnRDAeUtUPD2ypCGMb1JLmfsws
-Message-ID: <CAEf4BzYMHoMNdmDTwt_J6rQ=zr4zTB_gCBmfPkAd06Y2iztqFQ@mail.gmail.com>
-Subject: Re: [PATCH v8 15/18] perf: Have get_perf_callchain() return NULL if
- crosstask and user are set
-To: Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, x86@kernel.org, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>
+Date: Mon, 12 May 2025 15:29:11 -0700
+X-Gm-Features: AX0GCFvUISD-tt7hcAgaaLgJZ-tB02v_XDVWKkiY8z1iJhBlwg18KbzxqQKGMbA
+Message-ID: <CAEf4BzammxSa48ZBxQgGQjOBbdVniJcrQ+-52-76TqMYUHx8cg@mail.gmail.com>
+Subject: Re: [PATCH v4] tracepoint: Have tracepoints created with
+ DECLARE_TRACE() have _tp suffix
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, 
+	Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>, bpf@vger.kernel.org, 
+	netdev <netdev@vger.kernel.org>, Jiri Olsa <olsajiri@gmail.com>, 
+	Peter Zijlstra <peterz@infradead.org>, David Ahern <dsahern@kernel.org>, 
+	Juri Lelli <juri.lelli@gmail.com>, Breno Leitao <leitao@debian.org>, 
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Gabriele Monaco <gmonaco@redhat.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, May 10, 2025 at 10:59=E2=80=AFAM Josh Poimboeuf <jpoimboe@kernel.or=
-g> wrote:
+On Sat, May 10, 2025 at 1:37=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
+> wrote:
 >
-> On Fri, May 09, 2025 at 02:53:38PM -0700, Andrii Nakryiko wrote:
-> > On Fri, May 9, 2025 at 9:52=E2=80=AFAM Steven Rostedt <rostedt@goodmis.=
-org> wrote:
-> > >
-> > > From: Josh Poimboeuf <jpoimboe@kernel.org>
-> > >
-> > > get_perf_callchain() doesn't support cross-task unwinding for user sp=
-ace
-> > > stacks, have it return NULL if both the crosstask and user arguments =
-are
-> > > set.
-> > >
-> > > Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
-> > > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> > > ---
-> > >  kernel/events/callchain.c | 8 ++++----
-> > >  1 file changed, 4 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/kernel/events/callchain.c b/kernel/events/callchain.c
-> > > index b0f5bd228cd8..abf258913ab6 100644
-> > > --- a/kernel/events/callchain.c
-> > > +++ b/kernel/events/callchain.c
-> > > @@ -224,6 +224,10 @@ get_perf_callchain(struct pt_regs *regs, bool ke=
-rnel, bool user,
-> > >         struct perf_callchain_entry_ctx ctx;
-> > >         int rctx, start_entry_idx;
-> > >
-> > > +       /* crosstask is not supported for user stacks */
-> > > +       if (crosstask && user)
-> > > +               return NULL;
-> >
-> > I think get_perf_callchain() supports requesting both user and kernel
-> > stack traces, and if it's crosstask, you can still get kernel (but not
-> > user) stack, if I'm reading the code correctly.
-> >
-> > So by just returning NULL early you will change this behavior, no?
+> From: Steven Rostedt <rostedt@goodmis.org>
 >
-> Yeah, that does seem like a bug.
+> Most tracepoints in the kernel are created with TRACE_EVENT(). The
+> TRACE_EVENT() macro (and DECLARE_EVENT_CLASS() and DEFINE_EVENT() where i=
+n
+> reality, TRACE_EVENT() is just a helper macro that calls those other two
+> macros), will create not only a tracepoint (the function trace_<event>()
+> used in the kernel), it also exposes the tracepoint to user space along
+> with defining what fields will be saved by that tracepoint.
 >
-> Though crosstask in general is dubious, even for kernel stacks.
+> There are a few places that tracepoints are created in the kernel that ar=
+e
+> not exposed to userspace via tracefs. They can only be accessed from code
+> within the kernel. These tracepoints are created with DEFINE_TRACE()
 >
-> If the task is running while you're unwinding it, hilarity ensues.
-> There are guardrails in place, so it should be safe, it may just produce
-> nonsense.  But maybe the callers don't need perfection.
+> Most of these tracepoints end with "_tp". This is useful as when the
+> developer sees that, they know that the tracepoint is for in-kernel only
+> (meaning it can only be accessed inside the kernel, either directly by th=
+e
+> kernel or indirectly via modules and BPF programs) and is not exposed to
+> user space.
 >
-> But also, it would seem to be a bad idea to allow one task to spy on
-> what another task's kernelspace is doing.  Does unpriv BPF allow that?
+> Instead of making this only a process to add "_tp", enforce it by making
+> the DECLARE_TRACE() append the "_tp" suffix to the tracepoint. This
+> requires adding DECLARE_TRACE_EVENT() macros for the TRACE_EVENT() macro
+> to use that keeps the original name.
+>
+> Link: https://lore.kernel.org/all/20250418083351.20a60e64@gandalf.local.h=
+ome/
+>
+> Acked-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+> Changes since v3: https://lore.kernel.org/20250510092342.77371990@gandalf=
+.local.home
+>
+> - Added "_tp" suffix in bpf tests to:
+>
+>   tp_btf/bpf_testmod_test_raw_tp_null in raw_tp_null.c
+>   tp_btf/bpf_testmod_test_raw_tp_null in raw_tp_null_fail.c
+>   raw_tp.w/bpf_testmod_test_writable_bare in test_module_attach.c
+>
+>   Hopefully this passes the bpf verifier tests.
+>
 
-No, you need CAP_PERFMON to be able to capture stack traces, so we are
-fine from that POV.
+Yep, BPF CI is happy, changes look good. Thanks!
 
-But also note that BPF itself doesn't allow requesting both user and
-kernel stack traces in one go. So the issue I pointed out is not
-really related to how BPF is using get_perf_callchain().
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
+>  Documentation/trace/tracepoints.rst           | 17 ++++++---
+>  include/linux/tracepoint.h                    | 38 +++++++++++++------
+>  include/trace/bpf_probe.h                     |  8 ++--
+>  include/trace/define_trace.h                  | 17 ++++++++-
+>  include/trace/events/sched.h                  | 30 +++++++--------
+>  include/trace/events/tcp.h                    |  2 +-
+>  .../testing/selftests/bpf/progs/raw_tp_null.c |  2 +-
+>  .../selftests/bpf/progs/raw_tp_null_fail.c    |  2 +-
+>  .../selftests/bpf/progs/test_module_attach.c  |  4 +-
+>  .../bpf/progs/test_tp_btf_nullable.c          |  4 +-
+>  .../selftests/bpf/test_kmods/bpf_testmod.c    |  8 ++--
+>  11 files changed, 83 insertions(+), 49 deletions(-)
 >
-> Though it seems even 'cat /proc/self/stack' is a privileged operation
-> these days, does unpriv BPF allow that as well?
->
-> --
-> Josh
+
+[...]
 
