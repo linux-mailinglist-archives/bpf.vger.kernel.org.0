@@ -1,301 +1,191 @@
-Return-Path: <bpf+bounces-58107-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58108-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28EB6AB4DC3
-	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 10:13:33 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B54F9AB4E7C
+	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 10:49:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D33D17EBF0
-	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 08:13:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE48D7A470D
+	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 08:48:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C39681F8BC7;
-	Tue, 13 May 2025 08:13:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABB4D202C49;
+	Tue, 13 May 2025 08:49:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="A/GDB9Oi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F9HAwp/n"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ED5B1F09B3
-	for <bpf@vger.kernel.org>; Tue, 13 May 2025 08:13:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2CB31DB12E
+	for <bpf@vger.kernel.org>; Tue, 13 May 2025 08:49:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747123999; cv=none; b=bl2FUE8OUjrKMs36wRUJ8i264E3D6QMcGg/lFhwt6WjWfoTWL73C4H+CbUrZQeZHL4kEa733n6thnIC7Ns05jZbgtKoqB2CS5M5ykaMy18LNKCPlMNmCkM4Up6Q2bShk07sgIfnyneWNgmncH4XKt4qOxxlQgrcpioY1PqEAXuw=
+	t=1747126156; cv=none; b=JjUvXrpfJkSULVsTHflPU0T0iFxEhbPJJl6lI03JVCklPLRvh0xXsSFBgu35r/AOqbIBO1Xwq0OFVC8LCkKXhKeTUcgz2d5jOYuLy5QTWqa9wyi6mq5qi334AFVU5fckkk07U6bMdtvJUgDmXBoFnY2niaBXNbq3jJijKrPSxDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747123999; c=relaxed/simple;
-	bh=FVispU/bP5PzByg1gx3UIn0ELRl06f844D51hZGkB/Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gsUMiUQ3N0uyjXPQSgBPR4e64qeZJLb/4N6iSLV3aGRSGldU8Vmum+LsBEMw56W0GQ2q18bgw9CuY+0/NER6+Fa5nuUhxJC+zaz1LY/09pIV4hcaDWTckhf1E5FnEtap60GGhHyWZwSs9lQ4vMNkIW+hXBR69DOgc8lk5mB32lc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=A/GDB9Oi; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-549b116321aso6144665e87.3
-        for <bpf@vger.kernel.org>; Tue, 13 May 2025 01:13:14 -0700 (PDT)
+	s=arc-20240116; t=1747126156; c=relaxed/simple;
+	bh=yOfB79sDprPHAwUK6UJ3LX7cQU73V4Ro2gmRaLjvihQ=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=AwUghZrnJOzb2NO1S808mejMAGktnCvYuoTftd1DZW9fdlIbm9+8hsA9kKQrrP/wDctXQYxzUZDL9S2DKJ+8WgiG2LHvfbxTPXJT8zLtRcWs5lC9/A7f8/CglTSfO6TBXZ3YsZkAziB5RllLR3k7jpJJzHOv990WBxptxSH5/4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F9HAwp/n; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-22e3b069f23so50142215ad.2
+        for <bpf@vger.kernel.org>; Tue, 13 May 2025 01:49:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1747123993; x=1747728793; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=39zu7seed4jgg43LW2MbbGC/aWRzIIESDfHi1Ed39Jo=;
-        b=A/GDB9Oi61gsOJtLjDDWDDAON6kN5aRD0mhj8P4cRjvkCwIaims9Tf/q3Ft4SrfVke
-         /IH6pZiGaJFSo2N3e4WOh+bZTj8G8O8hoxzedkOkOhyGNDFE7YxK4QRkbDgzvijw3Q9L
-         xgpKIFgPMAvlvjByb9VkytwTXvVAwvIrN0LsQVxge/dwge9PJ+4mFGdr2KjJ/IsRvPir
-         lZ0pUV5Qbpc9tNwhWkEUMya5wq/OHJPfwyP34gIK2YkPKG1IB8G0DHuf0UByeu0+9VgA
-         ibTsTPBn1JS0SzBgbwvmFmQpCSm/lHwqh39V1VmxjQiVPTiiGP9qoYXH66QAEXwVQvhE
-         cH5w==
+        d=gmail.com; s=20230601; t=1747126154; x=1747730954; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=j+g3Goe7O6wlji67BrYdNSK3t1DsqzEmCBB4cfkoLbg=;
+        b=F9HAwp/nP+L79Bfj9CqDwxQ031BAKBF3YCNspSEe5t5sP012QbG8ETY+/cR8dp9jnQ
+         fFhO4UxIZbvkUVzoC3MxqhoUulkuxGRLmDkUw/ENOTFgkpMjxp/rQrhWlgQwUkcDHMbY
+         nl2oz9ZRJZuXbC69TfsArvj/CeklP25kvXq7HmLlXDw8Kod+XLb6RGcS1EiKTfnErqYX
+         wwNyHnTdfCREwiTA0CRtV0btBP2VcLQyI4DOv+blXZNf/aI/FJiZE9L3nF0/hW0HrkTH
+         pdr2N/TO+Jc6fxKA89+nFjw8qS4f/SwSUvpos3DoIa1Ycqm0iXojgOzRgFtLTRm68BHi
+         rr/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747123993; x=1747728793;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=39zu7seed4jgg43LW2MbbGC/aWRzIIESDfHi1Ed39Jo=;
-        b=vZkMTZ2Ym1VKWix1vix/4neUwkbrFR1G01boJac6CpwC70N88xyblmW1QCvZJiVeOI
-         MnNJvL94NYJ2q8uPWuzTsYdn8fWFJTxnRG8yvshxMAK1Q70yePoEUtGFlUlPj22589jg
-         QnGzmGYTlUzkFF0RQALRf464ocvPTdsC9bHtdlAplmPKcgyoMgfSgD/Pq44RHtk1R+Ys
-         xFPtUeQU0Cx0tEMfaHCyL1yvcCcTA/g+mb3CT6MHhy36TIAFyn/+RMLM9z+fz0HRVNQb
-         MUJFsWzglmJavZyhG4XLEGc0v4AGObTkAL8Gv3IvlTeA+FjVmZukxpFGZ6HkI71j+AQf
-         X/Vg==
-X-Forwarded-Encrypted: i=1; AJvYcCW3ezlwddImGKBx/7LdMafeR+s60i7URqzyKYqs5dNimOJ0JPj3r6oKyMioqkBGUdPAYyg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz+V99s5587M1ZsIDQi7XoBMZ6tpWjK+fv5UoWMmcLd5ld54F4x
-	0LOfpJXjzFEyGr6ZB2mKZSNBJyvcKtNRk2SrSOmQtrWwztorsmHtDKCQmnkDx2vFHkKYtY9Ffn/
-	DhGMkhXAiNx347Xd5lg7B5CQhh9x9IWIXGmQL
-X-Gm-Gg: ASbGncvW/lpP69spTuOcmeZx+ngy+SAzAoYcse6pUEY8lN5d4TR06Q9dPWb/vyAuuWQ
-	u1jKrToK1pVbRBFseP7rpoBCQIUQ+PzsKt4SAWcmhbQjE4kfra7b2hxDe9iTjoOu7adOHCNoHMp
-	X5o2hSszW+DSuH4GslYCxtOK37ndN5qxjyQ+JvTTDlrVx22DvNOlohbVNbu4YxGdTZHA==
-X-Google-Smtp-Source: AGHT+IE7L97rmyF6Rls4Vi11gKD7y5J5hh8OUwc4dI3VutRIld7UCLaygWrzqLzlZnE/u8M+GZgvo6S1ZMI914UgAgY=
-X-Received: by 2002:a05:6512:3088:b0:549:8c86:9bf6 with SMTP id
- 2adb3069b0e04-54fc67e61a5mr5388577e87.39.1747123992999; Tue, 13 May 2025
- 01:13:12 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1747126154; x=1747730954;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=j+g3Goe7O6wlji67BrYdNSK3t1DsqzEmCBB4cfkoLbg=;
+        b=D5XoZC06/MbPV8jn0JZ+ABP3NvkXEAZ8f2/VAkvjPjE1Fnaeo86blK1bWxxe6G6sNu
+         poq9SvP6ExZ9XQYYEffJwklHjpo4izfrR132EZQKvpj9tOaP9VZdFytbCtM4GLspwYV1
+         TICYxAW+rgm5kP0Gk2eqUs1iKCYl4+ZdHNeQr+N55Jw0Td0R0CdMx/nrEae4dS6Ds+0y
+         jAU3JeQQSw4hsy7Z4Cu6eizZGeEY7TYLbrTLiAC029wp4hxHJWFxBXJ1XOb+0d5of01C
+         FU3RhWzdTjQD8/ghsQiLdLvCY60fJ17ujSZnhwmmzpnMEkyst1R7IxU2wBrLRh6J8NDM
+         uSmw==
+X-Forwarded-Encrypted: i=1; AJvYcCV/4wzSyEuJg8iGmtUOSjYF8h6lRcybpj0u3pVxCfoLjHYtjp2qqARFXMvFko8ziNm0Dsk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxWK088TTtrLADbi6cL/VRd2uH95AXuTHNtBX9VCqYhOomyC4ce
+	V6yW/I3LMQoxh4uEk60Km4SL2lpepxjoPZgTg7fR6Kcu5kMsuPKo
+X-Gm-Gg: ASbGnctuUnBUNCcR5HqP1OTqTsj1j4DDWi+YbNaHsZRAX+tjHM9694j86qr2M42m5c0
+	DtxYxyDTQHdhzKbitOaYs2GSL/YEq/BOcabsQ02t9HBSwQyYSpWnQcpcZfqqP+O0cmU5Prlm7gv
+	G8fp9Eh70siu/il2uonKDYxH76A8/GdvvBdnCPKO4nPkQ3FGMr7rvVGQGLrzgJ3WzT7kwFFwg0E
+	CF1ng8AGLZXxnoe0KtUWB3nWOsg+8cxvmSQ5CNwphMD0i+DBQbjnfsYoqSnXKP+qpcbkwNKEnCk
+	qDReNCxMLnJAHYh+iZjWvvibSW6SBJYNCdbzgdqnxMLY2Q8=
+X-Google-Smtp-Source: AGHT+IELNtHVtozGQQui/yKQffrhwglIaets7Jl64sVWFsZBzX8UcLQ64EWTU06T+o4HZkA0C8e5ww==
+X-Received: by 2002:a17:902:dac5:b0:223:f9a4:3fb6 with SMTP id d9443c01a7336-22fc8b107abmr256240205ad.11.1747126153889;
+        Tue, 13 May 2025 01:49:13 -0700 (PDT)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22fc755596csm76778175ad.58.2025.05.13.01.49.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 May 2025 01:49:13 -0700 (PDT)
+Message-ID: <32b9c10381d7f0fe358f955437febf96e5d2f58a.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf: Add __prog tag to pass in prog->aux
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
+Cc: Tejun Heo <tj@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Andrii
+ Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau	 <martin.lau@kernel.org>, kkd@meta.com,
+ kernel-team@meta.com
+Date: Tue, 13 May 2025 01:49:11 -0700
+In-Reply-To: <20250513025747.1519365-1-memxor@gmail.com>
+References: <20250513025747.1519365-1-memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <68213ddf.050a0220.f2294.0045.GAE@google.com> <CAEf4BzbsmHonD-G45-Jo8RQHPjDYEz-Nwx0MGtsk427tgsqGkg@mail.gmail.com>
-In-Reply-To: <CAEf4BzbsmHonD-G45-Jo8RQHPjDYEz-Nwx0MGtsk427tgsqGkg@mail.gmail.com>
-From: Dmitry Vyukov <dvyukov@google.com>
-Date: Tue, 13 May 2025 10:13:01 +0200
-X-Gm-Features: AX0GCFvhf698Mjpq7Vly8ZviUnLjvyWjqHtMZKusaXObUFgruVQJYzVQZuDpuKg
-Message-ID: <CACT4Y+YpBHXXjU6rPBtB7_-5BvxqZUHW8i6YjOa6twoR=2u1aA@mail.gmail.com>
-Subject: Re: [syzbot] [bpf?] KASAN: vmalloc-out-of-bounds Write in
- vrealloc_noprof (2)
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: syzbot <syzbot+659fcc0678e5a1193143@syzkaller.appspotmail.com>, 
-	Linux Memory Management List <linux-mm@kvack.org>, andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me, 
-	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, 13 May 2025 at 00:52, Andrii Nakryiko <andrii.nakryiko@gmail.com> w=
-rote:
->
-> On Sun, May 11, 2025 at 5:16=E2=80=AFPM syzbot
-> <syzbot+659fcc0678e5a1193143@syzkaller.appspotmail.com> wrote:
-> >
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    707df3375124 Merge tag 'media/v6.15-2' of git://git.ker=
-nel..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=3D16b1b2bc580=
-000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D91c351a0f62=
-29e67
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3D659fcc0678e5a=
-1193143
-> > compiler:       Debian clang version 20.1.2 (++20250402124445+58df0ef89=
-dd6-1~exp1~20250402004600.97), Debian LLD 20.1.2
-> >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > Downloadable assets:
-> > disk image (non-bootable): https://storage.googleapis.com/syzbot-assets=
-/d900f083ada3/non_bootable_disk-707df337.raw.xz
-> > vmlinux: https://storage.googleapis.com/syzbot-assets/bc3944720ea5/vmli=
-nux-707df337.xz
-> > kernel image: https://storage.googleapis.com/syzbot-assets/7bc2f45ae23f=
-/bzImage-707df337.xz
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the co=
-mmit:
-> > Reported-by: syzbot+659fcc0678e5a1193143@syzkaller.appspotmail.com
-> >
-> > syz.0.0 uses obsolete (PF_INET,SOCK_PACKET)
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > BUG: KASAN: vmalloc-out-of-bounds in vrealloc_noprof+0x396/0x430 mm/vma=
-lloc.c:4093
-> > Write of size 4064 at addr ffffc9000efa1020 by task syz.0.0/5317
-> >
->
-> A while back I sent a fix for kasan handling of vrealloc ([0]), but
-> this issue came back even with my changes in [0]. Can anyone from mm
-> side take a look at vrealloc_noprof() and see if we are missing
-> anything else to convince KASAN that we are using vrealloc()
-> correctly?
->
-> Seems like kasan_poison_vmalloc() + kasan_unpoison_vmalloc() dance
-> isn't covering all cases? Or am I missing something? It's doubtful
-> that there is any BPF-side bug in using kvrealloc().
->
->   [0] https://lore.kernel.org/linux-mm/20241126005206.3457974-1-andrii@ke=
-rnel.org/
+On Mon, 2025-05-12 at 19:57 -0700, Kumar Kartikeya Dwivedi wrote:
 
-Hi Andrii,
+[...]
 
-The report flags the very memset that's visible in this patch chunk, right?
-https://lore.kernel.org/linux-mm/20241126005206.3457974-1-andrii@kernel.org=
-/
-Unless I am missing something obvious, the unpoison is added _after_
-the memset, so it can't help. The unpoison should be done _before_ the
-memset.
+In Documentation/bpf/kfuncs.rst there are descriptions for several
+suffixes that are supported, "__prog" should be added there.
 
+Do we want to add a separate test case for this feature?
+It looks like there are no tests for other suffixes,
+so relying on wq tests passing is probably fine.
 
-> > CPU: 0 UID: 0 PID: 5317 Comm: syz.0.0 Not tainted 6.15.0-rc5-syzkaller-=
-00038-g707df3375124 #0 PREEMPT(full)
-> > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-=
-1.16.3-2~bpo12+1 04/01/2014
-> > Call Trace:
-> >  <TASK>
-> >  dump_stack_lvl+0x189/0x250 lib/dump_stack.c:120
-> >  print_address_description mm/kasan/report.c:408 [inline]
-> >  print_report+0xb4/0x290 mm/kasan/report.c:521
-> >  kasan_report+0x118/0x150 mm/kasan/report.c:634
-> >  check_region_inline mm/kasan/generic.c:-1 [inline]
-> >  kasan_check_range+0x29a/0x2b0 mm/kasan/generic.c:189
-> >  __asan_memset+0x22/0x50 mm/kasan/shadow.c:84
-> >  vrealloc_noprof+0x396/0x430 mm/vmalloc.c:4093
-> >  push_insn_history+0x184/0x650 kernel/bpf/verifier.c:3874
-> >  do_check+0x597/0xd630 kernel/bpf/verifier.c:19450
-> >  do_check_common+0x168d/0x20b0 kernel/bpf/verifier.c:22776
-> >  do_check_main kernel/bpf/verifier.c:22867 [inline]
-> >  bpf_check+0x13679/0x19a70 kernel/bpf/verifier.c:24033
-> >  bpf_prog_load+0x1318/0x1930 kernel/bpf/syscall.c:2971
-> >  __sys_bpf+0x5f1/0x860 kernel/bpf/syscall.c:5834
-> >  __do_sys_bpf kernel/bpf/syscall.c:5941 [inline]
-> >  __se_sys_bpf kernel/bpf/syscall.c:5939 [inline]
-> >  __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5939
-> >  do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
-> >  do_syscall_64+0xf6/0x210 arch/x86/entry/syscall_64.c:94
-> >  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> > RIP: 0033:0x7f649c58e969
-> > Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89=
- f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 =
-ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-> > RSP: 002b:00007f649d4dd038 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-> > RAX: ffffffffffffffda RBX: 00007f649c7b5fa0 RCX: 00007f649c58e969
-> > RDX: 0000000000000048 RSI: 00002000000017c0 RDI: 0000000000000005
-> > RBP: 00007f649c610ab1 R08: 0000000000000000 R09: 0000000000000000
-> > R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> > R13: 0000000000000000 R14: 00007f649c7b5fa0 R15: 00007fff542287e8
-> >  </TASK>
-> >
-> > The buggy address belongs to the virtual mapping at
-> >  [ffffc9000ef81000, ffffc9000efa3000) created by:
-> >  kvrealloc_noprof+0x82/0xe0 mm/slub.c:5109
-> >
-> > The buggy address belongs to the physical page:
-> > page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x3ffd0 pfn:=
-0x3efe5
-> > flags: 0x4fff00000000000(node=3D1|zone=3D1|lastcpupid=3D0x7ff)
-> > raw: 04fff00000000000 0000000000000000 dead000000000122 000000000000000=
-0
-> > raw: 000000000003ffd0 0000000000000000 00000001ffffffff 000000000000000=
-0
-> > page dumped because: kasan: bad access detected
-> > page_owner tracks the page as allocated
-> > page last allocated via order 0, migratetype Unmovable, gfp_mask 0x102c=
-c2(GFP_HIGHUSER|__GFP_NOWARN), pid 5317, tgid 5316 (syz.0.0), ts 8258753338=
-3, free_ts 81110216781
-> >  set_page_owner include/linux/page_owner.h:32 [inline]
-> >  post_alloc_hook+0x1d8/0x230 mm/page_alloc.c:1718
-> >  prep_new_page mm/page_alloc.c:1726 [inline]
-> >  get_page_from_freelist+0x21ce/0x22b0 mm/page_alloc.c:3688
-> >  __alloc_pages_slowpath+0x2fe/0xcc0 mm/page_alloc.c:4509
-> >  __alloc_frozen_pages_noprof+0x319/0x370 mm/page_alloc.c:4983
-> >  alloc_pages_mpol+0x232/0x4a0 mm/mempolicy.c:2301
-> >  alloc_frozen_pages_noprof mm/mempolicy.c:2372 [inline]
-> >  alloc_pages_noprof+0xa9/0x190 mm/mempolicy.c:2392
-> >  vm_area_alloc_pages mm/vmalloc.c:3591 [inline]
-> >  __vmalloc_area_node mm/vmalloc.c:3669 [inline]
-> >  __vmalloc_node_range_noprof+0x8fe/0x12c0 mm/vmalloc.c:3844
-> >  __kvmalloc_node_noprof+0x3a0/0x5e0 mm/slub.c:5034
-> >  kvrealloc_noprof+0x82/0xe0 mm/slub.c:5109
-> >  push_insn_history+0x184/0x650 kernel/bpf/verifier.c:3874
-> >  do_check+0x597/0xd630 kernel/bpf/verifier.c:19450
-> >  do_check_common+0x168d/0x20b0 kernel/bpf/verifier.c:22776
-> >  do_check_main kernel/bpf/verifier.c:22867 [inline]
-> >  bpf_check+0x13679/0x19a70 kernel/bpf/verifier.c:24033
-> >  bpf_prog_load+0x1318/0x1930 kernel/bpf/syscall.c:2971
-> >  __sys_bpf+0x5f1/0x860 kernel/bpf/syscall.c:5834
-> >  __do_sys_bpf kernel/bpf/syscall.c:5941 [inline]
-> >  __se_sys_bpf kernel/bpf/syscall.c:5939 [inline]
-> >  __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5939
-> > page last free pid 82 tgid 82 stack trace:
-> >  reset_page_owner include/linux/page_owner.h:25 [inline]
-> >  free_pages_prepare mm/page_alloc.c:1262 [inline]
-> >  free_unref_folios+0xb81/0x14a0 mm/page_alloc.c:2782
-> >  shrink_folio_list+0x3053/0x4e90 mm/vmscan.c:1552
-> >  evict_folios+0x417b/0x5110 mm/vmscan.c:4698
-> >  try_to_shrink_lruvec+0x705/0x990 mm/vmscan.c:4859
-> >  shrink_one+0x21b/0x7c0 mm/vmscan.c:4904
-> >  shrink_many mm/vmscan.c:4967 [inline]
-> >  lru_gen_shrink_node mm/vmscan.c:5045 [inline]
-> >  shrink_node+0x3139/0x3750 mm/vmscan.c:6016
-> >  kswapd_shrink_node mm/vmscan.c:6867 [inline]
-> >  balance_pgdat mm/vmscan.c:7050 [inline]
-> >  kswapd+0x1675/0x2970 mm/vmscan.c:7315
-> >  kthread+0x70e/0x8a0 kernel/kthread.c:464
-> >  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:153
-> >  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
-> >
-> > Memory state around the buggy address:
-> >  ffffc9000efa0f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> >  ffffc9000efa0f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> > >ffffc9000efa1000: 00 00 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-> >                                ^
-> >  ffffc9000efa1080: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-> >  ffffc9000efa1100: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >
-> >
-> > ---
-> > This report is generated by a bot. It may contain errors.
-> > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >
-> > syzbot will keep track of this issue. See:
-> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> >
-> > If the report is already addressed, let syzbot know by replying with:
-> > #syz fix: exact-commit-title
-> >
-> > If you want to overwrite report's subsystems, reply with:
-> > #syz set subsystems: new-subsystem
-> > (See the list of subsystem names on the web dashboard)
-> >
-> > If the report is a duplicate of another one, reply with:
-> > #syz dup: exact-subject-of-another-report
-> >
-> > If you want to undo deduplication, reply with:
-> > #syz undup
->
-> --
-> You received this message because you are subscribed to the Google Groups=
- "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion visit https://groups.google.com/d/msgid/syzkaller=
--bugs/CAEf4BzbsmHonD-G45-Jo8RQHPjDYEz-Nwx0MGtsk427tgsqGkg%40mail.gmail.com.
+Implementation lgtm, a few nits below.
+
+>  include/linux/bpf_verifier.h |  1 +
+>  kernel/bpf/helpers.c         |  4 ++--
+>  kernel/bpf/verifier.c        | 33 +++++++++++++++++++++++++++------
+>  3 files changed, 30 insertions(+), 8 deletions(-)
+>=20
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index 9734544b6957..7dd85ed6059e 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
+> @@ -606,6 +606,7 @@ struct bpf_insn_aux_data {
+>  	bool calls_callback;
+>  	/* registers alive before this instruction. */
+>  	u16 live_regs_before;
+> +	u16 arg_prog;
+
+Nit: there is a 4-bit hole after `fastcall_spills_num`,
+     `arg_prog` field could be put there and 2 bytes at the tail
+     would be remain for future extension.
+
+>  };
+>=20
+>  #define MAX_USED_MAPS 64 /* max number of maps accessed by one eBPF prog=
+ram */
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index fed53da75025..43cbf439b9fb 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -3012,9 +3012,9 @@ __bpf_kfunc int bpf_wq_start(struct bpf_wq *wq, uns=
+igned int flags)
+>  __bpf_kfunc int bpf_wq_set_callback_impl(struct bpf_wq *wq,
+>  					 int (callback_fn)(void *map, int *key, void *value),
+>  					 unsigned int flags,
+> -					 void *aux__ign)
+> +					 void *aux__prog)
+>  {
+> -	struct bpf_prog_aux *aux =3D (struct bpf_prog_aux *)aux__ign;
+> +	struct bpf_prog_aux *aux =3D (struct bpf_prog_aux *)aux__prog;
+>  	struct bpf_async_kern *async =3D (struct bpf_async_kern *)wq;
+>=20
+>  	if (flags)
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 28f5a7899bd6..f409a06099f6 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -343,6 +343,7 @@ struct bpf_kfunc_call_arg_meta {
+>  		int uid;
+>  	} map;
+>  	u64 mem_size;
+> +	u32 arg_prog;
+
+Nit: this is a boolean flag, I'd put it after `bool arg_owning_ref`,
+     as there is a 3 bytes hole there.
+
+>  };
+>=20
+>  struct btf *btf_vmlinux;
+
+[...]
+
+@@ -12906,6 +12912,17 @@ static int check_kfunc_args(struct bpf_verifier_en=
+v *env, struct bpf_kfunc_call_
+ 		if (is_kfunc_arg_ignore(btf, &args[i]))
+ 			continue;
+=20
++		if (is_kfunc_arg_prog(btf, &args[i])) {
++			/* Used to reject repeated use of __aux. */
+                                                          ^^^^^^
+                                               Nit: should be __prog.
+
++			if (meta->arg_prog) {
++				verbose(env, "Only 1 prog->aux argument supported per-kfunc\n");
++				return -EFAULT;
++			}
++			meta->arg_prog =3D regno;
++			cur_aux(env)->arg_prog =3D regno;
++			continue;
++		}
++
+ 		if (btf_type_is_scalar(t)) {
+ 			if (reg->type !=3D SCALAR_VALUE) {
+ 				verbose(env, "R%d is not a scalar\n", regno);
+
 
