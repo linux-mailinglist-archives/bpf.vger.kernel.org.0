@@ -1,191 +1,260 @@
-Return-Path: <bpf+bounces-58108-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58109-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B54F9AB4E7C
-	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 10:49:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F31BAB52CB
+	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 12:38:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE48D7A470D
-	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 08:48:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB68E1884CFE
+	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 10:35:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABB4D202C49;
-	Tue, 13 May 2025 08:49:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4FCC26A1A3;
+	Tue, 13 May 2025 10:22:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F9HAwp/n"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ChNCLmYI";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="GXZC/sjq";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ChNCLmYI";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="GXZC/sjq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2CB31DB12E
-	for <bpf@vger.kernel.org>; Tue, 13 May 2025 08:49:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EC2D267F61
+	for <bpf@vger.kernel.org>; Tue, 13 May 2025 10:22:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747126156; cv=none; b=JjUvXrpfJkSULVsTHflPU0T0iFxEhbPJJl6lI03JVCklPLRvh0xXsSFBgu35r/AOqbIBO1Xwq0OFVC8LCkKXhKeTUcgz2d5jOYuLy5QTWqa9wyi6mq5qi334AFVU5fckkk07U6bMdtvJUgDmXBoFnY2niaBXNbq3jJijKrPSxDM=
+	t=1747131753; cv=none; b=IUx2ahmY7K1dhwlzxJLLihB0ItPWJ7as5feklAy9x94cPWzXgzGvLTL+kgHnrHMofCV75sEakwdIjT69A8FiuWN7NQo8inCAjJXDFWDyh5w9ast3sRPrLKTgbCXabdqHqPMH6ktHjYTtP1g0rCKwt0GwLzBdJzIYSxPJi1gQi3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747126156; c=relaxed/simple;
-	bh=yOfB79sDprPHAwUK6UJ3LX7cQU73V4Ro2gmRaLjvihQ=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=AwUghZrnJOzb2NO1S808mejMAGktnCvYuoTftd1DZW9fdlIbm9+8hsA9kKQrrP/wDctXQYxzUZDL9S2DKJ+8WgiG2LHvfbxTPXJT8zLtRcWs5lC9/A7f8/CglTSfO6TBXZ3YsZkAziB5RllLR3k7jpJJzHOv990WBxptxSH5/4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F9HAwp/n; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-22e3b069f23so50142215ad.2
-        for <bpf@vger.kernel.org>; Tue, 13 May 2025 01:49:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747126154; x=1747730954; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=j+g3Goe7O6wlji67BrYdNSK3t1DsqzEmCBB4cfkoLbg=;
-        b=F9HAwp/nP+L79Bfj9CqDwxQ031BAKBF3YCNspSEe5t5sP012QbG8ETY+/cR8dp9jnQ
-         fFhO4UxIZbvkUVzoC3MxqhoUulkuxGRLmDkUw/ENOTFgkpMjxp/rQrhWlgQwUkcDHMbY
-         nl2oz9ZRJZuXbC69TfsArvj/CeklP25kvXq7HmLlXDw8Kod+XLb6RGcS1EiKTfnErqYX
-         wwNyHnTdfCREwiTA0CRtV0btBP2VcLQyI4DOv+blXZNf/aI/FJiZE9L3nF0/hW0HrkTH
-         pdr2N/TO+Jc6fxKA89+nFjw8qS4f/SwSUvpos3DoIa1Ycqm0iXojgOzRgFtLTRm68BHi
-         rr/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747126154; x=1747730954;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=j+g3Goe7O6wlji67BrYdNSK3t1DsqzEmCBB4cfkoLbg=;
-        b=D5XoZC06/MbPV8jn0JZ+ABP3NvkXEAZ8f2/VAkvjPjE1Fnaeo86blK1bWxxe6G6sNu
-         poq9SvP6ExZ9XQYYEffJwklHjpo4izfrR132EZQKvpj9tOaP9VZdFytbCtM4GLspwYV1
-         TICYxAW+rgm5kP0Gk2eqUs1iKCYl4+ZdHNeQr+N55Jw0Td0R0CdMx/nrEae4dS6Ds+0y
-         jAU3JeQQSw4hsy7Z4Cu6eizZGeEY7TYLbrTLiAC029wp4hxHJWFxBXJ1XOb+0d5of01C
-         FU3RhWzdTjQD8/ghsQiLdLvCY60fJ17ujSZnhwmmzpnMEkyst1R7IxU2wBrLRh6J8NDM
-         uSmw==
-X-Forwarded-Encrypted: i=1; AJvYcCV/4wzSyEuJg8iGmtUOSjYF8h6lRcybpj0u3pVxCfoLjHYtjp2qqARFXMvFko8ziNm0Dsk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxWK088TTtrLADbi6cL/VRd2uH95AXuTHNtBX9VCqYhOomyC4ce
-	V6yW/I3LMQoxh4uEk60Km4SL2lpepxjoPZgTg7fR6Kcu5kMsuPKo
-X-Gm-Gg: ASbGnctuUnBUNCcR5HqP1OTqTsj1j4DDWi+YbNaHsZRAX+tjHM9694j86qr2M42m5c0
-	DtxYxyDTQHdhzKbitOaYs2GSL/YEq/BOcabsQ02t9HBSwQyYSpWnQcpcZfqqP+O0cmU5Prlm7gv
-	G8fp9Eh70siu/il2uonKDYxH76A8/GdvvBdnCPKO4nPkQ3FGMr7rvVGQGLrzgJ3WzT7kwFFwg0E
-	CF1ng8AGLZXxnoe0KtUWB3nWOsg+8cxvmSQ5CNwphMD0i+DBQbjnfsYoqSnXKP+qpcbkwNKEnCk
-	qDReNCxMLnJAHYh+iZjWvvibSW6SBJYNCdbzgdqnxMLY2Q8=
-X-Google-Smtp-Source: AGHT+IELNtHVtozGQQui/yKQffrhwglIaets7Jl64sVWFsZBzX8UcLQ64EWTU06T+o4HZkA0C8e5ww==
-X-Received: by 2002:a17:902:dac5:b0:223:f9a4:3fb6 with SMTP id d9443c01a7336-22fc8b107abmr256240205ad.11.1747126153889;
-        Tue, 13 May 2025 01:49:13 -0700 (PDT)
-Received: from [192.168.0.56] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22fc755596csm76778175ad.58.2025.05.13.01.49.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 May 2025 01:49:13 -0700 (PDT)
-Message-ID: <32b9c10381d7f0fe358f955437febf96e5d2f58a.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpf: Add __prog tag to pass in prog->aux
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
-Cc: Tejun Heo <tj@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Andrii
- Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau	 <martin.lau@kernel.org>, kkd@meta.com,
- kernel-team@meta.com
-Date: Tue, 13 May 2025 01:49:11 -0700
-In-Reply-To: <20250513025747.1519365-1-memxor@gmail.com>
-References: <20250513025747.1519365-1-memxor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+	s=arc-20240116; t=1747131753; c=relaxed/simple;
+	bh=c1WvkTFbMurOFNrcRbpPyC6+g7FLrn9s6jR5zWXVdA4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=h+BNGKtaNgERkkOwttZhcRK79cLVZogzMcPxktzbecUGyssbS3tjvXo4OQ5CVaH00DDTT7VRMIQ+iSgz0oWAS+voGVBAmYaiA5C6vzDqN3n3gQtnpcIYGySMqMFOON3Lln+3dIQFZ8Jed5VLGJc9pUGloi18Mznk7eC5hcEU0q0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ChNCLmYI; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=GXZC/sjq; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ChNCLmYI; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=GXZC/sjq; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4E8AE211D2;
+	Tue, 13 May 2025 10:22:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1747131749; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mrZHYTr94L6UiUBzTPPsFJdqRFgV3hVQF43r7tnRnVM=;
+	b=ChNCLmYISGXYX57UNr2nhroIDOi+2pNZhFuO5IVV8uaTn8ZrMF83DJG6bCLUwVuQveMrw2
+	mOodNvkGB3R2zdSdYGaub2D9F+fyF9Xgt1dXY6FBZ+jS7rgTprqwfUvr/cqWRZRtLJfhO7
+	OmrdBjya7s8VCJWuNqx0qWU3RzyMC/U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1747131749;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mrZHYTr94L6UiUBzTPPsFJdqRFgV3hVQF43r7tnRnVM=;
+	b=GXZC/sjqv9BstPD8ulzua7sBguJNvVGKA4T/kHsmUupPwVlRSxCvhFjXmKJKPO8yv79fti
+	u1OEC5HxJytRfEAw==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ChNCLmYI;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="GXZC/sjq"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1747131749; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mrZHYTr94L6UiUBzTPPsFJdqRFgV3hVQF43r7tnRnVM=;
+	b=ChNCLmYISGXYX57UNr2nhroIDOi+2pNZhFuO5IVV8uaTn8ZrMF83DJG6bCLUwVuQveMrw2
+	mOodNvkGB3R2zdSdYGaub2D9F+fyF9Xgt1dXY6FBZ+jS7rgTprqwfUvr/cqWRZRtLJfhO7
+	OmrdBjya7s8VCJWuNqx0qWU3RzyMC/U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1747131749;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mrZHYTr94L6UiUBzTPPsFJdqRFgV3hVQF43r7tnRnVM=;
+	b=GXZC/sjqv9BstPD8ulzua7sBguJNvVGKA4T/kHsmUupPwVlRSxCvhFjXmKJKPO8yv79fti
+	u1OEC5HxJytRfEAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 251D6137E8;
+	Tue, 13 May 2025 10:22:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 8EG0CGUdI2hdGwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Tue, 13 May 2025 10:22:29 +0000
+Message-ID: <fbcc9892-838c-4156-8ece-94793c00a1c6@suse.cz>
+Date: Tue, 13 May 2025 12:22:28 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 1/7] memcg: memcg_rstat_updated re-entrant safe
+ against irqs
+Content-Language: en-US
+To: Shakeel Butt <shakeel.butt@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Muchun Song <muchun.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Harry Yoo <harry.yoo@oracle.com>, Yosry Ahmed <yosry.ahmed@linux.dev>,
+ bpf@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+References: <20250513031316.2147548-1-shakeel.butt@linux.dev>
+ <20250513031316.2147548-2-shakeel.butt@linux.dev>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20250513031316.2147548-2-shakeel.butt@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 4E8AE211D2
+X-Spam-Flag: NO
+X-Spam-Score: -4.51
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,linux.dev:email,suse.cz:mid,suse.cz:dkim];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Action: no action
 
-On Mon, 2025-05-12 at 19:57 -0700, Kumar Kartikeya Dwivedi wrote:
+On 5/13/25 05:13, Shakeel Butt wrote:
+> The function memcg_rstat_updated() is used to track the memcg stats
+> updates for optimizing the flushes. At the moment, it is not re-entrant
+> safe and the callers disabled irqs before calling. However to achieve
+> the goal of updating memcg stats without irqs, memcg_rstat_updated()
+> needs to be re-entrant safe against irqs.
+> 
+> This patch makes memcg_rstat_updated() re-entrant safe against irqs.
+> However it is using atomic_* ops which on x86, adds lock prefix to the
+> instructions. Since this is per-cpu data, the this_cpu_* ops are
+> preferred. However the percpu pointer is stored in struct mem_cgroup and
+> doing the upward traversal through struct mem_cgroup may cause two cache
+> misses as compared to traversing through struct memcg_vmstats_percpu
+> pointer.
+> 
+> NOTE: explore if there is atomic_* ops alternative without lock prefix.
 
-[...]
+local_t might be what you want here
+https://docs.kernel.org/core-api/local_ops.html
 
-In Documentation/bpf/kfuncs.rst there are descriptions for several
-suffixes that are supported, "__prog" should be added there.
+Or maybe just add __percpu to parent like this?
 
-Do we want to add a separate test case for this feature?
-It looks like there are no tests for other suffixes,
-so relying on wq tests passing is probably fine.
+struct memcg_vmstats_percpu {
+...
+        struct memcg_vmstats_percpu __percpu *parent;
+...
+}
 
-Implementation lgtm, a few nits below.
+Yes, it means on each cpu's struct memcg_vmstats_percpu instance there will
+be actually the same value stored (the percpu offset) instead of the
+cpu-specific parent pointer, which might seem wasteful. But AFAIK this_cpu_*
+is optimized enough thanks to the segment register usage, that it doesn't
+matter? It shouldn't cause any extra cache miss you worry about, IIUC?
 
->  include/linux/bpf_verifier.h |  1 +
->  kernel/bpf/helpers.c         |  4 ++--
->  kernel/bpf/verifier.c        | 33 +++++++++++++++++++++++++++------
->  3 files changed, 30 insertions(+), 8 deletions(-)
->=20
-> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> index 9734544b6957..7dd85ed6059e 100644
-> --- a/include/linux/bpf_verifier.h
-> +++ b/include/linux/bpf_verifier.h
-> @@ -606,6 +606,7 @@ struct bpf_insn_aux_data {
->  	bool calls_callback;
->  	/* registers alive before this instruction. */
->  	u16 live_regs_before;
-> +	u16 arg_prog;
+With that I think you could refactor that code to use e.g.
+this_cpu_add_return() and this_cpu_xchg() on the stats_updates and obtain
+the parent "pointer" in a way that's also compatible with these operations.
 
-Nit: there is a 4-bit hole after `fastcall_spills_num`,
-     `arg_prog` field could be put there and 2 bytes at the tail
-     would be remain for future extension.
+That is unless we want also nmi safety, then we're back to the issue of the
+previous series...
 
->  };
->=20
->  #define MAX_USED_MAPS 64 /* max number of maps accessed by one eBPF prog=
-ram */
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index fed53da75025..43cbf439b9fb 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -3012,9 +3012,9 @@ __bpf_kfunc int bpf_wq_start(struct bpf_wq *wq, uns=
-igned int flags)
->  __bpf_kfunc int bpf_wq_set_callback_impl(struct bpf_wq *wq,
->  					 int (callback_fn)(void *map, int *key, void *value),
->  					 unsigned int flags,
-> -					 void *aux__ign)
-> +					 void *aux__prog)
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> ---
+>  mm/memcontrol.c | 21 +++++++++++++--------
+>  1 file changed, 13 insertions(+), 8 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 6cfa3550f300..2c4c095bf26c 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -503,7 +503,7 @@ static inline int memcg_events_index(enum vm_event_item idx)
+>  
+>  struct memcg_vmstats_percpu {
+>  	/* Stats updates since the last flush */
+> -	unsigned int			stats_updates;
+> +	atomic_t			stats_updates;
+>  
+>  	/* Cached pointers for fast iteration in memcg_rstat_updated() */
+>  	struct memcg_vmstats_percpu	*parent;
+> @@ -590,12 +590,15 @@ static bool memcg_vmstats_needs_flush(struct memcg_vmstats *vmstats)
+>  static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
 >  {
-> -	struct bpf_prog_aux *aux =3D (struct bpf_prog_aux *)aux__ign;
-> +	struct bpf_prog_aux *aux =3D (struct bpf_prog_aux *)aux__prog;
->  	struct bpf_async_kern *async =3D (struct bpf_async_kern *)wq;
->=20
->  	if (flags)
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 28f5a7899bd6..f409a06099f6 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -343,6 +343,7 @@ struct bpf_kfunc_call_arg_meta {
->  		int uid;
->  	} map;
->  	u64 mem_size;
-> +	u32 arg_prog;
-
-Nit: this is a boolean flag, I'd put it after `bool arg_owning_ref`,
-     as there is a 3 bytes hole there.
-
->  };
->=20
->  struct btf *btf_vmlinux;
-
-[...]
-
-@@ -12906,6 +12912,17 @@ static int check_kfunc_args(struct bpf_verifier_en=
-v *env, struct bpf_kfunc_call_
- 		if (is_kfunc_arg_ignore(btf, &args[i]))
- 			continue;
-=20
-+		if (is_kfunc_arg_prog(btf, &args[i])) {
-+			/* Used to reject repeated use of __aux. */
-                                                          ^^^^^^
-                                               Nit: should be __prog.
-
-+			if (meta->arg_prog) {
-+				verbose(env, "Only 1 prog->aux argument supported per-kfunc\n");
-+				return -EFAULT;
-+			}
-+			meta->arg_prog =3D regno;
-+			cur_aux(env)->arg_prog =3D regno;
-+			continue;
-+		}
-+
- 		if (btf_type_is_scalar(t)) {
- 			if (reg->type !=3D SCALAR_VALUE) {
- 				verbose(env, "R%d is not a scalar\n", regno);
+>  	struct memcg_vmstats_percpu *statc;
+> -	int cpu = smp_processor_id();
+> -	unsigned int stats_updates;
+> +	int cpu;
+> +	int stats_updates;
+>  
+>  	if (!val)
+>  		return;
+>  
+> +	/* Don't assume callers have preemption disabled. */
+> +	cpu = get_cpu();
+> +
+>  	cgroup_rstat_updated(memcg->css.cgroup, cpu);
+>  	statc = this_cpu_ptr(memcg->vmstats_percpu);
+>  	for (; statc; statc = statc->parent) {
+> @@ -607,14 +610,16 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
+>  		if (memcg_vmstats_needs_flush(statc->vmstats))
+>  			break;
+>  
+> -		stats_updates = READ_ONCE(statc->stats_updates) + abs(val);
+> -		WRITE_ONCE(statc->stats_updates, stats_updates);
+> +		stats_updates = atomic_add_return(abs(val), &statc->stats_updates);
+>  		if (stats_updates < MEMCG_CHARGE_BATCH)
+>  			continue;
+>  
+> -		atomic64_add(stats_updates, &statc->vmstats->stats_updates);
+> -		WRITE_ONCE(statc->stats_updates, 0);
+> +		stats_updates = atomic_xchg(&statc->stats_updates, 0);
+> +		if (stats_updates)
+> +			atomic64_add(stats_updates,
+> +				     &statc->vmstats->stats_updates);
+>  	}
+> +	put_cpu();
+>  }
+>  
+>  static void __mem_cgroup_flush_stats(struct mem_cgroup *memcg, bool force)
+> @@ -4155,7 +4160,7 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+>  		mem_cgroup_stat_aggregate(&ac);
+>  
+>  	}
+> -	WRITE_ONCE(statc->stats_updates, 0);
+> +	atomic_set(&statc->stats_updates, 0);
+>  	/* We are in a per-cpu loop here, only do the atomic write once */
+>  	if (atomic64_read(&memcg->vmstats->stats_updates))
+>  		atomic64_set(&memcg->vmstats->stats_updates, 0);
 
 
