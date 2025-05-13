@@ -1,157 +1,165 @@
-Return-Path: <bpf+bounces-58095-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58096-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50AF8AB4A7E
-	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 06:28:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30B80AB4A99
+	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 06:40:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A46C43B2844
-	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 04:28:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84D623BE561
+	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 04:40:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34B001E04BD;
-	Tue, 13 May 2025 04:28:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53DA51DF261;
+	Tue, 13 May 2025 04:40:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="X7YZ9Tm5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yzxzex0z"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13CAD1C862B
-	for <bpf@vger.kernel.org>; Tue, 13 May 2025 04:28:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F43826AFB
+	for <bpf@vger.kernel.org>; Tue, 13 May 2025 04:40:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747110490; cv=none; b=J79fKVZgY1A0d0ZlFZTen6j392G5jhJPuCQWWL9lwtAXiJAfsiLcgLFHl0UExoKcUaPYLLIvBENGlrYNPqeMLRr7LdRpU60Q0DFVNz9NMDS15ZK1TWVK0OuNRrOEH+8kohuQLObYQWMdpOvwOD99Yha8aS1PJCS4OZwigleDfCg=
+	t=1747111221; cv=none; b=hvb80vFSSUkoSQKc2foxTJ8VPtVKw3HCyeOqfkAerzx0vjkfYoiAY5JXQ16o3D/FtRzkkyRL8ZQR5hG5D0sHIzsPCH75NqTZsH6KwqcFM1i1xyoVL+bYj4b28kF3z9YycqSp7wTBOrAZ0yUi9/4sNf2xbhzS8zy6C4D7f1HZJFk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747110490; c=relaxed/simple;
-	bh=P/tVh1SGmOv4IS5LacLBq2PIeXYPZBySnKyqY6IxmmE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Ze7cEqO1Yxmg5hkQRPYBHSXrGJ9QbjKFD/cynqnTUIwrIAIITig+MALtkXmk7vrC+kDb/6YUIx0Hd5iro7w8gm+ipiL0uLKpA6vZ1Fh9psDmuZez55LgEL8baVhwVrVTTi4zfR8lVEuaTNEKfb8lAT1iGnolFnZujaQpY6hRDtg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=X7YZ9Tm5; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1747110476;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=BPTA9vVxkQoC46WbGZ0A0ac/vwtYT1FSdvh6sBn5uV4=;
-	b=X7YZ9Tm52OJw1Zo1gDM4ed9e+Dl8r4JQbud7yvSjT3UubAbFW3ZtmxmYoO9lwPkiILR81g
-	4tmjTk0+nWTdfZzs50vWuGFxSm/IB7hwHCSxxW6rw9SaSecyDlRvkf+uE9XvHMSnDNHp5v
-	J/REZf27qAH1Yi8peo1+ZI2rRJ1rMcI=
-From: Tao Chen <chen.dylane@linux.dev>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com,
-	mmullins@fb.com
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	Tao Chen <chen.dylane@linux.dev>,
-	syzbot+45b0c89a0fc7ae8dbadc@syzkaller.appspotmail.com
-Subject: [PATCH bpf-next] bpf: Fix WARN() in get_bpf_raw_tp_regs
-Date: Tue, 13 May 2025 12:27:47 +0800
-Message-Id: <20250513042747.757042-1-chen.dylane@linux.dev>
+	s=arc-20240116; t=1747111221; c=relaxed/simple;
+	bh=w7iI/U3RDumUi4KFqkTJLHySnkMbnuolbBnEmhEQgN8=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=eWRknVz805ntUkygN2dLNvegaZedzlpVdTZAK9mOJsQyzJUAx60jdXZEqX6lh+OrOPkgn2+hgltchrw+VeDXlQ79Id9XY+17UwY+ADr53XGCfksltjLKwA9WqQyQyMaogZhRhOvEUpOwFRro2VZHSTs2uAyQxA194t7JPw0h7uc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yzxzex0z; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-22fa47f295aso33953165ad.0
+        for <bpf@vger.kernel.org>; Mon, 12 May 2025 21:40:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747111218; x=1747716018; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=3EWdzwIL1167QTHOu/kkSlwUjmDzT0ANT4kdZOrARG8=;
+        b=Yzxzex0z3rYoOndzCNgE2B1EafyNRW5IJJr68XEQRyltiXNQK0a+8yd9xXAS+zIFhW
+         tKnymLTVyWzsbtyDZPRBnWWN/GWoPsi9eXKtlVMi1YJPoTfa5fAqI38gmIQ94GRQOrxJ
+         r8Zx3fsVt2YuMsmGLNy+khZvFHPZwnOZfMOfJHNrAaMnm/5ie2nwAhH6ue3AKHAspXn5
+         7MhFZV1wLrE4ASTKPf1k7cInCtgIiA4nIOWTjbJ60kP198zDRdieGQJRaacXQRY9twSd
+         NrwdKNpxOrR9NbsEKGFY4T8g6mTuERzmk5ep8rv7b9PoUFibLHvhBJEgz/AaLzCW35Zp
+         KOqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747111218; x=1747716018;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3EWdzwIL1167QTHOu/kkSlwUjmDzT0ANT4kdZOrARG8=;
+        b=G8RTrmhLupdTeiweR5af5WR36SFS1ogJY80IQJ8/DepIfQfRS4foERfaDse2aerE05
+         mIBjg729EH9d8Px13aKmGiZp2HF43D1lC2e727+S4NsjIc4WzpFaVfbvlm78r7PfcLN2
+         LlmSgJzHij7F/4ZFTZFGvafr/CLBaYDRGhbyVxA1Z4XsIdfx36JEB/yJlOhZBj/LWuTm
+         8er6qMT7ODKzPyfG8Bng8MbXTV51LUAdfxzMj8ZEACOG/66wRd9rEKncgAQ9AraEm/QN
+         RVFeY4h8VPL+tC9tYugEij8BitV/nk26U0yFVQZR3ZSFlMwA0yhJyxD9a4MVvVoDtDdG
+         Ju8A==
+X-Forwarded-Encrypted: i=1; AJvYcCW0ftNmCm/y+MY//5d9Qn8ht4OxWWK5qnkl8xQQ23F8uNVAtsDmc9NsRstyMabtgp7KfPA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YztQQLSuf1B3R30Py8camTZXLBrg7eYaK35nsp8BwUIqybxMGTw
+	Gld6FoL0IL/qpsleLRIndUxjBCmId+GGz1oj0S7Ww8BWzz3EB7hnheG0iDyaWa8=
+X-Gm-Gg: ASbGnctH1uLOe0iGCelC4+oIxCQkQgPAEsoNJpH9LqAcyl8qiTAcCEADX9eID11bWlT
+	oc0ITe/uTod+q0i+7+IV8CGjCeVomvPSDFwEa0kGTSVEB5xGmGVDGJfTrybpz/6XL4UJpAsOS13
+	1cDOjWlFWrPXu4K0FiXxkZBFpnHpSgHBeWveXHujmU+owHa6N/+EkRr0q68CiF+6mGKBvNTTdDB
+	rXW0lKiuL9bAWLvpLDrK+V8h+GbWwnMQbHheMcgVDwgJLWfu/DTBdXTzj0adRyt6pxGh5B+aPGl
+	y5al93Mo8Lr9Kvaja9q7C25gIGZ0a+wJGHR3uwciPutKBD8Nk86EL43JmA==
+X-Google-Smtp-Source: AGHT+IF97QIu8Pfv6Oayf4Z02Ax0aqk82qIC7vFwDPIC/i8Wvu78Oqm2b682ueSfTd1eTH4X/PwZ5w==
+X-Received: by 2002:a17:902:ea0c:b0:223:432b:593d with SMTP id d9443c01a7336-22fc8e94d97mr192471025ad.42.1747111218483;
+        Mon, 12 May 2025 21:40:18 -0700 (PDT)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22fc8271a9dsm71758855ad.113.2025.05.12.21.40.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 May 2025 21:40:18 -0700 (PDT)
+Message-ID: <fb5f5ab61dcd12e8e29e84907cb6ec4af28a6dc1.camel@gmail.com>
+Subject: Re: [RFC bpf-next 3/4] bpf: Generating a stubbed version of BPF
+ program for termination
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Raj Sahu <rjsu26@gmail.com>, bpf <bpf@vger.kernel.org>, Alexei
+ Starovoitov	 <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko	 <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu	 <song@kernel.org>, Yonghong Song
+ <yonghong.song@linux.dev>, John Fastabend	 <john.fastabend@gmail.com>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev	 <sdf@fomichev.me>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  Dan Williams
+ <djwillia@vt.edu>, miloc@vt.edu, ericts@vt.edu, rahult@vt.edu,
+ doniaghazy@vt.edu, quanzhif@vt.edu,  Jinghao Jia <jinghao7@illinois.edu>,
+ Siddharth Chintamaneni <sidchintamaneni@gmail.com>, Kumar Kartikeya Dwivedi
+	 <memxor@gmail.com>
+Date: Mon, 12 May 2025 21:40:15 -0700
+In-Reply-To: <CAADnVQJZpyqY9TWanRKjmViOZxppAeh7FGAnxV_1CKAih7drkA@mail.gmail.com>
+References: <20250420105524.2115690-1-rjsu26@gmail.com>
+	 <20250420105524.2115690-4-rjsu26@gmail.com> <m27c2l1ihl.fsf@gmail.com>
+	 <CAADnVQJZpyqY9TWanRKjmViOZxppAeh7FGAnxV_1CKAih7drkA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-syzkaller reported an issue:
+On Mon, 2025-05-12 at 17:20 -0700, Alexei Starovoitov wrote:
+> On Mon, May 12, 2025 at 5:07=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.c=
+om> wrote:
+> >=20
+> >=20
+> > - From verification point of view:
+> >   this function is RET_VOID and is not in
+> >   find_in_skiplist(), patch_generator() would replace its call with a
+> >   dummy. However, a corresponding bpf_spin_unlock() would remain and th=
+us
+> >   bpf_check() will exit with error.
+> >   So, you would need some special version of bpf_check, that collects
+> >   all resources needed for program translation (e.g. maps), but does
+> >   not perform semantic checks.
+> >   Or patch_generator() has to be called for a program that is already
+> >   verified.
+>=20
+> No. let's not parametrize bpf_check.
+>=20
+> Here is what I proposed earlier in the thread:
+>=20
+> the verifier should just remember all places where kfuncs
+> and helpers return _OR_NULL,
+> then when the verification is complete, copy the prog,
+> replaces 'call kfunc/help' with 'call stub',
+> run two JITs, and compare JIT artifacts
+> to make sure IPs match.
 
-WARNING: CPU: 3 PID: 5971 at kernel/trace/bpf_trace.c:1861 get_bpf_raw_tp_regs+0xa4/0x100 kernel/trace/bpf_trace.c:1861
-Modules linked in:
-CPU: 3 UID: 0 PID: 5971 Comm: syz-executor205 Not tainted 6.15.0-rc5-syzkaller-00038-g707df3375124 #0 PREEMPT(full)
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-RIP: 0010:get_bpf_raw_tp_regs+0xa4/0x100 kernel/trace/bpf_trace.c:1861
-RSP: 0018:ffffc90003636fa8 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000003 RCX: ffffffff81c6bc4c
-RDX: ffff888032efc880 RSI: ffffffff81c6bc83 RDI: 0000000000000005
-RBP: ffff88806a730860 R08: 0000000000000005 R09: 0000000000000003
-R10: 0000000000000004 R11: 0000000000000000 R12: 0000000000000004
-R13: 0000000000000001 R14: ffffc90003637008 R15: 0000000000000900
-FS:  0000000000000000(0000) GS:ffff8880d6cdf000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f7baee09130 CR3: 0000000029f5a000 CR4: 0000000000352ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- ____bpf_get_stack_raw_tp kernel/trace/bpf_trace.c:1934 [inline]
- bpf_get_stack_raw_tp+0x24/0x160 kernel/trace/bpf_trace.c:1931
- bpf_prog_ec3b2eefa702d8d3+0x43/0x47
- bpf_dispatcher_nop_func include/linux/bpf.h:1316 [inline]
- __bpf_prog_run include/linux/filter.h:718 [inline]
- bpf_prog_run include/linux/filter.h:725 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2363 [inline]
- bpf_trace_run3+0x23f/0x5a0 kernel/trace/bpf_trace.c:2405
- __bpf_trace_mmap_lock_acquire_returned+0xfc/0x140 include/trace/events/mmap_lock.h:47
- __traceiter_mmap_lock_acquire_returned+0x79/0xc0 include/trace/events/mmap_lock.h:47
- __do_trace_mmap_lock_acquire_returned include/trace/events/mmap_lock.h:47 [inline]
- trace_mmap_lock_acquire_returned include/trace/events/mmap_lock.h:47 [inline]
- __mmap_lock_do_trace_acquire_returned+0x138/0x1f0 mm/mmap_lock.c:35
- __mmap_lock_trace_acquire_returned include/linux/mmap_lock.h:36 [inline]
- mmap_read_trylock include/linux/mmap_lock.h:204 [inline]
- stack_map_get_build_id_offset+0x535/0x6f0 kernel/bpf/stackmap.c:157
- __bpf_get_stack+0x307/0xa10 kernel/bpf/stackmap.c:483
- ____bpf_get_stack kernel/bpf/stackmap.c:499 [inline]
- bpf_get_stack+0x32/0x40 kernel/bpf/stackmap.c:496
- ____bpf_get_stack_raw_tp kernel/trace/bpf_trace.c:1941 [inline]
- bpf_get_stack_raw_tp+0x124/0x160 kernel/trace/bpf_trace.c:1931
- bpf_prog_ec3b2eefa702d8d3+0x43/0x47
+Makes sense, much cleaner compared to special version of bpf_check().
 
-Tracepoint like trace_mmap_lock_acquire_returned may cause nested call
-as the corner case show above, which will be resolved with more general
-method in the future. As a result, WARN_ON_ONCE will be triggered. As
-Alexei suggested, remove the WARN_ON_ONCE first.
+> But thinking about it more...
+> I'm not sure any more that it's a good idea to fast execute
+> the program on one cpu and let it continue running as-is on
+> all other cpus including future invocations on this cpu.
+> So far the reasons to terminate bpf program:
+> - timeout in rqspinlock
+> - fault in arena
+> - some future watchdog
+>=20
+> In all cases the program is buggy, so it's safer
+> from kernel pov and from data integrity pov to stop
+> all instances now and prevent future invocations.
+> So I think we should patch the prog text in run-time
+> without cloning.
 
-Reported-by: syzbot+45b0c89a0fc7ae8dbadc@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/bpf/8bc2554d-1052-4922-8832-e0078a033e1d@gmail.com
-Fixes: 9594dc3c7e71 ("bpf: fix nested bpf tracepoints with per-cpu data")
-Suggested-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Tao Chen <chen.dylane@linux.dev>
----
- kernel/trace/bpf_trace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Stopping all program instances makes sense.
 
-Change list:
-- v1 -> v2:
-  - remove WARN() as Alexei suggested
-  - rename the patch
-- v1:
-    https://lore.kernel.org/bpf/a3fa6129-933a-4747-8165-884e38c58e3b@linux.dev
+However, this is orthogonal to preparing dummy version of the program.
+Atomically converting program to dummy might be useful from the same
+data integrity pov.
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 187dc37d61..d14f0fdd7a 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1858,7 +1858,7 @@ static struct pt_regs *get_bpf_raw_tp_regs(void)
- 	struct bpf_raw_tp_regs *tp_regs = this_cpu_ptr(&bpf_raw_tp_regs);
- 	int nest_level = this_cpu_inc_return(bpf_raw_tp_nest_level);
- 
--	if (WARN_ON_ONCE(nest_level > ARRAY_SIZE(tp_regs->regs))) {
-+	if (nest_level > ARRAY_SIZE(tp_regs->regs)) {
- 		this_cpu_dec(bpf_raw_tp_nest_level);
- 		return ERR_PTR(-EBUSY);
- 	}
--- 
-2.43.0
+Also, patching for dummy might be an effort to make program side
+effect free, e.g. by masking any map access.
+
+Still curious about PTR_TO_BTF_ID and bpf_spin_lock().
+
+[...]
+
 
 
