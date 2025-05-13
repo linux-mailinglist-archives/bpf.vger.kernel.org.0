@@ -1,158 +1,153 @@
-Return-Path: <bpf+bounces-58144-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58145-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7344AB5F48
-	for <lists+bpf@lfdr.de>; Wed, 14 May 2025 00:25:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AC36AB5F77
+	for <lists+bpf@lfdr.de>; Wed, 14 May 2025 00:35:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D7294A1A26
-	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 22:25:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFAE319E73B1
+	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 22:35:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4F6720F060;
-	Tue, 13 May 2025 22:25:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W94iHPgP"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47AD02116F6;
+	Tue, 13 May 2025 22:35:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7E4B20C461;
-	Tue, 13 May 2025 22:25:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E800A19DF61;
+	Tue, 13 May 2025 22:35:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747175145; cv=none; b=B4W6i/gqrO2QucwRcHntEahYd3tXoaeXV97Hs0eu+fcX9LcJkpPs8XosPshY2+jxbeREOV5bQkniuggHS6KSRi45L+dEN2C22kD0MQhuBNB8sIbdzRyZPnudLlFLvOkftotVCvGygQuYnXpD5g08R37UhTrY1TGtydE2MNwp/KY=
+	t=1747175726; cv=none; b=KSdwiBt++xXTmh4R8R/0kM0crRbOf7XTpBwKfr68pG7mJjmMs/HhD6CuLcDEeG3VLTHBcR/bAIGPrHElaIRsuT4EsIS+r43cTxBLiKayeuFvCPZDn5sViC+TbrReHBGtO4KaGPH6HpcEgkMEwS3e/tf0/jN6yvVV/vQMevvjkGQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747175145; c=relaxed/simple;
-	bh=rf3JppW/78wO/r4B/y0eX4WT7rbL9KH6NSFoGLZ/3Fg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZF5qupP4w3u3CRCVHgBiSWy0sGOCg5I96L/jwyFVZ06Lc2xDpcc3b+mZ+lbqtT8YQpuvM48rFcO796Xzs/FDjTwdCZgKQtadkIEac77AfS4BrL1CQtXHw/rLrjDEIW9fqaNUSQ2x00cKPa8kCfuQlAM/imRYZlVM7gfBd9NEOk4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W94iHPgP; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3a108684f90so3753202f8f.1;
-        Tue, 13 May 2025 15:25:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747175142; x=1747779942; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wAwr1O0koPzIlKh8epOygSIaJtugVEfkRrBmy7awSbw=;
-        b=W94iHPgPJz/INngo0cRpnhtWyjCUrDSuU969bPC3SZCkg4QLlB4bUabuaMGw9vB2YL
-         rFZXONTEsy/ATGwR8a3B0C1vEeNvHQdu6JroeCBXsU5Axsfgc88XkaCZKDcvY/ycc/RS
-         FW0lA72pKufLy+rIikDlmaYdhGzy7r5mEIWSwrcoPdSGY3CAc7dZeGJ5Tg8PQEmiA/xx
-         rklBm4KvN6ZJZcwBc4ApKGCUMPIIR7URNvN1sIh8qcOLuQeKB2ogbGwcpJpMUDd6ZAhe
-         Czjl8Smd3cosAGUXYrCcLWJL2+zGsmVRDfRdlEGWfTMkZNr5WZnqbXJom2X7GdoQRfqP
-         FMxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747175142; x=1747779942;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wAwr1O0koPzIlKh8epOygSIaJtugVEfkRrBmy7awSbw=;
-        b=PkFg+ktOKngMwKFbBoitHafYWlJUpYTexVzvdmIe7fym0XYQRysgR8drK3tGHn+XBe
-         zISSDcH5Yx/LX5leYlJkYoZI0nAbNcvOx2ahXcVeaOsCBQSJliW2iLHKBQHoVTI8z33w
-         W3FONirhkdjBnLQRStIRGhjUrGXTA9nhodz/+1XCFx2dtrGChhApDQXmbWlYpFt16pSC
-         s0kWcUnmzocM+iPjLA7eMXHy1zv3Jz06tdrvL7WdEd7JUQowbkHDtx/sI3yKTu4Ssq3v
-         vgZHwS1TMN+p1ivxQUzifg5n9p4WyczDqDLUxk1JrmJ5NYXNBiYSot0jMkF3jw1j82l4
-         Do+A==
-X-Forwarded-Encrypted: i=1; AJvYcCUSTbNd9SGY1uEFZNzWEpoZPQWNDpjTtWUDQ7/p4g5TLcumPsuzF5zrV8Cp9QJPZgytaTA=@vger.kernel.org, AJvYcCUh8SmE56CWg0Z3wY61BPIIYPhoSZdT5n//iDeuBmGhndOVBEl40EmVXi5Q8pF2cGr00uSs+Pw2Og==@vger.kernel.org, AJvYcCXZ6RgE7ONlGdYLS4uKSjDapGRe43cntP+dD1960Vx55jSj24wb0/V+yxE3Ecp6fHylR/95tS6qjHbERopB@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy+2xpPKY9cXwGFyl/aEKVU05ACEJiOAjzQlYGCDp8BaDVkYP/P
-	p7HNUeWbidrjiXeRlSppAqKMPuWSyIkAWJF3cUkxmUeldO5kFlHaCvM8WU/sLq24YYvZH8xXmAZ
-	Kl6dd3lEAXDXF4jmSWsk5D2UUcPk=
-X-Gm-Gg: ASbGncvGrKpNRVcFWOOtilzbFfw0ERNRN4jL8Gt3CygJGqqqmbptKCFGH1UhHHHOBMF
-	DZSLVyAf/Bmjl5h3aOjsSXhwCTQ5i5l7qAN1GjUaPzq+KB5iv6gYPKOoCOxD8M9Plg+2WvLC3rC
-	pbpXQKd7H18KOwTOKgpw90dwPf/GhpJOzpGBRcb6GALe7WeHH7ZfzhHZNYZ1Bv8w==
-X-Google-Smtp-Source: AGHT+IGCSV1CW2V8g3e0buvKmCKp4+U6DS5ChJ8qy9B6coY/qGEWuanukGv1ONA7/0rEN2Xci8nFgq7f5PO+enTp454=
-X-Received: by 2002:a05:6000:430d:b0:3a0:b4f1:8bd1 with SMTP id
- ffacd0b85a97d-3a3499532b6mr669366f8f.52.1747175141983; Tue, 13 May 2025
- 15:25:41 -0700 (PDT)
+	s=arc-20240116; t=1747175726; c=relaxed/simple;
+	bh=K8UsTuoitWC/iipHbtsG6xwLRP1rA/H6Xu2FVEoo/vY=;
+	h=Message-ID:Date:From:To:Cc:Subject; b=BwHQfDuHZBYKSnqgYF5X+4DZgZcSYBSPt7JkZ/GWuKUjcqISyu3aYktSxNDaqn13LSLvinMm7zQB9ixHijgPtxgBae0FG88hFPfhVFdDR6Wz9Rr0YhkEL41lHo2gLE8jTLpiRN6OT/AU6bLiD8u+bNn00sB1l2TvmX6rqwnxxBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66107C4CEEB;
+	Tue, 13 May 2025 22:35:25 +0000 (UTC)
+Received: from rostedt by gandalf with local (Exim 4.98.2)
+	(envelope-from <rostedt@goodmis.org>)
+	id 1uEyE3-00000004sZ7-0N2S;
+	Tue, 13 May 2025 18:35:51 -0400
+Message-ID: <20250513223435.636200356@goodmis.org>
+User-Agent: quilt/0.68
+Date: Tue, 13 May 2025 18:34:35 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org,
+ x86@kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Josh Poimboeuf <jpoimboe@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Ingo Molnar <mingo@kernel.org>,
+ Jiri Olsa <jolsa@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>,
+ Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH v9 00/13] unwind_user: x86: Deferred unwinding infrastructure
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250509232859.657525-1-shakeel.butt@linux.dev> <20250509232859.657525-5-shakeel.butt@linux.dev>
-In-Reply-To: <20250509232859.657525-5-shakeel.butt@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 13 May 2025 15:25:31 -0700
-X-Gm-Features: AX0GCFu-xAuvef9BfHGE2CGCgnqITmOEvaYA7dWvW7qUfVnFWb0NhsjFDSFfKcA
-Message-ID: <CAADnVQ+8w7huzJFqqm40KVetnQC-SoFKSMjq2uJHEHuAkCR7YA@mail.gmail.com>
-Subject: Re: [PATCH 4/4] memcg: make objcg charging nmi safe
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Vlastimil Babka <vbabka@suse.cz>, 
-	Alexei Starovoitov <ast@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, bpf <bpf@vger.kernel.org>, 
-	linux-mm <linux-mm@kvack.org>, 
-	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Meta kernel team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, May 9, 2025 at 4:29=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.dev=
-> wrote:
->
-> To enable memcg charged kernel memory allocations from nmi context,
-> consume_obj_stock() and refill_obj_stock() needs to be nmi safe. With
-> the simple in_nmi() check, take the slow path of the objcg charging
-> which handles the charging and memcg stats updates correctly for the nmi
-> context.
->
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> ---
->  mm/memcontrol.c | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
->
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index bba549c1f18c..6cfa3550f300 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -2965,6 +2965,9 @@ static bool consume_obj_stock(struct obj_cgroup *ob=
-jcg, unsigned int nr_bytes,
->         unsigned long flags;
->         bool ret =3D false;
->
-> +       if (unlikely(in_nmi()))
-> +               return ret;
-> +
->         local_lock_irqsave(&obj_stock.lock, flags);
->
->         stock =3D this_cpu_ptr(&obj_stock);
-> @@ -3068,6 +3071,15 @@ static void refill_obj_stock(struct obj_cgroup *ob=
-jcg, unsigned int nr_bytes,
->         unsigned long flags;
->         unsigned int nr_pages =3D 0;
->
-> +       if (unlikely(in_nmi())) {
-> +               if (pgdat)
-> +                       __mod_objcg_mlstate(objcg, pgdat, idx, nr_bytes);
-> +               nr_pages =3D nr_bytes >> PAGE_SHIFT;
-> +               nr_bytes =3D nr_bytes & (PAGE_SIZE - 1);
-> +               atomic_add(nr_bytes, &objcg->nr_charged_bytes);
-> +               goto out;
-> +       }
 
 
-Now I see what I did incorrectly in my series and how this patch 4
-combined with patch 3 is doing accounting properly.
+This series does not make any user space visible changes.
+It only adds the necessary infrastructure of the deferred unwinder.
 
-The only issue here and in other patches is that in_nmi() is
-an incomplete condition to check for.
-The reentrance is possible through kprobe or tracepoint.
-In PREEMP_RT we will be fully preemptible, but
-obj_stock.lock will be already taken by the current task.
-To fix it you need to use local_lock_is_locked(&obj_stock.lock)
-instead of in_nmi() or use local_trylock_irqsave(&obj_stock.lock).
+ Based off of tip/master: d60119b82d8871c66563f8657bb3e550a80234de
 
-local_trylock_irqsave() is cleaner and works today,
-while local_lock_is_locked() hasn't landed yet, but if we go
-is_locked route we can decouple reentrant obj_stock operation vs normal.
-Like the if (!local_lock_is_locked(&obj_stock.lock))
-can be done much higher up the stack from
-__memcg_slab_post_alloc_hook() the way I did in my series,
-and if locked it can do atomic_add()-style charging.
-So refill_obj_stock() and friends won't need to change.
+This has modifications in x86 and I would like it to go through the x86
+tree. Preferably it can go into this merge window so we can focus on getting
+perf and ftrace to work on top of this.
+
+Perf exposes a lot of the interface to user space as the perf tool needs
+to handle the merging of the stacks, I figured it would be better to just
+get the kernel side mostly done and then work out the kinks of the code
+between user and kernel.
+
+As there is no exposure to user space at this time, if something is found
+wrong with it it can be fixed without worrying about breaking API.
+
+I ran all these patches through my tests and they passed
+(had to add the fix for the CONFIG_MODULE in tip/master:
+ https://lore.kernel.org/all/20250513025839.495755-1-ebiggers@kernel.org/)
+
+Changes since v8: https://lore.kernel.org/all/20250509164524.448387100@goodmis.org/
+
+- The patches posted here have not been updated since v8.
+
+- Removed updates to perf proper
+
+  This is only to create the unwind infrastructure so that perf and
+  ftrace can be worked on simultaneously without dependencies for
+  each.
+
+- Discussion about using guard for SRCU
+
+   Andrii Nakryiko brought up using guard for SRCU around the
+   list iteration, but it was decided that just using the normal
+   methods were fine for this use case.
+
+
+Josh Poimboeuf (9):
+      unwind_user: Add user space unwinding API
+      unwind_user: Add frame pointer support
+      unwind_user/x86: Enable frame pointer unwinding on x86
+      perf/x86: Rename and move get_segment_base() and make it global
+      unwind_user: Add compat mode frame pointer support
+      unwind_user/x86: Enable compat mode frame pointer unwinding on x86
+      unwind_user/deferred: Add unwind cache
+      unwind_user/deferred: Add deferred unwinding interface
+      unwind_user/deferred: Make unwind deferral requests NMI-safe
+
+Steven Rostedt (4):
+      unwind_user/deferred: Add unwind_deferred_trace()
+      unwind deferred: Use bitmask to determine which callbacks to call
+      unwind deferred: Use SRCU unwind_deferred_task_work()
+      unwind: Clear unwind_mask on exit back to user space
+
+----
+ MAINTAINERS                              |   8 +
+ arch/Kconfig                             |  11 +
+ arch/x86/Kconfig                         |   2 +
+ arch/x86/events/core.c                   |  44 +---
+ arch/x86/include/asm/ptrace.h            |   2 +
+ arch/x86/include/asm/unwind_user.h       |  61 +++++
+ arch/x86/include/asm/unwind_user_types.h |  17 ++
+ arch/x86/kernel/ptrace.c                 |  38 ++++
+ include/asm-generic/Kbuild               |   2 +
+ include/asm-generic/unwind_user.h        |  24 ++
+ include/asm-generic/unwind_user_types.h  |   9 +
+ include/linux/entry-common.h             |   2 +
+ include/linux/sched.h                    |   6 +
+ include/linux/unwind_deferred.h          |  72 ++++++
+ include/linux/unwind_deferred_types.h    |  17 ++
+ include/linux/unwind_user.h              |  15 ++
+ include/linux/unwind_user_types.h        |  35 +++
+ kernel/Makefile                          |   1 +
+ kernel/fork.c                            |   4 +
+ kernel/unwind/Makefile                   |   1 +
+ kernel/unwind/deferred.c                 | 367 +++++++++++++++++++++++++++++++
+ kernel/unwind/user.c                     | 130 +++++++++++
+ 22 files changed, 829 insertions(+), 39 deletions(-)
+ create mode 100644 arch/x86/include/asm/unwind_user.h
+ create mode 100644 arch/x86/include/asm/unwind_user_types.h
+ create mode 100644 include/asm-generic/unwind_user.h
+ create mode 100644 include/asm-generic/unwind_user_types.h
+ create mode 100644 include/linux/unwind_deferred.h
+ create mode 100644 include/linux/unwind_deferred_types.h
+ create mode 100644 include/linux/unwind_user.h
+ create mode 100644 include/linux/unwind_user_types.h
+ create mode 100644 kernel/unwind/Makefile
+ create mode 100644 kernel/unwind/deferred.c
+ create mode 100644 kernel/unwind/user.c
 
