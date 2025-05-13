@@ -1,173 +1,118 @@
-Return-Path: <bpf+bounces-58077-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58078-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B235BAB48E1
-	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 03:41:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF402AB48E7
+	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 03:42:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 395C14A039C
-	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 01:41:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB86C19E7D32
+	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 01:42:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FA6D17ADF8;
-	Tue, 13 May 2025 01:41:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A65918FC84;
+	Tue, 13 May 2025 01:42:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EmI7CQ/0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LLgu+jIG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f67.google.com (mail-ed1-f67.google.com [209.85.208.67])
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE8B418C91F
-	for <bpf@vger.kernel.org>; Tue, 13 May 2025 01:41:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45E23A923
+	for <bpf@vger.kernel.org>; Tue, 13 May 2025 01:42:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747100506; cv=none; b=hHZw6HJtDn+fMQmihi9RHXV04xPuUUvTHsFPr6Rk28vf55XkIexUTMQQNBtKp+DlwG6zoYp1X15mMkSCvaeFu4f94aCqyne2owPnxPuDZGpRJGFHq9fL5MHZEqxCEE1diknP/nM42DuRcUy7Zwq9GpGycKqKT9MgbSF/BKQdYsA=
+	t=1747100548; cv=none; b=Hy+T9aqkNOWRJ+2op5qYo7hskdxSxxrjBzl5D5viiAQC6ZdFbbeOaE4KH+67kZWnlR5DkHMeek04JKCNh7p9DDQsjHbCL++PsbgOWCbo6W5+d+mPEuc6uSFNSSPuhE8v2z6ef1wFp6ttjghqX2Yn6An2DmmfIUw1pJSpX4eWCwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747100506; c=relaxed/simple;
-	bh=iChrYjKqQXXqqiNorvDtlsC6QhW8wcIZyYcab5AX4Dw=;
+	s=arc-20240116; t=1747100548; c=relaxed/simple;
+	bh=tAZCr1YrYm0d4k3QcmNeiJUWxPyTC2o8sh2EmUgyE3E=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YmONQObsu2E39fY8NFhu1qcL1fTJIMFWSXESyxY2r4Rkvk8Y1Cx0SYH7eLPgvMJyl9RxqqVBt7Tx0XDZ6S5F+NQpCgBd1/FdGLYSg/VkUCoMXq/0LNVO7LGtQkbVcVxHFUm0sJWFmTbDpe2nlLUkd4mLs6B7tz5kK9a0VaNObLk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EmI7CQ/0; arc=none smtp.client-ip=209.85.208.67
+	 To:Cc:Content-Type; b=abMGIL1c9s4eVFR0DlHM0Po3AXUKTZklLVqEYNl/AN5qu1AybBKYT1VnyRFDR56MLwGfe83vD05MnvUiCI6A3vL9hyoZKaRgYUiJzzJzNNKYaa9tX4715wwH8KLZkX6k2I1riDbE4USrgNXo9p2j1g2m9qoKffopLHTtE8Rr9/Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LLgu+jIG; arc=none smtp.client-ip=209.85.221.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f67.google.com with SMTP id 4fb4d7f45d1cf-5fc5bc05f99so9791959a12.3
-        for <bpf@vger.kernel.org>; Mon, 12 May 2025 18:41:44 -0700 (PDT)
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3a1f5d2d91eso2802370f8f.1
+        for <bpf@vger.kernel.org>; Mon, 12 May 2025 18:42:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747100503; x=1747705303; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1747100545; x=1747705345; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8/7D5xb8jel/Ov6iLitSn0zZm4FeYyb+Ri6V2z51b+Y=;
-        b=EmI7CQ/0URtRDL+AJW/6zGEcI7CXXX0B2qFXIOcqM0s5sxkAHpbv1FXui4bctY/rOl
-         tAxInVwg9qN5RzZwnh1H/7OwLHcFph7aMqFT94gIiuMUGBynfL2ObDYG2M9sZSIGKiwA
-         6mbt9XJNpWjvmMEoVwETJVtg1JeGOEfBs0HohpH8s4g4FTOYcCvxcF4jgQ7ONb6pzR23
-         zhzUAquY9HbvCb8BJno3l8fcxprA62cBijgZyMnybuLuHT30Yfpn+mlUny6mZNEErq7n
-         XlmXu72oW93Nn5vZC0VuM9JE9K6c4gCpsdUtG1/Ho03S5KLjA5RUblx2f+sXT6SWUi2r
-         uuuA==
+        bh=tAZCr1YrYm0d4k3QcmNeiJUWxPyTC2o8sh2EmUgyE3E=;
+        b=LLgu+jIGo8tAEjqUrnwA0MDsDd36awqkUUXe2rZLo8gWa9Raj7pm7f6ApBFx6rgzVL
+         1rz8A4djJ5a6gT+pozpvv1mE4B4iq53DlE/WoAw7nMG8iBXJRRbGKIuRwN3SMYmcfVO/
+         zo5DvktuBG214i3+u1vNZZelBlyn2JBusFYo/Z66PEDbSKBo7VIGWZCmufz42MMdN3Y5
+         RLTiTrJKNtOfW64z6OADnMvQrOIIfoA0yFKj1NtsSYULk5C6LHiRpayFpKAovBFb+bms
+         4zkNduOd+SlSLavgyThmttOjBtakkDGEOwER37Id/dTKo9ciYN4xsEr++SROwp70zS8d
+         gDEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747100503; x=1747705303;
+        d=1e100.net; s=20230601; t=1747100545; x=1747705345;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8/7D5xb8jel/Ov6iLitSn0zZm4FeYyb+Ri6V2z51b+Y=;
-        b=T8abwCqaoOAVHbsi9IFcDlR5O4XowYc2HfnOXNKlV0CMEplTDIIdHB7gXdnDUEjpkF
-         ngMC/ep4WtmEZasj33yxcnl9Eq3JHfn4brK1AVLopx7BrxnMl7icKEyFmfJ8MwoW+fwJ
-         Xn6C4ZgHGp8cIIL/5Xw+qFZqhlLaX2gnfJ1MWmCThGGJ//aM3POcR2saCvNcKKaOweCG
-         +1WoG+Cg/FMMZITwK8qKW/c3Wwes+UZIyZWSV9uZVgj2J3YIJI4rJSrds9rKDRfbDH+x
-         xBAoyWhSjtyrlcwYmqgA7z1T63MbGhWtr2JJHyVKZojaykl7ChzOwMZwLM7gYXmMVYV0
-         LlCw==
-X-Gm-Message-State: AOJu0YxkwzX8yhNvNGqVnhvwcCjaNLbbW9Z2tNDrusXM/Js0oKuZcoSY
-	w7LaiBmnxFrJ72hatXR3irISBpRP7fP5ay2PAA52Ig94MzbJAmm24OWyhnQSR8mRwY/fjxCKPX/
-	t6nIWDGDrZXfEvXz+UCMa6O67pFE=
-X-Gm-Gg: ASbGncvJNzAwRkb8kSbc1Xqbz5lGrCZ4AaBNnw7in/WvCPJrXM8fbtmcdrwMqz1MUsw
-	K6EQE5cPWsk16mxPQ/uCS/8SaM3QCYCY/oymscx0d9Pta43gZLLlh6w2u/DC93cazMD4GmMGw+H
-	O+cOThQ0IMLt06+NgyDaZCDytASKoU5tc=
-X-Google-Smtp-Source: AGHT+IETI08xsUOPIFEgsGgfgp0QqSlSm3GI7hUDd+D1W5A9EVUkBjeLJK60RVL+0JVAib82LJ8cXYZkqUTfMDmoT/w=
-X-Received: by 2002:a17:907:874f:b0:ad4:e065:9412 with SMTP id
- a640c23a62f3a-ad4e0659790mr53259166b.51.1747100502824; Mon, 12 May 2025
- 18:41:42 -0700 (PDT)
+        bh=tAZCr1YrYm0d4k3QcmNeiJUWxPyTC2o8sh2EmUgyE3E=;
+        b=M2STpjnFFez5PzECd9tvTy/IDR6crEHEN0mt4vkexdZF2vOBYuK+ES/aSPACGaceAj
+         vFDBjWeY/egniD2XTQHHNkvrlw3ULXqh7g+23Z7bxw4FjpUtD76Q9ee2zZoz/Onc/4k1
+         qErKj2FMVNxRp667vi34PPP505IRbLyrUFBAOKbtZ16sZWQ1nfLxkbbwJD2Ik3SYEta3
+         K4FiUjpMywl6k+FGWBUOK51hMX5PY0iYOvOf35KC9Zen/66aM2od2S+luXncdMtsYWYD
+         G3volF0lC/INNEg3+nlINqIpBv+76Q8OSodqfS/taN1OvnIBs6LE4+nW+eT8OSXo5OEB
+         B4PA==
+X-Gm-Message-State: AOJu0YwO9dtUtEZ1b+auw96ahWR9P2Afb79I2wCN11lhlSHl86TCgHl7
+	hA+uloFsU42NgR3uW+LWYH0JKOKhm9sKKPBTfTdz5z1d7OF14caJ5aEj7AbT9qL1CxAPdZNQgAJ
+	rwG5iUcKLGi696k0+aHbmr4X+QY4=
+X-Gm-Gg: ASbGncsEo62D4Gq6TrRoiSzxvvqmU+KIaVQvVk94K0Yw7DY0wKpQimKaDckjADM01JX
+	lFA2JdxKJ8cORK1eIkcim5cMXYOqAWnHXFj7LBRi5QwoLZk+gphuB6FdiNO7fYsFS5i4Ny4CM1n
+	Wk7JKK/NeDkRTL8wsK3ndMk14tFK6gzbxrAqiH6bA4AE4sLchBhKl88bECHqIP939TZfXajm8z
+X-Google-Smtp-Source: AGHT+IGk/9cA6LCUDXm1q/MKkEe8qR5P7OkQtzPpdm1kBB5v028OrLoPmzKFKLA67I6oXErkNhLyaaE1+p3sSIrVO50=
+X-Received: by 2002:a05:6000:2207:b0:3a1:4c72:9072 with SMTP id
+ ffacd0b85a97d-3a1f6438490mr12112084f8f.17.1747100545186; Mon, 12 May 2025
+ 18:42:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250512210246.3741193-1-memxor@gmail.com> <CAADnVQ+6vYFkBKvwbFMiALVCAOgC2mXd-oM2Xw26uioudMbZGg@mail.gmail.com>
-In-Reply-To: <CAADnVQ+6vYFkBKvwbFMiALVCAOgC2mXd-oM2Xw26uioudMbZGg@mail.gmail.com>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Mon, 12 May 2025 21:41:05 -0400
-X-Gm-Features: AX0GCFuvIcMq8BU9xTzr0G__NIIyv_BHxJtqSrQuwhLpzYB0y8QeEhklQxgQDO0
-Message-ID: <CAP01T75ryzGQtZ5uXn1CTzDQs_gAQSBkGRbkYk_JVgxfmFCK6w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1] bpf: Add __aux tag to pass in prog->aux
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Tejun Heo <tj@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, kkd@meta.com, Kernel Team <kernel-team@meta.com>
+References: <20250512205348.191079-1-mykyta.yatsenko5@gmail.com> <20250512205348.191079-3-mykyta.yatsenko5@gmail.com>
+In-Reply-To: <20250512205348.191079-3-mykyta.yatsenko5@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 12 May 2025 18:42:12 -0700
+X-Gm-Features: AX0GCFuCeGI9N3ghjoh9G8igb8tVf1sHDoXJllY5oun0fqqfXUgbh-M7FWCf7R4
+Message-ID: <CAADnVQJZPNW2ZEfq=CjB5UMgVu8SCJhzfT5H9=Gho0b9TxeSnA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 2/3] bpf: implement dynptr copy kfuncs
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin Lau <kafai@meta.com>, 
+	Kernel Team <kernel-team@meta.com>, Eduard <eddyz87@gmail.com>, 
+	Mykyta Yatsenko <yatsenko@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 12 May 2025 at 20:04, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Mon, May 12, 2025 at 1:53=E2=80=AFPM Mykyta Yatsenko
+<mykyta.yatsenko5@gmail.com> wrote:
 >
-> On Mon, May 12, 2025 at 2:02=E2=80=AFPM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
-> >
-> > Instead of hardcoding the list of kfuncs that need prog->aux passed to
-> > them with a combination of fixup_kfunc_call adjustment + __ign suffix,
-> > combine both in __aux suffix, which ignores the argument passed in, and
-> > fixes it up to the prog->aux. This allows kfuncs to have the prog->aux
-> > passed into them without having to touch the verifier.
-> >
-> > Cc: Tejun Heo <tj@kernel.org>
-> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > ---
-> >  include/linux/bpf_verifier.h |  1 +
-> >  kernel/bpf/helpers.c         |  4 ++--
-> >  kernel/bpf/verifier.c        | 33 +++++++++++++++++++++++++++------
-> >  3 files changed, 30 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.=
-h
-> > index 9734544b6957..1d90e44a1d04 100644
-> > --- a/include/linux/bpf_verifier.h
-> > +++ b/include/linux/bpf_verifier.h
-> > @@ -606,6 +606,7 @@ struct bpf_insn_aux_data {
-> >         bool calls_callback;
-> >         /* registers alive before this instruction. */
-> >         u16 live_regs_before;
-> > +       u16 arg_prog_aux;
-> >  };
-> >
-> >  #define MAX_USED_MAPS 64 /* max number of maps accessed by one eBPF pr=
-ogram */
-> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> > index fed53da75025..2b6bac4bf6e3 100644
-> > --- a/kernel/bpf/helpers.c
-> > +++ b/kernel/bpf/helpers.c
-> > @@ -3012,9 +3012,9 @@ __bpf_kfunc int bpf_wq_start(struct bpf_wq *wq, u=
-nsigned int flags)
-> >  __bpf_kfunc int bpf_wq_set_callback_impl(struct bpf_wq *wq,
-> >                                          int (callback_fn)(void *map, i=
-nt *key, void *value),
-> >                                          unsigned int flags,
-> > -                                        void *aux__ign)
-> > +                                        void *aux__aux)
 >
-> aux__aux is an odd name.
-> "__aux" as a suffix also looks strange.
->
+> +typedef int (*copy_fn_t)(void *dst, const void *src, u32 size, struct ta=
+sk_struct *tsk);
+> +
+> +/* The __always_inline is to make sure the compiler doesn't
 
-We can call it prog__aux.
+moved it to new line as:
+/*
+ * The __always_inline is to make sure the compiler doesn't
 
-> How about "__prog" suffix ?
-> It will be similar to the existing "__map" suffix.
+Please use the kernel coding style instead of the old networking
+style from now on.
 
-But it's a bit misleading, it's not the prog, it's prog->aux.
 
->
-> We can also standardize the argument name as
-> __bpf_kfunc int bpf_wq_set_callback_impl(.. , void *aux__prog)
->
-> then the name is more or less explanatory.
+> + * generate indirect calls into callbacks, which is expensive,
+> + * on some kernel configurations. This allows compiler to put
+> + * direct calls into all the specific callback implementations
+> + *(copy_user_data_sleepable, copy_user_data_nofault, and so on)
 
-You can call it foo__prog, the part before __ is arbitrary.
+Added extra space after *
 
->
-> >  {
-> > -       struct bpf_prog_aux *aux =3D (struct bpf_prog_aux *)aux__ign;
-> > +       struct bpf_prog_aux *aux =3D (struct bpf_prog_aux *)aux__aux;
->
-> and here it will be:
->
-> +       struct bpf_prog_aux *aux =3D (struct bpf_prog_aux *)aux__prog;
->
-> which looks ok to me.
+> + */
 
-How about I rename the parameter to prog__aux?
-Or __prog_aux as the tag name?
-
->
-> pw-bot: cr
+while applying.
 
