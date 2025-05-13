@@ -1,349 +1,214 @@
-Return-Path: <bpf+bounces-58142-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58143-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2ECFDAB5EB9
-	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 23:55:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AECAAB5F32
+	for <lists+bpf@lfdr.de>; Wed, 14 May 2025 00:17:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 997171B47287
-	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 21:56:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7603B7B36B3
+	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 22:16:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0A4F1F4E57;
-	Tue, 13 May 2025 21:55:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B91EA1FE45B;
+	Tue, 13 May 2025 22:17:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JCzkIAbY"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wx9K/XDN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80A3722338
-	for <bpf@vger.kernel.org>; Tue, 13 May 2025 21:55:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1242F3010C
+	for <bpf@vger.kernel.org>; Tue, 13 May 2025 22:17:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747173339; cv=none; b=StEkUf3RXm/k2R0XGjRM0nRbwc8BNTag2K0UGvhArqc7v1/Tro2bT/wP99OCj9ab08Y7sx/YJHiq2vCVNBGeIZ7GOVsCXzVxZeJEe++tETjyMyUiUuUomktaZNSbay1rsu6Y75nc6UD6UbO0cPSy1QssWLkiiBrPGxYjg5LDsi4=
+	t=1747174632; cv=none; b=mM/3QUM0oi8k+34Pd2aejWwekUtZZS7pUycucuoVluhashMfkYoUvzQRC7mQSOPnG78WFTQsyNdYwU5+c03cph8JyQBMRuaL01xPnS7uNiBElRwWFAl8qMZPNUucqaE2i3i6bhaASwlk7Y6l2PJj2yzIXVkIh0n5ueBUmrOeaIc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747173339; c=relaxed/simple;
-	bh=7f0xOVkspKButZ6GItrLPRgN2PCi41M8qIZecA1l9gQ=;
+	s=arc-20240116; t=1747174632; c=relaxed/simple;
+	bh=yNLqlPWASut9p1xEAFv4YgaFRmFtpdfW1XyDhbCPf5k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LVd215mV6d8Z2JefY+ylwnqWDruq/mp9AEHqiK8RV5r2MNB4Tmxg7THF2famHVjHSRqWUDW6ufu8pG1a2WdmLNQyJ5F3H8ROjMZr27tgRMiNlR8QTaSyQ1ypQMLFUHMvj5+RbWKuHyVW7c4WI/KDibuxRB9YgJirfbC5FpyKu8Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JCzkIAbY; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-22e09f57ed4so3112825ad.0
-        for <bpf@vger.kernel.org>; Tue, 13 May 2025 14:55:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747173337; x=1747778137; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=f0rO3WP4XFL6zJ5Hg0f3J54m6c9RExWTkXri/bw1j1s=;
-        b=JCzkIAbYRYyQsNQXugwpEjm2uy/cNU/o2lh69YOex/ILNPAN7LK5QbNJDNmuwGrIsG
-         57ZXcG2pluVfmlPKXdEr7yt5swvaSduVh+T61kBFamfBBx9Gvz7InFZN2ByW5clzIdlJ
-         dT6kOha0esSkKnn8cGohzAw6CftljjqoL6KpCCyxXFtJCLwOgPFnTQjARpHgjjBhklAm
-         B/MEP9f5N4AcXVumgXKcuWaOl2oly3vkVwSmGzwp4UGzxyKcY+bDusjwedhJEF55pwx2
-         12ZtEJm0u8rmxUqhSgbsdY2mFbAyUJdv5GMFj+JPivQoBj8GoCttxZylcAGNgez3WP2a
-         4Kcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747173337; x=1747778137;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=f0rO3WP4XFL6zJ5Hg0f3J54m6c9RExWTkXri/bw1j1s=;
-        b=H1Esh/y4J8B2op0jxmimdd5CNdoSCjwPrPLt8iHAviUFVPxgdn+5FoQrXePL8LbUQv
-         SozcoJVEhrbT4ipLU0q9mJXU1NS21t+a9P6P4m1lllFyhsmQQiUnWLjhcHGm5cErElpe
-         8DZJXbeyfJq23BE1kiNoCFRWcPeXK9DUnlU2xyXwMwqt0ghc/A+INz9uN8pPcVjoaFsk
-         hNQUI/s1jHPzrW9NtL/UFSOlMYEj9KdhOt5AsEqbNY8nV8AcQJmlaTjlGSFTQ8UyEjWE
-         qnl+YiFVY/kiMDTNit2K4MZHYYyRgfBBZ/Bg5mwuvhpeN/I+0iSQj7ZITPAx7FIoF95Y
-         NQ/g==
-X-Forwarded-Encrypted: i=1; AJvYcCWRxgnoKyMtzDEA5KA5hlR6NCoVJhUpno3mGeD6pPnN93yK9hDCVzY63VsINr08N6AXfqo=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywh2KT07twK+SmtYAEk3LgKm1aZym2LPji0vnFc66eWADJqbgnW
-	TBAFpL94HI7tEC7kJPIkJuYJO4KSYMFeqUFUMptaOqWkv9YU6vRN
-X-Gm-Gg: ASbGnct/WpQWrnKW7XYUM6unZv84wIky9Sj/1SwPsY2tqB4h2ystgWfWAzWR2kB9E50
-	bgsafss1oZ1xI1tpg7x/XnnWlTL74AUtbbj1sBgk97UiEY4y5LV9UfMBxktGF4T/oXYSaf4Oqzg
-	/RDZf9NqfDBkX49KhRjlww13ISmS4ib7uCrsqdq0Ad5wGz2fhYh60h2QuUxj0Ajtv7Ns1bNZ7N/
-	9RplZY2Rol4m/SIPhFYZnqzidMECBUwyZsZ/7cMfk9IIWC8J+1RewoFrEpvN5OW1A/WEfvt7utU
-	ZSIQ1MwoqMWnsCg3DVBJEPduPw/cuzT157maYBgmMAH3qtpkHdfYIk7n6tThGdPnptQkjW/3ATA
-	T+jQ9byRkLHCp62qBTxaRMDuJYg==
-X-Google-Smtp-Source: AGHT+IFslcIkZYaKWYt+R4dr+yTwjrGZc/XIPki7tcYG8vVxVX2d43zhrH9anQuoGgC+ul6/QNwfyw==
-X-Received: by 2002:a17:902:ecc6:b0:220:ff82:1c60 with SMTP id d9443c01a7336-2317cb01e62mr75079715ad.14.1747173336509;
-        Tue, 13 May 2025 14:55:36 -0700 (PDT)
-Received: from MacBook-Pro-49.local ([2001:558:600a:7:a83d:600f:32cc:235a])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22fc828c630sm85318685ad.177.2025.05.13.14.55.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 May 2025 14:55:36 -0700 (PDT)
-Date: Tue, 13 May 2025 14:55:34 -0700
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
-	bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, Harry Yoo <harry.yoo@oracle.com>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Michal Hocko <mhocko@suse.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Steven Rostedt <rostedt@goodmis.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH 4/6] locking/local_lock: Introduce
- local_lock_irqsave_check()
-Message-ID: <r2jpdbvckbjm5l237ryesh45zpowhcqmevtp5dbcccmxiwyjzx@t74et4kymzhx>
-References: <20250501032718.65476-1-alexei.starovoitov@gmail.com>
- <20250501032718.65476-5-alexei.starovoitov@gmail.com>
- <20250512140359.CDEasCj3@linutronix.de>
- <CAADnVQLs009ZgcwHfo77zHA_NiGqsBpwvdG1kqc0cW6b02tXXw@mail.gmail.com>
- <737d8993-b3c7-4ed5-8872-20c62ab81572@suse.cz>
+	 Content-Type:Content-Disposition:In-Reply-To; b=UT6zm2RIYUUrZFU2WBmdGNkfAdiKRgUUNygc3v7NHbWli1VTupcdazr99ICVueQr4/IZ+AvI9HQs0YXBsE00s5oHPuz8g2TKuLi6ct1kY+AdeIFXrXrafUw9EDhnu0XubD9WdceAcx/REX/EzWzj/j9NARkkOG/bg7FDVpSvMQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wx9K/XDN; arc=none smtp.client-ip=91.218.175.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Tue, 13 May 2025 15:17:00 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1747174626;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rahQYu1hjcaoMkOQ2Z62DrFUneDFZMeqj32rynYl3Ak=;
+	b=wx9K/XDNsqu6pyfaRN9KPelr685TgwkIZ1xr5mFHW+x3b9xZQLu1VZrf/0N2qg1XVpfB9O
+	0Hf3zWfQM3ZlD4p5dlaRY6pGJFUrKBK+9vQaQJjTOPRT8PivyYeNxB1GUui0ARnNei+Os6
+	I8+Ybr+04GBOUr87R0gPSswu14rvZx4=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>, 
+	Andrew Morton <akpm@linux-foundation.org>, Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, bpf@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH 0/4] memcg: nmi-safe kmem charging
+Message-ID: <ct2h2eyuepa2g2ltl5fucfegwyuqspvz6d4uugcs4szxwnggdc@6m4ks3hp3tjj>
+References: <20250509232859.657525-1-shakeel.butt@linux.dev>
+ <2e2f0568-3687-4574-836d-c23d09614bce@suse.cz>
+ <mzrsx4x5xluljyxy5h5ha6kijcno3ormac3sobc3k7bkj5wepr@cuz2fluc5m5d>
+ <07e4e8d9-2588-41bf-89d4-328ca6afd263@suse.cz>
+ <20250513114125.GE25763@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <737d8993-b3c7-4ed5-8872-20c62ab81572@suse.cz>
+In-Reply-To: <20250513114125.GE25763@noisy.programming.kicks-ass.net>
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, May 13, 2025 at 08:58:43AM +0200, Vlastimil Babka wrote:
-> On 5/12/25 19:16, Alexei Starovoitov wrote:
-> > On Mon, May 12, 2025 at 7:04 AM Sebastian Andrzej Siewior
-> > <bigeasy@linutronix.de> wrote:
-> >>
-> >> On 2025-04-30 20:27:16 [-0700], Alexei Starovoitov wrote:
-> >> > --- a/include/linux/local_lock_internal.h
-> >> > +++ b/include/linux/local_lock_internal.h
-> >> > @@ -168,6 +168,15 @@ do {                                                             \
-> >> >  /* preemption or migration must be disabled before calling __local_lock_is_locked */
-> >> >  #define __local_lock_is_locked(lock) READ_ONCE(this_cpu_ptr(lock)->acquired)
-> >> >
-> >> > +#define __local_lock_irqsave_check(lock, flags)                                      \
-> >> > +     do {                                                                    \
-> >> > +             if (IS_ENABLED(CONFIG_DEBUG_LOCK_ALLOC) &&                      \
-> >> > +                 (!__local_lock_is_locked(lock) || in_nmi()))                \
-> >> > +                     WARN_ON_ONCE(!__local_trylock_irqsave(lock, flags));    \
-> >> > +             else                                                            \
-> >> > +                     __local_lock_irqsave(lock, flags);                      \
-> >> > +     } while (0)
-> >> > +
-> >>
-> >> Hmm. If I see this right in SLUB then this is called from preemptible
-> >> context. Therefore the this_cpu_ptr() from __local_lock_is_locked()
-> >> should trigger a warning here.
-> > 
-> > When preemptible the migration is disabled. So no warning.
-> > 
-> >> This check variant provides only additional debugging and otherwise
-> >> behaves as local_lock_irqsave(). Therefore the in_nmi() should return
-> >> immediately with a WARN_ON() regardless if the lock is available or not
-> >> because the non-try variant should never be invoked from an NMI.
-> > 
-> > non-try variant can be invoked from NMI, because the earlier
-> > __local_lock_is_locked() check tells us that the lock is not locked.
-> > And it's safe to do.
-> > And that's the main challenge here.
-> > local_lock_irqsave_check() macro fights lockdep here.
-> > 
-> >> This looks like additional debug infrastructure that should be part of
-> >> local_lock_irqsave() itself,
-> > 
-> > The pattern of
-> > 
-> > if (!__local_lock_is_locked(lock)) {
-> >    .. lots of code..
-> >    local_lock_irqsave(lock);
-> > 
-> > is foreign to lockdep.
-> > 
-> > Since it can be called from NMI the lockdep just hates it:
-> > 
-> > [ 1021.956825] inconsistent {INITIAL USE} -> {IN-NMI} usage.
-> > ...
-> > [ 1021.956888]   lock(per_cpu_ptr(&lock));
-> > [ 1021.956890]   <Interrupt>
-> > [ 1021.956891]     lock(per_cpu_ptr(&lock));
-> > ..
-> > 
-> > and technically lockdep is correct.
-> > For any normal lock it's a deadlock waiting to happen,
-> > but not here.
-> > 
-> > Even without NMI the lockdep doesn't like it:
-> > [   14.627331] page_alloc_kthr/1965 is trying to acquire lock:
-> > [   14.627331] ffff8881f6ebe0f0 ((local_lock_t
-> > *)&c->lock){-.-.}-{3:3}, at: ___slab_alloc+0x9a9/0x1ab0
-> > [   14.627331]
-> > [   14.627331] but task is already holding lock:
-> > [   14.627331] ffff8881f6ebd490 ((local_lock_t
-> > *)&c->lock){-.-.}-{3:3}, at: ___slab_alloc+0xc7/0x1ab0
-> > [   14.627331]
-> > [   14.627331] other info that might help us debug this:
-> > [   14.627331]  Possible unsafe locking scenario:
-> > [   14.627331]
-> > [   14.627331]        CPU0
-> > [   14.627331]        ----
-> > [   14.627331]   lock((local_lock_t *)&c->lock);
-> > [   14.627331]   lock((local_lock_t *)&c->lock);
-> > 
-> > When slub is holding lock ...bd490 we detect it with
-> > __local_lock_is_locked(),
-> > then we check that lock ..be0f0 is not locked,
-> > and proceed to acquire it, but
-> > lockdep will show the above splat.
-> > 
-> > So local_lock_irqsave_check() is a workaround to avoid
-> > these two false positives from lockdep.
-> > 
-> > Yours and Vlastimil's observation is correct, that ideally
-> > local_lock_irqsave() should just handle it,
-> > but I don't see how to do it.
-> > How can lockdep understand the if (!locked()) lock() pattern ?
-> > Such usage is correct only for per-cpu local lock when migration
-> > is disabled from check to acquire.
+On Tue, May 13, 2025 at 01:41:25PM +0200, Peter Zijlstra wrote:
+> On Tue, May 13, 2025 at 09:15:23AM +0200, Vlastimil Babka wrote:
 > 
-> Thanks, I think I finally understand the issue and why a _check variant is
-> necessary. As a general note as this is so tricky, having more details in
-> comments and commit messages can't hurt so we can understand it sooner :)
+> > >> > The initial prototype tried to make memcg charging infra for kernel
+> > >> > memory re-entrant against irq and nmi. However upon realizing that
+> > >> > this_cpu_* operations are not safe on all architectures (Tejun), this
+> > >> 
+> > >> I assume it was an off-list discussion?
+> > >> Could we avoid this for the architectures where these are safe, which should
+> > >> be the major ones I hope?
 > 
-> Again this would be all simpler if we could just use trylock instead of
-> _check(), but then we need to handle the fallbacks. And AFAIU on RT trylock
-> can fail "spuriously", i.e. when we don't really preempt ourselves, as we
-> discussed in that memcg thread.
+> IIRC Power64 has issues here, 'funnily' their local_t is NMI safe.
+> Perhaps we could do the same for their this_cpu_*(), but ideally someone
+> with actual power hardware should do this ;-)
 > 
-> > Hence the macro is doing:
-> > if (IS_ENABLED(CONFIG_DEBUG_LOCK_ALLOC) &&
-> >    (!__local_lock_is_locked(lock) || in_nmi()))
-> >          WARN_ON_ONCE(!__local_trylock_irqsave(lock, flags));
+
+Is CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS the right config to
+differentiate between such archs? I see Power64 does not have that
+enabled.
+
+> > > Yes it was an off-list discussion. The discussion was more about the
+> > > this_cpu_* ops vs atomic_* ops as on x86 this_cpu_* does not have lock
+> > > prefix and how I should prefer this_cpu_* over atomic_* for my series on
+> > > objcg charging without disabling irqs. Tejun pointed out this_cpu_* are
+> > > not nmi safe for some archs and it would be better to handle nmi context
+> > > separately. So, I am not that worried about optimizing for NMI context
 > > 
-> > in_nmi() part is a workaround for the first lockdep splat
-> > and __local_lock_is_locked() is a workaround for 2nd lockdep splat,
-> > though the code did __local_lock_is_locked() check already.
+> > Well, we're introducing in_nmi() check and different execution paths to all
+> > charging. This could be e.g. compiled out for architectures where this_cpu*
+> > is NMI safe or they don't have NMIs in the first place.
 > 
-> So here's where this would be useful to have that info in a comment.
-> However, I wonder about it, as the code uses __local_trylock_irqsave(), so
-> lockdep should see it as an opportunistic attempt and not splat as that
-> trylock alone should be avoiding deadlock - if not we might have a bug in
-> the lockdep bits of trylock.
+> Very few architectures one would care about do not have NMIs. Risc-V
+> seems to be the exception here ?!?
+> 
+> > > but your next comment on generic_atomic64_* ops is giving me headache.
+> > > 
+> > >> 
+> > >> > series took a different approach targeting only nmi context. Since the
+> > >> > number of stats that are updated in kernel memory charging path are 3,
+> > >> > this series added special handling of those stats in nmi context rather
+> > >> > than making all >100 memcg stats nmi safe.
+> > >> 
+> > >> Hmm so from patches 2 and 3 I see this relies on atomic64_add().
+> > >> But AFAIU lib/atomic64.c has the generic fallback implementation for
+> > >> architectures that don't know better, and that would be using the "void
+> > >> generic_atomic64_##op" macro, which AFAICS is doing:
+> > >> 
+> > >>         local_irq_save(flags);                                          \
+> > >>         arch_spin_lock(lock);                                           \
+> > >>         v->counter c_op a;                                              \
+> > >>         arch_spin_unlock(lock);                                         \
+> > >>         local_irq_restore(flags);                                       \
+> > >> 
+> > >> so in case of a nmi hitting after the spin_lock this can still deadlock?
+> > >> 
+> > >> Hm or is there some assumption that we only use these paths when already
+> > >> in_nmi() and then another nmi can't come in that context?
+> > >> 
+> > >> But even then, flush_nmi_stats() in patch 1 isn't done in_nmi() and uses
+> > >> atomic64_xchg() which in generic_atomic64_xchg() implementation also has the
+> > >> irq_save+spin_lock. So can't we deadlock there?
+> > > 
+> > > I was actually assuming that atomic_* ops are safe against nmis for all
+> > > archs.
+> 
+> We have HAVE_NMI_SAFE_CMPXCHG for this -- there are architectures where
+> this is not the case -- but again, those are typically oddball archs you
+> don't much care about.
+> 
+> But yes, *64 on 32bit archs is generally not NMI safe.
+> 
+> > I looked at atomic_* ops in include/asm-generic/atomic.h and it
+> > > is using arch_cmpxchg() for CONFIG_SMP and it seems like for archs with
+> > > cmpxchg should be fine against nmi. I am not sure why atomic64_* are not
+> > > using arch_cmpxchg() instead. I will dig more.
+> 
+> Not many 32bit architectures have 64bit cmpxchg. We're only now dropping
+> support for x86 chips without CMPXCHG8b.
+> 
 
-Point taken. The comments need to be more detailed.
+As Vlastimil pointed out (last point), I don't think I will need 64bit
+cmpxchg, 32bit cmpxchg will be fine.
 
-I've been thinking of a way to avoid local_lock_irqsave_check() and
-came up with the following:
+> > Yeah I've found https://docs.kernel.org/core-api/local_ops.html and since it
+> > listed Mathieu we discussed on IRC and he mentioned the same thing that
+> > atomic_ ops are fine, but the later added 64bit variant isn't, which PeterZ
+> > (who added it) acknowledged.
+> > 
+> > But there could be way out if we could somehow compile-time assert that
+> > either is true:
+> > - CONFIG_HAVE_NMI=n - we can compile out all the nmi code
+> 
+> Note that in_nmi() is not depending on HAVE_NMI -- nor can it be. Many
+> architectures treat various traps as NMI-like, even though they might
+> not have real NMIs.
+> 
+> > - this_cpu is safe on that arch - we can also compile out the nmi code
+> 
+> There is no config symbol for this presently.
 
-diff --git a/include/linux/local_lock_internal.h b/include/linux/local_lock_internal.h
-index 94be15d574ad..58ac29f4ba9b 100644
---- a/include/linux/local_lock_internal.h
-+++ b/include/linux/local_lock_internal.h
-@@ -79,7 +79,7 @@ do {                                                          \
-                                                                \
-        debug_check_no_locks_freed((void *)lock, sizeof(*lock));\
-        lockdep_init_map_type(&(lock)->dep_map, #lock, &__key,  \
--                             0, LD_WAIT_CONFIG, LD_WAIT_INV,   \
-+                             1, LD_WAIT_CONFIG, LD_WAIT_INV,   \
-                              LD_LOCK_PERCPU);                  \
-        local_lock_debug_init(lock);                            \
- } while (0)
-@@ -166,11 +166,21 @@ do {                                                              \
-        })
+Hmm what about CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS?
 
- /* preemption or migration must be disabled before calling __local_lock_is_locked */
--#define __local_lock_is_locked(lock) READ_ONCE(this_cpu_ptr(lock)->acquired)
-+#define __local_lock_is_locked(lock)                                   \
-+       ({                                                              \
-+               bool ret = READ_ONCE(this_cpu_ptr(lock)->acquired);     \
-+                                                                       \
-+               if (!ret)                                               \
-+                       this_cpu_ptr(lock)->dep_map.flags = LOCAL_LOCK_UNLOCKED;\
-+               ret; \
-+       })
-+
-+#define __local_lock_flags_clear(lock) \
-+       do { this_cpu_ptr(lock)->dep_map.flags = 0; } while (0)
+> 
+> > - (if the above leaves any 64bit arch) its 64bit atomics implementation is safe
+> 
+> True, only because HPPA does not in fact have NMIs.
 
-It would need to be wrapped into macroses for !LOCKDEP, of course.
+What is HPPA?
 
-diff --git a/include/linux/lockdep_types.h b/include/linux/lockdep_types.h
-index 9f361d3ab9d9..6c580081ace3 100644
---- a/include/linux/lockdep_types.h
-+++ b/include/linux/lockdep_types.h
-@@ -190,13 +190,15 @@ struct lockdep_map {
-        u8                              wait_type_outer; /* can be taken in this context */
-        u8                              wait_type_inner; /* presents this context */
-        u8                              lock_type;
--       /* u8                           hole; */
-+       u8                              flags;
- #ifdef CONFIG_LOCK_STAT
-        int                             cpu;
-        unsigned long                   ip;
- #endif
- };
+> 
+> > - (if there are any 32bit applicable arch left) 32bit atomics should be
+> > enough for the nmi counters even with >4GB memory as we flush them? and we
+> > know the 32bit ops are safe
+> 
+> Older ARM might qualify here.
 
-+#define LOCAL_LOCK_UNLOCKED            1
-
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 58d78a33ac65..0eadee339e1f 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -4961,6 +4961,7 @@ void lockdep_init_map_type(struct lockdep_map *lock, const char *name,
-        lock->wait_type_outer = outer;
-        lock->wait_type_inner = inner;
-        lock->lock_type = lock_type;
-+       lock->flags = 0;
-
-        /*
-         * No key, no joy, we need to hash something.
-@@ -5101,6 +5102,9 @@ static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
-                lockevent_inc(lockdep_nocheck);
-        }
-
-+       if (unlikely(lock->flags == LOCAL_LOCK_UNLOCKED))
-+               subclass++;
-+
-        if (subclass < NR_LOCKDEP_CACHING_CLASSES)
-                class = lock->class_cache[subclass];
-        /*
+Thanks a lot Vlastimil & Peter for the suggestions. Let me summarize
+what I plan to do and please point out if I am doing something wrong:
 
 
-and the usage from slub/memcg looks like this:
+#if defined(CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS) || !defined(CONFIG_HAVE_NMI)
 
-if (!!local_lock_is_locked(&s->cpu_slab->lock)) {
-        ret = __slab_alloc_node(s, alloc_gfp, node, _RET_IP_, size);
-        __local_lock_flags_clear(&s->cpu_slab->lock);
-}
+// Do normal this_cpu* ops
 
-With that all normal local_lock_irqsave() automagically work.
+#elif defined(ARCH_HAVE_NMI_SAFE_CMPXCHG)
 
-High level the idea is to tell lockdep: "trust me, I know what I'm doing".
-Since it's a per-cpu local lock the workaround tells lockdep to treat
-such local_lock as nested, so lockdep allows second local_lock
-while the same cpu (in !RT) or task (in RT) is holding another local_lock.
+// Do 32 bit atomic ops with in_nmi() checks
 
-It addresses the 2nd false positive above:
-[   14.627331]   lock((local_lock_t *)&c->lock);
-[   14.627331]   lock((local_lock_t *)&c->lock);
+#else
 
-but doesn't address the first false positive of:
-[ 1021.956825] inconsistent {INITIAL USE} -> {IN-NMI} usage.
+// Build error or ignore nmi stats??
 
-We can silence lockdep for this lock with:
-@@ -5839,6 +5840,9 @@ void lock_acquire(struct lockdep_map *lock, unsigned int subclass,
-         */
-        kasan_check_byte(lock);
+#endif
 
-+       if (unlikely(lock->flags == LOCAL_LOCK_UNLOCKED))
-+               trylock = 1;
-+
-        if (unlikely(!lockdep_enabled())) {
 
-Then all lockdep false positives are gone.
-In other words the pair:
-  local_lock_is_locked(&local_lock);
-  __local_lock_flags_clear(&local_lock);
+WDYT?
 
-guards the region where local_lock can be taken multiple
-times on that cpu/task from any context including nmi.
-We know that the task won't migrate, so multiple lock/unlock
-of unlocked lock is safe.
+(BTW Vlastimil, I might rebase send out the irq-safe series before this
+nmi one.)
 
-I think this is a lesser evil hack/workaround than local_lock_irqsave_check().
-It gives clean start/end scope for such usage of local_lock.
-
-Thoughts?
+thanks,
+Shakeel
 
