@@ -1,219 +1,301 @@
-Return-Path: <bpf+bounces-58106-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58107-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8E0FAB4D74
-	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 09:59:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28EB6AB4DC3
+	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 10:13:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B2D1161562
-	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 07:59:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D33D17EBF0
+	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 08:13:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7917B1F1909;
-	Tue, 13 May 2025 07:58:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C39681F8BC7;
+	Tue, 13 May 2025 08:13:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Zp07Y/Sm"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="A/GDB9Oi"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55CCB1E2823
-	for <bpf@vger.kernel.org>; Tue, 13 May 2025 07:58:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ED5B1F09B3
+	for <bpf@vger.kernel.org>; Tue, 13 May 2025 08:13:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747123134; cv=none; b=jTw3Ro2b65KIJgLlTq9n8DO2dgEjQjfYB9zEnVCeEGBoU3dgJN+y45VCPf6q/beeEHRtMSu6H8NqKzRFAH1NL2Ah00DuUGB5yWiABqFRd9B6lokGMdv6uQ4gjOHuwZ8+GcUy5o5viz0r1QegNArlITHOLP2RVRiMHAE5VLy1F2E=
+	t=1747123999; cv=none; b=bl2FUE8OUjrKMs36wRUJ8i264E3D6QMcGg/lFhwt6WjWfoTWL73C4H+CbUrZQeZHL4kEa733n6thnIC7Ns05jZbgtKoqB2CS5M5ykaMy18LNKCPlMNmCkM4Up6Q2bShk07sgIfnyneWNgmncH4XKt4qOxxlQgrcpioY1PqEAXuw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747123134; c=relaxed/simple;
-	bh=1iog8uUcAnOfDkstEzE9DVn8MDHx9VVuFKoQnmJOfJI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Jf05sRqbjyhzzmP5VTRd2ZursjHREvlwURQKs3gPZwuW+WyOzgMUcJI2t/9ick1fqvj9tsFNrOJqhq+kmK2Y7/ymXP3F4kKERtjEuTYRKAbSyAIAag63SFZi/oUihn0fbtYdLGBqFsrREX+nNE4fxcc3nXeOOxu/TFt8a09hrMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Zp07Y/Sm; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1747123131;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/cXE8wpyS1ZC3ompzzCB3dTE+GWoL3ZRRJxcsK+KblI=;
-	b=Zp07Y/SmXiJKguA2avR5oXinKTOetUtL0OaLo5M7MU+vIaZTziDPAQqi8G+d9vgDqJ/0Bi
-	7Wdrw7DGKEq8Jha4tNpOYHKJAzS8oQvgQCJokZr00O4DvwGncPF+UL7Gmh0yfDXWQ1MsvA
-	o1e/wUI3Swz2EREFqp7N/PwyHQ1i+eg=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-149-bs14UUsOOsStmSp3jApBOw-1; Tue, 13 May 2025 03:58:48 -0400
-X-MC-Unique: bs14UUsOOsStmSp3jApBOw-1
-X-Mimecast-MFC-AGG-ID: bs14UUsOOsStmSp3jApBOw_1747123127
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3a0bd786a53so2199606f8f.0
-        for <bpf@vger.kernel.org>; Tue, 13 May 2025 00:58:48 -0700 (PDT)
+	s=arc-20240116; t=1747123999; c=relaxed/simple;
+	bh=FVispU/bP5PzByg1gx3UIn0ELRl06f844D51hZGkB/Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gsUMiUQ3N0uyjXPQSgBPR4e64qeZJLb/4N6iSLV3aGRSGldU8Vmum+LsBEMw56W0GQ2q18bgw9CuY+0/NER6+Fa5nuUhxJC+zaz1LY/09pIV4hcaDWTckhf1E5FnEtap60GGhHyWZwSs9lQ4vMNkIW+hXBR69DOgc8lk5mB32lc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=A/GDB9Oi; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-549b116321aso6144665e87.3
+        for <bpf@vger.kernel.org>; Tue, 13 May 2025 01:13:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1747123993; x=1747728793; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=39zu7seed4jgg43LW2MbbGC/aWRzIIESDfHi1Ed39Jo=;
+        b=A/GDB9Oi61gsOJtLjDDWDDAON6kN5aRD0mhj8P4cRjvkCwIaims9Tf/q3Ft4SrfVke
+         /IH6pZiGaJFSo2N3e4WOh+bZTj8G8O8hoxzedkOkOhyGNDFE7YxK4QRkbDgzvijw3Q9L
+         xgpKIFgPMAvlvjByb9VkytwTXvVAwvIrN0LsQVxge/dwge9PJ+4mFGdr2KjJ/IsRvPir
+         lZ0pUV5Qbpc9tNwhWkEUMya5wq/OHJPfwyP34gIK2YkPKG1IB8G0DHuf0UByeu0+9VgA
+         ibTsTPBn1JS0SzBgbwvmFmQpCSm/lHwqh39V1VmxjQiVPTiiGP9qoYXH66QAEXwVQvhE
+         cH5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747123127; x=1747727927;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/cXE8wpyS1ZC3ompzzCB3dTE+GWoL3ZRRJxcsK+KblI=;
-        b=xHgwko6TUQJzWDp6EGlwNg3GxxtR2R3XaXb9rn+52mhBcFMrjU3/JJOnTMZntC3xQm
-         PZ0DtnpxWmp86JVnRdR+kIaEqKUAe2yU5M34GCMfSJe2/h4t1TVhzFUKdi8axuc1kjso
-         SltJq0lB5jtfOISWovHlwtD+SdiNb6K/nYLJWRF6gTi9Bh6LwtCJzXZQRQX/XwzMR7i8
-         Q5TTB7zgpdrJd47lQkaJ60exzfiFKA2SjLRORi0fcCDVrzaFVNmO1UFWMOrOqDTZi8eZ
-         Ifm3R/942qrkDSZNOxYiNFTX7ZOAzpPs8CJSU3pc+esU1IEjcqVy4dnXRzH1CwVsiZwo
-         BDzQ==
-X-Gm-Message-State: AOJu0YwH+ruvh6A9SHJbGmw/cmfKS2YZTciDyiZRBix4E5uuURX5z93U
-	76IXChA/OC45dz6Hpxgo2mZbJt5YaAmvQSWSJS5eYA+W/XqEdgXDr2wRelCEYQI7vsDyqXnTDeX
-	MqPcpth4lCquVyIRB5g7GXE91MMFYmbNoPOtw0Mxe/XGnKUFP
-X-Gm-Gg: ASbGncvDkUejKWsZ8u3F+755zGgnoZCS/+fpFURBdvlvAdF2OedJUzRfdYhx+0YDZVQ
-	Aobc8jTVadfR1qSee0tJcpDvVt3NsqX9PB2Z/P6UKAoYB61LaO60lLY0QW5Ldsg6WvuQxYH0pZL
-	8ZUFRMuZi40A7G4Q8jN81Zbl8EP2er/+dt6sFbxReAMN7oMc1uI6ALyTds8iINB43PFO2mfIcSO
-	T/VpeNOxo9sfdMMVdRx4S1rg4mUghOD09YSIn2AE0eTJ21Q+cxd1+UHhNMEUAr5AB94rxfP6D6Z
-	fYDwBXo=
-X-Received: by 2002:a5d:64ae:0:b0:3a0:b294:ccc8 with SMTP id ffacd0b85a97d-3a1f64b43d9mr11561519f8f.59.1747123127124;
-        Tue, 13 May 2025 00:58:47 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHDw83IBy2aXEGjILBXG7nLSTIpKVnrJIPQAltoBRpc1okW6OLS5A/k5+oqvuCHFaga6vOZuw==
-X-Received: by 2002:a5d:64ae:0:b0:3a0:b294:ccc8 with SMTP id ffacd0b85a97d-3a1f64b43d9mr11561492f8f.59.1747123126750;
-        Tue, 13 May 2025 00:58:46 -0700 (PDT)
-Received: from [10.43.17.17] ([85.93.96.130])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a1f57ee95asm15356312f8f.11.2025.05.13.00.58.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 May 2025 00:58:46 -0700 (PDT)
-Message-ID: <ac10c2c6-c8e5-40ae-b932-f647ca54a855@redhat.com>
-Date: Tue, 13 May 2025 09:58:44 +0200
+        d=1e100.net; s=20230601; t=1747123993; x=1747728793;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=39zu7seed4jgg43LW2MbbGC/aWRzIIESDfHi1Ed39Jo=;
+        b=vZkMTZ2Ym1VKWix1vix/4neUwkbrFR1G01boJac6CpwC70N88xyblmW1QCvZJiVeOI
+         MnNJvL94NYJ2q8uPWuzTsYdn8fWFJTxnRG8yvshxMAK1Q70yePoEUtGFlUlPj22589jg
+         QnGzmGYTlUzkFF0RQALRf464ocvPTdsC9bHtdlAplmPKcgyoMgfSgD/Pq44RHtk1R+Ys
+         xFPtUeQU0Cx0tEMfaHCyL1yvcCcTA/g+mb3CT6MHhy36TIAFyn/+RMLM9z+fz0HRVNQb
+         MUJFsWzglmJavZyhG4XLEGc0v4AGObTkAL8Gv3IvlTeA+FjVmZukxpFGZ6HkI71j+AQf
+         X/Vg==
+X-Forwarded-Encrypted: i=1; AJvYcCW3ezlwddImGKBx/7LdMafeR+s60i7URqzyKYqs5dNimOJ0JPj3r6oKyMioqkBGUdPAYyg=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz+V99s5587M1ZsIDQi7XoBMZ6tpWjK+fv5UoWMmcLd5ld54F4x
+	0LOfpJXjzFEyGr6ZB2mKZSNBJyvcKtNRk2SrSOmQtrWwztorsmHtDKCQmnkDx2vFHkKYtY9Ffn/
+	DhGMkhXAiNx347Xd5lg7B5CQhh9x9IWIXGmQL
+X-Gm-Gg: ASbGncvW/lpP69spTuOcmeZx+ngy+SAzAoYcse6pUEY8lN5d4TR06Q9dPWb/vyAuuWQ
+	u1jKrToK1pVbRBFseP7rpoBCQIUQ+PzsKt4SAWcmhbQjE4kfra7b2hxDe9iTjoOu7adOHCNoHMp
+	X5o2hSszW+DSuH4GslYCxtOK37ndN5qxjyQ+JvTTDlrVx22DvNOlohbVNbu4YxGdTZHA==
+X-Google-Smtp-Source: AGHT+IE7L97rmyF6Rls4Vi11gKD7y5J5hh8OUwc4dI3VutRIld7UCLaygWrzqLzlZnE/u8M+GZgvo6S1ZMI914UgAgY=
+X-Received: by 2002:a05:6512:3088:b0:549:8c86:9bf6 with SMTP id
+ 2adb3069b0e04-54fc67e61a5mr5388577e87.39.1747123992999; Tue, 13 May 2025
+ 01:13:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v4 1/4] bpf: Teach vefier to handle const ptrs as
- args to kfuncs
-To: Matt Bobrowski <mattbobrowski@google.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>
-References: <cover.1746598898.git.vmalik@redhat.com>
- <1497b70f2a948fe29559c6bfb03551a7cc8638f1.1746598898.git.vmalik@redhat.com>
- <aBx0qmVvL84Jb3rf@google.com>
-From: Viktor Malik <vmalik@redhat.com>
-Content-Language: en-US
-In-Reply-To: <aBx0qmVvL84Jb3rf@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <68213ddf.050a0220.f2294.0045.GAE@google.com> <CAEf4BzbsmHonD-G45-Jo8RQHPjDYEz-Nwx0MGtsk427tgsqGkg@mail.gmail.com>
+In-Reply-To: <CAEf4BzbsmHonD-G45-Jo8RQHPjDYEz-Nwx0MGtsk427tgsqGkg@mail.gmail.com>
+From: Dmitry Vyukov <dvyukov@google.com>
+Date: Tue, 13 May 2025 10:13:01 +0200
+X-Gm-Features: AX0GCFvhf698Mjpq7Vly8ZviUnLjvyWjqHtMZKusaXObUFgruVQJYzVQZuDpuKg
+Message-ID: <CACT4Y+YpBHXXjU6rPBtB7_-5BvxqZUHW8i6YjOa6twoR=2u1aA@mail.gmail.com>
+Subject: Re: [syzbot] [bpf?] KASAN: vmalloc-out-of-bounds Write in
+ vrealloc_noprof (2)
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: syzbot <syzbot+659fcc0678e5a1193143@syzkaller.appspotmail.com>, 
+	Linux Memory Management List <linux-mm@kvack.org>, andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me, 
+	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 5/8/25 11:08, Matt Bobrowski wrote:
-> On Wed, May 07, 2025 at 08:40:36AM +0200, Viktor Malik wrote:
->> When a kfunc takes a const pointer as an argument, the verifier should
->> not check that the memory can be accessed for writing as that may lead
->> to rejecting safe programs. Extend the verifier to detect such arguments
->> and skip the write access check for them.
->>
->> The use-case for this change is passing string literals (i.e. read-only
->> maps) to read-only string kfuncs.
->>
->> Signed-off-by: Viktor Malik <vmalik@redhat.com>
->> ---
->>  include/linux/btf.h   |  5 +++++
->>  kernel/bpf/verifier.c | 10 ++++++----
->>  2 files changed, 11 insertions(+), 4 deletions(-)
->>
->> diff --git a/include/linux/btf.h b/include/linux/btf.h
->> index ebc0c0c9b944..5cb06c65d91f 100644
->> --- a/include/linux/btf.h
->> +++ b/include/linux/btf.h
->> @@ -391,6 +391,11 @@ static inline bool btf_type_is_type_tag(const struct btf_type *t)
->>  	return BTF_INFO_KIND(t->info) == BTF_KIND_TYPE_TAG;
->>  }
->>  
->> +static inline bool btf_type_is_const(const struct btf_type *t)
->> +{
->> +	return BTF_INFO_KIND(t->info) == BTF_KIND_CONST;
->> +}
-> 
-> I've seen btf_type_is_* related helpers lean on btf_kind() instead
-> here, which ultimately just wraps BTF_INFO_KIND() macro.
+On Tue, 13 May 2025 at 00:52, Andrii Nakryiko <andrii.nakryiko@gmail.com> w=
+rote:
+>
+> On Sun, May 11, 2025 at 5:16=E2=80=AFPM syzbot
+> <syzbot+659fcc0678e5a1193143@syzkaller.appspotmail.com> wrote:
+> >
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    707df3375124 Merge tag 'media/v6.15-2' of git://git.ker=
+nel..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=3D16b1b2bc580=
+000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D91c351a0f62=
+29e67
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=3D659fcc0678e5a=
+1193143
+> > compiler:       Debian clang version 20.1.2 (++20250402124445+58df0ef89=
+dd6-1~exp1~20250402004600.97), Debian LLD 20.1.2
+> >
+> > Unfortunately, I don't have any reproducer for this issue yet.
+> >
+> > Downloadable assets:
+> > disk image (non-bootable): https://storage.googleapis.com/syzbot-assets=
+/d900f083ada3/non_bootable_disk-707df337.raw.xz
+> > vmlinux: https://storage.googleapis.com/syzbot-assets/bc3944720ea5/vmli=
+nux-707df337.xz
+> > kernel image: https://storage.googleapis.com/syzbot-assets/7bc2f45ae23f=
+/bzImage-707df337.xz
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the co=
+mmit:
+> > Reported-by: syzbot+659fcc0678e5a1193143@syzkaller.appspotmail.com
+> >
+> > syz.0.0 uses obsolete (PF_INET,SOCK_PACKET)
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > BUG: KASAN: vmalloc-out-of-bounds in vrealloc_noprof+0x396/0x430 mm/vma=
+lloc.c:4093
+> > Write of size 4064 at addr ffffc9000efa1020 by task syz.0.0/5317
+> >
+>
+> A while back I sent a fix for kasan handling of vrealloc ([0]), but
+> this issue came back even with my changes in [0]. Can anyone from mm
+> side take a look at vrealloc_noprof() and see if we are missing
+> anything else to convince KASAN that we are using vrealloc()
+> correctly?
+>
+> Seems like kasan_poison_vmalloc() + kasan_unpoison_vmalloc() dance
+> isn't covering all cases? Or am I missing something? It's doubtful
+> that there is any BPF-side bug in using kvrealloc().
+>
+>   [0] https://lore.kernel.org/linux-mm/20241126005206.3457974-1-andrii@ke=
+rnel.org/
 
-This function is using the same style as 7 btf_type_is_* helpers
-directly above it so I don't think that it'd be doing something
-non-standard here.
+Hi Andrii,
 
->>  /* union is only a special case of struct:
->>   * all its offsetof(member) == 0
->>   */
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index 54c6953a8b84..e2d74c4d44c1 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -8186,7 +8186,7 @@ static int check_mem_size_reg(struct bpf_verifier_env *env,
->>  }
->>  
->>  static int check_mem_reg(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
->> -			 u32 regno, u32 mem_size)
->> +			 u32 regno, u32 mem_size, bool read_only)
-> 
-> Maybe s/read_only/write_mem_access?
-> 
->>  {
->>  	bool may_be_null = type_may_be_null(reg->type);
->>  	struct bpf_reg_state saved_reg;
->> @@ -8205,7 +8205,8 @@ static int check_mem_reg(struct bpf_verifier_env *env, struct bpf_reg_state *reg
->>  	}
->>  
->>  	err = check_helper_mem_access(env, regno, mem_size, BPF_READ, true, NULL);
->> -	err = err ?: check_helper_mem_access(env, regno, mem_size, BPF_WRITE, true, NULL);
->> +	if (!read_only)
->> +		err = err ?: check_helper_mem_access(env, regno, mem_size, BPF_WRITE, true, NULL);
-> 
-> For clarity, I'd completely get rid of the ternary operator usage
-> here. You can short circuit the call to check_helper_mem_access() w/
-> BPF_WRITE by simply checking the error code value from the preceding
-> call to check_helper_mem_access() w/ BPF_READ in the branch condition
-> i.e.
-> 
-> ```
-> err = check_helper_mem_access(..., BPF_READ, ...);
-> if (!err && write_mem_access)
->    err = check_helper_mem_acces(..., BPF_WRITE, ...);
-> ```
+The report flags the very memset that's visible in this patch chunk, right?
+https://lore.kernel.org/linux-mm/20241126005206.3457974-1-andrii@kernel.org=
+/
+Unless I am missing something obvious, the unpoison is added _after_
+the memset, so it can't help. The unpoison should be done _before_ the
+memset.
 
-That's a nice idea, thanks! I'll definitely use it in some form
-(depending on how we end up representing the access type param).
 
-> 
->>  	if (may_be_null)
->>  		*reg = saved_reg;
->> @@ -10361,7 +10362,7 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env, int subprog,
->>  			ret = check_func_arg_reg_off(env, reg, regno, ARG_DONTCARE);
->>  			if (ret < 0)
->>  				return ret;
->> -			if (check_mem_reg(env, reg, regno, arg->mem_size))
->> +			if (check_mem_reg(env, reg, regno, arg->mem_size, false))
-> 
-> For clarity, I'd add: /*write_mem_access=*/false). Same with the below
-> call to check_mem_reg().
-> 
->>  				return -EINVAL;
->>  			if (!(arg->arg_type & PTR_MAYBE_NULL) && (reg->type & PTR_MAYBE_NULL)) {
->>  				bpf_log(log, "arg#%d is expected to be non-NULL\n", i);
->> @@ -13252,7 +13253,8 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
->>  					i, btf_type_str(ref_t), ref_tname, PTR_ERR(resolve_ret));
->>  				return -EINVAL;
->>  			}
->> -			ret = check_mem_reg(env, reg, regno, type_size);
->> +			ret = check_mem_reg(env, reg, regno, type_size,
->> +					    btf_type_is_const(btf_type_by_id(btf, t->type)));
->>  			if (ret < 0)
->>  				return ret;
->>  			break;
->> -- 
->> 2.49.0
->>
-> 
-
+> > CPU: 0 UID: 0 PID: 5317 Comm: syz.0.0 Not tainted 6.15.0-rc5-syzkaller-=
+00038-g707df3375124 #0 PREEMPT(full)
+> > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-=
+1.16.3-2~bpo12+1 04/01/2014
+> > Call Trace:
+> >  <TASK>
+> >  dump_stack_lvl+0x189/0x250 lib/dump_stack.c:120
+> >  print_address_description mm/kasan/report.c:408 [inline]
+> >  print_report+0xb4/0x290 mm/kasan/report.c:521
+> >  kasan_report+0x118/0x150 mm/kasan/report.c:634
+> >  check_region_inline mm/kasan/generic.c:-1 [inline]
+> >  kasan_check_range+0x29a/0x2b0 mm/kasan/generic.c:189
+> >  __asan_memset+0x22/0x50 mm/kasan/shadow.c:84
+> >  vrealloc_noprof+0x396/0x430 mm/vmalloc.c:4093
+> >  push_insn_history+0x184/0x650 kernel/bpf/verifier.c:3874
+> >  do_check+0x597/0xd630 kernel/bpf/verifier.c:19450
+> >  do_check_common+0x168d/0x20b0 kernel/bpf/verifier.c:22776
+> >  do_check_main kernel/bpf/verifier.c:22867 [inline]
+> >  bpf_check+0x13679/0x19a70 kernel/bpf/verifier.c:24033
+> >  bpf_prog_load+0x1318/0x1930 kernel/bpf/syscall.c:2971
+> >  __sys_bpf+0x5f1/0x860 kernel/bpf/syscall.c:5834
+> >  __do_sys_bpf kernel/bpf/syscall.c:5941 [inline]
+> >  __se_sys_bpf kernel/bpf/syscall.c:5939 [inline]
+> >  __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5939
+> >  do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+> >  do_syscall_64+0xf6/0x210 arch/x86/entry/syscall_64.c:94
+> >  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> > RIP: 0033:0x7f649c58e969
+> > Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89=
+ f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 =
+ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+> > RSP: 002b:00007f649d4dd038 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+> > RAX: ffffffffffffffda RBX: 00007f649c7b5fa0 RCX: 00007f649c58e969
+> > RDX: 0000000000000048 RSI: 00002000000017c0 RDI: 0000000000000005
+> > RBP: 00007f649c610ab1 R08: 0000000000000000 R09: 0000000000000000
+> > R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+> > R13: 0000000000000000 R14: 00007f649c7b5fa0 R15: 00007fff542287e8
+> >  </TASK>
+> >
+> > The buggy address belongs to the virtual mapping at
+> >  [ffffc9000ef81000, ffffc9000efa3000) created by:
+> >  kvrealloc_noprof+0x82/0xe0 mm/slub.c:5109
+> >
+> > The buggy address belongs to the physical page:
+> > page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x3ffd0 pfn:=
+0x3efe5
+> > flags: 0x4fff00000000000(node=3D1|zone=3D1|lastcpupid=3D0x7ff)
+> > raw: 04fff00000000000 0000000000000000 dead000000000122 000000000000000=
+0
+> > raw: 000000000003ffd0 0000000000000000 00000001ffffffff 000000000000000=
+0
+> > page dumped because: kasan: bad access detected
+> > page_owner tracks the page as allocated
+> > page last allocated via order 0, migratetype Unmovable, gfp_mask 0x102c=
+c2(GFP_HIGHUSER|__GFP_NOWARN), pid 5317, tgid 5316 (syz.0.0), ts 8258753338=
+3, free_ts 81110216781
+> >  set_page_owner include/linux/page_owner.h:32 [inline]
+> >  post_alloc_hook+0x1d8/0x230 mm/page_alloc.c:1718
+> >  prep_new_page mm/page_alloc.c:1726 [inline]
+> >  get_page_from_freelist+0x21ce/0x22b0 mm/page_alloc.c:3688
+> >  __alloc_pages_slowpath+0x2fe/0xcc0 mm/page_alloc.c:4509
+> >  __alloc_frozen_pages_noprof+0x319/0x370 mm/page_alloc.c:4983
+> >  alloc_pages_mpol+0x232/0x4a0 mm/mempolicy.c:2301
+> >  alloc_frozen_pages_noprof mm/mempolicy.c:2372 [inline]
+> >  alloc_pages_noprof+0xa9/0x190 mm/mempolicy.c:2392
+> >  vm_area_alloc_pages mm/vmalloc.c:3591 [inline]
+> >  __vmalloc_area_node mm/vmalloc.c:3669 [inline]
+> >  __vmalloc_node_range_noprof+0x8fe/0x12c0 mm/vmalloc.c:3844
+> >  __kvmalloc_node_noprof+0x3a0/0x5e0 mm/slub.c:5034
+> >  kvrealloc_noprof+0x82/0xe0 mm/slub.c:5109
+> >  push_insn_history+0x184/0x650 kernel/bpf/verifier.c:3874
+> >  do_check+0x597/0xd630 kernel/bpf/verifier.c:19450
+> >  do_check_common+0x168d/0x20b0 kernel/bpf/verifier.c:22776
+> >  do_check_main kernel/bpf/verifier.c:22867 [inline]
+> >  bpf_check+0x13679/0x19a70 kernel/bpf/verifier.c:24033
+> >  bpf_prog_load+0x1318/0x1930 kernel/bpf/syscall.c:2971
+> >  __sys_bpf+0x5f1/0x860 kernel/bpf/syscall.c:5834
+> >  __do_sys_bpf kernel/bpf/syscall.c:5941 [inline]
+> >  __se_sys_bpf kernel/bpf/syscall.c:5939 [inline]
+> >  __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5939
+> > page last free pid 82 tgid 82 stack trace:
+> >  reset_page_owner include/linux/page_owner.h:25 [inline]
+> >  free_pages_prepare mm/page_alloc.c:1262 [inline]
+> >  free_unref_folios+0xb81/0x14a0 mm/page_alloc.c:2782
+> >  shrink_folio_list+0x3053/0x4e90 mm/vmscan.c:1552
+> >  evict_folios+0x417b/0x5110 mm/vmscan.c:4698
+> >  try_to_shrink_lruvec+0x705/0x990 mm/vmscan.c:4859
+> >  shrink_one+0x21b/0x7c0 mm/vmscan.c:4904
+> >  shrink_many mm/vmscan.c:4967 [inline]
+> >  lru_gen_shrink_node mm/vmscan.c:5045 [inline]
+> >  shrink_node+0x3139/0x3750 mm/vmscan.c:6016
+> >  kswapd_shrink_node mm/vmscan.c:6867 [inline]
+> >  balance_pgdat mm/vmscan.c:7050 [inline]
+> >  kswapd+0x1675/0x2970 mm/vmscan.c:7315
+> >  kthread+0x70e/0x8a0 kernel/kthread.c:464
+> >  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:153
+> >  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+> >
+> > Memory state around the buggy address:
+> >  ffffc9000efa0f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> >  ffffc9000efa0f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> > >ffffc9000efa1000: 00 00 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+> >                                ^
+> >  ffffc9000efa1080: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+> >  ffffc9000efa1100: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >
+> >
+> > ---
+> > This report is generated by a bot. It may contain errors.
+> > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> >
+> > syzbot will keep track of this issue. See:
+> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> >
+> > If the report is already addressed, let syzbot know by replying with:
+> > #syz fix: exact-commit-title
+> >
+> > If you want to overwrite report's subsystems, reply with:
+> > #syz set subsystems: new-subsystem
+> > (See the list of subsystem names on the web dashboard)
+> >
+> > If the report is a duplicate of another one, reply with:
+> > #syz dup: exact-subject-of-another-report
+> >
+> > If you want to undo deduplication, reply with:
+> > #syz undup
+>
+> --
+> You received this message because you are subscribed to the Google Groups=
+ "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion visit https://groups.google.com/d/msgid/syzkaller=
+-bugs/CAEf4BzbsmHonD-G45-Jo8RQHPjDYEz-Nwx0MGtsk427tgsqGkg%40mail.gmail.com.
 
