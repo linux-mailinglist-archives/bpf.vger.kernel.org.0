@@ -1,499 +1,129 @@
-Return-Path: <bpf+bounces-58139-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58140-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53525AB5E4D
-	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 23:15:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B64DAB5E56
+	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 23:19:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D16BB4A426C
-	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 21:15:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CAC1E1B4564B
+	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 21:19:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E98E1FDA6D;
-	Tue, 13 May 2025 21:15:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E23A41922FD;
+	Tue, 13 May 2025 21:19:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kqCkGVIF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MMXTsazQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C175B22338;
-	Tue, 13 May 2025 21:15:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0952201276;
+	Tue, 13 May 2025 21:19:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747170929; cv=none; b=E0AfJzSTC6yiL5kBcnPYzgaXXpfUiscyAXEcj7/2xyBSeCdnW9m6VX8GttlApCS2ACi4dixoYQNPWzat+W7FrY7CJGn1gY5MVBoAlnUUA8gt6YiQGbAXplOvfcMwPFng0m9xQnS5+fEANs+kbPA+rLQgAaYScj9wj6PuAHQpNaQ=
+	t=1747171168; cv=none; b=lc3wsYdiE+Y6cLeLgCZL49suc92eASjUA9e83w4PBr4ND4KZFQYracxRb+XqS9kqOAf/wJT3a+dxAzJjpVGFClkeiUGYShnESa9BpVYw9bxhzZUlR+Vh+SHNoqU8wFplCr6g+5oN7LFFqMiJqnb6hf41nQdZQFZd9pGXCF4fFls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747170929; c=relaxed/simple;
-	bh=FgV2p23NSDPw8Tyy4WKvVLysmNeM3a5kjTMBr1xFAIY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GmaQUKkU4LirqdEZMTMTvZBXLjUoZHFER2zDStn7zlhP8bc3wGFUlv7MpMG0EkXL114BoKQI0iusN2K3q4WrzgW4lkPbuzTW3cJwcRW7M2XBlXEzINhv5ci0MmqszhhJD1GZYXdgds6JH/Ckuu4t0nXgmPzxi3hbJHbFLuw4vTg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kqCkGVIF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1CACC4CEE4;
-	Tue, 13 May 2025 21:15:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747170929;
-	bh=FgV2p23NSDPw8Tyy4WKvVLysmNeM3a5kjTMBr1xFAIY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kqCkGVIF6fqMOcQqNZ5w8lozNDk/ka6Gj/pC7p1mKMGyiEJj435qWEKzpqmgm9n8K
-	 XQtOvzsTV0f35fQI3/htiFcLeQSZN06urDFKfPJgKEfh4eDOqX+V4VQv8Az8GpzSz5
-	 d1kiF5ni0dORikNI36xCbRfz8d4LQf5StSxQyFLkq7cEWYqZhxsRoyc1tNf23N9WmN
-	 J9JaV1JcOlirtzblZBEB2/hPSiir9P2CB9hbE+M08c0DNznKilonLhV3fjFt5OggB8
-	 MGSbgn0GgWELHaCe/NoVoLsQgKxTRrWDvqCVLEMpw1ydSE/orgWNfXGf7rPm9O+MeW
-	 mdzLqUsdpQ4Gw==
-Date: Tue, 13 May 2025 14:15:27 -0700
-From: Namhyung Kim <namhyung@kernel.org>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Kan Liang <kan.liang@linux.intel.com>
-Cc: Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
-	bpf@vger.kernel.org, Howard Chu <howardchu95@gmail.com>
-Subject: Re: [PATCH] perf trace: Support --summary-mode=cgroup
-Message-ID: <aCO2b-qAjWsVZObG@google.com>
-References: <20250501225337.928470-1-namhyung@kernel.org>
+	s=arc-20240116; t=1747171168; c=relaxed/simple;
+	bh=wwsaxtDJcxn+aKUGiPx/Z5SuIDpjkZ03+jZq2w/rpx0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VhM06LTZ4WPDOv7GIXWayFizIcPlDFNRLB00Hgq39X/su/YjOZMPffGqFlzslhjbYSXldo2qlJhNJTwn7VyPxU3GlmAZrDvnBg4enOaENeVUg8UZuhhcdZcBZ6Sff4zKhViOLRJT2ZqMqsXQ80ECi2Fc8aRwWYQmKoBN02Mf3GM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MMXTsazQ; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3a20257c815so3187487f8f.3;
+        Tue, 13 May 2025 14:19:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747171165; x=1747775965; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tqUOcURsI9IKQK470d3iHtcaSNqZOk2/X15O9wFfFLs=;
+        b=MMXTsazQOQZCnpTLqK6N2pTDLNUtQkqHtlR6F7vupfwhIx3Cmh5wAsiiEOd3yPGDtR
+         2V1aPIC2UmZ3YD6A2NjXdxq0m8e3t3h4opi6U+gbwXl0AM8/9fxFEY2/JzUCmb2hR60M
+         V1t+hgO389l4k+B2WMdCMTKONE15Qhc3CyQ+SGcPS5U8HeZ3XJgIo8T3NxVEn3Z4QNaw
+         EonX/hV0qQm7J0et8VD3VL3v/vLpFWsizXZ3dYmEl2IX2u3NSyMTkGWHY5VlZXcEyEi8
+         w7lCN4hnwryGTcPj1jHBvqvwApf47VPi48mqnbEJCDoFukrSATCNvQJBTeKlC7+iYMuq
+         PaOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747171165; x=1747775965;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tqUOcURsI9IKQK470d3iHtcaSNqZOk2/X15O9wFfFLs=;
+        b=BToLlSty4qW0sC1UCUsnbFixcIgkjUnbgVfz+tcFTIPsXXJ7qW/Ldu77ud6qv7Hx/L
+         5pTtNr46O4KWLRkpdlNqyCU8vh2QAxlnNUgw6ugwE3obhSKjk4gzIQL39PopgnJsCHNs
+         TatMQTnsfBMuwyDGUoYh91rlu3PmvGZWxptBops4acI06plnXjWO+l2CXSksv7ZcOhyh
+         EuwE3wFVZalyFnsJR3AGB837jrWUaDsqyBTgiHIql3XQqVOrHbVOKV6fpvmkWGeENJ8X
+         ZI534gxhj5cP/0g/s+LuXMJZ4ueJjkwvS7jWMgIVFVFPTMty9HizUZEdX+ZfUk88vxNe
+         TSPA==
+X-Forwarded-Encrypted: i=1; AJvYcCV49swy24kAUZpD5uApiYVb5kTlYz6GWzh3R1zFLNEUIBoL75mQR9iWTCFwXgLQxdwki/FeGum9Oqv0TWA=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw2ymlKaFZThYl64SggePWD85hSAwbUQ9+FI4byeaOG1X7t5gQL
+	zUtT7oErQQtJCbjyVXGtRcAFtlUaMw7iXx5UG/eRpl7XoiLHBw9jGjbk2EwHSZ9JSQPxMcY0FQa
+	YFomvBK0jn69SU0Gyxa94Qx1AgZk=
+X-Gm-Gg: ASbGncvADOm8bFz9VOvXUCDE4/LaTwCf7nw5Si8QYc2FPhxdFI5B75UIpjIUvXwMIXv
+	6KpCBT4UMIGOEEKpOdpunOuXbaV8Jdd56YCzljhmwy7VzXpRh6LncBc0n0xQh0hjrkLNfHhhSEX
+	gQ1Oe8KNusUYRZ9MqR5wnZCpSIYi1w7sm3xOX6HVSNW6wsKztIwHqMqvQ5icdnNg==
+X-Google-Smtp-Source: AGHT+IFkGg/2/Tmg0ij8JNRWus+ukKu5WP7alYp+YXdMtIs23VZa3IEQOnh7v5Vy066vjyM/47xFmO6y1S0+upzDZJw=
+X-Received: by 2002:a05:6000:430b:b0:3a1:fdff:5394 with SMTP id
+ ffacd0b85a97d-3a34994ac63mr624066f8f.57.1747171164770; Tue, 13 May 2025
+ 14:19:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250501225337.928470-1-namhyung@kernel.org>
+References: <20250513035853.75820-1-jiayuan.chen@linux.dev>
+In-Reply-To: <20250513035853.75820-1-jiayuan.chen@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 13 May 2025 14:19:13 -0700
+X-Gm-Features: AX0GCFvukt8CRdCACG4Y3UMwQBoo9HF66fpgYu5mj5tVDj2sXIzKNf1pgXKAssM
+Message-ID: <CAADnVQJJ7pLsm0UTzPOj1H+rdaaY7Lv0As0Te-b+7zieQbntkw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1] bpftool: Add support for custom BTF path in
+ prog load/loadall
+To: Jiayuan Chen <jiayuan.chen@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, Quentin Monnet <qmo@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Ping!
-
-On Thu, May 01, 2025 at 03:53:37PM -0700, Namhyung Kim wrote:
-> Add a new summary mode to collect stats for each cgroup.
-> 
->   $ sudo ./perf trace -as --bpf-summary --summary-mode=cgroup -- sleep 1
-> 
->    Summary of events:
-> 
->    cgroup /user.slice/user-657345.slice/user@657345.service/session.slice/org.gnome.Shell@x11.service, 535 events
-> 
->      syscall            calls  errors  total       min       avg       max       stddev
->                                        (msec)    (msec)    (msec)    (msec)        (%)
->      --------------- --------  ------ -------- --------- --------- ---------     ------
->      ppoll                 15      0   373.600     0.004    24.907   197.491     55.26%
->      poll                  15      0     1.325     0.001     0.088     0.369     38.76%
->      close                 66      0     0.567     0.007     0.009     0.026      3.55%
->      write                150      0     0.471     0.001     0.003     0.010      3.29%
->      recvmsg               94     83     0.290     0.000     0.003     0.037     16.39%
->      ioctl                 26      0     0.237     0.001     0.009     0.096     50.13%
->      timerfd_create        66      0     0.236     0.003     0.004     0.024      8.92%
->      timerfd_settime       70      0     0.160     0.001     0.002     0.012      7.66%
->      writev                10      0     0.118     0.001     0.012     0.019     18.17%
->      read                   9      0     0.021     0.001     0.002     0.004     14.07%
->      getpid                14      0     0.019     0.000     0.001     0.004     20.28%
-> 
->    cgroup /system.slice/polkit.service, 94 events
-> 
->      syscall            calls  errors  total       min       avg       max       stddev
->                                        (msec)    (msec)    (msec)    (msec)        (%)
->      --------------- --------  ------ -------- --------- --------- ---------     ------
->      ppoll                 22      0    19.811     0.000     0.900     9.273     63.88%
->      write                 30      0     0.040     0.001     0.001     0.003     12.09%
->      recvmsg               12      0     0.018     0.001     0.002     0.006     28.15%
->      read                  18      0     0.013     0.000     0.001     0.003     21.99%
->      poll                  12      0     0.006     0.000     0.001     0.001      4.48%
-> 
->    cgroup /user.slice/user-657345.slice/user@657345.service/app.slice/app-org.gnome.Terminal.slice/gnome-terminal-server.service, 21 events
-> 
->      syscall            calls  errors  total       min       avg       max       stddev
->                                        (msec)    (msec)    (msec)    (msec)        (%)
->      --------------- --------  ------ -------- --------- --------- ---------     ------
->      ppoll                  4      0    17.476     0.003     4.369    13.298     69.65%
->      recvmsg               15     12     0.068     0.002     0.005     0.014     26.53%
->      writev                 1      0     0.033     0.033     0.033     0.033      0.00%
->      poll                   1      0     0.005     0.005     0.005     0.005      0.00%
-> 
->    ...
-> 
-> It works only for --bpf-summary for now.
-> 
-> Cc: Howard Chu <howardchu95@gmail.com>
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+On Mon, May 12, 2025 at 8:59=E2=80=AFPM Jiayuan Chen <jiayuan.chen@linux.de=
+v> wrote:
+>
+> This patch exposes the btf_custom_path feature to bpftool, allowing users
+> to specify a custom BTF file when loading BPF programs using prog load or
+> prog loadall commands. This feature is already supported by libbpf, and
+> this patch makes it accessible through the bpftool command-line interface=
+.
+>
+> Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
 > ---
->  tools/perf/Documentation/perf-trace.txt       |   3 +-
->  tools/perf/builtin-trace.c                    |  10 +-
->  tools/perf/util/bpf-trace-summary.c           | 123 +++++++++++++++++-
->  .../perf/util/bpf_skel/syscall_summary.bpf.c  |  43 +++++-
->  tools/perf/util/bpf_skel/syscall_summary.h    |   2 +
->  tools/perf/util/trace.h                       |   1 +
->  6 files changed, 170 insertions(+), 12 deletions(-)
-> 
-> diff --git a/tools/perf/Documentation/perf-trace.txt b/tools/perf/Documentation/perf-trace.txt
-> index a8a0d8c33438fef7..c1fb6056a0d36dda 100644
-> --- a/tools/perf/Documentation/perf-trace.txt
-> +++ b/tools/perf/Documentation/perf-trace.txt
-> @@ -152,7 +152,8 @@ the thread executes on the designated CPUs. Default is to monitor all CPUs.
->  
->  --summary-mode=mode::
->  	To be used with -s or -S, to select how to show summary.  By default it'll
-> -	show the syscall summary by thread.  Possible values are: thread, total.
-> +	show the syscall summary by thread.  Possible values are: thread, total,
-> +	cgroup.
->  
->  --tool_stats::
->  	Show tool stats such as number of times fd->pathname was discovered thru
-> diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-> index b2c5a9b765ab5d33..83c62c30d914306c 100644
-> --- a/tools/perf/builtin-trace.c
-> +++ b/tools/perf/builtin-trace.c
-> @@ -5301,6 +5301,8 @@ static int trace__parse_summary_mode(const struct option *opt, const char *str,
->  		trace->summary_mode = SUMMARY__BY_THREAD;
->  	} else if (!strcmp(str, "total")) {
->  		trace->summary_mode = SUMMARY__BY_TOTAL;
-> +	} else if (!strcmp(str, "cgroup")) {
-> +		trace->summary_mode = SUMMARY__BY_CGROUP;
->  	} else {
->  		pr_err("Unknown summary mode: %s\n", str);
->  		return -1;
-> @@ -5460,7 +5462,7 @@ int cmd_trace(int argc, const char **argv)
->  	OPT_BOOLEAN(0, "errno-summary", &trace.errno_summary,
->  		    "Show errno stats per syscall, use with -s or -S"),
->  	OPT_CALLBACK(0, "summary-mode", &trace, "mode",
-> -		     "How to show summary: select thread (default) or total",
-> +		     "How to show summary: select thread (default), total or cgroup",
->  		     trace__parse_summary_mode),
->  	OPT_CALLBACK_DEFAULT('F', "pf", &trace.trace_pgfaults, "all|maj|min",
->  		     "Trace pagefaults", parse_pagefaults, "maj"),
-> @@ -5774,6 +5776,12 @@ int cmd_trace(int argc, const char **argv)
->  		symbol_conf.keep_exited_threads = true;
->  		if (trace.summary_mode == SUMMARY__NONE)
->  			trace.summary_mode = SUMMARY__BY_THREAD;
+>  tools/bpf/bpftool/prog.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+> index f010295350be..63f84e765b34 100644
+> --- a/tools/bpf/bpftool/prog.c
+> +++ b/tools/bpf/bpftool/prog.c
+> @@ -1681,8 +1681,17 @@ static int load_with_options(int argc, char **argv=
+, bool first_prog_only)
+>                 } else if (is_prefix(*argv, "autoattach")) {
+>                         auto_attach =3D true;
+>                         NEXT_ARG();
+> +               } else if (is_prefix(*argv, "custom_btf")) {
+> +                       NEXT_ARG();
 > +
-> +		if (!trace.summary_bpf && trace.summary_mode == SUMMARY__BY_CGROUP) {
-> +			pr_err("Error: --summary-mode=cgroup only works with --bpf-summary\n");
-> +			err = -EINVAL;
-> +			goto out;
-> +		}
->  	}
->  
->  	if (output_name != NULL) {
-> diff --git a/tools/perf/util/bpf-trace-summary.c b/tools/perf/util/bpf-trace-summary.c
-> index 114d8d9ed9b2d3f3..69fb165da206b01f 100644
-> --- a/tools/perf/util/bpf-trace-summary.c
-> +++ b/tools/perf/util/bpf-trace-summary.c
-> @@ -6,10 +6,12 @@
->  
->  #include "dwarf-regs.h" /* for EM_HOST */
->  #include "syscalltbl.h"
-> +#include "util/cgroup.h"
->  #include "util/hashmap.h"
->  #include "util/trace.h"
->  #include "util/util.h"
->  #include <bpf/bpf.h>
-> +#include <linux/rbtree.h>
->  #include <linux/time64.h>
->  #include <tools/libc_compat.h> /* reallocarray */
->  
-> @@ -18,6 +20,7 @@
->  
->  
->  static struct syscall_summary_bpf *skel;
-> +static struct rb_root cgroups = RB_ROOT;
->  
->  int trace_prepare_bpf_summary(enum trace_summary_mode mode)
->  {
-> @@ -29,9 +32,14 @@ int trace_prepare_bpf_summary(enum trace_summary_mode mode)
->  
->  	if (mode == SUMMARY__BY_THREAD)
->  		skel->rodata->aggr_mode = SYSCALL_AGGR_THREAD;
-> +	else if (mode == SUMMARY__BY_CGROUP)
-> +		skel->rodata->aggr_mode = SYSCALL_AGGR_CGROUP;
->  	else
->  		skel->rodata->aggr_mode = SYSCALL_AGGR_CPU;
->  
-> +	if (cgroup_is_v2("perf_event") > 0)
-> +		skel->rodata->use_cgroup_v2 = 1;
+> +                       if (!REQ_ARGS(1))
+> +                               goto err_free_reuse_maps;
 > +
->  	if (syscall_summary_bpf__load(skel) < 0) {
->  		fprintf(stderr, "failed to load syscall summary bpf skeleton\n");
->  		return -1;
-> @@ -42,6 +50,9 @@ int trace_prepare_bpf_summary(enum trace_summary_mode mode)
->  		return -1;
->  	}
->  
-> +	if (mode == SUMMARY__BY_CGROUP)
-> +		read_all_cgroups(&cgroups);
-> +
->  	return 0;
->  }
->  
-> @@ -88,9 +99,13 @@ static double rel_stddev(struct syscall_stats *stat)
->   * per-cpu analysis so it's keyed by the syscall number to combine stats
->   * from different CPUs.  And syscall_data always has a syscall_node so
->   * it can effectively work as flat hierarchy.
-> + *
-> + * For per-cgroup stats, it uses two-level data structure like thread
-> + * syscall_data is keyed by CGROUP and has an array of node which
-> + * represents each syscall for the cgroup.
->   */
->  struct syscall_data {
-> -	int key; /* tid if AGGR_THREAD, syscall-nr if AGGR_CPU */
-> +	u64 key; /* tid if AGGR_THREAD, syscall-nr if AGGR_CPU, cgroup if AGGR_CGROUP */
->  	int nr_events;
->  	int nr_nodes;
->  	u64 total_time;
-> @@ -191,7 +206,7 @@ static int print_thread_stat(struct syscall_data *data, FILE *fp)
->  
->  	qsort(data->nodes, data->nr_nodes, sizeof(*data->nodes), nodecmp);
->  
-> -	printed += fprintf(fp, " thread (%d), ", data->key);
-> +	printed += fprintf(fp, " thread (%d), ", (int)data->key);
->  	printed += fprintf(fp, "%d events\n\n", data->nr_events);
->  
->  	printed += fprintf(fp, "   syscall            calls  errors  total       min       avg       max       stddev\n");
-> @@ -283,6 +298,75 @@ static int print_total_stats(struct syscall_data **data, int nr_data, FILE *fp)
->  	return printed;
->  }
->  
-> +static int update_cgroup_stats(struct hashmap *hash, struct syscall_key *map_key,
-> +			       struct syscall_stats *map_data)
-> +{
-> +	struct syscall_data *data;
-> +	struct syscall_node *nodes;
-> +
-> +	if (!hashmap__find(hash, map_key->cgroup, &data)) {
-> +		data = zalloc(sizeof(*data));
-> +		if (data == NULL)
-> +			return -ENOMEM;
-> +
-> +		data->key = map_key->cgroup;
-> +		if (hashmap__add(hash, data->key, data) < 0) {
-> +			free(data);
-> +			return -ENOMEM;
-> +		}
-> +	}
-> +
-> +	/* update thread total stats */
-> +	data->nr_events += map_data->count;
-> +	data->total_time += map_data->total_time;
-> +
-> +	nodes = reallocarray(data->nodes, data->nr_nodes + 1, sizeof(*nodes));
-> +	if (nodes == NULL)
-> +		return -ENOMEM;
-> +
-> +	data->nodes = nodes;
-> +	nodes = &data->nodes[data->nr_nodes++];
-> +	nodes->syscall_nr = map_key->nr;
-> +
-> +	/* each thread has an entry for each syscall, just use the stat */
-> +	memcpy(&nodes->stats, map_data, sizeof(*map_data));
-> +	return 0;
-> +}
-> +
-> +static int print_cgroup_stat(struct syscall_data *data, FILE *fp)
-> +{
-> +	int printed = 0;
-> +	struct cgroup *cgrp = __cgroup__find(&cgroups, data->key);
-> +
-> +	qsort(data->nodes, data->nr_nodes, sizeof(*data->nodes), nodecmp);
-> +
-> +	if (cgrp)
-> +		printed += fprintf(fp, " cgroup %s,", cgrp->name);
-> +	else
-> +		printed += fprintf(fp, " cgroup id:%lu,", (unsigned long)data->key);
-> +
-> +	printed += fprintf(fp, " %d events\n\n", data->nr_events);
-> +
-> +	printed += fprintf(fp, "   syscall            calls  errors  total       min       avg       max       stddev\n");
-> +	printed += fprintf(fp, "                                     (msec)    (msec)    (msec)    (msec)        (%%)\n");
-> +	printed += fprintf(fp, "   --------------- --------  ------ -------- --------- --------- ---------     ------\n");
-> +
-> +	printed += print_common_stats(data, fp);
-> +	printed += fprintf(fp, "\n\n");
-> +
-> +	return printed;
-> +}
-> +
-> +static int print_cgroup_stats(struct syscall_data **data, int nr_data, FILE *fp)
-> +{
-> +	int printed = 0;
-> +
-> +	for (int i = 0; i < nr_data; i++)
-> +		printed += print_cgroup_stat(data[i], fp);
-> +
-> +	return printed;
-> +}
-> +
->  int trace_print_bpf_summary(FILE *fp)
->  {
->  	struct bpf_map *map = skel->maps.syscall_stats_map;
-> @@ -305,10 +389,19 @@ int trace_print_bpf_summary(FILE *fp)
->  		struct syscall_stats stat;
->  
->  		if (!bpf_map__lookup_elem(map, &key, sizeof(key), &stat, sizeof(stat), 0)) {
-> -			if (skel->rodata->aggr_mode == SYSCALL_AGGR_THREAD)
-> +			switch (skel->rodata->aggr_mode) {
-> +			case SYSCALL_AGGR_THREAD:
->  				update_thread_stats(&schash, &key, &stat);
-> -			else
-> +				break;
-> +			case SYSCALL_AGGR_CPU:
->  				update_total_stats(&schash, &key, &stat);
-> +				break;
-> +			case SYSCALL_AGGR_CGROUP:
-> +				update_cgroup_stats(&schash, &key, &stat);
-> +				break;
-> +			default:
-> +				break;
-> +			}
->  		}
->  
->  		prev_key = &key;
-> @@ -325,10 +418,19 @@ int trace_print_bpf_summary(FILE *fp)
->  
->  	qsort(data, nr_data, sizeof(*data), datacmp);
->  
-> -	if (skel->rodata->aggr_mode == SYSCALL_AGGR_THREAD)
-> +	switch (skel->rodata->aggr_mode) {
-> +	case SYSCALL_AGGR_THREAD:
->  		printed += print_thread_stats(data, nr_data, fp);
-> -	else
-> +		break;
-> +	case SYSCALL_AGGR_CPU:
->  		printed += print_total_stats(data, nr_data, fp);
-> +		break;
-> +	case SYSCALL_AGGR_CGROUP:
-> +		printed += print_cgroup_stats(data, nr_data, fp);
-> +		break;
-> +	default:
-> +		break;
-> +	}
->  
->  	for (i = 0; i < nr_data && data; i++) {
->  		free(data[i]->nodes);
-> @@ -343,5 +445,14 @@ int trace_print_bpf_summary(FILE *fp)
->  
->  void trace_cleanup_bpf_summary(void)
->  {
-> +	if (!RB_EMPTY_ROOT(&cgroups)) {
-> +		struct cgroup *cgrp, *tmp;
-> +
-> +		rbtree_postorder_for_each_entry_safe(cgrp, tmp, &cgroups, node)
-> +			cgroup__put(cgrp);
-> +
-> +		cgroups = RB_ROOT;
-> +	}
-> +
->  	syscall_summary_bpf__destroy(skel);
->  }
-> diff --git a/tools/perf/util/bpf_skel/syscall_summary.bpf.c b/tools/perf/util/bpf_skel/syscall_summary.bpf.c
-> index b25f53b3c1351392..1bcd066a5199a476 100644
-> --- a/tools/perf/util/bpf_skel/syscall_summary.bpf.c
-> +++ b/tools/perf/util/bpf_skel/syscall_summary.bpf.c
-> @@ -8,6 +8,7 @@
->  
->  #include <bpf/bpf_helpers.h>
->  #include <bpf/bpf_tracing.h>
-> +#include <bpf/bpf_core_read.h>
->  
->  /* This is to calculate a delta between sys-enter and sys-exit for each thread */
->  struct syscall_trace {
-> @@ -35,10 +36,41 @@ struct syscall_stats_map {
->  int enabled; /* controlled from userspace */
->  
->  const volatile enum syscall_aggr_mode aggr_mode;
-> +const volatile int use_cgroup_v2;
->  
-> -static void update_stats(int cpu_or_tid, int nr, s64 duration, long ret)
-> +int perf_subsys_id = -1;
-> +
-> +static inline __u64 get_current_cgroup_id(void)
-> +{
-> +	struct task_struct *task;
-> +	struct cgroup *cgrp;
-> +
-> +	if (use_cgroup_v2)
-> +		return bpf_get_current_cgroup_id();
-> +
-> +	task = bpf_get_current_task_btf();
-> +
-> +	if (perf_subsys_id == -1) {
-> +#if __has_builtin(__builtin_preserve_enum_value)
-> +		perf_subsys_id = bpf_core_enum_value(enum cgroup_subsys_id,
-> +						     perf_event_cgrp_id);
-> +#else
-> +		perf_subsys_id = perf_event_cgrp_id;
-> +#endif
-> +	}
-> +
-> +	cgrp = BPF_CORE_READ(task, cgroups, subsys[perf_subsys_id], cgroup);
-> +	return BPF_CORE_READ(cgrp, kn, id);
-> +}
-> +
-> +static void update_stats(int cpu_or_tid, u64 cgroup_id, int nr, s64 duration,
-> +			 long ret)
->  {
-> -	struct syscall_key key = { .cpu_or_tid = cpu_or_tid, .nr = nr, };
-> +	struct syscall_key key = {
-> +		.cpu_or_tid = cpu_or_tid,
-> +		.cgroup = cgroup_id,
-> +		.nr = nr,
-> +	};
->  	struct syscall_stats *stats;
->  
->  	stats = bpf_map_lookup_elem(&syscall_stats_map, &key);
-> @@ -90,7 +122,8 @@ SEC("tp_btf/sys_exit")
->  int sys_exit(u64 *ctx)
->  {
->  	int tid;
-> -	int key;
-> +	int key = 0;
-> +	u64 cgroup = 0;
->  	long ret = ctx[1]; /* return value of the syscall */
->  	struct syscall_trace *st;
->  	s64 delta;
-> @@ -105,11 +138,13 @@ int sys_exit(u64 *ctx)
->  
->  	if (aggr_mode == SYSCALL_AGGR_THREAD)
->  		key = tid;
-> +	else if (aggr_mode == SYSCALL_AGGR_CGROUP)
-> +		cgroup = get_current_cgroup_id();
->  	else
->  		key = bpf_get_smp_processor_id();
->  
->  	delta = bpf_ktime_get_ns() - st->timestamp;
-> -	update_stats(key, st->nr, delta, ret);
-> +	update_stats(key, cgroup, st->nr, delta, ret);
->  
->  	bpf_map_delete_elem(&syscall_trace_map, &tid);
->  	return 0;
-> diff --git a/tools/perf/util/bpf_skel/syscall_summary.h b/tools/perf/util/bpf_skel/syscall_summary.h
-> index 17f9ecba657088aa..72ccccb45925cd10 100644
-> --- a/tools/perf/util/bpf_skel/syscall_summary.h
-> +++ b/tools/perf/util/bpf_skel/syscall_summary.h
-> @@ -6,9 +6,11 @@
->  enum syscall_aggr_mode {
->  	SYSCALL_AGGR_THREAD,
->  	SYSCALL_AGGR_CPU,
-> +	SYSCALL_AGGR_CGROUP,
->  };
->  
->  struct syscall_key {
-> +	u64 cgroup;
->  	int cpu_or_tid;
->  	int nr;
->  };
-> diff --git a/tools/perf/util/trace.h b/tools/perf/util/trace.h
-> index ef8361ed12c4edc1..fa8d480527a22cef 100644
-> --- a/tools/perf/util/trace.h
-> +++ b/tools/perf/util/trace.h
-> @@ -8,6 +8,7 @@ enum trace_summary_mode {
->  	SUMMARY__NONE = 0,
->  	SUMMARY__BY_TOTAL,
->  	SUMMARY__BY_THREAD,
-> +	SUMMARY__BY_CGROUP,
->  };
->  
->  #ifdef HAVE_BPF_SKEL
-> -- 
-> 2.49.0.906.g1f30a19c02-goog
-> 
+> +                       open_opts.btf_custom_path =3D GET_ARG();
+
+I don't see a use case yet.
+What exactly is the scenario where it's useful ?
 
