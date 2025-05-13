@@ -1,45 +1,47 @@
-Return-Path: <bpf+bounces-58086-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58087-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D91C6AB49F3
-	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 05:13:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8945AB49F6
+	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 05:13:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A8318C5885
-	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 03:13:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C0B5B19E4BC8
+	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 03:14:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 606FB1DE8AF;
-	Tue, 13 May 2025 03:13:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E37691DF27D;
+	Tue, 13 May 2025 03:13:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fsod+VEy"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="s046WqLi"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A03A1DDC18
-	for <bpf@vger.kernel.org>; Tue, 13 May 2025 03:13:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 821671DB375
+	for <bpf@vger.kernel.org>; Tue, 13 May 2025 03:13:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747106021; cv=none; b=R0+rK5XLQ5qka3v6nC91U3UWQ6rlJcH63+faBdMIPUi0SAZVVScizXqtrZXoSK1ueAn0cz1rVxbNBURqTIPEjZnoe//7gwTMqsCfUOjFP4Yp6rks+AM9otptUUc3gC7SOeUkOMEYs0/xOkLC6fpSdSoUeYcX+jslqQ4bV6X/FqM=
+	t=1747106029; cv=none; b=kt2ksDufdfOPZStLoXFFFTVjDiJ9r1pKDgEUD6t9coSxnRCCllnsiKL4//upwg/bmsmFV2s0V6o3YBTV1dUTNSxyZRgefyeH7R4zAOvU/W+y8R6RqQpgl6TRybLb2PcwuUUTg89jmF7ZmRmFcwwdYgVeVFCSBGuJtj0HN9MrQsM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747106021; c=relaxed/simple;
-	bh=VNs9FPMzhf8zazFaa800LQaMlJPP89OGHWyxvsX0gWI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QM7UBrFgUgqH2wei/OzD8W760S4BZ9kztB3yebAGlnO8Kktk6n1x8U5TYfbKiKQezAt457r1+4HFqw9XhO4G1XRLuvA1zl2JYKu/c1eyWFQZsxs3O5OBgA5X8u+s652rDGAV0fYB40WgCOZ49tUktc1ZaoVYfIojCthTgNN4rhg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fsod+VEy; arc=none smtp.client-ip=95.215.58.183
+	s=arc-20240116; t=1747106029; c=relaxed/simple;
+	bh=n5s9ZZRvWvoxataSlwAcmGbeXZvkMF12DrmfaYB1ZDA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Lz7g0fbNlk2WIcVeVMGK9a6qrbz7APbHBtS4CG2qV/fI3Q+n4MjWOyfk6KmvQsttajZgNqPGZmND3t/Rl5U8aTqSEIWI/GdSWYg2urUnnfVCNyQssqil+/EgYLs/LbmNrpC4/V8VkAivLGU//JKdbrd+UB25bPSlJI3vIAZO2oc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=s046WqLi; arc=none smtp.client-ip=95.215.58.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1747106017;
+	t=1747106023;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=GXTE4pS6BF9sV5mPeyf6QZn/p+H6nbjslyn4BcRhdGI=;
-	b=fsod+VEy1I0JSZeB2v3fX4N8+mvOIpWzAisX09rwYZcupI5wDatBPi9QzhMWInGbcyHpHO
-	CS0cfnbsycQTdfk59F+1eFzWVlNLP7nRQsbrG0KlOt3lydbnsuHyhd+GRbi+2U0qk1Yvrc
-	hQ5fF4K0jPNU/7gD+PHZYJ4z8DHXXis=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fKjwuFgLIi+/qbpLVSCmVcizGpR4uToQYQN4R9XWXaE=;
+	b=s046WqLiD6NzciDYeAs2Pd9sL0cg9XQg1MC6wfbfV4pxi+XDfH9ARAET9Z5Afa6tzo72s7
+	xbSQAxH8ENw0+G5K5ilXEYUxLCAFQR7nzo62cUREnuWUW604+ZxMzrhqyDoDEPFHYlGfcS
+	h3wbcmRWWAGlhLsSP4vhNIGsGZTnp+g=
 From: Shakeel Butt <shakeel.butt@linux.dev>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Johannes Weiner <hannes@cmpxchg.org>,
@@ -56,9 +58,11 @@ Cc: Johannes Weiner <hannes@cmpxchg.org>,
 	cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Meta kernel team <kernel-team@meta.com>
-Subject: [RFC PATCH 0/7] memcg: make memcg stats irq safe
-Date: Mon, 12 May 2025 20:13:09 -0700
-Message-ID: <20250513031316.2147548-1-shakeel.butt@linux.dev>
+Subject: [RFC PATCH 1/7] memcg: memcg_rstat_updated re-entrant safe against irqs
+Date: Mon, 12 May 2025 20:13:10 -0700
+Message-ID: <20250513031316.2147548-2-shakeel.butt@linux.dev>
+In-Reply-To: <20250513031316.2147548-1-shakeel.butt@linux.dev>
+References: <20250513031316.2147548-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -68,36 +72,87 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-This series converts memcg stats to be irq safe i.e. memcg stats can be
-updated in any context (task, softirq or hardirq) without disabling the
-irqs.
+The function memcg_rstat_updated() is used to track the memcg stats
+updates for optimizing the flushes. At the moment, it is not re-entrant
+safe and the callers disabled irqs before calling. However to achieve
+the goal of updating memcg stats without irqs, memcg_rstat_updated()
+needs to be re-entrant safe against irqs.
 
-This is still an RFC as I am not satisfied with the usage of atomic_*
-ops in memcg_rstat_updated(). Second I still need to run performance
-benchmarks (any suggestions/recommendations would be appreciated).
-Sending this out early to get feedback.
+This patch makes memcg_rstat_updated() re-entrant safe against irqs.
+However it is using atomic_* ops which on x86, adds lock prefix to the
+instructions. Since this is per-cpu data, the this_cpu_* ops are
+preferred. However the percpu pointer is stored in struct mem_cgroup and
+doing the upward traversal through struct mem_cgroup may cause two cache
+misses as compared to traversing through struct memcg_vmstats_percpu
+pointer.
 
-This is based on latest mm-everything branch along with the nmi-safe
-memcg series [1].
+NOTE: explore if there is atomic_* ops alternative without lock prefix.
+Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+---
+ mm/memcontrol.c | 21 +++++++++++++--------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
 
-Link: http://lore.kernel.org/20250509232859.657525-1-shakeel.butt@linux.dev
-
-Shakeel Butt (7):
-  memcg: memcg_rstat_updated re-entrant safe against irqs
-  memcg: move preempt disable to callers of memcg_rstat_updated
-  memcg: make mod_memcg_state re-entrant safe against irqs
-  memcg: make count_memcg_events re-entrant safe against irqs
-  memcg: make __mod_memcg_lruvec_state re-entrant safe against irqs
-  memcg: objcg stock trylock without irq disabling
-  memcg: no stock lock for cpu hot-unplug
-
- include/linux/memcontrol.h |  41 +--------
- mm/memcontrol-v1.c         |   6 +-
- mm/memcontrol.c            | 167 +++++++++++++++----------------------
- mm/swap.c                  |   8 +-
- mm/vmscan.c                |  14 ++--
- 5 files changed, 85 insertions(+), 151 deletions(-)
-
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 6cfa3550f300..2c4c095bf26c 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -503,7 +503,7 @@ static inline int memcg_events_index(enum vm_event_item idx)
+ 
+ struct memcg_vmstats_percpu {
+ 	/* Stats updates since the last flush */
+-	unsigned int			stats_updates;
++	atomic_t			stats_updates;
+ 
+ 	/* Cached pointers for fast iteration in memcg_rstat_updated() */
+ 	struct memcg_vmstats_percpu	*parent;
+@@ -590,12 +590,15 @@ static bool memcg_vmstats_needs_flush(struct memcg_vmstats *vmstats)
+ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
+ {
+ 	struct memcg_vmstats_percpu *statc;
+-	int cpu = smp_processor_id();
+-	unsigned int stats_updates;
++	int cpu;
++	int stats_updates;
+ 
+ 	if (!val)
+ 		return;
+ 
++	/* Don't assume callers have preemption disabled. */
++	cpu = get_cpu();
++
+ 	cgroup_rstat_updated(memcg->css.cgroup, cpu);
+ 	statc = this_cpu_ptr(memcg->vmstats_percpu);
+ 	for (; statc; statc = statc->parent) {
+@@ -607,14 +610,16 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
+ 		if (memcg_vmstats_needs_flush(statc->vmstats))
+ 			break;
+ 
+-		stats_updates = READ_ONCE(statc->stats_updates) + abs(val);
+-		WRITE_ONCE(statc->stats_updates, stats_updates);
++		stats_updates = atomic_add_return(abs(val), &statc->stats_updates);
+ 		if (stats_updates < MEMCG_CHARGE_BATCH)
+ 			continue;
+ 
+-		atomic64_add(stats_updates, &statc->vmstats->stats_updates);
+-		WRITE_ONCE(statc->stats_updates, 0);
++		stats_updates = atomic_xchg(&statc->stats_updates, 0);
++		if (stats_updates)
++			atomic64_add(stats_updates,
++				     &statc->vmstats->stats_updates);
+ 	}
++	put_cpu();
+ }
+ 
+ static void __mem_cgroup_flush_stats(struct mem_cgroup *memcg, bool force)
+@@ -4155,7 +4160,7 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 		mem_cgroup_stat_aggregate(&ac);
+ 
+ 	}
+-	WRITE_ONCE(statc->stats_updates, 0);
++	atomic_set(&statc->stats_updates, 0);
+ 	/* We are in a per-cpu loop here, only do the atomic write once */
+ 	if (atomic64_read(&memcg->vmstats->stats_updates))
+ 		atomic64_set(&memcg->vmstats->stats_updates, 0);
 -- 
 2.47.1
 
