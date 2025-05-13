@@ -1,179 +1,213 @@
-Return-Path: <bpf+bounces-58084-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58085-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 194BFAB49AB
-	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 04:46:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7FA1AB49C3
+	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 04:58:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A73BC19E6C50
-	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 02:47:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F5BF7AF619
+	for <lists+bpf@lfdr.de>; Tue, 13 May 2025 02:56:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C92913B293;
-	Tue, 13 May 2025 02:46:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63F1D1D47B4;
+	Tue, 13 May 2025 02:57:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="npbZ+C/4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fz9gmq4o"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f67.google.com (mail-wm1-f67.google.com [209.85.128.67])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 462E64C6C
-	for <bpf@vger.kernel.org>; Tue, 13 May 2025 02:46:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 242931C683
+	for <bpf@vger.kernel.org>; Tue, 13 May 2025 02:57:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747104410; cv=none; b=bTyTQ+VgjwdP+nOnmjPRK13dA/NZfMqBYD268Vv/DwR3MgECg+dfjK1d2lr9NhyM693N/JwauDuOpNxUGTw/Rs14ecpsMoHsV0ZpnwInmeIU2pTJ+MdxWVp1/OysscgyoamDLPIHso2K+ZekpsqPYz/c+wRWFdEEaP/nhUjK0dc=
+	t=1747105072; cv=none; b=IXLpMqaoNtkRU/HgHvaiEhmPAelrjBly3CVXqgVVOYSFB6mTzKcRHbefyGG/YtfRsi91hKNwW0N4wymq/NkLRBawuBwTeqEa7UY1TTB8gIEnvSay+fMHc6ZwRf/Q8c3ErwBwGFe2TL8yOItO4M7fsNuwuMn9WJZ8caUqWmDUCFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747104410; c=relaxed/simple;
-	bh=4a/WLj6LUMcbI9hfPJ9/MgW4QYU3fTe+pmt4VfTNdUk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Qt/X0V+Kgxa5uCxdtLXlXUo7kN07gfVO4XyzLnfnusGqaKMiP+8glW2gcq+Yl+5tT5ZXDtN6HhmSLVujyAnwSWWPcev/7/jxL2hXiJDidxv9O2Om+a8DAIuZuR8dwiRjfnRoCBMx4xedI6B2UB9zZkLCYgtQnk/uCm+khpVKjCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=npbZ+C/4; arc=none smtp.client-ip=91.218.175.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <a3fa6129-933a-4747-8165-884e38c58e3b@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1747104404;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ALj/N2Qbm9XKZXq30SO78AvXdRiW3pmiMoKjGnyl7wo=;
-	b=npbZ+C/41DschfnE0HSAs5zKmA6LlyV9E81GxBjvCfCnjofRMQfsCaFCa2EW9GP09CUSNE
-	1kS8+0Jxcs/oojRo2JYrSAf7JvjqA/2NdzxIBD5ViEgBvCouSJGf0nsuE5JCMxlWSQ/B2/
-	vi16pumV1g+n6YUY8aatpbSdsdQxtP8=
-Date: Tue, 13 May 2025 10:46:33 +0800
+	s=arc-20240116; t=1747105072; c=relaxed/simple;
+	bh=SyyBlPPKy6Bd8qGv9bdhXvxuEtsDqwZeRvocL9cHtTU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=snbXevt7JTMqhs1erZq6i3Ctgw5xCkdhI48aPKKJMoxIFU1QE4h1GdoMtU5XAt2UjuyX9YoQlFjkT5leZ8RMPF4GnbSGni1D2hkhtYN5DKKqX36pDHsAvTkjlw73CtS07JB+sVnkwc6zX3Lz0lxy3h78AXRENQYS5moDKT/DdNY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fz9gmq4o; arc=none smtp.client-ip=209.85.128.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f67.google.com with SMTP id 5b1f17b1804b1-442ec3ce724so659945e9.0
+        for <bpf@vger.kernel.org>; Mon, 12 May 2025 19:57:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747105069; x=1747709869; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mM91ATpq+AwaBg+v30ZwLoSTsQ/uvZIzpyhQJYUG898=;
+        b=fz9gmq4oKVMDSUA0F2L8SUbhDLKN5XkYFXAuHmb9jMGVRfW7wYxfbdnx50Z4Da9Vw/
+         MpWBOA6K+/PJITrnp8hGPCdP7MREJUqMiLDVzgCfv9XYKGa85g4cz7iHGJMEOXhefZLA
+         I5xJqr+l/7QfKoId2Q0sx/eWYzkbGRRJnWWiBAC0+NlKR3Gti0BxslN+cHCb31ExLYew
+         d0D5y8rEiPKJDe1eNMwiJgY4098XfjIeESy6FYIm5eZXDKjsJNuXz0g9SJZgl/hMtW6j
+         QRQohkfK/ocrsYHwChaBmxB1h/pgt8I/yVpUMnUaxmiXSdbS6JL339pHcTbgJ9E94rkK
+         cmZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747105069; x=1747709869;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mM91ATpq+AwaBg+v30ZwLoSTsQ/uvZIzpyhQJYUG898=;
+        b=O26adSdjsyyWzY0w/LM2HPn9O8LrAP0w6bptaz19dh5ak7dCPi1A4YDnH4g+IrzFaZ
+         3NkKTr516lLAUMahgCA8owbJFOMTAOYd3MiZluMYgu1a3vsf5CoH37yNhxpYgspGiRxH
+         4ia4zM/xaL9IWxE8G0O5ntobsIGn5kuOKWl1/hEadCryBU5/oVyjSZ1utHakMEQxXbhD
+         oXc+XtcUMkbzGJN2llV/wzcDntnjwijYduDAvkl/6+nfde2wfSX3SxxfWE/P1rmENhP2
+         AGXrIJPHy7+tYeYu2kMC0/im1l8LREUPW2xifXr2GI6+E4QDDkw9ylTmgovpVLqFl7CH
+         P9Pg==
+X-Gm-Message-State: AOJu0YwenUkTr3+sl5VSK6wlJn7dIThEjJ4CxY6eVEu4rRHtAt33+XAJ
+	JQ4CzUlixoDSqhwYT9/3Mi5yQrMemZwjpEZFVm8ceQl6RfYY+QzaHlhrEfTffwdb+w==
+X-Gm-Gg: ASbGnctGQfjcrAXaylKJi1Oe0wuRK4N5KEHzLKw9mxYFkFhSyCrfkxAjW82d1CD+Gqr
+	FjuFxwl/TnjUepiK3zyc9fW0ORNkk7Fgqc3nZbJC2RaE/WpMa3hkxKVvVqBVkcXPOIv9FE9RkZC
+	5F6K567FcCiiOR8N0nHSd4Lweg3O2n8cLkgj/MED9xnpk3j2o9Hs81TRVFfykoAsuALnweNDJRI
+	Qs4KU9RlUCg+akVaKUC/bMsqi7sljsk7UnWXySgOgBYh6waaINjQSuTzMzFLvWpR4lBPXs7UZaz
+	1J1L7m+Rk0WGgJJaUFwxlckZhz6PS2/BwgCAj41+J03cFYzo+xgC
+X-Google-Smtp-Source: AGHT+IGOFPYCcKwyGz2zbzGXbG+wJBxVwirbeIYwXeLU+2pBSU6DDUXD2PSLeutqWyWj/V3ljqeiHQ==
+X-Received: by 2002:a05:600c:a42:b0:441:d228:1fe5 with SMTP id 5b1f17b1804b1-442d6de0f78mr111446405e9.33.1747105068680;
+        Mon, 12 May 2025 19:57:48 -0700 (PDT)
+Received: from localhost ([2a03:2880:31ff:74::])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-442d67ee275sm146359015e9.19.2025.05.12.19.57.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 May 2025 19:57:48 -0700 (PDT)
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Tejun Heo <tj@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	kkd@meta.com,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next v2] bpf: Add __prog tag to pass in prog->aux
+Date: Mon, 12 May 2025 19:57:47 -0700
+Message-ID: <20250513025747.1519365-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] bpf: Fix bpf_prog nested call in
- trace_mmap_lock_acquire_returned
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Song Liu <song@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Liam Howlett <Liam.Howlett@oracle.com>, bpf <bpf@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>,
- syzbot+45b0c89a0fc7ae8dbadc@syzkaller.appspotmail.com
-References: <20250512145901.691685-1-chen.dylane@linux.dev>
- <CAADnVQJNmS-3gDQ4=GRGzk00S-n9KOs2temi+P-7Nac_gnx5DQ@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Tao Chen <chen.dylane@linux.dev>
-In-Reply-To: <CAADnVQJNmS-3gDQ4=GRGzk00S-n9KOs2temi+P-7Nac_gnx5DQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3962; h=from:subject; bh=FfO5xvMJEViiSbyKQO6Si8LX+lFYuAFcyVRBoQUbfkg=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBoIrRq6RWIeoJo7SdxBjwS5QrzgL4aJAjJVcR6z3Jj ffAmmG+JAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCaCK0agAKCRBM4MiGSL8RymR0EA CZKT47/TcN7Mz+vBKhp9tRvWtsd8yx2fvHUVpJvrMwxK33pxCc5aIo9ZFC5DsnUYLLrPk/s6dQ7D7U GaKPdEzSAoPk+mtVdLuJzoe/H+zhXd0eO8887ADWt3qpG1D48p6Q8eEwQGoOJX2wDaBpvw3LAJ+oGx 4EdzmyDFlqmpWH0StE2+PuqOfutXobVYKw2X7H9uhQ9qRe5zNsEWnkAwc1EM3dZ02RWAYnjHuJf3lP bcbGnruvcsnVsNg5YdKU/XVJtB3CBgBtJlgNZh7Mc84Tu5VZm0oRX8SRBtHDSdW+/8xnKStzX2JSxq qrR8kNiF9200gZdzzzcK1mcgTPcMwhOE73ltZTq1BQ8N3GLPUeVM4yzMHSRS4JOS4GzygUhMQMlh8D EdamA3GHPtGX3Kl1pgjMzQbv1nXiYTwqz9TcYxkkN6a7SiSLAg/uDL1FNMGnVt92LTMrFg9BBeoD8G mnhDPrscAkj3bS0kjdWIqd9+mgDP/avLxQZqm7lJEdtOVY5IFA3E32WwiMRg4gsHaGdofouNH7WqBB h05JASjugP06N/eeYnLTlLjQNyTooLPksIFQCAnrjoIGOXWGccnM8rCIhJpJ+Rq8V4BKSGDJdYZbrp T/c9U4DGHrpUdVxXDLYkAy3QiXxFmBCw2Ce30hkGv4MMbSTReBheD5ttoUFw==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-在 2025/5/13 07:59, Alexei Starovoitov 写道:
-> On Mon, May 12, 2025 at 7:59 AM Tao Chen <chen.dylane@linux.dev> wrote:
->>
->> syzkaller reported an issue:
->>
->>   bpf_prog_ec3b2eefa702d8d3+0x43/0x47
->>   bpf_dispatcher_nop_func include/linux/bpf.h:1316 [inline]
->>   __bpf_prog_run include/linux/filter.h:718 [inline]
->>   bpf_prog_run include/linux/filter.h:725 [inline]
->>   __bpf_trace_run kernel/trace/bpf_trace.c:2363 [inline]
->>   bpf_trace_run3+0x23f/0x5a0 kernel/trace/bpf_trace.c:2405
->>   __bpf_trace_mmap_lock_acquire_returned+0xfc/0x140 include/trace/events/mmap_lock.h:47
->>   __traceiter_mmap_lock_acquire_returned+0x79/0xc0 include/trace/events/mmap_lock.h:47
->>   __do_trace_mmap_lock_acquire_returned include/trace/events/mmap_lock.h:47 [inline]
->>   trace_mmap_lock_acquire_returned include/trace/events/mmap_lock.h:47 [inline]
->>   __mmap_lock_do_trace_acquire_returned+0x138/0x1f0 mm/mmap_lock.c:35
->>   __mmap_lock_trace_acquire_returned include/linux/mmap_lock.h:36 [inline]
->>   mmap_read_trylock include/linux/mmap_lock.h:204 [inline]
->>   stack_map_get_build_id_offset+0x535/0x6f0 kernel/bpf/stackmap.c:157
->>   __bpf_get_stack+0x307/0xa10 kernel/bpf/stackmap.c:483
->>   ____bpf_get_stack kernel/bpf/stackmap.c:499 [inline]
->>   bpf_get_stack+0x32/0x40 kernel/bpf/stackmap.c:496
->>   ____bpf_get_stack_raw_tp kernel/trace/bpf_trace.c:1941 [inline]
->>   bpf_get_stack_raw_tp+0x124/0x160 kernel/trace/bpf_trace.c:1931
->>   bpf_prog_ec3b2eefa702d8d3+0x43/0x47
->>   bpf_dispatcher_nop_func include/linux/bpf.h:1316 [inline]
->>   __bpf_prog_run include/linux/filter.h:718 [inline]
->>   bpf_prog_run include/linux/filter.h:725 [inline]
->>   __bpf_trace_run kernel/trace/bpf_trace.c:2363 [inline]
->>   bpf_trace_run3+0x23f/0x5a0 kernel/trace/bpf_trace.c:2405
->>   __bpf_trace_mmap_lock_acquire_returned+0xfc/0x140 include/trace/events/mmap_lock.h:47
->>   __traceiter_mmap_lock_acquire_returned+0x79/0xc0 include/trace/events/mmap_lock.h:47
->>   __do_trace_mmap_lock_acquire_returned include/trace/events/mmap_lock.h:47 [inline]
->>   trace_mmap_lock_acquire_returned include/trace/events/mmap_lock.h:47 [inline]
->>   __mmap_lock_do_trace_acquire_returned+0x138/0x1f0 mm/mmap_lock.c:35
->>   __mmap_lock_trace_acquire_returned include/linux/mmap_lock.h:36 [inline]
->>   mmap_read_lock include/linux/mmap_lock.h:185 [inline]
->>   exit_mm kernel/exit.c:565 [inline]
->>   do_exit+0xf72/0x2c30 kernel/exit.c:940
->>   do_group_exit+0xd3/0x2a0 kernel/exit.c:1102
->>   __do_sys_exit_group kernel/exit.c:1113 [inline]
->>   __se_sys_exit_group kernel/exit.c:1111 [inline]
->>   __x64_sys_exit_group+0x3e/0x50 kernel/exit.c:1111
->>   x64_sys_call+0x1530/0x1730 arch/x86/include/generated/asm/syscalls_64.h:232
->>   do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
->>   do_syscall_64+0xcd/0x260 arch/x86/entry/syscall_64.c:94
->>   entry_SYSCALL_64_after_hwframe+0x77/0x7f
->>
->> mmap_read_trylock is used in stack_map_get_build_id_offset, if user
->> wants to trace trace_mmap_lock_acquire_returned tracepoint and get user
->> stack in the bpf_prog, it will call trace_mmap_lock_acquire_returned
->> again in the bpf_get_stack, which will lead to a nested call relationship.
->>
->> Reported-by: syzbot+45b0c89a0fc7ae8dbadc@syzkaller.appspotmail.com
->> Closes: https://lore.kernel.org/bpf/8bc2554d-1052-4922-8832-e0078a033e1d@gmail.com
->> Fixes: 2f1aaf3ea666 ("bpf, mm: Fix lockdep warning triggered by stack_map_get_build_id_offset()")
->> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
->> ---
->>   kernel/bpf/stackmap.c | 6 +++++-
->>   1 file changed, 5 insertions(+), 1 deletion(-)
->>
->> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
->> index 3615c06b7dfa..eec51f069028 100644
->> --- a/kernel/bpf/stackmap.c
->> +++ b/kernel/bpf/stackmap.c
->> @@ -130,6 +130,10 @@ static int fetch_build_id(struct vm_area_struct *vma, unsigned char *build_id, b
->>                           : build_id_parse_nofault(vma, build_id, NULL);
->>   }
->>
->> +static inline bool mmap_read_trylock_no_trace(struct mm_struct *mm)
->> +{
->> +       return down_read_trylock(&mm->mmap_lock) != 0;
->> +}
->>   /*
->>    * Expects all id_offs[i].ip values to be set to correct initial IPs.
->>    * They will be subsequently:
->> @@ -154,7 +158,7 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
->>           * build_id.
->>           */
->>          if (!user || !current || !current->mm || irq_work_busy ||
->> -           !mmap_read_trylock(current->mm)) {
->> +           !mmap_read_trylock_no_trace(current->mm)) {
-> 
-> This is not a fix.
-> It doesn't address the issue.
-> Since syzbot managed to craft such corner case,
-> let's remove WARN_ON_ONCE from get_bpf_raw_tp_regs() for now.
-> 
-> In the long run we may consider adding a per-tracepoint
-> recursion count for particularly dangerous tracepoints like this one,
+Instead of hardcoding the list of kfuncs that need prog->aux passed to
+them with a combination of fixup_kfunc_call adjustment + __ign suffix,
+combine both in __prog suffix, which ignores the argument passed in, and
+fixes it up to the prog->aux. This allows kfuncs to have the prog->aux
+passed into them without having to touch the verifier.
 
-This looks more general.
+Cc: Tejun Heo <tj@kernel.org>
+Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+---
+Changelog:
+v1 -> v2
+v1: https://lore.kernel.org/bpf/20250512210246.3741193-1-memxor@gmail.com
 
-> but let's not do it just yet.
-> Removing WARN_ON_ONCE should do it.
+ * Change __aux tag to __prog. (Alexei)
+---
+ include/linux/bpf_verifier.h |  1 +
+ kernel/bpf/helpers.c         |  4 ++--
+ kernel/bpf/verifier.c        | 33 +++++++++++++++++++++++++++------
+ 3 files changed, 30 insertions(+), 8 deletions(-)
 
-Will change it in v2.
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index 9734544b6957..7dd85ed6059e 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -606,6 +606,7 @@ struct bpf_insn_aux_data {
+ 	bool calls_callback;
+ 	/* registers alive before this instruction. */
+ 	u16 live_regs_before;
++	u16 arg_prog;
+ };
 
-> 
-> pw-bot: cr
+ #define MAX_USED_MAPS 64 /* max number of maps accessed by one eBPF program */
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index fed53da75025..43cbf439b9fb 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -3012,9 +3012,9 @@ __bpf_kfunc int bpf_wq_start(struct bpf_wq *wq, unsigned int flags)
+ __bpf_kfunc int bpf_wq_set_callback_impl(struct bpf_wq *wq,
+ 					 int (callback_fn)(void *map, int *key, void *value),
+ 					 unsigned int flags,
+-					 void *aux__ign)
++					 void *aux__prog)
+ {
+-	struct bpf_prog_aux *aux = (struct bpf_prog_aux *)aux__ign;
++	struct bpf_prog_aux *aux = (struct bpf_prog_aux *)aux__prog;
+ 	struct bpf_async_kern *async = (struct bpf_async_kern *)wq;
 
+ 	if (flags)
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 28f5a7899bd6..f409a06099f6 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -343,6 +343,7 @@ struct bpf_kfunc_call_arg_meta {
+ 		int uid;
+ 	} map;
+ 	u64 mem_size;
++	u32 arg_prog;
+ };
 
--- 
-Best Regards
-Tao Chen
+ struct btf *btf_vmlinux;
+@@ -11897,6 +11898,11 @@ static bool is_kfunc_arg_irq_flag(const struct btf *btf, const struct btf_param
+ 	return btf_param_match_suffix(btf, arg, "__irq_flag");
+ }
+
++static bool is_kfunc_arg_prog(const struct btf *btf, const struct btf_param *arg)
++{
++	return btf_param_match_suffix(btf, arg, "__prog");
++}
++
+ static bool is_kfunc_arg_scalar_with_name(const struct btf *btf,
+ 					  const struct btf_param *arg,
+ 					  const char *name)
+@@ -12938,6 +12944,17 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+ 		if (is_kfunc_arg_ignore(btf, &args[i]))
+ 			continue;
+
++		if (is_kfunc_arg_prog(btf, &args[i])) {
++			/* Used to reject repeated use of __aux. */
++			if (meta->arg_prog) {
++				verbose(env, "Only 1 prog->aux argument supported per-kfunc\n");
++				return -EFAULT;
++			}
++			meta->arg_prog = regno;
++			cur_aux(env)->arg_prog = regno;
++			continue;
++		}
++
+ 		if (btf_type_is_scalar(t)) {
+ 			if (reg->type != SCALAR_VALUE) {
+ 				verbose(env, "R%d is not a scalar\n", regno);
+@@ -21517,13 +21534,17 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ 		   desc->func_id == special_kfunc_list[KF_bpf_rdonly_cast]) {
+ 		insn_buf[0] = BPF_MOV64_REG(BPF_REG_0, BPF_REG_1);
+ 		*cnt = 1;
+-	} else if (is_bpf_wq_set_callback_impl_kfunc(desc->func_id)) {
+-		struct bpf_insn ld_addrs[2] = { BPF_LD_IMM64(BPF_REG_4, (long)env->prog->aux) };
++	}
+
+-		insn_buf[0] = ld_addrs[0];
+-		insn_buf[1] = ld_addrs[1];
+-		insn_buf[2] = *insn;
+-		*cnt = 3;
++	if (env->insn_aux_data[insn_idx].arg_prog) {
++		u32 regno = env->insn_aux_data[insn_idx].arg_prog;
++		struct bpf_insn ld_addrs[2] = { BPF_LD_IMM64(regno, (long)env->prog->aux) };
++		int idx = *cnt;
++
++		insn_buf[idx++] = ld_addrs[0];
++		insn_buf[idx++] = ld_addrs[1];
++		insn_buf[idx++] = *insn;
++		*cnt = idx;
+ 	}
+ 	return 0;
+ }
+--
+2.47.1
+
 
