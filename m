@@ -1,139 +1,194 @@
-Return-Path: <bpf+bounces-58220-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58221-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB039AB7445
-	for <lists+bpf@lfdr.de>; Wed, 14 May 2025 20:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 96218AB746C
+	for <lists+bpf@lfdr.de>; Wed, 14 May 2025 20:36:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EA858C2196
-	for <lists+bpf@lfdr.de>; Wed, 14 May 2025 18:23:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E89B8C147E
+	for <lists+bpf@lfdr.de>; Wed, 14 May 2025 18:35:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C39F2820C9;
-	Wed, 14 May 2025 18:23:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BD801F5858;
+	Wed, 14 May 2025 18:35:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CzFXTm6p"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-out.aladdin-rd.ru (mail-out.aladdin-rd.ru [91.199.251.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E7C91E9B16;
-	Wed, 14 May 2025 18:23:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.199.251.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B218F2868B8
+	for <bpf@vger.kernel.org>; Wed, 14 May 2025 18:35:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747246996; cv=none; b=Sk5BqHMrVxSKIPhjrXdTb7XHQi5Ostq9JMBz5TnQcg12vFXo9VtlaHMTT4rNf4u6DYu+MJAjIVr16z2oJOFuUgzL1uVrSPGuSLcGBdf9VFhoJb/oQ+Uf6q/rsq6hnoktpLRu5hw0n0kCUqTDZ9OTaVG2VNv1HdBoARZ39etPVcI=
+	t=1747247752; cv=none; b=lyq5DmpKtFnELLIxTuAHMKOaBgVrKeomp8W3HUQ9vL4Xqsf2fLtKRMfmxbC7adBo6hP/ThuzJQA4KUJm2AodYst/V2iGcaCuG6u9X8wCcGekTDcx21WS2LxL3s6wwut1t5kDBiP7JzWOpNC0g1jZu7ZIBfaYwDbXsLIXlJnQUM8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747246996; c=relaxed/simple;
-	bh=4e1qOJWkWaFSa6R6yvbt8eruwMLzqqkT2IlDLCrqYys=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=L22IxhQcnqq3czH0E2UweUpc5fleRchqCSRMoP+GKSgoG3Rwrz8WH0br8/mTy3HgX2gELkt7YbHFeNIVr77i4eMKB5KuRBAPugf+DNPh9J9U0mKEQTDDIdNU8w8MYRnh3wpopm9Siwt3iYRvv6sHWV/V9YTJvvAVACAcB8JTTS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aladdin.ru; spf=pass smtp.mailfrom=aladdin.ru; arc=none smtp.client-ip=91.199.251.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aladdin.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aladdin.ru
-From: Daniil Dulov <d.dulov@aladdin.ru>
-To: <stable@vger.kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC: Daniil Dulov <d.dulov@aladdin.ru>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, Yonghong
- Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh
-	<kpsingh@kernel.org>, Roman Gushchin <guro@fb.com>, <netdev@vger.kernel.org>,
-	<bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<lvc-project@linuxtesting.org>, syzbot <syzkaller@googlegroups.com>, Eric
- Dumazet <edumazet@google.com>
-Subject: [PATCH 5.10] bpf: Avoid overflows involving hash elem_size
-Date: Wed, 14 May 2025 21:07:33 +0300
-Message-ID: <20250514180733.1271988-1-d.dulov@aladdin.ru>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1747247752; c=relaxed/simple;
+	bh=FXR+yoHky+nwxXWGDuzeNtD0Pl66EDMCJYYq1hhFKLE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fNht1in7AFmdjAO0UjcLAUtmHmoUEBvy7Hhqrl1gMQksf7a6wMP/aNIlhlnCuMWGguBUHFSYugccRLVY4MsG8FmjstjBhQ0Q8qp4rvm4ozQ3UtDdsC41WUBJjIkXmoniXBliWhTwhTkdxvZTc0kkIWc1OMb+k5bi7lLAS/HKmak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CzFXTm6p; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50EC2C4CEF1
+	for <bpf@vger.kernel.org>; Wed, 14 May 2025 18:35:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747247752;
+	bh=FXR+yoHky+nwxXWGDuzeNtD0Pl66EDMCJYYq1hhFKLE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=CzFXTm6pYTm3IvFXuLGBNTrojvDZ4pcyUIX/pniAZRBOfJIUdCk0nVWmfzi0m5TgT
+	 nOsOV+uLSOiTCgJcA7Ey208+W5NAFvE5v3OpSg1O7e7KtSduzo1K1RHjJ3HMO6Trej
+	 hyGN4OY1HiyBWHZbcThBH3f4ibd99Jjn5p0T7ELy/XJH8sml9xFDczT6GsYyTDnkMR
+	 NW7az8rjYgR3YqCPqNOInJzDSiOJ/xM5huA43kuwW6WciZfacZtThoOIkfKnjfAVnh
+	 pnAm+gZgzhY96ILzfg6OdszsrSCRM1eTcolG9UIn3XEFAJT4k6KaZWWdOZwGw8rm3G
+	 5an1Jlur3hW6A==
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-ad1d1f57a01so21065266b.2
+        for <bpf@vger.kernel.org>; Wed, 14 May 2025 11:35:52 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXrLLYgOX1IQmES60iwJoI3epjNHspdjq3RL/QhfssyUCpuDi6T0df9/HITr35ZDIXgMZo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwlClFfuJ8ii2Z1aXAWVoXAMVFQvnMDUh/WvJLF+OkFUGEI5eou
+	WXW5nV/X/WHmBWgioQqwEOEGtrCarbka88dkgMSQ/PLKtSCM5m0CSIBpypEkVjcyPGA90980zNP
+	Y455getX8dj9LqMIINpdlwycmle3fEhUmwpgG
+X-Google-Smtp-Source: AGHT+IFtQMXy9LFulSzKje1GuSuGBtYynlXEWPAAMjiUP2194GFK8Vq6VYTuT87LMKZh7Uff3AMO5FsjIgB/BYZJ9Bw=
+X-Received: by 2002:a05:6402:2553:b0:5fc:3f48:a673 with SMTP id
+ 4fb4d7f45d1cf-5ff98897f75mr3681731a12.2.1747247739543; Wed, 14 May 2025
+ 11:35:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EXCH-2016-01.aladdin.ru (192.168.1.101) To
- EXCH-2016-01.aladdin.ru (192.168.1.101)
+References: <20250502184421.1424368-1-bboscaccy@linux.microsoft.com>
+ <20250502210034.284051-1-kpsingh@kernel.org> <CAHC9VhS5Vevcq90OxTmAp2=XtR1qOiDDe5sSXReX5oXzf+siVQ@mail.gmail.com>
+ <CACYkzJ5jsWFiXMRDwoGib5t+Xje6STTuJGRZM9Vg2dFz7uPa-g@mail.gmail.com>
+ <CACYkzJ6VQUExfyt0=-FmXz46GHJh3d=FXh5j4KfexcEFbHV-vg@mail.gmail.com>
+ <beaa81748cf1325df67930bf74ea87e6cdcb3e46.camel@HansenPartnership.com>
+ <CACYkzJ5XJOj08+hKheWDcqbPrFAwa+fFvOw+4QPAHBz1u2HgAg@mail.gmail.com> <4f92fcfaeffd179ff6ae265822dc79856310d6a3.camel@HansenPartnership.com>
+In-Reply-To: <4f92fcfaeffd179ff6ae265822dc79856310d6a3.camel@HansenPartnership.com>
+From: KP Singh <kpsingh@kernel.org>
+Date: Wed, 14 May 2025 20:35:28 +0200
+X-Gmail-Original-Message-ID: <CACYkzJ7Oh62u7bHwQ_nOLG54qnhyNU9msF5mWV_vFrBXw1oZqw@mail.gmail.com>
+X-Gm-Features: AX0GCFu6wgKt8ns7B4WmAYl1fFIsHpTPOSXa547IdWuqOMoeu6YVbaSdA5YH5n0
+Message-ID: <CACYkzJ7Oh62u7bHwQ_nOLG54qnhyNU9msF5mWV_vFrBXw1oZqw@mail.gmail.com>
+Subject: Re: [PATCH v3 0/4] Introducing Hornet LSM
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc: Paul Moore <paul@paul-moore.com>, bboscaccy@linux.microsoft.com, bpf@vger.kernel.org, 
+	code@tyhicks.com, corbet@lwn.net, davem@davemloft.net, dhowells@redhat.com, 
+	gnoack@google.com, herbert@gondor.apana.org.au, jarkko@kernel.org, 
+	jmorris@namei.org, jstancek@redhat.com, justinstitt@google.com, 
+	keyrings@vger.kernel.org, linux-crypto@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, llvm@lists.linux.dev, 
+	masahiroy@kernel.org, mic@digikod.net, morbo@google.com, nathan@kernel.org, 
+	neal@gompa.dev, nick.desaulniers+lkml@gmail.com, nicolas@fjasle.eu, 
+	nkapron@google.com, roberto.sassu@huawei.com, serge@hallyn.com, 
+	shuah@kernel.org, teknoraver@meta.com, xiyou.wangcong@gmail.com, 
+	kysrinivasan@gmail.com, Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Eric Dumazet <edumazet@google.com>
+On Wed, May 14, 2025 at 7:45=E2=80=AFPM James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
+>
+> On Wed, 2025-05-14 at 19:17 +0200, KP Singh wrote:
+> > On Wed, May 14, 2025 at 5:39=E2=80=AFPM James Bottomley
+> > <James.Bottomley@hansenpartnership.com> wrote:
+> > > On Sun, 2025-05-11 at 04:01 +0200, KP Singh wrote:
+> [...]
+> > > > This implicitly makes the payload equivalent to the signed block
+> > > > (B_signed)
+> > > >
+> > > >     I_loader || H_meta
+> > > >
+> > > > bpftool then generates the signature of this I_loader payload
+> > > > (which now contains the expected H_meta) using a key (system or
+> > > > user) with new flags that work in combination with bpftool -L
+> > >
+> > > Could I just push back a bit on this.  The theory of hash chains
+> > > (which I've cut to shorten) is about pure data structures.  The
+> > > reason for that is that the entire hash chain is supposed to be
+> > > easily independently verifiable in any environment because anything
+> > > can compute the hashes of the blocks and links.  This independent
+> > > verification of the chain is key to formally proving hash chains to
+> > > be correct.  In your proposal we lose the easy verifiability
+> > > because the link hash is embedded in the ebpf loader program which
+> > > has to be disassembled to do the extraction of the hash and verify
+> > > the loader is actually checking it.
+> >
+> > I am not sure I understand your concern. This is something that can
+> > easily be built into tooling / annotations.
+> >
+> >     bpftool -S -v <verification_key> <loader> <metadata>
+> >
+> > Could you explain what's the use-case for "easy verifiability".
+>
+> I mean verifiability of the hash chain link.  Given a signed program,
+> (i.e. a .h file which is generated by bpftool) which is a signature
+> over the loader only how would one use simple cryptographic operations
+> to verify it?
+>
 
-commit e1868b9e36d0ca52e4e7c6c06953f191446e44df upstream.
+I literally just said it above the hash can be extracted if you really
+want offline verification. Are you saying this code is hard to write?
+or is the tooling hard to write? Do you have some definition of
+"simple cryptographic operations".  All operations use tooling.
 
-Use of bpf_map_charge_init() was making sure hash tables would not use more
-than 4GB of memory.
+>
+> >
+> > > I was looking at ways we could use a pure hash chain (i.e.
+> > > signature over loader and real map hash) and it does strike me that
+> > > the above ebpf hash verification code is pretty invariant and easy
+> > > to construct, so it could run as a separate BPF fragment that then
+> > > jumps to the real loader.  In that case, it could be constructed on
+> > > the fly in a trusted environment, like the kernel, from the link
+> > > hash in the signature and the signature could just be Sig(loader ||
+> > > map hash) which can then be
+> >
+> > The design I proposed does the same thing:
+> >
+> >     Sig(loader || H_metadata)
+> >
+> > metadata is actually the data (programs, context etc) that's passed
+> > in the map. The verification just happens in the loader program and
+> > the loader || H_metadata is implemented elegantly to avoid any
+> > separate payloads.
+>
+> OK, so I think this is the crux of the problem:  In formal methods
+> proving the validity of a data based hash link is an easy set of
+> cryptographic operations.  You can assert that's equivalent to a
+> signature over a program that verifies the hash, but formally proving
+> it requires a formal analysis of the program to show that 1) it
+> contains the correct hash and 2) it correctly checks the hash against
+> the map.  That makes the task of someone receiving the .h file
+> containing the signed skeleton way harder: it's easy to prove the
+> signature matches the loader instructions, but they still have to prove
+> the instructions contain and verify the correct map hash.
+>
 
-Since the implicit check disappeared, we have to be more careful
-about overflows, to support big hash tables.
+I don't see this as a problem for 2 reasons:
 
-syzbot triggers a panic using :
+1. It's not hard
+2. Your typical user does not want to do formal verification and
+extract signatures etc.
 
-bpf(BPF_MAP_CREATE, {map_type=BPF_MAP_TYPE_LRU_HASH, key_size=16384, value_size=8,
-                     max_entries=262200, map_flags=0, inner_map_fd=-1, map_name="",
-                     map_ifindex=0, btf_fd=-1, btf_key_type_id=0, btf_value_type_id=0,
-                     btf_vmlinux_value_type_id=0}, 64) = ...
+[1] alone is enough.
 
-BUG: KASAN: vmalloc-out-of-bounds in bpf_percpu_lru_populate kernel/bpf/bpf_lru_list.c:594 [inline]
-BUG: KASAN: vmalloc-out-of-bounds in bpf_lru_populate+0x4ef/0x5e0 kernel/bpf/bpf_lru_list.c:611
-Write of size 2 at addr ffffc90017e4a020 by task syz-executor.5/19786
+The key user journey is:
 
-CPU: 0 PID: 19786 Comm: syz-executor.5 Not tainted 5.10.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0x5/0x4c8 mm/kasan/report.c:385
- __kasan_report mm/kasan/report.c:545 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
- bpf_percpu_lru_populate kernel/bpf/bpf_lru_list.c:594 [inline]
- bpf_lru_populate+0x4ef/0x5e0 kernel/bpf/bpf_lru_list.c:611
- prealloc_init kernel/bpf/hashtab.c:319 [inline]
- htab_map_alloc+0xf6e/0x1230 kernel/bpf/hashtab.c:507
- find_and_alloc_map kernel/bpf/syscall.c:123 [inline]
- map_create kernel/bpf/syscall.c:829 [inline]
- __do_sys_bpf+0xa81/0x5170 kernel/bpf/syscall.c:4336
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45deb9
-Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fd93fbc0c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 0000000000001a40 RCX: 000000000045deb9
-RDX: 0000000000000040 RSI: 0000000020000280 RDI: 0000000000000000
-RBP: 000000000119bf60 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119bf2c
-R13: 00007ffc08a7be8f R14: 00007fd93fbc19c0 R15: 000000000119bf2c
+* Build the program and the metadata
+* Sign the blob once (as explained)
+* A simple API to verify the sequence of operations.
 
-Fixes: 755e5d55367a ("bpf: Eliminate rlimit-based memory accounting for hashtab maps")
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Roman Gushchin <guro@fb.com>
-Link: https://lore.kernel.org/bpf/20201207182821.3940306-1-eric.dumazet@gmail.com
-Signed-off-by: Daniil Dulov <d.dulov@aladdin.ru>
----
- kernel/bpf/hashtab.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The user builds a program and signs the blob, they sign it because it
+contains the hash of the metadata. It seems like you are optimizing
+for the formal researcher but not for the tooling. The user just needs
+good tooling and a simple API which is exactly what was proposed.
 
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 4c7cab79d90e..829d6d3a8495 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -199,7 +199,7 @@ static void *fd_htab_map_get_ptr(const struct bpf_map *map, struct htab_elem *l)
- 
- static struct htab_elem *get_htab_elem(struct bpf_htab *htab, int i)
- {
--	return (struct htab_elem *) (htab->elems + i * htab->elem_size);
-+	return (struct htab_elem *) (htab->elems + i * (u64)htab->elem_size);
- }
- 
- static void htab_free_elems(struct bpf_htab *htab)
-@@ -255,7 +255,7 @@ static int prealloc_init(struct bpf_htab *htab)
- 	if (!htab_is_percpu(htab) && !htab_is_lru(htab))
- 		num_entries += num_possible_cpus();
- 
--	htab->elems = bpf_map_area_alloc(htab->elem_size * num_entries,
-+	htab->elems = bpf_map_area_alloc((u64)htab->elem_size * num_entries,
- 					 htab->map.numa_node);
- 	if (!htab->elems)
- 		return -ENOMEM;
--- 
-2.34.1
+- KP
 
+> Regards,
+>
+> James
+>
+>
 
