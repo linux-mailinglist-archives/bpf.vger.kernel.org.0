@@ -1,86 +1,85 @@
-Return-Path: <bpf+bounces-58176-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58177-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CEE8AB631B
-	for <lists+bpf@lfdr.de>; Wed, 14 May 2025 08:29:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CF0EAB6376
+	for <lists+bpf@lfdr.de>; Wed, 14 May 2025 08:48:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D91F917355D
-	for <lists+bpf@lfdr.de>; Wed, 14 May 2025 06:29:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4ECDD7A192B
+	for <lists+bpf@lfdr.de>; Wed, 14 May 2025 06:47:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29C801FE470;
-	Wed, 14 May 2025 06:29:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ACA81FCFF1;
+	Wed, 14 May 2025 06:48:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b5YwTIPL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mYNv/mWy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f67.google.com (mail-ej1-f67.google.com [209.85.218.67])
+Received: from mail-ej1-f68.google.com (mail-ej1-f68.google.com [209.85.218.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E108F13D539;
-	Wed, 14 May 2025 06:29:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0436317583;
+	Wed, 14 May 2025 06:48:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747204155; cv=none; b=S4npJBaPhSyoeZNlAI/gwHsRFqFAIjHZi5WTZuSalBgrkabXJ+CuXLPrQKGINQ9+karbFV8YS5He4y+gJ4gjGInavTxqw8g98P3gJ1YeQe6GP0gK9nDZT0fnPpR4aKSRTlNpLEZpg4p8AAF8j7oM6tLkZtohzLYY7wt9ZW0ahb0=
+	t=1747205305; cv=none; b=MErcEz7UThd+W8vyQUsOh6nLoCdF2nsQCP2bEJGyq5x7LGBjF2+/OTxRUAJ1/Que3LFkuwBJwzZ5rFYhhWR6OQ7zTCbcSph/RKxEo//3Pxw0N390MAGuPIvPfcilXfMYuTmuuZcp83s64v9vzS/H4C5oLsfqXONBBxG9+NHQ9z4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747204155; c=relaxed/simple;
-	bh=PaYjBZppfnvZ2HRcS6OlMJ9h+JyKAs+WdSh7y/nlHX4=;
+	s=arc-20240116; t=1747205305; c=relaxed/simple;
+	bh=HGZdJZIHRL1GtxweWrW4A40ao0eooBXQDxu8kYszvsY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gAb+Jui5H8FZnaF9f+EejcMdl2VnajasG3jF9YWjd16EeLYgWU2hX4dQ/W5jM9g/+1vdhoBW1QjPp/yhgnYwfGkAx2Zl1Ch1zCyx4ziFdislCHHNlyzz2oNz+JPXHiDIwmuSSlsXq5bGzBQGyT/K2Jf6tpPzkMCQkY8nPcDt/sQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b5YwTIPL; arc=none smtp.client-ip=209.85.218.67
+	 To:Cc:Content-Type; b=m6OlI+zZFdDZ00SdUhuIAjZC9VC4uEvbTbKV0pONWqoU0lRuUEYzXCTciDF/uk3J+EkMj/I0jnd1BjKE1mGQ446FFm0nlnJYd6FRqFIB3Jz7qZtlC+njlB7nxmivy05kh4lPbvYAck16EG0KNRbICA8AOyBndNRpLrbj9atxVrM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mYNv/mWy; arc=none smtp.client-ip=209.85.218.68
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f67.google.com with SMTP id a640c23a62f3a-ad23ec87134so9839466b.2;
-        Tue, 13 May 2025 23:29:13 -0700 (PDT)
+Received: by mail-ej1-f68.google.com with SMTP id a640c23a62f3a-ac34257295dso1082763966b.2;
+        Tue, 13 May 2025 23:48:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747204152; x=1747808952; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1747205301; x=1747810101; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=PaYjBZppfnvZ2HRcS6OlMJ9h+JyKAs+WdSh7y/nlHX4=;
-        b=b5YwTIPLUT+H4XvE2TGaFsbmqSK/VfQL+oCFSm/93jjSYrwFraHffOd8eIW/XLkxWD
-         FadCo2Ke4/b11Qzbs27LrYFGxK20rT3jqFcESGvBli+a9b96q/rFfvHfoQvT3WWYV5uM
-         S3IOVY6+1u/8EUUn09aC6DXHkhu+2wpXiGgVwW3fwx+WWYVje90apsO64U2uU/IonY5m
-         KCZwD8pwxpAkY7PpOassD4b/yXtVQ1/4UFAWPv4BnR42JLyb77t5tic1Vy1q4/upMumB
-         RylT0qvjO80xT3w+TjI7QEmeU053P20eqB64VfYX1h5JQwkOg2tNbj7zPR1fxPBnMeUA
-         sDfQ==
+        bh=HGZdJZIHRL1GtxweWrW4A40ao0eooBXQDxu8kYszvsY=;
+        b=mYNv/mWybOfFIowIcj/ApnyLO1mW2xiiV2cqri/cfFZh+CzfpPIvguCMkVef7NgM3s
+         ZskLdldyPBoZxnnK+waO9Kdc3v4eveid5b9+B3CoXYjjLSZvlN7n46+6Qm5wfvu9u6Ao
+         jxK7QCjIkHpYAuJqHs3h72rxuB7Jz+LzRKzHZlcewuXV7bGGExzPyr889OvBAb8RL2cZ
+         IYLtWAaTIynChqGNIO8WlVmVhw2IDGJfdXRzlOcMbwjcLZMW6Rv2o0eXRt7nNSS44v3Y
+         cepIGJw6NbB4IaViq+tIPsYFz5bGBVvzp4iWcGd2j3AFNsOH0AeEFYaLm4j6yzHA3Pdi
+         cFtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747204152; x=1747808952;
+        d=1e100.net; s=20230601; t=1747205301; x=1747810101;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=PaYjBZppfnvZ2HRcS6OlMJ9h+JyKAs+WdSh7y/nlHX4=;
-        b=ILoi72hs6tFR+BZ86fc+s6rKAJtUZFZ+LuOstZmJnvOzufno1EGCRfrCF0FBqTSdQO
-         ephZKmYnjWyxM+qgEDL17QuD3n6e/ibyknZm14qYV0NGzzD07sqxrXydSbzl2irpNl3f
-         /dr2k/6gnE1NXjV6QahQajmY3k0NWQ2txX/L5+AigxDHU7vCWCdJ4wDWfTcHkkFcEyy0
-         m32I52D8i44QYOhC5456e/SeggOvBc0GzHBQ8NtcOekJTvUNTUqqtuyLNzJ1FngTJJiw
-         mPgeBDMKjvdZQ3KjbX7vTNfKkTfLnp0oOKV4D1hYPu/H9/kuZuUomy1oTzzp4U9cPo4y
-         Kdgw==
-X-Forwarded-Encrypted: i=1; AJvYcCVhtydLJvDil1B2uUEDwnAWLas7Gcudk73Y6Z5HeC5H9/CJ+Me77K/RpMuBB9sUY8EsMUbhuI1VuvHCIXOuHpHS@vger.kernel.org, AJvYcCW+qGMcgvDVJTe+tpv4q9cdwA9iJIGlsUx0JxSvLXB9Dd4UDG0Bc80Oql1EkW2kTXdBRSY=@vger.kernel.org, AJvYcCXPnAnzTwF+NHEGlcXV+XcUENkr0elfi73HhnfP0WD/XvHRhVk5TWTk0B+Cu3weCPkGqgHgNhqAPXrNgQnn@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz/uuSjZFTLv+yeKryKS5LDRrao8azVulx3mYgZ2fbszx5SF+D2
-	cbAVKh0QfcRrKYbvxzMuRDkvayZV2DKzo3oAhanaYo5/wTa2xuWIAPoVj5l3ogtYN1SCFSEetXY
-	6ts8EleqgqvKTv28A5v60OJPq7i0=
-X-Gm-Gg: ASbGncvH1yEHmuOT7l1BNtpunIl80638ERBzrVSWn5BssOddWtfZ68vlkQg/LJ0ZXRM
-	StNcvFZpagsUm0JWae4yj26p2wYHFa8qJr8/HOl5h0cUYTNxuQh1G6f+DVsVy8hGwvTZcT6mx3x
-	qzbTg7Xwb5ulaEsxq0rZsXqU0bn0HByhs=
-X-Google-Smtp-Source: AGHT+IHLi9l3uVX4nW5VLQgBm2lV8tVCO9VuPjaDsf+SxaW0IV+yhko+vLUnG1ihrIh/6U5EoZfOVotR/SX2Qpqfql0=
-X-Received: by 2002:a17:907:a0ca:b0:ad2:33a5:f468 with SMTP id
- a640c23a62f3a-ad4f74a5448mr235593066b.54.1747204152004; Tue, 13 May 2025
- 23:29:12 -0700 (PDT)
+        bh=HGZdJZIHRL1GtxweWrW4A40ao0eooBXQDxu8kYszvsY=;
+        b=N+q3uv2Lb63Qv0zWfKUBKu8I8BWDkKFYaOdDF1uyIPNBc5rrcBCPF4Gd7sUuIeG4/4
+         pEYNsirwSEcfZ7Xq2J/6ydbO7Jz11i0zjZb5W7iqvyH8ThhvZmhaI4Il1VqeHe6zCzgs
+         qx71jvOg4cEceeUd+LuYBQG3O1gxj/B9kiv3Nbhm27fl1WhdxQYU+fNE4uko0ktRBh8U
+         WSGtWhF3GeeTZIH60QexH5/0SndGfKT9RTINM/RiYPTRPCNI2trA4v0/S9YPrNAkf+9y
+         5XV8JgBQXEkcC2Gnc7Q90ZumsC38hnMZjIdIFaukc27/yrNV+Ul+xh54+9ZiYHd4iogt
+         8v8A==
+X-Forwarded-Encrypted: i=1; AJvYcCV0WwM24EWL6H4x2Ofa1Nwzz3USx2O/qvaQL+TPQlsQ7CeJXaPv42go7eUpcIO+tHcZ1qg=@vger.kernel.org, AJvYcCWXRQ/VEVRayQvHBUdan64KUEq/fC08BQR2f+wboJnok1vycQx4Sk48+83KuaInDDgiYXm3lo7aI6C7geY8k5Si@vger.kernel.org, AJvYcCWxEhr8eERIjNChWGtBGFJeIpMekmi2GgOEUXNwMefB1+Hlv0PdQlTk7ymbvrs+iCqoDhkcG/ZOdtRS2ndS@vger.kernel.org
+X-Gm-Message-State: AOJu0YxeuKVDTNVr30ZNae8F1Rdd6EWr5faxc9+Enxe1brj4LxvGRA8v
+	Ow+CajNQ7gjhHCnpRIUZHPscXDjA36VCZsOmHcLnJcTXLXaDcJVdX90YTJJz89qYmrUk+jp4vSd
+	+gZmrDjXCmt7Vir+aSYqxopBQ+lo=
+X-Gm-Gg: ASbGncun8+gDvFM03yyXU8aM6Fs7JEkXO7sHWOcWfwGN2oWha/rOXcT1mlwBszC6Gxf
+	lhmn8eK2c/ptPTcmR8CeMlapo2B28WfjTu5RV/bcETkBL5JvDrrhNpB3j17nPzrub01R7m0xFza
+	E3/Kz2BKIQQF0lcJLl9j64b2U2TE5hRDKQui1rJYc+OA==
+X-Google-Smtp-Source: AGHT+IHR4iBb/I4Enb7BPpeT9sltrJqA0gSsnQXL1n3QG7K11/B1K1G20PjKfwnEwjCdCRskmsSlv58eOyHiQdilNDc=
+X-Received: by 2002:a17:906:3bc8:b0:ad2:404d:cade with SMTP id
+ a640c23a62f3a-ad4f72411e0mr183082466b.27.1747205301209; Tue, 13 May 2025
+ 23:48:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250501073603.1402960-1-luis.gerhorst@fau.de> <20250501073603.1402960-11-luis.gerhorst@fau.de>
-In-Reply-To: <20250501073603.1402960-11-luis.gerhorst@fau.de>
+References: <20250501073603.1402960-1-luis.gerhorst@fau.de> <20250501073603.1402960-12-luis.gerhorst@fau.de>
+In-Reply-To: <20250501073603.1402960-12-luis.gerhorst@fau.de>
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Wed, 14 May 2025 02:28:35 -0400
-X-Gm-Features: AX0GCFs-O_hhLomt9V3PLJCcKSURYY7CSGwd6Ua6n88FsUsqIjk4ubR7DgQIDuI
-Message-ID: <CAP01T75oU0zfZCiymEcH3r-GQ5A6GOc6GmYzJEnMa3=53XuUQQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 10/11] bpf: Allow nospec-protected var-offset
- stack access
+Date: Wed, 14 May 2025 02:47:44 -0400
+X-Gm-Features: AX0GCFun9-2MfM8_J1zhSkgZ3q4nYAOUK-g_v7fEm1Fc1hj9Yjf5b4J_glq1BvA
+Message-ID: <CAP01T76jeSg3W-OyfBfSbAjpEhBr_h8rbS-Hubk6gDdrkeEj_Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 11/11] bpf: Fall back to nospec for sanitization-failures
 To: Luis Gerhorst <luis.gerhorst@fau.de>
 Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
 	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
@@ -102,42 +101,49 @@ Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
 	Maximilian Ott <ott@cs.fau.de>, Milan Stephan <milan.stephan@fau.de>
 Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 1 May 2025 at 04:17, Luis Gerhorst <luis.gerhorst@fau.de> wrote:
+On Thu, 1 May 2025 at 04:10, Luis Gerhorst <luis.gerhorst@fau.de> wrote:
 >
-> Insert a nospec before the access to prevent it from ever using an index
-> that is subject to speculative scalar-confusion.
+> ALU sanitization was introduced to ensure that a subsequent ptr access
+> can never go OOB, even under speculation. This is required because we
+> currently allow speculative scalar confusion. Spec. scalar confusion is
+> possible because Spectre v4 sanitization only adds a nospec after
+> critical stores (e.g., scalar overwritten with a pointer).
 >
-> The access itself can either happen directly in the BPF program (reads
-> only, check_stack_read_var_off()) or in a helper (read/write,
-> check_helper_mem_access()).
+> If we add a nospec before the ALU op, none of the operands can be
+> subject to scalar confusion. As an ADD/SUB can not introduce scalar
+> confusion itself, the result will also not be subject to scalar
+> confusion. Therefore, the subsequent ptr access is always safe.
 >
-> This relies on the fact that the speculative scalar confusion that leads
-> to the variable-stack access going OOBs must stem from a prior
-> speculative store or branch bypass. Adding a nospec before the
-> variable-stack access will force all previously bypassed stores/branches
-> to complete and cause the stack access to only ever go to the stack slot
-> that is accessed architecturally.
+> We directly fall back to nospec for the sanitization errors
+> REASON_BOUNDS, _TYPE, _PATHS, and _LIMIT, even if we are not on a
+> speculative path.
 >
-> Alternatively, the variable-offset stack access might be a write that
-> can itself be subject to speculative store bypass (this can happen in
-> theory even if this code adds a nospec /before/ the variable-offset
-> write). Only indirect writes by helpers might be affected here (e.g.,
-> those taking ARG_PTR_TO_MAP_VALUE). (Because check_stack_write_var_off()
-> does not use check_stack_range_initialized(), in-program variable-offset
-> writes are not affected.) If the in-helper write can be subject to
-> Spectre v4 and the helper writes/overwrites pointers on the BPF stack,
-> they are already a problem for fixed-offset stack accesses and should be
-> subject to Spectre v4 sanitization.
->
-> Signed-off-by: Luis Gerhorst <luis.gerhorst@fau.de>
-> Acked-by: Henriette Herzog <henriette.herzog@rub.de>
-> Cc: Maximilian Ott <ott@cs.fau.de>
-> Cc: Milan Stephan <milan.stephan@fau.de>
-> ---
+> For REASON_STACK, we return the error -ENOMEM directly now. Previously,
+> sanitize_err() returned -EACCES for this case but we change it to
+> -ENOMEM because doing so prevents do_check() from falling back to a
+> nospec if we are on a speculative path. This would not be a serious
+> issue (the verifier would probably run into the -ENOMEM again shortly on
+> the next non-speculative path and still abort verification), but -ENOMEM
+> is more fitting here anyway. An alternative would be -EFAULT, which is
+> also returned for some of the other cases where push_stack() fails, but
+> this is more frequently used for verifier-internal bugs.
 
-Please also address sanitize_check_bounds, it's probably prevented by
-retrieve_ptr_limit rejecting other types but it'd be better to add a
-default statement for clarity.
+Hm, now looking at this and thinking more about this, I think
+recoverable error logic is probably ok as is.
+Scratch my earlier suggestion about unconditional handling. I guess
+what would be better would be
+handling everything except fatal ones. In case of fatal ones we should
+really quit verification and return.
+We may make partial changes to verifier state / env and try to bail
+out using -ENOMEM and -EFAULT.
+So unconditional continuation would be problematic as we'd act in a
+partial state never meant to be seen.
+
+The logic otherwise looks ok, so:
 
 Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+
+>
+> [...]
+>
 
