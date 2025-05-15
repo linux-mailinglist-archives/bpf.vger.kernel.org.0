@@ -1,176 +1,150 @@
-Return-Path: <bpf+bounces-58345-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58346-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1103AB8EB4
-	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 20:19:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7385AB8F09
+	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 20:28:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6FED168EE5
-	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 18:19:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D9CFD1C01074
+	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 18:28:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3BB725C6F4;
-	Thu, 15 May 2025 18:18:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26C46263F4A;
+	Thu, 15 May 2025 18:24:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ztCzEw6I"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="neWj93rj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABB0A25B66A
-	for <bpf@vger.kernel.org>; Thu, 15 May 2025 18:18:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9448525D1F5;
+	Thu, 15 May 2025 18:24:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747333133; cv=none; b=NuTlx//P9EREZkmHQRLLGC43U1j0NhogwvVqE2vIhLaN7hVE+as+E8RWh8xr6Mb2127fWFICliLtBTAw9t0VPDTianyKhhfttYlsMe6CgTPm7NSss1r4IsTOai2N0VuIa653x6dTE+glx5rnfRh6ReOvbS988zmav8Ypv5uTjzg=
+	t=1747333461; cv=none; b=k5tF7PmBwiLorErD9rbCu5d5CccMKpDlKAgfscGsNjZ+q+vdRmBvVCM0AWqtLAoZU0eAOgL60lV/9eaOjpjxRq+ewMfuZ7msev1C/5hO28Q/CvDbfqclMS2dMClwjOnorjDxA5muoPG7+l90qacmkPkVRvus057TK6thfbzyvxE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747333133; c=relaxed/simple;
-	bh=3SBz45FoCdX2rAVwgLJMwJm/Tl3yW9BAuoD4CAFzsUI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ig42wpGQVIUtch4WgOfSWOpvmXSu9sNR2EOQpnrLOpygEkyAz0CbIf1v3oyeKpO3ak9tth6SH9RF9G+H4HW4LAVG5xpnICQcltDZMNF6LLaLJYbkcaxkETc3nfnrx2T5PHfkIT/IqDNveFlEKlPr9KjKKzqUj2DV5xwmI9tXwPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ztCzEw6I; arc=none smtp.client-ip=209.85.166.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-3db82534852so25455ab.0
-        for <bpf@vger.kernel.org>; Thu, 15 May 2025 11:18:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1747333130; x=1747937930; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2rGbiTSO7SFrVDmCcDYREcx+d3h1JUwGFxNPYi0cVdQ=;
-        b=ztCzEw6IS+0t72TZbHqd5Y3/CP1BQ4wpCDRSObNeGxAwh1HaJsGo+zVWpP3YRZOpNo
-         uh6fS9mQkUmjDLTEdDErN+yQjUfj/nVE8A5aCDt7eBb1/nYAFq3g3hhW26otqEeKv0vk
-         2jx2vjJ4iAJY9mfXXDEwhCX0E1qIG2JhL32aCSG+4xmyOWtwnU0bDTSck+e1wNuAKM65
-         XrPWfSF3xSXKMuHFKV+OyrED/eeRlgwU3oT8cURvsRiYlIdbI/OTNBBEHU2FOLf1Kp7q
-         +3fNrbje0SIHKMypLQqqafgkrfkVzXN7iWPbR3lNQ9/MjpSbpRMp10OdG3H/IDVxuMB5
-         YD+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747333130; x=1747937930;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2rGbiTSO7SFrVDmCcDYREcx+d3h1JUwGFxNPYi0cVdQ=;
-        b=G1RbACO77wXmCsdNccKpcOtr0a27CiFuz8WrysrIk9oHY0vreAuHdV1V6x/XhDvnDD
-         vfmIrEZzpziV9BanNsb6gx4Qt2LmUAqIETmAPVoiRrMsmNEGER/iJ6I5eH0Xy3uHj/Ae
-         hZ1iW6pl3l0rENPGSCeQY+7ySqZDNDMZr9Pyh16SSW9JCPpJsOCmuCzUUd6uqYr/9o/w
-         NRcR23GWPfjXZ4xR44rjDR8SSZyjD+8OSoqdAbtfaHefWmPoqCQVzYRMtPWhZCxT43d9
-         W3A6xjUSnCEehsTMP8rE+daQafWzmp7KPEuwsCniSCyfRdZ5kSOYj9kJVWQQ0B/ZJi5/
-         RGCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWcoggmL9/UH9rSnCh+2ASU0le4WZ0vPAdr+DRHu5AlXsqWOrwZCsBJEwdGqihdCrRFHDM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxMde2EIeACihMPfhNedepzvwY6EpFgkYmWbMQROVmz+QZNz7vI
-	9J/4ouJAbkBGBkxk2oubgjTtmx2ctrdc35VjPsHO+GiEUZpU8hAXjFXplEJNYshsR6AyYF1TgWS
-	RpmSVM0Jt5JFhpugZpIg0Vj2/4GQNcuIBfMIBggXe
-X-Gm-Gg: ASbGncu5N4lCI4x1/gCQ3NP4/bxpj/hXhWEaTZ//r3wswfAs7fmxK5zlSKp3G/+t+O2
-	s65R30MpaoCm3EWYmLSgCGjk9ZHa5z9Kupk+/SKdoyNb9+AzOVsWBnWwyLc//QUEaXLHdDVFYK/
-	gtd3AUxXVRwIde99V3yl7FAsBRDmy94fOKZ+AkpYhL7xjwnJZ9BNO2Svgci5QQcg==
-X-Google-Smtp-Source: AGHT+IGcs2kawo6OdqfIjxqjsI/g20AoKRfUNpKpVRTYjE5Xgove4ZrKHNX2lkUyVTWi8lMmLTRTLM63RbJl0cnT6AQ=
-X-Received: by 2002:a05:6e02:b2f:b0:3d9:2af7:d7ef with SMTP id
- e9e14a558f8ab-3db780690c6mr5294515ab.24.1747333130358; Thu, 15 May 2025
- 11:18:50 -0700 (PDT)
+	s=arc-20240116; t=1747333461; c=relaxed/simple;
+	bh=cmyb4fslMdZMeqJjaLXvuCdgMLSOPj2eAW7zLDTyppQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QHX4vv34ohxrd22hYuYe1jvNVpKjfY7k87a85jMgWlkSpmva3FLtbIHCPqLHEjQFsNMsyc+jTwRW86ABQGUSNUzYgU0OZbIwm5v9xbjuIYuPeUqKrDLFVcrRfIFvQHSQzpqic/ENpnXgdHgxX8B1btfWUOZkDMy7hvPWJCXFjJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=neWj93rj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8B14C19421;
+	Thu, 15 May 2025 18:24:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747333461;
+	bh=cmyb4fslMdZMeqJjaLXvuCdgMLSOPj2eAW7zLDTyppQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=neWj93rjpazFcs+AlCYfjTtrA68QwMLPbqCAGKLV83Bw/9G5mYV5YGBG8kPiQvR5C
+	 aFWcZ6XPUcMrEPg2X9JdqcpVtlFnNDYbBWlCcWGkxStYHbhHq1I/otEkFgkY3AmctU
+	 85ZK90t0e8tjsxybIkI4t3GZ+OVaaVzhPh3OJXIaZtDSlc1C+BlEyQK75SJ9mC/Mkl
+	 lgrpMKpgThEPyZ6vixgMLEzrmfK2eFm/zKEwCjcdqmYE9+uMQnKqP+W05IihwVECmo
+	 TtVo1zvSB4eTuLdk8yXgGrC0ycL/ncy2YcAJHAchPB9GwAuTQ3iHcu3Uyh9IIgZ5Lf
+	 83L70jE8yVpWA==
+Date: Thu, 15 May 2025 11:24:16 -0700
+From: Kees Cook <kees@kernel.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+	Shung-Hsi Yu <shung-hsi.yu@suse.com>, bpf@vger.kernel.org,
+	linux-mm@kvack.org, Andrii Nakryiko <andrii@kernel.org>,
+	Ihor Solodrai <ihor.solodrai@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Michal Hocko <mhocko@suse.com>, Vlastimil Babka <vbabka@suse.cz>,
+	Uladzislau Rezki <urezki@gmail.com>, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org, regressions@lists.linux.dev,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Eduard Zingerman <eddyz87@gmail.com>
+Subject: Re: [REGRESSION] bpf verifier slowdown due to vrealloc() change
+ since 6.15-rc6
+Message-ID: <202505151116.4FFA176B8@keescook>
+References: <20250515-bpf-verifier-slowdown-vwo2meju4cgp2su5ckj@6gi6ssxbnfqg>
+ <C66C764E-C898-457D-93F0-A680983707F0@kernel.org>
+ <202505150911.1254C695D@keescook>
+ <20250515171821.6je7a4uvmttcdiia@desk>
+ <202505151039.DAA202A@keescook>
+ <CAEf4Bzb4LZK5p08t1y-32wAFDGoRGKR1w1T_je6+a_EOE2uSYQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250515181042.555189-1-namhyung@kernel.org>
-In-Reply-To: <20250515181042.555189-1-namhyung@kernel.org>
-From: Ian Rogers <irogers@google.com>
-Date: Thu, 15 May 2025 11:18:38 -0700
-X-Gm-Features: AX0GCFuU21N0eogG2Zws3gJgWQ-_VqHbZ8Gj4bz03q5Mfr_M1kuRjFpsz0AyX-Q
-Message-ID: <CAP-5=fUTXv00r1B=2JQX4nPhZfG+WOQwGrAWmcWAh29fNZz-Kg@mail.gmail.com>
-Subject: Re: [PATCH] perf lock contention: Reject more than 10ms delays for safety
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Kan Liang <kan.liang@linux.intel.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org, 
-	Song Liu <song@kernel.org>, bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4Bzb4LZK5p08t1y-32wAFDGoRGKR1w1T_je6+a_EOE2uSYQ@mail.gmail.com>
 
-Nit, in the subject line for clarity perhaps rather than "perf lock
-contention:" call it "perf lock contention/delay" or "perf lock
-delay".
+On Thu, May 15, 2025 at 10:53:10AM -0700, Andrii Nakryiko wrote:
+> On Thu, May 15, 2025 at 10:41 AM Kees Cook <kees@kernel.org> wrote:
+> >
+> > On Thu, May 15, 2025 at 10:18:21AM -0700, Pawan Gupta wrote:
+> > > On Thu, May 15, 2025 at 09:51:15AM -0700, Kees Cook wrote:
+> > > > On Thu, May 15, 2025 at 07:51:26AM -0700, Kees Cook wrote:
+> > > > > On May 15, 2025 6:12:25 AM PDT, Shung-Hsi Yu <shung-hsi.yu@suse.com> wrote:
+> > > > > >There is an observable slowdown when running BPF selftests on 6.15-rc6
+> > > > > >kernel[1] built with tools/testing/selftests/bpf/{config,config.x86_64}.
+> > > > > [...]
+> > > > > Where can I find the .config for the slow runs?
+> > > >
+> > > > Oops, I can read. :) Doing a build now...
+> > > >
+> > > > > And how do I run the test myself directly?
+> > > >
+> > > > I found:
+> > > > https://docs.kernel.org/bpf/bpf_devel_QA.html
+> > > >
+> > > > But it doesn't seem to cover a bunch of stuff (no way to prebuild the
+> > > > tests, no info on building the test modules).
+> > > >
+> > > > This seems to be needed:
+> > > >
+> > > > make O=regression-bug -C tools/testing/selftests/bpf/test_kmods
+> > > >
+> > > > But then the booted kernel doesn't load it (missing signatures?)
+> > > >
+> > > > Anyway, I'll keep digging...
+> > >
+> > > After struggling with this for a while, I figured vmtest.sh is the easiest
+> > > way to test bpf:
+> > >
+> > > ./tools/testing/selftests/bpf/vmtest.sh -i ./test_progs
+> >
+> > I can't even build the test_progs. :(
+> >
+> > $ make test_progs
+> > ...
+> >   CLNG-BPF [test_progs] bpf_iter_tasks.bpf.o
+> > progs/bpf_iter_tasks.c:98:8: error: call to undeclared function 'bpf_copy_from_user_task_str'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+> >    98 |         ret = bpf_copy_from_user_task_str((char *)task_str1, sizeof(task_str1), ptr, task, 0
+> > );
+> >       |               ^
+> > 1 error generated.
+> >
+> 
+> BPF selftests expect that there was a successful kernel build done
+> before that. So generally speaking:
+> 
+> 0) cd <linux/repo/path>
+> 1) export O=/path/to/build
+> 2) cat tools/testing/selftests/bpf/config >> /path/to/build/.config
+> 3) make O=/path/to/build -j$(nproc) oldefconfig all
+> 4) cd tools/testing/selftests/bpf # everything is built within this
+> directory, we don't support KBUILD_PATH or O for BPF selftests build
+> artifacts
+> 5) make O=/path/to/build -j$(nproc)
 
-On Thu, May 15, 2025 at 11:10=E2=80=AFAM Namhyung Kim <namhyung@kernel.org>=
- wrote:
->
-> Delaying kernel operations can be dangerous and the kernel may kill
-> (non-sleepable) BPF programs running for long in the future.
->
-> Limit the max delay to 10ms and update the document about it.
->
->   $ sudo ./perf lock con -abl -J 100000us@cgroup_mutex true
->   lock delay is too long: 100000us (> 10ms)
->
->    Usage: perf lock contention [<options>]
->
->       -J, --inject-delay <TIME@FUNC>
->                             Inject delays to specific locks
->
-> Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/perf/Documentation/perf-lock.txt | 8 ++++++--
->  tools/perf/builtin-lock.c              | 5 +++++
->  2 files changed, 11 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/perf/Documentation/perf-lock.txt b/tools/perf/Document=
-ation/perf-lock.txt
-> index 2d9aecf630422aa6..c17b3e318169f9dc 100644
-> --- a/tools/perf/Documentation/perf-lock.txt
-> +++ b/tools/perf/Documentation/perf-lock.txt
-> @@ -224,8 +224,12 @@ CONTENTION OPTIONS
->         only with -b/--use-bpf.
->
->         The 'time' is specified in nsec but it can have a unit suffix.  A=
-vailable
-> -       units are "ms" and "us".  Note that it will busy-wait after it ge=
-ts the
-> -       lock.  Please use it at your own risk.
-> +       units are "ms", "us" and "ns".  Currently it accepts up to 10ms o=
-f delays
-> +       for safety reasons.
-> +
-> +       Note that it will busy-wait after it gets the lock. Delaying lock=
-s can
-> +       have significant consequences including potential kernel crashes.=
-  Please
-> +       use it at your own risk.
->
->
->  SEE ALSO
-> diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
-> index 41f6f3d2b779b986..3b3ade7a39cad01f 100644
-> --- a/tools/perf/builtin-lock.c
-> +++ b/tools/perf/builtin-lock.c
-> @@ -2537,6 +2537,11 @@ static bool add_lock_delay(char *spec)
->                 return false;
->         }
->
-> +       if (duration > 10 * 1000 * 1000) {
+Linux ToT fails to build, -next fails to build. v6.14.6 fails build,
+each in different ways. :(
 
-nit: It's unfortunate the variable name isn't carrying the time unit.
-For example, this could be:
-```
-if (duration_ns > 10 * NSEC_PER_SEC) {
-```
-which should hopefully make it clearer what the time units are and
-that they aren't messed up.
+> But tbh, if the above causes you problems, I don't think you need to
+> spend that much time trying to build BPF selftests, given you know
+> what the issue is and you are fixing it.
 
-Thanks,
-Ian
+Well, nothing I've proposed makes any sense as far as something that would
+double execution time, so I don't really know what the issue is yet. :P
 
-> +               pr_err("lock delay is too long: %s (> 10ms)\n", spec);
-> +               return false;
-> +       }
-> +
->         tmp =3D realloc(delays, (nr_delays + 1) * sizeof(*delays));
->         if (tmp =3D=3D NULL) {
->                 pr_err("Memory allocation failure\n");
-> --
-> 2.49.0.1101.gccaa498523-goog
->
+-- 
+Kees Cook
 
