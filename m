@@ -1,85 +1,86 @@
-Return-Path: <bpf+bounces-58358-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58359-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03669AB90E7
-	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 22:40:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 591F8AB90EB
+	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 22:42:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DECE77AA602
-	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 20:39:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47E509E3CD1
+	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 20:42:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14F5929B77F;
-	Thu, 15 May 2025 20:40:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BB5A29B215;
+	Thu, 15 May 2025 20:42:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H5loLf+z"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NiVO/aHe"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 223EF27A461
-	for <bpf@vger.kernel.org>; Thu, 15 May 2025 20:40:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D9821E1308
+	for <bpf@vger.kernel.org>; Thu, 15 May 2025 20:42:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747341611; cv=none; b=QZ7Ywc48nEq63cpI/szLVCC1bvDcb+OqpL9oxWn0uxkURkbGuivCillZGVR9zpWfdZhncH7N8CHziwKyBABWjUWdNcukYFON+r3sQ2SlJ1XYrUu7UEbLATBC9fs3z8V6KyR1l7b+AHi5uY4R/cPy+qpOkzM5+HpW5vLirkJjhoI=
+	t=1747341769; cv=none; b=EavNdkRNVRrkgOXo1wM1nWvBv2FmVD7RvC6087tX//wby3hxxhGLBkM3Hg2jihnyALuStY4xjneL+OAHrdKJsBbo9fpM4FHFlhgBygYA/9AiHffAJcYEk1QL8SOqsxBwPnIXfd/Qhxh1ovHIAFufbVLhBmk5tNqQl+TdJiNBrj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747341611; c=relaxed/simple;
-	bh=ShLEHuqT5geblJv1ryyap4NMlZP/eHqDBn/zSdr5fdk=;
+	s=arc-20240116; t=1747341769; c=relaxed/simple;
+	bh=pZMMj/Bf1eG0q2OMxTU2yM5EU+yWjnertJ8XBnh1Mow=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SmM4IOfvLsPuPOYklFQC944Jxk7baBUzuLaCanm2DW+l5kqT/RsNpHs1UqT7BG7OoXW0kzr1nrIHYpHcJheUd7m0ir5k2oqPMjYFxb+Uej64d9IU4Uf2GsVzv4rFjmLXQ97ENpbMI+5MDEtg1Icj72z8XGPnlrD9W/xPIt3LnO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H5loLf+z; arc=none smtp.client-ip=209.85.215.171
+	 To:Cc:Content-Type; b=ZawuLPCVUJEyjFXlhWNCmel3uwiaB8bu+Jys4ycYDWERHeUtOv9v8VJ3yJ8ehrwWjOXyFv9Us4F9OEiL4aiQN0OKs7kqgkWS7MZ3EVH6bJQet541xhwRYistKh6meRbPxkpn71SQbtvwdsthN3ELNwLMSxO4DXT1zSJQO9KJmrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NiVO/aHe; arc=none smtp.client-ip=209.85.216.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-7fd581c2bf4so1169061a12.3
-        for <bpf@vger.kernel.org>; Thu, 15 May 2025 13:40:09 -0700 (PDT)
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-30ac268a8e0so2200932a91.0
+        for <bpf@vger.kernel.org>; Thu, 15 May 2025 13:42:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747341609; x=1747946409; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1747341766; x=1747946566; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=p6UnJY3RxWVtFZLW341IkUvm1cdW4LTF/WUlAxS7bcs=;
-        b=H5loLf+zfz6LfAykOCpYKVKCxobB0NOufh7pB8tnFu4NU827wbKVmN2yykeFEcWpUf
-         ff2U4ol0fm60QxlapW2tS4FRljIKjbsHletgI+6iNh+jY2BYSmctO/foagxHNfKutbj0
-         KjYF3u3zfuM+dyZapqOGckeX0xh60vlkNFJC0AYwwIefpEq/WE1Soghe7NMy4Frb/bys
-         D+9V5Kr7pns8ORTgIFgo7c/TN7X4j71voj5Z4Xnp4MM1esRv+KCrW+vyNmMwOm2eteLA
-         f0jnvHXIwnhzgto11MfiymI/4Y/qdr328+ugLeWVUE3kbryKlFG/hT+RV5Sp3FGFdlT/
-         tKBQ==
+        bh=mDcbvpaCwdpcZdj0/2+I2LSmWhvhBpKTP/zpPSSEjp4=;
+        b=NiVO/aHeWdl8E/iLxhdSRMw2EUTIx626FlHDAKlkHahIF36L1erSIlU2U7lQXml49a
+         Qf8jrBQjFHyEhOc+teqFY+9Ms9qUGIBHLck7YR+M5NpxNn1gijNtjhujp/yNE8i6my6F
+         JL+OXjMNwoJ1KYqiwWSn+EgyiRMtV0xlgs4VsFcCRuA2zrfe62XG5HJxM5zxxVXnl93p
+         ia12cwVgf2LIpH1YQn0fjBiSICrfHZTMYH2xM2IUVTY9M+sgUv8XN/8YN0V5zRguxKPV
+         EvW7iH+n6meRTDTIsTL8poU59w7ycYnj76I5hf9899OSCt6oYOq6m9Y5Q0ZRKtm2rp91
+         +mig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747341609; x=1747946409;
+        d=1e100.net; s=20230601; t=1747341766; x=1747946566;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=p6UnJY3RxWVtFZLW341IkUvm1cdW4LTF/WUlAxS7bcs=;
-        b=OKoKSegp8ag0Pz4Fu0RsAU+7KmFafRTphGA0Hxku5VqNsfBI7dpcp1RhufTwfg0x+d
-         YJn6L4cw6CL3B7nIw75J11Ddd1ZlBI0eDEcA8SnWSIN9RTCDEzJ17s8si3MGLsWd5IrC
-         MCEJ+evgoWeXcUe9NxoI1SxMCLHawyN9GgrqzQHARhWmm7JZgfdeC9Qt77Ox9IXLdopJ
-         e2KzWlXVuISeJgj7R/YKohsMYl4UU4DD0H5mv3Gnry923I0W7GtT0ITpPEHBlKqJW4Nu
-         F+WekL90DV80VAS8ysdbGtlUqBQj1Uhvwk15BdlttyY2VHXyklOYyIqSQl2npGqOpkat
-         +Vag==
-X-Gm-Message-State: AOJu0Yz2fQ5pmZVo06DtiMNGkvNb9LjAcoKObRP/S93u4ms7hIxKMLad
-	+2vLSELEVcKV0nnSEZP6l+ePkE1fxaZNPNZ+tMUSzQvmB68DBk763lz6puqIzUonklY/dwCCyxO
-	f5c70b1CLlIcuwTFODjDC8Hwy9D28nUU=
-X-Gm-Gg: ASbGncvbD1o/aCevWOZmJbva1i5Bj62BOukF7wtY2preg3pqvj/N5ugaWpBhs8slf7N
-	2qPEraTseX3tTbW2Pe/sGJ9a4WuBJeaXXCDK0Ete5bWYGFeH+TQnwsl00h8zi3oNZgqDIHBYYB7
-	hgeQpzzhFJJsyQ3jd8dL6n8Bkz6THQhPRmGLV4vHONLetCc809nLGi3JHuOrA=
-X-Google-Smtp-Source: AGHT+IEXpXQeKj96QS8UvMyjlZaKDEO1VTCXiI8EjyCdSeSPEjYnM0NuY03zjgZDTxC4jF0XTZfaEJnoYweBUjM3MUU=
-X-Received: by 2002:a17:90a:d40d:b0:30a:883a:ea5b with SMTP id
- 98e67ed59e1d1-30e7d545032mr1366587a91.17.1747341609121; Thu, 15 May 2025
- 13:40:09 -0700 (PDT)
+        bh=mDcbvpaCwdpcZdj0/2+I2LSmWhvhBpKTP/zpPSSEjp4=;
+        b=gWQ02fh26QF1l303fkcB7OKr5vbsxzLLfSrrnuroM74B/hXCKyJePY/kbQimO2vBqY
+         N3T8NA+nqENvEu2vYi2xx8J/NksFWj4nSDgSUUtehF+0eVcOvvG13fyPc0fcc2Kd2rpr
+         hsaJuD9m2V/y8DhvY50QY4jOJ2YpZ/MLlChY6XaOFhoy4rYo8VcJo3248gzvy5zs42iH
+         7xChw4oJzpVCxdt3QaKGBG9PLCPCALrG58AV5fI5/IVoIcYywmOXOQs80/VJn8NnoQGH
+         Speqi5T325SWlmBGjoSONmZf/gQd6YrUaCNoN5CLtbEaFye44/TrmH2TJgxqcRcP+rWC
+         Yyjw==
+X-Gm-Message-State: AOJu0Yx9DQPFRpwEN+UEPNOsAK+o9WzPbE2BiTJFOrGIoB4akDlOU5f4
+	hvdzEQomBiuSCCJq6qbEBxYHU3VN4EzA82UV6E2VR2v8VcaptStDYZLJCNh3f2833VOQJeDpEe9
+	qr9en7j1vo0hWMYzu8iDl1vPre8eltzw=
+X-Gm-Gg: ASbGncsacnbc8EBCut8nK5mZB2D3pdXCc04etJ/gy/NtpIUORFFFGfdULCOz6ZYPf0Z
+	C8E6qenF4HeGmQqw4U23SX3KVgTyXg9CHsUpTY0w6PPwe6yygd58vNHpGXnLcp0gDJI7xxQU6o3
+	Kd/vwOiVZcwizF70Aa+FzoGqmzuIejYCP+YykJCz4DXrnwgWU2FtVxNvygHPU=
+X-Google-Smtp-Source: AGHT+IGo5hkCJ7NaELrKpN9KFOKECJGLmP/jVsN5v55wx8xddyVc2ufjhlXLjT43+sQ0VW0F9TwebMgi9VRvHS5S0hQ=
+X-Received: by 2002:a17:90b:5850:b0:30a:9feb:1e15 with SMTP id
+ 98e67ed59e1d1-30e4db0fc60mr7113091a91.8.1747341765851; Thu, 15 May 2025
+ 13:42:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250508223524.487875-1-yonghong.song@linux.dev> <20250508223529.488295-1-yonghong.song@linux.dev>
-In-Reply-To: <20250508223529.488295-1-yonghong.song@linux.dev>
+References: <20250508223524.487875-1-yonghong.song@linux.dev> <20250508223539.489045-1-yonghong.song@linux.dev>
+In-Reply-To: <20250508223539.489045-1-yonghong.song@linux.dev>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 15 May 2025 13:39:54 -0700
-X-Gm-Features: AX0GCFvpT6uX5NKToD3_UH_dbtdNLSTu3G4ZX6mBSA1OG6WQmPAHI_Ik9cUcJw0
-Message-ID: <CAEf4BzYw-0gMuvgEHF-G4=G6V9QPCgMj_Ln7-4eeOgWMGjBGog@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/4] cgroup: Add bpf prog revisions to struct cgroup_bpf
+Date: Thu, 15 May 2025 13:42:33 -0700
+X-Gm-Features: AX0GCFsSw5VaIzuAF7oy0X8iMusGLVQ0cFtAFiuYn50AF83hbSySjO_Xb7HhzYo
+Message-ID: <CAEf4BzbHArO8ds+OguYjUXPf3BHk0FReKvcJg9mA7S2fZuGPig@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/4] libbpf: Support link-based cgroup attach
+ with options
 To: Yonghong Song <yonghong.song@linux.dev>
 Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
 	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
@@ -90,56 +91,34 @@ Content-Transfer-Encoding: quoted-printable
 On Thu, May 8, 2025 at 3:35=E2=80=AFPM Yonghong Song <yonghong.song@linux.d=
 ev> wrote:
 >
-> One of key items in mprog API is revision for prog list. The revision
-> number will be increased if the prog list changed, e.g., attach, detach
-> or replace.
+> Currently libbpf supports bpf_program__attach_cgroup() with signature:
+>   LIBBPF_API struct bpf_link *
+>   bpf_program__attach_cgroup(const struct bpf_program *prog, int cgroup_f=
+d);
 >
-> Add 'revisions' field to struct cgroup_bpf, representing revisions for
-> all cgroup related attachment types. The initial revision value is
-> set to 1, the same as kernel mprog implementations.
+> To support mprog style attachment, additionsl fields like flags,
+> relative_{fd,id} and expected_revision are needed.
+>
+> Add a new API:
+>   LIBBPF_API struct bpf_link *
+>   bpf_program__attach_cgroup_opts(const struct bpf_program *prog, int cgr=
+oup_fd,
+>                                   const struct bpf_cgroup_opts *opts);
+> where bpf_cgroup_opts contains all above needed fields.
 >
 > Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 > ---
->  include/linux/bpf-cgroup-defs.h | 1 +
->  kernel/cgroup/cgroup.c          | 5 +++++
->  2 files changed, 6 insertions(+)
+>  tools/lib/bpf/bpf.c      | 44 ++++++++++++++++++++++++++++++++++++++++
+>  tools/lib/bpf/bpf.h      |  5 +++++
+>  tools/lib/bpf/libbpf.c   | 28 +++++++++++++++++++++++++
+>  tools/lib/bpf/libbpf.h   | 15 ++++++++++++++
+>  tools/lib/bpf/libbpf.map |  1 +
+>  5 files changed, 93 insertions(+)
 >
 
 LGTM
 
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-> diff --git a/include/linux/bpf-cgroup-defs.h b/include/linux/bpf-cgroup-d=
-efs.h
-> index 0985221d5478..c9e6b26abab6 100644
-> --- a/include/linux/bpf-cgroup-defs.h
-> +++ b/include/linux/bpf-cgroup-defs.h
-> @@ -63,6 +63,7 @@ struct cgroup_bpf {
->          */
->         struct hlist_head progs[MAX_CGROUP_BPF_ATTACH_TYPE];
->         u8 flags[MAX_CGROUP_BPF_ATTACH_TYPE];
-> +       u64 revisions[MAX_CGROUP_BPF_ATTACH_TYPE];
->
->         /* list of cgroup shared storages */
->         struct list_head storages;
-> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> index 63e5b90da1f3..260ce8fc4ea4 100644
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -2071,6 +2071,11 @@ static void init_cgroup_housekeeping(struct cgroup=
- *cgrp)
->         for_each_subsys(ss, ssid)
->                 INIT_LIST_HEAD(&cgrp->e_csets[ssid]);
->
-> +#ifdef CONFIG_CGROUP_BPF
-> +       for (int i =3D 0; i < ARRAY_SIZE(cgrp->bpf.revisions); i++)
-> +               cgrp->bpf.revisions[i] =3D 1;
-> +#endif
-> +
->         init_waitqueue_head(&cgrp->offline_waitq);
->         INIT_WORK(&cgrp->release_agent_work, cgroup1_release_agent);
->  }
-> --
-> 2.47.1
->
+[...]
 
