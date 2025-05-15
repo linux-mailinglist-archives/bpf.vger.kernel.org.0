@@ -1,238 +1,406 @@
-Return-Path: <bpf+bounces-58340-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58341-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B45D3AB8E08
-	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 19:43:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 916D8AB8E0F
+	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 19:47:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5F59A01C0A
-	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 17:43:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1DCF55007FB
+	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 17:47:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6911258CDC;
-	Thu, 15 May 2025 17:43:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E0F4254858;
+	Thu, 15 May 2025 17:47:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="isH7+Bjf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RbMStSpa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E619C8F6E
-	for <bpf@vger.kernel.org>; Thu, 15 May 2025 17:43:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEB201361
+	for <bpf@vger.kernel.org>; Thu, 15 May 2025 17:47:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747331006; cv=none; b=W4lxu+tI5oVwiG9+g2LwQY4AlmnEUowTXp7tiRIzObxCipluSz6fbI/YumEjnEv3rvrFEhdwAn4wFPcsFxUtfP4aJ3f+FB/+roeeUcBPGWBip+p7AdECwrZN1HWPd5ltsKuzHw3dbzhC+NnlMUhjFOpe6jm2Z934o3JAOB9qJU8=
+	t=1747331238; cv=none; b=HyBdk9Eav7UYufjbdKnR+wLGrbtlCLyBIW/Q4ZnJr6AUCgiPQ8eChTXt+qYjVvStHpZzSjKJ8bUAG2pIx2euH2ITEanAa7+fWJv3eTeHsA4mc3tNpbsJzbr4Nqf8BfLhN5RF2MI0xfv+EuhHBnox/nWpnpQwWRzGzQDTTVXByZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747331006; c=relaxed/simple;
-	bh=BntxHoPfvh6BxtC9IAXP99+f9Sj9lZwsMRApSgg6G1U=;
+	s=arc-20240116; t=1747331238; c=relaxed/simple;
+	bh=qOChIHMIH2+Svh38ky2qXOjb+JFnT9OcLaBtRqwqkNk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nT+ppDCv5YS8in5gsVUD4a8N1cUgEKrcV6wrR3U2ceo+QnXgBdsp/N2Ayj/mtL7sGLesgMvw/mvkTKoPVPUYoWNUjJWbf1YJQdbpm2dqIe//Y8SgiW2ocM1A6+R2110rQLP8ESgoxWJqt8zseNTwrIbFY4Qj5evm73/6/pQDNrg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=isH7+Bjf; arc=none smtp.client-ip=209.85.215.174
+	 To:Cc:Content-Type; b=DtW0RxbhCX5wns7uEWjPX/GdB3VBE4qY15W2Q1WleZOSlO2a2l2rHzO6t3bjmYvzoy2iITq2msd/8BO/XcEpyELwS317WBgINX15lExOAXlcSpxie4UCfpC3OWMVO+VCX2AjV3nFkZlscg78XyrIKjExiDX6BxzSqHwKCdHLvqs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RbMStSpa; arc=none smtp.client-ip=209.85.216.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-af523f4511fso919930a12.0
-        for <bpf@vger.kernel.org>; Thu, 15 May 2025 10:43:24 -0700 (PDT)
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-30e7e46cb47so73207a91.1
+        for <bpf@vger.kernel.org>; Thu, 15 May 2025 10:47:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747331004; x=1747935804; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1747331236; x=1747936036; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gU8W5xlOqkV6+QVwjyPh6IEK6MsYOphg4oSdIpMHnUs=;
-        b=isH7+BjfqSJmTSDz4YrXMh6JbWG1LnfYrGK/Y2YxdY0n6DgkPN0YFwk5BMywM3ezUE
-         2DqXC54sYxhEurm+G48KnI5ZOXyaMJiIseHA22wd00WGA2yHt6egAcuULaaVXqSGBsjF
-         fArLlt33kajfa/jBqq8u+KieVOB4a2E15tC8/7gO8rW72shfz6WKTWoYAZ+MJMmoBtFx
-         aZ/dc6J/ittTp3Cqnq7zeH4fCV6LZcB5/Do13s3upHA/fY2ujf4ME8+nIke2nx9Suxvc
-         QdofeuS62dPuyptBluoVOuzTfdX33+HS3YaQAGqYR9EvVNjl6zVc9Jl8w+tE8j3gFJvT
-         Et6g==
+        bh=xmjYIet15bwyEEnAPIErkAHeLmdkG7DNeHByn4lMsk8=;
+        b=RbMStSpaQe5hg4FOjkZFXOS41nHMZv5mx/cJxXR4XGjCZDrIJaleSCcKv2fbj2KmMt
+         ue+izfCi0ux/mZwUdAbhn69KBEctHOnZg/qnUB6CLQCuGPttyfRmr09OHXRAc90cGArt
+         Hzjfug1y7RzqSv6iFkjncQaDFHKgYgRxIU878aRs32GSv83gAqewjW3JuQfSSNVgEuZq
+         2KuhFFSrPqg1fkWR0j1V18XlyF5aZzaN6be71If1dEIibpAhoWltW3zwZzAHuqL5p8cB
+         AJsRZqrLpZe39cnxMzhXy2XRxvBIM/pcrTv5bcUOT1IUFqJ8n5x8FGwPptf0mr0BukO2
+         23+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747331004; x=1747935804;
+        d=1e100.net; s=20230601; t=1747331236; x=1747936036;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gU8W5xlOqkV6+QVwjyPh6IEK6MsYOphg4oSdIpMHnUs=;
-        b=hsiOTVo7Dwb5+0b7+8HqbzpyjfNVu7HeNewa+SQRSRRyF24t+4GqOrBmUcN4Sz7NZf
-         oXKUfLeuO7LiRAN4dl2wmrZ7FT68A3BpW3vonHaan5GxKiK76jFKDvcNzZ8BD5lF1mxC
-         rXoEtFJ6HY3bcGYCeXArP768Bpk/WSpCaIBPnO21QwZ5duUJfxWf6AovfcaSXJdU+hKO
-         VC9QkVdgkGK0N1RxH0Heh/pTNuVL5icn9d+6mawM4tfRwEkNI/X7PO40py32Aw7NX+AX
-         wUO4Y3y0OZ5SlijKmPIGwp6xp5gTzvB353Q0xOwaFwuQtC/G/ySua+665QgtlRC0N53s
-         8mEg==
-X-Forwarded-Encrypted: i=1; AJvYcCWrk8FttnllYMqSpcf2Dp+irM8Pg+hcSsQ+0rlqEE6jXZtBkZ0Io5AjFVJkpTIUy5cMvFY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyIMSGJhJsr7YTAhnwjUn3dmIBBOO8VNmDssgVs7w/QDEOUfyye
-	GkhGqip64Y761fKeJ9R61x320HU0jyWnaNUJSt48pt1bpl9jB9koIy9wlcq37uVfS9YYpnOmjfz
-	bFkF/gw61PrnBSX/cHAa2ZA96UE0IqjM=
-X-Gm-Gg: ASbGncv5C+1/86cPy4jPXXqu+U9HzK1r7/BEiS3N0ca0C2IMdzwTfegxK+e9uZf2qiu
-	kiBS5NZAHx5+KNookXiAYfj1kvk8H/dQDsGDgOL9DkJHcUidJ/X9MGxjAKQRXsmM9lGQKLSIUlo
-	QyESwntb/r93/AIhBMXPn73gUR3LNKXzAHy7+8GIc/QMdhEUBW/H51Shn3W7U=
-X-Google-Smtp-Source: AGHT+IGGzgS6MMDzBd6bUMKtBScI1a5qh3O0bXTzS7NTlz6pRQ2LPLPaQvpcYRkb0uqSIpk3A3y5YQgEoR/96g5YLpw=
-X-Received: by 2002:a05:6a21:9988:b0:1f5:7eee:bb10 with SMTP id
- adf61e73a8af0-216218856fdmr563413637.8.1747331004080; Thu, 15 May 2025
- 10:43:24 -0700 (PDT)
+        bh=xmjYIet15bwyEEnAPIErkAHeLmdkG7DNeHByn4lMsk8=;
+        b=TNdIbSQaJNSFtXGs5/6fQkfdZJTLtRBsR4olUOd/1BFpOt0B8LxY8nSEBYvIGf6tl1
+         LTa86idwXXlrF8J9wcn+hF8XIlZIwbzyoxlKfFI2Z6hhbQKJz7GiTolaMnbBNfdWoZDe
+         c9vL7uc9cuf2Tb0ORpBAFulVrSmR6mZOyBzZVzNSu3KCfxkqhU8is2cBnlWEGZaHDQaV
+         XOgC81jdPK91MzTbkyqJ0QYwlIQo34RDHn7kWTMMtAWP8QpYV4ZRdj77qjvv0jc3W5fV
+         MesqAPDBzZENNxDhw9itDv1A7bxLZEsWd4IXMVHikPHyNvdfhfflwd22LGLU7zIV2bMJ
+         n6ag==
+X-Gm-Message-State: AOJu0YyIWn54db/PzvsgBI0I8k7GV/NTbGMFjeURdLwv5+hzCavxIMH0
+	ffCiFgTpTb8hxhiQtEaM6DPtJTkouTAV3A7jHbqoergV0TvizLKPWqDlS4thlff0Qww36u5v0wz
+	jg71CsP38izzGs+ldwm+dslyyWjJ4jKw=
+X-Gm-Gg: ASbGncskYblkRl0OddI2GRCSSC4ye4Q8oH0m8mndS157z2eBGlcqmq3XfOqAGX8wn8T
+	AXmlyy056ubuju+s3gCl1b6gp6sjeN2RNUO4Fhzo24cmgbRVmsdRkNhSLqCLHhVvgQWhqjTHbo0
+	OGTPZznCwyk0X7Fr+d9AhBpO/L5APUZ5dHsPvM5THa8Fo4x3C2
+X-Google-Smtp-Source: AGHT+IH6q4mYT59G8HlFLBK5nEYRPcO+DGS7TJNe14tOSb+Wub0dq9GR1uUpOqYsQiYL7DViDX0VQKTjQeII+d2/mNU=
+X-Received: by 2002:a17:90b:2b8b:b0:2ee:693e:ed7a with SMTP id
+ 98e67ed59e1d1-30e7d5bb691mr352830a91.35.1747331235717; Thu, 15 May 2025
+ 10:47:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250420105524.2115690-1-rjsu26@gmail.com> <20250420105524.2115690-4-rjsu26@gmail.com>
- <m27c2l1ihl.fsf@gmail.com> <CAADnVQJZpyqY9TWanRKjmViOZxppAeh7FGAnxV_1CKAih7drkA@mail.gmail.com>
- <CAE5sdEh3NuXUcjScj4Auvtc2701NAS6fu0hpzLGVnaoQ7ESnfg@mail.gmail.com> <CAADnVQKX2=jYfs5TBBKdKxHPi_ssUvrSuxbr22-dmYoP_e3=dA@mail.gmail.com>
-In-Reply-To: <CAADnVQKX2=jYfs5TBBKdKxHPi_ssUvrSuxbr22-dmYoP_e3=dA@mail.gmail.com>
+References: <20250511162758.281071-1-yonghong.song@linux.dev>
+ <CAEf4BzaXB=hJNtpg7aUE67skjhuxDnG_oWHRULnmMNJwc9dRcQ@mail.gmail.com>
+ <CAEf4BzbTzvapqEjExcOffOfwV=BKLL=ep1azp6VXdyLBgChZtg@mail.gmail.com> <3097e48c-a1ef-45f5-a445-c2a3c171fa81@linux.dev>
+In-Reply-To: <3097e48c-a1ef-45f5-a445-c2a3c171fa81@linux.dev>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 15 May 2025 10:43:11 -0700
-X-Gm-Features: AX0GCFv0w619uvjt9c6rg5q7b6-Z95edkb6Wf4ZzUVDoBLWVIopilcc2INUzjNA
-Message-ID: <CAEf4BzYpsNmHeQaHEMJ+1qUe=VusJSVgCbCrhSMe3u5mG33TKw@mail.gmail.com>
-Subject: Re: [RFC bpf-next 3/4] bpf: Generating a stubbed version of BPF
- program for termination
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Siddharth Chintamaneni <sidchintamaneni@gmail.com>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Raj Sahu <rjsu26@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Dan Williams <djwillia@vt.edu>, miloc@vt.edu, ericts@vt.edu, 
-	rahult@vt.edu, doniaghazy@vt.edu, quanzhif@vt.edu, 
-	Jinghao Jia <jinghao7@illinois.edu>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Thu, 15 May 2025 10:47:02 -0700
+X-Gm-Features: AX0GCFsLJewEMGMTntWpOlIdJF3fQJW6iGOhZQH2W9HUfjuCsdkTokctdYs7QlM
+Message-ID: <CAEf4BzaozHcBLhXzZAfbLRrNmx95d0DsMGjoBM9TvX7SDqujOg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Do not include r10 in precision
+ backtracking bookkeeping
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
+	Martin KaFai Lau <martin.lau@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 14, 2025 at 6:59=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Wed, May 14, 2025 at 6:44=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
+dev> wrote:
 >
-> On Mon, May 12, 2025 at 10:16=E2=80=AFPM Siddharth Chintamaneni
-> <sidchintamaneni@gmail.com> wrote:
+>
+>
+> On 5/12/25 6:05 AM, Andrii Nakryiko wrote:
+> > On Mon, May 12, 2025 at 9:26=E2=80=AFAM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> >> On Sun, May 11, 2025 at 9:28=E2=80=AFAM Yonghong Song <yonghong.song@l=
+inux.dev> wrote:
+> >>> Yi Lai reported an issue ([1]) where the following warning appears
+> >>> in kernel dmesg:
+> >>>    [   60.643604] verifier backtracking bug
+> >>>    [   60.643635] WARNING: CPU: 10 PID: 2315 at kernel/bpf/verifier.c=
+:4302 __mark_chain_precision+0x3a6c/0x3e10
+> >>>    [   60.648428] Modules linked in: bpf_testmod(OE)
+> >>>    [   60.650471] CPU: 10 UID: 0 PID: 2315 Comm: test_progs Tainted: =
+G           OE       6.15.0-rc4-gef11287f8289-dirty #327 PREEMPT(full)
+> >>>    [   60.654385] Tainted: [O]=3DOOT_MODULE, [E]=3DUNSIGNED_MODULE
+> >>>    [   60.656682] Hardware name: QEMU Standard PC (i440FX + PIIX, 199=
+6), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+> >>>    [   60.660475] RIP: 0010:__mark_chain_precision+0x3a6c/0x3e10
+> >>>    [   60.662814] Code: 5a 30 84 89 ea e8 c4 d9 01 00 80 3d 3e 7d d8 =
+04 00 0f 85 60 fa ff ff c6 05 31 7d d8 04
+> >>>                         01 48 c7 c7 00 58 30 84 e8 c4 06 a5 ff <0f> 0=
+b e9 46 fa ff ff 48 ...
+> >>>    [   60.668720] RSP: 0018:ffff888116cc7298 EFLAGS: 00010246
+> >>>    [   60.671075] RAX: 54d70e82dfd31900 RBX: ffff888115b65e20 RCX: 00=
+00000000000000
+> >>>    [   60.673659] RDX: 0000000000000001 RSI: 0000000000000004 RDI: 00=
+000000ffffffff
+> >>>    [   60.676241] RBP: 0000000000000400 R08: ffff8881f6f23bd3 R09: 1f=
+fff1103ede477a
+> >>>    [   60.678787] R10: dffffc0000000000 R11: ffffed103ede477b R12: ff=
+ff888115b60ae8
+> >>>    [   60.681420] R13: 1ffff11022b6cbc4 R14: 00000000fffffff2 R15: 00=
+00000000000001
+> >>>    [   60.684030] FS:  00007fc2aedd80c0(0000) GS:ffff88826fa8a000(000=
+0) knlGS:0000000000000000
+> >>>    [   60.686837] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >>>    [   60.689027] CR2: 000056325369e000 CR3: 000000011088b002 CR4: 00=
+00000000370ef0
+> >>>    [   60.691623] Call Trace:
+> >>>    [   60.692821]  <TASK>
+> >>>    [   60.693960]  ? __pfx_verbose+0x10/0x10
+> >>>    [   60.695656]  ? __pfx_disasm_kfunc_name+0x10/0x10
+> >>>    [   60.697495]  check_cond_jmp_op+0x16f7/0x39b0
+> >>>    [   60.699237]  do_check+0x58fa/0xab10
+> >>>    ...
+> >>>
+> >>> Further analysis shows the warning is at line 4302 as below:
+> >>>
+> >>>    4294                         /* static subprog call instruction, w=
+hich
+> >>>    4295                          * means that we are exiting current =
+subprog,
+> >>>    4296                          * so only r1-r5 could be still reque=
+sted as
+> >>>    4297                          * precise, r0 and r6-r10 or any stac=
+k slot in
+> >>>    4298                          * the current frame should be zero b=
+y now
+> >>>    4299                          */
+> >>>    4300                         if (bt_reg_mask(bt) & ~BPF_REGMASK_AR=
+GS) {
+> >>>    4301                                 verbose(env, "BUG regs %x\n",=
+ bt_reg_mask(bt));
+> >>>    4302                                 WARN_ONCE(1, "verifier backtr=
+acking bug");
+> >>>    4303                                 return -EFAULT;
+> >>>    4304                         }
+> >>>
+> >>> With the below test (also in the next patch):
+> >>>    __used __naked static void __bpf_jmp_r10(void)
+> >>>    {
+> >>>          asm volatile (
+> >>>          "r2 =3D 2314885393468386424 ll;"
+> >>>          "goto +0;"
+> >>>          "if r2 <=3D r10 goto +3;"
+> >>>          "if r1 >=3D -1835016 goto +0;"
+> >>>          "if r2 <=3D 8 goto +0;"
+> >>>          "if r3 <=3D 0 goto +0;"
+> >>>          "exit;"
+> >>>          ::: __clobber_all);
+> >>>    }
+> >>>
+> >>>    SEC("?raw_tp")
+> >>>    __naked void bpf_jmp_r10(void)
+> >>>    {
+> >>>          asm volatile (
+> >>>          "r3 =3D 0 ll;"
+> >>>          "call __bpf_jmp_r10;"
+> >>>          "r0 =3D 0;"
+> >>>          "exit;"
+> >>>          ::: __clobber_all);
+> >>>    }
+> >>>
+> >>> The following is the verifier failure log:
+> >>>    0: (18) r3 =3D 0x0                      ; R3_w=3D0
+> >>>    2: (85) call pc+2
+> >>>    caller:
+> >>>     R10=3Dfp0
+> >>>    callee:
+> >>>     frame1: R1=3Dctx() R3_w=3D0 R10=3Dfp0
+> >>>    5: frame1: R1=3Dctx() R3_w=3D0 R10=3Dfp0
+> >>>    ; asm volatile ("                                 \ @ verifier_pre=
+cision.c:184
+> >>>    5: (18) r2 =3D 0x20202000256c6c78       ; frame1: R2_w=3D0x2020200=
+0256c6c78
+> >>>    7: (05) goto pc+0
+> >>>    8: (bd) if r2 <=3D r10 goto pc+3        ; frame1: R2_w=3D0x2020200=
+0256c6c78 R10=3Dfp0
+> >> For stacks spill/fill we use INSN_F_STACK_ACCESS because not just r10
+> >> can be used to point to the stack. I wonder if we need to handle r10
+> >> more generically here?
+> >>
+> >> E.g., if here we had something like
+> >>
+> >> r1 =3D r10
+> >> r1 +=3D -8
+> >> if r2 <=3D r1 goto pc +3
+> >>
+> >> is it fine to track r1 as precise or we need to know that r1 is an ali=
+as to r10?
+> >>
+> >> Not sure myself yet, but I thought I'd bring this up as a concern.
+>
+> In backtrack_insn, we have:
+>
+>                  } else if (opcode =3D=3D BPF_MOV) {
+>                          if (BPF_SRC(insn->code) =3D=3D BPF_X) {
+>                                  /* dreg =3D sreg or dreg =3D (s8, s16, s=
+32)sreg
+>                                   * dreg needs precision after this insn
+>                                   * sreg needs precision before this insn
+>                                   */
+>                                  bt_clear_reg(bt, dreg);
+>                                  if (sreg !=3D BPF_REG_FP)
+>                                          bt_set_reg(bt, sreg);
+>                          } else {
+>                                  /* dreg =3D K
+>                                   * dreg needs precision after this insn.
+>                                   * Corresponding register is already mar=
+ked
+>                                   * as precise=3Dtrue in this verifier st=
+ate.
+>                                   * No further markings in parent are nec=
+essary
+>                                   */
+>                                  bt_clear_reg(bt, dreg);
+>                          }
+>
+> So for insn 'r1 =3D r10', even if r1 is marked precise, but based on the =
+above
+> code r1 will be cleared and r10 will not be added to bt_set_reg due to
+> 'sreg !=3D BPF_REG_FP'. So the current implementation should be okay.
+>
+>
+> >>
+> > After discussing this with Eduard offline, I think that we should
+> > generalize this a bit and not hard-code r10 handling like this.
 > >
-> > On Mon, 12 May 2025 at 17:20, Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Mon, May 12, 2025 at 5:07=E2=80=AFPM Eduard Zingerman <eddyz87@gma=
-il.com> wrote:
-> > > >
-> > > >
-> > > > - From verification point of view:
-> > > >   this function is RET_VOID and is not in
-> > > >   find_in_skiplist(), patch_generator() would replace its call with=
- a
-> > > >   dummy. However, a corresponding bpf_spin_unlock() would remain an=
-d thus
-> > > >   bpf_check() will exit with error.
-> > > >   So, you would need some special version of bpf_check, that collec=
-ts
-> > > >   all resources needed for program translation (e.g. maps), but doe=
-s
-> > > >   not perform semantic checks.
-> > > >   Or patch_generator() has to be called for a program that is alrea=
-dy
-> > > >   verified.
-> > >
-> > > No. let's not parametrize bpf_check.
-> > >
-> > > Here is what I proposed earlier in the thread:
-> > >
-> > > the verifier should just remember all places where kfuncs
-> > > and helpers return _OR_NULL,
-> > > then when the verification is complete, copy the prog,
-> > > replaces 'call kfunc/help' with 'call stub',
-> > > run two JITs, and compare JIT artifacts
-> > > to make sure IPs match.
-> > >
+> > Note how we use INSN_F_STACK_ACCESS to mark LDX and STX instructions
+> > as "accesses stack through register", regardless of whether that
+> > register is r10 or any other rx after `rX =3D r10; rX +=3D <offset>`. I
+> > think we should do the same here more generally for all instructions,
+> > especially for conditional jumps.
 > >
-> > This is something that we've experimented with last week
-> > https://github.com/sidchintamaneni/bpf/commits/bpf_term/v2_exploration/=
-.
-> > We did the cloning part after `do_misc_fixups` and before
-> > `fixup_call_args` inside
-> > bpf_check().
->
-> Something like that but it needs to handle both helpers and kfuncs,
-> and you don't need new fake helpers.
-> text_poke_bp_batch() doesn't care what insn is being patched.
->
-> > > But thinking about it more...
-> > > I'm not sure any more that it's a good idea to fast execute
-> > > the program on one cpu and let it continue running as-is on
-> > > all other cpus including future invocations on this cpu.
-> > > So far the reasons to terminate bpf program:
-> > > - timeout in rqspinlock
-> > > - fault in arena
-> > > - some future watchdog
-> > >
+> > The only complication is that with INSN_F_STACK_ACCESS we have only
+> > one possible register within LDX/STX, while with conditional jumps we
+> > can have two registers (and both might be PTR_TO_STACK registers!).
 > >
-> > Also long running interators, for example -
-> > https://github.com/sidchintamaneni/os-dev-env/blob/main/bpf-programs-ca=
-talog/research/termination/patch_gen_testing/bpf_loop_lr.kern.c
-> > Eventhough this is just an example, this could be possible when
-> > iterating through a map which grows unconditionally.
->
-> In terms of detection this is a subset of watchdog.
-> In terms of termination we still need to figure out the best
-> path forward.
-> bpf_loop() may or may not be inlined.
-> If it's still a helper call then we can have per-prog "stop_me" flag,
-> but it will penalize run-time, and won't really work for
-> inlined (unless we force inlining logic to consult that flag
-> as well).
-> One option is to patch the callback subprog to return 1,
-> but the callback might not have a branch that returns 1.
-> Another option is to remember the insn that does:
->         /* loop header,
->          * if reg_loop_cnt >=3D reg_loop_max skip the loop body
->          */
->         insn_buf[cnt++] =3D BPF_JMP_REG(BPF_JGE, reg_loop_cnt, reg_loop_m=
-ax, 5);
->
-> in inlined bpf_loop() and patch that insn with 'goto +5',
-> so inlined bpf_loop will terminate quickly.
->
-> > > In all cases the program is buggy, so it's safer
-> > > from kernel pov and from data integrity pov to stop
-> > > all instances now and prevent future invocations.
-> > > So I think we should patch the prog text in run-time
-> > > without cloning.
-> > >
+> > So I propose we split INSN_F_STACK_ACCESS into INSN_F_STACK_SRC and
+> > INSN_F_STACK_DST and use that to mark either src or dst register as
+> > being a PTR_TO_STACK. Then we can generically ignore any register that
+> > was a PTR_TO_STACK, because any such register is already implicitly
+> > precise.
 > >
-> > Yes, this is something that we had in mind:
-> > 1. Terminate the program on a single CPU
-> > 2. Terminate the program on all CPUs and de-link it
+> > We'd need to slightly update existing code to use either
+> > INSN_F_STACK_SRC or INSN_F_STACK_DST, depending on LDX or STX, and
+> > then generalize all that to conditionals (and, technically, any other
+> > instruction).
 > >
-> > Single CPU termination could be useful when a BPF program is using a
-> > per-CPU map and the map on a single CPU grows, causing the iterator to
-> > take a lot of time.
+> > WDYT? Does it make sense?
 >
-> I think de-link (and detach) is difficult.
-> The context where an abnormal condition is detected (like watchdog)
-> may not allow detaching.
-> So I think replacing nop5 in the prologue with 'goto out'
-> is better.
+> I tried to prototype based on the above idea. But ultimately I gave up.
+> The following are some of my analysis.
 >
+> The INSN_F_STACK_ACCESS is used for stack access (load and store).
+> See:
+>
+> /* instruction history flags, used in bpf_insn_hist_entry.flags field */
+> enum {
+>          /* instruction references stack slot through PTR_TO_STACK regist=
+er;
+>           * we also store stack's frame number in lower 3 bits (MAX_CALL_=
+FRAMES is 8)
+>           * and accessed stack slot's index in next 6 bits (MAX_BPF_STACK=
+ is 512,
+>           * 8 bytes per slot, so slot index (spi) is [0, 63])
+>           */
+>          INSN_F_FRAMENO_MASK =3D 0x7, /* 3 bits */
+>
+>          INSN_F_SPI_MASK =3D 0x3f, /* 6 bits */
+>          INSN_F_SPI_SHIFT =3D 3, /* shifted 3 bits to the left */
+>
+>          INSN_F_STACK_ACCESS =3D BIT(9), /* we need 10 bits total */
+> };
+>
+> static int insn_stack_access_flags(int frameno, int spi)
+> {
+>          return INSN_F_STACK_ACCESS | (spi << INSN_F_SPI_SHIFT) | frameno=
+;
+> }
+>
+> insn_stack_access_flags() is used by check_stack_read_fixed_off()
+> and check_stack_write_fixed_off(). For these two functions,
+> eventually a push_insn_history()
+>     push_insn_history(env, env->cur_state, insn_flags, 0)
+> is done to record related insn_flags info. Note that
+> insn_flags could be 0 or could be a actual insn_stack_access_flags()
+> which depends on other contexts.
+>
+> For cond op's like 'rX <op> rY', it is similar to other ALU{32,64} operat=
+ions.
+> The decision can be made on the spot about to either clear or add related
+> registers to bt_reg_set.
+>
+> I understand that it is desirable to avoid explicit checking BPF_REG_FP
+> register. But this seems the simplest workable approach without
+> involving push_insn_history().
+>
+> The more complex option is to do push_insn_history() for 'rX <op> rY'
+> conditions with information about how to deal with r10 register, e.g.,
+> to enforce the register must be one of r0-r9. That way, in backtrack_insn=
+,
+> the code can simply to
+>     if (hist->dst_reg_mask & dreg)
+>        bt_set_reg(bt, dreg);
+>     if (hist->src_reg_mask & sreg)
+>        bt_set_reg(bt, sreg);
+>
+> But this seems more complex than current simple approach.
+>
+> WDYT?
 
-We do have a "defunct link" state for some BPF link types, like XDP
-and a bunch of others, for example. If the interface to which XDP
-program was attached gets removed, you'll still have a BPF link
-remaining, but it won't really be attached anymore. We also have
-BPF_LINK_DETACH command (meant to be used by admins to force-detach
-links), which is basically the same concept. Original application will
-still have link FD, and that link object will exist in the kernel, but
-it will be "defunc" with no underlying BPF program and no attachment
-to its original BPF hook.
+Doing the push_insn_history() is exactly what I had in mind from the
+very beginning. I'd do that. It's a bit more code, but it sets us up
+better for generic handling of  PTR_TO_STACK registers, regardless if
+they are r10 or any other rX. This is the general direction we started
+on with INSN_F_STACK_ACCESS, so I think it makes sense to take another
+step in that direction, instead of reverting back to hacky BPF_REG_FP
+handling.
 
-That's just to say that we can extend that to other BPF link types, if
-necessary.
-
-> >
-> > > The verifier should prepare an array of patches in
-> > > text_poke_bp_batch() format and when timeout/fault detected
-> > > do one call to text_poke_bp_batch() to stub out the whole prog.
-> > >
-> > Do you mean creating different versions of patches and applying one of
-> > them based on the current execution state?
 >
-> I mean the verifier should prepare the whole batch with all insns
-> that needs to be patched and apply the whole thing at once
-> with one call to text_poke_bp_batch() that will affect all cpus.
-> It doesn't matter where the program was running on this cpu.
-> It might be running somewhere else on a different cpu.
-> text_poke_bp_batch() won't be atomic, but it doesn't have to be.
-> Every cpu might have a different fast-execute path to exit.
+>
+> >
+> >>>    9: (35) if r1 >=3D 0xffe3fff8 goto pc+0         ; frame1: R1=3Dctx=
+()
+> >>>    10: (b5) if r2 <=3D 0x8 goto pc+0
+> >>>    mark_precise: frame1: last_idx 10 first_idx 0 subseq_idx -1
+> >>>    mark_precise: frame1: regs=3Dr2 stack=3D before 9: (35) if r1 >=3D=
+ 0xffe3fff8 goto pc+0
+> >>>    mark_precise: frame1: regs=3Dr2 stack=3D before 8: (bd) if r2 <=3D=
+ r10 goto pc+3
+> >>>    mark_precise: frame1: regs=3Dr2,r10 stack=3D before 7: (05) goto p=
+c+0
+> >>>    mark_precise: frame1: regs=3Dr2,r10 stack=3D before 5: (18) r2 =3D=
+ 0x20202000256c6c78
+> >>>    mark_precise: frame1: regs=3Dr10 stack=3D before 2: (85) call pc+2
+> >>>    BUG regs 400
+> >>>
+> >>> The main failure reason is due to r10 in precision backtracking bookk=
+eeping.
+> >>> Actually r10 is always precise and there is no need to add it the pre=
+cision
+> >>> backtracking bookkeeping.
+> >>>
+> >>> This patch fixed the problem by not adding r10 to prevision backtrack=
+ing bookkeeping.
+> >>>
+> >>>    [1] https://lore.kernel.org/bpf/Z%2F8q3xzpU59CIYQE@ly-workstation/
+> >>>
+> >>> Reported by: Yi Lai <yi1.lai@linux.intel.com>
+> >>> Fixes: 407958a0e980 ("bpf: encapsulate precision backtracking bookkee=
+ping")
+> >>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+> >>> ---
+> >>>   kernel/bpf/verifier.c | 6 ++++--
+> >>>   1 file changed, 4 insertions(+), 2 deletions(-)
+> >>>
+> >>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> >>> index 28f5a7899bd6..1cb4d80d15c1 100644
+> >>> --- a/kernel/bpf/verifier.c
+> >>> +++ b/kernel/bpf/verifier.c
+> >>> @@ -4413,8 +4413,10 @@ static int backtrack_insn(struct bpf_verifier_=
+env *env, int idx, int subseq_idx,
+> >>>                           * before it would be equally necessary to
+> >>>                           * propagate it to dreg.
+> >>>                           */
+> >>> -                       bt_set_reg(bt, dreg);
+> >>> -                       bt_set_reg(bt, sreg);
+> >>> +                       if (dreg !=3D BPF_REG_FP)
+> >>> +                               bt_set_reg(bt, dreg);
+> >>> +                       if (sreg !=3D BPF_REG_FP)
+> >>> +                               bt_set_reg(bt, sreg);
+> >>>                  } else if (BPF_SRC(insn->code) =3D=3D BPF_K) {
+> >>>                           /* dreg <cond> K
+> >>>                            * Only dreg still needs precision before
+> >>> --
+> >>> 2.47.1
+> >>>
+>
 
