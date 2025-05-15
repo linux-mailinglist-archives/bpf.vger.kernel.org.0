@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-58303-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58304-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C397AB8636
-	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 14:22:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 599B3AB862C
+	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 14:21:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05593A018EB
-	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 12:18:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B83E0162C1F
+	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 12:19:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A797929B222;
-	Thu, 15 May 2025 12:15:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B793129B787;
+	Thu, 15 May 2025 12:15:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nf6im2aM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IIPLLAE4"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26DB221FF46;
-	Thu, 15 May 2025 12:15:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38414298271;
+	Thu, 15 May 2025 12:15:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747311319; cv=none; b=QafkGZo/qyVARNyB5htJs3qzoiJAZLLr9TQR3lfjJJ0IXG0zS/urH1cfBFvVqoDkN+zQkypzaPJ4ZbfCBF8z+Qh59BMuTPhzPIeJgactCXm68q+hiFt2y52gXmQ2HvFLE6Z8tWivQlPaXYPXXdP3CtAekXqZ8fCv1kJVq18ZqQ4=
+	t=1747311331; cv=none; b=C84O9BqnsP7iVM2GFn4n8vMMR2OKrDmsvs9wOyVVODA2nyFMBMjlezdl+MbnbK/jhzD6CYuV+yOzoxqbgM3gJ8rQCbRDiGV59SYk8FRuuF2muPOIULjjLGVmBs4pWUXdHYXzLdFn/+PdkQAUZWg8KylkphN68J3JGuIPG6u4bGA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747311319; c=relaxed/simple;
-	bh=NLfinYtj/70z5hk7+uSvdjIGEQMY3Ex4U02Dmsr/O+0=;
+	s=arc-20240116; t=1747311331; c=relaxed/simple;
+	bh=t3+95HT2GBiYtCDuYsuhE5kZpcX7GSywaBrbo6WI9ls=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KytHNqm6TB2qHJj0EEcrCDTSCNkDZquVQAhckPcrTHUgixlWkJo+rhYCkBjzEwUNmtR7T/yH5yZdnyuZ+dMVyF5/bGCm0x8i4ZErsW9hfrw30bNbgoYAgW3mtXIJ33c9T5wB89J5XaFRzMzDFLfFOTfJBK9UokQf6ASw7vphWdo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nf6im2aM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66659C4CEE7;
-	Thu, 15 May 2025 12:15:10 +0000 (UTC)
+	 MIME-Version; b=uQgl4G9Q7WRJgHqJDxhn+D1sdS/rDMaUxqwnhxjhvWuaDE5IJppoC9tkpQQ3ha3DweSW5nP7lt+epg9CRZLJuUQa51fhFLpUw+mB7awqN84k245txkkRUVg8EKN8NBoZnEjCGJm6TLZgqG2X9OBpmNGygPELGACp9HHcM/e+sHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IIPLLAE4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0C49C4CEE7;
+	Thu, 15 May 2025 12:15:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747311316;
-	bh=NLfinYtj/70z5hk7+uSvdjIGEQMY3Ex4U02Dmsr/O+0=;
+	s=k20201202; t=1747311331;
+	bh=t3+95HT2GBiYtCDuYsuhE5kZpcX7GSywaBrbo6WI9ls=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=nf6im2aM0/6A5jBfsxj6iyKU7cUFyAseC3RmIXQTcxrwFRFq6qBj31KEIVZiFvIA0
-	 3cZQ5zAwtTvuN/fd5Fg/f5ASocV2r55M2BAsW2ukZvHMZW0kXmb4G6bnJOfF2Ac2MD
-	 5RCAlBXjb6wrKZiqIXMmO5Q4ux99l2vybCPWnz8+/h/iK12JI6Qr+uTpHKRc+/icne
-	 41vK/AZcahN/Omh2pmx/85FYqxEbAnmStz7aiCHYrNmdi7+QwxKVqlLoOh3Yp7miYS
-	 Ht51G/hM2ubsBfzhhfzQ4xwpXBYjdtoq/S0VmkOT0ip8Aak488ViWlnF3/N4kd/r9W
-	 ZFJCLEkJNIvTQ==
+	b=IIPLLAE4b3zIOlVaLYGF0ZF04oJjhcvrlLzamZz2qgrWOuPm9bg/X+qQk6zwMrCXN
+	 yxtEozxWFFyQrjJMxF5ZMQfpDUzsJyQiG+NZszbL86OuPoKIftZGRvwZmexjvVZ5HQ
+	 mC/zV7tExHZ8Najo1XPYvY42bHidB57cRqMpjpBnTiBt5MoNXf/wDkLb5MebXtf42j
+	 o/Jx4HpxHkhhuxd+qeF2X0aHoO/kklYXISV0/H2CokAtP/jkF+RdPcd1KsPnHrvSxf
+	 4gqHNsBKNlx83eIo2YWhbka6cvcgEHWclGX+QSBHxVWGY2nvQvqThr2j6/WT5GNjCs
+	 FzfJSUKsovcsQ==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -59,9 +59,9 @@ Cc: bpf@vger.kernel.org,
 	David Laight <David.Laight@ACULAB.COM>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <thomas@t-8ch.de>,
 	Ingo Molnar <mingo@kernel.org>
-Subject: [PATCHv2 perf/core 16/22] selftests/bpf: Add uprobe syscall sigill signal test
-Date: Thu, 15 May 2025 14:11:13 +0200
-Message-ID: <20250515121121.2332905-17-jolsa@kernel.org>
+Subject: [PATCHv2 perf/core 17/22] selftests/bpf: Add optimized usdt variant for basic usdt test
+Date: Thu, 15 May 2025 14:11:14 +0200
+Message-ID: <20250515121121.2332905-18-jolsa@kernel.org>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250515121121.2332905-1-jolsa@kernel.org>
 References: <20250515121121.2332905-1-jolsa@kernel.org>
@@ -73,68 +73,106 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Make sure that calling uprobe syscall from outside uprobe trampoline
-results in sigill signal.
+Adding optimized usdt variant for basic usdt test to check that
+usdt arguments are properly passed in optimized code path.
 
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- .../selftests/bpf/prog_tests/uprobe_syscall.c | 36 +++++++++++++++++++
- 1 file changed, 36 insertions(+)
+ tools/testing/selftests/bpf/prog_tests/usdt.c | 38 ++++++++++++-------
+ 1 file changed, 25 insertions(+), 13 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-index a83abbe91b01..fa0ee813472f 100644
---- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-+++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-@@ -726,6 +726,40 @@ static void test_uprobe_race(void)
- 	ASSERT_FALSE(USDT_SEMA_IS_ACTIVE(race), "race_semaphore");
+diff --git a/tools/testing/selftests/bpf/prog_tests/usdt.c b/tools/testing/selftests/bpf/prog_tests/usdt.c
+index 495d66414b57..3a5b5230bfa0 100644
+--- a/tools/testing/selftests/bpf/prog_tests/usdt.c
++++ b/tools/testing/selftests/bpf/prog_tests/usdt.c
+@@ -40,12 +40,19 @@ static void __always_inline trigger_func(int x) {
+ 	}
  }
  
-+#ifndef __NR_uprobe
-+#define __NR_uprobe 336
-+#endif
-+
-+static void test_uprobe_sigill(void)
-+{
-+	int status, err, pid;
-+
-+	pid = fork();
-+	if (!ASSERT_GE(pid, 0, "fork"))
-+		return;
-+	/* child */
-+	if (pid == 0) {
-+		asm volatile (
-+			"pushq %rax\n"
-+			"pushq %rcx\n"
-+			"pushq %r11\n"
-+			"movq $" __stringify(__NR_uprobe) ", %rax\n"
-+			"syscall\n"
-+			"popq %r11\n"
-+			"popq %rcx\n"
-+			"retq\n"
-+		);
-+		exit(0);
-+	}
-+
-+	err = waitpid(pid, &status, 0);
-+	ASSERT_EQ(err, pid, "waitpid");
-+
-+	/* verify the child got killed with SIGILL */
-+	ASSERT_EQ(WIFSIGNALED(status), 1, "WIFSIGNALED");
-+	ASSERT_EQ(WTERMSIG(status), SIGILL, "WTERMSIG");
-+}
-+
- static void __test_uprobe_syscall(void)
+-static void subtest_basic_usdt(void)
++static void subtest_basic_usdt(bool optimized)
  {
- 	if (test__start_subtest("uretprobe_regs_equal"))
-@@ -746,6 +780,8 @@ static void __test_uprobe_syscall(void)
- 		test_uprobe_usdt();
- 	if (test__start_subtest("uprobe_race"))
- 		test_uprobe_race();
-+	if (test__start_subtest("uprobe_sigill"))
-+		test_uprobe_sigill();
+ 	LIBBPF_OPTS(bpf_usdt_opts, opts);
+ 	struct test_usdt *skel;
+ 	struct test_usdt__bss *bss;
+-	int err, i;
++	int err, i, called;
++
++#define TRIGGER(x) ({			\
++	trigger_func(x);		\
++	if (optimized)			\
++		trigger_func(x);	\
++	optimized ? 2 : 1;		\
++	})
+ 
+ 	skel = test_usdt__open_and_load();
+ 	if (!ASSERT_OK_PTR(skel, "skel_open"))
+@@ -66,11 +73,11 @@ static void subtest_basic_usdt(void)
+ 	if (!ASSERT_OK_PTR(skel->links.usdt0, "usdt0_link"))
+ 		goto cleanup;
+ 
+-	trigger_func(1);
++	called = TRIGGER(1);
+ 
+-	ASSERT_EQ(bss->usdt0_called, 1, "usdt0_called");
+-	ASSERT_EQ(bss->usdt3_called, 1, "usdt3_called");
+-	ASSERT_EQ(bss->usdt12_called, 1, "usdt12_called");
++	ASSERT_EQ(bss->usdt0_called, called, "usdt0_called");
++	ASSERT_EQ(bss->usdt3_called, called, "usdt3_called");
++	ASSERT_EQ(bss->usdt12_called, called, "usdt12_called");
+ 
+ 	ASSERT_EQ(bss->usdt0_cookie, 0xcafedeadbeeffeed, "usdt0_cookie");
+ 	ASSERT_EQ(bss->usdt0_arg_cnt, 0, "usdt0_arg_cnt");
+@@ -119,11 +126,11 @@ static void subtest_basic_usdt(void)
+ 	 * bpf_program__attach_usdt() handles this properly and attaches to
+ 	 * all possible places of USDT invocation.
+ 	 */
+-	trigger_func(2);
++	called += TRIGGER(2);
+ 
+-	ASSERT_EQ(bss->usdt0_called, 2, "usdt0_called");
+-	ASSERT_EQ(bss->usdt3_called, 2, "usdt3_called");
+-	ASSERT_EQ(bss->usdt12_called, 2, "usdt12_called");
++	ASSERT_EQ(bss->usdt0_called, called, "usdt0_called");
++	ASSERT_EQ(bss->usdt3_called, called, "usdt3_called");
++	ASSERT_EQ(bss->usdt12_called, called, "usdt12_called");
+ 
+ 	/* only check values that depend on trigger_func()'s input value */
+ 	ASSERT_EQ(bss->usdt3_args[0], 2, "usdt3_arg1");
+@@ -142,9 +149,9 @@ static void subtest_basic_usdt(void)
+ 	if (!ASSERT_OK_PTR(skel->links.usdt3, "usdt3_reattach"))
+ 		goto cleanup;
+ 
+-	trigger_func(3);
++	called += TRIGGER(3);
+ 
+-	ASSERT_EQ(bss->usdt3_called, 3, "usdt3_called");
++	ASSERT_EQ(bss->usdt3_called, called, "usdt3_called");
+ 	/* this time usdt3 has custom cookie */
+ 	ASSERT_EQ(bss->usdt3_cookie, 0xBADC00C51E, "usdt3_cookie");
+ 	ASSERT_EQ(bss->usdt3_arg_cnt, 3, "usdt3_arg_cnt");
+@@ -158,6 +165,7 @@ static void subtest_basic_usdt(void)
+ 
+ cleanup:
+ 	test_usdt__destroy(skel);
++#undef TRIGGER
  }
- #else
- static void __test_uprobe_syscall(void)
+ 
+ unsigned short test_usdt_100_semaphore SEC(".probes");
+@@ -419,7 +427,11 @@ static void subtest_urandom_usdt(bool auto_attach)
+ void test_usdt(void)
+ {
+ 	if (test__start_subtest("basic"))
+-		subtest_basic_usdt();
++		subtest_basic_usdt(false);
++#ifdef __x86_64__
++	if (test__start_subtest("basic_optimized"))
++		subtest_basic_usdt(true);
++#endif
+ 	if (test__start_subtest("multispec"))
+ 		subtest_multispec_usdt();
+ 	if (test__start_subtest("urand_auto_attach"))
 -- 
 2.49.0
 
