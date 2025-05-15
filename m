@@ -1,166 +1,138 @@
-Return-Path: <bpf+bounces-58264-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58265-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B53FDAB796F
-	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 01:30:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0FEFAB7A8D
+	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 02:26:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DCFB4C42DC
-	for <lists+bpf@lfdr.de>; Wed, 14 May 2025 23:30:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DE023BC230
+	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 00:26:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99B0B211A3D;
-	Wed, 14 May 2025 23:30:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A5501CD1F;
+	Thu, 15 May 2025 00:26:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jXZ09ZBI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hLEnrm2p"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D18854C9F
-	for <bpf@vger.kernel.org>; Wed, 14 May 2025 23:30:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 307534B1E49;
+	Thu, 15 May 2025 00:26:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747265447; cv=none; b=Y2V4SYqdVvyTiMd3ZWUaJFb0iYRKHOmXndUr5bhtW2Izr65VPLUrfTyr5EbWTxjNckUS5fcbg0AiVe91eTrFmuxBvkvVpkJOrfuCnuoXpkAMUSAP0FbxqsKRokKtFdyaYk4TukGTTdRf8aLVDsEZH8JHVuIoyeUT6TojIL06I4A=
+	t=1747268796; cv=none; b=HaD/Rpr60u/iIX28q69dYp4B1uAryZfT5LkXC6GlYacYM7dCNlATxMtjwUEOGxbbF+H/umpvBJiIe4Xz0ivee1x3Vm6Kvf7YPpY1BrWn2fMrZlGAZVr2ZQUJ6AZTCQjT716D1LEh1FCtr21DPQh503euk40NV3d0X8V569dn2uw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747265447; c=relaxed/simple;
-	bh=RPYQqw42dd/kOPLEFjfMLusr0I2u0kPT7uqvjsdzLxk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aK1974zSQZZWlB0ADtDi7W6ursPSIni2K8hOL3ITeuKa9d62yJqHffrE3MeQrsw9kfaUF5BTNNFYktmW0/NFAthf4VrtUabaRvhfraV9UTL9urDlBT0K+hqHQmQFCj+gH/okGqcCYqdDvwsVDDyJ4JYC8Om2nCLQCIzRg+tpY+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jXZ09ZBI; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <d3f8fe35-201f-453e-bac0-48db2c901283@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1747265442;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aCnVQmby+Lhwy/7E4/uS25UMiiipKqWnvneM1sIoa1U=;
-	b=jXZ09ZBIGbUVKMai857bsVv2G9gyXB6nT23cZR627OK6Do5JJhZwmnT0aNqGoaGt9BwF9d
-	3REx/jpCjB+D6MzhQPPJRddeYN7a9cSK+bVICm5LOnFGT+wVGxkajJnEC+V72KFb6b9auf
-	xXf44+7hGziOcJV5fE15b7mv29c6SpA=
-Date: Wed, 14 May 2025 16:30:18 -0700
+	s=arc-20240116; t=1747268796; c=relaxed/simple;
+	bh=Iag1cz9o4k407fJ7LuFn6oEhYeJdBnncqWkZ5d9YBco=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qu6TXpPoBQFLxjBQXA6xbnoT30Z/FVzsfyoBSW6O+MYolsU4G3ItFH5G9hGZtwrIF2JApw/3ddZ6CvPX5LAbcGfHsw///iQAzeljBEOHtdm+k2TYTPD/7G5yIDTzm0bjI5q0frxqKo2HS3cMI9ZExev6p2XIgxXvNVRMZEL+tnE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hLEnrm2p; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3a0b9303998so264876f8f.0;
+        Wed, 14 May 2025 17:26:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747268793; x=1747873593; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KD8UvdHZRLcoNM/UCrvtesOfzU243m+dv7TXAwV5SLQ=;
+        b=hLEnrm2pwZDLBL7DJ2EkoQl8+LGnnqoEcrhpWafCXFb0p92GqbD+hPY1R99ipe2Gej
+         mPbLKbofaJBi7vD2Z6sVzG7m2JssyxSFZaAY7X86rRJV+lOf3vRcYzXvgvAhnFPdOg+6
+         nvqBmayJskFfaCaYTUxflARBLmqawl5XgxvMzr33Ro1ICBAg7Cn5p9oQc/dANIU2DpmV
+         GcrsR8/Jvxy7C4QfwlqR9tcRxd7KKXadKEjP+wfc2RzLO77CyRBnYSbAg6Xo7ATWDOVP
+         Un78WP+0XRQog2py455wRADSzYop5CtvIhujnwZ9NZNA13ifTe0q/adrSGcHMCwAt+Zc
+         B+Ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747268793; x=1747873593;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KD8UvdHZRLcoNM/UCrvtesOfzU243m+dv7TXAwV5SLQ=;
+        b=r4aROkivKUyc2IY6o4uFDDx5bgDwhkrl+XsTzGmAuLtHEZROTV42D/8oRWLkDCAdet
+         MTRubeJqK2ftI9aMHvRAGgrsPnnTDSkr7ojLqqWIJ7RmJKzIurQLRbrWuN+UOsrPfNBP
+         zyRZBZxUfTSXvMd/XxVN/NL7FZeY6zMXgEawYJN47IoSdrZWvTabj2hufcOYoGWL1jkH
+         DvuSNo7MG3+BmsQxiVi1WCKitSRL9PAu7bhvnr1qUJ60yfkjfjMkWbaaE3fCOgSZ88yS
+         5ZVYmsuybQTsl3feeI1ADfo1CN8g6vq0W5xuOaGbFz24HCHeEpSNOoDROdb2YIZzXPFS
+         fhlQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW96qzXyvl4U027t75CnK+irUTy2ROPV1SQLPdafEE/5bd0owCkttb+/GeHZmoisMyWUmo=@vger.kernel.org, AJvYcCWEWBV2H8TPGP7HELHSNZxJjL8TPYu4/PcW15wWyVddGaY1aGlq9tcEWOPSdCKYOg/WTey9I/24QBFcvrg5@vger.kernel.org, AJvYcCXYvwkoDMGWB2Aw3s9wl8e98AjDfVTb1kSIKQvJfrgjOSEddm8IYL/JaNvdHkStzmEoeRxkhVF4@vger.kernel.org, AJvYcCXxxx/C1yz76N6VEg/fwYOTQ8HkRzZx/u323a1k33YIwZZw679QtchqCnLBXzgZgxJ6uG9hKzgN0bifuA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyiPAq9QLNfaHE9MvNBMf51cyJgkiugXnmVsfS0NpMajotGOb0e
+	s07lkY5hnB+XdZ2agwFLbSK1ZSVSLqMKuBxKSNck3RW9yNziwm8D9BRp9Aj8ClC4KHzd1S/I/OS
+	Ji2OKZQSSMCJzsewA2IrMMw56AhQ=
+X-Gm-Gg: ASbGncvhkp/O9NMawgCxmyA/Gi5iE01XZiMqPTq5OaiC1f4PvbX8PzO08+WoDi4/jS9
+	854IKFXRa6Z2y2AOmGLLTVT8P1I555RVCxJsQ2XYFx2MclPWjh89lQqbbRO/ta11v0XBJJcvdp5
+	i6YTZrK/O5WcJ+WNPLojsYnp31KjHRhMqMqfaj0Yb1W4yhmw8Z/XZKCqSl1ftzkQ==
+X-Google-Smtp-Source: AGHT+IE+HZtZ8YzQvVA5KORcVG830Q/KkDJreHLn/VSPYa/IsnTDh9JyEuOeA5868CcZFr3bt0O3oqGXAz6+b18BS6w=
+X-Received: by 2002:a5d:59a6:0:b0:3a0:b565:a2cb with SMTP id
+ ffacd0b85a97d-3a3511ae523mr1489281f8f.1.1747268793180; Wed, 14 May 2025
+ 17:26:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 1/2] bpf: Pass the same orig_call value to
- trampoline functions
-To: Ilya Leoshkevich <iii@linux.ibm.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
- Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>
-References: <20250512221911.61314-1-iii@linux.ibm.com>
- <20250512221911.61314-2-iii@linux.ibm.com>
- <ab1d5047-7926-43ae-9dd7-0824b75af8b7@linux.dev>
- <07d1180a55dc2a589bc0df0895447ba52284cabc.camel@linux.ibm.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <07d1180a55dc2a589bc0df0895447ba52284cabc.camel@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <1747253032-663457-1-git-send-email-tariqt@nvidia.com>
+In-Reply-To: <1747253032-663457-1-git-send-email-tariqt@nvidia.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 14 May 2025 17:26:22 -0700
+X-Gm-Features: AX0GCFuVyinZR-I2bjnzO6FUnVs95bvM6FFjH-AQVx4_GVmrDQbqAT7tVn9SH4E
+Message-ID: <CAADnVQLSMvk3uuzTCjqQKXs6hbZH9-_XeYo2Uvu2uHAiYrnkog@mail.gmail.com>
+Subject: Re: [PATCH net-next] net/mlx5e: Reuse per-RQ XDP buffer to avoid
+ stack zeroing overhead
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, 
+	Andrew Lunn <andrew+netdev@lunn.ch>, Saeed Mahameed <saeedm@nvidia.com>, 
+	Leon Romanovsky <leon@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	Network Development <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org, 
+	LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Moshe Shemesh <moshe@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Gal Pressman <gal@nvidia.com>, 
+	Carolina Jubran <cjubran@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 5/14/25 3:46 PM, Ilya Leoshkevich wrote:
-> On Wed, 2025-05-14 at 14:26 -0700, Martin KaFai Lau wrote:
->> On 5/12/25 1:57 PM, Ilya Leoshkevich wrote:
->>> There is currently some confusion in the s390x JIT regarding
->>> whether
->>> orig_call can be NULL and what that means. Originally the NULL
->>> value
->>> was used to distinguish the struct_ops case, but this was
->>> superseded by
->>> BPF_TRAMP_F_INDIRECT (see commit 0c970ed2f87c ("s390/bpf: Fix
->>> indirect
->>> trampoline generation").
->>>
->>> The remaining reason to have this check is that NULL can actually
->>> be
->>> passed to the arch_bpf_trampoline_size() call - but not to the
->>> respective arch_prepare_bpf_trampoline()! call - by
->>> bpf_struct_ops_prepare_trampoline().
->>>
->>> Remove this asymmetry by passing stub_func to both functions, so
->>> that
->>> JITs may rely on orig_call never being NULL.
->>>
->>> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
->>> ---
->>>    kernel/bpf/bpf_struct_ops.c | 2 +-
->>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/kernel/bpf/bpf_struct_ops.c
->>> b/kernel/bpf/bpf_struct_ops.c
->>> index db13ee70d94d..96113633e391 100644
->>> --- a/kernel/bpf/bpf_struct_ops.c
->>> +++ b/kernel/bpf/bpf_struct_ops.c
->>> @@ -601,7 +601,7 @@ int bpf_struct_ops_prepare_trampoline(struct
->>> bpf_tramp_links *tlinks,
->>>    	if (model->ret_size > 0)
->>>    		flags |= BPF_TRAMP_F_RET_FENTRY_RET;
->>>    
->>> -	size = arch_bpf_trampoline_size(model, flags, tlinks,
->>> NULL);
->>> +	size = arch_bpf_trampoline_size(model, flags, tlinks,
->>> stub_func);
->>
->> The change looks ok but not sure why it is needed.
->>
->> I can see why stub_func is needed to generate the final image in
->> arch_prepare_bpf_trampoline() in x86. The
->> "arch_bpf_trampoline_size()" here is
->> generating a temporary image, so NULL or not doesn't seem to matter.
->>
->> Does the s390 jit need to use the actual stub_func address somewhere
->> in the
->> temporary and/or final image?
-> 
-> Not right now, however, in the future I would like to check whether
-> orig_call points to a BPF prog. I have explained the rationale behind
-> this in the series description.
-> 
-> Purely practical issues aside, currently it's unclear what
-> orig_func == NULL means. It had meaning in the past, but not anymore.
-> I think it would be good to remove this uncertainty and state that
-> today orig_func is never NULL.
+On Wed, May 14, 2025 at 1:04=E2=80=AFPM Tariq Toukan <tariqt@nvidia.com> wr=
+ote:
+>
+> From: Carolina Jubran <cjubran@nvidia.com>
+>
+> CONFIG_INIT_STACK_ALL_ZERO introduces a performance cost by
+> zero-initializing all stack variables on function entry. The mlx5 XDP
+> RX path previously allocated a struct mlx5e_xdp_buff on the stack per
+> received CQE, resulting in measurable performance degradation under
+> this config.
+>
+> This patch reuses a mlx5e_xdp_buff stored in the mlx5e_rq struct,
+> avoiding per-CQE stack allocations and repeated zeroing.
+>
+> With this change, XDP_DROP and XDP_TX performance matches that of
+> kernels built without CONFIG_INIT_STACK_ALL_ZERO.
+>
+> Performance was measured on a ConnectX-6Dx using a single RX channel
+> (1 CPU at 100% usage) at ~50 Mpps. The baseline results were taken from
+> net-next-6.15.
+>
+> Stack zeroing disabled:
+> - XDP_DROP:
+>     * baseline:                     31.47 Mpps
+>     * baseline + per-RQ allocation: 32.31 Mpps (+2.68%)
+>
+> - XDP_TX:
+>     * baseline:                     12.41 Mpps
+>     * baseline + per-RQ allocation: 12.95 Mpps (+4.30%)
 
-For the bpf_struct_ops trampoline image, there is no need to invoke the 
-orig_call, so it had been NULL for both temporary and final image cases until 
-the recent cfi fix in x86.
+Looks good, but where are these gains coming from ?
+The patch just moves mxbuf from stack to rq.
+The number of operations should really be the same.
 
-I was asking because it feels like the jit might be doing something incorrect 
-(or at least unnecessary) for the bpf_struct_ops if it needs to use the 
-orig_call address. I don't know much of the s390 jit though.
+> Stack zeroing enabled:
+> - XDP_DROP:
+>     * baseline:                     24.32 Mpps
+>     * baseline + per-RQ allocation: 32.27 Mpps (+32.7%)
 
-The change looks fine from the bpf_struct_ops pov. Always pass "stub_func" is 
-more consistent also, so
-
-Acked-by: Martin KaFai Lau <martin.lau@kernel.org>
-
-I don't know enough about the tailcall_bpf2bpf_hierarchy as stated in the commit 
-message, so I will defer to others to comment.
-
-> Furthermore, a hypothetical JIT may produce different instruction
-> sequences for loading certain constants. Suppose we wanted to load
-> the value of orig_call into a register. Then in the NULL case a JIT
-> could generate:
-> 
->    xgr %r1,%r1
-> 
-> and in the non-NULL case:
-> 
->    llihf %r1,<high>
->    oilf %r1,<low>
-> 
-> As you mentioned, arch_bpf_trampoline_size() generates a temporary
-> image, and in this case it would have a different size. So this
-> asymmetry can be a potential footgun.
-
+This part makes sense.
 
