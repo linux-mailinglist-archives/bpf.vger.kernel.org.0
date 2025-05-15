@@ -1,155 +1,100 @@
-Return-Path: <bpf+bounces-58330-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58331-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 305B5AB8C47
-	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 18:24:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B261CAB8CD6
+	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 18:51:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C246A05DAA
-	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 16:23:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C64E16AC3B
+	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 16:51:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE1D421D5BD;
-	Thu, 15 May 2025 16:24:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58A73253F03;
+	Thu, 15 May 2025 16:51:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AgtpFgFr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QfFRvaw8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1FB121CC46;
-	Thu, 15 May 2025 16:24:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C792B72638;
+	Thu, 15 May 2025 16:51:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747326244; cv=none; b=TtaafiYFvAnIVXo56otgeXWKIkfOftAXE38tFE87hWyL2qkzB6u22uppE7yFPyC7te0Cq6KJ5iC5DXLPWAwkQdG6cTo1VxcqXsm3PqT3iPdUgZVA/5GycMxVkz8wDq/zqHFs2n2puYBEaTbVDCnbMAM68iUarXCaZR/8O9ChFOU=
+	t=1747327878; cv=none; b=LkPk3a7rPtGlT140SJMRMBF5RgzqmROK3Ao4m+3ycD3mH0V/VNn3MsqB4rcdrqOPEptzF+H2jDYim6xsCE1g30d6/mQSvT59cJFWR9HZFNvb9/ThjSLGeFliCDiVItWtnpVnWd2owYBVEvJp1WufVWrheeFZe8AWPNGm//ttnys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747326244; c=relaxed/simple;
-	bh=se9EXUVKBwSg4FhegCi5R+wYWLgRn6AqCTMjOA1vMrU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RD7obCvzu8cq8pDQI0cwzde+GpVu/UaJodJf1jDR5Pj3Xcjy+KsW8Z/JuB46I9RUUai38rRFGcUlEpPW30+/RCnWYXiijg5dfOpNDukk71s9af/wV1Goj7inbozoymPFCyc5AR+63RkSWwAcAc1eC2IiI1kQAqyoazBoIw5Ding=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AgtpFgFr; arc=none smtp.client-ip=209.85.216.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-30a894cc07cso1121793a91.2;
-        Thu, 15 May 2025 09:24:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747326242; x=1747931042; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SSSLU5jUV72K3/zMV5itWSXDtvetINJNPemI18+QmMw=;
-        b=AgtpFgFr0YEvxPIblZcQaUqpVDKVDJ8z9gaN+iUETxzc2gGkB1i4caEACcO+wYNtWa
-         G7JsIRs1sy7ZL1w6XNL5ncQQ7wa1W1HTsJZJWDZ9UzMc70DQiuNCHQI1VXYNSykfpABC
-         lxeB+T8rVSmgct1nuTtKfrh/0k4M9ocgAzaqX+bCmVOsGpILEvwUQB9zsg2HhsBJz33g
-         ZD2BWzC7b9w21TOG/pk58RxYxRc19GFUcW0nS2ppwuXXP1pLacpCLOaDwB+gDIg8WabQ
-         kSkxcTUTTR54yGdRgTNmpY1KZ03zezDs0Bt8pUYYSXPhqzuwcrfCBjzm5C2mb6ZUhM+b
-         JoqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747326242; x=1747931042;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SSSLU5jUV72K3/zMV5itWSXDtvetINJNPemI18+QmMw=;
-        b=X2pFniK2seG7RlcFG7bs+7h/yo2MtNDYvbLIdb4mEWoN+OQRWfAREMiLiFX+NnFPXN
-         TB8GtUSFZKCTR9ekSNApbzvCZhTQztdKmTRbpg/Pn5xOWNSeHw913LJjAeBklAKbSlpn
-         26cidQRsFsliSi7LxRq/wb39a7cWWhGVw0E4Lg1RWUyVe/6MLlubBweyc7K1pwq3EnTE
-         Vgpznb9B9u/vNc45CJgd3a/BGnaCRBTMfIOuXCWqYuCWdsG4hKA6S4MbVkmw5rLWMpvu
-         gCaCeL875Yo/rnYEqgDP3re4ij7ljrUJgbM9My1wHN8+mgbBOykA3mXbeGbXChOHTeCr
-         Idfg==
-X-Forwarded-Encrypted: i=1; AJvYcCWHs4+6UPEqCF32rscN15rNoyszqmK8zBV5yjo6lmysJghxf7mRwTZYVmt5HtKIk7WpE9tgC8i6VA==@vger.kernel.org, AJvYcCX6DDGOdAxMtTNpf6A4CkiIiSBUpkwn9TMQyN6KwJ6gd95k4rFCtrDMo7OPYtntFq26DBw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzOQEc1vEt0ru6rxXSkqo16WAcj5KbLHA2+wq5ga6Y+AR/fnlx6
-	zhuTxqz5D27gQWWNyFP9T1YSlpSvgzS6Y0EzxaX25RkjFSShGSrofFPt9csZIdnz7qfK+pqx+pM
-	cJAinHYFhCFR/l/GSMaSBoHB0YsWt69Y=
-X-Gm-Gg: ASbGncuTo3Tude7Lww+1FtfPU7LQnwNVLaWpV08KNXcE3xpAXypUNrSF+2N/XhcuKJ5
-	H7YX9Lfx/ZKUZA01jL23e2hf8030+IPxb77K1YWAshulT3BuHelE1irATlujBt/c1TVgmetbAnl
-	88tG4c18MhEf9D0LCjymiUqEv6IJbUhijOhQT/GVuh0Kng4sHk
-X-Google-Smtp-Source: AGHT+IF/YlLlKsL34MJi9somM0yMkKefXpFqmi/UrwSRvCNSnfMKDMr2czK3ren6STR3i4WwsBggwNXo4mZkyr5hywY=
-X-Received: by 2002:a17:90b:3f4c:b0:2ee:f677:aa14 with SMTP id
- 98e67ed59e1d1-30e7d5220dcmr79582a91.13.1747326240853; Thu, 15 May 2025
- 09:24:00 -0700 (PDT)
+	s=arc-20240116; t=1747327878; c=relaxed/simple;
+	bh=hhlOPM7z4HIlZKpReWFs9EedymGfWrq/M8vBY5bja1s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YjpS15jqzDLHw9rTJRouBOtWaSmWMNQJm63I7hKRWRsgn/u+xItyV7meFGXpthcAbOL80c7h0F/N6aGGoxnU/NdlSU9qMOxisSMtjZC576CUH+KVn6H1EeS4PEKSzmWDF4gh8q2biSahtXmdGfQaHnBf5WQYSqkdNKPAGUtMayE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QfFRvaw8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3914AC4CEE7;
+	Thu, 15 May 2025 16:51:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747327878;
+	bh=hhlOPM7z4HIlZKpReWFs9EedymGfWrq/M8vBY5bja1s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=QfFRvaw8pSJ2bcnJ42P3i0JZeLvyG+YvmakQgap00p7KY8c0dorb3I0wczZX86LMp
+	 FCWpLVGBCyAOezr+FwpI8/r9F+O7Nar6XNh2/Mh7f0L1fFIkjlak+UJ8K6K4kHzxIA
+	 XNkmMFSgh0lsFElmtyRTolr3vz9RuaUFC2Hg5xjSSxBJNoBq2pDk4u938G9lGgmJYe
+	 5x+mfu96WBJap32k8lr2t/0Fr7xFyuOUtlTQYy/WWwAx7CAq0EYVSduMQfCfykyaNx
+	 JmNiVNotH7Vrhz7WSJIzrVyNYsTeDvhZLepCnspCYUwOia9xVFZiD0Bpk8+uLYwDP/
+	 j9tj1B4H9RIJA==
+Date: Thu, 15 May 2025 09:51:15 -0700
+From: Kees Cook <kees@kernel.org>
+To: Shung-Hsi Yu <shung-hsi.yu@suse.com>, bpf@vger.kernel.org,
+	linux-mm@kvack.org, Andrii Nakryiko <andrii@kernel.org>,
+	Ihor Solodrai <ihor.solodrai@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Michal Hocko <mhocko@suse.com>, Vlastimil Babka <vbabka@suse.cz>,
+	Uladzislau Rezki <urezki@gmail.com>, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org, regressions@lists.linux.dev,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+	Eduard Zingerman <eddyz87@gmail.com>
+Subject: Re: [REGRESSION] bpf verifier slowdown due to vrealloc() change
+ since 6.15-rc6
+Message-ID: <202505150911.1254C695D@keescook>
+References: <20250515-bpf-verifier-slowdown-vwo2meju4cgp2su5ckj@6gi6ssxbnfqg>
+ <C66C764E-C898-457D-93F0-A680983707F0@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250508132237.1817317-1-alan.maguire@oracle.com>
- <CAEf4BzZfFixwy4vQG8jrUBtAOUFx=t1KG2F+AtKPVNCsMz0vQw@mail.gmail.com>
- <aCG8kz1eZjjw+sSU@kodidev-ubuntu> <4bc9b6c3-4e02-48d3-9b07-c7b1069bfd35@oracle.com>
- <CAEf4BzZoWiBqSBhmxviQ21hQ21m5eKQ=CUYk9AMAB+Z3xFkpGw@mail.gmail.com> <aCWfjGXbLCiGxSf8@kodidev-ubuntu>
-In-Reply-To: <aCWfjGXbLCiGxSf8@kodidev-ubuntu>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 15 May 2025 09:23:48 -0700
-X-Gm-Features: AX0GCFsokdU9306Qaedk8p9RsW53scD5Qa8ci0yK2b6LDrDWzLBwOmLtLvlz584
-Message-ID: <CAEf4BzbeXEpz4bcjXeRaLUHLiWAsERrSfZqCOrLjb5vKLNmrhQ@mail.gmail.com>
-Subject: Re: [RFC bpf-next 0/3] bpf: handle 0-sized structs properly
-To: Tony Ambardar <tony.ambardar@gmail.com>
-Cc: Alan Maguire <alan.maguire@oracle.com>, martin.lau@linux.dev, ast@kernel.org, 
-	andrii@kernel.org, alexis.lothore@bootlin.com, eddyz87@gmail.com, 
-	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, 
-	mykolal@fb.com, bpf@vger.kernel.org, dwarves@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <C66C764E-C898-457D-93F0-A680983707F0@kernel.org>
 
-On Thu, May 15, 2025 at 1:02=E2=80=AFAM Tony Ambardar <tony.ambardar@gmail.=
-com> wrote:
->
-> On Wed, May 14, 2025 at 09:22:00AM -0700, Andrii Nakryiko wrote:
-> > On Wed, May 14, 2025 at 3:31=E2=80=AFAM Alan Maguire <alan.maguire@orac=
-le.com> wrote:
-> > >
-> > > On 12/05/2025 10:17, Tony Ambardar wrote:
-> > > > On Fri, May 09, 2025 at 11:40:47AM -0700, Andrii Nakryiko wrote:
-> > > >> On Thu, May 8, 2025 at 6:22=E2=80=AFAM Alan Maguire <alan.maguire@=
-oracle.com> wrote:
->
+On Thu, May 15, 2025 at 07:51:26AM -0700, Kees Cook wrote:
+> On May 15, 2025 6:12:25 AM PDT, Shung-Hsi Yu <shung-hsi.yu@suse.com> wrote:
+> >There is an observable slowdown when running BPF selftests on 6.15-rc6
+> >kernel[1] built with tools/testing/selftests/bpf/{config,config.x86_64}.
 > [...]
->
-> Hi Alan, Andrii,
->
-> > > > Given pahole (and my related patch) assume pass-by-value for well-s=
-ized
-> > > > structs, I'd like to see this too. But while the pahole patch works=
- on
-> > > > 64/32-bit archs, I noticed from patch #1 that e.g. ___bpf_treg_cnt(=
-)
-> > > > seems to hard-code a 64-bit register size. Perhaps we can fix that =
-too?
-> > > >
-> > >
-> > > So I think your concern is the assumptions
-> > >
-> > >
-> > >         __builtin_choose_expr(sizeof(t) =3D=3D 8, 1,        \
-> > >         __builtin_choose_expr(sizeof(t) =3D=3D 16, 2,        \
-> > >
-> > > ? We may need arch-specific macros that specify register size that we
-> > > can use here, or is there a better way?
-> >
-> > we know the target architecture, so this shouldn't be hard to define
-> > the word size accordingly and use that here?
-> >
->
-> Well, I'm now unsure if this is a problem after reading the code more
-> closely.  The ctx is a u64 array and the PROG2-related macros process ctx
-> elems within the BPF VM using 64-bit regs. Does this mean the macro/union
-> magic all works OK then?
+> Where can I find the .config for the slow runs?
 
-I'd think that it's still a problem, because on 32-bit architecture if
-argument is 8 byte long, we'll use 2 registers, and each register will
-get their ctx[i] and ctx[i + 1] slot, so we need to take into account
-32-bit vs 64-bit distinction when calculating how many ctx[] slots we
-need to use/skip.
+Oops, I can read. :) Doing a build now...
 
->
-> Unfortunately, I cannot test a 32-bit host easily since JIT trampoline
-> support is still a WIP in my arm32 test setup. But perhaps someone can
-> share tracing experience with ppc32 JIT, which supports trampoline?
->
-> Thanks,
-> Tony
->
-> [...]
+> And how do I run the test myself directly?
+
+I found:
+https://docs.kernel.org/bpf/bpf_devel_QA.html
+
+But it doesn't seem to cover a bunch of stuff (no way to prebuild the
+tests, no info on building the test modules).
+
+This seems to be needed:
+
+make O=regression-bug -C tools/testing/selftests/bpf/test_kmods
+
+But then the booted kernel doesn't load it (missing signatures?)
+
+Anyway, I'll keep digging...
+
+-- 
+Kees Cook
 
