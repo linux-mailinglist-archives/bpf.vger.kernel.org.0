@@ -1,147 +1,143 @@
-Return-Path: <bpf+bounces-58280-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58281-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BE6CAB7F8F
-	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 10:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D4BDAB81D9
+	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 11:03:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13C244C505F
-	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 08:02:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB9E3175EED
+	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 09:01:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9DD32253E9;
-	Thu, 15 May 2025 08:02:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B52Q/CCd"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61DBE2980BC;
+	Thu, 15 May 2025 08:59:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 218D612CD96;
-	Thu, 15 May 2025 08:02:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 184FA297A6D;
+	Thu, 15 May 2025 08:59:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747296146; cv=none; b=NomH3bnGwQNFWE1nva6XPrB8B3ohS8qsPsovJpHMRcIuAd3SClAtscM6DHbwi3Q0rCya4RO0UYYpy5D9UXf3flo+0vIBTek/bsPqGgLV2a0hmAJeN9unLNA4Vc3NiTDbSEFY296v+cv51TOafx6SZEjKqGAf0t2VvA+A/nuPte8=
+	t=1747299567; cv=none; b=EeJaVIrwUjS8wA4e6t4owVBvawBPtl+JhAC0CQgUHcz4231RTPkW3lOSD/R0hC/xo5M3mE11UAJj7tXhXJpVYY0DwmNQ3b+AbpQ2vjMYF5/faP0UtOb0trBRNHS6s51IsAXBMSeSg+3xy2aG41ZyKT4C50cuZlVKI3u7k8yWHTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747296146; c=relaxed/simple;
-	bh=yTGSvbpFVh95op3RrLDfNZwCA3stiU2sfgg44eugPtc=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iJ1MFQrIKBe5D+NZ4Gs0Tt4BJXwI7SCBDIqOx5anWJspxefUEBXH+pY3wFlLtx3piz8/qsCq5zIUl+1tpiHS7Iv4G3Z0cv8haCVcrFJUBNszS2idhm+kbOarZJBiO0HTpxt/csEaNqcXae4BWfUzXiu3IxcNgUxaB34FiV17zKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B52Q/CCd; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1747299567; c=relaxed/simple;
+	bh=U8Gms1unVLaYGMPmJgh5mvgST4RNp4pyfwxfbuqpqZ0=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=NIWf8Vp/lPJAQtV2OTHPC3IjrPlk22rT5d6Ie3fFU0nO7JiY0VvpWSeio0E6nn9METq8zLLwFalIVVgs2I3owxjgqNKNb6OBF/um63TofmnWuwPOgHIdI77QpbPd7ORDVqsTCcNuNXrI1DgSn5m8c/jdMCd2T25fpDsGcjoTWRc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=fejes.dev; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=fejes.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-2302d90c7f7so7687135ad.3;
-        Thu, 15 May 2025 01:02:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747296144; x=1747900944; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=gZEKSsAVAm7tLGYRVOWvvqg+w/D70pTel7iaUlMrOmI=;
-        b=B52Q/CCdmCoOHKIU9PAHqWo38ptony0h7lE/goEJWS28THMwqlX8kFxE17QT/P1syq
-         FUPsYZdwwWGmLnEwRk5Zt8kXYnFfmhynzFlrJRicZtvYGbZmcuEHzMdp9qUuaLKk9FIk
-         LRWmgtvQRwqLGUVYKuiSmHbWavbuBYwQ052mz30oTKIztd3SLO/9imGRh7opF8l95CRm
-         nEUrIkSFWcedm4BAzBE4narS+e+8BUCeQb4Rxp5tg4aTvJ7xJSTr0mqlN+iywWA/WZW0
-         +843RcMnbNC06egYkbt/HM/dYGKJ4ge6jjatN309onGpB7/g85YmOfu3pyKvHsVC7izF
-         zWfA==
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-441ab63a415so7022885e9.3;
+        Thu, 15 May 2025 01:59:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747296144; x=1747900944;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gZEKSsAVAm7tLGYRVOWvvqg+w/D70pTel7iaUlMrOmI=;
-        b=NVe8Trqz/iWd9xxYr19th4QOpFnXNzt7wFpztAjg+3OMxDcGLQFSmpa+/A0iEZ0fHn
-         1ApI8vPRNHVmmtEqpBIgAP98VHjI+PHHH/Hukiz4lnBmSVvlZbvy20VjXWVjWyauqAJX
-         zBCag+IoqccPu05JZdzlwA+F5fNyzPBOvgGZW7BCajOmHlN093QWpN8r/O+wbk/lcC9r
-         q1GTyb7nW22zt9zVtIzyiOWNEdGdKi96itPLczRXSY85L7/faqTy84I2k4V3r4oXcaVW
-         mFnOKJ/xg6QIGDXXVgPt4STv7Y+iz4wXyU/ySRsofBI/dKIsrFdt3BwGUQHsFJ0dTwXL
-         SkaA==
-X-Forwarded-Encrypted: i=1; AJvYcCUzhnjwcF9oCeFwTp8MfrtomJ+sM8npNclP/9ZVXRPxZrehCQFmP8gVvPUSZb+aX/qO48c=@vger.kernel.org, AJvYcCW3ZVGNYCm5rcy9MBJl9UKQsXISCGghGqykbZivg7h8K6vesgqRUHt7CBRPAQzdYlz37F6GPqpAoQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzF+yYO0jfgaqzNr8ybi1vHwZjQiMAL3h5tB3y/E2AfzZosuD1N
-	pgingnK8a0wI3dB1cLInctdlK8RetpKmfIm3HPJE67i9cnrHe5VWveUFYw==
-X-Gm-Gg: ASbGncvdkUrCwqlQWhmLcfGsS7VACQ2wgSLn7udbNKETzCa8sK+QqYovDdmN9nyQL35
-	wdm9YGzeKcMJsMIhYCklQckChZHPRgJydRgHGx1Kf5n3R5KYCkDwQOLCPO30CTWXRdHCdbxRNR9
-	Kymj48NDLC6asG1qZBfO2Sv0oQf666LcqwDHQT4dO30aVpo1Q3XpgHgB4cIoXuvOSOQ1eKVxUMN
-	PWzWzgMuHi5g86v5XzAPJQQaD2uF9ZjFuLrPVZ61KJhJXjE+wcSGQhx3QSGQwxGiJ7quHbREdav
-	FGWkEjkVdH3XtlhDyQPgOpQH/DAUoQ2YDwVFTUjGYmTfiqNO5O/jwrHbgvHrnvqyP9QJ8TyqRi7
-	qIZgvu5qhwn7IKBUIdg==
-X-Google-Smtp-Source: AGHT+IEm6SOUK/WmdISB6zy+Zco2mnrSrTGDz/0bAf2EHk/YolZr4+BdL/dvi3WRFpN8ac/TfoEEmA==
-X-Received: by 2002:a17:902:ef45:b0:22f:f747:8fbe with SMTP id d9443c01a7336-231983de15bmr110822605ad.53.1747296144404;
-        Thu, 15 May 2025 01:02:24 -0700 (PDT)
-Received: from kodidev-ubuntu (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22fc7544cd4sm110357045ad.2.2025.05.15.01.02.22
+        d=1e100.net; s=20230601; t=1747299563; x=1747904363;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+wY3EMb5JxEbCY3HNeRXG9ydmvJmQVNydYXnk83cuGg=;
+        b=qBN4E3ORgyDjGyN5X7r2BqybCfqi0NH9FpRqzqXKYzoIWd+cM7kNJDU7eMDiiPYPWY
+         9f3m1JIunUfDwENp8rT9d3RZV/eQM2IGXn1HlMQswpdA8dAMa5IXSQZF2wDNCSFSjilK
+         pY5Tau8gDo0VMs5jz6H9TBjfm/4BkqoPNbr47W42p9130XbMa9xBIKtSAkwFeJ0mbzfs
+         oBRSEyjrgez88eOP/hFTaDYs/Xr9Gt8Tlg9XXxozOo7FoObQ0aRXbgizcAhO1CRVko+k
+         rQ7+S6IvePN1f42/Q0RsNzvNPv7I/Vzwa7v+csSJv5ynROFROUZLf/u+HDXOwaILOYXR
+         rqoA==
+X-Forwarded-Encrypted: i=1; AJvYcCUw9k2YqkGItpVhYsMm/LihhEOUrCr6nyLGktP/VsGU11I7y2T+66RVDVtGcjGzBXHkqgmFf/3mi37nk3s2@vger.kernel.org, AJvYcCWWBBOA+zQA9DMkWALf4ah+BnPxlwJDUNlNrS2T4O1CppH85V6M3HF8n76iCOJTblj7ckI=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywl3/LChk947W48u2FHn3+Tf949S9kvDY1nTpedCjTRYLHBEaBI
+	LTEi1I+/hh/TWU69LVUOS3HYAFnyNS0IDHtfMyVPvxzLXNNZqOgo
+X-Gm-Gg: ASbGncuVvhhobDr+wc3RHXyMPQcPPmRU/CBydTS7Yr3q6G82yraHmCiSIBQAxQHt56M
+	YVDsH102Y0O+wf/oq5W4PB3KTX5bzTWFHul/ZR5WdTua/yCdysggwTt/lJDC2UvPCwJGAzIYNfa
+	IFJNnIIOAgDysymockqC61eOekXAqKW9WsW0PxlJutGx1QPvm9pXrBAF5AzHmB4sQbViHRwErZE
+	rMGbPnbx5MY7HmdM0TOSa7qq97QeB6cIFD4yi5dGMyCMKyzLbN4j5Yd3Wq8+/dOg/VOLaQfyUFC
+	gsnYbCicYTthCDxbo9y8HOFJunTu03dWzbPfV9F8G973BwE0PZrNh9BrOtnreGU6JRv0gGQj1un
+	H06U64RD//9AwkgI4I4VB6/8A1g==
+X-Google-Smtp-Source: AGHT+IHSMBOis1LN9zZB8Ns1QMfbY61wSCNeknS/nXCa2UvoEyCLR8YwmUUu5xG/+nbb3Bg0E/FFdQ==
+X-Received: by 2002:a05:600d:1b:b0:43d:4686:5cfb with SMTP id 5b1f17b1804b1-442f4735a8bmr43794115e9.27.1747299563102;
+        Thu, 15 May 2025 01:59:23 -0700 (PDT)
+Received: from [10.148.85.1] (business-89-135-192-225.business.broadband.hu. [89.135.192.225])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-442f337db8asm62665355e9.9.2025.05.15.01.59.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 May 2025 01:02:23 -0700 (PDT)
-From: Tony Ambardar <tony.ambardar@gmail.com>
-X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
-Date: Thu, 15 May 2025 01:02:20 -0700
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alan Maguire <alan.maguire@oracle.com>, martin.lau@linux.dev,
-	ast@kernel.org, andrii@kernel.org, alexis.lothore@bootlin.com,
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
-	haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
-	bpf@vger.kernel.org, dwarves@vger.kernel.org
-Subject: Re: [RFC bpf-next 0/3] bpf: handle 0-sized structs properly
-Message-ID: <aCWfjGXbLCiGxSf8@kodidev-ubuntu>
-References: <20250508132237.1817317-1-alan.maguire@oracle.com>
- <CAEf4BzZfFixwy4vQG8jrUBtAOUFx=t1KG2F+AtKPVNCsMz0vQw@mail.gmail.com>
- <aCG8kz1eZjjw+sSU@kodidev-ubuntu>
- <4bc9b6c3-4e02-48d3-9b07-c7b1069bfd35@oracle.com>
- <CAEf4BzZoWiBqSBhmxviQ21hQ21m5eKQ=CUYk9AMAB+Z3xFkpGw@mail.gmail.com>
+        Thu, 15 May 2025 01:59:22 -0700 (PDT)
+Message-ID: <eefad549e3d0568b523305252b6ec3a468502d2d.camel@fejes.dev>
+Subject: Re: [PATCHv2] bpf: add bpf_msleep_interruptible() kfunc
+From: Ferenc Fejes <ferenc@fejes.dev>
+To: Sergey Senozhatsky <senozhatsky@chromium.org>, Alexei Starovoitov
+	 <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
+	 <john.fastabend@gmail.com>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+	 <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Matt Bobrowski
+	 <mattbobrowski@google.com>, Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Thu, 15 May 2025 10:59:21 +0200
+In-Reply-To: <20250515064800.2201498-1-senozhatsky@chromium.org>
+References: <20250515064800.2201498-1-senozhatsky@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.1-1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzZoWiBqSBhmxviQ21hQ21m5eKQ=CUYk9AMAB+Z3xFkpGw@mail.gmail.com>
 
-On Wed, May 14, 2025 at 09:22:00AM -0700, Andrii Nakryiko wrote:
-> On Wed, May 14, 2025 at 3:31 AM Alan Maguire <alan.maguire@oracle.com> wrote:
-> >
-> > On 12/05/2025 10:17, Tony Ambardar wrote:
-> > > On Fri, May 09, 2025 at 11:40:47AM -0700, Andrii Nakryiko wrote:
-> > >> On Thu, May 8, 2025 at 6:22 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+Hi,
 
-[...]
+On Thu, 2025-05-15 at 15:47 +0900, Sergey Senozhatsky wrote:
+> bpf_msleep_interruptible() puts a calling context into an
+> interruptible sleep.=C2=A0 This function is expected to be used
+> for testing only (perhaps in conjunction with fault-injection)
+> to simulate various execution delays or timeouts.
+>=20
+> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> ---
+>=20
+> v2:
+> -- switched to kfunc (Matt)
+>=20
+> =C2=A0kernel/bpf/helpers.c | 7 +++++++
+> =C2=A01 file changed, 7 insertions(+)
+>=20
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index fed53da75025..a7404ab3b0b8 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -24,6 +24,7 @@
+> =C2=A0#include <linux/bpf_mem_alloc.h>
+> =C2=A0#include <linux/kasan.h>
+> =C2=A0#include <linux/bpf_verifier.h>
+> +#include <linux/delay.h>
+> =C2=A0
+> =C2=A0#include "../../lib/kstrtox.h"
+> =C2=A0
+> @@ -3283,6 +3284,11 @@ __bpf_kfunc void bpf_local_irq_restore(unsigned lo=
+ng
+> *flags__irq_flag)
+> =C2=A0	local_irq_restore(*flags__irq_flag);
+> =C2=A0}
+> =C2=A0
+> +__bpf_kfunc unsigned long bpf_msleep_interruptible(unsigned int msecs)
+> +{
+> +	return msleep_interruptible(msecs);
 
-Hi Alan, Andrii,
+Perhaps exposing fsleep instead of msleep? fsleep might fallback to msleep =
+if no
+better mechanism exists or if the sleep duration is >1000us.
 
-> > > Given pahole (and my related patch) assume pass-by-value for well-sized
-> > > structs, I'd like to see this too. But while the pahole patch works on
-> > > 64/32-bit archs, I noticed from patch #1 that e.g. ___bpf_treg_cnt()
-> > > seems to hard-code a 64-bit register size. Perhaps we can fix that too?
-> > >
-> >
-> > So I think your concern is the assumptions
-> >
-> >
-> >         __builtin_choose_expr(sizeof(t) == 8, 1,        \
-> >         __builtin_choose_expr(sizeof(t) == 16, 2,        \
-> >
-> > ? We may need arch-specific macros that specify register size that we
-> > can use here, or is there a better way?
-> 
-> we know the target architecture, so this shouldn't be hard to define
-> the word size accordingly and use that here?
-> 
-
-Well, I'm now unsure if this is a problem after reading the code more
-closely.  The ctx is a u64 array and the PROG2-related macros process ctx
-elems within the BPF VM using 64-bit regs. Does this mean the macro/union
-magic all works OK then?
-
-Unfortunately, I cannot test a 32-bit host easily since JIT trampoline
-support is still a WIP in my arm32 test setup. But perhaps someone can
-share tracing experience with ppc32 JIT, which supports trampoline?
-
-Thanks,
-Tony
- 
-[...]
+> +}
+> +
+> =C2=A0__bpf_kfunc_end_defs();
+> =C2=A0
+> =C2=A0BTF_KFUNCS_START(generic_btf_ids)
+> @@ -3388,6 +3394,7 @@ BTF_ID_FLAGS(func, bpf_iter_kmem_cache_next,
+> KF_ITER_NEXT | KF_RET_NULL | KF_SLE
+> =C2=A0BTF_ID_FLAGS(func, bpf_iter_kmem_cache_destroy, KF_ITER_DESTROY |
+> KF_SLEEPABLE)
+> =C2=A0BTF_ID_FLAGS(func, bpf_local_irq_save)
+> =C2=A0BTF_ID_FLAGS(func, bpf_local_irq_restore)
+> +BTF_ID_FLAGS(func, bpf_msleep_interruptible, KF_SLEEPABLE)
+> =C2=A0BTF_KFUNCS_END(common_btf_ids)
+> =C2=A0
+> =C2=A0static const struct btf_kfunc_id_set common_kfunc_set =3D {
 
