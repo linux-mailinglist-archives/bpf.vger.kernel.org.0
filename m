@@ -1,87 +1,87 @@
-Return-Path: <bpf+bounces-58334-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58335-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 991D7AB8DA0
-	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 19:23:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B6D3AB8DA9
+	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 19:24:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24B90168F8A
-	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 17:23:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F25E33B0904
+	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 17:23:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1E76258CED;
-	Thu, 15 May 2025 17:23:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4121325742F;
+	Thu, 15 May 2025 17:23:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cNaRDQHJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YY3f7zrZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E758B1DDD1;
-	Thu, 15 May 2025 17:23:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5661425A2C0;
+	Thu, 15 May 2025 17:23:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747329786; cv=none; b=To4Wi/EClFzPibPnt8aVzmTtY4sJpPNnr7hWjUnhX7Uk2t99nG5F9YSZP2uQf+0CnvrDRw4MtJ2qEz19v5vUT/qjP+weXV+Tu7K8bJaDvgiKmwZcdRsQcHeRcKdPgLrGpgqBUTqX0YRPkqPP2yL0IqpG6M9SGm2MUWPCWcDN2S0=
+	t=1747329836; cv=none; b=szNZx/sdcx7snNPy4I3SPbW/M1nQmp79vxYpOsOFvA6z8ndSgRxOeh5TO+jCMXxRdItCr0Y1nFpo1vnLPC5TLLv3q6CnTek0xX6ZbQ6UypsxFNPr/YgqhlbI56xVSgaKD5naYj4jvVm9hC1TSl2WJbJifhX8FLPcaXMhtgWaxoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747329786; c=relaxed/simple;
-	bh=fOFezqkmxEnnFkyHkpcNC7nimpg8wel6A4pWdT4HtKo=;
+	s=arc-20240116; t=1747329836; c=relaxed/simple;
+	bh=Vvo1U7ZYT/daKTt8DjPAQDotWCOV+WFddjhL4Nt1dv4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JqoGgP2g6MQN56et2p823mfL3L3fnSRHHd7vTtS1fCCvYRTGZap0fr6Fmr+ZcyyARMPnVBAHfO+MKDFEYMIu8rFBSK6OIc+omLqv6Oy71XFdOFY+edmN0wzyHc0VRowDblwIZy9zaLr2aIrS6LOJfpES+FZXzzvNaeqAtec0Z6o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cNaRDQHJ; arc=none smtp.client-ip=209.85.215.173
+	 To:Cc:Content-Type; b=crrIsmYNwpShqXIO8398fG3ayuRVF8FfHf7JsNtXkhcFGBf/MGpUaxzPgj2AUgLmYMSpiVO0kaEIyiiDvigiR7p8MIiE/v5Asw7l1Ra2aTKsWtpb1IkXDsOK5qbBWiY0N/YGONAPvWFtE505XkQGcjM3qYZxBhMe/53XF/JJ9Ug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YY3f7zrZ; arc=none smtp.client-ip=209.85.215.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-b0b2d1f2845so861520a12.3;
-        Thu, 15 May 2025 10:23:04 -0700 (PDT)
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-b1396171fb1so670552a12.2;
+        Thu, 15 May 2025 10:23:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747329784; x=1747934584; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1747329834; x=1747934634; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=POmpsww8fxP51+rFGGUrmySpy0YfhbsPMfnLTURJaa8=;
-        b=cNaRDQHJbIhgvHiaYo6mfeEVa8T/Tzw4O02iDY1vZVQ6b7EOx6WnmE/+raNbqqNVGX
-         sbAGk5gTHrhYW25j8xpkoiDdMLPtelNxpQ+9yLy9CCrfP+9FT1j5gB/JYUwaXUfMlWfY
-         jNfnRZsOgF4BFrUj2qOXZ1tt0WZEe8q4iHcZdFAY19QNRasw6NfEO6tmotk0Pr1VlFEx
-         3fj3MUigf8emGBb14o3iLKM/feRpgj7kLAe8n4j+AERNaOt6G/uNM3k4lHmnEML3uL10
-         pRPBk+1ipgTwsdjm2CUzftsQ/QbIqxUrLDLieLYYgHctHYAMXyTgM0v38UdUteQ58+9W
-         Thgw==
+        bh=Gh0S+6m9cMD+k8B9Y4/TUOEGe6CgAna/tacJfPKX/q4=;
+        b=YY3f7zrZa/ctJSdsaNo+BY+qRdKuB25xD/9Q4BeJXWQHgSCnDbVYkAR3A8jatzeuF4
+         l82LEVaXc7e1B6RTVrgCnQlnHnVmy8wSmS+jFWUyOtZxLUyQve7Oh1B7ZQJl8KAvMltb
+         MFr2Sxl69jl/TKdyCSvhE0rh6g6oQZF2XSs7TxXnbPBtHd+9g7Wu4mmnRZF6VSuay1YS
+         Dbvvg0JysH3mpE9NoM/RTqR78odUWH2RsjVdgECNGLtlEom/JSDnU8DXvetqtS0D5cdw
+         UfI8yX6p2iwCyIkC4gAu+UIvYfMrqQ0GA7lokuJUSHeAOWrBwMJUr/pW9ObPhZbo0zAB
+         AA/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747329784; x=1747934584;
+        d=1e100.net; s=20230601; t=1747329834; x=1747934634;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=POmpsww8fxP51+rFGGUrmySpy0YfhbsPMfnLTURJaa8=;
-        b=Ul4eZV7pvng1f+JESw1k1JUmutAUJnEXMKfjv7MHe5Sn0cbpWlq5QE71ZWJ0CbL+Fg
-         0XQ1xYQ5G8vmFGLEXrxOS/Vb06fWqkqJP74Nk1sqSJtXDwxfO+pM9rkRHm3Y9YN/CQke
-         j80d61pMlIOD2wGTuG2toPjxklymwUO6HJi7vq7taazjz9DVMqZnVzchNpp/gVmoc6Er
-         pSF+hPGKLppD5nYz5PH8j2CdWLnzHdq5LhJGsukdkcC8U5DhjA9H+P4dFYHgYpIrCGsH
-         2mfSbvMriDSC06tnlcA2uTm9tDcsFDtOsHzaNPG+nuaVUj1TM+yCgglVIPZ/8/jE2+U9
-         zlsQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUG7cznTTQGuI8H5gP/zBmHY/G3gjWpOlVy6xbBGiRSrdQzsWG6uobjUbpy+CmS1CakDqoyt6swXWzbuQ60mE3wENxB@vger.kernel.org, AJvYcCVSwsN1KYn6AaaqPetrCOf1K90h5tsgztSzPwFhFUtobP6TS6zEoJBkiGFlch9OpjI3EhlvEWGDpRcSIVpi@vger.kernel.org, AJvYcCWEo1M9Gs8tH12sH0MbPBEe0x1NWCncSfMaQo61XRR0Ui03kpk1k7wHonZzJDaq2Sialos=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxsvonfvCXjYYNxZKCFBpdwwXJ/8l1Rldh/Xc/+MT5AymrUoAoF
-	uGC6AHlO4NhBwTOvkYgh7fKhFUfANnhePduSv1ox49G6rA6XgjZf7z1wgiVNNhwucbs/WfdTx16
-	7t2AOwS64XhIgWffdxmNCjkFL/BJ4DuCUhlV7
-X-Gm-Gg: ASbGncst+VyXOCidTnIU2X2/pgmlnwgKxv1yI1MHt/1jM/m0nw6+kv6q2+LPIYZ8HmD
-	lwaUD8/LDgtmzSIsZVq68G96gWW3ELvNUmYYkrWsP99WkbgLyDwB/myjSltdszaFXVHsqhVoC4b
-	A81jKr/bUk6r2Edi6MlYPSGetYDS6TOYQJhDT7jdTXJZg7H8dSDqpy7uSxjk0=
-X-Google-Smtp-Source: AGHT+IHVykVjRMnBxJN+2i4pCXlgj1iHKicUGWbEr9t1tvrZiWCMZGYzwueQ0Lb5vWesMXQKdVHNYeUcFHKH6x1tlmk=
-X-Received: by 2002:a17:90a:d005:b0:2f8:34df:5652 with SMTP id
- 98e67ed59e1d1-30e7d563768mr303365a91.21.1747329784151; Thu, 15 May 2025
- 10:23:04 -0700 (PDT)
+        bh=Gh0S+6m9cMD+k8B9Y4/TUOEGe6CgAna/tacJfPKX/q4=;
+        b=Os1tD1TN2t3foUZYPl6OdIOMR/WI8GCs1y8hZEea8SCGQCclOrk5W4j1dTtXWT3DpZ
+         5YmSOJQfgMSgqO8zLZKVOTmOa89UPxcx50dDd7IttZibdxTWmTYxox296Xt8OSlpq85L
+         5TRG6EBnXFIc/Zf58rKrTKKEjNqTFCQ7vr2/FK3ru5TKqrrunTVuFcm2M2smXYVycUyQ
+         eC/UMlfB1d5VN234P9hnRGhsDLf/uvlxAV5rPCJ/JhjyaqgbkXHPdChFUiR4NFm4tzBv
+         12u/A3X2ST7md+DzZ9cLoloQ4Z3wf3luqtiEqW7r6YPjYh9pnHN2pVMW6NR6hrHvZPgS
+         FnGw==
+X-Forwarded-Encrypted: i=1; AJvYcCV3myr4iLYcKwKybiiyF4wGjoXnYh47oFCoxxdfWFf1KzER7a7Ryng7cJgX8QPsJU8l6+39pSdoQW5wK6x3@vger.kernel.org, AJvYcCWkBQctLP8l0je0pWkPCwclu0mNWAUZHY/mRqUhs937lWK6jQKVf97smfH3rqHwaE6K3Jw=@vger.kernel.org, AJvYcCX6/tklpUzr8Nm3WI4ce5ObXK6mcyY5GfoLlvvXamadOCZ4lR2FoIlqVCBTyb/K3q0Tzu87n4p0w6Ib9FNr3MYrylid@vger.kernel.org
+X-Gm-Message-State: AOJu0YwV2MvPs/g/Kmea97sWyFObmAt9pt5uLeHpgu5PGydyhUQu8sIq
+	LFMW8/YjayGMrcaXZrgPjGdOAIMNqzmqrbbgD5Hyf9FpchIl6zIwUVjn77WF0b9dM4/oFZr6UqU
+	CH0Yof00Dsmq/B7NpvuTqylusicZqYhQ=
+X-Gm-Gg: ASbGncvskfl2L5UEoSxFxpmp3cMkarYPi/+2sx1qLBFr0Ua6EwTHKQoM0RChZQ704He
+	oqK/GVb/OZVNqSpOGnetzt8E48TBJSkoiJAum0jor0d7SaOMuK4y96uvzQZ5Vm3H2fD2xXhtBwK
+	V7naxZ6YoJpWSH85GEhRijf5sreTb4kpy01SUePBxE1x4viZCH
+X-Google-Smtp-Source: AGHT+IGjYah1/SPXx6SvyDN8o1y2ePsxsv6DqsRa6TTynY1tgHRXx50j1GQA3eXaMKW6GBvkqZrRlXXahJP3aUZaLb0=
+X-Received: by 2002:a17:90b:1d48:b0:2ef:114d:7bf8 with SMTP id
+ 98e67ed59e1d1-30e7d507e33mr346708a91.6.1747329834378; Thu, 15 May 2025
+ 10:23:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250515121121.2332905-1-jolsa@kernel.org> <20250515121121.2332905-9-jolsa@kernel.org>
-In-Reply-To: <20250515121121.2332905-9-jolsa@kernel.org>
+References: <20250515121121.2332905-1-jolsa@kernel.org> <20250515121121.2332905-12-jolsa@kernel.org>
+In-Reply-To: <20250515121121.2332905-12-jolsa@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 15 May 2025 10:22:51 -0700
-X-Gm-Features: AX0GCFtMXjsJ5mA4xD0VBoPILnMrP3GRnTnUwkOVLt0FdeO-C1FkuEUxLuueMDk
-Message-ID: <CAEf4BzYbZ3f9E8mSwY+oppSwU-Luh=5=GBjLKetVA2TOFT+dWQ@mail.gmail.com>
-Subject: Re: [PATCHv2 perf/core 08/22] uprobes/x86: Add mapping for optimized
- uprobe trampolines
+Date: Thu, 15 May 2025 10:23:41 -0700
+X-Gm-Features: AX0GCFvOzYZGcJMq-FRiyVWwx2RCzFA_BSjewcyS6sZ2xrCVPeVk9qGOofZvUKk
+Message-ID: <CAEf4Bzb0SMmKUXJic9Tqi9kLLRCwHPvd4f_9zCY26-5wC1vVng@mail.gmail.com>
+Subject: Re: [PATCHv2 perf/core 11/22] selftests/bpf: Import usdt.h from
+ libbpf/usdt project
 To: Jiri Olsa <jolsa@kernel.org>
 Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
 	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
@@ -95,62 +95,19 @@ Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 15, 2025 at 5:13=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
+On Thu, May 15, 2025 at 5:14=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Adding support to add special mapping for user space trampoline with
-> following functions:
+> Importing usdt.h from libbpf/usdt project.
 >
->   uprobe_trampoline_get - find or add uprobe_trampoline
->   uprobe_trampoline_put - remove or destroy uprobe_trampoline
->
-> The user space trampoline is exported as arch specific user space special
-> mapping through tramp_mapping, which is initialized in following changes
-> with new uprobe syscall.
->
-> The uprobe trampoline needs to be callable/reachable from the probed addr=
-ess,
-> so while searching for available address we use is_reachable_by_call func=
-tion
-> to decide if the uprobe trampoline is callable from the probe address.
->
-> All uprobe_trampoline objects are stored in uprobes_state object and are
-> cleaned up when the process mm_struct goes down. Adding new arch hooks
-> for that, because this change is x86_64 specific.
->
-> Locking is provided by callers in following changes.
->
+> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  arch/x86/kernel/uprobes.c | 115 ++++++++++++++++++++++++++++++++++++++
->  include/linux/uprobes.h   |   6 ++
->  kernel/events/uprobes.c   |  10 ++++
->  kernel/fork.c             |   1 +
->  4 files changed, 132 insertions(+)
+>  tools/testing/selftests/bpf/usdt.h | 545 +++++++++++++++++++++++++++++
+>  1 file changed, 545 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/usdt.h
 >
 
-[...]
-
-> +static unsigned long find_nearest_page(unsigned long vaddr)
-> +{
-> +       struct vm_unmapped_area_info info =3D {
-> +               .length     =3D PAGE_SIZE,
-> +               .align_mask =3D ~PAGE_MASK,
-> +               .flags      =3D VM_UNMAPPED_AREA_TOPDOWN,
-> +               .low_limit  =3D 0,
-
-would this, technically, allow to allocate memory at NULL (0x0000)
-address? should this start at PAGE_SIZE?
-
-> +               .high_limit =3D ULONG_MAX,
-> +       };
-> +       unsigned long limit, call_end =3D vaddr + 5;
-> +
-> +       if (!check_add_overflow(call_end, INT_MIN, &limit))
-> +               info.low_limit =3D limit;
-> +       if (!check_add_overflow(call_end, INT_MAX, &limit))
-> +               info.high_limit =3D limit;
-> +       return vm_unmapped_area(&info);
-> +}
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
 [...]
 
