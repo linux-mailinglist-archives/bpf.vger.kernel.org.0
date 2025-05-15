@@ -1,221 +1,304 @@
-Return-Path: <bpf+bounces-58371-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58372-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43071AB9230
-	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 00:09:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCB13AB9254
+	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 00:43:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41D7D3A4D16
-	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 22:08:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A65CD7B4119
+	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 22:42:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 271FE28AB0C;
-	Thu, 15 May 2025 22:09:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86539289E3F;
+	Thu, 15 May 2025 22:43:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LooUBX7d"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A7uJ93BH"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96721111BF;
-	Thu, 15 May 2025 22:09:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3099E347C7
+	for <bpf@vger.kernel.org>; Thu, 15 May 2025 22:43:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747346945; cv=none; b=iFEIm7+4oz1XyiEmX9NV8uaLJTwny7JQdjoE0W9o8vteHCGnwRjTitYSbNnb+BHMf6emJ7X+L9aOu001acl7D43HdZV9DKVOwGFRM8VWqdgoLRrrxLFRS26ouvR99lnWSzshN/xpnAlFKDxURK5kGkJpMS4wJAen56e+G80G5r8=
+	t=1747348993; cv=none; b=W7ZZYjSAHblnMWzfxSX1KkyuCoPYOVn2CacuAUs3jWgw4yVueMTl2F3p5SaeE6uWIpjTgd5ZmVRcpW9XWcm8vA8Ifvpf9juEn8I9rX7qNlf0koFZPZtWN6KIqswvBdruEFdJieDx+eaz3XgIZ8sIxxRkaUSa6Cj0imIBxn4IXxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747346945; c=relaxed/simple;
-	bh=vTlG7bW65Ok7ET5LGiyJDLIbRa5aW61JZ/tK5bBDdSg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oSVPh7YE867JLnZmvE2V7URpgqbw1nk/B9QXqs5yCBGjiOURsvej3J2Pra6Czyc6epjKrBSuVHAprI/+L+laDMnUiEhcpiCWLkoPHBJe9llNfkyadID98D2uu66ad3mpO1RK0nNIYOoRQeh1+p0dbnLF2xNXXWP/E2gpaqTVX/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LooUBX7d; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2556DC4CEE7;
-	Thu, 15 May 2025 22:08:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747346945;
-	bh=vTlG7bW65Ok7ET5LGiyJDLIbRa5aW61JZ/tK5bBDdSg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LooUBX7dxfOwukJ8lPQw36DZUDAEOByaA7bTebM8sVgFtb/7kfH0H+4aHKsMD0VbL
-	 Z/M4glKWvaTjZF1pzVrzAywXUKh0anbklwF3zwLd3nlZbHLFH5TXA+8cC4q5j6PJSZ
-	 ecq9Nb1+03ekYnHfPJXZqVvTzzN6GnnVVsz21Tl/UaMEbFrx758XKuWh9sz/QW1nxF
-	 G7MN06x7jo0Y5TcLJfMH2nfrWMH7UUWjteAOKd8Dygil0y4to9XKnYBPlriQytMuSf
-	 zT0B6T/KnhMTq5i+0begaYcHwYDyLrHJhOycCYjZrSZ509d2fhLbEFECe4Ub4tpWa2
-	 VMYDsUHFYV+kA==
-Date: Fri, 16 May 2025 00:08:56 +0200
-From: Alejandro Colomar <alx@kernel.org>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org, Song Liu <songliubraving@fb.com>, 
-	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, 
-	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, 
-	David Laight <David.Laight@aculab.com>, Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>, 
-	Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCHv2 22/22] man2: Add uprobe syscall page
-Message-ID: <6elp7g4ne2pk3kai6f72ggkpi2eje7haptdisoraopkpf54n26@4sr54ptnwpex>
-References: <20250515121121.2332905-1-jolsa@kernel.org>
- <20250515121121.2332905-23-jolsa@kernel.org>
+	s=arc-20240116; t=1747348993; c=relaxed/simple;
+	bh=eiOiK2ZSXyTuDsrXGYnbufCz1JBnQvcbQpQNwJr5CUY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=vDFVNCTZWxg/vJHS2Le+w0K2+R3p5q3pdHu5wBTIAxXiUgX6P5d/DkoDjmmf6Qcj2hGPfQ8rbUP6rICtrHAIXZRI8GmMQxPu/TpwupbYyEfdomuYvhdLjcgnFgx5SLUFgGhcyyNpjHp1nE+OCTGtAA67GJiNJKBP/aBwN6U5LWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A7uJ93BH; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3a0b9303998so996671f8f.0
+        for <bpf@vger.kernel.org>; Thu, 15 May 2025 15:43:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747348989; x=1747953789; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GZvzo7l34pOvB/sxaMybDN+lTA3P6NnF3jJSXd+mZjQ=;
+        b=A7uJ93BHN8N4ZSFD3jASdRH4KCUl7VzujCBv3pWJRswlLOrvOvtMH0gqSd0YMbjs+w
+         FVcFoILxuM1Cm844vICpACis4nijQjvy0w4ymPjNq91horIQnaX70fh8CBYk6MKVbDqe
+         oXtLrWU7gAbDTgIbHFTvqNJwfmSy7VWkfp26UvuY0iotdC6ptUFwhf+/jxd8HXEW1fZM
+         dgOmUpksvw+bKn3GkDhj9lg9Dl4vnhGAqoY5Cd0PYPG6MAlEZYUn0W2c4msmvIAU8u1/
+         HuFP/BLbW+vePuaYazxUc3G11oeYiYyQZimJAKGmkM2p7dV2inj+aWCq/xE7LFYBPgo8
+         fuPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747348989; x=1747953789;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GZvzo7l34pOvB/sxaMybDN+lTA3P6NnF3jJSXd+mZjQ=;
+        b=F1aowrA2MJ3VmJul5FQ01loNEPmisOyoNhQvoFHGXTonysbWVk2Mrgo88VOnsJwGn/
+         mlrTD7SBNWWoIAirEF6RyimagGkISE++R4IdrI6sKSPFOz+Kxmx1uzR5jtvt+UIATdRm
+         +OiH/6C4uCSTQYIo/xU2PXL28aveGOdQ+7QMMTVLNAuB1N6+1aZNGZ+AFGqgJskgaXFt
+         BHhHirdtTc9AAB3BO1axKNdPd0N3k70vRzM9NCumLTJLzlM7nolZR3Mnjtq7JnW/p1UA
+         cWUZwP/HjOXbnIEWttK5c+4p8UYnL+FYM2iXAlU+3Ivj6brwHq4xZ7b+21F1oP/DMod/
+         CqQw==
+X-Gm-Message-State: AOJu0YxSlRooSQFeC3oFl/ZYnNlzZ1rvxy6Wmb/2RkIHA+UKKOoRgrJ9
+	d8efOpnjlaGVvttuTDD2lTh10YSbIX/VjMvoCcOOkxuBtMQEwUVmZjuBhel3v62WEOL/zvjODYP
+	N8dB3IzZw9i3n6IhBK1EQFG/SZqbH16Y=
+X-Gm-Gg: ASbGncuJ5zShYjSYObpNvC4FYWySnEv+GRRXXaWjgDhgquRzyLQ2teCAXeGIeqTDkSF
+	zosHnOdsXlhW3UyFsL1Ne1yHvBqV3xd8WAs1doaZ1VQxl6rM25oSIyjqaoz7/ZP5IDyXqRkzGML
+	3E4pVleZGrxnBsNJ5oSsqh6Nw7K43N0RoOFOfk76Fy3c3Ol/zrNaIYnSp6OR/bfQ==
+X-Google-Smtp-Source: AGHT+IGwD+YHi6NRZbI3JgmYUGC2lD+hmoBPgIS3QPH67BE2rrt97PhFHv+btnwZkKfp26vUUPevOlX2cLUF9MVvKLo=
+X-Received: by 2002:a05:6000:402a:b0:3a3:4ba4:fdee with SMTP id
+ ffacd0b85a97d-3a3511996b5mr5471758f8f.1.1747348989218; Thu, 15 May 2025
+ 15:43:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="pifqnw6ycu3nbclf"
-Content-Disposition: inline
-In-Reply-To: <20250515121121.2332905-23-jolsa@kernel.org>
-
-
---pifqnw6ycu3nbclf
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
+References: <20250515200635.3427478-1-yonghong.song@linux.dev>
+In-Reply-To: <20250515200635.3427478-1-yonghong.song@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 15 May 2025 15:42:57 -0700
+X-Gm-Features: AX0GCFvkoUn--4tr-QeWUNWoi02PYcD9UMZPtvtKCuv96YbppYiui7P29gbRsDQ
+Message-ID: <CAADnVQL9A8vB-yRjnZn8bgMrfDSO17FFBtS_xOs5w-LSq+p74g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Warn with new bpf_unreachable()
+ kfunc maybe due to uninitialized var
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-From: Alejandro Colomar <alx@kernel.org>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org, Song Liu <songliubraving@fb.com>, 
-	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, 
-	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, 
-	David Laight <David.Laight@aculab.com>, Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>, 
-	Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCHv2 22/22] man2: Add uprobe syscall page
-References: <20250515121121.2332905-1-jolsa@kernel.org>
- <20250515121121.2332905-23-jolsa@kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <20250515121121.2332905-23-jolsa@kernel.org>
 
-Hi Jiri,
+On Thu, May 15, 2025 at 1:06=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
+dev> wrote:
+>
+> Marc Su=C3=B1=C3=A9 (Isovalent, part of Cisco) reported an issue where an
+> uninitialized variable caused generating bpf prog binary code not
+> working as expected. The reproducer is in [1] where the flags
+> =E2=80=9C-Wall -Werror=E2=80=9D are enabled, but there is no warning and =
+compiler
+> may take advantage of uninit variable to do aggressive optimization.
+>
+> In llvm internals, uninitialized variable usage may generate
+> 'unreachable' IR insn and these 'unreachable' IR insns may indicate
+> uninit var impact on code optimization. With clang21 patch [2],
+> those 'unreachable' IR insn are converted to func bpf_unreachable().
+>
+> In kernel, a new kfunc bpf_unreachable() is added. If this kfunc
+> (generated by [2]) is the last insn in the main prog or a subprog,
+> the verifier will suggest the verification failure may be due to
+> uninitialized var, so user can check their source code to find the
+> root cause.
+>
+> Without this patch, the verifier will output
+>   last insn is not an exit or jmp
+> and user will not know what is the potential root cause and
+> it will take more time to debug this verification failure.
+>
+> bpf_unreachable() is also possible in the middle of the prog.
+> If bpf_unreachable() is hit during normal do_check() verification,
+> verification will fail.
+>
+>   [1] https://github.com/msune/clang_bpf/blob/main/Makefile#L3
+>   [2] https://github.com/llvm/llvm-project/pull/131731
+>
+> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 
-On Thu, May 15, 2025 at 02:11:19PM +0200, Jiri Olsa wrote:
-> Changing uretprobe syscall man page to be shared with new
-> uprobe syscall man page.
->=20
-> Cc: Alejandro Colomar <alx@kernel.org>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-
-LGTM.
-
-
-Have a lovely night!
-Alex
+What's the difference between v1 and v2 ?
+Pls spell it out in a cover letter or commit log.
 
 > ---
->  man/man2/uprobe.2    |  1 +
->  man/man2/uretprobe.2 | 36 ++++++++++++++++++++++++------------
->  2 files changed, 25 insertions(+), 12 deletions(-)
->  create mode 100644 man/man2/uprobe.2
->=20
-> diff --git a/man/man2/uprobe.2 b/man/man2/uprobe.2
-> new file mode 100644
-> index 000000000000..ea5ccf901591
-> --- /dev/null
-> +++ b/man/man2/uprobe.2
-> @@ -0,0 +1 @@
-> +.so man2/uretprobe.2
-> diff --git a/man/man2/uretprobe.2 b/man/man2/uretprobe.2
-> index bbbfb0c59335..df0e5d92e5ed 100644
-> --- a/man/man2/uretprobe.2
-> +++ b/man/man2/uretprobe.2
-> @@ -2,22 +2,28 @@
->  .\"
->  .\" SPDX-License-Identifier: Linux-man-pages-copyleft
->  .\"
-> -.TH uretprobe 2 (date) "Linux man-pages (unreleased)"
-> +.TH uprobe 2 (date) "Linux man-pages (unreleased)"
->  .SH NAME
-> +uprobe,
->  uretprobe
->  \-
-> -execute pending return uprobes
-> +execute pending entry or return uprobes
->  .SH SYNOPSIS
->  .nf
-> +.B int uprobe(void);
->  .B int uretprobe(void);
->  .fi
->  .SH DESCRIPTION
-> +.BR uprobe ()
-> +is an alternative to breakpoint instructions
-> +for triggering entry uprobe consumers.
-> +.P
->  .BR uretprobe ()
->  is an alternative to breakpoint instructions
->  for triggering return uprobe consumers.
->  .P
->  Calls to
-> -.BR uretprobe ()
-> +these system calls
->  are only made from the user-space trampoline provided by the kernel.
->  Calls from any other place result in a
->  .BR SIGILL .
-> @@ -26,22 +32,28 @@ The return value is architecture-specific.
->  .SH ERRORS
->  .TP
->  .B SIGILL
-> -.BR uretprobe ()
-> -was called by a user-space program.
-> +These system calls
-> +were called by a user-space program.
->  .SH VERSIONS
->  The behavior varies across systems.
->  .SH STANDARDS
->  None.
->  .SH HISTORY
-> +.TP
-> +.BR uprobe ()
-> +TBD
-> +.TP
-> +.BR uretprobe ()
->  Linux 6.11.
->  .P
-> -.BR uretprobe ()
-> -was initially introduced for the x86_64 architecture
-> -where it was shown to be faster than breakpoint traps.
-> -It might be extended to other architectures.
-> +These system calls
-> +were initially introduced for the x86_64 architecture
-> +where they were shown to be faster than breakpoint traps.
-> +They might be extended to other architectures.
->  .SH CAVEATS
-> -.BR uretprobe ()
-> -exists only to allow the invocation of return uprobe consumers.
-> -It should
-> +These system calls
-> +exist only to allow the invocation of
-> +entry or return uprobe consumers.
-> +They should
->  .B never
->  be called directly.
-> --=20
-> 2.49.0
->=20
+>  kernel/bpf/helpers.c  |  5 +++++
+>  kernel/bpf/verifier.c | 22 +++++++++++++++++++++-
+>  2 files changed, 26 insertions(+), 1 deletion(-)
+>
+> In order to compile kernel successfully with the above [2], the following
+> change is needed due to clang21 changes:
+>
+>   --- a/Makefile
+>   +++ b/Makefile
+>   @@ -852,7 +852,7 @@ endif
+>    endif # may-sync-config
+>    endif # need-config
+>
+>   -KBUILD_CFLAGS  +=3D -fno-delete-null-pointer-checks
+>   +KBUILD_CFLAGS  +=3D -fno-delete-null-pointer-checks -Wno-default-const=
+-init-field-unsafe
+>
+>   --- a/scripts/Makefile.extrawarn
+>   +++ b/scripts/Makefile.extrawarn
+>   @@ -19,6 +19,7 @@ KBUILD_CFLAGS +=3D $(call cc-disable-warning, frame-a=
+ddress)
+>    KBUILD_CFLAGS +=3D $(call cc-disable-warning, address-of-packed-member=
+)
+>    KBUILD_CFLAGS +=3D -Wmissing-declarations
+>    KBUILD_CFLAGS +=3D -Wmissing-prototypes
+>   +KBUILD_CFLAGS +=3D -Wno-default-const-init-var-unsafe
+>
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index c1113b74e1e2..4852c36b1c51 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -3273,6 +3273,10 @@ __bpf_kfunc void bpf_local_irq_restore(unsigned lo=
+ng *flags__irq_flag)
+>         local_irq_restore(*flags__irq_flag);
+>  }
+>
+> +__bpf_kfunc void bpf_unreachable(void)
+> +{
+> +}
+> +
+>  __bpf_kfunc_end_defs();
+>
+>  BTF_KFUNCS_START(generic_btf_ids)
+> @@ -3386,6 +3390,7 @@ BTF_ID_FLAGS(func, bpf_copy_from_user_dynptr, KF_SL=
+EEPABLE)
+>  BTF_ID_FLAGS(func, bpf_copy_from_user_str_dynptr, KF_SLEEPABLE)
+>  BTF_ID_FLAGS(func, bpf_copy_from_user_task_dynptr, KF_SLEEPABLE | KF_TRU=
+STED_ARGS)
+>  BTF_ID_FLAGS(func, bpf_copy_from_user_task_str_dynptr, KF_SLEEPABLE | KF=
+_TRUSTED_ARGS)
+> +BTF_ID_FLAGS(func, bpf_unreachable)
+>  BTF_KFUNCS_END(common_btf_ids)
+>
+>  static const struct btf_kfunc_id_set common_kfunc_set =3D {
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index f6d3655b3a7a..5496775a884e 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -206,6 +206,7 @@ static int ref_set_non_owning(struct bpf_verifier_env=
+ *env,
+>  static void specialize_kfunc(struct bpf_verifier_env *env,
+>                              u32 func_id, u16 offset, unsigned long *addr=
+);
+>  static bool is_trusted_reg(const struct bpf_reg_state *reg);
+> +static void verbose_insn(struct bpf_verifier_env *env, struct bpf_insn *=
+insn);
+>
+>  static bool bpf_map_ptr_poisoned(const struct bpf_insn_aux_data *aux)
+>  {
+> @@ -3399,7 +3400,10 @@ static int check_subprogs(struct bpf_verifier_env =
+*env)
+>         int i, subprog_start, subprog_end, off, cur_subprog =3D 0;
+>         struct bpf_subprog_info *subprog =3D env->subprog_info;
+>         struct bpf_insn *insn =3D env->prog->insnsi;
+> +       bool is_bpf_unreachable =3D false;
+>         int insn_cnt =3D env->prog->len;
+> +       const struct btf_type *t;
+> +       const char *tname;
+>
+>         /* now check that all jumps are within the same subprog */
+>         subprog_start =3D subprog[cur_subprog].start;
+> @@ -3434,7 +3438,18 @@ static int check_subprogs(struct bpf_verifier_env =
+*env)
+>                         if (code !=3D (BPF_JMP | BPF_EXIT) &&
+>                             code !=3D (BPF_JMP32 | BPF_JA) &&
+>                             code !=3D (BPF_JMP | BPF_JA)) {
+> -                               verbose(env, "last insn is not an exit or=
+ jmp\n");
+> +                               verbose_insn(env, &insn[i]);
+> +                               if (btf_vmlinux && insn[i].code =3D=3D (B=
+PF_CALL | BPF_JMP) &&
+> +                                   insn[i].src_reg =3D=3D BPF_PSEUDO_KFU=
+NC_CALL) {
 
---=20
-<https://www.alejandro-colomar.es/>
+hmm. there is bpf_pseudo_kfunc_call() for that.
 
---pifqnw6ycu3nbclf
-Content-Type: application/pgp-signature; name="signature.asc"
+> +                                       t =3D btf_type_by_id(btf_vmlinux,=
+ insn[i].imm);
+> +                                       tname =3D btf_name_by_offset(btf_=
+vmlinux, t->name_off);
+> +                                       if (strcmp(tname, "bpf_unreachabl=
+e") =3D=3D 0)
 
------BEGIN PGP SIGNATURE-----
+same issue as in v1. don't do strcmp.
+Especially, since the 2nd hunk of this patch is doing it
+via special_kfunc_list[].
 
-iQIzBAABCgAdFiEES7Jt9u9GbmlWADAi64mZXMKQwqkFAmgmZfcACgkQ64mZXMKQ
-wqkceQ/7Bb+KzoKdDAaf09Xgn3v/CKQZp6/++6O5NCi/XU9zW0gRKIAgqyuXjLdB
-ZxkIAJ8b8+6SQePuEJIHasZs5LRlKPIQyW/rf36IRIuOCSWE9k4RzKpm4ODxHOig
-Mss/Z288qN52D5j+3FYuoH+nRjv/Qq2Bc+DgYOwRN2FN2VzODIiDAxyh8rRSAqnB
-ySQrcPTOv1uTjcQ4dNQO82zd3TswFtspzGj+h4hd8h7IFOYv+smNckgZLHVcr9bT
-mVAjC5g3faAep/7i/jVMs6ZI0754sJrfWOdrXt7TrhnQPBots6vaYLjlpNnHbUn2
-4ymhTPEcKdhxGMl6RG0d5JSpFmmiLlX1d5PYSOrr9948ON0WFmIoblmaNFwKkrSP
-bQjLonBQUxGey5x0JxMFBiY4rvcuMJe5W5POaPT0Qfqb5yjjMSOvjFQAqv1TVY73
-CpO0xgiERzEA9qUwHYiOU3OswEIhn/TZerpQQFG6cUbVihFPkiCJtIgndzZ9t+Me
-pN1Q+a+S2kpYtR2bDrH21m+/1Ak9YGZaoEjHRB87Pz57Npk0SvLpqTUx0K/f0F9b
-0wd7IXbwXfbY9KWkAVKNxWnrfLRfWfFcB+JIrmIP5dULNWiRJap5mLOMQjn16huE
-Iapyp1diQhmx4O3KrqiNnc5rJs/p4mHPtkjXiRRjuh73x4/G7Q0=
-=5zr5
------END PGP SIGNATURE-----
+> +                                               is_bpf_unreachable =3D tr=
+ue;
 
---pifqnw6ycu3nbclf--
+why extra bool ?
+Just print the error and return.
+
+> +                               }
+> +                               if (is_bpf_unreachable)
+> +                                       verbose(env, "last insn is bpf_un=
+reachable, due to uninitialized var?\n");
+
+bpf_unreachable()
+
+..variable.
+
+> +                               else
+> +                                       verbose(env, "last insn is not an=
+ exit or jmp\n");
+>                                 return -EINVAL;
+>                         }
+>                         subprog_start =3D subprog_end;
+> @@ -12122,6 +12137,7 @@ enum special_kfunc_type {
+>         KF_bpf_res_spin_unlock,
+>         KF_bpf_res_spin_lock_irqsave,
+>         KF_bpf_res_spin_unlock_irqrestore,
+> +       KF_bpf_unreachable,
+>  };
+>
+>  BTF_SET_START(special_kfunc_set)
+> @@ -12225,6 +12241,7 @@ BTF_ID(func, bpf_res_spin_lock)
+>  BTF_ID(func, bpf_res_spin_unlock)
+>  BTF_ID(func, bpf_res_spin_lock_irqsave)
+>  BTF_ID(func, bpf_res_spin_unlock_irqrestore)
+> +BTF_ID(func, bpf_unreachable)
+>
+>  static bool is_kfunc_ret_null(struct bpf_kfunc_call_arg_meta *meta)
+>  {
+> @@ -13525,6 +13542,9 @@ static int check_kfunc_call(struct bpf_verifier_e=
+nv *env, struct bpf_insn *insn,
+>                         return err;
+>                 }
+>                 __mark_btf_func_reg_size(env, regs, BPF_REG_0, sizeof(u32=
+));
+> +       } else if (insn->imm =3D=3D special_kfunc_list[KF_bpf_unreachable=
+]) {
+> +               verbose(env, "unexpected hit bpf_unreachable, due to unin=
+it var or incorrect verification?\n");
+
+!insn->off must be checked as well.
+The wording of the message is odd.
+s/unexpected hit bpf_unreachable/unexpected bpf_unreachable()/
+
+and I'd finish with "due to uninitialized variable?"
+Humans will read it. Don't abbreviate.
+
+"incorrect verification" part is weird. It won't convey
+any useful information to users.
+
+pw-bot: cr
+
+> +               return -EFAULT;
+>         }
+>
+>         if (is_kfunc_destructive(&meta) && !capable(CAP_SYS_BOOT)) {
+> --
+> 2.47.1
+>
 
