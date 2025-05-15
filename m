@@ -1,150 +1,117 @@
-Return-Path: <bpf+bounces-58346-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58347-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7385AB8F09
-	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 20:28:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BCA7AB8F21
+	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 20:32:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D9CFD1C01074
-	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 18:28:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBC093A26C6
+	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 18:31:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26C46263F4A;
-	Thu, 15 May 2025 18:24:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA1B92853E2;
+	Thu, 15 May 2025 18:31:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="neWj93rj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mc2c4Pth"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9448525D1F5;
-	Thu, 15 May 2025 18:24:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1AA928469D;
+	Thu, 15 May 2025 18:31:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747333461; cv=none; b=k5tF7PmBwiLorErD9rbCu5d5CccMKpDlKAgfscGsNjZ+q+vdRmBvVCM0AWqtLAoZU0eAOgL60lV/9eaOjpjxRq+ewMfuZ7msev1C/5hO28Q/CvDbfqclMS2dMClwjOnorjDxA5muoPG7+l90qacmkPkVRvus057TK6thfbzyvxE=
+	t=1747333875; cv=none; b=UIeOi6wx4CtpnRb0CnNCcuRbP/2MKWpB+v5Ym6Gk3PewFElnBFHTyYPDYgYiFj1BBgycG9Rb6E+JXD4deJue32xLPT5FAW188Hjpz/xjtJ8ksJi+FvUFhIp8c+B0WcLhp3J3TOPVzKSnBQD8i/U/Ue/o3zJQGlHAzR3Cg9Ix5ew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747333461; c=relaxed/simple;
-	bh=cmyb4fslMdZMeqJjaLXvuCdgMLSOPj2eAW7zLDTyppQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QHX4vv34ohxrd22hYuYe1jvNVpKjfY7k87a85jMgWlkSpmva3FLtbIHCPqLHEjQFsNMsyc+jTwRW86ABQGUSNUzYgU0OZbIwm5v9xbjuIYuPeUqKrDLFVcrRfIFvQHSQzpqic/ENpnXgdHgxX8B1btfWUOZkDMy7hvPWJCXFjJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=neWj93rj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8B14C19421;
-	Thu, 15 May 2025 18:24:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747333461;
-	bh=cmyb4fslMdZMeqJjaLXvuCdgMLSOPj2eAW7zLDTyppQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=neWj93rjpazFcs+AlCYfjTtrA68QwMLPbqCAGKLV83Bw/9G5mYV5YGBG8kPiQvR5C
-	 aFWcZ6XPUcMrEPg2X9JdqcpVtlFnNDYbBWlCcWGkxStYHbhHq1I/otEkFgkY3AmctU
-	 85ZK90t0e8tjsxybIkI4t3GZ+OVaaVzhPh3OJXIaZtDSlc1C+BlEyQK75SJ9mC/Mkl
-	 lgrpMKpgThEPyZ6vixgMLEzrmfK2eFm/zKEwCjcdqmYE9+uMQnKqP+W05IihwVECmo
-	 TtVo1zvSB4eTuLdk8yXgGrC0ycL/ncy2YcAJHAchPB9GwAuTQ3iHcu3Uyh9IIgZ5Lf
-	 83L70jE8yVpWA==
-Date: Thu, 15 May 2025 11:24:16 -0700
-From: Kees Cook <kees@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Shung-Hsi Yu <shung-hsi.yu@suse.com>, bpf@vger.kernel.org,
-	linux-mm@kvack.org, Andrii Nakryiko <andrii@kernel.org>,
-	Ihor Solodrai <ihor.solodrai@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Michal Hocko <mhocko@suse.com>, Vlastimil Babka <vbabka@suse.cz>,
-	Uladzislau Rezki <urezki@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org, regressions@lists.linux.dev,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eduard Zingerman <eddyz87@gmail.com>
+	s=arc-20240116; t=1747333875; c=relaxed/simple;
+	bh=V6rVl2MUL74b08/nShEq7cCkERzRMRshlzLbhmNnQ+M=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Xl/Plvux5QTSviR14IPcrEzUkhvIygTntfS0TV/anrWs6E02/5LlJzMFB414d0QC3q/y0tjuW0cd+miuGvZJsj/oL3WJXmECw335pnSoqlj9jQHllc9AR8SNPMh8+zdGsee0rHSpT+fmHquBArytdfz1mtQ22Wa3cCPl3WJJ5YA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Mc2c4Pth; arc=none smtp.client-ip=209.85.215.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-b0b2d0b2843so1015344a12.2;
+        Thu, 15 May 2025 11:31:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747333873; x=1747938673; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=V6rVl2MUL74b08/nShEq7cCkERzRMRshlzLbhmNnQ+M=;
+        b=Mc2c4PthL7zLQimOWfiOzdY/66hta7ybX42W94Ogk+5scBNUV4VyTie6MuIKNSz6BQ
+         GxfNRBcYAzJRPP2lBlhAekadEeA4ytD4dP5v3xTozVd5P3qaS5c7+LCIjewAZUPVSBH4
+         +0NzQ3cUhgi2B1AE/09Dnfo938pcVHpF8mndFMmCwC4BE5vzJ/gPl6ycPM9FdL+1jflm
+         krN8NcvnLVBwkBc8MLd5vYIn0Wkyfs34NLiY7RzESIpHUR/iEw+/qqQvYPZHzNu9EQWN
+         ulW1Isa6OVdAME8u1nmgvYFaGXb6Bwgo+L5hM3IUACiB/U5yJI2D4jr9KO4142MTsikZ
+         wrKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747333873; x=1747938673;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=V6rVl2MUL74b08/nShEq7cCkERzRMRshlzLbhmNnQ+M=;
+        b=noo3aWR7Asoy28VkTX7IdhU5HisFmTBrRDreMaHhnAQzoZdQxkemeniAL0sHwwIh6o
+         PN09OWdJ4Cq/3CHsS7bD5uvKSvtUMh53yZmSxWZ9N4RKdz8vmjcw3MrHfiXdJyz/h4UR
+         6XSUiZXwui7mGLQkKLn6LLWfNXVzTCUZLaE5AktNl59JzZGG1sKyw2aur4RJ/9LktO5R
+         7/u5aV8ICf25hIEpfqWjXZtrrjUQue8c7Cfksp3bcUtY1lC/9KXDQQmjclDRCMTYAVre
+         AsAssVWhEMLAP6DmA4ceqoAIbVw8acxZAGe7UYnHZZd2ockfH94ENQdrHxzeJn5dZ2lo
+         4L2A==
+X-Forwarded-Encrypted: i=1; AJvYcCU1dZt4PQJdhV1zsS/mzlX+oUYf8y7NiSnl1QuNsG59OSS0XF4A4EcFbPSs7LF1IRZSyRbyK5syklyGPtsl@vger.kernel.org, AJvYcCV+lEmAt3ZO1mpxUMCUsnaP1sPk89Ae01+JrKD4WplvQJLCAonaubBbU1Ri0pzIC6ynDFUD9srdmrYd/l2tRfU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwRAT27R8/AVT4xspNQf+srCMcgnspUaZeapjVjULJqTDCEMW3v
+	rW03qZ6pxb6HjdhGBEp9Vk8WanL7XLYnPpU5Od1t2c5wmg7ZZpQ17/JU
+X-Gm-Gg: ASbGnctPnPEeORZSoNvHfoEi7XSY/xuYjW0XbZ/Wto1mMNGdD5KRv39xemZJS4uZwHo
+	jgzYVnLcuxQa9/fIPSgc5XYO6bcof//IozEDYEOpi6BFS4syVVAIn/aX2n7Nng5sPwhoKwx+vWt
+	nhqL08hV4AfLYU80cMctrlIfBIteaxA7CBcEBuLrlK5OCcjKfnZQhkIjuWqSrGp9sCNyd7+Dt4I
+	IK5eVgfIdxHdCA9gFM9Ab10zGcDr5k/BK8aHLz97YmHwep5e+gFaSvVtrykeCu96dsmlHPL/qpJ
+	Qt6YIhnwsfNPfs2kUiTGcVITAU+gneGewmAh4CwyZkoqXvM7OW5cfTTKdg==
+X-Google-Smtp-Source: AGHT+IH6OY+7lX78qJzXX8XUmWkJnOnPaGJh9q4L+Bcz6Vd9CB0IOhsuPWAb1U3MJhxd+KmPtBkNvg==
+X-Received: by 2002:a17:902:ce87:b0:223:653e:eb09 with SMTP id d9443c01a7336-231d438a294mr6291995ad.7.1747333872812;
+        Thu, 15 May 2025 11:31:12 -0700 (PDT)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-231d4e98018sm917875ad.155.2025.05.15.11.31.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 May 2025 11:31:12 -0700 (PDT)
+Message-ID: <c36245a48149a12180ec710c65d317a12cdfa020.camel@gmail.com>
 Subject: Re: [REGRESSION] bpf verifier slowdown due to vrealloc() change
  since 6.15-rc6
-Message-ID: <202505151116.4FFA176B8@keescook>
-References: <20250515-bpf-verifier-slowdown-vwo2meju4cgp2su5ckj@6gi6ssxbnfqg>
- <C66C764E-C898-457D-93F0-A680983707F0@kernel.org>
- <202505150911.1254C695D@keescook>
- <20250515171821.6je7a4uvmttcdiia@desk>
- <202505151039.DAA202A@keescook>
- <CAEf4Bzb4LZK5p08t1y-32wAFDGoRGKR1w1T_je6+a_EOE2uSYQ@mail.gmail.com>
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Kees Cook <kees@kernel.org>, Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Cc: bpf@vger.kernel.org, linux-mm@kvack.org, Andrii Nakryiko
+ <andrii@kernel.org>,  Ihor Solodrai <ihor.solodrai@linux.dev>, Andrew
+ Morton <akpm@linux-foundation.org>, Michal Hocko	 <mhocko@suse.com>,
+ Vlastimil Babka <vbabka@suse.cz>, Uladzislau Rezki	 <urezki@gmail.com>,
+ linux-kernel@vger.kernel.org, 	linux-hardening@vger.kernel.org,
+ regressions@lists.linux.dev, Greg Kroah-Hartman	
+ <gregkh@linuxfoundation.org>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Pawan Gupta
+ <pawan.kumar.gupta@linux.intel.com>
+Date: Thu, 15 May 2025 11:31:09 -0700
+In-Reply-To: <202505150845.0F9E154@keescook>
+References: 
+	<20250515-bpf-verifier-slowdown-vwo2meju4cgp2su5ckj@6gi6ssxbnfqg>
+	 <202505150845.0F9E154@keescook>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4Bzb4LZK5p08t1y-32wAFDGoRGKR1w1T_je6+a_EOE2uSYQ@mail.gmail.com>
 
-On Thu, May 15, 2025 at 10:53:10AM -0700, Andrii Nakryiko wrote:
-> On Thu, May 15, 2025 at 10:41 AM Kees Cook <kees@kernel.org> wrote:
-> >
-> > On Thu, May 15, 2025 at 10:18:21AM -0700, Pawan Gupta wrote:
-> > > On Thu, May 15, 2025 at 09:51:15AM -0700, Kees Cook wrote:
-> > > > On Thu, May 15, 2025 at 07:51:26AM -0700, Kees Cook wrote:
-> > > > > On May 15, 2025 6:12:25 AM PDT, Shung-Hsi Yu <shung-hsi.yu@suse.com> wrote:
-> > > > > >There is an observable slowdown when running BPF selftests on 6.15-rc6
-> > > > > >kernel[1] built with tools/testing/selftests/bpf/{config,config.x86_64}.
-> > > > > [...]
-> > > > > Where can I find the .config for the slow runs?
-> > > >
-> > > > Oops, I can read. :) Doing a build now...
-> > > >
-> > > > > And how do I run the test myself directly?
-> > > >
-> > > > I found:
-> > > > https://docs.kernel.org/bpf/bpf_devel_QA.html
-> > > >
-> > > > But it doesn't seem to cover a bunch of stuff (no way to prebuild the
-> > > > tests, no info on building the test modules).
-> > > >
-> > > > This seems to be needed:
-> > > >
-> > > > make O=regression-bug -C tools/testing/selftests/bpf/test_kmods
-> > > >
-> > > > But then the booted kernel doesn't load it (missing signatures?)
-> > > >
-> > > > Anyway, I'll keep digging...
-> > >
-> > > After struggling with this for a while, I figured vmtest.sh is the easiest
-> > > way to test bpf:
-> > >
-> > > ./tools/testing/selftests/bpf/vmtest.sh -i ./test_progs
-> >
-> > I can't even build the test_progs. :(
-> >
-> > $ make test_progs
-> > ...
-> >   CLNG-BPF [test_progs] bpf_iter_tasks.bpf.o
-> > progs/bpf_iter_tasks.c:98:8: error: call to undeclared function 'bpf_copy_from_user_task_str'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-> >    98 |         ret = bpf_copy_from_user_task_str((char *)task_str1, sizeof(task_str1), ptr, task, 0
-> > );
-> >       |               ^
-> > 1 error generated.
-> >
-> 
-> BPF selftests expect that there was a successful kernel build done
-> before that. So generally speaking:
-> 
-> 0) cd <linux/repo/path>
-> 1) export O=/path/to/build
-> 2) cat tools/testing/selftests/bpf/config >> /path/to/build/.config
-> 3) make O=/path/to/build -j$(nproc) oldefconfig all
-> 4) cd tools/testing/selftests/bpf # everything is built within this
-> directory, we don't support KBUILD_PATH or O for BPF selftests build
-> artifacts
-> 5) make O=/path/to/build -j$(nproc)
+On Thu, 2025-05-15 at 08:47 -0700, Kees Cook wrote:
+> On Thu, May 15, 2025 at 09:12:25PM +0800, Shung-Hsi Yu wrote:
+> > Bisect was done by Pawan and got to commit a0309faf1cb0 "mm: vmalloc:
+> > support more granular vrealloc() sizing"[2]. To further zoom in the
+>=20
+> Can you try this patch? It's a clear bug fix, but if it doesn't improve
+> things, I have another idea to rearrange the memset.
 
-Linux ToT fails to build, -next fails to build. v6.14.6 fails build,
-each in different ways. :(
+I tried this patch on top of the commit 82f2b0b97b36 ("Linux 6.15-rc6").
+W/o the patch I observe the slowdown, test times out after 120 seconds,
+with the patch test finishes in 3 seconds.
 
-> But tbh, if the above causes you problems, I don't think you need to
-> spend that much time trying to build BPF selftests, given you know
-> what the issue is and you are fixing it.
-
-Well, nothing I've proposed makes any sense as far as something that would
-double execution time, so I don't really know what the issue is yet. :P
-
--- 
-Kees Cook
+[...]
 
