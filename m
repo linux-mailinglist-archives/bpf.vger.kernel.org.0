@@ -1,186 +1,124 @@
-Return-Path: <bpf+bounces-58321-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58322-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0648AB8A32
-	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 17:04:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60765AB8A7A
+	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 17:22:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 404E21899E00
-	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 15:03:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9254718893FE
+	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 15:22:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0F7F1FECD3;
-	Thu, 15 May 2025 15:02:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3B362163BB;
+	Thu, 15 May 2025 15:21:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H5wYBohM"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="f2RhhZz5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70D601DE2D6
-	for <bpf@vger.kernel.org>; Thu, 15 May 2025 15:02:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E02320B7FE
+	for <bpf@vger.kernel.org>; Thu, 15 May 2025 15:21:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747321371; cv=none; b=d8lkA2AMQIO6L/Owwv5jvMbrjx5Hrc+zUCvFZcmZz5Vglx63nE3qcAhvosR0mPfzln2t6SlBJn6cJv5Iahk26rYKUhugHOSIxAPZoY5D4iVPjykBKeq54Ie7Swnh9l/78i463lABoIbHR0Q2f9sCIJMzNFE5yxez/r5eQncsUGo=
+	t=1747322505; cv=none; b=VOwIqZRFLEl663DSa4sdG0Hryud/aZLa7rWX0fxGUxAdeDBO45irPkq6gaW9TGssr/Wdr8aoFXZbhcbhpZ69JTYruaye+k0lMb4M94rgfI85NrL7Yo9/PU1kMF1kPOXc++l83Q1XCOwFZoi7uZFfXgee73bVmoQpUDQddXF5GkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747321371; c=relaxed/simple;
-	bh=3KH9XWOnp3lfqwR44vhL7CvBTvN9J+uxq54a8FcGtA0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BdL6fw4MkGbyPZC/Z4Np/4LxZmocJ5TH83ywRHgDuCIImZU1AiQTl96/eJD+fUow2MPTksElUvgj9UEFj0QwdMydSk5NVSsT0OP9r8ZrV8bJyR8VPyvIpxAd0DuEgt0D7sDafPueLYmn9Fxh5QyIRPUXVZY5QiuBMg12vZsUNIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H5wYBohM; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3a0be321968so644053f8f.2
-        for <bpf@vger.kernel.org>; Thu, 15 May 2025 08:02:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747321368; x=1747926168; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=A2MhKFb5jQFsDsWD5YYixjajeyNhw+zGKEEVhOPPP6A=;
-        b=H5wYBohM7Pd+LD/NDnk0y5t4Y5U+gqQJAjisFIhibU0xcHeqaFwUB7N+My2+fDS0VM
-         Ngh26djzQKikv2Yhc9OqMpCEMoAWSx0qTCoAckEngHEaPuAoy+TKC3OPKcZYf58fTdjc
-         /X2/gMMqhb+nvLVD+5OHF4qh4TAY4L9uebmPih8yil0UEYNnqruO5EPHkgE4kvsJ8nb6
-         b2JBGuf+/6uwhdkJ/vnn6BQaDBrOV1zvJUtEOxQ/ihvoSR4X+TzB/OdjmADGL2Jqwuw6
-         gJkOuaXwMVxdRfz7NAXfMdjEUHlhGTBbtYPrZpb/vWHWAH2SXjnx+NtOLalb/BzY20Yi
-         GWpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747321368; x=1747926168;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=A2MhKFb5jQFsDsWD5YYixjajeyNhw+zGKEEVhOPPP6A=;
-        b=BdDMItyxahXL3V7j+cYFqAobZttutOf3QXOfhD+GpnDo2aPCHCyeK5kBbqbMOetQcu
-         jgnZA8gO0osWb9V40qFRYm9wR0pIHJvVx26rO12xTskK+Rk4uCdA1b1v/FPijRVE2jW2
-         5VlMJlpWiP7JuzS9zhodYM6dAbYuBnwHs/fCeAGoJ3Pm0zUj9Gf6GBSArcyVRAXPSfqh
-         txezgUA3JXp3jZ98LQluOhrttzPyITGNkO+p7Kb0rSpBrZenRySkvtvCgaQlVOB1Ydmw
-         dGDkgICVXpFtNPsdTeMfRVxd0CdJpypsjPloAiWHx+3yHr++SrQo7J/tSWDypGZIabmi
-         jwMQ==
-X-Gm-Message-State: AOJu0YzRgC5zT1vcZv+u4jBqSAcHwSjdGq+k8xNn7JZDfmBMpejyKb83
-	tFMipfF6C6Mhutp90PEJhOj5z5X3QCOFcFfaTXdWnue+dWQvF1KSPujh4eF2Gdt6sBSNKznhRVj
-	bSAMhZM6TXJ8GFVsYfN9TZWXqU1vDPUI1hY9p
-X-Gm-Gg: ASbGnctjDi/vJVTpPehdfNYLbOftgGPedYH9DTEhbxZmTYnE/qvR9Mfs1+mqFBZwzzJ
-	Xd82lw9lmdzYkjulCkyeSraU2199ycbPA/SOCVGOebb3ETk1LpVQNCS5U/Wtkln15zMyx6HN1dy
-	6wugfo/87dSHSsxIT+W7gieyIVJZR0X5waj+iI7SWd3HMy3l8aMaMQlla+odI=
-X-Google-Smtp-Source: AGHT+IHRD8GQfikpVxcpjUleaC2yNBUvz3cvgGvkeefIg7PSvH0pe1uZ1y27vGfc1AY1X2Gj2sA9r/RLtAuI8Prebt0=
-X-Received: by 2002:a05:6000:200f:b0:3a1:faa7:89e2 with SMTP id
- ffacd0b85a97d-3a35c84975amr67267f8f.58.1747321366754; Thu, 15 May 2025
- 08:02:46 -0700 (PDT)
+	s=arc-20240116; t=1747322505; c=relaxed/simple;
+	bh=iWSX4Lju/uclKKCH3oy7b2JkRHS8v7CmRHmmEd3vadc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KX5l+bt7tbGmfAxDzp8e7EMhYyKPr8UXb0THIVZjSF1KXWnorboV+iy+0Ow7HsVYi1qrzNmkIJ4w66bHLnfjrXiVe2PwHOSs0GEaYIp1jjA1i9hwfccjRNeVNYRkVvdmyDJLK/6wOQJmlvLNALmh1ek0b4Iu0GV64yDuvisCIXQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=f2RhhZz5; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 15 May 2025 08:21:25 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1747322491;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vNQ362kPh2DAdnB+ckUbQSAnkMVDAHgeooSh5BHonV0=;
+	b=f2RhhZz5GTNImie0TBvWXUh6tKuxj+d+dSQyeRxcyIxUPzyeYz3yGUoWQ+dZ6nCKrLcmST
+	rKyfkemIxryRt9zwqMVYyPc9lGs4Cc1HptTDtwbsUARhkCBUBNcogHcn1i9ydwJ8FuCXym
+	m+rJ4+jr/48NgW11U0/p/AEjp79HL9Q=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Harry Yoo <harry.yoo@oracle.com>, 
+	Yosry Ahmed <yosry.ahmed@linux.dev>, bpf@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>
+Subject: Re: [PATCH v2 1/7] memcg: memcg_rstat_updated re-entrant safe
+ against irqs
+Message-ID: <oqw3rhbai4zzr3g7mpjbq7zosatifn5lpbuqu4w732ksnfxxn2@hhut62hpdl2h>
+References: <20250514184158.3471331-1-shakeel.butt@linux.dev>
+ <20250514184158.3471331-2-shakeel.butt@linux.dev>
+ <22f69e6e-7908-4e92-96ca-5c70d535c439@lucifer.local>
+ <CAGj-7pUJQZD59Sx7E69Uvi1++dB59R8wWkDYvSTGYhU-18AHXg@mail.gmail.com>
+ <2d517f89-3bb4-4de2-8c14-8bb1e4235c7a@suse.cz>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <aCXT7kLv-SHy44Vx@mail.gmail.com>
-In-Reply-To: <aCXT7kLv-SHy44Vx@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 15 May 2025 08:02:34 -0700
-X-Gm-Features: AX0GCFvt55hVvUKnefovE-305ewU8N7f0AEKTZaSMFODDCw6H6lL-OXzaWMhwkE
-Message-ID: <CAADnVQJNYyiVQsqNZs-R6JOZ_TkEzTwSZyhAgwB1mDXQhksa6w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3] bpf: WARN_ONCE on verifier bugs
-To: Paul Chaignon <paul.chaignon@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2d517f89-3bb4-4de2-8c14-8bb1e4235c7a@suse.cz>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, May 15, 2025 at 4:45=E2=80=AFAM Paul Chaignon <paul.chaignon@gmail.=
-com> wrote:
->
-> Throughout the verifier's logic, there are multiple checks for
-> inconsistent states that should never happen and would indicate a
-> verifier bug. These bugs are typically logged in the verifier logs and
-> sometimes preceded by a WARN_ONCE.
->
-> This patch reworks these checks to consistently emit a verifier log AND
-> a warning when CONFIG_DEBUG_KERNEL is enabled. The consistent use of
-> WARN_ONCE should help fuzzers (ex. syzkaller) expose any situation
-> where they are actually able to reach one of those buggy verifier
-> states.
->
-> Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
-> ---
-> Changes in v3:
->   - Introduce and use verifier_bug_if, as suggested by Andrii.
-> Changes in v2:
->   - Introduce a new BPF_WARN_ONCE macro, with WARN_ONCE conditioned on
->     CONFIG_DEBUG_KERNEL, as per reviews.
->   - Use the new helper function for verifier bugs missed in v1,
->     particularly around backtracking.
->
->  include/linux/bpf.h          |   6 ++
->  include/linux/bpf_verifier.h |  10 +++
->  kernel/bpf/btf.c             |   4 +-
->  kernel/bpf/verifier.c        | 121 ++++++++++++++++-------------------
->  4 files changed, 74 insertions(+), 67 deletions(-)
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 83c56f40842b..5b25d278409b 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -346,6 +346,12 @@ static inline const char *btf_field_type_name(enum b=
-tf_field_type type)
->         }
->  }
->
-> +#if IS_ENABLED(CONFIG_DEBUG_KERNEL)
-> +#define BPF_WARN_ONCE(cond, format...) WARN_ONCE(cond, format)
-> +#else
-> +#define BPF_WARN_ONCE(cond, format...) BUILD_BUG_ON_INVALID(cond)
-> +#endif
-> +
->  static inline u32 btf_field_type_size(enum btf_field_type type)
->  {
->         switch (type) {
-> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> index cedd66867ecf..c3fd6905793a 100644
-> --- a/include/linux/bpf_verifier.h
-> +++ b/include/linux/bpf_verifier.h
-> @@ -839,6 +839,16 @@ __printf(3, 4) void verbose_linfo(struct bpf_verifie=
-r_env *env,
->                                   u32 insn_off,
->                                   const char *prefix_fmt, ...);
->
-> +#define verifier_bug_if(cond, env, fmt, args...)                        =
-       \
-> +       ({                                                               =
-       \
-> +               if (unlikely(cond)) {                                    =
-       \
-> +                       BPF_WARN_ONCE(1, "verifier bug: " fmt, ##args);  =
-       \
+On Thu, May 15, 2025 at 04:57:10PM +0200, Vlastimil Babka wrote:
+> On 5/15/25 16:31, Shakeel Butt wrote:
+> > On Thu, May 15, 2025 at 5:47 AM Lorenzo Stoakes
+> > <lorenzo.stoakes@oracle.com> wrote:
+> >>
+> >> Shakeel - This breaks the build in mm-new for me:
+> >>
+> >>   CC      mm/pt_reclaim.o
+> >> In file included from ./arch/x86/include/asm/rmwcc.h:5,
+> >>                  from ./arch/x86/include/asm/bitops.h:18,
+> >>                  from ./include/linux/bitops.h:68,
+> >>                  from ./include/linux/radix-tree.h:11,
+> >>                  from ./include/linux/idr.h:15,
+> >>                  from ./include/linux/cgroup-defs.h:13,
+> >>                  from mm/memcontrol.c:28:
+> >> mm/memcontrol.c: In function ‘mem_cgroup_alloc’:
+> >> ./arch/x86/include/asm/percpu.h:39:45: error: expected identifier or ‘(’ before ‘__seg_gs’
+> >>    39 | #define __percpu_seg_override   CONCATENATE(__seg_, __percpu_seg)
+> >>       |                                             ^~~~~~
+> >> ./include/linux/args.h:25:24: note: in definition of macro ‘__CONCAT’
+> >>    25 | #define __CONCAT(a, b) a ## b
+> >>       |                        ^
+> >> ./arch/x86/include/asm/percpu.h:39:33: note: in expansion of macro ‘CONCATENATE’
+> >>    39 | #define __percpu_seg_override   CONCATENATE(__seg_, __percpu_seg)
+> >>       |                                 ^~~~~~~~~~~
+> >> ./arch/x86/include/asm/percpu.h:93:33: note: in expansion of macro ‘__percpu_seg_override’
+> >>    93 | # define __percpu_qual          __percpu_seg_override
+> >>       |                                 ^~~~~~~~~~~~~~~~~~~~~
+> >> ././include/linux/compiler_types.h:60:25: note: in expansion of macro ‘__percpu_qual’
+> >>    60 | # define __percpu       __percpu_qual BTF_TYPE_TAG(percpu)
+> >>       |                         ^~~~~~~~~~~~~
+> >> mm/memcontrol.c:3700:45: note: in expansion of macro ‘__percpu’
+> >>  3700 |         struct memcg_vmstats_percpu *statc, __percpu *pstatc_pcpu;
+> >>       |                                             ^~~~~~~~
+> >> mm/memcontrol.c:3731:25: error: ‘pstatc_pcpu’ undeclared (first use in this function); did you mean ‘kstat_cpu’?
+> >>  3731 |                         pstatc_pcpu = parent->vmstats_percpu;
+> >>       |                         ^~~~~~~~~~~
+> >>       |                         kstat_cpu
+> >> mm/memcontrol.c:3731:25: note: each undeclared identifier is reported only once for each function it appears in
+> >>
+> >> The __percpu macro seems to be a bit screwy with comma-delimited decls, as it
+> >> seems that putting this on its own line fixes this problem:
+> >>
+> > 
+> > Which compiler (and version) is this? Thanks for the fix.
+> 
+> Hm right I see the same errors with gcc 7, 13, 14, 15 but not with clang.
 
-> +                       bpf_log(&env->log, "verifier bug: " fmt, ##args);=
-       \
-> +               }                                                        =
-       \
-> +               (cond);                                                  =
-       \
-> +       })
-> +#define verifier_bug(env, fmt, args...) verifier_bug_if(1, env, fmt, ##a=
-rgs)
->
-
-(cond) shouldn't be double evaluated.
-Also let's stringify condition in verifier_bug_if().
-The messages will be easier for humans to parse.
-Especially when code evolves and line numbers don't correspond
-to new code.
-
-Then some text can be reduced, removed or reworded.
-Like:
--                                       if
-(WARN_ON_ONCE(env->cur_state->loop_entry)) {
--                                               verbose(env, "verifier
-bug: env->cur_state->loop_entry !=3D NULL\n");
-+                                       if
-(verifier_bug_if(env->cur_state->loop_entry, env,
-+
-"cur_state->loop_entry not null\n"))
-
-can be:
-if (verifier_bug_if(env->cur_state->loop_entry, env, "broken loop detection=
-"))
+It seems to work with gcc 11.5.0, so weird.
 
