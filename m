@@ -1,143 +1,211 @@
-Return-Path: <bpf+bounces-58281-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58282-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D4BDAB81D9
-	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 11:03:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20FAAAB824A
+	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 11:17:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB9E3175EED
-	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 09:01:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0AC0C1B61C00
+	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 09:17:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61DBE2980BC;
-	Thu, 15 May 2025 08:59:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 081BE29670A;
+	Thu, 15 May 2025 09:17:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KdzhbpG3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 184FA297A6D;
-	Thu, 15 May 2025 08:59:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8098C1F09AD;
+	Thu, 15 May 2025 09:17:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747299567; cv=none; b=EeJaVIrwUjS8wA4e6t4owVBvawBPtl+JhAC0CQgUHcz4231RTPkW3lOSD/R0hC/xo5M3mE11UAJj7tXhXJpVYY0DwmNQ3b+AbpQ2vjMYF5/faP0UtOb0trBRNHS6s51IsAXBMSeSg+3xy2aG41ZyKT4C50cuZlVKI3u7k8yWHTI=
+	t=1747300629; cv=none; b=MnzbQKc7HQ6S4HCUeSbHzkFp1JpIOa+9hLW9Um9Gqx9tM2zfeoYExXU9ZuBSbY3y2yjxsgVKg2SwDZsQ0sKifZFa9ytC5A0GILnn4cl9STzDoF3wULqQ0Hh2kbxdYFnMCvziqIXLj1b6ZNAm5eepo88epzINPtMlzZI66v2+9fE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747299567; c=relaxed/simple;
-	bh=U8Gms1unVLaYGMPmJgh5mvgST4RNp4pyfwxfbuqpqZ0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=NIWf8Vp/lPJAQtV2OTHPC3IjrPlk22rT5d6Ie3fFU0nO7JiY0VvpWSeio0E6nn9METq8zLLwFalIVVgs2I3owxjgqNKNb6OBF/um63TofmnWuwPOgHIdI77QpbPd7ORDVqsTCcNuNXrI1DgSn5m8c/jdMCd2T25fpDsGcjoTWRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=fejes.dev; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=fejes.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-441ab63a415so7022885e9.3;
-        Thu, 15 May 2025 01:59:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747299563; x=1747904363;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+wY3EMb5JxEbCY3HNeRXG9ydmvJmQVNydYXnk83cuGg=;
-        b=qBN4E3ORgyDjGyN5X7r2BqybCfqi0NH9FpRqzqXKYzoIWd+cM7kNJDU7eMDiiPYPWY
-         9f3m1JIunUfDwENp8rT9d3RZV/eQM2IGXn1HlMQswpdA8dAMa5IXSQZF2wDNCSFSjilK
-         pY5Tau8gDo0VMs5jz6H9TBjfm/4BkqoPNbr47W42p9130XbMa9xBIKtSAkwFeJ0mbzfs
-         oBRSEyjrgez88eOP/hFTaDYs/Xr9Gt8Tlg9XXxozOo7FoObQ0aRXbgizcAhO1CRVko+k
-         rQ7+S6IvePN1f42/Q0RsNzvNPv7I/Vzwa7v+csSJv5ynROFROUZLf/u+HDXOwaILOYXR
-         rqoA==
-X-Forwarded-Encrypted: i=1; AJvYcCUw9k2YqkGItpVhYsMm/LihhEOUrCr6nyLGktP/VsGU11I7y2T+66RVDVtGcjGzBXHkqgmFf/3mi37nk3s2@vger.kernel.org, AJvYcCWWBBOA+zQA9DMkWALf4ah+BnPxlwJDUNlNrS2T4O1CppH85V6M3HF8n76iCOJTblj7ckI=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywl3/LChk947W48u2FHn3+Tf949S9kvDY1nTpedCjTRYLHBEaBI
-	LTEi1I+/hh/TWU69LVUOS3HYAFnyNS0IDHtfMyVPvxzLXNNZqOgo
-X-Gm-Gg: ASbGncuVvhhobDr+wc3RHXyMPQcPPmRU/CBydTS7Yr3q6G82yraHmCiSIBQAxQHt56M
-	YVDsH102Y0O+wf/oq5W4PB3KTX5bzTWFHul/ZR5WdTua/yCdysggwTt/lJDC2UvPCwJGAzIYNfa
-	IFJNnIIOAgDysymockqC61eOekXAqKW9WsW0PxlJutGx1QPvm9pXrBAF5AzHmB4sQbViHRwErZE
-	rMGbPnbx5MY7HmdM0TOSa7qq97QeB6cIFD4yi5dGMyCMKyzLbN4j5Yd3Wq8+/dOg/VOLaQfyUFC
-	gsnYbCicYTthCDxbo9y8HOFJunTu03dWzbPfV9F8G973BwE0PZrNh9BrOtnreGU6JRv0gGQj1un
-	H06U64RD//9AwkgI4I4VB6/8A1g==
-X-Google-Smtp-Source: AGHT+IHSMBOis1LN9zZB8Ns1QMfbY61wSCNeknS/nXCa2UvoEyCLR8YwmUUu5xG/+nbb3Bg0E/FFdQ==
-X-Received: by 2002:a05:600d:1b:b0:43d:4686:5cfb with SMTP id 5b1f17b1804b1-442f4735a8bmr43794115e9.27.1747299563102;
-        Thu, 15 May 2025 01:59:23 -0700 (PDT)
-Received: from [10.148.85.1] (business-89-135-192-225.business.broadband.hu. [89.135.192.225])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-442f337db8asm62665355e9.9.2025.05.15.01.59.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 May 2025 01:59:22 -0700 (PDT)
-Message-ID: <eefad549e3d0568b523305252b6ec3a468502d2d.camel@fejes.dev>
-Subject: Re: [PATCHv2] bpf: add bpf_msleep_interruptible() kfunc
-From: Ferenc Fejes <ferenc@fejes.dev>
-To: Sergey Senozhatsky <senozhatsky@chromium.org>, Alexei Starovoitov
-	 <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
-	 <john.fastabend@gmail.com>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
-	 <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Matt Bobrowski
-	 <mattbobrowski@google.com>, Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Thu, 15 May 2025 10:59:21 +0200
-In-Reply-To: <20250515064800.2201498-1-senozhatsky@chromium.org>
-References: <20250515064800.2201498-1-senozhatsky@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.1-1 
+	s=arc-20240116; t=1747300629; c=relaxed/simple;
+	bh=QVKOlT5ufDwX7I65S3zH6n+hABL8lXqI6aFRrHvjK7k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jZd2STN6IzOO0DuV2z5yc1hw5PKSWAdVC8s4cxuQcu1fdytOzzteZaxSjXrjV5YvICoE8RLhd+DzSK9Zk7K9OhrqBPsX47bszi7paYONv8eTBuEizdaVnGlkeb8V/yDMa+lXbKSFgT/lQgCnqOf1+6TNQxSsFWjpQcOn62bA6sw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KdzhbpG3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFC5BC4CEE9;
+	Thu, 15 May 2025 09:17:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747300629;
+	bh=QVKOlT5ufDwX7I65S3zH6n+hABL8lXqI6aFRrHvjK7k=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=KdzhbpG3zkVRx5Lyuw4wjB54O3iU36v1AdIu5FCTbZ6GO90HOSOUaEOkbY0ENXYLK
+	 u0YzV4pdXreYzzHNek1rZbTmse/RAJv9pRglfVY1+UPacLDTiW11ot5QH7he3810QV
+	 HsSjiwGzJ9/h7lgTxsPOve0zeWqaOsBujQzeHEhhdazyh33zHJAcQX1J/I9Xp4dW3F
+	 HMG3e96Y2uyZgUtlHhgUSH3FY5TaS91vq44gLDL4jSrTgHKnaIuLN9HsdfqlUA6xzG
+	 /tt3ZLiUsjzycxVZ8UgU0Cb5FGY3vNqA2k75m/1v/uLoRV+QYrFtgVAizbP8DebhVO
+	 mcuG4UKigfNSA==
+Message-ID: <d4e30634-b64e-47c7-9089-a37d20e29d2f@kernel.org>
+Date: Thu, 15 May 2025 10:17:05 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v2] bpftool: Add support for custom BTF path in
+ prog load/loadall
+To: Jiayuan Chen <jiayuan.chen@linux.dev>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Daniel Xu <dxu@dxuuu.xyz>,
+ Mykyta Yatsenko <yatsenko@meta.com>, Tao Chen <chen.dylane@gmail.com>,
+ linux-kernel@vger.kernel.org
+References: <20250515065018.240188-1-jiayuan.chen@linux.dev>
+From: Quentin Monnet <qmo@kernel.org>
+Content-Language: en-GB
+In-Reply-To: <20250515065018.240188-1-jiayuan.chen@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi,
+2025-05-15 14:50 UTC+0800 ~ Jiayuan Chen <jiayuan.chen@linux.dev>
+> This patch exposes the btf_custom_path feature to bpftool, allowing users
+> to specify a custom BTF file when loading BPF programs using prog load or
+> prog loadall commands.
+> 
+> The argument 'btf_custom_path' in libbpf is used for those kernes that
 
-On Thu, 2025-05-15 at 15:47 +0900, Sergey Senozhatsky wrote:
-> bpf_msleep_interruptible() puts a calling context into an
-> interruptible sleep.=C2=A0 This function is expected to be used
-> for testing only (perhaps in conjunction with fault-injection)
-> to simulate various execution delays or timeouts.
->=20
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+
+Typo: "kernes"
+
+
+> don't have CONFIG_DEBUG_INFO_BTF enabled but still want to perform CO-RE
+> relocations.
+> 
+> Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
 > ---
->=20
-> v2:
-> -- switched to kfunc (Matt)
->=20
-> =C2=A0kernel/bpf/helpers.c | 7 +++++++
-> =C2=A01 file changed, 7 insertions(+)
->=20
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index fed53da75025..a7404ab3b0b8 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -24,6 +24,7 @@
-> =C2=A0#include <linux/bpf_mem_alloc.h>
-> =C2=A0#include <linux/kasan.h>
-> =C2=A0#include <linux/bpf_verifier.h>
-> +#include <linux/delay.h>
-> =C2=A0
-> =C2=A0#include "../../lib/kstrtox.h"
-> =C2=A0
-> @@ -3283,6 +3284,11 @@ __bpf_kfunc void bpf_local_irq_restore(unsigned lo=
-ng
-> *flags__irq_flag)
-> =C2=A0	local_irq_restore(*flags__irq_flag);
-> =C2=A0}
-> =C2=A0
-> +__bpf_kfunc unsigned long bpf_msleep_interruptible(unsigned int msecs)
-> +{
-> +	return msleep_interruptible(msecs);
+>  tools/bpf/bpftool/Documentation/bpftool-prog.rst |  7 ++++++-
+>  tools/bpf/bpftool/bash-completion/bpftool        |  2 +-
+>  tools/bpf/bpftool/prog.c                         | 12 +++++++++++-
+>  3 files changed, 18 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/bpf/bpftool/Documentation/bpftool-prog.rst b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
+> index d6304e01afe0..e60a829ab8d0 100644
+> --- a/tools/bpf/bpftool/Documentation/bpftool-prog.rst
+> +++ b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
+> @@ -127,7 +127,7 @@ bpftool prog pin *PROG* *FILE*
+>      Note: *FILE* must be located in *bpffs* mount. It must not contain a dot
+>      character ('.'), which is reserved for future extensions of *bpffs*.
+>  
+> -bpftool prog { load | loadall } *OBJ* *PATH* [type *TYPE*] [map { idx *IDX* | name *NAME* } *MAP*] [{ offload_dev | xdpmeta_dev } *NAME*] [pinmaps *MAP_DIR*] [autoattach]
+> +bpftool prog { load | loadall } *OBJ* *PATH* [type *TYPE*] [map { idx *IDX* | name *NAME* } *MAP*] [{ offload_dev | xdpmeta_dev } *NAME*] [pinmaps *MAP_DIR*] [autoattach] [kernel_btf *BTF_DIR*]
+>      Load bpf program(s) from binary *OBJ* and pin as *PATH*. **bpftool prog
+>      load** pins only the first program from the *OBJ* as *PATH*. **bpftool prog
+>      loadall** pins all programs from the *OBJ* under *PATH* directory. **type**
+> @@ -153,6 +153,11 @@ bpftool prog { load | loadall } *OBJ* *PATH* [type *TYPE*] [map { idx *IDX* | na
+>      program does not support autoattach, bpftool falls back to regular pinning
+>      for that program instead.
+>  
+> +    The **kernel_btf** option allows specifying an external BTF file to replace
+> +    the system's own vmlinux BTF file for CO-RE relocations. NOTE that any
+> +    other feature (e.g., fentry/fexit programs, struct_ops, etc) will require
 
-Perhaps exposing fsleep instead of msleep? fsleep might fallback to msleep =
-if no
-better mechanism exists or if the sleep duration is >1000us.
 
-> +}
+Nit: No need for both "e.g." and "etc", they're redundant.
+
+
+> +    actual kernel BTF like /sys/kernel/btf/vmlinux.
 > +
-> =C2=A0__bpf_kfunc_end_defs();
-> =C2=A0
-> =C2=A0BTF_KFUNCS_START(generic_btf_ids)
-> @@ -3388,6 +3394,7 @@ BTF_ID_FLAGS(func, bpf_iter_kmem_cache_next,
-> KF_ITER_NEXT | KF_RET_NULL | KF_SLE
-> =C2=A0BTF_ID_FLAGS(func, bpf_iter_kmem_cache_destroy, KF_ITER_DESTROY |
-> KF_SLEEPABLE)
-> =C2=A0BTF_ID_FLAGS(func, bpf_local_irq_save)
-> =C2=A0BTF_ID_FLAGS(func, bpf_local_irq_restore)
-> +BTF_ID_FLAGS(func, bpf_msleep_interruptible, KF_SLEEPABLE)
-> =C2=A0BTF_KFUNCS_END(common_btf_ids)
-> =C2=A0
-> =C2=A0static const struct btf_kfunc_id_set common_kfunc_set =3D {
+
+
+Can we rephrase the second part of the paragraph a little bit please?
+“Any other feature” could be clearer, how about:
+
+	Note that any other feature relying on BTF (such as fentry/fexit
+	programs, struct_ops) requires the BTF file for the actual
+	kernel running on the host, often exposed at
+	/sys/kernel/btf/vmlinux.
+
+
+>      Note: *PATH* must be located in *bpffs* mount. It must not contain a dot
+>      character ('.'), which is reserved for future extensions of *bpffs*.
+>  
+> diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
+> index 1ce409a6cbd9..609938c287b7 100644
+> --- a/tools/bpf/bpftool/bash-completion/bpftool
+> +++ b/tools/bpf/bpftool/bash-completion/bpftool
+> @@ -511,7 +511,7 @@ _bpftool()
+>                              ;;
+>                          *)
+>                              COMPREPLY=( $( compgen -W "map" -- "$cur" ) )
+> -                            _bpftool_once_attr 'type pinmaps autoattach'
+> +                            _bpftool_once_attr 'type pinmaps autoattach kernel_btf'
+>                              _bpftool_one_of_list 'offload_dev xdpmeta_dev'
+>                              return 0
+>                              ;;
+
+
+Correct, but right before this could you also add the following, please:
+
+	@@ -505,13 +505,13 @@ _bpftool()
+	                             _bpftool_get_map_names
+	                             return 0
+	                             ;;
+	-                        pinned|pinmaps)
+	+                        pinned|pinmaps|kernel_btf)
+	                             _filedir
+	                             return 0
+	                             ;;
+	                         *)
+
+This will make the completion offer file names after the user has typed
+"kernel_btf".
+
+
+> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+> index f010295350be..3b6a361dd0f8 100644
+> --- a/tools/bpf/bpftool/prog.c
+> +++ b/tools/bpf/bpftool/prog.c
+> @@ -1681,8 +1681,17 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+>  		} else if (is_prefix(*argv, "autoattach")) {
+>  			auto_attach = true;
+>  			NEXT_ARG();
+> +		} else if (is_prefix(*argv, "kernel_btf")) {
+> +			NEXT_ARG();
+> +
+> +			if (!REQ_ARGS(1))
+> +				goto err_free_reuse_maps;
+> +
+> +			open_opts.btf_custom_path = GET_ARG();
+>  		} else {
+> -			p_err("expected no more arguments, 'type', 'map' or 'dev', got: '%s'?",
+> +			p_err("expected no more arguments, "
+> +			      "'type', 'map', 'dev', 'offload_dev', 'xdpmeta_dev', 'pinmaps', "
+> +			      "'autoattach', or 'kernel_btf', got: '%s'?",
+
+
+Some of them were missing, thanks for this! Can you remove "dev" from
+the list, please? It's been deprecated in favour of "offload_dev", to
+avoid confusion with "xdpmeta_dev".
+
+pw-bot: cr
+
+
+>  			      *argv);
+>  			goto err_free_reuse_maps;
+>  		}
+> @@ -2474,6 +2483,7 @@ static int do_help(int argc, char **argv)
+>  		"                         [map { idx IDX | name NAME } MAP]\\\n"
+>  		"                         [pinmaps MAP_DIR]\n"
+>  		"                         [autoattach]\n"
+> +		"                         [kernel_btf BTF_DIR]\n"
+>  		"       %1$s %2$s attach PROG ATTACH_TYPE [MAP]\n"
+>  		"       %1$s %2$s detach PROG ATTACH_TYPE [MAP]\n"
+>  		"       %1$s %2$s run PROG \\\n"
+
+
+Thanks,
+Quentin
 
