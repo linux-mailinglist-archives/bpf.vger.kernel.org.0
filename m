@@ -1,317 +1,179 @@
-Return-Path: <bpf+bounces-58373-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58374-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EAF1AB92C5
-	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 01:18:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15024AB93D7
+	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 03:57:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C8D3505FE7
-	for <lists+bpf@lfdr.de>; Thu, 15 May 2025 23:18:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC93B9E2D3B
+	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 01:56:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46604296162;
-	Thu, 15 May 2025 23:17:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D34BE226D1E;
+	Fri, 16 May 2025 01:56:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q0sK9wf/"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="HyB3yr7j";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="U0JllwPP"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from fhigh-b3-smtp.messagingengine.com (fhigh-b3-smtp.messagingengine.com [202.12.124.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE6DD296FAD;
-	Thu, 15 May 2025 23:17:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9D3223AD;
+	Fri, 16 May 2025 01:56:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747351032; cv=none; b=ouyFFfPY1JxYceapZNfLO/waiC/rK+/zzTuCT30IoJhEeL+EdPEQ6arL/6N3Dop2PEM/aLsV2Prj+Bomm7dQFPB8Z63sGzAsH52q6hLXEFoEDMtkgiNPjw6AaO9KVo67YI4jO6NbhnkqWKXR7DU4jpeYKP7VNxmnh7qtYKng7Nc=
+	t=1747360619; cv=none; b=uMwqCQev/qfX6y8mPuUha0M4xGXtp85RkefsiV6uaEuCDaWEhqZGdtXS7gM1kjp7933x3l8Y62pnHfkiRKCnkpDWENS3tqwkgxxM+ssqcGs3/Zw2pSTFPLSdXXxwnFiEzzUZ9qvLCphReoh8VS+qLXuSwitW6QZRU//ThvcRNUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747351032; c=relaxed/simple;
-	bh=3gXwjMFfOi7AILaAP8qYvaMgkPmZK1+iMnZ9P3mrEkg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sfnthad7ujZIjoPBRDzWd6Lf3GHLTA0LjwIY0CTczi+ZdXFVsTjzYIqf+VusT8q6tqkm7Q8C9e3zHOoVkkd0rDC8tmGcRfrLmw6yelL/Ha9tRXqy/imEKjBlWtoUJlm8EaFgSDXmONDpYal5Nc2rvmoCmH5y0JVkY55ru+EHZ8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q0sK9wf/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B922AC4CEEF;
-	Thu, 15 May 2025 23:17:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747351032;
-	bh=3gXwjMFfOi7AILaAP8qYvaMgkPmZK1+iMnZ9P3mrEkg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Q0sK9wf/9Wl02kFnuJn9gMVDNkaMyOTEg9jZY5stXPhtBLNG3pc5E9v1OBC3mX0jk
-	 tcmEAipwYEL+d+6HYddXQ6+va1rozIe88ujvbCERLOZsLM+Zpv0+5dWgZJEPvedinC
-	 nTcUcyG0PD8VbN/YA6wPdlVWb81s6IYKcSjzEgvJWAClGPcTblVZPCAQ662mdGI0vP
-	 hoA9RW1tml0ToG9G9JL/ocp60Ds5NZJAbvWC1oAiL3UcOGCeBcVzv0nkeBENTwlZ6/
-	 gKBeY5RAKBawZh0VcKPmZLX6iA5tyIK6sdxWnl7oaRfn/75SNWPokkvEyU/dkGjDl+
-	 G6vpracvEgSrg==
-From: Jakub Kicinski <kuba@kernel.org>
-To: davem@davemloft.net
-Cc: netdev@vger.kernel.org,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	andrew+netdev@lunn.ch,
-	horms@kernel.org,
-	donald.hunter@gmail.com,
-	daniel@iogearbox.net,
-	nicolas.dichtel@6wind.com,
-	jacob.e.keller@intel.com,
-	Jakub Kicinski <kuba@kernel.org>,
-	bpf@vger.kernel.org
-Subject: [PATCH net-next 9/9] tools: ynl: add a sample for rt-link
-Date: Thu, 15 May 2025 16:16:50 -0700
-Message-ID: <20250515231650.1325372-10-kuba@kernel.org>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250515231650.1325372-1-kuba@kernel.org>
-References: <20250515231650.1325372-1-kuba@kernel.org>
+	s=arc-20240116; t=1747360619; c=relaxed/simple;
+	bh=lg2RswOoCVT4JrW3TwQs/AOKgg/d8/NK9CoRbhd7LRI=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=Dk3swGQhwkTV/xn8y/Eh/3QK/ds4rUoKZ9XNnxdHD7hYNfHtDYhhC8nLRx0UsO0CjgPmi5pIh7N1mbEx4tMiLvs6l+2ls8mBuzXBAwjL0e1zSoHKlhhuOieteXVx32crjIduQwGdKQLN0tTl3g7NWcMH3ICxoJzM3Q+tmtCnTwM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=HyB3yr7j; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=U0JllwPP; arc=none smtp.client-ip=202.12.124.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from phl-compute-02.internal (phl-compute-02.phl.internal [10.202.2.42])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 243F0254011B;
+	Thu, 15 May 2025 21:56:55 -0400 (EDT)
+Received: from phl-imap-18 ([10.202.2.89])
+  by phl-compute-02.internal (MEProxy); Thu, 15 May 2025 21:56:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1747360614;
+	 x=1747447014; bh=jorEOfVhRuwZqY7DZl1lH+R2d25d21QYNH3JcMu4gfw=; b=
+	HyB3yr7jxSvggdH3/vXZ2f89Y7OpJrA9xeRRbR87IWa8KKbhDw6a9QK0OclaVvmP
+	fv879vYMXAKehKCc3aPR89aruoQ15G5NogwDSvxVD5dWOHD1xyqG6kRFutqzwDDo
+	ITfmSX8DM7Dg+r9NYb8mx7m1E2Bcj3ASlLdeh5arf4ldqX/+/u3JO2LyNtmBfR+b
+	+0aD9Wsb/JL4pQp/4Qs/EeInSq/qNRIa8RYLdWh+JX667NCAKYu1iUSO7D1C+z2m
+	5IRUZSh8NmmZjQ2we4c2pcc06s4ApTLQ1144gaO1ZjQKgOjhFZYuYw8fjyUnob+Z
+	Z4cfUEMWKqI8VJSTSyBKkA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1747360614; x=
+	1747447014; bh=jorEOfVhRuwZqY7DZl1lH+R2d25d21QYNH3JcMu4gfw=; b=U
+	0JllwPPAhlmQMj4mHYhMFmIxvYqBPeX76bZ94SjfBRdJfIfpLSD+CfXtE4fsM/OH
+	NhgB9nEKdsV9/6bnriormhwryFvsn/6U77uN9wal61WX2VbbkH3/pxW+ajCYvEEZ
+	zhe691xwS2kALSNRUS6PBhewhfaIc5EN47a5UWHzSqkk/hVxwLEVTdCWsAwbh5zw
+	uUUIfw+SlWgGjiClAe5eS8j5/5BPihe9SBymCJLC/c/jnKyd6xCw8brajfd6hBVW
+	G0uJXrCQ8I5+t6p0QQ2Jjl+Y0nYp3U0cVQ/LDC8fkVl1jqaGhVjNqOwPX+n3tyVU
+	ua5B3fCi4UbFGj44bc5Dg==
+X-ME-Sender: <xms:ZpsmaGBmP0qH6pBF1-7ua7RnEw8enrdlchNxu604BwcJZVPB0Ugmsg>
+    <xme:ZpsmaAjzbns8BzoV5xfnEvWo0T1lgryF5cTPVhgbPeB0i6AY6Nzh8Dwow8nxnaJvu
+    usVZWtPES108h7ZjQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdefuddugeekucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
+    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
+    gvnhhtshculddquddttddmnegfrhhlucfvnfffucdlfeehmdenucfjughrpefoggffhffv
+    vefkjghfufgtgfesthhqredtredtjeenucfhrhhomhepfdffrghnihgvlhcuighufdcuoe
+    gugihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpefgleeitefgvefffedu
+    fefhffdtieetgeetgeegheeufeeufeekgfefueffvefhffenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiiipdhn
+    sggprhgtphhtthhopeduvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepuggrvh
+    gvmhesuggrvhgvmhhlohhfthdrnhgvthdprhgtphhtthhopeifihhllhgvmhguvggsrhhu
+    ihhjnhdrkhgvrhhnvghlsehgmhgrihhlrdgtohhmpdhrtghpthhtohepvgguuhhmrgiivg
+    htsehgohhoghhlvgdrtghomhdprhgtphhtthhopehjrggtohgsrdgvrdhkvghllhgvrhes
+    ihhnthgvlhdrtghomhdprhgtphhtthhopehkuhgsrgeskhgvrhhnvghlrdhorhhgpdhrtg
+    hpthhtoheprghnughrvgifsehluhhnnhdrtghhpdhrtghpthhtohepjhgrshhofigrnhhg
+    sehrvgguhhgrthdrtghomhdprhgtphhtthhopehprggsvghnihesrhgvughhrghtrdgtoh
+    hmpdhrtghpthhtohepsghpfhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:ZpsmaJkCVy_11Ajx9LuGyPyerWRlWJpvLckODbwrVdgLd0rZySZ7tA>
+    <xmx:ZpsmaEz9UKzw_rGHOsRZLQMSSK3nUKVSQQ-F908mCr141b7JFLKexA>
+    <xmx:ZpsmaLTlYchxHheIoaaDYGGRQKtGPCc5sNODgoo07DXknhL0nil6ug>
+    <xmx:ZpsmaPYh5aDICpu5v0vdb67bM3PX7VefJqRTrKvQcyOTkY5MiUL07A>
+    <xmx:ZpsmaH6Y8a49c2zq46SgonXYSE8L7qRXid5G4DiLRaKWKcWivzHCHYrV>
+Feedback-ID: i6a694271:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 3CDDE15C0068; Thu, 15 May 2025 21:56:54 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-ThreadId: T995aa454cfce42d7
+Date: Thu, 15 May 2025 18:56:34 -0700
+From: "Daniel Xu" <dxu@dxuuu.xyz>
+To: "Willem de Bruijn" <willemdebruijn.kernel@gmail.com>,
+ "Alexander Shalimov" <alex-shalimov@yandex-team.ru>
+Cc: andrew@lunn.ch, "David Miller" <davem@davemloft.net>,
+ "Eric Dumazet" <edumazet@google.com>, jacob.e.keller@intel.com,
+ jasowang@redhat.com, "Jakub Kicinski" <kuba@kernel.org>,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ "Paolo Abeni" <pabeni@redhat.com>,
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Message-Id: <0bcc08e4-9f22-431c-97f3-c7d5784d2652@app.fastmail.com>
+In-Reply-To: <6825f65ae82b5_24bddc29422@willemb.c.googlers.com.notmuch>
+References: <681a63e3c1a6c_18e44b2949d@willemb.c.googlers.com.notmuch>
+ <20250514233931.56961-1-alex-shalimov@yandex-team.ru>
+ <6825f65ae82b5_24bddc29422@willemb.c.googlers.com.notmuch>
+Subject: Re: [PATCH] net/tun: expose queue utilization stats via ethtool
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Add a fairly complete example of rt-link usage. If run without any
-arguments it simply lists the interfaces and some of their attrs.
-If run with an arg it tries to create and delete a netkit device.
+On Thu, May 15, 2025, at 7:12 AM, Willem de Bruijn wrote:
+> Alexander Shalimov wrote:
+>> 06.05.2025, 22:32, "Willem de Bruijn" <willemdebruijn.kernel@gmail.co=
+m>:
+>> > Perhaps bpftrace with a kfunc at a suitable function entry point to
+>> > get access to these ring structures.
+>>=20
+>> Thank you for your responses!
+>>=20
+>> Initially, we implemented such monitoring using bpftrace but we were
+>> not satisfied with the need to double-check the structure definitions
+>> in tun.c for each new kernel version.
+>>=20
+>> We attached kprobe to the "tun_net_xmit()" function. This function
+>> gets a "struct net_device" as an argument, which is then explicitly
+>> cast to a tun_struct - "struct tun_struct *tun =3D netdev_priv(dev)".
+>> However, performing such a cast within bpftrace is difficult because
+>> tun_struct is defined in tun.c - meaning the structure definition
+>> cannot be included directly (not a header file). As a result, we were
+>> forced to add fake "struct tun_struct" and "struct tun_file"
+>> definitions, whose maintenance across kernel versions became
+>> cumbersome (see below). The same problems exists even with kfunc and
+>> btf - we are not able to cast properly netdev to tun_struct.
+>>=20
+>> That=E2=80=99s why we decided to add this functionality directly to t=
+he kernel.
+>
+> Let's solve this in bpftrace instead. That's no reason to rever to
+> hardcoded kernel APIs.
+>
+> It quite possibly already is. I'm no bpftrace expert. Cc:ing bpf@
 
- 1 # ./tools/net/ynl/samples/rt-link 1
- 2 Trying to create a Netkit interface
- 3 Testing error message for policy being bad:
- 4     Kernel error: 'Provided default xmit policy not supported' (bad attribute: .linkinfo.data(netkit).policy)
- 5   1:               lo: mtu 65536
- 6   2:           wlp0s1: mtu  1500
- 7   3:          enp0s13: mtu  1500
- 8   4:           dummy0: mtu  1500  kind dummy     altname one two
- 9   5:              nk0: mtu  1500  kind netkit    primary 0  policy forward
-10   6:              nk1: mtu  1500  kind netkit    primary 1  policy blackhole
-11 Trying to delete a Netkit interface (ifindex 6)
+Yeah, should be possible. You haven't needed to include header
+files to access type information available in BTF for a while now.
+This seems to work for me - mind giving this a try?
 
-Sample creates the device first, it sets an invalid value for a netkit
-attribute to trigger reverse parsing. Line 4 shows the error with the
-attribute path correctly generated by YNL.
+```
+fentry:tun:tun_net_xmit {
+    $tun =3D (struct tun_struct *)args->dev->priv;
+    print($tun->numqueues);  // or whatever else you want
+}
+```
 
-Then sample fixes the bad attribute and re-issues the request, with
-NLM_F_ECHO set. This flag causes the notification to be looped back
-to the initiating socket (our socket). Sample parses this notification
-to save the ifindex of the created netkit.
+fentry probes are better in general than kprobes if all you're doing
+is attaching to the entry of a function.
 
-Sample then proceeds to list the devices. Line 8 above shows a dummy
-device with two alt names. Lines 9 and 10 show the netkit devices
-the sample itself created.
+You could do the same with kprobes like this if you really want, though:
 
-The "primary" and "policy" attrs are from inside the netkit submsg.
-The string values are auto-generated for the enums by YNL.
+```
+kprobe:tun:tun_net_xmit {
+    $dev =3D (struct net_device *)arg1;
+    $tun =3D (struct tun_struct *)$dev->priv;
+    print($tun->numqueues);  // or whatever else you want
+}
+```
 
-To clean up sample deletes the interface it created (line 11).
+Although it looks like there's a bug when you omit the module name
+where bpftrace doesn't find the struct definition. I'll look into that.
 
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
----
-CC: bpf@vger.kernel.org
----
- tools/net/ynl/samples/rt-link.c  | 184 +++++++++++++++++++++++++++++++
- tools/net/ynl/samples/.gitignore |   1 +
- 2 files changed, 185 insertions(+)
- create mode 100644 tools/net/ynl/samples/rt-link.c
-
-diff --git a/tools/net/ynl/samples/rt-link.c b/tools/net/ynl/samples/rt-link.c
-new file mode 100644
-index 000000000000..acdd4b4a0f74
---- /dev/null
-+++ b/tools/net/ynl/samples/rt-link.c
-@@ -0,0 +1,184 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <stdio.h>
-+#include <string.h>
-+
-+#include <ynl.h>
-+
-+#include <arpa/inet.h>
-+#include <net/if.h>
-+
-+#include "rt-link-user.h"
-+
-+static void rt_link_print(struct rt_link_getlink_rsp *r)
-+{
-+	unsigned int i;
-+
-+	printf("%3d: ", r->_hdr.ifi_index);
-+
-+	if (r->_len.ifname)
-+		printf("%16s: ", r->ifname);
-+
-+	if (r->_present.mtu)
-+		printf("mtu %5d  ", r->mtu);
-+
-+	if (r->linkinfo._len.kind)
-+		printf("kind %-8s  ", r->linkinfo.kind);
-+	else
-+		printf("     %8s  ", "");
-+
-+	if (r->prop_list._count.alt_ifname) {
-+		printf("altname ");
-+		for (i = 0; i < r->prop_list._count.alt_ifname; i++)
-+			printf("%s ", r->prop_list.alt_ifname[i]->str);
-+		printf(" ");
-+	}
-+
-+	if (r->linkinfo._present.data && r->linkinfo.data._present.netkit) {
-+		struct rt_link_linkinfo_netkit_attrs *netkit;
-+		const char *name;
-+
-+		netkit = &r->linkinfo.data.netkit;
-+		printf("primary %d  ", netkit->primary);
-+
-+		name = NULL;
-+		if (netkit->_present.policy)
-+			name = rt_link_netkit_policy_str(netkit->policy);
-+		if (name)
-+			printf("policy %s  ", name);
-+	}
-+
-+	printf("\n");
-+}
-+
-+static int rt_link_create_netkit(struct ynl_sock *ys)
-+{
-+	struct rt_link_getlink_ntf *ntf_gl;
-+	struct rt_link_newlink_req *req;
-+	struct ynl_ntf_base_type *ntf;
-+	int ret;
-+
-+	req = rt_link_newlink_req_alloc();
-+	if (!req) {
-+		fprintf(stderr, "Can't alloc req\n");
-+		return -1;
-+	}
-+
-+	/* rtnetlink doesn't provide info about the created object.
-+	 * It expects us to set the ECHO flag and the dig the info out
-+	 * of the notifications...
-+	 */
-+	rt_link_newlink_req_set_nlflags(req, NLM_F_CREATE | NLM_F_ECHO);
-+
-+	rt_link_newlink_req_set_linkinfo_kind(req, "netkit");
-+
-+	/* Test error messages */
-+	rt_link_newlink_req_set_linkinfo_data_netkit_policy(req, 10);
-+	ret = rt_link_newlink(ys, req);
-+	if (ret) {
-+		printf("Testing error message for policy being bad:\n\t%s\n", ys->err.msg);
-+	} else {
-+		fprintf(stderr,	"Warning: unexpected success creating netkit with bad attrs\n");
-+		goto created;
-+	}
-+
-+	rt_link_newlink_req_set_linkinfo_data_netkit_policy(req, NETKIT_DROP);
-+
-+	ret = rt_link_newlink(ys, req);
-+created:
-+	rt_link_newlink_req_free(req);
-+	if (ret) {
-+		fprintf(stderr, "YNL: %s\n", ys->err.msg);
-+		return -1;
-+	}
-+
-+	if (!ynl_has_ntf(ys)) {
-+		fprintf(stderr,
-+			"Warning: interface created but received no notification, won't delete the interface\n");
-+		return 0;
-+	}
-+
-+	ntf = ynl_ntf_dequeue(ys);
-+	if (ntf->cmd !=	RTM_NEWLINK) {
-+		fprintf(stderr,
-+			"Warning: unexpected notification type, won't delete the interface\n");
-+		return 0;
-+	}
-+	ntf_gl = (void *)ntf;
-+	ret = ntf_gl->obj._hdr.ifi_index;
-+	ynl_ntf_free(ntf);
-+
-+	return ret;
-+}
-+
-+static void rt_link_del(struct ynl_sock *ys, int ifindex)
-+{
-+	struct rt_link_dellink_req *req;
-+
-+	req = rt_link_dellink_req_alloc();
-+	if (!req) {
-+		fprintf(stderr, "Can't alloc req\n");
-+		return;
-+	}
-+
-+	req->_hdr.ifi_index = ifindex;
-+	if (rt_link_dellink(ys, req))
-+		fprintf(stderr, "YNL: %s\n", ys->err.msg);
-+	else
-+		fprintf(stderr,
-+			"Trying to delete a Netkit interface (ifindex %d)\n",
-+			ifindex);
-+
-+	rt_link_dellink_req_free(req);
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	struct rt_link_getlink_req_dump *req;
-+	struct rt_link_getlink_list *rsp;
-+	struct ynl_error yerr;
-+	struct ynl_sock *ys;
-+	int created = 0;
-+
-+	ys = ynl_sock_create(&ynl_rt_link_family, &yerr);
-+	if (!ys) {
-+		fprintf(stderr, "YNL: %s\n", yerr.msg);
-+		return 1;
-+	}
-+
-+	if (argc > 1) {
-+		fprintf(stderr, "Trying to create a Netkit interface\n");
-+		created = rt_link_create_netkit(ys);
-+		if (created < 0)
-+			goto err_destroy;
-+	}
-+
-+	req = rt_link_getlink_req_dump_alloc();
-+	if (!req)
-+		goto err_del_ifc;
-+
-+	rsp = rt_link_getlink_dump(ys, req);
-+	rt_link_getlink_req_dump_free(req);
-+	if (!rsp)
-+		goto err_close;
-+
-+	if (ynl_dump_empty(rsp))
-+		fprintf(stderr, "Error: no links reported\n");
-+	ynl_dump_foreach(rsp, link)
-+		rt_link_print(link);
-+	rt_link_getlink_list_free(rsp);
-+
-+	if (created)
-+		rt_link_del(ys, created);
-+
-+	ynl_sock_destroy(ys);
-+	return 0;
-+
-+err_close:
-+	fprintf(stderr, "YNL: %s\n", ys->err.msg);
-+err_del_ifc:
-+	if (created)
-+		rt_link_del(ys, created);
-+err_destroy:
-+	ynl_sock_destroy(ys);
-+	return 2;
-+}
-diff --git a/tools/net/ynl/samples/.gitignore b/tools/net/ynl/samples/.gitignore
-index 7f9781cf532f..b3ec3fb0929f 100644
---- a/tools/net/ynl/samples/.gitignore
-+++ b/tools/net/ynl/samples/.gitignore
-@@ -4,4 +4,5 @@ netdev
- ovs
- page-pool
- rt-addr
-+rt-link
- rt-route
--- 
-2.49.0
-
+Thanks,
+Daniel
 
