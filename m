@@ -1,315 +1,175 @@
-Return-Path: <bpf+bounces-58406-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58407-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C00D7ABA04D
-	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 17:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 28D61ABA08C
+	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 18:03:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92CAA1743E1
-	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 15:50:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC6AF17B61E
+	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 16:03:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAE011BF33F;
-	Fri, 16 May 2025 15:50:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 925CE1B4F0F;
+	Fri, 16 May 2025 16:03:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IRCl1Jby"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wtg5IZjX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC6567D07D
-	for <bpf@vger.kernel.org>; Fri, 16 May 2025 15:50:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2686442C
+	for <bpf@vger.kernel.org>; Fri, 16 May 2025 16:03:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747410640; cv=none; b=l5tLkWk+YL/c3ZlnvkTe3NvbqjKvLf0UP6xm2/JmtLNNwROSlsw5VoRWOCHQTmIoL0N+Bh/e3VcanRTaxG6dkfvfqMid+oethiTmch6+DgXLLucWKzh/1LfzV8hCpGFP+cVVVoRWurgQpxMkkP4+EVwLLOhUQhh8Ge0Jijw+k40=
+	t=1747411400; cv=none; b=ppiDU8miElYy6S5quQV3g62nZ+Xh3wkB2xL7xWG0OV3Kl9Fi+knZoCAZflc0Dc4LlHR3LGK+YDs8B3GG4n1Xar48+iz+oMK0S/GV9Dwg4PfeVfbqPNXRgXfpI7n/pz8jCg1qDWKbBu/M+PkBrOITaRgFHWyynptQQeM1r2T837g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747410640; c=relaxed/simple;
-	bh=zCnoOAiyk/FScx9YbMjwRiv/+SdKfDSu/RWXpoeVIBw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oWoDgzlgVFB2sutnwoa9wejRQb9Av+YgBe1f8BD2qnjHcJKM3n+aftYNgDZsWttST5+LhWQT5Oe+VWnOiIDq35Ywlt1khSyc/u0sI7ZUJ660n4F9gF54tGaaEKUv2GvEqFh4fRDSy70ef58VZ2tGlbNC2WoA+HJjlIWyn/DaJgw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IRCl1Jby; arc=none smtp.client-ip=209.85.215.175
+	s=arc-20240116; t=1747411400; c=relaxed/simple;
+	bh=xXzcEqq5JO804+nZnCGA65KTAFUUV/SpykcZ4egdjeM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=em46IYnFeWZpD8KtVdAEpGAZljLCpm8El4l5kw//51VC4XXAm1FHpAsw5bxKhMImRYsfGeNjFV6QShl1SOgxpCC9nqifMGFCh7iecsUtMkSLqw0h+I3nJEKwBoEAoM6OcANTLZmwDqaXh7wRTRvB1YuRLscVV5/+DrvQvuLMqYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Wtg5IZjX; arc=none smtp.client-ip=209.85.128.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-b0db0b6a677so1846222a12.2
-        for <bpf@vger.kernel.org>; Fri, 16 May 2025 08:50:38 -0700 (PDT)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-43cfebc343dso16570985e9.2
+        for <bpf@vger.kernel.org>; Fri, 16 May 2025 09:03:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747410638; x=1748015438; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LiokMjazJmTJuESnSf/4K0rZQWNYc3gngaw8F/dmTo8=;
-        b=IRCl1JbyMDAG72fP/7q08bLUXKIKWoqtnQplZxYRfpDHpeatVaQPy3+eGGBDkgA5kT
-         LL6anOKHtd+DTJJa7oXyrV097EiAcW3ZbyoaJy7+Z736D/dD3i+zKFgl59Gmi216gIw1
-         LuOYANKgRRcRB/6F3cv5VyMa0g2Vxvx7XpOhAkTR+ICFSIVNEB2mpUHgirQt7qymKP6N
-         xEA+6Io2aDw/lsGh8IF8Snmctdq2A94y7x+26l6JM6crRkEBEDFJidfkfI044zOHgEAx
-         bsbh5rWS/qPXBSyerj7i0bIfS0+UgQdyvIGea+/Qn3j8R3634EKTV9mA4SOsvwBYVYKz
-         qGHA==
+        d=gmail.com; s=20230601; t=1747411396; x=1748016196; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=UOArQAhCjCtwpx1z2fdPrFYXZS5MVHr+gWPLC5VJSEo=;
+        b=Wtg5IZjXkqgt5ho1h0lltKoJML8u1/56pSCZsrFi1LMJBw6erITMbXMiGaeRCmBKns
+         y/NSH3F7bvH7BVAO7g3/BEziZ+x3AwhnvoPYOpFcWfS8BWrL5sHMnCDgJrHsQayviy6T
+         VxhcxAJlJAEHZWq7K1CvL0nYuLrZU7uxfI7ukZyF+xQ8a2RmriaCvteQEuKr5WoF/bwN
+         suYOsuczu8MWPTEyArk7MIMO4D/RJviYcOWhv1DNg39A1f7Xw+A/dsUalwyxJpCveSSI
+         dGwPIpEsaR1lLnp7xgc7gGPdSI5K4V9fIZx46QwuO93ImMA5A7u9RK2IMHKOaZXrd7YO
+         uyFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747410638; x=1748015438;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LiokMjazJmTJuESnSf/4K0rZQWNYc3gngaw8F/dmTo8=;
-        b=vqc+/QAKfBfwj2cT0CZRxD18uD960ocQHzMNlupH292n3Ngg533V1U9I+Gt4DjEfXw
-         GH71lUVJkFrP2/Fq+iAS/+QKUqCbiqEnptj4vgdA9nnnC4DxWxwRledkMqRcNPULYmKj
-         gSgCkYSoHO1Y5IPShp6Is/EXYuUns1CRrUIrJfemmp+39cbqU6KB+IOK9fpedyN3DOvD
-         j1T3jUW39WOe5ZwoFrLcuRoZbzsoi/yr/ZEemytJkLXz89MO1LOBc7Qxc1DTHZSiV1p9
-         BADfRQqBuylh5X4kSTPngBTeZVyluXoR9F7ofZr2XpwaNDI19Xx5UNUveaVVsXqiVHgP
-         ZS3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXl8RFiqeXSljBguxuiYBZIiSKAydIAKQ6Yq5W/mtwVxglPmO1crp5yx+K2VESum/LsT+s=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyG/TS+mK6pGFMXb1jrDcchax+T9aHpLsxmUy3sEJeKzYKXIKej
-	AMH5spPsz3LGVvW2ub4UHkYy+PwKGeJRI9CMfSjkzqA04VBPdF8uDlF9YZJi8fRLtmkfl++/Yu5
-	sGniDh1ewH+AEbaAbv26hW1hYDJpy1x8Djot6
-X-Gm-Gg: ASbGnctd20Wjf04hnVNyryeAlvA//0JpIm4GBBzF7rLpDcOOIN+mlxgpOPKZ/7+BqY2
-	OkLMZz3b33AdRCS+3Rztb0rdPo8aUrQlUSw4bEk/gzz8byeOep4FRl59WD7r92jEpyAxUvhTYRu
-	WNt3iugME697K6v29z0hNUSAyYK/b0pjkpeL/PBnZml+czacM9
-X-Google-Smtp-Source: AGHT+IHjYcDrKMxpGXdBEZOcNAQEIkUYlWRv+uVBrttimq+RO7V85eDPCxOF+ieUs1MupAN9G/jf2ALeLN7i3UcyePU=
-X-Received: by 2002:a17:902:f603:b0:223:f408:c3dc with SMTP id
- d9443c01a7336-231d43db55emr49059305ad.9.1747410637789; Fri, 16 May 2025
- 08:50:37 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1747411396; x=1748016196;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UOArQAhCjCtwpx1z2fdPrFYXZS5MVHr+gWPLC5VJSEo=;
+        b=paaqB+n4Hg5ceOLsnb7yW6Jc9sxXSkI1FgqfTQlgpE3Z8g0qP6FBnoV7nKyEsJ5PAh
+         7eFnv4ESPscaU+n30EjhDD1QCuCOvVy9g6HwZgTgofZs5h3Mh5+ysSe+v+y6SJxGNfMj
+         LTcgB//DoCMcL8Titu5v7ljBnXl18Pi+dpvCPd3Aep1Iq4Xp0K534TqwbKbVHBCsbkfX
+         JPt9h5XxRANrcv87YjA/gi+6Jf57myjPGBgKBBdYakHhkz4SUnmNoDnwRCkKLuOVv1Lm
+         qmmfDbYiUveY69miG4xfpz2f3yNVH+mlJeetJQ7DY/ZAXvHRHfymbNLcB1bw2Gm+GOb7
+         g+ew==
+X-Forwarded-Encrypted: i=1; AJvYcCWnF/i5FMb8R+y/QIR4pkOplpRh1VKLA9SliFnCHBxW/6PqtUcNpfDss9BrmTWHdzrq0fg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzM42MVQnn7AIamK6FpB3mAtPLSwNI/L5v1v40SiIuGT3KYotp7
+	8ENFidnHjwJDdDpHnec5OXqx06Yyi/pbKSeNeeaOKpHTsWOg4VdHgrQC
+X-Gm-Gg: ASbGncukOlAePO9xZE/ZXQv+6feFH3a377t9ok62AGXvJENDjHP1Nb0yz2r/5LOCZcK
+	dCGtdTc7QdHyqjAgoQrhEP12X4CakEv34J1GO4BjmPcLoyDM+gt2nhbhcruk3p1Eutcx334Xviw
+	jihahsje+YNvFNqsHA+CUYNdbebgKzzRJZ+WGMn4aNMK78vE/9970YQOud/LBGqd6q769Ole7Tb
+	6ju1QeRuBjNICTElylFUa0F+u4HB3MbMveGC9oDqpPSaDXmUQv8luQLDHiZU9kgWxkNnCDVZyJj
+	OGrMqtAduI0Oawc6HS2SfTVwlh8bvnwuLHqiOJNGvaZd5gzXujLrxbDQFEKJ02UyBcze/mwEnH/
+	tRb+b3nUkb/G6INCuu1xLR9jwCRP8VZsM
+X-Google-Smtp-Source: AGHT+IFXhwzoAIhwzlvq14+UQN1L2FB8CnbxTqt3fqt0s8Pk7KpSkaaZbr37cNy8Y4V84XrY6c3N1w==
+X-Received: by 2002:a05:600c:c10:b0:442:f989:3dfb with SMTP id 5b1f17b1804b1-442fd60b448mr38953885e9.1.1747411393957;
+        Fri, 16 May 2025 09:03:13 -0700 (PDT)
+Received: from ?IPV6:2a01:4b00:bf28:2e00:ff96:2dac:a39:3e10? ([2a01:4b00:bf28:2e00:ff96:2dac:a39:3e10])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-442f39ef8bbsm113583075e9.37.2025.05.16.09.03.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 May 2025 09:03:13 -0700 (PDT)
+Message-ID: <d2368b21-2e45-4601-be04-fc2e51ccf91f@gmail.com>
+Date: Fri, 16 May 2025 17:03:12 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1746598898.git.vmalik@redhat.com> <19913411da8c08170d959207e28262efc0a5d813.1746598898.git.vmalik@redhat.com>
- <CAEf4BzZBB3rD0gfxq3ZC0_RuBjXHBMqdXxw3DcEyuYhmh7n5HA@mail.gmail.com>
- <e1bb9c33b8852e1d3575f7cefe50aca266a8ff2b.camel@gmail.com>
- <CAEf4BzZ5x2JGcnZftf1KRiBziaz_On_mMtW77ArvnOyFNWh==Q@mail.gmail.com>
- <16d66553-e02d-4a13-aa54-50054aec3c98@redhat.com> <CAEf4BzbRiwivpVY4X29aq5txGP1UtpiGkjz=J0vLyvBO-Hw8Xw@mail.gmail.com>
- <71eb7443-18ce-4bf6-8371-a55a0016c6c1@redhat.com>
-In-Reply-To: <71eb7443-18ce-4bf6-8371-a55a0016c6c1@redhat.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 16 May 2025 08:50:25 -0700
-X-Gm-Features: AX0GCFsQF6qr2BTytd5M3ERtfKEVZZ7yQjIYa3DCeIleE9H_RlGPA2klEL9BcgU
-Message-ID: <CAEf4BzZtKVW+NEBTOpFK23KixNtwzgeRJwc-tBXQkWsqov-ZvA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 3/4] bpf: Add kfuncs for read-only string operations
-To: Viktor Malik <vmalik@redhat.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix
+ dynptr/test_probe_read_user_str_dynptr test failure
+To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+ Martin KaFai Lau <martin.lau@kernel.org>, Mykyta Yatsenko <yatsenko@meta.com>
+References: <20250515195145.3127492-1-yonghong.song@linux.dev>
+Content-Language: en-US
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+In-Reply-To: <20250515195145.3127492-1-yonghong.song@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, May 15, 2025 at 10:59=E2=80=AFPM Viktor Malik <vmalik@redhat.com> w=
-rote:
+On 5/15/25 20:51, Yonghong Song wrote:
+> When running bpf selftests with llvm18 compiler, I hit the following
+> test failure:
 >
-> On 5/15/25 19:17, Andrii Nakryiko wrote:
-> > On Thu, May 15, 2025 at 5:27=E2=80=AFAM Viktor Malik <vmalik@redhat.com=
-> wrote:
-> >>
-> >> On 5/10/25 00:03, Andrii Nakryiko wrote:
-> >>> On Fri, May 9, 2025 at 2:37=E2=80=AFPM Eduard Zingerman <eddyz87@gmai=
-l.com> wrote:
-> >>>>
-> >>>> On Fri, 2025-05-09 at 11:20 -0700, Andrii Nakryiko wrote:
-> >>>>
-> >>>> [...]
-> >>>>
-> >>>>>> +/**
-> >>>>>> + * bpf_strchr - Find the first occurrence of a character in a str=
-ing
-> >>>>>> + * @s: The string to be searched
-> >>>>>> + * @c: The character to search for
-> >>>>>> + *
-> >>>>>> + * Note that the %NUL-terminator is considered part of the string=
-, and can
-> >>>>>> + * be searched for.
-> >>>>>> + *
-> >>>>>> + * Return:
-> >>>>>> + * * const char * - Pointer to the first occurrence of @c within =
-@s
-> >>>>>> + * * %NULL        - @c not found in @s
-> >>>>>> + * * %-EFAULT     - Cannot read @s
-> >>>>>> + * * %-E2BIG      - @s too large
-> >>>>>> + */
-> >>>>>> +__bpf_kfunc const char *bpf_strchr(const char *s, char c)
-> >>>>>
-> >>>>> so let's say we found the character, we return a pointer to it, and
-> >>>>> that memory goes away (because we never owned it, so we don't reall=
-y
-> >>>>> know what and when will happen with it). Question, will verifier al=
-low
-> >>>>> BPF program to dereference this pointer? If yes, that's a problem. =
-But
-> >>>>> if not, then I'm not sure there is much point in returning a pointe=
-r.
-> >>
-> >> You are right, at the moment, the verifier marks the returned pointers
-> >> as `rdonly_mem_or_null` so an attempt to dereference them will result
-> >> into a verifier error. Which is clearly not very useful.
-> >>
-> >> I'd say that, theoretically, the pointers returned from these kfuncs
-> >> should be treated by the verifier in the same way as the passed
-> >> pointers. That is, if PTR_TO_MAP_VALUE is passed,
-> >> PTR_TO_MAP_VALUE_OR_NULL should be returned, and so on.
-> >>
-> >>>>> I'm just trying to imply that in BPF world integer-based APIs work
-> >>>>> better/safer, overall? For strings, we can switch any
-> >>>>> pointer-returning API to position-returning (or negative error) API
-> >>>>> and it would more or less naturally fit into BPF API surface, no?
-> >>>>
-> >>>> Integer based API solves the problem with memory access but is not
-> >>>> really ergonomic. W/o special logic in verifier the returned int wou=
-ld
-> >>>> be unbounded, hence the user would have to compare it with string
-> >>>> length before using.
-> >>>>
-> >>>> It looks like some verifier logic is necessary regardless of API bei=
-ng
-> >>>> integer or pointer based. In any case verifier needs additional rule=
-s
-> >>>> for each pointer type to adjust bounds on the return value or its re=
-fobj_id.
-> >>
-> >> IMO the problem here is that we can't just say anything about the
-> >> returned pointer (or index) rather than it is within the bounds of the
-> >> original string (or within the passed size for bounded kfuncs). So, an=
-y
-> >> access to that pointer with an offset other than 0 will still need an
-> >> explicit bounds check.
-> >
-> > Exactly.
-> >
-> >>
-> >>> You can't safely dereference any pointer returned from these APIs,
-> >>> because the memory might not be there anymore.
-> >>
-> >> You can't if the memory comes from an untrusted source. But what if th=
-e
-> >> memory is owned by the BPF program (e.g. on stack or in a map)? Then, =
-it
-> >> should be possible to dereference it safely, shouldn't it? IMHO, this
-> >> would be quite a common use-case: read string into BPF memory using
-> >> bpf_probe_read_str -> use string kfunc to search it -> do something wi=
-th
-> >> the returned pointer (dereference it). From ergonomics perspective, it
-> >> shouldn't be necessary to use bpf_probe_read or __get_kernel_nofault
-> >> again.
-> >
-> > For bpf_probe_read_str -> use kfunc scenario, I thought the main
-> > *goal* is to avoid the bpf_probe_read_str operation altogether. That's
-> > why we allow unsafe pointers passed into those kfuncs you are adding
-> > and why we use __get_kernel_nofault internally.
+>    verify_success:PASS:dynptr_success__open 0 nsec
+>    verify_success:PASS:bpf_object__find_program_by_name 0 nsec
+>    verify_success:PASS:dynptr_success__load 0 nsec
+>    verify_success:PASS:test_run 0 nsec
+>    verify_success:FAIL:err unexpected err: actual 1 != expected 0
+>    #91/19   dynptr/test_probe_read_user_str_dynptr:FAIL
+>    #91      dynptr:FAIL
 >
-> My original use-case (for bpftrace) was pure ergonimics - we typically
-> have a string on stack or in a map and instead of writing the string
-> operation by hand, we could use a pre-defined kfunc. But your suggested
-> use-case is probably even more valuable.
+> I did some analysis and found that the test failure is related to
+> lib/strncpy_from_user.c function do_strncpy_from_user():
 >
-> > So with that, you'd actually just use, say, bpf_strchr(), get back
-> > some pointer or index, calculate substring (prefix) length, and *then*
-> > maybe bpf_probe_read_str into ringbuf or local buffer, if you'd like
-> > to capture the data and do some post processing.
+>    ...
+>    byte_at_a_time:
+>          while (max) {
+>                  char c;
 >
-> Agreed. The great strength I can see in this is that in many cases, you
-> don't need the follow-up bpf_probe_read_str at all - getting the length
-> of the (sub)string, testing for substring or character inclusion, etc.
+>                  unsafe_get_user(c,src+res, efault);
+>                  dst[res] = c;
+>                  if (!c)
+>                          return res;
+>                  res++;
+>                  max--;
+>          }
+>    ...
 >
-> >>
-> >>> For integers, same idea. If you use bpf_probe_read_{kernel,user} to
-> >>> read data, then verifier doesn't care about the value of integer.
-> >>>
-> >>> But that's not ergonomic, so in some other thread few days ago I was
-> >>> proposing that we should add an untyped counterpart to bpf_core_cast(=
-)
-> >>> that would just make any memory accesses performed using
-> >>> __get_kernel_nofault() semantics. And so then:
-> >>>
-> >>>
-> >>> const char *str =3D <random value or we got it from somewhere untrust=
-ed>;
-> >>> int space_idx =3D bpf_strchr(str, ' ');
-> >>> if (space_idx < 0)
-> >>>   return -1; /* bad luck */
-> >>>
-> >>> const char *s =3D bpf_mem_cast(str);
-> >>> char buf[64] =3D {};
-> >>>
-> >>> bpf_for(i, 0, space_idx)
-> >>>     buf[i] =3D s[i]; /* MAGIC */
-> >>>
-> >>> bpf_printk("STUFF BEFORE SPACE: %s", buf);
-> >>
-> >> I can imagine that this would be a nice helper for accessing untrusted
-> >> memory in general but I don't think it's specific to string kfuncs. At
-> >> the moment, reading an untrusted string requires bpf_probe_read_str so
-> >> calling it after processing the string via a kfunc doesn't introduce a=
-ny
-> >> extra call.
-> >
-> > I might be confused, see above. My impression was that with your
-> > functions we won't need bpf_probe_read_str() and that was the whole
-> > point of your __get_kernel_nofault-based reimplementation. If not for
-> > that, we'd use trusted memory pointers and just used internal kernel
-> > strings, knowing that we are working with MAP_VALUE or PTR_TO_STACK of
-> > well-bounded size.
-> >
-> > Then again, see what I wrote above. I imagine that the user would not
-> > do bpf_probe_read_str() at all. I'll do bpf_strchr(), followed by
-> > bpf_memcast(), followed by iterating from 0 to the index returned from
-> > bpf_strchr(), if I need to process the substring.
+> Depending on whether the character 'c' is '\0' or not, the
+> return value 'res' could be different.
 >
-> Yeah, I can see value in that although I'm not sure what's the
-> difference between bpf_mem_cast and bpf_probe_read_str since they both
-> use __get_kernel_nofault under the hood. Just ergonomics and the fact
-> that bpf_mem_cast doesn't need a buffer? Also, shouldn't the
-
-It's not "just doesn't need a buffer", that's a major difference (and
-that buffer is sometimes a major limitation and blocker) Strings can
-be short *most of the time*, but occasionally could be very long. In
-both cases you want to process them in their entirety, if possible,
-but you can't afford pre-allocating buffer for the worst case just to
-be able to make a local copy.
-
-> dereferences after bpf_mem_cast be called under pagefault_disable?
+> In prog_tests/dynptr.c, we have
+>    char user_data[384] = {[0 ... 382] = 'a', '\0'};
+> the user_data[383] is '\0'. This will cause the following
+> error in progs/dynptr_success.c:
 >
-> >> BTW note that at the moment, the kfuncs do not accept strings from
-> >> untrusted sources as the verifier doesn't know how to treat `char *`
-> >> kfunc args and treats them as scalars (which are incompatible with oth=
-er
-> >> pointers). Here, changing also the kfunc args to ints would probably
-> >> help, although I think that it would not be ergonomic at all. So, we
-> >> still need some verifier work to handle `char *` args to kfuncs.
-> >
-> > Ok, so that's probably the missing piece. We need to teach verifiers
-> > to allow such untrusted pointers. I thought that was the whole idea
-> > behind adding these APIs: to allow such usage.
+>    test_dynptr_probe_str_xdp:
+>    ...
+>          bpf_for(i, 0, ARRAY_SIZE(test_len)) {
+>                  __u32 len = test_len[i];
 >
-> Yes, I'll look into that. Do you want to merge everything together or
-> should I post the updated (likely int-based) kfuncs in the meantime as
-> they are useful for trusted pointers as well?
-
-I'd switch all APIs to integers. And to allow passing any untrusted
-pointer, I believe we already have __ign suffix for kfunc argument. So
-please add __ign where appropriate, and let's write a few more tests
-validating that all this works?
-
-bpf_mem_cast() is probably a separate feature, so I wouldn't block on that.
-
+>                  cnt = bpf_read_dynptr_fn(&ptr_xdp, off, len, ptr);
+>                  if (cnt != len)
+>                          err = 1; <=== error happens here
+>    ...
 >
-> Viktor
+> In the above particular case, len is 384 and cnt is 383.
 >
-> >>
-> >>> Tbh, when dealing with libc string APIs, I still very frequently
-> >>> convert resulting pointers into indices, so I don't think it's
-> >>> actually an API regression to have index-based string APIs
-> >>
-> >> I agree here. In addition, it looks to me that returning pointers woul=
-d
-> >> require extra verifier work while returning indices would not. And we
-> >> still need to apply extra bounds checks or access helpers in a majorit=
-y
-> >> of use-cases so we don't loose much ergonomics with integer-based APIs=
-.
-> >>
-> >
-> > +1
-> >
+> If user_data[384] is changed to
+>    char user_data[384] = {[0 ... 383] = 'a'};
 >
+> The above error will not happen and the test will run successfully.
+>
+> Cc: Mykyta Yatsenko <yatsenko@meta.com>
+> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+> ---
+>   tools/testing/selftests/bpf/prog_tests/dynptr.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/dynptr.c b/tools/testing/selftests/bpf/prog_tests/dynptr.c
+> index 62e7ec775f24..4cc61afa63b4 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/dynptr.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/dynptr.c
+> @@ -45,7 +45,7 @@ static struct {
+>   
+>   static void verify_success(const char *prog_name, enum test_setup_type setup_type)
+>   {
+> -	char user_data[384] = {[0 ... 382] = 'a', '\0'};
+> +	char user_data[384] = {[0 ... 383] = 'a'};
+>   	struct dynptr_success *skel;
+>   	struct bpf_program *prog;
+>   	struct bpf_link *link;
+This test is disabled in the DENYLIST and the fix was submitted to 
+another tree:
+https://patchwork.kernel.org/project/linux-mm/patch/20250422131449.57177-1-mykyta.yatsenko5@gmail.com/
+It's a little bit different problem.
 
