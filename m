@@ -1,96 +1,48 @@
-Return-Path: <bpf+bounces-58395-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58396-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DFC9AB993D
-	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 11:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 991BCAB99F6
+	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 12:18:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3DF83A3AFC
-	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 09:46:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF2F89E6454
+	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 10:18:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 559E3217F34;
-	Fri, 16 May 2025 09:45:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60C8A227E83;
+	Fri, 16 May 2025 10:18:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="E2LiSY9t";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="fjtGVKr2";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="E2LiSY9t";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="fjtGVKr2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P3mXICJJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C96722F768
-	for <bpf@vger.kernel.org>; Fri, 16 May 2025 09:45:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D685D381C4;
+	Fri, 16 May 2025 10:18:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747388742; cv=none; b=DjD0MDLWQbLNiBLZdEELmNAxj+DdPbZQ/1GrgHVwT6/HHL1b0rWSgCXtfXe0ohoC2jWP9yst6Q6HF/gyUpGpJ34/psYZkLlt9uRJ+LfMT6OgaWfBOLH5SQVQ6MpOXzh0VaXgNJ+hTNzn7+Bm1iGQFZSLDn4GULGFgulZa1XUQnU=
+	t=1747390718; cv=none; b=KCVWBRXdTVsaW19GKs9MZyFgX1KFu93UdTomVlIM3+skswrhDKy0qKH7VRvUmZMeNFYiay/SX4mNr94QOA/tC+oMc+CBUs4Mqg8e+NGFRV8OY2E+wyY3OhPNVbP8DqANkyBuomCKnTRXI5mB5PEAXSxTuTgvN9Wxap+nlXORry8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747388742; c=relaxed/simple;
-	bh=7Bm6yd3q8eDSmAsfS/jyh5v4JWHukmbzYQSdpoEoWk8=;
+	s=arc-20240116; t=1747390718; c=relaxed/simple;
+	bh=i131/A59sXtp21nNvGxoWEaQce+rFrKSV6S4e1Sr2+Y=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PujYVe/uK+0o08C8AAiCvoyMsLATC+8bcnBVKFgOJJiqo9j9oHtSdI3mvzHyS7vC0J4QWIlpPGjSgksvI8C1l8kvgPuQ29AknozXzZ41hRK6J69hpzVhnNCemWIyvT9O4fGfj3a7Uf1zUiy8wSdvgbOdi4Eai3cAAUGIEcvyojA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=E2LiSY9t; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=fjtGVKr2; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=E2LiSY9t; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=fjtGVKr2; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 8F1741F809;
-	Fri, 16 May 2025 09:45:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1747388739; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8WpIKKHmGcTGOMiGo191FHS/rzC9luV4pcbmSleL9Ho=;
-	b=E2LiSY9t77zhDLEU1dEtdR2SAbSyz4VGtl58X+O5YgnxrT+1L9rxIHXtgrB0gUYWT1RRqq
-	GnaxN9s4I6VyB3LdBTDrUYchAzxfRs+IWxvrTn7v37CdXe9R6TkzQWZyH2PBmMNtWKnk4h
-	YYX9SJGoyls65x7+RNdnMk6amRaNNMg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1747388739;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8WpIKKHmGcTGOMiGo191FHS/rzC9luV4pcbmSleL9Ho=;
-	b=fjtGVKr2fc1C6/15gm6kiGUDTtJyh0ooLIMWiEZaKh4n3chdDAihT41/TTk4iW//2o/Mbp
-	D6gvzpf0rp2C8SCQ==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=E2LiSY9t;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=fjtGVKr2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1747388739; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8WpIKKHmGcTGOMiGo191FHS/rzC9luV4pcbmSleL9Ho=;
-	b=E2LiSY9t77zhDLEU1dEtdR2SAbSyz4VGtl58X+O5YgnxrT+1L9rxIHXtgrB0gUYWT1RRqq
-	GnaxN9s4I6VyB3LdBTDrUYchAzxfRs+IWxvrTn7v37CdXe9R6TkzQWZyH2PBmMNtWKnk4h
-	YYX9SJGoyls65x7+RNdnMk6amRaNNMg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1747388739;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8WpIKKHmGcTGOMiGo191FHS/rzC9luV4pcbmSleL9Ho=;
-	b=fjtGVKr2fc1C6/15gm6kiGUDTtJyh0ooLIMWiEZaKh4n3chdDAihT41/TTk4iW//2o/Mbp
-	D6gvzpf0rp2C8SCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7181613977;
-	Fri, 16 May 2025 09:45:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ACVmG0MJJ2hGcwAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Fri, 16 May 2025 09:45:39 +0000
-Message-ID: <8114231b-ec06-44a9-9075-9ccf0809de4a@suse.cz>
-Date: Fri, 16 May 2025 11:45:39 +0200
+	 In-Reply-To:Content-Type; b=nCrOWK0cgnxihnMn4fxyJ8U4i422S1fK02h4X3fSPvey6kccoM4KvteBPQe7GyYvqIx3ivqurvyweSt7V3V8Z+DoCLgSbM8XhFEr2YlDzm6ZR+8Puhvr/oSIEuFRbzPf0itlcDN/Vrd7mXHrvYQ6VD4mJm6oNqFmUo+QEtpY27w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P3mXICJJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88CFBC4CEE4;
+	Fri, 16 May 2025 10:18:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747390718;
+	bh=i131/A59sXtp21nNvGxoWEaQce+rFrKSV6S4e1Sr2+Y=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=P3mXICJJOZyaSegUEy8iLHArWfw9yPvdifaiN1NlDBGTwuJmKoDk3Q95uN5G31+p5
+	 YcKdUcMIJHWOoPSZ2frtZHJEQOaiwbiv4BaetfttzVn1qpQcN57ZQlSzVeni+2kg80
+	 pj2I3iLnVyx51Agwp1wT2T27+KPXP9ecfPF/+p//ZeuvUhJGyiYycjseIKeyCXQ7gj
+	 OPNZzzb7Mk7ZQ+P6sCGPaIrAv/vA2/b36jBzQsw/bupl6KN0uBfq0hlr/XttkLVU0b
+	 zm1UBdDOAYmSOd4o0gBYy4+3ym6l53mcGhqaYsjCfQuat0/YRXgvKB+XpYzQGBPShA
+	 ta8WdvGXcI96A==
+Message-ID: <9909038f-a005-440a-82f2-ebe2f2da0767@kernel.org>
+Date: Fri, 16 May 2025 11:18:33 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -98,75 +50,65 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/5] memcg: make memcg_rstat_updated nmi safe
-Content-Language: en-US
-To: Shakeel Butt <shakeel.butt@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Muchun Song <muchun.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Harry Yoo <harry.yoo@oracle.com>, Yosry Ahmed <yosry.ahmed@linux.dev>,
- Peter Zijlstra <peterz@infradead.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, bpf@vger.kernel.org,
- linux-mm@kvack.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- Meta kernel team <kernel-team@meta.com>
-References: <20250516064912.1515065-1-shakeel.butt@linux.dev>
- <20250516064912.1515065-6-shakeel.butt@linux.dev>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20250516064912.1515065-6-shakeel.butt@linux.dev>
+Subject: Re: [PATCH bpf-next v3] bpftool: Add support for custom BTF path in
+ prog load/loadall
+To: Jiayuan Chen <jiayuan.chen@linux.dev>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Mykyta Yatsenko <yatsenko@meta.com>,
+ Daniel Xu <dxu@dxuuu.xyz>, Tao Chen <chen.dylane@gmail.com>,
+ linux-kernel@vger.kernel.org
+References: <20250516032312.275261-1-jiayuan.chen@linux.dev>
+From: Quentin Monnet <qmo@kernel.org>
+Content-Language: en-GB
+In-Reply-To: <20250516032312.275261-1-jiayuan.chen@linux.dev>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 8F1741F809
-X-Spam-Flag: NO
-X-Spam-Score: -4.51
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.51 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim,suse.cz:mid,linux.dev:email]
-X-Rspamd-Action: no action
 
-On 5/16/25 08:49, Shakeel Butt wrote:
-> memcg: convert stats_updates to atomic_t
-
-You have two subjects, I guess delete the second one?
-
-> Currently kernel maintains memory related stats updates per-cgroup to
-> optimize stats flushing. The stats_updates is defined as atomic64_t
-> which is not nmi-safe on some archs. Actually we don't really need 64bit
-> atomic as the max value stats_updates can get should be less than
-> nr_cpus * MEMCG_CHARGE_BATCH. A normal atomic_t should suffice.
+2025-05-16 11:23 UTC+0800 ~ Jiayuan Chen <jiayuan.chen@linux.dev>
+> This patch exposes the btf_custom_path feature to bpftool, allowing users
+> to specify a custom BTF file when loading BPF programs using prog load or
+> prog loadall commands.
 > 
-> Also the function cgroup_rstat_updated() is still not nmi-safe but there
-> is parallel effort to make it nmi-safe, so until then let's ignore it in
-> the nmi context.
+> The argument 'btf_custom_path' in libbpf is used for those kernels that
+> don't have CONFIG_DEBUG_INFO_BTF enabled but still want to perform CO-RE
+> relocations.
 > 
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> Suggested-by: Quentin Monnet <qmo@kernel.org>
+> Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
+> 
+> ---
+> V2 -> V3: Optimized document grammar and some prompts
+> https://lore.kernel.org/bpf/20250515065018.240188-1-jiayuan.chen@linux.dev/
+> V1 -> V2: Added bash completion and documentation
+> https://lore.kernel.org/bpf/20250513035853.75820-1-jiayuan.chen@linux.dev/
+> ---
+>  tools/bpf/bpftool/Documentation/bpftool-prog.rst |  8 +++++++-
+>  tools/bpf/bpftool/bash-completion/bpftool        |  4 ++--
+>  tools/bpf/bpftool/prog.c                         | 12 +++++++++++-
+>  3 files changed, 20 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/bpf/bpftool/Documentation/bpftool-prog.rst b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
+> index d6304e01afe0..4dce43e8e8a3 100644
+> --- a/tools/bpf/bpftool/Documentation/bpftool-prog.rst
+> +++ b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
+> @@ -127,7 +127,7 @@ bpftool prog pin *PROG* *FILE*
+>      Note: *FILE* must be located in *bpffs* mount. It must not contain a dot
+>      character ('.'), which is reserved for future extensions of *bpffs*.
+>  
+> -bpftool prog { load | loadall } *OBJ* *PATH* [type *TYPE*] [map { idx *IDX* | name *NAME* } *MAP*] [{ offload_dev | xdpmeta_dev } *NAME*] [pinmaps *MAP_DIR*] [autoattach]
+> +bpftool prog { load | loadall } *OBJ* *PATH* [type *TYPE*] [map { idx *IDX* | name *NAME* } *MAP*] [{ offload_dev | xdpmeta_dev } *NAME*] [pinmaps *MAP_DIR*] [autoattach] [kernel_btf *BTF_FILE*]
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Woops, I just realised we also need to add kernel_btf to the command
+summary at the top of the document (line 34), sorry for missing it
+during the previous pass. Please add it, and mark v4 as:
 
+    Reviewed-by: Quentin Monnet <qmo@kernel.org>
+
+Thanks!
 
