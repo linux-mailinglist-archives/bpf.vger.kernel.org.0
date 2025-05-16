@@ -1,146 +1,121 @@
-Return-Path: <bpf+bounces-58413-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58414-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69167ABA2B0
-	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 20:21:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B354ABA2EA
+	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 20:33:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21EC57AB3A4
-	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 18:20:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F2EB55065C4
+	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 18:33:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10E2527EC7C;
-	Fri, 16 May 2025 18:21:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3408927FD4A;
+	Fri, 16 May 2025 18:32:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mVIMsqdU"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TfLjLWj/"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A55B727E7E3
-	for <bpf@vger.kernel.org>; Fri, 16 May 2025 18:21:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47CBD27FB36
+	for <bpf@vger.kernel.org>; Fri, 16 May 2025 18:32:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747419674; cv=none; b=OERNf0ldWsk3/sD6xtWrQASeFAb4fjXiLcmztJ9nRBwT7VTINc9dXAfTqi6ylEirx3C8TiIpiWuVQ7by3eQFIQ2NtoU8MPf+qpxAoh4aKuOm0bWrxz3lhGwi2GTB9bGnzEaDrw4RPZOGHnGnrUDrVDZERkNfc3PjYTBy82DWnFc=
+	t=1747420361; cv=none; b=dx4FTPOqP/7cT7jOTZcs+5VyrdQfy0ukW006t8apCjZwzgl7dpYUJ8Mil02X5a9sDloXY92HOPfqDl8avs/xcJXKbAC14zthqvEZhwVS0Xq9KiVhPH1ads4hzabSm1cmL3sRXaxp+G3ksnU4hGfxXfWaifWuc3VCWgTcBAH5bNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747419674; c=relaxed/simple;
-	bh=G+yvEjn9CCpeWu1T/OIdi1As1wUoCTD5yb58f6RGZ4M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SakcxMgYKdLJUnauOyx153X5I0iv+xZLz/n7TETsTvq9WrOFPQEA62odRD0ycfLicNT9RjMhj7/D4fm4azDvqAcghffCjp+wChV/uENmMADkfGVTkdCtqlDorcCrwQL48tkHrXOy7gY1rwdH5C4MizvBVVkh0iSOeLBCpzGTzsQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mVIMsqdU; arc=none smtp.client-ip=91.218.175.171
+	s=arc-20240116; t=1747420361; c=relaxed/simple;
+	bh=YIcodLdvBBeOnbc5f6aqLHIuwN4mjNqQy193de/5g/o=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YM9O4LZxHoYmSzSIKMWPXNK1eZP0IZ5UjzlI4MVEStgsiGKlAfxQBZitypSKNzy+dwu+G5bIXKoUlf47rCuQubxXU9H9tBOMsTxuyq0iqHfEuB66Lo4Y4ze37XsCuhdA+F75wuznX7cirWM+tx7pKUdLDpB7CbxcEj8inDFUhdE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TfLjLWj/; arc=none smtp.client-ip=91.218.175.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 16 May 2025 11:20:54 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1747419660;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Aijqc4SJocxuCvVY9CsEnm5XULlfxcjJW9An8m2JIBY=;
-	b=mVIMsqdUT72lHBzpWvauLnHJ4jd4fkdk/1nUNgjk0VS+Ur+CB2Pz7/FcHSFYjcjp0ZftQ0
-	NEhL6o0e4Ec55ODNiv2k4zNXmBxUiR39LBdclyfurcbNK7DKL1Dz6LZ8nCDmw9+/MzyJCc
-	YzeANwabOAeuUt2hyY1khgtOzJjRdAw=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1747420357;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=3itOgcDfGvCSNJojD1kWLSfTvY0H0Nn9ZZT8m3VXc9E=;
+	b=TfLjLWj/hIgCbCVByfp3HZ5c7rlJh1zgJsyfd5tpGiuovYQE+y6a1JLonBjp1468v03wKg
+	zRjX7O3l+pI3sx55HwtMFPOp+rsTgTYb+8Cl3fxfOH/apewbzg13tt7+eGptOpe+PJe3ks
+	5CWBtbGlYiq0TaNF2+nSrXtjPWU527c=
 From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	Alexei Starovoitov <ast@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
-	Harry Yoo <harry.yoo@oracle.com>, Yosry Ahmed <yosry.ahmed@linux.dev>, 
-	Peter Zijlstra <peterz@infradead.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	bpf@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>
-Subject: Re: [PATCH 1/5] memcg: disable kmem charging in nmi for unsupported
- arch
-Message-ID: <5utpywqjf47slmygpyfwmveabp65kzhq3sqf52j53hxs5owmxg@67ccuh4pmqsh>
-References: <20250516064912.1515065-1-shakeel.butt@linux.dev>
- <20250516064912.1515065-2-shakeel.butt@linux.dev>
- <050484a9-c08c-40d2-b431-76903a639222@suse.cz>
- <ukn75zvkgbyjmrhmy7rmt6dx24r47vy6npfdvjx6wxiduxeqnm@kkjoam7gft4v>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Harry Yoo <harry.yoo@oracle.com>,
+	Yosry Ahmed <yosry.ahmed@linux.dev>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Tejun Heo <tj@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-mm@kvack.org,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Meta kernel team <kernel-team@meta.com>
+Subject: [PATCH v3 0/5] memcg: nmi-safe kmem charging
+Date: Fri, 16 May 2025 11:32:26 -0700
+Message-ID: <20250516183231.1615590-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ukn75zvkgbyjmrhmy7rmt6dx24r47vy6npfdvjx6wxiduxeqnm@kkjoam7gft4v>
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-On Fri, May 16, 2025 at 08:37:23AM -0700, Shakeel Butt wrote:
-> On Fri, May 16, 2025 at 11:30:17AM +0200, Vlastimil Babka wrote:
-> > On 5/16/25 08:49, Shakeel Butt wrote:
-> > > The memcg accounting and stats uses this_cpu* and atomic* ops. There are
-> > > archs which define CONFIG_HAVE_NMI but does not define
-> > > CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS and ARCH_HAVE_NMI_SAFE_CMPXCHG, so
-> > > memcg accounting for such archs in nmi context is not possible to
-> > > support. Let's just disable memcg accounting in nmi context for such
-> > > archs.
-> > > 
-> > > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> > > ---
-> > >  include/linux/memcontrol.h |  5 +++++
-> > >  mm/memcontrol.c            | 15 +++++++++++++++
-> > >  2 files changed, 20 insertions(+)
-> > > 
-> > > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > > index f7848f73f41c..53920528821f 100644
-> > > --- a/include/linux/memcontrol.h
-> > > +++ b/include/linux/memcontrol.h
-> > > @@ -62,6 +62,11 @@ struct mem_cgroup_reclaim_cookie {
-> > >  
-> > >  #ifdef CONFIG_MEMCG
-> > >  
-> > > +#if defined(CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS) || \
-> > > +	!defined(CONFIG_HAVE_NMI) || defined(ARCH_HAVE_NMI_SAFE_CMPXCHG)
-> > > +#define MEMCG_SUPPORTS_NMI_CHARGING
-> > > +#endif
-> > > +
-> > >  #define MEM_CGROUP_ID_SHIFT	16
-> > >  
-> > >  struct mem_cgroup_id {
-> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > > index e17b698f6243..dface07f69bb 100644
-> > > --- a/mm/memcontrol.c
-> > > +++ b/mm/memcontrol.c
-> > > @@ -2647,11 +2647,26 @@ static struct obj_cgroup *current_objcg_update(void)
-> > >  	return objcg;
-> > >  }
-> > >  
-> > > +#ifdef MEMCG_SUPPORTS_NMI_CHARGING
-> > > +static inline bool nmi_charging_allowed(void)
-> > > +{
-> > > +	return true;
-> > > +}
-> > > +#else
-> > > +static inline bool nmi_charging_allowed(void)
-> > > +{
-> > > +	return false;
-> > > +}
-> > > +#endif
-> > > +
-> > >  __always_inline struct obj_cgroup *current_obj_cgroup(void)
-> > >  {
-> > >  	struct mem_cgroup *memcg;
-> > >  	struct obj_cgroup *objcg;
-> > >  
-> > > +	if (in_nmi() && !nmi_charging_allowed())
-> > 
-> > Exchange the two as the latter is compile-time constant, so it can shortcut
-> > the in_nmi() check away in all the good cases?
-> > 
-> 
-> Oh I thought compiler would figure that out but now that I think about
-> it, it can only do so if the first condition does not have any
-> side-effects and though in_nmi() does not, I am not sure if compiler can
-> extract that information.
-> 
-> I will fix this and make sure that compiler is doing the right thing.
+Users can attached their BPF programs at arbitrary execution points in
+the kernel and such BPF programs may run in nmi context. In addition,
+these programs can trigger memcg charged kernel allocations in the nmi
+context. However memcg charging infra for kernel memory is not equipped
+to handle nmi context for all architectures.
 
-So, gcc 11.5 generates the same code irrespective of checking in_nmi()
-first or second i.e. avoid in_nmi() check altogether on x86_64. I will
-still rearrange the checks to not leave this optimization to compilers.
+This series removes the hurdles to enable kmem charging in the nmi
+context for most of the archs. For archs without CONFIG_HAVE_NMI, this
+series is a noop. For archs with NMI support and have
+CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS, the previous work to make memcg
+stats re-entrant is sufficient for allowing kmem charging in nmi
+context. For archs with NMI support but without
+CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS and with
+ARCH_HAVE_NMI_SAFE_CMPXCHG, this series added infra to support kmem
+charging in nmi context. Lastly those archs with NMI support but without
+CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS and ARCH_HAVE_NMI_SAFE_CMPXCHG,
+kmem charging in nmi context is not supported at all.
+
+Mostly used archs have support for CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS
+and this series should be almost a noop (other than making
+memcg_rstat_updated nmi safe) for such archs. 
+
+Changes since v2:
+- Rearrange in_nmi() check as suggested by Vlastimil
+- Fix commit messag of patch 5 as suggested by Vlastimil
+
+Changes since v1:
+- The main change was to explicitly differentiate between archs which
+  have sane NMI support from others and make the series almost a noop
+  for such archs. (Suggested by Vlastimil)
+- This version very explicitly describes where kmem charging in nmi
+  context is supported and where it is not.
+
+Shakeel Butt (5):
+  memcg: disable kmem charging in nmi for unsupported arch
+  memcg: nmi safe memcg stats for specific archs
+  memcg: add nmi-safe update for MEMCG_KMEM
+  memcg: nmi-safe slab stats updates
+  memcg: make memcg_rstat_updated nmi safe
+
+ include/linux/memcontrol.h |  21 ++++++
+ mm/memcontrol.c            | 136 +++++++++++++++++++++++++++++++++----
+ 2 files changed, 145 insertions(+), 12 deletions(-)
+
+-- 
+2.47.1
+
 
