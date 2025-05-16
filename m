@@ -1,259 +1,609 @@
-Return-Path: <bpf+bounces-58429-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58430-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8A90ABA57A
-	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 23:46:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1553CABA5E2
+	for <lists+bpf@lfdr.de>; Sat, 17 May 2025 00:22:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 801F21C0216A
-	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 21:46:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0FBD3BE022
+	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 22:22:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0949E28003A;
-	Fri, 16 May 2025 21:45:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D86A228003D;
+	Fri, 16 May 2025 22:22:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="EQAbUoAp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ItPlI8cC"
 X-Original-To: bpf@vger.kernel.org
-Received: from SN4PR2101CU001.outbound.protection.outlook.com (mail-southcentralusazon11022140.outbound.protection.outlook.com [40.93.195.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C17FA46BF;
-	Fri, 16 May 2025 21:45:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.195.140
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747431956; cv=fail; b=U57IwzmlXdm012AVoNFeuL8nPenouFa/UrDQsKYfmaJkiW/EsOfebGHAORUCfImHmvt9s1wL86Hw5AQNog8Z+h55DU6EUNQkt4FHXr2/Mw2gKFADTFvVaTKdM51/BecsImQPmdxk8pO0X+zheHfl2a9KUvo8wVXSsCByLX1dEBM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747431956; c=relaxed/simple;
-	bh=vjal3NRaR+Ba87fqOUq1k27aLlrfozgFKVu7LcrTnJk=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=TcBwPV+HfKLqVWhOxbBD8DNY/Jipd93wTQHtIS4cLZefzZwxokmmszPS1HWklTR7qwqn3lO6hN7LMQcye4dpcopKMkQ4r8An4DbqZ/mDosn7+oeT5b21X4DKDaQCgHprCAMebNjnLdIArPAbqd72lOragnBZbOaDYYKau/E+PW8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=EQAbUoAp; arc=fail smtp.client-ip=40.93.195.140
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ReilxSfvZOWHKNOtbTeaXrH4ZflE5RI3y/XAHaUds0uZqU+U+HyyDN71GtFSoFryKJGF4IQIk2Vm8qa2LfhgYyFjZZKX3d7hcNEeYC1t/oHIVdUlnRXPkXPVZ3xHM/ZdKNPOA+gA8Y3U5+Ntp/jbcjP5l+vzlcy5M7p2TXD9GWeP/CXFhnXLA1icAcZxPw0rRZ7ilgXnk2xBKnQOZ2SPFbE4HCztrWJjZay83rQYYtHkOjkaYEXOmR4USAOyrx5HGAMjkwKMK65Bt1A4HOaOvGu2hFMjfjqpfrL7MTRLrwoyIEBjN5+8p30BsMfqq0CoeLBvsTIb4eQ4D+z7iwitug==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vjal3NRaR+Ba87fqOUq1k27aLlrfozgFKVu7LcrTnJk=;
- b=pbok18Oikw7cAvsH6iwyQ0yFG9R0Qz5eFypZAH5pFgEOJ7bHyV07VK2mnKvSSnWTZFzRkWtD8Cs2AjlvaWa4Dr/NQUD+bPRj/SRKkL4epyw3oxdoOW9gNwI9FqbeKuEtREu3SA7gLyWvW6RcbJyGI0AWpUv3EBcFCiTfIFbU9aYI4GsY+OzrAUlHrxI5nBwQrVCEKt6srMEL//h3w5MHRelkpcnvnD1n6LzqCb4wZal8YfsIhJIC03nX7pxtExFfL0DVbknJwGpPVoINmM53EpRi43e2aVpIgyuQd988gH3GCOqcNiG7kcqKe4OXzXj5GqUPGe/vRvprKtaUXMQogA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vjal3NRaR+Ba87fqOUq1k27aLlrfozgFKVu7LcrTnJk=;
- b=EQAbUoApoFshT17yO7sjVQD6MbntApTjLyldOvXf4BgyY8NtwpNDOhycUib/jSbzlGaUM9zGRH1PDJXhn3xT0jgA8eG2A3a8cAO0/5P95Bc6XHmaIGeiamCmRdvEJ1FpfqWHy65suLfjVIlWZYjQcMaQ3MSFJOUEYc2voBAY8pg=
-Received: from MN0PR21MB3437.namprd21.prod.outlook.com (2603:10b6:208:3d2::17)
- by MN0PR21MB3123.namprd21.prod.outlook.com (2603:10b6:208:377::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8769.12; Fri, 16 May
- 2025 21:45:51 +0000
-Received: from MN0PR21MB3437.namprd21.prod.outlook.com
- ([fe80::5125:461:1c07:1a97]) by MN0PR21MB3437.namprd21.prod.outlook.com
- ([fe80::5125:461:1c07:1a97%4]) with mapi id 15.20.8769.001; Fri, 16 May 2025
- 21:45:51 +0000
-From: Haiyang Zhang <haiyangz@microsoft.com>
-To: ALOK TIWARI <alok.a.tiwari@oracle.com>, "linux-hyperv@vger.kernel.org"
-	<linux-hyperv@vger.kernel.org>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>
-CC: Dexuan Cui <decui@microsoft.com>, "stephen@networkplumber.org"
-	<stephen@networkplumber.org>, KY Srinivasan <kys@microsoft.com>, Paul
- Rosswurm <paulros@microsoft.com>, "olaf@aepfle.de" <olaf@aepfle.de>,
-	"vkuznets@redhat.com" <vkuznets@redhat.com>, "davem@davemloft.net"
-	<davem@davemloft.net>, "wei.liu@kernel.org" <wei.liu@kernel.org>,
-	"edumazet@google.com" <edumazet@google.com>, "kuba@kernel.org"
-	<kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>, "leon@kernel.org"
-	<leon@kernel.org>, Long Li <longli@microsoft.com>,
-	"ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>, "john.fastabend@gmail.com"
-	<john.fastabend@gmail.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"ast@kernel.org" <ast@kernel.org>, "hawk@kernel.org" <hawk@kernel.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>, "shradhagupta@linux.microsoft.com"
-	<shradhagupta@linux.microsoft.com>, "andrew+netdev@lunn.ch"
-	<andrew+netdev@lunn.ch>, Konstantin Taranov <kotaranov@microsoft.com>,
-	"horms@kernel.org" <horms@kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [EXTERNAL] Re: [PATCH net-next] net: mana: Add support for Multi
- Vports on Bare metal
-Thread-Topic: [EXTERNAL] Re: [PATCH net-next] net: mana: Add support for Multi
- Vports on Bare metal
-Thread-Index: AQHbxpv3KSWHYi6n+kCJVM9rW+SgabPVvPeAgAAL4WA=
-Date: Fri, 16 May 2025 21:45:51 +0000
-Message-ID:
- <MN0PR21MB3437ED3FC34206052262C43ECA93A@MN0PR21MB3437.namprd21.prod.outlook.com>
-References: <1747425099-25830-1-git-send-email-haiyangz@microsoft.com>
- <71e89f06-872f-470c-86bc-c1429c1b8666@oracle.com>
-In-Reply-To: <71e89f06-872f-470c-86bc-c1429c1b8666@oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=82fab43a-53d3-49a4-82d5-546c67f2d171;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2025-05-16T21:39:41Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Tag=10,
- 3, 0, 1;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN0PR21MB3437:EE_|MN0PR21MB3123:EE_
-x-ms-office365-filtering-correlation-id: b5588b7b-ee44-48b6-dce7-08dd94c30702
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|1800799024|366016|376014|7416014|38070700018;
-x-microsoft-antispam-message-info:
- =?utf-8?B?VitlV05QREVPN1pSdTN2Qm1Od3N4QWdqNWlVRGI4MmZwMUVZMjJvbzQ5T213?=
- =?utf-8?B?QnNLRnV3bjhacnIxL21td0s5T2h0ZXVubEtoWUkraDhoNTdseUxjOUZ4NGsv?=
- =?utf-8?B?aHlhUkh5ZW01NWlURVZ1MkdQMDg5M2k5QXJBSVhZVWZ5a3JBU3lGL2dMYSt5?=
- =?utf-8?B?YmFGUnVwbFcxL2FyK0l2aDJNSGdXVktqeXd1eUdpSkpYMjBXYUtRSktnZFM5?=
- =?utf-8?B?TkdSYWg1Z21IenFzWG95S1NWU3R5QXZOZ1Rmd3FINlc1MTRKU2Z1Zm9lQmJ1?=
- =?utf-8?B?a3kzY1BjUDJFTzcwTXhnUERCa2ZJU1M4NStucExzTDZWdHFhRE5wZDE4QVF6?=
- =?utf-8?B?cEJZZ0l1VU5rQVR0SEQ1Q1dQY2tWZXZqNU1UdjBPYlpNcnVnc2Q1aVYrMWpP?=
- =?utf-8?B?TU1iTzZCV2VIblZQRmZLU1B1NitXYktkRGFSK0VLa1RFWmpLbVpHQ3NQblBJ?=
- =?utf-8?B?NXJiWWlrZXdyRlpDcGFaNjVXTnVhVXJmUzZpV2Jna3IvWDd0bXpnZTVVdUZJ?=
- =?utf-8?B?eWZucUhkazdCeS90eFl1RUlTbXBQdHNZUDJoRmYxY2ZYMEU3L0dhWWcvbjVj?=
- =?utf-8?B?SGttWmZsL0ljYnV2cStjWmRwOGFlS0I0RC9qZVRZOTBvc2lhYVRDcmZkczZo?=
- =?utf-8?B?bG94MkppQmpEVkZ2bnV3VWNtQjFod09wZjlYS2pIRVY1QkR1SXp6KzBGenFL?=
- =?utf-8?B?UUhSbk1seGhIMUdvRGo0MUpWY1RTdjFsWUJ4c0FPRzZ1cWJMdVdsekJDZW5M?=
- =?utf-8?B?S3dvMzNWR1RHY0tDYWJtTDNwaVFnMmtPTDJTd0VmZzRvQmFEVjFVelViWjZO?=
- =?utf-8?B?THFmeFR5Q1UyTGJwb2N6d1QwT3QzUW8vTTVOWHlWL1pvOUhDaXI5Q1p3VVMv?=
- =?utf-8?B?M3hnc0NQVmZvbjRKM1JXSTZpV3JuZ2JBT0V5ekMwVXRWRnVSVXFiUEZGRDF4?=
- =?utf-8?B?bzhJSHR6Vyt5cHI1ZWpMVXJPaTUvd2tyQUhVVFRReExyMk42V3UwMFVpQVMy?=
- =?utf-8?B?UmFKS1UramZQQm9XNUdubWxNREVVWFN4NURlZE1jTXVaRXRRM2tORzFId21H?=
- =?utf-8?B?Vi9lRU1DMFJSWEpxcWhWb3FuQmhITWdOMnZOVVMzSTM4VEppbjNLd2NXZlRM?=
- =?utf-8?B?WHpxdWlSS0drQ2lXY21iY2xET3krU2VBdSswZ0t5OUMzUjdUOWVZcTh0VmFo?=
- =?utf-8?B?S1pFcmozbzdFKzQ5M01MK0tZbDRoekZqZ1VsYlNOUGp2L3owakczMHdOV0F3?=
- =?utf-8?B?blRSejN2ejVJK3BIS3JqWkROQ3B2ck1yaElTbjJYckhZWXhiM3draDczMmVX?=
- =?utf-8?B?dTRheW0wLzQ3clMxYTlSaVB3cWR0V0dJQ2tvQUYrUVMvRHNOS0gwalp0S0Fa?=
- =?utf-8?B?aUNMTEsxNHBkRW5iMmFYUWxENFIyUmNDVFNUYnBON0NnUEZna1VSVmUwdm5z?=
- =?utf-8?B?L0VpTmRoV2Y4eXdvNlVhdWNpWVhtSUk0dFJ0d1ByelRJcVhqTk4xY2xncHFo?=
- =?utf-8?B?M3NnNk94RHdrN0JFR1R3UVpya2ZTZ2ZpWEFZbG9vZ1pld3pRY1JTaDJXWjBq?=
- =?utf-8?B?dzVxNk8wSVg3MnhuK0d6V25KRjd3QXp1LzZVZXluNXExRW13UUhOZy94Y05W?=
- =?utf-8?B?YkV1SHk3RTIwRGhsb2JUOXhOcHN3RmJoRUozelVUYllzWVdCT3lKa2RGdnFH?=
- =?utf-8?B?MVFnUk5UVlRzcTFTWjVhVHlnYnI4Z0RmWDFYdjBrdGFiM2lDRHVEOFVlOE0x?=
- =?utf-8?B?NUU5VVJWZCtab1Z3ZUxOUUhMUHZLdFkvTUErMnVjSVhCby9JWEpTVkxzaTBy?=
- =?utf-8?B?T2J6S3VhQWowSGN1ZmNBVEVCUVdhcTJLTDZmVHBuUWJKM0d6K2ZYQUh0WlUx?=
- =?utf-8?B?T3hBRFJwd2R6eWJCNzkvbld4aXd0MFhrOU9sQWpsTUUvT0x0RHlHeHcySzFY?=
- =?utf-8?B?VTFRbFlkS0wwWTN1eXpNbjlTWE93alA3OXgraGN0czVuTkh6NjFXZjA1cnUr?=
- =?utf-8?Q?8QWurz9/X8AHH1+TJeC31Gzx3SIZZc=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR21MB3437.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(7416014)(38070700018);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?eS9UN1pDbzJSbUNUSDJvQTlNZkZUYWcycURXUW14MTNrN0Z0akg3RzAybTBi?=
- =?utf-8?B?OEVKV1lROGY1V1A4dFphRGRXL3V3OHNkNXUrQmpCWHduRklkSC9LSU1Fd3NL?=
- =?utf-8?B?VG1ndnN1bHBhZU01Unc5QkJjNThTRFlWU1hBWUFTbjQ0RmpTc2NMZFJpbmw5?=
- =?utf-8?B?WkFvWGJFV1dQYUE4Q0F6T0dLUWhqeVRPdklpbGZ0TlVITkxjRmxidG85YVJ3?=
- =?utf-8?B?TlZ3Z0lRSlljdWMyb3RtNE0wbFBrRkcxa1orZnN0TzNkSEZ0b3RtR2t3d28x?=
- =?utf-8?B?N20zemRQSGRWdDdxdEphTVk0QnE5YWJIckUxcnozcFR1MjcvYUxrY0xUc0t5?=
- =?utf-8?B?bmdQd0t2UXBHM2Jza0VXQm5hV1RWQ2l0TjU3RmJBd3EwMTN4MGpMYTFxU2wz?=
- =?utf-8?B?UXV6SGFsTm5vSVNDZjRVSE12VnUxOXZaL2RuZ08vYjRGNDg2Rml4NXVPWm9J?=
- =?utf-8?B?S3JQaEhFYVVhempxQWlQNXZjdDZRUVBudXJwcFBMb2w5M3E1OFJkWXBHN2w4?=
- =?utf-8?B?VFg5WmsxMVhsL2NtdXorSHBUMG05ZlBTckdQL25LZkpVS0JCaCtudEg5NWZo?=
- =?utf-8?B?M0VqUTJtZEI5MTQwckIvSWpyc3V4SFFHWnNIR1NITnV6L1VSNkxQU3NON2NM?=
- =?utf-8?B?Wk90aVNVeE9sZSswNkJEMEVUczRlam1mU2JlU2dJdzU1NC9XU3RORUxNcS9V?=
- =?utf-8?B?ekJ5bE5LQlFla0hBMDRaS1ViNGxGMTlldEp2THFnVlVlY0dBK0hTNklhcjFH?=
- =?utf-8?B?aXUvdUJPcTNxenQxNlFIZVhjd0J1NWtHSXRYU1hYQ1RTc2tGWFZOSzVlU0tX?=
- =?utf-8?B?VndOMHhtSDVMNDR1OFB2NTBac1dFaGhRbzEwVG9Hd01RKy8xejRXN3dNbVU4?=
- =?utf-8?B?RzY1M1loQ2FhQUdCUHFpVm1qQnhodlRsNnVmc3dmR0FWSHpJcEhCOStyQzV4?=
- =?utf-8?B?eXVVRSs4K1JETHArOXVkRU96SGtMUXhFbTMrSGhIU3J6R2Ywbnd3NzRpSm9C?=
- =?utf-8?B?Y3U3Ni9VSDZSMmNId0ZJU29xR2xRM1dGMkhOWXRJTUNoamZKR1lmTytaWWZl?=
- =?utf-8?B?N2RwMVNmeTNWc1I1cmxhVkZaMGJjcDhXbFJldThzRk5iYUdsRGRUM2hTK0pJ?=
- =?utf-8?B?UUNvWGtSMkYvWkpweE9vLzBLcDJNcnMrS04rOHdoSmFEM3N0Yk8vdW5OKzdk?=
- =?utf-8?B?c0llZXI1T0U1TVhzeHhOdVNlQkl5TVJwTnJROGZPc2I3WmE5dDRkN3BFUk5v?=
- =?utf-8?B?T2c0amRoRDlBaVAzSFZnV2M0MDFKV0hDTTN2QStuM0hLTDlyeVllczhGMW9Q?=
- =?utf-8?B?eDB6aGlSeFF6QUZHSFl3S2xPSGkxWUFJYVVjQTlXY2p6bEpHbytLZ0xTRmpS?=
- =?utf-8?B?L3VuTVpsaVF1elUzeERzL0RpSG9MSi9aTEt6cG5OdnhHQnA4UjVOZldLRzlU?=
- =?utf-8?B?dTVRQkZIQlJqdGF5TVV2Q09mKytIRUtLeWxrTlVYWnlNY1kzTldhT0l6aHFC?=
- =?utf-8?B?WXFVWkN3T21JY0Ztbi9ZUklDNSt6RXlTRVB4WUY4TlVBZkJkbDc3ZzV6YXF0?=
- =?utf-8?B?WTd2VHZoR2VjRFk3ZGdWWTRXK2YrZUtJSXhYbG1hQkFjK09COW5zYlEzaWtD?=
- =?utf-8?B?UEJXOHBGNFNkRGlIdElLK3I2R0xKVlV5RC8xNDBPM1dCaWVyK3R5a2N0WDNi?=
- =?utf-8?B?TGpWMTNDQzEvUStaMDdUNXdkMTg3WHBtOFRCdThGQWJtY3g2NFFJUTlyaWdP?=
- =?utf-8?B?Z09uVVZGVzl5a0hjVnQ3eWJaZjZzeHJaQ2w1WldqY3RvSEJPQnZZNGM5blJt?=
- =?utf-8?B?bUNqc2s1M0FnNkh3NGQzd2JnMWxIYnpSVk9lT3ZnTzZQTXpyV2VnZEpGUnMx?=
- =?utf-8?B?VmxSV2VTZTI1WGprczJXcmNyeC9TTFJRVGVXb1doWXAvY0ZGdmZvRFlLOFNH?=
- =?utf-8?B?bmpVWmlucnEyNHBwemVwdmZ6cFIrWW1VTGNQa3A5Y0RsUGhEZUxTbEpGWHRM?=
- =?utf-8?B?Njl6amovK3dLNWhqak1MOVJtVEhaVkIxbmJCSlRlUGhFYkVqdk9yVFBWbFBB?=
- =?utf-8?B?Q0VURVFuSkVIK29rUS83anJvZklPU0hJcDVlcnA1MzJMVWl5Z0U3dWtMVXpS?=
- =?utf-8?Q?u4kyuGFRHvUTPJ/7GhHEfwJCK?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1377E1A76BC;
+	Fri, 16 May 2025 22:22:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1747434136; cv=none; b=GeHavztjXjpSatZ21D2L1f7reSJR5PpMX1+WED/na8FBUkD94ZOGrGa56WiKw8u7/RC61ptMqsCYawXTLNpdDIV8zc7DryFvgeB6TW2Fgbf8bugazmsA3UEeAQJMh54nqNSD36a/8NGS0sYWXsvBj2Ek33HnE56bGT1s7DVVy30=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1747434136; c=relaxed/simple;
+	bh=niJK17frrLNERvdChWDymcFcgPYqkOdoJrjToUMTUhM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Yhwyk3t72Jfi3nM0lG5ay+AxdOXKuWdC24EzsdlvfiOB2FZJ+6TOo+k1JBVc5zua+3yWrZOrGCZNhzudCY6H8jvKjb7c91deyj+9vkXT24orrypp2eSORg8eHAA0gPjBe6D6roH1w8Jd8pVewCrXIpVOZmB88Du0v1fFA59HILw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ItPlI8cC; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3a1f5d2d91eso1681717f8f.1;
+        Fri, 16 May 2025 15:22:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747434132; x=1748038932; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zICbWdfrt1r6ZtuKVV8v64CX+9iZkwP2dqOMnKPx0SQ=;
+        b=ItPlI8cCs53pp7jva2ZVH8K4tEM2hbo/KEIZnR0Wq0vinlxu0ujc8RP7qac/437fKo
+         KbG5jIJkAlxVtyy6b2MXRk/8Rg+yh8Yp/HhfF5Wjbnabf3PuCE2kg3+IxlzF0yQDAcEo
+         o7qXRsI08hHXsKZ8C6/Jmb71tZCg8e8cMJ7RYdcg0ElFhnyuAOLFq/LDQBUood7oRao/
+         SGq0bghoJ0KriDue0OCCux3hD2TLPdGcx5ZLJY7iQiUeE986bgawXQNoArZgR1Xkg2+6
+         SfmBc8fKYwD5fsV73HSSJESkEpQwldvjzjJb6yjG5RPeht5Ct9/hCKwDdqxLcMQ5/lNK
+         lG/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747434132; x=1748038932;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zICbWdfrt1r6ZtuKVV8v64CX+9iZkwP2dqOMnKPx0SQ=;
+        b=eQwtpV/oE54xYblj9tNIPi0hdogKbEEhdvPaIOHL45aN+9qjfKfSwRW0P3xj5+osfQ
+         q9LpR/OU5fBWFhFJrF8OhwSrkQ/3D0hx0G2gWQcJdJY0WdzKeOcskCgh0e7YnYDJzg/S
+         V3uESANrwiSAmS7cum4YqSKlpD+RqXIw8vGRq1Hqnd0WSQxeszw5izBaQg4ui4dgbcqW
+         dndHkQtC9LJgY2Bhw46JrtWzljcDmgW4xWaieo1np1IWCfrJk2Prdap0adQquXcdBeCx
+         CvnemBktyjIvN79gLqsRB8Coqtg4Inl8wvZDdGMFJlgYYK+VrBn7UA4lLpN1ipX5vtyW
+         mKew==
+X-Forwarded-Encrypted: i=1; AJvYcCUiVd59nSE+Fx4Ao49OtV0HFQ54Qqx1wowCMrY/w9uqP6aOSOMdxk1popVCzJ2nYz1FqX1O9ZA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyOwuHchgZ8Vpsh6af16pHw4Ejpg2YOCvCvFDW+8cPOgx19suJK
+	eLQaE2FgX8WX7cFPR8/Zn382GqhVOn3kZX06d4y4ybIsBUF+PHIrrNVy2ONDrht5cQc8m0fnuN+
+	mmI3cMkqO2T963YKTNCiYoJ50gEUQD5M=
+X-Gm-Gg: ASbGncuyvdzNgzX9Z+Vm/OfiV1crQSHkf5zg2a4Pm6LwmFNCdHjAQjdYc8wEeo18iqZ
+	fVxRs+xpy9PvjlBN5jtBGOHrYZnSwcMP/eLCMJFHsmRcX0YVm/DMMqFz8qLQdBfzmDRAGbhC7lo
+	cut8LV7c9fFcYMiE/Afj8UybB/P4qEw9+FjoXr1w397LIx2N9vjJUHefABaPhPpg==
+X-Google-Smtp-Source: AGHT+IFx7ymiJJ5SwIE/Hj7IcYAZo6jMy8dGSyvcB6asl9MBp/YBoQvbLywRbU2uDumXBUOA7KPDEn2WZBDB3nxq05k=
+X-Received: by 2002:a05:6000:2405:b0:3a0:ba67:8379 with SMTP id
+ ffacd0b85a97d-3a35c821aaamr5282842f8f.20.1747434131976; Fri, 16 May 2025
+ 15:22:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR21MB3437.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b5588b7b-ee44-48b6-dce7-08dd94c30702
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 May 2025 21:45:51.3332
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: saxQfDF57AovqWYC9m8aZpHEzYLwZT0ykTcQ64IZGxnaPZug+IjI9HFmENq0wI5vMW4KmWOUGyyHkl16KwxXpQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR21MB3123
+References: <20250515211606.2697271-1-ameryhung@gmail.com> <20250515211606.2697271-2-ameryhung@gmail.com>
+ <CAADnVQLPyHnqEbPowpN+JuMwH+iMX4=dZZu2chMaiexwAVxxJA@mail.gmail.com> <CAMB2axPpAdhkc0wvHY6VEKjRKti_85MMPo2eJ07T2w+kgV3YjQ@mail.gmail.com>
+In-Reply-To: <CAMB2axPpAdhkc0wvHY6VEKjRKti_85MMPo2eJ07T2w+kgV3YjQ@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 16 May 2025 15:22:01 -0700
+X-Gm-Features: AX0GCFuKrrOg2VQmocyDfuf4s12s3gSJa9znz0-WiB64UFcIQVUwHy4YN2R_K54
+Message-ID: <CAADnVQK30M9+eJz8OjFpteGXfpF6DoQqNxXJa3p5YGmxyG7xJw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/3] selftests/bpf: Introduce task local data
+To: Amery Hung <ameryhung@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Tejun Heo <tj@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQUxPSyBUSVdBUkkgPGFs
-b2suYS50aXdhcmlAb3JhY2xlLmNvbT4NCj4gU2VudDogRnJpZGF5LCBNYXkgMTYsIDIwMjUgNDo1
-NyBQTQ0KPiBUbzogSGFpeWFuZyBaaGFuZyA8aGFpeWFuZ3pAbWljcm9zb2Z0LmNvbT47IGxpbnV4
-LWh5cGVydkB2Z2VyLmtlcm5lbC5vcmc7DQo+IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmcNCj4gQ2M6
-IERleHVhbiBDdWkgPGRlY3VpQG1pY3Jvc29mdC5jb20+OyBzdGVwaGVuQG5ldHdvcmtwbHVtYmVy
-Lm9yZzsgS1kNCj4gU3Jpbml2YXNhbiA8a3lzQG1pY3Jvc29mdC5jb20+OyBQYXVsIFJvc3N3dXJt
-IDxwYXVscm9zQG1pY3Jvc29mdC5jb20+Ow0KPiBvbGFmQGFlcGZsZS5kZTsgdmt1em5ldHNAcmVk
-aGF0LmNvbTsgZGF2ZW1AZGF2ZW1sb2Z0Lm5ldDsNCj4gd2VpLmxpdUBrZXJuZWwub3JnOyBlZHVt
-YXpldEBnb29nbGUuY29tOyBrdWJhQGtlcm5lbC5vcmc7DQo+IHBhYmVuaUByZWRoYXQuY29tOyBs
-ZW9uQGtlcm5lbC5vcmc7IExvbmcgTGkgPGxvbmdsaUBtaWNyb3NvZnQuY29tPjsNCj4gc3Nlbmdh
-ckBsaW51eC5taWNyb3NvZnQuY29tOyBsaW51eC1yZG1hQHZnZXIua2VybmVsLm9yZzsNCj4gZGFu
-aWVsQGlvZ2VhcmJveC5uZXQ7IGpvaG4uZmFzdGFiZW5kQGdtYWlsLmNvbTsgYnBmQHZnZXIua2Vy
-bmVsLm9yZzsNCj4gYXN0QGtlcm5lbC5vcmc7IGhhd2tAa2VybmVsLm9yZzsgdGdseEBsaW51dHJv
-bml4LmRlOw0KPiBzaHJhZGhhZ3VwdGFAbGludXgubWljcm9zb2Z0LmNvbTsgYW5kcmV3K25ldGRl
-dkBsdW5uLmNoOyBLb25zdGFudGluDQo+IFRhcmFub3YgPGtvdGFyYW5vdkBtaWNyb3NvZnQuY29t
-PjsgaG9ybXNAa2VybmVsLm9yZzsgbGludXgtDQo+IGtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4g
-U3ViamVjdDogW0VYVEVSTkFMXSBSZTogW1BBVENIIG5ldC1uZXh0XSBuZXQ6IG1hbmE6IEFkZCBz
-dXBwb3J0IGZvciBNdWx0aQ0KPiBWcG9ydHMgb24gQmFyZSBtZXRhbA0KPiANCj4gDQo+IA0KPiBP
-biAxNy0wNS0yMDI1IDAxOjIxLCBIYWl5YW5nIFpoYW5nIHdyb3RlOg0KPiA+IFRvIHN1cHBvcnQg
-TXVsdGkgVnBvcnRzIG9uIEJhcmUgbWV0YWwsIGluY3JlYXNlIHRoZSBkZXZpY2UgY29uZmlnDQo+
-IHJlc3BvbnNlDQo+ID4gdmVyc2lvbi4gQW5kLCBza2lwIHRoZSByZWdpc3RlciBIVyB2cG9ydCwg
-YW5kIHJlZ2lzdGVyIGZpbHRlciBzdGVwcywNCj4gd2hlbg0KPiA+IHRoZSBCYXJlIG1ldGFsIGhv
-c3Rtb2RlIGlzIHNldC4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IEhhaXlhbmcgWmhhbmcgPGhh
-aXlhbmd6QG1pY3Jvc29mdC5jb20+DQo+ID4gLS0tDQo+ID4gICBkcml2ZXJzL25ldC9ldGhlcm5l
-dC9taWNyb3NvZnQvbWFuYS9tYW5hX2VuLmMgfCAyMiArKysrKysrKysrKysrLS0tLS0tDQo+ID4g
-ICBpbmNsdWRlL25ldC9tYW5hL21hbmEuaCAgICAgICAgICAgICAgICAgICAgICAgfCAgNCArKyst
-DQo+ID4gICAyIGZpbGVzIGNoYW5nZWQsIDE4IGluc2VydGlvbnMoKyksIDggZGVsZXRpb25zKC0p
-DQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWljcm9zb2Z0L21h
-bmEvbWFuYV9lbi5jDQo+IGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWljcm9zb2Z0L21hbmEvbWFu
-YV9lbi5jDQo+ID4gaW5kZXggMmJhYzZiZThmNmEwLi4wMjczNjk2ZDI1NGIgMTAwNjQ0DQo+ID4g
-LS0tIGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWljcm9zb2Z0L21hbmEvbWFuYV9lbi5jDQo+ID4g
-KysrIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWljcm9zb2Z0L21hbmEvbWFuYV9lbi5jDQo+ID4g
-QEAgLTkyMSw3ICs5MjEsNyBAQCBzdGF0aWMgdm9pZCBtYW5hX3BmX2RlcmVnaXN0ZXJfZmlsdGVy
-KHN0cnVjdA0KPiBtYW5hX3BvcnRfY29udGV4dCAqYXBjKQ0KPiA+DQo+IFtzbmlwXQ0KPiA+ICsJ
-dTggYm1faG9zdG1vZGUgPSAwOw0KPiA+ICAgCXUxNiBudW1fcG9ydHMgPSAwOw0KPiA+ICAgCWlu
-dCBlcnI7DQo+ID4gICAJaW50IGk7DQo+ID4gQEAgLTMwMjYsMTAgKzMwMzIsMTIgQEAgaW50IG1h
-bmFfcHJvYmUoc3RydWN0IGdkbWFfZGV2ICpnZCwgYm9vbA0KPiByZXN1bWluZykNCj4gPiAgIAl9
-DQo+ID4NCj4gPiAgIAllcnIgPSBtYW5hX3F1ZXJ5X2RldmljZV9jZmcoYWMsIE1BTkFfTUFKT1Jf
-VkVSU0lPTiwNCj4gTUFOQV9NSU5PUl9WRVJTSU9OLA0KPiA+IC0JCQkJICAgIE1BTkFfTUlDUk9f
-VkVSU0lPTiwgJm51bV9wb3J0cyk7DQo+ID4gKwkJCQkgICAgTUFOQV9NSUNST19WRVJTSU9OLCAm
-bnVtX3BvcnRzLCAmYm1faG9zdG1vZGUpOw0KPiA+ICAgCWlmIChlcnIpDQo+ID4gICAJCWdvdG8g
-b3V0Ow0KPiA+DQo+ID4gKwlhYy0+Ym1faG9zdG1vZGUgPSBibV9ob3N0bW9kZTsNCj4gPiArDQo+
-ID4gICAJaWYgKCFyZXN1bWluZykgew0KPiA+ICAgCQlhYy0+bnVtX3BvcnRzID0gbnVtX3BvcnRz
-Ow0KPiA+ICAgCX0gZWxzZSB7DQo+ID4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbmV0L21hbmEvbWFu
-YS5oIGIvaW5jbHVkZS9uZXQvbWFuYS9tYW5hLmgNCj4gPiBpbmRleCAwZjc4MDY1ZGU4ZmUuLmIz
-NTJkMmE3MTE4ZSAxMDA2NDQNCj4gPiAtLS0gYS9pbmNsdWRlL25ldC9tYW5hL21hbmEuaA0KPiA+
-ICsrKyBiL2luY2x1ZGUvbmV0L21hbmEvbWFuYS5oDQo+ID4gQEAgLTQwOCw2ICs0MDgsNyBAQCBz
-dHJ1Y3QgbWFuYV9jb250ZXh0IHsNCj4gPiAgIAlzdHJ1Y3QgZ2RtYV9kZXYgKmdkbWFfZGV2Ow0K
-PiA+DQo+ID4gICAJdTE2IG51bV9wb3J0czsNCj4gPiArCXU4IGJtX2hvc3Rtb2RlOyAvKiBCYXJl
-IE1ldGFsIEhvc3QgTW9kZSBFbmFibGVkICovDQo+IA0KPiB3aGF0IGFib3V0IG1haW50YWluaW5n
-IG5hdHVyYWwgYWxpZ25tZW50LCArdTggcmVzZXJ2ZWQwID8NCg0KVGhpcyBpcyBub3Qgc3RydWN0
-dXJlIGdvaW5nIGFjcm9zcyB0aGUgIndpcmUiLiBDb21waWxlciB3aWxsDQphZGQgaG9sZXMgd2hl
-biBuZWNlc3NhcnkuIFNvIHdlIGRvbid0IG5vcm1hbGx5IGFkZCAicmVzZXJ2ZWQiDQpmb3IgYWxp
-Z25tZW50IGluIHRoZXNlIHN0cnVjdHMsIHJpZ2h0Pw0KDQo+IC8qICtyZXNwb25zZSB2MzogQmFy
-ZSBNZXRhbCBIb3N0IE1vZGUgRW5hYmxlZCAqLyBmb3IgY29uc2lzdGVuY3kuDQo+IEV2ZW4gdGhv
-dWdoIHRoaXMgY29tbWVudCBpcyBvcHRpb25hbCBoZXJlLg0KDQpJIHdpbGwganVzdCByZW1vdmUg
-dGhpcyBvcHRpb25hbCBjb21tZW50Lg0KDQpUaGFua3MsDQotIEhhaXlhbmcNCg0KDQo=
+On Fri, May 16, 2025 at 1:41=E2=80=AFPM Amery Hung <ameryhung@gmail.com> wr=
+ote:
+>
+> > > +       size =3D round_up(size, 8);
+> >
+> > why roundup ? and to 8 in particular?
+> > If user space wants byte size keys, why not let it?
+>
+> I will remove it. This was to prevent breaking using TLD in atomic
+> operations, but it should be very unlikely as they are thread
+> specific.
+
+You mean for a case where one part of the app (like a shared library)
+is using u32, but the other is using u64 and doing atomic ops on it?
+
+Make sense to align the off set by tld_create_key(),
+but it can be done without rounding up all previous keys to 8.
+63 bytes in the header are wasted. So use 2 as an offset.
+A single cmpxchg 4 byte can update cnt+offset.
+Actually why store size in each tld_metadata ?
+Won't the logic will be simpler if it's an offset ?
+bpf side tld_fetch_key() wouldn't need to count.
+
+> > > +               if (i < cnt) {
+> > > +                       /*
+> > > +                        * Pending tld_create_key() uses size to sign=
+al if the metadata has
+> > > +                        * been fully updated.
+> > > +                        */
+> > > +                       while (!(sz =3D __atomic_load_n(&tld_metadata=
+_p->metadata[i].size,
+> > > +                                                     __ATOMIC_ACQUIR=
+E)))
+> > > +                               sched_yield();
+> > > +
+> > > +                       if (!strncmp(tld_metadata_p->metadata[i].name=
+, name, TLD_NAME_LEN))
+> > > +                               return (tld_key_t) {.off =3D -EEXIST}=
+;
+> > > +
+> > > +                       off +=3D sz;
+> > > +                       continue;
+> > > +               }
+> > > +
+> > > +               if (off + size > TLD_DATA_SIZE)
+> > > +                       return (tld_key_t) {.off =3D -E2BIG};
+> > > +
+> > > +               /*
+> > > +                * Only one tld_create_key() can increase the current=
+ cnt by one and
+> > > +                * takes the latest available slot. Other threads wil=
+l check again if a new
+> > > +                * TLD can still be added, and then compete for the n=
+ew slot after the
+> > > +                * succeeding thread update the size.
+> > > +                */
+> > > +               if (!__atomic_compare_exchange_n(&tld_metadata_p->cnt=
+, &cnt, cnt + 1, true,
+> > > +                                                __ATOMIC_RELAXED, __=
+ATOMIC_RELAXED))
+> >
+> > weak and relaxed/relaxed ?
+>
+> I can't see reordering issue with cnt so I choose to use relax. I can
+> change to strong acq/rel just to be safe.
+>
+> > That's unusual.
+> > I don't know what it is supposed to do.
+> > I think weak=3Dfalse and __ATOMIC_ACQUIRE, __ATOMIC_RELAXED
+> > would look as expected.
+> >
+>
+> Do you mean weak=3Dfalse and __ATOMIC_RELAXED, __ATOMIC_ACQUIRE?
+
+no idea. I just grepped the kernel and saw:
+TEST_KERNEL_LOCKED(atomic_builtin_with_memorder,
+                   __atomic_compare_exchange_n(flag, &v, 1, 0,
+__ATOMIC_ACQUIRE, __ATOMIC_RELAXED),
+                   __atomic_store_n(flag, 0, __ATOMIC_RELEASE));
+TEST_KERNEL_LOCKED(atomic_builtin_wrong_memorder,
+                   __atomic_compare_exchange_n(flag, &v, 1, 0,
+__ATOMIC_RELAXED, __ATOMIC_RELAXED),
+                   __atomic_store_n(flag, 0, __ATOMIC_RELAXED));
+
+I'd just use __ATOMIC_SEQ_CST everywhere.
+Speed is not important here.
+
+>
+> > > +                       goto retry;
+> > > +
+> > > +               strncpy(tld_metadata_p->metadata[i].name, name, TLD_N=
+AME_LEN);
+> > > +               __atomic_store_n(&tld_metadata_p->metadata[i].size, s=
+ize, __ATOMIC_RELEASE);
+> > > +               return (tld_key_t) {.off =3D off};
+> > > +       }
+> > > +
+> > > +       return (tld_key_t) {.off =3D -ENOSPC};
+> > > +}
+> > > +
+> > > +__attribute__((unused))
+> > > +static inline bool tld_key_is_err(tld_key_t key)
+> > > +{
+> > > +       return key.off < 0;
+> > > +}
+> > > +
+> > > +__attribute__((unused))
+> > > +static inline int tld_key_err_or_zero(tld_key_t key)
+> > > +{
+> > > +       return tld_key_is_err(key) ? key.off : 0;
+> > > +}
+> > > +
+> > > +/**
+> > > + * tld_get_data() - Gets a pointer to the TLD associated with the ke=
+y.
+> > > + *
+> > > + * @map_fd: A file descriptor of the underlying task local storage m=
+ap,
+> > > + * tld_data_map
+> > > + * @key: A key object returned by tld_create_key().
+> > > + *
+> > > + * Returns a pointer to the TLD if the key is valid; NULL if no key =
+has been
+> > > + * added, not enough memory for TLD for this thread, or the key is i=
+nvalid.
+> > > + *
+> > > + * Threads that call tld_get_data() must call tld_free() on exit to =
+prevent
+> > > + * memory leak.
+> > > + */
+> > > +__attribute__((unused))
+> > > +static void *tld_get_data(int map_fd, tld_key_t key)
+> > > +{
+> > > +       if (!READ_ONCE(tld_metadata_p))
+> > > +               return NULL;
+> > > +
+> > > +       if (!tld_data_p && __tld_init_data(map_fd))
+> > > +               return NULL;
+> >
+> > Why call it again?
+> > tld_create_key() should have done it, no?
+> >
+>
+> A TLD is created by calling tld_create_key() once. Then, threads may
+> call tld_get_data() to get their thread-specific TLD. So it is
+> possible for a thread to call tld_get_data() with tld_data_p=3D=3DNULL.
+
+I see. Please add a comment.
+
+> > > +
+> > > +       return tld_data_p->data + key.off;
+> > > +}
+> > > +
+> > > +/**
+> > > + * tld_free() - Frees task local data memory of the calling thread
+> > > + */
+> > > +__attribute__((unused))
+> > > +static void tld_free(void)
+> > > +{
+> > > +       if (tld_data_p)
+> > > +               free(tld_data_p);
+> > > +}
+> >
+> > Since this .h allocates tld_metadata_p, it probably needs
+> > a helper to free it too.
+> >
+> > > +
+> > > +#endif /* __TASK_LOCAL_DATA_H */
+> > > diff --git a/tools/testing/selftests/bpf/progs/task_local_data.bpf.h =
+b/tools/testing/selftests/bpf/progs/task_local_data.bpf.h
+> > > new file mode 100644
+> > > index 000000000000..5f48e408a5e5
+> > > --- /dev/null
+> > > +++ b/tools/testing/selftests/bpf/progs/task_local_data.bpf.h
+> > > @@ -0,0 +1,220 @@
+> > > +/* SPDX-License-Identifier: GPL-2.0 */
+> > > +#ifndef __TASK_LOCAL_DATA_BPF_H
+> > > +#define __TASK_LOCAL_DATA_BPF_H
+> > > +
+> > > +/*
+> > > + * Task local data is a library that facilitates sharing per-task da=
+ta
+> > > + * between user space and bpf programs.
+> > > + *
+> > > + *
+> > > + * PREREQUISITE
+> > > + *
+> > > + * A TLD, an entry of data in task local data, first needs to be cre=
+ated by the
+> > > + * user space. This is done by calling user space API, tld_create_ke=
+y(), with
+> > > + * the name of the TLD and the size.
+> > > + *
+> > > + *     tld_key_t prio, in_cs;
+> > > + *
+> > > + *     prio =3D tld_create_key("priority", sizeof(int));
+> > > + *     in_cs =3D tld_create_key("in_critical_section", sizeof(bool))=
+;
+> > > + *
+> > > + * A key associated with the TLD, which has an opaque type tld_key_t=
+, will be
+> > > + * returned. It can be used to get a pointer to the TLD in the user =
+space by
+> > > + * calling tld_get_data().
+> > > + *
+> > > + *
+> > > + * USAGE
+> > > + *
+> > > + * Similar to user space, bpf programs locate a TLD using the same k=
+ey.
+> > > + * tld_fetch_key() allows bpf programs to retrieve a key created in =
+the user
+> > > + * space by name, which is specified in the second argument of tld_c=
+reate_key().
+> > > + * tld_fetch_key() additionally will cache the key in a task local s=
+torage map,
+> > > + * tld_key_map, to avoid performing costly string comparisons every =
+time when
+> > > + * accessing a TLD. This requires the developer to define the map va=
+lue type of
+> > > + * tld_key_map, struct tld_keys. It only needs to contain keys used =
+by bpf
+> > > + * programs in the compilation unit.
+> > > + *
+> > > + * struct tld_keys {
+> > > + *     tld_key_t prio;
+> > > + *     tld_key_t in_cs;
+> > > + * };
+> > > + *
+> > > + * Then, for every new task, a bpf program will fetch and cache keys=
+ once and
+> > > + * for all. This should be done ideally in a non-critical path (e.g.=
+, in
+> > > + * sched_ext_ops::init_task).
+> > > + *
+> > > + *     struct tld_object tld_obj;
+> > > + *
+> > > + *     err =3D tld_object_init(task, &tld);
+> > > + *     if (err)
+> > > + *         return 0;
+> > > + *
+> > > + *     tld_fetch_key(&tld_obj, "priority", prio);
+> > > + *     tld_fetch_key(&tld_obj, "in_critical_section", in_cs);
+> > > + *
+> > > + * Note that, the first argument of tld_fetch_key() is a pointer to =
+tld_object.
+> > > + * It should be declared as a stack variable and initialized via tld=
+_object_init().
+> > > + *
+> > > + * Finally, just like user space programs, bpf programs can get a po=
+inter to a
+> > > + * TLD by calling tld_get_data(), with cached keys.
+> > > + *
+> > > + *     int *p;
+> > > + *
+> > > + *     p =3D tld_get_data(&tld_obj, prio, sizeof(int));
+> > > + *     if (p)
+> > > + *         // do something depending on *p
+> > > + */
+> > > +#include <errno.h>
+> > > +#include <bpf/bpf_helpers.h>
+> > > +
+> > > +#define TLD_DATA_SIZE __PAGE_SIZE
+> > > +#define TLD_DATA_CNT 63
+> > > +#define TLD_NAME_LEN 62
+> > > +
+> > > +typedef struct {
+> > > +       __s16 off;
+> > > +} tld_key_t;
+> > > +
+> > > +struct u_tld_data *dummy_data;
+> > > +struct u_tld_metadata *dummy_metadata;
+> > > +
+> > > +struct tld_metadata {
+> > > +       char name[TLD_NAME_LEN];
+> > > +       __u16 size;
+> > > +};
+> > > +
+> > > +struct u_tld_metadata {
+> > > +       __u8 cnt;
+> > > +       __u8 padding[63];
+> > > +       struct tld_metadata metadata[TLD_DATA_CNT];
+> > > +};
+> > > +
+> > > +struct u_tld_data {
+> > > +       char data[TLD_DATA_SIZE];
+> > > +};
+> > > +
+> > > +struct tld_map_value {
+> > > +       struct u_tld_data __uptr *data;
+> > > +       struct u_tld_metadata __uptr *metadata;
+> > > +};
+> > > +
+> > > +struct tld_object {
+> > > +       struct tld_map_value *data_map;
+> > > +       struct tld_keys *key_map;
+> > > +};
+> > > +
+> > > +/*
+> > > + * Map value of tld_key_map for caching keys. Must be defined by the=
+ developer.
+> > > + * Members should be tld_key_t and passed to the 3rd argument of tld=
+_fetch_key().
+> > > + */
+> > > +struct tld_keys;
+> > > +
+> > > +struct {
+> > > +       __uint(type, BPF_MAP_TYPE_TASK_STORAGE);
+> > > +       __uint(map_flags, BPF_F_NO_PREALLOC);
+> > > +       __type(key, int);
+> > > +       __type(value, struct tld_map_value);
+> > > +} tld_data_map SEC(".maps");
+> > > +
+> > > +struct {
+> > > +       __uint(type, BPF_MAP_TYPE_TASK_STORAGE);
+> > > +       __uint(map_flags, BPF_F_NO_PREALLOC);
+> > > +       __type(key, int);
+> > > +       __type(value, struct tld_keys);
+> > > +} tld_key_map SEC(".maps");
+> > > +
+> > > +/**
+> > > + * tld_object_init() - Initializes a tld_object.
+> > > + *
+> > > + * @task: The task_struct of the target task
+> > > + * @tld_obj: A pointer to a tld_object to be initialized
+> > > + *
+> > > + * Returns 0 on success; -ENODATA if the task has no TLD; -ENOMEM if=
+ the creation
+> > > + * of tld_key_map fails
+> > > + */
+> > > +__attribute__((unused))
+> > > +static int tld_object_init(struct task_struct *task, struct tld_obje=
+ct *tld_obj)
+> > > +{
+> > > +       tld_obj->data_map =3D bpf_task_storage_get(&tld_data_map, tas=
+k, 0, 0);
+> > > +       if (!tld_obj->data_map)
+> > > +               return -ENODATA;
+> > > +
+> > > +       tld_obj->key_map =3D bpf_task_storage_get(&tld_key_map, task,=
+ 0,
+> > > +                                               BPF_LOCAL_STORAGE_GET=
+_F_CREATE);
+> > > +       if (!tld_obj->key_map)
+> > > +               return -ENOMEM;
+> > > +
+> > > +       return 0;
+> > > +}
+> > > +
+> > > +/**
+> > > + * tld_fetch_key() - Fetches the key to a TLD by name. The key has t=
+o be created
+> > > + * by user space first with tld_create_key().
+> > > + *
+> > > + * @tld_obj: A pointer to a valid tld_object initialized by tld_obje=
+ct_init()
+> > > + * @name: The name of the key associated with a TLD
+> > > + * @key: The key in struct tld_keys to be saved to
+> > > + *
+> > > + * Returns a positive integer on success; 0 otherwise
+> > > + */
+> > > +#define tld_fetch_key(tld_obj, name, key)                           =
+           \
+> > > +       ({                                                           =
+           \
+> > > +               (tld_obj)->key_map->key.off =3D __tld_fetch_key(tld_o=
+bj, name);   \
+> > > +       })
+> > > +
+> > > +__attribute__((unused))
+> > > +static u16 __tld_fetch_key(struct tld_object *tld_obj, const char *n=
+ame)
+> > > +{
+> > > +       int i, meta_off, cnt;
+> > > +       void *metadata, *nm, *sz;
+> > > +       u16 off =3D 0;
+> > > +
+> > > +       if (!tld_obj->data_map || !tld_obj->data_map->metadata)
+> > > +               return 0;
+> > > +
+> > > +       cnt =3D tld_obj->data_map->metadata->cnt;
+> > > +       metadata =3D tld_obj->data_map->metadata->metadata;
+> > > +
+> > > +       bpf_for(i, 0, cnt) {
+> > > +               meta_off =3D i * sizeof(struct tld_metadata);
+> > > +               if (meta_off > TLD_DATA_SIZE - offsetof(struct u_tld_=
+metadata, metadata)
+> > > +                                          - sizeof(struct tld_metada=
+ta))
+> > > +                       break;
+> > > +
+> > > +               nm =3D metadata + meta_off + offsetof(struct tld_meta=
+data, name);
+> > > +               sz =3D metadata + meta_off + offsetof(struct tld_meta=
+data, size);
+> > > +
+> > > +               /*
+> > > +                * Reserve 0 for uninitialized keys. Increase the off=
+set of a valid key
+> > > +                * by one and subtract it later in tld_get_data().
+> > > +                */
+> > > +               if (!bpf_strncmp(nm, TLD_NAME_LEN, name))
+> > > +                       return off + 1;
+> >
+> > I think all this +1, -1 dance is doing is helping to catch an
+> > error when tld_get_data() is called without tld_fetch_key().
+> > I feel this is too defensive.
+> >
+> > Let tld_fetch_key() return proper negative error code.
+> >
+>
+> I can certainly return negative error code.
+>
+> But for the +1, -1 logic, I think is a simpler way to differentiate an
+> uninitialized key in tld_key_map from the first TLD (both key.off =3D=3D
+> 0). After all, bpf programs can call tld_get_data() without
+> tld_fetch_key().
+
+I'm saying we don't need to catch this case.
+progs should not call tld_get_data() without tld_fetch_key().
+If they do, it's a bug.
+
+>
+> > > +
+> > > +               off +=3D *(u16 *)sz;
+> > > +       }
+> > > +
+> > > +       return 0;
+> > > +}
+> > > +
+> > > +/**
+> > > + * tld_get_data() - Retrieves a pointer to the TLD associated with t=
+he key.
+> > > + *
+> > > + * @tld_obj: A pointer to a valid tld_object initialized by tld_obje=
+ct_init()
+> > > + * @key: The key of a TLD saved in tld_maps
+> > > + * @size: The size of the TLD. Must be a known constant value
+> > > + *
+> > > + * Returns a pointer to the TLD data associated with the key; NULL i=
+f the key
+> > > + * is not valid or the size is too big
+> > > + */
+> > > +#define tld_get_data(tld_obj, key, size) \
+> > > +       __tld_get_data(tld_obj, (tld_obj)->key_map->key.off - 1, size=
+)
+> > > +
+> > > +__attribute__((unused))
+> > > +__always_inline void *__tld_get_data(struct tld_object *tld_obj, u32=
+ off, u32 size)
+> > > +{
+> > > +       return (tld_obj->data_map->data && off >=3D 0 && off < TLD_DA=
+TA_SIZE - size) ?
+> > > +               (void *)tld_obj->data_map->data + off : NULL;
+> >
+> > If we require users to call tld_fetch_key() first and check for errors
+> > tld_get_data() can be faster:
+> > #define tld_get_data(tld_obj, key)
+> >    (void *)tld_obj->data_map->data + tld_obj->key_map->key.off
+> >
+>
+> tld_get_data() can be called in a bpf program without tld_fetch_key(),
+> so checking tld_obj->data_map->data is needed as the first load from
+> tld_obj->data_map->data yields a "mem_or_null".
+>
+> I did try to save this uptr "mem" after null check to stack (e.g., in
+> a tld_object) so that we can save subsequent checks. However, the
+> compiler sometime will do a fresh load from map_ptr when reading
+> tld_obj->data_map->data. Might need some work or trick to make it
+> happen.
+
+likely because you do tld_obj->data_map->data twice.
+
+> > I wouldn't bother with extra checks, especially for size.
+> >
+>
+> It needs to be bound-checked. If tld_get_data() doesn't do it, bpf
+> programs have to do it before acceess. Otherwise:
+>
+> ; return (tld_obj->data_map->data && off >=3D 0) ? @ task_local_data.bpf.=
+h:218
+> 25: (bf) r3 =3D r1                      ; R1_w=3Dmem(sz=3D4096) R3_w=3Dme=
+m(sz=3D4096)
+> 26: (0f) r3 +=3D r2                     ;
+> R2_w=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D0xffff7fff,smax3=
+2=3D32766,var_off=3D(0x0;
+> 0xffffffff)) R3_w=3Dmem(sz=3D4096,smin=3D0,smax=3Dumax=3D0xffffffff,var_o=
+ff=3D(0x0;
+> 0xfffffff)
+> ; test_value1 =3D *int_p; @ test_task_local_data.c:63
+> 27: (61) r2 =3D *(u32 *)(r3 +0)
+> R3 unbounded memory access, make sure to bounds check any such access
+
+That's easy to fix.
+Then something like:
+#define tld_get_data(tld_obj, key) \
+ ({
+    void * data =3D tld_obj->data_map->data;
+    if (data)
+         data +=3D tld_obj->key_map->key.off & (PAGE_SIZE - 1);
+    data;
+  })
+
+size is really not needed. The verifier sees it as one page.
+Bad bpf prog can write into the wrong key and the verifier cannot stop it.
+
+> > Bigger question.. can we cache the whole pointer for each key ?
+> > and then
+> > #define tld_get_data(tld_obj, key) ld_obj->key_map->key
+>
+> Maybe define the member type of tld_key_map as __uptr and allow bpf
+> programs to update a uptr field with a valid uptr?
+
+yeah. That indeed gets complicated. Maybe it's possible with some
+verifier changes, but let's not go there yet.
+The tld_get_data() proposed above is speedy enough.
 
