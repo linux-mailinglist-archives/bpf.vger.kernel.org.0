@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-58404-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58405-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E9BCAB9FFD
-	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 17:36:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AE62ABA002
+	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 17:37:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 968833B50F2
-	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 15:35:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B48407B8A9A
+	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 15:36:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C28011C4A10;
-	Fri, 16 May 2025 15:35:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04FA21C4A10;
+	Fri, 16 May 2025 15:37:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cAx9vsNI"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Zi62pArT"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E0B71A5BAE
-	for <bpf@vger.kernel.org>; Fri, 16 May 2025 15:35:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E18DD149C64;
+	Fri, 16 May 2025 15:37:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747409737; cv=none; b=hQq4gmgWui2W9E+5eEeBJ4gKo90OLATQE7dBep5U9SavwlDFuelmnJeR3amS1cSS7B/TY6V7UvVOYIGP8gHLTnJvRBjbt+OVCr14Qtlkp7YonDqCKPMUsZmhWVc9LlB/WF4MYMZchUEiPCTRXR4NOqz/1fuuhD7iHG+VcwoNNIw=
+	t=1747409854; cv=none; b=DC2oajlcwdGnDGwHqjGyryOus2xpNenfMYUOlXEXtT2Twg0f6BoKGuW/bApPvBzY2+eBuy4HcECOuIsh0X0K9jo6JQv4wt7ZX44dSwg6cML9eECDqBFxg3GMCaBuBeI7p36+RHLQKzbqSZv6ka1lS+jDWT2q3+IogdKTvUZmRh8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747409737; c=relaxed/simple;
-	bh=4spRlZNhnCEicwsxcWbx2Jkoz9+deyk3RJe76Gi67JI=;
+	s=arc-20240116; t=1747409854; c=relaxed/simple;
+	bh=HtWde3TpgiWAD605YmTLF4fS54hGTe1sdeYFh/LhoE8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ed06PvcTgeFsbqJTuMLJhAc/SN+areFnAgZl6pJjTW9vWfUE5SJy/DrRjEjc3Nz03ns85G8PbFpQ8KkmAZwcw1wYEhMz62QPDOZfeHSbh8OAsviO2HTGo/MGNQL3F9XaJcfdf3iRyF1JbhJrbqhqC4YimGAVOiyGKuOS3ffkwdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cAx9vsNI; arc=none smtp.client-ip=95.215.58.183
+	 Content-Type:Content-Disposition:In-Reply-To; b=PxTU+QVup5OQQ6e179QXjROgZM+LzFL1xhBKRJYj3dbkrNVdMCzwwUMUyBFCuAg1kwBtXNWzwivVgtnM32o+d8J308uQN1BXqORiIoVhmNvVw2MslfBf2CXITV9/IrCwQHOGAu1t/rnHz504PyCM5fAI7IaY+fpRzPZxg22qMm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Zi62pArT; arc=none smtp.client-ip=95.215.58.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 16 May 2025 08:34:21 -0700
+Date: Fri, 16 May 2025 08:37:23 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1747409723;
+	t=1747409850;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gDu+jRkwpaRbOzcYJWxPfjXvLWF0YO9LpUYPWyot3l4=;
-	b=cAx9vsNICzLyqKSVXLYeLdMpNBqma8I1rnl8JSm8TPTOnHA9zjtZ9WEs7rM9pfJ1oBaxjP
-	Nc5+Uy0/GmWjLJcuLPIdIRB664JgTaGoN+lV/Y+g45NGik3oIoV4MohXMzxjGOP8v54W6h
-	wsRQ29Nmaxnx+/VSJ/PIMK/i4BE0yp0=
+	bh=GUmB6MysdwfVDrB19QMncGfwBZNU3SIATJ4OxtHukM8=;
+	b=Zi62pArTD9nQONyMVoTOTkWzLtXfSpFp1vYJssLs+SioqtfVLUfCo5UPKpokDCEIRHJ7V7
+	MkjHQSHV01HKIeXg6u3ofnddU32/7s5zv5PrTQE4G2sgZBxxA3wxVfw3XPyZCJncMHcPwF
+	67ljLHnnIhccyilTXh9PP/QLo7HiSOQ=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Shakeel Butt <shakeel.butt@linux.dev>
 To: Vlastimil Babka <vbabka@suse.cz>
@@ -52,11 +52,12 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Peter Zijlstra <peterz@infradead.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
 	bpf@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
 	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>
-Subject: Re: [PATCH 5/5] memcg: make memcg_rstat_updated nmi safe
-Message-ID: <7v2v2bwgd4jbprimygguwatdi6zhsvidibk2zlddkx7ksg3y6l@u3mlw5bw3tyt>
+Subject: Re: [PATCH 1/5] memcg: disable kmem charging in nmi for unsupported
+ arch
+Message-ID: <ukn75zvkgbyjmrhmy7rmt6dx24r47vy6npfdvjx6wxiduxeqnm@kkjoam7gft4v>
 References: <20250516064912.1515065-1-shakeel.butt@linux.dev>
- <20250516064912.1515065-6-shakeel.butt@linux.dev>
- <8114231b-ec06-44a9-9075-9ccf0809de4a@suse.cz>
+ <20250516064912.1515065-2-shakeel.butt@linux.dev>
+ <050484a9-c08c-40d2-b431-76903a639222@suse.cz>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -65,31 +66,75 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8114231b-ec06-44a9-9075-9ccf0809de4a@suse.cz>
+In-Reply-To: <050484a9-c08c-40d2-b431-76903a639222@suse.cz>
 X-Migadu-Flow: FLOW_OUT
 
-On Fri, May 16, 2025 at 11:45:39AM +0200, Vlastimil Babka wrote:
+On Fri, May 16, 2025 at 11:30:17AM +0200, Vlastimil Babka wrote:
 > On 5/16/25 08:49, Shakeel Butt wrote:
-> > memcg: convert stats_updates to atomic_t
-> 
-> You have two subjects, I guess delete the second one?
-
-Oops I squashed the patch at the very end and forgot to fix this.
-
-> 
-> > Currently kernel maintains memory related stats updates per-cgroup to
-> > optimize stats flushing. The stats_updates is defined as atomic64_t
-> > which is not nmi-safe on some archs. Actually we don't really need 64bit
-> > atomic as the max value stats_updates can get should be less than
-> > nr_cpus * MEMCG_CHARGE_BATCH. A normal atomic_t should suffice.
-> > 
-> > Also the function cgroup_rstat_updated() is still not nmi-safe but there
-> > is parallel effort to make it nmi-safe, so until then let's ignore it in
-> > the nmi context.
+> > The memcg accounting and stats uses this_cpu* and atomic* ops. There are
+> > archs which define CONFIG_HAVE_NMI but does not define
+> > CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS and ARCH_HAVE_NMI_SAFE_CMPXCHG, so
+> > memcg accounting for such archs in nmi context is not possible to
+> > support. Let's just disable memcg accounting in nmi context for such
+> > archs.
 > > 
 > > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> > ---
+> >  include/linux/memcontrol.h |  5 +++++
+> >  mm/memcontrol.c            | 15 +++++++++++++++
+> >  2 files changed, 20 insertions(+)
+> > 
+> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > index f7848f73f41c..53920528821f 100644
+> > --- a/include/linux/memcontrol.h
+> > +++ b/include/linux/memcontrol.h
+> > @@ -62,6 +62,11 @@ struct mem_cgroup_reclaim_cookie {
+> >  
+> >  #ifdef CONFIG_MEMCG
+> >  
+> > +#if defined(CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS) || \
+> > +	!defined(CONFIG_HAVE_NMI) || defined(ARCH_HAVE_NMI_SAFE_CMPXCHG)
+> > +#define MEMCG_SUPPORTS_NMI_CHARGING
+> > +#endif
+> > +
+> >  #define MEM_CGROUP_ID_SHIFT	16
+> >  
+> >  struct mem_cgroup_id {
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index e17b698f6243..dface07f69bb 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -2647,11 +2647,26 @@ static struct obj_cgroup *current_objcg_update(void)
+> >  	return objcg;
+> >  }
+> >  
+> > +#ifdef MEMCG_SUPPORTS_NMI_CHARGING
+> > +static inline bool nmi_charging_allowed(void)
+> > +{
+> > +	return true;
+> > +}
+> > +#else
+> > +static inline bool nmi_charging_allowed(void)
+> > +{
+> > +	return false;
+> > +}
+> > +#endif
+> > +
+> >  __always_inline struct obj_cgroup *current_obj_cgroup(void)
+> >  {
+> >  	struct mem_cgroup *memcg;
+> >  	struct obj_cgroup *objcg;
+> >  
+> > +	if (in_nmi() && !nmi_charging_allowed())
 > 
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> Exchange the two as the latter is compile-time constant, so it can shortcut
+> the in_nmi() check away in all the good cases?
+> 
 
-Thanks a lot.
+Oh I thought compiler would figure that out but now that I think about
+it, it can only do so if the first condition does not have any
+side-effects and though in_nmi() does not, I am not sure if compiler can
+extract that information.
+
+I will fix this and make sure that compiler is doing the right thing.
 
