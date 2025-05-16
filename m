@@ -1,193 +1,146 @@
-Return-Path: <bpf+bounces-58412-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58413-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BD3CABA1D8
-	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 19:22:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69167ABA2B0
+	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 20:21:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EACC9E104E
-	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 17:22:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21EC57AB3A4
+	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 18:20:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0591F272E4B;
-	Fri, 16 May 2025 17:22:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10E2527EC7C;
+	Fri, 16 May 2025 18:21:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NJARW/kx"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mVIMsqdU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08AE425CC77;
-	Fri, 16 May 2025 17:22:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A55B727E7E3
+	for <bpf@vger.kernel.org>; Fri, 16 May 2025 18:21:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747416168; cv=none; b=hcN/O5v8ZIPAkfg6w2yI76/Woze971/rS4Zl45tZMyiLdPnnm5uBi5qSdAE874y8Akr+RC4Gyd7HRTC4FfG8Bps/mbMHyXaaCsCBrO3QnBZ8ErEQOsAjeAJyPTSx5ds+bnaAYc1tr17HrWXJ2Ms/fnsAhD+uTSSNypNKgHqoslY=
+	t=1747419674; cv=none; b=OERNf0ldWsk3/sD6xtWrQASeFAb4fjXiLcmztJ9nRBwT7VTINc9dXAfTqi6ylEirx3C8TiIpiWuVQ7by3eQFIQ2NtoU8MPf+qpxAoh4aKuOm0bWrxz3lhGwi2GTB9bGnzEaDrw4RPZOGHnGnrUDrVDZERkNfc3PjYTBy82DWnFc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747416168; c=relaxed/simple;
-	bh=gHDnfoajrPghe0uHWBzNeNQBRVEv0TYcue3CT7aNfik=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=K0kkd5B08+9yOWV1GhsT78an6VFc41vggcXjkle1S487Ittf/yZ2u1aEP9rNKGULU907Ig9lbBFIdRkBwND+a9FsXnR3B4Kab8IhfdtjX8zDiOxclViDR3KtjhTmJC9xssk9f04CfFUW2EtlN16bNaVxIbXe2pSpgHuBOY0ennM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NJARW/kx; arc=none smtp.client-ip=209.85.222.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-7c5568355ffso204946385a.0;
-        Fri, 16 May 2025 10:22:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747416165; x=1748020965; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rijU/iw06s1As7dK45CRJ6ZUYyr3AoRxB/Rs1KgsH2c=;
-        b=NJARW/kxHAezzeVEWXZdhZTVlQ7NAXZCjbWZGoS9DvUtB2TFwXlOOUcx0dOpLym0LN
-         tE2gkQkuymuWH+4tU4dhHetH/QRUgF/RAK6V9848vS64MKBb4yX73y//XrU4B/+y3Cbw
-         zdJ0WWHOnnb4ScpXgWWHATk1Ex22yj6sgEgkQfok0DI+QUTi/wpAqMjsNpxAHKjLg6pS
-         vfDF7BeMen5Q9cYLXkAY1DKa+TuCHBCS1/aK3ioGK6sLK25bgOSoM7RnnFQRVNawhzUf
-         n8Lb0iRzzfTqp0SDUi28h/z43fDJ/CpUleAnsDMVnqJQgICeuCc4/OFU6mUi3McRG/7k
-         Y1rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747416165; x=1748020965;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=rijU/iw06s1As7dK45CRJ6ZUYyr3AoRxB/Rs1KgsH2c=;
-        b=t5GNa/iEJmT5wKlWjgspeqzv36spvkvT8F1I4qLskQndKSQbaIES3P4ScrFcX+teZD
-         4Sh2B9RcBQr1p1LRtyAH22iv76nWN0DSvjpG6m8zOWnR0qKtMsKlWIAWMndNiK/n4d+/
-         cCFYr1J6HJva0kXXG2w7Q4EpNxXnAi1Ql+M07Gr7G0cZGTw1mmDRhS1P1UP7RvynJhd3
-         xgir3+hcSyRC0Q2jXg2AlYBjbXIyBmanF70oeXbVc7I6kMaMx6PuGA7pRdYbOEdCiaeN
-         Z1FQjRhgeqFnZ+cK68ihXmlolQgn4KlajtgaoB87Z2KZz64jGuZh7jrZvwo7qxcjbatS
-         53Aw==
-X-Forwarded-Encrypted: i=1; AJvYcCV2YGptP5LNs1fgZ6UQZfizVQysU9cG7RFNe3CjbyMCSY18jyL/U5jIOW/5+9LnOz8gvco=@vger.kernel.org, AJvYcCVdAn/SZ21e3g0qt6361tGvAqgqsHlNDywZlPpBMEcZvjyxEq3iDnvUwlxCGOyug3cVuTSZeAwML4S/lbSU@vger.kernel.org, AJvYcCVgafJd4HnJwNogd9bLuKbq1yoVEVmJ7GRLoqjRJvAJ00paQhCXgxn00AE7N8tpl0To/8PBgBBS@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzxi6X/S85/+KfEBBLwHKsBWugAAP7f7Qr6pv3cTEYYpRV7uiwj
-	7q2QB30UaPgt+H4mcvbYxfgkoRuwdz86Y9D9Xsd4uUwOViDaoQbeBsbW
-X-Gm-Gg: ASbGnctRoUx7uoAG8wWZP2f/uD+5tIW+qNO6Aninjxz051L6cO8InNDWF9FtXQHid/R
-	dZCPMR3UDcA/paKEE4RqQaKbw7Lkpd2CB0ip4yaudhOTFo/s7L3fp4Kssqbx5WjxrwEhPJZ3SHI
-	rWdHdArNKO7h8UGz++tqEpx80L40RzTTshhyDHmeZRe+K19uTRIBgFrLd3WJnaH2dbW4Ls38RxK
-	g0vU3Tp/sC34v1WtQ0qQkWNRR8AxPo1L4mYcUaA9CkzQuanVGOaW+WU2XmNdJD/w5CUmSW0IsbQ
-	uf6+7YcT/sbMoBDoPeMuxlMDc2Pz+BAchXg7qi0Otw9lML0u5Vst0Vl36W1WasJlbYBzVfae01z
-	BYSjB8SxJvLe1wmYpC30vmzI=
-X-Google-Smtp-Source: AGHT+IGgbFIs4gVRzBrRl+Z/NMLlfhcLYA4US1p+mqyo1Padg1fqO6Wvl/Kd4VdVk1OpuKSb+zZPyw==
-X-Received: by 2002:a05:620a:4593:b0:7c5:3b3b:c9da with SMTP id af79cd13be357-7cd4677d5bbmr725106685a.40.1747416164763;
-        Fri, 16 May 2025 10:22:44 -0700 (PDT)
-Received: from localhost (23.67.48.34.bc.googleusercontent.com. [34.48.67.23])
-        by smtp.gmail.com with UTF8SMTPSA id af79cd13be357-7cd467bc7d1sm144103785a.1.2025.05.16.10.22.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 May 2025 10:22:44 -0700 (PDT)
-Date: Fri, 16 May 2025 13:22:43 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Daniel Xu <dxu@dxuuu.xyz>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Alexander Shalimov <alex-shalimov@yandex-team.ru>
-Cc: andrew@lunn.ch, 
- David Miller <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, 
- jacob.e.keller@intel.com, 
- jasowang@redhat.com, 
- Jakub Kicinski <kuba@kernel.org>, 
- linux-kernel@vger.kernel.org, 
- netdev@vger.kernel.org, 
- Paolo Abeni <pabeni@redhat.com>, 
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Message-ID: <68277463d4c43_2ba041294cf@willemb.c.googlers.com.notmuch>
-In-Reply-To: <0bcc08e4-9f22-431c-97f3-c7d5784d2652@app.fastmail.com>
-References: <681a63e3c1a6c_18e44b2949d@willemb.c.googlers.com.notmuch>
- <20250514233931.56961-1-alex-shalimov@yandex-team.ru>
- <6825f65ae82b5_24bddc29422@willemb.c.googlers.com.notmuch>
- <0bcc08e4-9f22-431c-97f3-c7d5784d2652@app.fastmail.com>
-Subject: Re: [PATCH] net/tun: expose queue utilization stats via ethtool
+	s=arc-20240116; t=1747419674; c=relaxed/simple;
+	bh=G+yvEjn9CCpeWu1T/OIdi1As1wUoCTD5yb58f6RGZ4M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SakcxMgYKdLJUnauOyx153X5I0iv+xZLz/n7TETsTvq9WrOFPQEA62odRD0ycfLicNT9RjMhj7/D4fm4azDvqAcghffCjp+wChV/uENmMADkfGVTkdCtqlDorcCrwQL48tkHrXOy7gY1rwdH5C4MizvBVVkh0iSOeLBCpzGTzsQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mVIMsqdU; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Fri, 16 May 2025 11:20:54 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1747419660;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Aijqc4SJocxuCvVY9CsEnm5XULlfxcjJW9An8m2JIBY=;
+	b=mVIMsqdUT72lHBzpWvauLnHJ4jd4fkdk/1nUNgjk0VS+Ur+CB2Pz7/FcHSFYjcjp0ZftQ0
+	NEhL6o0e4Ec55ODNiv2k4zNXmBxUiR39LBdclyfurcbNK7DKL1Dz6LZ8nCDmw9+/MzyJCc
+	YzeANwabOAeuUt2hyY1khgtOzJjRdAw=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Alexei Starovoitov <ast@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
+	Harry Yoo <harry.yoo@oracle.com>, Yosry Ahmed <yosry.ahmed@linux.dev>, 
+	Peter Zijlstra <peterz@infradead.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	bpf@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>
+Subject: Re: [PATCH 1/5] memcg: disable kmem charging in nmi for unsupported
+ arch
+Message-ID: <5utpywqjf47slmygpyfwmveabp65kzhq3sqf52j53hxs5owmxg@67ccuh4pmqsh>
+References: <20250516064912.1515065-1-shakeel.butt@linux.dev>
+ <20250516064912.1515065-2-shakeel.butt@linux.dev>
+ <050484a9-c08c-40d2-b431-76903a639222@suse.cz>
+ <ukn75zvkgbyjmrhmy7rmt6dx24r47vy6npfdvjx6wxiduxeqnm@kkjoam7gft4v>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ukn75zvkgbyjmrhmy7rmt6dx24r47vy6npfdvjx6wxiduxeqnm@kkjoam7gft4v>
+X-Migadu-Flow: FLOW_OUT
 
-Daniel Xu wrote:
-> On Thu, May 15, 2025, at 7:12 AM, Willem de Bruijn wrote:
-> > Alexander Shalimov wrote:
-> >> 06.05.2025, 22:32, "Willem de Bruijn" <willemdebruijn.kernel@gmail.c=
-om>:
-> >> > Perhaps bpftrace with a kfunc at a suitable function entry point t=
-o
-> >> > get access to these ring structures.
-> >> =
+On Fri, May 16, 2025 at 08:37:23AM -0700, Shakeel Butt wrote:
+> On Fri, May 16, 2025 at 11:30:17AM +0200, Vlastimil Babka wrote:
+> > On 5/16/25 08:49, Shakeel Butt wrote:
+> > > The memcg accounting and stats uses this_cpu* and atomic* ops. There are
+> > > archs which define CONFIG_HAVE_NMI but does not define
+> > > CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS and ARCH_HAVE_NMI_SAFE_CMPXCHG, so
+> > > memcg accounting for such archs in nmi context is not possible to
+> > > support. Let's just disable memcg accounting in nmi context for such
+> > > archs.
+> > > 
+> > > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> > > ---
+> > >  include/linux/memcontrol.h |  5 +++++
+> > >  mm/memcontrol.c            | 15 +++++++++++++++
+> > >  2 files changed, 20 insertions(+)
+> > > 
+> > > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > > index f7848f73f41c..53920528821f 100644
+> > > --- a/include/linux/memcontrol.h
+> > > +++ b/include/linux/memcontrol.h
+> > > @@ -62,6 +62,11 @@ struct mem_cgroup_reclaim_cookie {
+> > >  
+> > >  #ifdef CONFIG_MEMCG
+> > >  
+> > > +#if defined(CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS) || \
+> > > +	!defined(CONFIG_HAVE_NMI) || defined(ARCH_HAVE_NMI_SAFE_CMPXCHG)
+> > > +#define MEMCG_SUPPORTS_NMI_CHARGING
+> > > +#endif
+> > > +
+> > >  #define MEM_CGROUP_ID_SHIFT	16
+> > >  
+> > >  struct mem_cgroup_id {
+> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > > index e17b698f6243..dface07f69bb 100644
+> > > --- a/mm/memcontrol.c
+> > > +++ b/mm/memcontrol.c
+> > > @@ -2647,11 +2647,26 @@ static struct obj_cgroup *current_objcg_update(void)
+> > >  	return objcg;
+> > >  }
+> > >  
+> > > +#ifdef MEMCG_SUPPORTS_NMI_CHARGING
+> > > +static inline bool nmi_charging_allowed(void)
+> > > +{
+> > > +	return true;
+> > > +}
+> > > +#else
+> > > +static inline bool nmi_charging_allowed(void)
+> > > +{
+> > > +	return false;
+> > > +}
+> > > +#endif
+> > > +
+> > >  __always_inline struct obj_cgroup *current_obj_cgroup(void)
+> > >  {
+> > >  	struct mem_cgroup *memcg;
+> > >  	struct obj_cgroup *objcg;
+> > >  
+> > > +	if (in_nmi() && !nmi_charging_allowed())
+> > 
+> > Exchange the two as the latter is compile-time constant, so it can shortcut
+> > the in_nmi() check away in all the good cases?
+> > 
+> 
+> Oh I thought compiler would figure that out but now that I think about
+> it, it can only do so if the first condition does not have any
+> side-effects and though in_nmi() does not, I am not sure if compiler can
+> extract that information.
+> 
+> I will fix this and make sure that compiler is doing the right thing.
 
-> >> Thank you for your responses!
-> >> =
-
-> >> Initially, we implemented such monitoring using bpftrace but we were=
-
-> >> not satisfied with the need to double-check the structure definition=
-s
-> >> in tun.c for each new kernel version.
-> >> =
-
-> >> We attached kprobe to the "tun_net_xmit()" function. This function
-> >> gets a "struct net_device" as an argument, which is then explicitly
-> >> cast to a tun_struct - "struct tun_struct *tun =3D netdev_priv(dev)"=
-.
-> >> However, performing such a cast within bpftrace is difficult because=
-
-> >> tun_struct is defined in tun.c - meaning the structure definition
-> >> cannot be included directly (not a header file). As a result, we wer=
-e
-> >> forced to add fake "struct tun_struct" and "struct tun_file"
-> >> definitions, whose maintenance across kernel versions became
-> >> cumbersome (see below). The same problems exists even with kfunc and=
-
-> >> btf - we are not able to cast properly netdev to tun_struct.
-> >> =
-
-> >> That=E2=80=99s why we decided to add this functionality directly to =
-the kernel.
-> >
-> > Let's solve this in bpftrace instead. That's no reason to rever to
-> > hardcoded kernel APIs.
-> >
-> > It quite possibly already is. I'm no bpftrace expert. Cc:ing bpf@
-> =
-
-> Yeah, should be possible. You haven't needed to include header
-> files to access type information available in BTF for a while now.
-> This seems to work for me - mind giving this a try?
-> =
-
-> ```
-> fentry:tun:tun_net_xmit {
->     $tun =3D (struct tun_struct *)args->dev->priv;
->     print($tun->numqueues);  // or whatever else you want
-> }
-> ```
-> =
-
-> fentry probes are better in general than kprobes if all you're doing
-> is attaching to the entry of a function.
-> =
-
-> You could do the same with kprobes like this if you really want, though=
-:
-> =
-
-> ```
-> kprobe:tun:tun_net_xmit {
->     $dev =3D (struct net_device *)arg1;
->     $tun =3D (struct tun_struct *)$dev->priv;
->     print($tun->numqueues);  // or whatever else you want
-> }
-> ```
-> =
-
-> Although it looks like there's a bug when you omit the module name
-> where bpftrace doesn't find the struct definition. I'll look into that.=
-
-
-Minor: unless tun is built-in.
-
-Thanks a lot for your response, Daniel. Good to know that we can get
-this information without kernel changes. And I learned something new
-:) Replicated your examples.
-
+So, gcc 11.5 generates the same code irrespective of checking in_nmi()
+first or second i.e. avoid in_nmi() check altogether on x86_64. I will
+still rearrange the checks to not leave this optimization to compilers.
 
