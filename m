@@ -1,155 +1,189 @@
-Return-Path: <bpf+bounces-58398-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58399-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8B7EAB9DE3
-	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 15:48:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E59C0AB9E75
+	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 16:18:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E776507EB9
-	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 13:47:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9A0CC7ADE7E
+	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 14:16:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4182713A258;
-	Fri, 16 May 2025 13:47:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C7F8192598;
+	Fri, 16 May 2025 14:17:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ROywHA2B"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XtXRnzWg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0954410785;
-	Fri, 16 May 2025 13:47:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 104D418DB0D
+	for <bpf@vger.kernel.org>; Fri, 16 May 2025 14:17:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747403233; cv=none; b=JVjm5W6ciX/l7cf1IYLKSJ9x0qpnet6I81BDt03qoa0YHdMkRle7sqnGo6X03l0Cdc8JyD09QoMySmetN+R7Way2wggsAifRitqEFyFt+eb30ZTD/EVLlwhvP2LmC/65KqlRMNuYqCheyfL1sRqXNCDlJX7wCTWOlh0ir2MYWrk=
+	t=1747405065; cv=none; b=K+kAS0P29HyGI4kFm7Xez1+gYFNgLwcz7j0sqm8JqEPh+edRdV0W3ucfhRLWu4pj5kTCV+pYk8v6041T/fTeecU0OaFlxuLYCriijpE2NmBhQZOXcp7CK37EcPkJTcKCSlZ05A6h/DzuwD5UKRU9Ns4KyEG5pvKr8JEjGkux7OY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747403233; c=relaxed/simple;
-	bh=gIPJ/iDLV/nl0ar/Tu/RiWPqiuZOy4ZKvq4zpmeDHGU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=W0xv3ssCJZxvXHTivsxzO3M+eXj7lrdzxywJaO24eVPEl9yZc15W5N3HbsNpDO4AOVVMM78AWYpo7UA4S7VFvUVNS7I+POkNw7Ijo0el8v863lrMR9dyCYe4W1EIFf5dTOhZwHeqn3oTXiSDB0yFswBr2yKV5ZqpFrKCu05VNr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ROywHA2B; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-442ea95f738so16032815e9.3;
-        Fri, 16 May 2025 06:47:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747403230; x=1748008030; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=K7G2I5OKBPNva6umSCfzfSla912kgeAD12cq229nxjE=;
-        b=ROywHA2Bz0qPWz915rPeI2DffZvy7h2Ggbpmgv/QPpOT+AEuGDTb+FYhSU/0cOa8qX
-         XWCuQVyOkeft5CjLaPqzaQpMi5P7dIHtEWerVo4sh1QLdWDq0JO8r+oev/FPxhwIg0Md
-         XWBBYW3vvZfSCSItU6k61XnDzGTxq741NY4renf2kqig7V34KonqshoOpJ3XkQxu2gJL
-         T4x64X9oS+GU2CC7LZOvMzARti1R8/kdmetWej7KSTFLL1VNctbHRTRrgGvgj3RODVXH
-         l2kpoLUcjqM1VR9OGJxqqnkxCztj2JKjNbyiJpma13bgetOFxds35zAbam9Vg9ykIxq4
-         tazw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747403230; x=1748008030;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=K7G2I5OKBPNva6umSCfzfSla912kgeAD12cq229nxjE=;
-        b=nu8FF6edKbWq4fDF03jLCceZNBJ9pxwy9OsqNn+RDfGqQUge4lT6Qq+vjF2Q3wxKrN
-         /Ca/39IWsPtOiYDceDqbvU6peeYoon3uLBufp7/791GiOY9EACVB3pfdj7eI0HXKq2Wg
-         txhiTbXBz2NiMVzc6VVCjbscjGJVBRO6sSkBjlQRTL9dSJf+LOLYch4Nbh68g9nRZzQ1
-         PLtz24EP4A+aymBtbpk8YvhDqW+IMhiMeIYFTMqJrOLwhZCI5i3jjdZ7KUNgwDhWgve/
-         /EWtBlL8ogdlR6ce7vL04ZadVzkIpnQMM+VX1e3TmJysKKfbQ3+zfxyR2RIANImjSY5R
-         clDw==
-X-Forwarded-Encrypted: i=1; AJvYcCUi2IqTRzFBbPAYSt1IHGHZXMBlubHeoq7TgfnWMfR+37aRjBKYH0Ue7gGf0KrqRq0H5yd5S5RB@vger.kernel.org, AJvYcCVHTL4m+LmDzEiYnOfm2F3XgYBreW+AcSwf0lSzBVT3CJeCsDStGzUZtOMS40GjM+IYmHo=@vger.kernel.org, AJvYcCWNjJecNN0752/4yKl7ZAVz/QHgLhPmECn8zP1BTy+QXYB+FTE2dxhjy2sT0kUrnBE6A/+RSAF5BD6JngPS@vger.kernel.org, AJvYcCXJqLDT1fA5onXX+yWXattiu25GWOh+apmKXuEkuQB7RMdCefypFyQ5UVZMT+ShHJDbcPY0y8Rd7JfCvg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxtwZr2lpULwo7eHGaGyF3jqY225jFAt+9fGDP2+fLfYEaBDiVZ
-	eWa7BXi5g+B5LZzvhgHgGDg3TIvK5TYnLgqtZp72rGP8/CCHdmn/XiZy3/SaMA==
-X-Gm-Gg: ASbGncu+Q7uEyfG3Jc05UckgAWjMtPPve2VtnAuLp8xk18QybXiCPnx+Qph+tj1yo1y
-	Jm09Eamh8RM+renvboK34OYi7xHrMaiuoNlX3U+XYUGWaiE/7KfeLhhNykP7T8vmFj5vR4A9oba
-	Uw8lpAYoEBJUVsyAqWIWyLd2e2hngcREBzU9yRY53bh16Hl+GDo36Jz++R7uE6UHmqEXBCInKPE
-	cvWs3U8mk9warhuhfMiw64NHQMwYh6OdIGsqlGFTRtgDVndRnHxQVqyjsrDEXXXcPfQTIQzmK97
-	knIu0MJANQ8ZPOhFCCh6rzHMMfQM948ShZ8Ci9dv+w/spotjty+sOJzDTG/tVXODKWM/rO80
-X-Google-Smtp-Source: AGHT+IH10n1Y0Q2+MvM5BkTzLrgdGKnNQN0RCaqs65h7v/86P47GRzrVro52ZRHru7adaDoziP6tKw==
-X-Received: by 2002:a5d:64e5:0:b0:3a0:a19f:2f47 with SMTP id ffacd0b85a97d-3a35c853278mr3674404f8f.42.1747403229917;
-        Fri, 16 May 2025 06:47:09 -0700 (PDT)
-Received: from [172.27.21.184] ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a35fa8c6d6sm2391336f8f.26.2025.05.16.06.47.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 May 2025 06:47:09 -0700 (PDT)
-Message-ID: <dcb3053f-6588-4c87-be42-a172dacb1828@gmail.com>
-Date: Fri, 16 May 2025 16:47:06 +0300
+	s=arc-20240116; t=1747405065; c=relaxed/simple;
+	bh=di7VcqmsOR/ksmcCT55gbdF3amMK+ETAgYq2FlW2QA8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FoCtA2Uj/HhOuHXiYiQTDjAtk5U2DIQ5EwaNfSl1wjV3U5yVwWlwdm3PCZ4t7idFQ1Lm6witj3odw9DmoddLHfabRu9kdIAAEOIaXsYMo/mtskksZgQcQ3jCWotx2Vyau+6tgkBQ4F8YtbO5jbnT4KUNiDLDPsWhsMSusOj28iI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XtXRnzWg; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1747405060;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=2WuqP8hVhA8NoR8vkcRmgIaGt57MUyF4WZKw8XNlY3A=;
+	b=XtXRnzWg1XOU15tFoqBgtCFbrOgBRiT7vGUxMP8epA3uZ4lF0it8pMe1uNaV+HyNBzFFrn
+	sGv4+MERAu4wsBhIr4sEv6MvLdRkj7lshSJoDgWgxbrajRIK8lbexfkw6+wwTag7erT9E1
+	qFouPCUZPmw/ouaJeyusQBLxSkzKA0A=
+From: Jiayuan Chen <jiayuan.chen@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Jiayuan Chen <jiayuan.chen@linux.dev>,
+	Michal Luczaj <mhal@rbox.co>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Jakub Sitnicki <jakub@cloudflare.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Thadeu Lima de Souza Cascardo <cascardo@igalia.com>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v6] bpf, sockmap: avoid using sk_socket after free when sending
+Date: Fri, 16 May 2025 22:17:12 +0800
+Message-ID: <20250516141713.291150-1-jiayuan.chen@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next] net/mlx5e: Reuse per-RQ XDP buffer to avoid
- stack zeroing overhead
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski
- <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Network Development <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org,
- LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
- Moshe Shemesh <moshe@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
- Gal Pressman <gal@nvidia.com>, Carolina Jubran <cjubran@nvidia.com>,
- Sebastiano Miano <mianosebastiano@gmail.com>,
- Samuel Dobron <sdobron@redhat.com>
-References: <1747253032-663457-1-git-send-email-tariqt@nvidia.com>
- <CAADnVQLSMvk3uuzTCjqQKXs6hbZH9-_XeYo2Uvu2uHAiYrnkog@mail.gmail.com>
-Content-Language: en-US
-From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <CAADnVQLSMvk3uuzTCjqQKXs6hbZH9-_XeYo2Uvu2uHAiYrnkog@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
+The sk->sk_socket is not locked or referenced in backlog thread, and
+during the call to skb_send_sock(), there is a race condition with
+the release of sk_socket. All types of sockets(tcp/udp/unix/vsock)
+will be affected.
 
+Race conditions:
+'''
+CPU0                               CPU1
 
-On 15/05/2025 3:26, Alexei Starovoitov wrote:
-> On Wed, May 14, 2025 at 1:04 PM Tariq Toukan <tariqt@nvidia.com> wrote:
->>
->> From: Carolina Jubran <cjubran@nvidia.com>
->>
->> CONFIG_INIT_STACK_ALL_ZERO introduces a performance cost by
->> zero-initializing all stack variables on function entry. The mlx5 XDP
->> RX path previously allocated a struct mlx5e_xdp_buff on the stack per
->> received CQE, resulting in measurable performance degradation under
->> this config.
->>
->> This patch reuses a mlx5e_xdp_buff stored in the mlx5e_rq struct,
->> avoiding per-CQE stack allocations and repeated zeroing.
->>
->> With this change, XDP_DROP and XDP_TX performance matches that of
->> kernels built without CONFIG_INIT_STACK_ALL_ZERO.
->>
->> Performance was measured on a ConnectX-6Dx using a single RX channel
->> (1 CPU at 100% usage) at ~50 Mpps. The baseline results were taken from
->> net-next-6.15.
->>
->> Stack zeroing disabled:
->> - XDP_DROP:
->>      * baseline:                     31.47 Mpps
->>      * baseline + per-RQ allocation: 32.31 Mpps (+2.68%)
->>
->> - XDP_TX:
->>      * baseline:                     12.41 Mpps
->>      * baseline + per-RQ allocation: 12.95 Mpps (+4.30%)
-> 
-> Looks good, but where are these gains coming from ?
-> The patch just moves mxbuf from stack to rq.
-> The number of operations should really be the same.
-> 
+backlog::skb_send_sock
+  sendmsg_unlocked
+    sock_sendmsg
+      sock_sendmsg_nosec
+                                   close(fd):
+                                     ...
+                                     ops->release() -> sock_map_close()
+                                     sk_socket->ops = NULL
+                                     free(socket)
+      sock->ops->sendmsg
+            ^
+            panic here
+'''
 
-I guess it's cache related. Hot/cold areas, alignments, movement of 
-other fields in the mlx5e_rq structure...
+The ref of psock become 0 after sock_map_close() executed.
+'''
+void sock_map_close()
+{
+    ...
+    if (likely(psock)) {
+    ...
+    // !! here we remove psock and the ref of psock become 0
+    sock_map_remove_links(sk, psock)
+    psock = sk_psock_get(sk);
+    if (unlikely(!psock))
+        goto no_psock; <=== Control jumps here via goto
+        ...
+        cancel_delayed_work_sync(&psock->work); <=== not executed
+        sk_psock_put(sk, psock);
+        ...
+}
+'''
 
->> Stack zeroing enabled:
->> - XDP_DROP:
->>      * baseline:                     24.32 Mpps
->>      * baseline + per-RQ allocation: 32.27 Mpps (+32.7%)
-> 
-> This part makes sense.
+Based on the fact that we already wait for the workqueue to finish in
+sock_map_close() if psock is held, we simply increase the psock
+reference count to avoid race conditions.
+
+With this patch, if the backlog thread is running, sock_map_close() will
+wait for the backlog thread to complete and cancel all pending work.
+
+If no backlog running, any pending work that hasn't started by then will
+fail when invoked by sk_psock_get(), as the psock reference count have
+been zeroed, and sk_psock_drop() will cancel all jobs via
+cancel_delayed_work_sync().
+
+In summary, we require synchronization to coordinate the backlog thread
+and close() thread.
+
+The panic I catched:
+'''
+Workqueue: events sk_psock_backlog
+RIP: 0010:sock_sendmsg+0x21d/0x440
+RAX: 0000000000000000 RBX: ffffc9000521fad8 RCX: 0000000000000001
+...
+Call Trace:
+ <TASK>
+ ? die_addr+0x40/0xa0
+ ? exc_general_protection+0x14c/0x230
+ ? asm_exc_general_protection+0x26/0x30
+ ? sock_sendmsg+0x21d/0x440
+ ? sock_sendmsg+0x3e0/0x440
+ ? __pfx_sock_sendmsg+0x10/0x10
+ __skb_send_sock+0x543/0xb70
+ sk_psock_backlog+0x247/0xb80
+...
+'''
+
+Reported-by: Michal Luczaj <mhal@rbox.co>
+Fixes: 4b4647add7d3 ("sock_map: avoid race between sock_map_close and sk_psock_put")
+Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
+
+---
+V5 -> V6: Use correct "Fixes" tag.
+V4 -> V5:
+This patch is extracted from my previous v4 patchset that contained
+multiple fixes, and it remains unchanged. Since this fix is relatively
+simple and easy to review, we want to separate it from other fixes to
+avoid any potential interference.
+---
+ net/core/skmsg.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+index 276934673066..34c51eb1a14f 100644
+--- a/net/core/skmsg.c
++++ b/net/core/skmsg.c
+@@ -656,6 +656,13 @@ static void sk_psock_backlog(struct work_struct *work)
+ 	bool ingress;
+ 	int ret;
+ 
++	/* Increment the psock refcnt to synchronize with close(fd) path in
++	 * sock_map_close(), ensuring we wait for backlog thread completion
++	 * before sk_socket freed. If refcnt increment fails, it indicates
++	 * sock_map_close() completed with sk_socket potentially already freed.
++	 */
++	if (!sk_psock_get(psock->sk))
++		return;
+ 	mutex_lock(&psock->work_mutex);
+ 	while ((skb = skb_peek(&psock->ingress_skb))) {
+ 		len = skb->len;
+@@ -708,6 +715,7 @@ static void sk_psock_backlog(struct work_struct *work)
+ 	}
+ end:
+ 	mutex_unlock(&psock->work_mutex);
++	sk_psock_put(psock->sk, psock);
+ }
+ 
+ struct sk_psock *sk_psock_init(struct sock *sk, int node)
+-- 
+2.47.1
 
 
