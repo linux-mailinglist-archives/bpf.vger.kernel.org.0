@@ -1,168 +1,206 @@
-Return-Path: <bpf+bounces-58423-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58424-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F9F2ABA469
-	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 21:55:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B2F0ABA4A4
+	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 22:22:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 432311BC768F
-	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 19:56:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C95997B2850
+	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 20:21:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EC46278767;
-	Fri, 16 May 2025 19:55:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 618C928001B;
+	Fri, 16 May 2025 20:22:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g+N46YOh"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="K71XVToF";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="eJpqsqXy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-b6-smtp.messagingengine.com (fhigh-b6-smtp.messagingengine.com [202.12.124.157])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 308E0EEBA
-	for <bpf@vger.kernel.org>; Fri, 16 May 2025 19:55:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A8CD1F956;
+	Fri, 16 May 2025 20:21:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747425341; cv=none; b=CIer5l3IW1mNQh0d8sopx9wsyf1vI51EZ4Vwa1Zk7G0OCW5uytCWRzYSryPj8pBM84HCVMfw0cwkOAACjsOYuUGPeAvPvJlXQJad1zRI7LrnZVmqM/sK2/uyJHG67epa9Q14f7q2aAxvx8QzIedxdavG5XeSQgvFooC2Ky9TXu0=
+	t=1747426921; cv=none; b=DNzQkE+eTqfOxzRdsWEwY2zMV+FjN+r44k3xvJi5VJT18eELPdr3qOmp5g6V6sCdDXLbx+nylSb2Kb2WwXiGlkTRcXZctBxCZjThzpMMs70HjLg5Tps//Hdg6mfkP/kXFPgZYxQPOk+64e7ooDmAvh5NyKiClXuIRjpsV1yESRM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747425341; c=relaxed/simple;
-	bh=2h3aLV2g5qJa1pMEAopHRVT74auE328VWFMUj9pi4xs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=psRFLCTArF7Mg2tzF0tR4Sy8pqrttuPRC9LjWJL8Kr/8hJvjDgLn3ReNHVgVkRKZSMzTybteUJrkajqDuuQnpRBjMc0y3l8I1T+CbUj/ldmfDIBih8zzE9z4riNLazRdNvH6+HhKZEPp9COrsfyQkFkJGUrnouCR4idrxiwQZ10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g+N46YOh; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-43edb40f357so18730675e9.0
-        for <bpf@vger.kernel.org>; Fri, 16 May 2025 12:55:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747425338; x=1748030138; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=fT2RGC6cyAMP7apl6FsyuD73yZQpqghkRchcVnOfpfQ=;
-        b=g+N46YOhxgjakHpADDJcjC7IQFGk+CJukwJ3+U/xF50rUjCTIS6InD8781arkLjG2O
-         e5YlqkkmcYtMbrXoj9f0Bg41iSEyUdD7Fq891FQ0d6h5EJOzhF8wmVny+nsicj75IwYs
-         7yuR0aFYcGsh447KNLLjOg39UV5bSwDae0NQMM+S1c0txdYvIV5tHIfqdnrkuDmwHEMD
-         vYBdU+MDzXfxuGmePOcOmGt+mAosWm3K4Rrv5DdsE/xuoEUPkp4tNnDnoSHXga7XwXbB
-         +ABf+yJfD98K1KItphM9TkPA6ZkC4prL25EAhH5FM2X1gIYLVO/zBbxyHEE70fg/TVt+
-         +5qQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747425338; x=1748030138;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fT2RGC6cyAMP7apl6FsyuD73yZQpqghkRchcVnOfpfQ=;
-        b=wumvgUBnDkJmuSLQFRZP1s3MtjRIv9n9tUSXK1ZphChC/Cw+HrRnDzFI3xxBGT7zho
-         TTuUPPX7fBgBg/yAN6do+zNXIe/ZlXmvFOiR+cGPjQ9VXVw7drNjTo2+gJMx6A3m1wyv
-         OaeveiN3ouzwiVn9n5Y/l+5fK7j6ka/vMuOiAjqhQq6w0vEqKy4mG9ObWTvyrj6jNJm+
-         e1N6U/hhkN4CrbJ55zwoBaaNnOx6j3MjGY98AmfJ+Zwfi92jCJiBIl1ZkoKd2+HqVAtg
-         wrLGizmp8bN+xiu/e9RJFtWt4vVvm8JUEznsXEhTtzYicc00m51GzHDhBONDLgDR7ni9
-         2lyw==
-X-Gm-Message-State: AOJu0Yz8xh1uRBTXR2wwfuX9qI+SFub1dXx/jEr+Q930csBUXywKLUs7
-	6QxhWJu9DgGV7pHyuzNYnt9xOX+8vxa2XtjSEuEU/5vH/pY1fB1IHhDL0OfOVg==
-X-Gm-Gg: ASbGncslY1trHGBOLghNkiu8N8yvFyXy5ylyVEO0WO8bCL2e51QQJo4W5MPr/6YZjaK
-	0W9kkAU11gnJs9l0knN1IuvWZdkmqyjxo33dwLzVWYRvqNe+OPqoaf46QUn8TVRuo+PGjYo1on8
-	4lyzONhxoW9BjKoYoOYdIZkATVp0Ps7xFF6WhrBip4I3Ow2iLvt8zemIphfNLIljUROWSiQw5Tx
-	2IbD7JrRkB00olkTUyxMEGhi+LabHrzPKYCP3JVqmGYwggkBWp9iXVJOS+1huOG+coxYu/QmQCb
-	lJyLqSicCDXDn1MutXYrbuKItzYU0ticcbMP72pp8dKcORoFLlkakkgzIuj6dsHfpA7r2A==
-X-Google-Smtp-Source: AGHT+IHHQFfn+SeIbqcqJZGSVlI0LBLPusPT8tHxjbkVlK26S1FfHWtQQLC0FLz3tBHm6gu7V8VlHg==
-X-Received: by 2002:a05:600c:1c03:b0:442:c98e:79ab with SMTP id 5b1f17b1804b1-442fd626edcmr43165525e9.9.1747425338171;
-        Fri, 16 May 2025 12:55:38 -0700 (PDT)
-Received: from msi-laptop.mynet ([2a01:4b00:bf28:2e00:ff96:2dac:a39:3e10])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a3648baa6asm1199731f8f.91.2025.05.16.12.55.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 May 2025 12:55:37 -0700 (PDT)
-From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	kafai@meta.com,
-	kernel-team@meta.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next] selftests/bpf: remove unnecessary link dependencies
-Date: Fri, 16 May 2025 20:55:22 +0100
-Message-ID: <20250516195522.311769-1-mykyta.yatsenko5@gmail.com>
-X-Mailer: git-send-email 2.49.0
+	s=arc-20240116; t=1747426921; c=relaxed/simple;
+	bh=WJ8YeNryCSzH6Ui7JodUwBz580NMCQQnGARlq4uKk3A=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=C+gkwjxo5q67jeqoJ+2o/ePebzzOks//Ii8Qi+KMcCN1Z66fgzsgrcyn/zCaKVPS8f1d9yjWkCZHCay/kmRXE7j/RH0T4suIHQ5kSBsBhPJ++cmXTU7/6f2IQQdT37vggqQB0rgw2inAhnii5B+kNOIKosg4godSD6XOj6cKUTg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=K71XVToF; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=eJpqsqXy; arc=none smtp.client-ip=202.12.124.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from phl-compute-02.internal (phl-compute-02.phl.internal [10.202.2.42])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id EEB91254008E;
+	Fri, 16 May 2025 16:21:56 -0400 (EDT)
+Received: from phl-imap-18 ([10.202.2.89])
+  by phl-compute-02.internal (MEProxy); Fri, 16 May 2025 16:21:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1747426916;
+	 x=1747513316; bh=y44ryEmBs0W7W6qyiyoOfpaV4DqfaTmIbApjfW/mYM4=; b=
+	K71XVToFZ+lNvc97Hv4dRpzHpSvQEeA9s01ftjVew3BUAr5HB05Mj2o/jfYGqG+D
+	I0YJhhFCkc93E1TUGG8NAjxOzHMMz5a0sKkWLrlLGPwAwZnO4IoXpgbU9mUVmXQd
+	7Q7Llah3hpZ9UokDeCCeBQva7ycBiY/GBMNlRWiv+B9AeSUvb8qEk1ZyT6gRFE9z
+	qW93xZEI5e7Okjav8cHCdvnx+woJStrT9kmcPtLedxTkqFutSt16sGWEijKjq/5J
+	kFZSZz3IVu8H6kLEBGbhokjOhdrSy5jIQ34sPd5SmU+SGayhxylyXGGRjiC2NTl5
+	TLLUEpYjgxd/zKWxu1Ekqw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1747426916; x=
+	1747513316; bh=y44ryEmBs0W7W6qyiyoOfpaV4DqfaTmIbApjfW/mYM4=; b=e
+	JpqsqXyYO7gl5h1LsZIUbERsbuJFQ2X33y9639xXEcWOy/plyN2HkFLsmlRdtYEf
+	BDb6groc7LbH2KDJ9ZPWHJHhR7muvUZTPjchbvZY6ihnJbhfM0aGLqa7ALcim1Ax
+	aQPGhZJhiZv8mKLBUEp8Fhc6U9y09KZHApSKPx2sGwPH91Gv0TNMURZNZKG7x4R8
+	tzh2PvjSvdYgIJKRR7zxF26Ri+pronfZJeoZHjwykFmLbaUDP7gOSkmVrkd/nWgG
+	/l9BJxkibdZIX/SfvEw2mHNnWXLdL4UrqN819GgZzPYEuRZNEtLoFRXLKZSCgQVy
+	ppSEGr1N7MQrylXyhWnhw==
+X-ME-Sender: <xms:ZJ4naLz6SsDPHUSQaXvY4MO5W65DLJ4OmwD9SFR1hRQYZ13VCYzuVA>
+    <xme:ZJ4naDTGd7Ij93sx8RgKlxtgArHv8jvHi9U3eFV5tMfdK0LKlYu3Omg_ZIFGZb6FE
+    akNRPtp1NG262c57Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdefudefieelucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
+    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
+    gvnhhtshculddquddttddmnegfrhhlucfvnfffucdlfeehmdenucfjughrpefoggffhffv
+    vefkjghfufgtgfesthhqredtredtjeenucfhrhhomhepfdffrghnihgvlhcuighufdcuoe
+    gugihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeeikeduveeiffekveff
+    ieehhfdtffdtveetjeefieevveffveevudetkeffffelleenucffohhmrghinhepghhith
+    hhuhgsrdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhf
+    rhhomhepugiguhesugiguhhuuhdrgiihiidpnhgspghrtghpthhtohepuddvpdhmohguvg
+    epshhmthhpohhuthdprhgtphhtthhopegurghvvghmsegurghvvghmlhhofhhtrdhnvght
+    pdhrtghpthhtohepfihilhhlvghmuggvsghruhhijhhnrdhkvghrnhgvlhesghhmrghilh
+    drtghomhdprhgtphhtthhopegvughumhgriigvthesghhoohhglhgvrdgtohhmpdhrtghp
+    thhtohepjhgrtghosgdrvgdrkhgvlhhlvghrsehinhhtvghlrdgtohhmpdhrtghpthhtoh
+    epkhhusggrsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrnhgurhgvfieslhhunhhn
+    rdgthhdprhgtphhtthhopehjrghsohifrghnghesrhgvughhrghtrdgtohhmpdhrtghpth
+    htohepphgrsggvnhhisehrvgguhhgrthdrtghomhdprhgtphhtthhopegsphhfsehvghgv
+    rhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:ZJ4naFV0YmCUp-GHpwcdw6IsNTGk25FvYh5ugH6wBJfmu36HQcyNzg>
+    <xmx:ZJ4naFhSr7eZfttx0vcc0aqo-fZyMFnUthtWMo032DOM1gI3AS3MrQ>
+    <xmx:ZJ4naNDjBC80VuaxlnnXZSeUoe-aTDtRXzwA0a8QeZe0eMQXONtJXQ>
+    <xmx:ZJ4naOJ7aE58bMNwAfQHkgLMHxoWGlj_RG0rEHDiBvjg29sZfoWE5g>
+    <xmx:ZJ4naKqm8cnYibMvIdFvcYUJVpYjB1UujfMKiakolMEaPLpft0A_7Tc_>
+Feedback-ID: i6a694271:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id E6D9115C006D; Fri, 16 May 2025 16:21:55 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-ThreadId: T995aa454cfce42d7
+Date: Fri, 16 May 2025 13:21:30 -0700
+From: "Daniel Xu" <dxu@dxuuu.xyz>
+To: "Willem de Bruijn" <willemdebruijn.kernel@gmail.com>,
+ "Alexander Shalimov" <alex-shalimov@yandex-team.ru>
+Cc: "Andrew Lunn" <andrew@lunn.ch>, "David Miller" <davem@davemloft.net>,
+ "Eric Dumazet" <edumazet@google.com>,
+ "Jacob Keller" <jacob.e.keller@intel.com>, jasowang@redhat.com,
+ "Jakub Kicinski" <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, "Paolo Abeni" <pabeni@redhat.com>,
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Message-Id: <81d6fb01-e914-4c04-875a-58e61b433a80@app.fastmail.com>
+In-Reply-To: <68277463d4c43_2ba041294cf@willemb.c.googlers.com.notmuch>
+References: <681a63e3c1a6c_18e44b2949d@willemb.c.googlers.com.notmuch>
+ <20250514233931.56961-1-alex-shalimov@yandex-team.ru>
+ <6825f65ae82b5_24bddc29422@willemb.c.googlers.com.notmuch>
+ <0bcc08e4-9f22-431c-97f3-c7d5784d2652@app.fastmail.com>
+ <68277463d4c43_2ba041294cf@willemb.c.googlers.com.notmuch>
+Subject: Re: [PATCH] net/tun: expose queue utilization stats via ethtool
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-From: Mykyta Yatsenko <yatsenko@meta.com>
 
-Remove llvm dependencies from binaries that do not use llvm libraries.
-Filter out libxml2 from llvm dependencies, as it seems that
-it is not actually used. This patch reduced link dependencies
-for BPF selftests.
-The next line was adding llvm dependencies to every target in the
-makefile, while the only targets that require those are test
-runnners (test_progs, test_progs-no_alu32,...):
-```
-$(OUTPUT)/$(TRUNNER_BINARY): LDLIBS += $$(LLVM_LDLIBS)
-```
 
-Before this change:
-ldd linux/tools/testing/selftests/bpf/veristat
-    linux-vdso.so.1 (0x00007ffd2c3fd000)
-    libelf.so.1 => /lib64/libelf.so.1 (0x00007fe1dcf89000)
-    libz.so.1 => /lib64/libz.so.1 (0x00007fe1dcf6f000)
-    libm.so.6 => /lib64/libm.so.6 (0x00007fe1dce94000)
-    libzstd.so.1 => /lib64/libzstd.so.1 (0x00007fe1dcddd000)
-    libxml2.so.2 => /lib64/libxml2.so.2 (0x00007fe1dcc54000)
-    libstdc++.so.6 => /lib64/libstdc++.so.6 (0x00007fe1dca00000)
-    libc.so.6 => /lib64/libc.so.6 (0x00007fe1dc600000)
-    /lib64/ld-linux-x86-64.so.2 (0x00007fe1dcfb1000)
-    liblzma.so.5 => /lib64/liblzma.so.5 (0x00007fe1dc9d4000)
-    libgcc_s.so.1 => /lib64/libgcc_s.so.1 (0x00007fe1dcc38000)
+On Fri, May 16, 2025, at 10:22 AM, Willem de Bruijn wrote:
+> Daniel Xu wrote:
+>> On Thu, May 15, 2025, at 7:12 AM, Willem de Bruijn wrote:
+>> > Alexander Shalimov wrote:
+>> >> 06.05.2025, 22:32, "Willem de Bruijn" <willemdebruijn.kernel@gmail=
+.com>:
+>> >> > Perhaps bpftrace with a kfunc at a suitable function entry point=
+ to
+>> >> > get access to these ring structures.
+>> >>=20
+>> >> Thank you for your responses!
+>> >>=20
+>> >> Initially, we implemented such monitoring using bpftrace but we we=
+re
+>> >> not satisfied with the need to double-check the structure definiti=
+ons
+>> >> in tun.c for each new kernel version.
+>> >>=20
+>> >> We attached kprobe to the "tun_net_xmit()" function. This function
+>> >> gets a "struct net_device" as an argument, which is then explicitly
+>> >> cast to a tun_struct - "struct tun_struct *tun =3D netdev_priv(dev=
+)".
+>> >> However, performing such a cast within bpftrace is difficult becau=
+se
+>> >> tun_struct is defined in tun.c - meaning the structure definition
+>> >> cannot be included directly (not a header file). As a result, we w=
+ere
+>> >> forced to add fake "struct tun_struct" and "struct tun_file"
+>> >> definitions, whose maintenance across kernel versions became
+>> >> cumbersome (see below). The same problems exists even with kfunc a=
+nd
+>> >> btf - we are not able to cast properly netdev to tun_struct.
+>> >>=20
+>> >> That=E2=80=99s why we decided to add this functionality directly t=
+o the kernel.
+>> >
+>> > Let's solve this in bpftrace instead. That's no reason to rever to
+>> > hardcoded kernel APIs.
+>> >
+>> > It quite possibly already is. I'm no bpftrace expert. Cc:ing bpf@
+>>=20
+>> Yeah, should be possible. You haven't needed to include header
+>> files to access type information available in BTF for a while now.
+>> This seems to work for me - mind giving this a try?
+>>=20
+>> ```
+>> fentry:tun:tun_net_xmit {
+>>     $tun =3D (struct tun_struct *)args->dev->priv;
+>>     print($tun->numqueues);  // or whatever else you want
+>> }
+>> ```
+>>=20
+>> fentry probes are better in general than kprobes if all you're doing
+>> is attaching to the entry of a function.
+>>=20
+>> You could do the same with kprobes like this if you really want, thou=
+gh:
+>>=20
+>> ```
+>> kprobe:tun:tun_net_xmit {
+>>     $dev =3D (struct net_device *)arg1;
+>>     $tun =3D (struct tun_struct *)$dev->priv;
+>>     print($tun->numqueues);  // or whatever else you want
+>> }
+>> ```
+>>=20
+>> Although it looks like there's a bug when you omit the module name
+>> where bpftrace doesn't find the struct definition. I'll look into tha=
+t.
+>
+> Minor: unless tun is built-in.
 
-After:
-ldd linux/tools/testing/selftests/bpf/veristat
-    linux-vdso.so.1 (0x00007ffc83370000)
-    libelf.so.1 => /lib64/libelf.so.1 (0x00007f4b87515000)
-    libz.so.1 => /lib64/libz.so.1 (0x00007f4b874fb000)
-    libc.so.6 => /lib64/libc.so.6 (0x00007f4b87200000)
-    libzstd.so.1 => /lib64/libzstd.so.1 (0x00007f4b87444000)
-    /lib64/ld-linux-x86-64.so.2 (0x00007f4b8753d000)
+Ah, right.
 
-Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
----
- tools/testing/selftests/bpf/Makefile | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+>
+> Thanks a lot for your response, Daniel. Good to know that we can get
+> this information without kernel changes. And I learned something new
+> :) Replicated your examples.
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 0d04cf54068e..27db3bf20c21 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -180,7 +180,7 @@ ifeq ($(feature-llvm),1)
-   # Prefer linking statically if it's available, otherwise fallback to shared
-   ifeq ($(shell $(LLVM_CONFIG) --link-static --libs >/dev/null 2>&1 && echo static),static)
-     LLVM_LDLIBS  += $(shell $(LLVM_CONFIG) --link-static --libs $(LLVM_CONFIG_LIB_COMPONENTS))
--    LLVM_LDLIBS  += $(shell $(LLVM_CONFIG) --link-static --system-libs $(LLVM_CONFIG_LIB_COMPONENTS))
-+    LLVM_LDLIBS  += $(filter-out -lxml2,$(shell $(LLVM_CONFIG) --link-static --system-libs $(LLVM_CONFIG_LIB_COMPONENTS)))
-     LLVM_LDLIBS  += -lstdc++
-   else
-     LLVM_LDLIBS  += $(shell $(LLVM_CONFIG) --link-shared --libs $(LLVM_CONFIG_LIB_COMPONENTS))
-@@ -675,9 +675,6 @@ ifneq ($2:$(OUTPUT),:$(shell pwd))
- 	$(Q)rsync -aq $$^ $(TRUNNER_OUTPUT)/
- endif
- 
--$(OUTPUT)/$(TRUNNER_BINARY): LDLIBS += $$(LLVM_LDLIBS)
--$(OUTPUT)/$(TRUNNER_BINARY): LDFLAGS += $$(LLVM_LDFLAGS)
--
- # some X.test.o files have runtime dependencies on Y.bpf.o files
- $(OUTPUT)/$(TRUNNER_BINARY): | $(TRUNNER_BPF_OBJS)
- 
-@@ -688,7 +685,7 @@ $(OUTPUT)/$(TRUNNER_BINARY): $(TRUNNER_TEST_OBJS)			\
- 			     $(OUTPUT)/veristat				\
- 			     | $(TRUNNER_BINARY)-extras
- 	$$(call msg,BINARY,,$$@)
--	$(Q)$$(CC) $$(CFLAGS) $$(filter %.a %.o,$$^) $$(LDLIBS) $$(LDFLAGS) -o $$@
-+	$(Q)$$(CC) $$(CFLAGS) $$(filter %.a %.o,$$^) $$(LDLIBS) $$(LLVM_LDLIBS) $$(LDFLAGS) $$(LLVM_LDFLAGS) -o $$@
- 	$(Q)$(RESOLVE_BTFIDS) --btf $(TRUNNER_OUTPUT)/btf_data.bpf.o $$@
- 	$(Q)ln -sf $(if $2,..,.)/tools/build/bpftool/$(USE_BOOTSTRAP)bpftool \
- 		   $(OUTPUT)/$(if $2,$2/)bpftool
--- 
-2.49.0
+Nice! Feel free to CC me if you have other stuff in the future.
 
+Bug fix for parsing implicit module BTF up here:
+https://github.com/bpftrace/bpftrace/pull/4137
 
