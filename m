@@ -1,114 +1,129 @@
-Return-Path: <bpf+bounces-58396-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58397-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 991BCAB99F6
-	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 12:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B85E7AB9B41
+	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 13:40:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF2F89E6454
-	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 10:18:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D4AB3B6B0F
+	for <lists+bpf@lfdr.de>; Fri, 16 May 2025 11:40:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60C8A227E83;
-	Fri, 16 May 2025 10:18:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1998B238C09;
+	Fri, 16 May 2025 11:40:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P3mXICJJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EJI+vYoU"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D685D381C4;
-	Fri, 16 May 2025 10:18:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AEA5233D91;
+	Fri, 16 May 2025 11:40:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747390718; cv=none; b=KCVWBRXdTVsaW19GKs9MZyFgX1KFu93UdTomVlIM3+skswrhDKy0qKH7VRvUmZMeNFYiay/SX4mNr94QOA/tC+oMc+CBUs4Mqg8e+NGFRV8OY2E+wyY3OhPNVbP8DqANkyBuomCKnTRXI5mB5PEAXSxTuTgvN9Wxap+nlXORry8=
+	t=1747395622; cv=none; b=cS/auwoLcibhOgdak1iI0JvHnuTr3cDZVeS8AGJEmdf5eY16Kj25wfvhIkUmxFhpc2kZF+tMaO+De6pZ5i0UyBHj5tQwtF+qAPRphEZNg6swWHMoMNzhxOEAA05mkW/nhP86bZPR0s5dBCBkI6B+yAzqf4aNpXz0wR5S1YurGuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747390718; c=relaxed/simple;
-	bh=i131/A59sXtp21nNvGxoWEaQce+rFrKSV6S4e1Sr2+Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nCrOWK0cgnxihnMn4fxyJ8U4i422S1fK02h4X3fSPvey6kccoM4KvteBPQe7GyYvqIx3ivqurvyweSt7V3V8Z+DoCLgSbM8XhFEr2YlDzm6ZR+8Puhvr/oSIEuFRbzPf0itlcDN/Vrd7mXHrvYQ6VD4mJm6oNqFmUo+QEtpY27w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P3mXICJJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88CFBC4CEE4;
-	Fri, 16 May 2025 10:18:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747390718;
-	bh=i131/A59sXtp21nNvGxoWEaQce+rFrKSV6S4e1Sr2+Y=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=P3mXICJJOZyaSegUEy8iLHArWfw9yPvdifaiN1NlDBGTwuJmKoDk3Q95uN5G31+p5
-	 YcKdUcMIJHWOoPSZ2frtZHJEQOaiwbiv4BaetfttzVn1qpQcN57ZQlSzVeni+2kg80
-	 pj2I3iLnVyx51Agwp1wT2T27+KPXP9ecfPF/+p//ZeuvUhJGyiYycjseIKeyCXQ7gj
-	 OPNZzzb7Mk7ZQ+P6sCGPaIrAv/vA2/b36jBzQsw/bupl6KN0uBfq0hlr/XttkLVU0b
-	 zm1UBdDOAYmSOd4o0gBYy4+3ym6l53mcGhqaYsjCfQuat0/YRXgvKB+XpYzQGBPShA
-	 ta8WdvGXcI96A==
-Message-ID: <9909038f-a005-440a-82f2-ebe2f2da0767@kernel.org>
-Date: Fri, 16 May 2025 11:18:33 +0100
+	s=arc-20240116; t=1747395622; c=relaxed/simple;
+	bh=0Mj+BtykqOdNUsFmfW8HuzL6Mqk7536Sro33aJLlBM8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CjhTO8B4Od1iIm68ZvApM8ZXmR12UPmOGqEJ4wNQyRrW2LLYR09kY32EsORKovE9gAX/KwMA85qXZVttewD7FWR+eH9YYi4Gq/idXQtSH8LEzpZuG9znCwekPLydhkgwtON1KtY/HK7mwEHUVp+9eGycfNGujpoD0X/czhi7Aho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EJI+vYoU; arc=none smtp.client-ip=209.85.167.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3fb3f4bf97aso1035625b6e.2;
+        Fri, 16 May 2025 04:40:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747395620; x=1748000420; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=AxhGcnn6IqTQUmc2HYW8DH4TY3uNPkdwnZshlk/xeUY=;
+        b=EJI+vYoUz+pNMd9OmZU81t596MRisnDMMamRWUF7UeO6rUWdiqdseOoBWwFrBcBs4m
+         IUuuZq40ksFpdBpJyiJ2b6XpXB2kaW5o2/RERpvBVjcQ6cIudOYfpjDGXfgRpDIdqFzr
+         kIzuMinM0EuGMZAK2PriuDUdwDXWQIOoK4NhNwMgPf9XxPuU4LS0RMjwwpSy7uslX6Zl
+         ZZi1Z41WhBVkWfVY5NeaFZ6805veQdNq9EcYBEnoTbM61UojE5ZtaO6JpkhvT8IvIVNt
+         FfV+CsVPOmBGmZBFIHa51BaOkN3Vn/mt5LGp2GEXRwp78UzPfKSlLwf7wL8ws0ENx9fD
+         jczA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747395620; x=1748000420;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AxhGcnn6IqTQUmc2HYW8DH4TY3uNPkdwnZshlk/xeUY=;
+        b=Qs4D3Nh/pL0qQ/X+vttihnqF2nViKo3jO9ltYgTWxcHl0/FSMLal7Kit1HBdYwFhch
+         p36CRcHqpCYgQe+TWHyOueQdlmbrX7s0Y0jrQBXm1yLq7LmS6LvgKefBreadRh7vwKd/
+         Ks/QPTfVrpr6wctjHRT0wO+J6zJz5ho6s+c+CM/dj8bHW6dIMqGmjWlUi94DLfOcYiyA
+         mUVQrKsmHZrAGIt1uQbgU9FiJthGyI3DJw9/KvEsUa47ojFKow0+ifRcQVzZW3t6ZkSZ
+         wADJGBZiKazf0zlwJWP8fLAz0WKTlyvxk2R2bIyYtmP8FSzRTFVjAe7UXZrghHOwetTf
+         dNfA==
+X-Forwarded-Encrypted: i=1; AJvYcCVtXGc4UQGgYaPS19GiXg8upZXH+FjjL8STqzJkErx9/HH9o0ue2rZv6SEVLKo6eC2Z+dZjFnU/@vger.kernel.org, AJvYcCXPPPRaBHGQTHBCJYl5gGUbw5+qOwCPu3yPCRdmdTj0BQNV9S56oqKhCvlpOdxDbycHu5c=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxDSHBRLg+kK36/i258NzsFbMTlvbuKf3SKhEln7dit3+TroJIH
+	4CBUTiwZa3pnGyf4puwkIyMQOzKQrWfK60iN5d6EJS+m8noNTP1KLp4KG3bU5uVc7XcikizmrUe
+	LBspg9anQpvm3nZR5+hLlN2cbOOzzJmA=
+X-Gm-Gg: ASbGnctJNraBgBKsbUQJidOlnLgV40QRsX/Xg2/fZoDoztN81jYPwKQcIWejyWa87Bb
+	mUCAz3VD21y4fZLMp6YnZe+RLZdK+I5ltvq2FGy5upwgh5zwyubWSY0zOz2PSr1sDdrkPjBCozU
+	dqsw57aWLCpbDB1PyKN939Xvo5E9sr2vEF6mUdXSkdcqT22uUjeQhwLIDQJ7/UJx0=
+X-Google-Smtp-Source: AGHT+IGA6+yGsHEZB4h4688rV2RS7jYQS6csUsq5/06mGIJ8DFSpcISgYgYQEDE9K3OuPX1eYRNws+vogqTArgtBuAc=
+X-Received: by 2002:a05:6808:3195:b0:404:764:f7b6 with SMTP id
+ 5614622812f47-404d865812amr2415447b6e.9.1747395620173; Fri, 16 May 2025
+ 04:40:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3] bpftool: Add support for custom BTF path in
- prog load/loadall
-To: Jiayuan Chen <jiayuan.chen@linux.dev>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykyta Yatsenko <yatsenko@meta.com>,
- Daniel Xu <dxu@dxuuu.xyz>, Tao Chen <chen.dylane@gmail.com>,
- linux-kernel@vger.kernel.org
-References: <20250516032312.275261-1-jiayuan.chen@linux.dev>
-From: Quentin Monnet <qmo@kernel.org>
-Content-Language: en-GB
-In-Reply-To: <20250516032312.275261-1-jiayuan.chen@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20250515231650.1325372-1-kuba@kernel.org> <20250515231650.1325372-10-kuba@kernel.org>
+In-Reply-To: <20250515231650.1325372-10-kuba@kernel.org>
+From: Donald Hunter <donald.hunter@gmail.com>
+Date: Fri, 16 May 2025 12:40:08 +0100
+X-Gm-Features: AX0GCFsG0H-iCjEs2uW7AlC3GHq30MzFGvk7B22PHzzVerBpl1NH0wzI33Cg9gw
+Message-ID: <CAD4GDZw-pL81FQmgKL9VBQ1pcHra_i-Ceje97y0ajXMoWvEuHw@mail.gmail.com>
+Subject: Re: [PATCH net-next 9/9] tools: ynl: add a sample for rt-link
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com, 
+	pabeni@redhat.com, andrew+netdev@lunn.ch, horms@kernel.org, 
+	daniel@iogearbox.net, nicolas.dichtel@6wind.com, jacob.e.keller@intel.com, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-2025-05-16 11:23 UTC+0800 ~ Jiayuan Chen <jiayuan.chen@linux.dev>
-> This patch exposes the btf_custom_path feature to bpftool, allowing users
-> to specify a custom BTF file when loading BPF programs using prog load or
-> prog loadall commands.
-> 
-> The argument 'btf_custom_path' in libbpf is used for those kernels that
-> don't have CONFIG_DEBUG_INFO_BTF enabled but still want to perform CO-RE
-> relocations.
-> 
-> Suggested-by: Quentin Monnet <qmo@kernel.org>
-> Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
-> 
-> ---
-> V2 -> V3: Optimized document grammar and some prompts
-> https://lore.kernel.org/bpf/20250515065018.240188-1-jiayuan.chen@linux.dev/
-> V1 -> V2: Added bash completion and documentation
-> https://lore.kernel.org/bpf/20250513035853.75820-1-jiayuan.chen@linux.dev/
-> ---
->  tools/bpf/bpftool/Documentation/bpftool-prog.rst |  8 +++++++-
->  tools/bpf/bpftool/bash-completion/bpftool        |  4 ++--
->  tools/bpf/bpftool/prog.c                         | 12 +++++++++++-
->  3 files changed, 20 insertions(+), 4 deletions(-)
-> 
-> diff --git a/tools/bpf/bpftool/Documentation/bpftool-prog.rst b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-> index d6304e01afe0..4dce43e8e8a3 100644
-> --- a/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-> +++ b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-> @@ -127,7 +127,7 @@ bpftool prog pin *PROG* *FILE*
->      Note: *FILE* must be located in *bpffs* mount. It must not contain a dot
->      character ('.'), which is reserved for future extensions of *bpffs*.
->  
-> -bpftool prog { load | loadall } *OBJ* *PATH* [type *TYPE*] [map { idx *IDX* | name *NAME* } *MAP*] [{ offload_dev | xdpmeta_dev } *NAME*] [pinmaps *MAP_DIR*] [autoattach]
-> +bpftool prog { load | loadall } *OBJ* *PATH* [type *TYPE*] [map { idx *IDX* | name *NAME* } *MAP*] [{ offload_dev | xdpmeta_dev } *NAME*] [pinmaps *MAP_DIR*] [autoattach] [kernel_btf *BTF_FILE*]
+On Fri, 16 May 2025 at 00:17, Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> Add a fairly complete example of rt-link usage. If run without any
+> arguments it simply lists the interfaces and some of their attrs.
+> If run with an arg it tries to create and delete a netkit device.
+>
+>  1 # ./tools/net/ynl/samples/rt-link 1
+>  2 Trying to create a Netkit interface
+>  3 Testing error message for policy being bad:
+>  4     Kernel error: 'Provided default xmit policy not supported' (bad attribute: .linkinfo.data(netkit).policy)
+>  5   1:               lo: mtu 65536
+>  6   2:           wlp0s1: mtu  1500
+>  7   3:          enp0s13: mtu  1500
+>  8   4:           dummy0: mtu  1500  kind dummy     altname one two
+>  9   5:              nk0: mtu  1500  kind netkit    primary 0  policy forward
+> 10   6:              nk1: mtu  1500  kind netkit    primary 1  policy blackhole
+> 11 Trying to delete a Netkit interface (ifindex 6)
+>
+> Sample creates the device first, it sets an invalid value for a netkit
+> attribute to trigger reverse parsing. Line 4 shows the error with the
+> attribute path correctly generated by YNL.
+>
+> Then sample fixes the bad attribute and re-issues the request, with
+> NLM_F_ECHO set. This flag causes the notification to be looped back
+> to the initiating socket (our socket). Sample parses this notification
+> to save the ifindex of the created netkit.
+>
+> Sample then proceeds to list the devices. Line 8 above shows a dummy
+> device with two alt names. Lines 9 and 10 show the netkit devices
+> the sample itself created.
+>
+> The "primary" and "policy" attrs are from inside the netkit submsg.
+> The string values are auto-generated for the enums by YNL.
+>
+> To clean up sample deletes the interface it created (line 11).
+>
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 
-Woops, I just realised we also need to add kernel_btf to the command
-summary at the top of the document (line 34), sorry for missing it
-during the previous pass. Please add it, and mark v4 as:
-
-    Reviewed-by: Quentin Monnet <qmo@kernel.org>
-
-Thanks!
+Reviewed-by: Donald Hunter <donald.hunter@gmail.com>
 
