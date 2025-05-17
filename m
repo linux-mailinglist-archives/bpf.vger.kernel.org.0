@@ -1,187 +1,187 @@
-Return-Path: <bpf+bounces-58444-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58445-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C68FABAA8F
-	for <lists+bpf@lfdr.de>; Sat, 17 May 2025 16:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C4F52ABAACE
+	for <lists+bpf@lfdr.de>; Sat, 17 May 2025 17:03:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 019A41B61216
-	for <lists+bpf@lfdr.de>; Sat, 17 May 2025 14:06:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F264189CD31
+	for <lists+bpf@lfdr.de>; Sat, 17 May 2025 15:03:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDA7A202C21;
-	Sat, 17 May 2025 14:06:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CA2B207A0C;
+	Sat, 17 May 2025 15:03:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="nRCQ87GH"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="K4490URf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C6351FECB4
-	for <bpf@vger.kernel.org>; Sat, 17 May 2025 14:06:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D73C02557C
+	for <bpf@vger.kernel.org>; Sat, 17 May 2025 15:03:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747490781; cv=none; b=S2UHSmNcxDLeJmgempey0LkdV6X9BcX93MpL0PAUittFGZ7OX+nwQc/y6O3L6L5UGKSPL8YJ+7n194JmrNXVeSF+am4ALG0Bnga6Bk+ocvTdpw+5eQji4WeRXh2gukR67xBZLvBG94u1vVGDk+fjUUAPZ0NaCIl5TLtcoU7r9pg=
+	t=1747494187; cv=none; b=pQCLB7IOO8BO6jD19f1nCWKFX2hE7/WWLeYSCVY5XGd0MM1CIc+VfbsfIMR/0R5C71G2zbtmVxIIJ7WFq5FomqYFBVw0TQBINpc0bTbvmIRWXzIQFmkB0HaWd9ITPujoorVvBH1fd2XTx/HvflNYvNPUVkRsblnN1nlHzR9VgvY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747490781; c=relaxed/simple;
-	bh=V06g8hrNK3Ss5baC8W9lAcyYGrXvMeywgXb8MDbYNUs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ojsh2FqMaCxFTmGAkhNdc1rfTktINdxZTrvRdZ/wnoMel7GKJLn0wcCcHP83z8qwIy55U+RGeEBRR/HiOQC4cYkU0HyItkqNlgs8fTn3eZTi9N08OdkWNuLUBaZUKCrwtI0pW+erwa5o/xV8SUXkqw/Gzp0gHs0JE/iYq3+rMr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=nRCQ87GH; arc=none smtp.client-ip=209.85.222.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-7c597760323so336028385a.3
-        for <bpf@vger.kernel.org>; Sat, 17 May 2025 07:06:18 -0700 (PDT)
+	s=arc-20240116; t=1747494187; c=relaxed/simple;
+	bh=0I1eiVOJEdVLLXIohuqFusEWQMPeVi5Dp73/GaN/bZ4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=C6CBLF9Il68Cnfs782kckM7bMnEvFYE6hCjzbT9ks91psSwQ/8PKLvmaZ3P6XMlJ+hEt3HDTAcDQrmLKRgBzfauBfE/TZrwwJ68eQtwjprVfW5qc1PHxDUBUA9pnky1a2sZ4kkwegQHot9ICFzBPhEhOXO444yAU24A71SveyFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=K4490URf; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-70ca772985fso13734137b3.1
+        for <bpf@vger.kernel.org>; Sat, 17 May 2025 08:03:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1747490778; x=1748095578; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NhvXy1V/6+eGgB5qAljkspgVToq5uQ0qNnLt1dtTF8E=;
-        b=nRCQ87GHOKm//mZw3TDNdzJAdz2DpVO9AGACZqar0x2M9+Fgyhd5G5PF2Kj8c6jlO3
-         z5xLWE/9s9fjq7jBbvnnri04A3gz3yjExq+0PW+zrqZtLUR095Ko96yp6PR1itF/kXMe
-         ThW2Q1ctu/9YVoq6HP30Qw1L7v5cSEoi/VGS+lv4HQD1gmd0RMRMoWqy6gZ+FpmK9mB9
-         5mXmgm3iZsORGkAfHfg0E0pnVUyvwFzbms3y3QqkMpdoxSCddCJT3G3OVtLREDZf+q0U
-         J7e42VqnElTiwNKhnNkqBSCIgkuYEYxQqqG2E0i5mKUU4kDTzlreW6CTUFyclbhyAYBP
-         pWQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747490778; x=1748095578;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=paul-moore.com; s=google; t=1747494185; x=1748098985; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NhvXy1V/6+eGgB5qAljkspgVToq5uQ0qNnLt1dtTF8E=;
-        b=tZZZ//Z9eFPQvQd2Qj049bAgygSu4XkLA1/bjPba6/+vebR09YUJ1fpUuVFGNzzw+F
-         7xAKANKKWaa/KYtfNt84UdyTGBJpPlwKYHQALXI6BBK2CKv9dFJxr0gpRSle0PadxglC
-         3VSdFPhXe9CBEnKJQuUSorgSEh7RSFt9IgR+2rJLTPzYm9seiQYPdfXK7AFjMylr/UZl
-         Q234G/begGAwsubGMIZS7tZAF5/NPB7RHphOCKrb41B3An7N52tdOkjDMEcQCQDKMJI3
-         +CrRUXhhKb1zM1oFEeFXa/ln6/E5pWQHzIZOferP1N7Q8KprGrJQhN1RTHxTxry8wHJx
-         JdKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXUCAaoWWvV/HQYrB7FpBB5rTnh2JedKlI1siZoKH6/B1xDKIDJ6hY+a5FtWYJPgTt0Kww=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzAb2VCUt50Q2XNX1vO7UbJi5V004QrqzpMYCUPMyXsTMrmOEcS
-	cgyOt0STYDsdR/t1vP2rsx3gAMht3szftNtuz6xj9rdRSLB89v3L+QjtfqFiDQUwma8=
-X-Gm-Gg: ASbGncu4yODn1GG/7xZBNm6JYKeb1XbWI4lL5y4INNzm8YqiDrvV9O12xyWNpLEcTPu
-	lesTHom3DuTIubPT6QYOWi4bJ2KwaiDUPdCJlUEvvZ91Flh2x+jCxzabb9iTtLuvN3EyuL9T6QJ
-	j9lxrWMAyP2WgzAiPi1RIvYExeU0V9dGVf35+HW5r4SwuMwrQsBd/NjWXNHMChbyVV741fe0cRm
-	dhW/UpjfWKajDN67khO41XhSMcdVFtrSdPy1nZjcLn9WrEpKOmJlQn8KMg3JpmN2MPO8NtxFY4S
-	e4ktBIdbkc4g46J58SS3oA28jmNjV19u0Dnwx1DI+ysgb6STRg==
-X-Google-Smtp-Source: AGHT+IGK6eD7aI2Err8GHK9YsHuDYpVSIxGRVIvR72HXl/w/7xQC5Grfki+phpp5KFktfiO8EpqdXQ==
-X-Received: by 2002:a05:620a:430d:b0:7c5:5d4b:e62f with SMTP id af79cd13be357-7cd46779caamr1017827985a.43.1747490778049;
-        Sat, 17 May 2025 07:06:18 -0700 (PDT)
-Received: from localhost ([2603:7000:c01:2716:cbb0:8ad0:a429:60f5])
-        by smtp.gmail.com with UTF8SMTPSA id af79cd13be357-7cd468e5a77sm257916385a.116.2025.05.17.07.06.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 May 2025 07:06:17 -0700 (PDT)
-Date: Sat, 17 May 2025 10:06:13 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Harry Yoo <harry.yoo@oracle.com>,
-	Yosry Ahmed <yosry.ahmed@linux.dev>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Tejun Heo <tj@kernel.org>, bpf@vger.kernel.org, linux-mm@kvack.org,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Meta kernel team <kernel-team@meta.com>
-Subject: Re: [PATCH v3 1/5] memcg: disable kmem charging in nmi for
- unsupported arch
-Message-ID: <20250517140613.GB104729@cmpxchg.org>
-References: <20250516183231.1615590-1-shakeel.butt@linux.dev>
- <20250516183231.1615590-2-shakeel.butt@linux.dev>
+        bh=6NTpCRL9xhCjiiet8qAMOfllcsVau1k8+ucYSc+O5KM=;
+        b=K4490URfks6tr9jn8LqvKaTG0G3arWwIyUz/hYiwUHy5vP69Uk/3qdDOSbzm8zCVmW
+         oElnbeUeKqdv8DBESWoFm8cCLrcRnoe71LeOpOlF6NxaQybDTBf2HL2pm7DorY6SWMc8
+         M7RGF5bGgDbi42iyjYbaYMUZ+/UtD2iB2CDIMVbgEKOrhVw0QDlgC1hqZvwpvSA+B/n/
+         f+4xVtzk6vqX1PHA0/g2gzNPxksXtM1EutFARSBniMpMYifo9mqnF+U8OLaDIcBdyXra
+         cUjiLfghFY5Bf1WPqRxBYcL/Ng/MPVBKbIp+UG/30/Ce9YXnvHMCYvD4RFN/44fJXcY3
+         8rcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747494185; x=1748098985;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6NTpCRL9xhCjiiet8qAMOfllcsVau1k8+ucYSc+O5KM=;
+        b=DRb++ZoGDJhGit0Rywa6iReGCY22fD5BxoOdQlmf3pvVVWICHKBIWM+PSE9q4ap7OS
+         BjxJeyWGB0nqIveO/aPESUAhzu728Vfo/UFD6a2s3zF8U9PY6K02pAx3dNXdWI8ktDbg
+         39sK5IkHMhXH3DS6WwE4xr7y8QGVIgsy5sNxrM4yW2TFv3mCg3IWs3E6qOWp744nirx/
+         2z2Nn61bAvRb/GAgN1fJ3YHdhKX+GreAnJOw/Su+YKfBAhrWx6meOsjJ3uDUbg9wNXp+
+         gAdqmSYRPLM/xyG57o8L0t8N6GcNydh5QfDUu8XtveT+HRDOlCAAbRDRQI+QHDQ0V2ej
+         Y8hA==
+X-Forwarded-Encrypted: i=1; AJvYcCVg1BJ3LnEM80p0mr1t9Arc6vTaSeQLc0KUuhBHqC5wYso8513ABSv5B40TwQuZ0bK32xc=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzgs/fQIRI2pd5SO5+g7zKMDBTYWF6HnV217/x44G7Dcb129sEP
+	96MvgTTLdbFCy/DQF5/AhjhLn3d9CHOvlWFhW9g3gK7rMNtijvkoXYxPuabCouPYqjZBNsQRz64
+	91WFoGt8W8N/NTYTXc0qWViqaSDqYgX7MzzskSu2L
+X-Gm-Gg: ASbGncsdYN6ccYIyq/nOstGPX8WUVmCVESxlFlHJ/f1QhJDgP6SGE88CJOTnM4V7E/q
+	BfhAyVypuHGCgoi5ikV4uQEKoE8EM8oAZhj4s5QSTPeEyddFJZrLcO5cmYD8FBqX+2v1JrgyjBG
+	qgsI1PDAvT9EdBpTqHuOQw/5OULeP0LxoT
+X-Google-Smtp-Source: AGHT+IH4cvXZ2A6B3NQOnryIolvKUjfmtGf2pZQLNvPvX7nedF6oJ2mP2HSmm3dkkvdcM65QuaIOMlI3AMimnH5TpLo=
+X-Received: by 2002:a05:690c:3749:b0:70c:b882:2f3 with SMTP id
+ 00721157ae682-70cb882052emr47413877b3.4.1747494184512; Sat, 17 May 2025
+ 08:03:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250516183231.1615590-2-shakeel.butt@linux.dev>
+References: <20250502184421.1424368-1-bboscaccy@linux.microsoft.com>
+ <20250502210034.284051-1-kpsingh@kernel.org> <CAHC9VhS5Vevcq90OxTmAp2=XtR1qOiDDe5sSXReX5oXzf+siVQ@mail.gmail.com>
+ <CACYkzJ5jsWFiXMRDwoGib5t+Xje6STTuJGRZM9Vg2dFz7uPa-g@mail.gmail.com>
+ <CACYkzJ6VQUExfyt0=-FmXz46GHJh3d=FXh5j4KfexcEFbHV-vg@mail.gmail.com>
+ <CAHC9VhQL_FkUH8F1fvFZmC-8UwZh3zkwjomCo1PiWNW0EGYUPw@mail.gmail.com>
+ <CACYkzJ4+=3owK+ELD9Nw7Rrm-UajxXEw8kVtOTJJ+SNAXpsOpw@mail.gmail.com>
+ <CAHC9VhTeFBhdagvw4cT3EvA72EYCfAn6ToptpE9PWipG9YLrFw@mail.gmail.com> <CAADnVQJ4GDKvLSWuAMdwajA0V2DEw5m-O228QknW8Eo9jxhyig@mail.gmail.com>
+In-Reply-To: <CAADnVQJ4GDKvLSWuAMdwajA0V2DEw5m-O228QknW8Eo9jxhyig@mail.gmail.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Sat, 17 May 2025 11:02:53 -0400
+X-Gm-Features: AX0GCFuTvPgKKVsi_C1ZZBN1jNV8jcEHmfkcEtykXlcuzLm0gL1ZiUersRDfwfQ
+Message-ID: <CAHC9VhTJcV1mqBpxVUtpLhrN4Y9W_BGgB_La5QCqObGheK28Ug@mail.gmail.com>
+Subject: Re: [PATCH v3 0/4] Introducing Hornet LSM
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: KP Singh <kpsingh@kernel.org>, Blaise Boscaccy <bboscaccy@linux.microsoft.com>, 
+	James Bottomley <James.Bottomley@hansenpartnership.com>, bpf <bpf@vger.kernel.org>, 
+	code@tyhicks.com, Jonathan Corbet <corbet@lwn.net>, "David S. Miller" <davem@davemloft.net>, 
+	David Howells <dhowells@redhat.com>, =?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, Jarkko Sakkinen <jarkko@kernel.org>, 
+	James Morris <jmorris@namei.org>, Jan Stancek <jstancek@redhat.com>, 
+	Justin Stitt <justinstitt@google.com>, keyrings@vger.kernel.org, 
+	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, 
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, 
+	Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
+	LSM List <linux-security-module@vger.kernel.org>, 
+	clang-built-linux <llvm@lists.linux.dev>, Masahiro Yamada <masahiroy@kernel.org>, 
+	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
+	Bill Wendling <morbo@google.com>, Nathan Chancellor <nathan@kernel.org>, Neal Gompa <neal@gompa.dev>, 
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Nicolas Schier <nicolas@fjasle.eu>, nkapron@google.com, 
+	Roberto Sassu <roberto.sassu@huawei.com>, "Serge E . Hallyn" <serge@hallyn.com>, 
+	Shuah Khan <shuah@kernel.org>, Matteo Croce <teknoraver@meta.com>, 
+	Cong Wang <xiyou.wangcong@gmail.com>, kysrinivasan@gmail.com, 
+	Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 16, 2025 at 11:32:27AM -0700, Shakeel Butt wrote:
-> The memcg accounting and stats uses this_cpu* and atomic* ops. There are
-> archs which define CONFIG_HAVE_NMI but does not define
-> CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS and ARCH_HAVE_NMI_SAFE_CMPXCHG, so
-> memcg accounting for such archs in nmi context is not possible to
-> support. Let's just disable memcg accounting in nmi context for such
-> archs.
-> 
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> ---
-> Changes since v2:
-> - reorder the in_nmi() check as suggested by Vlastimil
-> 
->  include/linux/memcontrol.h |  5 +++++
->  mm/memcontrol.c            | 15 +++++++++++++++
->  2 files changed, 20 insertions(+)
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index f7848f73f41c..53920528821f 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -62,6 +62,11 @@ struct mem_cgroup_reclaim_cookie {
->  
->  #ifdef CONFIG_MEMCG
->  
-> +#if defined(CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS) || \
-> +	!defined(CONFIG_HAVE_NMI) || defined(ARCH_HAVE_NMI_SAFE_CMPXCHG)
+On Fri, May 16, 2025 at 7:49=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+> On Fri, May 16, 2025 at 12:49=E2=80=AFPM Paul Moore <paul@paul-moore.com>=
+ wrote:
+> >
+> > I think we need some clarification on a few of these details, it would
+> > be good if you could answer the questions below about the
+> > authorization aspects of your design?
+> >
+> > * Is the signature validation code in the BPF verifier *always* going
+> > to be enforced when a signature is passed in from userspace?  In other
+> > words, in your design is there going to be either a kernel build time
+> > or runtime configuration knob that could selectively enable (or
+> > disable) signature verification in the BPF verifier?
+>
+> If there is a signature in union bpf_attr and it's incorrect
+> the prog_load command will be rejected.
+> No point in adding a knob to control that.
 
-                                             CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG?
+I agree that when a signature is provided and that signature check
+fails, the BPF load should be rejected.  I'm simply trying to
+understand how you envision your design handling all of the cases, not
+just this one, as well as what build and runtime options you expect
+for controlling various aspects of this behavior.
 
-> +#define MEMCG_SUPPORTS_NMI_CHARGING
-> +#endif
+> > * In the case where the signature validation code in the BPF verifier
+> > is active, what happens when a signature is *not* passed in from
+> > userspace?  Will the BPF verifier allow the program load to take
+> > place?  Will the load operation be blocked?  Will the load operation
+> > be subject to a more granular policy, and if so, how do you plan to
+> > incorporate that policy decision into the BPF program load path?
+>
+> If there is no signature the existing loading semantics will remain intac=
+t.
+> We can discuss whether to add a sysctl or cgroup knob to disallow
+> loading when signature is not present ...
 
-Since it's derived from config symbols, it's better to make this an
-internal symbol as well. Something like:
+As mentioned earlier this week, if the BPF verifier is performing the
+signature verification as KP described, we will need a LSM hook after
+the verifier to serve as an access control point.  Of course that
+doesn't preclude the addition of some type of sysctl/cgroup/whatever
+based access control, but the LSM hook would be needed regardless.
 
-	config MEMCG_NMI_UNSAFE
-		bool
-		depends on HAVE_NMI
-		depends on !ARCH_HAS_NMI_SAFE_THIS_CPU_OPS && !ARCH_HAVE_NMI_SAFE_CMPXCHG
+> but it probably should be a job of trivial LSM ...
 
->  #define MEM_CGROUP_ID_SHIFT	16
->  
->  struct mem_cgroup_id {
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index e17b698f6243..0f182e4a9da0 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -2647,11 +2647,26 @@ static struct obj_cgroup *current_objcg_update(void)
->  	return objcg;
->  }
->  
-> +#ifdef MEMCG_SUPPORTS_NMI_CHARGING
-> +static inline bool nmi_charging_allowed(void)
-> +{
-> +	return true;
-> +}
-> +#else
-> +static inline bool nmi_charging_allowed(void)
-> +{
-> +	return false;
-> +}
-> +#endif
+Exactly.  If the LSM is simply verifying the signature validation
+state of the BPF program being loaded it seems like an addition to IPE
+would be the best option from an upstream, in-tree perspective.
+However, with the post verifier LSM hook in place, one could also
+supply a BPF LSM to do something similar.
 
-...drop these...
+It sounds like we are in agreement on the desirability and need for a
+post verifier LSM hook; we'll keep moving forward with this idea
+despite KP's earlier objections to the hook.
 
-> +
->  __always_inline struct obj_cgroup *current_obj_cgroup(void)
->  {
->  	struct mem_cgroup *memcg;
->  	struct obj_cgroup *objcg;
->  
-> +	if (!nmi_charging_allowed() && in_nmi())
-> +		return NULL;
+> Note that the prog verification itself is independent of the signature.
+> If prog fails to pass safety checks it will still be rejected
+> even if signature is ok.
 
-..and finally do
+There is plenty of precedence for a kernel subsystem rejecting a
+security relevant operation before a LSM access control hook is
+called; the reasons range from discretionary access control issues to
+simple matters of resource exhaustion.  The possibility of the BPF
+verifier rejecting the program load due to verifier constraints is
+reasonable and expected.
 
-	if (IS_ENABLED(CONFIG_MEMCG_NMI_UNSAFE && in_nmi())
-		return NULL;
+> We're not going to do a verifier bypass.
 
-here.
+Agreed.  I don't recall anyone ever suggesting that as part of this
+recent BPF signature verification effort.
+
+--=20
+paul-moore.com
 
