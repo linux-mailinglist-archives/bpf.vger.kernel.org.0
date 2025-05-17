@@ -1,214 +1,189 @@
-Return-Path: <bpf+bounces-58447-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58448-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E9C0ABAAE5
-	for <lists+bpf@lfdr.de>; Sat, 17 May 2025 17:50:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 039FEABAAEA
+	for <lists+bpf@lfdr.de>; Sat, 17 May 2025 17:50:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF3FD7A73DD
-	for <lists+bpf@lfdr.de>; Sat, 17 May 2025 15:48:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0A831785DA
+	for <lists+bpf@lfdr.de>; Sat, 17 May 2025 15:50:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 356DE205ABB;
-	Sat, 17 May 2025 15:50:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04D60207E1D;
+	Sat, 17 May 2025 15:50:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rtv8ZY7f"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ATGkaD1y"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AD461EA90
-	for <bpf@vger.kernel.org>; Sat, 17 May 2025 15:50:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E51FF1F463A;
+	Sat, 17 May 2025 15:50:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747497003; cv=none; b=lJbetFpjTjlO/m7a6NC68KuEFX7pt4wrc1U6dUzK2omS/jYgc5wbeexSokwt7M/lTOqFD6WegG+SG/Zr3waVQVhZpFnoIJyxUws1cO1692yBgKX/6WDlfd2/SloYXGJPQPFlQq+RSNO264LSzi8BHJ5pRiHkjrQqNbR0I+s3x9U=
+	t=1747497038; cv=none; b=I5kx/Um+c1UXKd1icF0BWhWundpmAiZenox8wwlLImr9pCQl9nmU5oBknLdev5kszRwg8A4nDaW3wrIcj7GFEHisuZugwUv6Obrr7bIcFUtslxhWtUybLb1ji7cnFUa4+CXdbtaH4sLd4XWN9GGSidouai4+GY1u0RoZXxkNDi4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747497003; c=relaxed/simple;
-	bh=q5CX4Hnq67oJGMeJObphXE+LYj1+iIcFQqTBk89c0io=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aUT3QU0zdN2tyL9PwsB/0PEnKWcv/7wopIgAKVI17WDbIRx4g3BYQHgdmupEhr59D4P+7EFrVA4+XtHyKO+zD1QhVF9pYWO6jPvnGQLljLu/EEVdbtbFP2W82k70Yb9aFY3I1c+wjxfEQal3WPuBUjXjcy08X3tcqqFs4fK4E2E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rtv8ZY7f; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <769e672b-fcde-49d8-bd4b-58902569f17d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1747496999;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=c8BxkEoyl54mgQ3QM66U3z0aec5GHz60CWK56GnsMs8=;
-	b=rtv8ZY7fqM/qH+Mewgs61nHMR3owlK5WoDJYjsUBzAVMBypcB6mhkJezqLzDOY93IiVlVC
-	j5Tk8d/R4utaVaARDaZWQKMvZCVKEhiSCIuZboYB02MlwN+YQmC3Im//ZcIc7l1qHKT4z5
-	ksHI34EfndSBSaduo5sx3n45OICBjxs=
-Date: Sat, 17 May 2025 08:49:48 -0700
+	s=arc-20240116; t=1747497038; c=relaxed/simple;
+	bh=XZpIZNH9Ye1SFU2YgzNdnEpG9S1a+JCHTpEyymIpvbo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EKbGqGN6u2tmJKV6iQEwC1lwRbTmO0sioWmActi1LSWt9fb5+NrTJYUh+pVmtaILADVp0Lo5E8okbpkbDlfPGtljvnA+VTNkyr+csoSXKAhU6PWXx9u+Frd3crOn9w/TA5QUfkYd3TKNmzP2NpVKztB69uP2DjFmtoHVkLhjnaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ATGkaD1y; arc=none smtp.client-ip=209.85.222.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-875b8e006f8so774998241.0;
+        Sat, 17 May 2025 08:50:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747497035; x=1748101835; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/H1yH4AbSfMvCF5lDaIZcSmucQx4bL/RGtGJ0jzRozc=;
+        b=ATGkaD1yPny9pb77ziOatENzog5YQvZDTegELUHJIhdXTWAgLqRilHDmH8BiyMde64
+         2Gyce1peGSjQACd5V3dTFaWg/85+TKqHzcxsK1LEFL2DEDQOBaoxqn0+QlKDlp+5NHzg
+         9xmq0CJ71tNxvfJJBzo8erWQ+cM35t2R1cRWBtt4Pj+p0ZEQZBDz+YXia33sj3iJQ1ER
+         2dYMAGCt1MkZtPo8bbAvmOAX2jKbpuJFu1cZoF8QT9uk/NSVZRUgNjskBgcXs1P9DZKC
+         /kqGgssg2SHeAoTRY7Y16bmUeG7EFQ0/5PVNuJqNzxQvYc5XDW6S9DzR4VP9q6RuCFcw
+         D6HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747497035; x=1748101835;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/H1yH4AbSfMvCF5lDaIZcSmucQx4bL/RGtGJ0jzRozc=;
+        b=oTwFNOyhsVCC9axP0XBov1W7psZe+dm9+GIhi6/kT5Bf0G3cJWtKeBLfUoidcR5Fv7
+         +X+e6MPhcD54UhQAmKfpjlAW5pP+MC3LjSoB4XEjHOMeqIUY7RR1YGDwxMJtmwN/NWI2
+         Z6lrHZioRJbRyxQtfFFw9/LZzzcL6+6fAfERWCC/b81mLktWIc7RGzt25snxS3Q78Koh
+         6FpGhmBj42I0gd29no2VyINXdsD5lGeBE0gRqkQxd3UMpaDICJeX4FgjdBeN7x+SQ1GX
+         qLxRCcBs36cR5wjIXQSXk88Fa2SVU5r7FkOcCEUvnW9spYb1DK+L0B5WjjQ2aT5Le9C5
+         lcQg==
+X-Forwarded-Encrypted: i=1; AJvYcCUSzu/vzTJnauGQvTTQNDomDr2LtxnVKR5bkK8TA8UoSflMJ1RghS/PGtUZL9NmfYhUnAlrLnhkWg==@vger.kernel.org, AJvYcCXcoQGUsHvSmsQQdE3VfI8RKIZF8gSruuci8S4aCqzz7C8T4hNWWNxanoxu+1JPJfX1Uyk=@vger.kernel.org, AJvYcCXhX7ovnFdGuDYWJI5aEquBCCeTsKgi+sHgBO8zG5HP53/pleL6QW07FPNA3PCNFNtXH/8c33AMwHB8j6gj@vger.kernel.org
+X-Gm-Message-State: AOJu0YyOkKyg8JJeqoovD/S7sV/5EPrGJ/+wb4vc0Q1RjwxJtUBzTgyw
+	7qzGz9Dbf8f+FrGmku26moBVZLAv5uIXXskqrfoQ/M+y887KzfcpcpHq08Dz4ipX+j/amBcjVGi
+	GT51xyrmS/tAZDVHqK6J3HoqRU7C4lX4=
+X-Gm-Gg: ASbGncs6+6njo9uhOZ48IUP9TdrPhub5jcNQPvokbNU0fjbMV3rI3UrR+Us/+p7t1TP
+	gYe43TZ0wONcDEnA9dcjussDH3VTbJ84VPIr4RPlxxHBtH/XAoV4V9SdgF+jKt8Hqv8rpbCow4f
+	q4tnVn7fRIWgVu2rGxeiM8OaUoR7/g9CgjA7Uw/x01ug==
+X-Google-Smtp-Source: AGHT+IGPfaRkmLN5E2QpUx4OuFhuWdS+rY7He9e0e+Te3ATYw6mGidu5QaKvX13cASqWwLke8CCV21NpNOXW2AGxJ30=
+X-Received: by 2002:a05:6102:570d:b0:4c1:9695:c7c with SMTP id
+ ada2fe7eead31-4dfa6c56bffmr8650858137.24.1747497035264; Sat, 17 May 2025
+ 08:50:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 2/4] bpf: Implement mprog API on top of
- existing cgroup progs
-Content-Language: en-GB
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
- Daniel Borkmann <daniel@iogearbox.net>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, kernel-team@fb.com,
- Martin KaFai Lau <martin.lau@kernel.org>
-References: <20250508223524.487875-1-yonghong.song@linux.dev>
- <20250508223534.488607-1-yonghong.song@linux.dev>
- <CAEf4BzZc4fqF2Ez3f1HuMt6xL6PYC6U3iOqgb53BQmkmH5rLWg@mail.gmail.com>
- <CAEf4BzaEKFJ08bJEvnEV-qbf-ZD7VnZuF35N7dp1646tYWrPtw@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAEf4BzaEKFJ08bJEvnEV-qbf-ZD7VnZuF35N7dp1646tYWrPtw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250516183231.1615590-1-shakeel.butt@linux.dev>
+ <20250516183231.1615590-2-shakeel.butt@linux.dev> <20250517140613.GB104729@cmpxchg.org>
+In-Reply-To: <20250517140613.GB104729@cmpxchg.org>
+From: Shakeel Butt <shakeel.butt@gmail.com>
+Date: Sat, 17 May 2025 08:50:24 -0700
+X-Gm-Features: AX0GCFvybgsf65nJPdKxogM_gbxXN8TtbmaSBctrp2g5_gqMUzrZuFpFqdCIIqE
+Message-ID: <CAGj-7pXtRMKmx0Qm6DX2W3=s5iuRTCFs311YtGOi4wreuviiBg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/5] memcg: disable kmem charging in nmi for
+ unsupported arch
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Vlastimil Babka <vbabka@suse.cz>, Alexei Starovoitov <ast@kernel.org>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Harry Yoo <harry.yoo@oracle.com>, 
+	Yosry Ahmed <yosry.ahmed@linux.dev>, Peter Zijlstra <peterz@infradead.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Tejun Heo <tj@kernel.org>, bpf@vger.kernel.org, 
+	linux-mm@kvack.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Meta kernel team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-
-On 5/15/25 5:05 AM, Andrii Nakryiko wrote:
-> On Thu, May 15, 2025 at 1:38 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
->> On Thu, May 8, 2025 at 3:35 PM Yonghong Song <yonghong.song@linux.dev> wrote:
->>> Current cgroup prog ordering is appending at attachment time. This is not
->>> ideal. In some cases, users want specific ordering at a particular cgroup
->>> level. To address this, the existing mprog API seems an ideal solution with
->>> supporting BPF_F_BEFORE and BPF_F_AFTER flags.
->>>
->>> But there are a few obstacles to directly use kernel mprog interface.
->>> Currently cgroup bpf progs already support prog attach/detach/replace
->>> and link-based attach/detach/replace. For example, in struct
->>> bpf_prog_array_item, the cgroup_storage field needs to be together
->>> with bpf prog. But the mprog API struct bpf_mprog_fp only has bpf_prog
->>> as the member, which makes it difficult to use kernel mprog interface.
->>>
->>> In another case, the current cgroup prog detach tries to use the
->>> same flag as in attach. This is different from mprog kernel interface
->>> which uses flags passed from user space.
->>>
->>> So to avoid modifying existing behavior, I made the following changes to
->>> support mprog API for cgroup progs:
->>>   - The support is for prog list at cgroup level. Cross-level prog list
->>>     (a.k.a. effective prog list) is not supported.
->>>   - Previously, BPF_F_PREORDER is supported only for prog attach, now
->>>     BPF_F_PREORDER is also supported by link-based attach.
->>>   - For attach, BPF_F_BEFORE/BPF_F_AFTER/BPF_F_ID is supported similar to
->>>     kernel mprog but with different implementation.
->>>   - For detach and replace, use the existing implementation.
->>>   - For attach, detach and replace, the revision for a particular prog
->>>     list, associated with a particular attach type, will be updated
->>>     by increasing count by 1.
->>>
->>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
->>> ---
->>>   include/uapi/linux/bpf.h       |   7 ++
->>>   kernel/bpf/cgroup.c            | 144 ++++++++++++++++++++++++++++-----
->>>   kernel/bpf/syscall.c           |  44 ++++++----
->>>   tools/include/uapi/linux/bpf.h |   7 ++
->>>   4 files changed, 165 insertions(+), 37 deletions(-)
->>>
->> [...]
->>
->>> +       if (!anchor_prog) {
->>> +               hlist_for_each_entry(pltmp, progs, node) {
->>> +                       if ((flags & BPF_F_BEFORE) && *ppltmp)
->>> +                               break;
->>> +                       *ppltmp = pltmp;
->> This is be correct, but it's less obvious why because of all the
->> loops, breaks, and NULL anchor prog. The idea here is to find the very
->> first pl for BPF_F_BEFORE or the very last for BPF_F_AFTER, right? So
->> wouldn't this be more obviously correct:
->>
->> hlist_for_each_entry(pltmp, progs, node) {
->>      if (flags & BPF_F_BEFORE) {
->>          *ppltmp = pltmp;
->>          return NULL;
->>      }
->>      *ppltmp = pltmp;
->> }
->> return NULL;
->>
->>
->> I.e., once you know the result, just return as early as possible and
->> don't require tracing through the rest of code just to eventually
->> return all the same (but now somewhat disguised) values.
->>
->>
->> Though see my point about anchor_prog below, which will simplify this
->> to just `return pltmp;`
->>
->>
->> I'd also add a comment that if there is no anchor_prog, then
->> BPF_F_PREORDER doesn't matter because we either prepend or append to a
->> combined list of progs and end up with correct result
->>
->>> +               }
->>> +       }  else {
->>> +               hlist_for_each_entry(pltmp, progs, node) {
->>> +                       pltmp_prog = pltmp->link ? pltmp->link->link.prog : pltmp->prog;
->>> +                       if (pltmp_prog != anchor_prog)
->>> +                               continue;
->>> +                       if (!!(pltmp->flags & BPF_F_PREORDER) != preorder)
->>> +                               goto out;
->>> +                       *ppltmp = pltmp;
->>> +                       break;
->>> +               }
->>> +               if (!*ppltmp) {
->>> +                       ret = -ENOENT;
->>> +                       goto out;
->>> +               }
->>> +       }
->>> +
->>> +       return anchor_prog;
->>> +
->>> +out:
->>> +       bpf_prog_put(anchor_prog);
->>> +       return ERR_PTR(ret);
->>> +}
->>> +
->>> +static int insert_pl_to_hlist(struct bpf_prog_list *pl, struct hlist_head *progs,
->>> +                             struct bpf_prog *prog, u32 flags, u32 id_or_fd)
->>> +{
->>> +       struct bpf_prog_list *pltmp = NULL;
->>> +       struct bpf_prog *anchor_prog;
->>> +
->>> +       /* flags cannot have both BPF_F_BEFORE and BPF_F_AFTER */
->>> +       if ((flags & BPF_F_BEFORE) && (flags & BPF_F_AFTER))
->>> +               return -EINVAL;
->> I think this should be handled by get_anchor_prog(), both BPF_F_AFTER
->> and BPF_F_BEFORE will just result in no valid anchor program and we'll
->> error out below
-> Oh, I just randomly realized that there is a special case that I think
-> is allowed by Daniel's mprog implementation, and it might be important
-> for some users. If both BPF_F_BEFORE and BPF_F_AFTER are specified and
-> there is no ID/FD, then this combination would succeed if and only if
-> the currently attached list of progs is empty. Check
-> bpf_mprog_attach() and how it handles BPF_F_BEFORE and BPF_F_AFTER
-> completely independently calculating tidx. If tidx ends up being
-> consistent (which should be -1 for empty list), then that's where the
-> prog/link is inserted (-1 result in prepending into an empty list).
-
-I will add this support in the next revision.
-
+On Sat, May 17, 2025 at 7:06=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
+> wrote:
 >
+> On Fri, May 16, 2025 at 11:32:27AM -0700, Shakeel Butt wrote:
+> > The memcg accounting and stats uses this_cpu* and atomic* ops. There ar=
+e
+> > archs which define CONFIG_HAVE_NMI but does not define
+> > CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS and ARCH_HAVE_NMI_SAFE_CMPXCHG, s=
+o
+> > memcg accounting for such archs in nmi context is not possible to
+> > support. Let's just disable memcg accounting in nmi context for such
+> > archs.
+> >
+> > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> > ---
+> > Changes since v2:
+> > - reorder the in_nmi() check as suggested by Vlastimil
+> >
+> >  include/linux/memcontrol.h |  5 +++++
+> >  mm/memcontrol.c            | 15 +++++++++++++++
+> >  2 files changed, 20 insertions(+)
+> >
+> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > index f7848f73f41c..53920528821f 100644
+> > --- a/include/linux/memcontrol.h
+> > +++ b/include/linux/memcontrol.h
+> > @@ -62,6 +62,11 @@ struct mem_cgroup_reclaim_cookie {
+> >
+> >  #ifdef CONFIG_MEMCG
+> >
+> > +#if defined(CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS) || \
+> > +     !defined(CONFIG_HAVE_NMI) || defined(ARCH_HAVE_NMI_SAFE_CMPXCHG)
 >
-> Daniel, can you please double check and generally take a look at this
-> patch set, given you have the most detailed knowledge of mprog
-> interface? Thanks!
-
-Daniel, I will have another revision (v3) soon. Hopefully you can
-review it as well. Thanks!
-
+>                                              CONFIG_ARCH_HAVE_NMI_SAFE_CM=
+PXCHG?
 >
->>> +
->>> +       anchor_prog = get_anchor_prog(progs, prog, flags, id_or_fd, &pltmp);
->>> +       if (IS_ERR(anchor_prog))
->>> +               return PTR_ERR(anchor_prog);
+> > +#define MEMCG_SUPPORTS_NMI_CHARGING
+> > +#endif
+>
+> Since it's derived from config symbols, it's better to make this an
+> internal symbol as well. Something like:
+>
+>         config MEMCG_NMI_UNSAFE
+>                 bool
+>                 depends on HAVE_NMI
+>                 depends on !ARCH_HAS_NMI_SAFE_THIS_CPU_OPS && !ARCH_HAVE_=
+NMI_SAFE_CMPXCHG
+>
+> >  #define MEM_CGROUP_ID_SHIFT  16
+> >
+> >  struct mem_cgroup_id {
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index e17b698f6243..0f182e4a9da0 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -2647,11 +2647,26 @@ static struct obj_cgroup *current_objcg_update(=
+void)
+> >       return objcg;
+> >  }
+> >
+> > +#ifdef MEMCG_SUPPORTS_NMI_CHARGING
+> > +static inline bool nmi_charging_allowed(void)
+> > +{
+> > +     return true;
+> > +}
+> > +#else
+> > +static inline bool nmi_charging_allowed(void)
+> > +{
+> > +     return false;
+> > +}
+> > +#endif
+>
+> ...drop these...
+>
+> > +
+> >  __always_inline struct obj_cgroup *current_obj_cgroup(void)
+> >  {
+> >       struct mem_cgroup *memcg;
+> >       struct obj_cgroup *objcg;
+> >
+> > +     if (!nmi_charging_allowed() && in_nmi())
+> > +             return NULL;
+>
+> ..and finally do
+>
+>         if (IS_ENABLED(CONFIG_MEMCG_NMI_UNSAFE && in_nmi())
+>                 return NULL;
+>
+> here.
 
-[...]
-
+Thanks Johannes, will do in the next version.
 
