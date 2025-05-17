@@ -1,78 +1,86 @@
-Return-Path: <bpf+bounces-58442-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58443-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50B17ABA8F2
-	for <lists+bpf@lfdr.de>; Sat, 17 May 2025 10:46:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B222ABAA78
+	for <lists+bpf@lfdr.de>; Sat, 17 May 2025 15:43:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44E381BA3249
-	for <lists+bpf@lfdr.de>; Sat, 17 May 2025 08:46:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AED5C4A40EE
+	for <lists+bpf@lfdr.de>; Sat, 17 May 2025 13:43:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A85981DE2CF;
-	Sat, 17 May 2025 08:46:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20891200130;
+	Sat, 17 May 2025 13:43:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OCf1TawM"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="ZaMfs4A9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6306C18FDD2
-	for <bpf@vger.kernel.org>; Sat, 17 May 2025 08:46:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EAA31EB182
+	for <bpf@vger.kernel.org>; Sat, 17 May 2025 13:43:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747471584; cv=none; b=sQwwDKqM965ia1oM9qEEFWFO40PIkP8H88GeWaNgr4Nf5hYmdtQicBbHKh+M3lvMtRb8OSQDBvCuadn0bau+sMYWT877cFER6fji0SQ6pMHH/NZ7LS1NpVduXbB5vnfxHjckkES5hW3X7P2djOdNrOGsgcggZhvXib3NRrPNfsg=
+	t=1747489418; cv=none; b=WItZ8EwZtTcrVCSu9Dci8M/vWZq9ugAz5s4C9AIHdHkR8KjZtbyd4jQTsG4H+cfv0ds0rM8Mzti9gPMdze4W7mJlONkKy7gkBoQq8KLnwLXMDcduUGvbWqkAIaBQle3S+Ymf2MjhlEuN++7SaRmuFDfoG+6GTysMxHl6tMFDxXU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747471584; c=relaxed/simple;
-	bh=wHgkQSozsggwC73ZHGsr2Wk1ujVsRhl93W4Fm8t6gVw=;
+	s=arc-20240116; t=1747489418; c=relaxed/simple;
+	bh=jr38lzYnByE2JIKY4eeMFPGYmcpnVhynp9NkZCHQnIM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hKrUJob1uj+5fVfTG4VcF1afS2o2sDgpZfk8Jjbkhl9lyyWtFqF4EjeyisMtvlavm8uo6uo2FlKjZKk+foI13YsQnffYXwZUsITkD694i9EnaggREokHMgRwLXfe+q6LRlcy/1n6zJ8448wJN+os/9rtL/JJT2cA85Uo1M+7/Wk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OCf1TawM; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1747471582; x=1779007582;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=wHgkQSozsggwC73ZHGsr2Wk1ujVsRhl93W4Fm8t6gVw=;
-  b=OCf1TawMFLoNQjwdTAJL9K+g5tXA58MuG5rCTPRwBhIiniitzUN3GSRi
-   JsvpJhDoyF2fusLpePLYxTrmhDWvQVuytKAQPrlIy4wcW0ImcWSjnYrWe
-   B+NxkFHilj5M4sBfvL+1AUAtQEtbTr+roIfu64aJOtuCNx0s+W4HEFmq5
-   5JxhRijigMCJgWSb2M8i1Tajez8gxsYMltzLGmbvafgz9V26p3cFwsmZ6
-   AlrJpYhZdaLjCE5jrTOt4NyXGaRIgpOEELW2F6Mcbu0QBiwrMu6EJYotk
-   x53eBllbyOrmTb9LJjnk6tuLUsL0ZFiVoT73YMG9xfA0uadclkWXfc7tb
-   w==;
-X-CSE-ConnectionGUID: v/HPFiFXQNuauwfoBG8bjg==
-X-CSE-MsgGUID: 04vN6/oTSgmB40O+0piO0g==
-X-IronPort-AV: E=McAfee;i="6700,10204,11435"; a="49579831"
-X-IronPort-AV: E=Sophos;i="6.15,296,1739865600"; 
-   d="scan'208";a="49579831"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2025 01:46:21 -0700
-X-CSE-ConnectionGUID: Sw2a6q0qQfar3Gkh1UP8jg==
-X-CSE-MsgGUID: YhriPRWnRKiDH/XGjmn7Kw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,296,1739865600"; 
-   d="scan'208";a="139925722"
-Received: from lkp-server01.sh.intel.com (HELO 1992f890471c) ([10.239.97.150])
-  by fmviesa009.fm.intel.com with ESMTP; 17 May 2025 01:46:20 -0700
-Received: from kbuild by 1992f890471c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uGDBR-000K1z-1d;
-	Sat, 17 May 2025 08:46:17 +0000
-Date: Sat, 17 May 2025 16:45:49 +0800
-From: kernel test robot <lkp@intel.com>
-To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: Add a test with
- bpf_unreachable() kfunc
-Message-ID: <202505171650.f5nomWW4-lkp@intel.com>
-References: <20250515200640.3428248-1-yonghong.song@linux.dev>
+	 Content-Type:Content-Disposition:In-Reply-To; b=UwTZ8wUeFg397MhdHT8fvUKukK1cwWuLbKR0WM3cnat5cozY/iZ4QhQRNk+niHqDwhxEGQ5Z2/9I7R8c9plzhgZn+cCTXZ/hBtMKn1TPi7v2AIK9ufRGj0B84G/FKSSZBDqg7njtpPl1FO6tJy8tEn1LN1P9Sk414MzCXSCHJeI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=ZaMfs4A9; arc=none smtp.client-ip=209.85.160.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-4766631a6a4so32588721cf.2
+        for <bpf@vger.kernel.org>; Sat, 17 May 2025 06:43:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1747489414; x=1748094214; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=gaiJIc0AhDu+gg4V5awjlETP4a9ycGXgcdzSFFKV+/E=;
+        b=ZaMfs4A9ehUsRzf1Tpravka9Jh2NA15si+B5tQ4WyqVxMjfhkdpjA+W1ynu26mtZlL
+         nASiJGqSdq7upgDK4b9krD+ttQ6KiepYeEmeYTWVeeTXVb0ITgfW2mixBZ2OOpRW9DCS
+         zH/CYGhJSpkqgmyo6gtjJqJ5nNnJ29v8PO47kc0oowVxSh8ncBqPbD8cnZSQtwWFz34O
+         EHs8ULKNUTeiQbifRfVcFXPgdW0AjALOFNK5pbuWpD+SnRhPm604t3dJBPmil3v9CMLS
+         4aMeEnPXT9+3WdzheNFPuLZ+WqL3aBWDQ5d8Q4YJdCtnDQwv0XJj+Y5KVNx+GWvqsiyj
+         zQgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747489414; x=1748094214;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gaiJIc0AhDu+gg4V5awjlETP4a9ycGXgcdzSFFKV+/E=;
+        b=WT6oiT8/7LNxunLa+P4Lb/TD2GpsQWtKTJTUTsgaFn86Nu0nzoD2eptVTkf7/MD/Wi
+         ksQgouF752PxiG4YpI1PzYPVa5wpba9j6zgUUIGENHqtrWM2fN0msKkw+6LngjGtLfoT
+         /X5s0BX7nKXYP+ClefEtM2itSmaz5dKkbuCP5A84wI1FvqaDCfCe+jFgzImiQhzOghU6
+         MB388EzFoXZ6dFnpg6Xd+KxE7abkVODrKFKpXLE6o36DivoLTjUATVmik+U54kF/JgB5
+         oC9nmpoxW3w936fMHawSp0hq3sxUEgbWvSAfBHNdjNblodH4PA+f8TFjrgw/Af0Hr/95
+         gXdw==
+X-Gm-Message-State: AOJu0Yx+eQlqXmQflPgd51NbeNrAd4SyxPeaGTwRFhESaoYlYyKoQspA
+	BS4n8bYhkf899XGCk3pJaTSzIgBwaMnYB2CtViGBHOIA5EkN7ew1dki2ZAkBPvp87ao=
+X-Gm-Gg: ASbGncvxSV82jtWZqeI/GUgV+84xnclx65tTPZNtJIvkCURmeMfQRcWvyZiKpryZtOs
+	DAO5jM9DkSEWJit0u9PpuflJgc9zeGpoE2oA1sO/WNP0YeRmzrNSnG5B7tZtRZJ07qucrXtS9Uw
+	n9IrBlQAo5FsrgjU/cY9GBRPIpI4pUoWple6kojRej0AdwillXO+p5faP/FsSSDFBaJdXEXrdXC
+	Mbh1FKm+vMDJy0WfhOBo5eF6iG8UOFl7jRi8uwe5T7vjwTtNhiyIKSA+CONSbVAOojj5frKF6bK
+	zYFXdfV619K9LB0DSc6UZlEAPosGcVALxJ8ai5x9hX3hJOzH0w==
+X-Google-Smtp-Source: AGHT+IEY8qdVU7n2yJovckwrAweAaBmJ9a3ecpx5s0NF2iyipWR6sQZ0rP1uaIguoVmzsMSxi9XH0g==
+X-Received: by 2002:a05:622a:5589:b0:476:8288:9558 with SMTP id d75a77b69052e-494ae434787mr117164191cf.46.1747489414253;
+        Sat, 17 May 2025 06:43:34 -0700 (PDT)
+Received: from localhost ([2603:7000:c01:2716:cbb0:8ad0:a429:60f5])
+        by smtp.gmail.com with UTF8SMTPSA id d75a77b69052e-494ae3f88d1sm24440861cf.19.2025.05.17.06.43.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 May 2025 06:43:33 -0700 (PDT)
+Date: Sat, 17 May 2025 09:43:28 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf@vger.kernel.org, linux-mm@kvack.org, vbabka@suse.cz,
+	harry.yoo@oracle.com, shakeel.butt@linux.dev, mhocko@suse.com,
+	bigeasy@linutronix.de, andrii@kernel.org, memxor@gmail.com,
+	akpm@linux-foundation.org, peterz@infradead.org,
+	rostedt@goodmis.org
+Subject: Re: [PATCH] mm: Rename try_alloc_pages() to alloc_pages_nolock()
+Message-ID: <20250517134328.GA104729@cmpxchg.org>
+References: <20250517003446.60260-1-alexei.starovoitov@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -81,41 +89,21 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250515200640.3428248-1-yonghong.song@linux.dev>
+In-Reply-To: <20250517003446.60260-1-alexei.starovoitov@gmail.com>
 
-Hi Yonghong,
+On Fri, May 16, 2025 at 05:34:46PM -0700, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
+> 
+> The "try_" prefix is confusing, since it made people believe
+> that try_alloc_pages() is analogous to spin_trylock() and
+> NULL return means EAGAIN. This is not the case. If it returns
+> NULL there is no reason to call it again. It will most likely
+> return NULL again. Hence rename it to alloc_pages_nolock()
+> to make it symmetrical to free_pages_nolock() and document that
+> NULL means ENOMEM.
+> 
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on bpf-next/master]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Yonghong-Song/selftests-bpf-Add-a-test-with-bpf_unreachable-kfunc/20250516-040928
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20250515200640.3428248-1-yonghong.song%40linux.dev
-patch subject: [PATCH bpf-next v2 2/2] selftests/bpf: Add a test with bpf_unreachable() kfunc
-compiler: clang version 20.1.2 (https://github.com/llvm/llvm-project 58df0ef89dd64126512e4ee27b4ac3fd8ddf6247)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202505171650.f5nomWW4-lkp@intel.com/
-
-includecheck warnings: (new ones prefixed by >>)
->> tools/testing/selftests/bpf/progs/verifier_uninit_var.c: linux/in.h is included more than once.
-
-vim +4 tools/testing/selftests/bpf/progs/verifier_uninit_var.c
-
-   > 4	#include <linux/in.h>
-     5	#include <linux/ip.h>
-     6	#include <linux/ipv6.h>
-     7	#include <linux/udp.h>
-     8	#include <linux/tcp.h>
-     9	#include <stdbool.h>
-    10	#include <linux/icmpv6.h>
-  > 11	#include <linux/in.h>
-    12	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
