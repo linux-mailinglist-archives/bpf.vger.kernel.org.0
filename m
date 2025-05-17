@@ -1,86 +1,98 @@
-Return-Path: <bpf+bounces-58443-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58444-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B222ABAA78
-	for <lists+bpf@lfdr.de>; Sat, 17 May 2025 15:43:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C68FABAA8F
+	for <lists+bpf@lfdr.de>; Sat, 17 May 2025 16:06:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AED5C4A40EE
-	for <lists+bpf@lfdr.de>; Sat, 17 May 2025 13:43:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 019A41B61216
+	for <lists+bpf@lfdr.de>; Sat, 17 May 2025 14:06:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20891200130;
-	Sat, 17 May 2025 13:43:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDA7A202C21;
+	Sat, 17 May 2025 14:06:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="ZaMfs4A9"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="nRCQ87GH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
+Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EAA31EB182
-	for <bpf@vger.kernel.org>; Sat, 17 May 2025 13:43:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C6351FECB4
+	for <bpf@vger.kernel.org>; Sat, 17 May 2025 14:06:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747489418; cv=none; b=WItZ8EwZtTcrVCSu9Dci8M/vWZq9ugAz5s4C9AIHdHkR8KjZtbyd4jQTsG4H+cfv0ds0rM8Mzti9gPMdze4W7mJlONkKy7gkBoQq8KLnwLXMDcduUGvbWqkAIaBQle3S+Ymf2MjhlEuN++7SaRmuFDfoG+6GTysMxHl6tMFDxXU=
+	t=1747490781; cv=none; b=S2UHSmNcxDLeJmgempey0LkdV6X9BcX93MpL0PAUittFGZ7OX+nwQc/y6O3L6L5UGKSPL8YJ+7n194JmrNXVeSF+am4ALG0Bnga6Bk+ocvTdpw+5eQji4WeRXh2gukR67xBZLvBG94u1vVGDk+fjUUAPZ0NaCIl5TLtcoU7r9pg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747489418; c=relaxed/simple;
-	bh=jr38lzYnByE2JIKY4eeMFPGYmcpnVhynp9NkZCHQnIM=;
+	s=arc-20240116; t=1747490781; c=relaxed/simple;
+	bh=V06g8hrNK3Ss5baC8W9lAcyYGrXvMeywgXb8MDbYNUs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UwTZ8wUeFg397MhdHT8fvUKukK1cwWuLbKR0WM3cnat5cozY/iZ4QhQRNk+niHqDwhxEGQ5Z2/9I7R8c9plzhgZn+cCTXZ/hBtMKn1TPi7v2AIK9ufRGj0B84G/FKSSZBDqg7njtpPl1FO6tJy8tEn1LN1P9Sk414MzCXSCHJeI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=ZaMfs4A9; arc=none smtp.client-ip=209.85.160.174
+	 Content-Type:Content-Disposition:In-Reply-To; b=ojsh2FqMaCxFTmGAkhNdc1rfTktINdxZTrvRdZ/wnoMel7GKJLn0wcCcHP83z8qwIy55U+RGeEBRR/HiOQC4cYkU0HyItkqNlgs8fTn3eZTi9N08OdkWNuLUBaZUKCrwtI0pW+erwa5o/xV8SUXkqw/Gzp0gHs0JE/iYq3+rMr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=nRCQ87GH; arc=none smtp.client-ip=209.85.222.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-4766631a6a4so32588721cf.2
-        for <bpf@vger.kernel.org>; Sat, 17 May 2025 06:43:35 -0700 (PDT)
+Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-7c597760323so336028385a.3
+        for <bpf@vger.kernel.org>; Sat, 17 May 2025 07:06:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1747489414; x=1748094214; darn=vger.kernel.org;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1747490778; x=1748095578; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gaiJIc0AhDu+gg4V5awjlETP4a9ycGXgcdzSFFKV+/E=;
-        b=ZaMfs4A9ehUsRzf1Tpravka9Jh2NA15si+B5tQ4WyqVxMjfhkdpjA+W1ynu26mtZlL
-         nASiJGqSdq7upgDK4b9krD+ttQ6KiepYeEmeYTWVeeTXVb0ITgfW2mixBZ2OOpRW9DCS
-         zH/CYGhJSpkqgmyo6gtjJqJ5nNnJ29v8PO47kc0oowVxSh8ncBqPbD8cnZSQtwWFz34O
-         EHs8ULKNUTeiQbifRfVcFXPgdW0AjALOFNK5pbuWpD+SnRhPm604t3dJBPmil3v9CMLS
-         4aMeEnPXT9+3WdzheNFPuLZ+WqL3aBWDQ5d8Q4YJdCtnDQwv0XJj+Y5KVNx+GWvqsiyj
-         zQgQ==
+        bh=NhvXy1V/6+eGgB5qAljkspgVToq5uQ0qNnLt1dtTF8E=;
+        b=nRCQ87GHOKm//mZw3TDNdzJAdz2DpVO9AGACZqar0x2M9+Fgyhd5G5PF2Kj8c6jlO3
+         z5xLWE/9s9fjq7jBbvnnri04A3gz3yjExq+0PW+zrqZtLUR095Ko96yp6PR1itF/kXMe
+         ThW2Q1ctu/9YVoq6HP30Qw1L7v5cSEoi/VGS+lv4HQD1gmd0RMRMoWqy6gZ+FpmK9mB9
+         5mXmgm3iZsORGkAfHfg0E0pnVUyvwFzbms3y3QqkMpdoxSCddCJT3G3OVtLREDZf+q0U
+         J7e42VqnElTiwNKhnNkqBSCIgkuYEYxQqqG2E0i5mKUU4kDTzlreW6CTUFyclbhyAYBP
+         pWQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747489414; x=1748094214;
+        d=1e100.net; s=20230601; t=1747490778; x=1748095578;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gaiJIc0AhDu+gg4V5awjlETP4a9ycGXgcdzSFFKV+/E=;
-        b=WT6oiT8/7LNxunLa+P4Lb/TD2GpsQWtKTJTUTsgaFn86Nu0nzoD2eptVTkf7/MD/Wi
-         ksQgouF752PxiG4YpI1PzYPVa5wpba9j6zgUUIGENHqtrWM2fN0msKkw+6LngjGtLfoT
-         /X5s0BX7nKXYP+ClefEtM2itSmaz5dKkbuCP5A84wI1FvqaDCfCe+jFgzImiQhzOghU6
-         MB388EzFoXZ6dFnpg6Xd+KxE7abkVODrKFKpXLE6o36DivoLTjUATVmik+U54kF/JgB5
-         oC9nmpoxW3w936fMHawSp0hq3sxUEgbWvSAfBHNdjNblodH4PA+f8TFjrgw/Af0Hr/95
-         gXdw==
-X-Gm-Message-State: AOJu0Yx+eQlqXmQflPgd51NbeNrAd4SyxPeaGTwRFhESaoYlYyKoQspA
-	BS4n8bYhkf899XGCk3pJaTSzIgBwaMnYB2CtViGBHOIA5EkN7ew1dki2ZAkBPvp87ao=
-X-Gm-Gg: ASbGncvxSV82jtWZqeI/GUgV+84xnclx65tTPZNtJIvkCURmeMfQRcWvyZiKpryZtOs
-	DAO5jM9DkSEWJit0u9PpuflJgc9zeGpoE2oA1sO/WNP0YeRmzrNSnG5B7tZtRZJ07qucrXtS9Uw
-	n9IrBlQAo5FsrgjU/cY9GBRPIpI4pUoWple6kojRej0AdwillXO+p5faP/FsSSDFBaJdXEXrdXC
-	Mbh1FKm+vMDJy0WfhOBo5eF6iG8UOFl7jRi8uwe5T7vjwTtNhiyIKSA+CONSbVAOojj5frKF6bK
-	zYFXdfV619K9LB0DSc6UZlEAPosGcVALxJ8ai5x9hX3hJOzH0w==
-X-Google-Smtp-Source: AGHT+IEY8qdVU7n2yJovckwrAweAaBmJ9a3ecpx5s0NF2iyipWR6sQZ0rP1uaIguoVmzsMSxi9XH0g==
-X-Received: by 2002:a05:622a:5589:b0:476:8288:9558 with SMTP id d75a77b69052e-494ae434787mr117164191cf.46.1747489414253;
-        Sat, 17 May 2025 06:43:34 -0700 (PDT)
+        bh=NhvXy1V/6+eGgB5qAljkspgVToq5uQ0qNnLt1dtTF8E=;
+        b=tZZZ//Z9eFPQvQd2Qj049bAgygSu4XkLA1/bjPba6/+vebR09YUJ1fpUuVFGNzzw+F
+         7xAKANKKWaa/KYtfNt84UdyTGBJpPlwKYHQALXI6BBK2CKv9dFJxr0gpRSle0PadxglC
+         3VSdFPhXe9CBEnKJQuUSorgSEh7RSFt9IgR+2rJLTPzYm9seiQYPdfXK7AFjMylr/UZl
+         Q234G/begGAwsubGMIZS7tZAF5/NPB7RHphOCKrb41B3An7N52tdOkjDMEcQCQDKMJI3
+         +CrRUXhhKb1zM1oFEeFXa/ln6/E5pWQHzIZOferP1N7Q8KprGrJQhN1RTHxTxry8wHJx
+         JdKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXUCAaoWWvV/HQYrB7FpBB5rTnh2JedKlI1siZoKH6/B1xDKIDJ6hY+a5FtWYJPgTt0Kww=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzAb2VCUt50Q2XNX1vO7UbJi5V004QrqzpMYCUPMyXsTMrmOEcS
+	cgyOt0STYDsdR/t1vP2rsx3gAMht3szftNtuz6xj9rdRSLB89v3L+QjtfqFiDQUwma8=
+X-Gm-Gg: ASbGncu4yODn1GG/7xZBNm6JYKeb1XbWI4lL5y4INNzm8YqiDrvV9O12xyWNpLEcTPu
+	lesTHom3DuTIubPT6QYOWi4bJ2KwaiDUPdCJlUEvvZ91Flh2x+jCxzabb9iTtLuvN3EyuL9T6QJ
+	j9lxrWMAyP2WgzAiPi1RIvYExeU0V9dGVf35+HW5r4SwuMwrQsBd/NjWXNHMChbyVV741fe0cRm
+	dhW/UpjfWKajDN67khO41XhSMcdVFtrSdPy1nZjcLn9WrEpKOmJlQn8KMg3JpmN2MPO8NtxFY4S
+	e4ktBIdbkc4g46J58SS3oA28jmNjV19u0Dnwx1DI+ysgb6STRg==
+X-Google-Smtp-Source: AGHT+IGK6eD7aI2Err8GHK9YsHuDYpVSIxGRVIvR72HXl/w/7xQC5Grfki+phpp5KFktfiO8EpqdXQ==
+X-Received: by 2002:a05:620a:430d:b0:7c5:5d4b:e62f with SMTP id af79cd13be357-7cd46779caamr1017827985a.43.1747490778049;
+        Sat, 17 May 2025 07:06:18 -0700 (PDT)
 Received: from localhost ([2603:7000:c01:2716:cbb0:8ad0:a429:60f5])
-        by smtp.gmail.com with UTF8SMTPSA id d75a77b69052e-494ae3f88d1sm24440861cf.19.2025.05.17.06.43.32
+        by smtp.gmail.com with UTF8SMTPSA id af79cd13be357-7cd468e5a77sm257916385a.116.2025.05.17.07.06.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 May 2025 06:43:33 -0700 (PDT)
-Date: Sat, 17 May 2025 09:43:28 -0400
+        Sat, 17 May 2025 07:06:17 -0700 (PDT)
+Date: Sat, 17 May 2025 10:06:13 -0400
 From: Johannes Weiner <hannes@cmpxchg.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf@vger.kernel.org, linux-mm@kvack.org, vbabka@suse.cz,
-	harry.yoo@oracle.com, shakeel.butt@linux.dev, mhocko@suse.com,
-	bigeasy@linutronix.de, andrii@kernel.org, memxor@gmail.com,
-	akpm@linux-foundation.org, peterz@infradead.org,
-	rostedt@goodmis.org
-Subject: Re: [PATCH] mm: Rename try_alloc_pages() to alloc_pages_nolock()
-Message-ID: <20250517134328.GA104729@cmpxchg.org>
-References: <20250517003446.60260-1-alexei.starovoitov@gmail.com>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Harry Yoo <harry.yoo@oracle.com>,
+	Yosry Ahmed <yosry.ahmed@linux.dev>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Tejun Heo <tj@kernel.org>, bpf@vger.kernel.org, linux-mm@kvack.org,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Meta kernel team <kernel-team@meta.com>
+Subject: Re: [PATCH v3 1/5] memcg: disable kmem charging in nmi for
+ unsupported arch
+Message-ID: <20250517140613.GB104729@cmpxchg.org>
+References: <20250516183231.1615590-1-shakeel.butt@linux.dev>
+ <20250516183231.1615590-2-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -89,21 +101,87 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250517003446.60260-1-alexei.starovoitov@gmail.com>
+In-Reply-To: <20250516183231.1615590-2-shakeel.butt@linux.dev>
 
-On Fri, May 16, 2025 at 05:34:46PM -0700, Alexei Starovoitov wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
+On Fri, May 16, 2025 at 11:32:27AM -0700, Shakeel Butt wrote:
+> The memcg accounting and stats uses this_cpu* and atomic* ops. There are
+> archs which define CONFIG_HAVE_NMI but does not define
+> CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS and ARCH_HAVE_NMI_SAFE_CMPXCHG, so
+> memcg accounting for such archs in nmi context is not possible to
+> support. Let's just disable memcg accounting in nmi context for such
+> archs.
 > 
-> The "try_" prefix is confusing, since it made people believe
-> that try_alloc_pages() is analogous to spin_trylock() and
-> NULL return means EAGAIN. This is not the case. If it returns
-> NULL there is no reason to call it again. It will most likely
-> return NULL again. Hence rename it to alloc_pages_nolock()
-> to make it symmetrical to free_pages_nolock() and document that
-> NULL means ENOMEM.
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> ---
+> Changes since v2:
+> - reorder the in_nmi() check as suggested by Vlastimil
 > 
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+>  include/linux/memcontrol.h |  5 +++++
+>  mm/memcontrol.c            | 15 +++++++++++++++
+>  2 files changed, 20 insertions(+)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index f7848f73f41c..53920528821f 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -62,6 +62,11 @@ struct mem_cgroup_reclaim_cookie {
+>  
+>  #ifdef CONFIG_MEMCG
+>  
+> +#if defined(CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS) || \
+> +	!defined(CONFIG_HAVE_NMI) || defined(ARCH_HAVE_NMI_SAFE_CMPXCHG)
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+                                             CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG?
+
+> +#define MEMCG_SUPPORTS_NMI_CHARGING
+> +#endif
+
+Since it's derived from config symbols, it's better to make this an
+internal symbol as well. Something like:
+
+	config MEMCG_NMI_UNSAFE
+		bool
+		depends on HAVE_NMI
+		depends on !ARCH_HAS_NMI_SAFE_THIS_CPU_OPS && !ARCH_HAVE_NMI_SAFE_CMPXCHG
+
+>  #define MEM_CGROUP_ID_SHIFT	16
+>  
+>  struct mem_cgroup_id {
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index e17b698f6243..0f182e4a9da0 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2647,11 +2647,26 @@ static struct obj_cgroup *current_objcg_update(void)
+>  	return objcg;
+>  }
+>  
+> +#ifdef MEMCG_SUPPORTS_NMI_CHARGING
+> +static inline bool nmi_charging_allowed(void)
+> +{
+> +	return true;
+> +}
+> +#else
+> +static inline bool nmi_charging_allowed(void)
+> +{
+> +	return false;
+> +}
+> +#endif
+
+...drop these...
+
+> +
+>  __always_inline struct obj_cgroup *current_obj_cgroup(void)
+>  {
+>  	struct mem_cgroup *memcg;
+>  	struct obj_cgroup *objcg;
+>  
+> +	if (!nmi_charging_allowed() && in_nmi())
+> +		return NULL;
+
+..and finally do
+
+	if (IS_ENABLED(CONFIG_MEMCG_NMI_UNSAFE && in_nmi())
+		return NULL;
+
+here.
 
