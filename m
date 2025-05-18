@@ -1,181 +1,347 @@
-Return-Path: <bpf+bounces-58459-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58460-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FBAEABAE15
-	for <lists+bpf@lfdr.de>; Sun, 18 May 2025 07:49:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B21B9ABAF57
+	for <lists+bpf@lfdr.de>; Sun, 18 May 2025 12:40:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A3EE3BDAE7
-	for <lists+bpf@lfdr.de>; Sun, 18 May 2025 05:49:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C7A7178F36
+	for <lists+bpf@lfdr.de>; Sun, 18 May 2025 10:40:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 858381E22E9;
-	Sun, 18 May 2025 05:49:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4105821504F;
+	Sun, 18 May 2025 10:40:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="YUMI9ALZ"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="GnlrYf/b"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B78FE1BD01D
-	for <bpf@vger.kernel.org>; Sun, 18 May 2025 05:49:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81AAB1C6FE2;
+	Sun, 18 May 2025 10:40:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747547345; cv=none; b=QV7Qu43GSCR2DBo3Y86GKM0I3fmt3ToBcxDpemRNBVPxdWhrjx0+zWKjpCnz9VTmu2/AQBvW39+16UpQ7fhFNbUfiaLYvPDZpYj530O/6qpVMzgSrT3z4VYFbgNesmYQUbWixD2XApk2NE7Xm3kSxeHvX/w6IpTHnWbWUMofLew=
+	t=1747564812; cv=none; b=TyTYtsuY7yJguDptuy/FQMvlxl5va7wdByAgMPWtD/TKrl7RsAZOXsTIMGs0XAcIK+NjlvnihAjxSl3Zd2nS1KO2DzTBRFDD7bVl/NwvCoCoHxGNBDdWWYRapQp8M2u8iEwhYF5oXR8xIh/DAh188nKhSBAYXmv3aB17CPIk03k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747547345; c=relaxed/simple;
-	bh=eZBpP6KfUKXCXO83nQ/GJ5KM078e67pg7DbDDBqWLsc=;
-	h=From:To:CC:Date:Message-ID:In-Reply-To:References:Subject:
-	 MIME-Version:Content-Type; b=LhS5xyXj8NEufuVNyb3IxhMQYKPTD1wLaRkMYWiBJXuLv9Yd9XyOki7bFRR4d1dHvS8qcMlA32Q7W+ZdquJvR0rtsXAayUrrRB2Tw5/ksKVf/DfxJ8Qhz9yIVE0Gr6wkBwBVggEohIV4TskN8zGDHS1b1DqdRpUNtJNiPcnC2lY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=YUMI9ALZ; arc=none smtp.client-ip=209.85.160.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-4766631a6a4so37045671cf.2
-        for <bpf@vger.kernel.org>; Sat, 17 May 2025 22:49:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1747547341; x=1748152141; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:user-agent
-         :references:in-reply-to:message-id:date:cc:to:from:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=G9qeFJ7lNo+yYpuKZq/TR4G2C9hCrYbOgamht3tIasA=;
-        b=YUMI9ALZ3F59PQe6HDiEQTb/qxV1VE4OfL9j2tyimMWzoXQ3RQudHnmcg1S2lfJqNj
-         yH0MQoiQ8FCkQn3/WR9Cve3698ogucsVNoUHGjVECMPsUCpaGy01roAw7fz0lQzlsrJK
-         oKQPvXlIyc78VOcTyc3WgC1JeR+XKsM6S5hGrvgfNQME7lrJ2M7UnHzKT9lYdw6QqorS
-         +bxkp+exwio/ay+2al+6dNaeypjd1qLAN/w9gVLh/920iOV4aOUYC2Seodi7NYWnIu6Q
-         Kxfoe7yX3g0lZ68WNdRy6Z0SClgeZACMM1gWdyWLi2GMZqiT+IgYLXcx02oA2MblLctv
-         v27g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747547341; x=1748152141;
-        h=content-transfer-encoding:mime-version:subject:user-agent
-         :references:in-reply-to:message-id:date:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=G9qeFJ7lNo+yYpuKZq/TR4G2C9hCrYbOgamht3tIasA=;
-        b=Ge9iU32tMhEuEkZsNVJsZlyF3vaXUumhHhvzWRDOZoPcAQDoTmQearFIzJLLLrWwdY
-         o2CICiVJcr8XGMLacJnkKyolAZcFoBjDemqBetkoD9wpPNnkNaBiFLOvbyLT9qJj0BB1
-         pN2c7dEBYVdmTJQDcz1s1I4swCeN1j5DvdNyfp9TIbuAYSZZbxcGUCqL8kExgWzeHZZN
-         ovNx0dcUD2+6yGgJ0i11ojnUatNrssgNl844tgar4xrm+USGCmcuuAxbneAhq3nqUy9l
-         df/sbvfK6/LpSGaF0mXtGQVCfGp+Dw75B8vu+u+zlNLzIqoHbhsCN/o9ODolP9TmuO+S
-         Qi9A==
-X-Forwarded-Encrypted: i=1; AJvYcCUW9tG4VOW3s2tKe1OHBsQAKH8w/loAjXkqiM4nzsBM8puFKz344IRv7WT/RhZ9AKOPT8M=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzsX+r9UQt0eEtND7bZBtTClF1//CxeVqMec21Od9FeXc8PDGP3
-	3JXF9zgJyr8jFZuqRtg9xGFo1lD1pmW4TLYEUuLhyrguNuAqFImLpO3T1/ZUWBjFbg==
-X-Gm-Gg: ASbGnctMwYuv9Muv5Asnm6UbWrV5lr8cPEHHsCMEwvXqteiWlTEWdVF7ebTJ5jf4MG4
-	u601uqv+rMWUwu4qz8QPNm1ABtRM4nUFQJQ5tLT7wktpQtc6FcQ3N+MYp6/UgIMhUYItNHZ52Ab
-	LPUcSP/XmnValqmwvvXqdASxCwLDkColO+Oj6Kb7pQS5ebT/wRWS7hxYh24pnEClZLtS1d8/9Z6
-	txZORBaT9nFvsCLhzuLPo0K9BwC9OC4gM9TJMguh9+B5GQB8J7Dpq+SD+vm2a87IuibYdLlY6s9
-	9hlxXnPiuH4WuUp4wtXACpo4vtE+ltXjJeKTYz0QmftML2I1cG95IVQh5GgIUHzp+borsge01mZ
-	T4zKC7bZvni2LHe6eTpiKXLeSaA==
-X-Google-Smtp-Source: AGHT+IGfrmclUyrn2kL47uhxEFRGU+qhsbvKEWHTIktNb5yLBqfzULKgvSCB1fjnKNy9EuB8fUsqdQ==
-X-Received: by 2002:ac8:6f10:0:b0:477:6eca:b40c with SMTP id d75a77b69052e-494ae326c18mr161157901cf.1.1747547341540;
-        Sat, 17 May 2025 22:49:01 -0700 (PDT)
-Received: from [192.168.7.16] (pool-71-126-255-178.bstnma.fios.verizon.net. [71.126.255.178])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-494ae3f922csm35228371cf.26.2025.05.17.22.48.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 17 May 2025 22:49:00 -0700 (PDT)
-From: Paul Moore <paul@paul-moore.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC: KP Singh <kpsingh@kernel.org>, Blaise Boscaccy <bboscaccy@linux.microsoft.com>, 
-	James Bottomley <James.Bottomley@hansenpartnership.com>, bpf <bpf@vger.kernel.org>, 
-	<code@tyhicks.com>, Jonathan Corbet <corbet@lwn.net>, 
-	"David S. Miller" <davem@davemloft.net>, David Howells <dhowells@redhat.com>, 
-	=?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, Jarkko Sakkinen <jarkko@kernel.org>, 
-	James Morris <jmorris@namei.org>, Jan Stancek <jstancek@redhat.com>, 
-	Justin Stitt <justinstitt@google.com>, <keyrings@vger.kernel.org>, 
-	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, 
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, 
-	Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
-	LSM List <linux-security-module@vger.kernel.org>, 
-	clang-built-linux <llvm@lists.linux.dev>, Masahiro Yamada <masahiroy@kernel.org>, 
-	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
-	Bill Wendling <morbo@google.com>, Nathan Chancellor <nathan@kernel.org>, Neal Gompa <neal@gompa.dev>, 
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Nicolas Schier <nicolas@fjasle.eu>, 
-	<nkapron@google.com>, Roberto Sassu <roberto.sassu@huawei.com>, 
-	"Serge E . Hallyn" <serge@hallyn.com>, Shuah Khan <shuah@kernel.org>, Matteo Croce <teknoraver@meta.com>, 
-	Cong Wang <xiyou.wangcong@gmail.com>, <kysrinivasan@gmail.com>, 
-	Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sun, 18 May 2025 01:48:57 -0400
-Message-ID: <196e1f03128.28a7.85c95baa4474aabc7814e68940a78392@paul-moore.com>
-In-Reply-To: <CAADnVQ+wE5cGhy6tgmWgUwkNutueEsrhh6UR8N2fzrZjt-vb4g@mail.gmail.com>
-References: <20250502184421.1424368-1-bboscaccy@linux.microsoft.com>
- <20250502210034.284051-1-kpsingh@kernel.org>
- <CAHC9VhS5Vevcq90OxTmAp2=XtR1qOiDDe5sSXReX5oXzf+siVQ@mail.gmail.com>
- <CACYkzJ5jsWFiXMRDwoGib5t+Xje6STTuJGRZM9Vg2dFz7uPa-g@mail.gmail.com>
- <CACYkzJ6VQUExfyt0=-FmXz46GHJh3d=FXh5j4KfexcEFbHV-vg@mail.gmail.com>
- <CAHC9VhQL_FkUH8F1fvFZmC-8UwZh3zkwjomCo1PiWNW0EGYUPw@mail.gmail.com>
- <CACYkzJ4+=3owK+ELD9Nw7Rrm-UajxXEw8kVtOTJJ+SNAXpsOpw@mail.gmail.com>
- <CAHC9VhTeFBhdagvw4cT3EvA72EYCfAn6ToptpE9PWipG9YLrFw@mail.gmail.com>
- <CAADnVQJ4GDKvLSWuAMdwajA0V2DEw5m-O228QknW8Eo9jxhyig@mail.gmail.com>
- <CAHC9VhTJcV1mqBpxVUtpLhrN4Y9W_BGgB_La5QCqObGheK28Ug@mail.gmail.com>
- <CAADnVQ+wE5cGhy6tgmWgUwkNutueEsrhh6UR8N2fzrZjt-vb4g@mail.gmail.com>
-User-Agent: AquaMail/1.55.1 (build: 105501552)
-Subject: Re: [PATCH v3 0/4] Introducing Hornet LSM
+	s=arc-20240116; t=1747564812; c=relaxed/simple;
+	bh=4MMf0isE/u2ZflvK/FTsv0kklkEQvlodOFYQFj9m/bA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DEOqipnOVPPKuGSmZ8rfNKA2NKpyKvXF/WFRseV12r8F4o5oS07k/qea4myRw+WZKBw4XH8MSKURTQl4bHNKKm1gOfZ78vGivjHMly/IiMZrXW+Q/mgPudutq7jmDh/6n+8IKtbUS43yheaIAxk9GM7j1dMBw5R1tg51KJ6/CaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=GnlrYf/b; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54I30DcD010129;
+	Sun, 18 May 2025 10:38:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=FAVrjy
+	1LBV6r8dXd+SHBdcRzoBuXW5h14lGv0i65eOg=; b=GnlrYf/bBdEUlPPlbwklkx
+	k0Q+w9wF6HluwgaZAGgVq7LweJFGs2eanQUk8yBB40uZR0hUo1WH4m8010QrDcVf
+	coirKtxKJkiH63vFNb9TNRQJa9Vg4dbc4PJM2a4xeOvTqKt6nq/eIG1rGxEgulNc
+	jpIX43U2tIgP43Z//2XPrx2zwSISxuWplRbDpJ6U0SJL2CId6LeMMw3cGYPDTlhz
+	gSfcu6f/22l8kNdztPLmsZEinZtJbTNVveBfUQUcUEfwq/chq2Zo1fejY+ZemExh
+	eIUCGYzOseoP+3iFDM42hoiYolD6YMACQzB5gkKbrP30yawfK4Yy1J8Kph7qWZmA
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46q056a5tp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 18 May 2025 10:38:48 +0000 (GMT)
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 54IAcljG003315;
+	Sun, 18 May 2025 10:38:47 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46q056a5tn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 18 May 2025 10:38:47 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 54I7ugZE007338;
+	Sun, 18 May 2025 10:38:46 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 46q70k1c1w-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 18 May 2025 10:38:46 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 54IAchrE48300410
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sun, 18 May 2025 10:38:43 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E752220114;
+	Sun, 18 May 2025 10:38:42 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C0A1E20113;
+	Sun, 18 May 2025 10:38:35 +0000 (GMT)
+Received: from [9.43.41.62] (unknown [9.43.41.62])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Sun, 18 May 2025 10:38:35 +0000 (GMT)
+Message-ID: <e07a6fd9-9810-4288-97ce-33c97f4ac30e@linux.ibm.com>
+Date: Sun, 18 May 2025 16:08:34 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v3 05/11] bpf, arm64, powerpc: Add
+ bpf_jit_bypass_spec_v1/v4()
+To: Luis Gerhorst <luis.gerhorst@fau.de>, Alexei Starovoitov
+ <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau
+ <martin.lau@linux.dev>,
+        Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Puranjay Mohan <puranjay@kernel.org>,
+        Xu Kuohai <xukuohai@huaweicloud.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Naveen N Rao <naveen@kernel.org>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Henriette Herzog <henriette.herzog@rub.de>,
+        Saket Kumar Bhaskar <skb99@linux.ibm.com>,
+        Cupertino Miranda <cupertino.miranda@oracle.com>,
+        Jiayuan Chen <mrpre@163.com>, Matan Shachnai <m.shachnai@gmail.com>,
+        Dimitar Kanaliev <dimitar.kanaliev@siteground.com>,
+        Shung-Hsi Yu <shung-hsi.yu@suse.com>, Daniel Xu <dxu@dxuuu.xyz>,
+        bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kselftest@vger.kernel.org
+Cc: Maximilian Ott <ott@cs.fau.de>, Milan Stephan <milan.stephan@fau.de>
+References: <20250501073603.1402960-1-luis.gerhorst@fau.de>
+ <20250501073603.1402960-6-luis.gerhorst@fau.de>
+Content-Language: en-US
+From: Hari Bathini <hbathini@linux.ibm.com>
+In-Reply-To: <20250501073603.1402960-6-luis.gerhorst@fau.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-
-On May 17, 2025 12:13:50 PM Alexei Starovoitov 
-<alexei.starovoitov@gmail.com> wrote:
-> On Sat, May 17, 2025 at 8:03 AM Paul Moore <paul@paul-moore.com> wrote:
->> On Fri, May 16, 2025 at 7:49 PM Alexei Starovoitov
->> <alexei.starovoitov@gmail.com> wrote:
->>> On Fri, May 16, 2025 at 12:49 PM Paul Moore <paul@paul-moore.com> wrote:
->>>>
->>>> I think we need some clarification on a few of these details, it would
->>>> be good if you could answer the questions below about the
->>>> authorization aspects of your design?
->>>>
->>>> * Is the signature validation code in the BPF verifier *always* going
->>>> to be enforced when a signature is passed in from userspace?  In other
->>>> words, in your design is there going to be either a kernel build time
->>>> or runtime configuration knob that could selectively enable (or
->>>> disable) signature verification in the BPF verifier?
->>>
->>> If there is a signature in union bpf_attr and it's incorrect
->>> the prog_load command will be rejected.
->>> No point in adding a knob to control that.
->>
->> I agree that when a signature is provided and that signature check
->> fails, the BPF load should be rejected.  I'm simply trying to
->> understand how you envision your design handling all of the cases, not
->> just this one, as well as what build and runtime options you expect
->> for controlling various aspects of this behavior.
->>
->>>> * In the case where the signature validation code in the BPF verifier
->>>> is active, what happens when a signature is *not* passed in from
->>>> userspace?  Will the BPF verifier allow the program load to take
->>>> place?  Will the load operation be blocked?  Will the load operation
->>>> be subject to a more granular policy, and if so, how do you plan to
->>>> incorporate that policy decision into the BPF program load path?
->>>
->>> If there is no signature the existing loading semantics will remain intact.
->>> We can discuss whether to add a sysctl or cgroup knob to disallow
->>> loading when signature is not present ...
->>
->> As mentioned earlier this week, if the BPF verifier is performing the
->> signature verification as KP described, we will need a LSM hook after
->> the verifier to serve as an access control point.  Of course that
->> doesn't preclude the addition of some type of sysctl/cgroup/whatever
->> based access control, but the LSM hook would be needed regardless.
->
-> No. New hook is not needed.
-
-It would be good for you to explain how the existing LSM hook is sufficient 
-to authorize the loading of a BPF program using the signature validation 
-state determined in the BPF verifier.
-
---
-paul-moore.com
-
->
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTE4MDEwMCBTYWx0ZWRfX0oTAgd69TtH8 GdmXyHtNqw3iUln/YOdlEFfm9aAogUY7MSX4Pf860Y6GWtCM6F57SSU2gfIQ8Ytrykeg+ApAa9x 3/o23Bzr8vnwGSnC0VDI0MP60RsE8rZtOv9j4DC1yOQ4tj6sDTfqWZPES98cF/hTMzJ4vibXwf6
+ jHtERKhTZcZbUJNBuSW+Q4a+OQUnHEaPTmKDk+nndESveMJkJubb+cdTRDgjMRW7TAs+9qSH2Xq rRKVyR39IBIQVOcYopmw5xjv7ZGT8+81MPyRWiw5rlCdeq0H+1CHOwIHIiSW4tiQ7g7ckGDwfXy 7TN+eHFrXGmKdH6eQvZAuRcy0ZB0b7XaCXiWejTWDGgzbmwD+/XU95L86LIh9DsPgUC1v+UcBWP
+ waO56QJI9uyNf3X99nTRRm4JZE9dm58Ug8UpZMLpgbzbpe5YlYtPpndUU57XziwETjbryW2x
+X-Authority-Analysis: v=2.4 cv=H5vbw/Yi c=1 sm=1 tr=0 ts=6829b8b8 cx=c_pps a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17 a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10 a=VnNF1IyMAAAA:8 a=mFe75aD0Q6rLs-ne4sYA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+X-Proofpoint-GUID: kcHnYx0Yg8HMRdm5KtX2b3uA24X_g6I5
+X-Proofpoint-ORIG-GUID: twxZW800zCAvCaXjU8KduWmD8cO-KK8t
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-05-18_05,2025-05-16_03,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ suspectscore=0 adultscore=0 clxscore=1011 mlxlogscore=999 phishscore=0
+ mlxscore=0 malwarescore=0 priorityscore=1501 lowpriorityscore=0
+ spamscore=0 classifier=spam authscore=0 authtc=n/a authcc= route=outbound
+ adjust=0 reason=mlx scancount=1 engine=8.19.0-2505070000
+ definitions=main-2505180100
 
 
+
+On 01/05/25 1:05 pm, Luis Gerhorst wrote:
+> JITs can set bpf_jit_bypass_spec_v1/v4() if they want the verifier to
+> skip analysis/patching for the respective vulnerability. For v4, this
+> will reduce the number of barriers the verifier inserts. For v1, it
+> allows more programs to be accepted.
+> 
+> The primary motivation for this is to not regress unpriv BPF's
+> performance on ARM64 in a future commit where BPF_NOSPEC is also used
+> against Spectre v1.
+> 
+> This has the user-visible change that v1-induced rejections on
+> non-vulnerable PowerPC CPUs are avoided.
+> 
+> For now, this does not change the semantics of BPF_NOSPEC. It is still a
+> v4-only barrier and must not be implemented if bypass_spec_v4 is always
+> true for the arch. Changing it to a v1 AND v4-barrier is done in a
+> future commit.
+> 
+> As an alternative to bypass_spec_v1/v4, one could introduce NOSPEC_V1
+> AND NOSPEC_V4 instructions and allow backends to skip their lowering as
+> suggested by commit f5e81d111750 ("bpf: Introduce BPF nospec instruction
+> for mitigating Spectre v4"). Adding bpf_jit_bypass_spec_v1/v4() was
+> found to be preferable for the following reason:
+> 
+> * bypass_spec_v1/v4 benefits non-vulnerable CPUs: Always performing the
+>    same analysis (not taking into account whether the current CPU is
+>    vulnerable), needlessly restricts users of CPUs that are not
+>    vulnerable. The only use case for this would be portability-testing,
+>    but this can later be added easily when needed by allowing users to
+>    force bypass_spec_v1/v4 to false.
+> 
+> * Portability is still acceptable: Directly disabling the analysis
+>    instead of skipping the lowering of BPF_NOSPEC(_V1/V4) might allow
+>    programs on non-vulnerable CPUs to be accepted while the program will
+>    be rejected on vulnerable CPUs. With the fallback to speculation
+>    barriers for Spectre v1 implemented in a future commit, this will only
+>    affect programs that do variable stack-accesses or are very complex.
+> 
+> For PowerPC, the SEC_FTR checking in bpf_jit_bypass_spec_v4() is based
+> on the check that was previously located in the BPF_NOSPEC case.
+> 
+> For LoongArch, it would likely be safe to set both
+> bpf_jit_bypass_spec_v1() and _v4() according to
+> commit a6f6a95f2580 ("LoongArch, bpf: Fix jit to skip speculation
+> barrier opcode"). This is omitted here as I am unable to do any testing
+> for LoongArch.
+> 
+> Signed-off-by: Luis Gerhorst <luis.gerhorst@fau.de>
+> Cc: Henriette Herzog <henriette.herzog@rub.de>
+> Cc: Maximilian Ott <ott@cs.fau.de>
+> Cc: Milan Stephan <milan.stephan@fau.de>
+
+for the powerpc part..
+
+Acked-by: Hari Bathini <hbathini@linux.ibm.com>
+
+> ---
+>   arch/arm64/net/bpf_jit_comp.c     | 21 ++++++++++++---------
+>   arch/powerpc/net/bpf_jit_comp64.c | 21 +++++++++++++++++----
+>   include/linux/bpf.h               | 11 +++++++++--
+>   kernel/bpf/core.c                 | 15 +++++++++++++++
+>   4 files changed, 53 insertions(+), 15 deletions(-)
+> 
+> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+> index 70d7c89d3ac9..0f617b55866e 100644
+> --- a/arch/arm64/net/bpf_jit_comp.c
+> +++ b/arch/arm64/net/bpf_jit_comp.c
+> @@ -1583,15 +1583,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
+>   
+>   	/* speculation barrier */
+>   	case BPF_ST | BPF_NOSPEC:
+> -		/*
+> -		 * Nothing required here.
+> -		 *
+> -		 * In case of arm64, we rely on the firmware mitigation of
+> -		 * Speculative Store Bypass as controlled via the ssbd kernel
+> -		 * parameter. Whenever the mitigation is enabled, it works
+> -		 * for all of the kernel code with no need to provide any
+> -		 * additional instructions.
+> -		 */
+> +		/* See bpf_jit_bypass_spec_v4() */
+>   		break;
+>   
+>   	/* ST: *(size *)(dst + off) = imm */
+> @@ -2762,6 +2754,17 @@ bool bpf_jit_supports_percpu_insn(void)
+>   	return true;
+>   }
+>   
+> +bool bpf_jit_bypass_spec_v4(void)
+> +{
+> +	/* In case of arm64, we rely on the firmware mitigation of Speculative
+> +	 * Store Bypass as controlled via the ssbd kernel parameter. Whenever
+> +	 * the mitigation is enabled, it works for all of the kernel code with
+> +	 * no need to provide any additional instructions. Therefore, skip
+> +	 * inserting nospec insns against Spectre v4.
+> +	 */
+> +	return true;
+> +}
+> +
+>   bool bpf_jit_inlines_helper_call(s32 imm)
+>   {
+>   	switch (imm) {
+> diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
+> index 233703b06d7c..b5339c541283 100644
+> --- a/arch/powerpc/net/bpf_jit_comp64.c
+> +++ b/arch/powerpc/net/bpf_jit_comp64.c
+> @@ -363,6 +363,23 @@ static int bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 o
+>   	return 0;
+>   }
+>   
+> +bool bpf_jit_bypass_spec_v1(void)
+> +{
+> +#if defined(CONFIG_PPC_E500) || defined(CONFIG_PPC_BOOK3S_64)
+> +	return !(security_ftr_enabled(SEC_FTR_FAVOUR_SECURITY) &&
+> +		 security_ftr_enabled(SEC_FTR_BNDS_CHK_SPEC_BAR));
+> +#else
+> +	return true;
+> +#endif
+> +}
+> +
+> +bool bpf_jit_bypass_spec_v4(void)
+> +{
+> +	return !(security_ftr_enabled(SEC_FTR_FAVOUR_SECURITY) &&
+> +		 security_ftr_enabled(SEC_FTR_STF_BARRIER) &&
+> +		 stf_barrier_type_get() != STF_BARRIER_NONE);
+> +}
+> +
+>   /*
+>    * We spill into the redzone always, even if the bpf program has its own stackframe.
+>    * Offsets hardcoded based on BPF_PPC_STACK_SAVE -- see bpf_jit_stack_local()
+> @@ -785,10 +802,6 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, struct code
+>   		 * BPF_ST NOSPEC (speculation barrier)
+>   		 */
+>   		case BPF_ST | BPF_NOSPEC:
+> -			if (!security_ftr_enabled(SEC_FTR_FAVOUR_SECURITY) ||
+> -					!security_ftr_enabled(SEC_FTR_STF_BARRIER))
+> -				break;
+> -
+>   			switch (stf_barrier) {
+>   			case STF_BARRIER_EIEIO:
+>   				EMIT(PPC_RAW_EIEIO() | 0x02000000);
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 3f0cc89c0622..6f5e54c680db 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -2268,6 +2268,9 @@ bpf_prog_run_array_uprobe(const struct bpf_prog_array *array,
+>   	return ret;
+>   }
+>   
+> +bool bpf_jit_bypass_spec_v1(void);
+> +bool bpf_jit_bypass_spec_v4(void);
+> +
+>   #ifdef CONFIG_BPF_SYSCALL
+>   DECLARE_PER_CPU(int, bpf_prog_active);
+>   extern struct mutex bpf_stats_enabled_mutex;
+> @@ -2455,12 +2458,16 @@ static inline bool bpf_allow_uninit_stack(const struct bpf_token *token)
+>   
+>   static inline bool bpf_bypass_spec_v1(const struct bpf_token *token)
+>   {
+> -	return cpu_mitigations_off() || bpf_token_capable(token, CAP_PERFMON);
+> +	return bpf_jit_bypass_spec_v1() ||
+> +		cpu_mitigations_off() ||
+> +		bpf_token_capable(token, CAP_PERFMON);
+>   }
+>   
+>   static inline bool bpf_bypass_spec_v4(const struct bpf_token *token)
+>   {
+> -	return cpu_mitigations_off() || bpf_token_capable(token, CAP_PERFMON);
+> +	return bpf_jit_bypass_spec_v4() ||
+> +		cpu_mitigations_off() ||
+> +		bpf_token_capable(token, CAP_PERFMON);
+>   }
+>   
+>   int bpf_map_new_fd(struct bpf_map *map, int flags);
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index ba6b6118cf50..804f1e52bfa3 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -3029,6 +3029,21 @@ bool __weak bpf_jit_needs_zext(void)
+>   	return false;
+>   }
+>   
+> +/* By default, enable the verifier's mitigations against Spectre v1 and v4 for
+> + * all archs. The value returned must not change at runtime as there is
+> + * currently no support for reloading programs that were loaded without
+> + * mitigations.
+> + */
+> +bool __weak bpf_jit_bypass_spec_v1(void)
+> +{
+> +	return false;
+> +}
+> +
+> +bool __weak bpf_jit_bypass_spec_v4(void)
+> +{
+> +	return false;
+> +}
+> +
+>   /* Return true if the JIT inlines the call to the helper corresponding to
+>    * the imm.
+>    *
 
 
