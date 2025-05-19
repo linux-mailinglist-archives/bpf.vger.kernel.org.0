@@ -1,93 +1,57 @@
-Return-Path: <bpf+bounces-58496-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58497-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30104ABC81A
-	for <lists+bpf@lfdr.de>; Mon, 19 May 2025 22:00:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9176DABC824
+	for <lists+bpf@lfdr.de>; Mon, 19 May 2025 22:04:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2ECC17C122
-	for <lists+bpf@lfdr.de>; Mon, 19 May 2025 20:00:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16E987A7677
+	for <lists+bpf@lfdr.de>; Mon, 19 May 2025 20:02:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18EC720E715;
-	Mon, 19 May 2025 20:00:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 218462116F2;
+	Mon, 19 May 2025 20:04:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yl4raMbB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G2bqHuqL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 353D71E4AB;
-	Mon, 19 May 2025 20:00:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99DAB4B1E73;
+	Mon, 19 May 2025 20:04:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747684821; cv=none; b=JOg4s43z869IXBGsldOnAY2xefXEjQBqTWTCScHTdrkgK26pVuOCt6FTU6cl88rhCYzlFrB7CsvQGN0PoyP1YdRTFAgUn7vcq6MJq5gLYYfYdRWVv9n4vX9dob4uzxUrRy96ONrEpUWg95S5VXabxUI282p82GR8+I+ojP/v4Hw=
+	t=1747685043; cv=none; b=iI7fgRcxPV+8/+Ov0hM2Ha417DEKN8JCRiO3SUux5dXDe1K8F2Sk/9NIvnWIgCYckBndFvKI37t/Er3jZ2z4oVl6GiWyEZyqHeqmTOyzdpGZsGvUx4GEmrJ5LRziA4XZYeyoe5XcdbhnvWlH9moNpDEuxRQgRRFFvzkyjfXRwpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747684821; c=relaxed/simple;
-	bh=gDJDEDtqlLFibqDVY77tsX8YrdWJQP1Y3MY0GrR+7P8=;
+	s=arc-20240116; t=1747685043; c=relaxed/simple;
+	bh=VCSVeyv1BHfGUOW4mmEvbxzSMKRqWVY5VWJRcpA4WU0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gh49WNlgMWCZMRyW9VX2MHOu8lyk6wWvu5GhgsWpXWK8V+Ql0fOcg6DFbmmwCo6eX/PTy3oQxAtIlpFWR7PjOmQECy+pPVg0eCchytmB+Oc6sJFcRM+lpst4z68xEuO2H9gGyZZemlPu764hRKUwCisfsH9gp6kiEvxxqJXqzZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yl4raMbB; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-2321c38a948so20746345ad.2;
-        Mon, 19 May 2025 13:00:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747684817; x=1748289617; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PyrSfMkWxF68QAYkbl+yVox/D2cWlK35xRBgggxH3m0=;
-        b=Yl4raMbBBIeLkd0gsoQT0rPL1ejhUo2cnjmlpbON2xYT0sqbIe39sugQSjG5IKUjrp
-         EsXLNlGVrRagmkfYarf0ReeeFcRp4oLLD9qvcAvWAUiS1apqJZ2Yzyxi9fijiPy0Z8OY
-         ElC7ppDNoMlvaAOAVJMl2ss+xdcRpwUynVYommj52nctp2dZMVVmYrinC9FidbdbakXZ
-         65duf9IQgbxuInZaI8nepVE0CtZujZuczmMOynZTu8Lx/H9ubGkaO+qEK6vCtpPKdLUf
-         0pFLskofEOYs5cJkV6zbIh95UIItoiJG2bpdAfKmflAqzqXqwPZBRzv1OTmNwSrntVyb
-         P3zA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747684817; x=1748289617;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PyrSfMkWxF68QAYkbl+yVox/D2cWlK35xRBgggxH3m0=;
-        b=czu/8KKZTbkMlGroEm5bBvsj1w9UnPzGe/k5b6I5dC8wTxHEiLAU8L85HxurWWq/dY
-         z3kkDvipGjuRGo8rxFfcQxuEBculQ7Wtl2DOwIOo+1+zH40Ci7DKDr8DScrjk6H1Areu
-         7d9X5xMGBkGjQa3awJUY4MBOSILCFk5CZm9Kjkzvw9T/0AchzrPfpttv4CyXc5X2V9ci
-         TwerxPfKrMxiGOURi/b78j8CIFJzkkVk2m01OCBiBoWFwiQbsHXFTemjhvOTiT4KPNb+
-         lq2xExjy3+fTQl1MhAMP/2FaMttzu3nD1fcQLxNWx8RRrMUP0w/RtjBq47MbmYwNhbFD
-         M+6w==
-X-Forwarded-Encrypted: i=1; AJvYcCUbQ+7BY7+33gRB1g/+WMjM0Z0G3GMg82xV3VySS+JTzomvyHcKSFh/Hx6XM7OqIf7QUGJS6fHRq6Vde3jo@vger.kernel.org, AJvYcCVABzRxK9QHwzfriJ7Nx2JJllIrSWqDonbFnDRYKAGLhw3ijyyUxjsJ+i/+9WQSXKsQNLo=@vger.kernel.org, AJvYcCWFVm0ZlwfFVJirbA9Ma0S51H/G9Knd1pe1aeQkK/3w7N/c/XMMwD4wwMuazu1qq9LMOivfp3JK@vger.kernel.org
-X-Gm-Message-State: AOJu0YyJPMlIm860KGZqvBf4uCuxC3GwiInaXmBj7UsYbe9lkzw0wubn
-	cgk3V93AvucFAw01WjbbdaV9c4egCOqEPoBUBvMh+xJQ1pa4eloMKwoQZPSA7w==
-X-Gm-Gg: ASbGncsoHaAHLuR2kGe181huwGjeBa1t52NS7xUA1HjpxzxHPX3io3t/QC82yjlFrwB
-	Y/MDmywz5uuT04ebe31Btcp1JGChkAUiCajzopg9LcBErrT3RVQ5syCeexqm82iUT7yzVONPfIu
-	n4oNM8LN8MfvqQf+XLWlYTipdXzQtJgdUz/V3diS9SnmTix1VkCd+0mizkE3jIyNC97LxJFaXzC
-	Nk7e+F/gFFobgNMDOZarZr2Q9S8vaRDTy2YppdQrjgw9Wf55Dm1ZDwXUeZSZJ2ugBvpZLVq45zq
-	ldU5bgUdz9ZHhD+OBq4gZuAKZvNuGX+fNoH5LASBEO+Xah/zLXk=
-X-Google-Smtp-Source: AGHT+IHt6QfA2F6kwpFWBtZop56Dyx7wuHXPSe127sz2HGe75T+9/4tLv/VECGkyWpD903a+rfF2mg==
-X-Received: by 2002:a17:902:ce8f:b0:224:c46:d166 with SMTP id d9443c01a7336-231de3ae584mr206812435ad.40.1747684817188;
-        Mon, 19 May 2025 13:00:17 -0700 (PDT)
-Received: from gmail.com ([98.97.32.68])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-231d4ebae24sm63905955ad.197.2025.05.19.13.00.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 May 2025 13:00:16 -0700 (PDT)
-Date: Mon, 19 May 2025 13:00:03 -0700
-From: John Fastabend <john.fastabend@gmail.com>
-To: Cong Wang <xiyou.wangcong@gmail.com>
-Cc: Jiayuan Chen <jiayuan.chen@linux.dev>, bpf@vger.kernel.org,
-	Jakub Sitnicki <jakub@cloudflare.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Cong Wang <cong.wang@bytedance.com>,
-	Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v1] bpf, sockmap: Fix concurrency issues between
- memory charge and uncharge
-Message-ID: <20250519200003.46elezpkkfx5grl4@gmail.com>
-References: <20250508062423.51978-1-jiayuan.chen@linux.dev>
- <aCorf4Cq3Fuwiw2h@pop-os.localdomain>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ecRV3wvBn4Lr9SE1MZiUAhNA3NstC/X5CdnATrnc5gccuO2sfBRZstiMzo4I2gxK4dx5crYmL8/JqMO3trAXiSUhMOzW/KuSTmbHbLo8HQ/Tpq2pmGuxqblDQzJCv10lzdRr5i6jVMyOoo1AxNvjNn8zOv5WDLLvZQc4kF97h6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G2bqHuqL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D399EC4CEE4;
+	Mon, 19 May 2025 20:04:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747685043;
+	bh=VCSVeyv1BHfGUOW4mmEvbxzSMKRqWVY5VWJRcpA4WU0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=G2bqHuqLNEwCIpGC/fd899BInnypiko6V+U2TPFMb7oCB9J/Bij6dFowxkAT+KyCg
+	 +QhK8FtKFee1oACXYvxMybPA3xGtDJLuouWPEGLsoOsFuTOEtt4yWF2IHvKm0dKFQR
+	 E+R8kxoOG6mU0jo+sbSpyMwuWpIshmN6ouU3F4Q3iWg2BinkrLNHLDevuyZw4ukxrM
+	 E/AsNc38zNLSwRxNomZbiStv5xEv0MnIHUDJEad6seBX4sG7lg5VtOKRXv+ZpFidrL
+	 uqm2ZYCcbA1zJYREZPqpB6ljg5neDeCBj4fMg7bR9n2Ja/TbVk2jqjpM04Lr99RZ5f
+	 hdqTclxElTcqg==
+Date: Mon, 19 May 2025 10:04:01 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Amery Hung <ameryhung@gmail.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
+	alexei.starovoitov@gmail.com, andrii@kernel.org,
+	daniel@iogearbox.net, memxor@gmail.com, martin.lau@kernel.org,
+	kernel-team@meta.com
+Subject: Re: [PATCH bpf-next v4 1/3] selftests/bpf: Introduce task local data
+Message-ID: <aCuOsXKCkwa8zkwR@slm.duckdns.org>
+References: <20250515211606.2697271-1-ameryhung@gmail.com>
+ <20250515211606.2697271-2-ameryhung@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -96,81 +60,174 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aCorf4Cq3Fuwiw2h@pop-os.localdomain>
+In-Reply-To: <20250515211606.2697271-2-ameryhung@gmail.com>
 
-On 2025-05-18 11:48:31, Cong Wang wrote:
-> On Thu, May 08, 2025 at 02:24:22PM +0800, Jiayuan Chen wrote:
-> > Triggering WARN_ON_ONCE(sk->sk_forward_alloc) by running the following
-> > command, followed by pressing Ctrl-C after 2 seconds:
-> > ./bench sockmap -c 2 -p 1 -a --rx-verdict-ingress
-> > '''
-> > ------------[ cut here ]------------
-> > WARNING: CPU: 2 PID: 40 at net/ipv4/af_inet.c inet_sock_destruct
-> > 
-> > Call Trace:
-> > <TASK>
-> > __sk_destruct+0x46/0x222
-> > sk_psock_destroy+0x22f/0x242
-> > process_one_work+0x504/0x8a8
-> > ? process_one_work+0x39d/0x8a8
-> > ? __pfx_process_one_work+0x10/0x10
-> > ? worker_thread+0x44/0x2ae
-> > ? __list_add_valid_or_report+0x83/0xea
-> > ? srso_return_thunk+0x5/0x5f
-> > ? __list_add+0x45/0x52
-> > process_scheduled_works+0x73/0x82
-> > worker_thread+0x1ce/0x2ae
-> > '''
-> > 
-> > Reason:
-> > When we are in the backlog process, we allocate sk_msg and then perform
-> > the charge process. Meanwhile, in the user process context, the recvmsg()
-> > operation performs the uncharge process, leading to concurrency issues
-> > between them.
-> > 
-> > The charge process (2 functions):
-> > 1. sk_rmem_schedule(size) -> sk_forward_alloc increases by PAGE_SIZE
-> >                              multiples
-> > 2. sk_mem_charge(size)    -> sk_forward_alloc -= size
-> > 
-> > The uncharge process (sk_mem_uncharge()):
-> > 3. sk_forward_alloc += size
-> > 4. check if sk_forward_alloc > PAGE_SIZE
-> > 5. reclaim    -> sk_forward_alloc decreases, possibly becoming 0
-> > 
-> > Because the sk performing charge and uncharge is not locked
-> > (mainly because the backlog process does not lock the socket), therefore,
-> > steps 1 to 5 will execute concurrently as follows:
-> > 
-> > cpu0                                cpu1
-> > 1
-> >                                     3
-> >                                     4   --> sk_forward_alloc >= PAGE_SIZE
-> >                                     5   --> reclaim sk_forward_alloc
-> > 2 --> sk_forward_alloc may
-> >       become negative
-> > 
-> > Solution:
-> > 1. Add locking to the kfree_sk_msg() process, which is only called in the
-> >    user process context.
-> > 2. Integrate the charge process into sk_psock_create_ingress_msg() in the
-> >    backlog process and add locking.
-> > 3. Reuse the existing psock->ingress_lock.
-> 
-> Reusing the psock->ingress_lock looks weird to me, as it is intended for
-> locking ingress queue, at least at the time it was introduced.
-> 
-> And technically speaking, it is the sock lock which is supposed to serialize
-> socket charging.
-> 
-> So is there any better solution here?
+Hello,
 
-Agree I would be more apt to add the sock_lock back to the backlog then
-to punish fast path this way.
+On Thu, May 15, 2025 at 02:16:00PM -0700, Amery Hung wrote:
+...
+> +#define PAGE_SIZE 4096
 
-Holding the ref cnt on the psock stops blocks the sk_psock_destroy() in
-backlog now so is this still an issue?
+This might conflict with other definitions. Looks like non-4k page sizes are
+a lot more popular on arm. Would this be a problem?
 
-Thanks,
-John
+> +static int __tld_init_metadata(int map_fd)
+> +{
+> +	struct u_tld_metadata *new_metadata;
+> +	struct tld_map_value map_val;
+> +	int task_fd = 0, err;
+> +
+> +	task_fd = syscall(SYS_pidfd_open, getpid(), 0);
+> +	if (task_fd < 0) {
+> +		err = -errno;
+> +		goto out;
+> +	}
+> +
+> +	new_metadata = aligned_alloc(PAGE_SIZE, PAGE_SIZE);
+
+Is 4k size limit from UPTR? Is it still 4k on machines with >4k pages? If
+this isn't a hard limit from UPTR, would it make sense to encode the size in
+the header part of the metadata?
+
+> +static int __tld_init_data(int map_fd)
+> +{
+> +	struct u_tld_data *new_data = NULL;
+> +	struct tld_map_value map_val;
+> +	int err, task_fd = 0;
+> +
+> +	task_fd = syscall(SYS_pidfd_open, gettid(), PIDFD_THREAD);
+> +	if (task_fd < 0) {
+> +		err = -errno;
+> +		goto out;
+> +	}
+> +
+> +	new_data = aligned_alloc(PAGE_SIZE, TLD_DATA_SIZE);
+
+Ditto.
+
+Noob question. Does this means that each thread will map a 4k page no matter
+how much data it actually uses?
+
+> +__attribute__((unused))
+> +static tld_key_t tld_create_key(int map_fd, const char *name, size_t size)
+> +{
+> +	int err, i, cnt, sz, off = 0;
+> +
+> +	if (!READ_ONCE(tld_metadata_p)) {
+> +		err = __tld_init_metadata(map_fd);
+> +		if (err)
+> +			return (tld_key_t) {.off = err};
+> +	}
+> +
+> +	if (!tld_data_p) {
+> +		err = __tld_init_data(map_fd);
+> +		if (err)
+> +			return (tld_key_t) {.off = err};
+> +	}
+> +
+> +	size = round_up(size, 8);
+> +
+> +	for (i = 0; i < TLD_DATA_CNT; i++) {
+> +retry:
+> +		cnt = __atomic_load_n(&tld_metadata_p->cnt, __ATOMIC_RELAXED);
+> +		if (i < cnt) {
+> +			/*
+> +			 * Pending tld_create_key() uses size to signal if the metadata has
+> +			 * been fully updated.
+> +			 */
+> +			while (!(sz = __atomic_load_n(&tld_metadata_p->metadata[i].size,
+> +						      __ATOMIC_ACQUIRE)))
+> +				sched_yield();
+> +
+> +			if (!strncmp(tld_metadata_p->metadata[i].name, name, TLD_NAME_LEN))
+> +				return (tld_key_t) {.off = -EEXIST};
+> +
+> +			off += sz;
+> +			continue;
+> +		}
+> +
+> +		if (off + size > TLD_DATA_SIZE)
+> +			return (tld_key_t) {.off = -E2BIG};
+> +
+> +		/*
+> +		 * Only one tld_create_key() can increase the current cnt by one and
+> +		 * takes the latest available slot. Other threads will check again if a new
+> +		 * TLD can still be added, and then compete for the new slot after the
+> +		 * succeeding thread update the size.
+> +		 */
+> +		if (!__atomic_compare_exchange_n(&tld_metadata_p->cnt, &cnt, cnt + 1, true,
+> +						 __ATOMIC_RELAXED, __ATOMIC_RELAXED))
+> +			goto retry;
+> +
+> +		strncpy(tld_metadata_p->metadata[i].name, name, TLD_NAME_LEN);
+> +		__atomic_store_n(&tld_metadata_p->metadata[i].size, size, __ATOMIC_RELEASE);
+> +		return (tld_key_t) {.off = off};
+> +	}
+> +
+> +	return (tld_key_t) {.off = -ENOSPC};
+> +}
+
+This looks fine to me but I wonder whether run-length encoding the key
+strings would be more efficient and less restrictive in terms of key length.
+e.g.:
+
+struct key {
+        u32 data_len;
+        u16 key_off;
+        u16 key_len;
+};
+
+struct metadata {
+        struct key      keys[MAX_KEYS];
+        char            key_strs[SOME_SIZE];
+};
+
+The logic can be mostly the same. The only difference would be that key
+string is not inline. Determine winner in the creation path by compxchg'ing
+on data_len, but set key_off and key_len only after key string is updated.
+Losing on cmpxhcg or seeing an entry where key_len is zero means that that
+one lost and should relax and retry. It can still use the same 4k metadata
+page but will likely be able to allow more keys while also relaxing
+restrictions on key length.
+
+Hmm... maybe making the key string variably sized makes things difficult for
+the BPF code. If so (or for any other reasons), please feel free to ignore
+the above.
+
+> +#endif /* __TASK_LOCAL_DATA_H */
+> diff --git a/tools/testing/selftests/bpf/progs/task_local_data.bpf.h b/tools/testing/selftests/bpf/progs/task_local_data.bpf.h
+> new file mode 100644
+> index 000000000000..5f48e408a5e5
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/task_local_data.bpf.h
+...
+> +/**
+> + * tld_get_data() - Retrieves a pointer to the TLD associated with the key.
+> + *
+> + * @tld_obj: A pointer to a valid tld_object initialized by tld_object_init()
+> + * @key: The key of a TLD saved in tld_maps
+> + * @size: The size of the TLD. Must be a known constant value
+> + *
+> + * Returns a pointer to the TLD data associated with the key; NULL if the key
+> + * is not valid or the size is too big
+> + */
+> +#define tld_get_data(tld_obj, key, size) \
+> +	__tld_get_data(tld_obj, (tld_obj)->key_map->key.off - 1, size)
+> +
+> +__attribute__((unused))
+> +__always_inline void *__tld_get_data(struct tld_object *tld_obj, u32 off, u32 size)
+> +{
+> +	return (tld_obj->data_map->data && off >= 0 && off < TLD_DATA_SIZE - size) ?
+> +		(void *)tld_obj->data_map->data + off : NULL;
+> +}
+
+Neat.
+
+Generally looks great to me. The only thing I wonder is whether the data
+area sizing can be determined at init time rather than fixed to 4k.
+
+Thanks.
+
+-- 
+tejun
 
