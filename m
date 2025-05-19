@@ -1,233 +1,109 @@
-Return-Path: <bpf+bounces-58497-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58498-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9176DABC824
-	for <lists+bpf@lfdr.de>; Mon, 19 May 2025 22:04:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D591AABC874
+	for <lists+bpf@lfdr.de>; Mon, 19 May 2025 22:34:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16E987A7677
-	for <lists+bpf@lfdr.de>; Mon, 19 May 2025 20:02:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01E351B6573A
+	for <lists+bpf@lfdr.de>; Mon, 19 May 2025 20:34:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 218462116F2;
-	Mon, 19 May 2025 20:04:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G2bqHuqL"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBFD0217723;
+	Mon, 19 May 2025 20:33:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99DAB4B1E73;
-	Mon, 19 May 2025 20:04:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6260F213244
+	for <bpf@vger.kernel.org>; Mon, 19 May 2025 20:33:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747685043; cv=none; b=iI7fgRcxPV+8/+Ov0hM2Ha417DEKN8JCRiO3SUux5dXDe1K8F2Sk/9NIvnWIgCYckBndFvKI37t/Er3jZ2z4oVl6GiWyEZyqHeqmTOyzdpGZsGvUx4GEmrJ5LRziA4XZYeyoe5XcdbhnvWlH9moNpDEuxRQgRRFFvzkyjfXRwpA=
+	t=1747686836; cv=none; b=NwPTpQNeBCc5oC/18MUuxgFyBPcUdttk+Q6+IYP6oQGtIplm/QXjrwHhr+w+FynBTg8yVc2mJPrALuUkaDG/TMWOpLAgMx+6UJZbb6Hr91uYkddaV3RmA0jNmvVKoyKuunC9ZpdqGHbnnIz/K1y+DsDMtDstRI4ckNs4sDUt0L4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747685043; c=relaxed/simple;
-	bh=VCSVeyv1BHfGUOW4mmEvbxzSMKRqWVY5VWJRcpA4WU0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ecRV3wvBn4Lr9SE1MZiUAhNA3NstC/X5CdnATrnc5gccuO2sfBRZstiMzo4I2gxK4dx5crYmL8/JqMO3trAXiSUhMOzW/KuSTmbHbLo8HQ/Tpq2pmGuxqblDQzJCv10lzdRr5i6jVMyOoo1AxNvjNn8zOv5WDLLvZQc4kF97h6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G2bqHuqL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D399EC4CEE4;
-	Mon, 19 May 2025 20:04:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747685043;
-	bh=VCSVeyv1BHfGUOW4mmEvbxzSMKRqWVY5VWJRcpA4WU0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=G2bqHuqLNEwCIpGC/fd899BInnypiko6V+U2TPFMb7oCB9J/Bij6dFowxkAT+KyCg
-	 +QhK8FtKFee1oACXYvxMybPA3xGtDJLuouWPEGLsoOsFuTOEtt4yWF2IHvKm0dKFQR
-	 E+R8kxoOG6mU0jo+sbSpyMwuWpIshmN6ouU3F4Q3iWg2BinkrLNHLDevuyZw4ukxrM
-	 E/AsNc38zNLSwRxNomZbiStv5xEv0MnIHUDJEad6seBX4sG7lg5VtOKRXv+ZpFidrL
-	 uqm2ZYCcbA1zJYREZPqpB6ljg5neDeCBj4fMg7bR9n2Ja/TbVk2jqjpM04Lr99RZ5f
-	 hdqTclxElTcqg==
-Date: Mon, 19 May 2025 10:04:01 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Amery Hung <ameryhung@gmail.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
-	alexei.starovoitov@gmail.com, andrii@kernel.org,
-	daniel@iogearbox.net, memxor@gmail.com, martin.lau@kernel.org,
-	kernel-team@meta.com
-Subject: Re: [PATCH bpf-next v4 1/3] selftests/bpf: Introduce task local data
-Message-ID: <aCuOsXKCkwa8zkwR@slm.duckdns.org>
-References: <20250515211606.2697271-1-ameryhung@gmail.com>
- <20250515211606.2697271-2-ameryhung@gmail.com>
+	s=arc-20240116; t=1747686836; c=relaxed/simple;
+	bh=v33laHwX0AkHCRah0mOWmYjMV48+04umNBF5q5zMtZw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=R3r15aRjDYUhJowtTSUJzLu5r9u+7A88kJzTcnydaNly8IwhtOJLbVv0v2VhP1sEOVHOFE5ZgJSAU7Q9/PryRpH65gGmCG3jM5KXC1BVndHSbSdphU9ZmrB99tmdkMKk0Flk9mqQco/Xwkosb/9B3VEHFR5BGdXYQ7PYueRjabo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devvm16039.vll0.facebook.com (Postfix, from userid 128203)
+	id 8394F7CA87E1; Mon, 19 May 2025 13:33:39 -0700 (PDT)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next v3 0/2] bpf: Warn with bpf_unreachable() kfunc maybe due to uninitialized variable
+Date: Mon, 19 May 2025 13:33:39 -0700
+Message-ID: <20250519203339.2060080-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250515211606.2697271-2-ameryhung@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+Marc Su=C3=B1=C3=A9 (Isovalent, part of Cisco) reported an issue where an
+uninitialized variable caused generating bpf prog binary code not
+working as expected. The reproducer is in [1] where the flags
+=E2=80=9C-Wall -Werror=E2=80=9D are enabled, but there is no warning as t=
+he compiler
+takes advantage of uninitialized variable to do aggressive optimization.
+Such optimization results in a verification log:
+  last insn is not an exit or jmp
+User still needs to take quite some time to figure out what is
+the root cause.
 
-On Thu, May 15, 2025 at 02:16:00PM -0700, Amery Hung wrote:
-...
-> +#define PAGE_SIZE 4096
+To give a better hint to user, bpf_unreachable() kfunc is introduced
+in kernel and the compiler ([2]) will encode bpf_unreachable()
+as needed. For example, compiler may generate 'unreachable' IR
+after do optimizaiton by taking advantage of uninitialized variable,
+and later bpf backend will translate such 'unreachable' IR to
+bpf_unreachable() func in final binary. When kernel detects
+bpf_unreachable(), it is able to issue much better verifier log, e.g.
+  unexpected bpf_unreachable() due to uninitialized variable?
 
-This might conflict with other definitions. Looks like non-4k page sizes are
-a lot more popular on arm. Would this be a problem?
+  [1] https://github.com/msune/clang_bpf/blob/main/Makefile#L3
+  [2] https://github.com/llvm/llvm-project/pull/131731
 
-> +static int __tld_init_metadata(int map_fd)
-> +{
-> +	struct u_tld_metadata *new_metadata;
-> +	struct tld_map_value map_val;
-> +	int task_fd = 0, err;
-> +
-> +	task_fd = syscall(SYS_pidfd_open, getpid(), 0);
-> +	if (task_fd < 0) {
-> +		err = -errno;
-> +		goto out;
-> +	}
-> +
-> +	new_metadata = aligned_alloc(PAGE_SIZE, PAGE_SIZE);
+Changelogs:
+  v2 -> v3:
+    - v2: https://lore.kernel.org/bpf/CAADnVQL9A8vB-yRjnZn8bgMrfDSO17FFBt=
+S_xOs5w-LSq+p74g@mail.gmail.com/
+    - The newer llvm patch (above [2]) added 'exit' insn if the last insn
+      in the function is bpf_unreachable(). This way, check_subprogs()
+      handling is unnecessary and removed.
+    - Remove the big C test (above [1]) and add a simple C test and three
+      inline asm tests.
 
-Is 4k size limit from UPTR? Is it still 4k on machines with >4k pages? If
-this isn't a hard limit from UPTR, would it make sense to encode the size in
-the header part of the metadata?
+  v1 -> v2:
+    - v1: https://lore.kernel.org/bpf/20250511182744.1806792-1-yonghong.s=
+ong@linux.dev/
+    - If bpf_unreachable() is hit during check_kfunc_call(), report the
+      verification failure.
+    - Add three inline asm test cases.
 
-> +static int __tld_init_data(int map_fd)
-> +{
-> +	struct u_tld_data *new_data = NULL;
-> +	struct tld_map_value map_val;
-> +	int err, task_fd = 0;
-> +
-> +	task_fd = syscall(SYS_pidfd_open, gettid(), PIDFD_THREAD);
-> +	if (task_fd < 0) {
-> +		err = -errno;
-> +		goto out;
-> +	}
-> +
-> +	new_data = aligned_alloc(PAGE_SIZE, TLD_DATA_SIZE);
+Yonghong Song (2):
+  bpf: Warn with bpf_unreachable() kfunc maybe due to uninitialized
+    variable
+  selftests/bpf: Add unit tests with bpf_unreachable() kfunc
 
-Ditto.
+ kernel/bpf/helpers.c                          |  5 ++
+ kernel/bpf/verifier.c                         |  5 ++
+ .../selftests/bpf/prog_tests/verifier.c       |  2 +
+ .../bpf/progs/verifier_bpf_unreachable.c      | 61 +++++++++++++++++++
+ 4 files changed, 73 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_bpf_unreac=
+hable.c
 
-Noob question. Does this means that each thread will map a 4k page no matter
-how much data it actually uses?
+--=20
+2.47.1
 
-> +__attribute__((unused))
-> +static tld_key_t tld_create_key(int map_fd, const char *name, size_t size)
-> +{
-> +	int err, i, cnt, sz, off = 0;
-> +
-> +	if (!READ_ONCE(tld_metadata_p)) {
-> +		err = __tld_init_metadata(map_fd);
-> +		if (err)
-> +			return (tld_key_t) {.off = err};
-> +	}
-> +
-> +	if (!tld_data_p) {
-> +		err = __tld_init_data(map_fd);
-> +		if (err)
-> +			return (tld_key_t) {.off = err};
-> +	}
-> +
-> +	size = round_up(size, 8);
-> +
-> +	for (i = 0; i < TLD_DATA_CNT; i++) {
-> +retry:
-> +		cnt = __atomic_load_n(&tld_metadata_p->cnt, __ATOMIC_RELAXED);
-> +		if (i < cnt) {
-> +			/*
-> +			 * Pending tld_create_key() uses size to signal if the metadata has
-> +			 * been fully updated.
-> +			 */
-> +			while (!(sz = __atomic_load_n(&tld_metadata_p->metadata[i].size,
-> +						      __ATOMIC_ACQUIRE)))
-> +				sched_yield();
-> +
-> +			if (!strncmp(tld_metadata_p->metadata[i].name, name, TLD_NAME_LEN))
-> +				return (tld_key_t) {.off = -EEXIST};
-> +
-> +			off += sz;
-> +			continue;
-> +		}
-> +
-> +		if (off + size > TLD_DATA_SIZE)
-> +			return (tld_key_t) {.off = -E2BIG};
-> +
-> +		/*
-> +		 * Only one tld_create_key() can increase the current cnt by one and
-> +		 * takes the latest available slot. Other threads will check again if a new
-> +		 * TLD can still be added, and then compete for the new slot after the
-> +		 * succeeding thread update the size.
-> +		 */
-> +		if (!__atomic_compare_exchange_n(&tld_metadata_p->cnt, &cnt, cnt + 1, true,
-> +						 __ATOMIC_RELAXED, __ATOMIC_RELAXED))
-> +			goto retry;
-> +
-> +		strncpy(tld_metadata_p->metadata[i].name, name, TLD_NAME_LEN);
-> +		__atomic_store_n(&tld_metadata_p->metadata[i].size, size, __ATOMIC_RELEASE);
-> +		return (tld_key_t) {.off = off};
-> +	}
-> +
-> +	return (tld_key_t) {.off = -ENOSPC};
-> +}
-
-This looks fine to me but I wonder whether run-length encoding the key
-strings would be more efficient and less restrictive in terms of key length.
-e.g.:
-
-struct key {
-        u32 data_len;
-        u16 key_off;
-        u16 key_len;
-};
-
-struct metadata {
-        struct key      keys[MAX_KEYS];
-        char            key_strs[SOME_SIZE];
-};
-
-The logic can be mostly the same. The only difference would be that key
-string is not inline. Determine winner in the creation path by compxchg'ing
-on data_len, but set key_off and key_len only after key string is updated.
-Losing on cmpxhcg or seeing an entry where key_len is zero means that that
-one lost and should relax and retry. It can still use the same 4k metadata
-page but will likely be able to allow more keys while also relaxing
-restrictions on key length.
-
-Hmm... maybe making the key string variably sized makes things difficult for
-the BPF code. If so (or for any other reasons), please feel free to ignore
-the above.
-
-> +#endif /* __TASK_LOCAL_DATA_H */
-> diff --git a/tools/testing/selftests/bpf/progs/task_local_data.bpf.h b/tools/testing/selftests/bpf/progs/task_local_data.bpf.h
-> new file mode 100644
-> index 000000000000..5f48e408a5e5
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/task_local_data.bpf.h
-...
-> +/**
-> + * tld_get_data() - Retrieves a pointer to the TLD associated with the key.
-> + *
-> + * @tld_obj: A pointer to a valid tld_object initialized by tld_object_init()
-> + * @key: The key of a TLD saved in tld_maps
-> + * @size: The size of the TLD. Must be a known constant value
-> + *
-> + * Returns a pointer to the TLD data associated with the key; NULL if the key
-> + * is not valid or the size is too big
-> + */
-> +#define tld_get_data(tld_obj, key, size) \
-> +	__tld_get_data(tld_obj, (tld_obj)->key_map->key.off - 1, size)
-> +
-> +__attribute__((unused))
-> +__always_inline void *__tld_get_data(struct tld_object *tld_obj, u32 off, u32 size)
-> +{
-> +	return (tld_obj->data_map->data && off >= 0 && off < TLD_DATA_SIZE - size) ?
-> +		(void *)tld_obj->data_map->data + off : NULL;
-> +}
-
-Neat.
-
-Generally looks great to me. The only thing I wonder is whether the data
-area sizing can be determined at init time rather than fixed to 4k.
-
-Thanks.
-
--- 
-tejun
 
