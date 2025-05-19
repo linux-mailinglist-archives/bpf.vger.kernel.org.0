@@ -1,95 +1,82 @@
-Return-Path: <bpf+bounces-58477-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58478-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A051CABB558
-	for <lists+bpf@lfdr.de>; Mon, 19 May 2025 08:46:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DA1FABB579
+	for <lists+bpf@lfdr.de>; Mon, 19 May 2025 09:01:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 33427174E12
-	for <lists+bpf@lfdr.de>; Mon, 19 May 2025 06:46:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E60F53A781C
+	for <lists+bpf@lfdr.de>; Mon, 19 May 2025 07:01:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63F4A257AF6;
-	Mon, 19 May 2025 06:46:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B58F8246766;
+	Mon, 19 May 2025 07:01:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gwYpve7J";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="v7AJ0qPf";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gwYpve7J";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="v7AJ0qPf"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="aKQdyONK"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E508257ACA
-	for <bpf@vger.kernel.org>; Mon, 19 May 2025 06:46:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB14235946;
+	Mon, 19 May 2025 07:01:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747637186; cv=none; b=dRzx4XNhEr16RzSt93b16RhgytOsP0EyruXAUvw9uuD1J8Y+dD+fEQ5CzuoDGJe+39iJ5D+6sb0Vjw3wRVoF+EB6pnWL/Ks6NRt9tTlacJHHmLqngXyVJzNUALigQOBvTbrSJbJWxUefCklnOn9IYAEOJvBDsM8oMIzXNvn22F0=
+	t=1747638098; cv=none; b=J/85KtcdgSNJupknJP+jcpTRhekrIyPP9xGHm9n3xXUM/vai5IrH3jwWxlSgUcFLiwcNeS+urIPNKzhQyUpElkc3KZTRYiqQxrkxCr1MEorgwZfZZc/l/r+5q/JdV6DG4KD/kgKBiHMPJxP0ZBmgkw3QR8c+etM+pZX8xxjUxu8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747637186; c=relaxed/simple;
-	bh=Q+/RTDWi6WktToLzZZXpZHt4ZfwVB+vW35FzXoYeHTk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RnkJbfEhpgECeJuk4hklqSicilTDWbGN/Tb3G9r0QBDvgR9d5zdF67PlIIR5ULigNOjWkIjtGC1G8ft1SH1Ei266Qkd96TJudMJb8D3+NqjDwOfxeDAMgby3mW/QSm7AvCKn95e7czxj+DFIF1Z6nakGateRok5dWp+xY2T1bXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gwYpve7J; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=v7AJ0qPf; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gwYpve7J; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=v7AJ0qPf; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 5C75E22666;
-	Mon, 19 May 2025 06:46:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1747637183; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=iXYgVESyiYsApINsvEG9zz0BiWhBvZqdJItIZa2DtCk=;
-	b=gwYpve7JOUaxzcO35x0jziCdgFli0XHT44lnWkUWZYMyDTkmi2R8PfQ8GDjmuHz4ibI+1e
-	2FY4MAUtUUu7THrqY6BSUtHYeoXWpI9INSTXc4sFWVifiZ96nmjSzCmfTqqGP6j0Ga+oZ+
-	SnLHIsoenvr6/ee8hJnXjA8R9W55a/4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1747637183;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=iXYgVESyiYsApINsvEG9zz0BiWhBvZqdJItIZa2DtCk=;
-	b=v7AJ0qPfk+Ec8oGkUSGwFmClUil2DT892VqyI5zQMSgbda6o3ixOaYd6+pD8t1gSuUNTch
-	mQeIf7bGeM+KjuDw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1747637183; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=iXYgVESyiYsApINsvEG9zz0BiWhBvZqdJItIZa2DtCk=;
-	b=gwYpve7JOUaxzcO35x0jziCdgFli0XHT44lnWkUWZYMyDTkmi2R8PfQ8GDjmuHz4ibI+1e
-	2FY4MAUtUUu7THrqY6BSUtHYeoXWpI9INSTXc4sFWVifiZ96nmjSzCmfTqqGP6j0Ga+oZ+
-	SnLHIsoenvr6/ee8hJnXjA8R9W55a/4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1747637183;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=iXYgVESyiYsApINsvEG9zz0BiWhBvZqdJItIZa2DtCk=;
-	b=v7AJ0qPfk+Ec8oGkUSGwFmClUil2DT892VqyI5zQMSgbda6o3ixOaYd6+pD8t1gSuUNTch
-	mQeIf7bGeM+KjuDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3413313A30;
-	Mon, 19 May 2025 06:46:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id v7YzC7/TKmgsSQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 19 May 2025 06:46:23 +0000
-Message-ID: <9a8de744-cccd-4d05-8243-ff2b1ff65393@suse.cz>
-Date: Mon, 19 May 2025 08:46:22 +0200
+	s=arc-20240116; t=1747638098; c=relaxed/simple;
+	bh=vNiVoVPUTkOn1R4LseP9nX71xPo9fi1vp1PJ/rn869k=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=mEtW4tHG2NQldGbL/v9YI+R4r8yWkU7J0YwXMtimXLNAky3psnwIF2bT0g3RQl8bY3VpZNj+Qu5fgqe818Oy/oN/QEBDHqnAcda4jpK0rDllU8rJH8OHOqz92/g/30rsiKh0xq6YjYs3Hpfm6yjOmJ8jpCH3QNIbOBmByV0NzBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=aKQdyONK; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54IJeeaL016000;
+	Mon, 19 May 2025 06:59:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=AEChRQ
+	3cYw3UCjbb1oqD8moO8IE8jgsVGQLNpG14ups=; b=aKQdyONKXhvLaSdtRuI+hW
+	3aICkAwbfw7NGqKY/BEuL00JwX6dds14qEM+U0P+pXnahdbG5gn90+8v4/ejCL+Y
+	CKBwzMRSv4uC+wiULVKiuwd9s2u7oJ1PTv7PlzJhTs4+rmfyauTf4rRpDSZ0Cvxi
+	E2FGGKacYI8jj4Kug9fn5JyNzD3QwQgsNQLCoM+tceAayafdVj6+efy/pOUGmss1
+	YK65md+G/RuvZlUg/2YcjNTPJJlBRGzkPMdy/cuvao1LhY+W4u3hiXgDrMlM0X15
+	v7SQW06S0clVvIy8YSkQE8liUVeZVZxDsfNO1R/BCqm4p4PGH4RsQ/My+zEm6b0w
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46qn68j3xc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 19 May 2025 06:59:55 +0000 (GMT)
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 54J6xsuX006177;
+	Mon, 19 May 2025 06:59:54 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46qn68j3xb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 19 May 2025 06:59:54 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 54J5GrXj014262;
+	Mon, 19 May 2025 06:59:53 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 46q4st5kxv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 19 May 2025 06:59:52 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 54J6xnjx56295862
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 19 May 2025 06:59:49 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 02A6A20147;
+	Mon, 19 May 2025 06:59:49 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 11A6F2012F;
+	Mon, 19 May 2025 06:59:42 +0000 (GMT)
+Received: from [9.78.106.42] (unknown [9.78.106.42])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 19 May 2025 06:59:41 +0000 (GMT)
+Message-ID: <6dde4d2e-b249-4fb8-a8f6-359cb7c8b0fe@linux.ibm.com>
+Date: Mon, 19 May 2025 12:29:41 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -97,137 +84,112 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/5] memcg: disable kmem charging in nmi for
- unsupported arch
-To: Shakeel Butt <shakeel.butt@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Muchun Song <muchun.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Harry Yoo <harry.yoo@oracle.com>, Yosry Ahmed <yosry.ahmed@linux.dev>,
- Peter Zijlstra <peterz@infradead.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Tejun Heo
- <tj@kernel.org>, bpf@vger.kernel.org, linux-mm@kvack.org,
- cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- Meta kernel team <kernel-team@meta.com>
-References: <20250519063142.111219-1-shakeel.butt@linux.dev>
- <20250519063142.111219-2-shakeel.butt@linux.dev>
+Subject: Re: [PATCH bpf-next v2 06/11] bpf, arm64, powerpc: Change nospec to
+ include v1 barrier
+From: Hari Bathini <hbathini@linux.ibm.com>
+To: Luis Gerhorst <luis.gerhorst@fau.de>, Alexei Starovoitov
+ <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau
+ <martin.lau@linux.dev>,
+        Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Puranjay Mohan <puranjay@kernel.org>,
+        Xu Kuohai <xukuohai@huaweicloud.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Naveen N Rao <naveen@kernel.org>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Henriette Herzog <henriette.herzog@rub.de>,
+        Saket Kumar Bhaskar <skb99@linux.ibm.com>,
+        Cupertino Miranda <cupertino.miranda@oracle.com>,
+        Jiayuan Chen <mrpre@163.com>, Matan Shachnai <m.shachnai@gmail.com>,
+        Dimitar Kanaliev <dimitar.kanaliev@siteground.com>,
+        Shung-Hsi Yu <shung-hsi.yu@suse.com>, Daniel Xu <dxu@dxuuu.xyz>,
+        bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kselftest@vger.kernel.org
+Cc: Maximilian Ott <ott@cs.fau.de>, Milan Stephan <milan.stephan@fau.de>
+References: <20250421091802.3234859-1-luis.gerhorst@fau.de>
+ <20250421091802.3234859-7-luis.gerhorst@fau.de>
+ <d351c0ba-04fa-4764-a3a2-c4a8727aa582@linux.ibm.com>
 Content-Language: en-US
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- m6M14QORSWTLRg==
-In-Reply-To: <20250519063142.111219-2-shakeel.butt@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-4.30 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid,imap1.dmz-prg2.suse.org:helo,linux.dev:email]
-X-Spam-Flag: NO
-X-Spam-Score: -4.30
-X-Spam-Level: 
+In-Reply-To: <d351c0ba-04fa-4764-a3a2-c4a8727aa582@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: GMw36QXQwyRthu_VuAnZZSFrlc5efPI5
+X-Proofpoint-GUID: zh71TRuKhrMTzlDgqFOcRXTquRP3iToP
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTE5MDA2MSBTYWx0ZWRfX7qotaP9KBzNW IUL/DbUBW33FBjqSdwgPTeWvtZTtI0/q2QhlZMADKwz+DiSMh5oZkgFiIrBC576tk3ZilTQ/2No w+Ly+CJltLUwVzFyAaU1ZIDC+qfFyMTzoOVXD2mSNMgpdqrWAiHY7NpKjr/UJoV+JCRpedwDzLZ
+ MIwatIryHVrrN/7WhqGYsmSy2K4ZLzxuyVD4+DkIWYjuIw3otUdZqkYSc6vRJ97OjYJY8zz3aD+ blVaTRECvfIh5UUZLVnFSi7V44N5wIV3vBs880uZEvhm5H5LfiL+Ff3mgsiGc6O+7/8SkMKTw62 wPfL7OlrG64cmsi+FaVdwEa8vqKFwrD5YY1r4Nahw3OC7ttXFKKViUitng+Mxl353W20OJnY7u7
+ kPcYUe/M1+db99i9pJr3t71w9xExnHnXQvfZrPjGxr00PWVWsSoCwPB+PqVFO+N15ImPXIVX
+X-Authority-Analysis: v=2.4 cv=CN4qXQrD c=1 sm=1 tr=0 ts=682ad6eb cx=c_pps a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17 a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10 a=VnNF1IyMAAAA:8 a=KxtnHP_eebYsle0CoksA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-05-19_02,2025-05-16_03,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
+ suspectscore=0 mlxlogscore=886 priorityscore=1501 spamscore=0 mlxscore=0
+ lowpriorityscore=0 bulkscore=0 clxscore=1015 malwarescore=0 phishscore=0
+ classifier=spam authscore=0 authtc=n/a authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2505070000
+ definitions=main-2505190061
 
-On 5/19/25 08:31, Shakeel Butt wrote:
-> The memcg accounting and stats uses this_cpu* and atomic* ops. There are
-> archs which define CONFIG_HAVE_NMI but does not define
-> CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS and ARCH_HAVE_NMI_SAFE_CMPXCHG, so
-> memcg accounting for such archs in nmi context is not possible to
-> support. Let's just disable memcg accounting in nmi context for such
-> archs.
+
+
+On 18/05/25 4:11 pm, Hari Bathini wrote:
 > 
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-
-> ---
->  init/Kconfig    | 7 +++++++
->  mm/memcontrol.c | 3 +++
->  2 files changed, 10 insertions(+)
 > 
-> diff --git a/init/Kconfig b/init/Kconfig
-> index 4cdd1049283c..a2aa49cfb8bd 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -1006,6 +1006,13 @@ config MEMCG
->  	help
->  	  Provides control over the memory footprint of tasks in a cgroup.
->  
-> +config MEMCG_NMI_UNSAFE
-> +	bool
-> +	depends on MEMCG
-> +	depends on HAVE_NMI
-> +	depends on !ARCH_HAS_NMI_SAFE_THIS_CPU_OPS && !ARCH_HAVE_NMI_SAFE_CMPXCHG
-> +	default y
-> +
->  config MEMCG_V1
->  	bool "Legacy cgroup v1 memory controller"
->  	depends on MEMCG
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index e17b698f6243..532e2c06ea60 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -2652,6 +2652,9 @@ __always_inline struct obj_cgroup *current_obj_cgroup(void)
->  	struct mem_cgroup *memcg;
->  	struct obj_cgroup *objcg;
->  
-> +	if (IS_ENABLED(CONFIG_MEMCG_NMI_UNSAFE) && in_nmi())
-> +		return NULL;
-> +
->  	if (in_task()) {
->  		memcg = current->active_memcg;
->  		if (unlikely(memcg))
+> On 21/04/25 2:47 pm, Luis Gerhorst wrote:
+>> This changes the semantics of BPF_NOSPEC (previously a v4-only barrier)
+>> to always emit a speculation barrier that works against both Spectre v1
+>> AND v4. If mitigation is not needed on an architecture, the backend
+>> should set bpf_jit_bypass_spec_v4/v1().
+>>
+>> As of now, this commit only has the user-visible implication that unpriv
+>> BPF's performance on PowerPC is reduced. This is the case because we
+>> have to emit additional v1 barrier instructions for BPF_NOSPEC now.
+>>
+>> This commit is required for a future commit to allow us to rely on
+>> BPF_NOSPEC for Spectre v1 mitigation. As of this commit, the feature
+>> that nospec acts as a v1 barrier is unused.
+>>
+>> Commit f5e81d111750 ("bpf: Introduce BPF nospec instruction for
+>> mitigating Spectre v4") noted that mitigation instructions for v1 and v4
+>> might be different on some archs. While this would potentially offer
+>> improved performance on PowerPC, it was dismissed after the following
+>> considerations:
+>>
+>> * Only having one barrier simplifies the verifier and allows us to
+>>    easily rely on v4-induced barriers for reducing the complexity of
+>>    v1-induced speculative path verification.
+> 
+> Fair enough.
+> 
+>>
+>> * For the architectures that implemented BPF_NOSPEC, only PowerPC has
+>>    distinct instructions for v1 and v4. Even there, some insns may be
+>>    shared between the barriers for v1 and v4 (e.g., 'ori 31,31,0' and
+>>    'sync'). If this is still found to impact performance in an
+>>    unacceptable way, BPF_NOSPEC can be split into BPF_NOSPEC_V1 and
+>>    BPF_NOSPEC_V4 later. As an optimization, we can already skip v1/v4
+>>    insns from being emitted for PowerPC with this setup if
+>>    bypass_spec_v1/v4 is set.
+>>
+> 
+> Agreed.
+> 
+> Acked-by: Hari Bathini <hbathini@linux.ibm.com>
 
+Applies to v3 too :)
+Let me send for v3..
+
+- Hari
 
