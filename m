@@ -1,414 +1,222 @@
-Return-Path: <bpf+bounces-58479-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58480-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E468ABB585
-	for <lists+bpf@lfdr.de>; Mon, 19 May 2025 09:04:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 680D7ABB836
+	for <lists+bpf@lfdr.de>; Mon, 19 May 2025 11:07:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2761D3A71B0
-	for <lists+bpf@lfdr.de>; Mon, 19 May 2025 07:03:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0508B16F7EF
+	for <lists+bpf@lfdr.de>; Mon, 19 May 2025 09:07:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED60F265631;
-	Mon, 19 May 2025 07:04:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C5FC26C382;
+	Mon, 19 May 2025 09:07:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="R3IZeoTN"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="kJcTs9Te";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="Dj45LVRe"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9AAD1C683;
-	Mon, 19 May 2025 07:04:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747638248; cv=none; b=Fp9QU25By/JgS/59wsz5LJeQhptLfmOIUcgEwOdPYtqBOaEtxEPD03ZWZ5jGkqyd9gh7ftEs0wzoo/sZ9Dd5UMwNw19zot/Ujnnfy5Fi5iWz94q76XnT8gMpBrtJbaCiwT8enFNyRKF4thvU9r9ejCg9iHeXw1wYPUj9LUhUIWo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747638248; c=relaxed/simple;
-	bh=CDeUPbkmyPYslnW3MFit/Bhl8ZhtwOUeA2PAwa31zco=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jfpyGvwLVo7fOo24dDxPVVWtXJQVT/nnfJBB9EX7LoGYuB889idHCLc4XCpu6bUyzg2Q5ktNfP9P2eyz7gQ9gwpBotI0H+bCOpL4qyJGffFX7NzkelqNgVjZJRQNktQR3fv80CX29o4Zv8S7GRpFG7FwV0+htpOI5lWTkbxRcVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=R3IZeoTN; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54IIogTA023200;
-	Mon, 19 May 2025 07:02:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=y3/oIT
-	+7fToHoLwijovc0aOLEQZ5tehmZTiS/BaDnTg=; b=R3IZeoTN9ZAFb0GvYhV1V8
-	+EAriXaIysSTDXNp9G+QSSoiXD1zT0Tm5MzQcuEuuEiw75d0PWlrnrvDUxhWI//U
-	P0QEOkkLCqNWN/+46WOHb4g70DXDefYrOEQWWOuzAI9YQGUjlH9hUOv7uaPqWtbN
-	FDQFYsR1lapLFtP4WIWgIR1kqYNad1FSIs6YYrb8gIUbaQTA2oMdd88O1Kpz5ohH
-	Sn1ufPjOnqhd5cgpHr1unlAqIOpPn7BvMwI1uuSjie9XQUWHFcm7idRHPScRH7TI
-	eZ1ychHhFiiaKX70nUyR91sIJpiVOloSuKE54TSJspdF2dCy7gs2CDkkH2H2bLyA
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46qn68j4r1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 19 May 2025 07:02:03 +0000 (GMT)
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 54J6w6DT032240;
-	Mon, 19 May 2025 07:02:03 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46qn68j4qt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 19 May 2025 07:02:03 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 54J5Klg1013843;
-	Mon, 19 May 2025 07:02:02 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 46q4st5mq9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 19 May 2025 07:02:01 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 54J71wi439715182
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 19 May 2025 07:01:58 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 1774A2018E;
-	Mon, 19 May 2025 07:01:58 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5F7BB2018D;
-	Mon, 19 May 2025 07:01:51 +0000 (GMT)
-Received: from [9.78.106.42] (unknown [9.78.106.42])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 19 May 2025 07:01:51 +0000 (GMT)
-Message-ID: <7c4086dc-210d-4f5f-b7ad-e3062c96290d@linux.ibm.com>
-Date: Mon, 19 May 2025 12:31:50 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8278135957
+	for <bpf@vger.kernel.org>; Mon, 19 May 2025 09:07:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1747645639; cv=fail; b=c26F/cPZMfAbDomA/DOOwAHxEEhU4muEAEvIZnUwEZkWy7i9O4zqtMPastjSG9ij0GWxX2Lb7WSoMVwm5wGUX0Dz76SYomw0AhCH46yB0/OTQ3l+/7fX+68M1FFvETCl/IsuvALjwyc9rk/u079ezauCDTw9lBc5BUA1RA/7mXk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1747645639; c=relaxed/simple;
+	bh=WhU5pDYoc9OnyO291HKLXNhyM6BzCoa/qMFkxRwjKoo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=ok4XYj6XxswkjeSCrNUSPn19wvrzny4/qHWG+SR/1h+acgT9Wg61srtVaSw5u6UFESFK2SYO3I3lqYgzhZk7tHGXnvmPst10TAinavGmqGH/xRDDlvOE/vRBs0/wW3Z7HDvTo7Ow4VwIUL/8jgcMzj/Ot6sXmoPB7iJZyYK+NtE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=kJcTs9Te; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=Dj45LVRe; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54J6ilfU004034;
+	Mon, 19 May 2025 09:06:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=corp-2025-04-25; bh=tDT7X9VH//EO+572pS
+	IKc1cluXS28bQDhqgmXUPNdHE=; b=kJcTs9TeiFVQFfaGgoIuTlJnoq4s4XvJwj
+	CSkfHOwxTMhGBwLVuySCz7NTQLvhuxRyViNXkaDaRoQwMMyncSfY/bFDQbda0ZUf
+	XAe3hvy5QHa6I7TFYisfsDMR0aDBJMdYxTtLlkHd3cb5IzC7UVr7ADPulo7AzKVv
+	pgdjCY7a409l9h5IebTrBakj7h1WRiJhBkHejB+Y6/PD7UTPkRDW5cF0wIoUGNDI
+	ZBio4e31QEhPwodzcKwCNavUxDGTURHO7fP1FmHdVDMkg5+VFUbFKM6qnZaMOsDQ
+	++Nt9wXTv9D0zHKP6nI1X0u7eddWNi+gmbVlbtPJxUCaWSehcPbg==
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 46pk0vteue-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 19 May 2025 09:06:37 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 54J8a3O0010783;
+	Mon, 19 May 2025 09:06:28 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2171.outbound.protection.outlook.com [104.47.56.171])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 46pgw6f52f-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 19 May 2025 09:06:28 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=LPa3bFxfnBTzxktGQMSTCnf4y3LwVsme/cBaJYR/c45Uc2K1rs+wAGIRCl3Lu2BK7n/MJBtXtigYJDIR5be4q6Cee2iS1gIr0C2qnAB5j7NPmrn6oOz74agIbYoEtIRGeknyEX/9mepfSCDEUhU0F+/J6RFtGYPaVtvgmy2CJt2O8U2raN/PfvD1HMCgnQMcLVmzBKABYXmpI0+c/BK1/buUbO2z1VUxyUppO8/ALR7M3NAOt9dvgSPk+DfkVxFW9+glAxQhmqPDb620dilceHtraCcqHSs1L6z86AJ4UydejZQXGfAWRYeWvXRmiSq/LQ7NxHWL9KdX6wUmtCIHiA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tDT7X9VH//EO+572pSIKc1cluXS28bQDhqgmXUPNdHE=;
+ b=HREGDGZHYbQKcNMTc1sLpQqlmYaT8/nu4MwFxzHY5haFG9Y550P2Gt0y1EWwekFzvcQMiFXRwGEv+1x8mM85ry00kqTY4EpKgPpctPz4Tyt/2DTyA4B35sQRpF/6YPODxL+g7KnnTT8wU0WomWVn93FSmpxJoO6cDGF6JBMrKpYf6f31rKctrgGXa8E3P+Sa8/kiyjl1epvIQJJ5BMsx7OHkn+Cjc1tNRrz+hqnCGGETHIucxHXNZOVPz5Ch6G5USVFfjmvOmOsMheMAURFodnO8M3UdjcMwdEAuJTlknJmWZAtuQRqJbibjSQd15HGhAHsMUdjx61juVCBy1L/pkg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tDT7X9VH//EO+572pSIKc1cluXS28bQDhqgmXUPNdHE=;
+ b=Dj45LVReXUDA6TZfe+Q71EsxRIOfRp6xlyyYdfnoHlTLfdFenFAV5fW9yw9HhkOIJ1k1GoghWWPA2wv8iQmwhkpoYDMadzKiEy+z/51GrCEmpWiXVoBrA2yWpE++/VyX3gAaFZfQcFGV/Hw9YpPaE8e66rG+Ph/PNQfxwz2nSZc=
+Received: from CH3PR10MB7329.namprd10.prod.outlook.com (2603:10b6:610:12c::16)
+ by BN0PR10MB4871.namprd10.prod.outlook.com (2603:10b6:408:128::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8746.30; Mon, 19 May
+ 2025 09:06:25 +0000
+Received: from CH3PR10MB7329.namprd10.prod.outlook.com
+ ([fe80::f238:6143:104c:da23]) by CH3PR10MB7329.namprd10.prod.outlook.com
+ ([fe80::f238:6143:104c:da23%4]) with mapi id 15.20.8746.030; Mon, 19 May 2025
+ 09:06:25 +0000
+Date: Mon, 19 May 2025 18:06:13 +0900
+From: Harry Yoo <harry.yoo@oracle.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf@vger.kernel.org, linux-mm@kvack.org, vbabka@suse.cz,
+        shakeel.butt@linux.dev, mhocko@suse.com, bigeasy@linutronix.de,
+        andrii@kernel.org, memxor@gmail.com, akpm@linux-foundation.org,
+        peterz@infradead.org, rostedt@goodmis.org, hannes@cmpxchg.org
+Subject: Re: [PATCH] mm: Rename try_alloc_pages() to alloc_pages_nolock()
+Message-ID: <aCr0hQh1VXSDGq_I@hyeyoo>
+References: <20250517003446.60260-1-alexei.starovoitov@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250517003446.60260-1-alexei.starovoitov@gmail.com>
+X-ClientProxiedBy: SL2P216CA0221.KORP216.PROD.OUTLOOK.COM
+ (2603:1096:101:18::15) To CH3PR10MB7329.namprd10.prod.outlook.com
+ (2603:10b6:610:12c::16)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 06/11] bpf, arm64, powerpc: Change nospec to
- include v1 barrier
-To: Luis Gerhorst <luis.gerhorst@fau.de>, Alexei Starovoitov
- <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau
- <martin.lau@linux.dev>,
-        Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Puranjay Mohan <puranjay@kernel.org>,
-        Xu Kuohai <xukuohai@huaweicloud.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Naveen N Rao <naveen@kernel.org>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Henriette Herzog <henriette.herzog@rub.de>,
-        Saket Kumar Bhaskar <skb99@linux.ibm.com>,
-        Cupertino Miranda <cupertino.miranda@oracle.com>,
-        Jiayuan Chen <mrpre@163.com>, Matan Shachnai <m.shachnai@gmail.com>,
-        Dimitar Kanaliev <dimitar.kanaliev@siteground.com>,
-        Shung-Hsi Yu <shung-hsi.yu@suse.com>, Daniel Xu <dxu@dxuuu.xyz>,
-        bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kselftest@vger.kernel.org
-Cc: Maximilian Ott <ott@cs.fau.de>, Milan Stephan <milan.stephan@fau.de>
-References: <20250501073603.1402960-1-luis.gerhorst@fau.de>
- <20250501073603.1402960-7-luis.gerhorst@fau.de>
-Content-Language: en-US
-From: Hari Bathini <hbathini@linux.ibm.com>
-In-Reply-To: <20250501073603.1402960-7-luis.gerhorst@fau.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: YfNBw6cUTfW--ihn52NKp9LklaLFXDyg
-X-Proofpoint-GUID: 18UaltY-KdDeNQRbMDElGC4QCxaD27zH
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTE5MDA2MSBTYWx0ZWRfXywmgFHVkFuow rmbEzWcXS70QYVbU1kHQW08mSHjlmZ/bGcYvUYuSn20517eUw4dHGwj0219F+ttn58l0y0cI3nG h8NA9Qtk46CLHS9PKcwnYP7UGOCbDTGGbyUWEa4F0qPj2zasx8/FLTXyi6i1LzufGJe7EfSx1ea
- Q6reUba/B3kQY8AYc6gkosWPZtFYujV8vP7Ps6OzCOzHbLjllJe99sGByrfVEXEnoaTrmrSKEk9 nezHK0eNKWCEKCDOQwqTUlsQdUfeXYqKrIvdwRDNMM7xX8prC5LAp+fKzl5wdBYpHhOzYXLhxW1 cif5WZ+n0OHX29+ZYbzfQIRmsweVNPRXMmGVgP3OliuHhYH4uE+oOta9Mgf/0EezSjOw8WKH5tw
- clm8VHp83xZ+2UePHjJX8XWBViBrVstqflm8UfJ5/HM4Kxgbhocc16kU1PmDd6qU+a9CPaqq
-X-Authority-Analysis: v=2.4 cv=CN4qXQrD c=1 sm=1 tr=0 ts=682ad76b cx=c_pps a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17 a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10 a=mDV3o1hIAAAA:8 a=NEAV23lmAAAA:8 a=VnNF1IyMAAAA:8 a=cH2_UEqIt_luvVCa7oAA:9
- a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR10MB7329:EE_|BN0PR10MB4871:EE_
+X-MS-Office365-Filtering-Correlation-Id: 76a6330e-f252-4c64-5456-08dd96b46ee3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|7416014|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?vy8Pj1g4O3NWdre0X/oPVs8Q+u3tVrTm18Oo8dnbbbqg8rn+m/MbpcMbXKPM?=
+ =?us-ascii?Q?ADemagWLn8DldIZzvYziu0uCg2WfpDcrPc5WaXbmWubOf6kwlfh7x8Pq2fIs?=
+ =?us-ascii?Q?+SoP2tCX2/ZXFE/kaqGmX6LomVEbMLE5T4VbCkGf1RYopWfXqGwnciFJcKOA?=
+ =?us-ascii?Q?o7sacqDWreszkpJvyIb4CiNSAE45BH0z5xG3sruLdqM0OmIcGOvF0lxvdMPz?=
+ =?us-ascii?Q?VMdHIY64mrcSppcgBj4PTfGyU9NaXxkkf6QVxWIgGWro2pzegklMNhbf9HA6?=
+ =?us-ascii?Q?lGlRrES2Jd/7b9kzDJv7xzQuYPGRcmC4oEg/tmZz27rRpANJ6p+yBgDmugOj?=
+ =?us-ascii?Q?HwQ1Po6LJ8zmksN4dHnZ5F08vWKZw6Br5OENhMRsa/V+nrgX+GVpWJ/TEubC?=
+ =?us-ascii?Q?w7PoMG6nzhQ8xVkIcdhsIkkDyfzMA9yKepNXajFmPjU9GU9arpJ+zwTxzpBk?=
+ =?us-ascii?Q?qsmuR7xRN2fTWdUlS4ZKr8cou1iQv9pPLvveZdd9TfQLFQ3tz7F7VbQ6Fvu9?=
+ =?us-ascii?Q?eLY0J9XPamt3bN8YxuO6Rtt9/HTWbmUdXqopAWW3AOjqcLqLI9GOJYwrPYFc?=
+ =?us-ascii?Q?FXqHV/BJAtk+o84IRAYbmPvy6pn/djtdONMdFnU00jODaFAU72jJlYE+OXc7?=
+ =?us-ascii?Q?Fia3WUA9SdEjq++ikRZBPdaB0HRn9hJXVpDCsHOt20hJUMSf1MBRx5EJSwGA?=
+ =?us-ascii?Q?+zqPNHgO/lbcGXM2RwKVXqkz9RKICE54sAyhMm+X5Qvd3dMH5ngrJUnERoI6?=
+ =?us-ascii?Q?Tv5wruqdlcf4IvRXlIfr4pusWqAZE95KswYPnnQJ4mNEzkVQYm7/tPYT3QEZ?=
+ =?us-ascii?Q?VYAcgAw0u2cfg0Z4q5rgx6SYo2VB8HDOLW2G5ybdUTkuzFgPIX09GqNS8dkW?=
+ =?us-ascii?Q?+LBvs7k2cHCXJg/qRy3tsStk15BZiw5ff/ELI4AZzjLzfELtU+QlfSGflyvj?=
+ =?us-ascii?Q?KpN3wCdgjtq6yOLP08bqGi5DoHqd6gi/zeoQJVoMCDY2bwI1Bo6mZdUzdaR7?=
+ =?us-ascii?Q?pIXG+PnukdwtzYUJX+vTdoXoRCR/EEiy+W6T9LHez27Ly5dQQMGEfgP6GKjB?=
+ =?us-ascii?Q?9vr7Oi+cLTihbSk6MlvuGTyHZpaoQh/JccXVzeuMbhr7p+qngK9QNbB82OCs?=
+ =?us-ascii?Q?ig6jQTftqf2Eydo4JDJq/B8S9KiZlWy4Dlib6Pkrf821xToht5z5C+pdz9gO?=
+ =?us-ascii?Q?ILkBcmtAHjA1fnW8hQsU7C45HEIWXoYQp6G8/iOL1rzsvRSVehOLcVM9wxFr?=
+ =?us-ascii?Q?3D6lGSd7O+QUlr2oYTyCmMbaIqgANKP1zSUXilwXeEy0+UIcjZGmXFyKWnDh?=
+ =?us-ascii?Q?Q262ZzJnD41ogLcNKr/mGFRdrFIfCvcIoqUK/urnpa0x8wVcgjmMfaQNTvJd?=
+ =?us-ascii?Q?Oy264gXBm+R2BESIJ+lRSBHXd8hwV6oTXbpO1GRE5jvtAF3fleD0ejvWnqtA?=
+ =?us-ascii?Q?vm6Hn1AxBgM=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR10MB7329.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?pCPlO+Kt0InSc0CUf66c+GttzlwXmy5bTiH2UOEL+0v2JUefVyLyoCzGWVyy?=
+ =?us-ascii?Q?Tw0GUuvGie30mQq5jauwmpU+HZzzEW+j3QGVj1PuHiY/KATgLyn9Se9s/HdJ?=
+ =?us-ascii?Q?gWLoAVEXfWcg1SfR00OYxt4ZiZqCoMC+Nx+Zy36HQUvq6pnubbJ59e9D9LQ3?=
+ =?us-ascii?Q?CiN+dccqXigdS6axBEGf0PFHyIfazihAgPzzHvXdenf6eoYrXWs0wPd+z/s0?=
+ =?us-ascii?Q?/IuiJcXaXTa0COXmgP0oATAJSpHIDDJOKvxSKlceM415YJx8U3Ae3QD235RS?=
+ =?us-ascii?Q?oOaCX0AbF/3ycNA18qWxACHlthBD9cdLGgVBsKQi7jMDvbjD/q5UewJr8Dh4?=
+ =?us-ascii?Q?T8xqqPVkitRHNlLxvO3Kn98zNYOVTl5W62VTXERw1L/7k8Y9vsCfNiHU/gJh?=
+ =?us-ascii?Q?LXVnZQ7QUjDc2PsFuk5XbZ+a51TnQGGwFDQNpZAAHKI9anzjPZnOJItmMN8k?=
+ =?us-ascii?Q?ByTiVL7q3Zi6zUqzRSsdDBGvXO8XQkMhY5roCd3u5FMV9W4X+gulydhSD8AF?=
+ =?us-ascii?Q?Y6N8TRnevjuTxaX7kAgpOODBTqsTumNLlQDgaKAo+1vs5oMmYg16hMc51OBV?=
+ =?us-ascii?Q?NODN/s/F5PfiLgT9cb4zV1vRaGRIHKsAYSLKgQAXcsK0UsVaW5Haegtq/Gxt?=
+ =?us-ascii?Q?oDX5sDOWU6vUyH/qhkoJ/Wo7BF7E6wgz376yl9snuRDD0YBMCJmQz0xu+hQL?=
+ =?us-ascii?Q?yeV0hkgqE0JkKThq+z4Mora/h5wBJqI4TpR5Do0LiiI5NTL9YdoO3eyIGo1h?=
+ =?us-ascii?Q?usqmWr2Zq2mxffVfrTFh+9vyeVybHYXRWd/LJm8QfhEN/l5db0rOKOvUvEp6?=
+ =?us-ascii?Q?DMZsASy6ih1/dLV3me1q1uUFBcXOc7KWybCYivVOJIA4xpDfL34oGr+GgMB6?=
+ =?us-ascii?Q?77CmXIzVYGXzwVXNhWnt4SnWDRzLC37m471tmqkjoVQd6Z/Py5eN98xQN+5j?=
+ =?us-ascii?Q?xuWPbSesu+benrAHmXfMl2V+jjBgedZTn4gx/Mjdb4ksckVzjWUPo/MBDTHX?=
+ =?us-ascii?Q?5SEEJXVzYI0JWwCtjIwfnnz/vM5GGdoyU3AYmNybObiChkZcP/H/7h2tYWuJ?=
+ =?us-ascii?Q?0D84H60axBKZPemGqPZXzoPHFmDfqaygINkltDEk+HYwEYm+oxKy1Fxj1CNg?=
+ =?us-ascii?Q?x6HaCbG6muQkkywo1IqgoS0XJIF5EAqn/OAPy76fL9VYn8qtNBE3+ShaJn+W?=
+ =?us-ascii?Q?73uWVO9AGytWNDvwJqoAm/Wn9IWWqiliBnaOVG/YqCKOc0a/LbHIfN+oIjlZ?=
+ =?us-ascii?Q?6ddhH8Jv7+lR7bDTMziw4OhYKMMmae8Naz+omTV+3aYI0sPuZg2FTjHY1ug6?=
+ =?us-ascii?Q?adsbVykAF7e/pop7LMTdHoiq7myytcGFsdOPrZWzWIGnPcSesPC5+mRsxsMI?=
+ =?us-ascii?Q?Y1eqsb+pd2WrqpEJVX/bO+lJxc8ZQJUrLccn2u3fnQozaYZUt4aLTocyCRDl?=
+ =?us-ascii?Q?uVag+cCYitICc+WWZqSBrg0Sq+cmEy/2lN5H/s7T6M3CjDxTDlBNS+vNJTzW?=
+ =?us-ascii?Q?b6iWIga0lyMTmPHvohWxS1Q01Yrk0G+nIdYaF1upULsmX56h39S4zOGPpCuI?=
+ =?us-ascii?Q?oqoI6xoMvbMVE2veeDuRj7NF71N+Cyga7ry0XRkO?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	An2dE8QlKn/8UPZzTxWoYo4KTSzTeaAbpUmXfNaoWFsiB/ubYw43C7G7V/Jlte4G1zXziuMQnWvV8jQMw8Azs4accXEieN+lkU9tsqu60QNUGC3oiiJfzm8mSVakvkQqq6H2pi6vKL+abM+u5hfJD0ufeOCPNkKq4oqRcuo/t2j7qAW2b5J4Lj2tq7umzy5S++RfuLMNa6F9gRfNrNDLbC8BOU11g35FFmbPZ3NxxUA5ayJuU70HHmjVCbS+kF07Klab/S2h4bz49t6BtPMVeZclK7uDHiJpTejJgSvsJgSDR9M9sIJv5pYVkEHkC8zld2YWGUVCwz7n9iN8w0jckaSpTSeMHoC6EHa7h31B4m3hcFinms+TFc8QISSHzgo1XLxDan7adF8JnYH3WdALAwEpvXN/7dtMH/q12VDSVmSfpX+OsX/+xnie1oRJfHpG+fJBp4AnIM7GdcfigvYkc9AGJajc10zfCnBXYbL55wnYAw+aPQoHorpNU0QRQP16/d//aDVJfvn1lbcWuidW9V0WgjxO8Pylz9d3m/JztD6LXY9CQ6ttyMB9TeqXgTi5TDfybLAN4eAJn75l9VEWsyaWQLBYwmHhd3tFdceOiSU=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 76a6330e-f252-4c64-5456-08dd96b46ee3
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR10MB7329.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2025 09:06:25.6559
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2K/PJN3duwas2chGIEL8w5Xiv/zGbm0hYlbcSoHMFid92wlBxMKNxs9LCTJjYssa2Y12hic/Z4wyhxZpTLI0TA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR10MB4871
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-05-19_02,2025-05-16_03,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
- suspectscore=0 mlxlogscore=999 priorityscore=1501 spamscore=0 mlxscore=0
- lowpriorityscore=0 bulkscore=0 clxscore=1015 malwarescore=0 phishscore=0
- classifier=spam authscore=0 authtc=n/a authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2505070000
- definitions=main-2505190061
+ definitions=2025-05-19_03,2025-05-16_03,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 phishscore=0
+ bulkscore=0 adultscore=0 mlxscore=0 suspectscore=0 mlxlogscore=963
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2505070000
+ definitions=main-2505190085
+X-Proofpoint-ORIG-GUID: 6phjhpztVuWAjeBcbX2CBO06D7TZEghe
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTE5MDA4NiBTYWx0ZWRfX2+H2rUOJlnci 5rlYfTzFdI7spNl0A61QwlrTn79hFZ3M5K4odY/X6O9Nr7mohu5voZbzd8AumDp6dAKH0XfviIP y+NqwFCG7uUlsPIks1ySRMM7n2Tt1VGuiFTQLbforzij4VFqyb5tWYhRv+SVgJM4Qv3Bpa7Jl0k
+ FDABGV+TkN6yBxzyn/jUhnWALGZ7Dc3OMQ9bdiofFwyNJJAKwkst/GaFl3qNfA6OHDmNbFgBKjJ vZs6TnA9SCqY4Qv0EG7NnQ3hhX8wyjA7ePJlqJ7fLGf9GovuIIFgp3ZX2yZodZRgWfBsyqpfeLI jRlFSnWaRrohimaOSh0/Sem9wtFWlgoaXKh6rDxB4z37W4M9Vq84gGXXanFLs2FxkBkI+pdAeJY
+ MsNoI1vDycVxb132qKKu24aeUCkESa0m6lZ970qHD+PfibvwSKIXFybrrb8qS4uB7BoBC7nZ
+X-Authority-Analysis: v=2.4 cv=CMIqXQrD c=1 sm=1 tr=0 ts=682af49d b=1 cx=c_pps a=e1sVV491RgrpLwSTMOnk8w==:117 a=e1sVV491RgrpLwSTMOnk8w==:17 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19 a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19
+ a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10 a=dt9VzEwgFbYA:10 a=GoEa3M9JfhUA:10 a=VwQbUJbxAAAA:8 a=yPCof4ZbAAAA:8 a=hol3gUIZIl0Pa47p29wA:9 a=CjuIK1q_8ugA:10 cc=ntf awl=host:14694
+X-Proofpoint-GUID: 6phjhpztVuWAjeBcbX2CBO06D7TZEghe
 
-
-
-On 01/05/25 1:05 pm, Luis Gerhorst wrote:
-> This changes the semantics of BPF_NOSPEC (previously a v4-only barrier)
-> to always emit a speculation barrier that works against both Spectre v1
-> AND v4. If mitigation is not needed on an architecture, the backend
-> should set bpf_jit_bypass_spec_v4/v1().
+On Fri, May 16, 2025 at 05:34:46PM -0700, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
 > 
-> As of now, this commit only has the user-visible implication that unpriv
-> BPF's performance on PowerPC is reduced. This is the case because we
-> have to emit additional v1 barrier instructions for BPF_NOSPEC now.
+> The "try_" prefix is confusing, since it made people believe
+> that try_alloc_pages() is analogous to spin_trylock() and
+> NULL return means EAGAIN. This is not the case. If it returns
+> NULL there is no reason to call it again. It will most likely
+> return NULL again. Hence rename it to alloc_pages_nolock()
+> to make it symmetrical to free_pages_nolock() and document that
+> NULL means ENOMEM.
 > 
-> This commit is required for a future commit to allow us to rely on
-> BPF_NOSPEC for Spectre v1 mitigation. As of this commit, the feature
-> that nospec acts as a v1 barrier is unused.
-> 
-> Commit f5e81d111750 ("bpf: Introduce BPF nospec instruction for
-> mitigating Spectre v4") noted that mitigation instructions for v1 and v4
-> might be different on some archs. While this would potentially offer
-> improved performance on PowerPC, it was dismissed after the following
-> considerations:
-> 
-> * Only having one barrier simplifies the verifier and allows us to
->    easily rely on v4-induced barriers for reducing the complexity of
->    v1-induced speculative path verification.
-
-Fair enough..
-
-> 
-> * For the architectures that implemented BPF_NOSPEC, only PowerPC has
->    distinct instructions for v1 and v4. Even there, some insns may be
->    shared between the barriers for v1 and v4 (e.g., 'ori 31,31,0' and
->    'sync'). If this is still found to impact performance in an
->    unacceptable way, BPF_NOSPEC can be split into BPF_NOSPEC_V1 and
->    BPF_NOSPEC_V4 later. As an optimization, we can already skip v1/v4
->    insns from being emitted for PowerPC with this setup if
->    bypass_spec_v1/v4 is set.
-
-Yeah, agreed.
-For the powerpc changes..
-
-Acked-by: Hari Bathini <hbathini@linux.ibm.com>
-
-> 
-> Vulnerability-status for BPF_NOSPEC-based Spectre mitigations (v4 as of
-> this commit, v1 in the future) is therefore:
-> 
-> * x86 (32-bit and 64-bit), ARM64, and PowerPC (64-bit): Mitigated - This
->    patch implements BPF_NOSPEC for these architectures. The previous
->    v4-only version was supported since commit f5e81d111750 ("bpf:
->    Introduce BPF nospec instruction for mitigating Spectre v4") and
->    commit b7540d625094 ("powerpc/bpf: Emit stf barrier instruction
->    sequences for BPF_NOSPEC").
-> 
-> * LoongArch: Not Vulnerable - Commit a6f6a95f2580 ("LoongArch, bpf: Fix
->    jit to skip speculation barrier opcode") is the only other past commit
->    related to BPF_NOSPEC and indicates that the insn is not required
->    there.
-> 
-> * MIPS: Vulnerable (if unprivileged BPF is enabled) -
->    Commit a6f6a95f2580 ("LoongArch, bpf: Fix jit to skip speculation
->    barrier opcode") indicates that it is not vulnerable but this
->    contradicts the kernel and Debian documentation. Therefore I assume
->    that there exist vulnerable MIPS CPUs (but maybe not from Loongson?).
->    In the future, BPF_NOSPEC could be implemented for MIPS based on the
->    GCC speculation_barrier [1]. For now, we rely on unprivileged BPF
->    being disabled by default.
-> 
-> * Other: Unknown - To the best of my knowledge there is no definitive
->    information available that indicates that any other arch is
->    vulnerable. They are therefore left untouched (BPF_NOSPEC is not
->    implemented, but bypass_spec_v1/v4 is also not set).
-> 
-> I did the following testing to ensure the insn encoding is correct:
-> 
-> * ARM64:
->    * 'dsb nsh; isb' was successfully tested with the BPF CI in [2]
->    * 'sb' locally using QEMU v7.2.15 -cpu max (emitted sb insn is
->      executed for example with './test_progs -t verifier_array_access')
-> 
-> * PowerPC: The following configs were tested locally with ppc64le QEMU
->    v8.2 '-machine pseries -cpu POWER9':
->    * STF_BARRIER_EIEIO + CONFIG_PPC_BOOK32_64
->    * STF_BARRIER_SYNC_ORI (forced on) + CONFIG_PPC_BOOK32_64
->    * STF_BARRIER_FALLBACK (forced on) + CONFIG_PPC_BOOK32_64
->    * CONFIG_PPC_E500 (forced on) + STF_BARRIER_EIEIO
->    * CONFIG_PPC_E500 (forced on) + STF_BARRIER_SYNC_ORI (forced on)
->    * CONFIG_PPC_E500 (forced on) + STF_BARRIER_FALLBACK (forced on)
->    * CONFIG_PPC_E500 (forced on) + STF_BARRIER_NONE (forced on)
->    Most of those cobinations should not occur in practice, but I was not
->    able to get an PPC e6500 rootfs (for testing PPC_E500 without forcing
->    it on). In any case, this should ensure that there are no unexpected
->    conflicts between the insns when combined like this. Individual v1/v4
->    barriers were already emitted elsewhere.
-> 
-> [1] https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=29b74545531f6afbee9fc38c267524326dbfbedf
->      ("MIPS: Add speculation_barrier support")
-> [2] https://github.com/kernel-patches/bpf/pull/8576
-> 
-> Signed-off-by: Luis Gerhorst <luis.gerhorst@fau.de>
-> Cc: Henriette Herzog <henriette.herzog@rub.de>
-> Cc: Maximilian Ott <ott@cs.fau.de>
-> Cc: Milan Stephan <milan.stephan@fau.de>
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 > ---
->   arch/arm64/net/bpf_jit.h          |  5 +++
->   arch/arm64/net/bpf_jit_comp.c     |  9 +++--
->   arch/powerpc/net/bpf_jit_comp64.c | 59 ++++++++++++++++++++++---------
->   include/linux/filter.h            |  2 +-
->   kernel/bpf/core.c                 | 17 ++++-----
->   5 files changed, 65 insertions(+), 27 deletions(-)
-> 
-> diff --git a/arch/arm64/net/bpf_jit.h b/arch/arm64/net/bpf_jit.h
-> index a3b0e693a125..bbea4f36f9f2 100644
-> --- a/arch/arm64/net/bpf_jit.h
-> +++ b/arch/arm64/net/bpf_jit.h
-> @@ -325,4 +325,9 @@
->   #define A64_MRS_SP_EL0(Rt) \
->   	aarch64_insn_gen_mrs(Rt, AARCH64_INSN_SYSREG_SP_EL0)
->   
-> +/* Barriers */
-> +#define A64_SB aarch64_insn_get_sb_value()
-> +#define A64_DSB_NSH (aarch64_insn_get_dsb_base_value() | 0x7 << 8)
-> +#define A64_ISB aarch64_insn_get_isb_value()
-> +
->   #endif /* _BPF_JIT_H */
-> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-> index 0f617b55866e..ccd6a2f31e35 100644
-> --- a/arch/arm64/net/bpf_jit_comp.c
-> +++ b/arch/arm64/net/bpf_jit_comp.c
-> @@ -1581,9 +1581,14 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
->   			return ret;
->   		break;
->   
-> -	/* speculation barrier */
-> +	/* speculation barrier against v1 and v4 */
->   	case BPF_ST | BPF_NOSPEC:
-> -		/* See bpf_jit_bypass_spec_v4() */
-> +		if (alternative_has_cap_likely(ARM64_HAS_SB)) {
-> +			emit(A64_SB, ctx);
-> +		} else {
-> +			emit(A64_DSB_NSH, ctx);
-> +			emit(A64_ISB, ctx);
-> +		}
->   		break;
->   
->   	/* ST: *(size *)(dst + off) = imm */
-> diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
-> index b5339c541283..16d57bce6ddc 100644
-> --- a/arch/powerpc/net/bpf_jit_comp64.c
-> +++ b/arch/powerpc/net/bpf_jit_comp64.c
-> @@ -407,6 +407,7 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, struct code
->   		       u32 *addrs, int pass, bool extra_pass)
->   {
->   	enum stf_barrier_type stf_barrier = stf_barrier_type_get();
-> +	bool sync_emitted, ori31_emitted;
->   	const struct bpf_insn *insn = fp->insnsi;
->   	int flen = fp->len;
->   	int i, ret;
-> @@ -800,26 +801,52 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, struct code
->   
->   		/*
->   		 * BPF_ST NOSPEC (speculation barrier)
-> +		 *
-> +		 * The following must act as a barrier against both Spectre v1
-> +		 * and v4 if we requested both mitigations. Therefore, also emit
-> +		 * 'isync; sync' on E500 or 'ori31' on BOOK3S_64 in addition to
-> +		 * the insns needed for a Spectre v4 barrier.
-> +		 *
-> +		 * If we requested only !bypass_spec_v1 OR only !bypass_spec_v4,
-> +		 * we can skip the respective other barrier type as an
-> +		 * optimization.
->   		 */
->   		case BPF_ST | BPF_NOSPEC:
-> -			switch (stf_barrier) {
-> -			case STF_BARRIER_EIEIO:
-> -				EMIT(PPC_RAW_EIEIO() | 0x02000000);
-> -				break;
-> -			case STF_BARRIER_SYNC_ORI:
-> +			sync_emitted = false;
-> +			ori31_emitted = false;
-> +#ifdef CONFIG_PPC_E500
-> +			if (!bpf_jit_bypass_spec_v1()) {
-> +				EMIT(PPC_RAW_ISYNC());
->   				EMIT(PPC_RAW_SYNC());
-> -				EMIT(PPC_RAW_LD(tmp1_reg, _R13, 0));
-> -				EMIT(PPC_RAW_ORI(_R31, _R31, 0));
-> -				break;
-> -			case STF_BARRIER_FALLBACK:
-> -				ctx->seen |= SEEN_FUNC;
-> -				PPC_LI64(_R12, dereference_kernel_function_descriptor(bpf_stf_barrier));
-> -				EMIT(PPC_RAW_MTCTR(_R12));
-> -				EMIT(PPC_RAW_BCTRL());
-> -				break;
-> -			case STF_BARRIER_NONE:
-> -				break;
-> +				sync_emitted = true;
-> +			}
-> +#endif
-> +			if (!bpf_jit_bypass_spec_v4()) {
-> +				switch (stf_barrier) {
-> +				case STF_BARRIER_EIEIO:
-> +					EMIT(PPC_RAW_EIEIO() | 0x02000000);
-> +					break;
-> +				case STF_BARRIER_SYNC_ORI:
-> +					if (!sync_emitted)
-> +						EMIT(PPC_RAW_SYNC());
-> +					EMIT(PPC_RAW_LD(tmp1_reg, _R13, 0));
-> +					EMIT(PPC_RAW_ORI(_R31, _R31, 0));
-> +					ori31_emitted = true;
-> +					break;
-> +				case STF_BARRIER_FALLBACK:
-> +					ctx->seen |= SEEN_FUNC;
-> +					PPC_LI64(_R12, dereference_kernel_function_descriptor(bpf_stf_barrier));
-> +					EMIT(PPC_RAW_MTCTR(_R12));
-> +					EMIT(PPC_RAW_BCTRL());
-> +					break;
-> +				case STF_BARRIER_NONE:
-> +					break;
-> +				}
->   			}
-> +#ifdef CONFIG_PPC_BOOK3S_64
-> +			if (!bpf_jit_bypass_spec_v1() && !ori31_emitted)
-> +				EMIT(PPC_RAW_ORI(_R31, _R31, 0));
-> +#endif
->   			break;
->   
->   		/*
-> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> index f5cf4d35d83e..eca229752cbe 100644
-> --- a/include/linux/filter.h
-> +++ b/include/linux/filter.h
-> @@ -82,7 +82,7 @@ struct ctl_table_header;
->   #define BPF_CALL_ARGS	0xe0
->   
->   /* unused opcode to mark speculation barrier for mitigating
-> - * Speculative Store Bypass
-> + * Spectre v1 and v4
->    */
->   #define BPF_NOSPEC	0xc0
->   
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 804f1e52bfa3..fe16be379bf4 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -2102,14 +2102,15 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
->   #undef COND_JMP
->   	/* ST, STX and LDX*/
->   	ST_NOSPEC:
-> -		/* Speculation barrier for mitigating Speculative Store Bypass.
-> -		 * In case of arm64, we rely on the firmware mitigation as
-> -		 * controlled via the ssbd kernel parameter. Whenever the
-> -		 * mitigation is enabled, it works for all of the kernel code
-> -		 * with no need to provide any additional instructions here.
-> -		 * In case of x86, we use 'lfence' insn for mitigation. We
-> -		 * reuse preexisting logic from Spectre v1 mitigation that
-> -		 * happens to produce the required code on x86 for v4 as well.
-> +		/* Speculation barrier for mitigating Speculative Store Bypass,
-> +		 * Bounds-Check Bypass and Type Confusion. In case of arm64, we
-> +		 * rely on the firmware mitigation as controlled via the ssbd
-> +		 * kernel parameter. Whenever the mitigation is enabled, it
-> +		 * works for all of the kernel code with no need to provide any
-> +		 * additional instructions here. In case of x86, we use 'lfence'
-> +		 * insn for mitigation. We reuse preexisting logic from Spectre
-> +		 * v1 mitigation that happens to produce the required code on
-> +		 * x86 for v4 as well.
->   		 */
->   		barrier_nospec();
->   		CONT;
 
+Acked-by: Harry Yoo <harry.yoo@oracle.com>
+
+>  include/linux/gfp.h  |  8 ++++----
+>  kernel/bpf/syscall.c |  2 +-
+>  mm/page_alloc.c      | 15 ++++++++-------
+>  mm/page_owner.c      |  2 +-
+>  4 files changed, 14 insertions(+), 13 deletions(-)
+
+-- 
+Cheers,
+Harry / Hyeonggon
 
