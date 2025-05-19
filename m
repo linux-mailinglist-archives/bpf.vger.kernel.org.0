@@ -1,175 +1,131 @@
-Return-Path: <bpf+bounces-58515-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58516-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C10C9ABCBAD
-	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 01:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E26A1ABCBBC
+	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 01:49:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF8AE1BA07F1
-	for <lists+bpf@lfdr.de>; Mon, 19 May 2025 23:42:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 79B551B62D80
+	for <lists+bpf@lfdr.de>; Mon, 19 May 2025 23:49:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2E8F220F41;
-	Mon, 19 May 2025 23:42:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E71A22126F;
+	Mon, 19 May 2025 23:48:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qfBlMNKN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p79LCThA"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74ADD220F22
-	for <bpf@vger.kernel.org>; Mon, 19 May 2025 23:42:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20575220F52;
+	Mon, 19 May 2025 23:48:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747698139; cv=none; b=uypP5UxNu9lNgiGT0fmoZoyYpxJXAWnF9dpz/E7z8PcKFLwgs8CfUYRTc7ZfxSVY4qyR/L9ooFyOJCgHn9cr+cdHweU9xVhv+YyE6wvoyi9eglEI31agRluAtWOs2RB0mkNycOpNbALB4IVQ8xSnmMGDXpNAYZtN2AOHfPko154=
+	t=1747698531; cv=none; b=k9qiDdvwF/Lr7JdjDUB36le+5WV93NE1975ZFZSb98ZPZ8NsYIbgaEdCvjE1elykXF9kySUfnqfTcfNrl2AapIT061FObYXZICzx6hhvTsOE65yi06srArKyno6L9wEmqwSy9XALVxYty46bVVv05OfqAup19BvglW8PHVtQSXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747698139; c=relaxed/simple;
-	bh=ZKYV4DZqCzOu7XtrDoRxpxOQ2X8r++kTwWByKtXDhrI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XIJujlfHopqEFX0DE5UreU4hoNMFwCiPBcCB6J5cfjD8SLKyUGKhcWbVwe3fssTDFj5cIistV9IEGQ6ZwDqpz3N2b6JCP4MG7TXHVnmCb2EMAQlQmr19uQhIgCxgth0gZgCnD0npFN4jxAo4nBNt7a7ouzs5S1j05U6RrmJscRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qfBlMNKN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC61BC4CEEB
-	for <bpf@vger.kernel.org>; Mon, 19 May 2025 23:42:18 +0000 (UTC)
+	s=arc-20240116; t=1747698531; c=relaxed/simple;
+	bh=LMijej7gFtPDNBIOlBJu1tJ8zpVTvJVhOg0iGAqbUB4=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=qfe+xLTB4hqy9/KQ5fy655WWQ4/ZlpfwoyJ67uRAvSeMKofVuaRs2k02YOEuQ1ARdAdJp+F6CszdH1s69Yhi0QDBj8ynCEhqMPrNcm3UchqhCKX3P1QdVtQ2pmyIBRf8uFLddzcsonR9gOc4QSMbyKOMXEGiNrkFjUHxoMS09JY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p79LCThA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E71C4C4CEE4;
+	Mon, 19 May 2025 23:48:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747698138;
-	bh=ZKYV4DZqCzOu7XtrDoRxpxOQ2X8r++kTwWByKtXDhrI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=qfBlMNKNn6QUj0ScTtAwIwJm69g7Woza/4kEZV/itjo5M2QhBfUk/jE7QP7MA8/Fk
-	 fgU+lSKwGtyDlfpg40QItfxQWwKxkpj4C3ABh6RNqJ7JRD5lDq7w/kIjmTplnipqgB
-	 7J4OQ3xHqJ7PKOpFK8h4b47ssdliaOIhEmZnPwY2AqU1KdOMk+hSRzQ/LGOklnlFo3
-	 uaAG5J3ff3041iHWmDnxbY9ldEUPoUlZU/43us8b3WeoBUN1uW/Lu8tm+GZ21jwWLK
-	 4HAS4zGXr/4G9kO68dMHuY0wiwXJl6frcsLfJu8n2HwQ4XpOpii/5/QKx8avtBZGyb
-	 OfSDf+c2sD0JA==
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-476f4e9cf92so38649421cf.3
-        for <bpf@vger.kernel.org>; Mon, 19 May 2025 16:42:18 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUwpWm0ndxdNhV0q/FUN8ylFEwCLDhKHjjRZtkh9SaGWPYRZAzXySlgV/dvHPqYi7H7TeY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyoSJNsC3iahbDltXjwjqD7zDcZ8SJ+eYCr7atYElFdwp/oHYWi
-	gz7+HjlSoSYmkX1S28XzhK5tIHUri+bVU5OS9Ahvcc+hxYvNeRV7gejEN4XQH+oAMZWIes67eI6
-	OLogTCvfzFRDgCe+MhjZwYdfIJX1iTU+/hfAwq/6I
-X-Google-Smtp-Source: AGHT+IF3yXeBG7TOl1OWLmx6UHDF/3YbnaTG/HjinvwYXZmduyt29cvicBww1a9vAZvlcO0xk5OSvjlLpQi0hnBcD0E=
-X-Received: by 2002:ac8:5654:0:b0:494:af82:7804 with SMTP id
- d75a77b69052e-494af8278f4mr201668631cf.29.1747698137942; Mon, 19 May 2025
- 16:42:17 -0700 (PDT)
+	s=k20201202; t=1747698530;
+	bh=LMijej7gFtPDNBIOlBJu1tJ8zpVTvJVhOg0iGAqbUB4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=p79LCThAtnHz+EDt53BzdMUN6qagFtutqFTVD3F35ZSzCJxO0VXbNLV03KoUCdtjq
+	 /LMV73wPmUxo48wg9Y8XWztyKz9KR6oLY+bg+j00yRPj+LK2bDu6I2H9UPrjfVYP70
+	 /jmOmTkQ3tju7Ur4CPiWXTkBkbZX4kpsQr/EA6y1aa36SHyC3yt+zZhMj2x200cZTR
+	 bp/nqglcL5VuHI20xid+S+OA822wfZFdC9IBrj6qvRMM5XdFOcUsToGOpz7/9S9PoF
+	 WVP0X3YH9kZGMPQ7VpQCp0DRqHue528ouTn6ZkNeUjn0Wxtg42NdDKNwknkyWrI5Yo
+	 tXULjqg5FexNA==
+Date: Tue, 20 May 2025 08:48:45 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ x86@kernel.org, Song Liu <songliubraving@fb.com>, Yonghong Song
+ <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, Hao Luo
+ <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, David Laight
+ <David.Laight@ACULAB.COM>, Thomas =?UTF-8?B?V2Vpw59zY2h1aA==?=
+ <thomas@t-8ch.de>, Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCHv2 perf/core 01/22] uprobes: Remove breakpoint in
+ unapply_uprobe under mmap_write_lock
+Message-Id: <20250520084845.6388479dd18658d2c2598953@kernel.org>
+In-Reply-To: <20250515121121.2332905-2-jolsa@kernel.org>
+References: <20250515121121.2332905-1-jolsa@kernel.org>
+	<20250515121121.2332905-2-jolsa@kernel.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250502184421.1424368-1-bboscaccy@linux.microsoft.com>
- <20250502210034.284051-1-kpsingh@kernel.org> <CAHC9VhS5Vevcq90OxTmAp2=XtR1qOiDDe5sSXReX5oXzf+siVQ@mail.gmail.com>
- <CACYkzJ5jsWFiXMRDwoGib5t+Xje6STTuJGRZM9Vg2dFz7uPa-g@mail.gmail.com>
- <CACYkzJ6VQUExfyt0=-FmXz46GHJh3d=FXh5j4KfexcEFbHV-vg@mail.gmail.com>
- <CAHC9VhQL_FkUH8F1fvFZmC-8UwZh3zkwjomCo1PiWNW0EGYUPw@mail.gmail.com>
- <CACYkzJ4+=3owK+ELD9Nw7Rrm-UajxXEw8kVtOTJJ+SNAXpsOpw@mail.gmail.com>
- <CAHC9VhTeFBhdagvw4cT3EvA72EYCfAn6ToptpE9PWipG9YLrFw@mail.gmail.com>
- <CAADnVQJ4GDKvLSWuAMdwajA0V2DEw5m-O228QknW8Eo9jxhyig@mail.gmail.com>
- <CAHC9VhTJcV1mqBpxVUtpLhrN4Y9W_BGgB_La5QCqObGheK28Ug@mail.gmail.com>
- <CAADnVQ+wE5cGhy6tgmWgUwkNutueEsrhh6UR8N2fzrZjt-vb4g@mail.gmail.com>
- <196e1f03128.28a7.85c95baa4474aabc7814e68940a78392@paul-moore.com>
- <CAADnVQ+=2PnYHui2L0g0brNc+NqV8MtaRaU-XXpoXfJoghXpww@mail.gmail.com>
- <CAHC9VhRKZdEia0XUMs2+hRVC7oDzkBfkk5FPMD+Fq5V7mAk=Vg@mail.gmail.com>
- <CACYkzJ7oxFA3u9eKDpKgCsZsYsBojVJPHVeHZnVaYQ5e9DavmQ@mail.gmail.com> <CAC1LvL2F_WbObrdcumVZCKc7yLeq4e9PQhYHrLiyVzpzf=V_Xg@mail.gmail.com>
-In-Reply-To: <CAC1LvL2F_WbObrdcumVZCKc7yLeq4e9PQhYHrLiyVzpzf=V_Xg@mail.gmail.com>
-From: KP Singh <kpsingh@kernel.org>
-Date: Tue, 20 May 2025 01:42:06 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ43yJRMS+e-7LefYts_v2ZH7_FCbw_LfG3mYfu6q6VD0g@mail.gmail.com>
-X-Gm-Features: AX0GCFuKLMZDwuoCJgohVN01wRXVU9M-dpj2qXdRHi2W4iwOU0W5kASpMuAgI_I
-Message-ID: <CACYkzJ43yJRMS+e-7LefYts_v2ZH7_FCbw_LfG3mYfu6q6VD0g@mail.gmail.com>
-Subject: Re: [PATCH v3 0/4] Introducing Hornet LSM
-To: Zvi Effron <zeffron@riotgames.com>
-Cc: Paul Moore <paul@paul-moore.com>, Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
-	Blaise Boscaccy <bboscaccy@linux.microsoft.com>, 
-	James Bottomley <James.Bottomley@hansenpartnership.com>, bpf <bpf@vger.kernel.org>, 
-	code@tyhicks.com, Jonathan Corbet <corbet@lwn.net>, "David S. Miller" <davem@davemloft.net>, 
-	David Howells <dhowells@redhat.com>, =?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, Jarkko Sakkinen <jarkko@kernel.org>, 
-	James Morris <jmorris@namei.org>, Jan Stancek <jstancek@redhat.com>, 
-	Justin Stitt <justinstitt@google.com>, keyrings@vger.kernel.org, 
-	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, 
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, 
-	Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
-	LSM List <linux-security-module@vger.kernel.org>, 
-	clang-built-linux <llvm@lists.linux.dev>, Masahiro Yamada <masahiroy@kernel.org>, 
-	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
-	Bill Wendling <morbo@google.com>, Nathan Chancellor <nathan@kernel.org>, Neal Gompa <neal@gompa.dev>, 
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Nicolas Schier <nicolas@fjasle.eu>, nkapron@google.com, 
-	Roberto Sassu <roberto.sassu@huawei.com>, "Serge E . Hallyn" <serge@hallyn.com>, 
-	Shuah Khan <shuah@kernel.org>, Matteo Croce <teknoraver@meta.com>, 
-	Cong Wang <xiyou.wangcong@gmail.com>, kysrinivasan@gmail.com, 
-	Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-> > > > > > No. New hook is not needed.
+On Thu, 15 May 2025 14:10:58 +0200
+Jiri Olsa <jolsa@kernel.org> wrote:
 
-[...]
+> Currently unapply_uprobe takes mmap_read_lock, but it might call
+> remove_breakpoint which eventually changes user pages.
+> 
+> Current code writes either breakpoint or original instruction, so
+> it can probably go away with that, but with the upcoming change that
+> writes multiple instructions on the probed address we need to ensure
+> that any update to mm's pages is exclusive.
+> 
 
-> > > > >
-> > > > > It would be good for you to explain how the existing LSM hook is sufficient
-> > > > > to authorize the loading of a BPF program using the signature validation
-> > > > > state determined in the BPF verifier.
-> > > >
-> > > > I already explained:
-> > > > .. a job of trivial LSM:
-> > > > if (prog_attr doesn't have signature &&
-> > > >    (task == .. || task is under certain cgroup || whatever))
-> > > >   disallow.
-> > >
-> > > I read that earlier reply as an example that covers a sample use case,
-> > > I didn't realize you were asserting that was the only approach you
-> > > were considering.  Perhaps that was the source of confusion earlier,
-> > > we may disagree, but I don't intentionally "twist" words; not only is
-> > > that rude, it's just stupid in public, archived discussions.
-> > >
-> > > As I mentioned previously, we really need to see an explicit yes/no
-> > > flag from the BPF verifier to indicate that the signature on the BPF
-> > > program has been validated.  It really should be as simple as adding a
-> > > bool to bpf_prog_aux which the BPF verifier sets to true upon
-> > > successful signature validation, and then an LSM can use this flag as
-> > > input to an access control decision in a hook placed after the
-> > > verifier.  Are you objecting to the addition of a flag in the
-> > > bpf_prog_aux struct (or some other struct tightly coupled to the BPF
-> > > program), the LSM hook after the verifier, or both?  It would also be
-> > > helpful if you can elaborate on the technical reasons behind these
-> > > objections.
-> >
-> > Neither the aux field, nor the hook are required because:
-> >
-> > * If the signature is passed, it will be enforced, there are no
-> > "runtime aspects" that need to be configurable here.
-> > * What the LSM can specify a policy for is when a signature is not
-> > passed, for this, it does not need an aux field or a signature or the
-> > new hook, existing hooks are sufficient.
-> >
->
-> What about wanting to create a policy that requires signatures under certain
-> situations and allowing the lack of a signature under others? How is that
-> implemented with the existing hooks?
-> As I understand it, all the existing hooks know (would know) is that _if_ there
-> is a signature _then_ it will be enforced. There is no way to know _whether_
-> there is a signature.
->
+So, this is a bugfix, right?
 
-The signature is passed in bpf_attr and if there is a signature the
-LSM's job is done.
+Thanks,
 
-   https://elixir.bootlin.com/linux/v6.14.7/source/kernel/bpf/syscall.c#L5771
-
- It will be enforced.
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  kernel/events/uprobes.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> index 84ee7b590861..257581432cd8 100644
+> --- a/kernel/events/uprobes.c
+> +++ b/kernel/events/uprobes.c
+> @@ -483,7 +483,7 @@ static int __uprobe_write_opcode(struct vm_area_struct *vma,
+>   * @opcode_vaddr: the virtual address to store the opcode.
+>   * @opcode: opcode to be written at @opcode_vaddr.
+>   *
+> - * Called with mm->mmap_lock held for read or write.
+> + * Called with mm->mmap_lock held for write.
+>   * Return 0 (success) or a negative errno.
+>   */
+>  int uprobe_write_opcode(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
+> @@ -1464,7 +1464,7 @@ static int unapply_uprobe(struct uprobe *uprobe, struct mm_struct *mm)
+>  	struct vm_area_struct *vma;
+>  	int err = 0;
+>  
+> -	mmap_read_lock(mm);
+> +	mmap_write_lock(mm);
+>  	for_each_vma(vmi, vma) {
+>  		unsigned long vaddr;
+>  		loff_t offset;
+> @@ -1481,7 +1481,7 @@ static int unapply_uprobe(struct uprobe *uprobe, struct mm_struct *mm)
+>  		vaddr = offset_to_vaddr(vma, uprobe->offset);
+>  		err |= remove_breakpoint(uprobe, vma, vaddr);
+>  	}
+> -	mmap_read_unlock(mm);
+> +	mmap_write_unlock(mm);
+>  
+>  	return err;
+>  }
+> -- 
+> 2.49.0
+> 
 
 
-- KP
-
-> An example policy I can think of is that most users (with CAP_BPF) must submit
-> signed programs but some users are exempted. Would that policy be able to be
-> made with the current hooks?
->
-> > - KP
-> >
-> > >
-> > > --
-> > > paul-moore.com
-> >
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
