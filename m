@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-58511-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58510-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89243ABCB06
-	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 00:37:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4EE7ABCB05
+	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 00:37:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 156FF8C3C26
-	for <lists+bpf@lfdr.de>; Mon, 19 May 2025 22:37:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D9EA1B63F8E
+	for <lists+bpf@lfdr.de>; Mon, 19 May 2025 22:37:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83E6B21D3D2;
-	Mon, 19 May 2025 22:37:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 965B021D3C5;
+	Mon, 19 May 2025 22:37:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="UkIB1jUg"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ZY3Lbc/h"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8688D21ABA3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 852E22192FC
 	for <bpf@vger.kernel.org>; Mon, 19 May 2025 22:37:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747694232; cv=none; b=Xr1yv7Y1AKyJoj3q3Rq+RiIypAJ8jAlCUgRiscne7OB9/Et5gR3UtQ3iCuUm/aki8aKcRD88724NyGjgbnjKmlqhk30a1pr27n/KtuLh+XUZ+7hk+/Z8drHuhNDTo6MdIVvY7bJTW0kn+fk0kPfxza2CokJwfcCPn0L+S4GUaNI=
+	t=1747694231; cv=none; b=DRvgHhouSJMMRNOfdVXP7sKnKhtqjIEmfEQRrrhuGoVQkcihqGE4L4gXFzcHHQ1PTIjmFJd80PLsDYcmxI+MY9km1lzX+hf32UIqqxJiExlIK4K83itGtkxs5bmfETJX0/v5Yo2q4CRwrKWzAf3/dxY7coNjo7EzD4YRDkzVdoQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747694232; c=relaxed/simple;
-	bh=30YUrKaV5PXc1GLMxxG1S8+f6t0YZsgfdVY6ftfxFbY=;
+	s=arc-20240116; t=1747694231; c=relaxed/simple;
+	bh=CRYnrk5FrjFOgp6n7i0rE6HDU7p9MQpKVOKmUfIeqp0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=j5L3WagEukvY+MA8pF1vjjPzmIc95ZYGBzPhwKknvd6aJQ23QM0iBODhamGfFS6CIQT9f9tjfUIYgLj/Uy+0SpqrteCS+HUpTXy5vD7eqXeUUbpckx7lL/gjSspKyyXTjWhcHgl4O1H0eQsoH3VbzCHXv/PaCs4cx4GgI6m352Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=UkIB1jUg; arc=none smtp.client-ip=148.163.156.1
+	 MIME-Version; b=s7FFzYbkR2Hsj7O8e4dazJclFjM2SLD3Akk+j3wC4gChuY2LFgc75xHVRNX1iuPLEihqNfDMQC4InGevjQKERVtfXYePmhLwhborNnxVKclzvpGyEeQ9VBTjgWUW0LxZg5JTxAIC8nJjls+FQS0DfLslOhPPqRmwIIXBQHGBEiY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ZY3Lbc/h; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54JFQAGC032665;
-	Mon, 19 May 2025 22:36:55 GMT
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54JIsQAG012085;
+	Mon, 19 May 2025 22:36:56 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=pp1; bh=qZzrsWZKCKZkeLzYQ
-	dBBrKQE5wiWW7ZYD2Vd3SGEyRE=; b=UkIB1jUgCIoB7Xg2rMaJT/cAaQm1EbAOR
-	lwhXZOlzRyj97gKWu2BOv8/35ufCMXQjmEz0xMmi/6J0EOJqYn1ED94CSf2Ys82M
-	vHhr89PK9a2h1MdoEwwj+bwilekgQFULrdG3ImfGs3pGZcVsL4d1Ex2upQBwu9HX
-	xxk4ns9G+6Osv/m/P2h9MtfZeHviQeDXgUtNUjkjq9gpjjnfHe/+NScqOoHKKTyO
-	k1eixmSemSC0NkuqPSkNWcknf+Lb66BysD9L7S7KfGm+3NJ723L1rcSbRqFirKKD
-	vi6ZIcUQv0I2sBrZ7OLXFGpwpDCIlSi4z44tZWm8DcRcbWwiJnThQ==
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46r2qhu8jj-1
+	:mime-version:references:subject:to; s=pp1; bh=Pv7SNTNSwsPWF5rgC
+	vlLQQ//JscUidFJEl/vDTZ6mUQ=; b=ZY3Lbc/hZ1Rj5xVfwDcvgT6hMM7w+M3f5
+	10jnothxRid4Yx+L+/LHXKvf71PBaeST53Kq6pUB0nJq4libZ0MaZcpzvD/X3jlD
+	LC7kajhWSSgwm5eNhAd3KpfDL2CwK6c7lgDMX32oFKyWSGfGlLDgE80ro6s0E9Qs
+	aHlQJpaMMn4fK6tgEyBjvQ2kVgBp2jKgkIr0NfvxZJ9HCVumq9K4eb5M7DVBOemF
+	wAHgwYbca6Q0OjfxhOXAgqEaUnUVdkM485jGn26dEUaj8dYadEayOsxu/52Pfjqw
+	EWmxnUBe1rg0rjlYnWvAmChmbAlkr42RgB5fSnH0jNtgsn/zECIWQ==
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46rab70s5r-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Mon, 19 May 2025 22:36:55 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 54JLwvVe028860;
-	Mon, 19 May 2025 22:36:54 GMT
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 54JMSLVP005356;
+	Mon, 19 May 2025 22:36:55 GMT
 Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 46q55ys1n9-1
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 46q69m8ryk-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Mon, 19 May 2025 22:36:54 +0000
 Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 54JMaoaN55509418
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 54JMaoR255509420
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 19 May 2025 22:36:50 GMT
+	Mon, 19 May 2025 22:36:51 GMT
 Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 44E962012D;
+	by IMSVA (Postfix) with ESMTP id D85182012D;
 	Mon, 19 May 2025 22:36:50 +0000 (GMT)
 Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B535C2012B;
-	Mon, 19 May 2025 22:36:49 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 5C0D92012B;
+	Mon, 19 May 2025 22:36:50 +0000 (GMT)
 Received: from heavy.ibmuc.com (unknown [9.111.59.242])
 	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 19 May 2025 22:36:49 +0000 (GMT)
+	Mon, 19 May 2025 22:36:50 +0000 (GMT)
 From: Ilya Leoshkevich <iii@linux.ibm.com>
 To: Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -75,9 +75,9 @@ Cc: bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
         Vasily Gorbik <gor@linux.ibm.com>,
         Alexander Gordeev <agordeev@linux.ibm.com>,
         Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf-next 2/3] s390/bpf: Add macros for calling external functions
-Date: Mon, 19 May 2025 23:30:05 +0100
-Message-ID: <20250519223646.66382-3-iii@linux.ibm.com>
+Subject: [PATCH bpf-next 3/3] s390/bpf: Use kernel's expoline thunks
+Date: Mon, 19 May 2025 23:30:06 +0100
+Message-ID: <20250519223646.66382-4-iii@linux.ibm.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250519223646.66382-1-iii@linux.ibm.com>
 References: <20250519223646.66382-1-iii@linux.ibm.com>
@@ -89,151 +89,140 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTE5MDIxMSBTYWx0ZWRfXxOdwzDn6eByB F5wwPhdCsmpavCypAvBjmoW1sZOKmMqNVR7uwvMmPBN4CXwGcz6TJfAHK48Nexo9PKCZl8M7x28 tMzKQpJjzb3v/2lfKivpUb1ENSA4MRdrKafFhqJdaNa1Nx3zhg8thJCByVNkyH0KAdrt5ENwoRW
- PaoTH/3yK+c9ZpmtAZf1RscpQJ5/gj4H1VEmjN7X1X6SYeytm1kJNtAprEQsDAFQ4A++JyyGhWg x2yDVP8Ge7b0QejP1oGw+elJSlDxn5jG0frYj5NeZew6PRLle9G+0C2y/+1LdWcvppS+I5X/cSC vxzc8YR55hYeBTn6T2DAxn97yLWCrxc227pZHw04XxmuXgil5fqWKg1pTigDI3GRv+Ad+6/+Y8X
- v3rj/hHKk4oUcQvDZAf+wpSiZ7BqRHPOQbDJyrPO7qHIeNN8e7tEEBfRSz2QmrMxFACjpQ8C
-X-Proofpoint-ORIG-GUID: hodNBuD6tR8eIQOXA0IewQvlH7NHJM2M
-X-Proofpoint-GUID: hodNBuD6tR8eIQOXA0IewQvlH7NHJM2M
-X-Authority-Analysis: v=2.4 cv=P406hjAu c=1 sm=1 tr=0 ts=682bb287 cx=c_pps a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17 a=dt9VzEwgFbYA:10 a=VnNF1IyMAAAA:8 a=C2wOGMEbqDEBmCrE-IQA:9
+X-Authority-Analysis: v=2.4 cv=ELgG00ZC c=1 sm=1 tr=0 ts=682bb287 cx=c_pps a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17 a=dt9VzEwgFbYA:10 a=VnNF1IyMAAAA:8 a=HMsYVznzO8yh3S67C-MA:9
+X-Proofpoint-ORIG-GUID: Dcn0JF06o4y7FoZaqH7xrUthu8O1P0Z5
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTE5MDIxMSBTYWx0ZWRfX9YMD08iEAb1W i91AZRq/uHja7sXFqQV3gMECy37gosiHmXUCQMnVzWcs374GTPPF6TN9k8DZNLKnOuqVwmT3RQ+ NtpAeg7mX25kjKeYJqJQwWzxf0u8CqsyazyHYtLhixiVYi842HF8f2PNCbLlIzhvXebzqm12BZX
+ LShSgCYmoVgqSlPHPdCmtwHfUFB8qPWEGN4jQApCbpGkIGZtsWO+wOu3hWqzETYAt/HXDcbgy/D aWxpSZv716GE/e5FQTLoIvKdlaUJe3K0/bkDvfGFzMcKMUyBAJddh5yMDEDkzZk4ASNROw/+c+X ptcySKBCv3Thrl1gVe4kiVIIiFZ1Bz+wKyPXf1PUlRW+HH2yOWdqWEqfdllLi7O787mZjDhVBKb
+ nDVi5Fll5d6f1kNpSDqwJMs9WIApd76yNJTbnMwCD0uARGp7T5OzWylxUmTA2zv3F7nW1KFL
+X-Proofpoint-GUID: Dcn0JF06o4y7FoZaqH7xrUthu8O1P0Z5
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
  definitions=2025-05-19_09,2025-05-16_03,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- clxscore=1015 mlxscore=0 adultscore=0 impostorscore=0 spamscore=0
- malwarescore=0 priorityscore=1501 mlxlogscore=906 bulkscore=0 phishscore=0
- suspectscore=0 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505070000
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxlogscore=998
+ adultscore=0 lowpriorityscore=0 spamscore=0 bulkscore=0 suspectscore=0
+ phishscore=0 priorityscore=1501 impostorscore=0 mlxscore=0 malwarescore=0
+ classifier=spam authscore=0 authtc=n/a authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2505070000
  definitions=main-2505190211
 
-After the V!=R rework (commit c98d2ecae08f ("s390/mm: Uncouple physical
-vs virtual address spaces")), kernel and BPF programs are allocated
-within a 4G region, making it possible to use relative addressing to
-directly use kernel functions from BPF code.
-
-Add two new macros for calling kernel functions from BPF code:
-EMIT6_PCREL_RILB_PTR() and EMIT6_PCREL_RILC_PTR(). Factor out parts
-of the existing macros that are helpful for implementing the new ones.
+Simplify the JIT code by replacing the custom expolines with the ones
+defined in the kernel text.
 
 Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 ---
- arch/s390/net/bpf_jit_comp.c | 60 +++++++++++++++++++++++++-----------
- 1 file changed, 42 insertions(+), 18 deletions(-)
+ arch/s390/net/bpf_jit_comp.c | 61 ++++++++++--------------------------
+ 1 file changed, 17 insertions(+), 44 deletions(-)
 
 diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-index 6f22b5199c20..70a93e03bfb3 100644
+index 70a93e03bfb3..c7f8313ba449 100644
 --- a/arch/s390/net/bpf_jit_comp.c
 +++ b/arch/s390/net/bpf_jit_comp.c
-@@ -127,6 +127,18 @@ static inline void reg_set_seen(struct bpf_jit *jit, u32 b1)
- 		jit->seen_regs |= (1 << r1);
+@@ -48,8 +48,6 @@ struct bpf_jit {
+ 	int lit64;		/* Current position in 64-bit literal pool */
+ 	int base_ip;		/* Base address for literal pool */
+ 	int exit_ip;		/* Address of exit */
+-	int r1_thunk_ip;	/* Address of expoline thunk for 'br %r1' */
+-	int r14_thunk_ip;	/* Address of expoline thunk for 'br %r14' */
+ 	int tail_call_start;	/* Tail call start offset */
+ 	int excnt;		/* Number of exception table entries */
+ 	int prologue_plt_ret;	/* Return address for prologue hotpatch PLT */
+@@ -642,28 +640,17 @@ static void bpf_jit_prologue(struct bpf_jit *jit, struct bpf_prog *fp,
  }
  
-+static s32 off_to_pcrel(struct bpf_jit *jit, u32 off)
-+{
-+	return off - jit->prg;
-+}
-+
-+static s64 ptr_to_pcrel(struct bpf_jit *jit, const void *ptr)
-+{
-+	if (jit->prg_buf)
-+		return (const u8 *)ptr - ((const u8 *)jit->prg_buf + jit->prg);
-+	return 0;
-+}
-+
- #define REG_SET_SEEN(b1)					\
- ({								\
- 	reg_set_seen(jit, b1);					\
-@@ -201,7 +213,7 @@ static inline void reg_set_seen(struct bpf_jit *jit, u32 b1)
+ /*
+- * Emit an expoline for a jump that follows
++ * Jump using a register either directly or via an expoline thunk
+  */
+-static void emit_expoline(struct bpf_jit *jit)
+-{
+-	/* exrl %r0,.+10 */
+-	EMIT6_PCREL_RIL(0xc6000000, jit->prg + 10);
+-	/* j . */
+-	EMIT4_PCREL(0xa7f40000, 0);
+-}
+-
+-/*
+- * Emit __s390_indirect_jump_r1 thunk if necessary
+- */
+-static void emit_r1_thunk(struct bpf_jit *jit)
+-{
+-	if (nospec_uses_trampoline()) {
+-		jit->r1_thunk_ip = jit->prg;
+-		emit_expoline(jit);
+-		/* br %r1 */
+-		_EMIT2(0x07f1);
+-	}
+-}
++#define EMIT_JUMP_REG(reg) do {						\
++	if (nospec_uses_trampoline())					\
++		/* brcl 0xf,__s390_indirect_jump_rN */			\
++		EMIT6_PCREL_RILC_PTR(0xc0040000, 0x0f,			\
++				     __s390_indirect_jump_r ## reg);	\
++	else								\
++		/* br %rN */						\
++		_EMIT2(0x07f0 | reg);					\
++} while (0)
  
- #define EMIT4_PCREL_RIC(op, mask, target)			\
- ({								\
--	int __rel = ((target) - jit->prg) / 2;			\
-+	int __rel = off_to_pcrel(jit, target) / 2;		\
- 	_EMIT4((op) | (mask) << 20 | (__rel & 0xffff));		\
- })
- 
-@@ -239,7 +251,7 @@ static inline void reg_set_seen(struct bpf_jit *jit, u32 b1)
- 
- #define EMIT6_PCREL_RIEB(op1, op2, b1, b2, mask, target)	\
- ({								\
--	unsigned int rel = (int)((target) - jit->prg) / 2;	\
-+	unsigned int rel = off_to_pcrel(jit, target) / 2;	\
- 	_EMIT6((op1) | reg(b1, b2) << 16 | (rel & 0xffff),	\
- 	       (op2) | (mask) << 12);				\
- 	REG_SET_SEEN(b1);					\
-@@ -248,7 +260,7 @@ static inline void reg_set_seen(struct bpf_jit *jit, u32 b1)
- 
- #define EMIT6_PCREL_RIEC(op1, op2, b1, imm, mask, target)	\
- ({								\
--	unsigned int rel = (int)((target) - jit->prg) / 2;	\
-+	unsigned int rel = off_to_pcrel(jit, target) / 2;	\
- 	_EMIT6((op1) | (reg_high(b1) | (mask)) << 16 |		\
- 		(rel & 0xffff), (op2) | ((imm) & 0xff) << 8);	\
- 	REG_SET_SEEN(b1);					\
-@@ -257,29 +269,41 @@ static inline void reg_set_seen(struct bpf_jit *jit, u32 b1)
- 
- #define EMIT6_PCREL(op1, op2, b1, b2, i, off, mask)		\
- ({								\
--	int rel = (addrs[(i) + (off) + 1] - jit->prg) / 2;	\
-+	int rel = off_to_pcrel(jit, addrs[(i) + (off) + 1]) / 2;\
- 	_EMIT6((op1) | reg(b1, b2) << 16 | (rel & 0xffff), (op2) | (mask));\
- 	REG_SET_SEEN(b1);					\
- 	REG_SET_SEEN(b2);					\
- })
- 
-+static void emit6_pcrel_ril(struct bpf_jit *jit, u32 op, s64 pcrel)
-+{
-+	u32 pc32dbl = (s32)(pcrel / 2);
-+
-+	_EMIT6(op | pc32dbl >> 16, pc32dbl & 0xffff);
-+}
-+
-+static void emit6_pcrel_rilb(struct bpf_jit *jit, u32 op, u8 b, s64 pcrel)
-+{
-+	emit6_pcrel_ril(jit, op | reg_high(b) << 16, pcrel);
-+	REG_SET_SEEN(b);
-+}
-+
- #define EMIT6_PCREL_RILB(op, b, target)				\
--({								\
--	unsigned int rel = (int)((target) - jit->prg) / 2;	\
--	_EMIT6((op) | reg_high(b) << 16 | rel >> 16, rel & 0xffff);\
--	REG_SET_SEEN(b);					\
--})
-+	emit6_pcrel_rilb(jit, op, b, off_to_pcrel(jit, target))
- 
--#define EMIT6_PCREL_RIL(op, target)				\
--({								\
--	unsigned int rel = (int)((target) - jit->prg) / 2;	\
--	_EMIT6((op) | rel >> 16, rel & 0xffff);			\
--})
-+#define EMIT6_PCREL_RILB_PTR(op, b, target_ptr)			\
-+	emit6_pcrel_rilb(jit, op, b, ptr_to_pcrel(jit, target_ptr))
-+
-+static void emit6_pcrel_rilc(struct bpf_jit *jit, u32 op, u8 mask, s64 pcrel)
-+{
-+	emit6_pcrel_ril(jit, op | mask << 20, pcrel);
-+}
- 
- #define EMIT6_PCREL_RILC(op, mask, target)			\
--({								\
--	EMIT6_PCREL_RIL((op) | (mask) << 20, (target));		\
--})
-+	emit6_pcrel_rilc(jit, op, mask, off_to_pcrel(jit, target))
-+
-+#define EMIT6_PCREL_RILC_PTR(op, mask, target_ptr)		\
-+	emit6_pcrel_rilc(jit, op, mask, ptr_to_pcrel(jit, target_ptr))
- 
- #define _EMIT6_IMM(op, imm)					\
- ({								\
-@@ -503,7 +527,7 @@ static void bpf_skip(struct bpf_jit *jit, int size)
+ /*
+  * Call r1 either directly or via __s390_indirect_jump_r1 thunk
+@@ -672,7 +659,8 @@ static void call_r1(struct bpf_jit *jit)
  {
- 	if (size >= 6 && !is_valid_rel(size)) {
- 		/* brcl 0xf,size */
--		EMIT6_PCREL_RIL(0xc0f4000000, size);
-+		EMIT6_PCREL_RILC(0xc0040000, 0xf, size);
- 		size -= 6;
- 	} else if (size >= 4 && is_valid_rel(size)) {
- 		/* brc 0xf,size */
+ 	if (nospec_uses_trampoline())
+ 		/* brasl %r14,__s390_indirect_jump_r1 */
+-		EMIT6_PCREL_RILB(0xc0050000, REG_14, jit->r1_thunk_ip);
++		EMIT6_PCREL_RILB_PTR(0xc0050000, REG_14,
++				     __s390_indirect_jump_r1);
+ 	else
+ 		/* basr %r14,%r1 */
+ 		EMIT2(0x0d00, REG_14, REG_1);
+@@ -688,16 +676,7 @@ static void bpf_jit_epilogue(struct bpf_jit *jit, u32 stack_depth)
+ 	EMIT4(0xb9040000, REG_2, BPF_REG_0);
+ 	/* Restore registers */
+ 	save_restore_regs(jit, REGS_RESTORE, stack_depth, 0);
+-	if (nospec_uses_trampoline()) {
+-		jit->r14_thunk_ip = jit->prg;
+-		/* Generate __s390_indirect_jump_r14 thunk */
+-		emit_expoline(jit);
+-	}
+-	/* br %r14 */
+-	_EMIT2(0x07fe);
+-
+-	if (is_first_pass(jit) || (jit->seen & SEEN_FUNC))
+-		emit_r1_thunk(jit);
++	EMIT_JUMP_REG(14);
+ 
+ 	jit->prg = ALIGN(jit->prg, 8);
+ 	jit->prologue_plt = jit->prg;
+@@ -1899,7 +1878,8 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp,
+ 			/* aghi %r1,tail_call_start */
+ 			EMIT4_IMM(0xa70b0000, REG_1, jit->tail_call_start);
+ 			/* brcl 0xf,__s390_indirect_jump_r1 */
+-			EMIT6_PCREL_RILC(0xc0040000, 0xf, jit->r1_thunk_ip);
++			EMIT6_PCREL_RILC_PTR(0xc0040000, 0xf,
++					     __s390_indirect_jump_r1);
+ 		} else {
+ 			/* bc 0xf,tail_call_start(%r1) */
+ 			_EMIT4(0x47f01000 + jit->tail_call_start);
+@@ -2868,17 +2848,10 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
+ 	       0xf000 | tjit->tccnt_off);
+ 	/* aghi %r15,stack_size */
+ 	EMIT4_IMM(0xa70b0000, REG_15, tjit->stack_size);
+-	/* Emit an expoline for the following indirect jump. */
+-	if (nospec_uses_trampoline())
+-		emit_expoline(jit);
+ 	if (flags & BPF_TRAMP_F_SKIP_FRAME)
+-		/* br %r14 */
+-		_EMIT2(0x07fe);
++		EMIT_JUMP_REG(14);
+ 	else
+-		/* br %r1 */
+-		_EMIT2(0x07f1);
+-
+-	emit_r1_thunk(jit);
++		EMIT_JUMP_REG(1);
+ 
+ 	return 0;
+ }
 -- 
 2.49.0
 
