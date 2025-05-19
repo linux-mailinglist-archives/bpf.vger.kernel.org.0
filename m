@@ -1,83 +1,83 @@
-Return-Path: <bpf+bounces-58485-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58486-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B53FABBDA0
-	for <lists+bpf@lfdr.de>; Mon, 19 May 2025 14:23:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 490F2ABBF7B
+	for <lists+bpf@lfdr.de>; Mon, 19 May 2025 15:44:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2314417BC82
-	for <lists+bpf@lfdr.de>; Mon, 19 May 2025 12:23:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 74A801B61FBA
+	for <lists+bpf@lfdr.de>; Mon, 19 May 2025 13:44:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C028827511C;
-	Mon, 19 May 2025 12:23:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81C4527CCE2;
+	Mon, 19 May 2025 13:44:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K09HxbdX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hfALfld6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3CD5D515
-	for <bpf@vger.kernel.org>; Mon, 19 May 2025 12:22:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A066A27C16A
+	for <bpf@vger.kernel.org>; Mon, 19 May 2025 13:44:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747657382; cv=none; b=eVxfYfCrN/7ys/40fSE7YFV/3dpAiIOOlX54uKOXOILwp7yF11b86k4r9sE00aT2L3tEexAZpG9ZF5X9VQOieW9yqfiJ4S1uQo3IHs653phbkxxYmhr8631Oq2CyQNi3QMQ2aFvWcXTC2QpCp2Jp2T29DuG8BQNiGwjW+vu5yI4=
+	t=1747662244; cv=none; b=U2kxjp/5zJtiQ9g1Wk2Y15+Qc+pIJkj2TTfa94ojNEh+tb+GTnpwYElen0h7MWfMRWEuInsbS+I+oM00iAPn4F2RJgZLt3ciQnbXFASlPcVhiOKb+Y9ca70VWIDnZCPA0MmZ2/1ZraWtp+3IB9NX/Z0zCxr7ToNjaAfJaiiff0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747657382; c=relaxed/simple;
-	bh=KGhctToziUqdN+qmkK4Ofw8BcJH0M2ioklpAzk9sScc=;
+	s=arc-20240116; t=1747662244; c=relaxed/simple;
+	bh=RWHm7b/uC/EOU2z0lZZjVf2Hy4bAYeE8qoiWveJZE7M=;
 	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=hnGNrZlP4dP8Y3eWFuW8lBcusC8fe74kCPindSR8YAFRd5vHD8rUeXgb/7XdabqzuWdoIvzA40Kur8EuItnuR8cRnpG2Q6ZJMqC9yfRoX8ktSCAUk2GOzo0G0OZdpN5h4MM2vRMDkCGtlZgvnJhOt2KWQs2aosVewJXfg4dqeA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K09HxbdX; arc=none smtp.client-ip=209.85.221.47
+	 Content-Disposition; b=J8moVqs2rCOviLflQrNRYnxTuM6DFNdIMp7UjfIbOwHhcg8ZdCjmqMsm6Shq0rAr7qw6tVsnNaR+XHJn2JLe+LY9/p0m8q/GMejHLYC0PjjR+Ih2FH71VFnZzVZ3XsZFuqIymFQCjJr8+mqepanryT3jgQUz6IAK6WyBTfdciM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hfALfld6; arc=none smtp.client-ip=209.85.221.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3a375888197so307104f8f.0
-        for <bpf@vger.kernel.org>; Mon, 19 May 2025 05:22:59 -0700 (PDT)
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3a371097fe1so726910f8f.1
+        for <bpf@vger.kernel.org>; Mon, 19 May 2025 06:44:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747657378; x=1748262178; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1747662240; x=1748267040; darn=vger.kernel.org;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=TuCu36wymglHDEL2BaRc6AJXZzdTR8hx7FSjw+GnFs4=;
-        b=K09HxbdXDyQhsDMqn6+TmFOwYxcoJShfV1R/6UK8S/gUY0dR9BOrOEfSHO0NogbASf
-         h3zprhqkMBc/x8UgMk0NiXYcwa8K8nbM/AOQP14xOZg2qoAjU/wMi1mSxm+/VfYOudCS
-         dQRC4c0eYvQfOJ8pXVwtPXcHiXT2XDKPG2bfv/hh5EPa/93mCL5SuqlpQCO7WfN09km5
-         XIzFOUrU/ugWx0WKSEBBrSZF/SuF0BnzJvfTITwiV9vB3QsLk5S4oVPDH/gcXfPsFCL9
-         17ipqIzZWtWtxk/qb17aTY9iBMLDOLICvzKdhlwskE44RasYD1pzP9vzC/eUU09aXgkS
-         gpbw==
+        bh=F+N6Lwap8Y70wlz0c/XHtcL92rouec1/Ix1HTvTtu9Q=;
+        b=hfALfld62jCJ/fsVH21djEe+G7BFDVoSNFexzubE6OuaAQ60yz5SrGrNrElGIqVQOo
+         ZRvOaUepCj7x2LQnzZohJj6HUdtntBr9tcUpTnj0bWXeZNIHqUdtT5TtSMedw4abQaML
+         D8yjbIBU1r3rzCBsIL0wtsANbN6Vicl6o6XR+9X5/hT0dcONDOYrR0DCBtv8imA7CMrn
+         XwfomMXEa/ZpxR7w1GuhARRnI/YQ5LlJ3VqEls8ILipqKVEJLWU04lXZUslD/TGwqn6k
+         f0rx/of5nOkE7/r5evUbzqEPas9rdtw4QPibIEG6ox529PmZ+HrP3M5Fw0u/2e3pe8IB
+         UG1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747657378; x=1748262178;
+        d=1e100.net; s=20230601; t=1747662240; x=1748267040;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TuCu36wymglHDEL2BaRc6AJXZzdTR8hx7FSjw+GnFs4=;
-        b=uWrDSIoJKEbPQ6f0cUfQYyTqK3hb4GtuhsboEDnavtBwAauWTH4o3KaXYnKclawl14
-         jzn0Y4cYxoDGw4igHViVeCMZxp0iN3TICfAzBlF+PQtTo5qLsSyxRBPCt7MYsFQJ21/6
-         adDJILTpmn3UMWIu3M4k19sDkYepq71oG+Z3zTU9yOP4hF5pxiYYve00X8zzP24+BGgs
-         +YroFS4DNu4uFrP2g8qNUYQ7+9eR6DRkLC0moHYwS0HN8gBK4uCfp7np1GtgL41P6i8B
-         uBAZWtdbFzv7tR0xewCNgqkW5J7n+jqrO9Ma8+iNN4Dez8eUBaNosP+H+4w1ncIfvsmx
-         F+bA==
-X-Gm-Message-State: AOJu0YxsQ46AIdojdbTHKyh7sYrjVFQ5CLv/zYSC/OwHLXWv6yi9fwMU
-	GbEbJ0BLFaxhSEFt4tQVyCnQOn1i1C+qQ36wXyDrKLsVXjIyFCorigB6FqIUFg==
-X-Gm-Gg: ASbGncuV8/Mvievgwjyjq5Rjwout1nQL5fz3/MMMWdaUzYe1tXzLu/XUGW1LTkO4gjO
-	6Yk2xh1aBPT8KEQEsBi72sGw1Dw53lU9HzgPcykFuENnL1Cqf5pbGriZCBqSdres/ZYtPwT5kX+
-	8iT3nv6nIek/kIYiFOT0qtXoSlFI6fTHjqvsJV/WvxpgAq3iBDDiO0k3BnMSd1oI+eduxGBMFaP
-	Vm3NiDrSowOBCKptNEWLWgT/u5K6tKVL1ft3Uhf0DqW9RgDozLGPxV9Yi0BukXPxsiokIjWO2KM
-	1/aCBSp4yBssuO3k3L2gMkZABaWMPLxTX23+S8ZsNSfRtoqe6lYxAz+gFP/rmLQhGJhZaKzVqre
-	K7l/8ySbR0kyUIzbRjxGoESctXBKyXGI/XoP4JroPSL8vPttZtw==
-X-Google-Smtp-Source: AGHT+IGcBueD+gv7EPQMda1pSIAjxHJqG6G14f+zrH0XT+w8qDowdih5f5qcWVxktKk+mmOiZGVjEQ==
-X-Received: by 2002:a05:6000:18a9:b0:3a3:6d01:1ed3 with SMTP id ffacd0b85a97d-3a36d012147mr3920324f8f.42.1747657377923;
-        Mon, 19 May 2025 05:22:57 -0700 (PDT)
+        bh=F+N6Lwap8Y70wlz0c/XHtcL92rouec1/Ix1HTvTtu9Q=;
+        b=c/78qFauTXo3RL42/ZZw9dqJhYyq1IMUNoUDd39mv6Poqx3KR0ctWPCbyEAb/kPVrI
+         PIt+VOsZavYI/MNiTpI7msYR7WiILxLXQIV0Yezg+AjYmnJrMYh/vOTSQR4DlhH4m+h2
+         DQuuhTYVLgv3rPxtZp3FjqyVr5CX9l7LfcHbMq9Vr4JxeLQj9Z2K+BzCwDrYWjXVe6vs
+         lthPKoPhFE/+YcVVu/+n9DbKRjQy9EyWZci67WUw09Rkz51fS3AMsZHawcaiYJ7PPjj2
+         kCppg9mhophHf8VVdt3TfSrpoT1wFx6p/wAyKhX8OOqhpxWXeoWcf7K+fYjXjAV0mSTe
+         7Veg==
+X-Gm-Message-State: AOJu0YxA6JGiACJSlideOY8ieRGiRgUnm/cHHtqYHXHf3lxPOaEm3U7e
+	8XN2Cbs6gg435JBNmWwN8FZfL12CRA3TCsZuPx/PD//MElCiVNkmBAuztQxSyFK1
+X-Gm-Gg: ASbGncsZl9ddcGiT0gk8O4MXQ2z/fnZwSTyvjlS54W6kmu5/nP+WKJQN4j3KohT1KIe
+	+8P9PYuANPXJc15Oq7s7TXgoJklam6pG9vZcrHJpI0Lmdb8r4g12Bk1WpHf2V66xj2FFAsNWsQU
+	dZMayUmMOvNwUnrTa7j2NC1NzoCYQg7xlTjG7Hx1MplrQjHtozLa9sjSOYP+u8BtnB53u1QcKH3
+	gkeulN66p6WBiqjnj/jXl4QLKqFo/VuFyQ4VivaAuPGydhJ6kUc+6lx4bdq+EKVY1NqG7VMCizR
+	iAbP5B6ryxqg8rFs25xxeBDg/op+OBJHe5cSgBCgdXF9vasMTfGmKy3Isn8V4Pe3WuuwEOYBd+c
+	dVAeiJHOlKNoyj8gwmSxA4xmMKgjqB16pM6e618rjdFgluEdmBg==
+X-Google-Smtp-Source: AGHT+IGTeLPRHzvzRImYbMd0p3yvxrIuzVPOkEJnzkgNCPPY5F90Nfw2kcRQWzoBiVK9LxblX19J7A==
+X-Received: by 2002:a5d:638e:0:b0:3a3:64b8:ef20 with SMTP id ffacd0b85a97d-3a364b8ef5fmr6298965f8f.52.1747662239612;
+        Mon, 19 May 2025 06:43:59 -0700 (PDT)
 Received: from mail.gmail.com (2a01cb0889497e00b63b567e7194705b.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:b63b:567e:7194:705b])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a35ca5a8cfsm12807859f8f.37.2025.05.19.05.22.57
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a35ca88a34sm12757324f8f.70.2025.05.19.06.43.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 May 2025 05:22:57 -0700 (PDT)
-Date: Mon, 19 May 2025 14:22:55 +0200
+        Mon, 19 May 2025 06:43:58 -0700 (PDT)
+Date: Mon, 19 May 2025 15:43:57 +0200
 From: Paul Chaignon <paul.chaignon@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH bpf-next v5] bpf: WARN_ONCE on verifier bugs
-Message-ID: <aCsin_ILFTHgqNDM@mail.gmail.com>
+Subject: [PATCH bpf-next v6] bpf: WARN_ONCE on verifier bugs
+Message-ID: <aCs1nYvNNMq8dAWP@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -101,6 +101,8 @@ states.
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
 ---
+Changes in v6:
+  - Fix typo that broke the build.
 Changes in v5:
   - Improve error messages according to Andrii's suggestions.
   - Style adjustments related to line lengths and unlikely.
@@ -121,8 +123,8 @@ Changes in v2:
  include/linux/bpf.h          |   6 ++
  include/linux/bpf_verifier.h |  11 +++
  kernel/bpf/btf.c             |   4 +-
- kernel/bpf/verifier.c        | 142 +++++++++++++++--------------------
- 4 files changed, 79 insertions(+), 84 deletions(-)
+ kernel/bpf/verifier.c        | 141 +++++++++++++++--------------------
+ 4 files changed, 79 insertions(+), 83 deletions(-)
 
 diff --git a/include/linux/bpf.h b/include/linux/bpf.h
 index 83c56f40842b..5b25d278409b 100644
@@ -186,7 +188,7 @@ index 6b21ca67070c..0f7828380895 100644
  	}
  	if (prog_type == BPF_PROG_TYPE_EXT)
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index f6d3655b3a7a..26d5426481b9 100644
+index f6d3655b3a7a..d5807d2efc92 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
 @@ -1924,11 +1924,8 @@ static struct bpf_verifier_state *get_loop_entry(struct bpf_verifier_env *env,
@@ -358,7 +360,7 @@ index f6d3655b3a7a..26d5426481b9 100644
  			return -EFAULT;
  		}
  
-@@ -4758,10 +4753,8 @@ static int __mark_chain_precision(struct bpf_verifier_env *env, int regno)
+@@ -4758,8 +4753,7 @@ static int __mark_chain_precision(struct bpf_verifier_env *env, int regno)
  				 * It means the backtracking missed the spot where
  				 * particular register was initialized with a constant.
  				 */
@@ -366,11 +368,9 @@ index f6d3655b3a7a..26d5426481b9 100644
 -				WARN_ONCE(1, "verifier backtracking bug");
 +				verifier_bug(env, "backtracking idx %d", i);
  				return -EFAULT;
--			}
+ 			}
  		}
- 		st = st->parent;
- 		if (!st)
-@@ -4784,12 +4777,10 @@ static int __mark_chain_precision(struct bpf_verifier_env *env, int regno)
+@@ -4784,12 +4778,10 @@ static int __mark_chain_precision(struct bpf_verifier_env *env, int regno)
  
  			bitmap_from_u64(mask, bt_frame_stack_mask(bt, fr));
  			for_each_set_bit(i, mask, 64) {
@@ -386,7 +386,7 @@ index f6d3655b3a7a..26d5426481b9 100644
  
  				if (!is_spilled_scalar_reg(&func->stack[i])) {
  					bt_clear_frame_slot(bt, fr, i);
-@@ -6562,21 +6553,18 @@ static int check_max_stack_depth_subprog(struct bpf_verifier_env *env, int idx,
+@@ -6562,21 +6554,18 @@ static int check_max_stack_depth_subprog(struct bpf_verifier_env *env, int idx,
  		/* find the callee */
  		next_insn = i + insn[i].imm + 1;
  		sidx = find_subprog(env, next_insn);
@@ -411,7 +411,7 @@ index f6d3655b3a7a..26d5426481b9 100644
  				return -EINVAL;
  			}
  		}
-@@ -6676,11 +6664,8 @@ static int get_callee_stack_depth(struct bpf_verifier_env *env,
+@@ -6676,11 +6665,8 @@ static int get_callee_stack_depth(struct bpf_verifier_env *env,
  	int start = idx + insn->imm + 1, subprog;
  
  	subprog = find_subprog(env, start);
@@ -424,7 +424,7 @@ index f6d3655b3a7a..26d5426481b9 100644
  	return env->subprog_info[subprog].stack_depth;
  }
  #endif
-@@ -7985,7 +7970,7 @@ static int check_stack_range_initialized(
+@@ -7985,7 +7971,7 @@ static int check_stack_range_initialized(
  		slot = -i - 1;
  		spi = slot / BPF_REG_SIZE;
  		if (state->allocated_stack <= slot) {
@@ -433,7 +433,7 @@ index f6d3655b3a7a..26d5426481b9 100644
  			return -EFAULT;
  		}
  
-@@ -8414,7 +8399,7 @@ static int process_timer_func(struct bpf_verifier_env *env, int regno,
+@@ -8414,7 +8400,7 @@ static int process_timer_func(struct bpf_verifier_env *env, int regno,
  		return -EINVAL;
  	}
  	if (meta->map_ptr) {
@@ -442,7 +442,7 @@ index f6d3655b3a7a..26d5426481b9 100644
  		return -EFAULT;
  	}
  	meta->map_uid = reg->map_uid;
-@@ -10286,8 +10271,7 @@ static int setup_func_entry(struct bpf_verifier_env *env, int subprog, int calls
+@@ -10286,8 +10272,7 @@ static int setup_func_entry(struct bpf_verifier_env *env, int subprog, int calls
  	}
  
  	if (state->frame[state->curframe + 1]) {
@@ -452,7 +452,7 @@ index f6d3655b3a7a..26d5426481b9 100644
  		return -EFAULT;
  	}
  
-@@ -10401,8 +10385,7 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env, int subprog,
+@@ -10401,8 +10386,7 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env, int subprog,
  			if (err)
  				return err;
  		} else {
@@ -462,7 +462,7 @@ index f6d3655b3a7a..26d5426481b9 100644
  			return -EFAULT;
  		}
  	}
-@@ -10465,13 +10448,13 @@ static int push_callback_call(struct bpf_verifier_env *env, struct bpf_insn *ins
+@@ -10465,13 +10449,13 @@ static int push_callback_call(struct bpf_verifier_env *env, struct bpf_insn *ins
  	env->subprog_info[subprog].is_cb = true;
  	if (bpf_pseudo_kfunc_call(insn) &&
  	    !is_callback_calling_kfunc(insn->imm)) {
@@ -480,7 +480,7 @@ index f6d3655b3a7a..26d5426481b9 100644
  		return -EFAULT;
  	}
  
-@@ -10523,10 +10506,9 @@ static int check_func_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+@@ -10523,10 +10507,9 @@ static int check_func_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
  
  	target_insn = *insn_idx + insn->imm + 1;
  	subprog = find_subprog(env, target_insn);
@@ -493,7 +493,7 @@ index f6d3655b3a7a..26d5426481b9 100644
  
  	caller = state->frame[state->curframe];
  	err = btf_check_subprog_call(env, subprog, caller->regs);
-@@ -11125,7 +11107,7 @@ static int check_bpf_snprintf_call(struct bpf_verifier_env *env,
+@@ -11125,7 +11108,7 @@ static int check_bpf_snprintf_call(struct bpf_verifier_env *env,
  	err = fmt_map->ops->map_direct_value_addr(fmt_map, &fmt_addr,
  						  fmt_map_off);
  	if (err) {
@@ -502,7 +502,7 @@ index f6d3655b3a7a..26d5426481b9 100644
  		return -EFAULT;
  	}
  	fmt = (char *)(long)fmt_addr + fmt_map_off;
-@@ -19706,10 +19688,9 @@ static int do_check(struct bpf_verifier_env *env)
+@@ -19706,10 +19689,9 @@ static int do_check(struct bpf_verifier_env *env)
  						return err;
  					break;
  				} else {
@@ -515,7 +515,7 @@ index f6d3655b3a7a..26d5426481b9 100644
  					do_print_state = true;
  					continue;
  				}
-@@ -20767,10 +20748,9 @@ static int opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
+@@ -20767,10 +20749,9 @@ static int opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
  		if (bpf_pseudo_kfunc_call(&insn))
  			continue;
  
@@ -528,7 +528,7 @@ index f6d3655b3a7a..26d5426481b9 100644
  
  		zext_patch[0] = insn;
  		zext_patch[1].dst_reg = load_reg;
-@@ -21087,11 +21067,9 @@ static int jit_subprogs(struct bpf_verifier_env *env)
+@@ -21087,11 +21068,9 @@ static int jit_subprogs(struct bpf_verifier_env *env)
  		 * propagated in any case.
  		 */
  		subprog = find_subprog(env, i + insn->imm + 1);
@@ -542,7 +542,7 @@ index f6d3655b3a7a..26d5426481b9 100644
  		/* temporarily remember subprog id inside insn instead of
  		 * aux_data, since next loop will split up all insns into funcs
  		 */
-@@ -22454,7 +22432,7 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+@@ -22454,7 +22433,7 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
  			continue;
  		/* We need two slots in case timed may_goto is supported. */
  		if (stack_slots > slots) {
