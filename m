@@ -1,216 +1,196 @@
-Return-Path: <bpf+bounces-58528-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58529-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6EEDABD01A
-	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 09:12:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C337ABD060
+	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 09:25:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 538714A358C
-	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 07:12:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C3623A7E8D
+	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 07:25:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2146C25D1FE;
-	Tue, 20 May 2025 07:12:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2088225D54F;
+	Tue, 20 May 2025 07:25:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CSn7oaup"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QdrMi1E8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36A191799F;
-	Tue, 20 May 2025 07:12:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 224AA1C84C0
+	for <bpf@vger.kernel.org>; Tue, 20 May 2025 07:25:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747725129; cv=none; b=jbcglPQhFaC+RacMdr8H904j3az7guh0jLhgIl/crGfPaLUZgOIKoBfMo65YLAPcmD5SPdC3njX0esuyzch+BF+rAr0Y1BBh8KUknv2Pv1b0+E+ZRU/TokvLatl8SIwVKQZVFGvOcCNiLnYk1LnuIL9+akTQs9B9vJQ/HZNCCgg=
+	t=1747725946; cv=none; b=WcaptC/TfdrO2MumiTOz4C0uFMqhQhVyuiMC47fFh2JL6LIc20pXxUJp1jNnoKXBr/Y77tNqIyqvoyvkkv1cYeV0K6K9ERR6DocHbL5C/XvT2pGxpZhboFY7jJ9ZV1wZgpcaDwVD8wcbFNUYLhNOzbcCk7bjf/YQHrAJlcueV+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747725129; c=relaxed/simple;
-	bh=b5evWBJTWGYuIaCIoTvtE54TQUp1U7E1wACj5i6XqmY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rJw36ci/+TcKI+MEZunCZ9KgWoQ+7wzkN1mMyaKSugYm+xE5nCz3iBee3yTCACE/ZYSpMhQOxGSEEpNKL4FmyyqHfiMzOJ7GEEtrdNToum6oCKzzhGVMGie1hSy8/7mjHKX9h2oAr7ArCho4ENLkkECI0BUCoIkxzktbEBv5L5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CSn7oaup; arc=none smtp.client-ip=209.85.215.170
+	s=arc-20240116; t=1747725946; c=relaxed/simple;
+	bh=yzTerXv2eaE4nJPoN63LeBueYell4vWL8owTn+lcaIo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FMbSfxvOfhGFqfhbsnaYNRCGSHUHJqwnXLptj2rhGyQJF9uWboq7GQNPci/zpYRi1pSJf5UTmXMdIwvT9/BAwzGD6yIG7ci4py+UCOujwGyJodOAouhm3qOAA5sNx888l7nBu9fjKVQfIrV9pfgwjcpqFDdhb+ZSIj9galXrMWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QdrMi1E8; arc=none smtp.client-ip=209.85.219.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-af548cb1f83so4765958a12.3;
-        Tue, 20 May 2025 00:12:08 -0700 (PDT)
+Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-6f8cb6b3340so44112246d6.1
+        for <bpf@vger.kernel.org>; Tue, 20 May 2025 00:25:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747725127; x=1748329927; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gqLN9mzzftYCgqVGJEUOnli3rFmc56NiTfRVJ7wT24o=;
-        b=CSn7oaupxoKtxyuHhg16rig9HEMPZicSYuSQJ7QdR/WWpu2+soKIKnjrgWStemgx9+
-         vM2AZ8S6RFKOGqwaWmtXA68dJ91Ad98M909dWvVD0hXDDM6D+XCrFvm55hF6rLhEQW0w
-         9tWv19tmpGwDm7PkDdOnM5Mq+o0qDfsH0HDmrz1PZR51zoC75Ejw+nYGQlK4g+Njow8x
-         Me2nu6hON63RGN3lfiAN+JvQcCdA5UV0Gb/Mtj/Nc40M/TnfThoMc9Qpar3OzRYrrsd3
-         /TiXiNm8d/wPRgJYZI3w8M45F9v+GziGRd6YmJzhXbhUCqh1yOS+SXT9YtdBhKnaZ0x4
-         d/uw==
+        d=gmail.com; s=20230601; t=1747725944; x=1748330744; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hObiR3OS0YcfNiy0nnBYeGVqefSTZY0x1eGYXc1HwuQ=;
+        b=QdrMi1E8uU+F0NucgqtpGrKumGZc0fWXD0P4PLLpNogyl8kE2RdbhVce1SYYydZxRf
+         jF3Hu4+UcSSPRo1A43KjimvVZmfPEHwlDtrh/XPJPzfdcBbMRnPoGCR5jM58oEzRRgvt
+         Ahq5oqHy1GhHsQgYcgvovUk9NipoYvkRUqwMqzdf5JMWEbYOVyGeIUOd5UyAVhBd7ckE
+         OpCbzuDD4fir8jyPTCyJq6HvLxzvXsEab5/2pB2D3BYgWvfs2FQ7/jriOKxnCYsJU0T8
+         vqRZkc4DCA0juw+0Y76ClvpMuZpWBz3Rrc3am4oM/g1ln++dOmh/CpMfMYHieFGbkP53
+         zePw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747725127; x=1748329927;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gqLN9mzzftYCgqVGJEUOnli3rFmc56NiTfRVJ7wT24o=;
-        b=B50kWvLd9htTvLQ8Ko09Rrpis4Y6caiiBLBVLT5kasSVsnmyNH74WScYm3b9SEXN55
-         B3PN/Xc6zeME9qfPWOFH4bJHo+F/RDqy0vVR7ok5n21+zcTte/s4jGWCsvlxMsZKFhZv
-         02mDWcFsyZ5VJwLx19Vqtmcb+y3kzuYwi0x8k3j/OJnwy4lQCFJSkN2d2E7gcjLyCOnJ
-         K4RRaoFkAoSoV5mM8Tz2bE+ocUjQHV4GpXsUzTK3kWJjhn2kp25d+Gi1rNMW2iYxH9rE
-         wAcrSQOGqEyo3t7K6Lkuo3lP12x+ih8I7MdDsXra1QpPyczsGUqHzsTKEx4ITSV7MimF
-         NOxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVgdIeGRX4GF8t0FCQ+UiZvki8SeGg6JnQE2SO2+QWGa/JQIK47qQaRnDsg/s56Q6359gel8aoU@vger.kernel.org, AJvYcCWJjupj1BWP6bcdCjyO4HpHU9GW5u2qbol0c7CqUegFi5NSIxFxqHpp3oT5YKwQnHOzWc8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxINE71et89VZGjq2awDsDLzE5Eynin/xGwYAW+2REgIRQIDMl2
-	amMpiVPqKcHntQcM1vlS62/tuH3g2gUxFKM1qU1ECIfLeQg/MU3+bsn9
-X-Gm-Gg: ASbGncvMtzMSV+PoOHEehDHSpuoJFq+oFUfrxFugBbmIHFDODRLepQs+WAHM9GVtwRK
-	Uu+8b4grg4aELMqcGforqtlGCWGJuUoBDb5nObOz/YslqpAr+Yy6QcafUCkTXkOPfnXUwlGNYjW
-	ytUbWhdO2KuMpy/FUyIe1sJsYE0cRVNQ/JvlR4C6mRMKj8YWxQPklZmbMgWcABgSYPEhYUtOMzC
-	AiGQI4lEiyTJwITp1/dJp9No4q1G3825cYv/5jK0KRBvnPkrwX9ZtqljqMwUuY4+cGYFLZbM7Yy
-	IJDSXeJOGDn5odG2roMflv8Mb8O+vTV/eSnFX+Wp
-X-Google-Smtp-Source: AGHT+IHM+7tBAY1QQz54ggrEM9D+VZ2vlPPl16veJPN1EV5EnWA1SyFd3q8YAR4AxI3eZqRWm05E3g==
-X-Received: by 2002:a17:902:dac7:b0:21f:7a8b:d675 with SMTP id d9443c01a7336-231de3515ccmr225945305ad.4.1747725127365;
-        Tue, 20 May 2025 00:12:07 -0700 (PDT)
-Received: from ap.. ([182.213.254.91])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-231d4e977f6sm70542395ad.131.2025.05.20.00.12.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 May 2025 00:12:05 -0700 (PDT)
-From: Taehee Yoo <ap420073@gmail.com>
-To: davem@davemloft.net,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	andrew+netdev@lunn.ch,
-	horms@kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	michael.chan@broadcom.com,
-	pavan.chebbi@broadcom.com,
-	sdf@fomichev.me,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org
-Cc: jdamato@fastly.com,
-	martin.lau@kernel.org,
-	hramamurthy@google.com,
-	ap420073@gmail.com
-Subject: [PATCH net-next] eth: bnxt: fix deadlock when xdp is attached or detached
-Date: Tue, 20 May 2025 07:11:55 +0000
-Message-Id: <20250520071155.2462843-1-ap420073@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1747725944; x=1748330744;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hObiR3OS0YcfNiy0nnBYeGVqefSTZY0x1eGYXc1HwuQ=;
+        b=s8rynl57PJcjUKkhv77suxjF0NdWBOquqLCPLm6rLf201XxF1HV22tQexR1fQedfhM
+         ++DGNZhoCiXffacKTEnN+zZvaZ4VM3qxuy7NOMnI3Jv8zd+ooQydJpssrrEJBZ14p1aa
+         JR0ilGUB6M487b3aw7T7jkfBfR0eMBZuir3Hx8VQ/WOuSK4u13O0UfmGaTYWMaRtx6mr
+         spNZPuDAmvzUdHTERCaMXyHEP+V+mSLU8yXchyoQnG0UsAj9GYYgdInv+Hrsv5Xm9INK
+         F6/tuR6iCnmb8glaZMnmDrx7KNSupK5PS/ogMaJHFIjfZw37Sax0DgD3krUafkthxH5P
+         BylA==
+X-Forwarded-Encrypted: i=1; AJvYcCVth3Uz1iqa5onOw9QSmlXxtuGL2rFGToUegSOBYAHElbVhrMRPC8VOToVNHlQPP51bAqM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzeAFHWE2K873G9ofiGcWQDc2IdQ8Z/c6fcSk7CCrYVcgRTf/Np
+	3fjcHeWFPk2uN/VR8HuTDBcSCwuiXg5l0H5Q6yuyK41RMm3sDLWPayCRHc27hDuKe5ifY1zVCHr
+	O64n9fll9XqB4LFAUNgU+0xm1W7M1xpY=
+X-Gm-Gg: ASbGncsr0mpy77jXCIqMnAq6hty/HeOfNxV2e5/bqQ46viylbyMNG3fyw1o6eOkdCA9
+	A6xYKgmig5NiD92+/eYusOCc/I/cquFWjqC/2w3R3i7h4HnN+eNdpqZ80pXjRTHvI0OzDuZUKt8
+	QVp5Oi3HGmgWXITJ4gNhx7TIxobVvxz8Cx8A==
+X-Google-Smtp-Source: AGHT+IGK8HunlVifTt49FjbjG3L8jmHKgxpHhfFG6f5CcOb2w/xPPfAA1rx/ee5dIXEH56cDqFYpFNk+JEw0DjrOmjc=
+X-Received: by 2002:a05:6214:260e:b0:6e8:f470:2b11 with SMTP id
+ 6a1803df08f44-6f8b2c95b78mr271524316d6.23.1747725943836; Tue, 20 May 2025
+ 00:25:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250520060504.20251-1-laoar.shao@gmail.com> <CAA1CXcD=P8tBASK1X=+2=+_RANi062X8QMsi632MjPh=dkuD9Q@mail.gmail.com>
+In-Reply-To: <CAA1CXcD=P8tBASK1X=+2=+_RANi062X8QMsi632MjPh=dkuD9Q@mail.gmail.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Tue, 20 May 2025 15:25:07 +0800
+X-Gm-Features: AX0GCFvZIuvlTgJImXf7EfQpV_z2hERe_3ttyhvibb45f9-8iHsF2EUD8BCjsME
+Message-ID: <CALOAHbDbcdBZb_4mCpr4S81t8EBtDeSQ2OVSOH6qLNC-iYMa4A@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 0/5] mm, bpf: BPF based THP adjustment
+To: Nico Pache <npache@redhat.com>
+Cc: akpm@linux-foundation.org, david@redhat.com, ziy@nvidia.com, 
+	baolin.wang@linux.alibaba.com, lorenzo.stoakes@oracle.com, 
+	Liam.Howlett@oracle.com, ryan.roberts@arm.com, dev.jain@arm.com, 
+	hannes@cmpxchg.org, usamaarif642@gmail.com, 
+	gutierrez.asier@huawei-partners.com, willy@infradead.org, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, bpf@vger.kernel.org, 
+	linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-When xdp is attached or detached, dev->ndo_bpf() is called by
-do_setlink(), and it acquires netdev_lock() if needed.
-Unlike other drivers, the bnxt driver is protected by netdev_lock while
-xdp is attached/detached because it sets dev->request_ops_lock to true.
+On Tue, May 20, 2025 at 2:52=E2=80=AFPM Nico Pache <npache@redhat.com> wrot=
+e:
+>
+> On Tue, May 20, 2025 at 12:06=E2=80=AFAM Yafang Shao <laoar.shao@gmail.co=
+m> wrote:
+> >
+> > Background
+> > ----------
+> >
+> > At my current employer, PDD, we have consistently configured THP to "ne=
+ver"
+> > on our production servers due to past incidents caused by its behavior:
+> >
+> > - Increased memory consumption
+> >   THP significantly raises overall memory usage.
+> >
+> > - Latency spikes
+> >   Random latency spikes occur due to more frequent memory compaction
+> >   activity triggered by THP.
+> >
+> > These issues have made sysadmins hesitant to switch to "madvise" or
+> > "always" modes.
+> >
+> > New Motivation
+> > --------------
+> >
+> > We have now identified that certain AI workloads achieve substantial
+> > performance gains with THP enabled. However, we=E2=80=99ve also verifie=
+d that some
+> > workloads see little to no benefit=E2=80=94or are even negatively impac=
+ted=E2=80=94by THP.
+> >
+> > In our Kubernetes environment, we deploy mixed workloads on a single se=
+rver
+> > to maximize resource utilization. Our goal is to selectively enable THP=
+ for
+> > services that benefit from it while keeping it disabled for others. Thi=
+s
+> > approach allows us to incrementally enable THP for additional services =
+and
+> > assess how to make it more viable in production.
+> >
+> > Proposed Solution
+> > -----------------
+> >
+> > For this use case, Johannes suggested introducing a dedicated mode [0].=
+ In
+> > this new mode, we could implement BPF-based THP adjustment for fine-gra=
+ined
+> > control over tasks or cgroups. If no BPF program is attached, THP remai=
+ns
+> > in "never" mode. This solution elegantly meets our needs while avoiding=
+ the
+> > complexity of managing BPF alongside other THP modes.
+> >
+> > A selftest example demonstrates how to enable THP for the current task
+> > while keeping it disabled for others.
+> >
+> > Alternative Proposals
+> > ---------------------
+> >
+> > - Gutierrez=E2=80=99s cgroup-based approach [1]
+> >   - Proposed adding a new cgroup file to control THP policy.
+> >   - However, as Johannes noted, cgroups are designed for hierarchical
+> >     resource allocation, not arbitrary policy settings [2].
+> >
+> > - Usama=E2=80=99s per-task THP proposal based on prctl() [3]:
+> >   - Enabling THP per task via prctl().
+> >   - As David pointed out, neither madvise() nor prctl() works in "never=
+"
+> >     mode [4], making this solution insufficient for our needs.
+> Hi Yafang Shao,
+>
+> I believe you would have to invert your logic and disable the
+> processes you dont want using THPs, and have THP=3D"madvise"|"always". I
+> have yet to look over Usama's solution in detail but I believe this is
+> possible based on his cover letter.
+>
+> I also have an alternative solution proposed here!
+> https://lore.kernel.org/lkml/20250515033857.132535-1-npache@redhat.com/
+>
+> It's different in the sense it doesn't give you granular control per
+> process, cgroup, or BPF programmability, but it "may" suit your needs
+> by taming the THP waste and removing the latency spikes of PF time THP
+> compactions/allocations.
 
-So, the bnxt_xdp(), that is callback of ->ndo_bpf should not acquire
-netdev_lock().
-But the xdp_features_{set | clear}_redirect_target() was changed to
-acquire netdev_lock() internally.
-It causes a deadlock.
-To fix this problem, bnxt driver should use
-xdp_features_{set | clear}_redirect_target_locked() instead.
+Thank you for developing this feature. I'll review it carefully.
 
-Splat looks like:
-============================================
-WARNING: possible recursive locking detected
-6.15.0-rc6+ #1 Not tainted
---------------------------------------------
-bpftool/1745 is trying to acquire lock:
-ffff888131b85038 (&dev->lock){+.+.}-{4:4}, at: xdp_features_set_redirect_target+0x1f/0x80
+The challenge we face is that our system administration team doesn't
+permit enabling THP globally in production by setting it to "madvise"
+or "always". As a result, we can only experiment with your feature on
+our test servers at this stage.
 
-but task is already holding lock:
-ffff888131b85038 (&dev->lock){+.+.}-{4:4}, at: do_setlink.constprop.0+0x24e/0x35d0
+Therefore, our immediate priority isn't THP optimization, but rather
+finding a way to safely enable THP in production first. The kernel
+team needs a solution that addresses this fundamental deployment
+hurdle before we can consider performance improvements.
 
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(&dev->lock);
-  lock(&dev->lock);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-3 locks held by bpftool/1745:
- #0: ffffffffa56131c8 (rtnl_mutex){+.+.}-{4:4}, at: rtnl_setlink+0x1fe/0x570
- #1: ffffffffaafa75a0 (&net->rtnl_mutex){+.+.}-{4:4}, at: rtnl_setlink+0x236/0x570
- #2: ffff888131b85038 (&dev->lock){+.+.}-{4:4}, at: do_setlink.constprop.0+0x24e/0x35d0
-
-stack backtrace:
-CPU: 1 UID: 0 PID: 1745 Comm: bpftool Not tainted 6.15.0-rc6+ #1 PREEMPT(undef)
-Hardware name: ASUS System Product Name/PRIME Z690-P D4, BIOS 0603 11/01/2021
-Call Trace:
- <TASK>
- dump_stack_lvl+0x7a/0xd0
- print_deadlock_bug+0x294/0x3d0
- __lock_acquire+0x153b/0x28f0
- lock_acquire+0x184/0x340
- ? xdp_features_set_redirect_target+0x1f/0x80
- __mutex_lock+0x1ac/0x18a0
- ? xdp_features_set_redirect_target+0x1f/0x80
- ? xdp_features_set_redirect_target+0x1f/0x80
- ? __pfx_bnxt_rx_page_skb+0x10/0x10 [bnxt_en
- ? __pfx___mutex_lock+0x10/0x10
- ? __pfx_netdev_update_features+0x10/0x10
- ? bnxt_set_rx_skb_mode+0x284/0x540 [bnxt_en
- ? __pfx_bnxt_set_rx_skb_mode+0x10/0x10 [bnxt_en
- ? xdp_features_set_redirect_target+0x1f/0x80
- xdp_features_set_redirect_target+0x1f/0x80
- bnxt_xdp+0x34e/0x730 [bnxt_en 11cbcce8fa11cff1dddd7ef358d6219e4ca9add3]
- dev_xdp_install+0x3f4/0x830
- ? __pfx_bnxt_xdp+0x10/0x10 [bnxt_en 11cbcce8fa11cff1dddd7ef358d6219e4ca9add3]
- ? __pfx_dev_xdp_install+0x10/0x10
- dev_xdp_attach+0x560/0xf70
- dev_change_xdp_fd+0x22d/0x280
- do_setlink.constprop.0+0x2989/0x35d0
- ? __pfx_do_setlink.constprop.0+0x10/0x10
- ? lock_acquire+0x184/0x340
- ? find_held_lock+0x32/0x90
- ? rtnl_setlink+0x236/0x570
- ? rcu_is_watching+0x11/0xb0
- ? trace_contention_end+0xdc/0x120
- ? __mutex_lock+0x946/0x18a0
- ? __pfx___mutex_lock+0x10/0x10
- ? __lock_acquire+0xa95/0x28f0
- ? rcu_is_watching+0x11/0xb0
- ? rcu_is_watching+0x11/0xb0
- ? cap_capable+0x172/0x350
- rtnl_setlink+0x2cd/0x570
-
-Fixes: 03df156dd3a6 ("xdp: double protect netdev->xdp_flags with netdev->lock")
-Signed-off-by: Taehee Yoo <ap420073@gmail.com>
----
-
-This is a bugfix patch but target branch is net-next because the cause
-commit is not yet merged to net.
-
- drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-index e675611777b5..4a6d8cb9f970 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-@@ -425,9 +425,9 @@ static int bnxt_xdp_set(struct bnxt *bp, struct bpf_prog *prog)
- 
- 	if (prog) {
- 		bnxt_set_rx_skb_mode(bp, true);
--		xdp_features_set_redirect_target(dev, true);
-+		xdp_features_set_redirect_target_locked(dev, true);
- 	} else {
--		xdp_features_clear_redirect_target(dev);
-+		xdp_features_clear_redirect_target_locked(dev);
- 		bnxt_set_rx_skb_mode(bp, false);
- 	}
- 	bp->tx_nr_rings_xdp = tx_xdp;
--- 
-2.34.1
-
+--=20
+Regards
+Yafang
 
