@@ -1,228 +1,592 @@
-Return-Path: <bpf+bounces-58617-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58618-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 654E8ABE566
-	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 23:02:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94F4CABE577
+	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 23:03:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8239B4C6FF4
-	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 21:02:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 942FD1BC3549
+	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 21:02:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 874CC263F49;
-	Tue, 20 May 2025 20:59:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 869C3264620;
+	Tue, 20 May 2025 20:59:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eVYBuYlH"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="u3JbEYly"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53786262802;
-	Tue, 20 May 2025 20:59:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 425762620CB
+	for <bpf@vger.kernel.org>; Tue, 20 May 2025 20:59:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747774785; cv=none; b=DhJPI887d+t4RKLWU5QaEqNA8dfMT6QBmp7mbAhTVokQB/6fpgncxz7PyNBR8f3DRVWOaDvBBPiQhrAjvuNbL9UBS0ub0hnfFY156Fu34YAzniwAKL/GJoGS7PDPqIMPCeFG4O1y/tXhg5/nKeYe9K/GEf83GE8yUcv3SuvbLoo=
+	t=1747774785; cv=none; b=CYdVSe1+Ag0D8fN7pxdMgTqweU1KzBeX3+bt+m6JG+bNCMD/Ne9IjLye1fghM71MR1F3UnjyFI8lE0TwgsVKtH0HzkKSiNTDd95prSbI24biE5LA3Cel289U3Y3f4DJcR7a6fgti6vmrfDFl4iGtM3gOR1m7IgRUjyO8wZsV2Ro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1747774785; c=relaxed/simple;
-	bh=TxnEzQ9iMtKzyMMd8shQeHwasKbl/Er7rP8Xn3KpqNw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lFAjEaZu5Anh4X13KxylBNyqJelfPaulwhbeEiN1aWxJLMscPNod90rvuGdrdaYk+D834pYp6ZEzeDjpP/IXEsRRlLQOqOH2q5uq31Vk7/6AUDckrIfHKjh8SjlhWDM70llpjz3NE/kE88A9YpD/EzViRZLqzSHktZ4IIBY8ekY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eVYBuYlH; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1747774783; x=1779310783;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=TxnEzQ9iMtKzyMMd8shQeHwasKbl/Er7rP8Xn3KpqNw=;
-  b=eVYBuYlHtnSp4p5dzu6kKboiZqBgOvvAKMQ9YjtJoS2pvgJ0Qm1z7pwh
-   ivrWKGSAZzcvsunmPiyff3ix87t0UHnDLlljDrUrBz9/UbPrfJECm1N8i
-   28MjrjOvWuo4ooWiR2Jf+bO2OzFN4ymFdIysMe6pN+9lGgyQTVCL90EN2
-   2ZUpBlU1DE5Ypv6qN11RpYQegezd1OuVJ9mHlORtmMmTwrYSAnxG/Feh+
-   su67Fks6QcMiJIZ35rKEVk3aJScB1FdPzV3R2Xx5Xye7zUUspjY64RFhq
-   0Ci2/SMm61a/wt/zHv4wHVSEXHTF6EohUwud9vmJRyvAuQH/4ZZxCp095
-   w==;
-X-CSE-ConnectionGUID: Vb7FJxMeQ+6i6diuD2EIiw==
-X-CSE-MsgGUID: lrQ3diEpQaq7J7k8Q7UWXA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11439"; a="67142814"
-X-IronPort-AV: E=Sophos;i="6.15,302,1739865600"; 
-   d="scan'208";a="67142814"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2025 13:59:40 -0700
-X-CSE-ConnectionGUID: /vE/MEVlTPi/5ilASCMRYQ==
-X-CSE-MsgGUID: zuIZ/Xg8TU+sTrF0Bu6YPA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,302,1739865600"; 
-   d="scan'208";a="139850973"
-Received: from anguy11-upstream.jf.intel.com ([10.166.9.133])
-  by fmviesa007.fm.intel.com with ESMTP; 20 May 2025 13:59:40 -0700
-From: Tony Nguyen <anthony.l.nguyen@intel.com>
-To: davem@davemloft.net,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	andrew+netdev@lunn.ch,
-	netdev@vger.kernel.org
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
-	anthony.l.nguyen@intel.com,
-	maciej.fijalkowski@intel.com,
-	magnus.karlsson@intel.com,
-	michal.kubiak@intel.com,
-	przemyslaw.kitszel@intel.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	horms@kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH net-next 16/16] libeth: xdp, xsk: access adjacent u32s as u64 where applicable
-Date: Tue, 20 May 2025 13:59:17 -0700
-Message-ID: <20250520205920.2134829-17-anthony.l.nguyen@intel.com>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20250520205920.2134829-1-anthony.l.nguyen@intel.com>
-References: <20250520205920.2134829-1-anthony.l.nguyen@intel.com>
+	bh=EHQTJMr2zm+ftxoVvfQxMqsvAZY7xKCdtDKOU07hKik=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ck+WDo1KepwNhqD0coOXbBbAa2IXOYXEMmFWLa63YPsWBH9wpuTtQZSKqo3dyvp8ifDI1fEjzc6+wlKnQV4lBVVZiTWD65gcbvNYVQ74k+ING8Gqcx9IAjCaDyrN+ow6/E5PXRcCZ0g6eYgIIygpZpeuSTLmqCnT7aBDQYhalO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=u3JbEYly; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <c9972e17-1a8a-4178-be33-9c18b2d39d57@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1747774778;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=z0YrkEId5+PTNRkFNIVQRCw68uSUDQR5zegeKBsS+8g=;
+	b=u3JbEYlyWx0IhtBJt86lrUEQGwgVMhEhGdqA9bw24DBRYfMxP3Vh1KzHMtAQ+NJGpnW5PG
+	PRvhHIC7mP2dskexoGWpnlLhAv0bV0bebylPtO8R6hiqOXOPsgCeH3rspB/eiAhT19Croo
+	bg+P0RIakd0y8YP0HGooRSgfilejzSw=
+Date: Tue, 20 May 2025 13:59:18 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: Warn with bpf_unreachable() kfunc
+ maybe due to uninitialized variable
+Content-Language: en-GB
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf <bpf@vger.kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Kernel Team <kernel-team@fb.com>,
+ Martin KaFai Lau <martin.lau@kernel.org>
+References: <20250519203339.2060080-1-yonghong.song@linux.dev>
+ <20250519203344.2060544-1-yonghong.song@linux.dev>
+ <CAADnVQKR=i3qqxHcs3d2zcCEejz71z8GE2y=tghDPF2rFZUObg@mail.gmail.com>
+ <85503b11-ccce-412e-b031-cc9654d6291d@linux.dev>
+ <CAADnVQLvN-TshyvkY3u9MYc7h_og=LWz7Ldf2k_33VRDqKsUZw@mail.gmail.com>
+ <1330496e-5dda-4b42-9524-4bfcfeb50ba7@linux.dev>
+ <CAADnVQKipc=mML1ZjcMjKgKrP_L+wUPhAo0feFf6=DVqdWpCPQ@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAADnVQKipc=mML1ZjcMjKgKrP_L+wUPhAo0feFf6=DVqdWpCPQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
 
-On 64-bit systems, writing/reading one u64 is faster than two u32s even
-when they're are adjacent in a struct. The compilers won't guarantee
-they will combine those; I observed both successful and unsuccessful
-attempts with both GCC and Clang, and it's not easy to say what it
-depends on.
-There's a few places in libeth_xdp winning up to several percent from
-combined access (both performance and object code size, especially
-when unrolling). Add __LIBETH_WORD_ACCESS and use it there on LE.
-Drivers are free to optimize HW-specific callbacks under the same
-definition.
 
-Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
----
- include/net/libeth/xdp.h | 29 ++++++++++++++++++++++++++---
- include/net/libeth/xsk.h | 10 +++++-----
- 2 files changed, 31 insertions(+), 8 deletions(-)
+On 5/20/25 2:39 AM, Alexei Starovoitov wrote:
+> On Tue, May 20, 2025 at 11:01 AM Yonghong Song <yonghong.song@linux.dev> wrote:
+>>
+>>
+>> On 5/20/25 12:29 AM, Alexei Starovoitov wrote:
+>>> On Tue, May 20, 2025 at 8:25 AM Yonghong Song <yonghong.song@linux.dev> wrote:
+>>>>
+>>>> On 5/19/25 6:48 AM, Alexei Starovoitov wrote:
+>>>>> On Mon, May 19, 2025 at 1:34 PM Yonghong Song <yonghong.song@linux.dev> wrote:
+>>>>>> Marc Suñé (Isovalent, part of Cisco) reported an issue where an
+>>>>>> uninitialized variable caused generating bpf prog binary code not
+>>>>>> working as expected. The reproducer is in [1] where the flags
+>>>>>> “-Wall -Werror” are enabled, but there is no warning as the compiler
+>>>>>> takes advantage of uninitialized variable to do aggressive optimization.
+>>>>>> The optimized code looks like below:
+>>>>>>
+>>>>>>          ; {
+>>>>>>               0:       bf 16 00 00 00 00 00 00 r6 = r1
+>>>>>>          ;       bpf_printk("Start");
+>>>>>>               1:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0x0 ll
+>>>>>>                        0000000000000008:  R_BPF_64_64  .rodata
+>>>>>>               3:       b4 02 00 00 06 00 00 00 w2 = 0x6
+>>>>>>               4:       85 00 00 00 06 00 00 00 call 0x6
+>>>>>>          ; DEFINE_FUNC_CTX_POINTER(data)
+>>>>>>               5:       61 61 4c 00 00 00 00 00 w1 = *(u32 *)(r6 + 0x4c)
+>>>>>>          ;       bpf_printk("pre ipv6_hdrlen_offset");
+>>>>>>               6:       18 01 00 00 06 00 00 00 00 00 00 00 00 00 00 00 r1 = 0x6 ll
+>>>>>>                        0000000000000030:  R_BPF_64_64  .rodata
+>>>>>>               8:       b4 02 00 00 17 00 00 00 w2 = 0x17
+>>>>>>               9:       85 00 00 00 06 00 00 00 call 0x6
+>>>>>>          <END>
+>>>>>>
+>>>>>> The verifier will report the following failure:
+>>>>>>      9: (85) call bpf_trace_printk#6
+>>>>>>      last insn is not an exit or jmp
+>>>>>>
+>>>>>> The above verifier log does not give a clear hint about how to fix
+>>>>>> the problem and user may take quite some time to figure out that
+>>>>>> the issue is due to compiler taking advantage of uninitialized variable.
+>>>>>>
+>>>>>> In llvm internals, uninitialized variable usage may generate
+>>>>>> 'unreachable' IR insn and these 'unreachable' IR insns may indicate
+>>>>>> uninitialized variable impact on code optimization. So far, llvm
+>>>>>> BPF backend ignores 'unreachable' IR hence the above code is generated.
+>>>>>> With clang21 patch [2], those 'unreachable' IR insn are converted
+>>>>>> to func bpf_unreachable(). In order to maintain proper control flow
+>>>>>> graph for bpf progs, [2] also adds an 'exit' insn after bpf_unreachable()
+>>>>>> if bpf_unreachable() is the last insn in the function.
+>>>>>> The new code looks like:
+>>>>>>
+>>>>>>          ; {
+>>>>>>               0:       bf 16 00 00 00 00 00 00 r6 = r1
+>>>>>>          ;       bpf_printk("Start");
+>>>>>>               1:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0x0 ll
+>>>>>>                        0000000000000008:  R_BPF_64_64  .rodata
+>>>>>>               3:       b4 02 00 00 06 00 00 00 w2 = 0x6
+>>>>>>               4:       85 00 00 00 06 00 00 00 call 0x6
+>>>>>>          ; DEFINE_FUNC_CTX_POINTER(data)
+>>>>>>               5:       61 61 4c 00 00 00 00 00 w1 = *(u32 *)(r6 + 0x4c)
+>>>>>>          ;       bpf_printk("pre ipv6_hdrlen_offset");
+>>>>>>               6:       18 01 00 00 06 00 00 00 00 00 00 00 00 00 00 00 r1 = 0x6 ll
+>>>>>>                        0000000000000030:  R_BPF_64_64  .rodata
+>>>>>>               8:       b4 02 00 00 17 00 00 00 w2 = 0x17
+>>>>>>               9:       85 00 00 00 06 00 00 00 call 0x6
+>>>>>>              10:       85 10 00 00 ff ff ff ff call -0x1
+>>>>>>                        0000000000000050:  R_BPF_64_32  bpf_unreachable
+>>>>>>              11:       95 00 00 00 00 00 00 00 exit
+>>>>>>          <END>
+>>>>>>
+>>>>>> In kernel, a new kfunc bpf_unreachable() is added. During insn
+>>>>>> verification, any hit with bpf_unreachable() will result in
+>>>>>> verification failure. The kernel is able to provide better
+>>>>>> log message for debugging.
+>>>>>>
+>>>>>> With llvm patch [2] and without this patch (no bpf_unreachable()
+>>>>>> kfunc for existing kernel), e.g., for old kernels, the verifier
+>>>>>> outputs
+>>>>>>      10: <invalid kfunc call>
+>>>>>>      kfunc 'bpf_unreachable' is referenced but wasn't resolved
+>>>>>> Basically, kernel does not support bpf_unreachable() kfunc.
+>>>>>> This still didn't give clear signals about possible reason.
+>>>>>>
+>>>>>> With llvm patch [2] and with this patch, the verifier outputs
+>>>>>>      10: (85) call bpf_unreachable#74479
+>>>>>>      unexpected bpf_unreachable() due to uninitialized variable?
+>>>>>> It gives much better hints for verification failure.
+>>>>>>
+>>>>>>      [1] https://github.com/msune/clang_bpf/blob/main/Makefile#L3
+>>>>>>      [2] https://github.com/llvm/llvm-project/pull/131731
+>>>>>>
+>>>>>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>>>>>> ---
+>>>>>>     kernel/bpf/helpers.c  | 5 +++++
+>>>>>>     kernel/bpf/verifier.c | 5 +++++
+>>>>>>     2 files changed, 10 insertions(+)
+>>>>>>
+>>>>>> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+>>>>>> index c1113b74e1e2..4852c36b1c51 100644
+>>>>>> --- a/kernel/bpf/helpers.c
+>>>>>> +++ b/kernel/bpf/helpers.c
+>>>>>> @@ -3273,6 +3273,10 @@ __bpf_kfunc void bpf_local_irq_restore(unsigned long *flags__irq_flag)
+>>>>>>            local_irq_restore(*flags__irq_flag);
+>>>>>>     }
+>>>>>>
+>>>>>> +__bpf_kfunc void bpf_unreachable(void)
+>>>>>> +{
+>>>>>> +}
+>>>>>> +
+>>>>>>     __bpf_kfunc_end_defs();
+>>>>>>
+>>>>>>     BTF_KFUNCS_START(generic_btf_ids)
+>>>>>> @@ -3386,6 +3390,7 @@ BTF_ID_FLAGS(func, bpf_copy_from_user_dynptr, KF_SLEEPABLE)
+>>>>>>     BTF_ID_FLAGS(func, bpf_copy_from_user_str_dynptr, KF_SLEEPABLE)
+>>>>>>     BTF_ID_FLAGS(func, bpf_copy_from_user_task_dynptr, KF_SLEEPABLE | KF_TRUSTED_ARGS)
+>>>>>>     BTF_ID_FLAGS(func, bpf_copy_from_user_task_str_dynptr, KF_SLEEPABLE | KF_TRUSTED_ARGS)
+>>>>>> +BTF_ID_FLAGS(func, bpf_unreachable)
+>>>>>>     BTF_KFUNCS_END(common_btf_ids)
+>>>>>>
+>>>>>>     static const struct btf_kfunc_id_set common_kfunc_set = {
+>>>>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>>>>>> index d5807d2efc92..08013e2e1697 100644
+>>>>>> --- a/kernel/bpf/verifier.c
+>>>>>> +++ b/kernel/bpf/verifier.c
+>>>>>> @@ -12105,6 +12105,7 @@ enum special_kfunc_type {
+>>>>>>            KF_bpf_res_spin_unlock,
+>>>>>>            KF_bpf_res_spin_lock_irqsave,
+>>>>>>            KF_bpf_res_spin_unlock_irqrestore,
+>>>>>> +       KF_bpf_unreachable,
+>>>>>>     };
+>>>>>>
+>>>>>>     BTF_SET_START(special_kfunc_set)
+>>>>>> @@ -12208,6 +12209,7 @@ BTF_ID(func, bpf_res_spin_lock)
+>>>>>>     BTF_ID(func, bpf_res_spin_unlock)
+>>>>>>     BTF_ID(func, bpf_res_spin_lock_irqsave)
+>>>>>>     BTF_ID(func, bpf_res_spin_unlock_irqrestore)
+>>>>>> +BTF_ID(func, bpf_unreachable)
+>>>>>>
+>>>>>>     static bool is_kfunc_ret_null(struct bpf_kfunc_call_arg_meta *meta)
+>>>>>>     {
+>>>>>> @@ -13508,6 +13510,9 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>>>>>>                            return err;
+>>>>>>                    }
+>>>>>>                    __mark_btf_func_reg_size(env, regs, BPF_REG_0, sizeof(u32));
+>>>>>> +       } else if (!insn->off && insn->imm == special_kfunc_list[KF_bpf_unreachable]) {
+>>>>> Looks good, but let's not abuse special_kfunc_list[] for this case.
+>>>>> special_kfunc_type supposed to be in both set[] and list[].
+>>>>> This is not the case here.
+>>>>> It was wrong to add KF_bpf_set_dentry_xattr, bpf_iter_css_task_new,
+>>>>> bpf_dynptr_from_skb, and many others.
+>>>>> Let's fix this tech debt that we accumulated.
+>>>>>
+>>>>> special_kfunc_type should include only kfuncs that return
+>>>>> a pointer, so that this part is triggered:
+>>>>>
+>>>>>            } else if (btf_type_is_ptr(t)) {
+>>>>>                    ptr_type = btf_type_skip_modifiers(desc_btf, t->type,
+>>>>> &ptr_type_id);
+>>>>>
+>>>>>                    if (meta.btf == btf_vmlinux &&
+>>>>> btf_id_set_contains(&/special_kfunc_set, meta.func_id)) {
+>>>>>
+>>>>> All other kfuncs shouldn't be there. They don't need to be in
+>>>>> the special_kfunc_set.
+>>>>>
+>>>>> Let's split enum special_kfunc_type into what it meant to be
+>>>>> originally (both set and list), and move all list-only kfuncs
+>>>>> into a new array.
+>>>>> Let's call it kfunc_ids.
+>>>>> Then the check in this patch will look like:
+>>>>> insn->imm == kfunc_ids[KF_bpf_unreachable]
+>>>> IIUC, the main goal is to remove some kfuncs from special_kfunc_set
+>>>> since they are unnecessary.
+>>>>
+>>>> I think we do not need an 'enum' type for special_kfunc_set since
+>>>> the for all kfuncs in special_kfunc_set, btf_id_set_contains()
+>>>> is used to find corresponding btf_id. So current 'enum special_kfunc_type'
+>>>> is only used for special_kfunc_list to find proper kfunc_id's.
+>>>>
+>>>> I think the following change should achieve this:
+>>>>
+>>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>>>> index 08013e2e1697..2cf00b06ae66 100644
+>>>> --- a/kernel/bpf/verifier.c
+>>>> +++ b/kernel/bpf/verifier.c
+>>>> @@ -12060,7 +12060,7 @@ enum kfunc_ptr_arg_type {
+>>>>            KF_ARG_PTR_TO_RES_SPIN_LOCK,
+>>>>     };
+>>>>
+>>>> -enum special_kfunc_type {
+>>>> +enum special_kfunc_list_type {
+>>>>            KF_bpf_obj_new_impl,
+>>>>            KF_bpf_obj_drop_impl,
+>>>>            KF_bpf_refcount_acquire_impl,
+>>>> @@ -12126,24 +12126,10 @@ BTF_ID(func, bpf_rbtree_first)
+>>>>     BTF_ID(func, bpf_rbtree_root)
+>>>>     BTF_ID(func, bpf_rbtree_left)
+>>>>     BTF_ID(func, bpf_rbtree_right)
+>>>> -#ifdef CONFIG_NET
+>>>> -BTF_ID(func, bpf_dynptr_from_skb)
+>>>> -BTF_ID(func, bpf_dynptr_from_xdp)
+>>>> -#endif
+>>>>     BTF_ID(func, bpf_dynptr_slice)
+>>>>     BTF_ID(func, bpf_dynptr_slice_rdwr)
+>>>> -BTF_ID(func, bpf_dynptr_clone)
+>>>>     BTF_ID(func, bpf_percpu_obj_new_impl)
+>>>>     BTF_ID(func, bpf_percpu_obj_drop_impl)
+>>>> -BTF_ID(func, bpf_throw)
+>>>> -BTF_ID(func, bpf_wq_set_callback_impl)
+>>>> -#ifdef CONFIG_CGROUPS
+>>>> -BTF_ID(func, bpf_iter_css_task_new)
+>>>> -#endif
+>>>> -#ifdef CONFIG_BPF_LSM
+>>>> -BTF_ID(func, bpf_set_dentry_xattr)
+>>>> -BTF_ID(func, bpf_remove_dentry_xattr)
+>>>> -#endif
+>>>>     BTF_SET_END(special_kfunc_set)
+>>>>
+>>>>     BTF_ID_LIST(special_kfunc_list)
+>>>>
+>>>> I renamed 'enum special_kfunc_type' to 'enum special_kfunc_list_type'
+>>>> implying that the enum values in special_kfunc_lit_type has
+>>>> 1:1 relation to special_kfunc_list.
+>>>>
+>>>> WDYT?
+>>> I think this is not going far enough.
+>>> We confused ourselves with the current special_kfunc_type.
+>>> I prefer a full split where enum special_kfunc_type
+>>> contains only kfuncs for special_kfunc_set and _list,
+>>> and a separate enum that covers kfuncs in a new kfunc_ids[]
+>> Okay, I see. we should have
+>>     `enum special_kfunc_type`, special_kfunc_set and special_kfunc_list
+>> for kfuncs which are used in btf_id_set_contains().
+>>
+>> For all other kfuncs, we will have
+>>     `enum kfunc_ids_type` and kfunc_ids
+>>
+>> Something like below:
+>>
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index 08013e2e1697..66d0163c7ddb 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -12062,7 +12062,6 @@ enum kfunc_ptr_arg_type {
+>>
+>>    enum special_kfunc_type {
+>>           KF_bpf_obj_new_impl,
+>> -       KF_bpf_obj_drop_impl,
+>>           KF_bpf_refcount_acquire_impl,
+>>           KF_bpf_list_push_front_impl,
+>>           KF_bpf_list_push_back_impl,
+>> @@ -12072,45 +12071,19 @@ enum special_kfunc_type {
+>>           KF_bpf_list_back,
+>>           KF_bpf_cast_to_kern_ctx,
+>>           KF_bpf_rdonly_cast,
+>> -       KF_bpf_rcu_read_lock,
+>> -       KF_bpf_rcu_read_unlock,
+>>           KF_bpf_rbtree_remove,
+>>           KF_bpf_rbtree_add_impl,
+>>           KF_bpf_rbtree_first,
+>>           KF_bpf_rbtree_root,
+>>           KF_bpf_rbtree_left,
+>>           KF_bpf_rbtree_right,
+>> -       KF_bpf_dynptr_from_skb,
+>> -       KF_bpf_dynptr_from_xdp,
+>>           KF_bpf_dynptr_slice,
+>>           KF_bpf_dynptr_slice_rdwr,
+>> -       KF_bpf_dynptr_clone,
+>>           KF_bpf_percpu_obj_new_impl,
+>> -       KF_bpf_percpu_obj_drop_impl,
+>> -       KF_bpf_throw,
+>> -       KF_bpf_wq_set_callback_impl,
+>> -       KF_bpf_preempt_disable,
+>> -       KF_bpf_preempt_enable,
+>> -       KF_bpf_iter_css_task_new,
+>> -       KF_bpf_session_cookie,
+>> -       KF_bpf_get_kmem_cache,
+>> -       KF_bpf_local_irq_save,
+>> -       KF_bpf_local_irq_restore,
+>> -       KF_bpf_iter_num_new,
+>> -       KF_bpf_iter_num_next,
+>> -       KF_bpf_iter_num_destroy,
+>> -       KF_bpf_set_dentry_xattr,
+>> -       KF_bpf_remove_dentry_xattr,
+>> -       KF_bpf_res_spin_lock,
+>> -       KF_bpf_res_spin_unlock,
+>> -       KF_bpf_res_spin_lock_irqsave,
+>> -       KF_bpf_res_spin_unlock_irqrestore,
+>> -       KF_bpf_unreachable,
+>>    };
+>>
+>>    BTF_SET_START(special_kfunc_set)
+>>    BTF_ID(func, bpf_obj_new_impl)
+>> -BTF_ID(func, bpf_obj_drop_impl)
+>>    BTF_ID(func, bpf_refcount_acquire_impl)
+>>    BTF_ID(func, bpf_list_push_front_impl)
+>>    BTF_ID(func, bpf_list_push_back_impl)
+>> @@ -12126,29 +12099,13 @@ BTF_ID(func, bpf_rbtree_first)
+>>    BTF_ID(func, bpf_rbtree_root)
+>>    BTF_ID(func, bpf_rbtree_left)
+>>    BTF_ID(func, bpf_rbtree_right)
+>> -#ifdef CONFIG_NET
+>> -BTF_ID(func, bpf_dynptr_from_skb)
+>> -BTF_ID(func, bpf_dynptr_from_xdp)
+>> -#endif
+>>    BTF_ID(func, bpf_dynptr_slice)
+>>    BTF_ID(func, bpf_dynptr_slice_rdwr)
+>> -BTF_ID(func, bpf_dynptr_clone)
+>>    BTF_ID(func, bpf_percpu_obj_new_impl)
+>> -BTF_ID(func, bpf_percpu_obj_drop_impl)
+>> -BTF_ID(func, bpf_throw)
+>> -BTF_ID(func, bpf_wq_set_callback_impl)
+>> -#ifdef CONFIG_CGROUPS
+>> -BTF_ID(func, bpf_iter_css_task_new)
+>> -#endif
+>> -#ifdef CONFIG_BPF_LSM
+>> -BTF_ID(func, bpf_set_dentry_xattr)
+>> -BTF_ID(func, bpf_remove_dentry_xattr)
+>> -#endif
+>>    BTF_SET_END(special_kfunc_set)
+>>
+>>    BTF_ID_LIST(special_kfunc_list)
+>>    BTF_ID(func, bpf_obj_new_impl)
+>> -BTF_ID(func, bpf_obj_drop_impl)
+>>    BTF_ID(func, bpf_refcount_acquire_impl)
+>>    BTF_ID(func, bpf_list_push_front_impl)
+>>    BTF_ID(func, bpf_list_push_back_impl)
+>> @@ -12158,14 +12115,49 @@ BTF_ID(func, bpf_list_front)
+>>    BTF_ID(func, bpf_list_back)
+>>    BTF_ID(func, bpf_cast_to_kern_ctx)
+>>    BTF_ID(func, bpf_rdonly_cast)
+>> -BTF_ID(func, bpf_rcu_read_lock)
+>> -BTF_ID(func, bpf_rcu_read_unlock)
+>>    BTF_ID(func, bpf_rbtree_remove)
+>>    BTF_ID(func, bpf_rbtree_add_impl)
+>>    BTF_ID(func, bpf_rbtree_first)
+>>    BTF_ID(func, bpf_rbtree_root)
+>>    BTF_ID(func, bpf_rbtree_left)
+>>    BTF_ID(func, bpf_rbtree_right)
+>> +BTF_ID(func, bpf_dynptr_slice)
+>> +BTF_ID(func, bpf_dynptr_slice_rdwr)
+>> +BTF_ID(func, bpf_percpu_obj_new_impl)
+>> +
+> Yes. Something like that.
+>
+>
+>> +enum kfunc_ids_type {
+>> +       KF_bpf_obj_drop_impl,
+> The concern I had that now KF_bpf_obj_drop_impl == 0
+> and KF_bpf_obj_new_impl == 0.
+>
+> So another idea...
+>
+> maybe we should remove special_kfunc_set instead?
+>
+> I recall we argued with Kumar years ago about it.
+> I don't remember why we kept it
+> and what purpose it serves now.
+>
+> What will break if we do:
+>
+> -               if (meta.btf == btf_vmlinux &&
+> btf_id_set_contains(&special_kfunc_set, meta.func_id)) {
+> +               if (meta.btf == btf_vmlinux) {
+>                          if (meta.func_id ==
+> special_kfunc_list[KF_bpf_obj_new_impl] ||
+>                              meta.func_id ==
+> special_kfunc_list[KF_bpf_percpu_obj_new_impl]) {
+>                                  struct btf_struct_meta *struct_meta;
+> @@ -13838,10 +13838,6 @@ static int check_kfunc_call(struct
+> bpf_verifier_env *env, struct bpf_insn *insn,
+>                                   * because packet slices are not refcounted (see
+>                                   * dynptr_type_refcounted)
+>                                   */
+> -                       } else {
+> -                               verbose(env, "kernel function %s
+> unhandled dynamic return type\n",
+> -                                       meta.func_name);
+> -                               return -EFAULT;
+>                          }
+>
+> ?
 
-diff --git a/include/net/libeth/xdp.h b/include/net/libeth/xdp.h
-index 85f058482fc7..6d15386aff31 100644
---- a/include/net/libeth/xdp.h
-+++ b/include/net/libeth/xdp.h
-@@ -464,6 +464,21 @@ struct libeth_xdp_tx_desc {
- 	((const void *)(uintptr_t)(priv));				      \
- })
- 
-+/*
-+ * On 64-bit systems, assigning one u64 is faster than two u32s. When ::len
-+ * occupies lowest 32 bits (LE), whole ::opts can be assigned directly instead.
-+ */
-+#ifdef __LITTLE_ENDIAN
-+#define __LIBETH_WORD_ACCESS		1
-+#endif
-+#ifdef __LIBETH_WORD_ACCESS
-+#define __libeth_xdp_tx_len(flen, ...)					      \
-+	.opts = ((flen) | FIELD_PREP(GENMASK_ULL(63, 32), (__VA_ARGS__ + 0)))
-+#else
-+#define __libeth_xdp_tx_len(flen, ...)					      \
-+	.len = (flen), .flags = (__VA_ARGS__ + 0)
-+#endif
+The above change won't work. In original code, if the branch
+     if (meta.btf == btf_vmlinux && btf_id_set_contains(&special_kfunc_set, meta.func_id))
+is false, the control will go the next one like
+     } else if (btf_type_is_void(ptr_type)) {
+
+With the above code, if meta.btf == btf_vmlinux, but
+btf_id_set_contains(&special_kfunc_set, meta.func_id) is false, the control
+will miss
+    } else if (btf_type_is_void(ptr_type))
+checking and verification will not work any more.
+
+There are two possible ways to fix the problem:
+
+Option 1 to change btf_id_set_contains to another function to check meta.func_id like
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index d5807d2efc92..5129da4f604f 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -12107,44 +12107,6 @@ enum special_kfunc_type {
+         KF_bpf_res_spin_unlock_irqrestore,
+  };
+  
+-BTF_SET_START(special_kfunc_set)
+-BTF_ID(func, bpf_obj_new_impl)
+-BTF_ID(func, bpf_obj_drop_impl)
+...
+-BTF_ID(func, bpf_set_dentry_xattr)
+-BTF_ID(func, bpf_remove_dentry_xattr)
+-#endif
+-BTF_SET_END(special_kfunc_set)
+-
+  BTF_ID_LIST(special_kfunc_list)
+  BTF_ID(func, bpf_obj_new_impl)
+  BTF_ID(func, bpf_obj_drop_impl)
+@@ -13452,6 +13414,22 @@ static int fetch_kfunc_meta(struct bpf_verifier_env *env,
+         return 0;
+  }
+  
++static bool kfunc_id_allowed(int func_id, const struct btf_type *ptr_type)
++{
++       if (func_id == special_kfunc_list[KF_bpf_obj_new_impl] ||
++           func_id == special_kfunc_list[KF_bpf_percpu_obj_new_impl] ||
++           func_id == special_kfunc_list[KF_bpf_refcount_acquire_impl] ||
++           is_list_node_type(ptr_type) ||
++           is_rbtree_node_type(ptr_type) ||
++           func_id == special_kfunc_list[KF_bpf_cast_to_kern_ctx] ||
++           func_id == special_kfunc_list[KF_bpf_rdonly_cast] ||
++           func_id == special_kfunc_list[KF_bpf_dynptr_slice] ||
++           func_id == special_kfunc_list[KF_bpf_dynptr_slice_rdwr])
++               return true;
 +
- /**
-  * libeth_xdp_tx_xmit_bulk - main XDP Tx function
-  * @bulk: array of frames to send
-@@ -863,8 +878,7 @@ static inline u32 libeth_xdp_xmit_queue_head(struct libeth_xdp_tx_bulk *bq,
- 
- 	bq->bulk[bq->count++] = (typeof(*bq->bulk)){
- 		.xdpf	= xdpf,
--		.len	= xdpf->len,
--		.flags	= LIBETH_XDP_TX_FIRST,
-+		__libeth_xdp_tx_len(xdpf->len, LIBETH_XDP_TX_FIRST),
- 	};
- 
- 	if (!xdp_frame_has_frags(xdpf))
-@@ -895,7 +909,7 @@ static inline bool libeth_xdp_xmit_queue_frag(struct libeth_xdp_tx_bulk *bq,
- 
- 	bq->bulk[bq->count++] = (typeof(*bq->bulk)){
- 		.dma	= dma,
--		.len	= skb_frag_size(frag),
-+		__libeth_xdp_tx_len(skb_frag_size(frag)),
- 	};
- 
- 	return true;
-@@ -1253,6 +1267,7 @@ bool libeth_xdp_buff_add_frag(struct libeth_xdp_buff *xdp,
-  * Internal, use libeth_xdp_process_buff() instead. Initializes XDP buffer
-  * head with the Rx buffer data: data pointer, length, headroom, and
-  * truesize/tailroom. Zeroes the flags.
-+ * Uses faster single u64 write instead of per-field access.
-  */
- static inline void libeth_xdp_prepare_buff(struct libeth_xdp_buff *xdp,
- 					   const struct libeth_fqe *fqe,
-@@ -1260,7 +1275,15 @@ static inline void libeth_xdp_prepare_buff(struct libeth_xdp_buff *xdp,
- {
- 	const struct page *page = __netmem_to_page(fqe->netmem);
- 
-+#ifdef __LIBETH_WORD_ACCESS
-+	static_assert(offsetofend(typeof(xdp->base), flags) -
-+		      offsetof(typeof(xdp->base), frame_sz) ==
-+		      sizeof(u64));
++       return false;
++}
 +
-+	*(u64 *)&xdp->base.frame_sz = fqe->truesize;
-+#else
- 	xdp_init_buff(&xdp->base, fqe->truesize, xdp->base.rxq);
-+#endif
- 	xdp_prepare_buff(&xdp->base, page_address(page) + fqe->offset,
- 			 page->pp->p.offset, len, true);
- }
-diff --git a/include/net/libeth/xsk.h b/include/net/libeth/xsk.h
-index 213778a68476..481a7b28e6f2 100644
---- a/include/net/libeth/xsk.h
-+++ b/include/net/libeth/xsk.h
-@@ -26,8 +26,8 @@ static inline bool libeth_xsk_tx_queue_head(struct libeth_xdp_tx_bulk *bq,
- {
- 	bq->bulk[bq->count++] = (typeof(*bq->bulk)){
- 		.xsk	= xdp,
--		.len	= xdp->base.data_end - xdp->data,
--		.flags	= LIBETH_XDP_TX_FIRST,
-+		__libeth_xdp_tx_len(xdp->base.data_end - xdp->data,
-+				    LIBETH_XDP_TX_FIRST),
- 	};
- 
- 	if (likely(!xdp_buff_has_frags(&xdp->base)))
-@@ -48,7 +48,7 @@ static inline void libeth_xsk_tx_queue_frag(struct libeth_xdp_tx_bulk *bq,
- {
- 	bq->bulk[bq->count++] = (typeof(*bq->bulk)){
- 		.xsk	= frag,
--		.len	= frag->base.data_end - frag->data,
-+		__libeth_xdp_tx_len(frag->base.data_end - frag->data),
- 	};
- }
- 
-@@ -199,7 +199,7 @@ __libeth_xsk_xmit_fill_buf_md(const struct xdp_desc *xdesc,
- 	ctx = xsk_buff_raw_get_ctx(sq->pool, xdesc->addr);
- 	desc = (typeof(desc)){
- 		.addr	= ctx.dma,
--		.len	= xdesc->len,
-+		__libeth_xdp_tx_len(xdesc->len),
- 	};
- 
- 	BUILD_BUG_ON(!__builtin_constant_p(tmo == libeth_xsktmo));
-@@ -226,7 +226,7 @@ __libeth_xsk_xmit_fill_buf(const struct xdp_desc *xdesc,
- {
- 	return (struct libeth_xdp_tx_desc){
- 		.addr	= xsk_buff_raw_get_dma(sq->pool, xdesc->addr),
--		.len	= xdesc->len,
-+		__libeth_xdp_tx_len(xdesc->len),
- 	};
- }
- 
--- 
-2.47.1
+  static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+@@ -13687,7 +13665,7 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+         } else if (btf_type_is_ptr(t)) {
+                 ptr_type = btf_type_skip_modifiers(desc_btf, t->type, &ptr_type_id);
+  
+-               if (meta.btf == btf_vmlinux && btf_id_set_contains(&special_kfunc_set, meta.func_id)) {
++               if (meta.btf == btf_vmlinux && kfunc_id_allowed(meta.func_id, ptr_type)) {
+                         if (meta.func_id == special_kfunc_list[KF_bpf_obj_new_impl] ||
+...
+
+
+Option 2 is to add meta.btf == btf_vmlinux to each checking under branch with 'if(btf_type_is_ptr(t)' like
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index d5807d2efc92..2b5fbfb961d0 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -12107,44 +12107,6 @@ enum special_kfunc_type {
+         KF_bpf_res_spin_unlock_irqrestore,
+  };
+  
+-BTF_SET_START(special_kfunc_set)
+-BTF_ID(func, bpf_obj_new_impl)
+-BTF_ID(func, bpf_obj_drop_impl)
+...
+-BTF_ID(func, bpf_set_dentry_xattr)
+-BTF_ID(func, bpf_remove_dentry_xattr)
+-#endif
+-BTF_SET_END(special_kfunc_set)
+-
+  BTF_ID_LIST(special_kfunc_list)
+  BTF_ID(func, bpf_obj_new_impl)
+  BTF_ID(func, bpf_obj_drop_impl)
+@@ -13687,162 +13649,161 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+         } else if (btf_type_is_ptr(t)) {
+                 ptr_type = btf_type_skip_modifiers(desc_btf, t->type, &ptr_type_id);
+  
+-               if (meta.btf == btf_vmlinux && btf_id_set_contains(&special_kfunc_set, meta.func_id)) {
+-                       if (meta.func_id == special_kfunc_list[KF_bpf_obj_new_impl] ||
+-                           meta.func_id == special_kfunc_list[KF_bpf_percpu_obj_new_impl]) {
+-                               struct btf_struct_meta *struct_meta;
+-                               struct btf *ret_btf;
+-                               u32 ret_btf_id;
++               if (meta.btf == btf_vmlinux &&
++                   (meta.func_id == special_kfunc_list[KF_bpf_obj_new_impl] ||
++                    meta.func_id == special_kfunc_list[KF_bpf_percpu_obj_new_impl])) {
++                       struct btf_struct_meta *struct_meta;
++                       struct btf *ret_btf;
++                       u32 ret_btf_id;
+...
++               } else if (meta.btf == btf_vmlinux &&
++                          meta.func_id == special_kfunc_list[KF_bpf_refcount_acquire_impl]) {
++                       mark_reg_known_zero(env, regs, BPF_REG_0);
++                       regs[BPF_REG_0].type = PTR_TO_BTF_ID | MEM_ALLOC;
++                       regs[BPF_REG_0].btf = meta.arg_btf;
++                       regs[BPF_REG_0].btf_id = meta.arg_btf_id;
++
++                       insn_aux->kptr_struct_meta =
++                               btf_find_struct_meta(meta.arg_btf,
++                                                    meta.arg_btf_id);
++               } else if (meta.btf == btf_vmlinux && is_list_node_type(ptr_type)) {
++                       struct btf_field *field = meta.arg_list_head.field;
++
++                       mark_reg_graph_node(regs, BPF_REG_0, &field->graph_root);
+...
++               } else if (meta.btf == btf_vmlinux &&
++                          (meta.func_id == special_kfunc_list[KF_bpf_dynptr_slice] ||
++                           meta.func_id == special_kfunc_list[KF_bpf_dynptr_slice_rdwr])) {
++                       enum bpf_type_flag type_flag = get_dynptr_type_flag(meta.initialized_dynptr.type);
+...
++                        */
+                 } else if (btf_type_is_void(ptr_type)) {
+...
+
+The option 2 probably better as we can avoid redundant check like kfunc_id_allowed().
+Also we can have
+     bool is_meta_btf_vmlinux = meta.btf == btf_vmlinux;
+and use is_meta_btf_vmlinux instead of meta.btf == btf_vmlinux
 
 
