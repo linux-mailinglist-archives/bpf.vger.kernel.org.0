@@ -1,89 +1,89 @@
-Return-Path: <bpf+bounces-58599-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58600-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30C36ABE478
-	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 22:08:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21F05ABE4C0
+	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 22:32:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C465C4C47F1
-	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 20:08:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E25443A7E7B
+	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 20:31:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C18C286D50;
-	Tue, 20 May 2025 20:08:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FC6D28C5C2;
+	Tue, 20 May 2025 20:31:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SGBbPy5e"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kaFsiuTp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 596011EE7B9;
-	Tue, 20 May 2025 20:08:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 430BD288CA5;
+	Tue, 20 May 2025 20:31:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747771694; cv=none; b=PhCjxl4mlGfzARD7wi4uWsG/6P/ZkeZlTL4fVZQq2vzDcJwo93tmgf000IFXbifJ591Evz5Vvog/tRKNWExZhKrzg2zL1oWSdkow53pxUBVpOJKkJFuRj4yoeI85xYI+3orxSDf/OcXXCo/dsyDY3kVborw/Qe5pb4bjEsn2Hg8=
+	t=1747773065; cv=none; b=rEdSx6CSlKlRO7/Z+pTkwvco6fw4aFUi0EAvhXIXJLxbcK8sUcTLTNIRU8wHbiDPAZeF9b1PnLnVBgbh4hQPcHm39p3L+hWMu3Q4w1AbpgElo80jhva09WzCuatnpo9sBIwUQJm9Ng4lcymuEj8arc+SnU+BHsXsrBLmvU1342Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747771694; c=relaxed/simple;
-	bh=8Er8OhibuPRtXGUsiYNrQztXPWzDdhAQ89FUTn+HcLI=;
+	s=arc-20240116; t=1747773065; c=relaxed/simple;
+	bh=xgNMllPyPQbD/jsNqHCtVrLImV9tm2A22847oz+aSxI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MbwQiAFdc1lxoM9tO7OpyjPg7rrLy9c1UkBU2Z2gsCujdTqXzoLNfrgfN/DU8fl0uI8adEeE12JaJhSHMx/OA2XzVKBCIg/H35w08TE9+F6WCHa4kZ1Dy5LMx95FSxv3v8cK0ZbSMIuLYQ3slSidytBAq1GYkrhJKg7VrqNDWd0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SGBbPy5e; arc=none smtp.client-ip=209.85.221.47
+	 To:Cc:Content-Type; b=F5M0SYa4CRoLqErlgc/kZpCXErJZRv4cb30t1lHfk+mdtfmAJJ7F8xdRo9U+vT6mLn+5ceCCccxY5gP6paG1tFhy8QrYZcdYrjvnxvqdkUDC/fzYWIX4xaBrYjZv8H8bYV82zaOQUkUwn8V1Te2QXO0nLdr2lRkwSFpZotFU14c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kaFsiuTp; arc=none smtp.client-ip=209.85.216.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3a361b8a664so4419997f8f.3;
-        Tue, 20 May 2025 13:08:12 -0700 (PDT)
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-3108d54332eso30341a91.2;
+        Tue, 20 May 2025 13:31:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747771690; x=1748376490; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1747773063; x=1748377863; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=A3IPTweDtnrYm7kj/ndhlz8BOXodo3QwD16xiasY3w4=;
-        b=SGBbPy5eISIamHyMln7V6YjnIL1lGSHJ/FwvGoh9mu6G3MxhHpry6Y4UP12LT796w0
-         Hh9ZqwKM0isce9tpCUHoMKOsmZDvqdRy7CvHWa+XJJgSYa3og77y3hI0hZPga8BK4HHx
-         AgpBM6LaefOr76s3geHcnApD7/5mZnzLJyudV7gpRuZ3vMciI3Zt3SInjDkqWrjQDfp/
-         0FUemGHg63vjRbohkj91xPcNhs4isVVCyPE7NnwtoMJs/3tQcr05TBBRobEwuvvZZyil
-         ApDL+6qs4caSD38gHu5sU/EmyWdyIY6b9iaVLWESm/3wxx8FbHmve+NkD0AdkoKeQpc5
-         Jvkw==
+        bh=GrnzUd/yQLqyU7Ecj4tNRoixyaCDlqm4F4WRkVeusgI=;
+        b=kaFsiuTphJH2OOxWuWNS3mLTQX5fFs4G11RVc/fDEaSjqvY5eYUAjNe/AIOkU2tG1H
+         cz8rULH2zV/x2wQhXpD1Ld2hY+WmbyPS6en3NI96VBAV7S5SzyQwYGChz1M11EIFHocO
+         bnt5DKDZMSKj4EaHp8R40E6o33lL4h9N1qUVOuKrLJwDozcj+3hKCvShg2BTHr744rjn
+         WoUr+a4O/CqHCxKmB+WvUfqe9B6wvtOxSh/G/r/sgAjlRUyfmLdZuIkat1kVXzAuTwIb
+         Zu279uk7YQQ28duItfAFy+vZDWCj+dj3sqZFDDzpVcyiJ0qL9dtMelMC5wxfdJkrOMev
+         f/lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747771690; x=1748376490;
+        d=1e100.net; s=20230601; t=1747773063; x=1748377863;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=A3IPTweDtnrYm7kj/ndhlz8BOXodo3QwD16xiasY3w4=;
-        b=vijc2kcBxJyXPTw4dxkt4CH+7L842971eZDghIAVgu2mJXWBT6oVM4o2PHyMgaaV0L
-         VY/ngTdeggc6Wed7KJeRwEt0YJOvU2KmlCTYFWDdZ2LUP6q00aG74RODokKSDqmUb4tj
-         X25jXUIjoHz6qbZnOfas9sWTaBlVB2lrRZp6z773tGjNMm9d6tIhMVWpSqt964SPxuQd
-         y5W1hf2G9J5RKvrugnzUYqnzZ9NsA6pKmpuqNqb+2I4uLyxI7P3gp1ixxKgv47SDzUGB
-         E9cJm2qAcbeQ3sBw7AOQIn2076P9xWWGbVLcYAAJvEf77uk22mSBCJfcto80eaKMpc2q
-         /bBg==
-X-Forwarded-Encrypted: i=1; AJvYcCVIxpqxzLz6HWZhQpErUzGMt4AVShgcR/ME/KZcdSuGOb71FNUrh1RKKZkNEZt51FQog4gVx09CvLv1FiuK@vger.kernel.org, AJvYcCVSkFZFLFlnmEg7uZ+xyQSTg+lsbw9jOr/P+5IMw1PvlLwY+yQIUkejkQ8CNdNnGRdU55kzpK/HTk/Ctj7TzUYHR14B@vger.kernel.org, AJvYcCXy+A2gRrKHpjONDB0qqbUOKNc76ZVxMOHjpJkvj02FNEIMxG03wcsfN2v0d9BfftaR4+A=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxu1I6LLX8vD6u7ILQXCIdFpnZd0D7Qnn3No+rLotJfWIQL8d7T
-	u0vq3AFLAtzgC3WnrLPp4XxF3pfgVDoVYIph54amoeNXEMpzdKDnWtFEtlCv+G0OIEOjrK7v1fH
-	+1PsqJSidkwTHKvKkMtSGY5UJBH2QU3Y=
-X-Gm-Gg: ASbGncsetdUMoDQcabsNJpZ36KvWlq/Ho43cD8EzGsLwQ0hDlXlKBXUtA9u55qgHffE
-	+54vF4DRY7lJAobChigJW9/RmtzfDHQxwCy+IbnJlfwcArGHp4XgXicJRemvpFoqxjbq+2jkk6b
-	i8tMv5uXUI+Y2eBZGUukgMHJCCpqSbSgmdgCFfc4TmZ+a4OkDg
-X-Google-Smtp-Source: AGHT+IE1Nhc3de9UWe3Uxv90peDfXcg1RuNvCCTJNxAJCrPuuxtt0XQoISjWo9GfCVadN4ymgJNiD6mSYc+5zATWoSA=
-X-Received: by 2002:a05:6000:2502:b0:3a3:712e:c4c9 with SMTP id
- ffacd0b85a97d-3a3712ec624mr6806601f8f.52.1747771690406; Tue, 20 May 2025
- 13:08:10 -0700 (PDT)
+        bh=GrnzUd/yQLqyU7Ecj4tNRoixyaCDlqm4F4WRkVeusgI=;
+        b=go5ZAhs82y5bx+F+D5BUcR+9bRGYcVY6jTEHwDdUw17SOAnaKq0fH83CzGuadppqku
+         qJ++u3/WGyY8JAfwAN5HRdC1OkR75SZnBcf2J+GWWIuG3AFce0vniVbrPT9N3uPSY7p0
+         PXiIHOyym8FMd6m5CY8AMaszQW/ZmZhUjlqC7p+r8Dg8B0rC7Bcohbn0rVa7G3An9Epg
+         bki6fBar/4Rnrcgqy+ful/NE/kJ9k4I9lntULKmKHMOaOm8yrlKwlXpYGxYcfaWYgwuJ
+         jGvgyVjQCLEQlF1KuH0t8hRKfjWjOCBx8G60bkVSvVq7/+GawU4Dbc9SLm4zLG/+QNfP
+         sGFA==
+X-Forwarded-Encrypted: i=1; AJvYcCUnAuQWoqwMPg60wOgNVTUMFpkXQd2u8BS98qhxt23Ju7aJs6YE+eoHOQ2E8soPVkQLn10=@vger.kernel.org, AJvYcCUx4kVQTSBfrPKi2WmZolWKObHCobrMsNU31QYk3xUwjXebOOxziuqP16XWYG2SVpCIPCq8DtxINZL0cltV@vger.kernel.org, AJvYcCX61FDYb5L+3QRvZct7b1eYKUk+iyXLscCBWGnshSiLERnnWeAKTMJe1nlEs+DG4MXSkg6HEeUxlii6hw8dAjnyCebn@vger.kernel.org
+X-Gm-Message-State: AOJu0YwKK/tEuSDDScmczoMOa6CZ/9YWrrSoWTeI2OTQ2dI5R883VsGL
+	ut5BkIL3YsPbNWHVchiEfPTwb3gK8XK5yMZlA1/GBMm3QQxOuJsCzY8c9ER6XrVYglixpV1fY10
+	5XW7L7/EqV2rtEYFzA+kFLtj0b+iYTNk=
+X-Gm-Gg: ASbGncvZaC8GJ9PpB1B5B/dVYt3M8z/OsLGrN3oN3mkkdy2liU+6UkYKBBFijiFO2i9
+	AUreNoNlXv2ahSAOqgvIjuB9hehkoPKVQ+fZcX+EiGbMDV3q49ckXlU2SekZbyZ1WFEuJvW+uB+
+	nnDMFm00NDGSvc5mMI/bi/yTi52mazVfpvibQMmLeRvc+/SZPWMLQ1fJd9NOM=
+X-Google-Smtp-Source: AGHT+IE4ybAlv//BF8DsZphTTjPnCY4hzs7HwyQTj6wNk6+OE/f/W7jgi+Jk5MPxTYQ39xpfrlKnAcwF17FlNzlsbyk=
+X-Received: by 2002:a17:90b:4a:b0:30a:4ce4:5287 with SMTP id
+ 98e67ed59e1d1-30e82fbd3a0mr34472432a91.0.1747773063310; Tue, 20 May 2025
+ 13:31:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250520054943.5002-1-xuewen.yan@unisoc.com>
-In-Reply-To: <20250520054943.5002-1-xuewen.yan@unisoc.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 20 May 2025 13:07:59 -0700
-X-Gm-Features: AX0GCFsnSVJV_z_TzSzEMH1vd6p0Zn_P57_mmxCuj59sGtD1WNdRI0jcFppQQ7A
-Message-ID: <CAADnVQKZti=SXM=4owtk9jEqGMcD0mUqb46PNYwhquYfyORUuw@mail.gmail.com>
+References: <20250520054943.5002-1-xuewen.yan@unisoc.com> <CAADnVQKZti=SXM=4owtk9jEqGMcD0mUqb46PNYwhquYfyORUuw@mail.gmail.com>
+In-Reply-To: <CAADnVQKZti=SXM=4owtk9jEqGMcD0mUqb46PNYwhquYfyORUuw@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 20 May 2025 13:30:51 -0700
+X-Gm-Features: AX0GCFsY3sKiVL7c-RoHprUTofVqmOmNX1pZbpz9SDyWTlzwI07QmpOPvE0uocs
+Message-ID: <CAEf4BzaHFPpz9QmVNOHH_hJ-KOF+wsimGqBYRnNwAhz7zcj35w@mail.gmail.com>
 Subject: Re: [PATCH] Revert "bpf: remove unnecessary rcu_read_{lock,unlock}()
  in multi-uprobe attach logic"
-To: Xuewen Yan <xuewen.yan@unisoc.com>
-Cc: Song Liu <song@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Xuewen Yan <xuewen.yan@unisoc.com>, Song Liu <song@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
 	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
 	Steven Rostedt <rostedt@goodmis.org>, Alexei Starovoitov <ast@kernel.org>, 
 	Masami Hiramatsu <mhiramat@kernel.org>, bpf <bpf@vger.kernel.org>, 
@@ -93,45 +93,53 @@ Cc: Song Liu <song@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, May 19, 2025 at 10:51=E2=80=AFPM Xuewen Yan <xuewen.yan@unisoc.com>=
- wrote:
+On Tue, May 20, 2025 at 1:08=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> From: Di Shen <di.shen@unisoc.com>
+> On Mon, May 19, 2025 at 10:51=E2=80=AFPM Xuewen Yan <xuewen.yan@unisoc.co=
+m> wrote:
+> >
+> > From: Di Shen <di.shen@unisoc.com>
+> >
+> > This reverts commit 4a8f635a60540888dab3804992e86410360339c8.
+> >
+> > Althought get_pid_task() internally already calls rcu_read_lock() and
+> > rcu_read_unlock(), the find_vpid() was not.
+> >
+> > The documentation for find_vpid() clearly states:
+> >
+> >   "Must be called with the tasklist_lock or rcu_read_lock() held."
+> >
+> > Add proper rcu_read_lock/unlock() to protect the find_vpid().
+> >
+> > Reported-by: Xuewen Yan <xuewen.yan@unisoc.com>
+> > Signed-off-by: Di Shen <di.shen@unisoc.com>
+> > ---
+> >  kernel/trace/bpf_trace.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index 187dc37d61d4..0c4b6af10601 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -3417,7 +3417,9 @@ int bpf_uprobe_multi_link_attach(const union bpf_=
+attr *attr, struct bpf_prog *pr
+> >         }
+> >
+> >         if (pid) {
+> > +               rcu_read_lock();
+> >                 task =3D get_pid_task(find_vpid(pid), PIDTYPE_TGID);
+> > +               rcu_read_unlock();
+> >                 if (!task) {
+> >                         err =3D -ESRCH;
+> >                         goto error_path_put;
 >
-> This reverts commit 4a8f635a60540888dab3804992e86410360339c8.
+> hmm. indeed.
 >
-> Althought get_pid_task() internally already calls rcu_read_lock() and
-> rcu_read_unlock(), the find_vpid() was not.
->
-> The documentation for find_vpid() clearly states:
->
->   "Must be called with the tasklist_lock or rcu_read_lock() held."
->
-> Add proper rcu_read_lock/unlock() to protect the find_vpid().
->
-> Reported-by: Xuewen Yan <xuewen.yan@unisoc.com>
-> Signed-off-by: Di Shen <di.shen@unisoc.com>
-> ---
->  kernel/trace/bpf_trace.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 187dc37d61d4..0c4b6af10601 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -3417,7 +3417,9 @@ int bpf_uprobe_multi_link_attach(const union bpf_at=
-tr *attr, struct bpf_prog *pr
->         }
->
->         if (pid) {
-> +               rcu_read_lock();
->                 task =3D get_pid_task(find_vpid(pid), PIDTYPE_TGID);
-> +               rcu_read_unlock();
->                 if (!task) {
->                         err =3D -ESRCH;
->                         goto error_path_put;
 
-hmm. indeed.
+yep, my bad, missed find_vpid() restrictions. revert LGTM
 
-Jiri ?
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+> Jiri ?
 
