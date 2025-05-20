@@ -1,50 +1,50 @@
-Return-Path: <bpf+bounces-58546-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58547-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BFF1ABD48A
-	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 12:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B82FABD493
+	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 12:26:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D28DC7B38FB
-	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 10:23:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 363347B3D64
+	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 10:24:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70F7E26C388;
-	Tue, 20 May 2025 10:24:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B50B26D4D2;
+	Tue, 20 May 2025 10:24:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TQ0Q97lK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CKgtBdz2"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D12B226A0FC;
-	Tue, 20 May 2025 10:24:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 773F126C3AF;
+	Tue, 20 May 2025 10:24:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747736651; cv=none; b=cz/Wm2zC6R6o/1l2mBnd42sKjEGwNl9B4DEYcHY3baGnBX2cmFOFIl7Hwq4FSxOpZZFx+L2LeAKNPV9AFXba+mv8Go8l0tY3XIJx/9sgkPZJo5lc354D4IolpKPAUHZsRrZhTk4FtMP0ObschfHyw6ACtpnEnestKD3cctk/ops=
+	t=1747736656; cv=none; b=reN5nTe83QmUQWhsZs3Xd0AsN6P7v+CfQC5u4m39k31FVW5yDCXSE8SI3vM9brUaoeBkpQOg74E0oPAUX7Cy5Y1d5q8TAEGh+bJjTCDBFAqIUiy23KaHWh/ivwHJl8XwEBoTeEoxUGcl8AjizMOXRQvtrYOaPyCaLQURHXDypo4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747736651; c=relaxed/simple;
-	bh=YMbSCnPRwIyCAzYWgDoVNLwWOCQ2pSWUMHTeLhfe8Mg=;
+	s=arc-20240116; t=1747736656; c=relaxed/simple;
+	bh=xLrlxL0xXwR94rknogbGfGiqdI6tjOR6Ewlo75vEhpI=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=jypy81YD+dIAdes2nytwf3KOTGwlPdaCQTkAdMB3gzZ8kGPyK6sjkfd9YPrNYlXSPlXytUwSwOcR6dXOXbm83pDyCthdw63XY0dhWfH5Q2jXlGorQaDQzdF6ebWitskiTGzRXSXChN47JO0PRmmtjetUZnSgXJycfZGAW5z1V4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TQ0Q97lK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18E98C4CEE9;
-	Tue, 20 May 2025 10:24:06 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=t7YhGKRtcZLIO5o5rV232WgGYqlTt8cs8x3h43IT8pMkCSReQgbF8yUd44RAlz+5A6evndHiRKNYiPgNIcdRMwigMRLBe5Q1RKh5k4DuqkkObpnvHA4MwRJCm56zseLbHHP393AUqIO/Oyg5mgvyga00YQk950/38tO8C0XWx20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CKgtBdz2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFFA0C4CEF1;
+	Tue, 20 May 2025 10:24:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747736651;
-	bh=YMbSCnPRwIyCAzYWgDoVNLwWOCQ2pSWUMHTeLhfe8Mg=;
+	s=k20201202; t=1747736656;
+	bh=xLrlxL0xXwR94rknogbGfGiqdI6tjOR6Ewlo75vEhpI=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=TQ0Q97lK3ASQ/Dw454Wnkafpd2LfIiQMkmkh4t1svAtWYyIo7lU8DHrQ++d7T84Mf
-	 i8du1iJXHZV6VnlNnLVWz2KVuNpJu+LgIw621NtC2rSmdvMWN/Pxrlgnk7vojgsPTU
-	 dBikIqWZ3UMQtB8UahBhXdqiaT6aC1Ht0UlBZ8EhPma6sKiz9t0COASTMz9ddXCuVJ
-	 BoxSuQl3nB0fupas+J07wT0u9z1UhrIRP46o5C6RLqSy0uLKZQOJfWUX95W06aefgh
-	 lwUwhEgIa77Y3wX05JAO4qs3hQNcSCu+E9Pl9kNsmD4kUtKKXLrl/zFpdFpAqKUZgX
-	 zBBddopO5mUbg==
+	b=CKgtBdz22eZ55+d5Gmqxl0v7hdUY3H2cSsTLLE77BtOYoJJ8OYO16oLm1RTvBo4fE
+	 ujPdPI5OA5mD3JuJhQkqQkNN5BJxQk6X5RZL8V/9mrF6HDhLMCCpQbdkzy/7L/IeUP
+	 /1gfh1OwHgD85TpuDFMbRXhK4uBcfZf4wZU0ukN1Dg8t0YFQVVvFMsacbvX7pXw1f2
+	 urYf+6zqe6ybaH6V+52YzyOcH+9jRrWT4lAN8/sQ6xccjqBFBjZhaN5LTnHqGRQbeV
+	 jw3ObB3ff5Ii/E5cYwMPwrxoAMUEGKlmkAo34y42BU8opAHTgfSs8OHWdp0V7a6NlO
+	 iTxgFy61TaDbg==
 From: Roger Quadros <rogerq@kernel.org>
-Date: Tue, 20 May 2025 13:23:51 +0300
-Subject: [PATCH RFC net-next 2/5] net: ethernet: ti: am65-cpsw: add XSK
- pool helpers
+Date: Tue, 20 May 2025 13:23:52 +0300
+Subject: [PATCH RFC net-next 3/5] net: ethernet: ti: am65-cpsw: Add AF_XDP
+ zero copy for RX
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -53,7 +53,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250520-am65-cpsw-xdp-zc-v1-2-45558024f566@kernel.org>
+Message-Id: <20250520-am65-cpsw-xdp-zc-v1-3-45558024f566@kernel.org>
 References: <20250520-am65-cpsw-xdp-zc-v1-0-45558024f566@kernel.org>
 In-Reply-To: <20250520-am65-cpsw-xdp-zc-v1-0-45558024f566@kernel.org>
 To: Siddharth Vadapalli <s-vadapalli@ti.com>, 
@@ -70,313 +70,507 @@ Cc: srk@ti.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
  dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org, 
  Roger Quadros <rogerq@kernel.org>
 X-Mailer: b4 0.14.1
-X-Developer-Signature: v=1; a=openpgp-sha256; l=10416; i=rogerq@kernel.org;
- h=from:subject:message-id; bh=YMbSCnPRwIyCAzYWgDoVNLwWOCQ2pSWUMHTeLhfe8Mg=;
- b=owEBbQKS/ZANAwAIAdJaa9O+djCTAcsmYgBoLFg92e7URhiH+NeEIMbh7NBIawZnPO2Wwm1Mf
- Zw9ot3fZl6JAjMEAAEIAB0WIQRBIWXUTJ9SeA+rEFjSWmvTvnYwkwUCaCxYPQAKCRDSWmvTvnYw
- k/1PEAC9eHSJacMig16V/H768Mkz0avpiZZp3JadPkI7CiCmv3Lt61hW2w8h6xrc8A0CiqBey2L
- a0mMt63Cdepbjlv3LJ1mFd+Zqp86OFMYTwyCKQT8ndrDWS3Qc7ca0/Hj8u6hZc1YZCri5+YB6vi
- f4pYDbEPRvVtkCflF+toZ1KCTyEkdhy2iRiuyacwj8WVSImxpE8stBv92ibzuD6GKX+JZ0EmeTV
- mg3WFJOE7tGy+6fFqaqse6UQ6YhxlRjeRWuNq0n6X/nrOvVJIHwIlFztB4b4n1hpyqWTaa0ARGl
- LkbE8kF8+qUAbGBBRCyYIaRA8l04SXf5D1VQ1hWT6EjPug742wpt8KIBy+zDCBlgrd2+ednK/0Y
- LBo1ee5VLdbCxJcNANun874OYqga71hKdCso0pg0EgcMFYadpKU4cUpg9VP3Ja8dqleoQQKyUC2
- mX458885gERYmKPjcvhsvlGwIU4pbxRP+j7ElgHxwGbK6v087NuwSzPJLRpPBwRrji0pWxIbyo1
- r1IVT9aLNQ8mA02Uzqc2b8nZYb99+3uLBVaVNAU5Glu+9jTOgL1B994+OC6JPdd1XNX5taMqBfv
- wXwGF0vB3dSqPNQQgQcAwFHkmejVD+cNyM5lVLqdZW2vrcSHZWKbxtBHKIXbTUPhD3yd/Hnp/2J
- OYipTZcJxFwu0jQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=14909; i=rogerq@kernel.org;
+ h=from:subject:message-id; bh=xLrlxL0xXwR94rknogbGfGiqdI6tjOR6Ewlo75vEhpI=;
+ b=owEBbQKS/ZANAwAIAdJaa9O+djCTAcsmYgBoLFg9g7i7wyvOPisGCZCKiUTIUo+sFU7EZPR8c
+ rlqy4Lxrf6JAjMEAAEIAB0WIQRBIWXUTJ9SeA+rEFjSWmvTvnYwkwUCaCxYPQAKCRDSWmvTvnYw
+ k6yOEADJZzVrdF2cNlbN/tWUnC3eWyhu6xasPuhZXmZmXPwW2D8Iq7njZwegMktyofQ5r/PN8KH
+ 9upfTKbF3DvDx+sRgxLAEePkF6E/g54sS8AwvY7J+j9UYnQFQDm8JoURpxouW47qkFrlp2bJADA
+ eM6+yEs4HNGiCZ+O2RTz30ZW/+RMND8SuSrgYj4Fti2s5FI2pHDf36/Q9sBBIOc0WpyiorBjdRM
+ 9J/dJEOehB+XYlI/3NsjJ9v/LWbftao2CtL2XCZOC2KeDcVbKpBaOiie6kwQL3bzYnrhDQ4H8xu
+ eEUq60sbDxeDUy+U8hzms0Ecy284a6B5YrGSMnyG5YTulp/v+IM0z0voSmkikBqs3wbsuDhltMZ
+ GSAGgW4SRLp+2brOVxyMf4jUdcBK6ic3RJ1h4OIDFE4NiD+fQOrFy7Ik0tlPMjDsxfowkFJd7r3
+ yiuWkk9sYS9LA98meh3MZPXtqntX6CbGVqX20JbHUFsrkEedlJHJWRhJoKt/OUS+EClQUd1Pz0f
+ ALmgsACQ9AOQTjWA1nNpJy2AOM1TSlEOGXBi6XeZ+CKmnwJ1Bc5ljRp4dubrVqnI4S0oAR3BiVN
+ wzWa/2yVsudH5Wrc2cFdNOSED0BP5bPzXjXp4dJo4TOj5hJ2EagJeAafwZKM4E0l3lQjHKztHLk
+ XrKlwCTL7E/yt3w==
 X-Developer-Key: i=rogerq@kernel.org; a=openpgp;
  fpr=412165D44C9F52780FAB1058D25A6BD3BE763093
 
-To prepare for XSK zero copy support, add XSK pool
-helpers in a new file am65-cpsw-xdp.c
+Add zero copy support to RX path.
 
-As queues are shared between ports we can no longer
-support the case where zero copy (XSK Pool) is enabled
-for the queue on one port but not for other ports.
+Introduce xsk_pool and xsk_port_id to struct am65_cpsw_rx_flow.
+This way we can quickly check if the flow is setup as XSK pool
+and for which port.
 
-Current solution is to drop the packet if Zero copy
-is not enabled for that port + queue but enabled for
-some other port + same queue.
-
-xdp_zc_queues bitmap tracks if queue is setup as XSK
-pool and xsk_port_id array tracks which port the XSK
-queue is assigned to for zero copy.
+If the RX flow is setup as XSK pool then register it as
+MEM_TYPE_XSK_BUFF_POOL. At queue creation get free frames from
+the XSK pool and push it to the RX ring.
 
 Signed-off-by: Roger Quadros <rogerq@kernel.org>
 ---
- drivers/net/ethernet/ti/Makefile         |   2 +-
- drivers/net/ethernet/ti/am65-cpsw-nuss.c |  21 ++++--
- drivers/net/ethernet/ti/am65-cpsw-nuss.h |  20 +++++
- drivers/net/ethernet/ti/am65-cpsw-xdp.c  | 122 +++++++++++++++++++++++++++++++
- 4 files changed, 156 insertions(+), 9 deletions(-)
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c | 307 +++++++++++++++++++++++++++----
+ drivers/net/ethernet/ti/am65-cpsw-nuss.h |  12 +-
+ drivers/net/ethernet/ti/am65-cpsw-xdp.c  |  24 +++
+ 3 files changed, 309 insertions(+), 34 deletions(-)
 
-diff --git a/drivers/net/ethernet/ti/Makefile b/drivers/net/ethernet/ti/Makefile
-index cbcf44806924..48d07afe30f9 100644
---- a/drivers/net/ethernet/ti/Makefile
-+++ b/drivers/net/ethernet/ti/Makefile
-@@ -26,7 +26,7 @@ keystone_netcp_ethss-y := netcp_ethss.o netcp_sgmii.o netcp_xgbepcsr.o cpsw_ale.
- obj-$(CONFIG_TI_K3_CPPI_DESC_POOL) += k3-cppi-desc-pool.o
- 
- obj-$(CONFIG_TI_K3_AM65_CPSW_NUSS) += ti-am65-cpsw-nuss.o
--ti-am65-cpsw-nuss-y := am65-cpsw-nuss.o cpsw_sl.o am65-cpsw-ethtool.o cpsw_ale.o
-+ti-am65-cpsw-nuss-y := am65-cpsw-nuss.o cpsw_sl.o am65-cpsw-ethtool.o cpsw_ale.o am65-cpsw-xdp.o
- ti-am65-cpsw-nuss-$(CONFIG_TI_AM65_CPSW_QOS) += am65-cpsw-qos.o
- ti-am65-cpsw-nuss-$(CONFIG_TI_K3_AM65_CPSW_SWITCHDEV) += am65-cpsw-switchdev.o
- obj-$(CONFIG_TI_K3_AM65_CPTS) += am65-cpts.o
 diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-index cd713bb57b91..a946bcd770c4 100644
+index a946bcd770c4..5fbf04880722 100644
 --- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
 +++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-@@ -58,9 +58,6 @@
- 
- #define AM65_CPSW_MAX_PORTS	8
- 
--#define AM65_CPSW_MIN_PACKET_SIZE	VLAN_ETH_ZLEN
--#define AM65_CPSW_MAX_PACKET_SIZE	2024
--
- #define AM65_CPSW_REG_CTL		0x004
- #define AM65_CPSW_REG_STAT_PORT_EN	0x014
- #define AM65_CPSW_REG_PTYPE		0x018
-@@ -505,7 +502,7 @@ static inline void am65_cpsw_put_page(struct am65_cpsw_rx_flow *flow,
- static void am65_cpsw_nuss_rx_cleanup(void *data, dma_addr_t desc_dma);
- static void am65_cpsw_nuss_tx_cleanup(void *data, dma_addr_t desc_dma);
- 
--static void am65_cpsw_destroy_rxq(struct am65_cpsw_common *common, int id)
-+void am65_cpsw_destroy_rxq(struct am65_cpsw_common *common, int id)
- {
- 	struct am65_cpsw_rx_chn *rx_chn = &common->rx_chns;
- 	struct am65_cpsw_rx_flow *flow;
-@@ -554,7 +551,7 @@ static void am65_cpsw_destroy_rxqs(struct am65_cpsw_common *common)
- 	k3_udma_glue_disable_rx_chn(common->rx_chns.rx_chn);
- }
- 
--static int am65_cpsw_create_rxq(struct am65_cpsw_common *common, int id)
-+int am65_cpsw_create_rxq(struct am65_cpsw_common *common, int id)
- {
- 	struct am65_cpsw_rx_chn *rx_chn = &common->rx_chns;
- 	struct page_pool_params pp_params = {
-@@ -658,7 +655,7 @@ static int am65_cpsw_create_rxqs(struct am65_cpsw_common *common)
- 	return ret;
- }
- 
--static void am65_cpsw_destroy_txq(struct am65_cpsw_common *common, int id)
-+void am65_cpsw_destroy_txq(struct am65_cpsw_common *common, int id)
- {
- 	struct am65_cpsw_tx_chn *tx_chn = &common->tx_chns[id];
- 
-@@ -692,7 +689,7 @@ static void am65_cpsw_destroy_txqs(struct am65_cpsw_common *common)
- 		am65_cpsw_destroy_txq(common, id);
- }
- 
--static int am65_cpsw_create_txq(struct am65_cpsw_common *common, int id)
-+int am65_cpsw_create_txq(struct am65_cpsw_common *common, int id)
- {
- 	struct am65_cpsw_tx_chn *tx_chn = &common->tx_chns[id];
- 	int ret;
-@@ -1324,7 +1321,7 @@ static int am65_cpsw_nuss_rx_packets(struct am65_cpsw_rx_flow *flow,
- 	dma_unmap_single(rx_chn->dma_dev, buf_dma, buf_dma_len, DMA_FROM_DEVICE);
- 	k3_cppi_desc_pool_free(rx_chn->desc_pool, desc_rx);
- 
--	if (port->xdp_prog) {
-+	if (am65_cpsw_xdp_is_enabled(port)) {
- 		xdp_init_buff(&xdp, PAGE_SIZE, &port->xdp_rxq[flow->id]);
- 		xdp_prepare_buff(&xdp, page_addr, AM65_CPSW_HEADROOM,
- 				 pkt_len, false);
-@@ -1960,6 +1957,9 @@ static int am65_cpsw_ndo_bpf(struct net_device *ndev, struct netdev_bpf *bpf)
- 	switch (bpf->command) {
- 	case XDP_SETUP_PROG:
- 		return am65_cpsw_xdp_prog_setup(ndev, bpf->prog);
-+	case XDP_SETUP_XSK_POOL:
-+		return am65_cpsw_xsk_setup_pool(ndev, bpf->xsk.pool,
-+						bpf->xsk.queue_id);
- 	default:
- 		return -EINVAL;
+@@ -429,6 +429,55 @@ static void am65_cpsw_nuss_ndo_host_tx_timeout(struct net_device *ndev,
  	}
-@@ -3527,7 +3527,12 @@ static int am65_cpsw_nuss_probe(struct platform_device *pdev)
- 	common = devm_kzalloc(dev, sizeof(struct am65_cpsw_common), GFP_KERNEL);
- 	if (!common)
- 		return -ENOMEM;
+ }
+ 
++static int am65_cpsw_nuss_rx_push_zc(struct am65_cpsw_rx_flow *flow,
++				     struct xdp_buff *xdp)
++{
++	struct am65_cpsw_rx_chn *rx_chn = &flow->common->rx_chns;
++	struct cppi5_host_desc_t *desc_rx;
++	struct am65_cpsw_swdata *swdata;
++	u32 flow_id = flow->id;
++	dma_addr_t desc_dma;
++	dma_addr_t buf_dma;
++	int buf_len;
 +
- 	common->dev = dev;
-+	common->xdp_zc_queues = devm_bitmap_zalloc(dev, AM65_CPSW_MAX_QUEUES,
-+						   GFP_KERNEL);
-+	if (!common->xdp_zc_queues)
++	desc_rx = k3_cppi_desc_pool_alloc(rx_chn->desc_pool);
++	if (!desc_rx)
 +		return -ENOMEM;
- 
- 	of_id = of_match_device(am65_cpsw_nuss_of_mtable, dev);
- 	if (!of_id)
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.h b/drivers/net/ethernet/ti/am65-cpsw-nuss.h
-index 917c37e4e89b..e80e74a74d71 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.h
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.h
-@@ -23,8 +23,14 @@ struct am65_cpts;
- 
- #define AM65_CPSW_MAX_QUEUES	8	/* both TX & RX */
- 
-+#define AM65_CPSW_MIN_PACKET_SIZE	VLAN_ETH_ZLEN
-+#define AM65_CPSW_MAX_PACKET_SIZE	2024
 +
- #define AM65_CPSW_PORT_VLAN_REG_OFFSET	0x014
- 
-+#define AM65_CPSW_RX_DMA_ATTR	(DMA_ATTR_SKIP_CPU_SYNC |\
-+				 DMA_ATTR_WEAK_ORDERING)
++	desc_dma = k3_cppi_desc_pool_virt2dma(rx_chn->desc_pool, desc_rx);
++	buf_dma = xsk_buff_xdp_get_dma(xdp);
++	cppi5_hdesc_init(desc_rx, CPPI5_INFO0_HDESC_EPIB_PRESENT,
++			 AM65_CPSW_NAV_PS_DATA_SIZE);
++	k3_udma_glue_rx_dma_to_cppi5_addr(rx_chn->rx_chn, &buf_dma);
++	buf_len = xsk_pool_get_rx_frame_size(flow->xsk_pool);
++	cppi5_hdesc_attach_buf(desc_rx, buf_dma, buf_len, buf_dma, buf_len);
++	swdata = cppi5_hdesc_get_swdata(desc_rx);
++	swdata->xdp = xdp;
++	swdata->flow_id = flow_id;
 +
- struct am65_cpsw_slave_data {
- 	bool				mac_only;
- 	struct cpsw_sl			*mac_sl;
-@@ -190,6 +196,9 @@ struct am65_cpsw_common {
- 	unsigned char switch_id[MAX_PHYS_ITEM_ID_LEN];
- 	/* only for suspend/resume context restore */
- 	u32			*ale_context;
-+	/* XDP Zero Copy */
-+	unsigned long		*xdp_zc_queues;
-+	int			xsk_port_id[AM65_CPSW_MAX_QUEUES];
- };
- 
- struct am65_cpsw_ndev_priv {
-@@ -228,4 +237,15 @@ int am65_cpsw_nuss_update_tx_rx_chns(struct am65_cpsw_common *common,
- 
- bool am65_cpsw_port_dev_check(const struct net_device *dev);
- 
-+int am65_cpsw_create_rxq(struct am65_cpsw_common *common, int id);
-+void am65_cpsw_destroy_rxq(struct am65_cpsw_common *common, int id);
-+int am65_cpsw_create_txq(struct am65_cpsw_common *common, int id);
-+void am65_cpsw_destroy_txq(struct am65_cpsw_common *common, int id);
-+int am65_cpsw_xsk_setup_pool(struct net_device *ndev,
-+			     struct xsk_buff_pool *pool, u16 qid);
-+int am65_cpsw_xsk_wakeup(struct net_device *ndev, u32 qid, u32 flags);
-+static inline bool am65_cpsw_xdp_is_enabled(struct am65_cpsw_port *port)
-+{
-+	return !!READ_ONCE(port->xdp_prog);
++	return k3_udma_glue_push_rx_chn(rx_chn->rx_chn, flow_id,
++					desc_rx, desc_dma);
 +}
- #endif /* AM65_CPSW_NUSS_H_ */
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-xdp.c b/drivers/net/ethernet/ti/am65-cpsw-xdp.c
-new file mode 100644
-index 000000000000..e1ab81cb4548
---- /dev/null
-+++ b/drivers/net/ethernet/ti/am65-cpsw-xdp.c
-@@ -0,0 +1,122 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Texas Instruments K3 AM65 Ethernet Switch SubSystem Driver
-+ *
-+ * Copyright (C) 2025 Texas Instruments Incorporated - http://www.ti.com/
-+ *
-+ */
 +
-+#include <net/xsk_buff_pool.h>
-+#include <net/xdp_sock_drv.h>
-+#include "am65-cpsw-nuss.h"
-+
-+static int am65_cpsw_xsk_pool_enable(struct am65_cpsw_port *port,
-+				     struct xsk_buff_pool *pool, u16 qid)
++static int am65_cpsw_nuss_rx_alloc_zc(struct am65_cpsw_rx_flow *flow,
++				      int budget)
 +{
-+	struct am65_cpsw_common *common = port->common;
-+	struct am65_cpsw_rx_chn *rx_chn;
-+	bool need_update;
-+	u32 frame_size;
++	struct xdp_buff *xdp;
++	int i, ret;
++
++	for (i = 0; i < budget; i++) {
++		xdp = xsk_buff_alloc(flow->xsk_pool);
++		if (!xdp)
++			break;
++
++		ret = am65_cpsw_nuss_rx_push_zc(flow, xdp);
++		if (ret < 0)
++			break;
++	}
++
++	return i;
++}
++
+ static int am65_cpsw_nuss_rx_push(struct am65_cpsw_common *common,
+ 				  struct page *page, u32 flow_idx)
+ {
+@@ -529,6 +578,9 @@ void am65_cpsw_destroy_rxq(struct am65_cpsw_common *common, int id)
+ 		page_pool_destroy(flow->page_pool);
+ 		flow->page_pool = NULL;
+ 	}
++
++	flow->xsk_pool = NULL;
++	flow->xsk_port_id = -EINVAL;
+ }
+ 
+ static void am65_cpsw_destroy_rxqs(struct am65_cpsw_common *common)
+@@ -568,6 +620,7 @@ int am65_cpsw_create_rxq(struct am65_cpsw_common *common, int id)
+ 	struct page_pool *pool;
+ 	struct page *page;
+ 	int port, ret, i;
++	int port_id;
+ 
+ 	flow = &rx_chn->flows[id];
+ 	pp_params.napi = &flow->napi_rx;
+@@ -582,9 +635,24 @@ int am65_cpsw_create_rxq(struct am65_cpsw_common *common, int id)
+ 	/* using same page pool is allowed as no running rx handlers
+ 	 * simultaneously for both ndevs
+ 	 */
++
++	/* get first port with XSK pool & XDP program set */
+ 	for (port = 0; port < common->port_num; port++) {
+-		if (!common->ports[port].ndev)
+-		/* FIXME should we BUG here? */
++		flow->xsk_pool = am65_cpsw_xsk_get_pool(&common->ports[port],
++							id);
++		if (flow->xsk_pool)
++			break;
++	}
++
++	port_id = common->ports[port].port_id;
++	flow->xsk_port_id = flow->xsk_pool ? port_id : -EINVAL;
++	for (port = 0; port < common->port_num; port++) {
++		port_id = common->ports[port].port_id;
++
++		/* NOTE: if queue is XSK then only register it
++		 * for the relevant port it was assigned to
++		 */
++		if (flow->xsk_pool && port_id != flow->xsk_port_id)
+ 			continue;
+ 
+ 		rxq = &common->ports[port].xdp_rxq[id];
+@@ -593,29 +661,44 @@ int am65_cpsw_create_rxq(struct am65_cpsw_common *common, int id)
+ 		if (ret)
+ 			goto err;
+ 
+-		ret = xdp_rxq_info_reg_mem_model(rxq,
+-						 MEM_TYPE_PAGE_POOL,
+-						 pool);
++		if (flow->xsk_pool) {
++			ret = xdp_rxq_info_reg_mem_model(rxq,
++							 MEM_TYPE_XSK_BUFF_POOL,
++							 NULL);
++			xsk_pool_set_rxq_info(flow->xsk_pool, rxq);
++		} else {
++			ret = xdp_rxq_info_reg_mem_model(rxq,
++							 MEM_TYPE_PAGE_POOL,
++							 pool);
++		}
++
+ 		if (ret)
+ 			goto err;
+ 	}
+ 
+-	for (i = 0; i < AM65_CPSW_MAX_RX_DESC; i++) {
+-		page = page_pool_dev_alloc_pages(flow->page_pool);
+-		if (!page) {
+-			dev_err(common->dev, "cannot allocate page in flow %d\n",
+-				id);
+-			ret = -ENOMEM;
+-			goto err;
+-		}
++	if (flow->xsk_pool) {
++		/* get pages from xsk_pool and push to RX ring
++		 * queue as much as possible
++		 */
++		am65_cpsw_nuss_rx_alloc_zc(flow, AM65_CPSW_MAX_RX_DESC);
++	} else {
++		for (i = 0; i < AM65_CPSW_MAX_RX_DESC; i++) {
++			page = page_pool_dev_alloc_pages(flow->page_pool);
++			if (!page) {
++				dev_err(common->dev, "cannot allocate page in flow %d\n",
++					id);
++				ret = -ENOMEM;
++				goto err;
++			}
+ 
+-		ret = am65_cpsw_nuss_rx_push(common, page, id);
+-		if (ret < 0) {
+-			dev_err(common->dev,
+-				"cannot submit page to rx channel flow %d, error %d\n",
+-				id, ret);
+-			am65_cpsw_put_page(flow, page, false);
+-			goto err;
++			ret = am65_cpsw_nuss_rx_push(common, page, id);
++			if (ret < 0) {
++				dev_err(common->dev,
++					"cannot submit page to rx channel flow %d, error %d\n",
++					id, ret);
++				am65_cpsw_put_page(flow, page, false);
++				goto err;
++			}
+ 		}
+ 	}
+ 
+@@ -772,6 +855,8 @@ static void am65_cpsw_nuss_rx_cleanup(void *data, dma_addr_t desc_dma)
+ 	struct am65_cpsw_rx_chn *rx_chn = data;
+ 	struct cppi5_host_desc_t *desc_rx;
+ 	struct am65_cpsw_swdata *swdata;
++	struct am65_cpsw_rx_flow *flow;
++	struct xdp_buff *xdp;
+ 	dma_addr_t buf_dma;
+ 	struct page *page;
+ 	u32 buf_dma_len;
+@@ -779,13 +864,20 @@ static void am65_cpsw_nuss_rx_cleanup(void *data, dma_addr_t desc_dma)
+ 
+ 	desc_rx = k3_cppi_desc_pool_dma2virt(rx_chn->desc_pool, desc_dma);
+ 	swdata = cppi5_hdesc_get_swdata(desc_rx);
+-	page = swdata->page;
+ 	flow_id = swdata->flow_id;
+ 	cppi5_hdesc_get_obuf(desc_rx, &buf_dma, &buf_dma_len);
+ 	k3_udma_glue_rx_cppi5_to_dma_addr(rx_chn->rx_chn, &buf_dma);
+-	dma_unmap_single(rx_chn->dma_dev, buf_dma, buf_dma_len, DMA_FROM_DEVICE);
+ 	k3_cppi_desc_pool_free(rx_chn->desc_pool, desc_rx);
+-	am65_cpsw_put_page(&rx_chn->flows[flow_id], page, false);
++	flow = &rx_chn->flows[flow_id];
++	if (flow->xsk_pool) {
++		xdp = swdata->xdp;
++		xsk_buff_free(xdp);
++	} else {
++		page = swdata->page;
++		dma_unmap_single(rx_chn->dma_dev, buf_dma, buf_dma_len,
++				 DMA_FROM_DEVICE);
++		am65_cpsw_put_page(flow, page, false);
++	}
+ }
+ 
+ static void am65_cpsw_nuss_xmit_free(struct am65_cpsw_tx_chn *tx_chn,
+@@ -1264,6 +1356,151 @@ static void am65_cpsw_nuss_rx_csum(struct sk_buff *skb, u32 csum_info)
+ 	}
+ }
+ 
++static struct sk_buff *am65_cpsw_create_skb_zc(struct am65_cpsw_rx_flow *flow,
++					       struct xdp_buff *xdp)
++{
++	unsigned int metasize = xdp->data - xdp->data_meta;
++	unsigned int datasize = xdp->data_end - xdp->data;
++	struct sk_buff *skb;
++
++	skb = napi_alloc_skb(&flow->napi_rx,
++			     xdp->data_end - xdp->data_hard_start);
++	if (unlikely(!skb))
++		return NULL;
++
++	skb_reserve(skb, xdp->data - xdp->data_hard_start);
++	memcpy(__skb_put(skb, datasize), xdp->data, datasize);
++	if (metasize)
++		skb_metadata_set(skb, metasize);
++
++	return skb;
++}
++
++static void am65_cpsw_dispatch_skb_zc(struct am65_cpsw_rx_flow *flow,
++				      struct am65_cpsw_port *port,
++				      struct xdp_buff *xdp, u32 csum_info)
++{
++	struct am65_cpsw_common *common = flow->common;
++	unsigned int len = xdp->data_end - xdp->data;
++	struct am65_cpsw_ndev_priv *ndev_priv;
++	struct net_device *ndev = port->ndev;
++	struct sk_buff *skb;
++
++	skb = am65_cpsw_create_skb_zc(flow, xdp);
++	if (!skb) {
++		ndev->stats.rx_dropped++;
++		return;
++	}
++
++	ndev_priv = netdev_priv(ndev);
++	am65_cpsw_nuss_set_offload_fwd_mark(skb, ndev_priv->offload_fwd_mark);
++	if (port->rx_ts_enabled)
++		am65_cpts_rx_timestamp(common->cpts, skb);
++
++	skb_mark_for_recycle(skb);
++	skb->protocol = eth_type_trans(skb, ndev);
++	am65_cpsw_nuss_rx_csum(skb, csum_info);
++	napi_gro_receive(&flow->napi_rx, skb);
++	dev_sw_netstats_rx_add(ndev, len);
++}
++
++static int am65_cpsw_nuss_rx_zc(struct am65_cpsw_rx_flow *flow, int budget)
++{
++	struct am65_cpsw_rx_chn *rx_chn = &flow->common->rx_chns;
++	u32 buf_dma_len, pkt_len, port_id = 0, csum_info;
++	struct am65_cpsw_common *common = flow->common;
++	struct cppi5_host_desc_t *desc_rx;
++	struct device *dev = common->dev;
++	struct am65_cpsw_swdata *swdata;
++	dma_addr_t desc_dma, buf_dma;
++	struct am65_cpsw_port *port;
++	struct net_device *ndev;
++	u32 flow_idx = flow->id;
++	struct xdp_buff	*xdp;
++	int count = 0;
++	int xdp_status = 0;
++	u32 *psdata;
 +	int ret;
 +
-+	/*
-+	 * As queues are shared between ports we can no longer
-+	 * support the case where zero copy (XSK Pool) is enabled
-+	 * for the queue on one port but not for other ports.
-+	 *
-+	 * Current solution is to drop the packet if Zero copy
-+	 * is not enabled for that port + queue but enabled for
-+	 * some other port + same queue.
-+	 */
-+	if (test_bit(qid, common->xdp_zc_queues))
-+		return -EINVAL;
++	while (count < budget) {
++		ret = k3_udma_glue_pop_rx_chn(rx_chn->rx_chn, flow_idx,
++					      &desc_dma);
++		if (ret) {
++			if (ret != -ENODATA)
++				dev_err(dev, "RX: pop chn fail %d\n",
++					ret);
++			break;
++		}
 +
-+	rx_chn = &common->rx_chns;
-+	if (qid >= common->rx_ch_num_flows || qid >= common->tx_ch_num)
-+		return -EINVAL;
++		if (cppi5_desc_is_tdcm(desc_dma)) {
++			dev_dbg(dev, "%s RX tdown flow: %u\n",
++				__func__, flow_idx);
++			if (common->pdata.quirks & AM64_CPSW_QUIRK_DMA_RX_TDOWN_IRQ)
++				complete(&common->tdown_complete);
++			continue;
++		}
 +
-+	frame_size = xsk_pool_get_rx_frame_size(pool);
-+	if (frame_size < AM65_CPSW_MAX_PACKET_SIZE)
-+		return -EOPNOTSUPP;
++		desc_rx = k3_cppi_desc_pool_dma2virt(rx_chn->desc_pool,
++						     desc_dma);
++		dev_dbg(dev, "%s flow_idx: %u desc %pad\n",
++			__func__, flow_idx, &desc_dma);
 +
-+	ret = xsk_pool_dma_map(pool, rx_chn->dma_dev, AM65_CPSW_RX_DMA_ATTR);
-+	if (ret) {
-+		netdev_err(port->ndev, "Failed to map xsk pool\n");
-+		return ret;
++		swdata = cppi5_hdesc_get_swdata(desc_rx);
++		xdp = swdata->xdp;
++		cppi5_hdesc_get_obuf(desc_rx, &buf_dma, &buf_dma_len);
++		k3_udma_glue_rx_cppi5_to_dma_addr(rx_chn->rx_chn, &buf_dma);
++		pkt_len = cppi5_hdesc_get_pktlen(desc_rx);
++		cppi5_desc_get_tags_ids(&desc_rx->hdr, &port_id, NULL);
++		dev_dbg(dev, "%s rx port_id:%d\n", __func__, port_id);
++		port = am65_common_get_port(common, port_id);
++		ndev = port->ndev;
++		psdata = cppi5_hdesc_get_psdata(desc_rx);
++		csum_info = psdata[2];
++		dev_dbg(dev, "%s rx csum_info:%#x\n", __func__, csum_info);
++		k3_cppi_desc_pool_free(rx_chn->desc_pool, desc_rx);
++		count++;
++		xsk_buff_set_size(xdp, pkt_len);
++		xsk_buff_dma_sync_for_cpu(xdp);
++		/* check if this port has XSK enabled. else drop packet */
++		if (port_id != flow->xsk_port_id) {
++			dev_dbg(dev, "discarding non xsk port data\n");
++			xsk_buff_free(xdp);
++			ndev->stats.rx_dropped++;
++			continue;
++		}
++
++		ret = am65_cpsw_run_xdp(flow, port, xdp, &pkt_len);
++		switch (ret) {
++		case AM65_CPSW_XDP_PASS:
++			am65_cpsw_dispatch_skb_zc(flow, port, xdp, csum_info);
++			xsk_buff_free(xdp);
++			break;
++		case AM65_CPSW_XDP_CONSUMED:
++			xsk_buff_free(xdp);
++			break;
++		case AM65_CPSW_XDP_TX:
++		case AM65_CPSW_XDP_REDIRECT:
++			xdp_status |= ret;
++			break;
++		}
 +	}
 +
-+	need_update = common->usage_count &&
-+		      am65_cpsw_xdp_is_enabled(port);
-+	if (need_update) {
-+		am65_cpsw_destroy_rxq(common, qid);
-+		am65_cpsw_destroy_txq(common, qid);
++	if (xdp_status & AM65_CPSW_XDP_REDIRECT)
++		xdp_do_flush();
++
++	ret = am65_cpsw_nuss_rx_alloc_zc(flow, count);
++
++	if (xsk_uses_need_wakeup(flow->xsk_pool)) {
++		/* We set wakeup if we are exhausted of new requests */
++		if (ret < count)
++			xsk_set_rx_need_wakeup(flow->xsk_pool);
++		else
++			xsk_clear_rx_need_wakeup(flow->xsk_pool);
 +	}
 +
-+	set_bit(qid, common->xdp_zc_queues);
-+	common->xsk_port_id[qid] = port->port_id;
-+	if (need_update) {
-+		am65_cpsw_create_rxq(common, qid);
-+		am65_cpsw_create_txq(common, qid);
-+	}
-+
-+	return 0;
++	return count;
 +}
 +
-+static int am65_cpsw_xsk_pool_disable(struct am65_cpsw_port *port,
-+				      struct xsk_buff_pool *pool, u16 qid)
-+{
-+	struct am65_cpsw_common *common = port->common;
-+	bool need_update;
+ static int am65_cpsw_nuss_rx_packets(struct am65_cpsw_rx_flow *flow,
+ 				     int *xdp_state)
+ {
+@@ -1403,17 +1640,21 @@ static int am65_cpsw_nuss_rx_poll(struct napi_struct *napi_rx, int budget)
+ 	int num_rx = 0;
+ 
+ 	/* process only this flow */
+-	cur_budget = budget;
+-	while (cur_budget--) {
+-		ret = am65_cpsw_nuss_rx_packets(flow, &xdp_state);
+-		xdp_state_or |= xdp_state;
+-		if (ret)
+-			break;
+-		num_rx++;
+-	}
++	if (flow->xsk_pool) {
++		num_rx = am65_cpsw_nuss_rx_zc(flow, budget);
++	} else {
++		cur_budget = budget;
++		while (cur_budget--) {
++			ret = am65_cpsw_nuss_rx_packets(flow, &xdp_state);
++			xdp_state_or |= xdp_state;
++			if (ret)
++				break;
++			num_rx++;
++		}
+ 
+-	if (xdp_state_or & AM65_CPSW_XDP_REDIRECT)
+-		xdp_do_flush();
++		if (xdp_state_or & AM65_CPSW_XDP_REDIRECT)
++			xdp_do_flush();
++	}
+ 
+ 	dev_dbg(common->dev, "%s num_rx:%d %d\n", __func__, num_rx, budget);
+ 
+diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.h b/drivers/net/ethernet/ti/am65-cpsw-nuss.h
+index e80e74a74d71..0e44d8a6cd68 100644
+--- a/drivers/net/ethernet/ti/am65-cpsw-nuss.h
++++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.h
+@@ -15,6 +15,7 @@
+ #include <linux/soc/ti/k3-ringacc.h>
+ #include <net/devlink.h>
+ #include <net/xdp.h>
++#include <net/xdp_sock_drv.h>
+ #include "am65-cpsw-qos.h"
+ 
+ struct am65_cpts;
+@@ -107,6 +108,8 @@ struct am65_cpsw_rx_flow {
+ 	struct hrtimer rx_hrtimer;
+ 	unsigned long rx_pace_timeout;
+ 	struct page_pool *page_pool;
++	struct xsk_buff_pool *xsk_pool;
++	int xsk_port_id;
+ 	char name[32];
+ };
+ 
+@@ -120,7 +123,10 @@ struct am65_cpsw_tx_swdata {
+ 
+ struct am65_cpsw_swdata {
+ 	u32 flow_id;
+-	struct page *page;
++	union {
++		struct page *page;
++		struct xdp_buff *xdp;
++	};
+ };
+ 
+ struct am65_cpsw_rx_chn {
+@@ -248,4 +254,8 @@ static inline bool am65_cpsw_xdp_is_enabled(struct am65_cpsw_port *port)
+ {
+ 	return !!READ_ONCE(port->xdp_prog);
+ }
 +
-+	if (qid >= common->rx_ch_num_flows || qid >= common->tx_ch_num)
++struct xsk_buff_pool *am65_cpsw_xsk_get_pool(struct am65_cpsw_port *port,
++					     u32 qid);
++
+ #endif /* AM65_CPSW_NUSS_H_ */
+diff --git a/drivers/net/ethernet/ti/am65-cpsw-xdp.c b/drivers/net/ethernet/ti/am65-cpsw-xdp.c
+index e1ab81cb4548..e71ff38f851f 100644
+--- a/drivers/net/ethernet/ti/am65-cpsw-xdp.c
++++ b/drivers/net/ethernet/ti/am65-cpsw-xdp.c
+@@ -108,6 +108,9 @@ int am65_cpsw_xsk_wakeup(struct net_device *ndev, u32 qid, u32 flags)
+ {
+ 	struct am65_cpsw_common *common = am65_ndev_to_common(ndev);
+ 	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
++	struct am65_cpsw_rx_flow *rx_flow;
++
++	rx_flow = &common->rx_chns.flows[qid];
+ 
+ 	if (!netif_running(ndev) || !netif_carrier_ok(ndev))
+ 		return -ENETDOWN;
+@@ -118,5 +121,26 @@ int am65_cpsw_xsk_wakeup(struct net_device *ndev, u32 qid, u32 flags)
+ 	if (qid >= common->rx_ch_num_flows || qid >= common->tx_ch_num)
+ 		return -EINVAL;
+ 
++	if (!rx_flow->xsk_pool)
 +		return -EINVAL;
 +
-+	if (!test_bit(qid, common->xdp_zc_queues))
-+		return -EINVAL;
-+
-+	pool = xsk_get_pool_from_qid(port->ndev, qid);
-+	if (!pool)
-+		return -EINVAL;
-+
-+	need_update = common->usage_count && am65_cpsw_xdp_is_enabled(port);
-+	if (need_update) {
-+		am65_cpsw_destroy_rxq(common, qid);
-+		am65_cpsw_destroy_txq(common, qid);
-+		synchronize_rcu();
++	if (flags & XDP_WAKEUP_RX) {
++		if (!napi_if_scheduled_mark_missed(&rx_flow->napi_rx)) {
++			if (likely(napi_schedule_prep(&rx_flow->napi_rx)))
++				__napi_schedule(&rx_flow->napi_rx);
++		}
 +	}
 +
-+	xsk_pool_dma_unmap(pool, AM65_CPSW_RX_DMA_ATTR);
-+	clear_bit(qid, common->xdp_zc_queues);
-+	common->xsk_port_id[qid] = -EINVAL;
-+	if (need_update) {
-+		am65_cpsw_create_rxq(common, qid);
-+		am65_cpsw_create_txq(common, qid);
-+	}
+ 	return 0;
+ }
 +
-+	return 0;
-+}
-+
-+int am65_cpsw_xsk_setup_pool(struct net_device *ndev,
-+			     struct xsk_buff_pool *pool, u16 qid)
++struct xsk_buff_pool *am65_cpsw_xsk_get_pool(struct am65_cpsw_port *port,
++					     u32 qid)
 +{
-+	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
++	if (!am65_cpsw_xdp_is_enabled(port) ||
++	    !test_bit(qid, port->common->xdp_zc_queues) ||
++	    port->common->xsk_port_id[qid] != port->port_id)
++		return NULL;
 +
-+	return pool ? am65_cpsw_xsk_pool_enable(port, pool, qid) :
-+		      am65_cpsw_xsk_pool_disable(port, pool, qid);
-+}
-+
-+int am65_cpsw_xsk_wakeup(struct net_device *ndev, u32 qid, u32 flags)
-+{
-+	struct am65_cpsw_common *common = am65_ndev_to_common(ndev);
-+	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
-+
-+	if (!netif_running(ndev) || !netif_carrier_ok(ndev))
-+		return -ENETDOWN;
-+
-+	if (!am65_cpsw_xdp_is_enabled(port))
-+		return -EINVAL;
-+
-+	if (qid >= common->rx_ch_num_flows || qid >= common->tx_ch_num)
-+		return -EINVAL;
-+
-+	return 0;
++	return xsk_get_pool_from_qid(port->ndev, qid);
 +}
 
 -- 
