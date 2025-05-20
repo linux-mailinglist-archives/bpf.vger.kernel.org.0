@@ -1,376 +1,317 @@
-Return-Path: <bpf+bounces-58524-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58525-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C918DABCEFB
-	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 08:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C17BABCFB8
+	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 08:46:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9B311891F33
-	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 06:07:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2C5D1BA06F8
+	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 06:46:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D5642550A6;
-	Tue, 20 May 2025 06:06:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3E2225E462;
+	Tue, 20 May 2025 06:44:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DKTb75rz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lLquSZP0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D0A22571B9
-	for <bpf@vger.kernel.org>; Tue, 20 May 2025 06:06:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5943825D21C;
+	Tue, 20 May 2025 06:44:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747721199; cv=none; b=fr4g1RhLreh47mmDODFqJUGZb0FIZ3aFYa/veZC5UNlGwQQE3k/T1ntpZnqiGvcwdbpAMQ05/Xca7Bjwpu74D20ku6WyHMqqeRFF5jz+AIUHr5aGb5iEVrJmNHdhGhOocBxRaWHm4Q9dZTs+d/ffIExnIsDhcsCUTq8Gmbd1tdI=
+	t=1747723478; cv=none; b=i/i9a/1oZrf8anMyc+qDLZepXs8I0w1JXTYwiQC7Bb06j9P/A4wI9kcsIUTJlpmhWeXPKORPqVrcRll3Ha+DcBL0FXNCP14f4iVksms1UR8dCnkHYiRcsf+A55dme0I46/hhURxM0/TBbkR6SF+LyPiA9l//DTcHv7yWCdeV/SA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747721199; c=relaxed/simple;
-	bh=6AEau35TUhKfcCIyPUxsLWPSp8bK8h4v7pgJyT8qg4A=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=e7Sgs9WB7Et+mryqgYB8MOEHv2KUu3fHVQwTmT0QUJpAmeRfR2C1MfCW4BmYnTYyEvkR3DWcBPDygNSmIWo7qx0WGjUW8VkNugzlT84OyheCwnzmZY4bYsrW8UI1l5cQK130STB8uof/J6nJSkYgTIJluz67CvfzrNjw280FedY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DKTb75rz; arc=none smtp.client-ip=209.85.210.175
+	s=arc-20240116; t=1747723478; c=relaxed/simple;
+	bh=gzGIir2F/RYTKkc9z3kC/mDrlI0OBmrxwQCPXxcO+/E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LzhcO5MXavyuN1Q7DnVwYYNDMMcmZEdl50JR7DcfLEpuHIqP4SPnbKmPGkFXLBq4km0F5zBsfGCRrdWsslyCjLjl250Gu6nXr0lwd6FrAhvvfzGRL0/uz0ityjXYPvSfz/nl/ucSfmcapVX5EN6OkqAomtx6w6rkbjt4ZfTbFS8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lLquSZP0; arc=none smtp.client-ip=209.85.219.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-74264d1832eso6815879b3a.0
-        for <bpf@vger.kernel.org>; Mon, 19 May 2025 23:06:37 -0700 (PDT)
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-e7b8673ff36so2817627276.2;
+        Mon, 19 May 2025 23:44:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747721196; x=1748325996; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1747723475; x=1748328275; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+R/i6XORP4JHXXce5hw/20wRcCywtoWhALSIpSSgNY8=;
-        b=DKTb75rzvKv4ILudS+0murD7kUW/ge1rEJGDe51pX86wkJiotliB5HkcvJIBfsyb1D
-         uViD6q5SNgi0lvuSZNYugT3l2MtbNJHaIsCFTxnV2HxQgck2pYo3PMLZTlxRFFCSED2b
-         eb2BNhhOPi8imWTK8OoDnZlHszRof/xmkaSZL8Ebx8PFM8xnVJ7LZVfS7ZIrlNYyP0t5
-         VgvM8HyThRPa+6pxjqs5womjk+jjT0WSkrIrgt49MduxEiaZV+ByzLAPkrKTMZMXk3Cz
-         1lQNwdosiO+eL1qNgN6GOfKoOq1108axWaZFBkFUEwfcdZHXLh1RoTkBjpLWwRygUQQq
-         9qdg==
+        bh=ufpbIcD1nnlFO+YuOZyPO5+OmfJ1C/cl6AJ3HJfGCac=;
+        b=lLquSZP0F68gIAhW3J5piUAvZDGKcUVL9xsrpsWmRF23VeDsH2A3GWjcsKSpCcABN6
+         3NCBwCjP9bATIMLVKBZbsWYP+U7n1TzjgfCQnObDrFk+Q1i95KvizX7z+fNRC7VTr+aL
+         88kALzZW2KJ3xdz6li2nckWMnGDZBKKnZ7GSp5G+9sND6busCP0cLRQFMr9b+JUmyEEO
+         w9UvPISryEkfz2y/PUVk8fpLnJdHpMdzi3C705Q6FmT8fG7YBvw5CkDdDfpuiJ0r3tDW
+         +GOvNf8XnfuJlrdg+MyDLooT2YRhNSlP1rqVIYxNuBT3xpG8FxFAdqpTed5ag3qi/VsQ
+         qhfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747721196; x=1748325996;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1747723475; x=1748328275;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+R/i6XORP4JHXXce5hw/20wRcCywtoWhALSIpSSgNY8=;
-        b=SWYt0XBwShLlTiXkAKLjNKStEzLPUHTEgavlcQr7jwomAq4xcRpwjQliN2F7I3AONR
-         t3kzd6cadFMICjCGGEYDA3WIREyLvqjGC472aO7hffMprWzPb8vW4oGnLd/uaqxFUR2X
-         9RCXjPAgl8fjCMjSsoob33eNhJ385a2JZwXsqx70KshFqN1IE5utETcSeKBtCYRle2N4
-         uXFVhO8F3ToMwrPR7dCMDB+dv7I4y0EK7ReNt9dMOGIxFQQ1YvBDlA7nbANpm+ATA+Eq
-         TeSEsbJikDVzVJtoGDkRQDufXVCczNCBWQ9R8HlsPfu6XmraFTNdvxFtF4QDbUr2bJsz
-         tDAA==
-X-Gm-Message-State: AOJu0Yxj0EiSWd9XGF3wgmiiiVvomkSXXQ1g9pDLSHpP6cmSbq5pmAbi
-	eoz398rKMqO0MU7JlIfQfxukFuJV2lFqDpL6g5ljPEGuSSWCjhOqqHk5
-X-Gm-Gg: ASbGncsssQQQE/M61JaBY4m2qGzILievJ0ZL4MRazLjddGJSHhZ5U+UXdW1Jvmmn2qh
-	6aG37vDm9qgaXPBlf8sQKdOIh2bLbm3UQy3gmaNGU4Tm335OFt3AX4X5696RDAbhhakWbHh1suI
-	5gydLONFj4KBUYWxxpKlRKFsO+mxrPQJ4ykJEbfUpDKlmDhuLhP3zpK4UNqu+ywsf/4BWtQvEXb
-	Vh9NcU9EmouVTqwBnJ6NQXVYSyRutT+oqD3v2xS+1TXt2jvurCaXqSuwUpy+vFhBn+/ylNG6yST
-	0FozgkI7VZqFjXBs/NXmetN7R+QSxAT1gLvbzDbOaN9MYNdsojtYdWc3cFVsB2c/WaaZSrLkWbk
-	2TDOlYC0l3g==
-X-Google-Smtp-Source: AGHT+IE2rBbZvH4irE/20NJlvaM3UDbLqDjYTZCkVzQCmBeAMxjUOuRhmrpPMwxQw/CjLKcvbCgkWw==
-X-Received: by 2002:a05:6a20:7f8c:b0:203:bb3b:5f1d with SMTP id adf61e73a8af0-21621882888mr24979864637.6.1747721196460;
-        Mon, 19 May 2025 23:06:36 -0700 (PDT)
-Received: from localhost.localdomain ([39.144.103.61])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-30f36385e91sm823428a91.12.2025.05.19.23.06.28
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Mon, 19 May 2025 23:06:35 -0700 (PDT)
-From: Yafang Shao <laoar.shao@gmail.com>
-To: akpm@linux-foundation.org,
-	david@redhat.com,
-	ziy@nvidia.com,
-	baolin.wang@linux.alibaba.com,
-	lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com,
-	npache@redhat.com,
-	ryan.roberts@arm.com,
-	dev.jain@arm.com,
-	hannes@cmpxchg.org,
-	usamaarif642@gmail.com,
-	gutierrez.asier@huawei-partners.com,
-	willy@infradead.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org
-Cc: bpf@vger.kernel.org,
-	linux-mm@kvack.org,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH v2 5/5] selftests/bpf: Add selftest for THP adjustment
-Date: Tue, 20 May 2025 14:05:03 +0800
-Message-Id: <20250520060504.20251-6-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
-In-Reply-To: <20250520060504.20251-1-laoar.shao@gmail.com>
-References: <20250520060504.20251-1-laoar.shao@gmail.com>
+        bh=ufpbIcD1nnlFO+YuOZyPO5+OmfJ1C/cl6AJ3HJfGCac=;
+        b=qXf8pHR8J9pbN5usB50D4n3LaKVIVzB/jri/LJ03iJag8KN6oDEPNm2mpTmnDGabRX
+         64MaMsbiibftFakpw7RijQrw+bohFgi6J9ppX6Q+N46Lnm640kSpXxxyrNS0h2TxRTgX
+         KmyvZFOVr3YSJ2HOfpRLENFJgK2/p/WD5n/PlSkCvSC6d8xcdGek01n9EcXHXlrSf8TO
+         qyPSwmgwSGvWa55EvVTi/P5ZRYTnK84ciBPRBwMcaQ7qaavp9F1ERg2nidJPjdv+kcI3
+         Z0WjguP/9bcO/T1C9eIBRHuFozwueFaxRWF/8/s2g8yF14HROC9n1GFXHXJHB9OcPo+X
+         TTOg==
+X-Forwarded-Encrypted: i=1; AJvYcCVfCMrMxlr4JunbrbZvaDgQG5Mb4axtqozTzR+b4Ssx0OI/uafx+sqLuXbjNgTOdMPS6ToQc4M=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx6tRrHATEE8duxgbGavYCGc399trbN6ANQGGe+UmWo37iI8quv
+	0Z39uSUJbIgvTi3z6fBphvYdm+Myynaqcj+/pRW2HOim4Kz363jv74pww7k5TrM0AjuTenj71X9
+	3RnnU3vtMQ5GVA7VtEZnuHKGh8O3K/no=
+X-Gm-Gg: ASbGncvjoBm5wTXpmGvIVxVJtX4SFcqqK9r9w0+b2ZA/N6XAJAKZ7FWzaP5nr3JmSgN
+	rcJYjcLBcdnnbV8QxRIznAiK2JbRfPTSmSI3FWPC06YLm7pIPAiyOikrvb0UebU9Xo+Gu32GqtA
+	I4ZJGj6fG044buvlDWNmpHesDYM+wVUNO4
+X-Google-Smtp-Source: AGHT+IG+OCGepNquCFlHZZQFZboGnUgXhyoyfaUs9VkFsaKHaEfjRzIoympu2Owks0XqkwQSOhKzbVscB/ASMCEFIws=
+X-Received: by 2002:a05:6902:250e:b0:e7b:9354:239b with SMTP id
+ 3f1490d57ef6-e7b93542474mr12631609276.14.1747723475213; Mon, 19 May 2025
+ 23:44:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250515211606.2697271-1-ameryhung@gmail.com> <20250515211606.2697271-2-ameryhung@gmail.com>
+ <aCuOsXKCkwa8zkwR@slm.duckdns.org>
+In-Reply-To: <aCuOsXKCkwa8zkwR@slm.duckdns.org>
+From: Amery Hung <ameryhung@gmail.com>
+Date: Mon, 19 May 2025 23:44:24 -0700
+X-Gm-Features: AX0GCFu9sQo73EupEQi40uYbLuvaZc-ovgSK5NFBFMw43QSXvWZBhnPqwNkVoPk
+Message-ID: <CAMB2axNTyTaqBcFRLQ0VueztMdunv71jygeij00gDNY7i9=K6A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/3] selftests/bpf: Introduce task local data
+To: Tejun Heo <tj@kernel.org>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, alexei.starovoitov@gmail.com, 
+	andrii@kernel.org, daniel@iogearbox.net, memxor@gmail.com, 
+	martin.lau@kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This test case uses a BPF program to enforce the following THP allocation
-policy:
-- Only the current task is permitted to allocate THP.
-- All other tasks are denied.
+On Mon, May 19, 2025 at 1:04=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello,
+>
+> On Thu, May 15, 2025 at 02:16:00PM -0700, Amery Hung wrote:
+> ...
+> > +#define PAGE_SIZE 4096
+>
+> This might conflict with other definitions. Looks like non-4k page sizes =
+are
+> a lot more popular on arm. Would this be a problem?
+>
+> > +static int __tld_init_metadata(int map_fd)
+> > +{
+> > +     struct u_tld_metadata *new_metadata;
+> > +     struct tld_map_value map_val;
+> > +     int task_fd =3D 0, err;
+> > +
+> > +     task_fd =3D syscall(SYS_pidfd_open, getpid(), 0);
+> > +     if (task_fd < 0) {
+> > +             err =3D -errno;
+> > +             goto out;
+> > +     }
+> > +
+> > +     new_metadata =3D aligned_alloc(PAGE_SIZE, PAGE_SIZE);
+>
+> Is 4k size limit from UPTR? Is it still 4k on machines with >4k pages? If
+> this isn't a hard limit from UPTR, would it make sense to encode the size=
+ in
+> the header part of the metadata?
+>
 
-The expected behavior:
-- Before the BPF prog is attached
-  No tasks can allocate THP.
-- After the BPF prog is attached
-  Only the current task can allocate THP.
-- Switch to "never" mode after the BPF prog is attached
-  THP allocation is not allowed even for the current task.
+UPTR size limit is a page. I will make PAGE_SIZE arch dependent. For
+metadata, since all threads of a process share one metadata page, I
+think it is okay to make it a fixed size. For data, I think it makes
+sense to encode it in the header of metadata.
 
-The result is as follows,
-  $ ./test_progs --name="thp_adjust"
-  #437     thp_adjust:OK
-  Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+> > +static int __tld_init_data(int map_fd)
+> > +{
+> > +     struct u_tld_data *new_data =3D NULL;
+> > +     struct tld_map_value map_val;
+> > +     int err, task_fd =3D 0;
+> > +
+> > +     task_fd =3D syscall(SYS_pidfd_open, gettid(), PIDFD_THREAD);
+> > +     if (task_fd < 0) {
+> > +             err =3D -errno;
+> > +             goto out;
+> > +     }
+> > +
+> > +     new_data =3D aligned_alloc(PAGE_SIZE, TLD_DATA_SIZE);
+>
+> Ditto.
+>
+> Noob question. Does this means that each thread will map a 4k page no mat=
+ter
+> how much data it actually uses?
 
-CONFIG_TRANSPARENT_HUGEPAGE=y is required for this test.
+Unfortunately this is the case currently, but hey maybe we can make
+data size dynamic
 
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
----
- tools/testing/selftests/bpf/config            |   1 +
- .../selftests/bpf/prog_tests/thp_adjust.c     | 175 ++++++++++++++++++
- .../selftests/bpf/progs/test_thp_adjust.c     |  39 ++++
- 3 files changed, 215 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/thp_adjust.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust.c
+>
+> > +__attribute__((unused))
+> > +static tld_key_t tld_create_key(int map_fd, const char *name, size_t s=
+ize)
+> > +{
+> > +     int err, i, cnt, sz, off =3D 0;
+> > +
+> > +     if (!READ_ONCE(tld_metadata_p)) {
+> > +             err =3D __tld_init_metadata(map_fd);
+> > +             if (err)
+> > +                     return (tld_key_t) {.off =3D err};
+> > +     }
+> > +
+> > +     if (!tld_data_p) {
+> > +             err =3D __tld_init_data(map_fd);
+> > +             if (err)
+> > +                     return (tld_key_t) {.off =3D err};
+> > +     }
+> > +
+> > +     size =3D round_up(size, 8);
+> > +
+> > +     for (i =3D 0; i < TLD_DATA_CNT; i++) {
+> > +retry:
+> > +             cnt =3D __atomic_load_n(&tld_metadata_p->cnt, __ATOMIC_RE=
+LAXED);
+> > +             if (i < cnt) {
+> > +                     /*
+> > +                      * Pending tld_create_key() uses size to signal i=
+f the metadata has
+> > +                      * been fully updated.
+> > +                      */
+> > +                     while (!(sz =3D __atomic_load_n(&tld_metadata_p->=
+metadata[i].size,
+> > +                                                   __ATOMIC_ACQUIRE)))
+> > +                             sched_yield();
+> > +
+> > +                     if (!strncmp(tld_metadata_p->metadata[i].name, na=
+me, TLD_NAME_LEN))
+> > +                             return (tld_key_t) {.off =3D -EEXIST};
+> > +
+> > +                     off +=3D sz;
+> > +                     continue;
+> > +             }
+> > +
+> > +             if (off + size > TLD_DATA_SIZE)
+> > +                     return (tld_key_t) {.off =3D -E2BIG};
+> > +
+> > +             /*
+> > +              * Only one tld_create_key() can increase the current cnt=
+ by one and
+> > +              * takes the latest available slot. Other threads will ch=
+eck again if a new
+> > +              * TLD can still be added, and then compete for the new s=
+lot after the
+> > +              * succeeding thread update the size.
+> > +              */
+> > +             if (!__atomic_compare_exchange_n(&tld_metadata_p->cnt, &c=
+nt, cnt + 1, true,
+> > +                                              __ATOMIC_RELAXED, __ATOM=
+IC_RELAXED))
+> > +                     goto retry;
+> > +
+> > +             strncpy(tld_metadata_p->metadata[i].name, name, TLD_NAME_=
+LEN);
+> > +             __atomic_store_n(&tld_metadata_p->metadata[i].size, size,=
+ __ATOMIC_RELEASE);
+> > +             return (tld_key_t) {.off =3D off};
+> > +     }
+> > +
+> > +     return (tld_key_t) {.off =3D -ENOSPC};
+> > +}
+>
+> This looks fine to me but I wonder whether run-length encoding the key
+> strings would be more efficient and less restrictive in terms of key leng=
+th.
+> e.g.:
+>
+> struct key {
+>         u32 data_len;
+>         u16 key_off;
+>         u16 key_len;
+> };
+>
+> struct metadata {
+>         struct key      keys[MAX_KEYS];
+>         char            key_strs[SOME_SIZE];
+> };
+>
+> The logic can be mostly the same. The only difference would be that key
+> string is not inline. Determine winner in the creation path by compxchg'i=
+ng
+> on data_len, but set key_off and key_len only after key string is updated=
+.
+> Losing on cmpxhcg or seeing an entry where key_len is zero means that tha=
+t
+> one lost and should relax and retry. It can still use the same 4k metadat=
+a
+> page but will likely be able to allow more keys while also relaxing
+> restrictions on key length.
+>
+> Hmm... maybe making the key string variably sized makes things difficult =
+for
+> the BPF code. If so (or for any other reasons), please feel free to ignor=
+e
+> the above.
 
-diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-index c378d5d07e02..bb8a8a9d77a2 100644
---- a/tools/testing/selftests/bpf/config
-+++ b/tools/testing/selftests/bpf/config
-@@ -113,3 +113,4 @@ CONFIG_XDP_SOCKETS=y
- CONFIG_XFRM_INTERFACE=y
- CONFIG_TCP_CONG_DCTCP=y
- CONFIG_TCP_CONG_BBR=y
-+CONFIG_TRANSPARENT_HUGEPAGE=y
-diff --git a/tools/testing/selftests/bpf/prog_tests/thp_adjust.c b/tools/testing/selftests/bpf/prog_tests/thp_adjust.c
-new file mode 100644
-index 000000000000..6accd110d8ea
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/thp_adjust.c
-@@ -0,0 +1,175 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <sys/mman.h>
-+#include <test_progs.h>
-+#include "test_thp_adjust.skel.h"
-+
-+#define LEN (4 * 1024 * 1024) /* 4MB */
-+#define THP_ENABLED_PATH "/sys/kernel/mm/transparent_hugepage/enabled"
-+#define SMAPS_PATH "/proc/self/smaps"
-+#define ANON_HUGE_PAGES "AnonHugePages:"
-+
-+static char *thp_addr;
-+static char old_mode[32];
-+
-+int thp_mode_save(void)
-+{
-+	const char *start, *end;
-+	char buf[128];
-+	int fd, err;
-+	size_t len;
-+
-+	fd = open(THP_ENABLED_PATH, O_RDONLY);
-+	if (fd == -1)
-+		return -1;
-+
-+	err = read(fd, buf, sizeof(buf) - 1);
-+	if (err == -1)
-+		goto close;
-+
-+	start = strchr(buf, '[');
-+	end = start ? strchr(start, ']') : NULL;
-+	if (!start || !end || end <= start) {
-+		err = -1;
-+		goto close;
-+	}
-+
-+	len = end - start - 1;
-+	if (len >= sizeof(old_mode))
-+		len = sizeof(old_mode) - 1;
-+	strncpy(old_mode, start + 1, len);
-+	old_mode[len] = '\0';
-+
-+close:
-+	close(fd);
-+	return err;
-+}
-+
-+int thp_set(const char *desired_mode)
-+{
-+	int fd, err;
-+
-+	fd = open(THP_ENABLED_PATH, O_RDWR);
-+	if (fd == -1)
-+		return -1;
-+
-+	err = write(fd, desired_mode, strlen(desired_mode));
-+	close(fd);
-+	return err;
-+}
-+
-+int thp_reset(void)
-+{
-+	int fd, err;
-+
-+	fd = open(THP_ENABLED_PATH, O_WRONLY);
-+	if (fd == -1)
-+		return -1;
-+
-+	err = write(fd, old_mode, strlen(old_mode));
-+	close(fd);
-+	return err;
-+}
-+
-+int thp_alloc(void)
-+{
-+	int err, i;
-+
-+	thp_addr = mmap(NULL, LEN, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
-+	if (thp_addr == MAP_FAILED)
-+		return -1;
-+
-+	err = madvise(thp_addr, LEN, MADV_HUGEPAGE);
-+	if (err == -1)
-+		goto unmap;
-+
-+	for (i = 0; i < LEN; i += 4096)
-+		thp_addr[i] = 1;
-+	return 0;
-+
-+unmap:
-+	munmap(thp_addr, LEN);
-+	return -1;
-+}
-+
-+void thp_free(void)
-+{
-+	if (!thp_addr)
-+		return;
-+	munmap(thp_addr, LEN);
-+}
-+
-+void test_thp_adjust(void)
-+{
-+	struct bpf_link *fentry_link, *ops_link;
-+	struct test_thp_adjust *skel;
-+	int err, first_calls;
-+
-+	if (!ASSERT_NEQ(thp_mode_save(), -1, "THP mode save"))
-+		return;
-+	if (!ASSERT_GE(thp_set("bpf"), 0, "THP mode set"))
-+		return;
-+
-+	skel = test_thp_adjust__open();
-+	if (!ASSERT_OK_PTR(skel, "open"))
-+		goto thp_reset;
-+
-+	skel->bss->target_pid = getpid();
-+
-+	err = test_thp_adjust__load(skel);
-+	if (!ASSERT_OK(err, "load"))
-+		goto destroy;
-+
-+	fentry_link = bpf_program__attach_trace(skel->progs.thp_run);
-+	if (!ASSERT_OK_PTR(fentry_link, "attach fentry"))
-+		goto destroy;
-+
-+	if (!ASSERT_NEQ(thp_alloc(), -1, "THP alloc"))
-+		goto destroy;
-+
-+	/* Before attaching struct_ops, THP won't be allocated. */
-+	if (!ASSERT_EQ(skel->bss->thp_calls, 0, "THP calls"))
-+		goto thp_free;
-+
-+	if (!ASSERT_EQ(skel->bss->thp_wrong_calls, 0, "THP calls"))
-+		goto thp_free;
-+
-+	thp_free();
-+
-+	ops_link = bpf_map__attach_struct_ops(skel->maps.thp);
-+	if (!ASSERT_OK_PTR(ops_link, "attach struct_ops"))
-+		goto destroy;
-+
-+	if (!ASSERT_NEQ(thp_alloc(), -1, "THP alloc"))
-+		goto destroy;
-+
-+	/* After attaching struct_ops, THP will be allocated. */
-+	if (!ASSERT_GT(skel->bss->thp_calls, 0, "THP calls"))
-+		goto thp_free;
-+
-+	first_calls = skel->bss->thp_calls;
-+
-+	if (!ASSERT_EQ(skel->bss->thp_wrong_calls, 0, "THP calls"))
-+		goto thp_free;
-+
-+	thp_free();
-+
-+	if (!ASSERT_GE(thp_set("never"), 0, "THP set"))
-+		goto destroy;
-+
-+	if (!ASSERT_NEQ(thp_alloc(), -1, "THP alloc"))
-+		goto destroy;
-+
-+	/* In "never" mode, THP won't be allocated even if the prog is attached. */
-+	if (!ASSERT_EQ(skel->bss->thp_calls, first_calls, "THP calls"))
-+		goto thp_free;
-+
-+	ASSERT_EQ(skel->bss->thp_wrong_calls, 0, "THP calls");
-+
-+thp_free:
-+	thp_free();
-+destroy:
-+	test_thp_adjust__destroy(skel);
-+thp_reset:
-+	ASSERT_GE(thp_reset(), 0, "THP mode reset");
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_thp_adjust.c b/tools/testing/selftests/bpf/progs/test_thp_adjust.c
-new file mode 100644
-index 000000000000..69135380853c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_thp_adjust.c
-@@ -0,0 +1,39 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+int target_pid;
-+int thp_calls;
-+int thp_wrong_calls;
-+
-+SEC("fentry/do_huge_pmd_anonymous_page")
-+int BPF_PROG(thp_run)
-+{
-+	struct task_struct *current = bpf_get_current_task_btf();
-+
-+	if (current->pid == target_pid)
-+		thp_calls++;
-+	else
-+		thp_wrong_calls++;
-+	return 0;
-+}
-+
-+SEC("struct_ops/thp_bpf_allowable")
-+bool BPF_PROG(thp_bpf_allowable)
-+{
-+	struct task_struct *current = bpf_get_current_task_btf();
-+
-+	/* Permit the current task to allocate memory using THP. */
-+	if (current->pid == target_pid)
-+		return true;
-+	return false;
-+}
-+
-+SEC(".struct_ops.link")
-+struct bpf_thp_ops thp = {
-+	.thp_bpf_allowable = (void *)thp_bpf_allowable,
-+};
--- 
-2.43.5
+I think this is a great suggestion. The current implementation may
+waste spaces in metadata if a key does not use all 62 bytes. I don't
+see an obvious obstacle in bpf. I will try to incorporate this in the
+next respin.
 
+>
+> > +#endif /* __TASK_LOCAL_DATA_H */
+> > diff --git a/tools/testing/selftests/bpf/progs/task_local_data.bpf.h b/=
+tools/testing/selftests/bpf/progs/task_local_data.bpf.h
+> > new file mode 100644
+> > index 000000000000..5f48e408a5e5
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/task_local_data.bpf.h
+> ...
+> > +/**
+> > + * tld_get_data() - Retrieves a pointer to the TLD associated with the=
+ key.
+> > + *
+> > + * @tld_obj: A pointer to a valid tld_object initialized by tld_object=
+_init()
+> > + * @key: The key of a TLD saved in tld_maps
+> > + * @size: The size of the TLD. Must be a known constant value
+> > + *
+> > + * Returns a pointer to the TLD data associated with the key; NULL if =
+the key
+> > + * is not valid or the size is too big
+> > + */
+> > +#define tld_get_data(tld_obj, key, size) \
+> > +     __tld_get_data(tld_obj, (tld_obj)->key_map->key.off - 1, size)
+> > +
+> > +__attribute__((unused))
+> > +__always_inline void *__tld_get_data(struct tld_object *tld_obj, u32 o=
+ff, u32 size)
+> > +{
+> > +     return (tld_obj->data_map->data && off >=3D 0 && off < TLD_DATA_S=
+IZE - size) ?
+> > +             (void *)tld_obj->data_map->data + off : NULL;
+> > +}
+>
+> Neat.
+>
+> Generally looks great to me. The only thing I wonder is whether the data
+> area sizing can be determined at init time rather than fixed to 4k.
+>
+
+I think we can achieve it by first limiting tld_create_key() to the
+init phase (i.e., only calling them in C/C++ constructor). Then,
+tld_create_key() will not allocate memory for data. Instead, on the
+first call to tld_get_data(), we freeze the size of the data area and
+allocate the memory just enough or round up to the power of two.
+
+For C, we can define a new macro API (e.g., tld_define_key()) that
+generates a __attribute__((constructor)) function that in turn calls
+tld_create_key().
+
+> Thanks.
+>
+> --
+> tejun
 
