@@ -1,129 +1,173 @@
-Return-Path: <bpf+bounces-58560-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58561-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66D99ABDB6F
-	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 16:10:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 944A7ABDD77
+	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 16:42:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85ACB7B5454
-	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 14:09:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F5CA4E64C3
+	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 14:22:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEE872472AD;
-	Tue, 20 May 2025 14:08:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 597EB264A84;
+	Tue, 20 May 2025 14:16:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LqB3Wn13"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FhFyBJcu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA2C4247280
-	for <bpf@vger.kernel.org>; Tue, 20 May 2025 14:08:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CEB324A063;
+	Tue, 20 May 2025 14:16:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747750122; cv=none; b=sk2LZLyewvrpo1uZnvaD+sNA/yg0vJYnxZWgISEHPW69S8Jy0DRTVMq18pgDiG1S0iuMiDJ3aArXnooWI2oJshMMtSJ8RS+ixvACrKl/ok4L2vIJIBDiBl+2Mp2Mplr8V5mTSgG1uihObm+rdpMvDW1zxXNhG6WiC5LBR4kjOY0=
+	t=1747750610; cv=none; b=Z2sW2iZkvHFlgcMksHPJua9dCy39SJp6CGu2EW4e/7GDAx23Gk2Q9N8R2PL7QDYhuM/k9712re0r1O/Cp8Vr5NK/5quKPzYxUpwJ6GapmzmAWaRuA4yntjmHRgW0j1AK1GBsS7XPGyBgKgqBLJtixiIsSwD0HNQS899M18ZHf0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747750122; c=relaxed/simple;
-	bh=R9u9GUL7kBZOiQSKUFSWEzUwnZ7B3UQlM+Y4Twnxues=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=p8dB/BfIILY2xGJJoSwkdzAGW6FJ3wiXa4EIlUNFGINqhli7l3LqIdTzPewD5zB8JTFjMcHzj/EOrytNlBcqKPKZxEnuRiyezAZpmknbdp6leon/blW0XR3wWBiztrihC/oHXPgwUK1p9TXaU6wQbr6whuLuM4lGYVjeT+avZbE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LqB3Wn13; arc=none smtp.client-ip=209.85.219.49
+	s=arc-20240116; t=1747750610; c=relaxed/simple;
+	bh=9845lRrTwXYxLKnCGaZLjP7FJCySvM2kgiB80MXvo5o=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TmhDwP4Y2W1BQZCY1g810OHv7k19qupwrH9SchNi5D+T59B13BY8Ks4XqcgtnrXSakJtxv/B9vSGBgwdbheRPzs0RJvrUGMrt8GhpjQidNIfDOCLDdfo/z/VGRetiBVhAuvoClO2lUg0SVMBPkLcleXQJt2ka99rFXzrETJlM9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FhFyBJcu; arc=none smtp.client-ip=209.85.221.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-6f0ad74483fso59275006d6.1
-        for <bpf@vger.kernel.org>; Tue, 20 May 2025 07:08:40 -0700 (PDT)
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3a35919fa8bso2216792f8f.0;
+        Tue, 20 May 2025 07:16:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747750119; x=1748354919; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R9u9GUL7kBZOiQSKUFSWEzUwnZ7B3UQlM+Y4Twnxues=;
-        b=LqB3Wn133p8c4Mov2AkMwoOq+KvRHI6ZdteD2UK894Ux8bbD1kFmcjKkHsy5lzWyRH
-         JjFOtQH7fmFyBx4V/Q57Z5RnKsx8UTJ8v9uMZotgVWqtRZxi7MFLCCrPN7mWQPGHo7Jk
-         l0Xe2btjZi29no0WPSAJRM1YPA8Ku/gMVpuGWSWZKZ40F7luPZ4OdeTJK5PRR1BH6pT+
-         n1yPpkJbHPs6d7ZGruBogqbHvCsCOyRxutuIn7PoX4P/tkpewYQRQdVPj4GVrXPLWj1k
-         5AiZ2CR+ofutwmZBdHw6oP9Oigvpkdl4L2fYA1wgpLpisUaYvlyJ1tpbzIbuNTwuxPgX
-         V4PQ==
+        d=gmail.com; s=20230601; t=1747750607; x=1748355407; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=p8zSJjCRi1M41Zo6T5qJaK423QY8z842edzrekqdkMM=;
+        b=FhFyBJcuPmr3WOuli3LpromTOiQqLqctMvSb4drqbgm1LOqAF3KQLec4CFymYVWzfg
+         x0PaXJ8HW2+HCFKzhq1GtW4nrq+d2q/pcsWdxkTuru8jZbkAYSEcdYzUVrLWWRCXN/tQ
+         WhRcsZPVgU7RsYAs4BUps6xS2d+EWmEXnHrK/YkBMmFQUWQKstEG+07A+eZDKoURRAnx
+         EDJkZN+2R9LxzfKatGZkTWRJ8KDFgkp63iMTa8gaCsCLzuPAqGB3qbc0EvGAII+p5LN5
+         suGXhE2uZUYMqZjQ/FzCSr9XYPm0QgiZDFFj/W2fq5FOt33QMirI2aOQW2G2NGe8S07A
+         9bIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747750119; x=1748354919;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=R9u9GUL7kBZOiQSKUFSWEzUwnZ7B3UQlM+Y4Twnxues=;
-        b=Z7KNA6y7dcXWOJOxntlSvwUxq5E4sTm/qhuToGzWfp5eQUCIn5WdxoNeZMb8ppN7Rd
-         tFJl5q3OQO1oWpAF/mJW33YY+KzBhoAOAZ254lgsS5J8Rkqkd4Hyhiz1rM+gL+nE5ddZ
-         wPtWAKv/ce6kuM1K6CFv4P5Du+AY6MweoaKk1YwRHQFqFKEt7AbXtxlgBwzfneSBnmnR
-         9HVZVOP3Fesg5rWBGZHN1GfOEXRASIOKprxI7nyzT/BVoOyKC+o/cbSJZfxfj3xI/FD1
-         VZfiuz8eMgBXk9tcN1/V7DSQaPd6ekVb4S2RiTN8PPDDV8fTkvISJz0jSaOEuib1PTwi
-         Nt3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV7nTMOv6QnViWOu2NwmMX8UwDHZU2/GE7Z5JcolZzLLoF00oJJRwpSkBCUb4JAKgStS8c=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyrh+YAw7p5E484VunZS+C85Ka6Owum+09JmeYBZbW9zHaMWHPn
-	240OT/eqVNGPxT28xexDhH75L+CDgzi+PNNqHPrHanH87EiuVhejIbItR9APzpad8YEg1MzfERW
-	TKpoTAoG6SucXxTDhv7grxLhBD5eo6w4=
-X-Gm-Gg: ASbGncvVD3MAYzw/XrDSKVvIkHACx2hX4tmVBh85q5/lGJa5T2q8DmscZoNKCMzOGkg
-	IMIuFlgjinjMoT4dYgJEeQlqcejqVXE5MM5IQUwUr2T4V/+x9o6hW+ZUwGPG1GEGb9nGuCVR3SL
-	mRxRRBts0SnHD1v37CwICm1GBnbzTqKAmnRIA=
-X-Google-Smtp-Source: AGHT+IH7TMMUyDsvRriB+PtNF9NYS5GRdaGxJfFsGLNZmfI5bXhqWMVYC6N9NjlTbhfisISp6iBSL6lnIRYCdzi1oL0=
-X-Received: by 2002:a05:6214:19cd:b0:6f8:c2b9:b1f7 with SMTP id
- 6a1803df08f44-6f8c2b9b2a9mr248505096d6.13.1747750119154; Tue, 20 May 2025
- 07:08:39 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1747750607; x=1748355407;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=p8zSJjCRi1M41Zo6T5qJaK423QY8z842edzrekqdkMM=;
+        b=KUK/QRxbBxEXvyCh0SzsMwH21Mb+KgcovAzHafwSKu6BAfACJ+vI1l0slQ0rc78uky
+         TbC2UwieO8zCravWUCHiq42cSp2fx5hZkmD8vQb36diE1q8bGtqznznIve0Us/ja2mOO
+         yEE5Abt02OqfLvm2fpy9B/xwmxFp4lCD+/dRSECGWIBvNjYWkfzmhblViHXWeOjyPAJj
+         8FYExSJ5x0cCkMZXNQ4MJW8bH3x4wi+KWEycYwYSUQkjHQZYKcX2VHDIl4GWDewbJ7tg
+         5keG+DcjUyuDJEU15Ar+Vk+cPK1jkbkto7kCiWP0lBjMT+VWs96YHS44KH1lcGRshy/M
+         kAng==
+X-Forwarded-Encrypted: i=1; AJvYcCUxc6yltiMynOHjkGZpNss9lZMJlYjYNH1G3W3ch0pvWHcRLYUWk77MN1ddlywzl/KH8DZibr+Xc2nmavY5@vger.kernel.org, AJvYcCVWoZJvNDK2oSsgR3Jc+DAitCbjltFPzpwkHqpxRQPTSRBet4BEj3Z5ObYZG0SKDJvOovU=@vger.kernel.org, AJvYcCVxhhs5iUvTtvcqgCykUShuekRNAXi23rDA/FMMnmj8Vkrji2lAFIusRVAxQxOQm39+OjQemdyESgAUZd/Eb4FqpN+/@vger.kernel.org
+X-Gm-Message-State: AOJu0YxBk4buxF/cCpxRU96fGffRxGJhvVG0ecXsrBSQvNlbIj06QpHt
+	AxdWwkFs/4p7ro9kGTSP/F8QDEUvaY3PNJbc+Se7WOx+kalIerZuguQMqirazUcb
+X-Gm-Gg: ASbGncvrnrH/BtGPXdrb09R4mS5gQBHauS0pPbcMqS5UEqD3dPGoTk1PNeUgZwSKGVB
+	c3L3TJFnWnMf4F7t2vQlwRMOob1Y6dOrQitYFZCCE/hmETJjK1CovRHVhqtX+jRCB94P1d0pFJD
+	iRDoH6dhT+eVzOvH+VOd64q0Ss6LTHudKm8pWe9cBJBvc1l6Pd4AQ686PegOmuuYMUJlpzRT3MI
+	JJ7g9qDM5Ss8iYvzCxlZYiwxQUo7jt9H1TO9jxnudRtyk628ye8LvRA15lKG277h8CyHHeTC2fy
+	Le4XsH7P086qJVDIAwYq6M/3qGp3aapwD++i
+X-Google-Smtp-Source: AGHT+IHpAnvXNreEzLLqAUagJDkV0tQZs1tpXf9pWpAvAhFCTkj2uxZv2DHjMrxfmDDzvZhlsoXNzA==
+X-Received: by 2002:a5d:5442:0:b0:3a3:64fb:304d with SMTP id ffacd0b85a97d-3a364fb30f1mr9468037f8f.12.1747750606990;
+        Tue, 20 May 2025 07:16:46 -0700 (PDT)
+Received: from krava ([83.148.32.44])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a35ca4d258sm16430575f8f.20.2025.05.20.07.16.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 May 2025 07:16:46 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 20 May 2025 16:16:43 +0200
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	x86@kernel.org, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	David Laight <David.Laight@aculab.com>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>,
+	Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCHv2 perf/core 01/22] uprobes: Remove breakpoint in
+ unapply_uprobe under mmap_write_lock
+Message-ID: <aCyOy1OKDSrma3rJ@krava>
+References: <20250515121121.2332905-1-jolsa@kernel.org>
+ <20250515121121.2332905-2-jolsa@kernel.org>
+ <20250520084845.6388479dd18658d2c2598953@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250520060504.20251-1-laoar.shao@gmail.com> <CAA1CXcD=P8tBASK1X=+2=+_RANi062X8QMsi632MjPh=dkuD9Q@mail.gmail.com>
- <CALOAHbDbcdBZb_4mCpr4S81t8EBtDeSQ2OVSOH6qLNC-iYMa4A@mail.gmail.com> <aCx_Ngyjl3oOwJKG@casper.infradead.org>
-In-Reply-To: <aCx_Ngyjl3oOwJKG@casper.infradead.org>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Tue, 20 May 2025 22:08:03 +0800
-X-Gm-Features: AX0GCFuzeGC_Vo5CiRuC8Z__YjWOafRsZm9lwTrMJeZeDyr3nvckYp1Izr0sSEI
-Message-ID: <CALOAHbDUmad6nHnW755P8VYf+Pk=DogW0gMH4G73TwvKodW54A@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 0/5] mm, bpf: BPF based THP adjustment
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Nico Pache <npache@redhat.com>, akpm@linux-foundation.org, david@redhat.com, 
-	ziy@nvidia.com, baolin.wang@linux.alibaba.com, lorenzo.stoakes@oracle.com, 
-	Liam.Howlett@oracle.com, ryan.roberts@arm.com, dev.jain@arm.com, 
-	hannes@cmpxchg.org, usamaarif642@gmail.com, 
-	gutierrez.asier@huawei-partners.com, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250520084845.6388479dd18658d2c2598953@kernel.org>
 
-On Tue, May 20, 2025 at 9:10=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
-> wrote:
->
-> On Tue, May 20, 2025 at 03:25:07PM +0800, Yafang Shao wrote:
-> > The challenge we face is that our system administration team doesn't
-> > permit enabling THP globally in production by setting it to "madvise"
-> > or "always". As a result, we can only experiment with your feature on
-> > our test servers at this stage.
->
-> That's a you problem.
+On Tue, May 20, 2025 at 08:48:45AM +0900, Masami Hiramatsu wrote:
+> On Thu, 15 May 2025 14:10:58 +0200
+> Jiri Olsa <jolsa@kernel.org> wrote:
+> 
+> > Currently unapply_uprobe takes mmap_read_lock, but it might call
+> > remove_breakpoint which eventually changes user pages.
+> > 
+> > Current code writes either breakpoint or original instruction, so
+> > it can probably go away with that, but with the upcoming change that
+> > writes multiple instructions on the probed address we need to ensure
+> > that any update to mm's pages is exclusive.
+> > 
+> 
+> So, this is a bugfix, right?
 
-perhaps.
+nope, the current code is fine (I think), but the new code needs to go
+through 2 separate instructions changes and we determine the state of
+optimization based on the instruction we find, so we need to be sure
+there's only one thread inside remove_breakpoint call
 
-> You need to figure out how to influence your
-> sysadmin team to change their mind; whether it's by talking to their
-> superiors or persuading them directly.
+jirka
 
-I believe that "practicing" matters more than "talking" or "persuading".
-I=E2=80=99m surprised your suggestion relies on "talking" ;-)
-If I understand correctly, we all agree that "talk is cheap", right?
-
-> It's not a justification for why
-> upstream should take this patch.
-
-I believe Johannes has clearly explained the challenges the community
-is currently facing [0].
-
-[0]. https://lore.kernel.org/linux-mm/20250430174521.GC2020@cmpxchg.org/
-
-
---
-Regards
-
-Yafang
+> 
+> Thanks,
+> 
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  kernel/events/uprobes.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> > index 84ee7b590861..257581432cd8 100644
+> > --- a/kernel/events/uprobes.c
+> > +++ b/kernel/events/uprobes.c
+> > @@ -483,7 +483,7 @@ static int __uprobe_write_opcode(struct vm_area_struct *vma,
+> >   * @opcode_vaddr: the virtual address to store the opcode.
+> >   * @opcode: opcode to be written at @opcode_vaddr.
+> >   *
+> > - * Called with mm->mmap_lock held for read or write.
+> > + * Called with mm->mmap_lock held for write.
+> >   * Return 0 (success) or a negative errno.
+> >   */
+> >  int uprobe_write_opcode(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
+> > @@ -1464,7 +1464,7 @@ static int unapply_uprobe(struct uprobe *uprobe, struct mm_struct *mm)
+> >  	struct vm_area_struct *vma;
+> >  	int err = 0;
+> >  
+> > -	mmap_read_lock(mm);
+> > +	mmap_write_lock(mm);
+> >  	for_each_vma(vmi, vma) {
+> >  		unsigned long vaddr;
+> >  		loff_t offset;
+> > @@ -1481,7 +1481,7 @@ static int unapply_uprobe(struct uprobe *uprobe, struct mm_struct *mm)
+> >  		vaddr = offset_to_vaddr(vma, uprobe->offset);
+> >  		err |= remove_breakpoint(uprobe, vma, vaddr);
+> >  	}
+> > -	mmap_read_unlock(mm);
+> > +	mmap_write_unlock(mm);
+> >  
+> >  	return err;
+> >  }
+> > -- 
+> > 2.49.0
+> > 
+> 
+> 
+> -- 
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
