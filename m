@@ -1,88 +1,88 @@
-Return-Path: <bpf+bounces-58579-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58580-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B53A1ABDDEE
-	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 16:56:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3340ABDE0D
+	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 17:00:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5953F3A3A0A
-	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 14:56:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C0793A9F92
+	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 15:00:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA13824BBFF;
-	Tue, 20 May 2025 14:56:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8C052517B5;
+	Tue, 20 May 2025 15:00:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QJcnYroX"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QIndQ5LK"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4C7524C692
-	for <bpf@vger.kernel.org>; Tue, 20 May 2025 14:56:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1B7C24677D
+	for <bpf@vger.kernel.org>; Tue, 20 May 2025 15:00:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747753010; cv=none; b=HcRzZhdhOOls8Fr37FJm+leJU+hTmYh9bnYcYpWrwH6ZDHovgNixkA78GZ8F6ZGkPHrBOI7ZP8+FPCS1vHzHwxiFVcIFSKo1Q4TCz3Uo6lAkw/d8IVnRL3SXH8uhKt0MLDPYAhQd7blBQMwJ2hsj7Qp1QN+3uCJiwIgVuwfbl8k=
+	t=1747753217; cv=none; b=Wyt5MXU97gPkfee1qnOW/ArK3fkaIHH6VHCCnwkWOawsMKCxphJtAB2O18EDUQrM95fYgnb7Gl/8e1wgck/9qQfsQMP/tkSzx2R+U9pBqv4FCSKTUy6gTEsfbnZfsbG9CLNaDsheZtUAX60uwqIxZEkFOBG8CT8GAd4McuQX1as=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747753010; c=relaxed/simple;
-	bh=2LdRJtf2yISWGWF6OV+Z2o13Y/uRPGpnWFGXEhexxxQ=;
+	s=arc-20240116; t=1747753217; c=relaxed/simple;
+	bh=N03cSfvpE6Ti8vz2eztDN+QQToULLQ3LokMh/Q0mvjI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=X4aVwxG4gA2hz0MrZqRNrGAcmHrC9KQy+MiuzGa64SzXjiJuvqlOjg3rlFywW6vPE0o0kGvbqxJImUAsmWlIY0g1WXhtzJjVQFY1bZWi/i/sXWhQDmKhxTLBB7DtJwUzdtfYxe5X48Ubw0ojYl2Q5THa/5uDHf3oLphrEHE0vLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QJcnYroX; arc=none smtp.client-ip=170.10.129.124
+	 In-Reply-To:Content-Type; b=QXReCMk4CozKwdXN7LXbpDF1bR6ippXmrJfneFPYOyhyDBcgD1z98b2pWftOKa5Mk6fmcEVsdbE9eccVp67CuTR3t+k8jg/MC2679e/e5KB1TxX/LJxsYgjAzb3y8Q3G/BHda3s1cQFUMxU4RtozzUWAbQ0cK34B8pgXlxZb4r0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QIndQ5LK; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1747753007;
+	s=mimecast20190719; t=1747753212;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=hgevXuEZZW8LSKx2vHFxozeKINRQNhHwr9GnByFFOLI=;
-	b=QJcnYroXT6TCC8HHILD2EqdmoK2e5dtma2SziBWm4v3vdKV8fPX7y6Ebujk0GXwdAKeIC0
-	yEW3+ws3FjBPlYuAhdKloXBP1Q6KGWRYr1SL0lqvbG1iGdPIaK/BZaNDHVNVMnNR65EFeM
-	ZaAk5jDb+o7nnACY41YwYGC4lajnbpY=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=i2s5zJn6VDiqf+Oamn2t1mC0KNMDw8+pdHeLY6X/rWw=;
+	b=QIndQ5LKSxhtOGx48O2gQZXPzDkTe1G5xRDCu1LiYnCBOt+m9vX2Mo6YBDEotqU4tfY6g2
+	nDCmcrQY2P8yUAPP0AcnoIOj9upNshMvXX/SK9fVDz5ayWgOeDqqKeNtkaoutcy+jVmuWR
+	rxXn4Xe0yn4VzF6hoxwcyB7xxfKu+IE=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-287-EgVieURjNKSjXUeR_EBlfw-1; Tue, 20 May 2025 10:56:46 -0400
-X-MC-Unique: EgVieURjNKSjXUeR_EBlfw-1
-X-Mimecast-MFC-AGG-ID: EgVieURjNKSjXUeR_EBlfw_1747753005
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-441c96c1977so39323255e9.0
-        for <bpf@vger.kernel.org>; Tue, 20 May 2025 07:56:46 -0700 (PDT)
+ us-mta-354-j0vRMEbuPESsobE35IeWFA-1; Tue, 20 May 2025 11:00:09 -0400
+X-MC-Unique: j0vRMEbuPESsobE35IeWFA-1
+X-Mimecast-MFC-AGG-ID: j0vRMEbuPESsobE35IeWFA_1747753207
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-43d0830c3f7so41044075e9.2
+        for <bpf@vger.kernel.org>; Tue, 20 May 2025 08:00:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747753005; x=1748357805;
+        d=1e100.net; s=20230601; t=1747753207; x=1748358007;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :content-language:from:references:cc:to:subject:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=hgevXuEZZW8LSKx2vHFxozeKINRQNhHwr9GnByFFOLI=;
-        b=Y0o4Ut+8M6Evf7Qc2tvGijnI2zJrYS5Fn2TS68XcK3oX5xRr4M4VngW0eZLVJKR1IA
-         0/dnArJLgPUlt4UBznepyPmUMwrDxs0/9EJ8+kamJF3nHrOHsF98aJ53jvzId1V8ZdNG
-         Gz5KHlFDZqBkg/3dZUfFbyFhox4uTP5QPJhRY8FDC6RN+QlckgK1JGgvPn8GGwwRCN4B
-         /eqRuNMeXLFa/+0GaHgBO77O09Ky1eWmwxOBk/xCrOle7zdG0os0CtZhcZPnbSUsuMzL
-         Yj5Md/bjS4Hc3zWnUaotj9JANBgm0UzC81MQhoED2quboiUXOJRnz70b8/EKI5DQ4TFx
-         YzXw==
-X-Forwarded-Encrypted: i=1; AJvYcCUUzyqp0YQiAX3cptLPiLLLZ79bkZuD3CtBXg7tHtKwWABJSgX6Jo03s3XYSPGn9NF0e4w=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxm0xsvYJBi7gfuWMDOw06xR+ktJ4p8yokVx/f/yGdiUcPZDK9e
-	bnubqEhaGADsGbRuzxUrO/LbgJDPLMr+6sVmalaXd2+GE7U5/zfpUgosZi6mZJi1C/xMze1Yp2y
-	otrr6GmgBUTvAVUsT3U+8q2TgS3UKhD6QUqaN/6sqzx4+KqqEe2W7Mw==
-X-Gm-Gg: ASbGncsMGg5gfxSkZSfq2CeNBOQjW15XpM3moXJLCPzDO1Kr+JcXAphp4nDxLyg0JCg
-	+0LgKCIJdrZHfbyzYj8mfwJODAD1Pmg0ahsI1exp82tPvHnu+tFC/WKBcqQXCOEAr9v2izr4z1w
-	ySasy//REMLl7FA+9d+8k9HpbI0+aUSzU7W3Gbyww/gxB2yJj+24Sb/O5dzv91KmkbsmuogFUJT
-	oEKwbTxIDwdN0LPFVIBXT9LvuKgQhNJCJms76CzFaIN/Hjg8/bKfh8NAc0NdUn3J+yFXp3rxQ/o
-	66MH66w4ydxKbh8Ocrbp9Zur0+MkPKgPmZB2Uw8Lytqc3mqamysYqu0Z04/ga0OO3ZV6RhRaK/T
-	vLlbanHeSuHErokcYjG27wF+ZDzfvOb6EXIGfv0o=
-X-Received: by 2002:a05:600c:3e10:b0:43d:3df:42d8 with SMTP id 5b1f17b1804b1-442fefd780fmr140403385e9.6.1747753005167;
-        Tue, 20 May 2025 07:56:45 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF9tBLuIgp6b3rpJtD1JwfZWf8l7EqKb1g3XEWVXooTfTkNPJt6ZsPzG6SUzyVX2E2AJBNpGg==
-X-Received: by 2002:a05:600c:3e10:b0:43d:3df:42d8 with SMTP id 5b1f17b1804b1-442fefd780fmr140403045e9.6.1747753004818;
-        Tue, 20 May 2025 07:56:44 -0700 (PDT)
+        bh=i2s5zJn6VDiqf+Oamn2t1mC0KNMDw8+pdHeLY6X/rWw=;
+        b=kW+kdWyKcjM9Sbt+Vapo/GZC44RA3UTADOqGSph/6ZBInZBYST4TneOK5Lfm+bOdxy
+         DedpSM0xVM7oapzz8x8IIm6MzD5CE7jZXmGww2pFk/RA05nM8EK8UwrTJpClLMnHhite
+         YCTJktsRWGNZ9nnaEg6jGF+RPGgOoOXvQQu3+S4cYBNvmAGiSixwvgMTdoo7fGhO2Dp0
+         6/0Uqa7XfIqISZ3nr2TzBWkulR19ZgEt7jlvpl/YYFsUzEqkPm4sDJ5TTo0NUPhFA484
+         XtmMOkxn4jdbLSUMSc0pSR5veAUbwWdjV8obFxx4KSgJS/e/OpKxmP0pHbQ96WIkLMF1
+         XheQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX4ReKp18Ou8rQiOirelZQXZicY0ARpa1aQflGhMUtG8AdTKw9x2VsNSQ2Uffa50gKrepY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxY8Eg1dhtRurrOJkbvlLvEC7/VkcJRJedtChRpt4tUiEKCXiaj
+	kecpkm1FoM5zH9fmZ4CCG1NzqahgKi5I7ur9oDJlOHhbRxh9Cn9EfGTdvacWxbY12BLAup4jewX
+	9fL4b13Au9yDcSZX5xyHICPencPFfshPKYchmgxn6w+KdIf75KUFY1A==
+X-Gm-Gg: ASbGnctWxxGaSwVCoOQHmILJC4JISeC+XYP1nULoaAli4/K0/OcugnonaoLF3W1vHdg
+	Nzzgfy8+h/2yKHJWVNkLB4Sm5+j3GEDvj7FyDJzkg7FR6I712zrDv9S9Zn7hikZ3sUhxdD/0qmV
+	1E53mVf+eAEJJ67Mu6eXgklSve13gqo3trDBXll+Z1odXG2G2oBKTUkHQ5TsDFoIy2unfLTX73/
+	iqcABjcu4CA9WJ5NEOfP9y46jJtLy0UGjBPLCiPCbWvgcOhuaUwTEJSt7vSDMnx3yb/qfn3RroG
+	BKoJdusVhDP2KBVIBWAaa3xllm9aL6W7WMGf5c94bQmYkR8ysXb7bMuNc7WxVOXf3nHad+0GFPM
+	a6o6GZArmubKwswqwb71Ko9sggyFI36jrHKZ5uAI=
+X-Received: by 2002:a05:600c:34d4:b0:442:e0e0:250 with SMTP id 5b1f17b1804b1-442fd67200emr158111135e9.29.1747753207161;
+        Tue, 20 May 2025 08:00:07 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHQDqxiGKA4tkeiSH2PDNWUB5/u9yZfVoEssPnM5TVx5ileUuEXFfJoIauzZIlle9PhXQ+k0g==
+X-Received: by 2002:a05:600c:34d4:b0:442:e0e0:250 with SMTP id 5b1f17b1804b1-442fd67200emr158110825e9.29.1747753206705;
+        Tue, 20 May 2025 08:00:06 -0700 (PDT)
 Received: from ?IPV6:2003:d8:2f28:7c00:a95e:ac49:f2ad:ab84? (p200300d82f287c00a95eac49f2adab84.dip0.t-ipconnect.de. [2003:d8:2f28:7c00:a95e:ac49:f2ad:ab84])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-447f6b29619sm36408515e9.7.2025.05.20.07.56.43
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-447f78b2f19sm33137685e9.32.2025.05.20.08.00.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 May 2025 07:56:44 -0700 (PDT)
-Message-ID: <ead86239-0e0f-4c69-801f-af5667f163de@redhat.com>
-Date: Tue, 20 May 2025 16:56:43 +0200
+        Tue, 20 May 2025 08:00:06 -0700 (PDT)
+Message-ID: <f3bd0607-ca42-444c-81a3-2e052eb8f14c@redhat.com>
+Date: Tue, 20 May 2025 17:00:05 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -91,14 +91,15 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [RFC PATCH v2 0/5] mm, bpf: BPF based THP adjustment
-To: Matthew Wilcox <willy@infradead.org>,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
-Cc: Usama Arif <usamaarif642@gmail.com>, Yafang Shao <laoar.shao@gmail.com>,
- Nico Pache <npache@redhat.com>, akpm@linux-foundation.org, ziy@nvidia.com,
- baolin.wang@linux.alibaba.com, Liam.Howlett@oracle.com,
- ryan.roberts@arm.com, dev.jain@arm.com, hannes@cmpxchg.org,
- gutierrez.asier@huawei-partners.com, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org
+To: Usama Arif <usamaarif642@gmail.com>,
+ Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+ Yafang Shao <laoar.shao@gmail.com>
+Cc: Matthew Wilcox <willy@infradead.org>, Nico Pache <npache@redhat.com>,
+ akpm@linux-foundation.org, ziy@nvidia.com, baolin.wang@linux.alibaba.com,
+ Liam.Howlett@oracle.com, ryan.roberts@arm.com, dev.jain@arm.com,
+ hannes@cmpxchg.org, gutierrez.asier@huawei-partners.com, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, bpf@vger.kernel.org,
+ linux-mm@kvack.org
 References: <20250520060504.20251-1-laoar.shao@gmail.com>
  <CAA1CXcD=P8tBASK1X=+2=+_RANi062X8QMsi632MjPh=dkuD9Q@mail.gmail.com>
  <CALOAHbDbcdBZb_4mCpr4S81t8EBtDeSQ2OVSOH6qLNC-iYMa4A@mail.gmail.com>
@@ -106,8 +107,6 @@ References: <20250520060504.20251-1-laoar.shao@gmail.com>
  <CALOAHbDUmad6nHnW755P8VYf+Pk=DogW0gMH4G73TwvKodW54A@mail.gmail.com>
  <2345b8b9-b084-4661-8b55-61fd7fc7de57@lucifer.local>
  <82f7bca5-384f-41e5-a0fc-0e1e8e260607@gmail.com>
- <a3dfae27-2372-47b7-bc67-49a0c5be422b@lucifer.local>
- <aCyU7Q2DhPPF3Oau@casper.infradead.org>
 From: David Hildenbrand <david@redhat.com>
 Content-Language: en-US
 Autocrypt: addr=david@redhat.com; keydata=
@@ -155,20 +154,88 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <aCyU7Q2DhPPF3Oau@casper.infradead.org>
+In-Reply-To: <82f7bca5-384f-41e5-a0fc-0e1e8e260607@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 20.05.25 16:42, Matthew Wilcox wrote:
-> On Tue, May 20, 2025 at 03:35:49PM +0100, Lorenzo Stoakes wrote:
->> I agree global settings are not fine-grained enough, but 'sys admins refuse
->> to do X so we want to ignore what they do' is... really not right at all.
+On 20.05.25 16:32, Usama Arif wrote:
 > 
-> Oh, we do that all the time,  Leave the interface around but document
-> it's now a no-op.  For example, file-backed memory ignores the THP
-> settings completely.
-IIRC, it never honored it. Like shmem it also never honored it an 
-instead used it's own toggle (not sure what to think about that ...).
+> 
+> On 20/05/2025 15:22, Lorenzo Stoakes wrote:
+>> On Tue, May 20, 2025 at 10:08:03PM +0800, Yafang Shao wrote:
+>>> On Tue, May 20, 2025 at 9:10 PM Matthew Wilcox <willy@infradead.org> wrote:
+>>>>
+>>>> On Tue, May 20, 2025 at 03:25:07PM +0800, Yafang Shao wrote:
+>>>>> The challenge we face is that our system administration team doesn't
+>>>>> permit enabling THP globally in production by setting it to "madvise"
+>>>>> or "always". As a result, we can only experiment with your feature on
+>>>>> our test servers at this stage.
+>>>>
+>>>> That's a you problem.
+>>>
+>>> perhaps.
+>>>
+>>>> You need to figure out how to influence your
+>>>> sysadmin team to change their mind; whether it's by talking to their
+>>>> superiors or persuading them directly.
+>>>
+>>> I believe that "practicing" matters more than "talking" or "persuading".
+>>> I’m surprised your suggestion relies on "talking" ;-)
+>>> If I understand correctly, we all agree that "talk is cheap", right?
+>>>
+>>>> It's not a justification for why
+>>>> upstream should take this patch.
+>>>
+>>> I believe Johannes has clearly explained the challenges the community
+>>> is currently facing [0].
+>>>
+>>> [0]. https://lore.kernel.org/linux-mm/20250430174521.GC2020@cmpxchg.org/
+>>
+>> (Sorry to interject on your conversation, but :)
+>>
+>> I don't think anybody denies we have issues in configuring this stuff
+>> sensibly. A global-only control isn't going to cut it in the real world it
+>> seems.
+>>
+>> To me as you say yourself, definining the ABI/API here is what really matters,
+>> and we're right now inundated with several series all at once (you wait for one
+>> bus then 3 come at once... :).
+>>
+>> So this I think, should be the question.
+>>
+>> I like the idea of just exposing something like madvise(), which is something
+>> we're going to maintain indefinitely.
+>>
+>> Though any such exposure would in my view would need to be opt-in i.e. have a
+>> list of MADV_... options that are accepted, as we'd need to very cautiously
+>> determine which are safe from this context.
+>>
+>> Of course then this leads to the whole thing (and I really know very little
+>> about BPF internals - obviously happy to understand more) of whether we can just
+>> use the madvise() code direct or what locking we can do or how all that works.
+>>
+>> At any rate, a custom thing that is specific as 'switch mode for mTHP pages of
+>> size X to Y' is just something I'd rather us not tie ourselves to.
+>>
+>>>
+>>>
+>>> --
+>>> Regards
+>>>
+>>> Yafang
+>>
+>> What do you think re: bpf vs. something like my proposed process_madvise()
+>> extensions or Usama's proposed prctl()?
+>>
+>> Simpler, but really just using madvise functionality and having a means of
+>> defaulting across fork/exec (notwithstanding Jann's concerns in this area).
+> 
+> Unfortunately I think the issue is that neither prctl or process_madvise would work
+> for Yafangs usecase? Its usecase 3 mentioned in [1], i.e.
+> global system policy=never, process wants "madvise" policy for itself.
+
+If the global system policy would be "madvise", you'd need a way to just 
+disable it for processes where you wouldn't ever want them.
 
 -- 
 Cheers,
