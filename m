@@ -1,339 +1,221 @@
-Return-Path: <bpf+bounces-58584-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58585-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD877ABDEFF
-	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 17:28:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82A60ABDF9E
+	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 17:54:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B291A3B4D93
-	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 15:27:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDB448A4DDF
+	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 15:54:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D76F62627E7;
-	Tue, 20 May 2025 15:25:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E691261571;
+	Tue, 20 May 2025 15:54:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Hm/yBP0H"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JWCw0rLk"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2443C26136D
-	for <bpf@vger.kernel.org>; Tue, 20 May 2025 15:25:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F30C25F7A1
+	for <bpf@vger.kernel.org>; Tue, 20 May 2025 15:54:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747754734; cv=none; b=CNSC0xGa+d3hRRSt1oc92fqa0hkiCDlk1o6lJNsbbfLm9WdhiDLzRjGi5xYDolK51snFtLBDn0jIn1VzuQ5HiuPRqjX5T0aSdQjiqaI9fM3r5xgp5GRoIht/8wpqDOV9s6IYOMb6xImpGRLloOJy4i0B1WOakZpTjvQsbFcq1C4=
+	t=1747756489; cv=none; b=VFnMDXc2OQ5rz6A+Utv5JqovfQZJKELpA5yehpJyz+gbmZC6jFhBMPX42gmw3Tu/Hf9rTSn80of2kGN4Y3R8tOG0tJ89JxLwoK7y4WjJV16MfnVLYqDcLzOn9tNBsBO48AEJ09ThOkIQeJJToYomRZ66NftVPnSo+IOI48xxoRQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747754734; c=relaxed/simple;
-	bh=6DfwpIfOn8npc3l7DsMsDweGWtOL/Vz4kn5hVnNItWc=;
+	s=arc-20240116; t=1747756489; c=relaxed/simple;
+	bh=PsfAi/Q9gud8VNaJjpqie3AstpVTa7udNOf/T74FcNg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EKvsNs8SYoavCRR9Msnrc8QFGjAhhviDukwitcuer+0UsiYLCpcphPawzb3gXXit7BmUA3asvyxj6lMPyC6Pch3GBRM+gA+9RfZxOyDu06mh4fjxZF5MEnK4IzR4+Y9cvOw12bkWznvnhmW712XCoZV0Ntp6Af+gw0s5xa2OSKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Hm/yBP0H; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <85503b11-ccce-412e-b031-cc9654d6291d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1747754729;
+	 In-Reply-To:Content-Type; b=EqhhNhuTrZy/b39DxW8YurLVf/Wu6qgoo52qMU7geLGlvtwMwWB6aEJE5FYpk3iqC/eHHwQ8D5WtvScz0PfX5kOwCbOngkTXmmKE7Yi2DTuBghtD1eqSnk8eIHSX2/vUSlS6Pw6CHnEqjTBe0E/JwiC0hig5BRRJcIx17f4llpc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JWCw0rLk; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1747756487;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=um2NaT/tj1U8C0lGlW1nobs7X5w3hHDp43KzPAdyNyc=;
-	b=Hm/yBP0HoU7FWyiRio8gEyUQFPS9D35TGTY/IRvOW497eN5NOy5eaKK4la2d3VwjuciIsB
-	Fg7ANBQ+/aSylRA8JGOkAW2czrpMB4e7sL7TTW+uW3MyyalqRKvMhsOOt3IGrXVKRlYJ9x
-	phgCRwwH/Sdsu3KObQJsKbYzR095ohY=
-Date: Tue, 20 May 2025 08:25:24 -0700
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=OKcnKwFmtSUX4HUY416IGKBb5t3RzMZpZ4+wRruvRJ0=;
+	b=JWCw0rLksXcb2wuD6COAW49ygaGefhS720xc7UW/UpaunBVPdG6nBA0HOepiOOSbIbWRsI
+	SRzrlssmlXJiWRVp+8tN+9k62ORZcxerzjiVTZuQsoGqel7X6TEGpdxvZ8+n6n2HxTVdyn
+	guiwCWeH9ISKJI7oFjZx3QNazYiCBZY=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-96-zeUVwO7WOiqG4kys8eHmeg-1; Tue, 20 May 2025 11:54:45 -0400
+X-MC-Unique: zeUVwO7WOiqG4kys8eHmeg-1
+X-Mimecast-MFC-AGG-ID: zeUVwO7WOiqG4kys8eHmeg_1747756485
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-43d0a037f97so34500575e9.2
+        for <bpf@vger.kernel.org>; Tue, 20 May 2025 08:54:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747756484; x=1748361284;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=OKcnKwFmtSUX4HUY416IGKBb5t3RzMZpZ4+wRruvRJ0=;
+        b=GSuWa9R1KoZiHyEoVs3l+lB+2LFXfRpyCUiWqGXj7rrk2iGd/31O7WfcR8xCTrsYtV
+         dUydE7lDLjye4E+5aIViwX1Ly0rCaoj/WdXp8ZmcktZKm9hI7kvkb480EGPUG3XUvwyP
+         n2NOWBSJzGuFv2ioBJZ4LR6dvXWh15lkXsQ9ym2iyvOCLdz22a4Em/vv3oXkUP3O5qIb
+         DMyhq2FQiiOb38zBPE4iXL/tZXieCJjL1R/5HZiPNjckPJsFD988azfJeas8m9t6Crlv
+         A2RlaXluuHC0NREW7JptQMlyYXUR9wyf+BKtIyoU31ZSR6ddYNpsg+Y3fYOP6+nqVBiv
+         9J4A==
+X-Forwarded-Encrypted: i=1; AJvYcCW6G6pYqgYf4Jtvrqf2IkzDMaaky+/Pg622xTBi9c7wSNiznoPJ03FX4WzKrlcYFnMEiG0=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy2RRW9TFx7JJSiyEUr+fuvWLoeDCpijdaB+kl/ZSPGbFKqggwB
+	XeL0/sOK4X9jEHebFhrcosrsBPN/vSLBnQYkvcGZjA2tV3vuCmGJGGuFRa/GM7Pxnn6uzZWOLLO
+	aBWxd7kGJWpYy0GwyGylXmrhtSX7lwWcVlZJlzhfgaJkPhxAbwRpmQBt/4wrhflAN
+X-Gm-Gg: ASbGncunT0jL7cQimAcq0uwN6gJz+sJUUH8XyawByhT24iGL/RM11Bddiq6rpya34FW
+	SNLHxPyNtmZoatfXbainQweuClGSw5Zu1JnWPJ+aDyvRHkFr/zwJbdzhYUP6btuhjZoN91BGtXw
+	YAUBXZT/Mh6fcdNWlEHOzzw5VLiiJOL/SA1aemNXjT+tm2lU8wCOXYehnwXWO9K2mOdmNTfGzU2
+	EUSbjk+RYEnomMiYFdcEioH/bCFrXhLR0q1sL3j+1Bjb0FhFIzdwgWrfoswQKEXOlmjdyW1ozo0
+	ukA+l7N10GshMZVTabMVrTl4xyoDQT75WX5wqZuTgOT1VMLyiv87UGouawLPEZz3K+mLG+IxZiq
+	vcz5x9XSCOAArWUFoY2d7f0OBin7aak6bpmhfOmQ=
+X-Received: by 2002:a05:600c:3c82:b0:43d:7588:667b with SMTP id 5b1f17b1804b1-445229b42b7mr111181095e9.10.1747756484531;
+        Tue, 20 May 2025 08:54:44 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHNEcn99+03kGAQrm1G1mjNjQw2+1R7DVYoyqW5NZdrOcV1X92Hcwd0Dn+lFyl7PKIs9qT0Cg==
+X-Received: by 2002:a05:600c:3c82:b0:43d:7588:667b with SMTP id 5b1f17b1804b1-445229b42b7mr111180775e9.10.1747756484112;
+        Tue, 20 May 2025 08:54:44 -0700 (PDT)
+Received: from ?IPV6:2003:d8:2f28:7c00:a95e:ac49:f2ad:ab84? (p200300d82f287c00a95eac49f2adab84.dip0.t-ipconnect.de. [2003:d8:2f28:7c00:a95e:ac49:f2ad:ab84])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a364d2636bsm14163272f8f.99.2025.05.20.08.54.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 May 2025 08:54:43 -0700 (PDT)
+Message-ID: <9b44fe43-155d-457d-81ce-a2c1fb86521a@redhat.com>
+Date: Tue, 20 May 2025 17:54:42 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: Warn with bpf_unreachable() kfunc
- maybe due to uninitialized variable
-Content-Language: en-GB
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
-References: <20250519203339.2060080-1-yonghong.song@linux.dev>
- <20250519203344.2060544-1-yonghong.song@linux.dev>
- <CAADnVQKR=i3qqxHcs3d2zcCEejz71z8GE2y=tghDPF2rFZUObg@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAADnVQKR=i3qqxHcs3d2zcCEejz71z8GE2y=tghDPF2rFZUObg@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v2 0/5] mm, bpf: BPF based THP adjustment
+To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+ Yafang Shao <laoar.shao@gmail.com>
+Cc: akpm@linux-foundation.org, ziy@nvidia.com, baolin.wang@linux.alibaba.com,
+ Liam.Howlett@oracle.com, npache@redhat.com, ryan.roberts@arm.com,
+ dev.jain@arm.com, hannes@cmpxchg.org, usamaarif642@gmail.com,
+ gutierrez.asier@huawei-partners.com, willy@infradead.org, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, bpf@vger.kernel.org,
+ linux-mm@kvack.org
+References: <20250520060504.20251-1-laoar.shao@gmail.com>
+ <746e8123-2332-41c8-851b-787cb8c144a1@redhat.com>
+ <c77698ed-7257-46d5-951e-1da3c74cd36a@lucifer.local>
+ <CALOAHbCZRDuMtc=MpiR1FWpURZAVrHWQmDV08ySsiPekxU2KcA@mail.gmail.com>
+ <849decad-ab38-4a1a-8532-f518a108d8c6@lucifer.local>
+From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <849decad-ab38-4a1a-8532-f518a108d8c6@lucifer.local>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 7bit
 
+>> I totally agree with you that the key point here is how to define the
+>> API. As I replied to David, I believe we have two fundamental
+>> principles to adjust the THP policies:
+>> 1. Selective Benefit: Some tasks benefit from THP, while others do not.
+>> 2. Conditional Safety: THP allocation is safe under certain conditions
+>> but not others.
+>>
+>> Therefore, I believe we can define these APIs based on the established
+>> principles - everything else constitutes implementation details, even
+>> if core MM internals need to change.
+> 
+> But if we're looking to make the concept of THP go away, we really need to
+> go further than this.
 
+Yeah. I might be wrong, but I also don't think doing control on a 
+per-process level etc would be the right solution long-term.
 
-On 5/19/25 6:48 AM, Alexei Starovoitov wrote:
-> On Mon, May 19, 2025 at 1:34 PM Yonghong Song <yonghong.song@linux.dev> wrote:
->> Marc Suñé (Isovalent, part of Cisco) reported an issue where an
->> uninitialized variable caused generating bpf prog binary code not
->> working as expected. The reproducer is in [1] where the flags
->> “-Wall -Werror” are enabled, but there is no warning as the compiler
->> takes advantage of uninitialized variable to do aggressive optimization.
->> The optimized code looks like below:
->>
->>        ; {
->>             0:       bf 16 00 00 00 00 00 00 r6 = r1
->>        ;       bpf_printk("Start");
->>             1:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0x0 ll
->>                      0000000000000008:  R_BPF_64_64  .rodata
->>             3:       b4 02 00 00 06 00 00 00 w2 = 0x6
->>             4:       85 00 00 00 06 00 00 00 call 0x6
->>        ; DEFINE_FUNC_CTX_POINTER(data)
->>             5:       61 61 4c 00 00 00 00 00 w1 = *(u32 *)(r6 + 0x4c)
->>        ;       bpf_printk("pre ipv6_hdrlen_offset");
->>             6:       18 01 00 00 06 00 00 00 00 00 00 00 00 00 00 00 r1 = 0x6 ll
->>                      0000000000000030:  R_BPF_64_64  .rodata
->>             8:       b4 02 00 00 17 00 00 00 w2 = 0x17
->>             9:       85 00 00 00 06 00 00 00 call 0x6
->>        <END>
->>
->> The verifier will report the following failure:
->>    9: (85) call bpf_trace_printk#6
->>    last insn is not an exit or jmp
->>
->> The above verifier log does not give a clear hint about how to fix
->> the problem and user may take quite some time to figure out that
->> the issue is due to compiler taking advantage of uninitialized variable.
->>
->> In llvm internals, uninitialized variable usage may generate
->> 'unreachable' IR insn and these 'unreachable' IR insns may indicate
->> uninitialized variable impact on code optimization. So far, llvm
->> BPF backend ignores 'unreachable' IR hence the above code is generated.
->> With clang21 patch [2], those 'unreachable' IR insn are converted
->> to func bpf_unreachable(). In order to maintain proper control flow
->> graph for bpf progs, [2] also adds an 'exit' insn after bpf_unreachable()
->> if bpf_unreachable() is the last insn in the function.
->> The new code looks like:
->>
->>        ; {
->>             0:       bf 16 00 00 00 00 00 00 r6 = r1
->>        ;       bpf_printk("Start");
->>             1:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0x0 ll
->>                      0000000000000008:  R_BPF_64_64  .rodata
->>             3:       b4 02 00 00 06 00 00 00 w2 = 0x6
->>             4:       85 00 00 00 06 00 00 00 call 0x6
->>        ; DEFINE_FUNC_CTX_POINTER(data)
->>             5:       61 61 4c 00 00 00 00 00 w1 = *(u32 *)(r6 + 0x4c)
->>        ;       bpf_printk("pre ipv6_hdrlen_offset");
->>             6:       18 01 00 00 06 00 00 00 00 00 00 00 00 00 00 00 r1 = 0x6 ll
->>                      0000000000000030:  R_BPF_64_64  .rodata
->>             8:       b4 02 00 00 17 00 00 00 w2 = 0x17
->>             9:       85 00 00 00 06 00 00 00 call 0x6
->>            10:       85 10 00 00 ff ff ff ff call -0x1
->>                      0000000000000050:  R_BPF_64_32  bpf_unreachable
->>            11:       95 00 00 00 00 00 00 00 exit
->>        <END>
->>
->> In kernel, a new kfunc bpf_unreachable() is added. During insn
->> verification, any hit with bpf_unreachable() will result in
->> verification failure. The kernel is able to provide better
->> log message for debugging.
->>
->> With llvm patch [2] and without this patch (no bpf_unreachable()
->> kfunc for existing kernel), e.g., for old kernels, the verifier
->> outputs
->>    10: <invalid kfunc call>
->>    kfunc 'bpf_unreachable' is referenced but wasn't resolved
->> Basically, kernel does not support bpf_unreachable() kfunc.
->> This still didn't give clear signals about possible reason.
->>
->> With llvm patch [2] and with this patch, the verifier outputs
->>    10: (85) call bpf_unreachable#74479
->>    unexpected bpf_unreachable() due to uninitialized variable?
->> It gives much better hints for verification failure.
->>
->>    [1] https://github.com/msune/clang_bpf/blob/main/Makefile#L3
->>    [2] https://github.com/llvm/llvm-project/pull/131731
->>
->> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
->> ---
->>   kernel/bpf/helpers.c  | 5 +++++
->>   kernel/bpf/verifier.c | 5 +++++
->>   2 files changed, 10 insertions(+)
->>
->> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
->> index c1113b74e1e2..4852c36b1c51 100644
->> --- a/kernel/bpf/helpers.c
->> +++ b/kernel/bpf/helpers.c
->> @@ -3273,6 +3273,10 @@ __bpf_kfunc void bpf_local_irq_restore(unsigned long *flags__irq_flag)
->>          local_irq_restore(*flags__irq_flag);
->>   }
->>
->> +__bpf_kfunc void bpf_unreachable(void)
->> +{
->> +}
->> +
->>   __bpf_kfunc_end_defs();
->>
->>   BTF_KFUNCS_START(generic_btf_ids)
->> @@ -3386,6 +3390,7 @@ BTF_ID_FLAGS(func, bpf_copy_from_user_dynptr, KF_SLEEPABLE)
->>   BTF_ID_FLAGS(func, bpf_copy_from_user_str_dynptr, KF_SLEEPABLE)
->>   BTF_ID_FLAGS(func, bpf_copy_from_user_task_dynptr, KF_SLEEPABLE | KF_TRUSTED_ARGS)
->>   BTF_ID_FLAGS(func, bpf_copy_from_user_task_str_dynptr, KF_SLEEPABLE | KF_TRUSTED_ARGS)
->> +BTF_ID_FLAGS(func, bpf_unreachable)
->>   BTF_KFUNCS_END(common_btf_ids)
->>
->>   static const struct btf_kfunc_id_set common_kfunc_set = {
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index d5807d2efc92..08013e2e1697 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -12105,6 +12105,7 @@ enum special_kfunc_type {
->>          KF_bpf_res_spin_unlock,
->>          KF_bpf_res_spin_lock_irqsave,
->>          KF_bpf_res_spin_unlock_irqrestore,
->> +       KF_bpf_unreachable,
->>   };
->>
->>   BTF_SET_START(special_kfunc_set)
->> @@ -12208,6 +12209,7 @@ BTF_ID(func, bpf_res_spin_lock)
->>   BTF_ID(func, bpf_res_spin_unlock)
->>   BTF_ID(func, bpf_res_spin_lock_irqsave)
->>   BTF_ID(func, bpf_res_spin_unlock_irqrestore)
->> +BTF_ID(func, bpf_unreachable)
->>
->>   static bool is_kfunc_ret_null(struct bpf_kfunc_call_arg_meta *meta)
->>   {
->> @@ -13508,6 +13510,9 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
->>                          return err;
->>                  }
->>                  __mark_btf_func_reg_size(env, regs, BPF_REG_0, sizeof(u32));
->> +       } else if (!insn->off && insn->imm == special_kfunc_list[KF_bpf_unreachable]) {
-> Looks good, but let's not abuse special_kfunc_list[] for this case.
-> special_kfunc_type supposed to be in both set[] and list[].
-> This is not the case here.
-> It was wrong to add KF_bpf_set_dentry_xattr, bpf_iter_css_task_new,
-> bpf_dynptr_from_skb, and many others.
-> Let's fix this tech debt that we accumulated.
->
-> special_kfunc_type should include only kfuncs that return
-> a pointer, so that this part is triggered:
->
->          } else if (btf_type_is_ptr(t)) {
->                  ptr_type = btf_type_skip_modifiers(desc_btf, t->type,
-> &ptr_type_id);
->
->                  if (meta.btf == btf_vmlinux &&
-> btf_id_set_contains(&/special_kfunc_set, meta.func_id)) {
->
-> All other kfuncs shouldn't be there. They don't need to be in
-> the special_kfunc_set.
->
-> Let's split enum special_kfunc_type into what it meant to be
-> originally (both set and list), and move all list-only kfuncs
-> into a new array.
-> Let's call it kfunc_ids.
-> Then the check in this patch will look like:
-> insn->imm == kfunc_ids[KF_bpf_unreachable]
+In a world where we do stuff automatically ("auto" mode), we would be 
+much smarter about where to place a (m)THP, and which size we would use.
 
-IIUC, the main goal is to remove some kfuncs from special_kfunc_set
-since they are unnecessary.
+One might use bpf to control the allocation policy. But I don't think 
+this would be per-process or even per-VMA etc. Sure, we might give 
+hints, but placement decisions should happen on another level (e.g., 
+during page faults, during khugepaged etc).
 
-I think we do not need an 'enum' type for special_kfunc_set since
-the for all kfuncs in special_kfunc_set, btf_id_set_contains()
-is used to find corresponding btf_id. So current 'enum special_kfunc_type'
-is only used for special_kfunc_list to find proper kfunc_id's.
+> 
+> The second we have 'bpf program that figures out whether THP should be
+> used' we are permanently tied to the idea of THP on/off being a thing.
+> 
+> I mean any future stuff that makes THP more automagic will probably involve
+> having new modes for the legacy THP
+> /sys/kernel/mm/transparent_hugepage/enabled and
+> /sys/kernel/mm/transparent_hugepage/hugepages-xxkB/enabled
 
-I think the following change should achieve this:
+Yeah, the plan is to have "auto" in 
+/sys/kernel/mm/transparent_hugepage/enabled and just have all other 
+sizes "inherit" that option. And have a Kconfig that just enables that 
+as default. Once we're there, just phase out the interface long-term.
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 08013e2e1697..2cf00b06ae66 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -12060,7 +12060,7 @@ enum kfunc_ptr_arg_type {
-         KF_ARG_PTR_TO_RES_SPIN_LOCK,
-  };
-  
--enum special_kfunc_type {
-+enum special_kfunc_list_type {
-         KF_bpf_obj_new_impl,
-         KF_bpf_obj_drop_impl,
-         KF_bpf_refcount_acquire_impl,
-@@ -12126,24 +12126,10 @@ BTF_ID(func, bpf_rbtree_first)
-  BTF_ID(func, bpf_rbtree_root)
-  BTF_ID(func, bpf_rbtree_left)
-  BTF_ID(func, bpf_rbtree_right)
--#ifdef CONFIG_NET
--BTF_ID(func, bpf_dynptr_from_skb)
--BTF_ID(func, bpf_dynptr_from_xdp)
--#endif
-  BTF_ID(func, bpf_dynptr_slice)
-  BTF_ID(func, bpf_dynptr_slice_rdwr)
--BTF_ID(func, bpf_dynptr_clone)
-  BTF_ID(func, bpf_percpu_obj_new_impl)
-  BTF_ID(func, bpf_percpu_obj_drop_impl)
--BTF_ID(func, bpf_throw)
--BTF_ID(func, bpf_wq_set_callback_impl)
--#ifdef CONFIG_CGROUPS
--BTF_ID(func, bpf_iter_css_task_new)
--#endif
--#ifdef CONFIG_BPF_LSM
--BTF_ID(func, bpf_set_dentry_xattr)
--BTF_ID(func, bpf_remove_dentry_xattr)
--#endif
-  BTF_SET_END(special_kfunc_set)
-  
-  BTF_ID_LIST(special_kfunc_list)
+That's the plan. Now we "only" have to figure out how to make the 
+placement actually better ;)
 
-I renamed 'enum special_kfunc_type' to 'enum special_kfunc_list_type'
-implying that the enum values in special_kfunc_lit_type has
-1:1 relation to special_kfunc_list.
+> 
+> But if people are super reliant on this stuff it's potentially really
+> limiting.
+> 
+> I think you said in another post here that you were toying with the notion
+> of exposing somehow the madvise() interface and having that be the 'stable
+> API' of sorts?
+> 
+> That definitely sounds more sensible than something that very explicitly
+> interacts with THP.
+> 
+> Of course we have Usama's series and my proposed series for extending
+> process_madvise() along those lines also.
 
-WDYT?
+Yes.
 
->
-> Digging through the code it looks like we made a bit of a mess there.
-> Like this part:
->          } else if (btf_type_is_void(t)) {
->                  if (meta.btf == btf_vmlinux &&
-> btf_id_set_contains(&special_kfunc_set, meta.func_id)) {
->                          if (meta.func_id ==
-> special_kfunc_list[KF_bpf_obj_drop_impl] ||
->                              meta.func_id ==
-> special_kfunc_list[KF_bpf_percpu_obj_drop_impl]) {
->
->
-> *obj_drop don't need to be in a set,
-> and btf_id_set_contains() doesn't need to be called.
-> Both kfuncs should be moved to new kfunc_ids[]
+-- 
+Cheers,
 
-As you mentioned, for this one, we can do
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 2cf00b06ae66..a3ff57eaa5f4 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -12110,7 +12110,6 @@ enum special_kfunc_list_type {
-  
-  BTF_SET_START(special_kfunc_set)
-  BTF_ID(func, bpf_obj_new_impl)
--BTF_ID(func, bpf_obj_drop_impl)
-  BTF_ID(func, bpf_refcount_acquire_impl)
-  BTF_ID(func, bpf_list_push_front_impl)
-  BTF_ID(func, bpf_list_push_back_impl)
-@@ -12129,7 +12128,6 @@ BTF_ID(func, bpf_rbtree_right)
-  BTF_ID(func, bpf_dynptr_slice)
-  BTF_ID(func, bpf_dynptr_slice_rdwr)
-  BTF_ID(func, bpf_percpu_obj_new_impl)
--BTF_ID(func, bpf_percpu_obj_drop_impl)
-  BTF_SET_END(special_kfunc_set)
-  
-  BTF_ID_LIST(special_kfunc_list)
-@@ -13909,7 +13907,7 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
-                 if (reg_may_point_to_spin_lock(&regs[BPF_REG_0]) && !regs[BPF_REG_0].id)
-                         regs[BPF_REG_0].id = ++env->id_gen;
-         } else if (btf_type_is_void(t)) {
--               if (meta.btf == btf_vmlinux && btf_id_set_contains(&special_kfunc_set, meta.func_id)) {
-+               if (meta.btf == btf_vmlinux) {
-                         if (meta.func_id == special_kfunc_list[KF_bpf_obj_drop_impl] ||
-                             meta.func_id == special_kfunc_list[KF_bpf_percpu_obj_drop_impl]) {
-                                 insn_aux->kptr_struct_meta =
+David / dhildenb
 
 
