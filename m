@@ -1,564 +1,194 @@
-Return-Path: <bpf+bounces-58591-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58592-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90466ABE240
-	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 20:01:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 986EFABE263
+	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 20:15:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 905B64C43D3
-	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 18:01:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1E5C1BA6989
+	for <lists+bpf@lfdr.de>; Tue, 20 May 2025 18:15:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C47F1BD9F0;
-	Tue, 20 May 2025 18:01:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 923D828002D;
+	Tue, 20 May 2025 18:15:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UvD9y+Wm"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="NEAzUclL"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 036B922DA0D
-	for <bpf@vger.kernel.org>; Tue, 20 May 2025 18:01:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72DD228001D
+	for <bpf@vger.kernel.org>; Tue, 20 May 2025 18:15:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747764088; cv=none; b=bOBnj3YzaOiokGrHkG5tfznfxoJ5Sba9c+k7XS/HtBe5vfUl2YXPNpY32P8uSKClizwxbEJJMoGSh8aIkdi1JSak9f+TsSk9JwVcOgx3zzAkg6U2f8SVRPYCt4F4dzoBwbkr2XZkyrFYHV6WMxjmztaicYR7UKCFqAZSuNI/KOk=
+	t=1747764919; cv=none; b=FUVP4yP5yzFYilAd09L8AhK3D1YptcaIqQIPr2wKA19636SIJA4PuN+CaHW6GXLnic6F7KO3Fpe2KWLZFz74qryIhXZKpxtn4iAMwiLWM98ptV1t2pZQ+69PFRtHxVakNP71s84yNLplsQXsZc0wXrDHpyy8GhqL2mdP2jw1W0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747764088; c=relaxed/simple;
-	bh=cNMtHZCBthw2BM9cJoSrukdQxWrBTK9Q2uMw0gaRtqI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MMsD9RFu+pHvgZ+YS0WiRzZoKkbNEUO9rsyoI11BDBbuq/vN6MOHbZ5hD+sOebkIGaZHXXMm+P4EUN29G9vNqKY6AcLQY5L0NZaGgONSUa0oXrpBtxdviETp78MkxHjSQwdz3cBo7AVCSrMP2XqCWveNb/JMcJqpMJb7VqKNOrA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UvD9y+Wm; arc=none smtp.client-ip=95.215.58.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <1330496e-5dda-4b42-9524-4bfcfeb50ba7@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1747764082;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3w47gEXrmO1u7dtCeI1wJ+buG3CPn045aBdJ1FVF74w=;
-	b=UvD9y+WmpktjZOSmGpDTbtP3NfRUnoeFIqFux2VxbwOTvzoWYuR6lX42wRM1vtTNDPY2rD
-	W1YfKxYrSUtTliFWg6dmGtUIzyMJc5nBkOkTJZZQcTCUGMroB0bpCRWca+0nggVe4SLrkU
-	JXYt2WENtMk3l8jeG/sVjC/p5pQjfOE=
-Date: Tue, 20 May 2025 11:01:16 -0700
+	s=arc-20240116; t=1747764919; c=relaxed/simple;
+	bh=GgRCVDLqnmamZ1LoAdHXNYPW8/DDTnAXmUQXrWe5gIc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=k9larw8NUp9+Zr643yQuSnmC5Z8UeretQQCi6g3ePL0TinCKI+hvUfKlh1SoyixwxwAgtGSU/wJXjsOpl0ANKmF+k0zJhERgXWP61zsHAU8nDRQFPmK3zEVGxae7s9I4r+dCSE6PCdS1Mar6fZAMyguVu0SE73GzOQKdLic+ouo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=NEAzUclL; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-602039559d8so2852737a12.1
+        for <bpf@vger.kernel.org>; Tue, 20 May 2025 11:15:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1747764916; x=1748369716; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GgRCVDLqnmamZ1LoAdHXNYPW8/DDTnAXmUQXrWe5gIc=;
+        b=NEAzUclLEOipBmxjpXMYTfuunNdS3z46FXvyhiXtiLqoK/q8ZK5Hn+fX1An6sCN5ro
+         ZWwIV4xT2M2DiTs38JHtLvaeFhfsYEE4I+IM0Km2e4V+OYTk9gDT3G6cux/OXjSAcQXx
+         c+vX6FfiC8H5ZSLedIf9y5TJNwg+AHHgSLnhQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747764916; x=1748369716;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GgRCVDLqnmamZ1LoAdHXNYPW8/DDTnAXmUQXrWe5gIc=;
+        b=bFPoepro0kRqPDayTDdwkjVu8+0aFzlhPkD6ZL0dv7wegBogQLVGEDeAochznyY6HJ
+         TRR5mHm4t6RcIPEdchk8wrELl/iiDhcjsdboURu5PR/7BZgk68fmcUPFQZTukS2U5Kzo
+         Njfk4LDdWusHDkPvoncYJiv66IU5dI2gdKmabN1HHzkWAafHnqHGYKhQd+evHK88+7nZ
+         F1vRxhVDes/XMw9KQHQXP1Jrm2EQHtvvX+yPW1yK0ka6t3Eyb92Do/CmpIQdA46m30OJ
+         4OFaSUE5/Zgf3dnny3pi5ijwMuVrCP+/E1l6m1xsPfNqHDB8f4incwnlS4JvckqYK/oN
+         BnnA==
+X-Forwarded-Encrypted: i=1; AJvYcCWUyTjomXAJYvrBk1cfFS4YqeGf+kGx6ahxf7uvtWsf9shP4xxZbTxbXBxioE3ptTdji3E=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyCxWKCeMkdywq3itATLA+yNf9dwgux+vmglgPXSbDOb/WMmsM5
+	q+tHUbkKBVOz6VP7yKF8Ma5S0eMJ97325sN9iq4s3o0SQCitx8AIngBAKcIVnUN1yZSTggJr7Y5
+	O+k+CUaYKkpPy0KeyZsjINV6eFiSj//2HVJDaylCD
+X-Gm-Gg: ASbGncuSoWgS8WtlOlD8+znvb2srnFXuP3G4fibb6enqxCBBJRrl5rSyNSQNL1puYQ5
+	/eUJq3BQVnR4V5BXPKD470Xd7t+MqHYibbtraJiO66JDodc3vIPuKZhWdY9WvvKQ31wvVbgYbqt
+	v+bwsiOHpfufiTjcdVHSkQpz8NgBkT5LPMuA==
+X-Google-Smtp-Source: AGHT+IH2vPwJz0sjM3C3YxrR93NrEDGYZaDSkItPACV0OvjxE5jvyshItlpPZG+ubzTI4L4eAqrEu2ipor8Wnjfy3i0=
+X-Received: by 2002:a17:907:d0c:b0:ad2:24e5:27c9 with SMTP id
+ a640c23a62f3a-ad536dce79fmr1364806066b.44.1747764915563; Tue, 20 May 2025
+ 11:15:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: Warn with bpf_unreachable() kfunc
- maybe due to uninitialized variable
-Content-Language: en-GB
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf <bpf@vger.kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Kernel Team <kernel-team@fb.com>,
- Martin KaFai Lau <martin.lau@kernel.org>
-References: <20250519203339.2060080-1-yonghong.song@linux.dev>
- <20250519203344.2060544-1-yonghong.song@linux.dev>
- <CAADnVQKR=i3qqxHcs3d2zcCEejz71z8GE2y=tghDPF2rFZUObg@mail.gmail.com>
- <85503b11-ccce-412e-b031-cc9654d6291d@linux.dev>
- <CAADnVQLvN-TshyvkY3u9MYc7h_og=LWz7Ldf2k_33VRDqKsUZw@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAADnVQLvN-TshyvkY3u9MYc7h_og=LWz7Ldf2k_33VRDqKsUZw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250520071155.2462843-1-ap420073@gmail.com>
+In-Reply-To: <20250520071155.2462843-1-ap420073@gmail.com>
+From: Michael Chan <michael.chan@broadcom.com>
+Date: Tue, 20 May 2025 11:15:03 -0700
+X-Gm-Features: AX0GCFvmrHawgYSQUasyIb42hosa50fYd6YYiZTO5ev6CSOnKU8LrPFCfslqR6U
+Message-ID: <CACKFLinam==HdSB1KHRitGByAXNGW9awmfyu_jRasjA-qKmCHQ@mail.gmail.com>
+Subject: Re: [PATCH net-next] eth: bnxt: fix deadlock when xdp is attached or detached
+To: Taehee Yoo <ap420073@gmail.com>
+Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, 
+	edumazet@google.com, andrew+netdev@lunn.ch, horms@kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com, 
+	pavan.chebbi@broadcom.com, sdf@fomichev.me, netdev@vger.kernel.org, 
+	bpf@vger.kernel.org, jdamato@fastly.com, martin.lau@kernel.org, 
+	hramamurthy@google.com
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="000000000000f83aec0635953a7e"
 
+--000000000000f83aec0635953a7e
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On 5/20/25 12:29 AM, Alexei Starovoitov wrote:
-> On Tue, May 20, 2025 at 8:25 AM Yonghong Song <yonghong.song@linux.dev> wrote:
->>
->>
->> On 5/19/25 6:48 AM, Alexei Starovoitov wrote:
->>> On Mon, May 19, 2025 at 1:34 PM Yonghong Song <yonghong.song@linux.dev> wrote:
->>>> Marc Suñé (Isovalent, part of Cisco) reported an issue where an
->>>> uninitialized variable caused generating bpf prog binary code not
->>>> working as expected. The reproducer is in [1] where the flags
->>>> “-Wall -Werror” are enabled, but there is no warning as the compiler
->>>> takes advantage of uninitialized variable to do aggressive optimization.
->>>> The optimized code looks like below:
->>>>
->>>>         ; {
->>>>              0:       bf 16 00 00 00 00 00 00 r6 = r1
->>>>         ;       bpf_printk("Start");
->>>>              1:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0x0 ll
->>>>                       0000000000000008:  R_BPF_64_64  .rodata
->>>>              3:       b4 02 00 00 06 00 00 00 w2 = 0x6
->>>>              4:       85 00 00 00 06 00 00 00 call 0x6
->>>>         ; DEFINE_FUNC_CTX_POINTER(data)
->>>>              5:       61 61 4c 00 00 00 00 00 w1 = *(u32 *)(r6 + 0x4c)
->>>>         ;       bpf_printk("pre ipv6_hdrlen_offset");
->>>>              6:       18 01 00 00 06 00 00 00 00 00 00 00 00 00 00 00 r1 = 0x6 ll
->>>>                       0000000000000030:  R_BPF_64_64  .rodata
->>>>              8:       b4 02 00 00 17 00 00 00 w2 = 0x17
->>>>              9:       85 00 00 00 06 00 00 00 call 0x6
->>>>         <END>
->>>>
->>>> The verifier will report the following failure:
->>>>     9: (85) call bpf_trace_printk#6
->>>>     last insn is not an exit or jmp
->>>>
->>>> The above verifier log does not give a clear hint about how to fix
->>>> the problem and user may take quite some time to figure out that
->>>> the issue is due to compiler taking advantage of uninitialized variable.
->>>>
->>>> In llvm internals, uninitialized variable usage may generate
->>>> 'unreachable' IR insn and these 'unreachable' IR insns may indicate
->>>> uninitialized variable impact on code optimization. So far, llvm
->>>> BPF backend ignores 'unreachable' IR hence the above code is generated.
->>>> With clang21 patch [2], those 'unreachable' IR insn are converted
->>>> to func bpf_unreachable(). In order to maintain proper control flow
->>>> graph for bpf progs, [2] also adds an 'exit' insn after bpf_unreachable()
->>>> if bpf_unreachable() is the last insn in the function.
->>>> The new code looks like:
->>>>
->>>>         ; {
->>>>              0:       bf 16 00 00 00 00 00 00 r6 = r1
->>>>         ;       bpf_printk("Start");
->>>>              1:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0x0 ll
->>>>                       0000000000000008:  R_BPF_64_64  .rodata
->>>>              3:       b4 02 00 00 06 00 00 00 w2 = 0x6
->>>>              4:       85 00 00 00 06 00 00 00 call 0x6
->>>>         ; DEFINE_FUNC_CTX_POINTER(data)
->>>>              5:       61 61 4c 00 00 00 00 00 w1 = *(u32 *)(r6 + 0x4c)
->>>>         ;       bpf_printk("pre ipv6_hdrlen_offset");
->>>>              6:       18 01 00 00 06 00 00 00 00 00 00 00 00 00 00 00 r1 = 0x6 ll
->>>>                       0000000000000030:  R_BPF_64_64  .rodata
->>>>              8:       b4 02 00 00 17 00 00 00 w2 = 0x17
->>>>              9:       85 00 00 00 06 00 00 00 call 0x6
->>>>             10:       85 10 00 00 ff ff ff ff call -0x1
->>>>                       0000000000000050:  R_BPF_64_32  bpf_unreachable
->>>>             11:       95 00 00 00 00 00 00 00 exit
->>>>         <END>
->>>>
->>>> In kernel, a new kfunc bpf_unreachable() is added. During insn
->>>> verification, any hit with bpf_unreachable() will result in
->>>> verification failure. The kernel is able to provide better
->>>> log message for debugging.
->>>>
->>>> With llvm patch [2] and without this patch (no bpf_unreachable()
->>>> kfunc for existing kernel), e.g., for old kernels, the verifier
->>>> outputs
->>>>     10: <invalid kfunc call>
->>>>     kfunc 'bpf_unreachable' is referenced but wasn't resolved
->>>> Basically, kernel does not support bpf_unreachable() kfunc.
->>>> This still didn't give clear signals about possible reason.
->>>>
->>>> With llvm patch [2] and with this patch, the verifier outputs
->>>>     10: (85) call bpf_unreachable#74479
->>>>     unexpected bpf_unreachable() due to uninitialized variable?
->>>> It gives much better hints for verification failure.
->>>>
->>>>     [1] https://github.com/msune/clang_bpf/blob/main/Makefile#L3
->>>>     [2] https://github.com/llvm/llvm-project/pull/131731
->>>>
->>>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
->>>> ---
->>>>    kernel/bpf/helpers.c  | 5 +++++
->>>>    kernel/bpf/verifier.c | 5 +++++
->>>>    2 files changed, 10 insertions(+)
->>>>
->>>> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
->>>> index c1113b74e1e2..4852c36b1c51 100644
->>>> --- a/kernel/bpf/helpers.c
->>>> +++ b/kernel/bpf/helpers.c
->>>> @@ -3273,6 +3273,10 @@ __bpf_kfunc void bpf_local_irq_restore(unsigned long *flags__irq_flag)
->>>>           local_irq_restore(*flags__irq_flag);
->>>>    }
->>>>
->>>> +__bpf_kfunc void bpf_unreachable(void)
->>>> +{
->>>> +}
->>>> +
->>>>    __bpf_kfunc_end_defs();
->>>>
->>>>    BTF_KFUNCS_START(generic_btf_ids)
->>>> @@ -3386,6 +3390,7 @@ BTF_ID_FLAGS(func, bpf_copy_from_user_dynptr, KF_SLEEPABLE)
->>>>    BTF_ID_FLAGS(func, bpf_copy_from_user_str_dynptr, KF_SLEEPABLE)
->>>>    BTF_ID_FLAGS(func, bpf_copy_from_user_task_dynptr, KF_SLEEPABLE | KF_TRUSTED_ARGS)
->>>>    BTF_ID_FLAGS(func, bpf_copy_from_user_task_str_dynptr, KF_SLEEPABLE | KF_TRUSTED_ARGS)
->>>> +BTF_ID_FLAGS(func, bpf_unreachable)
->>>>    BTF_KFUNCS_END(common_btf_ids)
->>>>
->>>>    static const struct btf_kfunc_id_set common_kfunc_set = {
->>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->>>> index d5807d2efc92..08013e2e1697 100644
->>>> --- a/kernel/bpf/verifier.c
->>>> +++ b/kernel/bpf/verifier.c
->>>> @@ -12105,6 +12105,7 @@ enum special_kfunc_type {
->>>>           KF_bpf_res_spin_unlock,
->>>>           KF_bpf_res_spin_lock_irqsave,
->>>>           KF_bpf_res_spin_unlock_irqrestore,
->>>> +       KF_bpf_unreachable,
->>>>    };
->>>>
->>>>    BTF_SET_START(special_kfunc_set)
->>>> @@ -12208,6 +12209,7 @@ BTF_ID(func, bpf_res_spin_lock)
->>>>    BTF_ID(func, bpf_res_spin_unlock)
->>>>    BTF_ID(func, bpf_res_spin_lock_irqsave)
->>>>    BTF_ID(func, bpf_res_spin_unlock_irqrestore)
->>>> +BTF_ID(func, bpf_unreachable)
->>>>
->>>>    static bool is_kfunc_ret_null(struct bpf_kfunc_call_arg_meta *meta)
->>>>    {
->>>> @@ -13508,6 +13510,9 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
->>>>                           return err;
->>>>                   }
->>>>                   __mark_btf_func_reg_size(env, regs, BPF_REG_0, sizeof(u32));
->>>> +       } else if (!insn->off && insn->imm == special_kfunc_list[KF_bpf_unreachable]) {
->>> Looks good, but let's not abuse special_kfunc_list[] for this case.
->>> special_kfunc_type supposed to be in both set[] and list[].
->>> This is not the case here.
->>> It was wrong to add KF_bpf_set_dentry_xattr, bpf_iter_css_task_new,
->>> bpf_dynptr_from_skb, and many others.
->>> Let's fix this tech debt that we accumulated.
->>>
->>> special_kfunc_type should include only kfuncs that return
->>> a pointer, so that this part is triggered:
->>>
->>>           } else if (btf_type_is_ptr(t)) {
->>>                   ptr_type = btf_type_skip_modifiers(desc_btf, t->type,
->>> &ptr_type_id);
->>>
->>>                   if (meta.btf == btf_vmlinux &&
->>> btf_id_set_contains(&/special_kfunc_set, meta.func_id)) {
->>>
->>> All other kfuncs shouldn't be there. They don't need to be in
->>> the special_kfunc_set.
->>>
->>> Let's split enum special_kfunc_type into what it meant to be
->>> originally (both set and list), and move all list-only kfuncs
->>> into a new array.
->>> Let's call it kfunc_ids.
->>> Then the check in this patch will look like:
->>> insn->imm == kfunc_ids[KF_bpf_unreachable]
->> IIUC, the main goal is to remove some kfuncs from special_kfunc_set
->> since they are unnecessary.
->>
->> I think we do not need an 'enum' type for special_kfunc_set since
->> the for all kfuncs in special_kfunc_set, btf_id_set_contains()
->> is used to find corresponding btf_id. So current 'enum special_kfunc_type'
->> is only used for special_kfunc_list to find proper kfunc_id's.
->>
->> I think the following change should achieve this:
->>
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index 08013e2e1697..2cf00b06ae66 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -12060,7 +12060,7 @@ enum kfunc_ptr_arg_type {
->>           KF_ARG_PTR_TO_RES_SPIN_LOCK,
->>    };
->>
->> -enum special_kfunc_type {
->> +enum special_kfunc_list_type {
->>           KF_bpf_obj_new_impl,
->>           KF_bpf_obj_drop_impl,
->>           KF_bpf_refcount_acquire_impl,
->> @@ -12126,24 +12126,10 @@ BTF_ID(func, bpf_rbtree_first)
->>    BTF_ID(func, bpf_rbtree_root)
->>    BTF_ID(func, bpf_rbtree_left)
->>    BTF_ID(func, bpf_rbtree_right)
->> -#ifdef CONFIG_NET
->> -BTF_ID(func, bpf_dynptr_from_skb)
->> -BTF_ID(func, bpf_dynptr_from_xdp)
->> -#endif
->>    BTF_ID(func, bpf_dynptr_slice)
->>    BTF_ID(func, bpf_dynptr_slice_rdwr)
->> -BTF_ID(func, bpf_dynptr_clone)
->>    BTF_ID(func, bpf_percpu_obj_new_impl)
->>    BTF_ID(func, bpf_percpu_obj_drop_impl)
->> -BTF_ID(func, bpf_throw)
->> -BTF_ID(func, bpf_wq_set_callback_impl)
->> -#ifdef CONFIG_CGROUPS
->> -BTF_ID(func, bpf_iter_css_task_new)
->> -#endif
->> -#ifdef CONFIG_BPF_LSM
->> -BTF_ID(func, bpf_set_dentry_xattr)
->> -BTF_ID(func, bpf_remove_dentry_xattr)
->> -#endif
->>    BTF_SET_END(special_kfunc_set)
->>
->>    BTF_ID_LIST(special_kfunc_list)
->>
->> I renamed 'enum special_kfunc_type' to 'enum special_kfunc_list_type'
->> implying that the enum values in special_kfunc_lit_type has
->> 1:1 relation to special_kfunc_list.
->>
->> WDYT?
-> I think this is not going far enough.
-> We confused ourselves with the current special_kfunc_type.
-> I prefer a full split where enum special_kfunc_type
-> contains only kfuncs for special_kfunc_set and _list,
-> and a separate enum that covers kfuncs in a new kfunc_ids[]
-
-Okay, I see. we should have
-   `enum special_kfunc_type`, special_kfunc_set and special_kfunc_list
-for kfuncs which are used in btf_id_set_contains().
-
-For all other kfuncs, we will have
-   `enum kfunc_ids_type` and kfunc_ids
-
-Something like below:
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 08013e2e1697..66d0163c7ddb 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -12062,7 +12062,6 @@ enum kfunc_ptr_arg_type {
-                                                                                                                                        
-  enum special_kfunc_type {
-         KF_bpf_obj_new_impl,
--       KF_bpf_obj_drop_impl,
-         KF_bpf_refcount_acquire_impl,
-         KF_bpf_list_push_front_impl,
-         KF_bpf_list_push_back_impl,
-@@ -12072,45 +12071,19 @@ enum special_kfunc_type {
-         KF_bpf_list_back,
-         KF_bpf_cast_to_kern_ctx,
-         KF_bpf_rdonly_cast,
--       KF_bpf_rcu_read_lock,
--       KF_bpf_rcu_read_unlock,
-         KF_bpf_rbtree_remove,
-         KF_bpf_rbtree_add_impl,
-         KF_bpf_rbtree_first,
-         KF_bpf_rbtree_root,
-         KF_bpf_rbtree_left,
-         KF_bpf_rbtree_right,
--       KF_bpf_dynptr_from_skb,
--       KF_bpf_dynptr_from_xdp,
-         KF_bpf_dynptr_slice,
-         KF_bpf_dynptr_slice_rdwr,
--       KF_bpf_dynptr_clone,
-         KF_bpf_percpu_obj_new_impl,
--       KF_bpf_percpu_obj_drop_impl,
--       KF_bpf_throw,
--       KF_bpf_wq_set_callback_impl,
--       KF_bpf_preempt_disable,
--       KF_bpf_preempt_enable,
--       KF_bpf_iter_css_task_new,
--       KF_bpf_session_cookie,
--       KF_bpf_get_kmem_cache,
--       KF_bpf_local_irq_save,
--       KF_bpf_local_irq_restore,
--       KF_bpf_iter_num_new,
--       KF_bpf_iter_num_next,
--       KF_bpf_iter_num_destroy,
--       KF_bpf_set_dentry_xattr,
--       KF_bpf_remove_dentry_xattr,
--       KF_bpf_res_spin_lock,
--       KF_bpf_res_spin_unlock,
--       KF_bpf_res_spin_lock_irqsave,
--       KF_bpf_res_spin_unlock_irqrestore,
--       KF_bpf_unreachable,
-  };
-   
-  BTF_SET_START(special_kfunc_set)
-  BTF_ID(func, bpf_obj_new_impl)
--BTF_ID(func, bpf_obj_drop_impl)
-  BTF_ID(func, bpf_refcount_acquire_impl)
-  BTF_ID(func, bpf_list_push_front_impl)
-  BTF_ID(func, bpf_list_push_back_impl)
-@@ -12126,29 +12099,13 @@ BTF_ID(func, bpf_rbtree_first)
-  BTF_ID(func, bpf_rbtree_root)
-  BTF_ID(func, bpf_rbtree_left)
-  BTF_ID(func, bpf_rbtree_right)
--#ifdef CONFIG_NET
--BTF_ID(func, bpf_dynptr_from_skb)
--BTF_ID(func, bpf_dynptr_from_xdp)
--#endif
-  BTF_ID(func, bpf_dynptr_slice)
-  BTF_ID(func, bpf_dynptr_slice_rdwr)
--BTF_ID(func, bpf_dynptr_clone)
-  BTF_ID(func, bpf_percpu_obj_new_impl)
--BTF_ID(func, bpf_percpu_obj_drop_impl)
--BTF_ID(func, bpf_throw)
--BTF_ID(func, bpf_wq_set_callback_impl)
--#ifdef CONFIG_CGROUPS
--BTF_ID(func, bpf_iter_css_task_new)
--#endif
--#ifdef CONFIG_BPF_LSM
--BTF_ID(func, bpf_set_dentry_xattr)
--BTF_ID(func, bpf_remove_dentry_xattr)
--#endif
-  BTF_SET_END(special_kfunc_set)
-   
-  BTF_ID_LIST(special_kfunc_list)
-  BTF_ID(func, bpf_obj_new_impl)
--BTF_ID(func, bpf_obj_drop_impl)
-  BTF_ID(func, bpf_refcount_acquire_impl)
-  BTF_ID(func, bpf_list_push_front_impl)
-  BTF_ID(func, bpf_list_push_back_impl)
-@@ -12158,14 +12115,49 @@ BTF_ID(func, bpf_list_front)
-  BTF_ID(func, bpf_list_back)
-  BTF_ID(func, bpf_cast_to_kern_ctx)
-  BTF_ID(func, bpf_rdonly_cast)
--BTF_ID(func, bpf_rcu_read_lock)
--BTF_ID(func, bpf_rcu_read_unlock)
-  BTF_ID(func, bpf_rbtree_remove)
-  BTF_ID(func, bpf_rbtree_add_impl)
-  BTF_ID(func, bpf_rbtree_first)
-  BTF_ID(func, bpf_rbtree_root)
-  BTF_ID(func, bpf_rbtree_left)
-  BTF_ID(func, bpf_rbtree_right)
-+BTF_ID(func, bpf_dynptr_slice)
-+BTF_ID(func, bpf_dynptr_slice_rdwr)
-+BTF_ID(func, bpf_percpu_obj_new_impl)
-+
-+enum kfunc_ids_type {
-+       KF_bpf_obj_drop_impl,
-+       KF_bpf_rcu_read_lock,
-+       KF_bpf_rcu_read_unlock,
-+       KF_bpf_dynptr_from_skb,
-+       KF_bpf_dynptr_from_xdp,
-+       KF_bpf_dynptr_clone,
-+       KF_bpf_percpu_obj_drop_impl,
-+       KF_bpf_throw,
-+       KF_bpf_wq_set_callback_impl,
-+       KF_bpf_preempt_disable,
-+       KF_bpf_preempt_enable,
-+       KF_bpf_iter_css_task_new,
-+       KF_bpf_session_cookie,
-+       KF_bpf_get_kmem_cache,
-+       KF_bpf_local_irq_save,
-+       KF_bpf_local_irq_restore,
-+       KF_bpf_iter_num_new,
-+       KF_bpf_iter_num_next,
-+       KF_bpf_iter_num_destroy,
-+       KF_bpf_set_dentry_xattr,
-+       KF_bpf_remove_dentry_xattr,
-+       KF_bpf_res_spin_lock,
-+       KF_bpf_res_spin_unlock,
-+       KF_bpf_res_spin_lock_irqsave,
-+       KF_bpf_res_spin_unlock_irqrestore,
-+       KF_bpf_unreachable,
-+};
-+
-+BTF_ID_LIST(kfunc_ids)
-+BTF_ID(func, bpf_obj_drop_impl)
-+BTF_ID(func, bpf_rcu_read_lock)
-+BTF_ID(func, bpf_rcu_read_unlock)
-  #ifdef CONFIG_NET
-  BTF_ID(func, bpf_dynptr_from_skb)
-  BTF_ID(func, bpf_dynptr_from_xdp)
-@@ -12173,10 +12165,7 @@ BTF_ID(func, bpf_dynptr_from_xdp)
-  BTF_ID_UNUSED
-  BTF_ID_UNUSED
-  #endif
--BTF_ID(func, bpf_dynptr_slice)
--BTF_ID(func, bpf_dynptr_slice_rdwr)
-  BTF_ID(func, bpf_dynptr_clone)
--BTF_ID(func, bpf_percpu_obj_new_impl)
-  BTF_ID(func, bpf_percpu_obj_drop_impl)
-  BTF_ID(func, bpf_throw)
-  BTF_ID(func, bpf_wq_set_callback_impl)
-@@ -12223,22 +12212,22 @@ static bool is_kfunc_ret_null(struct bpf_kfunc_call_arg_meta *meta)
-   
-  static bool is_kfunc_bpf_rcu_read_lock(struct bpf_kfunc_call_arg_meta *meta)
-  {
--       return meta->func_id == special_kfunc_list[KF_bpf_rcu_read_lock];
-+       return meta->func_id == kfunc_ids[KF_bpf_rcu_read_lock];
-  }
-   
-  static bool is_kfunc_bpf_rcu_read_unlock(struct bpf_kfunc_call_arg_meta *meta)
-  {
--       return meta->func_id == special_kfunc_list[KF_bpf_rcu_read_unlock];
-+       return meta->func_id == kfunc_ids[KF_bpf_rcu_read_unlock];
-  }
-...
-@@ -21470,13 +21459,13 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
-                 insn_buf[2] = addr[1];
-                 insn_buf[3] = *insn;
-                 *cnt = 4;
--       } else if (desc->func_id == special_kfunc_list[KF_bpf_obj_drop_impl] ||
--                  desc->func_id == special_kfunc_list[KF_bpf_percpu_obj_drop_impl] ||
-+       } else if (desc->func_id == kfunc_ids[KF_bpf_obj_drop_impl] ||
-+                  desc->func_id == kfunc_ids[KF_bpf_percpu_obj_drop_impl] ||
-                    desc->func_id == special_kfunc_list[KF_bpf_refcount_acquire_impl]) {
-                 struct btf_struct_meta *kptr_struct_meta = env->insn_aux_data[insn_idx].kptr_struct_meta;
-                 struct bpf_insn addr[2] = { BPF_LD_IMM64(BPF_REG_2, (long)kptr_struct_meta) };
-                                                                                                                                        
--               if (desc->func_id == special_kfunc_list[KF_bpf_percpu_obj_drop_impl] && kptr_struct_meta) {
-+               if (desc->func_id == kfunc_ids[KF_bpf_percpu_obj_drop_impl] && kptr_struct_meta) {
-                         verbose(env, "verifier internal error: NULL kptr_struct_meta expected at insn_idx %d\n",
-                                 insn_idx);
-                         return -EFAULT;
-
-So we have clear separation between special_kfunc (using btf_id_set_contains())
-and list-only kfunc_ids.
-
+On Tue, May 20, 2025 at 12:12=E2=80=AFAM Taehee Yoo <ap420073@gmail.com> wr=
+ote:
 >
->>> Digging through the code it looks like we made a bit of a mess there.
->>> Like this part:
->>>           } else if (btf_type_is_void(t)) {
->>>                   if (meta.btf == btf_vmlinux &&
->>> btf_id_set_contains(&special_kfunc_set, meta.func_id)) {
->>>                           if (meta.func_id ==
->>> special_kfunc_list[KF_bpf_obj_drop_impl] ||
->>>                               meta.func_id ==
->>> special_kfunc_list[KF_bpf_percpu_obj_drop_impl]) {
->>>
->>>
->>> *obj_drop don't need to be in a set,
->>> and btf_id_set_contains() doesn't need to be called.
->>> Both kfuncs should be moved to new kfunc_ids[]
->> As you mentioned, for this one, we can do
->>
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index 2cf00b06ae66..a3ff57eaa5f4 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -12110,7 +12110,6 @@ enum special_kfunc_list_type {
->>
->>    BTF_SET_START(special_kfunc_set)
->>    BTF_ID(func, bpf_obj_new_impl)
->> -BTF_ID(func, bpf_obj_drop_impl)
->>    BTF_ID(func, bpf_refcount_acquire_impl)
->>    BTF_ID(func, bpf_list_push_front_impl)
->>    BTF_ID(func, bpf_list_push_back_impl)
->> @@ -12129,7 +12128,6 @@ BTF_ID(func, bpf_rbtree_right)
->>    BTF_ID(func, bpf_dynptr_slice)
->>    BTF_ID(func, bpf_dynptr_slice_rdwr)
->>    BTF_ID(func, bpf_percpu_obj_new_impl)
->> -BTF_ID(func, bpf_percpu_obj_drop_impl)
->>    BTF_SET_END(special_kfunc_set)
->>
->>    BTF_ID_LIST(special_kfunc_list)
->> @@ -13909,7 +13907,7 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
->>                   if (reg_may_point_to_spin_lock(&regs[BPF_REG_0]) && !regs[BPF_REG_0].id)
->>                           regs[BPF_REG_0].id = ++env->id_gen;
->>           } else if (btf_type_is_void(t)) {
->> -               if (meta.btf == btf_vmlinux && btf_id_set_contains(&special_kfunc_set, meta.func_id)) {
->> +               if (meta.btf == btf_vmlinux) {
->>                           if (meta.func_id == special_kfunc_list[KF_bpf_obj_drop_impl] ||
->>                               meta.func_id == special_kfunc_list[KF_bpf_percpu_obj_drop_impl]) {
->>                                   insn_aux->kptr_struct_meta =
-> Yes. Something like this but with new enum and new kfunc_ids[], like:
-> if (meta.func_id == kfunc_ids[KF_bpf_obj_drop_impl] ..
-
-Right. kfunc_ids is used here.
-
+> When xdp is attached or detached, dev->ndo_bpf() is called by
+> do_setlink(), and it acquires netdev_lock() if needed.
+> Unlike other drivers, the bnxt driver is protected by netdev_lock while
+> xdp is attached/detached because it sets dev->request_ops_lock to true.
 >
-> There is a concern that two KF_* enums may be confusing,
-> since it's not obvious whether
-> special_kfunc_list[KF_foo] or kfunc_ids[KF_foo] should be used.
-> Need to think about how to resolve the ambiguity...
+> So, the bnxt_xdp(), that is callback of ->ndo_bpf should not acquire
+> netdev_lock().
+> But the xdp_features_{set | clear}_redirect_target() was changed to
+> acquire netdev_lock() internally.
+> It causes a deadlock.
+> To fix this problem, bnxt driver should use
+> xdp_features_{set | clear}_redirect_target_locked() instead.
 
-Based on current verifier logic. special_kfunc_list[KF_foo] should
-be used if KF_foo is involved with btf_id_set_contains(...) checking.
+Thanks.
+Reviewed-by: Michael Chan <michael.chan@broadcom.com>
 
->
-> We also have these things for btf_ids of types:
-> extern u32 btf_tracing_ids[];
-> extern u32 bpf_cgroup_btf_id[];
-> extern u32 bpf_local_storage_map_btf_id[];
-> extern u32 btf_bpf_map_id[];
-> extern u32 bpf_kmem_cache_btf_id[];
+--000000000000f83aec0635953a7e
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
+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
+OnaLEot1MoQO7BIe5S9H4AcCEXXcrJJiAtMCl47ARpyHmvQFQFFTrHgUYEd9V+9bOzY7MBIGSV1N
+/JfsT1sZw6HT0lJkSQefhPGpBniAob62DJP3qr11tu8CAwEAAaOCAdowggHWMA4GA1UdDwEB/wQE
+AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
+c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
+AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
+TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
+bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
+L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJAYDVR0R
+BB0wG4EZbWljaGFlbC5jaGFuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNV
+HSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU31rAyTdZweIF0tJTFYwfOv2w
+L4QwDQYJKoZIhvcNAQELBQADggEBACcuyaGmk0NSZ7Kio7O7WSZ0j0f9xXcBnLbJvQXFYM7JI5uS
+kw5ozATEN5gfmNIe0AHzqwoYjAf3x8Dv2w7HgyrxWdpjTKQFv5jojxa3A5LVuM8mhPGZfR/L5jSk
+5xc3llsKqrWI4ov4JyW79p0E99gfPA6Waixoavxvv1CZBQ4Stu7N660kTu9sJrACf20E+hdKLoiU
+hd5wiQXo9B2ncm5P3jFLYLBmPltIn/uzdiYpFj+E9kS9XYDd+boBZhN1Vh0296zLQZobLfKFzClo
+E6IFyTTANonrXvCRgodKS+QJEH8Syu2jSKe023aVemkuZjzvPK7o9iU7BKkPG2pzLPgxggJgMIIC
+XAIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
+EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxeQGjDntHGb2iaQkIw
+DQYJYIZIAWUDBAIBBQCggccwLwYJKoZIhvcNAQkEMSIEIBE+Am21F3VsHugPWez2fjoP5VyiXFJi
+EYuLSzr1Vv0/MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI1MDUy
+MDE4MTUxNlowXAYJKoZIhvcNAQkPMU8wTTALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
+SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEB
+AQUABIIBADhxNXp59w/i2XVk7J+gfn7a6sPFfP9cwx9HR1/U9Q3z9u+TN2GJdVCitQtODrqTjuKl
+THMg9wEgyu8evwzNU0x9/jFx/DBMleJOogQpxVtClWwDaZ0dyDynpQaCacrTnSguI9ARXgpOFZxu
+UZLg1FhQ9HRMSB7gfEb/dN1QYmJ5rk9MCrJ2PMg/m8uEelWAzrGvqTZigd6QQ6ot3sAiYLs5e5MG
+iaSvqxfJ5Ne0fiPy0hNnQIYAn5BuZC0WpSeK1A0dDPvUY8Ii77z1SUpursoFEyDf80eSsFCwBsLD
+VY7zTdA2KbgoAggAT9AkYvE4bJXhLhXgkP2lhyicI9kHwcc=
+--000000000000f83aec0635953a7e--
 
