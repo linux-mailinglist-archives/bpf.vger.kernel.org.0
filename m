@@ -1,188 +1,140 @@
-Return-Path: <bpf+bounces-58680-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58681-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 937C6ABFE8F
-	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 22:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EFE2ABFE90
+	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 22:58:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BA3D170D88
-	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 20:58:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F4C4173A79
+	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 20:58:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D0B628FAB2;
-	Wed, 21 May 2025 20:58:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3646529B20A;
+	Wed, 21 May 2025 20:58:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rWosZUkF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OaNJt22U"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E018A1A5B86
-	for <bpf@vger.kernel.org>; Wed, 21 May 2025 20:58:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A4D01A5B86
+	for <bpf@vger.kernel.org>; Wed, 21 May 2025 20:58:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747861086; cv=none; b=SYZrWi0lTw90DEBk7V/VH5GoSVQf4ctVOdhpfSIAa1XXT8z3T3da9aHNhswlQSc4HxLQO8xF8xMPgKSYJkv/JxeaSitLGnkvMqCO7k9uey58xaoH39GzabLDdrw3i8xDscLdEnxCrwu2PmvbmAFLP1NfKjsHXjtAEIC1gsSSW8U=
+	t=1747861105; cv=none; b=r3hWFwpy9bqSODEmF/FUAPVKpG6YfzKVY1YlUO6Q+x2hb+XjdbSNNNAWIbUBq7O1OH4mk3/itGQWhcLx0r+QesC7ox63oVBClKJGt04Cl3teXFkK7ihv3BuNsFeNFDuWOnHH66LdT0fQ3ONaBGKrBCRSVvKOm8KEdC67JcjPeoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747861086; c=relaxed/simple;
-	bh=+9xJTd7U/z55I4S/zIWr//NBvKxNR3dAo9cDHltmqCs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uuEnDh17Hjx8tobNRem1kI0oDCZfkCZQmf6eR4KtpG2+OaBv+9suYPYBzSQ9rbKjoN3zr9NXeLXwMgvJNVr2GRq390rHBBy1/2/HTE0Jy2Q+IAUh6utgU7ZNRTj2zrKSy7MS4XiameENyxWxzVEnsMV7AdBNY5tgZ7JDlfFTy5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rWosZUkF; arc=none smtp.client-ip=95.215.58.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <5761ffe9-fc09-4f06-9311-0eed40a693fb@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1747861080;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WDRV/tImM8rqlS9bKNuQqX5OXFxwDKDT+FJgK8TDF1E=;
-	b=rWosZUkF0h4YUJoF9Y1t1Gz865p89XJcr+IorzS2Q1ZCgDSp1ogP+M00P1LjICAOLCeFGY
-	lH3olfcM4SA0wOv3EcWnV0uvynC2JEDpmbcZY0N48NZ/BjzB2eJlZrje5h33xYDoPMmssC
-	6b8ojZoOKUTFM7f8OS2FxjH7hSldZHc=
-Date: Wed, 21 May 2025 13:57:53 -0700
+	s=arc-20240116; t=1747861105; c=relaxed/simple;
+	bh=Kg/1WuXJ2k9eUfUf1W7gNoHW3XbfKIIKDhATt8mo+Gw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=jF4J3KPVSY/IgdOiIik8wLoXoLQXC3e05BZ1sibv+QjuxJOtMiBFQC4foqZXX9WgdqEbOCKR5JOtwLYapWCqi0IfMcBrPy80JJjs1SG2+5Ml8uxUaapXXQMpT6P/SelLQm/BGe9x4brm/O3oN+HRJoeH6r6beMCbZ/jsG9PI3PU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OaNJt22U; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-7424ccbef4eso7119864b3a.2
+        for <bpf@vger.kernel.org>; Wed, 21 May 2025 13:58:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747861102; x=1748465902; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:user-agent:message-id:date
+         :references:in-reply-to:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Kg/1WuXJ2k9eUfUf1W7gNoHW3XbfKIIKDhATt8mo+Gw=;
+        b=OaNJt22UXDUBTga0S/lTdvxzb4C6JNk0IUc4CPWOXGABvT4irPEX/9YdIp4kLG5T/I
+         ZVB5GPcoKbBJ8BqnT5jOmchC2B3fyEiTfqAitKwhvzYvB8ButkrM5vPN6Np42kduM+2t
+         zwwdv2ZJy4Of6KSofVSVdHfpeeAEuYRrtA3VaOwYtoZ93o9sSQIczgH7MQ1A7mjsITRZ
+         lk9Ir5CHxFGQ6bfA/yUu9J65/5myF2YeW3VlWAE85di2w8NnJcnBi5c1euBqH7TNwPR+
+         /czL3RMBBghbnJ2dBLJRsOvs5/5ZHFn48LhCf/7RAGpvlkt7c7oto8oV0+gX3CkCPlgg
+         T0+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747861102; x=1748465902;
+        h=content-transfer-encoding:mime-version:user-agent:message-id:date
+         :references:in-reply-to:subject:cc:to:from:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=Kg/1WuXJ2k9eUfUf1W7gNoHW3XbfKIIKDhATt8mo+Gw=;
+        b=O1pUbAC/Xwo8d+ao4utGB/RzV9FvsfzkIYM2pqZXT7HeOK6rJf3z/q1p/HOaPGGwUT
+         8dZUf7U6ICjYw4C0P8rZbBb1jcyBuVWSkIgknOazTXPw1do8lXwAECPaQrCVYL9xQXeZ
+         8NXTaH4N8yV37DfPu2xGMdu9qc6+IGs+0hNJxfdZfE4caO/kTzMWwqHJuL+Vd2LjWn+T
+         vvY1s+tkFLLU0FhlCIhZuE4aDVIXeSZENgeOAY96k3PpQudT1R+4dCSYY858n+IMWwzx
+         Fa2qrd2BLRJNcJ/vAB/N5cdNN5bCvHIfYN638uDqeXQXOCS6Vog7WvUrzZGWIcvKoCWh
+         ltog==
+X-Gm-Message-State: AOJu0Yzo+M2C0+kgX+TsTO8JEnNrSxf0DEc49Z69B0AQHSyzGhjQgr/d
+	qMtQwV/wB6vViUhbPu8m/j8i33mP7p7WVuaiI3hD9gqaUlnpwLd+ygVZ
+X-Gm-Gg: ASbGncsMUbAuB8dYb4SAELgQgxV9kqhKKqoMC0P3aYQRRa8EQdv3twc6uYIGrsQEOu+
+	U1SD45+uwir3I/uWo17GtMZ+9MO4/FdQfbbeBEwPqALJD0kD8WWVIbeRqsdUH2cUTFnW6seDAB9
+	m0nimTKHwJWN0ICwbXPLIT/opQZMnHcntVJAAv2uXrqAYwGVVljeQJ23VbqAjMW+LtKM3f13rLi
+	SpacUY5y6yIKjNM5kzdEHPhOWsDKhO1VosDvNrJktCBsWs2N2/VJOteBKi/oNGFJfGYFf/gJaDk
+	QWJhRfNNErX2fcKqhFIDxAuWNlsoav918UH9b2b+7F7KrweOSP9ubNE=
+X-Google-Smtp-Source: AGHT+IF+sHpgF1QLN62rocyZlhJhUmbD7UeoaR8COLEFd0VLG6SGeAVSqY7RbnBJPyaJPG+d5TztDg==
+X-Received: by 2002:a05:6a00:3921:b0:736:34ca:dee2 with SMTP id d2e1a72fcca58-742a97740damr30563344b3a.4.1747861102519;
+        Wed, 21 May 2025 13:58:22 -0700 (PDT)
+Received: from ezingerman-mba ([2620:10d:c090:500::6:8d1a])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-742a97395basm10069592b3a.76.2025.05.21.13.58.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 May 2025 13:58:22 -0700 (PDT)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf@vger.kernel.org,  Alexei Starovoitov <ast@kernel.org>,  Andrii
+ Nakryiko <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,
+  kernel-team@fb.com,  Martin KaFai Lau <martin.lau@kernel.org>
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: Do not include stack ptr register
+ in precision backtracking bookkeeping
+In-Reply-To: <2c0fa9ee-f9dd-4cde-b4fb-6f28ebefc619@linux.dev> (Yonghong Song's
+	message of "Wed, 21 May 2025 13:34:50 -0700")
+References: <20250521170409.2772304-1-yonghong.song@linux.dev>
+	<45e399c6-74ad-4e58-bfda-06b392d1d28d@gmail.com>
+	<2c0fa9ee-f9dd-4cde-b4fb-6f28ebefc619@linux.dev>
+Date: Wed, 21 May 2025 13:58:20 -0700
+Message-ID: <m2ikltd6kz.fsf@gmail.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: Add tests with stack ptr
- register in conditional jmp
-Content-Language: en-GB
-To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
- Martin KaFai Lau <martin.lau@kernel.org>
-References: <20250521170409.2772304-1-yonghong.song@linux.dev>
- <20250521170414.2773034-1-yonghong.song@linux.dev>
- <6dd9752a-4bec-423d-8936-8757251f2b50@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <6dd9752a-4bec-423d-8936-8757251f2b50@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
+Yonghong Song <yonghong.song@linux.dev> writes:
 
+[...]
 
-On 5/21/25 12:02 PM, Eduard Zingerman wrote:
->
-> On 2025-05-21 10:04, Yonghong Song wrote:
->
-> [...]
->
->> @@ -178,4 +178,57 @@ __naked int state_loop_first_last_equal(void)
->>       );
->>   }
->>   +__used __naked static void __bpf_cond_op_r10(void)
->> +{
->> +    asm volatile (
->> +    "r2 = 2314885393468386424 ll;"
->> +    "goto +0;"
->> +    "if r2 <= r10 goto +3;"
->> +    "if r1 >= -1835016 goto +0;"
->> +    "if r2 <= 8 goto +0;"
->> +    "if r3 <= 0 goto +0;"
->> +    "exit;"
->> +    ::: __clobber_all);
->> +}
->> +
->> +SEC("?raw_tp")
->> +__success __log_level(2)
->> +__msg("8: (bd) if r2 <= r10 goto pc+3")
->> +__msg("9: (35) if r1 >= 0xffe3fff8 goto pc+0")
->> +__msg("10: (b5) if r2 <= 0x8 goto pc+0")
->> +__msg("mark_precise: frame1: last_idx 10 first_idx 0 subseq_idx -1")
->> +__msg("mark_precise: frame1: regs=r2 stack= before 9: (35) if r1 >= 
->> 0xffe3fff8 goto pc+0")
->> +__msg("mark_precise: frame1: regs=r2 stack= before 8: (bd) if r2 <= 
->> r10 goto pc+3")
->> +__msg("mark_precise: frame1: regs=r2 stack= before 7: (05) goto pc+0")
->> +__naked void bpf_cond_op_r10(void)
->> +{
->> +    asm volatile (
->> +    "r3 = 0 ll;"
->> +    "call __bpf_cond_op_r10;"
->> +    "r0 = 0;"
->> +    "exit;"
->> +    ::: __clobber_all);
->> +}
->
-> This was probably a part of the repro, but I'm not sure
-> this test adds much compared to test below.
-> The changes do not interact with subprogram calls handling.
+>>> @@ -16397,6 +16423,29 @@ static void sync_linked_regs(struct
+>>> bpf_verifier_state *vstate, struct bpf_reg_s
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>>> =C2=A0 }
+>>> =C2=A0 +static int push_cond_jmp_history(struct bpf_verifier_env *env,
+>>> struct bpf_verifier_state *state,
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct bpf_reg_state *dst_reg, struct
+>>> bpf_reg_state *src_reg,
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 linked_regs)
+>>> +{
+>>> +=C2=A0=C2=A0=C2=A0 bool dreg_stack_ptr, sreg_stack_ptr;
+>>> +=C2=A0=C2=A0=C2=A0 int insn_flags;
+>>> +
+>>> +=C2=A0=C2=A0=C2=A0 if (!src_reg) {
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (linked_regs)
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret=
+urn push_insn_history(env, state, 0, linked_regs);
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
+>>> +=C2=A0=C2=A0=C2=A0 }
+>>
+>> Nit: this 'if' is not needed, src_reg is always set (it might point
+>> to a fake register,
+>> =C2=A0=C2=A0=C2=A0=C2=A0 but in that case it is a scalar without id).
+>>
+> Here, there is a bug here. Thanks for pointing this out. I need to check
+> BPF_SRC(insn->code) !=3D BPF_X instead of "!src_reg". Basically passing o=
+ne
+> more parameter (e.g., faked_sreg) to decide whether src_reg is faked or n=
+ot.
 
-It does not interact with subprogram due the patch 1. Without patch 1,
-the error will happen (see commit message of patch 1):
+I don't think any checks are needed.
+Fake register is always scalar and it cannot be collected as a linked regis=
+ter.
+So it won't end up in the instruction history flags.
 
-   0: (18) r3 = 0x0                      ; R3_w=0
-   2: (85) call pc+2
-   caller:
-    R10=fp0
-   callee:
-    frame1: R1=ctx() R3_w=0 R10=fp0
-   5: frame1: R1=ctx() R3_w=0 R10=fp0
-   ; asm volatile ("                                 \ @ verifier_precision.c:184
-   5: (18) r2 = 0x20202000256c6c78       ; frame1: R2_w=0x20202000256c6c78
-   7: (05) goto pc+0
-   8: (bd) if r2 <= r10 goto pc+3        ; frame1: R2_w=0x20202000256c6c78 R10=fp0
-   9: (35) if r1 >= 0xffe3fff8 goto pc+0         ; frame1: R1=ctx()
-   10: (b5) if r2 <= 0x8 goto pc+0
-   mark_precise: frame1: last_idx 10 first_idx 0 subseq_idx -1
-   mark_precise: frame1: regs=r2 stack= before 9: (35) if r1 >= 0xffe3fff8 goto pc+0
-   mark_precise: frame1: regs=r2 stack= before 8: (bd) if r2 <= r10 goto pc+3
-   mark_precise: frame1: regs=r2,r10 stack= before 7: (05) goto pc+0
-   mark_precise: frame1: regs=r2,r10 stack= before 5: (18) r2 = 0x20202000256c6c78
-   mark_precise: frame1: regs=r10 stack= before 2: (85) call pc+2
-   BUG regs 400
-
->
->> +
->> +SEC("?raw_tp")
->> +__success __log_level(2)
->> +__msg("3: (bf) r3 = r10")
->> +__msg("4: (bd) if r3 <= r2 goto pc+1")
->> +__msg("5: (b5) if r2 <= 0x8 goto pc+2")
->> +__msg("mark_precise: frame0: last_idx 5 first_idx 0 subseq_idx -1")
->> +__msg("mark_precise: frame0: regs=r2 stack= before 4: (bd) if r3 <= 
->> r2 goto pc+1")
->> +__msg("mark_precise: frame0: regs=r2 stack= before 3: (bf) r3 = r10")
->> +__naked void bpf_cond_op_not_r10(void)
->> +{
->> +    asm volatile (
->> +    "r0 = 0;"
->> +    "r2 = 2314885393468386424 ll;"
->> +    "r3 = r10;"
->> +    "if r3 <= r2 goto +1;"
->> +    "if r2 <= 8 goto +2;"
->
-> I think it would be good to add two more cases here:
-> - dst register is pointer to stack
-
-The previous test "r2 <= r10" should already cover this since r10 is a pointer to stack.
-
-> - both src and dst registers are pointers to stack
-
-I actually thought about this as well, e.g.,
-    r2 = r10
-    r3 = r10
-    if r2 <= r3 goto +0
-    if r2 <= 8 goto +0
-
-But since r2 is actually a stack pointer, then r2 does not need
-backtracking. So r2 <= r3 won't be backtracked too.
-
-But if you feel such an example still valuable, I can add it too.
-
->
->> +    "r0 = 2 ll;"
->> +    "exit;"
->> +    ::: __clobber_all);
->> +}
->> +
->>   char _license[] SEC("license") = "GPL";
-
+[...]
 
