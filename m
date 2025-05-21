@@ -1,127 +1,181 @@
-Return-Path: <bpf+bounces-58638-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58640-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9624ABEAF8
-	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 06:28:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E534ABEBE7
+	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 08:24:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6416C4E1883
-	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 04:28:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5EC881B6782A
+	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 06:24:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 026EF22DF9D;
-	Wed, 21 May 2025 04:28:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F7A1233D64;
+	Wed, 21 May 2025 06:24:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HGxVesP/"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="fq2evgm+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F343322D9EB
-	for <bpf@vger.kernel.org>; Wed, 21 May 2025 04:28:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CF631E9B19;
+	Wed, 21 May 2025 06:23:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747801729; cv=none; b=FSjlDv5eDZERdjFhIOsY5JtN9GA2pKafKTykJK0rX4eBlQIj36T85o2jr6TvDcAL43H+VXhetwhKa/y56VvU1ZEUlLt9wSMRJKT9p4yGeR0SIgzAJw4yA4xyla7GeAc/7tn8PiIC7cMPkmqqEeCGXsFQAUJx+cFhUmxjB0joCwo=
+	t=1747808643; cv=none; b=WrrV55J9M0Mb1gXoGC3DH/jber0qkk3jG510eOT7vMrbObDTcVOXSiCPCrQ+WlJb5yzCpfLQnEVaagLgfUwv8FGMJT97L4N2F7Bw1ShdTGAy9Pqzk3BZPdDmDEN5f7JNdtXhK2BlMMzzsGvvDsah1iW1eZ4ir/H9w/JgQqt0M30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747801729; c=relaxed/simple;
-	bh=rC7aPFRp56kGAZuIzL7I+c0AH6LmBhz8iy35R+WP+q8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=idHh9GBx+8Qda/q6P1bFAqp1Vp7tVv4HvlX2s2z8LNtizDlW7fAINXNk6wCVOyygpHJYMlZhxjHRTZvw6O5jsJRylJ3c9sulNyvvp/5Cd1LN/sU3W2Yzk/O5MLAI9O225QOYWPqTwLLk9mBlkYApvWAqWwgXvhJJz/N5o8HdvTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HGxVesP/; arc=none smtp.client-ip=209.85.219.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-6f8a87f0c0fso61063506d6.0
-        for <bpf@vger.kernel.org>; Tue, 20 May 2025 21:28:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747801727; x=1748406527; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jE+s01DccinR49vJy2RYweLyn+HO4R840h70MDC4FS0=;
-        b=HGxVesP/ly24lJqk810z6Sua5abDIPanqO11yx9XsqKUQya9qvswD2WqIf8pDDXaK4
-         aWjajDtjkYth130SBMAUrzl/XopJe/Syk4Xn7mryzwuR1Jzx8mfko+lAKUrhAXpaGG4B
-         Vfj22hlc/kQQL3FvvzjN4ugwkO4CLmehwMeoqgyvsyzyEQyx4/b5A6SokxKjdk4xyWe5
-         GeeJ9+k/nDLpUUflMe0ZPVsY0tq1kIVL7OPGAicHNvbOwnkmhX9Er5sVGVEXXrNpsoyz
-         mBoFZVXK0R+LPWpyHu7BhjWTZYPE6SnAgrqy8Uj03IZnfvNBFrGC8z+ny5NROlm6I+yV
-         6RRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747801727; x=1748406527;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jE+s01DccinR49vJy2RYweLyn+HO4R840h70MDC4FS0=;
-        b=n+YGssOf8wlPB7blV8MT+VkSUHdVGXqCVRQNrT88B+ywuIbvR4Nuk0S4Gr/3UhV4k1
-         0kvaPP6py92eD8GiZVBuT6nbf0oELQT3SHKONUcsB737cmVy6wRtJlb5/NDC9Tdq6FIR
-         h2v0KTt+gUOddxBEc45NCfMVVnoo/6XpWoUAARwsjmPF7Db9Q4A45A8x/erEJ9x7hg87
-         41+9MlmQJmHY+dg7nj8X/8x7+tnx/JiBokl6ae9BzUqJQlLXJugl6NOKPkJL22HhfjJA
-         Qn0ihZG2VTcs7XQHCFoTP+oZ0DQZTFr3krcdnVhkH+/vjt5T7jUIGOhnZuYtQUnYBLCs
-         IfHg==
-X-Forwarded-Encrypted: i=1; AJvYcCXCv0AmJ5o0qA3SBvg1y2FeuWbt/u4nPIkSP+b03xnmj4ufweCpQ02DADsbSYQ9nI/dvFw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzizsba1fozTznKns0UlHm6lZDBNFmhwta1dzhyZYt3+TPO2ogo
-	861MaQk/fWCbxztpV0aj4jDEBFyDVuKKPKgChK6p5foCAvFt9QbIz9SlnV4wglFbxPsaq3DTLC3
-	oB0LB5C1KKR5Cd3F+wDSC9B4+uVLEPeQ=
-X-Gm-Gg: ASbGnctdXWKM3YZxbCymQ5iO53Dv0FTf7nT1R07X33iVkDkaBNknlUDhwRMMwxgazHf
-	ev8thtYIyMYHrRMBI4rd7eEkhFuXcHsS9JHG44aeos/Fr+ZI3uDewrrqz5ALVaHI3x8rZGGw4vO
-	lf7b/oaoEsXdVl5l4kAbpcgNhk+63OApB2ZA==
-X-Google-Smtp-Source: AGHT+IHT/SSNN7DKcZkNza7jUsEL1rq8UaOlE9FpXkdns53FR9CMMY99/4sCR2U7P21T5j0e+CHkTTR7dgMJxthW9dg=
-X-Received: by 2002:a05:6214:f29:b0:6f4:b265:261 with SMTP id
- 6a1803df08f44-6f8b080f7e7mr360771636d6.8.1747801726829; Tue, 20 May 2025
- 21:28:46 -0700 (PDT)
+	s=arc-20240116; t=1747808643; c=relaxed/simple;
+	bh=0Vq9at/OYdOLMKZalD7R5Zkb+jm93cyO2v94IEXBflM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=B45kGMFdNLH3nk8uXjhhoRIi44/0ywx5+Br7rkLUz8McB2UR1x6lcIfkSsC/NQGTToncHEzj1t7RfqsdRrBsF20HkFo2B4/BBWDkp/4tSxoRr+/FdPItuvLVeUEz/8lAtR7UCEyPvmOwen2FEZlerIem80FqiwgeLHm1e07GQ9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=fq2evgm+; arc=none smtp.client-ip=213.97.179.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=1n/3IFWy+0LWJpNhuy9Hz5x+4AMFxJjBU/fPUdAjQPI=; b=fq2evgm+8aHHlVo2DpQEvrySSt
+	GO2vp2fKXtO2g0nV9hEiG9hYdjkigt7zTWE3O0j0gJBjVRLaydX4+pFf4K5zpdF2PfjTprkErWDUi
+	qDS50gNVmRRsXRFILzfFbW55oKZhR8+kLnt5Lg/C0unLciOTzqECfQuNkvaSGjvuvKs3VfIkjugkr
+	B70hJKa59NDjmQVnsBtL0OslaH6honTZblyqsH3I22LDdxQIYv+ZW/DSLurlonMtrQm5rc09l4BaV
+	0CS1mdNszFf0ahjBioD2m71swBrp44r1AHBYXq/tVmQv2aW/nPO+eQtLuRydoe3JL7XZSh0tRXS9X
+	miwX7g1g==;
+Received: from [223.233.70.209] (helo=localhost.localdomain)
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
+	id 1uHcrm-00B3oN-8q; Wed, 21 May 2025 08:23:50 +0200
+From: Bhupesh <bhupesh@igalia.com>
+To: akpm@linux-foundation.org
+Cc: bhupesh@igalia.com,
+	kernel-dev@igalia.com,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-perf-users@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org,
+	oliver.sang@intel.com,
+	lkp@intel.com,
+	laoar.shao@gmail.com,
+	pmladek@suse.com,
+	rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com,
+	arnaldo.melo@gmail.com,
+	alexei.starovoitov@gmail.com,
+	andrii.nakryiko@gmail.com,
+	mirq-linux@rere.qmqm.pl,
+	peterz@infradead.org,
+	willy@infradead.org,
+	david@redhat.com,
+	viro@zeniv.linux.org.uk,
+	keescook@chromium.org,
+	ebiederm@xmission.com,
+	brauner@kernel.org,
+	jack@suse.cz,
+	mingo@redhat.com,
+	juri.lelli@redhat.com,
+	bsegall@google.com,
+	mgorman@suse.de,
+	vschneid@redhat.com,
+	linux-trace-kernel@vger.kernel.org
+Subject: [PATCH v4 0/3] Add support for long task name
+Date: Wed, 21 May 2025 11:53:34 +0530
+Message-Id: <20250521062337.53262-1-bhupesh@igalia.com>
+X-Mailer: git-send-email 2.38.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250520060504.20251-1-laoar.shao@gmail.com> <CAA1CXcD=P8tBASK1X=+2=+_RANi062X8QMsi632MjPh=dkuD9Q@mail.gmail.com>
- <CALOAHbDbcdBZb_4mCpr4S81t8EBtDeSQ2OVSOH6qLNC-iYMa4A@mail.gmail.com>
- <aCx_Ngyjl3oOwJKG@casper.infradead.org> <CALOAHbDUmad6nHnW755P8VYf+Pk=DogW0gMH4G73TwvKodW54A@mail.gmail.com>
- <2345b8b9-b084-4661-8b55-61fd7fc7de57@lucifer.local> <82f7bca5-384f-41e5-a0fc-0e1e8e260607@gmail.com>
- <a3dfae27-2372-47b7-bc67-49a0c5be422b@lucifer.local> <aCyU7Q2DhPPF3Oau@casper.infradead.org>
-In-Reply-To: <aCyU7Q2DhPPF3Oau@casper.infradead.org>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Wed, 21 May 2025 12:28:09 +0800
-X-Gm-Features: AX0GCFvEYBCpG5ieUqLgW7G-4T53eX0Vl0ZmrBW1VnRhKy_dwQL_lAIxVIqTVu4
-Message-ID: <CALOAHbBTretjRExbBj7YSvfrv531jhqmaB6e-=yv9nTn0Chaeg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 0/5] mm, bpf: BPF based THP adjustment
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, Usama Arif <usamaarif642@gmail.com>, 
-	Nico Pache <npache@redhat.com>, akpm@linux-foundation.org, david@redhat.com, 
-	ziy@nvidia.com, baolin.wang@linux.alibaba.com, Liam.Howlett@oracle.com, 
-	ryan.roberts@arm.com, dev.jain@arm.com, hannes@cmpxchg.org, 
-	gutierrez.asier@huawei-partners.com, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, May 20, 2025 at 10:43=E2=80=AFPM Matthew Wilcox <willy@infradead.or=
-g> wrote:
->
-> On Tue, May 20, 2025 at 03:35:49PM +0100, Lorenzo Stoakes wrote:
-> > I agree global settings are not fine-grained enough, but 'sys admins re=
-fuse
-> > to do X so we want to ignore what they do' is... really not right at al=
-l.
->
-> Oh, we do that all the time,  Leave the interface around but document
-> it's now a no-op.  For example, file-backed memory ignores the THP
-> settings completely.
+Changes since v3:
+================
+- v3 can be seen here: https://lore.kernel.org/lkml/20250507110444.963779-1-bhupesh@igalia.com/
+- As suggested by Petr and Steven, used 'comm_ext' name instead of
+  'real_comm'. Correspondingly the macro name is changed to 'TASK_COMM_EXT_LEN'
+  for the 64-byte extended comm.
+- Rebased this patchset on linux-next/master, which contain the following patch from
+  Steven now:
+       155fd6c3e2f0 ("tracing/sched: Use __string() instead of fixed lengths for task->comm")
+- Accordingly, v4 drops the changes done for 'trace/sched' events in v3,
+  but retains the 'safe' memcpy' changes for other kernel trace users.
 
-This essentially invites downstream kernel developers to implement
-their own "file-enabled" solutions ;-)
+Changes since v2:
+================
+- v2 can be seen here: https://lore.kernel.org/lkml/20250331121820.455916-1-bhupesh@igalia.com/
+- As suggested by Yafang and Kees, picked Linus' suggested approach for
+  this version (see: <https://lore.kernel.org/all/CAHk-=wjAmmHUg6vho1KjzQi2=psR30+CogFd4aXrThr2gsiS4g@mail.gmail.com/>).
+- Dropped kthreads patch from this version. It would be sent out
+  separately, if we have a consensus on this approach.
 
-If you haven't yet encountered reports of file-backed THP causing
-performance regressions for specific workloads, you may be missing
-something. Our testing has confirmed performance degradation with
-certain HDFS workloads, even on the 6.12.y kernel - though I've
-prioritized discussing BPF-based THP control with you over
-investigating those specific cases.
+Changes since v1:
+================
+- v1 can be seen here: https://lore.kernel.org/lkml/20250314052715.610377-1-bhupesh@igalia.com/
+- As suggested by Kees, added [PATCH 3/3] to have a consistent
+  'full_name' entry inside 'task_struct' which both tasks and
+  kthreads can use.
+- Fixed the commit message to indicate that the existing ABI
+  '/proc/$pid/task/$tid/comm' remains untouched and a parallel
+  '/proc/$pid/task/$tid/full_name' ABI for new (interested) users.
 
-> And mounting an NFS filesystem as "intr" has
-> been a no-op for over a decade.
+While working with user-space debugging tools which work especially
+on linux gaming platforms, I found that the task name is truncated due
+to the limitation of TASK_COMM_LEN.
 
---=20
-Regards
-Yafang
+Now, during debug tracing, seeing truncated names is not very useful,
+especially on gaming platforms where the number of tasks running can
+be very high.
+
+This patchset does not touch 'TASK_COMM_LEN' at all, i.e.
+'TASK_COMM_LEN' and the 16-byte design remains untouched.
+
+Via this patchset, as Linus suggested, we can add the
+following union inside 'task_struct':
+       union {
+               char    comm[TASK_COMM_LEN];
+               char    comm_ext[TASK_COMM_EXT_LEN];
+       };
+
+and then modify '__set_task_comm()' to pass 'tsk->comm_ext'
+to the existing users.
+
+So, eventually:
+- users who want the existing 'TASK_COMM_LEN' behavior will get it
+  (existing ABIs would continue to work),
+- users who just print out 'tsk->comm' as a string will get the longer
+  new "extended comm",
+- users who do 'sizeof(->comm)' will continue to get the old value
+  because of the union.
+
+After this change, gdb is able to show full name of the task, using a
+simple app which generates threads with long names [see 1]:
+  # gdb ./threadnames -ex "run info thread" -ex "detach" -ex "quit" > log
+  # cat log
+
+  NameThatIsTooLongForComm[4662]
+
+[1]. https://github.com/lostgoat/tasknames
+
+Bhupesh (3):
+  exec: Remove obsolete comments
+  treewide: Switch memcpy() users of 'task->comm' to a more safer
+    implementation
+  exec: Add support for 64 byte 'tsk->comm_ext'
+
+ fs/exec.c                      |  6 +++---
+ include/linux/coredump.h       |  3 ++-
+ include/linux/sched.h          | 14 ++++++++------
+ include/trace/events/block.h   |  5 +++++
+ include/trace/events/oom.h     |  1 +
+ include/trace/events/osnoise.h |  1 +
+ include/trace/events/signal.h  |  1 +
+ include/trace/events/task.h    |  2 ++
+ 8 files changed, 23 insertions(+), 10 deletions(-)
+
+-- 
+2.38.1
+
 
