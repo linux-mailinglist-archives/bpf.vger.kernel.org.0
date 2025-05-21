@@ -1,144 +1,175 @@
-Return-Path: <bpf+bounces-58665-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58666-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB2ABABFCDE
-	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 20:31:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E8F2ABFCEB
+	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 20:37:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E94999E5752
-	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 18:31:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35DEB1894CC8
+	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 18:38:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54AB31E3DED;
-	Wed, 21 May 2025 18:31:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SiZEDFfv"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D268C28F50C;
+	Wed, 21 May 2025 18:37:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C82FE22FF42;
-	Wed, 21 May 2025 18:31:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E8A7289820;
+	Wed, 21 May 2025 18:37:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747852309; cv=none; b=Xg4srhDLX0btAhjUP86auWYX1n3VHZPapHDhv0d4p1YTT0/lmOo/1QEehW8d6BYnzAfvXQwMnRB4lvGGgNkwtstRTN0wZuDYkQqJA74qN1gicBf78umGSRg6T6iFZtywI9ojneyfX92rQih+Faeugt8XeMXvGZuUmVuFMejWd9k=
+	t=1747852664; cv=none; b=l9o2qRO4tQUaAj2mLN2Ie46dp3HPGhLN7YF3Sho5rdIlR+y90HwK/BMi4JAb+gUW81KvahykUYiyqtDCTULEwYPFu4LEjz0BuQg5oSCkYNYtkDJG+xpQy7RW1KeA/UMR6jRX3dFvvAmTevt7cTTfmNqIq5k/Zm/HL5QK4RG4vHk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747852309; c=relaxed/simple;
-	bh=VfQkC8b965RKXGTa8a92jClkdj8ZsqN4QbPyT7wSK0A=;
-	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=rrwRSs6Gwnkfwn1jRJA7MuQ17hizzokHWslpP+xZmA00D/BsUK9hkhUlF2gLBoYRqickQgbDaPlE/g12O2SQr/fbEkUpt8kK494FibLi4H0pB91VIIXg50H9U4vVpbAbgBHXznXe/2GtRskhvkSgZnIWPbteOaSiHikJqaY9sEo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SiZEDFfv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC80BC4CEEA;
-	Wed, 21 May 2025 18:31:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747852309;
-	bh=VfQkC8b965RKXGTa8a92jClkdj8ZsqN4QbPyT7wSK0A=;
-	h=From:To:Subject:In-Reply-To:References:Date:From;
-	b=SiZEDFfv/JqF5cgVzbbAq3YeHhk3WyjvrShj43MuiX34DkFj6564u+omftuhjfNBz
-	 bsWKP4DN8o1FSkczWY254vqQM0vI2P6Kh6UGaoIkjbATqz7gbDsUoqXSiq8CJLJQvu
-	 7IXVBSJbX8Up6Id/IERpkeWoot8dQdqoWeSEw+g0/0YsOrGQi0yOF9pCaZAjIFJSBC
-	 Ipi9bcE2Jf+dc9fOSEg1xtGGQ8o7yvt7cn/A43HwOe2t+jiXI059dRS9rGhBNxC7/9
-	 THnXvs0IHJHr1KF0NTmdBEYgHI8x2PuWMZ85j/pyTzttxc54VBPMsn3oqUCNSHF0EH
-	 B+ZNlbghwtaAA==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: syzbot <syzbot+0ef84a7bdf5301d4cbec@syzkaller.appspotmail.com>,
- andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
- john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
- linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me,
- song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Subject: Re: [syzbot] [bpf?] WARNING in bpf_check (4)
-In-Reply-To: <682dd10b.a00a0220.29bc26.028e.GAE@google.com>
-References: <682dd10b.a00a0220.29bc26.028e.GAE@google.com>
-Date: Wed, 21 May 2025 18:31:41 +0000
-Message-ID: <mb61p7c29zugi.fsf@kernel.org>
+	s=arc-20240116; t=1747852664; c=relaxed/simple;
+	bh=Aos9Ol6hokUVBuT33LhS3DKWl1E6gsmX4YWWAPnjFxk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FSAhNqeaNeKR9H7TzGveIoCfNtcxoDQlonJh+JEWyTSZIvPnW7e7byasFm/8Rd2VjM5qYHQCkTuCAyiw5ZMDLzIzYfIjydqbgI2bzN+sYYfRkX3H6wuljOrE2YlRPU5C9F8RqgZvggsqSnsuWjaKqzNBYdRfKraUbnvmPjSSeqo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1811C4CEE4;
+	Wed, 21 May 2025 18:37:39 +0000 (UTC)
+Date: Wed, 21 May 2025 19:37:37 +0100
+From: Catalin Marinas <catalin.marinas@arm.com>
+To: Ankur Arora <ankur.a.arora@oracle.com>
+Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org,
+	arnd@arndb.de, will@kernel.org, peterz@infradead.org,
+	akpm@linux-foundation.org, mark.rutland@arm.com,
+	harisokn@amazon.com, cl@gentwo.org, ast@kernel.org,
+	memxor@gmail.com, zhenglifeng1@huawei.com,
+	xueshuai@linux.alibaba.com, joao.m.martins@oracle.com,
+	boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
+Subject: Re: [PATCH v2 1/7] asm-generic: barrier: add
+ smp_cond_load_relaxed_timewait()
+Message-ID: <aC4dcZ2veeavM2dR@arm.com>
+References: <20250502085223.1316925-1-ankur.a.arora@oracle.com>
+ <20250502085223.1316925-2-ankur.a.arora@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250502085223.1316925-2-ankur.a.arora@oracle.com>
 
-syzbot <syzbot+0ef84a7bdf5301d4cbec@syzkaller.appspotmail.com> writes:
+Hi Ankur,
 
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    172a9d94339c Merge tag '6.15-rc6-smb3-client-fixes' of git..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=11d15ef4580000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=4f080d149583fe67
-> dashboard link: https://syzkaller.appspot.com/bug?extid=0ef84a7bdf5301d4cbec
-> compiler:       arm-linux-gnueabi-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> userspace arch: arm
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=130462d4580000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14efaef4580000
->
-> Downloadable assets:
-> disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/98a89b9f34e4/non_bootable_disk-172a9d94.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/88f3b6a8815a/vmlinux-172a9d94.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/8835063aa13d/zImage-172a9d94.xz
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+0ef84a7bdf5301d4cbec@syzkaller.appspotmail.com
->
-> ------------[ cut here ]------------
-> WARNING: CPU: 1 PID: 3102 at kernel/bpf/verifier.c:20723 opt_subreg_zext_lo32_rnd_hi32 kernel/bpf/verifier.c:20723 [inline]
-> WARNING: CPU: 1 PID: 3102 at kernel/bpf/verifier.c:20723 bpf_check+0x2d58/0x2ed4 kernel/bpf/verifier.c:24078
-> Modules linked in:
-> Kernel panic - not syncing: kernel: panic_on_warn set ...
-> CPU: 1 UID: 0 PID: 3102 Comm: syz-executor107 Not tainted 6.15.0-rc6-syzkaller #0 PREEMPT 
-> Hardware name: ARM-Versatile Express
-> Call trace: 
-> [<802019e4>] (dump_backtrace) from [<80201ae0>] (show_stack+0x18/0x1c arch/arm/kernel/traps.c:257)
->  r7:00000000 r6:828227fc r5:00000000 r4:82257e84
-> [<80201ac8>] (show_stack) from [<8021ff7c>] (__dump_stack lib/dump_stack.c:94 [inline])
-> [<80201ac8>] (show_stack) from [<8021ff7c>] (dump_stack_lvl+0x54/0x7c lib/dump_stack.c:120)
-> [<8021ff28>] (dump_stack_lvl) from [<8021ffbc>] (dump_stack+0x18/0x1c lib/dump_stack.c:129)
->  r5:00000000 r4:82a70d4c
-> [<8021ffa4>] (dump_stack) from [<802025f8>] (panic+0x120/0x374 kernel/panic.c:354)
-> [<802024d8>] (panic) from [<802619e8>] (check_panic_on_warn kernel/panic.c:243 [inline])
-> [<802024d8>] (panic) from [<802619e8>] (get_taint+0x0/0x1c kernel/panic.c:238)
->  r3:8280c604 r2:00000001 r1:8223ea4c r0:8224654c
->  r7:804020d0
-> [<80261974>] (check_panic_on_warn) from [<80261b4c>] (__warn+0x80/0x188 kernel/panic.c:749)
-> [<80261acc>] (__warn) from [<80261dcc>] (warn_slowpath_fmt+0x178/0x1f4 kernel/panic.c:776)
->  r8:00000009 r7:8225e3a4 r6:df989c44 r5:844f0000 r4:00000000
-> [<80261c58>] (warn_slowpath_fmt) from [<804020d0>] (opt_subreg_zext_lo32_rnd_hi32 kernel/bpf/verifier.c:20723 [inline])
-> [<80261c58>] (warn_slowpath_fmt) from [<804020d0>] (bpf_check+0x2d58/0x2ed4 kernel/bpf/verifier.c:24078)
->  r10:00000002 r9:84850000 r8:00000004 r7:00000002 r6:00000003 r5:000000c3
->  r4:ffffffff
-> [<803ff378>] (bpf_check) from [<803d66d0>] (bpf_prog_load+0x68c/0xc20 kernel/bpf/syscall.c:2971)
+Sorry, it took me some time to get back to this series (well, I tried
+once and got stuck on what wait_policy is supposed to mean, so decided
+to wait until I had more coffee ;)).
 
-I think this issue is triggered because insn_def_regno() doesn't
-understand BPF_LOAD_ACQ and returns -1 for it. On arm32 and other
-architectures that need zext, BPF_LOAD_ACQ will be marked for zext if
-the load is < 64 bit, but when opt_subreg_zext_lo32_rnd_hi32() tries to
-find the destination register to zext for BPF_LOAD_ACQ, it gets -1 from
-insn_def_regno() and triggers the WARN().
+On Fri, May 02, 2025 at 01:52:17AM -0700, Ankur Arora wrote:
+> diff --git a/include/asm-generic/barrier.h b/include/asm-generic/barrier.h
+> index d4f581c1e21d..a7be98e906f4 100644
+> --- a/include/asm-generic/barrier.h
+> +++ b/include/asm-generic/barrier.h
+> @@ -273,6 +273,64 @@ do {									\
+>  })
+>  #endif
+>  
+> +/*
+> + * Non-spin primitive that allows waiting for stores to an address,
+> + * with support for a timeout. This works in conjunction with an
+> + * architecturally defined wait_policy.
+> + */
+> +#ifndef __smp_timewait_store
+> +#define __smp_timewait_store(ptr, val) do { } while (0)
+> +#endif
+> +
+> +#ifndef __smp_cond_load_relaxed_timewait
+> +#define __smp_cond_load_relaxed_timewait(ptr, cond_expr, wait_policy,	\
+> +					 time_expr, time_end) ({	\
+> +	typeof(ptr) __PTR = (ptr);					\
+> +	__unqual_scalar_typeof(*ptr) VAL;				\
+> +	u32 __n = 0, __spin = 0;					\
+> +	u64 __prev = 0, __end = (time_end);				\
+> +	bool __wait = false;						\
+> +									\
+> +	for (;;) {							\
+> +		VAL = READ_ONCE(*__PTR);				\
+> +		if (cond_expr)						\
+> +			break;						\
+> +		cpu_relax();						\
+> +		if (++__n < __spin)					\
+> +			continue;					\
+> +		if (!(__prev = wait_policy((time_expr), __prev, __end,	\
+> +					  &__spin, &__wait)))		\
+> +			break;						\
+> +		if (__wait)						\
+> +			__smp_timewait_store(__PTR, VAL);		\
+> +		__n = 0;						\
+> +	}								\
+> +	(typeof(*ptr))VAL;						\
+> +})
+> +#endif
+> +
+> +/**
+> + * smp_cond_load_relaxed_timewait() - (Spin) wait for cond with no ordering
+> + * guarantees until a timeout expires.
+> + * @ptr: pointer to the variable to wait on
+> + * @cond: boolean expression to wait for
+> + * @wait_policy: policy handler that adjusts the number of times we spin or
+> + *  wait for cacheline to change (depends on architecture, not supported in
+> + *  generic code.) before evaluating the time-expr.
+> + * @time_expr: monotonic expression that evaluates to the current time
+> + * @time_end: compared against time_expr
+> + *
+> + * Equivalent to using READ_ONCE() on the condition variable.
+> + */
+> +#define smp_cond_load_relaxed_timewait(ptr, cond_expr, wait_policy,	\
+> +					 time_expr, time_end) ({	\
+> +	__unqual_scalar_typeof(*ptr) _val;;				\
+> +	_val = __smp_cond_load_relaxed_timewait(ptr, cond_expr,		\
+> +					      wait_policy, time_expr,	\
+> +					      time_end);		\
+> +	(typeof(*ptr))_val;						\
+> +})
 
-This should be fixed by the the patch at the end.
+IIUC, a generic user of this interface would need a wait_policy() that
+is aware of the arch details (event stream, WFET etc.), given the
+__smp_timewait_store() implementation in patch 3. This becomes clearer
+in patch 7 where one needs to create rqspinlock_cond_timewait().
 
-Thanks,
-Puranjay
+The __spin count can be arch specific, not part of some wait_policy,
+even if such policy is most likely implemented in the arch code (as the
+generic caller has no clue what it means). The __wait decision, again, I
+don't think it should be the caller of this API to decide how to handle,
+it's something internal to the API implementation based on whether the
+event stream (or later WFET) is available.
 
-#syz test
+The ___cond_timewait() implementation in patch 4 sets __wait if either
+the event stream of WFET is available. However, __smp_timewait_store()
+only uses WFE as per the __cmpwait_relaxed() implementation. So you
+can't really decouple wait_policy() from how the spinning is done, in an
+arch-specific way. In this implementation, wait_policy() would need to
+say how to wait - WFE, WFET. That's not captured (and I don't think it
+should, we can't expand the API every time we have a new method of
+waiting).
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 54c6953a8b84..9aa67e46cb8b 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -3643,6 +3643,9 @@ static bool is_reg64(struct bpf_verifier_env *env, struct bpf_insn *insn,
- /* Return the regno defined by the insn, or -1. */
- static int insn_def_regno(const struct bpf_insn *insn)
- {
-+       if (is_atomic_load_insn(insn))
-+               return insn->dst_reg;
-+
-        switch (BPF_CLASS(insn->code)) {
-        case BPF_JMP:
-        case BPF_JMP32:
+I still think this interface can be simpler and fairly generic, not with
+wait_policy specific to rqspinlock or poll_idle. Maybe you can keep a
+policy argument for an internal __smp_cond_load_relaxed_timewait() if
+it's easier to structure the code this way but definitely not for
+smp_cond_*().
+
+Another aspect I'm not keen on is the arbitrary fine/coarse constants.
+Can we not have the caller pass a slack value (in ns or 0 if it doesn't
+care) to smp_cond_load_relaxed_timewait() and let the arch code decide
+which policy to use?
+
+In summary, I see the API something like:
+
+#define smp_cond_load_relaxed_timewait(ptr, cond_expr,
+				       time_expr, time_end, slack_ns)
+
+We can even drop time_end if we capture it in time_expr returning a bool
+(like we do with cond_expr).
+
+Thanks.
+
+-- 
+Catalin
 
