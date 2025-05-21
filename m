@@ -1,193 +1,110 @@
-Return-Path: <bpf+bounces-58642-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58643-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 750D5ABEBEE
-	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 08:25:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25DE9ABEE31
+	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 10:41:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 107F34A82DD
-	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 06:25:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C3711890B9C
+	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 08:42:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC6B22356B0;
-	Wed, 21 May 2025 06:24:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BF5A237194;
+	Wed, 21 May 2025 08:41:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="Mxe5soRx"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Te1UzWPM"
 X-Original-To: bpf@vger.kernel.org
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEE83232392;
-	Wed, 21 May 2025 06:24:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AA7922DF8C;
+	Wed, 21 May 2025 08:41:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747808653; cv=none; b=QgbWpgKbTzz4TPEH8ykSqFvhfBk1w2TXUpFOO4Y+s1hWjOiUjK6wHYgv4uEZ+tLaoy0jhwLWPL2UOg+/6lUXuiWhLV99PZvMAs2GYIgrRyV2PAWhaEBofA180vErf8IhMv4InDDum7zKJN1DBEx9AnsZUeKHUSre9L5XZmTJlE0=
+	t=1747816903; cv=none; b=WHeuHYXtDSVDNWuDYJxS6cnGF1NaUoIW3LxmPurf1GHtZsZd696sgh1klzcgTEIPLLJv65iE3iisHQnThUrgOJ1svJyfDiHCDolovFP4GszdjeXZIg4JlGPfKgRF68y8csc7pLlctVbsnSD+oD3ksU5z3x16SOujn0fxtfN6ngI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747808653; c=relaxed/simple;
-	bh=Uv1ghNSaGNfo9bLBlcnVeQUqJDAm9OedV6fo1rEZFrc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=BBHuAwyr86jAt8vK7ZAfiflgp22UCU3FUEAzlgQUye/1MLMsxm2YEyKNv/1uLECl2YkQVoZNCLxhSe52BqsljbAyGIiTEws1qAmDwvG4ReG6rBq497XTQQPyrjo7I8kRMWr9sTnR/dp9BFrcumgmQqAwYlog5BxUIS9HW7fBv+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=Mxe5soRx; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=FLnlNaHrEaw8H+WX1bi4GYpuBsRULfbnbCOgBsPrKvQ=; b=Mxe5soRx264DMUPK1JWNdwLPXq
-	Rc0m42aIbWFiKQUIOURK8pq9srnIElIwgHAq7LKN2EpVwchaVyX4fJ3X//9EiLTrvomEW4EbqrgJe
-	Fid5k4RG3Tyd+DJNgOrPPtYnnHrFxQ3UQFjVD3/rbS1h7YJThFGcfwyNBG6FV6Uiv+g7fGxrAZjlM
-	i1xEn1VKgAoi2i21zAZlZ6wXw1fxEmnpOYBXuTGJGNsuapRmTszTeT47VZc+ayEBR7/R6GuV1/lPj
-	HfMp0evtjenf3bRvx25pdSBp/6VncScW1rSM1Vo4t4DGDD0sXJZAcMO6lrPraAqzSiOLaKfaPaKiK
-	DaO4j4lQ==;
-Received: from [223.233.70.209] (helo=localhost.localdomain)
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-	id 1uHcs4-00B3oN-O7; Wed, 21 May 2025 08:24:09 +0200
-From: Bhupesh <bhupesh@igalia.com>
-To: akpm@linux-foundation.org
-Cc: bhupesh@igalia.com,
-	kernel-dev@igalia.com,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-perf-users@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org,
-	oliver.sang@intel.com,
-	lkp@intel.com,
-	laoar.shao@gmail.com,
-	pmladek@suse.com,
-	rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com,
-	arnaldo.melo@gmail.com,
-	alexei.starovoitov@gmail.com,
-	andrii.nakryiko@gmail.com,
-	mirq-linux@rere.qmqm.pl,
-	peterz@infradead.org,
-	willy@infradead.org,
-	david@redhat.com,
-	viro@zeniv.linux.org.uk,
-	keescook@chromium.org,
-	ebiederm@xmission.com,
-	brauner@kernel.org,
-	jack@suse.cz,
-	mingo@redhat.com,
-	juri.lelli@redhat.com,
-	bsegall@google.com,
-	mgorman@suse.de,
-	vschneid@redhat.com,
-	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH v4 3/3] exec: Add support for 64 byte 'tsk->comm_ext'
-Date: Wed, 21 May 2025 11:53:37 +0530
-Message-Id: <20250521062337.53262-4-bhupesh@igalia.com>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20250521062337.53262-1-bhupesh@igalia.com>
-References: <20250521062337.53262-1-bhupesh@igalia.com>
+	s=arc-20240116; t=1747816903; c=relaxed/simple;
+	bh=uDw+ZJwPUxdSq79IaOADCgJrAkenZYaEAEllmnA9MDk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eA/bmtPtoZroSfbvZRVWjaZdsZtr68irX14ZaUXZDw+xxPzCt+ubn8oQwaMEQ2QyTnZlap/lXM3QsezxqhQvLqqgswZhRLXOBtcPLZkyZtZ4Agp/aA0nZrwSLPfZR3IkGZhYQyC4HE668zmFRncUSOX1Vi7jbfZsNisdgmwY1gI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=Te1UzWPM; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1173)
+	id 85448206832E; Wed, 21 May 2025 01:41:41 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 85448206832E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1747816901;
+	bh=tm3MPeyl5HQEq5tXrQRcuuPXKgXrLcNsWDnrjbtd2j8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Te1UzWPMJbaE7ikWZF5NBSuS4LtcbCPuwnIeM7MGge51yMYKZt47Mv25LGNXiuHwd
+	 fpV0GNyvDTyo6ID/nGVU90BzMl8A1TpX9F8Jd+q1qt5vwCSL5cVH1gpLXPAJHitAru
+	 9pPqZyvMre1TESFttWl5kkfXE1jRtvY5qdCCdYUQ=
+Date: Wed, 21 May 2025 01:41:41 -0700
+From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+To: Saurabh Sengar <ssengar@linux.microsoft.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, pabeni@redhat.com, horms@kernel.org,
+	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+	john.fastabend@gmail.com, sdf@fomichev.me, kuniyu@amazon.com,
+	ahmed.zaki@intel.com, aleksander.lobakin@intel.com,
+	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	ssengar@microsoft.com, stable@vger.kernel.org
+Subject: Re: [PATCH net] hv_netvsc: fix potential deadlock in
+ netvsc_vf_setxdp()
+Message-ID: <20250521084141.GA10135@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1747540070-11086-1-git-send-email-ssengar@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1747540070-11086-1-git-send-email-ssengar@linux.microsoft.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-Historically due to the 16-byte length of TASK_COMM_LEN, the
-users of 'tsk->comm' are restricted to use a fixed-size target
-buffer also of TASK_COMM_LEN for 'memcpy()' like use-cases.
+On Sat, May 17, 2025 at 08:47:50PM -0700, Saurabh Sengar wrote:
+> The MANA driver's probe registers netdevice via the following call chain:
+> 
+> mana_probe()
+>   register_netdev()
+>     register_netdevice()
+> 
+> register_netdevice() calls notifier callback for netvsc driver,
+> holding the netdev mutex via netdev_lock_ops().
+> 
+> Further this netvsc notifier callback end up attempting to acquire the
+> same lock again in dev_xdp_propagate() leading to deadlock.
+> 
+> netvsc_netdev_event()
+>   netvsc_vf_setxdp()
+>     dev_xdp_propagate()
+> 
+> This deadlock was not observed so far because net_shaper_ops was never
+> set and this lock in noop in this case. Fix this by using
+> netif_xdp_propagate instead of dev_xdp_propagate to avoid recursive
+> locking in this path.
+> 
+> This issue has not observed so far because net_shaper_ops was unset,
+> making the lock path effectively a no-op. To prevent recursive locking
+> and avoid this deadlock, replace dev_xdp_propagate() with
+> netif_xdp_propagate(), which does not acquire the lock again.
+> 
+> Also, clean up the unregistration path by removing unnecessary call to
+> netvsc_vf_setxdp(), since unregister_netdevice_many_notify() already
+> performs this cleanup via dev_xdp_uninstall.
+> 
+> Fixes: 97246d6d21c2 ("net: hold netdev instance lock during ndo_bpf")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+> ---
 
-To fix the same, Linus suggested in [1] that we can add the
-following union inside 'task_struct':
-       union {
-               char    comm[TASK_COMM_LEN];
-               char    comm_ext[TASK_COMM_EXT_LEN];
-       };
+Built and booted successfully. 
 
-and then modify '__set_task_comm()' to pass 'tsk->comm_ext'
-to the existing users.
+Tested-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com> 
 
-This would mean that:
-(1) The old common pattern of just printing with '%s' and tsk->comm
-    would just continue to work (as it is):
-
-        pr_alert("BUG: Bad page state in process %s  pfn:%05lx\n",
-                current->comm, page_to_pfn(page));
-
-(2) And, the memcpy() users of 'tsk->comm' would need to be made more
-    stable by ensuring that the destination buffer always has a closing
-    NUL character (done already in the preceding patch in this series).
-
-So, eventually:
-- users who want the existing 'TASK_COMM_LEN' behavior will get it
-  (existing ABIs would continue to work),
-- users who just print out 'tsk->comm' as a string will get the longer
-  new "extended comm",
-- users who do 'sizeof(->comm)' will continue to get the old value
-  because of the union.
-
-[1]. https://lore.kernel.org/all/CAHk-=wjAmmHUg6vho1KjzQi2=psR30+CogFd4aXrThr2gsiS4g@mail.gmail.com
-
-Signed-off-by: Bhupesh <bhupesh@igalia.com>
----
- fs/exec.c             | 6 +++---
- include/linux/sched.h | 8 ++++++--
- 2 files changed, 9 insertions(+), 5 deletions(-)
-
-diff --git a/fs/exec.c b/fs/exec.c
-index 1f5fdd2e096e..3b39fbfc8fe4 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -1077,11 +1077,11 @@ static int unshare_sighand(struct task_struct *me)
-  */
- void __set_task_comm(struct task_struct *tsk, const char *buf, bool exec)
- {
--	size_t len = min(strlen(buf), sizeof(tsk->comm) - 1);
-+	size_t len = min(strlen(buf), sizeof(tsk->comm_ext) - 1);
- 
- 	trace_task_rename(tsk, buf);
--	memcpy(tsk->comm, buf, len);
--	memset(&tsk->comm[len], 0, sizeof(tsk->comm) - len);
-+	memcpy(tsk->comm_ext, buf, len);
-+	memset(&tsk->comm_ext[len], 0, sizeof(tsk->comm_ext) - len);
- 	perf_event_comm(tsk, exec);
- }
- 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 704222114dcc..2605207170b4 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -316,6 +316,7 @@ struct user_event_mm;
-  */
- enum {
- 	TASK_COMM_LEN = 16,
-+	TASK_COMM_EXT_LEN = 64,
- };
- 
- extern void sched_tick(void);
-@@ -1165,7 +1166,10 @@ struct task_struct {
- 	 *   - logic inside set_task_comm() will ensure it is always NUL-terminated and
- 	 *     zero-padded
- 	 */
--	char				comm[TASK_COMM_LEN];
-+	union {
-+		char			comm[TASK_COMM_LEN];
-+		char			comm_ext[TASK_COMM_EXT_LEN];
-+	};
- 
- 	struct nameidata		*nameidata;
- 
-@@ -2005,7 +2009,7 @@ extern void __set_task_comm(struct task_struct *tsk, const char *from, bool exec
-  */
- #define get_task_comm(buf, tsk) ({			\
- 	BUILD_BUG_ON(sizeof(buf) < TASK_COMM_LEN);	\
--	strscpy_pad(buf, (tsk)->comm);			\
-+	strscpy_pad(buf, (tsk)->comm_ext);		\
- 	buf;						\
- })
- 
--- 
-2.38.1
-
+Thanks!
 
