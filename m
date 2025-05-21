@@ -1,149 +1,188 @@
-Return-Path: <bpf+bounces-58679-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58680-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FC7EABFE01
-	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 22:40:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 937C6ABFE8F
+	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 22:58:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00C7B16BD18
-	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 20:40:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BA3D170D88
+	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 20:58:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D9CC29CB20;
-	Wed, 21 May 2025 20:40:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D0B628FAB2;
+	Wed, 21 May 2025 20:58:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TjAQIjZP"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rWosZUkF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39DAC280CE3
-	for <bpf@vger.kernel.org>; Wed, 21 May 2025 20:40:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E018A1A5B86
+	for <bpf@vger.kernel.org>; Wed, 21 May 2025 20:58:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747860038; cv=none; b=ahD1HhV0qkVxYyjxsxcXA3MhziM+hIuDhr2OInXqgMQI2BrDTN+uL6e4g0JUZsln8dqCZtjfaPovTDkCeEa7XPy9IxWhpltSsg96ACVDkdMyA3b4ze08j/cOqTicDJ8p6mfzOXNiW61gUjbv1TfkHxg1cZKSy5/7EA6Ry/QmVAI=
+	t=1747861086; cv=none; b=SYZrWi0lTw90DEBk7V/VH5GoSVQf4ctVOdhpfSIAa1XXT8z3T3da9aHNhswlQSc4HxLQO8xF8xMPgKSYJkv/JxeaSitLGnkvMqCO7k9uey58xaoH39GzabLDdrw3i8xDscLdEnxCrwu2PmvbmAFLP1NfKjsHXjtAEIC1gsSSW8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747860038; c=relaxed/simple;
-	bh=zbjY1wizS23vo58PabGXx/GKrU4ugGQE+QWdx9Y90HE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Qr4KJhiqBHNLSuMR6wMeea5j6q7InUjlzjStkG38Wj6p6gxH+H+wb7TxiKwW36l8TcWgUpG8RtpOxmpVqC8Sj4Np56wG7XGdPOZ8dMs+PQy8Ns2uIWmXEN79mLsUwSoEhfhxrLF1O8rsEOT1V2GZp0l9EC7oxtTCVwqFP8Yc+qo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TjAQIjZP; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-231f61dc510so1143635ad.0
-        for <bpf@vger.kernel.org>; Wed, 21 May 2025 13:40:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1747860036; x=1748464836; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=e8RIINbhOGI/c2NEEqIGsIubtNjwgvOZk5mJqYlzXzg=;
-        b=TjAQIjZP6FCN5hWP+eyi1ayVY1f9+gOmKc9VUpQFB1MKsiVCa4YmBSbMOX5JMQ03AF
-         wfp8kskeIOiDcceW6ExRJJv1kRFcjaFVeRwmg8uIZcKFddwk/X1/EZMHNUfkPUYJ+C3K
-         A5nLsyjUBhhFvEDsIVrbuXXfdQs747V76LwV89j0MS1XatYC5TbtGqIPacRzFSGse2Mx
-         OVeHwAnRp619ak/QZvACf6AseZPR0XhtAhz8tUKXflzvJLzoGX5yOT1QQT0nZFv+W9dA
-         isWla/mge0aEsbnsAan8bsA6fgJKcbNGUIUXw3ywcfT95cH7364fZVDrhS/VDdxzJq5a
-         9NOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747860036; x=1748464836;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=e8RIINbhOGI/c2NEEqIGsIubtNjwgvOZk5mJqYlzXzg=;
-        b=XehxeiC62cSfsCjIq8ZhHqBCRiZZvHnWFUsw3lvbVqA+jC+yCj2LI2Fp53EwkH0yxz
-         McwaNj+Q8gGHLJtFfevad1+WEdcaNsRUxX4Z8iEfJS9Bua9JfzCRWcS+R0W0hZmpGvQi
-         uEeNA7n/oZ4X1WAj7UnD4BYalsN94iju2NDl0+nQtI05XH2h6pF6FaxMcrv16i9rEUvI
-         Lftxf/SMpTC7QdXbIMLLIja/fyeRnuea4CzSpAH25WNq6bNnsT3r2UC8zkYspCOiqJCW
-         BnwupwQKfECUDfn3cyq0ouYG/Cn0vayP+6ue9XYbF+1b36pLEaefxco4tFOe2kEQlDUy
-         2doQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXWdWNtuaRAq1KlgVT+g+A1Ya7fpbQIwoANOH/2V4SC/LPi/vQIqzPC8OPSK1xkxp8m7Mg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyx1ihDlX+QY1omyvpyCaSK9l/O3YH26syJ0y0lwiYZBiSpENF+
-	epoEAiJwdips1X9rvlO8HikluDINwJExDqyf0/BfUTIY71O2PLNTQ1AygVIwUSeOwQ==
-X-Gm-Gg: ASbGncso8G0NOaQ4zcKVvrwQRoZ+GRmYtWv3+wxmRupn5IAajFpkk+yFRZO6GetFVYU
-	N7gxJCXnbup9SArSZBTp3i5jE54lkmDt3M/9OJEKfgHikSG//khdUktOZmuGh/P75mBeI663RgC
-	/VTJrcSiSX3z7i8mKe9jjqaHYSMnKVnxG2UoFlckHvUVpEo7ufqZJfUpuVFALka7iDrPMk5bU38
-	dpSHUx8LR04otx1L5bwcOMBh8S18UYEecCtg+1bfYM6Q89I8d8hxs03pX0BRPYdhX1YcEM3vhgX
-	l69MMy02oWkOyXaEUnQ0kdSkLntuJlOOIXz0ZQYwDes73V6joMekbdKqgEaUe2uxgSWCu1Vatm8
-	XcrHwuqnUIDszGNmrhI9FMnY9vYM=
-X-Google-Smtp-Source: AGHT+IFWhfr8eMQeyoGAHZpfW3xBnV+hWPIDqTflQQXz1A1UZnZRmo37vQSO8OyDvOPpm/xdlB+AMQ==
-X-Received: by 2002:a17:903:1b66:b0:22e:1858:fc25 with SMTP id d9443c01a7336-233d6dda119mr168815ad.9.1747860036185;
-        Wed, 21 May 2025 13:40:36 -0700 (PDT)
-Received: from google.com (202.108.125.34.bc.googleusercontent.com. [34.125.108.202])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b26eb084cd2sm10025558a12.54.2025.05.21.13.40.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 May 2025 13:40:35 -0700 (PDT)
-Date: Wed, 21 May 2025 20:40:30 +0000
-From: Peilin Ye <yepeilin@google.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf] bpf: verifier: support BPF_LOAD_ACQ in
- insn_def_regno()
-Message-ID: <aC46PuLHp6yjTBJR@google.com>
-References: <20250521183911.21781-1-puranjay@kernel.org>
- <80ef5e2e-c2d9-45b7-9a48-f8c1a4767eae@gmail.com>
- <CAADnVQLgPBcRAqKfCXQwZae2jKDfp=xSFZCgzHgg-jcBTYp-yw@mail.gmail.com>
+	s=arc-20240116; t=1747861086; c=relaxed/simple;
+	bh=+9xJTd7U/z55I4S/zIWr//NBvKxNR3dAo9cDHltmqCs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uuEnDh17Hjx8tobNRem1kI0oDCZfkCZQmf6eR4KtpG2+OaBv+9suYPYBzSQ9rbKjoN3zr9NXeLXwMgvJNVr2GRq390rHBBy1/2/HTE0Jy2Q+IAUh6utgU7ZNRTj2zrKSy7MS4XiameENyxWxzVEnsMV7AdBNY5tgZ7JDlfFTy5k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rWosZUkF; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <5761ffe9-fc09-4f06-9311-0eed40a693fb@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1747861080;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WDRV/tImM8rqlS9bKNuQqX5OXFxwDKDT+FJgK8TDF1E=;
+	b=rWosZUkF0h4YUJoF9Y1t1Gz865p89XJcr+IorzS2Q1ZCgDSp1ogP+M00P1LjICAOLCeFGY
+	lH3olfcM4SA0wOv3EcWnV0uvynC2JEDpmbcZY0N48NZ/BjzB2eJlZrje5h33xYDoPMmssC
+	6b8ojZoOKUTFM7f8OS2FxjH7hSldZHc=
+Date: Wed, 21 May 2025 13:57:53 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: Add tests with stack ptr
+ register in conditional jmp
+Content-Language: en-GB
+To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+ Martin KaFai Lau <martin.lau@kernel.org>
+References: <20250521170409.2772304-1-yonghong.song@linux.dev>
+ <20250521170414.2773034-1-yonghong.song@linux.dev>
+ <6dd9752a-4bec-423d-8936-8757251f2b50@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <6dd9752a-4bec-423d-8936-8757251f2b50@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQLgPBcRAqKfCXQwZae2jKDfp=xSFZCgzHgg-jcBTYp-yw@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, May 21, 2025 at 01:04:47PM -0700, Alexei Starovoitov wrote:
-> On Wed, May 21, 2025 at 12:13 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
-> > I'm confused, is_atomic_load_insn() is defined as:
-> >
-> >           return BPF_CLASS(insn->code) == BPF_STX &&
-> >                  BPF_MODE(insn->code) == BPF_ATOMIC &&
-> >                  insn->imm == BPF_LOAD_ACQ;
-> >
-> > And insn_def_regno() has the following case:
-> >
-> >           case BPF_STX:
-> >                   if (BPF_MODE(insn->code) == BPF_ATOMIC ||
-> >                       BPF_MODE(insn->code) == BPF_PROBE_ATOMIC) {
-> >                           if (insn->imm == BPF_CMPXCHG)
-> >                                   return BPF_REG_0;
-> >                           else if (insn->imm == BPF_LOAD_ACQ)
-> >                                   return insn->dst_reg;
-> >                           else if (insn->imm & BPF_FETCH)
-> >                                   return insn->src_reg;
-> >                   }
-> >                   return -1;
-> >
-> > Why is it not triggering?
-> >
-> > Also, can this be tested with a BPF_F_TEST_RND_HI32 flag?
-> > E.g. see verifier_scalar_ids.c:linked_regs_and_subreg_def() test case.
-> 
-> I suspect it was already fixed by commit
-> fce7bd8e385a ("bpf/verifier: Handle BPF_LOAD_ACQ instructions in
-> insn_def_regno()")
 
-Ah, right; I did it when adding support for riscv64 (which needs_zext).
-I targeted bpf-next because at that time only x86_64 and arm64 (both
-!needs_zext) supported BPF_LOAD_ACQ, and didn't realize this could
-affect arm32 (needs_zext).
 
-It should've targeted bpf with a Fixes: tag instead.  Sorry for any
-confusion.
+On 5/21/25 12:02 PM, Eduard Zingerman wrote:
+>
+> On 2025-05-21 10:04, Yonghong Song wrote:
+>
+> [...]
+>
+>> @@ -178,4 +178,57 @@ __naked int state_loop_first_last_equal(void)
+>>       );
+>>   }
+>>   +__used __naked static void __bpf_cond_op_r10(void)
+>> +{
+>> +    asm volatile (
+>> +    "r2 = 2314885393468386424 ll;"
+>> +    "goto +0;"
+>> +    "if r2 <= r10 goto +3;"
+>> +    "if r1 >= -1835016 goto +0;"
+>> +    "if r2 <= 8 goto +0;"
+>> +    "if r3 <= 0 goto +0;"
+>> +    "exit;"
+>> +    ::: __clobber_all);
+>> +}
+>> +
+>> +SEC("?raw_tp")
+>> +__success __log_level(2)
+>> +__msg("8: (bd) if r2 <= r10 goto pc+3")
+>> +__msg("9: (35) if r1 >= 0xffe3fff8 goto pc+0")
+>> +__msg("10: (b5) if r2 <= 0x8 goto pc+0")
+>> +__msg("mark_precise: frame1: last_idx 10 first_idx 0 subseq_idx -1")
+>> +__msg("mark_precise: frame1: regs=r2 stack= before 9: (35) if r1 >= 
+>> 0xffe3fff8 goto pc+0")
+>> +__msg("mark_precise: frame1: regs=r2 stack= before 8: (bd) if r2 <= 
+>> r10 goto pc+3")
+>> +__msg("mark_precise: frame1: regs=r2 stack= before 7: (05) goto pc+0")
+>> +__naked void bpf_cond_op_r10(void)
+>> +{
+>> +    asm volatile (
+>> +    "r3 = 0 ll;"
+>> +    "call __bpf_cond_op_r10;"
+>> +    "r0 = 0;"
+>> +    "exit;"
+>> +    ::: __clobber_all);
+>> +}
+>
+> This was probably a part of the repro, but I'm not sure
+> this test adds much compared to test below.
+> The changes do not interact with subprogram calls handling.
 
-Thanks,
-Peilin Ye
+It does not interact with subprogram due the patch 1. Without patch 1,
+the error will happen (see commit message of patch 1):
+
+   0: (18) r3 = 0x0                      ; R3_w=0
+   2: (85) call pc+2
+   caller:
+    R10=fp0
+   callee:
+    frame1: R1=ctx() R3_w=0 R10=fp0
+   5: frame1: R1=ctx() R3_w=0 R10=fp0
+   ; asm volatile ("                                 \ @ verifier_precision.c:184
+   5: (18) r2 = 0x20202000256c6c78       ; frame1: R2_w=0x20202000256c6c78
+   7: (05) goto pc+0
+   8: (bd) if r2 <= r10 goto pc+3        ; frame1: R2_w=0x20202000256c6c78 R10=fp0
+   9: (35) if r1 >= 0xffe3fff8 goto pc+0         ; frame1: R1=ctx()
+   10: (b5) if r2 <= 0x8 goto pc+0
+   mark_precise: frame1: last_idx 10 first_idx 0 subseq_idx -1
+   mark_precise: frame1: regs=r2 stack= before 9: (35) if r1 >= 0xffe3fff8 goto pc+0
+   mark_precise: frame1: regs=r2 stack= before 8: (bd) if r2 <= r10 goto pc+3
+   mark_precise: frame1: regs=r2,r10 stack= before 7: (05) goto pc+0
+   mark_precise: frame1: regs=r2,r10 stack= before 5: (18) r2 = 0x20202000256c6c78
+   mark_precise: frame1: regs=r10 stack= before 2: (85) call pc+2
+   BUG regs 400
+
+>
+>> +
+>> +SEC("?raw_tp")
+>> +__success __log_level(2)
+>> +__msg("3: (bf) r3 = r10")
+>> +__msg("4: (bd) if r3 <= r2 goto pc+1")
+>> +__msg("5: (b5) if r2 <= 0x8 goto pc+2")
+>> +__msg("mark_precise: frame0: last_idx 5 first_idx 0 subseq_idx -1")
+>> +__msg("mark_precise: frame0: regs=r2 stack= before 4: (bd) if r3 <= 
+>> r2 goto pc+1")
+>> +__msg("mark_precise: frame0: regs=r2 stack= before 3: (bf) r3 = r10")
+>> +__naked void bpf_cond_op_not_r10(void)
+>> +{
+>> +    asm volatile (
+>> +    "r0 = 0;"
+>> +    "r2 = 2314885393468386424 ll;"
+>> +    "r3 = r10;"
+>> +    "if r3 <= r2 goto +1;"
+>> +    "if r2 <= 8 goto +2;"
+>
+> I think it would be good to add two more cases here:
+> - dst register is pointer to stack
+
+The previous test "r2 <= r10" should already cover this since r10 is a pointer to stack.
+
+> - both src and dst registers are pointers to stack
+
+I actually thought about this as well, e.g.,
+    r2 = r10
+    r3 = r10
+    if r2 <= r3 goto +0
+    if r2 <= 8 goto +0
+
+But since r2 is actually a stack pointer, then r2 does not need
+backtracking. So r2 <= r3 won't be backtracked too.
+
+But if you feel such an example still valuable, I can add it too.
+
+>
+>> +    "r0 = 2 ll;"
+>> +    "exit;"
+>> +    ::: __clobber_all);
+>> +}
+>> +
+>>   char _license[] SEC("license") = "GPL";
 
 
