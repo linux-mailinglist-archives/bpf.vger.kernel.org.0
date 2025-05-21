@@ -1,134 +1,156 @@
-Return-Path: <bpf+bounces-58646-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58647-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15E8AABF022
-	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 11:38:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AABD9ABF17E
+	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 12:25:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B0978C2296
-	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 09:37:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 969B08E1C9C
+	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 10:24:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B61C7248F43;
-	Wed, 21 May 2025 09:37:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F041C25CC77;
+	Wed, 21 May 2025 10:25:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="eWeJQa6e"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 759E323504D;
-	Wed, 21 May 2025 09:37:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E55625C814;
+	Wed, 21 May 2025 10:25:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747820253; cv=none; b=fC7kobb9WAC4h6aNN7D9MZGmOTMpQ3qwTs9E5OWD4vBPzOGNWKIOYGN1UiBYAjSXpRotGHEq9YDKdW0mKDXihMHAtvCU3ZLZCmlrtS+1L6SR7N05DEbbu0vPkeo7OE0kqWJeqznQx8QpsIEZ2I0Cs69IVjip8u+uLYNH3jwxGP0=
+	t=1747823109; cv=none; b=lW9HozleZIcCy1IaapBOVuQfRwJPYCphXcQRK13eY2+mTiAGTdf6XQ35vg6mxBPLgo0LFM+D+Ru1H4lXKfucOBfW8PFnzoRspdKMYR1rbFDf4j3XvaAFj8Mx4dKQXjDbo0A5SSzXENcWc0zDdyi16yx+am+0I8GSZ/8TQJ9gozw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747820253; c=relaxed/simple;
-	bh=N8yWSW5tYLd4q2UM0vWpfUGoZ8tTE6cCS0D8RWw2pbY=;
-	h=Subject:To:References:Cc:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=JtV2DWMtDwXv9hkUV3QYyiR1uGiYSonxlVZN2dy73J4uE7VBFWeK2SVw4qUQ2rdcikieagZw532jDxfg157Fx5R5w5oRlY0cPq47x7UL7/dXt+nbNHftuTs8RamjPoNZgkKPHGvFwQR9dI9NjlemRfACpLiOIqCHvibYZrsuPu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [113.200.148.30])
-	by gateway (Coremail) with SMTP id _____8AxaeDWni1oNJv0AA--.3899S3;
-	Wed, 21 May 2025 17:37:26 +0800 (CST)
-Received: from [10.130.0.149] (unknown [113.200.148.30])
-	by front1 (Coremail) with SMTP id qMiowMAxzxvRni1o0QnlAA--.10296S3;
-	Wed, 21 May 2025 17:37:21 +0800 (CST)
-Subject: Re: [PATCH] dcache: Define DNAME_INLINE_LEN as a number directly
-To: Yonghong Song <yonghong.song@linux.dev>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Al Viro <viro@zeniv.linux.org.uk>
-References: <20250520064707.31135-1-yangtiezhu@loongson.cn>
- <20250520082258.GC2023217@ZenIV>
- <CAADnVQJW+qyq9wPD6RdoaZ8nLYX8N2+4Bhxyd19h6pdqNRMc3A@mail.gmail.com>
- <b932c4b8-a45d-4da3-8ef9-f45055830609@linux.dev>
-Cc: Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
- loongarch@lists.linux.dev, LKML <linux-kernel@vger.kernel.org>
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <9750057e-2efa-58e1-8739-290f1b2a9104@loongson.cn>
-Date: Wed, 21 May 2025 17:37:20 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+	s=arc-20240116; t=1747823109; c=relaxed/simple;
+	bh=5HlH8MNJv3syXIN/vHnN2vVQp8Ri0Bh049wtA3tHBCE=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=F1jFZlYmdjy/1hQJTJuTKU0si8mkmh+UabbGCCZsu+SDqdO5uKMgUZAaziTniLc8dG+bEYfl+4OOcpy12+dK2514KTrUfo3JunB3K7S+/r08oW3eK9JeGX4Adu0goKfKVLU2FJ6+4zTyDmKZHc3hLxXPN1MQ2vZbjpiqp3NrEaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=eWeJQa6e; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1127)
+	id C8E8C206832E; Wed, 21 May 2025 03:25:06 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C8E8C206832E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1747823106;
+	bh=QR4U2caREfe4Ci0S/IeCgwAGch4AUN3kUS6ReAl1HII=;
+	h=From:To:Cc:Subject:Date:From;
+	b=eWeJQa6ex5RvTfbojYleEB1LCyZwvno5vXiEyXQi32dqUJu2w3hOass/vOFcuQ845
+	 byn7nsXClFZKcu9Me+QeA2wBWBk9sjRvBlwpzz5Pp1mgHqtjYRwPBH5J5TQ/WhIjFl
+	 gnoMDBCZt1cafttyeupHhDqUm91PSgNEJ3DLnBSQ=
+From: Saurabh Sengar <ssengar@linux.microsoft.com>
+To: kys@microsoft.com,
+	haiyangz@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
+	sdf@fomichev.me,
+	kuniyu@amazon.com,
+	ahmed.zaki@intel.com,
+	aleksander.lobakin@intel.com,
+	linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Cc: ssengar@microsoft.com,
+	stable@vger.kernel.org,
+	Saurabh Sengar <ssengar@linux.microsoft.com>
+Subject: [PATCH net,v2] hv_netvsc: fix potential deadlock in netvsc_vf_setxdp()
+Date: Wed, 21 May 2025 03:25:03 -0700
+Message-Id: <1747823103-3420-1-git-send-email-ssengar@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <b932c4b8-a45d-4da3-8ef9-f45055830609@linux.dev>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qMiowMAxzxvRni1o0QnlAA--.10296S3
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoW7uFy7ZF1xKFWDWw1rXw17XFc_yoW8Zr48pa
-	45KanFkr4DKFWrAr9F9wsYvFyftws3tayYgas5Xr10y3s0vF1fGF4Ig3y5uF93Cw48Cw4j
-	9w1jqFy3Zr18AagCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUU9Eb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-	GcCE3s1ln4kS14v26r1Y6r17M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2
-	x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r126r1D
-	McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7
-	I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8
-	JwCFI7km07C267AKxVWUXVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14
-	v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY
-	67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2
-	IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_
-	Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8q2NtUUUUU==
 
-On 05/21/2025 02:26 AM, Yonghong Song wrote:
->
->
-> On 5/20/25 1:04 AM, Alexei Starovoitov wrote:
->> On Tue, May 20, 2025 at 1:23 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
->>> On Tue, May 20, 2025 at 02:47:07PM +0800, Tiezhu Yang wrote:
->>>> When executing the bcc script, there exists the following error
->>>> on LoongArch and x86_64:
->>> NOTABUG.  You can't require array sizes to contain no arithmetics,
->>> including sizeof().  Well, you can, but don't expect your requests
->>> to be satisfied.
->>>
->>>> How to reproduce:
->>>>
->>>> git clone https://github.com/iovisor/bcc.git
->>>> mkdir bcc/build; cd bcc/build
->>>> cmake ..
->>>> make
->>>> sudo make install
->>>> sudo /usr/share/bcc/tools/filetop
->>> So fix the script.  Or report it to whoever wrote it, if it's
->>> not yours.
->> +1
->>
->>> I'm sorry, but we are NOT going to accomodate random parsers
->>> poking inside the kernel-internal headers and failing to
->>> actually parse the language they are written in.
->>>
->>> If you want to exfiltrate a constant, do what e.g. asm-offsets is
->>> doing.  Take a look at e.g.  arch/loongarch/kernel/asm-offsets.c
->>> and check what ends up in include/generated/asm-offsets.h - the
->>> latter is entirely produced out of the former.
->>>
->>> The trick is to have inline asm that would spew a recognizable
->>> line when compiled into assembler, with the value(s) you want
->>> substituted into it.  See include/linux/kbuild.h for the macros.
->>>
->>> Then you pick these lines out of generated your_file.s - no need
->>> to use python, sed(1) will do just fine.  See filechk_offsets in
->>> scripts/Makefile.lib for that part.
->> None of it is necessary.
->>
->> Tiezhu,
->>
->> bcc's tools/filetop.py is really old and obsolete.
->> It's not worth fixing. I'd delete it.
->> Use bcc's libbpf-tools/filetop instead.
->
-> Tiezhu, please check whether libbpf-tools/filetop satisfied your need or
-> not. Thanks!
+The MANA driver's probe registers netdevice via the following call chain:
 
-Yes, it works well for me.
+mana_probe()
+  register_netdev()
+    register_netdevice()
+
+register_netdevice() calls notifier callback for netvsc driver,
+holding the netdev mutex via netdev_lock_ops().
+
+Further this netvsc notifier callback end up attempting to acquire the
+same lock again in dev_xdp_propagate() leading to deadlock.
+
+netvsc_netdev_event()
+  netvsc_vf_setxdp()
+    dev_xdp_propagate()
+
+This deadlock was not observed so far because net_shaper_ops was never set,
+and thus the lock was effectively a no-op in this case. Fix this by using
+netif_xdp_propagate() instead of dev_xdp_propagate() to avoid recursive
+locking in this path.
+
+Also, clean up the unregistration path by removing the unnecessary call to
+netvsc_vf_setxdp(), since unregister_netdevice_many_notify() already
+performs this cleanup via dev_xdp_uninstall().
+
+Fixes: 97246d6d21c2 ("net: hold netdev instance lock during ndo_bpf")
+Cc: stable@vger.kernel.org
+Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+Tested-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
+---
+[V2]
+ - Modified commit message
+
+ drivers/net/hyperv/netvsc_bpf.c | 2 +-
+ drivers/net/hyperv/netvsc_drv.c | 2 --
+ net/core/dev.c                  | 1 +
+ 3 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/hyperv/netvsc_bpf.c b/drivers/net/hyperv/netvsc_bpf.c
+index e01c5997a551..1dd3755d9e6d 100644
+--- a/drivers/net/hyperv/netvsc_bpf.c
++++ b/drivers/net/hyperv/netvsc_bpf.c
+@@ -183,7 +183,7 @@ int netvsc_vf_setxdp(struct net_device *vf_netdev, struct bpf_prog *prog)
+ 	xdp.command = XDP_SETUP_PROG;
+ 	xdp.prog = prog;
+ 
+-	ret = dev_xdp_propagate(vf_netdev, &xdp);
++	ret = netif_xdp_propagate(vf_netdev, &xdp);
+ 
+ 	if (ret && prog)
+ 		bpf_prog_put(prog);
+diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
+index d8b169ac0343..ee3aaf9c10e6 100644
+--- a/drivers/net/hyperv/netvsc_drv.c
++++ b/drivers/net/hyperv/netvsc_drv.c
+@@ -2462,8 +2462,6 @@ static int netvsc_unregister_vf(struct net_device *vf_netdev)
+ 
+ 	netdev_info(ndev, "VF unregistering: %s\n", vf_netdev->name);
+ 
+-	netvsc_vf_setxdp(vf_netdev, NULL);
+-
+ 	reinit_completion(&net_device_ctx->vf_add);
+ 	netdev_rx_handler_unregister(vf_netdev);
+ 	netdev_upper_dev_unlink(vf_netdev, ndev);
+diff --git a/net/core/dev.c b/net/core/dev.c
+index fccf2167b235..8c6c9d7fba26 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -9953,6 +9953,7 @@ int netif_xdp_propagate(struct net_device *dev, struct netdev_bpf *bpf)
+ 
+ 	return dev->netdev_ops->ndo_bpf(dev, bpf);
+ }
++EXPORT_SYMBOL_GPL(netif_xdp_propagate);
+ 
+ u32 dev_xdp_prog_id(struct net_device *dev, enum bpf_xdp_mode mode)
+ {
+-- 
+2.43.0
 
 
