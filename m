@@ -1,253 +1,388 @@
-Return-Path: <bpf+bounces-58660-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58661-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFDD7ABFB9D
-	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 18:50:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 357F0ABFBF1
+	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 19:04:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96E699E74F8
-	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 16:50:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EA46188A56E
+	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 17:04:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 606012609E7;
-	Wed, 21 May 2025 16:50:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ED0725EFB8;
+	Wed, 21 May 2025 17:04:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D3E822B8BD;
-	Wed, 21 May 2025 16:50:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A91951CD1E4
+	for <bpf@vger.kernel.org>; Wed, 21 May 2025 17:04:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747846207; cv=none; b=UFNfH3HfFb00GonRRwSKE7WFDDM+NMddiluuiuyBgW/Qn6RUbdfElhZ7F2tkyVsUgR1hfr+0UZMC60gq8Tpsok2nnyifqMLpc+7+PDZByDXR6JnFxOlgccSIYIA0StxHfzOAjgo8rbXrJ/TduTw6t3InfDl7ri1/ECLtEZZnSaQ=
+	t=1747847068; cv=none; b=XwV6s3YuK25gH8wm4M32SowOvNnHpUPzAFcqyoKkT6v+xmtL9Ou3n6DEStKiB87EPM9Yo36YQGmgu7J9tqFXM/O5r8/Pg7b6Mc4s2BAeJNbs5lyb4Bbv2OTEo2re4GGsU8TJkCGQUAL+ou0wFKef3tRbaYWPEKPsb3lBysXCXTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747846207; c=relaxed/simple;
-	bh=KDHDNEXCJtBLo58XVi0m4EyFpeQHgCOxlLteALixCYk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=g2Ew0EgU7ZdAVsrXibmfmGQo+AcCS2M6bmYbYKaZZwaVB/9xnr4TDoKSvT+t4JW/47yopyjO9ltRHy6LgmehOTtc0W4PuWMpM3yzj6eRYiEXldrMPwgeBubFxMFqmSvSjSMKTtq7MtQOM15SI2iP0Nj7/jgVgpz/1NOi6oGbP1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E2D3C4CEE4;
-	Wed, 21 May 2025 16:50:05 +0000 (UTC)
-Date: Wed, 21 May 2025 12:50:48 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, x86@kernel.org,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Josh Poimboeuf
- <jpoimboe@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar
- <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Thomas Gleixner
- <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>, Dave Hansen
- <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, Andrii
- Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH v9 00/13] unwind_user: x86: Deferred unwinding
- infrastructure
-Message-ID: <20250521125048.4d572d08@gandalf.local.home>
-In-Reply-To: <20250520195549.17f6c2c7@gandalf.local.home>
-References: <20250513223435.636200356@goodmis.org>
-	<20250514132720.6b16880c@gandalf.local.home>
-	<aCfMzJ-zN0JKKTjO@google.com>
-	<20250521082605.b4bd632ef1312778ea51dd71@kernel.org>
-	<20250520195549.17f6c2c7@gandalf.local.home>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1747847068; c=relaxed/simple;
+	bh=ZgH/spLI4zcNUCdu5ifBEdzDvU3iZUFYhA8w2dTkwuA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TVR2A6KNADkqSzK4tKCdgDSACeGE8/ly/muYNp2ovScCxnMgquGA8jz/MdDmUarOmzhvmwbgMMxtUrPRr7nled/mrv0FRjyLubKmsb7HUK6k/+M4/7TrPlKmU9qFphOPryp+fsE4WaieapCgVVsjI2qqDb+Vc0p3I8fRhB0W2Qc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devvm16039.vll0.facebook.com (Postfix, from userid 128203)
+	id 897E17EE6104; Wed, 21 May 2025 10:04:09 -0700 (PDT)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next v3 1/2] bpf: Do not include stack ptr register in precision backtracking bookkeeping
+Date: Wed, 21 May 2025 10:04:09 -0700
+Message-ID: <20250521170409.2772304-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 20 May 2025 19:55:49 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Yi Lai reported an issue ([1]) where the following warning appears
+in kernel dmesg:
+  [   60.643604] verifier backtracking bug
+  [   60.643635] WARNING: CPU: 10 PID: 2315 at kernel/bpf/verifier.c:4302=
+ __mark_chain_precision+0x3a6c/0x3e10
+  [   60.648428] Modules linked in: bpf_testmod(OE)
+  [   60.650471] CPU: 10 UID: 0 PID: 2315 Comm: test_progs Tainted: G    =
+       OE       6.15.0-rc4-gef11287f8289-dirty #327 PREEMPT(full)
+  [   60.654385] Tainted: [O]=3DOOT_MODULE, [E]=3DUNSIGNED_MODULE
+  [   60.656682] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), B=
+IOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+  [   60.660475] RIP: 0010:__mark_chain_precision+0x3a6c/0x3e10
+  [   60.662814] Code: 5a 30 84 89 ea e8 c4 d9 01 00 80 3d 3e 7d d8 04 00=
+ 0f 85 60 fa ff ff c6 05 31 7d d8 04
+                       01 48 c7 c7 00 58 30 84 e8 c4 06 a5 ff <0f> 0b e9 =
+46 fa ff ff 48 ...
+  [   60.668720] RSP: 0018:ffff888116cc7298 EFLAGS: 00010246
+  [   60.671075] RAX: 54d70e82dfd31900 RBX: ffff888115b65e20 RCX: 0000000=
+000000000
+  [   60.673659] RDX: 0000000000000001 RSI: 0000000000000004 RDI: 0000000=
+0ffffffff
+  [   60.676241] RBP: 0000000000000400 R08: ffff8881f6f23bd3 R09: 1ffff11=
+03ede477a
+  [   60.678787] R10: dffffc0000000000 R11: ffffed103ede477b R12: ffff888=
+115b60ae8
+  [   60.681420] R13: 1ffff11022b6cbc4 R14: 00000000fffffff2 R15: 0000000=
+000000001
+  [   60.684030] FS:  00007fc2aedd80c0(0000) GS:ffff88826fa8a000(0000) kn=
+lGS:0000000000000000
+  [   60.686837] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  [   60.689027] CR2: 000056325369e000 CR3: 000000011088b002 CR4: 0000000=
+000370ef0
+  [   60.691623] Call Trace:
+  [   60.692821]  <TASK>
+  [   60.693960]  ? __pfx_verbose+0x10/0x10
+  [   60.695656]  ? __pfx_disasm_kfunc_name+0x10/0x10
+  [   60.697495]  check_cond_jmp_op+0x16f7/0x39b0
+  [   60.699237]  do_check+0x58fa/0xab10
+  ...
 
-> There's a proposal to move trace_sched_process_exit() to before exit_mm().
-> If that happens, we could make that tracepoint a "faultable" tracepoint and
-> then the unwind infrastructure could attach to it and do the unwinding from
-> that tracepoint.
+Further analysis shows the warning is at line 4302 as below:
 
-The below patch does work. It's just a PoC and would need to be broken up
-and also cleaned up.
+  4294                 /* static subprog call instruction, which
+  4295                  * means that we are exiting current subprog,
+  4296                  * so only r1-r5 could be still requested as
+  4297                  * precise, r0 and r6-r10 or any stack slot in
+  4298                  * the current frame should be zero by now
+  4299                  */
+  4300                 if (bt_reg_mask(bt) & ~BPF_REGMASK_ARGS) {
+  4301                         verbose(env, "BUG regs %x\n", bt_reg_mask(=
+bt));
+  4302                         WARN_ONCE(1, "verifier backtracking bug");
+  4303                         return -EFAULT;
+  4304                 }
 
-I created a TRACE_EVENT_FAULTABLE() that is basically just a
-TRACE_EVENT_SYSCALL(), and used that for the sched_process_exit tracepoint.
+With the below test (also in the next patch):
+  __used __naked static void __bpf_jmp_r10(void)
+  {
+	asm volatile (
+	"r2 =3D 2314885393468386424 ll;"
+	"goto +0;"
+	"if r2 <=3D r10 goto +3;"
+	"if r1 >=3D -1835016 goto +0;"
+	"if r2 <=3D 8 goto +0;"
+	"if r3 <=3D 0 goto +0;"
+	"exit;"
+	::: __clobber_all);
+  }
 
-I then had the unwinder attach to that tracepoint when the first unwind
-callback is registered.
+  SEC("?raw_tp")
+  __naked void bpf_jmp_r10(void)
+  {
+	asm volatile (
+	"r3 =3D 0 ll;"
+	"call __bpf_jmp_r10;"
+	"r0 =3D 0;"
+	"exit;"
+	::: __clobber_all);
+  }
 
-I had to change the check in the trace from testing PF_EXITING to just
-current->mm is NULL.
+The following is the verifier failure log:
+  0: (18) r3 =3D 0x0                      ; R3_w=3D0
+  2: (85) call pc+2
+  caller:
+   R10=3Dfp0
+  callee:
+   frame1: R1=3Dctx() R3_w=3D0 R10=3Dfp0
+  5: frame1: R1=3Dctx() R3_w=3D0 R10=3Dfp0
+  ; asm volatile ("                                 \ @ verifier_precisio=
+n.c:184
+  5: (18) r2 =3D 0x20202000256c6c78       ; frame1: R2_w=3D0x20202000256c=
+6c78
+  7: (05) goto pc+0
+  8: (bd) if r2 <=3D r10 goto pc+3        ; frame1: R2_w=3D0x20202000256c=
+6c78 R10=3Dfp0
+  9: (35) if r1 >=3D 0xffe3fff8 goto pc+0         ; frame1: R1=3Dctx()
+  10: (b5) if r2 <=3D 0x8 goto pc+0
+  mark_precise: frame1: last_idx 10 first_idx 0 subseq_idx -1
+  mark_precise: frame1: regs=3Dr2 stack=3D before 9: (35) if r1 >=3D 0xff=
+e3fff8 goto pc+0
+  mark_precise: frame1: regs=3Dr2 stack=3D before 8: (bd) if r2 <=3D r10 =
+goto pc+3
+  mark_precise: frame1: regs=3Dr2,r10 stack=3D before 7: (05) goto pc+0
+  mark_precise: frame1: regs=3Dr2,r10 stack=3D before 5: (18) r2 =3D 0x20=
+202000256c6c78
+  mark_precise: frame1: regs=3Dr10 stack=3D before 2: (85) call pc+2
+  BUG regs 400
 
-But this does work for the exiting of a task:
+The main failure reason is due to r10 in precision backtracking bookkeepi=
+ng.
+Actually r10 is always precise and there is no need to add it for the pre=
+cision
+backtracking bookkeeping.
 
--- Steve
+One way to fix the issue is to prevent bt_set_reg() if any src/dst reg is
+r10. Andrii suggested to go with push_insn_history() approach to avoid
+explicitly checking r10 in backtrack_insn().
 
-diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
-index a351763e6965..eb98bb61126e 100644
---- a/include/linux/tracepoint.h
-+++ b/include/linux/tracepoint.h
-@@ -617,6 +617,8 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
- #define TRACE_EVENT_SYSCALL(name, proto, args, struct, assign,	\
- 			    print, reg, unreg)			\
- 	DECLARE_TRACE_SYSCALL(name, PARAMS(proto), PARAMS(args))
-+#define TRACE_EVENT_FAULTABLE(name, proto, args, struct, assign, print)	\
-+	DECLARE_TRACE_SYSCALL(name, PARAMS(proto), PARAMS(args))
- 
- #define TRACE_EVENT_FLAGS(event, flag)
- 
-diff --git a/include/trace/define_trace.h b/include/trace/define_trace.h
-index ed52d0506c69..b228424744fd 100644
---- a/include/trace/define_trace.h
-+++ b/include/trace/define_trace.h
-@@ -50,6 +50,10 @@
- #define TRACE_EVENT_SYSCALL(name, proto, args, struct, assign, print, reg, unreg) \
- 	DEFINE_TRACE_SYSCALL(name, reg, unreg, PARAMS(proto), PARAMS(args))
- 
-+#undef TRACE_EVENT_FAULTABLE
-+#define TRACE_EVENT_FAULTABLE(name, proto, args, struct, assign, print) \
-+	DEFINE_TRACE_SYSCALL(name, NULL, NULL, PARAMS(proto), PARAMS(args))
+This patch added push_insn_history() support for cond_jmp like 'rX <op> r=
+Y'
+operations. In check_cond_jmp_op(), if any of rX or rY is a stack pointer=
+,
+push_insn_history() will record such information, and later backtrack_ins=
+n()
+will do bt_set_reg() properly for those register(s).
+
+  [1] https://lore.kernel.org/bpf/Z%2F8q3xzpU59CIYQE@ly-workstation/
+
+Reported by: Yi Lai <yi1.lai@linux.intel.com>
+Fixes: 407958a0e980 ("bpf: encapsulate precision backtracking bookkeeping=
+")
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+---
+ include/linux/bpf_verifier.h | 12 +++++--
+ kernel/bpf/verifier.c        | 68 ++++++++++++++++++++++++++++++++----
+ 2 files changed, 70 insertions(+), 10 deletions(-)
+
+Changelogs:
+  v2 -> v3:
+    - v2: https://lore.kernel.org/bpf/20250516161029.962760-1-yonghong.so=
+ng@linux.dev/
+    - In v2, I put sreg_flag/dreg_flag into bpf_insn_hist_entry and the i=
+nformation
+      includes register numbers. This is not necessary as later insn in b=
+acktracking
+      can retrieve the register number. So the new change is remove sreg_=
+flag/dreg_flag
+      from bpf_insn_hist_entry and add two bits in bpf_insn_hist_entry.fl=
+ags to
+      record whether the registers (cond jump like <reg> op < reg>) are s=
+tack pointer
+      or not. Other changes depend on this data structure change.
+  v1 -> v2:
+    - v1: https://lore.kernel.org/bpf/20250511162758.281071-1-yonghong.so=
+ng@linux.dev/
+    - In v1, we check r10 register explicitly in backtrack_insn() to deci=
+de
+      whether we should do bt_set_reg() or not. Andrii suggested to do
+      push_insn_history() instead. Whether a particular register (r10 in =
+this case)
+      should be available for backtracking or not is in check_cond_jmp_op=
+(),
+      and such information is pushed with push_insn_history(). Later in b=
+acktrack_insn(),
+      such info is retrieved to decide whether precision marking should b=
+e
+      done or not. This apporach can avoid explicit checking for r10 in b=
+acktrack_insn().
+
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index 78c97e12ea4e..e73a910e4ece 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -357,6 +357,10 @@ enum {
+ 	INSN_F_SPI_SHIFT =3D 3, /* shifted 3 bits to the left */
+=20
+ 	INSN_F_STACK_ACCESS =3D BIT(9), /* we need 10 bits total */
 +
- #undef TRACE_EVENT_NOP
- #define TRACE_EVENT_NOP(name, proto, args, struct, assign, print)
- 
-@@ -125,6 +129,7 @@
- #undef TRACE_EVENT_FN
- #undef TRACE_EVENT_FN_COND
- #undef TRACE_EVENT_SYSCALL
-+#undef TRACE_EVENT_FAULTABLE
- #undef TRACE_EVENT_CONDITION
- #undef TRACE_EVENT_NOP
- #undef DEFINE_EVENT_NOP
-diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
-index 3bec9fb73a36..c6d7894970e3 100644
---- a/include/trace/events/sched.h
-+++ b/include/trace/events/sched.h
-@@ -326,13 +326,13 @@ DEFINE_EVENT(sched_process_template, sched_process_free,
- 	     TP_ARGS(p));
- 
- /*
-- * Tracepoint for a task exiting.
-+ * Tracepoint for a task exiting (allows faulting)
-  * Note, it's a superset of sched_process_template and should be kept
-  * compatible as much as possible. sched_process_exits has an extra
-  * `group_dead` argument, so sched_process_template can't be used,
-  * unfortunately, just like sched_migrate_task above.
-  */
--TRACE_EVENT(sched_process_exit,
-+TRACE_EVENT_FAULTABLE(sched_process_exit,
- 
- 	TP_PROTO(struct task_struct *p, bool group_dead),
- 
-diff --git a/include/trace/trace_events.h b/include/trace/trace_events.h
-index 4f22136fd465..0ed57e7906d1 100644
---- a/include/trace/trace_events.h
-+++ b/include/trace/trace_events.h
-@@ -55,6 +55,16 @@
- 			     PARAMS(print));		       \
- 	DEFINE_EVENT(name, name, PARAMS(proto), PARAMS(args));
- 
-+#undef TRACE_EVENT_FAULTABLE
-+#define TRACE_EVENT_FAULTABLE(name, proto, args, tstruct, assign, print) \
-+	DECLARE_EVENT_SYSCALL_CLASS(name,		       \
-+			     PARAMS(proto),		       \
-+			     PARAMS(args),		       \
-+			     PARAMS(tstruct),		       \
-+			     PARAMS(assign),		       \
-+			     PARAMS(print));		       \
-+	DEFINE_EVENT(name, name, PARAMS(proto), PARAMS(args));
-+
- #include "stages/stage1_struct_define.h"
- 
- #undef DECLARE_EVENT_CLASS
-diff --git a/kernel/unwind/deferred.c b/kernel/unwind/deferred.c
-index 63d0237bad3e..7aad471f2887 100644
---- a/kernel/unwind/deferred.c
-+++ b/kernel/unwind/deferred.c
-@@ -11,6 +11,8 @@
- #include <linux/slab.h>
- #include <linux/mm.h>
- 
-+#include <trace/events/sched.h>
-+
- #define UNWIND_MAX_ENTRIES 512
- 
- /* Guards adding to or removing from the list of callbacks */
-@@ -77,7 +79,7 @@ int unwind_deferred_trace(struct unwind_stacktrace *trace)
- 	/* Should always be called from faultable context */
- 	might_fault();
- 
--	if (current->flags & PF_EXITING)
-+	if (!current->mm)
- 		return -EINVAL;
- 
- 	if (!info->cache) {
-@@ -107,14 +109,14 @@ int unwind_deferred_trace(struct unwind_stacktrace *trace)
- 	return 0;
++	INSN_F_DST_REG_STACK =3D BIT(10), /* dst_reg is PTR_TO_STACK */
++	INSN_F_SRC_REG_STACK =3D BIT(11), /* src_reg is PTR_TO_STACK */
++	/* total 12 bits are used now. */
+ };
+=20
+ static_assert(INSN_F_FRAMENO_MASK + 1 >=3D MAX_CALL_FRAMES);
+@@ -365,9 +369,11 @@ static_assert(INSN_F_SPI_MASK + 1 >=3D MAX_BPF_STACK=
+ / 8);
+ struct bpf_insn_hist_entry {
+ 	u32 idx;
+ 	/* insn idx can't be bigger than 1 million */
+-	u32 prev_idx : 22;
+-	/* special flags, e.g., whether insn is doing register stack spill/load=
+ */
+-	u32 flags : 10;
++	u32 prev_idx : 20;
++	/* special flags, e.g., whether insn is doing register stack spill/load=
+,
++	 * whether dst/src register is PTR_TO_STACK.
++	 */
++	u32 flags : 12;
+ 	/* additional registers that need precision tracking when this
+ 	 * jump is backtracked, vector of six 10-bit records
+ 	 */
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index d5807d2efc92..de848fbba659 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -3739,6 +3739,22 @@ static int check_reg_arg(struct bpf_verifier_env *=
+env, u32 regno,
+ 	return __check_reg_arg(env, state->regs, regno, t);
  }
- 
--static void unwind_deferred_task_work(struct callback_head *head)
-+static void process_unwind_deferred(void)
- {
--	struct unwind_task_info *info = container_of(head, struct unwind_task_info, work);
-+	struct task_struct *task = current;
-+	struct unwind_task_info *info = &task->unwind_info;
- 	struct unwind_stacktrace trace;
- 	struct unwind_work *work;
- 	unsigned long bits;
- 	u64 timestamp;
--	struct task_struct *task = current;
- 	int idx;
- 
- 	if (WARN_ON_ONCE(!unwind_pending(task)))
-@@ -152,6 +155,21 @@ static void unwind_deferred_task_work(struct callback_head *head)
- 	srcu_read_unlock(&unwind_srcu, idx);
- }
- 
-+static void unwind_deferred_task_work(struct callback_head *head)
+=20
++static int insn_reg_access_flags(bool dreg_stack_ptr, bool sreg_stack_pt=
+r)
 +{
-+	process_unwind_deferred();
++	return (dreg_stack_ptr ? INSN_F_DST_REG_STACK : 0) |
++	       (sreg_stack_ptr ? INSN_F_SRC_REG_STACK : 0);
 +}
 +
-+static void unwind_deferred_callback(void *data, struct task_struct *p, bool group_dead)
++static bool insn_dreg_stack_ptr(int insn_flags)
 +{
-+	if (!unwind_pending(p))
-+		return;
-+
-+	process_unwind_deferred();
-+
-+	task_work_cancel(p, &p->unwind_info.work);
++	return !!(insn_flags & INSN_F_DST_REG_STACK);
 +}
 +
- static int unwind_deferred_request_nmi(struct unwind_work *work, u64 *timestamp)
++static bool insn_sreg_stack_ptr(int insn_flags)
++{
++	return !!(insn_flags & INSN_F_SRC_REG_STACK);
++}
++
+ static int insn_stack_access_flags(int frameno, int spi)
  {
- 	struct unwind_task_info *info = &current->unwind_info;
-@@ -329,6 +347,10 @@ void unwind_deferred_cancel(struct unwind_work *work)
- 	for_each_process_thread(g, t) {
- 		clear_bit(bit, &t->unwind_mask);
+ 	return INSN_F_STACK_ACCESS | (spi << INSN_F_SPI_SHIFT) | frameno;
+@@ -4402,6 +4418,8 @@ static int backtrack_insn(struct bpf_verifier_env *=
+env, int idx, int subseq_idx,
+ 			 */
+ 			return 0;
+ 		} else if (BPF_SRC(insn->code) =3D=3D BPF_X) {
++			bool dreg_precise, sreg_precise;
++
+ 			if (!bt_is_reg_set(bt, dreg) && !bt_is_reg_set(bt, sreg))
+ 				return 0;
+ 			/* dreg <cond> sreg
+@@ -4410,8 +4428,16 @@ static int backtrack_insn(struct bpf_verifier_env =
+*env, int idx, int subseq_idx,
+ 			 * before it would be equally necessary to
+ 			 * propagate it to dreg.
+ 			 */
+-			bt_set_reg(bt, dreg);
+-			bt_set_reg(bt, sreg);
++			if (!hist)
++				return 0;
++			dreg_precise =3D !insn_dreg_stack_ptr(hist->flags);
++			sreg_precise =3D !insn_sreg_stack_ptr(hist->flags);
++			if (!dreg_precise && !sreg_precise)
++				return 0;
++			if (dreg_precise)
++				bt_set_reg(bt, dreg);
++			if (sreg_precise)
++				bt_set_reg(bt, sreg);
+ 		} else if (BPF_SRC(insn->code) =3D=3D BPF_K) {
+ 			 /* dreg <cond> K
+ 			  * Only dreg still needs precision before
+@@ -16397,6 +16423,29 @@ static void sync_linked_regs(struct bpf_verifier=
+_state *vstate, struct bpf_reg_s
  	}
-+
-+	/* Is this the last registered unwinding? */
-+	if (!unwind_mask)
-+		unregister_trace_sched_process_exit(unwind_deferred_callback, NULL);
  }
- 
- int unwind_deferred_init(struct unwind_work *work, unwind_callback_t func)
-@@ -341,6 +363,15 @@ int unwind_deferred_init(struct unwind_work *work, unwind_callback_t func)
- 	if (unwind_mask == ~(UNWIND_PENDING))
- 		return -EBUSY;
- 
-+	/* Is this the first registered unwinding? */
-+	if (!unwind_mask) {
-+		int ret;
+=20
++static int push_cond_jmp_history(struct bpf_verifier_env *env, struct bp=
+f_verifier_state *state,
++				 struct bpf_reg_state *dst_reg, struct bpf_reg_state *src_reg,
++				 u64 linked_regs)
++{
++	bool dreg_stack_ptr, sreg_stack_ptr;
++	int insn_flags;
 +
-+		ret = register_trace_sched_process_exit(unwind_deferred_callback, NULL);
-+		if (ret < 0)
-+			return ret;
++	if (!src_reg) {
++		if (linked_regs)
++			return push_insn_history(env, state, 0, linked_regs);
++		return 0;
 +	}
 +
- 	work->bit = ffz(unwind_mask);
- 	unwind_mask |= 1UL << work->bit;
- 
++	dreg_stack_ptr =3D dst_reg->type =3D=3D PTR_TO_STACK;
++	sreg_stack_ptr =3D src_reg->type =3D=3D PTR_TO_STACK;
++
++	if (!dreg_stack_ptr && !sreg_stack_ptr && !linked_regs)
++		return 0;
++
++	insn_flags =3D insn_reg_access_flags(dreg_stack_ptr, sreg_stack_ptr);
++	return push_insn_history(env, state, insn_flags, linked_regs);
++}
++
+ static int check_cond_jmp_op(struct bpf_verifier_env *env,
+ 			     struct bpf_insn *insn, int *insn_idx)
+ {
+@@ -16500,6 +16549,9 @@ static int check_cond_jmp_op(struct bpf_verifier_=
+env *env,
+ 		    !sanitize_speculative_path(env, insn, *insn_idx + 1,
+ 					       *insn_idx))
+ 			return -EFAULT;
++		err =3D push_cond_jmp_history(env, this_branch, dst_reg, src_reg, 0);
++		if (err)
++			return err;
+ 		if (env->log.level & BPF_LOG_LEVEL)
+ 			print_insn_state(env, this_branch, this_branch->curframe);
+ 		*insn_idx +=3D insn->off;
+@@ -16514,6 +16566,9 @@ static int check_cond_jmp_op(struct bpf_verifier_=
+env *env,
+ 					       *insn_idx + insn->off + 1,
+ 					       *insn_idx))
+ 			return -EFAULT;
++		err =3D push_cond_jmp_history(env, this_branch, dst_reg, src_reg, 0);
++		if (err)
++			return err;
+ 		if (env->log.level & BPF_LOG_LEVEL)
+ 			print_insn_state(env, this_branch, this_branch->curframe);
+ 		return 0;
+@@ -16528,11 +16583,10 @@ static int check_cond_jmp_op(struct bpf_verifie=
+r_env *env,
+ 		collect_linked_regs(this_branch, src_reg->id, &linked_regs);
+ 	if (dst_reg->type =3D=3D SCALAR_VALUE && dst_reg->id)
+ 		collect_linked_regs(this_branch, dst_reg->id, &linked_regs);
+-	if (linked_regs.cnt > 1) {
+-		err =3D push_insn_history(env, this_branch, 0, linked_regs_pack(&linke=
+d_regs));
+-		if (err)
+-			return err;
+-	}
++	err =3D push_cond_jmp_history(env, this_branch, dst_reg, src_reg,
++				    linked_regs.cnt > 1 ? linked_regs_pack(&linked_regs) : 0);
++	if (err)
++		return err;
+=20
+ 	other_branch =3D push_stack(env, *insn_idx + insn->off + 1, *insn_idx,
+ 				  false);
+--=20
+2.47.1
 
 
