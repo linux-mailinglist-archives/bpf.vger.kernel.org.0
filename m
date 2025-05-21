@@ -1,93 +1,190 @@
-Return-Path: <bpf+bounces-58668-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58669-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAC8CABFD10
-	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 20:55:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 164DFABFD11
+	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 20:55:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F5644A841C
-	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 18:55:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 384241BC2D22
+	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 18:55:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE54E28F92D;
-	Wed, 21 May 2025 18:55:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D077228F533;
+	Wed, 21 May 2025 18:55:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="opOCPUCW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j8ZMqJ+K"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-fw-52003.amazon.com (smtp-fw-52003.amazon.com [52.119.213.152])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AACA728F531;
-	Wed, 21 May 2025 18:55:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0C6E22CBF4
+	for <bpf@vger.kernel.org>; Wed, 21 May 2025 18:55:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747853723; cv=none; b=VyJdhQ4NRypbdTD/B1e6dfm7Dyn59bTUu6cUpw0J6EPZC+WfFp0fV0kzbxGexftRRT4EYGX3fpX1iFvAUy0PzovIyd37XFSkdsOB39C2uj1B4h7RSyOtkuApKctRa7bXHJizSUeD6aA4KuL7T8qc69eEDXZGRwb0m0ZxBCvAbxA=
+	t=1747853737; cv=none; b=nc54bipSdFFgjcr6o2G+fBt4iybNW04ZJ0LSw6XqUx9Fu9yO5kRzlcLpmKKyTAFwpsudDdrIMA2unD1WYvdFiFHpuUT7mVZdqZYQkXHjKl3GFfWdJ0FeaNlfd6kt8nmScJ5HVVbp0WzIlGZqiEAt31AL/zuxrX5Bjst33wRfFxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747853723; c=relaxed/simple;
-	bh=0wq/AfxTVnTjoaTp1I+1eJrMuahEIQVXnsXu8RfR0tY=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Rg3+BbQ3+X4lPkfRVYqVDBTc+AcF1kEwXph+Tb5PK22r9Ewi/WlMyhJ7jHM2eYj1lxla5Ari61WS0Vg1FfdbigyDdp+sXNT7KxEha1Dm5bqmDIR9D5wEl14wid4zM8Ytfece9mHDO1enE9ztB789wnoXjd99cjzQT/y2hv/uqFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=opOCPUCW; arc=none smtp.client-ip=52.119.213.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
+	s=arc-20240116; t=1747853737; c=relaxed/simple;
+	bh=Y8EuP3E51216B36+AzEU7ivGDSkV5t9MpiV/3eVyd8c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nTtWzY7I3sAW3Oiue2adtkutvdX2CqRv0Nr0t8p/ah3tXxVkE5xtNY45z35EgdTIUQIyWF0DV7hn/CxzlEVuN0CZI/w83Rx3fOxOvrQ48S5emd8ecs+XZ08pUA9g6aFi7K1aWMCETDa1zvoa9y6YDlTY60wqXJUtPgIjiLqYaxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j8ZMqJ+K; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-742af84818cso4348550b3a.1
+        for <bpf@vger.kernel.org>; Wed, 21 May 2025 11:55:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1747853722; x=1779389722;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=KG7bFjgkXr+F7h4No5I9wKA0MJvGI12KsoalsxVmNpM=;
-  b=opOCPUCWP1CHMO6lrG1qPrNFhgHytbJK9euT1vrSFIbwgL8T5cfi+QBI
-   ZgTdIg0vaygKMbS3hceC8qvJ26W8RSTBrVg94rQ0//0x2ukLOm+S3CR5W
-   8kRoQ8BkKjNORP8xRjJxcfKIDBwBPCQAtxuHUSjOmYAkrYPcM3Ea/T2un
-   Nu43gLzIlctXQXWgyjo4vO8fRaSV/6pAMkUKzemBUPvH1pYHEfmUdLx61
-   T4rldu3TlQqUsjv0Ks3SCELxcfwGjo0XaT/IxoWEtahaFRhQr9mCR2j1h
-   7PRT/0I16dRWkHzALoN+gO8HSADLUzzNXpAn78Fd8IgtxpA3Rcd+AWsT4
-   g==;
-X-IronPort-AV: E=Sophos;i="6.15,304,1739836800"; 
-   d="scan'208";a="95857485"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
-  by smtp-border-fw-52003.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2025 18:55:11 +0000
-Received: from EX19MTAUWA002.ant.amazon.com [10.0.7.35:4253]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.13.191:2525] with esmtp (Farcaster)
- id b5505184-aeb3-444a-a9d6-352deaab2d16; Wed, 21 May 2025 18:55:09 +0000 (UTC)
-X-Farcaster-Flow-ID: b5505184-aeb3-444a-a9d6-352deaab2d16
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
- Wed, 21 May 2025 18:55:09 +0000
-Received: from 6c7e67bfbae3.amazon.com (10.94.52.104) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
- Wed, 21 May 2025 18:55:07 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <jordan@jrife.io>
-CC: <alexei.starovoitov@gmail.com>, <bpf@vger.kernel.org>,
-	<daniel@iogearbox.net>, <kuniyu@amazon.com>, <martin.lau@linux.dev>,
-	<netdev@vger.kernel.org>, <willemdebruijn.kernel@gmail.com>
-Subject: Re: [PATCH v1 bpf-next 01/10] bpf: tcp: Make mem flags configurable through bpf_iter_tcp_realloc_batch
-Date: Wed, 21 May 2025 11:54:54 -0700
-Message-ID: <20250521185458.57420-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250520145059.1773738-2-jordan@jrife.io>
-References: <20250520145059.1773738-2-jordan@jrife.io>
+        d=gmail.com; s=20230601; t=1747853735; x=1748458535; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lqjJtnk8rbXwBl870QG0TMVHCwMfpPTcVS7ViUajP1Y=;
+        b=j8ZMqJ+KcKlFFPRN545tFOJfQwGanBmEiYD3v2YEvIkEy7eZhvT6PgEs6GxHHCaVZM
+         vVisx/3NEQX4hT9FW0enuCvgMzvOXahQh4gAx7pyU6gYSD4keRSX4ey37cjpoUec5VVg
+         lGVBVCCFN7ZI2N8XI4UfSPIzRg8jr0u/B7UC6K+sohbfzIQUvplDGDyBBf8M5qyCZJUj
+         vIYEnfAnYoKjoTmS1EVm6JaDvBycRaKVU/vfIiW09UKMo6Z6IgT/6vLBH2/vEvH7ySQW
+         CxsKsLTEuJ/cJujywTTnv9RF6XGkl7pIOo6QRIW8gLvkKPWsoY2tEBQZjcN87/RcYcfi
+         hUnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747853735; x=1748458535;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lqjJtnk8rbXwBl870QG0TMVHCwMfpPTcVS7ViUajP1Y=;
+        b=Fz2L1NVQaFe/btlAx/V6MEk8yhFJtddcY5FRd7iq6mqZcJy5RJIjsxR8B9MsjZtDOy
+         +xZ6JB27tleL2O/1nFisQFp/Mo73izFXWLvW8bqF5HqbhY85GvhgBI7SC2RkdswB6HiA
+         rn1iKLdjCK3MnR8BYsiuQj7frbk+6NvldlUV8FLYiDx+bHAhi5F6QNQd3EwPy4nuuuEn
+         lCPYa8xk/GhbxT832ZgkN1wb6uHtQ1sifeqw2aicgMnbg8DdgqlZT0XQ1bxbYl74CMgO
+         1h3XiCEnitpaQ26v6tF16nzMwBGIooV6aNKuwwrD1CFLMe+VQ0Ru6U064bJWal9haSsz
+         n5aA==
+X-Forwarded-Encrypted: i=1; AJvYcCVlAwt5eZXBTSUukCAJ7CdFRkiPChgS7rA3U4JMDIrY6j6PENhNO4Yg4bXBaEdHsXs0CIE=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw/ewtF9KIJvYc+0nWFE0muIHCUH/lynpS3mkSY4gWWZloQPBKs
+	Pj4foQCGmYloDdg5FSkJQ+9vfY9Nvr6l7RamRwU0qbvdRl2VCm5SdVL12FtzNylB
+X-Gm-Gg: ASbGncu1zy16eWYUGzUWVDbme4X3Pm4cNmmi7F7yN0mU+oh716wPfjSQE0h9LiWJ9lo
+	6E+HdAXSP2X5OkSmgHjwb/evFcDNLHXT8eKavcgblr8qxjzdWK0DyIURrWKsJywEF5iHf3e9DKk
+	81a9T74gLt3dHZ8mwSa+yKhr0Sb+W8v++8sDU89LnfPydR7KDTC85YjTKI0cvVE9lz2gmEqtZrE
+	8M6ULmoM/2spx3jbFnNeNCHT4XSXf6U1isjbBdR7bkIni/m/riyaDX1c5K4MBprs+pyE0STz71X
+	rMLkKkSduPu2ahhTg62VQpVg2eKYojtcYsdxjxHvAJpLGVglD8emrPzzYho17lAGnJnTzqefdlx
+	j/REi9JMVXWlza3yx
+X-Google-Smtp-Source: AGHT+IHWgNswkxv+CABW5ywxmS6vy4bGJ+OPLt3ifTZZQwsCfS1mlcEMeDSYn3bOOIc8ZMIQFxDsug==
+X-Received: by 2002:a05:6a20:12c3:b0:1f5:6abb:7cbb with SMTP id adf61e73a8af0-216219344b9mr34250247637.23.1747853735056;
+        Wed, 21 May 2025 11:55:35 -0700 (PDT)
+Received: from ?IPV6:2a03:83e0:115c:1:cb3:38cf:dbbe:7f85? ([2620:10d:c090:500::6:8d1a])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b26eaf8cc59sm9958932a12.40.2025.05.21.11.55.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 May 2025 11:55:34 -0700 (PDT)
+Message-ID: <45e399c6-74ad-4e58-bfda-06b392d1d28d@gmail.com>
+Date: Wed, 21 May 2025 11:55:33 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: Do not include stack ptr register in
+ precision backtracking bookkeeping
+To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+ Martin KaFai Lau <martin.lau@kernel.org>
+References: <20250521170409.2772304-1-yonghong.song@linux.dev>
+Content-Language: en-CA
+From: Eduard Zingerman <eddyz87@gmail.com>
+In-Reply-To: <20250521170409.2772304-1-yonghong.song@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D033UWC002.ant.amazon.com (10.13.139.196) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
 
-From: Jordan Rife <jordan@jrife.io>
-Date: Tue, 20 May 2025 07:50:48 -0700
-> Prepare for the next patch which needs to be able to choose either
-> GFP_USER or GFP_NOWAIT for calls to bpf_iter_tcp_realloc_batch.
-> 
-> Signed-off-by: Jordan Rife <jordan@jrife.io>
+[...]
 
-Reviewed-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index 78c97e12ea4e..e73a910e4ece 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
+> @@ -357,6 +357,10 @@ enum {
+>   	INSN_F_SPI_SHIFT = 3, /* shifted 3 bits to the left */
+>   
+>   	INSN_F_STACK_ACCESS = BIT(9), /* we need 10 bits total */
+> +
+> +	INSN_F_DST_REG_STACK = BIT(10), /* dst_reg is PTR_TO_STACK */
+> +	INSN_F_SRC_REG_STACK = BIT(11), /* src_reg is PTR_TO_STACK */
+
+INSN_F_STACK_ACCESS can be inferred from INSN_F_DST_REG_STACK
+and INSN_F_SRC_REG_STACK if insn_stack_access_flags() is adjusted
+to track these flags instead. So, can be one less flag/bit.
+
+> +	/* total 12 bits are used now. */
+>   };
+>   
+>   static_assert(INSN_F_FRAMENO_MASK + 1 >= MAX_CALL_FRAMES);
+
+[...]
+
+> @@ -4402,6 +4418,8 @@ static int backtrack_insn(struct bpf_verifier_env *env, int idx, int subseq_idx,
+>   			 */
+>   			return 0;
+>   		} else if (BPF_SRC(insn->code) == BPF_X) {
+> +			bool dreg_precise, sreg_precise;
+> +
+>   			if (!bt_is_reg_set(bt, dreg) && !bt_is_reg_set(bt, sreg))
+>   				return 0;
+>   			/* dreg <cond> sreg
+> @@ -4410,8 +4428,16 @@ static int backtrack_insn(struct bpf_verifier_env *env, int idx, int subseq_idx,
+>   			 * before it would be equally necessary to
+>   			 * propagate it to dreg.
+>   			 */
+> -			bt_set_reg(bt, dreg);
+> -			bt_set_reg(bt, sreg);
+> +			if (!hist)
+> +				return 0;
+> +			dreg_precise = !insn_dreg_stack_ptr(hist->flags);
+> +			sreg_precise = !insn_sreg_stack_ptr(hist->flags);
+> +			if (!dreg_precise && !sreg_precise)
+> +				return 0;
+> +			if (dreg_precise)
+> +				bt_set_reg(bt, dreg);
+> +			if (sreg_precise)
+> +				bt_set_reg(bt, sreg);
+
+This check can be done in a generic way at backtrack_insn() callsite:
+check which register is pointer to stack and remove it from set registers.
+
+>   		} else if (BPF_SRC(insn->code) == BPF_K) {
+>   			 /* dreg <cond> K
+>   			  * Only dreg still needs precision before
+> @@ -16397,6 +16423,29 @@ static void sync_linked_regs(struct bpf_verifier_state *vstate, struct bpf_reg_s
+>   	}
+>   }
+>   
+> +static int push_cond_jmp_history(struct bpf_verifier_env *env, struct bpf_verifier_state *state,
+> +				 struct bpf_reg_state *dst_reg, struct bpf_reg_state *src_reg,
+> +				 u64 linked_regs)
+> +{
+> +	bool dreg_stack_ptr, sreg_stack_ptr;
+> +	int insn_flags;
+> +
+> +	if (!src_reg) {
+> +		if (linked_regs)
+> +			return push_insn_history(env, state, 0, linked_regs);
+> +		return 0;
+> +	}
+
+Nit: this 'if' is not needed, src_reg is always set (it might point to a 
+fake register,
+      but in that case it is a scalar without id).
+
+> +
+> +	dreg_stack_ptr = dst_reg->type == PTR_TO_STACK;
+> +	sreg_stack_ptr = src_reg->type == PTR_TO_STACK;
+> +
+> +	if (!dreg_stack_ptr && !sreg_stack_ptr && !linked_regs)
+> +		return 0;
+> +
+> +	insn_flags = insn_reg_access_flags(dreg_stack_ptr, sreg_stack_ptr);
+> +	return push_insn_history(env, state, insn_flags, linked_regs);
+> +}
+> +
+
+[...]
+
 
