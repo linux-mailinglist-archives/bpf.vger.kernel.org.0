@@ -1,83 +1,83 @@
-Return-Path: <bpf+bounces-58653-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58652-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38959ABF3D9
-	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 14:11:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2149DABF3D8
+	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 14:11:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 545A1188E860
-	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 12:11:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA7984E68A1
+	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 12:11:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C432026A09A;
-	Wed, 21 May 2025 12:10:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92E062686A5;
+	Wed, 21 May 2025 12:10:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="grNf7JRq"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="hKETg3Pu"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2052.outbound.protection.outlook.com [40.107.94.52])
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2084.outbound.protection.outlook.com [40.107.102.84])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71C4A268690;
-	Wed, 21 May 2025 12:10:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AE55267F44;
+	Wed, 21 May 2025 12:10:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.84
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747829428; cv=fail; b=mYux6/50mbpN/5rBsJRkU+rCFYgXv6HcOwyuGMMlrNRQTTCSi21SjGK1x170FdScRp2XZe3G9at/YJEBZmbMk+HBzxLbyXwW+VfbwjR/CZUvuIROJTrDMBLja5cNJIhztJuQlSLuNPewqDEWf50arHKaO+isZroKY8JtvODeI4g=
+	t=1747829426; cv=fail; b=YElhNY+vyFXb5zYlJNm/+jdiNW+RIrDou/0Ng56mTpt4SYRwr/BFdui9UF55QaEsSU832FZJ/4pA5A4eTFvWmI++W2uOPao8KBYP4kxrvwvsIo5iAmjdwuh4cPe4obqq3nVyur7ULKpY1RBwK9ZoFK1aXUVopQHIdkoXVPripVc=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747829428; c=relaxed/simple;
-	bh=3ncon6ta0gWsqdvYlqPU6POpYbAdmRb8DIQzRfdfGKU=;
+	s=arc-20240116; t=1747829426; c=relaxed/simple;
+	bh=kSxuhH6CcBB1pGIlCR9bagjHmIGUG2t2VaCaszXtcjk=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ijbyxzZs5LKhyauhH+PIB27Vjkj/4VYqKQthYGlzY4gOHPuJP74zQamdetGQfy/xSYuHzm4/O3DtNY3zIRu+L3oVlLhq6MUX8mlVcd8H2VDG8WFtdWVF7p15MHfT7p7ptsnrKM37q/H7P851ri+MoLseou1a8AcEUQuw4YUYULc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=grNf7JRq; arc=fail smtp.client-ip=40.107.94.52
+	 MIME-Version:Content-Type; b=MXxB3xlt2IOazn3R8haKmbNhYtuJ9qKASvhp7wvoAcvK1YPmdR12RKHbvD4lEBGzrnGrB9TEnkDxIf+/d6I+7lkorGIV5T/jLssGdRPJPDUYqtoAQsjFuIn0BiNcpX7FzcOCGfiW0eUlEnwUh6/uJvk4LRRhsdpZUm8Vcr7Qe68=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=hKETg3Pu; arc=fail smtp.client-ip=40.107.102.84
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=S2/PZsF/4N4w5Huom+sTYDCXArlcF4kBfwAF/IU3Kr856696DdYorlumpobbo6X/5fzuLRvt2gvV4jsoa271c2v4ghooo3G/rrS6cU4hf6Ojl5asGFuU7nbVrsWYLKf1GhHniyMMt9fcF5LfA94ClIti8UjI3YSvCFuQSuaCd6hvcRZ3tGPqcpTgFm7L/JHCjPel5uBIWySpjVGjuU0wPXgWnzoffErCZ8M2/cILgvGN0BLYiQ9Ty+AHES663fas5I6yqRZ0OU6Drf2DnA7jMS70Z2mwwIBZ+wMSz38iqrOpObxGaQYQmCYBw78CVs5b9hDFWXQgoW9L7vxvVcfoug==
+ b=WcDMXhXk+uQLy3ShuEUXWtYEMjCYxuXzFZo8uyuAGaeU9qruPm9xzlYqpRPJiM+51yCSausLpq3vCk2baYViZ5d+ZyCwIfKEqujtC2EJajwm450ZWE+Jcfe/r+BUw61t7MLL2cPZELbzN2w+E02HMUItT0fCt1GvvBtbBN7nN1Z6SJ3Q73HwtSUTCbpLuIHbO6o5bC/qav9zdQ3dNu+jUEW0sptyHyNcYbH8LGrFOHK4z4NOoa8OzImjxx2swIZIaRa9XlodA43W5BIwqxVEzFv+B1lu4hKTLgiaKZ51Us5dUGjoxS9tUbcO1pe7rjaIVLhlMVrGEOeUs15OVTKb+g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=590wC9aOMtp9de48HYbocZtv6/4hQ4j3SJMHxdKCDbY=;
- b=ZewxkIVi+C0put1IFEOaUtd6X1Tya248xcLYc4ntOH0CgQRCLsTUlOpYCC/qQSM8LlatAD12/T2vezziHo7CDpcUa2JVWlkTsN1DP3OoJCqrxfhMnL33kDIcr+jgWWMLTJy/ZiBhyb1hEUQ4/V4gMRO8PUI9EQlUqbUfQl4jU3nUawreMHN4VUe9uVUah9ZWqyIHttIzpxRRzu3t9vMY161fR1disVrctz8BcdNUaILj/C3NmP2FbYNsVS4uqjoloaJ2lIwnEfc5IsguqmWxmHlUxGGl6q00Nbz12B+kyVNIlDdPcly77+01gR2ItTpGQk2FuZztD8IyIWQ5/I3o9A==
+ bh=G+7Vej9OqVluxU9s5Dxz8U9W9HlMyYxsBYhdPtNATiY=;
+ b=yOZ7Plq33Xf1+zUscqiKf5vHxnYU8ucET+/yoyrcPdT/NDAfNrXcKXYSKeFIblZyJknK+BMxiz7M3PuVeDjG2ufg2usxDfV/8DMkNvEnnGUEvRHZKSOHW+QnkAAO1eizYO6QeMadxJ5Eaxrng2nQjaPTEq+IQUMBMrp4c4g3xli7dlAceP92QCNgmeLqiqnVx3MyM4c/Ijm7GcIVA2MYIiH55Vypq9BvvMnqMqjcQ9tWNulPDworTCovjttwvHIgXYV4m+6BiZ6IgzeGVasbB6BGRysXqNnH29/FHANnQlkt5ztqNXmJ8eXmxbrd6j+WkUGmY6/82LSH2hl7VbmgOg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
+ 216.228.117.161) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=590wC9aOMtp9de48HYbocZtv6/4hQ4j3SJMHxdKCDbY=;
- b=grNf7JRqsH/hBd8vgziUwqtQfMXYtWn9GX3BxLMr8aZZaPxksXnVkeZkGaQSWi/MMBsd8sJYrxuHO+eXFXkXW3+xg2foukOmXtSl2sI61+uYTcNsB3oi0u58GjpOFv/jgBtSI9zs1VwsgM9bx23ro9+Qcq9Ynz07DvU/X9ZVJMTFiYnLn0/R4BIh+VkP/nxpiUuqp6sqYScE4fsrfjMo2sXO9aFqUb/amypDAgbJ7UiVfkXiXWwP2O00AmdIo2x7zTVLHY4M3QS8GqBEnm+z9lLee1Nfk7YcJedXuPDUBVnrK2BXdUPmsRDQPPNfdyNVIJsxgmIzvpm040t5ualuQg==
-Received: from PH7PR17CA0044.namprd17.prod.outlook.com (2603:10b6:510:323::15)
- by CY3PR12MB9630.namprd12.prod.outlook.com (2603:10b6:930:101::14) with
+ bh=G+7Vej9OqVluxU9s5Dxz8U9W9HlMyYxsBYhdPtNATiY=;
+ b=hKETg3PuhaqH0tIsDJHMc5Y3WsQfMJSkvwgo+Lwwsa//TvBKBJacUYm/eX53m381tz7usbNmlLYV6fryXuKPHtnyvNv039hM34UsL12qMvrc8NNTrVkvyVApeOIIxltBUmzHM5QabyP8sQ7caCO6nVYCSfeJgyb95SzQYZVMy3e/O1RAqCVmnTjqdu+Ty1HWyuDJfB4P39XNrWqgbcSEIiw1Pw+1BK9CBDUUrT8rtxxtn01XPileRzB3vXFfm9P+wMVbzvdoxonV+QGniQ+sn0XJzVbilbJbFIXXGaPg7elXaWVYszkl1dex8u7ZyvN+yPUHCEhWBY64g7SQ6I7j1w==
+Received: from BYAPR07CA0022.namprd07.prod.outlook.com (2603:10b6:a02:bc::35)
+ by SN7PR12MB7276.namprd12.prod.outlook.com (2603:10b6:806:2af::8) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8746.30; Wed, 21 May
- 2025 12:10:20 +0000
-Received: from SN1PEPF00036F43.namprd05.prod.outlook.com
- (2603:10b6:510:323:cafe::c2) by PH7PR17CA0044.outlook.office365.com
- (2603:10b6:510:323::15) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8746.34 via Frontend Transport; Wed,
- 21 May 2025 12:10:19 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8722.31; Wed, 21 May
+ 2025 12:10:21 +0000
+Received: from SJ5PEPF00000208.namprd05.prod.outlook.com
+ (2603:10b6:a02:bc:cafe::fc) by BYAPR07CA0022.outlook.office365.com
+ (2603:10b6:a02:bc::35) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8769.19 via Frontend Transport; Wed,
+ 21 May 2025 12:10:21 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- SN1PEPF00036F43.mail.protection.outlook.com (10.167.248.27) with Microsoft
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ SJ5PEPF00000208.mail.protection.outlook.com (10.167.244.41) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8769.18 via Frontend Transport; Wed, 21 May 2025 12:10:19 +0000
+ 15.20.8769.18 via Frontend Transport; Wed, 21 May 2025 12:10:20 +0000
 Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 21 May
- 2025 05:10:01 -0700
+ 2025 05:10:06 -0700
 Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail201.nvidia.com
  (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Wed, 21 May
- 2025 05:10:00 -0700
+ 2025 05:10:06 -0700
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.7)
  with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Wed, 21
- May 2025 05:09:55 -0700
+ May 2025 05:10:01 -0700
 From: Tariq Toukan <tariqt@nvidia.com>
 To: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, "Andrew
@@ -91,9 +91,9 @@ CC: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, "Saeed
 	<netdev@vger.kernel.org>, <bpf@vger.kernel.org>, Moshe Shemesh
 	<moshe@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Gal Pressman
 	<gal@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>
-Subject: [PATCH net-next 3/5] IB/IPoIB: Allow using netdevs that require the instance lock
-Date: Wed, 21 May 2025 15:09:00 +0300
-Message-ID: <1747829342-1018757-4-git-send-email-tariqt@nvidia.com>
+Subject: [PATCH net-next 4/5] net/mlx5e: Don't drop RTNL during firmware flash
+Date: Wed, 21 May 2025 15:09:01 +0300
+Message-ID: <1747829342-1018757-5-git-send-email-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.8.0
 In-Reply-To: <1747829342-1018757-1-git-send-email-tariqt@nvidia.com>
 References: <1747829342-1018757-1-git-send-email-tariqt@nvidia.com>
@@ -107,240 +107,94 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: AnonymousSubmission
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF00036F43:EE_|CY3PR12MB9630:EE_
-X-MS-Office365-Filtering-Correlation-Id: f989acce-6e0b-4cd6-2fb8-08dd98607483
+X-MS-TrafficTypeDiagnostic: SJ5PEPF00000208:EE_|SN7PR12MB7276:EE_
+X-MS-Office365-Filtering-Correlation-Id: 09b187d7-e54d-431b-6570-08dd98607563
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|36860700013|1800799024|7416014|82310400026;
+	BCL:0;ARA:13230040|82310400026|36860700013|7416014|376014|1800799024;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?hYo7lwr/YEnTSUaNY8tuOJIfetF6OCinOeciaJQAw662oYQFVO8m693/jiK5?=
- =?us-ascii?Q?Xup5yM4Uc2iYdf+cHSBdfyMN/fJ5dFONfcPnBVsC6Io3oJ7rtr3ZLOMvvk63?=
- =?us-ascii?Q?s4kUSctlqWNvfU2KW5TQ0envSvB1s2LpAnv0HW2BKZVvYuGjNkGCknPezVBf?=
- =?us-ascii?Q?kW7mvQHXtm7DRIoxApsnWg1eYfi6RSGlYQo16sgntC2vM3RyQk7n04OQIqQ+?=
- =?us-ascii?Q?DQMaOJuISJRIZD352mxnZkXbQpCvp58iUbeAm/UG5Y4KKVgk0KLFoUlbbyfY?=
- =?us-ascii?Q?ZmmnYMZQ8ZvrGBlcPoDmyTObd1Y2zdjTBZOexgH1wjqHUfbH1HZmV2+W4Wcy?=
- =?us-ascii?Q?xbjL0EE6i17/Wn2WVnPCFBTsEnVYknjSyZfRKw5mKONuiQ9aA242ZBpQygKv?=
- =?us-ascii?Q?wjV+RXVTIvl0ANQK9E9eys2EK+ZaQtul6B6CZw3LpPIPb4uwG7IbRKVQV5H2?=
- =?us-ascii?Q?dHl6NgKQq0UfNw7cU5hf908gsRbNoE48bpIUPb7UYPMWk7mGsHHjUVTwC5WM?=
- =?us-ascii?Q?Jmh6LnHQWgmNIerGnZAkavesXaE3qi2nIRNcpTaQM/EFsmWNZEV4lS+CzJSm?=
- =?us-ascii?Q?aw6E/3VsqJaiEGYfpkH96VDumD/dHFReVZrT8K68fLINCy4YKuq4amvD5/Tv?=
- =?us-ascii?Q?jScvFC0FhujNoSBrn/NCcWaUo/esPe5l4X73EE0z1kLjYNR9NvXJO3ZAWt93?=
- =?us-ascii?Q?Nicrh4Unk+6AbToelAZIQEdn1pmMnu1XWntPNbiDq6m9SKzM/KY76tmGwzHe?=
- =?us-ascii?Q?YoQT6ul5DrBOdb2jxgTQyji+zB189vjv7j8QBZIj0SD4ATRnTkjpWGsbcizq?=
- =?us-ascii?Q?6bFo1CqVZBMkZNYJAG8bplT0psZSXJsKXYrygr6dYFsN4YZYXvwgL2aXX4lj?=
- =?us-ascii?Q?0F+6jelaTNp63j7OXtqC8Fn+k179EWMCiGKCCkYCcKUIBh/7pFAaDUXauh3K?=
- =?us-ascii?Q?cWx6zXcMoGVbCN/y1tXnjVbS45tDeCowi8m/CW9z5R7tOhyxWlVeGtSmcinz?=
- =?us-ascii?Q?0B425XldlhUhfn187OkMXeaAJcd6y3zZ7ZjZfRFTTlE1FNPAw7cUrHoMtc+2?=
- =?us-ascii?Q?rxiZtKTK27aVORdvo4uRwu+i6aNr16M5y9qXlhPpQBxhUHYKP6Pl8o6sI3UW?=
- =?us-ascii?Q?dlIStu2NethrzxxZ6bbhREiWIExC3TOr0LfbEHMJivcdpeFGzwRJ4g4XiuVD?=
- =?us-ascii?Q?2yIwqulfHl/bx08bO801x+51RGVK3Hh0bdqIOO5YjJDSAbdMF4JrfK62Us9h?=
- =?us-ascii?Q?Xe3ML3TGr8sTvOc+/aTD07xkXD/5APp3DwDfijib/S3UjgZVxfQYGtkI1U3M?=
- =?us-ascii?Q?7Lq6Evls9hqIRSTxbfH+MT1mbLuQQeE10It6/Q9jCs50Ra6m/qZSTJ7jJwvO?=
- =?us-ascii?Q?j1k2AewwhJGAln2SBuow0WeyQapCloENrgBfIhMtaTszLAlv+6jMU9s4VJCs?=
- =?us-ascii?Q?UsWCwjRBXqELURc1AUeyBuMnQIMpPg6DlVegfnx8ha7WmHOD1YSLvGAx7yqk?=
- =?us-ascii?Q?WRkNeGnNLtCLSmX7hI9Lyd9mTwLb6fbew565?=
+	=?us-ascii?Q?tHYUKogkKoZPgjf0bZq7H8h4TxgComi16AXskmDdoRhPyhZM+HhQATOj1BXX?=
+ =?us-ascii?Q?nUyUeISwuSOvtbGKlDVyhfI3FlKJDc/l6v5bg0V/gzzYU4uu+Jcyf/6TX188?=
+ =?us-ascii?Q?Wjs00iOE+rqgAVwi45ZNPZQF/8V51UOp6unWxRLO0KHwt7YmS8Sk0ckvDgAd?=
+ =?us-ascii?Q?D3utSRvfeyo4iAkOJ7Gn5YxdclxpqGTUKW8eIHJKMCcAnIl3NG9b3ToVsAj6?=
+ =?us-ascii?Q?G2Vbx4+cAV0/jXdItre4/7/r8csZ22PbVMyAtxY1mLYNTKmeRwhj0IHIBvAW?=
+ =?us-ascii?Q?jT1h9sUYXic6lCGkRoHDkAX4UvTQc3V6EuyuAyVN0WZLbAeweJWiPRQLGSHV?=
+ =?us-ascii?Q?SjzdUz3QLzZpETysEGko/fS5H/YsTL1Q9uaAH10UmPdUFB7qJ0jmhK9oVYsY?=
+ =?us-ascii?Q?sa6iJP1rBXHZQWunxDLGN1sjcnG/NLd9w653zmbB8mqUgEKHQBjPDUkhZObZ?=
+ =?us-ascii?Q?4iE6bciTgruUXJjfu8b4KGaTgI9tTNGgbgFIgiHa5ZHqAfetEBp43jb9D4R0?=
+ =?us-ascii?Q?YigxpLNRviECERtw4DrHmP278IT64Db3hbIfcyJockfWw6X9/EXAukykW34T?=
+ =?us-ascii?Q?MdteVDh7hSvbILOzYFFh/s5+w4X/Ww0Zg1VKAxq/kZR6PUFL0BlhXn7ASugN?=
+ =?us-ascii?Q?vn6wKvqf+yikHqvUvJs9VzKDMZMCEZ0Kqu3fhQoEG2X3T3ryoPRrsTqGS64Q?=
+ =?us-ascii?Q?klL88SiXHuOoexNZYsTVSJ31bAtDfqylUNwWFbdvx2s9DCX1QqBhC6Ck2JFG?=
+ =?us-ascii?Q?lGM06yKJZiSSd0UZJdEsLsa/4nSXj9IGRok0f977kvvsOB/aaxC6g8EuHqN9?=
+ =?us-ascii?Q?/1uc1WtfQRtst37yiw1zbkyqFLIC/kPa/hzklVLPWtanwv57m6k6C6jeq9Dy?=
+ =?us-ascii?Q?QSmn/1i442elAb83dSUz1TgDtcB7zTpr2BCrczJ+/p5iWNhKwA+emCHOk4MQ?=
+ =?us-ascii?Q?cH5Mozim1ZTHx/Ewpr6l1FTnPahwKY/N1bFSGmibI6Cxr9gLZdnh0+voVJ15?=
+ =?us-ascii?Q?XgdcCRTHi+1Z87U6EjYgFgVcJk6R2a+yKXLdasQPNG/Ab5XsE6oSNT2vlqYi?=
+ =?us-ascii?Q?yXp/dk7yQtvc3fgQ7YrhvPeoxPS6OOMIaespY/ixf1iQXu0bS7ZdF4vt08bb?=
+ =?us-ascii?Q?Pxz8vaSfsrQ85+oCHJMA1RV/Gqrh0PSXZcQHq59NWUOCy/gVEDd8e0G5UBMx?=
+ =?us-ascii?Q?8voiHDhnhIjjsVfZGrD0klqfELyHuDc5W+G61lT/T5YPOpIoJcGq5mSJIQXA?=
+ =?us-ascii?Q?x584wMLTzaTM+4jOABTZrd/mG46mFuNqE+Q+/7unqVZiPyp617EUbDSmYUvL?=
+ =?us-ascii?Q?DM4MbzZV9ip5R5YW9DLrZOTcuTzplQVOw2h/+8a+mFkUhXCt6uRVmFHLEu2a?=
+ =?us-ascii?Q?hlVeGILqx7a6mEh1bCh8aMC/Kny/kfxVL6ympY8n98e1VbWghuOpbs/dQwsY?=
+ =?us-ascii?Q?jGaLukySIY6TUs3thW8QMZk0KHoq0rkjDXubWoCF9btcZOHRz9CiQYdmR25b?=
+ =?us-ascii?Q?JYNZZjakFhTI7u+ebJfR6Q/UAMisL4qAH3N7?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(36860700013)(1800799024)(7416014)(82310400026);DIR:OUT;SFP:1101;
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(36860700013)(7416014)(376014)(1800799024);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 May 2025 12:10:19.4125
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 May 2025 12:10:20.9932
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f989acce-6e0b-4cd6-2fb8-08dd98607483
+X-MS-Exchange-CrossTenant-Network-Message-Id: 09b187d7-e54d-431b-6570-08dd98607563
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	SN1PEPF00036F43.namprd05.prod.outlook.com
+	SJ5PEPF00000208.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY3PR12MB9630
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7276
 
 From: Cosmin Ratiu <cratiu@nvidia.com>
 
-After the last patch removing vlan_rwsem, it is an incremental step to
-allow ipoib to work with netdevs that require the instance lock.
-In several places, netdev_lock() is changed to netdev_lock_ops_to_full()
-which takes care of not acquiring the lock again when the netdev is
-already locked.
+There's no explanation in the original commit of why that was done, but
+presumably flashing takes a long time and holding RTNL for so long
+blocks other interactions with the netdev layer.
 
-In ipoib_ib_tx_timeout_work() and __ipoib_ib_dev_flush() for HEAVY
-flushes, the netdev lock is acquired/released. This is needed because
-these functions end up calling .ndo_stop()/.ndo_open() on subinterfaces,
-and the device may expect the netdev instance lock to be held.
+However, the stack is moving towards netdev instance locking and
+dropping and reacquiring RTNL in the context of flashing introduces
+locking ordering issues: RTNL must be acquired before the netdev
+instance lock and released after it.
 
-ipoib_set_mode() now explicitly acquires ops lock while manipulating the
-features, mtu and tx queues.
-
-Finally, ipoib_napi_enable()/ipoib_napi_disable() now use the *_locked
-variants of the napi_enable()/napi_disable() calls and optionally
-acquire the netdev lock themselves depending on the dev they operate on.
+This patch therefore takes the simpler approach by no longer dropping
+and reacquiring the RTNL, as soon RTNL for ethtool will be removed,
+leaving only the instance lock to protect against races.
 
 Signed-off-by: Cosmin Ratiu <cratiu@nvidia.com>
 Reviewed-by: Carolina Jubran <cjubran@nvidia.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 ---
- drivers/infiniband/ulp/ipoib/ipoib_ib.c   | 19 +++++++++++-----
- drivers/infiniband/ulp/ipoib/ipoib_main.c | 27 ++++++++++++++---------
- 2 files changed, 31 insertions(+), 15 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/ipoib/ipoib_ib.c b/drivers/infiniband/ulp/ipoib/ipoib_ib.c
-index dc670b4a191b..10b0dbda6cd5 100644
---- a/drivers/infiniband/ulp/ipoib/ipoib_ib.c
-+++ b/drivers/infiniband/ulp/ipoib/ipoib_ib.c
-@@ -40,6 +40,7 @@
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+index e399d7a3d6cb..ea078c9f5d15 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+@@ -2060,14 +2060,9 @@ int mlx5e_ethtool_flash_device(struct mlx5e_priv *priv,
+ 	if (err)
+ 		return err;
  
- #include <linux/ip.h>
- #include <linux/tcp.h>
-+#include <net/netdev_lock.h>
- #include <rdma/ib_cache.h>
+-	dev_hold(dev);
+-	rtnl_unlock();
+-
+ 	err = mlx5_firmware_flash(mdev, fw, NULL);
+ 	release_firmware(fw);
  
- #include "ipoib.h"
-@@ -781,16 +782,20 @@ static void ipoib_napi_enable(struct net_device *dev)
- {
- 	struct ipoib_dev_priv *priv = ipoib_priv(dev);
- 
--	napi_enable(&priv->recv_napi);
--	napi_enable(&priv->send_napi);
-+	netdev_lock_ops_to_full(dev);
-+	napi_enable_locked(&priv->recv_napi);
-+	napi_enable_locked(&priv->send_napi);
-+	netdev_unlock_full_to_ops(dev);
+-	rtnl_lock();
+-	dev_put(dev);
+ 	return err;
  }
- 
- static void ipoib_napi_disable(struct net_device *dev)
- {
- 	struct ipoib_dev_priv *priv = ipoib_priv(dev);
- 
--	napi_disable(&priv->recv_napi);
--	napi_disable(&priv->send_napi);
-+	netdev_lock_ops_to_full(dev);
-+	napi_disable_locked(&priv->recv_napi);
-+	napi_disable_locked(&priv->send_napi);
-+	netdev_unlock_full_to_ops(dev);
- }
- 
- int ipoib_ib_dev_stop_default(struct net_device *dev)
-@@ -1240,10 +1245,14 @@ static void __ipoib_ib_dev_flush(struct ipoib_dev_priv *priv,
- 		ipoib_ib_dev_down(dev);
- 
- 	if (level == IPOIB_FLUSH_HEAVY) {
-+		netdev_lock_ops(dev);
- 		if (test_bit(IPOIB_FLAG_INITIALIZED, &priv->flags))
- 			ipoib_ib_dev_stop(dev);
- 
--		if (ipoib_ib_dev_open(dev))
-+		result = ipoib_ib_dev_open(dev);
-+		netdev_unlock_ops(dev);
-+
-+		if (result)
- 			return;
- 
- 		if (netif_queue_stopped(dev))
-diff --git a/drivers/infiniband/ulp/ipoib/ipoib_main.c b/drivers/infiniband/ulp/ipoib/ipoib_main.c
-index 4879fd17e868..f2f5465f2a90 100644
---- a/drivers/infiniband/ulp/ipoib/ipoib_main.c
-+++ b/drivers/infiniband/ulp/ipoib/ipoib_main.c
-@@ -49,6 +49,7 @@
- #include <linux/jhash.h>
- #include <net/arp.h>
- #include <net/addrconf.h>
-+#include <net/netdev_lock.h>
- #include <net/pkt_sched.h>
- #include <linux/inetdevice.h>
- #include <rdma/ib_cache.h>
-@@ -200,10 +201,10 @@ int ipoib_open(struct net_device *dev)
- 		struct ipoib_dev_priv *cpriv;
- 
- 		/* Bring up any child interfaces too */
--		netdev_lock(dev);
-+		netdev_lock_ops_to_full(dev);
- 		list_for_each_entry(cpriv, &priv->child_intfs, list)
- 			ipoib_schedule_ifupdown_task(cpriv->dev, true);
--		netdev_unlock(dev);
-+		netdev_unlock_full_to_ops(dev);
- 	} else if (priv->parent) {
- 		struct ipoib_dev_priv *ppriv = ipoib_priv(priv->parent);
- 
-@@ -238,10 +239,10 @@ static int ipoib_stop(struct net_device *dev)
- 		struct ipoib_dev_priv *cpriv;
- 
- 		/* Bring down any child interfaces too */
--		netdev_lock(dev);
-+		netdev_lock_ops_to_full(dev);
- 		list_for_each_entry(cpriv, &priv->child_intfs, list)
- 			ipoib_schedule_ifupdown_task(cpriv->dev, false);
--		netdev_unlock(dev);
-+		netdev_unlock_full_to_ops(dev);
- 	}
- 
- 	return 0;
-@@ -566,9 +567,11 @@ int ipoib_set_mode(struct net_device *dev, const char *buf)
- 		set_bit(IPOIB_FLAG_ADMIN_CM, &priv->flags);
- 		ipoib_warn(priv, "enabling connected mode "
- 			   "will cause multicast packet drops\n");
-+		netdev_lock_ops(dev);
- 		netdev_update_features(dev);
--		dev_set_mtu(dev, ipoib_cm_max_mtu(dev));
-+		netif_set_mtu(dev, ipoib_cm_max_mtu(dev));
- 		netif_set_real_num_tx_queues(dev, 1);
-+		netdev_unlock_ops(dev);
- 		rtnl_unlock();
- 		priv->tx_wr.wr.send_flags &= ~IB_SEND_IP_CSUM;
- 
-@@ -578,9 +581,11 @@ int ipoib_set_mode(struct net_device *dev, const char *buf)
- 
- 	if (!strcmp(buf, "datagram\n")) {
- 		clear_bit(IPOIB_FLAG_ADMIN_CM, &priv->flags);
-+		netdev_lock_ops(dev);
- 		netdev_update_features(dev);
--		dev_set_mtu(dev, min(priv->mcast_mtu, dev->mtu));
-+		netif_set_mtu(dev, min(priv->mcast_mtu, dev->mtu));
- 		netif_set_real_num_tx_queues(dev, dev->num_tx_queues);
-+		netdev_unlock_ops(dev);
- 		rtnl_unlock();
- 		ipoib_flush_paths(dev);
- 		return (!rtnl_trylock()) ? -EBUSY : 0;
-@@ -1247,6 +1252,7 @@ void ipoib_ib_tx_timeout_work(struct work_struct *work)
- 	int err;
- 
- 	rtnl_lock();
-+	netdev_lock_ops(priv->dev);
- 
- 	if (!test_bit(IPOIB_FLAG_ADMIN_UP, &priv->flags))
- 		goto unlock;
-@@ -1261,6 +1267,7 @@ void ipoib_ib_tx_timeout_work(struct work_struct *work)
- 
- 	netif_tx_wake_all_queues(priv->dev);
- unlock:
-+	netdev_unlock_ops(priv->dev);
- 	rtnl_unlock();
- 
- }
-@@ -2404,10 +2411,10 @@ static void set_base_guid(struct ipoib_dev_priv *priv, union ib_gid *gid)
- 	netif_addr_unlock_bh(netdev);
- 
- 	if (!test_bit(IPOIB_FLAG_SUBINTERFACE, &priv->flags)) {
--		netdev_lock(priv->dev);
-+		netdev_lock_ops_to_full(priv->dev);
- 		list_for_each_entry(child_priv, &priv->child_intfs, list)
- 			set_base_guid(child_priv, gid);
--		netdev_unlock(priv->dev);
-+		netdev_unlock_full_to_ops(priv->dev);
- 	}
- }
- 
-@@ -2450,10 +2457,10 @@ static int ipoib_set_mac(struct net_device *dev, void *addr)
- 	if (!test_bit(IPOIB_FLAG_SUBINTERFACE, &priv->flags)) {
- 		struct ipoib_dev_priv *cpriv;
- 
--		netdev_lock(dev);
-+		netdev_lock_ops_to_full(dev);
- 		list_for_each_entry(cpriv, &priv->child_intfs, list)
- 			queue_work(ipoib_workqueue, &cpriv->flush_light);
--		netdev_unlock(dev);
-+		netdev_unlock_full_to_ops(dev);
- 	}
- 	queue_work(ipoib_workqueue, &priv->flush_light);
  
 -- 
 2.31.1
