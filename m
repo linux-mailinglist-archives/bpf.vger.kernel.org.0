@@ -1,93 +1,172 @@
-Return-Path: <bpf+bounces-58670-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58671-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDF63ABFD18
-	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 20:58:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 508A4ABFD1D
+	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 21:02:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB3DC9E0993
-	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 18:57:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BDA6D7B300A
+	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 19:01:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EB5C28F92D;
-	Wed, 21 May 2025 18:58:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CD4F230BE1;
+	Wed, 21 May 2025 19:02:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="em6N0JJI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57C2D27C157
-	for <bpf@vger.kernel.org>; Wed, 21 May 2025 18:58:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A16DDDD2
+	for <bpf@vger.kernel.org>; Wed, 21 May 2025 19:02:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747853884; cv=none; b=C/3xOIjnt1W7QIpa/M0LRxMbLlzBvJcin/6/CNYsihqz7A8wV+ZxHSHRVOIjY0S893cazKIIJVYmURQ/pAz+py0eggE27ETjPhoqw54JNEeA/L5Fp0Ml8/KII0geDiKoo6OVIrvItLyjoaeCFz3+Hxorah10O88nROf4N1+lVAo=
+	t=1747854138; cv=none; b=Rcl/i1fJKx0Rs6PDKAWA95HekZ/bnUNptiMVi/+cH71IjrdfaZvUABz31XqHNrxa8INv0L06r7ft4gJz4n6Z5ubxLETtwp8dCfU95JiBtkFixh4w/bc5+lHn9j3gQ70zImyD3QDw04xV8xgB/z3eD+n4HvfMZWx9YCmOSkFMhoI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747853884; c=relaxed/simple;
-	bh=IIYBLz5y0lJuE+esG9JSDGx+EOrG7hEtCwd5A8t+qoI=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=FVFVJKjE7fZnOriQoqGeOuLsHBCW1WhS1CfEIFfK9ZgcPS/NGLWe0VjlrPHDyBPAAyxnj/8COFn/oPdlpt12U+mR4+roAeWW5r6CzUcV+jH4RN3hyCbtiuPpS5WqxGd4Y3n5uAgQGaK0i1Xw0BYiONH2w6PSNlvSVVNZsfEHp0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-85e318dc464so1091790039f.1
-        for <bpf@vger.kernel.org>; Wed, 21 May 2025 11:58:03 -0700 (PDT)
+	s=arc-20240116; t=1747854138; c=relaxed/simple;
+	bh=y+v6KgOpxOSWkPLBBvXxdpqaPk1WXo7MQBN0ca0iwpU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LwRzGtl1VCE9BBSB7gsyPridfmBK6irE9DFLlUyYhfqgWOnK/ey3EoKHLsLSKxJ1VQmtMV8hG438KxQlAQWx7WT2hwjACDK05+fw8Dq6fNSIZ46p/LJpmPVKEuSQa8dk3zy7y4k7wez5/xF9n0qe1sa2IaGFZkLIj7Cl6glcyEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=em6N0JJI; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-72d3b48d2ffso6756427b3a.2
+        for <bpf@vger.kernel.org>; Wed, 21 May 2025 12:02:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747854137; x=1748458937; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JJnpP+B5SU0HhSHZsITnsIHK5nyl25rKiHYXhhgPlfc=;
+        b=em6N0JJIHcpJ7YAObPDOXh+EvxzVh1GaKZryZ5JISpwiP4gzGQYHoR1LZ/MsaRRuDh
+         caSusOEej0ghOeOuuDTSh1nrRnCbO1el9udtzSo1mWAqkPSrRnwWoDjQHBv5mrJofPqo
+         C01J6vJahidI0iUyt75CxbSXkgnDPUa6ZJEKfux+aCJFL6LDc7GhjZCx2OUSh1bkIxJM
+         vBodhmDcTUzwl4U7pWGldwgL9zRM4rg9T/O6DJV47o9i5IBt0Aw0t+zDXxEhksrI8ziJ
+         +TY1MAmUUeObqZC91pPeLV9ONW5uveECDo55S4I+3XkwiyWrZ5hm/oqyA1R7h0GqEQDB
+         nd3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747853882; x=1748458682;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20230601; t=1747854137; x=1748458937;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nB/8d55nWyugqS33sarTI4rY6RGp/V0J2j5OKmFWsrE=;
-        b=O8u2oA7XJJuinImyZGMPqyc6BSk+tQHh67y7rmK/84sZfTOeXjp+w4DaKuvJAQyWnf
-         n2EaPn/fmk2L1Njh/TDUiNuURgRjYASC5KrNMWxPUBhHtkuPj4zj06V5JqZMQpl20+5t
-         iOYoUThgJmZ6hv2A8/QXw2AU6wpH+crp+fhHoF/W/2r++DG5Xtik5k3V3blD/t2t2MMW
-         +K9i7Itf/K4U5/Mne6l0mwpQVKkPR6eb5ptpriFq6dO9AXLa5VHFgHGzpQuvV7T7otb8
-         zDTc0FgTUO+EKwceNrWuQX/VhbyxJoWMied453Hi5wf1ToIQcBz7frKpspWxqUK2zPE2
-         8peQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWy4pgjpurLiZfuTREfT1oyz9LDr0BTw5iyQfGz79ihdIWuVP1anODoUliREOyIYQ8mZxc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyisXSyyUrXpRwLee/p9MFYBUnNUr/XcwMHjqEf189aL5fA2aEd
-	FhLjid04IF1QvF6sXDOKH18h/gU7aBi0nBm+qUxeCWqO6NomfY3FOWzWxUnvRTQLgCm15pDIK0i
-	p2EBZqco2aKKe6r3O9BwOQRjEnzL2bgrQYO3x44sLSAb8SYOh/9wpXrYhNpc=
-X-Google-Smtp-Source: AGHT+IGZXy6uJ5JwUj1EcK76bd07+C3bl4uCX+YCPk9hntjnxboB+d/V0UrafDL2ydl6zRFBIcD1bTTdjsOfrSGgFWGfKdAnJzAd
+        bh=JJnpP+B5SU0HhSHZsITnsIHK5nyl25rKiHYXhhgPlfc=;
+        b=nE17VNgEHCYvVLbnBFmufB8ZJKLjLkmzEs6lQik0lpQ83ovUSwxWREPJ1WqwsCOuf2
+         clMaLUIEtKNfuYriFkhu+L5cQjiA24Dp0Vyk06bUAnPMo8WpG8rqvJ+WlR7PBVgQLhsw
+         k+wtEjf2QfvjU2jgUlmlB+SG+M7+We1PaqL42b2UESV1SPd65tbsOHH2mwVAMX/USbct
+         gExzTfFOwangiMjK0Myzxh+bwh62pE0l72GKwia4t3tuTmySWcyljr/P+C5Y3Tsxa0fL
+         AvJF0iPGtfdeUvNEvo+Brhe41Zr+fu3IPCB2OWmRqQo+vAAqmPEpacuhkko7R9dmIXeP
+         Ykjg==
+X-Forwarded-Encrypted: i=1; AJvYcCWxtLozu6NRT/2EKeUOTpuuTIiwZ7UzYSN9edmDYz6QBtZ7EC1BXmKg6wI+Izl0kBzllO4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzVsmRUyoF+H5T5gn8iYBzfaZ/0lS0CHxB59tMT0rmQbr2odvQ1
+	S7yfx2xUf3jD7peIHPp9pu/Qf+br4VSIsSAFPI2wZgBgt/EREdwzzJiMDo85h+g+
+X-Gm-Gg: ASbGncvFaXvHNh6kcQsty2oEOGWqTboObaMTpO27fPkLw5ZPG4FpToq7xaSAPwdwYCT
+	08CGsxvMaoZkTSmkUKZ1N8Xzt2wEYOdTQxXGq7AovwrExPCquBamKj28c6hjGIe22E3wn72JD6n
+	dFeGfe1qLDVeDOCKIc+SmUQe3D2Y6XvEAU1S801TzmBMVAJ+f/DLnkuRMoQRPG+By09MBHJN4mc
+	a4VdcV4Tw7bzUHS6Zyg6fu82xSTW70wsU5QOnc19kj/yySJ5exxcYa8bR3IWmaY39Qq5Y7KHrL4
+	7hzX+C0zHjloc2TnO1jB7TJw3J5W81NE3b8kaZko97BSvl8tg0sSdJlqlmR1fj4f5+jgJ90+KJZ
+	oVy2pIrZStBgzTLEu
+X-Google-Smtp-Source: AGHT+IETsJhUGhcDAQMhV1JgivmDzFPT7jgW49+FNfnMUzHBylE0VgdCUx17OdqLTjoHYVJfJGHBpg==
+X-Received: by 2002:a05:6a20:7d9b:b0:1f5:8e33:c417 with SMTP id adf61e73a8af0-2170cb051b7mr33261154637.2.1747854136519;
+        Wed, 21 May 2025 12:02:16 -0700 (PDT)
+Received: from ?IPV6:2a03:83e0:115c:1:cb3:38cf:dbbe:7f85? ([2620:10d:c090:500::6:8d1a])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-742a9739d06sm9979355b3a.83.2025.05.21.12.02.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 May 2025 12:02:16 -0700 (PDT)
+Message-ID: <6dd9752a-4bec-423d-8936-8757251f2b50@gmail.com>
+Date: Wed, 21 May 2025 12:02:14 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:3887:b0:867:d48:342b with SMTP id
- ca18e2360f4ac-86a2322a7e1mr1570254639f.11.1747853882464; Wed, 21 May 2025
- 11:58:02 -0700 (PDT)
-Date: Wed, 21 May 2025 11:58:02 -0700
-In-Reply-To: <mb61p7c29zugi.fsf@kernel.org>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <682e223a.a00a0220.2a3337.0002.GAE@google.com>
-Subject: Re: [syzbot] [bpf?] WARNING in bpf_check (4)
-From: syzbot <syzbot+0ef84a7bdf5301d4cbec@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, puranjay@kernel.org, 
-	sdf@fomichev.me, song@kernel.org, syzkaller-bugs@googlegroups.com, 
-	yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: Add tests with stack ptr
+ register in conditional jmp
+To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+ Martin KaFai Lau <martin.lau@kernel.org>
+References: <20250521170409.2772304-1-yonghong.song@linux.dev>
+ <20250521170414.2773034-1-yonghong.song@linux.dev>
+Content-Language: en-CA
+From: Eduard Zingerman <eddyz87@gmail.com>
+In-Reply-To: <20250521170414.2773034-1-yonghong.song@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello,
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+On 2025-05-21 10:04, Yonghong Song wrote:
 
-Reported-by: syzbot+0ef84a7bdf5301d4cbec@syzkaller.appspotmail.com
-Tested-by: syzbot+0ef84a7bdf5301d4cbec@syzkaller.appspotmail.com
+[...]
 
-Tested on:
+> @@ -178,4 +178,57 @@ __naked int state_loop_first_last_equal(void)
+>   	);
+>   }
+>   
+> +__used __naked static void __bpf_cond_op_r10(void)
+> +{
+> +	asm volatile (
+> +	"r2 = 2314885393468386424 ll;"
+> +	"goto +0;"
+> +	"if r2 <= r10 goto +3;"
+> +	"if r1 >= -1835016 goto +0;"
+> +	"if r2 <= 8 goto +0;"
+> +	"if r3 <= 0 goto +0;"
+> +	"exit;"
+> +	::: __clobber_all);
+> +}
+> +
+> +SEC("?raw_tp")
+> +__success __log_level(2)
+> +__msg("8: (bd) if r2 <= r10 goto pc+3")
+> +__msg("9: (35) if r1 >= 0xffe3fff8 goto pc+0")
+> +__msg("10: (b5) if r2 <= 0x8 goto pc+0")
+> +__msg("mark_precise: frame1: last_idx 10 first_idx 0 subseq_idx -1")
+> +__msg("mark_precise: frame1: regs=r2 stack= before 9: (35) if r1 >= 0xffe3fff8 goto pc+0")
+> +__msg("mark_precise: frame1: regs=r2 stack= before 8: (bd) if r2 <= r10 goto pc+3")
+> +__msg("mark_precise: frame1: regs=r2 stack= before 7: (05) goto pc+0")
+> +__naked void bpf_cond_op_r10(void)
+> +{
+> +	asm volatile (
+> +	"r3 = 0 ll;"
+> +	"call __bpf_cond_op_r10;"
+> +	"r0 = 0;"
+> +	"exit;"
+> +	::: __clobber_all);
+> +}
 
-commit:         4a95bc12 Merge tag 'rproc-v6.15-fixes' of git://git.ke..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=125d60e8580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1f68e7ba43fbfd48
-dashboard link: https://syzkaller.appspot.com/bug?extid=0ef84a7bdf5301d4cbec
-compiler:       arm-linux-gnueabi-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=152c4ad4580000
+This was probably a part of the repro, but I'm not sure
+this test adds much compared to test below.
+The changes do not interact with subprogram calls handling.
 
-Note: testing is done by a robot and is best-effort only.
+> +
+> +SEC("?raw_tp")
+> +__success __log_level(2)
+> +__msg("3: (bf) r3 = r10")
+> +__msg("4: (bd) if r3 <= r2 goto pc+1")
+> +__msg("5: (b5) if r2 <= 0x8 goto pc+2")
+> +__msg("mark_precise: frame0: last_idx 5 first_idx 0 subseq_idx -1")
+> +__msg("mark_precise: frame0: regs=r2 stack= before 4: (bd) if r3 <= r2 goto pc+1")
+> +__msg("mark_precise: frame0: regs=r2 stack= before 3: (bf) r3 = r10")
+> +__naked void bpf_cond_op_not_r10(void)
+> +{
+> +	asm volatile (
+> +	"r0 = 0;"
+> +	"r2 = 2314885393468386424 ll;"
+> +	"r3 = r10;"
+> +	"if r3 <= r2 goto +1;"
+> +	"if r2 <= 8 goto +2;"
+
+I think it would be good to add two more cases here:
+- dst register is pointer to stack
+- both src and dst registers are pointers to stack
+
+> +	"r0 = 2 ll;"
+> +	"exit;"
+> +	::: __clobber_all);
+> +}
+> +
+>   char _license[] SEC("license") = "GPL";
 
