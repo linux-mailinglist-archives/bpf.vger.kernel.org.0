@@ -1,175 +1,106 @@
-Return-Path: <bpf+bounces-58666-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58667-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E8F2ABFCEB
-	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 20:37:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFB4FABFCEE
+	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 20:39:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35DEB1894CC8
-	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 18:38:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 243221BC11C1
+	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 18:39:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D268C28F50C;
-	Wed, 21 May 2025 18:37:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34C4928ECEE;
+	Wed, 21 May 2025 18:39:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E3Yenc73"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E8A7289820;
-	Wed, 21 May 2025 18:37:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A99BD231A3B;
+	Wed, 21 May 2025 18:39:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747852664; cv=none; b=l9o2qRO4tQUaAj2mLN2Ie46dp3HPGhLN7YF3Sho5rdIlR+y90HwK/BMi4JAb+gUW81KvahykUYiyqtDCTULEwYPFu4LEjz0BuQg5oSCkYNYtkDJG+xpQy7RW1KeA/UMR6jRX3dFvvAmTevt7cTTfmNqIq5k/Zm/HL5QK4RG4vHk=
+	t=1747852759; cv=none; b=K/cfEUPCbYrKD71pDu7JGcELx+I8dvFwaSX4SgTrafju8V9rlzmqqXcjc8lsIsdu34w6bfXzRcEJG+kPCYQXzyiN14vuDb+an8qcDjFwKaEzZ8gO8pcOmEfTjgeDCXPf/ftWZqmDW6MFPrS95byC9OUQRzXx8X93hsD+hWfRhCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747852664; c=relaxed/simple;
-	bh=Aos9Ol6hokUVBuT33LhS3DKWl1E6gsmX4YWWAPnjFxk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FSAhNqeaNeKR9H7TzGveIoCfNtcxoDQlonJh+JEWyTSZIvPnW7e7byasFm/8Rd2VjM5qYHQCkTuCAyiw5ZMDLzIzYfIjydqbgI2bzN+sYYfRkX3H6wuljOrE2YlRPU5C9F8RqgZvggsqSnsuWjaKqzNBYdRfKraUbnvmPjSSeqo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1811C4CEE4;
-	Wed, 21 May 2025 18:37:39 +0000 (UTC)
-Date: Wed, 21 May 2025 19:37:37 +0100
-From: Catalin Marinas <catalin.marinas@arm.com>
-To: Ankur Arora <ankur.a.arora@oracle.com>
-Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org,
-	arnd@arndb.de, will@kernel.org, peterz@infradead.org,
-	akpm@linux-foundation.org, mark.rutland@arm.com,
-	harisokn@amazon.com, cl@gentwo.org, ast@kernel.org,
-	memxor@gmail.com, zhenglifeng1@huawei.com,
-	xueshuai@linux.alibaba.com, joao.m.martins@oracle.com,
-	boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
-Subject: Re: [PATCH v2 1/7] asm-generic: barrier: add
- smp_cond_load_relaxed_timewait()
-Message-ID: <aC4dcZ2veeavM2dR@arm.com>
-References: <20250502085223.1316925-1-ankur.a.arora@oracle.com>
- <20250502085223.1316925-2-ankur.a.arora@oracle.com>
+	s=arc-20240116; t=1747852759; c=relaxed/simple;
+	bh=SBLn1mgsCy1yNEPCrv9gyDzDQdEqfOao0Sm1vEgW7PA=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=DNw2Wb00XCIoPgPeOQdVjqsVeQ0ccitRAWM8l0tM68UhkpoNDxHqYfhyVx0JPPDS9QwaOdSxRz1I3+uSzLocpaJ+qrkJfnIwfwRBw4HHt8I9zw3veOIgwf3t8Jv8fPlSJT3uv/2gv/JG0c/G2/qW1L3qfH3xRp9XGNSHMGs+x/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E3Yenc73; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBA2AC4CEE4;
+	Wed, 21 May 2025 18:39:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747852758;
+	bh=SBLn1mgsCy1yNEPCrv9gyDzDQdEqfOao0Sm1vEgW7PA=;
+	h=From:To:Subject:Date:From;
+	b=E3Yenc7324pISYWoa4gqYevKb7WyXAR4Sqja93qV0uAesVQUVzrh7qJPfqb+0W7kI
+	 V/VJ8bErdlbIyUGaq+2yHgG9ahz2fwykiCcJotU9RF8mPeHsPcwIDBCcohVTYiMQlU
+	 ZMgTnDQ3ZmKQYGpEjBN0FDqs2cJeYZwZVQR4wDkLR70Ls7t3wftBqb5mBNLKnZX5nW
+	 Eafb8Dk4csYUPwp7R1EALiVWOraeHIkMv6qXb1Q4Kq9niyPh19UW1zk7j01GMCM0dE
+	 hU/eB/k4feF0qErLAV4vysR0X+ufke+VFTZnZqnhLuapCisYZRSIccHoIM9N2MHdS1
+	 pN9CYluQOlRgQ==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH bpf] bpf: verifier: support BPF_LOAD_ACQ in insn_def_regno()
+Date: Wed, 21 May 2025 18:39:09 +0000
+Message-ID: <20250521183911.21781-1-puranjay@kernel.org>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250502085223.1316925-2-ankur.a.arora@oracle.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Ankur,
+insn_def_regno() currently returns -1 for a BPF_LOAD_ACQ which is
+incorrect as BPF_LOAD_ACQ loads a value from (src_reg + off) into the
+dst_reg.
 
-Sorry, it took me some time to get back to this series (well, I tried
-once and got stuck on what wait_policy is supposed to mean, so decided
-to wait until I had more coffee ;)).
+This was uncovered by syzkaller while fuzzing on arm32 architecture
+where this function was being called by opt_subreg_zext_lo32_rnd_hi32()
+and the warning inside this function was triggered because the
+BPF_LOAD_ACQ instruction can read 32 bit values so it needs to be
+zero-extended on some archs (eg. arm32) but the destination register (to
+be zero-extended) returned by insn_def_regno() was invalid (-1).
 
-On Fri, May 02, 2025 at 01:52:17AM -0700, Ankur Arora wrote:
-> diff --git a/include/asm-generic/barrier.h b/include/asm-generic/barrier.h
-> index d4f581c1e21d..a7be98e906f4 100644
-> --- a/include/asm-generic/barrier.h
-> +++ b/include/asm-generic/barrier.h
-> @@ -273,6 +273,64 @@ do {									\
->  })
->  #endif
->  
-> +/*
-> + * Non-spin primitive that allows waiting for stores to an address,
-> + * with support for a timeout. This works in conjunction with an
-> + * architecturally defined wait_policy.
-> + */
-> +#ifndef __smp_timewait_store
-> +#define __smp_timewait_store(ptr, val) do { } while (0)
-> +#endif
-> +
-> +#ifndef __smp_cond_load_relaxed_timewait
-> +#define __smp_cond_load_relaxed_timewait(ptr, cond_expr, wait_policy,	\
-> +					 time_expr, time_end) ({	\
-> +	typeof(ptr) __PTR = (ptr);					\
-> +	__unqual_scalar_typeof(*ptr) VAL;				\
-> +	u32 __n = 0, __spin = 0;					\
-> +	u64 __prev = 0, __end = (time_end);				\
-> +	bool __wait = false;						\
-> +									\
-> +	for (;;) {							\
-> +		VAL = READ_ONCE(*__PTR);				\
-> +		if (cond_expr)						\
-> +			break;						\
-> +		cpu_relax();						\
-> +		if (++__n < __spin)					\
-> +			continue;					\
-> +		if (!(__prev = wait_policy((time_expr), __prev, __end,	\
-> +					  &__spin, &__wait)))		\
-> +			break;						\
-> +		if (__wait)						\
-> +			__smp_timewait_store(__PTR, VAL);		\
-> +		__n = 0;						\
-> +	}								\
-> +	(typeof(*ptr))VAL;						\
-> +})
-> +#endif
-> +
-> +/**
-> + * smp_cond_load_relaxed_timewait() - (Spin) wait for cond with no ordering
-> + * guarantees until a timeout expires.
-> + * @ptr: pointer to the variable to wait on
-> + * @cond: boolean expression to wait for
-> + * @wait_policy: policy handler that adjusts the number of times we spin or
-> + *  wait for cacheline to change (depends on architecture, not supported in
-> + *  generic code.) before evaluating the time-expr.
-> + * @time_expr: monotonic expression that evaluates to the current time
-> + * @time_end: compared against time_expr
-> + *
-> + * Equivalent to using READ_ONCE() on the condition variable.
-> + */
-> +#define smp_cond_load_relaxed_timewait(ptr, cond_expr, wait_policy,	\
-> +					 time_expr, time_end) ({	\
-> +	__unqual_scalar_typeof(*ptr) _val;;				\
-> +	_val = __smp_cond_load_relaxed_timewait(ptr, cond_expr,		\
-> +					      wait_policy, time_expr,	\
-> +					      time_end);		\
-> +	(typeof(*ptr))_val;						\
-> +})
+Fixes: 880442305a39 ("bpf: Introduce load-acquire and store-release instructions")
+Reported-by: syzbot+0ef84a7bdf5301d4cbec@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/bpf/682dd10b.a00a0220.29bc26.028e.GAE@google.com/T/#m1457e14da8cf6c1d9703b446c224407bca758f5c
+Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+---
+ kernel/bpf/verifier.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-IIUC, a generic user of this interface would need a wait_policy() that
-is aware of the arch details (event stream, WFET etc.), given the
-__smp_timewait_store() implementation in patch 3. This becomes clearer
-in patch 7 where one needs to create rqspinlock_cond_timewait().
-
-The __spin count can be arch specific, not part of some wait_policy,
-even if such policy is most likely implemented in the arch code (as the
-generic caller has no clue what it means). The __wait decision, again, I
-don't think it should be the caller of this API to decide how to handle,
-it's something internal to the API implementation based on whether the
-event stream (or later WFET) is available.
-
-The ___cond_timewait() implementation in patch 4 sets __wait if either
-the event stream of WFET is available. However, __smp_timewait_store()
-only uses WFE as per the __cmpwait_relaxed() implementation. So you
-can't really decouple wait_policy() from how the spinning is done, in an
-arch-specific way. In this implementation, wait_policy() would need to
-say how to wait - WFE, WFET. That's not captured (and I don't think it
-should, we can't expand the API every time we have a new method of
-waiting).
-
-I still think this interface can be simpler and fairly generic, not with
-wait_policy specific to rqspinlock or poll_idle. Maybe you can keep a
-policy argument for an internal __smp_cond_load_relaxed_timewait() if
-it's easier to structure the code this way but definitely not for
-smp_cond_*().
-
-Another aspect I'm not keen on is the arbitrary fine/coarse constants.
-Can we not have the caller pass a slack value (in ns or 0 if it doesn't
-care) to smp_cond_load_relaxed_timewait() and let the arch code decide
-which policy to use?
-
-In summary, I see the API something like:
-
-#define smp_cond_load_relaxed_timewait(ptr, cond_expr,
-				       time_expr, time_end, slack_ns)
-
-We can even drop time_end if we capture it in time_expr returning a bool
-(like we do with cond_expr).
-
-Thanks.
-
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 54c6953a8b84..9aa67e46cb8b 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -3643,6 +3643,9 @@ static bool is_reg64(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ /* Return the regno defined by the insn, or -1. */
+ static int insn_def_regno(const struct bpf_insn *insn)
+ {
++	if (is_atomic_load_insn(insn))
++		return insn->dst_reg;
++
+ 	switch (BPF_CLASS(insn->code)) {
+ 	case BPF_JMP:
+ 	case BPF_JMP32:
 -- 
-Catalin
+2.47.1
+
 
