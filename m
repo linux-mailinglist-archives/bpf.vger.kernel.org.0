@@ -1,128 +1,130 @@
-Return-Path: <bpf+bounces-58630-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58631-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0189ABE8C4
-	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 02:58:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 902E6ABE8D6
+	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 03:07:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E219E7A761F
-	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 00:58:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE8CB8A348E
+	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 01:07:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D49B135950;
-	Wed, 21 May 2025 00:58:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BB0114830F;
+	Wed, 21 May 2025 01:07:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z6o9hlUR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OWuP6I29"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E9D4F9C1;
-	Wed, 21 May 2025 00:58:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 709EB381BA
+	for <bpf@vger.kernel.org>; Wed, 21 May 2025 01:07:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747789113; cv=none; b=iGUuTWZTiS5+8QpVlvb6MozvpfxbSGp8VGTcY119J5jCR7RP/0z5k8umZsxMP8oMYpAew8ohpTRjnfrvVPhPAJ17haGLzkf7CV7aN41QL83CFp8mHC5grOxf0TiY9YVym3L5H4+x2gITpekBuo1MX7hX3TqTSwD0WJoaOKP1IVg=
+	t=1747789650; cv=none; b=LmsCTI0cEXiunZR7y85WXelSEaxk5R+2adhqogwXa+98aIi8iRS07P1FQfgZsG34JgN4W3VTf/swxYwPqI8Le7iAm/49gC1iTQpbGWIdi1XpO2mTfkWNF7ECQCBd34IQgwlxDXCUItybBmiPM7uYcuX/OyirJkHFkg5yf9tY/Ls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747789113; c=relaxed/simple;
-	bh=HyW+5TiMfu23CqQhtcIrNmOiegHzg3H0wfU8MWchsEU=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lNERVgrFzOO2uTYCODOMoTT9mCjhlE321I25HodKMpKXzoxBfUheLSDEylZ+wJQBZDXHo6jcGr1p/uYA52p0sO9nCJMKtnoqd5U/lUJbaDUgPm95gVVQrzWy1PEQdw/rifeiLveY2Upm2u+bDjpcJDilamfennD5FKUjcAWOymo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z6o9hlUR; arc=none smtp.client-ip=209.85.214.179
+	s=arc-20240116; t=1747789650; c=relaxed/simple;
+	bh=VD+r9HjeTnN8Vkgm7CFS3ntG6kPd9ZZCB/Y7pg8pgts=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=M4ZaoXC3lzj5oK3M9oI/O+eOboXS8jFu86/0+NNwyXABkE/ipsdwatxDPimjzApnsjttZzQeD25E0fjMvSNK7tKupuRhFPycXnosOWG9kygd7/kZmNSTfkEXfv4Tk0XqA+6vWY8IrDUSQuTButiREJWgjwxrg2SIW3bzX79wzWU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OWuP6I29; arc=none smtp.client-ip=209.85.128.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-231e98e46c0so37200095ad.3;
-        Tue, 20 May 2025 17:58:31 -0700 (PDT)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-442ccf0e1b3so76583945e9.3
+        for <bpf@vger.kernel.org>; Tue, 20 May 2025 18:07:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747789111; x=1748393911; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3q3ks04REvLgidweturj0ZAba0HHBIhzpzDzZr1ALwE=;
-        b=Z6o9hlURiNXczJ9qDclJYm02rx41qS5ue14lmAmEY2+/qAKz7rmuIQOIQykvowtTQV
-         tvpcPaZG2+MOEEhqMroK7BqDBNOCHskZVje9AoEuOt72tEfhEJ5pT2IduIE698xHEMA1
-         b7jpB0z5ushDkpG29rYbcU2iFC9GfmQ3CzzGraAGALInpMYAlP/o8+sRS9dkEkPOR4kS
-         apkt9Me7qQ45uL0w0/VroljrllswZ8ej6KoHl2NH5/pxN31/kjDB9Fxg4p47a181DI7p
-         jaQkR/Xktl2UOwJemMmqK3lrz/NY5PTL003LwRAHGK6UQ5fFNPL2xfY23ZuFv7qyd6J6
-         ClGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747789111; x=1748393911;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1747789647; x=1748394447; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3q3ks04REvLgidweturj0ZAba0HHBIhzpzDzZr1ALwE=;
-        b=nVRyjDSWhvX/PBWmHtYO2uf9XDdBWobqtVsDFcWF2qhQocj4hx7V3BNJvoeSDQ6QBx
-         dxMFr+79grS6EV8P0TmTrXKS0lNCzssDFAnJn+zPwQ1B2rpI9yDbomGCRTv2wMnCP37o
-         jJSdP7s7qOLHgEO3JW/3TAy6XAOngwymdx6JC4o2ofJgPxyqqIXJQ0fCm1OVxG/swzP9
-         l9oQv9Df8QG4ww4oM5DvnWGlnvp9umLHtBgQhwMNHuvNEwpVPROZTKceeOm2y51G5r4E
-         Qq0iQZFXLRUjBSmwsRPFR5X2ZLSg5CBeK/H2r1CyhbTMNRTZxXnALBT4iTxS/yY2qxs6
-         qWzg==
-X-Forwarded-Encrypted: i=1; AJvYcCVfRGIr7DGKuHtcn/i9opX/FFyoOHe8VNxa0760/kIhX/VLKvyv5pCz1owxYdPuykvJ9MY=@vger.kernel.org, AJvYcCWBkaWDBI28ao0Fvf53BVeRJMzb9lrUxQl2Lql7BEoBZTTU6SQRnZUw5HYWUEpiL/XheAxhfDio4w==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzTUxsI4E0RrJLUCtqEK3ijmx3MbIM8yFfFXIShjuANj81GXtkG
-	lPS9KGXw1ZIHmlpOdNbeHy7pJoKa7HVf26S05kmtMGiXuCdRFyVsYvEi
-X-Gm-Gg: ASbGnctSUK4IxoYUMwc87yDeiq73MPU9+8+KyjBeG1lA0ZeRc24Sa9SzE4ub+N/E0kd
-	Gu5i/hBAcEd92ST66nYdeAcM1PbRQRjUsFatCRbwOj2FumA7jvJBBlfN1vbc7xmSMPwxWkfeosy
-	fQLYFCTSXkaiyWQPJVrM7flw2uXnAW7hSYDHHfzT3koBrtE+q4HK7SQcVnQ4DPjnGlM+lgGug5F
-	/4cNzt7Gkb/n3pA+q1Cq9aCppOhgNZAw3vVfuYITmF8YYJ3XHwAwjHlrcWpae3VWclCgVPDjUTl
-	8u3zgODu9s+bRt+dRQb9IulUkN7Y+ceWm7KBy9/TGPQbEeTF11XRqXJA142v94v2gfdSSqFxTm/
-	3J/ZVvm2GQeQD6+cBSw==
-X-Google-Smtp-Source: AGHT+IE6k+fzD0eNBVN7y4HhpT7EAwkxwLSJMH/EmlHosqk9l8AlZQJro5cUEIEkhULN8N9kK0naaQ==
-X-Received: by 2002:a17:903:41d0:b0:220:e362:9b1a with SMTP id d9443c01a7336-231d452dd76mr279392605ad.25.1747789111093;
-        Tue, 20 May 2025 17:58:31 -0700 (PDT)
-Received: from kodidev-ubuntu (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-231d4ed2ac7sm82687045ad.225.2025.05.20.17.58.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 May 2025 17:58:30 -0700 (PDT)
-From: Tony Ambardar <tony.ambardar@gmail.com>
-X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
-Date: Tue, 20 May 2025 17:58:27 -0700
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, martin.lau@linux.dev,
-	ast@kernel.org, andrii@kernel.org, alexis.lothore@bootlin.com,
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
-	haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
-	bpf@vger.kernel.org, dwarves@vger.kernel.org
-Subject: Re: [RFC bpf-next 0/3] bpf: handle 0-sized structs properly
-Message-ID: <aC0lM9/RhCTlZ3W5@kodidev-ubuntu>
-References: <20250508132237.1817317-1-alan.maguire@oracle.com>
- <CAEf4BzZfFixwy4vQG8jrUBtAOUFx=t1KG2F+AtKPVNCsMz0vQw@mail.gmail.com>
- <8faae89d-3515-480c-9abe-4d0e7514e41b@oracle.com>
- <9a41b21f-c0ae-4298-bf95-09d0cdc3f3ab@oracle.com>
+        bh=AYeHP6battmahxDSs2HdNqIbhXYVd16XCi/geHswjRU=;
+        b=OWuP6I29OwwwmyQifvlekvW88y2KH1kwrsdqbAWvjkLGBO6Snub/REas6oRqO3Onr/
+         hLVwRq3UuSurjosibscsiwnc8vFxPLjUcOsmp/OMI/WzJIOpLXLg8c1/omuQJxie1Ywt
+         qBgCh5Et3CrgUXG9TZ2sQWlws6Xx2jqqQrb2X61H/Uv5AUs8TJTVwt2Hv2Sx3XaSdVbw
+         zdSBpOyG7SuOULj0spomVRfDw6hHlZD27JsQdtopKYuzMyHYh/LfRF+XrVvmPDo6klWY
+         795hJqRl4weTucJy85vufrISGnNAj3SBY6+JYxSAJ25qNPNRwLZb4LYzEJMLXlBQkL+L
+         94QQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747789647; x=1748394447;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AYeHP6battmahxDSs2HdNqIbhXYVd16XCi/geHswjRU=;
+        b=jLlHEtBbAhSvW+vg7VucYcBcQzPIwm85zS9MmioMJYqf+hQwQDX5ndXlMpq7DVIK7N
+         GL+iimy4Yp4f+c5zzZkGGPW2f9X37suhrvZrwn5fJYqlyVV577HSoa+pm/BFJYZBYQs2
+         xOe/ecHaKd+W5wcyT8u9ZCe3Xi8E2XsYsQJs6LdcAsIfXKyWGGj/QmddRZQmNqWa7/XY
+         yhnZQimmZW0BIzWezwfMrXOAFJrDHLLUBs+2qnw+dar/gKhQVN4vPIFJo05VqYg3j3Gc
+         A1/H0JRL1NcZx212ccLtnddUJyLDgQXPAby64lXCaGoAyGKUgUd24BE8EkadTcNda15G
+         romw==
+X-Gm-Message-State: AOJu0Ywup3OK4Srb7WqQTZEfb482nhGaPvQ+vRmqLsQxRMz9CdUrW/CE
+	lQFlFZqBM1guOu5mngQh02hgMdsTK+cWe5TJi64+fHpM/029VMy3hUykOOgBNAPrnuLcQN2iel7
+	ktfwov9kPrAT6pXmHhas44GAeh9jCSmUa2xMu
+X-Gm-Gg: ASbGncvkEwMAHbFI8R8Gm4AoFxPZEto+yUSyVZwy5q+w75VaW21nDdpHidsHHCu8IIF
+	Vrdvbuo9y1BCSGnYZ5UWSO6bHjDRAPEOTmAaXjUWaqoRwnbm9qtiANqV/N2reqkL2519MAJ7dd3
+	9kPvbKWYfy11wUHshXFqgrYK878VLsN6f40Y7tC3G0aI+lmqkYeljnerr3QoH6KQ==
+X-Google-Smtp-Source: AGHT+IGQL93OReVwlOg8HtI0Kn8CjyVfc750LRqNp7jat5DB/9AyQXJ7+xkZcSYQ/FvWRxSryuL6lQt8g4bS73x2O0c=
+X-Received: by 2002:a05:600d:c:b0:442:ff8e:11ac with SMTP id
+ 5b1f17b1804b1-442ff8e1221mr150661135e9.12.1747789646484; Tue, 20 May 2025
+ 18:07:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9a41b21f-c0ae-4298-bf95-09d0cdc3f3ab@oracle.com>
+References: <aCz84JU60wd8etiT@mail.gmail.com>
+In-Reply-To: <aCz84JU60wd8etiT@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 20 May 2025 18:07:15 -0700
+X-Gm-Features: AX0GCFsKRvPUZH008t0aezbcszWD7-6aM72RE_MZITyTHzHV0iSiV4DCrcYSLhI
+Message-ID: <CAADnVQL8zB_aC8hDDBVuW30mSwc1pu2=04yMiiOfZSZFcEgQEQ@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next] bpf: Support L4 csum update for IPv6 address changes
+To: Paul Chaignon <paul.chaignon@gmail.com>, Martin KaFai Lau <martin.lau@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, May 20, 2025 at 09:59:27AM +0100, Alan Maguire wrote:
-[...]
-> 
-> I discussed this with Jose, and the gcc behaviour with zero-sized
-> structs varies a bit between architectures. Given that complexity, my
-> inclination would be to class functions with 0-sized struct parameters
-> as having inconsistent representations. They can then be tackled by
-> adding location info on a per-site basis later as part of the
-> inline-related work. For now we would just not emit BTF for them, since
-> without that site-specific analysis we can't be sure from function
-> signature alone where parameters are stored. In practice this means
-> leaving one function out of kernel BTF.
-> 
-> So long story short, I think it might make sense to withdraw this series
-> for now and see if we can tweak Tony's patch to class functions with
-> 0-sized parameters as inconsistent as the v1 version did, meaning they
-> don't get a BTF representation. Thanks!
-> 
-> Alan
-> 
-[...]
+On Tue, May 20, 2025 at 3:06=E2=80=AFPM Paul Chaignon <paul.chaignon@gmail.=
+com> wrote:
+>
+> In Cilium, we use bpf_csum_diff + bpf_l4_csum_replace to, among other
+> things, update the L4 checksum after reverse SNATing IPv6 packets. That
+> use case is however not currently supported and leads to invalid
+> skb->csum values in some cases. This patch adds support for IPv6 address
+> changes in bpf_l4_csum_update via a new flag.
+>
+> When calling bpf_l4_csum_replace in Cilium, it ends up calling
+> inet_proto_csum_replace_by_diff:
+>
+>     1:  void inet_proto_csum_replace_by_diff(__sum16 *sum, struct sk_buff=
+ *skb,
+>     2:                                       __wsum diff, bool pseudohdr)
+>     3:  {
+>     4:      if (skb->ip_summed !=3D CHECKSUM_PARTIAL) {
+>     5:          csum_replace_by_diff(sum, diff);
+>     6:          if (skb->ip_summed =3D=3D CHECKSUM_COMPLETE && pseudohdr)
+>     7:              skb->csum =3D ~csum_sub(diff, skb->csum);
+>     8:      } else if (pseudohdr) {
+>     9:          *sum =3D ~csum_fold(csum_add(diff, csum_unfold(*sum)));
+>     10:     }
+>     11: }
+>
+> The bug happens when we're in the CHECKSUM_COMPLETE state. We've just
+> updated one of the IPv6 addresses. The helper now updates the L4 header
+> checksum on line 5. Next, it updates skb->csum on line 7. It shouldn't.
+>
+> For an IPv6 packet, the updates of the IPv6 address and of the L4
+> checksum will cancel each other. The checksums are set such that
+> computing a checksum over the packet including its checksum will result
+> in a sum of 0. So the same is true here when we update the L4 checksum
+> on line 5. We'll update it as to cancel the previous IPv6 address
+> update. Hence skb->csum should remain untouched in this case.
 
-Agreed that sounds reasonable, and I'd like to resolve the original
-problem on 32-bit, so will update my patch and resend.
+Is ILA broken then?
+net/ipv6/ila/ila_common.c is using
+inet_proto_csum_replace_by_diff()
 
-Thanks,
-Tony
+or is it simply doing it differently?
 
