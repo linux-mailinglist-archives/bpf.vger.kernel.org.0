@@ -1,237 +1,140 @@
-Return-Path: <bpf+bounces-58673-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58674-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8AD9ABFDA8
-	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 22:03:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD87FABFDAE
+	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 22:05:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88E054A605E
-	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 20:03:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 030053B213E
+	for <lists+bpf@lfdr.de>; Wed, 21 May 2025 20:04:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD03828FA97;
-	Wed, 21 May 2025 20:03:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAEB428FA82;
+	Wed, 21 May 2025 20:05:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mWWZj7R6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BQps1h7K"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FB6E280CE3;
-	Wed, 21 May 2025 20:03:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C98E1A5B86;
+	Wed, 21 May 2025 20:05:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747857798; cv=none; b=IMq/y4Efsv19laDtXVkm9nZspY/ykn1qQMnDF7DjUbdBEeLeBp6wDO0bwFQg1RXNuYCoLSc+cunxpa7oyigSKu6SkMSYGbPcSK62fugfnqwsPnIYZJag7UJAk1m9JyEOcy/R/7fqtiCQmlxOo5xJ1U/j9B5vM1lx5bG9LSn3hn4=
+	t=1747857902; cv=none; b=H0scb6AU4X+sBhLGWxb1sVrNyZWnwcXpizaG6g6a4nOmJ51Qn9Wf0uT3JYdO1UOrAYCxFy90mnSKKZ1t//3/BmflZIXrKWSm2S/9GJI0T71pIGJqghT0IV/wmEnv4MZFJ3mETpW2EnDeu6iwpb6nEs+3wxTqnG3Sf6sL1QwTHBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747857798; c=relaxed/simple;
-	bh=c/lBvX1t0gd9nnoWFybO/osjBDzkiXG4M59v4FZ8sf8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Iy7VHtaVmEb1HBryVWpldctvQMgNLsbm3Av2CbAhGnyhCxeKITNQ/u1chCc9SaWVqfiW0YhUfUZII3viSKf2HCyz4m7pwGiolbmVxJhTMWcBHU5+yrmXdOVpCcNO8LJVy/pPamn2VxjRLSGef+8xBDbOL3Kin/7/V2+biZfORXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mWWZj7R6; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1747857796; x=1779393796;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=c/lBvX1t0gd9nnoWFybO/osjBDzkiXG4M59v4FZ8sf8=;
-  b=mWWZj7R6p1Vh7kllJhmVHa7xhtd4hebgxuCp5MhJ+xH9Dy30pYMxGX7p
-   E2EHHu0qjhEtadQdeFU/ghSqY/coYE54TUg7bTavXkq65p+Nn1O++gPdG
-   bmWTlE//JGNW3TUekdnZH9/O1K+LSiqxQkbFb2v2wEhPuqYg1iGXIZSLN
-   2KzbCTiL8ZcEbxk1tNXLcmf7UgRap9IaoJIChubiQG2rFCMnU1KAkabuO
-   ESfe1J5vxQU8kKUkoUcKi1Vj3ci6wkwFZvH/fwiq/XbOWyj9CbIO/vdsr
-   pZt7B7+bOrTWfd3WXU0LplXEMoIZnanNuW0pExrE7XpjN5PmJCUa4/zrI
-   Q==;
-X-CSE-ConnectionGUID: 7JYa0CTQQZmFJ2Xheg2tJQ==
-X-CSE-MsgGUID: Fa0PApTkSGCrreJYA9DnQw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11440"; a="49559854"
-X-IronPort-AV: E=Sophos;i="6.15,304,1739865600"; 
-   d="scan'208";a="49559854"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2025 13:03:15 -0700
-X-CSE-ConnectionGUID: 3Bdhf4yrTLmOUTqYJ8mFWA==
-X-CSE-MsgGUID: LOiko2IMQqO7hPfwYYrSYA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,304,1739865600"; 
-   d="scan'208";a="140132394"
-Received: from lkp-server01.sh.intel.com (HELO 1992f890471c) ([10.239.97.150])
-  by fmviesa006.fm.intel.com with ESMTP; 21 May 2025 13:03:09 -0700
-Received: from kbuild by 1992f890471c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uHped-000OZc-0Q;
-	Wed, 21 May 2025 20:03:07 +0000
-Date: Thu, 22 May 2025 04:02:41 +0800
-From: kernel test robot <lkp@intel.com>
-To: Bhupesh <bhupesh@igalia.com>, akpm@linux-foundation.org
-Cc: oe-kbuild-all@lists.linux.dev, bhupesh@igalia.com,
-	kernel-dev@igalia.com, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	oliver.sang@intel.com, lkp@intel.com, laoar.shao@gmail.com,
-	pmladek@suse.com, rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
-	alexei.starovoitov@gmail.com, andrii.nakryiko@gmail.com,
-	mirq-linux@rere.qmqm.pl, peterz@infradead.org, willy@infradead.org,
-	david@redhat.com, viro@zeniv.linux.org.uk, keescook@chromium.org,
-	ebiederm@xmission.com, brauner@kernel.org, jack@suse.cz,
-	mingo@redhat.com, juri.lelli@redhat.com, bsegall@google.com,
-	mgorman@suse.de
-Subject: Re: [PATCH v4 2/3] treewide: Switch memcpy() users of 'task->comm'
- to a more safer implementation
-Message-ID: <202505220326.5yDQHjnt-lkp@intel.com>
-References: <20250521062337.53262-3-bhupesh@igalia.com>
+	s=arc-20240116; t=1747857902; c=relaxed/simple;
+	bh=wMqRVwT/Nyu/9c14xlcNNOnLCeR9/ETKJ25YybtF3l4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fWdrgNgS5ciXA+SFSXGV18SyYRkBXpcpTl916A8qrv7PLz6U4DHue4ovTncaeofi9qTjIHojpIpMzJITDJaqErTbAMj5IQ1/1M8JbKiDP9sr3wfYwUEtiLJgUmzIsO8RGIqJXyIuhUqYApJAZp5STyby+bqyJ3BNuNfqu/go74Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BQps1h7K; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3a36ab95a13so2740663f8f.3;
+        Wed, 21 May 2025 13:05:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747857899; x=1748462699; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9enirY0SQGAYYvH7urd3jEIBdZ8xYI4Y7D4a+GFsDSI=;
+        b=BQps1h7K4izv+jOTkOt6dRaXVOI9smtDLtlXsNXSlwpGh5pJhKnkm3RAFvCSuib5+I
+         h4lrh1H2f6FAom/6gjfM7QO2NVcs/aEJFaI99vLOGQ/YF7MOemomNu/H7q4vqrJUuhvR
+         NeEs5MJKNuBVGaU70qK5MSF4K9c+t4OqjbviZM7sVUw9DZp6++C0Nnxq0dERe8Eo/uBG
+         8fa0xJlqFcVLlruE2MoxOLtF8RJSx5MHK0WtxeAlOFguzI2zleM+7kQMj+lUkcV0C64Z
+         k1qqlYQoMa4p2eHSXkWdEdCqv9kU0488VBI6av2N1n/M3Py0bNmVIyqlImzsK7DSpIij
+         Xdrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747857899; x=1748462699;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9enirY0SQGAYYvH7urd3jEIBdZ8xYI4Y7D4a+GFsDSI=;
+        b=WOnCu937hZFvBzeu+I4w4JImWtqrsz40WIn39PMxJH8hJIU41vgwR67zwkFrVjvUUS
+         fUTu+1gQstWp19j1Ox/t7JSbmT4ZHo3fSaIuQtjf4lVVkPqsNcQZolBXe8JvvWaf1B/O
+         XysqtFiXXQ50aw0C+h6Gy2tEex88yMjpRtlWEOhLZdkBBUqnJoEmBxZKZfhyXeu4zVym
+         0w5kuR8TX8zWYGSXGhwSgTdYN+y1s/p88SY2bvLyGUFDcTVdtGEbQAZgdjblqRfBhVNc
+         9Z2VYnVG0A4bAgfLl+HYKYxb1N7qXceaU2eUymGUXmgv8vatK33iy9PK+FOe27CLX3Cv
+         +FYw==
+X-Forwarded-Encrypted: i=1; AJvYcCUQtDjyTm1eu7R8xL1o0vAqlFtU42equVql3pfomuFxI73QeKmVnHmlximg0aQ8t+/nfiDDMENezy/PiYul@vger.kernel.org, AJvYcCXPeAxYy0uFXZihGOqx/p2OrCJAzzPUKWTLLPZw9+qdG4RciIRceLX+di/zxcO8YQ/jp1U=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyVhDjWcvHKeDubWitBEgLiyNLdHwWhIh13e3SCvImSRALCABbV
+	fIbuIuJnn3HlW1Qk+/WBJFNFd4BLo3/xzjYi0i1gg39hKZNZj/J1Tcy4QY68H2g3sf6HHif1+4o
+	n9p7Oi5ecWHiesGLVbfhoRXpxfDKZs3k=
+X-Gm-Gg: ASbGncvkkNMMqK3AswqGL39efV6bwo33b+dYChHcn4nawzr9WU+ORffKPsRsohipmDc
+	JgPLgSiWmDSmEcb1vdk6uWU3tn9DboRSWmmo1mNC81+HD3pqBySqaIB3O2R+cUDUIFyNEBZfOnY
+	HaSBgGKd1Loi7DksSJoBEtCSB3Da31VghLaZ0yNAYlO+wckW4xjqLmk6azVjeZcA==
+X-Google-Smtp-Source: AGHT+IH6ZeaOWdlt8xat0t3dm+8LQC6if6IHF+lydOJLJMjJKR2mjaMSP490EsNnacwJILG2meGu/YiDkY4eGa8xga4=
+X-Received: by 2002:a05:6000:2507:b0:3a3:7031:59da with SMTP id
+ ffacd0b85a97d-3a370315bcamr11376204f8f.59.1747857898663; Wed, 21 May 2025
+ 13:04:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250521062337.53262-3-bhupesh@igalia.com>
+References: <20250521183911.21781-1-puranjay@kernel.org> <80ef5e2e-c2d9-45b7-9a48-f8c1a4767eae@gmail.com>
+In-Reply-To: <80ef5e2e-c2d9-45b7-9a48-f8c1a4767eae@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 21 May 2025 13:04:47 -0700
+X-Gm-Features: AX0GCFsYH19tcZ41YWJ6fA48uv2fJA3v_n94P_mad8cuG-omsVdikNasd3Hmoho
+Message-ID: <CAADnVQLgPBcRAqKfCXQwZae2jKDfp=xSFZCgzHgg-jcBTYp-yw@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: verifier: support BPF_LOAD_ACQ in insn_def_regno()
+To: Eduard Zingerman <eddyz87@gmail.com>, Peilin Ye <yepeilin@google.com>
+Cc: Puranjay Mohan <puranjay@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Bhupesh,
+On Wed, May 21, 2025 at 12:13=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.co=
+m> wrote:
+>
+>
+> On 2025-05-21 11:39, Puranjay Mohan wrote:
+> [...]
+> > @@ -3643,6 +3643,9 @@ static bool is_reg64(struct bpf_verifier_env *env=
+, struct bpf_insn *insn,
+> >   /* Return the regno defined by the insn, or -1. */
+> >   static int insn_def_regno(const struct bpf_insn *insn)
+> >   {
+> > +     if (is_atomic_load_insn(insn))
+> > +             return insn->dst_reg;
+> > +
+> >       switch (BPF_CLASS(insn->code)) {
+> >       case BPF_JMP:
+> >       case BPF_JMP32:
+>
+> I'm confused, is_atomic_load_insn() is defined as:
+>
+>           return BPF_CLASS(insn->code) =3D=3D BPF_STX &&
+>                  BPF_MODE(insn->code) =3D=3D BPF_ATOMIC &&
+>                  insn->imm =3D=3D BPF_LOAD_ACQ;
+>
+> And insn_def_regno() has the following case:
+>
+>           case BPF_STX:
+>                   if (BPF_MODE(insn->code) =3D=3D BPF_ATOMIC ||
+>                       BPF_MODE(insn->code) =3D=3D BPF_PROBE_ATOMIC) {
+>                           if (insn->imm =3D=3D BPF_CMPXCHG)
+>                                   return BPF_REG_0;
+>                           else if (insn->imm =3D=3D BPF_LOAD_ACQ)
+>                                   return insn->dst_reg;
+>                           else if (insn->imm & BPF_FETCH)
+>                                   return insn->src_reg;
+>                   }
+>                   return -1;
+>
+> Why is it not triggering?
+>
+> Also, can this be tested with a BPF_F_TEST_RND_HI32 flag?
+> E.g. see verifier_scalar_ids.c:linked_regs_and_subreg_def() test case.
 
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on trace/for-next]
-[also build test WARNING on tip/sched/core akpm-mm/mm-everything linus/master v6.15-rc7 next-20250521]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Bhupesh/exec-Remove-obsolete-comments/20250521-142443
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace for-next
-patch link:    https://lore.kernel.org/r/20250521062337.53262-3-bhupesh%40igalia.com
-patch subject: [PATCH v4 2/3] treewide: Switch memcpy() users of 'task->comm' to a more safer implementation
-config: arc-randconfig-002-20250522 (https://download.01.org/0day-ci/archive/20250522/202505220326.5yDQHjnt-lkp@intel.com/config)
-compiler: arc-linux-gcc (GCC) 8.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250522/202505220326.5yDQHjnt-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202505220326.5yDQHjnt-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from fs/coredump.c:20:
-   fs/coredump.c: In function 'do_coredump':
->> include/linux/coredump.h:57:7: warning: array subscript 16 is above array bounds of 'char[16]' [-Warray-bounds]
-      comm[TASK_COMM_LEN] = '\0'; \
-      ~~~~^~~~~~~~~~~~~~~
-   include/linux/coredump.h:63:43: note: in expansion of macro '__COREDUMP_PRINTK'
-    #define coredump_report_failure(fmt, ...) __COREDUMP_PRINTK(KERN_WARNING, fmt, ##__VA_ARGS__)
-                                              ^~~~~~~~~~~~~~~~~
-   fs/coredump.c:655:4: note: in expansion of macro 'coredump_report_failure'
-       coredump_report_failure(
-       ^~~~~~~~~~~~~~~~~~~~~~~
->> include/linux/coredump.h:57:7: warning: array subscript 16 is above array bounds of 'char[16]' [-Warray-bounds]
-      comm[TASK_COMM_LEN] = '\0'; \
-      ~~~~^~~~~~~~~~~~~~~
-   include/linux/coredump.h:63:43: note: in expansion of macro '__COREDUMP_PRINTK'
-    #define coredump_report_failure(fmt, ...) __COREDUMP_PRINTK(KERN_WARNING, fmt, ##__VA_ARGS__)
-                                              ^~~~~~~~~~~~~~~~~
-   fs/coredump.c:730:4: note: in expansion of macro 'coredump_report_failure'
-       coredump_report_failure("Core dump to %s aborted: "
-       ^~~~~~~~~~~~~~~~~~~~~~~
->> include/linux/coredump.h:57:7: warning: array subscript 16 is above array bounds of 'char[16]' [-Warray-bounds]
-      comm[TASK_COMM_LEN] = '\0'; \
-      ~~~~^~~~~~~~~~~~~~~
-   include/linux/coredump.h:63:43: note: in expansion of macro '__COREDUMP_PRINTK'
-    #define coredump_report_failure(fmt, ...) __COREDUMP_PRINTK(KERN_WARNING, fmt, ##__VA_ARGS__)
-                                              ^~~~~~~~~~~~~~~~~
-   fs/coredump.c:725:4: note: in expansion of macro 'coredump_report_failure'
-       coredump_report_failure("Core dump to %s aborted: "
-       ^~~~~~~~~~~~~~~~~~~~~~~
->> include/linux/coredump.h:57:7: warning: array subscript 16 is above array bounds of 'char[16]' [-Warray-bounds]
-      comm[TASK_COMM_LEN] = '\0'; \
-      ~~~~^~~~~~~~~~~~~~~
-   include/linux/coredump.h:63:43: note: in expansion of macro '__COREDUMP_PRINTK'
-    #define coredump_report_failure(fmt, ...) __COREDUMP_PRINTK(KERN_WARNING, fmt, ##__VA_ARGS__)
-                                              ^~~~~~~~~~~~~~~~~
-   fs/coredump.c:618:4: note: in expansion of macro 'coredump_report_failure'
-       coredump_report_failure("over core_pipe_limit, skipping core dump");
-       ^~~~~~~~~~~~~~~~~~~~~~~
->> include/linux/coredump.h:57:7: warning: array subscript 16 is above array bounds of 'char[16]' [-Warray-bounds]
-      comm[TASK_COMM_LEN] = '\0'; \
-      ~~~~^~~~~~~~~~~~~~~
-   include/linux/coredump.h:63:43: note: in expansion of macro '__COREDUMP_PRINTK'
-    #define coredump_report_failure(fmt, ...) __COREDUMP_PRINTK(KERN_WARNING, fmt, ##__VA_ARGS__)
-                                              ^~~~~~~~~~~~~~~~~
-   fs/coredump.c:642:4: note: in expansion of macro 'coredump_report_failure'
-       coredump_report_failure("|%s pipe failed", cn.corename);
-       ^~~~~~~~~~~~~~~~~~~~~~~
->> include/linux/coredump.h:57:7: warning: array subscript 16 is above array bounds of 'char[16]' [-Warray-bounds]
-      comm[TASK_COMM_LEN] = '\0'; \
-      ~~~~^~~~~~~~~~~~~~~
-   include/linux/coredump.h:63:43: note: in expansion of macro '__COREDUMP_PRINTK'
-    #define coredump_report_failure(fmt, ...) __COREDUMP_PRINTK(KERN_WARNING, fmt, ##__VA_ARGS__)
-                                              ^~~~~~~~~~~~~~~~~
-   fs/coredump.c:625:4: note: in expansion of macro 'coredump_report_failure'
-       coredump_report_failure("%s failed to allocate memory", __func__);
-       ^~~~~~~~~~~~~~~~~~~~~~~
->> include/linux/coredump.h:57:7: warning: array subscript 16 is above array bounds of 'char[16]' [-Warray-bounds]
-      comm[TASK_COMM_LEN] = '\0'; \
-      ~~~~^~~~~~~~~~~~~~~
-   include/linux/coredump.h:63:43: note: in expansion of macro '__COREDUMP_PRINTK'
-    #define coredump_report_failure(fmt, ...) __COREDUMP_PRINTK(KERN_WARNING, fmt, ##__VA_ARGS__)
-                                              ^~~~~~~~~~~~~~~~~
-   fs/coredump.c:611:4: note: in expansion of macro 'coredump_report_failure'
-       coredump_report_failure("RLIMIT_CORE is set to 1, aborting core");
-       ^~~~~~~~~~~~~~~~~~~~~~~
->> include/linux/coredump.h:57:7: warning: array subscript 16 is above array bounds of 'char[16]' [-Warray-bounds]
-      comm[TASK_COMM_LEN] = '\0'; \
-      ~~~~^~~~~~~~~~~~~~~
-   include/linux/coredump.h:63:43: note: in expansion of macro '__COREDUMP_PRINTK'
-    #define coredump_report_failure(fmt, ...) __COREDUMP_PRINTK(KERN_WARNING, fmt, ##__VA_ARGS__)
-                                              ^~~~~~~~~~~~~~~~~
-   fs/coredump.c:591:4: note: in expansion of macro 'coredump_report_failure'
-       coredump_report_failure("format_corename failed, aborting core");
-       ^~~~~~~~~~~~~~~~~~~~~~~
->> include/linux/coredump.h:57:7: warning: array subscript 16 is above array bounds of 'char[16]' [-Warray-bounds]
-      comm[TASK_COMM_LEN] = '\0'; \
-      ~~~~^~~~~~~~~~~~~~~
-   include/linux/coredump.h:63:43: note: in expansion of macro '__COREDUMP_PRINTK'
-    #define coredump_report_failure(fmt, ...) __COREDUMP_PRINTK(KERN_WARNING, fmt, ##__VA_ARGS__)
-                                              ^~~~~~~~~~~~~~~~~
-   fs/coredump.c:752:4: note: in expansion of macro 'coredump_report_failure'
-       coredump_report_failure("Core dump to |%s disabled", cn.corename);
-       ^~~~~~~~~~~~~~~~~~~~~~~
-   fs/coredump.c: In function 'validate_coredump_safety':
->> include/linux/coredump.h:57:7: warning: array subscript 16 is above array bounds of 'char[16]' [-Warray-bounds]
-      comm[TASK_COMM_LEN] = '\0'; \
-      ~~~~^~~~~~~~~~~~~~~
-   include/linux/coredump.h:63:43: note: in expansion of macro '__COREDUMP_PRINTK'
-    #define coredump_report_failure(fmt, ...) __COREDUMP_PRINTK(KERN_WARNING, fmt, ##__VA_ARGS__)
-                                              ^~~~~~~~~~~~~~~~~
-   fs/coredump.c:1006:3: note: in expansion of macro 'coredump_report_failure'
-      coredump_report_failure("Unsafe core_pattern used with fs.suid_dumpable=2: "
-      ^~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +57 include/linux/coredump.h
-
-    46	
-    47	/*
-    48	 * Logging for the coredump code, ratelimited.
-    49	 * The TGID and comm fields are added to the message.
-    50	 */
-    51	
-    52	#define __COREDUMP_PRINTK(Level, Format, ...) \
-    53		do {	\
-    54			char comm[TASK_COMM_LEN];	\
-    55			/* This will always be NUL terminated. */ \
-    56			memcpy(comm, current->comm, TASK_COMM_LEN); \
-  > 57			comm[TASK_COMM_LEN] = '\0'; \
-    58			printk_ratelimited(Level "coredump: %d(%*pE): " Format "\n",	\
-    59				task_tgid_vnr(current), (int)strlen(comm), comm, ##__VA_ARGS__);	\
-    60		} while (0)	\
-    61	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+I suspect it was already fixed by commit
+fce7bd8e385a ("bpf/verifier: Handle BPF_LOAD_ACQ instructions in
+insn_def_regno()")
 
