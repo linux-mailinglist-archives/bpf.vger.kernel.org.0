@@ -1,198 +1,139 @@
-Return-Path: <bpf+bounces-58749-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58750-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E72FEAC14C5
-	for <lists+bpf@lfdr.de>; Thu, 22 May 2025 21:25:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5ED69AC14EF
+	for <lists+bpf@lfdr.de>; Thu, 22 May 2025 21:45:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 914D75007AA
-	for <lists+bpf@lfdr.de>; Thu, 22 May 2025 19:25:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C579F1BC6580
+	for <lists+bpf@lfdr.de>; Thu, 22 May 2025 19:45:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00801189919;
-	Thu, 22 May 2025 19:25:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7640B1BE86E;
+	Thu, 22 May 2025 19:45:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lpY0aPgv"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="rPeK2Anl"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B6E581741
-	for <bpf@vger.kernel.org>; Thu, 22 May 2025 19:25:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 067FD1519B8;
+	Thu, 22 May 2025 19:45:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747941924; cv=none; b=evRvoDVXG2IrBjK/xMJZAlmZdpvxUHhAR5btoOOEt+0y366nd6GlQkCzEahEj/FxSE6orGRNFNKBPvUNOGdN7vRTq0hJJTZlOGzSWYtjrbf+cU9M0cAG322OpntkiiBltCR/H1mLhqHT56FK8BJsyEYZ9wRy8gxXREXV/ofA0lU=
+	t=1747943112; cv=none; b=T0XWX8Rns7pcgopxj0rdkrIIwjhWZm26yoWK2MRVFZVDFbTkZcVt0KafABJgU4tJ2Ze23F7tL1Wlhg6wf2oHffX8hYSd7tBaQRT8EXgjJzmT+ub+ftyCZV8Ug56dBw64dDVQSAX2TsUWz9D5q40ueGyyniOXIHGAsFD9XCghSh8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747941924; c=relaxed/simple;
-	bh=FYTA2YGOVavSHrzNFs6r/5f2tb2plMnbO0mKPNeYSOI=;
+	s=arc-20240116; t=1747943112; c=relaxed/simple;
+	bh=yh0R90YapmvdDEQUM4WgEM8LTT2tIlKucgQTnOOO3dA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PXXUGx5PAYQ9zR4It0OOv2uaaVl3rkUI2VVB4Uf2o9fFTeEgTp1JA+eoIkmYsSmsHE3VoO3pF3/K/OgEkhPLmvValsCJHRfY/jGxByIp5RfnkLVG8wWMGRboH9dskOfPpeyL3OevFMFpFOFm/slrir6JYjNuyU21aW/mh5h4HNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lpY0aPgv; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <3eb50302-d90c-4477-b296-f5f29a7d1eca@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1747941916;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fjZ8wY76miqnH4YT71rqtvPLrVN+UZp1HnTbatuwpPM=;
-	b=lpY0aPgvIDFd9ZPcgNsY1y8pPpUUptnJ8MPIYDaPDjhCMAOzLa4wlZY0g6dDIf/YyGr1oN
-	/qZAi6qOivPaJk0eZinfrZQBG56+VRPGwuj5PxgwIlmI9ktbExsHuvznWwFDZ4kKpSVUQM
-	OEtZV5BwK83Wc06kpk45vNpM5GCij4Y=
-Date: Thu, 22 May 2025 12:25:10 -0700
+	 In-Reply-To:Content-Type; b=bnILHXA4e/CFQWs08uEZ16Ltv5weaSnhWVpMcQPUIwaV7vUONnXSXRzI8KPBokRybSYLALZyu+VPo05WO+SZ25eqQ8zn8qOX//dT+ke5urdu5+w3rGN4hStMGfrweOesAWKaEnHV30JX0rU2xI1V5akYfYHa6uEOiw5n9D7bXi0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=rPeK2Anl; arc=none smtp.client-ip=213.97.179.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=b4Gq7lrRnu32phU15nLFZ+zTgkQ+RFVbw49dZ/Yes3Q=; b=rPeK2Anl5+yLqAmwH2j1YJTwdu
+	nE8CLl7xTplJk3RKL83afh7JUR2UnPhCPEwBk1Zj94FguLMhsl9Y/SagBXghVU+3Tfjgi+SKbliA1
+	LEA+6MiA9tJBO64lX+oBgP+c8JUwOewP6vKC2XkL075S8Eg2GTFo0+FAmH3cw5cIn6NGWeUAXOdEC
+	lVB8TsvW4eYKOJ7QAp5CMzWUZSdZYawijkZM4h22RumI/l81Jm7Re+DX+9m5iuMmlk0Hr4ambP4z9
+	2ObLFSaO6pdJQj7lNsFWBK20GWtcDZksYHtDExpllRuEPohRfJIa8TITV2/VPsmbeTTfFH3pMy5k6
+	r4P8hH5A==;
+Received: from [223.233.76.245] (helo=[192.168.1.12])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+	id 1uIBqe-00BrwM-2I; Thu, 22 May 2025 21:45:00 +0200
+Message-ID: <1ff57d4d-6e57-20f1-c3e3-b0f7dfeccaaf@igalia.com>
+Date: Fri, 23 May 2025 01:14:05 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v6] bpf, sockmap: avoid using sk_socket after
- free when sending
-To: Jiayuan Chen <jiayuan.chen@linux.dev>
-Cc: bpf@vger.kernel.org, Michal Luczaj <mhal@rbox.co>,
- John Fastabend <john.fastabend@gmail.com>,
- Jakub Sitnicki <jakub@cloudflare.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>,
- Thadeu Lima de Souza Cascardo <cascardo@igalia.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20250516141713.291150-1-jiayuan.chen@linux.dev>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH v4 2/3] treewide: Switch memcpy() users of 'task->comm' to
+ a more safer implementation
 Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20250516141713.291150-1-jiayuan.chen@linux.dev>
+To: Yafang Shao <laoar.shao@gmail.com>, Bhupesh <bhupesh@igalia.com>
+Cc: akpm@linux-foundation.org, kernel-dev@igalia.com,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org, oliver.sang@intel.com, lkp@intel.com, pmladek@suse.com,
+ rostedt@goodmis.org, mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
+ alexei.starovoitov@gmail.com, andrii.nakryiko@gmail.com,
+ mirq-linux@rere.qmqm.pl, peterz@infradead.org, willy@infradead.org,
+ david@redhat.com, viro@zeniv.linux.org.uk, keescook@chromium.org,
+ ebiederm@xmission.com, brauner@kernel.org, jack@suse.cz, mingo@redhat.com,
+ juri.lelli@redhat.com, bsegall@google.com, mgorman@suse.de,
+ vschneid@redhat.com, linux-trace-kernel@vger.kernel.org
+References: <20250521062337.53262-1-bhupesh@igalia.com>
+ <20250521062337.53262-3-bhupesh@igalia.com>
+ <CALOAHbCm_ggnxAtHMx07MUgnW01RiymD6MpR7coJOiokR4v52A@mail.gmail.com>
+ <CALOAHbDNBQN6m9SzK6MegwapUQ9vm4NgcZgyp=aepG8RA8J7UA@mail.gmail.com>
+From: Bhupesh Sharma <bhsharma@igalia.com>
+In-Reply-To: <CALOAHbDNBQN6m9SzK6MegwapUQ9vm4NgcZgyp=aepG8RA8J7UA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On 5/16/25 7:17 AM, Jiayuan Chen wrote:
-> The sk->sk_socket is not locked or referenced in backlog thread, and
-> during the call to skb_send_sock(), there is a race condition with
-> the release of sk_socket. All types of sockets(tcp/udp/unix/vsock)
-> will be affected.
-> 
-> Race conditions:
-> '''
-> CPU0                               CPU1
-> 
-> backlog::skb_send_sock
->    sendmsg_unlocked
->      sock_sendmsg
->        sock_sendmsg_nosec
->                                     close(fd):
->                                       ...
->                                       ops->release() -> sock_map_close()
->                                       sk_socket->ops = NULL
->                                       free(socket)
->        sock->ops->sendmsg
->              ^
->              panic here
-> '''
-> 
-> The ref of psock become 0 after sock_map_close() executed.
-> '''
-> void sock_map_close()
-> {
->      ...
->      if (likely(psock)) {
->      ...
->      // !! here we remove psock and the ref of psock become 0
->      sock_map_remove_links(sk, psock)
->      psock = sk_psock_get(sk);
->      if (unlikely(!psock))
->          goto no_psock; <=== Control jumps here via goto
->          ...
->          cancel_delayed_work_sync(&psock->work); <=== not executed
->          sk_psock_put(sk, psock);
->          ...
-> }
-> '''
-> 
-> Based on the fact that we already wait for the workqueue to finish in
-> sock_map_close() if psock is held, we simply increase the psock
-> reference count to avoid race conditions.
-> 
-> With this patch, if the backlog thread is running, sock_map_close() will
-> wait for the backlog thread to complete and cancel all pending work.
-> 
-> If no backlog running, any pending work that hasn't started by then will
-> fail when invoked by sk_psock_get(), as the psock reference count have
-> been zeroed, and sk_psock_drop() will cancel all jobs via
-> cancel_delayed_work_sync().
-> 
-> In summary, we require synchronization to coordinate the backlog thread
-> and close() thread.
-> 
-> The panic I catched:
-> '''
-> Workqueue: events sk_psock_backlog
-> RIP: 0010:sock_sendmsg+0x21d/0x440
-> RAX: 0000000000000000 RBX: ffffc9000521fad8 RCX: 0000000000000001
-> ...
-> Call Trace:
->   <TASK>
->   ? die_addr+0x40/0xa0
->   ? exc_general_protection+0x14c/0x230
->   ? asm_exc_general_protection+0x26/0x30
->   ? sock_sendmsg+0x21d/0x440
->   ? sock_sendmsg+0x3e0/0x440
->   ? __pfx_sock_sendmsg+0x10/0x10
->   __skb_send_sock+0x543/0xb70
->   sk_psock_backlog+0x247/0xb80
-> ...
-> '''
-> 
-> Reported-by: Michal Luczaj <mhal@rbox.co>
-> Fixes: 4b4647add7d3 ("sock_map: avoid race between sock_map_close and sk_psock_put")
-> Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
-> 
-> ---
-> V5 -> V6: Use correct "Fixes" tag.
-> V4 -> V5:
-> This patch is extracted from my previous v4 patchset that contained
-> multiple fixes, and it remains unchanged. Since this fix is relatively
-> simple and easy to review, we want to separate it from other fixes to
-> avoid any potential interference.
-> ---
->   net/core/skmsg.c | 8 ++++++++
->   1 file changed, 8 insertions(+)
-> 
-> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-> index 276934673066..34c51eb1a14f 100644
-> --- a/net/core/skmsg.c
-> +++ b/net/core/skmsg.c
-> @@ -656,6 +656,13 @@ static void sk_psock_backlog(struct work_struct *work)
->   	bool ingress;
->   	int ret;
->   
-> +	/* Increment the psock refcnt to synchronize with close(fd) path in
-> +	 * sock_map_close(), ensuring we wait for backlog thread completion
-> +	 * before sk_socket freed. If refcnt increment fails, it indicates
-> +	 * sock_map_close() completed with sk_socket potentially already freed.
-> +	 */
-> +	if (!sk_psock_get(psock->sk))
+Hi Yafang,
 
-This seems to be the first use case to pass "psock->sk" to "sk_psock_get()".
+Many thanks for the review.
 
-I could have missed the sock_map details here. Considering it is racing with 
-sock_map_close() which should also do a sock_put(sk) [?],
-could you help to explain what makes it safe to access the psock->sk here?
+On 5/22/25 11:57 AM, Yafang Shao wrote:
+> On Thu, May 22, 2025 at 2:15 PM Yafang Shao <laoar.shao@gmail.com> wrote:
+>> On Wed, May 21, 2025 at 2:24 PM Bhupesh <bhupesh@igalia.com> wrote:
+>>> As Linus mentioned in [1], currently we have several memcpy() use-cases
+>>> which use 'current->comm' to copy the task name over to local copies.
+>>> For an example:
+>>>
+>>>   ...
+>>>   char comm[TASK_COMM_LEN];
+>>>   memcpy(comm, current->comm, TASK_COMM_LEN);
+>>>   ...
+>>>
+>>> These should be modified so that we can later implement approaches
+>>> to handle the task->comm's 16-byte length limitation (TASK_COMM_LEN)
+>>> is a more modular way (follow-up patches do the same):
+>>>
+>>>   ...
+>>>   char comm[TASK_COMM_LEN];
+>>>   memcpy(comm, current->comm, TASK_COMM_LEN);
+>>>   comm[TASK_COMM_LEN - 1] = '\0';
+>>>   ...
+>>>
+>>> The relevant 'memcpy()' users were identified using the following search
+>>> pattern:
+>>>   $ git grep 'memcpy.*->comm\>'
+>> Hello Bhupesh,
+>>
+>> Several BPF programs currently read task->comm directly, as seen in:
+>>
+>> // tools/testing/selftests/bpf/progs/test_skb_helpers.c [0]
+>> bpf_probe_read_kernel_str(&comm, sizeof(comm), &task->comm);
+>>
+>> This approach may cause issues after the follow-up patch.
+>> I believe we should replace it with the safer bpf_get_current_comm()
+>> or explicitly null-terminate it with "comm[sizeof(comm) - 1] = '\0'".
+>> Out-of-tree BPF programs like BCC[1] or bpftrace[2] relying on direct
+>> task->comm access may also break and require updates.
+>>
+>> [0]. https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/tools/testing/selftests/bpf/progs/test_skb_helpers.c#n26
+>> [1]. https://github.com/iovisor/bcc
+>> [2]. https://github.com/bpftrace/bpftrace
+> Hmm, upon checking, I confirmed that bpf_probe_read_kernel_str()
+> already ensures the destination string is null-terminated. Therefore,
+> this change is unnecessary. Please disregard my previous comment.
+>
 
-> +		return;
->   	mutex_lock(&psock->work_mutex);
->   	while ((skb = skb_peek(&psock->ingress_skb))) {
->   		len = skb->len;
-> @@ -708,6 +715,7 @@ static void sk_psock_backlog(struct work_struct *work)
->   	}
->   end:
->   	mutex_unlock(&psock->work_mutex);
-> +	sk_psock_put(psock->sk, psock);
->   }
->   
->   struct sk_psock *sk_psock_init(struct sock *sk, int node)
+Sure. Yes, bpf_probe_read_kernel_str() handles these cases.
+
+Thanks,
+Bhupesh
 
 
