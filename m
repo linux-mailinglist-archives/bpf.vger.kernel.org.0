@@ -1,101 +1,87 @@
-Return-Path: <bpf+bounces-58735-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58736-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9636EAC1086
-	for <lists+bpf@lfdr.de>; Thu, 22 May 2025 17:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 08937AC1096
+	for <lists+bpf@lfdr.de>; Thu, 22 May 2025 18:00:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D12750160F
-	for <lists+bpf@lfdr.de>; Thu, 22 May 2025 15:57:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6951D4E7C38
+	for <lists+bpf@lfdr.de>; Thu, 22 May 2025 16:00:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AB6B28DB74;
-	Thu, 22 May 2025 15:57:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1463299ABF;
+	Thu, 22 May 2025 16:00:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d9JHNlfB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ScAsorDo"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63EB9286D65
-	for <bpf@vger.kernel.org>; Thu, 22 May 2025 15:57:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A98629CE6;
+	Thu, 22 May 2025 16:00:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747929436; cv=none; b=Omfrp5A8p9d25n8q73iYn05/6/IT+PsYPvnK9bxN98KYcTsOw6bxz1LQ6SkEB4LFrXl3Q9qTRQTdproU0BgdGSAZM+dY3mpBYQDxAKJM41xvWsrL6JrkGRNga3vIQwiH5isQ5hGWC/OIpS+uJsVeEwTrcOEjPQ2zBgzx6eeQE9M=
+	t=1747929618; cv=none; b=F1uskqeJmnCbOtTB0cAyDM6Uer1HaE4yRNwtKKEvB44h/yW/JQi0vICyiCblHt0RAjuW8M7KWL+OhNHmCn8j3updSNGHwadAqfzCvPPCjEqLk2favY8yv/4XUGTBRpjAnLYnKAIjKlCWODYllGeezm8Om//yGOxg4Y1scyLMyBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747929436; c=relaxed/simple;
-	bh=7UhZDnsojLr+fZGqu0PCL8SDDPtyRZiusCg+sQz4Zfw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TJLlaHDXsjCKyc5AuyJU8+LBJkvhDnvexAPqrbVvEzFc6d1b6y9nu+QxNI4ZB4tejwansF5zLGQhMiVkmQ+DhXeHrzSBDSm4mczpJKOuFYzhxJT+epfypwaDaX8fHsdpDa7Me2O5FJm9dOMP/0kuG+9637OqZgFLqXhPrfnuOSc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d9JHNlfB; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-43ede096d73so60821045e9.2
-        for <bpf@vger.kernel.org>; Thu, 22 May 2025 08:57:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747929433; x=1748534233; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7UhZDnsojLr+fZGqu0PCL8SDDPtyRZiusCg+sQz4Zfw=;
-        b=d9JHNlfBClVf48sJebbV0e+9XBU3LV3shGiTQXaQ3QVRKcCBQWqgIzZW2CsCQIOSdB
-         vwvNXYtIWZZHIKhuNQrdZPHpHnPebljwgdcdHbHrGvnCBTQvISH893JVIuBImuBhN/1J
-         UiSpQSjR1DeH/ZeNtJIi1ESyzq6x22pkFIZjxSJ/sDZOg62Ipe+XL/kP0hmpDOhFOzyw
-         EBD+8lAbHlaQCbXtEuXjuInV2ao+ndmVOFmj03RurPwnlZr7EAf0OocXS2wXuusmRCf9
-         ecMwHjnj3nQ2lf9LpcDxIgDflGJpae6xUOg0x61RvdcHBctAuKoLKI6M7TARBjLj9qco
-         4UbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747929433; x=1748534233;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7UhZDnsojLr+fZGqu0PCL8SDDPtyRZiusCg+sQz4Zfw=;
-        b=mkLxeaz7OXh8UCQ2qFhZX34JjvhRBaDFUL6bpzP3aKlhZyxgjLTtfa2aH2ZI03RIly
-         H3cDvbrKOp4GlB1YfIxiM3ZFK5o4py5OeOdiDQG9Kg730heKq2wiQ+AfbXRvEIIGgM2s
-         nNOgxIsrUyBXosh6HEBNaOqEYdE4Rxbry9ZAGQLnJhpWvRwYk7pe0hE35UeWL/35ZtKX
-         XekuG4NXLFtveQ/Fcw/YkMkm7zk1KTM7Sl79PQUvVsRziSoB16el/rUUP7qJ66xMLwtJ
-         BzQv5nMxUxciy+y/5vWTunt/UTEODQ/3qgVOEyFbP8Kuj+4yqqk7NYjKEoDxHLzUPVeo
-         g8Qg==
-X-Gm-Message-State: AOJu0YwAZheN3mikz+FnHU63Mop9AtPXUuUxqp1xrkrBjswIg05jlqw2
-	K+DZDL9p1eFcJg+cU+4pRwCBCzkROO7xwVMbHa85Oh+Mx/Jjaj40cfuL8S8295HJ/oQrtCE/3CO
-	5rGcKxcYNTFmdj4wWYW9LNuz+QpOAit5qPA==
-X-Gm-Gg: ASbGnctDYiqyLEcgjLSzGEOuQoeHgeSbJjkbdVDkHYrh+w4LsTG6UTfF7E9ws3GWv+2
-	iJ9b+1nYdiVs3oY8KypFK9uAur87Y4vWRl1OsFcUzrmlu5nZxqX2LKZzIA+lW9CDOg6ohUe9Hoh
-	D9tfnEaZlR8PwtVSC+atqFODInHvIMg7IvJwn+KspHpvrDP1csqITEN9MRLWhltA==
-X-Google-Smtp-Source: AGHT+IGgw/YRqGqx5u8glLXh+8xFkAcwjWrsoHaZ2C+E9Y+Fah20eOMN7LXxikaFy4zBfA6ot8PLEK3xTMTseoDFLmc=
-X-Received: by 2002:a05:600c:83c5:b0:439:86fb:7340 with SMTP id
- 5b1f17b1804b1-442fd67515emr286362815e9.30.1747929432577; Thu, 22 May 2025
- 08:57:12 -0700 (PDT)
+	s=arc-20240116; t=1747929618; c=relaxed/simple;
+	bh=Duu6R2oqMGbRLS8KypoJ+q341Mlb5R2v5xwyexlzGzc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=T1oe9YvbR9cFo5RUM8E0eDlDNUeaP+bF+HGCMeaXlobFGlyv72WXUZgjDaOFA/gKCPn9tw88XgSfSah0uH/8y6J29erVqWOwbSo3jpkTTKQf0EXlso8BFsMsuWidnDjb1n+0MKHjoFyYWaoZRt3yzwDRaK7+hj3/l0i5MCQUWvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ScAsorDo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F02F8C4CEE4;
+	Thu, 22 May 2025 16:00:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747929617;
+	bh=Duu6R2oqMGbRLS8KypoJ+q341Mlb5R2v5xwyexlzGzc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=ScAsorDoSw/NfVCiVDXq+nPJi+lDWwlFwznuUi9r8l+wmzMpygrZ4jlScGJCr2mag
+	 dsMyh7Sitj/VKhbTgu/lSJp/z1SYqWBm0ecM0YYbpfS9I7Lnn6EpEUYJCuc2PkHy/f
+	 qshWwBgEf8KgVRL+PqRWa6tXXejMgUegVwjcxi6BsctAjBIEVfLwqPRVFMlbg5rHAK
+	 x31pQFHSq/+mH18rcgx3VeIhaj+JEOEbWSPnm7nJoyycVpXOuR1bxhHZURhXJq8XzI
+	 Th8Y66s1I+v3lO5Je5GLwB9Wenizvw9kpoVWZXr8Kdx/k/3+w3q7/6SZBdfcHckdDw
+	 Vxt9mBh2icfIw==
+Date: Thu, 22 May 2025 09:00:15 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Paolo Abeni
+ <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, "Andrew Lunn"
+ <andrew+netdev@lunn.ch>, Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky
+ <leon@kernel.org>, "Saeed Mahameed" <saeedm@nvidia.com>, "Richard Cochran"
+ <richardcochran@gmail.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, <linux-rdma@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+ <bpf@vger.kernel.org>, Moshe Shemesh <moshe@nvidia.com>, Mark Bloch
+ <mbloch@nvidia.com>, Gal Pressman <gal@nvidia.com>, Cosmin Ratiu
+ <cratiu@nvidia.com>
+Subject: Re: [PATCH net-next 4/5] net/mlx5e: Don't drop RTNL during firmware
+ flash
+Message-ID: <20250522090015.60147b61@kernel.org>
+In-Reply-To: <1747829342-1018757-5-git-send-email-tariqt@nvidia.com>
+References: <1747829342-1018757-1-git-send-email-tariqt@nvidia.com>
+	<1747829342-1018757-5-git-send-email-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250521032047.1015381-1-yonghong.song@linux.dev> <20250521032057.1016838-1-yonghong.song@linux.dev>
-In-Reply-To: <20250521032057.1016838-1-yonghong.song@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 22 May 2025 08:57:01 -0700
-X-Gm-Features: AX0GCFuaOXh4CZmeCvFkZd0855IV7ycJrGWqrw8XQlPfQxdNGpIj6kAQCZmMYSU
-Message-ID: <CAADnVQJ+eQuhLAy0SYUp67U-pU_Bdf3-Jyy0PAnpfko3qcTKTw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 2/3] bpf: Warn with bpf_unreachable() kfunc
- maybe due to uninitialized variable
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, May 20, 2025 at 8:21=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
-dev> wrote:
->
-> +__bpf_kfunc void bpf_unreachable(void)
-> +{
-> +}
-> +
+On Wed, 21 May 2025 15:09:01 +0300 Tariq Toukan wrote:
+> However, the stack is moving towards netdev instance locking and
+> dropping and reacquiring RTNL in the context of flashing introduces
+> locking ordering issues: RTNL must be acquired before the netdev
+> instance lock and released after it.
+> 
+> This patch therefore takes the simpler approach by no longer dropping
+> and reacquiring the RTNL, as soon RTNL for ethtool will be removed,
+> leaving only the instance lock to protect against races.
 
-Eduard made a good point on LLVM diff that
-reserved functions have to start with double underscore.
+You didn't mention it so just in case someone tries to report this 
+as a regression later - devlink has been the preferred way to flash
+devices for 5+ years. It has much better UX with the progress
+notifications, and already does per-instance locking.
 
