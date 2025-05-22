@@ -1,163 +1,133 @@
-Return-Path: <bpf+bounces-58714-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58715-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA98AAC0479
-	for <lists+bpf@lfdr.de>; Thu, 22 May 2025 08:18:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86795AC0485
+	for <lists+bpf@lfdr.de>; Thu, 22 May 2025 08:21:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32F4D3ACFF6
-	for <lists+bpf@lfdr.de>; Thu, 22 May 2025 06:18:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B39621BA7B69
+	for <lists+bpf@lfdr.de>; Thu, 22 May 2025 06:21:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6127E221738;
-	Thu, 22 May 2025 06:18:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8374221729;
+	Thu, 22 May 2025 06:21:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jtlqP6ON"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YKrHnVdM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69BBA221299;
-	Thu, 22 May 2025 06:18:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2563B22155F
+	for <bpf@vger.kernel.org>; Thu, 22 May 2025 06:21:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747894726; cv=none; b=JphN4QcOvy8b8rkS266zDNwWTe1WIzsQ/YjqN2qsXRmBIhYCO3mu/wBWJk3KbvdhHGyIvZ+ueJqjQKUkS5gWZrQTkkV5m40t87VzHOxWowZ8WiMlRZ8D4HgMfRMQqoGPkvxIlCimYOhd+eINh2qPew6o6Au2jM2h6JZV9eMqR5k=
+	t=1747894892; cv=none; b=kXRJ//iL9mQVpabWg0VsjnoMXvfS+6ktH8QZ7PUC1rse9aHC1Mu5j4rhHcXZkMfM1N/Rvid4XNFwdm9tfauhcwUKmH9KZrksK1tjAd3voROtrrvOI02WkZb+7lmYjWyxl873gAWbnRzU/A3YWcXoVOVyeCAgIn0+jQ6p4PO5fH8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747894726; c=relaxed/simple;
-	bh=oJwpwh3y/PB/CRwAnhTVlwmZnDJ+bo5bOGacgDgyPgM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=elgyvn5A/paEOh8FAsZSFL/7XpJ6uuFnrIcwTqAdD5pnxT6nwtLGnxnDjaWvsvL3mKIawsridVbDKBdduraDbzuIDiTIaPq074oiM3c9vWgnY8ptt27v+N7Esf+YdZcW+AJcV5jo2hDzmDQJ0V/4WGt2bE3ddwPXjCWCfdFdJiQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jtlqP6ON; arc=none smtp.client-ip=209.85.219.47
+	s=arc-20240116; t=1747894892; c=relaxed/simple;
+	bh=puMynW4zD7IPkVFt4K+WJDb7uPcb9R9cgzymYGi+Pug=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eL/RQ4pyvJzjDbaFfXrT10aCN6DZvuu2WZ0JRJRBp12JeYl3xSCyL/OxJ34SrIa48GEyW30CzcLtN/WiIxYNxPo5Hob32uVNLwvuXb5/pdca5kJGND4px35PbnCy6eg7R8B8GP5aO+7NRjNPshfqu/aGwT7c26jT9Wou/kgWbis=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YKrHnVdM; arc=none smtp.client-ip=209.85.215.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-6f8b2682d61so64540796d6.0;
-        Wed, 21 May 2025 23:18:45 -0700 (PDT)
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-b170c99aa49so5110680a12.1
+        for <bpf@vger.kernel.org>; Wed, 21 May 2025 23:21:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747894724; x=1748499524; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZAiWBeRbrCxTSOGaCOh6cmRAxFgzgObkS3PNJgd3CaA=;
-        b=jtlqP6ONURCWDpLtAkvyvHvQxSOEUqu73DUOCdIOOf3CV58s7eCW17qrwGCX81Cr3l
-         qe1zEyXWQPzGTAG5YkwWvFTrbv5ShjgUy3iluhl8c/QwjkcM3+NYChaSIGTOjtrbRcjn
-         fV0oGYHTTcBNWlSBbhjn6J0YNN+8SzXJq4u/T8CnLsaeTxJ/WFiTEZsPSHLGxwQi4tW5
-         kTQ1VDzvpfcPyavFiZ38bNoMDKtiANubeL5XBINvkjTvfjnC3ptSAGMQAYt1VWx34cfk
-         q/khVoLBGcW0KWMzNq8KOLmue+sKi+9Q9YGlPUB08Roqm8ivxw/1A3UVW4u73DEaOQuQ
-         hwLQ==
+        d=gmail.com; s=20230601; t=1747894890; x=1748499690; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KGWKJ/FFW6TO4mSgE5/ePobxrfpMUhRMXzJ9EfvPL38=;
+        b=YKrHnVdMmFXaumUky/mgPmv/SnIU+3hV+Lwo1E0RGWoiT6JvsAxyQaHO4UY2AA65T6
+         bsYqYOh83wJZjLZm7dLXz6gEgnCLEvSPCTIEvBADJOMHen6pxakifkR+tykA+xFfVriQ
+         8EuELxv3GyNxiDmDB4Dqh7nmwZLrYNUVlmA9zuHr7eWsSbOt8I4L56+8ROeRkxeGaVIC
+         upj6iALkKt7DHet0FiCOigi+zBe0zqf5DxqG9sHn+s1jAOEovtq4gKuB2yMMWjYTElyQ
+         ScBXJFcADFhMQc5+ZpoX0DMD09ZKFznuicO+SnLxMLRGYXlez8QxSJBAFPKGiLYpt6nu
+         xqNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747894724; x=1748499524;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZAiWBeRbrCxTSOGaCOh6cmRAxFgzgObkS3PNJgd3CaA=;
-        b=filnXYNMyGdI2o35EQ5E0PGlKyZ1laJ9M9yc/pDezZcd95lgrCvqzuyM/SQ3013rcD
-         vVeI+Ke5NZ9K482TRjRODcoiEkI4C43nONj8qsvFEmWQ8UNaghEJsWHyzMJ/bfosx6MR
-         d3Nimm8a8FeilXyrAeSgd0x9DSXiSZZfo0r4yK+hnIOfE1FVbKvwDhL5mcgT09l/SAWR
-         QKTrvNbdqdRg9pLOFehIxKjlM4vvQ8W8a1JXuQ0ZW2LhLZUxcUc07JJ2FzlumMaGrrQQ
-         zIey8KIPM6FXV/TVu1awKhXGIj5aEjx4TUlvLAoMVVDhEPzA+02Fp2fBDVcJcateSLuA
-         57Xg==
-X-Forwarded-Encrypted: i=1; AJvYcCUqwXGvTsy6GmrRL58EpDENpKYF5v0x2GQfV8xAdPQiB8N97jbXhKuHMYeFGbzXM18lkWXyfoHaVXu95Qje@vger.kernel.org, AJvYcCVVk24zxwO2CfxBu5gwoXoY/Z3eSq/txoRSEXeWE9dKHIi3Mknk1EkhGbcuN8lc0cO0eV4jL71zepJSIqsC8VQnEAG3@vger.kernel.org, AJvYcCVsF540uDeOqs49t9Zsphqq71l6yABY4M5tLWhqj88CaRKsqq/vm4VeinWWeBOyxV7DX1IVNI+bknmPJbyyRg==@vger.kernel.org, AJvYcCWK7nR7r7lejoD4FhlghZSPHwXUFvGb11BWc/A+YavrsfGIboO8Kb6I8Nn5yz4+P6L0Rmp+7B4p5ZKochEzQInqQw==@vger.kernel.org, AJvYcCX6qdDuw2I1AQhz10pwaCnbqXueItJZ6SJH+QnDupV7HT03ZUWXvabygbi/9LK105B3hWY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YySyjIueKVYuae8O/lRaig9jeRzt1wy5uCHnn0kNXlb781o87/H
-	lubtPcyAjqFq5FRHPNJKrNca2Es25H+PrMjyJxOqYPDqftCmg9k3tlDlWLjnaKXrkZPtTD6J1o7
-	DBdGOBgKo8OR/ZB+HXiH7/GY1mUAGlg6yh/95WGc=
-X-Gm-Gg: ASbGncsp6439ghwdYm14x2E0zoUXDqo+F5BNFytwpyVqyPJuK5nIKM6CtbiPPoOPRxF
-	/qWOOGCnm4mTp95vQyK+zaNuaC69HLuMcSinMmbhfdidNKA6NC7P7unRQdHLo6eDbaEpxGbBA3j
-	2fmLMlRfSVU8raK8/tSuHpdMUBJPDcF+k+Eg==
-X-Google-Smtp-Source: AGHT+IF095o7KgziV/OiFOYLZCRqF+WnHMajqtqVaevy/ymBVxl78I9yj22rngIrp0rCYHfgWrpJMft76skDMOt1D4U=
-X-Received: by 2002:ad4:5aa3:0:b0:6e4:2e5b:8d3f with SMTP id
- 6a1803df08f44-6f8b12bab99mr292229976d6.14.1747894724203; Wed, 21 May 2025
- 23:18:44 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1747894890; x=1748499690;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KGWKJ/FFW6TO4mSgE5/ePobxrfpMUhRMXzJ9EfvPL38=;
+        b=Qo/a8PopY0kmk0CRWBGMJ3RzYvDe8HJPg0b01qxJ/p29NXvIq3bj9Gj7i9YJzqwrCI
+         P33jL7uqHoAi7sENFbagmXfSv4rXCBDSvuD2jaDvwbpNDTw+BdpqziCg8G2xUagrGUcS
+         7B0y5Uh9hOmgN3bFkcH2Ld4O3recRpUSNatukRysaNQt8OurdiIKTBv/9xlhkyCoZl4G
+         hahh7fTFOyO0PQHTxlYmxmEBVjuHx+VK/EUQInflzfkDvM1ekImVBPp3z/Po1fJLRmD6
+         y8O2k6dGgXQ+vL4oVLzFYDnMbCDdZ+uWWXZ4A9fCUTR46KbRSzr1kKtc1vi9R1c7iI24
+         PZ1Q==
+X-Gm-Message-State: AOJu0YySTZlOkY96dylQpFhRXlERJfGmqlpoBHOzX2R6lcLHzcHlXiKJ
+	y6eoB46pevR883nR5d2FOzD9waVfeFMk8zlwZ+//eVFm6SSDnXjoAvrnE2PXnw==
+X-Gm-Gg: ASbGncu+1GX+gxqfWeF4hPXEPcpvk3kpIEiskj3Q4WbsaxyR11WREUNdFHBfP9M0n9o
+	2DA1wopiSO0URFq/zY3D0tL0BRCEGm4Xxoxjj2DKGVku/zY57DPyx2rk0I/x4Uya9LMmu9uvEZW
+	JzDIyEY5Y4qFwmmDcXbmo7clfNYd3xqIjfa4bMKGY1Z2X+kD3mb6qtNWYVr7vnEWLasWZN/f8MP
+	WxIMZe/drJyTf2kTX0MtRvB4JvKnvBS1gAXfkv5qPJ+UKUtCq/KydeH844fV0nwphEAgCjSCERF
+	2goWc1PKjwwP4Zt1z+eIl+xUXkttXspEfWmR1CPj1fbKiX52I19j25Km5knNcQbKdjGVm3pVZg/
+	MU5EeD9mG+ytB6isYBuqprOty1FI=
+X-Google-Smtp-Source: AGHT+IGJZXWsZJtfk/x6D+O0CT7k7WTHMqIBkVeVxzGXV+30HfJkSc+BnyAwwSTetq+shsdRtmVHZQ==
+X-Received: by 2002:a17:903:94f:b0:226:38ff:1d6a with SMTP id d9443c01a7336-231d43d9cacmr304188885ad.7.1747894889891;
+        Wed, 21 May 2025 23:21:29 -0700 (PDT)
+Received: from localhost.localdomain (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-233b1bf1cdasm24399965ad.181.2025.05.21.23.21.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 May 2025 23:21:29 -0700 (PDT)
+From: Tony Ambardar <tony.ambardar@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Tony Ambardar <tony.ambardar@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>
+Subject: [PATCH bpf-next v1] libbpf: Fix inheritance of BTF pointer size
+Date: Wed, 21 May 2025 23:21:16 -0700
+Message-Id: <20250522062116.1885601-1-tony.ambardar@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250521062337.53262-1-bhupesh@igalia.com> <20250521062337.53262-2-bhupesh@igalia.com>
-In-Reply-To: <20250521062337.53262-2-bhupesh@igalia.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Thu, 22 May 2025 14:18:08 +0800
-X-Gm-Features: AX0GCFun7VcY0TRnwHC-yCRhsLLHNlgDgzjUoPDV-Se0yjKg_DkRUffEwpWoMp8
-Message-ID: <CALOAHbA9P0af7oVg+QTfFfn5TAyV0+vu+jeNG3DVHcO-OEsVVg@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] exec: Remove obsolete comments
-To: Bhupesh <bhupesh@igalia.com>
-Cc: akpm@linux-foundation.org, kernel-dev@igalia.com, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-mm@kvack.org, oliver.sang@intel.com, lkp@intel.com, pmladek@suse.com, 
-	rostedt@goodmis.org, mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com, 
-	alexei.starovoitov@gmail.com, andrii.nakryiko@gmail.com, 
-	mirq-linux@rere.qmqm.pl, peterz@infradead.org, willy@infradead.org, 
-	david@redhat.com, viro@zeniv.linux.org.uk, keescook@chromium.org, 
-	ebiederm@xmission.com, brauner@kernel.org, jack@suse.cz, mingo@redhat.com, 
-	juri.lelli@redhat.com, bsegall@google.com, mgorman@suse.de, 
-	vschneid@redhat.com, linux-trace-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, May 21, 2025 at 2:24=E2=80=AFPM Bhupesh <bhupesh@igalia.com> wrote:
->
-> Patch 3a3f61ce5e0b ("exec: Make sure task->comm is always NUL-terminated"=
-),
-> replaced 'strscpy_pad()' with 'memcpy()' implementations inside
-> '__set_task_comm()'.
->
-> However a few left-over comments are still there, which mention
-> the usage of 'strscpy_pad()' inside '__set_task_comm()'.
->
-> Remove those obsolete comments.
->
-> While at it, also remove an obsolete comment regarding 'task_lock()'
-> usage while handing 'task->comm'.
->
-> Signed-off-by: Bhupesh <bhupesh@igalia.com>
+Update btf_new_empty() to copy the pointer size from a provided base BTF.
+This ensures split BTF works properly and fixes test failures seen on
+32-bit targets:
 
-Acked-by: Yafang Shao <laoar.shao@gmail.com>
+  root@qemu-armhf:/usr/libexec/kselftests-bpf# ./test_progs -a btf_split
+  __test_btf_split:PASS:empty_main_btf 0 nsec
+  __test_btf_split:PASS:main_ptr_sz 0 nsec
+  __test_btf_split:PASS:empty_split_btf 0 nsec
+  __test_btf_split:FAIL:inherit_ptr_sz unexpected inherit_ptr_sz: actual 4 != expected 8
+  [...]
+  #41/1    btf_split/single_split:FAIL
 
-> ---
->  include/linux/sched.h | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
->
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index 8c60a42f9d00..704222114dcc 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -1162,10 +1162,8 @@ struct task_struct {
->          *
->          * - normally initialized begin_new_exec()
->          * - set it with set_task_comm()
-> -        *   - strscpy_pad() to ensure it is always NUL-terminated and
-> +        *   - logic inside set_task_comm() will ensure it is always NUL-=
-terminated and
->          *     zero-padded
-> -        *   - task_lock() to ensure the operation is atomic and the name=
- is
-> -        *     fully updated.
->          */
->         char                            comm[TASK_COMM_LEN];
->
-> @@ -1997,7 +1995,7 @@ extern void __set_task_comm(struct task_struct *tsk=
-, const char *from, bool exec
->   *   User space can randomly change their names anyway, so locking for r=
-eaders
->   *   doesn't make sense. For writers, locking is probably necessary, as =
-a race
->   *   condition could lead to long-term mixed results.
-> - *   The strscpy_pad() in __set_task_comm() can ensure that the task com=
-m is
-> + *   The logic inside __set_task_comm() should ensure that the task comm=
- is
->   *   always NUL-terminated and zero-padded. Therefore the race condition=
- between
->   *   reader and writer is not an issue.
->   *
-> --
-> 2.38.1
->
+Fixes: ba451366bf44 ("libbpf: Implement basic split BTF support")
+Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
+---
+ tools/lib/bpf/btf.c | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index 8d0d0b645a75..b1977888b35e 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -995,6 +995,7 @@ static struct btf *btf_new_empty(struct btf *base_btf)
+ 
+ 	if (base_btf) {
+ 		btf->base_btf = base_btf;
++		btf->ptr_sz = base_btf->ptr_sz;
+ 		btf->start_id = btf__type_cnt(base_btf);
+ 		btf->start_str_off = base_btf->hdr->str_len + base_btf->start_str_off;
+ 		btf->swapped_endian = base_btf->swapped_endian;
+-- 
+2.34.1
 
---=20
-Regards
-Yafang
 
