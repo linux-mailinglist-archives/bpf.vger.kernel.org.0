@@ -1,230 +1,290 @@
-Return-Path: <bpf+bounces-58751-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58752-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFF70AC14F4
-	for <lists+bpf@lfdr.de>; Thu, 22 May 2025 21:47:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 721D4AC1530
+	for <lists+bpf@lfdr.de>; Thu, 22 May 2025 22:03:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17C507A779E
-	for <lists+bpf@lfdr.de>; Thu, 22 May 2025 19:45:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C31D16BEFB
+	for <lists+bpf@lfdr.de>; Thu, 22 May 2025 20:03:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6284D2BEC57;
-	Thu, 22 May 2025 19:46:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A4CA1DF246;
+	Thu, 22 May 2025 20:03:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="Cll4vntr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UMi2i/4C"
 X-Original-To: bpf@vger.kernel.org
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 803B014C5AF;
-	Thu, 22 May 2025 19:46:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D98FF7482;
+	Thu, 22 May 2025 20:03:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747943207; cv=none; b=UMq+HAncRb5vZYSatvYO6/AJXPNGMxBzxl+Xdb91/LiwuqmuvIc1YMT61Ec+7K/+r+lgFHBCU2fJ3wz/GwvS8q1fpLzsvab/KPylLqRZuO7p8ReMzcPeRqlCXEXx9ijo8yophP6Nix/lAns4ygenTVypuq6qzqbSYfgiy5Z930o=
+	t=1747944195; cv=none; b=mTw7gy2Hi8DSoMSALWrSXO25VGfZm8T3f+hUTSDO6QT/UrCrjpeqSSrHS/rLpjwxho8H3/+5yzBhU+FAC5OC5sS5PpMbYE7liepIJZwdhY2UWfWyMMmbimpow61rgAnJ9iTj3xUzHYPsv4ExnSN14eHXF2GSmWo0bDRLb8NHauc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747943207; c=relaxed/simple;
-	bh=5VIQ59seO6MMcA2e64dfxzNyomkj44DCQXxI//+MMs0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QWKt4zLRZfBbRx6pRFFfaTYOq2PXcPzfQ+WEwEt/QYjlAA6+vSIrzdqaHOZc0Uaf8mivKOkNCTTbHcZL2nWoamWvphPf6a4eRHwOdD1Hywmv9GDAaXJkHuBf29oLgXhVK7G9MD0mxMaeuWR2kFowZQPsv5KWzdZSBMKQ4j3iQNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=Cll4vntr; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=qeZlnXYF3mBRhpPdC9Jj7FrmO4B5jYVsug5/mB2ATrk=; b=Cll4vntrWxDQHGd06wM/5/FPon
-	d/xHRk/fvEtuUYRc6hg8+jQOGB/wQa4NEPh8TtKTEEnD8JI8UKykDQkvNNqg9Ar01RtAFWBHlmHRd
-	o69Saiy5TK1TRu77be7AvDco+WSd5iszqybMsZU6wMcJil9CpM+F4RJvOrZh8vdAeSm1nPbuNrJG/
-	nMfJTosrIPc45cS5N2xeGCNE/JDUeq6Hyo0BiVtO2sPbcN3SwdOw+6qlhAVB9LN6q0ww43EK1DoBF
-	SJ4Ltp7uoeVb3MPzhJp/wcfm9jI0G8wMiHg5EEzMLu79hdRHvG/5fpl4Pj30Ej2FFCwr2xUD/CMfw
-	HP1hjY0A==;
-Received: from [223.233.76.245] (helo=[192.168.1.12])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1uIBsF-00Bryb-K6; Thu, 22 May 2025 21:46:39 +0200
-Message-ID: <24840570-913e-1603-eb92-baefd4758784@igalia.com>
-Date: Fri, 23 May 2025 01:16:31 +0530
+	s=arc-20240116; t=1747944195; c=relaxed/simple;
+	bh=NwMSlcLfrSRhutdLjYTifiPS06af95pgUqjQUWhFMYg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dClJ3AhyuiII6tZcyz2DTeHSXaIfdXH5qtFZCQAtzpPfNVEX4zFgHazFs4c0Ajdwb+8PC/YDoW8brfGiF+kRHQ/5R8/zIgShSmIDHwMUt7oi7KfhZJ+u2YutxiAAWcI3asdbIrS0i5w9eF+bCgfxtKnZWJXj7u0W5rEb68SCllM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UMi2i/4C; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-30820167b47so216894a91.0;
+        Thu, 22 May 2025 13:03:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747944193; x=1748548993; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dAdJzVm3ckUGYbOTwm87Nrbqr6uFTL/pYXC4+IrzeYQ=;
+        b=UMi2i/4CSQSWlWSwO0KU4UzX39gXSGTifnbE0iqaiqtSgYLH0jbD3tXeoRMrZaEEEU
+         wRqpD2hse5CPcuJEAqr3HUAmjNh6n0T0nrrscpSZdtwfff4mOmpk1tBim1lAnWn488fl
+         cOWiCws7PCB7uER5U+SMIKN9v5B7XyO7bIO2V/CSwJTgkyYptv9wEb0676PT2GY1w9Pm
+         v2Pn0mNF3/Nzi+oxUDOZ2WrENgMKBE76h6jQub1DikxdesBAODBF0sSObFca9H26FYzk
+         o8xKY9CK4qcLcuiJg1IBXlR45uH+JFSXvnCFMDHJYeReTaA6LppA5irshvDHsNEt0UAn
+         /jlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747944193; x=1748548993;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dAdJzVm3ckUGYbOTwm87Nrbqr6uFTL/pYXC4+IrzeYQ=;
+        b=xHZ0sZcCEGPBC/KVbpHEhWWMnJVWDXkcdUU/jkSlIU/R5up2CpUiPDfyPBRuIJTx0Y
+         9K2dlxTfWxKcxlM07/8Uf4zvwZilVkIKJxN1GTO+Ifk5lRODnybw9AzAUxa3MesptLwV
+         87HtEXbHVEqyouD6vHJGM4TFUE2NNNGUu6B/8srALVFbkUuIiWphJmlcg874NEwZgKja
+         lApWzi1N3d2KjIMZOrgbSAVMA+chyc0AagdBtUNQge6eEQooCk9ZBLRXwO279NiEnmdV
+         lQIko1m1Ps2eTSMbrkeFeazf3AFZ9J880ZtnVBZmjK0izsGIDhgXlP+sBrtPPVO8ZR4b
+         qZFQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV49SuHjSXTn6TV/HhPv0qChEb7uHAUq6b0QfDHpTeMmS6KlCcYf0WwbN8LVH2Q8S3vxcI=@vger.kernel.org, AJvYcCXVvXditsQEg/afA/CrWXSTUxubymg32PjNx28IuXsNXJGRBQEVGswdV+YF0j9a3OpZ85pMo84kKQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwV1E7+PANyZQrdWnXNhaWrktOucAeAP8mbj+rugLnrPHArJipq
+	sJeXJwHms4znEWfvN0Eug+RGZj7Rwnji79ElPJk7GBiPZVVqanlHKzqJMOt5qrmDerKUnG3F8VP
+	5bVEl/3Kq9sV9n0nJGJtzACS1U+XCbIw=
+X-Gm-Gg: ASbGncv/CSfwXlLN2JmrRndJQsrIiAhyVV7FnfyzoM6FkcxczIduPeyTyA2O3kR2AAo
+	hjRPNPqMbHO0lTQqg8DwAE1N4EVRFTECfshlqKXJ65ImF2tbsUvmg+ct18nBH2XCZQGNtTAIn/g
+	3cEAAFNAuaFTMfkflP5SgnSb4BjHQ3SO5+e/ym04hawYdXA1WL
+X-Google-Smtp-Source: AGHT+IFZaeN3HpVHbbkDdhI8b2b/0dHz/flsUtAabB1zm7ZFSAIv7EkRiirvKfdFXiIIeqjBJB56U2fJ+jt0Yd/Vb+8=
+X-Received: by 2002:a17:90b:3a48:b0:30e:e9f1:8447 with SMTP id
+ 98e67ed59e1d1-310e8899a4emr1006092a91.4.1747944192595; Thu, 22 May 2025
+ 13:03:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH v4 2/3] treewide: Switch memcpy() users of 'task->comm' to
- a more safer implementation
-Content-Language: en-US
-To: kernel test robot <lkp@intel.com>, Bhupesh <bhupesh@igalia.com>,
- akpm@linux-foundation.org
-Cc: oe-kbuild-all@lists.linux.dev, kernel-dev@igalia.com,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org, oliver.sang@intel.com, laoar.shao@gmail.com,
- pmladek@suse.com, rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
- arnaldo.melo@gmail.com, alexei.starovoitov@gmail.com,
- andrii.nakryiko@gmail.com, mirq-linux@rere.qmqm.pl, peterz@infradead.org,
- willy@infradead.org, david@redhat.com, viro@zeniv.linux.org.uk,
- keescook@chromium.org, ebiederm@xmission.com, brauner@kernel.org,
- jack@suse.cz, mingo@redhat.com, juri.lelli@redhat.com, bsegall@google.com,
- mgorman@suse.de
-References: <20250521062337.53262-3-bhupesh@igalia.com>
- <202505220326.5yDQHjnt-lkp@intel.com>
-From: Bhupesh Sharma <bhsharma@igalia.com>
-In-Reply-To: <202505220326.5yDQHjnt-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20250416-btf_inline-v1-0-e4bd2f8adae5@meta.com>
+ <d39e456b-20ed-48cf-90c0-c0b0b03dabe6@oracle.com> <09366E0A-0819-4C0A-9179-F40F8F46ECE0@meta.com>
+In-Reply-To: <09366E0A-0819-4C0A-9179-F40F8F46ECE0@meta.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 22 May 2025 13:03:00 -0700
+X-Gm-Features: AX0GCFtO6pcG3LYXhAsXB4wVxIDWX7xmYAvT9alk62QM_YIVC0urxCv2uI7_jhM
+Message-ID: <CAEf4BzZxccvWcGJ06hSnrVh6jJO-gdCLUitc7qNE-2oO8iK+og@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/3] list inline expansions in .BTF.inline
+To: Thierry Treyer <ttreyer@meta.com>
+Cc: Alan Maguire <alan.maguire@oracle.com>, 
+	"dwarves@vger.kernel.org" <dwarves@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+	"acme@kernel.org" <acme@kernel.org>, "ast@kernel.org" <ast@kernel.org>, Yonghong Song <yhs@meta.com>, 
+	"andrii@kernel.org" <andrii@kernel.org>, "ihor.solodrai@linux.dev" <ihor.solodrai@linux.dev>, 
+	Song Liu <songliubraving@meta.com>, Mykola Lysenko <mykolal@meta.com>, Daniel Xu <dlxu@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Thu, May 22, 2025 at 10:56=E2=80=AFAM Thierry Treyer <ttreyer@meta.com> =
+wrote:
+>
+> Hello everyone,
+>
+> Here are the estimates for the different encoding schemes we discussed:
+> - parameters' location takes ~1MB without de-duplication,
+> - parameters' location shrinks to ~14kB when de-duplicated,
+> - instead of de-duplicating the individual locations,
+>   de-duplicating functions' parameter lists yields 187kB of locations dat=
+a.
+>
+> We also need to take into account the size of the corresponding funcsec
+> table, which starts at 3.6MB. The full details follows:
+>
+>   1) // params_offset points to the first parameter's location
+>      struct fn_info { u32 type_id, offset, params_offset; };
+>   2) // param_offsets point to each parameters' location
+>      struct fn_info { u32 type_id, offset; u16 param_offsets[proto.arglen=
+]; };
+>   3) // locations are stored inline, in the funcsec table
+>      struct fn_info { u32 type_id, offset; loc inline_locs[proto.arglen];=
+ };
+>
+>   Params encoding             Locations Size   Funcsec Size   Total Size
+>   =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>   (1) param list, no dedup         1,017,654      5,467,824    6,485,478
+>   (1) param list, w/ dedup           187,379      5,467,824    5,655,203
+>   (2) param offsets, w/ dedup         14,526      4,808,838    4,823,364
 
-On 5/22/25 1:32 AM, kernel test robot wrote:
-> Hi Bhupesh,
->
-> kernel test robot noticed the following build warnings:
->
-> [auto build test WARNING on trace/for-next]
-> [also build test WARNING on tip/sched/core akpm-mm/mm-everything linus/master v6.15-rc7 next-20250521]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
->
-> url:    https://github.com/intel-lab-lkp/linux/commits/Bhupesh/exec-Remove-obsolete-comments/20250521-142443
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace for-next
-> patch link:    https://lore.kernel.org/r/20250521062337.53262-3-bhupesh%40igalia.com
-> patch subject: [PATCH v4 2/3] treewide: Switch memcpy() users of 'task->comm' to a more safer implementation
-> config: arc-randconfig-002-20250522 (https://download.01.org/0day-ci/archive/20250522/202505220326.5yDQHjnt-lkp@intel.com/config)
-> compiler: arc-linux-gcc (GCC) 8.5.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250522/202505220326.5yDQHjnt-lkp@intel.com/reproduce)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202505220326.5yDQHjnt-lkp@intel.com/
->
-> All warnings (new ones prefixed by >>):
->
->     In file included from fs/coredump.c:20:
->     fs/coredump.c: In function 'do_coredump':
->>> include/linux/coredump.h:57:7: warning: array subscript 16 is above array bounds of 'char[16]' [-Warray-bounds]
->        comm[TASK_COMM_LEN] = '\0'; \
->        ~~~~^~~~~~~~~~~~~~~
->     include/linux/coredump.h:63:43: note: in expansion of macro '__COREDUMP_PRINTK'
->      #define coredump_report_failure(fmt, ...) __COREDUMP_PRINTK(KERN_WARNING, fmt, ##__VA_ARGS__)
->                                                ^~~~~~~~~~~~~~~~~
->     fs/coredump.c:655:4: note: in expansion of macro 'coredump_report_failure'
->         coredump_report_failure(
->         ^~~~~~~~~~~~~~~~~~~~~~~
->>> include/linux/coredump.h:57:7: warning: array subscript 16 is above array bounds of 'char[16]' [-Warray-bounds]
->        comm[TASK_COMM_LEN] = '\0'; \
->        ~~~~^~~~~~~~~~~~~~~
->     include/linux/coredump.h:63:43: note: in expansion of macro '__COREDUMP_PRINTK'
->      #define coredump_report_failure(fmt, ...) __COREDUMP_PRINTK(KERN_WARNING, fmt, ##__VA_ARGS__)
->                                                ^~~~~~~~~~~~~~~~~
->     fs/coredump.c:730:4: note: in expansion of macro 'coredump_report_failure'
->         coredump_report_failure("Core dump to %s aborted: "
->         ^~~~~~~~~~~~~~~~~~~~~~~
->>> include/linux/coredump.h:57:7: warning: array subscript 16 is above array bounds of 'char[16]' [-Warray-bounds]
->        comm[TASK_COMM_LEN] = '\0'; \
->        ~~~~^~~~~~~~~~~~~~~
->     include/linux/coredump.h:63:43: note: in expansion of macro '__COREDUMP_PRINTK'
->      #define coredump_report_failure(fmt, ...) __COREDUMP_PRINTK(KERN_WARNING, fmt, ##__VA_ARGS__)
->                                                ^~~~~~~~~~~~~~~~~
->     fs/coredump.c:725:4: note: in expansion of macro 'coredump_report_failure'
->         coredump_report_failure("Core dump to %s aborted: "
->         ^~~~~~~~~~~~~~~~~~~~~~~
->>> include/linux/coredump.h:57:7: warning: array subscript 16 is above array bounds of 'char[16]' [-Warray-bounds]
->        comm[TASK_COMM_LEN] = '\0'; \
->        ~~~~^~~~~~~~~~~~~~~
->     include/linux/coredump.h:63:43: note: in expansion of macro '__COREDUMP_PRINTK'
->      #define coredump_report_failure(fmt, ...) __COREDUMP_PRINTK(KERN_WARNING, fmt, ##__VA_ARGS__)
->                                                ^~~~~~~~~~~~~~~~~
->     fs/coredump.c:618:4: note: in expansion of macro 'coredump_report_failure'
->         coredump_report_failure("over core_pipe_limit, skipping core dump");
->         ^~~~~~~~~~~~~~~~~~~~~~~
->>> include/linux/coredump.h:57:7: warning: array subscript 16 is above array bounds of 'char[16]' [-Warray-bounds]
->        comm[TASK_COMM_LEN] = '\0'; \
->        ~~~~^~~~~~~~~~~~~~~
->     include/linux/coredump.h:63:43: note: in expansion of macro '__COREDUMP_PRINTK'
->      #define coredump_report_failure(fmt, ...) __COREDUMP_PRINTK(KERN_WARNING, fmt, ##__VA_ARGS__)
->                                                ^~~~~~~~~~~~~~~~~
->     fs/coredump.c:642:4: note: in expansion of macro 'coredump_report_failure'
->         coredump_report_failure("|%s pipe failed", cn.corename);
->         ^~~~~~~~~~~~~~~~~~~~~~~
->>> include/linux/coredump.h:57:7: warning: array subscript 16 is above array bounds of 'char[16]' [-Warray-bounds]
->        comm[TASK_COMM_LEN] = '\0'; \
->        ~~~~^~~~~~~~~~~~~~~
->     include/linux/coredump.h:63:43: note: in expansion of macro '__COREDUMP_PRINTK'
->      #define coredump_report_failure(fmt, ...) __COREDUMP_PRINTK(KERN_WARNING, fmt, ##__VA_ARGS__)
->                                                ^~~~~~~~~~~~~~~~~
->     fs/coredump.c:625:4: note: in expansion of macro 'coredump_report_failure'
->         coredump_report_failure("%s failed to allocate memory", __func__);
->         ^~~~~~~~~~~~~~~~~~~~~~~
->>> include/linux/coredump.h:57:7: warning: array subscript 16 is above array bounds of 'char[16]' [-Warray-bounds]
->        comm[TASK_COMM_LEN] = '\0'; \
->        ~~~~^~~~~~~~~~~~~~~
->     include/linux/coredump.h:63:43: note: in expansion of macro '__COREDUMP_PRINTK'
->      #define coredump_report_failure(fmt, ...) __COREDUMP_PRINTK(KERN_WARNING, fmt, ##__VA_ARGS__)
->                                                ^~~~~~~~~~~~~~~~~
->     fs/coredump.c:611:4: note: in expansion of macro 'coredump_report_failure'
->         coredump_report_failure("RLIMIT_CORE is set to 1, aborting core");
->         ^~~~~~~~~~~~~~~~~~~~~~~
->>> include/linux/coredump.h:57:7: warning: array subscript 16 is above array bounds of 'char[16]' [-Warray-bounds]
->        comm[TASK_COMM_LEN] = '\0'; \
->        ~~~~^~~~~~~~~~~~~~~
->     include/linux/coredump.h:63:43: note: in expansion of macro '__COREDUMP_PRINTK'
->      #define coredump_report_failure(fmt, ...) __COREDUMP_PRINTK(KERN_WARNING, fmt, ##__VA_ARGS__)
->                                                ^~~~~~~~~~~~~~~~~
->     fs/coredump.c:591:4: note: in expansion of macro 'coredump_report_failure'
->         coredump_report_failure("format_corename failed, aborting core");
->         ^~~~~~~~~~~~~~~~~~~~~~~
->>> include/linux/coredump.h:57:7: warning: array subscript 16 is above array bounds of 'char[16]' [-Warray-bounds]
->        comm[TASK_COMM_LEN] = '\0'; \
->        ~~~~^~~~~~~~~~~~~~~
->     include/linux/coredump.h:63:43: note: in expansion of macro '__COREDUMP_PRINTK'
->      #define coredump_report_failure(fmt, ...) __COREDUMP_PRINTK(KERN_WARNING, fmt, ##__VA_ARGS__)
->                                                ^~~~~~~~~~~~~~~~~
->     fs/coredump.c:752:4: note: in expansion of macro 'coredump_report_failure'
->         coredump_report_failure("Core dump to |%s disabled", cn.corename);
->         ^~~~~~~~~~~~~~~~~~~~~~~
->     fs/coredump.c: In function 'validate_coredump_safety':
->>> include/linux/coredump.h:57:7: warning: array subscript 16 is above array bounds of 'char[16]' [-Warray-bounds]
->        comm[TASK_COMM_LEN] = '\0'; \
->        ~~~~^~~~~~~~~~~~~~~
->     include/linux/coredump.h:63:43: note: in expansion of macro '__COREDUMP_PRINTK'
->      #define coredump_report_failure(fmt, ...) __COREDUMP_PRINTK(KERN_WARNING, fmt, ##__VA_ARGS__)
->                                                ^~~~~~~~~~~~~~~~~
->     fs/coredump.c:1006:3: note: in expansion of macro 'coredump_report_failure'
->        coredump_report_failure("Unsafe core_pattern used with fs.suid_dumpable=2: "
->        ^~~~~~~~~~~~~~~~~~~~~~~
->
->
-> vim +57 include/linux/coredump.h
->
->      46	
->      47	/*
->      48	 * Logging for the coredump code, ratelimited.
->      49	 * The TGID and comm fields are added to the message.
->      50	 */
->      51	
->      52	#define __COREDUMP_PRINTK(Level, Format, ...) \
->      53		do {	\
->      54			char comm[TASK_COMM_LEN];	\
->      55			/* This will always be NUL terminated. */ \
->      56			memcpy(comm, current->comm, TASK_COMM_LEN); \
->    > 57			comm[TASK_COMM_LEN] = '\0'; \
->      58			printk_ratelimited(Level "coredump: %d(%*pE): " Format "\n",	\
->      59				task_tgid_vnr(current), (int)strlen(comm), comm, ##__VA_ARGS__);	\
->      60		} while (0)	\
->      61	
->
+This one is almost as good as (3) below, but fits better into the
+existing kind+vlen model where there is a variable number of fixed
+sized elements (but locations can still be variable-sized and keep
+evolving much more easily). I'd go with this one, unless I'm missing
+some important benefit of other representations.
 
-Thanks, I will fix these in v5.
+>   (3) param list inline            1,017,654      3,645,216    4,662,870
+>
+>   Estimated size in bytes of the new .BTF.func_aux section, from a
+>   production kernel v6.9. It includes both partially and fully inlined
+>   functions in the funcsec tables, with all their parameters, either inli=
+ne
+>   or in their own sub-section. It does not include type information that
+>   would be required to handle fully inlined functions, functions with
+>   conflicting name, and functions with conflicting prototypes.
+>
+>   The deduplicated locations in 2) are small enough to be indexed by a u1=
+6.
+>
+> Storing the locations inline uses the least amount of space. Followed by
+> storing inline a list of offsets to the locations. Neither of these
+> approaches have fixed size records in funcsec. "param list, w/ dedup" is
+> ~1MB larger than inlined locations, but has fixed size records.
+>
+> In all cases, the funcsec table uses the most space, compared to the
+> locations. The size of the `type` sub-section will also grow when we add
+> the missing type information for fully inlined functions, functions with
+> conflicting name, and functions with conflicting prototypes.
+>
+> With fixed size records in the funcsec table, we'd get faster lookup by
+> sorting by `type_id` or `offset`.  bpftrace could efficiently search the
+> lower bound of a `type_id` to instrument all its inline instances.
+> Symbolication tools could efficiently search for inline functions at a
+> given offset.
+>
+> However, it would rule out the most efficient encoding.
+> How do we want to approach this tradeoff?
+>
+> > 2. refine the representation of inline info, exploring adding new
+> > kind(s) to UAPI btf.h if needed. This would likely mean new APIs in
+> > libbpf to add locations and function site info.
+>
+>
+> I currently have a pahole prototype to emit "param list, no dedup" and am
+> close to a patch adding FUNCSEC to libbpf. I was wondering if it would ma=
+ke
+> sense for FUNCSEC to be a DATASEC with its 'kind_flag` set?
 
-Regards,
-Bhupesh
+Why abuse DATASEC if we are extending BTF with new types anyways? I'd
+go with a dedicated FUNCSEC (or FUNCSET, maybe?..)
+
+BTW, Alan, you've been working on self-describing BTF (size per fixed
+part of kind + size per vlen items). Any update on that one? Did you
+get blocked on it somewhere?
+
+>
+> Let me know if you have any questions or have new ideas for the encoding!
+>
+> Have a great day,
+> Thierry
+>
+>
+> > On 19 May 2025, at 13:02, Alan Maguire <alan.maguire@oracle.com> wrote:
+> >
+> > hi folks
+> >
+> > I just wanted to try and capture some of the discussion from last week'=
+s
+> > BPF office hours where we talked about this and hopefully we can
+> > together plot a path forward that supports inline representation and
+> > helps us fix some other long-standing issues with more complex function
+> > representation. If I've missed anything important or if anything looks
+> > wrong, please do chime in!
+> >
+> > In discussing this, we concluded that
+> >
+> > - separating the complex function representations into a separate .BTF
+> > section (.BTF.func_aux or something like it) would be valuable since it
+> > means tracers can continue to interact with existing function
+> > representations that have a straightforward relationship between their
+> > parameters and calling conventions stored in the .BTF section, and can
+> > optionally also utilize the auxiliary function information in .BTF.func=
+_aux
+> >
+> > - this gives us a bit more freedom to add new kinds etc to that
+> > auxiliary function info, and also to control unauthorized access that
+> > might be able to retrieve a function address or other potentially
+> > sensitive info from the aux function data
+> >
+> > - it also means that the only kernel support we would likely initially
+> > need to add would be to allow reading of
+> > /sys/kernel/btf/vmlinux.func_aux , likely via a dummy module supporting
+> > sysfs read.
+> >
+> > - for modules, we would need to support multi-split BTF, i.e split BTF
+> > in .BTF.func_aux in the module that sits atop the .BTF section of the
+> > module which in turn sits atop the vmlinux BTF.  Again only userspace
+> > and tooling support would likely be needed as a first step. I'm looking
+> > at this now and it may require no or minimal code changes to libbpf,
+> > just testing of the feature.  bpftool and pahole would need to support =
+a
+> > means of specifying multiple base BTFs in order, but that seems doable =
+too.
+> >
+> > We were less conclusive on the final form of the representation, but it
+> > would ideally help support fully and partially inlined representations
+> > and other situations we have today where the calling
+> > convention-specified registers and the function parameters do not
+> > cleanly line up. Today we leave such representations out of BTF but a
+> > location representation would allow us to add them back in. Similarly
+> > for functions with the same name but different signatures, having a
+> > function address to clarify which signature goes with which site will h=
+elp.
+> >
+> > Again we don't have to solve all these problems at once but having them
+> > in mind as we figure out the right form of the representation will help=
+.
+> >
+> > Something along the lines of the variable section where we have triples
+> > of <function type id, site address, location BTF id> for each function
+> > site will play a role. Again the exact form of the location data is TBD=
+,
+> > but we can experiment here to maximize compactness. Andrii pointed out =
+a
+> > BTF kind representation may waste bytes; for example a location will
+> > likely not require a name offset string representation. Could be an
+> > index into an array of location descriptions perhaps. Would be nice to
+> > make use of dedup for locations too, likely within pahole rather than
+> > BTF dedup proper. An empirical question is how much dedup will help,
+> > likely we will just have to try and see.
+> >
+> > So based on this I think our next steps are:
+> >
+> > 1. add address info to pahole; I'm working on a proof-of-concept on thi=
+s
+> > hope to have a newer version out this week. Address info would be neede=
+d
+> > for functions that we wish to represent in the aux section as a way of
+> > associating a function site with a location representation.
+> > 2. refine the representation of inline info, exploring adding new
+> > kind(s) to UAPI btf.h if needed. This would likely mean new APIs in
+> > libbpf to add locations and function site info.
+> > 3. explore multi-split BTF, adding libbpf-related tests for
+> > creation/manipulation of split BTF where the base is another split BTF.
+> > Multi-split BTF would be needed for module function aux info
+> >
+> > I'm hoping we can remove any blocks to further progress; task 3 above
+> > can be tackled in parallel while we explore vmlinux inline
+> > representation (multi-split is only needed for the module case where th=
+e
+> > aux info is created atop the module split BTF). I'm hoping to have a bi=
+t
+> > more done on task 1 later this week. So hopefully there's nothing here
+> > that impedes making progress on the inline problem.
+> >
+> > Again if there's anything I've missed above or that seems unclear,
+> > please do follow up. It's really positive that we're tackling this issu=
+e
+> > so I want to make sure that nothing gets in the way of progressing this=
+.
+> > Thanks again!
+> >
+> > Alan
+>
 
