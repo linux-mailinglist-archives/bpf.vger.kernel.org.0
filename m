@@ -1,382 +1,264 @@
-Return-Path: <bpf+bounces-58757-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58758-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D09E6AC15A3
-	for <lists+bpf@lfdr.de>; Thu, 22 May 2025 22:46:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEBE2AC15FF
+	for <lists+bpf@lfdr.de>; Thu, 22 May 2025 23:42:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F03043ACCEA
-	for <lists+bpf@lfdr.de>; Thu, 22 May 2025 20:45:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 538C51BA2D32
+	for <lists+bpf@lfdr.de>; Thu, 22 May 2025 21:42:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47A5024A07B;
-	Thu, 22 May 2025 20:46:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FC66257AF9;
+	Thu, 22 May 2025 21:42:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ODXV/Kq4"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ppd+SSV+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2075.outbound.protection.outlook.com [40.107.94.75])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24FC41DDC11
-	for <bpf@vger.kernel.org>; Thu, 22 May 2025 20:45:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747946760; cv=none; b=O5Nhie0B30z4fzguLDxfYM482e8KCk/844aM1Ji/pegqu6JZh900e+6azI5BG99lldDWUsZ7T1Hx9U1mVReQEeX1C7eTRkc5tb2kEUeFAptPbVraz+tFi6xQsOZjBbFS9kumeDVKIS5KJneaCnYKvNn0+whZLxbIVHrIOjA1xMA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747946760; c=relaxed/simple;
-	bh=qDW+xlu8x3RFD5w/WRnZTGP77tuSZJs7wG1AfGb+Qm4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ys5Td51Vs+AEnNXd6AdhfUS/Oj12IK3UAzQcbJ0r0J6L0A4kbFMWiRYv9BO1QYxHEzgK9ZDaq3qXi3aPPzUY0l6zWtUhg192mI1Sd1lwNindUqpbCPzvdbSiXbqT6Hly9lTv/q4/Y2oQY64E+PYnVV9Scv1EZTstgDIz/Qz0IJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ODXV/Kq4; arc=none smtp.client-ip=209.85.216.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-310e1f4627aso634253a91.2
-        for <bpf@vger.kernel.org>; Thu, 22 May 2025 13:45:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747946758; x=1748551558; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qetomtZ3+ILqQ32zatz6INeWk5si/E14it+bRSSdB0M=;
-        b=ODXV/Kq4zYXwg+E9vHX/HogSdOkh6tIdQBQNdCrVl5kg3CFWIH7wMSgvnT8s61rB+c
-         Jx39jEsPGl+I0YQp5eVyQLJ3vmlMTtEHqLap/EiquE2+EJ9c3wL5rZ2bS7T7laZYFHmT
-         8QFv6fyeEdnCucMtS8V2AGEDCfPOoPm+0swHNBj0FOWFTNYdSgB6/tksQYWQAAsXLtVt
-         KbKWDRYEofSLzTQA3ugFCvRPde997cOHbq9tflXSX84vxGw43qxi8YGKWJwtXeJYPRLQ
-         LZ4bfgGO+ePgYLBeR3XGfHFc8pclinM+Rw9mPZnYiUcKBXTNZjjtOa++lOosPcDNGHWh
-         38mQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747946758; x=1748551558;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qetomtZ3+ILqQ32zatz6INeWk5si/E14it+bRSSdB0M=;
-        b=eFaFwAzOASIF9m2f3mAbpaXbXe8HFg/L55L/2PMzT6D8+Q0NoJjgA7sJj3Ju5W5vgg
-         pDJPIsfjA5GwqAfsL5kWgpayNQapwhyCviqzSlsHZU7O0rIV0uJZqbEFWih2RrhNk7Kl
-         ERM03ijVyanNbZqEKIK0cogfnYRX93wJLKWTO0T8I5A5O8C47TI/yoBj7HmtNHsSmoMy
-         17O9HXaKgP+rBqNOKteaDrVSo4nm0iJbs+oVFrZ+XYUfTPen9qMLN/nbkAPzLwKygFHB
-         5T6CdOjUzeJr9D7XBsXMZ9Xx1/PTKM+WizUPeX4DxJCyXnqNI4FgmbASWUn72XiJx3ag
-         JANg==
-X-Gm-Message-State: AOJu0YwkHjLlphS3W5yvU3r+Xxr7nFyGHlTQEDQL/HLtl5b5IbZdpLnB
-	tWUGYeT4wbVkP/6HwxSlm3Ai/zLmiNSwS0I1cb2yp7i9Gw8v+D0FBv/80g+rcvclaaN1QWxbqCw
-	zPQqfkRYSx0UVDlcN7DLPlJcbgbXHaqfPOvyF36I=
-X-Gm-Gg: ASbGncuaTxFt7S5v4LEb29hncinD3rOXh2d6eO7JlxqsJfPkb4FXbp7eAolDD0BLzrn
-	ll7NTH0hgs274hgBGpgmHpTqsw2RcDq0vm6x1r7lOXh56oalMjgN7BF+sBFOyJzQhtROH+AHpA3
-	g7w+ndb8FPdzCQlWUeInwudrph+YZ6UD0hg3/bse/ziLi0m8WW
-X-Google-Smtp-Source: AGHT+IEMWNl0pDIoYWwPf2Kv665dsdAttoianatBZnsS/eCiI3RTvbxeImCLKctqEIkQmU2t2aqW6BKOAMj7tqcY30w=
-X-Received: by 2002:a17:90a:c887:b0:2ee:ad18:b309 with SMTP id
- 98e67ed59e1d1-30e830ca0b4mr35990596a91.3.1747946758192; Thu, 22 May 2025
- 13:45:58 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17945257442;
+	Thu, 22 May 2025 21:42:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.75
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1747950147; cv=fail; b=czlthvuKouc0Yj/MO47xpRwCEZM6J6jkdyz8uttOh8ZdfH2mL2Mr/5o1cEbJXgJXRsH6+ju+tSMjDaWCZe/4EoGHzEBr2Jy5lE3iyOe34xd/6I6A1Hh7kCC3mDmOnXJR4LLevkBQ87IEzPCVlMWYj8+LCXjdTru76vobljrF21o=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1747950147; c=relaxed/simple;
+	bh=S7cLc0r755iCaXOjBqRO5HznQQIgcZaNi918RI+3mq0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=gwOMGY0cHlHvqNvfv9AZsOOwLaAQamy+zlnr5GOqaBm1V7yRbUN01KNP8rkGrMa2t3nAm8l20OanGWNztl5po5XvGwogcP8ylXrvaLTVkvgMIp2tM7VST8GwvPBnMeBWDG1vYLbKyw/kDL1i5ieQXetAciez44S+IYXZDR8h1HE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ppd+SSV+; arc=fail smtp.client-ip=40.107.94.75
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=dLSx/DqyydddjNgEku5vGe+xySWfxn+n/3+PzyX0bQOz5ABFVoFxnz8mrGg0XlzRXfoGB7sybP+R2Lc/gOmrf3eXwlupQdkQTP1+mll+4X3J4KlJ6qu95fbWSzsGCLH6yvpLXZs6WSvkePh2IorO0s/hL3oeQRwFSjMWKu4bG7/ltrFJN191AKKTrdnvjCnOxgoYyGck9qShxGK7q5tJvmgIfWMR6s/X+PjGNwxd0j2boWsxLaNCPQS9ddBfsC6W/tCMNagrMIj3PIea9gpAsV0TCfLHn/eXb6RmxvOBWRf62ZjoiLFMJgvcWoVLMShj9wC5qq/kHS1ZUM7WiyO2Iw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8N323ayZHRB6ANaj0TtWd0756vNCC3nmaZPrAdM2fsE=;
+ b=o6FUMZr+2D06D2uZdBqUqPQMT7qHqIoVQfgq7s0CsLYMFlMG4xpVgZR4d0qVinILHuRInFQCbxxmBSY2wbOJAc29ym4iqv9In2/AG+mk7oIpNrzILpIO84ZrDbduILAjhvfWC5foopw/OmFYzcsBGuTqSdX6qz3iyvsbrWo0Sj/s5TY5ht9SM96SK0ALHsfG8DFgZuadYeQM6WtWmpS8pOp5uRdU3f5sdTQql9MoJV84vVux0PeaNXJ70eKRuQYIJ52cQOWWBDqRH3KYrWlaDb1RBa8pCd/vWkI+PGao449+PYsx3CakvQQBTrwOQzrNdefNjb/XdBCwx2SnNmsgcQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8N323ayZHRB6ANaj0TtWd0756vNCC3nmaZPrAdM2fsE=;
+ b=ppd+SSV+FXeN+WNn9VXpG0E20zEzXTyiOlcbCHj+IWi/ET+q8Sl716wsyZAynX/7X9PGW+0H5dNk0sDrB/0Glgw9+ugedXTFQXA4Bojcwa/S1QPrr39ql0ExAgh6tDT75WPrzndVt2HtfFXziQmD+h/PK9s4VF/ucV7Wu0vWaLatct20XxsCP4d+deIkir9ofTPo7qfltVZrUOQsAo6gbZNJDN+Z3M5QvUNaFPEFNtkywuAjkntb6A7Om0UWOQd6i8SVGSDvRw5ifxit3kqsx161g2ydETh6aInE0oHdukAY4A53bOaZ3uJ12zFUUGgtmcTbSVGSalE9QyKUG3zjYQ==
+Received: from DS7P220CA0052.NAMP220.PROD.OUTLOOK.COM (2603:10b6:8:224::32) by
+ PH7PR12MB5736.namprd12.prod.outlook.com (2603:10b6:510:1e3::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8746.30; Thu, 22 May
+ 2025 21:42:23 +0000
+Received: from CY4PEPF0000E9CD.namprd03.prod.outlook.com
+ (2603:10b6:8:224:cafe::f0) by DS7P220CA0052.outlook.office365.com
+ (2603:10b6:8:224::32) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8769.18 via Frontend Transport; Thu,
+ 22 May 2025 21:42:22 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CY4PEPF0000E9CD.mail.protection.outlook.com (10.167.241.132) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8769.18 via Frontend Transport; Thu, 22 May 2025 21:42:22 +0000
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Thu, 22 May
+ 2025 14:42:12 -0700
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail205.nvidia.com
+ (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Thu, 22 May
+ 2025 14:42:12 -0700
+Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.8)
+ with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Thu, 22
+ May 2025 14:42:07 -0700
+From: Tariq Toukan <tariqt@nvidia.com>
+To: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, "Andrew
+ Lunn" <andrew+netdev@lunn.ch>
+CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>, Richard Cochran <richardcochran@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend
+	<john.fastabend@gmail.com>, <netdev@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<bpf@vger.kernel.org>, Moshe Shemesh <moshe@nvidia.com>, Mark Bloch
+	<mbloch@nvidia.com>, Gal Pressman <gal@nvidia.com>, Cosmin Ratiu
+	<cratiu@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>
+Subject: [PATCH net-next V2 00/11] net/mlx5e: Add support for devmem and io_uring TCP zero-copy
+Date: Fri, 23 May 2025 00:41:15 +0300
+Message-ID: <1747950086-1246773-1-git-send-email-tariqt@nvidia.com>
+X-Mailer: git-send-email 2.8.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250517162720.4077882-1-yonghong.song@linux.dev> <20250517162731.4078451-1-yonghong.song@linux.dev>
-In-Reply-To: <20250517162731.4078451-1-yonghong.song@linux.dev>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 22 May 2025 13:45:46 -0700
-X-Gm-Features: AX0GCFv287SpuVZs6e9SbX2CcnTBLC6i5BoKjmdceSwSImebhIa7Z0RxCPISEAs
-Message-ID: <CAEf4BzbnSKr9JrdO266cN1tdPDpQKOGRrxn+ZbSX7cM5jVQh2g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/5] bpf: Implement mprog API on top of
- existing cgroup progs
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
-	Martin KaFai Lau <martin.lau@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-NV-OnPremToCloud: AnonymousSubmission
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9CD:EE_|PH7PR12MB5736:EE_
+X-MS-Office365-Filtering-Correlation-Id: 05b49cde-ff4e-4b5f-c621-08dd997988d1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|82310400026|1800799024|36860700013|7416014|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?kyWkyFqRGkl/ji/r7YQUe3vhv6iV9bmK0wECZBdhF4pxkNEyO7q1TjjwpqMV?=
+ =?us-ascii?Q?uFonYjpS6p0yQwK9ZU829O+4udoa1BdxFXFP/EqFdv5+PMsjS0CDyFJataSz?=
+ =?us-ascii?Q?QfK0G2nqCSQcEzdVNmE2OE/7LmO31fq8s9+wCG/lMF3hzfWPn8ITUOsMYIME?=
+ =?us-ascii?Q?2kKcSf9czjZN6h1+9gdkG3WAyaYc28TtNxaiJg+6Pb0mV/u5ygT+KEAafyxH?=
+ =?us-ascii?Q?E5pdBgADvPbJYS9nQwdPQ1xNI2Mb6VWhctDuVgjdXeIvJ4Hwu5+RWXYpTO7b?=
+ =?us-ascii?Q?vHvAbcjw2tFtxTsaffxgPdLzcm+aZinSPkhB7slT+EUjExnM/ldaeCabKljO?=
+ =?us-ascii?Q?TJ6FwMVkUw3BfEmHpKjGvZUQZ/GgQghhAUZzkF+6NeU3p6SWan0gH4a1pc2B?=
+ =?us-ascii?Q?r1ouj7VVHvLfvHVqgMwSZHAjw63lmQhOwoE4O6sghvQcAJGW+4lxxMGh+BKf?=
+ =?us-ascii?Q?+OLLuKQD2W/INt8VeE61AOH/sVItat77J7qaoDwjUxGGzwMNqKgAzK4AzYMO?=
+ =?us-ascii?Q?RThHb1lzkd/IdeEIJfVLcmRYfE4NYj6wsSZ6kfDR2FKoPhTAFRERYdn2DtIQ?=
+ =?us-ascii?Q?0fOG43QHtb1WiwU2lVwyNLscDurRIUBx2wqkpr4dTODgewWAAXRbA/4T1J5y?=
+ =?us-ascii?Q?OZuYyEZe/fe9HmjrQqenGs1YLegqXkkay4uoX0goKahRvPIAQKsRr34fv4CZ?=
+ =?us-ascii?Q?LtNI3MdmgcaGmdURACAmbGq7lBW7cPYp1fp8pfFwLgLVCGN1+iS0yd6sw0IT?=
+ =?us-ascii?Q?QgD9Hz1xCRuvhAxWWKAWj9BAaso1wBl5Oq9pH6P7k8cRr18QRFsscNbpZ4vO?=
+ =?us-ascii?Q?s7Ha2H1gvLhh/JztqVhPYm1Uw2nOinoH6pc+ZSGhCd4tqgiRmdFJYfnMYZSG?=
+ =?us-ascii?Q?xQTfxEvyqdBcJhNXphkqDB0lZHIrCoTVqfS19o3QlB+DWf5WOyyzrw3B2jA7?=
+ =?us-ascii?Q?VWP+HUAAV46NWfVBv7lMbfgSDIYKp0+3Yuk+/tKUERCqYyjbBjBssOBYY4xg?=
+ =?us-ascii?Q?apSHkrjAiE/y26R6djDjOXAwRC39Mrm+WlokSBLa9qreO7Ns1U8jm4hAVR8i?=
+ =?us-ascii?Q?of6nVxFX4Jhw11NeVmfwA3Q7oljh5QQLfLaPYQSGSeAMo4eCFFzLNgHDZKk1?=
+ =?us-ascii?Q?Mcxvf3HbTRqmUWvexlNeBzwByt3WuZFnT8mt1ZAjyxsfZWzsIzzqfjeGJoe8?=
+ =?us-ascii?Q?mFDJaq1sgKasPg8mBwEB7xcqS6dfFE+5ANlpFAMQVZ0VwkMkbNdo7TkxeArd?=
+ =?us-ascii?Q?rLg8F/XgXWhoEswtve1IyouQDT25wETAFSJXTcacGR65/P6rEqQkCtAPXwhY?=
+ =?us-ascii?Q?2Z8ccX3MrJMlg60sHmgquOYdmEDp4eziwa8QYTHX556eOFIxF4ViEyb+bBXe?=
+ =?us-ascii?Q?AtLOMKtwsh9ePQahOyysSJDKl3vC6GC/e2AVIrwT+AQTJz3Woyqu3SxK4bNE?=
+ =?us-ascii?Q?Vht/U2R1QUGp5eKdMN5tqIp10mH4Zqa09+YHRFm5zD/mkOD2l/47+sIVBzJA?=
+ =?us-ascii?Q?RjvJbFUUK7a+XmwZhavZQtPG+Zd16vDPdwps5Ln1/1z1aT7l1Ync3Qk53A?=
+ =?us-ascii?Q?=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(1800799024)(36860700013)(7416014)(376014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 May 2025 21:42:22.0710
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 05b49cde-ff4e-4b5f-c621-08dd997988d1
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CY4PEPF0000E9CD.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5736
 
-On Sat, May 17, 2025 at 9:27=E2=80=AFAM Yonghong Song <yonghong.song@linux.=
-dev> wrote:
->
-> Current cgroup prog ordering is appending at attachment time. This is not
-> ideal. In some cases, users want specific ordering at a particular cgroup
-> level. To address this, the existing mprog API seems an ideal solution wi=
-th
-> supporting BPF_F_BEFORE and BPF_F_AFTER flags.
->
-> But there are a few obstacles to directly use kernel mprog interface.
-> Currently cgroup bpf progs already support prog attach/detach/replace
-> and link-based attach/detach/replace. For example, in struct
-> bpf_prog_array_item, the cgroup_storage field needs to be together
-> with bpf prog. But the mprog API struct bpf_mprog_fp only has bpf_prog
-> as the member, which makes it difficult to use kernel mprog interface.
->
-> In another case, the current cgroup prog detach tries to use the
-> same flag as in attach. This is different from mprog kernel interface
-> which uses flags passed from user space.
->
-> So to avoid modifying existing behavior, I made the following changes to
-> support mprog API for cgroup progs:
->  - The support is for prog list at cgroup level. Cross-level prog list
->    (a.k.a. effective prog list) is not supported.
->  - Previously, BPF_F_PREORDER is supported only for prog attach, now
->    BPF_F_PREORDER is also supported by link-based attach.
->  - For attach, BPF_F_BEFORE/BPF_F_AFTER/BPF_F_ID/BPF_F_LINK is supported
->    similar to kernel mprog but with different implementation.
->  - For detach and replace, use the existing implementation.
->  - For attach, detach and replace, the revision for a particular prog
->    list, associated with a particular attach type, will be updated
->    by increasing count by 1.
->
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-> ---
->  include/uapi/linux/bpf.h       |   7 ++
->  kernel/bpf/cgroup.c            | 195 +++++++++++++++++++++++++++++----
->  kernel/bpf/syscall.c           |  43 +++++---
->  tools/include/uapi/linux/bpf.h |   7 ++
->  4 files changed, 214 insertions(+), 38 deletions(-)
->
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 16e95398c91c..356cd2b185fb 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -1794,6 +1794,13 @@ union bpf_attr {
->                                 };
->                                 __u64           expected_revision;
->                         } netkit;
-> +                       struct {
-> +                               union {
-> +                                       __u32   relative_fd;
-> +                                       __u32   relative_id;
-> +                               };
-> +                               __u64           expected_revision;
-> +                       } cgroup;
->                 };
->         } link_create;
->
-> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> index 62a1d8deb3dc..78e6fc70b8f9 100644
-> --- a/kernel/bpf/cgroup.c
-> +++ b/kernel/bpf/cgroup.c
-> @@ -624,6 +624,129 @@ static struct bpf_prog_list *find_attach_entry(stru=
-ct hlist_head *progs,
->         return NULL;
->  }
->
-> +static struct bpf_link *bpf_get_anchor_link(u32 flags, u32 id_or_fd, enu=
-m bpf_prog_type type)
-> +{
-> +       struct bpf_link *link =3D ERR_PTR(-EINVAL);
-> +
-> +       if (flags & BPF_F_ID)
-> +               link =3D bpf_link_by_id(id_or_fd);
-> +       else if (id_or_fd)
-> +               link =3D bpf_link_get_from_fd(id_or_fd);
-> +       if (IS_ERR(link))
-> +               return link;
-> +       if (type && link->prog->type !=3D type) {
-> +               bpf_link_put(link);
-> +               return ERR_PTR(-EINVAL);
-> +       }
-> +
-> +       return link;
-> +}
-> +
-> +static struct bpf_prog *bpf_get_anchor_prog(u32 flags, u32 id_or_fd, enu=
-m bpf_prog_type type)
-> +{
-> +       struct bpf_prog *prog =3D ERR_PTR(-EINVAL);
-> +
-> +       if (flags & BPF_F_ID)
-> +               prog =3D bpf_prog_by_id(id_or_fd);
-> +       else if (id_or_fd)
-> +               prog =3D bpf_prog_get(id_or_fd);
-> +       if (IS_ERR(prog))
-> +               return prog;
-> +       if (type && prog->type !=3D type) {
-> +               bpf_prog_put(prog);
-> +               return ERR_PTR(-EINVAL);
-> +       }
-> +
-> +       return prog;
-> +}
-> +
-> +static struct bpf_prog_list *get_prog_list(struct hlist_head *progs, str=
-uct bpf_prog *prog,
-> +                                          u32 flags, u32 id_or_fd)
-> +{
-> +       bool link =3D flags & BPF_F_LINK, id =3D flags & BPF_F_ID;
-> +       struct bpf_prog *anchor_prog =3D NULL, *pltmp_prog;
-> +       bool preorder =3D flags & BPF_F_PREORDER;
-> +       struct bpf_link *anchor_link =3D NULL;
-> +       struct bpf_prog_list *pltmp;
-> +       int ret =3D -EINVAL;
-> +
-> +       if (link || id || id_or_fd) {
+This series from the team adds support for zerocopy rx TCP with devmem
+and io_uring for ConnectX7 NICs and above. For performance reasons and
+simplicity HW-GRO will also be turned on when header-data split mode is
+on.
 
-please, use "is_id" to make it obvious that this is bool, it's very
-confusing to see "id || id_or_fd"
+Find more details below.
 
-same for is_link, please
+Regards,
+Tariq
 
-> +               /* flags must have either BPF_F_BEFORE or BPF_F_AFTER */
-> +               if (!(flags & BPF_F_BEFORE) !=3D !!(flags & BPF_F_AFTER))
+Performance
+===========
 
-either/or here means exclusive or inclusive?
+Test setup:
 
-if it's inclusive: if (flags & (BPF_F_BEFORE | BPF_F_AFTER)) should be
-enough to check that at least one of them is set
+* CPU: Intel(R) Xeon(R) Platinum 8380 CPU @ 2.30GHz (single NUMA)
+* NIC: ConnectX7
+* Benchmarking tool: kperf [1]
+* Single TCP flow
+* Test duration: 60s
 
-if exclusive, below you use a different style of checking (which
-arguably is easier to follow), so let's stay consistent
+With application thread and interrupts pinned to the *same* core:
+
+|------+-----------+----------|
+| MTU  | epoll     | io_uring |
+|------+-----------+----------|
+| 1500 | 61.6 Gbps | 114 Gbps |
+| 4096 | 69.3 Gbps | 151 Gbps |
+| 9000 | 67.8 Gbps | 187 Gbps |
+|------+-----------+----------|
+
+The CPU usage for io_uring is 95%.
+
+Reproduction steps for io_uring:
+
+server --no-daemon -a 2001:db8::1 --no-memcmp --iou --iou_sendzc \
+        --iou_zcrx --iou_dev_name eth2 --iou_zcrx_queue_id 2
+
+server --no-daemon -a 2001:db8::2 --no-memcmp --iou --iou_sendzc
+
+client --src 2001:db8::2 --dst 2001:db8::1 \
+        --msg-zerocopy -t 60 --cpu-min=2 --cpu-max=2
+
+Patch overview:
+================
+
+First, a netmem API for skb_can_coalesce is added to the core to be able
+to do skb fragment coalescing on netmems.
+
+The next patches introduce some cleanups in the internal SHAMPO code and
+improvements to hw gro capability checks in FW.
+
+A separate page_pool is introduced for headers. Ethtool stats are added
+as well.
+
+Then the driver is converted to use the netmem API and to allow support
+for unreadable netmem page pool.
+
+The queue management ops are implemented.
+
+Finally, the tcp-data-split ring parameter is exposed.
+
+Changelog
+=========
+
+Changes from v1 [0]:
+- Added support for skb_can_coalesce_netmem().
+- Avoid netmem_to_page() casts in the driver.
+- Fixed code to abide 80 char limit with some exceptions to avoid
+code churn.
+
+References
+==========
+
+[0] v1: https://lore.kernel.org/all/20250116215530.158886-1-saeed@kernel.org/
+[1] kperf: git://git.kernel.dk/kperf.git
 
 
-I got to say that my brain broke trying to reason about this pattern:
+Dragos Tatulea (1):
+  net: Add skb_can_coalesce for netmem
 
-   if (!(...) !=3D !!(...))
+Saeed Mahameed (10):
+  net: Kconfig NET_DEVMEM selects GENERIC_ALLOCATOR
+  net/mlx5e: SHAMPO: Reorganize mlx5_rq_shampo_alloc
+  net/mlx5e: SHAMPO: Remove redundant params
+  net/mlx5e: SHAMPO: Improve hw gro capability checking
+  net/mlx5e: SHAMPO: Separate pool for headers
+  net/mlx5e: SHAMPO: Headers page pool stats
+  net/mlx5e: Convert over to netmem
+  net/mlx5e: Add support for UNREADABLE netmem page pools
+  net/mlx5e: Implement queue mgmt ops and single channel swap
+  net/mlx5e: Support ethtool tcp-data-split settings
 
-Way too many exclamations/negations, IMO... I'm not sure what sort of
-condition we are expressing here?
+ drivers/net/ethernet/mellanox/mlx5/core/en.h  |  11 +-
+ .../ethernet/mellanox/mlx5/core/en/params.c   |  36 ++-
+ .../ethernet/mellanox/mlx5/core/en_ethtool.c  |  50 ++++
+ .../net/ethernet/mellanox/mlx5/core/en_main.c | 281 +++++++++++++-----
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   | 136 +++++----
+ .../ethernet/mellanox/mlx5/core/en_stats.c    |  53 ++++
+ .../ethernet/mellanox/mlx5/core/en_stats.h    |  24 ++
+ include/linux/skbuff.h                        |  12 +
+ net/Kconfig                                   |   2 +-
+ 9 files changed, 445 insertions(+), 160 deletions(-)
 
-pw-bot: cr
 
-> +                       return ERR_PTR(-EINVAL);
-> +       } else if (!hlist_empty(progs)) {
-> +               /* flags cannot have both BPF_F_BEFORE and BPF_F_AFTER */
-> +               if ((flags & BPF_F_BEFORE) && (flags & BPF_F_AFTER))
-> +                       return ERR_PTR(-EINVAL);
+base-commit: 33e1b1b3991ba8c0d02b2324a582e084272205d6
+-- 
+2.31.1
 
-do I understand correctly that neither BEFORE or AFTER might be set,
-in which case it must be BPF_F_REPLACE, is that right? Can it happen
-that we have neither REPLACE nor BEFORE/AFTER? Asked that below as
-well...
-
-> +       }
-> +
-> +       if (link) {
-> +               anchor_link =3D bpf_get_anchor_link(flags, id_or_fd, prog=
-->type);
-> +               if (IS_ERR(anchor_link))
-> +                       return ERR_PTR(PTR_ERR(anchor_link));
-> +               anchor_prog =3D anchor_link->prog;
-> +       } else if (id || id_or_fd) {
-> +               anchor_prog =3D bpf_get_anchor_prog(flags, id_or_fd, prog=
-->type);
-> +               if (IS_ERR(anchor_prog))
-> +                       return ERR_PTR(PTR_ERR(anchor_prog));
-> +       }
-> +
-> +       if (!anchor_prog) {
-> +               /* if there is no anchor_prog, then BPF_F_PREORDER doesn'=
-t matter
-> +                * since either prepend or append to a combined list of p=
-rogs will
-> +                * end up with correct result.
-> +                */
-> +               hlist_for_each_entry(pltmp, progs, node) {
-> +                       if (flags & BPF_F_BEFORE)
-> +                               return pltmp;
-> +                       if (pltmp->node.next)
-> +                               continue;
-> +                       return pltmp;
-> +               }
-> +               return NULL;
-> +       }
-> +
-> +       hlist_for_each_entry(pltmp, progs, node) {
-> +               pltmp_prog =3D pltmp->link ? pltmp->link->link.prog : plt=
-mp->prog;
-> +               if (pltmp_prog !=3D anchor_prog)
-> +                       continue;
-> +               if (!!(pltmp->flags & BPF_F_PREORDER) !=3D preorder)
-> +                       goto out;
-
-hm... thinking about this a bit more, is it illegal to have the same
-BPF program attached as PREORDER and POSTORDER? That seems legit to
-me, do we artificially disallow this?
-
-And so my proposal is instead of `goto out;` do `continue;` and write
-this loop as searching for an item and then checking whether that item
-was found after the loop.
-
-> +               if (anchor_link)
-> +                       bpf_link_put(anchor_link);
-> +               else
-> +                       bpf_prog_put(anchor_prog);
-
-and this duplicated cleanup would be best to avoid, given it's not
-just a singular bpf_prog_put()...
-
-> +               return pltmp;
-> +       }
-> +
-> +       ret =3D -ENOENT;
-> +out:
-> +       if (anchor_link)
-> +               bpf_link_put(anchor_link);
-> +       else
-> +               bpf_prog_put(anchor_prog);
-> +       return ERR_PTR(ret);
-> +}
-> +
-> +static int insert_pl_to_hlist(struct bpf_prog_list *pl, struct hlist_hea=
-d *progs,
-> +                             struct bpf_prog *prog, u32 flags, u32 id_or=
-_fd)
-> +{
-> +       struct bpf_prog_list *pltmp;
-> +
-> +       pltmp =3D get_prog_list(progs, prog, flags, id_or_fd);
-> +       if (IS_ERR(pltmp))
-> +               return PTR_ERR(pltmp);
-> +
-> +       if (!pltmp)
-> +               hlist_add_head(&pl->node, progs);
-> +       else if (flags & BPF_F_BEFORE)
-> +               hlist_add_before(&pl->node, &pltmp->node);
-> +       else
-> +               hlist_add_behind(&pl->node, &pltmp->node);
-> +
-> +       return 0;
-> +}
-> +
->  /**
->   * __cgroup_bpf_attach() - Attach the program or the link to a cgroup, a=
-nd
->   *                         propagate the change to descendants
-> @@ -633,6 +756,8 @@ static struct bpf_prog_list *find_attach_entry(struct=
- hlist_head *progs,
->   * @replace_prog: Previously attached program to replace if BPF_F_REPLAC=
-E is set
->   * @type: Type of attach operation
->   * @flags: Option flags
-> + * @id_or_fd: Relative prog id or fd
-> + * @revision: bpf_prog_list revision
->   *
->   * Exactly one of @prog or @link can be non-null.
->   * Must be called with cgroup_mutex held.
-> @@ -640,7 +765,8 @@ static struct bpf_prog_list *find_attach_entry(struct=
- hlist_head *progs,
->  static int __cgroup_bpf_attach(struct cgroup *cgrp,
->                                struct bpf_prog *prog, struct bpf_prog *re=
-place_prog,
->                                struct bpf_cgroup_link *link,
-> -                              enum bpf_attach_type type, u32 flags)
-> +                              enum bpf_attach_type type, u32 flags, u32 =
-id_or_fd,
-> +                              u64 revision)
->  {
->         u32 saved_flags =3D (flags & (BPF_F_ALLOW_OVERRIDE | BPF_F_ALLOW_=
-MULTI));
->         struct bpf_prog *old_prog =3D NULL;
-> @@ -656,6 +782,9 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
->             ((flags & BPF_F_REPLACE) && !(flags & BPF_F_ALLOW_MULTI)))
->                 /* invalid combination */
->                 return -EINVAL;
-> +       if ((flags & BPF_F_REPLACE) && (flags & (BPF_F_BEFORE | BPF_F_AFT=
-ER)))
-
-but can it be that neither is set?
-
-> +               /* only either replace or insertion with before/after */
-> +               return -EINVAL;
->         if (link && (prog || replace_prog))
->                 /* only either link or prog/replace_prog can be specified=
- */
->                 return -EINVAL;
-
-[...]
 
