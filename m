@@ -1,133 +1,156 @@
-Return-Path: <bpf+bounces-58715-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58716-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86795AC0485
-	for <lists+bpf@lfdr.de>; Thu, 22 May 2025 08:21:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F89AAC048D
+	for <lists+bpf@lfdr.de>; Thu, 22 May 2025 08:28:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B39621BA7B69
-	for <lists+bpf@lfdr.de>; Thu, 22 May 2025 06:21:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 072EB4A2127
+	for <lists+bpf@lfdr.de>; Thu, 22 May 2025 06:28:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8374221729;
-	Thu, 22 May 2025 06:21:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E145221D92;
+	Thu, 22 May 2025 06:28:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YKrHnVdM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ijio7bIj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2563B22155F
-	for <bpf@vger.kernel.org>; Thu, 22 May 2025 06:21:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BE231990C7;
+	Thu, 22 May 2025 06:28:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747894892; cv=none; b=kXRJ//iL9mQVpabWg0VsjnoMXvfS+6ktH8QZ7PUC1rse9aHC1Mu5j4rhHcXZkMfM1N/Rvid4XNFwdm9tfauhcwUKmH9KZrksK1tjAd3voROtrrvOI02WkZb+7lmYjWyxl873gAWbnRzU/A3YWcXoVOVyeCAgIn0+jQ6p4PO5fH8=
+	t=1747895291; cv=none; b=R5luMJwSL1b05zFa1jwQnQEMEmBBWx3m7/W0oz2O87VZHePgZzTT30Aff406I7Mcvr60DglaPzjSv0hrHZpKw105dPP1jPbzBLHaFdHGBzvAl0rwvb9u3+BNzN1kzvgmVnrtXE8gwmvsdgontxmxrqq5UZtl4Idkhoe4ZAtr/AM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747894892; c=relaxed/simple;
-	bh=puMynW4zD7IPkVFt4K+WJDb7uPcb9R9cgzymYGi+Pug=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eL/RQ4pyvJzjDbaFfXrT10aCN6DZvuu2WZ0JRJRBp12JeYl3xSCyL/OxJ34SrIa48GEyW30CzcLtN/WiIxYNxPo5Hob32uVNLwvuXb5/pdca5kJGND4px35PbnCy6eg7R8B8GP5aO+7NRjNPshfqu/aGwT7c26jT9Wou/kgWbis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YKrHnVdM; arc=none smtp.client-ip=209.85.215.172
+	s=arc-20240116; t=1747895291; c=relaxed/simple;
+	bh=IIJCYP06utjIpQePw7Ee28zeTx591O6yUKU04K0rZgM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rluotKtb/KkYXGb7FykQHGYI0BCq2OYakwHqsr6gBwU4YTnIjbq/HNkLSe+RAJCf9JvNW50hdLrZQZ52N0/zr9a4jK2HjXkOTRt7xWFIbSIBdKCpeXL9GZDs8pBNNGfdok6vUCcVC07kxWwhc4ihwOQBCitZEQUL1hHkHEH1Ajc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ijio7bIj; arc=none smtp.client-ip=209.85.160.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-b170c99aa49so5110680a12.1
-        for <bpf@vger.kernel.org>; Wed, 21 May 2025 23:21:30 -0700 (PDT)
+Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-4766cb762b6so81223051cf.0;
+        Wed, 21 May 2025 23:28:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747894890; x=1748499690; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=KGWKJ/FFW6TO4mSgE5/ePobxrfpMUhRMXzJ9EfvPL38=;
-        b=YKrHnVdMmFXaumUky/mgPmv/SnIU+3hV+Lwo1E0RGWoiT6JvsAxyQaHO4UY2AA65T6
-         bsYqYOh83wJZjLZm7dLXz6gEgnCLEvSPCTIEvBADJOMHen6pxakifkR+tykA+xFfVriQ
-         8EuELxv3GyNxiDmDB4Dqh7nmwZLrYNUVlmA9zuHr7eWsSbOt8I4L56+8ROeRkxeGaVIC
-         upj6iALkKt7DHet0FiCOigi+zBe0zqf5DxqG9sHn+s1jAOEovtq4gKuB2yMMWjYTElyQ
-         ScBXJFcADFhMQc5+ZpoX0DMD09ZKFznuicO+SnLxMLRGYXlez8QxSJBAFPKGiLYpt6nu
-         xqNQ==
+        d=gmail.com; s=20230601; t=1747895289; x=1748500089; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LHD6lCcHX2Pr8p6sdmSMfutAANjYi9IRIcXl5X7HkKk=;
+        b=ijio7bIjzxIUN8LUYwBKktIAiat02/jCKYAAbd1oUdm20NHr6+FeWa88u+XIGmaClI
+         1rmCyYleMF8zc1PfAaSJKq2qLh8lgK4v6Y6j/JVC5mT3/kRf29IN6LcisJhgjAlMCZiU
+         2eixnk4MQc9HKn2fF6jO4wPeyIp/7uoupPzlLiLo86DBCQYPp/rqzbFFf00xH0Pe+6Rv
+         DfznijtCKiTpqmWUHgPZGpncStcaY41OfsbHCqdf7VN9FLfkCPBxXoPWt+imxOJQr3hn
+         9WFSuHSH77UKNCCM+bTkz0WruD+ljWp/TiJTXLB8M28FWthngXp7shvV5MpyTpubE0e7
+         YQ0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747894890; x=1748499690;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KGWKJ/FFW6TO4mSgE5/ePobxrfpMUhRMXzJ9EfvPL38=;
-        b=Qo/a8PopY0kmk0CRWBGMJ3RzYvDe8HJPg0b01qxJ/p29NXvIq3bj9Gj7i9YJzqwrCI
-         P33jL7uqHoAi7sENFbagmXfSv4rXCBDSvuD2jaDvwbpNDTw+BdpqziCg8G2xUagrGUcS
-         7B0y5Uh9hOmgN3bFkcH2Ld4O3recRpUSNatukRysaNQt8OurdiIKTBv/9xlhkyCoZl4G
-         hahh7fTFOyO0PQHTxlYmxmEBVjuHx+VK/EUQInflzfkDvM1ekImVBPp3z/Po1fJLRmD6
-         y8O2k6dGgXQ+vL4oVLzFYDnMbCDdZ+uWWXZ4A9fCUTR46KbRSzr1kKtc1vi9R1c7iI24
-         PZ1Q==
-X-Gm-Message-State: AOJu0YySTZlOkY96dylQpFhRXlERJfGmqlpoBHOzX2R6lcLHzcHlXiKJ
-	y6eoB46pevR883nR5d2FOzD9waVfeFMk8zlwZ+//eVFm6SSDnXjoAvrnE2PXnw==
-X-Gm-Gg: ASbGncu+1GX+gxqfWeF4hPXEPcpvk3kpIEiskj3Q4WbsaxyR11WREUNdFHBfP9M0n9o
-	2DA1wopiSO0URFq/zY3D0tL0BRCEGm4Xxoxjj2DKGVku/zY57DPyx2rk0I/x4Uya9LMmu9uvEZW
-	JzDIyEY5Y4qFwmmDcXbmo7clfNYd3xqIjfa4bMKGY1Z2X+kD3mb6qtNWYVr7vnEWLasWZN/f8MP
-	WxIMZe/drJyTf2kTX0MtRvB4JvKnvBS1gAXfkv5qPJ+UKUtCq/KydeH844fV0nwphEAgCjSCERF
-	2goWc1PKjwwP4Zt1z+eIl+xUXkttXspEfWmR1CPj1fbKiX52I19j25Km5knNcQbKdjGVm3pVZg/
-	MU5EeD9mG+ytB6isYBuqprOty1FI=
-X-Google-Smtp-Source: AGHT+IGJZXWsZJtfk/x6D+O0CT7k7WTHMqIBkVeVxzGXV+30HfJkSc+BnyAwwSTetq+shsdRtmVHZQ==
-X-Received: by 2002:a17:903:94f:b0:226:38ff:1d6a with SMTP id d9443c01a7336-231d43d9cacmr304188885ad.7.1747894889891;
-        Wed, 21 May 2025 23:21:29 -0700 (PDT)
-Received: from localhost.localdomain (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-233b1bf1cdasm24399965ad.181.2025.05.21.23.21.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 May 2025 23:21:29 -0700 (PDT)
-From: Tony Ambardar <tony.ambardar@gmail.com>
-To: bpf@vger.kernel.org
-Cc: Tony Ambardar <tony.ambardar@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>
-Subject: [PATCH bpf-next v1] libbpf: Fix inheritance of BTF pointer size
-Date: Wed, 21 May 2025 23:21:16 -0700
-Message-Id: <20250522062116.1885601-1-tony.ambardar@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1747895289; x=1748500089;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LHD6lCcHX2Pr8p6sdmSMfutAANjYi9IRIcXl5X7HkKk=;
+        b=nFgsf8OxEcjgiMaWwiD+H7WNwWfXAYoWYPw/ldDWfTrRrKFm8AVzxu2jN+XFntSEFD
+         CXhBWiVRj12dr0vzBqb5dt79lSC7IdW7qnN7cAVPbv87UN6hdMAlcbYxpM0HxyJA13oS
+         COOMW8Yc6TEhW0c6hyvxX0mrr0wi5NiLvGt6AxrsWZaJ74yLQz9Nn1ND3U5WkK/ZrJg3
+         PrZPpmZCsyFbGta0x0GHuuexuWfqkYdy4N+AEzEgKRrsCXwgJYzpY5/fEJ2JbrRPfJ50
+         nGK6LidXSBBm1YQAVDN0Fg2hBj7HEGgOrCoHNk+EFkj9RRrDvQ9TFIDNbNKpnF/XB2XQ
+         669w==
+X-Forwarded-Encrypted: i=1; AJvYcCUsbCrOPWSAgrbOZH/304DS73SFBnyJGC43FleB+HHs+HBowWbpxtiZb3IxsG/vhIhtdnk0l8wUSvl8WM/r@vger.kernel.org, AJvYcCV7UOdDitrm3Q+/pM3dsultxjcKsveXsp+EprxQMB26vZkUwNk53yo9DGNmR54H4Q/ajNPniFpEWuhwTuM0ccstcj9H@vger.kernel.org, AJvYcCWztYPlx7xwUfgfC3Lz9Eh4V4NdrmjNuUV5Wp7ZP74HjG5HoXakPg/lkeYOI32Dr8TcMre2iwFay4yDku+t8HgE9Q==@vger.kernel.org, AJvYcCX8fDk8lS+IERD4rrYrKMfB5BYxJRoogFcXMy8Imrv8QzH+0BqGnR22dMD5bJDm/JG0bZo=@vger.kernel.org, AJvYcCXERnl2ZdkW27GpICKBcp/vkXxxFb9A/B+bwQPW9fd5+vaKBImGum9SrP9Kjn36rn4Oa7GBl4VqvGqzaCo3bg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzFfc2BbJt7SbZJKGtZo5Lw8b39k8f7l730oC5Ww6wLWD7Hfor2
+	aMm2o9Id2B9WYAQywZh0Pe5uMAa0hotLPfZoY9itL4Lrx0wTCxgdMZgTCMk24aMKQEGkMO+s3VW
+	0yiS653AKTKPj2sQU9MLbaFlsKApA/9w=
+X-Gm-Gg: ASbGncsQQJasCwy0dPuEcNJIg6bcjvONzPg65Gs0JccQWbxT/IG7xK5GiGoBv7gVplt
+	if/adz1EkyQoZ8BnpXbaSEQI6ZJXzXy0B+boh3Elyp9AI56VcUttX3ufeoWZcibEw9mlzG0mV6/
+	W0KnRm3cFaYzUh2PVUzCNL3VRHTv6Fm+Q6sw1ju46m+bBj
+X-Google-Smtp-Source: AGHT+IEbl6ReOpb49RwwL8AZJ/9Sol4SvQN4M0UGm1K51odVAmk0xoRFec0CSuR4PFQ6HC9MD2pnvl3mwXOmXHsstbQ=
+X-Received: by 2002:a05:622a:1e8b:b0:48d:66ee:662a with SMTP id
+ d75a77b69052e-494ae58b769mr436574031cf.26.1747895289152; Wed, 21 May 2025
+ 23:28:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250521062337.53262-1-bhupesh@igalia.com> <20250521062337.53262-3-bhupesh@igalia.com>
+ <CALOAHbCm_ggnxAtHMx07MUgnW01RiymD6MpR7coJOiokR4v52A@mail.gmail.com>
+In-Reply-To: <CALOAHbCm_ggnxAtHMx07MUgnW01RiymD6MpR7coJOiokR4v52A@mail.gmail.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Thu, 22 May 2025 14:27:33 +0800
+X-Gm-Features: AX0GCFsGdF0c_dPvPXc154mXKd8pL9O5JIppXmD9XtCHG7b0h4OOt3XBeUQIsTU
+Message-ID: <CALOAHbDNBQN6m9SzK6MegwapUQ9vm4NgcZgyp=aepG8RA8J7UA@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] treewide: Switch memcpy() users of 'task->comm' to
+ a more safer implementation
+To: Bhupesh <bhupesh@igalia.com>
+Cc: akpm@linux-foundation.org, kernel-dev@igalia.com, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-mm@kvack.org, oliver.sang@intel.com, lkp@intel.com, pmladek@suse.com, 
+	rostedt@goodmis.org, mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com, 
+	alexei.starovoitov@gmail.com, andrii.nakryiko@gmail.com, 
+	mirq-linux@rere.qmqm.pl, peterz@infradead.org, willy@infradead.org, 
+	david@redhat.com, viro@zeniv.linux.org.uk, keescook@chromium.org, 
+	ebiederm@xmission.com, brauner@kernel.org, jack@suse.cz, mingo@redhat.com, 
+	juri.lelli@redhat.com, bsegall@google.com, mgorman@suse.de, 
+	vschneid@redhat.com, linux-trace-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Update btf_new_empty() to copy the pointer size from a provided base BTF.
-This ensures split BTF works properly and fixes test failures seen on
-32-bit targets:
+On Thu, May 22, 2025 at 2:15=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com> =
+wrote:
+>
+> On Wed, May 21, 2025 at 2:24=E2=80=AFPM Bhupesh <bhupesh@igalia.com> wrot=
+e:
+> >
+> > As Linus mentioned in [1], currently we have several memcpy() use-cases
+> > which use 'current->comm' to copy the task name over to local copies.
+> > For an example:
+> >
+> >  ...
+> >  char comm[TASK_COMM_LEN];
+> >  memcpy(comm, current->comm, TASK_COMM_LEN);
+> >  ...
+> >
+> > These should be modified so that we can later implement approaches
+> > to handle the task->comm's 16-byte length limitation (TASK_COMM_LEN)
+> > is a more modular way (follow-up patches do the same):
+> >
+> >  ...
+> >  char comm[TASK_COMM_LEN];
+> >  memcpy(comm, current->comm, TASK_COMM_LEN);
+> >  comm[TASK_COMM_LEN - 1] =3D '\0';
+> >  ...
+> >
+> > The relevant 'memcpy()' users were identified using the following searc=
+h
+> > pattern:
+> >  $ git grep 'memcpy.*->comm\>'
+>
+> Hello Bhupesh,
+>
+> Several BPF programs currently read task->comm directly, as seen in:
+>
+> // tools/testing/selftests/bpf/progs/test_skb_helpers.c [0]
+> bpf_probe_read_kernel_str(&comm, sizeof(comm), &task->comm);
+>
+> This approach may cause issues after the follow-up patch.
+> I believe we should replace it with the safer bpf_get_current_comm()
+> or explicitly null-terminate it with "comm[sizeof(comm) - 1] =3D '\0'".
+> Out-of-tree BPF programs like BCC[1] or bpftrace[2] relying on direct
+> task->comm access may also break and require updates.
+>
+> [0]. https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tre=
+e/tools/testing/selftests/bpf/progs/test_skb_helpers.c#n26
+> [1]. https://github.com/iovisor/bcc
+> [2]. https://github.com/bpftrace/bpftrace
 
-  root@qemu-armhf:/usr/libexec/kselftests-bpf# ./test_progs -a btf_split
-  __test_btf_split:PASS:empty_main_btf 0 nsec
-  __test_btf_split:PASS:main_ptr_sz 0 nsec
-  __test_btf_split:PASS:empty_split_btf 0 nsec
-  __test_btf_split:FAIL:inherit_ptr_sz unexpected inherit_ptr_sz: actual 4 != expected 8
-  [...]
-  #41/1    btf_split/single_split:FAIL
+Hmm, upon checking, I confirmed that bpf_probe_read_kernel_str()
+already ensures the destination string is null-terminated. Therefore,
+this change is unnecessary. Please disregard my previous comment.
 
-Fixes: ba451366bf44 ("libbpf: Implement basic split BTF support")
-Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
----
- tools/lib/bpf/btf.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 8d0d0b645a75..b1977888b35e 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -995,6 +995,7 @@ static struct btf *btf_new_empty(struct btf *base_btf)
- 
- 	if (base_btf) {
- 		btf->base_btf = base_btf;
-+		btf->ptr_sz = base_btf->ptr_sz;
- 		btf->start_id = btf__type_cnt(base_btf);
- 		btf->start_str_off = base_btf->hdr->str_len + base_btf->start_str_off;
- 		btf->swapped_endian = base_btf->swapped_endian;
--- 
-2.34.1
-
+--=20
+Regards
+Yafang
 
