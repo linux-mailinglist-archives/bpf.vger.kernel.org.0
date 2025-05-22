@@ -1,140 +1,120 @@
-Return-Path: <bpf+bounces-58708-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58709-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A213AAC01CB
-	for <lists+bpf@lfdr.de>; Thu, 22 May 2025 03:38:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35867AC02A6
+	for <lists+bpf@lfdr.de>; Thu, 22 May 2025 04:54:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EEE11BA01F7
-	for <lists+bpf@lfdr.de>; Thu, 22 May 2025 01:38:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A69849E4CF6
+	for <lists+bpf@lfdr.de>; Thu, 22 May 2025 02:53:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A683B49625;
-	Thu, 22 May 2025 01:38:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A123A4086A;
+	Thu, 22 May 2025 02:54:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IFGZ6rzg"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ukfVB9y0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 894B87464
-	for <bpf@vger.kernel.org>; Thu, 22 May 2025 01:38:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D975614A82
+	for <bpf@vger.kernel.org>; Thu, 22 May 2025 02:53:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747877903; cv=none; b=TzuloQW1+GoVcsHubQp8gQ4RRNrXunrGpNKrzHaIH6p2rU8KsF51WC8FTuyi6tP2cjxVP+EAxa8/5GMLTHl/aWM93N522Um/sVRbBWgO8+AV3KaGFKjY7OvBWO6TrMDfQAHhvtobyw5BNzt0bCrMRPMpaQ2yRLYmFN046NLj+xM=
+	t=1747882442; cv=none; b=gjnleqr8sajpogAfUyWNEtyl7PvFrVHJXAV1kPB8NeON5km+r9Q1YIfmJCC2zYAaB6ch3ySnfWlyy4FvltsB8VI6Yltb41URSGNyL1i/kXUeRbQH+HdoxsrTmXTPghtSQ+l97gp2XPLzYJdXhD95F2azsYeMu56edyk+d9WX0po=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747877903; c=relaxed/simple;
-	bh=Pqz+gi5uCQji4FxW/zkW9ryaXb9M4Ti2yDQSz31TjSM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mA5KSjDFyQvAlP1rZnYfTb8C7eCjwwDKiL4YMis9LxuqUmaExdLYyRyHxv/uq55svdWsSHbfWmT3molo16JmP8fruplqrA+MNytDdxkgm44zeHCFcxIH5AZBFDWFcd1K8DdJZXS+0dy/jxKq60AwfcrqFziTBGsxgMfy+qCSeoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IFGZ6rzg; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-43cf848528aso67419975e9.2
-        for <bpf@vger.kernel.org>; Wed, 21 May 2025 18:38:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747877900; x=1748482700; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1Nu8uFNPkXhTvVbVWkq4SAjFV8yoxaN4uCkVfzuaqOQ=;
-        b=IFGZ6rzgFG1fBS3UNuk3mVkoCDrSRZomHKCVQuSGpXL3mNOsmvQEskeyIwahSsnmn1
-         nSo/65wZYhrwGYBEjz92i+3/HMkTKgSPTrXOfOCSUQLvfonpGDomYgxtWWbFO1095Woq
-         II4ZTLZiftAyctYqF1X2pijxgnNMiWtUgwJGv61wttIulp+8SM5f7H51nac4cem5dnat
-         IoUAIROwf4g5QONp+W9sqbSLWhoGztLVX/DakGj9NtVgWzv1M1SQh68jybAxCPlM8vk8
-         b/b2MH3S2Slqju60Lqyg7gRBdFTop5EMrTpviDrRw1jxQvoTu1WQLf3Mp+jFtRs0OHgj
-         SRvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747877900; x=1748482700;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1Nu8uFNPkXhTvVbVWkq4SAjFV8yoxaN4uCkVfzuaqOQ=;
-        b=UjJW9Z/F+mFtSfkPF8lq6D+9lZ7cgXMhgGtq8ujbW0LtbJiQsGBNcz2kI6fKN0JBo3
-         My4T6XNSD4UHZGEjyc6kb4NDGmxjbPMgvMz6Bqh+fCzOKn9InKaH/1bZ9A8OsLLDWAms
-         KsCMZ+7XjKU77iaA9WfGwR4RVYV2fzloDCfM10c2hN/T5nlWMjFlPiLtwhyLaw4J5xto
-         04EaZ5jmsxqcwLI/MgeHtq2rmqH57PvA5X+G8EUQYZph8VAGZq8LE64ChgJ+4IAyXiY8
-         PHBJYo3Yl6C3Kv6KJgW+yCF23amIcSgEj3QcItJdGDZ8gproErPLSSkpDQks9UP9AD5b
-         4NgQ==
-X-Gm-Message-State: AOJu0YxkO5y9DlUoNby3rgdywvGb2/NUmx3lpTnE2LkANLYy+/1MIlty
-	3cCj/PujEoifkKFPVlNL4dlXokhkd9YBLju/jpjfFrrdmyjykDKJzmWqyHwYhg==
-X-Gm-Gg: ASbGnctbbYJTw1QlIPlwSH9rg77W04muBi4uvYdNTH2eIPy6rNpQZuMSPP098Ke5c/G
-	gzJbE4KGm3fKryN1/PzSdquyoKi9yqYV+skciV7ZG/N04SaZmjqdwHC3shRJOs/JxS61qlBaO7u
-	D4S4zEGM4dt4Ei2R6p5T+38NBzVYMALm+mUdwywALHTqLNHrlFTdjBYqgRsFKtw++2OzwAz67Vw
-	BfRnXurvqhiIT/jpT7JaPcA7MG8F0Eu9M1bnQKI3As2Imv8dydwtI8s2/h5QOpFBdjWBj6DHquD
-	iy/XNkDcYKZKhjzdI+kF+Bjay1RAsSmI4fdBHJ/UghL59B6Efu96abLPy0MI/laRnOSsng==
-X-Google-Smtp-Source: AGHT+IFltte/IRcgwcX0CkENlrczsgwTsFj8hlkWQyqV0sKcdJotaytlLl5ETtmS41GkS4NAX1is0g==
-X-Received: by 2002:a05:600c:1e02:b0:442:f4d4:546 with SMTP id 5b1f17b1804b1-445e6f11da3mr133641245e9.1.1747877899431;
-        Wed, 21 May 2025 18:38:19 -0700 (PDT)
-Received: from msi-laptop.mynet ([2a01:4b00:bf28:2e00:ff96:2dac:a39:3e10])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-447f6b297easm91571855e9.6.2025.05.21.18.38.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 May 2025 18:38:19 -0700 (PDT)
-From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	kafai@meta.com,
-	kernel-team@meta.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next] selftests/bpf: add SKIP_LLVM makefile variable
-Date: Thu, 22 May 2025 02:38:13 +0100
-Message-ID: <20250522013813.125428-1-mykyta.yatsenko5@gmail.com>
-X-Mailer: git-send-email 2.49.0
+	s=arc-20240116; t=1747882442; c=relaxed/simple;
+	bh=fVBut4rSUuwC0y97IQDbnoY68VR8mygrpY2TjF0ZL98=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QpDLKIZiRBFZfYkchIPEOFmIsPfsAx1CUlbQxW1t7ihGsn/j5kM0mdetAlPlwpxUU0pBOhT0h2PdC8FJB9PCQhz//aSUtUzQWUxjpIo/ndpM9VQnMwEvJap75VCzlOBCNatE4dl4TOSmrmpPdEsMWGB+UF67CqF7dLwyQg7tAP0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ukfVB9y0; arc=none smtp.client-ip=91.218.175.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <93df65a6-e8b6-4e75-8918-f6ae0b12779a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1747882437;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gPE3GLVjuaMooql902Vz4dJkMFBqprM34CQ+CXoy3CQ=;
+	b=ukfVB9y0qijRWJan+aI6qMfjjxIc+FWt/AmuL1Sllo3BBMOZf0Vlotd8gSZ0GVMA1QQaxk
+	VMVhdgSkYu/4GzS4Fzu8FweIcY9SoKQWy1TF88umHIt+Xkjbc8H1b5ogAmwaGMTn94FP6b
+	JMAulykVsdmb8xBwhMNnx+bwKTC5xWs=
+Date: Wed, 21 May 2025 19:53:46 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: Do not include stack ptr register in
+ precision backtracking bookkeeping
+Content-Language: en-GB
+To: Eduard Zingerman <eddyz87@gmail.com>,
+ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
+References: <20250521170409.2772304-1-yonghong.song@linux.dev>
+ <45e399c6-74ad-4e58-bfda-06b392d1d28d@gmail.com>
+ <2c0fa9ee-f9dd-4cde-b4fb-6f28ebefc619@linux.dev>
+ <CAEf4Bzbx6xHc2LMCWpY_yQExgjauo0UaDmF4rDuFjefNvOhqRg@mail.gmail.com>
+ <m2jz69bmui.fsf@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <m2jz69bmui.fsf@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-From: Mykyta Yatsenko <yatsenko@meta.com>
 
-Introduce SKIP_LLVM makefile variable that allows to avoid using llvm
-dependencies when building BPF selftests. This is different from
-existing feature-llvm, as the latter is a result of automatic detection
-and should not be set by user explicitly.
-Avoiding llvm dependencies could be useful for environments that do not
-have them, given that as of now llvm dependencies are required only by
-jit_disasm_helpers.c.
 
-Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
----
- tools/testing/selftests/bpf/Makefile | 5 +++++
- 1 file changed, 5 insertions(+)
+On 5/21/25 3:49 PM, Eduard Zingerman wrote:
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>
+>> On Wed, May 21, 2025 at 1:35 PM Yonghong Song <yonghong.song@linux.dev> wrote:
+>>>
+>>>
+>>> On 5/21/25 11:55 AM, Eduard Zingerman wrote:
+>>>> [...]
+>>>>
+>>>>> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+>>>>> index 78c97e12ea4e..e73a910e4ece 100644
+>>>>> --- a/include/linux/bpf_verifier.h
+>>>>> +++ b/include/linux/bpf_verifier.h
+>>>>> @@ -357,6 +357,10 @@ enum {
+>>>>>        INSN_F_SPI_SHIFT = 3, /* shifted 3 bits to the left */
+>>>>>          INSN_F_STACK_ACCESS = BIT(9), /* we need 10 bits total */
+>>>>> +
+>>>>> +    INSN_F_DST_REG_STACK = BIT(10), /* dst_reg is PTR_TO_STACK */
+>>>>> +    INSN_F_SRC_REG_STACK = BIT(11), /* src_reg is PTR_TO_STACK */
+>>>> INSN_F_STACK_ACCESS can be inferred from INSN_F_DST_REG_STACK
+>>>> and INSN_F_SRC_REG_STACK if insn_stack_access_flags() is adjusted
+>>>> to track these flags instead. So, can be one less flag/bit.
+>>> You are correct, we could have BIT(9) for both INSN_F_STACK_ACCESS and INSN_F_DST_REG_STACK,
+>>> and BIT(10) for INSN_F_SRC_REG_STACK. But it makes code a little bit
+>>> complicated. I am okay with this if Andrii also thinks it is
+>>> worthwhile to do this.
+>> I originally wanted to replace INSN_F_STACK_ACCESS with either
+>> INSN_F_DST_REG_STACK or INSN_F_SRC_REG_STACK depending on STX/LDX. But
+>> then I realized that INSN_F_STACK_ACCESS implies the use of that spi
+>> mask, while xxx_REG_STACK doesn't. So it might be a bit simpler if we
+>> keep them distinct, and for LDX/STX we'll set either just
+>> INSN_F_STACK_ACCESS or INSN_F_STACK_ACCESS|INSN_F_xxx_REG_STACK
+>> (whichever makes most sense).
+>>
+>> We have enough bits, so I'd probably use two new bits and keep the
+>> existing STACK_ACCESS one as is. Unless Eduard thinks that this setup
+>> is actually more confusing?
+> Idk, I don't see much difference between these flags for LDX/STX or JMP.
+> In both cases it's a signal PTR_TO_STACK on the left / PTR_TO_STACK on
+> the right. So, having two ways to express the same thing seems a bit
+> confusing to me.
+>
+> Defer to your best judgement.
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 0d04cf54068e..ac2a8e4c8b6e 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -34,6 +34,9 @@ OPT_FLAGS	?= $(if $(RELEASE),-O2,-O0)
- LIBELF_CFLAGS	:= $(shell $(PKG_CONFIG) libelf --cflags 2>/dev/null)
- LIBELF_LIBS	:= $(shell $(PKG_CONFIG) libelf --libs 2>/dev/null || echo -lelf)
- 
-+SKIP_DOCS	?=
-+SKIP_LLVM	?=
-+
- ifeq ($(srctree),)
- srctree := $(patsubst %/,%,$(dir $(CURDIR)))
- srctree := $(patsubst %/,%,$(dir $(srctree)))
-@@ -172,6 +175,7 @@ override OUTPUT := $(patsubst %/,%,$(OUTPUT))
- endif
- endif
- 
-+ifneq ($(SKIP_LLVM),1)
- ifeq ($(feature-llvm),1)
-   LLVM_CFLAGS  += -DHAVE_LLVM_SUPPORT
-   LLVM_CONFIG_LIB_COMPONENTS := mcdisassembler all-targets
-@@ -187,6 +191,7 @@ ifeq ($(feature-llvm),1)
-   endif
-   LLVM_LDFLAGS += $(shell $(LLVM_CONFIG) --ldflags)
- endif
-+endif
- 
- SCRATCH_DIR := $(OUTPUT)/tools
- BUILD_DIR := $(SCRATCH_DIR)/build
--- 
-2.49.0
+Thanks for all discusions. I would like to use two new bits for now.
 
 
