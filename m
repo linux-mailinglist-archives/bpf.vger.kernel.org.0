@@ -1,106 +1,172 @@
-Return-Path: <bpf+bounces-58831-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58832-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 714ECAC22F3
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 14:48:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87226AC23A5
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 15:19:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF40DA265C9
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 12:48:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A34711775D7
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 13:19:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9304449620;
-	Fri, 23 May 2025 12:48:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AC49291863;
+	Fri, 23 May 2025 13:19:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="E0BEV1Pi"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nBTHqycH"
 X-Original-To: bpf@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BED161FDD;
-	Fri, 23 May 2025 12:48:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2653B291157;
+	Fri, 23 May 2025 13:19:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748004506; cv=none; b=hIcM2YlzYg50E2qVitW0OGUwSL5MxsJB2iQGcmuU8rUW8Ue0xnhrs9UoCQjqGBXY1dXpuQtRf0kxbd+evFBCllBnDFdGWLpLIuHLrIQIDMEuari7PCRBr03E1PSAUfMTh7u5yQQyISP5QbjGkbV3Uwk0kKE0oSENoCgPGKW9LnE=
+	t=1748006384; cv=none; b=EockvWBs8WUl1SBo/dJ2vBjvCNCQzEC5rd2STFqbeTuoAkgLgh+MmtyZgO2WmKDTFLM7jIHhtNu0Jv3MLasDF+TxYSnJLhXoHtrUi2VWN6Ajnw88jL2yTMfdYzpcMky3cbfr1uUUgL+yA18ikPVcAQx9Cn/6hdB9WyrF+B35hjg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748004506; c=relaxed/simple;
-	bh=ep7ttSMYmIC7dSCZw6rB4THOYgYU0W+j3ONAkquPmvs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LA/oOHh/Z9f6iiQJB7iI4LRn7gTtaPG6DtVEiQ9iYdTmfwwXGfAmvqoI8aXjpTOhZZWnrk8utRq9sBcmzh92qnTGDHa1Yd8m5z5IVgzJH1mlkcl2etIBer9g4q1GCxVTtsebKnngA8ycw8Xsr6k9ihUJknpK5Vi4dsR4JJbE4FU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=E0BEV1Pi; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1127)
-	id 2B704206834F; Fri, 23 May 2025 05:48:24 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2B704206834F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1748004504;
-	bh=TK3pq8zeypwsvsAQp4lD9eQ6MH7Hnc9VhxYCb1JrU/k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=E0BEV1PiOKtEampixS2HTrQxuD6/TbQearDIPrcet4PyKtxbMC1/Q71ZYdfiTYVsH
-	 moQRlxSHrYNO1KOo90RlnK3/DUbIJDZSuqyoA8rV+E3rS0NoL7tqL/q/1azAgm5xA2
-	 jbfWowHxhBACmuy0yY8YgnAdfNdE4lhyN/FnXj8M=
-Date: Fri, 23 May 2025 05:48:24 -0700
-From: Saurabh Singh Sengar <ssengar@linux.microsoft.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
-	edumazet@google.com, pabeni@redhat.com, horms@kernel.org,
-	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-	john.fastabend@gmail.com, sdf@fomichev.me, kuniyu@amazon.com,
-	ahmed.zaki@intel.com, aleksander.lobakin@intel.com,
-	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	ssengar@microsoft.com, stable@vger.kernel.org
-Subject: Re: [PATCH net,v2] hv_netvsc: fix potential deadlock in
- netvsc_vf_setxdp()
-Message-ID: <20250523124824.GA4946@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1747823103-3420-1-git-send-email-ssengar@linux.microsoft.com>
- <20250522151346.57390f40@kernel.org>
+	s=arc-20240116; t=1748006384; c=relaxed/simple;
+	bh=nc44uegTtaBLfa/PspnBn79HdTIQhDX0Wc6fqNkOBjU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OLQ7RdaqT8XqF7r1IM6jZ+NboLRNWfAZTl5gP04OPF5QtI/O+fXqI4VjTvJ+KjejmPJHrQJb0M1s7xsy8oy7WfA+tRBBTijTxtn7SwWBPCgkUK+bpMV9CaG/oNS6jvC775tBX+ApUCmCMcyWm1gUtfmBJm7PpL4INJN8ysjzDAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nBTHqycH; arc=none smtp.client-ip=95.215.58.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1748006378;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=YI9vOyiOj/PuepHUap7YF6scm7WgxYFdNjSyMkhd8EQ=;
+	b=nBTHqycH+yvB3uSaBCk/npTNGvfHjK4j58ohsdK1C4HRvIm24xgP1hnNdrBUIbeReeSN3R
+	CbhQ9XLaBvWdPcbmJ/tDNYRdHyLK4j7UpJ+WCp7kzN7FbqpnmRNcs5Vp6mycGPDmduPNVe
+	QXz9B3PD9l4N96SwtEZ5JNyQSweqYoE=
+From: Jiayuan Chen <jiayuan.chen@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Jiayuan Chen <jiayuan.chen@linux.dev>,
+	Boris Pismenny <borisp@nvidia.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Ihor Solodrai <isolodrai@meta.com>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next v1 0/2] bpf,ktls: Fix data corruption caused by using bpf_msg_pop_data() in ktls
+Date: Fri, 23 May 2025 21:18:57 +0800
+Message-ID: <20250523131915.19349-1-jiayuan.chen@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250522151346.57390f40@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, May 22, 2025 at 03:13:46PM -0700, Jakub Kicinski wrote:
-> On Wed, 21 May 2025 03:25:03 -0700 Saurabh Sengar wrote:
-> > The MANA driver's probe registers netdevice via the following call chain:
-> > 
-> > mana_probe()
-> >   register_netdev()
-> >     register_netdevice()
-> > 
-> > register_netdevice() calls notifier callback for netvsc driver,
-> > holding the netdev mutex via netdev_lock_ops().
-> > 
-> > Further this netvsc notifier callback end up attempting to acquire the
-> > same lock again in dev_xdp_propagate() leading to deadlock.
-> > 
-> > netvsc_netdev_event()
-> >   netvsc_vf_setxdp()
-> >     dev_xdp_propagate()
-> > 
-> > This deadlock was not observed so far because net_shaper_ops was never set,
-> 
-> The lock is on the VF, I think you meant to say that no device you use
-> in Azure is ops locked?
+Cong reported an issue where running 'test_sockmap' in the current
+bpf-next tree results in an error [1].
 
-That's right.
+The specific test case that triggered the error is a combined test
+involving ktls and bpf_msg_pop_data().
 
-> 
-> There's also the call to netvsc_register_vf() on probe path, please
-> fix or explain why it doesn't need locking in the commit message.
+Root Cause:
+When sending plaintext data, we initially calculated the corresponding
+ciphertext length. However, if we later reduced the plaintext data length
+via socket policy, we failed to recalculate the ciphertext length.
 
-On rethinking I realize you were referring to the netvsc_probe() path not
-mana_probe(). Since this lock is effectively a no-op, it doesn't really
-matter whether it's there or not.
+This results in transmitting buffers containing uninitialized data during
+ciphertext transmission.
 
-However, I think we can revisit this when we add ops for any of the VFs.
+This causes uninitialized bytes to be appended after a complete
+"Application Data" packet, leading to errors on the receiving end when
+parsing TLS record.
 
-- Saurabh
+This issue has existed for a long time but was only exposed after the
+following test code was merged.
+commit 47eae080410b ("selftests/bpf: Add more tests for test_txmsg_push_pop in test_sockmap")
+
+Although we already had tests for pop data before this commit, the
+pop data length was insufficient (less than 5 bytes). This meant that the
+corrupted TLS records with data length <5 bytes were cached without being
+parsed, resulting in no error being triggered.
+
+After this fix, all tests pass.
+
+ 1/ 6  sockmap::txmsg test passthrough:OK
+ 2/ 6  sockmap::txmsg test redirect:OK
+ 3/ 2  sockmap::txmsg test redirect wait send mem:OK
+ 4/ 6  sockmap::txmsg test drop:OK
+ 5/ 6  sockmap::txmsg test ingress redirect:OK
+ 6/ 7  sockmap::txmsg test skb:OK
+ 7/12  sockmap::txmsg test apply:OK
+ 8/12  sockmap::txmsg test cork:OK
+ 9/ 3  sockmap::txmsg test hanging corks:OK
+10/11  sockmap::txmsg test push_data:OK
+11/17  sockmap::txmsg test pull-data:OK
+12/ 9  sockmap::txmsg test pop-data:OK
+13/ 6  sockmap::txmsg test push/pop data:OK
+14/ 1  sockmap::txmsg test ingress parser:OK
+15/ 1  sockmap::txmsg test ingress parser2:OK
+16/ 6 sockhash::txmsg test passthrough:OK
+17/ 6 sockhash::txmsg test redirect:OK
+18/ 2 sockhash::txmsg test redirect wait send mem:OK
+19/ 6 sockhash::txmsg test drop:OK
+20/ 6 sockhash::txmsg test ingress redirect:OK
+21/ 7 sockhash::txmsg test skb:OK
+22/12 sockhash::txmsg test apply:OK
+23/12 sockhash::txmsg test cork:OK
+24/ 3 sockhash::txmsg test hanging corks:OK
+25/11 sockhash::txmsg test push_data:OK
+26/17 sockhash::txmsg test pull-data:OK
+27/ 9 sockhash::txmsg test pop-data:OK
+28/ 6 sockhash::txmsg test push/pop data:OK
+29/ 1 sockhash::txmsg test ingress parser:OK
+30/ 1 sockhash::txmsg test ingress parser2:OK
+31/ 6 sockhash:ktls:txmsg test passthrough:OK
+32/ 6 sockhash:ktls:txmsg test redirect:OK
+33/ 2 sockhash:ktls:txmsg test redirect wait send mem:OK
+34/ 6 sockhash:ktls:txmsg test drop:OK
+35/ 6 sockhash:ktls:txmsg test ingress redirect:OK
+36/ 7 sockhash:ktls:txmsg test skb:OK
+37/12 sockhash:ktls:txmsg test apply:OK
+38/12 sockhash:ktls:txmsg test cork:OK
+39/ 3 sockhash:ktls:txmsg test hanging corks:OK
+40/11 sockhash:ktls:txmsg test push_data:OK
+41/17 sockhash:ktls:txmsg test pull-data:OK
+42/ 9 sockhash:ktls:txmsg test pop-data:OK
+43/ 6 sockhash:ktls:txmsg test push/pop data:OK
+44/ 1 sockhash:ktls:txmsg test ingress parser:OK
+45/ 0 sockhash:ktls:txmsg test ingress parser2:OK
+Pass: 45 Fail: 0
+
+[1]: https://lore.kernel.org/bpf/CAM_iQpU7=4xjbefZoxndKoX9gFFMOe7FcWMq5tHBsymbrnMHxQ@mail.gmail.com/
+
+Jiayuan Chen (2):
+  bpf,ktls: Fix data corruption when using bpf_msg_pop_data() in ktls
+  selftests/bpf: Add test to cover ktls with bpf_msg_pop_data
+
+ net/tls/tls_sw.c                              | 15 +++
+ .../selftests/bpf/prog_tests/sockmap_ktls.c   | 91 +++++++++++++++++++
+ .../selftests/bpf/progs/test_sockmap_ktls.c   |  4 +
+ 3 files changed, 110 insertions(+)
+
+-- 
+2.47.1
+
 
