@@ -1,86 +1,54 @@
-Return-Path: <bpf+bounces-58821-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58822-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FEB5AC1D97
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 09:23:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D87CEAC1DE8
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 09:48:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FA334A3306
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 07:23:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49D271C0247E
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 07:48:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03D0421CC43;
-	Fri, 23 May 2025 07:23:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ZSApMKd/"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11E33283CBE;
+	Fri, 23 May 2025 07:48:01 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 190E91C5D7B
-	for <bpf@vger.kernel.org>; Fri, 23 May 2025 07:23:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C6C11547F2;
+	Fri, 23 May 2025 07:47:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747985013; cv=none; b=dEP90wTTuP5xgSSO/8chAP63aGNY0wZn8kZ5uovaLfUFW3l+lznmAZVKe+Sq2sNTOoU1uATRrxl+ciB5j24baEWA4JAAjUG6E4lU1yGBKVAlrGSFllxRbTStDpw1Ywj3jUeB7olME2EpuGsP1wdWKl8q6OqnQ4QMuT/vf9/ojNA=
+	t=1747986480; cv=none; b=UkVQsD49IKRQJdgAvGeSY9bz5NpC0jk2Eh7nqTu/GlKq6lMQZJt8WvAgc76RGtCWDykzV/Z7F7p3d+SBB2HcN9BxL/trPiqRSl1oPh3+/P9tbn0kxlnxNg/u2NrgqlcI2FHbFJd3MAXQgDBGcbPLlB3WbSwsfByp010m8x7tIhM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747985013; c=relaxed/simple;
-	bh=ihoBSshL0YGNXRQl56dbipBQPrtOpSxEgiCWKUyk9SM=;
+	s=arc-20240116; t=1747986480; c=relaxed/simple;
+	bh=g7Gdg+0qWBaRAZcaKXMUtBidxCgzsXqlP6QraOrKnVM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nByH3jKplGCYZDI8Y0DNELMDvrzS9vKKbVBjUJyb9jQx0MQ23hRaTQ5yZYscD4WG4m824YfouKlKqmIvAyJv+C4b5D95z2tZbE7W/5NclcVrYO5IIhZuaNWe5Nn88DvAamwE1rW9KGEAfU0xFTuMOIhjE5nbHMpOwo1sKSkdbos=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ZSApMKd/; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-231e98e46c0so59024975ad.3
-        for <bpf@vger.kernel.org>; Fri, 23 May 2025 00:23:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1747985011; x=1748589811; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=9oFOTJY+jM52XUB7bJEkukbArm9m+yq0+hVZWj+z6wQ=;
-        b=ZSApMKd/qXasRPEv96HmP7k/98vVq6536qVucvH8vxog9RWDEf7spQauOjwmkwHmBx
-         gUmxF7DR2GL+JLeIzD7NQj0N/X4Tx4ddnS8+nucnGF+N14V8ICvbsR9DMI5vOAQBEcpO
-         zde+VvdBU3hcXQ/MpSvrLCAcsKYrITRKhfWls=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747985011; x=1748589811;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9oFOTJY+jM52XUB7bJEkukbArm9m+yq0+hVZWj+z6wQ=;
-        b=YY/EvFq3TL/Em38m54vlLzLiy5L4htlajN+3/zE56ZN3pnnzyNPHYzBC/0r2TjHS/B
-         /ggnEY5L5e4avNZLJhPUpIuJItMPmhQm+l8SeDq2ky8psglwgL2sWie13/WF5kLBRyGq
-         9iJr7paMd60+GDAxPD7RzPE8jUHT9bRn43Ys8sT/G7wsKk9FgvN2NQGzDI7k9MSzdXFQ
-         FNh4jKkKKuWyFSeRxBhkQSkc/2B/LqHR1enAo+7sovpvohXBPxF/G5umQtEmwqtE9ret
-         xjETCqXQDqql9KWbX/38mla3HZq4Uj2FgNpkdRxoWdqMIIzeces6ArloMANV2s7c8bXB
-         HTVA==
-X-Forwarded-Encrypted: i=1; AJvYcCUoQ2GZc8bQrMZXtVnIGgOlTRxFi+sdlDneP2G7pOXvwHI99ce6uqZ20IFm+gzK3tBudT4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzfmDOo6WU3JV7XnJvVZoKuBCmGhzWWgtbw2SDwCWpt4aj7ZrdL
-	KBDaHuc1cIuDtWwYX/ToJxqlm8cGlnp05uEFAwtnNIT5wxYVlK9GVrWiT6LEL8QRcQ==
-X-Gm-Gg: ASbGncsUYWx0XRTojNzwBVA8jGsSvGrsMHoGKcYrFiX8ESRhwdfWnLgvGlZqTrwVpSo
-	QZuOF2/MBCb5PV5x3Msa4HE8PooW1a2M27e2gFFDTsWDR+8AfkjDHTVf5uQntnGq8QF4LqLTU8C
-	iPuIh/QVrnQ+Ahqsf5ptL204xO5Ma8NKKD7Ldys/TNi7KhJhrB8sHUWa/kE2pftY+pYOsK2b4Xb
-	cgqsbYwKr/qEggghOFVPqRLJ9aiv7xhydLxAK0N86SAZ5CubDNu9szZc1OQnC1jY/wtysxi1r4e
-	FliIGTZhsnDq8sneQnEddpm+fE0vurG4JPGmBI/aaXb9GHe4K5a2Spc=
-X-Google-Smtp-Source: AGHT+IGV7jMy68tNUPRjmOEfAPOqB8BQm0nYihPU/YOpSm86JVssQhjOtx/DD3XxmepL/d4sIa0A8g==
-X-Received: by 2002:a17:903:3d04:b0:223:f9a4:3f9c with SMTP id d9443c01a7336-233f21c7ccamr28916195ad.9.1747985011352;
-        Fri, 23 May 2025 00:23:31 -0700 (PDT)
-Received: from google.com ([2401:fa00:8f:203:17f7:e82e:5533:af02])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-231d4ed897asm118688185ad.250.2025.05.23.00.23.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 May 2025 00:23:30 -0700 (PDT)
-Date: Fri, 23 May 2025 16:23:25 +0900
-From: Sergey Senozhatsky <senozhatsky@chromium.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Matt Bobrowski <mattbobrowski@google.com>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2] bpf: add bpf_msleep_interruptible() kfunc
-Message-ID: <z4gvqyk3ktqhd4wmi7ju3qw67c56brf5klxcer3vqmp3v6sujn@2xq7j3ji4kic>
-References: <20250515064800.2201498-1-senozhatsky@chromium.org>
- <CAEf4BzYTiPuOUbQgkNvT2haAupeep79q0pVu=fcD5fEgnAjR_A@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZAbtM6ryxkDZlf23yUhnjdrPcIo7xitDsy6yVy9L1XfsG9vcleOlwf2nc3TtnKI2CVfCdFqVQPkCeC8VaFohVTjGlV1OmXhNsgBaMdpMWqDzmRuDB4KiHaL7Ux17AMQhgBwQQ5mfZiG5ziMHvUtGPQm4gXYdViF4xagWRa9gNj8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-669ff7000002311f-83-6830282111e6
+Date: Fri, 23 May 2025 16:47:40 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Taehee Yoo <ap420073@gmail.com>
+Cc: willy@infradead.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	kernel_team@skhynix.com, kuba@kernel.org, almasrymina@google.com,
+	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
+	akpm@linux-foundation.org, davem@davemloft.net,
+	john.fastabend@gmail.com, andrew+netdev@lunn.ch,
+	asml.silence@gmail.com, toke@redhat.com, tariqt@nvidia.com,
+	edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com,
+	leon@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	david@redhat.com, lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
+	surenb@google.com, mhocko@suse.com, horms@kernel.org,
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+	vishal.moola@gmail.com
+Subject: Re: [PATCH 00/18] Split netmem from struct page
+Message-ID: <20250523074740.GA8205@system.software.com>
+References: <20250523032609.16334-1-byungchul@sk.com>
+ <CAMArcTWx+8GFzk4=A2-DCUZkMtyYRaDZSqf+HvOf2KyC80BqsA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -90,63 +58,196 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzYTiPuOUbQgkNvT2haAupeep79q0pVu=fcD5fEgnAjR_A@mail.gmail.com>
+In-Reply-To: <CAMArcTWx+8GFzk4=A2-DCUZkMtyYRaDZSqf+HvOf2KyC80BqsA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0iTYRTHe97bXoeLt2X6qJA4u2GkVkIHUjP68kJfiqCggrbypS2vbGoa
+	FaaiNNMiLW1NmZZmJg6WuRlDaplTDLSVsbw0MW9FF2pqznVzSuS3H//z5/zOh8OS0gY6hFWl
+	ZQrqNEWKjBFT4s/+tdvCt8QoYxoqIkBvbGbgwXwO3Bu10OBpniJA39SGYMYzJAJ3p52BO7Vz
+	JOj7CimYNS6QMNE1JgJXwyQF1mIzCWNXuxkoLfSSkG9pJKC/rYyGioV6Esx5oyJ49VjPwLvm
+	PzRM2kop6NHdp8BVlghdhkCY6/2EoNNoJmDuSjUD5Q4DA+8LXQgcz8YouH2pDIGxw0mDd17P
+	JMr41vtvCb5dNyLiDaYs/mFjJK91Okje1HSZ4U3fr4v44TdWhu+u8lJ8u8VN8KUFXxj+28Qg
+	xX/tGGB4Y+sAxb8wdIp4t2n9Ae6oOC5JSFFlC+roBLlY6R0eoDMcu3OK7Y1UHqqO1iKWxVws
+	9pRu0CK/Jeyvd5E+priNuEVXi3zMcJux0+khffUALgJrO/ZqkZgluR80/uQuJnydtRzgKWs7
+	5WMJtwvXWT+IfCzlzuO82RJyOV+De26NL3XIxZ0/axxLO0kuFN/7zS7HYbjg0e2luh93EFcZ
+	jLSP1y1qn7TZCZ8Xc09YbHrtYpZvDsZPG53UNbRGt0KhW6HQ/VfoVigMiGpCUlVadqpClRIb
+	pcxNU+VEnUpPNaHF72m48POYBX3vP2RDHItk/hKLOFoppRXZmtxUG8IsKQuQPJ+MUkolSYrc
+	c4I6/YQ6K0XQ2FAoS8mCJDvmziZJudOKTCFZEDIE9b8pwfqF5KHYmcB8r51I2qcJrTsQcWPP
+	lcqx2LjKhfjAnjDn4LydCC8y+Wsjras/juOy2a3xblKekNqdOTM/2DyOHW2D0xNBQ8pf5qxN
+	0lUT+2+2vCo+GdBbdeaY/O5spSggudx2ePry0J3gTm/By/7w+J3y3otMSQ038rzo+Lr9IdVH
+	+jokMkqjVGyPJNUaxV+dWULZOQMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUhTYRiGe895z9nZaHGcVicNqoVpX2pR9IBaRj966UfUjygiylWnNpym
+	m8pMg9Ukazr7JGxtMbP8ppGaH2UW01IrKCbGNGtmaRr2aVqmWM6I/HdxPzfX/efhaIWZCeQ0
+	CcmiLkGlVbIyLNsaaVq5KDRCHfHOxYPNWc5C2U8DFHXXMjBa/p4CW2k1gu+jLyUw1NTMQkH+
+	CA22Z5kYhp2/aOh91CMBb2EfhvqsGhp6zrSwYMkco+FEbTEFjfZWBp5X5zJw8dcNGmqM3RJo
+	u2Nj4XX5bwb6XBYMrdYSDN7cGHjkmAMjTwYRNDlrKBjJsbNwwe1g4W2mF4G7sQfDleO5CJwN
+	HgbGftrYmMWkqqSDInXWVxLiqEghlcXLiNnjpklF6WmWVHw7LyFdL+pZ0pI3hkld7RBFLKZP
+	LPna24nJ54Z2lhT0f6GIs6odk6eOJsk2v92yqIOiVpMq6sLXx8rUY13tTKI70pDVXIyNyB5u
+	RlJO4NcIz294aR9jPli4ac1HPmb5EMHjGZ3MOS6AXyyYGzaakYyj+R+MMDiURfk6/jwI7+vr
+	sI/l/DrhWv2AxMcKPkMwDmfTf3M/ofXyu6kOPekcv+qectJ8kFA0wf2NFwim21em6lJ+u5Dn
+	cDI+nj05+6C6mTqLZlmnmazTTNb/Jus0kwPhUhSgSUiNV2m0a8P0ceq0BI0h7MCR+Ao0+SGF
+	x8bP1aLvbZtdiOeQcqY8ND5crWBUqfq0eBcSOFoZIH/YF6ZWyA+q0o6KuiP7dClaUe9CQRxW
+	zpVv2SnGKvjDqmQxThQTRd2/K8VJA40o5eOKSwGne1+E8tr0oUrTXVP21ZPSxjP3Ooi3sPdZ
+	UnrZdf/5OePj9KE7ndLPu66nhxurFprc+YXRm+8vnGcoKdsxmBF17tbEqX7Pkv2Rb/zW22Nc
+	ewvagpenGCJsM+y/UzeU4uGkvO7Vi8pzB3YIluhNDz0fDuNTiY8ztoZYlu6ZocR6tWrVMlqn
+	V/0B0MxHWB0DAAA=
+X-CFilter-Loop: Reflected
 
-On (25/05/20 16:26), Andrii Nakryiko wrote:
-> On Wed, May 14, 2025 at 11:48 PM Sergey Senozhatsky
-> <senozhatsky@chromium.org> wrote:
+On Fri, May 23, 2025 at 03:20:27PM +0900, Taehee Yoo wrote:
+> On Fri, May 23, 2025 at 12:36 PM Byungchul Park <byungchul@sk.com> wrote:
 > >
-> > bpf_msleep_interruptible() puts a calling context into an
-> > interruptible sleep.  This function is expected to be used
-> > for testing only (perhaps in conjunction with fault-injection)
-> > to simulate various execution delays or timeouts.
+> 
+> Hi Byungchul,
+> Thanks a lot for this work!
+> 
+> > The MM subsystem is trying to reduce struct page to a single pointer.
+> > The first step towards that is splitting struct page by its individual
+> > users, as has already been done with folio and slab.  This patchset does
+> > that for netmem which is used for page pools.
 > >
-> > Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> > Matthew Wilcox tried and stopped the same work, you can see in:
+> >
+> >    https://lore.kernel.org/linux-mm/20230111042214.907030-1-willy@infradead.org/
+> >
+> > Mina Almasry already has done a lot fo prerequisite works by luck, he
+> > said :).  I stacked my patches on the top of his work e.i. netmem.
+> >
+> > I focused on removing the page pool members in struct page this time,
+> > not moving the allocation code of page pool from net to mm.  It can be
+> > done later if needed.
+> >
+> > My rfc version of this work is:
+> >
+> >    https://lore.kernel.org/all/20250509115126.63190-1-byungchul@sk.com/
+> >
+> > There are still a lot of works to do, to remove the dependency on struct
+> > page in the network subsystem.  I will continue to work on this after
+> > this base patchset is merged.
+> 
+> There is a compile failure.
+
+Thanks a lot.  I will fix it.
+
+	Byungchul
+> 
+> In file included from drivers/net/ethernet/intel/libeth/rx.c:4:
+> ./include/net/libeth/rx.h: In function ‘libeth_rx_sync_for_cpu’:
+> ./include/net/libeth/rx.h:140:40: error: ‘struct page’ has no member named ‘pp’
+>   140 |         page_pool_dma_sync_for_cpu(page->pp, page, fqe->offset, len);
+>       |                                        ^~
+> drivers/net/ethernet/intel/libeth/rx.c: In function ‘libeth_rx_recycle_slow’:
+> drivers/net/ethernet/intel/libeth/rx.c:210:38: error: ‘struct page’
+> has no member named ‘pp’
+>   210 |         page_pool_recycle_direct(page->pp, page);
+>       |                                      ^~
+> make[7]: *** [scripts/Makefile.build:203:
+> drivers/net/ethernet/intel/libeth/rx.o] Error 1
+> make[6]: *** [scripts/Makefile.build:461:
+> drivers/net/ethernet/intel/libeth] Error 2
+> make[5]: *** [scripts/Makefile.build:461: drivers/net/ethernet/intel] Error 2
+> make[5]: *** Waiting for unfinished jobs....
+> 
+> There are page->pp usecases in drivers/net
+> ./drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c:1574:
+>  } else if (page->pp) {
+> ./drivers/net/ethernet/freescale/fec_main.c:1046:
+>                  page_pool_put_page(page->pp, page, 0, false);
+> ./drivers/net/ethernet/freescale/fec_main.c:1584:
+>  page_pool_put_page(page->pp, page, 0, true);
+> ./drivers/net/ethernet/freescale/fec_main.c:3351:
+>          page_pool_put_page(page->pp, page, 0, false);
+> ./drivers/net/ethernet/ti/icssg/icssg_prueth_sr1.c:370:
+> page_pool_recycle_direct(page->pp, page);
+> ./drivers/net/ethernet/ti/icssg/icssg_prueth_sr1.c:395:
+> page_pool_recycle_direct(page->pp, page);
+> ./drivers/net/ethernet/ti/icssg/icssg_common.c:111:
+> page_pool_recycle_direct(page->pp, swdata->data.page);
+> ./drivers/net/ethernet/intel/idpf/idpf_txrx.c:389:
+> page_pool_put_full_page(rx_buf->page->pp, rx_buf->page, false);
+> ./drivers/net/ethernet/intel/idpf/idpf_txrx.c:3254:     u32 hr =
+> rx_buf->page->pp->p.offset;
+> ./drivers/net/ethernet/intel/idpf/idpf_txrx.c:3286:     dst =
+> page_address(hdr->page) + hdr->offset + hdr->page->pp->p.offset;
+> ./drivers/net/ethernet/intel/idpf/idpf_txrx.c:3287:     src =
+> page_address(buf->page) + buf->offset + buf->page->pp->p.offset;
+> ./drivers/net/ethernet/intel/idpf/idpf_txrx.c:3305:     u32 hr =
+> buf->page->pp->p.offset;
+> ./drivers/net/ethernet/intel/libeth/rx.c:210:
+> page_pool_recycle_direct(page->pp, page);
+> ./drivers/net/ethernet/intel/iavf/iavf_txrx.c:1200:     u32 hr =
+> rx_buffer->page->pp->p.offset;
+> ./drivers/net/ethernet/intel/iavf/iavf_txrx.c:1217:     u32 hr =
+> rx_buffer->page->pp->p.offset;
+> ./drivers/net/wireless/mediatek/mt76/mt76.h:1800:
+> page_pool_put_full_page(page->pp, page, allow_direct);
+> ./include/net/libeth/rx.h:140:  page_pool_dma_sync_for_cpu(page->pp,
+> page, fqe->offset, len);
+> 
+> Thanks a lot!
+> Taehee Yoo
+> 
+> >
 > > ---
 > >
-> > v2:
-> > -- switched to kfunc (Matt)
+> > Changes from rfc:
+> >         1. Rebase on net-next's main branch
+> >            https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/
+> >         2. Fix a build error reported by kernel test robot
+> >            https://lore.kernel.org/all/202505100932.uzAMBW1y-lkp@intel.com/
+> >         3. Add given 'Reviewed-by's, thanks to Mina and Ilias
+> >         4. Do static_assert() on the size of struct netmem_desc instead
+> >            of placing place-holder in struct page, feedbacked by Matthew
+> >         5. Do struct_group_tagged(netmem_desc) on struct net_iov instead
+> >            of wholly renaming it to strcut netmem_desc, feedbacked by
+> >            Mina and Pavel
 > >
-> >  kernel/bpf/helpers.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
+> > Byungchul Park (18):
+> >   netmem: introduce struct netmem_desc struct_group_tagged()'ed on
+> >     struct net_iov
+> >   netmem: introduce netmem alloc APIs to wrap page alloc APIs
+> >   page_pool: use netmem alloc/put APIs in __page_pool_alloc_page_order()
+> >   page_pool: rename __page_pool_alloc_page_order() to
+> >     __page_pool_alloc_large_netmem()
+> >   page_pool: use netmem alloc/put APIs in __page_pool_alloc_pages_slow()
+> >   page_pool: rename page_pool_return_page() to page_pool_return_netmem()
+> >   page_pool: use netmem put API in page_pool_return_netmem()
+> >   page_pool: rename __page_pool_release_page_dma() to
+> >     __page_pool_release_netmem_dma()
+> >   page_pool: rename __page_pool_put_page() to __page_pool_put_netmem()
+> >   page_pool: rename __page_pool_alloc_pages_slow() to
+> >     __page_pool_alloc_netmems_slow()
+> >   mlx4: use netmem descriptor and APIs for page pool
+> >   page_pool: use netmem APIs to access page->pp_magic in
+> >     page_pool_page_is_pp()
+> >   mlx5: use netmem descriptor and APIs for page pool
+> >   netmem: use _Generic to cover const casting for page_to_netmem()
+> >   netmem: remove __netmem_get_pp()
+> >   page_pool: make page_pool_get_dma_addr() just wrap
+> >     page_pool_get_dma_addr_netmem()
+> >   netdevsim: use netmem descriptor and APIs for page pool
+> >   mm, netmem: remove the page pool members in struct page
 > >
-> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> > index fed53da75025..a7404ab3b0b8 100644
-> > --- a/kernel/bpf/helpers.c
-> > +++ b/kernel/bpf/helpers.c
-> > @@ -24,6 +24,7 @@
-> >  #include <linux/bpf_mem_alloc.h>
-> >  #include <linux/kasan.h>
-> >  #include <linux/bpf_verifier.h>
-> > +#include <linux/delay.h>
+> >  drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  46 ++++----
+> >  drivers/net/ethernet/mellanox/mlx4/en_tx.c    |   8 +-
+> >  drivers/net/ethernet/mellanox/mlx4/mlx4_en.h  |   4 +-
+> >  drivers/net/ethernet/mellanox/mlx5/core/en.h  |   4 +-
+> >  .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  18 ++--
+> >  .../net/ethernet/mellanox/mlx5/core/en/xdp.h  |   2 +-
+> >  .../net/ethernet/mellanox/mlx5/core/en_main.c |  15 ++-
+> >  .../net/ethernet/mellanox/mlx5/core/en_rx.c   |  66 ++++++------
+> >  drivers/net/netdevsim/netdev.c                |  18 ++--
+> >  drivers/net/netdevsim/netdevsim.h             |   2 +-
+> >  include/linux/mm.h                            |   5 +-
+> >  include/linux/mm_types.h                      |  11 --
+> >  include/linux/skbuff.h                        |  14 +++
+> >  include/net/netmem.h                          | 101 ++++++++++--------
+> >  include/net/page_pool/helpers.h               |  11 +-
+> >  net/core/page_pool.c                          |  97 +++++++++--------
+> >  16 files changed, 221 insertions(+), 201 deletions(-)
 > >
-> >  #include "../../lib/kstrtox.h"
 > >
-> > @@ -3283,6 +3284,11 @@ __bpf_kfunc void bpf_local_irq_restore(unsigned long *flags__irq_flag)
-> >         local_irq_restore(*flags__irq_flag);
-> >  }
+> > base-commit: f44092606a3f153bb7e6b277006b1f4a5b914cfc
+> > --
+> > 2.17.1
 > >
-> > +__bpf_kfunc unsigned long bpf_msleep_interruptible(unsigned int msecs)
-> > +{
-> > +       return msleep_interruptible(msecs);
-> > +}
-> > +
-> 
-> What happened to the trying out custom kernel module for
-> fuzzing/testing use case you have?
-
-Oh, my bad.  I think it wasn't clear to me that this was the final
-conclusion, it looked to me that the conversation ended up with a
-number of open questions.
-
-> I'll repeat my concerns. BPF maps and progs are all interdependent
-> between each other by global RCU Tasks Trace "domain". Delay one RCU
-> tasks trace grace period through the use of msleep() will delay
-> everything BPF-related in the entire kernel.
-> 
-> Until we have some way to give some of BPF programs and its isolated
-> BPF maps its own RCU domain, I don't think we should allow arbitrary
-> sleeps inside BPF programs.
-
-I see.  How are sleepable BPF programs operate wrt RCU currently?
+> >
 
