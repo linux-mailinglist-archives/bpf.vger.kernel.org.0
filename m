@@ -1,216 +1,225 @@
-Return-Path: <bpf+bounces-58842-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58843-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0162BAC2809
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 19:01:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F894AC282E
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 19:07:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D94B178CC5
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 17:01:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0F129E520F
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 17:07:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40EF7297A4C;
-	Fri, 23 May 2025 17:01:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AAA12980B6;
+	Fri, 23 May 2025 17:07:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ghHD7nnw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IJ+b75fH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CC7A211A11
-	for <bpf@vger.kernel.org>; Fri, 23 May 2025 17:01:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 163F6297A45;
+	Fri, 23 May 2025 17:07:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748019672; cv=none; b=XITb3Vafgwj6KTvHvdZnK2CaFzjCdwBQeRiCA1r7wvKkaSczSdvT/5HFBDr8or7AIra1dPl+03j+ML0Hbu8kjHHmVeveJGLhLXf9+t9iJWujnmZAH6VDTnmXRyDKgTzp3chsmfBttn3fFVgnFsMO9MJKfY9Q37SNBeUZnlKu5L8=
+	t=1748020022; cv=none; b=qzU8M0iytMppo8++dDrQAnM9a2TJ46VyQLkqmuL9x6zLHU2a4d4ZrQ8dRm10MNs2ex6VIOOc42wMovVM+0miouI7f5TP7J2CqkpWUhHTd43G2RbVjBjxkrJW5kbbTJfnh19aUMMV4u0pxshpdZundd72kqnhX0wcYpFaX2HZsJ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748019672; c=relaxed/simple;
-	bh=hExa2Cwm4bAPttUEZjJfYoGFUNfZ4ZleOpu3VTcmpaU=;
+	s=arc-20240116; t=1748020022; c=relaxed/simple;
+	bh=ZqHKZ6mJKB+jnfNWj5/3OnOPNL1aPN9ZqTC2AbQ04RM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ua4ioylXlVfz3sR7fc9kx07kptkO4KTCxuJrupcb/iOMsHyj6LJJunqt1qJnSC2lowp3pzNe0jOhl0+01OCJXDi8aydkKiIf0mdXhvdjcw4NC3SUIC0Uf51xoBYzCgla/DD8GG9j+90PrPyTOT0BjT/tXy6B6YfQbMJATHQS0HU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ghHD7nnw; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-231f6c0b692so8275ad.0
-        for <bpf@vger.kernel.org>; Fri, 23 May 2025 10:01:10 -0700 (PDT)
+	 To:Cc:Content-Type; b=WP6s3+wP+zLZQXMEAiyVAKpRBNF3bEyBjh8UAJzT3qq05+Od/DSEov5khh4IZtE7fGUP6Nth9DonxgZhyuoUN5juBSciELiAFwPoA8MnqHxSt1dCmBRdAXbqbub/nzwboHmZaulnnIyMUorw03mTqq3zETLMJgCMQSKlJDP4w8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IJ+b75fH; arc=none smtp.client-ip=209.85.215.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-b271f3ae786so46154a12.3;
+        Fri, 23 May 2025 10:07:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1748019669; x=1748624469; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1748020020; x=1748624820; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bOSRKDWId4W8kN+rUt+nVQlh5cnha/mrBYJj+eK+Jf0=;
-        b=ghHD7nnwMk4MPKcpkQnGayp4Nv24ozaA/sQig6FtW9RTCw4U/o7Qp2YHsZUmRkMLZm
-         h4Ml4frDUIz75uSXS0vMhdX17TCuSWCXZ1SUXGWWYfRBJc43nSaG+0UsHLzaDSG7uZI3
-         +eeSHHd7As90Sfs9K2sc3OpzH/oX/IrbIbqNnzUfZ6LolqM22MrmDIty4ytW3ovPzRZK
-         8xSbTjG/mW9nlfa0z/pLNOXLWMeeRaGo+trZUA3fQdHwRk7lcHta2rdzWCjdwnEzd6KR
-         IWsuVgn/9amsmTjLgCKy7iX3TijPiCc4TaJ4ki2NQyMtlzrnA7Lb7fb0f6raUFfwUnxV
-         jD0Q==
+        bh=xTwe+31sgu40oVCV+aZlCbb9wmWAuQEyaX6cVFtKWRA=;
+        b=IJ+b75fH5bpcmgXspM5zc+j1zx7RTT37FPQByh6NPJFb9LUN31tBa4YgfqvggCnJAd
+         So1zdBUVPtHOgF8jJUWL1Bj3IhnS4c5Os8pcJAUVTNxVlOq9S7lx19lxRmcxQMTTRsVu
+         /sj1UfuS+aQPtLlMOjxo+H3y7U8UT4feq91YBeGTKZJSEySX/KCnfw5h43Lnta+ib9px
+         xnp07acJm4FNfMf7GtrXSPFpPRx27fEwahSRwyWSIBy3XYMStQGIT4dkzyr2s57LtJYn
+         h5pWRxROGgw3i0SOzVFO3NWefkHaDMjUDA6bu+YLz1sDTyU/w/ULD6NCF9DgtUg84h/L
+         wO5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748019669; x=1748624469;
+        d=1e100.net; s=20230601; t=1748020020; x=1748624820;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bOSRKDWId4W8kN+rUt+nVQlh5cnha/mrBYJj+eK+Jf0=;
-        b=DK86Oth5MiEA4V+1fwrqYaQI6Gx9tMhkEFefN6NqWqdR1ehIDPBP13eVLzhoA+nkwj
-         ZB6hZYjO+vscuDz0Oe4nZXddLDYjcAetC5LIXT7deojrIuLrIV7T3E70CU1yT9Sj0opU
-         QMrLX8C5udhVhIYW3VmZE8DlGqkeQW4STgWkPIPZB9IfU8lYN4ztpXd77OXbwb9H8ZoN
-         nxqmbTE+ibd0QF4RTiRHHTazny1qphcXtc4KTgQPSaQQ52S+nRMf3qb4itSs0aTYjD7t
-         /ObuZWKc4+imPZikN5FSi7A2FSMJmetIaNK8b8dmHRXDra7kMR7vF6dtJlfZCshUsJIZ
-         UqcQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVJQqyh1Nt49CYG+psZ8Z94FfxH5rmhgCbRYrFao31n2BVbVP2oZd1OPm3J+ZF0dROYusM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxKuCKBRNu6cyqUb8aoe3DS99NI9PjNmLvJzahMJ4zKYGC7eLa3
-	5hGJqlI8ZeFc2HoYmq1EtnV2DXIT3CNVMUY5tHvS0+SXqqpJD7EqWuDT8bG2L21idG6CGyfenBv
-	cC590s4wiATMBxUKkCREyJ6ELF2VdG6Cashm2eKOf
-X-Gm-Gg: ASbGncvB8VD+n4yCihgbO3so1G0YMF4VdoE64kxW2XnS0mu6w1JGH1czWZx+yLB7d3d
-	ShAaeJXs2NcyNIJ7Y1c8U+UZPK30Zeh6Ds9PPloImUAQdxmFsU2eQpa+ZXVpaWhspgd6xDDuTTa
-	0kjdym2iVoLkGM/Ehl0RdZbp20YCQoyvw1gGobKNyUXVbaFhu8WQSrnDMVyJtjQxFnpyZlcQSk3
-	g==
-X-Google-Smtp-Source: AGHT+IGJuHYQfZLr7hfQil+IpUEJXAuKmCwI79/rmEAXhTB8FY4jWtiRvq1iHUteieQZgEsK3rVaeZy0sUBH+cb+uvM=
-X-Received: by 2002:a17:903:22d2:b0:231:e069:6195 with SMTP id
- d9443c01a7336-233f357c50cmr2674495ad.23.1748019669119; Fri, 23 May 2025
- 10:01:09 -0700 (PDT)
+        bh=xTwe+31sgu40oVCV+aZlCbb9wmWAuQEyaX6cVFtKWRA=;
+        b=i8cXmEcuJZvVeTiFqHxm768jzQ7t+ZO1H+uPQvzVQV0xmY5mRpH5ceSW2o60gN5X5n
+         W/bkg+tn7nybOGUqnG2O0TQT9An8dtc2VYxpYJecMlm7ri833fLpc1baH2UOvLBC3sBz
+         fZZMtWxBBoSZa1M7qGn9XOVs0fkHJKWo3R4ld7jSBwOd8wTGIggzFJ+ENCjoMItDPscv
+         YdOPK3quwJKofStrFybjkaWisguCc2C5+J8o9mJoZe1F0zacgAw6vbnQ+b4vNHTxsxcd
+         WU41kQw9JOFVjo4Y0tAw7CH0xdwdkzwxxuHPjSa7WZ+/trkBvdl414JpMg+YoPjmAqgT
+         cT3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCULtsjLbUOoJ2zbmx6W+2yirOz4tQtRUHUwTEIg00i/PC5lasufJ967i41mM+8oYfu4Q3GU2hNIMekFRg==@vger.kernel.org, AJvYcCVjXQk1g1fJS58kizsHaG8U7lTVuBl5VqkjPlzlkQTPgq5INqhihNQSV5OD2tvxnFC9bWQ=@vger.kernel.org, AJvYcCWTzUkk5JZzjaV2dH1newFHHax4+BQ2x1eeXbza7Xvs4ZbaTjJjjEmYBFcjzkD32vysd/rmSUHYuZOeT+Cd@vger.kernel.org, AJvYcCXCMBAfM3n6Fs8ZOhNHlPJ/9Fo5BR+4sB847q2Xlb5rvfesuznY3i4shjsMwItK9QkQzQylsN4euE+Cp2sXk7r6@vger.kernel.org
+X-Gm-Message-State: AOJu0YxHp3Fp+S/rbvVlYhUzl4qT/tQ/1dyLnXcNhFVGZE9SodANCH4j
+	qK3hJJAK3JSoFJ8oDJSmFaMRIuwpm5JVrCyT9QRj2384BVlI8TAV28Yl2BL8/b3jG0/xK8paCw8
+	dldiGHmvclLpdBOByBTDWAOvTmm0bd3E=
+X-Gm-Gg: ASbGncsjg0ndKmyvKoFq++3+P3caehqj2dZ3Bft8+oX6cVqRCZ1KjvNWHg4dPJZITSH
+	3dMU8738Klds9A0uW6USwsphjesOl3U4I8InYFwGcBfHQoubXQwsKse12fDYXrYU/O1nQ8ugfTS
+	BS6xGLlOWc++mjxukWhUd9FpuRX8WNrs/KAovbL3mWhPgQ1fY=
+X-Google-Smtp-Source: AGHT+IH09VpogiVWRSV3TGFY/J0lThnTV8LJdFkmB9/EYkitPgoh7Oyng/UL/+QrWFSwykW245ng7yngVOX9+T2DJRw=
+X-Received: by 2002:a17:90b:5548:b0:2f6:dcc9:38e0 with SMTP id
+ 98e67ed59e1d1-30e7d2bee8amr55478092a91.0.1748020020149; Fri, 23 May 2025
+ 10:07:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250523032609.16334-1-byungchul@sk.com> <20250523032609.16334-2-byungchul@sk.com>
-In-Reply-To: <20250523032609.16334-2-byungchul@sk.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Fri, 23 May 2025 10:00:55 -0700
-X-Gm-Features: AX0GCFsW6gNVDYJM6WPqUUcEweldiOyGkOySslyL-ATgJPZxy65Z4gtkC0ipm7U
-Message-ID: <CAHS8izPYrMMcqKiF1DmNqWW_=92joVrPE55rQTqGWaJ2=itHaw@mail.gmail.com>
-Subject: Re: [PATCH 01/18] netmem: introduce struct netmem_desc
- struct_group_tagged()'ed on struct net_iov
-To: Byungchul Park <byungchul@sk.com>
-Cc: willy@infradead.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, kernel_team@skhynix.com, kuba@kernel.org, 
-	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org, 
-	akpm@linux-foundation.org, davem@davemloft.net, john.fastabend@gmail.com, 
-	andrew+netdev@lunn.ch, asml.silence@gmail.com, toke@redhat.com, 
-	tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com, 
-	leon@kernel.org, ast@kernel.org, daniel@iogearbox.net, david@redhat.com, 
-	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz, 
-	rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org, 
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com
+References: <20250520-vmlinux-mmap-v5-0-e8c941acc414@isovalent.com>
+ <20250520-vmlinux-mmap-v5-1-e8c941acc414@isovalent.com> <y42h33hluaspiexeck5gkq7aow45stvf72is2k4hy46ydmlyhp@nr3lb27lrrqo>
+In-Reply-To: <y42h33hluaspiexeck5gkq7aow45stvf72is2k4hy46ydmlyhp@nr3lb27lrrqo>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 23 May 2025 10:06:47 -0700
+X-Gm-Features: AX0GCFsNteYjlsaXUoYqWQs5Ij-induCXRLQMApohCHBA8b86WtDRzByCTf4H4g
+Message-ID: <CAEf4Bzaro8n8aGh2B6bKOjjzVR=ADyY67ipvt_tvb5HUSeX49w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 1/3] btf: allow mmap of vmlinux btf
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Lorenz Bauer <lmb@isovalent.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 22, 2025 at 8:26=E2=80=AFPM Byungchul Park <byungchul@sk.com> w=
-rote:
+On Thu, May 22, 2025 at 4:01=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.de=
+v> wrote:
 >
-> To simplify struct page, the page pool members of struct page should be
-> moved to other, allowing these members to be removed from struct page.
+> On Tue, May 20, 2025 at 02:01:17PM +0100, Lorenz Bauer wrote:
+> > User space needs access to kernel BTF for many modern features of BPF.
+> > Right now each process needs to read the BTF blob either in pieces or
+> > as a whole. Allow mmaping the sysfs file so that processes can directly
+> > access the memory allocated for it in the kernel.
+> >
+> > remap_pfn_range is used instead of vm_insert_page due to aarch64
+> > compatibility issues.
+> >
+> > Tested-by: Alan Maguire <alan.maguire@oracle.com>
+> > Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
+> > ---
+> >  include/asm-generic/vmlinux.lds.h |  3 ++-
+> >  kernel/bpf/sysfs_btf.c            | 32 +++++++++++++++++++++++++++++++=
++
+> >  2 files changed, 34 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vm=
+linux.lds.h
+> > index 58a635a6d5bdf0c53c267c2a3d21a5ed8678ce73..1750390735fac7637cc4d2f=
+a05f96cb2a36aa448 100644
+> > --- a/include/asm-generic/vmlinux.lds.h
+> > +++ b/include/asm-generic/vmlinux.lds.h
+> > @@ -667,10 +667,11 @@ defined(CONFIG_AUTOFDO_CLANG) || defined(CONFIG_P=
+ROPELLER_CLANG)
+> >   */
+> >  #ifdef CONFIG_DEBUG_INFO_BTF
+> >  #define BTF                                                          \
+> > +     . =3D ALIGN(PAGE_SIZE);                                          =
+ \
+> >       .BTF : AT(ADDR(.BTF) - LOAD_OFFSET) {                           \
+> >               BOUNDED_SECTION_BY(.BTF, _BTF)                          \
+> >       }                                                               \
+> > -     . =3D ALIGN(4);                                                  =
+ \
+> > +     . =3D ALIGN(PAGE_SIZE);                                          =
+ \
+> >       .BTF_ids : AT(ADDR(.BTF_ids) - LOAD_OFFSET) {                   \
+> >               *(.BTF_ids)                                             \
+> >       }
+> > diff --git a/kernel/bpf/sysfs_btf.c b/kernel/bpf/sysfs_btf.c
+> > index 81d6cf90584a7157929c50f62a5c6862e7a3d081..941d0d2427e3a2d27e8f1cf=
+f7b6424d0d41817c1 100644
+> > --- a/kernel/bpf/sysfs_btf.c
+> > +++ b/kernel/bpf/sysfs_btf.c
+> > @@ -7,14 +7,46 @@
+> >  #include <linux/kobject.h>
+> >  #include <linux/init.h>
+> >  #include <linux/sysfs.h>
+> > +#include <linux/mm.h>
+> > +#include <linux/io.h>
+> > +#include <linux/btf.h>
+> >
+> >  /* See scripts/link-vmlinux.sh, gen_btf() func for details */
+> >  extern char __start_BTF[];
+> >  extern char __stop_BTF[];
+> >
+> > +static int btf_sysfs_vmlinux_mmap(struct file *filp, struct kobject *k=
+obj,
+> > +                               const struct bin_attribute *attr,
+> > +                               struct vm_area_struct *vma)
+> > +{
+> > +     unsigned long pages =3D PAGE_ALIGN(attr->size) >> PAGE_SHIFT;
+> > +     size_t vm_size =3D vma->vm_end - vma->vm_start;
+> > +     phys_addr_t addr =3D virt_to_phys(__start_BTF);
+> > +     unsigned long pfn =3D addr >> PAGE_SHIFT;
+> > +
+> > +     if (attr->private !=3D __start_BTF || !PAGE_ALIGNED(addr))
 >
-> Introduce a network memory descriptor to store the members, struct
-> netmem_desc, reusing struct net_iov that already mirrored struct page.
+> With vmlinux.lds.h change above, is the page aligned check still needed?
 >
-> While at it, relocate _pp_mapping_pad to group struct net_iov's fields.
+> Oh also can the size of btf region be non-page aligned?
+
+I'd probably leave this as a sanity/safety check, just in case someone
+modifies linker script and we miss this.
+
+BTF region size isn't page-aligned but in the linker script we
+page-align .BTF_ids that follows it, so the padding should be zeroed
+out. And Lorenz added a check in the selftest to validate this, so we
+should be covered.
+
 >
-> Signed-off-by: Byungchul Park <byungchul@sk.com>
-> ---
->  include/linux/mm_types.h |  2 +-
->  include/net/netmem.h     | 43 +++++++++++++++++++++++++++++++++-------
->  2 files changed, 37 insertions(+), 8 deletions(-)
+> > +             return -EINVAL;
+> > +
+> > +     if (vma->vm_pgoff)
+> > +             return -EINVAL;
+> > +
+> > +     if (vma->vm_flags & (VM_WRITE | VM_EXEC | VM_MAYSHARE))
+> > +             return -EACCES;
+> > +
+> > +     if (pfn + pages < pfn)
+> > +             return -EINVAL;
+> > +
+> > +     if ((vm_size >> PAGE_SHIFT) > pages)
+> > +             return -EINVAL;
+> > +
+> > +     vm_flags_mod(vma, VM_DONTDUMP, VM_MAYEXEC | VM_MAYWRITE);
 >
-> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> index 56d07edd01f9..873e820e1521 100644
-> --- a/include/linux/mm_types.h
-> +++ b/include/linux/mm_types.h
-> @@ -120,13 +120,13 @@ struct page {
->                         unsigned long private;
->                 };
->                 struct {        /* page_pool used by netstack */
-> +                       unsigned long _pp_mapping_pad;
->                         /**
->                          * @pp_magic: magic value to avoid recycling non
->                          * page_pool allocated pages.
->                          */
->                         unsigned long pp_magic;
->                         struct page_pool *pp;
-> -                       unsigned long _pp_mapping_pad;
+> Is it ok for fork() to keep the mapping in the child? (i.e. do you need
+> VM_DONTCOPY). BTW VM_DONTDUMP is added by remap_pfn_range(), so if you
+> want you can remove it here.
 
-Like Toke says, moving this to the beginning of this struct is not
-allowed. The first 3 bits of pp_magic are overlaid with page->lru so
-the pp makes sure not to use them. _pp_mapping_pad is overlaid with
-page->mapping, so the pp makes sure not to use it. AFAICT, this moving
-of _pp_mapping_pad is not necessary for this patch. I think just drop
-it.
+I think it's good to keep it in the fork, otherwise libbpf might crash
+after work due to BTF data suddenly disappearing.
 
->                         unsigned long dma_addr;
->                         atomic_long_t pp_ref_count;
->                 };
-> diff --git a/include/net/netmem.h b/include/net/netmem.h
-> index 386164fb9c18..08e9d76cdf14 100644
-> --- a/include/net/netmem.h
-> +++ b/include/net/netmem.h
-> @@ -31,12 +31,41 @@ enum net_iov_type {
->  };
 >
->  struct net_iov {
-> -       enum net_iov_type type;
-> -       unsigned long pp_magic;
-> -       struct page_pool *pp;
-> -       struct net_iov_area *owner;
-> -       unsigned long dma_addr;
-> -       atomic_long_t pp_ref_count;
-> +       /*
-> +        * XXX: Now that struct netmem_desc overlays on struct page,
-> +        * struct_group_tagged() should cover all of them.  However,
-> +        * a separate struct netmem_desc should be declared and embedded,
-> +        * once struct netmem_desc is no longer overlayed but it has its
-> +        * own instance from slab.  The final form should be:
-> +        *
-> +        *    struct netmem_desc {
-> +        *         unsigned long pp_magic;
-> +        *         struct page_pool *pp;
-> +        *         unsigned long dma_addr;
-> +        *         atomic_long_t pp_ref_count;
-> +        *    };
-> +        *
-> +        *    struct net_iov {
-> +        *         enum net_iov_type type;
-> +        *         struct net_iov_area *owner;
-> +        *         struct netmem_desc;
-> +        *    };
-> +        */
+> > +     return remap_pfn_range(vma, vma->vm_start, pfn, vm_size, vma->vm_=
+page_prot);
+> > +}
+> > +
+> >  static struct bin_attribute bin_attr_btf_vmlinux __ro_after_init =3D {
+> >       .attr =3D { .name =3D "vmlinux", .mode =3D 0444, },
+> >       .read_new =3D sysfs_bin_attr_simple_read,
+> > +     .mmap =3D btf_sysfs_vmlinux_mmap,
+> >  };
+> >
+> >  struct kobject *btf_kobj;
+> >
+>
+> Overall this looks good to me, so you can add:
+>
+> Reviewed-by: Shakeel Butt <shakeel.butt@linux.dev>
 
-I'm unclear on why moving to this format is a TODO for the future. Why
-isn't this state in the comment the state in the code? I think I gave
-the same code snippet on the RFC, but here again:
-
-struct netmem_desc {
-                        /**
-                         * @pp_magic: magic value to avoid recycling non
-                         * page_pool allocated pages.
-                         */
-                        unsigned long pp_magic;
-                        struct page_pool *pp;
-                       unsigned long _pp_mapping_pad;
-                        unsigned long dma_addr;
-                        atomic_long_t pp_ref_count;
-};
-
-(Roughly):
-
-struct page {
-   ...
-  struct {        /* page_pool used by netstack */
-     struct netmem_desc;
-  };
-  ...
-};
-
-struct net_iov {
-    enum net_iov_type type;
-    struct netmem_desc;
-    struct net_iov_area *owner;
-}
-
-AFAICT, this should work..?
-
---=20
-Thanks,
-Mina
+Thanks Shakeel, I've applied the patches to bpf-next!
 
