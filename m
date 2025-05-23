@@ -1,157 +1,217 @@
-Return-Path: <bpf+bounces-58824-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58825-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FF50AC1F22
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 11:01:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD1FBAC1FE3
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 11:40:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 208A87B948B
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 09:00:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E087A1B683DB
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 09:40:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 735C4222582;
-	Fri, 23 May 2025 09:01:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AC3C226D04;
+	Fri, 23 May 2025 09:40:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hP9TFbWg"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hy8+Abc5"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F44B1EB196
-	for <bpf@vger.kernel.org>; Fri, 23 May 2025 09:01:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6547E22688C
+	for <bpf@vger.kernel.org>; Fri, 23 May 2025 09:40:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747990870; cv=none; b=Ffqo0BehQPacO3Q2qJ2uIk83hKG8C/TJNnUUWSiMkmXAQM0D197zige8AJiypNlO17y4ovHo4IjTyooJe2mEXzRajcdeKUuEEniJ02/eLHcWq2Hf5GDUTezQ5yN6jICIXlgO7lTAEy32CBpBREKo2xbbFlVJfel9iOdUZPclpdo=
+	t=1747993212; cv=none; b=TfmiNg7vcvOzUQq50ZUuz+i7yT0PgCaWa25MB/Qga+3e+35aOK3nixnyF6fLpc5rAytELCe8Px+PSbwwJBrUN+X/++03JcM9crgY3S+FmVzPwekcDyHLqxCJpaI2vKiGWXCvyiByPdZdP5gtVAQ/u1tvWnVRHV4c6hh3d2zU3/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747990870; c=relaxed/simple;
-	bh=6AD71GZ1oJAgToKv63EU9Cvf388e1iJs65ueGm/PeYg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=DP8rt6k24emsUIMRd2ZjWFGrbOxEpCRx/GWdzK4cqprGWOGPG8u1NO6GH/zt3dSHQtrZnfgWeobZfqvXzkALlE+NdGrDb6jQTBfSfgIGHUk1DgoeSF/RYSBY0JSax8Z9d5VB0PdHnHkwgLuXDpZuELsKoyrnT7DqI7KfMjqMPoQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hP9TFbWg; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1747990867;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=W9137AuC1JXl/uRnv3Q7irr3oyxG/GyI+XTAgsgelrk=;
-	b=hP9TFbWgSuC4evXTGoYuZ5DdbKmI7+YCFf6g7Z3WUvh/xiF2MnbHhAAumEObhhXpRY6fMm
-	jBvWl9I4QKXBbKeWh73GNWBulfZAC+JyzjCA5jRVu0ONJAd2OQBttAgv3kft3fPk/t70Zj
-	ln8bwle63CR090vEmNTGzomN8CRpyR8=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-374-sPsMTXX7OwWdzsbjTpGADg-1; Fri, 23 May 2025 05:01:05 -0400
-X-MC-Unique: sPsMTXX7OwWdzsbjTpGADg-1
-X-Mimecast-MFC-AGG-ID: sPsMTXX7OwWdzsbjTpGADg_1747990864
-Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-550eb7606c1so3932374e87.0
-        for <bpf@vger.kernel.org>; Fri, 23 May 2025 02:01:05 -0700 (PDT)
+	s=arc-20240116; t=1747993212; c=relaxed/simple;
+	bh=EyjIJJ1aJToH0hBOVAR+EF+V4bSXXfa03bGAG1Wq7yc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=om4tT8hixgqlMKp4GaCy892XGPIv9i4+FhxrPxhJtrn+09472HVbAYNZ3lmwmlY7BVtdqrfHYrSd6U10X+faJgJAfU3+7D/jrarKomc0H2SxQg57luVrXfUT7J4g5BpiYRRYC0QQNwMd8nENfg6zw5Ci4rJ8zKq7q3oW/QXM5xk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hy8+Abc5; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3a37d24e607so3077085f8f.1
+        for <bpf@vger.kernel.org>; Fri, 23 May 2025 02:40:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1747993208; x=1748598008; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PmM7wl7FfXANU3+HoiZcpwWBrDC/gYVSs/BA58caBms=;
+        b=hy8+Abc5A4/XW+63VgDf3+BNSX2ukieLdkuV5SZTG7uZYGo8cNaF475Ob3Yg+167mZ
+         OCB1Mtat+uQYW/1FEhRF9Wx2VkYk40XAzfg7s2LtRbs5ZS2dolfWWECYmjMkol5tcFC8
+         lWRfUufY3MRohOJiWmGNB9Wv1Z6Rg69/QpOvnPcHtsG0ixVAX7eYPSsEERb9QJ3o06NT
+         /8qin1CEctylI+IqAVU+cxyd8BsDuWycmjKTuLFPv0kCF3tedZL6CzjrW6YOiszwUIoQ
+         VZOrdkRJC70DnIIBP51h0tvfi5lFsW23u0p1iVxLJuCOxVJ+fPWA9h+oz9FfahZ7jZK7
+         HPvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747990864; x=1748595664;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=W9137AuC1JXl/uRnv3Q7irr3oyxG/GyI+XTAgsgelrk=;
-        b=oIZXO+rT5dBliZZq8ipkRfykHUadomn0Kg9o9SOsugCqRrEGV5zqCjeTYTUas+wwX2
-         IP9fZ7oSL4ymv8SOO/olCSlpGdN72p5qJ04CWBwveO5x3KuTx+6h2zX+p276Jvo2kPCU
-         XhS5hfvT/0lo86xqlgnk+GY0EjY0Y/yDBfbjoW+UVUZHrbDT9Q7eGUUf/700O3+FfHQk
-         LloifC/V6Vn22DzuP1PpmTvYoYk1WscBh+hNOeqhAYAsxdCMkKQySL+4YL0oCxZxonMQ
-         UrZZuypNtZr4jkaPrKAglKH5kBuded1etyCjPONdnSJLBGpmu+tvBN0YjwtSh24vd663
-         +6Sg==
-X-Forwarded-Encrypted: i=1; AJvYcCV7m2C9jDarK/e/v1HxnhgPUnlxRR89cL03esraoDc1k0XUXv7hBXckFY+8LblvMDx/TbU=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz00cdg26RzZvRSgDF1u9i1ihrcWrP3Wbaim/5GZ3IUChCN//qZ
-	Jesvpi+YsjE1mHLF1KLOIZXgV1NVnu7Zq16F2mO8vsed+f64tGB08wrW/CR9v/eqO7FQ3VEU6Q3
-	lfa3btXkqUI/BrOeP2JE8/hC1uIAehMLiBKqVijiqDwyZmLb95mKvGw==
-X-Gm-Gg: ASbGncsxr4BoGK5+1D0P864m/gkEb/kCT3BkWTvYq2eEbivFolEmUfvLaQhkITgi1uJ
-	urEOxK/0HPiP0qaifatlvqzdwlz+IJsNNqlz0IfNY1HJjaOIsSMTgZol7AQHGhhTeUAZyMBBKv3
-	wW3pkCepIMxGbVM7fTRRc0ipjHH2Y6fjwjawO86RrYUnvKbPg5m/gZk3jaSYFnTfajxFx7yFnmq
-	0+M6TGdbZoOEG8px8eI/l8dyn2Rk6edULARdEslgg14CX3ggAb7UMBfhvgtK9Qn2hRiCJ+332oI
-	iBgg08Cx
-X-Received: by 2002:a05:6512:3d05:b0:549:4bf7:6463 with SMTP id 2adb3069b0e04-550e98ff25dmr10391797e87.44.1747990863808;
-        Fri, 23 May 2025 02:01:03 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGZQSs+uyNdVjrDhVHs2IglUPHTshvnWvanx+qtFny8cuAL31NdNk4CU+Vw4AmeBNf/utBp3w==
-X-Received: by 2002:a05:6512:3d05:b0:549:4bf7:6463 with SMTP id 2adb3069b0e04-550e98ff25dmr10391773e87.44.1747990863352;
-        Fri, 23 May 2025 02:01:03 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-550e703f606sm3782184e87.238.2025.05.23.02.01.02
+        d=1e100.net; s=20230601; t=1747993208; x=1748598008;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PmM7wl7FfXANU3+HoiZcpwWBrDC/gYVSs/BA58caBms=;
+        b=QhLqUxnxZDOueZ+jf5Ji0gprfEPX4ZBIFYqqf/Dr5AWDRDXbPikXvfef/r+7oKh1ln
+         liMdOCATvV1quyQbhIF2yeN4Fmr2y97a0wO0zV78C/519YGp4zOJQgDT2pXcEWo2j8hT
+         BkiO/hF3DjcwWkr1HoL1T1fn3FtNGgvL/VeQUo/Gc3IYKXrUtixs6ipsiX+qn2UNCkes
+         2tqTEm8JRuIpHpuuFwoe96UmijV+TQ5JGahJyWoV1o2hdRD03hp/I8oE9HljwXVRylk0
+         8H7PQE7KakR3VALDXvNBZI7RPlHM5g1Ib9ZbRmgjLCvEB5C1hLZe2k9/Pu28UCVCdtPz
+         yL4g==
+X-Forwarded-Encrypted: i=1; AJvYcCWyP9MrEZoC8P0EcXU2hQ2qJ55+HaB+jTPOTwvJdazx1B+knuxg9HBAdankpBhLer0qs64=@vger.kernel.org
+X-Gm-Message-State: AOJu0YziL2dttsem+AS0DPg8Qfxo+hF0jXQ2A7bVXgXiwb1WLFueZ78/
+	AuC8FsShpiU2QGfB7M0448bKgukZnNlh4aa+ibgVzwqSMZzgXMiG91WFhrn4cxYnzKRVV2pLN+h
+	t3CI7
+X-Gm-Gg: ASbGncsTVesJxep8bY+WyRU8hPTM6sa5Zu5U9KnumCVvo9c2nwYqvn5RcI7poOvQ2QD
+	1CLY/YHwygCiNGfVnqNsyU91rlPebIk1myFZvvZmDh4cS5iUNSApRHxRKFvnJgzgKq0c6fItgEy
+	NEgt7F1O0pe0fQtbVmo2VyelsGq6YMXGonScpMmbhONSIyYC+jF/P5Ywb45WaAohS7CqyVh0Kxj
+	hxaHU1nok/AoD7vz0DU/BSEubsLST0iuB8qobeXHcakWiT6+t5T7RHWKOOWqJpEws83p7Xye9It
+	FV1HaefziCHT+lI2AXeZK4ekJ2hXrlbs3DUtvoQ7kRtz4yNcyoDPclDPPTJGwbKUXMs=
+X-Google-Smtp-Source: AGHT+IGZNy6iLufcbGr1Cm4vscuZZ5cosVeDu++QGebNauJZVQ9784C5I6lmRFlz/knjxPIF4kXi1w==
+X-Received: by 2002:a05:6000:40c9:b0:3a1:fc5c:dec7 with SMTP id ffacd0b85a97d-3a35fe67788mr24039998f8f.21.1747993207620;
+        Fri, 23 May 2025 02:40:07 -0700 (PDT)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-3a35ca88a34sm25709566f8f.70.2025.05.23.02.40.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 May 2025 02:01:02 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 957971AA3B8F; Fri, 23 May 2025 11:01:01 +0200 (CEST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Byungchul Park <byungchul@sk.com>, willy@infradead.org,
- netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- kernel_team@skhynix.com, kuba@kernel.org, almasrymina@google.com,
- ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
- akpm@linux-foundation.org, davem@davemloft.net, john.fastabend@gmail.com,
- andrew+netdev@lunn.ch, asml.silence@gmail.com, tariqt@nvidia.com,
- edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com,
- leon@kernel.org, ast@kernel.org, daniel@iogearbox.net, david@redhat.com,
- lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
- rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org,
- linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com
-Subject: Re: [PATCH 01/18] netmem: introduce struct netmem_desc
- struct_group_tagged()'ed on struct net_iov
-In-Reply-To: <20250523032609.16334-2-byungchul@sk.com>
-References: <20250523032609.16334-1-byungchul@sk.com>
- <20250523032609.16334-2-byungchul@sk.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Fri, 23 May 2025 11:01:01 +0200
-Message-ID: <87bjrjn1ki.fsf@toke.dk>
+        Fri, 23 May 2025 02:40:07 -0700 (PDT)
+Date: Fri, 23 May 2025 12:40:03 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: oe-kbuild@lists.linux.dev, Bhupesh <bhupesh@igalia.com>,
+	akpm@linux-foundation.org
+Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev, bhupesh@igalia.com,
+	kernel-dev@igalia.com, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	oliver.sang@intel.com, laoar.shao@gmail.com, pmladek@suse.com,
+	rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+	arnaldo.melo@gmail.com, alexei.starovoitov@gmail.com,
+	andrii.nakryiko@gmail.com, mirq-linux@rere.qmqm.pl,
+	peterz@infradead.org, willy@infradead.org, david@redhat.com,
+	viro@zeniv.linux.org.uk, keescook@chromium.org,
+	ebiederm@xmission.com, brauner@kernel.org, jack@suse.cz,
+	mingo@redhat.com, juri.lelli@redhat.com, bsegall@google.com,
+	mgorman@suse.de
+Subject: Re: [PATCH v4 2/3] treewide: Switch memcpy() users of 'task->comm'
+ to a more safer implementation
+Message-ID: <202505221104.qV4Iy0rA-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250521062337.53262-3-bhupesh@igalia.com>
 
-Byungchul Park <byungchul@sk.com> writes:
+Hi Bhupesh,
 
-> To simplify struct page, the page pool members of struct page should be
-> moved to other, allowing these members to be removed from struct page.
->
-> Introduce a network memory descriptor to store the members, struct
-> netmem_desc, reusing struct net_iov that already mirrored struct page.
->
-> While at it, relocate _pp_mapping_pad to group struct net_iov's fields.
->
-> Signed-off-by: Byungchul Park <byungchul@sk.com>
-> ---
->  include/linux/mm_types.h |  2 +-
->  include/net/netmem.h     | 43 +++++++++++++++++++++++++++++++++-------
->  2 files changed, 37 insertions(+), 8 deletions(-)
->
-> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> index 56d07edd01f9..873e820e1521 100644
-> --- a/include/linux/mm_types.h
-> +++ b/include/linux/mm_types.h
-> @@ -120,13 +120,13 @@ struct page {
->  			unsigned long private;
->  		};
->  		struct {	/* page_pool used by netstack */
-> +			unsigned long _pp_mapping_pad;
->  			/**
->  			 * @pp_magic: magic value to avoid recycling non
->  			 * page_pool allocated pages.
->  			 */
->  			unsigned long pp_magic;
->  			struct page_pool *pp;
-> -			unsigned long _pp_mapping_pad;
->  			unsigned long dma_addr;
->  			atomic_long_t pp_ref_count;
->  		};
+kernel test robot noticed the following build warnings:
 
-The reason that field is called "_pp_mapping_pad" is that it's supposed
-to overlay the page->mapping field, so that none of the page_pool uses
-set a value here. Moving it breaks that assumption. Once struct
-netmem_desc is completely decoupled from struct page this obviously
-doesn't matter, but I think it does today? At least, trying to use that
-field for the DMA index broke things, which is why we ended up with the
-bit-stuffing in pp_magic...
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
--Toke
+url:    https://github.com/intel-lab-lkp/linux/commits/Bhupesh/exec-Remove-obsolete-comments/20250521-142443
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace for-next
+patch link:    https://lore.kernel.org/r/20250521062337.53262-3-bhupesh%40igalia.com
+patch subject: [PATCH v4 2/3] treewide: Switch memcpy() users of 'task->comm' to a more safer implementation
+config: powerpc64-randconfig-r071-20250522 (https://download.01.org/0day-ci/archive/20250522/202505221104.qV4Iy0rA-lkp@intel.com/config)
+compiler: clang version 21.0.0git (https://github.com/llvm/llvm-project f819f46284f2a79790038e1f6649172789734ae8)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+| Closes: https://lore.kernel.org/r/202505221104.qV4Iy0rA-lkp@intel.com/
+
+New smatch warnings:
+fs/coredump.c:591 do_coredump() error: buffer overflow 'comm' 16 <= 16
+fs/coredump.c:1006 validate_coredump_safety() error: buffer overflow 'comm' 16 <= 16
+
+vim +/comm +591 fs/coredump.c
+
+a78282e2c94f4c Linus Torvalds               2024-09-26  524  void do_coredump(const kernel_siginfo_t *siginfo)
+10c28d937e2cca Alex Kelly                   2012-09-26  525  {
+10c28d937e2cca Alex Kelly                   2012-09-26  526  	struct core_state core_state;
+10c28d937e2cca Alex Kelly                   2012-09-26  527  	struct core_name cn;
+10c28d937e2cca Alex Kelly                   2012-09-26  528  	struct mm_struct *mm = current->mm;
+10c28d937e2cca Alex Kelly                   2012-09-26  529  	struct linux_binfmt * binfmt;
+10c28d937e2cca Alex Kelly                   2012-09-26  530  	const struct cred *old_cred;
+10c28d937e2cca Alex Kelly                   2012-09-26  531  	struct cred *cred;
+a78282e2c94f4c Linus Torvalds               2024-09-26  532  	int retval = 0;
+10c28d937e2cca Alex Kelly                   2012-09-26  533  	int ispipe;
+315c69261dd3fa Paul Wise                    2019-08-02  534  	size_t *argv = NULL;
+315c69261dd3fa Paul Wise                    2019-08-02  535  	int argc = 0;
+fbb1816942c044 Jann Horn                    2015-09-09  536  	/* require nonrelative corefile path and be extra careful */
+fbb1816942c044 Jann Horn                    2015-09-09  537  	bool need_suid_safe = false;
+acdedd99b0f3bf Oleg Nesterov                2013-04-30  538  	bool core_dumped = false;
+10c28d937e2cca Alex Kelly                   2012-09-26  539  	static atomic_t core_dump_count = ATOMIC_INIT(0);
+10c28d937e2cca Alex Kelly                   2012-09-26  540  	struct coredump_params cprm = {
+5ab1c309b34488 Denys Vlasenko               2012-10-04  541  		.siginfo = siginfo,
+10c28d937e2cca Alex Kelly                   2012-09-26  542  		.limit = rlimit(RLIMIT_CORE),
+10c28d937e2cca Alex Kelly                   2012-09-26  543  		/*
+10c28d937e2cca Alex Kelly                   2012-09-26  544  		 * We must use the same mm->flags while dumping core to avoid
+10c28d937e2cca Alex Kelly                   2012-09-26  545  		 * inconsistency of bit flags, since this flag is not protected
+10c28d937e2cca Alex Kelly                   2012-09-26  546  		 * by any locks.
+10c28d937e2cca Alex Kelly                   2012-09-26  547  		 */
+10c28d937e2cca Alex Kelly                   2012-09-26  548  		.mm_flags = mm->flags,
+95c5436a488384 Eric W. Biederman            2022-03-08  549  		.vma_meta = NULL,
+8603b6f58637ce Oleksandr Natalenko          2022-09-03  550  		.cpu = raw_smp_processor_id(),
+10c28d937e2cca Alex Kelly                   2012-09-26  551  	};
+10c28d937e2cca Alex Kelly                   2012-09-26  552  
+5ab1c309b34488 Denys Vlasenko               2012-10-04  553  	audit_core_dumps(siginfo->si_signo);
+10c28d937e2cca Alex Kelly                   2012-09-26  554  
+10c28d937e2cca Alex Kelly                   2012-09-26  555  	binfmt = mm->binfmt;
+a78282e2c94f4c Linus Torvalds               2024-09-26  556  	if (!binfmt || !binfmt->core_dump)
+10c28d937e2cca Alex Kelly                   2012-09-26  557  		goto fail;
+a78282e2c94f4c Linus Torvalds               2024-09-26  558  	if (!__get_dumpable(cprm.mm_flags))
+10c28d937e2cca Alex Kelly                   2012-09-26  559  		goto fail;
+10c28d937e2cca Alex Kelly                   2012-09-26  560  
+10c28d937e2cca Alex Kelly                   2012-09-26  561  	cred = prepare_creds();
+a78282e2c94f4c Linus Torvalds               2024-09-26  562  	if (!cred)
+10c28d937e2cca Alex Kelly                   2012-09-26  563  		goto fail;
+10c28d937e2cca Alex Kelly                   2012-09-26  564  	/*
+10c28d937e2cca Alex Kelly                   2012-09-26  565  	 * We cannot trust fsuid as being the "true" uid of the process
+10c28d937e2cca Alex Kelly                   2012-09-26  566  	 * nor do we know its entire history. We only know it was tainted
+10c28d937e2cca Alex Kelly                   2012-09-26  567  	 * so we dump it as root in mode 2, and only into a controlled
+10c28d937e2cca Alex Kelly                   2012-09-26  568  	 * environment (pipe handler or fully qualified path).
+10c28d937e2cca Alex Kelly                   2012-09-26  569  	 */
+e579d2c259be42 Kees Cook                    2013-02-27  570  	if (__get_dumpable(cprm.mm_flags) == SUID_DUMP_ROOT) {
+10c28d937e2cca Alex Kelly                   2012-09-26  571  		/* Setuid core dump mode */
+10c28d937e2cca Alex Kelly                   2012-09-26  572  		cred->fsuid = GLOBAL_ROOT_UID;	/* Dump root private */
+fbb1816942c044 Jann Horn                    2015-09-09  573  		need_suid_safe = true;
+10c28d937e2cca Alex Kelly                   2012-09-26  574  	}
+10c28d937e2cca Alex Kelly                   2012-09-26  575  
+5ab1c309b34488 Denys Vlasenko               2012-10-04  576  	retval = coredump_wait(siginfo->si_signo, &core_state);
+10c28d937e2cca Alex Kelly                   2012-09-26  577  	if (retval < 0)
+10c28d937e2cca Alex Kelly                   2012-09-26  578  		goto fail_creds;
+10c28d937e2cca Alex Kelly                   2012-09-26  579  
+10c28d937e2cca Alex Kelly                   2012-09-26  580  	old_cred = override_creds(cred);
+10c28d937e2cca Alex Kelly                   2012-09-26  581  
+315c69261dd3fa Paul Wise                    2019-08-02  582  	ispipe = format_corename(&cn, &cprm, &argv, &argc);
+10c28d937e2cca Alex Kelly                   2012-09-26  583  
+10c28d937e2cca Alex Kelly                   2012-09-26  584  	if (ispipe) {
+315c69261dd3fa Paul Wise                    2019-08-02  585  		int argi;
+10c28d937e2cca Alex Kelly                   2012-09-26  586  		int dump_count;
+10c28d937e2cca Alex Kelly                   2012-09-26  587  		char **helper_argv;
+907ed1328d2a74 Lucas De Marchi              2013-04-30  588  		struct subprocess_info *sub_info;
+10c28d937e2cca Alex Kelly                   2012-09-26  589  
+10c28d937e2cca Alex Kelly                   2012-09-26  590  		if (ispipe < 0) {
+c114e9948c2b6a Roman Kisel                  2024-07-18 @591  			coredump_report_failure("format_corename failed, aborting core");
+e7fd1549aeb83e Oleg Nesterov                2013-07-03  592  			goto fail_unlock;
+
+>               /* This will always be NUL terminated. */ \
+> -             memcpy(comm, current->comm, sizeof(comm)); \
+> +             memcpy(comm, current->comm, TASK_COMM_LEN); \
+> +             comm[TASK_COMM_LEN] = '\0'; \
+                     ^^^^^^^^^^^^^^
+This was supposed to be "TASK_COMM_LEN - 1".  Also the comment says
+it's not required...
+
+10c28d937e2cca Alex Kelly                   2012-09-26  593  		}
+10c28d937e2cca Alex Kelly                   2012-09-26  594  
+10c28d937e2cca Alex Kelly                   2012-09-26  595  		if (cprm.limit == 1) {
+10c28d937e2cca Alex Kelly                   2012-09-26  596  			/* See umh_pipe_setup() which sets RLIMIT_CORE = 1.
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 
