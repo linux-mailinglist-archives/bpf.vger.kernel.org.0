@@ -1,160 +1,216 @@
-Return-Path: <bpf+bounces-58841-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58842-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C466CAC278A
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 18:25:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0162BAC2809
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 19:01:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 639A07BEDF2
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 16:21:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D94B178CC5
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 17:01:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87108296FCB;
-	Fri, 23 May 2025 16:22:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40EF7297A4C;
+	Fri, 23 May 2025 17:01:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EcYmAI+s"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ghHD7nnw"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 331A1294A06;
-	Fri, 23 May 2025 16:22:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CC7A211A11
+	for <bpf@vger.kernel.org>; Fri, 23 May 2025 17:01:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748017354; cv=none; b=kQGu2dF7zpSzAQ5UnRiYtwmk1PAAgWjn6co460sOH/NXJAQB9HHLtlbMZH8RspIq2BrAuAx15TeCJ3Xk5EBTpUl0aMdo+A7IqPayVel2xSvplQVwMpvOEpcK+dJVLYnrpY8q35KSST/8hI9wJRXDAIewEUYQ6fBJAlf6ng019bk=
+	t=1748019672; cv=none; b=XITb3Vafgwj6KTvHvdZnK2CaFzjCdwBQeRiCA1r7wvKkaSczSdvT/5HFBDr8or7AIra1dPl+03j+ML0Hbu8kjHHmVeveJGLhLXf9+t9iJWujnmZAH6VDTnmXRyDKgTzp3chsmfBttn3fFVgnFsMO9MJKfY9Q37SNBeUZnlKu5L8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748017354; c=relaxed/simple;
-	bh=LAkicZJyK/FGZjxwtLmT18YGpM4Dm/qAEb9YYZlSY88=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hKoGudRD0tmofexxdLyWTLPFTS/PIOPguY4d9TrNgGYzbKbZAK7w54X0CZAYgU6rtze6LahJrtPGMSPSC9GKS5T4WOMqWsw2ODnuhS2fR8Rcr/wUNxt6fXYydpcMIbTztj+Zfz/lmGcIHJ6tZJQvJldzMLWXCP9pIC2pq9874/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=EcYmAI+s; arc=none smtp.client-ip=91.218.175.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1748017350;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=p8BaeXySDEnnoBAKxDxDRFr2nIyJdWCYaT15SV7DAQI=;
-	b=EcYmAI+sjd3M9P4tTqpTRafycWBQZR/9qBIAjVmmsoeTIA2aoyZgGTdS44r+Pukf31wjd5
-	VfR2+BkJPxWJMrj5aJRQM2FOyhW/v5LjiJ5tvBn1SNxDwG0qWJHOs8GG5JAPBFa+HoNPsG
-	ANhWGgqUpZLOM5Yir+Cv2zKH3BrF3yQ=
-From: Jiayuan Chen <jiayuan.chen@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Jiayuan Chen <jiayuan.chen@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Jakub Sitnicki <jakub@cloudflare.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v1] bpf, sockmap: Fix psock incorrectly pointing to sk
-Date: Sat, 24 May 2025 00:22:19 +0800
-Message-ID: <20250523162220.52291-1-jiayuan.chen@linux.dev>
+	s=arc-20240116; t=1748019672; c=relaxed/simple;
+	bh=hExa2Cwm4bAPttUEZjJfYoGFUNfZ4ZleOpu3VTcmpaU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ua4ioylXlVfz3sR7fc9kx07kptkO4KTCxuJrupcb/iOMsHyj6LJJunqt1qJnSC2lowp3pzNe0jOhl0+01OCJXDi8aydkKiIf0mdXhvdjcw4NC3SUIC0Uf51xoBYzCgla/DD8GG9j+90PrPyTOT0BjT/tXy6B6YfQbMJATHQS0HU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ghHD7nnw; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-231f6c0b692so8275ad.0
+        for <bpf@vger.kernel.org>; Fri, 23 May 2025 10:01:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1748019669; x=1748624469; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bOSRKDWId4W8kN+rUt+nVQlh5cnha/mrBYJj+eK+Jf0=;
+        b=ghHD7nnwMk4MPKcpkQnGayp4Nv24ozaA/sQig6FtW9RTCw4U/o7Qp2YHsZUmRkMLZm
+         h4Ml4frDUIz75uSXS0vMhdX17TCuSWCXZ1SUXGWWYfRBJc43nSaG+0UsHLzaDSG7uZI3
+         +eeSHHd7As90Sfs9K2sc3OpzH/oX/IrbIbqNnzUfZ6LolqM22MrmDIty4ytW3ovPzRZK
+         8xSbTjG/mW9nlfa0z/pLNOXLWMeeRaGo+trZUA3fQdHwRk7lcHta2rdzWCjdwnEzd6KR
+         IWsuVgn/9amsmTjLgCKy7iX3TijPiCc4TaJ4ki2NQyMtlzrnA7Lb7fb0f6raUFfwUnxV
+         jD0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748019669; x=1748624469;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bOSRKDWId4W8kN+rUt+nVQlh5cnha/mrBYJj+eK+Jf0=;
+        b=DK86Oth5MiEA4V+1fwrqYaQI6Gx9tMhkEFefN6NqWqdR1ehIDPBP13eVLzhoA+nkwj
+         ZB6hZYjO+vscuDz0Oe4nZXddLDYjcAetC5LIXT7deojrIuLrIV7T3E70CU1yT9Sj0opU
+         QMrLX8C5udhVhIYW3VmZE8DlGqkeQW4STgWkPIPZB9IfU8lYN4ztpXd77OXbwb9H8ZoN
+         nxqmbTE+ibd0QF4RTiRHHTazny1qphcXtc4KTgQPSaQQ52S+nRMf3qb4itSs0aTYjD7t
+         /ObuZWKc4+imPZikN5FSi7A2FSMJmetIaNK8b8dmHRXDra7kMR7vF6dtJlfZCshUsJIZ
+         UqcQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVJQqyh1Nt49CYG+psZ8Z94FfxH5rmhgCbRYrFao31n2BVbVP2oZd1OPm3J+ZF0dROYusM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxKuCKBRNu6cyqUb8aoe3DS99NI9PjNmLvJzahMJ4zKYGC7eLa3
+	5hGJqlI8ZeFc2HoYmq1EtnV2DXIT3CNVMUY5tHvS0+SXqqpJD7EqWuDT8bG2L21idG6CGyfenBv
+	cC590s4wiATMBxUKkCREyJ6ELF2VdG6Cashm2eKOf
+X-Gm-Gg: ASbGncvB8VD+n4yCihgbO3so1G0YMF4VdoE64kxW2XnS0mu6w1JGH1czWZx+yLB7d3d
+	ShAaeJXs2NcyNIJ7Y1c8U+UZPK30Zeh6Ds9PPloImUAQdxmFsU2eQpa+ZXVpaWhspgd6xDDuTTa
+	0kjdym2iVoLkGM/Ehl0RdZbp20YCQoyvw1gGobKNyUXVbaFhu8WQSrnDMVyJtjQxFnpyZlcQSk3
+	g==
+X-Google-Smtp-Source: AGHT+IGJuHYQfZLr7hfQil+IpUEJXAuKmCwI79/rmEAXhTB8FY4jWtiRvq1iHUteieQZgEsK3rVaeZy0sUBH+cb+uvM=
+X-Received: by 2002:a17:903:22d2:b0:231:e069:6195 with SMTP id
+ d9443c01a7336-233f357c50cmr2674495ad.23.1748019669119; Fri, 23 May 2025
+ 10:01:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250523032609.16334-1-byungchul@sk.com> <20250523032609.16334-2-byungchul@sk.com>
+In-Reply-To: <20250523032609.16334-2-byungchul@sk.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Fri, 23 May 2025 10:00:55 -0700
+X-Gm-Features: AX0GCFsW6gNVDYJM6WPqUUcEweldiOyGkOySslyL-ATgJPZxy65Z4gtkC0ipm7U
+Message-ID: <CAHS8izPYrMMcqKiF1DmNqWW_=92joVrPE55rQTqGWaJ2=itHaw@mail.gmail.com>
+Subject: Re: [PATCH 01/18] netmem: introduce struct netmem_desc
+ struct_group_tagged()'ed on struct net_iov
+To: Byungchul Park <byungchul@sk.com>
+Cc: willy@infradead.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, kernel_team@skhynix.com, kuba@kernel.org, 
+	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org, 
+	akpm@linux-foundation.org, davem@davemloft.net, john.fastabend@gmail.com, 
+	andrew+netdev@lunn.ch, asml.silence@gmail.com, toke@redhat.com, 
+	tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com, 
+	leon@kernel.org, ast@kernel.org, daniel@iogearbox.net, david@redhat.com, 
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz, 
+	rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org, 
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-We observed an issue from the latest selftest: sockmap_redir where
-sk_psock(psock->sk) != psock in the backlog. The root cause is the special
-behavior in sockmap_redir - it frequently performs map_update() and
-map_delete() on the same socket. During map_update(), we create a new
-psock and during map_delete(), we eventually free the psock via rcu_work
-in sk_psock_drop(). However, pending workqueues might still exist and not
-be processed yet. If users immediately perform another map_update(), a new
-psock will be allocated for the same sk, resulting in two psocks pointing
-to the same sk.
+On Thu, May 22, 2025 at 8:26=E2=80=AFPM Byungchul Park <byungchul@sk.com> w=
+rote:
+>
+> To simplify struct page, the page pool members of struct page should be
+> moved to other, allowing these members to be removed from struct page.
+>
+> Introduce a network memory descriptor to store the members, struct
+> netmem_desc, reusing struct net_iov that already mirrored struct page.
+>
+> While at it, relocate _pp_mapping_pad to group struct net_iov's fields.
+>
+> Signed-off-by: Byungchul Park <byungchul@sk.com>
+> ---
+>  include/linux/mm_types.h |  2 +-
+>  include/net/netmem.h     | 43 +++++++++++++++++++++++++++++++++-------
+>  2 files changed, 37 insertions(+), 8 deletions(-)
+>
+> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> index 56d07edd01f9..873e820e1521 100644
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -120,13 +120,13 @@ struct page {
+>                         unsigned long private;
+>                 };
+>                 struct {        /* page_pool used by netstack */
+> +                       unsigned long _pp_mapping_pad;
+>                         /**
+>                          * @pp_magic: magic value to avoid recycling non
+>                          * page_pool allocated pages.
+>                          */
+>                         unsigned long pp_magic;
+>                         struct page_pool *pp;
+> -                       unsigned long _pp_mapping_pad;
 
-When the pending workqueue is later triggered, it uses the old psock to
-access sk for I/O operations, which is incorrect.
+Like Toke says, moving this to the beginning of this struct is not
+allowed. The first 3 bits of pp_magic are overlaid with page->lru so
+the pp makes sure not to use them. _pp_mapping_pad is overlaid with
+page->mapping, so the pp makes sure not to use it. AFAICT, this moving
+of _pp_mapping_pad is not necessary for this patch. I think just drop
+it.
 
-Timing Diagram:
+>                         unsigned long dma_addr;
+>                         atomic_long_t pp_ref_count;
+>                 };
+> diff --git a/include/net/netmem.h b/include/net/netmem.h
+> index 386164fb9c18..08e9d76cdf14 100644
+> --- a/include/net/netmem.h
+> +++ b/include/net/netmem.h
+> @@ -31,12 +31,41 @@ enum net_iov_type {
+>  };
+>
+>  struct net_iov {
+> -       enum net_iov_type type;
+> -       unsigned long pp_magic;
+> -       struct page_pool *pp;
+> -       struct net_iov_area *owner;
+> -       unsigned long dma_addr;
+> -       atomic_long_t pp_ref_count;
+> +       /*
+> +        * XXX: Now that struct netmem_desc overlays on struct page,
+> +        * struct_group_tagged() should cover all of them.  However,
+> +        * a separate struct netmem_desc should be declared and embedded,
+> +        * once struct netmem_desc is no longer overlayed but it has its
+> +        * own instance from slab.  The final form should be:
+> +        *
+> +        *    struct netmem_desc {
+> +        *         unsigned long pp_magic;
+> +        *         struct page_pool *pp;
+> +        *         unsigned long dma_addr;
+> +        *         atomic_long_t pp_ref_count;
+> +        *    };
+> +        *
+> +        *    struct net_iov {
+> +        *         enum net_iov_type type;
+> +        *         struct net_iov_area *owner;
+> +        *         struct netmem_desc;
+> +        *    };
+> +        */
 
-cpu0                        cpu1
+I'm unclear on why moving to this format is a TODO for the future. Why
+isn't this state in the comment the state in the code? I think I gave
+the same code snippet on the RFC, but here again:
 
-map_update(sk):
-    sk->psock = psock1
-    psock1->sk = sk
-map_delete(sk):
-   rcu_work_free(psock1)
+struct netmem_desc {
+                        /**
+                         * @pp_magic: magic value to avoid recycling non
+                         * page_pool allocated pages.
+                         */
+                        unsigned long pp_magic;
+                        struct page_pool *pp;
+                       unsigned long _pp_mapping_pad;
+                        unsigned long dma_addr;
+                        atomic_long_t pp_ref_count;
+};
 
-map_update(sk):
-    sk->psock = psock2
-    psock2->sk = sk
-                            workqueue:
-                                wakeup with psock1, but the sk of psock1
-                                doesn't belong to psock1
-rcu_handler:
-    clean psock1
-    free(psock1)
+(Roughly):
 
-Previously, we used reference counting to address the concurrency issue
-between backlog and sock_map_close(). This logic remains necessary as it
-prevents the sk from being freed while processing the backlog. But this
-patch prevents pending backlogs from using a psock after it has been
-freed.
+struct page {
+   ...
+  struct {        /* page_pool used by netstack */
+     struct netmem_desc;
+  };
+  ...
+};
 
-Note: We cannot call cancel_delayed_work_sync() in map_delete() since this
-might be invoked in BPF context by BPF helper, and the function may sleep.
+struct net_iov {
+    enum net_iov_type type;
+    struct netmem_desc;
+    struct net_iov_area *owner;
+}
 
-Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
-Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
+AFAICT, this should work..?
 
----
-Thanks to Michal Luczaj for providing the sockmap_redir test case, which
-indeed covers almost all sockmap forwarding paths.
----
- include/linux/skmsg.h | 1 +
- net/core/skmsg.c      | 5 ++++-
- 2 files changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-index 0b9095a281b8..b17221eef2f4 100644
---- a/include/linux/skmsg.h
-+++ b/include/linux/skmsg.h
-@@ -67,6 +67,7 @@ struct sk_psock_progs {
- enum sk_psock_state_bits {
- 	SK_PSOCK_TX_ENABLED,
- 	SK_PSOCK_RX_STRP_ENABLED,
-+	SK_PSOCK_DROPPED,
- };
- 
- struct sk_psock_link {
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index 34c51eb1a14f..bd58a693ce9a 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -656,6 +656,9 @@ static void sk_psock_backlog(struct work_struct *work)
- 	bool ingress;
- 	int ret;
- 
-+	if (sk_psock_test_state(psock, SK_PSOCK_DROPPED))
-+		return;
-+
- 	/* Increment the psock refcnt to synchronize with close(fd) path in
- 	 * sock_map_close(), ensuring we wait for backlog thread completion
- 	 * before sk_socket freed. If refcnt increment fails, it indicates
-@@ -867,7 +870,7 @@ void sk_psock_drop(struct sock *sk, struct sk_psock *psock)
- 	write_unlock_bh(&sk->sk_callback_lock);
- 
- 	sk_psock_stop(psock);
--
-+	sk_psock_set_state(psock, SK_PSOCK_DROPPED);
- 	INIT_RCU_WORK(&psock->rwork, sk_psock_destroy);
- 	queue_rcu_work(system_wq, &psock->rwork);
- }
--- 
-2.47.1
-
+--=20
+Thanks,
+Mina
 
