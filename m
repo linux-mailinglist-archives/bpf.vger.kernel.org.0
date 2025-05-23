@@ -1,188 +1,99 @@
-Return-Path: <bpf+bounces-58816-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58817-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 941C6AC1AAE
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 05:33:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABAFFAC1AC0
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 05:49:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AA47A24CDC
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 03:31:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A2CE1B65B82
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 03:49:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E47D5280314;
-	Fri, 23 May 2025 03:26:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3DA3221F31;
+	Fri, 23 May 2025 03:48:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lj/rQ3Gi"
 X-Original-To: bpf@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 564A5270ECD;
-	Fri, 23 May 2025 03:26:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 280F82DCBE7;
+	Fri, 23 May 2025 03:48:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747970793; cv=none; b=iD+FLpQM571sUjsbuLt4dQ7xyibSLWDtQ7SzkWGUD1cHqXyaMwLJaz/DkAzPPkFobPcrKnSIMX9WRbma/JrUqA7o4fVsRq188JX9hrgWav+hcgiVpkY3MbUba9xkcN2ky5IuFQz9mQCZfV7MOG9Uxxm2iF2O8pH3fUkvSvJlCxk=
+	t=1747972128; cv=none; b=V/GJYdjkgJ1URUx13vfsZbxu0EW8Sr5jm7Ti5iu4TTuiqv2G3ryukSNzbfN4YG8g2azA8owWVeGxg4RFOmCOSyigk6ATscVbTErzH+yQHBNbdqE+sKL735hSPR5AG7+grdh7SpEMs9mIfLA36IkY6hUTS/GKOuatfV2TfXyusz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747970793; c=relaxed/simple;
-	bh=C9NK/m9W07yH0SH2bdXndsqdPgn7AEXo1UEv0+SzIRk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=VvgG4pNM25llbw5yVSZhnOY6x1KE/+yoHANxUJQIpwXpFJAcNqWqtd7mUBrCMwa5Zcyeymfhg6g0pXL+PEa4nLLneTvybn8LPhdYH/KPYVvvUWysKgWarEjWwsSpjQmUpClL5OJ3RdD1yqlOGHVriU/CIVphL6rNidw52GxU5OQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-681ff7000002311f-23-682feadd3b6c
-From: Byungchul Park <byungchul@sk.com>
-To: willy@infradead.org,
-	netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	kernel_team@skhynix.com,
-	kuba@kernel.org,
-	almasrymina@google.com,
-	ilias.apalodimas@linaro.org,
-	harry.yoo@oracle.com,
-	hawk@kernel.org,
-	akpm@linux-foundation.org,
-	davem@davemloft.net,
-	john.fastabend@gmail.com,
-	andrew+netdev@lunn.ch,
-	asml.silence@gmail.com,
-	toke@redhat.com,
-	tariqt@nvidia.com,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	saeedm@nvidia.com,
-	leon@kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	david@redhat.com,
-	lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com,
-	vbabka@suse.cz,
-	rppt@kernel.org,
-	surenb@google.com,
-	mhocko@suse.com,
-	horms@kernel.org,
-	linux-rdma@vger.kernel.org,
-	bpf@vger.kernel.org,
-	vishal.moola@gmail.com
-Subject: [PATCH 18/18] mm, netmem: remove the page pool members in struct page
-Date: Fri, 23 May 2025 12:26:09 +0900
-Message-Id: <20250523032609.16334-19-byungchul@sk.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20250523032609.16334-1-byungchul@sk.com>
-References: <20250523032609.16334-1-byungchul@sk.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAAzWRSUwTYRiG/TvTmaGhZqwII4poFTUQ2YLmI0HDwcN/MgY1cTlII6OtlMWW
-	PUGrEo0NICphsyQlRqylsVoRWkSUAgWiEWSzgiyp0oMiO0TBuBTl9uR9v++5vAwhaSH9GUVy
-	Gq9KlimllIgUffOu2jP8JUwePjS1FnRmEwU137PgwZhVCDpjHYL5H0M0zLW2U3CvapEAXVce
-	CQvmJQLGHS4aRqvdJDReryfAdbODgoK8ZQKuWA0C6K4rFELx0n0C6jVjNPQ26CgYMf0Wgtte
-	QEJnxUMSRgtjwaH3hcXXEwhazfUCWMyvpOBOj56CT3mjCHpaXCTcvVyIwNzkFMLydx0Vuw3X
-	PvwgwLaKYRrrLen4qSEYa509BLYYb1DYMnubxh8HGincUbZMYpt1ToALrk5SeGZ8kMRTTf0U
-	Ntf2k/iNvpXGc5Yth9mTopgEXqnI4FVhB+JF8icFTkFqi1+Wu3eTBpkkWuTFcGwUZ8jToVVe
-	yHcLPEyxuzin8wfhYR82gptztZNaJGIIdlLIjeuWV47Ws4e46SYTpUUMQ7JBXHVJuCcWs/u4
-	WeNL+p8zkKt5/GrF4/U3LxpZoDwsYfdyz/sGaY+TY2dorsw2/f9hI9dscJJFSKxHa4xIokjO
-	SJIplFGh8uxkRVbomZQkC/o7bXXuz1NWNNt9xI5YBkm9xVZRmFwilGWos5PsiGMIqY+4zR0q
-	l4gTZNk5vCrltCpdyavtaBNDSv3EkYuZCRL2nCyNT+T5VF612goYL38N0lwovdYZEq1t25h2
-	LeAXE1DRPDGwFGfIdMTF75gpdzsvK83RBsdAnz3361Hl1YmS4Usvdh576zCdjel1nX8X1et7
-	8ESIfWypPLNh9y2N99bIIHyxNOlRunRzgxonBt6vGf0cn98jLw5UXOlc98x//3zw9uNcii2n
-	yth1tHJD1XuHlFTLZRHBhEot+wN92pOl1gIAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAAzWRa0hTcRyG++9cN1qcTqsORgQr07ScWsYPCjWK/CNk9akIQpcd2vLKZuK6
-	YSqUw5mWWdqMydByCsspzpWsmNcuULiU5W1hOaLCLl5ILSyNvj0878v75WUJvo4MYrWZOaIu
-	U52upGWkLGlP4Y7RTypNZOM2MNubaGj8mQf337VTYLa1IZieG2ZgqquXBmvtLAHmV0UkzNjn
-	CZjoGWfAXx8goeOqk4Dx6300mIoWCChofyCBzppnFLxuK6WgYr6OAGf+Owa8j8w0jDUtUhDw
-	mEh4Vt1Agr80Hnos62D2xRcEXXanBGZLami42W+h4X2RH0F/5zgJd6+UIrC7fRQs/DTT8Urc
-	2vBWgl3Vowy2OM7hlgdh2OjrJ7DDVkxjx48bDB4Z7KBx350FErvapyTYVDhJ4+8TQyT+6h6g
-	sfXjNwm2tw6Q+KWlizmy+oRs72kxXZsr6lSxKTJNs8knye5cnxfwbshHTbwRSVmB2yXMlAQk
-	S0xzIYLPN0cssYKLEqbGe0kjkrEEN0kJE+aF5dIaLkn45m6ijYhlSS5YqK+MXNJybrfww/aE
-	+be5SWh8+HR5R/rXl43N0EvMczHC4zdDTBmSWdAKG1JoM3Mz1Nr0mAh9msaQqc2LSM3KcKC/
-	59Vf+lXejqa9CR7EsUi5Uh6aodLwlDpXb8jwIIEllAp5dyBCw8tPqw3nRV1Wsu5cuqj3oA0s
-	qVwvTzwmpvDcGXWOmCaK2aLufyphpUH5KPxQVrC+fOcYexL2Sb3QJjv4QRXOHNmzlRqJWVXm
-	n3e4EpJdk9zmlo2VxYmtistZWt5YeNscFBeqOOCMqzjbmFZ/in9e4L949Gl3cfQ1qyEvovDW
-	cPm8dvA3dTgndfuF2JfWugq8GF12vrlKuj/ctMVQ1R1w13523jvOz6wNUZJ6jToqjNDp1X8A
-	10tm/bgCAAA=
-X-CFilter-Loop: Reflected
+	s=arc-20240116; t=1747972128; c=relaxed/simple;
+	bh=hU4E11daZQRWPop+eXf7dItbrTLSr07eegr9d9rLyLc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=W/Ih2cb3aAAm/oUm+8JcqiLAK6YAKsQIDSndyLFlzvZgQcUEJgyApO6XvZy44UmzVFcZFygQoOHUk0g2Igt0p4uiY7R+3g98y4HL1w+o3VmQHbuDLlDK1x1Uecmr8IOVd+Xr4mYLuu1j/+nTCN4BxtyaajUed3DPzKnUxOsjobM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lj/rQ3Gi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AC07C4CEE9;
+	Fri, 23 May 2025 03:48:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747972127;
+	bh=hU4E11daZQRWPop+eXf7dItbrTLSr07eegr9d9rLyLc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lj/rQ3GiGLdiau+P57zmneGhBgAfMwOjMvBLctFhT75R1EPvZ5B+giVnFwI5eHxa9
+	 RiMiquG8Ahu7fzGgL53Px/BnaD5MqSe+XkulE8WW3VtGLO3jgYvTq7mHJmnXO8HT0k
+	 IVlm+pa2SWgRZfx0S+157FDTqcymr66Laaajra42Cmav0gUZ5rF4VwxfkSUBOljdMj
+	 Zu+1bGtmcY67IjZpTYe/CyKwnE1FIQawVg8S5ZD4PBl0KY2UIPvReTE3pKq0rTvPqd
+	 l4BA/NIs6ebHPA4YP0vqH8f8LYR9cjI9h0XPmOzzN1clAgzBOWk0XqocxYh+JpDqIl
+	 CK9+q1olWtQ9g==
+Date: Thu, 22 May 2025 20:48:44 -0700
+From: Kees Cook <kees@kernel.org>
+To: Bhupesh <bhupesh@igalia.com>
+Cc: akpm@linux-foundation.org, kernel-dev@igalia.com,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, oliver.sang@intel.com, lkp@intel.com,
+	laoar.shao@gmail.com, pmladek@suse.com, rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
+	alexei.starovoitov@gmail.com, andrii.nakryiko@gmail.com,
+	mirq-linux@rere.qmqm.pl, peterz@infradead.org, willy@infradead.org,
+	david@redhat.com, viro@zeniv.linux.org.uk, ebiederm@xmission.com,
+	brauner@kernel.org, jack@suse.cz, mingo@redhat.com,
+	juri.lelli@redhat.com, bsegall@google.com, mgorman@suse.de,
+	vschneid@redhat.com, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 3/3] exec: Add support for 64 byte 'tsk->comm_ext'
+Message-ID: <202505222041.B639D482FB@keescook>
+References: <20250521062337.53262-1-bhupesh@igalia.com>
+ <20250521062337.53262-4-bhupesh@igalia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250521062337.53262-4-bhupesh@igalia.com>
 
-Now that all the users of the page pool members in struct page have been
-gone, the members can be removed from struct page.
+On Wed, May 21, 2025 at 11:53:37AM +0530, Bhupesh wrote:
+> Historically due to the 16-byte length of TASK_COMM_LEN, the
+> users of 'tsk->comm' are restricted to use a fixed-size target
+> buffer also of TASK_COMM_LEN for 'memcpy()' like use-cases.
+> 
+> To fix the same, Linus suggested in [1] that we can add the
+> following union inside 'task_struct':
+>        union {
+>                char    comm[TASK_COMM_LEN];
+>                char    comm_ext[TASK_COMM_EXT_LEN];
+>        };
 
-However, since struct netmem_desc might still use the space in struct
-page, the size of struct netmem_desc should be checked, until struct
-netmem_desc has its own instance from slab, to avoid conficting with
-other members within struct page.
+I remain unconvinced that this is at all safe. With the existing
+memcpy() and so many places using %s and task->comm, this feels very
+very risky to me.
 
-Remove the page pool members in struct page and add a static checker for
-the size.
+Can we just make it separate, instead of a union? Then we don't have to
+touch comm at all.
 
-Signed-off-by: Byungchul Park <byungchul@sk.com>
----
- include/linux/mm_types.h | 11 -----------
- include/net/netmem.h     | 28 +++++-----------------------
- 2 files changed, 5 insertions(+), 34 deletions(-)
+> and then modify '__set_task_comm()' to pass 'tsk->comm_ext'
+> to the existing users.
 
-diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index 873e820e1521..5a7864eb9d76 100644
---- a/include/linux/mm_types.h
-+++ b/include/linux/mm_types.h
-@@ -119,17 +119,6 @@ struct page {
- 			 */
- 			unsigned long private;
- 		};
--		struct {	/* page_pool used by netstack */
--			unsigned long _pp_mapping_pad;
--			/**
--			 * @pp_magic: magic value to avoid recycling non
--			 * page_pool allocated pages.
--			 */
--			unsigned long pp_magic;
--			struct page_pool *pp;
--			unsigned long dma_addr;
--			atomic_long_t pp_ref_count;
--		};
- 		struct {	/* Tail pages of compound page */
- 			unsigned long compound_head;	/* Bit zero is set */
- 		};
-diff --git a/include/net/netmem.h b/include/net/netmem.h
-index c63a7e20f5f3..257c22398d7a 100644
---- a/include/net/netmem.h
-+++ b/include/net/netmem.h
-@@ -77,30 +77,12 @@ struct net_iov_area {
- 	unsigned long base_virtual;
- };
- 
--/* These fields in struct page are used by the page_pool and net stack:
-- *
-- *        struct {
-- *                unsigned long _pp_mapping_pad;
-- *                unsigned long pp_magic;
-- *                struct page_pool *pp;
-- *                unsigned long dma_addr;
-- *                atomic_long_t pp_ref_count;
-- *        };
-- *
-- * We mirror the page_pool fields here so the page_pool can access these fields
-- * without worrying whether the underlying fields belong to a page or net_iov.
-- *
-- * The non-net stack fields of struct page are private to the mm stack and must
-- * never be mirrored to net_iov.
-+/* XXX: The page pool fields in struct page have been removed but they
-+ * might still use the space in struct page.  Thus, the size of struct
-+ * netmem_desc should be under control until struct netmem_desc has its
-+ * own instance from slab.
-  */
--#define NET_IOV_ASSERT_OFFSET(pg, iov)             \
--	static_assert(offsetof(struct page, pg) == \
--		      offsetof(struct net_iov, iov))
--NET_IOV_ASSERT_OFFSET(pp_magic, pp_magic);
--NET_IOV_ASSERT_OFFSET(pp, pp);
--NET_IOV_ASSERT_OFFSET(dma_addr, dma_addr);
--NET_IOV_ASSERT_OFFSET(pp_ref_count, pp_ref_count);
--#undef NET_IOV_ASSERT_OFFSET
-+static_assert(sizeof(struct netmem_desc) <= offsetof(struct page, _refcount));
- 
- static inline struct net_iov_area *net_iov_owner(const struct net_iov *niov)
- {
+We can use set_task_comm() to set both still...
+
 -- 
-2.17.1
-
+Kees Cook
 
