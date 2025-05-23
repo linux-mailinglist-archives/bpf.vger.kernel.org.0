@@ -1,378 +1,215 @@
-Return-Path: <bpf+bounces-58827-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58828-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58AC2AC20C5
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 12:19:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AFF5AC21C4
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 13:07:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 583CB1C01C97
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 10:19:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 307E8162D55
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 11:07:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94A18227EB2;
-	Fri, 23 May 2025 10:18:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E538B22D4CE;
+	Fri, 23 May 2025 11:07:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SkibLZub"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qpSIwbb0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C3241C84BC;
-	Fri, 23 May 2025 10:18:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 590761C8631;
+	Fri, 23 May 2025 11:07:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747995527; cv=none; b=qC1G9njwwBdR/n+q8+UQHe0sgLcuFCvmxkGlIYkzMpyAHVxvXvcQx49zmv5ZnQMQ5Q3iUxkEkauoKAsSh4aU3I8XjQbFGM09Z6CxdE2LCQuYZl0OA0pRB4n+RsFTs6dRAAz6yasHp5OsngodRuSTXuz6+YtL2q69MbQGb5hcBjI=
+	t=1747998441; cv=none; b=DZEeVvKmEfl4plKe51kf/iBu1F/+Jwi47JB4GV3PtownUeKo3ZsIFxxdaG3edZjC4b9ctfAxPAKnO3KfwW/pT1ciwuzZ6NIpFK6XMwAAteESSXDwFdClHyKrR1Y0CVEy8YssumZVmk+Y8JXzsNP7u6JEECgC7nvxMvhHugupuxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747995527; c=relaxed/simple;
-	bh=72P9ggHoV4J+bO4ofT9fcvn9tIutz+Znr8TDQNlCs1g=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NkvWGSVmcD6L4XSebTd1SiBFAhhSUsHcCoe0+sdAJIe8cMrowOMyTc37RFw9148cWen5ak/MHTU5k1d56OVLnqurcquGfsm0NeX2uQdNgg9Fk4dWTHtNbPusQfrlT9KFXmuCig8JiOSic5tp2z0+4FBXt2FViikI6jzkQqCK1J8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SkibLZub; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-23229fdaff4so67202775ad.1;
-        Fri, 23 May 2025 03:18:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747995525; x=1748600325; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6KJN2FlupJaDrBN/rwQtbtbCqJO+xDvIXE5wiEhwe0M=;
-        b=SkibLZub0asrq9RifO8jF5P9kLftCNmr8wiikimsWQR10A8hnv6dNRNfBllLy7aA7M
-         naJerAhkTxwKDylsHX171ey6HGAuXOd/boegs8QwXDMGIzQ/OGj7OqmwPqwvK0he9q7o
-         xL+yvTliWdjp6EmypRCd5tZlLtHxzOnMJ02kOCeRC7THrQFGPBD9eC3m06jUTu8gqrwn
-         GzPDXove3mXWemexpYP8bQyP4a8dnkzDjkO8HZjK1A7zPoqXV0+qiRpCUBSxNfy2ztHs
-         6hsanb3GxAJkIeLknyxPaG3lu6WZK0PlgqchLutKsnWgB0QFV/CFeJfkAu/kfvjFvlOv
-         23PA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747995525; x=1748600325;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6KJN2FlupJaDrBN/rwQtbtbCqJO+xDvIXE5wiEhwe0M=;
-        b=YCbPc8RPbaemG56/ckd9uZVT3VRrZdIQOsPtN6DyJglwls78oT2LME8KVqkAGUfV7d
-         iU7HT+TGjWE7cMZFoyvAd8bCS/g+0eNL9H+2a/9O7YHPgky1G0D6pN1JysBA4ArbUerf
-         8wNsrmPdtpYje3s0whq2owgjiu/ktcdkghBxO2rqKLpFvjTlxI4NLg/0OSIaCPXV0jA6
-         TnR5OabVDOcOOzKS38zWAcM5+ar8BAIWg4t0P7zsm3vt7095xQ8mptrCvcOLNQaYLjMu
-         S4AFHULnVmW8tA5HriTD+3s9f1P4i5ZFef2KWgMaVzlWSgjYfQZesyl3W8gf1XdtEpPx
-         LJ/A==
-X-Forwarded-Encrypted: i=1; AJvYcCWNIRCJDWUlKmx7NISSaMG9tIUVIol45mPLiwaV0pZEP/VeD9fkBcIVY3/qN04Gbfg52XQlxQo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwYDo46M9a7dW73UN1CFJD6JvW0HHsGa8G1PqMZEM+75fUsofmR
-	m6AYah5Szy/QxORaP8SbwOSM3Nn9j4BzKNOEClDcFXYD4AhRpHvqOv9j
-X-Gm-Gg: ASbGncuWUxMYhj7gIiUkNw/ucizS93Ck1fcdDzDA1gyaHYvOzJub0O2z4O77vTd2xso
-	JEWmjsE/6bqjwKX68mbmy1OjKkJLSSqocRMgPMfA3Nb0GO+Ne8GfY/gYtuqK8q1Xobu9K1RY/DP
-	pJmejsWJWj8Hb6VAe8V7E3uXaCtnAMXDFL/n84020CNelFXanSg9+KAO0PDrrx0LxkKxE53xBvw
-	ov9nxLT7oJrqnOkQWp58XlogGw4VQy8yvBTfYCphrSlHdmNs4fH5v2cTlAqkK3Oc0K6gKs6o9Ox
-	VY2qn5JcyBa/jGGRxjGe+o/OBV8iVRsYiHKQ8AmES+1G4ahSazQcJXK2QsoLoBhj8mF+0hOASGL
-	2WMQ/9O/GFmT0mVarCQ==
-X-Google-Smtp-Source: AGHT+IFmShpvwaBJIDqU7rc4pNy7Qy5rh9n+RG1p84vrCSMPXU++D8ISgzF8X1UugO4w87qw9KfPYQ==
-X-Received: by 2002:a17:903:41c7:b0:220:f59b:6e6 with SMTP id d9443c01a7336-233f218960amr31383745ad.8.1747995524618;
-        Fri, 23 May 2025 03:18:44 -0700 (PDT)
-Received: from kodidev-ubuntu (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-30f365d460fsm6969177a91.23.2025.05.23.03.18.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 May 2025 03:18:44 -0700 (PDT)
-From: Tony Ambardar <tony.ambardar@gmail.com>
-X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
-Date: Fri, 23 May 2025 03:18:42 -0700
-To: Amery Hung <ameryhung@gmail.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
-	alexei.starovoitov@gmail.com, andrii@kernel.org,
-	daniel@iogearbox.net, tj@kernel.org, memxor@gmail.com,
-	martin.lau@kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH bpf-next v4 2/3] selftests/bpf: Test basic task local
- data operations
-Message-ID: <aDBLgh7UoMwA1H5P@kodidev-ubuntu>
-References: <20250515211606.2697271-1-ameryhung@gmail.com>
- <20250515211606.2697271-3-ameryhung@gmail.com>
+	s=arc-20240116; t=1747998441; c=relaxed/simple;
+	bh=ZtulG+GqmTItXJpWf8cI/7ZkLZKWayGN42QGW1nDVfA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Q01qroXWzYAe5BONzS5Cz+HeLATnjNl6yzqLb1vU/th2rv/6pNtxsIrO6ZMFKDVNDmyR4HXGroSF3Ow3N/dFoYLoJI88LAbX+ADCmumRU2yRDFiTnF8deFvcP+tUWcvRADzb4OBiKvF5jHtQ6h5b3O22Y/HkuBBlsg+EUxMEUt8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qpSIwbb0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DE0EC4CEE9;
+	Fri, 23 May 2025 11:07:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747998440;
+	bh=ZtulG+GqmTItXJpWf8cI/7ZkLZKWayGN42QGW1nDVfA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=qpSIwbb0KUSAPiEXVz6Eu1qPzh45BAEMErfL5Y8cbZjXSvlYLuPIzr/crAGWSKRqh
+	 kdmbU0wtTS+rbxvMhiEZlWuEOpIc22PYeg3JoD1dJl2wB7IpL4qrHHB1Dr1AbECQE+
+	 KNex+SPzy1+HsM3x37ljDri1pFVk4YU02odvPc5/h2n21fsRt0l9gMxubobFeytHJc
+	 i20O8vkEyJaRb559fVGWXDB/5vP1+qn4YCUUH4QtHQPQSBXaeb5w6VZexPGEnMFxK3
+	 34RML23GZbgJuJYEXEmehD5UUnwR9b+D2hXu/sY2j+1qum992Mnj20g44WSARuJB28
+	 e1ICZQGgx4TDw==
+Message-ID: <f9b1d13c-aa20-4680-849c-535ea7c476a6@kernel.org>
+Date: Fri, 23 May 2025 13:07:10 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250515211606.2697271-3-ameryhung@gmail.com>
+User-Agent: Mozilla Thunderbird Beta
+Subject: Re: [PATCH bpf-next/net v3 4/5] selftests/bpf: Add mptcp_subflow
+ bpf_iter subtest
+Content-Language: en-GB, fr-BE
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>,
+ Geliang Tang <geliang@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20250320-bpf-next-net-mptcp-bpf_iter-subflows-v3-0-9abd22c2a7fd@kernel.org>
+ <20250320-bpf-next-net-mptcp-bpf_iter-subflows-v3-4-9abd22c2a7fd@kernel.org>
+ <98348a02-9f8b-4648-8abe-e6b802ae9a63@linux.dev>
+ <1621611c-8cf1-4281-986f-cfd8cc0e70f0@kernel.org>
+ <0364f8d2-9aa5-4dc0-b7f6-1c8572932814@linux.dev>
+From: Matthieu Baerts <matttbe@kernel.org>
+Autocrypt: addr=matttbe@kernel.org; keydata=
+ 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
+ lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
+Organization: NGI0 Core
+In-Reply-To: <0364f8d2-9aa5-4dc0-b7f6-1c8572932814@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, May 15, 2025 at 02:16:01PM -0700, Amery Hung wrote:
-> Test basic operations of task local data with valid and invalid
-> tld_create_key(). For invalid calls, make sure they return the right
-> error code, and verifiy that no TLDs are inserted by trying fetching
-> keys in the bpf program. For valid calls, first make sure the TLDs
-> are created using tld_fetch_key(). Then, verify that they are task-
-> specific with multiple user threads. This done by writing values unique
-> to each thread to TLDs, reading them from both user space and bpf, and
-> checking if the value read back are the same as the value written.
-> 
-> Signed-off-by: Amery Hung <ameryhung@gmail.com>
-> ---
->  .../bpf/prog_tests/test_task_local_data.c     | 163 ++++++++++++++++++
->  .../bpf/progs/test_task_local_data.c          |  81 +++++++++
->  2 files changed, 244 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_task_local_data.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_task_local_data.c
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/test_task_local_data.c b/tools/testing/selftests/bpf/prog_tests/test_task_local_data.c
-> new file mode 100644
-> index 000000000000..738fc1c9d8a4
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/test_task_local_data.c
-> @@ -0,0 +1,163 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <pthread.h>
-> +#include <bpf/btf.h>
-> +#include <test_progs.h>
-> +
-> +struct test_struct {
-> +	__u64 a;
-> +	__u64 b;
-> +	__u64 c;
-> +	__u64 d;
-> +};
-> +
-> +#include "test_task_local_data.skel.h"
-> +#include "task_local_data.h"
-> +
-> +/*
-> + * Reset task local data between subtests by clearing metadata. This is only safe
-> + * in selftests as subtests run sequentially. Users of task local data libraries
-> + * should not do this.
-> + */
-> +static void reset_tld(void)
-> +{
-> +	if (tld_metadata_p)
-> +		memset(tld_metadata_p, 0, PAGE_SIZE);
-> +}
-> +
-> +/* Serialize access to bpf program's global variables */
-> +static pthread_mutex_t global_mutex;
-> +
-> +#define TEST_BASIC_THREAD_NUM 63
-> +static tld_key_t tld_keys[TEST_BASIC_THREAD_NUM];
-> +
-> +void *test_task_local_data_basic_thread(void *arg)
-> +{
-> +	LIBBPF_OPTS(bpf_test_run_opts, opts);
-> +	struct test_task_local_data *skel = (struct test_task_local_data *)arg;
-> +	struct test_struct *value2;
-> +	int fd, err, tid, *value1;
-> +
-> +	fd = bpf_map__fd(skel->maps.tld_data_map);
-> +
-> +	value1 = tld_get_data(fd, tld_keys[0]);
-> +	if (!ASSERT_OK_PTR(value1, "tld_get_data"))
-> +		goto out;
-> +
-> +	value2 = tld_get_data(fd, tld_keys[1]);
-> +	if (!ASSERT_OK_PTR(value1, "tld_get_data"))
+Hi Martin,
 
-Should this be 'value2'?
-
-> +		goto out;
-> +
-> +	tid = gettid();
-> +
-> +	*value1 = tid + 0;
-> +	value2->a = tid + 1;
-> +	value2->b = tid + 2;
-> +	value2->c = tid + 3;
-> +	value2->d = tid + 4;
-> +
-> +	pthread_mutex_lock(&global_mutex);
-> +	/*
-> +	 * Run task_init which simulates an initialization bpf prog that runs once
-> +	 * for every new task. The program saves keys for subsequent bpf programs.
-> +	 */
-> +	err = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.task_init), &opts);
-> +	ASSERT_OK(err, "run task_init");
-> +	ASSERT_OK(opts.retval, "task_init retval");
-> +	/* Run task_main that read task local data and save to global variables */
-> +	err = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.task_main), &opts);
-> +	ASSERT_OK(err, "run task_main");
-> +	ASSERT_OK(opts.retval, "task_main retval");
-> +
-> +	ASSERT_EQ(skel->bss->test_value1, tid + 0, "tld_get_data value1");
-> +	ASSERT_EQ(skel->bss->test_value2.a, tid + 1, "tld_get_data value2.a");
-> +	ASSERT_EQ(skel->bss->test_value2.b, tid + 2, "tld_get_data value2.b");
-> +	ASSERT_EQ(skel->bss->test_value2.c, tid + 3, "tld_get_data value2.c");
-> +	ASSERT_EQ(skel->bss->test_value2.d, tid + 4, "tld_get_data value2.d");
-> +	pthread_mutex_unlock(&global_mutex);
-> +
-> +	/* Make sure valueX are indeed local to threads */
-> +	ASSERT_EQ(*value1, tid + 0, "value1");
-> +	ASSERT_EQ(value2->a, tid + 1, "value2.a");
-> +	ASSERT_EQ(value2->b, tid + 2, "value2.b");
-> +	ASSERT_EQ(value2->c, tid + 3, "value2.c");
-> +	ASSERT_EQ(value2->d, tid + 4, "value2.d");
-> +
-> +	*value1 = tid + 4;
-> +	value2->a = tid + 3;
-> +	value2->b = tid + 2;
-> +	value2->c = tid + 1;
-> +	value2->d = tid + 0;
-> +
-> +	/* Run task_main again */
-> +	pthread_mutex_lock(&global_mutex);
-> +	err = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.task_main), &opts);
-> +	ASSERT_OK(err, "run task_main");
-> +	ASSERT_OK(opts.retval, "task_main retval");
-> +
-> +	ASSERT_EQ(skel->bss->test_value1, tid + 4, "tld_get_data value1");
-> +	ASSERT_EQ(skel->bss->test_value2.a, tid + 3, "tld_get_data value2.a");
-> +	ASSERT_EQ(skel->bss->test_value2.b, tid + 2, "tld_get_data value2.b");
-> +	ASSERT_EQ(skel->bss->test_value2.c, tid + 1, "tld_get_data value2.c");
-> +	ASSERT_EQ(skel->bss->test_value2.d, tid + 0, "tld_get_data value2.d");
-> +	pthread_mutex_unlock(&global_mutex);
-> +
-> +	tld_free();
-> +out:
-> +	pthread_exit(NULL);
-> +}
-> +
-> +static void test_task_local_data_basic(void)
-> +{
-> +	struct test_task_local_data *skel;
-> +	pthread_t thread[TEST_BASIC_THREAD_NUM];
-> +	char dummy_key_name[TLD_NAME_LEN];
-> +	tld_key_t key;
-> +	int i, fd, err;
-> +
-> +	reset_tld();
-> +
-> +	ASSERT_OK(pthread_mutex_init(&global_mutex, NULL), "pthread_mutex_init");
-> +
-> +	skel = test_task_local_data__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-> +		return;
-> +
-> +	fd = bpf_map__fd(skel->maps.tld_data_map);
-> +
-> +	tld_keys[0] = tld_create_key(fd, "value1", sizeof(int));
-> +	ASSERT_FALSE(tld_key_is_err(tld_keys[0]), "tld_create_key");
-> +	tld_keys[1] = tld_create_key(fd, "value2", sizeof(struct test_struct));
-> +	ASSERT_FALSE(tld_key_is_err(tld_keys[1]), "tld_create_key");
-> +
-> +	key = tld_create_key(fd, "value_not_exist",
-> +			     PAGE_SIZE - sizeof(int) - sizeof(struct test_struct) + 1);
-> +	ASSERT_EQ(tld_key_err_or_zero(key), -E2BIG, "tld_create_key");
-> +
-> +	key = tld_create_key(fd, "value2", sizeof(struct test_struct));
-> +	ASSERT_EQ(tld_key_err_or_zero(key), -EEXIST, "tld_create_key");
-> +
-> +	for (i = 2; i < TLD_DATA_CNT; i++) {
-> +		snprintf(dummy_key_name, TLD_NAME_LEN, "dummy_value%d", i);
-> +		tld_keys[i] = tld_create_key(fd, dummy_key_name, sizeof(int));
-> +		ASSERT_FALSE(tld_key_is_err(tld_keys[i]), "tld_create_key");
-> +	}
-> +
-> +	key = tld_create_key(fd, "value_not_exist", sizeof(struct test_struct));
-> +	ASSERT_EQ(tld_key_err_or_zero(key), -ENOSPC, "tld_create_key");
-> +
-> +	for (i = 0; i < TEST_BASIC_THREAD_NUM; i++) {
-> +		err = pthread_create(&thread[i], NULL, test_task_local_data_basic_thread, skel);
-> +		if (!ASSERT_OK(err, "pthread_create"))
-> +			goto out;
-> +	}
-> +
-> +out:
-> +	for (i = 0; i < TEST_BASIC_THREAD_NUM; i++)
-> +		pthread_join(thread[i], NULL);
-> +}
-> +
-> +void test_task_local_data(void)
-> +{
-> +	if (test__start_subtest("task_local_data_basic"))
-> +		test_task_local_data_basic();
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/test_task_local_data.c b/tools/testing/selftests/bpf/progs/test_task_local_data.c
-> new file mode 100644
-> index 000000000000..4cf0630b19bd
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_task_local_data.c
-> @@ -0,0 +1,81 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <vmlinux.h>
-> +#include <errno.h>
-> +#include <bpf/bpf_helpers.h>
-> +
-> +#include "task_local_data.bpf.h"
-> +
-> +struct tld_keys {
-> +	tld_key_t value1;
-> +	tld_key_t value2;
-> +	tld_key_t value_not_exist;
-> +};
-> +
-> +struct test_struct {
-> +	unsigned long a;
-> +	unsigned long b;
-> +	unsigned long c;
-> +	unsigned long d;
-> +};
-> +
-> +int test_value1;
-> +struct test_struct test_value2;
-> +
-> +SEC("syscall")
-> +int task_init(void *ctx)
-> +{
-> +	struct tld_object tld_obj;
-> +	struct task_struct *task;
-> +	int err;
-> +
-> +	task = bpf_get_current_task_btf();
-> +	err = tld_object_init(task, &tld_obj);
-> +	if (err)
-> +		return 1;
-> +
-> +	if (!tld_fetch_key(&tld_obj, "value1", value1))
-> +		return 2;
-> +
-> +	if (!tld_fetch_key(&tld_obj, "value2", value2))
-> +		return 3;
-> +
-> +	if (tld_fetch_key(&tld_obj, "value_not_exist", value_not_exist))
-> +		return 6;
-> +
-> +	return 0;
-> +}
-> +
-> +SEC("syscall")
-> +int task_main(void *ctx)
-> +{
-> +	struct tld_object tld_obj;
-> +	struct test_struct *struct_p;
-> +	struct task_struct *task;
-> +	int err, *int_p;
-> +
-> +	task = bpf_get_current_task_btf();
-> +	err = tld_object_init(task, &tld_obj);
-> +	if (err)
-> +		return 1;
-> +
-> +	int_p = tld_get_data(&tld_obj, value1, sizeof(int));
-> +	if (int_p)
-> +		test_value1 = *int_p;
-> +	else
-> +		return 2;
-> +
-> +	struct_p = tld_get_data(&tld_obj, value2, sizeof(struct test_struct));
-> +	if (struct_p)
-> +		test_value2 = *struct_p;
-> +	else
-> +		return 3;
-> +
-> +	int_p = tld_get_data(&tld_obj, value_not_exist, sizeof(int));
-> +	if (int_p)
-> +		return 4;
-> +
-> +	return 0;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> -- 
-> 2.47.1
+On 21/05/2025 00:18, Martin KaFai Lau wrote:
+> On 5/19/25 3:04 AM, Matthieu Baerts wrote:
+>>>> +SEC("cgroup/getsockopt")
+>>>> +int iters_subflow(struct bpf_sockopt *ctx)
+>>>> +{
+>>>> +    struct mptcp_subflow_context *subflow;
+>>>> +    struct bpf_sock *sk = ctx->sk;
+>>>> +    struct sock *ssk = NULL;
+>>>> +    struct mptcp_sock *msk;
+>>>> +    int local_ids = 0;
+>>>> +
+>>>> +    if (ctx->level != SOL_TCP || ctx->optname != TCP_IS_MPTCP)
+>>>> +        return 1;
+>>>> +
+>>>> +    msk = bpf_core_cast(sk, struct mptcp_sock);
+>>>> +    if (!msk || msk->pm.server_side || !msk->pm.subflows)
+>>>> +        return 1;
+>>>> +
+>>>> +    bpf_for_each(mptcp_subflow, subflow, (struct sock *)sk) {
+>>>> +        /* Here MPTCP-specific packet scheduler kfunc can be called:
+>>>> +         * this test is not doing anything really useful, only to
+>>>
+>>> Lets fold the bpf_iter_mptcp_subflow addition into the future
+>>> "mptcp_sched_ops" set (the github link that you mentioned in patch 2).
+>>> Post them as one set to have a more practical example.
+>>
+>> Thank you for this suggestion. We can delay that if needed.
+>>
+>> Note that we have two struct_ops in preparation: mptcp_sched_ops and
+>> mptcp_pm_ops. We don't know which one will be ready first. They are both
+>> "blocked" by internal API modifications we would like to do to ease the
+>> maintenance later before "exposing" such API's via BPF. That's why we
+>> suggested to upstream this common part first as it is ready. But we can
+>> of course wait if you prefer.
 > 
+> This set is useful for discussing the questions you raised in patch 2.
+> 
+> I still don't see it useful to upstream patch 2 alone. The existing
+> selftests/bpf/progs/mptcp_subflow.c has already shown a way to do
+> similar iteration in SEC("cgroup/getsockopt") without patch 2.
+> 
+> I would prefer to wait for a fuller picture on the main struct_ops use
+> case first to ensure that we didn't overlook things. iiuc, improving the
+> iteration in SEC("cgroup/getsockopt") is not the main objective.
+
+I understand, that makes sense. When the rest will be ready, we will
+upstream patches from this series, except this one ("useless" selftest),
+and restricting bpf_iter_mptcp_subflow_* and other new kfuncs to
+BPF_PROG_TYPE_STRUCT_OPS only. So not to BPF_PROG_TYPE_CGROUP_SOCKOPT
+any more which was only needed for this new test. I don't think this
+program type requires access to these new kfunc for useful use-cases.
+This can be changed later if required anyway.
+
+>>>> +         * verify the iteration works.
+>>>> +         */
+>>>> +
+>>>> +        local_ids += subflow->subflow_id;
+>>>> +
+>>>> +        /* only to check the following helper works */
+>>>> +        ssk = mptcp_subflow_tcp_sock(subflow);
+>>>> +    }
+>>>> +
+>>>> +    if (!ssk)
+>>>> +        goto out;
+>>>> +
+>>>> +    /* assert: if not OK, something wrong on the kernel side */
+>>>> +    if (ssk->sk_dport != ((struct sock *)msk)->sk_dport)
+>>>> +        goto out;
+>>>> +
+>>>> +    /* only to check the following kfunc works */
+>>>> +    subflow = bpf_mptcp_subflow_ctx(ssk);
+>>>
+>>> bpf_core_cast should be as good instead of adding a new
+>>> bpf_mptcp_subflow_ctx() kfunc, so patch 1 should not be needed.
+>>
+>> OK, indeed, in this series we don't need it. We will need it later to
+>> modify some fields from the "subflow" structure directly. We can do the
+> 
+> The "ssk" here is not a trusted pointer. Note that in patch 1, the kfunc
+> bpf_mptcp_subflow_ctx() does not specify KF_TRUSTED_ARGS. I suspect it
+> should be KF_TRUSTED_ARGS based on what you described here.
+
+Good point, I think this flag is indeed missing.
+
+Cheers,
+Matt
+-- 
+Sponsored by the NGI0 Core fund.
+
 
