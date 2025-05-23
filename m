@@ -1,145 +1,187 @@
-Return-Path: <bpf+bounces-58850-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58851-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F718AC28B0
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 19:33:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9596DAC28BE
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 19:34:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 57E0C1BA62F6
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 17:33:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A78CBA2325A
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 17:34:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D37C0297108;
-	Fri, 23 May 2025 17:33:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F1A429898C;
+	Fri, 23 May 2025 17:34:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B5nNNYdV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ljrsEygJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC73481749;
-	Fri, 23 May 2025 17:33:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87992298271
+	for <bpf@vger.kernel.org>; Fri, 23 May 2025 17:34:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748021602; cv=none; b=UYdsj58/Qd/kJMYKZfsGSGVK/MPYmqch6fxbgzRsslw0bsjyKlcJNlUe9y7PZJsmGxOLliB6n+odXUCCn6V7XVgz1UON5UFurg7PdUwmKkNCf4+o6vIHLE415QB/lTdD0/5Y0QveawK65yYmg9ARyUcjCAtk2u6/1VGoSv8CNHA=
+	t=1748021666; cv=none; b=NR+udK+M0bliFT5yOJtR6YRH7V1UjFNy7J5CULV8rva9W1BMspVBLk38c2MfDwlRwyVZ15kFAdrW6fudtQ68cqxs0lZjIOCp8518PumgQOavFQKdZI+nm3WCp+hFk7HB+wSLLUWhvbC0dGFqk+URA9F+v18GFpR28QKCe5K0j4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748021602; c=relaxed/simple;
-	bh=8cUmFzXJyLokvGzIcZeJLDKLC2JgEM55P5f9ca4aHrU=;
+	s=arc-20240116; t=1748021666; c=relaxed/simple;
+	bh=+7wR1aOIjJQ1iPUOKO3UqokMMfnNqopbQQ7hiwfN6vM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=t9VXRmjqm7c0hZL7yDsBZVyy+nlze3C9W+jLAkG9MJSontYPwqXU+YlX5MvP6pfLrq50069y1983k9jwsJatvfi7WZ/UfCgBNES0Ft7sJ1fqZT+q6npL1vJSvQEY/WWrGIKwWTtS9FewWNzEElJ/64p1E5qL5Z7v6RMc56crnYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B5nNNYdV; arc=none smtp.client-ip=209.85.128.42
+	 To:Cc:Content-Type; b=LnkkwPorcqVPPHJBkYbxHHafuWHc+oCGTsejPOt2b3qhoeU+4T7Ozlgbwu0IjS6KidhzQevBd/p+NWOYZv7YceSD0h2sPY3yRXJ/yg9c705r1RPx1V2PArqBAwvM63JBz9QHFSAcVFtQ+x0ONKIhjsrTA4JFBu7mfnaXEZAFQow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ljrsEygJ; arc=none smtp.client-ip=209.85.215.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-443a787bd14so8568425e9.1;
-        Fri, 23 May 2025 10:33:20 -0700 (PDT)
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-b1396171fb1so50757a12.2
+        for <bpf@vger.kernel.org>; Fri, 23 May 2025 10:34:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748021599; x=1748626399; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1748021664; x=1748626464; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jLRX0CTtTbvhK3E8TIvdNJVRfccaOySP3rKAzrfL/0A=;
-        b=B5nNNYdVc1gb2sLJwPZqwHENsRJs9iDtfwoQhVp20o+FqCkcJBqTfOxhouaa70KV6z
-         Y4pRIzgjVm4aEFxMEvFcTIzbXtAVzD7zPFL3Ex/3oBMJxyoKy6srKLErb6KgCL+f8uuM
-         SHIBr0mt8UnuJNmqsIdGMj3EKIBlTT/DqGORqTug/Q5+LzQXZH+pztpaekfJvD9/ofBs
-         rnEfGL7iB8tNdyMKG+UjUqRW904NgriGMOCP1YElhYazeC8gsIuxfL5/JHzI1CfP4icr
-         XQNVLvNXhMdkvT6yB9X9vpy6IOCfbz6sHEgzwWUHtBxeokAX7tKYfeQZJ/Z4vQm0edE6
-         r4Kg==
+        bh=uQBogeE8pzxbwI3Vp9b79+QtByQBweZWOgw34mVpx+o=;
+        b=ljrsEygJ4DI/tnZ+swhub/tbiqPHKnypvmdkUwo9xUKS/LMQLic/IUfjwm0tlkgxcQ
+         81pV56FF0Umi1sMDMCn+OTZR8VLfj45Kbs/5NMkbi4cDgR8uUDyQ0962hcGB64YKn+ng
+         r0x4VnWBRvHFfNoHKBm6GpWnn5Bli3K3+tniBk3vapWBNXy0exA43OWEhXFHeZEFo1Nj
+         G5rFjnTIQSIGskn/rpG12P4bjBkgTIk8zj0o8aQUmPyOFX3Xs18jnnU8/CshC0CfZceR
+         YaWp0FUPCg01ePCq5fUnjvZanLwVqOfc+f1/aU/10sN8PEaaQPN0+/sBmDBzUzhHJXnl
+         Jh4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748021599; x=1748626399;
+        d=1e100.net; s=20230601; t=1748021664; x=1748626464;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jLRX0CTtTbvhK3E8TIvdNJVRfccaOySP3rKAzrfL/0A=;
-        b=vsvFEzT8z8BeysVeDeg5etvY/+aIxMTXRjLZJJFKebfpQ/MHidQFswOpeLh8sx7lJ7
-         q7xXMs8y0ZqDVHryUTTytMBSNHxvdQNHocCfikFDWtne6IHVIHSmiLSJCnULhuNIaczR
-         qlg9rAXL9Td5CGqC0m2t20tiERo9FZAB5q6y+hvu9tCG3FUQ3/zFrHgsqPEjJpuKE9Wq
-         CHtLlv9GM9YEqgSANsyTlc73Kr7xDSFvX5VaFO/bwKVGVozc9sbaQTWbgn5TSR0yuCM3
-         9QDV1itonryN2Fx++SalqLaVQYOfevTU38xjkCT652b4r7sXHITA4xV1eCf+axoEPV9o
-         Uxfg==
-X-Forwarded-Encrypted: i=1; AJvYcCUSng43aNe7Fmx269T6aTpXcDI7SYL4DvvVWfuegcC+KQ8vVYqwFcnyFdAUj2oWfK9bGaY=@vger.kernel.org, AJvYcCXhBdzN5AYoFygxPGMvqRm/x+wqfiTtzHNbJzOTVQ5Um00IS9xDzvastHLKHdb8iOIxLmxD09iPfg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzrGU1Rm4qulKzmrZj/yMnlpM21Eobu8RXKYO2VSws09x6GLr5H
-	ICiidOBT3RUmhbCkyFZe50W7NClWHo7ClVupcQgLDj/7EmUbTwXuTN26/pEh+1ay5M1VIb7D/wI
-	jyvOOvJfZ/1QQkU8EFvVq4Ic5rjjhEUI=
-X-Gm-Gg: ASbGncvlkGlYjRAeTYyGUqwg5dk81onURfBgoUlSKKjvZ9GTyqp9A5JSSwm6fk7r5CC
-	Nd6jmrEDFTA0G2reHjum041x2bPAeUE8JPibuZYMcNgkPZi+72E+zosumSWjlu3VM9UguZIJ1uY
-	VBoXAu2Fq79r3D51s+zwldMuhpasu8nmRaUrq8Fn1K9PerHHc=
-X-Google-Smtp-Source: AGHT+IE4/AXONzWxzI5HfkceV2q1e460C8kXlT3p5DMKK5UOn1nc8iom9PoP1F0X38YW5sK59NOeX3TSl0gwBHiL4Hs=
-X-Received: by 2002:a05:6000:2289:b0:3a3:7bad:2b95 with SMTP id
- ffacd0b85a97d-3a4ca756cc2mr315122f8f.29.1748021598698; Fri, 23 May 2025
- 10:33:18 -0700 (PDT)
+        bh=uQBogeE8pzxbwI3Vp9b79+QtByQBweZWOgw34mVpx+o=;
+        b=NU1GraM4OEHY2tExbVOGOYYMwJ8gYoK9kMLYrMCxc8VTbpFit/8wlCIwGcm1c/xLyn
+         kpmHU32h3NpNepZhiHxNTjlGQFUOWfUPJVhY0iqiiAQVI6jMQ6+F0hmUwJdJqxRsvj04
+         ilnp1sYXiAD6rq6W8sQ2xjtipMNiAAkX9O4ajaCMT42fcFZuDhFNB/mlwjaEXYbxM4Wm
+         9dZ41OfhhnWJHDKq5IR+mzkqmfQK8nFhBMa/NubqKqx6AO9sgw8UhHxmadE4umqRKIRZ
+         sZpLeur4RzRKUVPPY02FgckooXmTjiFaTDFSrSR+NynNMdMCycpizVjYQtL+iJ+26RDf
+         K+Ew==
+X-Gm-Message-State: AOJu0Yw1GB/oq+elCdMroKr73c6vEJBW0rJmnXf326KKlfdpGYYgDSoi
+	NMEt8MSQ7R0ffFPhgu1dmfnE4l1MI9JaphI2HBUbWCYVG6kEOBWrVqsy2BD7Lkjkak5OK7ZRLCw
+	wgYGU/VHFUsQdZREkCV6+WMqGoKCmorQibMnP
+X-Gm-Gg: ASbGncuXghPylo7GhJ06fgZLcD5Zfe9bP7rUtczneh1ZHwsIHzoTI0qPeFN3xAHovze
+	FExZ4px/Qld7tARwqZt3HlWzLyKHmNuqBxiQwNn8FcrGp2U0i9n+eVFYJJMc1l4y934z8rXvtsJ
+	eciDZRFgi8uXW/cg/fGMwe2emnP+sm1MPktRtU8NJorKTQ6Dw=
+X-Google-Smtp-Source: AGHT+IGgu5JPBpuD/z9ZKL6Y385s/6lxISOQbOYhR2MblM5vhLa4Kd+/M+PvcN98gMZQ5rh9nkeT+ffly1NAKclepjM=
+X-Received: by 2002:a17:90b:3c03:b0:310:8d4a:a275 with SMTP id
+ 98e67ed59e1d1-310e96e7402mr8042152a91.18.1748021663631; Fri, 23 May 2025
+ 10:34:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250416-btf_inline-v1-0-e4bd2f8adae5@meta.com>
- <d39e456b-20ed-48cf-90c0-c0b0b03dabe6@oracle.com> <09366E0A-0819-4C0A-9179-F40F8F46ECE0@meta.com>
-In-Reply-To: <09366E0A-0819-4C0A-9179-F40F8F46ECE0@meta.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 23 May 2025 10:33:07 -0700
-X-Gm-Features: AX0GCFuGEosiiat32kgEGusi3wy6GBcTkB4BFfF-YRg7AmBMKPHUZlpP5GRRnXE
-Message-ID: <CAADnVQ+SeJfjTRSdz=UYjYNhS9HMDriWfYyd==fLB1XBMSMdxg@mail.gmail.com>
-Subject: Re: [PATCH RFC 0/3] list inline expansions in .BTF.inline
-To: Thierry Treyer <ttreyer@meta.com>
-Cc: Alan Maguire <alan.maguire@oracle.com>, 
-	"dwarves@vger.kernel.org" <dwarves@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
-	"acme@kernel.org" <acme@kernel.org>, "ast@kernel.org" <ast@kernel.org>, Yonghong Song <yhs@meta.com>, 
-	"andrii@kernel.org" <andrii@kernel.org>, "ihor.solodrai@linux.dev" <ihor.solodrai@linux.dev>, 
-	Song Liu <songliubraving@meta.com>, Mykola Lysenko <mykolal@meta.com>, Daniel Xu <dlxu@meta.com>
+References: <20250522062116.1885601-1-tony.ambardar@gmail.com>
+ <CAEf4BzYuVzgDPAPtp6WPshf369dw3unuCruQADZd3DSrSwUNOQ@mail.gmail.com> <aDAcrlDkePRcC7bw@kodidev-ubuntu>
+In-Reply-To: <aDAcrlDkePRcC7bw@kodidev-ubuntu>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 23 May 2025 10:34:11 -0700
+X-Gm-Features: AX0GCFuWQT61oaZRBRCZYJoKvuWIIzCDMJsyvOH9uyxVucw8JFj-2dS-WFkkJKc
+Message-ID: <CAEf4BzazK2OwLPj-mPT6P4V2H+6hD4bi-QxebmhnGEc9UbHcUA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1] libbpf: Fix inheritance of BTF pointer size
+To: Tony Ambardar <tony.ambardar@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 22, 2025 at 10:56=E2=80=AFAM Thierry Treyer <ttreyer@meta.com> =
-wrote:
+On Thu, May 22, 2025 at 11:58=E2=80=AFPM Tony Ambardar <tony.ambardar@gmail=
+.com> wrote:
 >
-> Hello everyone,
+> On Thu, May 22, 2025 at 09:37:39AM -0700, Andrii Nakryiko wrote:
+> > On Wed, May 21, 2025 at 11:21=E2=80=AFPM Tony Ambardar <tony.ambardar@g=
+mail.com> wrote:
+> > >
+> > > Update btf_new_empty() to copy the pointer size from a provided base =
+BTF.
+> > > This ensures split BTF works properly and fixes test failures seen on
+> > > 32-bit targets:
+> > >
+> > >   root@qemu-armhf:/usr/libexec/kselftests-bpf# ./test_progs -a btf_sp=
+lit
+> > >   __test_btf_split:PASS:empty_main_btf 0 nsec
+> > >   __test_btf_split:PASS:main_ptr_sz 0 nsec
+> > >   __test_btf_split:PASS:empty_split_btf 0 nsec
+> > >   __test_btf_split:FAIL:inherit_ptr_sz unexpected inherit_ptr_sz: act=
+ual 4 !=3D expected 8
+> > >   [...]
+> > >   #41/1    btf_split/single_split:FAIL
+> > >
+> >
+> > Hm... can you debug it a little bit, please? I see that
+> > btf__pointer_size() on split BTF will do determine_ptr_size() call,
+> > which will do
+> >
+> > if (btf->base_btf && btf->base_btf->ptr_sz > 0)
+> >     return btf->base_btf->ptr_sz;
+> >
+> > So it looks intentional (though I can't claim I remember much of the
+> > details by now) that we don't proactively cache btf->ptr_sz when
+> > creating a new split BTF, but it should have resolved into base's
+> > pointer size. And if it doesn't, let's try to understand why?
+> >
 >
-> Here are the estimates for the different encoding schemes we discussed:
-> - parameters' location takes ~1MB without de-duplication,
-> - parameters' location shrinks to ~14kB when de-duplicated,
-> - instead of de-duplicating the individual locations,
->   de-duplicating functions' parameter lists yields 187kB of locations dat=
-a.
+> Because ptr_sz of new splits is initialized in btf_new_empty() with
 >
-> We also need to take into account the size of the corresponding funcsec
-> table, which starts at 3.6MB. The full details follows:
+>     btf->ptr_sz =3D sizeof(void *);
 >
->   1) // params_offset points to the first parameter's location
->      struct fn_info { u32 type_id, offset, params_offset; };
->   2) // param_offsets point to each parameters' location
->      struct fn_info { u32 type_id, offset; u16 param_offsets[proto.arglen=
-]; };
->   3) // locations are stored inline, in the funcsec table
->      struct fn_info { u32 type_id, offset; loc inline_locs[proto.arglen];=
- };
+> and base BTF ignored. Thus btf->ptr_sz is non-zero, determine_ptr_size()
+> does not get called from btf__pointer_size(), and tests pass because BPF
+> CI validates only 64-bit targets with no 32-bit coverage.
 >
->   Params encoding             Locations Size   Funcsec Size   Total Size
->   =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->   (1) param list, no dedup         1,017,654      5,467,824    6,485,478
->   (1) param list, w/ dedup           187,379      5,467,824    5,655,203
->   (2) param offsets, w/ dedup         14,526      4,808,838    4,823,364
->   (3) param list inline            1,017,654      3,645,216    4,662,870
+> Even with my patch, the ptr_sz code seems problematic and open to abuse.
+> It appears btf__set_pointer_size() can separately apply different ptr
+> sizes to base and split BTF, and btf__pointer_size() will likewise return
+> them.
+>
+> Thinking out loud, maybe we just set btf->ptr_sz =3D 0 for all splits. Th=
+en
+> make btf__set_pointer_size() recur to update only the ultimate base BTF,
+> and btf__pointer_size() does the same, calling determine_ptr_size() if
+> base BTF ptr_sz =3D=3D 0. That keeps ptr_sz consistent across multiple sp=
+lits
+> I think. Oh, and then add 32-bit and cross-endian CI targets... :-)
+>
+> WDYT?
 
-I feel u16 offset isn't really viable. Sooner or later we'd need to bump it=
-,
-and then we will have a mix of u32 and u16 offsets.
+Yes, that eager btf->ptr_sz assignment in btf_new_empty() looks like a
+bug, as you said, we should keep it at zero and let either user set it
+or it should be inferred from data, eventually.
 
-The main question I have is why funcsec size is bigger for (1) ?
-struct fn_info { u32 type_id, offset, params_offset; };
+As for btf__set_pointer_size(), we either need to recursively set it,
+as you said. Or, alternatively, only allow to set it through split BTF
+if none of base BTFs have it explicitly set already. Not exactly sure
+which semantics makes most sense, but I think we should consider both
+options and pick the best one.
 
-this is fixed size record and the number of them should be the same
-as in (2) and (3), so single u32 params_offset should be smaller
-than u16[arg_cnt], assuming that on average arg_cnt >=3D 2.
-
-Or you meant that average arg_cnt <=3D 1,
-but then the math is suspicious, since struct fn_info should
-be 4-byte aligned as everything in BTF.
-
-Also for (3), if locs are inlined, why "Locations Size" is not zero ?
-Or the math for (3) is actually:
-struct fn_info { u32 type_id, offset } * num_of_funcs ?
+>
+> > > Fixes: ba451366bf44 ("libbpf: Implement basic split BTF support")
+> > > Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
+> > > ---
+> > >  tools/lib/bpf/btf.c | 1 +
+> > >  1 file changed, 1 insertion(+)
+> > >
+> > > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> > > index 8d0d0b645a75..b1977888b35e 100644
+> > > --- a/tools/lib/bpf/btf.c
+> > > +++ b/tools/lib/bpf/btf.c
+> > > @@ -995,6 +995,7 @@ static struct btf *btf_new_empty(struct btf *base=
+_btf)
+> > >
+> > >         if (base_btf) {
+> > >                 btf->base_btf =3D base_btf;
+> > > +               btf->ptr_sz =3D base_btf->ptr_sz;
+> > >                 btf->start_id =3D btf__type_cnt(base_btf);
+> > >                 btf->start_str_off =3D base_btf->hdr->str_len + base_=
+btf->start_str_off;
+> > >                 btf->swapped_endian =3D base_btf->swapped_endian;
+> > > --
+> > > 2.34.1
+> > >
 
