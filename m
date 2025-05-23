@@ -1,32 +1,32 @@
-Return-Path: <bpf+bounces-58798-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58806-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC5AAAC1A66
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 05:26:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57A72AC1A83
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 05:28:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 954791C00CE3
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 03:26:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E425507F48
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 03:28:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F30D1221F02;
-	Fri, 23 May 2025 03:26:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2266425DD07;
+	Fri, 23 May 2025 03:26:29 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A54B422154F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5568221571;
 	Fri, 23 May 2025 03:26:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747970786; cv=none; b=heiywxgJpvEBzHVhmtGoFmDxg8eK78WiY4Jxop5sQ4P8H+lZGUqFPFpMIImTcpnEsglZBzkIR49enq5pI1p53HFr8u99J0rUqlfrnDoaBe9QMXbU3/xMme7JRVT4lO6lmEH44WjFnODzo9GsOmHTpyzUBmCm1cUkhioCbrwe5tk=
+	t=1747970787; cv=none; b=LhBDxnnGnCOZfXNM+kmbkRlX459nlC+caGRiKy06jhuD3l9jdcO1yQdvoo5dDGhYt4fvhCzJ29E/IlXHR5eUAjCZ7qr3R3aI105gk1GIBE6K9yp0h17hTOYtEHkHr1k6PEQMa+4zQd50i/AEz6K1+2RH/pMtKIAokuRybr3ZVtQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747970786; c=relaxed/simple;
-	bh=Nlu+Ye/l2MvdjyqvtqV9kAfumkCJ+PGw/5U4NmeTbnI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=JxITAFQYUcB3pms/aobcDOncSKi3Orn3PPG2220jQuVv/m/5tdta225KzvZfiQ2iJzFhpjzjGO1cYmRkqW/s8q6z/18uLOOmUXS5M5DHAO1NnFIaUdKLlWhSEDT/602j4m12jA+Pn2oVNWTpJKCc/BQUXrXdGfNivJ5kYXuvweY=
+	s=arc-20240116; t=1747970787; c=relaxed/simple;
+	bh=iFnfTWEc7pxfQokROsd8KJwiJS8bB+kZS180YvaOd6c=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=Evc4yHjpGj5jTk/+hL3dKu9HWFVfNaa1Mu9dqQppC6ctu33ZF5uG9lPh62JTpr8oGwIngpMGxt89I9ll5rS5ALIwdTECON65XDhus9/03oFOd5v2ymjTM2Zfl3IX20Q6SwpJ27r3E44uz1ZgEjZsD/WmXqT3d56NvLho/CGsxnI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-681ff7000002311f-93-682feadc559e
+X-AuditID: a67dfc5b-681ff7000002311f-9d-682feadca2ba
 From: Byungchul Park <byungchul@sk.com>
 To: willy@infradead.org,
 	netdev@vger.kernel.org
@@ -62,40 +62,40 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-rdma@vger.kernel.org,
 	bpf@vger.kernel.org,
 	vishal.moola@gmail.com
-Subject: [PATCH 04/18] page_pool: rename __page_pool_alloc_page_order() to __page_pool_alloc_large_netmem()
-Date: Fri, 23 May 2025 12:25:55 +0900
-Message-Id: <20250523032609.16334-5-byungchul@sk.com>
+Subject: [PATCH 05/18] page_pool: use netmem alloc/put APIs in __page_pool_alloc_pages_slow()
+Date: Fri, 23 May 2025 12:25:56 +0900
+Message-Id: <20250523032609.16334-6-byungchul@sk.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20250523032609.16334-1-byungchul@sk.com>
 References: <20250523032609.16334-1-byungchul@sk.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAAzWRa0hTcRjG++9cN1wcpubRqHQQhpE3NN5IQoLgCBFRfVLBRh7dck7ZdM0i
-	cCWUokvKMGzSJO9KR5bpNDFbXivIvMQ0rxP9YKnkmnkLc1bffjzvj4cHXhqTdeMBtEqTxWs1
-	CrWclOCSJa+KExOLYcpws5EBs9BIQsO6AWpmbASY61sQ/Nz4SoGru4+E5xVrGJg/5eHgFjYx
-	mO91UjBdvYBDx71WDJwP+kkoytvC4I6tVgSDLSYCSjarMGjNnaFguN1MwlTjDgEL9iIcBsrq
-	cJg2xUKv5QCsffiOoFtoFcFaYTkJj4YsJMzlTSMYeufE4anRhEDodBCwtW4mY4O45roxEddW
-	NklxFms297I2hCtwDGGctT6f5KyrDylu4ksHyfU/2cK5NptLxBXdXSa5H/PjOLfSOUpyQvMo
-	zn20dFOcy3r4IhMviUnm1So9rw07c1Wi7Bx/Rma+EhtWBAHLRatUARLTLBPFln7eJv6za6NK
-	5GGSCWYdjg3Mwz5MBOty9uEFSEJjzDLBzpu3diWa9mbS2PrK4x4HZ46yPaaxPV/KRLNC4RT5
-	t/MI29DUtZeLmZNs8ZR7L5ftOq9HxilPJ8u4Kba068W/Qf7s21oHXoykFrSvHslUGn26QqWO
-	ClXmaFSG0GsZ6Va0+9vq29sJNrQ6eNmOGBrJvaQ2SZhSRij0upx0O2JpTO4j7VkIVcqkyYqc
-	m7w2I0mbreZ1dnSQxuV+0si1G8kyJlWRxafxfCav/X8V0eKAXFSumlopOyX+3Ra0Ebjfe8d2
-	ATk7kyszBphFd5whvillRnXOWDLpXfKtpFmTEnx6ueHXfaMk+lhmzxUUsmR357YyhedTNX3q
-	REVkSKR/WbTemDp7KDwBgn3fP666lTh7fdyvP+aNSZgLbF/otyb5xAXF6ehhp29N/mjppZGz
-	hBzXKRURIZhWp/gD/TS9x9cCAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAAzWRa0hTcRyG+++cnZ0NB6cldtDoMqhMUTNTfqKUfaj+BGUQFQiiI09tqVM3
-	tZmEmnYTNW+h2KSZ9ykd867ZEO+WYGiWmqkslLDS8pa6rNTo28vzPrxfXpqQlZK2tEodyWnU
-	ihA5JSEl57wSncZmXJSHvz1DoOcrKahY0UHpZKMQ9MZ6BIurH0Sw0NFNQWHBMgH6/iQSlvg1
-	Aqa6zCKYKJkmoeVeAwHmhz0UpCZZCLjdWCaA9vxeIbypTxNC9loxAQ3xkyIYbNZTMF75RwjT
-	bakk9OaVkzCR5gNdBhtYfv0VQQffIIDllHwKsgYMFHxKmkAw0G4m4XFCGgLeNCwEy4qe8pHj
-	2vIRAW7K+yjChuooXFPmgJOHBwhcbXxA4er5TBEee9dC4Z5cC4mbGhcEODVxlsI/pkZJPGca
-	onDh5+8CzNcOkbjP0CE6v91P4h3EhaiiOY3LsUCJ0jT6hAqvE+vmeJ6IR/OiZCSmWeYou7Ba
-	LNjMFHOQHR5eJTazNePKLpi7yWQkoQlmVshO6S0bEk3vYIJZY5HjpkMy+9nOtJEtX8q4s3zK
-	OPVvcw9bUdW6xcWMB5s+vrTFZRvOi7ejonQkMaBtRmStUkeHKlQh7s7aYGWMWqVzvhIWWo02
-	7iu59SujES0Onm5DDI3kVlL7UBelTKiI1saEtiGWJuTW0s5pZ6VMGqSIuclpwgI0USGctg3Z
-	0aR8p/TMZS5QxlxTRHLBHBfOaf63AlpsG48cDQ1xLd6De8ubs+5eai+wmuHKogyPiu08j/ih
-	Kt99z0+0Zth0vUzw6L7jdP/3RXXsyVdefWfdHL/g6c6U9at1Hq0a46Fd2X76WNON3f3+ONne
-	VJNz4fhg3E/fsH4sXgrgn/p71p6yqKYUmW4RprCciHFH9ZjOfP2Abf779Vz/IjmpVSpcHQiN
-	VvEXrVITMboCAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAAzXReUiTcRgHcN+917YcvkypV4OO0SmkGRbPHyJCgT8qI7H+6bKVL240jzZd
+	GgSaRngmTUV00SQ0L5gsc7NEdM6LwpalTTOPeSSmRi6XTsuc5X8fnuPLAw8fF3cQfnx5fBKn
+	jJcqJJSQEM57lh8Zng2UHXXZxKDV11FQu5wCz8dMJGhrGjH4ufKZBoeli4Jn5U4ctO8yCVjS
+	u3CY6rTTMFo5TUDzQyMO9kfdFORlruJw31TFA2tjPgmFrgocjGljNHx4paVgpG6dhGlzHgE9
+	pdUEjOaHQaduOzjfzGFg0Rt54Mx9QoGmT0fBROYoBn3tdgLK0vMx0LfYSFhd1lJhe1FD9SAP
+	NZV+oZHOkIxeVPmjbFsfjgw1WRQyLD6m0fBAM4W6S1YJ1GRy8FBexgKFfkwNEeh7Sz+F9A39
+	BHqrs9DIYdh1nrkkDInhFHI1pwwMvS6UTY7n4ontPinFJRoyDbMy2ZiAzzLB7ODLr7wt52ic
+	hNsUc5C12VZwt32YINZh79qoC/k4s0CyU9rVzQVv5irb21JOuk0w+1nNQC/ttog5zq51NJL/
+	QneztfWtm0EC5gRbMLJEuS3emHn9cYh2h7LMEs326H/9v8KXbauyEQWYSId51GBiebw6TipX
+	BAfIUuPlKQE3E+IM2MZzK++tXTZhi9YoM8bwMYmnyCQMlIlJqVqVGmfGWD4u8RF1TAfIxKIY
+	aepdTpkQrUxWcCoztpNPSHaIjjnvxIiZWGkSd4vjEjnlVpfHF/ilYb6nVkxP1YetKVnR/dfU
+	9kIRUzSdNtn5zXDD1Nv2qWi2k4zMKptPn2EKvcLX1vflj6nWw8/pvcpvP/CpO7NnpvXKYvSB
+	YovAQxlU1mylfxtiu4Nc2i7e6YzqUO3JudDUiQsV27wPhZgvRqGQmYz695LcP5HLEeM2gcYY
+	kZM5eFZCqGTSIH9cqZL+BUzjIB7YAgAA
+X-Brightmail-Tracker: H4sIAAAAAAAAAzXRa0hTcRgG8P47l83R4LSsTgpFg9BJbmmaL2QlSHkoij4EhuBl6aEt56XN
+	ayRoDiyvs0WITZxIOqewmPcStTlvaGaaYmreFYkwr8sblCv69uN9Hp4vLw8TGnEXniI2gVXF
+	ypQiko/zb1/K9Jz8LpWfH/+Mg95cQ0L1dgpUzjQRoDc1INjcmeDChq2bhPIyOwb6Txoctsy7
+	GCx2zXFhumIJh5asRgzmCnpIyNPsYfC0yciBjpJeAgYb8gl4ufsGg8b0GS4Mv9OTMFXzm4Al
+	ax4OvcVVOEznB0CX4TjY+34gsJkbOWDPLSFBN2QgYV4zjWCoYw6H1xn5CMytYwTsbevJABFT
+	V/WVwzQXf+MyBksiU2v0YLLHhjDGYnpOMpb1F1xmcrSFZHqK9nCmuWmDw+RlrpDM2uI4zvxs
+	HSGZ8uVVDmOuG8GZfoONe+dICN8/ilUqkliV9EoEX74wm4vFdzinvCrSEelokMpGTjya8qFz
+	dHbcYZJyo8fGdjCHnSkvemOu++DO52HUCkEv6vc4juAoFUoPtJYRDuPUWVo3OsB1WED50vud
+	DcS/0dN09dv2v0NO1EVaO7VFOiw86Lz/Ms7VIr4BHTIhZ0VsUoxMofSVqKPlqbGKFElkXIwF
+	HfyvIm2/sAltDgdZEcVDosMC9xipXEjIktSpMVZE8zCRs6BzSSIXCqJkqY9ZVVy4KlHJqq3I
+	lYeLTghuBLMRQuqBLIGNZtl4VvU/5fCcXNKR37p3V+DlIrF9Xd2eNVw7v3LqZPDN4g/iqYX7
+	feGeIXZX6a17q5XJNTMXUszoWFvykx5/iWb/Y477w5XmRwHaNBt71XTGDynzw8TSfg9tqHSt
+	9PpsWGnWL2NorUX8rL4vw++cj0ZSP7tc6qOvrQ8rKJzwDnLxawt0K7i77Rl5TYSr5TIvD0yl
+	lv0BG79mfbsCAAA=
 X-CFilter-Loop: Reflected
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -103,37 +103,78 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 
-Now that __page_pool_alloc_page_order() uses netmem alloc/put APIs, not
-page alloc/put APIs, rename it to __page_pool_alloc_large_netmem() to
-reflect what it does.
+Use netmem alloc/put APIs instead of page alloc/put APIs in
+__page_pool_alloc_pages_slow().
+
+While at it, improved some comments.
 
 Signed-off-by: Byungchul Park <byungchul@sk.com>
 ---
- net/core/page_pool.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/core/page_pool.c | 23 ++++++++++++-----------
+ 1 file changed, 12 insertions(+), 11 deletions(-)
 
 diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index 2680d38d3daf..147cefe7a031 100644
+index 147cefe7a031..cec126e85eff 100644
 --- a/net/core/page_pool.c
 +++ b/net/core/page_pool.c
-@@ -518,7 +518,7 @@ static bool page_pool_dma_map(struct page_pool *pool, netmem_ref netmem, gfp_t g
- 	return false;
- }
- 
--static netmem_ref __page_pool_alloc_page_order(struct page_pool *pool,
-+static netmem_ref __page_pool_alloc_large_netmem(struct page_pool *pool,
- 						 gfp_t gfp)
- {
+@@ -551,7 +551,7 @@ static noinline netmem_ref __page_pool_alloc_pages_slow(struct page_pool *pool,
+ 	unsigned int pp_order = pool->p.order;
+ 	bool dma_map = pool->dma_map;
  	netmem_ref netmem;
-@@ -555,7 +555,7 @@ static noinline netmem_ref __page_pool_alloc_pages_slow(struct page_pool *pool,
+-	int i, nr_pages;
++	int i, nr_netmems;
  
  	/* Don't support bulk alloc for high-order pages */
  	if (unlikely(pp_order))
--		return __page_pool_alloc_page_order(pool, gfp);
-+		return __page_pool_alloc_large_netmem(pool, gfp);
- 
- 	/* Unnecessary as alloc cache is empty, but guarantees zero count */
+@@ -561,21 +561,21 @@ static noinline netmem_ref __page_pool_alloc_pages_slow(struct page_pool *pool,
  	if (unlikely(pool->alloc.count > 0))
+ 		return pool->alloc.cache[--pool->alloc.count];
+ 
+-	/* Mark empty alloc.cache slots "empty" for alloc_pages_bulk */
++	/* Mark empty alloc.cache slots "empty" for alloc_netmems_bulk_node() */
+ 	memset(&pool->alloc.cache, 0, sizeof(void *) * bulk);
+ 
+-	nr_pages = alloc_pages_bulk_node(gfp, pool->p.nid, bulk,
+-					 (struct page **)pool->alloc.cache);
+-	if (unlikely(!nr_pages))
++	nr_netmems = alloc_netmems_bulk_node(gfp, pool->p.nid, bulk,
++					   pool->alloc.cache);
++	if (unlikely(!nr_netmems))
+ 		return 0;
+ 
+-	/* Pages have been filled into alloc.cache array, but count is zero and
+-	 * page element have not been (possibly) DMA mapped.
++	/* Netmems have been filled into alloc.cache array, but count is
++	 * zero and elements have not been (possibly) DMA mapped.
+ 	 */
+-	for (i = 0; i < nr_pages; i++) {
++	for (i = 0; i < nr_netmems; i++) {
+ 		netmem = pool->alloc.cache[i];
+ 		if (dma_map && unlikely(!page_pool_dma_map(pool, netmem, gfp))) {
+-			put_page(netmem_to_page(netmem));
++			put_netmem(netmem);
+ 			continue;
+ 		}
+ 
+@@ -587,7 +587,7 @@ static noinline netmem_ref __page_pool_alloc_pages_slow(struct page_pool *pool,
+ 					   pool->pages_state_hold_cnt);
+ 	}
+ 
+-	/* Return last page */
++	/* Return the last netmem */
+ 	if (likely(pool->alloc.count > 0)) {
+ 		netmem = pool->alloc.cache[--pool->alloc.count];
+ 		alloc_stat_inc(pool, slow);
+@@ -595,7 +595,8 @@ static noinline netmem_ref __page_pool_alloc_pages_slow(struct page_pool *pool,
+ 		netmem = 0;
+ 	}
+ 
+-	/* When page just alloc'ed is should/must have refcnt 1. */
++	/* When a netmem has been just allocated, it should/must have
++	 * refcnt 1. */
+ 	return netmem;
+ }
+ 
 -- 
 2.17.1
 
