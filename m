@@ -1,278 +1,147 @@
-Return-Path: <bpf+bounces-58829-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58830-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44934AC21F4
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 13:25:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 068A1AC22AB
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 14:32:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EACFE5067C8
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 11:25:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 174C01BC4AF8
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 12:32:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79DC022D7AA;
-	Fri, 23 May 2025 11:25:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E1BC13FEE;
+	Fri, 23 May 2025 12:32:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="E6sFwf78"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="dtTyykSV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 639F422422E
-	for <bpf@vger.kernel.org>; Fri, 23 May 2025 11:25:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FADAE552;
+	Fri, 23 May 2025 12:32:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747999551; cv=none; b=p9Gh2K+JiYB7cwYl8dveG0tFpA8B13Fbp9jhn/S/Ds3ZqphYjo/WZejKh501vgg8kVDc2giVh8icAEdZH50ueQevWMtj/UswIOoU3YV5rLQ3sk7ttV4KBg1ZVnjdYJe6UCvCiIOqkT2Sx/7zG1EfVmJ8oRJPvhkIa6VH1OQOX3Y=
+	t=1748003523; cv=none; b=GRJfuANkoH5tdyrqlNxq59cEwFlqwBf3Gns7SloyEHrpxwCjc/d6K3HPF3LTpscQS+H3feU0M5zij0C/7CAPJQwmLFLil+ASgbCep6PPaWSH0Hcreb2+kXjnnHfarXzCJITrw+9d3teUASRqFExO4nQB8JzIe9RVBeHnCoRBMgg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747999551; c=relaxed/simple;
-	bh=p8w2tRkEqvevKx4vW7DGJ03RzRtCTsXjUFJc1BYVX5M=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=BLTm/VQhx+96ImbkYRU6+S10IEYEq/bzaznbqxupKOugRgZyVEYlmMGVBg7oP3HXBKaW59LwdY/KhEq3HGMgDVxX/XMvyk0rytxlztUSnTMmmndABb4fYrm7cNj07dT3tsPLsujLd1mGggO66BI0N2b2cg8Cyh6RSOVdLR0oLug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=E6sFwf78; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54N9Iuk0024643;
-	Fri, 23 May 2025 11:25:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=p8w2tR
-	kEqvevKx4vW7DGJ03RzRtCTsXjUFJc1BYVX5M=; b=E6sFwf78VR1vci5Q1X0arr
-	67OUXHHrlGmyj9Tp4VXOHw8Nm/TSWDPnNgjduzDGXzkaCIMndhkinmy4P0mtDNZX
-	+Xq+Y+JessLmvDu1013SBXOerEa9sf7eGPY9ZJAYOLSe+kzaZ6BMYsiNu5iE1XpI
-	3ZbalY8gZZJomG0FN38zFx+dwR42STOUyevfhABrBfF6gk8MWXQyHGioWt74Iu80
-	wJGJywdkQnMvP1i15oMPorbq5K5NFF07SBXeYeiMM37/33484I0oQ6nyE48ikSZL
-	QH+O6gFjIcLxqOYA+hrAdmxIMQFQhdgkIXIZndaGo5R99wCk2yrWQg17MYbs11XA
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46sxhwfd3j-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 May 2025 11:25:35 +0000 (GMT)
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 54NBOcYP022204;
-	Fri, 23 May 2025 11:25:34 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46sxhwfd3h-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 May 2025 11:25:34 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 54NAKJBR031973;
-	Fri, 23 May 2025 11:25:33 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 46rwmqea6e-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 May 2025 11:25:33 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 54NBPRvR35127846
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 23 May 2025 11:25:27 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D047320043;
-	Fri, 23 May 2025 11:25:27 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 1ED9520040;
-	Fri, 23 May 2025 11:25:27 +0000 (GMT)
-Received: from [127.0.0.1] (unknown [9.152.108.100])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 23 May 2025 11:25:27 +0000 (GMT)
-Message-ID: <a8b8b4c9b5485a605437448bd1c548a38dfd1d55.camel@linux.ibm.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix "expression result unused"
- warnings
-From: Ilya Leoshkevich <iii@linux.ibm.com>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Alexei Starovoitov
-	 <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann
- <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf
- <bpf@vger.kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik
- <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>
-Date: Fri, 23 May 2025 12:25:26 +0100
-In-Reply-To: <CAP01T74iix8HvmVYowFyrG98tDRw8JMOck7HQLD57nuo7SyuoA@mail.gmail.com>
-References: <20250508113804.304665-1-iii@linux.ibm.com>
-	 <CAADnVQ+kGcRrLOaA5ic6cYG+1vHJm0bBD1GRfUaYpaOGa3Vx0g@mail.gmail.com>
-	 <15bf9a71b8185006c8d19a3aefb331a2765629c5.camel@linux.ibm.com>
-	 <CAADnVQL6Q+QRv3_JwEd26biwGpFYcwD_=BjBJWLAtpgOP9CKRw@mail.gmail.com>
-	 <7a242102eecdd17b4d35c1e4f7d01ea15cb8066a.camel@linux.ibm.com>
-	 <CAADnVQ+5h9UESAgNA58HEQ-0zwxn=c0+ibH++NF9farR5-JB8g@mail.gmail.com>
-	 <CAP01T74iix8HvmVYowFyrG98tDRw8JMOck7HQLD57nuo7SyuoA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-2.fc40) 
+	s=arc-20240116; t=1748003523; c=relaxed/simple;
+	bh=j0CL94Rb8NLPTthjduF/9Bmuzez0jW0NPtqEk9wPUBI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Pswo0odFB2QdP2BogO4d0RRAitpMVEeEQ9mGGSG24iYGvndxNJbXgzo3smTP2v8TphyPF0Lj9QOwI7Ysz/OqA4CFwCERcGXUm3Li/9RurBQgW48Vp4DuqhZ4Vmtkk5/QIM1G+Kt5+Xd3Hk3axvHmdhz8MmBs5yqVzwL6YRHD6Tw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=dtTyykSV; arc=none smtp.client-ip=213.97.179.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=yO0EwDZrf4fd992J3B8iCK71Ip2ga1Ayg9UxqoNl3Zw=; b=dtTyykSVssYRpd4G7j3B1bGx7I
+	XaQ18MuK8E645S1dcEUB3aD0MCqSWaQrM8s5x4zd7EMH21QPKvZLczSBuupJvoATKwLzkNDz0oKzu
+	zRbXx08nyKMkS4pymGSq4SQkGRV4apCr3ONB78Zr+sphNCIq0b5ob9xUJVBTi4ubC2cBJjSY073Yg
+	TlVq/YRLU9Q8wN57CZXZ59s6qDswZVnBXNVx9kQo/74OSSCd0nasd+9qRZOek6hwqtuzv+2YP6iek
+	fyTrBrCqR79iZ46ueTEXEhkuBrtjifNRI9A58IN0M1VTKXjMtLMZi/CidjNG0DgWI0g/DPPgrACDo
+	Fy4F4v/A==;
+Received: from [223.233.76.245] (helo=[192.168.1.12])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+	id 1uIRZ1-00CB4g-9x; Fri, 23 May 2025 14:31:51 +0200
+Message-ID: <a7c323fe-6d11-4a21-a203-bd60acbfd831@igalia.com>
+Date: Fri, 23 May 2025 18:01:41 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTIzMDA5NyBTYWx0ZWRfX/fZL/WLuN52R OrGm3/N8lTPwXyaBX30Q/fvZd2BJn3zE8zXEHvhBYYHPgGZUMCA6vTK5QaVAoClAv689s9v/5sp V1lQFP+YRuuk41vR4RAyGgvAoBOf7y5/VRLFXgj/wK5TRSmi4iU8SeA4vKKlY4sVPB2BUp4H2vy
- UuVs4uEnuZLMEwt235ttAR9PVrsGhjeaS2aQkiVEEVwuWATj3Kj4qP2nKFQy8iWtmk+pj0kpS50 WQvFzP5sZC6QGPhv4C4iLf3uvvboXG5hcVEcmTquvEQBJ4RFIsYhyzAxgs8gsVg36Zfpshj94Eg EPW/GV2d82ZvdIp0S+BLGBG9RwRN1FvmlFMVCJGsXy8MlikN2Zytqz2CkTwIVerZXYeA3FnndW3
- yzrTsrwj0MB+oirfkZECQ6sQSkyVYklLNQkdVKP8dQKYzQmxwQikum1cGUbFVobLC7U45I47
-X-Proofpoint-GUID: 5Cf7h-nOXiMTyujDDtBU95pk6PU2xExS
-X-Authority-Analysis: v=2.4 cv=O685vA9W c=1 sm=1 tr=0 ts=68305b2f cx=c_pps a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17 a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10 a=pGLkceISAAAA:8 a=VnNF1IyMAAAA:8 a=PX-7xi24AYDY-sIWrJIA:9 a=QEXdDO2ut3YA:10
-X-Proofpoint-ORIG-GUID: DpWY7f0INbtbPSB0zYbYVEUcKgdVjUav
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-05-23_03,2025-05-22_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
- spamscore=0 mlxscore=0 phishscore=0 bulkscore=0 priorityscore=1501
- lowpriorityscore=0 impostorscore=0 clxscore=1015 malwarescore=0
- suspectscore=0 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505160000
- definitions=main-2505230097
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH v4 3/3] exec: Add support for 64 byte 'tsk->comm_ext'
+Content-Language: en-US
+To: Kees Cook <kees@kernel.org>, Bhupesh <bhupesh@igalia.com>
+Cc: akpm@linux-foundation.org, kernel-dev@igalia.com,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org, oliver.sang@intel.com, lkp@intel.com,
+ laoar.shao@gmail.com, pmladek@suse.com, rostedt@goodmis.org,
+ mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
+ alexei.starovoitov@gmail.com, andrii.nakryiko@gmail.com,
+ mirq-linux@rere.qmqm.pl, peterz@infradead.org, willy@infradead.org,
+ david@redhat.com, viro@zeniv.linux.org.uk, ebiederm@xmission.com,
+ brauner@kernel.org, jack@suse.cz, mingo@redhat.com, juri.lelli@redhat.com,
+ bsegall@google.com, mgorman@suse.de, vschneid@redhat.com,
+ linux-trace-kernel@vger.kernel.org
+References: <20250521062337.53262-1-bhupesh@igalia.com>
+ <20250521062337.53262-4-bhupesh@igalia.com>
+ <202505222041.B639D482FB@keescook>
+From: Bhupesh Sharma <bhsharma@igalia.com>
+In-Reply-To: <202505222041.B639D482FB@keescook>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, 2025-05-12 at 15:29 -0400, Kumar Kartikeya Dwivedi wrote:
-> On Mon, 12 May 2025 at 12:41, Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >=20
-> > On Mon, May 12, 2025 at 5:22=E2=80=AFAM Ilya Leoshkevich
-> > <iii@linux.ibm.com> wrote:
-> > >=20
-> > > On Fri, 2025-05-09 at 09:51 -0700, Alexei Starovoitov wrote:
-> > > > On Thu, May 8, 2025 at 12:21=E2=80=AFPM Ilya Leoshkevich
-> > > > <iii@linux.ibm.com>
-> > > > wrote:
-> > > > >=20
-> > > > > On Thu, 2025-05-08 at 11:38 -0700, Alexei Starovoitov wrote:
-> > > > > > On Thu, May 8, 2025 at 4:38=E2=80=AFAM Ilya Leoshkevich
-> > > > > > <iii@linux.ibm.com>
-> > > > > > wrote:
-> > > > > > >=20
-> > > > > > > clang-21 complains about unused expressions in a few
-> > > > > > > progs.
-> > > > > > > Fix by explicitly casting the respective expressions to
-> > > > > > > void.
-> > > > > >=20
-> > > > > > ...
-> > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (val & _Q_LOCKE=
-D_MASK)
-> > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 smp_cond_load_acquire_label(&lock-
-> > > > > > > >locked,
-> > > > > > > !VAL,
-> > > > > > > release_err);
-> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 (void)smp_cond_load_acquire_label(&lock-
-> > > > > > > > locked,
-> > > > > > > !VAL, release_err);
-> > > > > >=20
-> > > > > > Hmm. I'm on clang-21 too and I don't see them.
-> > > > > > What warnings do you see ?
-> > > > >=20
-> > > > > In file included from progs/arena_spin_lock.c:7:
-> > > > > progs/bpf_arena_spin_lock.h:305:1756: error: expression
-> > > > > result
-> > > > > unused
-> > > > > [-Werror,-Wunused-value]
-> > > > > =C2=A0 305 |=C2=A0=C2=A0 ({ typeof(_Generic((*&lock->locked), cha=
-r: (char)0,
-> > > > > unsigned
-> > > > > char : (unsigned char)0, signed char : (signed char)0,
-> > > > > unsigned
-> > > > > short :
-> > > > > (unsigned short)0, signed short : (signed short)0, unsigned
-> > > > > int :
-> > > > > (unsigned int)0, signed int : (signed int)0, unsigned long :
-> > > > > (unsigned
-> > > > > long)0, signed long : (signed long)0, unsigned long long :
-> > > > > (unsigned
-> > > > > long long)0, signed long long : (signed long long)0, default:
-> > > > > (typeof(*&lock->locked))0)) __val =3D ({ typeof(&lock->locked)
-> > > > > __ptr
-> > > > > =3D
-> > > > > (&lock->locked); typeof(_Generic((*(&lock->locked)), char:
-> > > > > (char)0,
-> > > > > unsigned char : (unsigned char)0, signed char : (signed
-> > > > > char)0,
-> > > > > unsigned short : (unsigned short)0, signed short : (signed
-> > > > > short)0,
-> > > > > unsigned int : (unsigned int)0, signed int : (signed int)0,
-> > > > > unsigned
-> > > > > long : (unsigned long)0, signed long : (signed long)0,
-> > > > > unsigned
-> > > > > long
-> > > > > long : (unsigned long long)0, signed long long : (signed long
-> > > > > long)0,
-> > > > > default: (typeof(*(&lock->locked)))0)) VAL; for (;;) { VAL =3D
-> > > > > (typeof(_Generic((*(&lock->locked)), char: (char)0, unsigned
-> > > > > char :
-> > > > > (unsigned char)0, signed char : (signed char)0, unsigned
-> > > > > short :
-> > > > > (unsigned short)0, signed short : (signed short)0, unsigned
-> > > > > int :
-> > > > > (unsigned int)0, signed int : (signed int)0, unsigned long :
-> > > > > (unsigned
-> > > > > long)0, signed long : (signed long)0, unsigned long long :
-> > > > > (unsigned
-> > > > > long long)0, signed long long : (signed long long)0, default:
-> > > > > (typeof(*(&lock->locked)))0)))(*(volatile typeof(*__ptr)
-> > > > > *)&(*__ptr));
-> > > > > if (!VAL) break; ({ __label__ l_break, l_continue; asm
-> > > > > volatile
-> > > > > goto("may_goto %l[l_break]" :::: l_break); goto l_continue;
-> > > > > l_break:
-> > > > > goto release_err; l_continue:; }); ({}); } (typeof(*(&lock-
-> > > > > > locked)))VAL; }); ({ ({ if (!CONFIG_X86_64) ({ unsigned
-> > > > > > long
-> > > > > > __val;
-> > > > > __sync_fetch_and_add(&__val, 0); }); else asm volatile("" :::
-> > > > > "memory"); }); }); (typeof(*(&lock->locked)))__val; });
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
-> > > > > ^=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 ~~~~~
-> > > > > 1 error generated.
-> > > >=20
-> > > > hmm. The error is impossible to read.
-> > > >=20
-> > > > Kumar,
-> > > >=20
-> > > > Do you see a way to silence it differently ?
-> > > >=20
-> > > > Without adding (void)...
-> > > >=20
-> > > > Things like:
-> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bpf_obj_new(..
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (void)bpf_obj_new(..
-> > > >=20
-> > > > are good to fix, and if we could annotate
-> > > > bpf_obj_new_impl kfunc with __must_check we would have done it,
-> > > >=20
-> > > > but
-> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 arch_mcs_spin_lock...
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 (void)arch_mcs_spin_lock...
-> > > >=20
-> > > > is odd.
-> > >=20
-> > > What do you think about moving (void) to the definition of
-> > > arch_mcs_spin_lock_contended_label()? I can send a v2 if this is
-> > > better.
-> >=20
-> > Kumar,
-> >=20
-> > thoughts?
->=20
-> Sorry for the delay, I was afk.
->=20
-> The warning seems a bit aggressive, in the kernel we have users which
-> do and do not use the value and it's fine.
-> I think moving (void) inside the macro is a problem since at least
-> rqspinlock like algorithm would want to inspect the result of the
-> locked bit.
-> No such users exist for now, of course. So maybe we can silence it
-> until we do end up depending on the value.
->=20
-> I will give a try with clang-21, but I think probably (void) in the
-> source is better if we do need to silence it.
+Hi Kees,
 
-Gentle ping.
+Thanks for the review.
 
-This is still an issue with clang version 21.0.0
-(++20250522112647+491619a25003-1~exp1~20250522112819.1465).
+On 5/23/25 9:18 AM, Kees Cook wrote:
+> On Wed, May 21, 2025 at 11:53:37AM +0530, Bhupesh wrote:
+>> Historically due to the 16-byte length of TASK_COMM_LEN, the
+>> users of 'tsk->comm' are restricted to use a fixed-size target
+>> buffer also of TASK_COMM_LEN for 'memcpy()' like use-cases.
+>>
+>> To fix the same, Linus suggested in [1] that we can add the
+>> following union inside 'task_struct':
+>>         union {
+>>                 char    comm[TASK_COMM_LEN];
+>>                 char    comm_ext[TASK_COMM_EXT_LEN];
+>>         };
+> I remain unconvinced that this is at all safe. With the existing
+> memcpy() and so many places using %s and task->comm, this feels very
+> very risky to me.
+>
+> Can we just make it separate, instead of a union? Then we don't have to
+> touch comm at all.
+
+I understand your apprehensions, but I think we have covered _almost_ 
+all the existing use-cases as of now:
+
+1. memcpy() users: Handled by [PATCH 2/3] of this series, where we 
+identify existing users using the following search
+     pattern:
+        $ git grep 'memcpy.*->comm\>'
+
+2. %s usage: I checked this at multiple places and can confirm that %s 
+usage to print out 'tsk->comm' (as a string), get the longer
+     new "extended comm".
+
+3. users who do 'sizeof(->comm)' will continue to get the old value 
+because of the union.
+
+The problem with having two separate comms: tsk->comm and tsk->ext_comm, 
+instead of a union is two fold:
+(a). If we keep two separate statically allocated comms: tsk->comm and 
+tsk->ext_comm in struct task_struct, we need to basically keep 
+supporting backward compatibility / ABI via tsk->comm and ask new 
+user-land users to move to tsk->ext_comm.
+
+(b). If we keep one statically allocated comm: tsk->comm and one dynamically allocated tsk->ext_comm in struct task_struct, then we have the problem of allocating the tsk->ext_comm which _may_ be in the exec()  hot path.
+
+I think the discussion between Linus and Yafang (see [1]), was more towards avoiding the approach in 3(a).
+
+Also we discussed the 3(b) approach, during the review of v2 of this series, where there was a apprehensions around: adding another field to store the task name and allocating tsk->ext_comm dynamically in the exec() hot path (see [2]).
+
+[1]. https://lore.kernel.org/all/CAHk-=wjAmmHUg6vho1KjzQi2=psR30+CogFd4aXrThr2gsiS4g@mail.gmail.com/
+[2]. https://lore.kernel.org/lkml/CALOAHbB51b-reG6+ypr43sBJ-QpQhF39r5WPjuEp5rgabgRmoA@mail.gmail.com/
+
+Please let me know your views.
+
+Thanks,
+Bhupesh
+
+>> and then modify '__set_task_comm()' to pass 'tsk->comm_ext'
+>> to the existing users.
+> We can use set_task_comm() to set both still...
+>
+
 
