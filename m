@@ -1,92 +1,119 @@
-Return-Path: <bpf+bounces-58837-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58838-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EC1DAC2609
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 17:08:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 696B0AC2700
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 18:00:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E18B7AE03A
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 15:07:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 01A927B3966
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 15:58:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 262A8296711;
-	Fri, 23 May 2025 15:08:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13E7229711E;
+	Fri, 23 May 2025 15:59:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NicA/MyG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 504D35D8F0
-	for <bpf@vger.kernel.org>; Fri, 23 May 2025 15:08:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1A252957B4
+	for <bpf@vger.kernel.org>; Fri, 23 May 2025 15:59:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748012889; cv=none; b=JJANHWzuR64KdadIvOx6KBiou0X68FMLkiKAC+exciKtjTHtgGiqoAj/kk1zqMUV6DonwNDtURR3lg/D+VUUXLD1iM8ZY8V/kKpiiALfIkC4WbNrJwBvE7YVagkzpS8Mzmn42LckDiBDpqcAYbDIpxUxRAviK+b5eQjTGgo8AVo=
+	t=1748015946; cv=none; b=d3h2zU//NsCOA/mvECm1UBe8C6NLtv6wicW2bb6a4Eyug10PvzatlTuqpdw0D90UhyHksGEE2LIUS05tLDU7p2KRXSy3aUo/4eWuN/lgKdU/cIHV+XRmBgyl57nunpzqijbuYqWUSy5maNry0Ry+x2/fvLiPWu6zBeiUr9JtO+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748012889; c=relaxed/simple;
-	bh=i+iXLNvGMTATkR4803QYEOC16erbRJNZXIzx8Xw0HYc=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=A8OHF/uPk6+wRh4EI+3/nWEdnViIG3lqsia+IyORkavQYB8rjO9xoI2eQBKHyhfMAsvgKY8nYyi9XF66g0gNaqdHtcJgbb1BdvOYdqKpF96ZCBagy134d9NaZCutSe8VSxqsOqQ4rEQTBa1H2blrB4ZjkgRXllYxRxs9zOil6LI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3dc62c92d5cso67485465ab.0
-        for <bpf@vger.kernel.org>; Fri, 23 May 2025 08:08:08 -0700 (PDT)
+	s=arc-20240116; t=1748015946; c=relaxed/simple;
+	bh=pBaS7FyIzCs7ytyhnBDghqiMEVDGLsKIQ9n8hGvAW9Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=r3YchDgarQvnsNWNZga/oNdGniloTbYM4kvA7bG1rayk6trgJgVz1OD4aHzZmTMy/VfGembN1YfpX1bP7Y/eYkvdHFdBfr74qDha+gl6zHW2fQ9YMYmx1UeH73RS9KkkZEgyFijbOJzFQXTcRQGlMZUCCQv7+5MQI8WwevVfq60=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NicA/MyG; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-43ce71582e9so77883875e9.1
+        for <bpf@vger.kernel.org>; Fri, 23 May 2025 08:59:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1748015943; x=1748620743; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6LLVYmFHopHFs0zGKxn88y8FkA5pTpDEP6h/IotMOuI=;
+        b=NicA/MyGoe+q8rfNF+8dsHC3Ja8ErhMGYgTPOAFr03epEOJqa9C9vXR6wZx2QTrh/Z
+         OX8x9leHz6SO4ycZns/pAAWjigpeu+/7oePrq2n6s0E3XpQBsFJKBcN/2T6VtCLhtsl+
+         atRA6Pa69O1wZJh5uvoBFL4IvbjUxmbrss8tT/XZcrXef8/9QWaJGsXu2JTp4jdlf6GG
+         BQjFTparkOjDFdxlp5PT+JGAcWFMOHOAQnK+wZy1OzUrAJ1T2D6pq4tHtKn5ars6SU3w
+         7FdMuU384p45DMBt9DP04A4DNKrRQmbYhVh3b3WD78Mv1H9/hs3IKMerZqehosUPqPKK
+         6utQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748012887; x=1748617687;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20230601; t=1748015943; x=1748620743;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cmr5S6Im8u0H817gwM37MBHCKU+4Gc2sIDVkqkOIiuA=;
-        b=EkxDHobi30WYqJ9VU3FsKrfTkNMT3hOPs74EnQYYFHJQKAvQ/OSUxSGC3/wN21mqqU
-         z9Ku6nqEbUIyD5Tx52BBwb3Lmi1vxn0eEzvANb7WjfeemsvuUJuDEgv37MKno2Er2Yk0
-         IxhEs3DZ1gegmao5gguD6Qxh9j0+JAq9z02YZcTKdVBOyKzRqdNUIMn50sy6xz3wvtry
-         0Zw55vajedpbZSANJr+6PtmAIO/HpwIzzG6Z6u+brdqllhUi6A3qn9OetNy02onYXI0P
-         b+LGZ2LMpXkQdcVS9ku05V3KQQFdHqsjtEFxctrgPKolwJdbDxYnjJz9/7R/gJlz3VZN
-         z6ow==
-X-Forwarded-Encrypted: i=1; AJvYcCVMWAitpHl4nFlgsGbv+yZnXOyDOwi4y2tgWGMoKUX6Ztb3iKbvBivT1r0z/VCa4okwxYU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyjiNG71zNwMylqxwx7cLYKKeNQlXPGAkCh0YHD896G5MJ1I5XY
-	yyqDXNVJD8WELN8rlt4gEr0nqbZ5g3AKCnfVoYgcbIGb9rTRvZmRjON94ldvodtA8tFocCgFFiY
-	a68c35Xr5pjAN95B52IcUxrrogbtDOn8WzNx9J74S8hjfj5XTOooXp/Soz4s=
-X-Google-Smtp-Source: AGHT+IHDobLa4xYg9FQCxm1cqLMjYS7GvPxRMFT4ju4YhG6UZLPg2I2+dWkd/7/iXpAed8cH5xLnYDh3fovvkw25t3CkFf3ZLAmr
+        bh=6LLVYmFHopHFs0zGKxn88y8FkA5pTpDEP6h/IotMOuI=;
+        b=UI61kxhDTT6IJIQ2c1Lc7shzMfDiTckIEnuJM2USN+gEQ9KYFweaZX0bi/Xo9sd0lt
+         vPvUsVMSerMEZ8+ZuMlZ/WtpN7tCRsaxWQqYvLN2L+gqtpxvMUSHWSL1PLBW4btDSevO
+         Md1QOv4fbYX278J9VXPjNjDPUexqAdusm/o2voPUkqazbDDQWZGKW+y0hzyWUMhm3w4T
+         grrp4VRztttb+3STphNwHttnQMxjYARu/gyHRMRLqkvAhqrB/5jRS4YmiuX9bwYTknVZ
+         jtS8twjS0eoeoqIrwrXvXaYuB0B5rNuR3S+L7K54fLIojl+CX9KH6hSLPuDps3dPvxJq
+         5guQ==
+X-Gm-Message-State: AOJu0YzSEnXZsoRdV8Zr3K0fBRaRMnwGq0vtveb7SnNhW7uIMOVNZVFh
+	6L8shnvnJZ3ajEdW8gp3kOKMfF+OlvoZl9KiTU0CqgnR4S4TmBjW49+XL03KwfIUNNDpLaiO7/N
+	9hurQ
+X-Gm-Gg: ASbGnctxDeT76+wHg5RkBVeGEeYse7pkQWeclkxLqggnjjxcn4nnYqAWScdwnXk+Jwv
+	LVNwvGA4pnN9XTwr2f5iYBRCsFsTf/Vw/mj1ARt0yZrd+T5h7RGgv6OZSmXT5cebSwq4wLNyWkb
+	5wDYgw0nxv1c0FqHWzeg1sXgBwiXUTtW6sL0hl+TNhNbmxvGeMv4ESEQveil7m8fSu/3i/pN4mJ
+	gjE7rmPt9K1Tt+kRSpf5+nbuvlIZ+NOY8G/sFkaOElu+AWn8ty+tb3IQvgFW7pYao4AJWYw3KIs
+	q/SYqbE+QkgnAxVfnMfzEgn0KPX5b46CHGBY1t3u68rN86juwbGGrPQRvZpADYOUz+4=
+X-Google-Smtp-Source: AGHT+IGsq7ZpK7wS/9JJwrLMcIIrTnDHHQ48kpVOwrW9GI4Be0mwhH+Vc03G+oI7xzkmzzDYUlEZRQ==
+X-Received: by 2002:a05:600c:1f95:b0:442:e03b:589d with SMTP id 5b1f17b1804b1-44b6e85fae2mr40823215e9.24.1748015943013;
+        Fri, 23 May 2025 08:59:03 -0700 (PDT)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-447f73d4aa2sm149955025e9.21.2025.05.23.08.59.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 May 2025 08:59:02 -0700 (PDT)
+Date: Fri, 23 May 2025 18:58:58 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Mykyta Yatsenko <yatsenko@meta.com>
+Cc: bpf@vger.kernel.org
+Subject: [bug report] bpf: Implement dynptr copy kfuncs
+Message-ID: <aDCbQq99EfNDI8xr@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:ca4f:0:b0:3d5:d6ad:286a with SMTP id
- e9e14a558f8ab-3db84313973mr258182195ab.13.1748012887430; Fri, 23 May 2025
- 08:08:07 -0700 (PDT)
-Date: Fri, 23 May 2025 08:08:07 -0700
-In-Reply-To: <634e5312cbaa01a31fe8781167dfb2dc8e932f2a.camel@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68308f57.a70a0220.1765ec.014f.GAE@google.com>
-Subject: Re: [syzbot] [bpf?] WARNING in __bpf_prog_ret0_warn
-From: syzbot <syzbot+0903f6d7f285e41cdf10@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, mannkafai@gmail.com, martin.lau@linux.dev, 
-	sdf@fomichev.me, song@kernel.org, syzkaller-bugs@googlegroups.com, 
-	yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hello,
+Hello Mykyta Yatsenko,
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Commit a498ee7576de ("bpf: Implement dynptr copy kfuncs") from May
+12, 2025 (linux-next), leads to the following Smatch static checker
+warning:
 
-Reported-by: syzbot+0903f6d7f285e41cdf10@syzkaller.appspotmail.com
-Tested-by: syzbot+0903f6d7f285e41cdf10@syzkaller.appspotmail.com
+	kernel/trace/bpf_trace.c:3557 copy_user_data_sleepable()
+	warn: maybe return -EFAULT instead of the bytes remaining?
 
-Tested on:
+kernel/trace/bpf_trace.c
+    3551 static __always_inline int copy_user_data_sleepable(void *dst, const void *unsafe_src,
+    3552                                                     u32 size, struct task_struct *tsk)
+    3553 {
+    3554         int ret;
+    3555 
+    3556         if (!tsk) /* Read from the current task */
+--> 3557                 return copy_from_user(dst, (const void __user *)unsafe_src, size);
 
-commit:         94305e83 Merge tag 'pmdomain-v6.15-rc3' of git://git.k..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=113f45f4580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=89a6bdf3bbc4e852
-dashboard link: https://syzkaller.appspot.com/bug?extid=0903f6d7f285e41cdf10
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=174f45f4580000
+I don't know if it matters what we return here so long as it's non-zero.
+This is probably a fast path so maybe we're returning positives
+intentionally?
 
-Note: testing is done by a robot and is best-effort only.
+    3558 
+    3559         ret = access_process_vm(tsk, (unsigned long)unsafe_src, dst, size, 0);
+    3560         if (ret != size)
+    3561                 return -EFAULT;
+    3562         return 0;
+    3563 }
+
+regards,
+dan carpenter
 
