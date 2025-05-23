@@ -1,142 +1,163 @@
-Return-Path: <bpf+bounces-58846-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58847-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A06AAC285D
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 19:15:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 216F4AC2865
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 19:18:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 996733B8D1D
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 17:14:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7322B176BEC
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 17:17:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 545112980CE;
-	Fri, 23 May 2025 17:15:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 397E4298254;
+	Fri, 23 May 2025 17:17:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="AwgU7xHF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CiEfgbxx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2AAE297B79
-	for <bpf@vger.kernel.org>; Fri, 23 May 2025 17:15:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A8972980BA;
+	Fri, 23 May 2025 17:17:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748020509; cv=none; b=iHZ8WihIqBeyRsEEEgeD2zplPh9j2nA3tjammZdJ79wECs3oXDudGLB46mJ+21AitTLweK3wv/QiuMfqBZxJMAdWnG8VjmGE/LqlG9dQ3AkeU+Izd2WtkyOfsj5O+Bs2dQCzX+HtrwQiDgIormP4gsv5adIcgAZ/kEDmzlzutLg=
+	t=1748020660; cv=none; b=CwVjL19yCD5aq+1CMompi8uljbDMz1/K0D2uHFGf0ewX5NaMvSzuHaTHF6QpBrTwEwmFALAMSlLjt7wDtRNt6ZUbbuyZmFaSqO/LJs1nQplmg0tKaalhKD54te/SzgopEDZXgEgF6q1AOUOjRCbBPLw+DJdbUuObjY+nLmv8Eag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748020509; c=relaxed/simple;
-	bh=IHS8+BmUXeAp3Xzbk8VRC75jhVDLrcvcJDpOGyFT7GU=;
+	s=arc-20240116; t=1748020660; c=relaxed/simple;
+	bh=dXqyC8onlMCGx7bgGvbd6oe6+Yn1lkQ2kVJSZPh8pbw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Prw+Rfo9VlBtuFcAULOo3VKiQZ/gl8qTzMHRFS0cl3WV9Q6lJkdlcpjDUOzVE2PMD4UmejX6K+j+4WMlEiXM5jha6f9cqHb6sB+K2Yjzg4pMDtTifjuHMV558EDhMSsst0mLwDa7dzcOoCCcU1CsZKmMthSIIszO57HHjt89kbc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=AwgU7xHF; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-234050cb45bso9395ad.1
-        for <bpf@vger.kernel.org>; Fri, 23 May 2025 10:15:07 -0700 (PDT)
+	 To:Cc:Content-Type; b=eZD4cZSS/G5UOyRsQ6z1UBcAlvV5giF9jsZ+mCYtDN7ad9hcRM0/UyWVp8Cw6hH3ovB9OQ+MmNGBdHODoNsVU7Pox/p9mic4Pr+qSzxm2WxcITzbqMzrQ7ap1xg1FM3RfXCKjvhoeT5Ha/1zzUqSq3WoywDlmlkXEux3cpPvf5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CiEfgbxx; arc=none smtp.client-ip=209.85.215.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-b13e0471a2dso45311a12.2;
+        Fri, 23 May 2025 10:17:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1748020507; x=1748625307; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1748020658; x=1748625458; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1L0JjzOjlHgjWZPMHxouS8dOF8m0fP7fyoaNhah9J5s=;
-        b=AwgU7xHFPElDMpaAU2nPAe0detPN0TBDBZo9r3J8vgltoaJUD6xbW+C4kcqpRTU/H+
-         6K4rkF4f2uQt5i+JqWLT0ClCJebaZn20/vB9xGle/iNkNyt8XvReWD6cOdoDCAljwm+s
-         NcRAlv24FvVZW04dVKNX2qK5zQsTS1JmpKRoIlu52XbRWD0uUYR7yPdgITxg4iO/0BK4
-         sYe3wfRTiWIb5dvpWnqNJIbDojNAk1GRbc21Gu3uttpmR659UGJjyU0fQ81iQwHyXOBa
-         DHWBDsexEyVggLoH00S2STn56e0Qy27cIdNRoA4D0baHyJ+ETyoVH5ILg01dG+wF63UD
-         oKlQ==
+        bh=6YFTP5lUlE1QjHF8yyWUrq58B97+VhwR7KGRjGcZgPs=;
+        b=CiEfgbxxLiEGfTYPYdI0abWgIyyIvnlGBR26tUHD7itGTrpTuJrFKw4OxkxK+49NJ7
+         /Tl1GEWJm5OeXgVQSkN/plZ1jo05b5FRZjD1zDj1TbQVeRUPUZeZ8Oe+nIo5Ml6LAyGZ
+         LBwAQLEQ/W8LH9dLa+o7owm25QuhpILIDcZW9hnipc9kMk5LqMTEtE5p8VBdXuVRGDeV
+         O19i33bRTm6lGlP4JDMEY4FJIqMWmnmjh6lGSjjMvo2l6Ce3dD/pO3hr2roh8X+cP6Bw
+         jo0GNtF6qTb/1byUxz6aPhT0A2A1pA4G3FaYZg78B9oyDfBpso76pfU2Ql9g+JnVhzYn
+         ybYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748020507; x=1748625307;
+        d=1e100.net; s=20230601; t=1748020658; x=1748625458;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1L0JjzOjlHgjWZPMHxouS8dOF8m0fP7fyoaNhah9J5s=;
-        b=GPspoW5OBsDSi359nLuwzXDtSokFasyAh/ebiggvenehycjZt1Wu+taRk7vRPpViyr
-         gHlE4UVj8O+458gjlSnG6HsIkbLO6IVkoaLpT99EXPNZISmLIHB2wHiooLeVOJkkdoU0
-         M9m1XCXY5ecvOjxDtlbZE73IfN8JEyGYlZ4tNqCfBiIGpaUrHehKtEXFQAZJRvszo33E
-         1VjMi+vcySgTl+GGXyFFmGvJRZjIhe1sD5PCK1426vz75RycTV3t1SnGP3Ws5Vjq389v
-         4riEOqep5foipoNNHoLx275mP1D08vIQ8X59ot8IuzKRz20ImoM7s3MtSJjNn6MSJkBE
-         I1CA==
-X-Forwarded-Encrypted: i=1; AJvYcCXCJs44+4vSt0umvNVwXxRofh+okHIKFWYYO1b3YEmnCN+/zV0V66fdOx81A+rpRrYOxHM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzoIDUF5c2gLY5kbegHuLx5Y5c70xT4FKfs7CIqwfX2qfcIVcE+
-	NSD5WbtpH/8ueVck33cZJRyLgafyjNfv4Jm4jypC4EiGgbWGGeiMOebsmML3SqFd9qt5UGDjcMb
-	BV4VNkbxbkv+lAuz3AUuEmkmXcuu9Iyezhv/DYANA
-X-Gm-Gg: ASbGncsKEcnAZcP0fFzdnIRztNx8KZS0xfWBAJMw/lyk7BQmHO6oqnhRCrUBGc1SlX7
-	U073gZUOBaNwvgWbYKH38nwLMVJSqrciLf84e/2T/O/Pa+RywbdsVafGqS3vcwZJb71398Lxg1g
-	Tsu8EvdsTU5t/v6Avy86OEmoBlG2THg3SCQsad2Zr2fTK59qevL16fypmTbOA8hPtRbD7Luw4gg
-	SErX6pC4Iw0
-X-Google-Smtp-Source: AGHT+IHKY4+eyOTipL+J4QWHEmhi7z98sbn5GuQRI5Ig+KizZC1qpLnfhveOl7CVrrTaKZsQhRy6NnMNBA8jCy7xQ54=
-X-Received: by 2002:a17:903:2348:b0:216:7aaa:4c5f with SMTP id
- d9443c01a7336-233f34df516mr2608055ad.3.1748020506755; Fri, 23 May 2025
- 10:15:06 -0700 (PDT)
+        bh=6YFTP5lUlE1QjHF8yyWUrq58B97+VhwR7KGRjGcZgPs=;
+        b=lpq0EbVHV3QfwuqYbFt7rjPkiQsnjVodiHNsswVrMUsVrBxw99FLb4zlv58a/qjbr8
+         O5P/nY+vlHlg9JgpuAbDR1galzUiumeSR0VQdYus2NbQYi58fT3lIoJScbPLFS5s5oJN
+         +CjQuomD7gJ0PaIuhjXJfXg+AkG1kbpcB5hAjZ6qMiEvw/CGPwdftzaGO0RjboB1G7+g
+         aRxN5NOG1Mzxfr5sYZgG9RK8jPlbyAnH91hIkmQj/s9Wegyni9/45VteNwGyDuNrcCNG
+         8O+VgrwrXuhqmZ9pIjuIUyiqhFeV8OoUKkwJUUKAFO2uDIneKi/oMgKnoEbmA4Q20Mt2
+         U49w==
+X-Forwarded-Encrypted: i=1; AJvYcCUL9+Wkjd9Cae4XpDGOnmaSkG6ImNsOAuBYYnbh+ky/cw1jEu3mZrTQ61bfCTl+OR5xge6ekk7YM4B9w6IE@vger.kernel.org, AJvYcCXrM0ux8Xly69HAWmThe36ngcLRhGv4yPz5Fl9IDzWsyb3R0PRdj32klMYDFHS9tV/GlWQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyEEL6hwcoCdoydEe6dAd0mf0M27Ey0tlOSIYVP9+zrs1EcMId8
+	+HjsKko22ctuZudxKLy8NmNdoRgyx7gP9p2mhmV7YR0JIPZzVTpXIxDGmwid4lZhBVjFz3wDUmQ
+	jcdACrgsMFVdoXsNkqM4mBs/Xm1qsQBE=
+X-Gm-Gg: ASbGncuJYBJLIkmHQSKmlPONDb+epl40shauiZe6VHXUhNc5x99vy4oBCVONGzQEl5Z
+	vt++ftBAQgy0I4fX4Cbac3BrBHB/X2HMC4KAilJKvI7p3Kka3V9ipVlLxMy3iAC7u7eumYR8Wed
+	nelm7ujTseKdxgP6fnTlFtkAfDycNTzC95yp/srxMOi4DFr5hNTBafDUnejQ==
+X-Google-Smtp-Source: AGHT+IHxnUGtdhm0ZP99cQHtnMkhM1UZm0zCWjs0mx/nTwYTlO/TXJHnxSx4FYWEjrKj3bzbamrBih5AuADjXyO3I+Y=
+X-Received: by 2002:a17:90b:134b:b0:301:1bce:c26f with SMTP id
+ 98e67ed59e1d1-30e830c7a7cmr37275562a91.3.1748020658522; Fri, 23 May 2025
+ 10:17:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250523032609.16334-1-byungchul@sk.com> <20250523032609.16334-15-byungchul@sk.com>
-In-Reply-To: <20250523032609.16334-15-byungchul@sk.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Fri, 23 May 2025 10:14:54 -0700
-X-Gm-Features: AX0GCFuS-_ZvIZXs7vWDJYGmbnFNShYZqaEghvfevVpzOFymPJ1-gQ7S9gnP9aI
-Message-ID: <CAHS8izMRDixoLC5p1+h4oxrfVvErXcokR6qC_zuOqBredBBMbA@mail.gmail.com>
-Subject: Re: [PATCH 14/18] netmem: use _Generic to cover const casting for page_to_netmem()
-To: Byungchul Park <byungchul@sk.com>
-Cc: willy@infradead.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, kernel_team@skhynix.com, kuba@kernel.org, 
-	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org, 
-	akpm@linux-foundation.org, davem@davemloft.net, john.fastabend@gmail.com, 
-	andrew+netdev@lunn.ch, asml.silence@gmail.com, toke@redhat.com, 
-	tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com, 
-	leon@kernel.org, ast@kernel.org, daniel@iogearbox.net, david@redhat.com, 
-	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz, 
-	rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org, 
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com
+References: <20250515064800.2201498-1-senozhatsky@chromium.org>
+ <CAEf4BzYTiPuOUbQgkNvT2haAupeep79q0pVu=fcD5fEgnAjR_A@mail.gmail.com> <z4gvqyk3ktqhd4wmi7ju3qw67c56brf5klxcer3vqmp3v6sujn@2xq7j3ji4kic>
+In-Reply-To: <z4gvqyk3ktqhd4wmi7ju3qw67c56brf5klxcer3vqmp3v6sujn@2xq7j3ji4kic>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 23 May 2025 10:17:25 -0700
+X-Gm-Features: AX0GCFsaeoqPTWi3rJBb3CU87mJdvE_ZJLIUN_YDjWlkSxqikPbDITrdaOUf1WI
+Message-ID: <CAEf4BzZ_5+717wK7g-3zuB6=DL-yfN6YYX=6RdZNf+DJfnkyhg@mail.gmail.com>
+Subject: Re: [PATCHv2] bpf: add bpf_msleep_interruptible() kfunc
+To: Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Matt Bobrowski <mattbobrowski@google.com>, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 22, 2025 at 8:26=E2=80=AFPM Byungchul Park <byungchul@sk.com> w=
-rote:
+On Fri, May 23, 2025 at 12:23=E2=80=AFAM Sergey Senozhatsky
+<senozhatsky@chromium.org> wrote:
 >
-> The current page_to_netmem() doesn't cover const casting resulting in
-> trying to cast const struct page * to const netmem_ref fails.
+> On (25/05/20 16:26), Andrii Nakryiko wrote:
+> > On Wed, May 14, 2025 at 11:48=E2=80=AFPM Sergey Senozhatsky
+> > <senozhatsky@chromium.org> wrote:
+> > >
+> > > bpf_msleep_interruptible() puts a calling context into an
+> > > interruptible sleep.  This function is expected to be used
+> > > for testing only (perhaps in conjunction with fault-injection)
+> > > to simulate various execution delays or timeouts.
+> > >
+> > > Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> > > ---
+> > >
+> > > v2:
+> > > -- switched to kfunc (Matt)
+> > >
+> > >  kernel/bpf/helpers.c | 7 +++++++
+> > >  1 file changed, 7 insertions(+)
+> > >
+> > > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> > > index fed53da75025..a7404ab3b0b8 100644
+> > > --- a/kernel/bpf/helpers.c
+> > > +++ b/kernel/bpf/helpers.c
+> > > @@ -24,6 +24,7 @@
+> > >  #include <linux/bpf_mem_alloc.h>
+> > >  #include <linux/kasan.h>
+> > >  #include <linux/bpf_verifier.h>
+> > > +#include <linux/delay.h>
+> > >
+> > >  #include "../../lib/kstrtox.h"
+> > >
+> > > @@ -3283,6 +3284,11 @@ __bpf_kfunc void bpf_local_irq_restore(unsigne=
+d long *flags__irq_flag)
+> > >         local_irq_restore(*flags__irq_flag);
+> > >  }
+> > >
+> > > +__bpf_kfunc unsigned long bpf_msleep_interruptible(unsigned int msec=
+s)
+> > > +{
+> > > +       return msleep_interruptible(msecs);
+> > > +}
+> > > +
+> >
+> > What happened to the trying out custom kernel module for
+> > fuzzing/testing use case you have?
 >
-> To cover the case, change page_to_netmem() to use macro and _Generic.
+> Oh, my bad.  I think it wasn't clear to me that this was the final
+> conclusion, it looked to me that the conversation ended up with a
+> number of open questions.
 >
-> Signed-off-by: Byungchul Park <byungchul@sk.com>
+> > I'll repeat my concerns. BPF maps and progs are all interdependent
+> > between each other by global RCU Tasks Trace "domain". Delay one RCU
+> > tasks trace grace period through the use of msleep() will delay
+> > everything BPF-related in the entire kernel.
+> >
+> > Until we have some way to give some of BPF programs and its isolated
+> > BPF maps its own RCU domain, I don't think we should allow arbitrary
+> > sleeps inside BPF programs.
+>
+> I see.  How are sleepable BPF programs operate wrt RCU currently?
 
-Reviewed-by: Mina Almasry <almasrymina@google.com>
-
-> ---
->  include/net/netmem.h | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
->
-> diff --git a/include/net/netmem.h b/include/net/netmem.h
-> index 29c005d70c4f..c2eb121181c2 100644
-> --- a/include/net/netmem.h
-> +++ b/include/net/netmem.h
-> @@ -172,10 +172,9 @@ static inline netmem_ref net_iov_to_netmem(struct ne=
-t_iov *niov)
->         return (__force netmem_ref)((unsigned long)niov | NET_IOV);
->  }
->
-> -static inline netmem_ref page_to_netmem(struct page *page)
-> -{
-> -       return (__force netmem_ref)page;
-> -}
-> +#define page_to_netmem(p)      (_Generic((p),                  \
-> +       const struct page *:    (__force const netmem_ref)(p),  \
-> +       struct page *:          (__force netmem_ref)(p)))
->
->  static inline netmem_ref alloc_netmems_node(int nid, gfp_t gfp_mask,
->                 unsigned int order)
-> --
-> 2.17.1
->
-
-
---=20
-Thanks,
-Mina
+What we call "sleepable BPF" is really "faultable BPF", meaning we
+only allow the kernel to handle page faults to bring data into
+physical memory. There is no real sleeping (though userfaultfd is its
+own set of problems when it comes to page fault predictability). So we
+consider this fault delay to be bounded. With msleep() that
+boundedness is explicitly abandoned.
 
