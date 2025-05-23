@@ -1,215 +1,278 @@
-Return-Path: <bpf+bounces-58828-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58829-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AFF5AC21C4
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 13:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 44934AC21F4
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 13:25:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 307E8162D55
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 11:07:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EACFE5067C8
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 11:25:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E538B22D4CE;
-	Fri, 23 May 2025 11:07:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79DC022D7AA;
+	Fri, 23 May 2025 11:25:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qpSIwbb0"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="E6sFwf78"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 590761C8631;
-	Fri, 23 May 2025 11:07:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 639F422422E
+	for <bpf@vger.kernel.org>; Fri, 23 May 2025 11:25:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747998441; cv=none; b=DZEeVvKmEfl4plKe51kf/iBu1F/+Jwi47JB4GV3PtownUeKo3ZsIFxxdaG3edZjC4b9ctfAxPAKnO3KfwW/pT1ciwuzZ6NIpFK6XMwAAteESSXDwFdClHyKrR1Y0CVEy8YssumZVmk+Y8JXzsNP7u6JEECgC7nvxMvhHugupuxo=
+	t=1747999551; cv=none; b=p9Gh2K+JiYB7cwYl8dveG0tFpA8B13Fbp9jhn/S/Ds3ZqphYjo/WZejKh501vgg8kVDc2giVh8icAEdZH50ueQevWMtj/UswIOoU3YV5rLQ3sk7ttV4KBg1ZVnjdYJe6UCvCiIOqkT2Sx/7zG1EfVmJ8oRJPvhkIa6VH1OQOX3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747998441; c=relaxed/simple;
-	bh=ZtulG+GqmTItXJpWf8cI/7ZkLZKWayGN42QGW1nDVfA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Q01qroXWzYAe5BONzS5Cz+HeLATnjNl6yzqLb1vU/th2rv/6pNtxsIrO6ZMFKDVNDmyR4HXGroSF3Ow3N/dFoYLoJI88LAbX+ADCmumRU2yRDFiTnF8deFvcP+tUWcvRADzb4OBiKvF5jHtQ6h5b3O22Y/HkuBBlsg+EUxMEUt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qpSIwbb0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DE0EC4CEE9;
-	Fri, 23 May 2025 11:07:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747998440;
-	bh=ZtulG+GqmTItXJpWf8cI/7ZkLZKWayGN42QGW1nDVfA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=qpSIwbb0KUSAPiEXVz6Eu1qPzh45BAEMErfL5Y8cbZjXSvlYLuPIzr/crAGWSKRqh
-	 kdmbU0wtTS+rbxvMhiEZlWuEOpIc22PYeg3JoD1dJl2wB7IpL4qrHHB1Dr1AbECQE+
-	 KNex+SPzy1+HsM3x37ljDri1pFVk4YU02odvPc5/h2n21fsRt0l9gMxubobFeytHJc
-	 i20O8vkEyJaRb559fVGWXDB/5vP1+qn4YCUUH4QtHQPQSBXaeb5w6VZexPGEnMFxK3
-	 34RML23GZbgJuJYEXEmehD5UUnwR9b+D2hXu/sY2j+1qum992Mnj20g44WSARuJB28
-	 e1ICZQGgx4TDw==
-Message-ID: <f9b1d13c-aa20-4680-849c-535ea7c476a6@kernel.org>
-Date: Fri, 23 May 2025 13:07:10 +0200
+	s=arc-20240116; t=1747999551; c=relaxed/simple;
+	bh=p8w2tRkEqvevKx4vW7DGJ03RzRtCTsXjUFJc1BYVX5M=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=BLTm/VQhx+96ImbkYRU6+S10IEYEq/bzaznbqxupKOugRgZyVEYlmMGVBg7oP3HXBKaW59LwdY/KhEq3HGMgDVxX/XMvyk0rytxlztUSnTMmmndABb4fYrm7cNj07dT3tsPLsujLd1mGggO66BI0N2b2cg8Cyh6RSOVdLR0oLug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=E6sFwf78; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54N9Iuk0024643;
+	Fri, 23 May 2025 11:25:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=p8w2tR
+	kEqvevKx4vW7DGJ03RzRtCTsXjUFJc1BYVX5M=; b=E6sFwf78VR1vci5Q1X0arr
+	67OUXHHrlGmyj9Tp4VXOHw8Nm/TSWDPnNgjduzDGXzkaCIMndhkinmy4P0mtDNZX
+	+Xq+Y+JessLmvDu1013SBXOerEa9sf7eGPY9ZJAYOLSe+kzaZ6BMYsiNu5iE1XpI
+	3ZbalY8gZZJomG0FN38zFx+dwR42STOUyevfhABrBfF6gk8MWXQyHGioWt74Iu80
+	wJGJywdkQnMvP1i15oMPorbq5K5NFF07SBXeYeiMM37/33484I0oQ6nyE48ikSZL
+	QH+O6gFjIcLxqOYA+hrAdmxIMQFQhdgkIXIZndaGo5R99wCk2yrWQg17MYbs11XA
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46sxhwfd3j-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 23 May 2025 11:25:35 +0000 (GMT)
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 54NBOcYP022204;
+	Fri, 23 May 2025 11:25:34 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46sxhwfd3h-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 23 May 2025 11:25:34 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 54NAKJBR031973;
+	Fri, 23 May 2025 11:25:33 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 46rwmqea6e-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 23 May 2025 11:25:33 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 54NBPRvR35127846
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 23 May 2025 11:25:27 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D047320043;
+	Fri, 23 May 2025 11:25:27 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 1ED9520040;
+	Fri, 23 May 2025 11:25:27 +0000 (GMT)
+Received: from [127.0.0.1] (unknown [9.152.108.100])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 23 May 2025 11:25:27 +0000 (GMT)
+Message-ID: <a8b8b4c9b5485a605437448bd1c548a38dfd1d55.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix "expression result unused"
+ warnings
+From: Ilya Leoshkevich <iii@linux.ibm.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Alexei Starovoitov
+	 <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann
+ <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf
+ <bpf@vger.kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik
+ <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>
+Date: Fri, 23 May 2025 12:25:26 +0100
+In-Reply-To: <CAP01T74iix8HvmVYowFyrG98tDRw8JMOck7HQLD57nuo7SyuoA@mail.gmail.com>
+References: <20250508113804.304665-1-iii@linux.ibm.com>
+	 <CAADnVQ+kGcRrLOaA5ic6cYG+1vHJm0bBD1GRfUaYpaOGa3Vx0g@mail.gmail.com>
+	 <15bf9a71b8185006c8d19a3aefb331a2765629c5.camel@linux.ibm.com>
+	 <CAADnVQL6Q+QRv3_JwEd26biwGpFYcwD_=BjBJWLAtpgOP9CKRw@mail.gmail.com>
+	 <7a242102eecdd17b4d35c1e4f7d01ea15cb8066a.camel@linux.ibm.com>
+	 <CAADnVQ+5h9UESAgNA58HEQ-0zwxn=c0+ibH++NF9farR5-JB8g@mail.gmail.com>
+	 <CAP01T74iix8HvmVYowFyrG98tDRw8JMOck7HQLD57nuo7SyuoA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-2.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: [PATCH bpf-next/net v3 4/5] selftests/bpf: Add mptcp_subflow
- bpf_iter subtest
-Content-Language: en-GB, fr-BE
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>,
- Geliang Tang <geliang@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20250320-bpf-next-net-mptcp-bpf_iter-subflows-v3-0-9abd22c2a7fd@kernel.org>
- <20250320-bpf-next-net-mptcp-bpf_iter-subflows-v3-4-9abd22c2a7fd@kernel.org>
- <98348a02-9f8b-4648-8abe-e6b802ae9a63@linux.dev>
- <1621611c-8cf1-4281-986f-cfd8cc0e70f0@kernel.org>
- <0364f8d2-9aa5-4dc0-b7f6-1c8572932814@linux.dev>
-From: Matthieu Baerts <matttbe@kernel.org>
-Autocrypt: addr=matttbe@kernel.org; keydata=
- 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
- lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
-Organization: NGI0 Core
-In-Reply-To: <0364f8d2-9aa5-4dc0-b7f6-1c8572932814@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTIzMDA5NyBTYWx0ZWRfX/fZL/WLuN52R OrGm3/N8lTPwXyaBX30Q/fvZd2BJn3zE8zXEHvhBYYHPgGZUMCA6vTK5QaVAoClAv689s9v/5sp V1lQFP+YRuuk41vR4RAyGgvAoBOf7y5/VRLFXgj/wK5TRSmi4iU8SeA4vKKlY4sVPB2BUp4H2vy
+ UuVs4uEnuZLMEwt235ttAR9PVrsGhjeaS2aQkiVEEVwuWATj3Kj4qP2nKFQy8iWtmk+pj0kpS50 WQvFzP5sZC6QGPhv4C4iLf3uvvboXG5hcVEcmTquvEQBJ4RFIsYhyzAxgs8gsVg36Zfpshj94Eg EPW/GV2d82ZvdIp0S+BLGBG9RwRN1FvmlFMVCJGsXy8MlikN2Zytqz2CkTwIVerZXYeA3FnndW3
+ yzrTsrwj0MB+oirfkZECQ6sQSkyVYklLNQkdVKP8dQKYzQmxwQikum1cGUbFVobLC7U45I47
+X-Proofpoint-GUID: 5Cf7h-nOXiMTyujDDtBU95pk6PU2xExS
+X-Authority-Analysis: v=2.4 cv=O685vA9W c=1 sm=1 tr=0 ts=68305b2f cx=c_pps a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17 a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10 a=pGLkceISAAAA:8 a=VnNF1IyMAAAA:8 a=PX-7xi24AYDY-sIWrJIA:9 a=QEXdDO2ut3YA:10
+X-Proofpoint-ORIG-GUID: DpWY7f0INbtbPSB0zYbYVEUcKgdVjUav
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-05-23_03,2025-05-22_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
+ spamscore=0 mlxscore=0 phishscore=0 bulkscore=0 priorityscore=1501
+ lowpriorityscore=0 impostorscore=0 clxscore=1015 malwarescore=0
+ suspectscore=0 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505160000
+ definitions=main-2505230097
 
-Hi Martin,
+On Mon, 2025-05-12 at 15:29 -0400, Kumar Kartikeya Dwivedi wrote:
+> On Mon, 12 May 2025 at 12:41, Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >=20
+> > On Mon, May 12, 2025 at 5:22=E2=80=AFAM Ilya Leoshkevich
+> > <iii@linux.ibm.com> wrote:
+> > >=20
+> > > On Fri, 2025-05-09 at 09:51 -0700, Alexei Starovoitov wrote:
+> > > > On Thu, May 8, 2025 at 12:21=E2=80=AFPM Ilya Leoshkevich
+> > > > <iii@linux.ibm.com>
+> > > > wrote:
+> > > > >=20
+> > > > > On Thu, 2025-05-08 at 11:38 -0700, Alexei Starovoitov wrote:
+> > > > > > On Thu, May 8, 2025 at 4:38=E2=80=AFAM Ilya Leoshkevich
+> > > > > > <iii@linux.ibm.com>
+> > > > > > wrote:
+> > > > > > >=20
+> > > > > > > clang-21 complains about unused expressions in a few
+> > > > > > > progs.
+> > > > > > > Fix by explicitly casting the respective expressions to
+> > > > > > > void.
+> > > > > >=20
+> > > > > > ...
+> > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (val & _Q_LOCKE=
+D_MASK)
+> > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 smp_cond_load_acquire_label(&lock-
+> > > > > > > >locked,
+> > > > > > > !VAL,
+> > > > > > > release_err);
+> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 (void)smp_cond_load_acquire_label(&lock-
+> > > > > > > > locked,
+> > > > > > > !VAL, release_err);
+> > > > > >=20
+> > > > > > Hmm. I'm on clang-21 too and I don't see them.
+> > > > > > What warnings do you see ?
+> > > > >=20
+> > > > > In file included from progs/arena_spin_lock.c:7:
+> > > > > progs/bpf_arena_spin_lock.h:305:1756: error: expression
+> > > > > result
+> > > > > unused
+> > > > > [-Werror,-Wunused-value]
+> > > > > =C2=A0 305 |=C2=A0=C2=A0 ({ typeof(_Generic((*&lock->locked), cha=
+r: (char)0,
+> > > > > unsigned
+> > > > > char : (unsigned char)0, signed char : (signed char)0,
+> > > > > unsigned
+> > > > > short :
+> > > > > (unsigned short)0, signed short : (signed short)0, unsigned
+> > > > > int :
+> > > > > (unsigned int)0, signed int : (signed int)0, unsigned long :
+> > > > > (unsigned
+> > > > > long)0, signed long : (signed long)0, unsigned long long :
+> > > > > (unsigned
+> > > > > long long)0, signed long long : (signed long long)0, default:
+> > > > > (typeof(*&lock->locked))0)) __val =3D ({ typeof(&lock->locked)
+> > > > > __ptr
+> > > > > =3D
+> > > > > (&lock->locked); typeof(_Generic((*(&lock->locked)), char:
+> > > > > (char)0,
+> > > > > unsigned char : (unsigned char)0, signed char : (signed
+> > > > > char)0,
+> > > > > unsigned short : (unsigned short)0, signed short : (signed
+> > > > > short)0,
+> > > > > unsigned int : (unsigned int)0, signed int : (signed int)0,
+> > > > > unsigned
+> > > > > long : (unsigned long)0, signed long : (signed long)0,
+> > > > > unsigned
+> > > > > long
+> > > > > long : (unsigned long long)0, signed long long : (signed long
+> > > > > long)0,
+> > > > > default: (typeof(*(&lock->locked)))0)) VAL; for (;;) { VAL =3D
+> > > > > (typeof(_Generic((*(&lock->locked)), char: (char)0, unsigned
+> > > > > char :
+> > > > > (unsigned char)0, signed char : (signed char)0, unsigned
+> > > > > short :
+> > > > > (unsigned short)0, signed short : (signed short)0, unsigned
+> > > > > int :
+> > > > > (unsigned int)0, signed int : (signed int)0, unsigned long :
+> > > > > (unsigned
+> > > > > long)0, signed long : (signed long)0, unsigned long long :
+> > > > > (unsigned
+> > > > > long long)0, signed long long : (signed long long)0, default:
+> > > > > (typeof(*(&lock->locked)))0)))(*(volatile typeof(*__ptr)
+> > > > > *)&(*__ptr));
+> > > > > if (!VAL) break; ({ __label__ l_break, l_continue; asm
+> > > > > volatile
+> > > > > goto("may_goto %l[l_break]" :::: l_break); goto l_continue;
+> > > > > l_break:
+> > > > > goto release_err; l_continue:; }); ({}); } (typeof(*(&lock-
+> > > > > > locked)))VAL; }); ({ ({ if (!CONFIG_X86_64) ({ unsigned
+> > > > > > long
+> > > > > > __val;
+> > > > > __sync_fetch_and_add(&__val, 0); }); else asm volatile("" :::
+> > > > > "memory"); }); }); (typeof(*(&lock->locked)))__val; });
+> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
+> > > > > ^=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 ~~~~~
+> > > > > 1 error generated.
+> > > >=20
+> > > > hmm. The error is impossible to read.
+> > > >=20
+> > > > Kumar,
+> > > >=20
+> > > > Do you see a way to silence it differently ?
+> > > >=20
+> > > > Without adding (void)...
+> > > >=20
+> > > > Things like:
+> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bpf_obj_new(..
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (void)bpf_obj_new(..
+> > > >=20
+> > > > are good to fix, and if we could annotate
+> > > > bpf_obj_new_impl kfunc with __must_check we would have done it,
+> > > >=20
+> > > > but
+> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 arch_mcs_spin_lock...
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 (void)arch_mcs_spin_lock...
+> > > >=20
+> > > > is odd.
+> > >=20
+> > > What do you think about moving (void) to the definition of
+> > > arch_mcs_spin_lock_contended_label()? I can send a v2 if this is
+> > > better.
+> >=20
+> > Kumar,
+> >=20
+> > thoughts?
+>=20
+> Sorry for the delay, I was afk.
+>=20
+> The warning seems a bit aggressive, in the kernel we have users which
+> do and do not use the value and it's fine.
+> I think moving (void) inside the macro is a problem since at least
+> rqspinlock like algorithm would want to inspect the result of the
+> locked bit.
+> No such users exist for now, of course. So maybe we can silence it
+> until we do end up depending on the value.
+>=20
+> I will give a try with clang-21, but I think probably (void) in the
+> source is better if we do need to silence it.
 
-On 21/05/2025 00:18, Martin KaFai Lau wrote:
-> On 5/19/25 3:04 AM, Matthieu Baerts wrote:
->>>> +SEC("cgroup/getsockopt")
->>>> +int iters_subflow(struct bpf_sockopt *ctx)
->>>> +{
->>>> +    struct mptcp_subflow_context *subflow;
->>>> +    struct bpf_sock *sk = ctx->sk;
->>>> +    struct sock *ssk = NULL;
->>>> +    struct mptcp_sock *msk;
->>>> +    int local_ids = 0;
->>>> +
->>>> +    if (ctx->level != SOL_TCP || ctx->optname != TCP_IS_MPTCP)
->>>> +        return 1;
->>>> +
->>>> +    msk = bpf_core_cast(sk, struct mptcp_sock);
->>>> +    if (!msk || msk->pm.server_side || !msk->pm.subflows)
->>>> +        return 1;
->>>> +
->>>> +    bpf_for_each(mptcp_subflow, subflow, (struct sock *)sk) {
->>>> +        /* Here MPTCP-specific packet scheduler kfunc can be called:
->>>> +         * this test is not doing anything really useful, only to
->>>
->>> Lets fold the bpf_iter_mptcp_subflow addition into the future
->>> "mptcp_sched_ops" set (the github link that you mentioned in patch 2).
->>> Post them as one set to have a more practical example.
->>
->> Thank you for this suggestion. We can delay that if needed.
->>
->> Note that we have two struct_ops in preparation: mptcp_sched_ops and
->> mptcp_pm_ops. We don't know which one will be ready first. They are both
->> "blocked" by internal API modifications we would like to do to ease the
->> maintenance later before "exposing" such API's via BPF. That's why we
->> suggested to upstream this common part first as it is ready. But we can
->> of course wait if you prefer.
-> 
-> This set is useful for discussing the questions you raised in patch 2.
-> 
-> I still don't see it useful to upstream patch 2 alone. The existing
-> selftests/bpf/progs/mptcp_subflow.c has already shown a way to do
-> similar iteration in SEC("cgroup/getsockopt") without patch 2.
-> 
-> I would prefer to wait for a fuller picture on the main struct_ops use
-> case first to ensure that we didn't overlook things. iiuc, improving the
-> iteration in SEC("cgroup/getsockopt") is not the main objective.
+Gentle ping.
 
-I understand, that makes sense. When the rest will be ready, we will
-upstream patches from this series, except this one ("useless" selftest),
-and restricting bpf_iter_mptcp_subflow_* and other new kfuncs to
-BPF_PROG_TYPE_STRUCT_OPS only. So not to BPF_PROG_TYPE_CGROUP_SOCKOPT
-any more which was only needed for this new test. I don't think this
-program type requires access to these new kfunc for useful use-cases.
-This can be changed later if required anyway.
-
->>>> +         * verify the iteration works.
->>>> +         */
->>>> +
->>>> +        local_ids += subflow->subflow_id;
->>>> +
->>>> +        /* only to check the following helper works */
->>>> +        ssk = mptcp_subflow_tcp_sock(subflow);
->>>> +    }
->>>> +
->>>> +    if (!ssk)
->>>> +        goto out;
->>>> +
->>>> +    /* assert: if not OK, something wrong on the kernel side */
->>>> +    if (ssk->sk_dport != ((struct sock *)msk)->sk_dport)
->>>> +        goto out;
->>>> +
->>>> +    /* only to check the following kfunc works */
->>>> +    subflow = bpf_mptcp_subflow_ctx(ssk);
->>>
->>> bpf_core_cast should be as good instead of adding a new
->>> bpf_mptcp_subflow_ctx() kfunc, so patch 1 should not be needed.
->>
->> OK, indeed, in this series we don't need it. We will need it later to
->> modify some fields from the "subflow" structure directly. We can do the
-> 
-> The "ssk" here is not a trusted pointer. Note that in patch 1, the kfunc
-> bpf_mptcp_subflow_ctx() does not specify KF_TRUSTED_ARGS. I suspect it
-> should be KF_TRUSTED_ARGS based on what you described here.
-
-Good point, I think this flag is indeed missing.
-
-Cheers,
-Matt
--- 
-Sponsored by the NGI0 Core fund.
-
+This is still an issue with clang version 21.0.0
+(++20250522112647+491619a25003-1~exp1~20250522112819.1465).
 
