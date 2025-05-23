@@ -1,229 +1,281 @@
-Return-Path: <bpf+bounces-58834-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58835-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B401AC23AF
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 15:20:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D788AAC2563
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 16:48:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C888D1C066C0
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 13:20:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF87BA4442B
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 14:48:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80B752920BE;
-	Fri, 23 May 2025 13:20:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F221C295DBA;
+	Fri, 23 May 2025 14:48:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mNJCnvPW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AuPfjiUG"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29E31291865
-	for <bpf@vger.kernel.org>; Fri, 23 May 2025 13:20:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B35A0248F63;
+	Fri, 23 May 2025 14:48:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748006412; cv=none; b=FeJE+HsP0OxRwPpcaZRcsJEpUXCAMLbmYsBuEXQpxIBSnaSvpj33Nb+yYITJNiJQjcQlpAGfLRRntf+RhtPScrzXXlOx/df7IE4XOsw1m7Jwlfo8XtGvNMeb+Y+Lhm1KChlXYFqIlRpnIxPKn7xgwzH0/DmMEuHQDhkHNHyO0E4=
+	t=1748011684; cv=none; b=pEWPk/Bzwq61wqyU1p6igZ1qkJuo1b8rH+se6/EXEUV7x81BM3tJ7Z+2AJM3qXaKtw38IVipkDlUsqlrGfX0mT9ZhHHXVq1OUa1J5TjlLO9QRXRXSYCrjLX/fGA32Mbh0o9DpKZ9sbxgxOjtZQlXPG4CjAL+OnmVmef9pX/Yobo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748006412; c=relaxed/simple;
-	bh=iG0pvVHCIniSa6/K288JCYz9/zRHjQOB+W412xcg368=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aQEY7Q+IcJBq275ug/Q9XpBfoIsitufcUx7BQQKIv7loIBH47T4pNVyfkKmHYQSnQ9bI5AJtxnPagirYW9kVGCOd3BXwlpxKbiMBjUjD9KUet6hM3O5CasmnSIpCgOX6/rONWKbyek9JltnfFEapP0HqvER0yZItgdVNh1vp5kg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mNJCnvPW; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1748006408;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TtCaT6fa/kicq1jIlhQVO8eyqlgwQfuRi8HxKyRVUBs=;
-	b=mNJCnvPW0SRYYq9/bPn+7gDbbXwuFmw/XqeoRrlNnuNwxkXrR33Fq+TYBFRRmNNsXbOAMb
-	NMs44y07xpu7A9dMFwAnKRQ4iizu+YN4XjF2lhiOe4vA5b1PXDjlEkowEe4/tGtE5vwvGa
-	kOss1VjTg9bRmXYsUswSwgR1DPKCweE=
-From: Jiayuan Chen <jiayuan.chen@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Jiayuan Chen <jiayuan.chen@linux.dev>,
-	Boris Pismenny <borisp@nvidia.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Ihor Solodrai <isolodrai@meta.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v1 2/2] selftests/bpf: Add test to cover ktls with bpf_msg_pop_data
-Date: Fri, 23 May 2025 21:18:59 +0800
-Message-ID: <20250523131915.19349-3-jiayuan.chen@linux.dev>
-In-Reply-To: <20250523131915.19349-1-jiayuan.chen@linux.dev>
-References: <20250523131915.19349-1-jiayuan.chen@linux.dev>
+	s=arc-20240116; t=1748011684; c=relaxed/simple;
+	bh=V8G69pvd2tNZFLKR7XA9L75+glRFI5zfuV/Bbwk9yh8=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=NEwscXNa0ngoDuTPWO/7In+Vv0gR95Y6RNvpH7z/FINEwKd16RuwKrQbXKBEpszUzOQb53/yqiNDM8CR9vc3FtmE5+S36BjYKIUt6rhOwVWjKQ/brmGR2KJ0MzXnGJFD/lI4eWmrKXbIpPcLhzZdnTnXrQMNmzgnuD/6ijxyvVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AuPfjiUG; arc=none smtp.client-ip=209.85.128.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-70811611315so30137b3.1;
+        Fri, 23 May 2025 07:48:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748011681; x=1748616481; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/u6pyxLFnLrt3nYm1AId8zC+SeQN2Lo9TW+oH/5GDDw=;
+        b=AuPfjiUGK+4rMuVfQa5vELerW5C8/RyWcVL6Pfv5RV35EHyif81QBxVeCYiEUdRIpN
+         8G8tyiwd/pdTRg2v56IVhJI/iz25m0vDGojni4lxmpA1MA+rsGZFWvcDTXHvxCgX2avp
+         J1JInxddGZonul0X9GZp0NW9KP4FjHL4t/TjSChoM91Qh7+m2F6VZDXsuqIWUvDKV8Cr
+         7zraSzCl8+mekTJ6Kl9hXgVh+fH51A3MDFCGm0dYoOb6b6VZ7SSB1O8AQqK1TgvSx3G1
+         CwImzS2KSI8zZEvCUb8K377EATPkQcLWX0dELKwf17b+SU2jGQoDiN8XQ/Dwgf1ZEpRa
+         qlyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748011681; x=1748616481;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=/u6pyxLFnLrt3nYm1AId8zC+SeQN2Lo9TW+oH/5GDDw=;
+        b=aolDzRLyvlvXmlAIpQC1rQsvlaJCofXyD9F2edpCMx8r1UWceDLhHLFoXF2mkWw94K
+         cPaMKMinS/Sb7x8GUJoRILjWX3k/iOBLgJ4zTsddP/itLV1YYt3a2UjAcEFeGhuySzFC
+         SkCKK2CtIP/GiqFsARdIc6mEjRdA5TnkYsvYvrilPrR52yvUtj/276xd54djU7eVVD7p
+         2waDkVmh8WMqGbQUYDQmnF0PAJ94XDrM7WkQCd975CGqpKVlpC0bX6ixz2Qn9SVg3vzB
+         T9OhIPg+h5odqg3KUINZzVv6Qyzcu+JTh/YkHSOKtUQidvKjdzcmgmCTba0vrpfiFFYN
+         lXYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU9Fi0LCDXGlBlqahYTGO5u1wEaAyHkJzTSLEzMUUS59KpfSkoYWleGmIIy57ZwDTAuBXnpVWuzT5KprZuc@vger.kernel.org, AJvYcCX47uBzCVe1/4nlYe49R0ydjDa4j7eK8Mn6J5yLXg0ARV9IuqRwpo//YsGtpdNC5hYx2WU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyccMCMMmn94nBJ3m0gcE3PCeDpVU3OOU+Z20sp9QR3Y4SuWqM5
+	aYAnctIIFpOB4GJkosDJ7MuzPFJrG569cIabTt7JXVAuoiI/B8gdPUHjzToR/jF8
+X-Gm-Gg: ASbGncskzn9oBmutZZR3zpAIZQmaBPH4SlKfn0ys9vzOSI8ViSOkxGZJF64vKtNApxx
+	qY05zJRGM9bu8NTj2PGmyQoJlqWdSeFhlxk1AadKE6q8LwqryVI7w2DCdPiAEz/TWrLy8+iaCNv
+	5E7VPfyeV7d4RkF2DRVtMJAr7BTJbFt6wkjxQWaQJjqk0x9SLgLU7DR79XlSqV51sj/nccBXoeg
+	vA51op/vSoa04YNg5iF9fa2LXMapvtFbDkXWd9GfCMAsIY1ashYmr81YptSeQFJ4GZwqiZTNSmn
+	H6MRLXgW1OBIhjCm60HXg87yYhxuBh0yx4wiT5fovG3rH2Qyl+NLZpx/QxYXRQ==
+X-Google-Smtp-Source: AGHT+IGul4UHo4z7JKDw1c52ejvIT0ztgH+mxcyv1Hhk3UvBTtfRXOlGadC4PuDYx0h0MedujoQO5A==
+X-Received: by 2002:a05:6214:248a:b0:6f2:c81f:9ef0 with SMTP id 6a1803df08f44-6f8b2d15058mr470317116d6.28.1748011670483;
+        Fri, 23 May 2025 07:47:50 -0700 (PDT)
+Received: from [127.0.0.1] ([62.192.175.167])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6f8b0883e48sm115537826d6.6.2025.05.23.07.47.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 May 2025 07:47:50 -0700 (PDT)
+Message-ID: <634e5312cbaa01a31fe8781167dfb2dc8e932f2a.camel@gmail.com>
+Subject: Re: [syzbot] [bpf?] WARNING in __bpf_prog_ret0_warn
+From: KaFai Wan <mannkafai@gmail.com>
+To: syzbot <syzbot+0903f6d7f285e41cdf10@syzkaller.appspotmail.com>, 
+ andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net,  eddyz87@gmail.com, haoluo@google.com,
+ john.fastabend@gmail.com, jolsa@kernel.org,  kpsingh@kernel.org,
+ linux-kernel@vger.kernel.org, martin.lau@linux.dev,  sdf@fomichev.me,
+ song@kernel.org, syzkaller-bugs@googlegroups.com,  yonghong.song@linux.dev
+Date: Fri, 23 May 2025 22:47:43 +0800
+In-Reply-To: <6816e34e.a70a0220.254cdc.002c.GAE@google.com>
+References: <6816e34e.a70a0220.254cdc.002c.GAE@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.0-1build2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-The selftest can reproduce an issue where using bpf_msg_pop_data() in
-ktls causes errors on the receiving end.
+On Sat, 2025-05-03 at 20:47 -0700, syzbot wrote:
+> Hello,
+>=20
+> syzbot found the following issue on:
+>=20
+> HEAD commit:=C2=A0=C2=A0=C2=A0 8bac8898fe39 Merge tag 'mmc-v6.15-rc1' of
+> git://git.kernel..
+> git tree:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 upstream
+> console output:
+> https://syzkaller.appspot.com/x/log.txt?x=3D10f03774580000
+> kernel config:=C2=A0
+> https://syzkaller.appspot.com/x/.config?x=3D541aa584278da96c
+> dashboard link:
+> https://syzkaller.appspot.com/bug?extid=3D0903f6d7f285e41cdf10
+> compiler:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 gcc (Debian 12.2.0-14) 12.2=
+.0, GNU ld (GNU Binutils
+> for Debian) 2.40
+> syz repro:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0
+> https://syzkaller.appspot.com/x/repro.syz?x=3D1550ca70580000
+> C reproducer:=C2=A0=C2=A0
+> https://syzkaller.appspot.com/x/repro.c?x=3D17d10f74580000
+>=20
+> Downloadable assets:
+> disk image (non-bootable):
+> https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_di=
+sk-8bac8898.raw.xz
+> vmlinux:
+> https://storage.googleapis.com/syzbot-assets/5f7c2d7e1cd1/vmlinux-8bac889=
+8.xz
+> kernel image:
+> https://storage.googleapis.com/syzbot-assets/77a157d2769a/bzImage-8bac889=
+8.xz
+>=20
+> IMPORTANT: if you fix the issue, please add the following tag to the
+> commit:
+> Reported-by: syzbot+0903f6d7f285e41cdf10@syzkaller.appspotmail.com
+>=20
+> ------------[ cut here ]------------
+> WARNING: CPU: 3 PID: 217 at kernel/bpf/core.c:2357
+> __bpf_prog_ret0_warn+0xa/0x20 kernel/bpf/core.c:2357
+> Modules linked in:
+> CPU: 3 UID: 0 PID: 217 Comm: kworker/u32:6 Not tainted 6.15.0-rc4-
+> syzkaller-00040-g8bac8898fe39 #0 PREEMPT(full)=20
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-
+> debian-1.16.3-2~bpo12+1 04/01/2014
+> Workqueue: ipv6_addrconf addrconf_dad_work
+> RIP: 0010:__bpf_prog_ret0_warn+0xa/0x20 kernel/bpf/core.c:2357
+> Code: f3 0f 1e fa e8 a7 c7 f0 ff 31 c0 c3 cc cc cc cc 90 90 90 90 90
+> 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa e8 87 c7 f0 ff 90 <0f>
+> 0b 90 31 c0 c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 90
+> RSP: 0018:ffffc900031f6c18 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: ffffc9000006e000 RCX: 1ffff9200000dc06
+> RDX: ffff8880234ba440 RSI: ffffffff81ca6979 RDI: ffff888031e93040
+> RBP: ffffc900031f6cb8 R08: 0000000000000001 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000000 R12: ffff88802b61e010
+> R13: ffff888031e93040 R14: 00000000000000a0 R15: ffff88802c3d4800
+> FS:=C2=A0 0000000000000000(0000) GS:ffff8880d6ce2000(0000)
+> knlGS:0000000000000000
+> CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 000055557b6d2ca8 CR3: 000000002473e000 CR4: 0000000000352ef0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+> =C2=A0<TASK>
+> =C2=A0bpf_dispatcher_nop_func include/linux/bpf.h:1316 [inline]
+> =C2=A0__bpf_prog_run include/linux/filter.h:718 [inline]
+> =C2=A0bpf_prog_run include/linux/filter.h:725 [inline]
+> =C2=A0cls_bpf_classify+0x74a/0x1110 net/sched/cls_bpf.c:105
+> =C2=A0tc_classify include/net/tc_wrapper.h:197 [inline]
+> =C2=A0__tcf_classify net/sched/cls_api.c:1764 [inline]
+> =C2=A0tcf_classify+0x7ef/0x1380 net/sched/cls_api.c:1860
+> =C2=A0htb_classify net/sched/sch_htb.c:245 [inline]
+> =C2=A0htb_enqueue+0x2f6/0x12d0 net/sched/sch_htb.c:624
+> =C2=A0dev_qdisc_enqueue net/core/dev.c:3984 [inline]
+> =C2=A0__dev_xmit_skb net/core/dev.c:4080 [inline]
+> =C2=A0__dev_queue_xmit+0x2142/0x43e0 net/core/dev.c:4595
+> =C2=A0dev_queue_xmit include/linux/netdevice.h:3350 [inline]
+> =C2=A0neigh_hh_output include/net/neighbour.h:523 [inline]
+> =C2=A0neigh_output include/net/neighbour.h:537 [inline]
+> =C2=A0ip_finish_output2+0xc38/0x21a0 net/ipv4/ip_output.c:235
+> =C2=A0__ip_finish_output net/ipv4/ip_output.c:313 [inline]
+> =C2=A0__ip_finish_output+0x49e/0x950 net/ipv4/ip_output.c:295
+> =C2=A0ip_finish_output+0x35/0x380 net/ipv4/ip_output.c:323
+> =C2=A0NF_HOOK_COND include/linux/netfilter.h:303 [inline]
+> =C2=A0ip_output+0x13b/0x2a0 net/ipv4/ip_output.c:433
+> =C2=A0dst_output include/net/dst.h:459 [inline]
+> =C2=A0ip_local_out+0x33e/0x4a0 net/ipv4/ip_output.c:129
+> =C2=A0iptunnel_xmit+0x5d5/0xa00 net/ipv4/ip_tunnel_core.c:82
+> =C2=A0geneve_xmit_skb drivers/net/geneve.c:921 [inline]
+> =C2=A0geneve_xmit+0x2bc5/0x5610 drivers/net/geneve.c:1046
+> =C2=A0__netdev_start_xmit include/linux/netdevice.h:5203 [inline]
+> =C2=A0netdev_start_xmit include/linux/netdevice.h:5212 [inline]
+> =C2=A0xmit_one net/core/dev.c:3776 [inline]
+> =C2=A0dev_hard_start_xmit+0x93/0x740 net/core/dev.c:3792
+> =C2=A0__dev_queue_xmit+0x7eb/0x43e0 net/core/dev.c:4629
+> =C2=A0dev_queue_xmit include/linux/netdevice.h:3350 [inline]
+> =C2=A0neigh_hh_output include/net/neighbour.h:523 [inline]
+> =C2=A0neigh_output include/net/neighbour.h:537 [inline]
+> =C2=A0ip6_finish_output2+0xe98/0x2020 net/ipv6/ip6_output.c:141
+> =C2=A0__ip6_finish_output net/ipv6/ip6_output.c:215 [inline]
+> =C2=A0ip6_finish_output+0x3f9/0x1360 net/ipv6/ip6_output.c:226
+> =C2=A0NF_HOOK_COND include/linux/netfilter.h:303 [inline]
+> =C2=A0ip6_output+0x1f9/0x540 net/ipv6/ip6_output.c:247
+> =C2=A0dst_output include/net/dst.h:459 [inline]
+> =C2=A0NF_HOOK include/linux/netfilter.h:314 [inline]
+> =C2=A0NF_HOOK include/linux/netfilter.h:308 [inline]
+> =C2=A0mld_sendpack+0x9e9/0x1220 net/ipv6/mcast.c:1868
+> =C2=A0mld_send_initial_cr.part.0+0x1a1/0x260 net/ipv6/mcast.c:2285
+> =C2=A0mld_send_initial_cr include/linux/refcount.h:291 [inline]
+> =C2=A0ipv6_mc_dad_complete+0x22c/0x2b0 net/ipv6/mcast.c:2293
+> =C2=A0addrconf_dad_completed+0xd8a/0x10d0 net/ipv6/addrconf.c:4341
+> =C2=A0addrconf_dad_work+0x84d/0x14e0 net/ipv6/addrconf.c:4269
+> =C2=A0process_one_work+0x9cc/0x1b70 kernel/workqueue.c:3238
+> =C2=A0process_scheduled_works kernel/workqueue.c:3319 [inline]
+> =C2=A0worker_thread+0x6c8/0xf10 kernel/workqueue.c:3400
+> =C2=A0kthread+0x3c2/0x780 kernel/kthread.c:464
+> =C2=A0ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:153
+> =C2=A0ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+> =C2=A0</TASK>
+>=20
+>=20
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ=C2=A0for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>=20
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status=C2=A0for how to communicate with syzbot.
+>=20
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+>=20
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before
+> testing.
+>=20
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+>=20
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+>=20
+> If you want to undo deduplication, reply with:
+> #syz undup
+>=20
 
-Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
----
- .../selftests/bpf/prog_tests/sockmap_ktls.c   | 91 +++++++++++++++++++
- .../selftests/bpf/progs/test_sockmap_ktls.c   |  4 +
- 2 files changed, 95 insertions(+)
+I think this issue is triggered because of CONFIG_BPF_JIT_ALWAYS_ON is
+not set and /proc/sys/net/core/bpf_jit_enable is set to 1, causing the
+arch to attempt JIT the prog, but jit failed due to FAULT_INJECTION.=C2=A0
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_ktls.c b/tools/testing/selftests/bpf/prog_tests/sockmap_ktls.c
-index b6c471da5c28..b87e7f39e15a 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_ktls.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_ktls.c
-@@ -314,6 +314,95 @@ static void test_sockmap_ktls_tx_no_buf(int family, int sotype, bool push)
- 	test_sockmap_ktls__destroy(skel);
- }
- 
-+static void test_sockmap_ktls_tx_pop(int family, int sotype)
-+{
-+	char msg[37] = "0123456789abcdefghijklmnopqrstuvwxyz\0";
-+	int c = 0, p = 0, one = 1, sent, recvd;
-+	struct test_sockmap_ktls *skel;
-+	int prog_fd, map_fd;
-+	char rcv[50] = {0};
-+	int err;
-+	int i, m, r;
-+
-+	skel = test_sockmap_ktls__open_and_load();
-+	if (!ASSERT_TRUE(skel, "open ktls skel"))
-+		return;
-+
-+	err = create_pair(family, sotype, &c, &p);
-+	if (!ASSERT_OK(err, "create_pair()"))
-+		goto out;
-+
-+	prog_fd = bpf_program__fd(skel->progs.prog_sk_policy);
-+	map_fd = bpf_map__fd(skel->maps.sock_map);
-+
-+	err = bpf_prog_attach(prog_fd, map_fd, BPF_SK_MSG_VERDICT, 0);
-+	if (!ASSERT_OK(err, "bpf_prog_attach sk msg"))
-+		goto out;
-+
-+	err = bpf_map_update_elem(map_fd, &one, &c, BPF_NOEXIST);
-+	if (!ASSERT_OK(err, "bpf_map_update_elem(c)"))
-+		goto out;
-+
-+	err = init_ktls_pairs(c, p);
-+	if (!ASSERT_OK(err, "init_ktls_pairs(c, p)"))
-+		goto out;
-+
-+	struct {
-+		int	pop_start;
-+		int	pop_len;
-+	} pop_policy[] = {
-+		/* trim the start */
-+		{0, 2},
-+		{0, 10},
-+		{1, 2},
-+		{1, 10},
-+		/* trim the end */
-+		{35, 2},
-+		/* New entries should be added before this line */
-+		{-1, -1},
-+	};
-+
-+	i = 0;
-+	while (pop_policy[i].pop_start >= 0) {
-+		skel->bss->pop_start = pop_policy[i].pop_start;
-+		skel->bss->pop_end =  pop_policy[i].pop_len;
-+
-+		sent = send(c, msg, sizeof(msg), 0);
-+		if (!ASSERT_EQ(sent, sizeof(msg), "send(msg)"))
-+			goto out;
-+
-+		recvd = recv_timeout(p, rcv, sizeof(rcv), MSG_DONTWAIT, 1);
-+		if (!ASSERT_EQ(recvd, sizeof(msg) - pop_policy[i].pop_len, "pop len mismatch"))
-+			goto out;
-+
-+		/* verify the data
-+		 * msg: 0123456789a bcdefghij klmnopqrstuvwxyz
-+		 *                  |       |
-+		 *                  popped data
-+		 */
-+		for (m = 0, r = 0; m < sizeof(msg);) {
-+			/* skip checking the data that has been popped */
-+			if (m >= pop_policy[i].pop_start &&
-+			    m <= pop_policy[i].pop_start + pop_policy[i].pop_len - 1) {
-+				m++;
-+				continue;
-+			}
-+
-+			if (!ASSERT_EQ(msg[m], rcv[r], "data mismatch"))
-+				goto out;
-+			m++;
-+			r++;
-+		}
-+		i++;
-+	}
-+out:
-+	if (c)
-+		close(c);
-+	if (p)
-+		close(p);
-+	test_sockmap_ktls__destroy(skel);
-+}
-+
- static void run_tests(int family, enum bpf_map_type map_type)
- {
- 	int map;
-@@ -338,6 +427,8 @@ static void run_ktls_test(int family, int sotype)
- 		test_sockmap_ktls_tx_cork(family, sotype, true);
- 	if (test__start_subtest("tls tx egress with no buf"))
- 		test_sockmap_ktls_tx_no_buf(family, sotype, true);
-+	if (test__start_subtest("tls tx with pop"))
-+		test_sockmap_ktls_tx_pop(family, sotype);
- }
- 
- void test_sockmap_ktls(void)
-diff --git a/tools/testing/selftests/bpf/progs/test_sockmap_ktls.c b/tools/testing/selftests/bpf/progs/test_sockmap_ktls.c
-index 8bdb9987c0c7..83df4919c224 100644
---- a/tools/testing/selftests/bpf/progs/test_sockmap_ktls.c
-+++ b/tools/testing/selftests/bpf/progs/test_sockmap_ktls.c
-@@ -7,6 +7,8 @@ int cork_byte;
- int push_start;
- int push_end;
- int apply_bytes;
-+int pop_start;
-+int pop_end;
- 
- struct {
- 	__uint(type, BPF_MAP_TYPE_SOCKMAP);
-@@ -22,6 +24,8 @@ int prog_sk_policy(struct sk_msg_md *msg)
- 		bpf_msg_cork_bytes(msg, cork_byte);
- 	if (push_start > 0 && push_end > 0)
- 		bpf_msg_push_data(msg, push_start, push_end, 0);
-+	if (pop_start >= 0 && pop_end > 0)
-+		bpf_msg_pop_data(msg, pop_start, pop_end, 0);
- 
- 	return SK_PASS;
- }
--- 
-2.47.1
+When `bpf_jit_enable` set to 1, sets `fp->jit_requested =3D 1` to
+indicate need to jit when create BPF program. During runtime selection,
+set 'fp->bpf_func' to `__bpf_prog_ret0_warn` by default, and should
+return an error when prog need to jit(`jit_needed`) but not jited.=C2=A0
 
+Since CONFIG_BPF_JIT_ALWAYS_ON is not set and the BPF program contains
+no kfuncs, the `jit_needed` set to false.=C2=A0As a result, incorrectly
+treats the program as valid, when the program runs it calls
+`__bpf_prog_ret0_warn` and triggers the WARN_ON_ONCE(1).
+
+--=20
+Thanks,
+kafai
+
+#syz test
+
+
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index ba6b6118cf50..4c951d60bef5 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -2474,8 +2474,7 @@ struct bpf_prog *bpf_prog_select_runtime(struct
+bpf_prog *fp, int *err)
+ 	if (fp->bpf_func)
+ 		goto finalize;
+=20
+-	if (IS_ENABLED(CONFIG_BPF_JIT_ALWAYS_ON) ||
+-	    bpf_prog_has_kfunc_call(fp))
++	if (fp->jit_requested || bpf_prog_has_kfunc_call(fp))
+ 		jit_needed =3D true;
+=20
+ 	bpf_prog_select_func(fp);
 
