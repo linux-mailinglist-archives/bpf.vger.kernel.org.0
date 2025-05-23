@@ -1,65 +1,61 @@
-Return-Path: <bpf+bounces-58817-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58818-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABAFFAC1AC0
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 05:49:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75DA5AC1AE2
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 06:06:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A2CE1B65B82
-	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 03:49:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D8267B81BC
+	for <lists+bpf@lfdr.de>; Fri, 23 May 2025 04:05:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3DA3221F31;
-	Fri, 23 May 2025 03:48:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32FC72222D8;
+	Fri, 23 May 2025 04:06:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lj/rQ3Gi"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="qteADHn1"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 280F82DCBE7;
-	Fri, 23 May 2025 03:48:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 572E8367;
+	Fri, 23 May 2025 04:06:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747972128; cv=none; b=V/GJYdjkgJ1URUx13vfsZbxu0EW8Sr5jm7Ti5iu4TTuiqv2G3ryukSNzbfN4YG8g2azA8owWVeGxg4RFOmCOSyigk6ATscVbTErzH+yQHBNbdqE+sKL735hSPR5AG7+grdh7SpEMs9mIfLA36IkY6hUTS/GKOuatfV2TfXyusz8=
+	t=1747973174; cv=none; b=DGHy8RNLIT5lwu5gDPB08gSUAPCD+CIapmej8GpKXdTn3b6qmz52Swnn8uUBB3iN9KgQZAL2gIV8dmXSx1TRLS3owE/bHjT7fjGioh2n1AmdUYIIoNSxwmWHYCmmSYW8dpRxf3zmW+XVYlnQlyJDRkmq6LEtyoR81M8HDx6NBZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747972128; c=relaxed/simple;
-	bh=hU4E11daZQRWPop+eXf7dItbrTLSr07eegr9d9rLyLc=;
+	s=arc-20240116; t=1747973174; c=relaxed/simple;
+	bh=Dd6hg5anYs4NDvtjZ+7fjfMWyb/P3mJi/lIxyob4a0o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W/Ih2cb3aAAm/oUm+8JcqiLAK6YAKsQIDSndyLFlzvZgQcUEJgyApO6XvZy44UmzVFcZFygQoOHUk0g2Igt0p4uiY7R+3g98y4HL1w+o3VmQHbuDLlDK1x1Uecmr8IOVd+Xr4mYLuu1j/+nTCN4BxtyaajUed3DPzKnUxOsjobM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lj/rQ3Gi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AC07C4CEE9;
-	Fri, 23 May 2025 03:48:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747972127;
-	bh=hU4E11daZQRWPop+eXf7dItbrTLSr07eegr9d9rLyLc=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=MW0jwiBID1s5SaoEvzWpeaYjuJUR9+YYN6tWP7VSlA4V+5xgEotFPvKr+MlSsrc67+IhBcz/YhrJq+xzBspclIxlP3qHMJ5qqQfu0hn+73i70O+x4epp3aBMii6rWfIxGLyqrae4TWRDiKxboSU+qgo5HjAs1jpfVQxg1juX5pw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=qteADHn1; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1127)
+	id DD8C5201DB37; Thu, 22 May 2025 21:06:06 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DD8C5201DB37
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1747973166;
+	bh=NAc+eegSvTa3ay9n8M4zgkCmIydrJCYRiYijS0bKWHY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lj/rQ3GiGLdiau+P57zmneGhBgAfMwOjMvBLctFhT75R1EPvZ5B+giVnFwI5eHxa9
-	 RiMiquG8Ahu7fzGgL53Px/BnaD5MqSe+XkulE8WW3VtGLO3jgYvTq7mHJmnXO8HT0k
-	 IVlm+pa2SWgRZfx0S+157FDTqcymr66Laaajra42Cmav0gUZ5rF4VwxfkSUBOljdMj
-	 Zu+1bGtmcY67IjZpTYe/CyKwnE1FIQawVg8S5ZD4PBl0KY2UIPvReTE3pKq0rTvPqd
-	 l4BA/NIs6ebHPA4YP0vqH8f8LYR9cjI9h0XPmOzzN1clAgzBOWk0XqocxYh+JpDqIl
-	 CK9+q1olWtQ9g==
-Date: Thu, 22 May 2025 20:48:44 -0700
-From: Kees Cook <kees@kernel.org>
-To: Bhupesh <bhupesh@igalia.com>
-Cc: akpm@linux-foundation.org, kernel-dev@igalia.com,
+	b=qteADHn1rWU9VHl2Z/C4U8p+yUZcUHpD1HTu6F5tS2wBexDJ3bi5X9adO6ru9agQ6
+	 3ksSh2+9mxpgeP5AK491vtaBbjHdzBmbrEMLo4D3JEGN1S/gRXNEWItDhKAk1Siuw9
+	 oA+4VyzttcT6utUrI+yZWEe8O2iLUhyLdpZjHBgI=
+Date: Thu, 22 May 2025 21:06:06 -0700
+From: Saurabh Singh Sengar <ssengar@linux.microsoft.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, pabeni@redhat.com, horms@kernel.org,
+	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+	john.fastabend@gmail.com, sdf@fomichev.me, kuniyu@amazon.com,
+	ahmed.zaki@intel.com, aleksander.lobakin@intel.com,
+	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org, oliver.sang@intel.com, lkp@intel.com,
-	laoar.shao@gmail.com, pmladek@suse.com, rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
-	alexei.starovoitov@gmail.com, andrii.nakryiko@gmail.com,
-	mirq-linux@rere.qmqm.pl, peterz@infradead.org, willy@infradead.org,
-	david@redhat.com, viro@zeniv.linux.org.uk, ebiederm@xmission.com,
-	brauner@kernel.org, jack@suse.cz, mingo@redhat.com,
-	juri.lelli@redhat.com, bsegall@google.com, mgorman@suse.de,
-	vschneid@redhat.com, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 3/3] exec: Add support for 64 byte 'tsk->comm_ext'
-Message-ID: <202505222041.B639D482FB@keescook>
-References: <20250521062337.53262-1-bhupesh@igalia.com>
- <20250521062337.53262-4-bhupesh@igalia.com>
+	ssengar@microsoft.com, stable@vger.kernel.org
+Subject: Re: [PATCH net,v2] hv_netvsc: fix potential deadlock in
+ netvsc_vf_setxdp()
+Message-ID: <20250523040606.GA25497@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1747823103-3420-1-git-send-email-ssengar@linux.microsoft.com>
+ <20250522151346.57390f40@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -68,32 +64,67 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250521062337.53262-4-bhupesh@igalia.com>
+In-Reply-To: <20250522151346.57390f40@kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Wed, May 21, 2025 at 11:53:37AM +0530, Bhupesh wrote:
-> Historically due to the 16-byte length of TASK_COMM_LEN, the
-> users of 'tsk->comm' are restricted to use a fixed-size target
-> buffer also of TASK_COMM_LEN for 'memcpy()' like use-cases.
+On Thu, May 22, 2025 at 03:13:46PM -0700, Jakub Kicinski wrote:
+> On Wed, 21 May 2025 03:25:03 -0700 Saurabh Sengar wrote:
+> > The MANA driver's probe registers netdevice via the following call chain:
+> > 
+> > mana_probe()
+> >   register_netdev()
+> >     register_netdevice()
+> > 
+> > register_netdevice() calls notifier callback for netvsc driver,
+> > holding the netdev mutex via netdev_lock_ops().
+> > 
+> > Further this netvsc notifier callback end up attempting to acquire the
+> > same lock again in dev_xdp_propagate() leading to deadlock.
+> > 
+> > netvsc_netdev_event()
+> >   netvsc_vf_setxdp()
+> >     dev_xdp_propagate()
+> > 
+> > This deadlock was not observed so far because net_shaper_ops was never set,
 > 
-> To fix the same, Linus suggested in [1] that we can add the
-> following union inside 'task_struct':
->        union {
->                char    comm[TASK_COMM_LEN];
->                char    comm_ext[TASK_COMM_EXT_LEN];
->        };
+> The lock is on the VF, I think you meant to say that no device you use
+> in Azure is ops locked?
+> 
+> There's also the call to netvsc_register_vf() on probe path, please
+> fix or explain why it doesn't need locking in the commit message.
 
-I remain unconvinced that this is at all safe. With the existing
-memcpy() and so many places using %s and task->comm, this feels very
-very risky to me.
+This patch specifically addresses the netvsc_register_vf() path only.
+I omitted the mention of netvsc_register_vf() in the commit message
+to keep the function path shorter. The full stack trace is provided below:
 
-Can we just make it separate, instead of a union? Then we don't have to
-touch comm at all.
+[   92.542180]  dev_xdp_propagate+0x2c/0x1b0
+[   92.542185]  netvsc_vf_setxdp+0x10d/0x180 [hv_netvsc]
+[   92.542192]  netvsc_register_vf.part.0+0x179/0x200 [hv_netvsc]
+[   92.542196]  netvsc_netdev_event+0x267/0x340 [hv_netvsc]
+[   92.542200]  notifier_call_chain+0x5f/0xc0
+[   92.542203]  raw_notifier_call_chain+0x16/0x20
+[   92.542205]  call_netdevice_notifiers_info+0x52/0xa0
+[   92.542209]  register_netdevice+0x7c8/0xaa0
+[   92.542211]  register_netdev+0x1f/0x40
+[   92.542214]  mana_probe+0x6e2/0x8e0 [mana]
+[   92.542220]  mana_gd_probe+0x187/0x220 [mana]
 
-> and then modify '__set_task_comm()' to pass 'tsk->comm_ext'
-> to the existing users.
+If you prefer I can update the stack trace in commit meesage
+From:
 
-We can use set_task_comm() to set both still...
+netvsc_netdev_event()
+  netvsc_vf_setxdp()
+    dev_xdp_propagate()
 
--- 
-Kees Cook
+To:
+
+netvsc_netdev_event()
+  netvsc_register_vf()
+    netvsc_vf_setxdp()
+      dev_xdp_propagate()
+
+- Saurabh
+
+> -- 
+> pw-bot: cr
 
