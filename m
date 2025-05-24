@@ -1,375 +1,323 @@
-Return-Path: <bpf+bounces-58888-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58889-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AD46AC2D33
-	for <lists+bpf@lfdr.de>; Sat, 24 May 2025 05:23:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1FE5AC2D4F
+	for <lists+bpf@lfdr.de>; Sat, 24 May 2025 06:13:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 312981BC4040
-	for <lists+bpf@lfdr.de>; Sat, 24 May 2025 03:23:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B72169E8050
+	for <lists+bpf@lfdr.de>; Sat, 24 May 2025 04:13:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A30519F49E;
-	Sat, 24 May 2025 03:22:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="HuQkw7iM";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="PqSVAL0d"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C9671A3169;
+	Sat, 24 May 2025 04:13:54 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D58419995E;
-	Sat, 24 May 2025 03:22:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748056979; cv=fail; b=JpxBHTUUXJIHKgkM3Klps8Y88BpE/Y2brbjARrAJ1dwdYHbHfRizPxRRjOqUwDZOLNoYbwSZU0gV1z4yxCYSEDZRXZO0h2kYAbjLCGOmlzoDqplzVDPxZrHLVjqsiHn/paewm45i+Hj+xJlz4tyghZOQ6qgbRDhQfPfmNRKWayM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748056979; c=relaxed/simple;
-	bh=cSh/kmyQ/WrJjmMzQ0zrsorKYCZsSIJHHsfdqHbunF4=;
-	h=References:From:To:Cc:Subject:In-reply-to:Date:Message-ID:
-	 Content-Type:MIME-Version; b=F37WkaYVLITM2CKEAwJGG7+g1x5bctQlzJtv3wMzsfP1exkBpWp9CXUQVGxINvEwQ1ExN/X3uKKH49n4/aK8j3s3P8A37fdVuzpvkunsoKtY0Ra8ZVzUson3htFM/+Hp98/esk/gaKP8nMpqyxB+PvQ8rSlLuk3+KQjXzIqhNdU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=HuQkw7iM; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=PqSVAL0d; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54O3K7N7009884;
-	Sat, 24 May 2025 03:22:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=corp-2025-04-25; bh=FYuXjYLIQ0zObQzRlB
-	Bh6WOOn6yv9MIc5aQUMviIyEc=; b=HuQkw7iMDT/i+i4CcIq9ueBeSxncdUIqS3
-	6nYPXw+BoJPNsgcXLI/WOIL+a7r8vnL+b05qUzUkXE3hJRmVD0cc3DYA0g55uYJx
-	3B6zZ3s7O4LzYXyCf9mjdfMr5rHMegdoW7cDvO96o1P6sAXAVrGvofrxAUN/GAf7
-	SbL0tHXuSJUNfsKnhLLU9TxVf4VCOrobSKt9CR+HgP84qA0fR+89qrtI8g6Fgt8x
-	5g33VeifKrBecW8v6afskVo613ph5JJ/D5H4G9B9a8tkfvthb7CQJI8QKPkmDQ1U
-	gZfCFfWy8Jx2HV2sJlvJSVxBWGGhTFNxYFZWK8DI7L/cvkvKb29Q==
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 46u4w3816u-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 24 May 2025 03:22:18 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 54O1Xec3024391;
-	Sat, 24 May 2025 03:22:17 GMT
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam04on2064.outbound.protection.outlook.com [40.107.102.64])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 46u4j69xg6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 24 May 2025 03:22:17 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=HzL6NGBWb4KtPXFiUYkD7uabxuzKlVwdntzImEm87vj/+ODwEbdx/DMZjwJHwcZlOFb6+rY/oKx77hEv9EkJ3MU449HNwO//+RnwiF/2q+rC3CKFvT051o8SBTESdAgj+687Z3o3qHGjwbmsPx3gFLDxVIU34IXp3YxJlkf7zOvxSIx53CvOEy3tQIz1v+cDJJDI10XyWv392qay2JYwBjDAsOX0A542mljWRHlv30zbrb4EXnMpbHatmAm1cesnnWylUjM0wfEQQUS+Yw03xVg2IzRahwSPU4TV674zy16fEiAS6N35plXxtlx7fwdOdk+o671wkN5KnvKbCg+8Og==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FYuXjYLIQ0zObQzRlBBh6WOOn6yv9MIc5aQUMviIyEc=;
- b=nIpl9b8agIonnOmFq4QZunI/cxkgMYuY0h0sNjY2clIqxrRIlKncYiN5JO8/Y+kcBqWqPbH/yItW4V9j5hYR1uJd9dN+14zBq5j6POF/PTOGFggaw1HSlvRE0ETa4paZYOAc0Vbr6QwaJy7K9JyC9DYjz5MprfT/zEl+LADjWhO5VbTvMF2qAwctRq1VBtv/v30qCJtZ/WwVpU5NxqSnWs441vvg+BalotNmH56XyBdlasLqHLxoXHj1KZSoHG7avUVJUaMDE5sdlf8S8rXkoCdDY6jyw2CtIjBRoh146VQdGJPgNTekPV1vIP4S227qBQpfsdjoh15+eOJPQDz/Dg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FYuXjYLIQ0zObQzRlBBh6WOOn6yv9MIc5aQUMviIyEc=;
- b=PqSVAL0do1gbcm181CJCJIuGIv2Su1c29rNIxwW0V0drC6G+6LfjBC61kLt5eQc1IO93MRHqPwZ/alHvgQOwcBLysfWlSkeHLBOCR7OpbVIfsu9FpgaPBfUOnSeKT9iW6ii77S65clsIa3OSfwHbJQYvdO/gXOByN+bo3vumXzg=
-Received: from CO6PR10MB5409.namprd10.prod.outlook.com (2603:10b6:5:357::14)
- by SJ0PR10MB4542.namprd10.prod.outlook.com (2603:10b6:a03:2da::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8746.30; Sat, 24 May
- 2025 03:22:14 +0000
-Received: from CO6PR10MB5409.namprd10.prod.outlook.com
- ([fe80::25a9:32c2:a7b0:de9e]) by CO6PR10MB5409.namprd10.prod.outlook.com
- ([fe80::25a9:32c2:a7b0:de9e%6]) with mapi id 15.20.8678.028; Sat, 24 May 2025
- 03:22:13 +0000
-References: <20250502085223.1316925-1-ankur.a.arora@oracle.com>
- <20250502085223.1316925-2-ankur.a.arora@oracle.com>
- <aC4dcZ2veeavM2dR@arm.com>
-User-agent: mu4e 1.4.10; emacs 27.2
-From: Ankur Arora <ankur.a.arora@oracle.com>
-To: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Ankur Arora <ankur.a.arora@oracle.com>, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        bpf@vger.kernel.org, arnd@arndb.de, will@kernel.org,
-        peterz@infradead.org, akpm@linux-foundation.org, mark.rutland@arm.com,
-        harisokn@amazon.com, cl@gentwo.org, ast@kernel.org, memxor@gmail.com,
-        zhenglifeng1@huawei.com, xueshuai@linux.alibaba.com,
-        joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
-        konrad.wilk@oracle.com
-Subject: Re: [PATCH v2 1/7] asm-generic: barrier: add
- smp_cond_load_relaxed_timewait()
-In-reply-to: <aC4dcZ2veeavM2dR@arm.com>
-Date: Fri, 23 May 2025 20:22:12 -0700
-Message-ID: <87v7pqzo9n.fsf@oracle.com>
-Content-Type: text/plain
-X-ClientProxiedBy: MW2PR2101CA0002.namprd21.prod.outlook.com
- (2603:10b6:302:1::15) To CO6PR10MB5409.namprd10.prod.outlook.com
- (2603:10b6:5:357::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C107F5695
+	for <bpf@vger.kernel.org>; Sat, 24 May 2025 04:13:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.181
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1748060033; cv=none; b=cRj0BINUYEVlkTDKR7xFyU2a+kv8VnaMc3zZf/t/YcZ1tpsv2KRFTiC9PVf+x4nAj0+3rMkZ8oG2NAaCP74hMjG0GUOB8JGE/Uqehnqt/PULb/5M3PTLmHKlw+I/qg4fu2FVAQVDqLvYR7xMUKExgS5nruVwH+IWJoQyk5nBJSQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1748060033; c=relaxed/simple;
+	bh=mA3lnvOgfv4FWnVNtJ0MkWqBBxCkKfHqrRlpGU8TByM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ius7+pKm+v+xqa62gYd49qEVa8xUCetvv09D+iuk0Rovh+bVAZvkfQjWH8kUZ5ykhcwfLm5OP/Gxqov/ieqWSY58+XbLNu80uvTrBb1yBr5ySY3eazIK5CHsqYA3HN84lP5jxDHKquUjJEZ9wGCZjy5OhDMQeJJfVYeFux6uVVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devvm16039.vll0.facebook.com (Postfix, from userid 128203)
+	id 694B68194260; Fri, 23 May 2025 21:13:35 -0700 (PDT)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next v5 1/2] bpf: Do not include stack ptr register in precision backtracking bookkeeping
+Date: Fri, 23 May 2025 21:13:35 -0700
+Message-ID: <20250524041335.4046126-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO6PR10MB5409:EE_|SJ0PR10MB4542:EE_
-X-MS-Office365-Filtering-Correlation-Id: bea64ef7-0994-4223-6289-08dd9a722d40
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|366016|7416014|376014|7053199007;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?njfNSeZ3MG8WflIOme7/g4oj4cgjJq7nqwudh7k64gnlThiPu5a+wUaYoh/C?=
- =?us-ascii?Q?gw5QfBmThlsuEBiCjQgtbIjPHSNeboa9vRXFws8EHXhQ+zeIhVtK/rI6ZGjc?=
- =?us-ascii?Q?p+20Ju5CbG3EAxJrK5mSM4/HHAU6jrCoqUUE0+7wMDbPkX8ugD36m7CdbRbh?=
- =?us-ascii?Q?fgOLJiIBDCPuMMBMXmSJflR5lMDbAqbYhZkShz2R+agh+9Pf2nHBP0YyFijj?=
- =?us-ascii?Q?VtCWItY5YDgpfekcIhvBAjafRUvnDIkhMM01oY7viIs1MDyVgzY/K+QLuxTj?=
- =?us-ascii?Q?tB23WBVdCf1YGLZeIDJ/IRdJRjfL1d1L8xJmVDTy+yT2ZxydYYG39xGSIv1P?=
- =?us-ascii?Q?6JKIPIwbkaz9Hfk7PjtyOYSbo/9kGVQIxqjkjogaDFzbvns0zhqLDSxRKIFB?=
- =?us-ascii?Q?ZNDh+kfu5hqwJPTpJKQw+ZBKuVdc2Ew0ur/QzSsBLTtMkVawU1YwdCkcrb/o?=
- =?us-ascii?Q?6y76VZRaJRZC/pb2pp5xXLlMYYmoogGuIu6M71UBMQRamNKDDTsbXxC0zhbF?=
- =?us-ascii?Q?8GsnDLP8VukByuU5vWSmAsTM14Z1FU6gK00lvVnRcK96hbidtAVPvOPxyaTx?=
- =?us-ascii?Q?XOysd089uN3Mqn9jb7jt5iiwaRmwIj9qP284xrukD+U2gt5O46/C2xE8RZlR?=
- =?us-ascii?Q?awQklMxthBQiUiM7bCi3X751QKQK3toWs1EOAvd5dai8ZHJRpQmmnG9Qe6ag?=
- =?us-ascii?Q?EvqciXADQN65w7WROdzwM6VdmrR/MRqYNLouMUNWhhSXRctSo0XvJxc+o42x?=
- =?us-ascii?Q?b83r4Ffo9uZZXOkaSxNOJl20yycp4iMtt5UWdnx1f3nWvPCsIHPmw2AefFMr?=
- =?us-ascii?Q?H0aukdxNTcYp8KPkMzBaLEbPEUHLTU5/QzwY9Et+WGfbFDqV/pcgydjXhafE?=
- =?us-ascii?Q?QuIwILVij4cl1tzZ8jokzzrBWqeXXo+8XHD2A1qcJuLU01p7HaxBxUU/KBfR?=
- =?us-ascii?Q?9TpUuwi7UfnmfNPAkyGj6a/Vj3HlmSldBdEVzdc5k7dZWOxiEZSP5vBhhkDb?=
- =?us-ascii?Q?emcPjLs/WLz/b3Gn1YUWCanVIRIdepqGYektW5rcWsZOHGc3v9Cg5N5P4czq?=
- =?us-ascii?Q?4+EX/slMEtgUuDYs1/7KOFJsVyUDwF9t7sWXJRUhVkS4B8ooxqFs/dGLkE1a?=
- =?us-ascii?Q?9jcaeon5PhDxTJKcsbcHRogiuFgoj7maCxAqll7+3peghCD4PyRG0DZMsAl0?=
- =?us-ascii?Q?MWFS3e/C/9VtRbj6x5x7/CgUI1BRQoyRE8x8Sa5102vVTPZGTMuxIXR55qAU?=
- =?us-ascii?Q?V2GWJPTBCVFQnjhATEcwFLY6oykwWrO4YWvustyIIjuJz5P8t/ciqoTO+hh8?=
- =?us-ascii?Q?QJqBXjUQtLssO4Ciopk5pAOvButUeDdv9A9+2IKnbRzhEzyfzQriOB+KhYIo?=
- =?us-ascii?Q?E3tf2CWYTei784GPkZk1FATn1dTlLZsvxza2R+DpahSS/Qp9w9eZQevIpdL7?=
- =?us-ascii?Q?uPXrDKI+YBo=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR10MB5409.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?EYYOQ2BlbkeWVuCDt+/+0o0T2sWduCXMZ+uoxBJuCc5kIz1fS27kCm4925gy?=
- =?us-ascii?Q?qmBOpWHwYwzrhsTn9A5vao92xZ/58gUZqrzFtGIlrGQmkUc9SiUUOIdI4S1r?=
- =?us-ascii?Q?+pXUfQXnqHBmAe0pukq6DQIn/+n0RYbY8idq0EZtl9Y6vJLke2HUw+2e82gK?=
- =?us-ascii?Q?9xImvTLWilyNNhBUmcD8b+Rn+vVWZX5ulrreucgsLUKIDivQOisgt4IaBxf8?=
- =?us-ascii?Q?Rtnr6s1IfiXUiNWX8RfZE+qSPC38oa94XbHqbjKMvcAjI+YxD6ZSU0UcLqrE?=
- =?us-ascii?Q?7S9aomUidckETNLxorBkuGclXw4+RGxc8+SVw12Mki0KsF7Ks4OQaaxbTQXh?=
- =?us-ascii?Q?3xsDw0ZAhqWWv3TTOpXn7hXtqnOM8Eh9sGbx1JRKCOH88l+oeocs/VOEu69R?=
- =?us-ascii?Q?2xFnG3OOpyQ7RDXm9CGx+pFS1xoENSPABmMU10QszkmSNch5/qqK0qX2ODxr?=
- =?us-ascii?Q?9hDVa0UzOrINEh7jpVPCPXVZ2551lA1eN7pa62yaoGgdPmL9qAsFS6fFiNnx?=
- =?us-ascii?Q?2/CTqDLJOKzKgWdA4b+pZGWz3hxouLBDlFoYTDfPCJjXVpPCNFMHoeqZ7Kzo?=
- =?us-ascii?Q?ZF47jizMOxnkovhEsih1Iivamch0xKKaFESOLmH1sgndj5iMCdxo0pbRLUhS?=
- =?us-ascii?Q?jZ8yB7x3Zwzhya9v7/hynf8TKTXKF6+bDyuYusgsThlzQRmSlt3U/CrVGNqD?=
- =?us-ascii?Q?L/s5fxV6n37xYXYGxyOZ2VYFxAElzZAFPXFPlTOSozEyvZa3U2JHkaRIqbWa?=
- =?us-ascii?Q?kiJlDCWq+sMnJwo4jOcSe5JhE2kJnJLieGoTWTqVPKWnQckj3p3tTrwOA1Mn?=
- =?us-ascii?Q?pwTAqu8vci4n59OPoE2balql+Yi7imRH2V8lU1V6hexTknvwevPqWvye/HZ0?=
- =?us-ascii?Q?+rpzM0kkgCFCH4FaCFpwBf8OpWrfNPJbLaxJc4TgEaiIFNXFq8xA1vNdMBdR?=
- =?us-ascii?Q?ZKN0J8qa4Yy/3UQ5wJfP/UZibEpPhwqVrRBwzjVm/kL3rc7zkWUUJL4uZupJ?=
- =?us-ascii?Q?fIdPDwzuWBXmmj0x0cps/H6XsKpHXB7PNKTnG2gB0HXhMywRA7aYvSYz18gt?=
- =?us-ascii?Q?K9B2z6ZBEW2VWHf9qgymMEy4kB8QH3TjKQp9FxvyxG9cU/gSewsiIo3er8O+?=
- =?us-ascii?Q?tZQTZQEoebTdtVnUkpAkZrMI1Q6GepEacJyROLWbFHNzKT6DbA+Rgn6KHQi8?=
- =?us-ascii?Q?j1LTGNOfrtzPpHMJcUNvzAMPg+bTNVNqVl/bojVRtFncfjk0ca29KAiOjuL4?=
- =?us-ascii?Q?9iUNsTgEtuAZr99QSAOa2FT8rvVImXgZ/+iCCwJM4Fty9yUw1ms1F3Sh3aXu?=
- =?us-ascii?Q?LLJQecqPLFAQLYOrvS+Pu9Rn33jetn6gmOWpV9aa2ytWMZ7pnO9cVEeI2JV5?=
- =?us-ascii?Q?SAF6uHiwxe98+g/p127ZRNS+1OP4zc96Lb1aVVPAC2On24g/K1ZaI9lVSHEw?=
- =?us-ascii?Q?hxGVwhPjIgnkshT+xae4V7XiRfG8bPpK3cxdUZUHtmAp4joMDl31PrKFbmIT?=
- =?us-ascii?Q?BSA24N8FLoLDWLDVGt3T62RU9n9LaGMPoAS2yOIlvbPXndHaEzoTedlYuIxm?=
- =?us-ascii?Q?fWOxbKWedj/553mDY3kh0LeZyzPRgZ2PgYT3Yst8f+23+vRhr+5/Md1TnYEZ?=
- =?us-ascii?Q?lw=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	lsVOG0KJcHvSwutLP7q6o3ssYWgbodknwfKAPypik2MYc/gNcullN+CXMHyaY8t80I0zrXAHB/1ZXtTe/3+HESJ6nMSW6Ly15xRG5qZ7NRlm4cCgb6hiN5P/TxQrp5BgXk6DJnYJzzlLPjdVpZXMqp/kIvW5aWwE4krMExzzz0AtzdAZP/+sJWUJkNMkifQBTfDkL6EITBKxguDF2CtSWT+P60IiPJdKaPyLDuYLgsv26LfYxg9xRr95eLSn1D6r/zxmqndCZXFB4zuMMOYBVklgPLsRLvSoM+O0Ubpsf1r3TFeAhemUAjtD3NP/5jhUIixFqlg/hk1rC0GhRzpt/I+490XR+55Duwr7EzXqTSxc9fniODS1SbEP9Je0h7BpHTUqlWBHFwaSua2y/A6vwK2rN496zE8HnoOw7QIdz4Iisp2BigeEJCcyYJWbYIdciAgZ5zb/ZW3l6hnWWeRpObzWlPG4CkMEqUmmPAN6/wnmzb4x68JHnB/AMTqv3ZvyrRz1MoJ4IKA+N4Pu6GWhRClUtIcjkPhmFGa09mmwjl60USjQx7FNG/vfln7bxhyp/HtuZ10E6NFZcDJ5lEJDvxiYoBMs6jZ5opss7fC6rS4=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bea64ef7-0994-4223-6289-08dd9a722d40
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR10MB5409.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 May 2025 03:22:13.5145
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rflPzW8efK+xMrU0fyYDi4xqeHA41MQAmBkRUN4+FtDTbUDj4wUoDBS9p1hC8Um3Bby26W2GiaBricW3T3Yec0WktM5SHygnFlELWI2R6a8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4542
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-05-24_02,2025-05-22_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0 spamscore=0
- suspectscore=0 bulkscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2505160000
- definitions=main-2505240030
-X-Authority-Analysis: v=2.4 cv=V/990fni c=1 sm=1 tr=0 ts=68313b6a b=1 cx=c_pps a=zPCbziy225d3KhSqZt3L1A==:117 a=zPCbziy225d3KhSqZt3L1A==:17 a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19
- a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=dt9VzEwgFbYA:10 a=GoEa3M9JfhUA:10 a=7CQSdrXTAAAA:8 a=zRqbISh11YqQD7CphrQA:9 a=a-qgeE7W1pNrGK8U0ZQC:22 cc=ntf awl=host:13206
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTI0MDAzMCBTYWx0ZWRfXzy9OdfhDVEf9 10zSj/euslvnrCHRHkiIyNMtRVcW/9HGiK1JK+HY1hTYLS3irPK+8FMmKlQcMxIegrysq/MAvEA M/1XUSJMQ9zcDkQMOr1+zomQD0R/XpNLEytLRTZU7Ld9gSxMjvwdZFExNqLdtSVJs6tu2Il8xrz
- TFcjgDNtmZWvEBDjviNN1HJvSK+398JgvQkhS50AHMiRdo90m+0lTt8tL4JlSXd0uSBR8tjUl5L Dd/fMnr8CzoCRDUbiOCHNsQKm9hh7UabMyMR4UwZYoJSFrWVrjS1Bp52waJOV2MFL/0q5keuZhZ 7QBX1XyIOVifz+whv268BC12hvDcOrA9lY1jF8ea/6GCkaUHi+An/5niwl8OU+I3VA19KsvKosX
- MrdDypv/l+PHUFMHwza2ephFBi2Rsn9wVSSfwrwsrFS9oT0jl1QTxpgqwmcIIQ3M0jw1toAr
-X-Proofpoint-ORIG-GUID: JVkfMBTDxC24EomoZS4kw3Mw20F18JOQ
-X-Proofpoint-GUID: JVkfMBTDxC24EomoZS4kw3Mw20F18JOQ
+Content-Transfer-Encoding: quoted-printable
 
+Yi Lai reported an issue ([1]) where the following warning appears
+in kernel dmesg:
+  [   60.643604] verifier backtracking bug
+  [   60.643635] WARNING: CPU: 10 PID: 2315 at kernel/bpf/verifier.c:4302=
+ __mark_chain_precision+0x3a6c/0x3e10
+  [   60.648428] Modules linked in: bpf_testmod(OE)
+  [   60.650471] CPU: 10 UID: 0 PID: 2315 Comm: test_progs Tainted: G    =
+       OE       6.15.0-rc4-gef11287f8289-dirty #327 PREEMPT(full)
+  [   60.654385] Tainted: [O]=3DOOT_MODULE, [E]=3DUNSIGNED_MODULE
+  [   60.656682] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), B=
+IOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+  [   60.660475] RIP: 0010:__mark_chain_precision+0x3a6c/0x3e10
+  [   60.662814] Code: 5a 30 84 89 ea e8 c4 d9 01 00 80 3d 3e 7d d8 04 00=
+ 0f 85 60 fa ff ff c6 05 31 7d d8 04
+                       01 48 c7 c7 00 58 30 84 e8 c4 06 a5 ff <0f> 0b e9 =
+46 fa ff ff 48 ...
+  [   60.668720] RSP: 0018:ffff888116cc7298 EFLAGS: 00010246
+  [   60.671075] RAX: 54d70e82dfd31900 RBX: ffff888115b65e20 RCX: 0000000=
+000000000
+  [   60.673659] RDX: 0000000000000001 RSI: 0000000000000004 RDI: 0000000=
+0ffffffff
+  [   60.676241] RBP: 0000000000000400 R08: ffff8881f6f23bd3 R09: 1ffff11=
+03ede477a
+  [   60.678787] R10: dffffc0000000000 R11: ffffed103ede477b R12: ffff888=
+115b60ae8
+  [   60.681420] R13: 1ffff11022b6cbc4 R14: 00000000fffffff2 R15: 0000000=
+000000001
+  [   60.684030] FS:  00007fc2aedd80c0(0000) GS:ffff88826fa8a000(0000) kn=
+lGS:0000000000000000
+  [   60.686837] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  [   60.689027] CR2: 000056325369e000 CR3: 000000011088b002 CR4: 0000000=
+000370ef0
+  [   60.691623] Call Trace:
+  [   60.692821]  <TASK>
+  [   60.693960]  ? __pfx_verbose+0x10/0x10
+  [   60.695656]  ? __pfx_disasm_kfunc_name+0x10/0x10
+  [   60.697495]  check_cond_jmp_op+0x16f7/0x39b0
+  [   60.699237]  do_check+0x58fa/0xab10
+  ...
 
-Catalin Marinas <catalin.marinas@arm.com> writes:
+Further analysis shows the warning is at line 4302 as below:
 
-> Hi Ankur,
->
-> Sorry, it took me some time to get back to this series (well, I tried
-> once and got stuck on what wait_policy is supposed to mean, so decided
-> to wait until I had more coffee ;)).
+  4294                 /* static subprog call instruction, which
+  4295                  * means that we are exiting current subprog,
+  4296                  * so only r1-r5 could be still requested as
+  4297                  * precise, r0 and r6-r10 or any stack slot in
+  4298                  * the current frame should be zero by now
+  4299                  */
+  4300                 if (bt_reg_mask(bt) & ~BPF_REGMASK_ARGS) {
+  4301                         verbose(env, "BUG regs %x\n", bt_reg_mask(=
+bt));
+  4302                         WARN_ONCE(1, "verifier backtracking bug");
+  4303                         return -EFAULT;
+  4304                 }
 
-I suppose that's as good a sign as any that the wait_policy stuff needs
-to change ;).
+With the below test (also in the next patch):
+  __used __naked static void __bpf_jmp_r10(void)
+  {
+	asm volatile (
+	"r2 =3D 2314885393468386424 ll;"
+	"goto +0;"
+	"if r2 <=3D r10 goto +3;"
+	"if r1 >=3D -1835016 goto +0;"
+	"if r2 <=3D 8 goto +0;"
+	"if r3 <=3D 0 goto +0;"
+	"exit;"
+	::: __clobber_all);
+  }
 
-> On Fri, May 02, 2025 at 01:52:17AM -0700, Ankur Arora wrote:
->> diff --git a/include/asm-generic/barrier.h b/include/asm-generic/barrier.h
->> index d4f581c1e21d..a7be98e906f4 100644
->> --- a/include/asm-generic/barrier.h
->> +++ b/include/asm-generic/barrier.h
->> @@ -273,6 +273,64 @@ do {									\
->>  })
->>  #endif
->>
->> +/*
->> + * Non-spin primitive that allows waiting for stores to an address,
->> + * with support for a timeout. This works in conjunction with an
->> + * architecturally defined wait_policy.
->> + */
->> +#ifndef __smp_timewait_store
->> +#define __smp_timewait_store(ptr, val) do { } while (0)
->> +#endif
->> +
->> +#ifndef __smp_cond_load_relaxed_timewait
->> +#define __smp_cond_load_relaxed_timewait(ptr, cond_expr, wait_policy,	\
->> +					 time_expr, time_end) ({	\
->> +	typeof(ptr) __PTR = (ptr);					\
->> +	__unqual_scalar_typeof(*ptr) VAL;				\
->> +	u32 __n = 0, __spin = 0;					\
->> +	u64 __prev = 0, __end = (time_end);				\
->> +	bool __wait = false;						\
->> +									\
->> +	for (;;) {							\
->> +		VAL = READ_ONCE(*__PTR);				\
->> +		if (cond_expr)						\
->> +			break;						\
->> +		cpu_relax();						\
->> +		if (++__n < __spin)					\
->> +			continue;					\
->> +		if (!(__prev = wait_policy((time_expr), __prev, __end,	\
->> +					  &__spin, &__wait)))		\
->> +			break;						\
->> +		if (__wait)						\
->> +			__smp_timewait_store(__PTR, VAL);		\
->> +		__n = 0;						\
->> +	}								\
->> +	(typeof(*ptr))VAL;						\
->> +})
->> +#endif
->> +
->> +/**
->> + * smp_cond_load_relaxed_timewait() - (Spin) wait for cond with no ordering
->> + * guarantees until a timeout expires.
->> + * @ptr: pointer to the variable to wait on
->> + * @cond: boolean expression to wait for
->> + * @wait_policy: policy handler that adjusts the number of times we spin or
->> + *  wait for cacheline to change (depends on architecture, not supported in
->> + *  generic code.) before evaluating the time-expr.
->> + * @time_expr: monotonic expression that evaluates to the current time
->> + * @time_end: compared against time_expr
->> + *
->> + * Equivalent to using READ_ONCE() on the condition variable.
->> + */
->> +#define smp_cond_load_relaxed_timewait(ptr, cond_expr, wait_policy,	\
->> +					 time_expr, time_end) ({	\
->> +	__unqual_scalar_typeof(*ptr) _val;;				\
->> +	_val = __smp_cond_load_relaxed_timewait(ptr, cond_expr,		\
->> +					      wait_policy, time_expr,	\
->> +					      time_end);		\
->> +	(typeof(*ptr))_val;						\
->> +})
->
-> IIUC, a generic user of this interface would need a wait_policy() that
-> is aware of the arch details (event stream, WFET etc.), given the
-> __smp_timewait_store() implementation in patch 3. This becomes clearer
-> in patch 7 where one needs to create rqspinlock_cond_timewait().
+  SEC("?raw_tp")
+  __naked void bpf_jmp_r10(void)
+  {
+	asm volatile (
+	"r3 =3D 0 ll;"
+	"call __bpf_jmp_r10;"
+	"r0 =3D 0;"
+	"exit;"
+	::: __clobber_all);
+  }
 
-Yes, if a caller can't work with the __smp_cond_timewait_coarse() etc,
-they would need to know the mechanics of how to do that on each arch.
+The following is the verifier failure log:
+  0: (18) r3 =3D 0x0                      ; R3_w=3D0
+  2: (85) call pc+2
+  caller:
+   R10=3Dfp0
+  callee:
+   frame1: R1=3Dctx() R3_w=3D0 R10=3Dfp0
+  5: frame1: R1=3Dctx() R3_w=3D0 R10=3Dfp0
+  ; asm volatile ("                                 \ @ verifier_precisio=
+n.c:184
+  5: (18) r2 =3D 0x20202000256c6c78       ; frame1: R2_w=3D0x20202000256c=
+6c78
+  7: (05) goto pc+0
+  8: (bd) if r2 <=3D r10 goto pc+3        ; frame1: R2_w=3D0x20202000256c=
+6c78 R10=3Dfp0
+  9: (35) if r1 >=3D 0xffe3fff8 goto pc+0         ; frame1: R1=3Dctx()
+  10: (b5) if r2 <=3D 0x8 goto pc+0
+  mark_precise: frame1: last_idx 10 first_idx 0 subseq_idx -1
+  mark_precise: frame1: regs=3Dr2 stack=3D before 9: (35) if r1 >=3D 0xff=
+e3fff8 goto pc+0
+  mark_precise: frame1: regs=3Dr2 stack=3D before 8: (bd) if r2 <=3D r10 =
+goto pc+3
+  mark_precise: frame1: regs=3Dr2,r10 stack=3D before 7: (05) goto pc+0
+  mark_precise: frame1: regs=3Dr2,r10 stack=3D before 5: (18) r2 =3D 0x20=
+202000256c6c78
+  mark_precise: frame1: regs=3Dr10 stack=3D before 2: (85) call pc+2
+  BUG regs 400
 
-I meant the two policies to be somewhat generic, but having to know
-the internals is a problem.
+The main failure reason is due to r10 in precision backtracking bookkeepi=
+ng.
+Actually r10 is always precise and there is no need to add it for the pre=
+cision
+backtracking bookkeeping.
 
-> The __spin count can be arch specific, not part of some wait_policy,
-> even if such policy is most likely implemented in the arch code (as the
-> generic caller has no clue what it means). The __wait decision, again, I
-> don't think it should be the caller of this API to decide how to handle,
-> it's something internal to the API implementation based on whether the
-> event stream (or later WFET) is available.
->
-> The ___cond_timewait() implementation in patch 4 sets __wait if either
-> the event stream of WFET is available. However, __smp_timewait_store()
-> only uses WFE as per the __cmpwait_relaxed() implementation. So you
-> can't really decouple wait_policy() from how the spinning is done, in an
-> arch-specific way.
+One way to fix the issue is to prevent bt_set_reg() if any src/dst reg is
+r10. Andrii suggested to go with push_insn_history() approach to avoid
+explicitly checking r10 in backtrack_insn().
 
-Agreed.
+This patch added push_insn_history() support for cond_jmp like 'rX <op> r=
+Y'
+operations. In check_cond_jmp_op(), if any of rX or rY is a stack pointer=
+,
+push_insn_history() will record such information, and later backtrack_ins=
+n()
+will do bt_set_reg() properly for those register(s).
 
-> In this implementation, wait_policy() would need to
-> say how to wait - WFE, WFET. That's not captured (and I don't think it
-> should, we can't expand the API every time we have a new method of
-> waiting).
+  [1] https://lore.kernel.org/bpf/Z%2F8q3xzpU59CIYQE@ly-workstation/
 
-The idea was both the wait_policy and the arch specific interface would
-evolve together and so once __cmpwait_relaxed() supports WFET, the
-wait_policy would also change alongside.
+Reported by: Yi Lai <yi1.lai@linux.intel.com>
+Fixes: 407958a0e980 ("bpf: encapsulate precision backtracking bookkeeping=
+")
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+---
+ include/linux/bpf_verifier.h | 12 ++++++++----
+ kernel/bpf/verifier.c        | 18 ++++++++++++++++--
+ 2 files changed, 24 insertions(+), 6 deletions(-)
 
-However, as you say, for users that define their own wait_policy, the
-interface becomes a mess to maintain.
+Changelogs:
+  v4 -> v5:
+    - v4: https://lore.kernel.org/bpf/20250522050239.2834718-1-yonghong.s=
+ong@linux.dev/
+    - Simplify implementation in backtrack_insn() and check_cond_jmp_op()=
+.
+  v3 -> v4:
+    - v3: https://lore.kernel.org/bpf/20250521170409.2772304-1-yonghong.s=
+ong@linux.dev/
+    - Fix an issue in push_cond_jmp_history(). Previously, '!src_reg' was=
+ used to
+      check whether insn is 'dreg <op> imm' or not. But actually '!src_re=
+g' is always
+      non-NULL. The new fix is using insn directly.
+  v2 -> v3:
+    - v2: https://lore.kernel.org/bpf/20250516161029.962760-1-yonghong.so=
+ng@linux.dev/
+    - In v2, I put sreg_flag/dreg_flag into bpf_insn_hist_entry and the i=
+nformation
+      includes register numbers. This is not necessary as later insn in b=
+acktracking
+      can retrieve the register number. So the new change is remove sreg_=
+flag/dreg_flag
+      from bpf_insn_hist_entry and add two bits in bpf_insn_hist_entry.fl=
+ags to
+      record whether the registers (cond jump like <reg> op < reg>) are s=
+tack pointer
+      or not. Other changes depend on this data structure change.
+  v1 -> v2:
+    - v1: https://lore.kernel.org/bpf/20250511162758.281071-1-yonghong.so=
+ng@linux.dev/
+    - In v1, we check r10 register explicitly in backtrack_insn() to deci=
+de
+      whether we should do bt_set_reg() or not. Andrii suggested to do
+      push_insn_history() instead. Whether a particular register (r10 in =
+this case)
+      should be available for backtracking or not is in check_cond_jmp_op=
+(),
+      and such information is pushed with push_insn_history(). Later in b=
+acktrack_insn(),
+      such info is retrieved to decide whether precision marking should b=
+e
+      done or not. This apporach can avoid explicit checking for r10 in b=
+acktrack_insn().
 
-> I still think this interface can be simpler and fairly generic, not with
-> wait_policy specific to rqspinlock or poll_idle. Maybe you can keep a
-> policy argument for an internal __smp_cond_load_relaxed_timewait() if
-> it's easier to structure the code this way but definitely not for
-> smp_cond_*().
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index 78c97e12ea4e..256274acb1d8 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -356,7 +356,11 @@ enum {
+ 	INSN_F_SPI_MASK =3D 0x3f, /* 6 bits */
+ 	INSN_F_SPI_SHIFT =3D 3, /* shifted 3 bits to the left */
+=20
+-	INSN_F_STACK_ACCESS =3D BIT(9), /* we need 10 bits total */
++	INSN_F_STACK_ACCESS =3D BIT(9),
++
++	INSN_F_DST_REG_STACK =3D BIT(10), /* dst_reg is PTR_TO_STACK */
++	INSN_F_SRC_REG_STACK =3D BIT(11), /* src_reg is PTR_TO_STACK */
++	/* total 12 bits are used now. */
+ };
+=20
+ static_assert(INSN_F_FRAMENO_MASK + 1 >=3D MAX_CALL_FRAMES);
+@@ -365,9 +369,9 @@ static_assert(INSN_F_SPI_MASK + 1 >=3D MAX_BPF_STACK =
+/ 8);
+ struct bpf_insn_hist_entry {
+ 	u32 idx;
+ 	/* insn idx can't be bigger than 1 million */
+-	u32 prev_idx : 22;
+-	/* special flags, e.g., whether insn is doing register stack spill/load=
+ */
+-	u32 flags : 10;
++	u32 prev_idx : 20;
++	/* special INSN_F_xxx flags */
++	u32 flags : 12;
+ 	/* additional registers that need precision tracking when this
+ 	 * jump is backtracked, vector of six 10-bit records
+ 	 */
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index d5807d2efc92..831c2eff56e1 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -4410,8 +4410,10 @@ static int backtrack_insn(struct bpf_verifier_env =
+*env, int idx, int subseq_idx,
+ 			 * before it would be equally necessary to
+ 			 * propagate it to dreg.
+ 			 */
+-			bt_set_reg(bt, dreg);
+-			bt_set_reg(bt, sreg);
++			if (!hist || !(hist->flags & INSN_F_SRC_REG_STACK))
++				bt_set_reg(bt, sreg);
++			if (!hist || !(hist->flags & INSN_F_DST_REG_STACK))
++				bt_set_reg(bt, dreg);
+ 		} else if (BPF_SRC(insn->code) =3D=3D BPF_K) {
+ 			 /* dreg <cond> K
+ 			  * Only dreg still needs precision before
+@@ -16407,6 +16409,7 @@ static int check_cond_jmp_op(struct bpf_verifier_=
+env *env,
+ 	struct bpf_reg_state *eq_branch_regs;
+ 	struct linked_regs linked_regs =3D {};
+ 	u8 opcode =3D BPF_OP(insn->code);
++	int insn_flags =3D 0;
+ 	bool is_jmp32;
+ 	int pred =3D -1;
+ 	int err;
+@@ -16465,6 +16468,9 @@ static int check_cond_jmp_op(struct bpf_verifier_=
+env *env,
+ 				insn->src_reg);
+ 			return -EACCES;
+ 		}
++
++		if (src_reg->type =3D=3D PTR_TO_STACK)
++			insn_flags |=3D INSN_F_SRC_REG_STACK;
+ 	} else {
+ 		if (insn->src_reg !=3D BPF_REG_0) {
+ 			verbose(env, "BPF_JMP/JMP32 uses reserved fields\n");
+@@ -16476,6 +16482,14 @@ static int check_cond_jmp_op(struct bpf_verifier=
+_env *env,
+ 		__mark_reg_known(src_reg, insn->imm);
+ 	}
+=20
++	if (dst_reg->type =3D=3D PTR_TO_STACK)
++		insn_flags |=3D INSN_F_DST_REG_STACK;
++	if (insn_flags) {
++		err =3D push_insn_history(env, this_branch, insn_flags, 0);
++		if (err)
++			return err;
++	}
++
+ 	is_jmp32 =3D BPF_CLASS(insn->code) =3D=3D BPF_JMP32;
+ 	pred =3D is_branch_taken(dst_reg, src_reg, opcode, is_jmp32);
+ 	if (pred >=3D 0) {
+--=20
+2.47.1
 
-Yeah. I think that's probably the way to do this. The main reason I felt
-that we need an explicit wait_policy was to address the rqspinlock case
-but as you point out, that makes the interface unmaintainable.
-
-So, this should work (see below for one proviso), for most users:
-
-    #define smp_cond_load_relaxed_timewait(ptr, cond_expr,
-     				       time_expr, time_end, slack_us)
-
-(Though, I would use slack_us instead of slack_ns and also keep time_expr
-and time_end denominated in us.)
-
-And users like rqspinlock could use __smp_cond_load_relaxed_timewait()
-with a policy argument where they can combine rqspinock policy plus
-with the common wait policy so wouldn't need to know the internals of
-the waiting mechanisms.
-
-> Another aspect I'm not keen on is the arbitrary fine/coarse constants.
-> Can we not have the caller pass a slack value (in ns or 0 if it doesn't
-> care) to smp_cond_load_relaxed_timewait() and let the arch code decide
-> which policy to use?
-
-Yeah, as you probably noticed, that's pretty much how what they are
-implemented internally already.
-
-> In summary, I see the API something like:
->
-> #define smp_cond_load_relaxed_timewait(ptr, cond_expr,
-> 				       time_expr, time_end, slack_ns)
-
-Ack.
-
-> We can even drop time_end if we capture it in time_expr returning a bool
-> (like we do with cond_expr).
-
-I'm not sure we can combine time_expr, time_end. Given that we have two
-ways to wait: spin and wait, both with different granularity, just a
-binary check won't suffice.
-
-For switching between wait and spin, we would also need to compare the
-granularity of the mechanism, derive the time-remaining, check against
-slack etc.
-
-Thanks for the comments. Most helpful.
-
---
-ankur
 
