@@ -1,245 +1,415 @@
-Return-Path: <bpf+bounces-58873-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58874-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 356EDAC2CCC
-	for <lists+bpf@lfdr.de>; Sat, 24 May 2025 03:02:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE580AC2CCD
+	for <lists+bpf@lfdr.de>; Sat, 24 May 2025 03:04:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55DB81C07BC8
-	for <lists+bpf@lfdr.de>; Sat, 24 May 2025 01:02:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C11517A6EC4
+	for <lists+bpf@lfdr.de>; Sat, 24 May 2025 01:03:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9B731448D5;
-	Sat, 24 May 2025 01:02:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8301819CD01;
+	Sat, 24 May 2025 01:04:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gxbMGfIi"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hzpcGUb0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f68.google.com (mail-ej1-f68.google.com [209.85.218.68])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8927F6FC3
-	for <bpf@vger.kernel.org>; Sat, 24 May 2025 01:02:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B90128EB
+	for <bpf@vger.kernel.org>; Sat, 24 May 2025 01:04:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748048522; cv=none; b=h0d/D4Vost6WHbbYTgigDWN3snh24+GVYamGnhAi1dcgTKdpTj4N2HOv5jovHrsvw0nXuM8lOXpYOmMuAuGBB/OpUy38WC5OEVYGo4WW4+db5YZK4pdWbMbmmaRBF1IfvsFuv+op0P+7wUhTuHKbGril9LkMyz7kzWmTcVwy1Lo=
+	t=1748048659; cv=none; b=Q1Gz0Nb/Pnmqzg1oAbf0vDLJKJt15+fX4qtSjnVkvspzGveX8a9ONhgoHXkQVsIyvts0TbCzV7RvRZTydHOKaVCUbQeY49/ABJHWrbh8kzzHKBoAn/QYQEieqMD+wt6nbya5nkUtn4f9i1PyPWxESzHxi0nakTYtOQTk5ZegvDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748048522; c=relaxed/simple;
-	bh=x32efmyMIIicX20DP2SgZVJAb502Gq/DfBcpsIbkTk4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VuY4o5wNUdw6QmaGOMLwCemdff3/0YPUnmIPDKgC8sXyLVqUsUdTmpHj8kM3h5TUuMzlUVMh05b2Bl6qhuZUyAASwOCl0gCQ5ukNZMj3reEuDX7QJ99eeecu31uHJhmm3mOCh9ll2ZA31OYGaGPPKp21a4qzXz8LzbYuODLotXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gxbMGfIi; arc=none smtp.client-ip=209.85.218.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f68.google.com with SMTP id a640c23a62f3a-acacb8743a7so75818466b.1
-        for <bpf@vger.kernel.org>; Fri, 23 May 2025 18:02:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748048519; x=1748653319; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IPxNcC3YId4FUejlEXwL5IotcAvwx+O8AcIu/WuJJbk=;
-        b=gxbMGfIiMrdSfbLBHGT5sW78tu/JviOf1zW4nldY319kHP46FMo7aPE5gjk6VjJKtE
-         oHF6TYccophoFY9jLFQcQRxcW2KUY0sZkRJKcFZciNL5nKf04xj/+5E1jLGQkfZCMF2x
-         kcMchKEHCC9VxRdNYF5tV0R7tii3tVbGb/Ywe7yyN7Kuc04PG9dh3fSrVTMKk7v8z+o4
-         mPcsctCDm/f+/kf6YXlYFHUtNWawI9CeZI1+0CfFi5dTj8kV7N2hl12+aw/SYlXIpy8t
-         UQiCM2BGqn7cjBhZmw+uQWrV6DYxpYWyY9Vi3Uo2LOufSBOPY2N4TI6+kbJkwVHrm3Oh
-         XIRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748048519; x=1748653319;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IPxNcC3YId4FUejlEXwL5IotcAvwx+O8AcIu/WuJJbk=;
-        b=N//4Wl0DIL3Fg1d7KgXLOeupb3MNLEY53D9TeUwI63klFC90lmk+Lwp8BLSXmRjy9Y
-         SUIZ8WfveOC1Nd2XBWNMSHj9REbKdJUkrUjt8Y+tUJhZwz5hZulObBgtjkKrzaMLZUYn
-         mMwZWfba4CaN/S4uzaUK0AjnR682S9sNDqbnL1qBTLEV5pUjGyZrrcu1YP0nM+RqyBzo
-         AoCbmn289k5ElxzVMObT/FovGbqwCdHT+HNCvL171y7gYm6RQ302+f1M7BzsG/lpLQ7k
-         Pcd5h+BOzAJaL3gheVY3Plfms3NSM3ph0DSdI04QlIkvQg7fcXViyT7lDfUh7hzJbNBm
-         KFyw==
-X-Forwarded-Encrypted: i=1; AJvYcCXEpNCB+L903Vl0FuQtV3vRr8T+8/o7+z+CfmHYRIOoWbFWKwTLYaFvh5Tk7F82i3zi+oM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzommjdiBsuma28uwVZ5KpQFbJJo341H5O/09ELtTISm5VR87Jh
-	lYxVdQk++kct0xL0I/T496klezntxNjjatF/APUTVo10GU1V6xTMiQ2CvjiikjOTZ2YGjLqNdIz
-	0HV+Ke5D7oiz9Xjw1ZqYm7zLBSDdMyGg=
-X-Gm-Gg: ASbGnct3PMQnzqkdDCXtHOH/280PjUd6WpABEuMLbeOsdlJqyqf7pJ+ZfAVD5ku1Ag4
-	8a+N6S8lV+bn86O3ZjXim4Ln/3GK3SI8XSaqVogF1YGit2TUCAaqkkNGQpic+dMTZ3XqJBBNp2h
-	SC6Su9MKSTP3IdmTESQwRtXp1WLnJrG7K7O0RFZ4Z7ZJfDUINRlPES2LmfYYrfNNPFJAWNELgOG
-	RTZKw==
-X-Google-Smtp-Source: AGHT+IFATIIq2FhBhUFnZ33lSdWiFwY3st2VXgVu/FkeTB1rvMiGSGpxYT2qOPuv+cg5+8MqUsci0K/ssVRFJpdwygo=
-X-Received: by 2002:a17:907:3e1c:b0:ac7:81b0:62c9 with SMTP id
- a640c23a62f3a-ad8599eacf9mr114310166b.20.1748048518664; Fri, 23 May 2025
- 18:01:58 -0700 (PDT)
+	s=arc-20240116; t=1748048659; c=relaxed/simple;
+	bh=xxKxC4sD5XRCoDpTDXIuV0MGaQrCNzDp39ie8XbZKBY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MzTBej2Z1ewG/Z701RjVZzQpHEtiuGNL5I3PUHeqeuy+Lzy5rZ7WHke/z+srZDoYaHnWVwAEfRLmj/ELXmsBGQuyxrJa24uDxrwigbqxoBhHmdtT+doolIwcA8Jv0ysLcCw6eiB5GcpOS7ciC+vwxeygDy3EWJcW9//SWZL62pg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hzpcGUb0; arc=none smtp.client-ip=95.215.58.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <067aec4f-6847-4c86-9e93-1be8145b252a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1748048651;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XOEc+pTmwyRTGEW5PQbj34T8ED8M4OKOsHN5V2CPkCc=;
+	b=hzpcGUb0rvKlDWnaQR37lyXkCM9Or4FNnOfuodsfxlo+3UNNK6fDmmJ6OBwQzs/v984Wxk
+	Kc1Xj0tb2YCti0jM5P+UpqJXEC5bzIbexluPVHRiF5DGlCrf16u+89nuceo5Fo5K9EXo/w
+	gotBjYi2rkwp8CMEkhxJXdko9IVu0/k=
+Date: Fri, 23 May 2025 18:03:11 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250508113804.304665-1-iii@linux.ibm.com> <CAADnVQ+kGcRrLOaA5ic6cYG+1vHJm0bBD1GRfUaYpaOGa3Vx0g@mail.gmail.com>
- <15bf9a71b8185006c8d19a3aefb331a2765629c5.camel@linux.ibm.com>
- <CAADnVQL6Q+QRv3_JwEd26biwGpFYcwD_=BjBJWLAtpgOP9CKRw@mail.gmail.com>
- <7a242102eecdd17b4d35c1e4f7d01ea15cb8066a.camel@linux.ibm.com>
- <CAADnVQ+5h9UESAgNA58HEQ-0zwxn=c0+ibH++NF9farR5-JB8g@mail.gmail.com>
- <CAP01T74iix8HvmVYowFyrG98tDRw8JMOck7HQLD57nuo7SyuoA@mail.gmail.com>
- <a8b8b4c9b5485a605437448bd1c548a38dfd1d55.camel@linux.ibm.com> <b7517bd4-3e6a-4a74-99c8-bca0969aeb01@linux.dev>
-In-Reply-To: <b7517bd4-3e6a-4a74-99c8-bca0969aeb01@linux.dev>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Sat, 24 May 2025 03:01:22 +0200
-X-Gm-Features: AX0GCFtWb6r4Rlharq365DhzPegk85Bmk4Wj1Yyk5fi9acHLlk0waf--unvwnas
-Message-ID: <CAP01T75hQ0SDAXY+w-nnRii_B9TkydCXahbC8ATrmuGAeQc+AQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix "expression result unused" warnings
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: Ilya Leoshkevich <iii@linux.ibm.com>, Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v3 2/5] bpf: Implement mprog API on top of
+ existing cgroup progs
+Content-Language: en-GB
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
+References: <20250517162720.4077882-1-yonghong.song@linux.dev>
+ <20250517162731.4078451-1-yonghong.song@linux.dev>
+ <CAEf4BzbnSKr9JrdO266cN1tdPDpQKOGRrxn+ZbSX7cM5jVQh2g@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAEf4BzbnSKr9JrdO266cN1tdPDpQKOGRrxn+ZbSX7cM5jVQh2g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Sat, 24 May 2025 at 02:06, Yonghong Song <yonghong.song@linux.dev> wrote=
-:
->
->
->
-> On 5/23/25 4:25 AM, Ilya Leoshkevich wrote:
-> > On Mon, 2025-05-12 at 15:29 -0400, Kumar Kartikeya Dwivedi wrote:
-> >> On Mon, 12 May 2025 at 12:41, Alexei Starovoitov
-> >> <alexei.starovoitov@gmail.com> wrote:
-> >>> On Mon, May 12, 2025 at 5:22=E2=80=AFAM Ilya Leoshkevich
-> >>> <iii@linux.ibm.com> wrote:
-> >>>> On Fri, 2025-05-09 at 09:51 -0700, Alexei Starovoitov wrote:
-> >>>>> On Thu, May 8, 2025 at 12:21=E2=80=AFPM Ilya Leoshkevich
-> >>>>> <iii@linux.ibm.com>
-> >>>>> wrote:
-> >>>>>> On Thu, 2025-05-08 at 11:38 -0700, Alexei Starovoitov wrote:
-> >>>>>>> On Thu, May 8, 2025 at 4:38=E2=80=AFAM Ilya Leoshkevich
-> >>>>>>> <iii@linux.ibm.com>
-> >>>>>>> wrote:
-> >>>>>>>> clang-21 complains about unused expressions in a few
-> >>>>>>>> progs.
-> >>>>>>>> Fix by explicitly casting the respective expressions to
-> >>>>>>>> void.
-> >>>>>>> ...
-> >>>>>>>>          if (val & _Q_LOCKED_MASK)
-> >>>>>>>> -               smp_cond_load_acquire_label(&lock-
-> >>>>>>>>> locked,
-> >>>>>>>> !VAL,
-> >>>>>>>> release_err);
-> >>>>>>>> +               (void)smp_cond_load_acquire_label(&lock-
-> >>>>>>>>> locked,
-> >>>>>>>> !VAL, release_err);
-> >>>>>>> Hmm. I'm on clang-21 too and I don't see them.
-> >>>>>>> What warnings do you see ?
-> >>>>>> In file included from progs/arena_spin_lock.c:7:
-> >>>>>> progs/bpf_arena_spin_lock.h:305:1756: error: expression
-> >>>>>> result
-> >>>>>> unused
-> >>>>>> [-Werror,-Wunused-value]
-> >>>>>>    305 |   ({ typeof(_Generic((*&lock->locked), char: (char)0,
-> >>>>>> unsigned
-> >>>>>> char : (unsigned char)0, signed char : (signed char)0,
-> >>>>>> unsigned
-> >>>>>> short :
-> >>>>>> (unsigned short)0, signed short : (signed short)0, unsigned
-> >>>>>> int :
-> >>>>>> (unsigned int)0, signed int : (signed int)0, unsigned long :
-> >>>>>> (unsigned
-> >>>>>> long)0, signed long : (signed long)0, unsigned long long :
-> >>>>>> (unsigned
-> >>>>>> long long)0, signed long long : (signed long long)0, default:
-> >>>>>> (typeof(*&lock->locked))0)) __val =3D ({ typeof(&lock->locked)
-> >>>>>> __ptr
-> >>>>>> =3D
-> >>>>>> (&lock->locked); typeof(_Generic((*(&lock->locked)), char:
-> >>>>>> (char)0,
-> >>>>>> unsigned char : (unsigned char)0, signed char : (signed
-> >>>>>> char)0,
-> >>>>>> unsigned short : (unsigned short)0, signed short : (signed
-> >>>>>> short)0,
-> >>>>>> unsigned int : (unsigned int)0, signed int : (signed int)0,
-> >>>>>> unsigned
-> >>>>>> long : (unsigned long)0, signed long : (signed long)0,
-> >>>>>> unsigned
-> >>>>>> long
-> >>>>>> long : (unsigned long long)0, signed long long : (signed long
-> >>>>>> long)0,
-> >>>>>> default: (typeof(*(&lock->locked)))0)) VAL; for (;;) { VAL =3D
-> >>>>>> (typeof(_Generic((*(&lock->locked)), char: (char)0, unsigned
-> >>>>>> char :
-> >>>>>> (unsigned char)0, signed char : (signed char)0, unsigned
-> >>>>>> short :
-> >>>>>> (unsigned short)0, signed short : (signed short)0, unsigned
-> >>>>>> int :
-> >>>>>> (unsigned int)0, signed int : (signed int)0, unsigned long :
-> >>>>>> (unsigned
-> >>>>>> long)0, signed long : (signed long)0, unsigned long long :
-> >>>>>> (unsigned
-> >>>>>> long long)0, signed long long : (signed long long)0, default:
-> >>>>>> (typeof(*(&lock->locked)))0)))(*(volatile typeof(*__ptr)
-> >>>>>> *)&(*__ptr));
-> >>>>>> if (!VAL) break; ({ __label__ l_break, l_continue; asm
-> >>>>>> volatile
-> >>>>>> goto("may_goto %l[l_break]" :::: l_break); goto l_continue;
-> >>>>>> l_break:
-> >>>>>> goto release_err; l_continue:; }); ({}); } (typeof(*(&lock-
-> >>>>>>> locked)))VAL; }); ({ ({ if (!CONFIG_X86_64) ({ unsigned
-> >>>>>>> long
-> >>>>>>> __val;
-> >>>>>> __sync_fetch_and_add(&__val, 0); }); else asm volatile("" :::
-> >>>>>> "memory"); }); }); (typeof(*(&lock->locked)))__val; });
-> >>>>>>        |
-> >>>>>> ^                         ~~~~~
-> >>>>>> 1 error generated.
-> >>>>> hmm. The error is impossible to read.
-> >>>>>
-> >>>>> Kumar,
-> >>>>>
-> >>>>> Do you see a way to silence it differently ?
-> >>>>>
-> >>>>> Without adding (void)...
-> >>>>>
-> >>>>> Things like:
-> >>>>> -       bpf_obj_new(..
-> >>>>> +       (void)bpf_obj_new(..
-> >>>>>
-> >>>>> are good to fix, and if we could annotate
-> >>>>> bpf_obj_new_impl kfunc with __must_check we would have done it,
-> >>>>>
-> >>>>> but
-> >>>>> -               arch_mcs_spin_lock...
-> >>>>> +               (void)arch_mcs_spin_lock...
-> >>>>>
-> >>>>> is odd.
-> >>>> What do you think about moving (void) to the definition of
-> >>>> arch_mcs_spin_lock_contended_label()? I can send a v2 if this is
-> >>>> better.
-> >>> Kumar,
-> >>>
-> >>> thoughts?
-> >> Sorry for the delay, I was afk.
-> >>
-> >> The warning seems a bit aggressive, in the kernel we have users which
-> >> do and do not use the value and it's fine.
-> >> I think moving (void) inside the macro is a problem since at least
-> >> rqspinlock like algorithm would want to inspect the result of the
-> >> locked bit.
-> >> No such users exist for now, of course. So maybe we can silence it
-> >> until we do end up depending on the value.
-> >>
-> >> I will give a try with clang-21, but I think probably (void) in the
-> >> source is better if we do need to silence it.
-> > Gentle ping.
-> >
-> > This is still an issue with clang version 21.0.0
-> > (++20250522112647+491619a25003-1~exp1~20250522112819.1465).
-> >
-> I cannot reproduce the "unused expressions" error. What is the
-> llvm cmake command line you are using?
->
 
-Sorry for the delay. I tried just now with clang built from the latest
-git checkout but I don't see it either.
-I built it following the steps at
-https://www.kernel.org/doc/Documentation/bpf/bpf_devel_QA.rst.
+
+On 5/22/25 1:45 PM, Andrii Nakryiko wrote:
+> On Sat, May 17, 2025 at 9:27 AM Yonghong Song <yonghong.song@linux.dev> wrote:
+>> Current cgroup prog ordering is appending at attachment time. This is not
+>> ideal. In some cases, users want specific ordering at a particular cgroup
+>> level. To address this, the existing mprog API seems an ideal solution with
+>> supporting BPF_F_BEFORE and BPF_F_AFTER flags.
+>>
+>> But there are a few obstacles to directly use kernel mprog interface.
+>> Currently cgroup bpf progs already support prog attach/detach/replace
+>> and link-based attach/detach/replace. For example, in struct
+>> bpf_prog_array_item, the cgroup_storage field needs to be together
+>> with bpf prog. But the mprog API struct bpf_mprog_fp only has bpf_prog
+>> as the member, which makes it difficult to use kernel mprog interface.
+>>
+>> In another case, the current cgroup prog detach tries to use the
+>> same flag as in attach. This is different from mprog kernel interface
+>> which uses flags passed from user space.
+>>
+>> So to avoid modifying existing behavior, I made the following changes to
+>> support mprog API for cgroup progs:
+>>   - The support is for prog list at cgroup level. Cross-level prog list
+>>     (a.k.a. effective prog list) is not supported.
+>>   - Previously, BPF_F_PREORDER is supported only for prog attach, now
+>>     BPF_F_PREORDER is also supported by link-based attach.
+>>   - For attach, BPF_F_BEFORE/BPF_F_AFTER/BPF_F_ID/BPF_F_LINK is supported
+>>     similar to kernel mprog but with different implementation.
+>>   - For detach and replace, use the existing implementation.
+>>   - For attach, detach and replace, the revision for a particular prog
+>>     list, associated with a particular attach type, will be updated
+>>     by increasing count by 1.
+>>
+>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>> ---
+>>   include/uapi/linux/bpf.h       |   7 ++
+>>   kernel/bpf/cgroup.c            | 195 +++++++++++++++++++++++++++++----
+>>   kernel/bpf/syscall.c           |  43 +++++---
+>>   tools/include/uapi/linux/bpf.h |   7 ++
+>>   4 files changed, 214 insertions(+), 38 deletions(-)
+>>
+>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>> index 16e95398c91c..356cd2b185fb 100644
+>> --- a/include/uapi/linux/bpf.h
+>> +++ b/include/uapi/linux/bpf.h
+>> @@ -1794,6 +1794,13 @@ union bpf_attr {
+>>                                  };
+>>                                  __u64           expected_revision;
+>>                          } netkit;
+>> +                       struct {
+>> +                               union {
+>> +                                       __u32   relative_fd;
+>> +                                       __u32   relative_id;
+>> +                               };
+>> +                               __u64           expected_revision;
+>> +                       } cgroup;
+>>                  };
+>>          } link_create;
+>>
+>> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+>> index 62a1d8deb3dc..78e6fc70b8f9 100644
+>> --- a/kernel/bpf/cgroup.c
+>> +++ b/kernel/bpf/cgroup.c
+>> @@ -624,6 +624,129 @@ static struct bpf_prog_list *find_attach_entry(struct hlist_head *progs,
+>>          return NULL;
+>>   }
+>>
+>> +static struct bpf_link *bpf_get_anchor_link(u32 flags, u32 id_or_fd, enum bpf_prog_type type)
+>> +{
+>> +       struct bpf_link *link = ERR_PTR(-EINVAL);
+>> +
+>> +       if (flags & BPF_F_ID)
+>> +               link = bpf_link_by_id(id_or_fd);
+>> +       else if (id_or_fd)
+>> +               link = bpf_link_get_from_fd(id_or_fd);
+>> +       if (IS_ERR(link))
+>> +               return link;
+>> +       if (type && link->prog->type != type) {
+>> +               bpf_link_put(link);
+>> +               return ERR_PTR(-EINVAL);
+>> +       }
+>> +
+>> +       return link;
+>> +}
+>> +
+>> +static struct bpf_prog *bpf_get_anchor_prog(u32 flags, u32 id_or_fd, enum bpf_prog_type type)
+>> +{
+>> +       struct bpf_prog *prog = ERR_PTR(-EINVAL);
+>> +
+>> +       if (flags & BPF_F_ID)
+>> +               prog = bpf_prog_by_id(id_or_fd);
+>> +       else if (id_or_fd)
+>> +               prog = bpf_prog_get(id_or_fd);
+>> +       if (IS_ERR(prog))
+>> +               return prog;
+>> +       if (type && prog->type != type) {
+>> +               bpf_prog_put(prog);
+>> +               return ERR_PTR(-EINVAL);
+>> +       }
+>> +
+>> +       return prog;
+>> +}
+>> +
+>> +static struct bpf_prog_list *get_prog_list(struct hlist_head *progs, struct bpf_prog *prog,
+>> +                                          u32 flags, u32 id_or_fd)
+>> +{
+>> +       bool link = flags & BPF_F_LINK, id = flags & BPF_F_ID;
+>> +       struct bpf_prog *anchor_prog = NULL, *pltmp_prog;
+>> +       bool preorder = flags & BPF_F_PREORDER;
+>> +       struct bpf_link *anchor_link = NULL;
+>> +       struct bpf_prog_list *pltmp;
+>> +       int ret = -EINVAL;
+>> +
+>> +       if (link || id || id_or_fd) {
+> please, use "is_id" to make it obvious that this is bool, it's very
+> confusing to see "id || id_or_fd"
+>
+> same for is_link, please
+
+Okay, I am following mprog.c code like below:
+
+====
+static int bpf_mprog_link(struct bpf_tuple *tuple,
+                           u32 id_or_fd, u32 flags,
+                           enum bpf_prog_type type)
+{
+         struct bpf_link *link = ERR_PTR(-EINVAL);
+         bool id = flags & BPF_F_ID;
+
+         if (id)
+                 link = bpf_link_by_id(id_or_fd);
+         else if (id_or_fd)
+                 link = bpf_link_get_from_fd(id_or_fd);
+====
+
+But agree is_id/is_link is more clear.
+
+>
+>> +               /* flags must have either BPF_F_BEFORE or BPF_F_AFTER */
+>> +               if (!(flags & BPF_F_BEFORE) != !!(flags & BPF_F_AFTER))
+> either/or here means exclusive or inclusive?
+>
+> if it's inclusive: if (flags & (BPF_F_BEFORE | BPF_F_AFTER)) should be
+> enough to check that at least one of them is set
+>
+> if exclusive, below you use a different style of checking (which
+> arguably is easier to follow), so let's stay consistent
+>
+>
+> I got to say that my brain broke trying to reason about this pattern:
+>
+>     if (!(...) != !!(...))
+>
+> Way too many exclamations/negations, IMO... I'm not sure what sort of
+> condition we are expressing here?
+
+Sorry for confusion. What I mean is 'exclusive'. I guess I can do
+
+bool is_before = flags & BPF_F_BEFORE;
+bool is_after = flags & BPF_F_AFTER;
+if (is_link || is_id || id_or_fd) {
+     if (is_before == is_after)
+         return ERR_PTR(-EINVAL);
+} else if (!hist_empty(progs)) {
+     if (is_before && is_after)
+         return ERR_PTR(-EINVAL);
+     ...
+}
+
+>
+> pw-bot: cr
+>
+>> +                       return ERR_PTR(-EINVAL);
+>> +       } else if (!hlist_empty(progs)) {
+>> +               /* flags cannot have both BPF_F_BEFORE and BPF_F_AFTER */
+>> +               if ((flags & BPF_F_BEFORE) && (flags & BPF_F_AFTER))
+>> +                       return ERR_PTR(-EINVAL);
+> do I understand correctly that neither BEFORE or AFTER might be set,
+> in which case it must be BPF_F_REPLACE, is that right? Can it happen
+> that we have neither REPLACE nor BEFORE/AFTER? Asked that below as
+> well...
+
+I think 'neither REPLACE nor BEFORE/AFTER' is possible. In that case,
+the prog is appended to the prog list.
+
+The code path here should not have REPLACE. See the code
+
+         if (pl) {
+                 old_prog = pl->prog;
+         } else {
+                 pl = kmalloc(sizeof(*pl), GFP_KERNEL);
+                 if (!pl) {
+                         bpf_cgroup_storages_free(new_storage);
+                         return -ENOMEM;
+                 }
+
+                 err = insert_pl_to_hlist(pl, progs, prog ? : link->link.prog, flags, id_or_fd);
+                 if (err) {
+                         kfree(pl);
+                         bpf_cgroup_storages_free(new_storage);
+                         return err;
+                 }
+         }
+
+If REPLACE is in the flag and prog replacement is successful, 'pl'
+will not be null.
+
+>
+>> +       }
+>> +
+>> +       if (link) {
+>> +               anchor_link = bpf_get_anchor_link(flags, id_or_fd, prog->type);
+>> +               if (IS_ERR(anchor_link))
+>> +                       return ERR_PTR(PTR_ERR(anchor_link));
+>> +               anchor_prog = anchor_link->prog;
+>> +       } else if (id || id_or_fd) {
+>> +               anchor_prog = bpf_get_anchor_prog(flags, id_or_fd, prog->type);
+>> +               if (IS_ERR(anchor_prog))
+>> +                       return ERR_PTR(PTR_ERR(anchor_prog));
+>> +       }
+>> +
+>> +       if (!anchor_prog) {
+>> +               /* if there is no anchor_prog, then BPF_F_PREORDER doesn't matter
+>> +                * since either prepend or append to a combined list of progs will
+>> +                * end up with correct result.
+>> +                */
+>> +               hlist_for_each_entry(pltmp, progs, node) {
+>> +                       if (flags & BPF_F_BEFORE)
+>> +                               return pltmp;
+>> +                       if (pltmp->node.next)
+>> +                               continue;
+>> +                       return pltmp;
+>> +               }
+>> +               return NULL;
+>> +       }
+>> +
+>> +       hlist_for_each_entry(pltmp, progs, node) {
+>> +               pltmp_prog = pltmp->link ? pltmp->link->link.prog : pltmp->prog;
+>> +               if (pltmp_prog != anchor_prog)
+>> +                       continue;
+>> +               if (!!(pltmp->flags & BPF_F_PREORDER) != preorder)
+>> +                       goto out;
+> hm... thinking about this a bit more, is it illegal to have the same
+> BPF program attached as PREORDER and POSTORDER? That seems legit to
+> me, do we artificially disallow this?
+
+Good question, in find_attach_entry(), we have
+
+         hlist_for_each_entry(pl, progs, node) {
+                 if (prog && pl->prog == prog && prog != replace_prog)
+                         /* disallow attaching the same prog twice */
+                         return ERR_PTR(-EINVAL);
+                 if (link && pl->link == link)
+                         /* disallow attaching the same link twice */
+                         return ERR_PTR(-EINVAL);
+         }
+
+Basically, two same progs are not allowed. Here we didn't check PREORDER flag.
+Should we relax this for this patch set?
+
+>
+> And so my proposal is instead of `goto out;` do `continue;` and write
+> this loop as searching for an item and then checking whether that item
+> was found after the loop.
+>
+>> +               if (anchor_link)
+>> +                       bpf_link_put(anchor_link);
+>> +               else
+>> +                       bpf_prog_put(anchor_prog);
+> and this duplicated cleanup would be best to avoid, given it's not
+> just a singular bpf_prog_put()...
+
+Will do.
+
+>
+>> +               return pltmp;
+>> +       }
+>> +
+>> +       ret = -ENOENT;
+>> +out:
+>> +       if (anchor_link)
+>> +               bpf_link_put(anchor_link);
+>> +       else
+>> +               bpf_prog_put(anchor_prog);
+>> +       return ERR_PTR(ret);
+>> +}
+>> +
+>> +static int insert_pl_to_hlist(struct bpf_prog_list *pl, struct hlist_head *progs,
+>> +                             struct bpf_prog *prog, u32 flags, u32 id_or_fd)
+>> +{
+>> +       struct bpf_prog_list *pltmp;
+>> +
+>> +       pltmp = get_prog_list(progs, prog, flags, id_or_fd);
+>> +       if (IS_ERR(pltmp))
+>> +               return PTR_ERR(pltmp);
+>> +
+>> +       if (!pltmp)
+>> +               hlist_add_head(&pl->node, progs);
+>> +       else if (flags & BPF_F_BEFORE)
+>> +               hlist_add_before(&pl->node, &pltmp->node);
+>> +       else
+>> +               hlist_add_behind(&pl->node, &pltmp->node);
+>> +
+>> +       return 0;
+>> +}
+>> +
+>>   /**
+>>    * __cgroup_bpf_attach() - Attach the program or the link to a cgroup, and
+>>    *                         propagate the change to descendants
+>> @@ -633,6 +756,8 @@ static struct bpf_prog_list *find_attach_entry(struct hlist_head *progs,
+>>    * @replace_prog: Previously attached program to replace if BPF_F_REPLACE is set
+>>    * @type: Type of attach operation
+>>    * @flags: Option flags
+>> + * @id_or_fd: Relative prog id or fd
+>> + * @revision: bpf_prog_list revision
+>>    *
+>>    * Exactly one of @prog or @link can be non-null.
+>>    * Must be called with cgroup_mutex held.
+>> @@ -640,7 +765,8 @@ static struct bpf_prog_list *find_attach_entry(struct hlist_head *progs,
+>>   static int __cgroup_bpf_attach(struct cgroup *cgrp,
+>>                                 struct bpf_prog *prog, struct bpf_prog *replace_prog,
+>>                                 struct bpf_cgroup_link *link,
+>> -                              enum bpf_attach_type type, u32 flags)
+>> +                              enum bpf_attach_type type, u32 flags, u32 id_or_fd,
+>> +                              u64 revision)
+>>   {
+>>          u32 saved_flags = (flags & (BPF_F_ALLOW_OVERRIDE | BPF_F_ALLOW_MULTI));
+>>          struct bpf_prog *old_prog = NULL;
+>> @@ -656,6 +782,9 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
+>>              ((flags & BPF_F_REPLACE) && !(flags & BPF_F_ALLOW_MULTI)))
+>>                  /* invalid combination */
+>>                  return -EINVAL;
+>> +       if ((flags & BPF_F_REPLACE) && (flags & (BPF_F_BEFORE | BPF_F_AFTER)))
+> but can it be that neither is set?
+
+I would say it is possible. In that case, the new prog is appended to
+the end of prog list.
+
+>
+>> +               /* only either replace or insertion with before/after */
+>> +               return -EINVAL;
+>>          if (link && (prog || replace_prog))
+>>                  /* only either link or prog/replace_prog can be specified */
+>>                  return -EINVAL;
+> [...]
+
 
