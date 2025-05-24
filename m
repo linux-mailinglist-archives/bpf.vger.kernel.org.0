@@ -1,415 +1,247 @@
-Return-Path: <bpf+bounces-58874-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58875-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE580AC2CCD
-	for <lists+bpf@lfdr.de>; Sat, 24 May 2025 03:04:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1802EAC2CD6
+	for <lists+bpf@lfdr.de>; Sat, 24 May 2025 03:19:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C11517A6EC4
-	for <lists+bpf@lfdr.de>; Sat, 24 May 2025 01:03:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20163A413C7
+	for <lists+bpf@lfdr.de>; Sat, 24 May 2025 01:18:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8301819CD01;
-	Sat, 24 May 2025 01:04:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 469F01C862D;
+	Sat, 24 May 2025 01:18:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hzpcGUb0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KDUbeTqs"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f68.google.com (mail-wr1-f68.google.com [209.85.221.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B90128EB
-	for <bpf@vger.kernel.org>; Sat, 24 May 2025 01:04:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5CCE1C32
+	for <bpf@vger.kernel.org>; Sat, 24 May 2025 01:18:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748048659; cv=none; b=Q1Gz0Nb/Pnmqzg1oAbf0vDLJKJt15+fX4qtSjnVkvspzGveX8a9ONhgoHXkQVsIyvts0TbCzV7RvRZTydHOKaVCUbQeY49/ABJHWrbh8kzzHKBoAn/QYQEieqMD+wt6nbya5nkUtn4f9i1PyPWxESzHxi0nakTYtOQTk5ZegvDs=
+	t=1748049534; cv=none; b=X8AlT7QIN1hCTZqFo7hjnlzaZrho+fPt0BcX1OZxxvIkWNRPWdT6AhvT0NvGD0L8Zu8ZRdBeUZgpUE5Qy3VreROdw+1LsIqsB3VqQZTis4AhLn9HqW4PlmTF3i6HlWUSM0hAdkaLkfKCTojVw5GhkCK+CZth7q44hHqQXvysVng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748048659; c=relaxed/simple;
-	bh=xxKxC4sD5XRCoDpTDXIuV0MGaQrCNzDp39ie8XbZKBY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MzTBej2Z1ewG/Z701RjVZzQpHEtiuGNL5I3PUHeqeuy+Lzy5rZ7WHke/z+srZDoYaHnWVwAEfRLmj/ELXmsBGQuyxrJa24uDxrwigbqxoBhHmdtT+doolIwcA8Jv0ysLcCw6eiB5GcpOS7ciC+vwxeygDy3EWJcW9//SWZL62pg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hzpcGUb0; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <067aec4f-6847-4c86-9e93-1be8145b252a@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1748048651;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XOEc+pTmwyRTGEW5PQbj34T8ED8M4OKOsHN5V2CPkCc=;
-	b=hzpcGUb0rvKlDWnaQR37lyXkCM9Or4FNnOfuodsfxlo+3UNNK6fDmmJ6OBwQzs/v984Wxk
-	Kc1Xj0tb2YCti0jM5P+UpqJXEC5bzIbexluPVHRiF5DGlCrf16u+89nuceo5Fo5K9EXo/w
-	gotBjYi2rkwp8CMEkhxJXdko9IVu0/k=
-Date: Fri, 23 May 2025 18:03:11 -0700
+	s=arc-20240116; t=1748049534; c=relaxed/simple;
+	bh=mFVh+IfKx+j5X6wGFpluJ0mKmIWFm0XU8LD6EkwHziU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=d11GIIei4DjFzDPhFkRFslJiChALg91bwqIJuM78BaX9wJaRHCgCebBJl3IkW7H3gioOaYeiiDyqVXsBvhKcpLX4J+djbTM4wp6kAuiD+RkSKXNLE4KGopsB0HxSwjJhmY58YEKC9mHNyKbxT1mMaXPhbFKq5CpmmaojuNJajVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KDUbeTqs; arc=none smtp.client-ip=209.85.221.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f68.google.com with SMTP id ffacd0b85a97d-3a37a243388so390134f8f.1
+        for <bpf@vger.kernel.org>; Fri, 23 May 2025 18:18:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748049531; x=1748654331; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=iflPHyOsOhLpmPWf4fxmKLNjHEwQh6+/Ugt9VZLwaUE=;
+        b=KDUbeTqsghHdKpm5wQ3/KH23+q2sN61I7IM2xtEulieE/sVHt1OVeLY0T3HUsA6Zgr
+         3eF3A8fRfabbbtJ5Lqi7IJxtbrPaiZVPAqVzVBPddThVhZS9/BZSfZ4p/9wJhhsJqQ52
+         0byNaG+68wNQ5yO9BuhasXspc0lfs9quNpBZDvrtKXi/b9Jo91OrRxVcC6y6mik4Ei2f
+         YVg30NyOHTEUAvQhDd2GEZVmbGpWGZ4NYZkBnBy4hbmPULeeZvJr0umgS5zjx+euEwNx
+         q7dIYYlJzEOQmCi18rbkherFJtPFGqMpSa7g++Tbqi3jX62DbV+gnQMDLOY6ka0exR9i
+         FLxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748049531; x=1748654331;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iflPHyOsOhLpmPWf4fxmKLNjHEwQh6+/Ugt9VZLwaUE=;
+        b=pRwj20M9iZ0Vvpgz7dnkuKLm2nWzx3u/5jmH3WuQIrUT6mnHH0CWb9/a+FIrvvDRKG
+         Niut/M8b+c7Q3NUiQAX21picoqqK380yfFLxGf+dBbCFvJIM9Ch2hnkMnlKXs8gjPhdE
+         AMdgKVZzibHrfcg7Bi9+oaAvI/XX86a3i4G2Pr8PO3m8tLvGqBDPT9g6D/xetWEkA9Ya
+         4Z1taCngDAFn8UWGpx3JVhwmrIRx1FihJjXPlp6BqOSoChBHEoh838lzPKln16BS74oQ
+         YaRgao4DqYk9+gO1fDJfIqVTw6i3Br62v3pzrFwjvZ9Y7eHIrOnL3UYtXekFZm3j+C40
+         Bn+w==
+X-Gm-Message-State: AOJu0Yyn/HIooX2AJJS/Y1BtEG8d+r1PT6QXw+W0JMYYnC0YCJHq5DvT
+	WA6XAZrC8Yg94SjmQvkm/PnE27c7N3Tbfic3l0v/edoFlOs/VkIjnnPXEn/6XKyb+1g=
+X-Gm-Gg: ASbGncu1VvJ7oXYeH+b2MCXCd0Ov5Q/ZFOft/O4Lei4u/Cpj9U/ybKMgkYWAu5+d4fR
+	LdCnheb8GUSBDPKw9E41yPFuFFhGqYhZANIzfo3EcZP8MumSiFv9pfSQ+n9zslElVT+OFXo/61T
+	jIZpNwytP2t/WmZ6CYPKiS8i0xR0oovFVEOkMhBSTmuxKDqDgP7yteVCyAUXhXnisreqd0QKlef
+	Z6hoAI5jFg2SydFqtJwdcqBRIntnl1boPHRfV9bPbWY5d9+60jOxHK++rg8VC5B3vUeIYqvQBHk
+	N9omIuWGo3NKSTXTg5gAr8Jicxaf2Umh1va4PE0n
+X-Google-Smtp-Source: AGHT+IGGQ3XnBiA+vgTS+Xofjf5xz9uD5P0pK631nOUUQQKCA8Nmjuzgjk6Jqa46CwTtNomm/qOwkg==
+X-Received: by 2002:a05:6000:2481:b0:3a3:712e:c4c9 with SMTP id ffacd0b85a97d-3a4cb499875mr1075471f8f.52.1748049530775;
+        Fri, 23 May 2025 18:18:50 -0700 (PDT)
+Received: from localhost ([2a03:2880:31ff:4::])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-447f1ef032esm166384995e9.9.2025.05.23.18.18.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 May 2025 18:18:50 -0700 (PDT)
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Emil Tsalapatis <emil@etsalapatis.com>,
+	Barret Rhoden <brho@google.com>,
+	Matt Bobrowski <mattbobrowski@google.com>,
+	kkd@meta.com,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next v2 00/11] BPF Standard Streams
+Date: Fri, 23 May 2025 18:18:38 -0700
+Message-ID: <20250524011849.681425-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v3 2/5] bpf: Implement mprog API on top of
- existing cgroup progs
-Content-Language: en-GB
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
-References: <20250517162720.4077882-1-yonghong.song@linux.dev>
- <20250517162731.4078451-1-yonghong.song@linux.dev>
- <CAEf4BzbnSKr9JrdO266cN1tdPDpQKOGRrxn+ZbSX7cM5jVQh2g@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAEf4BzbnSKr9JrdO266cN1tdPDpQKOGRrxn+ZbSX7cM5jVQh2g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6536; h=from:subject; bh=mFVh+IfKx+j5X6wGFpluJ0mKmIWFm0XU8LD6EkwHziU=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBoMR3Okb91HLXEHocPoz/EdF9CgNwuHDSfS7uEUgS+ fppkkSmJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCaDEdzgAKCRBM4MiGSL8RyrymD/ 0degBfKbnYymfNA5ewk0HUatym/Hagwig8R4H0TUKggdQ0u9QmIEl9loQPl+zvZNbLHndnVbiB6Nwp C3QNIZNh9KaOBfHJC55VLyqMQ2yAf14iHdM8OAjOdz1hLMUIWNKaM2zZ2WCkmW8vdRYxSJPzTupaTv +xzJWburcZE2uXu2At8IMnsvPgCrC1/j0XDLyhoT+XwU6CQ1nhCv6wk8jJ2ZD8x5e/rV7s/CtN+IiT Q2XU/SAv1GKw3QDiKl+2e9gWQONC0L+k2KG32OSyNt6Zw89Tq8saxsxgNDCo+JF2kuxCudenJk+iHV YXKPl/tasc9PYzsL6qM9B4+wa9lJR/i0WzoICbeZT9T4QN6N6dUA3OQA6vWSwDiniw4X8lSXyMjCtV teH/KGLighdv7V7t4YM1CToTnPnAjfiN8by8hF/nLlukgWkgcu458QlDVdlAetqDlgKT/n4FvsAi9U ZSMUBBRjUdemiIO62hjNVXScNGfYAVyrVMKco5RAafLXTWwWrA44YPkk1vQKzReS22ekUqnC23i8J+ Cxddsq/hrtBxQoYfSvvQpIu4NewRi+aKIcRqotEGvbAfOPExPGk20T7m13UQM3IQanijAWD0R7gt7g R+L7/69UlEUNEx7XKqguzQXeGjvtFR86uBzSPOOv7KsFZ1+7wkAWseC4w81A==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+
+This set introduces a standard output interface with two streams, namely
+stdout and stderr, for BPF programs. The idea is that these streams will
+be written to by BPF programs and the kernel, and serve as standard
+interfaces for informing user space of any BPF runtime violations. Users
+can also utilize them for printing normal messages for debugging usage,
+as is the case with bpf_printk() and trace pipe interface.
+
+BPF programs and the kernel can use these streams to output messages.
+User space can dump these messages using bpftool.
+
+The stream interface itself is implemented using a lockless list, so
+that we can queue messages from any context. Every printk statement into
+the stream leads to memory allocation. Allocation itself relies on
+try_alloc_pages() to construct a bespoke bump allocator to carve out
+elements. If this fails, we finally give up and drop the message.
+
+See commit logs for more details.
+
+Two scenarios are covered:
+ - Deadlocks and timeouts in rqspinlock.
+ - Timeouts for may_goto.
+
+In each we provide the stack trace and source information for the
+offending BPF programs. Both the C source line and the file and line
+numbers are printed. The output format is as follows:
+
+ERROR: AA or ABBA deadlock detected for bpf_res_spin_lock
+Attempted lock   = 0xff11000108f3a5e0
+Total held locks = 1
+Held lock[ 0] = 0xff11000108f3a5e0
+CPU: 48 UID: 0 PID: 786 Comm: test_progs
+Call trace:
+bpf_stream_stage_dump_stack+0xb0/0xd0
+bpf_prog_report_rqspinlock_violation+0x10b/0x130
+bpf_res_spin_lock+0x8c/0xa0
+bpf_prog_3699ea119d1f6ed8_foo+0xe5/0x140
+  if (!bpf_res_spin_lock(&v2->lock)) @ stream_bpftool.c:62
+bpf_prog_9b324ec4a1b2a5c0_stream_bpftool_dump_prog_stream+0x7e/0x2d0
+  foo(stream); @ stream_bpftool.c:93
+bpf_prog_test_run_syscall+0x102/0x240
+__sys_bpf+0xd68/0x2bf0
+__x64_sys_bpf+0x1e/0x30
+do_syscall_64+0x68/0x140
+entry_SYSCALL_64_after_hwframe+0x76/0x7e
+
+ERROR: Timeout detected for may_goto instruction
+CPU: 48 UID: 0 PID: 786 Comm: test_progs
+Call trace:
+bpf_stream_stage_dump_stack+0xb0/0xd0
+bpf_prog_report_may_goto_violation+0x6a/0x90
+bpf_check_timed_may_goto+0x4d/0xa0
+arch_bpf_timed_may_goto+0x21/0x40
+bpf_prog_3699ea119d1f6ed8_foo+0x12f/0x140
+  while (can_loop) @ stream_bpftool.c:71
+bpf_prog_9b324ec4a1b2a5c0_stream_bpftool_dump_prog_stream+0x7e/0x2d0
+  foo(stream); @ stream_bpftool.c:93
+bpf_prog_test_run_syscall+0x102/0x240
+__sys_bpf+0xd68/0x2bf0
+__x64_sys_bpf+0x1e/0x30
+do_syscall_64+0x68/0x140
+entry_SYSCALL_64_after_hwframe+0x76/0x7e
+
+Changelog:
+----------
+v1 -> v2
+v1: https://lore.kernel.org/bpf/20250507171720.1958296-1-memxor@gmail.com
+
+ * Drop arena page fault prints, will be done as follow up. (Alexei)
+ * Defer Andrii's request to reuse code and Alan's suggestion of error
+   counts to follow up.
+ * Drop bpf_dynptr_from_mem_slice patch.
+ * Drop some acks due to heavy reworking.
+ * Fix KASAN splat in bpf_prog_get_file_line. (Eduard)
+ * Collapse bpf_prog_ksym_find and is_bpf_text_address into single
+   call. (Eduard)
+ * Add missing RCU read lock in bpf_prog_ksym_find.
+ * Fix incorrect error handling in dump_stack_cb.
+ * Simplify libbpf macro. (Eduard, Andrii)
+ * Introduce bpf_prog_stream_read() libbpf API. (Eduard, Alexei, Andrii)
+ * Drop BPF prog from the bpftool, use libbpf API.
+ * Rework selftests.
+
+RFC v1 -> v1
+RFC v1: https://lore.kernel.org/bpf/20250414161443.1146103-1-memxor@gmail.com
+
+ * Rebase on bpf-next/master.
+ * Change output in dump_stack to also print source line. (Alexei)
+ * Simplify API to single pop() operation. (Eduard, Alexei)
+ * Add kdoc for bpf_dynptr_from_mem_slice.
+ * Fix -EINVAL returned from prog_dump_stream. (Eduard)
+ * Split dump_stack() patch into multiple commits.
+ * Add macro wrapping stream staging API.
+ * Change bpftool command from dump to tracelog. (Quentin)
+ * Add bpftool documentation and bash completion. (Quentin)
+ * Change license of bpftool to Dual BSD/GPL.
+ * Simplify memory allocator. (Alexei)
+   * No overflow into second page.
+   * Remove bpf_mem_alloc() fallback.
+ * Symlink bpftool BPF program and exercise as selftest. (Eduard)
+ * Verify output after dumping from ringbuf. (Eduard)
+ * More failure cases to check API invariants.
+ * Remove patches for dynptr lifetime fixes (split into separate set).
+ * Limit maximum error messages, and add stream capacity. (Eduard)
+
+Kumar Kartikeya Dwivedi (11):
+  bpf: Introduce BPF standard streams
+  bpf: Add function to extract program source info
+  bpf: Add function to find program from stack trace
+  bpf: Hold RCU read lock in bpf_prog_ksym_find
+  bpf: Add dump_stack() analogue to print to BPF stderr
+  bpf: Report may_goto timeout to BPF stderr
+  bpf: Report rqspinlock deadlocks/timeout to BPF stderr
+  libbpf: Add bpf_stream_printk() macro
+  libbpf: Introduce bpf_prog_stream_read() API
+  bpftool: Add support for dumping streams
+  selftests/bpf: Add tests for prog streams
+
+ arch/x86/net/bpf_jit_comp.c                   |   1 -
+ include/linux/bpf.h                           |  85 ++-
+ include/uapi/linux/bpf.h                      |  19 +
+ kernel/bpf/Makefile                           |   2 +-
+ kernel/bpf/core.c                             | 112 +++-
+ kernel/bpf/helpers.c                          |  26 +-
+ kernel/bpf/rqspinlock.c                       |  22 +
+ kernel/bpf/stream.c                           | 544 ++++++++++++++++++
+ kernel/bpf/syscall.c                          |  27 +-
+ kernel/bpf/verifier.c                         |   5 +-
+ .../bpftool/Documentation/bpftool-prog.rst    |   7 +
+ tools/bpf/bpftool/bash-completion/bpftool     |  16 +-
+ tools/bpf/bpftool/prog.c                      |  50 +-
+ tools/include/uapi/linux/bpf.h                |  19 +
+ tools/lib/bpf/bpf.c                           |  16 +
+ tools/lib/bpf/bpf.h                           |  15 +
+ tools/lib/bpf/bpf_helpers.h                   |  16 +
+ tools/lib/bpf/libbpf.map                      |   1 +
+ .../testing/selftests/bpf/prog_tests/stream.c | 110 ++++
+ tools/testing/selftests/bpf/progs/stream.c    |  75 +++
+ .../testing/selftests/bpf/progs/stream_fail.c |  17 +
+ 21 files changed, 1159 insertions(+), 26 deletions(-)
+ create mode 100644 kernel/bpf/stream.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/stream.c
+ create mode 100644 tools/testing/selftests/bpf/progs/stream.c
+ create mode 100644 tools/testing/selftests/bpf/progs/stream_fail.c
 
 
-
-On 5/22/25 1:45 PM, Andrii Nakryiko wrote:
-> On Sat, May 17, 2025 at 9:27 AM Yonghong Song <yonghong.song@linux.dev> wrote:
->> Current cgroup prog ordering is appending at attachment time. This is not
->> ideal. In some cases, users want specific ordering at a particular cgroup
->> level. To address this, the existing mprog API seems an ideal solution with
->> supporting BPF_F_BEFORE and BPF_F_AFTER flags.
->>
->> But there are a few obstacles to directly use kernel mprog interface.
->> Currently cgroup bpf progs already support prog attach/detach/replace
->> and link-based attach/detach/replace. For example, in struct
->> bpf_prog_array_item, the cgroup_storage field needs to be together
->> with bpf prog. But the mprog API struct bpf_mprog_fp only has bpf_prog
->> as the member, which makes it difficult to use kernel mprog interface.
->>
->> In another case, the current cgroup prog detach tries to use the
->> same flag as in attach. This is different from mprog kernel interface
->> which uses flags passed from user space.
->>
->> So to avoid modifying existing behavior, I made the following changes to
->> support mprog API for cgroup progs:
->>   - The support is for prog list at cgroup level. Cross-level prog list
->>     (a.k.a. effective prog list) is not supported.
->>   - Previously, BPF_F_PREORDER is supported only for prog attach, now
->>     BPF_F_PREORDER is also supported by link-based attach.
->>   - For attach, BPF_F_BEFORE/BPF_F_AFTER/BPF_F_ID/BPF_F_LINK is supported
->>     similar to kernel mprog but with different implementation.
->>   - For detach and replace, use the existing implementation.
->>   - For attach, detach and replace, the revision for a particular prog
->>     list, associated with a particular attach type, will be updated
->>     by increasing count by 1.
->>
->> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
->> ---
->>   include/uapi/linux/bpf.h       |   7 ++
->>   kernel/bpf/cgroup.c            | 195 +++++++++++++++++++++++++++++----
->>   kernel/bpf/syscall.c           |  43 +++++---
->>   tools/include/uapi/linux/bpf.h |   7 ++
->>   4 files changed, 214 insertions(+), 38 deletions(-)
->>
->> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->> index 16e95398c91c..356cd2b185fb 100644
->> --- a/include/uapi/linux/bpf.h
->> +++ b/include/uapi/linux/bpf.h
->> @@ -1794,6 +1794,13 @@ union bpf_attr {
->>                                  };
->>                                  __u64           expected_revision;
->>                          } netkit;
->> +                       struct {
->> +                               union {
->> +                                       __u32   relative_fd;
->> +                                       __u32   relative_id;
->> +                               };
->> +                               __u64           expected_revision;
->> +                       } cgroup;
->>                  };
->>          } link_create;
->>
->> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
->> index 62a1d8deb3dc..78e6fc70b8f9 100644
->> --- a/kernel/bpf/cgroup.c
->> +++ b/kernel/bpf/cgroup.c
->> @@ -624,6 +624,129 @@ static struct bpf_prog_list *find_attach_entry(struct hlist_head *progs,
->>          return NULL;
->>   }
->>
->> +static struct bpf_link *bpf_get_anchor_link(u32 flags, u32 id_or_fd, enum bpf_prog_type type)
->> +{
->> +       struct bpf_link *link = ERR_PTR(-EINVAL);
->> +
->> +       if (flags & BPF_F_ID)
->> +               link = bpf_link_by_id(id_or_fd);
->> +       else if (id_or_fd)
->> +               link = bpf_link_get_from_fd(id_or_fd);
->> +       if (IS_ERR(link))
->> +               return link;
->> +       if (type && link->prog->type != type) {
->> +               bpf_link_put(link);
->> +               return ERR_PTR(-EINVAL);
->> +       }
->> +
->> +       return link;
->> +}
->> +
->> +static struct bpf_prog *bpf_get_anchor_prog(u32 flags, u32 id_or_fd, enum bpf_prog_type type)
->> +{
->> +       struct bpf_prog *prog = ERR_PTR(-EINVAL);
->> +
->> +       if (flags & BPF_F_ID)
->> +               prog = bpf_prog_by_id(id_or_fd);
->> +       else if (id_or_fd)
->> +               prog = bpf_prog_get(id_or_fd);
->> +       if (IS_ERR(prog))
->> +               return prog;
->> +       if (type && prog->type != type) {
->> +               bpf_prog_put(prog);
->> +               return ERR_PTR(-EINVAL);
->> +       }
->> +
->> +       return prog;
->> +}
->> +
->> +static struct bpf_prog_list *get_prog_list(struct hlist_head *progs, struct bpf_prog *prog,
->> +                                          u32 flags, u32 id_or_fd)
->> +{
->> +       bool link = flags & BPF_F_LINK, id = flags & BPF_F_ID;
->> +       struct bpf_prog *anchor_prog = NULL, *pltmp_prog;
->> +       bool preorder = flags & BPF_F_PREORDER;
->> +       struct bpf_link *anchor_link = NULL;
->> +       struct bpf_prog_list *pltmp;
->> +       int ret = -EINVAL;
->> +
->> +       if (link || id || id_or_fd) {
-> please, use "is_id" to make it obvious that this is bool, it's very
-> confusing to see "id || id_or_fd"
->
-> same for is_link, please
-
-Okay, I am following mprog.c code like below:
-
-====
-static int bpf_mprog_link(struct bpf_tuple *tuple,
-                           u32 id_or_fd, u32 flags,
-                           enum bpf_prog_type type)
-{
-         struct bpf_link *link = ERR_PTR(-EINVAL);
-         bool id = flags & BPF_F_ID;
-
-         if (id)
-                 link = bpf_link_by_id(id_or_fd);
-         else if (id_or_fd)
-                 link = bpf_link_get_from_fd(id_or_fd);
-====
-
-But agree is_id/is_link is more clear.
-
->
->> +               /* flags must have either BPF_F_BEFORE or BPF_F_AFTER */
->> +               if (!(flags & BPF_F_BEFORE) != !!(flags & BPF_F_AFTER))
-> either/or here means exclusive or inclusive?
->
-> if it's inclusive: if (flags & (BPF_F_BEFORE | BPF_F_AFTER)) should be
-> enough to check that at least one of them is set
->
-> if exclusive, below you use a different style of checking (which
-> arguably is easier to follow), so let's stay consistent
->
->
-> I got to say that my brain broke trying to reason about this pattern:
->
->     if (!(...) != !!(...))
->
-> Way too many exclamations/negations, IMO... I'm not sure what sort of
-> condition we are expressing here?
-
-Sorry for confusion. What I mean is 'exclusive'. I guess I can do
-
-bool is_before = flags & BPF_F_BEFORE;
-bool is_after = flags & BPF_F_AFTER;
-if (is_link || is_id || id_or_fd) {
-     if (is_before == is_after)
-         return ERR_PTR(-EINVAL);
-} else if (!hist_empty(progs)) {
-     if (is_before && is_after)
-         return ERR_PTR(-EINVAL);
-     ...
-}
-
->
-> pw-bot: cr
->
->> +                       return ERR_PTR(-EINVAL);
->> +       } else if (!hlist_empty(progs)) {
->> +               /* flags cannot have both BPF_F_BEFORE and BPF_F_AFTER */
->> +               if ((flags & BPF_F_BEFORE) && (flags & BPF_F_AFTER))
->> +                       return ERR_PTR(-EINVAL);
-> do I understand correctly that neither BEFORE or AFTER might be set,
-> in which case it must be BPF_F_REPLACE, is that right? Can it happen
-> that we have neither REPLACE nor BEFORE/AFTER? Asked that below as
-> well...
-
-I think 'neither REPLACE nor BEFORE/AFTER' is possible. In that case,
-the prog is appended to the prog list.
-
-The code path here should not have REPLACE. See the code
-
-         if (pl) {
-                 old_prog = pl->prog;
-         } else {
-                 pl = kmalloc(sizeof(*pl), GFP_KERNEL);
-                 if (!pl) {
-                         bpf_cgroup_storages_free(new_storage);
-                         return -ENOMEM;
-                 }
-
-                 err = insert_pl_to_hlist(pl, progs, prog ? : link->link.prog, flags, id_or_fd);
-                 if (err) {
-                         kfree(pl);
-                         bpf_cgroup_storages_free(new_storage);
-                         return err;
-                 }
-         }
-
-If REPLACE is in the flag and prog replacement is successful, 'pl'
-will not be null.
-
->
->> +       }
->> +
->> +       if (link) {
->> +               anchor_link = bpf_get_anchor_link(flags, id_or_fd, prog->type);
->> +               if (IS_ERR(anchor_link))
->> +                       return ERR_PTR(PTR_ERR(anchor_link));
->> +               anchor_prog = anchor_link->prog;
->> +       } else if (id || id_or_fd) {
->> +               anchor_prog = bpf_get_anchor_prog(flags, id_or_fd, prog->type);
->> +               if (IS_ERR(anchor_prog))
->> +                       return ERR_PTR(PTR_ERR(anchor_prog));
->> +       }
->> +
->> +       if (!anchor_prog) {
->> +               /* if there is no anchor_prog, then BPF_F_PREORDER doesn't matter
->> +                * since either prepend or append to a combined list of progs will
->> +                * end up with correct result.
->> +                */
->> +               hlist_for_each_entry(pltmp, progs, node) {
->> +                       if (flags & BPF_F_BEFORE)
->> +                               return pltmp;
->> +                       if (pltmp->node.next)
->> +                               continue;
->> +                       return pltmp;
->> +               }
->> +               return NULL;
->> +       }
->> +
->> +       hlist_for_each_entry(pltmp, progs, node) {
->> +               pltmp_prog = pltmp->link ? pltmp->link->link.prog : pltmp->prog;
->> +               if (pltmp_prog != anchor_prog)
->> +                       continue;
->> +               if (!!(pltmp->flags & BPF_F_PREORDER) != preorder)
->> +                       goto out;
-> hm... thinking about this a bit more, is it illegal to have the same
-> BPF program attached as PREORDER and POSTORDER? That seems legit to
-> me, do we artificially disallow this?
-
-Good question, in find_attach_entry(), we have
-
-         hlist_for_each_entry(pl, progs, node) {
-                 if (prog && pl->prog == prog && prog != replace_prog)
-                         /* disallow attaching the same prog twice */
-                         return ERR_PTR(-EINVAL);
-                 if (link && pl->link == link)
-                         /* disallow attaching the same link twice */
-                         return ERR_PTR(-EINVAL);
-         }
-
-Basically, two same progs are not allowed. Here we didn't check PREORDER flag.
-Should we relax this for this patch set?
-
->
-> And so my proposal is instead of `goto out;` do `continue;` and write
-> this loop as searching for an item and then checking whether that item
-> was found after the loop.
->
->> +               if (anchor_link)
->> +                       bpf_link_put(anchor_link);
->> +               else
->> +                       bpf_prog_put(anchor_prog);
-> and this duplicated cleanup would be best to avoid, given it's not
-> just a singular bpf_prog_put()...
-
-Will do.
-
->
->> +               return pltmp;
->> +       }
->> +
->> +       ret = -ENOENT;
->> +out:
->> +       if (anchor_link)
->> +               bpf_link_put(anchor_link);
->> +       else
->> +               bpf_prog_put(anchor_prog);
->> +       return ERR_PTR(ret);
->> +}
->> +
->> +static int insert_pl_to_hlist(struct bpf_prog_list *pl, struct hlist_head *progs,
->> +                             struct bpf_prog *prog, u32 flags, u32 id_or_fd)
->> +{
->> +       struct bpf_prog_list *pltmp;
->> +
->> +       pltmp = get_prog_list(progs, prog, flags, id_or_fd);
->> +       if (IS_ERR(pltmp))
->> +               return PTR_ERR(pltmp);
->> +
->> +       if (!pltmp)
->> +               hlist_add_head(&pl->node, progs);
->> +       else if (flags & BPF_F_BEFORE)
->> +               hlist_add_before(&pl->node, &pltmp->node);
->> +       else
->> +               hlist_add_behind(&pl->node, &pltmp->node);
->> +
->> +       return 0;
->> +}
->> +
->>   /**
->>    * __cgroup_bpf_attach() - Attach the program or the link to a cgroup, and
->>    *                         propagate the change to descendants
->> @@ -633,6 +756,8 @@ static struct bpf_prog_list *find_attach_entry(struct hlist_head *progs,
->>    * @replace_prog: Previously attached program to replace if BPF_F_REPLACE is set
->>    * @type: Type of attach operation
->>    * @flags: Option flags
->> + * @id_or_fd: Relative prog id or fd
->> + * @revision: bpf_prog_list revision
->>    *
->>    * Exactly one of @prog or @link can be non-null.
->>    * Must be called with cgroup_mutex held.
->> @@ -640,7 +765,8 @@ static struct bpf_prog_list *find_attach_entry(struct hlist_head *progs,
->>   static int __cgroup_bpf_attach(struct cgroup *cgrp,
->>                                 struct bpf_prog *prog, struct bpf_prog *replace_prog,
->>                                 struct bpf_cgroup_link *link,
->> -                              enum bpf_attach_type type, u32 flags)
->> +                              enum bpf_attach_type type, u32 flags, u32 id_or_fd,
->> +                              u64 revision)
->>   {
->>          u32 saved_flags = (flags & (BPF_F_ALLOW_OVERRIDE | BPF_F_ALLOW_MULTI));
->>          struct bpf_prog *old_prog = NULL;
->> @@ -656,6 +782,9 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
->>              ((flags & BPF_F_REPLACE) && !(flags & BPF_F_ALLOW_MULTI)))
->>                  /* invalid combination */
->>                  return -EINVAL;
->> +       if ((flags & BPF_F_REPLACE) && (flags & (BPF_F_BEFORE | BPF_F_AFTER)))
-> but can it be that neither is set?
-
-I would say it is possible. In that case, the new prog is appended to
-the end of prog list.
-
->
->> +               /* only either replace or insertion with before/after */
->> +               return -EINVAL;
->>          if (link && (prog || replace_prog))
->>                  /* only either link or prog/replace_prog can be specified */
->>                  return -EINVAL;
-> [...]
+base-commit: 079e5c56a5c41d285068939ff7b0041ab10386fa
+-- 
+2.47.1
 
 
