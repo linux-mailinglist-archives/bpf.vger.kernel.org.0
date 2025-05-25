@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-58907-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58908-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C96FEAC344C
-	for <lists+bpf@lfdr.de>; Sun, 25 May 2025 13:55:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0E74AC3478
+	for <lists+bpf@lfdr.de>; Sun, 25 May 2025 14:15:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 332E7175CA8
-	for <lists+bpf@lfdr.de>; Sun, 25 May 2025 11:55:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 244371895E78
+	for <lists+bpf@lfdr.de>; Sun, 25 May 2025 12:15:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C09771F2BB5;
-	Sun, 25 May 2025 11:55:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC95B1F30A4;
+	Sun, 25 May 2025 12:14:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b="VOy7AmlJ"
+	dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b="iOH0WRs9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.17.12])
+Received: from mout.web.de (mout.web.de [212.227.15.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C46091DF26B;
-	Sun, 25 May 2025 11:55:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 963601F03D9;
+	Sun, 25 May 2025 12:14:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748174109; cv=none; b=kgNSucvyHtsbiQBGHOcaq4MZ4BU1ogeKnGZBiq24/15EMFk2Kam/t4AFDQewUgmdvhsR/fFTIx3GMZoxEWlf/XLY9jnN669yx+Nc0mQNHi67exAl8C8dQEkazIzr79D1Zz+NX0HA2mNppeQp7FKpuIgk5DqHoR8rxMdp+D/5Qlk=
+	t=1748175288; cv=none; b=eZng1Osi1Eo2E+3vGtsy/RczBFfLXHrq3IECXXFk1zgy9JLyEKERaw586RY+Lyw82jIltJqgnfwJQ/Iop0u4OgGMwmrPPwPi/PEEQFZo7fHvXCB5QDqAsxj302UlVkB+whRBNBQHy+iYBqSjoz36qVJZfsFjo+CcTJEewSwjuf8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748174109; c=relaxed/simple;
+	s=arc-20240116; t=1748175288; c=relaxed/simple;
 	bh=YjWZk96XYZTt6E1jewxusAGsKLFicY3r6Q4aQz6YD2g=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Nw6UFUCbQhmbNxiSl7lPigkO6iOA6gzu7cbYsdvXmohvIdrcCGKHDMqa0uvSoWz0cyQlZdTNOGn5IcQbXbjyFhHEFL6LbVYNk4zXEHBrS1qCqzsZe8cXMtZ7Ttcvyqm9YNqYdwmoGUeTXzRknYf9Vbp8p6Zu15ZnXcahGjkrwIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b=VOy7AmlJ; arc=none smtp.client-ip=212.227.17.12
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=W1UthWjWbg8g0UIlVxCMdVNg58pigGWYJJ6HQiarLs8a95IbbYlDDsHKrgQYuW5YH4oVLJzZqoy3PQut4wkMVijBil89bhONqJkqtX4dm4vFXsOd4yd0B3yhy7HkmaHsmtsafSDHEsZDJIR2zx2QXFCQwlmqtfi9h382IfYdjn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b=iOH0WRs9; arc=none smtp.client-ip=212.227.15.14
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1748174086; x=1748778886; i=spasswolf@web.de;
+	s=s29768273; t=1748175265; x=1748780065; i=spasswolf@web.de;
 	bh=zDo2qUQEoBkCdLj2EFYA2QmC0e5zrCeQS6bJfHQTJfQ=;
 	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:
 	 MIME-Version:Content-Transfer-Encoding:cc:
 	 content-transfer-encoding:content-type:date:from:message-id:
 	 mime-version:reply-to:subject:to;
-	b=VOy7AmlJ7629Z3zjfdSobq6FZYZpW5cv9IOpwli4x3mjKKKBQHuZZLr93cbqqBsf
-	 XZ/BCW3Neq1ciSPHCOptaFRGsjTpvNeOOem+d4Ol3td/VTqZXJUisreFge1eYoIwK
-	 e5g7t3olp1/yyQ44YUgJxdgupxmJyar9kq5kFl/zkNAmchveeheLI9vsxXrVxhyQT
-	 dCV7vf968/Rx16SnG4hWHoPQ8W0NDFv1wu6XrxrPok97noa2sTVlKkQrEUPMx0u/H
-	 /UZm6/dis3acFEK0Z7s5/z9OjIRD5RYypMmQHuS3eZTNfWQ9dwJhDHc3Ozh5ZUzBv
-	 PtcvMQZZgSa+ps03AQ==
+	b=iOH0WRs9QlUqE7vM8lTVuDaezLyKrWMDE4SzHeJJCyFZ48a9F7g76a1i76Zq445y
+	 YW9yHCn+RbAv5zPqjtS0KYn/XUt2zqCvQpp5Zl0j+Lk+m9ensM0M6bxmDxC0pGPXQ
+	 KrRGwhyMDtpc7h89pcREpp2z2Yiw/cQ9/Sa6ciF9FD5TZZwynZb392+NBfBemCDQY
+	 XY0DQkibcx+sshZRyKf7gWhKZczlAXE6VBrQgytlqYDbGtZ4FPfylvNDAT2ZZaCni
+	 Gp26O61ciYwc3Hd66DA1WznAhWDVQK1knh2IDrrMmLO8SapF3M3qd9VQMvBrqy6ri
+	 6cbB4AI8uvgc20/jfw==
 X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
 Received: from localhost.localdomain ([95.223.134.88]) by smtp.web.de
- (mrweb106 [213.165.67.124]) with ESMTPSA (Nemesis) id
- 1Mfc8o-1uqJy93mrQ-00abDb; Sun, 25 May 2025 13:54:46 +0200
+ (mrweb006 [213.165.67.108]) with ESMTPSA (Nemesis) id
+ 1MjgT9-1ul6Ko2SDb-00cblm; Sun, 25 May 2025 14:14:25 +0200
 From: Bert Karwatzki <spasswolf@web.de>
 To: linux-kernel@vger.kernel.org
 Cc: Bert Karwatzki <spasswolf@web.de>,
 	linux-next@vger.kernel.org,
 	bpf@vger.kernel.org,
 	linux-rt-users@vger.kernel.org,
-	linux-rt-devel@vger.kernel.org,
+	linux-rt-devel@lists.linux.dev,
 	Thomas Gleixner <tglx@linutronix.de>
 Subject: BUG: scheduling while atomic with PREEMPT_RT=y and bpf selftests
-Date: Sun, 25 May 2025 13:54:42 +0200
-Message-ID: <20250525115443.13378-1-spasswolf@web.de>
+Date: Sun, 25 May 2025 14:14:23 +0200
+Message-ID: <20250525121424.15517-1-spasswolf@web.de>
 X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -66,56 +66,32 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Yx9wMh2Do9oSdPoVBKRyJuLh+qmdyiHhr/ji9RVCYbvgoaliv8F
- FfR1NGp3nmaAID+u+g3SGnfWq/RoJP1htbkWMEOkwyjGfSRVA+ygXsVVulXwz40YTGuqtT1
- aKUGD+l0RaBnmfetAXo5XQM4/GMEHssc6muvC703zdIMM2XlJHLJ7bYrVJuczjg+ItbftpK
- g//195gUg3C5aNLKGVFFA==
+X-Provags-ID: V03:K1:XsD5zbvYZ1K7kmt2B7zjb2MeCUUDZW+asfn2rd1rhNIEQvI1vNX
+ h2eVbTMSjCTZzle1vXbGvFM8FZEz06yhbkixmJvygXrZeqym+OJgZUU/G9xdMYAuge1Ffkk
+ qGx1wdlp5v5UQNRFDs5urbtxHHCO5PaW4ZuiTOSvDyv6wgSP68aoXMagol1WzQdi0Kdz3W9
+ 6j8dPBLmrO935yOejE70w==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:43Jivoxrw2Y=;4Ix7opDkN0mF/Ih1O+7VjRat9Lw
- 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
- gjTGoLCQc5QPA=
+UI-OutboundReport: notjunk:1;M01:P0:8W8ZexEKqu8=;XTQLTTIn425g52YSS0rpWQbBoaF
+ vhAlV7jN9lv6U/5SRroXskUZE3bJHiChQzXqOZwvA7vueJK9HhDZ5W0FMvb4SW0/p380e7JmN
+ uayLvUdDaJLh1k++F5xb5vUb8CjYxymA735ExRmPjQilvrt5mkP4DdRzYWu5fUQCUVSXu/OSG
+ Hdpmf7khI2G4YLE0q4WEswrVbeNnUmq93FdVj/c+fgz3IXA8OBhF79Mqw2/NNitWJa4MzL+mw
+ OrMIhCRZsLEt/DJmEwWSTov8TR9sNiUbSlVfFYTmJXB/BgVMhj4SpUDm2gt/lk5eS35sA6aVy
+ CnDxS9Ki3FkXb4ZafYGCnj6wyYID2xQ2UWPkXc3TJebGpUkScvXzxWec+AwyYv1GfNPVLWTBH
+ XdWBSQKR5vdhg4vkgn/lfIPANTX+aJJOI36Wxmx93UAgYYTSi8pWl6Z3x28n9zZMk3nygdsAW
+ Fx/3e3ROYMRRM3nFBTVNpOQWJvWSO5GmdkfstdMbBvaAF1x7Vk7el+uInjQDf49ILu5XCNqXP
+ 2ssXzdk3OTadXdKaX5tt9BVm19AZ8/d9FqbwBhAmpA7rHYBhOA7WLc9RIcvapuSAaP6Edu0lz
+ jNZHudPgF3OIxr4ksFBWF5sOVRzD3MJAzTIzloOWsMukz9rqx6hlNeK1zoWB694F6b05Lxlcj
+ lY6w4FdPPHZTj99RUSU8ytdGqaBabAQ7/sPSWD97Q0jkkd+wK44cHS8bFSWwoQpyIQqAcqK4L
+ Jo8EoRJO9ayk5quNsBu0fw0TcdJavshehuYkNPUXHgpLLJyAbQVdZX5dzgLKOBCi5hoqOUKZa
+ ATdCVIx7aP8R0G8zxCmaqvCbyEiuH1p+H/lLpy3Ss3xru8mgLRdsPzgVzSTwui+aOPdtXQsaq
+ Qv0pOv1tbwg/vrtbA3d558bB7CfOpwJ/Rq9c4ojekYqHyzi9N8OwKEkOzouEvyVbKUUU/xZr6
+ xHhHN4kvYJ7Suhh33kgbZxH1ZZPgSjBuEFQ65UKbfYVTDOJHbJzqRBPu5eQEUQ6sUkvvo/lHT
+ ILtGZTw4XtuHc0lNeDLapNjcwvY0ZZbAvETFELBk1RzcRunrQ0dg0y74z7/IpYblvhFXtxpuW
+ PGefGM5UkxW/kvxtxgpPRQmp9wc3SydmWgG2ctSD7yHSh+khWhDUl27i8rYO2NTapZwEqiU1g
+ SWm2fxbPv45x2GczNxDQBqwhkO3z4mqDfrWvMizquerQn6TjaPCfRrAdtnNH4Gw7LsZ1s27Zc
+ znGBB3ZOMygdgfwerUOdQGOszWGQygyZsLeEpqluwGDInm7NO6a2KM8PN2YO8wB7NLfz3k0GV
+ +KOy7kEz2NMvSGsyBamqUlXzovjgkOi+TZgSpWSCf00El3PDWQlfAnQFtML6uKuYfIymwvzMe
+ ie9WL3xy9LxmBZntr3Ng9pNSZJWdLygVE4kggid+6N/lQlCQuyF9PWgX7W
 
 When running the bpf selftests while watching a video on youtube on a realt=
 ime
