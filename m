@@ -1,243 +1,162 @@
-Return-Path: <bpf+bounces-58955-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58956-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9432BAC447B
-	for <lists+bpf@lfdr.de>; Mon, 26 May 2025 22:37:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 066F4AC44D8
+	for <lists+bpf@lfdr.de>; Mon, 26 May 2025 23:36:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 33BEA16D438
-	for <lists+bpf@lfdr.de>; Mon, 26 May 2025 20:38:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE31F16534C
+	for <lists+bpf@lfdr.de>; Mon, 26 May 2025 21:36:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F18A023E32D;
-	Mon, 26 May 2025 20:37:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D970241668;
+	Mon, 26 May 2025 21:36:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZXzsrVp2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L1PkB8Wy"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A21C63B1AB
-	for <bpf@vger.kernel.org>; Mon, 26 May 2025 20:37:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B21F14830A;
+	Mon, 26 May 2025 21:36:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748291872; cv=none; b=FuMdoCpQfdike+585iWEnxyR/LMoqVW/D0wCP1VQ+CvOxsw88kn2eI+llZtIYWNpcI+5/ZhLPScSE/6H27xr6e00yCVI5Tv+soundfB7kDuANfNKf2w5JzM9GCewnsLnuQGQhMlu1X4v0CoTf6b4CMtkcilqoaycVMdk2buMfL8=
+	t=1748295378; cv=none; b=rrYqwIMCHhLEWR8jMQcYGsnok3WbooUswo57qHYy1Q+9ZCdAt6BnnNMHBNWaokTkB8sKUG8/sULEtrloxxfvtZiV108e3xs5ivxBm6GSRNxTnatPxrIDXn1HAs+kBNq7pmdm7yKZc750sicuW8CH7fJLN9XJE8TvM3gKTr4ee+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748291872; c=relaxed/simple;
-	bh=rPuWBPe5E1Lq7JEkaSVuGIXyqirVqxK9fKeXWXDSqng=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=XZ8KwW+wtFB7X5vH2B2tJOE+yudtLtF4Y228mZIWpy26hHTQmFxGCkrcG8ixZTW1oKCl+082NL0kAtjW0ZWwQ+3+zxs2qZqLNjQV5hukN0Bxu+GIMvxpB9iTuXZ33uv8RuVphXeSdkDMl4QubrTfOa7nDxj5nzurM79qKoqei9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZXzsrVp2; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1748291869;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=EBTo8VR8uz2XQ8ps5oq/JSBHANuEWU3CQm0KY3y/bzk=;
-	b=ZXzsrVp27X3aJwfkbdOmtlQtKsPNKBc9JyLp/vfvFWp4HNxLf9RuQ9PNSbjYeduJBwixzE
-	nPS1RC2o9/d+zvs1W54RPHiWpytht4e85rc6d2G4otyRXiVKv6+0VrRofPLcYs+Aoffjfn
-	B16NBYue2kWizqcRx6yXfirW8rrbP08=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-696-VWg6dA5ePYyTFzWKBz8SGQ-1; Mon, 26 May 2025 16:37:48 -0400
-X-MC-Unique: VWg6dA5ePYyTFzWKBz8SGQ-1
-X-Mimecast-MFC-AGG-ID: VWg6dA5ePYyTFzWKBz8SGQ_1748291867
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-43eed325461so17059625e9.3
-        for <bpf@vger.kernel.org>; Mon, 26 May 2025 13:37:48 -0700 (PDT)
+	s=arc-20240116; t=1748295378; c=relaxed/simple;
+	bh=A1O2aaqb1msQ3ciMI88tVBNeU3i1ThpwfS74QsymqGA=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RzgNybWIy7vCX3cnYfgUnjVAAwKY6l4WDDLntSaSZvy2gyi5qwtJ8tXUUigADA61S3rxE+TGEJ6eRlN920b/rghlwHIG4iSBpK8ltbNaCmZAZyPI1kZur4W9VsYrYQ7oTIw/RxaPOqwgzbfgTtHswr7EQdDCoqYyy46IFFSXa0A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L1PkB8Wy; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-43edb40f357so22406505e9.0;
+        Mon, 26 May 2025 14:36:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748295375; x=1748900175; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=s3lnNb9yn9lATjxO6VHxHH72Z14fcdJiMP9it5w7LLU=;
+        b=L1PkB8WyEvXlIckD8BhssUb7jk2uDsj3QrtI+hmgHVT4mq+jBxf9g84h7kQwMiD1DU
+         NPosAfNtX4qW2fCrcGrSbiK+BF8JBXBSyxYPuwXCtHvOavXC0vnVVpqJNpDjq/61zy9V
+         qCSzttUIZPly1gURauE7Kb7lpBzwM7ZF+JSa0XynO5pqci4JJ5gVMDFWFzLNzlyRzOHv
+         cdtCPjt7df5HUhhgbR1nwuNJqcF+rVH+mwEwFQL7QZTepZAgBz1wVYLWDhOelPQR5pz6
+         inrVm/tkrBdHxy+sTnZMGQy/K4nSscc1RWQZbmeSjDBIJGAkZ64W+0gHj2AjWTS6Jezp
+         Wsrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748291867; x=1748896667;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1748295375; x=1748900175;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EBTo8VR8uz2XQ8ps5oq/JSBHANuEWU3CQm0KY3y/bzk=;
-        b=XDJ0Nq3sOeFEGY9o3NApSHqzhxbcKu+YmE6L9Jo6DCqMPoRDc9N320RjINEg9YnJIR
-         LASWo6bPSWShk1f29jhHCyqd0LfbaJrt2GubxIlTiHMmxPHprRGkLphR8VxKrXLeTEi6
-         ibAHNyFz63lmqi7dh4dx6LUGDZcBJsrHhMX1IwsVmCNG2s/lqP3O5T4PNhmwrBRhKo+O
-         1gCIaX81lzxV1Eiaxuem/YFAHe+XcT8JoLeEtaECzlxYpkSFjEcG+oL8GUN+eJfGnsHM
-         0owLL7PumP9InlSxRSYhw98LbaN8rBrtVumvuFfKFlOw7pHHXn5GzJQ7clCnUg/M2erf
-         1zfA==
-X-Forwarded-Encrypted: i=1; AJvYcCXTmZPdCW7CVrJKeUw3cR3PF3U9b82c9ha2ScLFyZ+kle8b3gI98sPLxbzhEH0hSc6CghI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzkPjRXYyTRFEEK4qL8Eptrx3eNzgL6ZCPfANknQpnVu1jed/5C
-	mfrUU0Lo5BBwK8S/mNYQd4ndlIS9qiwRta4JjabaB0g/wjB7B5RNLnXhTvcvFEywzd10QnLnIUL
-	NlQXNLjbYvSS5Y6KDgg53oaJ/8pL43KnPLrW0e/ZSr5EFIixgUi02YQ==
-X-Gm-Gg: ASbGncuCyFK2exDfYf2Kq/xAAeqCZxhAeWxaUlVeq79rANU+cLXm+BckmD/7A+O4rHZ
-	sgwasxiSGfVJp3v5y3LAY9ZG1aR738+0r1BroQod7J4r70OS7bY+O945youbGyMJPZO5eRGKfz4
-	TNEXRWm088usVoYE3E+0CDuvvOuizYgmtptawzAvW0HdhSt3jrUvsu+7s2nFo+iq46EPYIJXYMk
-	AC2caV/p4DAY19IH2jPYClDb8uGw9bfF1a3lU09CTXlRIUONGLBEBy9oc0NbgVjzf4amA7YaHqK
-	9Jg7prXXWczjavZfOGOw0yh/2A2g2su1amlciTOqKCGzwsmf8x9cUASM9vOW3o54Q6xYTrHpcpj
-	1ihw0Yz9JHTHmuSQi03gLHWIF8sfg0Zf2YEin6Xc=
-X-Received: by 2002:a05:6000:1814:b0:3a4:cb8e:d118 with SMTP id ffacd0b85a97d-3a4cb8ed307mr6691335f8f.24.1748291867185;
-        Mon, 26 May 2025 13:37:47 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHKZgRBFuc46nxbZgEGIPBUp25iWgxzguWaZ7pXysg4WVA5mE0JdwANySxXFZivHlvg8u1VMw==
-X-Received: by 2002:a05:6000:1814:b0:3a4:cb8e:d118 with SMTP id ffacd0b85a97d-3a4cb8ed307mr6691323f8f.24.1748291866766;
-        Mon, 26 May 2025 13:37:46 -0700 (PDT)
-Received: from ?IPV6:2003:d8:2f19:6500:e1c1:8216:4c25:efe4? (p200300d82f196500e1c182164c25efe4.dip0.t-ipconnect.de. [2003:d8:2f19:6500:e1c1:8216:4c25:efe4])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a4c73a4284sm9908573f8f.85.2025.05.26.13.37.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 May 2025 13:37:46 -0700 (PDT)
-Message-ID: <f4964286-0cc3-4080-a94b-2f593da5ee69@redhat.com>
-Date: Mon, 26 May 2025 22:37:45 +0200
+        bh=s3lnNb9yn9lATjxO6VHxHH72Z14fcdJiMP9it5w7LLU=;
+        b=iqsCVSb3ms2BTud8m3YgoYZWPoRwWhi/+l6XB6jP9j+9gp5gKhh+ZjwMMnTMA22JgH
+         hs10z2K6WcUfS/s5WC9EJ0xAqe2xYa+tgpE5TUwaRZpy//PqwAc0r8SD6wcA+Wpu04ci
+         Y37dUqOZTHxzwOcvdiTB9erIXPMn9uYZ5Z6bWS5Fp9y9pXGO1hRKPXYtOn7AT1DBZ47v
+         FNpk/M+RvN8EZBT5lK5UL1G4LRePXMsaYqBGaabT0MuytpHHvp3H7UCt4K980Sj7gLWZ
+         9do3amBK0TtQ9nVwGb5dLfG35MR5jrUA/EsjQyOv4PildM5GsCum8Mvgf7da1JdIT5Io
+         uCEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVEjJZW2mePX84WfR3NPhFmLsrCu0Lf+6QFfw6GC+ilGV8n9zBZiLF+b7RNntF7WhSxTK9O4VNOwBMuY3iQhXwwSuON@vger.kernel.org, AJvYcCWfWp+FOqfW3kj34T6aqr+xqczYZYLJMkfRyJPaZ6vH3JzOZBAcdE3xFx6cnCeqpYXPJAL5tjbrci794Ian@vger.kernel.org, AJvYcCXLvEI+8j+OUGeQfhiKXjImSr4eN/U5Tu+t9vLlRlu4fo3LY7RO19UY2dHedsE8nCZSQrc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzDGOxRA7QofmsCDWeUZ/9twODpPcEJ5/gRv9OdPpV6vReFUGp7
+	bl3TsWHtAVB2TDF8H7bCHzB48mqpXwLyMYV47Xntlbq0oaRLXyMGxLn/
+X-Gm-Gg: ASbGncuzZx5ntjDLLGzTH4b+6JWrFgzIVpyHapzTr3G9yE1KwqNyoRvR4zsp+lwOIN2
+	jMI2ixuAgwCfQniu4FzVWpBr2uIQxVLRmJq2xB/GLTl2Hg+HXKw6JrBszLAK0QxfQexqN6uU7z+
+	KXpHdn75nefkHOtL3jYbplJNJ+UIkUDxmd3uXn2C5qy4UvQ+jGW8sdBugZRRd/yBOOQwYqJMRWy
+	m2Fssb+itcHxzNQAi7qjUY1pWBNezjnKSHLe+JfL1A8LuHpJ/JNGrrz3vMidtlXHZGqxGRYNpUj
+	ekBwHQlTGtR6gL0jolvdVnl1LOZmVhoeNerWrmYLMdwkED+HZfIWUnNtdCCZdSXXpzES
+X-Google-Smtp-Source: AGHT+IHxqRVP+JNqfYwSCLXotoldvLJsltqFGQqa9blxvha54IDkfupAVNQtPor/kQw/8VqmUD2m7Q==
+X-Received: by 2002:a05:600c:3e14:b0:43c:ec4c:25b1 with SMTP id 5b1f17b1804b1-44c92a54b22mr86319865e9.23.1748295375146;
+        Mon, 26 May 2025 14:36:15 -0700 (PDT)
+Received: from krava (85-193-35-57.rib.o2.cz. [85.193.35.57])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a4ce458830sm8315991f8f.14.2025.05.26.14.36.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 May 2025 14:36:14 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 26 May 2025 23:36:13 +0200
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	x86@kernel.org, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	David Laight <David.Laight@aculab.com>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>,
+	Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCHv2 perf/core 01/22] uprobes: Remove breakpoint in
+ unapply_uprobe under mmap_write_lock
+Message-ID: <aDTezSUdW6QvQ733@krava>
+References: <20250515121121.2332905-1-jolsa@kernel.org>
+ <20250515121121.2332905-2-jolsa@kernel.org>
+ <20250520084845.6388479dd18658d2c2598953@kernel.org>
+ <20250520141925.GA14203@redhat.com>
+ <20250522234822.0410cabbbbfb58ef327805a9@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 0/5] mm, bpf: BPF based THP adjustment
-To: Gutierrez Asier <gutierrez.asier@huawei-partners.com>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>,
- Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org,
- ziy@nvidia.com, baolin.wang@linux.alibaba.com, lorenzo.stoakes@oracle.com,
- npache@redhat.com, ryan.roberts@arm.com, dev.jain@arm.com,
- hannes@cmpxchg.org, usamaarif642@gmail.com, willy@infradead.org,
- ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- bpf@vger.kernel.org, linux-mm@kvack.org
-References: <20250520060504.20251-1-laoar.shao@gmail.com>
- <CALOAHbDPF+Mxqwh+5ScQFCyEdiz1ghNbgxJKAqmBRDeAZfe3sA@mail.gmail.com>
- <7d8a9a5c-e0ef-4e36-9e1d-1ef8e853aed4@redhat.com>
- <CALOAHbB-KQ4+z-Lupv7RcxArfjX7qtWcrboMDdT4LdpoTXOMyw@mail.gmail.com>
- <c983ffa8-cd14-47d4-9430-b96acedd989c@redhat.com>
- <yzpyagsqw4ryk63zfu3vxvjvrfxldbxm7wx2a3th7okidf7rwv@zsoyiwqtshfc>
- <pzuye3fkj6fj2riyzipqj7u4plwg6sjm2nyw4jkqi57u3g2yp5@jmvn5z2g5i7x>
- <3b792576-6189-4f53-b47f-95875181a656@redhat.com>
- <cbe7693f-fc5c-46d1-ac95-29171e3a46c3@huawei-partners.com>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <cbe7693f-fc5c-46d1-ac95-29171e3a46c3@huawei-partners.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250522234822.0410cabbbbfb58ef327805a9@kernel.org>
 
-On 26.05.25 22:30, Gutierrez Asier wrote:
+On Thu, May 22, 2025 at 11:48:22PM +0900, Masami Hiramatsu wrote:
+> On Tue, 20 May 2025 16:19:26 +0200
+> Oleg Nesterov <oleg@redhat.com> wrote:
+> 
+> > On 05/20, Masami Hiramatsu wrote:
+> > >
+> > > On Thu, 15 May 2025 14:10:58 +0200
+> > > Jiri Olsa <jolsa@kernel.org> wrote:
+> > >
+> > > > Currently unapply_uprobe takes mmap_read_lock, but it might call
+> > > > remove_breakpoint which eventually changes user pages.
+> > > >
+> > > > Current code writes either breakpoint or original instruction, so
+> > > > it can probably go away with that, but with the upcoming change that
+> > > > writes multiple instructions on the probed address we need to ensure
+> > > > that any update to mm's pages is exclusive.
+> > > >
+> > >
+> > > So, this is a bugfix, right?
+> > 
+> > No, mmap_read_lock() is fine.
+> > 
+> > To remind, this was already discussed with you, see
+> > [PATCH 02/12] uprobes: grab write mmap lock in unapply_uprobe()
+> > https://lore.kernel.org/all/20240625002144.3485799-3-andrii@kernel.org/
+> > 
+> > And you even reviewed this patch
+> > [PATCH 1/2] uprobes: document the usage of mm->mmap_lock
+> > https://lore.kernel.org/all/20240710140045.GA1084@redhat.com/
+> > 
+> > But, as the changelog explains, this patch is needed for the upcoming changes.
+> 
+> Oops, OK. So current code is good with either mmap_read_lock() or mmap_write_lock().
+> But the patch description is a bit confusing. If the point is an atomic (byte?)
+> update or not, it should describe it.
+
+ok, I'll try to make the changelog more detailed
+
+thanks,
+jirka
+
+> 
+> Thank you,
+> 
+> > 
+> > --------------------------------------------------------------------------
+> > Just in case... I'll try to read this series tomorrow, but at first glance
+> > this version addresses all my concerns.
+> > 
+> > Oleg.
+> > 
 > 
 > 
-> On 5/26/2025 7:51 PM, David Hildenbrand wrote:
->> On 26.05.25 17:54, Liam R. Howlett wrote:
->>> * Liam R. Howlett <Liam.Howlett@oracle.com> [250526 10:54]:
->>>> * David Hildenbrand <david@redhat.com> [250526 06:49]:
->>>>> On 26.05.25 11:37, Yafang Shao wrote:
->>>>>> On Mon, May 26, 2025 at 4:14 PM David Hildenbrand <david@redhat.com> wrote:
->>>>>>>
->>>>>>>> Hi all,
->>>>>>>>
->>>>>>>> Let’s summarize the current state of the discussion and identify how
->>>>>>>> to move forward.
->>>>>>>>
->>>>>>>> - Global-Only Control is Not Viable
->>>>>>>> We all seem to agree that a global-only control for THP is unwise. In
->>>>>>>> practice, some workloads benefit from THP while others do not, so a
->>>>>>>> one-size-fits-all approach doesn’t work.
->>>>>>>>
->>>>>>>> - Should We Use "Always" or "Madvise"?
->>>>>>>> I suspect no one would choose 'always' in its current state. ;)
->>>>>>>
->>>>>>> IIRC, RHEL9 has the default set to "always" for a long time.
->>>>>>
->>>>>> good to know.
->>>>>>
->>>>>>>
->>>>>>> I guess it really depends on how different the workloads are that you
->>>>>>> are running on the same machine.
->>>>>>
->>>>>> Correct. If we want to enable THP for specific workloads without
->>>>>> modifying the kernel, we must isolate them on dedicated servers.
->>>>>> However, this approach wastes resources and is not an acceptable
->>>>>> solution.
->>>>>>
->>>>>>>
->>>>>>>     > Both Lorenzo and David propose relying on the madvise mode. However,>
->>>>>>> since madvise is an unprivileged userspace mechanism, any user can
->>>>>>>> freely adjust their THP policy. This makes fine-grained control
->>>>>>>> impossible without breaking userspace compatibility—an undesirable
->>>>>>>> tradeoff.
->>>>>>>
->>>>>>> If required, we could look into a "sealing" mechanism, that would
->>>>>>> essentially lock modification attempts performed by the process (i.e.,
->>>>>>> MADV_HUGEPAGE).
->>>>>>
->>>>>> If we don’t introduce a new THP mode and instead rely solely on
->>>>>> madvise, the "sealing" mechanism could either violate the intended
->>>>>> semantics of madvise(), or simply break madvise() entirely, right?
->>>>>
->>>>> We would have to be a bit careful, yes.
->>>>>
->>>>> Errors from MADV_HUGEPAGE/MADV_NOHUGEPAGE are often ignored, because these
->>>>> options also fail with -EINVAL on kernels without THP support.
->>>>>
->>>>> Ignoring MADV_NOHUGEPAGE can be problematic with userfaultfd.
->>>>>
->>>>> What you likely really want to do is seal when you configured
->>>>> MADV_NOHUGEPAGE to be the default, and fail MADV_HUGEPAGE later.
->>>
->>> I am also not entirely sure how sealing a non-existing vma would work.
->>> We'd have to seal the default flags, but sealing is one way and this
->>> surely shouldn't be one way?
->>
->> You probably have  mseal() in mind. Just like we wouldn't be using madvise(), we also wouldn't be using mseal().
->>
->> It could be a simple mctrl()/whatever option/flag to set the default and no longer allow changing the default and per-VMA flags, unless CAP_SYS_ADMIN or sth like that.
->>
-> 
-> This isn't really TRANSPARENT Huge Pages, since we will require
-> the application to determine which memory range will be mapped with
-> huge pages.
-
-Huh? No idea how you concluded that. Can you elaborate?
-
--- 
-Cheers,
-
-David / dhildenb
-
+> -- 
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
