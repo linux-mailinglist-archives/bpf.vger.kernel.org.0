@@ -1,112 +1,83 @@
-Return-Path: <bpf+bounces-58939-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58940-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 086C7AC416C
-	for <lists+bpf@lfdr.de>; Mon, 26 May 2025 16:30:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDA7AAC417C
+	for <lists+bpf@lfdr.de>; Mon, 26 May 2025 16:34:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCD7916A836
-	for <lists+bpf@lfdr.de>; Mon, 26 May 2025 14:30:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E05C23BD109
+	for <lists+bpf@lfdr.de>; Mon, 26 May 2025 14:32:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B249F20DD40;
-	Mon, 26 May 2025 14:30:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E5F3212B3B;
+	Mon, 26 May 2025 14:32:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="CF57+Haf";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="qM2vW3Yd"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="LWNZr8cE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2049.outbound.protection.outlook.com [40.107.92.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 884DE28EB;
-	Mon, 26 May 2025 14:30:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B92AF212D9D
+	for <bpf@vger.kernel.org>; Mon, 26 May 2025 14:32:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.49
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748269841; cv=fail; b=MM6ZkYZbM7nP4ONgoIjsjwm57e+XRRTyo0ZsSHQCDvmIpmpF+5WYDnV1lGBPHtHpf94KAVQolU6rSSA9BQBtEL5Ys1LxZUVJX6BUQlPISpURnxXhuclh5d21zRaDZh0cR9Ja+wE9nR3xWYH16a0i8WDFhOPfENPGE/ErtJlWJFY=
+	t=1748269946; cv=fail; b=NKUKutE60Ce3VQtKJK9ZueTra97FaDXp0etlr1vt9oYhdveh/G22E5W/ckmF+hivCz4Cog9HBZ3gzMCkC+jhu6Va4pQ1yjedzYIw8RI4+NrtpcUK3XrzOS1Olag4JoojYBIZAf7cxYnszKwRb4C5nl/Jfh8Gl1zkovAH6jbFMKI=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748269841; c=relaxed/simple;
-	bh=65wbbXzdkyCut6gb/2Ww3VDWaVw54S+QlDdH3THIjBA=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Y+RB3YTGlFJKQ7IBkQOfWaUmFRvyfvlIqGKxDdywS35WH0zLHxQw1tUNzLbynMyGx1oDGMxyxWXYCqDEoruiEbBdEGncunrl/z4JVnoPMujyp88VvlAVHkb1tL5kNlPhDhFixIqfEIX10yUOnf7hml1/e50gTvi6ZnzoHbjifwM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=CF57+Haf; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=qM2vW3Yd; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54Q8twVS010856;
-	Mon, 26 May 2025 14:30:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	corp-2025-04-25; bh=owGNLm0L9j2hhe8OvxUOysjYe5Zd33g4jLat+qwVFcY=; b=
-	CF57+Hafl978+0xBw04ZT40/vIF5ub9swWkCbhAGvPP3i3OivtqXBYmsvQkGPOJC
-	5/RGEaW35EUr4TdhpIw1kgsDALQVhSe2jLvSjZH3ZQbVSW0vY9INt3EaFvMTbfWl
-	ZpHCnS+pj3gn8E5dvKC7XV7XiVpnAjr4oUroi9rTid8qb/mB3dsvLZvaeOfS3VZ+
-	acSNCNM7elnyTRomWTUpwi82owUfqnbFLj6dTyyBmWNGsE4EoXtPbqb1bvRZ3Nya
-	k0G4WjgPTXv/iGC5CqpINlzW2DbJRkUBpuMbMmT+Szl4TZkJ6PMzcaZIHyGjh+4z
-	2Ab6Zh6vunCe3ifz0Jio2w==
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 46v3pd1epy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 26 May 2025 14:30:15 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 54QE4E0Y021122;
-	Mon, 26 May 2025 14:30:14 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10on2047.outbound.protection.outlook.com [40.107.94.47])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 46u4jebrg8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 26 May 2025 14:30:14 +0000
+	s=arc-20240116; t=1748269946; c=relaxed/simple;
+	bh=qcvaQ/tGAbXQQZWRGctNVk/GJR1hAokl8t1o/y/HXA8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=DDUXKmKtWTDk3MtDPoA00x3+HiYu+KOA4TeEjGVf79yYhLYDR0d9fRGSZycIDHyUIMzYoQYxTH8AXhbdb7i1X+sZ9fGuztKDAfXSW9jkZdT5pyFnmgVwAD9iZsryBd6ddXzr8sceN02EPohwEpbwJuPh8ZJXBxb4cOYKHOOFt6U=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=LWNZr8cE; arc=fail smtp.client-ip=40.107.92.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=N7Yia9RwHZwHLqzqq3TEW8oenOHRhv0oYDvb4x/EtKy6AB6eV+qrGO0PiEjOHwYZygEDksyKcXPc6OCrLrB6CcfEL0XiRgtAUlrqEbSo5LLQLp+4aVeUYX87BVND5PC7LVXOKtCtKgMo+RzrVnA85ON6iKAt2VYFNS2zu1gctbkDPyZ6CG7vmulqnpJZgTP5y10XFN1/9b1KkzWYIUe93sg1fNxHtK/uvPYjLymnYQ15+z3c1zCYqi2XB73MvSVbjyM0d7YGbG0bOBmPmRnTZfn3Ivr62KQTVQtZiHLBfJ1Rlsfx6W8JCttmENgo7WiTKzwksv5SOiBTs8C43GDY2w==
+ b=IAOWxQjT3KpWNQ5TOrOEpBTK44hLZKAXs3vADC/viXz6AR9ZzaAg8mTzQ/goN6GkixGC2bhJ9OztWFwsvGMqno0wnT5kl6D0hMbPH7s5WcrGdDyj6au7yG4pH+MdPrmS23vvTqOeBcU/a3wn9rJOwfE5lBxYnbS9znkEyk1QUJzFmgOLGGKSeC++D/kDW4uxubCsXCe1sg1SWUD0i6WoaGEFJXeZZR2+4edL5qDprVNu3aLb+8MgJMMzHcZ4eXxn9rs8z3N/NFuETPw6OsW3ElewvUOGQfBvguKbm4Oa+Z3xDXiymKdOgyc1CcxVgeulmyFHUdxO3dvTGRCwBUruIg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=owGNLm0L9j2hhe8OvxUOysjYe5Zd33g4jLat+qwVFcY=;
- b=UuK89Kr+msrAgR3KbI0wdZ+WsSkwwbEk2ibuzHlfosDUwPtnN+Wezz3xGcnB1+IiK7a1WjlemaPv9kQdxbY/zmuwVVnX91SBmco5qEYaho9g9j9vSPpKLOPCWKC3howAcIrH+A+px5NUwdGQduGAGXexieccU4S8TMElR6XFqsfWwPo0v8CFAosKryV0GFBHIFx1XLQTYglEQQDVOgaNFYRR7i/XBFi1flPMzv0T+71OQKOtFx+DxYAHadWfAekSzxmxEzHUn9FA6h4fntLoYYGoNHvcRD/WjanKy4y9K/SDFdKUYHhl2IVQpNRUgCO4UPjFyn1sspmUT6uKjzyPnw==
+ bh=qLDslDO7+d5a45vA+Yc+ykqFeOMWiqpNzSVozsBVteM=;
+ b=wrwQKJyOznx+J1m3nm21S9CW70ZyLuHKTuVOAzxKQnO9rJUWnpPBFZ4mWKgGTLSt7brL9uAlBiFxe6Vs+5I0QYAcUWacWgCGvLdBiP/wEfXY/Z0upp8fJhDUY8LCU+pkzAgwRE6gLgG6ngxiTrYSKXFdyW49Q3gRvcL2H9KyeepTBDeiA/fBkf1NCvy6r3JJEVTYhAdwqp6/SYCu0HeCuE9M7YYAPEnn9bQF0675afC6b6xFlLa55guSDhE5WTFB2722gL1LhO90DQG8OhvnQape61mmrprp6JdmGREYkAXeNnIN8o09uSVvt7Q9sws4E6LRwL37QGiJq/qH1CqsAA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=owGNLm0L9j2hhe8OvxUOysjYe5Zd33g4jLat+qwVFcY=;
- b=qM2vW3YdQskrusmYAwu1v+EbpA8NhiIfOp60fl6LsrUx/jQSD8jPg9j1oJ0W8FTP1AyxdJYtAemyMsZ0uzmpa6QwoTGjGqBY94ZAxIhVEaBjSivX3/kjnOpL+NhYv/XxU2TtVcIX9K6B4i+IKpTwED/NDxycIgmXcuIi1/XzbG8=
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
- by CY5PR10MB6093.namprd10.prod.outlook.com (2603:10b6:930:3a::15) with
+ bh=qLDslDO7+d5a45vA+Yc+ykqFeOMWiqpNzSVozsBVteM=;
+ b=LWNZr8cER0zr41w4vJP5+jHjAXIPT8BjYGs+I7AJD4JZXLYdfHOKeUY79jUZt9LjjbhxSttyLtHYtAf6DpJZzUkvnJA4VO6BpLjbDdK4WyZs7poMyGkn1T9pqFl7DtrNacTBjGqXnrfyUsjdAD9KWxyCXyFgApLDyQoqYuUUEBECPD8sME7qBCeY3Ooj0hNUEbu7Z1ez0lXyd6G+nXAggwHt9f/RvvTLWLcNLAFk4HAgNSgCTnnJwAVWVYzovUjXcPOnKkNJXJXQUF1Ub/FUviOC/PiKk/frW3d1SC4P4BTgcdcXTaIvP9A8bfjSStvUbZr5SkYtBRzNGZIOaIcd7g==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS7PR12MB9473.namprd12.prod.outlook.com (2603:10b6:8:252::5) by
+ BY5PR12MB4289.namprd12.prod.outlook.com (2603:10b6:a03:204::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8746.30; Mon, 26 May
- 2025 14:30:10 +0000
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::682b:c879:9f97:a34f]) by BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::682b:c879:9f97:a34f%4]) with mapi id 15.20.8746.032; Mon, 26 May 2025
- 14:30:10 +0000
-Message-ID: <6428960b-a1a7-4b1f-8975-5a85e2b8697d@oracle.com>
-Date: Mon, 26 May 2025 15:30:05 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 0/3] list inline expansions in .BTF.inline
-To: Thierry Treyer <ttreyer@meta.com>, Eduard Zingerman <eddyz87@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        "dwarves@vger.kernel.org" <dwarves@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "acme@kernel.org" <acme@kernel.org>, "ast@kernel.org" <ast@kernel.org>,
-        Yonghong Song <yhs@meta.com>, "andrii@kernel.org" <andrii@kernel.org>,
-        "ihor.solodrai@linux.dev" <ihor.solodrai@linux.dev>,
-        Song Liu <songliubraving@meta.com>, Mykola Lysenko <mykolal@meta.com>,
-        Daniel Xu <dlxu@meta.com>
-References: <20250416-btf_inline-v1-0-e4bd2f8adae5@meta.com>
- <d39e456b-20ed-48cf-90c0-c0b0b03dabe6@oracle.com>
- <09366E0A-0819-4C0A-9179-F40F8F46ECE0@meta.com>
- <CAEf4BzZxccvWcGJ06hSnrVh6jJO-gdCLUitc7qNE-2oO8iK+og@mail.gmail.com>
- <bfb120452de9d9ce0868485bc41fa8cf56edf4cf.camel@gmail.com>
- <530F1115-7836-4F1F-A14D-F1A7B49EF299@meta.com>
-Content-Language: en-GB
-From: Alan Maguire <alan.maguire@oracle.com>
-In-Reply-To: <530F1115-7836-4F1F-A14D-F1A7B49EF299@meta.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8769.27; Mon, 26 May
+ 2025 14:32:20 +0000
+Received: from DS7PR12MB9473.namprd12.prod.outlook.com
+ ([fe80::5189:ecec:d84a:133a]) by DS7PR12MB9473.namprd12.prod.outlook.com
+ ([fe80::5189:ecec:d84a:133a%4]) with mapi id 15.20.8769.022; Mon, 26 May 2025
+ 14:32:20 +0000
+From: Zi Yan <ziy@nvidia.com>
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: akpm@linux-foundation.org, david@redhat.com,
+ baolin.wang@linux.alibaba.com, lorenzo.stoakes@oracle.com,
+ Liam.Howlett@oracle.com, npache@redhat.com, ryan.roberts@arm.com,
+ dev.jain@arm.com, hannes@cmpxchg.org, usamaarif642@gmail.com,
+ gutierrez.asier@huawei-partners.com, willy@infradead.org, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, bpf@vger.kernel.org,
+ linux-mm@kvack.org
+Subject: Re: [RFC PATCH v2 0/5] mm, bpf: BPF based THP adjustment
+Date: Mon, 26 May 2025 10:32:18 -0400
+X-Mailer: MailMate (2.0r6255)
+Message-ID: <7570019E-1FF1-47E0-82CD-D28378EBD8B6@nvidia.com>
+In-Reply-To: <CALOAHbDPF+Mxqwh+5ScQFCyEdiz1ghNbgxJKAqmBRDeAZfe3sA@mail.gmail.com>
+References: <20250520060504.20251-1-laoar.shao@gmail.com>
+ <CALOAHbDPF+Mxqwh+5ScQFCyEdiz1ghNbgxJKAqmBRDeAZfe3sA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: LO4P123CA0639.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:296::6) To BLAPR10MB5267.namprd10.prod.outlook.com
- (2603:10b6:208:30e::22)
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: MN2PR04CA0008.namprd04.prod.outlook.com
+ (2603:10b6:208:d4::21) To DS7PR12MB9473.namprd12.prod.outlook.com
+ (2603:10b6:8:252::5)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -114,205 +85,286 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BLAPR10MB5267:EE_|CY5PR10MB6093:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7816262c-81c7-4a39-68f4-08dd9c61d1ba
+X-MS-TrafficTypeDiagnostic: DS7PR12MB9473:EE_|BY5PR12MB4289:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9f38517c-0ad7-4f73-90e7-08dd9c621f66
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|7416014|376014;
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|366016|7416014|376014|7053199007;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?N2NoTnFOZmZFeVozSnppRWJUVnpRRFpoTkdQUmlRKytVb2xPb252Z1FEV0pt?=
- =?utf-8?B?ZUJVS3hwWlJFUVNic29NQWNBbmNhZ09aQXBuMG92cTFBOUFMYmdqSWt6RWVZ?=
- =?utf-8?B?RTZkMjFRbHZPUzJtZDZvR2RKYktyZTBiRU1XMWpsZUtXSWlWL2FNZDZ1QlZB?=
- =?utf-8?B?SEpmL25pVzZmeHVudmxoWTBxY1YrVEtXU0taM1JJb2dlR1NsLzVRSVVCT0ZQ?=
- =?utf-8?B?RlJMckd5cG54bEozQlZuTTVSVyt3NXJsNjMrRURqWExFZy96V1ZCb0xDZWdx?=
- =?utf-8?B?UTZtVVREVlczWEJpd3pXTUtwN05LMjYvb05JL0FDelRGL3podkJvdFM0SWs1?=
- =?utf-8?B?Y2hGaDVUbFFjUDZlY2t0ZGU4dmRSNnAvOS8wZ0hOdDg1bHowbngvKzdoMCtM?=
- =?utf-8?B?YTA1ckk2ZG9wSXU3WlROM0daTmwyamtSRFdSZVhQbnhpZHVST3RjL3lEMjM5?=
- =?utf-8?B?WTdaM3FSODdRRVBWWnFSWXI3R21JcUI0QXUzR3kyYW5WdDlUNTRQOExwMU8y?=
- =?utf-8?B?WGtGTmhPUVVIT2dWSVpadFBtaDBZcUxwK2VUL2FqYU9EVnpsS3VleU1CMEpp?=
- =?utf-8?B?Q0o0NkxPL2RPb3l1NC9CaGZmSlk0Q0MyVEh5SXNsYXRvakkyTkhMUzBldXVY?=
- =?utf-8?B?R3lyeVA5d0NGL3JHbmlsZ3ZId09nYlNIaXdXM3IxK245eHFSKzdoZFJsSjNk?=
- =?utf-8?B?Wmo4NjdNL0xucjUrTUticUlZLytmbDNYeCtSYzZhWFEwL2NMK0l2VDJFNlh3?=
- =?utf-8?B?bnBqSWh1UFVNdUtzeDVkM2llTHQ0a0JrQy9CN1lXbTIxclZrdFNTd3VBSy8r?=
- =?utf-8?B?eW9EdEJlUFBVWW4yU0ZiQlFxVzFMSG5aaVpxYWh0K0NRemZHbWUrN2xIQjlL?=
- =?utf-8?B?ekFhMXE5RGExbm5LWHdidVZZYy80bXZKUkp4YXFEM1pxMi9aLzFIZ0Y5SE1K?=
- =?utf-8?B?bUI4b0tycXBSOStKMGNyRk1WUFlnRWRDendSN3BIeEdkY2JRUjdUaS9wUzAx?=
- =?utf-8?B?R3dOM3IxMTNLYW5Fa1RxbWhOK096QnhqNHk3cmpleWJiTFhHMlVXVlI2VjEw?=
- =?utf-8?B?b1FvQ1ZEb2diRTF4cmRKL1B0OGcxUlZTdkpXek0vTVNTN2xkdG5FYWZQb3dG?=
- =?utf-8?B?WDVxaGhiZzBPdVN3THJkTi9HamE4V2JtYmROUjdWeUJWZTQxNEFYTGhQRFcz?=
- =?utf-8?B?TWhwZFBSNDgwYjE5SkZUa3JUYVJRZ0xiTnlJK3dkaVloMTdkVFFzbjZIdWRx?=
- =?utf-8?B?ZjdBYTBqekNYN3RDcGtLTUdudXRzMlJkOFFCT0ZQQ3BIOXBTNnQ4ekxUSjg5?=
- =?utf-8?B?L0s4YTM1VzFJVkQvWFBvV3JIZysvdUQ3b0Vjc3NPYU45bnJzVEJHZXhlcTdQ?=
- =?utf-8?B?QjRvT2xpZTRqV0k3RVVlck5tdUMrS0RLTHZqNEJsbjhGek1NYUZoS1REY2h5?=
- =?utf-8?B?cjlUYTBmcTBsNFpva3hQNFBLZWRqUnFkSnNVeUg5ME5UOENaS1IrYXhpbFNk?=
- =?utf-8?B?QkVLemxzUjNHWGZlc2hQN3U3R3F1Vll3T1dQYllmcXlUbHRvNFVTRDJwa2Nz?=
- =?utf-8?B?b1ROaXo5VDF4T3pPeDBudVE3V2VZM2Zaa0xabzQzSjdybFlwMU0xMG9kS0xt?=
- =?utf-8?B?dFdPN2NaV0R3OW1taXB2SjBMQmJWclRWNW1zS2J6ZGRGM21KYk1iN01lR21R?=
- =?utf-8?B?aEZIT1M2bC9STlBPOVljdjJRSlFWeEUrN3JtNzZDSXExOVozWEh5L0hXQXNk?=
- =?utf-8?B?cmx6ZjZJTU02TEpNYy9kOUs0WUgxdkh2UnRjK0dUYUVpeWFManRON0RlT0s1?=
- =?utf-8?B?S2h3V0l5QTNTWEQzdmJyVzM5TkZXSE5lZ2hqUEVpU2d0Q2hYVE9yam83RW9m?=
- =?utf-8?B?c2dCa1pJck5FVWxuc2t1dlVxdnpsdzFWU3EyUlI3SndUVHpCVFl4M2J5UjBH?=
- =?utf-8?Q?iMDaVCrnkJY=3D?=
+	=?utf-8?B?cEZCNjV3WTBXRVJHUnU2bHRaMmRtaDFhVXJLeVZ3a2pvbmxud2g2ZGd6WFV1?=
+ =?utf-8?B?Z2lPdHU2K3JFNUllRUtIVDRHL2QvNmZCZ2ppMlZLcmhwTjdEL09MVW11Ujl3?=
+ =?utf-8?B?NVBNTk4wMCtPMGVmNkFGNElYZ2ZQQTNPZDd2a1BGQmZEVFNUd2pGc3lGemdt?=
+ =?utf-8?B?OS9UZTcvcjl5REJnLzBiQ2RDV0tpdnlNUDNHVFZSbmN3VDYzelAvT1VKOFJY?=
+ =?utf-8?B?TFdGalNKWWJJY0dQdktraDNRU0JSQ1dmTW5lUmc4c3kzZllvSFBWQ3lDbUVN?=
+ =?utf-8?B?QU1DSlphOEY3NDMveWk5VXd5NXU2QzdoTDJ5UmU5MzBlbFZBckxBRGt1OUZS?=
+ =?utf-8?B?Y0srWTQyenVTVExpRm4wZi9sbVdXQ2VDU2Q1djJjVlM5SFltZ3VuNm05SDdl?=
+ =?utf-8?B?bktyRHdYb2pRTFVDOUoyWkQvUXJVTVBuaEwwdTRkN012YlpSN1ZXQWV5cU45?=
+ =?utf-8?B?SU5jcDByU1NPeDRHZjBvaGhjSC9zTjEvUGFYQ0h6bGdidVB5Rk0rME5rb3ly?=
+ =?utf-8?B?OEFnU2h3TzdZTkdqeld3NFNFdXNkeEdjem5oeTFHNTNrZnB0SlBOQk5VQjRu?=
+ =?utf-8?B?MFlxUjlSS2hFbVdUK1lxMXNISXgzLzEzNzUyb3RrV3pvOVhTaUtaY0tBUHhy?=
+ =?utf-8?B?OUhDdXpsMm13UE1aS1R2MExacGQ2WEFncWx6Y2tvSnNKUEtadzFHSk5ZdWJD?=
+ =?utf-8?B?L2JpOW5EQW85eWp4cEswOENPK2h4L2xiNVA1Qlh1aUhGcm1xeFlKdjJJZG1x?=
+ =?utf-8?B?WWtuQytRZitCVTNNZGE2STh6WFJ1QnRUMitUUlJFUkJaQThHYmQ3SkVid0x4?=
+ =?utf-8?B?cWZCcmFiTHp0aXRTdTlUdGEwcWFDS2ZUei9YQU11NFVpZUxLeFdBU0lYc1pa?=
+ =?utf-8?B?NHlGZGk4dUpSR3NmVFVRVFRjNE9hWU5TZGNSZFA4M2NPY1d5NjNJYmpwNHFN?=
+ =?utf-8?B?YnN4Wnp2WUZ3SXYySGhEUXRqUndhWSt2a3UyQTRYMzM2b1BhSkFJNFZ3b2ps?=
+ =?utf-8?B?MjRHeEQ2Yk56SlQ1YjZuemN6N0xqcExBU1dkVFUrWC80ZEFWdkt6WmJnTkhl?=
+ =?utf-8?B?K25uOENnT3hnSHRnN3dJYWxGUkJ1WThiNlJ3TmNFMnNRVmgrRzdPUDJla3ps?=
+ =?utf-8?B?amg2djd1NTJCRDNhSHU4djh0dE1kVzhwMTVSTXI3aDFOOUppblpUNkNnbVpo?=
+ =?utf-8?B?dlN6MytPdW16QlpFWXJaQlZwaXprNDBlWWxrZC9iNlg2SFFNMzJYdFY3ODlr?=
+ =?utf-8?B?OStqL3dTZzZsaE9TaENRc3FxWWx0YVJBOHpEVmVVMGxFRXpodGZXbFNXem1C?=
+ =?utf-8?B?SC9GamJNb3F1V1ROc2lIeVhQYnd3bk1QUk5iajFvU1ljLzc4OUcvNFVDWmhE?=
+ =?utf-8?B?ZmNXYkZ2WjBrWDB3Q1ExV2V3eXd1SnZ3bDZYeE1CWks0TmVmVmVDMTdsNGwy?=
+ =?utf-8?B?ZWx6YzJqTW11Q1pKTW5COUtQSUh0eUhPK3BON0hQWWw5YjRJRkI5VUNWWkwv?=
+ =?utf-8?B?R2s3dkFuZy9Fbi9tVW8wTjFmQjBzbHhDR0dXQVdqcFFzRnVNVVZWdHRNVnJh?=
+ =?utf-8?B?VmNMS0JzSlBDU3F0RHdZeHg5OEZCVmV6QVEwK3MxNU5pYlIwWFdtUU5rd2JC?=
+ =?utf-8?B?Qk1oYUpCMllvZ0ZaSmQxOEpOa2tScitnUVp0dU00UTdkVzVGUjcrcTl4SE5S?=
+ =?utf-8?B?d1FYaHQrUnVSWms5UEZZTjZTdm05VENOVVZ2RW5LY2VFbjF3bEZmVUVacTdK?=
+ =?utf-8?B?bTE5ekJsQmlsaE5yVHN3UG4wOGNzR1NUbFp6OURCd2duMHVHN2hNT3VwOWRo?=
+ =?utf-8?B?S1RwUGlCSlNhdkVlSWFZbkx4WVBLdE5nd1dPU04vK21wdWhiY3hKRWNDZjFz?=
+ =?utf-8?B?aE5oNjNYeDNGREJFa0JxVW1VWThxa0hyYk5QYkFSUm55RG5xMWFBSG9FZzVJ?=
+ =?utf-8?Q?P8zghLkpYSggOn2Vb+Kz0hb+PF4P0wET?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB9473.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014)(7053199007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?dUdoZ2FCdnFjUUJBWGtJQzF2bGZDbkRsMStXNE1zcVF6NHhoMUk2aDd5SXoz?=
- =?utf-8?B?U05jY3h5cWY5V0JZbUNTV2FEekZCQkpabWp3OGlQNlFVbG4zbTRocGlJYzY5?=
- =?utf-8?B?bU5RTXpYU0xYbnRMYndJVTU1cXRiZVl5c0FrR200bWh4dFo5RkZ2Z1RtcnNS?=
- =?utf-8?B?aGJOTWxNY0djVExSVUl1WFdyeHZhQ0FZclQrSHRlSUxKT0dvM3FNZ2FOVFBn?=
- =?utf-8?B?QkRCWU4wZit4MWVOcXNpeWZidUxCaEVBNWg3eTJkM2JPeHlIeU1yN2R3anNW?=
- =?utf-8?B?QS9uM3dNejF0QTU3dUxsRHgvNjRCdGtlaVAvNTRBZVZxK082d1I4cmdVcWVO?=
- =?utf-8?B?cEljeUtjOUhwVzJteThYbk1HM1ZoMG03MWJaZU9rZHF1Vkozc3ZsZEhyOWlB?=
- =?utf-8?B?cC9XaHZYUXNPNnM0MmF4aENVRjRzbTEvY0RWMFhZY2dHZk5COHFnVmZuVWhF?=
- =?utf-8?B?eWhZNlo5SlN0Sld4MG1ZelQraW9NUm1RZy9iUVdRVWNLSjB0MlZ0ejJYdEpG?=
- =?utf-8?B?YWx2RWNGMVp4c3EzNW5NK2Vhb0F3QXVnRlpCd1dDZnptUnc2dlNtcGxrcEZO?=
- =?utf-8?B?OGgxeVVPZXloUGVOZ1RFMUFOa1JDTVhSNUxrVC9vS0lucytmbVhERG9EV1ZH?=
- =?utf-8?B?Skl1d3BSVTBsRnR4WXZJL3lwVVpobU1IY002T2xLUjU0NVFwUGRKVjhTZ2hY?=
- =?utf-8?B?Rk9LNUhzUmFJb1ZITEkzekNTYkhTR3preStvYjVGK0h1YUUrY0lvMitIOS8v?=
- =?utf-8?B?MUt4SEI0VjJlVTJmejhzMzk1R0VEZ2N3WU1YRzI3cERQOVhsbGtJbVI1Y2or?=
- =?utf-8?B?cVA0a0xjSmg4MzZtVHdHVy9PWERReGorU3JYbkxEeDE1NldjRXR5NnJQdUM4?=
- =?utf-8?B?eUNmRVJjR29tc2Njd2Fud1o5bDRRblVITXJ2R2R5OFd4MEMwLzYxc2pJeXY0?=
- =?utf-8?B?SXpiRk1NbDJ3Rzh4dnhWcnl5L0QxUU9TK3N6UThQdUcvWDN0TlRGR1ZPU2tO?=
- =?utf-8?B?UGRZL1hXc3RySU9KYVhwWXlyUzE4eHFoWklHZVJXOGlJMCtCeHQ1N2ZRVEZt?=
- =?utf-8?B?K1NPcFkraUk4WnRiRWVUd3RnQnNiR01TVmhjNWVRV0tMM043UGJ0N0ZGVGlV?=
- =?utf-8?B?Wkpsb2FpTVNVdkJVdlNGdmpYUG53SEVCUlFsUTFEQU51N1lZTUtIbjFwWUsx?=
- =?utf-8?B?SEd1MVJ6VlFSME40amVLWEQvc1V1U1BRZVZ5a1ZwZ1A5ZTR2RkVMRmZBT01h?=
- =?utf-8?B?RGsycGtrNmxFVVVrSVlKalJKMU9UTi9QQUMzZ0cwRGY5bGtCT2xwalA3Vk1G?=
- =?utf-8?B?ZnpxMisreU02elB6VzdRTFcwVU53VSszQlV6OWRSNldCUllmZ2R0V0Y0OGVY?=
- =?utf-8?B?NGpUaVZsSzVDQnFNeWN0RnNXY1Z0SEV0M1ZUUUFMOGNxSlBPN3cwbVdSMHlk?=
- =?utf-8?B?L0Q5Smh5ejRUdkNhWkRnTkpjdjhNQzBwL0hwbFNpcjRTVmYrTllDUHF3K1dV?=
- =?utf-8?B?L21WQjA3NlZHTU9PZG1ralZpY2pTakJxcmJnNWxQOUZpdzVjbmZhMTVSckM1?=
- =?utf-8?B?bkNQdmRkNlVJQm1MNlJjV2ZsU2ZLK0ZKbjFta3JCLzFob041V0Z2WkpUVEV2?=
- =?utf-8?B?VU12SnhRblhwRUJnT1F1ODNkbzBraGo0N2JYRCtPQnhKem5pYkxrQ01ScytU?=
- =?utf-8?B?MUhER0g3RjhEWEdzbHJqSGltenVETHU1NURCYzJiMUFnamhic0VuWUx1dTB4?=
- =?utf-8?B?YnFmWXV4MjBEdEN2azJCWjhLQmxsc3I1cDBaYnM2ZDAxWktSR1U5S0NNd0tY?=
- =?utf-8?B?V0tCbEdmQnZXWlAyekk3d3Yxa2ppbEsvaVJDZStzb2Vod2p6eW9hS3lkQUpq?=
- =?utf-8?B?SllieUhTclJGUk5BdHUrQytnNzd3bktHakVqdkRxNnVVZ0dOZENLOTlPTFN0?=
- =?utf-8?B?Qk1UUWF5VmtRcFZ4QWZ1UmUvS3lUb1I1d3RnSVUyUUx6V2dTU2d6Q3I3L21q?=
- =?utf-8?B?aDNVeVJMZVBCZFVUTzlra1duUE5BMHFvZkduTENTWVI3K0tVclFLUHF5ZG9w?=
- =?utf-8?B?ZVlnTjFBT3JnWXBOWjNhdEtTV2JVdFBhcGZESnVTV29VUUh0NW9kRmM0aWt6?=
- =?utf-8?B?eko0Z3Uzc3RXd2QyOC9mRm9JclF6Vk1KS1JKR1JTRHQzTTQvSkhBY3JQczc2?=
- =?utf-8?B?MkE9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	MqiRf9niQQcdTc9I3UxnUy6jzIRzVlTZiR+txOWhoKNvFweWkVwAB4uwYcztF0vqVbc2yRFT6CKqSw8qlb9CrIth1kbxiKa2fTPxK/5dHD4ClJzibAn4AHx8FVwKOR7liSd1Vi/oHCtjqfu27k8fk9p0o10o6jrCC6ZCF50cYQ6ql7jCSYgJn5jowd/0zTPdBJSL98BDTbUiO7pgGHB2bVLx3TCAs/9Ohecalw4Me2GFINUlXjuSomMdPLliI0EznVQMAgYGQX+Mcwq0X8tmZcYwOi06Um0/wQQsCbq7zH9dbowcrqtILkNw4oDDS65oPpQRl0o24fAyPuu3NO1H1i33EX0eHeYEC9tPv9ujglZdbUOfU+7GSJVydrdPWEYrOsfDACNTDJ/GToMMuz6PeV1TCcL8WJOE5d34SovjIdFFa2EVs59o+XQaBa/dlPAdTqtaeYcsL8tQahPc2BsoSLGDWa6vY4e10a8DBhwwnqiBvzN4V/ED/0UmEfkIUr8O7rADHywW/pUN202dkWwUyLwBnx+AJxeEpdZ2axk/EXcCk5B+WXPI7DyM/lPVR9X0b6oADkR0cNi6XUnPIHmJlz5wksWyoLA+sMk6qIMA1Bg=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7816262c-81c7-4a39-68f4-08dd9c61d1ba
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
+	=?utf-8?B?QWU0aC9JNkZEL3BnSXRHbUtzdGFnVjVWNzk5UjNnMXNPeDFOVHo3SGJlUzJT?=
+ =?utf-8?B?ZTNTWXJWWmkzUmRVTlltd3E2T05iTlY3QkVaOFVoTmJkRkQ2aHNCTkdQRkli?=
+ =?utf-8?B?QzVLcU9sSE9JMTkxZUhNbGI0dDV5VDdScm5BZENpOWJJdEdHN1VKSFpuaWxv?=
+ =?utf-8?B?cTZGYnorWnZJZmtHNk5MMGk2Wm5qajNRaWN0YU5WbDZ3Qks2eHB2V0g1UHB4?=
+ =?utf-8?B?VmNpbDJlVWVST1l1b0tleFhZSEFTdCtrMEpPOC9KMmlrb1JkeGFxK0hFMDV3?=
+ =?utf-8?B?N0R3bGV3bkFwaGk5NkFvemJuSmxJQUZETjZjdURkMDRQQlpGSytBa1lqeUc1?=
+ =?utf-8?B?UjRMbnFadCtTczlTb2RIcVVrdUhwSmdNMlVOOTRpb2hIUDJNbW9uWWxFT2R3?=
+ =?utf-8?B?U1ZRMUFKc3ZEbzhnTGdnVnNKS2twNkxmOWw2aHFKOEczcFJyeWJiekhVZ0Fn?=
+ =?utf-8?B?eVRCdFI0cGNRNWFRRnFYN0hmZkRmSW43R2ZiOXAzYWc3Zkp3aFc0L1ltRDJt?=
+ =?utf-8?B?SWN0bmozOExzczh3ekovWXdvZk10L216UkFDOUMxaHc4YXNxOHFTdnhUUlpu?=
+ =?utf-8?B?VU5COEhhTkM5UXAvSVZ4eG9ITS9XZTYyOE4wWll5QzRqbStJTW50dTdTNnh2?=
+ =?utf-8?B?ejBJZzVpZ3JjN05KRVpVQVpQL2tUMHdRamIyOHcwSE1sUzh5Q085SmJQaHBB?=
+ =?utf-8?B?Z2syZGh6ZEMvNXBDaVRWeXVISm9oVnFkYjVsa3VROGxrUFlKYURqQUVtMWF1?=
+ =?utf-8?B?RjZ4YTN4Qkw3OGQ0U1drVVljZGxTOWhMd2piZGpZN1lmVmRhbzI2dXlLNWl0?=
+ =?utf-8?B?VEY3dW9hYjkraG96eUdvVmc2TVFDZ1NZbjBvYVF4T1QrV3FCZzNid2ExRzA0?=
+ =?utf-8?B?OWIyU2g2NDBBVHpKS0hUaUpLMjZHVEM4eFd2TW9WcElsUCtBNjFNWHFIQUFM?=
+ =?utf-8?B?YVN1alVNYzhQbVByb0dvdWZERHVTNWZpYVd2ZWZ0U0FWV01wYnJsTForSGx4?=
+ =?utf-8?B?S0Fna0R1amZxTHpVZTU5ai9tTFJNVkxLTElVOG1xcVIxakdYL3BmSHBINko5?=
+ =?utf-8?B?c1FjaXFxOGFJUGYzWjRneTJtTU5YWjZXOWtGenBwT0libjl6Yy9zZEpWUGUx?=
+ =?utf-8?B?R04wMWF6a1JqbHArZXU4SHVrSE95SGdSREd2QXh3VUdUNDlScjZBeVhPbEF3?=
+ =?utf-8?B?RUlPNjUydDF4MTMvbTlGSW1lMmJUWGllS3NEU0Z6UVk1T2l6N0lVWFU4UW4y?=
+ =?utf-8?B?Vy95T1NmUVZyRGVFR3g1bzI0Q1lqaHBZNXNzd2ZNVk0vMGN0L0JzYVArdVpV?=
+ =?utf-8?B?WElPZVI0T3lURC92WDZwd3NTWG9TM0lmZzFxQ3RzVTl1RU5sbTB1Q0tMdFJ4?=
+ =?utf-8?B?dEZtam9YcnYvbzUyZ1JXVVBHSjZGNmhsWXl3Ny90UHR0WkdOd3I4RkhmaDF0?=
+ =?utf-8?B?QzREbW9UeDFJK1dyczVNVnJEb1Q1SzNabU9LQnJudWUveWFnL2M1cnEvRStq?=
+ =?utf-8?B?aUVkSW1zdDlqLzZPME9vcmI3WHB2a1BDdHN4YUsxSWZqanBUU2plRlNQdGJX?=
+ =?utf-8?B?czVZMVVuSTcvN3B5Z1RSdnE2dTVYMDJRNDY2KzJ3UzdKL3RnSGNiYWs5ZzF5?=
+ =?utf-8?B?VkFoUm9INUhRT1p1ekZIVCtMbTQ0ajk5RUs2Nzd3bGZTVklFeUwrRlRoSTZY?=
+ =?utf-8?B?Y0lOVDBuU25iOFR4NU5mZ0t1N2pEMjYwMG5XN1RDMmY4WndZOGFzczUrMStZ?=
+ =?utf-8?B?NkM4WVJQWVBUU2NWeTdOZmRQaXNRZ3dyQkxaSjJsM1FNanAxTWR1bGVpNHRO?=
+ =?utf-8?B?NTZJckN4WDg0Rng2UkI0VHlMWm5wNHp0NS83M3E2V21ja2JNSjhYc1E4RmZl?=
+ =?utf-8?B?N0pocjkxUk1MT2thcEZ4THFkdkxZMGROMnBFclU5cngyQTRuK2dsRTBkUXdX?=
+ =?utf-8?B?VVlvK2dYSHZXWElacUNpRXFsc1JpVnJMcGc3RHZkMWRuR2VEZVBMNC9sSkZ4?=
+ =?utf-8?B?aGRaOHFsVngzS1B1bEtmVTRveVlWMm5nd3E2Vm04M3lVaHdyYzc3cVRrVHlT?=
+ =?utf-8?B?YzdCd09td0d3cWliQ0dDMTRVYjlwRHk3MW5Ncy8zLzFLYStOUUFUakY0Z0NX?=
+ =?utf-8?Q?nseswKvJ02Yjv3bWN/cOxDXsm?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f38517c-0ad7-4f73-90e7-08dd9c621f66
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB9473.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 May 2025 14:30:10.2921
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 May 2025 14:32:20.5177
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rw3IEF7Vil+KVzeg6PLy7bSE3MQZ04xg4L4z+fOolHnt8UYzc9v0fuSqYGdi2i6mL8Or922L5JoQG7lPmcjzWQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR10MB6093
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-05-26_07,2025-05-26_02,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 phishscore=0
- adultscore=0 suspectscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2505160000
- definitions=main-2505260123
-X-Proofpoint-ORIG-GUID: k2VKPO5tAFTK0nqOHOmFcFQzNZkSlta_
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTI2MDEyMyBTYWx0ZWRfX1kNZ+qrdUMs9 up+waLWeEkOvALvMBrLYPLa02Kzzun9xVL/DDvLgI4HMyxH99i/sHm4X8LDlzov9V5gU1PMB9BA 9c1u32WPfjK3tbEsiMdYqRQF8DqqrVDJR4mlGh+NXv/CIwKu2q/znPD97Y13wTS44JlGlRgFi4Z
- Sx3SgFHMiROpr+/HcG97MyrzkfeES7Ppilt4gub8BQF+tqD90krhvA2AzDRW4E2PctJALOIMkIQ cxFKxL1190eWf07+BKE4bWWi+1J2WJmDOV/UfUOYDjHinwO1PpChamhuCRPAWs+4/YO3z3AIP5j kLYmudQGMApNOubw4ZH5u7pgfd3FXC67XHLbQO3kY54uowakyLIFyuQ/Ra2Cl4JIx6fHuzWlsW3
- CPjC+53izk/UTELGSrn0llfVsv6PkTCbL0dyyyliVBMpY5m0WoM/9s7kM3LT/9sn6aGQvK7o
-X-Authority-Analysis: v=2.4 cv=UZNRSLSN c=1 sm=1 tr=0 ts=68347af7 b=1 cx=c_pps a=qoll8+KPOyaMroiJ2sR5sw==:117 a=qoll8+KPOyaMroiJ2sR5sw==:17 a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19
- a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10 a=GoEa3M9JfhUA:10 a=YX3hTKRaI-vc-F0v5IsA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 cc=ntf awl=host:13207
-X-Proofpoint-GUID: k2VKPO5tAFTK0nqOHOmFcFQzNZkSlta_
+X-MS-Exchange-CrossTenant-UserPrincipalName: IEd9ivRwxvMzHUdSGxFZVEnHErHhUn0plHzMWNzbn6bU+6UMFxIoRxEPIz3KENzj
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4289
 
-On 23/05/2025 19:57, Thierry Treyer wrote:
->>>>  2) // param_offsets point to each parameters' location
->>>>     struct fn_info { u32 type_id, offset; u16 param_offsets[proto.arglen]; };
->>>>  [...]
->>>>  (2) param offsets, w/ dedup         14,526      4,808,838    4,823,364
->>>
->>> This one is almost as good as (3) below, but fits better into the
->>> existing kind+vlen model where there is a variable number of fixed
->>> sized elements (but locations can still be variable-sized and keep
->>> evolving much more easily). I'd go with this one, unless I'm missing
->>> some important benefit of other representations.
+On 24 May 2025, at 23:01, Yafang Shao wrote:
+
+> On Tue, May 20, 2025 at 2:05=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com=
+> wrote:
 >>
->> Thierry, could you please provide some details for the representation
->> of both fn_info and parameters for this case?
-> 
-> The locations are stored in their own sub-section, like strings, using the
-> encoding described previously. A location is a tagged union of an operation
-> and its operands describing how to find to parameter’s value.
-> 
-> The locations for nil, ’%rdi’ and ’*(%rdi + 32)’ are encoded as follow:
-> 
->   [0x00] [0x09 0x05] [0x0a 0x05 0x00000020]
-> #  `NIL   `REG   #5   |    `Reg#5        `Offset added to Reg’s value
-> #                     `ADDR_REG_OFF
-> 
-> The funcsec table starts with a `struct btf_type` of type FUNCSEC, followed by
-> vlen `struct btf_func_secinfo` (referred previously as fn_info):
-> 
->   .align(4)
->   struct btf_func_secinfo {
->     __u32 type_id;                       // Type ID of FUNC
->     __u32 offset;                        // Offset in section
->     __u16 parameter_offsets[proto.vlen]; // Offsets to params’ location
->   };
-> 
-> To know how many parameters a function has, you’d use its type_id to retrieve
-> its FUNC, then its FUNC_PROTO to finally get the FUNC_PROTO vlen.
-> Optimized out parameters won’t have a location, so we need a NIL to skip them.
-> 
-> 
-> Given a function with arg0 optimized out, arg1 at *(%rdi + 32) and arg2 in %rdi.
-> You’d get the following encoding:
-> 
->   [1] FUNC_PROTO, vlen=3
->       ...args
->   [2] FUNC 'foo' type_id=1
->   [3] FUNCSEC '.text', vlen=1           # ,NIL   ,*(%rdi + 32)
->       - type_id=n, offset=0x1234, params=[0x0, 0x3, 0x1]
->                                         #             `%rdi
-> 
-> # Regular BTF encoding for 1 and 2
->   ...
-> # ,FUNCSEC ’.text’, vlen=1
->   [0x000001 0x14000001 0x00000000]
-> # ,btf_func_secinfo      ,params=[0x0, 0x3, 0x1] + extra nil for alignment
->   [0x00000002 0x00001234 0x0000 0x0003 0x0001 0x0000]
-> 
-> Note: I didn’t take into account the 4-bytes padding requirement of BTF.
->       I’ve sent the correct numbers when responding to Alexei.
-> 
->> I'm curious how far this version is from exhausting u16 limit.
-> 
-> 
-> We’re already using 22% of the 64 kiB addressable by u16.
-> 
->> Why abuse DATASEC if we are extending BTF with new types anyways? I'd
->> go with a dedicated FUNCSEC (or FUNCSET, maybe?..)
-> 
-> I'm not sure that a 'set' describes the table best, since a function
-> can have multiple entries in the table.
-> FUNCSEC is ugly, but it conveys that the offsets are from a section’s base.
+>> Background
+>> ----------
+>>
+>> At my current employer, PDD, we have consistently configured THP to "nev=
+er"
+>> on our production servers due to past incidents caused by its behavior:
+>>
+>> - Increased memory consumption
+>>   THP significantly raises overall memory usage.
+>>
+>> - Latency spikes
+>>   Random latency spikes occur due to more frequent memory compaction
+>>   activity triggered by THP.
+>>
+>> These issues have made sysadmins hesitant to switch to "madvise" or
+>> "always" modes.
+>>
+>> New Motivation
+>> --------------
+>>
+>> We have now identified that certain AI workloads achieve substantial
+>> performance gains with THP enabled. However, we=E2=80=99ve also verified=
+ that some
+>> workloads see little to no benefit=E2=80=94or are even negatively impact=
+ed=E2=80=94by THP.
+>>
+>> In our Kubernetes environment, we deploy mixed workloads on a single ser=
+ver
+>> to maximize resource utilization. Our goal is to selectively enable THP =
+for
+>> services that benefit from it while keeping it disabled for others. This
+>> approach allows us to incrementally enable THP for additional services a=
+nd
+>> assess how to make it more viable in production.
+>>
+>> Proposed Solution
+>> -----------------
+>>
+>> For this use case, Johannes suggested introducing a dedicated mode [0]. =
+In
+>> this new mode, we could implement BPF-based THP adjustment for fine-grai=
+ned
+>> control over tasks or cgroups. If no BPF program is attached, THP remain=
+s
+>> in "never" mode. This solution elegantly meets our needs while avoiding =
+the
+>> complexity of managing BPF alongside other THP modes.
+>>
+>> A selftest example demonstrates how to enable THP for the current task
+>> while keeping it disabled for others.
+>>
+>> Alternative Proposals
+>> ---------------------
+>>
+>> - Gutierrez=E2=80=99s cgroup-based approach [1]
+>>   - Proposed adding a new cgroup file to control THP policy.
+>>   - However, as Johannes noted, cgroups are designed for hierarchical
+>>     resource allocation, not arbitrary policy settings [2].
+>>
+>> - Usama=E2=80=99s per-task THP proposal based on prctl() [3]:
+>>   - Enabling THP per task via prctl().
+>>   - As David pointed out, neither madvise() nor prctl() works in "never"
+>>     mode [4], making this solution insufficient for our needs.
+>>
+>> Conclusion
+>> ----------
+>>
+>> Introducing a new "bpf" mode for BPF-based per-task THP adjustments is t=
+he
+>> most effective solution for our requirements. This approach represents a
+>> small but meaningful step toward making THP truly usable=E2=80=94and man=
+ageable=E2=80=94in
+>> production environments.
+>>
+>> This is currently a PoC implementation. Feedback of any kind is welcome.
+>>
+>> Link: https://lore.kernel.org/linux-mm/20250509164654.GA608090@cmpxchg.o=
+rg/ [0]
+>> Link: https://lore.kernel.org/linux-mm/20241030083311.965933-1-gutierrez=
+.asier@huawei-partners.com/ [1]
+>> Link: https://lore.kernel.org/linux-mm/20250430175954.GD2020@cmpxchg.org=
+/ [2]
+>> Link: https://lore.kernel.org/linux-mm/20250519223307.3601786-1-usamaari=
+f642@gmail.com/ [3]
+>> Link: https://lore.kernel.org/linux-mm/41e60fa0-2943-4b3f-ba92-9f02838c8=
+81b@redhat.com/ [4]
+>>
+>> RFC v1->v2:
+>> The main changes are as follows,
+>> - Use struct_ops instead of fmod_ret (Alexei)
+>> - Introduce a new THP mode (Johannes)
+>> - Introduce new helpers for BPF hook (Zi)
+>> - Refine the commit log
+>>
+>> RFC v1: https://lwn.net/Articles/1019290/
+>>
+>> Yafang Shao (5):
+>>   mm: thp: Add a new mode "bpf"
+>>   mm: thp: Add hook for BPF based THP adjustment
+>>   mm: thp: add struct ops for BPF based THP adjustment
+>>   bpf: Add get_current_comm to bpf_base_func_proto
+>>   selftests/bpf: Add selftest for THP adjustment
+>>
+>>  include/linux/huge_mm.h                       |  15 +-
+>>  kernel/bpf/cgroup.c                           |   2 -
+>>  kernel/bpf/helpers.c                          |   2 +
+>>  mm/Makefile                                   |   3 +
+>>  mm/bpf_thp.c                                  | 120 ++++++++++++
+>>  mm/huge_memory.c                              |  65 ++++++-
+>>  mm/khugepaged.c                               |   3 +
+>>  tools/testing/selftests/bpf/config            |   1 +
+>>  .../selftests/bpf/prog_tests/thp_adjust.c     | 175 ++++++++++++++++++
+>>  .../selftests/bpf/progs/test_thp_adjust.c     |  39 ++++
+>>  10 files changed, 414 insertions(+), 11 deletions(-)
+>>  create mode 100644 mm/bpf_thp.c
+>>  create mode 100644 tools/testing/selftests/bpf/prog_tests/thp_adjust.c
+>>  create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust.c
+>>
+>> --
+>> 2.43.5
+>>
+>
+> Hi all,
+>
+> Let=E2=80=99s summarize the current state of the discussion and identify =
+how
+> to move forward.
+>
+> - Global-Only Control is Not Viable
+> We all seem to agree that a global-only control for THP is unwise. In
+> practice, some workloads benefit from THP while others do not, so a
+> one-size-fits-all approach doesn=E2=80=99t work.
+>
+> - Should We Use "Always" or "Madvise"?
+> I suspect no one would choose 'always' in its current state. ;)
+> Both Lorenzo and David propose relying on the madvise mode. However,
+> since madvise is an unprivileged userspace mechanism, any user can
+> freely adjust their THP policy. This makes fine-grained control
+> impossible without breaking userspace compatibility=E2=80=94an undesirabl=
+e
+> tradeoff.
+> Given these limitations, the community should consider introducing a
+> new "admin" mode for privileged THP policy management.
+>
+
+I agree with the above two points.
+
+> - Can the Kernel Automatically Manage THP Without User Input?
+> In practice, users define their own success metrics=E2=80=94such as laten=
+cy
+> (RT), queries per second (QPS), or throughput=E2=80=94to evaluate a featu=
+re=E2=80=99s
+> usefulness. If a feature fails to improve these metrics, it provides
+> no practical value.
+> Currently, the kernel lacks visibility into user-defined metrics,
+> making fully automated optimization impossible (at least without user
+> input). More importantly, automatic management offers no benefit if it
+> doesn=E2=80=99t align with user needs.
+
+Yes, kernel is basically guessing what userspace wants with some hints
+like MADV_HUGEPAGE/MADV_NOHUGEPAGE. But kernel has the global view
+of memory fragmentation, which userspace cannot get easily. I wonder
+if it is possible that userspace tuning might benefit one set of
+applications but hurt others or overall performance. Right now,
+THP tuning is 0 or 1, either an application wants THPs or not.
+We might need a way of ranking THP requests from userspace to
+let kernel prioritize them (I am not sure if we can add another
+user input parameter, like THP_nice, to get this done, since
+apparently everyone will set THP_nice to -100 to get themselves
+at the top of the list).
+
+> Exception: For kernel-enforced changes (e.g., the page-to-folio
+> transition), users must adapt regardless. But THP tuning requires
+> flexibility=E2=80=94forcing automation without measurable gains is
+> counterproductive.
+> (Please correct me if I=E2=80=99ve overlooked anything.)
+>
+> --=20
+> Regards
+> Yafang
 
 
-I totally agree that we have more freedom to define new representations
-here, so don't feel too constrained by existing representations like
-DATASEC if they are not helpful.
-
-One thing I hadn't really thought about before you suggested it is
-having the locations in a separate section from types as we have for
-strings. Do we need that? Or could we have a BTF_KIND_LOC_SEC that is
-associated with the FUNC_SEC via a type id (loc sec points at the type
-of the associated func sec) and contains the packed location info?
-
-In other words
-
-[3] FUNCSEC '.text', vlen= ...
-<func_id, offset, param_location_offsets[]>
-...
-[4] LOCSEC '.text', type_id=3
-<packed locations>
-...
-
+--
+Best Regards,
+Yan, Zi
 
