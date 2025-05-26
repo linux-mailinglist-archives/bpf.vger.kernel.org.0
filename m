@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-58918-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58919-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70BBBAC380A
-	for <lists+bpf@lfdr.de>; Mon, 26 May 2025 04:36:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04D18AC382B
+	for <lists+bpf@lfdr.de>; Mon, 26 May 2025 05:09:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72A391722CC
-	for <lists+bpf@lfdr.de>; Mon, 26 May 2025 02:36:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A2CC1891FA2
+	for <lists+bpf@lfdr.de>; Mon, 26 May 2025 03:09:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E82417B425;
-	Mon, 26 May 2025 02:36:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2204198E81;
+	Mon, 26 May 2025 03:09:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CB2C35979;
-	Mon, 26 May 2025 02:36:30 +0000 (UTC)
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B98BE13A41F;
+	Mon, 26 May 2025 03:09:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748226997; cv=none; b=qxDSpv4O0brolEVwejmCdzjbzHrtQEJ8Lc/Na1Jy3O2sFJ2YURZDOloLaY8rgH8cvQCy3Lfx4C6Uz7GAt/cmNbbZlAHGa0apbf37iLlNsE3W6XWw5eSZKnuwJm6oeP0NAonT0J/tJSieznKoB2nBRs5h2n4jbPU7g+yINIG7m+A=
+	t=1748228952; cv=none; b=Es2Davy/Nk2xSyKAf+3MngDxr3i543PrT+fkaVYTWZ5Zc168Pi2IuY/g/aB91/EeHLw4RJ/aaxcHn2WPzR5cKttb6XzOmuYAW2jj9e79tmZK0cLREje9lZhJi+Ej1CoSq6vE5yjGL/DrCSG8MVT1bfiRQCSxw6mEkMruigX3d1o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748226997; c=relaxed/simple;
-	bh=rB8e59f9DCmVM7INNnSN9zJLulQqCsUj1n2FnpHMHzo=;
+	s=arc-20240116; t=1748228952; c=relaxed/simple;
+	bh=n2R/XKA+q3Xd+D2urEIVEv0qpf0OjXPZ7JL3kfzUtCs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C+fL+8dr6zzcsXUGo/8Z0CxP9o0WXhQw3FT7Ghi30Ffh+OeEX9BkwY5gPJKYkk49cMKpyAy8qcU+THR0PHpPFjrV9Gpp3eP88yAfwN6P1c2Of3TnS0GnVfgYzqxSkqGDMEw6Gwuxf4tNx+u1kL3444bnFKxYackrAoDynlGol+I=
+	 Content-Type:Content-Disposition:In-Reply-To; b=cF9jT0MgfmnSDykTcH2GpOQ+Ufew9k++oPb/kR44qfkV8DtHnjCd5uaqToYwmY5r3BdoRgIKQZdUiTKA/vCkChNcSDGb/Si/ZQp1HinKFt6DQU+p9d72rSbtj+EgeN7ze5Y8GNgB424+UAuCwr1UwgKs28wMYfKS01mxrxA4/1Q=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-681ff7000002311f-fe-6833d3ade381
-Date: Mon, 26 May 2025 11:36:24 +0900
+X-AuditID: a67dfc5b-681ff7000002311f-42-6833db5079af
+Date: Mon, 26 May 2025 12:08:58 +0900
 From: Byungchul Park <byungchul@sk.com>
 To: Mina Almasry <almasrymina@google.com>
 Cc: willy@infradead.org, netdev@vger.kernel.org,
@@ -45,13 +45,11 @@ Cc: willy@infradead.org, netdev@vger.kernel.org,
 	surenb@google.com, mhocko@suse.com, horms@kernel.org,
 	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
 	vishal.moola@gmail.com
-Subject: Re: [PATCH 12/18] page_pool: use netmem APIs to access
- page->pp_magic in page_pool_page_is_pp()
-Message-ID: <20250526023624.GB27145@system.software.com>
+Subject: Re: [PATCH 13/18] mlx5: use netmem descriptor and APIs for page pool
+Message-ID: <20250526030858.GA56990@system.software.com>
 References: <20250523032609.16334-1-byungchul@sk.com>
- <20250523032609.16334-13-byungchul@sk.com>
- <CAHS8izN6QAcAr-qkFSYAy0JaTU+hdM56r-ug-AWDGGqLvHkNuQ@mail.gmail.com>
- <20250526022307.GA27145@system.software.com>
+ <20250523032609.16334-14-byungchul@sk.com>
+ <CAHS8izOX0j04=KB-=_kpyR+_HZHk+4hKK-xTEtsGNNHzZFvhKQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -61,106 +59,68 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250526022307.GA27145@system.software.com>
+In-Reply-To: <CAHS8izOX0j04=KB-=_kpyR+_HZHk+4hKK-xTEtsGNNHzZFvhKQ@mail.gmail.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa2yLURjHnb6np+9qjeM1nLpGRYS4bC7JI5HxQTgScQkhcV2tb7SsJd3M
-	Ji6dzW3ZhhGXrqyY3YxG1VYsC7ObEKZCOkaXYhLX2GaZbRm6RezbL8+T5//7f3hEQbqkHCGa
-	LAmy1aKP0xE1Vn8Nvzj1+vOZxsjU1wQcrhICVzuSoKDJqwRHcSmCtl+vVdBaVUvg8sV2ARxP
-	0zD8dHUK8KEmqIJAfjOG8sNlAgSP1RHITOsS4IC3UAH1pVlKONV5RYAyW5MKnt9xEHhb8lsJ
-	zZWZGB7aizAEsuZDjXMYtD/6gqDKVaaA9ozzBE76nATepQUQ+B4EMeSkZCFwVfiV0NXhIPPH
-	cU9Rg4Lftr9Rcad7J79ZOJmn+30CdxcfJdzdkq3ijS/LCa8724X5bW+rgmemfiP8x4dXmH+v
-	eEG4y/MC88fOKhVvdY9ZTteq5xrkOFOibJ0eHaM2lraV4B0NEUmdp08SG0qh6UgUGZ3Fau/G
-	pKOwXizJ7lGFGNMJzOsLoBATOpH5/b+EEEfQSSyv4oQyxAINKNkTx9YQD6FbWcarjyTEGgqs
-	uqDqb45alKgfsY68VNy3GMwennuP+44nsu4LPiHUQaAjWUGP2Dcey1Jv5fS6wugcduRMT2+H
-	oXQ8u1daqwhlMuoVWW5mHukrrWX3C/34OBps76ew91PY/yvs/RROhIuRZLIkmvWmuFnTjMkW
-	U9K02O1mN/r7Ofl7u9d5UUv9ykpERaQL18ToZholpT4xPtlciZgo6CI0oxyRRklj0Cfvlq3b
-	N1l3xsnxlWikiHXDNTPadxkkukWfIG+T5R2y9d9WIYaNsCHpZVBb8/kQt8VGf8p7pl4wPPrr
-	zyujqwcm1O/3KKZEeRbrb7UVZQfN42szGj0F5rSpKcuaNuxeuyR3k1YbvmRj47Vvawz5C6Wm
-	jUMsqw6u2BWJpYWfuw3BMTmxsxcsutHSsL56z0Bt84AjS+vKk2wevP736qjEjBP76OllmwfN
-	24sUOhxv1EdNFqzx+j/0dYZGNQMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTcRiH+e9cdhwujmvmQYtiIZKkJZa8oZgJ0aHA6kNlftGlh7acU7Yp
-	WmQzLS+oXZSsOWuipZkyMJ3TRMK7GCqTclk5m7c+WGpe8IbllMhvD++P3/O+H14KE90n3Cm5
-	UsOplFKFhBTggrDAdJ+aQX/ZUfsLH9Abq0l4s5wMFaNmAvRVJgQLK1/4MN/eRUJZ6RIG+v4M
-	HBaNqxhMdNr5YHs1iUNzZgMG9gfdJORlrGFw11zJg7aSHgIGTPkEFK6+xKBBO8qHwSY9CSPV
-	fwiYbM3DoUf3Ggdbfgh0GvbAUu80gnZjAw+WcktIKLAYSBjLsCGwtNlxKE7LR2BssRKwtqwn
-	QyRs3evPPLZR943PGmoT2beV3myO1YKxtVXZJFv7+zGf/fqpmWS7n67hbKN5nsfmpf8i2bmJ
-	YZydaflIsmU/Znmsse4jzn4wtPMvuEQIgmI4hTyJUx0JjhLITAvVeMJncfLqkwJSi9LoHORE
-	MfQxpvrxBt/BOO3JmC025GCS9mKs1hXMwWL6EFPe8ohwMEbbCKZPf8PBu+kbTO7wFOlgIQ1M
-	R0X7pkdAiWgrYpbL0/HtwIXpeTaOb5e9mPXnlk0ptckeTMUGtT3ez6TXF2/tcqJPMFlFG1s3
-	uNIHmfemLt5DtEu3w6TbYdL9N+l2mAwIr0JiuTIpTipXHPdVx8pSlPJk3+j4uFq0+R2vbq8/
-	MqOFwTOtiKaQxFkYJfGXiQhpkjolrhUxFCYRC/fqj8pEwhhpyk1OFR+pSlRw6lbkQeESN+HZ
-	K1yUiL4u1XCxHJfAqf6lPMrJXYtG6sOuHQgKdx87Nz57KiA69WJ2d7Lfikt5iaLGdWjx8FXn
-	Kf6doTpP7ck56rRmGolHPX2EkTNDwUpS+L3DnFDUH0+7FWtiTE0BWRvh/iE/u0MH7iWdD/UM
-	jMg9GOQyD077Mit7YwLlhZThnSZ+1n7ZOLvUN3kr69LcQmxqqLxUgqtlUj9vTKWW/gUiqudE
-	GQMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRjHeXfec3Ycro7L6k2zyyoiQ7sY9HTFIOJAFEV9iCLykIe20mUz
+	TaXMcmFaajeo1kmWlbeMyTK3wkSneUdNMdZ1YhZ90C5e5ryUOS3y24//c/k9Hx6WUploP1ar
+	OynqdUKEmlFgRY/3vaBd70I0K60V00EyFzLwyB0HuR02GqSCEgT9Q+/k0FdVw8D9ey4KpGYD
+	hgHzMAWfqzvl4Mz5gqE0xUpBZ2YtA+mGEQrO2/Jk0FKSQcON4YcUWJM65ND2XGLgY+EYDV/s
+	6RjqjPkYnBmhUG2aBa6GbgRVZqsMXJfvMnC91cTAJ4MTQWtlJ4Y75zIQmMscNIy4JSZ0IV+c
+	/0bGPzN+kPMmSwz/JC+QT3O0UrylIJXhLb3X5Pz716UMX3trBPPPbH0yPj35G8P//PwW89/L
+	2hneXNyO+UZTlZzvs8zbxe1XbAwXI7Sxon7F5jCFpqYuD0elecU1FK9NQrflaciLJdwa8tht
+	oP6xJdVOpyGWxdwSktK2wxMz3FLicAxNtPhyy8iDsqu0hynOSZMm6aiHZ3A7iDWzW+ZhJQfk
+	e08m9rCKy0ekaGz5ZO5D6m534cnZpWQ0q5XyqCjOn+T+Zifj+ST56Z0JlRe3m1R3JU+0z+QW
+	kfKSmvH1ivEri1ky3HPp7/lzSEWeA19BPsYpCuMUhfG/wjhFYUK4AKm0uthIQRuxJlgTr9PG
+	BR8+HmlB43+Tc2b0gA31tuyxI45Fam9lmDpEo6KF2Oj4SDsiLKX2Vc6VVmpUynAhPkHUHz+k
+	j4kQo+3In8Xq2crVrlPhKu6IcFI8JopRov5fVcZ6+SWhXGfbiYD+nqJ8qfbXAmWCwyUkvAi7
+	FdXdrrk5mnj6SvO2jvrBmReczkHThjO6gUplrg0HOTourkrQNWc3v5xGbVo842hAouSbfbax
+	vOzG9r7Bka17X61bsDPzR+hXQ/1iQ8lBWU7G+uS3bq4/a6it5bK74em+HP8PTdu3CVuq5gUG
+	q3G0RlgVSOmjhT8Ja5nvMwMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0iTYRTHefZe9iotXpfWg0rCQkxLsyw8VIQh1EOhJkGFBTr1zU3nhU1F
+	o8CaIY3UrCCdU2amThMny7yEiEzzQmmiGKbVxEuEeSlvaEaXJZHffvzPOb//l8NRUi3jyimT
+	UgV1klwlYx1px9BjWt+wsQCFf95AIBjMtSw8XcuAqvFmBgw1jQiW18fEsNTZzUJ52SoFhjfZ
+	NKyYv1Mw3TUhBlvlJxpac5oomMjvYSE3e4OCW80mEXSU9DIw0JjHwMPvFRQ0ZY2LYeiFgYWP
+	tb8Y+GTNpaFXX02DLS8Iuow7YfXVLIJOc5MIVu+WsPBg0MjCZLYNwWDHBA3FN/MQmNtGGNhY
+	M7BBMtJQ/U5EWvQfxMRoSSPPTD5ENzJIEUvNHZZYFu+Lyfu3rSzpKdygSUvzkojkaudZ8m16
+	lCYLbcMsKf/8VUTMDcM0eW3sFJ9zinA8HiuolOmC+sCJKEdFd6+JTtE5ZLxqCMxCRWIdcuAw
+	fxhb7lgZHeI4mvfEOUMh9pjlvfDIyDplZ2feGz9pK2DsTPE2Bvcb4u28gw/BTfmzIjtLeMAL
+	c/m0naV8NcL1v/Zt5k64t2iK3rz1wj9KByl7FcW74aqf3GbsgbXPi/9WOfDhuGtK+3fdhd+D
+	2xu7RffQdv0Wk36LSf/fpN9iMiK6Bjkrk9IT5UrVET9NgiIzSZnhF5OcaEF/XqPyxo+CZrQ8
+	dNqKeA7JtkmiZAEKKSNP12QmWhHmKJmzxN3gr5BKYuWZ1wR1cqQ6TSVorMiNo2W7JGcuClFS
+	Pk6eKiQIQoqg/jcVcQ6uWchUV30quK3e75xb6cuVN0crSuZlA2Vy5Zwm3iN8t278UqFn7B5y
+	Ymatx8tpcSai0b21zh1HjxXsP9t35PL24zbTySH2tr9vqsuV+fjgUe+6/vqrU0FxpX0Lpabr
+	C+fbY/ojH/c9Ut29UBvWfTpmMnR5aviLom4gfm/chv/Ew0NB0ZkyWqOQH/Sh1Br5b+5GyJYW
+	AwAA
 X-CFilter-Loop: Reflected
 
-On Mon, May 26, 2025 at 11:23:07AM +0900, Byungchul Park wrote:
-> On Fri, May 23, 2025 at 10:21:17AM -0700, Mina Almasry wrote:
-> > On Thu, May 22, 2025 at 8:26 PM Byungchul Park <byungchul@sk.com> wrote:
-> > >
-> > > To simplify struct page, the effort to seperate its own descriptor from
-> > > struct page is required and the work for page pool is on going.
-> > >
-> > > To achieve that, all the code should avoid accessing page pool members
-> > > of struct page directly, but use safe APIs for the purpose.
-> > >
-> > > Use netmem_is_pp() instead of directly accessing page->pp_magic in
-> > > page_pool_page_is_pp().
-> > >
-> > > Signed-off-by: Byungchul Park <byungchul@sk.com>
-> > > ---
-> > >  include/linux/mm.h   | 5 +----
-> > >  net/core/page_pool.c | 5 +++++
-> > >  2 files changed, 6 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/include/linux/mm.h b/include/linux/mm.h
-> > > index 8dc012e84033..3f7c80fb73ce 100644
-> > > --- a/include/linux/mm.h
-> > > +++ b/include/linux/mm.h
-> > > @@ -4312,10 +4312,7 @@ int arch_lock_shadow_stack_status(struct task_struct *t, unsigned long status);
-> > >  #define PP_MAGIC_MASK ~(PP_DMA_INDEX_MASK | 0x3UL)
-> > >
-> > >  #ifdef CONFIG_PAGE_POOL
-> > > -static inline bool page_pool_page_is_pp(struct page *page)
-> > > -{
-> > > -       return (page->pp_magic & PP_MAGIC_MASK) == PP_SIGNATURE;
-> > > -}
-> > 
-> > I vote for keeping this function as-is (do not convert it to netmem),
-> > and instead modify it to access page->netmem_desc->pp_magic.
+On Fri, May 23, 2025 at 10:13:27AM -0700, Mina Almasry wrote:
+> On Thu, May 22, 2025 at 8:26 PM Byungchul Park <byungchul@sk.com> wrote:
+> >
+> > To simplify struct page, the effort to seperate its own descriptor from
+> > struct page is required and the work for page pool is on going.
+> >
+> > Use netmem descriptor and APIs for page pool in mlx5 code.
+> >
+> > Signed-off-by: Byungchul Park <byungchul@sk.com>
 > 
-> Once the page pool fields are removed from struct page, struct page will
-> have neither struct netmem_desc nor the fields..
+> Just FYI, you're racing with Nvidia adding netmem support to mlx5 as
+> well. Probably they prefer to take their patch. So try to rebase on
+> top of that maybe? Up to you.
 > 
-> So it's unevitable to cast it to netmem_desc in order to refer to
-> pp_magic.  Again, pp_magic is no longer associated to struct page.
+> https://lore.kernel.org/netdev/1747950086-1246773-9-git-send-email-tariqt@nvidia.com/
+> 
+> I also wonder if you should send this through the net-next tree, since
+> it seem to race with changes that are going to land in net-next soon.
+> Up to you, I don't have any strong preference. But if you do send to
+> net-next, there are a bunch of extra rules to keep in mind:
+> 
+> https://docs.kernel.org/process/maintainer-netdev.html
 
-Options that come across my mind are:
-
-   1. use lru field of struct page instead, with appropriate comment but
-      looks so ugly.
-   2. instead of a full word for the magic, use a bit of flags or use
-      the private field for that purpose.
-   3. do not check magic number for page pool.
-   4. more?
+I can send to net-next, but is it okay even if it's more than 15 patches?
 
 	Byungchul
 > 
-> Thoughts?
-> 
-> 	Byungchul
-> 
-> > The reason is that page_pool_is_pp() is today only called from code
-> > paths we have a page and not a netmem. Casting the page to a netmem
-> > which will cast it back to a page pretty much is a waste of cpu
-> > cycles. The page_pool is a place where we count cycles and we have
-> > benchmarks to verify performance (I pointed you to
-> > page_pool_bench_simple on the RFC).
-> > 
-> > So lets avoid the cpu cycles if possible.
-> > 
-> > -- 
-> > Thanks,
-> > Mina
+> -- 
+> Thanks,
+> Mina
 
