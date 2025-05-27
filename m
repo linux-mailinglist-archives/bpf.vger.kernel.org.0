@@ -1,217 +1,200 @@
-Return-Path: <bpf+bounces-58974-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58975-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37A21AC4A6B
-	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 10:41:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DC5BAC4A7F
+	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 10:45:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC63317BA2B
-	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 08:41:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 144933B9AA7
+	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 08:45:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ED1E21C16B;
-	Tue, 27 May 2025 08:41:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 320D224BD1A;
+	Tue, 27 May 2025 08:45:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ILT3wfBM"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="WsHtfjyb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F70D202F8B
-	for <bpf@vger.kernel.org>; Tue, 27 May 2025 08:41:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26A981DF26E;
+	Tue, 27 May 2025 08:45:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748335294; cv=none; b=BB6F0EXhXFAIMPhYc1D5A0a8uqX/6DSHqjdBlABXSnrY046I+BLDA3Hpfmu2rjESjOdOBrhOjcq3Qe3eIVOINEKDZBSx8HC1vmU0O+EOi0xR81Z8EG/kK/iL/CUfchLTsoyDINrWSvcspHzWMdy1Z/VA7HdioGO38PUsJ/LS3S4=
+	t=1748335514; cv=none; b=eWy4V8wQmH0ZUwjKWfeeKBxHauc9QK0fjh4NNBs3p0Ft6mDJhPHgk3noSTEMG7cZDnhMnrdSg9NGIxl+i1fQ8tILGqaTK55H5rAFdC1nuwZJHVsQWl2O0u2M7wZtgLdoNuJGo62Ru8L7MFTDB7jAQgtZsb0K7FSpFTykfGDCeLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748335294; c=relaxed/simple;
-	bh=cUnsFstUzy8xqPklaETnBhhsrmIrWsvn1tabp2LJk9U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HmhvSVL8DbM8b6QeLs4HCSg9XZTmpew8N7MstF4Bawk7jrrWmZPWiV2HnQfTMjg+/F26x6Y2MXJHrvisbbulr7pGjRITeaY339AvFWH3YsfprF1FJBSPzm/8iyYt7+uw5LslHZCU3C7j/r6Io3P7QtkpnmIWbvHhw8GeyuIuaOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ILT3wfBM; arc=none smtp.client-ip=209.85.219.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-6f0c30a1cf8so39551636d6.2
-        for <bpf@vger.kernel.org>; Tue, 27 May 2025 01:41:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748335292; x=1748940092; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=p7koMvbwJk44nT5CGAwVYivi7QHUEWn5brvCgXni+H0=;
-        b=ILT3wfBM3xR+Oj27j6shbxoZ6NCAy5odkksaPvegXCv06e8ZVSP+/w0pevsEmwi4YJ
-         nR9em77gdSphK5BMk2gizNFbkYK6eunUhouwwmbrbaRxT2HC2Xr4kpm6LnkUSqgACM/i
-         JP9OV+LWkvoWqpoi/ZDGrfp73H+/X8lNXrjo8wixENGcO3rjAX7LcEJl4FKHIU6E0Jfw
-         mtXSZTC4Eq/R+VPt2E61FyM2PTVhQIsI7l8m9gWBcG1ncZFyl8kJSuaansapa2jkuzRb
-         7sWIY9RNEQ5uE0vtqnkMCh9uTpPb/ZnY87U5l35ZuktbkH/gpMqCTmWHjXvbWc3e8mlV
-         Piuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748335292; x=1748940092;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=p7koMvbwJk44nT5CGAwVYivi7QHUEWn5brvCgXni+H0=;
-        b=aQDJPivhyLuS/SPKgKkpNW+qxOvQCeh9nAzBC4RjGxAhhg8kwEHCSqdX7mughV1e3U
-         73My5RyV9ZiNvBxr5BpK9iKAjVROmnuMXIpGhQKgyFA9xxBb4vKWh+LDmm/nGK3EKGQ1
-         desS1oUZv2pyo9Xk6A0J65WDBcQwSJOUezD6m0lzllQd9nr7oK6k8ecbk/7lchX0OAFu
-         XJszfeX5HlN46UPhlSkpcMXxmV6qyajTdDCuhC479AXdT11C4iPKPh5WQFywnQQ5WOT4
-         8yiYZ0Xcp8J5pQoaUElukoeFVKgv7LxQYDMuL5qNZa61xvR//Dm4Zw1Fxw1lX64M7lM2
-         KMWA==
-X-Forwarded-Encrypted: i=1; AJvYcCVmDQWXrKtkvxUazjNUTLrIt4Fow97qirAnp8BuZXTYNQzyH3ltgydo7Aa/BNCVNZ74vfI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzXlvhDdAbDzabGcDYtB0hlgccRTSECoQI7ENkULfRO4OY2a8hC
-	ndY6g7R9prOQAI7Gx760+q1NsixasYcGTDKkxQGcYDu+yTg6dvPTevPwUgiae0rk+uRnS0kmdlz
-	gTAEge/86OUzDGa7GUhSW/QpiWQkhrl4=
-X-Gm-Gg: ASbGncuZGlTb0lBmFOnjKQ8mgo47QDJ7ha2Kgq9CpBvVpLpoTBNWt308wa7WairdwsE
-	LnPRBtSgvYgv3R6u4b5/Fl//ByUemwAnFdguq9xDOgzfCpRy8D035GGd/hIl5cAm+HxqoSj5ZQB
-	TEKTt9WmzDCHBIFDZQ74N5h930cnqQ/N+PiQ==
-X-Google-Smtp-Source: AGHT+IHuCrWzUG0fJT8OJIIsUPBPrsS4ysWMb6JECnMWI9zkMLwYmv1B/AxHyD8tyxk+USC7j0jzwg+WbHsrmMz0dSo=
-X-Received: by 2002:a05:6214:1d0d:b0:6f8:e2ab:cb8a with SMTP id
- 6a1803df08f44-6fa9cfff18fmr210571496d6.5.1748335292009; Tue, 27 May 2025
- 01:41:32 -0700 (PDT)
+	s=arc-20240116; t=1748335514; c=relaxed/simple;
+	bh=q9A5It0VcKJo2Z0sOBgikusUjjLmdwUMhdXXAWimklU=;
+	h=Content-Type:Date:Message-Id:From:To:Cc:Subject:Mime-Version:
+	 References:In-Reply-To; b=ZiXnbxk7AGGP5le5WEduWlyC22u8RbgVakpEdgHddXyHnr1OmYdRy7psfhmYaDjbg/spZyqOASqwslmTnsl2ZopuYooxF6l7kxUWbCwFyNTFV9c+mDG1i7+Dk4vfuYo89Vht4E7TCrQNMgkPKGae+n83U09ZdBBB4kErPWgMHo0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=WsHtfjyb; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 701CF43137;
+	Tue, 27 May 2025 08:45:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1748335510;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QzPRMr1l+fHaNToRkbY1GkYZ/zbxBgq6V8xrU1tHPf8=;
+	b=WsHtfjyboYTn/inoED+hlu32+QYRGzVRTfeTxdp4gHe0upe98p4LMB8qXn4HvSNRYlUo0P
+	7X5QOwXR+mVsIlNhhLnSgqo56DgD0KhdaRFeMMV+rIhpTm4V5EDCbnOqYO448ucWaJ8lih
+	yTsdqmHp3lKzba+38ROjgdOTObnT5A1u3HMSCn4xndSuwcNscAQekWO5izBz6Yfp4RiqlO
+	snkxmUjnPsQZEuO2D48+cvX0sqhldyw6b4Ml/ZwU9FsLdaS2PW8qUagGqfstCDPPoFg/Lw
+	4eE0U/M9lzRCgpLz1w8SjY1h3XgCpUfQxbTC+klPVsmED9PpYGvnksdxgwljsg==
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 27 May 2025 10:45:07 +0200
+Message-Id: <DA6T7OEF94IG.2BH2PWTCVEOTA@bootlin.com>
+From: =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+To: "Xu Kuohai" <xukuohai@huaweicloud.com>, "Alexei Starovoitov"
+ <ast@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>, "John
+ Fastabend" <john.fastabend@gmail.com>, "Andrii Nakryiko"
+ <andrii@kernel.org>, "Martin KaFai Lau" <martin.lau@linux.dev>, "Eduard
+ Zingerman" <eddyz87@gmail.com>, "Song Liu" <song@kernel.org>, "Yonghong
+ Song" <yonghong.song@linux.dev>, "KP Singh" <kpsingh@kernel.org>,
+ "Stanislav Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>,
+ "Jiri Olsa" <jolsa@kernel.org>, "Puranjay Mohan" <puranjay@kernel.org>,
+ "Catalin Marinas" <catalin.marinas@arm.com>, "Will Deacon"
+ <will@kernel.org>, "Mykola Lysenko" <mykolal@fb.com>, "Shuah Khan"
+ <shuah@kernel.org>, "Maxime Coquelin" <mcoquelin.stm32@gmail.com>,
+ "Alexandre Torgue" <alexandre.torgue@foss.st.com>, "Florent Revest"
+ <revest@chromium.org>
+Cc: "Bastien Curutchet" <bastien.curutchet@bootlin.com>,
+ <ebpf@linuxfoundation.org>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, <bpf@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-kselftest@vger.kernel.org>,
+ <linux-stm32@st-md-mailman.stormreply.com>, "Xu Kuohai"
+ <xukuohai@huawei.com>
+Subject: Re: [PATCH bpf-next v2 1/2] bpf, arm64: Support up to 12 function
+ arguments
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250520060504.20251-1-laoar.shao@gmail.com> <CALOAHbDPF+Mxqwh+5ScQFCyEdiz1ghNbgxJKAqmBRDeAZfe3sA@mail.gmail.com>
- <7d8a9a5c-e0ef-4e36-9e1d-1ef8e853aed4@redhat.com> <CALOAHbB-KQ4+z-Lupv7RcxArfjX7qtWcrboMDdT4LdpoTXOMyw@mail.gmail.com>
- <c983ffa8-cd14-47d4-9430-b96acedd989c@redhat.com> <CALOAHbBjueZhwrzp81FP-7C7ntEp5Uzaz26o2s=ZukVSmidEOA@mail.gmail.com>
- <ada2fcc0-3915-40e7-8908-b4d73a2eb050@redhat.com> <CALOAHbB9kuZ_8XJbTw98VuNtSdeUT=m9PAfO0uxsf4WaC3LXrA@mail.gmail.com>
- <5f0aadb1-28a8-4be0-bad9-16b738840e57@redhat.com>
-In-Reply-To: <5f0aadb1-28a8-4be0-bad9-16b738840e57@redhat.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Tue, 27 May 2025 16:40:55 +0800
-X-Gm-Features: AX0GCFvuLlCWLi1cQHi5Z4H4JSeykG8tUlPJcDn10xANbbMNlkhwr2Sz-BwyJ30
-Message-ID: <CALOAHbB-HtU9ERzxDaz8NoC4-BG5Lb7-dF0v16Bp2Ckr1M7JEw@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 0/5] mm, bpf: BPF based THP adjustment
-To: David Hildenbrand <david@redhat.com>
-Cc: akpm@linux-foundation.org, ziy@nvidia.com, baolin.wang@linux.alibaba.com, 
-	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, npache@redhat.com, 
-	ryan.roberts@arm.com, dev.jain@arm.com, hannes@cmpxchg.org, 
-	usamaarif642@gmail.com, gutierrez.asier@huawei-partners.com, 
-	willy@infradead.org, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	bpf@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+X-Mailer: aerc 0.20.1-0-g2ecb8770224a
+References: <20250522-many_args_arm64-v2-0-d6afdb9cf819@bootlin.com>
+ <20250522-many_args_arm64-v2-1-d6afdb9cf819@bootlin.com>
+ <8d184497-fecf-497f-8b4c-bcd4b0a697ce@huaweicloud.com>
+In-Reply-To: <8d184497-fecf-497f-8b4c-bcd4b0a697ce@huaweicloud.com>
+X-GND-State: clean
+X-GND-Score: -100
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddtgdduleelfeculddtuddrgeefvddrtddtmdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurheptgffkffhvfevufgggffofhgjsehtqhertdertdejnecuhfhrohhmpeetlhgvgihishcunfhothhhohhrrocuoegrlhgvgihishdrlhhothhhohhrvgessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepffefiedtuedvgfekkeefteelkedvheehvdetuedtgfekueeuheelhfdvgfdtvddvnecuffhomhgrihhnpegsohhothhlihhnrdgtohhmnecukfhppedvrgdtvdemkeegvdekmehfleegtgemvgdttdemmeguieehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvdgrtddvmeekgedvkeemfhelgegtmegvtddtmeemugeihedphhgvlhhopehlohgtrghlhhhoshhtpdhmrghilhhfrhhomheprghlvgigihhsrdhlohhthhhorhgvsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopeeftddprhgtphhtthhopeiguhhkuhhohhgriheshhhurgifvghitghlohhuugdrtghomhdprhgtphhtthhopegrshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhopehjohhhnhdrf
+ hgrshhtrggsvghnugesghhmrghilhdrtghomhdprhgtphhtthhopegrnhgurhhiiheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhgrrhhtihhnrdhlrghusehlihhnuhigrdguvghvpdhrtghpthhtohepvgguugihiiekjeesghhmrghilhdrtghomhdprhgtphhtthhopehsohhngheskhgvrhhnvghlrdhorhhg
+X-GND-Sasl: alexis.lothore@bootlin.com
 
-On Tue, May 27, 2025 at 4:30=E2=80=AFPM David Hildenbrand <david@redhat.com=
-> wrote:
->
-> >> I don't think we want to add such a mechanism (new mode) where the
-> >> primary configuration mechanism is through bpf.
-> >>
-> >> Maybe bpf could be used as an alternative, but we should look into a
-> >> reasonable alternative first, like the discussed mctrl()/.../ raised i=
-n
-> >> the process_madvise() series.
-> >>
-> >> No "bpf" mode in disguise, please :)
-> >
-> > This goal can be readily achieved using a BPF program. In any case, it
-> > is a feasible solution.
->
-> No BPF-only solution.
->
-> >
-> >>
-> >>> We could define
-> >>> the API as follows:
-> >>>
-> >>> struct bpf_thp_ops {
-> >>>          /**
-> >>>           * @task_thp_mode: Get the THP mode for a specific task
-> >>>           *
-> >>>           * Return:
-> >>>           * - TASK_THP_ALWAYS: "always" mode
-> >>>           * - TASK_THP_MADVISE: "madvise" mode
-> >>>           * - TASK_THP_NEVER: "never" mode
-> >>>           * Future modes can also be added.
-> >>>           */
-> >>>          int (*task_thp_mode)(struct task_struct *p);
-> >>> };
-> >>>
-> >>> For observability, we could add a "THP mode" field to
-> >>> /proc/[pid]/status. For example:
-> >>>
-> >>> $ grep "THP mode" /proc/123/status
-> >>> always
-> >>> $ grep "THP mode" /proc/456/status
-> >>> madvise
-> >>> $ grep "THP mode" /proc/789/status
-> >>> never
-> >>>
-> >>> The THP mode for each task would be determined by the attached BPF
-> >>> program based on the task's attributes. We would place the BPF hook i=
-n
-> >>> appropriate kernel functions. Note that this setting wouldn't be
-> >>> inherited during fork/exec - the BPF program would make the decision
-> >>> dynamically for each task.
-> >>
-> >> What would be the mode (default) when the bpf program would not be act=
-ive?
-> >>
-> >>> This approach also enables runtime adjustments to THP modes based on
-> >>> system-wide conditions, such as memory fragmentation or other
-> >>> performance overheads. The BPF program could adapt policies
-> >>> dynamically, optimizing THP behavior in response to changing
-> >>> workloads.
-> >>
-> >> I am not sure that is the proper way to handle these scenarios: I neve=
-r
-> >> heard that people would be adjusting the system-wide policy dynamicall=
-y
-> >> in that way either.
-> >>
-> >> Whatever we do, we have to make sure that what we add won't
-> >> over-complicate things in the future. Having tooling dynamically adjus=
-t
-> >> the THP policy of processes that coarsely sounds ... very wrong long-t=
-erm.
-> >
-> > This is just an example demonstrating how BPF can be used to adjust
-> > its flexibility. Notably, all these policies can be implemented
-> > without modifying the kernel.
->
-> See below on "policy".
->
-> >
-> >>
-> >>   > > As Liam pointed out in another thread, naming is challenging her=
-e -
-> >>> "process" might not be the most accurate term for this context.
-> >>
-> >> No, it's not even a per-process thing. It is per MM, and a MM might be
-> >> used by multiple processes ...
-> >
-> > I consistently use 'thread' for the latter case.
->
-> You can use CLONE_VM without CLONE_THREAD ...
+Hi Xu, thanks for the review
 
-If I understand correctly, this can only occur for shared THP but not
-anonymous THP. For instance, if either process allocates an anonymous
-THP, it would trigger the creation of a new MM. Please correct me if
-I'm mistaken.
+On Tue May 27, 2025 at 10:11 AM CEST, Xu Kuohai wrote:
+> On 5/22/2025 6:14 PM, Alexis Lothor=C3=A9 wrote:
+>
+> [...]
+>
+>> -static void save_args(struct jit_ctx *ctx, int args_off, int nregs)
+>> +struct arg_aux {
+>> +	/* how many args are passed through registers, the rest of the args ar=
+e
+>> +	 * passed through stack
+>> +	 */
+>> +	int args_in_regs;
+>> +	/* how many registers are used to pass arguments */
+>> +	int regs_for_args;
+>> +	/* how much stack is used for additional args passed to bpf program
+>> +	 * that did not fit in original function registers
+>> +	 **/
+>
+> nit: "**/" should be "*/"
+
+ACK
+
+[...]
+
+>> +	a->ostack_for_args =3D 0;
+>> +
+>> +	/* the rest arguments are passed through stack */
+>> +	for (a->ostack_for_args =3D 0, a->bstack_for_args =3D 0;
+>> +	     i < m->nr_args; i++) {
+>
+> a->ostack_for_args is initialized twice.
+>
+> move all initializations before the loop?
+
+ACK
+
+>> +		/* We can not know for sure about exact alignment needs for
+>> +		 * struct passed on stack, so deny those
+>> +		 */
+>> +		if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG)
+>> +			return -EOPNOTSUPP;
+>
+> leave the error code as is, namely, return -ENOTSUPP?
+
+Actually this change follows a complaint from checkpatch:
+
+"WARNING: ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP"
+
+>> +		stack_slots =3D (m->arg_size[i] + 7) / 8;
+>> +		/* AAPCS 64 C.14: arguments passed on stack must be aligned to
+>> +		 * max(8, arg_natural_alignment)
+>> +		 */
+>> +		a->bstack_for_args +=3D stack_slots * 8;
+>> +		a->ostack_for_args =3D round_up(a->ostack_for_args + stack_slots * 8,=
+ 8);
+>
+> since a->ostack_for_args starts from 0 and is always incremented
+> by multiples of 8, round_up() to 8 is not needed.
+
+True. This is a (partial) remnant from the first attempt to handle more
+exotic alignments like large structs or __int128, but that's indeed not
+needed for this current version. I'll clean it up.
+
+[...]
+
+>> +	for (i =3D a->args_in_regs; i < m->nr_args; i++) {
+>> +		slots =3D (m->arg_size[i] + 7) / 8;
+>> +		/* AAPCS C.14: additional arguments on stack must be
+>> +		 * aligned on max(8, arg_natural_alignment)
+>> +		 */
+>> +		soff =3D round_up(soff, 8);
+>> +		if (for_call_origin)
+>> +			doff =3D  round_up(doff, 8);
+>
+> since both soff and doff start from multiples of 8 and are
+> incremented by 8 each time, the two round_up()s are also
+> not needed.
+
+ACK. I guess the small AAPCS mention can go too then.
 
 >
-> Additionally, this
-> > can be implemented per-MM without kernel code modifications.
-> > With a well-designed API, users can even implement custom THP
-> > policies=E2=80=94all without altering kernel code.
+>> +		/* verifier ensures arg_size <=3D 16, so slots equals 1 or 2 */
+>> +		while (slots-- > 0) {
+>> +			emit(A64_LDR64I(tmp, A64_FP, soff), ctx);
+>> +			/* if there is unused space in the last slot, clear
+>> +			 * the garbage contained in the space.
+>> +			 */
+>> +			if (slots =3D=3D 0 && !for_call_origin)
+>> +				clear_garbage(ctx, tmp, m->arg_size[i] % 8);
+>> +			emit(A64_STR64I(tmp, A64_SP, doff), ctx);
+>> +			soff +=3D 8;
+>> +			doff +=3D 8;
+>> +		}
+>> +	}
+>> +}
 >
-> You can switch between modes, that' all you can do. I wouldn't really
-> call that "custom policy" as it is extremely limited.
->
-> And that's exactly my point: it's basic switching between modes ... a
-> reasonable policy in the future will make placement decisions and not
-> just state "always/never/madvise".
+> [...]
 
-Could you please elaborate further on 'make placement decisions'? As
-previously mentioned, we (including the broader community) really need
-the user input to determine whether THP allocation is appropriate in a
-given case.
+
+
 
 --=20
-Regards
-Yafang
+Alexis Lothor=C3=A9, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
 
