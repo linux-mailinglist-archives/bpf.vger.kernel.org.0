@@ -1,127 +1,213 @@
-Return-Path: <bpf+bounces-59025-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59026-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6592AC5C50
-	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 23:40:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAD3BAC5C52
+	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 23:41:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77B081BA622F
-	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 21:40:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 668E24A6DDD
+	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 21:41:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67AD52147ED;
-	Tue, 27 May 2025 21:39:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A49982147ED;
+	Tue, 27 May 2025 21:41:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ToJV+9LD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="buaean/f"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 906AE20551C;
-	Tue, 27 May 2025 21:39:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAEE220551C;
+	Tue, 27 May 2025 21:41:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748381993; cv=none; b=eLBRei0eOCBj9JCN9UeNfXHAMkkTyZRZNKsEraFwLAomvLaMrhC4LtpvvowpaN4IX5Rkv6NLVTrMtTob5kMstralwtJ5yrQrecli9+gRLnMuvKeOCd8+0bGWqzRtJjgq/DvowgKwh5PHvGNq3CqSSJ8BdWtg2Z6lfxqOgH0Ubo4=
+	t=1748382092; cv=none; b=B2W0p5SfOmkoi2xKCsam5QjBRjHsJpZJsGWGF7eEzMvDlu6Vt/DxgpYD+bVHq9Zb40AtljJ5oiMZzU0niBv2ZiUMK7d462V2oSh8uznxPGOkCn2QjZBBRnmVfbdwEoaCYXDVL+DM9WKe7jLhDBecswg26XF2Ioai0dPr+W0aCbY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748381993; c=relaxed/simple;
-	bh=6YNyQSi+NXWsf2Hu9EJhYHMmDJXMHB9t+ICW3ATuink=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=iJb1Llq+SeHHm80KgGtE5h5Rwo76qk1nT8eoKjBLQBlO1wxOdPFehEqnXfsXMcVhtmXia8+6CsEi54Lh6QaT9XMZZQ9jZiZSou/plx/GTgYQAVBYIDak8KhGbiOla5MOUtl1UjWE8dBEC7oXaCkjwSgogrV3E4+owbuY/nAerZw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ToJV+9LD; arc=none smtp.client-ip=209.85.214.180
+	s=arc-20240116; t=1748382092; c=relaxed/simple;
+	bh=b37r62/PQ1+q3+JTGoZFirUufbRcbWMygWyJ42hBi4M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=j23zGqyfzggp0yBrqeJoSY3UU6UVa737Uzl6rc8Z7qRxM8M5h/JvTrxDFgqcdOmcr8RocuR+cIz/cIqPU4dJ89i7fv3PkAaqdkIaF3igpC9z+4zArkgpc5iLXStVVxi154pzE1R/S51azxrQQ86icy4/C0Ta5JyFpm6YIZF6c8Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=buaean/f; arc=none smtp.client-ip=209.85.216.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-2347b7d6aeeso23279885ad.2;
-        Tue, 27 May 2025 14:39:51 -0700 (PDT)
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-31149f0393dso2157268a91.1;
+        Tue, 27 May 2025 14:41:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748381991; x=1748986791; darn=vger.kernel.org;
-        h=mime-version:user-agent:message-id:date:references:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6YNyQSi+NXWsf2Hu9EJhYHMmDJXMHB9t+ICW3ATuink=;
-        b=ToJV+9LDOSkJja7mC50J7sAc3VZQaP8MWgB1T3g5xT+dU6HLM9ojC6OJf80eQI9Nd6
-         eXgzGn9WvhZQElxZWy/nY2E1LcZ4gTHd+HuJlGtfF80VU9hXcvCKBsooUblReLXAJ5Dx
-         NsjBLim/6IZh275TtfrsTqLUTTuzVxp81G/T69a4mIeoBGwjBybG1ACiumRBbz9NrX5K
-         dVSRtYlH5OZzTAVxNc/BoPm9SKXksneDcpw7QNJMi9yFa38rJ/A6P8QlOFxUThz6dcCq
-         sQ7kBk2k+jGXzp8P7WTjslM21G54ehc1vd6BuMPd6BhWG01VPwk8WBxPiQhZYiL8LzwY
-         Ca8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748381991; x=1748986791;
-        h=mime-version:user-agent:message-id:date:references:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1748382090; x=1748986890; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6YNyQSi+NXWsf2Hu9EJhYHMmDJXMHB9t+ICW3ATuink=;
-        b=lP50EYLlv2ZT6rzTP4TmtolYuRJXnM15AGC2FA6Nnuaw4pk4VWD0nd7OaXo9LdbRvx
-         I/b0Hnqi0pyAI7G6icxLDTkaI5S3t9MQBjVR5oJfH8SuDrPKOtsHdpKpuBZYypD37OWj
-         Z/oep9Vz4J/k921Ck8uuyufZd39OVZ7l8S3FZg+9VHueVCfTZugBACPC4wZKzHfpXiNQ
-         qlWGDrEEGwkNpLj1oFvv4RWvxhyDNWafWZyeT1hdLOHIc2Ft/7iEq1PcDZSL9BPtTrg0
-         pR1dRsLS/KdaIldCMxJBPviEo1RuvweTkWsgFlZuWl8+F1GCGy625/gDz8gCp/QXNfhN
-         Q7GA==
-X-Forwarded-Encrypted: i=1; AJvYcCUXpXKLzYM9p7wILDMWI0QjsDeMhB+48i3yaz5SZzV5HABqnmGazQbV0GW5Vx6vr/DNCIY9xQZRVkAVbDY=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy5a9nOy8zs+9a+DTbZ1EdNwzfByMIfsDky12CkO6R4VjTEtIBg
-	anOdkDWW2qx12rE6cCPinnnrq+7zTwNAi1iG4aN8wOqKJr96jaVveLiqph2P9uJ9
-X-Gm-Gg: ASbGncuhbQYSi2sikO4rF8kQlOjuy2awsfAMkCPsi6gPZZPedgJ+MB6b1vZcWtUzcJv
-	NR+w2kCQ2KK9RWp8Qu94xfZlTjoFonhBDqn7HOl49XtKiG8Vvc80DhMnDoWdvCuePA5u21Vp3wI
-	PRR5j0+zu3meKrE8PLF9bhe6snOzbtw1I//37o4Bqmh5JbossywcfiafBUWv3ON3QFcQzSM5ie0
-	2a/wU1P7i5zSkMmEUJ4003gQL6xdS5tK1nJeCnobFOo43jDiXzExbyb0myxzaWbFBNPzLud7pw/
-	5rU2vcG87yRWQWvWXVSar+dkUQUlJ5XzaCBwTgVGMPm0KweWgfJJ5bw=
-X-Google-Smtp-Source: AGHT+IHOQWWz8DzoaRoO30K2AVMpD9QlFR8QA0NDb1ZoC9oic7Dyris3dV5vSUzlZU2Kx/NlYEbz+Q==
-X-Received: by 2002:a17:902:e5cb:b0:234:c549:da10 with SMTP id d9443c01a7336-234c549dbedmr12734285ad.47.1748381990628;
-        Tue, 27 May 2025 14:39:50 -0700 (PDT)
-Received: from ezingerman-mba ([2620:10d:c090:500::7:461c])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-234cc24e8bfsm447345ad.221.2025.05.27.14.39.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 May 2025 14:39:50 -0700 (PDT)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: "Jerome Marchand" <jmarchan@redhat.com>
-Cc: bpf@vger.kernel.org,  Martin KaFai Lau <martin.lau@linux.dev>,  Alexei
- Starovoitov <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,
-  Andrii Nakryiko <andrii@kernel.org>,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bpf: Specify access type of bpf_sysctl_get_name args
-In-Reply-To: <20250527165412.533335-1-jmarchan@redhat.com> (Jerome Marchand's
-	message of "Tue, 27 May 2025 18:54:12 +0200")
-References: <20250527165412.533335-1-jmarchan@redhat.com>
-Date: Tue, 27 May 2025 14:39:48 -0700
-Message-ID: <m2ecw97mxn.fsf@gmail.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        bh=rgRYyyw+a2/aWbP9YIIdfoRYj+7frEzMlZj8+mWk9XE=;
+        b=buaean/f3JlOODeMckhp09gvuBNLxBSUOUFD6EpNrccF/ftyffCDMU/4dPv7gGVUXi
+         eoVa/a5fEjLZmgM0ygxq6VOSSshvPcqqpasAmFUHV0KsrixH5eYikPPJJyX3aVPJZBYC
+         jQgfoCcdKfxi+Uwvei1MW82N6po6S9cKTsgoH4JgU15q/1fFlQ1i6YwARRzb9f9llBtY
+         vNNV42EhHDDYDyGaxPc8OTLvm4Oe4ipVB13/LCHGe5nnekkl8fqlu8+N3QGOc7scbLii
+         Ph6VFbubWyZ4nh39kM0VsMvQsqxpk4bBpeFjayazWiaL4GWRAbfQmWIOCTEs+kYP0HJJ
+         P5Fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748382090; x=1748986890;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rgRYyyw+a2/aWbP9YIIdfoRYj+7frEzMlZj8+mWk9XE=;
+        b=fqZcB5OUEPibM4Zb0Y6tNiv78DD3Xvn+FTQ6E+ACoOiWLWS4HS9DECruqYw/pylyVw
+         rdeXndgcCwjfRPkQwdJkMqV4ZJWRkMo/97cukvRHeJm2tm83nYHJR/wuh0ODOCp3pgFV
+         aLCZ/aLzpioC7cbX4Z0LXrHmUjwVyePgnTYqtnV4HNcCORG0//DJs0if/2WzMPzGXNJQ
+         wxyo2ZqD9EEzvN3P1Y+61KjdluuEcUJmOFWzdOpkwhY/Ss90NWzKT0witdbA+cwXkUBa
+         Sl8ttR7S8I+n5kO0YvZxenOoEOCi/FczlpuqvNlIgbYVT5XO9xFeHpMzondQ63skIvDQ
+         JeKA==
+X-Forwarded-Encrypted: i=1; AJvYcCU9Ew63Ztjg2jUKJq7i5no92TrfAOwXRAdpqSf5CFLOtwvVn5XEPKxjj7MI4oJKAZHcASo=@vger.kernel.org, AJvYcCUElXOaz42DEpleodNz2kx9s+6aq5ydldD4J1TdKZGHtdObx5w94Joff5p10S0Ji0Ex/dPv6mnZUw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx+jkPz3IqVJfIKgZOCgskrqz4WwgVGSzWzYXsdakLLToejavps
+	Gnq3NrTrkh9qLvntQ1+bonq+4/5cwKioHTUbYHGK2ax7/tOTEYJL2ne8Bdy1aA7jS5fh1RwKvKs
+	4FDAlgR1C7/mZavi/CqCe7bdPe8GragRG2A==
+X-Gm-Gg: ASbGncvJhlhIJj7Mb6pc8vAL6C+WHF1rdwZbWj1aHg7HEpmoTqyWTm4ACiRS8GOG5s+
+	AlwnRfokqyRpaxoTDVVCp8xW4xsRqajfGzdT9fdg8aZQtrq0RXyJbW4pCffYEdbsXClxvc/wv30
+	JNiJvM4gYY5djseIHxb0hEMhPSnKw5wATMLvBj26N84j1AA+FC
+X-Google-Smtp-Source: AGHT+IHgyTusboXaQq9I7KVe+GnJiwTu5VJhQzZ97tPewDqcMLzflPIbc+VwJCRRimENfdcXtF3uLUWqThYJU0/DF3A=
+X-Received: by 2002:a17:90b:5282:b0:311:df4b:4b8c with SMTP id
+ 98e67ed59e1d1-311df4b4d23mr736012a91.7.1748382089822; Tue, 27 May 2025
+ 14:41:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20250416-btf_inline-v1-0-e4bd2f8adae5@meta.com>
+ <d39e456b-20ed-48cf-90c0-c0b0b03dabe6@oracle.com> <09366E0A-0819-4C0A-9179-F40F8F46ECE0@meta.com>
+ <CAEf4BzZxccvWcGJ06hSnrVh6jJO-gdCLUitc7qNE-2oO8iK+og@mail.gmail.com>
+ <bfb120452de9d9ce0868485bc41fa8cf56edf4cf.camel@gmail.com>
+ <530F1115-7836-4F1F-A14D-F1A7B49EF299@meta.com> <6428960b-a1a7-4b1f-8975-5a85e2b8697d@oracle.com>
+In-Reply-To: <6428960b-a1a7-4b1f-8975-5a85e2b8697d@oracle.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 27 May 2025 14:41:17 -0700
+X-Gm-Features: AX0GCFsnKDVdX8xHE8GBgx5pnjms9tbaT5vkJ58CxchEr0UrFXN8sOPvKv-Y7vc
+Message-ID: <CAEf4BzaG-GtJwVXNyZKqYnZFqq210uLFSHPArZYXyS+fab5Dmg@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/3] list inline expansions in .BTF.inline
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: Thierry Treyer <ttreyer@meta.com>, Eduard Zingerman <eddyz87@gmail.com>, 
+	"dwarves@vger.kernel.org" <dwarves@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+	"acme@kernel.org" <acme@kernel.org>, "ast@kernel.org" <ast@kernel.org>, Yonghong Song <yhs@meta.com>, 
+	"andrii@kernel.org" <andrii@kernel.org>, "ihor.solodrai@linux.dev" <ihor.solodrai@linux.dev>, 
+	Song Liu <songliubraving@meta.com>, Mykola Lysenko <mykolal@meta.com>, Daniel Xu <dlxu@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-"Jerome Marchand" <jmarchan@redhat.com> writes:
-
-> The second argument of bpf_sysctl_get_name() helper is a pointer to a
-> buffer that is being written to. However that isn't specify in the
-> prototype.
+On Mon, May 26, 2025 at 7:30=E2=80=AFAM Alan Maguire <alan.maguire@oracle.c=
+om> wrote:
 >
-> Until commit 37cce22dbd51a ("bpf: verifier: Refactor helper access
-> type tracking"), all helper accesses were considered as a possible
-> write access by the verifier, so no big harm was done. However, since
-> then, the verifier might make wrong asssumption about the content of
-> that address which might lead it to make faulty optimizations (such as
-> removing code that was wrongly labeled dead). This is what happens in
-> test_sysctl selftest to the tests related to sysctl_get_name.
+> On 23/05/2025 19:57, Thierry Treyer wrote:
+> >>>>  2) // param_offsets point to each parameters' location
+> >>>>     struct fn_info { u32 type_id, offset; u16 param_offsets[proto.ar=
+glen]; };
+> >>>>  [...]
+> >>>>  (2) param offsets, w/ dedup         14,526      4,808,838    4,823,=
+364
+> >>>
+> >>> This one is almost as good as (3) below, but fits better into the
+> >>> existing kind+vlen model where there is a variable number of fixed
+> >>> sized elements (but locations can still be variable-sized and keep
+> >>> evolving much more easily). I'd go with this one, unless I'm missing
+> >>> some important benefit of other representations.
+> >>
+> >> Thierry, could you please provide some details for the representation
+> >> of both fn_info and parameters for this case?
+> >
+> > The locations are stored in their own sub-section, like strings, using =
+the
+> > encoding described previously. A location is a tagged union of an opera=
+tion
+> > and its operands describing how to find to parameter=E2=80=99s value.
+> >
+> > The locations for nil, =E2=80=99%rdi=E2=80=99 and =E2=80=99*(%rdi + 32)=
+=E2=80=99 are encoded as follow:
+> >
+> >   [0x00] [0x09 0x05] [0x0a 0x05 0x00000020]
+> > #  `NIL   `REG   #5   |    `Reg#5        `Offset added to Reg=E2=80=99s=
+ value
+> > #                     `ADDR_REG_OFF
+> >
+> > The funcsec table starts with a `struct btf_type` of type FUNCSEC, foll=
+owed by
+> > vlen `struct btf_func_secinfo` (referred previously as fn_info):
+> >
+> >   .align(4)
+> >   struct btf_func_secinfo {
+> >     __u32 type_id;                       // Type ID of FUNC
+> >     __u32 offset;                        // Offset in section
+> >     __u16 parameter_offsets[proto.vlen]; // Offsets to params=E2=80=99 =
+location
+> >   };
+> >
+> > To know how many parameters a function has, you=E2=80=99d use its type_=
+id to retrieve
+> > its FUNC, then its FUNC_PROTO to finally get the FUNC_PROTO vlen.
+> > Optimized out parameters won=E2=80=99t have a location, so we need a NI=
+L to skip them.
+> >
+> >
+> > Given a function with arg0 optimized out, arg1 at *(%rdi + 32) and arg2=
+ in %rdi.
+> > You=E2=80=99d get the following encoding:
+> >
+> >   [1] FUNC_PROTO, vlen=3D3
+> >       ...args
+> >   [2] FUNC 'foo' type_id=3D1
+> >   [3] FUNCSEC '.text', vlen=3D1           # ,NIL   ,*(%rdi + 32)
+> >       - type_id=3Dn, offset=3D0x1234, params=3D[0x0, 0x3, 0x1]
+> >                                         #             `%rdi
+> >
+> > # Regular BTF encoding for 1 and 2
+> >   ...
+> > # ,FUNCSEC =E2=80=99.text=E2=80=99, vlen=3D1
+> >   [0x000001 0x14000001 0x00000000]
+> > # ,btf_func_secinfo      ,params=3D[0x0, 0x3, 0x1] + extra nil for alig=
+nment
+> >   [0x00000002 0x00001234 0x0000 0x0003 0x0001 0x0000]
+> >
+> > Note: I didn=E2=80=99t take into account the 4-bytes padding requiremen=
+t of BTF.
+> >       I=E2=80=99ve sent the correct numbers when responding to Alexei.
+> >
+> >> I'm curious how far this version is from exhausting u16 limit.
+> >
+> >
+> > We=E2=80=99re already using 22% of the 64=E2=80=AFkiB addressable by u1=
+6.
+> >
+> >> Why abuse DATASEC if we are extending BTF with new types anyways? I'd
+> >> go with a dedicated FUNCSEC (or FUNCSET, maybe?..)
+> >
+> > I'm not sure that a 'set' describes the table best, since a function
+> > can have multiple entries in the table.
+> > FUNCSEC is ugly, but it conveys that the offsets are from a section=E2=
+=80=99s base.
 >
-> Correctly mark the second argument of bpf_sysctl_get_name() as
-> ARG_PTR_TO_UNINIT_MEM.
 >
-> Signed-off-by: Jerome Marchand <jmarchan@redhat.com>
-> ---
+> I totally agree that we have more freedom to define new representations
+> here, so don't feel too constrained by existing representations like
+> DATASEC if they are not helpful.
+>
+> One thing I hadn't really thought about before you suggested it is
+> having the locations in a separate section from types as we have for
+> strings. Do we need that? Or could we have a BTF_KIND_LOC_SEC that is
+> associated with the FUNC_SEC via a type id (loc sec points at the type
+> of the associated func sec) and contains the packed location info?
+>
+> In other words
+>
+> [3] FUNCSEC '.text', vlen=3D ...
+> <func_id, offset, param_location_offsets[]>
+> ...
+> [4] LOCSEC '.text', type_id=3D3
+> <packed locations>
 
-Looks like we don't run bpf_sysctl_get_name tests on the CI.
-CI executes the following binaries:
-- test_progs{,-no_alu32,-cpuv4}
-- test_verifier
-- test_maps
-test_progs is what is actively developed.
+LOCSEC pointing to FUNCSEC isn't that useful, no? You'd want to go
+from FUNCSEC to LOCSEC quickly, not the other way around, no? But I
+also don't see the need to have a per-ELF-section set of locations,
+tbh... One set ought to be enough across all FUNCSECs?
 
-I agree with the reasoning behind this patch, however, could you please
-add a selftest demonstrating unsafe behaviour?
-You can use tools/testing/selftests/bpf/progs/verifier_and.c as an
-example of verifier test checking for specific log message.
-(framework also supports execution if __retval is specified,
- tests can be written in plain C as well, e.g. as in .../iters.c).
+> ...
+>
 
