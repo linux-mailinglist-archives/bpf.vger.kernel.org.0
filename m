@@ -1,115 +1,136 @@
-Return-Path: <bpf+bounces-58987-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58988-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01BD3AC4BFB
-	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 12:06:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54C1BAC4C25
+	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 12:21:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C060117BD33
-	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 10:06:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 131F07AD1DC
+	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 10:19:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81156255F3C;
-	Tue, 27 May 2025 10:06:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50DF4254873;
+	Tue, 27 May 2025 10:20:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="nYrmYq/+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HJ9jLqsG"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C633D253B60;
-	Tue, 27 May 2025 10:06:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE5F5253F12
+	for <bpf@vger.kernel.org>; Tue, 27 May 2025 10:20:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748340380; cv=none; b=pDR68rpan4swdjBlRG7f7voVIlF+358GVqOMfSYrSmDft3MpbHDEd4cX2W8oN2opusE58JgWXfytBn+BsshXvjNEz/rJB2tITUaCe98z7uyWnkLs+riZtjlf0aOrh9QJrysrqMgXITOmuOYR6X0yNdtgWKTIqvJFU0SPXUicI30=
+	t=1748341206; cv=none; b=oDbhUWc4Ns4LK9qeDktKQAhQ8Q332+nIP5et3jtft7Lkh8CiZBZXSc6fiGyU3citMNvJW1RS092u4mrU9BtdknFegn7HQJK0iOZc/ERphNSV6E95yk9o03wUAv/vxVGeXgXgQAaMCdS6E3+PBS9smgWS+ZUbHW2jKCSsBNDrLs8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748340380; c=relaxed/simple;
-	bh=SWutLzW2f0QowHEeX6Fe3tjpE4LQ738nisqkiqbIlys=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=aZWTzulEG5j7+QLUwB6EsyBbU1/OcTkR641LmX37gJ0y3JbqvjI6IllN9C3sKs5qa07gfO+ZcEm3nW4ab2IgkedRS6OOteGyLNdipoSKe08FSL0ih3yrn0F5R86xQgejnLxCOaKaf/skezOGWlYgBiCkPLMWwGeHC8G1T+WTW+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=nYrmYq/+; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4CDE71FD77;
-	Tue, 27 May 2025 10:06:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1748340375;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AHN+uDsSXaJTkD0laSVsn0A5Nrq0eTHXt3UKaa7Mqnc=;
-	b=nYrmYq/+92zawj6+lX9PdBhCrVDmQ1u+KN1e/25bQ/jqN1TV7Litbr5z7PhU3HApE33vW4
-	TT/ZyzJjsCYILkLI5EyQJXBWK1JuYCvlU0b0dj7p8JsZ9w7Puj4Mnx5/Hilyr7dcHN8dYJ
-	XZBgLIKewusiawvMz1lOz9pGHufISFZ3Efza9UOhoOqayEpGP/alVN+CB7apFpOEUa6t/y
-	B8D12jzYjagNp2sF+XfPk8YYm3CgK5MQb5yQ5jnSJtSyl9NYCb7dhNoAi6GhZIRRySXsUQ
-	U0MT2SiHeG/9V4zteRFnDfViSuVbHXshR9o+5rnsUUcfaRH89JrNrwiVfn6qqw==
-From: =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-Date: Tue, 27 May 2025 12:06:04 +0200
-Subject: [PATCH bpf-next v3 2/2] selftests/bpf: enable many-args tests for
- arm64
+	s=arc-20240116; t=1748341206; c=relaxed/simple;
+	bh=dVmLXL7Dxq4oudQTYCKcyVzjG8XDcxvRold3ixPpHT8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cAr2gnToly8QsjO/1cDH4BWzjVvwZD9R72GUCM72diwpKwOGf0BfXRtY01IjZiWpIvg9xKL/IgezHO0egPagpYW21NnUzMjinB5mc1m2HZ14HI4MSxKaGabN/NkIP0O0Q1eN5Wvc3Xv2F0oQ9u77CpSrkIru5WGJhhcxmqzrqRo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HJ9jLqsG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C43A9C4CEE9;
+	Tue, 27 May 2025 10:20:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1748341206;
+	bh=dVmLXL7Dxq4oudQTYCKcyVzjG8XDcxvRold3ixPpHT8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=HJ9jLqsGVrL97B7h88eBYlZB6+OojDc1tqqJ0h0eNE4u/hA3z/d370wYY2SQ97dRE
+	 mnIak3lGYPySBGdM99eErDF61g4Wub55Yx2C0oCvblmq97MeDLG1ciVei9yK+V9jW1
+	 LtcrxzZ/OHn1PqtKiw/lK/O7IFYM20Pd7G5SSn9RrdWVj4iZXxVo546hy+7S7ejJh2
+	 ycIZ33ZI6p4LBOiRW5TvZZ6E1tzg62zL776nTOANRbrWCb3/BptVrETZ0bZr9KBLtH
+	 Ty0qrpVGCyGwb7lXOYB25BK7KmvbJgNF9HQEfb90HlIsJGEy7KDVqkUXcZnRtWYRl0
+	 GDH05NkgpDdPw==
+Message-ID: <b8246692-6eb8-4079-9113-c1519221e55d@kernel.org>
+Date: Tue, 27 May 2025 11:20:02 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20250527-many_args_arm64-v3-2-3faf7bb8e4a2@bootlin.com>
-References: <20250527-many_args_arm64-v3-0-3faf7bb8e4a2@bootlin.com>
-In-Reply-To: <20250527-many_args_arm64-v3-0-3faf7bb8e4a2@bootlin.com>
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, 
- Xu Kuohai <xukuohai@huaweicloud.com>, 
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
- Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
- Alexandre Torgue <alexandre.torgue@foss.st.com>, 
- Florent Revest <revest@chromium.org>
-Cc: Bastien Curutchet <bastien.curutchet@bootlin.com>, 
- ebpf@linuxfoundation.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-kselftest@vger.kernel.org, 
- linux-stm32@st-md-mailman.stormreply.com, 
- =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-X-Mailer: b4 0.14.2
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddtgddvtddtleculddtuddrgeefvddrtddtmdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephfffufggtgfgkfhfjgfvvefosehtkeertdertdejnecuhfhrohhmpeetlhgvgihishcunfhothhhohhrroculdgvuefrhfcuhfhouhhnuggrthhiohhnmdcuoegrlhgvgihishdrlhhothhhohhrvgessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepleejkeetffefveelgeeklefhtefhgfeigeduveffjeehleeifeefjedtudejgeeunecukfhppedvrgdtvdemkeegvdekmehfleegtgemvgdttdemmeguieehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvdgrtddvmeekgedvkeemfhelgegtmegvtddtmeemugeihedphhgvlhhopegludelvddrudeikedruddrudeljegnpdhmrghilhhfrhhomheprghlvgigihhsrdhlohhthhhorhgvsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopeeftddprhgtphhtthhopehsohhngheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhgrohhluhhosehgohhoghhlvgdrtghomhdprhgtphhtthhopehthhhomhgrshdrphgvthgriiiiohhnihessghoohhtlhhinhdrtghomhdprhgtphhtthhop
- ehsughfsehfohhmihgthhgvvhdrmhgvpdhrtghpthhtohepsghpfhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehjohhlshgrsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgrrhhmqdhkvghrnhgvlheslhhishhtshdrihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopehpuhhrrghnjhgrhieskhgvrhhnvghlrdhorhhg
-X-GND-Sasl: alexis.lothore@bootlin.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v2 10/11] bpftool: Add support for dumping
+ streams
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Emil Tsalapatis
+ <emil@etsalapatis.com>, Barret Rhoden <brho@google.com>,
+ Matt Bobrowski <mattbobrowski@google.com>, kkd@meta.com, kernel-team@meta.com
+References: <20250524011849.681425-1-memxor@gmail.com>
+ <20250524011849.681425-11-memxor@gmail.com>
+From: Quentin Monnet <qmo@kernel.org>
+Content-Language: en-GB
+In-Reply-To: <20250524011849.681425-11-memxor@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Now that support for up to 12 args is enabled for tracing programs on
-ARM64, enable the existing tests for this feature on this architecture.
+2025-05-23 18:18 UTC-0700 ~ Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> Add support for printing the BPF stream contents of a program in
+> bpftool. The new bpftool prog tracelog command is extended to take
+> stdout and stderr arguments, and then the prog specification.
+> 
+> The bpf_prog_stream_read() API added in previous patch is simply reused
+> to grab data and then it is dumped to the respective file. The stdout
+> data is sent to stdout, and stderr is printed to stderr.
+> 
+> Cc: Quentin Monnet <qmo@kernel.org>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  .../bpftool/Documentation/bpftool-prog.rst    |  7 +++
+>  tools/bpf/bpftool/bash-completion/bpftool     | 16 +++++-
+>  tools/bpf/bpftool/prog.c                      | 50 ++++++++++++++++++-
+>  3 files changed, 71 insertions(+), 2 deletions(-)
+> 
 
-Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
----
-Changes in v2:
-- keep tracing struct tests disabled, as structs passed on stack are not
-  handled by the new revision
----
- tools/testing/selftests/bpf/DENYLIST.aarch64 | 2 --
- 1 file changed, 2 deletions(-)
+> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+> index f010295350be..3f31fbb8a99c 100644
+> --- a/tools/bpf/bpftool/prog.c
+> +++ b/tools/bpf/bpftool/prog.c
+> @@ -1113,6 +1113,53 @@ static int do_detach(int argc, char **argv)
+>  	return 0;
+>  }
+>  
+> +enum prog_tracelog_mode {
+> +	TRACE_STDOUT,
+> +	TRACE_STDERR,
+> +};
 
-diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing/selftests/bpf/DENYLIST.aarch64
-index 6d8feda27ce9de07d77d6e384666082923e3dc76..12e99c0277a8cbf9e63e8f6d3a108c8a1208407b 100644
---- a/tools/testing/selftests/bpf/DENYLIST.aarch64
-+++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
-@@ -1,3 +1 @@
--fentry_test/fentry_many_args                     # fentry_many_args:FAIL:fentry_many_args_attach unexpected error: -524
--fexit_test/fexit_many_args                       # fexit_many_args:FAIL:fexit_many_args_attach unexpected error: -524
- tracing_struct/struct_many_args                  # struct_many_args:FAIL:tracing_struct_many_args__attach unexpected error: -524
 
--- 
-2.49.0
+You could have TRACE_STDOUT = 1 and TRACE_STDERR = 2 in this enum, and
+later do "stream_id = mode". This would avoid passing "1" or "2" inside
+of the prog_tracelog_stream() function. Although thinking again, it's
+maybe confusing to use the same enum for the mode and the stream_id?
+Your call.
 
+
+> +
+> +static int
+> +prog_tracelog_stream(int prog_fd, enum prog_tracelog_mode mode)
+> +{
+> +	FILE *file = mode == TRACE_STDOUT ? stdout : stderr;
+> +	int stream_id = mode == TRACE_STDOUT ? 1 : 2;
+> +	static char buf[512];
+
+
+Why static?
+
+
+> +	int ret;
+> +
+> +	ret = 0;
+> +	do {
+> +		ret = bpf_prog_stream_read(prog_fd, stream_id, buf, sizeof(buf));
+> +		if (ret > 0) {
+> +			fwrite(buf, sizeof(buf[0]), ret, file);
+> +		}
+
+
+Nit: No brackets needed around fwrite()
+
+Otherwise looks good, thanks!
+
+Quentin
 
