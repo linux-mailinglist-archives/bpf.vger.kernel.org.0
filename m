@@ -1,145 +1,263 @@
-Return-Path: <bpf+bounces-58979-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58980-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30276AC4B8B
-	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 11:29:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C367AC4BB2
+	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 11:44:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0362170B82
-	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 09:29:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E84793A8B04
+	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 09:43:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF863253933;
-	Tue, 27 May 2025 09:28:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FAB92505A5;
+	Tue, 27 May 2025 09:44:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GcnF3O2+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WhJEs09f"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72453248F73
-	for <bpf@vger.kernel.org>; Tue, 27 May 2025 09:28:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCA5E24DFF3
+	for <bpf@vger.kernel.org>; Tue, 27 May 2025 09:44:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748338139; cv=none; b=CFXa6wRMGJRMChsucm/de37hFry1cU6EOCMgZRHsvvhPbxkRZTUcluKlOL9EUwmqIeSLZ5FAKuhk4kQhbYPaL4rbXGSI8OFLrk1QobPsB2uw80yQNRwB+23aeWmJQkK0WhdQqk91TQ56jFGqd7zYCvO8FgmCTgVPXuTf4aR60YQ=
+	t=1748339044; cv=none; b=G11Mb06kuTdm/Pk/TO6IjvaW+XfgfHCBO+0/KQiSbQzSa5NRHx3TB3J4fbxc6ZJ+aPhVHUes+ndmG83za8YuVE8QhvccPI9DBdKQDQtooalf2qHDMxaHpflb4yodew6up8d6bhDIAtLtykwZ93a2NB2FTSFjsK/KTlpXaJS6cq8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748338139; c=relaxed/simple;
-	bh=jYEhg75W17+LrrRp5ozft0smLaCDvCUlIDdgZkc8Maw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JhvNwvfhRIXFAauGQNR0SfFuuwuVkaNewVTIPIABOd3uQzIOyw4cXtUie1LwyTx3w0iEgTrDafeC8pARynWKPHVcI3Ytb2j5iI36CdWEJj5s5hhVJYQea+isKurT2oZEfq0fG1Hp2L0T1Z82gCfP+yiCkoDup4bjyRGt0sEFUV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GcnF3O2+; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1748338136;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=d2VX9MfL1HCTriT+S3B9Z1XwLwg3XDZQ+O6lDXv3bE4=;
-	b=GcnF3O2+DhFxEc9GW8lAH0adS9eRHDdbK9qujz628jaSAOdvosEvbho12Xw395xCiZK7QJ
-	ZuNvrRLEIXoPnMFelBvsL+tT5Epk9WZA2rq5QV+0bRaQpSPM57k+CDAgKIDNfHrL9rZLNk
-	bbO6XtMt6TTIrBsKgyVLTUpUr6ZXJ8c=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-436-xj_8hmOfN_OjWGYtlkwU3g-1; Tue, 27 May 2025 05:28:54 -0400
-X-MC-Unique: xj_8hmOfN_OjWGYtlkwU3g-1
-X-Mimecast-MFC-AGG-ID: xj_8hmOfN_OjWGYtlkwU3g_1748338134
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-43ceeaf1524so14282915e9.1
-        for <bpf@vger.kernel.org>; Tue, 27 May 2025 02:28:54 -0700 (PDT)
+	s=arc-20240116; t=1748339044; c=relaxed/simple;
+	bh=NJJPjuQeSdz0JJuO7figqiC29r8w4NK0aoY3IEPxM0c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QwC9Y6i0kN4eqxmCYVJbk2ENJ65ol+HwZ1otWej8w11Oq5hojTnTlnnxn5/pXPvbBmeeSdvXVHZoGrYuPeSw+dJxSNUwulE/wCtz0I9VJYd/VqJtbyN2BzL/z8vfnnz2fsq3cusD0AIbFjNadg4eLU8uQTqOlO7PZCpTgdpj5IU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WhJEs09f; arc=none smtp.client-ip=209.85.219.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-6f2b04a6169so33686796d6.1
+        for <bpf@vger.kernel.org>; Tue, 27 May 2025 02:44:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748339041; x=1748943841; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=N63HG5Y92FVIyGYtF9GWHOZMWzYb14mgOGmeAq1M4Zk=;
+        b=WhJEs09fGg9FlVtxJwzwM1AOkJ2SUNBMutom/Wc0aKCLqGRA3vbvvdfvMLv54q0wIv
+         F3HViKQAnOHcOzUKHcmztuhmTC5WOQ01EzjTQBQNIkAMq5q60oU/B56QUMUgyYbwvYwG
+         jravFoLgA23GLgk7LLLfJbcnbv8/qfqxRhf7F/b7updTvyIVxyxUBnhlWUNW8WmUPfl0
+         D6GTisnBN2RhrJN7jP6z5ZTvdMlZpIwG3GgJc1VFqaymvR0Q8aO9usfVi22uVTXHzu5r
+         9kXVmekv0+ZoRi3RNztnvbE+xHnzVuveIaV9vBjW2n6b97GOE5nLeQmiF+togoOHD/gP
+         tXdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748338133; x=1748942933;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=d2VX9MfL1HCTriT+S3B9Z1XwLwg3XDZQ+O6lDXv3bE4=;
-        b=w2Ea5rmdTeYd1m+Iyq54WnYvXarxxBXAulBx07POO3eGk0jLxLYvxg+/cYHq8RDFk0
-         v0aESFLmFeQN9VyDKBMwl3khS+Yq9c49QhSONOFpovN4WqhFwovIt0qABJDAbfbko5BQ
-         1EIyF5viXlP5EQ26ZKha0ZdeI9ktg0UpUf7MfFLz1Ds2Lh3ioqdPoRDPHlwMUmxpojyT
-         cbymTA1CS20Q3d5U4Z7+IH854O4qduEeUWQ8CD2wbMMckGuGn42lS969NMNMT2c64U/A
-         /BAQDoDLXccvnB+tB0IuQVXHTPBVOpa+tyu/CHhclbnP9hUPTffslNaevsuDxJgKtW82
-         ZoDA==
-X-Forwarded-Encrypted: i=1; AJvYcCWBHxme80UZ+ARdalE2IT5TRf+qXtgF6xyagJKAJdlZJ6lAgzIi+bb5au/16mbnoq3rtew=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxc8347HGsq6TWTbLNQTgtEpFCLd6mzFDR1j1NRCPltsINQlObQ
-	IHcHm8Vbuec0JcY2TZslJDJJh0jPZPuAAI7v+NLx++OhB/5gl2q2dA/vA71ZXN9gyyCKPo2ggcs
-	NUiu4USdh6ciL8c/9VEpkm5JRlamPoUog3Rk8c8yJJ/+9UmVyQ8XF1g==
-X-Gm-Gg: ASbGncvY6NoF++kXygujCOndBhD8PCg2SUPR555bvZ8/Nj6bOdKx4rlOcvomA5RrMg3
-	FmAyjR9Cvv1hu0h6rvqPLtBDlDSehwLAt7eRsff2OKNoM3m2YUX1MPipM+wbs+VR6YcWcH+ad0D
-	tu9NtJYdwFC62hrM99ZHXtTHNS/pU6XtuULxU0/YSDcpHVGYuZ0QGn8S5r077KmNTcFlKpruRm1
-	FeJgFdRRPRz20e8rF6bRt6FNJUbO6iOrYWSnpksOpbjTLF5IA91vSbEsD/HaVtn+jh4h3bcYtgV
-	Mzv4JXzfHbHiqZAsrqI=
-X-Received: by 2002:a05:600c:1d0a:b0:43d:186d:a4bf with SMTP id 5b1f17b1804b1-44c77bf3aa2mr98283915e9.0.1748338133535;
-        Tue, 27 May 2025 02:28:53 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFW/XvOutq354S3u3kVQy6maNZpndfNYmmZuqtvnQwyMkFCqY+qleAw2OpAQBAisEp90oBu4Q==
-X-Received: by 2002:a05:600c:1d0a:b0:43d:186d:a4bf with SMTP id 5b1f17b1804b1-44c77bf3aa2mr98283485e9.0.1748338133127;
-        Tue, 27 May 2025 02:28:53 -0700 (PDT)
-Received: from ?IPV6:2a0d:3344:2728:e810::f39? ([2a0d:3344:2728:e810::f39])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a4e4c4739csm290454f8f.0.2025.05.27.02.28.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 May 2025 02:28:52 -0700 (PDT)
-Message-ID: <ea6b8065-76e4-45c8-a51f-858abab4d639@redhat.com>
-Date: Tue, 27 May 2025 11:28:50 +0200
+        d=1e100.net; s=20230601; t=1748339041; x=1748943841;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=N63HG5Y92FVIyGYtF9GWHOZMWzYb14mgOGmeAq1M4Zk=;
+        b=MLTd+mc/oRnRSOQCVhtkyVp3+Gv50RD5G4n9xaby199TI0LD/u/4zsx5XpbRFPDGao
+         vdjRGtk6DsFNMB2VsYA16ldTdgGc19B/QbKBAGAOy0XxHHpm4IKysIc3iFhKSvwYPPvo
+         simJ9VIHROMDL9k/FfuUwCqNuEHph6ZRXOiN80MSxpXKuJBr6QSl5J56v1KDqT/pZ2jq
+         7HAExa5W4nwLg0r7MiMxIqknI1ZibwMjJUh8X5y3QWPsTDhYwRtxc9n4VHPDOIK/hH6J
+         SWU6Sem4dsMCom76COiDuMItXiKODgMFeDPqWoWa8dAyzz9KXFu7YgA+SJj6r/qoVLfm
+         Lqng==
+X-Forwarded-Encrypted: i=1; AJvYcCXd/nhSz8Lp+5YHNrkAtC9TzCEPyngiIelsu801pdSoMKV5zCdNocW6ElfmbYCVxm0vKyk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxMAF6yjeFVGVWQMaOaFg+Bv0GTIuIBaQRh1meZr4Ow1CsthmXu
+	idnbHWZ0coRwj/kVFnWpyzNrXDjEXgXpUNvpkmvlW+nYJGEcx6giBWFsgiHjumXq7vv9whYbrQU
+	bgbHBWPmod03XE4PMEkPVC7WlvFUYWUk=
+X-Gm-Gg: ASbGncvnV9wFS3bMm3MKPVP6YNJUZJq+YCp0HHfJFkWr2L1Rw56upjAGcnEsci54cbr
+	c4Tg3HBoJnytPSM4lCSMpAOq7GQSyKKNkaevX5Kkfo6xw7bg0jAw+MvmbZ7lPdtwKiqfZduYtu1
+	HXZ7vX5X23SIRGWPUTNED0JSDFHHNW6nMteQ==
+X-Google-Smtp-Source: AGHT+IGdNv2zziVNbElhr3cJOToNZON9YtqVKI7OLlWGgXLHr0FzfwqC0eobYdVSCnSNLAAsmfJTU+Op/72SKVtawQU=
+X-Received: by 2002:a05:6214:ac6:b0:6e8:f17e:e00d with SMTP id
+ 6a1803df08f44-6fa9d01da5amr215870256d6.14.1748339041560; Tue, 27 May 2025
+ 02:44:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next,v5] net: mana: Add handler for hardware servicing
- events
-To: Haiyang Zhang <haiyangz@microsoft.com>, linux-hyperv@vger.kernel.org,
- netdev@vger.kernel.org
-Cc: decui@microsoft.com, stephen@networkplumber.org, kys@microsoft.com,
- paulros@microsoft.com, olaf@aepfle.de, vkuznets@redhat.com,
- davem@davemloft.net, wei.liu@kernel.org, edumazet@google.com,
- kuba@kernel.org, leon@kernel.org, longli@microsoft.com,
- ssengar@linux.microsoft.com, linux-rdma@vger.kernel.org,
- daniel@iogearbox.net, john.fastabend@gmail.com, bpf@vger.kernel.org,
- ast@kernel.org, hawk@kernel.org, tglx@linutronix.de,
- shradhagupta@linux.microsoft.com, andrew+netdev@lunn.ch,
- kotaranov@microsoft.com, horms@kernel.org, linux-kernel@vger.kernel.org
-References: <1747873343-3118-1-git-send-email-haiyangz@microsoft.com>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <1747873343-3118-1-git-send-email-haiyangz@microsoft.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20250520060504.20251-1-laoar.shao@gmail.com> <CALOAHbDPF+Mxqwh+5ScQFCyEdiz1ghNbgxJKAqmBRDeAZfe3sA@mail.gmail.com>
+ <7d8a9a5c-e0ef-4e36-9e1d-1ef8e853aed4@redhat.com> <CALOAHbB-KQ4+z-Lupv7RcxArfjX7qtWcrboMDdT4LdpoTXOMyw@mail.gmail.com>
+ <c983ffa8-cd14-47d4-9430-b96acedd989c@redhat.com> <CALOAHbBjueZhwrzp81FP-7C7ntEp5Uzaz26o2s=ZukVSmidEOA@mail.gmail.com>
+ <ada2fcc0-3915-40e7-8908-b4d73a2eb050@redhat.com> <CALOAHbB9kuZ_8XJbTw98VuNtSdeUT=m9PAfO0uxsf4WaC3LXrA@mail.gmail.com>
+ <5f0aadb1-28a8-4be0-bad9-16b738840e57@redhat.com> <CALOAHbB-HtU9ERzxDaz8NoC4-BG5Lb7-dF0v16Bp2Ckr1M7JEw@mail.gmail.com>
+ <5d48d0c3-89a3-44da-bc1a-9a4601f146a4@redhat.com>
+In-Reply-To: <5d48d0c3-89a3-44da-bc1a-9a4601f146a4@redhat.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Tue, 27 May 2025 17:43:24 +0800
+X-Gm-Features: AX0GCFtwWKoF-RQmtZjDpQX-Dit9jZ_VJEAtyOSuVMZ9pHRZFkDt07JSG21M9Tw
+Message-ID: <CALOAHbBUK=oPihkG22Z7L92rHNw-fB=p8zSk+1NFmzBjBENmVg@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 0/5] mm, bpf: BPF based THP adjustment
+To: David Hildenbrand <david@redhat.com>
+Cc: akpm@linux-foundation.org, ziy@nvidia.com, baolin.wang@linux.alibaba.com, 
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, npache@redhat.com, 
+	ryan.roberts@arm.com, dev.jain@arm.com, hannes@cmpxchg.org, 
+	usamaarif642@gmail.com, gutierrez.asier@huawei-partners.com, 
+	willy@infradead.org, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	bpf@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 5/22/25 2:22 AM, Haiyang Zhang wrote:
-> @@ -400,6 +448,33 @@ static void mana_gd_process_eqe(struct gdma_queue *eq)
->  		eq->eq.callback(eq->eq.context, eq, &event);
->  		break;
->  
-> +	case GDMA_EQE_HWC_FPGA_RECONFIG:
-> +		dev_info(gc->dev, "Recv MANA service type:%d\n", type);
-> +
-> +		if (gc->in_service) {
-> +			dev_info(gc->dev, "Already in service\n");
-> +			break;
-> +		}
-> +
-> +		if (!try_module_get(THIS_MODULE)) {
-> +			dev_info(gc->dev, "Module is unloading\n");
-> +			break;
-> +		}
-> +
-> +		mns_wk = kzalloc(sizeof(*mns_wk), GFP_ATOMIC);
-> +		if (!mns_wk) {
-> +			module_put(THIS_MODULE);
-> +			break;
-> +		}
-> +
-> +		dev_info(gc->dev, "Start MANA service type:%d\n", type);
-> +		gc->in_service = true;
-> +		mns_wk->pdev = to_pci_dev(gc->dev);
-> +		pci_dev_get(mns_wk->pdev);
+On Tue, May 27, 2025 at 5:27=E2=80=AFPM David Hildenbrand <david@redhat.com=
+> wrote:
+>
+> On 27.05.25 10:40, Yafang Shao wrote:
+> > On Tue, May 27, 2025 at 4:30=E2=80=AFPM David Hildenbrand <david@redhat=
+.com> wrote:
+> >>
+> >>>> I don't think we want to add such a mechanism (new mode) where the
+> >>>> primary configuration mechanism is through bpf.
+> >>>>
+> >>>> Maybe bpf could be used as an alternative, but we should look into a
+> >>>> reasonable alternative first, like the discussed mctrl()/.../ raised=
+ in
+> >>>> the process_madvise() series.
+> >>>>
+> >>>> No "bpf" mode in disguise, please :)
+> >>>
+> >>> This goal can be readily achieved using a BPF program. In any case, i=
+t
+> >>> is a feasible solution.
+> >>
+> >> No BPF-only solution.
+> >>
+> >>>
+> >>>>
+> >>>>> We could define
+> >>>>> the API as follows:
+> >>>>>
+> >>>>> struct bpf_thp_ops {
+> >>>>>           /**
+> >>>>>            * @task_thp_mode: Get the THP mode for a specific task
+> >>>>>            *
+> >>>>>            * Return:
+> >>>>>            * - TASK_THP_ALWAYS: "always" mode
+> >>>>>            * - TASK_THP_MADVISE: "madvise" mode
+> >>>>>            * - TASK_THP_NEVER: "never" mode
+> >>>>>            * Future modes can also be added.
+> >>>>>            */
+> >>>>>           int (*task_thp_mode)(struct task_struct *p);
+> >>>>> };
+> >>>>>
+> >>>>> For observability, we could add a "THP mode" field to
+> >>>>> /proc/[pid]/status. For example:
+> >>>>>
+> >>>>> $ grep "THP mode" /proc/123/status
+> >>>>> always
+> >>>>> $ grep "THP mode" /proc/456/status
+> >>>>> madvise
+> >>>>> $ grep "THP mode" /proc/789/status
+> >>>>> never
+> >>>>>
+> >>>>> The THP mode for each task would be determined by the attached BPF
+> >>>>> program based on the task's attributes. We would place the BPF hook=
+ in
+> >>>>> appropriate kernel functions. Note that this setting wouldn't be
+> >>>>> inherited during fork/exec - the BPF program would make the decisio=
+n
+> >>>>> dynamically for each task.
+> >>>>
+> >>>> What would be the mode (default) when the bpf program would not be a=
+ctive?
+> >>>>
+> >>>>> This approach also enables runtime adjustments to THP modes based o=
+n
+> >>>>> system-wide conditions, such as memory fragmentation or other
+> >>>>> performance overheads. The BPF program could adapt policies
+> >>>>> dynamically, optimizing THP behavior in response to changing
+> >>>>> workloads.
+> >>>>
+> >>>> I am not sure that is the proper way to handle these scenarios: I ne=
+ver
+> >>>> heard that people would be adjusting the system-wide policy dynamica=
+lly
+> >>>> in that way either.
+> >>>>
+> >>>> Whatever we do, we have to make sure that what we add won't
+> >>>> over-complicate things in the future. Having tooling dynamically adj=
+ust
+> >>>> the THP policy of processes that coarsely sounds ... very wrong long=
+-term.
+> >>>
+> >>> This is just an example demonstrating how BPF can be used to adjust
+> >>> its flexibility. Notably, all these policies can be implemented
+> >>> without modifying the kernel.
+> >>
+> >> See below on "policy".
+> >>
+> >>>
+> >>>>
+> >>>>    > > As Liam pointed out in another thread, naming is challenging =
+here -
+> >>>>> "process" might not be the most accurate term for this context.
+> >>>>
+> >>>> No, it's not even a per-process thing. It is per MM, and a MM might =
+be
+> >>>> used by multiple processes ...
+> >>>
+> >>> I consistently use 'thread' for the latter case.
+> >>
+> >> You can use CLONE_VM without CLONE_THREAD ...
+> >
+> > If I understand correctly, this can only occur for shared THP but not
+> > anonymous THP. For instance, if either process allocates an anonymous
+> > THP, it would trigger the creation of a new MM. Please correct me if
+> > I'm mistaken.
+>
+> What clone(CLONE_VM) will do is essentially create a new process, that
+> shares the MM with the original process. Similar to a thread, just that
+> the new process will show up in /proc/ as ... a new process, not as a
+> thread under /prod/$pid/tasks of the original process.
+>
+> Both processes will operate on the shared MM struct as if they were
+> ordinary threads. No Copy-on-Write involved.
+>
+> One example use case I've been involved in is async teardown in QEMU [1].
+>
+> [1] https://kvm-forum.qemu.org/2022/ibm_async_destroy.pdf
 
-Acquiring both the device and the module reference is confusing and
-likely unnecessary. pci_dev_get() should suffice.
+I understand what you mean, but what I'm really confused about is how
+this relates to allocating anonymous THP.  If either one allocates
+anon THP, it will definitely create a new MM, right ?
 
-/P
+>
+> >
+> >>
+> >> Additionally, this
+> >>> can be implemented per-MM without kernel code modifications.
+> >>> With a well-designed API, users can even implement custom THP
+> >>> policies=E2=80=94all without altering kernel code.
+> >>
+> >> You can switch between modes, that' all you can do. I wouldn't really
+> >> call that "custom policy" as it is extremely limited.
+> >>
+> >> And that's exactly my point: it's basic switching between modes ... a
+> >> reasonable policy in the future will make placement decisions and not
+> >> just state "always/never/madvise".
+> >
+> > Could you please elaborate further on 'make placement decisions'? As
+> > previously mentioned, we (including the broader community) really need
+> > the user input to determine whether THP allocation is appropriate in a
+> > given case.
+>
+> The glorious future were we make smarter decisions where to actually
+> place THPs even in the "always" mode.
+>
+> E.g., just because we enable "always" for a process does not mean that
+> we really want a THP everywhere; quite the opposite.
 
+So 'always' simply means "the system doesn't guarantee THP allocation
+will succeed" ? If that's the case, we should revisit RFC v1 [0],
+where we proposed rejecting THP allocations in certain scenarios for
+specific tasks.
+
+[0] https://lwn.net/Articles/1019290/
+
+>
+> Treat the "always"/"madvise"/"never" as a rough mode, not a future-proof
+> policy that we would want to fine-tune dynamically ... that would be
+> very limiting.
+
+
+--=20
+Regards
+Yafang
 
