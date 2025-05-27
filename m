@@ -1,200 +1,116 @@
-Return-Path: <bpf+bounces-58975-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58976-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DC5BAC4A7F
-	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 10:45:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCDD1AC4B41
+	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 11:11:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 144933B9AA7
-	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 08:45:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6EC987A7C7E
+	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 09:09:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 320D224BD1A;
-	Tue, 27 May 2025 08:45:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="WsHtfjyb"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18405253947;
+	Tue, 27 May 2025 09:09:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26A981DF26E;
-	Tue, 27 May 2025 08:45:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 477E324DCFD;
+	Tue, 27 May 2025 09:09:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748335514; cv=none; b=eWy4V8wQmH0ZUwjKWfeeKBxHauc9QK0fjh4NNBs3p0Ft6mDJhPHgk3noSTEMG7cZDnhMnrdSg9NGIxl+i1fQ8tILGqaTK55H5rAFdC1nuwZJHVsQWl2O0u2M7wZtgLdoNuJGo62Ru8L7MFTDB7jAQgtZsb0K7FSpFTykfGDCeLM=
+	t=1748336965; cv=none; b=ZNNrcB+LSVqUY6IXcrrkE275eV+OgicBJ9dj2e/YGnLzZz70gVLE1ABunpLImZCRAdKhWwEB9GGfJspl5DeE896UjMS923zp+lUo7SRwFSFfoIv2z3jNMS+w0VmPJ/8GvCWN01wT4F9d1uxp35KZ7NHAN0eeq4Hj3l8/AvweJPg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748335514; c=relaxed/simple;
-	bh=q9A5It0VcKJo2Z0sOBgikusUjjLmdwUMhdXXAWimklU=;
-	h=Content-Type:Date:Message-Id:From:To:Cc:Subject:Mime-Version:
-	 References:In-Reply-To; b=ZiXnbxk7AGGP5le5WEduWlyC22u8RbgVakpEdgHddXyHnr1OmYdRy7psfhmYaDjbg/spZyqOASqwslmTnsl2ZopuYooxF6l7kxUWbCwFyNTFV9c+mDG1i7+Dk4vfuYo89Vht4E7TCrQNMgkPKGae+n83U09ZdBBB4kErPWgMHo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=WsHtfjyb; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 701CF43137;
-	Tue, 27 May 2025 08:45:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1748335510;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QzPRMr1l+fHaNToRkbY1GkYZ/zbxBgq6V8xrU1tHPf8=;
-	b=WsHtfjyboYTn/inoED+hlu32+QYRGzVRTfeTxdp4gHe0upe98p4LMB8qXn4HvSNRYlUo0P
-	7X5QOwXR+mVsIlNhhLnSgqo56DgD0KhdaRFeMMV+rIhpTm4V5EDCbnOqYO448ucWaJ8lih
-	yTsdqmHp3lKzba+38ROjgdOTObnT5A1u3HMSCn4xndSuwcNscAQekWO5izBz6Yfp4RiqlO
-	snkxmUjnPsQZEuO2D48+cvX0sqhldyw6b4Ml/ZwU9FsLdaS2PW8qUagGqfstCDPPoFg/Lw
-	4eE0U/M9lzRCgpLz1w8SjY1h3XgCpUfQxbTC+klPVsmED9PpYGvnksdxgwljsg==
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 27 May 2025 10:45:07 +0200
-Message-Id: <DA6T7OEF94IG.2BH2PWTCVEOTA@bootlin.com>
-From: =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-To: "Xu Kuohai" <xukuohai@huaweicloud.com>, "Alexei Starovoitov"
- <ast@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>, "John
- Fastabend" <john.fastabend@gmail.com>, "Andrii Nakryiko"
- <andrii@kernel.org>, "Martin KaFai Lau" <martin.lau@linux.dev>, "Eduard
- Zingerman" <eddyz87@gmail.com>, "Song Liu" <song@kernel.org>, "Yonghong
- Song" <yonghong.song@linux.dev>, "KP Singh" <kpsingh@kernel.org>,
- "Stanislav Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>,
- "Jiri Olsa" <jolsa@kernel.org>, "Puranjay Mohan" <puranjay@kernel.org>,
- "Catalin Marinas" <catalin.marinas@arm.com>, "Will Deacon"
- <will@kernel.org>, "Mykola Lysenko" <mykolal@fb.com>, "Shuah Khan"
- <shuah@kernel.org>, "Maxime Coquelin" <mcoquelin.stm32@gmail.com>,
- "Alexandre Torgue" <alexandre.torgue@foss.st.com>, "Florent Revest"
- <revest@chromium.org>
-Cc: "Bastien Curutchet" <bastien.curutchet@bootlin.com>,
- <ebpf@linuxfoundation.org>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, <bpf@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-kselftest@vger.kernel.org>,
- <linux-stm32@st-md-mailman.stormreply.com>, "Xu Kuohai"
- <xukuohai@huawei.com>
-Subject: Re: [PATCH bpf-next v2 1/2] bpf, arm64: Support up to 12 function
- arguments
+	s=arc-20240116; t=1748336965; c=relaxed/simple;
+	bh=L9SJ6XIHO1/dhWjxSjRaAIMTyMX04beCIk3yi5amM5k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=naFyHH2kH5pnW7VLaleFfisWOq4e0jLxTrpXGBl7iJLjjY+8cKrrMOH4tuHYShz44kzSJLn3/5+7ZiJmJhDcZjPPderNnpYxbnz+XPl6M80jGjCaZJVHQtJNLMlKaSIozp1eYE7d3FLqW9eribzyNzgn6QfWRrOpKEFNWRwWxVk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4b66J50c3Xz4f3lDc;
+	Tue, 27 May 2025 17:08:53 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id D03DE1A1513;
+	Tue, 27 May 2025 17:09:19 +0800 (CST)
+Received: from [10.67.111.192] (unknown [10.67.111.192])
+	by APP4 (Coremail) with SMTP id gCh0CgDnSF0+gTVoOO+iNg--.59571S2;
+	Tue, 27 May 2025 17:09:19 +0800 (CST)
+Message-ID: <5535f49f-8903-4055-b99a-cf8b2d4666e1@huaweicloud.com>
+Date: Tue, 27 May 2025 17:09:18 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: aerc 0.20.1-0-g2ecb8770224a
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v2 1/2] bpf, arm64: Support up to 12 function
+ arguments
+Content-Language: en-US
+To: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ Puranjay Mohan <puranjay@kernel.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Florent Revest <revest@chromium.org>
+Cc: Bastien Curutchet <bastien.curutchet@bootlin.com>,
+ ebpf@linuxfoundation.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kselftest@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com, Xu Kuohai <xukuohai@huawei.com>
 References: <20250522-many_args_arm64-v2-0-d6afdb9cf819@bootlin.com>
  <20250522-many_args_arm64-v2-1-d6afdb9cf819@bootlin.com>
  <8d184497-fecf-497f-8b4c-bcd4b0a697ce@huaweicloud.com>
-In-Reply-To: <8d184497-fecf-497f-8b4c-bcd4b0a697ce@huaweicloud.com>
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddtgdduleelfeculddtuddrgeefvddrtddtmdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurheptgffkffhvfevufgggffofhgjsehtqhertdertdejnecuhfhrohhmpeetlhgvgihishcunfhothhhohhrrocuoegrlhgvgihishdrlhhothhhohhrvgessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepffefiedtuedvgfekkeefteelkedvheehvdetuedtgfekueeuheelhfdvgfdtvddvnecuffhomhgrihhnpegsohhothhlihhnrdgtohhmnecukfhppedvrgdtvdemkeegvdekmehfleegtgemvgdttdemmeguieehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvdgrtddvmeekgedvkeemfhelgegtmegvtddtmeemugeihedphhgvlhhopehlohgtrghlhhhoshhtpdhmrghilhhfrhhomheprghlvgigihhsrdhlohhthhhorhgvsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopeeftddprhgtphhtthhopeiguhhkuhhohhgriheshhhurgifvghitghlohhuugdrtghomhdprhgtphhtthhopegrshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhopehjohhhnhdrf
- hgrshhtrggsvghnugesghhmrghilhdrtghomhdprhgtphhtthhopegrnhgurhhiiheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhgrrhhtihhnrdhlrghusehlihhnuhigrdguvghvpdhrtghpthhtohepvgguugihiiekjeesghhmrghilhdrtghomhdprhgtphhtthhopehsohhngheskhgvrhhnvghlrdhorhhg
-X-GND-Sasl: alexis.lothore@bootlin.com
+ <DA6T7OEF94IG.2BH2PWTCVEOTA@bootlin.com>
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+In-Reply-To: <DA6T7OEF94IG.2BH2PWTCVEOTA@bootlin.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgDnSF0+gTVoOO+iNg--.59571S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYV7kC6x804xWl14x267AKxVWrJVCq3wAF
+	c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
+	0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xv
+	wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
+	x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
+	64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
+	1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kI
+	c2xKxwCF04k20xvY0x0EwIxGrwCF54CYxVCY1x0262kKe7AKxVW8ZVWrXwCFx2IqxVCFs4
+	IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1r
+	MI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJV
+	WUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j
+	6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYx
+	BIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
-Hi Xu, thanks for the review
-
-On Tue May 27, 2025 at 10:11 AM CEST, Xu Kuohai wrote:
-> On 5/22/2025 6:14 PM, Alexis Lothor=C3=A9 wrote:
->
-> [...]
->
->> -static void save_args(struct jit_ctx *ctx, int args_off, int nregs)
->> +struct arg_aux {
->> +	/* how many args are passed through registers, the rest of the args ar=
-e
->> +	 * passed through stack
->> +	 */
->> +	int args_in_regs;
->> +	/* how many registers are used to pass arguments */
->> +	int regs_for_args;
->> +	/* how much stack is used for additional args passed to bpf program
->> +	 * that did not fit in original function registers
->> +	 **/
->
-> nit: "**/" should be "*/"
-
-ACK
+On 5/27/2025 4:45 PM, Alexis Lothoré wrote:
 
 [...]
 
->> +	a->ostack_for_args =3D 0;
->> +
->> +	/* the rest arguments are passed through stack */
->> +	for (a->ostack_for_args =3D 0, a->bstack_for_args =3D 0;
->> +	     i < m->nr_args; i++) {
->
-> a->ostack_for_args is initialized twice.
->
-> move all initializations before the loop?
+>>> +		/* We can not know for sure about exact alignment needs for
+>>> +		 * struct passed on stack, so deny those
+>>> +		 */
+>>> +		if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG)
+>>> +			return -EOPNOTSUPP;
+>> leave the error code as is, namely, return -ENOTSUPP?
+> Actually this change follows a complaint from checkpatch:
+> 
+> "WARNING: ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP"
 
-ACK
-
->> +		/* We can not know for sure about exact alignment needs for
->> +		 * struct passed on stack, so deny those
->> +		 */
->> +		if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG)
->> +			return -EOPNOTSUPP;
->
-> leave the error code as is, namely, return -ENOTSUPP?
-
-Actually this change follows a complaint from checkpatch:
-
-"WARNING: ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP"
-
->> +		stack_slots =3D (m->arg_size[i] + 7) / 8;
->> +		/* AAPCS 64 C.14: arguments passed on stack must be aligned to
->> +		 * max(8, arg_natural_alignment)
->> +		 */
->> +		a->bstack_for_args +=3D stack_slots * 8;
->> +		a->ostack_for_args =3D round_up(a->ostack_for_args + stack_slots * 8,=
- 8);
->
-> since a->ostack_for_args starts from 0 and is always incremented
-> by multiples of 8, round_up() to 8 is not needed.
-
-True. This is a (partial) remnant from the first attempt to handle more
-exotic alignments like large structs or __int128, but that's indeed not
-needed for this current version. I'll clean it up.
+Seems we can just ignore this warning, as ENOTSUPP is already used
+throughout bpf, and the actual value -524 is well recognized.
 
 [...]
-
->> +	for (i =3D a->args_in_regs; i < m->nr_args; i++) {
->> +		slots =3D (m->arg_size[i] + 7) / 8;
->> +		/* AAPCS C.14: additional arguments on stack must be
->> +		 * aligned on max(8, arg_natural_alignment)
->> +		 */
->> +		soff =3D round_up(soff, 8);
->> +		if (for_call_origin)
->> +			doff =3D  round_up(doff, 8);
->
-> since both soff and doff start from multiples of 8 and are
-> incremented by 8 each time, the two round_up()s are also
-> not needed.
-
-ACK. I guess the small AAPCS mention can go too then.
-
->
->> +		/* verifier ensures arg_size <=3D 16, so slots equals 1 or 2 */
->> +		while (slots-- > 0) {
->> +			emit(A64_LDR64I(tmp, A64_FP, soff), ctx);
->> +			/* if there is unused space in the last slot, clear
->> +			 * the garbage contained in the space.
->> +			 */
->> +			if (slots =3D=3D 0 && !for_call_origin)
->> +				clear_garbage(ctx, tmp, m->arg_size[i] % 8);
->> +			emit(A64_STR64I(tmp, A64_SP, doff), ctx);
->> +			soff +=3D 8;
->> +			doff +=3D 8;
->> +		}
->> +	}
->> +}
->
-> [...]
-
-
-
-
---=20
-Alexis Lothor=C3=A9, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
 
 
