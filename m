@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-58982-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58983-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 947DBAC4BBE
-	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 11:48:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6654AC4BC0
+	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 11:48:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3387D3AA4A5
-	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 09:48:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8669617B1D5
+	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 09:48:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28322253947;
-	Tue, 27 May 2025 09:48:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8009253B60;
+	Tue, 27 May 2025 09:48:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h8lBnD8X"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I4h886Rw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7CDF1E3DF2;
-	Tue, 27 May 2025 09:48:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A511D157A48;
+	Tue, 27 May 2025 09:48:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748339302; cv=none; b=GLUBHLv/Cvt4nCQyH8A31kCKYRGT8dbw0A9H4V7w8M6ZG3lT8+JxggtjTaL6BDLgtKtFKg3ffkPHkwq2sXf3oVUqgZwOmr1EnwdElx5aFE9YDRADNKs3mrhwQ1uFj6j88GKQ33mldtzH60tnsWIIt3/HjA6IB+O7Hk3vJX2IWQ8=
+	t=1748339325; cv=none; b=Po/XgqYPzJxvRx99Pvsmb7qp78kUDuhVKPJUfzEDNNQ8+665rW4CHw+JyatTxUBNJUajbZ4Vg2ziRcZVewF+Y25TVUAfsaaRcq216llWdlvrtg7EMy6PdeibHUvYfMdjPGVDOt/W+QxlGtwVVs4VkRYgCK+ObePbFB3vmCdp5zc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748339302; c=relaxed/simple;
-	bh=m1QmiYFWVwHnh02Ip+Ou3TzZjkiSB/M9v7jCMpYvPEM=;
+	s=arc-20240116; t=1748339325; c=relaxed/simple;
+	bh=7jhn0ocJocKbmcpqwW0ArPnbdJ6mEXgOA+JJLcObY9A=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jK7559JsjCUbEl3WbO1Wxsb/W0MCQY+ejFEcc/2cEP7ZPYAhz5FKh/bYTFxe/hclrhAFLzOW7L5AxlB9sC9/dHQa/bw6uz3kcQXpWc3XjiRsFKYkS4GKfxArVt3WUma4sQBihJ5wfclKv7CsYLtO6ySyRNHoZ+QuM4czOU2ggig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h8lBnD8X; arc=none smtp.client-ip=209.85.128.42
+	 Content-Type:Content-Disposition:In-Reply-To; b=TcG+CUS0oC9pp64Sb4szQz4fUlovSvmlf9t0FGFZ1+B8Xaq/MAAXTEqx+BypTa5VPMTo7DnhSlFIisXobFac1TjfDZK4qjddTXHwOXXz7y4zPfknKVKZJM+y1ZcTljqWACpLLE5ixD1+qSC/ij6hHYVw+yIyCksomD2sxeolemk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I4h886Rw; arc=none smtp.client-ip=209.85.128.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-43cfe574976so24718625e9.1;
-        Tue, 27 May 2025 02:48:20 -0700 (PDT)
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-442f4a3a4d6so21414375e9.0;
+        Tue, 27 May 2025 02:48:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748339299; x=1748944099; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1748339322; x=1748944122; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mBgiUJQ5RadDrnm0oBFUkItxig+/jZVDMGkJ7P9tqFo=;
-        b=h8lBnD8XnCbO+ct5ktA7oglg5OpSowxBRl3SlzXhFz63tTYmKZJltLgemEhP8aNsF2
-         j06+oXC0b6mDJgx6BEgrMA2zWIjFq0zxjQqCkA5NGG0keFFp2GeBvGYaugXYQBAQiRiI
-         vuReOdJ3yC2mrjCOBqvDOgsjbkM77DVkoqahk3xOq5M9WpFS6ToxyXuo2JedS3f2Z9vw
-         qyY/+4GmPF1fw3sxTp+MVupCr8wrOFjpBu3FtvGZyJ1axBWiUAr9s5ESq/yqw8Gdvky8
-         atkfr3OE8Ac41WixiQ8Fm5dKYLPyEKrHNCzVc35eXTOJXxxNhlX250Z3TYi401IUQSFk
-         R5fg==
+        bh=sNz/QzDugy/+GyzpyqunW+LM6Fm4UTizSp7m4y6c9Yk=;
+        b=I4h886RwXpJUCAmOL2Yiukg454YucdBpA3T37o8ajhhRtXbXVS6eT0xpjgLHMxShZN
+         aVUaDe5k6YHgEcS5r9ELvRReub8d347/hQ090CVBzEcVZPC8i3qWau/zCT4nXmRJE9jk
+         C3Wf7uiTN6hkBZQRuxXCd2GPd8S9acdmxSdAYQlfahAjFPXhM9XXLvM/TGFaq2J5BYJG
+         TsAdrpg1/IDbDy6p9RWDEQ/HJ52H38IWjD0IUSo7yFxi2PfQun4DKwGuCwtXidBwCamP
+         dXvsIvbavoux2bAvts8rBGpj8pMgOzyFp3zqEheHTA62B4Y35VH6A3vXe+8nZIKlWP0A
+         MBtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748339299; x=1748944099;
+        d=1e100.net; s=20230601; t=1748339322; x=1748944122;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mBgiUJQ5RadDrnm0oBFUkItxig+/jZVDMGkJ7P9tqFo=;
-        b=niSk0O75wK23ihIDWh8xISv5A3cIFbj8ldv6IuyV6zfwmwQk7IhQX/pWQO2uy18P9D
-         ZQEVouK6W9mrwfCoGei3TRO7UQ2MR2fEPZeMS5uU/Y86qsBUu0XIeMWLymZPw7FnLqMv
-         4PpY7Vg0HWgX1duPNORaG7k3vZBoER7ZKlU20+/dxNb0kvXGD4ax8o9DOzpIKruEft8a
-         q3o2HInkyLliiNGdXxLE7y82Ph5cIfxYUswA8s0zUavyISQ3uav1WHDPmOTa4KKTdi0W
-         4SCd6drprLY4aozgA8SM+XzwQf62VyY7FvovBWjDTP30vTGp2zoiz/xeyBi/v8bwCNEd
-         GFyw==
-X-Forwarded-Encrypted: i=1; AJvYcCUDvGxgKA+VbKboWBXfGjJ8MABQZc0iFuTq0Z5ih0X0inw7a7Z0m8QxjvAYP2xi6VoxzG8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzztfNNaCvgFUEC28IOPDTNbxgnPYVyww3rndpI7S0M6XNl52Un
-	WLPhGuHRjAvf/tbg3jW7Ftb0S+ye5QopCP/egtNtKQf+zpZWhAzmU/c1w3z/gDCd
-X-Gm-Gg: ASbGncujDKVKjLeHF8JxuKyfOguIpZrYEgcHOTlASjLzv+M+xtuZOoZedI0nhCavoZR
-	+57dn2P3n5gQHeWF+O14bKy0lmZ5X+H1Iy5Dep+z2UwOMX8271xJB/YEubeBnSplZp/AR1Fj/Dd
-	Vm3EciNJvxPzPZjkaGsNPM2naMPGmCc7yuNU0WzmLXKWaLdLpsHnCBDmpPwZoSt7hLAq5oCcCzm
-	OfV+oxxJDCIMgzGCpqDaT8rblBlIFxCiavJh72gs3qe6HMHcN+CKuhEM7Joaox7QmAFlzXjhv+8
-	l4zfqQlQca8fX9+veLLtuGVRkzQpwxElD7La/7JzOYcfriNV9405CPOW0xZDm+BVoohK5dzlbBJ
-	JkjinudI/L5dO/0I98TdbK6qkWffuZM7ExiqvINhRDgSLScI1
-X-Google-Smtp-Source: AGHT+IEqVmR2jXeWtS/cdRUM/wKot9CHe+dD+u4JF2IqEBjz8AocSKURvGaoHPZKASPWy059ClxKkg==
-X-Received: by 2002:a05:600c:3ca1:b0:43c:f81d:34 with SMTP id 5b1f17b1804b1-44c91ad7046mr108790105e9.9.1748339298921;
-        Tue, 27 May 2025 02:48:18 -0700 (PDT)
+        bh=sNz/QzDugy/+GyzpyqunW+LM6Fm4UTizSp7m4y6c9Yk=;
+        b=teMupVh97kwzUSvBIrGQrr9Jpp3Gyfm54fNMTSuLDO9lGZIBMKU3Jkye85+neHFIW/
+         9g4645FZESD0u6N6V6Dfd2JZhfiGYQf7NUdh7RLOBWWGNO9QVyHysUYlYaJMDiAqNdP8
+         N+Lgc99DJqy8M+gYLkeCc1IatNWY6kw7z6jr06ks4thrnjge0U7c/Wc2Mf4ArFE9ZKMJ
+         y01sop3eQjV/n9VHg0DxkHNL+Ppm6ehFNezuG+EBw+uHZXVZufFWMOkqDAyyc1hMmzzZ
+         qv8RBZ04j9E3U+3xyzi9ZHIHkDn1iK3KveQXcWJCME0WUPL6F6JY7PdhweIqP5SLBvti
+         8RZA==
+X-Forwarded-Encrypted: i=1; AJvYcCXvxsx0Knx9h5QBwRwkKcifMCwFkxiuP4se/5/orDGsFYYsmGoZgqk6Q2gp313zbgJLCqQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyuS5QIdZeFBvRcYdpuUUlTLMuabqyggSkVk0M1yr+Pm2OQSrZu
+	i16SWiIytvWxN5yCadajs+5KkBV7n4PfvIl/Y2YQLKEwSdlOL4ZsyCef0c0TzcZH
+X-Gm-Gg: ASbGncs96GjMczUI4UFzeeDnFVi5l52FlzZQwkNa+SLX6l67SSErDddHgg5vQQcJmmS
+	wzS9Ult+jYd19yfdEs2hqlbbgf2ausXSZYndRjWd1UA55Ku2hBL74NGzmTqX5G5wlpCGr7Fwmt9
+	L0y974TTY2Mz8pyRU70DWxhLl557lKa2jGTga74pqxQPd6i/FKeGrgaRAZ3Vq5M8vYqeAcCrrVl
+	uKd8LSpLe3VXQ0e4mNf28UHLHu0PQT91RhXNamxr5Bf8hJheqll1wr7dDVD7z48ce2OgpEh64UR
+	DbcETFslFJz+ZA6yT7lNFfcb7nHf2j1AIEozPqsQlbZt1K3sSSDvF3p/Ng6whU1tJxPYLdqk0tb
+	aRImkfSAB9aaFLfOf2hakg3XcBCwSxw6Gdrso/OECZAONSPyO
+X-Google-Smtp-Source: AGHT+IHjbjTwWTxMTrOrjKchawB4AdMqFZVZw/UCCSsn9bYkmVkGeB5f66nr1p0btkEGhZ7O6Dp/Qg==
+X-Received: by 2002:a05:600c:3208:b0:441:bbe5:f562 with SMTP id 5b1f17b1804b1-44b53991a34mr107904775e9.16.1748339321762;
+        Tue, 27 May 2025 02:48:41 -0700 (PDT)
 Received: from mail.gmail.com (2a01cb0889497e00f6e2550003dabfc0.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:f6e2:5500:3da:bfc0])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-447f73d3edcsm271163605e9.20.2025.05.27.02.48.17
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-447f1ef01besm261086265e9.10.2025.05.27.02.48.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 May 2025 02:48:18 -0700 (PDT)
-Date: Tue, 27 May 2025 11:48:16 +0200
+        Tue, 27 May 2025 02:48:40 -0700 (PDT)
+Date: Tue, 27 May 2025 11:48:39 +0200
 From: Paul Chaignon <paul.chaignon@gmail.com>
 To: netdev@vger.kernel.org, bpf@vger.kernel.org
 Cc: "David S. Miller" <davem@davemloft.net>,
@@ -82,8 +82,9 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH net v2 1/2] net: Fix checksum update for ILA adj-transport
-Message-ID: <3735f3bd86717bb22507a05f40b1432ec362138c.1748337614.git.paul.chaignon@gmail.com>
+Subject: [PATCH net v2 2/2] bpf: Fix L4 csum update on IPv6 in
+ CHECKSUM_COMPLETE
+Message-ID: <458dd94a6f546156fcf2ec325424cd43be3e8862.1748337614.git.paul.chaignon@gmail.com>
 References: <cover.1748337614.git.paul.chaignon@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -95,157 +96,131 @@ Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <cover.1748337614.git.paul.chaignon@gmail.com>
 
-During ILA address translations, the L4 checksums can be handled in
-different ways. One of them, adj-transport, consist in parsing the
-transport layer and updating any found checksum. This logic relies on
-inet_proto_csum_replace_by_diff and produces an incorrect skb->csum when
-in state CHECKSUM_COMPLETE.
+In Cilium, we use bpf_csum_diff + bpf_l4_csum_replace to, among other
+things, update the L4 checksum after reverse SNATing IPv6 packets. That
+use case is however not currently supported and leads to invalid
+skb->csum values in some cases. This patch adds support for IPv6 address
+changes in bpf_l4_csum_update via a new flag.
 
-This bug can be reproduced with a simple ILA to SIR mapping, assuming
-packets are received with CHECKSUM_COMPLETE:
+When calling bpf_l4_csum_replace in Cilium, it ends up calling
+inet_proto_csum_replace_by_diff:
 
-  $ ip a show dev eth0
-  14: eth0@if15: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
-      link/ether 62:ae:35:9e:0f:8d brd ff:ff:ff:ff:ff:ff link-netnsid 0
-      inet6 3333:0:0:1::c078/64 scope global
-         valid_lft forever preferred_lft forever
-      inet6 fd00:10:244:1::c078/128 scope global nodad
-         valid_lft forever preferred_lft forever
-      inet6 fe80::60ae:35ff:fe9e:f8d/64 scope link proto kernel_ll
-         valid_lft forever preferred_lft forever
-  $ ip ila add loc_match fd00:10:244:1 loc 3333:0:0:1 \
-      csum-mode adj-transport ident-type luid dev eth0
+    1:  void inet_proto_csum_replace_by_diff(__sum16 *sum, struct sk_buff *skb,
+    2:                                       __wsum diff, bool pseudohdr)
+    3:  {
+    4:      if (skb->ip_summed != CHECKSUM_PARTIAL) {
+    5:          csum_replace_by_diff(sum, diff);
+    6:          if (skb->ip_summed == CHECKSUM_COMPLETE && pseudohdr)
+    7:              skb->csum = ~csum_sub(diff, skb->csum);
+    8:      } else if (pseudohdr) {
+    9:          *sum = ~csum_fold(csum_add(diff, csum_unfold(*sum)));
+    10:     }
+    11: }
 
-Then I hit [fd00:10:244:1::c078]:8000 with a server listening only on
-[3333:0:0:1::c078]:8000. With the bug, the SYN packet is dropped with
-SKB_DROP_REASON_TCP_CSUM after inet_proto_csum_replace_by_diff changed
-skb->csum. The translation and drop are visible on pwru [1] traces:
+The bug happens when we're in the CHECKSUM_COMPLETE state. We've just
+updated one of the IPv6 addresses. The helper now updates the L4 header
+checksum on line 5. Next, it updates skb->csum on line 7. It shouldn't.
 
-  IFACE   TUPLE                                                        FUNC
-  eth0:9  [fd00:10:244:3::3d8]:51420->[fd00:10:244:1::c078]:8000(tcp)  ipv6_rcv
-  eth0:9  [fd00:10:244:3::3d8]:51420->[fd00:10:244:1::c078]:8000(tcp)  ip6_rcv_core
-  eth0:9  [fd00:10:244:3::3d8]:51420->[fd00:10:244:1::c078]:8000(tcp)  nf_hook_slow
-  eth0:9  [fd00:10:244:3::3d8]:51420->[fd00:10:244:1::c078]:8000(tcp)  inet_proto_csum_replace_by_diff
-  eth0:9  [fd00:10:244:3::3d8]:51420->[3333:0:0:1::c078]:8000(tcp)     tcp_v6_early_demux
-  eth0:9  [fd00:10:244:3::3d8]:51420->[3333:0:0:1::c078]:8000(tcp)     ip6_route_input
-  eth0:9  [fd00:10:244:3::3d8]:51420->[3333:0:0:1::c078]:8000(tcp)     ip6_input
-  eth0:9  [fd00:10:244:3::3d8]:51420->[3333:0:0:1::c078]:8000(tcp)     ip6_input_finish
-  eth0:9  [fd00:10:244:3::3d8]:51420->[3333:0:0:1::c078]:8000(tcp)     ip6_protocol_deliver_rcu
-  eth0:9  [fd00:10:244:3::3d8]:51420->[3333:0:0:1::c078]:8000(tcp)     raw6_local_deliver
-  eth0:9  [fd00:10:244:3::3d8]:51420->[3333:0:0:1::c078]:8000(tcp)     ipv6_raw_deliver
-  eth0:9  [fd00:10:244:3::3d8]:51420->[3333:0:0:1::c078]:8000(tcp)     tcp_v6_rcv
-  eth0:9  [fd00:10:244:3::3d8]:51420->[3333:0:0:1::c078]:8000(tcp)     __skb_checksum_complete
-  eth0:9  [fd00:10:244:3::3d8]:51420->[3333:0:0:1::c078]:8000(tcp)     kfree_skb_reason(SKB_DROP_REASON_TCP_CSUM)
-  eth0:9  [fd00:10:244:3::3d8]:51420->[3333:0:0:1::c078]:8000(tcp)     skb_release_head_state
-  eth0:9  [fd00:10:244:3::3d8]:51420->[3333:0:0:1::c078]:8000(tcp)     skb_release_data
-  eth0:9  [fd00:10:244:3::3d8]:51420->[3333:0:0:1::c078]:8000(tcp)     skb_free_head
-  eth0:9  [fd00:10:244:3::3d8]:51420->[3333:0:0:1::c078]:8000(tcp)     kfree_skbmem
+For an IPv6 packet, the updates of the IPv6 address and of the L4
+checksum will cancel each other. The checksums are set such that
+computing a checksum over the packet including its checksum will result
+in a sum of 0. So the same is true here when we update the L4 checksum
+on line 5. We'll update it as to cancel the previous IPv6 address
+update. Hence skb->csum should remain untouched in this case.
 
-This is happening because inet_proto_csum_replace_by_diff is updating
-skb->csum when it shouldn't. The L4 checksum is updated such that it
-"cancels" the IPv6 address change in terms of checksum computation, so
-the impact on skb->csum is null.
+The same bug doesn't affect IPv4 packets because, in that case, three
+fields are updated: the IPv4 address, the IP checksum, and the L4
+checksum. The change to the IPv4 address and one of the checksums still
+cancel each other in skb->csum, but we're left with one checksum update
+and should therefore update skb->csum accordingly. That's exactly what
+inet_proto_csum_replace_by_diff does.
 
-Note this would be different for an IPv4 packet since three fields
-would be updated: the IPv4 address, the IP checksum, and the L4
-checksum. Two would cancel each other and skb->csum would still need
-to be updated to take the L4 checksum change into account.
+This special case for IPv6 L4 checksums is also described atop
+inet_proto_csum_replace16, the function we should be using in this case.
 
-This patch fixes it by passing an ipv6 flag to
-inet_proto_csum_replace_by_diff, to skip the skb->csum update if we're
-in the IPv6 case. Note the behavior of the only other user of
-inet_proto_csum_replace_by_diff, the BPF subsystem, is left as is in
-this patch and fixed in the subsequent patch.
+This patch introduces a new bpf_l4_csum_replace flag, BPF_F_IPV6,
+to indicate that we're updating the L4 checksum of an IPv6 packet. When
+the flag is set, inet_proto_csum_replace_by_diff will skip the
+skb->csum update.
 
-With the fix, using the reproduction from above, I can confirm
-skb->csum is not touched by inet_proto_csum_replace_by_diff and the TCP
-SYN proceeds to the application after the ILA translation.
-
-1 - https://github.com/cilium/pwru
-Fixes: 65d7ab8de582 ("net: Identifier Locator Addressing module")
+Fixes: 7d672345ed295 ("bpf: add generic bpf_csum_diff helper")
 Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
 ---
- include/net/checksum.h    | 2 +-
- net/core/filter.c         | 2 +-
- net/core/utils.c          | 4 ++--
- net/ipv6/ila/ila_common.c | 6 +++---
- 4 files changed, 7 insertions(+), 7 deletions(-)
+ include/uapi/linux/bpf.h       | 4 +++-
+ net/core/filter.c              | 5 +++--
+ tools/include/uapi/linux/bpf.h | 4 +++-
+ 3 files changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/include/net/checksum.h b/include/net/checksum.h
-index 243f972267b8..be9356d4b67a 100644
---- a/include/net/checksum.h
-+++ b/include/net/checksum.h
-@@ -164,7 +164,7 @@ void inet_proto_csum_replace16(__sum16 *sum, struct sk_buff *skb,
- 			       const __be32 *from, const __be32 *to,
- 			       bool pseudohdr);
- void inet_proto_csum_replace_by_diff(__sum16 *sum, struct sk_buff *skb,
--				     __wsum diff, bool pseudohdr);
-+				     __wsum diff, bool pseudohdr, bool ipv6);
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index fd404729b115..b5ac285d4fc2 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -2051,7 +2051,8 @@ union bpf_attr {
+  * 		untouched (unless **BPF_F_MARK_ENFORCE** is added as well), and
+  * 		for updates resulting in a null checksum the value is set to
+  * 		**CSUM_MANGLED_0** instead. Flag **BPF_F_PSEUDO_HDR** indicates
+- * 		the checksum is to be computed against a pseudo-header.
++ * 		the checksum is to be computed against a pseudo-header. Flag
++ * 		**BPF_F_IPV6** should be set for IPv6 packets.
+  *
+  * 		This helper works in combination with **bpf_csum_diff**\ (),
+  * 		which does not update the checksum in-place, but offers more
+@@ -6068,6 +6069,7 @@ enum {
+ 	BPF_F_PSEUDO_HDR		= (1ULL << 4),
+ 	BPF_F_MARK_MANGLED_0		= (1ULL << 5),
+ 	BPF_F_MARK_ENFORCE		= (1ULL << 6),
++	BPF_F_IPV6			= (1ULL << 7),
+ };
  
- static __always_inline
- void inet_proto_csum_replace2(__sum16 *sum, struct sk_buff *skb,
+ /* BPF_FUNC_skb_set_tunnel_key and BPF_FUNC_skb_get_tunnel_key flags. */
 diff --git a/net/core/filter.c b/net/core/filter.c
-index 577a4504e26f..3c93765742c9 100644
+index 3c93765742c9..357d26b76c22 100644
 --- a/net/core/filter.c
 +++ b/net/core/filter.c
-@@ -1987,7 +1987,7 @@ BPF_CALL_5(bpf_l4_csum_replace, struct sk_buff *, skb, u32, offset,
+@@ -1968,10 +1968,11 @@ BPF_CALL_5(bpf_l4_csum_replace, struct sk_buff *, skb, u32, offset,
+ 	bool is_pseudo = flags & BPF_F_PSEUDO_HDR;
+ 	bool is_mmzero = flags & BPF_F_MARK_MANGLED_0;
+ 	bool do_mforce = flags & BPF_F_MARK_ENFORCE;
++	bool is_ipv6   = flags & BPF_F_IPV6;
+ 	__sum16 *ptr;
+ 
+ 	if (unlikely(flags & ~(BPF_F_MARK_MANGLED_0 | BPF_F_MARK_ENFORCE |
+-			       BPF_F_PSEUDO_HDR | BPF_F_HDR_FIELD_MASK)))
++			       BPF_F_PSEUDO_HDR | BPF_F_HDR_FIELD_MASK | BPF_F_IPV6)))
+ 		return -EINVAL;
+ 	if (unlikely(offset > 0xffff || offset & 1))
+ 		return -EFAULT;
+@@ -1987,7 +1988,7 @@ BPF_CALL_5(bpf_l4_csum_replace, struct sk_buff *, skb, u32, offset,
  		if (unlikely(from != 0))
  			return -EINVAL;
  
--		inet_proto_csum_replace_by_diff(ptr, skb, to, is_pseudo);
-+		inet_proto_csum_replace_by_diff(ptr, skb, to, is_pseudo, false);
+-		inet_proto_csum_replace_by_diff(ptr, skb, to, is_pseudo, false);
++		inet_proto_csum_replace_by_diff(ptr, skb, to, is_pseudo, is_ipv6);
  		break;
  	case 2:
  		inet_proto_csum_replace2(ptr, skb, from, to, is_pseudo);
-diff --git a/net/core/utils.c b/net/core/utils.c
-index 27f4cffaae05..b8c21a859e27 100644
---- a/net/core/utils.c
-+++ b/net/core/utils.c
-@@ -473,11 +473,11 @@ void inet_proto_csum_replace16(__sum16 *sum, struct sk_buff *skb,
- EXPORT_SYMBOL(inet_proto_csum_replace16);
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index fd404729b115..b5ac285d4fc2 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -2051,7 +2051,8 @@ union bpf_attr {
+  * 		untouched (unless **BPF_F_MARK_ENFORCE** is added as well), and
+  * 		for updates resulting in a null checksum the value is set to
+  * 		**CSUM_MANGLED_0** instead. Flag **BPF_F_PSEUDO_HDR** indicates
+- * 		the checksum is to be computed against a pseudo-header.
++ * 		the checksum is to be computed against a pseudo-header. Flag
++ * 		**BPF_F_IPV6** should be set for IPv6 packets.
+  *
+  * 		This helper works in combination with **bpf_csum_diff**\ (),
+  * 		which does not update the checksum in-place, but offers more
+@@ -6068,6 +6069,7 @@ enum {
+ 	BPF_F_PSEUDO_HDR		= (1ULL << 4),
+ 	BPF_F_MARK_MANGLED_0		= (1ULL << 5),
+ 	BPF_F_MARK_ENFORCE		= (1ULL << 6),
++	BPF_F_IPV6			= (1ULL << 7),
+ };
  
- void inet_proto_csum_replace_by_diff(__sum16 *sum, struct sk_buff *skb,
--				     __wsum diff, bool pseudohdr)
-+				     __wsum diff, bool pseudohdr, bool ipv6)
- {
- 	if (skb->ip_summed != CHECKSUM_PARTIAL) {
- 		csum_replace_by_diff(sum, diff);
--		if (skb->ip_summed == CHECKSUM_COMPLETE && pseudohdr)
-+		if (skb->ip_summed == CHECKSUM_COMPLETE && pseudohdr && !ipv6)
- 			skb->csum = ~csum_sub(diff, skb->csum);
- 	} else if (pseudohdr) {
- 		*sum = ~csum_fold(csum_add(diff, csum_unfold(*sum)));
-diff --git a/net/ipv6/ila/ila_common.c b/net/ipv6/ila/ila_common.c
-index 95e9146918cc..b8d43ed4689d 100644
---- a/net/ipv6/ila/ila_common.c
-+++ b/net/ipv6/ila/ila_common.c
-@@ -86,7 +86,7 @@ static void ila_csum_adjust_transport(struct sk_buff *skb,
- 
- 			diff = get_csum_diff(ip6h, p);
- 			inet_proto_csum_replace_by_diff(&th->check, skb,
--							diff, true);
-+							diff, true, true);
- 		}
- 		break;
- 	case NEXTHDR_UDP:
-@@ -97,7 +97,7 @@ static void ila_csum_adjust_transport(struct sk_buff *skb,
- 			if (uh->check || skb->ip_summed == CHECKSUM_PARTIAL) {
- 				diff = get_csum_diff(ip6h, p);
- 				inet_proto_csum_replace_by_diff(&uh->check, skb,
--								diff, true);
-+								diff, true, true);
- 				if (!uh->check)
- 					uh->check = CSUM_MANGLED_0;
- 			}
-@@ -111,7 +111,7 @@ static void ila_csum_adjust_transport(struct sk_buff *skb,
- 
- 			diff = get_csum_diff(ip6h, p);
- 			inet_proto_csum_replace_by_diff(&ih->icmp6_cksum, skb,
--							diff, true);
-+							diff, true, true);
- 		}
- 		break;
- 	}
+ /* BPF_FUNC_skb_set_tunnel_key and BPF_FUNC_skb_get_tunnel_key flags. */
 -- 
 2.43.0
 
