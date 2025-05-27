@@ -1,168 +1,159 @@
-Return-Path: <bpf+bounces-58963-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58964-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFD61AC47A2
-	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 07:29:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED039AC47B8
+	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 07:42:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C69D1772A7
-	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 05:29:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B97C21893349
+	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 05:42:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8845E1DF252;
-	Tue, 27 May 2025 05:29:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDA1D1DF246;
+	Tue, 27 May 2025 05:42:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d0Z/XuMx"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="V/FBWR68"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D42F13AD3F;
-	Tue, 27 May 2025 05:29:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF213C13B;
+	Tue, 27 May 2025 05:42:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748323746; cv=none; b=PY8CunrZzFMURN64SetahfClE/xxcb30pmL6QAoYJNnnBY6R7x0tr8eGwgoHcKox2aCggOV+erWOxPZZI5Edz9s+MjW9Q0ozSKWuYo453jYgpPnhmmvuNG3oPVhPXDw/ilrsnEMfjxrczIJojhO7kcex5oe1DHDvyL2HdXSi+oE=
+	t=1748324552; cv=none; b=s8FmR91PysjRiP93JGskCUv6kqXm9HDnYVts1u5AcVQIpUU8lsT/pEgU+wd6csFdPSIkfUHDyDHJfcNKH03hYmBSAslmMxRz0ixTsZ9swvVX5FraszHnhGX0AQ57QBsptIPJUBGJwpxHp+DWwbk8NzP13qyc8gPMu563Ei01ykk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748323746; c=relaxed/simple;
-	bh=C8qkJH3MrAqV9gs5bawr3ON5EFZyUYFn+wmxYKLvcvA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eiZQYhv35FQA5lDvYjHb4tWX5RGZUJX40u+akfQLpZkLHN1NrsW2uBQy0y8u46XL7EKvtKpqBBG2T674T4oIwg3vs2U0949OHexB10BpUwmiv1WeBi1uOl2oMmG0N9aBzFleG+mwYuA7UZ5vfkrmgxHMSI47y5ayF7H2RZw75CQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d0Z/XuMx; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-ad5394be625so541577266b.2;
-        Mon, 26 May 2025 22:29:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748323743; x=1748928543; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XPYBWyOq7r+7W8qExCRG+4zXFY/pJBbil6VcRDPRQGs=;
-        b=d0Z/XuMxfrJY2AqROTAIqB0bXKp2y6DzuzkHDbjcVhadF3V3xaFUVI/IlTfdjsnfUJ
-         5wqm94+jk+oJgQy/zKaaRWBk59pvM92xBPod9cvBbva+ILkVigFqMnFcO3MR3kYLtdx2
-         0hKyf1EO6SLkecB/IvZ8I5390HiJu8YeU1XIzyYH8CFsCsvMSAkwfLtZd/thziQxpQKo
-         dWslhs3BH+qV5TfVLsSmDTjz0Ns9Kai4nIBlAkLy/8zB7wNcHw5SGwCuPRAsGioGCU6p
-         6rnHLUr7H0OZSgZflwtUpKH5f3Na8bB9MM7FYsYFTt/1lPe6h1j/QWWBpAK5J3bFWqiI
-         rkxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748323743; x=1748928543;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XPYBWyOq7r+7W8qExCRG+4zXFY/pJBbil6VcRDPRQGs=;
-        b=uj6kJGOqfliDJ6jMwr9lZpArtEhhLKMLlk2qc9OCTFGbKC+4vwZQpC0xje1dY5WyJ1
-         FCwWP0x1myTM8wLj3NO4HWdv72eZDalTjx2lNo5DW6tlQhDFYRhv/4Pzhw54KH1rYXhT
-         56B1X/emWBT14ctcxTqrNQS30I9XnZ374rXfJfsIBETZ/MVQKnycC98pKlQ8rnhOzGmR
-         zX8ZOQX+X/dsNjhSsDD5lhhCMezS21qbENPAlSKYns7dKE1//TKU5sB4VEjlyBMR7eFO
-         soF9yxFmWIiOdrvm567xlpE7rn8mHQzCpdOLlx1RhCgmoskhiUaW5hpDnEDoMmTaxFa5
-         P7BA==
-X-Forwarded-Encrypted: i=1; AJvYcCX0tsX5JfpLSLmbOq+YOzHOGt1T7btalFo6Mz6lRNHXJKgOlcZ8Pn5B5V8otSAkXAlTZcd9ZvWi@vger.kernel.org, AJvYcCXX9QaPGhuZrVntnTyXWwJnQA853M3b4u0MeNdRnzVOz0pD1IhORaj94GqYE/NlRYRmRKVkVkrysBdHdzcV@vger.kernel.org, AJvYcCXi/Qj0xRuIsl/9IpaHBs/jUKYkkYzxX2+1xeEkY9C8/uUzfXljllwqyMIYnMEsS/hnfLM=@vger.kernel.org, AJvYcCXoRlt7bePvKDOZD6T08DrEHi/VXpjDjvLEvP0l6f+Bm6OmEe3Q7zcUb9ZdwoRDdXVH38zbJ5e9ke//1w==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyOSmicNgtAtmUY2n8Prp7ozxVZUrg4gZDnW6OA3T+56keOBlGj
-	O8AFzZtS9XWV/YSw2J0dVhAErgDzuTN5GfElfUbkjFQ2edIXkE9h7xnG5SqdcYkU
-X-Gm-Gg: ASbGncvDk+TAq47+0Qo1X77YZJGg+FWg0sJefaPD3RXrvSvH9llORTRCS598MRXNdJe
-	hTW60dJiadT0wWDRD7YsMAFEav2RGWR5IbqYk9b7jDTOE/bKeRzX2rePeCwkLlFQsVXncBs2VGi
-	/fXzHwX9WesUwPVZKITsD5ZQHEgDq/LilUrJJKz7x398XLU333/rtgFTaCY8Wp1hftio9V6tn0s
-	oGZj6v4ZRXoHcIWH7w2YU3ZVzkCRnPcBMiEVPMwAHZGABwneNztRHmJKwtMz/ogkvyV8qVyRcVp
-	IFWfrnL4oHEF2rAKKdnuWRt93eIyDYEKAyDmJaHGU3Rj8J4LLlM4b08cb4Hr5ND7OtJelYI=
-X-Google-Smtp-Source: AGHT+IFyCR8YM6MYHZlh2Co1/HQCHjCvfrUUguXmsb48Z8OwvU5/EiOa5v8Hnhx4fjcjwxRKZC73BA==
-X-Received: by 2002:a17:907:97c8:b0:ad2:43be:6f04 with SMTP id a640c23a62f3a-ad85b1d6bb3mr930446566b.51.1748323742493;
-        Mon, 26 May 2025 22:29:02 -0700 (PDT)
-Received: from [192.168.8.100] ([148.252.132.24])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ad52d0717c3sm1807896766b.65.2025.05.26.22.28.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 May 2025 22:29:01 -0700 (PDT)
-Message-ID: <651351db-e3ec-4944-8db5-e63290a578e8@gmail.com>
-Date: Tue, 27 May 2025 06:30:12 +0100
+	s=arc-20240116; t=1748324552; c=relaxed/simple;
+	bh=LSN+JZs62AFH8k+p7KoqWLl+5lo1kiXD5xF9uP2he0U=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=O3x6+b9iT6UKCams5/SW1ClAqFfGj1IAA8tRtez71kQ9RxDxbGVnmzP1SnoYAoBbUQEIqgBC8CgjYtdh5dY40BsgStoqQo4vs7hvdocYK8E8DH++tCxCBccjrJc8+Sr7GE+g10k7pEcsu1JbLVLaewrKOBbReu2KL4hLso/MqIg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=V/FBWR68; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54R5FfiB015958;
+	Tue, 27 May 2025 05:41:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=GB88/zUggTdqQf1vImnha+8Sk12HP4jhUFUL0qn4Z
+	vU=; b=V/FBWR68q7U5PJamO7/+CQq+tyxlawzMoIkWkG/nRZ9+uewlSxq8Q8Ztr
+	m7A1OpVNv56X8JSogwuQgOSjj8j52Z5KfouU0jQr4AAiPcQWAq+ld62QBIFquQmS
+	X0h07LxZzYsuPoyqeJ8QPJHB10r6vLKp+fw4U6nOkpsh5eHRFXlpTvTCk/iWEVeL
+	PTB0g6Dn8cnZ6wRJgtK/2PGKIpXorIkexRxwijT5YpX3OFuHVO6u+O4jUVAtddwR
+	oO97vUl3NdHSk6R18WIUM0g1nCeFK9rlIEsgGHoTqtCLBHEqyZAklPp46YZOggAH
+	GMS9iN88u4s/CWHadl1fOc6+9xhsA==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46v0p2g75u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 27 May 2025 05:41:52 +0000 (GMT)
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 54R5RbJ8032740;
+	Tue, 27 May 2025 05:41:51 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46v0p2g75r-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 27 May 2025 05:41:51 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 54R2pSY1009847;
+	Tue, 27 May 2025 05:41:51 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 46usxms7bm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 27 May 2025 05:41:50 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 54R5fkgp47841684
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 27 May 2025 05:41:46 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C934A2004B;
+	Tue, 27 May 2025 05:41:46 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8F9C420040;
+	Tue, 27 May 2025 05:41:41 +0000 (GMT)
+Received: from li-621bac4c-27c7-11b2-a85c-c2bf7c4b3c07.ibm.com.com (unknown [9.43.24.30])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 27 May 2025 05:41:41 +0000 (GMT)
+From: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+To: netdev@vger.kernel.org
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        hbathini@linux.ibm.com, maddy@linux.ibm.com, venkat88@linux.ibm.com,
+        sfr@canb.auug.org.au, alexei.starovoitov@gmail.com,
+        daniel@iogearbox.net, mykolal@fb.com, yoong.siang.song@intel.com,
+        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+        haoluo@google.com, jolsa@kernel.org, shuah@kernel.org
+Subject: [PATCH net-next] selftests/bpf: Fix bpf selftest build warning
+Date: Tue, 27 May 2025 11:11:38 +0530
+Message-ID: <20250527054138.1086006-1-skb99@linux.ibm.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 18/18] mm, netmem: remove the page pool members in struct
- page
-To: Byungchul Park <byungchul@sk.com>
-Cc: Mina Almasry <almasrymina@google.com>, willy@infradead.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- kernel_team@skhynix.com, kuba@kernel.org, ilias.apalodimas@linaro.org,
- harry.yoo@oracle.com, hawk@kernel.org, akpm@linux-foundation.org,
- davem@davemloft.net, john.fastabend@gmail.com, andrew+netdev@lunn.ch,
- toke@redhat.com, tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com,
- saeedm@nvidia.com, leon@kernel.org, ast@kernel.org, daniel@iogearbox.net,
- david@redhat.com, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
- vbabka@suse.cz, rppt@kernel.org, surenb@google.com, mhocko@suse.com,
- horms@kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
- vishal.moola@gmail.com
-References: <20250523032609.16334-1-byungchul@sk.com>
- <20250523032609.16334-19-byungchul@sk.com>
- <CAHS8izM-ee5C8W2D2x9ChQz667PQEaYFOtgKZcFCMT4HRHL0fQ@mail.gmail.com>
- <20250526013744.GD74632@system.software.com>
- <cae26eaa-66cf-4d1f-ae13-047fb421824a@gmail.com>
- <20250527010226.GA19906@system.software.com>
-Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <20250527010226.GA19906@system.software.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: hniIQAKNbKaMz0m7uRoeVVGmN4blMz1r
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTI3MDA0MiBTYWx0ZWRfX2KH/YZ+IXrD+ xEwRJfReATiRs31NWV8AHzlO+alRQxKzjNz03su/4PdjDwFwCMnMclWmCbI8sOigQtx/uiisz94 wpKFdDXu5QFUsnQcjZ7a3KX3p4tuznFhguhpQHkI0B8CIMGy7LB2el/unBH+vCfMq9BFtj+PCLg
+ v7pmMp9dqtjyTSSuXI+zw925ImeqPR171eKx5d+LLwLpMfqpLFrVG70b5mqx0DucYAEOixRxVu2 P+/v7k5Otum5E0CBJa7vVTDZXr6TObLh5Y/Tc22YICRzPfMINs9h1TnThZywBfTlY7JcJL3ZkZi X+yrPf32qcMZNXLmguE/5vJvplY+gaFnjDHhHZohduGQUJtLxVlRNWzrZ99+tkUnDxM45JLornJ
+ aevHuUXaYlaHN6RkOy4ICEgssJHEzd+IbjKgqHtR3KnQJkTfKexMqq5gfk+JgKxQZE7GuPka
+X-Authority-Analysis: v=2.4 cv=Q7TS452a c=1 sm=1 tr=0 ts=683550a0 cx=c_pps a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17 a=dt9VzEwgFbYA:10 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=QyXUC8HyAAAA:8 a=rV7urDwo7b39epbSBP8A:9
+X-Proofpoint-GUID: kUl06Ny2CnDbsd5iHLU-MPR7ppgJ17oC
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-05-27_03,2025-05-26_02,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ priorityscore=1501 mlxlogscore=695 phishscore=0 clxscore=1015
+ malwarescore=0 adultscore=0 mlxscore=0 impostorscore=0 spamscore=0
+ suspectscore=0 lowpriorityscore=0 classifier=spam authscore=0 authtc=n/a
+ authcc= route=outbound adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2505160000 definitions=main-2505270042
 
-On 5/27/25 02:02, Byungchul Park wrote:
-...>> Patch 1:
->>
->> struct page {
->> 	unsigned long flags;
->> 	union {
->> 		struct_group_tagged(netmem_desc, netmem_desc) {
->> 			// same layout as before
->> 			...
->> 			struct page_pool *pp;
->> 			...
->> 		};
-> 
-> This part will be gone shortly.  The matters come from absence of this
-> part.
+On linux-next, build for bpf selftest displays a warning:
 
-Right, the problem is not having an explicit netmem_desc in struct
-page and not using struct netmem_desc in all relevant helpers.
+Warning: Kernel ABI header at 'tools/include/uapi/linux/if_xdp.h'
+differs from latest version at 'include/uapi/linux/if_xdp.h'.
 
->> struct net_iov {
->> 	unsigned long flags_padding;
->> 	union {
->> 		struct {
->> 			// same layout as in page + build asserts;
->> 			...
->> 			struct page_pool *pp;
->> 			...
->> 		};
->> 		struct netmem_desc desc;
->> 	};
->> };
->>
->> struct netmem_desc *page_to_netmem_desc(struct page *page)
->> {
->> 	return &page->netmem_desc;
-> 
-> page will not have any netmem things in it after this, that matters.
+Commit 8066e388be48 ("net: add UAPI to the header guard in various network headers")
+changed the header guard from _LINUX_IF_XDP_H to _UAPI_LINUX_IF_XDP_H
+in include/uapi/linux/if_xdp.h.
 
-Ok, the question is where are you going to stash the fields?
-We still need space to store them. Are you going to do the
-indirection mm folks want?
+To resolve the warning, update tools/include/uapi/linux/if_xdp.h
+to align with the changes in include/uapi/linux/if_xdp.h
 
-AFAIK, the plan is that in the end pages will still have
-netmem_desc but through an indirection. E.g.
+Fixes: 8066e388be48 ("net: add UAPI to the header guard in various network headers")
+Reported-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+Closes: https://lore.kernel.org/all/c2bc466d-dff2-4d0d-a797-9af7f676c065@linux.ibm.com/
+Tested-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+Signed-off-by: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+---
+ tools/include/uapi/linux/if_xdp.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-static inline bool page_pool_page_is_pp(struct page *page)
-{
-	return page->page_type == PAGE_PP_NET;
-}
-
-struct netmem_desc *page_to_netmem_desc(struct page *page)
-{
-	return page->page_private;
-}
-
+diff --git a/tools/include/uapi/linux/if_xdp.h b/tools/include/uapi/linux/if_xdp.h
+index 42869770776e..44f2bb93e7e6 100644
+--- a/tools/include/uapi/linux/if_xdp.h
++++ b/tools/include/uapi/linux/if_xdp.h
+@@ -7,8 +7,8 @@
+  *	      Magnus Karlsson <magnus.karlsson@intel.com>
+  */
+ 
+-#ifndef _LINUX_IF_XDP_H
+-#define _LINUX_IF_XDP_H
++#ifndef _UAPI_LINUX_IF_XDP_H
++#define _UAPI_LINUX_IF_XDP_H
+ 
+ #include <linux/types.h>
+ 
+@@ -180,4 +180,4 @@ struct xdp_desc {
+ /* TX packet carries valid metadata. */
+ #define XDP_TX_METADATA (1 << 1)
+ 
+-#endif /* _LINUX_IF_XDP_H */
++#endif /* _UAPI_LINUX_IF_XDP_H */
 -- 
-Pavel Begunkov
+2.43.5
 
 
