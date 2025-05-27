@@ -1,195 +1,384 @@
-Return-Path: <bpf+bounces-59020-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59021-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21F59AC5C20
-	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 23:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 28E3BAC5C25
+	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 23:27:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A84353A7E5F
-	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 21:23:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE4B23AF63D
+	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 21:26:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8798B212B38;
-	Tue, 27 May 2025 21:23:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8010020C038;
+	Tue, 27 May 2025 21:26:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TeRFItUX"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HV88pdD/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A737E1F4E4F
-	for <bpf@vger.kernel.org>; Tue, 27 May 2025 21:23:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 128B31FDA
+	for <bpf@vger.kernel.org>; Tue, 27 May 2025 21:26:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748381033; cv=none; b=AhIpL4C2Gjmyy+XyZgNpc0oPhNOPzLFq9msM7gjNyoc0z46SebVg3iFhyjVVIP/qpywQaoMbwIxoumR55w+89WQAgyCRHw28D6m2yVXFENn2QCJ+hlVQQNes28OrkUVqnbm/7mZmbvnNb3gUcADQ7zVJA7/z25cybQZ+TsKDkuk=
+	t=1748381214; cv=none; b=owVsKJEcoMgUeM+xjj+o5gJgY8pD0vtG99VpfBBe8fvl9YSLtnsa44frplUFtiNiTHdyAapHNxTcfA8F7uh/QEQb2W0OuYK30Hb54lGtI8WKExVZ/gjAIewlTdkI6QamPQy5PHxlJTuYSeRc1E6WXx3jPPs0rndU/XrTFWUPNP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748381033; c=relaxed/simple;
-	bh=7b3cJ7D+vpIYr9Hqc4CwYAVjeiOR60Ly78gxURBTZiI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mkHwV0OyyORib7oOfNgq1katyhQPu/HSZ2G3gvxSnriAOJzwOPZXsqK8Wg0VL9Xzx1l8nMiaWHfD/LQD53s2D3XkGPwMFpA1VQgEm+485ZH+ZcAXMjeaSTu2S9ZUUJMTLqMWt43c5rw0cBxaMTj+y0kLtJGaSe2e9BaohwRlwCo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TeRFItUX; arc=none smtp.client-ip=209.85.216.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-3109f106867so3817243a91.1
-        for <bpf@vger.kernel.org>; Tue, 27 May 2025 14:23:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748381031; x=1748985831; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fppIT8cvPdwPAP8uEFwAtrDP7952qq0tICJJ8qeqBUw=;
-        b=TeRFItUXirFBYkzuoB9cnvg+dOSOgAIcms8LEQNF1vs609X4wTw+UccbpGfPpqHtoJ
-         MffcTKc1oR3ewTFsRPxwXqEvFcSJ0C/Sv4PghrNrRBWz44FEiWFDT6sMarpWcxD9X67o
-         feppKcn38aLvIlRVAJxN7iEe8tyIVKasn7aGe0MdX1WybdnbO3xk7ybueIlKF8zpm9IB
-         TnrNvjHaNu2MNVDvx4E93GkT1/mrZtBJCPyHXavwACVFp20sv03pGSPjXyn0E5IB21GR
-         A4j2rj22wD5cOKSW8G4oHeXW54MKARTOyWgMgq5djEiTBc/l/RozvYtPKhidtV4hu8B3
-         AFwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748381031; x=1748985831;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fppIT8cvPdwPAP8uEFwAtrDP7952qq0tICJJ8qeqBUw=;
-        b=Ww8I4N77+f7nrfoSyjjrSX7MsU9cSW3s9Dq0NMtLfxHt70hAOT15mZidnv1eJp7heU
-         aO28kYURurTzU5ZIPgHF1t5WLUk/uFZBoHs9ckGgWTUIamEMcDTAFz6RWfTqMkvnNg7Q
-         M0alCBJ7Jy7+gLNf5QRheiFXyB6za1tiBvv3CMhSO39jr/616kmdxufRwaByoIo+PLTH
-         CeZ1yIEW9e19PwVyhKfw/viy2FlOSiFUDDt1yG0rK8lN9gCOBaSh5AjgUzSkeGXdR9Tq
-         GX3jtVVX1Sa+8zr0k49zSWX+nb5kvjdpWRokxV3wGl9LdseHL5Z5wJgdf1fLWL0eU4eC
-         KrtA==
-X-Forwarded-Encrypted: i=1; AJvYcCUJ2/Tyh9uS0FYaLJmqNIDnNzofPK/MOZBSQOFKLyksET3k9lMPX8Ug9d/C4aRkrN0KmGs=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx1Of8RlcsDdmpsPWINaj3701S0HSPk6h5hfnUkhsfYfolg2WSy
-	rteZz87N5N9deabVO4yPikKgE27pBtv4hvvU8uLE0pI7JLGEiGPmyGu9YbFgKgv2NhMi9woQa7v
-	yTNFWCt58FGmZZOjL0v5fP5D2+lGE12Y=
-X-Gm-Gg: ASbGnctvmvuF5FDXOGx+vDK6z8eIIerppxslXI8mB9JlUv1Lb08bqRQxsRd6P0xtj2D
-	riwEFRXVQAH6vANGyIQ0QprLOWLv3ClT0iaQ2C8x86M1WYctUMR99czWJTiKw6ULNX5dtkV8WEs
-	6X3y2jv6wWYy7I9a55NFMp7OgVeJdEFuh+OlHTjbJ1/+rk+Ebj
-X-Google-Smtp-Source: AGHT+IEPLhk4GEqTPojSgGC0XLcG4D0Uq/YAeaoBwXa0J7dFtoMsgN7u5lQHCinISSLCrCi5CEd1NrUVA42WAR7Z8S8=
-X-Received: by 2002:a17:90b:4a92:b0:311:afaa:5e25 with SMTP id
- 98e67ed59e1d1-311afaa5ffamr6651735a91.24.1748381030831; Tue, 27 May 2025
- 14:23:50 -0700 (PDT)
+	s=arc-20240116; t=1748381214; c=relaxed/simple;
+	bh=EqJo7YCoQTBzDJz04ILn7SArEdQUMsXHOZnmy782KuM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rmTuXUm1k+j2vXwRwFMDV+pXxUpShQvvxgwt9jIHP9BsvFqPIUS3A57q43SU9R6TWMS4qS1DlZRE87VINO4wm5tGe5cTB5z/fcv4QDnlXRPj7boNbwwggjts6MmGnlsUkq54EC002QUfxRm6kVkUbyvdD8BsNQ3RXH9LGLkvLW8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HV88pdD/; arc=none smtp.client-ip=91.218.175.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <92c810bf-64f0-4f84-80d5-65e27bbe9a3e@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1748381208;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=csYR+SQ8ocIYay0ZE9cKGwa1y8NKac3caRYihbvoGFY=;
+	b=HV88pdD/2am+l+MDOjqTarZ6MB671Xrr966srI1PlSWWVKd5mo9KxnNwrb6BEIoSb3Muy1
+	0mLFH3yYf2mnFeeBeWcDWK3BD4rG6abk0avGlLqpje8k6o/Au6Deg4mBEtNHNlB81igs/Z
+	4JInsZw5pXvX1rp003gf0msXSk0Aa84=
+Date: Tue, 27 May 2025 14:26:42 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250523232503.1086319-1-isolodrai@meta.com> <20250523232503.1086319-2-isolodrai@meta.com>
-In-Reply-To: <20250523232503.1086319-2-isolodrai@meta.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 27 May 2025 14:23:37 -0700
-X-Gm-Features: AX0GCFsFokUmbpDa8LFcDQSBsAdgoK5nxMy9oB_CZBu6EBTxOGX54EWcCcSx-Cw
-Message-ID: <CAEf4BzZNU0gX_sQ8k8JaLe1e+Veth3Rk=4x7MDhv=hQxvO8EDw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: add a test case with
- CONST_PTR_TO_MAP null check
-To: ihor.solodrai@linux.dev
-Cc: andrii@kernel.org, bpf@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, mykolal@fb.com, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix "expression result unused"
+ warnings
+Content-Language: en-GB
+To: Ilya Leoshkevich <iii@linux.ibm.com>,
+ Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>
+References: <20250508113804.304665-1-iii@linux.ibm.com>
+ <CAADnVQ+kGcRrLOaA5ic6cYG+1vHJm0bBD1GRfUaYpaOGa3Vx0g@mail.gmail.com>
+ <15bf9a71b8185006c8d19a3aefb331a2765629c5.camel@linux.ibm.com>
+ <CAADnVQL6Q+QRv3_JwEd26biwGpFYcwD_=BjBJWLAtpgOP9CKRw@mail.gmail.com>
+ <7a242102eecdd17b4d35c1e4f7d01ea15cb8066a.camel@linux.ibm.com>
+ <CAADnVQ+5h9UESAgNA58HEQ-0zwxn=c0+ibH++NF9farR5-JB8g@mail.gmail.com>
+ <CAP01T74iix8HvmVYowFyrG98tDRw8JMOck7HQLD57nuo7SyuoA@mail.gmail.com>
+ <a8b8b4c9b5485a605437448bd1c548a38dfd1d55.camel@linux.ibm.com>
+ <b7517bd4-3e6a-4a74-99c8-bca0969aeb01@linux.dev>
+ <CAP01T75hQ0SDAXY+w-nnRii_B9TkydCXahbC8ATrmuGAeQc+AQ@mail.gmail.com>
+ <195a1fd78ebf029eba204982f5bbe0ec6ef025fb.camel@linux.ibm.com>
+ <6192c51c-e800-4a89-a0b2-52abab33010a@linux.dev>
+ <15f2b0cb9fd8c106d1daac1c7e0c156c97e0ee04.camel@linux.ibm.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <15f2b0cb9fd8c106d1daac1c7e0c156c97e0ee04.camel@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, May 23, 2025 at 4:25=E2=80=AFPM Ihor Solodrai <isolodrai@meta.com> =
-wrote:
->
-> The test requires the following to happen:
->   * CONST_PTR_TO_MAP value is put on the stack
->   * then this value is checked for null
->   * the code in the null branch fails verification
->
-> I was able to achieve this by using a stack allocated array of maps,
-> populated with values from a global map.
->
-> Signed-off-by: Ihor Solodrai <isolodrai@meta.com>
-> ---
->  .../selftests/bpf/progs/verifier_map_in_map.c | 24 +++++++++++++++++++
->  1 file changed, 24 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/progs/verifier_map_in_map.c b/to=
-ols/testing/selftests/bpf/progs/verifier_map_in_map.c
-> index 7d088ba99ea5..52b3e1749e71 100644
-> --- a/tools/testing/selftests/bpf/progs/verifier_map_in_map.c
-> +++ b/tools/testing/selftests/bpf/progs/verifier_map_in_map.c
-> @@ -139,4 +139,28 @@ __naked void on_the_inner_map_pointer(void)
->         : __clobber_all);
->  }
->
-> +SEC("socket")
-> +int map_ptr_is_never_null(void *ctx)
-> +{
-> +       struct bpf_map *maps[2] =3D { 0 };
-> +       struct bpf_map *map =3D NULL;
-> +       int __attribute__((aligned(8))) key =3D 0;
-> +
-> +       for (key =3D 0; key < 2; key++) {
-> +               map =3D bpf_map_lookup_elem(&map_in_map, &key);
-> +               if (map)
-> +                       maps[key] =3D map;
-> +               else
-> +                       return 0;
-> +       }
-> +
-> +       /* After the loop every element of maps is CONST_PTR_TO_MAP so
-> +        * the invalid branch should not be explored by the verifier.
-> +        */
-> +       if (!maps[0])
-> +               asm volatile ("r10 =3D 0;");
-> +
-> +       return 0;
-> +}
-> +
 
-I had (slightly redacted) logic like this when I ran into this issue origin=
-ally:
 
-struct rb_ctx {
-    void *rb;
-    struct bpf_dynptr dptr;
-};
+On 5/27/25 1:27 AM, Ilya Leoshkevich wrote:
+> On Mon, 2025-05-26 at 22:15 -0700, Yonghong Song wrote:
+>>
+>> On 5/24/25 2:05 PM, Ilya Leoshkevich wrote:
+>>> On Sat, 2025-05-24 at 03:01 +0200, Kumar Kartikeya Dwivedi wrote:
+>>>> On Sat, 24 May 2025 at 02:06, Yonghong Song
+>>>> <yonghong.song@linux.dev>
+>>>> wrote:
+>>>>>
+>>>>> On 5/23/25 4:25 AM, Ilya Leoshkevich wrote:
+>>>>>> On Mon, 2025-05-12 at 15:29 -0400, Kumar Kartikeya Dwivedi
+>>>>>> wrote:
+>>>>>>> On Mon, 12 May 2025 at 12:41, Alexei Starovoitov
+>>>>>>> <alexei.starovoitov@gmail.com> wrote:
+>>>>>>>> On Mon, May 12, 2025 at 5:22 AM Ilya Leoshkevich
+>>>>>>>> <iii@linux.ibm.com> wrote:
+>>>>>>>>> On Fri, 2025-05-09 at 09:51 -0700, Alexei Starovoitov
+>>>>>>>>> wrote:
+>>>>>>>>>> On Thu, May 8, 2025 at 12:21 PM Ilya Leoshkevich
+>>>>>>>>>> <iii@linux.ibm.com>
+>>>>>>>>>> wrote:
+>>>>>>>>>>> On Thu, 2025-05-08 at 11:38 -0700, Alexei
+>>>>>>>>>>> Starovoitov
+>>>>>>>>>>> wrote:
+>>>>>>>>>>>> On Thu, May 8, 2025 at 4:38 AM Ilya Leoshkevich
+>>>>>>>>>>>> <iii@linux.ibm.com>
+>>>>>>>>>>>> wrote:
+>>>>>>>>>>>>> clang-21 complains about unused expressions in
+>>>>>>>>>>>>> a
+>>>>>>>>>>>>> few
+>>>>>>>>>>>>> progs.
+>>>>>>>>>>>>> Fix by explicitly casting the respective
+>>>>>>>>>>>>> expressions to
+>>>>>>>>>>>>> void.
+>>>>>>>>>>>> ...
+>>>>>>>>>>>>>            if (val & _Q_LOCKED_MASK)
+>>>>>>>>>>>>> -
+>>>>>>>>>>>>> smp_cond_load_acquire_label(&lock-
+>>>>>>>>>>>>>> locked,
+>>>>>>>>>>>>> !VAL,
+>>>>>>>>>>>>> release_err);
+>>>>>>>>>>>>> +
+>>>>>>>>>>>>> (void)smp_cond_load_acquire_label(&lock-
+>>>>>>>>>>>>>> locked,
+>>>>>>>>>>>>> !VAL, release_err);
+>>>>>>>>>>>> Hmm. I'm on clang-21 too and I don't see them.
+>>>>>>>>>>>> What warnings do you see ?
+>>>>>>>>>>> In file included from progs/arena_spin_lock.c:7:
+>>>>>>>>>>> progs/bpf_arena_spin_lock.h:305:1756: error:
+>>>>>>>>>>> expression
+>>>>>>>>>>> result
+>>>>>>>>>>> unused
+>>>>>>>>>>> [-Werror,-Wunused-value]
+>>>>>>>>>>>      305 |   ({ typeof(_Generic((*&lock->locked),
+>>>>>>>>>>> char:
+>>>>>>>>>>> (char)0,
+>>>>>>>>>>> unsigned
+>>>>>>>>>>> char : (unsigned char)0, signed char : (signed
+>>>>>>>>>>> char)0,
+>>>>>>>>>>> unsigned
+>>>>>>>>>>> short :
+>>>>>>>>>>> (unsigned short)0, signed short : (signed short)0,
+>>>>>>>>>>> unsigned
+>>>>>>>>>>> int :
+>>>>>>>>>>> (unsigned int)0, signed int : (signed int)0,
+>>>>>>>>>>> unsigned
+>>>>>>>>>>> long :
+>>>>>>>>>>> (unsigned
+>>>>>>>>>>> long)0, signed long : (signed long)0, unsigned long
+>>>>>>>>>>> long :
+>>>>>>>>>>> (unsigned
+>>>>>>>>>>> long long)0, signed long long : (signed long
+>>>>>>>>>>> long)0,
+>>>>>>>>>>> default:
+>>>>>>>>>>> (typeof(*&lock->locked))0)) __val = ({
+>>>>>>>>>>> typeof(&lock-
+>>>>>>>>>>>> locked)
+>>>>>>>>>>> __ptr
+>>>>>>>>>>> =
+>>>>>>>>>>> (&lock->locked); typeof(_Generic((*(&lock-
+>>>>>>>>>>>> locked)),
+>>>>>>>>>>> char:
+>>>>>>>>>>> (char)0,
+>>>>>>>>>>> unsigned char : (unsigned char)0, signed char :
+>>>>>>>>>>> (signed
+>>>>>>>>>>> char)0,
+>>>>>>>>>>> unsigned short : (unsigned short)0, signed short :
+>>>>>>>>>>> (signed
+>>>>>>>>>>> short)0,
+>>>>>>>>>>> unsigned int : (unsigned int)0, signed int :
+>>>>>>>>>>> (signed
+>>>>>>>>>>> int)0,
+>>>>>>>>>>> unsigned
+>>>>>>>>>>> long : (unsigned long)0, signed long : (signed
+>>>>>>>>>>> long)0,
+>>>>>>>>>>> unsigned
+>>>>>>>>>>> long
+>>>>>>>>>>> long : (unsigned long long)0, signed long long :
+>>>>>>>>>>> (signed long
+>>>>>>>>>>> long)0,
+>>>>>>>>>>> default: (typeof(*(&lock->locked)))0)) VAL; for
+>>>>>>>>>>> (;;) {
+>>>>>>>>>>> VAL =
+>>>>>>>>>>> (typeof(_Generic((*(&lock->locked)), char: (char)0,
+>>>>>>>>>>> unsigned
+>>>>>>>>>>> char :
+>>>>>>>>>>> (unsigned char)0, signed char : (signed char)0,
+>>>>>>>>>>> unsigned
+>>>>>>>>>>> short :
+>>>>>>>>>>> (unsigned short)0, signed short : (signed short)0,
+>>>>>>>>>>> unsigned
+>>>>>>>>>>> int :
+>>>>>>>>>>> (unsigned int)0, signed int : (signed int)0,
+>>>>>>>>>>> unsigned
+>>>>>>>>>>> long :
+>>>>>>>>>>> (unsigned
+>>>>>>>>>>> long)0, signed long : (signed long)0, unsigned long
+>>>>>>>>>>> long :
+>>>>>>>>>>> (unsigned
+>>>>>>>>>>> long long)0, signed long long : (signed long
+>>>>>>>>>>> long)0,
+>>>>>>>>>>> default:
+>>>>>>>>>>> (typeof(*(&lock->locked)))0)))(*(volatile
+>>>>>>>>>>> typeof(*__ptr)
+>>>>>>>>>>> *)&(*__ptr));
+>>>>>>>>>>> if (!VAL) break; ({ __label__ l_break, l_continue;
+>>>>>>>>>>> asm
+>>>>>>>>>>> volatile
+>>>>>>>>>>> goto("may_goto %l[l_break]" :::: l_break); goto
+>>>>>>>>>>> l_continue;
+>>>>>>>>>>> l_break:
+>>>>>>>>>>> goto release_err; l_continue:; }); ({}); }
+>>>>>>>>>>> (typeof(*(&lock-
+>>>>>>>>>>>> locked)))VAL; }); ({ ({ if (!CONFIG_X86_64) ({
+>>>>>>>>>>>> unsigned
+>>>>>>>>>>>> long
+>>>>>>>>>>>> __val;
+>>>>>>>>>>> __sync_fetch_and_add(&__val, 0); }); else asm
+>>>>>>>>>>> volatile("" :::
+>>>>>>>>>>> "memory"); }); }); (typeof(*(&lock->locked)))__val;
+>>>>>>>>>>> });
+>>>>>>>>>>>          |
+>>>>>>>>>>> ^                         ~~~~~
+>>>>>>>>>>> 1 error generated.
+>>>>>>>>>> hmm. The error is impossible to read.
+>>>>>>>>>>
+>>>>>>>>>> Kumar,
+>>>>>>>>>>
+>>>>>>>>>> Do you see a way to silence it differently ?
+>>>>>>>>>>
+>>>>>>>>>> Without adding (void)...
+>>>>>>>>>>
+>>>>>>>>>> Things like:
+>>>>>>>>>> -       bpf_obj_new(..
+>>>>>>>>>> +       (void)bpf_obj_new(..
+>>>>>>>>>>
+>>>>>>>>>> are good to fix, and if we could annotate
+>>>>>>>>>> bpf_obj_new_impl kfunc with __must_check we would
+>>>>>>>>>> have
+>>>>>>>>>> done it,
+>>>>>>>>>>
+>>>>>>>>>> but
+>>>>>>>>>> -               arch_mcs_spin_lock...
+>>>>>>>>>> +               (void)arch_mcs_spin_lock...
+>>>>>>>>>>
+>>>>>>>>>> is odd.
+>>>>>>>>> What do you think about moving (void) to the definition
+>>>>>>>>> of
+>>>>>>>>> arch_mcs_spin_lock_contended_label()? I can send a v2
+>>>>>>>>> if
+>>>>>>>>> this is
+>>>>>>>>> better.
+>>>>>>>> Kumar,
+>>>>>>>>
+>>>>>>>> thoughts?
+>>>>>>> Sorry for the delay, I was afk.
+>>>>>>>
+>>>>>>> The warning seems a bit aggressive, in the kernel we have
+>>>>>>> users
+>>>>>>> which
+>>>>>>> do and do not use the value and it's fine.
+>>>>>>> I think moving (void) inside the macro is a problem since
+>>>>>>> at
+>>>>>>> least
+>>>>>>> rqspinlock like algorithm would want to inspect the result
+>>>>>>> of
+>>>>>>> the
+>>>>>>> locked bit.
+>>>>>>> No such users exist for now, of course. So maybe we can
+>>>>>>> silence
+>>>>>>> it
+>>>>>>> until we do end up depending on the value.
+>>>>>>>
+>>>>>>> I will give a try with clang-21, but I think probably
+>>>>>>> (void) in
+>>>>>>> the
+>>>>>>> source is better if we do need to silence it.
+>>>>>> Gentle ping.
+>>>>>>
+>>>>>> This is still an issue with clang version 21.0.0
+>>>>>> (++20250522112647+491619a25003-1~exp1~20250522112819.1465).
+>>>>>>
+>>>>> I cannot reproduce the "unused expressions" error. What is the
+>>>>> llvm cmake command line you are using?
+>>>>>
+>>>> Sorry for the delay. I tried just now with clang built from the
+>>>> latest
+>>>> git checkout but I don't see it either.
+>>>> I built it following the steps at
+>>>> https://www.kernel.org/doc/Documentation/bpf/bpf_devel_QA.rst.
+>>> I use the following make invocation:
+>>>
+>>> make CC="ccache gcc" LD=ld.lld-21 O="$PWD/../linux-build-s390x"
+>>> CLANG="ccache clang-21" LLVM_STRIP=llvm-strip-21 LLC=llc-21
+>>> LLD=lld-21
+>>> -j128 -C tools/testing/selftests/bpf BPF_GCC= V=1
+>>>
+>>> which results in the following clang invocation:
+>>>
+>>> ccache clang-21  -g -Wall -Werror -D__TARGET_ARCH_s390 -mbig-endian
+>>> -
+>>> I"$PWD/../../../../.."/linux-build-s390x//tools/include -
+>>> I"$PWD/../../../../.."/linux/tools/testing/selftests/bpf -
+>>> I"$PWD/../../../../.."/linux/tools/include/uapi -
+>>> I"$PWD/../../../../.."/usr/include -std=gnu11 -fno-strict-aliasing
+>>> -
+>>> Wno-compare-distinct-pointer-types -idirafter /usr/lib/llvm-
+>>> 21/lib/clang/21/include -idirafter /usr/local/include -idirafter
+>>> /usr/include/s390x-linux-gnu -idirafter /usr/include    -
+>>> DENABLE_ATOMICS_TESTS   -O2 --target=bpfeb -c
+>>> progs/arena_spin_lock.c -
+>>> mcpu=v3 -o "$PWD/../../../../.."/linux-build-
+>>> s390x//arena_spin_lock.bpf.o
+>>>
+>>> I tried dropping ccache, but it did not help.
+>> Thanks, Ilya. It could be great if you can find out the
+>> cmake command lines which eventually builds your clang-21.
+>> Once cmake command lines are available, I can build
+>> the compiler on x86_64 host and do some checking for it.
+> Hi Yonghong, I don't build it, I take it from apt.llvm.org.
+> It's surprising we don't see this in CI, because it also takes
+> clang from there. If you think this is a compiler and not a code
+> bug, I can debug this myself, because maybe it's reproducible only on
+> s390x.
 
-static __always_inline struct rb_ctx __rb_event_reserve(u64 dyn_sz)
-{
-    struct rb_ctx rb_ctx =3D {};
-    void *rb;
-    u32 cpu =3D bpf_get_smp_processor_id();
-    u32 rb_slot =3D cpu & 1; /* 0 or 1 */
+I don't think this is a compiler bug. As mentioned by Alexei, __must_check
 
-    rb =3D bpf_map_lookup_elem(&rbs, &rb_slot);
-    if (!rb)
-        return rb_ctx;
+   linux/compiler_attributes.h:#define __must_check __attribute__((__warn_unused_result__))
 
-    rb_ctx.rb =3D rb;
-    rb_ctx.has_dptr =3D true;
+is needed for the compiler to issue an error for unused func return value.
 
-    /* can fail, still needs bpf_ringbuf_submit_dynptr() */
-    bpf_ringbuf_reserve_dynptr(rb, sz, 0, &rb_ctx.dptr);
+I did some further checking on clang source code with a simple example on x86_64 machine:
 
-    return rb_ctx;
+$ cat t.c
+int bar(void) __attribute__((warn_unused_result));
+// int bar(void);
+int foo(int a) {
+   bar();
+   return a;
 }
 
-static __noinline void __rb_event_submit(struct rb_ctx *ctx)
-{
-    if (!ctx->rb) /* shouldn't/can't do submit below */
-        return;
+and command line
 
-    /* no-op, if ctx->rb is NULL */
-    bpf_ringbuf_submit_dynptr(&ctx->dptr, 0);
-}
+clang -Wall -Werror -g -O2 -c t.c
 
+The key related code is at
+   https://github.com/llvm/llvm-project/blob/main/clang/lib/Sema/SemaStmt.cpp#L230-L257
 
-Where `rbs` is ARRAY_OF_MAPS of RINGBUF maps. And so when calling
-__rb_event_reserve(), followed by __rb_event_submit(), no matter
-whether map-in-map lookup succeeded or not, no matter whether
-ringbuf_reserve_dynptr() succeeded or not, we'd satisfy ringbuf API
-rules calling submit_dynptr() iff map-in-map succeeded.
-
-Maybe try using this logic, it's actually a real-world code pattern,
-so would be good to know it keeps working after your fix.
-
-pw-bot: cr
+// Diagnoses unused expressions that call functions marked [[nodiscard]],
+// [[gnu::warn_unused_result]] and similar.
+// Additionally, a DiagID can be provided to emit a warning in additional
+// contexts (such as for an unused LHS of a comma expression)
+void DiagnoseUnused(Sema &S, const Expr *E, std::optional<unsigned> DiagID) {
+   bool NoDiscardOnly = !DiagID.has_value();
+......
 
 
->  char _license[] SEC("license") =3D "GPL";
-> --
-> 2.47.1
-    >
+The following two lines of code is the key:
+
+   if (!E->isUnusedResultAWarning(WarnExpr, Loc, R1, R2, S.Context))
+     return;
+   ...
+
+With 'int bar(void) __attribute__((warn_unused_result));' the above
+if stmt will fall through.
+With 'int bar(void);' the above if stmt will return from DiagnozeUnused() func.
+
+For 'return true' case, eventually it emits an error.
+
+So we don't have issues with x86.
+
+But if s390x emits an error even without __attribute__((warn_unused_result)),
+I suspect that there is a bug in clang21 frontend with s390x.
+I assume clang20 will be okay?
+It is possible that in clang21, s390x clang frontend target specific things
+may cause clang emit error even without __must_check attribute.
+
+If clang20 is okay for s390x, I suggest to file a bug to llvm-project
+(clang21 frontend).
+
 
