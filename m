@@ -1,98 +1,156 @@
-Return-Path: <bpf+bounces-58984-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58985-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82147AC4BE0
-	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 12:00:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF72AAC4BF5
+	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 12:06:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6C4E3B79AC
-	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 09:59:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8107C189E2F0
+	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 10:06:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04127255F33;
-	Tue, 27 May 2025 10:00:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D54B2253B73;
+	Tue, 27 May 2025 10:06:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sJKoEI3l"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Bx7+1hAC"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79FCC254AF3;
-	Tue, 27 May 2025 09:59:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1CE235973;
+	Tue, 27 May 2025 10:06:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748339999; cv=none; b=OSceZlPbG+azvnMx5bdPWbX15dDqOl2kO2d5l39C64sUrEiTthRl7qtdq7vIDIbyiVzt2TIe1A9c3TVZ8S2QKU4fNV4hAQUpEIZqK/RQJ9OubSHzm0ti3d0nMuluR72mkGRYSViz/flqo9aN3ZrQr6el5V0R5uJeZXOjrzIQFGg=
+	t=1748340377; cv=none; b=tXKS7lRCYSrEGMZLy8WyAB9ogW87dhnYCUpdZIVN2j2fGwIX1Dh83iqRJ1v15nGiTKTU56mliW1404MgcGX4YlpbO7fFH/oiClqmil5UdfOxW6/vnYJtL2KfimDhHujGg1Jm6nI6XcgBGbTU/hD4iOqiArRztIEA1YbGK24YEGc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748339999; c=relaxed/simple;
-	bh=MViKN2+i9zzdGHsc7eYtQ0YzQSzoXPV/RafepRFlVfc=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=HhGW8fuDpZRGfp7lIxzTILeV0onRMtVH9C2XCQ5HOatWMLwDTBrGYGmv9JKU5rtpzQyZG2ZpdinDqCsVpmjEe0Qa7FmtvPyddUCaC46JBQQ5VKeNw1ewXCrNOCLdwXjGXXCsj6/DoHaAH3js0yLF9iby/gF/jDWRiBGRYTv/bVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sJKoEI3l; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF20FC4CEEE;
-	Tue, 27 May 2025 09:59:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748339998;
-	bh=MViKN2+i9zzdGHsc7eYtQ0YzQSzoXPV/RafepRFlVfc=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=sJKoEI3lf3rEFIzhUe/PWajMZRg6WJpVveJpKbuKezfqZsaJK4Ps3lE4ZR7X/6T4T
-	 M4k6uuGQTp7OYNmAsymcCNaxzezWaRTva8Y1cQaMPfzQvomUsbzvBZsEOWbzkLO51j
-	 1QLxH4nRTP7ttiwQol5HsIea4Ck1wPFg3sX1cQpYZSBOm4g/7ADUkcT0hiR3GPxVE2
-	 iqNU2Jg0ohiSb4pUDJURyCKxm7TFuE34KRj23giZQX6HzRZbGW5PRk1kfLZqlg8P08
-	 L8XxVaGsSNd6PufNH0zLlWqRL68zSYA7eDV67mjoXKHDHQm0+F3AndVCkR+YZbTB5T
-	 dsUc9FHeRDGyA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70E4B380AAE2;
-	Tue, 27 May 2025 10:00:34 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1748340377; c=relaxed/simple;
+	bh=7WSLUxaUDgCs2WPIV7adNYFOswKb/YdjK8z3bsFWn0s=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=YektHPG2XO3FMNJgsdOVWH3bqZHAJWhK5U2RgnfJ3hirtzu+M2T8+iMHkXJt3tQQqdA+04Z2SkPEo8BnRIj2+OLRQu+cRJy53Ov9lrYm3cUBUebrakiGRtH39pp0tUfipHNqbV3Y+L97DE5PI1nGVNlawCYztWW2lXagSIkwBTY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Bx7+1hAC; arc=none smtp.client-ip=217.70.183.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 547541F4F3;
+	Tue, 27 May 2025 10:06:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1748340372;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=g9PY5sgRf+wMjq44Tp5gP3wPRWLLrFsYXl9Qe4W89/8=;
+	b=Bx7+1hACUM/l0dpn7ADyoDeEiJgnyCojm2ckjd2rLGz4sHPgSV+8BOqtujc6ZSOmauoltf
+	wPDRDKIltW+UxzHoS4vCbrDiK0BnTIwuOTDoDdyZ9KW4HvXQykXMx8I8b/rBW2H0gi2mNi
+	/6hytZKephHFIGTaHc6lp1NL/ZyW3vZLPWOTWsJvH6fHB4p1ah9LgCw+OWUfzTQ0qd52SY
+	SSz/58CjswdgrlIkAVtUCbW7eKKuv6/05ykABOLaaTt1PR0qxuXqMd5J66RF0WnPnRVTyy
+	pPgH4rplsyn4BHirsCmeLE1YF/esr153Zte7Ddn1D2HGshb31UToOaqmZ/ZeyA==
+From: =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+Subject: [PATCH bpf-next v3 0/2] bpf, arm64: support up to 12 arguments
+Date: Tue, 27 May 2025 12:06:02 +0200
+Message-Id: <20250527-many_args_arm64-v3-0-3faf7bb8e4a2@bootlin.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 net-next] xsk: add missing virtual address conversion for
- page
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <174834003324.1237935.11428627748212887379.git-patchwork-notify@kernel.org>
-Date: Tue, 27 May 2025 10:00:33 +0000
-References: <20250522040115.5057-1-minhquangbui99@gmail.com>
-In-Reply-To: <20250522040115.5057-1-minhquangbui99@gmail.com>
-To: Bui Quang Minh <minhquangbui99@gmail.com>
-Cc: netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
- john.fastabend@gmail.com, edumazet@google.com, pabeni@redhat.com,
- horms@kernel.org, maciej.fijalkowski@intel.com, aleksander.lobakin@intel.com,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+X-B4-Tracking: v=1; b=H4sIAIqONWgC/2XNTQrDIBAF4KsU17XoaP666j1KKSaOidBo0BASQ
+ u5ecVNKNgOPx/tmJxGDxUjul50EXGy03qUgrhfSDcr1SK1OmQCDggEwOiq3vVXoYzpjKWndalH
+ JCstG1iStpoDGrll8knYy1OE6k1dqBhtnH7b8auG5z6rk/KQunDLKlACDFQjR4KP1fv5Yd+v8m
+ LUFfkIBcBYgCbpURrdNZ2re/AvHcXwBRufAvfwAAAA=
+X-Change-ID: 20250220-many_args_arm64-8bd3747e6948
+To: Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, 
+ Xu Kuohai <xukuohai@huaweicloud.com>, 
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+ Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+ Florent Revest <revest@chromium.org>
+Cc: Bastien Curutchet <bastien.curutchet@bootlin.com>, 
+ ebpf@linuxfoundation.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-kselftest@vger.kernel.org, 
+ linux-stm32@st-md-mailman.stormreply.com, 
+ =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>, 
+ Xu Kuohai <xukuohai@huawei.com>
+X-Mailer: b4 0.14.2
+X-GND-State: clean
+X-GND-Score: -100
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddtgddvtddtleculddtuddrgeefvddrtddtmdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffufffkgggtgffvvefosehtkeertdertdejnecuhfhrohhmpeetlhgvgihishcunfhothhhohhrrocuoegrlhgvgihishdrlhhothhhohhrvgessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepffefvdelledtfeekudelvdekvdeuffduieevkedviedtgeefueehgfdvuedthfeunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpsghoohhtlhhinhdrtghomhenucfkphepvdgrtddvmeekgedvkeemfhelgegtmegvtddtmeemugeiheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvrgdtvdemkeegvdekmehfleegtgemvgdttdemmeguieehpdhhvghloheplgduledvrdduieekrddurdduleejngdpmhgrihhlfhhrohhmpegrlhgvgihishdrlhhothhhohhrvgessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepfedupdhrtghpthhtohepshhonhhgsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehhrgholhhuohesghhoohhglhgvrdgtohhmpdhrtghpthhtohepthhhohhmrghsrdhpvghtrgiiiihonhhisegsohhothhlihhnr
+ dgtohhmpdhrtghpthhtohepshgufhesfhhomhhitghhvghvrdhmvgdprhgtphhtthhopegsphhfsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepjhholhhsrgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqrghrmhdqkhgvrhhnvghlsehlihhsthhsrdhinhhfrhgruggvrggurdhorhhgpdhrtghpthhtohepphhurhgrnhhjrgihsehkvghrnhgvlhdrohhrgh
+X-GND-Sasl: alexis.lothore@bootlin.com
 
-Hello:
+Hello,
 
-This patch was applied to netdev/net-next.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
+this is the v2 of the many args series for arm64, being itself a revival
+of Xu Kuhoai's work to enable larger arguments count for BPF programs on
+ARM64 ([1]).
 
-On Thu, 22 May 2025 11:01:15 +0700 you wrote:
-> In commit 7ead4405e06f ("xsk: convert xdp_copy_frags_from_zc() to use
-> page_pool_dev_alloc()"), when converting from netmem to page, I missed a
-> call to page_address() around skb_frag_page(frag) to get the virtual
-> address of the page. This commit uses skb_frag_address() helper to fix
-> the issue.
-> 
-> Fixes: 7ead4405e06f ("xsk: convert xdp_copy_frags_from_zc() to use page_pool_dev_alloc()")
-> Reviewed-by: Alexander Lobakin <aleksander.lobakin@intel.com>
-> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
-> 
-> [...]
+The discussions in v1 shed some light on some issues around specific
+cases, for example with functions passing struct on stack with custom
+packing/alignment attributes: those cases can not be properly detected
+with the current BTF info. So this new revision aims to separate
+concerns with a simpler implementation, just accepting additional args
+on stack if we can make sure about the alignment constraints (and so,
+refusing attachment to functions passing structs on stacks). I then
+checked if the specific alignment constraints could be checked with
+larger scalar types rather than structs, but it appears that this use
+case is in fact rejected at the verifier level (see a9b59159d338 ("bpf:
+Do not allow btf_ctx_access with __int128 types")). So in the end the
+specific alignment corner cases raised in [1] can not really happen in
+the kernel in its current state. This new revision still brings support
+for the standard cases as a first step, it will then be possible to
+iterate on top of it to add the more specific cases like struct passed
+on stack and larger types.
 
-Here is the summary with links:
-  - [v2,net-next] xsk: add missing virtual address conversion for page
-    https://git.kernel.org/netdev/net-next/c/28fcb4b56f92
+[1] https://lore.kernel.org/all/20230917150752.69612-1-xukuohai@huaweicloud.com/#t
 
-You are awesome, thank you!
+Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
+---
+Changes in v3:
+- switch back -EOPNOTSUPP to -ENOTSUPP
+- fix comment style
+- group intializations for arg_aux
+- remove some unneeded round_up
+- Link to v2: https://lore.kernel.org/r/20250522-many_args_arm64-v2-0-d6afdb9cf819@bootlin.com
+
+Changes in v2:
+- remove alignment computation from btf.c
+- deduce alignment constraints directly in jit compiler for simple types
+- deny attachment to functions with "corner-cases" arguments (ie:
+  structs on stack)
+- remove custom tests, as the corresponding use cases are locked either
+  by the JIT comp or the verifier
+- drop RFC
+- Link to v1: https://lore.kernel.org/r/20250411-many_args_arm64-v1-0-0a32fe72339e@bootlin.com
+
+---
+Alexis Lothoré (eBPF Foundation) (1):
+      selftests/bpf: enable many-args tests for arm64
+
+Xu Kuohai (1):
+      bpf, arm64: Support up to 12 function arguments
+
+ arch/arm64/net/bpf_jit_comp.c                | 225 ++++++++++++++++++++-------
+ tools/testing/selftests/bpf/DENYLIST.aarch64 |   2 -
+ 2 files changed, 171 insertions(+), 56 deletions(-)
+---
+base-commit: 9435138c069117cd59a4912b5ea2ae44cc2c5ffa
+change-id: 20250220-many_args_arm64-8bd3747e6948
+
+Best regards,
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Alexis Lothoré, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
 
