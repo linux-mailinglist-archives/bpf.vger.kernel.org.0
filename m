@@ -1,108 +1,116 @@
-Return-Path: <bpf+bounces-59005-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59006-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 276E2AC5466
-	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 19:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F1FBAC5742
+	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 19:30:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 993504A2AAD
-	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 17:00:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13FF44A6AF0
+	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 17:30:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F5A9280036;
-	Tue, 27 May 2025 17:00:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B56531AF0BB;
+	Tue, 27 May 2025 17:30:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iSArvkHK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HnEusWYD"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99CEC27FD61;
-	Tue, 27 May 2025 17:00:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FF4825A627
+	for <bpf@vger.kernel.org>; Tue, 27 May 2025 17:30:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748365202; cv=none; b=irB3h+fcmtqwePzkTIK2Vq7iqLXtkO96kbWOsGmCV+MC48UZdvEbhdH+DyGIMUx3fGYaNyp4PTTbPP7QMpWlWsqMXhHkK5EqLw1FIt7tdWIzbBT9BjMpEjIfxIOiiqj5bWw/RW3qUcj4S66c7wyfOnKVFFHTnmfQBQ6JqMpxUUk=
+	t=1748367050; cv=none; b=Jmp7Q2QmQgbKnPw24H6xYY/kDJkqmid+VNLFOffKt1KIurqi+ZxD1gnPAtGM+3ENbBrq0++UIHjOHe6A1qOCPT1dBnikxmqpk9MfpRv5kccU39xdHznN6XcvtW8Zf5++JvwAoARGYXimOzp6R+Nklb2dodefbiAxJab1DwT0GOc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748365202; c=relaxed/simple;
-	bh=YZ2oMVULHYa93hhilrUAyynPEjoYTyfzy2z4lPIc7Tg=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=jn9Vl5qHNn1+1TqkPsiTIvoKKA917To7pQfvb3lWuVOCL0NqUGGxDjcijxlK2aPrvSbNndoaHnqSEj4PjxhnEOrgDaYZocwRL2NwABuuyEgmt8Yqb+rLo/647iH1XFERRbSf1KyznRx+7m2eykG0rWJg5RBnyUSX4gF5ZEwbp5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iSArvkHK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F63BC4CEEB;
-	Tue, 27 May 2025 17:00:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748365202;
-	bh=YZ2oMVULHYa93hhilrUAyynPEjoYTyfzy2z4lPIc7Tg=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=iSArvkHKnbdfsIqUw+stBXLTL/Ke5U83Hr/h23PCKH2twhwaBkubimAvx+taEjhT+
-	 17GlrF1mNeJ2qOU1eeQFgusqyTP1WRXOw7wtddnqrTKjnZLZXhJ4GxmKoP6fqH3adF
-	 0z2L9LzHN+9Vy5fTKrqM/7c9uzziOcOKJ0MDEdzdO1qPK+X3ASzCKvacfPGOisD9+F
-	 WKAGBUN79iYYo5BVjEit65FIDLp3Sp67mhiw4T5Bvx6D2IFu+Tqb3fSiLcz5O4kK1n
-	 /YBV1WAXRqBb0V/YcRRV6HLwvAO05G2KHwpnU0EdoV5jkVxUdL9tc1RSwrXhIv1HM4
-	 U6NdPKaAX22tg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 7228D380AAE2;
-	Tue, 27 May 2025 17:00:37 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1748367050; c=relaxed/simple;
+	bh=k4DgVCmMx2v8HH0ZHJD1F+doIXYfILmBPEmEFpjBcSY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Vt8v/ZzNeeYB5eZYsitBR9056i3muvhyIHtUN9/2eRVIvSDermNDKSudEMRxt/wsNFY0+GJ7smuG1v9+2/xvVqT8Z1UfxU6KMFYUiUbC8d4jSF9RL+DAvQDzEqV7evWjELQYRXDfVmeP8aj4MmD/K6vS3lS5NSgMBw6HfnuykyI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HnEusWYD; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3a4d152cb44so3333970f8f.2
+        for <bpf@vger.kernel.org>; Tue, 27 May 2025 10:30:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748367047; x=1748971847; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gvviCJ2oYBMbmQA+UTssXwmLgRzGcgpFY4e/ToSCytM=;
+        b=HnEusWYD7bhd5DZyU4IYQGiCNx/N54x6hXd7hwymY/iY0Cz1COM0klHqi+FthQnSrK
+         CKhaxb9ZwFWIzXutoD62kzbqmWZq4tL6+512+zEPEKQLsSFrOkGsl88ENkWymXn8fuIB
+         /9S+E+6pW2kgKgha04D616ebywrmI4ook+wcYAi+tdGvYcpCA1GIP2ME9eYGdjks48Gw
+         2/OQ/gtbF0VKOV7djgmo/kckBZQ7qHrzIDAG3y+Kprcmtr1sv74FA4+ux3t3Y9I0nUNn
+         DUlRgALFsgHs+1NeXImuMuy/7G+M8o6zjQ/LmmFrtoBLMvKEe3ZcMVek47qeDi8UMaKG
+         HjJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748367047; x=1748971847;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gvviCJ2oYBMbmQA+UTssXwmLgRzGcgpFY4e/ToSCytM=;
+        b=PYoXARueSXwnsap7orgVXrulSsYdP2gQhkFwkBg77wHtJhFR4uGr1TY+pI/5L2ZxFj
+         XcwLxuNxZyEvA3g2qOcCXw+JfWoE+ycZTaidzvOUcNewBYKiS2AytT8ES0Lqz16EFcJ5
+         c6Nqgj4TsYPT/LBC8pbWnk+cGGxKtSCao/zDWxlrbJX+lAXQikGtOsVVsHBMqOaara1N
+         juxR1BIdROPiknlNBah9roIm6zDqtjlZ3EtTYYTfhoNNKrmAgEio9qIQKoK0jWF6HOgr
+         AxziAHpQPZu9YW5S/ZBTV+X3/f7Fy+5/s6hISvq5bv0cJL8ATrCB+h8R1yJLnFDwbUNn
+         tnFQ==
+X-Gm-Message-State: AOJu0YwEfbPKoVMAJnV1FulKusHy+xBaseJ66GRciCKwrFdsrYzffhP+
+	qR2cE4dWNmJIlDiH3aKdKR51P0drswOhtD1G0q9ve55ghLQVb+KDlhsjBbarzeDqrblvVdBDn3g
+	NPnKm82dWbnkcR+mN8hcIW3E+oCGnG6s=
+X-Gm-Gg: ASbGnctbe/eURVheLrTSFJPV6tbQiisuIBvRg/bG7g2tjoX2vziDcVVKPUDmd1UT29c
+	mKk3F16VmhstWsjJeVQi7fLsFd1d5NEnJpy8+DCwbP4P0EqgZiSzXmDZreQoHhXq7S5FmUi9pl2
+	seh1DaPmZLJypBpNzu4Zz4YMeAmlERheLViK1JUXIGsHsCUr4Cq+gvOGUNHOc=
+X-Google-Smtp-Source: AGHT+IHpupCJ5fajvdOR6sOgLo+LyCVtRkY+u5rDt1WLqkPhX0rbdw1VhtPaVEx8laNn4d/nLR3KgNt3hj9+FApq5K4=
+X-Received: by 2002:a05:6000:2893:b0:3a4:e2b9:c7e7 with SMTP id
+ ffacd0b85a97d-3a4e2b9c9e4mr2769094f8f.33.1748367046655; Tue, 27 May 2025
+ 10:30:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v7 0/5] Replace CONFIG_DMABUF_SYSFS_STATS with BPF
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <174836523626.1711047.17059127767778339738.git-patchwork-notify@kernel.org>
-Date: Tue, 27 May 2025 17:00:36 +0000
-References: <20250522230429.941193-1-tjmercier@google.com>
-In-Reply-To: <20250522230429.941193-1-tjmercier@google.com>
-To: T.J. Mercier <tjmercier@google.com>
-Cc: sumit.semwal@linaro.org, christian.koenig@amd.com, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
- skhan@linuxfoundation.org, alexei.starovoitov@gmail.com,
- linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, android-mm@google.com,
- simona@ffwll.ch, eddyz87@gmail.com, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org, song@kernel.org
+References: <20250523205316.1291136-1-yonghong.song@linux.dev> <20250523205331.1291734-1-yonghong.song@linux.dev>
+In-Reply-To: <20250523205331.1291734-1-yonghong.song@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 27 May 2025 10:30:35 -0700
+X-Gm-Features: AX0GCFuW7DMVeNrQeqgT-QsF8NYTJKGyrJGmBTzJK7xhqdUUAYEpnTMc4LJ-HJw
+Message-ID: <CAADnVQJ6mGzvemnmzzwjHTrrCfgymHEN0ZZz=oWNDD=5qSiLpQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 3/3] selftests/bpf: Add unit tests with
+ __bpf_trap() kfunc
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Fri, May 23, 2025 at 1:53=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
+dev> wrote:
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/verifier_bpf_trap.c
+> @@ -0,0 +1,71 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
+> +#include <vmlinux.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include "bpf_misc.h"
+> +
+> +#if __clang_major__ >=3D 21
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+I added "&& 0" here to avoid failing the build
+on current clang 21.
 
-On Thu, 22 May 2025 23:04:24 +0000 you wrote:
-> Until CONFIG_DMABUF_SYSFS_STATS was added [1] it was only possible to
-> perform per-buffer accounting with debugfs which is not suitable for
-> production environments. Eventually we discovered the overhead with
-> per-buffer sysfs file creation/removal was significantly impacting
-> allocation and free times, and exacerbated kernfs lock contention. [2]
-> dma_buf_stats_setup() is responsible for 39% of single-page buffer
-> creation duration, or 74% of single-page dma_buf_export() duration when
-> stressing dmabuf allocations and frees.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next,v7,1/5] dma-buf: Rename debugfs symbols
-    https://git.kernel.org/bpf/bpf-next/c/89f9dba365e1
-  - [bpf-next,v7,2/5] bpf: Add dmabuf iterator
-    https://git.kernel.org/bpf/bpf-next/c/76ea95534995
-  - [bpf-next,v7,3/5] bpf: Add open coded dmabuf iterator
-    https://git.kernel.org/bpf/bpf-next/c/6eab7ac7c5ee
-  - [bpf-next,v7,4/5] selftests/bpf: Add test for dmabuf_iter
-    https://git.kernel.org/bpf/bpf-next/c/ae5d2c59ecd7
-  - [bpf-next,v7,5/5] selftests/bpf: Add test for open coded dmabuf_iter
-    https://git.kernel.org/bpf/bpf-next/c/7594dcb71ff8
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> +SEC("socket")
+> +__description("__builtin_trap with simple c code")
+> +__failure __msg("unexpected __bpf_trap() due to uninitialized variable?"=
+)
+> +void bpf_builtin_trap_with_simple_c(void)
+> +{
+> +       __builtin_trap();
+> +}
+> +#endif
 
