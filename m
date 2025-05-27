@@ -1,267 +1,394 @@
-Return-Path: <bpf+bounces-58970-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58971-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3DFEAC49F7
-	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 10:14:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D467FAC4A4B
+	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 10:27:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E572167D10
-	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 08:14:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1854D16BBF1
+	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 08:27:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8813E1D6195;
-	Tue, 27 May 2025 08:14:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 345BF248F73;
+	Tue, 27 May 2025 08:27:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OYMDnDAf"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="d4/G6R6r"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DCDB1F4624
-	for <bpf@vger.kernel.org>; Tue, 27 May 2025 08:14:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C71D024A05D
+	for <bpf@vger.kernel.org>; Tue, 27 May 2025 08:27:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748333670; cv=none; b=CEtal47HN351SUrGHs4vc3QZ8N4nN2Rz+QlfiJ3lJwPJmxgMRFI7bxlDI1y04i+AC/YyFO3PmZFcex/reGo3Pwu1EH04yjJO/d7rpLWpKnrNAd8L5GCybxJE1tnchf7uotxm33ufRV9JzgW4SQ6RP0nATgakKIXW24Ne21gZkDQ=
+	t=1748334448; cv=none; b=gg3cW+RdnCrC86IoTy0gpgmRu3oxdkeyJFB04VhfSdA497Ol5+1VkSum+M8mQ5NAT7hCHKzjxSJ0LNplFKGeRou4asTfcl1ytM3FUV4p9n5y2ffzACnvs2XEqI0/GnApoQhbTLnI0uT629NEaU9++KYuLrzgrPZpP0QLnfpEVK8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748333670; c=relaxed/simple;
-	bh=diiGlRrYjOALVg+hO+cX2xhOeDnSiPH8EHcMMf93uDs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=btTx5Tj6/oR67HGocfHOt61JIg7pongs8xgvhUDs52cedHtgtfuEW4Jn8ZhYpi176oCr663aS1FHvJfmzf0JJOlHlTXEXvLwmgKbJZlUOobAPLY2mnzlOc1JjZABuB6T8SL2dOwNjaIV0TMqvc+Z9WLkrJHFZYrIRt+5yf2BIEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OYMDnDAf; arc=none smtp.client-ip=209.85.219.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-6faa19e0661so25714796d6.3
-        for <bpf@vger.kernel.org>; Tue, 27 May 2025 01:14:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748333667; x=1748938467; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KaNQTaEyUd3zGpDeyMxKJHVSUTBrFb5+VNEBkzCYBC0=;
-        b=OYMDnDAfgW8VaP/b3c0rmlHEbALaZLRrvVmEs5AUiF8+xvFVuv+1y478F6iwZEovoG
-         /EDxaXV7gUdSVEeNmUYnt4iTLQgZtZtNHwc2wzdmrG1fdMXlZ1h4EVCj4IgLRjt5Pren
-         SYBic5vyqXpK2FMnabQ7Cia9Pzvj2Fu0yBm5P9jdVDFNq2j8jSRhjWV4YKQ7GQInH3Qw
-         1UZlwA9ZoI3TUydFNbCmyMoZzJBcHHYVoC/A47qTKMJtvmCrr8An3Izvq6ewAjzP867l
-         OGW6IfuDWU0JN5n4OS7DTkHf1Zuqi/TQQtKHDBd21bkymIivt4vDSyR7lS75Mx1KUYXG
-         MkWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748333667; x=1748938467;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KaNQTaEyUd3zGpDeyMxKJHVSUTBrFb5+VNEBkzCYBC0=;
-        b=wkr0+EN+bzBAanvLWlc3B51Z6Kt7rNaFISC1gpHdydQB3sralSPpCA89fLiRxg95KV
-         iCSzwAzPtFxHvvrpligxVHSHCYXbNLxXhjPUtA5KP+P1oOQc5OI7s5GcdjTEVfmujula
-         OKhBnHgknbI2qeus9Cg6sCF7OhQ36tJfyHqPbXf2l9yu+InbI6rDiw8T/O5xnmqRRw9a
-         dE6KS3ZvqEYOsZfr/rAN9+kALCJXiiS5otXIO6/1cw6HXHGyfrfhmhSlwlVi9PUno2JV
-         CbFDsZAeHOPaGV6Sxk/X72Xdc7GY2V3HgtUzWoX9DY0hiBEbrGxFVjJHxjzflOfTW19A
-         /z1A==
-X-Forwarded-Encrypted: i=1; AJvYcCUcPbgm37AkjoqKYrIPlIoH7iKyEnDQQxlCfDTluJHb+LNlQ2hEy+aJRyNfyFa4pmuJsN8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwzoIiZLkqvrmHD/eWIyfl19Lnjkv7kEiRhfDD0hGXLlwOoPL3p
-	XHHxK9SF8mW4MdqDOtlIQdj6TxCbfNB0908+CusqRtvp2pbo4VeSTHzxcXPHUK1+WzGohI5vl4Y
-	S7JMu90tdenR/uLuXLK/tzH1+VmJkoP0=
-X-Gm-Gg: ASbGncsy8HZI6Wgb6US66LtlT0ytcfCHs46ZwU4fSLPsKJDGrpguZigobigs6sgZ96X
-	WzjVdJJ6XYlRlJnN927BalrodgxjB1zLh8f1hURSl4kDyRHk3+bvWJsjTklv50UJk5hJcJUOqrf
-	8ve+/JGwjM95sB4pUavCFiX9D2Dz9WdLqv+Q==
-X-Google-Smtp-Source: AGHT+IF6UnFIGNe0BPCY8Q18oxqWJXZOD7gK9UnA0fz8D/U6DdNI3gV5KMfQ980OtKU+zyTPjxjZ5DIsXeoV3uwV0sw=
-X-Received: by 2002:a05:6214:5c4:b0:6fa:9d5a:ae6e with SMTP id
- 6a1803df08f44-6fa9d5ab650mr108180316d6.6.1748333667026; Tue, 27 May 2025
- 01:14:27 -0700 (PDT)
+	s=arc-20240116; t=1748334448; c=relaxed/simple;
+	bh=ihHwXxYhZOP6cPjq+ZlfnKl5IxC6K9QLk/MQQUwhbxE=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=EqW2bwM7B/5ZiHzq3hD9GxZOJrqzVP2tc++JPQwPDGYCEMJyYieTpBqmt5xm8yDViO1CB4+DFoL/mTkY/uDr061Gw7Z98Jsd3ZmvRJds0cLb725tbKPLyTyutL2F/ShKD4B8H7UmmFJI89fUz6J46NT3h3HX7M9OPA4sogXbxQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=d4/G6R6r; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54R6mgrr006139;
+	Tue, 27 May 2025 08:27:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=ihHwXx
+	YhZOP6cPjq+ZlfnKl5IxC6K9QLk/MQQUwhbxE=; b=d4/G6R6rkbIzYukkoFTK3a
+	w65/XvtU24kpZMfNG5o3o+N2IEXIvAqWV4JqS91spRziHJ0NzP+JMICHrEJj+gJP
+	oZBz+5tK/KE4vXZFFofzak4Anpb8jH2cW45JQbO1d+5pB/xwpbEcF6l9MBjJziU9
+	Axj5oW6jpQ9TsvGaZ4Ac/uBdosvy3Wx0yFJaYrCa8cLo+54B+ehWFRekK44cRxne
+	qGPrAVn2QQdVj5zZfzygRg1ZdmbeRakb2jHge0Z1ZdBsVbg2kvxCWTvNerGdxUkZ
+	ferFRw3mIe/yYTLaz2cnL4SptSk+XO4nqz1OYyQK2+ZT9HaC5s3HkVqLEX2Lcktg
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46u4hnd8bh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 27 May 2025 08:27:10 +0000 (GMT)
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 54R8FMor007817;
+	Tue, 27 May 2025 08:27:10 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46u4hnd8bf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 27 May 2025 08:27:10 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 54R3srOH006366;
+	Tue, 27 May 2025 08:27:09 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 46utnmhmbd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 27 May 2025 08:27:09 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 54R8R54l57606462
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 27 May 2025 08:27:05 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7A1872004B;
+	Tue, 27 May 2025 08:27:05 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9E37F20043;
+	Tue, 27 May 2025 08:27:04 +0000 (GMT)
+Received: from [127.0.0.1] (unknown [9.152.108.100])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 27 May 2025 08:27:04 +0000 (GMT)
+Message-ID: <15f2b0cb9fd8c106d1daac1c7e0c156c97e0ee04.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix "expression result unused"
+ warnings
+From: Ilya Leoshkevich <iii@linux.ibm.com>
+To: Yonghong Song <yonghong.song@linux.dev>,
+        Kumar Kartikeya Dwivedi
+	 <memxor@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Alexei Starovoitov
+ <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko
+ <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Heiko Carstens
+ <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev
+ <agordeev@linux.ibm.com>
+Date: Tue, 27 May 2025 10:27:04 +0200
+In-Reply-To: <6192c51c-e800-4a89-a0b2-52abab33010a@linux.dev>
+References: <20250508113804.304665-1-iii@linux.ibm.com>
+	 <CAADnVQ+kGcRrLOaA5ic6cYG+1vHJm0bBD1GRfUaYpaOGa3Vx0g@mail.gmail.com>
+	 <15bf9a71b8185006c8d19a3aefb331a2765629c5.camel@linux.ibm.com>
+	 <CAADnVQL6Q+QRv3_JwEd26biwGpFYcwD_=BjBJWLAtpgOP9CKRw@mail.gmail.com>
+	 <7a242102eecdd17b4d35c1e4f7d01ea15cb8066a.camel@linux.ibm.com>
+	 <CAADnVQ+5h9UESAgNA58HEQ-0zwxn=c0+ibH++NF9farR5-JB8g@mail.gmail.com>
+	 <CAP01T74iix8HvmVYowFyrG98tDRw8JMOck7HQLD57nuo7SyuoA@mail.gmail.com>
+	 <a8b8b4c9b5485a605437448bd1c548a38dfd1d55.camel@linux.ibm.com>
+	 <b7517bd4-3e6a-4a74-99c8-bca0969aeb01@linux.dev>
+	 <CAP01T75hQ0SDAXY+w-nnRii_B9TkydCXahbC8ATrmuGAeQc+AQ@mail.gmail.com>
+	 <195a1fd78ebf029eba204982f5bbe0ec6ef025fb.camel@linux.ibm.com>
+	 <6192c51c-e800-4a89-a0b2-52abab33010a@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-2.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250520060504.20251-1-laoar.shao@gmail.com> <CALOAHbDPF+Mxqwh+5ScQFCyEdiz1ghNbgxJKAqmBRDeAZfe3sA@mail.gmail.com>
- <7d8a9a5c-e0ef-4e36-9e1d-1ef8e853aed4@redhat.com> <CALOAHbB-KQ4+z-Lupv7RcxArfjX7qtWcrboMDdT4LdpoTXOMyw@mail.gmail.com>
- <c983ffa8-cd14-47d4-9430-b96acedd989c@redhat.com> <CALOAHbBjueZhwrzp81FP-7C7ntEp5Uzaz26o2s=ZukVSmidEOA@mail.gmail.com>
- <ada2fcc0-3915-40e7-8908-b4d73a2eb050@redhat.com>
-In-Reply-To: <ada2fcc0-3915-40e7-8908-b4d73a2eb050@redhat.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Tue, 27 May 2025 16:13:50 +0800
-X-Gm-Features: AX0GCFsz_Jg5WjvVW8_sdkCN2L2PMZnv99cPfGyCRD3M5sN8ZyrxgdPDk13oj7Y
-Message-ID: <CALOAHbB9kuZ_8XJbTw98VuNtSdeUT=m9PAfO0uxsf4WaC3LXrA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 0/5] mm, bpf: BPF based THP adjustment
-To: David Hildenbrand <david@redhat.com>
-Cc: akpm@linux-foundation.org, ziy@nvidia.com, baolin.wang@linux.alibaba.com, 
-	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, npache@redhat.com, 
-	ryan.roberts@arm.com, dev.jain@arm.com, hannes@cmpxchg.org, 
-	usamaarif642@gmail.com, gutierrez.asier@huawei-partners.com, 
-	willy@infradead.org, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	bpf@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=HvB2G1TS c=1 sm=1 tr=0 ts=6835775e cx=c_pps a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17 a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10 a=VwQbUJbxAAAA:8 a=pGLkceISAAAA:8 a=VnNF1IyMAAAA:8 a=Twlkf-z8AAAA:8
+ a=CckCpcDGUhSvZOO3l5sA:9 a=QEXdDO2ut3YA:10 a=-74SuR6ZdpOK_LpdRCUo:22
+X-Proofpoint-GUID: PonTatmEXcEAgDE1_GvIUEVXAr-aNkqR
+X-Proofpoint-ORIG-GUID: Se01Y6hmJ8CqvAr2sudJJsZcQS9isfvz
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTI3MDA2NCBTYWx0ZWRfX90JmoNGWm+RE rDdjddUWDItrIklqXtUv94YUkSCRqSSAMvlepXJ+Ohg7RXiVaX6hKfRr8xdFEQ082mPKJ0ywTO0 nH2oPtcJoLVlZMAfzDII6J2C3fllORmD0oTotxCZHvfBvYsewa2n3UQblsXMHxT4U8ejejWIV8d
+ BvMXtiVKY3s18gTdQBwyJupWuSzicTTwE26ynRaBqvCKdVCdd9chgFnVJ+/0MVE0kCyyN7M6E6L dZ0JtzQK0Jaus+KezvMJ23eR7/AtWLzt2VyzUa944ZguSq4iw5ggJvI1Fs0QSaRveSAfdDsc8hl KrLDS0McYZ0ToPcGurXCQAUdFD0x5pPtQxWnT06S9/G0/8VDHq88vDCPH3nI+/N6e7hDbhm8s/C
+ nNXqk1K8S0NdKnGu1zF5bfitfQHLJVVkzEhEbK/nrfVb8H61CQz48voQDVwCnGjcXZAPwbqX
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-05-27_04,2025-05-26_02,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 bulkscore=0 lowpriorityscore=0 phishscore=0
+ clxscore=1015 malwarescore=0 mlxlogscore=999 impostorscore=0 spamscore=0
+ mlxscore=0 suspectscore=0 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505160000
+ definitions=main-2505270064
 
-On Tue, May 27, 2025 at 3:58=E2=80=AFPM David Hildenbrand <david@redhat.com=
-> wrote:
->
-> On 27.05.25 07:46, Yafang Shao wrote:
-> > On Mon, May 26, 2025 at 6:49=E2=80=AFPM David Hildenbrand <david@redhat=
-.com> wrote:
-> >>
-> >> On 26.05.25 11:37, Yafang Shao wrote:
-> >>> On Mon, May 26, 2025 at 4:14=E2=80=AFPM David Hildenbrand <david@redh=
-at.com> wrote:
-> >>>>
-> >>>>> Hi all,
-> >>>>>
-> >>>>> Let=E2=80=99s summarize the current state of the discussion and ide=
-ntify how
-> >>>>> to move forward.
-> >>>>>
-> >>>>> - Global-Only Control is Not Viable
-> >>>>> We all seem to agree that a global-only control for THP is unwise. =
-In
-> >>>>> practice, some workloads benefit from THP while others do not, so a
-> >>>>> one-size-fits-all approach doesn=E2=80=99t work.
-> >>>>>
-> >>>>> - Should We Use "Always" or "Madvise"?
-> >>>>> I suspect no one would choose 'always' in its current state. ;)
-> >>>>
-> >>>> IIRC, RHEL9 has the default set to "always" for a long time.
-> >>>
-> >>> good to know.
-> >>>
-> >>>>
-> >>>> I guess it really depends on how different the workloads are that yo=
-u
-> >>>> are running on the same machine.
-> >>>
-> >>> Correct. If we want to enable THP for specific workloads without
-> >>> modifying the kernel, we must isolate them on dedicated servers.
-> >>> However, this approach wastes resources and is not an acceptable
-> >>> solution.
-> >>>
-> >>>>
-> >>>>    > Both Lorenzo and David propose relying on the madvise mode. How=
-ever,>
-> >>>> since madvise is an unprivileged userspace mechanism, any user can
-> >>>>> freely adjust their THP policy. This makes fine-grained control
-> >>>>> impossible without breaking userspace compatibility=E2=80=94an unde=
-sirable
-> >>>>> tradeoff.
-> >>>>
-> >>>> If required, we could look into a "sealing" mechanism, that would
-> >>>> essentially lock modification attempts performed by the process (i.e=
-.,
-> >>>> MADV_HUGEPAGE).
-> >>>
-> >>> If we don=E2=80=99t introduce a new THP mode and instead rely solely =
-on
-> >>> madvise, the "sealing" mechanism could either violate the intended
-> >>> semantics of madvise(), or simply break madvise() entirely, right?
-> >>
-> >> We would have to be a bit careful, yes.
-> >>
-> >> Errors from MADV_HUGEPAGE/MADV_NOHUGEPAGE are often ignored, because
-> >> these options also fail with -EINVAL on kernels without THP support.
-> >>
-> >> Ignoring MADV_NOHUGEPAGE can be problematic with userfaultfd.
-> >>
-> >> What you likely really want to do is seal when you configured
-> >> MADV_NOHUGEPAGE to be the default, and fail MADV_HUGEPAGE later.
-> >>
-> >>>>
-> >>>> The could be added on top of the current proposals that are flying
-> >>>> around, and could be done e.g., per-process.
-> >>>
-> >>> How about introducing a dedicated "process" mode? This would allow
-> >>> each process to use different THP modes=E2=80=94some in "always," oth=
-ers in
-> >>> "madvise," and the rest in "never." Future THP modes could also be
-> >>> added to this framework.
-> >>
-> >> We have to be really careful about not creating even more mess with mo=
-re
-> >> modes.
-> >>
-> >> How would that design look like in detail (how would we set it per
-> >> process etc?)?
-> >
-> > I have a preliminary idea to implement this using BPF.
->
-> I don't think we want to add such a mechanism (new mode) where the
-> primary configuration mechanism is through bpf.
->
-> Maybe bpf could be used as an alternative, but we should look into a
-> reasonable alternative first, like the discussed mctrl()/.../ raised in
-> the process_madvise() series.
->
-> No "bpf" mode in disguise, please :)
-
-This goal can be readily achieved using a BPF program. In any case, it
-is a feasible solution.
-
->
-> > We could define
-> > the API as follows:
-> >
-> > struct bpf_thp_ops {
-> >         /**
-> >          * @task_thp_mode: Get the THP mode for a specific task
-> >          *
-> >          * Return:
-> >          * - TASK_THP_ALWAYS: "always" mode
-> >          * - TASK_THP_MADVISE: "madvise" mode
-> >          * - TASK_THP_NEVER: "never" mode
-> >          * Future modes can also be added.
-> >          */
-> >         int (*task_thp_mode)(struct task_struct *p);
-> > };
-> >
-> > For observability, we could add a "THP mode" field to
-> > /proc/[pid]/status. For example:
-> >
-> > $ grep "THP mode" /proc/123/status
-> > always
-> > $ grep "THP mode" /proc/456/status
-> > madvise
-> > $ grep "THP mode" /proc/789/status
-> > never
-> >
-> > The THP mode for each task would be determined by the attached BPF
-> > program based on the task's attributes. We would place the BPF hook in
-> > appropriate kernel functions. Note that this setting wouldn't be
-> > inherited during fork/exec - the BPF program would make the decision
-> > dynamically for each task.
->
-> What would be the mode (default) when the bpf program would not be active=
-?
->
-> > This approach also enables runtime adjustments to THP modes based on
-> > system-wide conditions, such as memory fragmentation or other
-> > performance overheads. The BPF program could adapt policies
-> > dynamically, optimizing THP behavior in response to changing
-> > workloads.
->
-> I am not sure that is the proper way to handle these scenarios: I never
-> heard that people would be adjusting the system-wide policy dynamically
-> in that way either.
->
-> Whatever we do, we have to make sure that what we add won't
-> over-complicate things in the future. Having tooling dynamically adjust
-> the THP policy of processes that coarsely sounds ... very wrong long-term=
+On Mon, 2025-05-26 at 22:15 -0700, Yonghong Song wrote:
+>=20
+>=20
+> On 5/24/25 2:05 PM, Ilya Leoshkevich wrote:
+> > On Sat, 2025-05-24 at 03:01 +0200, Kumar Kartikeya Dwivedi wrote:
+> > > On Sat, 24 May 2025 at 02:06, Yonghong Song
+> > > <yonghong.song@linux.dev>
+> > > wrote:
+> > > >=20
+> > > >=20
+> > > > On 5/23/25 4:25 AM, Ilya Leoshkevich wrote:
+> > > > > On Mon, 2025-05-12 at 15:29 -0400, Kumar Kartikeya Dwivedi
+> > > > > wrote:
+> > > > > > On Mon, 12 May 2025 at 12:41, Alexei Starovoitov
+> > > > > > <alexei.starovoitov@gmail.com> wrote:
+> > > > > > > On Mon, May 12, 2025 at 5:22=E2=80=AFAM Ilya Leoshkevich
+> > > > > > > <iii@linux.ibm.com> wrote:
+> > > > > > > > On Fri, 2025-05-09 at 09:51 -0700, Alexei Starovoitov
+> > > > > > > > wrote:
+> > > > > > > > > On Thu, May 8, 2025 at 12:21=E2=80=AFPM Ilya Leoshkevich
+> > > > > > > > > <iii@linux.ibm.com>
+> > > > > > > > > wrote:
+> > > > > > > > > > On Thu, 2025-05-08 at 11:38 -0700, Alexei
+> > > > > > > > > > Starovoitov
+> > > > > > > > > > wrote:
+> > > > > > > > > > > On Thu, May 8, 2025 at 4:38=E2=80=AFAM Ilya Leoshkevi=
+ch
+> > > > > > > > > > > <iii@linux.ibm.com>
+> > > > > > > > > > > wrote:
+> > > > > > > > > > > > clang-21 complains about unused expressions in
+> > > > > > > > > > > > a
+> > > > > > > > > > > > few
+> > > > > > > > > > > > progs.
+> > > > > > > > > > > > Fix by explicitly casting the respective
+> > > > > > > > > > > > expressions to
+> > > > > > > > > > > > void.
+> > > > > > > > > > > ...
+> > > > > > > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 if (val & _Q_LOCKED_MASK)
+> > > > > > > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0
+> > > > > > > > > > > > smp_cond_load_acquire_label(&lock-
+> > > > > > > > > > > > > locked,
+> > > > > > > > > > > > !VAL,
+> > > > > > > > > > > > release_err);
+> > > > > > > > > > > > +
+> > > > > > > > > > > > (void)smp_cond_load_acquire_label(&lock-
+> > > > > > > > > > > > > locked,
+> > > > > > > > > > > > !VAL, release_err);
+> > > > > > > > > > > Hmm. I'm on clang-21 too and I don't see them.
+> > > > > > > > > > > What warnings do you see ?
+> > > > > > > > > > In file included from progs/arena_spin_lock.c:7:
+> > > > > > > > > > progs/bpf_arena_spin_lock.h:305:1756: error:
+> > > > > > > > > > expression
+> > > > > > > > > > result
+> > > > > > > > > > unused
+> > > > > > > > > > [-Werror,-Wunused-value]
+> > > > > > > > > > =C2=A0=C2=A0=C2=A0 305 |=C2=A0=C2=A0 ({ typeof(_Generic=
+((*&lock->locked),
+> > > > > > > > > > char:
+> > > > > > > > > > (char)0,
+> > > > > > > > > > unsigned
+> > > > > > > > > > char : (unsigned char)0, signed char : (signed
+> > > > > > > > > > char)0,
+> > > > > > > > > > unsigned
+> > > > > > > > > > short :
+> > > > > > > > > > (unsigned short)0, signed short : (signed short)0,
+> > > > > > > > > > unsigned
+> > > > > > > > > > int :
+> > > > > > > > > > (unsigned int)0, signed int : (signed int)0,
+> > > > > > > > > > unsigned
+> > > > > > > > > > long :
+> > > > > > > > > > (unsigned
+> > > > > > > > > > long)0, signed long : (signed long)0, unsigned long
+> > > > > > > > > > long :
+> > > > > > > > > > (unsigned
+> > > > > > > > > > long long)0, signed long long : (signed long
+> > > > > > > > > > long)0,
+> > > > > > > > > > default:
+> > > > > > > > > > (typeof(*&lock->locked))0)) __val =3D ({
+> > > > > > > > > > typeof(&lock-
+> > > > > > > > > > > locked)
+> > > > > > > > > > __ptr
+> > > > > > > > > > =3D
+> > > > > > > > > > (&lock->locked); typeof(_Generic((*(&lock-
+> > > > > > > > > > >locked)),
+> > > > > > > > > > char:
+> > > > > > > > > > (char)0,
+> > > > > > > > > > unsigned char : (unsigned char)0, signed char :
+> > > > > > > > > > (signed
+> > > > > > > > > > char)0,
+> > > > > > > > > > unsigned short : (unsigned short)0, signed short :
+> > > > > > > > > > (signed
+> > > > > > > > > > short)0,
+> > > > > > > > > > unsigned int : (unsigned int)0, signed int :
+> > > > > > > > > > (signed
+> > > > > > > > > > int)0,
+> > > > > > > > > > unsigned
+> > > > > > > > > > long : (unsigned long)0, signed long : (signed
+> > > > > > > > > > long)0,
+> > > > > > > > > > unsigned
+> > > > > > > > > > long
+> > > > > > > > > > long : (unsigned long long)0, signed long long :
+> > > > > > > > > > (signed long
+> > > > > > > > > > long)0,
+> > > > > > > > > > default: (typeof(*(&lock->locked)))0)) VAL; for
+> > > > > > > > > > (;;) {
+> > > > > > > > > > VAL =3D
+> > > > > > > > > > (typeof(_Generic((*(&lock->locked)), char: (char)0,
+> > > > > > > > > > unsigned
+> > > > > > > > > > char :
+> > > > > > > > > > (unsigned char)0, signed char : (signed char)0,
+> > > > > > > > > > unsigned
+> > > > > > > > > > short :
+> > > > > > > > > > (unsigned short)0, signed short : (signed short)0,
+> > > > > > > > > > unsigned
+> > > > > > > > > > int :
+> > > > > > > > > > (unsigned int)0, signed int : (signed int)0,
+> > > > > > > > > > unsigned
+> > > > > > > > > > long :
+> > > > > > > > > > (unsigned
+> > > > > > > > > > long)0, signed long : (signed long)0, unsigned long
+> > > > > > > > > > long :
+> > > > > > > > > > (unsigned
+> > > > > > > > > > long long)0, signed long long : (signed long
+> > > > > > > > > > long)0,
+> > > > > > > > > > default:
+> > > > > > > > > > (typeof(*(&lock->locked)))0)))(*(volatile
+> > > > > > > > > > typeof(*__ptr)
+> > > > > > > > > > *)&(*__ptr));
+> > > > > > > > > > if (!VAL) break; ({ __label__ l_break, l_continue;
+> > > > > > > > > > asm
+> > > > > > > > > > volatile
+> > > > > > > > > > goto("may_goto %l[l_break]" :::: l_break); goto
+> > > > > > > > > > l_continue;
+> > > > > > > > > > l_break:
+> > > > > > > > > > goto release_err; l_continue:; }); ({}); }
+> > > > > > > > > > (typeof(*(&lock-
+> > > > > > > > > > > locked)))VAL; }); ({ ({ if (!CONFIG_X86_64) ({
+> > > > > > > > > > > unsigned
+> > > > > > > > > > > long
+> > > > > > > > > > > __val;
+> > > > > > > > > > __sync_fetch_and_add(&__val, 0); }); else asm
+> > > > > > > > > > volatile("" :::
+> > > > > > > > > > "memory"); }); }); (typeof(*(&lock->locked)))__val;
+> > > > > > > > > > });
+> > > > > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
+> > > > > > > > > > ^=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 ~~~~~
+> > > > > > > > > > 1 error generated.
+> > > > > > > > > hmm. The error is impossible to read.
+> > > > > > > > >=20
+> > > > > > > > > Kumar,
+> > > > > > > > >=20
+> > > > > > > > > Do you see a way to silence it differently ?
+> > > > > > > > >=20
+> > > > > > > > > Without adding (void)...
+> > > > > > > > >=20
+> > > > > > > > > Things like:
+> > > > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bpf_obj_new(..
+> > > > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (void)bpf_obj_new(.=
 .
+> > > > > > > > >=20
+> > > > > > > > > are good to fix, and if we could annotate
+> > > > > > > > > bpf_obj_new_impl kfunc with __must_check we would
+> > > > > > > > > have
+> > > > > > > > > done it,
+> > > > > > > > >=20
+> > > > > > > > > but
+> > > > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 arch_mcs_spin_lock...
+> > > > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (void)arch_mcs_spin_lock...
+> > > > > > > > >=20
+> > > > > > > > > is odd.
+> > > > > > > > What do you think about moving (void) to the definition
+> > > > > > > > of
+> > > > > > > > arch_mcs_spin_lock_contended_label()? I can send a v2
+> > > > > > > > if
+> > > > > > > > this is
+> > > > > > > > better.
+> > > > > > > Kumar,
+> > > > > > >=20
+> > > > > > > thoughts?
+> > > > > > Sorry for the delay, I was afk.
+> > > > > >=20
+> > > > > > The warning seems a bit aggressive, in the kernel we have
+> > > > > > users
+> > > > > > which
+> > > > > > do and do not use the value and it's fine.
+> > > > > > I think moving (void) inside the macro is a problem since
+> > > > > > at
+> > > > > > least
+> > > > > > rqspinlock like algorithm would want to inspect the result
+> > > > > > of
+> > > > > > the
+> > > > > > locked bit.
+> > > > > > No such users exist for now, of course. So maybe we can
+> > > > > > silence
+> > > > > > it
+> > > > > > until we do end up depending on the value.
+> > > > > >=20
+> > > > > > I will give a try with clang-21, but I think probably
+> > > > > > (void) in
+> > > > > > the
+> > > > > > source is better if we do need to silence it.
+> > > > > Gentle ping.
+> > > > >=20
+> > > > > This is still an issue with clang version 21.0.0
+> > > > > (++20250522112647+491619a25003-1~exp1~20250522112819.1465).
+> > > > >=20
+> > > > I cannot reproduce the "unused expressions" error. What is the
+> > > > llvm cmake command line you are using?
+> > > >=20
+> > > Sorry for the delay. I tried just now with clang built from the
+> > > latest
+> > > git checkout but I don't see it either.
+> > > I built it following the steps at
+> > > https://www.kernel.org/doc/Documentation/bpf/bpf_devel_QA.rst.
+> > I use the following make invocation:
+> >=20
+> > make CC=3D"ccache gcc" LD=3Dld.lld-21 O=3D"$PWD/../linux-build-s390x"
+> > CLANG=3D"ccache clang-21" LLVM_STRIP=3Dllvm-strip-21 LLC=3Dllc-21
+> > LLD=3Dlld-21
+> > -j128 -C tools/testing/selftests/bpf BPF_GCC=3D V=3D1
+> >=20
+> > which results in the following clang invocation:
+> >=20
+> > ccache clang-21=C2=A0 -g -Wall -Werror -D__TARGET_ARCH_s390 -mbig-endia=
+n
+> > -
+> > I"$PWD/../../../../.."/linux-build-s390x//tools/include -
+> > I"$PWD/../../../../.."/linux/tools/testing/selftests/bpf -
+> > I"$PWD/../../../../.."/linux/tools/include/uapi -
+> > I"$PWD/../../../../.."/usr/include -std=3Dgnu11 -fno-strict-aliasing
+> > -
+> > Wno-compare-distinct-pointer-types -idirafter /usr/lib/llvm-
+> > 21/lib/clang/21/include -idirafter /usr/local/include -idirafter
+> > /usr/include/s390x-linux-gnu -idirafter /usr/include=C2=A0=C2=A0=C2=A0 =
+-
+> > DENABLE_ATOMICS_TESTS=C2=A0=C2=A0 -O2 --target=3Dbpfeb -c
+> > progs/arena_spin_lock.c -
+> > mcpu=3Dv3 -o "$PWD/../../../../.."/linux-build-
+> > s390x//arena_spin_lock.bpf.o
+> >=20
+> > I tried dropping ccache, but it did not help.
+>=20
+> Thanks, Ilya. It could be great if you can find out the
+> cmake command lines which eventually builds your clang-21.
+> Once cmake command lines are available, I can build
+> the compiler on x86_64 host and do some checking for it.
 
-This is just an example demonstrating how BPF can be used to adjust
-its flexibility. Notably, all these policies can be implemented
-without modifying the kernel.
-
->
->  > > As Liam pointed out in another thread, naming is challenging here -
-> > "process" might not be the most accurate term for this context.
->
-> No, it's not even a per-process thing. It is per MM, and a MM might be
-> used by multiple processes ...
-
-I consistently use 'thread' for the latter case. Additionally, this
-can be implemented per-MM without kernel code modifications.
-With a well-designed API, users can even implement custom THP
-policies=E2=80=94all without altering kernel code.
-
---=20
-Regards
-Yafang
+Hi Yonghong, I don't build it, I take it from apt.llvm.org.
+It's surprising we don't see this in CI, because it also takes
+clang from there. If you think this is a compiler and not a code
+bug, I can debug this myself, because maybe it's reproducible only on
+s390x.
 
