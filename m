@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-59010-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59011-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52D6BAC58D8
-	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 19:50:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 348DBAC58DA
+	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 19:50:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 039BE1BC2E38
-	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 17:50:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6D621BC2E2C
+	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 17:50:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4135D280038;
-	Tue, 27 May 2025 17:49:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC5E0280330;
+	Tue, 27 May 2025 17:49:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CEDTCtuF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mNZ1Fw5l"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5BAA27A131;
-	Tue, 27 May 2025 17:49:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56C10280322
+	for <bpf@vger.kernel.org>; Tue, 27 May 2025 17:49:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748368196; cv=none; b=RO5Vf2GqdhhgDPLrvk0LOzLogfkeWWrvNRi/MTMARY7D6oMnTISDNLK5RJobZ2j/XLS689NmI2s8yekUR2LamHK8Mp4MCFqZJwfX1qBQe5Vv8PSrAraD12IKoyt3sOl//2K3Yl0R9RG8j8jMpAsMrtaYHBSO3CkzwjpDq5p3ccY=
+	t=1748368198; cv=none; b=A03U57nP3CgihBtbGnwg6Vy/YH4kBXNKaJnrbsKADhX4Y6GyT2bvrZ1QU6R3CKzASXWKcC9smQqAXVchFw6nELYR+FIY6u6nZwlj3zUUGaZVWSz2MrX6A+pmQLfd5TirHYB2mkXa/eR4vLPXydYaNY7KIetDuugYwd81Ke13tH0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748368196; c=relaxed/simple;
-	bh=u6RlqQsVwqhdS3Om0f8q0tySfymkFYitRgLj80KCa5o=;
+	s=arc-20240116; t=1748368198; c=relaxed/simple;
+	bh=bX/R8BPVDjONA5yi2cO1wPtMghqkhUg+TW66zXEJ+vA=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=Bn/WWlYCA1e1zEXbTJhx5vH3PhF5TjnFSQ0X17ILrpWMiENNi6OLCeIfz2WYTUQ6L6VyhwgJ3Za7aJAjNMHv3LCvyZrHMmnLLUzk2oJSedJOk3932Mgjes86HEvOga6+NI7FfoxFSHdGms6PuZPcode/i57mlN7wRD3ZpIdYLGM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CEDTCtuF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C1F7C4CEEA;
-	Tue, 27 May 2025 17:49:56 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=dlknh6v1A/sZ7rEWa9geqHGl3YUr4lZy0/gdBjnWNm807amkHS15hcBH1EJyf3AalwlK5AuFBUAwxe2x20IfSw4ypnK9sf5SVpC0kk7IlAcsnHVsqWtzsn9IlOf0anRDZRe+mAA8ZRqfJxC8U8ZfvE9CiC0scdGixrlBJ05PBck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mNZ1Fw5l; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F105C4CEE9;
+	Tue, 27 May 2025 17:49:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748368196;
-	bh=u6RlqQsVwqhdS3Om0f8q0tySfymkFYitRgLj80KCa5o=;
+	s=k20201202; t=1748368198;
+	bh=bX/R8BPVDjONA5yi2cO1wPtMghqkhUg+TW66zXEJ+vA=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=CEDTCtuFw1ooDIYX4sfCUSahGH7C3UVddOKVbjxZOdSkEU1ycpbBvQhvzUUW+v7NZ
-	 bCWDQKSnC3wS5rBsZhgzSHjIlWt6PfKI471dZjG6xvqstPi5nw7mzUmKjVdBG/edl4
-	 udcAWIyvXPW0XEP2UVMO1IYPEUNxvo29eSDip5QETOV5abfhMC+0czdU9vq4CKskhW
-	 5C3uzOL7/TdTtc0BiufK3ibbHlLm2p+CgHvb1+TeT54QdlLMynqprs88FgGeOS9IXz
-	 Ug1/TRlD+2oZKn/fK0QCnuR0O5lDMnXc53qDwr9t4cym7kVHm3ZZRIzgXNLMG10vre
-	 STH1WwJ4ldKsA==
+	b=mNZ1Fw5lAuW4jE9G+UVZGJelEXlIoLt57mJG3Bx9lcYMdza+zZYoitMXi3IzaB/9Z
+	 qntL815aYRS5YCvfZCX9LNPBZfvCb/pQ0/AxJDghbCvjQ04bX051xEH/yJHqPxHBWf
+	 a/Se+fukRnlh0IoEGa56WaYtYZo8YiK79rwyeAjrS1hfbctGTrEjKA2vtrgAVb/5jg
+	 ejt8v6gGHy4EdBI8yrC3DLwF7kjbVaYw+xEDnLvyMSImSnd65cx3g/Q3hl+GYD6vLn
+	 rhcjJs7ngMwH7JmPGyrn8gkrhtS2y6lMgJqs2GqPfcnNfbNjZsAwDOzFk9Au6Gy6Ws
+	 e3x7ndiKJfdeg==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAD30380AAE2;
-	Tue, 27 May 2025 17:50:31 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70CDB380AAE2;
+	Tue, 27 May 2025 17:50:33 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,60 +52,41 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next 1/1] bpf: fix WARNING in __bpf_prog_ret0_warn when
- jit failed
+Subject: Re: [PATCH bpf-next] bpf: Check rcu_read_lock_trace_held() in
+ bpf_map_lookup_percpu_elem()
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <174836823075.1725298.17816488514505670750.git-patchwork-notify@kernel.org>
-Date: Tue, 27 May 2025 17:50:30 +0000
-References: <20250526133358.2594176-1-mannkafai@gmail.com>
-In-Reply-To: <20250526133358.2594176-1-mannkafai@gmail.com>
-To: KaFai Wan <mannkafai@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- syzbot+0903f6d7f285e41cdf10@syzkaller.appspotmail.com
+ <174836823200.1725298.10199388427709310337.git-patchwork-notify@kernel.org>
+Date: Tue, 27 May 2025 17:50:32 +0000
+References: <20250526062534.1105938-1-houtao@huaweicloud.com>
+In-Reply-To: <20250526062534.1105938-1-houtao@huaweicloud.com>
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: bpf@vger.kernel.org, martin.lau@linux.dev, alexei.starovoitov@gmail.com,
+ andrii@kernel.org, eddyz87@gmail.com, song@kernel.org, haoluo@google.com,
+ yonghong.song@linux.dev, daniel@iogearbox.net, kpsingh@kernel.org,
+ sdf@fomichev.me, jolsa@kernel.org, john.fastabend@gmail.com,
+ houtao1@huawei.com
 
 Hello:
 
 This patch was applied to bpf/bpf-next.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Mon, 26 May 2025 21:33:58 +0800 you wrote:
-> syzkaller reported an issue:
+On Mon, 26 May 2025 14:25:34 +0800 you wrote:
+> From: Hou Tao <houtao1@huawei.com>
 > 
-> WARNING: CPU: 3 PID: 217 at kernel/bpf/core.c:2357 __bpf_prog_ret0_warn+0xa/0x20 kernel/bpf/core.c:2357
-> Modules linked in:
-> CPU: 3 UID: 0 PID: 217 Comm: kworker/u32:6 Not tainted 6.15.0-rc4-syzkaller-00040-g8bac8898fe39 #0 PREEMPT(full)
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-> Workqueue: ipv6_addrconf addrconf_dad_work
-> RIP: 0010:__bpf_prog_ret0_warn+0xa/0x20 kernel/bpf/core.c:2357
-> RSP: 0018:ffffc900031f6c18 EFLAGS: 00010293
-> RAX: 0000000000000000 RBX: ffffc9000006e000 RCX: 1ffff9200000dc06
-> RDX: ffff8880234ba440 RSI: ffffffff81ca6979 RDI: ffff888031e93040
-> RBP: ffffc900031f6cb8 R08: 0000000000000001 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000000 R12: ffff88802b61e010
-> R13: ffff888031e93040 R14: 00000000000000a0 R15: ffff88802c3d4800
-> FS:  0000000000000000(0000) GS:ffff8880d6ce2000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000055557b6d2ca8 CR3: 000000002473e000 CR4: 0000000000352ef0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  bpf_dispatcher_nop_func include/linux/bpf.h:1316 [inline]
->  __bpf_prog_run include/linux/filter.h:718 [inline]
->  bpf_prog_run include/linux/filter.h:725 [inline]
->  cls_bpf_classify+0x74a/0x1110 net/sched/cls_bpf.c:105
->  ...
+> bpf_map_lookup_percpu_elem() helper is also available for sleepable bpf
+> program. When BPF JIT is disabled or under 32-bit host,
+> bpf_map_lookup_percpu_elem() will not be inlined. Using it in a
+> sleepable bpf program will trigger the warning in
+> bpf_map_lookup_percpu_elem(), because the bpf program only holds
+> rcu_read_lock_trace lock. Therefore, add the missed check.
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next,1/1] bpf: fix WARNING in __bpf_prog_ret0_warn when jit failed
-    https://git.kernel.org/bpf/bpf-next/c/86bc9c742426
+  - [bpf-next] bpf: Check rcu_read_lock_trace_held() in bpf_map_lookup_percpu_elem()
+    https://git.kernel.org/bpf/bpf-next/c/d4965578267e
 
 You are awesome, thank you!
 -- 
