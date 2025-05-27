@@ -1,250 +1,267 @@
-Return-Path: <bpf+bounces-58969-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-58970-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9044FAC49EB
-	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 10:11:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3DFEAC49F7
+	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 10:14:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 24F9E189BDA5
-	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 08:11:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E572167D10
+	for <lists+bpf@lfdr.de>; Tue, 27 May 2025 08:14:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 257DB248F53;
-	Tue, 27 May 2025 08:11:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8813E1D6195;
+	Tue, 27 May 2025 08:14:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OYMDnDAf"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 042A7154457;
-	Tue, 27 May 2025 08:11:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DCDB1F4624
+	for <bpf@vger.kernel.org>; Tue, 27 May 2025 08:14:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748333487; cv=none; b=Um90nfWcs7Y+8UFnlNQIH4t5goYgn1lRWrpLdJOwm5dcqGQaUDznyRPV88hmlehVV15ArJa+Y1SE/uGO5kyhjJE6KAbq0PdRtif6QkxfEYNysJVAN77W10CdB/n8WOthFfIKFNxzJmwlopPuaGTqmPl+xADNfbU6/iD7tzmY3Qg=
+	t=1748333670; cv=none; b=CEtal47HN351SUrGHs4vc3QZ8N4nN2Rz+QlfiJ3lJwPJmxgMRFI7bxlDI1y04i+AC/YyFO3PmZFcex/reGo3Pwu1EH04yjJO/d7rpLWpKnrNAd8L5GCybxJE1tnchf7uotxm33ufRV9JzgW4SQ6RP0nATgakKIXW24Ne21gZkDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748333487; c=relaxed/simple;
-	bh=wkEbYlUmL/0e/Oq4Kc62UXZiv8Icaa5HQS20G9Srl+o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MtejY/z44ULheguW0DREMGSkiwVuHAzN/mBHqtWdRQ/20XB/DyANNKjbSRFc2/JzvsBHAR6+02F0T+5ezsZMVFq1T13sH+s0ROk17Y2Ww4NkNprSPOgRNB/OnyDfx+A3N6w00qabrlua7tnRwiz5gd5psAzfFkZ0qPUk7ruMtCs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4b651k2LxrzYQv8L;
-	Tue, 27 May 2025 16:11:22 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 701BD1A252A;
-	Tue, 27 May 2025 16:11:21 +0800 (CST)
-Received: from [10.67.111.192] (unknown [10.67.111.192])
-	by APP4 (Coremail) with SMTP id gCh0CgCXRlunczVo2KyeNg--.19162S2;
-	Tue, 27 May 2025 16:11:21 +0800 (CST)
-Message-ID: <8d184497-fecf-497f-8b4c-bcd4b0a697ce@huaweicloud.com>
-Date: Tue, 27 May 2025 16:11:19 +0800
+	s=arc-20240116; t=1748333670; c=relaxed/simple;
+	bh=diiGlRrYjOALVg+hO+cX2xhOeDnSiPH8EHcMMf93uDs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=btTx5Tj6/oR67HGocfHOt61JIg7pongs8xgvhUDs52cedHtgtfuEW4Jn8ZhYpi176oCr663aS1FHvJfmzf0JJOlHlTXEXvLwmgKbJZlUOobAPLY2mnzlOc1JjZABuB6T8SL2dOwNjaIV0TMqvc+Z9WLkrJHFZYrIRt+5yf2BIEI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OYMDnDAf; arc=none smtp.client-ip=209.85.219.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-6faa19e0661so25714796d6.3
+        for <bpf@vger.kernel.org>; Tue, 27 May 2025 01:14:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748333667; x=1748938467; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KaNQTaEyUd3zGpDeyMxKJHVSUTBrFb5+VNEBkzCYBC0=;
+        b=OYMDnDAfgW8VaP/b3c0rmlHEbALaZLRrvVmEs5AUiF8+xvFVuv+1y478F6iwZEovoG
+         /EDxaXV7gUdSVEeNmUYnt4iTLQgZtZtNHwc2wzdmrG1fdMXlZ1h4EVCj4IgLRjt5Pren
+         SYBic5vyqXpK2FMnabQ7Cia9Pzvj2Fu0yBm5P9jdVDFNq2j8jSRhjWV4YKQ7GQInH3Qw
+         1UZlwA9ZoI3TUydFNbCmyMoZzJBcHHYVoC/A47qTKMJtvmCrr8An3Izvq6ewAjzP867l
+         OGW6IfuDWU0JN5n4OS7DTkHf1Zuqi/TQQtKHDBd21bkymIivt4vDSyR7lS75Mx1KUYXG
+         MkWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748333667; x=1748938467;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KaNQTaEyUd3zGpDeyMxKJHVSUTBrFb5+VNEBkzCYBC0=;
+        b=wkr0+EN+bzBAanvLWlc3B51Z6Kt7rNaFISC1gpHdydQB3sralSPpCA89fLiRxg95KV
+         iCSzwAzPtFxHvvrpligxVHSHCYXbNLxXhjPUtA5KP+P1oOQc5OI7s5GcdjTEVfmujula
+         OKhBnHgknbI2qeus9Cg6sCF7OhQ36tJfyHqPbXf2l9yu+InbI6rDiw8T/O5xnmqRRw9a
+         dE6KS3ZvqEYOsZfr/rAN9+kALCJXiiS5otXIO6/1cw6HXHGyfrfhmhSlwlVi9PUno2JV
+         CbFDsZAeHOPaGV6Sxk/X72Xdc7GY2V3HgtUzWoX9DY0hiBEbrGxFVjJHxjzflOfTW19A
+         /z1A==
+X-Forwarded-Encrypted: i=1; AJvYcCUcPbgm37AkjoqKYrIPlIoH7iKyEnDQQxlCfDTluJHb+LNlQ2hEy+aJRyNfyFa4pmuJsN8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwzoIiZLkqvrmHD/eWIyfl19Lnjkv7kEiRhfDD0hGXLlwOoPL3p
+	XHHxK9SF8mW4MdqDOtlIQdj6TxCbfNB0908+CusqRtvp2pbo4VeSTHzxcXPHUK1+WzGohI5vl4Y
+	S7JMu90tdenR/uLuXLK/tzH1+VmJkoP0=
+X-Gm-Gg: ASbGncsy8HZI6Wgb6US66LtlT0ytcfCHs46ZwU4fSLPsKJDGrpguZigobigs6sgZ96X
+	WzjVdJJ6XYlRlJnN927BalrodgxjB1zLh8f1hURSl4kDyRHk3+bvWJsjTklv50UJk5hJcJUOqrf
+	8ve+/JGwjM95sB4pUavCFiX9D2Dz9WdLqv+Q==
+X-Google-Smtp-Source: AGHT+IF6UnFIGNe0BPCY8Q18oxqWJXZOD7gK9UnA0fz8D/U6DdNI3gV5KMfQ980OtKU+zyTPjxjZ5DIsXeoV3uwV0sw=
+X-Received: by 2002:a05:6214:5c4:b0:6fa:9d5a:ae6e with SMTP id
+ 6a1803df08f44-6fa9d5ab650mr108180316d6.6.1748333667026; Tue, 27 May 2025
+ 01:14:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2 1/2] bpf, arm64: Support up to 12 function
- arguments
-To: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Puranjay Mohan <puranjay@kernel.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Florent Revest <revest@chromium.org>
-Cc: Bastien Curutchet <bastien.curutchet@bootlin.com>,
- ebpf@linuxfoundation.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kselftest@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com, Xu Kuohai <xukuohai@huawei.com>
-References: <20250522-many_args_arm64-v2-0-d6afdb9cf819@bootlin.com>
- <20250522-many_args_arm64-v2-1-d6afdb9cf819@bootlin.com>
-Content-Language: en-US
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-In-Reply-To: <20250522-many_args_arm64-v2-1-d6afdb9cf819@bootlin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCXRlunczVo2KyeNg--.19162S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxCFyxAw1DZr17tr1xKryrtFb_yoWrCrWxpr
-	nYk3ZxGFs3Zw40g3WrXw4UX34FkFs5tF4Y9r48A343AF4DKrykKFsYkayjkFyfCr1kAF4j
-	93s0vrsxAF45J3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
-	4xRDUUUUU==
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+References: <20250520060504.20251-1-laoar.shao@gmail.com> <CALOAHbDPF+Mxqwh+5ScQFCyEdiz1ghNbgxJKAqmBRDeAZfe3sA@mail.gmail.com>
+ <7d8a9a5c-e0ef-4e36-9e1d-1ef8e853aed4@redhat.com> <CALOAHbB-KQ4+z-Lupv7RcxArfjX7qtWcrboMDdT4LdpoTXOMyw@mail.gmail.com>
+ <c983ffa8-cd14-47d4-9430-b96acedd989c@redhat.com> <CALOAHbBjueZhwrzp81FP-7C7ntEp5Uzaz26o2s=ZukVSmidEOA@mail.gmail.com>
+ <ada2fcc0-3915-40e7-8908-b4d73a2eb050@redhat.com>
+In-Reply-To: <ada2fcc0-3915-40e7-8908-b4d73a2eb050@redhat.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Tue, 27 May 2025 16:13:50 +0800
+X-Gm-Features: AX0GCFsz_Jg5WjvVW8_sdkCN2L2PMZnv99cPfGyCRD3M5sN8ZyrxgdPDk13oj7Y
+Message-ID: <CALOAHbB9kuZ_8XJbTw98VuNtSdeUT=m9PAfO0uxsf4WaC3LXrA@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 0/5] mm, bpf: BPF based THP adjustment
+To: David Hildenbrand <david@redhat.com>
+Cc: akpm@linux-foundation.org, ziy@nvidia.com, baolin.wang@linux.alibaba.com, 
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, npache@redhat.com, 
+	ryan.roberts@arm.com, dev.jain@arm.com, hannes@cmpxchg.org, 
+	usamaarif642@gmail.com, gutierrez.asier@huawei-partners.com, 
+	willy@infradead.org, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	bpf@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 5/22/2025 6:14 PM, Alexis Lothoré wrote:
+On Tue, May 27, 2025 at 3:58=E2=80=AFPM David Hildenbrand <david@redhat.com=
+> wrote:
+>
+> On 27.05.25 07:46, Yafang Shao wrote:
+> > On Mon, May 26, 2025 at 6:49=E2=80=AFPM David Hildenbrand <david@redhat=
+.com> wrote:
+> >>
+> >> On 26.05.25 11:37, Yafang Shao wrote:
+> >>> On Mon, May 26, 2025 at 4:14=E2=80=AFPM David Hildenbrand <david@redh=
+at.com> wrote:
+> >>>>
+> >>>>> Hi all,
+> >>>>>
+> >>>>> Let=E2=80=99s summarize the current state of the discussion and ide=
+ntify how
+> >>>>> to move forward.
+> >>>>>
+> >>>>> - Global-Only Control is Not Viable
+> >>>>> We all seem to agree that a global-only control for THP is unwise. =
+In
+> >>>>> practice, some workloads benefit from THP while others do not, so a
+> >>>>> one-size-fits-all approach doesn=E2=80=99t work.
+> >>>>>
+> >>>>> - Should We Use "Always" or "Madvise"?
+> >>>>> I suspect no one would choose 'always' in its current state. ;)
+> >>>>
+> >>>> IIRC, RHEL9 has the default set to "always" for a long time.
+> >>>
+> >>> good to know.
+> >>>
+> >>>>
+> >>>> I guess it really depends on how different the workloads are that yo=
+u
+> >>>> are running on the same machine.
+> >>>
+> >>> Correct. If we want to enable THP for specific workloads without
+> >>> modifying the kernel, we must isolate them on dedicated servers.
+> >>> However, this approach wastes resources and is not an acceptable
+> >>> solution.
+> >>>
+> >>>>
+> >>>>    > Both Lorenzo and David propose relying on the madvise mode. How=
+ever,>
+> >>>> since madvise is an unprivileged userspace mechanism, any user can
+> >>>>> freely adjust their THP policy. This makes fine-grained control
+> >>>>> impossible without breaking userspace compatibility=E2=80=94an unde=
+sirable
+> >>>>> tradeoff.
+> >>>>
+> >>>> If required, we could look into a "sealing" mechanism, that would
+> >>>> essentially lock modification attempts performed by the process (i.e=
+.,
+> >>>> MADV_HUGEPAGE).
+> >>>
+> >>> If we don=E2=80=99t introduce a new THP mode and instead rely solely =
+on
+> >>> madvise, the "sealing" mechanism could either violate the intended
+> >>> semantics of madvise(), or simply break madvise() entirely, right?
+> >>
+> >> We would have to be a bit careful, yes.
+> >>
+> >> Errors from MADV_HUGEPAGE/MADV_NOHUGEPAGE are often ignored, because
+> >> these options also fail with -EINVAL on kernels without THP support.
+> >>
+> >> Ignoring MADV_NOHUGEPAGE can be problematic with userfaultfd.
+> >>
+> >> What you likely really want to do is seal when you configured
+> >> MADV_NOHUGEPAGE to be the default, and fail MADV_HUGEPAGE later.
+> >>
+> >>>>
+> >>>> The could be added on top of the current proposals that are flying
+> >>>> around, and could be done e.g., per-process.
+> >>>
+> >>> How about introducing a dedicated "process" mode? This would allow
+> >>> each process to use different THP modes=E2=80=94some in "always," oth=
+ers in
+> >>> "madvise," and the rest in "never." Future THP modes could also be
+> >>> added to this framework.
+> >>
+> >> We have to be really careful about not creating even more mess with mo=
+re
+> >> modes.
+> >>
+> >> How would that design look like in detail (how would we set it per
+> >> process etc?)?
+> >
+> > I have a preliminary idea to implement this using BPF.
+>
+> I don't think we want to add such a mechanism (new mode) where the
+> primary configuration mechanism is through bpf.
+>
+> Maybe bpf could be used as an alternative, but we should look into a
+> reasonable alternative first, like the discussed mctrl()/.../ raised in
+> the process_madvise() series.
+>
+> No "bpf" mode in disguise, please :)
 
-[...]
+This goal can be readily achieved using a BPF program. In any case, it
+is a feasible solution.
 
-> -static void save_args(struct jit_ctx *ctx, int args_off, int nregs)
-> +struct arg_aux {
-> +	/* how many args are passed through registers, the rest of the args are
-> +	 * passed through stack
-> +	 */
-> +	int args_in_regs;
-> +	/* how many registers are used to pass arguments */
-> +	int regs_for_args;
-> +	/* how much stack is used for additional args passed to bpf program
-> +	 * that did not fit in original function registers
-> +	 **/
+>
+> > We could define
+> > the API as follows:
+> >
+> > struct bpf_thp_ops {
+> >         /**
+> >          * @task_thp_mode: Get the THP mode for a specific task
+> >          *
+> >          * Return:
+> >          * - TASK_THP_ALWAYS: "always" mode
+> >          * - TASK_THP_MADVISE: "madvise" mode
+> >          * - TASK_THP_NEVER: "never" mode
+> >          * Future modes can also be added.
+> >          */
+> >         int (*task_thp_mode)(struct task_struct *p);
+> > };
+> >
+> > For observability, we could add a "THP mode" field to
+> > /proc/[pid]/status. For example:
+> >
+> > $ grep "THP mode" /proc/123/status
+> > always
+> > $ grep "THP mode" /proc/456/status
+> > madvise
+> > $ grep "THP mode" /proc/789/status
+> > never
+> >
+> > The THP mode for each task would be determined by the attached BPF
+> > program based on the task's attributes. We would place the BPF hook in
+> > appropriate kernel functions. Note that this setting wouldn't be
+> > inherited during fork/exec - the BPF program would make the decision
+> > dynamically for each task.
+>
+> What would be the mode (default) when the bpf program would not be active=
+?
+>
+> > This approach also enables runtime adjustments to THP modes based on
+> > system-wide conditions, such as memory fragmentation or other
+> > performance overheads. The BPF program could adapt policies
+> > dynamically, optimizing THP behavior in response to changing
+> > workloads.
+>
+> I am not sure that is the proper way to handle these scenarios: I never
+> heard that people would be adjusting the system-wide policy dynamically
+> in that way either.
+>
+> Whatever we do, we have to make sure that what we add won't
+> over-complicate things in the future. Having tooling dynamically adjust
+> the THP policy of processes that coarsely sounds ... very wrong long-term=
+.
 
-nit: "**/" should be "*/"
+This is just an example demonstrating how BPF can be used to adjust
+its flexibility. Notably, all these policies can be implemented
+without modifying the kernel.
 
-> +	int bstack_for_args;
-> +	/* home much stack is used for additional args passed to the
-> +	 * original function when called from trampoline (this one needs
-> +	 * arguments to be properly aligned)
-> +	 */
-> +	int ostack_for_args;
-> +};
-> +
-> +static int calc_arg_aux(const struct btf_func_model *m,
-> +			 struct arg_aux *a)
->   {
-> -	int i;
-> +	int stack_slots, nregs, slots, i;
-> +
-> +	/* verifier ensures m->nr_args <= MAX_BPF_FUNC_ARGS */
-> +	for (i = 0, nregs = 0; i < m->nr_args; i++) {
-> +		slots = (m->arg_size[i] + 7) / 8;
-> +		if (nregs + slots <= 8) /* passed through register ? */
-> +			nregs += slots;
-> +		else
-> +			break;
-> +	}
-> +
-> +	a->args_in_regs = i;
-> +	a->regs_for_args = nregs;
-> +	a->ostack_for_args = 0;
-> +
-> +	/* the rest arguments are passed through stack */
-> +	for (a->ostack_for_args = 0, a->bstack_for_args = 0;
-> +	     i < m->nr_args; i++) {
+>
+>  > > As Liam pointed out in another thread, naming is challenging here -
+> > "process" might not be the most accurate term for this context.
+>
+> No, it's not even a per-process thing. It is per MM, and a MM might be
+> used by multiple processes ...
 
-a->ostack_for_args is initialized twice.
+I consistently use 'thread' for the latter case. Additionally, this
+can be implemented per-MM without kernel code modifications.
+With a well-designed API, users can even implement custom THP
+policies=E2=80=94all without altering kernel code.
 
-move all initializations before the loop?
-
-> +		/* We can not know for sure about exact alignment needs for
-> +		 * struct passed on stack, so deny those
-> +		 */
-> +		if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG)
-> +			return -EOPNOTSUPP;
-
-leave the error code as is, namely, return -ENOTSUPP?
-
-> +		stack_slots = (m->arg_size[i] + 7) / 8;
-> +		/* AAPCS 64 C.14: arguments passed on stack must be aligned to
-> +		 * max(8, arg_natural_alignment)
-> +		 */
-> +		a->bstack_for_args += stack_slots * 8;
-> +		a->ostack_for_args = round_up(a->ostack_for_args + stack_slots * 8, 8);
-
-since a->ostack_for_args starts from 0 and is always incremented
-by multiples of 8, round_up() to 8 is not needed.
-
-> +	}
->   
-> -	for (i = 0; i < nregs; i++) {
-> -		emit(A64_STR64I(i, A64_SP, args_off), ctx);
-> -		args_off += 8;
-> +	return 0;
-> +}
-> +
-> +static void clear_garbage(struct jit_ctx *ctx, int reg, int effective_bytes)
-> +{
-> +	if (effective_bytes) {
-> +		int garbage_bits = 64 - 8 * effective_bytes;
-> +#ifdef CONFIG_CPU_BIG_ENDIAN
-> +		/* garbage bits are at the right end */
-> +		emit(A64_LSR(1, reg, reg, garbage_bits), ctx);
-> +		emit(A64_LSL(1, reg, reg, garbage_bits), ctx);
-> +#else
-> +		/* garbage bits are at the left end */
-> +		emit(A64_LSL(1, reg, reg, garbage_bits), ctx);
-> +		emit(A64_LSR(1, reg, reg, garbage_bits), ctx);
-> +#endif
->   	}
->   }
->   
-> -static void restore_args(struct jit_ctx *ctx, int args_off, int nregs)
-> +static void save_args(struct jit_ctx *ctx, int bargs_off, int oargs_off,
-> +		      const struct btf_func_model *m,
-> +		      const struct arg_aux *a,
-> +		      bool for_call_origin)
->   {
->   	int i;
-> +	int reg;
-> +	int doff;
-> +	int soff;
-> +	int slots;
-> +	u8 tmp = bpf2a64[TMP_REG_1];
-> +
-> +	/* store arguments to the stack for the bpf program, or restore
-> +	 * arguments from stack for the original function
-> +	 */
-> +	for (reg = 0; reg < a->regs_for_args; reg++) {
-> +		emit(for_call_origin ?
-> +		     A64_LDR64I(reg, A64_SP, bargs_off) :
-> +		     A64_STR64I(reg, A64_SP, bargs_off),
-> +		     ctx);
-> +		bargs_off += 8;
-> +	}
-> +
-> +	soff = 32; /* on stack arguments start from FP + 32 */
-> +	doff = (for_call_origin ? oargs_off : bargs_off);
-> +
-> +	/* save on stack arguments */
-> +	for (i = a->args_in_regs; i < m->nr_args; i++) {
-> +		slots = (m->arg_size[i] + 7) / 8;
-> +		/* AAPCS C.14: additional arguments on stack must be
-> +		 * aligned on max(8, arg_natural_alignment)
-> +		 */
-> +		soff = round_up(soff, 8);
-> +		if (for_call_origin)
-> +			doff =  round_up(doff, 8);
-
-since both soff and doff start from multiples of 8 and are
-incremented by 8 each time, the two round_up()s are also
-not needed.
-
-> +		/* verifier ensures arg_size <= 16, so slots equals 1 or 2 */
-> +		while (slots-- > 0) {
-> +			emit(A64_LDR64I(tmp, A64_FP, soff), ctx);
-> +			/* if there is unused space in the last slot, clear
-> +			 * the garbage contained in the space.
-> +			 */
-> +			if (slots == 0 && !for_call_origin)
-> +				clear_garbage(ctx, tmp, m->arg_size[i] % 8);
-> +			emit(A64_STR64I(tmp, A64_SP, doff), ctx);
-> +			soff += 8;
-> +			doff += 8;
-> +		}
-> +	}
-> +}
-
-[...]
-
+--=20
+Regards
+Yafang
 
