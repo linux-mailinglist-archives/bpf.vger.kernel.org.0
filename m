@@ -1,209 +1,205 @@
-Return-Path: <bpf+bounces-59166-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59167-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE9CFAC6727
-	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 12:41:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EF871AC679B
+	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 12:46:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2B143AF87A
-	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 10:40:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36414A21F03
+	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 10:45:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0CF827A46F;
-	Wed, 28 May 2025 10:40:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 065FC27B505;
+	Wed, 28 May 2025 10:44:54 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9D2227A12F;
-	Wed, 28 May 2025 10:40:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A59B27A139;
+	Wed, 28 May 2025 10:44:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748428851; cv=none; b=IASPYBPFwgWguAsKZw3O9gmpsDMtaDV5VJ5EYpfcgxqWebrx4jMIRrvRriypIFRxx3HYguRtBl/JEqHVo9qNRad5UEequcPzIzgXdBsTNVTWrAmwdSAmm50ASq+TSVJ4FarH2bO/2h6HSicULA0VmSngbW+eYKWo4zNJ11M6GzY=
+	t=1748429093; cv=none; b=Wh+dSU0Mr031tl8Hu4b3CL6xOaBhg6FqJbt4ZJgmH1p8JQv//pIMiG29O2sJnbJTVUY7AAaZPScsoby4tzJizpXr5B2nu2M+nkMl6IXzrEMaPAAq2LRDshDuaTT9SqrGtbxSl2X2YySsA8FP23hacIJnz/Y+qrwBJVqxns7F9oI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748428851; c=relaxed/simple;
-	bh=4haYlpXI5Ixcum997fl2z6nwrGcuYNAvbh9OqGw7pCg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=YA8H7smZV79gxAJqhsTYpysJSGTKE7l2HP8i2xcw+Taq+au84Py8nKV2K2pNN8NOD2II4LkwgZyQ2Hi7IoQ2krM25oSWzgFJ+kpC24cstv0r1e/v0/2cF+vSABuYdiE/4QX4haLQ8tGS9u5hbXU+nr5YzGLoWo31BvZ5bInIXqw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 30eaf12e3bb011f0b29709d653e92f7d-20250528
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.45,REQID:d77636db-7685-4e1e-b6c2-abe4fb78a234,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-3,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:7
-X-CID-INFO: VERSION:1.1.45,REQID:d77636db-7685-4e1e-b6c2-abe4fb78a234,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-3,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:7
-X-CID-META: VersionHash:6493067,CLOUDID:a5b747f2bb1facfd45d139daa1634ba9,BulkI
-	D:250528184038GRIC8D5J,BulkQuantity:0,Recheck:0,SF:17|19|23|42|66|74|78|10
-	0|101|102,TC:nil,Content:0|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,
-	QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-	,ARC:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_SNR
-X-UUID: 30eaf12e3bb011f0b29709d653e92f7d-20250528
-X-User: jianghaoran@kylinos.cn
-Received: from localhost.localdomain [(114.246.238.195)] by mailgw.kylinos.cn
-	(envelope-from <jianghaoran@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 1632325228; Wed, 28 May 2025 18:40:36 +0800
-From: Haoran Jiang <jianghaoran@kylinos.cn>
-To: loongarch@lists.linux.dev
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kernel@xen0n.name,
-	chenhuacai@kernel.org,
-	hengqi.chen@gmail.com,
-	yangtiezhu@loongson.cn,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	sdf@fomichev.me,
-	kpsingh@kernel.org,
-	john.fastabend@gmail.com,
-	yonghong.song@linux.dev,
-	song@kernel.org,
-	eddyz87@gmail.com,
-	martin.lau@linux.dev,
-	andrii@kernel.org,
-	daniel@iogearbox.net
-Subject: [PATCH] LoongArch: BPF: Optimize the calculation method of jmp_offset in the emit_bpf_tail_call function
-Date: Wed, 28 May 2025 18:40:32 +0800
-Message-Id: <20250528104032.1237415-1-jianghaoran@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1748429093; c=relaxed/simple;
+	bh=dg5mHjTNFjh5HufNfUkk+9xtn8O5Kt5adGbR0I182mw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BXhDOjo2R/hM9JE4RjDR4oAENvvtb70WFxH9T869N/DLWL0fUhqC1+ClvqW4nVvdNSXzC2vRnD8QU0uuixreWxZLvKlAg6Si0UeCyfsa/o51AkYBOpylNVL7H3uunzYeuotWqOQSo/OsNeSnhpdE5wZuQARZ/wpy7o349Q1Kj38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-669ff7000002311f-12-6836e91d5aa2
+Date: Wed, 28 May 2025 19:44:40 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Pavel Begunkov <asml.silence@gmail.com>
+Cc: Mina Almasry <almasrymina@google.com>, willy@infradead.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, kernel_team@skhynix.com, kuba@kernel.org,
+	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
+	akpm@linux-foundation.org, davem@davemloft.net,
+	john.fastabend@gmail.com, andrew+netdev@lunn.ch, toke@redhat.com,
+	tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com,
+	saeedm@nvidia.com, leon@kernel.org, ast@kernel.org,
+	daniel@iogearbox.net, david@redhat.com, lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
+	surenb@google.com, mhocko@suse.com, horms@kernel.org,
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+	vishal.moola@gmail.com
+Subject: Re: [PATCH 12/18] page_pool: use netmem APIs to access
+ page->pp_magic in page_pool_page_is_pp()
+Message-ID: <20250528104440.GA13050@system.software.com>
+References: <20250523032609.16334-13-byungchul@sk.com>
+ <CAHS8izN6QAcAr-qkFSYAy0JaTU+hdM56r-ug-AWDGGqLvHkNuQ@mail.gmail.com>
+ <20250526022307.GA27145@system.software.com>
+ <a4ff25cb-e31f-4ed7-a3b9-867b861b17bd@gmail.com>
+ <20250528081403.GA28116@system.software.com>
+ <06fca2f8-39f6-4abb-8e0d-bef373d9be0f@gmail.com>
+ <20250528091416.GA54984@system.software.com>
+ <b7efa56b-e9fd-4ca6-9ecf-0d5f15b8d0c1@gmail.com>
+ <20250528093303.GB54984@system.software.com>
+ <5494b37d-1af0-488e-904b-2d3cbd0e7dcf@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <5494b37d-1af0-488e-904b-2d3cbd0e7dcf@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SWUwTURSGc2emd6aVxktduErc6oJLXIPmxD0a441xjQ9GTdAGRlstYIog
+	IBoEjBELbiRiLVhRERBSU6UsqUYrIkbjUkUrLhhU1OAKWkUUpSVG3r7858/5zsOReE2BYqBk
+	iNkqm2J0Ri1WCaoPQQXjB72bpp/0+dB4sNpLMZz9kQhnXlQqwFriRPC1/YkIbTXXMZw84ePB
+	eidDgG/2nzy8rm0SobGwWQDXngoemvbXYcjK6OAhrbKIg7vObAXk/DzNQ0XqCxHuV1sxPC/9
+	o4Bmd5YANyzFAjRmz4VaW3/w3XyPoMZewYHPnIfhsMeG4WVGIwLP1SYBju3KRmC/5FVAxw8r
+	njuMXSh+zLEqyzOR2Rzx7HzRWJbp9fDMUbIXM0frIZE9fejCrC63Q2BVlW0cy0r/iNmX1w0C
+	+3SpHjP7hXqB3bLViKzNMXg5WaOaGSUbDQmyaeLs9Sq9q/wI2nIxLDGn+i1ORfmDMpFSoiSc
+	mluOiJlICrA3ba0/FshImtuex/sZkzDq9bYHuC8ZR1seubvqKokn7xXUvscp+Ad9yCZqbniD
+	/awmQFtqSzg/a8hugZrNS7vzYHrj6KtAn+9a+ivfw/u9PAmlZzql7ngITS8/FnApySya/r0z
+	sKYfGU4vO69zfi8lLon6PB/47vsH0CtFXuEACrb0UFh6KCz/FZYeChsSSpDGEJMQrTMYwyfo
+	k2IMiRMiY6MdqOtzCnf8WluJWu+udCMiIW2Qmp2bqtcodAlxSdFuRCVe21edNmeaXqOO0iUl
+	y6bYdaZ4oxznRqGSoA1RT/Fti9KQjbqt8mZZ3iKb/k05STkwFa2KvTY4JGle/sIIY8po3/JT
+	D3ZGXFXnPMFQSMpIxA7j8VHlM28rmz/FhxbX1oeEF3C5znup23NSNu7nIldvqHNd/mPEQcsW
+	Vo1Q9m4YE70g+LdryfTti8OS3QdxMrevkG5u86SElYlpIZrJ1Xm92iObp6yMXdHaOZ+JO4ct
+	GjpDqxXi9LrJY3lTnO4vwi9NpjUDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRjHec85OzuuFsdl9ZJoMQkh8xKYPNHND4FvSdIHIyrCRh7cSqds
+	KRoEXpPEaaZpzWkrzdSEhek2r9g0zS4kM2vdtOxqmWUX71rOiPz24/9/+P2/PBwtyxCt5lTq
+	E4JGrYiWsxJGErYlzddjKEgZMNuEwWCqYeH6RCJce2UVgaHajODn5HMx/OjoYqHs8hgNhofp
+	DPwyTdHwrnNQDAMV7xlozrTQMJh7hwVd+jQNqdZKCtpLukXQY84RQcHUVRosya/E0NtoYKG/
+	5rcI3tt0DHTrqxgYyAmGTuNKGLs3jKDDZKFgLLuEhXy7kYU36QMI7O2DDBSn5CAwtTpEMD1h
+	YIPlpK7qKUUa9C/FxFgbT25WridZDjtNaqvPsKT2+zkxefG4mSV3LkwzpMH6gyK6tBGWjL57
+	xpCvrX0sKfv4jSKmuj6G3Dd2iPe6HpRsjRSiVQmCxn/7EYmyub4IxbV4JxY0fmSTUalHFuI4
+	zAdiR+qhLOTCMfw6fGGyhHYyy3tjh2Nygd14H/z5iU2chSQczQ+LsCnTzDiL5fwxnP3sA+tk
+	KQ/4c2c15WQZn8Hg7Oywv7kr7r74duGenpfOlNpp5y7Nu+Nrc9zfeA1Oqy9e2HLht+G08bkF
+	zQreC7eZu6izaJl+kUm/yKT/b9IvMhkRU43cVOqEGIUqepOf9rgySa1K9DsaG1OL5p+j4tRM
+	nhX97A2xIZ5D8qVScmOTUiZSJGiTYmwIc7TcTZq6I0gpk0Yqkk4KmtgITXy0oLUhd46Rr5Lu
+	3i8ckfFRihPCcUGIEzT/WopzWZ2MvDWXfEOu4Kjz4Xz+wZChpliLcbz/cOGQjg3YF38rVLIk
+	ojjCc+190jDY4z+3y2fn7ddFSasCDnz6Hu63ufzR6SrfoZ7coC95LftHvfz7H4QWXppta21f
+	Yg07nRI8Uj4zfrc4PtBaFZGZYgk077WukKkfbaA8Ayuu7gnvq/zg4b3DLme0SsXG9bRGq/gD
+	47EkOBgDAAA=
+X-CFilter-Loop: Reflected
 
-For a ebpf subprog JIT，the last call bpf_int_jit_compile function will
-directly enter the skip_init_ctx process. At this point, out_offset = -1,
-the jmp_offset in emit_bpf_tail_call is calculated
-by #define jmp_offset (out_offset - (cur_offset)) is a negative number,
-which does not meet expectations.The final generated assembly as follow.
+On Wed, May 28, 2025 at 10:51:29AM +0100, Pavel Begunkov wrote:
+> On 5/28/25 10:33, Byungchul Park wrote:
+> > On Wed, May 28, 2025 at 10:20:29AM +0100, Pavel Begunkov wrote:
+> > > On 5/28/25 10:14, Byungchul Park wrote:
+> > > > On Wed, May 28, 2025 at 10:07:52AM +0100, Pavel Begunkov wrote:
+> > > > > On 5/28/25 09:14, Byungchul Park wrote:
+> > > > > > On Wed, May 28, 2025 at 08:51:47AM +0100, Pavel Begunkov wrote:
+> > > > > > > On 5/26/25 03:23, Byungchul Park wrote:
+> > > > > > > > On Fri, May 23, 2025 at 10:21:17AM -0700, Mina Almasry wrote:
+> > > > > > > > > On Thu, May 22, 2025 at 8:26 PM Byungchul Park <byungchul@sk.com> wrote:
+> > > > > > > > > > 
+> > > > > > > > > > To simplify struct page, the effort to seperate its own descriptor from
+> > > > > > > > > > struct page is required and the work for page pool is on going.
+> > > > > > > > > > 
+> > > > > > > > > > To achieve that, all the code should avoid accessing page pool members
+> > > > > > > > > > of struct page directly, but use safe APIs for the purpose.
+> > > > > > > > > > 
+> > > > > > > > > > Use netmem_is_pp() instead of directly accessing page->pp_magic in
+> > > > > > > > > > page_pool_page_is_pp().
+> > > > > > > > > > 
+> > > > > > > > > > Signed-off-by: Byungchul Park <byungchul@sk.com>
+> > > > > > > > > > ---
+> > > > > > > > > >      include/linux/mm.h   | 5 +----
+> > > > > > > > > >      net/core/page_pool.c | 5 +++++
+> > > > > > > > > >      2 files changed, 6 insertions(+), 4 deletions(-)
+> > > > > > > > > > 
+> > > > > > > > > > diff --git a/include/linux/mm.h b/include/linux/mm.h
+> > > > > > > > > > index 8dc012e84033..3f7c80fb73ce 100644
+> > > > > > > > > > --- a/include/linux/mm.h
+> > > > > > > > > > +++ b/include/linux/mm.h
+> > > > > > > > > > @@ -4312,10 +4312,7 @@ int arch_lock_shadow_stack_status(struct task_struct *t, unsigned long status);
+> > > > > > > > > >      #define PP_MAGIC_MASK ~(PP_DMA_INDEX_MASK | 0x3UL)
+> > > > > > > > > > 
+> > > > > > > > > >      #ifdef CONFIG_PAGE_POOL
+> > > > > > > > > > -static inline bool page_pool_page_is_pp(struct page *page)
+> > > > > > > > > > -{
+> > > > > > > > > > -       return (page->pp_magic & PP_MAGIC_MASK) == PP_SIGNATURE;
+> > > > > > > > > > -}
+> > > > > > > > > 
+> > > > > > > > > I vote for keeping this function as-is (do not convert it to netmem),
+> > > > > > > > > and instead modify it to access page->netmem_desc->pp_magic.
+> > > > > > > > 
+> > > > > > > > Once the page pool fields are removed from struct page, struct page will
+> > > > > > > > have neither struct netmem_desc nor the fields..
+> > > > > > > > 
+> > > > > > > > So it's unevitable to cast it to netmem_desc in order to refer to
+> > > > > > > > pp_magic.  Again, pp_magic is no longer associated to struct page.
+> > > > > > > > 
+> > > > > > > > Thoughts?
+> > > > > > > 
+> > > > > > > Once the indirection / page shrinking is realized, the page is
+> > > > > > > supposed to have a type field, isn't it? And all pp_magic trickery
+> > > > > > > will be replaced with something like
+> > > > > > > 
+> > > > > > > page_pool_page_is_pp() { return page->type == PAGE_TYPE_PP; }
+> > > > > > 
+> > > > > > Agree, but we need a temporary solution until then.  I will use the
+> > > > > > following way for now:
+> > > > > 
+> > > > > The question is what is the problem that you need another temporary
+> > > > > solution? If, for example, we go the placeholder way, page_pool_page_is_pp()
+> > > > 
+> > > > I prefer using the place-holder, but Matthew does not.  I explained it:
+> > > > 
+> > > >      https://lore.kernel.org/all/20250528013145.GB2986@system.software.com/
+> > > > 
+> > > > Now, I'm going with the same way as the other approaches e.g. ptdesc.
+> > > 
+> > > Sure, but that doesn't change my point
+> > 
+> > What's your point?  The other appoaches do not use place-holders.  I
+> > don't get your point.
+> > 
+> > As I told you, I will introduce a new struct, netmem_desc, instead of
+> > struct_group_tagged() on struct net_iov, and modify the static assert on
+> > the offsets to keep the important fields between struct page and
+> > netmem_desc.
+> > 
+> > Then, is that following your point?  Or could you explain your point in
+> > more detail?  Did you say other points than these?
+> 
+> Then please read the message again first. I was replying to th
+> aliasing with "lru", and even at the place you cut the message it
+> says "for example", which was followed by "You should be able to
+> do the same with the overlay option.".
 
-54:	bgeu        	$a2, $t1, -8	    # 0x0000004c
-58:	addi.d      	$a6, $s5, -1
-5c:	bltz        	$a6, -16	    # 0x0000004c
-60:	alsl.d      	$t2, $a2, $a1, 0x3
-64:	ld.d        	$t2, $t2, 264
-68:	beq         	$t2, $zero, -28	    # 0x0000004c
+With struct_group_tagged() on struct net_iov, no idea about how to.
+However, it's doable with a new separate struct, struct netmem_desc.
 
-Before apply this patch, the follow test case will reveal soft lock issues.
+I will.
 
-cd tools/testing/selftests/bpf/
-./test_progs --allow=tailcalls/tailcall_bpf2bpf_1
-
-dmesg:
-watchdog: BUG: soft lockup - CPU#2 stuck for 26s! [test_progs:25056]
-
-Signed-off-by: Haoran Jiang <jianghaoran@kylinos.cn>
----
- arch/loongarch/net/bpf_jit.c | 28 +++++++++-------------------
- 1 file changed, 9 insertions(+), 19 deletions(-)
-
-diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
-index fa1500d4aa3e..d85490e7de89 100644
---- a/arch/loongarch/net/bpf_jit.c
-+++ b/arch/loongarch/net/bpf_jit.c
-@@ -208,9 +208,7 @@ bool bpf_jit_supports_far_kfunc_call(void)
- 	return true;
- }
- 
--/* initialized on the first pass of build_body() */
--static int out_offset = -1;
--static int emit_bpf_tail_call(struct jit_ctx *ctx)
-+static int emit_bpf_tail_call(int insn, struct jit_ctx *ctx)
- {
- 	int off;
- 	u8 tcc = tail_call_reg(ctx);
-@@ -220,9 +218,8 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
- 	u8 t2 = LOONGARCH_GPR_T2;
- 	u8 t3 = LOONGARCH_GPR_T3;
- 	const int idx0 = ctx->idx;
--
--#define cur_offset (ctx->idx - idx0)
--#define jmp_offset (out_offset - (cur_offset))
-+	int tc_ninsn = 0;
-+	int jmp_offset = 0;
- 
- 	/*
- 	 * a0: &ctx
-@@ -232,8 +229,11 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
- 	 * if (index >= array->map.max_entries)
- 	 *	 goto out;
- 	 */
-+	tc_ninsn = insn ? ctx->offset[insn+1] - ctx->offset[insn] :
-+		ctx->offset[0];
- 	off = offsetof(struct bpf_array, map.max_entries);
- 	emit_insn(ctx, ldwu, t1, a1, off);
-+	jmp_offset = tc_ninsn - (ctx->idx - idx0);
- 	/* bgeu $a2, $t1, jmp_offset */
- 	if (emit_tailcall_jmp(ctx, BPF_JGE, a2, t1, jmp_offset) < 0)
- 		goto toofar;
-@@ -243,6 +243,7 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
- 	 *	 goto out;
- 	 */
- 	emit_insn(ctx, addid, REG_TCC, tcc, -1);
-+	jmp_offset = tc_ninsn - (ctx->idx - idx0);
- 	if (emit_tailcall_jmp(ctx, BPF_JSLT, REG_TCC, LOONGARCH_GPR_ZERO, jmp_offset) < 0)
- 		goto toofar;
- 
-@@ -254,6 +255,7 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
- 	emit_insn(ctx, alsld, t2, a2, a1, 2);
- 	off = offsetof(struct bpf_array, ptrs);
- 	emit_insn(ctx, ldd, t2, t2, off);
-+	jmp_offset = tc_ninsn - (ctx->idx - idx0);
- 	/* beq $t2, $zero, jmp_offset */
- 	if (emit_tailcall_jmp(ctx, BPF_JEQ, t2, LOONGARCH_GPR_ZERO, jmp_offset) < 0)
- 		goto toofar;
-@@ -263,22 +265,11 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
- 	emit_insn(ctx, ldd, t3, t2, off);
- 	__build_epilogue(ctx, true);
- 
--	/* out: */
--	if (out_offset == -1)
--		out_offset = cur_offset;
--	if (cur_offset != out_offset) {
--		pr_err_once("tail_call out_offset = %d, expected %d!\n",
--			    cur_offset, out_offset);
--		return -1;
--	}
--
- 	return 0;
- 
- toofar:
- 	pr_info_once("tail_call: jump too far\n");
- 	return -1;
--#undef cur_offset
--#undef jmp_offset
- }
- 
- static void emit_atomic(const struct bpf_insn *insn, struct jit_ctx *ctx)
-@@ -916,7 +907,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx, bool ext
- 	/* tail call */
- 	case BPF_JMP | BPF_TAIL_CALL:
- 		mark_tail_call(ctx);
--		if (emit_bpf_tail_call(ctx) < 0)
-+		if (emit_bpf_tail_call(i, ctx) < 0)
- 			return -EINVAL;
- 		break;
- 
-@@ -1342,7 +1333,6 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	if (tmp_blinded)
- 		bpf_jit_prog_release_other(prog, prog == orig_prog ? tmp : orig_prog);
- 
--	out_offset = -1;
- 
- 	return prog;
- 
--- 
-2.43.0
-
+	Byungchul
+> 
+> You can still continue to use pp_magic placed in the netmem_desc
+> until mm gets rid of it in favour of page->type. I hear that you're
+> saying it's temporary, but it's messy and there is nothing more
+> persistent than a "temporary solution", who knows where the final
+> conversion is going to happen.
+> 
+> -- 
+> Pavel Begunkov
+> 
 
