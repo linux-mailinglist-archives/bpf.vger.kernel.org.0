@@ -1,77 +1,78 @@
-Return-Path: <bpf+bounces-59108-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59109-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DC22AC6073
-	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 05:55:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EC7AAC6070
+	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 05:55:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52C5718831EC
-	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 03:54:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A00F89E11D4
+	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 03:54:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17A0921D3F5;
-	Wed, 28 May 2025 03:50:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F232A21E094;
+	Wed, 28 May 2025 03:50:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EyxBi+0r"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cRAHr2Y/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f193.google.com (mail-pl1-f193.google.com [209.85.214.193])
+Received: from mail-pl1-f194.google.com (mail-pl1-f194.google.com [209.85.214.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D58721CC7F;
-	Wed, 28 May 2025 03:50:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D58521CC71;
+	Wed, 28 May 2025 03:50:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748404220; cv=none; b=t1ZKuQt7nbKRgUnPnyw4BwmxYScl+tA2Nt9YmfTvmuE9174mRy1ON7Oi/MD0pPEQSxkPCj7n9miGYIZoNBLihGuhWdxHQ3Fwa2pj7HgorAHAq0kkj0SM1LzilXsWLraISaifMOrGzu0iwQFOl+izjjX2fwzp94radL+KjwbL5xM=
+	t=1748404222; cv=none; b=CggqQuerExIoauh+l2AzaowKhzu/yhSQuuBvmfnsTSq6AUVSs3iynZDcM3HDpAn+TYXVA4XhpXwS10DPYy2CWt96UCZBZDz/M1xcm2/qMRCag1fdKErlZjh2juqWer4d8SKuAbBt0itVGTK60e7aInyOTClBpHN0u/SglmS+qy4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748404220; c=relaxed/simple;
-	bh=5V+8heoQF3gSTeQDws/G0dOXiPgoppADqa7baGsuzPE=;
+	s=arc-20240116; t=1748404222; c=relaxed/simple;
+	bh=Cg0Y83b329LN/NLe5Rd1wETYp97M1UfTmvlXP4dlxQA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=NihKajXar4IHL2/Gvmj1ILFp07H4q5vo9DzyOhK7E+UFbd529mQ9m6pYQlW3tabOOmLzL4vuu/HynEmCfVCKVN9C94EUHtJkkQbl3Fsd8Bo/CjwrKYWD5CGwZErTODjip2zfI6cWUl/cIbozTHJyqe0VVv4mca6aLP6sdX9eOoQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EyxBi+0r; arc=none smtp.client-ip=209.85.214.193
+	 MIME-Version; b=ZXjFUVrJY7B/nH2/JvGPzlRjnJ8mN4xxqgKpavwogUu+3cgXDC6gyMjnGKButozb3rUI3su4snQJfbGI4mQGka1IaF3Yb5g/8+t611IVZ8DLTQ3cYhX3GZiGpCF1YLrHYaS5KJeVm4UKZ5lMXo6b4g2Aonp5gNKgMn2PMmlpfSA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cRAHr2Y/; arc=none smtp.client-ip=209.85.214.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f193.google.com with SMTP id d9443c01a7336-234488c2ea6so28143715ad.3;
-        Tue, 27 May 2025 20:50:18 -0700 (PDT)
+Received: by mail-pl1-f194.google.com with SMTP id d9443c01a7336-23035b3edf1so30877705ad.3;
+        Tue, 27 May 2025 20:50:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748404218; x=1749009018; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1748404220; x=1749009020; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OOAklLICFXXiJE09qqPApCXuoD1jwY/692BPEgyWx/I=;
-        b=EyxBi+0rJv/PI4VAbkIVz3xeOa3V2+UEcV8dILYmAGWeyFD2+3bOO4DsOrfC0d/SYB
-         Nzxq6OK8x71sdEmDeKntd791VCW+sViBu95q3eb3IkFL0Y1BB0oNwDAlG7jgWRSmH4lA
-         hNLZHQkL443p9MVNwBB+gqTKd9z1ZGp/9ldt3dpKIKM0tV23T7SpQD02wuC+eGB6+2en
-         ZgDSJf8qcwVjCSqOfvlfu2GKSvpwfvkSXjh06yS6/Le1pmdrtxJN9WEOqKUbvQxfSXyR
-         IYZbdseWa6B6w6o7OtjNuMhaRs/kTQrmjnJsHEulkrPRDi+58zMt7Vt69rk3qNjg18Jt
-         uHGQ==
+        bh=ppMvLXTeAVvwICb0b3sYSiEahNB4W8tGcpU/rQDfwuU=;
+        b=cRAHr2Y/y+obMbKpBPI6GwhsvMpEWZXpmeRgyA1BFtnw+6LIaWSFJlmZeD4zMsmQ7g
+         ZvFULvNVLVBtMKE7S/EatPiszGJBdYo4+DxO5e/QBnK+60VK3fS6+FlEtZAgdIRri6Pm
+         E68jRhQtnsTinWvlmKNEuAP9vVIefbx7ZJaxv0Y+UBMouo2hBdNuo7iRozE8ppWGLrwo
+         /Du20/uzLSq2hUEZ/6emFMhcjtsUtZ51UAoK4telD65GlF/VNl8NFOXlAUqwmcHktm6C
+         yEJW0ETMakWHub5WTMSc0C1mK02Kq6OTcpICNhHxwRoCWM0lDFL2CzjAyhK0xOm5TD+r
+         N6Vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748404218; x=1749009018;
+        d=1e100.net; s=20230601; t=1748404220; x=1749009020;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OOAklLICFXXiJE09qqPApCXuoD1jwY/692BPEgyWx/I=;
-        b=LHTwwSAnJZktsrtI4j1Vch/ezRaKbkUom6tjDJfZKzoA9aBnRe1Ms3oWG60OUJk0zs
-         2BidjIE+U8fb/g3YEATGIhC85nZHQbip9VwJ0LlDbeGsysUQALiRvGhIFzZwQYSStWEs
-         UiLZnaapE9iAf3Hmpbw2eXvYhaqKSJ2jGAFUoIRzEY34OlyxVEUoQBl+1GhaAdP1SmyU
-         ab9Y2h4qb8Sak1fEJt5WmXKdPB+maFC3KnUEXxp4PGG7u29nlCCKan0aDx/pPxAL9l08
-         aythrYyCil12xtTD1zXvqdDA20ucTAxnm/+GvlN8SAqXtzALKyDDWWsiIssutkLXThtS
-         V86w==
-X-Forwarded-Encrypted: i=1; AJvYcCUvsqDa8XI3Edqxj+IiZzxT9DFE/ED+X5AMHdNizjBOQjk1bK6Ho0/0NnavqHOF8LPZT9NrqwN7uga9pCs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxrM1EM7aRf6/zcn990nlp05k5j3d3Ar0jH+2c86pWJpwrcJzM3
-	OrmQFcWQmUpp/tESIOI94TH/TYVznw6f7lFKRNMhOZALBsMUUtSh6dX9
-X-Gm-Gg: ASbGncuTI3OpJ2SD6Lq9JKp2FGDr7OgsBVyCvnQF6aKjkyGkogCuKDJDil7p0fu12gF
-	8VvTQ+Ar8n2fr1cUcDm4MQwN+23z83ROnZjONqlHxRoKv+3xsY/j2HNLBoH0foxIfL/wlPP8maP
-	h3bQaPNYsEqLteflb5EU9EWWPmJM96Uv9eLNYrGnndtTghwX1/jKeS6C5QvZI4hwE0K+QuWVobq
-	ouWcSyIc6RqaUMEpE/ARtUlVrVYxQa5J1Fk9fY/YCXGy7XVp8SzGDqlv92fGXd8wmENPkWgO9bi
-	VClr72SKG3/5b+nOK0fB9/v2AhQLo7vWEdHMde2nvYlNrdIoKWu186zJtGjv/vBPn3dP
-X-Google-Smtp-Source: AGHT+IFjRDfKk14PTcCXJFZU5cazoUTE4t7ucC5c5KcvLGRVl1mcIVWu47Z++9kntaSV5DajC+EV3Q==
-X-Received: by 2002:a17:902:e807:b0:22e:50fa:50d6 with SMTP id d9443c01a7336-23414fb1934mr238367355ad.37.1748404217643;
-        Tue, 27 May 2025 20:50:17 -0700 (PDT)
+        bh=ppMvLXTeAVvwICb0b3sYSiEahNB4W8tGcpU/rQDfwuU=;
+        b=BnctoszIztFf0yKx4qE1uHrLCbRfkp3/zpdwX5XB+LsxJoPzyt0aMPdPWGNwfZ+rSG
+         yd8W5d+tIUun3+R2yFBOOeimMaAVTOmwXB1skpgtrN9OL464MO8UZ8Vj7Dr/05tKxCVt
+         f/hZ8M5eUxyxr42yAZiP9TXdPbkrl8e1rJAf/f+2Kx1K57hgl6yiejOPjghwek7qr9Y0
+         FVeZihV1izQuHXZ273qtQt2x/dwAeGPQ2Z1e4w7Id06oMi09h+MNtdiWI3jvp4XQ3hmR
+         q1XGBWrk0h3Tr5vV8KW+uOhLyMGAAdpb5W5ia1A+efbP66YR0dkA4x+Kx2+Q/yZHYM0W
+         d00A==
+X-Forwarded-Encrypted: i=1; AJvYcCUiJmLabYD98P5QOgf3vCXAa5/1FXzPcGwHM/8xrNYL8eH0mzmBDGg5XaXeq+J8UE4pR2kOGi3wCAsZoPI=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz2lZadbUzaLFDkrZKf4Q6kNYl6JG4OjLSza9++U9krkjTFZ2r2
+	SZSzUfzr1GS6NMCtuQnw31O/xq44JM79N+INZlo7ZGi6XmPXD3nks7oO
+X-Gm-Gg: ASbGncuAJoBV7sxJWxgjRYqlaOnMtQ/ekjh/+dq7DagYXzO0eR/ZIEMNnTL1//d4oCv
+	xmcDf5PEat8VZIMBNuJIYio0kahgfisGrTG+ZLfMCUGz4M7nVi8JGYNLBbSOE5FyHcFMDqMG8OJ
+	AREzub26Z79r6g61sHdJLcflzxuROx7XxBd8E2MOaFz0V7E59czYhPQyV/MQiMHa0b2Z/TwtPY6
+	oM3cqhAk29Zc2XtAhHkIGTmJ2yjTPpo4xd7PZBqr97/GbHJoZKw+MfKf3b7QJw3dB9oDWkjoSBo
+	zt+iMSULzEi2h/+nattoP4khDHDcXepBAs/If7AYQxypue9lYXZd3pj2F22Q+PMeIDY+Pd5E6TB
+	M/wg=
+X-Google-Smtp-Source: AGHT+IGY4I9vvI1XK8m9Bv5+nxTB1QcaQm+Nu44QbsEkVPydM4PCaf7ATyYKIvKCS4IIHIi+e1yqAA==
+X-Received: by 2002:a17:903:986:b0:234:c8f6:1b03 with SMTP id d9443c01a7336-234d2c4aa08mr13167895ad.47.1748404219819;
+        Tue, 27 May 2025 20:50:19 -0700 (PDT)
 Received: from localhost.localdomain ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-234d35ac417sm2074505ad.169.2025.05.27.20.50.15
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-234d35ac417sm2074505ad.169.2025.05.27.20.50.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 May 2025 20:50:17 -0700 (PDT)
+        Tue, 27 May 2025 20:50:19 -0700 (PDT)
 From: Menglong Dong <menglong8.dong@gmail.com>
 X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
 To: alexei.starovoitov@gmail.com,
@@ -80,9 +81,9 @@ To: alexei.starovoitov@gmail.com,
 Cc: bpf@vger.kernel.org,
 	Menglong Dong <dongml2@chinatelecom.cn>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next 19/25] libbpf: support tracing_multi
-Date: Wed, 28 May 2025 11:47:06 +0800
-Message-Id: <20250528034712.138701-20-dongml2@chinatelecom.cn>
+Subject: [PATCH bpf-next 20/25] libbpf: add btf type hash lookup support
+Date: Wed, 28 May 2025 11:47:07 +0800
+Message-Id: <20250528034712.138701-21-dongml2@chinatelecom.cn>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250528034712.138701-1-dongml2@chinatelecom.cn>
 References: <20250528034712.138701-1-dongml2@chinatelecom.cn>
@@ -94,338 +95,307 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add supporting for the attach types of:
+For now, the libbpf find the btf type id by loop all the btf types and
+compare its name, which is inefficient if we have many functions to
+lookup.
 
-BPF_TRACE_FENTRY_MULTI
-BPF_TRACE_FEXIT_MULTI
-BPF_MODIFY_RETURN_MULTI
+We add the "use_hash" to the function args of find_kernel_btf_id() to
+indicate if we should lookup the btf type id by hash. The hash table will
+be initialized if it has not yet.
 
 Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
 ---
- tools/bpf/bpftool/common.c |   3 +
- tools/lib/bpf/bpf.c        |  10 +++
- tools/lib/bpf/bpf.h        |   6 ++
- tools/lib/bpf/libbpf.c     | 168 ++++++++++++++++++++++++++++++++++++-
- tools/lib/bpf/libbpf.h     |  19 +++++
- tools/lib/bpf/libbpf.map   |   1 +
- 6 files changed, 204 insertions(+), 3 deletions(-)
+ tools/lib/bpf/btf.c      | 102 +++++++++++++++++++++++++++++++++++++++
+ tools/lib/bpf/btf.h      |   6 +++
+ tools/lib/bpf/libbpf.c   |  37 +++++++++++---
+ tools/lib/bpf/libbpf.map |   3 ++
+ 4 files changed, 140 insertions(+), 8 deletions(-)
 
-diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
-index ecfa790adc13..8e681fe3dd6b 100644
---- a/tools/bpf/bpftool/common.c
-+++ b/tools/bpf/bpftool/common.c
-@@ -1162,6 +1162,9 @@ const char *bpf_attach_type_input_str(enum bpf_attach_type t)
- 	case BPF_TRACE_FENTRY:			return "fentry";
- 	case BPF_TRACE_FEXIT:			return "fexit";
- 	case BPF_MODIFY_RETURN:			return "mod_ret";
-+	case BPF_TRACE_FENTRY_MULTI:		return "fentry_multi";
-+	case BPF_TRACE_FEXIT_MULTI:		return "fexit_multi";
-+	case BPF_MODIFY_RETURN_MULTI:		return "mod_ret_multi";
- 	case BPF_SK_REUSEPORT_SELECT:		return "sk_skb_reuseport_select";
- 	case BPF_SK_REUSEPORT_SELECT_OR_MIGRATE:	return "sk_skb_reuseport_select_or_migrate";
- 	default:	return libbpf_bpf_attach_type_str(t);
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index a9c3e33d0f8a..75a917de1a3c 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -797,6 +797,16 @@ int bpf_link_create(int prog_fd, int target_fd,
- 		if (!OPTS_ZEROED(opts, tracing))
- 			return libbpf_err(-EINVAL);
- 		break;
-+	case BPF_TRACE_FENTRY_MULTI:
-+	case BPF_TRACE_FEXIT_MULTI:
-+	case BPF_MODIFY_RETURN_MULTI:
-+		attr.link_create.tracing_multi.btf_ids = ptr_to_u64(OPTS_GET(opts, tracing_multi.btf_ids, 0));
-+		attr.link_create.tracing_multi.tgt_fds = ptr_to_u64(OPTS_GET(opts, tracing_multi.tgt_fds, 0));
-+		attr.link_create.tracing_multi.cookies = ptr_to_u64(OPTS_GET(opts, tracing_multi.cookies, 0));
-+		attr.link_create.tracing_multi.cnt = OPTS_GET(opts, tracing_multi.cnt, 0);
-+		if (!OPTS_ZEROED(opts, tracing_multi))
-+			return libbpf_err(-EINVAL);
-+		break;
- 	case BPF_NETFILTER:
- 		attr.link_create.netfilter.pf = OPTS_GET(opts, netfilter.pf, 0);
- 		attr.link_create.netfilter.hooknum = OPTS_GET(opts, netfilter.hooknum, 0);
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index 777627d33d25..c279b3bc80be 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -422,6 +422,12 @@ struct bpf_link_create_opts {
- 		struct {
- 			__u64 cookie;
- 		} tracing;
-+		struct {
-+			__u32 cnt;
-+			const __u32 *btf_ids;
-+			const __u32 *tgt_fds;
-+			const __u64 *cookies;
-+		} tracing_multi;
- 		struct {
- 			__u32 pf;
- 			__u32 hooknum;
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index cfe81e1640d8..0c4ed5d237e5 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -136,6 +136,9 @@ static const char * const attach_type_name[] = {
- 	[BPF_NETKIT_PEER]		= "netkit_peer",
- 	[BPF_TRACE_KPROBE_SESSION]	= "trace_kprobe_session",
- 	[BPF_TRACE_UPROBE_SESSION]	= "trace_uprobe_session",
-+	[BPF_TRACE_FENTRY_MULTI]	= "trace_fentry_multi",
-+	[BPF_TRACE_FEXIT_MULTI]		= "trace_fexit_multi",
-+	[BPF_MODIFY_RETURN_MULTI]	= "modify_return_multi",
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index f1d495dc66bb..a0df16296a94 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -35,6 +35,7 @@ struct btf {
+ 	void *raw_data;
+ 	/* raw BTF data in non-native endianness */
+ 	void *raw_data_swapped;
++	struct hashmap *func_hash;
+ 	__u32 raw_size;
+ 	/* whether target endianness differs from the native one */
+ 	bool swapped_endian;
+@@ -131,6 +132,12 @@ struct btf {
+ 	int ptr_sz;
  };
  
- static const char * const link_type_name[] = {
-@@ -410,6 +413,8 @@ enum sec_def_flags {
- 	SEC_XDP_FRAGS = 16,
- 	/* Setup proper attach type for usdt probes. */
- 	SEC_USDT = 32,
-+	/* attachment target is multi-link */
-+	SEC_ATTACH_BTF_MULTI = 64,
- };
- 
- struct bpf_sec_def {
-@@ -7417,9 +7422,9 @@ static int libbpf_prepare_prog_load(struct bpf_program *prog,
- 		opts->expected_attach_type = BPF_TRACE_UPROBE_MULTI;
- 	}
- 
--	if ((def & SEC_ATTACH_BTF) && !prog->attach_btf_id) {
-+	if ((def & (SEC_ATTACH_BTF | SEC_ATTACH_BTF_MULTI)) && !prog->attach_btf_id) {
- 		int btf_obj_fd = 0, btf_type_id = 0, err;
--		const char *attach_name;
-+		const char *attach_name, *name_end;
- 
- 		attach_name = strchr(prog->sec_name, '/');
- 		if (!attach_name) {
-@@ -7438,7 +7443,27 @@ static int libbpf_prepare_prog_load(struct bpf_program *prog,
- 		}
- 		attach_name++; /* skip over / */
- 
--		err = libbpf_find_attach_btf_id(prog, attach_name, &btf_obj_fd, &btf_type_id);
-+		name_end = strchr(attach_name, ',');
-+		/* for multi-link tracing, use the first target symbol during
-+		 * loading.
-+		 */
-+		if ((def & SEC_ATTACH_BTF_MULTI) && name_end) {
-+			int len = name_end - attach_name + 1;
-+			char *first_tgt;
++struct btf_type_key {
++	__u32 dummy;
++	const char *name;
++	int kind;
++};
 +
-+			first_tgt = malloc(len);
-+			if (!first_tgt)
-+				return -ENOMEM;
-+			libbpf_strlcpy(first_tgt, attach_name, len);
-+			first_tgt[len - 1] = '\0';
-+			err = libbpf_find_attach_btf_id(prog, first_tgt, &btf_obj_fd,
-+							&btf_type_id);
-+			free(first_tgt);
-+		} else {
-+			err = libbpf_find_attach_btf_id(prog, attach_name, &btf_obj_fd,
-+							&btf_type_id);
-+		}
-+
- 		if (err)
- 			return err;
- 
-@@ -9507,6 +9532,7 @@ static int attach_kprobe_session(const struct bpf_program *prog, long cookie, st
- static int attach_uprobe_multi(const struct bpf_program *prog, long cookie, struct bpf_link **link);
- static int attach_lsm(const struct bpf_program *prog, long cookie, struct bpf_link **link);
- static int attach_iter(const struct bpf_program *prog, long cookie, struct bpf_link **link);
-+static int attach_trace_multi(const struct bpf_program *prog, long cookie, struct bpf_link **link);
- 
- static const struct bpf_sec_def section_defs[] = {
- 	SEC_DEF("socket",		SOCKET_FILTER, 0, SEC_NONE),
-@@ -9553,6 +9579,13 @@ static const struct bpf_sec_def section_defs[] = {
- 	SEC_DEF("fentry.s+",		TRACING, BPF_TRACE_FENTRY, SEC_ATTACH_BTF | SEC_SLEEPABLE, attach_trace),
- 	SEC_DEF("fmod_ret.s+",		TRACING, BPF_MODIFY_RETURN, SEC_ATTACH_BTF | SEC_SLEEPABLE, attach_trace),
- 	SEC_DEF("fexit.s+",		TRACING, BPF_TRACE_FEXIT, SEC_ATTACH_BTF | SEC_SLEEPABLE, attach_trace),
-+	SEC_DEF("tp_btf+",		TRACING, BPF_TRACE_RAW_TP, SEC_ATTACH_BTF, attach_trace),
-+	SEC_DEF("fentry.multi+",	TRACING, BPF_TRACE_FENTRY_MULTI, SEC_ATTACH_BTF_MULTI, attach_trace_multi),
-+	SEC_DEF("fmod_ret.multi+",	TRACING, BPF_MODIFY_RETURN_MULTI, SEC_ATTACH_BTF_MULTI, attach_trace_multi),
-+	SEC_DEF("fexit.multi+",		TRACING, BPF_TRACE_FEXIT_MULTI, SEC_ATTACH_BTF_MULTI, attach_trace_multi),
-+	SEC_DEF("fentry.multi.s+",	TRACING, BPF_TRACE_FENTRY_MULTI, SEC_ATTACH_BTF_MULTI | SEC_SLEEPABLE, attach_trace_multi),
-+	SEC_DEF("fmod_ret.multi.s+",	TRACING, BPF_MODIFY_RETURN_MULTI, SEC_ATTACH_BTF_MULTI | SEC_SLEEPABLE, attach_trace_multi),
-+	SEC_DEF("fexit.multi.s+",	TRACING, BPF_TRACE_FEXIT_MULTI, SEC_ATTACH_BTF_MULTI | SEC_SLEEPABLE, attach_trace_multi),
- 	SEC_DEF("freplace+",		EXT, 0, SEC_ATTACH_BTF, attach_trace),
- 	SEC_DEF("lsm+",			LSM, BPF_LSM_MAC, SEC_ATTACH_BTF, attach_lsm),
- 	SEC_DEF("lsm.s+",		LSM, BPF_LSM_MAC, SEC_ATTACH_BTF | SEC_SLEEPABLE, attach_lsm),
-@@ -12787,6 +12820,135 @@ static int attach_trace(const struct bpf_program *prog, long cookie, struct bpf_
- 	return libbpf_get_error(*link);
+ static inline __u64 ptr_to_u64(const void *ptr)
+ {
+ 	return (__u64) (unsigned long) ptr;
+@@ -938,6 +945,100 @@ static __s32 btf_find_by_name_kind(const struct btf *btf, int start_id,
+ 	return libbpf_err(-ENOENT);
  }
  
-+struct bpf_link *bpf_program__attach_trace_multi_opts(const struct bpf_program *prog,
-+						      const struct bpf_trace_multi_opts *opts)
++static size_t btf_hash_name(long key, void *btf)
 +{
-+	LIBBPF_OPTS(bpf_link_create_opts, link_opts);
-+	__u32 *btf_ids = NULL, *tgt_fds = NULL;
-+	struct bpf_link *link = NULL;
-+	char errmsg[STRERR_BUFSIZE];
-+	int prog_fd, pfd, cnt, err;
++	const struct btf_type *t = (const struct btf_type *)key;
++	const char *name;
 +
-+	if (!OPTS_VALID(opts, bpf_trace_multi_opts))
-+		return libbpf_err_ptr(-EINVAL);
++	if (t->name_off > BTF_MAX_NAME_OFFSET)
++		name = ((struct btf_type_key *)key)->name;
++	else
++		name = btf__name_by_offset(btf, t->name_off);
 +
-+	prog_fd = bpf_program__fd(prog);
-+	if (prog_fd < 0) {
-+		pr_warn("prog '%s': can't attach before loaded\n", prog->name);
-+		return libbpf_err_ptr(-EINVAL);
-+	}
++	return str_hash(name);
++}
 +
-+	cnt = OPTS_GET(opts, cnt, 0);
-+	if (opts->syms) {
-+		int btf_obj_fd, btf_type_id, i;
++static bool btf_name_equal(long key1, long key2, void *btf)
++{
++	const struct btf_type *t1 = (const struct btf_type *)key1,
++		*t2 = (const struct btf_type *)key2;
++	const char *name1, *name2;
++	int k1, k2;
 +
-+		if (opts->btf_ids || opts->tgt_fds) {
-+			pr_warn("can set both opts->syms and opts->btf_ids\n");
-+			return libbpf_err_ptr(-EINVAL);
-+		}
++	name1 = btf__name_by_offset(btf, t1->name_off);
++	k1 = btf_kind(t1);
 +
-+		btf_ids = malloc(sizeof(*btf_ids) * cnt);
-+		tgt_fds = malloc(sizeof(*tgt_fds) * cnt);
-+		if (!btf_ids || !tgt_fds) {
-+			err = -ENOMEM;
-+			goto err_free;
-+		}
-+		for (i = 0; i < cnt; i++) {
-+			btf_obj_fd = btf_type_id = 0;
++	if (t2->name_off > BTF_MAX_NAME_OFFSET) {
++		struct btf_type_key *t2_key = (struct btf_type_key *)key2;
 +
-+			err = find_kernel_btf_id(prog->obj, opts->syms[i],
-+					 prog->expected_attach_type, &btf_obj_fd,
-+					 &btf_type_id);
-+			if (err)
-+				goto err_free;
-+			btf_ids[i] = btf_type_id;
-+			tgt_fds[i] = btf_obj_fd;
-+		}
-+		link_opts.tracing_multi.btf_ids = btf_ids;
-+		link_opts.tracing_multi.tgt_fds = tgt_fds;
++		name2 = t2_key->name;
++		k2 = t2_key->kind;
 +	} else {
-+		link_opts.tracing_multi.btf_ids = OPTS_GET(opts, btf_ids, 0);
-+		link_opts.tracing_multi.tgt_fds = OPTS_GET(opts, tgt_fds, 0);
++		name2 = btf__name_by_offset(btf, t2->name_off);
++		k2 = btf_kind(t2);
 +	}
 +
-+	link = calloc(1, sizeof(*link));
-+	if (!link) {
-+		err = -ENOMEM;
-+		goto err_free;
-+	}
-+	link->detach = &bpf_link__detach_fd;
-+
-+	link_opts.tracing_multi.cookies = OPTS_GET(opts, cookies, 0);
-+	link_opts.tracing_multi.cnt = cnt;
-+
-+	pfd = bpf_link_create(prog_fd, 0, bpf_program__expected_attach_type(prog), &link_opts);
-+	if (pfd < 0) {
-+		err = -errno;
-+		pr_warn("prog '%s': failed to attach: %s\n",
-+			prog->name, libbpf_strerror_r(pfd, errmsg, sizeof(errmsg)));
-+		goto err_free;
-+	}
-+	link->fd = pfd;
-+
-+	free(btf_ids);
-+	free(tgt_fds);
-+	return link;
-+err_free:
-+	free(btf_ids);
-+	free(tgt_fds);
-+	free(link);
-+	return libbpf_err_ptr(err);
++	return k1 == k2 && strcmp(name1, name2) == 0;
 +}
 +
-+static int attach_trace_multi(const struct bpf_program *prog, long cookie, struct bpf_link **link)
++__s32 btf__make_hash(struct btf *btf)
 +{
-+	LIBBPF_OPTS(bpf_trace_multi_opts, opts);
-+	int i, err, len, cnt = 1;
-+	char **syms, *buf, *name;
-+	const char *spec;
++	__u32 i, nr_types = btf__type_cnt(btf);
++	struct hashmap *map;
 +
-+	spec = strchr(prog->sec_name, '/');
-+	if (!spec || !*(++spec))
-+		return -EINVAL;
++	if (btf->func_hash)
++		return 0;
 +
-+	len = strlen(spec) + 1;
-+	buf = malloc(len);
-+	if (!buf)
-+		return -ENOMEM;
++	map = hashmap__new(btf_hash_name, btf_name_equal, (void *)btf);
++	if (!map)
++		return libbpf_err(-ENOMEM);
 +
-+	libbpf_strlcpy(buf, spec, len);
-+	for (i = 0; i < len; i++) {
-+		if (buf[i] == ',')
-+			cnt++;
++	for (i = btf->start_id; i < nr_types; i++) {
++		const struct btf_type *t = btf__type_by_id(btf, i);
++		int err;
++
++		/* only function need this */
++		if (btf_kind(t) != BTF_KIND_FUNC)
++			continue;
++
++		err = hashmap__add(map, t, i);
++		if (err == -EEXIST) {
++			pr_warn("btf type exist: name=%s\n",
++				btf__name_by_offset(btf, t->name_off));
++			continue;
++		}
++
++		if (err)
++			return libbpf_err(err);
 +	}
 +
-+	syms = malloc(sizeof(*syms) * cnt);
-+	if (!syms) {
-+		err = -ENOMEM;
-+		goto out_free;
-+	}
-+
-+	opts.syms = (const char **)syms;
-+	opts.cnt = cnt;
-+	name = buf;
-+	err = -EINVAL;
-+	while (name) {
-+		if (*name == '\0')
-+			goto out_free;
-+		*(syms++) = name;
-+		name = strchr(name, ',');
-+		if (name)
-+			*(name++) = '\0';
-+	}
-+
-+	*link = bpf_program__attach_trace_multi_opts(prog, &opts);
-+	err = libbpf_get_error(*link);
-+out_free:
-+	free(buf);
-+	free(opts.syms);
-+	return err;
++	btf->func_hash = map;
++	return 0;
 +}
 +
- static int attach_lsm(const struct bpf_program *prog, long cookie, struct bpf_link **link)
- {
- 	*link = bpf_program__attach_lsm(prog);
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index ded98e8cf327..d7f0db7ab586 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -833,6 +833,25 @@ bpf_program__attach_xdp(const struct bpf_program *prog, int ifindex);
- LIBBPF_API struct bpf_link *
- bpf_program__attach_freplace(const struct bpf_program *prog,
- 			     int target_fd, const char *attach_func_name);
-+struct bpf_trace_multi_opts {
-+	/* size of this struct, for forward/backward compatibility */
-+	size_t sz;
-+	/* array of function symbols to attach */
-+	const char **syms;
-+	/* array of the btf type id to attach */
-+	__u32 *btf_ids;
-+	/* array of the target fds */
-+	__u32 *tgt_fds;
-+	/* array of the cookies */
-+	__u64 *cookies;
-+	/* number of elements in syms/btf_ids/cookies arrays */
-+	size_t cnt;
-+};
-+#define bpf_trace_multi_opts__last_field cnt
++bool btf__hash_hash(struct btf *btf)
++{
++	return !!btf->func_hash;
++}
 +
-+LIBBPF_API struct bpf_link *
-+bpf_program__attach_trace_multi_opts(const struct bpf_program *prog,
-+				     const struct bpf_trace_multi_opts *opts);
++int btf__find_by_func_hash(struct btf *btf, const char *type_name, __u32 kind)
++{
++	struct btf_type_key key = {
++		.dummy = 0xffffffff,
++		.name = type_name,
++		.kind = kind,
++	};
++	long t;
++
++	if (!btf->func_hash)
++		return -ENOENT;
++
++	if (hashmap__find(btf->func_hash, &key, &t))
++		return t;
++
++	return -ENOENT;
++}
++
+ __s32 btf__find_by_name_kind_own(const struct btf *btf, const char *type_name,
+ 				 __u32 kind)
+ {
+@@ -974,6 +1075,7 @@ void btf__free(struct btf *btf)
+ 	if (btf->fd >= 0)
+ 		close(btf->fd);
  
- struct bpf_netfilter_opts {
- 	/* size of this struct, for forward/backward compatibility */
++	hashmap__free(btf->func_hash);
+ 	if (btf_is_modifiable(btf)) {
+ 		/* if BTF was modified after loading, it will have a split
+ 		 * in-memory representation for header, types, and strings
+diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+index 4392451d634b..8639377a1f3b 100644
+--- a/tools/lib/bpf/btf.h
++++ b/tools/lib/bpf/btf.h
+@@ -335,6 +335,12 @@ btf_dump__dump_type_data(struct btf_dump *d, __u32 id,
+ 			 const void *data, size_t data_sz,
+ 			 const struct btf_dump_type_data_opts *opts);
+ 
++
++LIBBPF_API __s32 btf__make_hash(struct btf *btf);
++LIBBPF_API bool btf__hash_hash(struct btf *btf);
++LIBBPF_API int
++btf__find_by_func_hash(struct btf *btf, const char *type_name, __u32 kind);
++
+ /*
+  * A set of helpers for easier BTF types handling.
+  *
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 0c4ed5d237e5..4a903102e0c7 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -634,6 +634,7 @@ struct extern_desc {
+ 
+ struct module_btf {
+ 	struct btf *btf;
++	struct hashmap *btf_name_hash;
+ 	char *name;
+ 	__u32 id;
+ 	int fd;
+@@ -717,6 +718,7 @@ struct bpf_object {
+ 	 * it at load time.
+ 	 */
+ 	struct btf *btf_vmlinux;
++	struct hashmap *btf_name_hash;
+ 	/* Path to the custom BTF to be used for BPF CO-RE relocations as an
+ 	 * override for vmlinux BTF.
+ 	 */
+@@ -1004,7 +1006,7 @@ static int find_ksym_btf_id(struct bpf_object *obj, const char *ksym_name,
+ 			    struct module_btf **res_mod_btf);
+ 
+ #define STRUCT_OPS_VALUE_PREFIX "bpf_struct_ops_"
+-static int find_btf_by_prefix_kind(const struct btf *btf, const char *prefix,
++static int find_btf_by_prefix_kind(struct btf *btf, const char *prefix,
+ 				   const char *name, __u32 kind);
+ 
+ static int
+@@ -10040,7 +10042,7 @@ void btf_get_kernel_prefix_kind(enum bpf_attach_type attach_type,
+ 	}
+ }
+ 
+-static int find_btf_by_prefix_kind(const struct btf *btf, const char *prefix,
++static int find_btf_by_prefix_kind(struct btf *btf, const char *prefix,
+ 				   const char *name, __u32 kind)
+ {
+ 	char btf_type_name[BTF_MAX_NAME_SIZE];
+@@ -10054,6 +10056,10 @@ static int find_btf_by_prefix_kind(const struct btf *btf, const char *prefix,
+ 	 */
+ 	if (ret < 0 || ret >= sizeof(btf_type_name))
+ 		return -ENAMETOOLONG;
++
++	if (btf__hash_hash(btf))
++		return btf__find_by_func_hash(btf, btf_type_name, kind);
++
+ 	return btf__find_by_name_kind(btf, btf_type_name, kind);
+ }
+ 
+@@ -10126,9 +10132,9 @@ static int libbpf_find_prog_btf_id(const char *name, __u32 attach_prog_fd, int t
+ 
+ static int find_kernel_btf_id(struct bpf_object *obj, const char *attach_name,
+ 			      enum bpf_attach_type attach_type,
+-			      int *btf_obj_fd, int *btf_type_id)
++			      int *btf_obj_fd, int *btf_type_id, bool use_hash)
+ {
+-	int ret, i, mod_len;
++	int ret, i, mod_len, err;
+ 	const char *fn_name, *mod_name = NULL;
+ 
+ 	fn_name = strchr(attach_name, ':');
+@@ -10139,6 +10145,11 @@ static int find_kernel_btf_id(struct bpf_object *obj, const char *attach_name,
+ 	}
+ 
+ 	if (!mod_name || strncmp(mod_name, "vmlinux", mod_len) == 0) {
++		if (use_hash) {
++			err = btf__make_hash(obj->btf_vmlinux);
++			if (err)
++				return err;
++		}
+ 		ret = find_attach_btf_id(obj->btf_vmlinux,
+ 					 mod_name ? fn_name : attach_name,
+ 					 attach_type);
+@@ -10161,6 +10172,11 @@ static int find_kernel_btf_id(struct bpf_object *obj, const char *attach_name,
+ 		if (mod_name && strncmp(mod->name, mod_name, mod_len) != 0)
+ 			continue;
+ 
++		if (use_hash) {
++			err = btf__make_hash(mod->btf);
++			if (err)
++				return err;
++		}
+ 		ret = find_attach_btf_id(mod->btf,
+ 					 mod_name ? fn_name : attach_name,
+ 					 attach_type);
+@@ -10210,7 +10226,7 @@ static int libbpf_find_attach_btf_id(struct bpf_program *prog, const char *attac
+ 	} else {
+ 		err = find_kernel_btf_id(prog->obj, attach_name,
+ 					 attach_type, btf_obj_fd,
+-					 btf_type_id);
++					 btf_type_id, false);
+ 	}
+ 	if (err) {
+ 		pr_warn("prog '%s': failed to find kernel BTF type ID of '%s': %s\n",
+@@ -12854,11 +12870,16 @@ struct bpf_link *bpf_program__attach_trace_multi_opts(const struct bpf_program *
+ 			goto err_free;
+ 		}
+ 		for (i = 0; i < cnt; i++) {
+-			btf_obj_fd = btf_type_id = 0;
++			/* only use btf type function hashmap when the count
++			 * is big enough.
++			 */
++			bool func_hash = cnt > 1024;
++
+ 
++			btf_obj_fd = btf_type_id = 0;
+ 			err = find_kernel_btf_id(prog->obj, opts->syms[i],
+ 					 prog->expected_attach_type, &btf_obj_fd,
+-					 &btf_type_id);
++					 &btf_type_id, func_hash);
+ 			if (err)
+ 				goto err_free;
+ 			btf_ids[i] = btf_type_id;
+@@ -13936,7 +13957,7 @@ int bpf_program__set_attach_target(struct bpf_program *prog,
+ 			return libbpf_err(err);
+ 		err = find_kernel_btf_id(prog->obj, attach_func_name,
+ 					 prog->expected_attach_type,
+-					 &btf_obj_fd, &btf_id);
++					 &btf_obj_fd, &btf_id, false);
+ 		if (err)
+ 			return libbpf_err(err);
+ 	}
 diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 23df00ae0b73..fab014528b86 100644
+index fab014528b86..100b14de9b22 100644
 --- a/tools/lib/bpf/libbpf.map
 +++ b/tools/lib/bpf/libbpf.map
-@@ -416,6 +416,7 @@ LIBBPF_1.4.0 {
- 		btf__new_split;
- 		btf_ext__raw_data;
- 		bpf_object__free_btfs;
-+		bpf_program__attach_trace_multi_opts;
- } LIBBPF_1.3.0;
- 
- LIBBPF_1.5.0 {
+@@ -445,4 +445,7 @@ LIBBPF_1.6.0 {
+ 		bpf_program__line_info_cnt;
+ 		btf__add_decl_attr;
+ 		btf__add_type_attr;
++		btf__hash_hash;
++		btf__find_by_func_hash;
++		btf__make_hash;
+ } LIBBPF_1.5.0;
 -- 
 2.39.5
 
