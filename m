@@ -1,151 +1,148 @@
-Return-Path: <bpf+bounces-59039-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59040-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4885BAC5E31
-	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 02:27:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B3ECAC5E32
+	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 02:28:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8CE947AA6D4
-	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 00:25:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD77D9E8159
+	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 00:27:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F199278F2F;
-	Wed, 28 May 2025 00:27:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB40D839F4;
+	Wed, 28 May 2025 00:28:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bKPEgnvh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c+1If3ze"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from mail-ej1-f66.google.com (mail-ej1-f66.google.com [209.85.218.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1515072634
-	for <bpf@vger.kernel.org>; Wed, 28 May 2025 00:27:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 902A3487BE
+	for <bpf@vger.kernel.org>; Wed, 28 May 2025 00:28:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748392029; cv=none; b=jiq9SvuH9VkU6NXXk/TYvAZt1F7TbR74xVYQyr7LIzfe0jXKXkf1x9WtRna7ZGC8yO9TG6fXJDRAAHxhWKtyAk/BOKEb3LPSbBpil1cYnzz/csdFyt3EhKowUwrIWqZiShLJ6mvZPaQq1DTL5getnPZM76ohm+zLb7s8b9Lm0lI=
+	t=1748392097; cv=none; b=NxfBPA9dfm/W1lWX5mFUMg6kQ5okjGvfZLK5tPvMnbXVPtb7yMd25XEfJrXJriMARPe3anU0NDeh/NedgjpoWL+KE0e+LdVX2vsj/KVnevfx2A9ScYOpVDzpVvjRF0nbG/3a5vp1fRPyRJLa5wB+d7L2vI3ZvpiAwcE/l4Sh40g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748392029; c=relaxed/simple;
-	bh=duRct5JXMYbnM2dpIoZz6+ectfUqwXEPNGnUF4rIbbo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MttuUWUMyds0PCB7ZnpOD+ggr1/+RG8PbI1M5OAHlRrYMQlJy3OrkVLvVCXZPlleQbyyqHzPR804HxFuZpda9IgOQESrknip+nd3j0tlZ1Hakzg3hFer3k171i7+y2TLJKVXve3//lHDZxjcPczMSqgoEbIgwXjlwxA6+elpYeA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bKPEgnvh; arc=none smtp.client-ip=209.85.214.170
+	s=arc-20240116; t=1748392097; c=relaxed/simple;
+	bh=/lgHHIOkvIWI+qG+PEVonlbqXP6osS1m3ltdPLSNj60=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PGMhfyyVIVFwVu1oo0xBRTPLI/IKOf6HeDtTObRWjKelti8OXTpSNwsMbIcJLY9ANWS2WIRbMFyl3BYeCIUZjDMKbs68Kzrq5O1C8Zg/nKSbAYp2FyOopUe46WNsPYMpSz4nu/GZxVuE7h3gMm5sZFNokotHLzZEogE2reEdN44=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c+1If3ze; arc=none smtp.client-ip=209.85.218.66
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-22e09f57ed4so3472465ad.0
-        for <bpf@vger.kernel.org>; Tue, 27 May 2025 17:27:07 -0700 (PDT)
+Received: by mail-ej1-f66.google.com with SMTP id a640c23a62f3a-ad891bb0957so204220066b.3
+        for <bpf@vger.kernel.org>; Tue, 27 May 2025 17:28:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748392027; x=1748996827; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=KpuxmvuESfWRBjwTrM+x2+GrkEXPMjx3rwSt4GzxrBU=;
-        b=bKPEgnvh3izEvEc+ecIwe/W5JDTSfNnHGRZyLWAXPYkSSK2s/bbp6hJtdrLDHeRt3n
-         OJYx5oFV2cCXDWCUGY7uuUmja2d8e3PyxpwH5LmpipLVL5/GJepRnUxAH9u8Le2lmhci
-         uG5Q6xvS1Ezft+UcVI29c/B76Elgq+NQ7W+iQHl+qjEcwb1ndRe7KLK8hGvk9ijO+Zs8
-         28nxKsmM27XlXxEAZV9/0lci1WaI0ylA1hkWyR4xfXOTHwU1I+hmfWA5+0gbKZFqGxbv
-         WvJOyGTFZ6Q4AOLOrMnOJqrVEArLvAjbhNH6MMWvHJjVKlKAqaCaMHdIfBC9I48EK9ee
-         k8eA==
+        d=gmail.com; s=20230601; t=1748392094; x=1748996894; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=UbkznIz+VnahHAIIK9MLoFCeuAmNRpum1t0dHH6jR+Q=;
+        b=c+1If3zewmQU/htYfCNM/wwapLdQgQ2qyuOfSj/zQQB5/0DlnnOm7pKfz1nYpiB4JC
+         pgeKmH6E5zpJC/HwzrKvXaTwkUy+8a9FXueK7yR351Wm0zc2xr4S6qc+inSdp6uke3lw
+         tgJt3YsT9EVGyBNyAlNXw9UOACkhQzCDBq3LC9AEpuaBY8ROSFExA/8WAwdNf2WyP/oO
+         x4uXmliEKo5eCVopnUOfLPSu0gJ0o1ge/ZleCK4XhjutEzDT2cajFmF2zJ+VIW09olUQ
+         Ry104WxE8ufYWHXP8/f9sSxl3q/d8zbgI0nwR1a1ledmjSoFIe1bjtDSUuRfJX7YFUYn
+         nH2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748392027; x=1748996827;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1748392094; x=1748996894;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=KpuxmvuESfWRBjwTrM+x2+GrkEXPMjx3rwSt4GzxrBU=;
-        b=lvjq7ulRVgHXFE3ePzG4YM9bVSap5VwlTHpbB9r0YEfvfJ+IYvgVG71jndDSnINQh3
-         L/F9XjuyPs9Q4/Nd94FgPf9XLOdk2LWjfKxSbZTcyAyT1vi1hjr2lxYPfmtw3/a+YlDx
-         xj8vVRMEDOfVjJli05JvhfGYAo0XLjyxSf+J3INfDjQL+uOCrTZt+PvfA/EdAgxQNEEC
-         UFQSZJChEA/xO+SS0InTsrh6BVwkNxYWqTXewUDFilurqEDq3pHPaWCmqJrRJPVsAr6y
-         1aogI5bUpgwck9dreAu/A+Q5ik9242xgZgeddVPwDja3B5Zm9iHIwQtylmsFFKBSl0S3
-         WbGQ==
-X-Gm-Message-State: AOJu0YyXCFG3g67kii5/UFdD/kZRli83g5DCzktvUZJsFQdNNQRT+vc0
-	XYVa8q3bibg9UwpFRlFI2K0a2B5AD/vseyC/PZedRCBeo340KgWWWxDqnQ+k9w==
-X-Gm-Gg: ASbGncs6X8wxHGfrpgCXuoGd2adM4mAjhCncfZ1oYowWs1ratR65AKTvjscBMtFcX9C
-	k+/aG14WtmI/cCKlZN+ACbgQw8tUOlJcCxBZwgvqhu6rzyX6Fx6kzMgXnq7O9kLWUlN8UZx6+iz
-	0iPAXdwCW0A/ev0ATlg4X/bWLk2/3+UTy8aZNdqmJCmMm4Uj70XLsYZvuETCVZW7q3Pk4Gb6FTF
-	zpiMsuFqfrRbC64ONkb3JFsnWX4zG4c2xgGrXNc6LMlMjBp+J0HjHljk/1C44K/7YRThghBigJ7
-	giECOBsWQ9By4klvKOG76kpNBETOU4iiROdebygwuEnur4+20dh3YOBdVCR22F4N0RkI4DUShuy
-	tsdq5C5dot6P+fWc1
-X-Google-Smtp-Source: AGHT+IGFNhf3Ap/qbGwImHU4tyeoaF+QEiMD2Mz08FpnYq8QiWmNy2Np7LRi4n3r+H20jBVMVkO2vA==
-X-Received: by 2002:a17:903:2f82:b0:215:a303:24e9 with SMTP id d9443c01a7336-234b74448bbmr35116325ad.3.1748392026727;
-        Tue, 27 May 2025 17:27:06 -0700 (PDT)
-Received: from localhost.localdomain ([2001:558:600a:7:a83d:600f:32cc:235a])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-234d35ccf5dsm44395ad.257.2025.05.27.17.27.05
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 27 May 2025 17:27:06 -0700 (PDT)
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: bpf@vger.kernel.org
-Cc: daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@kernel.org,
-	xukuohai@huawei.com,
-	alexis.lothore@bootlin.com,
-	kernel-team@fb.com
-Subject: [PATCH bpf-next] bpf, arm64: Remove unused-but-set function and variable.
-Date: Tue, 27 May 2025 17:27:04 -0700
-Message-Id: <20250528002704.21197-1-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+        bh=UbkznIz+VnahHAIIK9MLoFCeuAmNRpum1t0dHH6jR+Q=;
+        b=JPwPUW6Wjx2T4NLdowAwslr8rGr7NQQvJ9yJO9/qObluCL5fE1HQ4t+A8G0aSrf/8B
+         CVzMHlyFPhJcPqPOGN+LCAK1qBNWlicX1qnGRDcelnzEX3gzNvPqM2utDKNpUoUUPEMm
+         rUXCrN+1I9wMW+coPf3y4dOVWIzS41s7cRAsf+tGkBIaliJODBLIE+eD7Cd9LnpnMgI5
+         iWxLN1UhT1nas5BLu2g3YsUs5ZZUPbDC3H8wVcyel24OYQ/ADW0xHLJlK9LzGP/KG/O4
+         vpkBsZUH6D6IK/PTvvLZsXLxYI740xvpTXh+Fmgq8FLGbhGdWHAjYfElv/bAfQ9LQ/jH
+         528w==
+X-Gm-Message-State: AOJu0YzCsd5Fy+iCuhsxBtuyZG71x+GU+L677Mn1IDm+FdzpwlOR4p9G
+	GSKxPn4vdnfmO9z2Tp391PIL1AUqpd038LFbqu3sDjTOIlQ6d4trvGdfTS56RekB+f93HZrx8dl
+	bSzc5BzLXjVlV0UiRhJdctpQ6MeUjiLA=
+X-Gm-Gg: ASbGncsw3/bAsvatti7xCWrcmZpXicL/eBVaJP2o7BoxWvNrp3+6M3N82IMyW0nhUI+
+	MhsPYdW6xndeWk4Rfzq2dbO+iPgZAza660Au0SKSGTtc/kOIPrZwThjaQiw53owCwUXQrsDm3Hf
+	tapW+iTUoUg5fUFVglAvCuEdaNZtUohr3o5NzoitFEooHblHZgIKzWBvelz8/RqdA/sr0=
+X-Google-Smtp-Source: AGHT+IH2ebS7V+NoAQxAz4BCA4juCoaWBvA+bxEQ9JjbmnJ1hb85ry87K74fQCUm2q9cqikV6S5CXsF7W/BBlSnZWRQ=
+X-Received: by 2002:a17:907:7fa2:b0:ad8:9e80:6bc6 with SMTP id
+ a640c23a62f3a-ad89e807bf2mr73706466b.22.1748392093759; Tue, 27 May 2025
+ 17:28:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250524011849.681425-1-memxor@gmail.com> <20250524011849.681425-5-memxor@gmail.com>
+ <CAP01T76sCLH8qCrEqr=oYLW3CpbZA-+ifbA3DOCXT93Lk0LN5Q@mail.gmail.com> <m2o6vd4ml8.fsf@gmail.com>
+In-Reply-To: <m2o6vd4ml8.fsf@gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Wed, 28 May 2025 02:27:37 +0200
+X-Gm-Features: AX0GCFvzELftal0yZKYZTA7YGPLxJy-aW8X_27da4bKYPKhc_n1tnLPT2XvMVu8
+Message-ID: <CAP01T76h+=QCerjcJZy_LE6UgF6Gu1mmfLbi10OJjDRK=JrrpA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 04/11] bpf: Hold RCU read lock in bpf_prog_ksym_find
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Emil Tsalapatis <emil@etsalapatis.com>, 
+	Barret Rhoden <brho@google.com>, Matt Bobrowski <mattbobrowski@google.com>, kkd@meta.com, 
+	kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
 
-From: Alexei Starovoitov <ast@kernel.org>
+On Wed, 28 May 2025 at 02:15, Eduard Zingerman <eddyz87@gmail.com> wrote:
+>
+> Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
+>
+> [...]
+>
+> >> --- a/kernel/bpf/core.c
+> >> +++ b/kernel/bpf/core.c
+> >> @@ -782,7 +782,11 @@ bool is_bpf_text_address(unsigned long addr)
+> >>
+> >>  struct bpf_prog *bpf_prog_ksym_find(unsigned long addr)
+> >>  {
+> >> -       struct bpf_ksym *ksym = bpf_ksym_find(addr);
+> >> +       struct bpf_ksym *ksym;
+> >> +
+> >> +       rcu_read_lock();
+> >> +       ksym = bpf_ksym_find(addr);
+> >> +       rcu_read_unlock();
+> >>
+> >>         return ksym && ksym->prog ?
+> >>                container_of(ksym, struct bpf_prog_aux, ksym)->prog :
+> >
+> > This isn't right, we need to have the read section open around ksym
+> > access as well.
+> > We can end the section and return the prog pointer.
+> > The caller is responsible to ensure prog outlives RCU protection, or
+> > otherwise hold it if necessary for prog's lifetime.
+> >
+> > We're using this to pick programs who have an active stack frame, so
+> > they aren't going away.
+> > But the ksym access itself needs to happen under correct protection.
+> >
+> > I can fix it in a respin, whatever is best.
+>
+> Are rcu_read_{lock,unlock} necessary in core.c:search_bpf_extables()
+> after this change?
 
-Remove unused-but-set function and variable to fix the build warning:
-   arch/arm64/net/bpf_jit_comp.c: In function 'arch_bpf_trampoline_size':
->> arch/arm64/net/bpf_jit_comp.c:2547:6: warning: variable 'nregs' set but not used [-Wunused-but-set-variable]
-    2547 |  int nregs, ret;
-         |      ^~~~~
+Don't think so, in general, it would be necessary to hold the RCU read
+lock to make sure the program does not go away.
+There is a requirement to hold it to traverse the latch tree itself,
+and then for accesses on the prog require its lifetime to be valid.
+Except in case of search_bpf_extables (and all other current users),
+the prog being found should have an active frame on that CPU, so it's
+not going away.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202505280643.h0qYcSCM-lkp@intel.com/
-Fixes: 9014cf56f13d ("bpf, arm64: Support up to 12 function arguments")
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
----
- arch/arm64/net/bpf_jit_comp.c | 21 ++-------------------
- 1 file changed, 2 insertions(+), 19 deletions(-)
+Alternatively, we can add WARN_ON_ONCE(rcu_read_lock_held()) as a requirement.
 
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index b5c3ab623536..14d4c6ac4ca0 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -2520,21 +2520,6 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
- 	return ctx->idx;
- }
- 
--static int btf_func_model_nregs(const struct btf_func_model *m)
--{
--	int nregs = m->nr_args;
--	int i;
--
--	/* extra registers needed for struct argument */
--	for (i = 0; i < MAX_BPF_FUNC_ARGS; i++) {
--		/* The arg_size is at most 16 bytes, enforced by the verifier. */
--		if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG)
--			nregs += (m->arg_size[i] + 7) / 8 - 1;
--	}
--
--	return nregs;
--}
--
- int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
- 			     struct bpf_tramp_links *tlinks, void *func_addr)
- {
-@@ -2543,10 +2528,8 @@ int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
- 		.idx = 0,
- 	};
- 	struct bpf_tramp_image im;
--	struct arg_aux  aaux;
--	int nregs, ret;
--
--	nregs = btf_func_model_nregs(m);
-+	struct arg_aux aaux;
-+	int ret;
- 
- 	ret = calc_arg_aux(m, &aaux);
- 	if (ret < 0)
--- 
-2.47.1
+> Also, helpers.c:bpf_stack_walker.c does not have lock/unlock in it,
+> this patch needs a fixes tag for commit f18b03fabaa9 ("bpf: Implement BPF exceptions")?
 
+So far this is probably not a bug because programs run in an RCU read
+section already (perhaps it is a problem in case of sleepable ones).
+It felt odd to me while looking at the code.
+
+I feel like the rcu_read_lock being dropped and then returning a prog
+pointer will be a bit confusing and a footgun, so it might be better
+to go with WARN_ON_ONCE.
 
