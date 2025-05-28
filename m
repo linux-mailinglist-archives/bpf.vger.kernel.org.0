@@ -1,205 +1,119 @@
-Return-Path: <bpf+bounces-59204-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59205-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8A32AC7391
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 00:07:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA439AC7390
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 00:06:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1AE4D7A1101
-	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 22:04:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CEEF23B1038
+	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 22:06:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09AD823A9B4;
-	Wed, 28 May 2025 21:56:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBFAF21CA1C;
+	Wed, 28 May 2025 21:58:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c5akxl9c"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Aoloa0i6"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 637B523BD02;
-	Wed, 28 May 2025 21:56:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAE1421FF32;
+	Wed, 28 May 2025 21:58:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748469407; cv=none; b=Qx8mNbjKPRD7BjX6F1IC7F3QU4DWiL/vfdAvv10Hgfd8Uau98eFGHmvYp+4uULU70o5dJZS0+D1jQRomwmgbgv29nlbvZIagu7IdJCuydrQZcUDnwlmuglXga4I0YF59oiy8A8Cu1MRrXM58D249FbxB1IxWC3dD0657uIk0H0g=
+	t=1748469533; cv=none; b=dOYMRjPH2k6y231tevEzb2wRwvAeHwag5bZWiOPIR5+sjY1JykTiq2cEgJQTCSPaUYmtzv8oCTJRUH8LMnKPr6n3OlS8TdbHrjK3OF72Muwde4OFMQyYHUEMfAVISaWI/loUlUiU3rLXImdaP/IuGeDH/yULLyVE7slblQn2ed8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748469407; c=relaxed/simple;
-	bh=7ipO+CcTyqLC2tdZaG7Aofb5TPn4W7/PmutHuo/ElSU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=M0y0FcmZhlcC9T1dfOrYIZ9JEXqTWLEflgB7DK59FDszlyIFGUq2buUUKAQaIBh8ZCiilyMYfKRZdq5RfwOHdfnj3R1mM9Ld/Hjm2yDNpE3eKZL1aq4Zcn2V9Sc8CMaKdIoHnqwf8Y7SL+TOUPk4HEOVYH672S0h9lShDPsbXpU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c5akxl9c; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E105C4CEEE;
-	Wed, 28 May 2025 21:56:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748469407;
-	bh=7ipO+CcTyqLC2tdZaG7Aofb5TPn4W7/PmutHuo/ElSU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=c5akxl9c7nw6WrBuwEPa5nD9K8gLW/54N1PyUo6f/kf5vzDXAg/CCGOKiZm/T2XJp
-	 K3wqbvJydZzUs/ehM+V5w2r/tYmnecaclwT4xE5vHWjR1YR5q2X3xOFOZIUCiHUpEA
-	 RKeutYKA+sDg3Rwxhyf3fW8RVHsWP8rz7J4YzOKnqVuvE/wgO8RRM1WKXe3R+Bw9DN
-	 weTlBi6QufrdyIhPBF3n9409eJSdmyC5Hb+vJM0lVhSjtAFkbRUmsty5lSheNq9Dv7
-	 eeo2rWMg4DG71z5IiqTdMJVTlIVEOkm7Pr3J59UXTajdiGLnXWIHD4uIMlVoI1OSAb
-	 wsqD3PP9insyw==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>,
-	Ravi Bangoria <ravi.bangoria@amd.com>,
-	Sasha Levin <sashal@kernel.org>,
-	mingo@redhat.com,
-	acme@kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 3/3] perf: Ensure bpf_perf_link path is properly serialized
-Date: Wed, 28 May 2025 17:56:42 -0400
-Message-Id: <20250528215642.1983928-3-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250528215642.1983928-1-sashal@kernel.org>
-References: <20250528215642.1983928-1-sashal@kernel.org>
+	s=arc-20240116; t=1748469533; c=relaxed/simple;
+	bh=LLUztYHjAFJ3efU9EaxF8l2rLkaP+mwM/RroEOD3eeo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hgq2UsVvWzaxEy8PyeiwCyqlnVGqQZEoAdVQzWBFHEbFDAq8V8uJxsHbd9NCrjtuo5Oay6/vBXieIsbzwsweZcOo4H/o+/B6NrJujjm8LoVd0bynyMMiHU0gefx07rFkLMq8ErqlNLbSGcfZuNBKHJjOrLcCEVBE1Ep0MdzwiEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Aoloa0i6; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-23461842024so3299215ad.0;
+        Wed, 28 May 2025 14:58:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748469531; x=1749074331; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ttAJzmfW9+GQa0rRyczMv5l8LbO1UT5+77cAySADNRQ=;
+        b=Aoloa0i65HznO+dOigx/oBxBElcNoeeKzYMfMavYHGOq22NK1LZ+iM8PEPKiq5oZ46
+         rXmcbdvUxoXAVKpEjQXI2KAB3r8nOH7H51jXVuOsqXkPq9F2ens/6qfkrcCe4hb9qdhP
+         hVUhLILIJUxkjOlioOTOYb6mXvLQ5tKv0Vzh3/dDG8QmKUtkLBYmWfKlFxgbTAz7acVN
+         76ZpsON2b5k1/E9JDw0BB1etqvgc1VgJhJLQrZqYFfXm1SdBpS6ieXCLWeZuT0VVLaEf
+         YRgPLMI0YNs0pXQj0OJONtHs9If0IPBGuUgmPYTE0T+YVU1l7arbB6CdaduX5SvC8uR+
+         Q7hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748469531; x=1749074331;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ttAJzmfW9+GQa0rRyczMv5l8LbO1UT5+77cAySADNRQ=;
+        b=aWrmqn+Cy6gdZkF1NthmhmcEfq73/V70dSaNnrmNtocYOuJw09+QMplTvZkn0704JO
+         Bj14LgjGRhVDfEvVI1+0Ei6+5AiMNKSejs4SGUsJw2vd8Wgx0K+CH+4tzYrbgG4rS319
+         HWjm5hQrj8kwPz2xUt4fgMCu2UXDn8XYgNEGQ/ywPTGgkSjFC1JLmbLYcWLDyEPZGGAb
+         FmK96PTPa5WlgdEMYyJpD2wVYQGeIDh7aOr0WIUqyvd+brsxCRfE/eav8HLWkNndAP2V
+         AgW4xHIh0gqFnBbK4dqrysrbQQlFnTT+QgD3NN56KQeT8BK11ZKGAKxc7RIiXO75nl/B
+         Cymw==
+X-Forwarded-Encrypted: i=1; AJvYcCU6jrN+qEV09dZJ3F0ZLi/M//8dU1Q83ZX2pWl9nOzODzwsbez4LaQN/UTYyQ9pOX4oTvaJwRTpgm+xw5w=@vger.kernel.org, AJvYcCUhUNYEzuwYl+ukn8pYvOJ/yyEOGhrLWhukfY/ESmYTcXP424yWz0GwTH5ejr9YisNRXUH6zQzShYOzB1KQtQ9z@vger.kernel.org, AJvYcCXSjEyPus8TJL0Viq04fC2Q2mVbv/VMBakgTNhET0F/EZ35XnEScNq4npiguvRBdkKgfZCzCPBf@vger.kernel.org
+X-Gm-Message-State: AOJu0YwogOh5/SrdFcKrQQ0ozrsSyDdEHASmceT3lFvTOaUcWCNMb6Wu
+	8zUbkTWe9FoHKEjD3p7URkqm4LUdaPFoOEnAN4jFjEPXXszefNJq0Igb
+X-Gm-Gg: ASbGncsFp2Xsvxvbks/ZxVVdaii8L+6Vluvsdi+IBtAkNYet9qAEfhx1yCR7L9BuTDd
+	j+Os3xrpstnCIAeWtbKowWOd8sg3PjHDeCkM4Ga0y/+bbTmtt9e79Ccb7o/DGKR7gXyhfgA4sEb
+	DHwzO2hjvg/HsEXeBYYBNK9WCnBM4wxwTOSVywfXeO5Jxh5eAwSobK8YDA6l/UgSSQAemPCtK2Q
+	FzY57Kk9mximkWXWGfS1G/DW3nJD4Pwe75iB5HtY8P57pi/XaZwHqJc32t/9rQP2q2N/1AJ43xw
+	JGAuSVUtgkCqZWgn9V1WXZ0J1dFjNGorycSyIwqLa2aoP8PSKOXLd4KB3SwFqt0=
+X-Google-Smtp-Source: AGHT+IFAAfBzpsKcvV0vuav8DmCGmUI4Eo+o2HOPct7NcdnaFE8CpWx5nme7qzYPJ47hd1mO67Ib/Q==
+X-Received: by 2002:a17:903:228c:b0:22d:b305:e097 with SMTP id d9443c01a7336-23414fd3e53mr259186315ad.50.1748469531018;
+        Wed, 28 May 2025 14:58:51 -0700 (PDT)
+Received: from gmail.com ([98.97.34.246])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23506cfa37fsm581965ad.197.2025.05.28.14.58.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 May 2025 14:58:50 -0700 (PDT)
+Date: Wed, 28 May 2025 14:58:46 -0700
+From: John Fastabend <john.fastabend@gmail.com>
+To: Jiayuan Chen <jiayuan.chen@linux.dev>
+Cc: bpf@vger.kernel.org, Boris Pismenny <borisp@nvidia.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>, Ihor Solodrai <isolodrai@meta.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next v1 2/2] selftests/bpf: Add test to cover ktls
+ with bpf_msg_pop_data
+Message-ID: <20250528215846.iqx6ea7f2bb4m7wj@gmail.com>
+References: <20250523131915.19349-1-jiayuan.chen@linux.dev>
+ <20250523131915.19349-3-jiayuan.chen@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.184
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250523131915.19349-3-jiayuan.chen@linux.dev>
 
-From: Peter Zijlstra <peterz@infradead.org>
+On 2025-05-23 21:18:59, Jiayuan Chen wrote:
+> The selftest can reproduce an issue where using bpf_msg_pop_data() in
+> ktls causes errors on the receiving end.
+> 
+> Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
+> ---
 
-[ Upstream commit 7ed9138a72829d2035ecbd8dbd35b1bc3c137c40 ]
+Yep LGTM thanks.
 
-Ravi reported that the bpf_perf_link_attach() usage of
-perf_event_set_bpf_prog() is not serialized by ctx->mutex, unlike the
-PERF_EVENT_IOC_SET_BPF case.
-
-Reported-by: Ravi Bangoria <ravi.bangoria@amd.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Ravi Bangoria <ravi.bangoria@amd.com>
-Link: https://lkml.kernel.org/r/20250307193305.486326750@infradead.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
-
-Based on my analysis of the commit and the kernel tree context, here is
-my evaluation: **YES** This commit should be backported to stable kernel
-trees. Here's my detailed analysis: ## Bug Analysis The commit fixes a
-**race condition and security vulnerability** in the BPF perf event
-attachment path. Specifically: 1. **Race Condition**: The
-`bpf_perf_link_attach()` function calls `perf_event_set_bpf_prog()`
-without holding the `ctx->mutex`, while the equivalent ioctl path
-(`PERF_EVENT_IOC_SET_BPF`) properly acquires this mutex before calling
-the same function. 2. **Inconsistent Locking**: The fix shows two
-different code paths accessing the same critical section with different
-locking semantics: - **ioctl path** (line 2309): Acquires `ctx->mutex`
-via `_perf_ioctl()` → `__perf_event_set_bpf_prog()` -
-**bpf_perf_link_attach path**: Called `perf_event_set_bpf_prog()`
-directly without mutex protection ## Code Changes Analysis The fix
-introduces proper serialization by: 1. **Creating
-`__perf_event_set_bpf_prog()`**: An internal version that doesn't
-acquire locks 2. **Modifying `perf_event_set_bpf_prog()`**: Now acquires
-`ctx->mutex` before calling the internal version 3. **Updating ioctl
-path**: Uses the internal version since it already holds the mutex ##
-Why This Should Be Backported 1. **Security Impact**: Race conditions in
-BPF attachment can lead to use-after-free or other memory corruption
-issues that could be exploited 2. **Bug Fix Nature**: This is clearly a
-bug fix that addresses inconsistent locking semantics rather than adding
-new features 3. **Minimal Risk**: The change is small, contained, and
-follows existing patterns - it simply ensures consistent locking across
-both code paths 4. **Critical Subsystem**: This affects the BPF
-subsystem and perf events, both critical kernel components where race
-conditions can have serious security implications 5. **Similar
-Historical Precedent**: Looking at the reference commits, commit #5 with
-"Backport Status: YES" was backported for fixing a similar type
-validation issue in BPF perf events, showing that BPF perf-related fixes
-are appropriate for stable trees The commit addresses the exact type of
-concurrency bug that stable trees are designed to fix - it's a clear
-bugfix with minimal regression risk that addresses a potential security
-vulnerability in a critical kernel subsystem.
-
- kernel/events/core.c | 34 ++++++++++++++++++++++++++++++----
- 1 file changed, 30 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 520a890a2a6f7..9519661390344 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -5822,6 +5822,9 @@ static int perf_event_set_output(struct perf_event *event,
- static int perf_event_set_filter(struct perf_event *event, void __user *arg);
- static int perf_copy_attr(struct perf_event_attr __user *uattr,
- 			  struct perf_event_attr *attr);
-+static int __perf_event_set_bpf_prog(struct perf_event *event,
-+				     struct bpf_prog *prog,
-+				     u64 bpf_cookie);
- 
- static long _perf_ioctl(struct perf_event *event, unsigned int cmd, unsigned long arg)
- {
-@@ -5890,7 +5893,7 @@ static long _perf_ioctl(struct perf_event *event, unsigned int cmd, unsigned lon
- 		if (IS_ERR(prog))
- 			return PTR_ERR(prog);
- 
--		err = perf_event_set_bpf_prog(event, prog, 0);
-+		err = __perf_event_set_bpf_prog(event, prog, 0);
- 		if (err) {
- 			bpf_prog_put(prog);
- 			return err;
-@@ -10360,8 +10363,9 @@ static inline bool perf_event_is_tracing(struct perf_event *event)
- 	return false;
- }
- 
--int perf_event_set_bpf_prog(struct perf_event *event, struct bpf_prog *prog,
--			    u64 bpf_cookie)
-+static int __perf_event_set_bpf_prog(struct perf_event *event,
-+				     struct bpf_prog *prog,
-+				     u64 bpf_cookie)
- {
- 	bool is_kprobe, is_tracepoint, is_syscall_tp;
- 
-@@ -10395,6 +10399,20 @@ int perf_event_set_bpf_prog(struct perf_event *event, struct bpf_prog *prog,
- 	return perf_event_attach_bpf_prog(event, prog, bpf_cookie);
- }
- 
-+int perf_event_set_bpf_prog(struct perf_event *event,
-+			    struct bpf_prog *prog,
-+			    u64 bpf_cookie)
-+{
-+	struct perf_event_context *ctx;
-+	int ret;
-+
-+	ctx = perf_event_ctx_lock(event);
-+	ret = __perf_event_set_bpf_prog(event, prog, bpf_cookie);
-+	perf_event_ctx_unlock(event, ctx);
-+
-+	return ret;
-+}
-+
- void perf_event_free_bpf_prog(struct perf_event *event)
- {
- 	if (!perf_event_is_tracing(event)) {
-@@ -10414,7 +10432,15 @@ static void perf_event_free_filter(struct perf_event *event)
- {
- }
- 
--int perf_event_set_bpf_prog(struct perf_event *event, struct bpf_prog *prog,
-+static int __perf_event_set_bpf_prog(struct perf_event *event,
-+				     struct bpf_prog *prog,
-+				     u64 bpf_cookie)
-+{
-+	return -ENOENT;
-+}
-+
-+int perf_event_set_bpf_prog(struct perf_event *event,
-+			    struct bpf_prog *prog,
- 			    u64 bpf_cookie)
- {
- 	return -ENOENT;
--- 
-2.39.5
-
+Reviewed-by: John Fastabend <john.fastabend@gmail.com>
 
