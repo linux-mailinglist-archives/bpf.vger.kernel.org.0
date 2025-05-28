@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-59118-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59119-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 318ABAC6141
-	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 07:27:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DFD6AC614E
+	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 07:41:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2358C1BC2EC4
-	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 05:27:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A278E4A1A81
+	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 05:41:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3678D20C00C;
-	Wed, 28 May 2025 05:27:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3C11207E1D;
+	Wed, 28 May 2025 05:41:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7CBC1FFC41;
-	Wed, 28 May 2025 05:26:56 +0000 (UTC)
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D42641C84B2;
+	Wed, 28 May 2025 05:41:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748410023; cv=none; b=BIxhm9QOFbBimhTGodS2MHDFekpf0EZniSY3ulo0+bszljYYI/fN92bLvt0yegxiFYYnT/CklJUV8z3qiXrwb2MUcX0GuqL/YxEf5QAAbwhuT11psCp+i4PK9U/HvtXVT2iU8YRkm8xKTOap09f0TOJ63s5N5XPLKGv3nuPccbo=
+	t=1748410875; cv=none; b=MO3bqGj47vqCOsWZTidK0LZ1dJWWtwOQ60vwzU7wVYYgKaZ+oKsXJtoD09OChj80c9CnuOUqtcexcirFk8H7GZlHjw9nnRFQK5SZlnQkq6k9Eeb2+92vRI8GEBEJV/dMvSri+jUmJuVQhxPO9xOSRADZgpKnsAUDSXsu7luBp+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748410023; c=relaxed/simple;
-	bh=vlDhKjejOD4pBwO+Mqai5sYH1ZPgWIOBUfvckYb9ao0=;
+	s=arc-20240116; t=1748410875; c=relaxed/simple;
+	bh=wN8sYZl/mz8uDPrAXCUTTNFLSJM4kxH7HqZEgJtHnQg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nyNrAGQtFwWO8jWuCvlL0pfkWTb4e1lm0XruCVqVdtehfPiVENSywWaB6UUObwcIBGh93C2LiIeIAL1NfddGcIylQSwyGvTos9fVG/RjYQ/587/vpEPzI2f2drSui2esSilaIKC1RneES4OWDZmJTDZMjvFnxTvTEUq41Y+mlm8=
+	 Content-Type:Content-Disposition:In-Reply-To; b=izi5OEGQyKabOK+o4fKc5eTAWIFrNlaDfbL3hq8BYganxCmLVWOaFYSEjRx7rG9+B3MWjPyNwpzS+fvT8VrTZQMDXTSTvuw9YGPXd3sDtUbXXyd9/0fpdy2mksOBwSQT/BzEScG9n1f3HUBL/mHNo8ddoUU8lNqJzJ9EEo/Mfqs=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-681ff7000002311f-e8-68369e9f1f62
-Date: Wed, 28 May 2025 14:26:50 +0900
+X-AuditID: a67dfc5b-669ff7000002311f-bb-6836a1f3d4ed
+Date: Wed, 28 May 2025 14:41:00 +0900
 From: Byungchul Park <byungchul@sk.com>
 To: Mina Almasry <almasrymina@google.com>
 Cc: willy@infradead.org, netdev@vger.kernel.org,
@@ -47,7 +47,7 @@ Cc: willy@infradead.org, netdev@vger.kernel.org,
 	vishal.moola@gmail.com
 Subject: Re: [PATCH v2 02/16] netmem: introduce netmem alloc APIs to wrap
  page alloc APIs
-Message-ID: <20250528052650.GA9346@system.software.com>
+Message-ID: <20250528054100.GB9346@system.software.com>
 References: <20250528022911.73453-1-byungchul@sk.com>
  <20250528022911.73453-3-byungchul@sk.com>
  <CAHS8izOkr96_i1B8o_AWQGgfWSWZVVjHhOShReLZozsxZB6WdQ@mail.gmail.com>
@@ -62,36 +62,36 @@ Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 In-Reply-To: <CAHS8izOkr96_i1B8o_AWQGgfWSWZVVjHhOShReLZozsxZB6WdQ@mail.gmail.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA03SWUxTQRSA4czdemmoXirqCIlLxaAk1AXR82AU3sb44h4jMdjIja0skqJY
-	XEJliUoE90RKhSICZYklFUrdUJAA7ohoCgg1ICQqimwNUKNS0MjblzmZ88/D8LS8gPXjNXFH
-	RG2cKkbBSRnpN+/84LzcdepVjmwlGC3lHJSN6aD4o50FY6kNwch4hwSG6xs5KMh30WB8ncbA
-	qGWCht6Gbgk4i/oYeHCmmobuC00cZKa5aUixmylotmWxcHWikIZq/UcJvL1n5KCr/DcLfXWZ
-	DDw1lDDgzAqDBtM8cD3vR1BvqabAdf4GB1daTBz0pDkRtDzpZiDndBYCS42DBfeYkQtbQipL
-	2ihy19ApISbrUXLHHEQyHC00sZae44h16LKEfHj/gCNN190MuWsfpkhm6neODPa2M2Sg5h1H
-	LJXvGPLCVC8hw9aFW4W90g1RYowmUdSu3Lhfqu5sv0bFt83WpZtrkR6leWcgLx4La3Ht2VLq
-	nxszh6fMCMtwW2sP7TEnBGKHY3zKvsIKfKvmEusxLThZ/Mp4yOM5QgRO/1rGeCwT1mPnuYco
-	A0l5uWBG2KFvpaYHPvhp9idm+nIg/pnbMrmUn7Q/Lv7FTx8vwqlVOVMtL2Eb1t+3T3musBQ/
-	tjVSnp1YsPP4c03X30cvwLVmB3MR+RhmJAwzEob/CcOMhAkxpUiuiUuMVWli1irVSXEanfLA
-	4Vgrmvw6Rad+RtjRUPOOOiTwSOEtIxWhajmrSkxIiq1DmKcVvrKUTevUclmUKum4qD0cqT0a
-	IybUIX+eUcyXrXEdi5ILB1VHxGhRjBe1/6YU7+WnR8EhO1N06cv3JV8O2MLmKH4NuZexSlvk
-	saiOD9EO97aAxcntIW9Wjuw7EJ99LfVzf17XzV2PTuQuLNpq3WxX5qUOmuZa/QdstReedTnH
-	d0sUbyqCqrZA6LfWWS+2j42G64rDC1/PCbxk113NfX47rG1PydeOwuYA19vwlyeL/cZ7fnxR
-	MAlq1eogWpug+gPFO8XlNgMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA03SW0iTYRjAcd/vtM/h8nNZfmhQTUM0O5L2QCepoJcuwuhCqItc+dlmbspm
-	Q4Ng6exgadkBak5bWToPMDHTZSY1JdOiQi2nVqt5JtM8ohmVUyLvfrwP7/+5eVhSeo72Z5Xq
-	ZEGjlifIGDElPrAtfd2d/AjFxtnBFWCyljFQOp0CRV9sNJhKqhBMzHSJYLyhkYGCu1MkmN4a
-	KJi0/iSh94VLBM7CPgpqz1eT4LrykoEswywJaTYLAfV5TTS8q8qm4cbPByRU67+IoLXGxMDn
-	sj809NmzKGgyFlPgzI6EF+blMPVqCEGDtZqAqct5DFxvMTPQbXAiaKl3UZB7NhuBtc5Bw+y0
-	iYmU4criDgI/Nn4SYXPFKfzQEoozHS0krii5yOCKsWsi/PFDLYNf3pql8GPbOIGz0ocZPNrb
-	SeGRuvcMLhj4QWBr5XsKvzY3iKJ8Dou3xwoJSp2g2bAzRqz41HmTSOrwTsmwPEd6ZPDKRJ4s
-	z23hG7PGCbcpbg3f0dZNus1wwbzDMTNvXy6Ev1+XQ7tNck6af2OKd3spd4TP+FZKuS3htvLO
-	i09RJhKzUs6CeIe+jVgY+PBNt3uohc/B/K/8lrkoO+cAvug3u/C8kk9/lDu/y5M7yOuf2Oa9
-	jAvkn1U1ElfREuOiknFRyfi/ZFxUMiOqBPkq1TqVXJkQvl57UpGqVqasP56oqkBz11F45leO
-	DU207rMjjkUyLwkuD1dIablOm6qyI54lZb6StF0RCqkkVp56WtAkHtWcShC0dhTAUjI/yf5o
-	IUbKnZAnCycFIUnQ/JsSrKe/HgWO3q/c1L9770hQHO416XJUQ+XtbQX3QgaFmIJQdfj1Hb+P
-	1W0I7Apu9vMQHXrjZ8kL8i7sj3oUYv3jkg+Hh6l0fdPfu8ZWx9uj2yNSktcO+aXe3TMmRQEu
-	37C4QTM1uFm33f/C3qhJ56r0gZqvKLLVo37FmfPVse+aL63MizP0yCitQr4plNRo5X8B5kAK
-	NhkDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRjHe3fec3YcDo4r603JaBVSlFZYPkWU9CFfuoBd6EPSZbRDW+mS
+	maZ2YakhWpp2o9a0aTfTbLZsrpJRZl4qTDRjXa2VGmSlLsUblXNEfvvx3H7/Dw/PKIrYAF6r
+	2y/qdaoYJSfDsu++hfPdhUs0Cwa7/cFkuclB6UASXP9oZ8FUYkPwa/CtFNw1dRxcLuxnwPQi
+	HUOfZYiB9lqXFNqudWCoyqhkwHWynoPs9GEGUu3FEmiy5bBwZugqA5WGj1JouW/i4MPNPyx0
+	VGdjaDDewNCWEwG15snQ/6wLQY2lUgL9J/I5ON1s5uBzehuC5scuDBeP5iCwOJwsDA+YuIgZ
+	tOLGawm9Z3wvpWZrAr1TPJdmOZsZai3J5Ki195SUvntVxdH688OY3rO7JTQ77QdHe9rfYPrT
+	0cpRS0Urps/NNVLqtgZFCVtly9VijDZR1Ieu2CnTVHSZUNw5vyTHuc0GlC/PQj48EcKIu9HO
+	/OOMTofEw1iYTV4OH8ce5oRg4nQOjs1MEuaQK4481sOM0MaSRtMeD08Uosmxb6Vj83IhnNzN
+	7eaykIxXCMWIOA0vJd6GH2m48AV7l4PJSEHz6FF+lAPJ9d+8tzydpN29OObyETYQwwNvNn9h
+	Jnloq5N4bhLBzpMLmSVSb+ip5FGxE+ciP+M4hXGcwvhfYRynMCNcghRaXWKsShsTFqJJ1mmT
+	Qnbti7Wi0c+5dngk2o56mzZVI4FHSl85LV+sUbCqxPjk2GpEeEY5SZ66colGIVerklNE/b4d
+	+oQYMb4aBfJYOUW+qP+AWiHsVu0X94pinKj/15XwPgEGlLA7v9FGLlXeGjh0RNM+ryM0xbl5
+	4cEo2ZazloJZm1KiPq17Hvy7aPvnh4bwrV0tE62rtBPa16qjy5+Erk1IU8f+CFo6OVwmKrSB
+	6G3u+U5/TVMq9t3WFVlU0JO3pjYzz16vjrzfs7iMnaY73JpRGmaLWL2+deTr02Vxqze2uMpu
+	9ylxvEa1cC6jj1f9BdCSIPI1AwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0iTYRTHe97Ls9fR4nVZvWURLUoSNKO0I0VJH+oh6AaVlB9q6VubTq2t
+	hnahlYZkza6IrSkbVpoKS1s6S0ZMMS1JmxrrOrNSu1CWF9TZxSmR336c///8zpfD0fIz7BxO
+	nXJY1KYoNQosZaSbV2WE9VmjVBH2HgxmWxmG0qE0KOpwsGAuqUTQP/xKAn11jzAUWgdpMDdn
+	MjBgG6HhY32nBLy3uhioyaqiofNCAwZjpo+G045iCmrzG1loqcxh4erITRqqDB0SaL1vxvC2
+	7A8LXS4jA42m2wx4c2Kg3jITBp98RVBnq6Jg8Hw+hituC4b3mV4E7tpOBq6fykFgc3pY8A2Z
+	cYyC2G+/oEi16Y2EWCqOkLvFoSTb46ZJRclZTCp+XpaQ189rMGnI8zGk2tFHEWPGN0x+fHzJ
+	kO/OdkwKe3opYrO3M6TJUifZGrhbujpB1Kj1onbpmr1Slf2rGR3MDUxz5m43oHxZNgrgBH6F
+	kNXtpPzM8IuENt85xs+YDxE8nmHaz0H8EuGG8xLrZ5r3ssJTc6Kfp/NxwpkvpeN9Gb9SuHex
+	F2cjKSfni5HgMbRRE0Gg0HjtAzOxHCKMFrjHpNwYBwtFv7mJ8Xwh49718VsB/DbB8MAxzjP4
+	hcLDykfURTTNNMlkmmQy/TeZJpksiClBQeoUfbJSrYkM1yWp0lPUaeHxqckVaOw5bp0YveRA
+	/a0bXIjnkGKqjNyJVMlZpV6XnuxCAkcrgmSn10ap5LIEZfpRUZu6R3tEI+pcKJhjFLNkG2PF
+	vXL+gPKwmCSKB0Xtv5TiAuYYEN6pbY7O+60Peay24uAtzXnPD/xq8U2Pal9YfihhwTrrwLv3
+	DUM5YTfvZG0ILvgT/fjYSOywcf/SUztSazYldu8wjS5IzTRGSDSfenZN2Rwv2bczd1vTwPdw
+	e2HY8bKB5vIt63lpnPtkYn3pPN+12YuD5hU/C9VY53421EbLXK7lMfsUjE6lXBZKa3XKvxHZ
+	eCsYAwAA
 X-CFilter-Loop: Reflected
 
 On Tue, May 27, 2025 at 08:11:58PM -0700, Mina Almasry wrote:
@@ -137,14 +137,14 @@ On Tue, May 27, 2025 at 08:11:58PM -0700, Mina Almasry wrote:
 > helpers in include/net where they're available to the entire kernel
 > and net stack. Can we put these helpers in net/core/page_pool.c or at
 > least net/core/netmem_priv.h?
-
-Thanks.  I will.
-
+> 
 > Also maybe the helpers aren't needed anyway. AFAICT there is only 1
 > call site in page_pool.c for each, so maybe we can implement this
 > inline.
 
-Sure.
+Ah.  I recalled the reason why I added these APIs this way, that is, to
+make the allocation method easier to be altered in the future.  I will
+move it to net/core/netmem_priv.h but keep it in the header anyway.
 
 	Byungchul
 > 
