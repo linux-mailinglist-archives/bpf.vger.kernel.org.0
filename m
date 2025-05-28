@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-59202-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59203-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA39CAC737B
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 00:04:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0171AC7385
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 00:06:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A89A27A3698
-	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 22:02:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 74CAE7B1332
+	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 22:03:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9A7223535E;
-	Wed, 28 May 2025 21:56:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BD45238C0F;
+	Wed, 28 May 2025 21:56:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SMa98BL9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ua/xBYDn"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32E31235063;
-	Wed, 28 May 2025 21:56:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91925221FD9;
+	Wed, 28 May 2025 21:56:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748469397; cv=none; b=SpicKJYQBZXde6QDVuY1jJ05DncwSod7gystQVrhxxPzCsNeWq2rhqaH4DtZqhTzC5+vdqmCTDdCdgwlrvGz7GpfShNiauPTkgU15YK7lujtgyZoaz9RMc8Xg1CnDxjV8NEl0byTjMnO1xhA9wZ8SRKKuA9BQp+86fLWlnCgtlA=
+	t=1748469402; cv=none; b=dWtJ0bFaeXDc1tPZWPBn8ajcJdyEitIi4kNadZ2zr++RStAPkJSk3NwJry+Ev6oa1f4rllWqnkNhtP+jtCWr46YxjNRVg/ygbjyov30l3L6joO3fsUKkW55RL3/lMY/sRs7jgrtz8uFUTtlDYsMsX6CoUgOjzfnJjqcC5mW5j6k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748469397; c=relaxed/simple;
-	bh=1KD0sDuMOVhYKyW7fskDdK6BoUqTSmcBmAMV0vThhFo=;
+	s=arc-20240116; t=1748469402; c=relaxed/simple;
+	bh=BJLqWLq2H7lCTwYJPE7Twex64GxiwfCLjH6e85Bfj40=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LMig50rwprwpPz2OhlKXGIFvuy8XS3CPoFf5pw29Q/WukLOfT5irg4X6WX1UEMj+YsDnlV/d/nOmAIUQ06NTmI1+cxQ1vSVbwcCSAxxcbqb18Fu9Bm7Zu/s/bzidi1+RehIpscJCZHIYK+5ijmlWRd1LXLMEkIYvdQz7Dkj4iVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SMa98BL9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8AE8C4CEE3;
-	Wed, 28 May 2025 21:56:35 +0000 (UTC)
+	 MIME-Version:Content-Type; b=tUaVOoxMJCUsjl7HrzbvE5cjOp+ZdFOODU1Vp4vjOdEq0n3XciGC55UN1ZXbJFXsU2i5saVoA5iEGCUZ8Rwb20YcXO05ZdUSet05W9bOm+qX9wy3riK5m1FMwofUXYcIm4UmlHfwKKA/9BX44VnGG6IVRShibqO4XZNCNi9J2S8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ua/xBYDn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F36C7C4CEF3;
+	Wed, 28 May 2025 21:56:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748469397;
-	bh=1KD0sDuMOVhYKyW7fskDdK6BoUqTSmcBmAMV0vThhFo=;
+	s=k20201202; t=1748469402;
+	bh=BJLqWLq2H7lCTwYJPE7Twex64GxiwfCLjH6e85Bfj40=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SMa98BL9BPwulYijh4eTPCcRKZZ8ZLhu9wKqM88iUfA97eT0fFTHd/f/pSu4JpSSG
-	 Yrek4k4lwgLwHa88ICzGH9oVnQg7otdpVj+a0V7REEV5KUbghshHX9QqFGVfjCQoLG
-	 y4/1GptZUhZWQKT1HtB+JEC3yVvnDJCC7xgtxlArHJMKBsPOuE7RmvyXa2pyyA94Ru
-	 eh1Lw7WiX4babXpwXyKkuVZhl9ygpRNrk5IdHFJlW7HwkJTIQq1gEGL699HjPedowk
-	 9LZBwSy71ds662FiOJP0gEkRXyEHPiNanVQGADPHakxTVI5/D4R3t724hXVVB8M2Dg
-	 LGt/saj7jyXpg==
+	b=ua/xBYDnvcI+bpGtCo5QgeH+jF6pDOEcu9VFg2QQK9xE8nu5OvzHS21NkTT1B93MC
+	 7nCPwjY6dVnjEYuZS8esIpvIFufbU5nu0j6fH6nMXA1WninmRJ6CjB4cPPQ9BgDrOn
+	 Z38CPxI4gYFUD58eVE7PGMxkes4eOVQzB6Z+k0F7Xpb07e9mn+J6wyxvnxuDfBFEll
+	 La9D2Ij0ur5KUXvTqLCqdiC96JifgEm3KoDjHu3nCDR6rC6v8OpXL1Jl9YZfAzyrAm
+	 VW4p4N42nwwOZO2RsIPS6YwgGYIFz2jEVI0ni3urUaZe/Ur0OmwzBYf5g0IeNhrvcO
+	 QHmc2nXrsq79A==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
@@ -54,12 +54,12 @@ Cc: Peter Zijlstra <peterz@infradead.org>,
 	linux-kernel@vger.kernel.org,
 	netdev@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 3/3] perf: Ensure bpf_perf_link path is properly serialized
-Date: Wed, 28 May 2025 17:56:32 -0400
-Message-Id: <20250528215632.1983756-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 3/3] perf: Ensure bpf_perf_link path is properly serialized
+Date: Wed, 28 May 2025 17:56:37 -0400
+Message-Id: <20250528215637.1983842-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250528215632.1983756-1-sashal@kernel.org>
-References: <20250528215632.1983756-1-sashal@kernel.org>
+In-Reply-To: <20250528215637.1983842-1-sashal@kernel.org>
+References: <20250528215637.1983842-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -68,7 +68,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.92
+X-stable-base: Linux 6.1.140
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
@@ -127,10 +127,10 @@ vulnerability in a critical kernel subsystem.
  1 file changed, 30 insertions(+), 4 deletions(-)
 
 diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 987807b1040ae..0fff8153f402f 100644
+index 8fc2bc5646ee2..447536a74fc75 100644
 --- a/kernel/events/core.c
 +++ b/kernel/events/core.c
-@@ -5915,6 +5915,9 @@ static int perf_event_set_output(struct perf_event *event,
+@@ -5728,6 +5728,9 @@ static int perf_event_set_output(struct perf_event *event,
  static int perf_event_set_filter(struct perf_event *event, void __user *arg);
  static int perf_copy_attr(struct perf_event_attr __user *uattr,
  			  struct perf_event_attr *attr);
@@ -140,7 +140,7 @@ index 987807b1040ae..0fff8153f402f 100644
  
  static long _perf_ioctl(struct perf_event *event, unsigned int cmd, unsigned long arg)
  {
-@@ -5983,7 +5986,7 @@ static long _perf_ioctl(struct perf_event *event, unsigned int cmd, unsigned lon
+@@ -5796,7 +5799,7 @@ static long _perf_ioctl(struct perf_event *event, unsigned int cmd, unsigned lon
  		if (IS_ERR(prog))
  			return PTR_ERR(prog);
  
@@ -149,7 +149,7 @@ index 987807b1040ae..0fff8153f402f 100644
  		if (err) {
  			bpf_prog_put(prog);
  			return err;
-@@ -10584,8 +10587,9 @@ static inline bool perf_event_is_tracing(struct perf_event *event)
+@@ -10351,8 +10354,9 @@ static inline bool perf_event_is_tracing(struct perf_event *event)
  	return false;
  }
  
@@ -161,7 +161,7 @@ index 987807b1040ae..0fff8153f402f 100644
  {
  	bool is_kprobe, is_uprobe, is_tracepoint, is_syscall_tp;
  
-@@ -10623,6 +10627,20 @@ int perf_event_set_bpf_prog(struct perf_event *event, struct bpf_prog *prog,
+@@ -10390,6 +10394,20 @@ int perf_event_set_bpf_prog(struct perf_event *event, struct bpf_prog *prog,
  	return perf_event_attach_bpf_prog(event, prog, bpf_cookie);
  }
  
@@ -182,7 +182,7 @@ index 987807b1040ae..0fff8153f402f 100644
  void perf_event_free_bpf_prog(struct perf_event *event)
  {
  	if (!perf_event_is_tracing(event)) {
-@@ -10642,7 +10660,15 @@ static void perf_event_free_filter(struct perf_event *event)
+@@ -10409,7 +10427,15 @@ static void perf_event_free_filter(struct perf_event *event)
  {
  }
  
