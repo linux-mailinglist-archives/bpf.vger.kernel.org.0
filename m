@@ -1,77 +1,78 @@
-Return-Path: <bpf+bounces-59169-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59170-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78F46AC6873
-	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 13:35:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36C67AC6901
+	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 14:17:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B50D53B6EB7
-	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 11:34:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02BE24A8281
+	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 12:17:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABBBE2836AF;
-	Wed, 28 May 2025 11:34:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55FF1284662;
+	Wed, 28 May 2025 12:17:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ULHOQ+80"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QyVJfX74"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B05EC1E8854;
-	Wed, 28 May 2025 11:34:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D05B283C9D;
+	Wed, 28 May 2025 12:17:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748432097; cv=none; b=px0Cz0aLE+dYZhgdHKPtWIzRHdfUzEt+i1KU3OhhXOn6sUBPtIKkLAx6T903YdSdIhrHAsdKqMlxbn4ACdIcM5/RESjuxYHa2SNwZuIiJ1qAVp+JAxzEZG5z62SysVicjrC4AMKvjP0OWV8XQEnKWkKLyh57r1xHygRNseeJxHg=
+	t=1748434624; cv=none; b=MOLyu7xQ0bXPG0XQJlA0WrhJsfXyyTUDv87f8M7QP3F+BsDan5w1x8xEbld+whyZPSQPTuTG+Uo3tyceRg+Q7MeQKFQun0KkiTyEOhpPqiZAVf69s0pMJkd6vXQNTxB7wTJ1XCOr2KOyaTUULuaR2v9izU1Wjbr2lajO5aq5tU4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748432097; c=relaxed/simple;
-	bh=HSxCbgRLZhJCIcQQOJEc5MtOOGLMy3xGR4PMKG3DHvg=;
+	s=arc-20240116; t=1748434624; c=relaxed/simple;
+	bh=zliaatdZSG3ID75nB4njeI5zRcmiAOD/ZqOPCvHelOs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pIc8kAKys4DXy9AXqqHkBcgq0zw3shGPknULi3XCsEBX8BcrO/grfb24D9XTjo39y7HB2OJ9gy+Sheaolsygu3UNM2pDLnGR7fwJWcUcF6BmscddR3pgSSUXgNW7MpQcVZeOr2t/TIlFUZMtdX8ejsO19bfOqU+1u5jRrq0yp6Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ULHOQ+80; arc=none smtp.client-ip=198.175.65.20
+	 Content-Type:Content-Disposition:In-Reply-To; b=jomh+dpr1Fo9NYoUTrk646lC6hP12bMqiCys/GWxxMWlPrj5OIozVAu03Ft8Fb98H2Sw6U64+G9YSOj80b6GfFpfp352VAgb3min9+HohqC4dymGFEhOPcKHlAmYlvIkiW8xMeE7nXqxy4JESADjdz1rtXl2vv4o28aKNhR+trw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QyVJfX74; arc=none smtp.client-ip=192.198.163.8
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1748432096; x=1779968096;
+  t=1748434623; x=1779970623;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=HSxCbgRLZhJCIcQQOJEc5MtOOGLMy3xGR4PMKG3DHvg=;
-  b=ULHOQ+80tetHTnpZPtjnLc0M30Ar3/v/USsIGMgo3zdgJ75ofW9x+y8w
-   VZLhEWHCOE8UN440lRtGQy3xtjjz1qXd2ZFjnt91hLd7Z7IuXrqAOzfaH
-   uezoU1u8rqpGqTv+WGjRvvFbAsn7ck4yeTV40xfa9VeytSLFXvq/AMhlv
-   ljvcah/vKyTLKFKzHDPr7l1nTfh1eukMKz9nxlbut7URh36odIc5HVLuq
-   lCRRiskDrR+/aPHL4hL5l4HdHGtiVunMeMWc+MEupxlaRoQMiGVNOqVNC
-   n4jwzGqfSL0lMBh9ALccQ/MSN4iWFk5xxbjHs7LZwAn1dmt+xaiQkzXyg
-   A==;
-X-CSE-ConnectionGUID: ckVO1Q45RGC0fjt+8iHR6A==
-X-CSE-MsgGUID: 49Yjd5RfRt25dWQzZIqinw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11447"; a="50152786"
+  bh=zliaatdZSG3ID75nB4njeI5zRcmiAOD/ZqOPCvHelOs=;
+  b=QyVJfX74mr4CeNPW4oHeF1zq3PsJPZHV1k8CGDPq0yVt30UPuUOFSvzV
+   1SibCpVjcHBERq4KClSendu+AYQUx9cLlv5r3IQt2PqaemaEz76PbjTE2
+   Ahg9KxAeMr6fGvYj31BXA6tYnyaQDJ+S9kD7ygpH2UZjoh/qzaau68GgC
+   mWB61P5FTj+aSEMTdW3Cbe4sbnrc/1zI/uNvN2LGJhcyKfKMwv11P3Yed
+   Ra8StP5TMPjrvuAYE0XoI7p/TU6EGlXNJ9Tb2VT5uNqvNRfQioDAe04Nc
+   Dcpbq2CGIj/7oikFgl32ysbtF0jPT0dfI9VEGk29kYg65NQYFjs+wrc2O
+   g==;
+X-CSE-ConnectionGUID: iy6KrfmaQ0ms86CslONP4g==
+X-CSE-MsgGUID: TgcGfzKYTDWZa3ZILSc1GA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11447"; a="68005234"
 X-IronPort-AV: E=Sophos;i="6.15,321,1739865600"; 
-   d="scan'208";a="50152786"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2025 04:34:56 -0700
-X-CSE-ConnectionGUID: gOecNs2RRlqmVkcs8m6llw==
-X-CSE-MsgGUID: BHUyzIPHSy6OcTM3fSV+GQ==
+   d="scan'208";a="68005234"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2025 05:17:02 -0700
+X-CSE-ConnectionGUID: zfMKmqs0Qnmx7lKJ9Bpfqw==
+X-CSE-MsgGUID: TNY0VZEKTUW6+mR/lzVwxA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.15,321,1739865600"; 
-   d="scan'208";a="174209022"
+   d="scan'208";a="144192208"
 Received: from lkp-server01.sh.intel.com (HELO 1992f890471c) ([10.239.97.150])
-  by orviesa002.jf.intel.com with ESMTP; 28 May 2025 04:34:53 -0700
+  by fmviesa009.fm.intel.com with ESMTP; 28 May 2025 05:17:01 -0700
 Received: from kbuild by 1992f890471c with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1uKF3a-000VcS-22;
-	Wed, 28 May 2025 11:34:50 +0000
-Date: Wed, 28 May 2025 19:34:35 +0800
+	id 1uKFiM-000Ve0-1S;
+	Wed, 28 May 2025 12:16:58 +0000
+Date: Wed, 28 May 2025 20:16:32 +0800
 From: kernel test robot <lkp@intel.com>
 To: Menglong Dong <menglong8.dong@gmail.com>, alexei.starovoitov@gmail.com,
 	rostedt@goodmis.org, jolsa@kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	bpf@vger.kernel.org, Menglong Dong <dongml2@chinatelecom.cn>,
+Cc: oe-kbuild-all@lists.linux.dev, bpf@vger.kernel.org,
+	Menglong Dong <dongml2@chinatelecom.cn>,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next 14/25] bpf: tracing: add multi-link support
-Message-ID: <202505281947.qIShGsJU-lkp@intel.com>
-References: <20250528034712.138701-15-dongml2@chinatelecom.cn>
+Subject: Re: [PATCH bpf-next 03/25] arm64: implement per-function metadata
+ storage for arm64
+Message-ID: <202505282007.0CscfzXZ-lkp@intel.com>
+References: <20250528034712.138701-4-dongml2@chinatelecom.cn>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -80,7 +81,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250528034712.138701-15-dongml2@chinatelecom.cn>
+In-Reply-To: <20250528034712.138701-4-dongml2@chinatelecom.cn>
 
 Hi Menglong,
 
@@ -90,51 +91,30 @@ kernel test robot noticed the following build errors:
 
 url:    https://github.com/intel-lab-lkp/linux/commits/Menglong-Dong/add-per-function-metadata-storage-support/20250528-115819
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20250528034712.138701-15-dongml2%40chinatelecom.cn
-patch subject: [PATCH bpf-next 14/25] bpf: tracing: add multi-link support
-config: arm-randconfig-002-20250528 (https://download.01.org/0day-ci/archive/20250528/202505281947.qIShGsJU-lkp@intel.com/config)
-compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250528/202505281947.qIShGsJU-lkp@intel.com/reproduce)
+patch link:    https://lore.kernel.org/r/20250528034712.138701-4-dongml2%40chinatelecom.cn
+patch subject: [PATCH bpf-next 03/25] arm64: implement per-function metadata storage for arm64
+config: arm64-randconfig-002-20250528 (https://download.01.org/0day-ci/archive/20250528/202505282007.0CscfzXZ-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250528/202505282007.0CscfzXZ-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202505281947.qIShGsJU-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202505282007.0CscfzXZ-lkp@intel.com/
 
 All errors (new ones prefixed by >>):
 
->> kernel/bpf/syscall.c:3727:2: error: call to undeclared function 'bpf_gtrampoline_unlink_prog'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-    3727 |         bpf_gtrampoline_unlink_prog(&multi_link->link);
-         |         ^
-   kernel/bpf/syscall.c:3727:2: note: did you mean 'bpf_trampoline_unlink_prog'?
-   include/linux/bpf.h:1492:19: note: 'bpf_trampoline_unlink_prog' declared here
-    1492 | static inline int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link,
-         |                   ^
->> kernel/bpf/syscall.c:3995:8: error: call to undeclared function 'bpf_gtrampoline_link_prog'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-    3995 |         err = bpf_gtrampoline_link_prog(&link->link);
-         |               ^
-   kernel/bpf/syscall.c:3995:8: note: did you mean 'bpf_trampoline_link_prog'?
-   include/linux/bpf.h:1486:19: note: 'bpf_trampoline_link_prog' declared here
-    1486 | static inline int bpf_trampoline_link_prog(struct bpf_tramp_link *link,
-         |                   ^
-   kernel/bpf/syscall.c:4001:3: error: call to undeclared function 'bpf_gtrampoline_unlink_prog'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-    4001 |                 bpf_gtrampoline_unlink_prog(&link->link);
-         |                 ^
-   3 errors generated.
-
-
-vim +/bpf_gtrampoline_unlink_prog +3727 kernel/bpf/syscall.c
-
-  3721	
-  3722	static void bpf_tracing_multi_link_release(struct bpf_link *link)
-  3723	{
-  3724		struct bpf_tracing_multi_link *multi_link =
-  3725			container_of(link, struct bpf_tracing_multi_link, link.link);
-  3726	
-> 3727		bpf_gtrampoline_unlink_prog(&multi_link->link);
-  3728		__bpf_tracing_multi_link_release(multi_link);
-  3729	}
-  3730	
+>> aarch64-linux-gcc: error: unrecognized command line option '-fpatchable-function-entry=1,1'
+   make[3]: *** [scripts/Makefile.build:203: scripts/mod/empty.o] Error 1 shuffle=4239289662
+>> aarch64-linux-gcc: error: unrecognized command line option '-fpatchable-function-entry=1,1'
+   make[3]: *** [scripts/Makefile.build:98: scripts/mod/devicetable-offsets.s] Error 1 shuffle=4239289662
+   make[3]: Target 'scripts/mod/' not remade because of errors.
+   make[2]: *** [Makefile:1281: prepare0] Error 2 shuffle=4239289662
+   make[2]: Target 'prepare' not remade because of errors.
+   make[1]: *** [Makefile:248: __sub-make] Error 2 shuffle=4239289662
+   make[1]: Target 'prepare' not remade because of errors.
+   make: *** [Makefile:248: __sub-make] Error 2 shuffle=4239289662
+   make: Target 'prepare' not remade because of errors.
 
 -- 
 0-DAY CI Kernel Test Service
