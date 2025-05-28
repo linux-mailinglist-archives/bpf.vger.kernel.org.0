@@ -1,135 +1,158 @@
-Return-Path: <bpf+bounces-59128-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59129-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EB0EAC62AD
-	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 09:11:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56695AC62D2
+	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 09:20:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52E451BA420F
-	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 07:11:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 055E51681B9
+	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 07:20:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04C2B244663;
-	Wed, 28 May 2025 07:11:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7707B244695;
+	Wed, 28 May 2025 07:19:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mNJMwxMH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FB+mTpCf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0481243956
-	for <bpf@vger.kernel.org>; Wed, 28 May 2025 07:11:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 560BE1367;
+	Wed, 28 May 2025 07:19:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748416264; cv=none; b=eJ6/koRxTYZ0ER2ZJ+2ZYIHzWM3/nWzXk8SnjaAy1/rgGgO7T9QObFctnL8BOlirHVxJsSkx44sCcQ7+PzexIrerCmVriwAe+imi7r5T9VIvwReu9bK9nup6wmb1ZARk+i9SmdNf4VCx9EVBXMthW1x835Gc9p4wqzRMSSNk+Kg=
+	t=1748416794; cv=none; b=gbPEm0fP0Z/LL9MCDB21Pg7+FjMCi/Rj8HXS5KVd0c1/fT7x7Zzahzr8fQ+ZWzwTdtdHwiT3t8aZq8F7jzt2PAO5NOUy7ukphxBWez0E3Fk/2DKfyi+ROuCOp54n0xukIFKGgOLYEuUHY3Ev0rkkirlr1ZS7F65SVF1JQMn/Lgw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748416264; c=relaxed/simple;
-	bh=c+HSWpQf08Q44emJxl1wVdQK4QxnYmtKYA7yWiIUvCA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VCSmEFOglssxtzqD9RMriwEXYs50EElxzC0mEt3QGyKAaEC/oG2D7gOsUAvinxmbIOskfhYV4hxbC4WzCF8gFGTzCu8EeBRPHKTkJTHQExO8kHT2A2DRK5cE1P995jYK7f7h5WEtFltnO6N4JEZQc9p86LYkF0JjDr28RXvYUyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mNJMwxMH; arc=none smtp.client-ip=209.85.219.175
+	s=arc-20240116; t=1748416794; c=relaxed/simple;
+	bh=ntMPcjZr9Pm033gu7Fx/HPiDio0i+/tdgt6pURKOm3g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=c6AzwIi/EEPINIewO4UBGkPAD1gH8wY6jWwEoeRLlLMSWfdjFPb1CwnUVmyJlKUUnUOpSiaMKH9eflT3LcouWpREqmO6vpW23+uYNN9y2tGQ9s6LNdlR4WfS9cNlG6yqatKZXJ1wBEB96H76MSYhwuOfZaSmWADzlA3DK5+Z3xY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FB+mTpCf; arc=none smtp.client-ip=209.85.218.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-e7dc83224d5so527603276.1
-        for <bpf@vger.kernel.org>; Wed, 28 May 2025 00:11:02 -0700 (PDT)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-ac3eb3fdd2eso756682966b.0;
+        Wed, 28 May 2025 00:19:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748416262; x=1749021062; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=AaLq2vIVSn6sAsC6KdBYVc9RopsAOBmwh5AN5b2x62Y=;
-        b=mNJMwxMHHGsN1vBgo/5DUkktip3Jq6JmO9hTMipOmS8R/6ZV8eXRzG2TPJpYmaFnrF
-         4A3OkyXaTPZf1dCU8VG1i81E+k1TSw/dUaku9oD2JYS31vOaNy82e3CDXiEVaxZB1V25
-         gzcRMuMxGttgXiF/itMmr0bBsYfNBeeDvTF3Qwi4rgzXPqCJ/vUeZBPwdUYOiewur0sR
-         F7O9aqT9G+1nIYYSokzy3jH9cAnoXfXm0gssh7heqJEgq82b9OkPCL9ldfyEKaBd1/oV
-         PTpUxBS6HfJvpGDB4a7MdrL5Of/Wuf6+Hu5/63Jc9uGsZ5AOppoeZ7e1Bq3p5WO9QHMB
-         P5Tg==
+        d=gmail.com; s=20230601; t=1748416790; x=1749021590; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OUbnFWv1f37Ta+BVjxPt8pmoACrgGpNv4OYgueKntrw=;
+        b=FB+mTpCfdRvwEn1BlHrIVHbShcpMMUmFr6tI6TGzrSEJ59tlIB897ZiAH+fRNBYV4r
+         yZtcxXqa/vmE7KTEf55H5ZdS/G5fgUYYs1hlGaxPu83NR+eSSRHCAvBzv+HbRQYsR9xC
+         Gc7gd1fla9AcvALJhEgFLlKIibWodgprLTjOvTfyUXetovUej3Q1c0Ml9vH+rI/Ua/Ea
+         7YKbG8LL7R2OAc8wRvsIQv+hCRr/w1nur5Y8yd7DxRNGZaxT59dg7keKsCgssHgwmpaD
+         tNh8x72NGXp1P4iU6A3mFiDZxwM+lgAmbQVKKj7yyqGqJ10fagGG4YyymQm4pFNgxeW/
+         4OZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748416262; x=1749021062;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AaLq2vIVSn6sAsC6KdBYVc9RopsAOBmwh5AN5b2x62Y=;
-        b=AefEcs8AW9MzjIbp8rRqupNL1NVGn2sa1nFkhCnaBeK3DgN0nTdGINoN1LSdznJnUe
-         EVZVHKvaNE1ha7kEfkSyoqcmTDr4nwxKpy94h/yIBSp+rsGmp6yoqtvHsXvpqZABYDiJ
-         W7KLR+vqwu0N81G1dQnsmhD8eoc87H8Xp5IlwrQC3KOrlHHmy9WMyytYz9keJ+o7OVZ/
-         UT2K1HMA5yPPZE2mquIhAaJmS344FTsoaDDioVBkxLuafk/Xq4QRhfaSkxuzeAKWfHrg
-         gRU1Pk3ukljBJvIQS7eJxUbrWzQTgRA4evQ+ZRIa0cRit6tVlG60AJBP+UpY5u/lnre9
-         KSfQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW+6uwS41WzO1tDZtJQHgSH1d6aC3akrLaerhcB+zD/fSGzFAdofi/m2y82EAaARx1TyqA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzOL1ZdkRplPiAMdJkKG0zrWvwl53Rw9xk+amQx2QRFEvvLRLKz
-	5lhNTCT89F5InL7k6p+nAy7YP9PCbzpELXsMnX46x3X4eTMKs9jVpfFlJa6bNyx1a4UozPB1Zon
-	oRnKn4eX/npB0RRxK48dcwEOQbY5kkRY=
-X-Gm-Gg: ASbGncv/YkaepRVC5VucQzUFVNGcG5VkZIh8zAxDwAOq9q5jcJaxP5MlmVC4nvRrjyO
-	wn+G181/S3jiH3/g9wPEdGaAgBCqPgRvq2rM8/ithoC/UYIgO5SaGmty/Ip4OlnsH6aqZIZGgf5
-	I2jj6+TAJs38q5sV5BG2+Yv0K9+bf7cs0u
-X-Google-Smtp-Source: AGHT+IHPa2QiVMuRTetNj3txcx4tNUMhc54lA9upSo2nD2LC+EE/pJ47A9wsr+6/e0F8sZ19aTQbiDrxZxZ3qg2MFrQ=
-X-Received: by 2002:a05:6902:2d06:b0:e7d:89d2:a2bb with SMTP id
- 3f1490d57ef6-e7dd031fc28mr5145760276.3.1748416261838; Wed, 28 May 2025
- 00:11:01 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1748416790; x=1749021590;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OUbnFWv1f37Ta+BVjxPt8pmoACrgGpNv4OYgueKntrw=;
+        b=IGFX9P/KDK01l754Dxig8VSc4rLfAIRZ5/LO1ImlESVtdqdonANfZJO0PbUdLMwAE8
+         iziT7p3FvZ/30OMe08sHWdm8te7A5xPpcs06XBDImztHvDP0cZf0/VYuyMD6zgaUCaXb
+         +YzdfRYVMAa8tZWPnwoEIGwwMV+WbBITCP78vfzC09a1+DrrkvdKvLQ2wMWtKC8WT81I
+         SQKoIz7RhyplmGSYRI0ZMTnVvVCpMBFKN1VhOe9/9IPdIJ14Zzd12v3rA3BZV+vZAHcT
+         D9NYhzhkgsfXo6A5BCuRYxaKrZXReBpM5mujuK1GogrMJjjS5lldzf6uxlI+l2/wjE1B
+         Ll1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVYVwMYO4KVbW3+957pXKxizbiePZN4RiOkUruL9c4YZEtDpd80vYvsjmPh6kZBeQ7y3f8=@vger.kernel.org, AJvYcCVzvc54lxEiA5dYECfEGbxAMUkzj6vvtoclAtW9Hlmd4NHQ1DIjgdjynv1/E/i6RhGKHynIvzAl@vger.kernel.org, AJvYcCXKZZ1WGMtpdQD+uSQzg9//Ho/mdZ5e3ZSNjildIogi2OBMU2Ms6HZP9PZg9ss8Y5C3ZV5IgzB4NAKF09DG@vger.kernel.org, AJvYcCXU6x0mBro9pOZjX3U7TXOQ4Sk2X+NKgQnb3wSWVA6ncqxbLktPkCKPlgmukSyD3m1D/HmsweiozODNRw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxgU1QrPRCTt64/HuuGXR/Ujwr2Dkk812nc537mDTdgQ0ti2j0+
+	9QL0ie8/ygoWP2Whg6InVgNWD381Q+eZiMcSuRsRXqNLxCQxXXD/cOM+
+X-Gm-Gg: ASbGncv+cNgeQY/BocoIccFuN1oNmcPzXiouER6WZc9ABVqUeKQtqE5asw3dvXDaqgP
+	AcnVjBBsYNd7kPtPN3s27MehzFziCxGTeytznvUzw849F7MC8jy8whLlul5Ogc6XcuKoBkNesxi
+	BRaRMKJ3eUqNLg1NZ3LfoR+wIfZFbYJINtMx4DAMiPPWhqmGgcIwXAmgD4WrUpW/+8a/zAPU4d3
+	IFxe2ISSMD2vMNNLJnhF4TtguWBaYf3hs7aBwUkgvLcHnkg1Zmcvp2LfjxM37V0RmPH8TvwHubh
+	hGRdxSZPhq9osKyywfavmIpTS6MYbqEpiJ2wXrmMfRyepUWGiq4Wm4uFt64eEP0=
+X-Google-Smtp-Source: AGHT+IF8u/oWlE6nDqmRdBTJqi0N5ZpxlTVC/BaksAktgdabSWc2dFiSy583FQXlAFD49z4UcobfKw==
+X-Received: by 2002:a17:907:3fa3:b0:ad1:e4e9:6b4f with SMTP id a640c23a62f3a-ad8a1f31b03mr95247266b.36.1748416790119;
+        Wed, 28 May 2025 00:19:50 -0700 (PDT)
+Received: from ?IPV6:2620:10d:c096:325::6f? ([2620:10d:c092:600::1:c447])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ad8a1a1322fsm58712266b.80.2025.05.28.00.19.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 May 2025 00:19:49 -0700 (PDT)
+Message-ID: <187e12ce-7e25-4fe0-871d-170f22125f8e@gmail.com>
+Date: Wed, 28 May 2025 08:21:00 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250420105524.2115690-1-rjsu26@gmail.com> <20250420105524.2115690-4-rjsu26@gmail.com>
- <m27c2l1ihl.fsf@gmail.com> <CAADnVQJZpyqY9TWanRKjmViOZxppAeh7FGAnxV_1CKAih7drkA@mail.gmail.com>
- <CAE5sdEh3NuXUcjScj4Auvtc2701NAS6fu0hpzLGVnaoQ7ESnfg@mail.gmail.com>
- <CAADnVQKX2=jYfs5TBBKdKxHPi_ssUvrSuxbr22-dmYoP_e3=dA@mail.gmail.com>
- <CAM6KYssQwOnOqQT6TxHuu1_vDmmuw+OtFB=FwPLqbFcv+QdVrg@mail.gmail.com> <CAADnVQLFM9s_Ss7eqyx47tiY8i2b2dt=RMPHMC_s67Ang1rNBw@mail.gmail.com>
-In-Reply-To: <CAADnVQLFM9s_Ss7eqyx47tiY8i2b2dt=RMPHMC_s67Ang1rNBw@mail.gmail.com>
-From: Raj Sahu <rjsu26@gmail.com>
-Date: Wed, 28 May 2025 00:10:45 -0700
-X-Gm-Features: AX0GCFsyE-tU08AjAXtSeQJ77-J1ZI9Rqdn7FfbK_545KYaTeWzzDI1aTu6O6Zw
-Message-ID: <CAM6KYsuVe10f39kfaJaQEUGGA7xjmkALxjRSQxJRcGKAw4KtGQ@mail.gmail.com>
-Subject: Re: [RFC bpf-next 3/4] bpf: Generating a stubbed version of BPF
- program for termination
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Siddharth Chintamaneni <sidchintamaneni@gmail.com>, Eduard Zingerman <eddyz87@gmail.com>, 
-	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Dan Williams <djwillia@vt.edu>, miloc@vt.edu, ericts@vt.edu, 
-	rahult@vt.edu, doniaghazy@vt.edu, quanzhif@vt.edu, 
-	Jinghao Jia <jinghao7@illinois.edu>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 18/18] mm, netmem: remove the page pool members in struct
+ page
+To: Mina Almasry <almasrymina@google.com>
+Cc: Byungchul Park <byungchul@sk.com>, willy@infradead.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ kernel_team@skhynix.com, kuba@kernel.org, ilias.apalodimas@linaro.org,
+ harry.yoo@oracle.com, hawk@kernel.org, akpm@linux-foundation.org,
+ davem@davemloft.net, john.fastabend@gmail.com, andrew+netdev@lunn.ch,
+ toke@redhat.com, tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com,
+ saeedm@nvidia.com, leon@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ david@redhat.com, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
+ vbabka@suse.cz, rppt@kernel.org, surenb@google.com, mhocko@suse.com,
+ horms@kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+ vishal.moola@gmail.com
+References: <20250523032609.16334-1-byungchul@sk.com>
+ <20250523032609.16334-19-byungchul@sk.com>
+ <CAHS8izM-ee5C8W2D2x9ChQz667PQEaYFOtgKZcFCMT4HRHL0fQ@mail.gmail.com>
+ <20250526013744.GD74632@system.software.com>
+ <cae26eaa-66cf-4d1f-ae13-047fb421824a@gmail.com>
+ <20250527010226.GA19906@system.software.com>
+ <651351db-e3ec-4944-8db5-e63290a578e8@gmail.com>
+ <CAHS8izNYmWTgb+QDA72RYAQaFC15Tfc59tK3Q2d670gHyyKJNQ@mail.gmail.com>
+Content-Language: en-US
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <CAHS8izNYmWTgb+QDA72RYAQaFC15Tfc59tK3Q2d670gHyyKJNQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> That's exactly the case I was concerned about earlier.
-> These two insns might generate different JIT images,
-> so to prepare patches for text_poke_bp_batch()
-> the verifier needs to coordinate with JIT.
-> Replacing call with mov is a danger zone.
-> iirc "mov %eax, 1" is 5 bytes, just like "call foo" is 5 bytes.
-> But this is pure luck.
-> We should only replace a call with a call or a jmp or a nop.
-> See map_poke_track/untrack/run logic.
-> Maybe we can reuse some of it.
-.
-.
-> text_poke_bp() takes care of that.
-> That's what the "_bp" suffix signifies. It's modifying live text
-> via 'bp' (breakpoint). It has a multistep process to make it safe.
+On 5/27/25 18:38, Mina Almasry wrote:
+...>>>> struct netmem_desc *page_to_netmem_desc(struct page *page)
+>>>> {
+>>>>       return &page->netmem_desc;
+>>>
+>>> page will not have any netmem things in it after this, that matters.
+>>
+>> Ok, the question is where are you going to stash the fields?
+>> We still need space to store them. Are you going to do the
+>> indirection mm folks want?
+>>
+> 
+> I think I see some confusion here. I'm not sure indirection is what mm
+> folks want. The memdesc effort has already been implemented for zpdesc
 
-We were exploring the suggested design on a high-level.
-The idea of moving patch generation after verification is really
-simplifying the code.  We are also exploring whether we can
-move it all the way after JIT.
-There is a clarification needed.
-If we need to support global termination, we need the call sites
-(prepared during load-time) and pass it to text_poke_queue() which
-will take care of patching the call instructions in-memory.
-In this case, the only information we need is the call sites and not
-the patched program (which we can free-up towards the end of program
-load once the call_site information is obtained).
+To the best of my knowledge, it is. What you're looking at should be
+a temporary state before all other users are converted, after which
+mm will shrink the page in a single patch / small series.
 
-However, if we want to support per-CPU termination (for the case of a
-super large per-CPU map causing large runtime, etc), we will need the
-patch to stay around.
-In this case, the termination handler (bpf_die in code) will perform
-the `rip` change and stack modifications.
+> and ptdesc[1], and the approach they did is very different from this
+> series. zpdesc and ptdesc have created a struct that mirrors the
+> entirety of struct page, not a subfield of struct page with
+> indirection:
+> 
+> https://elixir.bootlin.com/linux/v6.14.3/source/mm/zpdesc.h#L29
+> 
+> I'm now a bit confused, because the code changes in this series do not
+> match the general approach that zpdesc and ptdesc have done.
 
-So, are we looking to support both, or just global termination?
+In my estimation, the only bits that mm needs for a clean final
+patch is a new struct with use case specific fields (i.e. netmem_desc),
+a helper converting a page to it, and that everyone uses the helper
+to access the fields. I'd argue a temporary placeholder in struct
+page is an easier approach than separate overlays, but either is
+fine to me.
+
+> Byungchul, is the deviation in approach from zpdesc and ptdecs
+> intentional? And if so why? Should we follow the zpdesc and ptdesc
+> lead and implement a new struct that mirrors the entirety of struct
+> page?
+> 
+> [1] https://kernelnewbies.org/MatthewWilcox/Memdescs/Path
+
+-- 
+Pavel Begunkov
+
 
