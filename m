@@ -1,176 +1,151 @@
-Return-Path: <bpf+bounces-59073-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59074-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 202C3AC5F99
-	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 04:36:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB0ADAC5FDF
+	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 05:12:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F8517AC0BF
-	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 02:34:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 633FB9E2FC0
+	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 03:12:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2D401C5D44;
-	Wed, 28 May 2025 02:35:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16B121E3787;
+	Wed, 28 May 2025 03:12:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CLz5hjWj"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qLuGLAzF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 904832BD1B
-	for <bpf@vger.kernel.org>; Wed, 28 May 2025 02:35:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC8091C4A0A
+	for <bpf@vger.kernel.org>; Wed, 28 May 2025 03:12:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748399716; cv=none; b=j8qJaMvqug5Bag5q41gzNuShzh6F7axufUuTp0NRvbgq4OgAlZj3gY28gn+QPMhJ0CHSzY+La9FP34e5tdElVygBaRs+I3T/S47UAHmduORcFwoSPWvBleNHCSPupTokK2GtuxDdkKFDIh8Gx5LJ+1L+mat9P2w5n+LErUkkA5A=
+	t=1748401935; cv=none; b=PRvkGEbJitIgXHBXW145eaWnBY0Xq+7naDH1Uvj9u0v+HJndkGE+4dDChQV3V8vlsReEXPxJnzHGtdCBQGmC91eENyx63qlC4Iv0NmnsDNVKNYjpr2iimJhBIIaw9JZ9z6TFcvkn3+6cIf75RR7m48ieGUJNvh7BJks237cz8Ck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748399716; c=relaxed/simple;
-	bh=w2pkJCa+NG0DLQdW7DZlb08XDaDYZN60YMKALjcRbRw=;
+	s=arc-20240116; t=1748401935; c=relaxed/simple;
+	bh=45wv2D7qTveHvG++liQk1FdgOdvStQgyo7K7EgLBQ20=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=E9FemdjVFiFpqwMXHIYTWART6k3paIo0gv/CZrGFiENEcrWzc543sh9dGkMwzFXRGx0ox4lGKfKll+DM9IBGgfZdhHTVEKyPuRqWxtUN+vEEU1YjmOYHh957VordQqa5t2e32k4dCYId9h74SGLR9EZquBrB55cI9qGxmouJh9c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CLz5hjWj; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-43cfdc2c8c9so25828645e9.2
-        for <bpf@vger.kernel.org>; Tue, 27 May 2025 19:35:14 -0700 (PDT)
+	 To:Cc:Content-Type; b=Sf26JQ6eZvTGqq8yax5LmtgTKUB7LjrshOQxbPHkJU8d/UxAIg+ppHjxUWEwlDEdpablKHrKNS1VbOOEFxI9WAKZObEUo/7VnBbIZFXYi3fw7b8XCYRZinpfRwSsOq32bKUgw/SxRThfqKkCFGeOcK+1NDVX5oK7gEQr5cGFDaA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qLuGLAzF; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-231ba6da557so79995ad.1
+        for <bpf@vger.kernel.org>; Tue, 27 May 2025 20:12:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748399713; x=1749004513; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1748401932; x=1749006732; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=51nAeDpNOY9pWYPTuP82l/bKLpEVzRgi66NRXpQXTQU=;
-        b=CLz5hjWjZczX0AtjER9ugTyNJjOHBIkAmL86RtgmtHoUYzm+DxF+JLnc2Bkl1v5lam
-         Qu98XYyShgSut71VsUHwOs/+OHWy5GmoaCO15gagtLiAi6qOMun75H9B7pG6lmP33hjV
-         Epxi1yswB4EqUjFLvvBG0QNJ+IOI7jafnIJOZ8keeuW/GN+OLCwn00XnJnLe6r5YP//T
-         bko3+imOXbHiqVsAriLz93/TJcLk/h5a4M4PAyYKKZnCpG2rX6ODJo7ZfdymJIBU17Qo
-         jov9L7CDV8p5ZTFYUHdprvmNkRi2P9VnLlK3/MF7xT6T7gA211n7FtZ+qDRWE4YGQfvr
-         FGPQ==
+        bh=hi54XJvxzTpbX0StT38uQRnU2/zb/XVmDK+caARZGHA=;
+        b=qLuGLAzFri0ELQo4ug0igeikL8LmDPPfEQYrCmNbU56Tg8RjWHOo8GCx63KdOLC5fb
+         94Jn31FyUqWmxqXyNLqYUmxnmjRwO2pQqa0ZZalBFrASW/1pctyQD2t7UllpFpmvNYrt
+         y0mwJnzWgd4jTwRFf8njjTLsyOLvIvcxHIQ/Ul0eHEV0u33HJa1R9v7DUTEol/dfaCv9
+         XsolPSH5bhIV+A8Xda5ar5qQR1g4R9BqKe9EK8B+ouo8AwtvnLFwFJerameKYWZLZJpd
+         1L1CiVHn/Ix2rwsqKjvMl2SmHlnZz0Uz/gvRtZMV1+LLu2nmlHPBrASFWAikRAlKP3AO
+         IjhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748399713; x=1749004513;
+        d=1e100.net; s=20230601; t=1748401932; x=1749006732;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=51nAeDpNOY9pWYPTuP82l/bKLpEVzRgi66NRXpQXTQU=;
-        b=IRPrwLOO/k0dcnDfzQIXEOR9pHjzgqaniH+QPjNXlrfxX088UMso/AbeqUKRFQZLtP
-         u8z3wzlzg+2UHv833c/e0ti2agrYFINjRBCaebqFO02CssIGkVthE0WqSzPeAQD3dbw1
-         WcDzRw/Gv4/R/GZgwKj0u5k7IF7spb/EDOYKy8HHXapXGSgk8LlxZyh6y9kf+zGR9c7Q
-         DF2IEZUGfBoBoFRNfpdVIidO+RRr3n18SSFy65dMBm71tE/ZStuO0Wl1x4Pd4ZZWh6Pk
-         Y/PaeYf50gC0FGiAga63lt6xUBaFAh5y7TqLbcyQpYS8HiaiR2UveGqQyXrKClU9ce1W
-         blFA==
-X-Forwarded-Encrypted: i=1; AJvYcCXdQpxlJhq8uq4dDqogwac4zbzyIpWTYS0D2q1cOo1vRWaoiR1yQymclhNUSgb/pgIV1a0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzGI8L4fqZVNzbeWgUGo1Fg17WgSRIFAGALIKpd+nzCkd8heBm6
-	y5ZSSCwO+mYuxicd5I4HF4Go0TnHji4PV2jQLSnXrbxXjaWh8fGlb7faqYxerqQMoGH1VsATHPO
-	FabIfzeUcQXnyaI+SmQtU0XneXb6hrI0=
-X-Gm-Gg: ASbGnctDy0M012eUml25nY1VXWu/lVmcNO8i6vgfBvY3jCTL6bEt/dbEJcuJnEb38KL
-	BJTl9LdCTm9+vwT5FTRqS34PfWXWU3GspDDWYLJDPbfJZxrFgoPfJTBDvYhJ7JaRCGLEZu5bFGQ
-	TFSx71UvBcD111G36sDefaF3iHxSCMOiOaYqVNHBvOQZtZulSrtK1TNxx1snYHi7u/DzYoukQ9
-X-Google-Smtp-Source: AGHT+IEMQs46FYuK0UI1MEAVFIHBLx00DlZZb8L4vutnDp0SkNqW1Uu2tJG+z1bluZnJFb1eByYQ9I58ql27Kylc5NE=
-X-Received: by 2002:a5d:584c:0:b0:3a4:d4cd:b0a with SMTP id
- ffacd0b85a97d-3a4d4cd0df1mr9356376f8f.28.1748399712476; Tue, 27 May 2025
- 19:35:12 -0700 (PDT)
+        bh=hi54XJvxzTpbX0StT38uQRnU2/zb/XVmDK+caARZGHA=;
+        b=aMsGV22vbFC4gKL5BTvRH6mu4evUoX8MdAMju1Z0zVGZ10BrHqt2/c2i5ai2/qzFU7
+         YeNklVFAwcV197kzEezZsloi+15HjjSzwfG3ZYK6+OvFu23OAbwFyN26cKSiYiMRHKaF
+         XqHRl3rxQz2rZTIFa3P4jxKsjXrQSMzmhxfwmyMzi3kPDgQ8Cw+CgDcahz2nnb3VrAWx
+         sQN13o292tXMBedsx4my0wnTuC/lOUsecoGctuEaVAvqq/98tgF17+Bst+OjRpxlgOyf
+         lORGBT8SxQzGvH2Gigh2mjQzStVMJAlwZOQ4lAqZIF2CdyLWvNoWzzoiTh3daNHd8buO
+         1VtA==
+X-Forwarded-Encrypted: i=1; AJvYcCXORPQy/PZA2iqCLmS1yDSF8e50YVCI17zuFxxczfLb8adxfRZLEoSZUqJGVdWXtnejCQA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyDYFma9WQUouuhXKk7hLKnTIbKAMN92/knHupDfKOWkL/2uWXo
+	hh1Ffm5lcdKAcb5XrAjYlnRQGfjN4inJZiappe1qDm2ffhmSazTlplrle73qlIOQubEYP14vHn1
+	bbhYo+3E14GTK22dd8HF2/xh2NjuyQcCL+Ojc/7ej
+X-Gm-Gg: ASbGncvtk9N2RzlZ/hKkGhwjXNd/zE3TxVLmov4hHExed770KhZpE9eK1ybUf23cVQN
+	N6i9/zvBaTKYrdi5x+LcROmmNTkLL2yHzfqPiSzw2lr4omrZoirgBB+/4BVhrM9IFMs6xetS6dW
+	mswKega1WQKw0XcyGKHiJWranmGPokPiFFBs2NjcJha8mj
+X-Google-Smtp-Source: AGHT+IGdqjyzoDtqYIHx/y7YKWzz/qyhFs2l//e3GArH1hU2e1HUWggvHASce0D05SKLzqIW3p6xmhC7Nwpq0Q6Hybk=
+X-Received: by 2002:a17:902:d2c7:b0:234:b2bf:e676 with SMTP id
+ d9443c01a7336-234cbe28862mr1141045ad.11.1748401931545; Tue, 27 May 2025
+ 20:12:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250526162146.24429-1-leon.hwang@linux.dev> <20250526162146.24429-3-leon.hwang@linux.dev>
- <CAADnVQJZ1dpSf3AtfNsvovogfC75eVs=PiYXMivUpDHDow3Row@mail.gmail.com> <CAEf4Bzbw9G4HhL4_ecbgc2=bDbZuVEA2zLnChgqT_WCsq11krQ@mail.gmail.com>
-In-Reply-To: <CAEf4Bzbw9G4HhL4_ecbgc2=bDbZuVEA2zLnChgqT_WCsq11krQ@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 27 May 2025 19:35:01 -0700
-X-Gm-Features: AX0GCFvqj2S2dJz2JOxz68e7rULmS93OerKf5sTkQCsUoLmg7w2y8iLm3aaq5oU
-Message-ID: <CAADnVQLxzJMAYymtWMFZb6eAK+ha_shRfh+m3W3yFO4dLn-YeA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/4] bpf, libbpf: Support global percpu data
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Leon Hwang <leon.hwang@linux.dev>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Yonghong Song <yonghong.song@linux.dev>, 
-	Song Liu <song@kernel.org>, Eduard <eddyz87@gmail.com>, Quentin Monnet <qmo@kernel.org>, 
-	Daniel Xu <dxu@dxuuu.xyz>, kernel-patches-bot@fb.com
+References: <20250528022911.73453-1-byungchul@sk.com> <20250528022911.73453-3-byungchul@sk.com>
+In-Reply-To: <20250528022911.73453-3-byungchul@sk.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Tue, 27 May 2025 20:11:58 -0700
+X-Gm-Features: AX0GCFvbRHta6TyJPe_xr_2KYS1z9gGCeokku76odClbu09MqRPDqhx2_Gv1QJ4
+Message-ID: <CAHS8izOkr96_i1B8o_AWQGgfWSWZVVjHhOShReLZozsxZB6WdQ@mail.gmail.com>
+Subject: Re: [PATCH v2 02/16] netmem: introduce netmem alloc APIs to wrap page
+ alloc APIs
+To: Byungchul Park <byungchul@sk.com>
+Cc: willy@infradead.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, kernel_team@skhynix.com, kuba@kernel.org, 
+	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org, 
+	akpm@linux-foundation.org, davem@davemloft.net, john.fastabend@gmail.com, 
+	andrew+netdev@lunn.ch, asml.silence@gmail.com, toke@redhat.com, 
+	tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com, 
+	leon@kernel.org, ast@kernel.org, daniel@iogearbox.net, david@redhat.com, 
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz, 
+	rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org, 
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, May 27, 2025 at 4:25=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Tue, May 27, 2025 at 7:29=E2=80=AFPM Byungchul Park <byungchul@sk.com> w=
+rote:
 >
-> On Tue, May 27, 2025 at 3:40=E2=80=AFPM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Mon, May 26, 2025 at 9:22=E2=80=AFAM Leon Hwang <leon.hwang@linux.de=
-v> wrote:
-> > > +
-> > > +       data_sz =3D map->def.value_size;
-> > > +       if (is_percpu) {
-> > > +               num_cpus =3D libbpf_num_possible_cpus();
-> > > +               if (num_cpus < 0) {
-> > > +                       err =3D num_cpus;
-> > > +                       return err;
-> > > +               }
-> > > +
-> > > +               data_sz =3D data_sz * num_cpus;
-> > > +               data =3D malloc(data_sz);
-> > > +               if (!data) {
-> > > +                       err =3D -ENOMEM;
-> > > +                       return err;
-> > > +               }
-> > > +
-> > > +               elem_sz =3D map->def.value_size;
-> > > +               for (i =3D 0; i < num_cpus; i++)
-> > > +                       memcpy(data + i * elem_sz, map->mmaped, elem_=
-sz);
-> > > +       } else {
-> > > +               data =3D map->mmaped;
-> > > +       }
-> > >
-> > >         if (obj->gen_loader) {
-> > >                 bpf_gen__map_update_elem(obj->gen_loader, map - obj->=
-maps,
-> > > -                                        map->mmaped, map->def.value_=
-size);
-> > > +                                        data, data_sz);
-> >
-> > I missed it earlier, but now I wonder how this is supposed to work ?
-> > skel and lskel may be generated on a system with N cpus,
-> > but loaded with M cpus.
-> >
-> > Another concern is num_cpus multiplier can be huge.
-> > lksel adds all that init data into a global array.
-> > Pls avoid this multiplier.
+> To eliminate the use of struct page in page pool, the page pool code
+> should use netmem descriptor and APIs instead.
 >
-> Hm... For skel, the number of CPUs at runtime isn't a problem, it's
-> only memory waste for this temporary data. But it is forced on us by
-> kernel contract for MAP_UPDATE_ELEM for per-CPU maps.
+> As part of the work, introduce netmem alloc APIs allowing the code to
+> use them rather than the existing APIs for struct page.
 >
-> Should we have a flag for map update command for per-CPU maps that
-> would mean "use this data as a value for each CPU"? Then we can
-> provide just a small piece of initialization data and not have to rely
-> on the number of CPUs. This will also make lskel part very simple.
+> Signed-off-by: Byungchul Park <byungchul@sk.com>
+> ---
+>  include/net/netmem.h | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+>
+> diff --git a/include/net/netmem.h b/include/net/netmem.h
+> index a721f9e060a2..37d0e0e002c2 100644
+> --- a/include/net/netmem.h
+> +++ b/include/net/netmem.h
+> @@ -177,6 +177,19 @@ static inline netmem_ref page_to_netmem(struct page =
+*page)
+>         return (__force netmem_ref)page;
+>  }
+>
+> +static inline netmem_ref alloc_netmems_node(int nid, gfp_t gfp_mask,
+> +               unsigned int order)
+> +{
+> +       return page_to_netmem(alloc_pages_node(nid, gfp_mask, order));
+> +}
+> +
+> +static inline unsigned long alloc_netmems_bulk_node(gfp_t gfp, int nid,
+> +               unsigned long nr_netmems, netmem_ref *netmem_array)
+> +{
+> +       return alloc_pages_bulk_node(gfp, nid, nr_netmems,
+> +                       (struct page **)netmem_array);
+> +}
+> +
+>  /**
+>   * virt_to_netmem - convert virtual memory pointer to a netmem reference
+>   * @data: host memory pointer to convert
 
-Initially it felt too specific, but I think it makes sense.
-The contract was too restrictive. Let's add the flag.
+Code looks fine to me, but I'm not sure we want to export these
+helpers in include/net where they're available to the entire kernel
+and net stack. Can we put these helpers in net/core/page_pool.c or at
+least net/core/netmem_priv.h?
 
-> Alternatively (and perhaps more flexibly) we can extend
-> MAP_UPDATE_ELEM with ability to specify specific CPU for per-CPU maps.
-> I'd probably have a MAP_LOOKUP_ELEM counterpart for this as well. Then
-> skeleton/light skeleton code can iterate given number of times to
-> initialize all CPUs using small initial data image.
+Also maybe the helpers aren't needed anyway. AFAICT there is only 1
+call site in page_pool.c for each, so maybe we can implement this
+inline.
 
-I guess this can be a follow up.
-With extra flag lookup/update/delete can look into a new field
-in that anonymous struct:
-        struct { /* anonymous struct used by BPF_MAP_*_ELEM and
-BPF_MAP_FREEZE commands */
-                __u32           map_fd;
-                __aligned_u64   key;
-                union {
-                        __aligned_u64 value;
-                        __aligned_u64 next_key;
-                };
-                __u64           flags;
-        };
-
-There is also "batch" version of lookup/update/delete.
-They probably will need to be extended as well for consistency ?
-So I'd only go with the "use data to update all CPUs" flag for now.
+--=20
+Thanks,
+Mina
 
