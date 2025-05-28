@@ -1,365 +1,257 @@
-Return-Path: <bpf+bounces-59114-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59087-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 396FEAC6080
-	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 05:57:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80DA6AC603C
+	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 05:48:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF9A41893970
-	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 03:56:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA6F87B0EAE
+	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 03:47:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3E63221557;
-	Wed, 28 May 2025 03:50:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B6F91EF363;
+	Wed, 28 May 2025 03:48:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mPQCK9uV"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OSNX0yNv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f196.google.com (mail-pl1-f196.google.com [209.85.214.196])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC234221277;
-	Wed, 28 May 2025 03:50:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D20B1EB193
+	for <bpf@vger.kernel.org>; Wed, 28 May 2025 03:48:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748404233; cv=none; b=Z90eO4r8gQqIt9CzVPun90A8PPtfT/2d/Kf1/5JDNG7zGgTriCR93kezybo2gueRmQZX77BeM7QYMYtKeYL2tlJJxSUsnX9Y+CjHY6zHmxdSl32tn1j79D7rUPn0aYwzkv7+rpevPifKDr+tCyTo78B3VMwUe3VQ4TlTzAsZD1c=
+	t=1748404089; cv=none; b=n0yJdD2KbnXVbnqOtyZrGV2No3Jb1qKjCzngqXpwGSEtHKIkKxtfsObww2L/U1cXQL3zRPV1P7dzB9sVvqaGXYa5EKgbuw53LHYPrMHRtnPnxo+5mkg9TWI1+d7Z2H0djbDfQno3+SNnwYMvyOVL6aXNBoEhHs1Hot8SvZU0S+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748404233; c=relaxed/simple;
-	bh=rciDrG8G6L4Dh6dkq2H8+0cYFsdIDFcdIk/SXzFy2Vw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hKQ1aLovyIqpPXRNtRR6T0KXUWGa3UYyP2E3JhUNsJDGIazCO3vnTqDKWt/O5vAQsoDkK0nP6CE1PWO1Lb2IQPErZjwZzcylGoXEWb4JOnTTEehBTZa2FbwN7enVUYJpI6vVWAtZZQ19ml07FisP1qoBKLomQQRT1SLf0+nyb7I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mPQCK9uV; arc=none smtp.client-ip=209.85.214.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f196.google.com with SMTP id d9443c01a7336-23446bb8785so37436685ad.0;
-        Tue, 27 May 2025 20:50:31 -0700 (PDT)
+	s=arc-20240116; t=1748404089; c=relaxed/simple;
+	bh=WRdWk5k0DzvC0IqnH5+irBEy6lu1z+vAHhkMr1DodwA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=u0r05uFCuiLg9QpiivgxnP1Yx38GHSyCZI7dTT80FIRBdIWe1xwVEg9fgar6RnF9Ki9zWW0typntzdBRarf6EtTHfsEJH+Wls/uusJmnc2hTCMu4SAHjPdSK46qeRxGpbtRCq2xrI2Nz2tySIBz7HGyFQocjvyBBPpj2PjJqatA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OSNX0yNv; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2348ac8e0b4so74465ad.1
+        for <bpf@vger.kernel.org>; Tue, 27 May 2025 20:48:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748404231; x=1749009031; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1748404087; x=1749008887; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Hu9/X1JOi8Os36x5RU4FpTPbcc8XO6FTrIp+jwMDpec=;
-        b=mPQCK9uVQrI/1QxlD5BoZkw4kJB8zOGFt+dWbUJUmo2FwhuQDYYx8jwlDa/0Hzw735
-         ihks9MVokUBv6TEDIgvEaWVZsg2hovST3kFymNEHnBziPplKwCmy+9Ucc9HzbGprD3/b
-         IgzHEDWHMsgzpRmsrj+1CKzCxrnfLHGP0+6xkI+KJZCq3AsG2KUjCbcoHDxWquwZT+yY
-         6IIe/NAuNKwawgsPlk0YHMm2MnLe9ywLEC3WLPbkWDkBMmgesiasw8Q3v3jeTT6SIprj
-         +NdqQYm0PRkTiTf8NZjLXn6fMxY59ME9NhroTZtq9T1GMBCsiNOLh8O3SaR3Q69/u2Qu
-         xR9Q==
+        bh=77lpftD4KhYJa03QspdPV4v3SobsW6lQYU4wBXhrxZo=;
+        b=OSNX0yNvPRjVJbv8rriH2T4DpqMb/MAuqtue1V8P+dEBLnhf+CHdnkdWEsriB98G+W
+         /C2k3anpWf42PhuX1ufIk7vv+19duXyAVIOp8bxTy6VdgizOrh7FLrJnyDBIcrqyNwb2
+         ygUnYiXGXxrlPhqkNAKNrAxuTXeskI0RyLB1XdPK42hXRHGjsyM2rUsQoipOvFXqhcjj
+         FbXTffR+BBMuymiMkwgclaeRGD/hcBxQfDo46KMIONu2gExpUSUX8LP0PLGmqePlrayO
+         J6Q8M0lB+IuKIBSFTAXZe5ZosSUbjU+Iqv37hcv1YpsmcPJcBCIEVFk1Q0DUSNE9t0pD
+         tUSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748404231; x=1749009031;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1748404087; x=1749008887;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Hu9/X1JOi8Os36x5RU4FpTPbcc8XO6FTrIp+jwMDpec=;
-        b=dXFifQfGWYQFC1PIZc/FsAkB0+y08WC3YwjgRHNJpsAQyV7xk4CYUZxV9lP3qC1RGc
-         J7XDnTR7Hko2Dq0JqMGMpFxNmvSr6upJMYDSn3RVovm7hmm0c2c6WGro3iCKHme+b9LT
-         R5hjUvrnhpP5WilnmQOkJeKmf4Oq0EbaZy0StK/aBZX4cwvfExXFw3IeBP2++3eNskNA
-         28uXmHiDtHol/mgB9pg+1dFaLqCF805D0iwJ5Yj3E0BPyOPev3vq6fSZ04PUhSglCORI
-         IPQzuJo+iRx38b757m++gsQqRe9kiPFRpBoPhKHYrOFDKHz3188sNv+pxlfRb9GCH0ya
-         juyA==
-X-Forwarded-Encrypted: i=1; AJvYcCUKIym+JVckzYCFeSuJ9s8zdiSrzlDPCVX3czHo+tCwREten7DGulVxcHJ1lDwwZDwnWluOpTtWcT3nPWw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx24sShMuGxS2GDTRrv3HlaxKzK0iBd6nOyqy3fPnaaSl8YDkBF
-	zOFXTCkPkOs3CLqAi04MGYFkXx832ikRGCHVXofoySpR+Aa7nTfnFxLw
-X-Gm-Gg: ASbGnctPEiGRS0BFEhhqUFUq+Td92xpkmmpFr5aL6mMLVT9rs1xXeyChPYA4XKq8Uil
-	5JwUGF+UpfuLiBRkTUjCd//FiHYqzdrEgwe8RE9u00ZGY3Jsko3hZ6fGfc5VXSwwW1SYKY6PwqU
-	/HfAPURwi6URTnRcvGcoqA4VqQDpnACSUB4VkGXGZ9guMutgK1XI86s7UpFAJi7Nqx8GpfEfvLa
-	HWdw3FO0LduAYWIkgmDC/Rvwytvrr+p9qDBD82n7a8Rl3Qyac9x/8AqAvxmKUnQC/0CQVSKZcju
-	FljQUOqm346S8dmFxZ7JU8AWRzPDstAvCkGJICE4F93IzbF84mtMDKbfhLzMlRNbZFWn
-X-Google-Smtp-Source: AGHT+IHb6XuBb0eSurxKAfp2Gz9/QNo3XaqUB3jxZEb20L9m4arA2I30pbXGEjnNIAQjFRKJrZLISQ==
-X-Received: by 2002:a17:902:e5cb:b0:234:c549:da10 with SMTP id d9443c01a7336-234c549dbedmr29711375ad.47.1748404230906;
-        Tue, 27 May 2025 20:50:30 -0700 (PDT)
-Received: from localhost.localdomain ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-234d35ac417sm2074505ad.169.2025.05.27.20.50.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 May 2025 20:50:30 -0700 (PDT)
-From: Menglong Dong <menglong8.dong@gmail.com>
-X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
-To: alexei.starovoitov@gmail.com,
-	rostedt@goodmis.org,
-	jolsa@kernel.org
-Cc: bpf@vger.kernel.org,
-	Menglong Dong <dongml2@chinatelecom.cn>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next 25/25] selftests/bpf: add performance bench test for trace prog
-Date: Wed, 28 May 2025 11:47:12 +0800
-Message-Id: <20250528034712.138701-26-dongml2@chinatelecom.cn>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250528034712.138701-1-dongml2@chinatelecom.cn>
-References: <20250528034712.138701-1-dongml2@chinatelecom.cn>
+        bh=77lpftD4KhYJa03QspdPV4v3SobsW6lQYU4wBXhrxZo=;
+        b=Ex3QBd5I7lSYs1ZDpyUt8jKMoV/PEqv261+EO3dMWdquASHpkB2lFEI0yL72cVYYHO
+         52u88YdDQxf5kLsngcMf16gouscI2Ny8eCXaf3nnBcflyJBgGK7mnGl+f17AEzMcYdkP
+         KlPWN/FY6ZYyjhhIDBcwfFFuJkCquGhFQHe5tCzBZIzg0DLy/3so1CxM+vH5142LUaY6
+         MLTD4twKDDFLX5bPU0ggOjAib5d+mHO2govkLfT6K/5t5ym1EY1sCpR47KSc0SE5lH5g
+         gysPV7ImpZMk27GWts8wVAwCL3gQxV5lPRgU2rfx0XPQur1MAr90bvttCz3BWJj+sBIm
+         lXgg==
+X-Forwarded-Encrypted: i=1; AJvYcCWN7esrcENyUmtBkKgWHaG+E64EwckUovjESbJR8I1/hLneIgkdBiWB8qEk1lYoPlnvvmE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyUbu5o9NSdowaFA/DSEboG2DVE47w8BVT1SLYt2sqsQQw3xbJg
+	0ebcrrLyaJm4X2qODpRkZAoHawGUCNMVBSL9pRbrsiBnDVTua7gjzC9xkWP97puTNPXqd8AdLMn
+	pnQRNlmJ4i9sr0d6/OypUkRxzHTa5tVjO87bQRwlR
+X-Gm-Gg: ASbGncspal6I9QhSsrS6N6Dj3olnRS2zTQnu5Ld9SYmdo3iNgIQ2Jim4UZpV4x9IPR3
+	NdqN4SgMm+2t2QP8TPZ7+limOEiQB1tNLQyA4PGaKqx8r14ebnpiXuQQcxboIN+p1QnxTOq19KR
+	Wrkwi2CDmuMNEJmEoiAsOg4+sNd2ts6+pO6tv9bfBRTcK53X4l0a5T20A=
+X-Google-Smtp-Source: AGHT+IELYX3baDhkEuyXGmGEeTAzQv2FBMw+rcqLgCf+Ug/FNV2eDBLVmigKMRQ56cVnnFtdrOccuMw8Li7FXvRWEmY=
+X-Received: by 2002:a17:902:cf12:b0:231:f3a3:17c6 with SMTP id
+ d9443c01a7336-234c55ab59fmr1800515ad.20.1748404086759; Tue, 27 May 2025
+ 20:48:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250523032609.16334-1-byungchul@sk.com> <20250523032609.16334-2-byungchul@sk.com>
+ <20250527025047.GA71538@system.software.com> <CAHS8izOJ6BEhiY6ApKuUkKw8+_R_pZ7kKwE9NqzCyC=g_2JGcA@mail.gmail.com>
+ <20250528012152.GA2986@system.software.com>
+In-Reply-To: <20250528012152.GA2986@system.software.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Tue, 27 May 2025 20:47:54 -0700
+X-Gm-Features: AX0GCFuLfWYjOWpLxh-E2UEV1XJgFAUhM-h1hCiR1nhwAiLxgjKaWTaZkFY7k1w
+Message-ID: <CAHS8izMvRrG2wpE7HEyK3t544-wN_h3SC8nGabCoPWj1qCv_ag@mail.gmail.com>
+Subject: Re: [PATCH 01/18] netmem: introduce struct netmem_desc
+ struct_group_tagged()'ed on struct net_iov
+To: Byungchul Park <byungchul@sk.com>
+Cc: willy@infradead.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, kernel_team@skhynix.com, kuba@kernel.org, 
+	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org, 
+	akpm@linux-foundation.org, davem@davemloft.net, john.fastabend@gmail.com, 
+	andrew+netdev@lunn.ch, asml.silence@gmail.com, toke@redhat.com, 
+	tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com, 
+	leon@kernel.org, ast@kernel.org, daniel@iogearbox.net, david@redhat.com, 
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz, 
+	rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org, 
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add testcase for the performance of the trace bpf progs. In this testcase,
-bpf_fentry_test1() will be called 10000000 times in bpf_testmod_bench_run,
-and the time consumed will be returned. Following cases is considered:
+On Tue, May 27, 2025 at 6:22=E2=80=AFPM Byungchul Park <byungchul@sk.com> w=
+rote:
+>
+> On Tue, May 27, 2025 at 01:03:32PM -0700, Mina Almasry wrote:
+> > On Mon, May 26, 2025 at 7:50=E2=80=AFPM Byungchul Park <byungchul@sk.co=
+m> wrote:
+> > >
+> > > On Fri, May 23, 2025 at 12:25:52PM +0900, Byungchul Park wrote:
+> > > > To simplify struct page, the page pool members of struct page shoul=
+d be
+> > > > moved to other, allowing these members to be removed from struct pa=
+ge.
+> > > >
+> > > > Introduce a network memory descriptor to store the members, struct
+> > > > netmem_desc, reusing struct net_iov that already mirrored struct pa=
+ge.
+> > > >
+> > > > While at it, relocate _pp_mapping_pad to group struct net_iov's fie=
+lds.
+> > > >
+> > > > Signed-off-by: Byungchul Park <byungchul@sk.com>
+> > > > ---
+> > > >  include/linux/mm_types.h |  2 +-
+> > > >  include/net/netmem.h     | 43 +++++++++++++++++++++++++++++++++---=
+----
+> > > >  2 files changed, 37 insertions(+), 8 deletions(-)
+> > > >
+> > > > diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> > > > index 56d07edd01f9..873e820e1521 100644
+> > > > --- a/include/linux/mm_types.h
+> > > > +++ b/include/linux/mm_types.h
+> > > > @@ -120,13 +120,13 @@ struct page {
+> > > >                       unsigned long private;
+> > > >               };
+> > > >               struct {        /* page_pool used by netstack */
+> > > > +                     unsigned long _pp_mapping_pad;
+> > > >                       /**
+> > > >                        * @pp_magic: magic value to avoid recycling =
+non
+> > > >                        * page_pool allocated pages.
+> > > >                        */
+> > > >                       unsigned long pp_magic;
+> > > >                       struct page_pool *pp;
+> > > > -                     unsigned long _pp_mapping_pad;
+> > > >                       unsigned long dma_addr;
+> > > >                       atomic_long_t pp_ref_count;
+> > > >               };
+> > > > diff --git a/include/net/netmem.h b/include/net/netmem.h
+> > > > index 386164fb9c18..08e9d76cdf14 100644
+> > > > --- a/include/net/netmem.h
+> > > > +++ b/include/net/netmem.h
+> > > > @@ -31,12 +31,41 @@ enum net_iov_type {
+> > > >  };
+> > > >
+> > > >  struct net_iov {
+> > > > -     enum net_iov_type type;
+> > > > -     unsigned long pp_magic;
+> > > > -     struct page_pool *pp;
+> > > > -     struct net_iov_area *owner;
+> > > > -     unsigned long dma_addr;
+> > > > -     atomic_long_t pp_ref_count;
+> > > > +     /*
+> > > > +      * XXX: Now that struct netmem_desc overlays on struct page,
+> > > > +      * struct_group_tagged() should cover all of them.  However,
+> > > > +      * a separate struct netmem_desc should be declared and embed=
+ded,
+> > > > +      * once struct netmem_desc is no longer overlayed but it has =
+its
+> > > > +      * own instance from slab.  The final form should be:
+> > > > +      *
+> > > > +      *    struct netmem_desc {
+> > > > +      *         unsigned long pp_magic;
+> > > > +      *         struct page_pool *pp;
+> > > > +      *         unsigned long dma_addr;
+> > > > +      *         atomic_long_t pp_ref_count;
+> > > > +      *    };
+> > > > +      *
+> > > > +      *    struct net_iov {
+> > > > +      *         enum net_iov_type type;
+> > > > +      *         struct net_iov_area *owner;
+> > > > +      *         struct netmem_desc;
+> > > > +      *    };
+> > > > +      */
+> > > > +     struct_group_tagged(netmem_desc, desc,
+> > >
+> > > So..  For now, this is the best option we can pick.  We can do all th=
+at
+> > > you told me once struct netmem_desc has it own instance from slab.
+> > >
+> > > Again, it's because the page pool fields (or netmem things) from stru=
+ct
+> > > page will be gone by this series.
+> > >
+> > > Mina, thoughts?
+> > >
+> >
+> > Can you please post an updated series with the approach you have in
+> > mind? I think this series as-is seems broken vis-a-vie the
+> > _pp_padding_map param move that looks incorrect. Pavel and I have also
+> > commented on patch 18 that removing the ASSERTS seems incorrect as
+> > it's breaking the symmetry between struct page and struct net_iov.
+>
+> I told you I will fix it.  I will send the updated series shortly for
+> *review*.  However, it will be for review since we know this work can be
+> completed once the next works have been done:
+>
+>    https://lore.kernel.org/all/20250520205920.2134829-2-anthony.l.nguyen@=
+intel.com/
+>    https://lore.kernel.org/all/1747950086-1246773-9-git-send-email-tariqt=
+@nvidia.com/
+>
+> > It's not clear to me if the fields are being removed from struct page,
+> > where are they going... the approach ptdesc for example has taken is
+>
+> They are going to struct net_iov.
 
-- nop: nothing is attached to bpf_fentry_test1()
-- fentry: a empty FENTRY bpf program is attached to bpf_fentry_test1()
-- fentry_multi_single: a empty FENTRY_MULTI bpf program is attached to
-  bpf_fentry_test1()
-- fentry_multi_all: a empty FENTRY_MULTI bpf program is attached to all
-  the kernel functions
-- kprobe_multi_single: a empty KPROBE_MULTI bpf program is attached to
-  bpf_fentry_test1()
-- kprobe_multi_all: a empty KPROBE_MULTI bpf program is attached to all
-  the kernel functions
+Oh. I see. My gut reaction is I'm not sure moving the page_pool fields
+to struct net_iov will work.
 
-And we can get the result by running:
+struct net_iov shares some fields with struct page, but abstractly
+it's very different.
 
-  ./test_progs -t tracing_multi_bench -v | grep time
+struct page is allocated by the mm stack via things like alloc_pages
+and can be passed to mm apis such as put_page() (called from
+skb_frag_ref) and vm_insert_batch (called from
+tcp_zerocopy_vm_insert_batch_error).
 
-Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
----
- .../selftests/bpf/prog_tests/trace_bench.c    | 149 ++++++++++++++++++
- .../selftests/bpf/progs/fentry_empty.c        |  13 ++
- .../testing/selftests/bpf/progs/trace_bench.c |  21 +++
- .../selftests/bpf/test_kmods/bpf_testmod.c    |  16 ++
- 4 files changed, 199 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/trace_bench.c
- create mode 100644 tools/testing/selftests/bpf/progs/fentry_empty.c
- create mode 100644 tools/testing/selftests/bpf/progs/trace_bench.c
+struct net_iov is kvmalloced by networking code (see
+net_devmem_bind_dmabuf for example), and *must not* be passed to any
+mm apis as it's not a struct page at all. Accidentally calling
+vm_insert_batch on a struct net_iov will cause a kernel crash or some
+memory corruption.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/trace_bench.c b/tools/testing/selftests/bpf/prog_tests/trace_bench.c
-new file mode 100644
-index 000000000000..673c9acf358c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/trace_bench.c
-@@ -0,0 +1,149 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 ChinaTelecom */
-+
-+#include <test_progs.h>
-+#include "bpf/libbpf_internal.h"
-+
-+#include "fentry_multi_empty.skel.h"
-+#include "fentry_empty.skel.h"
-+#include "kprobe_multi_empty.skel.h"
-+#include "trace_bench.skel.h"
-+
-+static void test_bench_run(const char *name)
-+{
-+	struct trace_bench *skel;
-+	__u64 bench_result;
-+	int err;
-+
-+	skel = trace_bench__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "trace_bench__open_and_load"))
-+		return;
-+
-+	err = trace_bench__attach(skel);
-+	if (!ASSERT_OK(err, "trace_bench__attach"))
-+		goto cleanup;
-+
-+	ASSERT_OK(trigger_module_test_read(1), "trigger_read");
-+
-+	bench_result = skel->bss->bench_result / 1000;
-+	printf("bench time for %s: %lld.%03lldms\n", name, bench_result / 1000,
-+	       bench_result % 1000);
-+cleanup:
-+	trace_bench__destroy(skel);
-+}
-+
-+static void test_fentry_multi(bool load_all, char *name)
-+{
-+	LIBBPF_OPTS(bpf_trace_multi_opts, opts);
-+	struct fentry_multi_empty *skel;
-+	char **syms = NULL;
-+	struct bpf_link *link;
-+	size_t cnt = 0;
-+	int err;
-+
-+	skel = fentry_multi_empty__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "fentry_multi_empty__open_and_load"))
-+		goto cleanup;
-+
-+	if (!load_all) {
-+		err = fentry_multi_empty__attach(skel);
-+		if (!ASSERT_OK(err, "fentry_multi_empty__attach"))
-+			goto cleanup;
-+		goto do_test;
-+	}
-+
-+	if (!ASSERT_OK(bpf_get_ksyms(&syms, &cnt, true), "get_syms"))
-+		return;
-+	opts.syms = (const char **) syms;
-+	opts.cnt = cnt;
-+	opts.skip_invalid = true;
-+	link = bpf_program__attach_trace_multi_opts(skel->progs.fentry_multi_empty,
-+						    &opts);
-+	if (!ASSERT_OK_PTR(link, "bpf_program__attach_trace_multi_opts"))
-+		goto cleanup;
-+	skel->links.fentry_multi_empty = link;
-+	printf("attach %d functions before testings\n", (int)opts.cnt);
-+
-+do_test:
-+	test_bench_run(name);
-+cleanup:
-+	fentry_multi_empty__destroy(skel);
-+	if (syms)
-+		free(syms);
-+}
-+
-+static void test_fentry_single(void)
-+{
-+	struct fentry_empty *skel;
-+	int err;
-+
-+	skel = fentry_empty__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "fentry_empty__open_and_load"))
-+		return;
-+
-+	err = fentry_empty__attach(skel);
-+	if (!ASSERT_OK(err, "fentry_empty__attach"))
-+		goto cleanup;
-+
-+	test_bench_run("fentry_single");
-+cleanup:
-+	fentry_empty__destroy(skel);
-+}
-+
-+static void test_kprobe_multi(bool load_all, char *name)
-+{
-+	LIBBPF_OPTS(bpf_kprobe_multi_opts, opts);
-+	char *test_func = "bpf_fentry_test1";
-+	struct kprobe_multi_empty *skel;
-+	struct bpf_link *link;
-+	char **syms = NULL;
-+	size_t cnt = 0;
-+
-+	if (!ASSERT_OK(bpf_get_ksyms(&syms, &cnt, true), "get_syms"))
-+		return;
-+
-+	skel = kprobe_multi_empty__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "kprobe_multi_empty__open_and_load"))
-+		goto cleanup;
-+
-+	if (load_all) {
-+		opts.syms = (const char **) syms;
-+		opts.cnt = cnt;
-+	} else {
-+		opts.syms = (const char **) &test_func;
-+		opts.cnt = 1;
-+	}
-+	link = bpf_program__attach_kprobe_multi_opts(skel->progs.test_kprobe_empty,
-+						     NULL, &opts);
-+	if (!ASSERT_OK_PTR(link, "bpf_program__attach_kprobe_multi_opts"))
-+		goto cleanup;
-+	skel->links.test_kprobe_empty = link;
-+
-+	if (load_all)
-+		printf("attach %d functions before testings\n", (int)opts.cnt);
-+	test_bench_run(name);
-+
-+cleanup:
-+	kprobe_multi_empty__destroy(skel);
-+	if (syms)
-+		free(syms);
-+}
-+
-+void test_trace_bench(void)
-+{
-+	if (test__start_subtest("nop"))
-+		test_bench_run("nop");
-+
-+	if (test__start_subtest("fentry_single"))
-+		test_fentry_single();
-+
-+	if (test__start_subtest("fentry_multi_single"))
-+		test_fentry_multi(false, "fentry_multi_single");
-+	if (test__start_subtest("fentry_multi_all"))
-+		test_fentry_multi(true, "fentry_multi_all");
-+
-+	if (test__start_subtest("kprobe_multi_single"))
-+		test_kprobe_multi(false, "kprobe_multi_single");
-+	if (test__start_subtest("kprobe_multi_all"))
-+		test_kprobe_multi(true, "kprobe_multi_all");
-+}
-diff --git a/tools/testing/selftests/bpf/progs/fentry_empty.c b/tools/testing/selftests/bpf/progs/fentry_empty.c
-new file mode 100644
-index 000000000000..f2bfaf04d56a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/fentry_empty.c
-@@ -0,0 +1,13 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 ChinaTelecom */
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+SEC("fentry/bpf_fentry_test1")
-+int BPF_PROG(fentry_empty)
-+{
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/trace_bench.c b/tools/testing/selftests/bpf/progs/trace_bench.c
-new file mode 100644
-index 000000000000..98373871414a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/trace_bench.c
-@@ -0,0 +1,21 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 ChinaTelecom */
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+__u64 bench_result;
-+
-+SEC("fexit.multi/bpf_testmod_bench_run")
-+int BPF_PROG(fexit_bench_done)
-+{
-+	__u64 ret = 0;
-+
-+	bpf_get_func_ret(ctx, &ret);
-+	bench_result = ret;
-+
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-index ebc4d5204136..d21775eba211 100644
---- a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-@@ -405,6 +405,20 @@ noinline int bpf_testmod_fentry_test11(u64 a, void *b, short c, int d,
- 	return a + (long)b + c + d + (long)e + f + g + h + i + j + k;
- }
- 
-+extern int bpf_fentry_test1(int a);
-+noinline u64 bpf_testmod_bench_run(void)
-+{
-+	u64 start = ktime_get_boottime_ns();
-+	u64 time;
-+
-+	for (int i = 0; i < 10000000; i++)
-+		bpf_fentry_test1(i);
-+
-+	time = ktime_get_boottime_ns() - start;
-+
-+	return time;
-+}
-+
- int bpf_testmod_fentry_ok;
- 
- noinline ssize_t
-@@ -443,6 +457,8 @@ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
- 
- 	(void)trace_bpf_testmod_test_raw_tp_null(NULL);
- 
-+	(void)bpf_testmod_bench_run();
-+
- 	bpf_testmod_test_struct_ops3();
- 
- 	struct_arg3 = kmalloc((sizeof(struct bpf_testmod_struct_arg_3) +
--- 
-2.39.5
+Thus abstractly different things maybe should not share the same
+in-kernel struct.
 
+One thing that maybe could work is if struct net_iov has a field in it
+which tells us whether it's actually a struct page that can be passed
+to mm apis, or not a struct page which cannot be passed to mm apis.
+
+> Or I should introduce another struct
+
+maybe introducing another struct is the answer. I'm not sure. The net
+stack today already supports struct page and struct net_iov, with
+netmem_ref acting as an abstraction over both. Adding a 3rd struct and
+adding more checks to test if page or net_iov or something new will
+add overhead.
+
+An additional problem is that there are probably hundreds or thousands
+of references to 'page' in the net stack and drivers. I'm not sure
+what you're going to do about those. Are you converting all those to
+netmem or netmem_desc?
+
+--=20
+Thanks,
+Mina
 
