@@ -1,301 +1,514 @@
-Return-Path: <bpf+bounces-59182-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59183-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12EADAC6E41
-	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 18:45:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10FAAAC6E61
+	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 18:49:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EE3416AD9B
-	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 16:45:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C4A47A48D2
+	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 16:48:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8154E28DB7E;
-	Wed, 28 May 2025 16:45:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FB5328DEEB;
+	Wed, 28 May 2025 16:49:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="ILNCHytE";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="je66BRu5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vw5b8A6N"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72A471F19A;
-	Wed, 28 May 2025 16:45:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748450723; cv=fail; b=VJaGezbzYg6wVV/bBx4HCFFTP4eHIsBJFFgRGr31TH7LH7ilKMKlbl8F1Amio0Ha7F06qxuSX6TagKClbpGT2bISBmha+cdwXz9KUNnLZuDxX/VwZml90B1DEnTowQzt8qyatgFT2MjMwHjaFqrnJA/SqYCsA/aBTbBHCD3lSTw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748450723; c=relaxed/simple;
-	bh=erxDVwLCmpNn9hYR9r9ZI0sTzjUurhGXdQhJ/VwPY0c=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=MZJTdiWGCxo7MH5H+UmOr62FFQHuF84lO7KRQ1F2czwXSpXzez1Js4gkITqTALzzb83IQsUScfL3DiNj5Mrc0hyYRjJDFvtYbSCzCwqn3K1AlHNZ+sme6ZHRpZMKnvZ899rrgk1zXTyNXqz1J+zbAGkgourwHic1gKJBUhMOyAo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=ILNCHytE; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=je66BRu5; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54SCq8ol031331;
-	Wed, 28 May 2025 16:44:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	corp-2025-04-25; bh=oCQCizNFkrGZbC7WSQcew1UgxDSGd5ePVLihBgEBDkM=; b=
-	ILNCHytE6FOAYMxwmMCukXsO4X5d8HIDVePgW0A4Pi4Bh0F/9iIBwst408l85WIf
-	v1t0MXdcS1Pth5mpvlfccyU+IpB9D3qHuOPH3CxctNWdI7rrUrNjmr7Gc6I29+fD
-	EUu4Dd6aPgZlfoqAkA6KIhRktE+GNNHkERJUUakjMsM6VbLC9iVRC6sCA51AJ2O1
-	cQzjAGWG10g06uVwYwGrkqsEdRJ7QdnqXejJo5IcpEuaGLkNuiKxXTb3xm5xx3tb
-	pY52jupTyPvDrrDarwv6Tp+vfre8PpqpF0b/t3QE+MW8Sz/3WbL4lLHVhd45QuSp
-	E8ZFJLmauHrQzElmGVKWGQ==
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 46v2pex71u-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 28 May 2025 16:44:39 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 54SGBY9s021122;
-	Wed, 28 May 2025 16:44:39 GMT
-Received: from dm5pr21cu001.outbound.protection.outlook.com (mail-centralusazon11011071.outbound.protection.outlook.com [52.101.62.71])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 46u4jh53gd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 28 May 2025 16:44:38 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Ul2u5t5K3WGfA04/Fqs06rqtfottyQBT85YOFfzzoQBVKVXyD1FtfReyue8gtSXo+nmoM8/t5cTZgDYxyeKZJ4w4h00OI3iFOkazxMYf1X3DXBsJIA0PP0/5js2S1r09AVWn2H7ZjvDtkFStpEtZ8yzOlpDngBAwhziTUXk/pLJK4YZ+A2Ih2vRrYGSOL+9uHcDS9Sz1S3odPbAGsEineUPj1ZwMlKzqy2YtAZVBhWHfWztuWloxHf5/uMkpvyjZOPGVRWbSTZOjnWSS1+BhnLsZnA1Ohf1vkgltl+CUsxrqU1+/WEd7UVaEBxGV2M5HAs1Lb6GfEFJBp5N546w4DA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oCQCizNFkrGZbC7WSQcew1UgxDSGd5ePVLihBgEBDkM=;
- b=ri9s6/WTMwwIG1Ho3UVC7IjZLo6KD0Wux3/baKMy7yrYL8RL38zqqamrryDzD7dawTL2WgDrix68OOE8lFLgYcEoNouhdh14AkRWOb736b3TLXYjXHt6VwQ/qtzUTMHtiIQfux91zm/6BQfWDn6Hfqw9nBNw2iaFeukWSutIo1Ymvj+mK1oRbgYOeGP2iKP7CY+IyIqtAIp6ioir5az1tE6sN71iKd3WSWC+TdFRVeLHbIZFGkApx25qOri165BkeW9dCKtEgk+87Tby+HCRGJaB7x+AP48slNlUDaZmH8wgSFgM3UfX7vrlKFX50WWaueKK5ccNJCZEGWJVbCjMqg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9257428850E
+	for <bpf@vger.kernel.org>; Wed, 28 May 2025 16:49:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1748450967; cv=none; b=VcJ4wUJIaQ5u/1+FWIsFzQ6n6uimdLwrjMJ4z1zbpWkGBN8IpXuCkWeoRfFrFC2wRXK1lX669Q4veDcfUK0E9ofJdaAIINssJrdR9to2zAsnHKfkAea+1BHcyPtSaPk7WIZpzUHauy1VW0AHtUPOZ63ZpKAvfaxDG2TTnd7fNgA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1748450967; c=relaxed/simple;
+	bh=ur1Xmdwocr4ZqOgGje1zP+GF9Ip1eHHD+giv5y3OVQc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=HEzkAtuzxO/5KZk/skwJSOR9C0+/DSmYcBMS8+xiPt1/X9696VtvFYqGQm1DlU/a0iL8jy5cunXi/k9a/iQFMrQla68FtM3AngmMB8kZ+T6WEEgQQIlP5aBKiAHPxCDpaXfD++PKHOv61nugAfogSThAEtSufOFa0mWnwhloaEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vw5b8A6N; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-742c9563fafso3544598b3a.0
+        for <bpf@vger.kernel.org>; Wed, 28 May 2025 09:49:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oCQCizNFkrGZbC7WSQcew1UgxDSGd5ePVLihBgEBDkM=;
- b=je66BRu5sHHnkkrmWyvxuRggr6IKCo31XCPHTaR90H4ssos0h81Ltg+3qqDc9DXOybZUgzuzg8Am+ivd7CdayxymFZEYsXQn6hvLmHQYQRXx4eE4cJj2uyFTiPKOCx7720h6JsWmQgr6TBFUD2xRkkjNxxrzFlG22Stk5oNKAl8=
-Received: from DS7PR10MB5328.namprd10.prod.outlook.com (2603:10b6:5:3a6::12)
- by DM3PPF34F57F25D.namprd10.prod.outlook.com (2603:10b6:f:fc00::c1c) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8746.31; Wed, 28 May
- 2025 16:44:35 +0000
-Received: from DS7PR10MB5328.namprd10.prod.outlook.com
- ([fe80::ea13:c6c1:9956:b29c]) by DS7PR10MB5328.namprd10.prod.outlook.com
- ([fe80::ea13:c6c1:9956:b29c%2]) with mapi id 15.20.8746.035; Wed, 28 May 2025
- 16:44:35 +0000
-Message-ID: <d855c95e-06db-4c68-af01-8997ce9b9257@oracle.com>
-Date: Wed, 28 May 2025 22:14:26 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH net-next v2 1/2] virtio-net: support zerocopy multi
- buffer XDP in mergeable
-To: Bui Quang Minh <minhquangbui99@gmail.com>, netdev@vger.kernel.org
-Cc: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        =?UTF-8?Q?Eugenio_P=C3=A9rez?=
- <eperezma@redhat.com>,
-        Andrew Lunn <andrew+netdev@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <20250527161904.75259-1-minhquangbui99@gmail.com>
- <20250527161904.75259-2-minhquangbui99@gmail.com>
-Content-Language: en-US
-From: ALOK TIWARI <alok.a.tiwari@oracle.com>
-In-Reply-To: <20250527161904.75259-2-minhquangbui99@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI2PR02CA0025.apcprd02.prod.outlook.com
- (2603:1096:4:195::21) To DS7PR10MB5328.namprd10.prod.outlook.com
- (2603:10b6:5:3a6::12)
+        d=gmail.com; s=20230601; t=1748450965; x=1749055765; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=NqlstiNOU0Xjjw+wrhGxlMMEFFWaOOpa6KMCtlg+d7k=;
+        b=Vw5b8A6Ns/ubIRuhgjKHhZGmtSJzHycHdGevkgBtaV/JlvREG9nq6P32bAIx0jnYJB
+         5k7V9gKXv5lDtURvxnVRciCfn7NA5s7ljExHLQYRXa/875NwD+wRu2VRf2Hxhcl+4AqG
+         AOyt0avveRO1e2wtpn3GuHw0JrTOb9TbI1ri1Wsfuh0lArQpCos423/zTZSJtiNJWJ3u
+         obI6RNU7MvVtJfvqo2OYkHoLu7xIC6zJVi9XkpmCriXxtYoG3aIQjvmx9y4SO/K0F/LY
+         q5B4v235G6mptDT/exy5RlSSm8somO5Ji3H8Qupa8F+IPI6MRiY2j0IQWuEV9nGAjsdQ
+         RfJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748450965; x=1749055765;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NqlstiNOU0Xjjw+wrhGxlMMEFFWaOOpa6KMCtlg+d7k=;
+        b=h0k0xXA79dZmoV85F1vakntBwrl6hb6uFAORHMvnkydlCiD55T+/s6IdieqcAf6Tc9
+         AgfPKFtIgse0TQLG4cF8XXbZtYLjw/VMM/ybdIwYy3SSXNFlsmpVPB1EYzRO/kmILGdm
+         WeH+VcKcHX2ED+FzG3pjWgGF7zPgqNYG5B78JG2RgoffFcSU2fpsM2AETlPtmDLR0qe1
+         7kpLfvvEZ+XkMvoV+H8tOzDJ+uQTJwwBzAqrEw+niOz0T3VKTWLNsUcFGgW/qUptuz0B
+         PIgN5F5T+ehrfzVt+tFoOR57DTKTux62C3jB6QN2g2RTzYD93AUB+t6rz8rSKkWaoyy/
+         S3bw==
+X-Gm-Message-State: AOJu0Yw8nWcnFGISnLSmLwMMPegfYrNVJQWsj4Nyay/8lkKNHZvL9Juu
+	vz+Baz5mFP7FsUcaexG44LM47v2poJNeg0U+0SzAA5/K/F32FehECcw/
+X-Gm-Gg: ASbGnct3MrSuk8QnVCphOYJaYe9kEw73Q9UcvNJHszi4Wy0gb/q64g5BYS0H3xkGPds
+	CeQgxpFhv7QLHoCbUnZXArxWkBDF7DYJqH2fyJ8hUECQREgWa4c8s+LbtyHsAQraqXvHvWYZQwR
+	OFHO958hs4HAfvGXCrHf1yLvkpC1NOUyMsAJgF/H0Dfjjw/IAwm++iJHjFgO7D7S4VLpS6IH3Bi
+	25ZAIe2qjxwgqTP6TKne5nRZidI3rYUIJotEiO6GlmWcVD1Be/9bGijpJ2yiNB+5XsonbXDGdzv
+	euio9sJTWbusHo4FOkSLzm3YgqvC8MZNB4zFwcwhqX1QHdY+WRgN7/iQ0H5baLFlM5AxcTwxXdt
+	emKM67gO3Q1lRp+mW
+X-Google-Smtp-Source: AGHT+IFOfHFsYS94uE0jwazRP3Rfq77CfSkhygDTxlfr05uvMsU9aBNwvW28SeSWK7+y2bTZVFDKLw==
+X-Received: by 2002:a05:6a00:2d90:b0:736:5e28:cfba with SMTP id d2e1a72fcca58-746b40bfa6bmr4769050b3a.18.1748450964519;
+        Wed, 28 May 2025 09:49:24 -0700 (PDT)
+Received: from localhost.localdomain ([2001:558:600a:7:a83d:600f:32cc:235a])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-746e343c671sm1484825b3a.140.2025.05.28.09.49.23
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Wed, 28 May 2025 09:49:23 -0700 (PDT)
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: torvalds@linux-foundation.org
+Cc: bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@kernel.org
+Subject: [GIT PULL] BPF changes for 6.16
+Date: Wed, 28 May 2025 09:49:21 -0700
+Message-Id: <20250528164921.57695-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR10MB5328:EE_|DM3PPF34F57F25D:EE_
-X-MS-Office365-Filtering-Correlation-Id: 92a8fb1e-4484-4206-1ae3-08dd9e06ed9a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|366016|7416014|376014|7053199007;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?THFpMFpWZC9hNkFjUGNSdmpQN3ZwWlV5RXNRV3lGUE5DSFpGVEM5U2dnUms1?=
- =?utf-8?B?NHlIVTJZbjg3aDhEQ2V1bXVXMlJQcit0bzRzaEswVEtRaGh6YVNiQWJVanZj?=
- =?utf-8?B?aU1QdFJldkdHRE9Bdm15a0ZteEVKa1pKWCtaSm5Ya2w2aGptM3RqaGpjazlS?=
- =?utf-8?B?eHVWSUV5eFpyVUczS0ZUdFNHLyt5eGl0c0xIVVdkYjVlSU5ORWJ3ODBid1dS?=
- =?utf-8?B?MFoyZjZQNGZFcnRoNUdoNDdMY1I1TlM3RnVrSXZZbXFGc0hVTUNSeWxOVmUw?=
- =?utf-8?B?UlY2aGMyOStaL1FuS2Mwd1JDZHFCRXozRDMwTUdlam85L0Z3NHFKTHk1Yk96?=
- =?utf-8?B?YlVEUkUzR2xsSlErUkRKRGJoYXQrckYwMzR1SnM3aU9EWGg3REVMdzZiSCs4?=
- =?utf-8?B?c1ZnOHBaZEF3T3BDQ0ppS0JMVU1BTWxiZnJyb0Q5dXBtZE5qMSs2Tkx4c3VR?=
- =?utf-8?B?cWJ1Wkw0N1ppYzhVVVZrOFNXSUVpZEpuSVdTdUNGRmxRVEpEblpMOU5Jb0I2?=
- =?utf-8?B?RTlVclM3SStuMkRJMkZRRmtXTFRzK3BrZEVrSzgyQ3V0bEhEdmxPejhRWGhS?=
- =?utf-8?B?S3JiV0JtTGpjRUhNVTNHaTU0VE5jc1NjazQycHEvcE80SVJTeGQ3ZHpUd3pG?=
- =?utf-8?B?bGQydE5GN2dTSSttRm1QUEd5ZGhUbHpwWUY4N1lEcTdFVE1tTmlKRVdXNVNC?=
- =?utf-8?B?ZHBLb3lEd1p1NzdQTWZPaEcyaTdTRTJkU1Myem9wNE9ZbDRDUW83aFFiL3Qv?=
- =?utf-8?B?ek5lVit6Z3ZQYnoxZlNDZVFLK3JXN2M0OTVoaEZoZGY2bHd2WktDNFByeFpz?=
- =?utf-8?B?dDZFUXB4OVNXRURkd3dHaDcvMTA4ZlExTDVSR3hXYndFWFlVYUxSbVlIbkp1?=
- =?utf-8?B?czVSR3hNZGVQQnFKUEd0NlRDMmExL21Dd1ZMOWptT0tPcUt6eXV4RjREOHVk?=
- =?utf-8?B?ZnphTndjWXYvUkVHTjZ5alU4YTNVbWh5VVhCS2FpS3dSVXM5d2pYSnNMc09O?=
- =?utf-8?B?RTQzMktSbWpzdG50aXBmR1QxNlFlbFNPRjhhQ2R2aFp3VkwrNG9Sc0RISXNP?=
- =?utf-8?B?MDlnTURyNjRBQmFCSERuWUQ1UFJ3WE9CZTMvZHUwNzNQSFN1Z2VkbCtRN3BF?=
- =?utf-8?B?MFNaWTZlWmNqejRtQUczWFFtWUMxMW5DS29zRmI1WE45OXhDQUwxOElIb3pz?=
- =?utf-8?B?cG9aMisrNHRkMVJnQVBoWW16NW1yWUwwTTNNb3hndVZhNmFNdjlWdmcrYktL?=
- =?utf-8?B?U3ZPVVZ4Nmhhc2F2T1NyTWZaak5zT2c0cXFiM2JEVlBkaFBSNGROemlFYVd2?=
- =?utf-8?B?bTdPVHpZbmxhenl1aFBUZnNiWjFhTTlyd3hsYmZSdXNXL0R0d2NFZE5TWDdk?=
- =?utf-8?B?aGNWT1FreVc1UjFULzVURDFjNEdhZ2trVGhIY0ZaTTRtbG5ia2NtWVllTlgv?=
- =?utf-8?B?RmRwZElBUGtmcDMrZUVaUDhNbjZ4R0tOUkErOWFCUXliRGJkU0djNWYwZGw3?=
- =?utf-8?B?VWVQRGg3VHAycDZpYTFwRU9kckwxV0FCejR2aEd1T1ZSTlI4dUY2MmNYNm9i?=
- =?utf-8?B?ZlpudW02dC9LWUVoRXVtNE1pa1JTdWZiNG5PWUJTekpLYTF5VjdmQkpVUDk0?=
- =?utf-8?B?L1hYdmR4SFNFSEo4cEIyWGdJOWs1RU9kMzJVd3N2QVFMOVlhY3JqbXpOUHRC?=
- =?utf-8?B?MUNIbE11eVUyVituWnMxOUs5dXNCN0hiVmVDUmNmbDc4VHo0a2Zub2lGOXpK?=
- =?utf-8?B?RGMvalJ1SmEzL1VuTGxWazB1YUhiOW9ScE9yS3dVbjVmSHhwL3RROGZ3ak9L?=
- =?utf-8?B?cWpVMnZwN1ZSc05yL044ZzRMSWVodzQ0Y3lMbXVJMHVyczgwa2UxSjBBNEgr?=
- =?utf-8?B?Z1BwbklXdlZGYkpQTEZseDhQbHM5TnZaOUpESngzUGY0dVg1Ni9ESFdmN0JM?=
- =?utf-8?Q?ZaKjWykHcVc=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR10MB5328.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?ZjhsYUlITnhIYTN4OGtKQWJ1N2N6Qzl3aGNGQzdxc015NEljZ3kzNkQyeDkz?=
- =?utf-8?B?Y3NmZ1JNWkNJaWg3UWhyRVcvRlJCQ1pUN0tEN3E0L2dOUy8wNmpYSEpzRFpo?=
- =?utf-8?B?QW9QVFM2QmtWZlZMbzRXYkNvTElMb2pLTDBWNktzYktmRWIvSzZUNDZBWUIw?=
- =?utf-8?B?K3YzT25qVXlEaytEQThhcGllVnJSaCtYa3VYaVBPMDlxekdXbG9vVDRJZ2N4?=
- =?utf-8?B?TWJ4UWtLb1ZCVjREM3dRZ0hZRkk3NTQwSlk3aldhL2o1UTVHNU1VNTcxQTdX?=
- =?utf-8?B?czFnZUUzcmpTRGlBdUVaR2lKOTRtcnUvU0ZMd1dJY0VWNmRCcEhaT0NGTjNX?=
- =?utf-8?B?VGZJRnh5Tm5mUGt0aW50NEptUERObXE4ajE2cXJ3U1gzMUVLbzUzVjRuclJK?=
- =?utf-8?B?ODRxWmJjYlg0cmd5aXRrSGd3alpXODlrZHVMdWZNTHhQcFdKV1Nlc1UxNjZv?=
- =?utf-8?B?S0JFTnlRTU1UV29Bc3hpdjFubldSUTlQOFZKYk1mcS9EU3hwclJ2NStsbkxw?=
- =?utf-8?B?Yk5YNG5pWE9pcEtSRlBhR1RZT3V5RDdmc3RFcENlYVFlanoxcDQ2N3FGRitY?=
- =?utf-8?B?cUFrRlZkWGl3OVRud3owYkEydXBRV2M5Yk8yS1ozQXd6aVBMWDBLaTJLYVhM?=
- =?utf-8?B?bUZhL3p4d3lGRzgrYzIzeGF1SEJ3SEJuWXUzMStaTElmMFF1c0psSnNOTDVj?=
- =?utf-8?B?VmY1TmFEbmFaRVpBc01NL25vQTJYdzVoTU9yTTkrWXFmaHZTMnR3SnRMVmJX?=
- =?utf-8?B?SUh4V0NUenpLSEFHZWR0aDdqYzhScDZtdUhtVGNRMXNqUXVKV2xySDQyQW9R?=
- =?utf-8?B?WDlSV2R6QlRNTThrZEpvZm1UQnRTTnVCVXpCR29rYlZ0aGNaN2JiNkM5UjlQ?=
- =?utf-8?B?Y3JHTTlNZkZZSXBwb1FtRzN4L3Y4UjFSS2NyV1g0cXQzSmVrQll2VzJYKzZs?=
- =?utf-8?B?cXV2K3hyK0E0ZXhmcXdyL3FoS25SZ0RHTXJ3N29qTUloTjdSd1gwYUh6UCtR?=
- =?utf-8?B?YUFQdU5sNHh4OEZMYWtkMG5vVzJhT3dHSCtSbE91NW44bnBJYTNZRldQSTg2?=
- =?utf-8?B?M2ZUY0tFNHNxYWt1T1NUcUM4Y3BadkNveTE4QXdwL1hwa2FvczJJMjNjamdG?=
- =?utf-8?B?eXp2Y1FSZmFHRUNHOTJGeTBRNlVpTzA2ak81MFp0elY4cWlrd21lSkFiWmJW?=
- =?utf-8?B?TnBBL09JSHgzcThJd2hsVzlrbkxCYUc4NXo5b2tyMG9XNm9QeHFqRzJtZVZL?=
- =?utf-8?B?L1FPVkNmNVp2OG9Tb24zcnkvRnlLV2tEWmgvTXN2alBnWjJRYlFqeEVCbURk?=
- =?utf-8?B?M1RkQmlGYWlDZnJTWjUvRGE5NDZVVFVJQ2JzdW03WVdtckVPMXJ1Q3lWM3VU?=
- =?utf-8?B?eXRONVNZZEZDZHNncTlIZWNPNG9YaktES0lBWlNKL0lRVk1QVWpuM1FEdzh2?=
- =?utf-8?B?TXM5Tk0zenBuYmZWOHVWdGg3TTdScllYSkJaN2N4alpxc1hMNHQzVEgvaVpC?=
- =?utf-8?B?aE5YVkxkZ0FQblE4L05sZWlMeXhXM2FiaFZXU2hZcFYwVHgvMitaVG01R0c5?=
- =?utf-8?B?Q0F4eExIU0ZuM090OVJZQ0R3aW1ibTVaL2dPTXZIQkhkeTIyelF1NVpKNkpN?=
- =?utf-8?B?dVlKa1paVDVkeGFmODhCMlJSZm9YeUgzUW9LSkJVZnFma0gyZGtIUWRwQTdD?=
- =?utf-8?B?R2sxTnlicG9uVWhWRDUwYjBIMjZXd0t1NmxlWmlhT0FsdTUzbFJkRGgwUjJF?=
- =?utf-8?B?V1UvVFJnM0dVZlNIaEpiQ1ZtYVBEbHpyRE9tb2YvQ2h0elUxa2VxM2JINDdK?=
- =?utf-8?B?ZHFsM1RCU3VOMmpBRXpoWjZ6dkJJUVN1Tkp6aGNISElFQk0wcGxrSGFTNnVX?=
- =?utf-8?B?YTFqN1BQaDZMSGJWbHZ0d09WZ3R3RllKTnhyS1lDbXdyN2RFUzlhK1FQU1NO?=
- =?utf-8?B?RmFhSmJIN3BDV1RVR2hpNGhjeVNMR0hZNVBiSGJFelJKaGh5V3JuaStoQ0NF?=
- =?utf-8?B?ZFUvNXJtckZyYU1DYUgvTERVM2g3ZzN6cXZBUmI4bnAvcHI3WnR6WkVYM3Ni?=
- =?utf-8?B?ZDczVUlhb3BjN0tHZzhobHpBRDNSNWs3VGJMaTROR0xYR2UvRTZnV0twcGxU?=
- =?utf-8?Q?JUHCO8tmfZWidwlQcijVHZKBn?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	3CKjJBNCcNlo6lph1YieCcAW6mLjAvf/9pKF0vnUoND+Xakfr8+Ps0Aw5zv+iu6dUdAlti45Qgo88h1v6gLh9pnzTnKxkLBd2IpyoiYosWPyqTYw0HPxzv5kc9pvG6+sUb8qLB/COFcUvQlr7cafPr44yLfGmfX0sUvRfy5pDLqRAy9DeLePNQTAqWO89HEVmHhMjwq42cgKw7zHwJ9HJ5p8y5H2FQXhInYRMZ1AO2xKSUYVcLNC9pQSQuJHsmVgTlROAp5JBxzePBvUhWhMvQ7+pdDwhIvzZ7zFY6GkfJYeouAIY+WSgFN608midiOxOM5ojH9dqm7cMK9EsMCbJI1JjFXOVCRSUY/hMHjsp06KqcfEmXsghfnZuhhj7cHn1EPdqJw56oWez5mImo2QVhoUAuDup28b6lrSA8KNaKY9iRUGWwb7cxyPBLBnIhvKhMWXC/aquca3diA8CJE0d0fB6NG3k2v5kNTG8OEZTIYDnBLnMvNCEWHKjZTNPq80IZT8cAnRUtbu7tusSgYqlGmBNtX5Ym/nVzqxG7wmX5AWdzK5mrdpqTccWbaunNl0Nopj3Qk0s0kTt3Sf3XtllHyAa4faGEgQwlYHl2R7s6M=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 92a8fb1e-4484-4206-1ae3-08dd9e06ed9a
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR10MB5328.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 May 2025 16:44:35.3537
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wNCgeiFrVCjL8JFwUjWeCp4q1QCpMsyAeGpdDpbmXZdagPCFNyjGmBxXySXmYmZp0aqq1NZO2ngJYehjVZM8cZg/wNjvXoA/8FQoTSgAZ0Q=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM3PPF34F57F25D
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-05-28_08,2025-05-27_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 phishscore=0
- adultscore=0 suspectscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2505160000
- definitions=main-2505280145
-X-Proofpoint-ORIG-GUID: EqwVNIWm5f5Y3QPp6O5p86eeWOb2DAth
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTI4MDE0NSBTYWx0ZWRfXzx9y2TZzHG8c ScWFB6eEzUstnKsWZi6RuWTApIQqIqvBz0NNgpvjuvHOcZZwix7dPnu0BwIJllt+rZoPAMYDqz0 V9ii02zkmOdUJTdOfqJMPpVZZo6wp1KKg20Na4vK0Llk8y7kxpxnca0RmMLe3JEZgKsO2KzQQ1N
- r/XnZi7HIVZhjVs9b7SLYci33K6F16a+A4TN7UXwr69LekiUIUP9eThCsH9vTewxu0v3AaaqJz8 hecv3Jl5n41tS4icSqgmmSoa2M2N2m9rt+qssH7p7qDZQpx+vVsNXZq0yndQygOCzvRZkgL+xah ml7j0vi5uppDyz3zNMST7yBqg3soXC9DmnLq8/6mWdjtjPUaG+0+a/oa3z3IlZJ+Y1pxpLWlaZH
- hQcvbrL0/1hBkswFEG2YQgJoHCLY7nxhTSLW8/CSL3ik+wTdUcc1sLrnv0AX0vu1MsNjVeJ/
-X-Proofpoint-GUID: EqwVNIWm5f5Y3QPp6O5p86eeWOb2DAth
-X-Authority-Analysis: v=2.4 cv=TdeWtQQh c=1 sm=1 tr=0 ts=68373d77 b=1 cx=c_pps a=qoll8+KPOyaMroiJ2sR5sw==:117 a=qoll8+KPOyaMroiJ2sR5sw==:17 a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19
- a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10 a=GoEa3M9JfhUA:10 a=pGLkceISAAAA:8 a=r0Xck-ZRBxm570edAgkA:9 a=QEXdDO2ut3YA:10 cc=ntf awl=host:13207
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+Hi Linus,
 
+The following changes since commit b4432656b36e5cc1d50a1f2dc15357543add530e:
 
-On 27-05-2025 21:49, Bui Quang Minh wrote:
-> Currently, in zerocopy mode with mergeable receive buffer, virtio-net
-> does not support multi buffer but a single buffer only. This commit adds
-> support for multi mergeable receive buffer in the zerocopy XDP path by
-> utilizing XDP buffer with frags.
-> 
-> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
-> ---
->   drivers/net/virtio_net.c | 123 +++++++++++++++++++++------------------
->   1 file changed, 66 insertions(+), 57 deletions(-)
-> 
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index e53ba600605a..a9558650f205 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -45,6 +45,8 @@ module_param(napi_tx, bool, 0644);
->   #define VIRTIO_XDP_TX		BIT(0)
->   #define VIRTIO_XDP_REDIR	BIT(1)
->   
-> +#define VIRTNET_MAX_ZC_SEGS	8
-> +
->   /* RX packet size EWMA. The average packet size is used to determine the packet
->    * buffer size when refilling RX rings. As the entire RX ring may be refilled
->    * at once, the weight is chosen so that the EWMA will be insensitive to short-
-> @@ -1232,65 +1234,53 @@ static void xsk_drop_follow_bufs(struct net_device *dev,
->   	}
->   }
->   
-> -static int xsk_append_merge_buffer(struct virtnet_info *vi,
-> -				   struct receive_queue *rq,
-> -				   struct sk_buff *head_skb,
-> -				   u32 num_buf,
-> -				   struct virtio_net_hdr_mrg_rxbuf *hdr,
-> -				   struct virtnet_rq_stats *stats)
-> +static int virtnet_build_xsk_buff_mrg(struct virtnet_info *vi,
-> +				      struct receive_queue *rq,
-> +				      u32 num_buf,
-> +				      struct xdp_buff *xdp,
-> +				      struct virtnet_rq_stats *stats)
->   {
-> -	struct sk_buff *curr_skb;
-> -	struct xdp_buff *xdp;
-> -	u32 len, truesize;
-> -	struct page *page;
-> +	unsigned int len;
->   	void *buf;
->   
-> -	curr_skb = head_skb;
-> +	if (num_buf < 2)
-> +		return 0;
-> +
-> +	while (num_buf > 1) {
-> +		struct xdp_buff *new_xdp;
->   
-> -	while (--num_buf) {
->   		buf = virtqueue_get_buf(rq->vq, &len);
-> -		if (unlikely(!buf)) {
-> -			pr_debug("%s: rx error: %d buffers out of %d missing\n",
-> -				 vi->dev->name, num_buf,
-> -				 virtio16_to_cpu(vi->vdev,
-> -						 hdr->num_buffers));
-> +		if (!unlikely(buf)) {
+  Linux 6.15-rc4 (2025-04-27 15:19:23 -0700)
 
-if (unlikely(!buf)) { ?
+are available in the Git repository at:
 
-> +			pr_debug("%s: rx error: %d buffers missing\n",
-> +				 vi->dev->name, num_buf);
->   			DEV_STATS_INC(vi->dev, rx_length_errors);
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/bpf-next-6.16
 
-Thanks,
-Alok
+for you to fetch changes up to c5cebb241e27ed0c3f4c1d2ce63089398e0ed17e:
+
+  bpf, arm64: Remove unused-but-set function and variable. (2025-05-27 20:16:57 -0700)
+
+----------------------------------------------------------------
+Single PR this time with BPF changes.
+There should be no conflicts.
+
+- Fix and improve BTF deduplication of identical BTF types
+  (Alan Maguire and Andrii Nakryiko)
+
+- Support up to 12 arguments in BPF trampoline on arm64
+  (Xu Kuohai and Alexis Lothoré) 
+
+- Support load-acquire and store-release instructions in BPF JIT
+  on riscv64 (Andrea Parri)
+
+- Fix uninitialized values in BPF_{CORE,PROBE}_READ macros
+  (Anton Protopopov)
+
+- Streamline allowed helpers across program types (Feng Yang)
+
+- Support atomic update for hashtab of BPF maps (Hou Tao)
+
+- Implement json output for BPF helpers (Ihor Solodrai)
+
+- Several s390 JIT fixes (Ilya Leoshkevich)
+
+- Various sockmap fixes (Jiayuan Chen)
+
+- Support mmap of vmlinux BTF data (Lorenz Bauer)
+
+- Support BPF rbtree traversal and list peeking (Martin KaFai Lau)
+
+- Tests for sockmap/sockhash redirection (Michal Luczaj)
+
+- Introduce kfuncs for memory reads into dynptrs (Mykyta Yatsenko)
+
+- Add support for dma-buf iterators in BPF (T.J. Mercier)
+
+- The verifier support for __bpf_trap() (Yonghong Song)
+
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+----------------------------------------------------------------
+Alan Maguire (4):
+      libbpf: Add identical pointer detection to btf_dedup_is_equiv()
+      selftests/bpf: Add btf dedup test covering module BTF dedup
+      libbpf/btf: Fix string handling to support multi-split BTF
+      selftests/bpf: Test multi-split BTF
+
+Alexei Starovoitov (15):
+      Merge branch 'bpf-fix-ktls-panic-with-sockmap-and-add-tests'
+      Merge branch 'bpf-sockmap-fix-data-loss-and-panic-issues'
+      Merge branch 'bpf-support-atomic-update-for-htab-of-maps'
+      Merge git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf after rc3
+      Merge branch 'selftests-bpf-fix-a-few-issues-in-arena_spin_lock'
+      Merge git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf after rc4
+      Merge branch 'bpf-support-bpf-rbtree-traversal-and-list-peeking'
+      Merge branch 'bpf-riscv64-support-load-acquire-and-store-release-instructions'
+      Merge branch 'fix-verifier-test-failures-in-verbose-mode'
+      Merge branch 'introduce-kfuncs-for-memory-reads-into-dynptrs'
+      Merge branch 's390-bpf-remove-the-orig_call-null-check'
+      Merge branch 's390-bpf-use-kernel-s-expoline-thunks'
+      Merge branch 'replace-config_dmabuf_sysfs_stats-with-bpf'
+      Merge branch 'bpf-arm64-support-up-to-12-arguments'
+      bpf, arm64: Remove unused-but-set function and variable.
+
+Alexis Lothoré (eBPF Foundation) (1):
+      selftests/bpf: enable many-args tests for arm64
+
+Andrea Parri (2):
+      bpf, riscv64: Introduce emit_load_*() and emit_store_*()
+      bpf, riscv64: Support load-acquire and store-release instructions
+
+Andrii Nakryiko (10):
+      Merge branch 'likely-unlikely-for-bpf_helpers-and-a-small-comment-fix'
+      Merge branch 'libbpf-introduce-line_info-and-func_info-getters'
+      Merge branch 'libbpf-fix-event-name-too-long-error-and-add-tests'
+      Merge branch 'bpf-allow-access-to-const-void-pointer-arguments-in-tracing-programs'
+      libbpf: Improve BTF dedup handling of "identical" BTF types
+      Merge branch 'bpf-allow-some-trace-helpers-for-all-prog-types'
+      Merge branch 'bpf-retrieve-ref_ctr_offset-from-uprobe-perf-link'
+      bpf, docs: document open-coded BPF iterators
+      Merge branch 'libbpf-support-multi-split-btf'
+      Merge branch 'allow-mmap-of-sys-kernel-btf-vmlinux'
+
+Anton Protopopov (5):
+      bpf: Fix a comment describing bpf_attr
+      libbpf: Add likely/unlikely macros and use them in selftests
+      libbpf: Use proper errno value in linker
+      bpf: Fix uninitialized values in BPF_{CORE,PROBE}_READ
+      libbpf: Use proper errno value in nlattr
+
+Carlos Llamas (1):
+      libbpf: Fix implicit memfd_create() for bionic
+
+Chen Ni (1):
+      selftests/bpf: Convert comma to semicolon
+
+Di Shen (1):
+      bpf: Revert "bpf: remove unnecessary rcu_read_{lock,unlock}() in multi-uprobe attach logic"
+
+Feng Yang (6):
+      libbpf: Fix event name too long error
+      selftests/bpf: Add test for attaching uprobe with long event names
+      selftests/bpf: Add test for attaching kprobe with long event names
+      bpf: Streamline allowed helpers between tracing and base sets
+      bpf: Allow some trace helpers for all prog types
+      sched_ext: Remove bpf_scx_get_func_proto
+
+Gregory Bell (2):
+      selftests/bpf: test_verifier verbose causes erroneous failures
+      selftests/bpf: test_verifier verbose log overflows
+
+Hou Tao (7):
+      bpf: Factor out htab_elem_value helper()
+      bpf: Rename __htab_percpu_map_update_elem to htab_map_update_elem_in_place
+      bpf: Support atomic update for htab of maps
+      bpf: Add is_fd_htab() helper
+      bpf: Don't allocate per-cpu extra_elems for fd htab
+      selftests/bpf: Add test case for atomic update of fd htab
+      bpf: Check rcu_read_lock_trace_held() in bpf_map_lookup_percpu_elem()
+
+Ihor Solodrai (4):
+      kbuild, bpf: Enable --btf_features=attributes
+      libbpf: Verify section type in btf_find_elf_sections
+      selftests/bpf: Remove sockmap_ktls disconnect_after_delete test
+      scripts/bpf_doc.py: implement json output format
+
+Ilya Leoshkevich (10):
+      selftests/bpf: Set MACs during veth creation in tc_redirect
+      selftests/bpf: Fix arena_spin_lock.c build dependency
+      selftests/bpf: Fix arena_spin_lock on systems with less than 16 CPUs
+      selftests/bpf: Fix endianness issue in __qspinlock declaration
+      s390/bpf: Store backchain even for leaf progs
+      bpf: Pass the same orig_call value to trampoline functions
+      s390/bpf: Remove the orig_call NULL check
+      s390: always declare expoline thunks
+      s390/bpf: Add macros for calling external functions
+      s390/bpf: Use kernel's expoline thunks
+
+Jiapeng Chong (1):
+      selftest/bpf/benchs: Remove duplicate sys/types.h header
+
+Jiayuan Chen (10):
+      bpf: fix ktls panic with sockmap
+      selftests/bpf: add ktls selftest
+      bpf, sockmap: Fix data lost during EAGAIN retries
+      bpf, sockmap: fix duplicated data transmission
+      bpf, sockmap: Fix panic when calling skb_linearize
+      selftest/bpf/benchs: Add benchmark for sockmap usage
+      ktls, sockmap: Fix missing uncharge operation
+      selftests/bpf: Add test to cover sockmap with ktls
+      bpf, sockmap: Avoid using sk_socket after free when sending
+      bpftool: Add support for custom BTF path in prog load/loadall
+
+Jiri Olsa (3):
+      bpf: Add support to retrieve ref_ctr_offset for uprobe perf link
+      selftests/bpf: Add link info test for ref_ctr_offset retrieval
+      bpftool: Display ref_ctr_offset for uprobe link info
+
+Jonathan Wiepert (1):
+      Use thread-safe function pointer in libbpf_print
+
+KaFai Wan (3):
+      bpf: Allow access to const void pointer arguments in tracing programs
+      selftests/bpf: Add test to access const void pointer argument in tracing program
+      bpf: Avoid __bpf_prog_ret0_warn when jit fails
+
+Khaled Elnaggar (1):
+      docs: bpf: Fix bullet point formatting warning
+
+Kumar Kartikeya Dwivedi (1):
+      bpf: Add support for __prog argument suffix to pass in prog->aux
+
+Kuniyuki Iwashima (1):
+      selftests/bpf: Relax TCPOPT_WINDOW validation in test_tcp_custom_syncookie.c.
+
+Lorenz Bauer (3):
+      btf: Allow mmap of vmlinux btf
+      selftests: bpf: Add a test for mmapable vmlinux BTF
+      libbpf: Use mmap to parse vmlinux BTF from sysfs
+
+Lorenzo Bianconi (2):
+      bpf: Allow XDP dev-bound programs to perform XDP_REDIRECT into maps
+      selftests/bpf: xdp_metadata: Check XDP_REDIRCT support for dev-bound progs
+
+Luis Gerhorst (1):
+      selftests/bpf: Fix caps for __xlated/jited_unpriv
+
+Malaya Kumar Rout (1):
+      selftests/bpf: Close the file descriptor to avoid resource leaks
+
+Martin KaFai Lau (12):
+      Merge branch 'bpf-allow-xdp_redirect-for-xdp-dev-bound-programs'
+      bpf: Check KF_bpf_rbtree_add_impl for the "case KF_ARG_PTR_TO_RB_NODE"
+      bpf: Simplify reg0 marking for the rbtree kfuncs that return a bpf_rb_node pointer
+      bpf: Add bpf_rbtree_{root,left,right} kfunc
+      bpf: Allow refcounted bpf_rb_node used in bpf_rbtree_{remove,left,right}
+      selftests/bpf: Add tests for bpf_rbtree_{root,left,right}
+      bpf: Simplify reg0 marking for the list kfuncs that return a bpf_list_node pointer
+      bpf: Add bpf_list_{front,back} kfunc
+      selftests/bpf: Add test for bpf_list_{front,back}
+      bpftool: Fix cgroup command to only show cgroup bpf programs
+      Merge branch 'ktls-sockmap-fix-missing-uncharge-operation-and-add-selfttest'
+      Merge branch 'selftests-bpf-test-sockmap-sockhash-redirection'
+
+Michal Luczaj (8):
+      selftests/bpf: Support af_unix SOCK_DGRAM socket pair creation
+      selftests/bpf: Add socket_kind_to_str() to socket_helpers
+      selftests/bpf: Add u32()/u64() to sockmap_helpers
+      selftests/bpf: Introduce verdict programs for sockmap_redir
+      selftests/bpf: Add selftest for sockmap/hashmap redirection
+      selftests/bpf: sockmap_listen cleanup: Drop af_vsock redir tests
+      selftests/bpf: sockmap_listen cleanup: Drop af_unix redir tests
+      selftests/bpf: sockmap_listen cleanup: Drop af_inet SOCK_DGRAM redir tests
+
+Mykyta Yatsenko (11):
+      selftests/bpf: Support struct/union presets in veristat
+      libbpf: Add getters for BTF.ext func and line info
+      selftests/bpf: Add BTF.ext line/func info getter tests
+      selftests/bpf: Allow skipping docs compilation
+      helpers: make few bpf helpers public
+      bpf: Implement dynptr copy kfuncs
+      selftests/bpf: introduce tests for dynptr copy kfuncs
+      libbpf: Check bpf_map_skeleton link for NULL
+      selftests/bpf: Remove unnecessary link dependencies
+      selftests/bpf: Add SKIP_LLVM makefile variable
+      bpf: Fix error return value in bpf_copy_from_user_dynptr
+
+Paul Chaignon (3):
+      bpf: Clarify role of BPF_F_RECOMPUTE_CSUM
+      bpf: Clarify the meaning of BPF_F_PSEUDO_HDR
+      bpf: WARN_ONCE on verifier bugs
+
+Peilin Ye (6):
+      bpf/verifier: Handle BPF_LOAD_ACQ instructions in insn_def_regno()
+      bpf, riscv64: Skip redundant zext instruction after load-acquire
+      selftests/bpf: Use CAN_USE_LOAD_ACQ_STORE_REL when appropriate
+      selftests/bpf: Avoid passing out-of-range values to __retval()
+      selftests/bpf: Verify zero-extension behavior in load-acquire tests
+      selftests/bpf: Enable non-arena load-acquire/store-release selftests for riscv64
+
+Saket Kumar Bhaskar (1):
+      selftests/bpf: Fix bpf_nf selftest failure
+
+Shung-Hsi Yu (1):
+      bpf: Use proper type to calculate bpf_raw_tp_null_args.mask index
+
+T.J. Mercier (6):
+      selftests/bpf: Fix kmem_cache iterator draining
+      dma-buf: Rename debugfs symbols
+      bpf: Add dmabuf iterator
+      bpf: Add open coded dmabuf iterator
+      selftests/bpf: Add test for dmabuf_iter
+      selftests/bpf: Add test for open coded dmabuf_iter
+
+Tao Chen (4):
+      bpf: Check link_create.flags parameter for multi_kprobe
+      bpf: Check link_create.flags parameter for multi_uprobe
+      libbpf: Remove sample_period init in perf_buffer
+      bpf: Fix WARN() in get_bpf_raw_tp_regs
+
+Thorsten Blum (2):
+      bpf: Replace offsetof() with struct_size()
+      bpf: Replace offsetof() with struct_size()
+
+Viktor Malik (1):
+      libbpf: Fix buffer overflow in bpf_object__init_prog
+
+WangYuli (1):
+      bpf, docs: Fix non-standard line break
+
+Xu Kuohai (1):
+      bpf, arm64: Support up to 12 function arguments
+
+YiFei Zhu (1):
+      bpftool: Fix regression of "bpftool cgroup tree" EINVAL on older kernels
+
+Yonghong Song (5):
+      bpf: Remove special_kfunc_set from verifier
+      bpf: Warn with __bpf_trap() kfunc maybe due to uninitialized variable
+      selftests/bpf: Add unit tests with __bpf_trap() kfunc
+      bpf: Do not include stack ptr register in precision backtracking bookkeeping
+      selftests/bpf: Add tests with stack ptr register in conditional jmp
+
+ Documentation/bpf/bpf_iterators.rst                | 117 +++-
+ Documentation/bpf/kfuncs.rst                       |  17 +
+ arch/arm64/net/bpf_jit_comp.c                      | 242 +++++---
+ arch/riscv/net/bpf_jit.h                           |  15 +
+ arch/riscv/net/bpf_jit_comp64.c                    | 332 +++++++----
+ arch/riscv/net/bpf_jit_core.c                      |   3 +-
+ arch/s390/include/asm/nospec-branch.h              |   4 -
+ arch/s390/net/bpf_jit_comp.c                       | 138 +++--
+ drivers/dma-buf/dma-buf.c                          |  98 +++-
+ include/asm-generic/vmlinux.lds.h                  |   3 +-
+ include/linux/bpf-cgroup.h                         |   8 -
+ include/linux/bpf.h                                |  20 +
+ include/linux/bpf_verifier.h                       |  24 +-
+ include/linux/dma-buf.h                            |   4 +-
+ include/uapi/linux/bpf.h                           |  19 +-
+ kernel/bpf/Makefile                                |   3 +
+ kernel/bpf/bpf_struct_ops.c                        |   2 +-
+ kernel/bpf/btf.c                                   |  45 +-
+ kernel/bpf/cgroup.c                                |  32 --
+ kernel/bpf/core.c                                  |  29 +-
+ kernel/bpf/dmabuf_iter.c                           | 150 +++++
+ kernel/bpf/hashtab.c                               | 148 +++--
+ kernel/bpf/helpers.c                               | 133 ++++-
+ kernel/bpf/syscall.c                               |  10 +-
+ kernel/bpf/sysfs_btf.c                             |  32 ++
+ kernel/bpf/verifier.c                              | 636 +++++++++++----------
+ kernel/sched/ext.c                                 |  15 +-
+ kernel/trace/bpf_trace.c                           | 321 +++++++----
+ kernel/trace/trace_uprobe.c                        |   2 +-
+ net/bpf/test_run.c                                 |   8 +-
+ net/core/filter.c                                  |  14 -
+ net/core/skmsg.c                                   |  56 +-
+ net/tls/tls_sw.c                                   |  15 +-
+ scripts/Makefile.btf                               |   2 +
+ scripts/bpf_doc.py                                 | 119 +++-
+ tools/bpf/bpftool/Documentation/bpftool-prog.rst   |  10 +-
+ tools/bpf/bpftool/bash-completion/bpftool          |   4 +-
+ tools/bpf/bpftool/cgroup.c                         |  14 +-
+ tools/bpf/bpftool/link.c                           |   3 +
+ tools/bpf/bpftool/prog.c                           |  12 +-
+ tools/include/uapi/linux/bpf.h                     |  19 +-
+ tools/lib/bpf/bpf_core_read.h                      |   6 +
+ tools/lib/bpf/bpf_helpers.h                        |   8 +
+ tools/lib/bpf/btf.c                                | 226 ++++++--
+ tools/lib/bpf/libbpf.c                             |  87 +--
+ tools/lib/bpf/libbpf.h                             |   6 +
+ tools/lib/bpf/libbpf.map                           |   4 +
+ tools/lib/bpf/libbpf_internal.h                    |   9 +
+ tools/lib/bpf/linker.c                             |   6 +-
+ tools/lib/bpf/nlattr.c                             |  15 +-
+ tools/testing/selftests/bpf/DENYLIST               |   1 +
+ tools/testing/selftests/bpf/DENYLIST.aarch64       |   2 -
+ tools/testing/selftests/bpf/Makefile               |  16 +-
+ tools/testing/selftests/bpf/bench.c                |   4 +
+ .../testing/selftests/bpf/benchs/bench_htab_mem.c  |   3 +-
+ tools/testing/selftests/bpf/benchs/bench_sockmap.c | 598 +++++++++++++++++++
+ tools/testing/selftests/bpf/bpf_experimental.h     |   5 +
+ tools/testing/selftests/bpf/config                 |   3 +
+ .../selftests/bpf/prog_tests/arena_spin_lock.c     |  14 +-
+ .../selftests/bpf/prog_tests/attach_probe.c        |  84 +++
+ tools/testing/selftests/bpf/prog_tests/bpf_nf.c    |   6 +
+ .../selftests/bpf/prog_tests/btf_dedup_split.c     | 101 ++++
+ tools/testing/selftests/bpf/prog_tests/btf_split.c |  58 +-
+ tools/testing/selftests/bpf/prog_tests/btf_sysfs.c |  81 +++
+ .../testing/selftests/bpf/prog_tests/dmabuf_iter.c | 285 +++++++++
+ tools/testing/selftests/bpf/prog_tests/dynptr.c    |  13 +
+ .../selftests/bpf/prog_tests/fd_htab_lookup.c      | 192 +++++++
+ .../selftests/bpf/prog_tests/fill_link_info.c      |  18 +-
+ .../selftests/bpf/prog_tests/kmem_cache_iter.c     |   2 +-
+ .../testing/selftests/bpf/prog_tests/linked_list.c |   6 +
+ tools/testing/selftests/bpf/prog_tests/rbtree.c    |   6 +
+ tools/testing/selftests/bpf/prog_tests/sk_assign.c |   4 +-
+ .../selftests/bpf/prog_tests/socket_helpers.h      |  84 ++-
+ .../selftests/bpf/prog_tests/sockmap_helpers.h     |  25 +-
+ .../selftests/bpf/prog_tests/sockmap_ktls.c        | 297 ++++++++--
+ .../selftests/bpf/prog_tests/sockmap_listen.c      | 457 ---------------
+ .../selftests/bpf/prog_tests/sockmap_redir.c       | 465 +++++++++++++++
+ .../testing/selftests/bpf/prog_tests/tc_redirect.c |  11 +-
+ .../selftests/bpf/prog_tests/test_btf_ext.c        |  64 +++
+ .../selftests/bpf/prog_tests/test_veristat.c       |   5 +
+ tools/testing/selftests/bpf/prog_tests/verifier.c  |   2 +
+ .../selftests/bpf/prog_tests/xdp_metadata.c        |  22 +-
+ .../selftests/bpf/progs/bench_sockmap_prog.c       |  65 +++
+ .../bpf/{ => progs}/bpf_arena_spin_lock.h          |  15 +-
+ tools/testing/selftests/bpf/progs/bpf_misc.h       |   5 +-
+ tools/testing/selftests/bpf/progs/dmabuf_iter.c    | 101 ++++
+ tools/testing/selftests/bpf/progs/dynptr_success.c | 230 ++++++++
+ tools/testing/selftests/bpf/progs/fd_htab_lookup.c |  25 +
+ tools/testing/selftests/bpf/progs/iters.c          |   2 -
+ .../testing/selftests/bpf/progs/linked_list_peek.c | 113 ++++
+ tools/testing/selftests/bpf/progs/prepare.c        |   1 -
+ tools/testing/selftests/bpf/progs/rbtree_fail.c    |  29 +-
+ tools/testing/selftests/bpf/progs/rbtree_search.c  | 206 +++++++
+ .../testing/selftests/bpf/progs/set_global_vars.c  |  41 ++
+ tools/testing/selftests/bpf/progs/test_btf_ext.c   |  22 +
+ .../selftests/bpf/progs/test_sockmap_ktls.c        |  36 ++
+ .../selftests/bpf/progs/test_sockmap_redir.c       |  68 +++
+ .../bpf/progs/test_tcp_custom_syncookie.c          |   4 +-
+ .../selftests/bpf/progs/verifier_bpf_trap.c        |  71 +++
+ .../selftests/bpf/progs/verifier_btf_ctx_access.c  |  12 +
+ .../selftests/bpf/progs/verifier_load_acquire.c    |  48 +-
+ .../selftests/bpf/progs/verifier_precision.c       |  58 +-
+ .../selftests/bpf/progs/verifier_store_release.c   |  39 +-
+ tools/testing/selftests/bpf/progs/xdp_metadata.c   |  13 +
+ .../testing/selftests/bpf/test_kmods/bpf_testmod.c |   8 +-
+ tools/testing/selftests/bpf/test_loader.c          |  14 +-
+ tools/testing/selftests/bpf/test_verifier.c        |   8 +-
+ tools/testing/selftests/bpf/veristat.c             | 101 +++-
+ 108 files changed, 5801 insertions(+), 1713 deletions(-)
+ create mode 100644 kernel/bpf/dmabuf_iter.c
+ create mode 100644 tools/testing/selftests/bpf/benchs/bench_sockmap.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/btf_sysfs.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/dmabuf_iter.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/fd_htab_lookup.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sockmap_redir.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_btf_ext.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bench_sockmap_prog.c
+ rename tools/testing/selftests/bpf/{ => progs}/bpf_arena_spin_lock.h (98%)
+ create mode 100644 tools/testing/selftests/bpf/progs/dmabuf_iter.c
+ create mode 100644 tools/testing/selftests/bpf/progs/fd_htab_lookup.c
+ create mode 100644 tools/testing/selftests/bpf/progs/linked_list_peek.c
+ create mode 100644 tools/testing/selftests/bpf/progs/rbtree_search.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_btf_ext.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_ktls.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_redir.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_bpf_trap.c
 
