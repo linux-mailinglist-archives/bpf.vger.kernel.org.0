@@ -1,288 +1,118 @@
-Return-Path: <bpf+bounces-59189-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59190-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBE93AC6F8B
-	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 19:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 301D0AC70A6
+	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 20:02:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C96817635C
-	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 17:42:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B88A16B9DA
+	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 18:02:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B00928DF29;
-	Wed, 28 May 2025 17:42:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A70A28E590;
+	Wed, 28 May 2025 18:02:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="K9/eP3rj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YOBtY8lZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 267301F582E
-	for <bpf@vger.kernel.org>; Wed, 28 May 2025 17:41:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6997128DF51
+	for <bpf@vger.kernel.org>; Wed, 28 May 2025 18:02:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748454119; cv=none; b=clfpZiQ/U18460fAYkpGfpmmgFc9WcC5MlxxUbGuOVxy8N1WGnImOBjxs4XERKzse1RfidtDJhJG3mN/qQYB2aXSsKQiDSDQU8ZMvW3IRZkISP3h7R6kJnhkIYyPO6axil0pgqVGZPxiY3CJ3HivBQGRxkBSf6/euAhBzd+lpOw=
+	t=1748455362; cv=none; b=hAb6E8tbgwolwKpERB24MzriH0v3n0e3J8NJDoNghaCBKkAHsksp0z+KAbcHJ40YH/QsMxLyqC6ouCmoUoNOjIzIk/sFPyt49sKWU/gRPVg9ac6sUyi9/M3bd5f5RmHTp6pov7LoU3auFhvS+0/5PfpT++Pef9XwcDjTV9QNgdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748454119; c=relaxed/simple;
-	bh=WzzDro7hTdVQ7YhfQQ5LSKK3q0j3y/7qsf/ExlcQXY0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NsxJtiPTuG4/GHI53cKWBwpPgBl9wjlpI6EUCz1gXBbEqXRg18Vz9PNGa398UTnlORAiZ5UVIP1QF9WL7DKTjldEqHt5pkPME0kas1JcBSgdXQ5L2+BpjQPaeagPuaTV6vKrWuhgecg1P+4XtU8ID6BrjcdvWwmqW9bhNA2UT+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=K9/eP3rj; arc=none smtp.client-ip=95.215.58.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <8c58af8e-1e00-4630-b19b-368a02e60ce1@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1748454114;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vmqSOQCMBY4ozVv3CQobOof7gKSpxbDPaQReB6RUiCE=;
-	b=K9/eP3rjU88X18AW/Rs+vTUFDfT1iOM5uf8SqEkzRfKbUlL0X+5HYvC+5HmgMQcUj64++q
-	BLO5X5+1cCu305Hn2wHe76SMFGCnw3CgLZkMPOFdfu58tfBbtSvy0kATWElNgwlznvwVMA
-	Cpzx8KLZIDL7QVLn+QYhPyZdmCkUKQs=
-Date: Wed, 28 May 2025 10:41:44 -0700
+	s=arc-20240116; t=1748455362; c=relaxed/simple;
+	bh=ISADO/sjcgAzQby3PNtrJJJvMvpngyHdHu9GZBVoMeE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Fjt55dV8WQooGJhge5vaw/KpfgVGlxrWQyxLjsPbK6aT4af4uwUwRi194+GYXHAFpkNkaZqdHOARsh2SbUBwLt/q0Z2BouR2DzzTl+4yIV5eZ5QDZoQt2Xdlc79AhgHIfaHT51G6rE8hQSfTDhqeFWlwtvXxZrX/j5L3Qlvug2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YOBtY8lZ; arc=none smtp.client-ip=209.85.166.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-3dd7a95d19eso810405ab.0
+        for <bpf@vger.kernel.org>; Wed, 28 May 2025 11:02:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748455360; x=1749060160; darn=vger.kernel.org;
+        h=mime-version:user-agent:message-id:date:references:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XqbJJnxAmc6+8xYJyIsNoSDkzYNy+aZxHaN1MI1Y5qU=;
+        b=YOBtY8lZtV3i+etfsE/OVpaADBz865CtTSgHyBezVt7LMRQyP5pyHj1mOA+WkyuyWc
+         h1zyjVl/SaezhfWmQoTJtAUSYLpLYG5zkeVHKYA7Flm3u3Oej097wv9IpMk+jVC8XNhO
+         zISGy8eSvX3ip1+JCsv/hqqux95hkw8IS7Zn93wc17NCcBagiZU/rDRmRqnYtVdMwFPF
+         K0WQHY0RrN8zD1veausV31RQtRJKv1bKsAqC52LkA18pU7E/wQ6hl8G+GVC+xMcpv+ev
+         ThzYDTjTeD3U7PsfLWseNQ8rYM7xig16n2LXIgatREIeHBjHUionMZhOiyMjAx6eG9qm
+         VeCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748455360; x=1749060160;
+        h=mime-version:user-agent:message-id:date:references:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XqbJJnxAmc6+8xYJyIsNoSDkzYNy+aZxHaN1MI1Y5qU=;
+        b=Wb3MtvuaWcRVfL1yEXAt1Hu3JbRc+P4TX9G+LrR0WgaQbq3foTFcL4x1jpRZK23Nhh
+         DDEigCDhUbSdTen64v0X6pg3G9hMKFC5c4QaBlQ13oTz72vcRnAjuVa0CMvB7jF+ucEo
+         Wtb95n1jvv7rUufuD9gKvTH0r2dwUlE7zfIs0cuSVDZ1C0lzI1vTG+KJdkm2KyAXzXXD
+         rBekTiTsgKObOvS/Iyeqf2Li911dFKRV5uBsvK8S6m/8lrYWe4FK6i21ofAuDJ5oCFdz
+         t0MfIrPuyUwJHtSCH6toFGxwLwikKPtujQuLOyJjEUyWGSMPbRh5NGAgF9HR/wbyv8sO
+         8i7Q==
+X-Gm-Message-State: AOJu0YyBFtD6QqYNiGg91cynDIOIh7t9V3mEc2tTMsLGzeAe4mANzNLv
+	rFjE+5xKc0fI+kaPj8x1kyGyW7CRzFs31SadAu610rlpS/mKOS5C6qiamlYcnyMv
+X-Gm-Gg: ASbGnctwJQmj5FPr+qH1uMhtcKbVfBW8qryz4CeaDQmjYYEAhTNckCz1krt6vQ8qKnd
+	x1elpSCk00NvwsfxCm/bJwcUju8q9iz1NPuxxD79sV7poCt1JC/Uxzlt/tg+3Sa0UM9Bl13r5M9
+	s0hxWJ0z/A8jY7t7U9tE6tOr5cbpqe+DrIi7dBSIW6N59Lt+qXArgkuYKCdMTH/zKRROZcEQpy8
+	wCy4VhU39f88UaTVZluWn87PqTeWAr54cVX4uwBQ1RwS1Upt+WcADBthD+xbioOdPGe98bA1UYR
+	CZD3Z1sQ0c5ViPLlpdOXOfHxCS8108yxo2Jm7ykHJtki8B4ZEAWo2cQ=
+X-Google-Smtp-Source: AGHT+IG6ifgvOoy1YDnD/ENIYoZ8y2ZIMpFrahGPWJw+EcIbZpYqPl0qhHt0VGG/QpE5BuRxHYHbgw==
+X-Received: by 2002:a17:902:c94c:b0:234:986c:66ed with SMTP id d9443c01a7336-234986c6d05mr105359735ad.9.1748455349772;
+        Wed, 28 May 2025 11:02:29 -0700 (PDT)
+Received: from ezingerman-mba ([2620:10d:c090:500::4:d651])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-234d2fd43c6sm14847805ad.18.2025.05.28.11.02.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 May 2025 11:02:29 -0700 (PDT)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf@vger.kernel.org,  Alexei Starovoitov <ast@kernel.org>,  Andrii
+ Nakryiko <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,
+  Martin KaFai Lau <martin.lau@kernel.org>,  Emil Tsalapatis
+ <emil@etsalapatis.com>,  Barret Rhoden <brho@google.com>,  Matt Bobrowski
+ <mattbobrowski@google.com>,  kkd@meta.com,  kernel-team@meta.com
+Subject: Re: [PATCH bpf-next v2 09/11] libbpf: Introduce
+ bpf_prog_stream_read() API
+In-Reply-To: <20250524011849.681425-10-memxor@gmail.com> (Kumar Kartikeya
+	Dwivedi's message of "Fri, 23 May 2025 18:18:47 -0700")
+References: <20250524011849.681425-1-memxor@gmail.com>
+	<20250524011849.681425-10-memxor@gmail.com>
+Date: Wed, 28 May 2025 11:02:26 -0700
+Message-ID: <m2o6vc1uml.fsf@gmail.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] bpf: Specify access type of bpf_sysctl_get_name args
-Content-Language: en-GB
-To: Jerome Marchand <jmarchan@redhat.com>, bpf@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
- Eduard Zingerman <eddyz87@gmail.com>
-References: <20250527165412.533335-1-jmarchan@redhat.com>
- <7aed6949-1076-4c8f-8939-35b47072d431@linux.dev>
- <c8bb97cc-68b6-44f1-a4f4-b0ebc42a7f92@redhat.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <c8bb97cc-68b6-44f1-a4f4-b0ebc42a7f92@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain
 
+Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
 
+> Introduce a libbpf API so that users can read data from a given BPF
+> stream for a BPF prog fd. For now, only the low-level syscall wrapper
+> is provided, we can add a bpf_program__* accessor as a follow up if
+> needed.
+>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
 
-On 5/28/25 2:09 AM, Jerome Marchand wrote:
-> On 27/05/2025 21:56, Yonghong Song wrote:
->>
->>
->> On 5/27/25 9:54 AM, Jerome Marchand wrote:
->>> The second argument of bpf_sysctl_get_name() helper is a pointer to a
->>> buffer that is being written to. However that isn't specify in the
->>> prototype.
->>>
->>> Until commit 37cce22dbd51a ("bpf: verifier: Refactor helper access
->>> type tracking"), all helper accesses were considered as a possible
->>> write access by the verifier, so no big harm was done. However, since
->>> then, the verifier might make wrong asssumption about the content of
->>> that address which might lead it to make faulty optimizations (such as
->>> removing code that was wrongly labeled dead). This is what happens in
->>
->> Could you give more detailed example about the above statement?
->>
->>    the verifier might make wrong asssumption about the content of
->>    that address which might lead it to make faulty optimizations 
->> (such as
->>    removing code that was wrongly labeled dead)
->
-> To be clear, I don't mean that the verifier does anything wrong in this
-> case. It makes a wrong assumption because it was fed wrong information
-> by the helper prototype. Here is the output of the verifier with commit
-> 37cce22dbd51a:
->
-> func#0 @0
-> Live regs before insn:
->   0: .1........ (bf) r7 = r10
->   1: .1.....7.. (07) r7 += -8
->   2: .1.....7.. (b7) r0 = 0
->   3: 01.....7.. (7b) *(u64 *)(r7 +0) = r0
->   4: .1.....7.. (bf) r2 = r7
->   5: .12....7.. (b7) r3 = 8
->   6: .123...7.. (b7) r4 = 1
->   7: .1234..7.. (85) call bpf_sysctl_get_name#101
->   8: 0......7.. (55) if r0 != 0x7 goto pc+6
->   9: .......7.. (18) r8 = 0x6d656d5f706374
->  11: .......78. (79) r9 = *(u64 *)(r7 +0)
->  12: ........89 (5d) if r8 != r9 goto pc+2
->  13: .......... (b7) r0 = 1
->  14: 0......... (05) goto pc+1
->  15: .......... (b7) r0 = 0
->  16: 0......... (95) exit
-> 0: R1=ctx() R10=fp0
-> 0: (bf) r7 = r10                      ; R7_w=fp0 R10=fp0
-> 1: (07) r7 += -8                      ; R7_w=fp-8
-> 2: (b7) r0 = 0                        ; R0_w=0
-> 3: (7b) *(u64 *)(r7 +0) = r0          ; R0_w=0 R7_w=fp-8 fp-8_w=0
-> 4: (bf) r2 = r7                       ; R2_w=fp-8 R7_w=fp-8
-> 5: (b7) r3 = 8                        ; R3_w=8
-> 6: (b7) r4 = 1                        ; R4_w=1
-> 7: (85) call bpf_sysctl_get_name#101
-> mark_precise: frame0: last_idx 7 first_idx 0 subseq_idx -1
-> mark_precise: frame0: regs=r3 stack= before 6: (b7) r4 = 1
-> mark_precise: frame0: regs=r3 stack= before 5: (b7) r3 = 8
-> 8: R0_w=scalar()
-> 8: (55) if r0 != 0x7 goto pc+6        ; R0_w=7
-> 9: (18) r8 = 0x6d656d5f706374         ; R8_w=0x6d656d5f706374
-> 11: (79) r9 = *(u64 *)(r7 +0)         ; R7=fp-8 R9=0 fp-8=0
-> 12: (5d) if r8 != r9 goto pc+2
-> mark_precise: frame0: last_idx 12 first_idx 12 subseq_idx -1
-> mark_precise: frame0: parent state regs=r8 stack=:  R0_w=7 R7_w=fp-8 
-> R8_rw=P0x6d656d5f706374 R9_rw=0 R10=fp0 fp-8_w=0
-> mark_precise: frame0: last_idx 11 first_idx 0 subseq_idx 12
-> mark_precise: frame0: regs=r8 stack= before 11: (79) r9 = *(u64 *)(r7 +0)
-> mark_precise: frame0: regs=r8 stack= before 9: (18) r8 = 0x6d656d5f706374
-> mark_precise: frame0: last_idx 12 first_idx 12 subseq_idx -1
-> mark_precise: frame0: parent state regs=r9 stack=:  R0_w=7 R7_w=fp-8 
-> R8_rw=P0x6d656d5f706374 R9_rw=P0 R10=fp0 fp-8_w=0
-> mark_precise: frame0: last_idx 11 first_idx 0 subseq_idx 12
-> mark_precise: frame0: regs=r9 stack= before 11: (79) r9 = *(u64 *)(r7 +0)
-> mark_precise: frame0: regs= stack=-8 before 9: (18) r8 = 0x6d656d5f706374
-> mark_precise: frame0: regs= stack=-8 before 8: (55) if r0 != 0x7 goto 
-> pc+6
-> mark_precise: frame0: regs= stack=-8 before 7: (85) call 
-> bpf_sysctl_get_name#101
-> mark_precise: frame0: regs= stack=-8 before 6: (b7) r4 = 1
-> mark_precise: frame0: regs= stack=-8 before 5: (b7) r3 = 8
-> mark_precise: frame0: regs= stack=-8 before 4: (bf) r2 = r7
-> mark_precise: frame0: regs= stack=-8 before 3: (7b) *(u64 *)(r7 +0) = r0
-> mark_precise: frame0: regs=r0 stack= before 2: (b7) r0 = 0
-> 12: R8=0x6d656d5f706374 R9=0
-> 15: (b7) r0 = 0                       ; R0_w=0
-> 16: (95) exit
-> mark_precise: frame0: last_idx 16 first_idx 12 subseq_idx -1
-> mark_precise: frame0: regs=r0 stack= before 15: (b7) r0 = 0
->
-> from 8 to 15: R0_w=scalar() R7_w=fp-8 R10=fp0 fp-8_w=0
-> 15: R0_w=scalar() R7_w=fp-8 R10=fp0 fp-8_w=0
-> 15: (b7) r0 = 0                       ; R0_w=0
-> 16: (95) exit
-> mark_precise: frame0: last_idx 16 first_idx 0 subseq_idx -1
-> mark_precise: frame0: regs=r0 stack= before 15: (b7) r0 = 0
-> processed 16 insns (limit 1000000) max_states_per_insn 0 total_states 
-> 1 peak_states 1 mark_read 1
->
-> At line 11, it still assume that fp-8=0, despite the call to
-> bpf_sysctl_get_name. Because of that, it assumes that the first branch
-> of the conditional jump at line 12 is never taken an the program always
-> return 0 (access denied).
->
-> For comparison, here's the verifier output when commit 37cce22dbd51a is
-> reverted:
->
-> func#0 @0
-> Live regs before insn:
->   0: .1........ (bf) r7 = r10
->   1: .1.....7.. (07) r7 += -8
->   2: .1.....7.. (b7) r0 = 0
->   3: 01.....7.. (7b) *(u64 *)(r7 +0) = r0
->   4: .1.....7.. (bf) r2 = r7
->   5: .12....7.. (b7) r3 = 8
->   6: .123...7.. (b7) r4 = 1
->   7: .1234..7.. (85) call bpf_sysctl_get_name#101
->   8: 0......7.. (55) if r0 != 0x7 goto pc+6
->   9: .......7.. (18) r8 = 0x6d656d5f706374
->  11: .......78. (79) r9 = *(u64 *)(r7 +0)
->  12: ........89 (5d) if r8 != r9 goto pc+2
->  13: .......... (b7) r0 = 1
->  14: 0......... (05) goto pc+1
->  15: .......... (b7) r0 = 0
->  16: 0......... (95) exit
-> 0: R1=ctx() R10=fp0
-> 0: (bf) r7 = r10                      ; R7_w=fp0 R10=fp0
-> 1: (07) r7 += -8                      ; R7_w=fp-8
-> 2: (b7) r0 = 0                        ; R0_w=0
-> 3: (7b) *(u64 *)(r7 +0) = r0          ; R0_w=0 R7_w=fp-8 fp-8_w=0
-> 4: (bf) r2 = r7                       ; R2_w=fp-8 R7_w=fp-8
-> 5: (b7) r3 = 8                        ; R3_w=8
-> 6: (b7) r4 = 1                        ; R4_w=1
-> 7: (85) call bpf_sysctl_get_name#101
-> mark_precise: frame0: last_idx 7 first_idx 0 subseq_idx -1
-> mark_precise: frame0: regs=r3 stack= before 6: (b7) r4 = 1
-> mark_precise: frame0: regs=r3 stack= before 5: (b7) r3 = 8
-> 8: R0_w=scalar()
-> 8: (55) if r0 != 0x7 goto pc+6        ; R0_w=7
-> 9: (18) r8 = 0x6d656d5f706374         ; R8_w=0x6d656d5f706374
-> 11: (79) r9 = *(u64 *)(r7 +0)         ; R7=fp-8 R9=scalar() fp-8=mmmmmmmm
-> 12: (5d) if r8 != r9 goto pc+2        ; R8=0x6d656d5f706374 
-> R9=0x6d656d5f706374
-> 13: (b7) r0 = 1                       ; R0_w=1
-> 14: (05) goto pc+1
-> 16: (95) exit
-> mark_precise: frame0: last_idx 16 first_idx 12 subseq_idx -1
-> mark_precise: frame0: regs=r0 stack= before 14: (05) goto pc+1
-> mark_precise: frame0: regs=r0 stack= before 13: (b7) r0 = 1
->
-> from 12 to 15: R0=7 R7=fp-8 R8=0x6d656d5f706374 R9=scalar() R10=fp0 
-> fp-8=mmmmmmmm
-> 15: R0=7 R7=fp-8 R8=0x6d656d5f706374 R9=scalar() R10=fp0 fp-8=mmmmmmmm
-> 15: (b7) r0 = 0                       ; R0_w=0
-> 16: (95) exit
-> mark_precise: frame0: last_idx 16 first_idx 12 subseq_idx -1
-> mark_precise: frame0: regs=r0 stack= before 15: (b7) r0 = 0
->
-> from 8 to 15: R0_w=scalar() R7_w=fp-8 R10=fp0 fp-8_w=mmmmmmmm
-> 15: R0_w=scalar() R7_w=fp-8 R10=fp0 fp-8_w=mmmmmmmm
-> 15: (b7) r0 = 0                       ; R0_w=0
-> 16: (95) exit
-> mark_precise: frame0: last_idx 16 first_idx 0 subseq_idx -1
-> mark_precise: frame0: regs=r0 stack= before 15: (b7) r0 = 0
-> processed 19 insns (limit 1000000) max_states_per_insn 0 total_states 
-> 1 peak_states 1 mark_read 1
->
->>
->> This patch actually may cause a behavior change.
->>
->> Without this patch, typically the whole buffer will be initialized
->> to 0 and then the helper itself will copy bytes until seeing a '\0'.
->>
->> With this patch, bpf prog does not need to initialize the buffer.
->> Inside the helper, the copied bytes may not cover the whole buffer.
->
-> If that's an issue, it could be easily fixed by replacing
-> ARG_PTR_TO_UNINIT_MEM by ARG_PTR_TO_MEM | MEM_WRITE.
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
-Thanks. I think ARG_PTR_TO_MEM | MEM_WRITE is better to express the
-intention of the helper.
+[...]
 
-> I don't know what the original intention was when bpf_sysctl_get_name()
-> was introduced, but almost all helpers use ARG_PTR_TO_UNINIT_MEM for
-> such a case.
->
-> Jerome
->
->>
->>> test_sysctl selftest to the tests related to sysctl_get_name.
->>>
->>> Correctly mark the second argument of bpf_sysctl_get_name() as
->>> ARG_PTR_TO_UNINIT_MEM.
->>>
->>> Signed-off-by: Jerome Marchand <jmarchan@redhat.com>
->>> ---
->>>   kernel/bpf/cgroup.c | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
->>> index 84f58f3d028a3..09c02a592d24a 100644
->>> --- a/kernel/bpf/cgroup.c
->>> +++ b/kernel/bpf/cgroup.c
->>> @@ -2104,7 +2104,7 @@ static const struct bpf_func_proto 
->>> bpf_sysctl_get_name_proto = {
->>>       .gpl_only    = false,
->>>       .ret_type    = RET_INTEGER,
->>>       .arg1_type    = ARG_PTR_TO_CTX,
->>> -    .arg2_type    = ARG_PTR_TO_MEM,
->>> +    .arg2_type    = ARG_PTR_TO_UNINIT_MEM,
->>>       .arg3_type    = ARG_CONST_SIZE,
->>>       .arg4_type    = ARG_ANYTHING,
->>>   };
->>
->>
->
+> +int bpf_prog_stream_read(int prog_fd, __u32 stream_id, void *stream_buf, __u32 stream_buf_len)
 
+Note: many of such utility functions have _opts parameter for future
+      extensibility. Imo in this case it would hinder usability a bit.
+      If need be bpf_prog_stream_read_opts can be added later.
+
+[...]
 
