@@ -1,144 +1,129 @@
-Return-Path: <bpf+bounces-59045-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59046-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D057AC5E8B
-	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 02:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6143CAC5E97
+	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 02:59:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A25AA9E74B2
-	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 00:52:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E28A93A644E
+	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 00:58:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79CD815A848;
-	Wed, 28 May 2025 00:51:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D5B8154BE2;
+	Wed, 28 May 2025 00:58:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Y5ijp5Dr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k018IcL1"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f65.google.com (mail-ej1-f65.google.com [209.85.218.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B1D61862
-	for <bpf@vger.kernel.org>; Wed, 28 May 2025 00:51:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E21110FD
+	for <bpf@vger.kernel.org>; Wed, 28 May 2025 00:58:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748393510; cv=none; b=Py1Z+D3nMTdKcafu14ur45VsN2uMSnj11TY4vLzXsdrVigMKMsDr73gjch4M3kSy+Tgmx3eknAERYrgVvjOU2P90Xdx6eyi83oP4A2JZ8oN1Vc5OGfgUauto8G5PrA8anrGp39QfSVoRD/LTfI4PDYuwVJVp5HVTLuqwyooF+3M=
+	t=1748393935; cv=none; b=kblJ1efgemHJUZbogGOlctuzDh/rlo+DkwBJTGhsosILnuPr4NxPMAUIEfS/PbWesiJrt4ZEuZFFIBXkIv8xm6gGgSmuyPb5VxNdB2OUjFTxDWX0+QUytpZT49+L5JvuqnBo95HVlkmfmpBz5BOAM14pQZcJwoH32/NZjOAq+z8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748393510; c=relaxed/simple;
-	bh=y1Qc0jlp3fdwyFuV0NrLUuBSYuWf0x9TB/LFDTST/hg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ee6Iyy7wOXBzF+zcoqglONG3t/14QLIk80weOi4KxlLoSnLh1pFbhPUvbZgiStF3NCQlP93SNDnq0GcgQfgxqA64LyPpmpkoKf+otgR7Rm9uCu7QJTZdqkNI2Zsfq3Wq+HT9tm+hgniawpODOG+YbUkma/NJ8FCKGJJtYAAOVxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Y5ijp5Dr; arc=none smtp.client-ip=95.215.58.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ae95a774-2218-4ddc-b2e0-d7bac2b731fd@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1748393503;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WLTryZpTrEZX2okYPkBiKM780EpNO+m0WRb1dWRiQDw=;
-	b=Y5ijp5Dr3Gg/95eVcckDjPIxuWR5SMaiZLb+vAGmRDzWth8akC17umLKRz+hdxWbRKzJ7s
-	3yduGwBZzg3mHLJYpAj551Avq8d0HW0En3Ieb8rS+JMlpTJuqp6B1NltkSvpapD8SpyDm+
-	bBtuuIotmzt38CdtAA/ozElE0EMeBRU=
-Date: Tue, 27 May 2025 17:51:37 -0700
+	s=arc-20240116; t=1748393935; c=relaxed/simple;
+	bh=Dk6yf3R2k1WnpcmqsS9mHlstGoVSt4iCb9G45y+6TSY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RkUtZgjpShbiZw+7WHHaCXyL67XZDQrvx/UwH9vd/1xp7hiIUfkICU0f98xg9d3YRoNjE8WeI1+vr5Et4OZ0EV2/Z0KUTW7IlfOpNvcbfTddWQCG2I3YVHu9GfLW73VoDPGLTeAvv+XfhP8X+oBtNGSUfRl47DVWuKUPjlYVNEY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k018IcL1; arc=none smtp.client-ip=209.85.218.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f65.google.com with SMTP id a640c23a62f3a-ad89c32a7b5so87434466b.2
+        for <bpf@vger.kernel.org>; Tue, 27 May 2025 17:58:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748393932; x=1748998732; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=k06jwoR2fbnz0IsbzZKqtsnPALaWcx9YY6jMgHpEO7o=;
+        b=k018IcL15UWbiuMDRj3wgNh1jFFHEqe2QDwmW9y/ELVTsrEH8EtvlDyf+8xV3LuC30
+         JvA0CG3BUfXSVubNK9YKLId1O0Qpstkd3BzvQzSQ0t3WXTjS/l6qyv7pPnuZUgYS5oeJ
+         ar2m3ySD6o26B1NP78qa/k2+Z3bleIRkVnJYtIoAz4FDO1AIjO6hFXYKe1/LWSauE7NA
+         SBZrHQQ/8eAKHRhSWh+678Qzz+34HpQSEgE2Pk+k30qVlm7H3bGB2zUh1Wn4xTt5rQKI
+         z6DululFluZe+iQxmntUu6JWQ1aKla7Piq4g8dKKc3taMP3l/LTxsD8N2ZVVQZYbX5dt
+         HojQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748393932; x=1748998732;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=k06jwoR2fbnz0IsbzZKqtsnPALaWcx9YY6jMgHpEO7o=;
+        b=b5BpHdWZ2e957JJvOye3klc+cNYefGNFWiXcZ8HDU/KxBn1MTf4m2vabVy4HtRZlEO
+         8lVnp/Sv+2kfKS83NweLACABWRmF+gNroU0ZC8LLU0AvODdozb/VQoq3It38dOlhBQZe
+         IxjWc0B+pORHf9qeJnJRJNyClCSaKaCPC+RACKvg7ejKbUET7HmuNxQFuPzndvKsSOd1
+         Rb1lQpRN5+ysJ+sc9+J9yWlfFvijkUETPHmDXbQCVi0g47/7pQTFjFuolR96JZpHEa0U
+         soYTeFpqWKzURhSP3heKxqrHFbgQVEN9LgqWmEOMyZ7xiTnY2BW5V+aYKrgriBHBHO+0
+         W2Gg==
+X-Gm-Message-State: AOJu0Yzzrqy69VuPqYR/17WoiBDxH2JjeIt3KZkJ8gnHoRWSSZR+NhEQ
+	gjv7tDe67uWAJngGuhJRlaZRsA8fW3PH576hfAfpeyFOBNf4H1hqM3JHdiUCj1ewdI9m8UeeFu8
+	h0+GrLK05HvFdmE5D3ZGqjHh9lSTGxFKJ1R4h
+X-Gm-Gg: ASbGncuDwB88YSsNtSrHowxBDbFn5AH4j7RlwuytDsnYlVt+PN/PYsGRoUzfZrg/dSg
+	/jS4BvGRw5uNJ6htmW9QAylGJiQV6eDp6EmRsP1cLT40lYXLCKjiPqVMikqpmQ6Gmq2aeSYZi/C
+	4QYXa3t8qR3kkMHV9poV/IFo64jVEmiDbLFRotlByaYETsd6vWow8t3JkJ7uL/xdN5huM=
+X-Google-Smtp-Source: AGHT+IFKffAJKLhXtqR3l97jcMczIDTBXBWc34QFAdc5w1G2U7EUAcl9nUkC3NSfPwkl/VaUEvmOzwgbwgQXg7xjGKQ=
+X-Received: by 2002:a17:906:cac7:b0:ad8:8364:d4ac with SMTP id
+ a640c23a62f3a-ad88364db22mr671346266b.55.1748393932142; Tue, 27 May 2025
+ 17:58:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v1 bpf-next 10/10] selftests/bpf: Add tests for bucket
- resume logic in established sockets
-To: Jordan Rife <jordan@jrife.io>
-Cc: Daniel Borkmann <daniel@iogearbox.net>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Kuniyuki Iwashima <kuniyu@amazon.com>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>, netdev@vger.kernel.org,
- bpf@vger.kernel.org
-References: <20250520145059.1773738-1-jordan@jrife.io>
- <20250520145059.1773738-11-jordan@jrife.io>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20250520145059.1773738-11-jordan@jrife.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250524011849.681425-1-memxor@gmail.com> <20250524011849.681425-6-memxor@gmail.com>
+ <m2tt5536n8.fsf@gmail.com>
+In-Reply-To: <m2tt5536n8.fsf@gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Wed, 28 May 2025 02:58:15 +0200
+X-Gm-Features: AX0GCFsB2yUI5G8MBJbJ5b4m5kYHx9450azj9S9ugaggTVgBMbcSN9H5WPu3DKk
+Message-ID: <CAP01T74WSqhWPGVXrDfLRbtgM5Om0MiL4_x=1Od3QOPERj8BdA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 05/11] bpf: Add dump_stack() analogue to print
+ to BPF stderr
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Emil Tsalapatis <emil@etsalapatis.com>, 
+	Barret Rhoden <brho@google.com>, Matt Bobrowski <mattbobrowski@google.com>, kkd@meta.com, 
+	kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 5/20/25 7:50 AM, Jordan Rife wrote:
-> +static bool close_and_wait(int fd, struct bpf_link *link)
-> +{
-> +	static const int us_per_ms = 1000;
-> +	__u64 cookie = socket_cookie(fd);
-> +	struct iter_out out;
-> +	bool exists = true;
-> +	int iter_fd, nread;
-> +	int waits = 20; /* 2 seconds */
-> +
-> +	close(fd);
-> +
-> +	/* Wait for socket to disappear from the ehash table. */
-> +	while (waits--) {
-> +		iter_fd = bpf_iter_create(bpf_link__fd(link));
-> +		if (!ASSERT_OK_FD(iter_fd, "bpf_iter_create"))
-> +			return false;
-> +
-> +		/* Is it still there? */
-> +		do {
-> +			nread = read(iter_fd, &out, sizeof(out));
-> +			if (!ASSERT_GE(nread, 0, "nread")) {
-> +				close(iter_fd);
-> +				return false;
-> +			}
-> +			exists = nread && cookie == out.cookie;
-> +		} while (!exists && nread);
-> +
-> +		close(iter_fd);
-> +
-> +		if (!exists)
-> +			break;
-> +
-> +		usleep(100 * us_per_ms);
+On Wed, 28 May 2025 at 02:45, Eduard Zingerman <eddyz87@gmail.com> wrote:
+>
+> Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
+>
+> Could you please modify one of the selftests to check lines reported by
+> dump stack?
 
-Instead of retrying with the bpf_iter_tcp to confirm the sk is gone from the 
-ehash table, I think the bpf_sock_destroy() can help here.
+Ok, will try to do it with a regex pattern to match the overall layout.
 
-> +	}
-> +
-> +	return !exists;
-> +}
-> +
->   static int get_seen_count(int fd, struct sock_count counts[], int n)
->   {
->   	__u64 cookie = socket_cookie(fd);
-> @@ -241,6 +279,43 @@ static void remove_seen(int family, int sock_type, const char *addr, __u16 port,
->   			       counts_len);
->   }
->   
-> +static void remove_seen_established(int family, int sock_type, const char *addr,
-> +				    __u16 port, int *listen_socks,
-> +				    int listen_socks_len, int *established_socks,
-> +				    int established_socks_len,
-> +				    struct sock_count *counts, int counts_len,
-> +				    struct bpf_link *link, int iter_fd)
-> +{
-> +	int close_idx;
-> +
-> +	/* Iterate through all listening sockets. */
-> +	read_n(iter_fd, listen_socks_len, counts, counts_len);
-> +
-> +	/* Make sure we saw all listening sockets exactly once. */
-> +	check_n_were_seen_once(listen_socks, listen_socks_len, listen_socks_len,
-> +			       counts, counts_len);
-> +
-> +	/* Leave one established socket. */
-> +	read_n(iter_fd, established_socks_len - 1, counts, counts_len);
+>
+> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+>
+> [...]
+>
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 6985e793e927..aab5ea17a329 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -3613,8 +3613,10 @@ __printf(2, 3)
+> >  int bpf_stream_stage_printk(struct bpf_stream_stage *ss, const char *fmt, ...);
+> >  int bpf_stream_stage_commit(struct bpf_stream_stage *ss, struct bpf_prog *prog,
+> >                           enum bpf_stream_id stream_id);
+> > +int bpf_stream_stage_dump_stack(struct bpf_stream_stage *ss);
+> >
+> >  #define bpf_stream_printk(...) bpf_stream_stage_printk(&__ss, __VA_ARGS__)
+> > +#define bpf_stream_dump_stack() bpf_stream_stage_dump_stack(&__ss)
+>
+> I don't think we should add macro with hard-coded variable names (`__ss`)
+> in common headers.
 
-hmm... In the "SEC("iter/tcp") int iter_tcp_soreuse(...)" bpf prog, there is a 
-"sk->sk_state != TCP_LISTEN" check and the established sk should have been 
-skipped. Does it have an existing bug? I suspect it is missing a "()" around
-"sk->sk_family == AF_INET6 ? !ipv6_addr_loopback(...) : ...".
+Hm, right. But this is supposed to be used within the stream stage
+block, and we have __i variables in macros that wrap around loops
+etc., hence the double / triple underscore to not conflict. Anyhow,
+I'm open to other suggestions.
 
+>
+> [...]
 
