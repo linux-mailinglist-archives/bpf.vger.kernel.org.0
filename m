@@ -1,75 +1,75 @@
-Return-Path: <bpf+bounces-59037-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59038-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05E88AC5E17
-	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 02:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CC4EEAC5E2B
+	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 02:23:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68BEE7AA15B
-	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 00:14:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0BC747A1DC8
+	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 00:22:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7547A1F5EA;
-	Wed, 28 May 2025 00:15:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ADF15103F;
+	Wed, 28 May 2025 00:23:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h88kr1Ap"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HmvcpgFL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DC107FD
-	for <bpf@vger.kernel.org>; Wed, 28 May 2025 00:15:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FD26EEB2
+	for <bpf@vger.kernel.org>; Wed, 28 May 2025 00:23:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748391336; cv=none; b=dBvcXkesue8j9ZZVWZGLmHTRKkniQwgPvDUfC75pJchD8xcnHfY5NCPjw5SfnUt/+2Z9lQ4NE5GvzUU2iZ3Bcq5cGAwZ4Bi58rJQFv+ftfZFjof3eI2kDJZJRZHT3rBDFEncnzJq3sAf1h2xvPdHIdK5zXxXdMef8QUWWny+eWk=
+	t=1748391807; cv=none; b=m8Uz+Sa9Ioai2aQ7ycaegN1H7cFhC1xc0eq2KKZWokCt5cnKawmX419HnZXiaFVcYXy5rFyuyLvEixkjf2XsfPPjpT89iiTWODGVlbcRELT08/Yq5hHqj1YS6nj7HE2j0oEH748qFWhdNNsd6ASMdlA7f5BLksvBGjGDm4qq75g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748391336; c=relaxed/simple;
-	bh=8jy2lxDluNtavO8EYHrZZ182tkV8F8WNEMPMhciutkY=;
+	s=arc-20240116; t=1748391807; c=relaxed/simple;
+	bh=B7rkpwyPYpA/PoKDI3+Ear/NQy0RVcUQ+PAEsi89Reo=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=TwYNpy79S3EsLgiS1JxFG8y76EWZPvZQSB+7YAtmn9dFs3B5lhT/vlGbt58sziQqVQCuyc9U+OD7ttLwhw2CWoWfrdnRS6rGiwbxeH3BxhHCVZgx1UnT7oDRGqt+Rkqpr2G/yDEamz+PpK1OvDSBlYmqPryGGHYga/g6dZCV7ew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h88kr1Ap; arc=none smtp.client-ip=209.85.210.182
+	 MIME-Version:Content-Type; b=rjiRwpp1P8L30sr2FB+kbfJBG39kO/blQPVdvIU7GR4ylsK+yYouAW/t61QpPZaxy6yd3S6VzVC1T59I/XFpOSWyjw2dsyNNIUdqpgxghIx4jiRKiYF+kd6C92lH3s8xHqB5Xh7HGqTp7nSehn+xRxr8hBC6GWjYxzGmfKOb/Gc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HmvcpgFL; arc=none smtp.client-ip=209.85.215.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-742c46611b6so4451099b3a.1
-        for <bpf@vger.kernel.org>; Tue, 27 May 2025 17:15:34 -0700 (PDT)
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-b1fb650bdf7so1969098a12.1
+        for <bpf@vger.kernel.org>; Tue, 27 May 2025 17:23:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748391334; x=1748996134; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1748391805; x=1748996605; darn=vger.kernel.org;
         h=mime-version:user-agent:message-id:date:references:in-reply-to
          :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=SKKfDYFznTdGGXd7qbd7Y28+t09cxE2n806aKyaE7SE=;
-        b=h88kr1ApEj2Uz19/fuQ6cKcK9QCXV2gtnV9LbAOvDrsJXkRoPW4xEM9elXyvgc7lO7
-         VSsMeEmesQJ8ZT9G8KBbk5xfeOyZjfv2qtv1V5TRjrM3HCgF3crCbbM+cLdDrdoo8AdR
-         8jfpV22YYyrjLRyjcwMN9RZR00cm8g9/OjLojhCg7z+r4Cdpdcw9j10H6K18dshbBTp6
-         9zeMM9FGuP4HkOT0GWhhhZLJEIz2PKFqk4Uy/loJ/0T8nMs0oHtOSkEKFQ781A3AOaMY
-         ImMOI2eqjeA1DV73cHOwM54NCpWvILtWFBYTUi+bLzAgFATqJ99v3JStsY6Jr09cFlww
-         vbuQ==
+        bh=FDbfNYmRdBjFPlNFEjKd7XOoc5xfKt5rPyc+oZynZSU=;
+        b=HmvcpgFLz6jBNEi8oq7hzoCDSjNLRULfZivuk9aH+yirzeiR38ZZMdwc9onQPeXyk/
+         Ovz0dPWTbRZDqS+2TGnS+AEp1+UzO3ypE/EQw483Zzu7GX0h1zVBe4+jZDoC+TIVv9Bq
+         IAB4h2AhiZbGBxYUWvZUk+ExBsXHxy4KStXgxRsQwoYj64W5mtlc9AnsldjGhQvJkem+
+         rM0e7C8SwPpSciSyZ6ZDrNJVmQOpGGFB0rAgBJKc3joRVwWo174jmZ8bjMkrYm/qHzUc
+         DoTNW1lIdy6DsNV/g+8/XHbZK+uvqVdYkKepcHmScMEZ2QQWuQTKFgGCjTjAJwLo9KAF
+         HIgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748391334; x=1748996134;
+        d=1e100.net; s=20230601; t=1748391805; x=1748996605;
         h=mime-version:user-agent:message-id:date:references:in-reply-to
          :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SKKfDYFznTdGGXd7qbd7Y28+t09cxE2n806aKyaE7SE=;
-        b=ViuOEslIhpNoIO8zgcVbJL8dAc4VfTqQJ2U/zhvlSaUTLFs9j8Sg77t+Va+n51Tqhu
-         1+Rcggds/J2Y5Wr93IRctElBfHrW0VOS5pH6A2etH2tPIci3udGxawW6oKtMTFCaUTsb
-         dMMZXXpVRPd8L+bBhlVrim5LZ9eS7p3EwZ0rtA+RsRWyajRCN4W4ll7jJ78jvu+plFmV
-         8VEI488b6f9CfV1wYEtOdBxYQ3qxTG/JeNvXhRA9IcPlk4+hfwiy8hwNjVzUk0sszkJK
-         iJnkcqFJqCgHlIW5CmMBHIKhiDo8XFSM6o5Qe8IpFI5V3VhNEw4Q7Uo8G5NiXe4S9Tkh
-         Ce9A==
-X-Gm-Message-State: AOJu0YyuMElG7HY3BCmBcA55ysSMJtJWknTEgomIYmQqRW4EC9kKeth5
-	ER4FI32X5COS060QrBvcRquybvBSPdon0RAmiI1STUnedK2qjPAJx9hC
-X-Gm-Gg: ASbGncuhwAYXvAdiLpwCZ5xP24dHz2dFP4VVd4epmoZ2LQMbHKu0x9Aboz37ySQXen+
-	RLQT+cAmU5ipIaOEv+PIdesdTAvsdikRVcVGfLLWxgyPDZH5NHC76H9PDNaQvhs9xO+1MWR8U5n
-	IfqdKqyXDA0k/fkq4SwV2r1EusZxHPl8FU4xlzMgDJrRolsfe3z0hrNNcr37y1xLTviRfz2lvLd
-	9eE5F0kQLRtXzbSH0htfUo7wbZe8Ji+T/7T8ZolcFoptEYBZJ10mlG3SUj4R46FSnuLSEcCejKt
-	llJHnd8Cgp4Ei04wIzRj7rHpPtuX7RIXtxDkAYwzPhrsEKy/U5k4o+bOtN9Wvo1ZMQ==
-X-Google-Smtp-Source: AGHT+IEarfFg/6E0sxSw6qy6wZdu68ziNn3G/zmDx+oJQHk+xEAbOudT55nEgmToeN9UKvxQBjiKEw==
-X-Received: by 2002:a17:903:32c2:b0:22e:3eb9:471b with SMTP id d9443c01a7336-23414f60848mr214689165ad.23.1748391333810;
-        Tue, 27 May 2025 17:15:33 -0700 (PDT)
+        bh=FDbfNYmRdBjFPlNFEjKd7XOoc5xfKt5rPyc+oZynZSU=;
+        b=RkDGVnUfk5I6yFFeYWML6Cm+0ibi9vZQ9xDXCDjdZ7YuNmkU8HCesJJOLI92RO9i7R
+         b8ELJGCcEfqEYcZl86kmbCL6DrhJgvdlLxqHWy9t2v3ETq92gxw10+tn8RQYFOWBFBsG
+         SqZsGgIQnrCJM/pgOh/pWKXbY9UMMLONTJ/Cv/JovqKu3wfBSLbUvbsoopnzuXaUhGT4
+         c5/uUzD8Yzx42U3yJXwfINYyHjexphB0ie8k++Gt8R96JHxf08jmxttFLibpJVcFM6Y2
+         L26Au+Rf9/34Vw321EA/ZEhjVaU/oq+Pt0enWH95T5mU41DFo4wPIE/eCS9vE4mwIBZh
+         nvAg==
+X-Gm-Message-State: AOJu0Yw1MHiqacd5c8P11U+iEf4TW7erQNpn7wii7Gn6MdfWBIGj8Jzo
+	dN9I+ZNpApeMU9RMDPHW16g9DHfrZ7OvKstTPJL0Gnre+OkeDQqBDB8x
+X-Gm-Gg: ASbGncthENDI+2e569ytAhwmrqLNl/p92rzRLakgLXdjhncgYU3zz4qlmhJEoSPVXYI
+	8S6RyLKYmtHQ5PR/E64Kw6+DBs3j0fbsR87/lnt9TIq0qj3mB/g9VJTNh604iKTOFdgWEaiT3yA
+	LfuMWCBK9a8mTVampbjiNw4g4pk+7ro+Rqna/ai0HqSnVnZ7NWTQSyA8gGa4Y5IHl4vs7WY0o+F
+	1TruWrBMjCw1W/C9bkGCmIxkL75V3pFvz9oNytl5L6LEKW9vEafrK57+LvsnPDEhycWnMUiZ6zI
+	xkWe5xgyE+hwDZECtNH641EHisO9wF7ASL/TBE9Hz9zCMpO3upGOw/s=
+X-Google-Smtp-Source: AGHT+IHh2mYIaVfZ+NMixvr05SkGzcAfsjaDV0xw5XNun/ecp8CVFqAYunXM7FqDuD84grtoE5mIfQ==
+X-Received: by 2002:a17:90a:c2c3:b0:2fe:9581:fbea with SMTP id 98e67ed59e1d1-31110d92962mr21308025a91.29.1748391805446;
+        Tue, 27 May 2025 17:23:25 -0700 (PDT)
 Received: from ezingerman-mba ([2620:10d:c090:500::7:461c])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-234cc2336b8sm1686695ad.159.2025.05.27.17.15.32
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-311e9b636a4sm19982a91.19.2025.05.27.17.23.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 May 2025 17:15:33 -0700 (PDT)
+        Tue, 27 May 2025 17:23:25 -0700 (PDT)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Cc: bpf@vger.kernel.org,  Alexei Starovoitov <ast@kernel.org>,  Andrii
@@ -77,16 +77,15 @@ Cc: bpf@vger.kernel.org,  Alexei Starovoitov <ast@kernel.org>,  Andrii
   Martin KaFai Lau <martin.lau@kernel.org>,  Emil Tsalapatis
  <emil@etsalapatis.com>,  Barret Rhoden <brho@google.com>,  Matt Bobrowski
  <mattbobrowski@google.com>,  kkd@meta.com,  kernel-team@meta.com
-Subject: Re: [PATCH bpf-next v2 04/11] bpf: Hold RCU read lock in
- bpf_prog_ksym_find
-In-Reply-To: <CAP01T76sCLH8qCrEqr=oYLW3CpbZA-+ifbA3DOCXT93Lk0LN5Q@mail.gmail.com>
-	(Kumar Kartikeya Dwivedi's message of "Sat, 24 May 2025 06:41:08
+Subject: Re: [PATCH bpf-next v2 01/11] bpf: Introduce BPF standard streams
+In-Reply-To: <CAP01T77zkuR1MGOmBXCnsjjQPezLHfz0RRayfqDYZ0_h0Z4X9g@mail.gmail.com>
+	(Kumar Kartikeya Dwivedi's message of "Wed, 28 May 2025 01:55:20
 	+0200")
 References: <20250524011849.681425-1-memxor@gmail.com>
-	<20250524011849.681425-5-memxor@gmail.com>
-	<CAP01T76sCLH8qCrEqr=oYLW3CpbZA-+ifbA3DOCXT93Lk0LN5Q@mail.gmail.com>
-Date: Tue, 27 May 2025 17:15:31 -0700
-Message-ID: <m2o6vd4ml8.fsf@gmail.com>
+	<20250524011849.681425-2-memxor@gmail.com> <m2cybt62gp.fsf@gmail.com>
+	<CAP01T77zkuR1MGOmBXCnsjjQPezLHfz0RRayfqDYZ0_h0Z4X9g@mail.gmail.com>
+Date: Tue, 27 May 2025 17:23:23 -0700
+Message-ID: <m2bjrd4m84.fsf@gmail.com>
 User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -100,36 +99,61 @@ Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
 
 [...]
 
->> --- a/kernel/bpf/core.c
->> +++ b/kernel/bpf/core.c
->> @@ -782,7 +782,11 @@ bool is_bpf_text_address(unsigned long addr)
+>> > diff --git a/kernel/bpf/stream.c b/kernel/bpf/stream.c
+>> > new file mode 100644
+>> > index 000000000000..b9e6f7a43b1b
+>> > --- /dev/null
+>> > +++ b/kernel/bpf/stream.c
 >>
->>  struct bpf_prog *bpf_prog_ksym_find(unsigned long addr)
->>  {
->> -       struct bpf_ksym *ksym = bpf_ksym_find(addr);
->> +       struct bpf_ksym *ksym;
->> +
->> +       rcu_read_lock();
->> +       ksym = bpf_ksym_find(addr);
->> +       rcu_read_unlock();
+>> [...]
 >>
->>         return ksym && ksym->prog ?
->>                container_of(ksym, struct bpf_prog_aux, ksym)->prog :
+>> > +int bpf_stream_stage_commit(struct bpf_stream_stage *ss, struct bpf_prog *prog,
+>> > +                         enum bpf_stream_id stream_id)
+>> > +{
+>> > +     struct llist_node *list, *head, *tail;
+>> > +     struct bpf_stream *stream;
+>> > +     int ret;
+>> > +
+>> > +     stream = bpf_stream_get(stream_id, prog->aux);
+>> > +     if (!stream)
+>> > +             return -EINVAL;
+>> > +
+>> > +     ret = bpf_stream_consume_capacity(stream, ss->len);
+>> > +     if (ret)
+>> > +             return ret;
+>> > +
+>> > +     list = llist_del_all(&ss->log);
+>> > +     head = list;
+>> > +
+>> > +     if (!list)
+>> > +             return 0;
+>> > +     while (llist_next(list)) {
+>> > +             tail = llist_next(list);
+>> > +             list = tail;
+>> > +     }
+>> > +     llist_add_batch(head, tail, &stream->log);
+>>
+>> If `llist_next(list) == NULL` at entry `tail` is never assigned?
 >
-> This isn't right, we need to have the read section open around ksym
-> access as well.
-> We can end the section and return the prog pointer.
-> The caller is responsible to ensure prog outlives RCU protection, or
-> otherwise hold it if necessary for prog's lifetime.
->
-> We're using this to pick programs who have an active stack frame, so
-> they aren't going away.
-> But the ksym access itself needs to happen under correct protection.
->
-> I can fix it in a respin, whatever is best.
+> The assumption is llist_del_all being non-NULL means llist_next is
+> going to return a non-NULL value at least once.
+> Does that address your concern?
 
-Are rcu_read_{lock,unlock} necessary in core.c:search_bpf_extables()
-after this change?
-Also, helpers.c:bpf_stack_walker.c does not have lock/unlock in it,
-this patch needs a fixes tag for commit f18b03fabaa9 ("bpf: Implement BPF exceptions")?
+Sorry, maybe I don't understand something.
+Suppose that at entry ss->log is a list with a single element:
+
+ ss->log -> 0xAA: { .next = NULL; ... payload ... }
+
+then:
+- list == 0xAA;
+- llist_next(list) == 0x0;
+- loop body never executes.
+
+What do I miss?
+
+
+>> > +     return 0;
+>> > +}
+
+[...]
 
