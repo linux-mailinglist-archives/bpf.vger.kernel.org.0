@@ -1,32 +1,32 @@
-Return-Path: <bpf+bounces-59068-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59069-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D14AAC5F82
-	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 04:32:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B954DAC5F7E
+	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 04:32:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40832188E138
-	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 02:32:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2CB4166774
+	for <lists+bpf@lfdr.de>; Wed, 28 May 2025 02:32:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C43143D544;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED4F621A458;
 	Wed, 28 May 2025 02:29:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56D6D1E8331;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D6EE1E9B08;
 	Wed, 28 May 2025 02:29:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748399371; cv=none; b=u9nQ+BJR3OvR1gu2EpT5jzpgQFszfqVUTgNnpodTy3b0D+pQ8Jt4PV8bdiVIsXWeu5xIP75cHge1xEDH96+Si1ZhXl4a2DITqkInMStRPfydtSXBwlfVb2bNBvKaCmKiCFBGHNWLKtYIQvpEsEbY/Vb/1eosMoseNCKSoXTTnXs=
+	t=1748399371; cv=none; b=UsjSTCPCrtMQ/n2pSqoFAsrLJvTvgA3djqHVBK8T0OqlJCBX/pp8F3EtyRKIId5dDG5LAXZ0897vtiGKO4f/5R29KAqPvS7lgvZ0wQxtT51YJ6W4uB/EuisrLhWMtt0s3ElW6leXB0F9dHfgvxYXococyLtw0BCO4/X7wP43Adg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1748399371; c=relaxed/simple;
-	bh=Bn+B677u1SUXBMK6hXmuHKqv5b/inDpHW5BYywKSQyc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=NjvCYiD6eszAwpqKZhwUFE+J4IjLKpRm4rOasBYefEhP6wPjn74OhBzO6MoqOwZhxHzwIlyzfn+ruclOUqgUHxU7qbyDqnwMnG8To+Luv08fMG0zJ0vA0Y9YULVEvRPJppvtovJWgajCEvojmpPDEhajCAGymN+QOXBHL4sU52E=
+	bh=3Kt0d3eGR5T8xiFGwL/cldZmUj+PrXCfAZYAHnjIPuc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=rO8mcBq65IPVgi4xBcL4bzRDlY+WLbzjNiAX3Js1YKB9zJ2o1ME4RjSV7Njoc9J9IhWL2ABx4ztKitz4vEmiL/H18VO+1M1E0xVLrth+9HtoKwU14DmzhVjaVuKfDxLFT8vPSlzHt0qvVR9lb6xjUG44WZAcrPxTFysBLXloa5g=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-669ff7000002311f-91-68367502f54e
+X-AuditID: a67dfc5b-669ff7000002311f-9d-68367502188d
 From: Byungchul Park <byungchul@sk.com>
 To: willy@infradead.org,
 	netdev@vger.kernel.org
@@ -62,40 +62,40 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-rdma@vger.kernel.org,
 	bpf@vger.kernel.org,
 	vishal.moola@gmail.com
-Subject: [PATCH v2 12/16] netmem: use _Generic to cover const casting for page_to_netmem()
-Date: Wed, 28 May 2025 11:29:07 +0900
-Message-Id: <20250528022911.73453-13-byungchul@sk.com>
+Subject: [PATCH v2 13/16] netmem: remove __netmem_get_pp()
+Date: Wed, 28 May 2025 11:29:08 +0900
+Message-Id: <20250528022911.73453-14-byungchul@sk.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20250528022911.73453-1-byungchul@sk.com>
 References: <20250528022911.73453-1-byungchul@sk.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAAzWRa0hTcRiH+++cnXMcrk5L9JRiuBBJ8YqX94OYEuX/W0FfwgodenDDOWVT
-	80KgJlSadofQhVPJO82W6DQx7xcMlJmxyutEMzBFl0udZM7y28Pzg4cXXoaQ9JNnGIUqg1er
-	ZEopJSJFP52r/QWZ4fKgit/uoNU3U9C0nQ1180YhaBvbEPza+UaDdWCYgpoqGwHa8SIStvS7
-	BCwNWWiYq10moeteOwGWRyMUlBbZCSg01gtgoq1MCM93XxPQnj9Pw2SnloLZ5n0hLPeVkjBa
-	3kDCXFk0DOlcwTa2imBA3y4A28NXFDwz6ShYLJpDYOq3kFBRUIZA320Wgn1bS0V74daGLwLc
-	UT5DY50hE7+r98XFZhOBDY0PKGzYfErj6c9dFB55aSdxh9EqwKV31yi8sfSVxOvdUxTWt06R
-	+KNugMZWg+dVNk4UmcQrFVm8OjAqQSTXLdbS6V1MtnE7Lx+V0MXIieHYUK5xuIc64h3T9KGn
-	WB/ObN4hHOzCBnNWyzBZjEQMwa4JuSWtXeAYTrFxXMdCJelgkvXmXvS8OQyJ2XBuYfQH8S96
-	lmtq6TlghnE68IPTiQ4tYcO49RI9cjQ5doPm9sdm/x90muutN5OPkViHjjUiiUKVlSpTKEMD
-	5DkqRXZAYlqqAR28tvbO3g0j2py41odYBkmdxbglTC4RyrI0Oal9iGMIqYu48EK4XCJOkuXk
-	8uq0eHWmktf0IXeGlLqJQ2y3kyRssiyDT+H5dF59tAoYpzP5yOtt7Gq1WXY+5lxZlac67nqe
-	JmHeb6s9pmZf9MlgaXLamWze9Xj/XVByZfySG8Pf6m0LnYjIjUgJsV/MKg9l/zwRriumwqxu
-	lQpbmp93YPzsXnKCyD/Q5+Rl907xUFBk63HXzYIP2zODBdaUwMiolbqWtZvKpPvy2OCJlfAT
-	ix5SUiOXBfsSao3sLz/oPL7WAgAA
-X-Brightmail-Tracker: H4sIAAAAAAAAAzXRa0hTYRwG8N6ds7PjcHFcUiejglFESpqR8o/K/OZLlBpR2cB06MENndqm
-	oqU0dRFpajdLbNZMMq9NTNwsb8w7CommLTXnBTWj1NRsNqFc0bcfzwPPl4cmxKWkG62ITeBU
-	sbIYCSUkhYHHMw/xEn3lh1c/bAWdoYqCSlsyvJww8UFXUY9gdX1UACvtXRSUFK8RoHunJeGH
-	4RcBM51TArCWzpLQeMtIwFReNwU5WjsBGaYyHrQV9fChvz6XDw9/vSDAqJkQwOAbHQXjVb/5
-	MGvOIaGnsJwEa64/dOq3w1rvVwTtBiMP1u4UUfBgQE/BtNaKYKBtioQn6bkIDM0WPthtOspf
-	guvKP/JwQ+EnAdbXJuLXZe44yzJA4NqK2xSuXb4vwGPDjRTuLrCTuMG0wsM5mQsU/j4zQuLF
-	5iEKl3xe4mFD3RCJ+/TtgmAXqfBEJBejSOJUXn7hQrl+ulQQ30gnm2zXNShbkIWcaJY5yq4P
-	jP01xRxgLZZ1wmFXxptdmeois5CQJpgFPjujs/McxTZGyjZMPiMdJpn9bH7rK8phEePLTvbM
-	E/9G97KVNa2bpmmnzbxjLMIRixkfdjHbgO4ioR5tqUCuitgkpUwR4+OpjpanxCqSPSPilLVo
-	873StI17JrQ6GGBGDI0kziJc4yMX82VJ6hSlGbE0IXEVZZzylYtFkbKUa5wqLkyVGMOpzWgX
-	TUp2iE5f4sLFTJQsgYvmuHhO9b/l0U5uGnRlvlWrdfE0pVskcU9Fw1XVig6lsfpnaFC26uDI
-	MY/z+aP7+vdQHhrp2XNzgaPJmjCxskljm1kmmsa9QoxH1PmTbF2q1Bp08kuBJnLj8qPR3sUi
-	Ucv7vKs3Kr/1NdlSzzwmLqQV828GL+28GDfyVjYb+twY0uLH5UTN2Z3HA3ZLSLVc5u1OqNSy
-	P6ZKak65AgAA
+X-Brightmail-Tracker: H4sIAAAAAAAAAzWRa0hTYRjHe3fenXNcTU5L6rhuuMrIyDTUniJMiOD90AchhMoPdtJTG+rU
+	zXkpkqWiac3squiiWXm3ZtN0RVnqvNFNNGtdzFgpFKWkNTSDconffvyeP/8P/4elFA6sZDXa
+	VFGnFRJUtAzLvi+p2CIxhKmD7g76gdnaQEP9dAZUf7RLwVzXguDnzDsGphw9NNyocFNgfpGL
+	4Zf1NwWj3S4GRqrGMDzIb6XAda6XBlPuLAXZ9hoJ9LcUSeHS70oKWo0fGRi8b6bhQ8NfKYx1
+	mDD0ldViGCmKgG7LcnA/+YbAYW2VgPvsVRouDlho+JQ7gmCg04Wh/FQRAmubUwqz02Y6wo80
+	176RkHtlwwyx2AykqSaAFDoHKGKrK6CJbfICQ96/ekCT3tJZTO7ZpyTElDNOkx+jbzGZaBui
+	ibV5CJOnFgdDpmxrIrlDsl1xYoImTdRtDT8sUzsul1HJ12QZA9bX2Ii62ELkxfJcCJ9X1cks
+	8OXmlxIP09xG3umcoTzswwXzU64eXIhkLMWNS/lR8+z/0DJuJz/2Oh97GHMb+Om80/+9nAvj
+	Hz27Qc+XruXrGx/PFbGs15zveh/r0QoulJ84Y0WeTp77xfDXm4ap+bwv317jxMVIbkGL6pBC
+	o01LFDQJIYHqTK0mIzA2KdGG5n5bdfJPtB1N9u/vQByLVEvkpDFUrZAKafrMxA7Es5TKR569
+	O0ytkMcJmcdFXVKMzpAg6jvQSharVsi3udPjFNwxIVWMF8VkUbdwlbBeSiPy3bfqYZwu6mK5
+	9y5n1p4vc8sf2LxGX1+c3h/t/3z9uPv2wVtR4UHGFFL61U+Zo2zbcb4y8MimlAz/TU329Dz/
+	eGH6fr5J0rVYHhDepvYtaUoKLn3xuXryw5WuExOpWQXepr6be4cOpsY8L9g+rE2eSY4sGWzg
+	VpeFGta134mpPLpUhfVqITiA0umFfzSUtwHXAgAA
+X-Brightmail-Tracker: H4sIAAAAAAAAAzWRW0iTYRzGffe9+/Y5G30us4+80AYVWHmItD9qZle+dGFdBJYX6tAPt5zT
+	NhUNxCNZ5qmDFDZzKXm2yRweQkx0Og+d1NRllmJpkqGlJlODUqO7H7/n4bl5GEpajQ8ySnUi
+	r1HLVTJajMUh/tknBEm+Cq+iZ06gMzTQUG9LgeqZNiHo6loQrG18EMGq2UJD5ZN1CnRvcjD8
+	MmxSMNc3K4LpqnkMHbmtFMwW9dNQkLNFQVZbjQB6ygaE8LalUAj3N59S0JoxI4LR5zoaPjX8
+	EcJ8dwGGgdJaDNOFQdCnd4b1oe8IzIZWAaznl9Fwb0RPw+ecaQQjPbMYHmUWIjB0WoWwZdPR
+	QTJiqn0vIO2lH0VEb0wizTXuJM86QhFj3S2aGFfuisjUeAdN+h9uYdLetiogBdlLNPk5N4nJ
+	cucYTSoXfgiIwTSGyUu9WXTRMUwcEM2rlMm8xjMwUqwwl5RSCeXilBHDBM5AvUwesmc49hRX
+	Ynon2GGaPcpZrRvUDjux3tzqrAXnITFDsUtCbk63tVvax/px8xO5eIcxe5iz3bi56yWsL/fi
+	VSX9b9SVq2/q2h5iGPtt3zsVtaOlrA+3fNuAipFYj+zqkJNSnRwnV6p8PLSxilS1MsUjKj7O
+	iLbvq0r7facNrY0GdyOWQbI9EtLko5AK5cna1LhuxDGUzEmSddZXIZVEy1Ov85r4CE2Sitd2
+	IxcGyw5IzofykVI2Rp7Ix/J8Aq/5nwoY+4MZCLulxyzoVoYdjR1mmUXVaI9iHWoHLdozrq+P
+	TewPNrUWN6clu1w4Pd74hclcCgngFyM7HWyTcSdb2sOPLM+7qSwV7o8vOc5d1hmvmCKMhziv
+	MZemsMGBYXVP2HFnxbWhcOtXLrQl32b3zfPcg71JzRWKq6ldfsVB/uzgYnpguQxrFXJvd0qj
+	lf8FtSqMxroCAAA=
 X-CFilter-Loop: Reflected
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -103,35 +103,41 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 
-The current page_to_netmem() doesn't cover const casting resulting in
-trying to cast const struct page * to const netmem_ref fails.
-
-To cover the case, change page_to_netmem() to use macro and _Generic.
+There are no users of __netmem_get_pp().  Remove it.
 
 Signed-off-by: Byungchul Park <byungchul@sk.com>
 Reviewed-by: Mina Almasry <almasrymina@google.com>
 ---
- include/net/netmem.h | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ include/net/netmem.h | 16 ----------------
+ 1 file changed, 16 deletions(-)
 
 diff --git a/include/net/netmem.h b/include/net/netmem.h
-index 37d0e0e002c2..4c977512f9d7 100644
+index 4c977512f9d7..96472e56e8ee 100644
 --- a/include/net/netmem.h
 +++ b/include/net/netmem.h
-@@ -172,10 +172,9 @@ static inline netmem_ref net_iov_to_netmem(struct net_iov *niov)
- 	return (__force netmem_ref)((unsigned long)niov | NET_IOV);
+@@ -224,22 +224,6 @@ static inline struct net_iov *__netmem_clear_lsb(netmem_ref netmem)
+ 	return (struct net_iov *)((__force unsigned long)netmem & ~NET_IOV);
  }
  
--static inline netmem_ref page_to_netmem(struct page *page)
+-/**
+- * __netmem_get_pp - unsafely get pointer to the &page_pool backing @netmem
+- * @netmem: netmem reference to get the pointer from
+- *
+- * Unsafe version of netmem_get_pp(). When @netmem is always page-backed,
+- * e.g. when it's a header buffer, performs faster and generates smaller
+- * object code (avoids clearing the LSB). When @netmem points to IOV,
+- * provokes invalid memory access.
+- *
+- * Return: pointer to the &page_pool (garbage if @netmem is not page-backed).
+- */
+-static inline struct page_pool *__netmem_get_pp(netmem_ref netmem)
 -{
--	return (__force netmem_ref)page;
+-	return __netmem_to_page(netmem)->pp;
 -}
-+#define page_to_netmem(p)	(_Generic((p),			\
-+	const struct page * :	(__force const netmem_ref)(p),	\
-+	struct page * :		(__force netmem_ref)(p)))
- 
- static inline netmem_ref alloc_netmems_node(int nid, gfp_t gfp_mask,
- 		unsigned int order)
+-
+ static inline struct page_pool *netmem_get_pp(netmem_ref netmem)
+ {
+ 	return __netmem_clear_lsb(netmem)->pp;
 -- 
 2.17.1
 
