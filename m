@@ -1,64 +1,64 @@
-Return-Path: <bpf+bounces-59263-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59264-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6DD6AC7712
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 06:19:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D0E5AC7714
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 06:19:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 898D71C0208B
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 04:19:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AA1DA250F5
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 04:19:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6326124FBFF;
-	Thu, 29 May 2025 04:19:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF8E724EAB1;
+	Thu, 29 May 2025 04:19:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ig0CQ4CH"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Wm9dZLtB"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46E4324A078
-	for <bpf@vger.kernel.org>; Thu, 29 May 2025 04:19:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 932F0EEAA
+	for <bpf@vger.kernel.org>; Thu, 29 May 2025 04:19:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748492349; cv=none; b=rgDyhVIAHRsBSqG46DmcEgQrxP8H0xpPSG4wcF3SuS4/6oGhjk4flb/A+oFbZAFenCrh+ik9k7GcUDG3vD/+FR+wltDgtB3L8FRSwyvpKwsIOM3GnyDZpWiQDuUeCR4fH4tfDh6vB4k0XLkGYzy8M+VN4/H84whXR2pF/VWXbrM=
+	t=1748492366; cv=none; b=R2dlK+1F96GIE/YehU0YSNARLD1q927+sSBIH34axtDmzV+pAR0wF+yjntq04egUWWMx9+vM0Ry1vMLVZpXhXxjSyCpxm2dn206CxT22P3jVyoKo91luDIf5GZY0ezKxfKLKuKjWEzqwBgwZ5w3yICuEv5BLpBcKJgQv5Xn9DXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748492349; c=relaxed/simple;
-	bh=8F6mTLmJlh4i3Fet3JGrhPNNSnQhPigFYr8g61jXIp8=;
+	s=arc-20240116; t=1748492366; c=relaxed/simple;
+	bh=1UNEpynHFgSv5UFL1m587D9A3kwHBOqumSFm94pzW2M=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=H3vLI6sklpzRD2wq90vWtJjxZNzyzleEl7lUEcJvV5coRpUPzmqBv6tV83ngrErAdFyZd4+WJ0bI5cILKiLeVNHF0I9Hglzss9YP/xwZNdLxv1H+Wam0Vkhf8gytgi0rpXBYH899GCE0XQvopyZj1mCtio6e04SQvg2ajQIHA68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ig0CQ4CH; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=azQHCF1xrBLOOAdZD6RFYMIsUWaOWUmWEUR4IBdo0cvnPOXq+fbaOdG2ZDaStcR4u8I6s5YvfhpKaYjcJ1VE2ZOH21tb6fyHjO3/JwZyMLFCTViCWeBViAkufdWCHOXTR8AEm32pA+wgoAJWZtthtCWpzkl2hG55fzV6HpwU1Qg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Wm9dZLtB; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1748492347;
+	s=mimecast20190719; t=1748492363;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=BNCqutEYCGxkPLPPDptf/fqRtu8WQpYy2xLrXDrGIyA=;
-	b=ig0CQ4CHs8jWViPd68CtzfaTdB3m9H4HIkgRPW2B1idy82WAyvSoWJwG3+kslvJfXlpO2f
-	NbuVQpYeve7W7UGgmUWN3LbniAvNwo/StJ0LLsG67jGOeJ/WYBWr0OlDttLlGDQt+JKhx4
-	oFp0vYnldtP4hlzLOA0qfYWvWQ8TpJA=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+	bh=GbMqCLbigtH8SYgz7AdYn6GOyuyyf11S46PIWrL2Yo4=;
+	b=Wm9dZLtBc8BaItdsGAbFy4YvsSS5WJs67XyTbXF/HnouAyz1eEInmPLL1bVr2j350DbOq/
+	A/d1KAwcr9uAOjd2bT8TKO6vSGstSexsJy64IXFE+WY+onfQYwEP8ZCr68xSPxNWRf2e0I
+	kwcsciUr+/JYvGujsS+XCqAyum7ryRI=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-617-sGGsIEEPMcaCE9IEmBYFfw-1; Thu,
- 29 May 2025 00:19:03 -0400
-X-MC-Unique: sGGsIEEPMcaCE9IEmBYFfw-1
-X-Mimecast-MFC-AGG-ID: sGGsIEEPMcaCE9IEmBYFfw_1748492341
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-26-_Y_3EDN0Mgye5xzjzC9SBA-1; Thu,
+ 29 May 2025 00:19:17 -0400
+X-MC-Unique: _Y_3EDN0Mgye5xzjzC9SBA-1
+X-Mimecast-MFC-AGG-ID: _Y_3EDN0Mgye5xzjzC9SBA_1748492354
 Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id D8AE71955DAB;
-	Thu, 29 May 2025 04:19:00 +0000 (UTC)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id A34DD18001EA;
+	Thu, 29 May 2025 04:19:14 +0000 (UTC)
 Received: from fedora.redhat.com (unknown [10.72.112.18])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 62B1718003FC;
-	Thu, 29 May 2025 04:18:48 +0000 (UTC)
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id A643E18003FC;
+	Thu, 29 May 2025 04:19:01 +0000 (UTC)
 From: Pingfan Liu <piliu@redhat.com>
-To: linux-kernel@vger.kernel.org
+To: bpf@vger.kernel.org
 Cc: Pingfan Liu <piliu@redhat.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -82,10 +82,13 @@ Cc: Pingfan Liu <piliu@redhat.com>,
 	Dave Young <dyoung@redhat.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	kexec@lists.infradead.org,
-	bpf@vger.kernel.org
-Subject: [PATCHv3 2/9] lib/decompress: Keep decompressor when CONFIG_KEXEC_PE_IMAGE
-Date: Thu, 29 May 2025 12:17:37 +0800
-Message-ID: <20250529041744.16458-3-piliu@redhat.com>
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>
+Subject: [PATCHv3 3/9] bpf: Introduce bpf_copy_to_kernel() to buffer the content from bpf-prog
+Date: Thu, 29 May 2025 12:17:38 +0800
+Message-ID: <20250529041744.16458-4-piliu@redhat.com>
 In-Reply-To: <20250529041744.16458-1-piliu@redhat.com>
 References: <20250529041744.16458-1-piliu@redhat.com>
 Precedence: bulk
@@ -97,68 +100,296 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 
-The KEXE PE format parser needs the kernel built-in decompressor to
-decompress the kernel image. So moving the decompressor out of __init
-sections.
+In the security kexec_file_load case, the buffer which holds the kernel
+image is invisible to the userspace.
+
+The common data flow in bpf scheme is from kernel to bpf-prog.  In the
+case of kexec_file_load, the kexec component needs to buffer the parsed
+result by bpf-prog (opposite the usual direction) to the next stage
+parsing. bpf_kexec_carrier() makes the opposite data flow possible. A
+bpf-prog can publish the parsed payload address to the kernel, and the
+latter can copy them for future use.
 
 Signed-off-by: Pingfan Liu <piliu@redhat.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-To: linux-kernel@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Song Liu <song@kernel.org>
+Cc: Yonghong Song <yonghong.song@linux.dev>
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: Stanislav Fomichev <sdf@fomichev.me>
+Cc: Hao Luo <haoluo@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+To: bpf@vger.kernel.org
 ---
- include/linux/decompress/mm.h | 7 +++++++
- lib/decompress.c              | 6 +++---
- 2 files changed, 10 insertions(+), 3 deletions(-)
+ include/linux/bpf.h          |  23 +++++
+ kernel/bpf/Makefile          |   2 +-
+ kernel/bpf/helpers.c         |   2 +
+ kernel/bpf/helpers_carrier.c | 194 +++++++++++++++++++++++++++++++++++
+ 4 files changed, 220 insertions(+), 1 deletion(-)
+ create mode 100644 kernel/bpf/helpers_carrier.c
 
-diff --git a/include/linux/decompress/mm.h b/include/linux/decompress/mm.h
-index ac862422df158..e8948260e2bbe 100644
---- a/include/linux/decompress/mm.h
-+++ b/include/linux/decompress/mm.h
-@@ -92,7 +92,14 @@ MALLOC_VISIBLE void free(void *where)
- #define large_malloc(a) vmalloc(a)
- #define large_free(a) vfree(a)
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 3f0cc89c0622c..104974a6d18cb 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -3568,4 +3568,27 @@ static inline bool bpf_is_subprog(const struct bpf_prog *prog)
+ 	return prog->aux->func_idx != 0;
+ }
  
-+#ifdef CONFIG_KEXEC_PE_IMAGE
-+#define INIT
-+#define INITCONST
-+#else
- #define INIT __init
-+#define INITCONST __initconst
-+#endif
++struct mem_range_result {
++	struct kref ref;
++	struct rcu_head rcu;
++	char *buf;
++	uint32_t buf_sz;
++	uint32_t data_sz;
++	/* kmalloc-ed or vmalloc-ed */
++	bool kmalloc;
++	int status;
++	struct mem_cgroup *memcg;
++};
++int mem_range_result_put(struct mem_range_result *result);
 +
- #define STATIC
++typedef int (*resource_handler)(const char *name, struct mem_range_result *r);
++
++struct carrier_listener {
++	char *name;
++	bool kmalloc;
++	resource_handler handler;
++};
++
++int register_carrier_listener(struct carrier_listener *listener);
++int unregister_carrier_listener(char *str);
+ #endif /* _LINUX_BPF_H */
+diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
+index 70502f038b921..d1f1f50e23cc8 100644
+--- a/kernel/bpf/Makefile
++++ b/kernel/bpf/Makefile
+@@ -6,7 +6,7 @@ cflags-nogcse-$(CONFIG_X86)$(CONFIG_CC_IS_GCC) := -fno-gcse
+ endif
+ CFLAGS_core.o += -Wno-override-init $(cflags-nogcse-yy)
  
- #include <linux/init.h>
-diff --git a/lib/decompress.c b/lib/decompress.c
-index ab3fc90ffc646..3d5b6304bb0f1 100644
---- a/lib/decompress.c
-+++ b/lib/decompress.c
-@@ -6,7 +6,7 @@
-  */
- 
- #include <linux/decompress/generic.h>
--
-+#include <linux/decompress/mm.h>
- #include <linux/decompress/bunzip2.h>
- #include <linux/decompress/unlzma.h>
- #include <linux/decompress/unxz.h>
-@@ -48,7 +48,7 @@ struct compress_format {
- 	decompress_fn decompressor;
- };
- 
--static const struct compress_format compressed_formats[] __initconst = {
-+static const struct compress_format compressed_formats[] INITCONST = {
- 	{ {0x1f, 0x8b}, "gzip", gunzip },
- 	{ {0x1f, 0x9e}, "gzip", gunzip },
- 	{ {0x42, 0x5a}, "bzip2", bunzip2 },
-@@ -60,7 +60,7 @@ static const struct compress_format compressed_formats[] __initconst = {
- 	{ {0, 0}, NULL, NULL }
- };
- 
--decompress_fn __init decompress_method(const unsigned char *inbuf, long len,
-+decompress_fn INIT decompress_method(const unsigned char *inbuf, long len,
- 				const char **name)
- {
- 	const struct compress_format *cf;
+-obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o log.o token.o
++obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o helpers_carrier.o tnum.o log.o token.o
+ obj-$(CONFIG_BPF_SYSCALL) += bpf_iter.o map_iter.o task_iter.o prog_iter.o link_iter.o
+ obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list.o lpm_trie.o map_in_map.o bloom_filter.o
+ obj-$(CONFIG_BPF_SYSCALL) += local_storage.o queue_stack_maps.o ringbuf.o
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index e3a2662f4e336..1f4284e58400b 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -3200,6 +3200,8 @@ BTF_KFUNCS_START(generic_btf_ids)
+ #ifdef CONFIG_CRASH_DUMP
+ BTF_ID_FLAGS(func, crash_kexec, KF_DESTRUCTIVE)
+ #endif
++BTF_ID_FLAGS(func, bpf_mem_range_result_put, KF_RELEASE)
++BTF_ID_FLAGS(func, bpf_copy_to_kernel, KF_TRUSTED_ARGS | KF_SLEEPABLE)
+ BTF_ID_FLAGS(func, bpf_obj_new_impl, KF_ACQUIRE | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_percpu_obj_new_impl, KF_ACQUIRE | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_obj_drop_impl, KF_RELEASE)
+diff --git a/kernel/bpf/helpers_carrier.c b/kernel/bpf/helpers_carrier.c
+new file mode 100644
+index 0000000000000..c4e45fdf0ebb8
+--- /dev/null
++++ b/kernel/bpf/helpers_carrier.c
+@@ -0,0 +1,194 @@
++// SPDX-License-Identifier: GPL-2.0-only
++#include <linux/bpf.h>
++#include <linux/bpf-cgroup.h>
++#include <linux/cgroup.h>
++#include <linux/rcupdate.h>
++#include <linux/hashtable.h>
++#include <linux/jhash.h>
++#include <linux/mutex.h>
++#include <linux/kref.h>
++#include <linux/vmalloc.h>
++#include <linux/slab.h>
++
++
++struct str_listener {
++	struct hlist_node node;
++	char *str;
++	resource_handler handler;
++	bool kmalloc;
++};
++
++DEFINE_STATIC_SRCU(srcu);
++static DEFINE_MUTEX(str_listeners_mutex);
++static DEFINE_HASHTABLE(str_listeners, 8);
++
++static struct str_listener *find_listener(const char *str)
++{
++	struct str_listener *item;
++	unsigned int hash = jhash(str, strlen(str), 0);
++
++	hash_for_each_possible(str_listeners, item, node, hash) {
++		if (strcmp(item->str, str) == 0)
++			return item;
++	}
++	return NULL;
++}
++
++static void __mem_range_result_free(struct rcu_head *rcu)
++{
++	struct mem_range_result *result = container_of(rcu, struct mem_range_result, rcu);
++	struct mem_cgroup *memcg, *old_memcg;
++
++	memcg = result->memcg;
++	old_memcg = set_active_memcg(memcg);
++	if (likely(!!result->buf)) {
++		if (result->kmalloc)
++			kfree(result->buf);
++		else
++			vfree(result->buf);
++	}
++	kfree(result);
++	set_active_memcg(old_memcg);
++	mem_cgroup_put(memcg);
++}
++
++static void __mem_range_result_put(struct kref *kref)
++{
++	struct mem_range_result *result = container_of(kref, struct mem_range_result, ref);
++
++	call_srcu(&srcu, &result->rcu, __mem_range_result_free);
++}
++
++int mem_range_result_put(struct mem_range_result *result)
++{
++
++	if (!result) {
++		pr_err("%s, receive invalid range\n", __func__);
++		return -EINVAL;
++	}
++
++	kref_put(&result->ref, __mem_range_result_put);
++	return 0;
++}
++
++__bpf_kfunc int bpf_mem_range_result_put(struct mem_range_result *result)
++{
++	return mem_range_result_put(result);
++}
++
++/*
++ * Cache the content in @buf into kernel
++ */
++__bpf_kfunc int bpf_copy_to_kernel(const char *name, char *buf, int size)
++{
++	struct mem_range_result *range;
++	struct mem_cgroup *memcg, *old_memcg;
++	struct str_listener *item;
++	resource_handler handler;
++	bool kmalloc;
++	char *kbuf;
++	int id, ret = 0;
++
++	id = srcu_read_lock(&srcu);
++	item = find_listener(name);
++	if (!item) {
++		srcu_read_unlock(&srcu, id);
++		return -EINVAL;
++	}
++	kmalloc = item->kmalloc;
++	handler = item->handler;
++	srcu_read_unlock(&srcu, id);
++	memcg = get_mem_cgroup_from_current();
++	old_memcg = set_active_memcg(memcg);
++	range = kmalloc(sizeof(struct mem_range_result), GFP_KERNEL);
++	if (!range) {
++		pr_err("fail to allocate mem_range_result\n");
++		ret = -ENOMEM;
++		goto err;
++	}
++
++	kref_init(&range->ref);
++	if (item->kmalloc)
++		kbuf = kmalloc(size, GFP_KERNEL | __GFP_ACCOUNT);
++	else
++		kbuf = __vmalloc(size, GFP_KERNEL | __GFP_ACCOUNT);
++	if (!kbuf) {
++		kfree(range);
++		ret = -ENOMEM;
++		goto err;
++	}
++	ret = copy_from_kernel_nofault(kbuf, buf, size);
++	if (unlikely(ret < 0)) {
++		kfree(range);
++		if (item->kmalloc)
++			kfree(kbuf);
++		else
++			vfree(kbuf);
++		ret = -EINVAL;
++		goto err;
++	}
++	range->kmalloc = item->kmalloc;
++	range->buf = kbuf;
++	range->buf_sz = size;
++	range->data_sz = size;
++	range->memcg = memcg;
++	mem_cgroup_tryget(memcg);
++	range->status = 0;
++	ret = handler(name, range);
++	mem_range_result_put(range);
++err:
++	set_active_memcg(old_memcg);
++	mem_cgroup_put(memcg);
++	return ret;
++}
++
++int register_carrier_listener(struct carrier_listener *listener)
++{
++	struct str_listener *item;
++	unsigned int hash;
++	int ret;
++
++	if (!listener->name)
++		return -EINVAL;
++	item = kmalloc(sizeof(*item), GFP_KERNEL);
++	if (!item)
++		return -ENOMEM;
++	item->str = kstrdup(listener->name, GFP_KERNEL);
++	if (!item->str) {
++		kfree(item);
++		return -ENOMEM;
++	}
++	item->handler = listener->handler;
++	item->kmalloc = listener->kmalloc;
++	hash = jhash(item->str, strlen(item->str), 0);
++	mutex_lock(&str_listeners_mutex);
++	if (!find_listener(item->str)) {
++		hash_add(str_listeners, &item->node, hash);
++	} else {
++		kfree(item->str);
++		kfree(item);
++		ret = -EBUSY;
++	}
++	mutex_unlock(&str_listeners_mutex);
++
++	return ret;
++}
++EXPORT_SYMBOL(register_carrier_listener);
++
++int unregister_carrier_listener(char *str)
++{
++	struct str_listener *item;
++	int ret = 0;
++
++	mutex_lock(&str_listeners_mutex);
++	item = find_listener(str);
++	if (!!item)
++		hash_del(&item->node);
++	else
++		ret = -EINVAL;
++	mutex_unlock(&str_listeners_mutex);
++
++	return ret;
++}
++EXPORT_SYMBOL(unregister_carrier_listener);
++
 -- 
 2.49.0
 
