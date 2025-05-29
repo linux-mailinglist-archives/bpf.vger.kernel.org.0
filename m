@@ -1,159 +1,145 @@
-Return-Path: <bpf+bounces-59331-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59332-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49E6AAC84D2
-	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 01:09:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C269AC84D6
+	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 01:10:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3355175A32
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 23:09:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 099CC1BC45F7
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 23:10:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8866321D3D2;
-	Thu, 29 May 2025 23:09:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53C0C23278D;
+	Thu, 29 May 2025 23:10:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0AYzsTex"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="DP7urY4K"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com [209.85.217.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CCE821D3D9
-	for <bpf@vger.kernel.org>; Thu, 29 May 2025 23:09:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05260610B;
+	Thu, 29 May 2025 23:10:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748560167; cv=none; b=OMjRd0MWd8R1i48RntIJNIlKij2m4hFEGNYTJNFukOpk50UpSbm3BUpFgvrYnYFiIA1dgafMsbe3Lw5SpDZXdW9RHNMFUtrMSj76wVsl7eaxBEa04HRgY8HCzriKfNDIBzgcxWsEDx20bUxYw4J3Rx6ElFrJPubLJBMu5Vve1SI=
+	t=1748560225; cv=none; b=tevuhXbFwepYPzL21zU5Z6zymNw4yKnAXJsZjj60i25yqX+J86TFe+diub1M0tpMvc4wxV+FwMKloQQukF2ADa/tL+B2NRT+L/JPWxPm3+zZnDeULkVb+bfZsPsBxPocM9FDlyeVnoZAtAui0Cz2LvckHDK/XqpFkQRjkPJmkqs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748560167; c=relaxed/simple;
-	bh=GajOjrak31hz+z4NbE6saOyWhweppL99J6iTMsMMSE8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gOQRfapczI+FWaJlxkZM/bpte2PN33ZUfJPTnKacYUW3DakauMG7AvNBr00lnuTLa6+u+j9OBMcEOzJn9vugUeLd72dvMbWj4W2xkJ1046VMsuAEWyBuQyTB6zBbqkMygyqyTDx/oShAr/58G8T6Jv7zAsWv60S/7bnsoB8cQK8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0AYzsTex; arc=none smtp.client-ip=209.85.217.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vs1-f50.google.com with SMTP id ada2fe7eead31-4e59012c7eeso923023137.1
-        for <bpf@vger.kernel.org>; Thu, 29 May 2025 16:09:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1748560164; x=1749164964; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GajOjrak31hz+z4NbE6saOyWhweppL99J6iTMsMMSE8=;
-        b=0AYzsTexr72+7FI7h2T4HR1aJm2NeGVt+RYnaJ3QGYoSj4eK+OHPa22V+iEEut6hC1
-         QzTZ1oY6z7De8+7QWkLXpjVYcHmMwX3R6J47+hVxMl96wdZUJ+AU+lmgDqWOJbwCKpHc
-         8RVZ86EVWc2oXsg3C+za0hHfCpObsWvtIgcmgx7tb736tygMhxb7Hkvz2S+lBjC0EhhF
-         dbqXLrLQCNrWT5ms1UoQqvyKseORHKm1JeTGchv+RTLmV5nsGqYr9/Gy+KMP4qvw6h7F
-         bWGrxwUBXA1bgIEls/gfEoWSP/4uhtlepeuCvBh8kXWaSxOJpjUYM1pVUpkmffI5Xsos
-         rWrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748560164; x=1749164964;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GajOjrak31hz+z4NbE6saOyWhweppL99J6iTMsMMSE8=;
-        b=ii/MXwwYUN29YUaQHRnN4OjjWiWSEV8hB0kM2meN8whDyBT962Ut3BO2rQxeinzQqO
-         9zEmY44zClS3Jgel4QkizoHxLzfhbHoS43u+VhHRlLvdRdK8ZBZAq7zB7X92tONffmZE
-         zfRwtEHAjTfr1NwIFAK+leq3tkEMUGZH8ocJFjgN9CplqHfdrVgONUmIwiw0KG1dAjMT
-         OQPtVSq4NM++asWu97uD0YT1m2ZZ+ZcmIHSjEEBYoEz1psZyF49IhTglGkBhqsq1KukJ
-         p2wA44DdHqMQfUt3jNHkifSwVdaKvRtp6eExuIQp4o8TMWyfcB9jLK5qvqOdW5kzWX7y
-         2+9g==
-X-Forwarded-Encrypted: i=1; AJvYcCUOGt2dzWeFJvsSpyHMhghH1QwYK+Y2a9RVUttOhv7EFIqdPgE8LxiAjfIpvutOSnFl3vc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyyN6LgtzUWoAMPYFXB2AobUurXPICRKRkqNthAJHARl+MW2zcH
-	82uElkbVgokOX0kV/Xrj7s8Cwy/6MjVP4aKp7B1NRoJJfYX71JX8DyfFmv6c1YEI5rVVqVGh+NC
-	2MQAa7uRRA2dsu+vjSJZ10w86fv9dAlHNFz340pRd
-X-Gm-Gg: ASbGnctthDBxuiUzPG8u5fdUI7fwdt+gt2N4UIfl9QHp4kFfBPg0XKD8dcYOTNWC2wJ
-	W1gz6J8myrpfpBAzA1s4O9m7jvd3BJWhSZJ9Dk+bpy0RrNmdI7h6LJsTsyVpwokpIl2iRCiJdjT
-	e4EEwr2zPejyhtukd6cE/KGx+uF1/sqCNx83a71jrSTUm5mA23IgJ31ASh4jpCxrSaozQRjoVqi
-	g==
-X-Google-Smtp-Source: AGHT+IG6BQA0I630mRZfaOvWCCUcIMdbtiue7trw5etAjQ+fq0zA+UtWqiz/UuEf1zqxPU9NUikhqGT7EEBX4W6fxqU=
-X-Received: by 2002:a05:6102:38c8:b0:4e4:f503:6675 with SMTP id
- ada2fe7eead31-4e6e41a8063mr1697324137.18.1748560163881; Thu, 29 May 2025
- 16:09:23 -0700 (PDT)
+	s=arc-20240116; t=1748560225; c=relaxed/simple;
+	bh=uFjp7SU8YEP82YOaIJFGFLpBgle1lTi5iLyd36oc6mg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=V7rvmH5grvi9KcGqgE9vYwY34wdyZAjaChomu9Pw19V5OQLiwd1jnwrb8sU/GQV73rCHTmWgyuNOsJhWmo+IyPs4UXzZKqzi5WxY2JCWaeZWvL8XWW4KVwpof3M0cljFuDXXqVKeK/gEa3oxZkc5PI3H1JiYM1tBDL4TaU0zMmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=DP7urY4K; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=M2hE6XVOgu6lYN3x94mg3U8DaOZrftu1a2UwXyrz0Og=; b=DP7urY4K8Y5glUGrUOP+xuF0ls
+	IW5g9yEzsYP86aiY11HyMIhVY5yEpo9ZoCtyVC3YD554vHM5GcJkAazctaB9rk4F/VgO2cFPf6ale
+	09bdHWBRWxHWQWFtfzAFR+mjmjNehq2d+Fp//kVgyirE1mNGdcvdW4TbDNEPlux51ww2YXmcMqz0F
+	vO0YStNXrni6a8zD1XGkO0VzXz0r8+tGv/kv0UdFTKqHxaDUom6hyFkhk2AOD0hMvAjGgnZBXBwex
+	eCN5b+97ckPGxIIipHNWt2Bzd6g37v2eXBm3p57ZJzXE6vREgaZeAoV49XvgGVMbtUpA8l0TRtOLv
+	VSZaYefw==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uKmOA-00000004ZQe-34xh;
+	Thu, 29 May 2025 23:10:18 +0000
+Date: Fri, 30 May 2025 00:10:18 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Song Liu <song@kernel.org>
+Cc: Jan Kara <jack@suse.cz>, bpf@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-security-module@vger.kernel.org, kernel-team@meta.com,
+	andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
+	daniel@iogearbox.net, martin.lau@linux.dev, brauner@kernel.org,
+	kpsingh@kernel.org, mattbobrowski@google.com, amir73il@gmail.com,
+	repnop@google.com, jlayton@kernel.org, josef@toxicpanda.com,
+	mic@digikod.net, gnoack@google.com
+Subject: Re: [PATCH bpf-next 3/4] bpf: Introduce path iterator
+Message-ID: <20250529231018.GP2023217@ZenIV>
+References: <yti2dilasy7b3tu6iin5pugkn6oevdswrwoy6gorudb7x2cqhh@nqb3gcyxg4by>
+ <CAPhsuW4tg+bXU41fhAaS0n74d_a_KCFGvy_vkQOj7v4VLie2wg@mail.gmail.com>
+ <20250529173810.GJ2023217@ZenIV>
+ <CAPhsuW5pAvH3E1dVa85Kx2QsUSheSLobEMg-b0mOdtyfm7s4ug@mail.gmail.com>
+ <20250529183536.GL2023217@ZenIV>
+ <CAPhsuW7LFP0ddFg_oqkDyO9s7DZX89GFQBOnX=4n5mV=VCP5oA@mail.gmail.com>
+ <20250529201551.GN2023217@ZenIV>
+ <CAPhsuW5DP1x_wyzT1aYjpj3hxUs4uB8vdK9iEp=+i46QLotiOg@mail.gmail.com>
+ <20250529214544.GO2023217@ZenIV>
+ <CAPhsuW5oXZVEaMwNpSF74O7wZ_f2Qr_44pu9L4_=LBwdW5T9=w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250521222725.3895192-1-blakejones@google.com>
- <20250521222725.3895192-4-blakejones@google.com> <CAP-5=fWZG-N8ZzRh6h1qRuEgFbxTCyEwGu1sZZy+YmnSeGgSSw@mail.gmail.com>
-In-Reply-To: <CAP-5=fWZG-N8ZzRh6h1qRuEgFbxTCyEwGu1sZZy+YmnSeGgSSw@mail.gmail.com>
-From: Blake Jones <blakejones@google.com>
-Date: Thu, 29 May 2025 16:09:13 -0700
-X-Gm-Features: AX0GCFuGir3GW6UHq3oIxIPaTP0vr6jrzzbbxjveLO3-Hr0ZfzoynVlNv6aTEO4
-Message-ID: <CAP_z_Ch2SKwVcSV7ffV1Lbp=6TuKLyofSs1gpfBPMf6mV9-wHA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] perf: collect BPF metadata from new programs, and
- display the new event
-To: Ian Rogers <irogers@google.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	Chun-Tse Shao <ctshao@google.com>, Zhongqiu Han <quic_zhonhan@quicinc.com>, 
-	James Clark <james.clark@linaro.org>, Charlie Jenkins <charlie@rivosinc.com>, 
-	Andi Kleen <ak@linux.intel.com>, Dmitry Vyukov <dvyukov@google.com>, Leo Yan <leo.yan@arm.com>, 
-	Yujie Liu <yujie.liu@intel.com>, Graham Woodward <graham.woodward@arm.com>, 
-	Yicong Yang <yangyicong@hisilicon.com>, Ben Gainey <ben.gainey@arm.com>, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPhsuW5oXZVEaMwNpSF74O7wZ_f2Qr_44pu9L4_=LBwdW5T9=w@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-Hi Ian,
+On Thu, May 29, 2025 at 03:13:10PM -0700, Song Liu wrote:
 
-Thanks for your comments!
+> Is it an issue if we only hold a reference to a MNT_LOCKED mount for
+> short period of time? "Short period" means it may get interrupted, page
+> faults, or wait for an IO (read xattr), but it won't hold a reference to the
+> mount and sleep indefinitely.
 
-On Thu, May 29, 2025 at 11:12=E2=80=AFAM Ian Rogers <irogers@google.com> wr=
-ote:
-> On Wed, May 21, 2025 at 3:27=E2=80=AFPM Blake Jones <blakejones@google.co=
-m> wrote:
-> > diff --git a/tools/perf/util/bpf_skel/sample_filter.bpf.c b/tools/perf/=
-util/bpf_skel/sample_filter.bpf.c
-> > [...]
-> > +// This is used by tests/shell/record_bpf_metadata.sh
-> > +// to verify that BPF metadata generation works.
-> > +const int bpf_metadata_test_value SEC(".rodata") =3D 42;
->
-> This is a bit random.
+MNT_LOCKED mount itself is not a problem.  What shouldn't be done is
+looking around in the mountpoint it covers.  It depends upon the things
+you are going to do with that, but it's very easy to get an infoleak
+that way.
 
-Yeah, that's fair. I added it because it was a straightforward way to relia=
-bly
-get a known value that I could observe from tests/shell/test_bpf_metadata.s=
-h.
+> > OTOH, there's a good cause for moving some of the flags, MNT_LOCKED
+> > included, out of ->mnt_flags and into a separate field in struct mount.
+> > However, that would conflict with any code using that to deal with
+> > your iterator safely.
+> >
+> > What's more, AFAICS in case of a stack of mounts each covering the root
+> > of parent mount, you stop in each of those.  The trouble is, umount(2)
+> > propagation logics assumes that intermediate mounts can be pulled out of
+> > such stack without causing trouble.  For pathname resolution that is
+> > true; it goes through the entire stack atomically wrt that stuff.
+> > For your API that's not the case; somebody who has no idea about an
+> > intermediate mount being there might get caught on it while it's getting
+> > pulled from the stack.
+> >
+> > What exactly do you need around the mountpoint crossing?
+> 
+> I thought about skipping intermediate mounts (that are hidden by
+> other mounts). AFAICT, not skipping them will not cause any issue.
 
-> For the non-BPF C code we have a build generated
-> PERF-VERSION-FILE that contains something like `#define PERF_VERSION
-> "6.15.rc7.ge450e74276d2"`. I wonder having something like
-]> [...]
-> would be more useful/meaningful. Perhaps the build could inject the
-> variable to avoid duplicating it all the BPF skeletons.
+It can.  Suppose e.g. that /mnt gets propagation from another namespace,
+but not the other way round and you mount something on /mnt.
 
-I could do this if you'd like. It would make it harder for my test to check
-that it was reporting the right value, because the PERF-VERSION-FILE define=
-s
-PERF_VERSION in a way that's useful for C programs but not shell scripts.
-I'd just have the test check that it was reporting some string (maybe one
-with at least one dot in it, if I can stably make that assumption). WDYT?
+Later, in that another namespace, somebody mounts something on wherever
+your /mnt gets propagation to.  A copy will be propagated _between_
+your /mnt and whatever you've mounted on top of it; it will be entirely
+invisible until you umount your /mnt.  At that point the propagated
+copy will show up there, same as if it had appeared just after your
+umount.  Prior to that it's entirely invisible.  If its original
+counterpart in another namespace gets unmounted first, the copy will
+be quietly pulled out.
 
-> nit: I wonder for testing it would be interesting to have 0 and >1
-> metadata values tested too. We may want to have test programs
-> explicitly for that, in tools/perf/tests.
+Note that choose_mountpoint_rcu() callers (including choose_mountpoint())
+will have mount_lock seqcount sampled before the traversal _and_ recheck
+it after having reached the bottom of stack.  IOW, if you traverse ..
+on the way to root, you won't get caught on the sucker being pulled out.
 
-My testing right now depends pretty heavily on the fact that perf will load
-sample_filter.bpf.o for me; this seems much better than trying to load a
-BPF program manually from a test.
+Your iterator, OTOH, would stop in that intermediate mount - and get
+an unpleasant surprise when it comes back to do the next step (towards
+/mnt on root filesystem, that is) and finds that path->mnt points
+to something that is detached from everything - no way to get from
+it any further.  That - despite the fact that location you've started
+from is still mounted, still has the same pathname, etc. and nothing
+had been disrupted for it.
 
-If I could find other perf invocations that would load other BPF programs
-automatically, I could potentially test the "0 metadata" and ">1 metadata"
-cases. That would involve more BPF-program-specific modifications, though,
-which would be closer to the thing you objected to above. So to me this
-doesn't seem worth the effort.
+And yes, landlock has a narrow race in the matching place.  Needs to
+be fixed.  At least it does ignore those as far as any decisions are
+concerned...
 
-Blake
+Note, BTW, that it might be better off by doing that similar to
+d_path.c - without arseloads of dget_parent/dput et.al.; not sure
+how feasible it is, but if everything in it can be done under
+rcu_read_lock(), that's something to look into.
 
