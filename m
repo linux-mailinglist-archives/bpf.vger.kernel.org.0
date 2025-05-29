@@ -1,122 +1,133 @@
-Return-Path: <bpf+bounces-59294-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59295-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7260AAC7FEC
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 16:57:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3748EAC8054
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 17:33:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5091167DC7
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 14:57:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 885469E35E3
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 15:32:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6C8E21CC64;
-	Thu, 29 May 2025 14:57:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 874A422D4E2;
+	Thu, 29 May 2025 15:32:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SKqHj12B"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="dEK26zK9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f65.google.com (mail-ej1-f65.google.com [209.85.218.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DED2839FD9
-	for <bpf@vger.kernel.org>; Thu, 29 May 2025 14:57:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.65
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91AD6193062;
+	Thu, 29 May 2025 15:32:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748530667; cv=none; b=qE8s9MVwmh9L+pKRTGZjZVMAbHAky4/jKukZ+QekH+y/LYm8QR8CkArCugVi8u0fvxI4Iihp5DLj0dpFUOwknk2DuIHdydoTUDZEtV2gx2cS8GrAjPQmImct/Imv6P3bHw8180bfMzOQfWpc6zGLIT1/oU1zZM5ikvciBhzh0Pk=
+	t=1748532772; cv=none; b=a1c4Kb6QC6CTAgdVooNq1dV74V4se7+bql22wF4MtlDoZCqeoxZJJxzJLr3xXq5LqWvDUjAKriqEV7U/zB1dO83c6H0eiReQa6qLsDPkIU9zEbp+2O/rKd4jz1ysIbnc8uFrBkQpg8AFOvJWVym/PSL91fsBYf05lhXWWntoE88=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748530667; c=relaxed/simple;
-	bh=psfZLHeyREHCVQegkY7Zsa7aT/U9kQb26jNSQ0iTYzQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DK2Z3ndCiBIi7CVz7a8ZSUXQodjc1Oi1SSCYaAKC8CH8bw/lCHtGDok1JC3Rm+fSuIqutXBz6eayrTTpyAUIcCs7S5W7GzsHAKgCMv8avUwx3eDp04bCKuI9waevqAnuqiYzm7pTn1BQ850OdvL+RuxO8pj9bOQM5tCBmUJf6g8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SKqHj12B; arc=none smtp.client-ip=209.85.218.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f65.google.com with SMTP id a640c23a62f3a-ad883afdf0cso175371166b.0
-        for <bpf@vger.kernel.org>; Thu, 29 May 2025 07:57:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748530664; x=1749135464; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=AdqwIO7K6IALlSgcSE/H7dgnTcHvkA3eSwPXu7IMbgw=;
-        b=SKqHj12B3D2UsYJdfXcMEPwrX4kxNs+NEmc6q8yAKZCsG5NOAgC6TZqaPMpARdWUrS
-         5U1VIFxm6xiGp7ZW0nBh3MV3JV72Itf/64LYz0Le08B1A7I3/y83qNFSsK5z/dpHWxmv
-         nvA3HqOsx/yofD6mgZEUVBqr/gQSGmmxYbTvuIpaSYqWzcEW1wppPKu3nI5RzJnP1aNt
-         VwLp4hQQxp1Ja6dJEqSwxKQAEKg3PfqRHuhgOh4yimUneJVfryLV0lD/leDud7oNoIeK
-         kXP0PU+ULX+JwCmjqnB4YUNUNB7V34r9EWoI7AyPKJG1OmSaoBdkxQ/XJyyhrC8pCr36
-         xsZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748530664; x=1749135464;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AdqwIO7K6IALlSgcSE/H7dgnTcHvkA3eSwPXu7IMbgw=;
-        b=w3SANo8HiWhd+E9YbsOPdLp8HmM6WWjYj81KUucZFrCnGIizaQonbMqpaJM3R8Msu3
-         YkqSSAl2j7jCFTxI/rnRzk1+fEyjmg2FEqFtChIxvZrXeajA+h6d4KjQKC1vQnYOuFJ3
-         wVKFKNHocrR/9FKJLBEL1t7qLsWBZ6KvKzRYdKiuhcIzWYP78PTx04KJ0qM4xDWZJx36
-         5Dq8DIciQzDp3LaQWn/vREqJdqDv3gWZBRt8LB95lnob9A9RDlI34OF76/6Mij+2RkOv
-         +m4GxjzpBdkNq8kfRU+0M0+f4+wLKPEiyR2m9s0nuuoVMR6kg1v4dZxSZJPSMliBaRR3
-         979g==
-X-Gm-Message-State: AOJu0YyFBKs2/VGi9QF8GXgg/SnIMbTnKi8TLZltqdyZht8PnNb+N2cl
-	IcI86WBJg10/Tlh9fqBxGox9MTykUa49sz806tRbXjRuvRAuhvfhjYcgT7B+iX5ci+x9JTELktL
-	LVRw5xShX4pziaWDY/Rj3CQeJrfs6hWs=
-X-Gm-Gg: ASbGncsIgQMk2GydrVyYgzjyEUXUhK1nZ+wX6mwUOT1/5iXD334i3s9EpRHeYJ3sA+7
-	377wBfIpUQjXxI7Qp5bYBKTQxKFG96YqSrjgWY5vwgHflxxc8mrP+LZzqFcA/EQ0qJ1Mkdzaeg/
-	VL/FVn/98yag5/1QTYJPGmYpKTfAjLnbWm+5NT77baU618UOVKx9QBgo6WHV5PYGDoOGo=
-X-Google-Smtp-Source: AGHT+IFB3LG3YTb+pYGMMX/aif8T7yR7bvKEYAZWJbeifhQMf1ObJDUEfPAG5BpgYt18bRCtZCU8B2vBNBOGMnNYnW4=
-X-Received: by 2002:a17:907:7245:b0:ad8:9466:3344 with SMTP id
- a640c23a62f3a-ad894663456mr1028555266b.43.1748530663916; Thu, 29 May 2025
- 07:57:43 -0700 (PDT)
+	s=arc-20240116; t=1748532772; c=relaxed/simple;
+	bh=GzoA6uvTo4t9PdtiyY4JFANz807VCS4EaCaegKk/xqU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=kaXWEQgW9D2cnEgX+FkwGjd/9GayLZ/bkVw5Fm+Bu8onwnPSuz+c7jof5plnmDMNhQo3MTYk4Tt8bcxaJQTBEoB/E59lmx6L6CwkIFlJgK5suqk24BwXk0d/MC2tKqtF4nmKFT7CmGHhLog6v4TtOIiR9mna1GGJdPRtQzm2pzQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=dEK26zK9; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from narnia (unknown [40.78.13.173])
+	by linux.microsoft.com (Postfix) with ESMTPSA id D0CB1207861D;
+	Thu, 29 May 2025 08:32:44 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D0CB1207861D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1748532768;
+	bh=CVcXX0izB84lzZgI4QE93xD+b9nu6pG8yG3Y1vkIp/4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=dEK26zK9pRZZcIxz/pLWp9R4tr/wue5TYXgnS4OULTipYZlZ42H7056RrD0GTzsMo
+	 dTGT1ZmDBvivP/d3g18JAE0PJUfTa+OGPUc32VHMH24qU5tyYKN9K4gvb+f9NZPz54
+	 huicmVqCVkiLyW+j3NBbRbIIDLzsSWGgWw7UtvqY=
+From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+To: Lukas Wunner <lukas@wunner.de>
+Cc: Paul Moore <paul@paul-moore.com>, jarkko@kernel.org,
+ zeffron@riotgames.com, xiyou.wangcong@gmail.com, kysrinivasan@gmail.com,
+ code@tyhicks.com, linux-security-module@vger.kernel.org,
+ roberto.sassu@huawei.com, James.Bottomley@hansenpartnership.com, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John
+ Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
+ <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, David Howells <dhowells@redhat.com>, Ignat Korchagin
+ <ignat@cloudflare.com>, Quentin Monnet <qmo@kernel.org>, Jason Xing
+ <kerneljasonxing@gmail.com>, Willem de Bruijn <willemb@google.com>, Anton
+ Protopopov <aspsk@isovalent.com>, Jordan Rome <linux@jordanrome.com>,
+ Martin Kelly <martin.kelly@crowdstrike.com>, Alan Maguire
+ <alan.maguire@oracle.com>, Matteo Croce <teknoraver@meta.com>,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ keyrings@vger.kernel.org, linux-crypto@vger.kernel.org
+Subject: Re: [PATCH 1/3] bpf: Add bpf_check_signature
+In-Reply-To: <aDgy1Wqn7WIFNXvb@wunner.de>
+References: <20250528215037.2081066-1-bboscaccy@linux.microsoft.com>
+ <20250528215037.2081066-2-bboscaccy@linux.microsoft.com>
+ <aDgy1Wqn7WIFNXvb@wunner.de>
+Date: Thu, 29 May 2025 08:32:43 -0700
+Message-ID: <87msave8kk.fsf@microsoft.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250524011849.681425-1-memxor@gmail.com> <20250524011849.681425-12-memxor@gmail.com>
- <m2wma01xaz.fsf@gmail.com>
-In-Reply-To: <m2wma01xaz.fsf@gmail.com>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Thu, 29 May 2025 16:57:06 +0200
-X-Gm-Features: AX0GCFtDeBWNJT5AQtb0VQ7c5jPndSnNY3hOpslNa9x0HU8zaG9HoUlT9eOfYIA
-Message-ID: <CAP01T77AyzvwW7p7BBpNTdzWCEU7PLFqMgN3xg1dG5ahz_K=Bg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 11/11] selftests/bpf: Add tests for prog streams
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Emil Tsalapatis <emil@etsalapatis.com>, 
-	Barret Rhoden <brho@google.com>, Matt Bobrowski <mattbobrowski@google.com>, kkd@meta.com, 
-	kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 
-On Wed, 28 May 2025 at 19:04, Eduard Zingerman <eddyz87@gmail.com> wrote:
->
-> Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
->
-> [...]
->
-> > +struct {
-> > +     int prog_off;
-> > +     const char *errstr;
-> > +} stream_error_arr[] = {
-> > +     {
-> > +             offsetof(struct stream, progs.stream_cond_break),
-> > +             "ERROR: Timeout detected for may_goto instruction",
-> > +     },
-> > +     {
-> > +             offsetof(struct stream, progs.stream_deadlock),
-> > +             "ERROR: AA or ABBA deadlock detected",
-> > +     },
-> > +};
->
-> Wild idea: instead of hand-coding this for each test, maybe add
-> __bpf_stderr, __bpf_stdout annotations to test_loader.c?
-> With intent for them to operate like __msg.
+Lukas Wunner <lukas@wunner.de> writes:
 
-Good idea. But we'll have to run the program, which is slightly
-different for each type.
-I guess I can just support tc, syscall etc. for now with some default
-setup to support this.
-
+> On Wed, May 28, 2025 at 02:49:03PM -0700, Blaise Boscaccy wrote:
+>> +	if (!attr->signature_maps_size) {
+>> +		sha256((u8 *)prog->insnsi, prog->len * sizeof(struct bpf_insn), (u8 *)&hash);
+>> +		err = verify_pkcs7_signature(hash, sizeof(hash), signature, attr->signature_size,
+>> +				     VERIFY_USE_SECONDARY_KEYRING,
+>> +				     VERIFYING_EBPF_SIGNATURE,
+>> +				     NULL, NULL);
 >
-> [...]
+> Has this ever been tested?
+>
+> It looks like it will always return -EINVAL because:
+>
+>   verify_pkcs7_signature()
+>     verify_pkcs7_message_sig()
+>       pkcs7_verify()
+>
+> ... pkcs7_verify() contains a switch statement which you're not
+> amending with a "case VERIFYING_EBPF_SIGNATURE" but which returns
+> -EINVAL in the "default" case.
+>
+
+Looks like I missed a commit when sending this patchset. Thanks for
+finding that. 
+
+> Aside from that, you may want to consider introducing a new ".ebpf"
+> keyring to allow adding trusted keys specifically for eBPF verification
+> without having to rely on the system keyring.
+>
+> Constraining oneself to sha256 doesn't seem future-proof.
+>
+
+Definitely not a bad idea, curious, how would you envision that looking
+from an UAPI perspective? 
+
+> Some minor style issues in the commit message caught my eye:
+>
+>> This introduces signature verification for eBPF programs inside of the
+>> bpf subsystem. Two signature validation schemes are included, one that
+>
+> Use imperative mood, avoid repetitive "This ...", e.g.
+> "Introduce signature verification of eBPF programs..."
+>
+>> The signature check is performed before the call to
+>> security_bpf_prog_load. This allows the LSM subsystem to be clued into
+>> the result of the signature check, whilst granting knowledge of the
+>> method and apparatus which was employed.
+>
+> "Perform the signature check before calling security_bpf_prog_load()
+> to allow..."
+>
+> Thanks,
+>
+> Lukas
 
