@@ -1,119 +1,153 @@
-Return-Path: <bpf+bounces-59321-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59322-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6E74AC82D1
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 21:36:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 891CEAC82DD
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 21:46:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6F8A4E23D8
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 19:36:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4AF61167FE9
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 19:46:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C212023278D;
-	Thu, 29 May 2025 19:36:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECA1E235067;
+	Thu, 29 May 2025 19:46:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="JZqa7Nym"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dhBbzPTk"
 X-Original-To: bpf@vger.kernel.org
-Received: from lamorak.hansenpartnership.com (lamorak.hansenpartnership.com [198.37.111.173])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ABB5647;
-	Thu, 29 May 2025 19:36:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.37.111.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FAE2E55B;
+	Thu, 29 May 2025 19:46:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748547382; cv=none; b=IOGLIZPDxeN2OV2XHl8bMiSGCEfyEYS+vP6ml5HH5sswzevLDJfyigq5kQB0yY0jZ+c52VS86DE657YjoXNow8uR1vA5/xIv6k+2ETfvbd0PyxIhbw8fSGWzjwNxmW/7DH4ejm4Y7y5TaafBbiMZs62TvzIsjHOIphL/eFu0WoQ=
+	t=1748547975; cv=none; b=PABMj9nxWZUg1oKlaeXVeXJMzORcnI6F6thhqXziJ3leQnZbcO+DPpjina5rAol+sq5kOBeLe0n866eXLQQp4woSdm+V1lL6GoFPlUaQ/0Js7iqJ2SvP5pe0nF3ot5N3Ph5h1zURBpNVgybLtBfRSmu00c1EUqubRu0OCBYJk8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748547382; c=relaxed/simple;
-	bh=2bUqagZGWI0lLzQPnI16/Y1D7mlNCDbhNLDo4Ngxzb8=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=GpPcENWcy+ZSLeOezdRz4q93OVyEKsKghrFW+1uERd1Up9QW/qramEXl+gMYFGEFtedAVMQiCAGhEh6b+flC3rs38QxoqyYsl+5YvtVbnRyM65gufc3/Sukh/3cn+eMLn+v/nSHUNoaysbD6SWb5KA9TUR2WH7Zosf7AuxqEiWE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=JZqa7Nym; arc=none smtp.client-ip=198.37.111.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1748547377;
-	bh=2bUqagZGWI0lLzQPnI16/Y1D7mlNCDbhNLDo4Ngxzb8=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=JZqa7Nymct4odN0PbiIgmCVu0kFP4r+DoNcOecx/unVxBNguc0MSMeAy7shDTv8DX
-	 s8avJ3N00SpntGPoNpLKeGmd2obyTdYIqOlqgMBB8GM3EMtKKnyF9PUV5bh/oP0vFX
-	 709F9oq/7E4+DZ0vyEKKV2D0/3lPwfuOG7xNtk88=
-Received: from [IPv6:2601:5c4:4302:c21::a774] (unknown [IPv6:2601:5c4:4302:c21::a774])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by lamorak.hansenpartnership.com (Postfix) with ESMTPSA id D55891C04CF;
-	Thu, 29 May 2025 15:36:15 -0400 (EDT)
-Message-ID: <6965225097f82e5db30928abc5aa316fa25b8fa0.camel@HansenPartnership.com>
-Subject: Re: [PATCH 1/3] bpf: Add bpf_check_signature
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: Lukas Wunner <lukas@wunner.de>, Blaise Boscaccy
-	 <bboscaccy@linux.microsoft.com>
-Cc: Paul Moore <paul@paul-moore.com>, jarkko@kernel.org,
- zeffron@riotgames.com,  xiyou.wangcong@gmail.com, kysrinivasan@gmail.com,
- code@tyhicks.com,  linux-security-module@vger.kernel.org,
- roberto.sassu@huawei.com, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
- <song@kernel.org>,  Yonghong Song <yonghong.song@linux.dev>, KP Singh
- <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,  Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, David Howells
- <dhowells@redhat.com>,  Ignat Korchagin <ignat@cloudflare.com>, Quentin
- Monnet <qmo@kernel.org>, Jason Xing <kerneljasonxing@gmail.com>,  Willem de
- Bruijn <willemb@google.com>, Anton Protopopov <aspsk@isovalent.com>, Jordan
- Rome <linux@jordanrome.com>,  Martin Kelly <martin.kelly@crowdstrike.com>,
- Alan Maguire <alan.maguire@oracle.com>, Matteo Croce <teknoraver@meta.com>,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
- keyrings@vger.kernel.org, linux-crypto@vger.kernel.org
-Date: Thu, 29 May 2025 15:36:14 -0400
-In-Reply-To: <aDi2JWk0jtbUpMhD@wunner.de>
-References: <20250528215037.2081066-1-bboscaccy@linux.microsoft.com>
-	 <20250528215037.2081066-2-bboscaccy@linux.microsoft.com>
-	 <aDgy1Wqn7WIFNXvb@wunner.de> <87msave8kk.fsf@microsoft.com>
-	 <aDi2JWk0jtbUpMhD@wunner.de>
-Autocrypt: addr=James.Bottomley@HansenPartnership.com;
- prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	s=arc-20240116; t=1748547975; c=relaxed/simple;
+	bh=PUrL8mn5uIdACfpE3eBmISpFl6piO91h/jKm7BYJGkM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=noZMPTc/IVqRdo0Giat9xwOcpl2pPBvrG5KxG+qLKVGrOo14wncsf1yM2l8JEMFid83NXfyJkYZ6oqc5OgE2Sk4o8zcTfYDXUqY3R3C/rvSVyHqZ9rKIHokNRznqM/6RR1ZhLObV8WXOsK8POTqZa+hUKiFuZMsfdtJNgPyR8aM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dhBbzPTk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDAADC4CEEE;
+	Thu, 29 May 2025 19:46:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1748547973;
+	bh=PUrL8mn5uIdACfpE3eBmISpFl6piO91h/jKm7BYJGkM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=dhBbzPTk0XNUJHO8ZLPLriWTxcCUcc5O8dTQXpUwAmMEvMYHsfSJ286+NfeZW0PXL
+	 3oMjxVc7eGl95Aimp9pT6Jd5NGj5Qswxf3SsAanW3NIz7ZoV2D/LbDGdYj/EQVAUIZ
+	 8N/bqFOYikEuwO/aKo3xUlZBMjN077MW4nF5H30fWj+D7hEytqDVNdBQoMIHTlfRfk
+	 TZQxR8zXJPDDAsoXU/gLuIdEyAYXD/fD2sfIHkoyBn0URWgxchLH5SBVwXWDfb9RyJ
+	 GJuJEsUUCJw+y4bRpZAsJ97vZak6ZLYgslGjZyjx4PqRVe6va1HWwhf9u8j43eH7+X
+	 mM1kqxqujFhgw==
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-4766631a6a4so14517261cf.2;
+        Thu, 29 May 2025 12:46:13 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVgUt1QuWBOb9xN47k0hTAmR1IL6IHYxq9iHRSIgnBnhNjFiuqjYrFP1dxFSEk2inHTh04aeDlEp3oUMqwy/TAxEQbJWmAc@vger.kernel.org, AJvYcCWUW7YRhMWgN4uytrK1oLYDpntZ42nYWF3gRxaUV0qiRrm/ED23MA2j807ksEWp0EYIvf8=@vger.kernel.org, AJvYcCWiN96DUizrRKR0vNEti/oZK6O4rXUft6BOImYAgLVSl6Px5d32yrRquInfJxE8Z9TcOT8uUzHujTD/t0sIcQ==@vger.kernel.org, AJvYcCXbOaadGxCPAt9hA71JVKfYw7pZCN74eq9+K449mI+5gJl1llVcsoCTFgyu5GFISkUA0hj6++ZoIjPRrk1J@vger.kernel.org
+X-Gm-Message-State: AOJu0YypOb+Wzp4NolGnCXlR8LHjckQDt3tpEbeyxuoD28Kvk4sn497E
+	SUXbMwJDh4C25sXOxK64Cc7Xm4jhhK0J2QqkukXHxHPavgqTFisRdZaBqnn29zhNR9QxDmeoS/2
+	WE303vL7izhMD4LFIOuSOJSQ2TXqQLUs=
+X-Google-Smtp-Source: AGHT+IFY6IU590S4bL+v5D6GhHAGoh9dEWG0xwhcHzGoy8EgWUJpivtPNMBxmodfjCBhvoBMJd3CfBXnBhJrzinrrSk=
+X-Received: by 2002:a05:622a:1cc4:b0:4a4:2f0b:d2e4 with SMTP id
+ d75a77b69052e-4a44004620cmr16325091cf.13.1748547972905; Thu, 29 May 2025
+ 12:46:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20250528222623.1373000-1-song@kernel.org> <20250528222623.1373000-4-song@kernel.org>
+ <20250528223724.GE2023217@ZenIV> <yti2dilasy7b3tu6iin5pugkn6oevdswrwoy6gorudb7x2cqhh@nqb3gcyxg4by>
+ <CAPhsuW4tg+bXU41fhAaS0n74d_a_KCFGvy_vkQOj7v4VLie2wg@mail.gmail.com>
+ <20250529173810.GJ2023217@ZenIV> <CAPhsuW5pAvH3E1dVa85Kx2QsUSheSLobEMg-b0mOdtyfm7s4ug@mail.gmail.com>
+ <20250529183536.GL2023217@ZenIV>
+In-Reply-To: <20250529183536.GL2023217@ZenIV>
+From: Song Liu <song@kernel.org>
+Date: Thu, 29 May 2025 12:46:00 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7LFP0ddFg_oqkDyO9s7DZX89GFQBOnX=4n5mV=VCP5oA@mail.gmail.com>
+X-Gm-Features: AX0GCFucBpIhJ0-QFxVRuTA9Yczw7uUI-QGrQG2G-J0sOZi2vyvwqTFuO6IWqmQ
+Message-ID: <CAPhsuW7LFP0ddFg_oqkDyO9s7DZX89GFQBOnX=4n5mV=VCP5oA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/4] bpf: Introduce path iterator
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Jan Kara <jack@suse.cz>, bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, brauner@kernel.org, 
+	kpsingh@kernel.org, mattbobrowski@google.com, amir73il@gmail.com, 
+	repnop@google.com, jlayton@kernel.org, josef@toxicpanda.com, mic@digikod.net, 
+	gnoack@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2025-05-29 at 21:31 +0200, Lukas Wunner wrote:
-> On Thu, May 29, 2025 at 08:32:43AM -0700, Blaise Boscaccy wrote:
-> > Lukas Wunner <lukas@wunner.de> writes:
-> > > Constraining oneself to sha256 doesn't seem future-proof.
-> >=20
-> > Definitely not a bad idea, curious, how would you envision that
-> > looking from an UAPI perspective?
->=20
-> If possible, extend the anonymous struct used by BPF_PROG_LOAD
-> command with an additional parameter to select the hash algorithm.
->=20
-> Alternatively, create a new command to set the hash algorithm for
-> subsequent BPF_PROG_LOAD commands.
+On Thu, May 29, 2025 at 11:35=E2=80=AFAM Al Viro <viro@zeniv.linux.org.uk> =
+wrote:
+>
+> On Thu, May 29, 2025 at 11:00:51AM -0700, Song Liu wrote:
+> > On Thu, May 29, 2025 at 10:38=E2=80=AFAM Al Viro <viro@zeniv.linux.org.=
+uk> wrote:
+> > >
+> > > On Thu, May 29, 2025 at 09:53:21AM -0700, Song Liu wrote:
+> > >
+> > > > Current version of path iterator only supports walking towards the =
+root,
+> > > > with helper path_parent. But the path iterator API can be extended
+> > > > to cover other use cases.
+> > >
+> > > Clarify the last part, please - call me paranoid, but that sounds lik=
+e
+> > > a beginning of something that really should be discussed upfront.
+> >
+> > We don't have any plan with future use cases yet. The only example
+> > I mentioned in the original version of the commit log is "walk the
+> > mount tree". IOW, it is similar to the current iterator, but skips non
+> > mount point iterations.
+> >
+> > Since we call it "path iterator", it might make sense to add ways to
+> > iterate the VFS tree in different patterns. For example, we may
+> > have an iterator that iterates all files within a directory. Again, we
+> > don't see urgent use cases other than the current "walk to root"
+> > iterator.
+>
+> What kinds of locking environments can that end up used in?
 
-Both of those look like less than good ideas.  There's not much point
-having a hash that's different from the hash used in the signature
-(which is currently sha256), so we could simply extract the hash from
-the PKCS7 bundle and use that.  We can also get bonus points this way
-for not modifying any internal APIs ...
+This will start with a referenced "struct path", in a sleepable context.
 
-Regards,
+> The reason why I'm getting more and more unhappy with this thing is
+> that it sounds like a massive headache for any correctness analysis in
+> VFS work.
+>
+> Going straight to the root starting at a point you already have pinned
+> is relatively mild - you can't do path_put() in any blocking contexts,
+> obviously, and you'd better be careful with what you are doing on
+> mountpoint traversal (e.g. combined with "now let's open that directory
+> and read it" it's an instant "hell, no" - you could easily bypass MNT_LOC=
+KED
+> restrictions that way), but if there's a threat of that getting augmented
+> with other things (iterating through all files in directory would be
+> a very different beast from the locking POV, if nothing else)... ouch.
 
-James
+We are fully aware that a "files in the directory" iterator may need
+different locking. This is the exact reason we want to provide this
+logic as an iterator in the kernel: to get locking/etc correct in the
+first place, so that the users can avoid making mistakes.
 
+> Basically, you are creating a spot we will need to watch very carefully
+> from now on.  And the rationale appears to include "so that we could
+> expose that to random out-of-tree code that decided to call itself LSM",
+> so pardon me for being rather suspicious about the details.
+
+No matter what we call them, these use cases exist, out-of-tree or
+in-tree, as BPF programs or kernel modules. We are learning from
+Landlock here, simply because it is probably the best way to achieve
+this.
+
+This particular set introduces a safer API than combinations of
+existing APIs (follow_up(), dget_parent(), etc.). It guarantees all
+the memory accesses are to properly referenced kernel objects;
+it also guaranteed all the acquired references are released.
+Therefore, I don't see it adds risks in any sense.
+
+Thanks,
+Song
 
