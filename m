@@ -1,62 +1,62 @@
-Return-Path: <bpf+bounces-59264-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59265-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D0E5AC7714
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 06:19:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C741AC7715
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 06:19:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AA1DA250F5
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 04:19:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 226851C020D2
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 04:20:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF8E724EAB1;
-	Thu, 29 May 2025 04:19:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59B4E2505BA;
+	Thu, 29 May 2025 04:19:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Wm9dZLtB"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aacdB8I1"
 X-Original-To: bpf@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 932F0EEAA
-	for <bpf@vger.kernel.org>; Thu, 29 May 2025 04:19:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 439AE1E5B6F
+	for <bpf@vger.kernel.org>; Thu, 29 May 2025 04:19:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748492366; cv=none; b=R2dlK+1F96GIE/YehU0YSNARLD1q927+sSBIH34axtDmzV+pAR0wF+yjntq04egUWWMx9+vM0Ry1vMLVZpXhXxjSyCpxm2dn206CxT22P3jVyoKo91luDIf5GZY0ezKxfKLKuKjWEzqwBgwZ5w3yICuEv5BLpBcKJgQv5Xn9DXY=
+	t=1748492379; cv=none; b=QBTSakO62o8DWn9Zsi3SEBJv8z1XA6CdZX7fZoU934Nqf3syXP1iKNC7ItteDAgr9gAJSSfUIs5GSyYHnbowBBnxfdy6zHLCoHPhhby95VXxoJpTCJ40sLoR0y/2VzKHk7fGBXmYLtWoK0eJRJuqOSm/fYGEyMiAaTd6HPULShg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748492366; c=relaxed/simple;
-	bh=1UNEpynHFgSv5UFL1m587D9A3kwHBOqumSFm94pzW2M=;
+	s=arc-20240116; t=1748492379; c=relaxed/simple;
+	bh=W+DAQs7xPova2vXkwgw7V2VeWAVxyCPGQfp8hoRcFkg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=azQHCF1xrBLOOAdZD6RFYMIsUWaOWUmWEUR4IBdo0cvnPOXq+fbaOdG2ZDaStcR4u8I6s5YvfhpKaYjcJ1VE2ZOH21tb6fyHjO3/JwZyMLFCTViCWeBViAkufdWCHOXTR8AEm32pA+wgoAJWZtthtCWpzkl2hG55fzV6HpwU1Qg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Wm9dZLtB; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=V7MpP9ojLTQ2iwdvNOmjndkaTdQpjJN697My0B/9FEo/HS1z0wpFuAKnYsAYTwbpI6lWnE0bc7sqOOlVZ2EJVIL8gFtU4S9CsyD0Y/2u3G33M2lJhlXTbfX1L7QsmfWGJa6oIhBcCvJyGPxXnpNIspMPv4PIIgzVp/hBMPWlzXA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aacdB8I1; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1748492363;
+	s=mimecast20190719; t=1748492377;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GbMqCLbigtH8SYgz7AdYn6GOyuyyf11S46PIWrL2Yo4=;
-	b=Wm9dZLtBc8BaItdsGAbFy4YvsSS5WJs67XyTbXF/HnouAyz1eEInmPLL1bVr2j350DbOq/
-	A/d1KAwcr9uAOjd2bT8TKO6vSGstSexsJy64IXFE+WY+onfQYwEP8ZCr68xSPxNWRf2e0I
-	kwcsciUr+/JYvGujsS+XCqAyum7ryRI=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+	bh=MdWHT1perMY/ilaILk5jhZmkWKssh6zUyVvG2waTWcY=;
+	b=aacdB8I1PUwpF6J2c86+bwP2oNfBvYdPOZ5oX6pU+8kZEAxdbQWN9a5QVSURIAsL1UyEt/
+	jngRgGusrbmxBvU4149M+7npR5F2NiACXthmf2m8SjoKkOoGrXrQ2e9zOvzjPNGVdPg5gh
+	kqfn2969zO9rZemy7VGo8JigU5aOflU=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-26-_Y_3EDN0Mgye5xzjzC9SBA-1; Thu,
- 29 May 2025 00:19:17 -0400
-X-MC-Unique: _Y_3EDN0Mgye5xzjzC9SBA-1
-X-Mimecast-MFC-AGG-ID: _Y_3EDN0Mgye5xzjzC9SBA_1748492354
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-444-Tv4T9c1KMTWX4BB937_ruQ-1; Thu,
+ 29 May 2025 00:19:31 -0400
+X-MC-Unique: Tv4T9c1KMTWX4BB937_ruQ-1
+X-Mimecast-MFC-AGG-ID: Tv4T9c1KMTWX4BB937_ruQ_1748492368
 Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id A34DD18001EA;
-	Thu, 29 May 2025 04:19:14 +0000 (UTC)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 50B6F1956089;
+	Thu, 29 May 2025 04:19:28 +0000 (UTC)
 Received: from fedora.redhat.com (unknown [10.72.112.18])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id A643E18003FC;
-	Thu, 29 May 2025 04:19:01 +0000 (UTC)
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 70AB8180047F;
+	Thu, 29 May 2025 04:19:15 +0000 (UTC)
 From: Pingfan Liu <piliu@redhat.com>
 To: bpf@vger.kernel.org
 Cc: Pingfan Liu <piliu@redhat.com>,
@@ -86,9 +86,9 @@ Cc: Pingfan Liu <piliu@redhat.com>,
 	Stanislav Fomichev <sdf@fomichev.me>,
 	Hao Luo <haoluo@google.com>,
 	Jiri Olsa <jolsa@kernel.org>
-Subject: [PATCHv3 3/9] bpf: Introduce bpf_copy_to_kernel() to buffer the content from bpf-prog
-Date: Thu, 29 May 2025 12:17:38 +0800
-Message-ID: <20250529041744.16458-4-piliu@redhat.com>
+Subject: [PATCHv3 4/9] bpf: Introduce decompressor kfunc
+Date: Thu, 29 May 2025 12:17:39 +0800
+Message-ID: <20250529041744.16458-5-piliu@redhat.com>
 In-Reply-To: <20250529041744.16458-1-piliu@redhat.com>
 References: <20250529041744.16458-1-piliu@redhat.com>
 Precedence: bulk
@@ -100,15 +100,10 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 
-In the security kexec_file_load case, the buffer which holds the kernel
-image is invisible to the userspace.
-
-The common data flow in bpf scheme is from kernel to bpf-prog.  In the
-case of kexec_file_load, the kexec component needs to buffer the parsed
-result by bpf-prog (opposite the usual direction) to the next stage
-parsing. bpf_kexec_carrier() makes the opposite data flow possible. A
-bpf-prog can publish the parsed payload address to the kernel, and the
-latter can copy them for future use.
+This commit bridges the gap between bpf-prog and the kernel
+decompression routines. At present, only a global memory allocator is
+used for the decompression. Later, if needed, the decompress_fn's
+prototype can be changed to pass in a task related allocator.
 
 Signed-off-by: Pingfan Liu <piliu@redhat.com>
 Cc: Alexei Starovoitov <ast@kernel.org>
@@ -125,271 +120,144 @@ Cc: Hao Luo <haoluo@google.com>
 Cc: Jiri Olsa <jolsa@kernel.org>
 To: bpf@vger.kernel.org
 ---
- include/linux/bpf.h          |  23 +++++
- kernel/bpf/Makefile          |   2 +-
- kernel/bpf/helpers.c         |   2 +
- kernel/bpf/helpers_carrier.c | 194 +++++++++++++++++++++++++++++++++++
- 4 files changed, 220 insertions(+), 1 deletion(-)
- create mode 100644 kernel/bpf/helpers_carrier.c
+ kernel/bpf/helpers.c | 111 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 111 insertions(+)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 3f0cc89c0622c..104974a6d18cb 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -3568,4 +3568,27 @@ static inline bool bpf_is_subprog(const struct bpf_prog *prog)
- 	return prog->aux->func_idx != 0;
- }
- 
-+struct mem_range_result {
-+	struct kref ref;
-+	struct rcu_head rcu;
-+	char *buf;
-+	uint32_t buf_sz;
-+	uint32_t data_sz;
-+	/* kmalloc-ed or vmalloc-ed */
-+	bool kmalloc;
-+	int status;
-+	struct mem_cgroup *memcg;
-+};
-+int mem_range_result_put(struct mem_range_result *result);
-+
-+typedef int (*resource_handler)(const char *name, struct mem_range_result *r);
-+
-+struct carrier_listener {
-+	char *name;
-+	bool kmalloc;
-+	resource_handler handler;
-+};
-+
-+int register_carrier_listener(struct carrier_listener *listener);
-+int unregister_carrier_listener(char *str);
- #endif /* _LINUX_BPF_H */
-diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-index 70502f038b921..d1f1f50e23cc8 100644
---- a/kernel/bpf/Makefile
-+++ b/kernel/bpf/Makefile
-@@ -6,7 +6,7 @@ cflags-nogcse-$(CONFIG_X86)$(CONFIG_CC_IS_GCC) := -fno-gcse
- endif
- CFLAGS_core.o += -Wno-override-init $(cflags-nogcse-yy)
- 
--obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o log.o token.o
-+obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o helpers_carrier.o tnum.o log.o token.o
- obj-$(CONFIG_BPF_SYSCALL) += bpf_iter.o map_iter.o task_iter.o prog_iter.o link_iter.o
- obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list.o lpm_trie.o map_in_map.o bloom_filter.o
- obj-$(CONFIG_BPF_SYSCALL) += local_storage.o queue_stack_maps.o ringbuf.o
 diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index e3a2662f4e336..1f4284e58400b 100644
+index 1f4284e58400b..9748d6101d032 100644
 --- a/kernel/bpf/helpers.c
 +++ b/kernel/bpf/helpers.c
-@@ -3200,6 +3200,8 @@ BTF_KFUNCS_START(generic_btf_ids)
- #ifdef CONFIG_CRASH_DUMP
- BTF_ID_FLAGS(func, crash_kexec, KF_DESTRUCTIVE)
- #endif
-+BTF_ID_FLAGS(func, bpf_mem_range_result_put, KF_RELEASE)
-+BTF_ID_FLAGS(func, bpf_copy_to_kernel, KF_TRUSTED_ARGS | KF_SLEEPABLE)
- BTF_ID_FLAGS(func, bpf_obj_new_impl, KF_ACQUIRE | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_percpu_obj_new_impl, KF_ACQUIRE | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_obj_drop_impl, KF_RELEASE)
-diff --git a/kernel/bpf/helpers_carrier.c b/kernel/bpf/helpers_carrier.c
-new file mode 100644
-index 0000000000000..c4e45fdf0ebb8
---- /dev/null
-+++ b/kernel/bpf/helpers_carrier.c
-@@ -0,0 +1,194 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include <linux/bpf.h>
-+#include <linux/bpf-cgroup.h>
-+#include <linux/cgroup.h>
-+#include <linux/rcupdate.h>
-+#include <linux/hashtable.h>
-+#include <linux/jhash.h>
-+#include <linux/mutex.h>
-+#include <linux/kref.h>
-+#include <linux/vmalloc.h>
-+#include <linux/slab.h>
-+
-+
-+struct str_listener {
-+	struct hlist_node node;
-+	char *str;
-+	resource_handler handler;
-+	bool kmalloc;
-+};
-+
-+DEFINE_STATIC_SRCU(srcu);
-+static DEFINE_MUTEX(str_listeners_mutex);
-+static DEFINE_HASHTABLE(str_listeners, 8);
-+
-+static struct str_listener *find_listener(const char *str)
-+{
-+	struct str_listener *item;
-+	unsigned int hash = jhash(str, strlen(str), 0);
-+
-+	hash_for_each_possible(str_listeners, item, node, hash) {
-+		if (strcmp(item->str, str) == 0)
-+			return item;
-+	}
-+	return NULL;
-+}
-+
-+static void __mem_range_result_free(struct rcu_head *rcu)
-+{
-+	struct mem_range_result *result = container_of(rcu, struct mem_range_result, rcu);
-+	struct mem_cgroup *memcg, *old_memcg;
-+
-+	memcg = result->memcg;
-+	old_memcg = set_active_memcg(memcg);
-+	if (likely(!!result->buf)) {
-+		if (result->kmalloc)
-+			kfree(result->buf);
-+		else
-+			vfree(result->buf);
-+	}
-+	kfree(result);
-+	set_active_memcg(old_memcg);
-+	mem_cgroup_put(memcg);
-+}
-+
-+static void __mem_range_result_put(struct kref *kref)
-+{
-+	struct mem_range_result *result = container_of(kref, struct mem_range_result, ref);
-+
-+	call_srcu(&srcu, &result->rcu, __mem_range_result_free);
-+}
-+
-+int mem_range_result_put(struct mem_range_result *result)
-+{
-+
-+	if (!result) {
-+		pr_err("%s, receive invalid range\n", __func__);
-+		return -EINVAL;
-+	}
-+
-+	kref_put(&result->ref, __mem_range_result_put);
-+	return 0;
-+}
-+
-+__bpf_kfunc int bpf_mem_range_result_put(struct mem_range_result *result)
-+{
-+	return mem_range_result_put(result);
-+}
+@@ -23,6 +23,7 @@
+ #include <linux/btf_ids.h>
+ #include <linux/bpf_mem_alloc.h>
+ #include <linux/kasan.h>
++#include <linux/decompress/generic.h>
+ 
+ #include "../../lib/kstrtox.h"
+ 
+@@ -3194,12 +3195,122 @@ __bpf_kfunc void bpf_local_irq_restore(unsigned long *flags__irq_flag)
+ 	local_irq_restore(*flags__irq_flag);
+ }
+ 
++#define MAX_UNCOMPRESSED_BUF_SIZE	(1 << 28)
++/*
++ * At present, one global allocator for decompression. Later if needed, changing the
++ * prototype of decompress_fn to introduce each task's allocator.
++ */
++static char *output_buf;
++static char *output_cur;
++static DEFINE_MUTEX(output_buf_mutex);
 +
 +/*
-+ * Cache the content in @buf into kernel
++ * Copy the partial decompressed content in [buf, buf + len) to dst.
++ * If the dst size is beyond the capacity, return -1 to indicate the
++ * decompress method that something is wrong.
 + */
-+__bpf_kfunc int bpf_copy_to_kernel(const char *name, char *buf, int size)
++static long flush(void *buf, unsigned long len)
 +{
-+	struct mem_range_result *range;
-+	struct mem_cgroup *memcg, *old_memcg;
-+	struct str_listener *item;
-+	resource_handler handler;
-+	bool kmalloc;
-+	char *kbuf;
-+	int id, ret = 0;
 +
-+	id = srcu_read_lock(&srcu);
-+	item = find_listener(name);
-+	if (!item) {
-+		srcu_read_unlock(&srcu, id);
-+		return -EINVAL;
-+	}
-+	kmalloc = item->kmalloc;
-+	handler = item->handler;
-+	srcu_read_unlock(&srcu, id);
++	if (output_cur - output_buf > MAX_UNCOMPRESSED_BUF_SIZE - len)
++		return -1;
++	memcpy(output_cur, buf, len);
++	output_cur += len;
++	return len;
++}
++
++__bpf_kfunc struct mem_range_result *bpf_decompress(char *image_gz_payload, int image_gz_sz)
++{
++	struct mem_cgroup *memcg, *old_memcg;
++	decompress_fn decompressor;
++	struct mem_range_result *range;
++	const char *name;
++	char *input_buf;
++	int ret;
++
 +	memcg = get_mem_cgroup_from_current();
 +	old_memcg = set_active_memcg(memcg);
 +	range = kmalloc(sizeof(struct mem_range_result), GFP_KERNEL);
 +	if (!range) {
 +		pr_err("fail to allocate mem_range_result\n");
-+		ret = -ENOMEM;
-+		goto err;
++		goto error;
++	}
++	kref_init(&range->ref);
++
++	input_buf = __vmalloc(image_gz_sz, GFP_KERNEL | __GFP_ACCOUNT);
++	if (!input_buf) {
++		kfree(range);
++		pr_err("fail to allocate input buffer\n");
++		goto error;
 +	}
 +
-+	kref_init(&range->ref);
-+	if (item->kmalloc)
-+		kbuf = kmalloc(size, GFP_KERNEL | __GFP_ACCOUNT);
-+	else
-+		kbuf = __vmalloc(size, GFP_KERNEL | __GFP_ACCOUNT);
-+	if (!kbuf) {
++	ret = copy_from_kernel_nofault(input_buf, image_gz_payload, image_gz_sz);
++	if (ret < 0) {
 +		kfree(range);
-+		ret = -ENOMEM;
-+		goto err;
++		vfree(input_buf);
++		pr_err("Error when copying from 0x%p, size:0x%x\n",
++				image_gz_payload, image_gz_sz);
++		goto error;
 +	}
-+	ret = copy_from_kernel_nofault(kbuf, buf, size);
-+	if (unlikely(ret < 0)) {
++
++	mutex_lock(&output_buf_mutex);
++	output_buf = __vmalloc(MAX_UNCOMPRESSED_BUF_SIZE, GFP_KERNEL | __GFP_ACCOUNT);
++	if (!output_buf) {
++		mutex_unlock(&output_buf_mutex);
 +		kfree(range);
-+		if (item->kmalloc)
-+			kfree(kbuf);
-+		else
-+			vfree(kbuf);
-+		ret = -EINVAL;
-+		goto err;
++		vfree(input_buf);
++		pr_err("fail to allocate output buffer\n");
++		goto error;
 +	}
-+	range->kmalloc = item->kmalloc;
-+	range->buf = kbuf;
-+	range->buf_sz = size;
-+	range->data_sz = size;
-+	range->memcg = memcg;
-+	mem_cgroup_tryget(memcg);
-+	range->status = 0;
-+	ret = handler(name, range);
-+	mem_range_result_put(range);
-+err:
++	output_cur = output_buf;
++	decompressor = decompress_method(input_buf, image_gz_sz, &name);
++	if (!decompressor) {
++		kfree(range);
++		vfree(input_buf);
++		vfree(output_buf);
++		mutex_unlock(&output_buf_mutex);
++		pr_err("Can not find decompress method\n");
++		goto error;
++	}
++	ret = decompressor(input_buf, image_gz_sz, NULL, flush,
++				NULL, NULL, NULL);
++
++	vfree(input_buf);
++	/* Update the range map */
++	if (ret == 0) {
++		range->kmalloc = false;
++		range->buf = output_buf;
++		range->buf_sz = MAX_UNCOMPRESSED_BUF_SIZE;
++		range->data_sz = output_cur - output_buf;
++		output_buf = output_cur = NULL;
++		mutex_unlock(&output_buf_mutex);
++		range->status = 0;
++		/* Do not release the reference */
++		range->memcg = memcg;
++		set_active_memcg(old_memcg);
++		return range;
++	}
++
++	/* Decompression fails */
++	vfree(output_buf);
++	output_buf = output_cur = NULL;
++	mutex_unlock(&output_buf_mutex);
++	kfree(range);
++	pr_err("Decompress error\n");
++
++error:
 +	set_active_memcg(old_memcg);
 +	mem_cgroup_put(memcg);
-+	return ret;
++	return NULL;
 +}
 +
-+int register_carrier_listener(struct carrier_listener *listener)
-+{
-+	struct str_listener *item;
-+	unsigned int hash;
-+	int ret;
-+
-+	if (!listener->name)
-+		return -EINVAL;
-+	item = kmalloc(sizeof(*item), GFP_KERNEL);
-+	if (!item)
-+		return -ENOMEM;
-+	item->str = kstrdup(listener->name, GFP_KERNEL);
-+	if (!item->str) {
-+		kfree(item);
-+		return -ENOMEM;
-+	}
-+	item->handler = listener->handler;
-+	item->kmalloc = listener->kmalloc;
-+	hash = jhash(item->str, strlen(item->str), 0);
-+	mutex_lock(&str_listeners_mutex);
-+	if (!find_listener(item->str)) {
-+		hash_add(str_listeners, &item->node, hash);
-+	} else {
-+		kfree(item->str);
-+		kfree(item);
-+		ret = -EBUSY;
-+	}
-+	mutex_unlock(&str_listeners_mutex);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL(register_carrier_listener);
-+
-+int unregister_carrier_listener(char *str)
-+{
-+	struct str_listener *item;
-+	int ret = 0;
-+
-+	mutex_lock(&str_listeners_mutex);
-+	item = find_listener(str);
-+	if (!!item)
-+		hash_del(&item->node);
-+	else
-+		ret = -EINVAL;
-+	mutex_unlock(&str_listeners_mutex);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL(unregister_carrier_listener);
-+
+ __bpf_kfunc_end_defs();
+ 
+ BTF_KFUNCS_START(generic_btf_ids)
+ #ifdef CONFIG_CRASH_DUMP
+ BTF_ID_FLAGS(func, crash_kexec, KF_DESTRUCTIVE)
+ #endif
++BTF_ID_FLAGS(func, bpf_decompress, KF_TRUSTED_ARGS | KF_ACQUIRE | KF_SLEEPABLE)
+ BTF_ID_FLAGS(func, bpf_mem_range_result_put, KF_RELEASE)
+ BTF_ID_FLAGS(func, bpf_copy_to_kernel, KF_TRUSTED_ARGS | KF_SLEEPABLE)
+ BTF_ID_FLAGS(func, bpf_obj_new_impl, KF_ACQUIRE | KF_RET_NULL)
 -- 
 2.49.0
 
