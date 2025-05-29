@@ -1,93 +1,107 @@
-Return-Path: <bpf+bounces-59312-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59313-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC8B5AC81DA
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 19:52:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B8AFAC81EF
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 20:01:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4DE467B4176
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 17:50:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F40F31727C7
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 18:01:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6849F22F173;
-	Thu, 29 May 2025 17:51:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6A13230BC1;
+	Thu, 29 May 2025 18:01:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cHS/Mlb9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kHLr0oyC"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22A7D22D4FA
-	for <bpf@vger.kernel.org>; Thu, 29 May 2025 17:51:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F0921A4E9D;
+	Thu, 29 May 2025 18:01:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748541115; cv=none; b=P8pvZC2jtIqFPThmBNemolJ+pdA5bcE3haxTnpz6PWgw4ArcP9EAa64htLPugRTiov4hPzq4/bSnYZ+73VyBue+UcNSPf42Ps/lqfLgsFTBUw5EgobfkAO21SaE0BMvx+as9A9W3fq8oI3aZ/Btxf1MkjVbv+z7lvXAPWdTjfZo=
+	t=1748541664; cv=none; b=aeynzvSeeuFsNpZYxsCBDQCielu9+tfuiAuBJ4WdOgquHgKGtYMAQu8SELypMQZ3G+6nQj74rO2uT6I4ZvRSdkEBsGJffYRQXq8SVsVQoW1LrwTTi3RPk40LvYhrHSkR3qO85l70hM0yf/a6RVbqCrxZQwal80Oi0y4/3/eeiw4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748541115; c=relaxed/simple;
-	bh=izuLx6FzHgHfIZb3KvaAmO4qRt5qTAlg3QWhMMKAbM8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fymG3VyFG/oCOuoGCr64aYmUCb98skfWBf3KXAReZj7iY/4oTIfWSSOD0YnbRQo89rQYjD1W3LWdUMCVujALZgyVlrVQ1ob/3G4O7K0Sq1Q8vbuuwIZQd3VCCqJmwRHETBkevruS9vdEXzzPV4sycDz++/8ng2RaRjSlTFrARls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cHS/Mlb9; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ffd23260-f214-482c-aef0-3fb49dbfa1d0@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1748541101;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IMtmh8j2rskPP+tsvVa7KatJcF2eyuj0Y+85ZRD8nUU=;
-	b=cHS/Mlb9RQ0qsnTujwHVp43bOTG4RBEudfL/SkRtZrYq1IPnm2BIkwDv9gFVQqJWoOMHTG
-	Wt4ZfXt40Tzj3A1UuqgiD/q9f9U7Mf91kd38BoYdlFBcZOQVCpXkOzakiqJnV7Mxeg4Ipi
-	CoibJVDNCXB2UZlVw06iunVxm6Rp/O8=
-Date: Fri, 30 May 2025 01:50:48 +0800
+	s=arc-20240116; t=1748541664; c=relaxed/simple;
+	bh=va8x2OuP/XP9tUIN6TYly8/+r3SiRgdq7ss21hcfXrs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aJcNmIi2TSqHzcETvQu0uusKMeCARVCt+wfj3Shlgrqi9YLNRhkBmdm1Jkl1mw4REfFu9LLJl8h/Wn+jkgUDVQtrB+vYW7a4mgovQCwIPM1izvUnD9X5r3n9IdXY7+9gbyMGJP576WS2wsDIVShz2kgMKYlW9jxcbr2PYh6I0nY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kHLr0oyC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F29E0C4CEEA;
+	Thu, 29 May 2025 18:01:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1748541664;
+	bh=va8x2OuP/XP9tUIN6TYly8/+r3SiRgdq7ss21hcfXrs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=kHLr0oyCdmWcYpOoslfqCz/WOpR8Y+i+6tyIYoau+2WzBsjGtRLaXd6WTHxqVxVTz
+	 4tr88sVRL3sGzUw4s1gxpAfVZo5bzPA98zKpNf4sKDvMHwI5V2qFSsWaHcIIFkupQG
+	 GiKg88l9YKOEuj1Kh2YPP7VEjl+j/JprJJYPh7txuoN7gME6gD/3iRSJC4F04gubxM
+	 3RHu6OsweVVU0YEpzygqHd8O3j/QRNRSBDPmJjIZl7VVGul36kRoj5oS55oL9NTz36
+	 RMOd2cJzMDLYoU4Wp/i8QXd2doySkmu5OiixRlsgHguHS6qTpY6h7upRR8lSMPCClY
+	 7VGBpdsAgNyRA==
+Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-6faacf5d5adso13760766d6.1;
+        Thu, 29 May 2025 11:01:03 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVbYGHUCggjTqUaiq2DRMuzQYKMCOcqQOC1BGsK063ZIzQcHI8iGNfaYcJkENG0Rv7BElXFh7LHN8GyAJidlw==@vger.kernel.org, AJvYcCWP+692HR4GnpDRKEQv5W/N39bHHIBkbpyDAwySPJlZ0m2q73/lA9Fb1JGH3Tn4WMsuLamPxxYzIE6Sed7l@vger.kernel.org, AJvYcCWjlNvF6k3UwCK3noFXcn3rb0soE8hJSAyXDkmFLuUJOmMJJmeEuaphSI+MyVwwz2yeMRI=@vger.kernel.org, AJvYcCXNY7Z74PrQ7KCf2T3AMxhH9ToYzGfn4ElDgI4mW/M+QavLMGnM9QudKHzQ2941+lJktH1/FOtFHBfObgcKFi0d1NUWbavA@vger.kernel.org
+X-Gm-Message-State: AOJu0YzW8QkOyJJ0mQleDjKTuYOxvPsje5OQg7jg+QDx6mPqkHW0y8Fz
+	WLvZvnsQDjlZaJ8JrKirmotkcRI6idHrzbaJ5Lp9pKqvTLZLBc6YPxYTvwSMHcg7rkuv+K79nvR
+	Wrj/Y5feTZQni3CqHnrD8og+Z+jRfdww=
+X-Google-Smtp-Source: AGHT+IF6EPR6+2zjvOUnh/yy1Eu/+WwFCHyfFf4IxcU2aFuspgKBn8eKOejuW0eaU2iFowJOtDhNbKdKhRjaPf5sXBs=
+X-Received: by 2002:a05:6214:caa:b0:6fa:9baa:face with SMTP id
+ 6a1803df08f44-6facec0f7d9mr10351106d6.35.1748541663143; Thu, 29 May 2025
+ 11:01:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 3/3] bpftool: Display cookie for raw_tp link
- probe
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Quentin Monnet <qmo@kernel.org>,
- Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>
-References: <20250529165759.2536245-1-chen.dylane@linux.dev>
- <20250529165759.2536245-3-chen.dylane@linux.dev>
- <CAADnVQJVFffjzgZ0o_gAGJHwHHXn+UjawhAwknaTfgdQpjY3xA@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Tao Chen <chen.dylane@linux.dev>
-In-Reply-To: <CAADnVQJVFffjzgZ0o_gAGJHwHHXn+UjawhAwknaTfgdQpjY3xA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250528222623.1373000-1-song@kernel.org> <20250528222623.1373000-4-song@kernel.org>
+ <20250528223724.GE2023217@ZenIV> <yti2dilasy7b3tu6iin5pugkn6oevdswrwoy6gorudb7x2cqhh@nqb3gcyxg4by>
+ <CAPhsuW4tg+bXU41fhAaS0n74d_a_KCFGvy_vkQOj7v4VLie2wg@mail.gmail.com> <20250529173810.GJ2023217@ZenIV>
+In-Reply-To: <20250529173810.GJ2023217@ZenIV>
+From: Song Liu <song@kernel.org>
+Date: Thu, 29 May 2025 11:00:51 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5pAvH3E1dVa85Kx2QsUSheSLobEMg-b0mOdtyfm7s4ug@mail.gmail.com>
+X-Gm-Features: AX0GCFuJEvhwqFfh-JvOxs1IMEGRcEd6UR-5Og_2gqEBY0g9YyGGE9Vhi82CZU0
+Message-ID: <CAPhsuW5pAvH3E1dVa85Kx2QsUSheSLobEMg-b0mOdtyfm7s4ug@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/4] bpf: Introduce path iterator
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Jan Kara <jack@suse.cz>, bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, brauner@kernel.org, 
+	kpsingh@kernel.org, mattbobrowski@google.com, amir73il@gmail.com, 
+	repnop@google.com, jlayton@kernel.org, josef@toxicpanda.com, mic@digikod.net, 
+	gnoack@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-在 2025/5/30 01:11, Alexei Starovoitov 写道:
-> On Thu, May 29, 2025 at 10:01 AM Tao Chen <chen.dylane@linux.dev> wrote:
->>
->> Display cookie for raw_tp link probe, in plain mode:
->>
->>   #bpftool link
->>
->> 22: raw_tracepoint  prog 14
->>          tp 'sys_enter'  cookie 23925373020405760
->>          pids test_progs(176)
-> 
-> Curious number.
-> What 0x55000000000000 was used for ?
+On Thu, May 29, 2025 at 10:38=E2=80=AFAM Al Viro <viro@zeniv.linux.org.uk> =
+wrote:
+>
+> On Thu, May 29, 2025 at 09:53:21AM -0700, Song Liu wrote:
+>
+> > Current version of path iterator only supports walking towards the root=
+,
+> > with helper path_parent. But the path iterator API can be extended
+> > to cover other use cases.
+>
+> Clarify the last part, please - call me paranoid, but that sounds like
+> a beginning of something that really should be discussed upfront.
 
-Yes, no practical in fact, i just ran the selftest case in bpf_cookie.c.
-raw_tp_opts.cookie = cookie = 0x55000000000000L;
+We don't have any plan with future use cases yet. The only example
+I mentioned in the original version of the commit log is "walk the
+mount tree". IOW, it is similar to the current iterator, but skips non
+mount point iterations.
 
--- 
-Best Regards
-Tao Chen
+Since we call it "path iterator", it might make sense to add ways to
+iterate the VFS tree in different patterns. For example, we may
+have an iterator that iterates all files within a directory. Again, we
+don't see urgent use cases other than the current "walk to root"
+iterator.
+
+Thanks,
+Song
 
