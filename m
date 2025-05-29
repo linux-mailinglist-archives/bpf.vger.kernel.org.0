@@ -1,242 +1,117 @@
-Return-Path: <bpf+bounces-59229-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59230-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E2A3AC759A
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 04:03:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7F0CAC759C
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 04:03:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26AEBA255C3
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 02:02:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A3EBA40DE0
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 02:03:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B8DE1519A6;
-	Thu, 29 May 2025 02:03:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71A3C241C89;
+	Thu, 29 May 2025 02:03:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e+zDEbXI"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Nv4Q5jzJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FDF113AA2F;
-	Thu, 29 May 2025 02:03:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACB852417D9
+	for <bpf@vger.kernel.org>; Thu, 29 May 2025 02:03:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748484185; cv=none; b=rOEhauJd4XWxlKlJeBMS455OxslWKW7wtlOFU2hkzAa0VvX7PVg4mlJSIZzG2T0YM7GqEJoTgVruP1gzVzM2aSURDECFaAoqVO3XlzMPB6q0usmhR2aW6qyJSmkgbZDh4L05k/GS0m7sCSF/OIJk6DUb8x7B2sFoCxD6PDPNN/w=
+	t=1748484204; cv=none; b=RQMC/vx4meCOV2zHkSUgDDmFIleSMoQDcUHDmisuA1RXT23Q0qvXc0VyIkmmHqWKvim9TD1q3XHAej8GkH+AFANzRpO9Vnedtq+ZHJSiXy8irMyBXc9KjOA2VwlAnsjV+NAWOISrHBIEzhJ+Yp4OSdrFciwCyjUUMvAoNQb/1VA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748484185; c=relaxed/simple;
-	bh=DIN6LIQaAOvcQ53vfc9A5k02oK5pSKpsJOPM8n2POLc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=M2d8Pe38co4NEIRtaZhl8Z3mRHxuJ4G5aQXAnb5pJEZka6neyqBJc70Xv53BaBoJYEme/MXkbBRydZYIyq0DdKQS6PkzuxqYoxaJLMUAV6+bXMzmTDJshFuLLsyDSYNbA53AK8FTHXiz361J4s8HMcanrUJnqOdzxVmIPYjRPmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e+zDEbXI; arc=none smtp.client-ip=209.85.161.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-609e7f27c66so133725eaf.0;
-        Wed, 28 May 2025 19:03:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748484182; x=1749088982; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R1egAo3iwBvxZqJdXFnwcv60q/WxRGcWuQcEWMsX+k0=;
-        b=e+zDEbXIWnVQhmOtleQy/wzry7GNEd6raeHIr0d/o6I3WxfvrHIEbW0jhU3YorlULc
-         Y1+peSnpcanatoCfKaXwzqahreS5LKCjcdz5E61/r+jeSvWy4AkGi+cPovSawXLzHe5A
-         WAQAr+BMKHRxQnwPAS6l8IZ0bzQOajABCbOhOVZaZVCMU8IKWlqzUx+1RmZB0QEyEMM+
-         3d4G5SRIZTOlGqgDmL7UCwgpE3X7AoMmxZg2HRy3Ekp92Ks2mWGlqrRvr84FSDcTPBxu
-         0Mze2zPrwIfZcuCJrhu+iT+cLAbsEWEPH6WfwDET4ivE3RO5Eg9nPgvoWKs97VbE6nz6
-         760A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748484182; x=1749088982;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=R1egAo3iwBvxZqJdXFnwcv60q/WxRGcWuQcEWMsX+k0=;
-        b=htdwL/YX+lZZKhO9rk2yh/wx4caUXhKAXKsJ95CqFEe9O2+BW2yPLjf98Qn0FHd/ek
-         QJuQ7Df5NLly37AiWE039VLLolj6l6zB1nSuJQktM1UHUio7IBRPrLU88voMmRq9H33+
-         rafuOvoUBSg8b+bWvVl4DeVZKPIBS16h3414uVEas8VLx0uCbVo1x+t7pff1Xxw+GDrg
-         rPhDwHc5NKZwMuL6aO8u5Kn49yVh4COsSnezGUgHl1/RvRJephq7xQXy2IFQduf2nue+
-         SA5EXX7iZD6mXx1Gj5bA8t4wg7orxcKbXUHkJOmJ8HMjOehQv6HkH4gEIoaC8d9yAK79
-         zaxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVUF0D6YCYTMyisiHrapD0c4M05ofuKsGA6k2aBo3AM1Nu+0q/H6+XnjSRWRV5QacMdocY=@vger.kernel.org, AJvYcCVcTJxS/gMw/Rh0MIIs20xZxr0naPTZiv3DvDE1i9ifYPHX4ofRu8M8PVCcEPd9n5o0SdvKzmqdNnwLDgO2@vger.kernel.org
-X-Gm-Message-State: AOJu0YzRO9Mu0Hqdhh0ZvxKJAZvp5a2PAZEz7Umbbk/0mV+TiVmiqWTB
-	eY/AB41ZtE1kUKqk9+FrbJJurJebIp8y5F4QCHEF5QjRd64JuMetohhMJWWkZCdqOjvFjI88fzF
-	e0FtecOlJAWZTxYhqlcSass06r+NnJ0A=
-X-Gm-Gg: ASbGncvx4xlEPZFoQE3UBCnaXmnI5mk2V1/DlL3EWzBdYWpiwKyr407s+7uph7ZcB9V
-	wEEJaAHno93xVe/JSxn+2P1HadrezhIA57/Aq/wAQYg2INpL/SjWHAytVGn8yaNN9XOlheSBrwT
-	8emj8F6RYWfm0zcfOyqCWpsq4jlvQW8yRsOr3GpP1jsyY=
-X-Google-Smtp-Source: AGHT+IH0mfeDH3IFQ2Mw4l8ARan0BJrAfAyJQiogfmzdX/eyo4H5wdRxQMSJ66duRYCi67pL0zjvLOz0YNbhUglnQQc=
-X-Received: by 2002:a05:6871:20d:b0:2c1:62ba:cd7c with SMTP id
- 586e51a60fabf-2e861df8abamr10614260fac.15.1748484182330; Wed, 28 May 2025
- 19:03:02 -0700 (PDT)
+	s=arc-20240116; t=1748484204; c=relaxed/simple;
+	bh=SWW7m2YS63jr9KQ5MhnGgWwWRqvPYINWGmx0VDbiqGE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=T95CNMTOTyaBbNXQBSpJMZIc6A3jPOdVqnaFBEN18r+I8rNa0+IX8eobXrNc9l40QkBh0CoFw45QqpW74FoZJaE3j6s2mxuAfp5JgDkq6DvTd4nRm6SJdHzekjlqztUeL6ieD6rV95myB4pRu1IDwy38GNemzHbpmy0itnnfufI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Nv4Q5jzJ; arc=none smtp.client-ip=91.218.175.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <ecd34ed3-cbe6-4370-ae89-1e1e382b6c34@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1748484200;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cP6cAp56RYNKdwcwWl/Smp5+QwlQcWMVbp3z3P0vJ+Q=;
+	b=Nv4Q5jzJ6Leyr1kZwpr6hPEWspoQxji10M1FpaW04v9coYP/DIPG9gAnBVRlz1V+FDMpcE
+	tvNs0xcYltuqsh6oQWAhhMyHJAxLMuWfMbJyX171e/u/bHYX01mQj0a8ckK77P7sn4DCBf
+	iiYF3dNh3jC+eODoGV0Ns6VQFPgwaPM=
+Date: Thu, 29 May 2025 10:03:13 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250528104032.1237415-1-jianghaoran@kylinos.cn>
-In-Reply-To: <20250528104032.1237415-1-jianghaoran@kylinos.cn>
-From: Hengqi Chen <hengqi.chen@gmail.com>
-Date: Thu, 29 May 2025 10:02:51 +0800
-X-Gm-Features: AX0GCFujo6dWfpQa5SiUb5FoezkhVXHsP8VZTM4lE4ANnYjcbdoIqPK4PV8GCUw
-Message-ID: <CAEyhmHTg3xNMBrSxXQj96pvfD83t6_RHRT_GGtbBzOpAKztDpw@mail.gmail.com>
-Subject: Re: [PATCH] LoongArch: BPF: Optimize the calculation method of
- jmp_offset in the emit_bpf_tail_call function
-To: jianghaoran@kylinos.cn
-Cc: loongarch@lists.linux.dev, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, kernel@xen0n.name, chenhuacai@kernel.org, 
-	yangtiezhu@loongson.cn, haoluo@google.com, jolsa@kernel.org, sdf@fomichev.me, 
-	kpsingh@kernel.org, john.fastabend@gmail.com, yonghong.song@linux.dev, 
-	song@kernel.org, eddyz87@gmail.com, martin.lau@linux.dev, andrii@kernel.org, 
-	daniel@iogearbox.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v3 1/4] bpf: Introduce global percpu data
+Content-Language: en-US
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, yonghong.song@linux.dev, song@kernel.org,
+ eddyz87@gmail.com, qmo@kernel.org, dxu@dxuuu.xyz, kernel-patches-bot@fb.com
+References: <20250526162146.24429-1-leon.hwang@linux.dev>
+ <20250526162146.24429-2-leon.hwang@linux.dev>
+ <CAEf4BzZw_OgDWRzRsni5crcOs=9V3VT+c_Fz_gf2zCvx1wLzuA@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Leon Hwang <leon.hwang@linux.dev>
+In-Reply-To: <CAEf4BzZw_OgDWRzRsni5crcOs=9V3VT+c_Fz_gf2zCvx1wLzuA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi Haoran,
 
-On Wed, May 28, 2025 at 6:40=E2=80=AFPM Haoran Jiang <jianghaoran@kylinos.c=
-n> wrote:
->
-> For a ebpf subprog JIT=EF=BC=8Cthe last call bpf_int_jit_compile function=
- will
-> directly enter the skip_init_ctx process. At this point, out_offset =3D -=
-1,
-> the jmp_offset in emit_bpf_tail_call is calculated
-> by #define jmp_offset (out_offset - (cur_offset)) is a negative number,
-> which does not meet expectations.The final generated assembly as follow.
->
-> 54:     bgeu            $a2, $t1, -8        # 0x0000004c
-> 58:     addi.d          $a6, $s5, -1
-> 5c:     bltz            $a6, -16            # 0x0000004c
-> 60:     alsl.d          $t2, $a2, $a1, 0x3
-> 64:     ld.d            $t2, $t2, 264
-> 68:     beq             $t2, $zero, -28     # 0x0000004c
->
-> Before apply this patch, the follow test case will reveal soft lock issue=
-s.
->
-> cd tools/testing/selftests/bpf/
-> ./test_progs --allow=3Dtailcalls/tailcall_bpf2bpf_1
->
-> dmesg:
-> watchdog: BUG: soft lockup - CPU#2 stuck for 26s! [test_progs:25056]
->
 
-This is a known issue. Does this change pass all tailcall tests ?
-If not, please refer to the tailcall hierarchy patchset([1]).
-We should address it once and for all. Thanks.
+On 28/5/25 06:31, Andrii Nakryiko wrote:
+> On Mon, May 26, 2025 at 9:22 AM Leon Hwang <leon.hwang@linux.dev> wrote:
+>>
+>> This patch introduces global percpu data, inspired by commit
+>> 6316f78306c1 ("Merge branch 'support-global-data'"). It enables the
+>> definition of global percpu variables in BPF, similar to the
+>> DEFINE_PER_CPU() macro in the kernel[0].
+>>
 
-  [1]: https://lore.kernel.org/bpf/20240714123902.32305-1-hffilwlqm@gmail.c=
-om/
+[...]
 
-> Signed-off-by: Haoran Jiang <jianghaoran@kylinos.cn>
-> ---
->  arch/loongarch/net/bpf_jit.c | 28 +++++++++-------------------
->  1 file changed, 9 insertions(+), 19 deletions(-)
->
-> diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
-> index fa1500d4aa3e..d85490e7de89 100644
-> --- a/arch/loongarch/net/bpf_jit.c
-> +++ b/arch/loongarch/net/bpf_jit.c
-> @@ -208,9 +208,7 @@ bool bpf_jit_supports_far_kfunc_call(void)
->         return true;
->  }
->
-> -/* initialized on the first pass of build_body() */
-> -static int out_offset =3D -1;
-> -static int emit_bpf_tail_call(struct jit_ctx *ctx)
-> +static int emit_bpf_tail_call(int insn, struct jit_ctx *ctx)
->  {
->         int off;
->         u8 tcc =3D tail_call_reg(ctx);
-> @@ -220,9 +218,8 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
->         u8 t2 =3D LOONGARCH_GPR_T2;
->         u8 t3 =3D LOONGARCH_GPR_T3;
->         const int idx0 =3D ctx->idx;
-> -
-> -#define cur_offset (ctx->idx - idx0)
-> -#define jmp_offset (out_offset - (cur_offset))
-> +       int tc_ninsn =3D 0;
-> +       int jmp_offset =3D 0;
->
->         /*
->          * a0: &ctx
-> @@ -232,8 +229,11 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
->          * if (index >=3D array->map.max_entries)
->          *       goto out;
->          */
-> +       tc_ninsn =3D insn ? ctx->offset[insn+1] - ctx->offset[insn] :
-> +               ctx->offset[0];
->         off =3D offsetof(struct bpf_array, map.max_entries);
->         emit_insn(ctx, ldwu, t1, a1, off);
-> +       jmp_offset =3D tc_ninsn - (ctx->idx - idx0);
->         /* bgeu $a2, $t1, jmp_offset */
->         if (emit_tailcall_jmp(ctx, BPF_JGE, a2, t1, jmp_offset) < 0)
->                 goto toofar;
-> @@ -243,6 +243,7 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
->          *       goto out;
->          */
->         emit_insn(ctx, addid, REG_TCC, tcc, -1);
-> +       jmp_offset =3D tc_ninsn - (ctx->idx - idx0);
->         if (emit_tailcall_jmp(ctx, BPF_JSLT, REG_TCC, LOONGARCH_GPR_ZERO,=
- jmp_offset) < 0)
->                 goto toofar;
->
-> @@ -254,6 +255,7 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
->         emit_insn(ctx, alsld, t2, a2, a1, 2);
->         off =3D offsetof(struct bpf_array, ptrs);
->         emit_insn(ctx, ldd, t2, t2, off);
-> +       jmp_offset =3D tc_ninsn - (ctx->idx - idx0);
->         /* beq $t2, $zero, jmp_offset */
->         if (emit_tailcall_jmp(ctx, BPF_JEQ, t2, LOONGARCH_GPR_ZERO, jmp_o=
-ffset) < 0)
->                 goto toofar;
-> @@ -263,22 +265,11 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
->         emit_insn(ctx, ldd, t3, t2, off);
->         __build_epilogue(ctx, true);
->
-> -       /* out: */
-> -       if (out_offset =3D=3D -1)
-> -               out_offset =3D cur_offset;
-> -       if (cur_offset !=3D out_offset) {
-> -               pr_err_once("tail_call out_offset =3D %d, expected %d!\n"=
-,
-> -                           cur_offset, out_offset);
-> -               return -1;
-> -       }
-> -
->         return 0;
->
->  toofar:
->         pr_info_once("tail_call: jump too far\n");
->         return -1;
-> -#undef cur_offset
-> -#undef jmp_offset
->  }
->
->  static void emit_atomic(const struct bpf_insn *insn, struct jit_ctx *ctx=
-)
-> @@ -916,7 +907,7 @@ static int build_insn(const struct bpf_insn *insn, st=
-ruct jit_ctx *ctx, bool ext
->         /* tail call */
->         case BPF_JMP | BPF_TAIL_CALL:
->                 mark_tail_call(ctx);
-> -               if (emit_bpf_tail_call(ctx) < 0)
-> +               if (emit_bpf_tail_call(i, ctx) < 0)
->                         return -EINVAL;
->                 break;
->
-> @@ -1342,7 +1333,6 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_pro=
-g *prog)
->         if (tmp_blinded)
->                 bpf_jit_prog_release_other(prog, prog =3D=3D orig_prog ? =
-tmp : orig_prog);
->
-> -       out_offset =3D -1;
->
->         return prog;
->
-> --
-> 2.43.0
->
+>> +
+>>         err = check_map_access(env, regno, reg->off,
+>>                                map->value_size - reg->off, false,
+>>                                ACCESS_HELPER);
+>> @@ -11101,6 +11109,11 @@ static int check_bpf_snprintf_call(struct bpf_verifier_env *env,
+>>                 return -EINVAL;
+>>         num_args = data_len_reg->var_off.value / 8;
+>>
+>> +       if (fmt_map->map_type != BPF_MAP_TYPE_ARRAY) {
+>> +               verbose(env, "only array map supports snprintf\n");
+>> +               return -EINVAL;
+>> +       }
+>> +
+>>         /* fmt being ARG_PTR_TO_CONST_STR guarantees that var_off is const
+>>          * and map_direct_value_addr is set.
+>>          */
+>> @@ -21906,6 +21919,38 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+>>                         goto next_insn;
+>>                 }
+>>
+>> +#ifdef CONFIG_SMP
+> 
+> Instead of CONFIG_SMP, I think it's more appropriate to check for
+> bpf_jit_supports_percpu_insn(). We check CONFIG_SMP for
+> BPF_FUNC_get_smp_processor_id inlining because of `cpu_number` per-CPU
+> variable, not because BPF_MOV64_PERCPU_REG() doesn't work on single
+> CPU systems (IIUC).
+> 
+Agreed.
+
+Then, 'EMIT_mov(dst_reg, src_reg);' can be avoided if dst_reg is same as
+src_reg while handling BPF_MOV64_PERCPU_REG() on x86_64.
+
+Thanks,
+Leon
+
 
