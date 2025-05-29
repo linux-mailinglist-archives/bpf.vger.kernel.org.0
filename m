@@ -1,236 +1,332 @@
-Return-Path: <bpf+bounces-59231-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59232-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75BDEAC75DB
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 04:25:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96137AC75EB
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 04:42:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 375394E7F35
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 02:25:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA2E01BC55B4
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 02:43:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ACC0244674;
-	Thu, 29 May 2025 02:25:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0EAF245007;
+	Thu, 29 May 2025 02:42:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FoZi+ViF"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GwbTNOWG"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 028E319E968
-	for <bpf@vger.kernel.org>; Thu, 29 May 2025 02:25:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 480612F872
+	for <bpf@vger.kernel.org>; Thu, 29 May 2025 02:42:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748485510; cv=none; b=Jba41u28sjGywteJzALJuxrB3Zbpai8RQwCQ591l35CkHVAKev6hPUx7gNhDoeOk9tZyWGBgmYQ0z3YTkOOZLGe0jCoQQT8ghxVXwm6CLr1jD5iCt6oiWXXOOM8eskIyOxdO0FcwLuZyzliBYZfD4VB8C88IXzUmswClCR2s1M8=
+	t=1748486559; cv=none; b=q/cHk58yh6yttlJPGX62NZ2DQrYP6Ogl+9yosMOnM0S6uKOO6U9QRnpaN6S4uTuQVGeQ/GXgwwsEZvfOb/NNReArZrhiOOs9/wYOy/LDFWfDkKHh0ZNara6/j6gTw9h+mnFEMSQLR8ZqIwdJe29DIc/8tR43vKg3Ge/TB8t4bVM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748485510; c=relaxed/simple;
-	bh=mfibpYKPNpxMlISXBqDjuBfnEsRr7EcygK9eoYQWXQE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gj2IJkRBTT32zYuFkcD7yht6p/F6xnQeyGT3VmvHOCw6BpdD6Kfe2aFUwXEIEKa6OMr6F5vg2AcP/lSvc/KhiOEO0N6cW0oQz46RqIeqhUn7BBTFzfd0vMhUKSap9p2gHrbS7CieC+tF3rVQq2mRGkZ/T7MmzDaOUhmiIZUKw14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FoZi+ViF; arc=none smtp.client-ip=91.218.175.170
+	s=arc-20240116; t=1748486559; c=relaxed/simple;
+	bh=GNLRYQUJcKmHRLXQoGd5L1xafjjvL1agDYEiwlM6VJw=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=QPjmeCBXBtzy/0/pGUq3wLtHftzu1QKjoB2MKWqJxnElKcXLv+ts49PzMqCPoTno2pr8wZjLYuHbAMvyYMZGiCtLyLK/y/cfSkx7ip+VTJb29zqL2n6a7JqQ7ucOhv7kAvs1LhRMaKuuVG7+NXFwge4trQBTFKf2cWB9hF+D7iw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GwbTNOWG; arc=none smtp.client-ip=91.218.175.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <f722152f-b364-4e36-bd50-7dcc8a8279df@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1748485505;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dIoejoPvgN0i2N1GUbRjRt6lgl7A6sB9qYsaLzxpASo=;
-	b=FoZi+ViFG0gmSkrf3qrxtIJdO1DI2exJPji2U5ZXjeZGRMrWzyZ/2rvsMAdPEM1bo13GHp
-	KuBQntKL3GJrdJf0nXL1bLdlOWp32ZxI31rSxR+fxGhK8qvY9jEB1fQhT4zO9VbdJwhDHL
-	zObIdrruS8zElfJe9v2ozZbx8By3EyI=
-Date: Thu, 29 May 2025 10:24:56 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v3 2/4] bpf, libbpf: Support global percpu data
-Content-Language: en-US
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, yonghong.song@linux.dev, song@kernel.org,
- eddyz87@gmail.com, qmo@kernel.org, dxu@dxuuu.xyz, kernel-patches-bot@fb.com
-References: <20250526162146.24429-1-leon.hwang@linux.dev>
- <20250526162146.24429-3-leon.hwang@linux.dev>
- <CAEf4BzY7MB9h-xAnPbheUgBhcqOMNaf1=HH=8V-HmC8k4VPgwQ@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1748486544;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=f7vrs6bHYMJbGrO5/ULBT0VnsxBQ4VzjvKqhI3ES3E4=;
+	b=GwbTNOWGRLn5YQ0S+STemjaPdr+AT42nVc0pOwx0hrMCbgHWoX/XDdHTyjB8NyTL6QqNW8
+	NJSqned0g1KAMapS4YSvovRSpXCv6zwK0lrKYYrw4OSO/hcdFCEzohoy2qVKrxSiaX7vR6
+	XBm8UiNt/yUzJLF/4S97A30uWboAu1c=
+Date: Thu, 29 May 2025 02:42:14 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Leon Hwang <leon.hwang@linux.dev>
-In-Reply-To: <CAEf4BzY7MB9h-xAnPbheUgBhcqOMNaf1=HH=8V-HmC8k4VPgwQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+From: "Jiayuan Chen" <jiayuan.chen@linux.dev>
+Message-ID: <fefe50c6ec558074ec7de944175cec82bb426f10@linux.dev>
+TLS-Required: No
+Subject: Re: [PATCH bpf-next v1] bpf, sockmap: Fix psock incorrectly pointing
+ to sk
+To: "John Fastabend" <john.fastabend@gmail.com>
+Cc: bpf@vger.kernel.org, "Jakub Sitnicki" <jakub@cloudflare.com>, "David S.
+ Miller" <davem@davemloft.net>, "Eric Dumazet" <edumazet@google.com>,
+ "Jakub Kicinski" <kuba@kernel.org>, "Paolo Abeni" <pabeni@redhat.com>,
+ "Simon Horman" <horms@kernel.org>, "Alexei Starovoitov" <ast@kernel.org>,
+ "Daniel Borkmann" <daniel@iogearbox.net>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20250528234650.n5orke2yq55qnoen@gmail.com>
+References: <20250523162220.52291-1-jiayuan.chen@linux.dev>
+ <20250528234650.n5orke2yq55qnoen@gmail.com>
 X-Migadu-Flow: FLOW_OUT
 
+May 29, 2025 at 07:46, "John Fastabend" <john.fastabend@gmail.com> wrote:
 
 
-On 28/5/25 06:31, Andrii Nakryiko wrote:
-> On Mon, May 26, 2025 at 9:22 AM Leon Hwang <leon.hwang@linux.dev> wrote:
->>
->> This patch introduces support for global percpu data in libbpf by adding a
->> new ".data..percpu" section, similar to ".data". It enables efficient
->> handling of percpu global variables in bpf programs.
->>
->> This enhancement improves performance for workloads that benefit from
->> percpu storage.
->>
->> Meanwhile, add bpf_map__is_internal_percpu() API to check whether the map
->> is an internal map used for global percpu variables.
-> 
-> I'm not a big fan of this super specific API. We do have
-> bpf_map__is_internal() to let customer know that map is special in
-> some way, but I'd like to avoid making this fine distinction between
-> per-CPU internal map vs non-per-CPU (and then why stop there, why not
-> have kconfig-specific API, ksym-specific check, etc)?
-> 
-> All this is mostly useful just for bpftool for skeleton codegen, and
-> bpftool already has to know about .percpu prefix, so it doesn't need
-> this API to make all these decisions. Let's try to drop this
-> bpf_map__is_internal_percpu() API?
-> 
 
-To remove bpf_map__is_internal_percpu(), it can be replaced with:
+>=20
+>=20On 2025-05-24 00:22:19, Jiayuan Chen wrote:
+>=20
+>=20>=20
+>=20> We observed an issue from the latest selftest: sockmap_redir where
+> >=20
+>=20>  sk_psock(psock->sk) !=3D psock in the backlog. The root cause is t=
+he special
+> >=20
+>=20>  behavior in sockmap_redir - it frequently performs map_update() an=
+d
+> >=20
+>=20>  map_delete() on the same socket. During map_update(), we create a =
+new
+> >=20
+>=20>  psock and during map_delete(), we eventually free the psock via rc=
+u_work
+> >=20
+>=20>  in sk_psock_drop(). However, pending workqueues might still exist =
+and not
+> >=20
+>=20>  be processed yet. If users immediately perform another map_update(=
+), a new
+> >=20
+>=20>  psock will be allocated for the same sk, resulting in two psocks p=
+ointing
+> >=20
+>=20>  to the same sk.
+> >=20
+>=20>=20=20
+>=20>=20
+>=20>  When the pending workqueue is later triggered, it uses the old pso=
+ck to
+> >=20
+>=20>  access sk for I/O operations, which is incorrect.
+> >=20
+>=20>=20=20
+>=20>=20
+>=20>  Timing Diagram:
+> >=20
+>=20>=20=20
+>=20>=20
+>=20>  cpu0 cpu1
+> >=20
+>=20>=20=20
+>=20>=20
+>=20>  map_update(sk):
+> >=20
+>=20>  sk->psock =3D psock1
+> >=20
+>=20>  psock1->sk =3D sk
+> >=20
+>=20>  map_delete(sk):
+> >=20
+>=20>  rcu_work_free(psock1)
+> >=20
+>=20>=20=20
+>=20>=20
+>=20>  map_update(sk):
+> >=20
+>=20>  sk->psock =3D psock2
+> >=20
+>=20>  psock2->sk =3D sk
+> >=20
+>=20>  workqueue:
+> >=20
+>=20>  wakeup with psock1, but the sk of psock1
+> >=20
+>=20>  doesn't belong to psock1
+> >=20
+>=20>  rcu_handler:
+> >=20
+>=20>  clean psock1
+> >=20
+>=20>  free(psock1)
+> >=20
+>=20>=20=20
+>=20>=20
+>=20>  Previously, we used reference counting to address the concurrency =
+issue
+> >=20
+>=20>  between backlog and sock_map_close(). This logic remains necessary=
+ as it
+> >=20
+>=20>  prevents the sk from being freed while processing the backlog. But=
+ this
+> >=20
+>=20>  patch prevents pending backlogs from using a psock after it has be=
+en
+> >=20
+>=20>  freed.
+> >=20
+>=20
+> Nit, its not that psock would be freed because we do have the
+>=20
+>=20cancel_delayed_work_sync() before the kfree(psock). But this
+>=20
+>=20is not a good state with two psocks referenceing the same sk.
+>=20
+>=20>=20
+>=20> Note: We cannot call cancel_delayed_work_sync() in map_delete() sin=
+ce this
+> >=20
+>=20>  might be invoked in BPF context by BPF helper, and the function ma=
+y sleep.
+> >=20
+>=20>=20=20
+>=20>=20
+>=20>  Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg inte=
+rface")
+> >=20
+>=20>  Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
+> >=20
+>=20>=20=20
+>=20>=20
+>=20>  ---
+> >=20
+>=20>  Thanks to Michal Luczaj for providing the sockmap_redir test case,=
+ which
+> >=20
+>=20>  indeed covers almost all sockmap forwarding paths.
+> >=20
+>=20>  ---
+> >=20
+>=20>  include/linux/skmsg.h | 1 +
+> >=20
+>=20>  net/core/skmsg.c | 5 ++++-
+> >=20
+>=20>  2 files changed, 5 insertions(+), 1 deletion(-)
+> >=20
+>=20>=20=20
+>=20>=20
+>=20>  diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
+> >=20
+>=20>  index 0b9095a281b8..b17221eef2f4 100644
+> >=20
+>=20>  --- a/include/linux/skmsg.h
+> >=20
+>=20>  +++ b/include/linux/skmsg.h
+> >=20
+>=20>  @@ -67,6 +67,7 @@ struct sk_psock_progs {
+> >=20
+>=20>  enum sk_psock_state_bits {
+> >=20
+>=20>  SK_PSOCK_TX_ENABLED,
+> >=20
+>=20>  SK_PSOCK_RX_STRP_ENABLED,
+> >=20
+>=20>  + SK_PSOCK_DROPPED,
+> >=20
+>=20>  };
+> >=20
+>=20>=20=20
+>=20>=20
+>=20>  struct sk_psock_link {
+> >=20
+>=20>  diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+> >=20
+>=20>  index 34c51eb1a14f..bd58a693ce9a 100644
+> >=20
+>=20>  --- a/net/core/skmsg.c
+> >=20
+>=20>  +++ b/net/core/skmsg.c
+> >=20
+>=20>  @@ -656,6 +656,9 @@ static void sk_psock_backlog(struct work_struc=
+t *work)
+> >=20
+>=20>  bool ingress;
+> >=20
+>=20>  int ret;
+> >=20
+>=20>=20=20
+>=20>=20
+>=20>  + if (sk_psock_test_state(psock, SK_PSOCK_DROPPED))
+> >=20
+>=20>  + return;
+> >=20
+>=20
+> Could we use the SK_PSOCK_TX_ENABLED bit here? Its already used to
+>=20
+>=20ensure we wont requeue work after the psock has started being
+>=20
+>=20removed. Seems like we don't need two flags? wdyt?
+>=20
+>=20>=20
+>=20> +
+> >=20
+>=20>  /* Increment the psock refcnt to synchronize with close(fd) path i=
+n
+> >=20
+>=20>  * sock_map_close(), ensuring we wait for backlog thread completion
+> >=20
+>=20>  * before sk_socket freed. If refcnt increment fails, it indicates
+> >=20
+>=20>  @@ -867,7 +870,7 @@ void sk_psock_drop(struct sock *sk, struct sk_=
+psock *psock)
+> >=20
+>=20>  write_unlock_bh(&sk->sk_callback_lock);
+> >=20
+>=20>=20=20
+>=20>=20
+>=20>  sk_psock_stop(psock);
+> >=20
+>=20
+> Can we add this to sk_psock_stop where we have the TX_ENABLED bit
+>=20
+>=20cleared.
 
-static bool bpf_map_is_internal_percpu(const struct bpf_map *map)
-{
-	return bpf_map__is_internal(map) &&
-	       bpf_map__type(map) == BPF_MAP_TYPE_PERCPU_ARRAY;
-}
 
-This should be functionally equivalent to checking:
 
-map->libbpf_type == LIBBPF_MAP_PERCPU;
+Thanks, I just add SK_PSOCK_TX_ENABLED checking at the start of sk_psock_=
+backlog().
+Every works fine, and truly no more flag needed !
 
->>
->> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
->> ---
->>  tools/lib/bpf/libbpf.c   | 102 +++++++++++++++++++++++++++++++--------
->>  tools/lib/bpf/libbpf.h   |   9 ++++
->>  tools/lib/bpf/libbpf.map |   1 +
->>  3 files changed, 91 insertions(+), 21 deletions(-)
->>
+diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+index 34c51eb1a14f..83c78379932e 100644
+--- a/net/core/skmsg.c
++++ b/net/core/skmsg.c
+@@ -656,6 +656,13 @@ static void sk_psock_backlog(struct work_struct *wor=
+k)
+        bool ingress;
+        int ret;
 
-[...]
++       /* If sk is quickly removed from the map and then added back, the=
+ old
++        * psock should not be scheduled, because there are now two psock=
+s
++        * pointing to the same sk.
++        */
++       if (!sk_psock_test_state(psock, SK_PSOCK_TX_ENABLED))
++               return;
++
+        /* Increment the psock refcnt to synchronize with close(fd) path =
+in
+         * sock_map_close(), ensuring we wait for backlog thread completi=
+on
+         * before sk_socket freed. If refcnt increment fails, it indicate=
+s
 
->>  struct elf_sec_desc {
->> @@ -1902,7 +1905,7 @@ static bool map_is_mmapable(struct bpf_object *obj, struct bpf_map *map)
->>         struct btf_var_secinfo *vsi;
->>         int i, n;
->>
->> -       if (!map->btf_value_type_id)
->> +       if (!map->btf_value_type_id || map->libbpf_type == LIBBPF_MAP_PERCPU_DATA)
-> 
-> Not sure this is correct. We should have btf_value_type_id for PERCPU
-> global data array, no?
-> 
 
-Yes, a PERCPU global data array should indeed have a valid
-btf_value_type_id, which is required for seq_show.
 
-This is evident in percpu_array_map_seq_show_elem(), where
-btf_value_type_id is used to display the per-CPU values:
-
-static void percpu_array_map_seq_show_elem(struct bpf_map *map, void *key,
-					   struct seq_file *m)
-{
-	// ...
-
-	rcu_read_lock();
-
-	seq_printf(m, "%u: {\n", *(u32 *)key);
-	pptr = array->pptrs[index & array->index_mask];
-	for_each_possible_cpu(cpu) {
-		seq_printf(m, "\tcpu%d: ", cpu);
-		btf_type_seq_show(map->btf, map->btf_value_type_id,
-				  per_cpu_ptr(pptr, cpu), m);
-		seq_putc(m, '\n');
-	}
-	seq_puts(m, "}\n");
-
-	rcu_read_unlock();
-}
-
-So the check for !map->btf_value_type_id in combination with
-LIBBPF_MAP_PERCPU_DATA needs to be considered.
-
->>                 return false;
->>
->>         t = btf__type_by_id(obj->btf, map->btf_value_type_id);
->> @@ -1926,6 +1929,7 @@ static int
->>  bpf_object__init_internal_map(struct bpf_object *obj, enum libbpf_map_type type,
->>                               const char *real_name, int sec_idx, void *data, size_t data_sz)
-
-[...]
-
->>
->> +       /* .data..percpu DATASEC must have __aligned(8) size. */
-> 
-> please remind me why? similarly for def->value_size special casing?
-> What will happen if we don't explicitly roundup() on libbpf side
-> (kernel always does roundup(8) for ARRAY value_size anyways, which is
-> why I am asking)
-> 
-
-t->size must match def->value_size.
-
-That said, I believe it's acceptable to avoid using roundup() for both
-values. I'll test this using seq_show to confirm.
-
->> +       if (strcmp(sec_name, PERCPU_DATA_SEC) == 0 || str_has_pfx(sec_name, PERCPU_DATA_SEC))
->> +               t->size = roundup(t->size, 8);
->> +
->>         for (i = 0, vsi = btf_var_secinfos(t); i < vars; i++, vsi++) {
->>                 const struct btf_type *t_var;
->>                 struct btf_var *var;
->> @@ -3923,6 +3939,11 @@ static int bpf_object__elf_collect(struct bpf_object *obj)
-
-[...]
-
->> +       data_sz = map->def.value_size;
->> +       if (is_percpu) {
->> +               num_cpus = libbpf_num_possible_cpus();
->> +               if (num_cpus < 0) {
->> +                       err = num_cpus;
->> +                       return err;
-> 
-> hm... why not `return num_cpus;`?
-> 
-
-Ack.
-
->> +               }
->> +
->> +               data_sz = data_sz * num_cpus;
->> +               data = malloc(data_sz);
->> +               if (!data) {
->> +                       err = -ENOMEM;
->> +                       return err;
->> +               }
-> 
-> [...]
-> 
->>  /**
->>   * @brief **bpf_map__set_pin_path()** sets the path attribute that tells where the
->>   * BPF map should be pinned. This does not actually create the 'pin'.
->> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
->> index 1205f9a4fe048..1c239ac88c699 100644
->> --- a/tools/lib/bpf/libbpf.map
->> +++ b/tools/lib/bpf/libbpf.map
->> @@ -443,4 +443,5 @@ LIBBPF_1.6.0 {
->>                 bpf_program__line_info_cnt;
->>                 btf__add_decl_attr;
->>                 btf__add_type_attr;
->> +               bpf_map__is_internal_percpu;
-> 
-> alphabetically sorted
-> 
-
-bpf_map__is_internal_percpu will be dropped.
-
-Thanks,
-Leon
-
+> >=20
+>=20> -
+> >=20
+>=20>  + sk_psock_set_state(psock, SK_PSOCK_DROPPED);
+> >=20
+>=20>  INIT_RCU_WORK(&psock->rwork, sk_psock_destroy);
+> >=20
+>=20>  queue_rcu_work(system_wq, &psock->rwork);
+> >=20
+>=20>  }
+> >=20
+>=20>  --=20
+>=20>=20
+>=20>  2.47.1
+> >
+>
 
