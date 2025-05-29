@@ -1,172 +1,439 @@
-Return-Path: <bpf+bounces-59317-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59318-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB3B0AC8241
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 20:38:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59631AC825C
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 20:58:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B70A1C05A8F
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 18:38:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35CBA7A5155
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 18:57:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 489E323183F;
-	Thu, 29 May 2025 18:38:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88418231839;
+	Thu, 29 May 2025 18:58:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GpUAHXJZ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VtgYLdCG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 540F622D4F0;
-	Thu, 29 May 2025 18:38:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6864A1DB924
+	for <bpf@vger.kernel.org>; Thu, 29 May 2025 18:58:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748543902; cv=none; b=Z0CI85ORl/8qMMiRrXRBocIuptbaGI/0w+mu7uLHKQgh9hKwbmzB5dI/Rggypl1LfsieC8jJCgLM77UMCBaIKRo9EvjtybtGMXGBXAOlS0J+0nvzGIPuvt/Ds1HObx5zYHM2OSYcmlDopVhx+hdemPbi/0PWNu9U2OCD/Y2yoV0=
+	t=1748545124; cv=none; b=XzKx47WJ/MxxRtQgL6Z5git+ejtlW3vv/L3OrRPy4yBB8H0oRyiRnb4+i2YIA7cNT12JQKw2GbWRprJz75HkjKDsL/5PmNMGFyy36V0LuufW4vD2VHWTXgxN+NtJBeuUdZMNVKP6q5CCIkkUYQfp0yvhAwRbT8sVST5pAUHIjdY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748543902; c=relaxed/simple;
-	bh=J7oa/5hP27LugL5IgPi1bvQAwOS2h2/7Si531ggOGYg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qZA1Yko5asTTcRlWJ+5Oi2OwYC0+HEf/m88Q25fmGkOpgr7cAAOp6juXCb3/XO/zvqpbt32RepcbxDad3qfqxO7OzhJIejCgWqxWPwngcH+s4DyXY8r8XkT5COZ9icn6TmfP+02LKU9FYUesjKlvPDE79xLgF9WzJJrUFblU4oE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GpUAHXJZ; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-2351ffb669cso5544955ad.2;
-        Thu, 29 May 2025 11:38:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748543900; x=1749148700; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xovIQZn3YQTyYV3/H7wuOXp388nJWq7YYeTeqG5/Sl4=;
-        b=GpUAHXJZ55gxKjKNSocqB4HFWPXDciyBztkD9ZeS1iFF+1Re5mldd2CVjRb5fUo2F9
-         Fr7SrqHOWK1/JCpGZ/Wjk7JHuo9AZeaz1rl9zqZ3IytzmJEy77FIabhhqsadQsJQx6I6
-         uBWVG7QTQ5hWQT06yncJH/Bf7kVMIaXuI/P9o1suFqCCz4TWaqA/HhaQCXULhNiXKBag
-         ilnaO5aAUnQ2Y+MDeo8ZIWhxnm/p7V6csbWej/Eo1aMk/hhcD9vIsd+R4wSViJ74bB1C
-         nsmxLX1nZ98UthAm8lNLQqLIk0QnzewZs2O3lUg9aWWJue2mNdwVII8PrrGyceQxsqtV
-         7Kjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748543900; x=1749148700;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xovIQZn3YQTyYV3/H7wuOXp388nJWq7YYeTeqG5/Sl4=;
-        b=tTsqv7VHbkFtd/tD/XkmRf5/7p4wBwcTf7N/oKpmv8TT3Kkz29fQ0nmq+C/FEL3UNo
-         3yvOOJh7rZbots61vhTlwfA3R3TL4WZx5t9qelR2R4IKEdR8779uC1Nvoc+6djLIz3Qh
-         cu3brDAXpK59kIIKN5tO0SYcFbydKkNz0do99G8S3fESQLbbDseXTu/30L1HaEJNJ4Mq
-         0FiAGCuofoAdKugJMQ/Ioo6pDG6eC2ueP0jkV+H2vhubAUDOiZX48MoysxvCvxQtIOCr
-         GeEpbMM2M/l/H+czP4m92SKKE1js97TqhXn4n93jPjdh78Lh7Hb1ko4wn3MYAQBJvMOJ
-         Hqzg==
-X-Forwarded-Encrypted: i=1; AJvYcCU/X93gU8DbhPKpbaTwy0TE4KUEupHzvfezffMAQdlFJNDeZu7o0fIQCTIDvpQZnUc6u0hDmNn9@vger.kernel.org, AJvYcCUM7A5wZhpPIEpucJz8KBSSWMGMr/KIPc4vsZubW1K0N1tirrmPoEnT1D1C/5JmFCEkXJA=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyjj7cguwmHOLWcS5m9HSOtKec83jP4RrVSOPj9r4D4wab3Fyzr
-	cvmQBamOQYjbPFyJ2ogpTRxgFzPPK9PhRB/xn5a6AMgRwqw2Ihr0nvyV
-X-Gm-Gg: ASbGncv+nfqyASt1q3QzMYXXI8Vz04rsotZrTu+d5me09NpwfdxVDvvlxKU/Vr9ScCY
-	eulYbSR3LrzP4F7IYgl4tFYVpHWg+OXU1zMclcsblOZWw5xUoA8pwDVsBBekiTonHSbh46qn599
-	N4WYSomlZa1GzPoOYaL7BMvR5sgZgHZWfLT4LlpZAjB9pqWu352sSat+aE4z9BWGcgRqw/Bkkmi
-	WdefBjM4zwtSJadOyTFizfZ0uOpreQn0eTimFARh/giLweMW4K6WbVbR75z4cNENoV3Yf63mmbe
-	U6bs7RA9nzDrkFuqckMg16JTi7GYP/443Kc8gFk0zSiK0t3Q/n92ysY=
-X-Google-Smtp-Source: AGHT+IGY0XduAU+L9wttkINgVF16jQYQl+QvqQmcL7EkRupXJEb0+P/UxaSztaLkg2NzNGo9Qr0FJA==
-X-Received: by 2002:a17:902:ec88:b0:234:adce:3ebc with SMTP id d9443c01a7336-2352a17fa26mr7265705ad.52.1748543900443;
-        Thu, 29 May 2025 11:38:20 -0700 (PDT)
-Received: from localhost ([129.210.115.104])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23506cd75e1sm15326985ad.112.2025.05.29.11.38.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 May 2025 11:38:19 -0700 (PDT)
-Date: Thu, 29 May 2025 11:38:19 -0700
-From: Cong Wang <xiyou.wangcong@gmail.com>
-To: Zijian Zhang <zijianzhang@bytedance.com>
-Cc: John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
-	bpf@vger.kernel.org, zhoufeng.zf@bytedance.com,
-	jakub@cloudflare.com, Cong Wang <cong.wang@bytedance.com>
-Subject: Re: [Patch bpf-next v3 2/4] skmsg: implement slab allocator cache
- for sk_msg
-Message-ID: <aDipm6P+RWGD8j4M@pop-os.localdomain>
-References: <20250519203628.203596-1-xiyou.wangcong@gmail.com>
- <20250519203628.203596-3-xiyou.wangcong@gmail.com>
- <20250529000348.upto3ztve36ccamv@gmail.com>
- <c66ac1f6-1626-47d6-9132-1aeedf771032@bytedance.com>
+	s=arc-20240116; t=1748545124; c=relaxed/simple;
+	bh=QeyNgQcP7SUNBaCrPXf1RaNXU4rKkV1IpXNIIrZFDm8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=m7cCpyt/IOZA0v3yLJPBYgo5RZX12e2tQvq/0N7qYrtbxPLZBJNrjFe2FSZM/UaH+Pv7ZOvWLmr1L0KCHYexsJRWdevJ37boBfDVnIf/XEnqiqRaL7fC8OGl1Sl687V3A9K3JfAtWxHzMNYQyvs/A+EL4hZKlYeZD44/Pzue3J0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VtgYLdCG; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <6f688f2e-7d26-423a-9029-d1b1ef1c938a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1748545109;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bOHe7a4ltmWqU1e5ZS3U2ls9kKsTWCwuykifpUWa7fs=;
+	b=VtgYLdCGWWtZxWhQVaE20Jrx/LldVehE0PJCfOKVrqNgrnWGgXGpsBM7eVN23clwEmliho
+	GQUhZsaz5b8m1oaK2Mx/XoVNwY6T20jmR4ydzzDEUexemsKiZh6kou1HCCfRjK3P+6SvtD
+	oDhdQDsdcTNnrCrcxDfzztsxaC14pb0=
+Date: Thu, 29 May 2025 11:58:17 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c66ac1f6-1626-47d6-9132-1aeedf771032@bytedance.com>
+Subject: Re: [PATCH v4 1/5] cgroup: move rstat base stat objects into their
+ own struct
+To: JP Kobryn <inwardvessel@gmail.com>, tj@kernel.org,
+ shakeel.butt@linux.dev, yosryahmed@google.com, mkoutny@suse.com,
+ hannes@cmpxchg.org, akpm@linux-foundation.org
+Cc: linux-mm@kvack.org, cgroups@vger.kernel.org, kernel-team@meta.com,
+ bpf@vger.kernel.org
+References: <20250404011050.121777-1-inwardvessel@gmail.com>
+ <20250404011050.121777-2-inwardvessel@gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+In-Reply-To: <20250404011050.121777-2-inwardvessel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, May 28, 2025 at 05:49:22PM -0700, Zijian Zhang wrote:
-> On 5/28/25 5:04 PM, John Fastabend wrote:
-> > On 2025-05-19 13:36:26, Cong Wang wrote:
-> > > From: Zijian Zhang <zijianzhang@bytedance.com>
-> > > 
-> > > Optimizing redirect ingress performance requires frequent allocation and
-> > > deallocation of sk_msg structures. Introduce a dedicated kmem_cache for
-> > > sk_msg to reduce memory allocation overhead and improve performance.
-> > > 
-> > > Reviewed-by: Cong Wang <cong.wang@bytedance.com>
-> > > Signed-off-by: Zijian Zhang <zijianzhang@bytedance.com>
-> > > ---
-> > >   include/linux/skmsg.h | 21 ++++++++++++---------
-> > >   net/core/skmsg.c      | 28 +++++++++++++++++++++-------
-> > >   net/ipv4/tcp_bpf.c    |  5 ++---
-> > >   3 files changed, 35 insertions(+), 19 deletions(-)
-> > > 
-> > > diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-> > > index d6f0a8cd73c4..bf28ce9b5fdb 100644
-> > > --- a/include/linux/skmsg.h
-> > > +++ b/include/linux/skmsg.h
-> > > @@ -121,6 +121,7 @@ struct sk_psock {
-> > >   	struct rcu_work			rwork;
-> > >   };
-> > > +struct sk_msg *sk_msg_alloc(gfp_t gfp);
-> > >   int sk_msg_expand(struct sock *sk, struct sk_msg *msg, int len,
-> > >   		  int elem_first_coalesce);
-> > >   int sk_msg_clone(struct sock *sk, struct sk_msg *dst, struct sk_msg *src,
-> > > @@ -143,6 +144,8 @@ int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
-> > >   		   int len, int flags);
-> > >   bool sk_msg_is_readable(struct sock *sk);
-> > > +extern struct kmem_cache *sk_msg_cachep;
-> > > +
-> > >   static inline void sk_msg_check_to_free(struct sk_msg *msg, u32 i, u32 bytes)
-> > >   {
-> > >   	WARN_ON(i == msg->sg.end && bytes);
-> > > @@ -319,6 +322,13 @@ static inline void sock_drop(struct sock *sk, struct sk_buff *skb)
-> > >   	kfree_skb(skb);
-> > >   }
-> > > +static inline void kfree_sk_msg(struct sk_msg *msg)
-> > > +{
-> > > +	if (msg->skb)
-> > > +		consume_skb(msg->skb);
-> > > +	kmem_cache_free(sk_msg_cachep, msg);
-> > > +}
-> > > +
-> > >   static inline bool sk_psock_queue_msg(struct sk_psock *psock,
-> > >   				      struct sk_msg *msg)
-> > >   {
-> > > @@ -330,7 +340,7 @@ static inline bool sk_psock_queue_msg(struct sk_psock *psock,
-> > >   		ret = true;
-> > >   	} else {
-> > >   		sk_msg_free(psock->sk, msg);
-> > > -		kfree(msg);
-> > > +		kfree_sk_msg(msg);
-> > 
-> > Isn't this a potential use after free on msg->skb? The sk_msg_free() a
-> > line above will consume_skb() if it exists and its not nil set so we would
-> > consume_skb() again?
-> > 
+On 4/3/25 6:10 PM, JP Kobryn wrote:
+> This non-functional change serves as preparation for moving to
+> subsystem-based rstat trees. The base stats are not an actual subsystem,
+> but in future commits they will have exclusive rstat trees just as other
+> subsystems will.
 > 
-> Thanks to sk_msg_free, after consuming the skb, it invokes sk_msg_init
-> to make msg->skb NULL to prevent further double free.
+> Moving the base stat objects into a new struct allows the cgroup_rstat_cpu
+> struct to become more compact since it now only contains the minimum amount
+> of pointers needed for rstat participation. Subsystems will (in future
+> commits) make use of the compact cgroup_rstat_cpu struct while avoiding the
+> memory overhead of the base stat objects which they will not use.
 > 
-> To avoid the confusion, we can replace kfree_sk_msg here with
-> kmem_cache_free.
+> An instance of the new struct cgroup_rstat_base_cpu was placed on the
+> cgroup struct so it can retain ownership of these base stats common to all
+> cgroups. A helper function was added for looking up the cpu-specific base
+> stats of a given cgroup. Finally, initialization and variable names were
+> adjusted where applicable.
+> 
+> Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
+> ---
+>   include/linux/cgroup-defs.h | 38 ++++++++++-------
+>   kernel/cgroup/cgroup.c      |  8 +++-
+>   kernel/cgroup/rstat.c       | 84 ++++++++++++++++++++++---------------
+>   3 files changed, 79 insertions(+), 51 deletions(-)
 > 
 
-Right, the re-initialization in sk_msg_free() is indeed confusing, maybe
-it is time to clean up its logic? For example, separate sk_msg_init()
-out from sk_msg_free().
+Hi everyone.
 
-I can add a separate patch for this in next update, if people prefer.
+BPF CI started failing after recent upstream merges (tip: 90b83efa6701).
+I bisected the issue to this patch, see a log snippet below [1]:
 
-Thanks!
+     ##[error]#44/9 btf_tag/btf_type_tag_percpu_vmlinux_helper
+     load_btfs:PASS:could not load vmlinux BTF 0 nsec
+     test_btf_type_tag_vmlinux_percpu:PASS:btf_type_tag_percpu 0 nsec
+     libbpf: prog 'test_percpu_helper': BPF program load failed: -EACCES
+     libbpf: prog 'test_percpu_helper': -- BEGIN PROG LOAD LOG --
+     0: R1=ctx() R10=fp0
+     ; int BPF_PROG(test_percpu_helper, struct cgroup *cgrp, const char 
+*path) @ btf_type_tag_percpu.c:58
+     0: (79) r1 = *(u64 *)(r1 +0)
+     func 'cgroup_mkdir' arg0 has btf_id 437 type STRUCT 'cgroup'
+     1: R1_w=trusted_ptr_cgroup()
+     ; cpu = bpf_get_smp_processor_id(); @ btf_type_tag_percpu.c:63
+     1: (7b) *(u64 *)(r10 -8) = r1         ; R1_w=trusted_ptr_cgroup() 
+R10=fp0 fp-8_w=trusted_ptr_cgroup()
+     2: (85) call bpf_get_smp_processor_id#8       ; 
+R0_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=1,var_off=(0x0; 0x1))
+     3: (79) r1 = *(u64 *)(r10 -8)         ; R1_w=trusted_ptr_cgroup() 
+R10=fp0 fp-8_w=trusted_ptr_cgroup()
+     ; cgrp->self.rstat_cpu, cpu); @ btf_type_tag_percpu.c:65
+     4: (79) r1 = *(u64 *)(r1 +32)         ; R1_w=percpu_ptr_css_rstat_cpu()
+     ; rstat = (struct cgroup_rstat_cpu *)bpf_per_cpu_ptr( @ 
+btf_type_tag_percpu.c:64
+     5: (bc) w2 = w0                       ; 
+R0_w=scalar(id=1,smin=smin32=0,smax=umax=smax32=umax32=1,var_off=(0x0; 
+0x1)) 
+R2_w=scalar(id=1,smin=smin32=0,smax=umax=smax32=umax32=1,var_off=(0x0; 0x1))
+     6: (85) call bpf_per_cpu_ptr#153      ; 
+R0=ptr_or_null_css_rstat_cpu(id=2)
+     ; if (rstat) { @ btf_type_tag_percpu.c:66
+     7: (15) if r0 == 0x0 goto pc+1        ; R0=ptr_css_rstat_cpu()
+     ; *(volatile int *)rstat; @ btf_type_tag_percpu.c:68
+     8: (61) r1 = *(u32 *)(r0 +0)
+     cannot access ptr member updated_children with moff 0 in struct 
+css_rstat_cpu with off 0 size 4
+     processed 9 insns (limit 1000000) max_states_per_insn 0 
+total_states 1 peak_states 1 mark_read 1
+     -- END PROG LOAD LOG --
+     libbpf: prog 'test_percpu_helper': failed to load: -EACCES
+     libbpf: failed to load object 'btf_type_tag_percpu'
+     libbpf: failed to load BPF skeleton 'btf_type_tag_percpu': -EACCES
+     test_btf_type_tag_vmlinux_percpu:FAIL:btf_type_tag_percpu_helper 
+unexpected error: -13 (errno 13)
+
+The test in question [2]:
+
+SEC("tp_btf/cgroup_mkdir")
+int BPF_PROG(test_percpu_helper, struct cgroup *cgrp, const char *path)
+{
+	struct cgroup_rstat_cpu *rstat;
+	__u32 cpu;
+
+	cpu = bpf_get_smp_processor_id();
+	rstat = (struct cgroup_rstat_cpu *)bpf_per_cpu_ptr(cgrp->rstat_cpu, cpu);
+	if (rstat) {
+		/* READ_ONCE */
+		*(volatile int *)rstat; // BPF verification fails here
+	}
+
+	return 0;
+}
+
+Any ideas about how to properly fix this?
+
+Thanks.
+
+[1] 
+https://github.com/kernel-patches/bpf/actions/runs/15316839796/job/43125242673
+[2] 
+https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/tools/testing/selftests/bpf/progs/btf_type_tag_percpu.c#n68
+
+> diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+> index 485b651869d9..6d177f770d28 100644
+> --- a/include/linux/cgroup-defs.h
+> +++ b/include/linux/cgroup-defs.h
+> @@ -344,10 +344,29 @@ struct cgroup_base_stat {
+>    * frequency decreases the cost of each read.
+>    *
+>    * This struct hosts both the fields which implement the above -
+> - * updated_children and updated_next - and the fields which track basic
+> - * resource statistics on top of it - bsync, bstat and last_bstat.
+> + * updated_children and updated_next.
+>    */
+>   struct cgroup_rstat_cpu {
+> +	/*
+> +	 * Child cgroups with stat updates on this cpu since the last read
+> +	 * are linked on the parent's ->updated_children through
+> +	 * ->updated_next.
+> +	 *
+> +	 * In addition to being more compact, singly-linked list pointing
+> +	 * to the cgroup makes it unnecessary for each per-cpu struct to
+> +	 * point back to the associated cgroup.
+> +	 *
+> +	 * Protected by per-cpu cgroup_rstat_cpu_lock.
+> +	 */
+> +	struct cgroup *updated_children;	/* terminated by self cgroup */
+> +	struct cgroup *updated_next;		/* NULL iff not on the list */
+> +};
+> +
+> +/*
+> + * This struct hosts the fields which track basic resource statistics on
+> + * top of it - bsync, bstat and last_bstat.
+> + */
+> +struct cgroup_rstat_base_cpu {
+>   	/*
+>   	 * ->bsync protects ->bstat.  These are the only fields which get
+>   	 * updated in the hot path.
+> @@ -374,20 +393,6 @@ struct cgroup_rstat_cpu {
+>   	 * deltas to propagate to the per-cpu subtree_bstat.
+>   	 */
+>   	struct cgroup_base_stat last_subtree_bstat;
+> -
+> -	/*
+> -	 * Child cgroups with stat updates on this cpu since the last read
+> -	 * are linked on the parent's ->updated_children through
+> -	 * ->updated_next.
+> -	 *
+> -	 * In addition to being more compact, singly-linked list pointing
+> -	 * to the cgroup makes it unnecessary for each per-cpu struct to
+> -	 * point back to the associated cgroup.
+> -	 *
+> -	 * Protected by per-cpu cgroup_rstat_cpu_lock.
+> -	 */
+> -	struct cgroup *updated_children;	/* terminated by self cgroup */
+> -	struct cgroup *updated_next;		/* NULL iff not on the list */
+>   };
+>   
+>   struct cgroup_freezer_state {
+> @@ -518,6 +523,7 @@ struct cgroup {
+>   
+>   	/* per-cpu recursive resource statistics */
+>   	struct cgroup_rstat_cpu __percpu *rstat_cpu;
+> +	struct cgroup_rstat_base_cpu __percpu *rstat_base_cpu;
+>   	struct list_head rstat_css_list;
+>   
+>   	/*
+> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> index ac2db99941ca..77349d07b117 100644
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -161,10 +161,14 @@ static struct static_key_true *cgroup_subsys_on_dfl_key[] = {
+>   };
+>   #undef SUBSYS
+>   
+> -static DEFINE_PER_CPU(struct cgroup_rstat_cpu, cgrp_dfl_root_rstat_cpu);
+> +static DEFINE_PER_CPU(struct cgroup_rstat_cpu, root_rstat_cpu);
+> +static DEFINE_PER_CPU(struct cgroup_rstat_base_cpu, root_rstat_base_cpu);
+>   
+>   /* the default hierarchy */
+> -struct cgroup_root cgrp_dfl_root = { .cgrp.rstat_cpu = &cgrp_dfl_root_rstat_cpu };
+> +struct cgroup_root cgrp_dfl_root = {
+> +	.cgrp.rstat_cpu = &root_rstat_cpu,
+> +	.cgrp.rstat_base_cpu = &root_rstat_base_cpu,
+> +};
+>   EXPORT_SYMBOL_GPL(cgrp_dfl_root);
+>   
+>   /*
+> diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+> index 4bb587d5d34f..a20e3ab3f7d3 100644
+> --- a/kernel/cgroup/rstat.c
+> +++ b/kernel/cgroup/rstat.c
+> @@ -19,6 +19,12 @@ static struct cgroup_rstat_cpu *cgroup_rstat_cpu(struct cgroup *cgrp, int cpu)
+>   	return per_cpu_ptr(cgrp->rstat_cpu, cpu);
+>   }
+>   
+> +static struct cgroup_rstat_base_cpu *cgroup_rstat_base_cpu(
+> +		struct cgroup *cgrp, int cpu)
+> +{
+> +	return per_cpu_ptr(cgrp->rstat_base_cpu, cpu);
+> +}
+> +
+>   /*
+>    * Helper functions for rstat per CPU lock (cgroup_rstat_cpu_lock).
+>    *
+> @@ -351,12 +357,22 @@ int cgroup_rstat_init(struct cgroup *cgrp)
+>   			return -ENOMEM;
+>   	}
+>   
+> +	if (!cgrp->rstat_base_cpu) {
+> +		cgrp->rstat_base_cpu = alloc_percpu(struct cgroup_rstat_base_cpu);
+> +		if (!cgrp->rstat_cpu) {
+> +			free_percpu(cgrp->rstat_cpu);
+> +			return -ENOMEM;
+> +		}
+> +	}
+> +
+>   	/* ->updated_children list is self terminated */
+>   	for_each_possible_cpu(cpu) {
+>   		struct cgroup_rstat_cpu *rstatc = cgroup_rstat_cpu(cgrp, cpu);
+> +		struct cgroup_rstat_base_cpu *rstatbc =
+> +			cgroup_rstat_base_cpu(cgrp, cpu);
+>   
+>   		rstatc->updated_children = cgrp;
+> -		u64_stats_init(&rstatc->bsync);
+> +		u64_stats_init(&rstatbc->bsync);
+>   	}
+>   
+>   	return 0;
+> @@ -379,6 +395,8 @@ void cgroup_rstat_exit(struct cgroup *cgrp)
+>   
+>   	free_percpu(cgrp->rstat_cpu);
+>   	cgrp->rstat_cpu = NULL;
+> +	free_percpu(cgrp->rstat_base_cpu);
+> +	cgrp->rstat_base_cpu = NULL;
+>   }
+>   
+>   void __init cgroup_rstat_boot(void)
+> @@ -419,9 +437,9 @@ static void cgroup_base_stat_sub(struct cgroup_base_stat *dst_bstat,
+>   
+>   static void cgroup_base_stat_flush(struct cgroup *cgrp, int cpu)
+>   {
+> -	struct cgroup_rstat_cpu *rstatc = cgroup_rstat_cpu(cgrp, cpu);
+> +	struct cgroup_rstat_base_cpu *rstatbc = cgroup_rstat_base_cpu(cgrp, cpu);
+>   	struct cgroup *parent = cgroup_parent(cgrp);
+> -	struct cgroup_rstat_cpu *prstatc;
+> +	struct cgroup_rstat_base_cpu *prstatbc;
+>   	struct cgroup_base_stat delta;
+>   	unsigned seq;
+>   
+> @@ -431,15 +449,15 @@ static void cgroup_base_stat_flush(struct cgroup *cgrp, int cpu)
+>   
+>   	/* fetch the current per-cpu values */
+>   	do {
+> -		seq = __u64_stats_fetch_begin(&rstatc->bsync);
+> -		delta = rstatc->bstat;
+> -	} while (__u64_stats_fetch_retry(&rstatc->bsync, seq));
+> +		seq = __u64_stats_fetch_begin(&rstatbc->bsync);
+> +		delta = rstatbc->bstat;
+> +	} while (__u64_stats_fetch_retry(&rstatbc->bsync, seq));
+>   
+>   	/* propagate per-cpu delta to cgroup and per-cpu global statistics */
+> -	cgroup_base_stat_sub(&delta, &rstatc->last_bstat);
+> +	cgroup_base_stat_sub(&delta, &rstatbc->last_bstat);
+>   	cgroup_base_stat_add(&cgrp->bstat, &delta);
+> -	cgroup_base_stat_add(&rstatc->last_bstat, &delta);
+> -	cgroup_base_stat_add(&rstatc->subtree_bstat, &delta);
+> +	cgroup_base_stat_add(&rstatbc->last_bstat, &delta);
+> +	cgroup_base_stat_add(&rstatbc->subtree_bstat, &delta);
+>   
+>   	/* propagate cgroup and per-cpu global delta to parent (unless that's root) */
+>   	if (cgroup_parent(parent)) {
+> @@ -448,73 +466,73 @@ static void cgroup_base_stat_flush(struct cgroup *cgrp, int cpu)
+>   		cgroup_base_stat_add(&parent->bstat, &delta);
+>   		cgroup_base_stat_add(&cgrp->last_bstat, &delta);
+>   
+> -		delta = rstatc->subtree_bstat;
+> -		prstatc = cgroup_rstat_cpu(parent, cpu);
+> -		cgroup_base_stat_sub(&delta, &rstatc->last_subtree_bstat);
+> -		cgroup_base_stat_add(&prstatc->subtree_bstat, &delta);
+> -		cgroup_base_stat_add(&rstatc->last_subtree_bstat, &delta);
+> +		delta = rstatbc->subtree_bstat;
+> +		prstatbc = cgroup_rstat_base_cpu(parent, cpu);
+> +		cgroup_base_stat_sub(&delta, &rstatbc->last_subtree_bstat);
+> +		cgroup_base_stat_add(&prstatbc->subtree_bstat, &delta);
+> +		cgroup_base_stat_add(&rstatbc->last_subtree_bstat, &delta);
+>   	}
+>   }
+>   
+> -static struct cgroup_rstat_cpu *
+> +static struct cgroup_rstat_base_cpu *
+>   cgroup_base_stat_cputime_account_begin(struct cgroup *cgrp, unsigned long *flags)
+>   {
+> -	struct cgroup_rstat_cpu *rstatc;
+> +	struct cgroup_rstat_base_cpu *rstatbc;
+>   
+> -	rstatc = get_cpu_ptr(cgrp->rstat_cpu);
+> -	*flags = u64_stats_update_begin_irqsave(&rstatc->bsync);
+> -	return rstatc;
+> +	rstatbc = get_cpu_ptr(cgrp->rstat_base_cpu);
+> +	*flags = u64_stats_update_begin_irqsave(&rstatbc->bsync);
+> +	return rstatbc;
+>   }
+>   
+>   static void cgroup_base_stat_cputime_account_end(struct cgroup *cgrp,
+> -						 struct cgroup_rstat_cpu *rstatc,
+> +						 struct cgroup_rstat_base_cpu *rstatbc,
+>   						 unsigned long flags)
+>   {
+> -	u64_stats_update_end_irqrestore(&rstatc->bsync, flags);
+> +	u64_stats_update_end_irqrestore(&rstatbc->bsync, flags);
+>   	cgroup_rstat_updated(cgrp, smp_processor_id());
+> -	put_cpu_ptr(rstatc);
+> +	put_cpu_ptr(rstatbc);
+>   }
+>   
+>   void __cgroup_account_cputime(struct cgroup *cgrp, u64 delta_exec)
+>   {
+> -	struct cgroup_rstat_cpu *rstatc;
+> +	struct cgroup_rstat_base_cpu *rstatbc;
+>   	unsigned long flags;
+>   
+> -	rstatc = cgroup_base_stat_cputime_account_begin(cgrp, &flags);
+> -	rstatc->bstat.cputime.sum_exec_runtime += delta_exec;
+> -	cgroup_base_stat_cputime_account_end(cgrp, rstatc, flags);
+> +	rstatbc = cgroup_base_stat_cputime_account_begin(cgrp, &flags);
+> +	rstatbc->bstat.cputime.sum_exec_runtime += delta_exec;
+> +	cgroup_base_stat_cputime_account_end(cgrp, rstatbc, flags);
+>   }
+>   
+>   void __cgroup_account_cputime_field(struct cgroup *cgrp,
+>   				    enum cpu_usage_stat index, u64 delta_exec)
+>   {
+> -	struct cgroup_rstat_cpu *rstatc;
+> +	struct cgroup_rstat_base_cpu *rstatbc;
+>   	unsigned long flags;
+>   
+> -	rstatc = cgroup_base_stat_cputime_account_begin(cgrp, &flags);
+> +	rstatbc = cgroup_base_stat_cputime_account_begin(cgrp, &flags);
+>   
+>   	switch (index) {
+>   	case CPUTIME_NICE:
+> -		rstatc->bstat.ntime += delta_exec;
+> +		rstatbc->bstat.ntime += delta_exec;
+>   		fallthrough;
+>   	case CPUTIME_USER:
+> -		rstatc->bstat.cputime.utime += delta_exec;
+> +		rstatbc->bstat.cputime.utime += delta_exec;
+>   		break;
+>   	case CPUTIME_SYSTEM:
+>   	case CPUTIME_IRQ:
+>   	case CPUTIME_SOFTIRQ:
+> -		rstatc->bstat.cputime.stime += delta_exec;
+> +		rstatbc->bstat.cputime.stime += delta_exec;
+>   		break;
+>   #ifdef CONFIG_SCHED_CORE
+>   	case CPUTIME_FORCEIDLE:
+> -		rstatc->bstat.forceidle_sum += delta_exec;
+> +		rstatbc->bstat.forceidle_sum += delta_exec;
+>   		break;
+>   #endif
+>   	default:
+>   		break;
+>   	}
+>   
+> -	cgroup_base_stat_cputime_account_end(cgrp, rstatc, flags);
+> +	cgroup_base_stat_cputime_account_end(cgrp, rstatbc, flags);
+>   }
+>   
+>   /*
+
 
