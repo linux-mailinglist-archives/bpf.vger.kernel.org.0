@@ -1,199 +1,184 @@
-Return-Path: <bpf+bounces-59258-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59259-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2DEBAC7682
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 05:38:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 455CDAC768B
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 05:42:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99C371BA046A
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 03:38:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33D9F7ACCA8
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 03:41:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D4432459F2;
-	Thu, 29 May 2025 03:38:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16CF2248897;
+	Thu, 29 May 2025 03:42:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="psVCYuxO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SKVDvwIP"
 X-Original-To: bpf@vger.kernel.org
-Received: from out162-62-57-137.mail.qq.com (out162-62-57-137.mail.qq.com [162.62.57.137])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A7F3522A
-	for <bpf@vger.kernel.org>; Thu, 29 May 2025 03:38:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.137
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2538B21E0AC;
+	Thu, 29 May 2025 03:42:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748489903; cv=none; b=bQepP4U/x2FgPLmra5VSwayXeW9pVtv+8C6g9LLVMoN1mQziFTSj9GFw63HNldQxi0iUeDA9dV8+ksTQsCiSxSI7+XfbeQxHdeEnMrtbeRynY9G1oHPzWVNmV+mH8OHgvKn97/OAwlgc9QwQFj2c3jLf86EGH8cut32Oaf1OvN8=
+	t=1748490158; cv=none; b=paiw7NWCO58R5s5l0MxV4idtqcwHMKGxzOVzJi1hKZSRqbO4Epcsiugzo2DdJB2m1Z4QSekSkOB5pwJEusAgm/CzvzvLUSNuhcFwBGjzXZX5LSrtr12XBRcQ5qoxG0vBk5FH+F5hJlqNsuK3XiwQbbKYBzGjyWUXTRoTWiZhmOs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748489903; c=relaxed/simple;
-	bh=9Gi+p7NOWdUYlyOBzHRN/ipN/78Bvj8tyDqCPEfyIh4=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=ef6sR9hwDlV7uxi3Di53vp0GpIafvUA+kXXqN1rrm7pSU4NBX7CXwMVTp/oV31m04q1aD9Mw29WCqszpvbZ8SIQB8raglExIyEYqtkAFzS/UHJL0KvTkhomCbnltMdMeY2d7HIhks8ky+Mint60CGtOhWhBjGmvZ2g9NN5hLSVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=psVCYuxO; arc=none smtp.client-ip=162.62.57.137
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1748489596;
-	bh=51cyRcS8pE0GQdR/zXBHt3aPgQac/BxEPQcY9bI9Ah8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=psVCYuxOrx0AHskpvob+Zzg1r08NOZtVLH9nXddSwH+fuqiYDOtdQsvUX+marVE9C
-	 4zyj7sf0GCv2xIucTf8GP648awKVn4K37ATXv55cB/CjA69bpMlKq3VSB/kPPIlmXq
-	 n0RTI13p9pX7viHpPgz8oEAttkDA7e0oaq29XGHY=
-Received: from NUC10.. ([39.156.73.10])
-	by newxmesmtplogicsvrszgpua8-0.qq.com (NewEsmtp) with SMTP
-	id 84C280DC; Thu, 29 May 2025 11:33:12 +0800
-X-QQ-mid: xmsmtpt1748489592tsa3q4n7f
-Message-ID: <tencent_2B46D7106B0DB285B4B2242FFB55685EF309@qq.com>
-X-QQ-XMAILINFO: NwU6Bou9okj/gKz5AmlCKddnnW1+RtLu8QmoYcmy9g6COA5vTwShMU3Q1Ko0Ya
-	 f4zqdfe1MSvIEazISSt7eLqbQGhnvcV9GsL+vCWJ3CKz3zvXk5nyZMeCMCqyF5bkgs92skz95sNZ
-	 LD4cOnC24CW1ANVmf3/Ye3Hz8Otewo3Zy2drSuK2vvJwKBhEI5WH5eOlC6R/JgIAxBtaxb1h6RiE
-	 i01QzsoBVQRh8Letozkx8fL8UA0CyNZppoIjf06MbZ0dbm2BtO/w7ARu9GKqe043ZaLat28rbobG
-	 ONRWp/zWAVzB+wTP9jykGvpLrbm+wyQdRsurBH1q8oUCGMh9+7zYuqEg1lxafHhkZ51+yYyGgJ7R
-	 TJMlgcx1flT6qoDJweFWXP1FJhUvRP9wc3fhkmD8FQXU0Awus8kpnBmt0LBw85P1Kow/I1eZQhGw
-	 UTKdL1jhD6ckV9pYkUeFeDWqqfrqAlYR4V9t5tjstwvGxrjQQ7hFtdbwyUG2ZH/8BgODaLBasqZg
-	 JMknZuHiOCioM4UU65PkSCcqLUgJblLL8OylNfFPLaeuGBgiVNso11WpNuUeqAcWycrWbUdZYbBr
-	 UeNlI1i3lmlHq0kLVwxwcavFA1GnHI2GftwA9Ag0x/5npmawDvLnIJ3RWrtM5zFIANWUue6h3HyX
-	 FaBQwyaTx0fAnGGJ0zOdd1yXBChpiv2XhTYplW0Wmj5FnpkfJNGZgaNkUe31BxkLbQxFjFIpgEDC
-	 JJrMpqMwRUjdrWTzdSZAc3roJi9GBKcNiFOfYSNeIHLczgqOIDUB+HB7G5PEY4Zk6pfiF63xh5nE
-	 hWjLGDmTzHtAfmH+MtINz/4ZfhjdPHqEwe7MSF7Afg3gUd/18vWoHPATYsdtWR6hPhNy3t6LQJNb
-	 0zQVYYKf47qCX9YUK6nbHmp2YxrYxxga/+pZidfD59Ds6IBE2vumFln45Gegun/zmcjOZGVPEXSb
-	 vfVbkmGlMEIvYaTkJPekgHwhpi+mnLR6JZLngH3hJHLE8eHYZfHzlxgXp12IDeMD3eEsKMC5qUC2
-	 O6tWdpn2CG3Det6rHtIzfh3OyJVcCGFQcO+eQo7fgB+74/1IyT+FHggKIfqxM=
-X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
-From: Rong Tao <rtoax@foxmail.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net
-Cc: rtoax@foxmail.com,
-	rongtao@cestc.cn,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Juntong Deng <juntong.deng@outlook.com>,
-	Amery Hung <amery.hung@bytedance.com>,
-	Dave Marchevsky <davemarchevsky@fb.com>,
-	Hou Tao <houtao1@huawei.com>,
-	bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)),
-	linux-kernel@vger.kernel.org (open list),
-	linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK)
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Add selftests for bpf_task_cwd_from_pid()
-Date: Thu, 29 May 2025 11:32:50 +0800
-X-OQ-MSGID: <78ba76a0749baaee94023a58bc1c3a8ba517afa3.1748488784.git.rtoax@foxmail.com>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <cover.1748488784.git.rtoax@foxmail.com>
-References: <cover.1748488784.git.rtoax@foxmail.com>
+	s=arc-20240116; t=1748490158; c=relaxed/simple;
+	bh=1oGqF+kLpE2T0HCkMCKtmAmdZ5GNX4oGFxPLWIQEJkM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ub5TpxBsfdg2XKgIz1VeI5MrJesf/smI7A3X6vL0t61ELaNY6tTmzE4hnQX92rVvPdVGKnQqBLXnfrLUQbRTIHjEIrEIDGXdZ4qUzzXJ4PqAilg/rVOUib3ixPRSC4PWNkFzCAdHRHykDkLatjEij2B86pd9uqx/njSnIhMZZ8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SKVDvwIP; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-22e033a3a07so6633485ad.0;
+        Wed, 28 May 2025 20:42:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748490156; x=1749094956; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sGQ6gPvbs0cdDm4yHXwvrbROFKsQxn254OqSH+zgs90=;
+        b=SKVDvwIPhY5SRAf3WrEqvnDZHnSz+jDKiovCNnjcTXVLXcVb/3TXxTrRzlbGaDBfcj
+         faBLDrbo1tdK3pLB0jMvTuJgNwdT07PxU6/8KNM2RyX79QlkUZjwDZidPE/8YGcrW9XU
+         zRlo9iIqhNcwen7l5aUSOBTjWJl9NlQh8vqrmfyzE6lpw1k5ZmzuZPYr6qnNhjw2S6gB
+         VIrhEdCf09O23kYJr/mRN6yj1WtWOTEq2/KQKJHUSJWwpji9hc23Y+7t+5NbkvXddZa0
+         CGXdseA/kBzog2vIa4GvKKTGIEtz894uJ2TARovnY/WY2eqeLMlGf/epbHyqSG/znJiQ
+         +UNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748490156; x=1749094956;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sGQ6gPvbs0cdDm4yHXwvrbROFKsQxn254OqSH+zgs90=;
+        b=v+qyEFKgSxHN4eyFUWRENM5WLKmV/fj+DXzxBQIEIgsvZ4h3h9gGfoY5njvbVmolwd
+         AGgaMiAe7p+hXXcpYVvGcCLaANKb5kEJbK9B9vI8V9SvWDYJQR4EDmLQqPmhYaAWnai9
+         LDrVI+toKUDlvQxOfvWL/t5etQAkeRpIQlW71azq+0yiICF46mRqpUC6eYSGHkwPjWLA
+         9HXVh03gwgccChPJdVcyLI+EB5sEhsMInRO8UIo9nKsw0NxezsJzSlQrxrmM7rinB2eh
+         rSf2ZPZCsavEubJQ0QPNkkBAnJsn/NtxCYKgVS8g7CEXJSQzbeLY2eB6eqj0o7KfS2d8
+         S63g==
+X-Forwarded-Encrypted: i=1; AJvYcCURxnHrC8V/TNvJZh8hvDRK4/zAi9qJ/XrXtenn3ciK51x9faicTOo3PfMb641EDObL4BUFOetSVu/eSWTi@vger.kernel.org, AJvYcCWib8q8DrXNP47zz67mdqo9otWuxGXvtGN5lQrZ6hcgnvxk5zwJoN82IvcOw+GCgzm0ip4=@vger.kernel.org, AJvYcCXIzBfJJTtFXtzxBbsD8PmRFE4TTP+R7MU2s7y60Je5U8gAc5QUP0O5YyFXmwN85sbPBMvTFg33@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz7qrnPVxkvnveNnMb7/9If4sdkwbOOOAx5PGFK0KVB2D6aCnUs
+	IXNVLgGk0BNxeF82jsaENgLshQP9sUvwLDpK/TeLB1DKvg46tHOgz1kp
+X-Gm-Gg: ASbGnctz4K6+WxYEQt9gGoGUL3gw+mDDiUFQuu0nOPmpirehi5SB4cpTwIIxDq/WlBf
+	JXPwvtS0uzbrguMsK7Jo4ONMWJ5sgaBWC+lcYboxmIw3s6T6xRiTp3P0i4rZ8YYJNx0U0Sln/0U
+	CkbBuM8JqQY2Z7S+iN3fXoU9e2dCVpwYzR9z3yZcu8oHWw61y83j/yqeGfcvBy74jxpsStZKcep
+	By1kS86fqBYvQEI6CvJvuBf+t8t+q02SBHUMGzd2CjXBLzdWqh2sqhsHms/0ts4/Bw0lIo9+O4l
+	8If/xAQ1c//OaRX8fM69NrcBP1itGCGCh2Na+Q+KeXa2Qd+ZgO5qb4Th4gSBQ8bM3AoGMP/fi8R
+	e8fpUjrxD+9Wov3VqL5Q7qHqXkfA=
+X-Google-Smtp-Source: AGHT+IGeJBpGKs8MTyCqIF7KiEXWtVJVhEgmHCJGR2AwCEysIcKML8h49AWwZtiK+qYj1P1TkFjW1g==
+X-Received: by 2002:a17:903:32c7:b0:234:f580:9f8 with SMTP id d9443c01a7336-23507fda8edmr8895975ad.3.1748490156212;
+        Wed, 28 May 2025 20:42:36 -0700 (PDT)
+Received: from ?IPV6:2001:ee0:4f0e:fb30:76aa:9d32:607:b042? ([2001:ee0:4f0e:fb30:76aa:9d32:607:b042])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-235069fa2c7sm3485485ad.0.2025.05.28.20.42.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 May 2025 20:42:35 -0700 (PDT)
+Message-ID: <c75005c0-7e1a-48f0-b39b-b6310642ad4a@gmail.com>
+Date: Thu, 29 May 2025 10:42:27 +0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH net-next v2 1/2] virtio-net: support zerocopy multi
+ buffer XDP in mergeable
+To: ALOK TIWARI <alok.a.tiwari@oracle.com>, netdev@vger.kernel.org
+Cc: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
+ Xuan Zhuo <xuanzhuo@linux.alibaba.com>, =?UTF-8?Q?Eugenio_P=C3=A9rez?=
+ <eperezma@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, virtualization@lists.linux.dev,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20250527161904.75259-1-minhquangbui99@gmail.com>
+ <20250527161904.75259-2-minhquangbui99@gmail.com>
+ <d855c95e-06db-4c68-af01-8997ce9b9257@oracle.com>
+Content-Language: en-US
+From: Bui Quang Minh <minhquangbui99@gmail.com>
+In-Reply-To: <d855c95e-06db-4c68-af01-8997ce9b9257@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-From: Rong Tao <rongtao@cestc.cn>
+On 5/28/25 23:44, ALOK TIWARI wrote:
+>
+>
+> On 27-05-2025 21:49, Bui Quang Minh wrote:
+>> Currently, in zerocopy mode with mergeable receive buffer, virtio-net
+>> does not support multi buffer but a single buffer only. This commit adds
+>> support for multi mergeable receive buffer in the zerocopy XDP path by
+>> utilizing XDP buffer with frags.
+>>
+>> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
+>> ---
+>>   drivers/net/virtio_net.c | 123 +++++++++++++++++++++------------------
+>>   1 file changed, 66 insertions(+), 57 deletions(-)
+>>
+>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+>> index e53ba600605a..a9558650f205 100644
+>> --- a/drivers/net/virtio_net.c
+>> +++ b/drivers/net/virtio_net.c
+>> @@ -45,6 +45,8 @@ module_param(napi_tx, bool, 0644);
+>>   #define VIRTIO_XDP_TX        BIT(0)
+>>   #define VIRTIO_XDP_REDIR    BIT(1)
+>>   +#define VIRTNET_MAX_ZC_SEGS    8
+>> +
+>>   /* RX packet size EWMA. The average packet size is used to 
+>> determine the packet
+>>    * buffer size when refilling RX rings. As the entire RX ring may 
+>> be refilled
+>>    * at once, the weight is chosen so that the EWMA will be 
+>> insensitive to short-
+>> @@ -1232,65 +1234,53 @@ static void xsk_drop_follow_bufs(struct 
+>> net_device *dev,
+>>       }
+>>   }
+>>   -static int xsk_append_merge_buffer(struct virtnet_info *vi,
+>> -                   struct receive_queue *rq,
+>> -                   struct sk_buff *head_skb,
+>> -                   u32 num_buf,
+>> -                   struct virtio_net_hdr_mrg_rxbuf *hdr,
+>> -                   struct virtnet_rq_stats *stats)
+>> +static int virtnet_build_xsk_buff_mrg(struct virtnet_info *vi,
+>> +                      struct receive_queue *rq,
+>> +                      u32 num_buf,
+>> +                      struct xdp_buff *xdp,
+>> +                      struct virtnet_rq_stats *stats)
+>>   {
+>> -    struct sk_buff *curr_skb;
+>> -    struct xdp_buff *xdp;
+>> -    u32 len, truesize;
+>> -    struct page *page;
+>> +    unsigned int len;
+>>       void *buf;
+>>   -    curr_skb = head_skb;
+>> +    if (num_buf < 2)
+>> +        return 0;
+>> +
+>> +    while (num_buf > 1) {
+>> +        struct xdp_buff *new_xdp;
+>>   -    while (--num_buf) {
+>>           buf = virtqueue_get_buf(rq->vq, &len);
+>> -        if (unlikely(!buf)) {
+>> -            pr_debug("%s: rx error: %d buffers out of %d missing\n",
+>> -                 vi->dev->name, num_buf,
+>> -                 virtio16_to_cpu(vi->vdev,
+>> -                         hdr->num_buffers));
+>> +        if (!unlikely(buf)) {
+>
+> if (unlikely(!buf)) { ?
 
-Add some selftest testcases that validate the expected behavior of the
-bpf_task_cwd_from_pid() kfunc that was added in the prior patch.
+Thanks, I'll fix this in the next version.
 
-Signed-off-by: Rong Tao <rongtao@cestc.cn>
----
- .../selftests/bpf/prog_tests/task_kfunc.c     |  3 ++
- .../selftests/bpf/progs/task_kfunc_common.h   |  1 +
- .../selftests/bpf/progs/task_kfunc_success.c  | 47 +++++++++++++++++++
- 3 files changed, 51 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/task_kfunc.c b/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
-index 83b90335967a..c18a0cb67164 100644
---- a/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
-+++ b/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
-@@ -149,6 +149,9 @@ static const char * const success_tests[] = {
- 	"task_kfunc_acquire_trusted_walked",
- 	"test_task_kfunc_flavor_relo",
- 	"test_task_kfunc_flavor_relo_not_found",
-+	"test_task_cwd_from_pid_arg",
-+	"test_task_cwd_from_pid",
-+	"test_task_cwd_from_pid_current",
- };
- 
- static const char * const vpid_success_tests[] = {
-diff --git a/tools/testing/selftests/bpf/progs/task_kfunc_common.h b/tools/testing/selftests/bpf/progs/task_kfunc_common.h
-index e9c4fea7a4bb..b762054a1825 100644
---- a/tools/testing/selftests/bpf/progs/task_kfunc_common.h
-+++ b/tools/testing/selftests/bpf/progs/task_kfunc_common.h
-@@ -24,6 +24,7 @@ struct task_struct *bpf_task_acquire(struct task_struct *p) __ksym;
- void bpf_task_release(struct task_struct *p) __ksym;
- struct task_struct *bpf_task_from_pid(s32 pid) __ksym;
- struct task_struct *bpf_task_from_vpid(s32 vpid) __ksym;
-+int bpf_task_cwd_from_pid(s32 pid, char *buf, u32 buf_len) __ksym;
- void bpf_rcu_read_lock(void) __ksym;
- void bpf_rcu_read_unlock(void) __ksym;
- 
-diff --git a/tools/testing/selftests/bpf/progs/task_kfunc_success.c b/tools/testing/selftests/bpf/progs/task_kfunc_success.c
-index 5fb4fc19d26a..6424cf5c151e 100644
---- a/tools/testing/selftests/bpf/progs/task_kfunc_success.c
-+++ b/tools/testing/selftests/bpf/progs/task_kfunc_success.c
-@@ -351,6 +351,53 @@ int BPF_PROG(test_task_from_pid_invalid, struct task_struct *task, u64 clone_fla
- 	return 0;
- }
- 
-+SEC("tp_btf/task_newtask")
-+int BPF_PROG(test_task_cwd_from_pid_arg, struct task_struct *task, u64 clone_flags)
-+{
-+	char cwd[256];
-+
-+	if (!is_test_kfunc_task())
-+		return 0;
-+
-+	err = 0;
-+	err += bpf_task_cwd_from_pid(task->pid, NULL, sizeof(cwd)) != -EINVAL;
-+	err += bpf_task_cwd_from_pid(task->pid, cwd, 0) != -EINVAL;
-+	err += bpf_task_cwd_from_pid(-1, cwd, sizeof(cwd)) != -ESRCH;
-+	return 0;
-+}
-+
-+SEC("tp_btf/task_newtask")
-+int BPF_PROG(test_task_cwd_from_pid, struct task_struct *task, u64 clone_flags)
-+{
-+	char cwd[256];
-+
-+	if (!is_test_kfunc_task())
-+		return 0;
-+
-+	err = bpf_task_cwd_from_pid(task->pid, cwd, sizeof(cwd));
-+	return 0;
-+}
-+
-+SEC("tp_btf/task_newtask")
-+int BPF_PROG(test_task_cwd_from_pid_current, struct task_struct *task, u64 clone_flags)
-+{
-+	char cwd[128], cwd2[128];
-+	struct task_struct *current;
-+
-+	if (!is_test_kfunc_task())
-+		return 0;
-+
-+	current = bpf_get_current_task_btf();
-+
-+	err = 0;
-+	err += bpf_task_cwd_from_pid(task->pid, cwd, sizeof(cwd));
-+	err += bpf_task_cwd_from_pid(current->pid, cwd2, sizeof(cwd2));
-+
-+	err += bpf_strncmp(cwd, sizeof(cwd), cwd2) != 0;
-+
-+	return 0;
-+}
-+
- SEC("tp_btf/task_newtask")
- int BPF_PROG(task_kfunc_acquire_trusted_walked, struct task_struct *task, u64 clone_flags)
- {
--- 
-2.49.0
+>
+>> +            pr_debug("%s: rx error: %d buffers missing\n",
+>> +                 vi->dev->name, num_buf);
+>>               DEV_STATS_INC(vi->dev, rx_length_errors);
+>
+> Thanks,
+> Alok
 
 
