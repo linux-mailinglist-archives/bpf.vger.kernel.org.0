@@ -1,132 +1,107 @@
-Return-Path: <bpf+bounces-59307-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59308-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2504AC8162
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 19:01:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19685AC8172
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 19:06:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51B99502EB2
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 17:01:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F11E018864E7
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 17:06:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EC6A22FF4E;
-	Thu, 29 May 2025 17:01:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7683222DFBE;
+	Thu, 29 May 2025 17:06:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FUuN5oX7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vBZyq5VG"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4504622F767
-	for <bpf@vger.kernel.org>; Thu, 29 May 2025 17:00:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFFB0CA5A;
+	Thu, 29 May 2025 17:06:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748538061; cv=none; b=ohJzBR5tnO6Y6FKHVXgA8h/6CH1RPQVVcSVad43YESfktNmRx2CKCMqpvxQ9OnmwAdJqOXOLR9MZT17aHuY9AacwHCn0GW4M5NOS+jQpSgZLDEfrFXt7rF0LQ4QKA/cdmR5Tj22uFiaZbEa6zuhjQA+ba414T4/jThVfuvKN27Q=
+	t=1748538374; cv=none; b=m7uI6EavgH8AIYnTZejTdw7bbK1tWgN/dt/qDKZO9z/To9N1Vu33JJMb6254hwNl8Wh88F4gP98cLMNnzaMVgYe8fFN+KxBa/cyfVu+HOhyscnYfkX5y/LQ1mg/1HRj4OI7iwCvPyzTWYVIIPdRWq//ifoNr0+U9K0xObhEf+D4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748538061; c=relaxed/simple;
-	bh=fn6Gypx0jppX4ZfV/wU6Lot+KTQW1fMN2RLSLn7ESP4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=LPxyOmJ6P0yGZnUDmfwZ7NyJUep+SO5TPq19fhC/flrDs+ahHulu69q0nVYISJTFa5BB0BjBIZhbK1hfv3LOoeanRV4RYIoqprOIYg0QwYXOM0+zTBQmlQ0yGe4d1MnfVsWGfLCWqgDY+OjlHb+pO5kTb8ViXS1t3KWJY8VO0M0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FUuN5oX7; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1748538058;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Oo40gIonSC9h0uhsHSMEjkgSCyqiY1FN2iI8Vf98Jlo=;
-	b=FUuN5oX7WLfaXCWrsgrZ90DC9ZoBuCLfY279sHIiwhg++8xlm3Y4y6g0ieshIJ0EZFibE8
-	CXrk0sNnqA03TNb/kCPEp1X0Y+u0vpbk7MXF49+9c/PHg42bn+Lvbo7PtIwr/viftWIji+
-	JFaXhhBhy8O1BI0wOsNSg5nTct4ZR4g=
-From: Tao Chen <chen.dylane@linux.dev>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	qmo@kernel.org,
-	jolsa@kernel.org
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Tao Chen <chen.dylane@linux.dev>
-Subject: [PATCH bpf-next  3/3] bpftool: Display cookie for raw_tp link probe
-Date: Fri, 30 May 2025 00:57:59 +0800
-Message-Id: <20250529165759.2536245-3-chen.dylane@linux.dev>
-In-Reply-To: <20250529165759.2536245-1-chen.dylane@linux.dev>
-References: <20250529165759.2536245-1-chen.dylane@linux.dev>
+	s=arc-20240116; t=1748538374; c=relaxed/simple;
+	bh=ybSUIx4J4QXFnXrJeAufVFzpaPKzZtF4JsxTls+uIl4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lntsWUX8/Xx0SjcGw3ynHQxyqvdg+u1ZixKpo21oDjmfqxemMfUS7qX4jE/CaNv0bpcsJGgVll+x0cM+fueChJewq/mXizF8jaMt6IWbLW0pe8iM6WiXmDv3puFuaKpVWnB0Ntfbep01nVyrDuwcph/jIg6b+t/+beRAg3K0Dm0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vBZyq5VG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 368FDC4CEEA;
+	Thu, 29 May 2025 17:06:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1748538373;
+	bh=ybSUIx4J4QXFnXrJeAufVFzpaPKzZtF4JsxTls+uIl4=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=vBZyq5VGzLFA6s/9JsFdwOPjiTUpK59x3vwYjz8e3YgnVp36nDUZC6rLY49QMNBKY
+	 mOoxBJ1sRCksDa1uruyVZUvauRqLTPX2Dynze6DMlfcU5OrFn7J2DvfDhPPLWLmJKr
+	 Nyt0cxe+HSjT+wEJwN3zTOvMZDy9cCf4qSLLdctfbYOvddw8pIjFX5tV3uTFApEohb
+	 rKCwpm+0yshwBB1oiRHiKq/TbUy45cp+1ZBJKPT7/u9SIdEvcoA2A9Is1QkeOHh+r/
+	 Eu+uVqXJzI0x05eakgXZizDu5BWSb3re2xmW/JZcmokxo5uzM3q5CRx1D8CG2UNmQC
+	 0Bc9L5HEuhTCQ==
+Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-47692b9d059so16177131cf.3;
+        Thu, 29 May 2025 10:06:13 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUJxGL1QX/yGVRcBjyOkQK7tmoOCo8vpw3AWoDXsp+vt3RNlSLkLsGb9+5eICg1R58YcelgPfjiw2WxIsEE@vger.kernel.org, AJvYcCVd/9OYx0AfVJVOov1LBBg6YVvdxr+IdtDONVhCS8OoTA1wZsfrzkJrdWQjs4TQDInppacEfmlVPEq9cksUmFhTs25Dm5yo@vger.kernel.org, AJvYcCWBCxBodFLX+Mc2uyk3o/WSn0C1GUogn6IH6bQ/Y3WpVCU4VmnfgtVHWVFLAuH9lGH9025lyGbEcYWGf9ymog==@vger.kernel.org, AJvYcCX5Ii6iurrx3i4i9fLtw5apt6/zOqgTfX3GOLKuonn2SOgfT2k8nYCmuC6LsTooidDA5+c=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywliro3GFOdoRytcpl7YWucvFMnJ0eYOa3lA13W7eshLrDmCatK
+	iF2xkjuCYvEk5mqCt7b2J0jUaWl1PSTbh3YmJpA8I/nL2tB2C9yPpu2UqZZCPZrxNAU3CsJJgq2
+	2yU0/U0BK5yOAD1Tq0ih8XEzVE9GLstQ=
+X-Google-Smtp-Source: AGHT+IH9p7AzuRoU58gKl0Zi0c2yc63sDhav8grGGsjk3Kynjfd+8+kZGpJwRIHFZXjDBTGVZ0bfFxIKAjQGnzspt40=
+X-Received: by 2002:ac8:5cd5:0:b0:48e:9e05:cede with SMTP id
+ d75a77b69052e-4a4400e462amr7256201cf.52.1748538372435; Thu, 29 May 2025
+ 10:06:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250528222623.1373000-1-song@kernel.org> <20250528222623.1373000-4-song@kernel.org>
+ <20250528223724.GE2023217@ZenIV> <yti2dilasy7b3tu6iin5pugkn6oevdswrwoy6gorudb7x2cqhh@nqb3gcyxg4by>
+ <CAPhsuW4tg+bXU41fhAaS0n74d_a_KCFGvy_vkQOj7v4VLie2wg@mail.gmail.com> <CAADnVQ+UGsvfAM8-E8Ft3neFkz4+TjE=rPbP1sw1m5_4H9BPNg@mail.gmail.com>
+In-Reply-To: <CAADnVQ+UGsvfAM8-E8Ft3neFkz4+TjE=rPbP1sw1m5_4H9BPNg@mail.gmail.com>
+From: Song Liu <song@kernel.org>
+Date: Thu, 29 May 2025 10:05:59 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW78L8WUkKz8iJ1whrZ2gLJR+7Kh59eFrSXvrxP0DwMGig@mail.gmail.com>
+X-Gm-Features: AX0GCFsdjKPZ4yFrJx9AiGup60wQDY6NN-nsSNLgH7TOfusfnwxZiRW6dRLoxZ4
+Message-ID: <CAPhsuW78L8WUkKz8iJ1whrZ2gLJR+7Kh59eFrSXvrxP0DwMGig@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/4] bpf: Introduce path iterator
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>, 
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	LSM List <linux-security-module@vger.kernel.org>, Kernel Team <kernel-team@meta.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Eduard <eddyz87@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Christian Brauner <brauner@kernel.org>, KP Singh <kpsingh@kernel.org>, 
+	Matt Bobrowski <mattbobrowski@google.com>, Amir Goldstein <amir73il@gmail.com>, repnop@google.com, 
+	Jeff Layton <jlayton@kernel.org>, Josef Bacik <josef@toxicpanda.com>, 
+	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
+	=?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Display cookie for raw_tp link probe, in plain mode:
+On Thu, May 29, 2025 at 9:57=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+[...]
+> >
+> > How about we describe this as:
+> >
+> > Introduce a path iterator, which safely (no crash) walks a struct path.
+> > Without malicious parallel modifications, the walk is guaranteed to
+> > terminate. The sequence of dentries maybe surprising in presence
+> > of parallel directory or mount tree modifications and the iteration may
+> > not ever finish in face of parallel malicious directory tree manipulati=
+ons.
+>
+> Hold on. If it's really the case then is the landlock susceptible
+> to this type of attack already ?
+> landlock may infinitely loop in the kernel ?
 
- #bpftool link
+I think this only happens if the attacker can modify the mount or
+directory tree as fast as the walk, which is probably impossible
+in reality.
 
-22: raw_tracepoint  prog 14
-        tp 'sys_enter'  cookie 23925373020405760
-        pids test_progs(176)
-
-And in json mode:
-
- #bpftool link -j | jq
-
-[
-  {
-    "id": 47,
-    "type": "raw_tracepoint",
-    "prog_id": 79,
-    "tp_name": "sys_enter",
-    "cookie": 23925373020405760,
-    "pids": [
-      {
-        "pid": 274,
-        "comm": "test_progs"
-      }
-    ]
-  }
-]
-
-Signed-off-by: Tao Chen <chen.dylane@linux.dev>
----
- tools/bpf/bpftool/link.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
-index 52fd2c9fac..bd37f364be 100644
---- a/tools/bpf/bpftool/link.c
-+++ b/tools/bpf/bpftool/link.c
-@@ -484,6 +484,7 @@ static int show_link_close_json(int fd, struct bpf_link_info *info)
- 	case BPF_LINK_TYPE_RAW_TRACEPOINT:
- 		jsonw_string_field(json_wtr, "tp_name",
- 				   u64_to_ptr(info->raw_tracepoint.tp_name));
-+		jsonw_lluint_field(json_wtr, "cookie", info->raw_tracepoint.cookie);
- 		break;
- 	case BPF_LINK_TYPE_TRACING:
- 		err = get_prog_info(info->prog_id, &prog_info);
-@@ -876,6 +877,8 @@ static int show_link_close_plain(int fd, struct bpf_link_info *info)
- 	case BPF_LINK_TYPE_RAW_TRACEPOINT:
- 		printf("\n\ttp '%s'  ",
- 		       (const char *)u64_to_ptr(info->raw_tracepoint.tp_name));
-+		if (info->raw_tracepoint.cookie)
-+			printf("cookie %llu ", info->raw_tracepoint.cookie);
- 		break;
- 	case BPF_LINK_TYPE_TRACING:
- 		err = get_prog_info(info->prog_id, &prog_info);
--- 
-2.43.0
-
+Thanks,
+Song
 
