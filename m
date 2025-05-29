@@ -1,172 +1,131 @@
-Return-Path: <bpf+bounces-59281-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59282-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5666AC7BAD
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 12:18:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B28AAC7BB5
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 12:27:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 25E494A3E33
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 10:18:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A98C716D998
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 10:27:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA07A22068A;
-	Thu, 29 May 2025 10:18:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9392227E86;
+	Thu, 29 May 2025 10:27:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="GBcKC/4A"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Utx+Bfps"
 X-Original-To: bpf@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB5301F1527;
-	Thu, 29 May 2025 10:18:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD04DA55;
+	Thu, 29 May 2025 10:27:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748513915; cv=none; b=sLMSstEwDQdCYIKLRKyYZ1A8joLkpA73uKEe7TAkX3K63ukgO47g6im9DkAIP5Dyxi73HfK8qdZwnVD0nFNQWmV2CK1T8MSa843/Txjbrdv5UBRyRssvu49DUnzMjJaW2QvuwwU1zKqUew7KLV9sX5eDSA63v1hu/SlXixEenlE=
+	t=1748514466; cv=none; b=ZjylK+eCDnqa/Zl7bBVoI4iwi+sZngeJGhgtzvpUXBvaczL7nfGcHlZ6xeNvYmThx91rXI/pbFKVdL+IisVZ6dA90SIOT95hn7Y+mVXfRA24BzCgf9vPLA+rdjyYnm9GOyjrZGEmoqBSbgmg6eIfhUukkFHju4r3eiSIUzuE1zs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748513915; c=relaxed/simple;
-	bh=5i/hDAQBSkwYVpOy1/ZC5ugPq70Hq06cHWW43vLth00=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=UHjHod6qxaQOXN5ze9mT3KrVzCDxmz/gIdC4xl8q1tfCMhH7Zu9uvEO50WWSS3uSYUywBULld6hfH9kzA3saE7+GCOLaUaWq2hV8JzI2RTIOeEsiNyfyLg/rE5GpIHRV9AkRvnBh0OsXYXUJFnJjS+1RM45JVO/RP5FOevMrK5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=GBcKC/4A; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1127)
-	id 2D5F5203EE15; Thu, 29 May 2025 03:18:33 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2D5F5203EE15
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1748513913;
-	bh=3O+r7rjK0Z7UCd5rC/P3E0rsfGqbO+aPvR8Qk26+QUU=;
-	h=From:To:Cc:Subject:Date:From;
-	b=GBcKC/4AzpGsK248NlSiWI82KViX/AHEk9rigBc6HF17A3Q59wNP1ftlJb6RkegXr
-	 n5YUu8SzNBuSBpIt4GxR5JwrzOlscEvU0Z3WbR1rTpeI9vmPQvD+1n5J5O3ujcnjxl
-	 VScqEuM3b7tiTTm4VjykXBgs2Lm0R93H9en+I+zc=
-From: Saurabh Sengar <ssengar@linux.microsoft.com>
-To: kys@microsoft.com,
-	haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	horms@kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	sdf@fomichev.me,
-	kuniyu@amazon.com,
-	ahmed.zaki@intel.com,
-	aleksander.lobakin@intel.com,
-	linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Cc: ssengar@microsoft.com,
-	stable@vger.kernel.org,
-	Saurabh Sengar <ssengar@linux.microsoft.com>
-Subject: [PATCH net,v3] hv_netvsc: fix potential deadlock in netvsc_vf_setxdp()
-Date: Thu, 29 May 2025 03:18:30 -0700
-Message-Id: <1748513910-23963-1-git-send-email-ssengar@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
+	s=arc-20240116; t=1748514466; c=relaxed/simple;
+	bh=xwXFY9UdZBSTps1MTWCZR1whskDuA0ViFIzrULuJ5Kg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=aTH9firIc/4GXhzgnvTc+uxNXARMY5AyUUqgnEghoiCg+qS9lQ1x/2fFkdILQ8YD6DkRpx1mCZDYwmxcTmuQlIAKlJD1o6DOyu7yYFb8x0F34rPYEfDda07T4w2bbjHYS1cNADCASolouYf1wn5QpPQfQHoDxkpgAHglZWY2MMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Utx+Bfps; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-43edecbfb94so8280955e9.1;
+        Thu, 29 May 2025 03:27:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748514463; x=1749119263; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=N+AefZyy5EAJz83R2KsC5kPBXhXauBKCBzOFKZkWLAQ=;
+        b=Utx+BfpsqRFd4PibHoxth2ThdSk18aiHv3UOpnRynTqfbkG8EFyji0J7T1eBBkvr0J
+         IYuLs/0i3yCy5WpvBMOw70+Cq2ZNq35f+ZRgzenlIR69GAczcXs1PSxqizeCHX95FusS
+         vvhmioY2I7WT+s9kOr1R/NYTHhiH+MiliYUv9TwcFwxa+Nx9H2xVzJ6xbKkEEiW/j5W8
+         cWOBgPQqFPypBODTqak39Ij282SDy0OrPRyO0qtBcrnFP/YVwzS1RhtoEt9IY9OoEkF1
+         pXcUqrLE0H76qWt31DfGhJy/zW6WAWaWAk9t07EQYj7qZNZeN3H1i4ZA8QXiSyWP955v
+         rrqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748514463; x=1749119263;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=N+AefZyy5EAJz83R2KsC5kPBXhXauBKCBzOFKZkWLAQ=;
+        b=dKlwRW5B5yU5dl7zJUZrPgNg6WDyv4OjgW3Z+FLTUjdsf0FnbGlv6shclPdY5H6Elh
+         4patuuVkkwQoVs48JD45fbxjAW9l04GUc/U0rN7bk5n3/to/vUS79v0MtIuC73Esx8Dd
+         iPRsqIRB591HjXw44Q5H+O5tLM4tOdXTGkzd8XC+b/3JIfDH4Q/s9K+KP1mt6PFmM9zN
+         hDZgmxXkusz5DxRtBGsv4DU6quk+VZLq0FDLuSH9tTNkew7CaGDmeMbVGqhSF5qfm8lC
+         ROaqUW9NECwa3pi/Su3Q2sTznf8G2ig0nsHJ2WwJPqZw5pAA/K4o3w61+WK9KstVMR7c
+         Caxw==
+X-Forwarded-Encrypted: i=1; AJvYcCU3thpmQsoAaIJ/kr6rQfdtlUeW8oSMZqyBv4w91+g+ePgxhH+8aIeeLkZHdePop5o/8VA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxcSUfbucIdo33LcsqKab0YAZo26r25NLX7UiWYPvMoIUoFXxNN
+	AWx3u9yNCqwBZiY/Bss5pUHdFP97Rrbcignpv24LMpUFfkXT5I3B1L+J5BLgG/Y/
+X-Gm-Gg: ASbGnctpxfUV9MHXe7MtzrylzW/suvPyJ7Y0h4Zfus0vOu2PJrqnLM/cuc/Efer2VI+
+	sWpeFtH+I4jV8xSeHw+TgTgnVzZzYwvUmXpOkBWA2xmzm+Zsu5TBpGut3bt8K/J+yCitwQvtBVG
+	Y433POwlRmYMv0gkAVDCF1+H/D5IYtE0wxDdqXdS2uMbVb6/Tg/z+k8QrFiqAkmg7V7q09J2GWh
+	a4uv4elj52hyFg3xN5RHGZ/P6DlZX7OR5ZZ3SJDcFFEMy+wXa2AJXTXzwXKPmn4ETLtgSc7uGVu
+	diGHMg/PgnSWQwXzZdOvTQfAX9CN1yrkpcALibYiGZGPiKeQrUIpDxVMZB+1bbWfhM/lQW/wRS0
+	EstldJ+G4NwcR+TE3i+Qr5Wj3Wc4Mc17c6VSdyArq5Ove+MThNjaWKnbhS01Y
+X-Google-Smtp-Source: AGHT+IEnk39EgwFTzhew+vvAIglWFMhE6eZ3A3PYqgJ4o9slzcECgwXJwZntpV6M8cxXOMAOg2Nb8Q==
+X-Received: by 2002:a05:600c:3f0c:b0:442:ccf0:41e6 with SMTP id 5b1f17b1804b1-44c917f6760mr244803945e9.3.1748514462788;
+        Thu, 29 May 2025 03:27:42 -0700 (PDT)
+Received: from mail.gmail.com (2a01cb0889497e00bc44bdc1afbcf705.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:bc44:bdc1:afbc:f705])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-450cfc51633sm15732785e9.24.2025.05.29.03.27.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 May 2025 03:27:41 -0700 (PDT)
+Date: Thu, 29 May 2025 12:27:40 +0200
+From: Paul Chaignon <paul.chaignon@gmail.com>
+To: netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	David Ahern <dsahern@kernel.org>, Tom Herbert <tom@herbertland.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH net v3 0/2] net: Fix inet_proto_csum_replace_by_diff for IPv6
+Message-ID: <cover.1748509484.git.paul.chaignon@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The MANA driver's probe registers netdevice via the following call chain:
+This patchset fixes a bug that causes skb->csum to hold an incorrect
+value when calling inet_proto_csum_replace_by_diff for an IPv6 packet
+in CHECKSUM_COMPLETE state. This bug affects BPF helper
+bpf_l4_csum_replace and IPv6 ILA in adj-transport mode.
 
-mana_probe()
-  register_netdev()
-    register_netdevice()
+In those cases, inet_proto_csum_replace_by_diff updates the L4 checksum
+field after an IPv6 address change. These two changes cancel each other
+in terms of checksum, so skb->csum shouldn't be updated.
 
-register_netdevice() calls notifier callback for netvsc driver,
-holding the netdev mutex via netdev_lock_ops().
+Changes in v3:
+  - Rebase.
+  - Use proper tag for reference, per Paolo's suggestion.
+Changes in v2:
+  - For BPF, pass the new flag is_ipv6 to
+    inet_proto_csum_replace_by_diff directly instead of calling
+    inet_proto_csum_replace16.
+  - Document the new BPF helper flag.
+  - Fix the usage of inet_proto_csum_replace_by_diff in ILA in a
+    separate patch.
+  - Rebase on net tree.
+  - Link: https://lore.kernel.org/bpf/aCz84JU60wd8etiT@mail.gmail.com/
 
-Further this netvsc notifier callback end up attempting to acquire the
-same lock again in dev_xdp_propagate() leading to deadlock.
+Paul Chaignon (2):
+  net: Fix checksum update for ILA adj-transport
+  bpf: Fix L4 csum update on IPv6 in CHECKSUM_COMPLETE
 
-netvsc_netdev_event()
-  netvsc_vf_setxdp()
-    dev_xdp_propagate()
+ include/net/checksum.h         | 2 +-
+ include/uapi/linux/bpf.h       | 2 ++
+ net/core/filter.c              | 5 +++--
+ net/core/utils.c               | 4 ++--
+ net/ipv6/ila/ila_common.c      | 6 +++---
+ tools/include/uapi/linux/bpf.h | 2 ++
+ 6 files changed, 13 insertions(+), 8 deletions(-)
 
-This deadlock was not observed so far because net_shaper_ops was never set,
-and thus the lock was effectively a no-op in this case. Fix this by using
-netif_xdp_propagate() instead of dev_xdp_propagate() to avoid recursive
-locking in this path.
-
-And, since no deadlock is observed on the other path which is via
-netvsc_probe, add the lock exclusivly for that path.
-
-Also, clean up the unregistration path by removing the unnecessary call to
-netvsc_vf_setxdp(), since unregister_netdevice_many_notify() already
-performs this cleanup via dev_xdp_uninstall().
-
-Fixes: 97246d6d21c2 ("net: hold netdev instance lock during ndo_bpf")
-Cc: stable@vger.kernel.org
-Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
-Tested-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-Reviewed-by: Subbaraya Sundeep <sbhatta@marvell.com>
----
-[V3]
-- Add the lock for netvsc probe path
-
-[V2]
- - Modified commit message
-
- drivers/net/hyperv/netvsc_bpf.c | 2 +-
- drivers/net/hyperv/netvsc_drv.c | 4 ++--
- net/core/dev.c                  | 1 +
- 3 files changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/hyperv/netvsc_bpf.c b/drivers/net/hyperv/netvsc_bpf.c
-index e01c5997a551..1dd3755d9e6d 100644
---- a/drivers/net/hyperv/netvsc_bpf.c
-+++ b/drivers/net/hyperv/netvsc_bpf.c
-@@ -183,7 +183,7 @@ int netvsc_vf_setxdp(struct net_device *vf_netdev, struct bpf_prog *prog)
- 	xdp.command = XDP_SETUP_PROG;
- 	xdp.prog = prog;
- 
--	ret = dev_xdp_propagate(vf_netdev, &xdp);
-+	ret = netif_xdp_propagate(vf_netdev, &xdp);
- 
- 	if (ret && prog)
- 		bpf_prog_put(prog);
-diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
-index 14a0d04e21ae..c41a025c66f0 100644
---- a/drivers/net/hyperv/netvsc_drv.c
-+++ b/drivers/net/hyperv/netvsc_drv.c
-@@ -2462,8 +2462,6 @@ static int netvsc_unregister_vf(struct net_device *vf_netdev)
- 
- 	netdev_info(ndev, "VF unregistering: %s\n", vf_netdev->name);
- 
--	netvsc_vf_setxdp(vf_netdev, NULL);
--
- 	reinit_completion(&net_device_ctx->vf_add);
- 	netdev_rx_handler_unregister(vf_netdev);
- 	netdev_upper_dev_unlink(vf_netdev, ndev);
-@@ -2631,7 +2629,9 @@ static int netvsc_probe(struct hv_device *dev,
- 			continue;
- 
- 		netvsc_prepare_bonding(vf_netdev);
-+		netdev_lock_ops(vf_netdev);
- 		netvsc_register_vf(vf_netdev, VF_REG_IN_PROBE);
-+		netdev_unlock_ops(vf_netdev);
- 		__netvsc_vf_setup(net, vf_netdev);
- 		break;
- 	}
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 2b514d95c528..a388f459a366 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -9968,6 +9968,7 @@ int netif_xdp_propagate(struct net_device *dev, struct netdev_bpf *bpf)
- 
- 	return dev->netdev_ops->ndo_bpf(dev, bpf);
- }
-+EXPORT_SYMBOL_GPL(netif_xdp_propagate);
- 
- u32 dev_xdp_prog_id(struct net_device *dev, enum bpf_xdp_mode mode)
- {
 -- 
 2.43.0
 
