@@ -1,221 +1,149 @@
-Return-Path: <bpf+bounces-59274-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59275-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E349AC77A1
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 07:26:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A447AC77B8
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 07:35:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B4184E7567
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 05:26:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 699EBA2572E
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 05:35:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2BD3253B64;
-	Thu, 29 May 2025 05:25:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BE2E252299;
+	Thu, 29 May 2025 05:35:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="gfuFudMP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="akUT/QuU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C31C212B3D;
-	Thu, 29 May 2025 05:25:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D2994685;
+	Thu, 29 May 2025 05:35:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748496355; cv=none; b=Mh7dxuAK1Ikt2VWwcT4TSyMKtLqQaKiMzW+In4QobaQjD8cSAH/O78GYSOc1L9r9xdfMl7RQC8mhwh52R+PjuHcE0+NUxtxKy9KWTqAtwdZo+XGa8QTD/gXyR2liT8SHCYYcAgupsHyJDQdp5LMulm1lecwu2pt86vUjgitbQyI=
+	t=1748496917; cv=none; b=SnHd49AsOm37UbN4ONMdw0h5rguQCYKK5zv/xjm7jmy2Q1brlLFJMwHfSsWVJsCwJc+6uqmETi2qUvLKuXP6ArkVHLf3ZSw9FsWYvmU72N/80TGmjtjUU92Ktx4NQDsaR4M5uYjmqP8LvcZ3ew5WsmDWaLW0nA3ppAahEl83WIQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748496355; c=relaxed/simple;
-	bh=iZVBJrkksb1yJxQ0iRCSBWW4c1nVnbLOB4xN8Bu0ES4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=jxkbeZnVvXzTFYowglW3ex5Mz4GrbMHlcZ7Dd/uN9EHgeZ4K0C0iOlkrpTRtoiVUCSBmL4Z7T6FJHCtZHS4Knkt3irBnrcMHr4679WTQJupiJCyDU/AbIrA0mAxmG6cTXG6LGEg8z0vL1SQHEHK5FIv4b/lgcyBv6EQUr9fsgAA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=gfuFudMP; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54T1v4g6027799;
-	Thu, 29 May 2025 05:25:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	0bclMJflGoDpC6u6S0sgwywANy1Dvb6NmfRTSgcnga8=; b=gfuFudMPZX8QmICH
-	lK/MDFO/urA3YUB7PUkY9heR7oKbGEVLtf/b4GZ/NbXAIR7ZHy5ppV/RahbmZdFj
-	rCke3UDlY78wOEyOkxWI3AtXI70LKoZPWPwqnjAeYm/gfXFU+Z0NblKGhOyKs45z
-	3ACa6+JHjmhD17+sr52YSr7IQBEVWj4+XmizShblWHk3q3aNp1uPFNJA1LerWMf4
-	q8XKkwcvzKOF0sFXt/D6jxA+w1Dqz5TbfIJv7U4a4azrXBKyd5KXzVWDpZTK9owa
-	Whgi431bc1xvNaAkk6F4srEOTIKl1yO4gYHOrCrQwvYTUsaTYrqILCr3w2qvxZCC
-	Z+HbiA==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 46w992pn2j-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 29 May 2025 05:25:03 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA01.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 54T5P2KF001100
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 29 May 2025 05:25:02 GMT
-Received: from [10.110.61.81] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 28 May
- 2025 22:24:59 -0700
-Message-ID: <4a2d8151-9dfe-4876-8216-85211bc393bf@quicinc.com>
-Date: Wed, 28 May 2025 22:24:58 -0700
+	s=arc-20240116; t=1748496917; c=relaxed/simple;
+	bh=6fRuZd8jwy1+cEmMH+1K7LAYDssyVXfGXLxGuyPMyD8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nUmSWfCPJavw7QcTX+tbBBP8CPC9uln7FcYtaDBuassFl9ts4RvNoNZwVSeZUZQHPyW0IIXEKZ5336fs5qSi3ujAeZkVxSXtkQP1FW7csKymhhJl2hWC5Gg8g3WtTpVlHvobRxpwiT8oJHuA9ECaBAASSr5O4kS7CH4E/Fgj7G8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=akUT/QuU; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-43cf257158fso3966085e9.2;
+        Wed, 28 May 2025 22:35:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748496913; x=1749101713; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OQ5bGBuDRHlPqX9Pkj2cY2f4XXf/2SjhXBJpx+bX+FU=;
+        b=akUT/QuUFqzCv5DWMUEfrf0gNccA91SSUF5AOXPRm5ZZEclWP942KfOcgXl7PNsRE4
+         7wDeRtgYkx4YMmKbWxv00SEdd1UQfB0cD4NT9tkHjxHRIIJn1EE/teIwooJsBbAIMcfC
+         V2r8EBCxDqmDnmmNk/auCDHnUt7yXCYXYNUcfaGLR2323B8Tr9HlYDLAhKQL/OVaGUao
+         iwe+id0ziA4CVFvHvN78MD4POicArW+N7qmyz5RAFRJwWNtu5oVpMDGC1cjSW3LD95mE
+         3vGHR1J58iI+Bgn/fCYrSPj5dGUNeNdc6keF4rABF2/yOzfRGrsrWVFNhJdgksRU655A
+         m5cA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748496913; x=1749101713;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OQ5bGBuDRHlPqX9Pkj2cY2f4XXf/2SjhXBJpx+bX+FU=;
+        b=G8S4fOcoBPmqrwBF0oTrzmIrQmD8XfBL2K9p2c7h14OcJSysyxuu0LLAm5xrFNVeRR
+         AwwfGdhpNZcG+XhtnisS8puJ+ldmVkutkps3sCmN+oXS2CfMv5qX8PGex8/Y+praqLXE
+         cL3nRedXo4gQkRrsKL0cl3+vurJNAiLEZ8BzT1aMW51WipujTiWtmk/HJqX6rbItVO9L
+         kJvYCICTmIVOz4Un5FnkjEQITaq+IEFBl8v4KfIPFJumC9cUUcccyjfjgzEw9kAYs8ax
+         X7ZjdzE6KQKfDtgxUFSXFE4steqza2MvepmMn/STfGW8hiPNQEedIStqRtwhEeFHPFSw
+         T3jQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVPItjYsixPuYHgwmgx0SDUbVvQHBrDqZsGKvUe2IXfu+vh9aoch4/zlDtZJfSHR+BfByukr6wEVw==@vger.kernel.org, AJvYcCXotymfHlM33rU6cpHi/jwogvOvNhErrw9z0Ak1twEP8q4cxKOnMDCCQWoXpLzbEHBegfw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwFGFxC4UK4mXjfJGGToroxROe9dVCN1d7B/E6AaZ0BbHFq31XD
+	Jdeipj24baKQw31r3Vj9tZST/s8G8SzsK5855VgNjOUzbWH18JqH/x5WmknSzJRWhYgzSiMU6l7
+	YxH1r0uOGfDVEKlnmzDpJJ/UFZrOuBUU=
+X-Gm-Gg: ASbGnctRglqoAfa7U5+SF2Qlgv9R5I34ZfSBukKdyb0zJmfVEN2LQJTtEd2+uT1g54M
+	A0nySNJN/A+ix6RzEZc3BHcwO58erB/A4huRt3RxjZPODaCM/QA07eGNwLm23i29AlC5afUpjWj
+	iy/Az/B3S9ION82I+mIGYNG0qfxoFIy9ch
+X-Google-Smtp-Source: AGHT+IG0PO9zxZhpyGgKiwuKrmIHwuBSYeRkXM7mZD9bJje26lX33u5gWEifjmcZnsrkAypYXzPuuzPSqC676GEiqFw=
+X-Received: by 2002:a05:600c:190a:b0:450:cfcb:5c83 with SMTP id
+ 5b1f17b1804b1-450cfcb5d89mr9748175e9.30.1748496913169; Wed, 28 May 2025
+ 22:35:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v6 0/5] net: stmmac: Add PCI driver support for
- BCM8958x
-To: Yanteng Si <si.yanteng@linux.dev>,
-        Jitendra Vegiraju
-	<jitendra.vegiraju@broadcom.com>
-CC: Andrew Lunn <andrew@lunn.ch>,
-        "Russell King (Oracle)"
-	<rmk+kernel@armlinux.org.uk>,
-        <netdev@vger.kernel.org>, <alexandre.torgue@foss.st.com>,
-        <joabreu@synopsys.com>, <davem@davemloft.net>, <edumazet@google.com>,
-        <kuba@kernel.org>, <pabeni@redhat.com>, <mcoquelin.stm32@gmail.com>,
-        <bcm-kernel-feedback-list@broadcom.com>, <richardcochran@gmail.com>,
-        <ast@kernel.org>, <daniel@iogearbox.net>, <hawk@kernel.org>,
-        <john.fastabend@gmail.com>, <fancer.lancer@gmail.com>,
-        <ahalaney@redhat.com>, <xiaolei.wang@windriver.com>,
-        <rohan.g.thomas@intel.com>, <Jianheng.Zhang@synopsys.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>, <bpf@vger.kernel.org>,
-        <linux@armlinux.org.uk>, <horms@kernel.org>,
-        <florian.fainelli@broadcom.com>,
-        Sagar Cheluvegowda <quic_scheluve@quicinc.com>
-References: <20241018205332.525595-1-jitendra.vegiraju@broadcom.com>
- <CAMdnO-+FjsRX4fjbCE_RVNY4pEoArD68dAWoEM+oaEZNJiuA3g@mail.gmail.com>
- <67919001-1cb7-4e9b-9992-5b3dd9b03406@quicinc.com>
- <CAMdnO-+HwXf7c=igt2j6VHcki3cYanXpFApZDcEe7DibDz810g@mail.gmail.com>
- <7ac5c034-9e6d-45c4-b20a-2a386b4d9117@quicinc.com>
- <51768fa6-007e-4f30-ac1f-eed01ae1a3c5@linux.dev>
- <CAMdnO-KNfH79PG1=21Dbyaart2JN_e1XcF+tTG93BG5BobX+Gg@mail.gmail.com>
- <eb591c65-0106-45f4-9e57-434dac54e923@linux.dev>
-Content-Language: en-US
-From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
-In-Reply-To: <eb591c65-0106-45f4-9e57-434dac54e923@linux.dev>
+References: <20250528095743.791722-1-alan.maguire@oracle.com> <20250528095743.791722-4-alan.maguire@oracle.com>
+In-Reply-To: <20250528095743.791722-4-alan.maguire@oracle.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 28 May 2025 22:35:01 -0700
+X-Gm-Features: AX0GCFtcEyZCPoazMkdZV5JY7UPDrVS2B2qyJBIyP9dyX6y_W1ezUk_nj-E69ws
+Message-ID: <CAADnVQ+GDezR0e+SgqDB5h885Gd500cGYpFs4_LiXpLuD5gYFg@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 3/9] libbpf: use kind layout to compute an
+ unknown kind size
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Masahiro Yamada <masahiroy@kernel.org>, Quentin Monnet <qmo@kernel.org>, 
+	Ihor Solodrai <ihor.solodrai@linux.dev>, dwarves@vger.kernel.org, 
+	bpf <bpf@vger.kernel.org>, Thierry Treyer <ttreyer@meta.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTI5MDA1MiBTYWx0ZWRfX9bwkRqe3K7hG
- kT3bBMtM8uLQJVSK417IAU/yZF63z2rQ9MKu6HMC1yx4K1qKM8kM0pesMcTFWNz7JPBOHiLiSoL
- 6MuctcgekxCHSeBUTXfkWOkgurqK9WssRnT45uQaqyAWl41mkdp3hsg93TZ//s5OVDusK1x5plv
- APDKLiOkUiB9WmsCUGsvDWHtPf4ZYzDJt4/4qB6I0GToxwOdFR+WAJJ3umMVrGE3UDb+qtuAyF/
- TVSLWVyY/G+8+LXCW9Z0I2IUo0jNdOJa7ardbZKN/75/iUEiwfTPrAD8G/nVWYRGKfGAnUXdoka
- EwOrPWtHoA88mt+u1YJmoGD5/YWwqaR6Q6vf5epjIHh5b0MneOOjIamii5K4BpJcEmY9jHfbcuK
- 3fnxSdsHlkvDI6cd60spXD+eDbyTlOlWaPHSy06FPitmU8yZVaTi+8rx22GBtjbI1hL1agtK
-X-Authority-Analysis: v=2.4 cv=Fes3xI+6 c=1 sm=1 tr=0 ts=6837efaf cx=c_pps
- a=JYp8KDb2vCoCEuGobkYCKw==:117 a=JYp8KDb2vCoCEuGobkYCKw==:17
- a=GEpy-HfZoHoA:10 a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10 a=VwQbUJbxAAAA:8
- a=Q-fNiiVtAAAA:8 a=COk6AnOGAAAA:8 a=CyOmcBoVXlxtOUliTrsA:9 a=3ZKOabzyN94A:10
- a=QEXdDO2ut3YA:10 a=TjNXssC_j7lpFel5tvFf:22
-X-Proofpoint-GUID: ta8-0ys4Gq8QeTxmA8W3M6poBTkirC5h
-X-Proofpoint-ORIG-GUID: ta8-0ys4Gq8QeTxmA8W3M6poBTkirC5h
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-05-29_02,2025-05-27_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- mlxscore=0 malwarescore=0 impostorscore=0 phishscore=0 clxscore=1011
- lowpriorityscore=0 bulkscore=0 priorityscore=1501 mlxlogscore=999 spamscore=0
- adultscore=0 suspectscore=0 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505160000
- definitions=main-2505290052
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, May 28, 2025 at 2:58=E2=80=AFAM Alan Maguire <alan.maguire@oracle.c=
+om> wrote:
+>
+> This allows BTF parsing to proceed even if we do not know the
+> kind.
+>
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
+>  tools/lib/bpf/btf.c | 35 ++++++++++++++++++++++++++++-------
+>  1 file changed, 28 insertions(+), 7 deletions(-)
+>
+> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> index 43d1fce8977c..7a197dbfc689 100644
+> --- a/tools/lib/bpf/btf.c
+> +++ b/tools/lib/bpf/btf.c
+> @@ -355,7 +355,29 @@ static int btf_parse_kind_layout_sec(struct btf *btf=
+)
+>         return 0;
+>  }
+>
+> -static int btf_type_size(const struct btf_type *t)
+> +/* for unknown kinds, consult kind layout. */
+> +static int btf_type_size_unknown(const struct btf *btf, const struct btf=
+_type *t)
+> +{
+> +       int size =3D sizeof(struct btf_type);
+> +       struct btf_kind_layout *k =3D NULL;
+> +       __u16 vlen =3D btf_vlen(t);
+> +       __u8 kind =3D btf_kind(t);
+> +
+> +       if (btf->kind_layout)
+> +               k =3D &((struct btf_kind_layout *)btf->kind_layout)[kind]=
+;
+> +
+> +       if (!k || (void *)k > ((void *)btf->kind_layout + btf->hdr->kind_=
+layout_len)) {
+> +               pr_debug("Unsupported BTF_KIND: %u\n", btf_kind(t));
+> +               return -EINVAL;
 
+I'm missing the point around kind_layout->flags.
+I was expecting that this helper and others at least
+would check that flags =3D=3D 0, but none of it is happening.
+The patches say that flags is unused and do nothing.
+Why add flags field at all?
 
-On 5/28/2025 10:14 PM, Yanteng Si wrote:
-> 
-> 在 5/29/25 10:56 AM, Jitendra Vegiraju 写道:
->> Hi Yanteng,
->>
->> On Wed, May 28, 2025 at 6:36 PM Yanteng Si <si.yanteng@linux.dev> wrote:
->>> 在 5/28/25 8:04 AM, Abhishek Chauhan (ABC) 写道:
->>>>
->>>> On 2/7/2025 3:18 PM, Jitendra Vegiraju wrote:
->>>>> Hi Abhishek,
->>>>>
->>>>> On Fri, Feb 7, 2025 at 10:21 AM Abhishek Chauhan (ABC) <
->>>>> quic_abchauha@quicinc.com> wrote:
->>>>>
->>>>>>
->>>>>> On 11/5/2024 8:12 AM, Jitendra Vegiraju wrote:
->>>>>>> Hi netdev team,
->>>>>>>
->>>>>>> On Fri, Oct 18, 2024 at 1:53 PM <jitendra.vegiraju@broadcom.com> wrote:
->>>>>>>> From: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
->>>>>>>>
->>>>>>>> This patchset adds basic PCI ethernet device driver support for Broadcom
->>>>>>>> BCM8958x Automotive Ethernet switch SoC devices.
->>>>>>>>
->>>>>>> I would like to seek your guidance on how to take this patch series
->>>>>> forward.
->>>>>>> Thanks to your feedback and Serge's suggestions, we made some forward
->>>>>>> progress on this patch series.
->>>>>>> Please make any suggestions to enable us to upstream driver support
->>>>>>> for BCM8958x.
->>>>>> Jitendra,
->>>>>>            Have we resent this patch or got it approved ? I dont see any
->>>>>> updates after this patch.
->>>>>>
->>>>>>
->>>>> Thank you for inquiring about the status of this patch.
->>>>> As stmmac driver is going through a maintainer transition, we wanted to
->>>>> wait until a new maintainer is identified.
->>>>> We would like to send the updated patch as soon as possible.
->>>>> Thanks,
->>>>> Jitendra
->>>> Thanks Jitendra, I am sorry but just a follow up.
->>>>
->>>> Do we know if stmmac maintainer are identified now ?
->>> I'm curious why such a precondition is added？
->>>
->> It's not a precondition. Let me give some context.
->> This patch series adds support for a new Hyper DMA(HDMA) MAC from Synopsis.
->> Many of the netdev community members reviewed the patches at that time.
->> Being the module maintainer at that time, Serge took the initiative to
->> guide us through integrating the new MAC into the stmmac driver.
->> We addressed all the review comments and submitted the last patch series.
->> Without an official maintainer, we didn't get feedback on the last patch series.
->> Because of this, we wanted to wait until a new maintainer is assigned
->> to this module.
->> As Abhishek expressed in his email, it appears the HDMA MAC is
->> becoming more mainstream.
->> We are hoping to rebase the patch series and resubmit for review if
->> netdev team members show interest.
-> 
-> 
-> https://lore.kernel.org/netdev/20241018205332.525595-1-jitendra.vegiraju@broadcom.com/
-> 
-> In my opinion, the precondition for waiting for a maintainer is that
-> 
-> the patch set has passed the review. I checked lore and did not find
-> 
-> any R&B tags in the patch set, which means your patch set has not
-> 
-> yet met the merging requirements.
-> 
-> Therefore, I think you can continue to push forward with this patch
-> 
-> set and not let it stagnate. I will take some time to review the previous
-> 
-> versions (which may take a while) and hope to be helpful.
-> 
-> Thanks,
-> 
-> Yanteng
-> 
-I will review the patch in the coming few days as well. As this patch also helps Qualcomm to develop the 
-HDMA arch for 25XGMAC EMAC controller. 
-This patch is validated/verfied/tested on Qualcomm platform devices which are not PCIE based. 
->> Thanks,
->> Jitendra
->>> Thanks,
->>> Yanteng
+> +       }
+> +
+> +       size +=3D k->info_sz;
+> +       size +=3D vlen * k->elem_sz;
+> +
+> +       return size;
+> +}
 
