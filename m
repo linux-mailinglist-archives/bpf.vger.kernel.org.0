@@ -1,153 +1,173 @@
-Return-Path: <bpf+bounces-59322-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59323-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 891CEAC82DD
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 21:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F3756AC82E8
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 21:54:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4AF61167FE9
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 19:46:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C90E4E138E
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 19:54:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECA1E235067;
-	Thu, 29 May 2025 19:46:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 636702343C0;
+	Thu, 29 May 2025 19:54:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dhBbzPTk"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MSUxL6Eh"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FAE2E55B;
-	Thu, 29 May 2025 19:46:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C7FF23507C
+	for <bpf@vger.kernel.org>; Thu, 29 May 2025 19:54:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748547975; cv=none; b=PABMj9nxWZUg1oKlaeXVeXJMzORcnI6F6thhqXziJ3leQnZbcO+DPpjina5rAol+sq5kOBeLe0n866eXLQQp4woSdm+V1lL6GoFPlUaQ/0Js7iqJ2SvP5pe0nF3ot5N3Ph5h1zURBpNVgybLtBfRSmu00c1EUqubRu0OCBYJk8k=
+	t=1748548486; cv=none; b=QkhyTjRdf3nZwdnxZ5QpakBtj0RlaCgIUv/0R5AVa/K8cVtx4dD3zWPeIP1czzjopbxLY0ycmCRJcWsxNM5HmOrNuEO/rwDvM4TTXC/EYeydLsgEMAWfU/JwQlV856Em81QqSZHJVB2Xhbrk27Rg2GAFnzZwUbh3920i4BFCuRk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748547975; c=relaxed/simple;
-	bh=PUrL8mn5uIdACfpE3eBmISpFl6piO91h/jKm7BYJGkM=;
+	s=arc-20240116; t=1748548486; c=relaxed/simple;
+	bh=KDAyZCxfpcHV0to5/wSFImIdoFPpjfeLeo2xpeGVPeQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=noZMPTc/IVqRdo0Giat9xwOcpl2pPBvrG5KxG+qLKVGrOo14wncsf1yM2l8JEMFid83NXfyJkYZ6oqc5OgE2Sk4o8zcTfYDXUqY3R3C/rvSVyHqZ9rKIHokNRznqM/6RR1ZhLObV8WXOsK8POTqZa+hUKiFuZMsfdtJNgPyR8aM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dhBbzPTk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDAADC4CEEE;
-	Thu, 29 May 2025 19:46:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748547973;
-	bh=PUrL8mn5uIdACfpE3eBmISpFl6piO91h/jKm7BYJGkM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=dhBbzPTk0XNUJHO8ZLPLriWTxcCUcc5O8dTQXpUwAmMEvMYHsfSJ286+NfeZW0PXL
-	 3oMjxVc7eGl95Aimp9pT6Jd5NGj5Qswxf3SsAanW3NIz7ZoV2D/LbDGdYj/EQVAUIZ
-	 8N/bqFOYikEuwO/aKo3xUlZBMjN077MW4nF5H30fWj+D7hEytqDVNdBQoMIHTlfRfk
-	 TZQxR8zXJPDDAsoXU/gLuIdEyAYXD/fD2sfIHkoyBn0URWgxchLH5SBVwXWDfb9RyJ
-	 GJuJEsUUCJw+y4bRpZAsJ97vZak6ZLYgslGjZyjx4PqRVe6va1HWwhf9u8j43eH7+X
-	 mM1kqxqujFhgw==
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-4766631a6a4so14517261cf.2;
-        Thu, 29 May 2025 12:46:13 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVgUt1QuWBOb9xN47k0hTAmR1IL6IHYxq9iHRSIgnBnhNjFiuqjYrFP1dxFSEk2inHTh04aeDlEp3oUMqwy/TAxEQbJWmAc@vger.kernel.org, AJvYcCWUW7YRhMWgN4uytrK1oLYDpntZ42nYWF3gRxaUV0qiRrm/ED23MA2j807ksEWp0EYIvf8=@vger.kernel.org, AJvYcCWiN96DUizrRKR0vNEti/oZK6O4rXUft6BOImYAgLVSl6Px5d32yrRquInfJxE8Z9TcOT8uUzHujTD/t0sIcQ==@vger.kernel.org, AJvYcCXbOaadGxCPAt9hA71JVKfYw7pZCN74eq9+K449mI+5gJl1llVcsoCTFgyu5GFISkUA0hj6++ZoIjPRrk1J@vger.kernel.org
-X-Gm-Message-State: AOJu0YypOb+Wzp4NolGnCXlR8LHjckQDt3tpEbeyxuoD28Kvk4sn497E
-	SUXbMwJDh4C25sXOxK64Cc7Xm4jhhK0J2QqkukXHxHPavgqTFisRdZaBqnn29zhNR9QxDmeoS/2
-	WE303vL7izhMD4LFIOuSOJSQ2TXqQLUs=
-X-Google-Smtp-Source: AGHT+IFY6IU590S4bL+v5D6GhHAGoh9dEWG0xwhcHzGoy8EgWUJpivtPNMBxmodfjCBhvoBMJd3CfBXnBhJrzinrrSk=
-X-Received: by 2002:a05:622a:1cc4:b0:4a4:2f0b:d2e4 with SMTP id
- d75a77b69052e-4a44004620cmr16325091cf.13.1748547972905; Thu, 29 May 2025
- 12:46:12 -0700 (PDT)
+	 To:Cc:Content-Type; b=f1VhndtEIxg8UKX7Cieyqksi6RtAYTx7G9xm4MHbJI9Mn1RP8k+wTFCPBYB+ygsGBHZUZ7LvZmP2VHJOEqX992AVGdy1CPyL48GZhmHFJKFjd50m0izjLh0TJLATbmRTMCXUlQXz4vYzTVP+0w6u29YNHblKGIhjTrGzpBc6ARI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MSUxL6Eh; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-231ba6da557so4925ad.1
+        for <bpf@vger.kernel.org>; Thu, 29 May 2025 12:54:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1748548484; x=1749153284; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+S4lB4Gv2jYjRHEOEuJ0wV1gBVt5Pet87rhCpqcSobY=;
+        b=MSUxL6EhFcxZAX2nnGpVvd6okohJVgLifzOSpskOkM1C/UVhFz2FyRM6BndNBkInq4
+         XRCLCcKD003T1nXhD9/IxCeLSEh0K3JwlgDsUQJ3pchbE0TlozSoDSqP8R/R+o1TBdJB
+         oAwaE/C2rHV/IqbTHYaUo8eGIOdSw1PM03dTq6LTBYqRXxx9u4HeKVozrA5eS8t1SxDr
+         XorECmCtUU8RMdyTIdE6fZCmaSmy8gflI6M+w3JQSWFa7mrjEntSPHU0sd3CmUGDCs3p
+         vfnKNmXYrzudRI236aTDhSqhBpYvxIIVVVHtZzM1DbY5Hrblf+VzcvFgxia7VPLa9QZ9
+         U0bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748548484; x=1749153284;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+S4lB4Gv2jYjRHEOEuJ0wV1gBVt5Pet87rhCpqcSobY=;
+        b=cUcXgFEkta5EZBHckjMmA+9YsF629em8icYyxJH7t6MoP6i8TjqmaqDcQ2gGTbbRxH
+         gofE8eIElzgeQmqX/7gL1CulbA2I4hIPNmy8ZbbyvztiEk+FUUBcOsVvsHP6nU8dIBo2
+         J4+LGYW2TAWF6vX0fQ5o1FET6oODN/V800rZFHse7SdXfN8H2IqYlnZNgShlpSQouMJh
+         nBATDFrakUUTqdmRBbxw/HC4WrRmprvbszpzUhPiZQbX+vsHzaryLe8Rhk5IHWg9SwgQ
+         0uhsrxCCGpWroOd4Xk3pWK7EuE5f2zp2kgbs7Ozlc82BLXei0X/o/AVQqg3xgNpLdEoo
+         Y4nw==
+X-Forwarded-Encrypted: i=1; AJvYcCVwySkOFG69hxatQMXVkD202cLEiiHcche3P35aPQ+LIrgyhOzLJzMjjLIMIvLCwTD8IzE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwXxSMIjJ5mqqJhm54Q6ipKYjIvtvC+T2QF912hN6RR+X2jhtsR
+	bavaA7eccYqmkXkRwKk0Kibpy2MKtEKsXmGRWpPo28dDwKBPhGAKMn17UGI/QSC7x7eQlXgtPFj
+	LDqR8c9JyQbXRq3njfMhtZd2aLSaLZ0nKXe3AZTXU
+X-Gm-Gg: ASbGncssL2m9Kp1LWKmgeUb9ufegF531fgcSbbchAOWstSsW0wiEdtVd+P0rjA9MdQC
+	8iuaMFwr4IcjpA4QDw8R09eA1sEGxx4WfuX6bEfidkUhfu+s+halinJA6195gfhU7WDTRs5A4IN
+	vjMMp93suSqi86BPBJZgsbSqjukm1bVPshJlTKvFW6ojTZ4vOC4V6opigOF2ts2ilW4E5tvBZMC
+	A==
+X-Google-Smtp-Source: AGHT+IGmg+nEhmGzdkLEDm9ONY2hZUhV/0fEvZFKjJYpf64+Bw18ZGKp0XAOrshELwrE2o9kRY3dj61qUB92cOKcTUI=
+X-Received: by 2002:a17:902:ea0b:b0:234:c37:85a with SMTP id
+ d9443c01a7336-2352e05b0edmr555885ad.24.1748548484265; Thu, 29 May 2025
+ 12:54:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250528222623.1373000-1-song@kernel.org> <20250528222623.1373000-4-song@kernel.org>
- <20250528223724.GE2023217@ZenIV> <yti2dilasy7b3tu6iin5pugkn6oevdswrwoy6gorudb7x2cqhh@nqb3gcyxg4by>
- <CAPhsuW4tg+bXU41fhAaS0n74d_a_KCFGvy_vkQOj7v4VLie2wg@mail.gmail.com>
- <20250529173810.GJ2023217@ZenIV> <CAPhsuW5pAvH3E1dVa85Kx2QsUSheSLobEMg-b0mOdtyfm7s4ug@mail.gmail.com>
- <20250529183536.GL2023217@ZenIV>
-In-Reply-To: <20250529183536.GL2023217@ZenIV>
-From: Song Liu <song@kernel.org>
-Date: Thu, 29 May 2025 12:46:00 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7LFP0ddFg_oqkDyO9s7DZX89GFQBOnX=4n5mV=VCP5oA@mail.gmail.com>
-X-Gm-Features: AX0GCFucBpIhJ0-QFxVRuTA9Yczw7uUI-QGrQG2G-J0sOZi2vyvwqTFuO6IWqmQ
-Message-ID: <CAPhsuW7LFP0ddFg_oqkDyO9s7DZX89GFQBOnX=4n5mV=VCP5oA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/4] bpf: Introduce path iterator
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Jan Kara <jack@suse.cz>, bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, brauner@kernel.org, 
-	kpsingh@kernel.org, mattbobrowski@google.com, amir73il@gmail.com, 
-	repnop@google.com, jlayton@kernel.org, josef@toxicpanda.com, mic@digikod.net, 
-	gnoack@google.com
+References: <20250529031047.7587-1-byungchul@sk.com> <20250529031047.7587-19-byungchul@sk.com>
+In-Reply-To: <20250529031047.7587-19-byungchul@sk.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Thu, 29 May 2025 12:54:31 -0700
+X-Gm-Features: AX0GCFt2p_r4U8_gCj8tNExwCZt7Mt1YqF_zxcfMdfPoeOcDtEP_NDyoXRdx3FE
+Message-ID: <CAHS8izNyXM_KQiySAw4hZQ+FU8yxAZmcqvjsO7P3pM0HNy0STA@mail.gmail.com>
+Subject: Re: [RFC v3 18/18] page_pool: access ->pp_magic through struct
+ netmem_desc in page_pool_page_is_pp()
+To: Byungchul Park <byungchul@sk.com>
+Cc: willy@infradead.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, kernel_team@skhynix.com, kuba@kernel.org, 
+	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org, 
+	akpm@linux-foundation.org, davem@davemloft.net, john.fastabend@gmail.com, 
+	andrew+netdev@lunn.ch, asml.silence@gmail.com, toke@redhat.com, 
+	tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com, 
+	leon@kernel.org, ast@kernel.org, daniel@iogearbox.net, david@redhat.com, 
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz, 
+	rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org, 
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 29, 2025 at 11:35=E2=80=AFAM Al Viro <viro@zeniv.linux.org.uk> =
-wrote:
+On Wed, May 28, 2025 at 8:11=E2=80=AFPM Byungchul Park <byungchul@sk.com> w=
+rote:
 >
-> On Thu, May 29, 2025 at 11:00:51AM -0700, Song Liu wrote:
-> > On Thu, May 29, 2025 at 10:38=E2=80=AFAM Al Viro <viro@zeniv.linux.org.=
-uk> wrote:
-> > >
-> > > On Thu, May 29, 2025 at 09:53:21AM -0700, Song Liu wrote:
-> > >
-> > > > Current version of path iterator only supports walking towards the =
-root,
-> > > > with helper path_parent. But the path iterator API can be extended
-> > > > to cover other use cases.
-> > >
-> > > Clarify the last part, please - call me paranoid, but that sounds lik=
-e
-> > > a beginning of something that really should be discussed upfront.
-> >
-> > We don't have any plan with future use cases yet. The only example
-> > I mentioned in the original version of the commit log is "walk the
-> > mount tree". IOW, it is similar to the current iterator, but skips non
-> > mount point iterations.
-> >
-> > Since we call it "path iterator", it might make sense to add ways to
-> > iterate the VFS tree in different patterns. For example, we may
-> > have an iterator that iterates all files within a directory. Again, we
-> > don't see urgent use cases other than the current "walk to root"
-> > iterator.
+> To simplify struct page, the effort to separate its own descriptor from
+> struct page is required and the work for page pool is on going.
 >
-> What kinds of locking environments can that end up used in?
-
-This will start with a referenced "struct path", in a sleepable context.
-
-> The reason why I'm getting more and more unhappy with this thing is
-> that it sounds like a massive headache for any correctness analysis in
-> VFS work.
+> To achieve that, all the code should avoid directly accessing page pool
+> members of struct page.
 >
-> Going straight to the root starting at a point you already have pinned
-> is relatively mild - you can't do path_put() in any blocking contexts,
-> obviously, and you'd better be careful with what you are doing on
-> mountpoint traversal (e.g. combined with "now let's open that directory
-> and read it" it's an instant "hell, no" - you could easily bypass MNT_LOC=
-KED
-> restrictions that way), but if there's a threat of that getting augmented
-> with other things (iterating through all files in directory would be
-> a very different beast from the locking POV, if nothing else)... ouch.
+> Access ->pp_magic through struct netmem_desc instead of directly
+> accessing it through struct page in page_pool_page_is_pp().  Plus, move
+> page_pool_page_is_pp() from mm.h to netmem.h to use struct netmem_desc
+> without header dependency issue.
+>
+> Signed-off-by: Byungchul Park <byungchul@sk.com>
+> ---
+>  include/linux/mm.h   | 12 ------------
+>  include/net/netmem.h | 14 ++++++++++++++
+>  mm/page_alloc.c      |  1 +
+>  3 files changed, 15 insertions(+), 12 deletions(-)
+>
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 8dc012e84033..de10ad386592 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -4311,16 +4311,4 @@ int arch_lock_shadow_stack_status(struct task_stru=
+ct *t, unsigned long status);
+>   */
+>  #define PP_MAGIC_MASK ~(PP_DMA_INDEX_MASK | 0x3UL)
+>
+> -#ifdef CONFIG_PAGE_POOL
+> -static inline bool page_pool_page_is_pp(struct page *page)
+> -{
+> -       return (page->pp_magic & PP_MAGIC_MASK) =3D=3D PP_SIGNATURE;
+> -}
+> -#else
+> -static inline bool page_pool_page_is_pp(struct page *page)
+> -{
+> -       return false;
+> -}
+> -#endif
+> -
+>  #endif /* _LINUX_MM_H */
+> diff --git a/include/net/netmem.h b/include/net/netmem.h
+> index f05a8b008d00..9e4ed3530788 100644
+> --- a/include/net/netmem.h
+> +++ b/include/net/netmem.h
+> @@ -53,6 +53,20 @@ NETMEM_DESC_ASSERT_OFFSET(pp_ref_count, pp_ref_count);
+>   */
+>  static_assert(sizeof(struct netmem_desc) <=3D offsetof(struct page, _ref=
+count));
+>
+> +#ifdef CONFIG_PAGE_POOL
+> +static inline bool page_pool_page_is_pp(struct page *page)
+> +{
+> +       struct netmem_desc *desc =3D (__force struct netmem_desc *)page;
+> +
 
-We are fully aware that a "files in the directory" iterator may need
-different locking. This is the exact reason we want to provide this
-logic as an iterator in the kernel: to get locking/etc correct in the
-first place, so that the users can avoid making mistakes.
+Is it expected that page can be cast to netmem_desc freely? I know it
+works now since netmem_desc and page have the same layout, but how is
+it going to continue to work when page is shrunk and no longer has
+'pp_magic' inside of it? Is that series going to fixup all the places
+where casts are done?
 
-> Basically, you are creating a spot we will need to watch very carefully
-> from now on.  And the rationale appears to include "so that we could
-> expose that to random out-of-tree code that decided to call itself LSM",
-> so pardon me for being rather suspicious about the details.
+Is it also allowed that we can static cast netmem_desc to page?
 
-No matter what we call them, these use cases exist, out-of-tree or
-in-tree, as BPF programs or kernel modules. We are learning from
-Landlock here, simply because it is probably the best way to achieve
-this.
+Consider creating netmem_desc_page helper like ptdesc_page.
 
-This particular set introduces a safer API than combinations of
-existing APIs (follow_up(), dget_parent(), etc.). It guarantees all
-the memory accesses are to properly referenced kernel objects;
-it also guaranteed all the acquired references are released.
-Therefore, I don't see it adds risks in any sense.
+I'm not sure the __force is needed too.
 
+--=20
 Thanks,
-Song
+Mina
 
