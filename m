@@ -1,172 +1,242 @@
-Return-Path: <bpf+bounces-59228-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59229-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD432AC7598
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 03:59:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E2A3AC759A
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 04:03:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87FCC4E7937
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 01:59:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26AEBA255C3
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 02:02:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB805221F0F;
-	Thu, 29 May 2025 01:59:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B8DE1519A6;
+	Thu, 29 May 2025 02:03:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iHNT4+2B"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e+zDEbXI"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D5D717C211
-	for <bpf@vger.kernel.org>; Thu, 29 May 2025 01:59:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FDF113AA2F;
+	Thu, 29 May 2025 02:03:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748483980; cv=none; b=BlNViJ5gPe/TSFcG1GtX9W+v1GEDD1oZ3bwz50g5KeuuTF9LGXhdM6NG4ozokLjPIwzC9DihHJaoZR1i0kuGiXJlawqetZcoSypeGnfBMpky4ea5NM5qGxtYeN5RlM83NBoF/f/AN9bngjEXp4TBwG/vgxXNZS4dsESAWhSDj7Y=
+	t=1748484185; cv=none; b=rOEhauJd4XWxlKlJeBMS455OxslWKW7wtlOFU2hkzAa0VvX7PVg4mlJSIZzG2T0YM7GqEJoTgVruP1gzVzM2aSURDECFaAoqVO3XlzMPB6q0usmhR2aW6qyJSmkgbZDh4L05k/GS0m7sCSF/OIJk6DUb8x7B2sFoCxD6PDPNN/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748483980; c=relaxed/simple;
-	bh=E0VDnu2Vb7FasqEutiogEzJdZ70+RQibyb21+FPvlBY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WObPMUz/mg2lO4GjDcCYACViz0VnHKSqy+SRYnhmTelZ4xR9KA4HlDh/5Ay9cZWGQmeHZWL8m0NDdaLCJxqgYi0D4tTKMDKJ0x1ahdbF3aSE3o/EeCPI/dZZzu2nEXrPt8YwnjxFap4yHoKtgCWUtO9Mh4vIQ/QImODmZRSaUUo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iHNT4+2B; arc=none smtp.client-ip=95.215.58.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <a94dbbe2-f1cb-4ad2-a021-e07f00ee8fe1@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1748483976;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3UZsMwMj65621+5MWWMrZn5MiRxhAeR1zA5Aj//ulqI=;
-	b=iHNT4+2BVmDdElb84zPCpqERjuhWRhDmlUMPAdRERhMWw5rqMRAIOWopjuWwJtJvC0HPGr
-	+FYqe+ZRRWqG0eTfE3xMrLuP6I39zqkLgLEaXHKam6I1lptsWrEmtv747Dle0DDOgZpkNJ
-	uIZF4Z28j9fFFqxqK5mjvQd+K29yqdE=
-Date: Thu, 29 May 2025 09:59:23 +0800
+	s=arc-20240116; t=1748484185; c=relaxed/simple;
+	bh=DIN6LIQaAOvcQ53vfc9A5k02oK5pSKpsJOPM8n2POLc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=M2d8Pe38co4NEIRtaZhl8Z3mRHxuJ4G5aQXAnb5pJEZka6neyqBJc70Xv53BaBoJYEme/MXkbBRydZYIyq0DdKQS6PkzuxqYoxaJLMUAV6+bXMzmTDJshFuLLsyDSYNbA53AK8FTHXiz361J4s8HMcanrUJnqOdzxVmIPYjRPmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e+zDEbXI; arc=none smtp.client-ip=209.85.161.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-609e7f27c66so133725eaf.0;
+        Wed, 28 May 2025 19:03:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748484182; x=1749088982; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R1egAo3iwBvxZqJdXFnwcv60q/WxRGcWuQcEWMsX+k0=;
+        b=e+zDEbXIWnVQhmOtleQy/wzry7GNEd6raeHIr0d/o6I3WxfvrHIEbW0jhU3YorlULc
+         Y1+peSnpcanatoCfKaXwzqahreS5LKCjcdz5E61/r+jeSvWy4AkGi+cPovSawXLzHe5A
+         WAQAr+BMKHRxQnwPAS6l8IZ0bzQOajABCbOhOVZaZVCMU8IKWlqzUx+1RmZB0QEyEMM+
+         3d4G5SRIZTOlGqgDmL7UCwgpE3X7AoMmxZg2HRy3Ekp92Ks2mWGlqrRvr84FSDcTPBxu
+         0Mze2zPrwIfZcuCJrhu+iT+cLAbsEWEPH6WfwDET4ivE3RO5Eg9nPgvoWKs97VbE6nz6
+         760A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748484182; x=1749088982;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=R1egAo3iwBvxZqJdXFnwcv60q/WxRGcWuQcEWMsX+k0=;
+        b=htdwL/YX+lZZKhO9rk2yh/wx4caUXhKAXKsJ95CqFEe9O2+BW2yPLjf98Qn0FHd/ek
+         QJuQ7Df5NLly37AiWE039VLLolj6l6zB1nSuJQktM1UHUio7IBRPrLU88voMmRq9H33+
+         rafuOvoUBSg8b+bWvVl4DeVZKPIBS16h3414uVEas8VLx0uCbVo1x+t7pff1Xxw+GDrg
+         rPhDwHc5NKZwMuL6aO8u5Kn49yVh4COsSnezGUgHl1/RvRJephq7xQXy2IFQduf2nue+
+         SA5EXX7iZD6mXx1Gj5bA8t4wg7orxcKbXUHkJOmJ8HMjOehQv6HkH4gEIoaC8d9yAK79
+         zaxQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVUF0D6YCYTMyisiHrapD0c4M05ofuKsGA6k2aBo3AM1Nu+0q/H6+XnjSRWRV5QacMdocY=@vger.kernel.org, AJvYcCVcTJxS/gMw/Rh0MIIs20xZxr0naPTZiv3DvDE1i9ifYPHX4ofRu8M8PVCcEPd9n5o0SdvKzmqdNnwLDgO2@vger.kernel.org
+X-Gm-Message-State: AOJu0YzRO9Mu0Hqdhh0ZvxKJAZvp5a2PAZEz7Umbbk/0mV+TiVmiqWTB
+	eY/AB41ZtE1kUKqk9+FrbJJurJebIp8y5F4QCHEF5QjRd64JuMetohhMJWWkZCdqOjvFjI88fzF
+	e0FtecOlJAWZTxYhqlcSass06r+NnJ0A=
+X-Gm-Gg: ASbGncvx4xlEPZFoQE3UBCnaXmnI5mk2V1/DlL3EWzBdYWpiwKyr407s+7uph7ZcB9V
+	wEEJaAHno93xVe/JSxn+2P1HadrezhIA57/Aq/wAQYg2INpL/SjWHAytVGn8yaNN9XOlheSBrwT
+	8emj8F6RYWfm0zcfOyqCWpsq4jlvQW8yRsOr3GpP1jsyY=
+X-Google-Smtp-Source: AGHT+IH0mfeDH3IFQ2Mw4l8ARan0BJrAfAyJQiogfmzdX/eyo4H5wdRxQMSJ66duRYCi67pL0zjvLOz0YNbhUglnQQc=
+X-Received: by 2002:a05:6871:20d:b0:2c1:62ba:cd7c with SMTP id
+ 586e51a60fabf-2e861df8abamr10614260fac.15.1748484182330; Wed, 28 May 2025
+ 19:03:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v3 0/4] bpf: Introduce global percpu data
-To: Yonghong Song <yonghong.song@linux.dev>,
- Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, song@kernel.org, eddyz87@gmail.com, qmo@kernel.org,
- dxu@dxuuu.xyz, kernel-patches-bot@fb.com
-References: <20250526162146.24429-1-leon.hwang@linux.dev>
- <CAEf4Bzb69wNAvLZ_55vzsZ0Co7u+g=JD85OkodWuYsG-uHBz_w@mail.gmail.com>
- <6cc290d6-2fe8-4171-9e74-a9f20c5b5992@linux.dev>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Leon Hwang <leon.hwang@linux.dev>
-In-Reply-To: <6cc290d6-2fe8-4171-9e74-a9f20c5b5992@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250528104032.1237415-1-jianghaoran@kylinos.cn>
+In-Reply-To: <20250528104032.1237415-1-jianghaoran@kylinos.cn>
+From: Hengqi Chen <hengqi.chen@gmail.com>
+Date: Thu, 29 May 2025 10:02:51 +0800
+X-Gm-Features: AX0GCFujo6dWfpQa5SiUb5FoezkhVXHsP8VZTM4lE4ANnYjcbdoIqPK4PV8GCUw
+Message-ID: <CAEyhmHTg3xNMBrSxXQj96pvfD83t6_RHRT_GGtbBzOpAKztDpw@mail.gmail.com>
+Subject: Re: [PATCH] LoongArch: BPF: Optimize the calculation method of
+ jmp_offset in the emit_bpf_tail_call function
+To: jianghaoran@kylinos.cn
+Cc: loongarch@lists.linux.dev, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, kernel@xen0n.name, chenhuacai@kernel.org, 
+	yangtiezhu@loongson.cn, haoluo@google.com, jolsa@kernel.org, sdf@fomichev.me, 
+	kpsingh@kernel.org, john.fastabend@gmail.com, yonghong.song@linux.dev, 
+	song@kernel.org, eddyz87@gmail.com, martin.lau@linux.dev, andrii@kernel.org, 
+	daniel@iogearbox.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hi Haoran,
 
+On Wed, May 28, 2025 at 6:40=E2=80=AFPM Haoran Jiang <jianghaoran@kylinos.c=
+n> wrote:
+>
+> For a ebpf subprog JIT=EF=BC=8Cthe last call bpf_int_jit_compile function=
+ will
+> directly enter the skip_init_ctx process. At this point, out_offset =3D -=
+1,
+> the jmp_offset in emit_bpf_tail_call is calculated
+> by #define jmp_offset (out_offset - (cur_offset)) is a negative number,
+> which does not meet expectations.The final generated assembly as follow.
+>
+> 54:     bgeu            $a2, $t1, -8        # 0x0000004c
+> 58:     addi.d          $a6, $s5, -1
+> 5c:     bltz            $a6, -16            # 0x0000004c
+> 60:     alsl.d          $t2, $a2, $a1, 0x3
+> 64:     ld.d            $t2, $t2, 264
+> 68:     beq             $t2, $zero, -28     # 0x0000004c
+>
+> Before apply this patch, the follow test case will reveal soft lock issue=
+s.
+>
+> cd tools/testing/selftests/bpf/
+> ./test_progs --allow=3Dtailcalls/tailcall_bpf2bpf_1
+>
+> dmesg:
+> watchdog: BUG: soft lockup - CPU#2 stuck for 26s! [test_progs:25056]
+>
 
-On 29/5/25 01:10, Yonghong Song wrote:
-> 
-> 
-> On 5/27/25 3:31 PM, Andrii Nakryiko wrote:
->> On Mon, May 26, 2025 at 9:22 AM Leon Hwang <leon.hwang@linux.dev> wrote:
->>> This patch set introduces global percpu data, similar to commit
->>> 6316f78306c1 ("Merge branch 'support-global-data'"), to reduce
->>> restrictions
->>> in C for BPF programs.
->>>
->>> With this enhancement, it becomes possible to define and use global
->>> percpu
->>> variables, like the DEFINE_PER_CPU() macro in the kernel[0].
->>>
->>> The section name for global peurcpu data is ".data..percpu". It
->>> cannot be
->>> named ".percpu" or ".percpudata" because defining a one-byte percpu
->>> variable (e.g., char run SEC(".data..percpu") = 0;) can trigger a crash
->>> with Clang 17[1]. The name ".data.percpu" is also avoided because some
->> Does this happen with newer Clangs? If not, I don't think a bug in
->> Clang 17 is reason enough for this weird '.data..percpu' naming
->> convention. I'd still very much prefer .percpu prefix. .data is used
->> for non-per-CPU data, we shouldn't share the prefix, if we can avoid
->> that.
-> 
-> I checked and clang17 does have a fatal error with '.percpu'. But clang18
-> to clang21 all fine.
-> 
-> For clang17, the error message is
->   fatal error: error in backend: unable to write nop sequence of 3 bytes
-> in llvm/lib/MC/MCAssembler.cpp.
-> 
-> The key reason is in bpf backend llvm/lib/Target/BPF/MCTargetDesc/
-> BPFAsmBackend.cpp
-> 
-> bool BPFAsmBackend::writeNopData(raw_ostream &OS, uint64_t Count,
->                                  const MCSubtargetInfo *STI) const {
->   if ((Count % 8) != 0)
->     return false;
-> 
->   for (uint64_t i = 0; i < Count; i += 8)
->     support::endian::write<uint64_t>(OS, 0x15000000, Endian);
-> 
->   return true;
-> }
-> 
-> Since Count is 3, writeNopData returns false and it caused the fatal error.
-> 
-> The bug is likely in MC itself as for the same BPF writeNopData
-> implementatation,
-> clang18 works fine (with Count is 8). So the bug should be fixed in
-> clang18.
-> 
-From my testing, Clang 18 handles 'char run SEC(".percpu");' correctly
-without crashing.
+This is a known issue. Does this change pass all tailcall tests ?
+If not, please refer to the tailcall hierarchy patchset([1]).
+We should address it once and for all. Thanks.
 
-To use the '.percpu' section while avoiding the Clang 17 bug, the test
-case can be adjusted as follows:
+  [1]: https://lore.kernel.org/bpf/20240714123902.32305-1-hffilwlqm@gmail.c=
+om/
 
-int data SEC(".percpu") = -1;
-int nums[7] SEC(".percpu");
-#if defined(__clang__) && __clang_major__ >= 18
-char run SEC(".percpu") = 0;
-struct {
-	char set;
-	int i;
-	int nums[7];
-} struct_data SEC(".percpu") = {
-	.set = 0,
-	.i = -1,
-};
-#else
-struct {
-	int i;
-	int nums[7];
-} struct_data SEC(".percpu") = {
-	.i = -1,
-};
-#endif
-
-SEC("raw_tp/task_rename")
-int update_percpu_data(struct __sk_buff *skb)
-{
-	struct_data.nums[6] = 0xc0de;
-	struct_data.i = 1;
-	nums[6] = 0xc0de;
-	data = 1;
-#if defined(__clang__) && __clang_major__ >= 18
-	struct_data.set = 1;
-	run = 1;
-#endif
-	return 0;
-}
-
-With this change, the 'char run SEC(".percpu");' declaration will only
-be compiled and tested with Clang 18 or newer, effectively avoiding the
-crash with Clang 17.
-
-Thanks,
-Leon
-
+> Signed-off-by: Haoran Jiang <jianghaoran@kylinos.cn>
+> ---
+>  arch/loongarch/net/bpf_jit.c | 28 +++++++++-------------------
+>  1 file changed, 9 insertions(+), 19 deletions(-)
+>
+> diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
+> index fa1500d4aa3e..d85490e7de89 100644
+> --- a/arch/loongarch/net/bpf_jit.c
+> +++ b/arch/loongarch/net/bpf_jit.c
+> @@ -208,9 +208,7 @@ bool bpf_jit_supports_far_kfunc_call(void)
+>         return true;
+>  }
+>
+> -/* initialized on the first pass of build_body() */
+> -static int out_offset =3D -1;
+> -static int emit_bpf_tail_call(struct jit_ctx *ctx)
+> +static int emit_bpf_tail_call(int insn, struct jit_ctx *ctx)
+>  {
+>         int off;
+>         u8 tcc =3D tail_call_reg(ctx);
+> @@ -220,9 +218,8 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
+>         u8 t2 =3D LOONGARCH_GPR_T2;
+>         u8 t3 =3D LOONGARCH_GPR_T3;
+>         const int idx0 =3D ctx->idx;
+> -
+> -#define cur_offset (ctx->idx - idx0)
+> -#define jmp_offset (out_offset - (cur_offset))
+> +       int tc_ninsn =3D 0;
+> +       int jmp_offset =3D 0;
+>
+>         /*
+>          * a0: &ctx
+> @@ -232,8 +229,11 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
+>          * if (index >=3D array->map.max_entries)
+>          *       goto out;
+>          */
+> +       tc_ninsn =3D insn ? ctx->offset[insn+1] - ctx->offset[insn] :
+> +               ctx->offset[0];
+>         off =3D offsetof(struct bpf_array, map.max_entries);
+>         emit_insn(ctx, ldwu, t1, a1, off);
+> +       jmp_offset =3D tc_ninsn - (ctx->idx - idx0);
+>         /* bgeu $a2, $t1, jmp_offset */
+>         if (emit_tailcall_jmp(ctx, BPF_JGE, a2, t1, jmp_offset) < 0)
+>                 goto toofar;
+> @@ -243,6 +243,7 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
+>          *       goto out;
+>          */
+>         emit_insn(ctx, addid, REG_TCC, tcc, -1);
+> +       jmp_offset =3D tc_ninsn - (ctx->idx - idx0);
+>         if (emit_tailcall_jmp(ctx, BPF_JSLT, REG_TCC, LOONGARCH_GPR_ZERO,=
+ jmp_offset) < 0)
+>                 goto toofar;
+>
+> @@ -254,6 +255,7 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
+>         emit_insn(ctx, alsld, t2, a2, a1, 2);
+>         off =3D offsetof(struct bpf_array, ptrs);
+>         emit_insn(ctx, ldd, t2, t2, off);
+> +       jmp_offset =3D tc_ninsn - (ctx->idx - idx0);
+>         /* beq $t2, $zero, jmp_offset */
+>         if (emit_tailcall_jmp(ctx, BPF_JEQ, t2, LOONGARCH_GPR_ZERO, jmp_o=
+ffset) < 0)
+>                 goto toofar;
+> @@ -263,22 +265,11 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
+>         emit_insn(ctx, ldd, t3, t2, off);
+>         __build_epilogue(ctx, true);
+>
+> -       /* out: */
+> -       if (out_offset =3D=3D -1)
+> -               out_offset =3D cur_offset;
+> -       if (cur_offset !=3D out_offset) {
+> -               pr_err_once("tail_call out_offset =3D %d, expected %d!\n"=
+,
+> -                           cur_offset, out_offset);
+> -               return -1;
+> -       }
+> -
+>         return 0;
+>
+>  toofar:
+>         pr_info_once("tail_call: jump too far\n");
+>         return -1;
+> -#undef cur_offset
+> -#undef jmp_offset
+>  }
+>
+>  static void emit_atomic(const struct bpf_insn *insn, struct jit_ctx *ctx=
+)
+> @@ -916,7 +907,7 @@ static int build_insn(const struct bpf_insn *insn, st=
+ruct jit_ctx *ctx, bool ext
+>         /* tail call */
+>         case BPF_JMP | BPF_TAIL_CALL:
+>                 mark_tail_call(ctx);
+> -               if (emit_bpf_tail_call(ctx) < 0)
+> +               if (emit_bpf_tail_call(i, ctx) < 0)
+>                         return -EINVAL;
+>                 break;
+>
+> @@ -1342,7 +1333,6 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_pro=
+g *prog)
+>         if (tmp_blinded)
+>                 bpf_jit_prog_release_other(prog, prog =3D=3D orig_prog ? =
+tmp : orig_prog);
+>
+> -       out_offset =3D -1;
+>
+>         return prog;
+>
+> --
+> 2.43.0
+>
 
