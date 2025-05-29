@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-59257-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59258-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42409AC7681
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 05:38:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2DEBAC7682
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 05:38:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F5719E4A12
-	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 03:37:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99C371BA046A
+	for <lists+bpf@lfdr.de>; Thu, 29 May 2025 03:38:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A441D221FA8;
-	Thu, 29 May 2025 03:37:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D4432459F2;
+	Thu, 29 May 2025 03:38:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="yDqO38Nh"
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="psVCYuxO"
 X-Original-To: bpf@vger.kernel.org
-Received: from out162-62-57-210.mail.qq.com (out162-62-57-210.mail.qq.com [162.62.57.210])
+Received: from out162-62-57-137.mail.qq.com (out162-62-57-137.mail.qq.com [162.62.57.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E127F37160
-	for <bpf@vger.kernel.org>; Thu, 29 May 2025 03:37:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.210
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A7F3522A
+	for <bpf@vger.kernel.org>; Thu, 29 May 2025 03:38:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.137
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748489875; cv=none; b=u5wVG1EDFiM1pEMGLpb8GcaszO86VHVCn1qJwKME3ud+g2aikWC2H3C/zuAJVpHJ+xMikRWGQJymzI+qf/N4Gsg8dijzOTFa2waY5QG2ErRbt2CjpWlHYxYvmbCieodc+KfMUGQKYgvR6u1cAozn9kc+kx9j1M9hI88f5avglUM=
+	t=1748489903; cv=none; b=bQepP4U/x2FgPLmra5VSwayXeW9pVtv+8C6g9LLVMoN1mQziFTSj9GFw63HNldQxi0iUeDA9dV8+ksTQsCiSxSI7+XfbeQxHdeEnMrtbeRynY9G1oHPzWVNmV+mH8OHgvKn97/OAwlgc9QwQFj2c3jLf86EGH8cut32Oaf1OvN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748489875; c=relaxed/simple;
-	bh=CBupvWDj+bp8c+zW9n63VQLzHs/I520TET911IbwSbY=;
+	s=arc-20240116; t=1748489903; c=relaxed/simple;
+	bh=9Gi+p7NOWdUYlyOBzHRN/ipN/78Bvj8tyDqCPEfyIh4=;
 	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=HAFYJu2zGYRu7lyl8LlKzUbcdtCQTqPtxZeGGdulgIRROf1T8sJdG7lwcZpfWoxqZFKgqpmJlDP+FBDu+OBy48wrEiRRYI7cZ+T+Kv7/oRVSY3Ip0KLFXqSdOuhpMKmaJVydnPrY010hz3z3Q5ANpLLTgm2CtAG2f7mgZQe5NuY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=yDqO38Nh; arc=none smtp.client-ip=162.62.57.210
+	 MIME-Version; b=ef6sR9hwDlV7uxi3Di53vp0GpIafvUA+kXXqN1rrm7pSU4NBX7CXwMVTp/oV31m04q1aD9Mw29WCqszpvbZ8SIQB8raglExIyEYqtkAFzS/UHJL0KvTkhomCbnltMdMeY2d7HIhks8ky+Mint60CGtOhWhBjGmvZ2g9NN5hLSVc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=psVCYuxO; arc=none smtp.client-ip=162.62.57.137
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1748489567;
-	bh=0yxfgjZsIWQnTUAUtq7liyCcqoh9g0BEu9JK+IiDETg=;
+	s=s201512; t=1748489596;
+	bh=51cyRcS8pE0GQdR/zXBHt3aPgQac/BxEPQcY9bI9Ah8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=yDqO38NheQyXFDLqQImpmMaSywcUM16Wfs+5iegWUwslMP6q/yPPhbWxOnfF8LiDz
-	 tIPQHYHsw6jeAInL67q1tSQqMqValHaM06RBn/PfT3c+cnQK7TXCiVf2HrPnQ3QraG
-	 roNixV9di6p4NKv3aiqmHPWuf1flFnWWb2KhpnYs=
+	b=psVCYuxOrx0AHskpvob+Zzg1r08NOZtVLH9nXddSwH+fuqiYDOtdQsvUX+marVE9C
+	 4zyj7sf0GCv2xIucTf8GP648awKVn4K37ATXv55cB/CjA69bpMlKq3VSB/kPPIlmXq
+	 n0RTI13p9pX7viHpPgz8oEAttkDA7e0oaq29XGHY=
 Received: from NUC10.. ([39.156.73.10])
 	by newxmesmtplogicsvrszgpua8-0.qq.com (NewEsmtp) with SMTP
-	id 8293B21C; Thu, 29 May 2025 11:32:41 +0800
-X-QQ-mid: xmsmtpt1748489561teyck2g0p
-Message-ID: <tencent_97F8B56B340F51DB604B482FEBF012460505@qq.com>
-X-QQ-XMAILINFO: NnYhxYSyuBnLGYxP4juhxZppL5xEnQkJZl/jDuQ+1KvyfyFpE1SifIj+1iHcPr
-	 CerkoZOaWSmDclDEG/vhipekyH7tjamvBg94Hm5I13vVEWsqDAhDhVJp9Dft4s4t3dAGcmIjyHwE
-	 tUkiytTHBzIgyqv98CkSQ260zuPMKNREBVvZ/ObMl0WU9H2K3AMCUM5LxTaUfm6YrJNZWRMxRwSx
-	 0nPaDdZZt0sEa9Mvw/7I8HIp5gbkwe2nLUPKN8eIQNLbhXNjzjN3sQciWPqdVTAVa3vFc6fUp6Rj
-	 j+KpJYdkLApLbDE3JroYsbTkM8ICao8tdLzh07b3EoXCjQeAO97H7lxWu1dhyTa9GhPJyqefgYuO
-	 xfgSfrXfs54a1ZftUQLXjaJPWtVLCaP5jd27OpTcg2eNYDj2KyQny3kramdHr8ITn0gGfREA/g/j
-	 bUbHjGeZu9iDW0vhf5pv6IE3NbS/roFK5CL9khZLibwtvJhVyYWt1lOg15bF44ygaHzb8jYE1WA3
-	 3Rmnj3t6YTa1RrWRb66YAov6AERrGvJyqC0JAHRMaWOaS6V8eQhs8BQVoJCwn3cyeqJT9b9u7xqD
-	 IymO8WkU50kUy/M6e6g3V6q2eZyzgPYn2a8nz2LY2ScvYPRhKOMiC61GGR3X6gOprHfG0B1Ocmge
-	 nBL1kiz5UDUuC99i720N/OLTsFx00CQFCF9tUGsqcevfF4CBGe88cUA2R5QLXZ333cG1OEjpRyUb
-	 p6cJc1Zdgcqse55albhvaTH54YT6+z0WKJEOFR/QQHhiIgxgVxckQofL8myivlEXnEoNROu1nkk+
-	 L78BeeIyHDifRggkqnKYmccm9q259f9Au4x/DdAsmpw2aQp/kSCDfyJkCxAPQi+eAtG3GAZo+D/f
-	 Kk8O3KW5WVUMq7vU3dUjv9l76O8qbapSZSvYEfCGF6UJNEFX/zyp8ZZMDwI/PNcyqTdGbKmHTJc2
-	 tQWrDf5oQd6z2FdRKPjDhEdS/jx+ZaABaZwioqsZowAlxNXJGMpUYle09NgbaCnRCu/OBM2D+SFN
-	 v6K0RPyWK0dS5ntiWddrTdTr7mFMLi6mIzFeevLnkb1Gdl4i5E
+	id 84C280DC; Thu, 29 May 2025 11:33:12 +0800
+X-QQ-mid: xmsmtpt1748489592tsa3q4n7f
+Message-ID: <tencent_2B46D7106B0DB285B4B2242FFB55685EF309@qq.com>
+X-QQ-XMAILINFO: NwU6Bou9okj/gKz5AmlCKddnnW1+RtLu8QmoYcmy9g6COA5vTwShMU3Q1Ko0Ya
+	 f4zqdfe1MSvIEazISSt7eLqbQGhnvcV9GsL+vCWJ3CKz3zvXk5nyZMeCMCqyF5bkgs92skz95sNZ
+	 LD4cOnC24CW1ANVmf3/Ye3Hz8Otewo3Zy2drSuK2vvJwKBhEI5WH5eOlC6R/JgIAxBtaxb1h6RiE
+	 i01QzsoBVQRh8Letozkx8fL8UA0CyNZppoIjf06MbZ0dbm2BtO/w7ARu9GKqe043ZaLat28rbobG
+	 ONRWp/zWAVzB+wTP9jykGvpLrbm+wyQdRsurBH1q8oUCGMh9+7zYuqEg1lxafHhkZ51+yYyGgJ7R
+	 TJMlgcx1flT6qoDJweFWXP1FJhUvRP9wc3fhkmD8FQXU0Awus8kpnBmt0LBw85P1Kow/I1eZQhGw
+	 UTKdL1jhD6ckV9pYkUeFeDWqqfrqAlYR4V9t5tjstwvGxrjQQ7hFtdbwyUG2ZH/8BgODaLBasqZg
+	 JMknZuHiOCioM4UU65PkSCcqLUgJblLL8OylNfFPLaeuGBgiVNso11WpNuUeqAcWycrWbUdZYbBr
+	 UeNlI1i3lmlHq0kLVwxwcavFA1GnHI2GftwA9Ag0x/5npmawDvLnIJ3RWrtM5zFIANWUue6h3HyX
+	 FaBQwyaTx0fAnGGJ0zOdd1yXBChpiv2XhTYplW0Wmj5FnpkfJNGZgaNkUe31BxkLbQxFjFIpgEDC
+	 JJrMpqMwRUjdrWTzdSZAc3roJi9GBKcNiFOfYSNeIHLczgqOIDUB+HB7G5PEY4Zk6pfiF63xh5nE
+	 hWjLGDmTzHtAfmH+MtINz/4ZfhjdPHqEwe7MSF7Afg3gUd/18vWoHPATYsdtWR6hPhNy3t6LQJNb
+	 0zQVYYKf47qCX9YUK6nbHmp2YxrYxxga/+pZidfD59Ds6IBE2vumFln45Gegun/zmcjOZGVPEXSb
+	 vfVbkmGlMEIvYaTkJPekgHwhpi+mnLR6JZLngH3hJHLE8eHYZfHzlxgXp12IDeMD3eEsKMC5qUC2
+	 O6tWdpn2CG3Det6rHtIzfh3OyJVcCGFQcO+eQo7fgB+74/1IyT+FHggKIfqxM=
 X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
 From: Rong Tao <rtoax@foxmail.com>
 To: ast@kernel.org,
@@ -83,9 +83,9 @@ Cc: rtoax@foxmail.com,
 	bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)),
 	linux-kernel@vger.kernel.org (open list),
 	linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK)
-Subject: [PATCH bpf-next 1/2] bpf: Add bpf_task_cwd_from_pid() kfunc
-Date: Thu, 29 May 2025 11:32:34 +0800
-X-OQ-MSGID: <5af7a0a04f467df05d2e4cd54a0a7ebf396c3888.1748488784.git.rtoax@foxmail.com>
+Subject: [PATCH bpf-next 2/2] selftests/bpf: Add selftests for bpf_task_cwd_from_pid()
+Date: Thu, 29 May 2025 11:32:50 +0800
+X-OQ-MSGID: <78ba76a0749baaee94023a58bc1c3a8ba517afa3.1748488784.git.rtoax@foxmail.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1748488784.git.rtoax@foxmail.com>
 References: <cover.1748488784.git.rtoax@foxmail.com>
@@ -99,89 +99,100 @@ Content-Transfer-Encoding: 8bit
 
 From: Rong Tao <rongtao@cestc.cn>
 
-It is a bit troublesome to get cwd based on pid in bpf program, such as
-bpftrace example [1].
-
-This patch therefore adds a new bpf_task_cwd_from_pid() kfunc which
-allows BPF programs to get cwd from a pid.
-
-[1] https://github.com/bpftrace/bpftrace/issues/3314
+Add some selftest testcases that validate the expected behavior of the
+bpf_task_cwd_from_pid() kfunc that was added in the prior patch.
 
 Signed-off-by: Rong Tao <rongtao@cestc.cn>
 ---
- kernel/bpf/helpers.c | 45 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
+ .../selftests/bpf/prog_tests/task_kfunc.c     |  3 ++
+ .../selftests/bpf/progs/task_kfunc_common.h   |  1 +
+ .../selftests/bpf/progs/task_kfunc_success.c  | 47 +++++++++++++++++++
+ 3 files changed, 51 insertions(+)
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index b71e428ad936..0f32fbc997bb 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -24,6 +24,10 @@
- #include <linux/bpf_mem_alloc.h>
- #include <linux/kasan.h>
- #include <linux/bpf_verifier.h>
-+#include <linux/fs.h>
-+#include <linux/fs_struct.h>
-+#include <linux/path.h>
-+#include <linux/string.h>
+diff --git a/tools/testing/selftests/bpf/prog_tests/task_kfunc.c b/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
+index 83b90335967a..c18a0cb67164 100644
+--- a/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
++++ b/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
+@@ -149,6 +149,9 @@ static const char * const success_tests[] = {
+ 	"task_kfunc_acquire_trusted_walked",
+ 	"test_task_kfunc_flavor_relo",
+ 	"test_task_kfunc_flavor_relo_not_found",
++	"test_task_cwd_from_pid_arg",
++	"test_task_cwd_from_pid",
++	"test_task_cwd_from_pid_current",
+ };
  
- #include "../../lib/kstrtox.h"
+ static const char * const vpid_success_tests[] = {
+diff --git a/tools/testing/selftests/bpf/progs/task_kfunc_common.h b/tools/testing/selftests/bpf/progs/task_kfunc_common.h
+index e9c4fea7a4bb..b762054a1825 100644
+--- a/tools/testing/selftests/bpf/progs/task_kfunc_common.h
++++ b/tools/testing/selftests/bpf/progs/task_kfunc_common.h
+@@ -24,6 +24,7 @@ struct task_struct *bpf_task_acquire(struct task_struct *p) __ksym;
+ void bpf_task_release(struct task_struct *p) __ksym;
+ struct task_struct *bpf_task_from_pid(s32 pid) __ksym;
+ struct task_struct *bpf_task_from_vpid(s32 vpid) __ksym;
++int bpf_task_cwd_from_pid(s32 pid, char *buf, u32 buf_len) __ksym;
+ void bpf_rcu_read_lock(void) __ksym;
+ void bpf_rcu_read_unlock(void) __ksym;
  
-@@ -2643,6 +2647,46 @@ __bpf_kfunc struct task_struct *bpf_task_from_vpid(s32 vpid)
- 	return p;
+diff --git a/tools/testing/selftests/bpf/progs/task_kfunc_success.c b/tools/testing/selftests/bpf/progs/task_kfunc_success.c
+index 5fb4fc19d26a..6424cf5c151e 100644
+--- a/tools/testing/selftests/bpf/progs/task_kfunc_success.c
++++ b/tools/testing/selftests/bpf/progs/task_kfunc_success.c
+@@ -351,6 +351,53 @@ int BPF_PROG(test_task_from_pid_invalid, struct task_struct *task, u64 clone_fla
+ 	return 0;
  }
  
-+/**
-+ * bpf_task_cwd_from_pid - Get a task's absolute pathname of the current
-+ * working directory from its pid.
-+ * @pid: The pid of the task being looked up.
-+ * @buf: The array pointed to by buf.
-+ * @buf_len: buf length.
-+ */
-+__bpf_kfunc int bpf_task_cwd_from_pid(s32 pid, char *buf, u32 buf_len)
++SEC("tp_btf/task_newtask")
++int BPF_PROG(test_task_cwd_from_pid_arg, struct task_struct *task, u64 clone_flags)
 +{
-+	struct path pwd;
-+	char kpath[256], *path;
-+	struct task_struct *task;
++	char cwd[256];
 +
-+	if (!buf || buf_len == 0)
-+		return -EINVAL;
++	if (!is_test_kfunc_task())
++		return 0;
 +
-+	rcu_read_lock();
-+	task = pid_task(find_vpid(pid), PIDTYPE_PID);
-+	if (!task) {
-+		rcu_read_unlock();
-+		return -ESRCH;
-+	}
-+	task_lock(task);
-+	if (!task->fs) {
-+		task_unlock(task);
-+		return -ENOENT;
-+	}
-+	get_fs_pwd(task->fs, &pwd);
-+	task_unlock(task);
-+	rcu_read_unlock();
-+
-+	path = d_path(&pwd, kpath, sizeof(kpath));
-+	path_put(&pwd);
-+	if (IS_ERR(path))
-+		return PTR_ERR(path);
-+
-+	strncpy(buf, path, buf_len);
++	err = 0;
++	err += bpf_task_cwd_from_pid(task->pid, NULL, sizeof(cwd)) != -EINVAL;
++	err += bpf_task_cwd_from_pid(task->pid, cwd, 0) != -EINVAL;
++	err += bpf_task_cwd_from_pid(-1, cwd, sizeof(cwd)) != -ESRCH;
 +	return 0;
 +}
 +
- /**
-  * bpf_dynptr_slice() - Obtain a read-only pointer to the dynptr data.
-  * @p: The dynptr whose data slice to retrieve
-@@ -3314,6 +3358,7 @@ BTF_ID_FLAGS(func, bpf_task_get_cgroup1, KF_ACQUIRE | KF_RCU | KF_RET_NULL)
- #endif
- BTF_ID_FLAGS(func, bpf_task_from_pid, KF_ACQUIRE | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_task_from_vpid, KF_ACQUIRE | KF_RET_NULL)
-+BTF_ID_FLAGS(func, bpf_task_cwd_from_pid, KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_throw)
- #ifdef CONFIG_BPF_EVENTS
- BTF_ID_FLAGS(func, bpf_send_signal_task, KF_TRUSTED_ARGS)
++SEC("tp_btf/task_newtask")
++int BPF_PROG(test_task_cwd_from_pid, struct task_struct *task, u64 clone_flags)
++{
++	char cwd[256];
++
++	if (!is_test_kfunc_task())
++		return 0;
++
++	err = bpf_task_cwd_from_pid(task->pid, cwd, sizeof(cwd));
++	return 0;
++}
++
++SEC("tp_btf/task_newtask")
++int BPF_PROG(test_task_cwd_from_pid_current, struct task_struct *task, u64 clone_flags)
++{
++	char cwd[128], cwd2[128];
++	struct task_struct *current;
++
++	if (!is_test_kfunc_task())
++		return 0;
++
++	current = bpf_get_current_task_btf();
++
++	err = 0;
++	err += bpf_task_cwd_from_pid(task->pid, cwd, sizeof(cwd));
++	err += bpf_task_cwd_from_pid(current->pid, cwd2, sizeof(cwd2));
++
++	err += bpf_strncmp(cwd, sizeof(cwd), cwd2) != 0;
++
++	return 0;
++}
++
+ SEC("tp_btf/task_newtask")
+ int BPF_PROG(task_kfunc_acquire_trusted_walked, struct task_struct *task, u64 clone_flags)
+ {
 -- 
 2.49.0
 
