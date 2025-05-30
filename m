@@ -1,132 +1,181 @@
-Return-Path: <bpf+bounces-59342-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59343-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBC5CAC861A
-	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 03:56:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A31CAAC883A
+	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 08:30:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D7B23BA7C0
-	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 01:55:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EACA6A254B6
+	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 06:30:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEC792CCC5;
-	Fri, 30 May 2025 01:56:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06CDC1FECC3;
+	Fri, 30 May 2025 06:30:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MOqa+S2B"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LnO4bld0"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE684185E7F
-	for <bpf@vger.kernel.org>; Fri, 30 May 2025 01:56:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D929125D6;
+	Fri, 30 May 2025 06:30:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748570172; cv=none; b=So8XabsyWR0d7XFAwlzlfKZU67a2QH+dwbwLa63HsmEkt20gl5MqbnZ6+XXkw+5E9/VbqHixIYM4yCeT+QIRxkCaxukeSiGEiE55zkIGvi25GjcOShbg/MOc8Pq0d6hSagoLPow9vbV7BXrZgjRbgQfkQO0ZgfhdR0KcMXTj07U=
+	t=1748586617; cv=none; b=o4GVIzNrA8uAnE/wnexoYXWb0I03ogNrssg/C6OqQlc1osqRlaELzV0KfprJjF/96NoTyOCJsA2B3TQQLRCjqJ56Mz6ccDjWOIBnNyUDmjWko3m1HCF2M/zZqAssVJBqpmveSd5kgDH+ltRp4BPZ38yv+1XLrjKEx9a1n4ECdvE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748570172; c=relaxed/simple;
-	bh=u7VyUFhkpp3iahCut82BwLg3+2sCvnO38zqnNgASCpY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ppdBZf9dPtOdx5TY7uJpeUyFdi3DNDWZulIHX8CCq8Df/sCpHweEXePnRG/nHN4PYRksq149/j5UNeiHvJHwQOGUFTDJGnm4poG/VJmnU16XkY70sQJ/XymJJBE/U2bCF3uHcUph8ZAuGUfkRzv6u7PIYDXoOS6ocKRjrEoaanE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MOqa+S2B; arc=none smtp.client-ip=91.218.175.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <599838d4-7faf-41ce-9a7f-6eebd5173db7@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1748570165;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=q9wJXvfCN3kwmaDp7fZIzUrWKt3creevaq+W6CDqyW4=;
-	b=MOqa+S2BTvgi6QE6ogqD4uge/Rm/j4oBEMhrH97yjl3kSkpfGECd1sUEHG1E56arwPsoDu
-	0oaMn1mT2NjMCDm91Q8Re4F+tDZrG1JsHEzNfofBmLeEKu1yjg0QuFes2mLVodBqfdN2Tr
-	HhKCuqZxxN57W6Kppw50A+vHDw+wGyE=
-Date: Thu, 29 May 2025 18:55:56 -0700
+	s=arc-20240116; t=1748586617; c=relaxed/simple;
+	bh=sKvXicb32pe3GzjnNLo8RSw+9Ys48hdotCKWMvLi7A8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JyWeUWu4PrYYW/D2zgfwl7gfylI7W2i4lwTCOLa814o8/9dJM+FvxMTtrXa9wxa4GgvDWwwqisJyLvx42YFm/9UWfqf9l5B7S9Xlzbl+1mLv6xlsZovBvlbs8Z1gRfs0J0lXjpcO/Av8AskEDiaawLSj9w77cN+XZ/Xq1CqyW3E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LnO4bld0; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-2320d06b728so15660415ad.1;
+        Thu, 29 May 2025 23:30:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748586615; x=1749191415; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RyuLdEneac7v7fIMVVlyOJeFB1d97Dk3ked7QoQ2Pfs=;
+        b=LnO4bld02Fi+MTytiHBmndKccs8eIHhIBHDF8tQ+0Bp3xlprJc4pGEUbsjUg77fpHf
+         wyPhdyPaQK29vOqajML1Br/qUujJ+iY/IvZji3gLRjnppy0FsLsFEgDTM8HcnHLjCa66
+         zeFC0fQRcSb7x4k7gFdPMz/7OBdA6xqsoR0nsrriaHxHKO4APvQ1w86ubfnsHojH/XqG
+         LO5T8uc3BYQp5taXIfIC4gKookChdpqRJVK+IXh/wb0M3Go8K5ceB8zD84mBYFd7Tmwm
+         57mrWd21owIdnLi4V0ygAwzk8xlnLvQXKjG7Hjua0kFS8we5nO8/LJkqJdTIeFJc8v+w
+         sTmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748586615; x=1749191415;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RyuLdEneac7v7fIMVVlyOJeFB1d97Dk3ked7QoQ2Pfs=;
+        b=k1LWeReydWL7Wgb3RYx/GF/9jC4Ox866oCJvqJ9/f5Wwi5LmKacIW33dTuAT16qPtn
+         KaChUf3znb0y5KfPbLVvWjurA/juzudf2ycDwwlfPXW6GMJeEDSko6oOsP5XHC/GlL2J
+         UMcF05qzFdC4EV0fDkefQW5so2njLp4S+mTcECx2SdqdCyasuQchBRiBy1uwwc8nhZiP
+         bVln+gyLA6HH5Q7b882VpG0p+6BVCYjBrQMsylIsB27MlnH8Ed/rJwFA3j/REwQeR0fF
+         /B93FvEqzjJ1KMDbxrIJv1/xVXkWjCO6HWdsew478rTkA1UnBzqmOqYtYPhB1iv4CE/T
+         qVbg==
+X-Forwarded-Encrypted: i=1; AJvYcCWp3Ay3YUkLjZriydfEyIt/72BKD4EOu46TrWe+gGOa4fgg624X7uWw0Fh4xi0jJxMQWek=@vger.kernel.org, AJvYcCX/UIoWYXD1zyrpQR4Ix/WyEO6FISU3kRJElh8/RWMDqyMzLoqDm1FWzijFaDCw5O5sgz+wUmnH@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx+TFJzvmrgufTaFfPTxnj3R+YZQ65qvcu/x1xxnw7OgVrrAshS
+	05CH27B3eKdbKfMxqTFkCIH9l5Abfxo6JGirSAWgQWKw/bmn2AbTgk+x
+X-Gm-Gg: ASbGncvjYc2e5xh67chr+SCYF/ALRwkBNKXOzoXFlGPkf4PgTXxBwAzQRYdZQ8nTL4w
+	a2l2XfETs7bDyYV8OzB3uxfAdAW9/IjY5R3P8FUynuoOsh1nrReyxfbdJvElkm68Pi6LFVtoYhs
+	JyUyHke9X/zedawxvYTb6WOhYzlQ6us/X5AFR514jG44t6+lUEEC4eXRf68wQ9Lg24S0TpInbO3
+	7YnfX33vW3bxU5CErTL7JskRd891SIv2KY7/iQWdajuuGtUtuuozngjf5xZ+8CJGrAzoRHDAqPH
+	X8tn2U/Sc8+8Y70UiY9zkkr+/DYA3bT5Noz0lHgv/gedoDSQMJM=
+X-Google-Smtp-Source: AGHT+IFMdcy0H6xfnuJuoqGMMfHh6XB0ob9CaqB2xpeNUrgqvcbxzRuO8pkOphiWfPmw1DVMvZZVvQ==
+X-Received: by 2002:a17:902:d58b:b0:234:cc7c:d2e2 with SMTP id d9443c01a7336-23528fee497mr39251195ad.1.1748586615208;
+        Thu, 29 May 2025 23:30:15 -0700 (PDT)
+Received: from gmail.com ([98.97.45.79])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23506bd96eesm21698055ad.73.2025.05.29.23.30.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 May 2025 23:30:14 -0700 (PDT)
+Date: Thu, 29 May 2025 23:30:11 -0700
+From: John Fastabend <john.fastabend@gmail.com>
+To: Cong Wang <xiyou.wangcong@gmail.com>
+Cc: Zijian Zhang <zijianzhang@bytedance.com>, netdev@vger.kernel.org,
+	bpf@vger.kernel.org, zhoufeng.zf@bytedance.com,
+	jakub@cloudflare.com, Cong Wang <cong.wang@bytedance.com>
+Subject: Re: [Patch bpf-next v3 2/4] skmsg: implement slab allocator cache
+ for sk_msg
+Message-ID: <20250530063011.cqubbcehgnraasmx@gmail.com>
+References: <20250519203628.203596-1-xiyou.wangcong@gmail.com>
+ <20250519203628.203596-3-xiyou.wangcong@gmail.com>
+ <20250529000348.upto3ztve36ccamv@gmail.com>
+ <c66ac1f6-1626-47d6-9132-1aeedf771032@bytedance.com>
+ <aDipm6P+RWGD8j4M@pop-os.localdomain>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add bpf_task_cwd_from_pid() kfunc
-Content-Language: en-GB
-To: Rong Tao <rtoax@foxmail.com>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, rongtao@cestc.cn,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
- Juntong Deng <juntong.deng@outlook.com>,
- Amery Hung <amery.hung@bytedance.com>,
- Dave Marchevsky <davemarchevsky@fb.com>, Hou Tao <houtao1@huawei.com>,
- "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)"
- <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
- "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-References: <cover.1748488784.git.rtoax@foxmail.com>
- <tencent_97F8B56B340F51DB604B482FEBF012460505@qq.com>
- <CAADnVQ+hUk2wV3M+9mgv_i5sNt_FuHpAnDpkQJ22D37bxAJHsQ@mail.gmail.com>
- <tencent_C8CF57BAD10D440E8308A19E2C894B341507@qq.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <tencent_C8CF57BAD10D440E8308A19E2C894B341507@qq.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aDipm6P+RWGD8j4M@pop-os.localdomain>
 
+On 2025-05-29 11:38:19, Cong Wang wrote:
+> On Wed, May 28, 2025 at 05:49:22PM -0700, Zijian Zhang wrote:
+> > On 5/28/25 5:04 PM, John Fastabend wrote:
+> > > On 2025-05-19 13:36:26, Cong Wang wrote:
+> > > > From: Zijian Zhang <zijianzhang@bytedance.com>
+> > > > 
+> > > > Optimizing redirect ingress performance requires frequent allocation and
+> > > > deallocation of sk_msg structures. Introduce a dedicated kmem_cache for
+> > > > sk_msg to reduce memory allocation overhead and improve performance.
+> > > > 
+> > > > Reviewed-by: Cong Wang <cong.wang@bytedance.com>
+> > > > Signed-off-by: Zijian Zhang <zijianzhang@bytedance.com>
+> > > > ---
+> > > >   include/linux/skmsg.h | 21 ++++++++++++---------
+> > > >   net/core/skmsg.c      | 28 +++++++++++++++++++++-------
+> > > >   net/ipv4/tcp_bpf.c    |  5 ++---
+> > > >   3 files changed, 35 insertions(+), 19 deletions(-)
+> > > > 
+> > > > diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
+> > > > index d6f0a8cd73c4..bf28ce9b5fdb 100644
+> > > > --- a/include/linux/skmsg.h
+> > > > +++ b/include/linux/skmsg.h
+> > > > @@ -121,6 +121,7 @@ struct sk_psock {
+> > > >   	struct rcu_work			rwork;
+> > > >   };
+> > > > +struct sk_msg *sk_msg_alloc(gfp_t gfp);
+> > > >   int sk_msg_expand(struct sock *sk, struct sk_msg *msg, int len,
+> > > >   		  int elem_first_coalesce);
+> > > >   int sk_msg_clone(struct sock *sk, struct sk_msg *dst, struct sk_msg *src,
+> > > > @@ -143,6 +144,8 @@ int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
+> > > >   		   int len, int flags);
+> > > >   bool sk_msg_is_readable(struct sock *sk);
+> > > > +extern struct kmem_cache *sk_msg_cachep;
+> > > > +
+> > > >   static inline void sk_msg_check_to_free(struct sk_msg *msg, u32 i, u32 bytes)
+> > > >   {
+> > > >   	WARN_ON(i == msg->sg.end && bytes);
+> > > > @@ -319,6 +322,13 @@ static inline void sock_drop(struct sock *sk, struct sk_buff *skb)
+> > > >   	kfree_skb(skb);
+> > > >   }
+> > > > +static inline void kfree_sk_msg(struct sk_msg *msg)
+> > > > +{
+> > > > +	if (msg->skb)
+> > > > +		consume_skb(msg->skb);
+> > > > +	kmem_cache_free(sk_msg_cachep, msg);
+> > > > +}
+> > > > +
+> > > >   static inline bool sk_psock_queue_msg(struct sk_psock *psock,
+> > > >   				      struct sk_msg *msg)
+> > > >   {
+> > > > @@ -330,7 +340,7 @@ static inline bool sk_psock_queue_msg(struct sk_psock *psock,
+> > > >   		ret = true;
+> > > >   	} else {
+> > > >   		sk_msg_free(psock->sk, msg);
+> > > > -		kfree(msg);
+> > > > +		kfree_sk_msg(msg);
+> > > 
+> > > Isn't this a potential use after free on msg->skb? The sk_msg_free() a
+> > > line above will consume_skb() if it exists and its not nil set so we would
+> > > consume_skb() again?
+> > > 
+> > 
+> > Thanks to sk_msg_free, after consuming the skb, it invokes sk_msg_init
+> > to make msg->skb NULL to prevent further double free.
+> > 
+> > To avoid the confusion, we can replace kfree_sk_msg here with
+> > kmem_cache_free.
+> > 
+> 
+> Right, the re-initialization in sk_msg_free() is indeed confusing, maybe
+> it is time to clean up its logic? For example, separate sk_msg_init()
+> out from sk_msg_free().
+> 
+> I can add a separate patch for this in next update, if people prefer.
+> 
+> Thanks!
 
+OK so its not a problem we have the init there. So ACK for this patch.
+Perhaps a follow up to clean up the different types of 'frees' would be
+useful. Move into sk_msg_free+kfree_sk_msg into a single call. But,
+I'm not completely convinced its worth the churn.
 
-On 5/29/25 6:28 PM, Rong Tao wrote:
->
-> On 5/29/25 13:44, Alexei Starovoitov wrote:
->> On Wed, May 28, 2025 at 8:37 PM Rong Tao <rtoax@foxmail.com> wrote:
->>> From: Rong Tao <rongtao@cestc.cn>
->>>
->>> It is a bit troublesome to get cwd based on pid in bpf program, such as
->>> bpftrace example [1].
->>>
->>> This patch therefore adds a new bpf_task_cwd_from_pid() kfunc which
->>> allows BPF programs to get cwd from a pid.
->>>
->>> [1] https://github.com/bpftrace/bpftrace/issues/3314
->> Yes. This is cumbersome, but adding a very specific kfunc
->> to the kernel is not a solution.
->> This is tracing, no need for precise cwd. probe_read_kernel
->> can do the job. bpftrace needs to have better C interop.
->> Once that happens any kind of tracing extraction will be
->> easy to write in C. Like this bpf_task_cwd_from_pid()
->> can already be written as C bpf program.
-> Thanks for your reply, Yesterday I tried many ways to implement
-> the solution of getting cwd from pid/task, but all failed. The basic
-> idea is to rewrite the d_path() code, but in the bpf program, there
-> will be various memory security access problems, even if enough
->  `if (!ptr)` are added, the program cannot be loaded successfully.
->
-> https://github.com/Rtoax/bcc/commit/2ba7a2389fc1183264e5195ff26561d93038886c 
->
->
->     bcc/tools$ sudo ./opensnoop.py -F
->
->     ; if (dentry == vfsmnt->mnt_root || dentry == dentry->d_parent) { 
-> @ main.c:174
->     109: (79) r2 = *(u64 *)(r7 +0)
->     R7 invalid mem access 'scalar'
-
-I think you can use bpf_probe_read_kernel() helper to get r2?
-
->
-> At the same time, bpf_d_path cannot be used because it can only be
-> applied to functions in btf_allowlist_d_path. Currently, it is
-> impossible to get cwd from pid/task in user mode. Any suggestions?
->
-> In addition, I fully tested this patch yesterday and it performed well.
->
-> Rong Tao
->
->
-
+Acked-by: John Fastabend <john.fastabend@gmail.com>
 
