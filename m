@@ -1,403 +1,130 @@
-Return-Path: <bpf+bounces-59358-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59359-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DA5CAC93E7
-	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 18:49:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B7F6CAC9476
+	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 19:15:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71B49A435E8
-	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 16:49:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C664C3B8FE2
+	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 17:15:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE7B0235346;
-	Fri, 30 May 2025 16:49:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 117202367A3;
+	Fri, 30 May 2025 17:15:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b="g3tbbypp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IHU9WOTk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00206402.pphosted.com (mx0a-00206402.pphosted.com [148.163.148.77])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE87B1A23A2;
-	Fri, 30 May 2025 16:49:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.148.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FE812D600;
+	Fri, 30 May 2025 17:15:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748623774; cv=none; b=NJLkdscd5KqpHF4eaGr6G+BXVIj5YXWLEGSHgMYTKRDP9DLAbSN79tR1FXLjZVxSAAKaJN/fHMAnkRWmQQ3svvAIEv+qf0cqPTYLKYKKYthDpq/sIlLtK1/VuVhkD3AsMLczAD8h/UtdBVWcvn82V9JdZuyhtuMmXDeFSTkDQ+8=
+	t=1748625343; cv=none; b=qMpf3w3zEb7E35pR1j2Go1IZmIWt6i2gq1bTZhh8vJ0e1VBCZBKXI4fG1TYtgchaiZE79CyMJaeXYugyU6hd3tISgDGevjGoQNySvdmWwcPcq0t6sSbWiP+wBqU4yhVhEd81hZgti2qxnCOwXoT4GbD1n4b99L9dWv5JUGUuXSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748623774; c=relaxed/simple;
-	bh=mq+8VExfNMFj16XIDJQGqcy8oUpPXpBXcMQRt/Sjtfk=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SLGOmDr0jkvXDekObWdWEv9B0ObvLZA3SuBycIJcAu5vuN5CVDgIqiT6/QVXnvBcJTMBLvn1wVnT5uQA5s0nTI5GhwfYtApU7FxvtFuerWZ2zyGctuWS3QEHUNiBwMP17gQ7UkGpgb50tBgqQmNuOMHE1pqZmidRRc6PLSYZXNc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com; spf=pass smtp.mailfrom=crowdstrike.com; dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b=g3tbbypp; arc=none smtp.client-ip=148.163.148.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crowdstrike.com
-Received: from pps.filterd (m0354652.ppops.net [127.0.0.1])
-	by mx0a-00206402.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54UGO1DB002318;
-	Fri, 30 May 2025 16:49:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com;
-	 h=cc:content-transfer-encoding:content-type:date:from
-	:in-reply-to:message-id:mime-version:references:subject:to; s=
-	default; bh=m0xDDwWLnWiEvrgHQyJtx/t0XNiUz4bdWVqVGiJM6wY=; b=g3tb
-	byppSqzjtWmd6v0HpkoL8CFHdFvaLESYqf+F5szLHj/ZnNcUSEpynG2d7zaP0yiH
-	qVK4lxfYnZmTaqdDMGmxgUd+JV8DetK1jIO7WNOr8VHMdCBNLvgrIV0Hma5jtV6K
-	cRa4LPHJfXkdmjbr0nelqN0t+k9nXnLX6Vv1CFtqT88yTXxGCUyYFiYM6UyXgn5y
-	KkGKWHWWYx8GchmeTaXgro8v2ZyKLEQMYqtXzN2eD76zxGzpqaaBXAsmrsBsadMz
-	oTACL0CxYKqO2RDIX1q/GRPzGwehNZNOeizlEZuES3zG0u7FaDUfe0ZkEBW7fOvq
-	pcLTaLBI85i6Cp/PXA==
-Received: from mail.crowdstrike.com (dragosx.crowdstrike.com [208.42.231.60] (may be forged))
-	by mx0a-00206402.pphosted.com (PPS) with ESMTPS id 46uux3m7tv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 30 May 2025 16:49:10 +0000 (GMT)
-Received: from ML-CTVHTF21DX.crowdstrike.sys (10.100.11.122) by
- 04WPEXCH007.crowdstrike.sys (10.100.11.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Fri, 30 May 2025 16:49:05 +0000
-From: Slava Imameev <slava.imameev@crowdstrike.com>
-To: <qmo@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andrii@kernel.org>, <shuah@kernel.org>, <bpf@vger.kernel.org>
-CC: <martin.lau@linux.dev>, <eddyz87@gmail.com>, <song@kernel.org>,
-        <yonghong.song@linux.dev>, <john.fastabend@gmail.com>,
-        <kpsingh@kernel.org>, <sdf@fomichev.me>, <haoluo@google.com>,
-        <jolsa@kernel.org>, <mykolal@fb.com>, <slava.imameev@crowdstrike.com>,
-        <justin.deschamp@crowdstrike.com>, <mark.fontana@crowdstrike.com>,
-        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: Add test for bpftool access to read-only protected maps
-Date: Sat, 31 May 2025 02:48:44 +1000
-Message-ID: <20250530164844.74734-2-slava.imameev@crowdstrike.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
-In-Reply-To: <20250530164844.74734-1-slava.imameev@crowdstrike.com>
-References: <20250530164844.74734-1-slava.imameev@crowdstrike.com>
+	s=arc-20240116; t=1748625343; c=relaxed/simple;
+	bh=aV56R5LwjSjBEB8PaKsoUC7GH8MBZvupl6e+frIn6ls=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jXTHkbdTjf8fd03t9c4LXgYpdurnCe7V0WsHIXXdjsnFoB53YpT61T712uY7wbWxzsY7JLPZ68cmKglEfij1FFbEiSXxYnBrdjTRvWwHlKCrN95DRldMh6rdHY6kS1sfcjMvrMIjDI9pnoDdiGogdlUK8iWC7O0AqS16r3qUkxI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IHU9WOTk; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2301ac32320so23262005ad.1;
+        Fri, 30 May 2025 10:15:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748625341; x=1749230141; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=QDA88krRjjfrMHi8XF/SJ2xvUb8o9K3lPrI4lhdku/U=;
+        b=IHU9WOTkvMV2/HQUfMUAJ9dULJpkSutkqzOB1Kw1A8znfAOFSn5GpVI+WJIyHkoxFH
+         MRy3fv4jm9lJxGnf8gw4VJ6Y0ChyBoIsV1YMSi1dv+8R59U5VnOpqCsO8cxAMfAyu0rO
+         Dwm9vM1CrniPREFjTTw0LDnkzW/r/KZYcnnD4lH6iy35b3Tl2Yo++PWUsS1nCmTzHYR4
+         Fwtlhuui4VtegCQVwUqrzDAYV8NtzejklfHP0V4fKyp57Cb3jShjEKfgDfBiFcImX/mB
+         PSptsdD61hudlBmSL3jymqjrOTQ4t9yUoKPXfLxXvZcrvJfFqbFqoBSzZY3BXhwhiq/2
+         xyKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748625341; x=1749230141;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QDA88krRjjfrMHi8XF/SJ2xvUb8o9K3lPrI4lhdku/U=;
+        b=mEuT4ykDY5YUhLggLyQ70O4lvBCl1PTQyAu+RAjc2CMx1jtQ7cd7ydU7pM/zrp8fIj
+         cPK7TbtkU6XVXFT1QCcCAg6YEnW0TVB1VkqqJ/RXclKYNrNxiygZk0R0ZtTX8kOt7dna
+         GEgBtSAsnt8sXrN7a1VEdkMYCqVMOOhhjl0WfltTioiodRTy57gkdElWnDuPXznEwJoK
+         TcJ6K/Ec2XjoWTICrXsNxgpVKq5hJpRzk/BFIMjZD2GLWgWGA2emoxaNn743h5ZGoS81
+         ectJ1iZjEJbrtbDttIyEQ0X4N9qWgYl+pu1xOLH39NEiv9OcSvU0TBokGiSpG1/MmJeG
+         52ow==
+X-Forwarded-Encrypted: i=1; AJvYcCVbD1uB+yvHEdY1ZdjZ+F5FU0/TksWczzyWTrPHSDZ4ce2pM7cbzBI1FP50BR+Hghr8vB8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxmX+S5Ou5U7BsKcH1bh3csLBtcybJ2AZgwjnMa3jg6MRMLikuE
+	ZfFGaCK342OOnc/TLplEDIFZhFXY4dRr3JQX/XE55qW1h2N1vT3IfVvF
+X-Gm-Gg: ASbGnctY/IJbjo2Mb/6UswvcdRu/V7DCzBsQGG+8Cnd7SKRInkHz0D3KUH8NBq/QXXP
+	YAB1cSt0D9B0y4vtVO+9sJv1oN3jQzmyrmhFWMiU7nJhTfzXRV+hbMpmPCzmvZX8d5TjDcIlnQ+
+	OWSiQf++fxsMvr8Ro4cqbONxBOtQaJXJxcKU6k/0Lb9dFlb3kVgT0YSYeq88XyhXUwsCTcuURzA
+	Msye3UAm5SlqoALc+Yip8KSUjZIMxPqdTeVFPhBygCtkq9EuePatCduqfl1LODZgl4gR0vhgzG2
+	+zEPwCr/vMcloYzIukpZNTyHP1nrpiS08OBlrlJUWCekbzqZ2Lvv
+X-Google-Smtp-Source: AGHT+IEZOOT4dL0X2Z0+F4OyrfSAYhBTvXNYp5t4nXsCToEPeTv6MlGSUWlLEh+HNbXi8qOSJSExew==
+X-Received: by 2002:a17:902:e888:b0:234:c8f6:1b10 with SMTP id d9443c01a7336-235291ef73bmr71615125ad.28.1748625341284;
+        Fri, 30 May 2025 10:15:41 -0700 (PDT)
+Received: from gmail.com ([98.97.39.137])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23506cf9380sm30815835ad.203.2025.05.30.10.15.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 May 2025 10:15:40 -0700 (PDT)
+Date: Fri, 30 May 2025 10:15:30 -0700
+From: John Fastabend <john.fastabend@gmail.com>
+To: Cong Wang <xiyou.wangcong@gmail.com>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, zhoufeng.zf@bytedance.com,
+	jakub@cloudflare.com, zijianzhang@bytedance.com,
+	Cong Wang <cong.wang@bytedance.com>
+Subject: Re: [Patch bpf-next v3 3/4] skmsg: save some space in struct sk_psock
+Message-ID: <20250530171530.lqnim5gh3egiddkc@gmail.com>
+References: <20250519203628.203596-1-xiyou.wangcong@gmail.com>
+ <20250519203628.203596-4-xiyou.wangcong@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: 04WPEXCH012.crowdstrike.sys (10.100.11.82) To
- 04WPEXCH007.crowdstrike.sys (10.100.11.74)
-X-Disclaimer: USA
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-05-30_07,2025-05-30_01,2025-03-28_01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250519203628.203596-4-xiyou.wangcong@gmail.com>
 
-Add selftest cases that validate bpftool's expected behavior when
-accessing maps protected from modification via security_bpf_map.
+On 2025-05-19 13:36:27, Cong Wang wrote:
+> From: Cong Wang <cong.wang@bytedance.com>
+> 
+> This patch aims to save some space in struct sk_psock and prepares for
+> the next patch which will add more fields.
+> 
+> psock->eval can only have 4 possible values, make it 8-bit is
+> sufficient.
+> 
+> psock->redir_ingress is just a boolean, using 1 bit is enough.
+> 
+> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> ---
+>  include/linux/skmsg.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
+> index bf28ce9b5fdb..7620f170c4b1 100644
+> --- a/include/linux/skmsg.h
+> +++ b/include/linux/skmsg.h
+> @@ -85,8 +85,8 @@ struct sk_psock {
+>  	struct sock			*sk_redir;
+>  	u32				apply_bytes;
+>  	u32				cork_bytes;
+> -	u32				eval;
+> -	bool				redir_ingress; /* undefined if sk_redir is null */
+> +	u8				eval;
+> +	u8 				redir_ingress : 1; /* undefined if sk_redir is null */
+>  	struct sk_msg			*cork;
+>  	struct sk_psock_progs		progs;
+>  #if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
+> -- 
+> 2.34.1
+> 
 
-The test includes a BPF program attached to security_bpf_map with two maps:
-- A protected map that only allows read-only access
-- An unprotected map that allows full access
-
-The test script attaches the BPF program to security_bpf_map and
-verifies that for the bpftool map command:
-- Read access works on both maps
-- Write access fails on the protected map
-- Write access succeeds on the unprotected map
-- These behaviors remain consistent when the maps are pinned
-
-Signed-off-by: Slava Imameev <slava.imameev@crowdstrike.com>
----
-Changes in v2:
-- fix for a test compilation error: "conflicting types for 'bpf_fentry_test1'"
----
----
- tools/testing/selftests/bpf/Makefile          |   1 +
- .../selftests/bpf/progs/security_bpf_map.c    |  56 +++++
- .../testing/selftests/bpf/test_bpftool_map.sh | 208 ++++++++++++++++++
- 3 files changed, 265 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/security_bpf_map.c
- create mode 100755 tools/testing/selftests/bpf/test_bpftool_map.sh
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index cf5ed3bee573..731a86407799 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -109,6 +109,7 @@ TEST_PROGS := test_kmod.sh \
- 	test_xdping.sh \
- 	test_bpftool_build.sh \
- 	test_bpftool.sh \
-+	test_bpftool_map.sh \
- 	test_bpftool_metadata.sh \
- 	test_doc_build.sh \
- 	test_xsk.sh \
-diff --git a/tools/testing/selftests/bpf/progs/security_bpf_map.c b/tools/testing/selftests/bpf/progs/security_bpf_map.c
-new file mode 100644
-index 000000000000..09048c096ee4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/security_bpf_map.c
-@@ -0,0 +1,56 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_helpers.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+#define EPERM 1 /* Operation not permitted */
-+
-+/* From include/linux/mm.h. */
-+#define FMODE_WRITE	0x2
-+
-+struct map;
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+	__uint(max_entries, 1);
-+} prot_map SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+	__uint(max_entries, 1);
-+} not_prot_map SEC(".maps");
-+
-+SEC("fmod_ret/security_bpf_map")
-+int BPF_PROG(fmod_bpf_map, struct bpf_map *map, int fmode)
-+{
-+	if (map == &prot_map) {
-+		/* Allow read-only access */
-+		if (fmode & FMODE_WRITE)
-+			return -EPERM;
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * This program keeps references to maps. This is needed to prevent
-+ * optimizing them out.
-+ */
-+SEC("fentry/bpf_fentry_test1")
-+int BPF_PROG(bpf_map_test0, int a)
-+{
-+	__u32 key = 0;
-+	__u32 val1 = a;
-+	__u32 val2 = a + 1;
-+
-+	bpf_map_update_elem(&prot_map, &key, &val1, BPF_ANY);
-+	bpf_map_update_elem(&not_prot_map, &key, &val2, BPF_ANY);
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/test_bpftool_map.sh b/tools/testing/selftests/bpf/test_bpftool_map.sh
-new file mode 100755
-index 000000000000..c7c7f3d2071e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/test_bpftool_map.sh
-@@ -0,0 +1,208 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+
-+# Kselftest framework requirement - SKIP code is 4.
-+ksft_skip=4
-+
-+PROTECTED_MAP_NAME="prot_map"
-+NOT_PROTECTED_MAP_NAME="not_prot_map"
-+BPF_FILE="security_bpf_map.bpf.o"
-+TESTNAME="security_bpf_map"
-+BPF_FS=$(awk '$3 == "bpf" {print $2; exit}' /proc/mounts)
-+BPF_DIR="$BPF_FS/test_$TESTNAME"
-+SCRIPT_DIR=$(dirname $(realpath "$0"))
-+BPF_FILE_PATH="$SCRIPT_DIR/$BPF_FILE"
-+# Assume the script is located under tools/testing/selftests/bpf/
-+KDIR_ROOT_DIR=$(realpath "$SCRIPT_DIR"/../../../../)
-+
-+_cleanup()
-+{
-+	set +eu
-+	[ -d "$TMPDIR" ] && rm -rf "$TMPDIR" 2> /dev/null
-+	[ -d "$BPF_DIR" ] && rm -rf "$BPF_DIR" 2> /dev/null
-+}
-+
-+cleanup_skip()
-+{
-+	echo "selftests: $TESTNAME [SKIP]"
-+	_cleanup
-+
-+	exit $ksft_skip
-+}
-+
-+cleanup()
-+{
-+	if [ "$?" = 0 ]; then
-+		echo "selftests: $TESTNAME [PASS]"
-+	else
-+		echo "selftests: $TESTNAME [FAILED]"
-+	fi
-+	_cleanup
-+}
-+
-+# Parameters:
-+#   $1: The top of kernel repository
-+#   $2: Output directory
-+build_bpftool()
-+{
-+	local kdir_root_dir="$1"
-+	local output_dir="$2"
-+	local pwd="$(pwd)"
-+	local ncpus=1
-+
-+	echo Building bpftool ...
-+
-+	#We want to start build from the top of kernel repository.
-+	cd "$kdir_root_dir"
-+	if [ ! -e tools/bpf/bpftool/Makefile ]; then
-+		echo bpftool files not found
-+		exit $ksft_skip
-+	fi
-+
-+	# Determine the number of CPUs for parallel compilation
-+	if command -v nproc >/dev/null 2>&1; then
-+		ncpus=$(nproc)
-+	fi
-+
-+	make -C tools/bpf/bpftool -s -j"$ncpus" OUTPUT="$output_dir"/ >/dev/null
-+	echo ... finished building bpftool
-+	cd "$pwd"
-+}
-+
-+# Function to test map access with configurable write expectations
-+# Parameters:
-+#   $1: Map name
-+#   $2: Whether write should succeed (true/false)
-+#   $3: bpftool path
-+#   $4: BPF_DIR
-+test_map_access() {
-+	local map_name="$1"
-+	local write_should_succeed="$2"
-+	local bpftool_path="$3"
-+	local pin_path="$4/${map_name}_pinned"
-+	local key="0 0 0 0"
-+	local value="1 1 1 1"
-+
-+	echo "Testing access to map: $map_name"
-+
-+	# Test read access to the map
-+	if "$bpftool_path" map lookup name "$map_name" key $key; then
-+		echo "  Read access to $map_name succeeded"
-+	else
-+		echo "  Read access to $map_name failed"
-+		exit 1
-+	fi
-+
-+	# Test write access to the map
-+	if "$bpftool_path" map update name "$map_name" key $key value $value; then
-+		if [ "$write_should_succeed" = "true" ]; then
-+			echo "  Write access to $map_name succeeded as expected"
-+		else
-+			echo "  Write access to $map_name succeeded but should have failed"
-+			exit 1
-+		fi
-+	else
-+		if [ "$write_should_succeed" = "true" ]; then
-+			echo "  Write access to $map_name failed but should have succeeded"
-+			exit 1
-+		else
-+			echo "  Write access to $map_name failed as expected"
-+		fi
-+	fi
-+
-+	# Pin the map to the BPF filesystem
-+	"$bpftool_path" map pin name "$map_name" "$pin_path"
-+	if [ -e "$pin_path" ]; then
-+		echo "  Successfully pinned $map_name to $pin_path"
-+	else
-+		echo "  Failed to pin $map_name"
-+		exit 1
-+	fi
-+
-+	# Test read access to the pinned map
-+	if "$bpftool_path" map lookup pinned "$pin_path" key $key; then
-+		echo "  Read access to pinned $map_name succeeded"
-+	else
-+		echo "  Read access to pinned $map_name failed"
-+		exit 1
-+	fi
-+
-+	# Test write access to the pinned map
-+	if "$bpftool_path" map update pinned "$pin_path" key $key value $value; then
-+		if [ "$write_should_succeed" = "true" ]; then
-+			echo "  Write access to pinned $map_name succeeded as expected"
-+		else
-+			echo "  Write access to pinned $map_name succeeded but should have failed"
-+			exit 1
-+		fi
-+	else
-+		if [ "$write_should_succeed" = "true" ]; then
-+			echo "  Write access to pinned $map_name failed but should have succeeded"
-+			exit 1
-+		else
-+			echo "  Write access to pinned $map_name failed as expected"
-+		fi
-+	fi
-+
-+	echo "  Finished testing $map_name"
-+	echo
-+}
-+
-+check_root_privileges() {
-+	if [ $(id -u) -ne 0 ]; then
-+		echo "Need root privileges"
-+		exit $ksft_skip
-+	fi
-+}
-+
-+check_bpffs() {
-+	if [ -z "$BPF_FS" ]; then
-+		echo "Could not run test without bpffs mounted"
-+		exit $ksft_skip
-+	fi
-+}
-+
-+create_tmp_dir() {
-+	TMPDIR=$(mktemp -d)
-+	if [ $? -ne 0 ] || [ ! -d "$TMPDIR" ]; then
-+		echo "Failed to create temporary directory"
-+		exit $ksft_skip
-+	fi
-+}
-+
-+locate_or_build_bpftool() {
-+	if ! bpftool version > /dev/null 2>&1; then
-+		build_bpftool "$KDIR_ROOT_DIR" "$TMPDIR"
-+		BPFTOOL_PATH="$TMPDIR"/bpftool
-+	else
-+		echo "Using bpftool from PATH"
-+		BPFTOOL_PATH="bpftool"
-+	fi
-+}
-+
-+set -eu
-+
-+trap cleanup_skip EXIT
-+
-+check_root_privileges
-+
-+check_bpffs
-+
-+create_tmp_dir
-+
-+locate_or_build_bpftool
-+
-+mkdir "$BPF_DIR"
-+
-+trap cleanup EXIT
-+
-+# Load and attach the BPF programs to control maps access
-+"$BPFTOOL_PATH" prog loadall "$BPF_FILE_PATH" "$BPF_DIR"/prog autoattach
-+
-+# Test protected map (write should fail)
-+test_map_access "$PROTECTED_MAP_NAME" "false" "$BPFTOOL_PATH" "$BPF_DIR"
-+
-+# Test not protected map (write should succeed)
-+test_map_access "$NOT_PROTECTED_MAP_NAME" "true" "$BPFTOOL_PATH" "$BPF_DIR"
-+
-+exit 0
--- 
-2.34.1
-
+Reviewed-by: John Fastabend <john.fastabend@gmail.com>
 
