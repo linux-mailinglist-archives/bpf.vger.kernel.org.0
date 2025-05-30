@@ -1,174 +1,273 @@
-Return-Path: <bpf+bounces-59374-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59375-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B843AC96BA
-	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 22:44:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AD95AC96E7
+	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 23:12:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 74D601C204EB
-	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 20:45:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88A061C05459
+	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 21:12:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4CD227A468;
-	Fri, 30 May 2025 20:44:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1E8C283159;
+	Fri, 30 May 2025 21:12:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CbPhc/no"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jmumj2mc"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46FF3283159
-	for <bpf@vger.kernel.org>; Fri, 30 May 2025 20:44:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAC79238166;
+	Fri, 30 May 2025 21:12:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748637885; cv=none; b=D+GjYJGMxXi+egMONjB8Ktz6mdYBCgzjgKkBINqwE75/vGmRcHMU8C7iRjExs0SYLuqjSLRARNiIPqgL2+8N2bn43qr0x4BQykhJc4htEUbdQ3pKbL2UAKPAiXIkRwSPUyzdlrVQnv4RKNPuTkittvgGuDqQw+cHdB3lRk7u8gc=
+	t=1748639549; cv=none; b=Oj+03T1g9Sd5MXsKGtYM8J6nsVRv73vQDcgiK5NUY5c377GYrJ4Q4fz01f7ijarWTRD57I9oChAjjSwnggLKFqaKSpiuoMc55ekluUS9RUbQFJscJqMyfnZnhIgHMeGePXP7Tbt7l6ANjmMngP24WBDgBn39vPVGSfBHjoZunNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748637885; c=relaxed/simple;
-	bh=WKODy9FgXDgbxxqWIA/IwTJOy8VJdioFU2ccnli5Qqw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NDd92YVnewYhCfon9xVvW7wgg7DfSKBldcj0Th71iWTB6mqgcqzMaUiGNY75WMJAnJAglmZKONFOTRR9HHVvhdkR8ZPv7mrV3hhZs2KBdJVqiYT076hsJkgK9S7im3g1uOOdyz068L8WMk1PYb30A5yhAmUPKVEfSyhmDLHMvsQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CbPhc/no; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7181C4CEF7
-	for <bpf@vger.kernel.org>; Fri, 30 May 2025 20:44:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748637884;
-	bh=WKODy9FgXDgbxxqWIA/IwTJOy8VJdioFU2ccnli5Qqw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=CbPhc/no0sprPn3MpKuqpBbsDpyw9abX5ODIn1jJi6UkVBrWyHG4hA2FG5nFkCVSp
-	 w7HUoXKR8iWP5TENPwSpNXcF31CXXNZp26hUnvXfB/+22FafWkB0EYN7V+qfKbY0TA
-	 wEo20e7ECyluRc2B8UpVE8o60SlqtVocaXAQH1/iBVgjVptT5tz6XuIOz2H2l7BYWX
-	 LmnGZ0oFerv2zqPVzvtRd/t2ZrHV0AIeRMkylsU85E1P4clXyGb2EAVLTR7W87J5p9
-	 vH/dAIJCMs1S+jWkvRQds74WhsJdCgIFqk2Vx26n+oi/CqgNPW6vFdVh2mck5Gnjki
-	 h4X3m4ZvxTUTg==
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-ad93ff9f714so440052366b.2
-        for <bpf@vger.kernel.org>; Fri, 30 May 2025 13:44:44 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVMmZrsea4/+1WQj/UOIUh7PBrUE+AVbiQuSxnyLUMtak2qnnBJr/0upqr92WwVVKpYnxM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YysMWf9URPxOsr/mhP83SIeZUQ2rZ0nSGFNzc3+/g/ktkcqKmO9
-	gNHgwV5uj+638GqE3wMV0vdrZNqiKD/CgkmDoF06NtxyE2wXp0ZLxhT8s+flenVbRDzksu8dBW7
-	61keWLym5t6LSzM/UkLZuWHdFVxqxN5oSiUHAH1FS
-X-Google-Smtp-Source: AGHT+IFYPjLrtRmSUw02l8acZu75ZEk31voCEunbDz/ggHhtTlCZtv6L/sdj5D+DMpzfEs9+aMo/5KET1xbavpqajeo=
-X-Received: by 2002:a17:907:3d16:b0:ad8:a935:b8f9 with SMTP id
- a640c23a62f3a-adb36ba4a97mr335177366b.32.1748637883137; Fri, 30 May 2025
- 13:44:43 -0700 (PDT)
+	s=arc-20240116; t=1748639549; c=relaxed/simple;
+	bh=1RDbQof3hcUoVEnNR567nz5IImp8cq1fU0bWH7YJTec=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=rH93DZMLPD9qkk3FLZZ/MAO31Mga6mTWSbOhDKcWKvixPgWVGgmiILz/z/d+KsQtRgx1ESEP3fpUGf7/b+bPJMQFKzEF5cJepVhqD+z04sJ0+4ul+9HVe7uIxtGXLB0KFOJBqiC6HXAfRv8Y9RdKLPHvLHkGXlIdCovGyKeqUII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jmumj2mc; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1748639548; x=1780175548;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=1RDbQof3hcUoVEnNR567nz5IImp8cq1fU0bWH7YJTec=;
+  b=jmumj2mcnKlv5fNVhWhzNx+7HA2ggsZBl87ACui+eWljDD0/Nm8yv7i7
+   i6Sl2UxgR/58decuFp85Kudyfot4zt0AQmuUVtSw5LD3hLA+sYy4YMGkv
+   v/azKot7vMV6FyDHcy8xnb7Fev7wDWKvR4yZl3eMmjvyS+OQUw4dlTUQz
+   tSFNJQQyUb/VjgaHyQqhIkU0R9L8j5vQsxAN6nygcZPM+Zmcs0xn+KU/j
+   oA9WJ8RagrH+UWzwyRgzTohobPXAy5RrUR+pgu8Jxge8srdVhNWMw9/jH
+   YMpqIxUWi2fh6jh7vlrjbpzvFjiCz2WXeL+ynq6V+fBHBI09Hl9kADr+b
+   Q==;
+X-CSE-ConnectionGUID: enqmVmWhScezj0PXyAoAbQ==
+X-CSE-MsgGUID: eEW6fesEQ/aAeqzz0nvQ+w==
+X-IronPort-AV: E=McAfee;i="6700,10204,11449"; a="49862594"
+X-IronPort-AV: E=Sophos;i="6.16,196,1744095600"; 
+   d="scan'208";a="49862594"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 May 2025 14:12:25 -0700
+X-CSE-ConnectionGUID: 735D8l67QmO4PZkhyRtv7Q==
+X-CSE-MsgGUID: 5cKEsaghRBOjA7gaaH4oVg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,196,1744095600"; 
+   d="scan'208";a="144621672"
+Received: from anguy11-upstream.jf.intel.com ([10.166.9.133])
+  by orviesa007.jf.intel.com with ESMTP; 30 May 2025 14:12:25 -0700
+From: Tony Nguyen <anthony.l.nguyen@intel.com>
+To: davem@davemloft.net,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	andrew+netdev@lunn.ch,
+	netdev@vger.kernel.org
+Cc: Michal Kubiak <michal.kubiak@intel.com>,
+	anthony.l.nguyen@intel.com,
+	aleksander.lobakin@intel.com,
+	maciej.fijalkowski@intel.com,
+	magnus.karlsson@intel.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
+	bpf@vger.kernel.org,
+	Dawid Osuchowski <dawid.osuchowski@linux.intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Jacob Keller <jacob.e.keller@intel.com>,
+	Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
+	Simon Horman <horms@kernel.org>,
+	Jesse Brandeburg <jbrandeburg@cloudflare.com>,
+	Saritha Sanigani <sarithax.sanigani@intel.com>
+Subject: [PATCH net 1/5] ice: fix Tx scheduler error handling in XDP callback
+Date: Fri, 30 May 2025 14:12:15 -0700
+Message-ID: <20250530211221.2170484-2-anthony.l.nguyen@intel.com>
+X-Mailer: git-send-email 2.47.1
+In-Reply-To: <20250530211221.2170484-1-anthony.l.nguyen@intel.com>
+References: <20250530211221.2170484-1-anthony.l.nguyen@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250528215037.2081066-1-bboscaccy@linux.microsoft.com>
- <CACYkzJ5oJASZ43B531gY8mESqAF3WYFKez-H5vKxnk8r48Ouxg@mail.gmail.com> <CAHC9VhSLOjQr4Ph2CefyEZGiB-Vqd4a8Y9=uA2YPo79Xo=Qopg@mail.gmail.com>
-In-Reply-To: <CAHC9VhSLOjQr4Ph2CefyEZGiB-Vqd4a8Y9=uA2YPo79Xo=Qopg@mail.gmail.com>
-From: KP Singh <kpsingh@kernel.org>
-Date: Fri, 30 May 2025 22:44:32 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ4W9yhET8AnwvU5hhbP8nsH12sneqzKexVs6p4C596+sA@mail.gmail.com>
-X-Gm-Features: AX0GCFtEzKd5icGNP9zMXhh3w0IjhKTZ4H9XX606OWYKl73LpaAxQPOFCdjO9vc
-Message-ID: <CACYkzJ4W9yhET8AnwvU5hhbP8nsH12sneqzKexVs6p4C596+sA@mail.gmail.com>
-Subject: Re: [PATCH 0/3] BPF signature verification
-To: Paul Moore <paul@paul-moore.com>
-Cc: Blaise Boscaccy <bboscaccy@linux.microsoft.com>, jarkko@kernel.org, zeffron@riotgames.com, 
-	xiyou.wangcong@gmail.com, kysrinivasan@gmail.com, code@tyhicks.com, 
-	linux-security-module@vger.kernel.org, roberto.sassu@huawei.com, 
-	James.Bottomley@hansenpartnership.com, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, David Howells <dhowells@redhat.com>, Lukas Wunner <lukas@wunner.de>, 
-	Ignat Korchagin <ignat@cloudflare.com>, Quentin Monnet <qmo@kernel.org>, 
-	Jason Xing <kerneljasonxing@gmail.com>, Willem de Bruijn <willemb@google.com>, 
-	Anton Protopopov <aspsk@isovalent.com>, Jordan Rome <linux@jordanrome.com>, 
-	Martin Kelly <martin.kelly@crowdstrike.com>, Alan Maguire <alan.maguire@oracle.com>, 
-	Matteo Croce <teknoraver@meta.com>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	keyrings@vger.kernel.org, linux-crypto@vger.kernel.org, kys@microsoft.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, May 30, 2025 at 10:15=E2=80=AFPM Paul Moore <paul@paul-moore.com> w=
-rote:
->
-> On Fri, May 30, 2025 at 12:42=E2=80=AFPM KP Singh <kpsingh@kernel.org> wr=
-ote:
-> > On Wed, May 28, 2025 at 11:50=E2=80=AFPM Blaise Boscaccy
-> > <bboscaccy@linux.microsoft.com> wrote:
->
-> ...
->
-> > Please hold off on further iterations, I am working on a series and
-> > will share these patches based on the design that was proposed.
->
-> I don't think there is any harm in Blaise continuing his work in this
-> area, especially as he seems to be making reasonable progress towards
-> a solution that satisfies everyone's needs.  Considering all of the
-> work that Blaise has already invested in this, and his continued
-> willingness to try to work with everyone in the community to converge
-> on a solution, wouldn't it be more beneficial to work with Blaise on
-> further developing/refining his patchset instead of posting a parallel
-> effort?  It's your call of course, I'm not going to tell you, or
-> anyone else, to refrain from posting patches upstream, but it seems
-> like this is a good opportunity to help foster the development of a
-> new contributor.
+From: Michal Kubiak <michal.kubiak@intel.com>
 
-I think Blaise's interactions leave a lot to be desired, especially as
-a new contributor with the replies being unnecessarily abrasive, which
-I am choosing to ignore.
+When the XDP program is loaded, the XDP callback adds new Tx queues.
+This means that the callback must update the Tx scheduler with the new
+queue number. In the event of a Tx scheduler failure, the XDP callback
+should also fail and roll back any changes previously made for XDP
+preparation.
 
-Regardless, it would be more efficient to handle the subtleties here
-if someone from the core BPF community implements this. This is why I
-volunteered myself, but I need some time to wrap up the code and send
-it on the list. Blaise can continue to send patches that don't
-incorporate the feedback, it will only delay me further.
+The previous implementation had a bug that not all changes made by the
+XDP callback were rolled back. This caused the crash with the following
+call trace:
 
->
-> > > 2. Timing of Signature Check
-> > >
-> > > This patchset moves the signature check to a point before
-> > > security_bpf_prog_load is invoked, due to an unresolved discussion
-> > > here:
-> >
-> > This is fine and what I had in mind, signature verification does not
-> > need to happen in the verifier and the existing hooks are good enough.
->
-> Excellent, I'm glad we can agree on the relative placement of the
-> signature verification and the LSM hook.  Perhaps I misunderstood your
-> design idea, but I took your comment:
->
-> "The signature check in the verifier (during BPF_PROG_LOAD):
+[  +9.549584] ice 0000:ca:00.0: Failed VSI LAN queue config for XDP, error: -5
+[  +0.382335] Oops: general protection fault, probably for non-canonical address 0x50a2250a90495525: 0000 [#1] SMP NOPTI
+[  +0.010710] CPU: 103 UID: 0 PID: 0 Comm: swapper/103 Not tainted 6.14.0-net-next-mar-31+ #14 PREEMPT(voluntary)
+[  +0.010175] Hardware name: Intel Corporation M50CYP2SBSTD/M50CYP2SBSTD, BIOS SE5C620.86B.01.01.0005.2202160810 02/16/2022
+[  +0.010946] RIP: 0010:__ice_update_sample+0x39/0xe0 [ice]
 
-I meant during BPF_PROG_LOAD i.e. before the bpf_check is triggered,
-as I said this is better explained when implemented.
+[...]
 
->> trust me, friend=E2=80=9D aspect of the original design.
+[  +0.002715] Call Trace:
+[  +0.002452]  <IRQ>
+[  +0.002021]  ? __die_body.cold+0x19/0x29
+[  +0.003922]  ? die_addr+0x3c/0x60
+[  +0.003319]  ? exc_general_protection+0x17c/0x400
+[  +0.004707]  ? asm_exc_general_protection+0x26/0x30
+[  +0.004879]  ? __ice_update_sample+0x39/0xe0 [ice]
+[  +0.004835]  ice_napi_poll+0x665/0x680 [ice]
+[  +0.004320]  __napi_poll+0x28/0x190
+[  +0.003500]  net_rx_action+0x198/0x360
+[  +0.003752]  ? update_rq_clock+0x39/0x220
+[  +0.004013]  handle_softirqs+0xf1/0x340
+[  +0.003840]  ? sched_clock_cpu+0xf/0x1f0
+[  +0.003925]  __irq_exit_rcu+0xc2/0xe0
+[  +0.003665]  common_interrupt+0x85/0xa0
+[  +0.003839]  </IRQ>
+[  +0.002098]  <TASK>
+[  +0.002106]  asm_common_interrupt+0x26/0x40
+[  +0.004184] RIP: 0010:cpuidle_enter_state+0xd3/0x690
 
-The kernel is the TCB, both LSM and BPF are a part of the kernel and
-part of the same trust domain, LSM has sufficient information in the
-existing LSM hooks to enforce a signature policy and there is no need
-for a boolean:
+Fix this by performing the missing unmapping of XDP queues from
+q_vectors and setting the XDP rings pointer back to NULL after all those
+queues are released.
+Also, add an immediate exit from the XDP callback in case of ring
+preparation failure.
 
-* If attr.signature is set, it's enforced, a new boolean does not
-convey any new information here.
-* If we specifically need auditing here, we can add an audit call in
-the signature_verification method, this can be done in a follow-up
-series.
+Fixes: efc2214b6047 ("ice: Add support for XDP")
+Reviewed-by: Dawid Osuchowski <dawid.osuchowski@linux.intel.com>
+Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+Signed-off-by: Michal Kubiak <michal.kubiak@intel.com>
+Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
+Reviewed-by: Simon Horman <horms@kernel.org>
+Tested-by: Jesse Brandeburg <jbrandeburg@cloudflare.com>
+Tested-by: Saritha Sanigani <sarithax.sanigani@intel.com> (A Contingent Worker at Intel)
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+---
+ drivers/net/ethernet/intel/ice/ice_main.c | 47 ++++++++++++++++-------
+ 1 file changed, 33 insertions(+), 14 deletions(-)
 
+diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
+index 20d3baf955e3..d97d4b25b30d 100644
+--- a/drivers/net/ethernet/intel/ice/ice_main.c
++++ b/drivers/net/ethernet/intel/ice/ice_main.c
+@@ -2740,6 +2740,27 @@ void ice_map_xdp_rings(struct ice_vsi *vsi)
+ 	}
+ }
+ 
++/**
++ * ice_unmap_xdp_rings - Unmap XDP rings from interrupt vectors
++ * @vsi: the VSI with XDP rings being unmapped
++ */
++static void ice_unmap_xdp_rings(struct ice_vsi *vsi)
++{
++	int v_idx;
++
++	ice_for_each_q_vector(vsi, v_idx) {
++		struct ice_q_vector *q_vector = vsi->q_vectors[v_idx];
++		struct ice_tx_ring *ring;
++
++		ice_for_each_tx_ring(ring, q_vector->tx)
++			if (!ring->tx_buf || !ice_ring_is_xdp(ring))
++				break;
++
++		/* restore the value of last node prior to XDP setup */
++		q_vector->tx.tx_ring = ring;
++	}
++}
++
+ /**
+  * ice_prepare_xdp_rings - Allocate, configure and setup Tx rings for XDP
+  * @vsi: VSI to bring up Tx rings used by XDP
+@@ -2803,7 +2824,7 @@ int ice_prepare_xdp_rings(struct ice_vsi *vsi, struct bpf_prog *prog,
+ 	if (status) {
+ 		dev_err(dev, "Failed VSI LAN queue config for XDP, error: %d\n",
+ 			status);
+-		goto clear_xdp_rings;
++		goto unmap_xdp_rings;
+ 	}
+ 
+ 	/* assign the prog only when it's not already present on VSI;
+@@ -2819,6 +2840,8 @@ int ice_prepare_xdp_rings(struct ice_vsi *vsi, struct bpf_prog *prog,
+ 		ice_vsi_assign_bpf_prog(vsi, prog);
+ 
+ 	return 0;
++unmap_xdp_rings:
++	ice_unmap_xdp_rings(vsi);
+ clear_xdp_rings:
+ 	ice_for_each_xdp_txq(vsi, i)
+ 		if (vsi->xdp_rings[i]) {
+@@ -2835,6 +2858,8 @@ int ice_prepare_xdp_rings(struct ice_vsi *vsi, struct bpf_prog *prog,
+ 	mutex_unlock(&pf->avail_q_mutex);
+ 
+ 	devm_kfree(dev, vsi->xdp_rings);
++	vsi->xdp_rings = NULL;
++
+ 	return -ENOMEM;
+ }
+ 
+@@ -2850,7 +2875,7 @@ int ice_destroy_xdp_rings(struct ice_vsi *vsi, enum ice_xdp_cfg cfg_type)
+ {
+ 	u16 max_txqs[ICE_MAX_TRAFFIC_CLASS] = { 0 };
+ 	struct ice_pf *pf = vsi->back;
+-	int i, v_idx;
++	int i;
+ 
+ 	/* q_vectors are freed in reset path so there's no point in detaching
+ 	 * rings
+@@ -2858,17 +2883,7 @@ int ice_destroy_xdp_rings(struct ice_vsi *vsi, enum ice_xdp_cfg cfg_type)
+ 	if (cfg_type == ICE_XDP_CFG_PART)
+ 		goto free_qmap;
+ 
+-	ice_for_each_q_vector(vsi, v_idx) {
+-		struct ice_q_vector *q_vector = vsi->q_vectors[v_idx];
+-		struct ice_tx_ring *ring;
+-
+-		ice_for_each_tx_ring(ring, q_vector->tx)
+-			if (!ring->tx_buf || !ice_ring_is_xdp(ring))
+-				break;
+-
+-		/* restore the value of last node prior to XDP setup */
+-		q_vector->tx.tx_ring = ring;
+-	}
++	ice_unmap_xdp_rings(vsi);
+ 
+ free_qmap:
+ 	mutex_lock(&pf->avail_q_mutex);
+@@ -3013,11 +3028,14 @@ ice_xdp_setup_prog(struct ice_vsi *vsi, struct bpf_prog *prog,
+ 		xdp_ring_err = ice_vsi_determine_xdp_res(vsi);
+ 		if (xdp_ring_err) {
+ 			NL_SET_ERR_MSG_MOD(extack, "Not enough Tx resources for XDP");
++			goto resume_if;
+ 		} else {
+ 			xdp_ring_err = ice_prepare_xdp_rings(vsi, prog,
+ 							     ICE_XDP_CFG_FULL);
+-			if (xdp_ring_err)
++			if (xdp_ring_err) {
+ 				NL_SET_ERR_MSG_MOD(extack, "Setting up XDP Tx resources failed");
++				goto resume_if;
++			}
+ 		}
+ 		xdp_features_set_redirect_target(vsi->netdev, true);
+ 		/* reallocate Rx queues that are used for zero-copy */
+@@ -3035,6 +3053,7 @@ ice_xdp_setup_prog(struct ice_vsi *vsi, struct bpf_prog *prog,
+ 			NL_SET_ERR_MSG_MOD(extack, "Freeing XDP Rx resources failed");
+ 	}
+ 
++resume_if:
+ 	if (if_running)
+ 		ret = ice_up(vsi);
+ 
+-- 
+2.47.1
 
->
->  verify_pkcs7_signature(prog->aux->sha, sizeof(prog->aux->sha),
->    sig_from_bpf_attr, =E2=80=A6);"
->
-> https://lore.kernel.org/linux-security-module/CACYkzJ6VQUExfyt0=3D-FmXz46=
-GHJh3d=3DFXh5j4KfexcEFbHV-vg@mail.gmail.com/
->
-> ... to mean that the PKCS7 signature verification was going to happen
-> *in* the verifier, with the verifier being bpf_check().  Simply for my
-> own education, if bpf_check() and/or the bpf_check() call in
-> bpf_prog_load() is not the verifier, it would be helpful to know that,
-> and also what code is considered the be the BPF verifier.  Regardless,
-> it's a good step forward that we are all on the same page with respect
-> to the authorization of signed/unsigned BPF programs.  We still have a
-> ways to go it looks like, but we're making good progress.
->
-> --
-> paul-moore.com
 
