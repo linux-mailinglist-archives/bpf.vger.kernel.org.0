@@ -1,247 +1,137 @@
-Return-Path: <bpf+bounces-59340-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59341-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E39C4AC85FA
-	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 03:22:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E4A1AC8602
+	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 03:30:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5EE324A619F
-	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 01:22:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D63CA23BB9
+	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 01:29:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 750661547D2;
-	Fri, 30 May 2025 01:22:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F56E17A586;
+	Fri, 30 May 2025 01:30:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="xdkkHen9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C7C078F59;
-	Fri, 30 May 2025 01:22:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 634819475;
+	Fri, 30 May 2025 01:29:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.252
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748568133; cv=none; b=GvcoEKWzIkdnVmwAPUcYw3/ioxJQEnGi3ppzvLf/DXY24V3WA1R3vhbG37DSCFor7dGDGwoza9Y55HjHt1TYGUMBCqpvwA+co4XouocNlriTvBL7Av/uf+XhWGdRHycsgPZO/1vUmYdXKxRrpc7n4bB+RYp33XrudMywnTEKc5o=
+	t=1748568602; cv=none; b=ESU3qWpx5tBbbXjKlNBD8+fpRhlIsUWSOOMgk4Kq6bp2cyXpe5k9BJFE1me1NTkjBRru9WqTlhAF0dHUqffwp5Q8OjdMN1x5FXFS6lgXGqAJOPoIpHjvg2cerAVe51Cqidup/aEFwbQsaUJv7cTpsoObohdHSHRK6uhFL6kcgDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748568133; c=relaxed/simple;
-	bh=cPZgUdjIWra0PdLQpoq1G4ikubdy55BGyBeN7H0ghQc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=NGgcm+Y/UsTtcoj0zO+tDRD8PDK3hGT51wfgeT9CBNrF+orZf6rWJjIQG7d9y80g94Us0XbGjjE5I4pO0Arrq8d6Cyp+soi4z6s+gqMEJCncPyEDOZi9MihQWqRtkXxBkL4khyrK3ckCFlzq+CoSLpgFzOdLh3Tk1nnJMjxaQ2E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 7aeb099a3cf411f0b29709d653e92f7d-20250530
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.45,REQID:61bc4a82-4730-41a2-ae0f-7d2ed25cec8c,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:5
-X-CID-INFO: VERSION:1.1.45,REQID:61bc4a82-4730-41a2-ae0f-7d2ed25cec8c,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:5
-X-CID-META: VersionHash:6493067,CLOUDID:7101c88277929fe5165bb6c834cba4f3,BulkI
-	D:250529133829GCJDP53I,BulkQuantity:1,Recheck:0,SF:17|19|24|43|64|66|74|78
-	|80|81|82|83|100|101|102|841,TC:nil,Content:0|51,EDM:-3,IP:-2,URL:99|1,Fil
-	e:nil,RT:nil,Bulk:40,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DK
-	R:0,DKP:0,BRR:0,BRE:0,ARC:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,
-	TF_CID_SPAM_ULS
-X-UUID: 7aeb099a3cf411f0b29709d653e92f7d-20250530
-X-User: jianghaoran@kylinos.cn
-Received: from [192.168.31.67] [(223.70.159.239)] by mailgw.kylinos.cn
-	(envelope-from <jianghaoran@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 1991867234; Fri, 30 May 2025 09:21:58 +0800
-Message-ID: <68ec5a7f3cc63dc19397b3ce0649716e0fac8d49.camel@kylinos.cn>
-Subject: =?gb2312?Q?=BB=D8=B8=B4=A3=BA=5BPATCH=5D?= LoongArch: BPF: Optimize
- the calculation method of jmp_offset in the emit_bpf_tail_call function
-From: jianghaoran <jianghaoran@kylinos.cn>
-To: Hengqi Chen <hengqi.chen@gmail.com>
-Cc: loongarch@lists.linux.dev, bpf@vger.kernel.org, 
- linux-kernel@vger.kernel.org, kernel@xen0n.name, chenhuacai@kernel.org, 
- yangtiezhu@loongson.cn, haoluo@google.com, jolsa@kernel.org,
- sdf@fomichev.me,  kpsingh@kernel.org, john.fastabend@gmail.com,
- yonghong.song@linux.dev,  song@kernel.org, eddyz87@gmail.com,
- martin.lau@linux.dev, andrii@kernel.org,  daniel@iogearbox.net
-Date: Fri, 30 May 2025 09:21:54 +0800
-In-Reply-To: <CAEyhmHTg3xNMBrSxXQj96pvfD83t6_RHRT_GGtbBzOpAKztDpw@mail.gmail.com>
-References: <20250528104032.1237415-1-jianghaoran@kylinos.cn>
-	 <CAEyhmHTg3xNMBrSxXQj96pvfD83t6_RHRT_GGtbBzOpAKztDpw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.1-2kord0k2.4.25.1 
+	s=arc-20240116; t=1748568602; c=relaxed/simple;
+	bh=+TFmXCqtLZ8kiawumxahT/VHs4zh/m9qAIziG3dAgZA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RuZKny8ne0zOvf4+rNrARZ3Y+r8RrqP/Af8NBZZ7BuCmh1VwnR92jW6Vj4Rdkdvl48JEpPW6lMuoq5mA/YOlzYYqarOKPQQmIZ2rl8UANm9GNInJ1RdQJrB1aFtfigHbL7X+hYitGIdxKrGpQ9nk2XXGxm4JxzmcdnzB6BvDQwU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=xdkkHen9; arc=none smtp.client-ip=162.62.57.252
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1748568593;
+	bh=d/Y6VEfM9SurICbLntJEFopmvBrML0o9kXS3a5I2T2E=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=xdkkHen9UG2KjxWMfMvZ5YARakhb8PatUjAHYFje7i76H7eJT6+Icn++Egrnx39tZ
+	 +V1dznCbPlCFgW6cSmxg7w2T6Dhi30Gt27N42POeGCXqQnD4unW7D7LYqMAEKVO7Dv
+	 9/mkbpDNpC5hNewiwMIXry9WIQs9MFuN2biB14KU=
+Received: from [10.56.52.9] ([39.156.73.10])
+	by newxmesmtplogicsvrszb20-0.qq.com (NewEsmtp) with SMTP
+	id 7288748B; Fri, 30 May 2025 09:28:40 +0800
+X-QQ-mid: xmsmtpt1748568520tyjwdxpn4
+Message-ID: <tencent_C8CF57BAD10D440E8308A19E2C894B341507@qq.com>
+X-QQ-XMAILINFO: No4GWyI4cWt6a1L7H8fewm5WKIVIP5BHfKlE5bVXolURhqFbtLdqoSpronad9P
+	 1nt257iai3dasHZFj9kwS+xbRum60Y1KIE5k3f8JXobZBQgIgiQtjMwBst+ken4NniB8kRBJuDki
+	 0zGqlD1aPCHtrFbF8CaRM1dkWhV3UJ6zAnwUdyCDUis3Za1r/MThHGN3vItxT104WZL5JF+pTMY6
+	 7hzBIV0KawuuI90BU5X22AAAHMFW00VEAjBPHIDS9JDVL88xhGmrjPnDqESg+C1YrF9OcpnWgUem
+	 FaEAbGpB6gEETDzK9V4qEDwheu7Q8xXfugm0QwTxZnEU/foIEJBAjqWZCQWn/Pl7WoGqgsg4+O1E
+	 5Nj3o5kne+KI17XcxTgtJwVeVwKkQRjaqBSW3CJi/8+I7XDy9QEXova7zRaOoEOs4X2/BF0EdXm0
+	 fThHL0fKhzplL5EO9yha3uQfPJ5M0cb5UvSDxjS8p7BQxdXT1LnOqwBv7Vgej6BkW3EMCHCI+FxJ
+	 j6VDlYnnM7q4C4icf9Og/nDokfwwqf55VRPaE2H4f+YTlC8AGdo4vTWItFuNI8Yxj3lt/ZYALC7s
+	 qUWg2gdaurJygWthl0YYoblsGZmsQedhWiAPI1vBy2+WO1nPfGhE1ZY1j5EOoYWTvGi2+Hs+e/Px
+	 u0EjoyrsDRheZqrRBtYi2MSSz0rUToiZ8GAe0g6LKLtyDyl7/DNII3Zzh8rwawyEF1dFuztoPiUo
+	 I7JTzPjiZafIvNkMLQIJHfpEzQkJzVhCpyPfcd18JIfR2M+ClA62QyNNr0I/fgmfbslFw4X0Xl90
+	 Kl425X80hC7pQ1RY8n4wt4TuEv49HFMrTB314ARKX8cWzqzdvAvglitqy8e3qxGyYO862kDADT6K
+	 pcs2avJEaN+FQX9+txltkXZv1AmbQb1nfBWzrZ0XD+kKF272NGwkfpgIKRmPUPjv33NTzZx8qDiR
+	 3qPfF8n22JUZ9p+Y0tmrPHh1++cFl8xFBqDC+qRg8F5xQld4yqiaUVUZoxvcp/
+X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
+X-OQ-MSGID: <0a5e325f-9567-4cfa-9e34-08e0258a96f0@foxmail.com>
+Date: Fri, 30 May 2025 09:28:40 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add bpf_task_cwd_from_pid() kfunc
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, rongtao@cestc.cn,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, Juntong Deng <juntong.deng@outlook.com>,
+ Amery Hung <amery.hung@bytedance.com>,
+ Dave Marchevsky <davemarchevsky@fb.com>, Hou Tao <houtao1@huawei.com>,
+ "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)"
+ <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
+ "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+References: <cover.1748488784.git.rtoax@foxmail.com>
+ <tencent_97F8B56B340F51DB604B482FEBF012460505@qq.com>
+ <CAADnVQ+hUk2wV3M+9mgv_i5sNt_FuHpAnDpkQJ22D37bxAJHsQ@mail.gmail.com>
+Content-Language: en-US
+From: Rong Tao <rtoax@foxmail.com>
+In-Reply-To: <CAADnVQ+hUk2wV3M+9mgv_i5sNt_FuHpAnDpkQJ22D37bxAJHsQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
+On 5/29/25 13:44, Alexei Starovoitov wrote:
+> On Wed, May 28, 2025 at 8:37 PM Rong Tao <rtoax@foxmail.com> wrote:
+>> From: Rong Tao <rongtao@cestc.cn>
+>>
+>> It is a bit troublesome to get cwd based on pid in bpf program, such as
+>> bpftrace example [1].
+>>
+>> This patch therefore adds a new bpf_task_cwd_from_pid() kfunc which
+>> allows BPF programs to get cwd from a pid.
+>>
+>> [1] https://github.com/bpftrace/bpftrace/issues/3314
+> Yes. This is cumbersome, but adding a very specific kfunc
+> to the kernel is not a solution.
+> This is tracing, no need for precise cwd. probe_read_kernel
+> can do the job. bpftrace needs to have better C interop.
+> Once that happens any kind of tracing extraction will be
+> easy to write in C. Like this bpf_task_cwd_from_pid()
+> can already be written as C bpf program.
+Thanks for your reply, Yesterday I tried many ways to implement
+the solution of getting cwd from pid/task, but all failed. The basic
+idea is to rewrite the d_path() code, but in the bpf program, there
+will be various memory security access problems, even if enough
+  `if (!ptr)` are added, the program cannot be loaded successfully.
 
+https://github.com/Rtoax/bcc/commit/2ba7a2389fc1183264e5195ff26561d93038886c
 
+     bcc/tools$ sudo ./opensnoop.py -F
 
-在 2025-05-29星期四的 10:02 +0800，Hengqi Chen写道：
-> Hi Haoran,
-> 
-> On Wed, May 28, 2025 at 6:40 PM Haoran Jiang <
-> jianghaoran@kylinos.cn
-> > wrote:
-> > For a ebpf subprog JIT，the last call bpf_int_jit_compile
-> > function will
-> > directly enter the skip_init_ctx process. At this point,
-> > out_offset = -1,
-> > the jmp_offset in emit_bpf_tail_call is calculated
-> > by #define jmp_offset (out_offset - (cur_offset)) is a negative
-> > number,
-> > which does not meet expectations.The final generated assembly
-> > as follow.
-> > 
-> > 54:     bgeu            $a2, $t1, -8        # 0x0000004c
-> > 58:     addi.d          $a6, $s5, -1
-> > 5c:     bltz            $a6, -16            # 0x0000004c
-> > 60:     alsl.d          $t2, $a2, $a1, 0x3
-> > 64:     ld.d            $t2, $t2, 264
-> > 68:     beq             $t2, $zero, -28     # 0x0000004c
-> > 
-> > Before apply this patch, the follow test case will reveal soft
-> > lock issues.
-> > 
-> > cd tools/testing/selftests/bpf/
-> > ./test_progs --allow=tailcalls/tailcall_bpf2bpf_1
-> > 
-> > dmesg:
-> > watchdog: BUG: soft lockup - CPU#2 stuck for 26s!
-> > [test_progs:25056]
-> > 
-> 
-> This is a known issue. Does this change pass all tailcall tests ?
-> If not, please refer to the tailcall hierarchy patchset([1]).
-> We should address it once and for all. Thanks.
-> 
->   [1]: 
-> https://lore.kernel.org/bpf/20240714123902.32305-1-hffilwlqm@gmail.com/
-> 
-> Thanks,I'll keep looking into these patches.
-> > Signed-off-by: Haoran Jiang <
-> > jianghaoran@kylinos.cn
-> > >
-> > ---
-> >  arch/loongarch/net/bpf_jit.c | 28 +++++++++-------------------
-> >  1 file changed, 9 insertions(+), 19 deletions(-)
-> > 
-> > diff --git a/arch/loongarch/net/bpf_jit.c
-> > b/arch/loongarch/net/bpf_jit.c
-> > index fa1500d4aa3e..d85490e7de89 100644
-> > --- a/arch/loongarch/net/bpf_jit.c
-> > +++ b/arch/loongarch/net/bpf_jit.c
-> > @@ -208,9 +208,7 @@ bool bpf_jit_supports_far_kfunc_call(void)
-> >         return true;
-> >  }
-> > 
-> > -/* initialized on the first pass of build_body() */
-> > -static int out_offset = -1;
-> > -static int emit_bpf_tail_call(struct jit_ctx *ctx)
-> > +static int emit_bpf_tail_call(int insn, struct jit_ctx *ctx)
-> >  {
-> >         int off;
-> >         u8 tcc = tail_call_reg(ctx);
-> > @@ -220,9 +218,8 @@ static int emit_bpf_tail_call(struct
-> > jit_ctx *ctx)
-> >         u8 t2 = LOONGARCH_GPR_T2;
-> >         u8 t3 = LOONGARCH_GPR_T3;
-> >         const int idx0 = ctx->idx;
-> > -
-> > -#define cur_offset (ctx->idx - idx0)
-> > -#define jmp_offset (out_offset - (cur_offset))
-> > +       int tc_ninsn = 0;
-> > +       int jmp_offset = 0;
-> > 
-> >         /*
-> >          * a0: &ctx
-> > @@ -232,8 +229,11 @@ static int emit_bpf_tail_call(struct
-> > jit_ctx *ctx)
-> >          * if (index >= array->map.max_entries)
-> >          *       goto out;
-> >          */
-> > +       tc_ninsn = insn ? ctx->offset[insn+1] - ctx-
-> > >offset[insn] :
-> > +               ctx->offset[0];
-> >         off = offsetof(struct bpf_array, map.max_entries);
-> >         emit_insn(ctx, ldwu, t1, a1, off);
-> > +       jmp_offset = tc_ninsn - (ctx->idx - idx0);
-> >         /* bgeu $a2, $t1, jmp_offset */
-> >         if (emit_tailcall_jmp(ctx, BPF_JGE, a2, t1, jmp_offset)
-> > < 0)
-> >                 goto toofar;
-> > @@ -243,6 +243,7 @@ static int emit_bpf_tail_call(struct
-> > jit_ctx *ctx)
-> >          *       goto out;
-> >          */
-> >         emit_insn(ctx, addid, REG_TCC, tcc, -1);
-> > +       jmp_offset = tc_ninsn - (ctx->idx - idx0);
-> >         if (emit_tailcall_jmp(ctx, BPF_JSLT, REG_TCC,
-> > LOONGARCH_GPR_ZERO, jmp_offset) < 0)
-> >                 goto toofar;
-> > 
-> > @@ -254,6 +255,7 @@ static int emit_bpf_tail_call(struct
-> > jit_ctx *ctx)
-> >         emit_insn(ctx, alsld, t2, a2, a1, 2);
-> >         off = offsetof(struct bpf_array, ptrs);
-> >         emit_insn(ctx, ldd, t2, t2, off);
-> > +       jmp_offset = tc_ninsn - (ctx->idx - idx0);
-> >         /* beq $t2, $zero, jmp_offset */
-> >         if (emit_tailcall_jmp(ctx, BPF_JEQ, t2,
-> > LOONGARCH_GPR_ZERO, jmp_offset) < 0)
-> >                 goto toofar;
-> > @@ -263,22 +265,11 @@ static int emit_bpf_tail_call(struct
-> > jit_ctx *ctx)
-> >         emit_insn(ctx, ldd, t3, t2, off);
-> >         __build_epilogue(ctx, true);
-> > 
-> > -       /* out: */
-> > -       if (out_offset == -1)
-> > -               out_offset = cur_offset;
-> > -       if (cur_offset != out_offset) {
-> > -               pr_err_once("tail_call out_offset = %d,
-> > expected %d!\n",
-> > -                           cur_offset, out_offset);
-> > -               return -1;
-> > -       }
-> > -
-> >         return 0;
-> > 
-> >  toofar:
-> >         pr_info_once("tail_call: jump too far\n");
-> >         return -1;
-> > -#undef cur_offset
-> > -#undef jmp_offset
-> >  }
-> > 
-> >  static void emit_atomic(const struct bpf_insn *insn, struct
-> > jit_ctx *ctx)
-> > @@ -916,7 +907,7 @@ static int build_insn(const struct bpf_insn
-> > *insn, struct jit_ctx *ctx, bool ext
-> >         /* tail call */
-> >         case BPF_JMP | BPF_TAIL_CALL:
-> >                 mark_tail_call(ctx);
-> > -               if (emit_bpf_tail_call(ctx) < 0)
-> > +               if (emit_bpf_tail_call(i, ctx) < 0)
-> >                         return -EINVAL;
-> >                 break;
-> > 
-> > @@ -1342,7 +1333,6 @@ struct bpf_prog
-> > *bpf_int_jit_compile(struct bpf_prog *prog)
-> >         if (tmp_blinded)
-> >                 bpf_jit_prog_release_other(prog, prog ==
-> > orig_prog ? tmp : orig_prog);
-> > 
-> > -       out_offset = -1;
-> > 
-> >         return prog;
-> > 
-> > --
-> > 2.43.0
-> > 
+     ; if (dentry == vfsmnt->mnt_root || dentry == dentry->d_parent) { @ 
+main.c:174
+     109: (79) r2 = *(u64 *)(r7 +0)
+     R7 invalid mem access 'scalar'
+
+At the same time, bpf_d_path cannot be used because it can only be
+applied to functions in btf_allowlist_d_path. Currently, it is
+impossible to get cwd from pid/task in user mode. Any suggestions?
+
+In addition, I fully tested this patch yesterday and it performed well.
+
+Rong Tao
 
 
