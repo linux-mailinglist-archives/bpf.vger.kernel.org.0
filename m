@@ -1,400 +1,524 @@
-Return-Path: <bpf+bounces-59349-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59350-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35098AC903D
-	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 15:33:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AB90AC90D2
+	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 15:58:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D966117D328
-	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 13:33:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D5301C0464A
+	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 13:58:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B270186294;
-	Fri, 30 May 2025 13:33:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F06922ACF2;
+	Fri, 30 May 2025 13:58:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b="NweBX4q9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZqCDNICy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00206402.pphosted.com (mx0a-00206402.pphosted.com [148.163.148.77])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA7AF1547D2;
-	Fri, 30 May 2025 13:33:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.148.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01CED14F9F7;
+	Fri, 30 May 2025 13:58:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748611997; cv=none; b=hCeEpNiwQyyR1S9jH9+sXb9d2mW3c4jktfxpVH/n0wmrobN8S2H5ctxkfZFj+jvqeSrkQcF3t1gy6y1HyPYG8bIx/WW8o2XhwsOOTyojdhUoDMkgsuC5HHQuRaAGN7J1siwfFWQ5GZ1I6UYNTOzUmNE2FBx2vZR+SNU07HIobAs=
+	t=1748613516; cv=none; b=O3J8z/+139GEkapOej4jAaOgGk5U8ycUpawCwgU0SfpsdO1wJb3/A8vXqEuiSRVnVn/zFxTwIiWtFnCuJGGyjrg85sEmGYZEGQhIdHQi0VdnASz2frUvhvzvVztB+Nna9HCa0AJHIMFiRBviiGlu+PtTn5Y+PIMAfwajr5/BCFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748611997; c=relaxed/simple;
-	bh=4w22kZ52negMUTuIli5dR16SY+t1/SlhL095ZunFByM=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nvcKWYbxTwDxnPnmMRTD5xlnHB6k2Z9RuAbm6LTRzTtr3X8wz/7pnVOGIDmMph0ze+NQMVNEVJURONnL3A180VZb8aPXzP+1ci5ytchaydB3QV3JkIjTrYM3GFfIcYkTxtrMopztuu537RgtngD1Fzb7UtnrTMR6nTFqSq7tP/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com; spf=pass smtp.mailfrom=crowdstrike.com; dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b=NweBX4q9; arc=none smtp.client-ip=148.163.148.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crowdstrike.com
-Received: from pps.filterd (m0354652.ppops.net [127.0.0.1])
-	by mx0a-00206402.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54UCLQEJ002202;
-	Fri, 30 May 2025 12:58:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com;
-	 h=content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=default; bh=Wz
-	t3C1uyCswPs1cKeQlufIRtqHdv3juNPPqO3gwQN9g=; b=NweBX4q9U8U+Xwn+TB
-	dxkaC5s7rVhsmhpnkXk+AIyZ6BfIcPhOpTE/t4n6bU08npF4lSl7Td0psX416x1v
-	mgN2EzP3rTcIbXkvdHsppxHZOTelclkYxCgTDJJ7+rkYxBNn3kIPgdKag+F0aUHf
-	7Wvk3bqcGKEa/c/+1vGgn2EB89ngJ4gA/VVf6QdpotqwL4nsfnHyLCOp5basQ9R+
-	Eh3oE/mRPaNp004RVBsH3RSBoR8kcYazvDlPgY9eveO40yK+JS6JaeeB5iOFJ4LR
-	qOPtoEPY92fy/CT59rU2OTi599VJRNrE2RZXSBYYThEfk0ZPQB8VjcBoAkSZ42Vs
-	Yd8Q==
-Received: from mail.crowdstrike.com (dragosx.crowdstrike.com [208.42.231.60] (may be forged))
-	by mx0a-00206402.pphosted.com (PPS) with ESMTPS id 46uux3kfr6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 30 May 2025 12:58:07 +0000 (GMT)
-Received: from ML-CTVHTF21DX.crowdstrike.sys (10.100.11.122) by
- 04WPEXCH007.crowdstrike.sys (10.100.11.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Fri, 30 May 2025 12:58:02 +0000
-From: Slava Imameev <slava.imameev@crowdstrike.com>
-To: <qmo@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andrii@kernel.org>, <martin.lau@linux.dev>, <eddyz87@gmail.com>,
-        <song@kernel.org>, <yonghong.song@linux.dev>,
-        <john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@fomichev.me>,
-        <haoluo@google.com>, <jolsa@kernel.org>, <mykolal@fb.com>,
-        <shuah@kernel.org>, <slava.imameev@crowdstrike.com>,
-        <justin.deschamp@crowdstrike.com>, <mark.fontana@crowdstrike.com>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Add test for bpftool access to read-only protected maps
-Date: Fri, 30 May 2025 22:57:17 +1000
-Message-ID: <20250530125717.34746-2-slava.imameev@crowdstrike.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
-In-Reply-To: <20250530125717.34746-1-slava.imameev@crowdstrike.com>
-References: <20250530125717.34746-1-slava.imameev@crowdstrike.com>
+	s=arc-20240116; t=1748613516; c=relaxed/simple;
+	bh=bn9bOI4KLJ0v58+6kBKDkQIFVYcKcuu1OXXfIFkPJ4w=;
+	h=Subject:From:To:Cc:Date:Message-ID:MIME-Version:Content-Type; b=bLvy8EDvrDjFZpkYNXW3txi5+4fTA+DIx39F0RguN8yT6Nxun33V8JrS+Dl+q/83y5bDcXCUTssUE14KO94SjWsmHPp/TIv+qqQ79A0aINioUMlU3MboqU38cEjdHkEsbiKkGm/6cttdx81sxBwl93gBpHe5HKBV+FXrAn8TJfE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZqCDNICy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53906C4CEE9;
+	Fri, 30 May 2025 13:58:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1748613514;
+	bh=bn9bOI4KLJ0v58+6kBKDkQIFVYcKcuu1OXXfIFkPJ4w=;
+	h=Subject:From:To:Cc:Date:From;
+	b=ZqCDNICyjzTKN4sgq/G+WkHnqetRj3YN3tI+tzxi85aLRJXouxRZGRwJW06AvSHae
+	 cOXWa6Dlv6qfQvPRTtk+BmIXGOpAw3L/vVrOSsHVZOPiB01ka3XP/TY57dX8ar65VA
+	 6ebaqkjMTZFUh/3KBqpHSE1j8ezAOvxj8kXilExr0MrPnClqC8zqg4/D2z5TpAtCJG
+	 bPKYOoS/pSi0b+ppHmw86oGgAW5gdSVbNaQcaAFj0XqyAZQG+CiS0b8yKHg0uJGMjS
+	 ZuKT43+V29GOTVCga7aBK6vBsU4KToaf9/2u1U1BhB+cpE+/VDrejs27kgVQ/uiyjx
+	 nsvaFsHygGhoQ==
+Subject: [PATCH net-next V3] net: track pfmemalloc drops via
+ SKB_DROP_REASON_PFMEMALLOC
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+To: netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org,
+ Eric Dumazet <eric.dumazet@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
+ =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+ kernel-team@cloudflare.com, mfleming@cloudflare.com
+Date: Fri, 30 May 2025 15:58:30 +0200
+Message-ID: <174861348802.1621620.12023807708034587582.stgit@firesoul>
+User-Agent: StGit/1.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: 04WPEXCH009.crowdstrike.sys (10.100.11.79) To
- 04WPEXCH007.crowdstrike.sys (10.100.11.74)
-X-Disclaimer: USA
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-05-30_05,2025-05-30_01,2025-03-28_01
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-Add selftest cases that validate bpftool's expected behavior when
-accessing maps protected from modification via security_bpf_map.
+Add a new SKB drop reason (SKB_DROP_REASON_PFMEMALLOC) to track packets
+dropped due to memory pressure. In production environments, we've observed
+memory exhaustion reported by memory layer stack traces, but these drops
+were not properly tracked in the SKB drop reason infrastructure.
 
-The test includes a BPF program attached to security_bpf_map with two maps:
-- A protected map that only allows read-only access
-- An unprotected map that allows full access
+While most network code paths now properly report pfmemalloc drops, some
+protocol-specific socket implementations still use sk_filter() without
+drop reason tracking:
+- Bluetooth L2CAP sockets
+- CAIF sockets
+- IUCV sockets
+- Netlink sockets
+- SCTP sockets
+- Unix domain sockets
 
-The test script attaches the BPF program to security_bpf_map and
-verifies that for the bpftool map command:
-- Read access works on both maps
-- Write access fails on the protected map
-- Write access succeeds on the unprotected map
-- These behaviors remain consistent when the maps are pinned
+These remaining cases represent less common paths and could be converted
+in a follow-up patch if needed. The current implementation provides
+significantly improved observability into memory pressure events in the
+network stack, especially for key protocols like TCP and UDP, helping to
+diagnose problems in production environments.
 
-Signed-off-by: Slava Imameev <slava.imameev@crowdstrike.com>
+Reported-by: Matt Fleming <mfleming@cloudflare.com>
+Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
 ---
- tools/testing/selftests/bpf/Makefile          |   1 +
- .../selftests/bpf/progs/security_bpf_map.c    |  56 +++++
- .../testing/selftests/bpf/test_bpftool_map.sh | 208 ++++++++++++++++++
- 3 files changed, 265 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/security_bpf_map.c
- create mode 100755 tools/testing/selftests/bpf/test_bpftool_map.sh
+V3:
+ - Add some whilespace lines to please checkpatch
+ - Don't correct skb_drop_reason type in __udp4_lib_rcv
+ - drop_reason variable in RX-handler (__netif_receive_skb_core)
+V2:
+ - link: https://lore.kernel.org/all/174680137188.1282310.4154030185267079690.stgit@firesoul/
+V1:
+ - link: https://lore.kernel.org/all/174619899817.1075985.12078484570755125058.stgit@firesoul/
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index cf5ed3bee573..731a86407799 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -109,6 +109,7 @@ TEST_PROGS := test_kmod.sh \
- 	test_xdping.sh \
- 	test_bpftool_build.sh \
- 	test_bpftool.sh \
-+	test_bpftool_map.sh \
- 	test_bpftool_metadata.sh \
- 	test_doc_build.sh \
- 	test_xsk.sh \
-diff --git a/tools/testing/selftests/bpf/progs/security_bpf_map.c b/tools/testing/selftests/bpf/progs/security_bpf_map.c
-new file mode 100644
-index 000000000000..57226f2ceb5f
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/security_bpf_map.c
-@@ -0,0 +1,56 @@
-+// SPDX-License-Identifier: GPL-2.0-only
+ drivers/net/tun.c             |    6 ++----
+ include/linux/filter.h        |   14 ++++++++++++--
+ include/net/dropreason-core.h |    4 ++++
+ include/net/tcp.h             |    2 +-
+ net/core/dev.c                |   12 +++++++++---
+ net/core/filter.c             |   15 ++++++++++++---
+ net/core/sock.c               |   20 +++++++++++++-------
+ net/ipv4/tcp_ipv4.c           |   25 ++++++++++++++-----------
+ net/ipv4/udp.c                |    6 ++----
+ net/ipv6/tcp_ipv6.c           |    9 +++------
+ net/ipv6/udp.c                |    4 +---
+ net/rose/rose_in.c            |    3 ++-
+ 12 files changed, 75 insertions(+), 45 deletions(-)
+
+diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+index 7babd1e9a378..bc47b6d112c3 100644
+--- a/drivers/net/tun.c
++++ b/drivers/net/tun.c
+@@ -1000,8 +1000,8 @@ static unsigned int run_ebpf_filter(struct tun_struct *tun,
+ /* Net device start xmit */
+ static netdev_tx_t tun_net_xmit(struct sk_buff *skb, struct net_device *dev)
+ {
++	enum skb_drop_reason drop_reason = SKB_DROP_REASON_NOT_SPECIFIED;
+ 	struct tun_struct *tun = netdev_priv(dev);
+-	enum skb_drop_reason drop_reason;
+ 	int txq = skb->queue_mapping;
+ 	struct netdev_queue *queue;
+ 	struct tun_file *tfile;
+@@ -1030,10 +1030,8 @@ static netdev_tx_t tun_net_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	}
+ 
+ 	if (tfile->socket.sk->sk_filter &&
+-	    sk_filter(tfile->socket.sk, skb)) {
+-		drop_reason = SKB_DROP_REASON_SOCKET_FILTER;
++	    (sk_filter_reason(tfile->socket.sk, skb, &drop_reason)))
+ 		goto drop;
+-	}
+ 
+ 	len = run_ebpf_filter(tun, skb, len);
+ 	if (len == 0) {
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index f5cf4d35d83e..4e82332afe03 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -1073,10 +1073,20 @@ bpf_jit_binary_lock_ro(struct bpf_binary_header *hdr)
+ 	return set_memory_rox((unsigned long)hdr, hdr->size >> PAGE_SHIFT);
+ }
+ 
+-int sk_filter_trim_cap(struct sock *sk, struct sk_buff *skb, unsigned int cap);
++int sk_filter_trim_cap(struct sock *sk, struct sk_buff *skb, unsigned int cap,
++		       enum skb_drop_reason *reason);
 +
-+#include "vmlinux.h"
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_helpers.h>
+ static inline int sk_filter(struct sock *sk, struct sk_buff *skb)
+ {
+-	return sk_filter_trim_cap(sk, skb, 1);
++	enum skb_drop_reason ignore_reason;
 +
-+char _license[] SEC("license") = "GPL";
++	return sk_filter_trim_cap(sk, skb, 1, &ignore_reason);
++}
 +
-+#define EPERM 1 /* Operation not permitted */
-+
-+/* From include/linux/mm.h. */
-+#define FMODE_WRITE	0x2
-+
-+struct map;
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+	__uint(max_entries, 1);
-+} prot_map SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+	__uint(max_entries, 1);
-+} not_prot_map SEC(".maps");
-+
-+SEC("fmod_ret/security_bpf_map")
-+int BPF_PROG(fmod_bpf_map, struct bpf_map *map, int fmode)
++static inline int sk_filter_reason(struct sock *sk, struct sk_buff *skb,
++				   enum skb_drop_reason *reason)
 +{
-+	if (map == &prot_map) {
-+		/* Allow read-only access */
-+		if (fmode & FMODE_WRITE)
-+			return -EPERM;
++	return sk_filter_trim_cap(sk, skb, 1, reason);
+ }
+ 
+ struct bpf_prog *bpf_prog_select_runtime(struct bpf_prog *fp, int *err);
+diff --git a/include/net/dropreason-core.h b/include/net/dropreason-core.h
+index bea77934a235..f33dfc93c759 100644
+--- a/include/net/dropreason-core.h
++++ b/include/net/dropreason-core.h
+@@ -570,6 +570,10 @@ enum skb_drop_reason {
+ 	 * ingress bridge port does not allow frames to be forwarded.
+ 	 */
+ 	SKB_DROP_REASON_BRIDGE_INGRESS_STP_STATE,
++	/**
++	 * @SKB_DROP_REASON_PFMEMALLOC: dropped when under memory pressure
++	 */
++	SKB_DROP_REASON_PFMEMALLOC,
+ 	/**
+ 	 * @SKB_DROP_REASON_MAX: the maximum of core drop reasons, which
+ 	 * shouldn't be used as a real 'reason' - only for tracing code gen
+diff --git a/include/net/tcp.h b/include/net/tcp.h
+index 5078ad868fee..b6d72e1b4362 100644
+--- a/include/net/tcp.h
++++ b/include/net/tcp.h
+@@ -1560,7 +1560,7 @@ bool tcp_add_backlog(struct sock *sk, struct sk_buff *skb,
+ 		     enum skb_drop_reason *reason);
+ 
+ 
+-int tcp_filter(struct sock *sk, struct sk_buff *skb);
++int tcp_filter(struct sock *sk, struct sk_buff *skb, enum skb_drop_reason *reason);
+ void tcp_set_state(struct sock *sk, int state);
+ void tcp_done(struct sock *sk);
+ int tcp_abort(struct sock *sk, int err);
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 03d20a98f8b7..847adba3795b 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -5711,6 +5711,7 @@ static inline int nf_ingress(struct sk_buff *skb, struct packet_type **pt_prev,
+ static int __netif_receive_skb_core(struct sk_buff **pskb, bool pfmemalloc,
+ 				    struct packet_type **ppt_prev)
+ {
++	enum skb_drop_reason drop_reason = SKB_DROP_REASON_UNHANDLED_PROTO;
+ 	struct packet_type *ptype, *pt_prev;
+ 	rx_handler_func_t *rx_handler;
+ 	struct sk_buff *skb = *pskb;
+@@ -5802,8 +5803,10 @@ static int __netif_receive_skb_core(struct sk_buff **pskb, bool pfmemalloc,
+ #endif
+ 	skb_reset_redirect(skb);
+ skip_classify:
+-	if (pfmemalloc && !skb_pfmemalloc_protocol(skb))
++	if (pfmemalloc && !skb_pfmemalloc_protocol(skb)) {
++		drop_reason = SKB_DROP_REASON_PFMEMALLOC;
+ 		goto drop;
 +	}
+ 
+ 	if (skb_vlan_tag_present(skb)) {
+ 		if (pt_prev) {
+@@ -5901,8 +5904,10 @@ static int __netif_receive_skb_core(struct sk_buff **pskb, bool pfmemalloc,
+ 	}
+ 
+ 	if (pt_prev) {
+-		if (unlikely(skb_orphan_frags_rx(skb, GFP_ATOMIC)))
++		if (unlikely(skb_orphan_frags_rx(skb, GFP_ATOMIC))) {
++			drop_reason = SKB_DROP_REASON_SKB_UCOPY_FAULT;
+ 			goto drop;
++		}
+ 		*ppt_prev = pt_prev;
+ 	} else {
+ drop:
+@@ -5910,7 +5915,8 @@ static int __netif_receive_skb_core(struct sk_buff **pskb, bool pfmemalloc,
+ 			dev_core_stats_rx_dropped_inc(skb->dev);
+ 		else
+ 			dev_core_stats_rx_nohandler_inc(skb->dev);
+-		kfree_skb_reason(skb, SKB_DROP_REASON_UNHANDLED_PROTO);
 +
-+	return 0;
-+}
++		kfree_skb_reason(skb, drop_reason);
+ 		/* Jamal, now you will not able to escape explaining
+ 		 * me how you were going to use this. :-)
+ 		 */
+diff --git a/net/core/filter.c b/net/core/filter.c
+index bc6828761a47..4ae299dc2eb7 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -122,6 +122,7 @@ EXPORT_SYMBOL_GPL(copy_bpf_fprog_from_user);
+  *	@sk: sock associated with &sk_buff
+  *	@skb: buffer to filter
+  *	@cap: limit on how short the eBPF program may trim the packet
++ *	@reason: record drop reason on errors (negative return value)
+  *
+  * Run the eBPF program and then cut skb->data to correct size returned by
+  * the program. If pkt_len is 0 we toss packet. If skb->len is smaller
+@@ -130,7 +131,8 @@ EXPORT_SYMBOL_GPL(copy_bpf_fprog_from_user);
+  * be accepted or -EPERM if the packet should be tossed.
+  *
+  */
+-int sk_filter_trim_cap(struct sock *sk, struct sk_buff *skb, unsigned int cap)
++int sk_filter_trim_cap(struct sock *sk, struct sk_buff *skb,
++		       unsigned int cap, enum skb_drop_reason *reason)
+ {
+ 	int err;
+ 	struct sk_filter *filter;
+@@ -142,15 +144,20 @@ int sk_filter_trim_cap(struct sock *sk, struct sk_buff *skb, unsigned int cap)
+ 	 */
+ 	if (skb_pfmemalloc(skb) && !sock_flag(sk, SOCK_MEMALLOC)) {
+ 		NET_INC_STATS(sock_net(sk), LINUX_MIB_PFMEMALLOCDROP);
++		*reason = SKB_DROP_REASON_PFMEMALLOC;
+ 		return -ENOMEM;
+ 	}
+ 	err = BPF_CGROUP_RUN_PROG_INET_INGRESS(sk, skb);
+-	if (err)
++	if (err) {
++		*reason = SKB_DROP_REASON_SOCKET_FILTER;
+ 		return err;
++	}
+ 
+ 	err = security_sock_rcv_skb(sk, skb);
+-	if (err)
++	if (err) {
++		*reason = SKB_DROP_REASON_SECURITY_HOOK;
+ 		return err;
++	}
+ 
+ 	rcu_read_lock();
+ 	filter = rcu_dereference(sk->sk_filter);
+@@ -162,6 +169,8 @@ int sk_filter_trim_cap(struct sock *sk, struct sk_buff *skb, unsigned int cap)
+ 		pkt_len = bpf_prog_run_save_cb(filter->prog, skb);
+ 		skb->sk = save_sk;
+ 		err = pkt_len ? pskb_trim(skb, max(cap, pkt_len)) : -EPERM;
++		if (err)
++			*reason = SKB_DROP_REASON_SOCKET_FILTER;
+ 	}
+ 	rcu_read_unlock();
+ 
+diff --git a/net/core/sock.c b/net/core/sock.c
+index b64df2463300..8cb6254cc56a 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -524,11 +524,10 @@ int sock_queue_rcv_skb_reason(struct sock *sk, struct sk_buff *skb,
+ 	enum skb_drop_reason drop_reason;
+ 	int err;
+ 
+-	err = sk_filter(sk, skb);
+-	if (err) {
+-		drop_reason = SKB_DROP_REASON_SOCKET_FILTER;
++	err = sk_filter_reason(sk, skb, &drop_reason);
++	if (err)
+ 		goto out;
+-	}
 +
-+/*
-+ * This program keeps references to maps. This is needed to prevent
-+ * optimizing them out.
-+ */
-+SEC("fentry/bpf_fentry_test1")
-+int BPF_PROG(bpf_fentry_test1, int a)
-+{
-+	__u32 key = 0;
-+	__u32 val1 = a;
-+	__u32 val2 = a + 1;
+ 	err = __sock_queue_rcv_skb(sk, skb);
+ 	switch (err) {
+ 	case -ENOMEM:
+@@ -551,15 +550,18 @@ EXPORT_SYMBOL(sock_queue_rcv_skb_reason);
+ int __sk_receive_skb(struct sock *sk, struct sk_buff *skb,
+ 		     const int nested, unsigned int trim_cap, bool refcounted)
+ {
++	enum skb_drop_reason reason = SKB_DROP_REASON_NOT_SPECIFIED;
+ 	int rc = NET_RX_SUCCESS;
++	int err;
+ 
+-	if (sk_filter_trim_cap(sk, skb, trim_cap))
++	if (sk_filter_trim_cap(sk, skb, trim_cap, &reason))
+ 		goto discard_and_relse;
+ 
+ 	skb->dev = NULL;
+ 
+ 	if (sk_rcvqueues_full(sk, READ_ONCE(sk->sk_rcvbuf))) {
+ 		atomic_inc(&sk->sk_drops);
++		reason = SKB_DROP_REASON_SOCKET_RCVBUFF;
+ 		goto discard_and_relse;
+ 	}
+ 	if (nested)
+@@ -575,8 +577,12 @@ int __sk_receive_skb(struct sock *sk, struct sk_buff *skb,
+ 		rc = sk_backlog_rcv(sk, skb);
+ 
+ 		mutex_release(&sk->sk_lock.dep_map, _RET_IP_);
+-	} else if (sk_add_backlog(sk, skb, READ_ONCE(sk->sk_rcvbuf))) {
++	} else if ((err = sk_add_backlog(sk, skb, READ_ONCE(sk->sk_rcvbuf)))) {
+ 		bh_unlock_sock(sk);
++		if (err == -ENOMEM)
++			reason = SKB_DROP_REASON_PFMEMALLOC;
++		if (err == -ENOBUFS)
++			reason = SKB_DROP_REASON_SOCKET_BACKLOG;
+ 		atomic_inc(&sk->sk_drops);
+ 		goto discard_and_relse;
+ 	}
+@@ -587,7 +593,7 @@ int __sk_receive_skb(struct sock *sk, struct sk_buff *skb,
+ 		sock_put(sk);
+ 	return rc;
+ discard_and_relse:
+-	kfree_skb(skb);
++	sk_skb_reason_drop(sk, skb, reason);
+ 	goto out;
+ }
+ EXPORT_SYMBOL(__sk_receive_skb);
+diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
+index d5b5c32115d2..d0cf144b9bd5 100644
+--- a/net/ipv4/tcp_ipv4.c
++++ b/net/ipv4/tcp_ipv4.c
+@@ -2025,6 +2025,7 @@ bool tcp_add_backlog(struct sock *sk, struct sk_buff *skb,
+ 	u32 gso_size;
+ 	u64 limit;
+ 	int delta;
++	int err;
+ 
+ 	/* In case all data was pulled from skb frags (in __pskb_pull_tail()),
+ 	 * we can fix skb->truesize to its real value to avoid future drops.
+@@ -2135,21 +2136,26 @@ bool tcp_add_backlog(struct sock *sk, struct sk_buff *skb,
+ 
+ 	limit = min_t(u64, limit, UINT_MAX);
+ 
+-	if (unlikely(sk_add_backlog(sk, skb, limit))) {
++	if (unlikely((err = sk_add_backlog(sk, skb, limit)))) {
+ 		bh_unlock_sock(sk);
+-		*reason = SKB_DROP_REASON_SOCKET_BACKLOG;
+-		__NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPBACKLOGDROP);
++		if (err == -ENOMEM) {
++			*reason = SKB_DROP_REASON_PFMEMALLOC;
++			__NET_INC_STATS(sock_net(sk), LINUX_MIB_PFMEMALLOCDROP);
++		} else {
++			*reason = SKB_DROP_REASON_SOCKET_BACKLOG;
++			__NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPBACKLOGDROP);
++		}
+ 		return true;
+ 	}
+ 	return false;
+ }
+ EXPORT_IPV6_MOD(tcp_add_backlog);
+ 
+-int tcp_filter(struct sock *sk, struct sk_buff *skb)
++int tcp_filter(struct sock *sk, struct sk_buff *skb, enum skb_drop_reason *reason)
+ {
+ 	struct tcphdr *th = (struct tcphdr *)skb->data;
+ 
+-	return sk_filter_trim_cap(sk, skb, th->doff * 4);
++	return sk_filter_trim_cap(sk, skb, th->doff * 4, reason);
+ }
+ EXPORT_IPV6_MOD(tcp_filter);
+ 
+@@ -2276,14 +2282,12 @@ int tcp_v4_rcv(struct sk_buff *skb)
+ 		}
+ 		refcounted = true;
+ 		nsk = NULL;
+-		if (!tcp_filter(sk, skb)) {
++		if (!tcp_filter(sk, skb, &drop_reason)) {
+ 			th = (const struct tcphdr *)skb->data;
+ 			iph = ip_hdr(skb);
+ 			tcp_v4_fill_cb(skb, iph, th);
+ 			nsk = tcp_check_req(sk, skb, req, false, &req_stolen,
+ 					    &drop_reason);
+-		} else {
+-			drop_reason = SKB_DROP_REASON_SOCKET_FILTER;
+ 		}
+ 		if (!nsk) {
+ 			reqsk_put(req);
+@@ -2339,10 +2343,9 @@ int tcp_v4_rcv(struct sk_buff *skb)
+ 
+ 	nf_reset_ct(skb);
+ 
+-	if (tcp_filter(sk, skb)) {
+-		drop_reason = SKB_DROP_REASON_SOCKET_FILTER;
++	if (tcp_filter(sk, skb, &drop_reason))
+ 		goto discard_and_relse;
+-	}
 +
-+	bpf_map_update_elem(&prot_map, &key, &val1, BPF_ANY);
-+	bpf_map_update_elem(&not_prot_map, &key, &val2, BPF_ANY);
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/test_bpftool_map.sh b/tools/testing/selftests/bpf/test_bpftool_map.sh
-new file mode 100755
-index 000000000000..c7c7f3d2071e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/test_bpftool_map.sh
-@@ -0,0 +1,208 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
+ 	th = (const struct tcphdr *)skb->data;
+ 	iph = ip_hdr(skb);
+ 	tcp_v4_fill_cb(skb, iph, th);
+diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+index f9f5b92cf4b6..ad3ca2d2e3fc 100644
+--- a/net/ipv4/udp.c
++++ b/net/ipv4/udp.c
+@@ -2345,7 +2345,7 @@ static int __udp_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
+  */
+ static int udp_queue_rcv_one_skb(struct sock *sk, struct sk_buff *skb)
+ {
+-	int drop_reason = SKB_DROP_REASON_NOT_SPECIFIED;
++	enum skb_drop_reason drop_reason = SKB_DROP_REASON_NOT_SPECIFIED;
+ 	struct udp_sock *up = udp_sk(sk);
+ 	int is_udplite = IS_UDPLITE(sk);
+ 
+@@ -2434,10 +2434,8 @@ static int udp_queue_rcv_one_skb(struct sock *sk, struct sk_buff *skb)
+ 	    udp_lib_checksum_complete(skb))
+ 			goto csum_error;
+ 
+-	if (sk_filter_trim_cap(sk, skb, sizeof(struct udphdr))) {
+-		drop_reason = SKB_DROP_REASON_SOCKET_FILTER;
++	if (sk_filter_trim_cap(sk, skb, sizeof(struct udphdr), &drop_reason))
+ 		goto drop;
+-	}
+ 
+ 	udp_csum_pull_header(skb);
+ 
+diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
+index 7dcb33f879ee..6af7a08f510c 100644
+--- a/net/ipv6/tcp_ipv6.c
++++ b/net/ipv6/tcp_ipv6.c
+@@ -1832,14 +1832,12 @@ INDIRECT_CALLABLE_SCOPE int tcp_v6_rcv(struct sk_buff *skb)
+ 		}
+ 		refcounted = true;
+ 		nsk = NULL;
+-		if (!tcp_filter(sk, skb)) {
++		if (!tcp_filter(sk, skb, &drop_reason)) {
+ 			th = (const struct tcphdr *)skb->data;
+ 			hdr = ipv6_hdr(skb);
+ 			tcp_v6_fill_cb(skb, hdr, th);
+ 			nsk = tcp_check_req(sk, skb, req, false, &req_stolen,
+ 					    &drop_reason);
+-		} else {
+-			drop_reason = SKB_DROP_REASON_SOCKET_FILTER;
+ 		}
+ 		if (!nsk) {
+ 			reqsk_put(req);
+@@ -1895,10 +1893,9 @@ INDIRECT_CALLABLE_SCOPE int tcp_v6_rcv(struct sk_buff *skb)
+ 
+ 	nf_reset_ct(skb);
+ 
+-	if (tcp_filter(sk, skb)) {
+-		drop_reason = SKB_DROP_REASON_SOCKET_FILTER;
++	if (tcp_filter(sk, skb, &drop_reason))
+ 		goto discard_and_relse;
+-	}
 +
-+# Kselftest framework requirement - SKIP code is 4.
-+ksft_skip=4
-+
-+PROTECTED_MAP_NAME="prot_map"
-+NOT_PROTECTED_MAP_NAME="not_prot_map"
-+BPF_FILE="security_bpf_map.bpf.o"
-+TESTNAME="security_bpf_map"
-+BPF_FS=$(awk '$3 == "bpf" {print $2; exit}' /proc/mounts)
-+BPF_DIR="$BPF_FS/test_$TESTNAME"
-+SCRIPT_DIR=$(dirname $(realpath "$0"))
-+BPF_FILE_PATH="$SCRIPT_DIR/$BPF_FILE"
-+# Assume the script is located under tools/testing/selftests/bpf/
-+KDIR_ROOT_DIR=$(realpath "$SCRIPT_DIR"/../../../../)
-+
-+_cleanup()
-+{
-+	set +eu
-+	[ -d "$TMPDIR" ] && rm -rf "$TMPDIR" 2> /dev/null
-+	[ -d "$BPF_DIR" ] && rm -rf "$BPF_DIR" 2> /dev/null
-+}
-+
-+cleanup_skip()
-+{
-+	echo "selftests: $TESTNAME [SKIP]"
-+	_cleanup
-+
-+	exit $ksft_skip
-+}
-+
-+cleanup()
-+{
-+	if [ "$?" = 0 ]; then
-+		echo "selftests: $TESTNAME [PASS]"
-+	else
-+		echo "selftests: $TESTNAME [FAILED]"
-+	fi
-+	_cleanup
-+}
-+
-+# Parameters:
-+#   $1: The top of kernel repository
-+#   $2: Output directory
-+build_bpftool()
-+{
-+	local kdir_root_dir="$1"
-+	local output_dir="$2"
-+	local pwd="$(pwd)"
-+	local ncpus=1
-+
-+	echo Building bpftool ...
-+
-+	#We want to start build from the top of kernel repository.
-+	cd "$kdir_root_dir"
-+	if [ ! -e tools/bpf/bpftool/Makefile ]; then
-+		echo bpftool files not found
-+		exit $ksft_skip
-+	fi
-+
-+	# Determine the number of CPUs for parallel compilation
-+	if command -v nproc >/dev/null 2>&1; then
-+		ncpus=$(nproc)
-+	fi
-+
-+	make -C tools/bpf/bpftool -s -j"$ncpus" OUTPUT="$output_dir"/ >/dev/null
-+	echo ... finished building bpftool
-+	cd "$pwd"
-+}
-+
-+# Function to test map access with configurable write expectations
-+# Parameters:
-+#   $1: Map name
-+#   $2: Whether write should succeed (true/false)
-+#   $3: bpftool path
-+#   $4: BPF_DIR
-+test_map_access() {
-+	local map_name="$1"
-+	local write_should_succeed="$2"
-+	local bpftool_path="$3"
-+	local pin_path="$4/${map_name}_pinned"
-+	local key="0 0 0 0"
-+	local value="1 1 1 1"
-+
-+	echo "Testing access to map: $map_name"
-+
-+	# Test read access to the map
-+	if "$bpftool_path" map lookup name "$map_name" key $key; then
-+		echo "  Read access to $map_name succeeded"
-+	else
-+		echo "  Read access to $map_name failed"
-+		exit 1
-+	fi
-+
-+	# Test write access to the map
-+	if "$bpftool_path" map update name "$map_name" key $key value $value; then
-+		if [ "$write_should_succeed" = "true" ]; then
-+			echo "  Write access to $map_name succeeded as expected"
-+		else
-+			echo "  Write access to $map_name succeeded but should have failed"
-+			exit 1
-+		fi
-+	else
-+		if [ "$write_should_succeed" = "true" ]; then
-+			echo "  Write access to $map_name failed but should have succeeded"
-+			exit 1
-+		else
-+			echo "  Write access to $map_name failed as expected"
-+		fi
-+	fi
-+
-+	# Pin the map to the BPF filesystem
-+	"$bpftool_path" map pin name "$map_name" "$pin_path"
-+	if [ -e "$pin_path" ]; then
-+		echo "  Successfully pinned $map_name to $pin_path"
-+	else
-+		echo "  Failed to pin $map_name"
-+		exit 1
-+	fi
-+
-+	# Test read access to the pinned map
-+	if "$bpftool_path" map lookup pinned "$pin_path" key $key; then
-+		echo "  Read access to pinned $map_name succeeded"
-+	else
-+		echo "  Read access to pinned $map_name failed"
-+		exit 1
-+	fi
-+
-+	# Test write access to the pinned map
-+	if "$bpftool_path" map update pinned "$pin_path" key $key value $value; then
-+		if [ "$write_should_succeed" = "true" ]; then
-+			echo "  Write access to pinned $map_name succeeded as expected"
-+		else
-+			echo "  Write access to pinned $map_name succeeded but should have failed"
-+			exit 1
-+		fi
-+	else
-+		if [ "$write_should_succeed" = "true" ]; then
-+			echo "  Write access to pinned $map_name failed but should have succeeded"
-+			exit 1
-+		else
-+			echo "  Write access to pinned $map_name failed as expected"
-+		fi
-+	fi
-+
-+	echo "  Finished testing $map_name"
-+	echo
-+}
-+
-+check_root_privileges() {
-+	if [ $(id -u) -ne 0 ]; then
-+		echo "Need root privileges"
-+		exit $ksft_skip
-+	fi
-+}
-+
-+check_bpffs() {
-+	if [ -z "$BPF_FS" ]; then
-+		echo "Could not run test without bpffs mounted"
-+		exit $ksft_skip
-+	fi
-+}
-+
-+create_tmp_dir() {
-+	TMPDIR=$(mktemp -d)
-+	if [ $? -ne 0 ] || [ ! -d "$TMPDIR" ]; then
-+		echo "Failed to create temporary directory"
-+		exit $ksft_skip
-+	fi
-+}
-+
-+locate_or_build_bpftool() {
-+	if ! bpftool version > /dev/null 2>&1; then
-+		build_bpftool "$KDIR_ROOT_DIR" "$TMPDIR"
-+		BPFTOOL_PATH="$TMPDIR"/bpftool
-+	else
-+		echo "Using bpftool from PATH"
-+		BPFTOOL_PATH="bpftool"
-+	fi
-+}
-+
-+set -eu
-+
-+trap cleanup_skip EXIT
-+
-+check_root_privileges
-+
-+check_bpffs
-+
-+create_tmp_dir
-+
-+locate_or_build_bpftool
-+
-+mkdir "$BPF_DIR"
-+
-+trap cleanup EXIT
-+
-+# Load and attach the BPF programs to control maps access
-+"$BPFTOOL_PATH" prog loadall "$BPF_FILE_PATH" "$BPF_DIR"/prog autoattach
-+
-+# Test protected map (write should fail)
-+test_map_access "$PROTECTED_MAP_NAME" "false" "$BPFTOOL_PATH" "$BPF_DIR"
-+
-+# Test not protected map (write should succeed)
-+test_map_access "$NOT_PROTECTED_MAP_NAME" "true" "$BPFTOOL_PATH" "$BPF_DIR"
-+
-+exit 0
--- 
-2.34.1
+ 	th = (const struct tcphdr *)skb->data;
+ 	hdr = ipv6_hdr(skb);
+ 	tcp_v6_fill_cb(skb, hdr, th);
+diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
+index 7317f8e053f1..ffef09631832 100644
+--- a/net/ipv6/udp.c
++++ b/net/ipv6/udp.c
+@@ -893,10 +893,8 @@ static int udpv6_queue_rcv_one_skb(struct sock *sk, struct sk_buff *skb)
+ 	    udp_lib_checksum_complete(skb))
+ 		goto csum_error;
+ 
+-	if (sk_filter_trim_cap(sk, skb, sizeof(struct udphdr))) {
+-		drop_reason = SKB_DROP_REASON_SOCKET_FILTER;
++	if (sk_filter_trim_cap(sk, skb, sizeof(struct udphdr), &drop_reason))
+ 		goto drop;
+-	}
+ 
+ 	udp_csum_pull_header(skb);
+ 
+diff --git a/net/rose/rose_in.c b/net/rose/rose_in.c
+index 4d67f36dce1b..4603a9385a61 100644
+--- a/net/rose/rose_in.c
++++ b/net/rose/rose_in.c
+@@ -101,6 +101,7 @@ static int rose_state2_machine(struct sock *sk, struct sk_buff *skb, int framety
+  */
+ static int rose_state3_machine(struct sock *sk, struct sk_buff *skb, int frametype, int ns, int nr, int q, int d, int m)
+ {
++	enum skb_drop_reason dr; /* ignored */
+ 	struct rose_sock *rose = rose_sk(sk);
+ 	int queued = 0;
+ 
+@@ -162,7 +163,7 @@ static int rose_state3_machine(struct sock *sk, struct sk_buff *skb, int framety
+ 		rose_frames_acked(sk, nr);
+ 		if (ns == rose->vr) {
+ 			rose_start_idletimer(sk);
+-			if (sk_filter_trim_cap(sk, skb, ROSE_MIN_LEN) == 0 &&
++			if (sk_filter_trim_cap(sk, skb, ROSE_MIN_LEN, &dr) == 0 &&
+ 			    __sock_queue_rcv_skb(sk, skb) == 0) {
+ 				rose->vr = (rose->vr + 1) % ROSE_MODULUS;
+ 				queued = 1;
+
 
 
