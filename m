@@ -1,183 +1,242 @@
-Return-Path: <bpf+bounces-59337-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59338-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41801AC85B8
-	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 02:42:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03BC9AC85E4
+	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 03:10:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24E827B0900
-	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 00:41:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D3CD3B5CDD
+	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 01:10:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E5DE2D600;
-	Fri, 30 May 2025 00:42:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GI/DRy1T"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C92141465B4;
+	Fri, 30 May 2025 01:10:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8841F2907;
-	Fri, 30 May 2025 00:42:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A40F410E4;
+	Fri, 30 May 2025 01:10:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748565749; cv=none; b=RQG34tAbtTJKzdcIldK4+HtVBq7Q5TAWKLwon60qKSAcZqWW0O7XIKjPUjEzCFGHw6xslRJ7Ux9tjS29YezKtXR+tYAc0DJQuwXoXBY6671dmOxeKDJaxpGm1aEqEGEEn71HcY5pHtscu4GH66B9wGXBiwS4UvomguTa8quFwxc=
+	t=1748567417; cv=none; b=FGadZmwXIcvMXtcCPn8dckPs5Q28H1GDAR+08J6PFgg/uASBIkiPKyKO2VJw6vJLX/FG2ptQEVzuBDwWfT0VKmLrhi0Fwns3R/Gxbmp1+o7DDQbrhL0ZH8bqItfvCCqewJ3Rkil73TdkDl8O2bwcpohgBCNa3jBXdP0RKGdFP2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748565749; c=relaxed/simple;
-	bh=7bEkvTOnQCSK2sw2Na277q6zkrloQhkHZ3+iRT9SH4A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=I7XFfqOcwFfRZWBXxN0n5/g7nJ1N41evUU5bJguY/yduopH5NzUjMDhbUmzUwf3CAkQgBeG4L8hkkV3t/KLoKbHHaGoV4IMZaHWXgI95qpeFzuModGI9AnZXI1edk8cW2uZVgdmHZT9D8J/YgGsBP0ml7a2Y6kNDuGXZ24UUxOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GI/DRy1T; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB180C4AF09;
-	Fri, 30 May 2025 00:42:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748565749;
-	bh=7bEkvTOnQCSK2sw2Na277q6zkrloQhkHZ3+iRT9SH4A=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=GI/DRy1TUmCvGHwjRyvzfAQQ9MFa+h9Qei6mR2XNBpi2YOZnwSghcXI+oa95zFwI3
-	 TNe1MYRk5qIVX2dr9XDoA/T1MFltSgFDvYu7d53RiTVLN9T1E5oTShrKV3o7WqkBn3
-	 tpaEz9VYjuVfgk9r5nXFQMxpkbKA+sKe+Nvjl5EGKMlT9/bySFixL0SH8pHx5b4b15
-	 No76H0/t7fTQLk/ja6zXXOQkTSs7cZLAtHNc+k/1GkJO4oxd3Ki1B1slWiOX/rycMp
-	 z4WjhK6E6A81eNOBOBPDZd64UT+x32HLh+W9pMxRzdUl15UXJUGDbKbXuNArNQ8K22
-	 npCmnaNWSLZnQ==
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-476a720e806so13277411cf.0;
-        Thu, 29 May 2025 17:42:28 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUWFp4sOvERXOYlerA/l/gDMg6ehSp46oqsPmmizurDXPWHvg6uvPdGlSRa0SIyRQrZidw=@vger.kernel.org, AJvYcCUxk1ZLRdTG13ZmcWZgaNTeInhjqRWrH0yoo5XCgEHR3h9LT3C8hFpQDsJierDGhtmCdvOgLFpazuyBztF3@vger.kernel.org, AJvYcCVfPyjeFlL+sI/Rnjg/9+x0qMhKKYmjr/w6mYRs0NromghybUcPKIcLVjzNMof1bMzDbZU2ZIRYkdpWJE/+biw4ghCHYEl0@vger.kernel.org, AJvYcCW+rdiuov63382NWrc3r3e7Jp8ufcsog7R0YqzEpavdKTqFr31Z9BI6P5LSy0drLsYhvTrUqAG00UZ6QjcySA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy+Lt9wvlgScQ2CWjsIjRaY4+MvaJa/KsJBWCtoDePtvjYjRHnc
-	ce1dkxxCHIbG1OX15MH+n3LVxdg99At2ANTjdwiecdAFXLfh39nKotEp0WqoRJuX2C6UZs19ubQ
-	I1LmNj5kjCPIV4E2YANu3JbvcMi6Kcrg=
-X-Google-Smtp-Source: AGHT+IGGGJvTIObZ60heIR5yqNHLAS2YoqnPZNzVO/6WrFAaaJsKljhGnZyGkTVQZnuSXcgLVahmSs4v22gHvONGMaY=
-X-Received: by 2002:a05:622a:1c14:b0:4a4:2f43:fb4e with SMTP id
- d75a77b69052e-4a440010735mr31040801cf.3.1748565748062; Thu, 29 May 2025
- 17:42:28 -0700 (PDT)
+	s=arc-20240116; t=1748567417; c=relaxed/simple;
+	bh=JTWoZYMV/sBS4/+ns9GwXgeHnkr4jGPNv48ZkJkgXjA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MxEMH1ii0S0Aj4ZatvZaenMD7HRa2ZM/HXeI64G02dC8yk/hVoOjul3qzO6yI0EvuqN696ESVNFAPGXdsVzXYNdt9UOflHTqs03kvOmdhFyhPiwoh1SwLXWEDhsdkSkRehox4c7HZpltyGNaGPbG3I/o/vAM6N7HHOGShLrO7nI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-669ff7000002311f-eb-6839056f5554
+Date: Fri, 30 May 2025 10:10:02 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Mina Almasry <almasrymina@google.com>
+Cc: willy@infradead.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	kernel_team@skhynix.com, kuba@kernel.org,
+	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
+	akpm@linux-foundation.org, davem@davemloft.net,
+	john.fastabend@gmail.com, andrew+netdev@lunn.ch,
+	asml.silence@gmail.com, toke@redhat.com, tariqt@nvidia.com,
+	edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com,
+	leon@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	david@redhat.com, lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
+	surenb@google.com, mhocko@suse.com, horms@kernel.org,
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+	vishal.moola@gmail.com
+Subject: Re: [RFC v3 01/18] netmem: introduce struct netmem_desc mirroring
+ struct page
+Message-ID: <20250530011002.GA3093@system.software.com>
+References: <20250529031047.7587-1-byungchul@sk.com>
+ <20250529031047.7587-2-byungchul@sk.com>
+ <CAHS8izNBjkMLbQsP++0r+fbkW2q7gGOdrbmE7gH-=jQUMCgJ1g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <yti2dilasy7b3tu6iin5pugkn6oevdswrwoy6gorudb7x2cqhh@nqb3gcyxg4by>
- <CAPhsuW4tg+bXU41fhAaS0n74d_a_KCFGvy_vkQOj7v4VLie2wg@mail.gmail.com>
- <20250529173810.GJ2023217@ZenIV> <CAPhsuW5pAvH3E1dVa85Kx2QsUSheSLobEMg-b0mOdtyfm7s4ug@mail.gmail.com>
- <20250529183536.GL2023217@ZenIV> <CAPhsuW7LFP0ddFg_oqkDyO9s7DZX89GFQBOnX=4n5mV=VCP5oA@mail.gmail.com>
- <20250529201551.GN2023217@ZenIV> <CAPhsuW5DP1x_wyzT1aYjpj3hxUs4uB8vdK9iEp=+i46QLotiOg@mail.gmail.com>
- <20250529214544.GO2023217@ZenIV> <CAPhsuW5oXZVEaMwNpSF74O7wZ_f2Qr_44pu9L4_=LBwdW5T9=w@mail.gmail.com>
- <20250529231018.GP2023217@ZenIV>
-In-Reply-To: <20250529231018.GP2023217@ZenIV>
-From: Song Liu <song@kernel.org>
-Date: Thu, 29 May 2025 17:42:16 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW6-J+NUe=jX51wGVP=nMFjETu+1LUTsWZiBa1ckwq7b+w@mail.gmail.com>
-X-Gm-Features: AX0GCFvdxMXrtmIn1lcuA6IWSFQd3Sx1TkLEWLyJGOYk7DtqDvgz8-KgHXA52OQ
-Message-ID: <CAPhsuW6-J+NUe=jX51wGVP=nMFjETu+1LUTsWZiBa1ckwq7b+w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/4] bpf: Introduce path iterator
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Jan Kara <jack@suse.cz>, bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, brauner@kernel.org, 
-	kpsingh@kernel.org, mattbobrowski@google.com, amir73il@gmail.com, 
-	repnop@google.com, jlayton@kernel.org, josef@toxicpanda.com, mic@digikod.net, 
-	gnoack@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHS8izNBjkMLbQsP++0r+fbkW2q7gGOdrbmE7gH-=jQUMCgJ1g@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0iTYRTHefZe9jodva7bo5LRouxqGWJHCrUger5kdvkgCtVLvrTlnDEv
+	aRGstJs5u2iSc8Yq71mLZTqtpJaYYmooxeyislQIynCapXZziuS3H+f8z/mdD4ejFLcZX06t
+	TRZ1WkGjZGW07KvXrfWJTKhqY/3vUDBZqli4+zMNyvpsDJgqaxCMjr+XwkjjSxbu3BqjwNSR
+	ScN3ywQFA01OKfSWDtLw5HwtBc7LzSwYMicpOGMrl8DrmhwG8iZKKKjV90mhq97EQk/VXwYG
+	7QYaWowVNPTmRECTeRGMtX5B0GiplcBYdhELuZ1mFj5l9iLofOGkofB0DgJLg4OByZ8mNmIZ
+	qa7olpA640cpMVtTyMPyNSTL0UkRa+VFllhd16Tkw9snLGm+MUmTOtuIhBgyhlgyPPCOJt8a
+	3rDEUv2GJq/MjVIyYvWP4mNkW+NEjTpV1G0IOyRTvejQHrOtSmt53kbp0We/LOTBYT4YXyqw
+	U7Pc1vOUdjPNr8Alj/Klbmb5AOxwjE9nFvCrcXHDVcbNFN/L4HbTUTfP56Nx+b0miZvl/Gbs
+	KrRN5WWcgi9F2Pp5QjrT8MYtBf30zHAA/nWzcyrETbEfLvvDzZSX4oxHhdMuD34Ptrqyp10L
+	+eX4Wc1LiXsn5m0cLmqfRDNH++Dn5Q76CvI2zlEY5yiM/xXGOQozoiuRQq1NTRDUmuBAVbpW
+	nRZ4ODHBiqY+p/TUr1gbcr3eZ0c8h5Re8o1hoFIwQmpSeoIdYY5SLpCfCQ9RKeRxQvoJUZd4
+	UJeiEZPsyI+jlYvlm8aOxyn4I0KyGC+Kx0TdbFfCefjq0bb761KcOdcHi5/GdwVt8onJ3am3
+	eD+uDzKEh+tlkRmyisie5A5yLcu//lxzyKK84bVOWXdU06Et6q2Bu5O9YrdUMuNn8+t+1HSz
+	e1dFR/kSLni0df+urnzPofuaEGHljowHrnPD/T0+88RtIYFhQtHJt8uN1Z4HLhicPkdCfbcv
+	UdJJKiFoDaVLEv4BTbFk7DUDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SfUzMcRzHfX9P9+t0/FzJV9lsZ6SM0jx80Oif+M0wxjCz1eHHna7L7up2
+	sSwVpnVXyYxfl46USpydHq6WxpXUUFZK5SFKxmah0no4D13N9N9rn/f78/r882FJ+Vnal1Vr
+	YwWdVqlRMFJKumND8vIYep0q+J55CVhsJQzcHjHCrfcOGizF5QiGRl9LYLDuCQN514dJsDSn
+	UPDTNkZCX32PBLoLPlFQfb6ChJ70BgZMKeMkJDkKCajNaaThRbmZhktj+SRUJL6XQGuVhYF3
+	JX9o+OQ0UdAoFlHQbQ6DeqsPDD/9iqDOVkHAcFoOA1ktVgZ6U7oRtNT2UJB9xozAVtNBw/iI
+	hQlT8KVFnQRfKb6V8FZ7HH+/MJBP7WgheXvxBYa3D1yU8G/aqxm+4co4xVc6BgnelNzP8D/6
+	uij+W00bw+d9/k7wttI2in9mrZPsnHNAGnpE0KgNgi5oY6RUVdusPeFYamx89JxMRF/8UpEH
+	i7lV+Pm7B5SbKW4xzi+7LHEzw/njjo5R0s3eXAC+WZNJu5nkumncZDnuZi9uPy68U0+4Wcat
+	xQPZjom+lJVzBQjbv4xJpoI5uPHqR2pq2R+7rrVMlNgJ9sO3frNT44U4uSx78pYHtwvbB9Im
+	b83lFuGH5U+IDDRLnGYSp5nE/yZxmsmKqGLkrdYaopVqzeoV+ihVvFZtXHE4JtqOJp6jIMGV
+	6UBDrVuciGORwlMG4aCS00qDPj7aiTBLKrxlSZvWqOSyI8r4k4IuJkIXpxH0TuTHUop5sq37
+	hEg5d0wZK0QJwglB9y8lWA/fRBTR1Ls399eCsLejLmUT2fU4tdaQn5Lt5/XhXHq7cdjHvnQr
+	cWNPVnjn7uvHjVnr++9eFtWmbbnkK2f9o7iEgwtjc+dXJfzyDNpzNNi8rqgrLvNQqKs4ZM3m
+	GZtnhseHzY7WZVTKxaFFP1+K27FnW1p6yLaADZq1rlLDjGWnvKpMp6MUlF6lXBlI6vTKvx4l
+	hL8YAwAA
+X-CFilter-Loop: Reflected
 
-On Thu, May 29, 2025 at 4:10=E2=80=AFPM Al Viro <viro@zeniv.linux.org.uk> w=
-rote:
->
-> On Thu, May 29, 2025 at 03:13:10PM -0700, Song Liu wrote:
->
-> > Is it an issue if we only hold a reference to a MNT_LOCKED mount for
-> > short period of time? "Short period" means it may get interrupted, page
-> > faults, or wait for an IO (read xattr), but it won't hold a reference t=
-o the
-> > mount and sleep indefinitely.
->
-> MNT_LOCKED mount itself is not a problem.  What shouldn't be done is
-> looking around in the mountpoint it covers.  It depends upon the things
-> you are going to do with that, but it's very easy to get an infoleak
-> that way.
->
-> > > OTOH, there's a good cause for moving some of the flags, MNT_LOCKED
-> > > included, out of ->mnt_flags and into a separate field in struct moun=
-t.
-> > > However, that would conflict with any code using that to deal with
-> > > your iterator safely.
-> > >
-> > > What's more, AFAICS in case of a stack of mounts each covering the ro=
-ot
-> > > of parent mount, you stop in each of those.  The trouble is, umount(2=
-)
-> > > propagation logics assumes that intermediate mounts can be pulled out=
- of
-> > > such stack without causing trouble.  For pathname resolution that is
-> > > true; it goes through the entire stack atomically wrt that stuff.
-> > > For your API that's not the case; somebody who has no idea about an
-> > > intermediate mount being there might get caught on it while it's gett=
-ing
-> > > pulled from the stack.
-> > >
-> > > What exactly do you need around the mountpoint crossing?
+On Thu, May 29, 2025 at 09:31:40AM -0700, Mina Almasry wrote:
+> On Wed, May 28, 2025 at 8:11 PM Byungchul Park <byungchul@sk.com> wrote:
+> >  struct net_iov {
+> > -       enum net_iov_type type;
+> > -       unsigned long pp_magic;
+> > -       struct page_pool *pp;
+> > -       struct net_iov_area *owner;
+> > -       unsigned long dma_addr;
+> > -       atomic_long_t pp_ref_count;
+> > +       union {
+> > +               struct netmem_desc desc;
+> > +
+> > +               /* XXX: The following part should be removed once all
+> > +                * the references to them are converted so as to be
+> > +                * accessed via netmem_desc e.g. niov->desc.pp instead
+> > +                * of niov->pp.
+> > +                *
+> > +                * Plus, once struct netmem_desc has it own instance
+> > +                * from slab, network's fields of the following can be
+> > +                * moved out of struct netmem_desc like:
+> > +                *
+> > +                *    struct net_iov {
+> > +                *       struct netmem_desc desc;
+> > +                *       struct net_iov_area *owner;
+> > +                *       ...
+> > +                *    };
+> > +                */
+> 
+> We do not need to wait until netmem_desc has its own instance from
+> slab to move the net_iov-specific fields out of netmem_desc. We can do
+> that now, because there are no size restrictions on net_iov.
+
+Got it.  Thanks for explanation.
+
+> So, I recommend change this to:
+> 
+> struct net_iov {
+>   /* Union for anonymous aliasing: */
+>   union {
+>     struct netmem_desc desc;
+>     struct {
+>        unsigned long _flags;
+>        unsigned long pp_magic;
+>        struct page_pool *pp;
+>        unsigned long _pp_mapping_pad;
+>        unsigned long dma_addr;
+>        atomic_long_t pp_ref_count;
+>     };
+>     struct net_iov_area *owner;
+>     enum net_iov_type type;
+> };
+
+Do you mean?
+
+  struct net_iov {
+    /* Union for anonymous aliasing: */
+    union {
+      struct netmem_desc desc;
+      struct {
+         unsigned long _flags;
+         unsigned long pp_magic;
+         struct page_pool *pp;
+         unsigned long _pp_mapping_pad;
+         unsigned long dma_addr;
+         atomic_long_t pp_ref_count;
+      };
+    };
+    struct net_iov_area *owner;
+    enum net_iov_type type;
+  };
+
+Right?  If so, I will.
+
+> >  struct net_iov_area {
+> > @@ -48,27 +110,22 @@ struct net_iov_area {
+> >         unsigned long base_virtual;
+> >  };
 > >
-> > I thought about skipping intermediate mounts (that are hidden by
-> > other mounts). AFAICT, not skipping them will not cause any issue.
->
-> It can.  Suppose e.g. that /mnt gets propagation from another namespace,
-> but not the other way round and you mount something on /mnt.
->
-> Later, in that another namespace, somebody mounts something on wherever
-> your /mnt gets propagation to.  A copy will be propagated _between_
-> your /mnt and whatever you've mounted on top of it; it will be entirely
-> invisible until you umount your /mnt.  At that point the propagated
-> copy will show up there, same as if it had appeared just after your
-> umount.  Prior to that it's entirely invisible.  If its original
-> counterpart in another namespace gets unmounted first, the copy will
-> be quietly pulled out.
+> > -/* These fields in struct page are used by the page_pool and net stack:
+> > +/* net_iov is union'ed with struct netmem_desc mirroring struct page, so
+> > + * the page_pool can access these fields without worrying whether the
+> > + * underlying fields are accessed via netmem_desc or directly via
+> > + * net_iov, until all the references to them are converted so as to be
+> > + * accessed via netmem_desc e.g. niov->desc.pp instead of niov->pp.
+> >   *
+> > - *        struct {
+> > - *                unsigned long pp_magic;
+> > - *                struct page_pool *pp;
+> > - *                unsigned long _pp_mapping_pad;
+> > - *                unsigned long dma_addr;
+> > - *                atomic_long_t pp_ref_count;
+> > - *        };
+> > - *
+> > - * We mirror the page_pool fields here so the page_pool can access these fields
+> > - * without worrying whether the underlying fields belong to a page or net_iov.
+> > - *
+> > - * The non-net stack fields of struct page are private to the mm stack and must
+> > - * never be mirrored to net_iov.
+> > + * The non-net stack fields of struct page are private to the mm stack
+> > + * and must never be mirrored to net_iov.
+> >   */
+> > -#define NET_IOV_ASSERT_OFFSET(pg, iov)             \
+> > -       static_assert(offsetof(struct page, pg) == \
+> > +#define NET_IOV_ASSERT_OFFSET(desc, iov)                    \
+> > +       static_assert(offsetof(struct netmem_desc, desc) == \
+> >                       offsetof(struct net_iov, iov))
+> > +NET_IOV_ASSERT_OFFSET(_flags, type);
+> 
+> Remove this assertion.
 
-Thanks for sharing this information!
+I will.
 
-> Note that choose_mountpoint_rcu() callers (including choose_mountpoint())
-> will have mount_lock seqcount sampled before the traversal _and_ recheck
-> it after having reached the bottom of stack.  IOW, if you traverse ..
-> on the way to root, you won't get caught on the sucker being pulled out.
+> 
+> >  NET_IOV_ASSERT_OFFSET(pp_magic, pp_magic);
+> >  NET_IOV_ASSERT_OFFSET(pp, pp);
+> > +NET_IOV_ASSERT_OFFSET(_pp_mapping_pad, owner);
+> 
+> And this one.
 
-In some of our internal discussions, we talked about using
-choose_mountpoint() instead of follow_up(). I didn't go that direction in t=
-his
-version because it requires holding "root". But if it makes more sense
-to use, choose_mountpoint(), we sure can hold "root".
+I will.
 
-Alternatively, I think it is also OK to pass a zero'ed root to
-choose_mountpoint().
+> (_flags, type) and (_pp_mapping_pad, owner) have very different
+> semantics and usage, we should not assert they are not the same
+> offset. However (pp, pp) and (pp_magic,pp_magic) have the same
+> semantics and usage, so we do assert they are at the same offset.
+> 
+> Code is allowed to access __netmem_clear_lsb(netmem)->pp or
+> __netmem_clear_lsb(netmem)->pp_magic without caring what's the
+> underlying memory type because both fields have the same semantics and
+> usage.
+> 
+> Code should *not* assume it can access
+> __netmem_clear_lsb(netmem)->owner or __netmem_clear_lsb(netmem)->type
+> without doing a check whether the underlying memory is
+> page/netmem_desc or net_iov. These fields are only usable for net_iov,
 
-> Your iterator, OTOH, would stop in that intermediate mount - and get
-> an unpleasant surprise when it comes back to do the next step (towards
-> /mnt on root filesystem, that is) and finds that path->mnt points
-> to something that is detached from everything - no way to get from
-> it any further.  That - despite the fact that location you've started
-> from is still mounted, still has the same pathname, etc. and nothing
-> had been disrupted for it.
->
-> And yes, landlock has a narrow race in the matching place.  Needs to
-> be fixed.  At least it does ignore those as far as any decisions are
-> concerned...
+Sounds good.  Thanks.
 
-If we update path_parent in this patchset with choose_mountpoint(),
-and use it in Landlock, we will close this race condition, right?
+	Byungchul
 
->
-> Note, BTW, that it might be better off by doing that similar to
-> d_path.c - without arseloads of dget_parent/dput et.al.; not sure
-> how feasible it is, but if everything in it can be done under
-> rcu_read_lock(), that's something to look into.
-
-I don't think we can do everything here inside rcu_read_lock().
-But d_path.c does have some code we can probably reuse or
-learn from. Also, we probably need two variations of iterators,
-one walk until absolute root, while the other walk until root of
-current->fs, just like d_path() vs. d_absolute_path(). Does this
-sound reasonable?
-
-Thanks,
-Song
+> so let's explicitly move them to a different place.
+> 
+> -- 
+> Thanks,
+> Mina
 
