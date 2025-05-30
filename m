@@ -1,193 +1,620 @@
-Return-Path: <bpf+bounces-59347-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59348-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14729AC8D81
-	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 14:27:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E720AC8FE3
+	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 15:22:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70DE81897571
-	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 12:27:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B3C0189865F
+	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 13:17:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04AA222B597;
-	Fri, 30 May 2025 12:27:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1142613635E;
+	Fri, 30 May 2025 13:16:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="Iixtc6xD"
+	dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b="OlE45DgI"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-8fa9.mail.infomaniak.ch (smtp-8fa9.mail.infomaniak.ch [83.166.143.169])
+Received: from mx0b-00206402.pphosted.com (mx0b-00206402.pphosted.com [148.163.152.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CF2522ACE7
-	for <bpf@vger.kernel.org>; Fri, 30 May 2025 12:27:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.166.143.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ABAC17BD3;
+	Fri, 30 May 2025 13:16:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.152.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748608041; cv=none; b=lthuUho3w4yFZFE7vlM9nw8mn7ixjykZZW9e92NJGwA2OlFtgu57v/AbkApYEPRYWtfM3yLsccovElWCyBMzTBj+OClK4OQquurgiPhtFBhekDaJQa7oThRczm1tDROUgURcupP8a1iapzhhZO65K+7N1uDrUx8B52+gAzsLI8U=
+	t=1748611018; cv=none; b=gjTdZuhXYh0FLfzSdObIcwrBEG1Xx5Puri4Uym61f5C4gietNHmPQ9PiycIG3rH8qrwBdeymXwIaxnpHGyAvgVGyLEaM6R9kO5GPplc+VsULSiZOTPZL2LnFYZSFfzvtpDb+fQld9Xm/svjn/bd+RfJUV15U33/Mfudt7QkozRM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748608041; c=relaxed/simple;
-	bh=usNAqfNU05yWDD1nnvMBPsO4jB44WecabSLtQa+JE+Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KBU46unwP7jVI0Q7pnEit/T6J1SoAEjJMVLkDN5q61d5nh+T7EMn4G8GTR2/wBaJEtuKNOIfjxH2WHK8T0S8NrkMyCpnopg0R1FqyHNPEWJjYsEo1lNr7LLck+/R2MLGKmkwJycpv1walhl/HG5kINCqCcDVIyYJP8HzR4Mju7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=Iixtc6xD; arc=none smtp.client-ip=83.166.143.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
-Received: from smtp-4-0000.mail.infomaniak.ch (unknown [IPv6:2001:1600:7:10::a6b])
-	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4b82Q12q1xz8g8;
-	Fri, 30 May 2025 14:20:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digikod.net;
-	s=20191114; t=1748607641;
-	bh=XnOAINnFb0Z0ZcHabmc3qHltopvQ1m/OtdV1pvd9//U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Iixtc6xDq8SMxPtPVz3eEfOFPJq6OSNq9mg0j6DPkcvi1r3iE8Ae4vp8qmodYpgAd
-	 HXk+DJ0PXp2s2uT0p/i1fexLNBhuGQ3aVgdkzut+dav0tI6ZVZNtYRVNlUE0Z/wEnU
-	 JtxL5Y7j3xXmCtz0YpVzCWEiXLWncOjsEQ2BghOM=
-Received: from unknown by smtp-4-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4b82Q01gBszjtL;
-	Fri, 30 May 2025 14:20:40 +0200 (CEST)
-Date: Fri, 30 May 2025 14:20:39 +0200
-From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-To: Song Liu <song@kernel.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
-	bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, 
-	ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, brauner@kernel.org, 
-	kpsingh@kernel.org, mattbobrowski@google.com, amir73il@gmail.com, repnop@google.com, 
-	jlayton@kernel.org, josef@toxicpanda.com, gnoack@google.com, 
-	Tingmao Wang <m@maowtm.org>
-Subject: Re: [PATCH bpf-next 3/4] bpf: Introduce path iterator
-Message-ID: <20250530.euz5beesaSha@digikod.net>
-References: <20250529173810.GJ2023217@ZenIV>
- <CAPhsuW5pAvH3E1dVa85Kx2QsUSheSLobEMg-b0mOdtyfm7s4ug@mail.gmail.com>
- <20250529183536.GL2023217@ZenIV>
- <CAPhsuW7LFP0ddFg_oqkDyO9s7DZX89GFQBOnX=4n5mV=VCP5oA@mail.gmail.com>
- <20250529201551.GN2023217@ZenIV>
- <CAPhsuW5DP1x_wyzT1aYjpj3hxUs4uB8vdK9iEp=+i46QLotiOg@mail.gmail.com>
- <20250529214544.GO2023217@ZenIV>
- <CAPhsuW5oXZVEaMwNpSF74O7wZ_f2Qr_44pu9L4_=LBwdW5T9=w@mail.gmail.com>
- <20250529231018.GP2023217@ZenIV>
- <CAPhsuW6-J+NUe=jX51wGVP=nMFjETu+1LUTsWZiBa1ckwq7b+w@mail.gmail.com>
+	s=arc-20240116; t=1748611018; c=relaxed/simple;
+	bh=odSpI0BeOEr3gfWcu6dm8dCBXa6N3MN2XV4lNf57b3k=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=gugsZl6noh+fgH7Wh/dWRZ5fyNzApXOI+gdtuP2DpNLJx3TojCFq1MaWI0DF9h7ZRIcFZVsMsZhMl87M1qCBWlvnQRW/eSLkC8ireqmrSMqUMrRhrwPXGsmASPJKWuQBxp6JciZvhli8VutRfEUXQ23mKRmDjFRID5+U8A5sMRw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com; spf=pass smtp.mailfrom=crowdstrike.com; dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b=OlE45DgI; arc=none smtp.client-ip=148.163.152.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crowdstrike.com
+Received: from pps.filterd (m0354655.ppops.net [127.0.0.1])
+	by mx0b-00206402.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54U5tYJH013510;
+	Fri, 30 May 2025 12:57:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com;
+	 h=content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=default; bh=jmVUGjZmv+RCtWS4PPyAaRxK
+	z/CajiPe93qR/cXGm/M=; b=OlE45DgII48j9+M6G2hpqMr1wVVlOQrhPobOCxoS
+	luclLAuwaMPWXOY+IRpiBSXGm58sf6MIHgoi1pM/1G6u0J0XjFuykVMuanrBHtO9
+	HMdjrIcpSQ3ouDLYSI+yZGd0u7PnjOxtaOd8c9jrB6pwhh3c9LbkCKTuYLA9M/zO
+	ZfbiImQJc00xIc9QflavbZV7HUc/pM+YEXIJnIHd+4W2NWAJPXbK8/SVq3jnSMKU
+	hfe0d2ksA12MNgqI/mYXNWrv72YqmbtaSMeSuc06mYhgwNpLFj/Ej8pg3W1LS2bP
+	mVXaSYfCW3+8/PpV+fp0DeBoVzm5gu9vgS75HQjXMV+PyA==
+Received: from mail.crowdstrike.com (dragosx.crowdstrike.com [208.42.231.60] (may be forged))
+	by mx0b-00206402.pphosted.com (PPS) with ESMTPS id 46wj9euygu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 30 May 2025 12:57:55 +0000 (GMT)
+Received: from ML-CTVHTF21DX.crowdstrike.sys (10.100.11.122) by
+ 04WPEXCH007.crowdstrike.sys (10.100.11.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Fri, 30 May 2025 12:57:50 +0000
+From: Slava Imameev <slava.imameev@crowdstrike.com>
+To: <qmo@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andrii@kernel.org>, <martin.lau@linux.dev>, <eddyz87@gmail.com>,
+        <song@kernel.org>, <yonghong.song@linux.dev>,
+        <john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@fomichev.me>,
+        <haoluo@google.com>, <jolsa@kernel.org>, <mykolal@fb.com>,
+        <shuah@kernel.org>, <slava.imameev@crowdstrike.com>,
+        <justin.deschamp@crowdstrike.com>, <mark.fontana@crowdstrike.com>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>
+Subject: [PATCH bpf-next 1/2] bpftool: Use appropriate permissions for map access
+Date: Fri, 30 May 2025 22:57:16 +1000
+Message-ID: <20250530125717.34746-1-slava.imameev@crowdstrike.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPhsuW6-J+NUe=jX51wGVP=nMFjETu+1LUTsWZiBa1ckwq7b+w@mail.gmail.com>
-X-Infomaniak-Routing: alpha
+Content-Type: text/plain
+X-ClientProxiedBy: 04WPEXCH009.crowdstrike.sys (10.100.11.79) To
+ 04WPEXCH007.crowdstrike.sys (10.100.11.74)
+X-Disclaimer: USA
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-05-30_05,2025-05-30_01,2025-03-28_01
 
-On Thu, May 29, 2025 at 05:42:16PM -0700, Song Liu wrote:
-> On Thu, May 29, 2025 at 4:10 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
-> >
-> > On Thu, May 29, 2025 at 03:13:10PM -0700, Song Liu wrote:
-> >
-> > > Is it an issue if we only hold a reference to a MNT_LOCKED mount for
-> > > short period of time? "Short period" means it may get interrupted, page
-> > > faults, or wait for an IO (read xattr), but it won't hold a reference to the
-> > > mount and sleep indefinitely.
-> >
-> > MNT_LOCKED mount itself is not a problem.  What shouldn't be done is
-> > looking around in the mountpoint it covers.  It depends upon the things
-> > you are going to do with that, but it's very easy to get an infoleak
-> > that way.
-> >
-> > > > OTOH, there's a good cause for moving some of the flags, MNT_LOCKED
-> > > > included, out of ->mnt_flags and into a separate field in struct mount.
-> > > > However, that would conflict with any code using that to deal with
-> > > > your iterator safely.
-> > > >
-> > > > What's more, AFAICS in case of a stack of mounts each covering the root
-> > > > of parent mount, you stop in each of those.  The trouble is, umount(2)
-> > > > propagation logics assumes that intermediate mounts can be pulled out of
-> > > > such stack without causing trouble.  For pathname resolution that is
-> > > > true; it goes through the entire stack atomically wrt that stuff.
-> > > > For your API that's not the case; somebody who has no idea about an
-> > > > intermediate mount being there might get caught on it while it's getting
-> > > > pulled from the stack.
-> > > >
-> > > > What exactly do you need around the mountpoint crossing?
-> > >
-> > > I thought about skipping intermediate mounts (that are hidden by
-> > > other mounts). AFAICT, not skipping them will not cause any issue.
-> >
-> > It can.  Suppose e.g. that /mnt gets propagation from another namespace,
-> > but not the other way round and you mount something on /mnt.
-> >
-> > Later, in that another namespace, somebody mounts something on wherever
-> > your /mnt gets propagation to.  A copy will be propagated _between_
-> > your /mnt and whatever you've mounted on top of it; it will be entirely
-> > invisible until you umount your /mnt.  At that point the propagated
-> > copy will show up there, same as if it had appeared just after your
-> > umount.  Prior to that it's entirely invisible.  If its original
-> > counterpart in another namespace gets unmounted first, the copy will
-> > be quietly pulled out.
-> 
-> Thanks for sharing this information!
-> 
-> > Note that choose_mountpoint_rcu() callers (including choose_mountpoint())
-> > will have mount_lock seqcount sampled before the traversal _and_ recheck
-> > it after having reached the bottom of stack.  IOW, if you traverse ..
-> > on the way to root, you won't get caught on the sucker being pulled out.
-> 
-> In some of our internal discussions, we talked about using
-> choose_mountpoint() instead of follow_up(). I didn't go that direction in this
-> version because it requires holding "root". But if it makes more sense
-> to use, choose_mountpoint(), we sure can hold "root".
-> 
-> Alternatively, I think it is also OK to pass a zero'ed root to
-> choose_mountpoint().
-> 
-> > Your iterator, OTOH, would stop in that intermediate mount - and get
-> > an unpleasant surprise when it comes back to do the next step (towards
-> > /mnt on root filesystem, that is) and finds that path->mnt points
-> > to something that is detached from everything - no way to get from
-> > it any further.  That - despite the fact that location you've started
-> > from is still mounted, still has the same pathname, etc. and nothing
-> > had been disrupted for it.
-> >
-> > And yes, landlock has a narrow race in the matching place.  Needs to
-> > be fixed.  At least it does ignore those as far as any decisions are
-> > concerned...
+Modify several functions in tools/bpf/bpftool/common.c to allow
+specification of requested access for file descriptors, such as
+read-only access.
 
-Thanks for pointing this out.  In the case of Landlock, walking to a
-disconnected mount point (because of this umount race condition) would
-deny the requested access whereas it may be allowed otherwise.  This is
-not a security issue but still an issue because an event unrelated to
-the request (umount) can abort a path resolution, which should not be
-the case.
+Update bpftool to request only read access for maps when write
+access is not required. This fixes errors when reading from maps
+that are protected from modification via security_bpf_map.
 
-Without access to mount_lock, what would be the best way to fix this
-Landlock issue while making it backportable?
+Signed-off-by: Slava Imameev <slava.imameev@crowdstrike.com>
+---
+ tools/bpf/bpftool/btf.c           |  3 +-
+ tools/bpf/bpftool/common.c        | 57 ++++++++++++++++++++++---------
+ tools/bpf/bpftool/iter.c          |  2 +-
+ tools/bpf/bpftool/link.c          |  2 +-
+ tools/bpf/bpftool/main.h          | 13 ++++---
+ tools/bpf/bpftool/map.c           | 56 +++++++++++++++++-------------
+ tools/bpf/bpftool/map_perf_ring.c |  3 +-
+ tools/bpf/bpftool/prog.c          |  4 +--
+ 8 files changed, 90 insertions(+), 50 deletions(-)
 
-> 
-> If we update path_parent in this patchset with choose_mountpoint(),
-> and use it in Landlock, we will close this race condition, right?
+diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+index 6b14cbfa58aa..1ba27cb03348 100644
+--- a/tools/bpf/bpftool/btf.c
++++ b/tools/bpf/bpftool/btf.c
+@@ -905,7 +905,8 @@ static int do_dump(int argc, char **argv)
+ 			return -1;
+ 		}
+ 
+-		fd = map_parse_fd_and_info(&argc, &argv, &info, &len);
++		fd = map_parse_fd_and_info(&argc, &argv, &info, &len,
++					   BPF_F_RDONLY);
+ 		if (fd < 0)
+ 			return -1;
+ 
+diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+index ecfa790adc13..ff1c99281beb 100644
+--- a/tools/bpf/bpftool/common.c
++++ b/tools/bpf/bpftool/common.c
+@@ -193,7 +193,8 @@ int mount_tracefs(const char *target)
+ 	return err;
+ }
+ 
+-int open_obj_pinned(const char *path, bool quiet)
++int open_obj_pinned(const char *path, bool quiet,
++		    const struct bpf_obj_get_opts *opts)
+ {
+ 	char *pname;
+ 	int fd = -1;
+@@ -205,7 +206,7 @@ int open_obj_pinned(const char *path, bool quiet)
+ 		goto out_ret;
+ 	}
+ 
+-	fd = bpf_obj_get(pname);
++	fd = bpf_obj_get_opts(pname, opts);
+ 	if (fd < 0) {
+ 		if (!quiet)
+ 			p_err("bpf obj get (%s): %s", pname,
+@@ -221,12 +222,13 @@ int open_obj_pinned(const char *path, bool quiet)
+ 	return fd;
+ }
+ 
+-int open_obj_pinned_any(const char *path, enum bpf_obj_type exp_type)
++int open_obj_pinned_any(const char *path, enum bpf_obj_type exp_type,
++			const struct bpf_obj_get_opts *opts)
+ {
+ 	enum bpf_obj_type type;
+ 	int fd;
+ 
+-	fd = open_obj_pinned(path, false);
++	fd = open_obj_pinned(path, false, opts);
+ 	if (fd < 0)
+ 		return -1;
+ 
+@@ -555,7 +557,7 @@ static int do_build_table_cb(const char *fpath, const struct stat *sb,
+ 	if (typeflag != FTW_F)
+ 		goto out_ret;
+ 
+-	fd = open_obj_pinned(fpath, true);
++	fd = open_obj_pinned(fpath, true, NULL);
+ 	if (fd < 0)
+ 		goto out_ret;
+ 
+@@ -928,7 +930,7 @@ int prog_parse_fds(int *argc, char ***argv, int **fds)
+ 		path = **argv;
+ 		NEXT_ARGP();
+ 
+-		(*fds)[0] = open_obj_pinned_any(path, BPF_OBJ_PROG);
++		(*fds)[0] = open_obj_pinned_any(path, BPF_OBJ_PROG, NULL);
+ 		if ((*fds)[0] < 0)
+ 			return -1;
+ 		return 1;
+@@ -965,7 +967,8 @@ int prog_parse_fd(int *argc, char ***argv)
+ 	return fd;
+ }
+ 
+-static int map_fd_by_name(char *name, int **fds)
++static int map_fd_by_name(char *name, int **fds,
++			  const struct bpf_get_fd_by_id_opts *opts)
+ {
+ 	unsigned int id = 0;
+ 	int fd, nb_fds = 0;
+@@ -973,6 +976,7 @@ static int map_fd_by_name(char *name, int **fds)
+ 	int err;
+ 
+ 	while (true) {
++		LIBBPF_OPTS(bpf_get_fd_by_id_opts, opts_ro);
+ 		struct bpf_map_info info = {};
+ 		__u32 len = sizeof(info);
+ 
+@@ -985,7 +989,9 @@ static int map_fd_by_name(char *name, int **fds)
+ 			return nb_fds;
+ 		}
+ 
+-		fd = bpf_map_get_fd_by_id(id);
++		/* Request a read-only fd to query the map info */
++		opts_ro.open_flags = BPF_F_RDONLY;
++		fd = bpf_map_get_fd_by_id_opts(id, &opts_ro);
+ 		if (fd < 0) {
+ 			p_err("can't get map by id (%u): %s",
+ 			      id, strerror(errno));
+@@ -1004,6 +1010,15 @@ static int map_fd_by_name(char *name, int **fds)
+ 			continue;
+ 		}
+ 
++		/* Get an fd with the requested options. */
++		close(fd);
++		fd = bpf_map_get_fd_by_id_opts(id, opts);
++		if (fd < 0) {
++			p_err("can't get map by id (%u): %s", id,
++			      strerror(errno));
++			goto err_close_fds;
++		}
++
+ 		if (nb_fds > 0) {
+ 			tmp = realloc(*fds, (nb_fds + 1) * sizeof(int));
+ 			if (!tmp) {
+@@ -1023,8 +1038,16 @@ static int map_fd_by_name(char *name, int **fds)
+ 	return -1;
+ }
+ 
+-int map_parse_fds(int *argc, char ***argv, int **fds)
++int map_parse_fds(int *argc, char ***argv, int **fds, __u32 open_flags)
+ {
++	LIBBPF_OPTS(bpf_get_fd_by_id_opts, opts);
++
++	if (open_flags & ~BPF_F_RDONLY) {
++		p_err("invalid open_flags: %x", open_flags);
++		return -1;
++	}
++	opts.open_flags = open_flags;
++
+ 	if (is_prefix(**argv, "id")) {
+ 		unsigned int id;
+ 		char *endptr;
+@@ -1038,7 +1061,7 @@ int map_parse_fds(int *argc, char ***argv, int **fds)
+ 		}
+ 		NEXT_ARGP();
+ 
+-		(*fds)[0] = bpf_map_get_fd_by_id(id);
++		(*fds)[0] = bpf_map_get_fd_by_id_opts(id, &opts);
+ 		if ((*fds)[0] < 0) {
+ 			p_err("get map by id (%u): %s", id, strerror(errno));
+ 			return -1;
+@@ -1056,16 +1079,18 @@ int map_parse_fds(int *argc, char ***argv, int **fds)
+ 		}
+ 		NEXT_ARGP();
+ 
+-		return map_fd_by_name(name, fds);
++		return map_fd_by_name(name, fds, &opts);
+ 	} else if (is_prefix(**argv, "pinned")) {
+ 		char *path;
++		LIBBPF_OPTS(bpf_obj_get_opts, get_opts);
++		get_opts.file_flags = open_flags;
+ 
+ 		NEXT_ARGP();
+ 
+ 		path = **argv;
+ 		NEXT_ARGP();
+ 
+-		(*fds)[0] = open_obj_pinned_any(path, BPF_OBJ_MAP);
++		(*fds)[0] = open_obj_pinned_any(path, BPF_OBJ_MAP, &get_opts);
+ 		if ((*fds)[0] < 0)
+ 			return -1;
+ 		return 1;
+@@ -1075,7 +1100,7 @@ int map_parse_fds(int *argc, char ***argv, int **fds)
+ 	return -1;
+ }
+ 
+-int map_parse_fd(int *argc, char ***argv)
++int map_parse_fd(int *argc, char ***argv, __u32 open_flags)
+ {
+ 	int *fds = NULL;
+ 	int nb_fds, fd;
+@@ -1085,7 +1110,7 @@ int map_parse_fd(int *argc, char ***argv)
+ 		p_err("mem alloc failed");
+ 		return -1;
+ 	}
+-	nb_fds = map_parse_fds(argc, argv, &fds);
++	nb_fds = map_parse_fds(argc, argv, &fds, open_flags);
+ 	if (nb_fds != 1) {
+ 		if (nb_fds > 1) {
+ 			p_err("several maps match this handle");
+@@ -1103,12 +1128,12 @@ int map_parse_fd(int *argc, char ***argv)
+ }
+ 
+ int map_parse_fd_and_info(int *argc, char ***argv, struct bpf_map_info *info,
+-			  __u32 *info_len)
++			  __u32 *info_len, __u32 open_flags)
+ {
+ 	int err;
+ 	int fd;
+ 
+-	fd = map_parse_fd(argc, argv);
++	fd = map_parse_fd(argc, argv, open_flags);
+ 	if (fd < 0)
+ 		return -1;
+ 
+diff --git a/tools/bpf/bpftool/iter.c b/tools/bpf/bpftool/iter.c
+index 5c39c2ed36a2..ad318a8667a4 100644
+--- a/tools/bpf/bpftool/iter.c
++++ b/tools/bpf/bpftool/iter.c
+@@ -37,7 +37,7 @@ static int do_pin(int argc, char **argv)
+ 				return -1;
+ 			}
+ 
+-			map_fd = map_parse_fd(&argc, &argv);
++			map_fd = map_parse_fd(&argc, &argv, 0);
+ 			if (map_fd < 0)
+ 				return -1;
+ 
+diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
+index 3535afc80a49..8523be11dcd9 100644
+--- a/tools/bpf/bpftool/link.c
++++ b/tools/bpf/bpftool/link.c
+@@ -117,7 +117,7 @@ static int link_parse_fd(int *argc, char ***argv)
+ 		path = **argv;
+ 		NEXT_ARGP();
+ 
+-		return open_obj_pinned_any(path, BPF_OBJ_LINK);
++		return open_obj_pinned_any(path, BPF_OBJ_LINK, NULL);
+ 	}
+ 
+ 	p_err("expected 'id' or 'pinned', got: '%s'?", **argv);
+diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
+index 9eb764fe4cc8..6db704fda5c0 100644
+--- a/tools/bpf/bpftool/main.h
++++ b/tools/bpf/bpftool/main.h
+@@ -15,6 +15,7 @@
+ 
+ #include <bpf/hashmap.h>
+ #include <bpf/libbpf.h>
++#include <bpf/bpf.h>
+ 
+ #include "json_writer.h"
+ 
+@@ -140,8 +141,10 @@ void get_prog_full_name(const struct bpf_prog_info *prog_info, int prog_fd,
+ int get_fd_type(int fd);
+ const char *get_fd_type_name(enum bpf_obj_type type);
+ char *get_fdinfo(int fd, const char *key);
+-int open_obj_pinned(const char *path, bool quiet);
+-int open_obj_pinned_any(const char *path, enum bpf_obj_type exp_type);
++int open_obj_pinned(const char *path, bool quiet,
++		    const struct bpf_obj_get_opts *opts);
++int open_obj_pinned_any(const char *path, enum bpf_obj_type exp_type,
++			const struct bpf_obj_get_opts *opts);
+ int mount_bpffs_for_file(const char *file_name);
+ int create_and_mount_bpffs_dir(const char *dir_name);
+ int do_pin_any(int argc, char **argv, int (*get_fd_by_id)(int *, char ***));
+@@ -167,10 +170,10 @@ int do_iter(int argc, char **argv) __weak;
+ int parse_u32_arg(int *argc, char ***argv, __u32 *val, const char *what);
+ int prog_parse_fd(int *argc, char ***argv);
+ int prog_parse_fds(int *argc, char ***argv, int **fds);
+-int map_parse_fd(int *argc, char ***argv);
+-int map_parse_fds(int *argc, char ***argv, int **fds);
++int map_parse_fd(int *argc, char ***argv, __u32 open_flags);
++int map_parse_fds(int *argc, char ***argv, int **fds, __u32 open_flags);
+ int map_parse_fd_and_info(int *argc, char ***argv, struct bpf_map_info *info,
+-			  __u32 *info_len);
++			  __u32 *info_len, __u32 open_flags);
+ 
+ struct bpf_prog_linfo;
+ #if defined(HAVE_LLVM_SUPPORT) || defined(HAVE_LIBBFD_SUPPORT)
+diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+index 81cc668b4b05..c7dc2eae8ba8 100644
+--- a/tools/bpf/bpftool/map.c
++++ b/tools/bpf/bpftool/map.c
+@@ -337,9 +337,9 @@ static void fill_per_cpu_value(struct bpf_map_info *info, void *value)
+ 		memcpy(value + i * step, value, info->value_size);
+ }
+ 
+-static int parse_elem(char **argv, struct bpf_map_info *info,
+-		      void *key, void *value, __u32 key_size, __u32 value_size,
+-		      __u32 *flags, __u32 **value_fd)
++static int parse_elem(char **argv, struct bpf_map_info *info, void *key,
++		      void *value, __u32 key_size, __u32 value_size,
++		      __u32 *flags, __u32 **value_fd, __u32 open_flags)
+ {
+ 	if (!*argv) {
+ 		if (!key && !value)
+@@ -362,7 +362,7 @@ static int parse_elem(char **argv, struct bpf_map_info *info,
+ 			return -1;
+ 
+ 		return parse_elem(argv, info, NULL, value, key_size, value_size,
+-				  flags, value_fd);
++				  flags, value_fd, open_flags);
+ 	} else if (is_prefix(*argv, "value")) {
+ 		int fd;
+ 
+@@ -388,7 +388,7 @@ static int parse_elem(char **argv, struct bpf_map_info *info,
+ 				return -1;
+ 			}
+ 
+-			fd = map_parse_fd(&argc, &argv);
++			fd = map_parse_fd(&argc, &argv, open_flags);
+ 			if (fd < 0)
+ 				return -1;
+ 
+@@ -424,7 +424,7 @@ static int parse_elem(char **argv, struct bpf_map_info *info,
+ 		}
+ 
+ 		return parse_elem(argv, info, key, NULL, key_size, value_size,
+-				  flags, NULL);
++				  flags, NULL, open_flags);
+ 	} else if (is_prefix(*argv, "any") || is_prefix(*argv, "noexist") ||
+ 		   is_prefix(*argv, "exist")) {
+ 		if (!flags) {
+@@ -440,7 +440,7 @@ static int parse_elem(char **argv, struct bpf_map_info *info,
+ 			*flags = BPF_EXIST;
+ 
+ 		return parse_elem(argv + 1, info, key, value, key_size,
+-				  value_size, NULL, value_fd);
++				  value_size, NULL, value_fd, open_flags);
+ 	}
+ 
+ 	p_err("expected key or value, got: %s", *argv);
+@@ -639,7 +639,7 @@ static int do_show_subset(int argc, char **argv)
+ 		p_err("mem alloc failed");
+ 		return -1;
+ 	}
+-	nb_fds = map_parse_fds(&argc, &argv, &fds);
++	nb_fds = map_parse_fds(&argc, &argv, &fds, BPF_F_RDONLY);
+ 	if (nb_fds < 1)
+ 		goto exit_free;
+ 
+@@ -672,12 +672,15 @@ static int do_show_subset(int argc, char **argv)
+ 
+ static int do_show(int argc, char **argv)
+ {
++	LIBBPF_OPTS(bpf_get_fd_by_id_opts, opts);
+ 	struct bpf_map_info info = {};
+ 	__u32 len = sizeof(info);
+ 	__u32 id = 0;
+ 	int err;
+ 	int fd;
+ 
++	opts.open_flags = BPF_F_RDONLY;
++
+ 	if (show_pinned) {
+ 		map_table = hashmap__new(hash_fn_for_key_as_id,
+ 					 equal_fn_for_key_as_id, NULL);
+@@ -707,7 +710,7 @@ static int do_show(int argc, char **argv)
+ 			break;
+ 		}
+ 
+-		fd = bpf_map_get_fd_by_id(id);
++		fd = bpf_map_get_fd_by_id_opts(id, &opts);
+ 		if (fd < 0) {
+ 			if (errno == ENOENT)
+ 				continue;
+@@ -909,7 +912,7 @@ static int do_dump(int argc, char **argv)
+ 		p_err("mem alloc failed");
+ 		return -1;
+ 	}
+-	nb_fds = map_parse_fds(&argc, &argv, &fds);
++	nb_fds = map_parse_fds(&argc, &argv, &fds, BPF_F_RDONLY);
+ 	if (nb_fds < 1)
+ 		goto exit_free;
+ 
+@@ -997,7 +1000,7 @@ static int do_update(int argc, char **argv)
+ 	if (argc < 2)
+ 		usage();
+ 
+-	fd = map_parse_fd_and_info(&argc, &argv, &info, &len);
++	fd = map_parse_fd_and_info(&argc, &argv, &info, &len, 0);
+ 	if (fd < 0)
+ 		return -1;
+ 
+@@ -1006,7 +1009,7 @@ static int do_update(int argc, char **argv)
+ 		goto exit_free;
+ 
+ 	err = parse_elem(argv, &info, key, value, info.key_size,
+-			 info.value_size, &flags, &value_fd);
++			 info.value_size, &flags, &value_fd, 0);
+ 	if (err)
+ 		goto exit_free;
+ 
+@@ -1076,7 +1079,7 @@ static int do_lookup(int argc, char **argv)
+ 	if (argc < 2)
+ 		usage();
+ 
+-	fd = map_parse_fd_and_info(&argc, &argv, &info, &len);
++	fd = map_parse_fd_and_info(&argc, &argv, &info, &len, BPF_F_RDONLY);
+ 	if (fd < 0)
+ 		return -1;
+ 
+@@ -1084,7 +1087,8 @@ static int do_lookup(int argc, char **argv)
+ 	if (err)
+ 		goto exit_free;
+ 
+-	err = parse_elem(argv, &info, key, NULL, info.key_size, 0, NULL, NULL);
++	err = parse_elem(argv, &info, key, NULL, info.key_size, 0, NULL, NULL,
++			 BPF_F_RDONLY);
+ 	if (err)
+ 		goto exit_free;
+ 
+@@ -1127,7 +1131,7 @@ static int do_getnext(int argc, char **argv)
+ 	if (argc < 2)
+ 		usage();
+ 
+-	fd = map_parse_fd_and_info(&argc, &argv, &info, &len);
++	fd = map_parse_fd_and_info(&argc, &argv, &info, &len, BPF_F_RDONLY);
+ 	if (fd < 0)
+ 		return -1;
+ 
+@@ -1140,8 +1144,8 @@ static int do_getnext(int argc, char **argv)
+ 	}
+ 
+ 	if (argc) {
+-		err = parse_elem(argv, &info, key, NULL, info.key_size, 0,
+-				 NULL, NULL);
++		err = parse_elem(argv, &info, key, NULL, info.key_size, 0, NULL,
++				 NULL, BPF_F_RDONLY);
+ 		if (err)
+ 			goto exit_free;
+ 	} else {
+@@ -1198,7 +1202,7 @@ static int do_delete(int argc, char **argv)
+ 	if (argc < 2)
+ 		usage();
+ 
+-	fd = map_parse_fd_and_info(&argc, &argv, &info, &len);
++	fd = map_parse_fd_and_info(&argc, &argv, &info, &len, BPF_F_RDONLY);
+ 	if (fd < 0)
+ 		return -1;
+ 
+@@ -1209,7 +1213,8 @@ static int do_delete(int argc, char **argv)
+ 		goto exit_free;
+ 	}
+ 
+-	err = parse_elem(argv, &info, key, NULL, info.key_size, 0, NULL, NULL);
++	err = parse_elem(argv, &info, key, NULL, info.key_size, 0, NULL, NULL,
++			 0);
+ 	if (err)
+ 		goto exit_free;
+ 
+@@ -1226,11 +1231,16 @@ static int do_delete(int argc, char **argv)
+ 	return err;
+ }
+ 
++static int map_parse_read_only_fd(int *argc, char ***argv)
++{
++	return map_parse_fd(argc, argv, BPF_F_RDONLY);
++}
++
+ static int do_pin(int argc, char **argv)
+ {
+ 	int err;
+ 
+-	err = do_pin_any(argc, argv, map_parse_fd);
++	err = do_pin_any(argc, argv, map_parse_read_only_fd);
+ 	if (!err && json_output)
+ 		jsonw_null(json_wtr);
+ 	return err;
+@@ -1319,7 +1329,7 @@ static int do_create(int argc, char **argv)
+ 			if (!REQ_ARGS(2))
+ 				usage();
+ 			inner_map_fd = map_parse_fd_and_info(&argc, &argv,
+-							     &info, &len);
++							     &info, &len, 0);
+ 			if (inner_map_fd < 0)
+ 				return -1;
+ 			attr.inner_map_fd = inner_map_fd;
+@@ -1368,7 +1378,7 @@ static int do_pop_dequeue(int argc, char **argv)
+ 	if (argc < 2)
+ 		usage();
+ 
+-	fd = map_parse_fd_and_info(&argc, &argv, &info, &len);
++	fd = map_parse_fd_and_info(&argc, &argv, &info, &len, 0);
+ 	if (fd < 0)
+ 		return -1;
+ 
+@@ -1407,7 +1417,7 @@ static int do_freeze(int argc, char **argv)
+ 	if (!REQ_ARGS(2))
+ 		return -1;
+ 
+-	fd = map_parse_fd(&argc, &argv);
++	fd = map_parse_fd(&argc, &argv, 0);
+ 	if (fd < 0)
+ 		return -1;
+ 
+diff --git a/tools/bpf/bpftool/map_perf_ring.c b/tools/bpf/bpftool/map_perf_ring.c
+index 552b4ca40c27..bcb767e2d673 100644
+--- a/tools/bpf/bpftool/map_perf_ring.c
++++ b/tools/bpf/bpftool/map_perf_ring.c
+@@ -128,7 +128,8 @@ int do_event_pipe(int argc, char **argv)
+ 	int err, map_fd;
+ 
+ 	map_info_len = sizeof(map_info);
+-	map_fd = map_parse_fd_and_info(&argc, &argv, &map_info, &map_info_len);
++	map_fd = map_parse_fd_and_info(&argc, &argv, &map_info, &map_info_len,
++				       0);
+ 	if (map_fd < 0)
+ 		return -1;
+ 
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index 96eea8a67225..deeaa5c1ed7d 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -1062,7 +1062,7 @@ static int parse_attach_detach_args(int argc, char **argv, int *progfd,
+ 	if (!REQ_ARGS(2))
+ 		return -EINVAL;
+ 
+-	*mapfd = map_parse_fd(&argc, &argv);
++	*mapfd = map_parse_fd(&argc, &argv, 0);
+ 	if (*mapfd < 0)
+ 		return *mapfd;
+ 
+@@ -1608,7 +1608,7 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+ 			}
+ 			NEXT_ARG();
+ 
+-			fd = map_parse_fd(&argc, &argv);
++			fd = map_parse_fd(&argc, &argv, 0);
+ 			if (fd < 0)
+ 				goto err_free_reuse_maps;
+ 
+-- 
+2.34.1
 
-choose_mountpoint() is currently private, but if we add a new filesystem
-helper, I think the right approach would be to expose follow_dotdot(),
-updating its arguments with public types.  This way the intermediates
-mount points will not be exposed, RCU optimization will be leveraged,
-and usage of this new helper will be simplified.
-
-> 
-> >
-> > Note, BTW, that it might be better off by doing that similar to
-> > d_path.c - without arseloads of dget_parent/dput et.al.; not sure
-> > how feasible it is, but if everything in it can be done under
-> > rcu_read_lock(), that's something to look into.
-> 
-> I don't think we can do everything here inside rcu_read_lock().
-> But d_path.c does have some code we can probably reuse or
-> learn from. Also, we probably need two variations of iterators,
-> one walk until absolute root, while the other walk until root of
-> current->fs, just like d_path() vs. d_absolute_path(). Does this
-> sound reasonable?
-
-Passing the root to a public follow_dotdot() helper should do the job.
-
-> 
-> Thanks,
-> Song
-> 
 
