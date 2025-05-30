@@ -1,197 +1,132 @@
-Return-Path: <bpf+bounces-59368-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59369-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A29A4AC9539
-	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 19:51:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B184AC95C0
+	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 20:44:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74679A805F2
-	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 17:50:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45FB41C0722C
+	for <lists+bpf@lfdr.de>; Fri, 30 May 2025 18:44:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AA2827703E;
-	Fri, 30 May 2025 17:50:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBEEC278E47;
+	Fri, 30 May 2025 18:43:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="saRCg2bT"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="YtET+WyT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2974276022
-	for <bpf@vger.kernel.org>; Fri, 30 May 2025 17:50:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E72D8320B;
+	Fri, 30 May 2025 18:43:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748627438; cv=none; b=qfZoqUv/vpf5JFAJlfBmhTddhCbVf9wp/9wON6rMX/jSOlLG/xoy/khvEh0LGy7nMMdHq+JQOZog/BCQR6N+7EHFMqsKWN6iT0MN1a0PcO6/R/D/QE6xaJCvO44wI/03rIi2psNWhPlKklmqxEw5SFB/9IQ+gpVI7hx359yZ5Bs=
+	t=1748630636; cv=none; b=Gc6pCvp4WjEWC2SdxX/1LPHk1YIUW35NgZXXu4c5j4h7xAcqHdJltaMkJreiCpbyYR056QMek5GHfILLZQZlhd1KOxOXq/l38pEBiiycP/RLIC6mJhJTcALw4f3W+A4/apkPnLiPHjxzQaMKDdlO4ypqVylBzjQVBoIbfrFQPdY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748627438; c=relaxed/simple;
-	bh=ZpyN4/g0fIVhnbT8d1gKlwHIPtIdzBgiCO0etih4F9c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lOyCRqK4Uj8aVkdlANg83sPagTGdjANNY2E614SFZE3qeBVhxMsjPmxpnkbfveD8VVNb4phLq6xPAcsuBHsgOR3MyRROUsov7WnIHNLNLGMMA5goCNNXA0NaAn5SzSasS80/jcxs/vtlijlalmxsHnm8fK/Tum9s1n/jBSq/DQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=saRCg2bT; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-2349068ebc7so19785ad.0
-        for <bpf@vger.kernel.org>; Fri, 30 May 2025 10:50:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1748627436; x=1749232236; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LZxelI4d4NvZ/TF/J+tAC98NjF7+jArlYHEM3kySd7Y=;
-        b=saRCg2bTJPbra+aNMFsPyKAbAZlqc8IdH/0Ku2IoHdPOUzLWf7PwI6kcvT0KvGBcQv
-         YCwmBj2b8KBBgL3Etw97zdUUnbAm+yUdQfngtlQTvR9evGmleuYl7911bIjZi1e2QbfR
-         mRWu90UgdcDAN8CD64cXCVWcyoThVdqgcLPlnU8E0m4k7a9US9/3mBAfkaohQwIwWk2s
-         urCtb/k1cZtfmNwNnXloR7U0oaxIaH3NBSY7n1C0CkCwzhZY65wZb2i29kNWMKij6B9Q
-         KhHkHebGOgUWsJ/9zUmbfOIG9jdwSjyqaesv6HOhiHT2w/v9K5s/H8pN+14Yu3O7Wly1
-         D+Jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748627436; x=1749232236;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LZxelI4d4NvZ/TF/J+tAC98NjF7+jArlYHEM3kySd7Y=;
-        b=QKgkCZpNfvrvpbFcmfXJIsUM8uw0Ja+giNtXJmEm1gIasgVkvapTBFBr2Akws4xFno
-         Eis0nzc2kZ7NM5edgVAteruvpQxK3OEVyHXCS/Y6RkGtnFlousueBQd3iz8IcKLBeDR+
-         2zYPZEh1izx6EKidAHUwaC8iiz3CfyjLYZ/7x1yyAC8+Bcx71YZYdg7unySj1ekYpOQh
-         JnyYyh+JmPGWyFxQ0ZJE8keuMLlULhOxBcXeP037Zm0a3830sKNy1bax4BEC+kqzd+af
-         TMWI+hlkEFw/n3TbYtfaWunQBjv4PX05mUt6Vb8Nfwf9BqTXnaLibTuXsKgWpB4GG7oa
-         pEzw==
-X-Forwarded-Encrypted: i=1; AJvYcCWI7sa3lt3i4vTfgJ0dUk6Dnw4vw/Cp5vEaYc4MKgRSrPa/Xjxydqp7iN9JkWqn4NA/yUc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzolT8vaGslutTab+WOT7MDSG0UfQF/NnVBOOgzk8TJ4TOA4yt+
-	3qHOF7iWg6qInwrrb1V9cRd2ICHwmg9JSzv1h6V5KAgBnhfAtiO/i/IFcUP038/PcZWBEJk/o1x
-	ak3oCjjXN0ixXVlYNaFWowbs+fRop9DJL9fehlKWp
-X-Gm-Gg: ASbGncswdbhyfoWYLh7sfiEpbZM4QDuNjYBZi2mMVG4yCLfth0c0DYBJcBryGxoq9yh
-	5L1DyW0VFmD5kmTQi4k9D4Q9Xi+zoKJo0buEUVUop7BymVb+x6vPWls0o9cNYTqpJ2WE/ZGyXaX
-	JM9RPOB3TV4k/xw6YiWZpK0orL8nL/EwX/CW3uJa+TX0gb04j/VnCSHAbf90cGadWaoRiVWB0SC
-	w==
-X-Google-Smtp-Source: AGHT+IF/dpJ3V6p0xr1UkmFfbIzfoRNakFfjWEsSzdnU9K0wExcotWGzZLbWs+c4kGKxup4uLNw2Dwpv5BnHj6UuyNs=
-X-Received: by 2002:a17:902:ecd2:b0:231:eedd:de3a with SMTP id
- d9443c01a7336-2353220f83emr3003775ad.25.1748627435241; Fri, 30 May 2025
- 10:50:35 -0700 (PDT)
+	s=arc-20240116; t=1748630636; c=relaxed/simple;
+	bh=O+SOo4fXh2RonK93tHTCVEAKSrP185mJpn7EfvVyTgc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lm4RgT91pIiWJJhgULUH1l20RdwhM32C6Y8dc8zlco7KNjhKaUr0uzkbxiOQ8yGFJfwC4SG9xr5tX3jea3XxAraMQid7aZSjYkNlFX+IOqPoOvRtguDwDsqX/Kyc/XxgRP4GRJVYWPTXbt0LpCrvK+w9uSXpUesdxHgsFnKMKy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=YtET+WyT; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
+	bh=A0DFkEBJ3eSjhNRerzJHHjxcP9CBhGkX6phH4Ii4B4A=; b=YtET+WyTM2zCgHOb/JxEESVMcn
+	SWbIrAWpEYHsVk3SGfqwaCOZxOfXYw1fbZIB/Kl7VuKvm82MxWueaEI4d2JFuTS7/yog0UHUQ5+Qj
+	PdMbIrXP9G4SeSzULJOKHqkV7SI1VyeVgTYDOsbFkhrWjpSXfzPdxYhbVjz8E9NiUwuFvHT+MBTNO
+	2eP5ZO8lS/8Xmfv52UX5Sb6ydTCHdQ7CnHjeLJ4yYs9p8r41Vy/fUlIfFVQcQHaicX9Dm8ZD9RDon
+	2nw7SajENa1LaHyKeLjezzOUEJVqzaPEVKo1l+pnKNm5sn7cQfs0otm+rBkS+Oq+NdCAHwzu5gOeT
+	kR3B0GIA==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uL4ho-0000000EoyD-2uvT;
+	Fri, 30 May 2025 18:43:48 +0000
+Date: Fri, 30 May 2025 19:43:48 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc: Song Liu <song@kernel.org>, Jan Kara <jack@suse.cz>,
+	bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
+	kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com,
+	ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+	brauner@kernel.org, kpsingh@kernel.org, mattbobrowski@google.com,
+	amir73il@gmail.com, repnop@google.com, jlayton@kernel.org,
+	josef@toxicpanda.com, gnoack@google.com,
+	Tingmao Wang <m@maowtm.org>
+Subject: Re: [PATCH bpf-next 3/4] bpf: Introduce path iterator
+Message-ID: <20250530184348.GQ2023217@ZenIV>
+References: <CAPhsuW5pAvH3E1dVa85Kx2QsUSheSLobEMg-b0mOdtyfm7s4ug@mail.gmail.com>
+ <20250529183536.GL2023217@ZenIV>
+ <CAPhsuW7LFP0ddFg_oqkDyO9s7DZX89GFQBOnX=4n5mV=VCP5oA@mail.gmail.com>
+ <20250529201551.GN2023217@ZenIV>
+ <CAPhsuW5DP1x_wyzT1aYjpj3hxUs4uB8vdK9iEp=+i46QLotiOg@mail.gmail.com>
+ <20250529214544.GO2023217@ZenIV>
+ <CAPhsuW5oXZVEaMwNpSF74O7wZ_f2Qr_44pu9L4_=LBwdW5T9=w@mail.gmail.com>
+ <20250529231018.GP2023217@ZenIV>
+ <CAPhsuW6-J+NUe=jX51wGVP=nMFjETu+1LUTsWZiBa1ckwq7b+w@mail.gmail.com>
+ <20250530.euz5beesaSha@digikod.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250529031047.7587-1-byungchul@sk.com> <20250529031047.7587-2-byungchul@sk.com>
- <CAHS8izNBjkMLbQsP++0r+fbkW2q7gGOdrbmE7gH-=jQUMCgJ1g@mail.gmail.com> <20250530011002.GA3093@system.software.com>
-In-Reply-To: <20250530011002.GA3093@system.software.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Fri, 30 May 2025 10:50:22 -0700
-X-Gm-Features: AX0GCFvslPZ_UC7JzYeAi_Zy_ofVmEwzK1hvI1l778wh4YYuE9pFk1RpuJvt08A
-Message-ID: <CAHS8izNPSHR7B24Y3RZiBeZHkPyzKAKdZbQgXwqwgs01HzxDTw@mail.gmail.com>
-Subject: Re: [RFC v3 01/18] netmem: introduce struct netmem_desc mirroring
- struct page
-To: Byungchul Park <byungchul@sk.com>
-Cc: willy@infradead.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, kernel_team@skhynix.com, kuba@kernel.org, 
-	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org, 
-	akpm@linux-foundation.org, davem@davemloft.net, john.fastabend@gmail.com, 
-	andrew+netdev@lunn.ch, asml.silence@gmail.com, toke@redhat.com, 
-	tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com, 
-	leon@kernel.org, ast@kernel.org, daniel@iogearbox.net, david@redhat.com, 
-	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz, 
-	rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org, 
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250530.euz5beesaSha@digikod.net>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Thu, May 29, 2025 at 6:10=E2=80=AFPM Byungchul Park <byungchul@sk.com> w=
-rote:
->
-> On Thu, May 29, 2025 at 09:31:40AM -0700, Mina Almasry wrote:
-> > On Wed, May 28, 2025 at 8:11=E2=80=AFPM Byungchul Park <byungchul@sk.co=
-m> wrote:
-> > >  struct net_iov {
-> > > -       enum net_iov_type type;
-> > > -       unsigned long pp_magic;
-> > > -       struct page_pool *pp;
-> > > -       struct net_iov_area *owner;
-> > > -       unsigned long dma_addr;
-> > > -       atomic_long_t pp_ref_count;
-> > > +       union {
-> > > +               struct netmem_desc desc;
-> > > +
-> > > +               /* XXX: The following part should be removed once all
-> > > +                * the references to them are converted so as to be
-> > > +                * accessed via netmem_desc e.g. niov->desc.pp instea=
-d
-> > > +                * of niov->pp.
-> > > +                *
-> > > +                * Plus, once struct netmem_desc has it own instance
-> > > +                * from slab, network's fields of the following can b=
-e
-> > > +                * moved out of struct netmem_desc like:
-> > > +                *
-> > > +                *    struct net_iov {
-> > > +                *       struct netmem_desc desc;
-> > > +                *       struct net_iov_area *owner;
-> > > +                *       ...
-> > > +                *    };
-> > > +                */
-> >
-> > We do not need to wait until netmem_desc has its own instance from
-> > slab to move the net_iov-specific fields out of netmem_desc. We can do
-> > that now, because there are no size restrictions on net_iov.
->
-> Got it.  Thanks for explanation.
->
-> > So, I recommend change this to:
-> >
-> > struct net_iov {
-> >   /* Union for anonymous aliasing: */
-> >   union {
-> >     struct netmem_desc desc;
-> >     struct {
-> >        unsigned long _flags;
-> >        unsigned long pp_magic;
-> >        struct page_pool *pp;
-> >        unsigned long _pp_mapping_pad;
-> >        unsigned long dma_addr;
-> >        atomic_long_t pp_ref_count;
-> >     };
-> >     struct net_iov_area *owner;
-> >     enum net_iov_type type;
-> > };
->
-> Do you mean?
->
->   struct net_iov {
->     /* Union for anonymous aliasing: */
->     union {
->       struct netmem_desc desc;
->       struct {
->          unsigned long _flags;
->          unsigned long pp_magic;
->          struct page_pool *pp;
->          unsigned long _pp_mapping_pad;
->          unsigned long dma_addr;
->          atomic_long_t pp_ref_count;
->       };
->     };
->     struct net_iov_area *owner;
->     enum net_iov_type type;
->   };
->
-> Right?  If so, I will.
->
+On Fri, May 30, 2025 at 02:20:39PM +0200, Mickaël Salaün wrote:
 
-Yes, sounds good.
+> Without access to mount_lock, what would be the best way to fix this
+> Landlock issue while making it backportable?
+> 
+> > 
+> > If we update path_parent in this patchset with choose_mountpoint(),
+> > and use it in Landlock, we will close this race condition, right?
+> 
+> choose_mountpoint() is currently private, but if we add a new filesystem
+> helper, I think the right approach would be to expose follow_dotdot(),
+> updating its arguments with public types.  This way the intermediates
+> mount points will not be exposed, RCU optimization will be leveraged,
+> and usage of this new helper will be simplified.
 
-Also, maybe having a union with the same fields for anonymous aliasing
-can be error prone if someone updates netmem_desc and forgets to
-update the mirror in struct net_iov. If you can think of a way to deal
-with that, great, if not lets maybe put a comment on top of struct
-netmem_desc:
+IMO anything that involves struct nameidata should remain inside
+fs/namei.c - something public might share helpers with it, but that's
+it.  We had more than enough pain on changes in there, and I'm pretty
+sure that we are not done yet; in the area around atomic_open, but not
+only there.  Parts of that are still too subtle, IMO - it got a lot
+better over the years, but I would really prefer to avoid the need
+to bring more code into analysis for any further massage.
 
-/* Do not update the fields in netmem_desc without also updating the
-anonymous aliasing union in struct net_iov */.
+Are you sure that follow_dotdot() behaviour is what you really want?
 
-Or something like that.
+Note that it's not quite how the pathname resolution works.  There we
+have the result of follow_dotdot() fed to step_into(), and that changes
+things.  Try this:
 
---=20
-Thanks,
-Mina
+mkdir /tmp/foo
+mkdir /tmp/foo/bar
+cd /tmp/foo/bar
+mount -t tmpfs none /tmp/foo
+touch /tmp/foo/x
+ls -Uldi . .. /tmp/foo ../.. /tmp ../x
+
+and think about the results.  Traversing .. is basically "follow_up as much
+as possible, then to parent, then follow_down as much as possible" and
+the last part (../x) explains why we do it that way.
+
+Which objects would you want to iterate through when dealing with the
+current directory in the experiment above?  Simulation of pathwalk
+would have the root of overmounting filesystem as the second object
+visited; follow_dotdot() would yield the directory overmounted by
+that instead.
+
+I'm not saying that either behaviour is right for your case - just that
+they are not identical and it's something that needs to be consciously
+chosen.
 
