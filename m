@@ -1,122 +1,133 @@
-Return-Path: <bpf+bounces-59409-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59410-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A63D0AC9A47
-	for <lists+bpf@lfdr.de>; Sat, 31 May 2025 11:51:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D863BAC9ABB
+	for <lists+bpf@lfdr.de>; Sat, 31 May 2025 13:45:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6BC113A5464
-	for <lists+bpf@lfdr.de>; Sat, 31 May 2025 09:51:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9DDB67A70A8
+	for <lists+bpf@lfdr.de>; Sat, 31 May 2025 11:44:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 547B5239567;
-	Sat, 31 May 2025 09:51:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2A9323BCE4;
+	Sat, 31 May 2025 11:45:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="qQR7MIIZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MXY4APr8"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAB9FEED7
-	for <bpf@vger.kernel.org>; Sat, 31 May 2025 09:51:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.4
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71A82237163;
+	Sat, 31 May 2025 11:45:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748685090; cv=none; b=fop/7JaTLcs/cdiEQ7kTAb7CieSqTj+lQC59P/WAZO0Zf/7FWGt1kcX71RKhPKwx2fvPwhYprkST3ajmsgLws7hVTufE2Z/TKgxCJt1cxw0qHLLiDBQXGw3rAnoQlUx/3ayBoWeKhMXUvNBJNcc6nGjIeFs268I5wTJSCi35p0M=
+	t=1748691917; cv=none; b=Ey9QKwY6MPopDg6rvUmfPilNGXqKimdMMzukPNoH58gc1vMz42HL22Y9TshBODEIUX4OfG5T2sQO88psePDD5QkGbFfJd1uS+hTx4fGvG+7oVQdBuACGVSUvWxtgpHrd5truAwYvagyxCTe6+Oix/AHI9GHeKnHqjPl4wuW83T4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748685090; c=relaxed/simple;
-	bh=ZM5aGRQ3UciKbLqXO7MT168nvz9xv1xezNpZuKTWxRQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AY3+7BHIv7dzLJzhzwUj6nJM7Y9uzAS1qxoBl65WGtFinywSgkKkcr2Panzfex79GepAsD69fw9APXn9SJR5LDLEHmWjyZ5z/dE421HzKcc0B6IE565KH9p93qEwW/BD232D03CA/6k+DXK8KuwDKpsr5ckbwk2XmP/YJf0u+Ts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=qQR7MIIZ; arc=none smtp.client-ip=117.135.210.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=Z4
-	r1mK3SkpfiGoMHV+/ckDyJt8w9ct6oxMc6V4Coc7c=; b=qQR7MIIZkDZUIpo4Bm
-	qedR34glee/AFYc54YPYekudpsNAfuJvOT0kXTTTRUnl9LVvFQtnZ0BD3MQX5hFz
-	FT9lS+jtODoPUMJ4Mi0IOIEVuhobJApvd+GQBYrneYDiWd6Ig3HF4J9gedC3a2kX
-	bWHw/rc/eTa9Jq0+HMaRDOfhI=
-Received: from localhost.localdomain (unknown [])
-	by gzsmtp4 (Coremail) with SMTP id PygvCgDX42IP0TpoKfOWBQ--.3412S2;
-	Sat, 31 May 2025 17:51:12 +0800 (CST)
-From: Jiawei Zhao <Phoenix500526@163.com>
-To: andrii@kernel.org
-Cc: bpf@vger.kernel.org
-Subject: [PATCH] libbpf: correct some typos and syntax issues in usdt doc
-Date: Sat, 31 May 2025 17:51:11 +0800
-Message-Id: <20250531095111.57824-1-Phoenix500526@163.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+	s=arc-20240116; t=1748691917; c=relaxed/simple;
+	bh=DjXMkjtM4ppbS/skmByM816vF5rWXU+Al3ViHaB6/Tk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gdcOhIxDWzlZ1+PmPE5LO+k61059M8EfDRBZmKfzWH5usi5D+e9fod++WHWoL81Z7Lo8EmIzyn0MkJ+LVDIpzX73pCAwbpVKfk0rifQMs0FNH9cnFBmQuM+HhGJEG/Y0ANIVpvfINEeWn8mIZsXzrK6bPCM/xmh6Aii0gkrJ+b8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MXY4APr8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6435EC4CEE3;
+	Sat, 31 May 2025 11:45:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1748691914;
+	bh=DjXMkjtM4ppbS/skmByM816vF5rWXU+Al3ViHaB6/Tk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MXY4APr8Hr1Hfl4lGe6RS+LXTv7fXAGtkFCyhSpcb4cWIm106bGW8KbmZqtgm7IKF
+	 lary8+pGSqI8B7nWlvvmv4Am3kyJ6sEHxT+HWn8JPAwZHIit4BdSNoS/MaCB983oXh
+	 t1T18gd+p8anH66a8JsRyJOTVsl7T8+hJMAht+Fm+pnaPObpNIdkZKN3u/Fpp3yoE9
+	 dQGPgu0GcwEfI+qOZP9YSaV/036KANtzdI6b9shFB578MzgCsyRO6/Usuvdln5iElz
+	 rT4EUnatU8KEPcXyBmcl3bCjSW9k6lwoDvm1YUJnDfzwP6BAOPshRdQ/vbOONGv9Pz
+	 D3LuQW01qsxzw==
+Date: Sat, 31 May 2025 08:45:11 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
+	bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH] perf lock contention: Reject more than 10ms delays for
+ safety
+Message-ID: <aDrrxwPcSslAFnpb@x1>
+References: <20250515181042.555189-1-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:PygvCgDX42IP0TpoKfOWBQ--.3412S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxCFy5Xw4kKw4ktF13KrWxJFb_yoW5ArWkpF
-	Zagw1UCr18XFW8Ar4DZ3y8JrWfta1DGF45Gw48X342vwsxW3Z7KrnagF4akFy7Crs3Ja4f
-	ZF42qrW7GFWDAaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U67K3UUUUU=
-X-CM-SenderInfo: pskrv0dl0viiqvswqiywtou0bp/1tbiTwheiGg6zkUtbQABsJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250515181042.555189-1-namhyung@kernel.org>
 
-Fix some incorrect words, such as "and" -> "an", "it's" -> "its"
-Fix some grammar issues, such as removing redundant "will",
-  "would complicated" -> "would complicate".
+On Thu, May 15, 2025 at 11:10:42AM -0700, Namhyung Kim wrote:
+> Delaying kernel operations can be dangerous and the kernel may kill
+> (non-sleepable) BPF programs running for long in the future.
+> 
+> Limit the max delay to 10ms and update the document about it.
+> 
+>   $ sudo ./perf lock con -abl -J 100000us@cgroup_mutex true
+>   lock delay is too long: 100000us (> 10ms)
+> 
+>    Usage: perf lock contention [<options>]
+> 
+>       -J, --inject-delay <TIME@FUNC>
+>                             Inject delays to specific locks
+> 
+> Suggested-by: Alexei Starovoitov <ast@kernel.org>
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 
-Signed-off-by: Jiawei Zhao <Phoenix500526@163.com>
----
- tools/lib/bpf/usdt.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
-index 4e4a52742b01..3373b9d45ac4 100644
---- a/tools/lib/bpf/usdt.c
-+++ b/tools/lib/bpf/usdt.c
-@@ -59,7 +59,7 @@
-  *
-  * STAP_PROBE3(my_usdt_provider, my_usdt_probe_name, 123, x, &y);
-  *
-- * USDT is identified by it's <provider-name>:<probe-name> pair of names. Each
-+ * USDT is identified by its <provider-name>:<probe-name> pair of names. Each
-  * individual USDT has a fixed number of arguments (3 in the above example)
-  * and specifies values of each argument as if it was a function call.
-  *
-@@ -81,7 +81,7 @@
-  * NOP instruction that kernel can replace with an interrupt instruction to
-  * trigger instrumentation code (BPF program for all that we care about).
-  *
-- * Semaphore above is and optional feature. It records an address of a 2-byte
-+ * Semaphore above is an optional feature. It records an address of a 2-byte
-  * refcount variable (normally in '.probes' ELF section) used for signaling if
-  * there is anything that is attached to USDT. This is useful for user
-  * applications if, for example, they need to prepare some arguments that are
-@@ -121,7 +121,7 @@
-  * a uprobe BPF program (which for kernel, at least currently, is just a kprobe
-  * program, so BPF_PROG_TYPE_KPROBE program type). With the only difference
-  * that uprobe is usually attached at the function entry, while USDT will
-- * normally will be somewhere inside the function. But it should always be
-+ * normally be somewhere inside the function. But it should always be
-  * pointing to NOP instruction, which makes such uprobes the fastest uprobe
-  * kind.
-  *
-@@ -151,7 +151,7 @@
-  * libbpf sets to spec ID during attach time, or, if kernel is too old to
-  * support BPF cookie, through IP-to-spec-ID map that libbpf maintains in such
-  * case. The latter means that some modes of operation can't be supported
-- * without BPF cookie. Such mode is attaching to shared library "generically",
-+ * without BPF cookie. Such a mode is attaching to shared library "generically",
-  * without specifying target process. In such case, it's impossible to
-  * calculate absolute IP addresses for IP-to-spec-ID map, and thus such mode
-  * is not supported without BPF cookie support.
-@@ -185,7 +185,7 @@
-  * as even if USDT spec string is the same, USDT cookie value can be
-  * different. It was deemed excessive to try to deduplicate across independent
-  * USDT attachments by taking into account USDT spec string *and* USDT cookie
-- * value, which would complicated spec ID accounting significantly for little
-+ * value, which would complicate spec ID accounting significantly for little
-  * gain.
-  */
- 
--- 
-2.39.5 (Apple Git-154)
 
+Thanks, applied to perf-tools-next,
+
+- Arnaldo
+
+> ---
+>  tools/perf/Documentation/perf-lock.txt | 8 ++++++--
+>  tools/perf/builtin-lock.c              | 5 +++++
+>  2 files changed, 11 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/Documentation/perf-lock.txt b/tools/perf/Documentation/perf-lock.txt
+> index 2d9aecf630422aa6..c17b3e318169f9dc 100644
+> --- a/tools/perf/Documentation/perf-lock.txt
+> +++ b/tools/perf/Documentation/perf-lock.txt
+> @@ -224,8 +224,12 @@ CONTENTION OPTIONS
+>  	only with -b/--use-bpf.
+>  
+>  	The 'time' is specified in nsec but it can have a unit suffix.  Available
+> -	units are "ms" and "us".  Note that it will busy-wait after it gets the
+> -	lock.  Please use it at your own risk.
+> +	units are "ms", "us" and "ns".  Currently it accepts up to 10ms of delays
+> +	for safety reasons.
+> +
+> +	Note that it will busy-wait after it gets the lock. Delaying locks can
+> +	have significant consequences including potential kernel crashes.  Please
+> +	use it at your own risk.
+>  
+>  
+>  SEE ALSO
+> diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
+> index 41f6f3d2b779b986..3b3ade7a39cad01f 100644
+> --- a/tools/perf/builtin-lock.c
+> +++ b/tools/perf/builtin-lock.c
+> @@ -2537,6 +2537,11 @@ static bool add_lock_delay(char *spec)
+>  		return false;
+>  	}
+>  
+> +	if (duration > 10 * 1000 * 1000) {
+> +		pr_err("lock delay is too long: %s (> 10ms)\n", spec);
+> +		return false;
+> +	}
+> +
+>  	tmp = realloc(delays, (nr_delays + 1) * sizeof(*delays));
+>  	if (tmp == NULL) {
+>  		pr_err("Memory allocation failure\n");
+> -- 
+> 2.49.0.1101.gccaa498523-goog
 
