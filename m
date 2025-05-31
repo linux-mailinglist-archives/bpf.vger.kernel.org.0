@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-59410-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59411-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D863BAC9ABB
-	for <lists+bpf@lfdr.de>; Sat, 31 May 2025 13:45:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B65AAC9ABC
+	for <lists+bpf@lfdr.de>; Sat, 31 May 2025 13:49:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9DDB67A70A8
-	for <lists+bpf@lfdr.de>; Sat, 31 May 2025 11:44:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD24F189C6CD
+	for <lists+bpf@lfdr.de>; Sat, 31 May 2025 11:49:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2A9323BCE4;
-	Sat, 31 May 2025 11:45:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95F0023BCE4;
+	Sat, 31 May 2025 11:49:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MXY4APr8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TEigLghs"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71A82237163;
-	Sat, 31 May 2025 11:45:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16D7EEAD0;
+	Sat, 31 May 2025 11:49:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748691917; cv=none; b=Ey9QKwY6MPopDg6rvUmfPilNGXqKimdMMzukPNoH58gc1vMz42HL22Y9TshBODEIUX4OfG5T2sQO88psePDD5QkGbFfJd1uS+hTx4fGvG+7oVQdBuACGVSUvWxtgpHrd5truAwYvagyxCTe6+Oix/AHI9GHeKnHqjPl4wuW83T4=
+	t=1748692164; cv=none; b=Ii9n6bzo6d8qnronXd9lR8SHD7/Az7o6X0LKsZyVFJYtXb/fwOozhEl5EeyLLuI8JFg7l9tm518L9adqNDDIb1lMyp2/s8NHzNm3EznIJgi9eGbTdJ7vbTgDeWO/+5oY5uyyYg8Cg1pLMEnLz6+uEbFnGFxp4LUlrTySmJhOWfo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748691917; c=relaxed/simple;
-	bh=DjXMkjtM4ppbS/skmByM816vF5rWXU+Al3ViHaB6/Tk=;
+	s=arc-20240116; t=1748692164; c=relaxed/simple;
+	bh=Af8HaQZyJpqo1jRB+/Ioz25AGaCCmNcBiYyroVixhYE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gdcOhIxDWzlZ1+PmPE5LO+k61059M8EfDRBZmKfzWH5usi5D+e9fod++WHWoL81Z7Lo8EmIzyn0MkJ+LVDIpzX73pCAwbpVKfk0rifQMs0FNH9cnFBmQuM+HhGJEG/Y0ANIVpvfINEeWn8mIZsXzrK6bPCM/xmh6Aii0gkrJ+b8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MXY4APr8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6435EC4CEE3;
-	Sat, 31 May 2025 11:45:14 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=q+HkHKSF+8/uv2ms2cs5kv1DSgnnEjN0p0DBd8LWEjx/SpIWv0jSb53Nl0QgA498eIW2Zp8HNfne6pNPjhrxJXvUbv+he5mi2Q9o5a7XN68AqGsJNpcMhGdoTQRt407WEWpbcKA9F5678cQ8i1VlNQUpCYSPshSvqaI5wxolC0Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TEigLghs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0B02C4CEE3;
+	Sat, 31 May 2025 11:49:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748691914;
-	bh=DjXMkjtM4ppbS/skmByM816vF5rWXU+Al3ViHaB6/Tk=;
+	s=k20201202; t=1748692163;
+	bh=Af8HaQZyJpqo1jRB+/Ioz25AGaCCmNcBiYyroVixhYE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MXY4APr8Hr1Hfl4lGe6RS+LXTv7fXAGtkFCyhSpcb4cWIm106bGW8KbmZqtgm7IKF
-	 lary8+pGSqI8B7nWlvvmv4Am3kyJ6sEHxT+HWn8JPAwZHIit4BdSNoS/MaCB983oXh
-	 t1T18gd+p8anH66a8JsRyJOTVsl7T8+hJMAht+Fm+pnaPObpNIdkZKN3u/Fpp3yoE9
-	 dQGPgu0GcwEfI+qOZP9YSaV/036KANtzdI6b9shFB578MzgCsyRO6/Usuvdln5iElz
-	 rT4EUnatU8KEPcXyBmcl3bCjSW9k6lwoDvm1YUJnDfzwP6BAOPshRdQ/vbOONGv9Pz
-	 D3LuQW01qsxzw==
-Date: Sat, 31 May 2025 08:45:11 -0300
+	b=TEigLghsEjebwnfmaWzIZ5IRtT/hfObwzEXTQ8Xrf0NraDdI9BxKvVpEfIRfyUKdI
+	 /0xMCqtgKeTXOhGTsfqWy6U77gaq7n/52DNBUj64UXLWv3FoA6T+wyAqc8NmFlDeAp
+	 rSxIV3jPteD9etdKv1FXVOxb4+SG3mgbqLWQq89MEJp80szksXbTpaYPaillKbAHJf
+	 CriapOSmozuODEWbfG6yj+LIbcnSiuha19aZeePhoLsBFUeT2ees550idWHrMxYyQE
+	 0uPyDG5SRBdH2IS9EuxY5vMzU96opEP49UZs5FcBITe94bMqIWj9e3W8lXaxfu4wxO
+	 uNfnL0PIRWbHg==
+Date: Sat, 31 May 2025 08:49:20 -0300
 From: Arnaldo Carvalho de Melo <acme@kernel.org>
 To: Namhyung Kim <namhyung@kernel.org>
 Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>,
@@ -53,7 +53,7 @@ Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>,
 	bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>
 Subject: Re: [PATCH] perf lock contention: Reject more than 10ms delays for
  safety
-Message-ID: <aDrrxwPcSslAFnpb@x1>
+Message-ID: <aDrswP62_-fy3vUC@x1>
 References: <20250515181042.555189-1-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -81,13 +81,6 @@ On Thu, May 15, 2025 at 11:10:42AM -0700, Namhyung Kim wrote:
 > 
 > Suggested-by: Alexei Starovoitov <ast@kernel.org>
 > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-
-
-
-Thanks, applied to perf-tools-next,
-
-- Arnaldo
-
 > ---
 >  tools/perf/Documentation/perf-lock.txt | 8 ++++++--
 >  tools/perf/builtin-lock.c              | 5 +++++
@@ -125,6 +118,12 @@ Thanks, applied to perf-tools-next,
 > +		return false;
 > +	}
 > +
+
+Please consider to replace those 1000 * 1000 her and in other places
+with NSEC_PER_MSEC in a followup patch for the next merge window.
+
+- Arnaldo
+
 >  	tmp = realloc(delays, (nr_delays + 1) * sizeof(*delays));
 >  	if (tmp == NULL) {
 >  		pr_err("Memory allocation failure\n");
