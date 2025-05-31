@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-59401-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59402-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D9ECAC98FD
-	for <lists+bpf@lfdr.de>; Sat, 31 May 2025 05:10:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8582DAC9950
+	for <lists+bpf@lfdr.de>; Sat, 31 May 2025 07:10:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D295616A354
-	for <lists+bpf@lfdr.de>; Sat, 31 May 2025 03:10:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F3381BA411B
+	for <lists+bpf@lfdr.de>; Sat, 31 May 2025 05:10:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81E901448E0;
-	Sat, 31 May 2025 03:09:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61DCC28A1EA;
+	Sat, 31 May 2025 05:10:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ljvns2tY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eTZutv4T"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E34FD1EB39;
-	Sat, 31 May 2025 03:09:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C57225475E;
+	Sat, 31 May 2025 05:10:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748660997; cv=none; b=OAi17aS5QeBn7mLcJdGX7doR0mVOFx26qqLY87/QAaFAHuPN0kSZPfwUUSOq5sFkzuLFNdYgufmvbQKcz0MEt2OGDN2BD2e/ETFUYkg1y/A4LKbttmNrCgvhJ8hqGF/p47UB3DZg+HkwXp4ctKmu4cdPXX3ndfZ0+Fc5OHhFdzM=
+	t=1748668212; cv=none; b=Dgt0QWNQZCfmgLcP7VMOECdsYpOq+e/xUDA4+GKF7QkR+CfH0vViFTltDRJPNvXEoZaGYpa5Rn4EVJ9NjxLjm7bfIR0IbygJ7s2I/IP5gaovnb6MHoH2uNpdX7+t2VKRIxFeQaxDxsZ35mYsApq+Dt9g1g0VHZnxU50uAq3sjqg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748660997; c=relaxed/simple;
-	bh=z8gZ+q37IvEpWDej+h76Rujah+rzvK1Yk/0ORMQ4eOI=;
+	s=arc-20240116; t=1748668212; c=relaxed/simple;
+	bh=PJgVm3ToSC/rDZaBkrfA/rpfuG5OxUdSrBHWlFxA0EA=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=We+3c6sGCboTRz0dV8/d3jy4wWBlWnQ+iqq0vLqJN7qUtOyynU79WwYcadJMimyT616b7MXQHbrsbBP4Q8rZP+P7DboCyJRKJ2r6o2xb+lmkQzqWGw03o06Zsg3Ohh+sLu9Uuek2/MqHpRt00NeCquFco2Uiq5bnwUo3xjjAfj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ljvns2tY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AEB3C4CEEB;
-	Sat, 31 May 2025 03:09:56 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=ho8uHpNp8wbPvBSs6BkSQuIbpjunOpnrx+wib4em12YGSWVcCPadRMxv/UCoSNedC08B50DxBmPdggW+lOSP4FpaQGCyR1qS4djwbeHShb6CDp21l12NIt76u4hC4as4mVWvjUQJMUBszgRWYTwwMSwop42wA88HQr4BnJ7H/e4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eTZutv4T; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FC2BC4CEEE;
+	Sat, 31 May 2025 05:10:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748660996;
-	bh=z8gZ+q37IvEpWDej+h76Rujah+rzvK1Yk/0ORMQ4eOI=;
+	s=k20201202; t=1748668212;
+	bh=PJgVm3ToSC/rDZaBkrfA/rpfuG5OxUdSrBHWlFxA0EA=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Ljvns2tYEp7FnoH02Ay/quaAkbUmtUORD8q6ntDbnCcVbxkuXij4gw9qL0zGbamsv
-	 QiWkhB6B4o6lgQZ3G/gfpDB93wU7Rtm9uGC2RZC+CPWUU3Dr+bhjL3kVirw1ZGnruI
-	 sa9vS29R97ogEWJfMtmbYExZx93Darp4ZA/M/UQIsbLiw35tq4j8PWMhfaIxtwEFDh
-	 b5mZ4yUX/aWzsJe1v8/13iXZFP4wFBnAcj1Pwz6dOlth5izzEgZ0EJV8EX3lbaDoqd
-	 ZiCznJW7AN+Oyry99ws/awerk1rTV9GSUACAAw4CxH2ryUS0hSWh1Yecahpmjtrp/A
-	 FXIlhzfH3zJ5Q==
+	b=eTZutv4Ttw9DRkgC3h8N+v7tedHyw59Vp2Cpw9aNFnctwCkrvzbzzRyppoPr1BNfC
+	 IM9UOBiXoSs9qhvGbmYcdCVOJAKOsOShqeRNtiV18dR23FH+jYybFaXBCX9rZrO6O2
+	 2oAd5cckiGRlUerk7n3FTwd6/nU4+n5/baYHuvdg/gv11A0wFXJLHS23KAH+PL4/A1
+	 D3FHL9+V1KCVCNcCKQbihA1FFCf+ALKyrCyb7XbhBCxORuCWQKyIWw+TrvMQpzuCOx
+	 P05JTRDjWZUmKdfvyaWt12Mz7ag4GlKUqTGYvMo0FBmmJAYzn0K1yV1EHYqFjeoMWG
+	 OEWviN5f8JT7A==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB0A239F1DF3;
-	Sat, 31 May 2025 03:10:30 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADFBB39F1DF3;
+	Sat, 31 May 2025 05:10:46 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,44 +52,41 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net,v3] hv_netvsc: fix potential deadlock in
- netvsc_vf_setxdp()
+Subject: Re: [PATCH net v3 0/2] net: Fix inet_proto_csum_replace_by_diff for
+ IPv6
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <174866102976.15083.16967733452112171542.git-patchwork-notify@kernel.org>
-Date: Sat, 31 May 2025 03:10:29 +0000
-References: <1748513910-23963-1-git-send-email-ssengar@linux.microsoft.com>
-In-Reply-To: <1748513910-23963-1-git-send-email-ssengar@linux.microsoft.com>
-To: Saurabh Sengar <ssengar@linux.microsoft.com>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
- decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, pabeni@redhat.com, horms@kernel.org, ast@kernel.org,
- daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
- sdf@fomichev.me, kuniyu@amazon.com, ahmed.zaki@intel.com,
- aleksander.lobakin@intel.com, linux-hyperv@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- ssengar@microsoft.com, stable@vger.kernel.org
+ <174866824551.44670.1820707650191720178.git-patchwork-notify@kernel.org>
+Date: Sat, 31 May 2025 05:10:45 +0000
+References: <cover.1748509484.git.paul.chaignon@gmail.com>
+In-Reply-To: <cover.1748509484.git.paul.chaignon@gmail.com>
+To: Paul Chaignon <paul.chaignon@gmail.com>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org,
+ tom@herbertland.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
 
 Hello:
 
-This patch was applied to netdev/net.git (main)
+This series was applied to netdev/net.git (main)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Thu, 29 May 2025 03:18:30 -0700 you wrote:
-> The MANA driver's probe registers netdevice via the following call chain:
+On Thu, 29 May 2025 12:27:40 +0200 you wrote:
+> This patchset fixes a bug that causes skb->csum to hold an incorrect
+> value when calling inet_proto_csum_replace_by_diff for an IPv6 packet
+> in CHECKSUM_COMPLETE state. This bug affects BPF helper
+> bpf_l4_csum_replace and IPv6 ILA in adj-transport mode.
 > 
-> mana_probe()
->   register_netdev()
->     register_netdevice()
-> 
-> register_netdevice() calls notifier callback for netvsc driver,
-> holding the netdev mutex via netdev_lock_ops().
+> In those cases, inet_proto_csum_replace_by_diff updates the L4 checksum
+> field after an IPv6 address change. These two changes cancel each other
+> in terms of checksum, so skb->csum shouldn't be updated.
 > 
 > [...]
 
 Here is the summary with links:
-  - [net,v3] hv_netvsc: fix potential deadlock in netvsc_vf_setxdp()
-    https://git.kernel.org/netdev/net/c/3ec523304976
+  - [net,v3,1/2] net: Fix checksum update for ILA adj-transport
+    https://git.kernel.org/netdev/net/c/6043b794c766
+  - [net,v3,2/2] bpf: Fix L4 csum update on IPv6 in CHECKSUM_COMPLETE
+    https://git.kernel.org/netdev/net/c/ead7f9b8de65
 
 You are awesome, thank you!
 -- 
