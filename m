@@ -1,186 +1,138 @@
-Return-Path: <bpf+bounces-59407-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59408-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C5B2AC9A1B
-	for <lists+bpf@lfdr.de>; Sat, 31 May 2025 10:40:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18DB5AC9A25
+	for <lists+bpf@lfdr.de>; Sat, 31 May 2025 10:52:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 860149E5B3D
-	for <lists+bpf@lfdr.de>; Sat, 31 May 2025 08:40:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD8D37A8273
+	for <lists+bpf@lfdr.de>; Sat, 31 May 2025 08:50:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3BCC238151;
-	Sat, 31 May 2025 08:40:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84EE5BE5E;
+	Sat, 31 May 2025 08:52:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="jq0/Bi8+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OfGgbmJX"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-190c.mail.infomaniak.ch (smtp-190c.mail.infomaniak.ch [185.125.25.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B98D2376F5
-	for <bpf@vger.kernel.org>; Sat, 31 May 2025 08:40:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.25.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B16F20F081;
+	Sat, 31 May 2025 08:52:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748680850; cv=none; b=dpLAMzrhZEvx2GVljK9Zp06DMnMNGV+7cQdhgq+Hyfqv9wLR8HizmgNG/LiYnlulF/9SWS0XbG5UWb430PG0KHKCDvgaRx5oCKs41b5iO6GuzIsN/ePAD6KNBdVTCIKYF6s/32Zqr6+HlAkT6yLOCEGovibEMGRWRGAp6z6ScZg=
+	t=1748681528; cv=none; b=fB8NVB7wjKfDRAf7imm7S/RP+z/BOb4w7EScoe2v+4eBvVt5NIW1qDgvxF3B0Ke7lwcRhTIZTHszaa7SMznCEAnkr+WL0te99ZKaaaN0NP/uiB+xb6SDIsBPvEiB76j14baH/okzaT91yL7Galvc8tvAOX6k/WD2/DHQlum+8dU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748680850; c=relaxed/simple;
-	bh=nTTvmO1cQS3F/SnYQlmbLHNx64KvT3g8uZsDvQW8aiM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=enj9KU9KrpQG4S6zxFpwCijM0LMNfAFCd2FZvJ8kmQGgD3abi2J86DbCP1mvK3m41VcXsVuh5odHzZbh00gNrUOmPCCk3Zc8l077PbXiZ9LtXfCksqGl7Jjk7UxdSaIS04wLYIW495qdnlHHQVN5nFOXviGsdoQHb+PYRfyWrsE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=jq0/Bi8+; arc=none smtp.client-ip=185.125.25.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
-Received: from smtp-3-0001.mail.infomaniak.ch (unknown [IPv6:2001:1600:4:17::246c])
-	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4b8YTg2G0szT3S;
-	Sat, 31 May 2025 10:40:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digikod.net;
-	s=20191114; t=1748680839;
-	bh=aDOO32soUx4ivBS0LOVNv8TRKSSec0lWi7HQfvCT8e8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jq0/Bi8+MOFNrvGElUvgAA7b3qMIfXmvs2twjH4EckrdBmPRh0NkPqeDhqTtGHKWj
-	 dGyOIb/Vwxx8I3F21FPxR3kwyxqfjiZ94ePth/mpbkFxdUsG20sLI1so0QWMf8sbiq
-	 B1ff02L/uAlw5HdyIhkoa527/lgUTp03qqNX0lbU=
-Received: from unknown by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4b8YTf4WfDzSmT;
-	Sat, 31 May 2025 10:40:38 +0200 (CEST)
-Date: Sat, 31 May 2025 10:40:37 +0200
-From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-To: Song Liu <song@kernel.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
-	bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, 
-	ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, brauner@kernel.org, 
-	kpsingh@kernel.org, mattbobrowski@google.com, amir73il@gmail.com, repnop@google.com, 
-	jlayton@kernel.org, josef@toxicpanda.com, gnoack@google.com, 
-	Tingmao Wang <m@maowtm.org>
-Subject: Re: [PATCH bpf-next 3/4] bpf: Introduce path iterator
-Message-ID: <20250531.NaQu4eic9ieN@digikod.net>
-References: <20250529183536.GL2023217@ZenIV>
- <CAPhsuW7LFP0ddFg_oqkDyO9s7DZX89GFQBOnX=4n5mV=VCP5oA@mail.gmail.com>
- <20250529201551.GN2023217@ZenIV>
- <CAPhsuW5DP1x_wyzT1aYjpj3hxUs4uB8vdK9iEp=+i46QLotiOg@mail.gmail.com>
- <20250529214544.GO2023217@ZenIV>
- <CAPhsuW5oXZVEaMwNpSF74O7wZ_f2Qr_44pu9L4_=LBwdW5T9=w@mail.gmail.com>
- <20250529231018.GP2023217@ZenIV>
- <CAPhsuW6-J+NUe=jX51wGVP=nMFjETu+1LUTsWZiBa1ckwq7b+w@mail.gmail.com>
- <20250530.euz5beesaSha@digikod.net>
- <CAPhsuW5U-nPk4MFdZSeBNds0qEHjQZrC=c5q+AGNpsKiveC2wA@mail.gmail.com>
+	s=arc-20240116; t=1748681528; c=relaxed/simple;
+	bh=REe60zlbqeu01BOJVePubuQZLx8kofDHdn8NxkEDkks=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Vblc3wbrUEjjHjqzV0r1WzwN+Y04r5kHgA7p1rpgEGfALyDD48/6jV5Myyh12mZ2vckt07UartyglysDrMVQ9vsSW/SIDfUHdTRTLkMvzULWzmcviqeaybNt3KzaEZ+JAhDBiMBENdYcXg7EORI2DSuOecixdJpJe8UnhPo9vwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OfGgbmJX; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-747abb3cd0bso2271810b3a.1;
+        Sat, 31 May 2025 01:52:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748681526; x=1749286326; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=REe60zlbqeu01BOJVePubuQZLx8kofDHdn8NxkEDkks=;
+        b=OfGgbmJXuMm78Aj4iSx6+p9leW+M+/20Imo7fyu9h5grrRJQGMyvrSu27mzEPEeJvI
+         VaC1+o3Yxu8JAA3GK2DDXcAC7Yb6NsvikX+krkuFi1a/vmXs4U0YlOJhO2z2vjVbIOtk
+         DBTpCMqE+DzNIWOYC5/5whoK5SFkcFuYDZVqYCwbpw6Yce1WJpG6o+verNUaXTE9nz33
+         3ShA0cfM4XqNyKbAC7cJc9tFPA8O90kT0tXoclQkFSH9XTEFFpWnnwDYV0ag78gYQ5BS
+         EghIYqx7y+J8dNBj4bRTlH+PxXMlACtzn/KOXBOvBqsL37JmlvyGHTpyo7vhSlu1xyLw
+         gP1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748681526; x=1749286326;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=REe60zlbqeu01BOJVePubuQZLx8kofDHdn8NxkEDkks=;
+        b=iJvlp402iaAbL+80dN4DcdB+Zh3EA2A7KQP6lFqqkBClhqWG85/whBGgexqyrp4Br4
+         I5Ndy6EpkxAFI9IpQauggCUdoetyb6JTIMxVbJJDQhdbv1vu4/bbquDf04ST8pby2rXu
+         6fy8PrjyjD+qGDWc1jZ+Efr1ASkNiDa3FIWAsasj+fSyUSynePvKoHWDTEx5S4zt+jyF
+         VkqWoUp+WYC5zePNVQgedWVGroXUIL8c8anLEx/KjOWMH5XKoFG1RRwqEOjbH2/qbmkZ
+         Yv1MQzKNoUsjXwbtkcGD3WsDrQZSAoX3T3gZNcTcyJPnwcLk1Q9lAZ0usa89I+byuMQm
+         D0mQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVKpWehzOVBvFXctH/1P+wU/oTGWz52v2QNhdR7ecT3uwlmo4kEC1x4JLju7JilWP9yYY8=@vger.kernel.org, AJvYcCVsgL/LP2e6Cj3eaKEo8IEBOMirbOgg/hkkpLk3S8RoZqhYyLUpHJZ+2uMxao3ZkMrvQnn9Vbhe0/4MYoRJ@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywt73fvdcFU73J7YW2qQwRucRFBBSaDAyrFmcGdBj5jT/PHitHR
+	PWbnHGZzVBPu76pVrDOXVGQzalCrYk5LotzbgKQEb/cT6bIgTah96JYH
+X-Gm-Gg: ASbGnctsX+3POIXwDxLtWP552ax8BTj54CDhc7DvUVvLNCU8LLRxvZCu33WYUOptsq8
+	YOSXBx5Z6bc3nC5XmKM8HbEEmaLqUOtqZlJt+qUzXKDMbt+HWG3yX2IWGsj4Eu2UCNUr5VfKGmL
+	k3X7ekkl9D0J8ZLF1f2dlNi20f/gU4tPXE9YdYm0BJIp27FMM4P3J4ygpj5+f2mNe+0tVhDIHd2
+	tuWJWAHnBiHWf1MFJqLEtsviMkLwOwazJyaPL3x5Md9K75ZwGnEh/JSc9qPgq8EDL+zXOrHFXtV
+	SfNCqz09hDLr33FhP4b2841CeelhenzPYsc5g011PnbH7xMAv+RfR3KTtkS2tSMjrkvR3ObDbE4
+	t721rVXI9FZ4JmH8/+y03nqGG/AThdzbwYDcnZslb
+X-Google-Smtp-Source: AGHT+IFrK8g6/dGJ+qH8DK2puY7/mPl63dYSmPTZk3WE+0FNPHkZ94c11mvWpcO4rQ5k5aBxw+s1VQ==
+X-Received: by 2002:a17:903:1a0b:b0:234:71c1:d34f with SMTP id d9443c01a7336-234f67a7c06mr152428215ad.8.1748681525735;
+        Sat, 31 May 2025 01:52:05 -0700 (PDT)
+Received: from ?IPV6:2001:ee0:4f0e:fb30:af83:9564:6a79:4f18? ([2001:ee0:4f0e:fb30:af83:9564:6a79:4f18])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23506cd362fsm39298485ad.116.2025.05.31.01.52.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 31 May 2025 01:52:05 -0700 (PDT)
+Message-ID: <ef4ac528-3f91-4004-b47b-e758a5712d28@gmail.com>
+Date: Sat, 31 May 2025 15:51:57 +0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPhsuW5U-nPk4MFdZSeBNds0qEHjQZrC=c5q+AGNpsKiveC2wA@mail.gmail.com>
-X-Infomaniak-Routing: alpha
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH net-next v2 2/2] selftests: net: add XDP socket tests
+ for virtio-net
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: netdev@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
+ Jason Wang <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+ =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, virtualization@lists.linux.dev,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20250527161904.75259-1-minhquangbui99@gmail.com>
+ <20250527161904.75259-3-minhquangbui99@gmail.com> <aDhCfxHo3M5dxlpH@boxer>
+ <fe162eed-fd44-4c18-a541-8243ccfc4252@gmail.com> <aDmaT1cmoRa6PaqK@boxer>
+Content-Language: en-US
+From: Bui Quang Minh <minhquangbui99@gmail.com>
+In-Reply-To: <aDmaT1cmoRa6PaqK@boxer>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, May 30, 2025 at 11:55:22AM -0700, Song Liu wrote:
-> On Fri, May 30, 2025 at 5:20 AM Mickaël Salaün <mic@digikod.net> wrote:
-> [...]
-> > >
-> > > If we update path_parent in this patchset with choose_mountpoint(),
-> > > and use it in Landlock, we will close this race condition, right?
-> >
-> > choose_mountpoint() is currently private, but if we add a new filesystem
-> > helper, I think the right approach would be to expose follow_dotdot(),
-> > updating its arguments with public types.  This way the intermediates
-> > mount points will not be exposed, RCU optimization will be leveraged,
-> > and usage of this new helper will be simplified.
-> 
-> I think it is easier to add a helper similar to follow_dotdot(), but not with
-> nameidata. follow_dotdot() touches so many things in nameidata, so it
-> is better to keep it as-is. I am having the following:
+On 5/30/25 18:45, Maciej Fijalkowski wrote:
+> On Thu, May 29, 2025 at 09:29:14PM +0700, Bui Quang Minh wrote:
+>> On 5/29/25 18:18, Maciej Fijalkowski wrote:
+>>> On Tue, May 27, 2025 at 11:19:04PM +0700, Bui Quang Minh wrote:
+>>>> This adds a test to test the virtio-net rx when there is a XDP socket
+>>>> bound to it. There are tests for both copy mode and zerocopy mode, both
+>>>> cases when XDP program returns XDP_PASS and XDP_REDIRECT to a XDP socket.
+>>>>
+>>>> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
+>>> Hi Bui,
+>>>
+>>> have you considered adjusting xskxceiver for your needs? If yes and you
+>>> decided to go with another test app then what were the issues around it?
+>>>
+>>> This is yet another approach for xsk testing where we already have a
+>>> test framework.
+>> Hi,
+>>
+>> I haven't tried much hard to adapt xskxceiver. I did have a look at
+>> xskxceiver but I felt the supported topology is not suitable for my need. To
+>> test the receiving side in virtio-net, I use Qemu to set up virtio-net in
+>> the guest and vhost-net in the host side. The sending side is in the host
+>> and the receiving is in the guest so I can't figure out how to do that with
+>> xskxceiver.
+> I see - couldn't the python side be executing xdpsock then instead of your
+> own app?
 
-I was not suggesting to expose nameidata (only struct path and int), but
-yes, a standalone helper is OK and it will not tie it to the current
-follow_dotdot() internals.
+I'm not aware of xdpsock. Could you give the path to that file?
 
-> 
-> /**
->  * path_parent - Find the parent of path
-
-Because we update @path, I'd suggest a name containing "walk", something
-like path_walk_parent().
-
->  * @path: input and output path.
->  * @root: root of the path walk, do not go beyond this root. If @root is
->  *        zero'ed, walk all the way to real root.
->  *
->  * Given a path, find the parent path. Replace @path with the parent path.
->  * If we were already at the real root or a disconnected root, @path is
->  * not changed.
-
-We should explain that the semantic is the same as follow_dotdot(), but
-not follow_dots().
-
->  *
->  * Returns:
->  *  true  - if @path is updated to its parent.
->  *  false - if @path is already the root (real root or @root).
->  */
-> bool path_parent(struct path *path, const struct path *root)
-> {
->         struct dentry *parent;
-> 
->         if (path_equal(path, root))
->                 return false;
-> 
->         if (unlikely(path->dentry == path->mnt->mnt_root)) {
->                 struct path p;
-> 
->                 if (!choose_mountpoint(real_mount(path->mnt), root, &p))
->                         return false;
->                 path_put(path);
->                 *path = p;
->                 return true;
->         }
-> 
->         if (unlikely(IS_ROOT(path->dentry)))
->                 return false;
-> 
->         parent = dget_parent(path->dentry);
->         if (unlikely(!path_connected(path->mnt, parent))) {
->                 dput(parent);
->                 return false;
->         }
->         dput(path->dentry);
->         path->dentry = parent;
->         return true;
-> }
-> EXPORT_SYMBOL_GPL(path_parent);
-> 
-> And for Landlock, it is simply:
-> 
->                 if (path_parent(&walker_path, &root))
->                         continue;
-> 
->                 if (unlikely(IS_ROOT(walker_path.dentry))) {
->                         /*
->                          * Stops at disconnected or real root directories.
->                          * Only allows access to internal filesystems
->                          * (e.g. nsfs, which is reachable through
->                          * /proc/<pid>/ns/<namespace>).
->                          */
->                         if (walker_path.mnt->mnt_flags & MNT_INTERNAL) {
->                                 allowed_parent1 = true;
->                                 allowed_parent2 = true;
->                         }
->                         break;
->                 }
-> 
-> Does this look right?
-
-Yes, thanks.
-
-Al, Christian, would that be OK to backport this helper to fix the
-Landlock issue?  If yes, Song could you please put it in in a place that
-could be easily backported down to 5.15 e.g., just after handle_dots()?
-
-> 
-> Thanks,
-> Song
-> 
+> I wouldn't like to end up with several xsk tools for testing data path on
+> different environments.
 
