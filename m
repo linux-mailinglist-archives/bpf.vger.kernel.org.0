@@ -1,132 +1,261 @@
-Return-Path: <bpf+bounces-59411-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59412-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B65AAC9ABC
-	for <lists+bpf@lfdr.de>; Sat, 31 May 2025 13:49:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5065EAC9B3E
+	for <lists+bpf@lfdr.de>; Sat, 31 May 2025 15:51:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD24F189C6CD
-	for <lists+bpf@lfdr.de>; Sat, 31 May 2025 11:49:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0513B1741B0
+	for <lists+bpf@lfdr.de>; Sat, 31 May 2025 13:51:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95F0023BCE4;
-	Sat, 31 May 2025 11:49:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7510223C514;
+	Sat, 31 May 2025 13:51:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TEigLghs"
+	dkim=pass (2048-bit key) header.d=maowtm.org header.i=@maowtm.org header.b="SMumDkZY";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="eeUXMRF/"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from flow-b3-smtp.messagingengine.com (flow-b3-smtp.messagingengine.com [202.12.124.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16D7EEAD0;
-	Sat, 31 May 2025 11:49:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7672717597;
+	Sat, 31 May 2025 13:51:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748692164; cv=none; b=Ii9n6bzo6d8qnronXd9lR8SHD7/Az7o6X0LKsZyVFJYtXb/fwOozhEl5EeyLLuI8JFg7l9tm518L9adqNDDIb1lMyp2/s8NHzNm3EznIJgi9eGbTdJ7vbTgDeWO/+5oY5uyyYg8Cg1pLMEnLz6+uEbFnGFxp4LUlrTySmJhOWfo=
+	t=1748699491; cv=none; b=KgxKzyK9KAoE9W0VaEwOC3KESYXYCdwFBC2gPgtvGwu4uyklHfN0mPzRar1EgKMF4kC+CMkdH7O8ZE568wAu71GGJ+A78zq1isyN+dpcPVN/xiD1h+1XvMFES96q3nLdpI1LG/u9+zLXq+qsJXhSYm77qSf7KcCADAYoiclXaI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748692164; c=relaxed/simple;
-	bh=Af8HaQZyJpqo1jRB+/Ioz25AGaCCmNcBiYyroVixhYE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q+HkHKSF+8/uv2ms2cs5kv1DSgnnEjN0p0DBd8LWEjx/SpIWv0jSb53Nl0QgA498eIW2Zp8HNfne6pNPjhrxJXvUbv+he5mi2Q9o5a7XN68AqGsJNpcMhGdoTQRt407WEWpbcKA9F5678cQ8i1VlNQUpCYSPshSvqaI5wxolC0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TEigLghs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0B02C4CEE3;
-	Sat, 31 May 2025 11:49:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748692163;
-	bh=Af8HaQZyJpqo1jRB+/Ioz25AGaCCmNcBiYyroVixhYE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TEigLghsEjebwnfmaWzIZ5IRtT/hfObwzEXTQ8Xrf0NraDdI9BxKvVpEfIRfyUKdI
-	 /0xMCqtgKeTXOhGTsfqWy6U77gaq7n/52DNBUj64UXLWv3FoA6T+wyAqc8NmFlDeAp
-	 rSxIV3jPteD9etdKv1FXVOxb4+SG3mgbqLWQq89MEJp80szksXbTpaYPaillKbAHJf
-	 CriapOSmozuODEWbfG6yj+LIbcnSiuha19aZeePhoLsBFUeT2ees550idWHrMxYyQE
-	 0uPyDG5SRBdH2IS9EuxY5vMzU96opEP49UZs5FcBITe94bMqIWj9e3W8lXaxfu4wxO
-	 uNfnL0PIRWbHg==
-Date: Sat, 31 May 2025 08:49:20 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
-	bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>
-Subject: Re: [PATCH] perf lock contention: Reject more than 10ms delays for
- safety
-Message-ID: <aDrswP62_-fy3vUC@x1>
-References: <20250515181042.555189-1-namhyung@kernel.org>
+	s=arc-20240116; t=1748699491; c=relaxed/simple;
+	bh=/raXh0dUOshGWJWEiIMnLA2Onw6RDiCXkqUbcvlMGY4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jo96AvXGPabpIy384oiHSID4+8mA+nqpSzXrHDOh2O8+s+KxC9wU01Rt0akPTu2ht+dBC53TS1T7jqh8dmDj0Kmn00suBTDz5jMsldbDSqvqDxCluX+YlYA8uoU+riACus/GLwQrgcsRR6YGu6kAfpz0DPQTfjCHi+4WfaFF+c4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=maowtm.org; spf=pass smtp.mailfrom=maowtm.org; dkim=pass (2048-bit key) header.d=maowtm.org header.i=@maowtm.org header.b=SMumDkZY; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=eeUXMRF/; arc=none smtp.client-ip=202.12.124.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=maowtm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=maowtm.org
+Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
+	by mailflow.stl.internal (Postfix) with ESMTP id B50D91D4054D;
+	Sat, 31 May 2025 09:51:27 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-04.internal (MEProxy); Sat, 31 May 2025 09:51:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maowtm.org; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1748699487;
+	 x=1748706687; bh=gWomyldKWxU7l0zsMN1/xB5c7EUkzuXCPvf0zYP8PZ4=; b=
+	SMumDkZYeEFdxYEwIPRvgGcRaFptC5I03xhTEC7lcLpqIyR2HFJmFqE/QhaTKrYx
+	8lK9tzoMqur9vmr/XgGwvzDbIvYBK8ntRRtPJFrNCEm3hS6ne149RHBR7SR2tDn1
+	zMF3zxN6dz/cWEI4GwZCBCG0EYu0J1s1CSe2bzVyYqWm226onhKZDVxuqWE2USmd
+	9ecX3wT9ozkDOkZS0T2aURCezWrfzHiv/k5lElAx3oYHpxi46YNgpid5dbMj4jTQ
+	XaxOninPuTJtMY/CxY5j+pkCRc3Ai4XMi8aK5xXF8dJR0nLuwGKj8DdHyjD2rdsd
+	rVNfSgKlcWRektmJf4TCXw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1748699487; x=
+	1748706687; bh=gWomyldKWxU7l0zsMN1/xB5c7EUkzuXCPvf0zYP8PZ4=; b=e
+	eUXMRF/Lo0eFxfrq0NAeGCwmsR1xEbHVGZVT0Dmu65lMW869StEqobbjP6O8oq+X
+	WkdWpI6SFBRlGLYpLwwnerSChPIR2WW/uBuQuMeCjbbs08R+L5NXP3VRymtFkQwv
+	Fk3fGR3C0XhoE5poGXjhHt6cbVPBxlXn5SV5EaBdShum1ECK6QzGOw9yT26IHCT1
+	UNw/bBdJckTiGb+HZBVxVCjfaospkzBGVXOMCZnUOu8i+MmNqzJO0WFEUL/Ep8ZJ
+	fRmAOz5WOa58H6Pl2lloS2FP1p2d66saczD2pPgnMeniIDpxsKBPdD3xxaA+E7o1
+	BaI0BwUDhCAKfQW+iawhg==
+X-ME-Sender: <xms:Xgk7aGiOdOhVjen6OmUFvL_p0fQJRnni4o4ca7lPTDORvSeg61Nrww>
+    <xme:Xgk7aHAuaHEZR64dbv_CyB5PAtee7pZSifTJc1LacryTElyhVu45vGjSfiR85kMVh
+    2mf9sC7MttODMyIuf0>
+X-ME-Received: <xmr:Xgk7aOG9tMnKmp4qz57kvjot_YKUtUzpPO5nTUX0w6-W-NhP8qvj7hA3J9yNOFGh3X8l0ozuKeXPMlXIYcokVeuP>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddtgdefvddtjeculddtuddrgeefvddrtd
+    dtmdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggft
+    fghnshhusghstghrihgsvgdpuffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftd
+    dtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefkffggfgfuvfev
+    fhfhjggtgfesthekredttddvjeenucfhrhhomhepvfhinhhgmhgrohcuhggrnhhguceomh
+    esmhgrohifthhmrdhorhhgqeenucggtffrrghtthgvrhhnpedukeevhfegvedvveeihedv
+    vdeghfeglefgudegfeetvdekiefgledtheeggefhgfenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmsehmrghofihtmhdrohhrghdpnhgspghr
+    tghpthhtohepvddvpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehsohhngheskh
+    gvrhhnvghlrdhorhhgpdhrtghpthhtohepmhhitgesughighhikhhougdrnhgvthdprhgt
+    phhtthhopehlihhnuhigqdhfshguvghvvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpd
+    hrtghpthhtoheplhhinhhugidqshgvtghurhhithihqdhmohguuhhlvgesvhhgvghrrdhk
+    vghrnhgvlhdrohhrghdprhgtphhtthhopegsphhfsehvghgvrhdrkhgvrhhnvghlrdhorh
+    hgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdho
+    rhhgpdhrtghpthhtohepkhgvrhhnvghlqdhtvggrmhesmhgvthgrrdgtohhmpdhrtghpth
+    htoheprghnughrihhisehkvghrnhgvlhdrohhrghdprhgtphhtthhopegvugguhiiikeej
+    sehgmhgrihhlrdgtohhm
+X-ME-Proxy: <xmx:Xgk7aPRq3LKHnyDPYB8J2-GI7IgQO1xi_1ovkUSq_79KrdOK6z9e8Q>
+    <xmx:Xgk7aDyGJJ2wi3hiDbcLYNW2QKSMghPo2aaqsynNBSdqDQhTIVGVZw>
+    <xmx:Xgk7aN6rXQHwb2F4VS8UVNtQAZhn3ixZgLc7vr7dEi5Y36hsagogOA>
+    <xmx:Xgk7aAwzkSTonorkKVOpUg5J3b4_Np8pLOF5RlU5D8jXgJNnChHCsg>
+    <xmx:Xwk7aBxZzVzzDblqzACFNj5vCV1uKCO21d0ztZYnOllXey41gPsPX-eL>
+Feedback-ID: i580e4893:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 31 May 2025 09:51:23 -0400 (EDT)
+Message-ID: <027d5190-b37a-40a8-84e9-4ccbc352bcdf@maowtm.org>
+Date: Sat, 31 May 2025 14:51:22 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250515181042.555189-1-namhyung@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 2/4] landlock: Use path_parent()
+To: Song Liu <song@kernel.org>, =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?=
+ <mic@digikod.net>, linux-fsdevel@vger.kernel.org,
+ linux-security-module@vger.kernel.org
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+ andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+ martin.lau@linux.dev, viro@zeniv.linux.org.uk, brauner@kernel.org,
+ jack@suse.cz, kpsingh@kernel.org, mattbobrowski@google.com,
+ amir73il@gmail.com, repnop@google.com, jlayton@kernel.org,
+ josef@toxicpanda.com, gnoack@google.com
+References: <20250528222623.1373000-1-song@kernel.org>
+ <20250528222623.1373000-3-song@kernel.org>
+Content-Language: en-US
+From: Tingmao Wang <m@maowtm.org>
+In-Reply-To: <20250528222623.1373000-3-song@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, May 15, 2025 at 11:10:42AM -0700, Namhyung Kim wrote:
-> Delaying kernel operations can be dangerous and the kernel may kill
-> (non-sleepable) BPF programs running for long in the future.
+On 5/28/25 23:26, Song Liu wrote:
+> Use path_parent() to walk a path up to its parent.
 > 
-> Limit the max delay to 10ms and update the document about it.
+> While path_parent() has an extra check with path_connected() than existing
+> code, there is no functional changes intended for landlock.
 > 
->   $ sudo ./perf lock con -abl -J 100000us@cgroup_mutex true
->   lock delay is too long: 100000us (> 10ms)
-> 
->    Usage: perf lock contention [<options>]
-> 
->       -J, --inject-delay <TIME@FUNC>
->                             Inject delays to specific locks
-> 
-> Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> Signed-off-by: Song Liu <song@kernel.org>
 > ---
->  tools/perf/Documentation/perf-lock.txt | 8 ++++++--
->  tools/perf/builtin-lock.c              | 5 +++++
->  2 files changed, 11 insertions(+), 2 deletions(-)
+>  security/landlock/fs.c | 34 +++++++++++++++++-----------------
+>  1 file changed, 17 insertions(+), 17 deletions(-)
 > 
-> diff --git a/tools/perf/Documentation/perf-lock.txt b/tools/perf/Documentation/perf-lock.txt
-> index 2d9aecf630422aa6..c17b3e318169f9dc 100644
-> --- a/tools/perf/Documentation/perf-lock.txt
-> +++ b/tools/perf/Documentation/perf-lock.txt
-> @@ -224,8 +224,12 @@ CONTENTION OPTIONS
->  	only with -b/--use-bpf.
+> diff --git a/security/landlock/fs.c b/security/landlock/fs.c
+> index 6fee7c20f64d..32a24758ad6e 100644
+> --- a/security/landlock/fs.c
+> +++ b/security/landlock/fs.c
+> @@ -837,7 +837,6 @@ static bool is_access_to_paths_allowed(
+>  	 * restriction.
+>  	 */
+>  	while (true) {
+> -		struct dentry *parent_dentry;
+>  		const struct landlock_rule *rule;
 >  
->  	The 'time' is specified in nsec but it can have a unit suffix.  Available
-> -	units are "ms" and "us".  Note that it will busy-wait after it gets the
-> -	lock.  Please use it at your own risk.
-> +	units are "ms", "us" and "ns".  Currently it accepts up to 10ms of delays
-> +	for safety reasons.
-> +
-> +	Note that it will busy-wait after it gets the lock. Delaying locks can
-> +	have significant consequences including potential kernel crashes.  Please
-> +	use it at your own risk.
->  
->  
->  SEE ALSO
-> diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
-> index 41f6f3d2b779b986..3b3ade7a39cad01f 100644
-> --- a/tools/perf/builtin-lock.c
-> +++ b/tools/perf/builtin-lock.c
-> @@ -2537,6 +2537,11 @@ static bool add_lock_delay(char *spec)
->  		return false;
+>  		/*
+> @@ -896,19 +895,17 @@ static bool is_access_to_paths_allowed(
+>  		if (allowed_parent1 && allowed_parent2)
+>  			break;
+>  jump_up:
+> -		if (walker_path.dentry == walker_path.mnt->mnt_root) {
+> -			if (follow_up(&walker_path)) {
+> -				/* Ignores hidden mount points. */
+> -				goto jump_up;
+> -			} else {
+> -				/*
+> -				 * Stops at the real root.  Denies access
+> -				 * because not all layers have granted access.
+> -				 */
+> -				break;
+> -			}
+> -		}
+> -		if (unlikely(IS_ROOT(walker_path.dentry))) {
+> +		switch (path_parent(&walker_path)) {
+> +		case PATH_PARENT_CHANGED_MOUNT:
+> +			/* Ignores hidden mount points. */
+> +			goto jump_up;
+> +		case PATH_PARENT_REAL_ROOT:
+> +			/*
+> +			 * Stops at the real root.  Denies access
+> +			 * because not all layers have granted access.
+> +			 */
+> +			goto walk_done;
+> +		case PATH_PARENT_DISCONNECTED_ROOT:
+>  			/*
+>  			 * Stops at disconnected root directories.  Only allows
+>  			 * access to internal filesystems (e.g. nsfs, which is
+
+I was looking at the existing handling of disconnected root in Landlock
+and I realized that the comment here confused me a bit:
+
+/*
+ * Stops at disconnected root directories.  Only allows
+ * access to internal filesystems (e.g. nsfs, which is
+ * reachable through /proc/<pid>/ns/<namespace>).
+ */
+
+In the original code, this was under a
+
+    if (unlikely(IS_ROOT(walker_path.dentry)))
+
+which means that it only stops walking if we found out we're disconnected
+after reaching a filesystem boundary.  However if before we got to this
+point, we have already collected enough rules to allow access, access
+would be allowed, even if we're currently disconnected.  Demo:
+
+/ # cd /
+/ # cp /linux/samples/landlock/sandboxer .
+/ # mkdir a b
+/ # mkdir a/foo
+/ # echo baz > a/foo/bar
+/ # mount --bind a b
+/ # LL_FS_RO=/ LL_FS_RW=/ ./sandboxer bash
+Executing the sandboxed command...
+/ # cd /b/foo
+/b/foo # cat bar
+baz
+/b/foo # mv /a/foo /foo
+/b/foo # cd ..     # <- We're now disconnected
+bash: cd: ..: No such file or directory
+/b/foo # cat bar
+baz                # <- but landlock still lets us read the file
+
+However, I think this patch will change this behavior due to the use of
+path_connected
+
+root@10a8fff999ce:/# mkdir a b
+root@10a8fff999ce:/# mkdir a/foo
+root@10a8fff999ce:/# echo baz > a/foo/bar
+root@10a8fff999ce:/# mount --bind a b
+root@10a8fff999ce:/# LL_FS_RO=/ LL_FS_RW=/ ./sandboxer bash
+Executing the sandboxed command...
+bash: cannot set terminal process group (191): Inappropriate ioctl for device
+bash: no job control in this shell
+root@10a8fff999ce:/# cd /b/foo
+root@10a8fff999ce:/b/foo# cat bar
+baz
+root@10a8fff999ce:/b/foo# mv /a/foo /foo
+root@10a8fff999ce:/b/foo# cd ..
+bash: cd: ..: No such file or directory
+root@10a8fff999ce:/b/foo# cat bar
+cat: bar: Permission denied
+
+I'm not sure if the original behavior was intentional, but since this
+technically counts as a functional changes, just pointing this out.
+
+Also I'm slightly worried about the performance overhead of doing
+path_connected for every hop in the iteration (but ultimately it's
+Mickaël's call).  At least for Landlock, I think if we want to block all
+access to disconnected files, as long as we eventually realize we have
+been disconnected (by doing the "if dentry == path.mnt" check once when we
+reach root), and in that case deny access, we should be good.
+
+
+> @@ -918,12 +915,15 @@ static bool is_access_to_paths_allowed(
+>  				allowed_parent1 = true;
+>  				allowed_parent2 = true;
+>  			}
+> +			goto walk_done;
+> +		case PATH_PARENT_SAME_MOUNT:
+>  			break;
+> +		default:
+> +			WARN_ON_ONCE(1);
+> +			goto walk_done;
+>  		}
+> -		parent_dentry = dget_parent(walker_path.dentry);
+> -		dput(walker_path.dentry);
+> -		walker_path.dentry = parent_dentry;
 >  	}
+> +walk_done:
+>  	path_put(&walker_path);
 >  
-> +	if (duration > 10 * 1000 * 1000) {
-> +		pr_err("lock delay is too long: %s (> 10ms)\n", spec);
-> +		return false;
-> +	}
-> +
+>  	if (!allowed_parent1) {
 
-Please consider to replace those 1000 * 1000 her and in other places
-with NSEC_PER_MSEC in a followup patch for the next merge window.
-
-- Arnaldo
-
->  	tmp = realloc(delays, (nr_delays + 1) * sizeof(*delays));
->  	if (tmp == NULL) {
->  		pr_err("Memory allocation failure\n");
-> -- 
-> 2.49.0.1101.gccaa498523-goog
 
