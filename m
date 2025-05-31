@@ -1,81 +1,100 @@
-Return-Path: <bpf+bounces-59400-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59401-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 278C0AC98C1
-	for <lists+bpf@lfdr.de>; Sat, 31 May 2025 03:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D9ECAC98FD
+	for <lists+bpf@lfdr.de>; Sat, 31 May 2025 05:10:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B60044E21CC
-	for <lists+bpf@lfdr.de>; Sat, 31 May 2025 01:18:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D295616A354
+	for <lists+bpf@lfdr.de>; Sat, 31 May 2025 03:10:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9A401BC41;
-	Sat, 31 May 2025 01:18:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81E901448E0;
+	Sat, 31 May 2025 03:09:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ivCVrGK6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ljvns2tY"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32CE2F9CB;
-	Sat, 31 May 2025 01:18:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E34FD1EB39;
+	Sat, 31 May 2025 03:09:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748654295; cv=none; b=kngYkQLKxzMbTlbyjlddL9qZv7e3lGdBgQhntHS+E3OMXvMo7OckPla7hfeUHIzdEqMO03xXD37Xg2P2D0nIVJEwykiy14p4kW5Wpv6dX6RMxa6DkEK6RWsaM9lyBcITxTald8XwrGu5ts8S+KRD2mejd/rRYaanybAMfP9azZE=
+	t=1748660997; cv=none; b=OAi17aS5QeBn7mLcJdGX7doR0mVOFx26qqLY87/QAaFAHuPN0kSZPfwUUSOq5sFkzuLFNdYgufmvbQKcz0MEt2OGDN2BD2e/ETFUYkg1y/A4LKbttmNrCgvhJ8hqGF/p47UB3DZg+HkwXp4ctKmu4cdPXX3ndfZ0+Fc5OHhFdzM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748654295; c=relaxed/simple;
-	bh=KCloIB4T1/EcOdaoUCdYvcDOeG6BrP9cZb98xI5Osr8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=B+N+2WcnDb9Y/6u9Cy5iQ6L4SrD1SlC5bJdQ5LmjyvF/o7pWuH1oDknRjM9/L4MUh+E44Op+0nlgwRrcZ5Chw3OVbCNx3K3eX/JH1re94KPvIuh90VpMdHM0okg/PGeSu9dZ0wBRPgGdbZyu+SS4CYiHphw3xgctgobDTIalqAI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ivCVrGK6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 370D1C4CEEB;
-	Sat, 31 May 2025 01:18:14 +0000 (UTC)
+	s=arc-20240116; t=1748660997; c=relaxed/simple;
+	bh=z8gZ+q37IvEpWDej+h76Rujah+rzvK1Yk/0ORMQ4eOI=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=We+3c6sGCboTRz0dV8/d3jy4wWBlWnQ+iqq0vLqJN7qUtOyynU79WwYcadJMimyT616b7MXQHbrsbBP4Q8rZP+P7DboCyJRKJ2r6o2xb+lmkQzqWGw03o06Zsg3Ohh+sLu9Uuek2/MqHpRt00NeCquFco2Uiq5bnwUo3xjjAfj8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ljvns2tY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AEB3C4CEEB;
+	Sat, 31 May 2025 03:09:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748654294;
-	bh=KCloIB4T1/EcOdaoUCdYvcDOeG6BrP9cZb98xI5Osr8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ivCVrGK6y3FxEiSPx2LR+tn+xwI7k8qQvJFmg0APzeLXFaeDQ7KvHLHKAj9ZxOCCq
-	 fYAAwkj9ySulYuGiM0ugEjacpu8TBD9K9MHqcjMDAVpK6woguex8ijRWE7aXDuCdog
-	 aF/+9734UvpR271lmGy8gYEZrzQRaC1IzvFncqy3LycmteBjJ8iEhClp9O20P9jiGY
-	 a97Ubx3eBRG/5VwckcaWjApi86LBSeqpXSllrYQp9JwKB738YQUETs0z3lUXK8NGqN
-	 Y8q4L2nmvU5Rju2D46fwJQtoY6gQqC/pQ+CFGOb/5liXEHCImvv+8nPOiBS6e5L3Fq
-	 ahSq9wndCMlcQ==
-Date: Fri, 30 May 2025 18:18:13 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, LKML
- <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
- bpf@vger.kernel.org, Jonathan Lemon <jonathan.lemon@gmail.com>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>, Masami Hiramatsu
- <mhiramat@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Subject: Re: [PATCH] xdp: Remove unused mem_return_failed event
-Message-ID: <20250530181813.1024eec5@kernel.org>
-In-Reply-To: <20250530121638.35106c15@gandalf.local.home>
-References: <20250529160550.1f888b15@gandalf.local.home>
-	<696364e6-5eb1-4543-b9f4-60fba10623fc@kernel.org>
-	<20250530121638.35106c15@gandalf.local.home>
+	s=k20201202; t=1748660996;
+	bh=z8gZ+q37IvEpWDej+h76Rujah+rzvK1Yk/0ORMQ4eOI=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=Ljvns2tYEp7FnoH02Ay/quaAkbUmtUORD8q6ntDbnCcVbxkuXij4gw9qL0zGbamsv
+	 QiWkhB6B4o6lgQZ3G/gfpDB93wU7Rtm9uGC2RZC+CPWUU3Dr+bhjL3kVirw1ZGnruI
+	 sa9vS29R97ogEWJfMtmbYExZx93Darp4ZA/M/UQIsbLiw35tq4j8PWMhfaIxtwEFDh
+	 b5mZ4yUX/aWzsJe1v8/13iXZFP4wFBnAcj1Pwz6dOlth5izzEgZ0EJV8EX3lbaDoqd
+	 ZiCznJW7AN+Oyry99ws/awerk1rTV9GSUACAAw4CxH2ryUS0hSWh1Yecahpmjtrp/A
+	 FXIlhzfH3zJ5Q==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB0A239F1DF3;
+	Sat, 31 May 2025 03:10:30 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net,v3] hv_netvsc: fix potential deadlock in
+ netvsc_vf_setxdp()
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <174866102976.15083.16967733452112171542.git-patchwork-notify@kernel.org>
+Date: Sat, 31 May 2025 03:10:29 +0000
+References: <1748513910-23963-1-git-send-email-ssengar@linux.microsoft.com>
+In-Reply-To: <1748513910-23963-1-git-send-email-ssengar@linux.microsoft.com>
+To: Saurabh Sengar <ssengar@linux.microsoft.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+ decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+ edumazet@google.com, pabeni@redhat.com, horms@kernel.org, ast@kernel.org,
+ daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+ sdf@fomichev.me, kuniyu@amazon.com, ahmed.zaki@intel.com,
+ aleksander.lobakin@intel.com, linux-hyperv@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ ssengar@microsoft.com, stable@vger.kernel.org
 
-On Fri, 30 May 2025 12:16:38 -0400 Steven Rostedt wrote:
-> > Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>  
+Hello:
+
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Thu, 29 May 2025 03:18:30 -0700 you wrote:
+> The MANA driver's probe registers netdevice via the following call chain:
 > 
-> Thanks. Will this go through the networking tree or should I just take it?
+> mana_probe()
+>   register_netdev()
+>     register_netdevice()
+> 
+> register_netdevice() calls notifier callback for netvsc driver,
+> holding the netdev mutex via netdev_lock_ops().
+> 
+> [...]
 
-If you're planning to send it to Linus in this MW, still, go for it:
-Acked-by: Jakub Kicinski <kuba@kernel.org>
-If you mean to keep it in your -next tree for next MW I think we should
-take it to avoid conflict noise. But our -next tree is closed during MW
-per linux-next preferences.
+Here is the summary with links:
+  - [net,v3] hv_netvsc: fix potential deadlock in netvsc_vf_setxdp()
+    https://git.kernel.org/netdev/net/c/3ec523304976
 
-IOW please take it if you wanna ship it now, otherwise please repost
-after MW?
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
