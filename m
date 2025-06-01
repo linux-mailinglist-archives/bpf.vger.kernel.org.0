@@ -1,81 +1,136 @@
-Return-Path: <bpf+bounces-59415-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59416-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77C93AC9CA8
-	for <lists+bpf@lfdr.de>; Sat, 31 May 2025 22:14:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BC00AC9DE9
+	for <lists+bpf@lfdr.de>; Sun,  1 Jun 2025 08:58:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C73417D49E
-	for <lists+bpf@lfdr.de>; Sat, 31 May 2025 20:14:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76776178608
+	for <lists+bpf@lfdr.de>; Sun,  1 Jun 2025 06:58:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2DED1A5B99;
-	Sat, 31 May 2025 20:14:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D996118BC2F;
+	Sun,  1 Jun 2025 06:58:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Wg4BCu68"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BCBC139D;
-	Sat, 31 May 2025 20:14:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 018B52DCBFA
+	for <bpf@vger.kernel.org>; Sun,  1 Jun 2025 06:58:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748722484; cv=none; b=EvpXMCPDrhUe1PIwNOBzB1wcRPmjxzvpiropWZiLr4HjVrm+UmV1o+L6DJVL8OK9IfA85PWAVADBsEkgMU31vH7oXbQ74rQF4Dan1NVGTWoZDlNZcRIH/sYekE9sRz+1xAWjkrsKmM6J3Mf6bCRWcQ+iMxtw8wrMna+sGs4eHok=
+	t=1748761101; cv=none; b=QLeCHjIn3GODgJLCrwKSI9RcnToAMbkKuNpqJm5qFUB+q3TufAd3iACWSlro+iz0M3GE+z1KOq1MXZc8odfhzGJepWbgf3jaU68T441fS6doAXM1UJDFvXCQ7l0mSIAHhM0B0acWSACxQ2KMvhLxgpuBVwaUGEnkUWBBJD+FfkE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748722484; c=relaxed/simple;
-	bh=EWn7oCviz4cJo10FkBXaHDfYtLYegc5N4X7rrxnu7lU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pF7cBtD8Ogx2AjGZrgS5tF9nase0Tm+GaoXxdA6rDUMx5ZKpXJyTy2XOAmkq61vRp3QoSxYquy/3qOCvkk54Kn9AzCDpvCJfTAQWtEQo9tEn015/e3F4E/LIbyYA/FW9HXpnTkIQJAL6r0clu9gcG6GOiLhl8kXwQCO945Gv9wM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCEA6C4CEE3;
-	Sat, 31 May 2025 20:14:42 +0000 (UTC)
-Date: Sat, 31 May 2025 16:15:49 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, LKML
- <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
- bpf@vger.kernel.org, Jonathan Lemon <jonathan.lemon@gmail.com>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>, Masami Hiramatsu
- <mhiramat@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Subject: Re: [PATCH] xdp: Remove unused mem_return_failed event
-Message-ID: <20250531161549.6e1c69c7@gandalf.local.home>
-In-Reply-To: <20250530181813.1024eec5@kernel.org>
-References: <20250529160550.1f888b15@gandalf.local.home>
-	<696364e6-5eb1-4543-b9f4-60fba10623fc@kernel.org>
-	<20250530121638.35106c15@gandalf.local.home>
-	<20250530181813.1024eec5@kernel.org>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1748761101; c=relaxed/simple;
+	bh=eSUi6mmwtriXuiK98d3JawAKXWxnhpANAYkppm1QY7Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MPlLZZB7wxf64akgv9dD/sLYp8DmudlTXo545tthpc8XdcbFE3L+S7aXszIS7C6BogyZPC9QF3T5RXGHKG/Inj9puCO1nSGnDlG9fdtEFQME36b7S5a1DCRQqc/IbD/UTMa/WoBymQ6rSAtHo7oSUcMMZ6ePt8WdEOaCmRNnfFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Wg4BCu68; arc=none smtp.client-ip=95.215.58.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <44c3a765-4300-44c8-a3fb-eef8f4b7c39f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1748761084;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dYg4W8sQIGZJe7GW8WiUziY9FirriCAkkpB+aVxZCdk=;
+	b=Wg4BCu6828ffzhpti/R5N1sjQ2d8nk63y1px0GVrXVbFRmFa4AzELhRagJRLEOKacDEySI
+	QXjR1+2EdttnBcyctmxQSiYFvvLrGzOQL3e1BmwHVxu6kc7/XGL4ycQkFcTachYzZIIpKU
+	8hClrSUc5s0Fg0mbGAPo5tE80dwIi5w=
+Date: Sun, 1 Jun 2025 14:57:39 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH bpf-next 1/3] bpf: Add cookie to raw_tp bpf_link_info
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, qmo@kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20250529165759.2536245-1-chen.dylane@linux.dev>
+ <aDq-F9nK4K74ubjo@krava>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Tao Chen <chen.dylane@linux.dev>
+In-Reply-To: <aDq-F9nK4K74ubjo@krava>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, 30 May 2025 18:18:13 -0700
-Jakub Kicinski <kuba@kernel.org> wrote:
-
-> On Fri, 30 May 2025 12:16:38 -0400 Steven Rostedt wrote:
-> > > Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>    
-> > 
-> > Thanks. Will this go through the networking tree or should I just take it?  
+在 2025/5/31 16:30, Jiri Olsa 写道:
+> On Fri, May 30, 2025 at 12:57:57AM +0800, Tao Chen wrote:
+>> After commit 68ca5d4eebb8 ("bpf: support BPF cookie in raw tracepoint
+>> (raw_tp, tp_btf) programs"), we can show the cookie in bpf_link_info
+>> like kprobe etc.
+>>
+>> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+>> ---
+>>   include/uapi/linux/bpf.h       | 1 +
+>>   kernel/bpf/syscall.c           | 1 +
+>>   tools/include/uapi/linux/bpf.h | 1 +
+>>   3 files changed, 3 insertions(+)
+>>
+>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>> index 07ee73cdf9..7d0ad5c2b6 100644
+>> --- a/include/uapi/linux/bpf.h
+>> +++ b/include/uapi/linux/bpf.h
+>> @@ -6644,6 +6644,7 @@ struct bpf_link_info {
+>>   		struct {
+>>   			__aligned_u64 tp_name; /* in/out: tp_name buffer ptr */
+>>   			__u32 tp_name_len;     /* in/out: tp_name buffer len */
 > 
-> If you're planning to send it to Linus in this MW, still, go for it:
-> Acked-by: Jakub Kicinski <kuba@kernel.org>
-> If you mean to keep it in your -next tree for next MW I think we should
-> take it to avoid conflict noise. But our -next tree is closed during MW
-> per linux-next preferences.
+> there's hole now in here, let's add something like
 > 
-> IOW please take it if you wanna ship it now, otherwise please repost
-> after MW?
+>    __u32 reserved;
+> 
 
-Yeah, I think I'll try to get it in now. I'll ping the maintainers of my
-other patches to see if I can get them all in in one go.
+Sounds good, i will add it in v2, thanks.
 
-Thanks,
+> jirka
+> 
+> 
+>> +			__u64 cookie;
+>>   		} raw_tracepoint;
+>>   		struct {
+>>   			__u32 attach_type;
+>> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+>> index 9794446bc8..1c3dbe44ac 100644
+>> --- a/kernel/bpf/syscall.c
+>> +++ b/kernel/bpf/syscall.c
+>> @@ -3687,6 +3687,7 @@ static int bpf_raw_tp_link_fill_link_info(const struct bpf_link *link,
+>>   		return -EINVAL;
+>>   
+>>   	info->raw_tracepoint.tp_name_len = tp_len + 1;
+>> +	info->raw_tracepoint.cookie = raw_tp_link->cookie;
+>>   
+>>   	if (!ubuf)
+>>   		return 0;
+>> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+>> index 07ee73cdf9..7d0ad5c2b6 100644
+>> --- a/tools/include/uapi/linux/bpf.h
+>> +++ b/tools/include/uapi/linux/bpf.h
+>> @@ -6644,6 +6644,7 @@ struct bpf_link_info {
+>>   		struct {
+>>   			__aligned_u64 tp_name; /* in/out: tp_name buffer ptr */
+>>   			__u32 tp_name_len;     /* in/out: tp_name buffer len */
+>> +			__u64 cookie;
+>>   		} raw_tracepoint;
+>>   		struct {
+>>   			__u32 attach_type;
+>> -- 
+>> 2.43.0
+>>
 
--- Steve
+
+-- 
+Best Regards
+Tao Chen
 
