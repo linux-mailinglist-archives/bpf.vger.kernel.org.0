@@ -1,157 +1,187 @@
-Return-Path: <bpf+bounces-59458-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59459-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F06AACBCC6
-	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 23:40:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BF76ACBD2A
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 00:16:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC9471894597
-	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 21:40:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5329516C098
+	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 22:16:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C1D822B8B6;
-	Mon,  2 Jun 2025 21:39:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HLKRAjGi"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BF801E521A;
+	Mon,  2 Jun 2025 22:16:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB61722A4E1;
-	Mon,  2 Jun 2025 21:39:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A6D82C3254;
+	Mon,  2 Jun 2025 22:16:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748900398; cv=none; b=ci3uEDl/VyOby/CV8vIOi6Vo03fCi9KoBbHysSgoDcSIbrTpTujOYUjZyhiC4L9p9XPhyA3OPqF66/8f+LfyuLMKV6s1K6izxQUL2W9M4ipdz/9flUwibdiFJfflCJLLaCJdyMiV5gYDxBqoBMoH0b2PaO6zpwJ8k35fJW4QfXM=
+	t=1748902596; cv=none; b=rXFO93M3xTFgDFXxiJ13h5T+jatscxKLqle9BmvMdu+hdbrKA/1q+3pnsDCGFjNIW1EhT15NBFwCpNSVClldue+W9Z4xQRz3lKpEkFzMQDMg4Fi0mrByaq6Z2bB8XFk5e/KVJlXcxB7Q+NlJd/jusIunV5/apRmyRLVo9auCzr4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748900398; c=relaxed/simple;
-	bh=D5rMwgMuw7vFEBLzBjHtdZTfsg5qAmhgT0qIubto9J4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RQv02A9q7Fh9She5cofbobYrg2P9mC163sdWSkvZ1Y1xa71Xmu2eSBWl1+bIashl2ppSMRbLoTStetbgKbZbYR4HnQi0EvD9GElVjFQe6dZmS9/9hOnj5mGF+5Koo6me8XEr16shIRYSpgCKKgVWZBK6IlJvhTkvzaVKXYSrXPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HLKRAjGi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3251BC4CEF9;
-	Mon,  2 Jun 2025 21:39:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748900398;
-	bh=D5rMwgMuw7vFEBLzBjHtdZTfsg5qAmhgT0qIubto9J4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=HLKRAjGigSWDLuFnxM8vofEHocn+JaqHR5pGIkrgYeAW9be3PE/2mdjXlbixptb1b
-	 +cczS7ulkWOezL95LKGr+vc7fxZvxUSTB8TjnAW6Dns7BujG4ebPMBc2orA0uVW/8V
-	 rPoHCnWMnbRUE7wqBffUXbNgFxj3ELkLnjOjAojnaqmmcqN9/ASdBGrFxCZV7vBLwR
-	 qv3aQ6dXZSfZ6qEgo1ishXxI1LPnExdY3nQ3wW4kX8EkRAfCsubEzqg0YNJbYwVkWu
-	 dZ0TXpJLBMduAS2nqLZqwITfT6HsO6xv9E+3PmeM137n683ixBcQZyjRhUvZ0w9har
-	 enoLdX9N4N7ig==
-Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-4a56cc0def0so37242801cf.3;
-        Mon, 02 Jun 2025 14:39:58 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUNVHiAu7LWdfaxaglj5qLv88bNA+MgkqknGfbmVnRANrvssnfDcSny5yGAHxXgLNdWNY/8vsu3wDquXPlUxk6ZqZbzEVz6@vger.kernel.org, AJvYcCVu7CQalzFvMl7wdmaULg/Oc2UDMGGe7HHAudyO3mUfInmPb29E99sd/lEe7MFNfaL8CF8=@vger.kernel.org, AJvYcCWC9tlzIqAOPkaze1xpuN6vR/UwA/9D+6AdUjOLPI1JgmRSUOUy5sd9A3fCg4FVr0t0n6ej3vcLLvzyYfNc@vger.kernel.org, AJvYcCXf8q8HZdk7kA/5BAPuWmpEq57S1ds9U1xXfhDr30QzJor0VLYnd4nm4App55o6+bc2y8e3lWEUx5i3cKGrdw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzJq6YHQR17zggIjERDTpOJc7dNTTrESVBpR/ye4CilillTM1zA
-	P4+9rIx+2cEfnHAJQMIyhC3GhgjsclHt66QwyCsmpTC4CcAVvwhUhRKjmFuCW7L9yCdm+1Xn59U
-	+HJ96hiiA3Q5lphcQ0OKJNzdOwCWSOVM=
-X-Google-Smtp-Source: AGHT+IEl19xYKphp6ScpotIBp7vISmshyLgOHscf74bsxVvcAveqQtSi4J8d9EExxhp1QPyLAmlOFMD+xXrQ1asLmnM=
-X-Received: by 2002:a05:622a:8ca:b0:4a4:31e2:2e77 with SMTP id
- d75a77b69052e-4a4aed6d87fmr194893451cf.50.1748900397157; Mon, 02 Jun 2025
- 14:39:57 -0700 (PDT)
+	s=arc-20240116; t=1748902596; c=relaxed/simple;
+	bh=SjiaE8Mx135bBY5XzHbSmvcZrGy8SqtHZrrGihjp0MM=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=itKw3pxss8T7vtR+B74X8jg++87uWqgvCi+t4pIDQ/Jlqyqb0ZNwIaVgOFra8FRrdvfquay7V+Oq5HUf1fukA/O4wQsmI+Ex1m9I/5ZJew547i6Wfit/bJOdq3FfxANlwm7Ljh0RXvCnc16M4fhQFwXNDRPQ0aVTwzf3WjGfWrw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35FD6C4CEEB;
+	Mon,  2 Jun 2025 22:16:31 +0000 (UTC)
+Date: Mon, 2 Jun 2025 18:17:43 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Howard Chu <howardchu95@gmail.com>
+Cc: Namhyung Kim <namhyung@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, acme@kernel.org, mingo@redhat.com,
+ mark.rutland@arm.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+ irogers@google.com, adrian.hunter@intel.com, peterz@infradead.org,
+ kan.liang@linux.intel.com, linux-perf-users@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Song Liu <song@kernel.org>,
+ bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [RFC PATCH v1] perf trace: Mitigate failures in parallel perf
+ trace instances
+Message-ID: <20250602181743.1c3dabea@gandalf.local.home>
+In-Reply-To: <CAH0uvojGoLX6mpK9wA1cw-EO-y_fUmdndAU8eZ1pa70Lc_rvvw@mail.gmail.com>
+References: <20250529065537.529937-1-howardchu95@gmail.com>
+	<aDpBTLoeOJ3NAw_-@google.com>
+	<CAH0uvojGoLX6mpK9wA1cw-EO-y_fUmdndAU8eZ1pa70Lc_rvvw@mail.gmail.com>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250528222623.1373000-1-song@kernel.org> <20250528222623.1373000-4-song@kernel.org>
- <20250528223724.GE2023217@ZenIV> <yti2dilasy7b3tu6iin5pugkn6oevdswrwoy6gorudb7x2cqhh@nqb3gcyxg4by>
- <CAPhsuW4tg+bXU41fhAaS0n74d_a_KCFGvy_vkQOj7v4VLie2wg@mail.gmail.com>
- <20250529173810.GJ2023217@ZenIV> <CAPhsuW5pAvH3E1dVa85Kx2QsUSheSLobEMg-b0mOdtyfm7s4ug@mail.gmail.com>
- <20250602-lustig-erkennbar-7ef28fa97e20@brauner> <CAPhsuW7ogestn8Cc2jac2O0fnWcH_w=HuZQiSOx0umM4uT6Whg@mail.gmail.com>
- <CAADnVQ+_T2UTVQA9XXew26XR8zqhNpwX33Uy_pVW0_7s-bexLg@mail.gmail.com>
-In-Reply-To: <CAADnVQ+_T2UTVQA9XXew26XR8zqhNpwX33Uy_pVW0_7s-bexLg@mail.gmail.com>
-From: Song Liu <song@kernel.org>
-Date: Mon, 2 Jun 2025 14:39:43 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4JRgWDJNp5yysH1xNvaXCLg3c_QEHAMiuCwzbZ7e-hhQ@mail.gmail.com>
-X-Gm-Features: AX0GCFskcyFCGev_LYvQ3JP4unXF6FRY_i6cg5E06f6c2dBU7o8khi7-pZnJUk0
-Message-ID: <CAPhsuW4JRgWDJNp5yysH1xNvaXCLg3c_QEHAMiuCwzbZ7e-hhQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/4] bpf: Introduce path iterator
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Christian Brauner <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
-	bpf <bpf@vger.kernel.org>, Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	LSM List <linux-security-module@vger.kernel.org>, Kernel Team <kernel-team@meta.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eduard <eddyz87@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Matt Bobrowski <mattbobrowski@google.com>, Amir Goldstein <amir73il@gmail.com>, repnop@google.com, 
-	Jeff Layton <jlayton@kernel.org>, Josef Bacik <josef@toxicpanda.com>, 
-	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
-	=?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 2, 2025 at 8:40=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Mon, Jun 2, 2025 at 6:27=E2=80=AFAM Song Liu <song@kernel.org> wrote:
-> >
-> > On Mon, Jun 2, 2025 at 2:27=E2=80=AFAM Christian Brauner <brauner@kerne=
-l.org> wrote:
-> > >
-> > > On Thu, May 29, 2025 at 11:00:51AM -0700, Song Liu wrote:
-> > > > On Thu, May 29, 2025 at 10:38=E2=80=AFAM Al Viro <viro@zeniv.linux.=
-org.uk> wrote:
-> > > > >
-> > > > > On Thu, May 29, 2025 at 09:53:21AM -0700, Song Liu wrote:
-> > > > >
-> > > > > > Current version of path iterator only supports walking towards =
-the root,
-> > > > > > with helper path_parent. But the path iterator API can be exten=
-ded
-> > > > > > to cover other use cases.
-> > > > >
-> > > > > Clarify the last part, please - call me paranoid, but that sounds=
- like
-> > > > > a beginning of something that really should be discussed upfront.
-> > > >
-> > > > We don't have any plan with future use cases yet. The only example
-> > > > I mentioned in the original version of the commit log is "walk the
-> > > > mount tree". IOW, it is similar to the current iterator, but skips =
-non
-> > > > mount point iterations.
-> > > >
-> > > > Since we call it "path iterator", it might make sense to add ways t=
-o
-> > > > iterate the VFS tree in different patterns. For example, we may
-> > >
-> > > No, we're not adding a swiss-army knife for consumption by out-of-tre=
-e
-> > > code. I'm not opposed to adding a sane iterator for targeted use-case=
-s
-> > > with a clear scope and internal API behavior as I've said multiple ti=
-mes
-> > > already on-list and in-person.
-> > >
-> > > I will not merge anything that will endup exploding into some fancy
-> > > "walk subtrees in any order you want".
-> >
-> > We are not proposing (and AFAICT never proposed) to have a
-> > swiss-army knife that "walk subtrees in any order you want". Instead,
-> > we are proposing a sane iterator that serves exactly one use case
-> > now. I guess the concern is that it looks extensible. However, I made
-> > the API like this so that it can be extended, with thorough reviews, to
-> > cover another sane use case. If there is still concern with this. We
-> > sure can make current code not extensible. In case there is a
-> > different sane use case, we will introduce another iterator after
-> > thorough reviews.
->
-> It's good that the iterator is extensible, but to achieve that
-> there is no need to introduce "enum bpf_path_iter_mode"
-> which implies some unknown walk patterns.
-> Just add "u64 flags" to bpf_iter_path_new() and
-> if (!flags) return -EINVAL;
-> Then we'll have a way to extend that kfunc if really necessary.
-> Deleting and introducing new kfuncs/iterators is not a big deal,
-> but reserving 'flags' as an option for extension is almost
-> always a good backup.
+On Fri, 30 May 2025 17:00:38 -0700
+Howard Chu <howardchu95@gmail.com> wrote:
 
-Sounds good! I will prepare v2 with a flags field.
+> Hello Namhyung,
+>=20
+> On Fri, May 30, 2025 at 4:37=E2=80=AFPM Namhyung Kim <namhyung@kernel.org=
+> wrote:
+> >
+> > Hello,
+> >
+> > (Adding tracing folks) =20
+>=20
+> (That's so convenient wow)
 
-Thanks,
-Song
+Shouldn't the BPF folks be more relevant. I don't see any of the tracing
+code involved here.
+
+>=20
+> >
+> > On Wed, May 28, 2025 at 11:55:36PM -0700, Howard Chu wrote: =20
+> > > perf trace utilizes the tracepoint utility, the only filter in perf
+> > > trace is a filter on syscall type. For example, if perf traces only
+> > > openat, then it filters all the other syscalls, such as readlinkat,
+> > > readv, etc.
+> > >
+> > > This filtering is flawed. Consider this case: two perf trace
+> > > instances are running at the same time, trace instance A tracing
+> > > readlinkat, trace instance B tracing openat. When an openat syscall
+> > > enters, it triggers both BPF programs (sys_enter) in both perf trace
+> > > instances, these kernel functions will be executed:
+> > >
+> > > perf_syscall_enter
+> > >   perf_call_bpf_enter
+> > >     trace_call_bpf
+
+This is in bpf_trace.c (BPF related, not tracing related).
+
+-- Steve
+
+
+> > >       bpf_prog_run_array
+> > >
+> > > In bpf_prog_run_array:
+> > > ~~~
+> > > while ((prog =3D READ_ONCE(item->prog))) {
+> > >       run_ctx.bpf_cookie =3D item->bpf_cookie;
+> > >       ret &=3D run_prog(prog, ctx);
+> > >       item++;
+> > > }
+> > > ~~~
+> > >
+> > > I'm not a BPF expert, but by tinkering I found that if one of the BPF
+> > > programs returns 0, there will be no tracepoint sample. That is,
+> > >
+> > > (Is there a sample?) =3D ProgRetA & ProgRetB & ProgRetC
+> > >
+> > > Where ProgRetA is the return value of one of the BPF programs in the =
+BPF
+> > > program array.
+> > >
+> > > Go back to the case, when two perf trace instances are tracing two
+> > > different syscalls, again, A is tracing readlinkat, B is tracing open=
+at,
+> > > when an openat syscall enters, it triggers the sys_enter program in
+> > > instance A, call it ProgA, and the sys_enter program in instance B,
+> > > ProgB, now ProgA will return 0 because ProgA cares about readlinkat o=
+nly,
+> > > even though ProgB returns 1; (Is there a sample?) =3D ProgRetA (0) &
+> > > ProgRetB (1) =3D 0. So there won't be a tracepoint sample in B's outp=
+ut,
+> > > when there really should be one. =20
+> >
+> > Sounds like a bug.  I think it should run bpf programs attached to the
+> > current perf_event only.  Isn't it the case for tracepoint + perf + bpf=
+? =20
+>=20
+> I really can't answer that question.
+>=20
+> > =20
+> > >
+> > > I also want to point out that openat and readlinkat have augmented
+> > > output, so my example might not be accurate, but it does explain the
+> > > current perf-trace-in-parallel dilemma.
+> > >
+> > > Now for augmented output, it is different. When it calls
+> > > bpf_perf_event_output, there is a sample. There won't be no ProgRetA &
+> > > ProgRetB... thing. So I will send another RFC patch to enable
+> > > parallelism using this feature. Also, augmented_output creates a samp=
+le
+> > > on it's own, so returning 1 will create a duplicated sample, when
+> > > augmented, just return 0 instead. =20
+> >
+> > Yes, it's bpf-output and tracepoint respectively.  Maybe we should
+> > always return 1 not to drop syscalls unintentionally and perf can
+> > discard duplicated samples. =20
+>=20
+> I like this.
+>=20
+> >
+> > Another approach would be return 0 always and use bpf-output for
+> > unaugmented syscalls too.  But I'm afraid it'd affect other perf tools
+> > using tracepoints. =20
+>=20
+> Yep.
+>=20
+> > =20
+> > >
+> > > Is this approach perfect? Absolutely not, there will likely be some
+> > > performance overhead on the kernel side. It is just a quick dirty fix
+> > > that makes perf trace run in parallel without failing. This patch is =
+an
+> > > explanation on the reason of failures and possibly, a link used in a
+> > > nack comment. =20
+> >
+> > Thanks for your work, but I'm afraid it'd still miss some syscalls as it
+> > returns 0 sometimes. =20
+>=20
+> My bad... For example this:
+>=20
+> if (pid_filter__has(&pids_filtered, getpid()))
+>    return 0;
+>=20
+> This patch is practically meaningless, but it passes the parallel tests.
+>=20
+> Thanks,
+> Howard
+
 
