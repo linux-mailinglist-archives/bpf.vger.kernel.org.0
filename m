@@ -1,112 +1,375 @@
-Return-Path: <bpf+bounces-59436-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59437-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74F1EACB719
-	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 17:24:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26425ACB6DB
+	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 17:22:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D54B14C343F
-	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 15:09:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C88A4C21C0
+	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 15:12:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7056C23BF8F;
-	Mon,  2 Jun 2025 15:01:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03C3D233737;
+	Mon,  2 Jun 2025 15:05:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="UrpPYD4Z"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="eh3vdhQB"
 X-Original-To: bpf@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86C1E23315A;
-	Mon,  2 Jun 2025 15:01:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E98B23237B
+	for <bpf@vger.kernel.org>; Mon,  2 Jun 2025 15:05:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748876497; cv=none; b=WhAVJTeCyJplzlOFzM5CjjJ6Pt5qkaOpoG1OWKr0obFxq2TwSYOtaFc4MxSf1AS2bnwf+gOMqSkcnQHtFlM0YiEeAstVJgubfC/SAgeEpKmpOPGJED+7AUnrXh9ZllddSYKWzyXyU9P8ZkIKDhwHKAmvbRblY5sYtOsCnPgjcJw=
+	t=1748876754; cv=none; b=q7yS3LRbw8IFnTcK9INULLP5duGLeJSYBcxXXle59EiDdezzd6qL0mFXHHWx2pt731tfaDguAWgmBzB87nEgCiBuN51b1WgnytFTaeBk1s+xCi/y6fKh791NyMXukmxiUOZX4Mivel2n/XVqzrH/ic/5pzFyIAvYAobA9HPk+jk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748876497; c=relaxed/simple;
-	bh=LaKg7t0RuwlvnsMDtoPiMEaCUDTrJM9p4LfCg+Jnc2Q=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=eseiSOVUyEl3NX26z12v3UWViBR9Q7Qe6JdRT1rSPuhpDfyeH6c4tHumUuY6Z9LCjbC6feX0GdTEtbENbV1R78CNj1vmYHSKAbXc21HXwYjbIW3mG6cFB92vcvTs5YkZ7l2axANxOlYzytbqslao68U/qm6h3yKQ52GS7asSwmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=UrpPYD4Z; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from narnia (unknown [40.78.13.173])
-	by linux.microsoft.com (Postfix) with ESMTPSA id B783C2113A4E;
-	Mon,  2 Jun 2025 08:01:27 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B783C2113A4E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1748876490;
-	bh=LaKg7t0RuwlvnsMDtoPiMEaCUDTrJM9p4LfCg+Jnc2Q=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=UrpPYD4ZV36T4yks9wnk/qqQ88MEmtszbG2RxOz0KAkkfYCcOC3WYCFy6DjO9pzaL
-	 LBmNP0WUgqbdsAtAbz6eT4v/qzrlskHWyK9j10OBMF8VTsGSJWWtl0vLgtNUAlt3Z3
-	 EC6Y5vacXwc28JQhCc+l6hHnHaXw69IoxlK6+Tpw=
-From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
-To: KP Singh <kpsingh@kernel.org>
-Cc: Paul Moore <paul@paul-moore.com>, jarkko@kernel.org,
- zeffron@riotgames.com, xiyou.wangcong@gmail.com, kysrinivasan@gmail.com,
- code@tyhicks.com, linux-security-module@vger.kernel.org,
- roberto.sassu@huawei.com, James.Bottomley@hansenpartnership.com, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John
- Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, David Howells
- <dhowells@redhat.com>, Lukas Wunner <lukas@wunner.de>, Ignat Korchagin
- <ignat@cloudflare.com>, Quentin Monnet <qmo@kernel.org>, Jason Xing
- <kerneljasonxing@gmail.com>, Willem de Bruijn <willemb@google.com>, Anton
- Protopopov <aspsk@isovalent.com>, Jordan Rome <linux@jordanrome.com>,
- Martin Kelly <martin.kelly@crowdstrike.com>, Alan Maguire
- <alan.maguire@oracle.com>, Matteo Croce <teknoraver@meta.com>,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- keyrings@vger.kernel.org, linux-crypto@vger.kernel.org, kys@microsoft.com
-Subject: Re: [PATCH 0/3] BPF signature verification
-In-Reply-To: <CACYkzJ5gXf4MOdb4scid0TaQwpwewH5Zzn2W18XB1tFBoR2CQQ@mail.gmail.com>
-References: <20250528215037.2081066-1-bboscaccy@linux.microsoft.com>
- <CACYkzJ5oJASZ43B531gY8mESqAF3WYFKez-H5vKxnk8r48Ouxg@mail.gmail.com>
- <87iklhn6ed.fsf@microsoft.com>
- <CACYkzJ75JXUM_C2og+JNtBat5psrEzjsgcV+b74FwrNaDF68nA@mail.gmail.com>
- <87ecw5n3tz.fsf@microsoft.com>
- <CACYkzJ4ondubPHDF8HL-sseVQo7AtJ2uo=twqhqLWaE3zJ=jEA@mail.gmail.com>
- <878qmdn39e.fsf@microsoft.com>
- <CACYkzJ6ChW6GeG8CJiUR6w-Nu3U2OYednXgCYJmp6N5FysLc2w@mail.gmail.com>
- <875xhhn0jo.fsf@microsoft.com>
- <CACYkzJ5gXf4MOdb4scid0TaQwpwewH5Zzn2W18XB1tFBoR2CQQ@mail.gmail.com>
-Date: Mon, 02 Jun 2025 08:01:29 -0700
-Message-ID: <8734cimbli.fsf@microsoft.com>
+	s=arc-20240116; t=1748876754; c=relaxed/simple;
+	bh=H5kHUSGNewKk+2DnnUpNcNHbHQNuSxBdvQMugCJHy+I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cb5q3qx4+u6AgmLqaSrWx5R1ktVo/khB6ft9pU4GTXYZjFEVLBts2xbxKj+FYjKReoKQdl/0Y6qQcNIoJ0F+yDNE+gsBWLyvfybwwCq62y3FYt+rZkVje3NaaWn7YN6Zx0pd1ITr8VYphbYG+vUy3swa15+qNJ0W7Vm0FfwBTok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=eh3vdhQB; arc=none smtp.client-ip=209.85.166.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-3dd89a85414so518225ab.0
+        for <bpf@vger.kernel.org>; Mon, 02 Jun 2025 08:05:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1748876751; x=1749481551; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=I2dfgUrLyGgIpbCKR2W/UpAQPOS9BKojbb73ls2Lb5w=;
+        b=eh3vdhQB7JWjRTfb7+UVIyoHGxop+f54QgWEAhxQFM8anPceWOb/16YyJi2HW5r59q
+         iXupIW11Cqk7IL4Br09CbZeSNxAkQBot89orli0nPudQnwLisgH+jj2ti87HnoXfbTOP
+         88eY/vSF2FZENmPg2+Xv4nYvGAURoW1cG3DHuqtZxTLMI5ArnaGRW8KzaEmnnGDAn3wY
+         YgWrgM7guyWpFOUNDJGNkhXMbf0Jg32r8seVXkKvyaWLybDe/i+lnAUPJX47vAD1r0Sk
+         rHOHxy8dTC9Ls6q+9dp5Lu18aihDjIbCrrlAjJDjUBlBGLIwvnikn1megGXpZZKfIxyL
+         y+bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748876751; x=1749481551;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=I2dfgUrLyGgIpbCKR2W/UpAQPOS9BKojbb73ls2Lb5w=;
+        b=c3ejlanLs1+k85BDKhHnES4LJ/K2OG9qhZpfn8Tss2OT5MP9oV6NVcwcq/hD7pBjlL
+         yqCBXr9fvdC32Q7w2roi8CdNy+qk3yUXb0E0248dsg3IPvR2BG6Crlwqs4u/kElVTpz2
+         OoXp7n+t6XzWXY7t45g0jJnHcsRsGfujDNkibkexuG36ipsVJREAB8Uad8yyYTrkNFma
+         XWrrbdk/W3WyDudsTqHOc+xmkDNQhYXKp4d02bJ3l0t1aTIotdfJLkeHw0kbVDH7tnVh
+         BhOCpZecwK2XN9Zt9DsxIkMn9UU9hCg7Hp1Gf97G0V47XWd2gf5tq9Pn06q19Cd6dy81
+         AsYg==
+X-Forwarded-Encrypted: i=1; AJvYcCWN9lc4lWroXgMBjdm72f+t0wBDeTSiHvoEXykS9En+cy0IvsJ4KT+XdUuCj065f3/HuLc=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw0ya4x0rKEx0JqM3YBvuSy9ZjBO4BBLO3bpfWDKJIKZjUHQVcg
+	Kq8XcQiIdUX2I/noaYRJLqsM0rCLpFrsrW0VLuYUzYnm3u2unSVJU/L5jBtJTXfTgYuOGpj72KI
+	fM+diiB+oyVCE2YApqMWxz20Ohsa1oeV+zWibMmYG
+X-Gm-Gg: ASbGncuwIHJf7t4uopi6UcnwFLIiPU0hdJTHVuaJ80QGqKQ1y0XJPXW4rVNQj9EvHa2
+	nD5QIqfHXs8XL+c3x3jT5GQUSwFYvwNvymSGKXEggM0wvTWeEO9Cr2P5a7FVKqgPrwbiRZmzVJW
+	u9L2pJkhrN1O4bLr8slNqbp2r/y4CEG/uJCaQFkD3X7aSdZKrpWnVlTy1/aRZ7guOitPXehlOHV
+	GdWOAQZjrU=
+X-Google-Smtp-Source: AGHT+IF6m7o0fdDRx3Vbhw/MpD28hZ96bYJtWMuRMvo6m8wCfHK7XogY8w4GxWbIA7d+1VodLKqlSwUOffaJcO0Ko7U=
+X-Received: by 2002:a05:6e02:180b:b0:3dd:a7a1:9ee8 with SMTP id
+ e9e14a558f8ab-3dda7a1a195mr3484305ab.24.1748876751219; Mon, 02 Jun 2025
+ 08:05:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20250531072031.2263491-1-blakejones@google.com> <CAADnVQJv_FVciT9LC+W=sVtWAt9oXeAACzmTHzyqY-2svi4ugA@mail.gmail.com>
+In-Reply-To: <CAADnVQJv_FVciT9LC+W=sVtWAt9oXeAACzmTHzyqY-2svi4ugA@mail.gmail.com>
+From: Ian Rogers <irogers@google.com>
+Date: Mon, 2 Jun 2025 08:05:38 -0700
+X-Gm-Features: AX0GCFss5TTU-FIMe9bH8z4GTz9-CpAC3L2v9sZZ6MQmhvIXr3LieJYQucQLd8w
+Message-ID: <CAP-5=fWADfh9WNXgUOhXYW5hZWk-FZL1oJTdaDgq8Hqr8_Fd0g@mail.gmail.com>
+Subject: Re: [PATCH] libbpf: add support for printing BTF character arrays as strings
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Blake Jones <blakejones@google.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Ihor Solodrai <ihor.solodrai@linux.dev>, Namhyung Kim <namhyung@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-KP Singh <kpsingh@kernel.org> writes:
+On Sat, May 31, 2025 at 11:20=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Sat, May 31, 2025 at 12:20=E2=80=AFAM Blake Jones <blakejones@google.c=
+om> wrote:
+> >
+> > The BTF dumper code currently displays arrays of characters as just tha=
+t -
+> > arrays, with each character formatted individually. Sometimes this is w=
+hat
+> > makes sense, but it's nice to be able to treat that array as a string.
+> >
+> > This change adds a special case to the btf_dump functionality to allow
+> > arrays of single-byte integer values to be printed as character strings=
+.
+> > Characters for which isprint() returns false are printed as hex-escaped
+> > values. This is enabled when the new ".print_strings" is set to 1 in th=
+e
+> > btf_dump_type_data_opts structure.
+> >
+> > As an example, here's what it looks like to dump the string "hello" usi=
+ng
+> > a few different field values for btf_dump_type_data_opts (.compact =3D =
+1):
+> >
+> > - .print_strings =3D 0, .skip_names =3D 0:  (char[6])['h','e','l','l','=
+o',]
+> > - .print_strings =3D 0, .skip_names =3D 1:  ['h','e','l','l','o',]
+> > - .print_strings =3D 1, .skip_names =3D 0:  (char[6])"hello"
+> > - .print_strings =3D 1, .skip_names =3D 1:  "hello"
+> >
+> > Here's the string "h\xff", dumped with .compact =3D 1 and .skip_names =
+=3D 1:
+> >
+> > - .print_strings =3D 0:  ['h',-1,]
+> > - .print_strings =3D 1:  "h\xff"
+> >
+> > Signed-off-by: Blake Jones <blakejones@google.com>
+> > ---
+> >  tools/lib/bpf/btf.h                           |   3 +-
+> >  tools/lib/bpf/btf_dump.c                      |  51 ++++++++-
+> >  .../selftests/bpf/prog_tests/btf_dump.c       | 102 ++++++++++++++++++
+> >  3 files changed, 154 insertions(+), 2 deletions(-)
+>
+> Please split selftests vs main libbpf parts.
+>
+> > diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+> > index 4392451d634b..be8e8e26d245 100644
+> > --- a/tools/lib/bpf/btf.h
+> > +++ b/tools/lib/bpf/btf.h
+> > @@ -326,9 +326,10 @@ struct btf_dump_type_data_opts {
+> >         bool compact;           /* no newlines/indentation */
+> >         bool skip_names;        /* skip member/type names */
+> >         bool emit_zeroes;       /* show 0-valued fields */
+> > +       bool print_strings;     /* print char arrays as strings */
+> >         size_t :0;
+> >  };
+> > -#define btf_dump_type_data_opts__last_field emit_zeroes
+> > +#define btf_dump_type_data_opts__last_field print_strings
+> >
+> >  LIBBPF_API int
+> >  btf_dump__dump_type_data(struct btf_dump *d, __u32 id,
+> > diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+> > index 460c3e57fadb..a07dd5accdd8 100644
+> > --- a/tools/lib/bpf/btf_dump.c
+> > +++ b/tools/lib/bpf/btf_dump.c
+> > @@ -75,6 +75,7 @@ struct btf_dump_data {
+> >         bool is_array_member;
+> >         bool is_array_terminated;
+> >         bool is_array_char;
+> > +       bool print_strings;
+>
+> Looks useful, but make sure to add a feature detection
+> to perf, since it has to work with old and new libbpf.
 
->> And I'm saying that they are, based on wanting visibility in the LSM
->> layer, passing that along to the end user, and wanting to be able to
->> show correctness, along with mitigating an entire vector of supply chain
->> attacks targeting gen.c.
->
-> What supply chain attack?I asked this earlier, you never replied, what
-> does a supply chain attack here really look like?
->
->
-I responded to that here:
-https://lore.kernel.org/linux-security-module/87iklhn6ed.fsf@microsoft.com/
+Just for clarity on this. We'll need a "libbpf-strings" feature like
+the existing "libbpf" one:
+https://web.git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.gi=
+t/tree/tools/build/feature/test-libbpf.c?h=3Dperf-tools-next
 
-Warmest Regards,
-Blaise
+Currently these features are only used if perf is built with
+LIBBPF_DYNAMIC=3D1 as part of the build arguments (ie its not the
+default):
+https://web.git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.gi=
+t/tree/tools/perf/Makefile.config?h=3Dperf-tools-next#n580
 
-> - KP
+If no suitable libbpf is detected then the build will error out. I
+guess if feature-libbpf is present but not feature-libbpf-strings then
+we'll need a perf #define so that the string feature won't cause
+perf's build to fail. We could make it so that perf's build fails if
+feature-libbpf and feature-libbpf-strings are missing, but that's
+likely too much for people using LIBBPF_DYNAMIC=3D1 today.
+
+Thanks,
+Ian
+
+> >  };
+> >
+> >  struct btf_dump {
+> > @@ -2028,6 +2029,50 @@ static int btf_dump_var_data(struct btf_dump *d,
+> >         return btf_dump_dump_type_data(d, NULL, t, type_id, data, 0, 0)=
+;
+> >  }
+> >
+> > +static int btf_dump_string_data(struct btf_dump *d,
+> > +                               const struct btf_type *t,
+> > +                               __u32 id,
+> > +                               const void *data)
+> > +{
+> > +       const struct btf_array *array =3D btf_array(t);
+> > +       __u32 i;
+> > +
+> > +       if (!btf_is_int(skip_mods_and_typedefs(d->btf, array->type, NUL=
+L)) ||
+> > +           btf__resolve_size(d->btf, array->type) !=3D 1 ||
+> > +           !d->typed_dump->print_strings) {
+> > +               pr_warn("unexpected %s() call for array type %u\n",
+> > +                       __func__, array->type);
+> > +               return -EINVAL;
+> > +       }
+> > +
+> > +       btf_dump_data_pfx(d);
+> > +       btf_dump_printf(d, "\"");
+> > +
+> > +       for (i =3D 0; i < array->nelems; i++, data++) {
+> > +               char c;
+> > +
+> > +               if (data >=3D d->typed_dump->data_end)
+> > +                       return -E2BIG;
+> > +
+> > +               c =3D *(char *)data;
+> > +               if (c =3D=3D '\0') {
+> > +                       /* When printing character arrays as strings, N=
+UL bytes
+> > +                        * are always treated as string terminators; th=
+ey are
+> > +                        * never printed.
+> > +                        */
 >
->>
->> So in summary, your objection to this is that you feel it's simply "not
->> needed", and those above risks/design problems aren't actually an issue?
->>
->> > Let's have this discussion in the patch series, much easier to discuss
->> > with the code.
->>
->> I think we've all been waiting for that. Yes, lets.
+> Please use normal kernel style comments.
+> We're gradually getting away from networking style.
+>
+> > +                       break;
+> > +               }
+> > +               if (isprint(c))
+> > +                       btf_dump_printf(d, "%c", c);
+> > +               else
+> > +                       btf_dump_printf(d, "\\x%02x", *(__u8 *)data);
+> > +       }
+> > +
+> > +       btf_dump_printf(d, "\"");
+> > +
+> > +       return 0;
+> > +}
+> > +
+> >  static int btf_dump_array_data(struct btf_dump *d,
+> >                                const struct btf_type *t,
+> >                                __u32 id,
+> > @@ -2055,8 +2100,11 @@ static int btf_dump_array_data(struct btf_dump *=
+d,
+> >                  * char arrays, so if size is 1 and element is
+> >                  * printable as a char, we'll do that.
+> >                  */
+> > -               if (elem_size =3D=3D 1)
+> > +               if (elem_size =3D=3D 1) {
+> > +                       if (d->typed_dump->print_strings)
+> > +                               return btf_dump_string_data(d, t, id, d=
+ata);
+> >                         d->typed_dump->is_array_char =3D true;
+> > +               }
+> >         }
+> >
+> >         /* note that we increment depth before calling btf_dump_print()=
+ below;
+> > @@ -2544,6 +2592,7 @@ int btf_dump__dump_type_data(struct btf_dump *d, =
+__u32 id,
+> >         d->typed_dump->compact =3D OPTS_GET(opts, compact, false);
+> >         d->typed_dump->skip_names =3D OPTS_GET(opts, skip_names, false)=
+;
+> >         d->typed_dump->emit_zeroes =3D OPTS_GET(opts, emit_zeroes, fals=
+e);
+> > +       d->typed_dump->print_strings =3D OPTS_GET(opts, print_strings, =
+false);
+> >
+> >         ret =3D btf_dump_dump_type_data(d, NULL, t, id, data, 0, 0);
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dump.c b/tools/=
+testing/selftests/bpf/prog_tests/btf_dump.c
+> > index c0a776feec23..70e51943f148 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/btf_dump.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
+> > @@ -879,6 +879,106 @@ static void test_btf_dump_var_data(struct btf *bt=
+f, struct btf_dump *d,
+> >                           "static int bpf_cgrp_storage_busy =3D (int)2"=
+, 2);
+> >  }
+> >
+> > +/*
+> > + * String-like types are generally not named, so they need to be
+> > + * found this way rather than via btf__find_by_name().
+> > + */
+>
+> This is the correct style of comments.
+>
+> > +static int find_char_array_type(struct btf *btf, int nelems)
+> > +{
+> > +       const int nr_types =3D btf__type_cnt(btf);
+> > +       const int char_type =3D btf__find_by_name(btf, "char");
+> > +
+> > +       for (int i =3D 1; i < nr_types; i++) {
+> > +               const struct btf_type *t;
+> > +               const struct btf_array *at;
+> > +
+> > +               t =3D btf__type_by_id(btf, i);
+> > +               if (btf_kind(t) !=3D BTF_KIND_ARRAY)
+> > +                       continue;
+> > +
+> > +               at =3D btf_array(t);
+> > +               if (at->nelems =3D=3D nelems && at->type =3D=3D char_ty=
+pe)
+> > +                       return i;
+> > +       }
+> > +
+> > +       return -ENOENT;
+> > +}
+> > +
+> > +static int btf_dump_string_data(struct btf *btf, struct btf_dump *d,
+> > +                               char *str, struct btf_dump_type_data_op=
+ts *opts,
+> > +                               char *ptr, size_t ptr_sz,
+> > +                               const char *expected_val)
+> > +{
+> > +       char name[64];
+> > +       size_t type_sz;
+> > +       int type_id;
+> > +       int ret =3D 0;
+> > +
+> > +       snprintf(name, sizeof(name), "char[%zu]", ptr_sz);
+> > +       type_id =3D find_char_array_type(btf, ptr_sz);
+> > +       if (!ASSERT_GE(type_id, 0, "find type id"))
+> > +               return -ENOENT;
+> > +       type_sz =3D btf__resolve_size(btf, type_id);
+> > +       str[0] =3D '\0';
+> > +       ret =3D btf_dump__dump_type_data(d, type_id, ptr, ptr_sz, opts)=
+;
+> > +       if (type_sz <=3D ptr_sz) {
+> > +               if (!ASSERT_EQ(ret, type_sz, "failed/unexpected type_sz=
+"))
+> > +                       return -EINVAL;
+> > +       } else {
+> > +               if (!ASSERT_EQ(ret, -E2BIG, "failed to return -E2BIG"))
+> > +                       return -EINVAL;
+> > +       }
+> > +       if (!ASSERT_STREQ(str, expected_val, "ensure expected/actual ma=
+tch"))
+> > +               return -EFAULT;
+> > +       return 0;
+> > +}
+> > +
+> > +static void test_btf_dump_string_data(struct btf *btf, struct btf_dump=
+ *d,
+> > +                                     char *str)
+> > +{
+> > +       DECLARE_LIBBPF_OPTS(btf_dump_type_data_opts, opts);
+> > +
+> > +       opts.compact =3D true;
+> > +       opts.emit_zeroes =3D false;
+> > +       opts.print_strings =3D true;
+> > +
+> > +       opts.skip_names =3D false;
+> > +       btf_dump_string_data(btf, d, str, &opts, "foo", 4,
+> > +               "(char[4])\"foo\"");
+>
+> we allow up to 100 char per line.
+> Don't split it that short.
+>
+> pw-bot: cr
 
