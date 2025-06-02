@@ -1,221 +1,212 @@
-Return-Path: <bpf+bounces-59429-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59430-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA6BFACACF2
-	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 13:05:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 220ABACAE53
+	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 14:55:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D19E3A49BA
-	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 11:04:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01AA31890CB2
+	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 12:56:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EE8D20B806;
-	Mon,  2 Jun 2025 11:05:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 689ED21B1AB;
+	Mon,  2 Jun 2025 12:55:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RJvGo5Eu"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Qlfme/q/"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 502711E0DE3
-	for <bpf@vger.kernel.org>; Mon,  2 Jun 2025 11:05:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D7D6214A7C;
+	Mon,  2 Jun 2025 12:55:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748862308; cv=none; b=PElPttyXGtYdLUbdMBAy93fmIydaq+nZSrQh5Z0UZQ2hWC/VtM99ZbKGYXOKSo0Ku6Stz5zP9DwXtI9z8P3aFi7aLODciaToVfA267o5gYA17EoNAAozfaOGW7nX1yAm5uLpxggoB1laPfZGsrjatyYGDpBuC2yrm4j39BaPEFA=
+	t=1748868944; cv=none; b=AkZd3jNFYlW2c8BT9OG3IB0c+RpQ0OJHgIheOXDIgjBDHIrgz+SyNvO9h35kUXaF1Z30KqWVrebPNBC8Ynvx/hZy0Xz6+XW6xF7phyhr4JL0Iib2eNbthI48H1hdxs/eIChJ8G1eXzsR7zKxPVRm9vQR+MaRsUxujspi0zaYE4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748862308; c=relaxed/simple;
-	bh=A4OkNO6pKJdoJr7vYx9FCXoetIQb+v3bG4umPUpfy0U=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=mOqQ1ZPg+ISw41U3SQlQCQuu2IwrLh20Yt7tdGkewyocu+on2Hkgoc0Lo0aFXO5c7NyfE8+nGydyGT+ft5IrfMITJPyyf+hBkeClD6mG56urxFWorxMSaun4Sx6Ut6QJw/LrHKs5E+sbq476cAOrUGjk06981+J5xWhbtQMrSkk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RJvGo5Eu; arc=none smtp.client-ip=91.218.175.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1748868944; c=relaxed/simple;
+	bh=y9+IaaeJoUBPuK65ygBY5K30uxjC2G0ZhhZUVxyNCyI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IFZdeNEs8OMWnqsNVJfLIK7rDuO6x+qLN9KBGiZrqHeRzYjzB57iA+DszKnG0mYfwEOdq+qCqXJ7Dw4rrpQCd+K3xhIuhbgz7p99/n1mU3icAp9/8lC7Rv5hLKUlisp6ducnePJh61OsElqvsL2tOZ3SpLDWQqYrQTPta/Fgz1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Qlfme/q/; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1748868942; x=1780404942;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=y9+IaaeJoUBPuK65ygBY5K30uxjC2G0ZhhZUVxyNCyI=;
+  b=Qlfme/q/RfUojPyWMg1/6I4lZ8dhB1kcSGzVnh3AJvgynaACTR25FRNE
+   dCX+4Ea5KfmgkAIOuVJzV6YMyX7ghHjKqgHZQ2je/mph1ddgNQ9AmKVak
+   z1G3d4OBYYNKfXEIEdAmDNiIa4SJebHuM8PffU2jv490XzNPkLmhhphtn
+   JfJZ88iwJHBdQEma6hIznwKqJlinYYayOgL6RafYdmEzWhcMyElUYwCL0
+   dmDtYENrWGvZf1ZqkZEYUrf/Ltl23Yfjf0BIKTTuj5CaT7Hi9x5+qbimT
+   8sPFJ3J9/M4kvchemaTjpLp8rCrMoDnfjQnqe1IAh9MGgDYlLVgz6BM5O
+   w==;
+X-CSE-ConnectionGUID: V+HzTEA6QROL7FLVVoYaEg==
+X-CSE-MsgGUID: MShqi+MERPuOM6zJmQd6pg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11451"; a="49997138"
+X-IronPort-AV: E=Sophos;i="6.16,203,1744095600"; 
+   d="scan'208";a="49997138"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2025 05:55:41 -0700
+X-CSE-ConnectionGUID: aUnRIk5STJCcfkg+ysGCDA==
+X-CSE-MsgGUID: 7zCLPVguQy+0DyRARrnRYQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,203,1744095600"; 
+   d="scan'208";a="145474976"
+Received: from linux.intel.com ([10.54.29.200])
+  by orviesa008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2025 05:55:41 -0700
+Received: from [10.246.136.52] (kliang2-mobl1.ccr.corp.intel.com [10.246.136.52])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by linux.intel.com (Postfix) with ESMTPS id 7FC9B20B5736;
+	Mon,  2 Jun 2025 05:55:39 -0700 (PDT)
+Message-ID: <d3c6b899-7281-4f97-a449-96f506181bab@linux.intel.com>
+Date: Mon, 2 Jun 2025 08:55:38 -0400
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1748862292;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GgzGn7mX9LPHdW6wIq04NEoY4o/2aPy+ycvjiVMwLpA=;
-	b=RJvGo5Eu4br18T4wfwZrZxPFmIVPvINsrBo79u62AgI5wKOCaCRHE5yQvXLFeAq1u04q7N
-	FBhRi1ecNlz/GAEFqwRlNVaOJYJYYo9zPrbLJtzhOBJSXiooO43G0A3vV6B3AcV6RBQC9Y
-	LKGiZjm0w1tEwp6JhnEU7ycN1A/x6fY=
-Date: Mon, 02 Jun 2025 11:04:50 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Jiayuan Chen" <jiayuan.chen@linux.dev>
-Message-ID: <d99805aaeadd9cd041c9048801084648832a6da1@linux.dev>
-TLS-Required: No
-Subject: Re: [PATCH bpf-next v1 1/2] bpf,ktls: Fix data corruption when using
- bpf_msg_pop_data() in ktls
-To: "Cong Wang" <xiyou.wangcong@gmail.com>
-Cc: bpf@vger.kernel.org, "Boris Pismenny" <borisp@nvidia.com>, "John
- Fastabend" <john.fastabend@gmail.com>, "Jakub Kicinski"
- <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>, "Eric
- Dumazet" <edumazet@google.com>, "Paolo Abeni" <pabeni@redhat.com>, "Simon
- Horman" <horms@kernel.org>, "Andrii Nakryiko" <andrii@kernel.org>,
- "Eduard Zingerman" <eddyz87@gmail.com>, "Mykola Lysenko"
- <mykolal@fb.com>, "Alexei Starovoitov" <ast@kernel.org>, "Daniel
- Borkmann" <daniel@iogearbox.net>, "Martin KaFai Lau"
- <martin.lau@linux.dev>, "Song Liu" <song@kernel.org>, "Yonghong Song"
- <yonghong.song@linux.dev>, "KP Singh" <kpsingh@kernel.org>, "Stanislav
- Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>, "Jiri Olsa"
- <jolsa@kernel.org>, "Shuah Khan" <shuah@kernel.org>, "Ihor Solodrai"
- <isolodrai@meta.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-In-Reply-To: <aDika2FRd4n+VRmZ@pop-os.localdomain>
-References: <20250523131915.19349-1-jiayuan.chen@linux.dev>
- <20250523131915.19349-2-jiayuan.chen@linux.dev>
- <aDika2FRd4n+VRmZ@pop-os.localdomain>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: perf regression. Was: [PATCH V4 01/16] perf: Fix the throttle
+ logic for a group
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: peterz@infradead.org, mingo@redhat.com, namhyung@kernel.org,
+ irogers@google.com, mark.rutland@arm.com, linux-kernel@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, eranian@google.com, ctshao@google.com,
+ tmricht@linux.ibm.com, leo.yan@arm.com, bpf@vger.kernel.org,
+ andrii@kernel.org, ihor.solodrai@linux.dev, song@kernel.org, jolsa@kernel.org
+References: <20250520181644.2673067-1-kan.liang@linux.intel.com>
+ <20250520181644.2673067-2-kan.liang@linux.intel.com>
+ <djxlh5fx326gcenwrr52ry3pk4wxmugu4jccdjysza7tlc5fef@ktp4rffawgcw>
+Content-Language: en-US
+From: "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <djxlh5fx326gcenwrr52ry3pk4wxmugu4jccdjysza7tlc5fef@ktp4rffawgcw>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-2025/5/30 02:16, "Cong Wang" <xiyou.wangcong@gmail.com> =E5=86=99=E5=88=
-=B0:
+Hi Alexei,
 
-
-
->=20
->=20On Fri, May 23, 2025 at 09:18:58PM +0800, Jiayuan Chen wrote:
->=20
->=20>=20
->=20> When sending plaintext data, we initially calculated the correspond=
-ing
-> >=20
->=20>  ciphertext length. However, if we later reduced the plaintext data=
- length
-> >=20
->=20>  via socket policy, we failed to recalculate the ciphertext length.
-> >=20
->=20>=20=20
->=20>=20
->=20>  This results in transmitting buffers containing uninitialized data=
- during
-> >=20
->=20>  ciphertext transmission.
-> >=20
->=20>=20=20
->=20>=20
->=20>  This causes uninitialized bytes to be appended after a complete
-> >=20
->=20>  "Application Data" packet, leading to errors on the receiving end =
-when
-> >=20
->=20>  parsing TLS record.
-> >=20
->=20>=20=20
->=20>=20
->=20>  Fixes: d3b18ad31f93 ("tls: add bpf support to sk_msg handling")
-> >=20
->=20>  Reported-by: Cong Wang <xiyou.wangcong@gmail.com>
-> >=20
->=20>  Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
-> >=20
->=20>  ---
-> >=20
->=20>  net/tls/tls_sw.c | 15 +++++++++++++++
-> >=20
->=20>  1 file changed, 15 insertions(+)
-> >=20
->=20>=20=20
->=20>=20
->=20>  diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
-> >=20
->=20>  index fc88e34b7f33..b23a4655be6a 100644
-> >=20
->=20>  --- a/net/tls/tls_sw.c
-> >=20
->=20>  +++ b/net/tls/tls_sw.c
-> >=20
->=20>  @@ -872,6 +872,21 @@ static int bpf_exec_tx_verdict(struct sk_msg =
-*msg, struct sock *sk,
-> >=20
->=20>  delta =3D msg->sg.size;
-> >=20
->=20>  psock->eval =3D sk_psock_msg_verdict(sk, psock, msg);
-> >=20
->=20>  delta -=3D msg->sg.size;
-> >=20
->=20>  +
-> >=20
->=20>  + if ((s32)delta > 0) {
-> >=20
->=20>  + /* It indicates that we executed bpf_msg_pop_data(),
-> >=20
->=20>  + * causing the plaintext data size to decrease.
-> >=20
->=20>  + * Therefore the encrypted data size also needs to
-> >=20
->=20>  + * correspondingly decrease. We only need to subtract
-> >=20
->=20>  + * delta to calculate the new ciphertext length since
-> >=20
->=20>  + * ktls does not support block encryption.
-> >=20
->=20>  + */
-> >=20
->=20>  + if (!WARN_ON_ONCE(!ctx->open_rec)) {
-> >=20
->=20
-> I am wondering if we need to WARN here? Because the code below this
->=20
->=20handles it gracefully:
->=20
-
-Hi=20Cong
-
-The ctx->open_rec is freed after a TLS record is processed (regardless
-of whether the redirect check passes or triggers a redirect).
-The 'if (rec)' check in the subsequent code you print is indeed designed
-to handle the expected lifecycle state of open_rec.
-
-But the code path I modified should never see a NULL open_rec under norma=
-l
-operation As this is a bug fix, I need to ensure the fix itself doesn't
-create new issues.=20
-
-Thanks.
+On 2025-06-01 8:30 p.m., Alexei Starovoitov wrote:
+> On Tue, May 20, 2025 at 11:16:29AM -0700, kan.liang@linux.intel.com wrote:
+>> From: Kan Liang <kan.liang@linux.intel.com>
+>>
+>> The current throttle logic doesn't work well with a group, e.g., the
+>> following sampling-read case.
+>>
+>> $ perf record -e "{cycles,cycles}:S" ...
+>>
+>> $ perf report -D | grep THROTTLE | tail -2
+>>             THROTTLE events:        426  ( 9.0%)
+>>           UNTHROTTLE events:        425  ( 9.0%)
+>>
+>> $ perf report -D | grep PERF_RECORD_SAMPLE -a4 | tail -n 5
+>> 0 1020120874009167 0x74970 [0x68]: PERF_RECORD_SAMPLE(IP, 0x1):
+>> ... sample_read:
+>> .... group nr 2
+>> ..... id 0000000000000327, value 000000000cbb993a, lost 0
+>> ..... id 0000000000000328, value 00000002211c26df, lost 0
+>>
+>> The second cycles event has a much larger value than the first cycles
+>> event in the same group.
+>>
+>> The current throttle logic in the generic code only logs the THROTTLE
+>> event. It relies on the specific driver implementation to disable
+>> events. For all ARCHs, the implementation is similar. Only the event is
+>> disabled, rather than the group.
+>>
+>> The logic to disable the group should be generic for all ARCHs. Add the
+>> logic in the generic code. The following patch will remove the buggy
+>> driver-specific implementation.
+>>
+>> The throttle only happens when an event is overflowed. Stop the entire
+>> group when any event in the group triggers the throttle.
+>> The MAX_INTERRUPTS is set to all throttle events.
+>>
+>> The unthrottled could happen in 3 places.
+>> - event/group sched. All events in the group are scheduled one by one.
+>>   All of them will be unthrottled eventually. Nothing needs to be
+>>   changed.
+>> - The perf_adjust_freq_unthr_events for each tick. Needs to restart the
+>>   group altogether.
+>> - The __perf_event_period(). The whole group needs to be restarted
+>>   altogether as well.
+>>
+>> With the fix,
+>> $ sudo perf report -D | grep PERF_RECORD_SAMPLE -a4 | tail -n 5
+>> 0 3573470770332 0x12f5f8 [0x70]: PERF_RECORD_SAMPLE(IP, 0x2):
+>> ... sample_read:
+>> .... group nr 2
+>> ..... id 0000000000000a28, value 00000004fd3dfd8f, lost 0
+>> ..... id 0000000000000a29, value 00000004fd3dfd8f, lost 0
+>>
+>> Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+>> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+>> ---
+>>  kernel/events/core.c | 66 ++++++++++++++++++++++++++++++--------------
+>>  1 file changed, 46 insertions(+), 20 deletions(-)
+> 
+> This patch breaks perf hw events somehow.
+> 
+> After merging this into bpf trees we see random "watchdog: BUG: soft lockup"
+> with various stack traces followed up:
+> [   78.620749] Sending NMI from CPU 8 to CPUs 0:
+> [   76.387722] NMI backtrace for cpu 0
+> [   76.387722] CPU: 0 UID: 0 PID: 0 Comm: swapper/0 Tainted: G           O L      6.15.0-10818-ge0f0ee1c31de #1163 PREEMPT
+> [   76.387722] Tainted: [O]=OOT_MODULE, [L]=SOFTLOCKUP
+> [   76.387722] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+> [   76.387722] RIP: 0010:_raw_spin_lock_irqsave+0xc/0x40
+> [   76.387722] Call Trace:
+> [   76.387722]  <IRQ>
+> [   76.387722]  hrtimer_try_to_cancel.part.0+0x24/0xe0
+> [   76.387722]  hrtimer_cancel+0x21/0x40
+> [   76.387722]  cpu_clock_event_stop+0x64/0x70
 
 
->=20 931 bool reset_eval =3D !ctx->open_rec;
->=20
->=20 932=20
->=20
->  933 rec =3D ctx->open_rec;
->=20
->=20 934 if (rec) {
->=20
->=20 935 msg =3D &rec->msg_plaintext;
->=20
->=20 936 if (!msg->apply_bytes)
->=20
->=20 937 reset_eval =3D true;
->=20
->=20 938 }
->=20
->=20 939 if (reset_eval) {
->=20
->=20 940 psock->eval =3D __SK_NONE;
->=20
->=20 941 if (psock->sk_redir) {
->=20
->=20 942 sock_put(psock->sk_redir);
->=20
->=20 943 psock->sk_redir =3D NULL;
->=20
->=20 944 }
->=20
->=20 945 }
->=20
->=20Thanks for fixing it!
->=20
->=20Cong
->
+The issues should be fixed by the patch.
+https://lore.kernel.org/lkml/20250528175832.2999139-1-kan.liang@linux.intel.com/
+
+Could you please give it a try?
+
+Thanks,
+Kan
+
+
+> [   76.387722]  __perf_event_account_interrupt+0xcf/0x140
+> [   76.387722]  __perf_event_overflow+0x36/0x340
+> [   76.387722]  ? hrtimer_start_range_ns+0x2c1/0x420
+> [   76.387722]  ? kvm_sched_clock_read+0x11/0x20
+> [   76.387722]  perf_swevent_hrtimer+0xaf/0x100
+> [   76.387722]  ? cpu_clock_event_add+0x6e/0x90
+> [   76.387722]  ? event_sched_in+0xc3/0x190
+> [   76.387722]  ? update_load_avg+0x87/0x3d0
+> [   76.387722]  ? _raw_spin_unlock+0xe/0x20
+> [   76.387722]  ? sched_balance_update_blocked_averages+0x59b/0x6a0
+> [   76.387722]  ? ctx_sched_in+0x184/0x210
+> [   76.387722]  ? kvm_sched_clock_read+0x11/0x20
+> [   76.387722]  ? sched_clock_cpu+0x55/0x190
+> [   76.387722]  ? perf_exclude_event+0x50/0x50
+> [   76.387722]  __hrtimer_run_queues+0x111/0x290
+> [   76.387722]  hrtimer_interrupt+0xff/0x240
+> [   76.387722]  __sysvec_apic_timer_interrupt+0x4f/0x110
+> [   76.387722]  sysvec_apic_timer_interrupt+0x6c/0x90
+> 
+> After reverting:
+> commit e800ac51202f ("perf: Only dump the throttle log for the leader")
+> commit 9734e25fbf5a ("perf: Fix the throttle logic for a group")
+> everything is back to normal.
+> 
+> There are many ways to reproduce.
+> Any test that sets up perf hw event followed up by tests that IPIs all cpus.
+> One way:
+> selftests/bpf/test_progs -t stacktrace_build_id_nmi
+> selftests/bpf/test_progs -t unpriv_bpf_disabled
+> 
+> Please take a look.
+> 
 
