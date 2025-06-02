@@ -1,227 +1,137 @@
-Return-Path: <bpf+bounces-59443-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59444-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 355DDACBA68
-	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 19:36:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72E48ACBA6C
+	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 19:43:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A3857AB152
-	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 17:35:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17DB23BB247
+	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 17:43:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE145229B0F;
-	Mon,  2 Jun 2025 17:36:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9008F13BC35;
+	Mon,  2 Jun 2025 17:43:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="M8OOQWx+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rc2ace2q"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-190b.mail.infomaniak.ch (smtp-190b.mail.infomaniak.ch [185.125.25.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB1E6223DFD
-	for <bpf@vger.kernel.org>; Mon,  2 Jun 2025 17:35:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.25.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A34E91925AB;
+	Mon,  2 Jun 2025 17:43:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748885761; cv=none; b=IPG8U0b0Jrn+/lJE0NeL7Ol0Azl856j1jFw6rM22UiSI1sFVgoxbG0WKmmo8c7MFa1VEjzTk10fp9MDp7okZIMSBWWLpXMiwAjyJUugWf3J/wAdf1qNUgqo5gK0v37cLNIEAAO4AO+DZvXwVcWr1n3d/QID1oTdNGImF82AqIzQ=
+	t=1748886205; cv=none; b=k9Kd1WBuwiWO0QdhSYbQuttljLQbO8yvNsqoXvxpFUZNe8weUGzxauyp6vliViXsr3zroLg+e0/bHBDcs+uD8RlPCyGv+Td9abhi5Pz402ojtIzQGhI+OClbr0VLIlQprNEyzOCW8lVpkEKPNxJSjnhmDQ+NBu7FO0ZHitZ6NdI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748885761; c=relaxed/simple;
-	bh=VUhI7CSW76kd/2BwwKOpp8s7Bj4/P8quxGT6EYFmteI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rDOTE10iKkh0nGBcu28zYgwhKSvETwE6I8DAP8BHvZ9fn2eJKnEo4st9S6NI9WSQfJesJvdmEwORzYnBiUsc5AjqWnBkBtTxK3fmZE7XgJphHxWkob+V8anJGVOpwt4heKywEYyI6MngLjNMDfj9kWkU0MFZDOx66EzSBhWUxp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=M8OOQWx+; arc=none smtp.client-ip=185.125.25.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
-Received: from smtp-4-0000.mail.infomaniak.ch (smtp-4-0000.mail.infomaniak.ch [10.7.10.107])
-	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4bB1GF445mzsq2;
-	Mon,  2 Jun 2025 19:35:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digikod.net;
-	s=20191114; t=1748885749;
-	bh=I1+g0eVqjmTqLKooXrJGQ9n+AkRh/ReUCRj2fzMRkns=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=M8OOQWx+BGV1YUVOeH25ve75KC7jFyye0iOoy0EdCVr6ZYaGDhtsX014OSqpfPhUm
-	 +3dbggZnfrD0emuVwQjB8/b2KnTe5Fle3MHkvDZTinGUDPcs8WLizrFvMv4EhSC1Fo
-	 YzC244GupgBAhzLZ6CBxPV9ycq9vUURFtNoKj8sU=
-Received: from unknown by smtp-4-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4bB1GD2KT5zbdy;
-	Mon,  2 Jun 2025 19:35:48 +0200 (CEST)
-Date: Mon, 2 Jun 2025 19:35:47 +0200
-From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-To: Tingmao Wang <m@maowtm.org>
-Cc: Song Liu <song@kernel.org>, linux-fsdevel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, viro@zeniv.linux.org.uk, 
-	brauner@kernel.org, jack@suse.cz, kpsingh@kernel.org, mattbobrowski@google.com, 
-	amir73il@gmail.com, repnop@google.com, jlayton@kernel.org, josef@toxicpanda.com, 
-	gnoack@google.com
-Subject: Re: [PATCH bpf-next 2/4] landlock: Use path_parent()
-Message-ID: <20250602.Oqu6piethung@digikod.net>
-References: <20250528222623.1373000-1-song@kernel.org>
- <20250528222623.1373000-3-song@kernel.org>
- <027d5190-b37a-40a8-84e9-4ccbc352bcdf@maowtm.org>
+	s=arc-20240116; t=1748886205; c=relaxed/simple;
+	bh=fXrgd83elDEuepOQPG4IhT9vtapfZgCMADiLVFA5TL0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AodXIoT9DUCa54IEk0tbuYU/alSaj3rKQJlvzvrzBZZwv/LJfzxfOZHcNKGpeSnxyDaPnVjlK2V8qJiT5GeBKwS5UE5PmLFXnCUDkITjN38/eJlH0iOt8C7HdWrwrE9mJ0Ekrzl3sIo385UXc5NwJoNFvxyBs/wFrGneVIura2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rc2ace2q; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-23035b3edf1so42364035ad.3;
+        Mon, 02 Jun 2025 10:43:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748886203; x=1749491003; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IodS3ygWGQlGtxvOhMysa+jDntNIq1MDmyqZVf6SuZo=;
+        b=Rc2ace2qigXqPoJW19+Tu48x/Aqo24B8IbRmemefdh9qbJPuG6OLtZ32l2uaTW/D+p
+         qAjVHa5gaa0vjoc59JS5c8Oiz3bZExW6FSac+Zfi6JovLREFsdHwDqTCx4WQNWcrcuq0
+         fEAXvn7OQEEBfjSr0vqqVb6C08kkcmvg3Pgiv1E/IsONvIRlHhodwjTKp7NGr1icTcDG
+         hROtUAO6wPRgsJVTYhDIvn8nyq9Ybw75g2ORE9hCevMXmWhDuGKaGj7HtwmTGYWIvVUx
+         zeXeFGCdhf9z4cKAVWWmCzTspmUVLf4S6h68suLjKVE007fNHPnmfEjLMFiAeWs07n61
+         LJjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748886203; x=1749491003;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IodS3ygWGQlGtxvOhMysa+jDntNIq1MDmyqZVf6SuZo=;
+        b=B0PWcD3nZPsukhqjjXm0XaTjpNaxoXecq1cPFYtg3H+DwnadpIWlZvDs2Ho7O3ouUx
+         W9nGVpaRuU8Ek1Aeqt6Gty7+wlWGKghEEeL0N6tALmB93ZPaw6scVN1Ujg8vnI+yb3Dy
+         iY0fPb3QNBy0EyTX/19eN+FtU6DEYRN4YfnbOznne1JmRpwTEmTEcbj/ItZNQs3heWh+
+         OUiFMKW3kQPe6tqJOhODUwpvt0jU34cQyU97So+gYRuJjpesuT05lprKErpoSkZRhkyY
+         WIKTP1k1ZySE41gZXV869q8sHVm/UPQHW8ppQ34uJJNZDWhaqU/yXu2ufy1PDeczKi4w
+         Mw8w==
+X-Forwarded-Encrypted: i=1; AJvYcCUgO+3Uzs6y18P/1cYMedfNRictIsIo91QEMw5NS55VdXMirVXf72qCNousnFp4wOjhCVw0RX81cvRjQiG6RKwP@vger.kernel.org, AJvYcCW4rte6xk1LslMXcn+bSeciR8ou55Zfw3rpbgVh3ZMd5tn3bNIUba5/t0OIy36K0Rx1GG8=@vger.kernel.org, AJvYcCWxn+BH+dlxMEz6UGb43emH6TZ0LWkDkLvn3io0NI8WZh19hhvf88er/C28chQXcnUk4rgNad4JQMrI4Gpx@vger.kernel.org
+X-Gm-Message-State: AOJu0YzRttomRmQv0Vq8ycnUpuxwDKWwEBpATS2DGKyL8Lm0ZEc7NDej
+	t6Id4318O1B57QI7cJYQfPtxCOg6xrjwnqDyRsZAUU98GLqafIXZAhTS
+X-Gm-Gg: ASbGncuA9LiCvpz2di7Tx0G/0ZU4eKX0yqKyPpXLulzqGZeLVdYEDCKIQMqvBriQKoI
+	i0Y7USYlXC6cfacTZ+918TQGM/89Ejo8MvY4dsKXAMDF8scOORpZUcWbfLjDxOTJK0oxe9upNl+
+	1ea70VtLQ1iHyRibtlFKoWnqrKHZRMvpSXbsfdObDgOdWP1pfkXM5R7WD+qx5uBTPVKHCAiZ+1m
+	i5dudpd8ssV3iVyn3+R6/74Bqgwvfv8V4f5jLrT1KA1DLShYJ/a9hv1YU7H30jKtn9zEjgPVOgh
+	VLzcERSlfNYl08fXnpjadVlRhF7ODvKXfATQUhH+lsmxQ/QYBokZ8wl41V4ZqClCGH1LroQizEp
+	COk9hASgw
+X-Google-Smtp-Source: AGHT+IHTd3m02WIDm2HVjeZnxZ0rKLBE61LTISQj2SyrFKIfYac3HYIPLqtf4MlXZwHol0UGij+kxw==
+X-Received: by 2002:a17:902:cf0a:b0:224:26fd:82e5 with SMTP id d9443c01a7336-23529b4637emr235241435ad.48.1748886202697;
+        Mon, 02 Jun 2025 10:43:22 -0700 (PDT)
+Received: from localhost.localdomain ([205.254.163.2])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23506bdd034sm73590405ad.92.2025.06.02.10.43.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Jun 2025 10:43:22 -0700 (PDT)
+From: Suchit <suchitkarunakaran@gmail.com>
+To: andrii@kernel.org,
+	eddyz87@gmail.com,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	mykolal@fb.com,
+	ast@kernel.org,
+	daniel@iogearbox.net
+Cc: martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	shuah@kernel.org,
+	Suchit <suchitkarunakaran@gmail.com>
+Subject: [PATCH] selftests/bpf: Validate UDP length in cls_redirect test
+Date: Mon,  2 Jun 2025 23:13:09 +0530
+Message-ID: <20250602174309.31315-1-suchitkarunakaran@gmail.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <027d5190-b37a-40a8-84e9-4ccbc352bcdf@maowtm.org>
-X-Infomaniak-Routing: alpha
 
-On Sat, May 31, 2025 at 02:51:22PM +0100, Tingmao Wang wrote:
-> On 5/28/25 23:26, Song Liu wrote:
-> > Use path_parent() to walk a path up to its parent.
-> > 
-> > While path_parent() has an extra check with path_connected() than existing
-> > code, there is no functional changes intended for landlock.
-> > 
-> > Signed-off-by: Song Liu <song@kernel.org>
-> > ---
-> >  security/landlock/fs.c | 34 +++++++++++++++++-----------------
-> >  1 file changed, 17 insertions(+), 17 deletions(-)
-> > 
-> > diff --git a/security/landlock/fs.c b/security/landlock/fs.c
-> > index 6fee7c20f64d..32a24758ad6e 100644
-> > --- a/security/landlock/fs.c
-> > +++ b/security/landlock/fs.c
-> > @@ -837,7 +837,6 @@ static bool is_access_to_paths_allowed(
-> >  	 * restriction.
-> >  	 */
-> >  	while (true) {
-> > -		struct dentry *parent_dentry;
-> >  		const struct landlock_rule *rule;
-> >  
-> >  		/*
-> > @@ -896,19 +895,17 @@ static bool is_access_to_paths_allowed(
-> >  		if (allowed_parent1 && allowed_parent2)
-> >  			break;
-> >  jump_up:
-> > -		if (walker_path.dentry == walker_path.mnt->mnt_root) {
-> > -			if (follow_up(&walker_path)) {
-> > -				/* Ignores hidden mount points. */
-> > -				goto jump_up;
-> > -			} else {
-> > -				/*
-> > -				 * Stops at the real root.  Denies access
-> > -				 * because not all layers have granted access.
-> > -				 */
-> > -				break;
-> > -			}
-> > -		}
-> > -		if (unlikely(IS_ROOT(walker_path.dentry))) {
-> > +		switch (path_parent(&walker_path)) {
-> > +		case PATH_PARENT_CHANGED_MOUNT:
-> > +			/* Ignores hidden mount points. */
-> > +			goto jump_up;
-> > +		case PATH_PARENT_REAL_ROOT:
-> > +			/*
-> > +			 * Stops at the real root.  Denies access
-> > +			 * because not all layers have granted access.
-> > +			 */
-> > +			goto walk_done;
-> > +		case PATH_PARENT_DISCONNECTED_ROOT:
-> >  			/*
-> >  			 * Stops at disconnected root directories.  Only allows
-> >  			 * access to internal filesystems (e.g. nsfs, which is
-> 
-> I was looking at the existing handling of disconnected root in Landlock
-> and I realized that the comment here confused me a bit:
-> 
-> /*
->  * Stops at disconnected root directories.  Only allows
->  * access to internal filesystems (e.g. nsfs, which is
->  * reachable through /proc/<pid>/ns/<namespace>).
->  */
-> 
-> In the original code, this was under a
-> 
->     if (unlikely(IS_ROOT(walker_path.dentry)))
-> 
-> which means that it only stops walking if we found out we're disconnected
-> after reaching a filesystem boundary.  However if before we got to this
-> point, we have already collected enough rules to allow access, access
-> would be allowed, even if we're currently disconnected.  Demo:
-> 
-> / # cd /
-> / # cp /linux/samples/landlock/sandboxer .
-> / # mkdir a b
-> / # mkdir a/foo
-> / # echo baz > a/foo/bar
-> / # mount --bind a b
-> / # LL_FS_RO=/ LL_FS_RW=/ ./sandboxer bash
-> Executing the sandboxed command...
-> / # cd /b/foo
-> /b/foo # cat bar
-> baz
-> /b/foo # mv /a/foo /foo
-> /b/foo # cd ..     # <- We're now disconnected
-> bash: cd: ..: No such file or directory
-> /b/foo # cat bar
-> baz                # <- but landlock still lets us read the file
-> 
-> However, I think this patch will change this behavior due to the use of
-> path_connected
-> 
-> root@10a8fff999ce:/# mkdir a b
-> root@10a8fff999ce:/# mkdir a/foo
-> root@10a8fff999ce:/# echo baz > a/foo/bar
-> root@10a8fff999ce:/# mount --bind a b
-> root@10a8fff999ce:/# LL_FS_RO=/ LL_FS_RW=/ ./sandboxer bash
-> Executing the sandboxed command...
-> bash: cannot set terminal process group (191): Inappropriate ioctl for device
-> bash: no job control in this shell
-> root@10a8fff999ce:/# cd /b/foo
-> root@10a8fff999ce:/b/foo# cat bar
-> baz
-> root@10a8fff999ce:/b/foo# mv /a/foo /foo
-> root@10a8fff999ce:/b/foo# cd ..
-> bash: cd: ..: No such file or directory
-> root@10a8fff999ce:/b/foo# cat bar
-> cat: bar: Permission denied
+Add validation step to ensure that the UDP payload is
+long enough to contain the expected GUE and UNIGUE encapsulation
+headers
 
-This is a good test case, we should add a test for that.
+Signed-off-by: Suchit <suchitkarunakaran@gmail.com>
+---
+ tools/testing/selftests/bpf/progs/test_cls_redirect.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-> 
-> I'm not sure if the original behavior was intentional, but since this
-> technically counts as a functional changes, just pointing this out.
+diff --git a/tools/testing/selftests/bpf/progs/test_cls_redirect.c b/tools/testing/selftests/bpf/progs/test_cls_redirect.c
+index f344c6835e84..c1d2eaee2e77 100644
+--- a/tools/testing/selftests/bpf/progs/test_cls_redirect.c
++++ b/tools/testing/selftests/bpf/progs/test_cls_redirect.c
+@@ -978,7 +978,14 @@ int cls_redirect(struct __sk_buff *skb)
+ 		return TC_ACT_OK;
+ 	}
+ 
+-	/* TODO Check UDP length? */
++	uint16_t udp_len = bpf_ntohs(encap->udp.len);
++	uint16_t min_encap_len = sizeof(encap->udp) + sizeof(encap->gue) + sizeof(encap->unigue);
++
++	if (udp_len < min_encap_len) {
++		metrics->errors_total_malformed_encapsulation++;
++		return TC_ACT_SHOT;
++	}
 
-This is indeed an issue.
+ 	if (encap->udp.dest != ENCAPSULATION_PORT) {
+ 		return TC_ACT_OK;
+ 	}
+-- 
+2.49.0
 
-> 
-> Also I'm slightly worried about the performance overhead of doing
-> path_connected for every hop in the iteration (but ultimately it's
-> Mickaël's call).
-
-Yes, we need to check with a benchmark.  We might want to keep the
-walker_path.dentry == walker_path.mnt->mnt_root check inlined.
-
-> At least for Landlock, I think if we want to block all
-> access to disconnected files, as long as we eventually realize we have
-> been disconnected (by doing the "if dentry == path.mnt" check once when we
-> reach root), and in that case deny access, we should be good.
-> 
-> 
-> > @@ -918,12 +915,15 @@ static bool is_access_to_paths_allowed(
-> >  				allowed_parent1 = true;
-> >  				allowed_parent2 = true;
-> >  			}
-> > +			goto walk_done;
-> > +		case PATH_PARENT_SAME_MOUNT:
-> >  			break;
-> > +		default:
-> > +			WARN_ON_ONCE(1);
-> > +			goto walk_done;
-> >  		}
-> > -		parent_dentry = dget_parent(walker_path.dentry);
-> > -		dput(walker_path.dentry);
-> > -		walker_path.dentry = parent_dentry;
-> >  	}
-> > +walk_done:
-> >  	path_put(&walker_path);
-> >  
-> >  	if (!allowed_parent1) {
-> 
-> 
 
