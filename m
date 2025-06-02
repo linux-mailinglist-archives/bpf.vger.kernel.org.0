@@ -1,92 +1,112 @@
-Return-Path: <bpf+bounces-59435-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59436-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29CA6ACB5F2
-	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 17:12:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74F1EACB719
+	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 17:24:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5742A1BC7665
-	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 15:02:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D54B14C343F
+	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 15:09:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65D81224240;
-	Mon,  2 Jun 2025 14:55:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7056C23BF8F;
+	Mon,  2 Jun 2025 15:01:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Q3ssEig6"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="UrpPYD4Z"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 414B1223DEF
-	for <bpf@vger.kernel.org>; Mon,  2 Jun 2025 14:54:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86C1E23315A;
+	Mon,  2 Jun 2025 15:01:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748876102; cv=none; b=L9b+Jg87eiAGRi2Ew0Aa7Mt2Vqnb6mhGXOgFfh7GnuPErBU59s+2lkxz4bIyuYugNJ/8GGcfNQCxiHNBdUVO1/giJEZz/z+tZVSRG6VOiAXYUSKa8cnjKPcRNL3F1g4PTOaUu3vk/vSnua3Wu01fjE3h7dZuzVivTAkLaFxTXF0=
+	t=1748876497; cv=none; b=WhAVJTeCyJplzlOFzM5CjjJ6Pt5qkaOpoG1OWKr0obFxq2TwSYOtaFc4MxSf1AS2bnwf+gOMqSkcnQHtFlM0YiEeAstVJgubfC/SAgeEpKmpOPGJED+7AUnrXh9ZllddSYKWzyXyU9P8ZkIKDhwHKAmvbRblY5sYtOsCnPgjcJw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748876102; c=relaxed/simple;
-	bh=iQwc17TdMV/yfeIRfr5oNdWRm+g0Uk/Vj0XMS797H90=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PeDc6lOgGgbaYRWkXf7G+TJzFWlEWFPVx1tQIBU9KJlkEsQtm5NsAN85K79jNiAOWwtxM/SXSzFZsFIOYH8QVcuNB5hne9V6ouZ8fs5SaH8zNdEXe6abjG1RPIHCQ0rvi8dGARC/f6UdshXKn6PFvor0bOc47/voyPg5DxOsQro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Q3ssEig6; arc=none smtp.client-ip=95.215.58.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 2 Jun 2025 07:54:20 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1748876088;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jK+toVOslS/uORtFWGgTjBsPyxhbHB/QR1GNGAJP37E=;
-	b=Q3ssEig6oHBpk/690cvZLo0Dzc77n6f2C/I9kPbIl8w4qQmSjZku6OPYh/eKRTO6LuKFiX
-	153BJ6V9Hp/ZqIZUv6sMWElPKjoRBHBCocgoDNoPRS99cY3pzh8QM/Qz6JoT1XLG4N6gY9
-	VT1HfGdAK9HfjfGcaNhlZy5e4A19ack=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	Vlastimil Babka <vbabka@suse.cz>, Alexei Starovoitov <ast@kernel.org>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Harry Yoo <harry.yoo@oracle.com>, 
-	Yosry Ahmed <yosry.ahmed@linux.dev>, Peter Zijlstra <peterz@infradead.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Tejun Heo <tj@kernel.org>, bpf@vger.kernel.org, 
-	linux-mm@kvack.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Meta kernel team <kernel-team@meta.com>
-Subject: Re: [PATCH v4 0/5] memcg: nmi-safe kmem charging
-Message-ID: <y2eqzgsplnp2fuvlhwk3hogffgjh3d2caohxuwa4dgt7ecznhx@m57r5xhglzyb>
-References: <20250519063142.111219-1-shakeel.butt@linux.dev>
- <gqb34j7wrgetfuklvcjbdlcuteratvvnuow4ujs3dza22fdtwb@cobgv5fq6hb5>
+	s=arc-20240116; t=1748876497; c=relaxed/simple;
+	bh=LaKg7t0RuwlvnsMDtoPiMEaCUDTrJM9p4LfCg+Jnc2Q=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=eseiSOVUyEl3NX26z12v3UWViBR9Q7Qe6JdRT1rSPuhpDfyeH6c4tHumUuY6Z9LCjbC6feX0GdTEtbENbV1R78CNj1vmYHSKAbXc21HXwYjbIW3mG6cFB92vcvTs5YkZ7l2axANxOlYzytbqslao68U/qm6h3yKQ52GS7asSwmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=UrpPYD4Z; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from narnia (unknown [40.78.13.173])
+	by linux.microsoft.com (Postfix) with ESMTPSA id B783C2113A4E;
+	Mon,  2 Jun 2025 08:01:27 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B783C2113A4E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1748876490;
+	bh=LaKg7t0RuwlvnsMDtoPiMEaCUDTrJM9p4LfCg+Jnc2Q=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=UrpPYD4ZV36T4yks9wnk/qqQ88MEmtszbG2RxOz0KAkkfYCcOC3WYCFy6DjO9pzaL
+	 LBmNP0WUgqbdsAtAbz6eT4v/qzrlskHWyK9j10OBMF8VTsGSJWWtl0vLgtNUAlt3Z3
+	 EC6Y5vacXwc28JQhCc+l6hHnHaXw69IoxlK6+Tpw=
+From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+To: KP Singh <kpsingh@kernel.org>
+Cc: Paul Moore <paul@paul-moore.com>, jarkko@kernel.org,
+ zeffron@riotgames.com, xiyou.wangcong@gmail.com, kysrinivasan@gmail.com,
+ code@tyhicks.com, linux-security-module@vger.kernel.org,
+ roberto.sassu@huawei.com, James.Bottomley@hansenpartnership.com, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John
+ Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
+ <yonghong.song@linux.dev>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, David Howells
+ <dhowells@redhat.com>, Lukas Wunner <lukas@wunner.de>, Ignat Korchagin
+ <ignat@cloudflare.com>, Quentin Monnet <qmo@kernel.org>, Jason Xing
+ <kerneljasonxing@gmail.com>, Willem de Bruijn <willemb@google.com>, Anton
+ Protopopov <aspsk@isovalent.com>, Jordan Rome <linux@jordanrome.com>,
+ Martin Kelly <martin.kelly@crowdstrike.com>, Alan Maguire
+ <alan.maguire@oracle.com>, Matteo Croce <teknoraver@meta.com>,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ keyrings@vger.kernel.org, linux-crypto@vger.kernel.org, kys@microsoft.com
+Subject: Re: [PATCH 0/3] BPF signature verification
+In-Reply-To: <CACYkzJ5gXf4MOdb4scid0TaQwpwewH5Zzn2W18XB1tFBoR2CQQ@mail.gmail.com>
+References: <20250528215037.2081066-1-bboscaccy@linux.microsoft.com>
+ <CACYkzJ5oJASZ43B531gY8mESqAF3WYFKez-H5vKxnk8r48Ouxg@mail.gmail.com>
+ <87iklhn6ed.fsf@microsoft.com>
+ <CACYkzJ75JXUM_C2og+JNtBat5psrEzjsgcV+b74FwrNaDF68nA@mail.gmail.com>
+ <87ecw5n3tz.fsf@microsoft.com>
+ <CACYkzJ4ondubPHDF8HL-sseVQo7AtJ2uo=twqhqLWaE3zJ=jEA@mail.gmail.com>
+ <878qmdn39e.fsf@microsoft.com>
+ <CACYkzJ6ChW6GeG8CJiUR6w-Nu3U2OYednXgCYJmp6N5FysLc2w@mail.gmail.com>
+ <875xhhn0jo.fsf@microsoft.com>
+ <CACYkzJ5gXf4MOdb4scid0TaQwpwewH5Zzn2W18XB1tFBoR2CQQ@mail.gmail.com>
+Date: Mon, 02 Jun 2025 08:01:29 -0700
+Message-ID: <8734cimbli.fsf@microsoft.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <gqb34j7wrgetfuklvcjbdlcuteratvvnuow4ujs3dza22fdtwb@cobgv5fq6hb5>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain
 
-On Mon, Jun 02, 2025 at 04:45:31PM +0200, Michal Koutný wrote:
-> Hello Shakeel.
-> 
-> On Sun, May 18, 2025 at 11:31:37PM -0700, Shakeel Butt <shakeel.butt@linux.dev> wrote:
-> > Users can attached their BPF programs at arbitrary execution points in
-> > the kernel and such BPF programs may run in nmi context. In addition,
-> > these programs can trigger memcg charged kernel allocations in the nmi
-> > context. However memcg charging infra for kernel memory is not equipped
-> > to handle nmi context for all architectures.
-> 
-> How much memory does this refer to? Is it unbound (in particular for
-> non-privileged eBPF)? Or is it rather negligible? (I assume the former
-> to make the series worth it.)
-> 
+KP Singh <kpsingh@kernel.org> writes:
 
-It depends on the BPF program and thus can be arbitrarily large. So,
-irrespective of privileged or non-privileged BPF programs, they can
-allocate large amount of memory to maintain monitoring or debugging (or
-for some other use-case) information.
+>> And I'm saying that they are, based on wanting visibility in the LSM
+>> layer, passing that along to the end user, and wanting to be able to
+>> show correctness, along with mitigating an entire vector of supply chain
+>> attacks targeting gen.c.
+>
+> What supply chain attack?I asked this earlier, you never replied, what
+> does a supply chain attack here really look like?
+>
+>
+I responded to that here:
+https://lore.kernel.org/linux-security-module/87iklhn6ed.fsf@microsoft.com/
+
+Warmest Regards,
+Blaise
+
+> - KP
+>
+>>
+>> So in summary, your objection to this is that you feel it's simply "not
+>> needed", and those above risks/design problems aren't actually an issue?
+>>
+>> > Let's have this discussion in the patch series, much easier to discuss
+>> > with the code.
+>>
+>> I think we've all been waiting for that. Yes, lets.
 
