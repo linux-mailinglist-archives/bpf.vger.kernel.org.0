@@ -1,101 +1,227 @@
-Return-Path: <bpf+bounces-59442-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59443-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA7FBACBA55
-	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 19:31:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 355DDACBA68
+	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 19:36:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A8A718839B2
-	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 17:31:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A3857AB152
+	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 17:35:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E1E1225A3B;
-	Mon,  2 Jun 2025 17:30:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE145229B0F;
+	Mon,  2 Jun 2025 17:36:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fFR07+Hb"
+	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="M8OOQWx+"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtp-190b.mail.infomaniak.ch (smtp-190b.mail.infomaniak.ch [185.125.25.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E6C72C326F;
-	Mon,  2 Jun 2025 17:30:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB1E6223DFD
+	for <bpf@vger.kernel.org>; Mon,  2 Jun 2025 17:35:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.25.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748885458; cv=none; b=SvAzu/WjNc8JcBYCEIT+87AOmS8XjRYbUSnu8vIcyd7ZHr7eK+L5KUjXwg2kFDcXg1uVVZRUmXcSac+Xb7JEWfdgkXBrfQTRvzlkEHoaP3pEUwpPYhTXZpjV23flThSvYiHQ6Dyk6ad3U4LlOKNtAblCUHmz5AL7n4jRcprONrQ=
+	t=1748885761; cv=none; b=IPG8U0b0Jrn+/lJE0NeL7Ol0Azl856j1jFw6rM22UiSI1sFVgoxbG0WKmmo8c7MFa1VEjzTk10fp9MDp7okZIMSBWWLpXMiwAjyJUugWf3J/wAdf1qNUgqo5gK0v37cLNIEAAO4AO+DZvXwVcWr1n3d/QID1oTdNGImF82AqIzQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748885458; c=relaxed/simple;
-	bh=53s2psCDL5SQIwqHxnGAlLY1Ue4hS4j0bbVgn0kFX2o=;
+	s=arc-20240116; t=1748885761; c=relaxed/simple;
+	bh=VUhI7CSW76kd/2BwwKOpp8s7Bj4/P8quxGT6EYFmteI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dGeo0x+L6zPcWjuUFQDPuNe+Dz23CA7w89N3BAAyThtfId1w4ueaGVc5RZ+uHeM0zpIsSoIOYue+9khVpu+jRzULYjSh39RwV9f04nRVje02iKNPChsndItVjxqbltUQRoCFJA8/zwCLJF5y+zKd/ouNew3xFG54NV72hiiHYV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fFR07+Hb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60D13C4CEEB;
-	Mon,  2 Jun 2025 17:30:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748885457;
-	bh=53s2psCDL5SQIwqHxnGAlLY1Ue4hS4j0bbVgn0kFX2o=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=rDOTE10iKkh0nGBcu28zYgwhKSvETwE6I8DAP8BHvZ9fn2eJKnEo4st9S6NI9WSQfJesJvdmEwORzYnBiUsc5AjqWnBkBtTxK3fmZE7XgJphHxWkob+V8anJGVOpwt4heKywEYyI6MngLjNMDfj9kWkU0MFZDOx66EzSBhWUxp8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=M8OOQWx+; arc=none smtp.client-ip=185.125.25.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
+Received: from smtp-4-0000.mail.infomaniak.ch (smtp-4-0000.mail.infomaniak.ch [10.7.10.107])
+	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4bB1GF445mzsq2;
+	Mon,  2 Jun 2025 19:35:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digikod.net;
+	s=20191114; t=1748885749;
+	bh=I1+g0eVqjmTqLKooXrJGQ9n+AkRh/ReUCRj2fzMRkns=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fFR07+HbHriDHi70yRz6tfqei2FwqN4quZOTD2FbJyuwo3gJeUtxOAvC6XvfuLaH7
-	 PQlfUYhOCbUIZNL/6fu6wjkdM8GW24lG8VJuOX++nf7HjKS8yfWhNNqzO91wqSeEEC
-	 sAs0wEDW9p15kYc26Anl5hC3BSv4AoFKJlZR1OktJCu4a6ecvhUCeUZOK6tOXxEa+I
-	 sjSpG/d2dd0u9AWSsfwkB8HyERb00gLy2xsSS2Jzlx4q3N5+Y3ki7IX6oqfmZiBj90
-	 EWHtTjvyPmADqFDJMgZtywQr3cE4N+KBmD0nSqLcya0yntsKbOdmJFerJsFET1RiMV
-	 ITYwZdLNkNY8A==
-Date: Mon, 2 Jun 2025 07:30:56 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH 2/3 cgroup/for-6.16] sched_ext: Introduce
- cgroup_lifetime_notifier
-Message-ID: <aD3f0OselwNoryP5@slm.duckdns.org>
-References: <aCQfffBvNpW3qMWN@mtj.duckdns.org>
- <aCQfvCuVWOYkv_X5@mtj.duckdns.org>
- <kzgswr6dlvzvcxcd6yajoqshpumus7fiwft7mmsh5vcygdc5zd@mfauedvifz7f>
+	b=M8OOQWx+BGV1YUVOeH25ve75KC7jFyye0iOoy0EdCVr6ZYaGDhtsX014OSqpfPhUm
+	 +3dbggZnfrD0emuVwQjB8/b2KnTe5Fle3MHkvDZTinGUDPcs8WLizrFvMv4EhSC1Fo
+	 YzC244GupgBAhzLZ6CBxPV9ycq9vUURFtNoKj8sU=
+Received: from unknown by smtp-4-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4bB1GD2KT5zbdy;
+	Mon,  2 Jun 2025 19:35:48 +0200 (CEST)
+Date: Mon, 2 Jun 2025 19:35:47 +0200
+From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+To: Tingmao Wang <m@maowtm.org>
+Cc: Song Liu <song@kernel.org>, linux-fsdevel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, viro@zeniv.linux.org.uk, 
+	brauner@kernel.org, jack@suse.cz, kpsingh@kernel.org, mattbobrowski@google.com, 
+	amir73il@gmail.com, repnop@google.com, jlayton@kernel.org, josef@toxicpanda.com, 
+	gnoack@google.com
+Subject: Re: [PATCH bpf-next 2/4] landlock: Use path_parent()
+Message-ID: <20250602.Oqu6piethung@digikod.net>
+References: <20250528222623.1373000-1-song@kernel.org>
+ <20250528222623.1373000-3-song@kernel.org>
+ <027d5190-b37a-40a8-84e9-4ccbc352bcdf@maowtm.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <kzgswr6dlvzvcxcd6yajoqshpumus7fiwft7mmsh5vcygdc5zd@mfauedvifz7f>
+In-Reply-To: <027d5190-b37a-40a8-84e9-4ccbc352bcdf@maowtm.org>
+X-Infomaniak-Routing: alpha
 
-Hello,
-
-On Mon, Jun 02, 2025 at 05:07:39PM +0200, Michal Koutný wrote:
-> On Wed, May 14, 2025 at 12:44:44AM -0400, Tejun Heo <tj@kernel.org> wrote:
-> > Other subsystems may make use of the cgroup hierarchy with the cgroup_bpf
-> > support being one such example. For such a feature, it's useful to be able
-> <snip>
-> 
-> > other uses are planned.
-> <snip>
-> 
-> > @@ -5753,6 +5765,15 @@ static struct cgroup *cgroup_create(stru
-> >  			goto out_psi_free;
-> >  	}
+On Sat, May 31, 2025 at 02:51:22PM +0100, Tingmao Wang wrote:
+> On 5/28/25 23:26, Song Liu wrote:
+> > Use path_parent() to walk a path up to its parent.
+> > 
+> > While path_parent() has an extra check with path_connected() than existing
+> > code, there is no functional changes intended for landlock.
+> > 
+> > Signed-off-by: Song Liu <song@kernel.org>
+> > ---
+> >  security/landlock/fs.c | 34 +++++++++++++++++-----------------
+> >  1 file changed, 17 insertions(+), 17 deletions(-)
+> > 
+> > diff --git a/security/landlock/fs.c b/security/landlock/fs.c
+> > index 6fee7c20f64d..32a24758ad6e 100644
+> > --- a/security/landlock/fs.c
+> > +++ b/security/landlock/fs.c
+> > @@ -837,7 +837,6 @@ static bool is_access_to_paths_allowed(
+> >  	 * restriction.
+> >  	 */
+> >  	while (true) {
+> > -		struct dentry *parent_dentry;
+> >  		const struct landlock_rule *rule;
 > >  
-> > +	ret = blocking_notifier_call_chain_robust(&cgroup_lifetime_notifier,
-> > +						  CGROUP_LIFETIME_ONLINE,
-> > +						  CGROUP_LIFETIME_OFFLINE, cgrp);
+> >  		/*
+> > @@ -896,19 +895,17 @@ static bool is_access_to_paths_allowed(
+> >  		if (allowed_parent1 && allowed_parent2)
+> >  			break;
+> >  jump_up:
+> > -		if (walker_path.dentry == walker_path.mnt->mnt_root) {
+> > -			if (follow_up(&walker_path)) {
+> > -				/* Ignores hidden mount points. */
+> > -				goto jump_up;
+> > -			} else {
+> > -				/*
+> > -				 * Stops at the real root.  Denies access
+> > -				 * because not all layers have granted access.
+> > -				 */
+> > -				break;
+> > -			}
+> > -		}
+> > -		if (unlikely(IS_ROOT(walker_path.dentry))) {
+> > +		switch (path_parent(&walker_path)) {
+> > +		case PATH_PARENT_CHANGED_MOUNT:
+> > +			/* Ignores hidden mount points. */
+> > +			goto jump_up;
+> > +		case PATH_PARENT_REAL_ROOT:
+> > +			/*
+> > +			 * Stops at the real root.  Denies access
+> > +			 * because not all layers have granted access.
+> > +			 */
+> > +			goto walk_done;
+> > +		case PATH_PARENT_DISCONNECTED_ROOT:
+> >  			/*
+> >  			 * Stops at disconnected root directories.  Only allows
+> >  			 * access to internal filesystems (e.g. nsfs, which is
 > 
-> This is with cgroup_mutex taken.
+> I was looking at the existing handling of disconnected root in Landlock
+> and I realized that the comment here confused me a bit:
 > 
-> Wouldn't it be more prudent to start with atomic or raw notifier chain?
-> (To prevent future unwitting expansion of cgroup_mutex.)
+> /*
+>  * Stops at disconnected root directories.  Only allows
+>  * access to internal filesystems (e.g. nsfs, which is
+>  * reachable through /proc/<pid>/ns/<namespace>).
+>  */
+> 
+> In the original code, this was under a
+> 
+>     if (unlikely(IS_ROOT(walker_path.dentry)))
+> 
+> which means that it only stops walking if we found out we're disconnected
+> after reaching a filesystem boundary.  However if before we got to this
+> point, we have already collected enough rules to allow access, access
+> would be allowed, even if we're currently disconnected.  Demo:
+> 
+> / # cd /
+> / # cp /linux/samples/landlock/sandboxer .
+> / # mkdir a b
+> / # mkdir a/foo
+> / # echo baz > a/foo/bar
+> / # mount --bind a b
+> / # LL_FS_RO=/ LL_FS_RW=/ ./sandboxer bash
+> Executing the sandboxed command...
+> / # cd /b/foo
+> /b/foo # cat bar
+> baz
+> /b/foo # mv /a/foo /foo
+> /b/foo # cd ..     # <- We're now disconnected
+> bash: cd: ..: No such file or directory
+> /b/foo # cat bar
+> baz                # <- but landlock still lets us read the file
+> 
+> However, I think this patch will change this behavior due to the use of
+> path_connected
+> 
+> root@10a8fff999ce:/# mkdir a b
+> root@10a8fff999ce:/# mkdir a/foo
+> root@10a8fff999ce:/# echo baz > a/foo/bar
+> root@10a8fff999ce:/# mount --bind a b
+> root@10a8fff999ce:/# LL_FS_RO=/ LL_FS_RW=/ ./sandboxer bash
+> Executing the sandboxed command...
+> bash: cannot set terminal process group (191): Inappropriate ioctl for device
+> bash: no job control in this shell
+> root@10a8fff999ce:/# cd /b/foo
+> root@10a8fff999ce:/b/foo# cat bar
+> baz
+> root@10a8fff999ce:/b/foo# mv /a/foo /foo
+> root@10a8fff999ce:/b/foo# cd ..
+> bash: cd: ..: No such file or directory
+> root@10a8fff999ce:/b/foo# cat bar
+> cat: bar: Permission denied
 
-This being primarily useful for init/exiting stuff, I think it'd be
-reasonable to expect memory allocations. e.g. Even the existing BPF cgroup
-support needs sleepable context for percpu_ref init and prog allocations.
+This is a good test case, we should add a test for that.
 
-If cgroup_mutex gets involved in locking dep loops, it'll light up lockdep,
-so I'm not *too* worried.
+> 
+> I'm not sure if the original behavior was intentional, but since this
+> technically counts as a functional changes, just pointing this out.
 
-Thanks.
+This is indeed an issue.
 
--- 
-tejun
+> 
+> Also I'm slightly worried about the performance overhead of doing
+> path_connected for every hop in the iteration (but ultimately it's
+> MickaÃ«l's call).
+
+Yes, we need to check with a benchmark.  We might want to keep the
+walker_path.dentry == walker_path.mnt->mnt_root check inlined.
+
+> At least for Landlock, I think if we want to block all
+> access to disconnected files, as long as we eventually realize we have
+> been disconnected (by doing the "if dentry == path.mnt" check once when we
+> reach root), and in that case deny access, we should be good.
+> 
+> 
+> > @@ -918,12 +915,15 @@ static bool is_access_to_paths_allowed(
+> >  				allowed_parent1 = true;
+> >  				allowed_parent2 = true;
+> >  			}
+> > +			goto walk_done;
+> > +		case PATH_PARENT_SAME_MOUNT:
+> >  			break;
+> > +		default:
+> > +			WARN_ON_ONCE(1);
+> > +			goto walk_done;
+> >  		}
+> > -		parent_dentry = dget_parent(walker_path.dentry);
+> > -		dput(walker_path.dentry);
+> > -		walker_path.dentry = parent_dentry;
+> >  	}
+> > +walk_done:
+> >  	path_put(&walker_path);
+> >  
+> >  	if (!allowed_parent1) {
+> 
+> 
 
