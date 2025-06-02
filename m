@@ -1,236 +1,198 @@
-Return-Path: <bpf+bounces-59448-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59449-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C64F4ACBAFE
-	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 20:15:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2E37ACBB22
+	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 20:39:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4EE2164B4F
-	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 18:15:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB75618920AE
+	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 18:39:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9B3D229B18;
-	Mon,  2 Jun 2025 18:15:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E25B22157E;
+	Mon,  2 Jun 2025 18:39:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DeC+kyPP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B7KQriAP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77849211C;
-	Mon,  2 Jun 2025 18:15:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03A983EA98;
+	Mon,  2 Jun 2025 18:39:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748888114; cv=none; b=Yi+spty4PgoAvlsW1KL91b8GJzZp4xPPEFoFaLmTHAiEorMTMaCEGDljk7fqh+KzyfWfaNygAaukAxlTy4XPwjmyZJ9YsJP6biRrqCv9BjxPure1X051qqTVX28J+GFojBIS/YFrMuaY4+9JsCgoMadGguPGJBDclWdkDWi0pxg=
+	t=1748889563; cv=none; b=X9YSFRpLyAsa7xVGwQhXj6k9Khc+0Y1wnNfrmXYnOGrT+GO/uzZk6t2XNFmM0W9ngkzKY9vK/+ju3P9TDUQGoUxi9CVWCdirkftFZrnTFpvyh1xms8AlOoTMzFrkk4/zXqFjwR0eFNXLSHSc3NXJKPBmGYWMZCTSydfnJcGTwJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748888114; c=relaxed/simple;
-	bh=hedc1slK+9Lv61TDwSQNxLU1CfM474XSEdPMgVna/Ck=;
+	s=arc-20240116; t=1748889563; c=relaxed/simple;
+	bh=bGGkzeql+kLBnwAhHz5NwSXdhWSCN087guRy3TwIvTs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Tuh+AhYFyAvATucMPKzcpzF5KJbF6ihR0csT1Iwz5GVA+GLoOlUr5s12eyQRg3xbR3VTH0EY0gsKyPtWtfvjqQ6ZfdqgxAEbNEy9qTLUO/AQu3g/UcgmRDA4TgzxdrdEEM8/TrBylbxWJV3Jxf3s2pbWSlWv4uW5ohO428exjZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DeC+kyPP; arc=none smtp.client-ip=209.85.128.49
+	 To:Cc:Content-Type; b=PlEvW+XAOGDYMHpax6eNERQq9bUF0hMdMEgCz3E4z4uCR7LO5JTEvtsbp0r1C+AMjyBIuB9JI6H1EQ5Dwp5eWNzRAtvdfplWZin4yWJfdGX5oWZHQrovCsqDENa2K3iT6LaoK2Q+7cwYaCYdm9TptaTx95eijR5g6d6wb8TQlpo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B7KQriAP; arc=none smtp.client-ip=209.85.221.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-442f9043f56so28507635e9.0;
-        Mon, 02 Jun 2025 11:15:12 -0700 (PDT)
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3a36efcadb8so4169820f8f.0;
+        Mon, 02 Jun 2025 11:39:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748888111; x=1749492911; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1748889559; x=1749494359; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mX/pCZ6QPtF7g93rpLdt86rmKoHi6yL8n3t0sLvtHpg=;
-        b=DeC+kyPPIcVujpo05GyoYfXLyxu3sZzQTfiXD9D4SDPN8miMJVFKjbSt0VGFiHTdlk
-         Re469aXMTNoDig86b313tc+z5yocOMQLYbtaHXL4B2NJvUlER9RII7LYhCA58GPDeEbs
-         /14r1egkiMucq+i6fM3/UGhvw0KymPvhZmkiT+I0O1i0pQBblqQO6I3gmpO1HzXr3JdE
-         UzJm3xvboZP7yeqKSbDuD5Dymne1Lx5RoPHoW+IvINy8OaNxD76vsQz0zMO55gOvx6Kq
-         77CzB2sosacTIjInbo9mCqHfYdec1+nrrGnDpVSBgVvmbE3u+AEX4C6iKutJPE1Egr/K
-         ETrQ==
+        bh=p4EJ/bNdkxlN82qnQqNLj+AZOld+xZ2/fvExor8dpnA=;
+        b=B7KQriAPfJc/bCpO2Y0q5W7M6ABYLfIKKYmLnIPBqGqVqTp4B4gV073J5XRWLxVr5g
+         Ur6GTbO1OOPtW3wDwzn7HTQ8RK82wfXC8AYqZ85bBPtofP+1AFg8tGyK7XxDiIqMzX4x
+         GCYThM0LCtP7AJ0X4BnksMWOFpECeShYba/eN2goEVtbXTWTmDyAfK/kBsOyBkFuQ8OT
+         cTP4Ng+NwLacgAx7z+MKqxOKyTsixIqbrndCnptI65tz5eI+NueNe8YDijWix0HYCZ5y
+         yGeGTZEhstoWJ5orJ/OEW7elP2kX8JBOMpK3NnNhd5FqOFG5gxoY2x/zHltcFxiPVBpg
+         AMQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748888111; x=1749492911;
+        d=1e100.net; s=20230601; t=1748889559; x=1749494359;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mX/pCZ6QPtF7g93rpLdt86rmKoHi6yL8n3t0sLvtHpg=;
-        b=sglPAajMXSRlcXYRTNdU9lLxTfgZlGGYNE4EWAG1eVuZQqk18YLWR4p1Og/+J5SLQ6
-         SOEPLIk5xylKniJSIQphwb0wnnv4xvvB10ygMjXWT/HBau8amDrhN0hbvqGFnsF8Kk4j
-         pYgVbN12iVuEqiPRU5ZFxMNk+cYxizqS6+P4PV22sNj3gYN/b5v72Z7+XDVIfTK8fGYx
-         2q7cxDZeCJMUTBWePREj+0EQqsfmDQl/EQzPt0RXDd9iVe1+ygMYJ0sJTF0TH6vA8NCi
-         kLtCqxj6N8zuKWpGGJkAN9Ware4lnsZ8Mh0Si+co44F6GVJ8HYWb5QjPnH4N4rwfbUF7
-         ZfwA==
-X-Forwarded-Encrypted: i=1; AJvYcCWt1Bql4mz88cgpWC7y1bLcslulHbVOtLTCKDzUfYOkGRvBHMWpZM4Haq001BsuUKhYHgc=@vger.kernel.org, AJvYcCX9ytnvTB8F/Nls5yC1cv+SeRd1WxnKpUhQ7hreWnVj1bhPU17WkrG3DktIC+79/uPQB/sxrPQh1dJP9tu1wEsXKg==@vger.kernel.org, AJvYcCXib3QOcgJQkbcnx1tOq0FQdN47FxgHRyX3gclyTm14769Q0sZn9eH7fz/KK7bbT4cfffRp27GkM1Dmv8Ut@vger.kernel.org
-X-Gm-Message-State: AOJu0YxXWaYgeK6cYNMIKwiwUaI5HvL4mT8jY2s9mAx0DUrIQQiDvz3A
-	ZhsoTl9wPE8Hd4Cv4yPofbFNhL+7iFT34oRsJ2D7NSsKJdp2GRiZ2fsnsX4bWVUIoFleAGzYIjl
-	oAAT5rNcl5vXHlBHQdIFrw9+QXlA0rm0=
-X-Gm-Gg: ASbGncvtV7OwwFBQHo+2fahwNqVZL2N3Umpg3UhCwybbZF8a2Ii9dtprdIRtEmRYDWi
-	yVjknclWrugCyARE/sUVRlmJZfxNmyO1uv0XI8mvriMQHcVm+4YbhbmxIuqdqbLiBu7hmWYo9Oy
-	ry9teTG56NV4mCuWoIz6GDcLUBPHo5LSId+pnc6XlmlvxSd5gN
-X-Google-Smtp-Source: AGHT+IGpJYuInbfHGFM0Zs7ZYiwunfyj5vlSoTMHxj6LUcKavVkEz4WNHuG4znOYLPTBJU4BgCL66MJAHdk+hUyWB1w=
-X-Received: by 2002:a05:6000:2dca:b0:3a4:e706:532b with SMTP id
- ffacd0b85a97d-3a4fe398f49mr6954997f8f.43.1748888110368; Mon, 02 Jun 2025
- 11:15:10 -0700 (PDT)
+        bh=p4EJ/bNdkxlN82qnQqNLj+AZOld+xZ2/fvExor8dpnA=;
+        b=rZPmejEBxaGZ/WZh6fvlBHbOMHrPSGUYRcnjB24RdZfAv7XRW2JoFM+KSwIYMFhaNt
+         hloS6FnDd0x7HWohFwmsUoMtaX17GvgNsMy7JH6iIqCw5N4lmV447PHncm+tK/LWO0Gu
+         WnJH1Jhx7GNs006u02KpHXh0YxJAO1bPGkxr+OsXxrgs8SCmVBiviWacEZVVgJC58VR4
+         DQ4/cOIQBV59UOrD+OpLVURVOyx7gi/GIm6n2+jXshZsXiedLHYPRk1z0L0q4PRjIlv+
+         2oKDQ3NUOeR6ldnTzMi9zRS6pnmp0Dx0UXOT68DudYLsLaVTtctN8c4xZsfKQ9ap5e/9
+         DwAw==
+X-Forwarded-Encrypted: i=1; AJvYcCUzN2CkoSTzVybjVNOENNA8N0d9OeWm/S4Fi7oBZ6fKVO6+Qpdt+GP2nGiIjtEkGkwX6G0=@vger.kernel.org, AJvYcCVlUF3kzAsny5M6BUXtMPmGv7ImeDUOmvYJiCSUDJwiT4eO8gsSu/G5d72VCf31AXyeJlRtEnzPJeD2956Mfl/w@vger.kernel.org, AJvYcCXsOmy+S76kcEn9Sfo+I2iX1Z+eGHflwpxejn170EsxPLsNciga/WhMI+NnKZGZUewOciaynxNo3BjXdP3n@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz++2myKrZ4bFNfqj5yXDm/wzUztIqkbp8m81sHvsCBBDyssGgW
+	IBB5vYLxN6QF4lK1cW6jkJ4cwbuIRmV3y1RTH7M/K+VAG4mMUo4rmAtkXvHXQ3PUrLirrIbTtdO
+	nVk552JpnWIO/HD7C8gOqH2TtTiaFguM=
+X-Gm-Gg: ASbGncs2KObI/28uN1ITVsPUcs3vsBkGydjWUxNPE+sGHVkHaJiZZ+WPVFkHCO/tkc6
+	7zTqJkq0qBXdcFl/fC1WjjItZWWF5Qkdg+WySJkWDcY6HN6NUWTwmVs4NJt6GYh9SkEB1MbwgTG
+	xerYarZcuKAWlyIZdJEKFgiBrO7VztqnNpq0D1EfiGfDYmQI9oTnhcWD6WO3lCteTWGedyGg==
+X-Google-Smtp-Source: AGHT+IHUqx+mgL8hi72589JB27VJBUMwBIp9UzNzlH5b5s1OhLB/pURvh6gvJXZGV2bvvKk9RnNCYMD8HuP9sRI3DPU=
+X-Received: by 2002:a05:6000:3112:b0:3a0:7f9c:189a with SMTP id
+ ffacd0b85a97d-3a4f799acd4mr11273853f8f.0.1748889559007; Mon, 02 Jun 2025
+ 11:39:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250520181644.2673067-1-kan.liang@linux.intel.com>
- <20250520181644.2673067-2-kan.liang@linux.intel.com> <djxlh5fx326gcenwrr52ry3pk4wxmugu4jccdjysza7tlc5fef@ktp4rffawgcw>
- <d3c6b899-7281-4f97-a449-96f506181bab@linux.intel.com> <CAADnVQL_v4SscxVK5fLxKo5Z4+LJtVfpvrJ4+ztu-ecPfxwrhQ@mail.gmail.com>
- <fb64520f-3890-4cdf-9c12-73d6b8de584b@linux.intel.com>
-In-Reply-To: <fb64520f-3890-4cdf-9c12-73d6b8de584b@linux.intel.com>
+References: <20250531072031.2263491-1-blakejones@google.com>
+ <CAADnVQJv_FVciT9LC+W=sVtWAt9oXeAACzmTHzyqY-2svi4ugA@mail.gmail.com> <CAP-5=fWADfh9WNXgUOhXYW5hZWk-FZL1oJTdaDgq8Hqr8_Fd0g@mail.gmail.com>
+In-Reply-To: <CAP-5=fWADfh9WNXgUOhXYW5hZWk-FZL1oJTdaDgq8Hqr8_Fd0g@mail.gmail.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 2 Jun 2025 11:14:59 -0700
-X-Gm-Features: AX0GCFtaVFimDMEvqxIFdbLFiBresthrljCeNVzlQTI2Dmecz-iAlJlh5ai8MYA
-Message-ID: <CAADnVQ+h24Sez9iaa9DdwS9sWQ4m1LXeXQM7XMPKfZO7FmUtMg@mail.gmail.com>
-Subject: Re: perf regression. Was: [PATCH V4 01/16] perf: Fix the throttle
- logic for a group
-To: "Liang, Kan" <kan.liang@linux.intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>, 
-	Mark Rutland <mark.rutland@arm.com>, LKML <linux-kernel@vger.kernel.org>, 
-	"linux-perf-use." <linux-perf-users@vger.kernel.org>, Stephane Eranian <eranian@google.com>, 
-	Chun-Tse Shao <ctshao@google.com>, Thomas Richter <tmricht@linux.ibm.com>, Leo Yan <leo.yan@arm.com>, 
-	bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Ihor Solodrai <ihor.solodrai@linux.dev>, Song Liu <song@kernel.org>, Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 2 Jun 2025 11:39:07 -0700
+X-Gm-Features: AX0GCFtiw9IZLAsO114ncb1PisrfRk2ajYyxEUOp4PqScN6vm6DijNlIQ-pyHHA
+Message-ID: <CAADnVQKeJUdvJ7tKhpdatL-A5zDi9DXKFun8fwM2e7Bynd5FDg@mail.gmail.com>
+Subject: Re: [PATCH] libbpf: add support for printing BTF character arrays as strings
+To: Ian Rogers <irogers@google.com>
+Cc: Blake Jones <blakejones@google.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Ihor Solodrai <ihor.solodrai@linux.dev>, Namhyung Kim <namhyung@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 2, 2025 at 10:51=E2=80=AFAM Liang, Kan <kan.liang@linux.intel.c=
-om> wrote:
+On Mon, Jun 2, 2025 at 8:05=E2=80=AFAM Ian Rogers <irogers@google.com> wrot=
+e:
 >
->
->
-> On 2025-06-02 12:24 p.m., Alexei Starovoitov wrote:
-> > On Mon, Jun 2, 2025 at 5:55=E2=80=AFAM Liang, Kan <kan.liang@linux.inte=
-l.com> wrote:
-> >>
-> >> Hi Alexei,
-> >>
-> >> On 2025-06-01 8:30 p.m., Alexei Starovoitov wrote:
-> >>> On Tue, May 20, 2025 at 11:16:29AM -0700, kan.liang@linux.intel.com w=
-rote:
-> >>>> From: Kan Liang <kan.liang@linux.intel.com>
-> >>>>
-> >>>> The current throttle logic doesn't work well with a group, e.g., the
-> >>>> following sampling-read case.
-> >>>>
-> >>>> $ perf record -e "{cycles,cycles}:S" ...
-> >>>>
-> >>>> $ perf report -D | grep THROTTLE | tail -2
-> >>>>             THROTTLE events:        426  ( 9.0%)
-> >>>>           UNTHROTTLE events:        425  ( 9.0%)
-> >>>>
-> >>>> $ perf report -D | grep PERF_RECORD_SAMPLE -a4 | tail -n 5
-> >>>> 0 1020120874009167 0x74970 [0x68]: PERF_RECORD_SAMPLE(IP, 0x1):
-> >>>> ... sample_read:
-> >>>> .... group nr 2
-> >>>> ..... id 0000000000000327, value 000000000cbb993a, lost 0
-> >>>> ..... id 0000000000000328, value 00000002211c26df, lost 0
-> >>>>
-> >>>> The second cycles event has a much larger value than the first cycle=
-s
-> >>>> event in the same group.
-> >>>>
-> >>>> The current throttle logic in the generic code only logs the THROTTL=
-E
-> >>>> event. It relies on the specific driver implementation to disable
-> >>>> events. For all ARCHs, the implementation is similar. Only the event=
- is
-> >>>> disabled, rather than the group.
-> >>>>
-> >>>> The logic to disable the group should be generic for all ARCHs. Add =
+> On Sat, May 31, 2025 at 11:20=E2=80=AFAM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Sat, May 31, 2025 at 12:20=E2=80=AFAM Blake Jones <blakejones@google=
+.com> wrote:
+> > >
+> > > The BTF dumper code currently displays arrays of characters as just t=
+hat -
+> > > arrays, with each character formatted individually. Sometimes this is=
+ what
+> > > makes sense, but it's nice to be able to treat that array as a string=
+.
+> > >
+> > > This change adds a special case to the btf_dump functionality to allo=
+w
+> > > arrays of single-byte integer values to be printed as character strin=
+gs.
+> > > Characters for which isprint() returns false are printed as hex-escap=
+ed
+> > > values. This is enabled when the new ".print_strings" is set to 1 in =
 the
-> >>>> logic in the generic code. The following patch will remove the buggy
-> >>>> driver-specific implementation.
-> >>>>
-> >>>> The throttle only happens when an event is overflowed. Stop the enti=
-re
-> >>>> group when any event in the group triggers the throttle.
-> >>>> The MAX_INTERRUPTS is set to all throttle events.
-> >>>>
-> >>>> The unthrottled could happen in 3 places.
-> >>>> - event/group sched. All events in the group are scheduled one by on=
-e.
-> >>>>   All of them will be unthrottled eventually. Nothing needs to be
-> >>>>   changed.
-> >>>> - The perf_adjust_freq_unthr_events for each tick. Needs to restart =
-the
-> >>>>   group altogether.
-> >>>> - The __perf_event_period(). The whole group needs to be restarted
-> >>>>   altogether as well.
-> >>>>
-> >>>> With the fix,
-> >>>> $ sudo perf report -D | grep PERF_RECORD_SAMPLE -a4 | tail -n 5
-> >>>> 0 3573470770332 0x12f5f8 [0x70]: PERF_RECORD_SAMPLE(IP, 0x2):
-> >>>> ... sample_read:
-> >>>> .... group nr 2
-> >>>> ..... id 0000000000000a28, value 00000004fd3dfd8f, lost 0
-> >>>> ..... id 0000000000000a29, value 00000004fd3dfd8f, lost 0
-> >>>>
-> >>>> Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> >>>> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-> >>>> ---
-> >>>>  kernel/events/core.c | 66 ++++++++++++++++++++++++++++++-----------=
----
-> >>>>  1 file changed, 46 insertions(+), 20 deletions(-)
-> >>>
-> >>> This patch breaks perf hw events somehow.
-> >>>
-> >>> After merging this into bpf trees we see random "watchdog: BUG: soft =
-lockup"
-> >>> with various stack traces followed up:
-> >>> [   78.620749] Sending NMI from CPU 8 to CPUs 0:
-> >>> [   76.387722] NMI backtrace for cpu 0
-> >>> [   76.387722] CPU: 0 UID: 0 PID: 0 Comm: swapper/0 Tainted: G       =
-    O L      6.15.0-10818-ge0f0ee1c31de #1163 PREEMPT
-> >>> [   76.387722] Tainted: [O]=3DOOT_MODULE, [L]=3DSOFTLOCKUP
-> >>> [   76.387722] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),=
- BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-> >>> [   76.387722] RIP: 0010:_raw_spin_lock_irqsave+0xc/0x40
-> >>> [   76.387722] Call Trace:
-> >>> [   76.387722]  <IRQ>
-> >>> [   76.387722]  hrtimer_try_to_cancel.part.0+0x24/0xe0
-> >>> [   76.387722]  hrtimer_cancel+0x21/0x40
-> >>> [   76.387722]  cpu_clock_event_stop+0x64/0x70
-> >>
-> >>
-> >> The issues should be fixed by the patch.
-> >> https://lore.kernel.org/lkml/20250528175832.2999139-1-kan.liang@linux.=
-intel.com/
-> >>
-> >> Could you please give it a try?
+> > > btf_dump_type_data_opts structure.
+> > >
+> > > As an example, here's what it looks like to dump the string "hello" u=
+sing
+> > > a few different field values for btf_dump_type_data_opts (.compact =
+=3D 1):
+> > >
+> > > - .print_strings =3D 0, .skip_names =3D 0:  (char[6])['h','e','l','l'=
+,'o',]
+> > > - .print_strings =3D 0, .skip_names =3D 1:  ['h','e','l','l','o',]
+> > > - .print_strings =3D 1, .skip_names =3D 0:  (char[6])"hello"
+> > > - .print_strings =3D 1, .skip_names =3D 1:  "hello"
+> > >
+> > > Here's the string "h\xff", dumped with .compact =3D 1 and .skip_names=
+ =3D 1:
+> > >
+> > > - .print_strings =3D 0:  ['h',-1,]
+> > > - .print_strings =3D 1:  "h\xff"
+> > >
+> > > Signed-off-by: Blake Jones <blakejones@google.com>
+> > > ---
+> > >  tools/lib/bpf/btf.h                           |   3 +-
+> > >  tools/lib/bpf/btf_dump.c                      |  51 ++++++++-
+> > >  .../selftests/bpf/prog_tests/btf_dump.c       | 102 ++++++++++++++++=
+++
+> > >  3 files changed, 154 insertions(+), 2 deletions(-)
 > >
-> > Thanks. It fixes it, but the commit log says that
-> > only cpu-clock and task_clock are affected,
-> > which are SW events.
->
-> Yes, only the two SW events are affected.
->
+> > Please split selftests vs main libbpf parts.
 > >
-> > While our tests are locking while setting up:
+> > > diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+> > > index 4392451d634b..be8e8e26d245 100644
+> > > --- a/tools/lib/bpf/btf.h
+> > > +++ b/tools/lib/bpf/btf.h
+> > > @@ -326,9 +326,10 @@ struct btf_dump_type_data_opts {
+> > >         bool compact;           /* no newlines/indentation */
+> > >         bool skip_names;        /* skip member/type names */
+> > >         bool emit_zeroes;       /* show 0-valued fields */
+> > > +       bool print_strings;     /* print char arrays as strings */
+> > >         size_t :0;
+> > >  };
+> > > -#define btf_dump_type_data_opts__last_field emit_zeroes
+> > > +#define btf_dump_type_data_opts__last_field print_strings
+> > >
+> > >  LIBBPF_API int
+> > >  btf_dump__dump_type_data(struct btf_dump *d, __u32 id,
+> > > diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+> > > index 460c3e57fadb..a07dd5accdd8 100644
+> > > --- a/tools/lib/bpf/btf_dump.c
+> > > +++ b/tools/lib/bpf/btf_dump.c
+> > > @@ -75,6 +75,7 @@ struct btf_dump_data {
+> > >         bool is_array_member;
+> > >         bool is_array_terminated;
+> > >         bool is_array_char;
+> > > +       bool print_strings;
 > >
-> >         struct perf_event_attr attr =3D {
-> >                 .freq =3D 1,
-> >                 .type =3D PERF_TYPE_HARDWARE,
-> >                 .config =3D PERF_COUNT_HW_CPU_CYCLES,
-> >         };
-> >
-> > Is it because we run in x86 VM and HW_CPU_CYCLES is mapped
-> > to cpu-clock sw ?
+> > Looks useful, but make sure to add a feature detection
+> > to perf, since it has to work with old and new libbpf.
 >
-> No, that's from different PMU. We never map HW_CPU_CYCLES to a SW event.
-> It will error our if the PMU is not available.
+> Just for clarity on this. We'll need a "libbpf-strings" feature like
+> the existing "libbpf" one:
+> https://web.git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.=
+git/tree/tools/build/feature/test-libbpf.c?h=3Dperf-tools-next
 >
-> I'm not familiar with your test case and env. At least, I saw
-> PERF_COUNT_SW_CPU_CLOCK is used in the case unpriv_bpf_disabled.
+> Currently these features are only used if perf is built with
+> LIBBPF_DYNAMIC=3D1 as part of the build arguments (ie its not the
+> default):
+> https://web.git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.=
+git/tree/tools/perf/Makefile.config?h=3Dperf-tools-next#n580
+>
+> If no suitable libbpf is detected then the build will error out. I
+> guess if feature-libbpf is present but not feature-libbpf-strings then
+> we'll need a perf #define so that the string feature won't cause
+> perf's build to fail.
 
-I see. The first test was necessary to create throttle conditions
-for the 2nd test that actually used cpu-clock.
-
-Feel free to add
-Tested-by: Alexei Starovoitov <ast@kernel.org>
-
-I've applied your patch to bpf tree for now to stop the bleeding.
-Will drop it when the fix gets to Linus through perf trees.
+Yes. Something like this.
+It will also allow libbpf and perf patches to land in parallel.
 
