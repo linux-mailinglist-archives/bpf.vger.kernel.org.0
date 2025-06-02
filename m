@@ -1,68 +1,69 @@
-Return-Path: <bpf+bounces-59427-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59428-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DD74ACAB6C
-	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 11:32:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 972FAACAB8C
+	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 11:41:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F4F0189A552
-	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 09:33:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1E67189C4D5
+	for <lists+bpf@lfdr.de>; Mon,  2 Jun 2025 09:41:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0956B1E0E1A;
-	Mon,  2 Jun 2025 09:32:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA8651E32D5;
+	Mon,  2 Jun 2025 09:41:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b/bQqgF/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n5zlRaru"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A64A2C3249;
-	Mon,  2 Jun 2025 09:32:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 346FC2C3240;
+	Mon,  2 Jun 2025 09:41:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748856758; cv=none; b=MVmiRnoiK7VNw7tW8XDZNVC2awvJF6x7oVf7wbX3v1Ej8BYv2Dfl0wxl1+IpqtdLjzeN/7Go8J/3xCBPcJk83s5RsT3cBJV3rtaGyvZaK0JR2D3iftM56YqC5Ned01KgiR1l+Dcvr6//J89k+4WYJB6IpoMQ1qwp++ydshKms50=
+	t=1748857287; cv=none; b=oyyummmYga4RJNirohUMEH4bMWEJr1eNOVdgfLqBZmvWn8Z8ZOwXN7sd23R3nRcZrDzctZwcA+EPyAi7MSX8I9nW2ToPRahUhlNOV8z7UafkMkNsGfFwlPnQZd7apDQBjw/sgPDPOeCoJD6EutjjsshGHupsqaIQptzdFDVF8fo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748856758; c=relaxed/simple;
-	bh=nr4WqDvry9Cej4Mt316h/Dzw69D+4TInCxHLquLuXZM=;
+	s=arc-20240116; t=1748857287; c=relaxed/simple;
+	bh=nc6j8Ww3pa6hsHO1V9lFp84Qa/02w3fwd44UmE8/4Rk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Za9N0C7xWG0iESfskk+vr255t3GUWFJlU+CGLHBcqsHv9okAwNS+89ARHM1bAqd33VawLSxE2kD6pxewQNq6RyTCiuzKP7kxhaLGruSOZREIk0nnbMbqdUxrRMqaKvWKi1niB21wbixkDEjZGOoEpTU+z9dZEopRok0m3EppFZw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b/bQqgF/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7010C4CEEB;
-	Mon,  2 Jun 2025 09:32:32 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=bY2JOSbXasHCa1feFZHpOR9U+NtKYsW0/Ak1NYigUlIyVsemsRuEdMalSWzShG8QahR7Sx38/XKzmwLYs6CikyenCmutd8HLZAe4XWzxigqWwxh/ViP4CRPtXSnK3jS0hCII3GaCLGhBymDiGsrhEVNA8GBkYsmaVZSD+SJHR6g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n5zlRaru; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB054C4CEEB;
+	Mon,  2 Jun 2025 09:41:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748856758;
-	bh=nr4WqDvry9Cej4Mt316h/Dzw69D+4TInCxHLquLuXZM=;
+	s=k20201202; t=1748857286;
+	bh=nc6j8Ww3pa6hsHO1V9lFp84Qa/02w3fwd44UmE8/4Rk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=b/bQqgF/D2RMhGm2dsGYeYPHlX/2BpeQ+jCGtifH5sJXlzICBeiNAFBIKRuF2HRvL
-	 BmYTwVWy08M+Dg8ye38PD44v7aAfkEg7ctXRbjzRXEF/qdnObtlDr3ImqQfI87qaJ3
-	 cNqaIZ6zgs1NPnmPgdnqiVZfmwDKwA9ct77XcGzruvspCMdpbXUWF7D8ePweEiiYNx
-	 5pKzOUsbXd0LyRc5L9jkbtZX1gyQ7XzLbyQYpZS2E7RmvkDA24gHX2OcFqXbxEiK1p
-	 DknJP2rB9A1lm9w69qeB3cOaphrvnH7T1L3cYQFtfC9SHn5MdA7I3CO68KtVAB9zJ0
-	 ERHbtYy+4ubtw==
-Date: Mon, 2 Jun 2025 11:32:30 +0200
+	b=n5zlRaruelPGzyHReU0/OBvQXB3bXOw3WhShwjZGDlm7089tB9BWiZTrAstN85UVT
+	 vzg1Gtx83aO7bMoIQ2tV9NhMl2ld/STm4eeiKWZB44Sk5owmMKGc5wi8Y/4bZNC3AL
+	 5fnswEOnW9uvtW5k6tt8pC2T90guJO3a0PGTXlCsjJdawO3ibEbksxnpSAEbqd44FJ
+	 EgLiYOxAzzlbpRxHx5IhdQJ4FDscrDa+quTUg4vJb7mzXqXyyYlA2MuhdlB8iD+J06
+	 r0/bkShKsBhMNgl24mTLC7Rwo9xXiCLBwBgpBStEcOTfS74Q9ENn9CWfZ0cVf7YWpE
+	 RDTh0hp0F0caA==
+Date: Mon, 2 Jun 2025 11:41:19 +0200
 From: Christian Brauner <brauner@kernel.org>
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>, 
-	Song Liu <song@kernel.org>, Jan Kara <jack@suse.cz>, bpf@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, 
-	ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, kpsingh@kernel.org, 
-	mattbobrowski@google.com, amir73il@gmail.com, repnop@google.com, jlayton@kernel.org, 
-	josef@toxicpanda.com, gnoack@google.com, Tingmao Wang <m@maowtm.org>
+To: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+Cc: Song Liu <song@kernel.org>, 
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>, 
+	bpf <bpf@vger.kernel.org>, Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, LSM List <linux-security-module@vger.kernel.org>, 
+	Kernel Team <kernel-team@meta.com>, Andrii Nakryiko <andrii@kernel.org>, Eduard <eddyz87@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Matt Bobrowski <mattbobrowski@google.com>, Amir Goldstein <amir73il@gmail.com>, repnop@google.com, 
+	Jeff Layton <jlayton@kernel.org>, Josef Bacik <josef@toxicpanda.com>, 
+	=?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>
 Subject: Re: [PATCH bpf-next 3/4] bpf: Introduce path iterator
-Message-ID: <20250602-hagel-poliklinisch-922154e2202d@brauner>
-References: <20250529183536.GL2023217@ZenIV>
- <CAPhsuW7LFP0ddFg_oqkDyO9s7DZX89GFQBOnX=4n5mV=VCP5oA@mail.gmail.com>
- <20250529201551.GN2023217@ZenIV>
- <CAPhsuW5DP1x_wyzT1aYjpj3hxUs4uB8vdK9iEp=+i46QLotiOg@mail.gmail.com>
- <20250529214544.GO2023217@ZenIV>
- <CAPhsuW5oXZVEaMwNpSF74O7wZ_f2Qr_44pu9L4_=LBwdW5T9=w@mail.gmail.com>
- <20250529231018.GP2023217@ZenIV>
- <CAPhsuW6-J+NUe=jX51wGVP=nMFjETu+1LUTsWZiBa1ckwq7b+w@mail.gmail.com>
- <20250530.euz5beesaSha@digikod.net>
- <20250530184348.GQ2023217@ZenIV>
+Message-ID: <20250602-zuarbeiten-entledigen-d793f4e0bce3@brauner>
+References: <20250528222623.1373000-1-song@kernel.org>
+ <20250528222623.1373000-4-song@kernel.org>
+ <20250528223724.GE2023217@ZenIV>
+ <yti2dilasy7b3tu6iin5pugkn6oevdswrwoy6gorudb7x2cqhh@nqb3gcyxg4by>
+ <CAPhsuW4tg+bXU41fhAaS0n74d_a_KCFGvy_vkQOj7v4VLie2wg@mail.gmail.com>
+ <CAADnVQ+UGsvfAM8-E8Ft3neFkz4+TjE=rPbP1sw1m5_4H9BPNg@mail.gmail.com>
+ <CAPhsuW78L8WUkKz8iJ1whrZ2gLJR+7Kh59eFrSXvrxP0DwMGig@mail.gmail.com>
+ <20250530.oh5pahH9Nui9@digikod.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -72,26 +73,42 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250530184348.GQ2023217@ZenIV>
+In-Reply-To: <20250530.oh5pahH9Nui9@digikod.net>
 
-On Fri, May 30, 2025 at 07:43:48PM +0100, Al Viro wrote:
-> On Fri, May 30, 2025 at 02:20:39PM +0200, Mickaël Salaün wrote:
-> 
-> > Without access to mount_lock, what would be the best way to fix this
-> > Landlock issue while making it backportable?
+On Fri, May 30, 2025 at 04:20:39PM +0200, Mickaël Salaün wrote:
+> On Thu, May 29, 2025 at 10:05:59AM -0700, Song Liu wrote:
+> > On Thu, May 29, 2025 at 9:57 AM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > [...]
+> > > >
+> > > > How about we describe this as:
+> > > >
+> > > > Introduce a path iterator, which safely (no crash) walks a struct path.
+> > > > Without malicious parallel modifications, the walk is guaranteed to
+> > > > terminate. The sequence of dentries maybe surprising in presence
+> > > > of parallel directory or mount tree modifications and the iteration may
+> > > > not ever finish in face of parallel malicious directory tree manipulations.
+> > >
+> > > Hold on. If it's really the case then is the landlock susceptible
+> > > to this type of attack already ?
+> > > landlock may infinitely loop in the kernel ?
 > > 
-> > > 
-> > > If we update path_parent in this patchset with choose_mountpoint(),
-> > > and use it in Landlock, we will close this race condition, right?
-> > 
-> > choose_mountpoint() is currently private, but if we add a new filesystem
-> > helper, I think the right approach would be to expose follow_dotdot(),
-> > updating its arguments with public types.  This way the intermediates
-> > mount points will not be exposed, RCU optimization will be leveraged,
-> > and usage of this new helper will be simplified.
+> > I think this only happens if the attacker can modify the mount or
+> > directory tree as fast as the walk, which is probably impossible
+> > in reality.
 > 
-> IMO anything that involves struct nameidata should remain inside
-> fs/namei.c - something public might share helpers with it, but that's
+> Yes, so this is not an infinite loop but an infinite race between the
+> kernel and a very fast malicious user space process with an infinite
+> number of available nested writable directories, that would also require
+> a filesystem (and a kernel) supporting infinite pathname length.
 
-Strongly agree.
+Uhm, I'm not so sure. If you have really deep directory chains and
+expose them via bind-mounts in multiple location then it was already
+easy to trigger livelocks because e.g., is_subdir() did lockless
+sequence counter checks and it refired over and over and over again.
+We've fixed that since but such issues aren't all that theoretical. IOW,
+the bug was caused simply by having too many concurrent tree
+modifications and parts of the code need to make sure that they haven't
+affected their result. So I would be very careful with asserting that
+it's not possible to hit such issues in real-life...
 
