@@ -1,312 +1,145 @@
-Return-Path: <bpf+bounces-59505-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59506-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC2D3ACC8E1
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 16:16:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 762DCACC8ED
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 16:19:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D43B188F166
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 14:16:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AD283A7992
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 14:18:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D0FB3E47B;
-	Tue,  3 Jun 2025 14:15:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC748239562;
+	Tue,  3 Jun 2025 14:19:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y+ID4G6x"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dITUHu60"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25724238C34
-	for <bpf@vger.kernel.org>; Tue,  3 Jun 2025 14:15:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3DF52745E;
+	Tue,  3 Jun 2025 14:19:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748960155; cv=none; b=CY8tOCOd0eWXOy2/r8fPRK78UJEv95i0Uwt1Q/19G5WXarzZUw8KapxIynE2KhetLuvN6rySF+km6s6qT6cMWZfenoCiM0tLVjLOdvvCaE7NzaBpDbh4Fh9gRBQIvDjSoUjKcWT28AkQvOXJsp1OsOpv859wSX9TRiT2LjrC8qo=
+	t=1748960343; cv=none; b=NO9lwd86dxKkqd9mC3Ucx42FIPHpxjCp0LzgPzyKbNvMr7EYl21O15iyqj9LZfYquBJUunOkIVT3jsadODfZMa6FEJ0r7M+fuqe9MqsbNckN63eUf6qJ32UuGhTV5hkg8frjjzioCcy+wCC7l/GowczKIEuxYrjGbeiqA+4M6KE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748960155; c=relaxed/simple;
-	bh=RnYiKUqRblzk4ZJYFFR2SUJ1hne3zrlLlvcK3ciNWXA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=litfDLM75wYLFSaJENHVInK7JgL90qvWGXOAPFLaSTRskEsqhBOjjwiwrHG8ZgQaeJYFKyjlaVPS9wlkhV/J4vNAyY83SJJYKxd7FyYuESeMQfqiruP8UjS3iwRkjhKdYojDq9RphUz/8N2+zUdDoabDZS7HzAM1rsEp/M6YaHk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y+ID4G6x; arc=none smtp.client-ip=209.85.208.43
+	s=arc-20240116; t=1748960343; c=relaxed/simple;
+	bh=YTMw6hVIJ4tac7hSIaKesh8CBYHWVGFRHULIjD0JYGg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ms3yf3e7nZo4WG0WNhdZb/0daXWuAgOe4EA4AIjwqZz6vYXxN5swGelD0jt1+2BvN/YU/UvPIN85hb45nzO7up4No8QTz1msDxs3vY0zSBl8EeBQPd2BNOjkXESRm7U8QkbNWXiCkoJ/qDjzf8a5EDEW4bBT/iNXn71Iy7+QzCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dITUHu60; arc=none smtp.client-ip=209.85.216.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-602e203db66so9830518a12.1
-        for <bpf@vger.kernel.org>; Tue, 03 Jun 2025 07:15:52 -0700 (PDT)
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-312b0d83a10so2005953a91.0;
+        Tue, 03 Jun 2025 07:19:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748960151; x=1749564951; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zxVdQSMTqRwFjabyM0u1EAj8PBs1OukFHP23aE1ZMw8=;
-        b=Y+ID4G6xdzkT9BXo/2K9+or7R2D97La7AxeGVg9fgIb1XDkeF8flHSQywzF6SBaffT
-         Bt5Blf3NHAfyED66y3WGHXoyJmzDPrOGRNDOi5DP+E5tTKUPofd3T+9D+x2nO+lTD6UV
-         FetNr77/NHjbf2j/wvweLses9glGSAchuVI3YlxSeRnGlKYL6x+KHdJdIMvDzCv6/P8F
-         RziFqRciUGOnWhw9yaalYTpXcYJW0VasTlJDr91FM7zB6pqywP4Riq81nuuYxaQTiSCI
-         HOWjm1/xi5HGWY9sWsyR4H8lOlHnW34zUiAIROCrnswTsjre+PtW2Rjn2ilkQynr0fc/
-         jBVg==
+        d=gmail.com; s=20230601; t=1748960341; x=1749565141; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2GiI1DpFumaOXkG4kd/ldNkXDNVlluff0coHT3pCkZ4=;
+        b=dITUHu60229YOarjMVdidOth43jeDYVesniMGVELsH+qDf758GllvfEoG/8viwgpbb
+         Lw6+PYaGCZIX7lv3nt/yKeqGs+G8h78irkbslbc4ofyWpmOrhJOMjCcwEgKHOW4RdNgJ
+         utQrwSBOK4HYSD+kf0O8GacEqM9oe8bjj58L6JnAWd78sspG32ffrDIBqkVq48VZm7yr
+         5qqzRp/s44kauNbaCmqmZYvQN82W1m7S9dTgNVrX8p5+mc5OkbKF/+JKP5UOQoCHGHL+
+         1yA/zz4Ss4Ny9ExugYWbeWHyScLNUgw2AAj93j8JRnVcjjFezxSrLmOoqeEx/F5sOzBq
+         fhCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748960151; x=1749564951;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zxVdQSMTqRwFjabyM0u1EAj8PBs1OukFHP23aE1ZMw8=;
-        b=u9IP+BHgS2aMqXMRP1UxFD7j2FZzEGQ3E5JTAxwbsSRgsD0CHaywoPBCAuVrj7cHTn
-         wR4gZqOgIOdW0brBffqWPOUPVdbHE8V4bjqpgz8t7GfWqdlk3tUD5e/FZqmVHCwdPmXE
-         xOEp1l7pPNC0YdzlJMtthSh9/AZic3X70YL8v62Li9KtzUxCS83gqxZtqMP8fiGdnU5Q
-         Si54QCEcy5CfxK5UMwP93b7EKp+Ay1SoYzH1ZjFvK8xGhVBUL1Az4u3i9PelNqmVu/3B
-         7l7plPNK42rSxnl3b+dveJykzJMU9g9z3aFX7xcuBYBO5E5cFgwqajGLUjyF1cIRFMWd
-         RFWQ==
-X-Gm-Message-State: AOJu0YwEViSIzmpvDkpoD83jLAP/TjCncG1CT2fdqGMqQKk2+FuQZL/d
-	MIjSXQ5eIYl1mgMZjzdU9xpA6uZQ5H8rVNyf0QIqNuXJ5JCVehVzKMZsYUg5xT0m
-X-Gm-Gg: ASbGncsNwd34/GWj2SU32lHKvv7hgnLVWpWK0ONF0L1w3qR9vC9wChzE/1PK8OmDMYe
-	rJ+xnclAVO+ITIOS6IWq8SV6DSAHUr7dWlJcxBx/PCpf7hZ0Ooy7Uf1qadLtchXF3rl14R7FrF8
-	ujNqt1YBSFTfnGieVoQb9lNlM6sc7CU/e+HJypx7FwuSZRu+mFfLIoUrzz73r1EwFE7lKuFbkTf
-	CPY+TQZx9micWZIysJB/5iSohwSM0KQmLD0PbMqE02CnHRPfhpzMbnpf5Hj3lYD6Y4jVInxhKsy
-	3mvH0iJZc3Y3khQoZmaILBmFMlg6ZXhF2D3jmN9UOU0ZXLkmsJDBdJqRLkfr
-X-Google-Smtp-Source: AGHT+IG3icnFCFs/moNVEkUA7NA5D+AcoexDD8WdhGEQXWs9QLvYlFyiHqTpxObuMcRf0w+qfuvlsw==
-X-Received: by 2002:a05:6402:3593:b0:601:6c34:5ed2 with SMTP id 4fb4d7f45d1cf-605b77213d4mr11638154a12.4.1748960151004;
-        Tue, 03 Jun 2025 07:15:51 -0700 (PDT)
-Received: from localhost ([2a02:8109:a307:d900:8d44:8ebc:1af3:5969])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-60566c2b39asm7757329a12.7.2025.06.03.07.15.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Jun 2025 07:15:50 -0700 (PDT)
-From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	kafai@meta.com,
-	kernel-team@meta.com,
-	eddyz87@gmail.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next] selftests/bpf: support array presets in veristat
-Date: Tue,  3 Jun 2025 15:15:38 +0100
-Message-ID: <20250603141539.86878-1-mykyta.yatsenko5@gmail.com>
-X-Mailer: git-send-email 2.49.0
+        d=1e100.net; s=20230601; t=1748960341; x=1749565141;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2GiI1DpFumaOXkG4kd/ldNkXDNVlluff0coHT3pCkZ4=;
+        b=FvbUbOlMwdoB+6vsiAO2SF/F520j2magf2WSSk7zzPeyL3zsWhVFSiFw/HW3Q6cofF
+         kJUr1kabQIwPnMr3t2I3NSbI1jVyaXnrHLQ3Be/qQWUbWHA1pJwgjVzGMrnrKN3CHFoi
+         cYZMnogbmNazaZyVaPR8RJQc6bGVOYrtJPmHagOqm5125vqQygkBuuTIFPUBXrQ8SUHv
+         qS59SSsTvCHbG1dOj3vEjbyxgzM2eCYjBX7TBdQjwiiNEZkiFFJ/j2z2TzuVpiLSwXGv
+         goYxKJn7Cpu5+b+eu4KMeL2U6G5ZTOrn7MoDkoHtbn4R8KzgMKvWimqNlfwBLuYlaA7v
+         /2Pw==
+X-Forwarded-Encrypted: i=1; AJvYcCVZJlyFpmu9XVDVnDbJZuD+t1XiAlExF9cv9ESKasC0iOk7wMA8jgMW2MsOGBj0+yghIR8QzK++6WwFg+dB@vger.kernel.org, AJvYcCVbpbPtwgodeC4ZqH18Xlzb4erZGbJLWEcBuVfj4nK1aRzOXu63S7nuA0jHxywvcyeTGsI=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz066e0OjesEqEVZHTynmkeP7xBRGXZ4mfBv0L7frQn8Fe5YWoE
+	Ks6rWfU8DBErrrK5Vzk5RSIpwyw9U1fhvS3sgeRypQIUYx5mV2YpgsK1
+X-Gm-Gg: ASbGnct0WdqbuQ+/1dA7Bmep5Hy2RvINDCO1R46GctIfwu0+26oyGtcbT8Y7R+R4K7/
+	1bd/Pqi6x1BJFoM78fshj4XORsdu7yopY5V76W2DBy5n9GHClAQKpkcc3yO8p1Qr0w+xbiHSycw
+	pmd4+lkLi41T48GcCAYICmkC54K7FezLkVimpUjC0Rkpbmh/kejj4W64kCrZM1SWbVwcuUzWhT8
+	Q8tDHw4BhZgIwk4MTzDLhymKCG0J9bSNbGmlmeEZj1MMRjlIXadV87WyurfIPUavYwPiKN3l9zJ
+	L7vrTJNXuh4q/qUV8l9DCcBZfK8UZFSSx9tWri8x4hd6/HTXqWo6cFpG7tEI7NaimvuGNR+lobo
+	Jq7dvpH+gXq96Ot0MCW+6w1w1hDLVpbVG3vvGTnaz
+X-Google-Smtp-Source: AGHT+IHYn7hiu2Jk3QqyG7TaSkPhOS5JI0kLYniE4Gj2hpCCxy1DnFsfHd9qOhBb9winlm+9+7HBEw==
+X-Received: by 2002:a17:90b:2251:b0:311:d05c:947 with SMTP id 98e67ed59e1d1-3125044928bmr25109627a91.24.1748960340534;
+        Tue, 03 Jun 2025 07:19:00 -0700 (PDT)
+Received: from ?IPV6:2001:ee0:4f0e:fb30:c672:ef11:a97b:5717? ([2001:ee0:4f0e:fb30:c672:ef11:a97b:5717])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-312db8eb19asm2158390a91.44.2025.06.03.07.18.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Jun 2025 07:19:00 -0700 (PDT)
+Message-ID: <5c6323fc-e147-457a-98ae-df1d1fa7cd7e@gmail.com>
+Date: Tue, 3 Jun 2025 21:18:51 +0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH net-next v2 2/2] selftests: net: add XDP socket tests
+ for virtio-net
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: netdev@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
+ Jason Wang <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+ =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, virtualization@lists.linux.dev,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20250527161904.75259-1-minhquangbui99@gmail.com>
+ <20250527161904.75259-3-minhquangbui99@gmail.com> <aDhCfxHo3M5dxlpH@boxer>
+ <fe162eed-fd44-4c18-a541-8243ccfc4252@gmail.com> <aDmaT1cmoRa6PaqK@boxer>
+ <ef4ac528-3f91-4004-b47b-e758a5712d28@gmail.com> <aD3JjgW2oxdal5lE@boxer>
+Content-Language: en-US
+From: Bui Quang Minh <minhquangbui99@gmail.com>
+In-Reply-To: <aD3JjgW2oxdal5lE@boxer>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Mykyta Yatsenko <yatsenko@meta.com>
+On 6/2/25 22:55, Maciej Fijalkowski wrote:
+> On Sat, May 31, 2025 at 03:51:57PM +0700, Bui Quang Minh wrote:
+>> On 5/30/25 18:45, Maciej Fijalkowski wrote:
+>>> On Thu, May 29, 2025 at 09:29:14PM +0700, Bui Quang Minh wrote:
+>>>> On 5/29/25 18:18, Maciej Fijalkowski wrote:
+>>>>> On Tue, May 27, 2025 at 11:19:04PM +0700, Bui Quang Minh wrote:
+>>>>>> This adds a test to test the virtio-net rx when there is a XDP socket
+>>>>>> bound to it. There are tests for both copy mode and zerocopy mode, both
+>>>>>> cases when XDP program returns XDP_PASS and XDP_REDIRECT to a XDP socket.
+>>>>>>
+>>>>>> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
+>>>>> Hi Bui,
+>>>>>
+>>>>> have you considered adjusting xskxceiver for your needs? If yes and you
+>>>>> decided to go with another test app then what were the issues around it?
+>>>>>
+>>>>> This is yet another approach for xsk testing where we already have a
+>>>>> test framework.
+>>>> Hi,
+>>>>
+>>>> I haven't tried much hard to adapt xskxceiver. I did have a look at
+>>>> xskxceiver but I felt the supported topology is not suitable for my need. To
+>>>> test the receiving side in virtio-net, I use Qemu to set up virtio-net in
+>>>> the guest and vhost-net in the host side. The sending side is in the host
+>>>> and the receiving is in the guest so I can't figure out how to do that with
+>>>> xskxceiver.
+>>> I see - couldn't the python side be executing xdpsock then instead of your
+>>> own app?
+>> I'm not aware of xdpsock. Could you give the path to that file?
+> https://github.com/xdp-project/bpf-examples/tree/main/AF_XDP-example
+>
+> this is our go-to app side of AF_XDP.
 
-Implement support for presetting values for array elements in veristat.
-For example:
-```
-sudo ./veristat set_global_vars.bpf.o -G "struct1[2].struct2[1].u.var_u8[2] = 3" -G "arr[3] = 9"
-```
-Arrays of structures and structure of arrays work, but each individual
-scalar value has to be set separately: `foo[1].bar[2] = value`.
+Thanks, I'll take a look at it and try to use it for selftest if 
+possible in next version.
 
-Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
----
- .../selftests/bpf/prog_tests/test_veristat.c  |  9 +--
- .../selftests/bpf/progs/set_global_vars.c     | 12 ++--
- tools/testing/selftests/bpf/veristat.c        | 63 +++++++++++++++++--
- 3 files changed, 70 insertions(+), 14 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_veristat.c b/tools/testing/selftests/bpf/prog_tests/test_veristat.c
-index 47b56c258f3f..1af5d02bb2d0 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_veristat.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_veristat.c
-@@ -60,12 +60,13 @@ static void test_set_global_vars_succeeds(void)
- 	    " -G \"var_s8 = -128\" "\
- 	    " -G \"var_u8 = 255\" "\
- 	    " -G \"var_ea = EA2\" "\
--	    " -G \"var_eb = EB2\" "\
--	    " -G \"var_ec = EC2\" "\
-+	    " -G \"var_eb  =  EB2\" "\
-+	    " -G \"var_ec=EC2\" "\
- 	    " -G \"var_b = 1\" "\
--	    " -G \"struct1.struct2.u.var_u8 = 170\" "\
-+	    " -G \"struct1[2].struct2[1].u.var_u8[2]=170\" "\
- 	    " -G \"union1.struct3.var_u8_l = 0xaa\" "\
- 	    " -G \"union1.struct3.var_u8_h = 0xaa\" "\
-+	    " -G \"arr[2] = 0xaa\" "	\
- 	    "-vl2 > %s", fix->veristat, fix->tmpfile);
- 
- 	read(fix->fd, fix->output, fix->sz);
-@@ -81,7 +82,7 @@ static void test_set_global_vars_succeeds(void)
- 	__CHECK_STR("_w=12 ", "var_eb = EB2");
- 	__CHECK_STR("_w=13 ", "var_ec = EC2");
- 	__CHECK_STR("_w=1 ", "var_b = 1");
--	__CHECK_STR("_w=170 ", "struct1.struct2.u.var_u8 = 170");
-+	__CHECK_STR("_w=170 ", "struct1.struct2[1].u.var_u8[2] = 170");
- 	__CHECK_STR("_w=0xaaaa ", "union1.var_u16 = 0xaaaa");
- 
- out:
-diff --git a/tools/testing/selftests/bpf/progs/set_global_vars.c b/tools/testing/selftests/bpf/progs/set_global_vars.c
-index 90f5656c3991..db11e26d7a42 100644
---- a/tools/testing/selftests/bpf/progs/set_global_vars.c
-+++ b/tools/testing/selftests/bpf/progs/set_global_vars.c
-@@ -23,6 +23,7 @@ const volatile enum Enum var_ea = EA1;
- const volatile enum Enumu64 var_eb = EB1;
- const volatile enum Enums64 var_ec = EC1;
- const volatile bool var_b = false;
-+const volatile __s32 arr[5];
- 
- struct Struct {
- 	int:16;
-@@ -35,16 +36,16 @@ struct Struct {
- 		volatile struct {
- 			const int:1;
- 			union {
--				const volatile __u8 var_u8;
-+				const volatile __u8 var_u8[3];
- 				const volatile __s16 filler3;
- 				const int:1;
- 			} u;
- 		};
--	} struct2;
-+	} struct2[2];
- };
- 
- const volatile __u32 stru = 0; /* same prefix as below */
--const volatile struct Struct struct1 = {.struct2 = {.u = {.var_u8 = 1}}};
-+const volatile struct Struct struct1[3] = {{.struct2 = {{}, {.u = {.var_u8 = {1}}}}}};
- 
- union Union {
- 	__u16 var_u16;
-@@ -62,8 +63,6 @@ union Union {
- 
- const volatile union Union union1 = {.var_u16 = -1};
- 
--char arr[4] = {0};
--
- SEC("socket")
- int test_set_globals(void *ctx)
- {
-@@ -81,8 +80,9 @@ int test_set_globals(void *ctx)
- 	a = var_eb;
- 	a = var_ec;
- 	a = var_b;
--	a = struct1.struct2.u.var_u8;
-+	a = struct1[2].struct2[1].u.var_u8[2];
- 	a = union1.var_u16;
-+	a = arr[3];
- 
- 	return a;
- }
-diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
-index b2bb20b00952..79c5ea6476ca 100644
---- a/tools/testing/selftests/bpf/veristat.c
-+++ b/tools/testing/selftests/bpf/veristat.c
-@@ -1379,7 +1379,7 @@ static int append_var_preset(struct var_preset **presets, int *cnt, const char *
- 	memset(cur, 0, sizeof(*cur));
- 	(*cnt)++;
- 
--	if (sscanf(expr, "%s = %s %n", var, val, &n) != 2 || n != strlen(expr)) {
-+	if (sscanf(expr, "%[][a-zA-Z0-9_.] = %s %n", var, val, &n) != 2 || n != strlen(expr)) {
- 		fprintf(stderr, "Failed to parse expression '%s'\n", expr);
- 		return -EINVAL;
- 	}
-@@ -1486,6 +1486,39 @@ static bool is_preset_supported(const struct btf_type *t)
- 	return btf_is_int(t) || btf_is_enum(t) || btf_is_enum64(t);
- }
- 
-+static int adjust_array_secinfo(const struct btf *btf, const struct btf_type *t,
-+				struct btf_var_secinfo *sinfo, const char *var)
-+{
-+	struct btf_array *barr;
-+	const struct btf_type *type;
-+	char arr[64], idx[64];
-+	int i = 0, tid;
-+
-+	if (!btf_is_array(t))
-+		return 0;
-+
-+	barr = btf_array(t);
-+	tid = btf__resolve_type(btf, barr->type);
-+	type = btf__type_by_id(btf, tid);
-+
-+	/* var may contain chained expression e.g.: foo[1].bar */
-+	if (sscanf(var, "%[a-zA-Z0-9_][%[a-zA-Z0-9]]", arr, idx) != 2) {
-+		fprintf(stderr, "Could not parse array expression %s\n", var);
-+		return -EINVAL;
-+	}
-+	errno = 0;
-+	i = strtol(idx, NULL, 0);
-+	if (errno || i < 0 || i >= barr->nelems) {
-+		fprintf(stderr, "Preset index %s is invalid or out of bounds [0, %d]\n",
-+			idx, barr->nelems);
-+		return -EINVAL;
-+	}
-+	sinfo->size = type->size;
-+	sinfo->type = tid;
-+	sinfo->offset += i * type->size;
-+	return 0;
-+}
-+
- const int btf_find_member(const struct btf *btf,
- 			  const struct btf_type *parent_type,
- 			  __u32 parent_offset,
-@@ -1493,7 +1526,7 @@ const int btf_find_member(const struct btf *btf,
- 			  int *member_tid,
- 			  __u32 *member_offset)
- {
--	int i;
-+	int i, err;
- 
- 	if (!btf_is_composite(parent_type))
- 		return -EINVAL;
-@@ -1511,8 +1544,12 @@ const int btf_find_member(const struct btf *btf,
- 		member_type = btf__type_by_id(btf, tid);
- 		if (member->name_off) {
- 			const char *name = btf__name_by_offset(btf, member->name_off);
-+			int name_len = strlen(name);
- 
--			if (strcmp(member_name, name) == 0) {
-+			if (strcmp(member_name, name) == 0 ||
-+			    (btf_is_array(member_type) &&
-+			     strncmp(name, member_name, name_len) == 0 &&
-+			     member_name[name_len] == '[')) {
- 				if (btf_member_bitfield_size(parent_type, i) != 0) {
- 					fprintf(stderr, "Bitfield presets are not supported %s\n",
- 						name);
-@@ -1520,6 +1557,16 @@ const int btf_find_member(const struct btf *btf,
- 				}
- 				*member_offset = parent_offset + member->offset;
- 				*member_tid = tid;
-+				if (btf_is_array(member_type)) {
-+					struct btf_var_secinfo sinfo = {.offset = 0};
-+
-+					err = adjust_array_secinfo(btf, member_type,
-+								   &sinfo, member_name);
-+					if (err)
-+						return err;
-+					*member_tid = sinfo.type;
-+					*member_offset += sinfo.offset * 8;
-+				}
- 				return 0;
- 			}
- 		} else if (btf_is_composite(member_type)) {
-@@ -1548,6 +1595,13 @@ static int adjust_var_secinfo(struct btf *btf, const struct btf_type *t,
- 	snprintf(expr, sizeof(expr), "%s", var);
- 	strtok_r(expr, ".", &saveptr);
- 
-+	if (btf_is_array(base_type)) {
-+		err = adjust_array_secinfo(btf, base_type, sinfo, var);
-+		if (err)
-+			return err;
-+		base_type = btf__type_by_id(btf, sinfo->type);
-+	}
-+
- 	while ((name = strtok_r(NULL, ".", &saveptr))) {
- 		err = btf_find_member(btf, base_type, 0, name, &member_tid, &member_offset);
- 		if (err) {
-@@ -1673,7 +1727,8 @@ static int set_global_vars(struct bpf_object *obj, struct var_preset *presets, i
- 
- 				if (strncmp(var_name, presets[k].name, var_len) != 0 ||
- 				    (presets[k].name[var_len] != '\0' &&
--				     presets[k].name[var_len] != '.'))
-+				     presets[k].name[var_len] != '.' &&
-+				     presets[k].name[var_len] != '['))
- 					continue;
- 
- 				if (presets[k].applied) {
--- 
-2.49.0
-
+Quang Minh.
 
