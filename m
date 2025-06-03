@@ -1,158 +1,130 @@
-Return-Path: <bpf+bounces-59565-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59566-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DE51ACCFE1
-	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 00:33:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6298CACD032
+	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 01:20:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 588793A43D1
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 22:32:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B90FD1897BDD
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 23:20:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 651DB253346;
-	Tue,  3 Jun 2025 22:32:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 548C1253346;
+	Tue,  3 Jun 2025 23:20:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hmZz/5Pf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NbUmJx91"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D49B419CC39;
-	Tue,  3 Jun 2025 22:32:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C636B2066CF;
+	Tue,  3 Jun 2025 23:20:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748989974; cv=none; b=TJ+uYyJ3f4kE6hTUfREJM45y3wx2TvCM1ST/brqmWUneOaiuVoMmOGBe5qd4yySQNJKyWbNVosL1LN451jkjb83+KHNNjxXu6KPtad8CrtG4ptn30HsBETmlTQqU+gX24D1JdzsmfwuyKiDfzol4ZtLzuvjWueU91+Pz49k7Mbg=
+	t=1748992816; cv=none; b=YKYONHMzflehBS6Zzq7BIJAFqXeP+IrK210VxGgYsePKgQFStDCXNDkiKoFcqMjKhA2X53k01Vv+M6lmue81d55OZIKVuWRYN7RDTymlK2S4+ngvDxuZe2IMob9ARBGiO0SpiWfDwiQPVWOiDazzyjqoejVAa2y5WiB67FkXeAU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748989974; c=relaxed/simple;
-	bh=bPXsRXpAxnlibilkjqrzAMmxKvKrgapASq5nd7CJUvU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b0DsLDhr52aQvh6rkqBQGHN1iuwBKurGJ+qP12i2R/aDJTVGJq1RBSRE7Rc3jIUwsribOv94NN8FV/IFWf15AqJT2Yz7VOiytSUKI6GkZ8ZayXKPNy6Mvokrb3xsNYuJ25DLQk1z6u77wB9MtGvvqjhYceDy4S3b2KrEvHhe8fs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hmZz/5Pf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86428C4CEED;
-	Tue,  3 Jun 2025 22:32:53 +0000 (UTC)
+	s=arc-20240116; t=1748992816; c=relaxed/simple;
+	bh=G6HTrgY8s0ABn2090OgkfKLlCb3pzWh2OSW5n7m8PzU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WgaLtKMk8UbYuTPPv0jQQfwU//4wwdzZBWasMPiNW8hSFjjyjHbI83h7KU4TbP7DHrFMkxE2TpNeWKZabjJQps+sY3kw4riS9t3stW8ZvrMRL3RszKK9irnzJGKr9bdOk3O2b12IY3Wv/IYdBRA5pkDsP6NUU0j9/E4skUwLlt8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NbUmJx91; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A68C8C4CEEF;
+	Tue,  3 Jun 2025 23:20:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748989974;
-	bh=bPXsRXpAxnlibilkjqrzAMmxKvKrgapASq5nd7CJUvU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hmZz/5PfB227KENsmt29kjBaKus3m8PO+zxGimbW3gsLF5YE1htDXTfEIhb3yx+8N
-	 y7ClgVBPtzn3Gu5E9YpXzkJBIFKsFw/p3cc6YnuXY+b0eb/erRbuKtTTWnbSqNfBku
-	 dX9IiyVIG8yIaGau5llRcvSQNnTK5U2lbMKcBQOOklK9V6rQt4UweGEC840QeHthyP
-	 1EhuduCSyCmNgjfRXCk8xVP8Qk736HxEtV7gkY2XfJfmSZ8mLoIpt8xK3aEDSQryMB
-	 qjn9kbxgS9T3Ywx99UdD41rDLKOZZ54rdBUV/ThCmObgmdwUuimq2dimGm3Hqa5BP8
-	 eu1lMiTy9n8fA==
-Date: Tue, 3 Jun 2025 15:32:52 -0700
-From: Namhyung Kim <namhyung@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	James Clark <james.clark@linaro.org>,
-	Dapeng Mi <dapeng1.mi@linux.intel.com>,
-	Thomas Richter <tmricht@linux.ibm.com>,
-	Veronika Molnarova <vmolnaro@redhat.com>, Hao Ge <gehao@kylinos.cn>,
-	Howard Chu <howardchu95@gmail.com>,
-	Weilin Wang <weilin.wang@intel.com>, Levi Yun <yeoreum.yun@arm.com>,
-	"Dr. David Alan Gilbert" <linux@treblig.org>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Xu Yang <xu.yang_2@nxp.com>, Tengda Wu <wutengda@huaweicloud.com>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH v3 00/10] Move uid filtering to BPF filters
-Message-ID: <aD94FJN4Pjsx7exP@google.com>
-References: <20250425214008.176100-1-irogers@google.com>
- <CAP-5=fXiYHbe9gd_TNyy=txzrd+ONxecnpZr+uPeOnF5XxunGw@mail.gmail.com>
- <aD586_XkeOH2_Fes@google.com>
- <CAP-5=fUXJ6fW4738Fnx9AK2mPeA74ZpYKv=Ui6wYLWXE3KRRTQ@mail.gmail.com>
+	s=k20201202; t=1748992816;
+	bh=G6HTrgY8s0ABn2090OgkfKLlCb3pzWh2OSW5n7m8PzU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=NbUmJx91iy/w/IK5R0+Cdo5UJz/LFbcnT4kT26yxDO+HIDcIQWmscRvwBeN3eN52x
+	 4Z7rHysC5lPHkqfpR3w6mYy4n5UbBx2OZ249PdP9tT9pZ6vmjsELhLKNav7NIuP3h5
+	 bT+S3PVFceH1+FUaPMcooMXfp6MmN5gJRFsGGKDP9zmoBJ+tLXTq2VoXE5WyctIk4j
+	 3BQeKPVuiC7BL8V9CS8HS8LnU60DReTxo11SrPParwnSaXnjbQ1ePz02Vit5Gli3pY
+	 XqWQL5pPrLieasMjfmWU6lzHGsVlBLD0to4ZoWDUDx18xurRTVoCalCq/OdJHvPuyo
+	 vE6GZqk9OGYug==
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-4a44b3526e6so54923671cf.0;
+        Tue, 03 Jun 2025 16:20:16 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUjswvYVf0Whm2YcUMbqVObWgLSFcDt4jFgU7nOcUYxhFqAiu3c2oDXGV8DyzRM9RFfGrhJHkTbfRCXWj0p@vger.kernel.org, AJvYcCUzjYGhbH6kwDG3fgH8DNWzm9YVang8tBqSbezlF7JGhBM3c3hwydvYPmIk+ExdlZJbx45B+r8iCfVhkIYU@vger.kernel.org, AJvYcCXETEJztUs11k7ewwVcZA4fFV/mAHVZObdp54YhILMIxzMNgCCAMvk6OmFa7P2lBru1VWAOjnY1p80EmRX+98BW8HDIFogv@vger.kernel.org
+X-Gm-Message-State: AOJu0YyEbvK+XClsLMtZPFFo8HnH1x9dMc0NgqeCig8LlW7sq3JLimrO
+	ynkSWWydroiLrUctuLdeN76ogs8fUr1EqGk//YqwRrA7c3CVmpVo3/IwP3lofk6X0Utqyau+3Sm
+	fxbQyC4huQhVy7RfuivFDKidoPTsjZ78=
+X-Google-Smtp-Source: AGHT+IH4Kd1zp8ji2+OmIj64se2PS6DJY05aRquelehbqiinjRk4WB/znGty+R9MDWOshmgqyXVU24LS5KDCLoNBSEU=
+X-Received: by 2002:a05:622a:544b:b0:476:980c:10a9 with SMTP id
+ d75a77b69052e-4a5a57fc70bmr13760421cf.21.1748992815883; Tue, 03 Jun 2025
+ 16:20:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fUXJ6fW4738Fnx9AK2mPeA74ZpYKv=Ui6wYLWXE3KRRTQ@mail.gmail.com>
+References: <20250603065920.3404510-1-song@kernel.org> <20250603065920.3404510-4-song@kernel.org>
+ <CAEf4BzasOmqHDnuKd7LCT_FEBVMuJxmVNgvs52y5=qLd1bB=rg@mail.gmail.com>
+ <CAPhsuW7mwut7SYubAUa5Ji7meDP1Bn8ZD9s+4sqjBDim7jGrWA@mail.gmail.com> <CAEf4Bzbm=mnRM=PYBLDTogrb+bNk2TnTj-kGr3=oFNEyQm8hKw@mail.gmail.com>
+In-Reply-To: <CAEf4Bzbm=mnRM=PYBLDTogrb+bNk2TnTj-kGr3=oFNEyQm8hKw@mail.gmail.com>
+From: Song Liu <song@kernel.org>
+Date: Tue, 3 Jun 2025 16:20:02 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6rdJpP4pqtgU2WC8-KOkNObeY5ELMy_ga_0YjJJj0NaA@mail.gmail.com>
+X-Gm-Features: AX0GCFv8ElnQFepo78HRXo57cLt23SB-SkBGmvc12qF61wcH0yiwIRcZkJdh_7E
+Message-ID: <CAPhsuW6rdJpP4pqtgU2WC8-KOkNObeY5ELMy_ga_0YjJJj0NaA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 3/4] bpf: Introduce path iterator
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, viro@zeniv.linux.org.uk, 
+	brauner@kernel.org, jack@suse.cz, kpsingh@kernel.org, 
+	mattbobrowski@google.com, amir73il@gmail.com, repnop@google.com, 
+	jlayton@kernel.org, josef@toxicpanda.com, mic@digikod.net, gnoack@google.com, 
+	m@maowtm.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 02, 2025 at 11:26:12PM -0700, Ian Rogers wrote:
-> On Mon, Jun 2, 2025 at 9:41 PM Namhyung Kim <namhyung@kernel.org> wrote:
+On Tue, Jun 3, 2025 at 2:45=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Tue, Jun 3, 2025 at 2:09=E2=80=AFPM Song Liu <song@kernel.org> wrote:
 > >
-> > Hi Ian,
-> >
-> > On Tue, May 27, 2025 at 01:39:21PM -0700, Ian Rogers wrote:
-> > > On Fri, Apr 25, 2025 at 2:40 PM Ian Rogers <irogers@google.com> wrote:
-> > > >
-> > > > Rather than scanning /proc and skipping PIDs based on their UIDs, use
-> > > > BPF filters for uid filtering. The /proc scanning in thread_map is
-> > > > racy as the PID may exit before the perf_event_open causing perf to
-> > > > abort. BPF UID filters are more robust as they avoid the race. The
-> > > > /proc scanning also misses processes starting after the perf
-> > > > command. Add a helper for commands that support UID filtering and wire
-> > > > up. Remove the non-BPF UID filtering support given it doesn't work.
-> > > >
-> > > > v3: Add lengthier commit messages as requested by Arnaldo. Rebase on
-> > > >     tmp.perf-tools-next.
-> > > >
-> > > > v2: Add a perf record uid test (Namhyung) and force setting
-> > > >     system-wide for perf trace and perf record (Namhyung). Ensure the
-> > > >     uid filter isn't set on tracepoint evsels.
-> > > >
-> > > > v1: https://lore.kernel.org/lkml/20250111190143.1029906-1-irogers@google.com/
+> > On Tue, Jun 3, 2025 at 11:40=E2=80=AFAM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > [...]
+> > > > +__bpf_kfunc struct path *bpf_iter_path_next(struct bpf_iter_path *=
+it)
+> > > > +{
+> > > > +       struct bpf_iter_path_kern *kit =3D (void *)it;
+> > > > +       struct path root =3D {};
+> > > > +
+> > > > +       if (!path_walk_parent(&kit->path, &root))
+> > > > +               return NULL;
+> > > > +       return &kit->path;
+> > > > +}
+> > > > +
+> > > > +__bpf_kfunc void bpf_iter_path_destroy(struct bpf_iter_path *it)
+> > > > +{
+> > > > +       struct bpf_iter_path_kern *kit =3D (void *)it;
+> > > > +
+> > > > +       path_put(&kit->path);
 > > >
-> > > Ping. Thanks,
+> > > note, destroy() will be called even if construction of iterator fails
+> > > or we exhausted iterator. So you need to make sure that you have
+> > > bpf_iter_path state where you can detect that there is no path presen=
+t
+> > > and skip path_put().
 > >
-> > I'm ok with preferring BPF over /proc scanning, but still hesitate to
-> > remove it since some people don't use BPF.  Can you please drop that
-> > part and make parse_uid_filter() conditional on BPF?
-> 
-> Hi Namhyung,
-> 
-> The approach of scanning /proc fails as:
-> 1) processes that start after perf starts will be missed,
-> 2) processes that terminate between being scanned in /proc and
-> perf_event_open will cause perf to fail (essentially the -u option is
-> just sugar to scan /proc and then provide the processes as if they
-> were a -p option - such an approach doesn't need building into the
-> tool).
+> > In bpf_iter_path_next(), when path_walk_parent() returns false, we
+> > still hold reference to kit->path, then _destroy() will release it. So =
+we
+> > should be fine, no?
+>
+> you still need to handle iterators that failed to be initialized,
+> though? And one can argue that if path_walk_parent() returns false, we
+> need to put that last path before returning NULL, no?
 
-Yeah, I remember we had this discussion before.  I think (1) is not true
-as perf events will be inherited to children (but there is a race).  And
-(2) is a real problem but it's also about a race and it can succeed.
-
-Maybe we could change it to skip failed events when the target is a
-user but that's not the direction you want.
-
-> 
-> This patch series adds a test [1] and perf test has lots of processes
-> starting and exiting, matching condition (2) above*. If this series
-> were changed to an approach that uses BPF and falls back on /proc
-> scanning then the -u option would be broken for both reasons above but
-> also prove a constant source of test flakes.
-> 
-> Rather than give the users something both frustrating to use (keeps
-> quitting due to failed opens) and broken (missing processes) I think
-> it is better to quit perf at that point informing the user they need
-> more permissions to load the BPF program. This also makes the -u
-> option testable.
-> 
-> So the request for a change I don't think is sensible as it provides a
-> worse user and testing experience. There is also the cognitive load of
-> having the /proc scanning code in the code base, whereas the BPF
-> filter is largely isolated.
-
-But I think the problem is that it has different requirements - BPF and
-root privilege.  So it should be used after checking the requirements
-and fail or fallback.
-
-Does it print proper error messages if not?  With that we can deprecate
-the existing behavior and remove it later.
+kit->path is zero'ed on initialization failures, so we can path_put() it
+safely. For _next() returns NULL case, we can either put kit->path
+in _destroy(), which is the logic now, or put kit->path in the last
+_next() call and make _destroy() a no-op in that case. I don't have
+a strong preference either way.
 
 Thanks,
-Namhyung
-
+Song
 
