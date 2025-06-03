@@ -1,48 +1,47 @@
-Return-Path: <bpf+bounces-59522-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59523-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1AE7ACCC65
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 19:46:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D678ACCC6A
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 19:47:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 418703A6E80
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 17:45:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BB5F1896927
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 17:46:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DD4D1E503C;
-	Tue,  3 Jun 2025 17:46:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A1951E503C;
+	Tue,  3 Jun 2025 17:46:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RSRqqob2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TaEgzXWQ"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9681B1BC3F;
-	Tue,  3 Jun 2025 17:46:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C36884A01;
+	Tue,  3 Jun 2025 17:46:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748972773; cv=none; b=pxtnPjJYqAXitbV0cA8gEjQug0DzXjwb4M7+y4FG+j1xEVjTJIQ6aZsgS0GVYxxYEhykHNgpl61jo4tCOhpmMB5USR3miZraCmYApT2N6C0JNuG/pteJ6xVR0nZae2OmCrK+qf7sDnido90BOFeTSNFaJHFTrjwP71j9pQirwus=
+	t=1748972780; cv=none; b=M9Z/6r8z9afRDVQTira+oV9xx6lhqRFDhylb9fqulvEZ+b1DQNejtfgiFf/1mhNQokURkFJfGL+b+wLkkercek4Aem1FGwK89OeOPHCaG/bHljMACppSFjS0oprG3OLeFmfJpkciN9Kd78JbKMEHroejxt7wy7Xlk57nVBYKzw8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748972773; c=relaxed/simple;
-	bh=OzIvNh+mKrDJeOE8MUUUulECgSRVybs0VAqSRQcLl1U=;
+	s=arc-20240116; t=1748972780; c=relaxed/simple;
+	bh=hmBH+sLKIp7Ypu6vIaGpMbHCpm6p6q6RNT5uHBzABAE=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SUx84DdUz1OaL1yUxoffnIlAlCsayOZZZb7oNBSBu3ChTZaAo4qAUD6rgJTMgengHOr5QqlY6hlvCY5nV9HQnV8LoBp4+RKBoukKj670POsZ7imuRoGAvf/KzSpThbJQeeOBQnLdmM2p4KMdwRnavuo0G2NYhBgpzuKZWEZfY4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RSRqqob2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED9E7C4CEED;
-	Tue,  3 Jun 2025 17:46:09 +0000 (UTC)
+	 MIME-Version:Content-Type; b=RBbgwt32kQs7zojcVadgMrtEVYmEFlKSp8T/5hzUHDpY1bY0Ho7j9YssDPwx5hXj21hTiXfEu4EoOH3r9vLdphNu7RHMuXkSm/hPBnGIUeLaT4LXZojoeCmX0VOGp3hhwheZRj+qqk1GuDwJmVUOzDb3gWPzTuDDb33F3gdBd0w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TaEgzXWQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE314C4CEED;
+	Tue,  3 Jun 2025 17:46:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748972773;
-	bh=OzIvNh+mKrDJeOE8MUUUulECgSRVybs0VAqSRQcLl1U=;
+	s=k20201202; t=1748972780;
+	bh=hmBH+sLKIp7Ypu6vIaGpMbHCpm6p6q6RNT5uHBzABAE=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=RSRqqob237uJMYSevae3++Vvsq1T3gEumDVv2zPP+h6eJ0wLPtihflKViUz98yvsx
-	 Cip9Dz5qqZLizwZC/vb14sFfWeOuXBcJq0zAS6Pjg4ZIhsnGkYrJFkRC8PSvoTBCYZ
-	 /KOQmlfV+42WcTfnOFfKcZVX75RRpInRScO8rN3GlKy/Bq3V/feO5/bZVFKfflqEgi
-	 BPM9dsZRr14DyeQEKYU65wvkVPW17eTzyhlPY19Zm/PvimupTIcmAe1ZL8DgBoUH8m
-	 IWAerUYfqkwgZPAzZBhOAjO2B3qoLByT8JxLe/9yMoJSU+AtyST5Vpbwkk73ZquZI2
-	 YK+iYNLG3N1Eg==
-Subject: [PATCH bpf-next V1 3/7] net: xdp: Add kfuncs to store hw metadata in
- xdp_buff
+	b=TaEgzXWQ4FeMv7/YKH7EdVRhpIKgdBm4Zfz4mGn043cuiE4aROpMclV3ezhZdo/hE
+	 ssiZZGmd6is2p1D4g2Wfab9V6Jne43R0oGdrVTh/Zc4vuFqEe+9OdEekCVZ5+VaiSq
+	 yTW/Brxum2wHT+nR4zgyGxwYv9c4+fU/tQ6+Drs+Rt+Cxjx4yjaaOFkELQpw11ZFV+
+	 /NAIgyVNSLfrMYT7xJLDqr7ooiWZWoWskzGTJytFvzVrWEkSeNAwLr2e3IiYvxLyGm
+	 YUwx2GKswC7cgLwgDtPNoYohZxDBhAkRWcPZghqkptOnwijrxvNBVmB9efBBO1wBDx
+	 94AiFqgq3RfkQ==
+Subject: [PATCH bpf-next V1 4/7] net: xdp: Set skb hw metadata from xdp_frame
 From: Jesper Dangaard Brouer <hawk@kernel.org>
 To: bpf@vger.kernel.org, netdev@vger.kernel.org,
  Jakub Kicinski <kuba@kernel.org>, lorenzo@kernel.org
@@ -53,8 +52,8 @@ Cc: Jesper Dangaard Brouer <hawk@kernel.org>,
  "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
  sdf@fomichev.me, kernel-team@cloudflare.com, arthur@arthurfabre.com,
  jakub@cloudflare.com
-Date: Tue, 03 Jun 2025 19:46:08 +0200
-Message-ID: <174897276809.1677018.15753779269046278541.stgit@firesoul>
+Date: Tue, 03 Jun 2025 19:46:14 +0200
+Message-ID: <174897277482.1677018.1195726795235767459.stgit@firesoul>
 In-Reply-To: <174897271826.1677018.9096866882347745168.stgit@firesoul>
 References: <174897271826.1677018.9096866882347745168.stgit@firesoul>
 User-Agent: StGit/1.5
@@ -69,98 +68,105 @@ Content-Transfer-Encoding: 7bit
 
 From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-Introduce the following kfuncs to store hw metadata provided by the NIC
-into the xdp_buff struct:
-
-- rx-hash: bpf_xdp_store_rx_hash
-- rx-vlan: bpf_xdp_store_rx_vlan
-- rx-hw-ts: bpf_xdp_store_rx_ts
+Update the following hw metadata provided by the NIC building the skb
+from a xdp_frame.
+- rx hash
+- rx vlan
+- rx hw-ts
 
 Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
 ---
- include/net/xdp.h |    5 +++++
- net/core/xdp.c    |   45 +++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 50 insertions(+)
+ include/net/xdp.h |   15 +++++++++++++++
+ net/core/xdp.c    |   29 ++++++++++++++++++++++++++++-
+ 2 files changed, 43 insertions(+), 1 deletion(-)
 
 diff --git a/include/net/xdp.h b/include/net/xdp.h
-index 5dcdf634ae4a..ef73f0bcc441 100644
+index ef73f0bcc441..1ecbfe2053f2 100644
 --- a/include/net/xdp.h
 +++ b/include/net/xdp.h
-@@ -153,6 +153,11 @@ static __always_inline void xdp_buff_set_frag_pfmemalloc(struct xdp_buff *xdp)
- 	xdp->flags |= XDP_FLAGS_FRAGS_PF_MEMALLOC;
+@@ -310,6 +310,21 @@ xdp_frame_is_frag_pfmemalloc(const struct xdp_frame *frame)
+ 	return !!(frame->flags & XDP_FLAGS_FRAGS_PF_MEMALLOC);
  }
  
-+static __always_inline bool xdp_buff_has_valid_meta_area(struct xdp_buff *xdp)
++static __always_inline bool xdp_frame_has_rx_meta_hash(struct xdp_frame *frame)
 +{
-+	return !!(xdp->flags & XDP_FLAGS_META_AREA);
++	return !!(frame->flags & XDP_FLAGS_META_RX_HASH);
 +}
 +
- static __always_inline void
- xdp_init_buff(struct xdp_buff *xdp, u32 frame_sz, struct xdp_rxq_info *rxq)
- {
++static __always_inline bool xdp_frame_has_rx_meta_vlan(struct xdp_frame *frame)
++{
++	return !!(frame->flags & XDP_FLAGS_META_RX_VLAN);
++}
++
++static __always_inline bool xdp_frame_has_rx_meta_ts(struct xdp_frame *frame)
++{
++	return !!(frame->flags & XDP_FLAGS_META_RX_TS);
++}
++
+ #define XDP_BULK_QUEUE_SIZE	16
+ struct xdp_frame_bulk {
+ 	int count;
 diff --git a/net/core/xdp.c b/net/core/xdp.c
-index 61edbd424494..7d59543d7916 100644
+index 7d59543d7916..69077cf4c541 100644
 --- a/net/core/xdp.c
 +++ b/net/core/xdp.c
-@@ -957,12 +957,57 @@ __bpf_kfunc int bpf_xdp_metadata_rx_vlan_tag(const struct xdp_md *ctx,
- 	return -EOPNOTSUPP;
+@@ -786,6 +786,23 @@ struct sk_buff *xdp_build_skb_from_zc(struct xdp_buff *xdp)
  }
+ EXPORT_SYMBOL_GPL(xdp_build_skb_from_zc);
  
-+__bpf_kfunc int bpf_xdp_store_rx_hash(struct xdp_md *ctx, u32 hash,
-+				      enum xdp_rss_hash_type rss_type)
++static void xdp_set_skb_rx_hash_from_meta(struct xdp_frame *frame,
++					  struct sk_buff *skb)
 +{
-+	struct xdp_buff *xdp = (struct xdp_buff *)ctx;
++	enum pkt_hash_types hash_type = PKT_HASH_TYPE_NONE;
 +
-+	if (!xdp_buff_has_valid_meta_area(xdp))
-+		return -ENOSPC;
++	if (!xdp_frame_has_rx_meta_hash(frame))
++		return;
 +
-+	xdp->rx_meta->hash.val = hash;
-+	xdp->rx_meta->hash.type = rss_type;
-+	xdp->flags |= XDP_FLAGS_META_RX_HASH;
++	if (frame->rx_meta.hash.type & XDP_RSS_TYPE_L4_ANY)
++		hash_type = PKT_HASH_TYPE_L4;
++	else if (frame->rx_meta.hash.type & (XDP_RSS_TYPE_L3_IPV4 |
++					     XDP_RSS_TYPE_L3_IPV6))
++		hash_type = PKT_HASH_TYPE_L3;
 +
-+	return 0;
++	skb_set_hash(skb, frame->rx_meta.hash.val, hash_type);
 +}
 +
-+__bpf_kfunc int bpf_xdp_store_rx_vlan(struct xdp_md *ctx, __be16 vlan_proto,
-+				      u16 vlan_tci)
-+{
-+	struct xdp_buff *xdp = (struct xdp_buff *)ctx;
-+
-+	if (!xdp_buff_has_valid_meta_area(xdp))
-+		return -ENOSPC;
-+
-+	xdp->rx_meta->vlan.proto = vlan_proto;
-+	xdp->rx_meta->vlan.tci = vlan_tci;
-+	xdp->flags |= XDP_FLAGS_META_RX_VLAN;
-+
-+	return 0;
-+}
-+
-+__bpf_kfunc int bpf_xdp_store_rx_ts(struct xdp_md *ctx, u64 ts)
-+{
-+	struct xdp_buff *xdp = (struct xdp_buff *)ctx;
-+	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
-+	struct skb_shared_hwtstamps *shwt = &sinfo->hwtstamps;
-+
-+	shwt->hwtstamp = ts;
-+	xdp->flags |= XDP_FLAGS_META_RX_TS;
-+
-+	return 0;
-+}
-+
- __bpf_kfunc_end_defs();
+ struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame *xdpf,
+ 					   struct sk_buff *skb,
+ 					   struct net_device *dev)
+@@ -794,11 +811,15 @@ struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame *xdpf,
+ 	unsigned int headroom, frame_size;
+ 	void *hard_start;
+ 	u8 nr_frags;
++	u64 ts;
  
- BTF_KFUNCS_START(xdp_metadata_kfunc_ids)
- #define XDP_METADATA_KFUNC(_, __, name, ___) BTF_ID_FLAGS(func, name, KF_TRUSTED_ARGS)
- XDP_METADATA_KFUNC_xxx
- #undef XDP_METADATA_KFUNC
-+BTF_ID_FLAGS(func, bpf_xdp_store_rx_hash)
-+BTF_ID_FLAGS(func, bpf_xdp_store_rx_vlan)
-+BTF_ID_FLAGS(func, bpf_xdp_store_rx_ts)
- BTF_KFUNCS_END(xdp_metadata_kfunc_ids)
+ 	/* xdp frags frame */
+ 	if (unlikely(xdp_frame_has_frags(xdpf)))
+ 		nr_frags = sinfo->nr_frags;
  
- static const struct btf_kfunc_id_set xdp_metadata_kfunc_set = {
++	if (unlikely(xdp_frame_has_rx_meta_ts(xdpf)))
++		ts = sinfo->hwtstamps.hwtstamp;
++
+ 	/* Part of headroom was reserved to xdpf */
+ 	headroom = sizeof(*xdpf) + xdpf->headroom;
+ 
+@@ -826,9 +847,15 @@ struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame *xdpf,
+ 	/* Essential SKB info: protocol and skb->dev */
+ 	skb->protocol = eth_type_trans(skb, dev);
+ 
++	xdp_set_skb_rx_hash_from_meta(xdpf, skb);
++	if (xdp_frame_has_rx_meta_vlan(xdpf))
++		__vlan_hwaccel_put_tag(skb, xdpf->rx_meta.vlan.proto,
++				       xdpf->rx_meta.vlan.tci);
++	if (unlikely(xdp_frame_has_rx_meta_ts(xdpf)))
++		skb_hwtstamps(skb)->hwtstamp = ts;
++
+ 	/* Optional SKB info, currently missing:
+ 	 * - HW checksum info		(skb->ip_summed)
+-	 * - HW RX hash			(skb_set_hash)
+ 	 * - RX ring dev queue index	(skb_record_rx_queue)
+ 	 */
+ 
 
 
 
