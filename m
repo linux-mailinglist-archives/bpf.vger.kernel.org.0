@@ -1,140 +1,175 @@
-Return-Path: <bpf+bounces-59510-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59511-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B668FACC9D7
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 17:09:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 460D5ACC9E5
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 17:13:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71BD718973EA
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 15:08:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 496C51657B0
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 15:13:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CC6F23C510;
-	Tue,  3 Jun 2025 15:07:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EF7923C384;
+	Tue,  3 Jun 2025 15:13:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WnbNpVT1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Av3ICbmj"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 989F923C506
-	for <bpf@vger.kernel.org>; Tue,  3 Jun 2025 15:07:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD85D223316;
+	Tue,  3 Jun 2025 15:13:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748963242; cv=none; b=oqFp1p0D8pxdLZXZ317b7AcmWjZ3Uc4iOBGGhzNm7O2Jf8RLsHpTPdvPJyc5/HrX8Q8CVU6ITjXM5CerSfKCm7SVH0G0bTq/MYcaWeOxclAfThSEUOlXQJF2cht5adj4UDAD2FevmPx9X1YQ/2AELdAuayM1TUkkNHeW0+nR8NQ=
+	t=1748963613; cv=none; b=OYLqpEIKifmpQBgeLGNZPlGF5N4wWSL0sYk508qOt0WvgFr4d9vKUJmMSTJsHCVPsH5uky1LHUYQmTsJa2vw2NtfFhkEtrEfy663VXPdYqM2a85hdq5d+2auq1nOGF/6rYJH+lCEX0LxJwhhOQHR3L8lKQBpY1aijKzyulgtwcE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748963242; c=relaxed/simple;
-	bh=RRUIgBZA7/RZuCTepb8TfhL+tkUhWcimMhe1FoMS5Uk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YQSGSNckruFvudaLTJRxn9UT8JG/XN0C8KKtsMRGeN1revOgD+heWRSW5BNN1ckSho9ZR3c6FLVv+h4dLwMG6Ek8GaLW8/RceoFKFse0ECswzeRDJt3JhNGKbZQByv8Q1+lkI+2WzzUfqvROt9DGa3WDTzda5KTBi+0+zoGbsuE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WnbNpVT1; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <029e657a-cbf5-4db1-9ddb-5fbf75ea8f4e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1748963236;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=H/S8RT0q+1oRhcL15WhoKhfpGElrxWknt11mPVDpvpM=;
-	b=WnbNpVT1Sydsz6sSCFK8n9wJMC4R0fge4PL9E1PGhGFHbo/rMlIy11Aj7TyISgwm6Bifm8
-	6HfqOTUd38BaDNZ8nOWjK3JFU5H6N0XNp7ci9md+59/Kc6QopugCH5ZBZ0fF9XxP2gp98l
-	c+e4s6HA+Ntv9pGntr2IWEKllpTv0Is=
-Date: Tue, 3 Jun 2025 23:07:03 +0800
+	s=arc-20240116; t=1748963613; c=relaxed/simple;
+	bh=VKaT1KQZbq1h+bpWVaNBkbsVejOICIzA68th4hZbQu4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jXFG0uyb+mlzlExmkfjwI/LYNISVIszzJeWdkKkm6ZGo8Hm02OPYkfce2sl4/5LVuAC200uAqhw2JTl8OF4Pg2cFMBY1Sb7xGhp0YWx+90liUPswVWoLlm/UDQHdYAnhGvgIs97zZfGaxNXqBZ/hM0DfE0Rv+fJNUeAabb69RQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Av3ICbmj; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3a367ec7840so3999956f8f.2;
+        Tue, 03 Jun 2025 08:13:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748963610; x=1749568410; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DM7FqjbQ2HOQRdv25jJI92AI5FyCapZb+x0ggg0Oxqo=;
+        b=Av3ICbmjdzI2VZWbRT2l4CJ0KuX4tN6o4CzJ01Xv0uVqHxWggNyembzlZIrwSTNf9f
+         2unxipBJdx5A38UN7T1a5PlQLc9jpdIQ+pumRYYFb7JnSF+AlS/yoMYneyg50qIEspHQ
+         3r2QSOMS5B+nVJTeYPwvv9a+zo7l7b/oKmJ6rLMnveyRX5rYVH4Ssmn6ivikLi1oRUvM
+         q55QFer+5C31GWurcph6l67QMWUyxbi2y5Z0unbK9B/SW2NVYxANofR3eL+cMMNMXr59
+         PyXTzngFQgPOsEq6SUxHeyXsRiDeCcul8brZQxHmtdHkl14HBgcChNA761QOlBU+jP40
+         Hrdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748963610; x=1749568410;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DM7FqjbQ2HOQRdv25jJI92AI5FyCapZb+x0ggg0Oxqo=;
+        b=Bp5tiX0Ng9r5WK3aLPHPpCA8INdWl4LTYQPcTaBLH4XhrvcxN6Zy/XfjHjMAjAJN8x
+         zuloKPs2a7tLNsBn+lQYtDKG4EgBCGVyJU+L2t+So6zjQrRvCsaJbHzA03vGVgKcMZY1
+         HYFPULlk8/fR+lvhUtf+FkFf3UV+1VjyZWqhW0dLIStD+r6CElFGKnyOxifpQySM7zOi
+         2QMaz54InfXBOD1/0SEJxGOqsP5xVs0tjhfzMQvfuIOf6Wz2FwIRgKsUKIwgYL7RNdd3
+         XJ4giRyVweFhwcv4EoxwJSxmIUZe1nKJ51lIDmatdru8HjvptspnS4JzM/s7HuiSCLYK
+         FOIw==
+X-Forwarded-Encrypted: i=1; AJvYcCU/RduDu5eN+9IVqFeqfjK6IiTSo4S8S5XgL4y1xkICd6lNr5qvi2cwbkdh7CAoU8gPJ4pUVvdfXqqgnwzY@vger.kernel.org, AJvYcCUADAd42QuHImByGRhhavyIE4gieEq/KlPuISxqUXZ40cATs3BFn52f0q8HHLIvdTH6uWeB1REevhJQOtwP@vger.kernel.org, AJvYcCXmL/QJ32ajnLftY4jcH6v0ZZCHyZ0FKpDGlzQx/Xa4f86NwaSNynpEdJjTs2x0kQ3C4B0RfBGUsKN4d3nbFEaOsbNY40x5@vger.kernel.org
+X-Gm-Message-State: AOJu0YwfJksHT1Bof7ZTF4ahqfHUz+QhOYxUnoNqXSyEOIsESpYYMg2k
+	HPh7MX2i3fCgVWBITjNuYgv25dDTJ5d4s59toNm//hOYCZWnoeFQ6AV3uQanhxiZw2bwl/O+DHB
+	Fuu7ddqKiR2EuqE6M+WB5ZcV5kZ3N5qw=
+X-Gm-Gg: ASbGnctQ9jic0BZZ+mEI6ykG2KxZ8ZFD/UOUzl7pWOv7tvg1pdq/D6ympE/a7YHvok/
+	soB6dFTz+mZekex8HB1OdH8/fJtS6s02st1Zj0Yg3TNi92x1WXHlBPje7ZYQ8CK0weZ4ccFyQq4
+	2fYqhC1tSt2/1WeGT+PU85A+I6YA2R+fam7bax7UQ/sNnSiEdOAcPJU6Vc2Ao=
+X-Google-Smtp-Source: AGHT+IH59aVL70zjdlvFvrxqya3aA8HNcB8WHYJtYoL80K4X5T7xHH/6N7iBla+1X6FUqhCjz6qor/hWAe3HaZDHy+o=
+X-Received: by 2002:a05:6000:230b:b0:3a4:e318:1aa9 with SMTP id
+ ffacd0b85a97d-3a4f89ead67mr12808911f8f.59.1748963609616; Tue, 03 Jun 2025
+ 08:13:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 1/3] bpf: Add cookie to raw_tp bpf_link_info
-To: Yonghong Song <yonghong.song@linux.dev>, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
- eddyz87@gmail.com, song@kernel.org, john.fastabend@gmail.com,
- kpsingh@kernel.org, sdf@fomichev.me, qmo@kernel.org, jolsa@kernel.org
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20250603022610.3005963-1-chen.dylane@linux.dev>
- <48e85d82-e5c7-463a-aef3-f1ecbe863524@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Tao Chen <chen.dylane@linux.dev>
-In-Reply-To: <48e85d82-e5c7-463a-aef3-f1ecbe863524@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250603065920.3404510-1-song@kernel.org> <20250603065920.3404510-4-song@kernel.org>
+In-Reply-To: <20250603065920.3404510-4-song@kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 3 Jun 2025 08:13:18 -0700
+X-Gm-Features: AX0GCFu98PiOKI1wBddjoNp1jUp6L4dsekQR23Qi4Bu9qcDk7dk8CUSl-Pywa9o
+Message-ID: <CAADnVQLjvJCFjTiWpsBmfbyH5i88oq7yxjvaf+Th7tQANouA_Q@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 3/4] bpf: Introduce path iterator
+To: Song Liu <song@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	LSM List <linux-security-module@vger.kernel.org>, Kernel Team <kernel-team@meta.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Eduard <eddyz87@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, KP Singh <kpsingh@kernel.org>, 
+	Matt Bobrowski <mattbobrowski@google.com>, Amir Goldstein <amir73il@gmail.com>, repnop@google.com, 
+	Jeff Layton <jlayton@kernel.org>, Josef Bacik <josef@toxicpanda.com>, 
+	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
+	=?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>, m@maowtm.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-在 2025/6/3 22:52, Yonghong Song 写道:
-> 
-> 
-> On 6/2/25 7:26 PM, Tao Chen wrote:
->> After commit 68ca5d4eebb8 ("bpf: support BPF cookie in raw tracepoint
->> (raw_tp, tp_btf) programs"), we can show the cookie in bpf_link_info
->> like kprobe etc.
->>
->> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
->> ---
->>   include/uapi/linux/bpf.h       | 2 ++
->>   kernel/bpf/syscall.c           | 1 +
->>   tools/include/uapi/linux/bpf.h | 2 ++
->>   3 files changed, 5 insertions(+)
->>
->> Change list:
->> - v1 -> v2:
->>      - fill the hole in bpf_link_info.(Jiri)
->> - v1:
->>      https://lore.kernel.org/bpf/20250529165759.2536245-1- 
->> chen.dylane@linux.dev
->>
->> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->> index 07ee73cdf9..f3e2aae302 100644
->> --- a/include/uapi/linux/bpf.h
->> +++ b/include/uapi/linux/bpf.h
->> @@ -6644,6 +6644,8 @@ struct bpf_link_info {
->>           struct {
->>               __aligned_u64 tp_name; /* in/out: tp_name buffer ptr */
->>               __u32 tp_name_len;     /* in/out: tp_name buffer len */
->> +            __u32 reserved; /* just fill the hole */
-> 
-> See various examples in uapi/linux/bpf.h, '__u32 :32;' is the preferred
-> apporach to fill the hole.
+On Mon, Jun 2, 2025 at 11:59=E2=80=AFPM Song Liu <song@kernel.org> wrote:
+>
+> Introduce a path iterator, which reliably walk a struct path toward
+> the root. This path iterator is based on path_walk_parent. A fixed
+> zero'ed root is passed to path_walk_parent(). Therefore, unless the
+> user terminates it earlier, the iterator will terminate at the real
+> root.
+>
+> Signed-off-by: Song Liu <song@kernel.org>
+> ---
+>  kernel/bpf/Makefile    |  1 +
+>  kernel/bpf/helpers.c   |  3 +++
+>  kernel/bpf/path_iter.c | 58 ++++++++++++++++++++++++++++++++++++++++++
+>  kernel/bpf/verifier.c  |  5 ++++
+>  4 files changed, 67 insertions(+)
+>  create mode 100644 kernel/bpf/path_iter.c
+>
+> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
+> index 3a335c50e6e3..454a650d934e 100644
+> --- a/kernel/bpf/Makefile
+> +++ b/kernel/bpf/Makefile
+> @@ -56,6 +56,7 @@ obj-$(CONFIG_BPF_SYSCALL) +=3D kmem_cache_iter.o
+>  ifeq ($(CONFIG_DMA_SHARED_BUFFER),y)
+>  obj-$(CONFIG_BPF_SYSCALL) +=3D dmabuf_iter.o
+>  endif
+> +obj-$(CONFIG_BPF_SYSCALL) +=3D path_iter.o
+>
+>  CFLAGS_REMOVE_percpu_freelist.o =3D $(CC_FLAGS_FTRACE)
+>  CFLAGS_REMOVE_bpf_lru_list.o =3D $(CC_FLAGS_FTRACE)
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index b71e428ad936..b190c78e40f6 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -3397,6 +3397,9 @@ BTF_ID_FLAGS(func, bpf_iter_dmabuf_next, KF_ITER_NE=
+XT | KF_RET_NULL | KF_SLEEPAB
+>  BTF_ID_FLAGS(func, bpf_iter_dmabuf_destroy, KF_ITER_DESTROY | KF_SLEEPAB=
+LE)
+>  #endif
+>  BTF_ID_FLAGS(func, __bpf_trap)
+> +BTF_ID_FLAGS(func, bpf_iter_path_new, KF_ITER_NEW | KF_SLEEPABLE)
+> +BTF_ID_FLAGS(func, bpf_iter_path_next, KF_ITER_NEXT | KF_RET_NULL | KF_S=
+LEEPABLE)
+> +BTF_ID_FLAGS(func, bpf_iter_path_destroy, KF_ITER_DESTROY | KF_SLEEPABLE=
+)
+>  BTF_KFUNCS_END(common_btf_ids)
+>
+>  static const struct btf_kfunc_id_set common_kfunc_set =3D {
+> diff --git a/kernel/bpf/path_iter.c b/kernel/bpf/path_iter.c
+> new file mode 100644
+> index 000000000000..0d972ec84beb
+> --- /dev/null
+> +++ b/kernel/bpf/path_iter.c
 
-Well, it looks better, will change it in v3, thanks.
+I think Christian's preference was to keep
+everything in fs/bpf_fs_kfuncs.c
 
-> 
->> +            __u64 cookie;
->>           } raw_tracepoint;
->>           struct {
->>               __u32 attach_type;
->> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
->> index 9794446bc8..1c3dbe44ac 100644
->> --- a/kernel/bpf/syscall.c
->> +++ b/kernel/bpf/syscall.c
->> @@ -3687,6 +3687,7 @@ static int bpf_raw_tp_link_fill_link_info(const 
->> struct bpf_link *link,
->>           return -EINVAL;
->>       info->raw_tracepoint.tp_name_len = tp_len + 1;
->> +    info->raw_tracepoint.cookie = raw_tp_link->cookie;
->>       if (!ubuf)
->>           return 0;
->> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/ 
->> linux/bpf.h
->> index 07ee73cdf9..f3e2aae302 100644
->> --- a/tools/include/uapi/linux/bpf.h
->> +++ b/tools/include/uapi/linux/bpf.h
->> @@ -6644,6 +6644,8 @@ struct bpf_link_info {
->>           struct {
->>               __aligned_u64 tp_name; /* in/out: tp_name buffer ptr */
->>               __u32 tp_name_len;     /* in/out: tp_name buffer len */
->> +            __u32 reserved; /* just fill the hole */
->> +            __u64 cookie;
->>           } raw_tracepoint;
->>           struct {
->>               __u32 attach_type;
-> 
+Don't add a new file. Just add this iter there.
 
+> @@ -0,0 +1,58 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
+> +#include <linux/bpf.h>
+> +#include <linux/bpf_mem_alloc.h>
+> +#include <linux/namei.h>
+> +#include <linux/path.h>
+> +
+> +/* open-coded iterator */
+> +struct bpf_iter_path {
+> +       __u64 __opaque[3];
+> +} __aligned(8);
+> +
+> +struct bpf_iter_path_kern {
+> +       struct path path;
+> +       __u64 flags;
 
--- 
-Best Regards
-Tao Chen
+Why? flags is unused. Don't waste space for it.
 
