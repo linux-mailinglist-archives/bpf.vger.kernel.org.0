@@ -1,115 +1,145 @@
-Return-Path: <bpf+bounces-59545-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59547-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D3B2ACCEA6
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 23:07:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EA91ACCEAC
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 23:09:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8282B3A5DDD
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 21:07:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2BE53A5974
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 21:09:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E2B72248B5;
-	Tue,  3 Jun 2025 21:07:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5E1F224B1E;
+	Tue,  3 Jun 2025 21:09:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="IBFvhYON"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mZ8Goc0O"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx-rz-1.rrze.uni-erlangen.de (mx-rz-1.rrze.uni-erlangen.de [131.188.11.20])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07D9D223DC0;
-	Tue,  3 Jun 2025 21:07:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C7E754918;
+	Tue,  3 Jun 2025 21:09:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748984858; cv=none; b=HhF9xXp7+Cv9in1yxuQ3ZLWjtCa+bAfeZIv+bUkrs9KySin+K9rNwq7vWONL9xMMhS1c/Hzbxr7nO0nZJK7FPErDre7muzhkdzaRUzyLOGlRzWzIKlFpJwSkLSzwjetCwsXNPD7Qn4LO+h3AaRmXxN/pIvB6v3Fy0yAG6ETnwhA=
+	t=1748984975; cv=none; b=EJpWi1XwQNG1swk98LwGvjoPmmNEMSePZaQ4y/JgqLAHR1S57Gh7PldvKFT2LdsodCoB9gEfkCdI6he7cyX9ezCbS5At5oAJf0fUBIFTuBus0s3ulqQD2AVsjBH75r67P6JMrVv0neZ3vRPZslW4/Pi4r6/FpTU30F0RemhcjWQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748984858; c=relaxed/simple;
-	bh=14iBWL0wepR+/NLmlKQ5GYaXgIUdICdBtkY2wCSNDec=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=q3LPKvw+SEYLGVY2mua7Udq71wq4+9tFhBLOcny9KilgvR5zcNcJ2XJA586b/kq8TCR5wM1BM+hS0LONaz3v/Czyu4TowkJhX9/LuYYLPYbJsTyHHysFJFvS98lqQx+qtZAd7BMrVnsYo3fYTVAsutsN59RwU9kqO1GV1ttCo6Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=IBFvhYON; arc=none smtp.client-ip=131.188.11.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
-	t=1748984854; bh=14iBWL0wepR+/NLmlKQ5GYaXgIUdICdBtkY2wCSNDec=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From:To:CC:
-	 Subject;
-	b=IBFvhYONv1CxQ8hzdbccA0do1pDzSADmtjNUFlQU2JzbsM12pPTYhLqvp37pahvoE
-	 rrSrdmfNp3Nt5YGuMGnGjDGzELq5uRsNqxzq59EQ9Y+oEFk/5LUgAmyLeW3lTt8liJ
-	 PlK98jVBngVNcPhrktkxboft4I+BIC2odUZKVqEsSrdJKgB98QfpDecgaq8hYROMWk
-	 rqSxwb0QPnb1QogbfEmhDL03tC4gSOK4xXbwLWMwnOZLdU7sIjNK2N2/70zNkTHzr5
-	 Ick8KcekAT4d/emYkOsQucPmA6u70cGX/m+ebNbKfXlTQlmQzIjB+icu8wvzfzGkSX
-	 sHL3W5JZwzsBA==
-Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-rz-1.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4bBjw63sNsz8swQ;
-	Tue,  3 Jun 2025 23:07:34 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at boeck1.rrze.uni-erlangen.de (RRZE)
-X-RRZE-Flag: Not-Spam
-X-RRZE-Submit-IP: 2001:9e8:3639:fe00:a21f:4ce4:8495:5578
-Received: from localhost (unknown [IPv6:2001:9e8:3639:fe00:a21f:4ce4:8495:5578])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: U2FsdGVkX19rrgm+35nUwSoCdL9l4H5ISQMck9KR3zw=)
-	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4bBjw24t9Nz8shV;
-	Tue,  3 Jun 2025 23:07:30 +0200 (CEST)
-From: Luis Gerhorst <luis.gerhorst@fau.de>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,  Daniel Borkmann
- <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>,  Martin
- KaFai Lau <martin.lau@linux.dev>,  Eduard Zingerman <eddyz87@gmail.com>,
-  Song Liu <song@kernel.org>,  Yonghong Song <yonghong.song@linux.dev>,
-  John Fastabend <john.fastabend@gmail.com>,  KP Singh
- <kpsingh@kernel.org>,  Stanislav Fomichev <sdf@fomichev.me>,  Hao Luo
- <haoluo@google.com>,  Jiri Olsa <jolsa@kernel.org>,  Puranjay Mohan
- <puranjay@kernel.org>,  Xu Kuohai <xukuohai@huaweicloud.com>,  Catalin
- Marinas <catalin.marinas@arm.com>,  Will Deacon <will@kernel.org>,  Hari
- Bathini <hbathini@linux.ibm.com>,  Christophe Leroy
- <christophe.leroy@csgroup.eu>,  Naveen N Rao <naveen@kernel.org>,
-  Madhavan Srinivasan <maddy@linux.ibm.com>,  Michael Ellerman
- <mpe@ellerman.id.au>,  Nicholas Piggin <npiggin@gmail.com>,  Mykola
- Lysenko <mykolal@fb.com>,  Shuah Khan <shuah@kernel.org>,  Henriette
- Herzog <henriette.herzog@rub.de>,  Saket Kumar Bhaskar
- <skb99@linux.ibm.com>,  Cupertino Miranda <cupertino.miranda@oracle.com>,
-  Jiayuan Chen <mrpre@163.com>,  Matan Shachnai <m.shachnai@gmail.com>,
-  Dimitar Kanaliev <dimitar.kanaliev@siteground.com>,  Shung-Hsi Yu
- <shung-hsi.yu@suse.com>,  Daniel Xu <dxu@dxuuu.xyz>,  bpf@vger.kernel.org,
-  linux-arm-kernel@lists.infradead.org,  linux-kernel@vger.kernel.org,
-  linuxppc-dev@lists.ozlabs.org,  linux-kselftest@vger.kernel.org,
-  Maximilian Ott <ott@cs.fau.de>,  Milan Stephan <milan.stephan@fau.de>
-Subject: Re: [PATCH bpf-next v3 10/11] bpf: Allow nospec-protected
- var-offset stack access
-In-Reply-To: <CAP01T76HZ+s5h+_REqRFkRjjoKwnZZn9YswpSVinGicah1pGJw@mail.gmail.com>
-	(Kumar Kartikeya Dwivedi's message of "Fri, 2 May 2025 02:03:12 +0200")
-References: <20250501073603.1402960-1-luis.gerhorst@fau.de>
-	<20250501073603.1402960-11-luis.gerhorst@fau.de>
-	<CAP01T76HZ+s5h+_REqRFkRjjoKwnZZn9YswpSVinGicah1pGJw@mail.gmail.com>
-User-Agent: mu4e 1.12.8; emacs 30.1
-Date: Tue, 03 Jun 2025 23:07:30 +0200
-Message-ID: <874iwwlejx.fsf@fau.de>
+	s=arc-20240116; t=1748984975; c=relaxed/simple;
+	bh=SK0VuAs7KqC4TjvZbevh+r/sXC+NMvrMP1MNVXAkAKs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=X2qu8pxcSZPze+NtmmmEcRaIGHKBnGdamHFcZ9P4CwuEWpIkzLzW0batVEY8R36+/ARqOnlKg7ZCW7xrUq+Z8oEUnCIBM2wbfkD7peECBU54308ZlwB+IyQCBFbqShEM4s5yzIn7MyxtP9F6wISIVX1SLyG7EVwOV2eISusfkk8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mZ8Goc0O; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C92FC4CEED;
+	Tue,  3 Jun 2025 21:09:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1748984974;
+	bh=SK0VuAs7KqC4TjvZbevh+r/sXC+NMvrMP1MNVXAkAKs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=mZ8Goc0OGGsxDAEqlsE9LVAsOa0tQJirxGW+Rp7CMZZCZ/kOR/XxiY/xBLZRo1Ujx
+	 gvsJZASe9IhTFCOHtl2f/XSr7DTlu+OlSohSlgGJC+fH+P37olcb4waUFR0J8i730h
+	 tH4HhMzH4AAI7TSWMC+bY0EZDEeBqDHGhdOmhSM5+Tlh2v54vUdnUiSzC8KUidaf2w
+	 GdcKuBwpkqswsC/P3b5I8888Ak4z09MTjLZh7ibhK7cgSPmXRFctE2lizB2VIVFFrF
+	 flKdGi7cedy5JLdsSCd6V4YbhcjaUmgrY/60VPEaChDohdarJgIzTuqxoXhdXGRoIu
+	 dgxEKLVMpZEPw==
+Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-6fad0820112so3882316d6.0;
+        Tue, 03 Jun 2025 14:09:33 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVlATlxGd7Uz4eR5BqvUiiYLFqHbEGvB+gLMxKyqlZAUWm3ixw1iUymTPvReM66KzDStTK3KzgyOn7s0sbq@vger.kernel.org, AJvYcCVuvm8jDWFbWMuMgX8g1hxkuxKi7T+YJKh/yGrjUYdHjRWH9PDt2XqlpVrGecqBG7O5IAaY7dfUOIjlRq+A@vger.kernel.org, AJvYcCXHzSajiURQWzBQdPEPUzk0WOwZWzw4C5wh5T6+kKeaXZOP8JRH6SljYNXaVHRl23zC0gkd51i2WTs6CUqTqenZn2WVQxIk@vger.kernel.org
+X-Gm-Message-State: AOJu0YwuXcPR4Y7Lr/V06ZXCMqoGDLINy/63xRFhgq9Lh/txlN+cBz9k
+	9ITxhcV2HMWCLoAMos0ITfHgH2ACwPrJjftpakQDyVygR16EmlY+G+C5nR/11CF0a42XUUZHvqu
+	VyUKyBdnUd7m7QjNrZsNGuDP+IgTZM00=
+X-Google-Smtp-Source: AGHT+IGIwMbDd0jXLmSygYRd4/MkAIct4a1Jw2aqmQh14hAObNsts2iJ6fo7aPaDUAURnnILo2I0fMYiXdCifc+2bRM=
+X-Received: by 2002:ad4:5f45:0:b0:6e2:4da9:4e2d with SMTP id
+ 6a1803df08f44-6faf6a6c328mr8401036d6.9.1748984972741; Tue, 03 Jun 2025
+ 14:09:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20250603065920.3404510-1-song@kernel.org> <20250603065920.3404510-4-song@kernel.org>
+ <CAEf4BzasOmqHDnuKd7LCT_FEBVMuJxmVNgvs52y5=qLd1bB=rg@mail.gmail.com>
+In-Reply-To: <CAEf4BzasOmqHDnuKd7LCT_FEBVMuJxmVNgvs52y5=qLd1bB=rg@mail.gmail.com>
+From: Song Liu <song@kernel.org>
+Date: Tue, 3 Jun 2025 14:09:20 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7mwut7SYubAUa5Ji7meDP1Bn8ZD9s+4sqjBDim7jGrWA@mail.gmail.com>
+X-Gm-Features: AX0GCFtqsYbKlyyk6L9CQ1-wot5BYMF3VoGjSP70JqKG6PkWNwWNyrGGQjbCro4
+Message-ID: <CAPhsuW7mwut7SYubAUa5Ji7meDP1Bn8ZD9s+4sqjBDim7jGrWA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 3/4] bpf: Introduce path iterator
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, viro@zeniv.linux.org.uk, 
+	brauner@kernel.org, jack@suse.cz, kpsingh@kernel.org, 
+	mattbobrowski@google.com, amir73il@gmail.com, repnop@google.com, 
+	jlayton@kernel.org, josef@toxicpanda.com, mic@digikod.net, gnoack@google.com, 
+	m@maowtm.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
+On Tue, Jun 3, 2025 at 11:40=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+[...]
+> > +__bpf_kfunc struct path *bpf_iter_path_next(struct bpf_iter_path *it)
+> > +{
+> > +       struct bpf_iter_path_kern *kit =3D (void *)it;
+> > +       struct path root =3D {};
+> > +
+> > +       if (!path_walk_parent(&kit->path, &root))
+> > +               return NULL;
+> > +       return &kit->path;
+> > +}
+> > +
+> > +__bpf_kfunc void bpf_iter_path_destroy(struct bpf_iter_path *it)
+> > +{
+> > +       struct bpf_iter_path_kern *kit =3D (void *)it;
+> > +
+> > +       path_put(&kit->path);
+>
+> note, destroy() will be called even if construction of iterator fails
+> or we exhausted iterator. So you need to make sure that you have
+> bpf_iter_path state where you can detect that there is no path present
+> and skip path_put().
 
-> Hmm, while reading related code, I noticed that sanitize_check_bounds
-> returns 0 in case the type is not map_value or stack.
-> It seems like it should be returning an error, cannot check right now
-> but I'm pretty sure these are not the two pointer types unprivileged
-> programs can access?
-> So smells like a bug?
+In bpf_iter_path_next(), when path_walk_parent() returns false, we
+still hold reference to kit->path, then _destroy() will release it. So we
+should be fine, no?
 
-I now looked into this and as suspected it does not appear to be a bug
-but only misleading code, I have sent a patch with a detailed
-explanation and an assert:
-https://lore.kernel.org/bpf/20250603204557.332447-1-luis.gerhorst@fau.de/T/#u
+Thanks,
+Song
+
+>
+> > +}
+> > +
+> > +__bpf_kfunc_end_defs();
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index a7d6e0c5928b..45b45cdfb223 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -7036,6 +7036,10 @@ BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct socket) {
+> >         struct sock *sk;
+> >  };
+> >
+> > +BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct path) {
+> > +       struct dentry *dentry;
+> > +};
+> > +
+> >  static bool type_is_rcu(struct bpf_verifier_env *env,
+> >                         struct bpf_reg_state *reg,
+> >                         const char *field_name, u32 btf_id)
+> > @@ -7076,6 +7080,7 @@ static bool type_is_trusted_or_null(struct bpf_ve=
+rifier_env *env,
+> >                                     const char *field_name, u32 btf_id)
+> >  {
+> >         BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct socket));
+> > +       BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct path));
+> >
+> >         return btf_nested_type_is_trusted(&env->log, reg, field_name, b=
+tf_id,
+> >                                           "__safe_trusted_or_null");
+> > --
+> > 2.47.1
+> >
+>
 
