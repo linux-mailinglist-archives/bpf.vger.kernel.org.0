@@ -1,218 +1,282 @@
-Return-Path: <bpf+bounces-59540-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59542-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9492EACCE7A
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 22:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B051EACCE96
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 23:04:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 302A13A7459
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 20:51:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61CE23A5499
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 21:03:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7A40225761;
-	Tue,  3 Jun 2025 20:50:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 635EB223DD4;
+	Tue,  3 Jun 2025 21:03:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KB2rPxdM"
+	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="SYBaqtRb"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+Received: from mx-rz-2.rrze.uni-erlangen.de (mx-rz-2.rrze.uni-erlangen.de [131.188.11.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA01021C16D
-	for <bpf@vger.kernel.org>; Tue,  3 Jun 2025 20:50:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69A861F12F4;
+	Tue,  3 Jun 2025 21:03:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748983811; cv=none; b=Qjjci9Jgo6eyRqSmsyCTWvKF/7Z4aumFpT0NUNZZAXUrN2/dVK3ABgWTr1NjR97rf5pfvaQSQsKnlPWEZSsXkTivbuv9voyxWus7gUV9hTOTKWNc6+MHXjARcgWfONkMbqy8vPE5dtwqM0RNrfa2C8SgqFJ7aX58wFi2ekDKcSM=
+	t=1748984636; cv=none; b=KM8SU6zMP3CN38nLl+5pDDeVkYgOguN9TZPR45fndMBEzG+u6zXGaRnaykIdjBOXxWWJoiM7YhcRjR6NoyskXDcosgvb4nXbQyPEgt75WXXI4bG8I2Aah8c1bAsmSMrM+4+vNv9SrEoYyjy0vCDryc2TgMyLrtT0ZPMD3mVKKcM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748983811; c=relaxed/simple;
-	bh=j9OUWrhChf7ZQCsdoqnA29xM4WW996oqQ1Kht5NiaRI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dLmB5kcYtfOXeGtewHvCrQLyR4Y4zPnyg9MkHMXmeA37iWGRXeNlPq8pJDdE7f5PESCFZ3NE0jejOt5VqY11QMJn8Fgksz/RwGvBIPh5sZzaann20uF3sq08mNKE5PdZb5i8i3yf7AaNmMmOSpIlIDTt1406BPt/HsPELlmeZzI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KB2rPxdM; arc=none smtp.client-ip=91.218.175.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <4c60e0e4-0bb8-4ae4-b7c3-f29af926f6a0@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1748983795;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AYDczDkAWGO7hhWYMWNKnea7MYkw9912XrfEX61Dh/U=;
-	b=KB2rPxdMXmrNDx+/PRWF+SZ0Dq9rGGghN/OMmDeHZb7kzLHmtNXE/N1xPsQ7BN82Nq5CVI
-	oRoiTZXpBOyHUrBLMPr7ZBLs2dUdMknaz/LQDr5fWYnqy4ysEd02nzyawtblVs5UchB8aG
-	fEPIKdVGWtijMCNEcSu6t2AyXcuPa9M=
-Date: Tue, 3 Jun 2025 13:49:47 -0700
+	s=arc-20240116; t=1748984636; c=relaxed/simple;
+	bh=W6Nhh3ZCRHLqwfzIjPbKNeTIxBcOEyxYHK4U+kynE/E=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=eQYhMJtIDHePSkfZ2iWaPqTK3fz0OWATJ8XyZ+6arZ0Dcq76aRHDVVeR/zQGQ4TjTVLo8AIbhEUxfnaHXnnMLy+FQy6+h1q8o32+SZN9Vt9aoDZbabd9b2xtRSyX+JYRn2X/8jCSAZIIgm1RFEMJkmjaYDLPNXBhYP4aOznVaq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=SYBaqtRb; arc=none smtp.client-ip=131.188.11.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
+	t=1748984285; bh=xfzs1Ogf0DKZ/YULLmQfkygDrX6ZPmGjv16hUj4o9H0=;
+	h=From:To:Subject:Date:From:To:CC:Subject;
+	b=SYBaqtRb39acS5t+QgIbA5sTlWkgJzSPyuQBg1BDigIHp16Q2J/creWnuLgUDMWZJ
+	 HM92g2qDmrsm9ijFygECQZpwQg4b9fHx5AKuv6kh2x7aDcuzebqcLZlnVvcr0wKrNV
+	 hSoY28zujYOOGh8snrGw3+Cxg7/FDQiImLPk/gCq4lw0rs9C1EUAej/4+//y8Uk1XF
+	 LyIDw5qlnWUEEayv4TalHGl8qToxaNA8suYioxYyqfmvdkkZJv6+9TGWWyJvKavuoc
+	 /eDRiOqrKMYivjN3ntSu8Gd2+miv7iE3ZU1TYst+lOHPTTzDVoVPRO1xHnkS3iH4ky
+	 OYT1MNbk3MiTw==
+Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-rz-2.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4bBjj90qyPzPjvv;
+	Tue,  3 Jun 2025 22:58:05 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at boeck4.rrze.uni-erlangen.de (RRZE)
+X-RRZE-Flag: Not-Spam
+X-RRZE-Submit-IP: 2001:9e8:3639:fe00:a21f:4ce4:8495:5578
+Received: from luis-tp.fritz.box (unknown [IPv6:2001:9e8:3639:fe00:a21f:4ce4:8495:5578])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: U2FsdGVkX1+JbA/3lyDF+n/+UvApQhduk6C5CJwWwrU=)
+	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4bBjj46tHzzPkFW;
+	Tue,  3 Jun 2025 22:58:00 +0200 (CEST)
+From: Luis Gerhorst <luis.gerhorst@fau.de>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Puranjay Mohan <puranjay@kernel.org>,
+	Xu Kuohai <xukuohai@huaweicloud.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Hari Bathini <hbathini@linux.ibm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Naveen N Rao <naveen@kernel.org>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Luis Gerhorst <luis.gerhorst@fau.de>,
+	Henriette Herzog <henriette.herzog@rub.de>,
+	Saket Kumar Bhaskar <skb99@linux.ibm.com>,
+	Cupertino Miranda <cupertino.miranda@oracle.com>,
+	Jiayuan Chen <mrpre@163.com>,
+	Matan Shachnai <m.shachnai@gmail.com>,
+	Dimitar Kanaliev <dimitar.kanaliev@siteground.com>,
+	Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+	Daniel Xu <dxu@dxuuu.xyz>,
+	bpf@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next v4 0/9] bpf: Mitigate Spectre v1 using barriers
+Date: Tue,  3 Jun 2025 22:57:51 +0200
+Message-ID: <20250603205800.334980-1-luis.gerhorst@fau.de>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 bpf-next 3/4] bpf: Introduce path iterator
-Content-Language: en-GB
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Song Liu <song@kernel.org>
-Cc: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
- kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
- daniel@iogearbox.net, martin.lau@linux.dev, viro@zeniv.linux.org.uk,
- brauner@kernel.org, jack@suse.cz, kpsingh@kernel.org,
- mattbobrowski@google.com, amir73il@gmail.com, repnop@google.com,
- jlayton@kernel.org, josef@toxicpanda.com, mic@digikod.net,
- gnoack@google.com, m@maowtm.org
-References: <20250603065920.3404510-1-song@kernel.org>
- <20250603065920.3404510-4-song@kernel.org>
- <CAEf4BzasOmqHDnuKd7LCT_FEBVMuJxmVNgvs52y5=qLd1bB=rg@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAEf4BzasOmqHDnuKd7LCT_FEBVMuJxmVNgvs52y5=qLd1bB=rg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+
+This improves the expressiveness of unprivileged BPF by inserting
+speculation barriers instead of rejecting the programs.
+
+The approach was previously presented at LPC'24 [1] and RAID'24 [2].
+
+To mitigate the Spectre v1 (PHT) vulnerability, the kernel rejects
+potentially-dangerous unprivileged BPF programs as of
+commit 9183671af6db ("bpf: Fix leakage under speculation on mispredicted
+branches"). In [2], we have analyzed 364 object files from open source
+projects (Linux Samples and Selftests, BCC, Loxilb, Cilium, libbpf
+Examples, Parca, and Prevail) and found that this affects 31% to 54% of
+programs.
+
+To resolve this in the majority of cases this patchset adds a fall-back
+for mitigating Spectre v1 using speculation barriers. The kernel still
+optimistically attempts to verify all speculative paths but uses
+speculation barriers against v1 when unsafe behavior is detected. This
+allows for more programs to be accepted without disabling the BPF
+Spectre mitigations (e.g., by setting cpu_mitigations_off()).
+
+For this, it relies on the fact that speculation barriers generally
+prevent all later instructions from executing if the speculation was not
+correct (not only loads). See patch 7 ("bpf: Fall back to nospec for
+Spectre v1") for a detailed description and references to the relevant
+vendor documentation (AMD and Intel x86-64, ARM64, and PowerPC).
+
+In [1] we have measured the overhead of this approach relative to having
+mitigations off and including the upstream Spectre v4 mitigations. For
+event tracing and stack-sampling profilers, we found that mitigations
+increase BPF program execution time by 0% to 62%. For the Loxilb network
+load balancer, we have measured a 14% slowdown in SCTP performance but
+no significant slowdown for TCP. This overhead only applies to programs
+that were previously rejected.
+
+I reran the expressiveness-evaluation with v6.14 and made sure the main
+results still match those from [1] and [2] (which used v6.5).
+
+Main design decisions are:
+
+* Do not use separate bytecode insns for v1 and v4 barriers (inspired by
+  Daniel Borkmann's question at LPC). This simplifies the verifier
+  significantly and has the only downside that performance on PowerPC is
+  not as high as it could be.
+
+* Allow archs to still disable v1/v4 mitigations separately by setting
+  bpf_jit_bypass_spec_v1/v4(). This has the benefit that archs can
+  benefit from improved BPF expressiveness / performance if they are not
+  vulnerable (e.g., ARM64 for v4 in the kernel).
+
+* Do not remove the empty BPF_NOSPEC implementation for backends for
+  which it is unknown whether they are vulnerable to Spectre v1.
+
+[1] https://lpc.events/event/18/contributions/1954/ ("Mitigating
+    Spectre-PHT using Speculation Barriers in Linux eBPF")
+[2] https://arxiv.org/pdf/2405.00078 ("VeriFence: Lightweight and
+    Precise Spectre Defenses for Untrusted Linux Kernel Extensions")
+
+Changes:
+
+* v3 -> v4:
+  - Remove insn parameter from do_check_insn() and extract
+    process_bpf_exit_full as a function as requested by Eduard
+  - Investigate apparent sanitize_check_bounds() bug reported by
+    Kartikeya (does appear to not be a bug but only confusing code),
+    sent separate patch to document it and add an assert
+  - Remove already-merged commit 1 ("selftests/bpf: Fix caps for
+    __xlated/jited_unpriv")
+  - Drop former commit 10 ("bpf: Allow nospec-protected var-offset stack
+    access") as it did not include a test and there are other places
+    where var-off is rejected. Also, none of the tested real-world
+    programs used var-off in the paper. Therefore keep the old behavior
+    for now and potentially prepare a patch that converts all cases
+    later if required.
+  - Add link to AMD lfence and PowerPC speculation barrier (ori 31,31,0)
+    documentation
+  - Move detailed barrier documentation to commit 7 ("bpf: Fall back to
+    nospec for Spectre v1")
+  - Link to v3: https://lore.kernel.org/all/20250501073603.1402960-1-luis.gerhorst@fau.de/
+
+* v2 -> v3:
+  - Fix
+    https://lore.kernel.org/oe-kbuild-all/202504212030.IF1SLhz6-lkp@intel.com/
+    and similar by moving the bpf_jit_bypass_spec_v1/v4() prototypes out
+    of the #ifdef CONFIG_BPF_SYSCALL. Decided not to move them to
+    filter.h (where similar bpf_jit_*() prototypes live) as they would
+    still have to be duplicated in bpf.h to be usable to
+    bpf_bypass_spec_v1/v4() (unless including filter.h in bpf.h is an
+    option).
+  - Fix
+    https://lore.kernel.org/oe-kbuild-all/202504220035.SoGveGpj-lkp@intel.com/
+    by moving the variable declarations out of the switch-case.
+  - Build touched C files with W=2 and bpf config on x86 to check that
+    there are no other warnings introduced.
+  - Found 3 more checkpatch warnings that can be fixed without degrading
+    readability.
+  - Rebase to bpf-next 2025-05-01
+  - Link to v2: https://lore.kernel.org/bpf/20250421091802.3234859-1-luis.gerhorst@fau.de/
+
+* v1 -> v2:
+  - Drop former commits 9 ("bpf: Return PTR_ERR from push_stack()") and 11
+    ("bpf: Fall back to nospec for spec path verification") as suggested
+    by Alexei. This series therefore no longer changes push_stack() to
+    return PTR_ERR.
+  - Add detailed explanation of how lfence works internally and how it
+    affects the algorithm.
+  - Add tests checking that nospec instructions are inserted in expected
+    locations using __xlated_unpriv as suggested by Eduard (also,
+    include a fix for __xlated_unpriv)
+  - Add a test for the mitigations from the description of
+    commit 9183671af6db ("bpf: Fix leakage under speculation on
+    mispredicted branches")
+  - Remove unused variables from do_check[_insn]() as suggested by
+    Eduard.
+  - Remove INSN_IDX_MODIFIED to improve readability as suggested by
+    Eduard. This also causes the nospec_result-check to run (and fail)
+    for jumping-ops. Add a warning to assert that this check must never
+    succeed in that case.
+  - Add details on the safety of patch 10 ("bpf: Allow nospec-protected
+    var-offset stack access") based on the feedback on v1.
+  - Rebase to bpf-next-250420
+  - Link to v1: https://lore.kernel.org/all/20250313172127.1098195-1-luis.gerhorst@fau.de/
+
+* RFC -> v1:
+  - rebase to bpf-next-250313
+  - tests: mark expected successes/new errors
+  - add bpt_jit_bypass_spec_v1/v4() to avoid #ifdef in
+    bpf_bypass_spec_v1/v4()
+  - ensure that nospec with v1-support is implemented for archs for
+    which GCC supports speculation barriers, except for MIPS
+  - arm64: emit speculation barrier
+  - powerpc: change nospec to include v1 barrier
+  - discuss potential security (archs that do not impl. BPF nospec) and
+    performance (only PowerPC) regressions
+  - Link to RFC: https://lore.kernel.org/bpf/20250224203619.594724-1-luis.gerhorst@fau.de/
+
+Luis Gerhorst (9):
+  bpf: Move insn if/else into do_check_insn()
+  bpf: Return -EFAULT on misconfigurations
+  bpf: Return -EFAULT on internal errors
+  bpf, arm64, powerpc: Add bpf_jit_bypass_spec_v1/v4()
+  bpf, arm64, powerpc: Change nospec to include v1 barrier
+  bpf: Rename sanitize_stack_spill to nospec_result
+  bpf: Fall back to nospec for Spectre v1
+  selftests/bpf: Add test for Spectre v1 mitigation
+  bpf: Fall back to nospec for sanitization-failures
+
+ arch/arm64/net/bpf_jit.h                      |   5 +
+ arch/arm64/net/bpf_jit_comp.c                 |  28 +-
+ arch/powerpc/net/bpf_jit_comp64.c             |  80 ++-
+ include/linux/bpf.h                           |  11 +-
+ include/linux/bpf_verifier.h                  |   3 +-
+ include/linux/filter.h                        |   2 +-
+ kernel/bpf/core.c                             |  32 +-
+ kernel/bpf/verifier.c                         | 633 ++++++++++--------
+ tools/testing/selftests/bpf/progs/bpf_misc.h  |   4 +
+ .../selftests/bpf/progs/verifier_and.c        |   8 +-
+ .../selftests/bpf/progs/verifier_bounds.c     |  66 +-
+ .../bpf/progs/verifier_bounds_deduction.c     |  45 +-
+ .../selftests/bpf/progs/verifier_map_ptr.c    |  20 +-
+ .../selftests/bpf/progs/verifier_movsx.c      |  16 +-
+ .../selftests/bpf/progs/verifier_unpriv.c     |  65 +-
+ .../bpf/progs/verifier_value_ptr_arith.c      | 101 ++-
+ .../selftests/bpf/verifier/dead_code.c        |   3 +-
+ tools/testing/selftests/bpf/verifier/jmp32.c  |  33 +-
+ tools/testing/selftests/bpf/verifier/jset.c   |  10 +-
+ 19 files changed, 755 insertions(+), 410 deletions(-)
 
 
-
-On 6/3/25 11:40 AM, Andrii Nakryiko wrote:
-> On Mon, Jun 2, 2025 at 11:59 PM Song Liu <song@kernel.org> wrote:
->> Introduce a path iterator, which reliably walk a struct path toward
->> the root. This path iterator is based on path_walk_parent. A fixed
->> zero'ed root is passed to path_walk_parent(). Therefore, unless the
->> user terminates it earlier, the iterator will terminate at the real
->> root.
->>
->> Signed-off-by: Song Liu <song@kernel.org>
->> ---
->>   kernel/bpf/Makefile    |  1 +
->>   kernel/bpf/helpers.c   |  3 +++
->>   kernel/bpf/path_iter.c | 58 ++++++++++++++++++++++++++++++++++++++++++
->>   kernel/bpf/verifier.c  |  5 ++++
->>   4 files changed, 67 insertions(+)
->>   create mode 100644 kernel/bpf/path_iter.c
->>
->> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
->> index 3a335c50e6e3..454a650d934e 100644
->> --- a/kernel/bpf/Makefile
->> +++ b/kernel/bpf/Makefile
->> @@ -56,6 +56,7 @@ obj-$(CONFIG_BPF_SYSCALL) += kmem_cache_iter.o
->>   ifeq ($(CONFIG_DMA_SHARED_BUFFER),y)
->>   obj-$(CONFIG_BPF_SYSCALL) += dmabuf_iter.o
->>   endif
->> +obj-$(CONFIG_BPF_SYSCALL) += path_iter.o
->>
->>   CFLAGS_REMOVE_percpu_freelist.o = $(CC_FLAGS_FTRACE)
->>   CFLAGS_REMOVE_bpf_lru_list.o = $(CC_FLAGS_FTRACE)
->> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
->> index b71e428ad936..b190c78e40f6 100644
->> --- a/kernel/bpf/helpers.c
->> +++ b/kernel/bpf/helpers.c
->> @@ -3397,6 +3397,9 @@ BTF_ID_FLAGS(func, bpf_iter_dmabuf_next, KF_ITER_NEXT | KF_RET_NULL | KF_SLEEPAB
->>   BTF_ID_FLAGS(func, bpf_iter_dmabuf_destroy, KF_ITER_DESTROY | KF_SLEEPABLE)
->>   #endif
->>   BTF_ID_FLAGS(func, __bpf_trap)
->> +BTF_ID_FLAGS(func, bpf_iter_path_new, KF_ITER_NEW | KF_SLEEPABLE)
->> +BTF_ID_FLAGS(func, bpf_iter_path_next, KF_ITER_NEXT | KF_RET_NULL | KF_SLEEPABLE)
->> +BTF_ID_FLAGS(func, bpf_iter_path_destroy, KF_ITER_DESTROY | KF_SLEEPABLE)
->>   BTF_KFUNCS_END(common_btf_ids)
->>
->>   static const struct btf_kfunc_id_set common_kfunc_set = {
->> diff --git a/kernel/bpf/path_iter.c b/kernel/bpf/path_iter.c
->> new file mode 100644
->> index 000000000000..0d972ec84beb
->> --- /dev/null
->> +++ b/kernel/bpf/path_iter.c
->> @@ -0,0 +1,58 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
->> +#include <linux/bpf.h>
->> +#include <linux/bpf_mem_alloc.h>
->> +#include <linux/namei.h>
->> +#include <linux/path.h>
->> +
->> +/* open-coded iterator */
->> +struct bpf_iter_path {
->> +       __u64 __opaque[3];
->> +} __aligned(8);
->> +
->> +struct bpf_iter_path_kern {
->> +       struct path path;
->> +       __u64 flags;
->> +} __aligned(8);
->> +
->> +__bpf_kfunc_start_defs();
->> +
->> +__bpf_kfunc int bpf_iter_path_new(struct bpf_iter_path *it,
->> +                                 struct path *start,
->> +                                 __u64 flags)
->> +{
->> +       struct bpf_iter_path_kern *kit = (void *)it;
->> +
->> +       BUILD_BUG_ON(sizeof(*kit) > sizeof(*it));
->> +       BUILD_BUG_ON(__alignof__(*kit) != __alignof__(*it));
->> +
->> +       if (flags) {
->> +               memset(&kit->path, 0, sizeof(struct path));
->> +               return -EINVAL;
->> +       }
->> +
->> +       kit->path = *start;
->> +       path_get(&kit->path);
->> +       kit->flags = flags;
->> +
->> +       return 0;
->> +}
->> +
->> +__bpf_kfunc struct path *bpf_iter_path_next(struct bpf_iter_path *it)
->> +{
->> +       struct bpf_iter_path_kern *kit = (void *)it;
->> +       struct path root = {};
->> +
->> +       if (!path_walk_parent(&kit->path, &root))
->> +               return NULL;
->> +       return &kit->path;
->> +}
->> +
->> +__bpf_kfunc void bpf_iter_path_destroy(struct bpf_iter_path *it)
->> +{
->> +       struct bpf_iter_path_kern *kit = (void *)it;
->> +
->> +       path_put(&kit->path);
-> note, destroy() will be called even if construction of iterator fails
-> or we exhausted iterator. So you need to make sure that you have
-> bpf_iter_path state where you can detect that there is no path present
-> and skip path_put().
-
-In rare cases, it is possible &kit->path address could be destroyed
-and reused, right? Maybe we need more state in kit to detect the change?
-
->
->> +}
->> +
->> +__bpf_kfunc_end_defs();
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index a7d6e0c5928b..45b45cdfb223 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -7036,6 +7036,10 @@ BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct socket) {
->>          struct sock *sk;
->>   };
->>
->> +BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct path) {
->> +       struct dentry *dentry;
->> +};
->> +
->>   static bool type_is_rcu(struct bpf_verifier_env *env,
->>                          struct bpf_reg_state *reg,
->>                          const char *field_name, u32 btf_id)
->> @@ -7076,6 +7080,7 @@ static bool type_is_trusted_or_null(struct bpf_verifier_env *env,
->>                                      const char *field_name, u32 btf_id)
->>   {
->>          BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct socket));
->> +       BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct path));
->>
->>          return btf_nested_type_is_trusted(&env->log, reg, field_name, btf_id,
->>                                            "__safe_trusted_or_null");
->> --
->> 2.47.1
->>
+base-commit: cd2e103d57e5615f9bb027d772f93b9efd567224
+-- 
+2.49.0
 
 
