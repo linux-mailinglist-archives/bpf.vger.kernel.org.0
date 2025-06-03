@@ -1,316 +1,261 @@
-Return-Path: <bpf+bounces-59550-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59549-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3F66ACCEBE
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 23:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id ADA9DACCEB7
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 23:13:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C74E518836BF
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 21:14:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD30C189666D
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 21:13:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 750F7226863;
-	Tue,  3 Jun 2025 21:13:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF7FA22541C;
+	Tue,  3 Jun 2025 21:13:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="u72N0HKY"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MZib4A3W";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="VbktXhK5";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MZib4A3W";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="VbktXhK5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx-rz-1.rrze.uni-erlangen.de (mx-rz-1.rrze.uni-erlangen.de [131.188.11.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 287882248A6;
-	Tue,  3 Jun 2025 21:13:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD7082248A6
+	for <bpf@vger.kernel.org>; Tue,  3 Jun 2025 21:13:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748985230; cv=none; b=V/QuFffWRo8vo0ThGVSuBAJ2jCHfmdnJJhMYhJApfGDwJWZBuDx9XV6NL867wrD2Z5pVltJny4Q5lwsK1Kk0ncjknU5BQEogjX/EpuhsgedrDN0V+Lu47Ltkt3KIsESSMqcqDJsGXLLe+hR/Ok2H/nTKHxHgwKXZcidm31wnoXE=
+	t=1748985209; cv=none; b=nmTvshgD3PvMqStw9C308sUlCfjE9DakjpTTXPWOBiSLW6tLNU8DN7y/UB9apeLU4G1RwrSAJYT3CZYgWEr2r3YMQ5U523b+uCogfPmQYwQkxoSSeXCdp0kCIUrTUrFnWKzTj5bYAAtrfKbQWs9r11Y8NZKJky0PnIZos+tjDZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748985230; c=relaxed/simple;
-	bh=aMDRsr8BgEnv2VC/stL9/Fn9Dhd4Wg8D2PKZI6RbKyM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nQl/YXSpq5uJos2N6ZWQK4WFnXFJjNbpkyHRS9VVKgVySKwih+KYp1WyaP0BdhYdyMah2hspmnGzhlUC0uBF4AiJbDyYsxaayxexPPa7rCDj5a+cCWXinW1a1JyhlqJTcNi0QLHut38FqQzT8OFo/jhlKMGgcTZk7KuBFwxYInw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=u72N0HKY; arc=none smtp.client-ip=131.188.11.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
-	t=1748985226; bh=uCHDWZ/YSKO/QVzz8XQFkdmZfL60SSwm4+MhipptReg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From:To:CC:
-	 Subject;
-	b=u72N0HKYOGr0NvUlYLTRCuXIZlktKw1V8ooPxftf94M73oCqM7EFWG8D71veK0RBc
-	 BnK4N3BnOc6MEFioZ3WfRSijkhcJs3qdTIJrTZ721vBmR3QOhkq8Xp4UtAh+H6FHdj
-	 ntbm6Wvpvrbj2YdD8IqQMcWnvsEunG5HwKGJAKtPzLJkaJai9LXqhmIqDelZJqOfZx
-	 e6OmxJ332JUfiIKne1407EBQNEPCBe/K9gx7ylUo8xNhWaiJ09HIPCBIqC30uqgh0d
-	 CT1HUrQd7PR8ZCBswl4GUdD3vrfrJljMRctiERzpi4I6UJgrzR3cLlA5Rk11SM/BCJ
-	 q0l3P7c7WzCzw==
-Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
+	s=arc-20240116; t=1748985209; c=relaxed/simple;
+	bh=56CnIO38JA9FR6C8fkfLYnjVHQy114Hq381qdfserSQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PMHvw6Kk7PgdT9nsH6axjpCqYskZDV7+lXS4t60vTW7cj6RVKxsHGWmczVHOqk3EiWOfkZdmtEiWQjMOVQEO14HZks7M/paI3h6nvk4CzyW2qEtGdK36r9J3DUTv/6BoFrx+hUjb81Z9be8ATr6nUda6Qroev7ZOxdN3dQ2v8WA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MZib4A3W; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=VbktXhK5; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MZib4A3W; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=VbktXhK5; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-rz-1.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4bBk3F6FY9z8sbt;
-	Tue,  3 Jun 2025 23:13:45 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at boeck4.rrze.uni-erlangen.de (RRZE)
-X-RRZE-Flag: Not-Spam
-X-RRZE-Submit-IP: 2001:9e8:3639:fe00:a21f:4ce4:8495:5578
-Received: from luis-tp.fritz.box (unknown [IPv6:2001:9e8:3639:fe00:a21f:4ce4:8495:5578])
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B67531F443;
+	Tue,  3 Jun 2025 21:13:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1748985205; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nMp5F2i64TgnwrxwOwToMGnKAHG72K+/VQOBRSB9EGs=;
+	b=MZib4A3WP4o/O56JpIBAdlFZ4Bq7le3ftDXE0PSpWTZsKWYED18U9CNNGY8y7P5S6CForx
+	4J2rPtFUR30wU2LunJgVr6nZJYoQ7vdI0AsZs+wnieCYRS4P11OGAXwNyhGHDZsP7Lpci2
+	3YjzPub65b9JhZuu996QCsyC6TzopBs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1748985205;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nMp5F2i64TgnwrxwOwToMGnKAHG72K+/VQOBRSB9EGs=;
+	b=VbktXhK5SK/ViiRkLAanmMa4DDS8Fzlkt0rgQKf+GJ3y8T4crILU354KWyqtsGWg0VPCX9
+	4EGT1zw8aO3TZDAQ==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=MZib4A3W;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=VbktXhK5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1748985205; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nMp5F2i64TgnwrxwOwToMGnKAHG72K+/VQOBRSB9EGs=;
+	b=MZib4A3WP4o/O56JpIBAdlFZ4Bq7le3ftDXE0PSpWTZsKWYED18U9CNNGY8y7P5S6CForx
+	4J2rPtFUR30wU2LunJgVr6nZJYoQ7vdI0AsZs+wnieCYRS4P11OGAXwNyhGHDZsP7Lpci2
+	3YjzPub65b9JhZuu996QCsyC6TzopBs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1748985205;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nMp5F2i64TgnwrxwOwToMGnKAHG72K+/VQOBRSB9EGs=;
+	b=VbktXhK5SK/ViiRkLAanmMa4DDS8Fzlkt0rgQKf+GJ3y8T4crILU354KWyqtsGWg0VPCX9
+	4EGT1zw8aO3TZDAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: U2FsdGVkX1+u239X7Kf1MUWjocRBQ3Jv/Tc/rDSzZ4g=)
-	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4bBk396YP9z8sgj;
-	Tue,  3 Jun 2025 23:13:41 +0200 (CEST)
-From: Luis Gerhorst <luis.gerhorst@fau.de>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Xu Kuohai <xukuohai@huaweicloud.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Hari Bathini <hbathini@linux.ibm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Naveen N Rao <naveen@kernel.org>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Luis Gerhorst <luis.gerhorst@fau.de>,
-	Henriette Herzog <henriette.herzog@rub.de>,
-	Saket Kumar Bhaskar <skb99@linux.ibm.com>,
-	Cupertino Miranda <cupertino.miranda@oracle.com>,
-	Jiayuan Chen <mrpre@163.com>,
-	Matan Shachnai <m.shachnai@gmail.com>,
-	Dimitar Kanaliev <dimitar.kanaliev@siteground.com>,
-	Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-	Daniel Xu <dxu@dxuuu.xyz>,
-	bpf@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-kselftest@vger.kernel.org
-Cc: Maximilian Ott <ott@cs.fau.de>,
-	Milan Stephan <milan.stephan@fau.de>
-Subject: [PATCH bpf-next v4 4/9] bpf, arm64, powerpc: Add bpf_jit_bypass_spec_v1/v4()
-Date: Tue,  3 Jun 2025 23:13:18 +0200
-Message-ID: <20250603211318.337474-1-luis.gerhorst@fau.de>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250603205800.334980-1-luis.gerhorst@fau.de>
-References: <20250603205800.334980-1-luis.gerhorst@fau.de>
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9EC3F13A1D;
+	Tue,  3 Jun 2025 21:13:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id qgB/JnVlP2hIHwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 03 Jun 2025 21:13:25 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 456DAA08DD; Tue,  3 Jun 2025 23:13:25 +0200 (CEST)
+Date: Tue, 3 Jun 2025 23:13:25 +0200
+From: Jan Kara <jack@suse.cz>
+To: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+Cc: Jan Kara <jack@suse.cz>, Song Liu <song@kernel.org>, 
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>, 
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	LSM List <linux-security-module@vger.kernel.org>, Kernel Team <kernel-team@meta.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Eduard <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Christian Brauner <brauner@kernel.org>, KP Singh <kpsingh@kernel.org>, 
+	Matt Bobrowski <mattbobrowski@google.com>, Amir Goldstein <amir73il@gmail.com>, repnop@google.com, 
+	Jeff Layton <jlayton@kernel.org>, Josef Bacik <josef@toxicpanda.com>, 
+	=?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, Jann Horn <jannh@google.com>
+Subject: Re: [PATCH bpf-next 3/4] bpf: Introduce path iterator
+Message-ID: <fcl5ay76nlftwcqetzxduwlkesmmoyofctnpca5otqecee3bf4@w6hv3lxcwscq>
+References: <20250528222623.1373000-1-song@kernel.org>
+ <20250528222623.1373000-4-song@kernel.org>
+ <20250528223724.GE2023217@ZenIV>
+ <yti2dilasy7b3tu6iin5pugkn6oevdswrwoy6gorudb7x2cqhh@nqb3gcyxg4by>
+ <CAPhsuW4tg+bXU41fhAaS0n74d_a_KCFGvy_vkQOj7v4VLie2wg@mail.gmail.com>
+ <CAADnVQ+UGsvfAM8-E8Ft3neFkz4+TjE=rPbP1sw1m5_4H9BPNg@mail.gmail.com>
+ <CAPhsuW78L8WUkKz8iJ1whrZ2gLJR+7Kh59eFrSXvrxP0DwMGig@mail.gmail.com>
+ <20250530.oh5pahH9Nui9@digikod.net>
+ <vumjuw5ha6jtxtadsr5vwjtuneeqfg3vpydciczsn75qdg2ekv@464a4dxtxx27>
+ <20250603.be1ahteePh8z@digikod.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250603.be1ahteePh8z@digikod.net>
+X-Spamd-Result: default: False [-2.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_COUNT_THREE(0.00)[3];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[24];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MIME_TRACE(0.00)[0:+];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_SOME(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+	FREEMAIL_CC(0.00)[suse.cz,kernel.org,gmail.com,zeniv.linux.org.uk,vger.kernel.org,meta.com,iogearbox.net,linux.dev,google.com,toxicpanda.com];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: B67531F443
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: -2.51
 
-JITs can set bpf_jit_bypass_spec_v1/v4() if they want the verifier to
-skip analysis/patching for the respective vulnerability. For v4, this
-will reduce the number of barriers the verifier inserts. For v1, it
-allows more programs to be accepted.
+On Tue 03-06-25 14:49:09, Mickaël Salaün wrote:
+> On Tue, Jun 03, 2025 at 11:46:22AM +0200, Jan Kara wrote:
+> > On Fri 30-05-25 16:20:39, Mickaël Salaün wrote:
+> > > On Thu, May 29, 2025 at 10:05:59AM -0700, Song Liu wrote:
+> > > > On Thu, May 29, 2025 at 9:57 AM Alexei Starovoitov
+> > > > <alexei.starovoitov@gmail.com> wrote:
+> > > > [...]
+> > > > > >
+> > > > > > How about we describe this as:
+> > > > > >
+> > > > > > Introduce a path iterator, which safely (no crash) walks a struct path.
+> > > > > > Without malicious parallel modifications, the walk is guaranteed to
+> > > > > > terminate. The sequence of dentries maybe surprising in presence
+> > > > > > of parallel directory or mount tree modifications and the iteration may
+> > > > > > not ever finish in face of parallel malicious directory tree manipulations.
+> > > > >
+> > > > > Hold on. If it's really the case then is the landlock susceptible
+> > > > > to this type of attack already ?
+> > > > > landlock may infinitely loop in the kernel ?
+> > > > 
+> > > > I think this only happens if the attacker can modify the mount or
+> > > > directory tree as fast as the walk, which is probably impossible
+> > > > in reality.
+> > > 
+> > > Yes, so this is not an infinite loop but an infinite race between the
+> > > kernel and a very fast malicious user space process with an infinite
+> > > number of available nested writable directories, that would also require
+> > > a filesystem (and a kernel) supporting infinite pathname length.
+> > 
+> > Well, you definitely don't need infinite pathname length. Example:
+> > 
+> > Have a dir hierarchy like:
+> > 
+> >   A
+> >  / \
+> > B   C
+> > |
+> > D
+> > 
+> > Start iterating from A/B/D, you climb up to A/B. In parallel atacker does:
+> > 
+> > mv A/B/ A/C/; mkdir A/B
+> > 
+> > Now by following parent you get to A/C. In parallel attaker does:
+> > 
+> > mv A/C/ A/B/; mkdir A/C
+> > 
+> > And now you are essentially where you've started so this can repeat
+> > forever.
+> 
+> Yes, this is the scenario I had in mind talking about "infinite race"
+> (instead of infinite loop).  For this to work it will require the
+> filesystem to support an infinite number of nested directories, but I'm
+> not sure which FS could be eligible.
 
-The primary motivation for this is to not regress unpriv BPF's
-performance on ARM64 in a future commit where BPF_NOSPEC is also used
-against Spectre v1.
+Well, most filesystems don't limit depth of a directory hierarchy in any
+particular way. The depth is limited only by available disk space.
 
-This has the user-visible change that v1-induced rejections on
-non-vulnerable PowerPC CPUs are avoided.
+> Anyway, what would would be the threat model for this infinite race?
 
-For now, this does not change the semantics of BPF_NOSPEC. It is still a
-v4-only barrier and must not be implemented if bypass_spec_v4 is always
-true for the arch. Changing it to a v1 AND v4-barrier is done in a
-future commit.
+These kinds of problems can usually lead to DoS. That's not too serious
+problem as local users with write fs access can cause smaller or larger
+troubles to the system anyway but it can be rather unpleasant e.g. for
+container hosting systems if you can force e.g. container management tools
+to spend attacker-controlled time in the kernel just because Landlock or
+the eBPF "security solution" ends up crawling path in attacker controlled
+part of filesystem.
 
-As an alternative to bypass_spec_v1/v4, one could introduce NOSPEC_V1
-AND NOSPEC_V4 instructions and allow backends to skip their lowering as
-suggested by commit f5e81d111750 ("bpf: Introduce BPF nospec instruction
-for mitigating Spectre v4"). Adding bpf_jit_bypass_spec_v1/v4() was
-found to be preferable for the following reason:
+> > As others wrote this particular timing might be hard enough to hit for it
+> > to not be a practical attack but I would not bet much on somebody not being
+> > able to invent some variant that works, in particular with BPF iterator.
+> 
+> There might exist corner cases that could be an issue but would the
+> impact be different than with other kinds of path walk?
 
-* bypass_spec_v1/v4 benefits non-vulnerable CPUs: Always performing the
-  same analysis (not taking into account whether the current CPU is
-  vulnerable), needlessly restricts users of CPUs that are not
-  vulnerable. The only use case for this would be portability-testing,
-  but this can later be added easily when needed by allowing users to
-  force bypass_spec_v1/v4 to false.
+Well, a standard path lookup is limited by the length of the path (and
+symlink recursion limit). Things like common parent lookup during rename
+acquire locks to block parallel directory tree modifications so similar
+attacks are impossible there. It is only the "walk from some dentry to the
+root without holding any locks" pattern that has these kind of unbounded
+looping issues.
 
-* Portability is still acceptable: Directly disabling the analysis
-  instead of skipping the lowering of BPF_NOSPEC(_V1/V4) might allow
-  programs on non-vulnerable CPUs to be accepted while the program will
-  be rejected on vulnerable CPUs. With the fallback to speculation
-  barriers for Spectre v1 implemented in a future commit, this will only
-  affect programs that do variable stack-accesses or are very complex.
+> What could we do to avoid or limit such issue?
 
-For PowerPC, the SEC_FTR checking in bpf_jit_bypass_spec_v4() is based
-on the check that was previously located in the BPF_NOSPEC case.
+That's a tough question. You can hold rename_lock which blocks all
+directory renames. This obviously makes the walk-to-the-root safe against
+any "rename" attacks but it is a system wide lock with all the obvious
+scalability implications. So I don't think that's really feasible. You
+could also limit the number of steps in your pathwalk and return error if
+it gets exceeded. I believe that would be a more practical solution.
 
-For LoongArch, it would likely be safe to set both
-bpf_jit_bypass_spec_v1() and _v4() according to
-commit a6f6a95f2580 ("LoongArch, bpf: Fix jit to skip speculation
-barrier opcode"). This is omitted here as I am unable to do any testing
-for LoongArch.
-
-Hari's ack concerns the PowerPC part only.
-
-Signed-off-by: Luis Gerhorst <luis.gerhorst@fau.de>
-Acked-by: Hari Bathini <hbathini@linux.ibm.com>
-Cc: Henriette Herzog <henriette.herzog@rub.de>
-Cc: Maximilian Ott <ott@cs.fau.de>
-Cc: Milan Stephan <milan.stephan@fau.de>
----
- arch/arm64/net/bpf_jit_comp.c     | 21 ++++++++++++---------
- arch/powerpc/net/bpf_jit_comp64.c | 21 +++++++++++++++++----
- include/linux/bpf.h               | 11 +++++++++--
- kernel/bpf/core.c                 | 15 +++++++++++++++
- 4 files changed, 53 insertions(+), 15 deletions(-)
-
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index da8b89dd2910..2cab9063f563 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -1632,15 +1632,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 
- 	/* speculation barrier */
- 	case BPF_ST | BPF_NOSPEC:
--		/*
--		 * Nothing required here.
--		 *
--		 * In case of arm64, we rely on the firmware mitigation of
--		 * Speculative Store Bypass as controlled via the ssbd kernel
--		 * parameter. Whenever the mitigation is enabled, it works
--		 * for all of the kernel code with no need to provide any
--		 * additional instructions.
--		 */
-+		/* See bpf_jit_bypass_spec_v4() */
- 		break;
- 
- 	/* ST: *(size *)(dst + off) = imm */
-@@ -2911,6 +2903,17 @@ bool bpf_jit_supports_percpu_insn(void)
- 	return true;
- }
- 
-+bool bpf_jit_bypass_spec_v4(void)
-+{
-+	/* In case of arm64, we rely on the firmware mitigation of Speculative
-+	 * Store Bypass as controlled via the ssbd kernel parameter. Whenever
-+	 * the mitigation is enabled, it works for all of the kernel code with
-+	 * no need to provide any additional instructions. Therefore, skip
-+	 * inserting nospec insns against Spectre v4.
-+	 */
-+	return true;
-+}
-+
- bool bpf_jit_inlines_helper_call(s32 imm)
- {
- 	switch (imm) {
-diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
-index 5daa77aee7f7..a4335761b7f9 100644
---- a/arch/powerpc/net/bpf_jit_comp64.c
-+++ b/arch/powerpc/net/bpf_jit_comp64.c
-@@ -370,6 +370,23 @@ static int bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 o
- 	return 0;
- }
- 
-+bool bpf_jit_bypass_spec_v1(void)
-+{
-+#if defined(CONFIG_PPC_E500) || defined(CONFIG_PPC_BOOK3S_64)
-+	return !(security_ftr_enabled(SEC_FTR_FAVOUR_SECURITY) &&
-+		 security_ftr_enabled(SEC_FTR_BNDS_CHK_SPEC_BAR));
-+#else
-+	return true;
-+#endif
-+}
-+
-+bool bpf_jit_bypass_spec_v4(void)
-+{
-+	return !(security_ftr_enabled(SEC_FTR_FAVOUR_SECURITY) &&
-+		 security_ftr_enabled(SEC_FTR_STF_BARRIER) &&
-+		 stf_barrier_type_get() != STF_BARRIER_NONE);
-+}
-+
- /*
-  * We spill into the redzone always, even if the bpf program has its own stackframe.
-  * Offsets hardcoded based on BPF_PPC_STACK_SAVE -- see bpf_jit_stack_local()
-@@ -791,10 +808,6 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, struct code
- 		 * BPF_ST NOSPEC (speculation barrier)
- 		 */
- 		case BPF_ST | BPF_NOSPEC:
--			if (!security_ftr_enabled(SEC_FTR_FAVOUR_SECURITY) ||
--					!security_ftr_enabled(SEC_FTR_STF_BARRIER))
--				break;
--
- 			switch (stf_barrier) {
- 			case STF_BARRIER_EIEIO:
- 				EMIT(PPC_RAW_EIEIO() | 0x02000000);
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 5b25d278409b..5dd556e89cce 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2288,6 +2288,9 @@ bpf_prog_run_array_uprobe(const struct bpf_prog_array *array,
- 	return ret;
- }
- 
-+bool bpf_jit_bypass_spec_v1(void);
-+bool bpf_jit_bypass_spec_v4(void);
-+
- #ifdef CONFIG_BPF_SYSCALL
- DECLARE_PER_CPU(int, bpf_prog_active);
- extern struct mutex bpf_stats_enabled_mutex;
-@@ -2475,12 +2478,16 @@ static inline bool bpf_allow_uninit_stack(const struct bpf_token *token)
- 
- static inline bool bpf_bypass_spec_v1(const struct bpf_token *token)
- {
--	return cpu_mitigations_off() || bpf_token_capable(token, CAP_PERFMON);
-+	return bpf_jit_bypass_spec_v1() ||
-+		cpu_mitigations_off() ||
-+		bpf_token_capable(token, CAP_PERFMON);
- }
- 
- static inline bool bpf_bypass_spec_v4(const struct bpf_token *token)
- {
--	return cpu_mitigations_off() || bpf_token_capable(token, CAP_PERFMON);
-+	return bpf_jit_bypass_spec_v4() ||
-+		cpu_mitigations_off() ||
-+		bpf_token_capable(token, CAP_PERFMON);
- }
- 
- int bpf_map_new_fd(struct bpf_map *map, int flags);
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index c20babbf998f..f9bd9625438b 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -3034,6 +3034,21 @@ bool __weak bpf_jit_needs_zext(void)
- 	return false;
- }
- 
-+/* By default, enable the verifier's mitigations against Spectre v1 and v4 for
-+ * all archs. The value returned must not change at runtime as there is
-+ * currently no support for reloading programs that were loaded without
-+ * mitigations.
-+ */
-+bool __weak bpf_jit_bypass_spec_v1(void)
-+{
-+	return false;
-+}
-+
-+bool __weak bpf_jit_bypass_spec_v4(void)
-+{
-+	return false;
-+}
-+
- /* Return true if the JIT inlines the call to the helper corresponding to
-  * the imm.
-  *
+								Honza
 -- 
-2.49.0
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
