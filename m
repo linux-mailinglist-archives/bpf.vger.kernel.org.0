@@ -1,199 +1,123 @@
-Return-Path: <bpf+bounces-59475-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59477-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C0F1ACBE94
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 04:45:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 397B1ACBE97
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 04:48:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F83B3A581F
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 02:45:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED79D16F6F9
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 02:48:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F21D38DD1;
-	Tue,  3 Jun 2025 02:45:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B759812CD96;
+	Tue,  3 Jun 2025 02:48:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R+6NNMTb"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="e+1LT30X"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42DF82C326D
-	for <bpf@vger.kernel.org>; Tue,  3 Jun 2025 02:45:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D6CC3FE4
+	for <bpf@vger.kernel.org>; Tue,  3 Jun 2025 02:48:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748918746; cv=none; b=b1fYfvpnrdY5OTeaQ9YoRzyQ4zzZcE/8koDO8eOuLxvXeNiiufyx11Nt84TGYNG8Z7ibsp11VNUohIBwXTB57hsxpuBT6Ze+IvZDhaN/zaDuXF3KDItJyZZMH8P+1trFzKaL3F5rCn3gYvnk1+zfBllLad4BkOAJl3dy59SOs28=
+	t=1748918905; cv=none; b=YQhGMk+HG+65CR9mfSYuGc+7XnRDmCQTlLeNHTsKonzylBMoBnkhdqbifWrj8jJKOSv228ijSU1No2kq+cJKzvqfVdDQCeP1HLZ0D7LWUfJl+15nP4vaJy8LzHTNMo7c5uAy3Z9sEgsZozcrrQKSa3g0208A1RxlrP4+AZppSQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748918746; c=relaxed/simple;
-	bh=5igvRZTLcHEMwcy62oSLt498sliLyBp34eAdu6Bugo0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NNZyhJ9jeZvcZAgysb9vf6t3YnmpBOCFxl1rkaihheSk78U3Vtv0oJd5NzeSfafFX+Y9NhpGW4y5gC+91kpt68EY1VVYGm99mawhDx/jVRMvhkM/5ekrjzDM/IONu+Dyaj9zx4EVauXNUqWiLRMLj/eSwF1lTPwlW9GFqxt5ISo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R+6NNMTb; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-43edecbfb46so37188875e9.0
-        for <bpf@vger.kernel.org>; Mon, 02 Jun 2025 19:45:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748918742; x=1749523542; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RlpZlVhvKSpm9UAt2f2WlH80jb/wvBfBvcWRf79YHMw=;
-        b=R+6NNMTbeQv3THuHHQU7OXk69dBuqGc7FlBd2PKuNdcRBuHNcX6NlncHYTt3DhyHVF
-         IkZH3ShqqA51xcaK0Xd/cmu0ceUDDUkbelP7JRjE661lQT9VpFP5apdAdquCVHGpTeEF
-         BJpnEirJdJUpsbU++MM9AHdqIExEQ4eie1eRpM1FahoFU/Gt/E2H8jFYUMxq45+nMzSH
-         bzwtUa3pyv9Gkgha++ne75LB6I+XZXDShXPBEqgSy7k9yedM7zk1VRVGeC4OLapAxDbM
-         izeDwDpSH7xok5a04Te/Ha7f2stUAHhEcTUUzgmOiWIEjbV5HVJbg8Nk3yfS/VALbJe/
-         lxtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748918742; x=1749523542;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RlpZlVhvKSpm9UAt2f2WlH80jb/wvBfBvcWRf79YHMw=;
-        b=W5h7TyXAiW2kJtAwiPwDvZd9jEvibmIzqvov7dZ61Dbj0+HdSCku8o+7HuXddL3EjS
-         eXxlPxXQ6ZpI+jgsIDgxnx4i5cv2TtaFMusJ9aFTy64ewFVbtnoIMjEnridLlrwKARkP
-         Jx6cuB8PPIbq3rRfp/R7wZ0L4uwEB2D4YV0pC+70E+iPA+IHwQ4hLPgIGrv5X9Fz8qzp
-         4B+EPVW1/egZqEYGo1jlKcy+VDn/q2PgceFavFJSwUFmJHmFTpXS54n4fGuYPniDsUkf
-         od0RB+qP/ayTJsO5f1vnK1rhFn+wSS8A7HbYgUTEaWNSyj3sFeDSDHBq9Aqn8jSyy8g6
-         JGYw==
-X-Gm-Message-State: AOJu0Yyq13tx/H2/5EvshRIVYmfVeYC8FzlatGutUSaZjnRkLxUDqBrF
-	gPdojVyq4T6wfd++0oe0z4gejKxAGDk8U77AmVT0Fi6przrp/QbBrLl+yoLVt3qEFBFuXoJL/N5
-	hiAUt0lq8kxPwXtC1PRDiiMYSxc0TYiDIxS1H
-X-Gm-Gg: ASbGncvByj69B8rEuq0iizy2DrpnoXj739bSQ0iTRV9CI+o+UbTQMGjdP6ch34idDIx
-	DwMhRrOJWyG1sN32GrMmJVWJAAg/UGXrE6JrQd9if8ul08pAOgUgmyKH+2XM6ylv5/hNtzlbDXp
-	z5anU4PkcQcm7EbWafockyp/w+IAjhiB8GIsyTjCw1gY2FlsLtCq7QOvf3h/lTGA==
-X-Google-Smtp-Source: AGHT+IEPv+jGp4lK6hr0KAkUcndFILIwXFPeilYvOWwzfZJu6HNi7YGHYg9q04gxGpPM3MzQk+tM47AL452TIv7q3UM=
-X-Received: by 2002:a05:600c:35c8:b0:43d:db5:7b1a with SMTP id
- 5b1f17b1804b1-450d8843261mr135745505e9.12.1748918742085; Mon, 02 Jun 2025
- 19:45:42 -0700 (PDT)
+	s=arc-20240116; t=1748918905; c=relaxed/simple;
+	bh=bDbN/pUUCsasyHfTje7nyuNy7yM1UBPiW8nU2tT+CkA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=So/3I5W6/K753Z+7G++zc2N5xlpxyTu6IBTV8Bl68Wf/WneE6/r3t9i8NC4CKWSP6IsIxRUQRqc8BSaUjSIrxEVXxNaOw+pWuvZyp/TGphI9agAjvayz10CSngqcNtz9n6wzR9VJ0BLjSFIMuT5Modmp/coXYNZQ6zHWVvA9Lq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=e+1LT30X; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <53bf93fb-079c-4133-8f55-0aed72ec8a88@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1748918901;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/j1puQZRDhJ0qoYMQOD1oTjw2gQglSLkgl/8bmDUL54=;
+	b=e+1LT30Xmr0ff0wlWVpZZ00SXRjgF4d8ppglmQISmQYZesx6+pI3Bar05zbv3wDMMkzzVK
+	GusBsp/pouiODVEgAAsozf2ZE6loBOmid7HlMdkJiUpEyBYNtY5hyeMOead/8debpua8uf
+	qobk/weVtf3PV0ehNQQW4GjVmHD+L9c=
+Date: Tue, 3 Jun 2025 10:47:53 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250526062555.1106061-1-houtao@huaweicloud.com>
- <20250526062555.1106061-3-houtao@huaweicloud.com> <CAADnVQLH3Ut8dF9t=_zB4acbZYuN=9+fgsACossGqFVTPO6EaQ@mail.gmail.com>
- <137a5a3f-c571-5ade-7ea1-d224ec6b36f0@huaweicloud.com>
-In-Reply-To: <137a5a3f-c571-5ade-7ea1-d224ec6b36f0@huaweicloud.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 2 Jun 2025 19:45:31 -0700
-X-Gm-Features: AX0GCFtkYGJWqktM2GEehXkLgYi8KlMWrlnD2cPmsXbuvzLAs6G3YdGVLTKtcts
-Message-ID: <CAADnVQLBsYU0xysuqzbZCKbSZP=CLdc8FPaMsvxtrwApwVT6EQ@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 2/3] bpf: Implement bpf mem allocator dtor
- for hash map
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Hou Tao <houtao1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v3 3/4] bpf, bpftool: Generate skeleton for
+ global percpu data
+Content-Language: en-US
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, yonghong.song@linux.dev, song@kernel.org,
+ eddyz87@gmail.com, qmo@kernel.org, dxu@dxuuu.xyz, kernel-patches-bot@fb.com,
+ =?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>
+References: <20250526162146.24429-1-leon.hwang@linux.dev>
+ <20250526162146.24429-4-leon.hwang@linux.dev>
+ <CAEf4BzY9KeVeo2+6Ht1v3rL6UdwNxABZCSK1OZ_sD8qhpYZaeQ@mail.gmail.com>
+ <2d94fcd1-9ddd-49c4-86b6-720b3636ad24@linux.dev>
+ <CAEf4BzYzikQSvvJTm8j2X71ewBxZjVKLLFqxaVMCgziJMWC8mA@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Leon Hwang <leon.hwang@linux.dev>
+In-Reply-To: <CAEf4BzYzikQSvvJTm8j2X71ewBxZjVKLLFqxaVMCgziJMWC8mA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Jun 2, 2025 at 7:27=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wro=
-te:
->
-> Hi,
->
-> On 6/3/2025 7:08 AM, Alexei Starovoitov wrote:
-> > On Sun, May 25, 2025 at 11:08=E2=80=AFPM Hou Tao <houtao@huaweicloud.co=
-m> wrote:
-> >> From: Hou Tao <houtao1@huawei.com>
-> >>
-> >> BPF hash map supports special fields in its value, and BPF program is
-> >> free to manipulate these special fields even after the element is
-> >> deleted from the hash map. For non-preallocated hash map, these specia=
-l
-> >> fields will be leaked when the map is destroyed. Therefore, implement
-> >> necessary BPF memory allocator dtor to free these special fields.
-> >>
-> >> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> >> ---
-> >>  kernel/bpf/hashtab.c | 34 ++++++++++++++++++++++++++++++++--
-> >>  1 file changed, 32 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-> >> index dd6c157cb828..2531177d1464 100644
-> >> --- a/kernel/bpf/hashtab.c
-> >> +++ b/kernel/bpf/hashtab.c
-> >> @@ -128,6 +128,8 @@ struct htab_elem {
-> >>         char key[] __aligned(8);
-> >>  };
-> >>
-> >> +static void check_and_free_fields(struct bpf_htab *htab, struct htab_=
-elem *elem);
-> >> +
-> >>  static inline bool htab_is_prealloc(const struct bpf_htab *htab)
-> >>  {
-> >>         return !(htab->map.map_flags & BPF_F_NO_PREALLOC);
-> >> @@ -464,6 +466,33 @@ static int htab_map_alloc_check(union bpf_attr *a=
-ttr)
-> >>         return 0;
-> >>  }
-> >>
-> >> +static void htab_ma_dtor(void *obj, void *ctx)
-> >> +{
-> >> +       struct bpf_htab *htab =3D ctx;
-> >> +
-> >> +       /* The per-cpu pointer saved in the htab_elem may have been fr=
-eed
-> >> +        * by htab->pcpu_ma. Therefore, freeing the special fields in =
-the
-> >> +        * per-cpu pointer through the dtor of htab->pcpu_ma instead.
-> >> +        */
-> >> +       if (htab_is_percpu(htab))
-> >> +               return;
-> >> +       check_and_free_fields(htab, obj);
-> >> +}
-> > It seems the selftest in patch 3 might be working "by accident",
-> > but older tests should be crashing?
->
-> Er, didn't follow the reason why the older test should be crashing.  For
-> the per-cpu hash map, the per-cpu pointer gets through
-> htab_elem_get_ptr() is valid until one tasks trace RCU gp passes,
-> therefore, the bpf prog will always manipulate a valid per-cpu pointer.
-> The comment above wants to say is that htab_elem_get_ptr() in
-> htab_ma_dtor() may return a freed per-cpu pointer, because the order of
-> freeing htab_elem->ptr_to_pptr and htab_elem is nondeterministic.
->
-> > It looks like you're calling check_and_free_fields() twice now.
-> > Once from htab_elem_free() and then again in htab_ma_dtor() ?
-> >
-> > If we're going for dtor then htab should delegate all clean up to it.
->
-> Yes. check_and_free_fields() is called twice.
 
-I meant that things will be crashing since it's called twice.
-In bpf_obj_free_fields()
-timer/wq are probably fine to be called multiple times.
-list_head/rb_tree/kptr should be fine as well,
-but uptr will double unpin.
 
-I doubt we really thought through the consequences of
-calling bpf_obj_free_fields() on the same map value multiple times.
+On 3/6/25 07:50, Andrii Nakryiko wrote:
+> On Wed, May 28, 2025 at 7:56 PM Leon Hwang <leon.hwang@linux.dev> wrote:
+>>
+>>
+>>
+>> On 28/5/25 06:31, Andrii Nakryiko wrote:
+>>> Adding libbpf-rs maintainer, Daniel, for awareness, as Rust skeleton
+>>> will have to add support for this, once this patch set lands upstream.
+>>>
+>>>
+>>
+>> [...]
+>>
+>>>> +
+>>>> +       if (map_cnt) {
+>>>> +               bpf_object__for_each_map(map, obj) {
+>>>> +                       if (bpf_map__is_internal_percpu(map) &&
+>>>> +                           get_map_ident(map, ident, sizeof(ident)))
+>>>> +                               printf("\tobj->%s = NULL;\n", ident);
+>>>> +               }
+>>>> +       }
+>>>
+>>> hm... maybe we can avoid this by making libbpf re-mmap() this
+>>> initialization image to be read-only during bpf_object load? Then the
+>>> pointer can stay in the skeleton and be available for querying of
+>>> "initialization values" (if anyone cares), and we won't have any extra
+>>> post-processing steps in code generated skeleton code?
+>>>
+>>> And Rust skeleton will be able to expose this as a non-mutable
+>>> reference with no extra magic behind it?
+>>>
+>>>
+>> We can re-mmap() it as read-only.
+>>
+>> However, in the case of the Rust skeleton, users could still use unsafe
+>> code to cast immutable variables to mutable ones.
+> 
+> you have to actively want to abuse the API to do this, so I wouldn't
+> be too concerned about this
+> 
 
-> There are three possible
-> locations to free the special fields:
->
-> 1) when the element is freed through bpf_mem_cache_free()
-> 2) before the element is reused
-> 3) before the element is freed to slab.
->
-> 3) is necessary to ensure these special fields will not be leaked and 1)
-> is necessary to ensure these special fields will be freed before it is
-> reused. I didn't find a good way to only call it once.
+Agreed.
 
-My point is that we have to call it once, especially since
-it's recursive in obj_drop, or...
-if we have to call it multiple times we need to fix uptr and
-review all other special fields carefully.
+It will be marked as read-only using mprotect().
 
-> Maybe adding a
-> bit flag to the pointer of the element to indicate that it has been
-> destroyed is OK ? Will try it in the next revision.
+Thanks,
+Leon
 
-Not sure what you have in mind.
+
 
