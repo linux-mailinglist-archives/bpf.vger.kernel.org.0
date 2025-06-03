@@ -1,47 +1,48 @@
-Return-Path: <bpf+bounces-59523-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59524-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D678ACCC6A
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 19:47:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C0BCACCC67
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 19:46:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BB5F1896927
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 17:46:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86849175084
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 17:46:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A1951E503C;
-	Tue,  3 Jun 2025 17:46:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B16B1E5B8A;
+	Tue,  3 Jun 2025 17:46:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TaEgzXWQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="goF5UN/s"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C36884A01;
-	Tue,  3 Jun 2025 17:46:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D7FD2C3242;
+	Tue,  3 Jun 2025 17:46:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748972780; cv=none; b=M9Z/6r8z9afRDVQTira+oV9xx6lhqRFDhylb9fqulvEZ+b1DQNejtfgiFf/1mhNQokURkFJfGL+b+wLkkercek4Aem1FGwK89OeOPHCaG/bHljMACppSFjS0oprG3OLeFmfJpkciN9Kd78JbKMEHroejxt7wy7Xlk57nVBYKzw8=
+	t=1748972787; cv=none; b=POW13eTFBa3COhB3fZ5+YRu619Av2k6kuhwwyZ0e+syiIPnAGLejwSrnxehLXTaUfFGPKsrbhnndzbZBvCBrHCI7tXJR4UDNuQk3H2hhS8WeIuhnG13YVged1+SBFNke9awskQTzVqzSMM8O1SAx7nXUc5use1Uh54PrNRPd34Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748972780; c=relaxed/simple;
-	bh=hmBH+sLKIp7Ypu6vIaGpMbHCpm6p6q6RNT5uHBzABAE=;
+	s=arc-20240116; t=1748972787; c=relaxed/simple;
+	bh=pPGqq/khaOlApziNAsBe7r3FMrqclQn0oOxLpIyDN44=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RBbgwt32kQs7zojcVadgMrtEVYmEFlKSp8T/5hzUHDpY1bY0Ho7j9YssDPwx5hXj21hTiXfEu4EoOH3r9vLdphNu7RHMuXkSm/hPBnGIUeLaT4LXZojoeCmX0VOGp3hhwheZRj+qqk1GuDwJmVUOzDb3gWPzTuDDb33F3gdBd0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TaEgzXWQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE314C4CEED;
-	Tue,  3 Jun 2025 17:46:16 +0000 (UTC)
+	 MIME-Version:Content-Type; b=d+pJ9ooikHkPIL/huURLkECqVaxBdy756k8sSw2JCopN9ZGFgkUquVJl4U7Xapv5FYS5I1J9RyvmNUIbZhJYNh0MZe6Z8uY6HQQuxCkjX8PHC9fbBoHQjM76fYqd56iAVXN1av1fMkMUAw7/fhBT0SZv98M/IzcVD9fdN/4DApI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=goF5UN/s; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7131DC4CEED;
+	Tue,  3 Jun 2025 17:46:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748972780;
-	bh=hmBH+sLKIp7Ypu6vIaGpMbHCpm6p6q6RNT5uHBzABAE=;
+	s=k20201202; t=1748972787;
+	bh=pPGqq/khaOlApziNAsBe7r3FMrqclQn0oOxLpIyDN44=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=TaEgzXWQ4FeMv7/YKH7EdVRhpIKgdBm4Zfz4mGn043cuiE4aROpMclV3ezhZdo/hE
-	 ssiZZGmd6is2p1D4g2Wfab9V6Jne43R0oGdrVTh/Zc4vuFqEe+9OdEekCVZ5+VaiSq
-	 yTW/Brxum2wHT+nR4zgyGxwYv9c4+fU/tQ6+Drs+Rt+Cxjx4yjaaOFkELQpw11ZFV+
-	 /NAIgyVNSLfrMYT7xJLDqr7ooiWZWoWskzGTJytFvzVrWEkSeNAwLr2e3IiYvxLyGm
-	 YUwx2GKswC7cgLwgDtPNoYohZxDBhAkRWcPZghqkptOnwijrxvNBVmB9efBBO1wBDx
-	 94AiFqgq3RfkQ==
-Subject: [PATCH bpf-next V1 4/7] net: xdp: Set skb hw metadata from xdp_frame
+	b=goF5UN/sK6FL713/c18g9US/a8WdNQSZ6iD7XlMmQVv+4aeVX/7xoSc6JQlfae4Yz
+	 ZE0MxHPb2DIop046sUIOIdpwM0KMtFVASREhF4xBTQ6TrGl6zaAmWqb4noxW+CWhvT
+	 ZrSLyLUHRpETJgNN4HkiiopD7DVLUH+QtKaubjTAoLKOSxc+olRyE9dnZPF1TDxFJC
+	 QNK0L8cYimjc0zhifR5JU9LWgRS2JT27xHZR1wKUxqKx4VJDeQnAwPW0qIuSGA1iHl
+	 TcEkc4cu0mSfc+JZZAn2bCqyMaifXko4e4BDI4kdwXOGm2/a4m/19D76D6wejb5YPR
+	 IRue+SaL1tjPg==
+Subject: [PATCH bpf-next V1 5/7] net: veth: Read xdp metadata from rx_meta
+ struct if available
 From: Jesper Dangaard Brouer <hawk@kernel.org>
 To: bpf@vger.kernel.org, netdev@vger.kernel.org,
  Jakub Kicinski <kuba@kernel.org>, lorenzo@kernel.org
@@ -52,8 +53,8 @@ Cc: Jesper Dangaard Brouer <hawk@kernel.org>,
  "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
  sdf@fomichev.me, kernel-team@cloudflare.com, arthur@arthurfabre.com,
  jakub@cloudflare.com
-Date: Tue, 03 Jun 2025 19:46:14 +0200
-Message-ID: <174897277482.1677018.1195726795235767459.stgit@firesoul>
+Date: Tue, 03 Jun 2025 19:46:21 +0200
+Message-ID: <174897278159.1677018.3349798909066020659.stgit@firesoul>
 In-Reply-To: <174897271826.1677018.9096866882347745168.stgit@firesoul>
 References: <174897271826.1677018.9096866882347745168.stgit@firesoul>
 User-Agent: StGit/1.5
@@ -68,105 +69,130 @@ Content-Transfer-Encoding: 7bit
 
 From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-Update the following hw metadata provided by the NIC building the skb
-from a xdp_frame.
-- rx hash
-- rx vlan
-- rx hw-ts
+Report xdp_rx_meta info if available in xdp_buff struct in
+xdp_metadata_ops callbacks for veth driver
 
 Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 ---
- include/net/xdp.h |   15 +++++++++++++++
- net/core/xdp.c    |   29 ++++++++++++++++++++++++++++-
- 2 files changed, 43 insertions(+), 1 deletion(-)
+ drivers/net/veth.c |   12 +++++++++++
+ include/net/xdp.h  |   57 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 69 insertions(+)
 
+diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+index 7bb53961c0ea..94b470b6b680 100644
+--- a/drivers/net/veth.c
++++ b/drivers/net/veth.c
+@@ -1614,6 +1614,10 @@ static int veth_xdp(struct net_device *dev, struct netdev_bpf *xdp)
+ static int veth_xdp_rx_timestamp(const struct xdp_md *ctx, u64 *timestamp)
+ {
+ 	struct veth_xdp_buff *_ctx = (void *)ctx;
++	const struct xdp_buff *xdp = &_ctx->xdp;
++
++	if (!xdp_load_rx_ts_from_buff(xdp, timestamp))
++		return 0;
+ 
+ 	if (!_ctx->skb)
+ 		return -ENODATA;
+@@ -1626,8 +1630,12 @@ static int veth_xdp_rx_hash(const struct xdp_md *ctx, u32 *hash,
+ 			    enum xdp_rss_hash_type *rss_type)
+ {
+ 	struct veth_xdp_buff *_ctx = (void *)ctx;
++	const struct xdp_buff *xdp = &_ctx->xdp;
+ 	struct sk_buff *skb = _ctx->skb;
+ 
++	if (!xdp_load_rx_hash_from_buff(xdp, hash, rss_type))
++		return 0;
++
+ 	if (!skb)
+ 		return -ENODATA;
+ 
+@@ -1641,9 +1649,13 @@ static int veth_xdp_rx_vlan_tag(const struct xdp_md *ctx, __be16 *vlan_proto,
+ 				u16 *vlan_tci)
+ {
+ 	const struct veth_xdp_buff *_ctx = (void *)ctx;
++	const struct xdp_buff *xdp = &_ctx->xdp;
+ 	const struct sk_buff *skb = _ctx->skb;
+ 	int err;
+ 
++	if (!xdp_load_rx_vlan_tag_from_buff(xdp, vlan_proto, vlan_tci))
++		return 0;
++
+ 	if (!skb)
+ 		return -ENODATA;
+ 
 diff --git a/include/net/xdp.h b/include/net/xdp.h
-index ef73f0bcc441..1ecbfe2053f2 100644
+index 1ecbfe2053f2..6d93f0cf1b53 100644
 --- a/include/net/xdp.h
 +++ b/include/net/xdp.h
-@@ -310,6 +310,21 @@ xdp_frame_is_frag_pfmemalloc(const struct xdp_frame *frame)
- 	return !!(frame->flags & XDP_FLAGS_FRAGS_PF_MEMALLOC);
+@@ -158,6 +158,23 @@ static __always_inline bool xdp_buff_has_valid_meta_area(struct xdp_buff *xdp)
+ 	return !!(xdp->flags & XDP_FLAGS_META_AREA);
  }
  
-+static __always_inline bool xdp_frame_has_rx_meta_hash(struct xdp_frame *frame)
++static __always_inline bool
++xdp_buff_has_rx_meta_hash(const struct xdp_buff *xdp)
 +{
-+	return !!(frame->flags & XDP_FLAGS_META_RX_HASH);
++	return !!(xdp->flags & XDP_FLAGS_META_RX_HASH);
 +}
 +
-+static __always_inline bool xdp_frame_has_rx_meta_vlan(struct xdp_frame *frame)
++static __always_inline bool
++xdp_buff_has_rx_meta_vlan(const struct xdp_buff *xdp)
 +{
-+	return !!(frame->flags & XDP_FLAGS_META_RX_VLAN);
++	return !!(xdp->flags & XDP_FLAGS_META_RX_VLAN);
 +}
 +
-+static __always_inline bool xdp_frame_has_rx_meta_ts(struct xdp_frame *frame)
++static __always_inline bool xdp_buff_has_rx_meta_ts(const struct xdp_buff *xdp)
 +{
-+	return !!(frame->flags & XDP_FLAGS_META_RX_TS);
++	return !!(xdp->flags & XDP_FLAGS_META_RX_TS);
 +}
 +
- #define XDP_BULK_QUEUE_SIZE	16
- struct xdp_frame_bulk {
- 	int count;
-diff --git a/net/core/xdp.c b/net/core/xdp.c
-index 7d59543d7916..69077cf4c541 100644
---- a/net/core/xdp.c
-+++ b/net/core/xdp.c
-@@ -786,6 +786,23 @@ struct sk_buff *xdp_build_skb_from_zc(struct xdp_buff *xdp)
+ static __always_inline void
+ xdp_init_buff(struct xdp_buff *xdp, u32 frame_sz, struct xdp_rxq_info *rxq)
+ {
+@@ -708,4 +725,44 @@ static __always_inline u32 bpf_prog_run_xdp(const struct bpf_prog *prog,
+ 
+ 	return act;
  }
- EXPORT_SYMBOL_GPL(xdp_build_skb_from_zc);
- 
-+static void xdp_set_skb_rx_hash_from_meta(struct xdp_frame *frame,
-+					  struct sk_buff *skb)
++
++static inline int xdp_load_rx_hash_from_buff(const struct xdp_buff *xdp,
++					     u32 *hash,
++					     enum xdp_rss_hash_type *rss_type)
 +{
-+	enum pkt_hash_types hash_type = PKT_HASH_TYPE_NONE;
++	if (!xdp_buff_has_rx_meta_hash(xdp))
++		return -ENODATA;
 +
-+	if (!xdp_frame_has_rx_meta_hash(frame))
-+		return;
++	*hash = xdp->rx_meta->hash.val;
++	*rss_type = xdp->rx_meta->hash.type;
 +
-+	if (frame->rx_meta.hash.type & XDP_RSS_TYPE_L4_ANY)
-+		hash_type = PKT_HASH_TYPE_L4;
-+	else if (frame->rx_meta.hash.type & (XDP_RSS_TYPE_L3_IPV4 |
-+					     XDP_RSS_TYPE_L3_IPV6))
-+		hash_type = PKT_HASH_TYPE_L3;
-+
-+	skb_set_hash(skb, frame->rx_meta.hash.val, hash_type);
++	return 0;
 +}
 +
- struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame *xdpf,
- 					   struct sk_buff *skb,
- 					   struct net_device *dev)
-@@ -794,11 +811,15 @@ struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame *xdpf,
- 	unsigned int headroom, frame_size;
- 	void *hard_start;
- 	u8 nr_frags;
-+	u64 ts;
- 
- 	/* xdp frags frame */
- 	if (unlikely(xdp_frame_has_frags(xdpf)))
- 		nr_frags = sinfo->nr_frags;
- 
-+	if (unlikely(xdp_frame_has_rx_meta_ts(xdpf)))
-+		ts = sinfo->hwtstamps.hwtstamp;
++static inline int xdp_load_rx_vlan_tag_from_buff(const struct xdp_buff *xdp,
++						 __be16 *vlan_proto,
++						 u16 *vlan_tci)
++{
++	if (!xdp_buff_has_rx_meta_vlan(xdp))
++		return -ENODATA;
 +
- 	/* Part of headroom was reserved to xdpf */
- 	headroom = sizeof(*xdpf) + xdpf->headroom;
- 
-@@ -826,9 +847,15 @@ struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame *xdpf,
- 	/* Essential SKB info: protocol and skb->dev */
- 	skb->protocol = eth_type_trans(skb, dev);
- 
-+	xdp_set_skb_rx_hash_from_meta(xdpf, skb);
-+	if (xdp_frame_has_rx_meta_vlan(xdpf))
-+		__vlan_hwaccel_put_tag(skb, xdpf->rx_meta.vlan.proto,
-+				       xdpf->rx_meta.vlan.tci);
-+	if (unlikely(xdp_frame_has_rx_meta_ts(xdpf)))
-+		skb_hwtstamps(skb)->hwtstamp = ts;
++	*vlan_proto = xdp->rx_meta->vlan.proto;
++	*vlan_tci = xdp->rx_meta->vlan.tci;
 +
- 	/* Optional SKB info, currently missing:
- 	 * - HW checksum info		(skb->ip_summed)
--	 * - HW RX hash			(skb_set_hash)
- 	 * - RX ring dev queue index	(skb_record_rx_queue)
- 	 */
- 
++	return 0;
++}
++
++static inline int xdp_load_rx_ts_from_buff(const struct xdp_buff *xdp, u64 *ts)
++{
++	struct skb_shared_info *sinfo;
++
++	if (!xdp_buff_has_rx_meta_ts(xdp))
++		return -ENODATA;
++
++	sinfo = xdp_get_shared_info_from_buff(xdp);
++	*ts = sinfo->hwtstamps.hwtstamp;
++
++	return 0;
++}
++
+ #endif /* __LINUX_NET_XDP_H__ */
 
 
 
