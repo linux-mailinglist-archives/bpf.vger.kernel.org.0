@@ -1,192 +1,193 @@
-Return-Path: <bpf+bounces-59555-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59556-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71508ACCEF4
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 23:28:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1A0FACCEF8
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 23:28:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFEE53A3734
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 21:27:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20BA81887C18
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 21:28:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE30722DF95;
-	Tue,  3 Jun 2025 21:28:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C06D226D02;
+	Tue,  3 Jun 2025 21:28:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="iwhqI0r8"
+	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="R3pPMiSf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com [209.85.222.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx-rz-2.rrze.uni-erlangen.de (mx-rz-2.rrze.uni-erlangen.de [131.188.11.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9657B221F09
-	for <bpf@vger.kernel.org>; Tue,  3 Jun 2025 21:28:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EBB722579E;
+	Tue,  3 Jun 2025 21:28:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748986089; cv=none; b=PXVwaXMpdzCVZ+44kMqwznEniF99FN1ex/EYdSV3JLZhEGgYxw01G8wJ81gQDJVR1QNH/QKTJ1LcYrSApanShE/a1yBFCPEJej0gPoRiIBJWs9m+WZrJdwagidJ/sPdOe9Rmy0utII2E/AI0Q6YUa5oXc9XOGIqbk++h/0NYWs0=
+	t=1748986111; cv=none; b=UkxS8CTdCjPpYJCz4X3Dgf5WBn6kydciJHm6j9CCsoxBWe/RAgIlEi6Iecu2aFEFEEk2HXfVj1UvBY/XXijQwbvt+hnDRTS+rKbxabQjJT+51agtdYXR5dXFm60sgFMWPKymSacXTc0KB83N2jR73WuyyBs2vnttFUuBr8cmFcQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748986089; c=relaxed/simple;
-	bh=SUcs4ezYKO4bL6n9M4wwGaW5Kl1QdqF5O9xTiMlCOnI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EcdMa0k4xcO9+9X8UFm40S+0txyNGQMUUQXog7DVGyqaFXK4bIju/XvJ333vT6aZ5WMwWijFx8eUCv2arAnwnPR7QZp0hGys8iLQtHJx+G3b6lKC3eXdWt7Hg8v7HAErkYlXvQUxd/Z8+0ul8evqK/WfP5s0/Pv0KUPIlYCtY5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=iwhqI0r8; arc=none smtp.client-ip=209.85.222.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f54.google.com with SMTP id a1e0cc1a2514c-86dc3482b3dso239805241.0
-        for <bpf@vger.kernel.org>; Tue, 03 Jun 2025 14:28:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1748986086; x=1749590886; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=v5ojcrIVgkEfEi/wrMb1iM7XDB/HOb9H8wYORbOpMVQ=;
-        b=iwhqI0r8XS3h1hEGLDhnfCwmGPoyGdchSnRZLiox3uJLwpl2rP1TXJrOx0kGiiv1Qv
-         2GVoTI6ZlK3uy1lGaIvGkb7tI5E0SXWYhIq8wDMjd9cZbtXxLqQhqLMaIEIapn1elmgf
-         k5zTJdSWS7Du+bfs2pAV3eku5B89zshzEMRWLEiFEYnuBftYHk/bHbi/P4s6By+CQSrK
-         SpigI0/PHr8bGJfoSSxDoGjlDgZMO52gNGvyO70mNHLvxNpreRnxF8sO4gAGKGOQzTlq
-         nn7pQb+NuDC6ZBgp0CSuWzI/X1cmsFL0LTwwh1RrZcDtmgHXy6scv5AaPF4rkCBnyOC2
-         Rf/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748986086; x=1749590886;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=v5ojcrIVgkEfEi/wrMb1iM7XDB/HOb9H8wYORbOpMVQ=;
-        b=WliaQaLH7+/cczpA+43588P4VGKTtLDeQX6TgU3WwThdSJrnesPv31CdkD3T241Gtt
-         qyIek0S2TuUg04lGtiIRAw9+xn/oJuFweEADGeTswTMzN85X1IALacw71rWvWiVd78Qr
-         BSgVFqS2dGB5F6SgiijVrh9UEXyT6Uz8DDNNALv22tXd75NmESeJh/JDbP9/0Bb64YIv
-         Y3Xhg6bDEU+MtM7uDMAEbgnkwDdfgONyg/jP7tDJgaEJOS8n9IGaCg9pGKu5lkGLjA6O
-         nGZW403N3P6sv4EyHjne6LiJMzvJyI+WnrrolQ6Rc8vfBAinNhorEipfbs5gRXurqrd0
-         uw8g==
-X-Forwarded-Encrypted: i=1; AJvYcCU3b4LOZaDRQuiuaLr2vU+zzoYm9s+kW/1Ie4wcZIkDRZcHnBhHlj1fwysLZrkB+ayq+xE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxTEf8Fi50qUjxyyPkf7lJxJMvGpBpcljJWNk8eLQdIIgJuS2Kl
-	stl1P1FVX1wVd7tubKkIxZ8UsK5mIdEx4FN1r1twEmiRFLc8qcTiZ9RvNMutM3/yKfPZFjH0QsQ
-	Y7Hrzq+ucHvdCMebPf5N8jmEWpp/xHmeWVtw4WwaJ
-X-Gm-Gg: ASbGncvri8LV+NSzZxym7xRgE+VFi8kNP2jCei+zuc2jAZMCDvq4FheWppupTGTWOd6
-	x3iSOswY4VG0GK5qffQ872J0RAlPNr1Xe0WVgsGoKIYXLjEVkrXpcTJHDNvg8bS9s2SxjElor2p
-	a3OidqMFjQ2bTuEN+QTJdcxpkOjzUZVSH04iw8j966CxaOMoCymM+XhVX3RQlZ/tV78xfGw2Soj
-	xlsI4wos8tX
-X-Google-Smtp-Source: AGHT+IGPufNgxZrRK47SQJAnzsbGTLBiIYxDJo93U7kPRNqPTlaECeMfrKAn6BbuqZ9O026msMwFSfTvqVvkhwFCr2A=
-X-Received: by 2002:a05:6102:6a8b:b0:4e1:ec70:536 with SMTP id
- ada2fe7eead31-4e73604f86bmr3729726137.4.1748986086263; Tue, 03 Jun 2025
- 14:28:06 -0700 (PDT)
+	s=arc-20240116; t=1748986111; c=relaxed/simple;
+	bh=91X80LvGHfH90x/qxrnpS8bkmAvt6UUlA5rRQzLZg/I=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=fAGDMLJYjxnaHK1y80D5bTUufSvegHgv5Td4LNrFP708rglaNu1xDwJBy9xGsRbmiTSZoLBF/WHJGRD7/RgYk3yzeyUFqmN3txRVSrHAqqzSEkik+vRUFSKBWCwDMs02WtXgGuCGhOJB1TcevLWwR50FnB4uDOmPvIoHE7RQq8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=R3pPMiSf; arc=none smtp.client-ip=131.188.11.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
+	t=1748986107; bh=ARpytHsyfivjxGjflz99PobPaQ/Mtr9Wv+8PNmUUgKc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From:To:CC:
+	 Subject;
+	b=R3pPMiSfvWBr9q+phUTH/uIaiJTRngnHfV38FDKrEu0rWW+NROPwI97cQI7vvjF9b
+	 QlyUwWpcjrB479J15KVsC/l25vUlnmyiCTosRvJ2hJOtB7Ds9aJObDxXllxWOhaPh8
+	 YZre8UFpOFSwEEB9f0BZtu3V6yc+qQt878BdQqa2kxcqpCbIfrOkEDgXcvJd0cBB47
+	 QfCCl0tiF4jeF8x+TUt+UUU8xvyOgWNbL+Xc3T65ZjnzZWH5jnWlhreysMVud+aA/U
+	 vKr1XiZC/4YJUdN/IdteEihDFKFaeCRI48HciCVZ9uM7rWMkpiKMlLhVpI1pBrIE3j
+	 OAviOnKmghToA==
+Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-rz-2.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4bBkNB6ZfkzPkZc;
+	Tue,  3 Jun 2025 23:28:26 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at boeck4.rrze.uni-erlangen.de (RRZE)
+X-RRZE-Flag: Not-Spam
+X-RRZE-Submit-IP: 2001:9e8:3639:fe00:a21f:4ce4:8495:5578
+Received: from luis-tp.fritz.box (unknown [IPv6:2001:9e8:3639:fe00:a21f:4ce4:8495:5578])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: U2FsdGVkX18910nUSGoVfudKBySRew8N0fTZeQak0HM=)
+	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4bBkN73X7dzPkPR;
+	Tue,  3 Jun 2025 23:28:23 +0200 (CEST)
+From: Luis Gerhorst <luis.gerhorst@fau.de>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Puranjay Mohan <puranjay@kernel.org>,
+	Xu Kuohai <xukuohai@huaweicloud.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Hari Bathini <hbathini@linux.ibm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Naveen N Rao <naveen@kernel.org>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Luis Gerhorst <luis.gerhorst@fau.de>,
+	Henriette Herzog <henriette.herzog@rub.de>,
+	Saket Kumar Bhaskar <skb99@linux.ibm.com>,
+	Cupertino Miranda <cupertino.miranda@oracle.com>,
+	Jiayuan Chen <mrpre@163.com>,
+	Matan Shachnai <m.shachnai@gmail.com>,
+	Dimitar Kanaliev <dimitar.kanaliev@siteground.com>,
+	Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+	Daniel Xu <dxu@dxuuu.xyz>,
+	bpf@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-kselftest@vger.kernel.org
+Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Subject: [PATCH bpf-next v4 8/9] selftests/bpf: Add test for Spectre v1 mitigation
+Date: Tue,  3 Jun 2025 23:28:14 +0200
+Message-ID: <20250603212814.338867-1-luis.gerhorst@fau.de>
+X-Mailer: git-send-email 2.49.0
+In-Reply-To: <20250603205800.334980-1-luis.gerhorst@fau.de>
+References: <20250603205800.334980-1-luis.gerhorst@fau.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250521222725.3895192-1-blakejones@google.com>
- <20250521222725.3895192-3-blakejones@google.com> <aD9Xxhwqpm8BDeKe@google.com>
-In-Reply-To: <aD9Xxhwqpm8BDeKe@google.com>
-From: Blake Jones <blakejones@google.com>
-Date: Tue, 3 Jun 2025 14:27:53 -0700
-X-Gm-Features: AX0GCFvoOAekprdEsevG7NvEGepKfhZ3n_z3bWQsEz8WhnhItGs9NEkTscTn2Ng
-Message-ID: <CAP_z_Cj_8uTBGzaoFmi1f956dXi1qDnF4kqc49MSn0jDHYFfxg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] perf: collect BPF metadata from existing BPF programs
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	Chun-Tse Shao <ctshao@google.com>, Zhongqiu Han <quic_zhonhan@quicinc.com>, 
-	James Clark <james.clark@linaro.org>, Charlie Jenkins <charlie@rivosinc.com>, 
-	Andi Kleen <ak@linux.intel.com>, Dmitry Vyukov <dvyukov@google.com>, Leo Yan <leo.yan@arm.com>, 
-	Yujie Liu <yujie.liu@intel.com>, Graham Woodward <graham.woodward@arm.com>, 
-	Yicong Yang <yangyicong@hisilicon.com>, Ben Gainey <ben.gainey@arm.com>, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Namhyung,
+This is based on the gadget from the description of commit 9183671af6db
+("bpf: Fix leakage under speculation on mispredicted branches").
 
-On Tue, Jun 3, 2025 at 1:15=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
-rote:
->
-> On Wed, May 21, 2025 at 03:27:24PM -0700, Blake Jones wrote:
-> > Look for .rodata maps, find ones with 'bpf_metadata_' variables, extrac=
-t
-> > their values as strings, and create a new PERF_RECORD_BPF_METADATA
-> > synthetic event using that data. The code gets invoked from the existin=
-g
-> > routine perf_event__synthesize_one_bpf_prog().
->
-> It would be great if you can show an example how those metadata is
-> constructed and shared between BPF programs.
+Signed-off-by: Luis Gerhorst <luis.gerhorst@fau.de>
+Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+---
+ .../selftests/bpf/progs/verifier_unpriv.c     | 57 +++++++++++++++++++
+ 1 file changed, 57 insertions(+)
 
-I've added the following to my commit message:
+diff --git a/tools/testing/selftests/bpf/progs/verifier_unpriv.c b/tools/testing/selftests/bpf/progs/verifier_unpriv.c
+index c42c3839b30c..43236b93ebb5 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_unpriv.c
++++ b/tools/testing/selftests/bpf/progs/verifier_unpriv.c
+@@ -729,4 +729,61 @@ l0_%=:	r0 = 0;						\
+ "	::: __clobber_all);
+ }
+ 
++SEC("socket")
++__description("unpriv: Spectre v1 path-based type confusion of scalar as stack-ptr")
++__success __success_unpriv __retval(0)
++#ifdef SPEC_V1
++__xlated_unpriv("if r0 != 0x1 goto pc+2")
++/* This nospec prevents the exploit because it forces the mispredicted (not
++ * taken) `if r0 != 0x0 goto l0_%=` to resolve before using r6 as a pointer.
++ * This causes the CPU to realize that `r6 = r9` should have never executed. It
++ * ensures that r6 always contains a readable stack slot ptr when the insn after
++ * the nospec executes.
++ */
++__xlated_unpriv("nospec")
++__xlated_unpriv("r9 = *(u8 *)(r6 +0)")
++#endif
++__naked void unpriv_spec_v1_type_confusion(void)
++{
++	asm volatile ("					\
++	r1 = 0;						\
++	*(u64*)(r10 - 8) = r1;				\
++	r2 = r10;					\
++	r2 += -8;					\
++	r1 = %[map_hash_8b] ll;				\
++	call %[bpf_map_lookup_elem];			\
++	if r0 == 0 goto l2_%=;				\
++	/* r0: pointer to a map array entry */		\
++	r2 = r10;					\
++	r2 += -8;					\
++	r1 = %[map_hash_8b] ll;				\
++	/* r1, r2: prepared call args */		\
++	r6 = r10;					\
++	r6 += -8;					\
++	/* r6: pointer to readable stack slot */	\
++	r9 = 0xffffc900;				\
++	r9 <<= 32;					\
++	/* r9: scalar controlled by attacker */		\
++	r0 = *(u64 *)(r0 + 0); /* cache miss */		\
++	if r0 != 0x0 goto l0_%=;			\
++	r6 = r9;					\
++l0_%=:	if r0 != 0x1 goto l1_%=;			\
++	r9 = *(u8 *)(r6 + 0);				\
++l1_%=:  /* leak r9 */					\
++	r9 &= 1;					\
++	r9 <<= 9;					\
++	*(u64*)(r10 - 8) = r9;				\
++	call %[bpf_map_lookup_elem];			\
++	if r0 == 0 goto l2_%=;				\
++	/* leak secret into is_cached(map[0|512]): */	\
++	r0 = *(u64 *)(r0 + 0);				\
++l2_%=:							\
++	r0 = 0;						\
++	exit;						\
++"	:
++	: __imm(bpf_map_lookup_elem),
++	  __imm_addr(map_hash_8b)
++	: __clobber_all);
++}
++
+ char _license[] SEC("license") = "GPL";
+-- 
+2.49.0
 
-| For example, a BPF program with the following variables:
-|
-|     const char bpf_metadata_version[] SEC(".rodata") =3D "3.14159";
-|     int bpf_metadata_value[] SEC(".rodata") =3D 42;
-|
-| would generate a PERF_RECORD_BPF_METADATA record with:
-|
-|     .prog_name        =3D <BPF program name, e.g. "bpf_prog_a1b2c3_foo">
-|     .nr_entries       =3D 2
-|     .entries[0].key   =3D "version"
-|     .entries[0].value =3D "3.14159"
-|     .entries[1].key   =3D "value"
-|     .entries[1].value =3D "42"
-|
-| Each of the BPF programs and subprograms that share those variables would
-| get a distinct PERF_RECORD_BPF_METADATA record, with the ".prog_name" sho=
-wing
-| the name of each program or subprogram. The prog_name is deliberately the
-| same as the ".name" field in the corresponding PERF_RECORD_KSYMBOL record=
-.
-
-> IIUC the metadata is collected for each BPF program which may have
-> multiple subprograms.  Then this patch creates multiple PERF_RECORD_
-> BPF_METADATA for each subprogram, right?
->
-> Can it be shared using the BPF program ID?
-
-In theory, yes, it could be shared. But I want to be able to correlate them
-with the corresponding PERF_RECORD_KSYMBOL events, and KSYMBOL events for
-subprograms don't have the full-program ID, so I wouldn't be able to do tha=
-t.
-
-> > +     rodata =3D calloc(1, map_info.value_size);
->
-> You can use 'zalloc()' instead, in other places too.
-
-Fixed, thanks.
-
-> > +void bpf_metadata_free(struct bpf_metadata *metadata)
-> > +{
-> > +     if (metadata =3D=3D NULL)
-> > +             return;
-> > +     for (__u32 index =3D 0; index < metadata->nr_prog_names; index++)
-> > +             free(metadata->prog_names[index]);
-> > +     if (metadata->prog_names !=3D NULL)
-> > +             free(metadata->prog_names);
-> > +     if (metadata->event !=3D NULL)
-> > +             free(metadata->event);
->
-> No need to NULL change for free().
-
-I've removed the NULL checks.
-
-> > +static int synthesize_perf_record_bpf_metadata(
-> > [...]
-> > +     for (__u32 index =3D 0; index < metadata->nr_prog_names; index++)=
- {
-> > +             memcpy(event->bpf_metadata.prog_name,
-> > +                    metadata->prog_names[index], BPF_PROG_NAME_LEN);
->
-> Is it possible to call synthesize_bpf_prog_name() directly to the
-> event->bpf_metadata.prog_name instead of saving it metadata->prog_names?
-
-Not with the way the code is currently structured - we need the BTF data
-to call synthesize_bpf_prog_name(), and that's allocated and freed inside
-of bpf_metadata_create().
-
-Blake
 
