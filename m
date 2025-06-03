@@ -1,153 +1,198 @@
-Return-Path: <bpf+bounces-59502-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59503-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC408ACC701
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 14:49:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 822A4ACC785
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 15:18:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0CC3188DBAD
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 12:49:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27B687A4E20
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 13:17:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAC2322ACEF;
-	Tue,  3 Jun 2025 12:49:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B957230BD9;
+	Tue,  3 Jun 2025 13:18:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="GhiFs+Oa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I3j8CshA"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-42ab.mail.infomaniak.ch (smtp-42ab.mail.infomaniak.ch [84.16.66.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A14C219E0
-	for <bpf@vger.kernel.org>; Tue,  3 Jun 2025 12:49:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=84.16.66.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 215E213C8E8;
+	Tue,  3 Jun 2025 13:18:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748954955; cv=none; b=TltcjZE5fvDuhaw/ThZO8it+37PW3F3sAXr3P9WoUDWZ7kNlDLjPkOM7hiU2SbSAXxDbwjswUWMiuPxsD7G8K4osWz+TYrOiUXRdkWnCXuysXeJMOtJ6a+Qdg1j/EssVj/mTzqqeguO1nP177ggxmAp2oGX9igtjw+nikl0Fijo=
+	t=1748956687; cv=none; b=IwfRHAWqSxWK3iDBGfLPA2hK8oerHLi63Jye1nKYvFt88YQnzhsHASUbR4qVI05OayFMnQnUmq/Thca6CWdHqYGRc61/aG7PedvXfAPFDxMnfvVaHaO2Lgwqq+K4UnPPi2isIQZrEiwPfRpa+bZZGFP55suwo7uWQvW+waPsBXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748954955; c=relaxed/simple;
-	bh=YpSUlje0QFo8fAg0UbMHlFaUYLWtmOn9kosehVUWl2c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iuzNScUuCFzjQrgoaKRC9Fdmde3gu4P5ZyS3eEoCira1CTNL7snsEAlKe3PY0wTpekkW69V5kYZVrTZsorBJiEq4F16tvmyRez2Q08qPWrzgvdsp7l10G9BzD38wgDYEoh6BK3j7FBt4oi8Q7Ot1vzOUMGCal5ZGTE8ORTE6Ydg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=GhiFs+Oa; arc=none smtp.client-ip=84.16.66.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
-Received: from smtp-4-0001.mail.infomaniak.ch (unknown [IPv6:2001:1600:7:10::a6c])
-	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4bBVs24Wlqz19Nm;
-	Tue,  3 Jun 2025 14:49:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digikod.net;
-	s=20191114; t=1748954950;
-	bh=f3sEmdCXf265fZdW3agrYCmOKfWp1F1brT5D1vfWqXM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GhiFs+OagmKnjzrO37+j/bRCJRvL9X3nchSdSAL8QZU93u7utA+y7M8Amp3tayn7Y
-	 IO9csEQOJKBi0mYDUlEtitpv2pCrsfPbqVoQ3xYe9TAcL3iY//3waB8c/VPB78CrOt
-	 4joM5dCTU2faTdJvacgFSKLJK8cYRtNhLvtQiqA4=
-Received: from unknown by smtp-4-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4bBVs15hNzzDkc;
-	Tue,  3 Jun 2025 14:49:09 +0200 (CEST)
-Date: Tue, 3 Jun 2025 14:49:09 +0200
-From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-To: Jan Kara <jack@suse.cz>
-Cc: Song Liu <song@kernel.org>, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>, 
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	LSM List <linux-security-module@vger.kernel.org>, Kernel Team <kernel-team@meta.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eduard <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Christian Brauner <brauner@kernel.org>, KP Singh <kpsingh@kernel.org>, 
-	Matt Bobrowski <mattbobrowski@google.com>, Amir Goldstein <amir73il@gmail.com>, repnop@google.com, 
-	Jeff Layton <jlayton@kernel.org>, Josef Bacik <josef@toxicpanda.com>, 
-	=?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, Jann Horn <jannh@google.com>
-Subject: Re: [PATCH bpf-next 3/4] bpf: Introduce path iterator
-Message-ID: <20250603.be1ahteePh8z@digikod.net>
-References: <20250528222623.1373000-1-song@kernel.org>
- <20250528222623.1373000-4-song@kernel.org>
- <20250528223724.GE2023217@ZenIV>
- <yti2dilasy7b3tu6iin5pugkn6oevdswrwoy6gorudb7x2cqhh@nqb3gcyxg4by>
- <CAPhsuW4tg+bXU41fhAaS0n74d_a_KCFGvy_vkQOj7v4VLie2wg@mail.gmail.com>
- <CAADnVQ+UGsvfAM8-E8Ft3neFkz4+TjE=rPbP1sw1m5_4H9BPNg@mail.gmail.com>
- <CAPhsuW78L8WUkKz8iJ1whrZ2gLJR+7Kh59eFrSXvrxP0DwMGig@mail.gmail.com>
- <20250530.oh5pahH9Nui9@digikod.net>
- <vumjuw5ha6jtxtadsr5vwjtuneeqfg3vpydciczsn75qdg2ekv@464a4dxtxx27>
+	s=arc-20240116; t=1748956687; c=relaxed/simple;
+	bh=Xemxkc7CmkUAnRI0oTE4LFUjpXKr0LGpTSrxjrZCiIc=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KBc2aOhjIv3FVXjgMksKQ0JPsQ3/K/NKwThr4rPOxWSQ6tcG/Tpl+0D7G+hcrGiEqhPHxYE9XlZwPMmPfRoXZGcm+PhyvgD5c2QwoG2kDXyCREVDOwySPY/zs9UgwYJXIFglD67mHiYa8RD/LeHN8uzQbVfjQultU0VdrHsB3TQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I3j8CshA; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-450cf214200so51907945e9.1;
+        Tue, 03 Jun 2025 06:18:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748956684; x=1749561484; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=peWLhA4jAbByy6mLiR9VmFzFINS+YteyOYVUMCn+9PE=;
+        b=I3j8CshAfgHifQ7bS1EFDH3As/oaDyZ74LFMqa6BpRDKrOYhtuMvgNhkQrcEYXt3yO
+         z2/AKLl/ywqIY23PWpWT0oNeBRxF7XoNp9/VuPf9avhfjDfpzmJW1ifp+C9Hth7MybPf
+         zjmYfuJ/kaBWWJYb7fNHFYw6wxE3ByJ1ypE/IBYZ8N/vLKwZ75P17+4hz3I2qaZXMBuo
+         BZ7NaCQTyosg5/BBGGaIdfuGZyxKV0GIYkk5oa9BredWrWF3KRpGSEFeAILjXAGF+ouA
+         LRZI7WX1T4/IJGx4t8REaepPefygMf8pnsPUeCO30RYG7gKo/GysAUo0Mvd263ncbgIy
+         1QKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748956684; x=1749561484;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=peWLhA4jAbByy6mLiR9VmFzFINS+YteyOYVUMCn+9PE=;
+        b=eupBBK3+kt8TSG2zj5sgpDRnW2l4Sf3c3H6J8fXg3RCn85QiIVIE7rx/CyZ6o8XdIL
+         tMVjypnVSMSk1mQCvOUMkzFvJ4XpWYRU4M6B4RHEHDZjRItnd6nySwSDhhbS8ZFDqZCS
+         dZqITkW0cYyNWqbLPSA8nLLmtQNUVRoCCuyjDHyNum2LTMFSPizKieMnamawlpbAQjt7
+         3Xk4SYW+4De+70W8q5IQoIplxvm1YWkXhHezIo45pnIv0CRWaBx5DpjMQnPCXcnqMCH2
+         5RPgQ67X6cVAtGTRAtbNyNU/TkV7pDLr3Vl9VmJ9QEwmGYtsGeDfkamQGrTUZti4CyFG
+         QKgQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV3e5vIEsVHHj1A5CaiSIXgSc807/BP7wKvCDOjGOubIznFpXSG46HJAUuE4FuzeXq+1ynfQcsknTOSvbvR@vger.kernel.org, AJvYcCW3moPfVAQ2vlQsPMCUA9XNnncKyBgnY95TU5m6EirnJvc4CFKmSWVD/sTohSIkFg3i2vk=@vger.kernel.org, AJvYcCX5WP0c0VaEKiwGKMNSY5tg0vNM7miDTE1dUAMhBg9AXVdj69cSi54YpWRITdiB8447vJWnQ3zymwSixZ9kmTsN@vger.kernel.org
+X-Gm-Message-State: AOJu0YwoO7AepdIGvEmXlVw5E7eOqQXYdND6tVwgqfeseqNpmSbgJQoy
+	1Fuk7Tx4+7A/o00sw6V+p3i8zTwxBXKeqNntK0kyrHCf6krVxbBJhU/W
+X-Gm-Gg: ASbGncuzF2dA0bapx+4/1CKSheRovjWJ/2dYoDDkO5Qe95ZdOTj8dZXc03iXZyJ1CNY
+	mo2sDt4ENeiFSwGbePhS3izEtWVCfh3SEU2l89vxdixqXySIkIuQjv/pjTlbpOj7nkv9R6X0znL
+	XjfQX+U6oPnKSjS0WfFJYpwoLf0GJo63VdfTwZs87cYEJF397I/bl/D7fg8fSFLJNTexknW/AS5
+	OZyQlOw4JbXtwGmi3Pg73wpAgC4VhI12wMqHOajCchu0g2u5oBtamSydLu4ZVGnXiBt4d5CfjFS
+	BrZ/e8kxZ5btCEgBgsmJMJaRzwd/2vCld4sFG78=
+X-Google-Smtp-Source: AGHT+IEOLU+ZNQccBdDuYLKmcv1FH7y9QFTBdWAdtQv9NUcEFH1//GEL/QfmTGkcoDfbzeqbxby5XQ==
+X-Received: by 2002:a05:600c:314a:b0:43d:1b74:e89a with SMTP id 5b1f17b1804b1-450d880c950mr155691445e9.9.1748956684034;
+        Tue, 03 Jun 2025 06:18:04 -0700 (PDT)
+Received: from krava ([176.74.159.170])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a4efe5b887sm18720835f8f.18.2025.06.03.06.18.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Jun 2025 06:18:03 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 3 Jun 2025 15:18:01 +0200
+To: Blake Jones <blakejones@google.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Ihor Solodrai <ihor.solodrai@linux.dev>,
+	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] libbpf: add support for printing BTF character
+ arrays as strings
+Message-ID: <aD72CVq-kWr3G4S3@krava>
+References: <20250603044813.88265-1-blakejones@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <vumjuw5ha6jtxtadsr5vwjtuneeqfg3vpydciczsn75qdg2ekv@464a4dxtxx27>
-X-Infomaniak-Routing: alpha
+In-Reply-To: <20250603044813.88265-1-blakejones@google.com>
 
-On Tue, Jun 03, 2025 at 11:46:22AM +0200, Jan Kara wrote:
-> On Fri 30-05-25 16:20:39, Mickaël Salaün wrote:
-> > On Thu, May 29, 2025 at 10:05:59AM -0700, Song Liu wrote:
-> > > On Thu, May 29, 2025 at 9:57 AM Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
-> > > [...]
-> > > > >
-> > > > > How about we describe this as:
-> > > > >
-> > > > > Introduce a path iterator, which safely (no crash) walks a struct path.
-> > > > > Without malicious parallel modifications, the walk is guaranteed to
-> > > > > terminate. The sequence of dentries maybe surprising in presence
-> > > > > of parallel directory or mount tree modifications and the iteration may
-> > > > > not ever finish in face of parallel malicious directory tree manipulations.
-> > > >
-> > > > Hold on. If it's really the case then is the landlock susceptible
-> > > > to this type of attack already ?
-> > > > landlock may infinitely loop in the kernel ?
-> > > 
-> > > I think this only happens if the attacker can modify the mount or
-> > > directory tree as fast as the walk, which is probably impossible
-> > > in reality.
-> > 
-> > Yes, so this is not an infinite loop but an infinite race between the
-> > kernel and a very fast malicious user space process with an infinite
-> > number of available nested writable directories, that would also require
-> > a filesystem (and a kernel) supporting infinite pathname length.
-> 
-> Well, you definitely don't need infinite pathname length. Example:
-> 
-> Have a dir hierarchy like:
-> 
->   A
->  / \
-> B   C
-> |
-> D
-> 
-> Start iterating from A/B/D, you climb up to A/B. In parallel atacker does:
-> 
-> mv A/B/ A/C/; mkdir A/B
-> 
-> Now by following parent you get to A/C. In parallel attaker does:
-> 
-> mv A/C/ A/B/; mkdir A/C
-> 
-> And now you are essentially where you've started so this can repeat
-> forever.
+On Mon, Jun 02, 2025 at 09:48:12PM -0700, Blake Jones wrote:
 
-Yes, this is the scenario I had in mind talking about "infinite race"
-(instead of infinite loop).  For this to work it will require the
-filesystem to support an infinite number of nested directories, but I'm
-not sure which FS could be eligible.
+SNIP
 
-Anyway, what would would be the threat model for this infinite race?
+> diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+> index 460c3e57fadb..336a6646e0fa 100644
+> --- a/tools/lib/bpf/btf_dump.c
+> +++ b/tools/lib/bpf/btf_dump.c
+> @@ -68,6 +68,7 @@ struct btf_dump_data {
+>  	bool compact;
+>  	bool skip_names;
+>  	bool emit_zeroes;
+> +	bool emit_strings;
+>  	__u8 indent_lvl;	/* base indent level */
+>  	char indent_str[BTF_DATA_INDENT_STR_LEN];
+>  	/* below are used during iteration */
+> @@ -2028,6 +2029,43 @@ static int btf_dump_var_data(struct btf_dump *d,
+>  	return btf_dump_dump_type_data(d, NULL, t, type_id, data, 0, 0);
+>  }
+>  
+> +static int btf_dump_string_data(struct btf_dump *d,
+> +				const struct btf_type *t,
+> +				__u32 id,
+> +				const void *data)
+> +{
+> +	const struct btf_array *array = btf_array(t);
+> +	__u32 i;
+> +
+> +	btf_dump_data_pfx(d);
+> +	btf_dump_printf(d, "\"");
+> +
+> +	for (i = 0; i < array->nelems; i++, data++) {
+> +		char c;
+> +
+> +		if (data >= d->typed_dump->data_end)
+> +			return -E2BIG;
 
-> 
-> As others wrote this particular timing might be hard enough to hit for it
-> to not be a practical attack but I would not bet much on somebody not being
-> able to invent some variant that works, in particular with BPF iterator.
+curious, is this just string array without null terminating byte?
+should we just print " and return 0 instead of E2BIG error ?
 
-There might exist corner cases that could be an issue but would the
-impact be different than with other kinds of path walk?
+thanks,
+jirka
 
-What could we do to avoid or limit such issue?
 
-> 
-> 								Honza
+> +
+> +		c = *(char *)data;
+> +		if (c == '\0') {
+> +			/*
+> +			 * When printing character arrays as strings, NUL bytes
+> +			 * are always treated as string terminators; they are
+> +			 * never printed.
+> +			 */
+> +			break;
+> +		}
+> +		if (isprint(c))
+> +			btf_dump_printf(d, "%c", c);
+> +		else
+> +			btf_dump_printf(d, "\\x%02x", *(__u8 *)data);
+> +	}
+> +
+> +	btf_dump_printf(d, "\"");
+> +
+> +	return 0;
+> +}
+> +
+>  static int btf_dump_array_data(struct btf_dump *d,
+>  			       const struct btf_type *t,
+>  			       __u32 id,
+> @@ -2055,8 +2093,11 @@ static int btf_dump_array_data(struct btf_dump *d,
+>  		 * char arrays, so if size is 1 and element is
+>  		 * printable as a char, we'll do that.
+>  		 */
+> -		if (elem_size == 1)
+> +		if (elem_size == 1) {
+> +			if (d->typed_dump->emit_strings)
+> +				return btf_dump_string_data(d, t, id, data);
+>  			d->typed_dump->is_array_char = true;
+> +		}
+>  	}
+>  
+>  	/* note that we increment depth before calling btf_dump_print() below;
+> @@ -2544,6 +2585,7 @@ int btf_dump__dump_type_data(struct btf_dump *d, __u32 id,
+>  	d->typed_dump->compact = OPTS_GET(opts, compact, false);
+>  	d->typed_dump->skip_names = OPTS_GET(opts, skip_names, false);
+>  	d->typed_dump->emit_zeroes = OPTS_GET(opts, emit_zeroes, false);
+> +	d->typed_dump->emit_strings = OPTS_GET(opts, emit_strings, false);
+>  
+>  	ret = btf_dump_dump_type_data(d, NULL, t, id, data, 0, 0);
+>  
 > -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+> 2.49.0.1204.g71687c7c1d-goog
+> 
 
