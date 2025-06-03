@@ -1,135 +1,157 @@
-Return-Path: <bpf+bounces-59530-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59531-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52CE1ACCCD3
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 20:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 70BAEACCD32
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 20:39:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 068493A32DA
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 18:23:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24BD43A6C41
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 18:39:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08DCD288C0E;
-	Tue,  3 Jun 2025 18:24:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8B8E288C34;
+	Tue,  3 Jun 2025 18:39:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dVOpRlVH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aewCuvOi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45])
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B4F71D63DD
-	for <bpf@vger.kernel.org>; Tue,  3 Jun 2025 18:24:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7AB31DDC1A;
+	Tue,  3 Jun 2025 18:39:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748975042; cv=none; b=MCwDUk4Ue3I0hy/Iyb+IQr3WY0+jNqu6dWyPrXWaSXWjUNzhNSYTNEA6SS283iUDwqW1UEHuoFqP88pK+fbEJTws6PW2JvzV/WQw7aEGi4xZuCKmvhttmitU2keHByN2jwlTHTQsHVsyl4PPRQmALEe0UaSZJPMW7KHC9cQxKkQ=
+	t=1748975981; cv=none; b=niXkt6+Amy4TkDuFs8ub89Kxmw/oeyThdDLP9Z5Z3bx0YWAWZPXfmS77bRO2GDk2xErfHBY1k5+Tzu6DECZKY0N123lj4BCQzg9hk6TUDuUHQYCKAnHTIJ8vsoF8iEsEzuFxpVH9iOIrYCB+UUNvB2PwYIUUPMy8hGPe3tnncmE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748975042; c=relaxed/simple;
-	bh=eiutlgQbbFswcPoUKxtmnu9MmBbg4ONzk6H4t4P4Txs=;
+	s=arc-20240116; t=1748975981; c=relaxed/simple;
+	bh=1pDd+2Jwqn3pZtW4zhN7M2Lvav/pNQJvPtvah0XyeiE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jebtoqxQRIB3fnq1sL61stiWoXHWdwNc7w0islugsXLZvrDTa1GYlpPQdim7fEklC/i9LMJTuI1VyZfWRRPmeWSrYtOrET3IBb0i0OYNNezeiWB7+VNZ4lZF8BnASWZzKikRDGO68EtEN+CXO8ihkLEbEcMVQcGYz5HE6h7LQv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dVOpRlVH; arc=none smtp.client-ip=209.85.222.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f45.google.com with SMTP id a1e0cc1a2514c-87de8a14cd7so1619967241.1
-        for <bpf@vger.kernel.org>; Tue, 03 Jun 2025 11:24:00 -0700 (PDT)
+	 To:Cc:Content-Type; b=NGexF4wu22ihL1CmAFvJGcWKmw0OJzKPWP7euVNbaO/NoB0d4dR48ksBgaAr3g7QzYkZewLouFedkta6ySQ7UY0tUqTUA6BTnQRWwSBzAcyQd6P7seIEls2d0178tBl62d+h04KQYdStBwrn7C6uzs657SzDhAKpl06e1SoZzR8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aewCuvOi; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-3122a63201bso4609001a91.0;
+        Tue, 03 Jun 2025 11:39:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1748975040; x=1749579840; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1748975979; x=1749580779; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=eiutlgQbbFswcPoUKxtmnu9MmBbg4ONzk6H4t4P4Txs=;
-        b=dVOpRlVHAcBXHpJQhH4vcXcBNz/Ol0E20S1mx2ADnDuicz5BYNsak535bHcfiUILTZ
-         TozmzIR1z9aQYODGbJFlBuervl8Pzid/5R6W1DgQcxFgwOinOVXQgt/0/1w6ZSQQ+ful
-         r5h0rB0lAX2nVuhtosyRRiee6ocD7tOSdIgDXNeVkvmCaS/pk4ZYUpTXwRfUwMLJioxt
-         UtCa4K357gfvhwoTARf2BHM3fBrvPig2HIn9pVIM3yjrP/kO3PACF+I857lGwVylPySc
-         PxVEPlFNZLpeAbCsgQzQiWK5F5u9D0YTINMaD4lfB+x8O+iTgRAqvG4BTrfKIWsg3J3Q
-         sglg==
+        bh=fbscpJnTvqrynsyDif3HRAdd1lUPKj4mnJ1Hd5BJ/98=;
+        b=aewCuvOi2lI5CnuPtmkO7qRBhPcHaGtZgTfK7VQ6yiG+93Q1GGupCwyHxgDgbfujgI
+         JkGlmYQslHrkx8njdWXsrFZ/tpdAnEqLiVP6eOvc/qpwQxr2QRowjMMHyZfF8tUAyex6
+         9GS4oblDI7RZWUbYB6jG5Lp0oIxuASZnTWUfWkR8CNBssRIa2rb2e+Y64AUcN8d21NNf
+         JW+kHMCt7KdmNvlX21sbAYM7j9GKX4YRmtSfLw924TQDKXkiVH4Yimrofef6JqPMHWA0
+         Ehgb0lEkl/FV/ICwUH3GXW4FhMmzdtRoOW3QZxVB9rRO/Qgckso3dN9sME0ow+9RgOA8
+         1HkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748975040; x=1749579840;
+        d=1e100.net; s=20230601; t=1748975979; x=1749580779;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=eiutlgQbbFswcPoUKxtmnu9MmBbg4ONzk6H4t4P4Txs=;
-        b=IWhkgaV/WPwDiHDRYUhAABZUGfZuiOZHqYzE4CLN/mKUJMmlHdeEycFvHEkdcRSQS3
-         8sxQMOkjdPWu1H7+AXOpvx+LR+KDxBb9jKDZhrUBJ9XAbd1bs9wI3dhWGemOQwSgNQEI
-         qU/xUsNA1KixGF0FKF3QxzwUEg/dhG/3BvOD9FIEfS5B+o8uOtxm8y2RmdXnVYe+Ldpb
-         CQaEZ00Wixvlv8PuzBdOC/Us354+EPSrG5YvFX0HvSjxmhp/36WPsXhTpgaEplnexduo
-         OtQDX5SFhuQYC+yYE12tqv7GAVKskKq9WvrKjx18UeyauRKDvHn34gYO9EIZc7Eaur2b
-         WE+A==
-X-Forwarded-Encrypted: i=1; AJvYcCUDGv2P5wDK45H50RSvGCBohpxd3SDKEjJLSD8RbMn1HFVPuXdD1SMVF5le1r7OuDWQ3Ao=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzbOujEO9YDvLAqc4uwfTxIY3s8BV5qU80ogLS0bQ6GRS2YeUmW
-	YPLYY6a52zpfnLA/mLd0586fFObVs4viSbeMdNr3M4Vbza6U5nc/dFVCrl6VKCSdczUEv/hdmGH
-	qhKk9PzNlzeDyHD/vOMN1cigb+vDvFN5JoybvuOnJ
-X-Gm-Gg: ASbGnctNY0sc798Ogqy04uoAAaToz0DIPSwhazxFDPBdImv3u1mTgBh+CwX7bAeC8x7
-	/E2M8nL5Nw7ZjHLKTUzWcCWrGl45apKc4VNEaPr0RlB0mmmKgaSU9BVql377ZhH1BfbKfkXCOsd
-	Spvd7v5mDFtmcHnZbaMPJp5YpaD6CgBNyz6m5TbgoKoL+51vmDEW34043A25TQwjSsRxCIyY8dH
-	bjLy2UWrUA=
-X-Google-Smtp-Source: AGHT+IGu3iGfbqqsG3F9IVzijCh7yIShG1fCIQdA9Dgix1KcAW3sFId+iZ1kuCoUZV8YX2AkrDLGqQebTSC/08SGhzM=
-X-Received: by 2002:a05:6102:ccf:b0:4c5:1c2e:79f5 with SMTP id
- ada2fe7eead31-4e701b94cecmr9613373137.16.1748975039606; Tue, 03 Jun 2025
- 11:23:59 -0700 (PDT)
+        bh=fbscpJnTvqrynsyDif3HRAdd1lUPKj4mnJ1Hd5BJ/98=;
+        b=OElGvWc/ClJuYz/9b0yYlra/D8buljdK0h7aScaWRx843hzhIJJSBRPBFonMV9bw8P
+         rGXFODUCmxJR2nXobQQ0u/NDLeTPqpNc1lZLAx4A1ojRM2IgdiZl7nPARj/nIykLG/Gf
+         DFMIAELvtha85VTaOf3J5xfPVFHC+oTdiy5+L2Ybcnu9ICW/QHPQx0iH5m3+VMnKa/ZY
+         pv7+Img9Zd2wfF/vzsMOlusASCdz5SeA9ZqHpKHaCCA7wmOEMyeWQ06uTLYZERzVMyrL
+         HfrIcnA9D3HTTMWv0y9QgiWvqVwEyZ/HSjHiPXzqUeBMt4L1WsYr0N1Sm82K1G7GB+QC
+         eF2w==
+X-Forwarded-Encrypted: i=1; AJvYcCVYfW2cwvJuhJPlfWZIjkmk1wypG7Hog36/BG4cprHxO9HGH6VlMBXUTpAv/NuB1rTopx883knARjKBth54@vger.kernel.org, AJvYcCWD3KkVngX6DRMQkK8p41gaGF5ekoTddiBcGc0zBdXaZND9YkC7GLaWLun+XUZkjl2hoWo=@vger.kernel.org, AJvYcCXA505c0f0lPQK9ciQIXwqDc5ZAr4avlgQw+h7vE/c508gkdGCJcCYtVFGkTPlsFVtnfT+7gQO4ndLeN4OGKJ3U@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx6KNpPzyCPNF0YLYFmRxHwD3LNuvD+3D51WEVxvkHYSl7o1hem
+	kW//K3rS4Bb/ybN9mwi16XjMJnTQncKEdw4Y3N44OPilF9+ttmBCvrwIW7/o1bVN3Su2eaitQ9g
+	IhuLDcEn0tpxV7dKvABWbBJBwefGzU8M=
+X-Gm-Gg: ASbGncvDffC8fFIdzCrT4pXGaCZZbwKE0c01Hw0efzY+pQgYDlm7/kFa79mKRu35d//
+	DB6yBa0KiIDz63Gb8Ii2Z6qGY2qb+octE6ounkP+55YzUsIJyytX8PogU+3hD6yHGfp4yy8rwaJ
+	PB0vNMLADc9d9WF1qEU4qPh1AfFTkmPe821FczI34ld2zt3Qsv
+X-Google-Smtp-Source: AGHT+IGLOfkdeSZ7gvCfF0dQ5DpBU03EAzzXjG62NJYLnVqn+a4t6jrkAB+VSyk1S1Uk0dlHG/zQapRdxg6HlbYge30=
+X-Received: by 2002:a17:90a:ec90:b0:312:1147:7b16 with SMTP id
+ 98e67ed59e1d1-3130cdfbfe8mr154607a91.35.1748975978895; Tue, 03 Jun 2025
+ 11:39:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250521222725.3895192-1-blakejones@google.com>
- <20250521222725.3895192-2-blakejones@google.com> <aC9iF4_eASPkPxXd@x1>
- <CAP_z_Cg_vH1+BAm87U4gYQ0hDRGtHkkYb2DHtTRSd_QNvg3ZLQ@mail.gmail.com>
- <CAP_z_ChErhmooT5rhyXH8L-Ltkz3xdJ7PG20UKDpn9usMUgqTA@mail.gmail.com>
- <aDntjJcJsrQWfPkB@google.com> <CAP_z_CjLtMq_FvmijnFUQbD5UUw=T9jP_pHWCw5fS=38dgSh9g@mail.gmail.com>
-In-Reply-To: <CAP_z_CjLtMq_FvmijnFUQbD5UUw=T9jP_pHWCw5fS=38dgSh9g@mail.gmail.com>
-From: Blake Jones <blakejones@google.com>
-Date: Tue, 3 Jun 2025 11:23:48 -0700
-X-Gm-Features: AX0GCFszGyqeZR0Dklu6vwdsbGkQkC3kk6Dhkl4_uVAGYzvPlnmcKX43Rvyctf4
-Message-ID: <CAP_z_Ch8hKvGvot7140ShuCZOxkb+7M7Wpa4AY-D-Arp9P5ffg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] perf: add support for printing BTF character arrays
- as strings
-To: Namhyung Kim <namhyung@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+References: <20250603044813.88265-1-blakejones@google.com> <aD72CVq-kWr3G4S3@krava>
+ <CAP_z_CgAAAaAPGfYY2DErT_V2-E2e8E+fDHcGPVSaOq+_D9EeQ@mail.gmail.com>
+In-Reply-To: <CAP_z_CgAAAaAPGfYY2DErT_V2-E2e8E+fDHcGPVSaOq+_D9EeQ@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 3 Jun 2025 11:39:25 -0700
+X-Gm-Features: AX0GCFussGMaKN8PIz9-WJiVVOA62ved-t6SGZA4O5dcf_-ER8thRVLdopRLs_s
+Message-ID: <CAEf4BzbYrjOwzhvSn0M5sPtOJu5dXuPDhrWPkkLvLaL3+R20=A@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] libbpf: add support for printing BTF character
+ arrays as strings
+To: Blake Jones <blakejones@google.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
 	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
 	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	Chun-Tse Shao <ctshao@google.com>, Zhongqiu Han <quic_zhonhan@quicinc.com>, 
-	James Clark <james.clark@linaro.org>, Charlie Jenkins <charlie@rivosinc.com>, 
-	Andi Kleen <ak@linux.intel.com>, Dmitry Vyukov <dvyukov@google.com>, Leo Yan <leo.yan@arm.com>, 
-	Yujie Liu <yujie.liu@intel.com>, Graham Woodward <graham.woodward@arm.com>, 
-	Yicong Yang <yangyicong@hisilicon.com>, Ben Gainey <ben.gainey@arm.com>, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Ihor Solodrai <ihor.solodrai@linux.dev>, Namhyung Kim <namhyung@kernel.org>, 
+	Ian Rogers <irogers@google.com>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-The libbpf patch set is under discussion right now. Once it converges,
-is there a way to include those patches in the perf tree without
-waiting for them to go up to the main tree and then back down? Could I
-resend them here, or include them as the first part of my next patch
-series?
+On Tue, Jun 3, 2025 at 8:39=E2=80=AFAM Blake Jones <blakejones@google.com> =
+wrote:
+>
+> On Tue, Jun 3, 2025 at 6:18=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wro=
+te:
+> > > +static int btf_dump_string_data(struct btf_dump *d,
+> > > +                             const struct btf_type *t,
+> > > +                             __u32 id,
+> > > +                             const void *data)
+> > > +{
+> > > +     const struct btf_array *array =3D btf_array(t);
+> > > +     __u32 i;
+> > > +
+> > > +     btf_dump_data_pfx(d);
+> > > +     btf_dump_printf(d, "\"");
+> > > +
+> > > +     for (i =3D 0; i < array->nelems; i++, data++) {
+> > > +             char c;
+> > > +
+> > > +             if (data >=3D d->typed_dump->data_end)
+> > > +                     return -E2BIG;
+> >
+> > curious, is this just string array without null terminating byte?
+> > should we just print " and return 0 instead of E2BIG error ?
+>
+> Good question. That E2BIG error would happen, for example, if we tried
+> to print the array "{ 'a', 'b', 'c' }" when the type was "char[4]".
 
-Thanks in advance for the guidance.
+Exactly, data is truncated, we have to return E2BIG. But I think that
+is checked earlier with btf_dump_type_data_check_overflow(), so we
+probably don't need to do this here?
 
-Blake
+Please add tests with truncated data so we know for sure?
 
-On Sat, May 31, 2025 at 12:26=E2=80=AFAM Blake Jones <blakejones@google.com=
-> wrote:
+> I'd say your proposed behavior would be consistent with the semantic of
+> ".emit_strings should display strings in an intuitively useful way",
+
+It still should follow the overall contract, so I think E2BIG is
+justified for truncated data.
+
+But there is also a bit of a quirk. If a string is not
+zero-terminated, we actually don't distinguish it in any way. Would it
+make sense to detect this and still print it as an array of individual
+characters? It's clearly not a valid C string at that point, so
+emit_strings doesn't have to apply. WDYT? The implementation would be
+simple -- find zero in an array, if found - emit everything up to that
+point as string, if not - emit character array?
+
+> and I'd be in favor of doing that (replacing "return -E2BIG" with "break"=
+).
+> If others agree (specifically Andrii, who had comments about the semantic=
+s
+> yesterday), I'll make that change.
 >
-> Hi Namhyung,
->
-> On Fri, May 30, 2025 at 10:40=E2=80=AFAM Namhyung Kim <namhyung@kernel.or=
-g> wrote:
-> > I think it's better to go to the bpf tree although it'd take longer to
-> > get your perf patches.
->
-> Thanks for the suggestion. I've sent this patch to the bpf tree, and I'll
-> resend the rest of this series once that change makes its way to this tre=
-e.
->
+
+
+
 > Blake
 
