@@ -1,145 +1,140 @@
-Return-Path: <bpf+bounces-59509-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59510-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1B08ACC9D8
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 17:09:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B668FACC9D7
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 17:09:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FEAB16B11D
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 15:08:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71BD718973EA
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 15:08:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7C6323E33F;
-	Tue,  3 Jun 2025 15:07:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CC6F23C510;
+	Tue,  3 Jun 2025 15:07:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YbTk7AFu"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WnbNpVT1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D594123BCF7;
-	Tue,  3 Jun 2025 15:07:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 989F923C506
+	for <bpf@vger.kernel.org>; Tue,  3 Jun 2025 15:07:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748963233; cv=none; b=h7YloyBZJ99KDTdSMvVWHehCCQtkrsLXB2VQ1lwhbX8ETPcNO97keHfmEV9e4W4IPOxP2ry2tsuRk1F8O1mRnRTZBEIlvRGyJkOuyx9um0GRChTqKct5UGryMPmORF0hyKTSYJ3lO53EsyhCHirRb3JajETsDhB/DZ93g+89XgM=
+	t=1748963242; cv=none; b=oqFp1p0D8pxdLZXZ317b7AcmWjZ3Uc4iOBGGhzNm7O2Jf8RLsHpTPdvPJyc5/HrX8Q8CVU6ITjXM5CerSfKCm7SVH0G0bTq/MYcaWeOxclAfThSEUOlXQJF2cht5adj4UDAD2FevmPx9X1YQ/2AELdAuayM1TUkkNHeW0+nR8NQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748963233; c=relaxed/simple;
-	bh=8V2kmbUZiu9hSlXFWJGJ4smleoQNWTcBNXYPPBlHjmY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JNm1UerunCfxN/9Fe2PeRI2meKn1gikJzTZB/FmYgZZEV8/SNHZ5tPQP0omML/DFZR1qyHFDzEPVPDGZtyrMmoENFb8ip2Vq5ceHGq0GF5ms5iQ6XWmpFpEqlxWrQrIjGSvEBIEo1KBJKgzG1J/oQ7mGXhkxofvyjtY5HvXMmGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YbTk7AFu; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-747fba9f962so951584b3a.0;
-        Tue, 03 Jun 2025 08:07:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748963229; x=1749568029; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=rHRcx0Q2kd7s5w9xmY/qLmUUkyxdFzsoRB5ggIvT+6M=;
-        b=YbTk7AFu9Ekm9Aod/0bD39/25yQrjNj68yTj5shjJBHZee2LDeefp53mdyKrc04DT1
-         LUwEhkS054F2vXJY0zPyyiPGvKoAc8PQ7ubhRcTdWHnyAEEnul/ouLt2/cOmtLB3oSZq
-         VI8tQZDoTUqlP0MBjhL4tQoZXIkEM2MQRATBX7wfs81UlMylf3PAs2wcRJeYX16qZIhV
-         DGpy+kBhcOJu06+mcveYTSS/k8W7pUtKrVVa3McyCo0v7jGsKrNhyN6dJZ9SicqrVf8H
-         6jvcvs7gmd4QKZpvptxsX5PjT2AB+zEHQMuxbVi5tBk8SDFy40Zosx8tx3URVy3uz0Ik
-         L81A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748963229; x=1749568029;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rHRcx0Q2kd7s5w9xmY/qLmUUkyxdFzsoRB5ggIvT+6M=;
-        b=isi4MSGk0JHX7M+Aslx3t2I4eBkP2Imv7SpG/V2Omwh5i6jNoAeAGKCZiROPLjgOZy
-         F1CvDKGiqjg/knc8RC5Naof4VdceaV7UnHXpDlq6yaAGSkQ9pW/oENr1Y5uXpnX/MUwt
-         eyfgv7iWSY3jt93hNp+kh+pO41HP7RpsMLlQWKhLTglqHdZbQOyPjR/jJYbbOoqPiYE9
-         /qBX0/59kEnv09rrQzN4yzMsB8zXGJiwy0ursl9xJrrA2Vlz6BsEQnT9oImnLIT2eWri
-         eQyBT26eZ6nI3wx71dgp/Fg9yvunDuU1lPc3oDLOa1B4ql1dzfsX7IplLWxa8dYR0R2j
-         rUxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU+LIeY78Y/3ALe9UodHe0gy5AZiVW1sOB/XQd3q4Fz5Y1OnpmOgsxZbxn5dhUBGZHFsmGVmr0jaTNTcnbg@vger.kernel.org, AJvYcCUEl/SkggVTTSGFtlyyGnrgLiFdB6xIbGuZGr2YfRhqwuhBH8/W7b9i0DI8c07Xi189dyI=@vger.kernel.org, AJvYcCUVUnlgmdAJneRoUcTK314lgNe7RDxrEUg3PEkV4i7LqA5/HC7BfdWJjfBa9aG9QeD7aLoF+g32@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy7XBTiXBv4zz5GyBVAa0b3QnMrTg/5LCp6H+jubgIhd64JUozK
-	tnuZhZGjy7k+wFXuOj0hL/C4HPqLKqtcYFpN9LJS94LSSwBZUpltTwMhaCLjSg==
-X-Gm-Gg: ASbGncvXo/7RXftK2Q+vNEPJrsZYfZkahLIZJ71bhSTkSQMBLR0Yps+kbGHQKQWC4On
-	Ry0PYyzxwcPgD1j6DL3E6kjddnfPgmoGM9gUCwY4RQvWsVI0baNmqzfDQL5PlyN60RsjRIObVlp
-	bPpM6czUE3jyxEyyAlxRwf1cRj+bvyHnn1EIqYJo+tTGc3UIkYb6qlt5hdhjvUqBkq4rmZMHWj0
-	Pf6bM/Z10uq1qh5AxxpISDOyGGlT4/F4rT4Vt7kFngAa2Y/t7gIq70TT2EnuDHGGFKWE78EShDD
-	qGA+cT+LGVIofN9naxjJB6w1NeXdQKAHAxzTuP5iF93zT5iG9htyHx1mjyE8imTa0anQeB41A1R
-	rTw==
-X-Google-Smtp-Source: AGHT+IF0pZpF9yVqhFdo6KrG71N2ZNsh9D4aeXFDJnmId/+aHoYpiDUuxam3stwW5F7pvrA6H0vAzA==
-X-Received: by 2002:a05:6a00:194a:b0:746:2ae9:fc49 with SMTP id d2e1a72fcca58-747fe29e165mr3581505b3a.9.1748963229373;
-        Tue, 03 Jun 2025 08:07:09 -0700 (PDT)
-Received: from minh.192.168.1.1 ([2001:ee0:4f0e:fb30:c672:ef11:a97b:5717])
-        by smtp.googlemail.com with ESMTPSA id d2e1a72fcca58-747afeab0d0sm9461782b3a.44.2025.06.03.08.07.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Jun 2025 08:07:08 -0700 (PDT)
-From: Bui Quang Minh <minhquangbui99@gmail.com>
-To: netdev@vger.kernel.org
-Cc: "Michael S. Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	=?UTF-8?q?Eugenio=20P=C3=A9rez?= <eperezma@redhat.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	virtualization@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Bui Quang Minh <minhquangbui99@gmail.com>,
-	stable@vger.kernel.org
-Subject: [PATCH net] virtio-net: drop the multi-buffer XDP packet in zerocopy
-Date: Tue,  3 Jun 2025 22:06:13 +0700
-Message-ID: <20250603150613.83802-1-minhquangbui99@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1748963242; c=relaxed/simple;
+	bh=RRUIgBZA7/RZuCTepb8TfhL+tkUhWcimMhe1FoMS5Uk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YQSGSNckruFvudaLTJRxn9UT8JG/XN0C8KKtsMRGeN1revOgD+heWRSW5BNN1ckSho9ZR3c6FLVv+h4dLwMG6Ek8GaLW8/RceoFKFse0ECswzeRDJt3JhNGKbZQByv8Q1+lkI+2WzzUfqvROt9DGa3WDTzda5KTBi+0+zoGbsuE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WnbNpVT1; arc=none smtp.client-ip=91.218.175.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <029e657a-cbf5-4db1-9ddb-5fbf75ea8f4e@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1748963236;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=H/S8RT0q+1oRhcL15WhoKhfpGElrxWknt11mPVDpvpM=;
+	b=WnbNpVT1Sydsz6sSCFK8n9wJMC4R0fge4PL9E1PGhGFHbo/rMlIy11Aj7TyISgwm6Bifm8
+	6HfqOTUd38BaDNZ8nOWjK3JFU5H6N0XNp7ci9md+59/Kc6QopugCH5ZBZ0fF9XxP2gp98l
+	c+e4s6HA+Ntv9pGntr2IWEKllpTv0Is=
+Date: Tue, 3 Jun 2025 23:07:03 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next v2 1/3] bpf: Add cookie to raw_tp bpf_link_info
+To: Yonghong Song <yonghong.song@linux.dev>, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, john.fastabend@gmail.com,
+ kpsingh@kernel.org, sdf@fomichev.me, qmo@kernel.org, jolsa@kernel.org
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250603022610.3005963-1-chen.dylane@linux.dev>
+ <48e85d82-e5c7-463a-aef3-f1ecbe863524@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Tao Chen <chen.dylane@linux.dev>
+In-Reply-To: <48e85d82-e5c7-463a-aef3-f1ecbe863524@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-In virtio-net, we have not yet supported multi-buffer XDP packet in
-zerocopy mode when there is a binding XDP program. However, in that
-case, when receiving multi-buffer XDP packet, we skip the XDP program
-and return XDP_PASS. As a result, the packet is passed to normal network
-stack which is an incorrect behavior. This commit instead returns
-XDP_DROP in that case.
+在 2025/6/3 22:52, Yonghong Song 写道:
+> 
+> 
+> On 6/2/25 7:26 PM, Tao Chen wrote:
+>> After commit 68ca5d4eebb8 ("bpf: support BPF cookie in raw tracepoint
+>> (raw_tp, tp_btf) programs"), we can show the cookie in bpf_link_info
+>> like kprobe etc.
+>>
+>> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+>> ---
+>>   include/uapi/linux/bpf.h       | 2 ++
+>>   kernel/bpf/syscall.c           | 1 +
+>>   tools/include/uapi/linux/bpf.h | 2 ++
+>>   3 files changed, 5 insertions(+)
+>>
+>> Change list:
+>> - v1 -> v2:
+>>      - fill the hole in bpf_link_info.(Jiri)
+>> - v1:
+>>      https://lore.kernel.org/bpf/20250529165759.2536245-1- 
+>> chen.dylane@linux.dev
+>>
+>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>> index 07ee73cdf9..f3e2aae302 100644
+>> --- a/include/uapi/linux/bpf.h
+>> +++ b/include/uapi/linux/bpf.h
+>> @@ -6644,6 +6644,8 @@ struct bpf_link_info {
+>>           struct {
+>>               __aligned_u64 tp_name; /* in/out: tp_name buffer ptr */
+>>               __u32 tp_name_len;     /* in/out: tp_name buffer len */
+>> +            __u32 reserved; /* just fill the hole */
+> 
+> See various examples in uapi/linux/bpf.h, '__u32 :32;' is the preferred
+> apporach to fill the hole.
 
-Fixes: 99c861b44eb1 ("virtio_net: xsk: rx: support recv merge mode")
-Cc: stable@vger.kernel.org
-Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
----
- drivers/net/virtio_net.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+Well, it looks better, will change it in v3, thanks.
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index e53ba600605a..4c35324d6e5b 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -1309,9 +1309,14 @@ static struct sk_buff *virtnet_receive_xsk_merge(struct net_device *dev, struct
- 	ret = XDP_PASS;
- 	rcu_read_lock();
- 	prog = rcu_dereference(rq->xdp_prog);
--	/* TODO: support multi buffer. */
--	if (prog && num_buf == 1)
--		ret = virtnet_xdp_handler(prog, xdp, dev, xdp_xmit, stats);
-+	if (prog) {
-+		/* TODO: support multi buffer. */
-+		if (num_buf == 1)
-+			ret = virtnet_xdp_handler(prog, xdp, dev, xdp_xmit,
-+						  stats);
-+		else
-+			ret = XDP_DROP;
-+	}
- 	rcu_read_unlock();
- 
- 	switch (ret) {
+> 
+>> +            __u64 cookie;
+>>           } raw_tracepoint;
+>>           struct {
+>>               __u32 attach_type;
+>> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+>> index 9794446bc8..1c3dbe44ac 100644
+>> --- a/kernel/bpf/syscall.c
+>> +++ b/kernel/bpf/syscall.c
+>> @@ -3687,6 +3687,7 @@ static int bpf_raw_tp_link_fill_link_info(const 
+>> struct bpf_link *link,
+>>           return -EINVAL;
+>>       info->raw_tracepoint.tp_name_len = tp_len + 1;
+>> +    info->raw_tracepoint.cookie = raw_tp_link->cookie;
+>>       if (!ubuf)
+>>           return 0;
+>> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/ 
+>> linux/bpf.h
+>> index 07ee73cdf9..f3e2aae302 100644
+>> --- a/tools/include/uapi/linux/bpf.h
+>> +++ b/tools/include/uapi/linux/bpf.h
+>> @@ -6644,6 +6644,8 @@ struct bpf_link_info {
+>>           struct {
+>>               __aligned_u64 tp_name; /* in/out: tp_name buffer ptr */
+>>               __u32 tp_name_len;     /* in/out: tp_name buffer len */
+>> +            __u32 reserved; /* just fill the hole */
+>> +            __u64 cookie;
+>>           } raw_tracepoint;
+>>           struct {
+>>               __u32 attach_type;
+> 
+
+
 -- 
-2.43.0
-
+Best Regards
+Tao Chen
 
