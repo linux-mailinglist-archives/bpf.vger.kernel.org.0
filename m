@@ -1,186 +1,170 @@
-Return-Path: <bpf+bounces-59558-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59559-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8505BACCF22
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 23:44:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1D68ACCF26
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 23:45:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA2CF1894DC2
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 21:45:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B9E43A474E
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 21:44:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51A8A231835;
-	Tue,  3 Jun 2025 21:44:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54241238C1E;
+	Tue,  3 Jun 2025 21:45:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="op3aNcQB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OMTtnqrt"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC9A4221F09;
-	Tue,  3 Jun 2025 21:44:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A2AB226CF8;
+	Tue,  3 Jun 2025 21:45:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748987082; cv=none; b=iBpHUt6Y/6HtgHzdbl7C/mt1dNFeVE+so2Fcut81KJ4+DoIampm2AGZWMdxj9W82vt3wf45Ed76rY0i9H/F9OZZDOOUTk8oJG64/yp0VjyPRywh5ZNgKXggiFEVPV7dSWfKu1o1n6ezaA3Wmc2UX5idMkGhKWlmfN7Zy7J68yKI=
+	t=1748987110; cv=none; b=W5RNssB5uH/9GxPqzG5wofsC98+SiIv8jidvLZZw+b9xc6n6JtaTEG81j4aP5pViJ7d6OAbAgtUvOoeV0KWyBaicrg62LUwvJoM7Sfv1rxY/Z8JKMOaGlaP24TohdVaTa6tGYhCpKMayH4oySsPYsFw7+2hwKW9JQsgnv+xjNYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748987082; c=relaxed/simple;
-	bh=7gflI8bQ8A18TGwYKDpl889ph/xH2f2J3Yd9be18SVE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TNaUcaRhu8tKpGugNAphZQ6EsJQyXa69ZcG4fPB4iRk2Gw26Jg3WqizIi8hp70KYJ2wazkoqlH9N1p9v4XbXOZIR1u7feUCDQ3go0dOynXe2bDdqfoIarhntF0bqpPeUeboExsDjbPUgZ9vewq2N8eNxcGBLtS7ZdK1T3irjEcA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=op3aNcQB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23B94C4CEED;
-	Tue,  3 Jun 2025 21:44:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748987081;
-	bh=7gflI8bQ8A18TGwYKDpl889ph/xH2f2J3Yd9be18SVE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=op3aNcQB6siv2ePJTouwAfA4BRKm4uTb4lJgIU8bYhtE39YTPO7hvbpLwUCKLd0EG
-	 NBxhtoMyNEuvoFzcvAzFCRiwnRmomxY9jOt54DOCDffbv6npVItTyrfI+tKmNL2T0I
-	 SR3OyOOm6CeeheGvfpX2CxUkD57uVbPovQqdLf4uWLlk3XanYR8NK4PRoUJ/qLcZ1B
-	 1k63vLtpI7E3baUodqkC2b7WBXW8NDxqYqwI7J6kLSrVrWInuhZTquDRO5hAziSfbO
-	 QK5EL0hTyzYmTwHXnTrxvvd0FB180p+QBWu1Mszx9C7Inf6bLCJCDNci5CYke5nNg/
-	 f4Oz/a/ATC6DQ==
-Date: Tue, 3 Jun 2025 14:44:38 -0700
-From: Namhyung Kim <namhyung@kernel.org>
-To: Blake Jones <blakejones@google.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Chun-Tse Shao <ctshao@google.com>,
-	Zhongqiu Han <quic_zhonhan@quicinc.com>,
-	James Clark <james.clark@linaro.org>,
-	Charlie Jenkins <charlie@rivosinc.com>,
-	Andi Kleen <ak@linux.intel.com>, Dmitry Vyukov <dvyukov@google.com>,
-	Leo Yan <leo.yan@arm.com>, Yujie Liu <yujie.liu@intel.com>,
-	Graham Woodward <graham.woodward@arm.com>,
-	Yicong Yang <yangyicong@hisilicon.com>,
-	Ben Gainey <ben.gainey@arm.com>, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH 2/3] perf: collect BPF metadata from existing BPF programs
-Message-ID: <aD9sxuFwwxwHGzNi@google.com>
-References: <20250521222725.3895192-1-blakejones@google.com>
- <20250521222725.3895192-3-blakejones@google.com>
- <aD9Xxhwqpm8BDeKe@google.com>
- <CAP_z_Cj_8uTBGzaoFmi1f956dXi1qDnF4kqc49MSn0jDHYFfxg@mail.gmail.com>
+	s=arc-20240116; t=1748987110; c=relaxed/simple;
+	bh=RCs8/uMB+ezaarYU/ndq+IH9j+JTL8HLGA+9mgA2CWI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qALWxcCs+blo60Q8OMiI293dKqbYg0gWWRQ8oGGDTKOBb52gJE4y85wy0Q2lHr2hHhwdLGFkN7lB3jvCSw0T3oHDhBH0S53IfoEeY8KIMS+L93UUGLh5Uv9Ehe1ygSegJzvsRtNwxnNiEonbelRXnGAhri5tJ1uoUSpiaa78fes=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OMTtnqrt; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-7424ccbef4eso4978554b3a.2;
+        Tue, 03 Jun 2025 14:45:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748987108; x=1749591908; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=819jl8ds/qzrOtBRq9UfsH7pGIYx+U6oQEMjUt1XFXA=;
+        b=OMTtnqrtM+9yLJl8QDHREgemGKdVFvgRI4bLOVmrEJTvptoEUkYGVpXZtfFwp2/572
+         wwnRUzw8siUcHOYdmpHwZnPbNVRqv8gA7m2LfpBEY6F77BNG6Q3ifmXhGPfmVQ5c2wTU
+         WLKQhyHBsJBiDBfx1ptabECoe+/onbPxqXfbLasWKhnhgKGc8vLPfjHZv6d8Pc5ViBog
+         Cxzc+EGVgh808ED3itcx2o83O/AsSlChA0e6xlPwU5vw/1wr7kqP59JLoFadRTL59d4p
+         Vyt2KHPbfaeoogbk7dLEUCAzHRgnTLkc/m5ciLsnYg4Cmko4dgOxjAvTON6ZvL9H/PrA
+         79Qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748987108; x=1749591908;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=819jl8ds/qzrOtBRq9UfsH7pGIYx+U6oQEMjUt1XFXA=;
+        b=jcU9fxT6DeYhdfXcVaR+BHbtM1kYw6BdI9DiDIAfRRUiJ1y2NLiydE7Ub94yuVZn/C
+         ia/yvwUvAi9RxEUCCkfBSBrZi8u7WVe37wAbg0woUSfl2raJAszAwzZTM4C+tBPS/jim
+         FwuuKtLpil+Y+8B9aH2vyNc7go5BI9EJRyUQ/Dtr2qyQy2FcQw8xXOwSzmh249f+VVvp
+         je3HREI0sjoUp0KKragDYZjMCCHXR75mhNg0un76gd1kWXxT6WihMxG3R7T+ZHXlq/5C
+         PrZkgNm3cw3wzfHxWd6f6M20FKVCH6yH//5lDxP16zCO3LNxGOOGXsKC0C7jSBMJRIyN
+         m3kg==
+X-Forwarded-Encrypted: i=1; AJvYcCUJDK9ixVvMueH1kQKec9VZRoAA4nGvSpyLm83Ol93V+86KwlXM5zRiKq6clqkIjGKyqvM/3p9FZRzbcx4x9t3RFEnmnSr4@vger.kernel.org, AJvYcCXVizrmlODj4dLSE/Pe7NyxTnsd69fPz84n5EgnpabVkjNpMZFYYDQuJwXqCWSM9ylhb7dfNUj1wlcuEvFT@vger.kernel.org, AJvYcCXeUImCfac0SMcFYpZCZZQ8HwrL79Y0rk64bSGwcV4BNucT4YyZCZu4nMTHWlGeLkOGbMX3BAviIy4wuPvQ@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx4+fRYVyZma0CUydSqZ099RuyG2nO2DU74XTMoPbePIh3YOeLS
+	jepmGK1M0iHsUjhq0WP0oymqLyneEfC3OqmL32EI6vEx+0Kk6caWA5GF3LaqIkW7aEdMdiTNLUu
+	/4P/5vzm/eKIzGGzjIUunhWBCEctfeIxxyg==
+X-Gm-Gg: ASbGnct45w2X1GSnOWGXh1k7SmqLVwFMEvSM3txyxrl86qusQzPEnh5LgTSyK4ggyFp
+	LgwQnPvdJfpNVRVfHdVACnHhylCHhmUXUcZRWwZPUzTiFMwUf/BnFT1Zew0UlvLAwb4/svFSxXQ
+	6OPhXUdebCvvlOzIyXF2gyQcH30xQRrRd9DYDQFMVGNbrDOPlS
+X-Google-Smtp-Source: AGHT+IF7MqQcSA/FsUXrpXDFQkq09C3I0U5aU6W0tB+ZTkwFNkLdxNttYUEiVQNLgyvtjX4iDkjJwYwdm7yVHveMMME=
+X-Received: by 2002:a05:6a20:729d:b0:215:edce:4e2c with SMTP id
+ adf61e73a8af0-21d22d08e2cmr569327637.28.1748987108576; Tue, 03 Jun 2025
+ 14:45:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP_z_Cj_8uTBGzaoFmi1f956dXi1qDnF4kqc49MSn0jDHYFfxg@mail.gmail.com>
+References: <20250603065920.3404510-1-song@kernel.org> <20250603065920.3404510-4-song@kernel.org>
+ <CAEf4BzasOmqHDnuKd7LCT_FEBVMuJxmVNgvs52y5=qLd1bB=rg@mail.gmail.com> <CAPhsuW7mwut7SYubAUa5Ji7meDP1Bn8ZD9s+4sqjBDim7jGrWA@mail.gmail.com>
+In-Reply-To: <CAPhsuW7mwut7SYubAUa5Ji7meDP1Bn8ZD9s+4sqjBDim7jGrWA@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 3 Jun 2025 14:44:56 -0700
+X-Gm-Features: AX0GCFtNF4ppXnOnKhcp7EPaFV861gMLhwM4EEIUcYJLDXBOjd5THFRV5GW8gWM
+Message-ID: <CAEf4Bzbm=mnRM=PYBLDTogrb+bNk2TnTj-kGr3=oFNEyQm8hKw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 3/4] bpf: Introduce path iterator
+To: Song Liu <song@kernel.org>
+Cc: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, viro@zeniv.linux.org.uk, 
+	brauner@kernel.org, jack@suse.cz, kpsingh@kernel.org, 
+	mattbobrowski@google.com, amir73il@gmail.com, repnop@google.com, 
+	jlayton@kernel.org, josef@toxicpanda.com, mic@digikod.net, gnoack@google.com, 
+	m@maowtm.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Blake,
-
-On Tue, Jun 03, 2025 at 02:27:53PM -0700, Blake Jones wrote:
-> Hi Namhyung,
-> 
-> On Tue, Jun 3, 2025 at 1:15 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > On Wed, May 21, 2025 at 03:27:24PM -0700, Blake Jones wrote:
-> > > Look for .rodata maps, find ones with 'bpf_metadata_' variables, extract
-> > > their values as strings, and create a new PERF_RECORD_BPF_METADATA
-> > > synthetic event using that data. The code gets invoked from the existing
-> > > routine perf_event__synthesize_one_bpf_prog().
-> >
-> > It would be great if you can show an example how those metadata is
-> > constructed and shared between BPF programs.
-> 
-> I've added the following to my commit message:
-> 
-> | For example, a BPF program with the following variables:
-> |
-> |     const char bpf_metadata_version[] SEC(".rodata") = "3.14159";
-> |     int bpf_metadata_value[] SEC(".rodata") = 42;
-> |
-> | would generate a PERF_RECORD_BPF_METADATA record with:
-> |
-> |     .prog_name        = <BPF program name, e.g. "bpf_prog_a1b2c3_foo">
-> |     .nr_entries       = 2
-> |     .entries[0].key   = "version"
-> |     .entries[0].value = "3.14159"
-> |     .entries[1].key   = "value"
-> |     .entries[1].value = "42"
-> |
-> | Each of the BPF programs and subprograms that share those variables would
-> | get a distinct PERF_RECORD_BPF_METADATA record, with the ".prog_name" showing
-> | the name of each program or subprogram. The prog_name is deliberately the
-> | same as the ".name" field in the corresponding PERF_RECORD_KSYMBOL record.
-
-Thanks!
-
-> 
-> > IIUC the metadata is collected for each BPF program which may have
-> > multiple subprograms.  Then this patch creates multiple PERF_RECORD_
-> > BPF_METADATA for each subprogram, right?
-> >
-> > Can it be shared using the BPF program ID?
-> 
-> In theory, yes, it could be shared. But I want to be able to correlate them
-> with the corresponding PERF_RECORD_KSYMBOL events, and KSYMBOL events for
-> subprograms don't have the full-program ID, so I wouldn't be able to do that.
-
-It's unfortunate that KSYMBOL doesn't have the program ID, but IIRC the
-following BPF_EVENT should have it.  I think it's safe to think KSYMBOLs
-belong to the BPF_EVENT when they are from the same thread.
-
-> 
-> > > +     rodata = calloc(1, map_info.value_size);
-> >
-> > You can use 'zalloc()' instead, in other places too.
-> 
-> Fixed, thanks.
-> 
-> > > +void bpf_metadata_free(struct bpf_metadata *metadata)
+On Tue, Jun 3, 2025 at 2:09=E2=80=AFPM Song Liu <song@kernel.org> wrote:
+>
+> On Tue, Jun 3, 2025 at 11:40=E2=80=AFAM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> [...]
+> > > +__bpf_kfunc struct path *bpf_iter_path_next(struct bpf_iter_path *it=
+)
 > > > +{
-> > > +     if (metadata == NULL)
-> > > +             return;
-> > > +     for (__u32 index = 0; index < metadata->nr_prog_names; index++)
-> > > +             free(metadata->prog_names[index]);
-> > > +     if (metadata->prog_names != NULL)
-> > > +             free(metadata->prog_names);
-> > > +     if (metadata->event != NULL)
-> > > +             free(metadata->event);
+> > > +       struct bpf_iter_path_kern *kit =3D (void *)it;
+> > > +       struct path root =3D {};
+> > > +
+> > > +       if (!path_walk_parent(&kit->path, &root))
+> > > +               return NULL;
+> > > +       return &kit->path;
+> > > +}
+> > > +
+> > > +__bpf_kfunc void bpf_iter_path_destroy(struct bpf_iter_path *it)
+> > > +{
+> > > +       struct bpf_iter_path_kern *kit =3D (void *)it;
+> > > +
+> > > +       path_put(&kit->path);
 > >
-> > No need to NULL change for free().
-> 
-> I've removed the NULL checks.
-> 
-> > > +static int synthesize_perf_record_bpf_metadata(
-> > > [...]
-> > > +     for (__u32 index = 0; index < metadata->nr_prog_names; index++) {
-> > > +             memcpy(event->bpf_metadata.prog_name,
-> > > +                    metadata->prog_names[index], BPF_PROG_NAME_LEN);
+> > note, destroy() will be called even if construction of iterator fails
+> > or we exhausted iterator. So you need to make sure that you have
+> > bpf_iter_path state where you can detect that there is no path present
+> > and skip path_put().
+>
+> In bpf_iter_path_next(), when path_walk_parent() returns false, we
+> still hold reference to kit->path, then _destroy() will release it. So we
+> should be fine, no?
+
+you still need to handle iterators that failed to be initialized,
+though? And one can argue that if path_walk_parent() returns false, we
+need to put that last path before returning NULL, no?
+
+>
+> Thanks,
+> Song
+>
 > >
-> > Is it possible to call synthesize_bpf_prog_name() directly to the
-> > event->bpf_metadata.prog_name instead of saving it metadata->prog_names?
-> 
-> Not with the way the code is currently structured - we need the BTF data
-> to call synthesize_bpf_prog_name(), and that's allocated and freed inside
-> of bpf_metadata_create().
-
-I see.  You already freed the map data and BTF.  Ok, it's not a big deal
-and probably not needed if we can switch to BPF ID.
-
-Thanks,
-Namhyung
-
+> > > +}
+> > > +
+> > > +__bpf_kfunc_end_defs();
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index a7d6e0c5928b..45b45cdfb223 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -7036,6 +7036,10 @@ BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct socket) {
+> > >         struct sock *sk;
+> > >  };
+> > >
+> > > +BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct path) {
+> > > +       struct dentry *dentry;
+> > > +};
+> > > +
+> > >  static bool type_is_rcu(struct bpf_verifier_env *env,
+> > >                         struct bpf_reg_state *reg,
+> > >                         const char *field_name, u32 btf_id)
+> > > @@ -7076,6 +7080,7 @@ static bool type_is_trusted_or_null(struct bpf_=
+verifier_env *env,
+> > >                                     const char *field_name, u32 btf_i=
+d)
+> > >  {
+> > >         BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct socket));
+> > > +       BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct path));
+> > >
+> > >         return btf_nested_type_is_trusted(&env->log, reg, field_name,=
+ btf_id,
+> > >                                           "__safe_trusted_or_null");
+> > > --
+> > > 2.47.1
+> > >
+> >
 
