@@ -1,271 +1,122 @@
-Return-Path: <bpf+bounces-59493-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59494-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 114EEACC0A8
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 09:00:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DDF2FACC2EC
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 11:24:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C281F3A43A6
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 07:00:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B0013A59A0
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 09:23:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D62EA2690EB;
-	Tue,  3 Jun 2025 06:59:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CEEC2820B9;
+	Tue,  3 Jun 2025 09:23:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bw8+RBSM"
+	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="t0wsoKtB"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50DBB268C7F;
-	Tue,  3 Jun 2025 06:59:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67608271461;
+	Tue,  3 Jun 2025 09:23:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.82.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748933997; cv=none; b=sR7PLzaIcitWFDXlvJ3HGbqGYCZyZvfPSQMuQIxJ0Qj9bdVGD9BhnuWtA5ek8IT0xmcNrUPQdfY0dBeQz12u++yPsQmUMDYeqTKThY5icWVPqI3XHr8kOEeT/sEfkQmuyHqQRgCyhoUt8sdIsuoGXLdlEjPY9uyBmaKGmSRTjbY=
+	t=1748942602; cv=none; b=fXEUBiQoPuO8cccYCcEpDqyMLdSTwt1ejWbgRMX4odHL7A9UHnKyhiB7Tf+B6x7nUEp/4GtxGq83ZxtedkrxOHvx1t7bwMBkjMepaTdP6OldwfYnkxTGY70P5j4EMnOIB97/jAnbuDGokLYtfgiqj4xN25MmzVaKB2fkI7aUO4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748933997; c=relaxed/simple;
-	bh=ZvJ2xMZlhu1ON5brft5paCaAhefbbaXbiA98oslx0SQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=S4mD6Gl2gkCq/S3LANIfqA5lmqYezFE8J69hnmInTU6QzPKsVoEkyNh6pmrUvWiFSkUrpVxr3hSJRFHX3zrTwSSxbyHYpHhPTLO1ELzVv/hGf8rRbeb/ANZNlg0Xo9FzLmHf+RAwxvwPnhkrjYBb9h26pmKXnh79Wu5TGwPx0yo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bw8+RBSM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9BB6C4CEEF;
-	Tue,  3 Jun 2025 06:59:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748933995;
-	bh=ZvJ2xMZlhu1ON5brft5paCaAhefbbaXbiA98oslx0SQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bw8+RBSMp5aJNZtTJZiOiPUJRDoO1OJvdeC9NhCfdscjClFlOsNEAFp0eqCSIkTRN
-	 UID3+GDpxR773Jmht/MuJEbKPotLQu5d2LO8UHhKIJCpZ2myc1Vf66y6BfHcdT5Y8o
-	 K/upQoat2R3qkcM8QbngJXTfdhi3uUMPiA0VU11BqFN5ymLBFECrYyGAsqhCvCUf5+
-	 +EQKYAkStxRB9VgReGLLmaVViwx0WLAjj9oOnyvhSafsi49f4KQK0ZPgUATcQv1azy
-	 MWMqPLMtsPp93G/a7GJZ79tghTPhsfc6YFLk7DkFYcd/Z9M+2s9aX14cSJd36xf3L5
-	 QuzIc2WAmZRsQ==
-From: Song Liu <song@kernel.org>
-To: bpf@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-security-module@vger.kernel.org
-Cc: kernel-team@meta.com,
-	andrii@kernel.org,
-	eddyz87@gmail.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	viro@zeniv.linux.org.uk,
-	brauner@kernel.org,
-	jack@suse.cz,
-	kpsingh@kernel.org,
-	mattbobrowski@google.com,
-	amir73il@gmail.com,
-	repnop@google.com,
-	jlayton@kernel.org,
-	josef@toxicpanda.com,
-	mic@digikod.net,
-	gnoack@google.com,
-	m@maowtm.org,
-	Song Liu <song@kernel.org>
-Subject: [PATCH v2 bpf-next 4/4] selftests/bpf: Add tests for bpf path iterator
-Date: Mon,  2 Jun 2025 23:59:20 -0700
-Message-ID: <20250603065920.3404510-5-song@kernel.org>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20250603065920.3404510-1-song@kernel.org>
-References: <20250603065920.3404510-1-song@kernel.org>
+	s=arc-20240116; t=1748942602; c=relaxed/simple;
+	bh=f1wdr64U+YYAAV0A3q+bTnD7EkymhsUJyrNJvoSnqdo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=l8rmaNUadsV1v1US8s6kFySgt37tR2s1OR3L5M1zqx3kN7FQfV48FqRsEEDHzMHzaGuZa0vB87u7o7XOQYqxQsGrPKmGXJFNYIuJg65gY+z04Qzbdt+92LW5FT+Iz7goJn74mDzg57IwBBWGfPECWQD0awBMy8LlaBhnJzv6cFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=t0wsoKtB; arc=none smtp.client-ip=144.76.82.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+	s=42; h=From:Cc:To:Date:Message-ID;
+	bh=kpNhsEEpaYakShgasw+Rs4IOzaFp5Kk2My7Haocu3t4=; b=t0wsoKtBwKT9CwUbMEuG0OPMeV
+	bfboWh5elw9hgOKpjq4QoQeDr50rs2VfLs/ibdPhM987M31bXfsbQy8oV9ulX12gWhvv2gwOZeBUX
+	i19Im8r/Jz1iQcqFo0Tpnw/+fRxKbCKTedoDJO4VqsZxCnS0Q0BW4qKo2BC6wrEJIH32sYhonVYnK
+	lHbOj0nyX+EVUBeLB9vEct7s0xiUNQkKbfy1jTtpCydjEBGt9CNA9stxdHMguMSYjhs7c6xekV+Q7
+	u4idbz2m/Q7XUl/KdAq+4armM27FudgMZB6LvRchCFHfUqvMOGwxi2ymhnO2mvp3/RiLEgJ2KMS04
+	OOCU9cao5DrTS4ajyu2aD+6sFGJlXTN7InR5I90dDKTeV0L0Jc1cSfuICdaCNAgU9s2AbAkBv1PdP
+	i5Us12UGeh+Y1uMKFVKIzRxt3rIGRtduXdii8BOpubPD9E6S1mbCyKgR6CLpg9El8pXylH9sF9f1V
+	6oiagtxX5oANV2cxND3sx9iN;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
+	(Exim)
+	id 1uMNrR-008gCi-1d;
+	Tue, 03 Jun 2025 09:23:09 +0000
+Message-ID: <3df479c7-e42f-41e1-bc5e-88f3d783c5d1@samba.org>
+Date: Tue, 3 Jun 2025 11:22:33 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC v3 01/18] netmem: introduce struct netmem_desc mirroring
+ struct page
+To: Mina Almasry <almasrymina@google.com>, Byungchul Park <byungchul@sk.com>
+Cc: willy@infradead.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org, kernel_team@skhynix.com,
+ kuba@kernel.org, ilias.apalodimas@linaro.org, harry.yoo@oracle.com,
+ hawk@kernel.org, akpm@linux-foundation.org, davem@davemloft.net,
+ john.fastabend@gmail.com, andrew+netdev@lunn.ch, asml.silence@gmail.com,
+ toke@redhat.com, tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com,
+ saeedm@nvidia.com, leon@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ david@redhat.com, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
+ vbabka@suse.cz, rppt@kernel.org, surenb@google.com, mhocko@suse.com,
+ horms@kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+ vishal.moola@gmail.com
+References: <20250529031047.7587-1-byungchul@sk.com>
+ <20250529031047.7587-2-byungchul@sk.com>
+ <CAHS8izNBjkMLbQsP++0r+fbkW2q7gGOdrbmE7gH-=jQUMCgJ1g@mail.gmail.com>
+ <20250530011002.GA3093@system.software.com>
+ <CAHS8izNPSHR7B24Y3RZiBeZHkPyzKAKdZbQgXwqwgs01HzxDTw@mail.gmail.com>
+Content-Language: en-US
+From: Stefan Metzmacher <metze@samba.org>
+In-Reply-To: <CAHS8izNPSHR7B24Y3RZiBeZHkPyzKAKdZbQgXwqwgs01HzxDTw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Add tests for bpf path iterator, including test cases similar to real
-workload (call bpf_path_d_path and bpf_get_dentry_xattr), and test cases
-where the verifier rejects invalid use of the iterator.
+Hi Mina,
 
-Signed-off-by: Song Liu <song@kernel.org>
----
- .../testing/selftests/bpf/bpf_experimental.h  |   6 +
- .../selftests/bpf/prog_tests/path_iter.c      |  12 ++
- tools/testing/selftests/bpf/progs/path_iter.c | 134 ++++++++++++++++++
- 3 files changed, 152 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/path_iter.c
- create mode 100644 tools/testing/selftests/bpf/progs/path_iter.c
+>> Do you mean?
+>>
+>>    struct net_iov {
+>>      /* Union for anonymous aliasing: */
+>>      union {
+>>        struct netmem_desc desc;
+>>        struct {
+>>           unsigned long _flags;
+>>           unsigned long pp_magic;
+>>           struct page_pool *pp;
+>>           unsigned long _pp_mapping_pad;
+>>           unsigned long dma_addr;
+>>           atomic_long_t pp_ref_count;
+>>        };
+>>      };
+>>      struct net_iov_area *owner;
+>>      enum net_iov_type type;
+>>    };
+>>
+>> Right?  If so, I will.
+>>
+> 
+> Yes, sounds good.
+> 
+> Also, maybe having a union with the same fields for anonymous aliasing
+> can be error prone if someone updates netmem_desc and forgets to
+> update the mirror in struct net_iov. If you can think of a way to deal
+> with that, great, if not lets maybe put a comment on top of struct
+> netmem_desc:
 
-diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
-index 5e512a1d09d1..cbb759b473df 100644
---- a/tools/testing/selftests/bpf/bpf_experimental.h
-+++ b/tools/testing/selftests/bpf/bpf_experimental.h
-@@ -596,4 +596,10 @@ extern int bpf_iter_dmabuf_new(struct bpf_iter_dmabuf *it) __weak __ksym;
- extern struct dma_buf *bpf_iter_dmabuf_next(struct bpf_iter_dmabuf *it) __weak __ksym;
- extern void bpf_iter_dmabuf_destroy(struct bpf_iter_dmabuf *it) __weak __ksym;
- 
-+struct bpf_iter_path;
-+extern int bpf_iter_path_new(struct bpf_iter_path *it, struct path *start,
-+			     __u64 flags) __weak __ksym;
-+extern struct path *bpf_iter_path_next(struct bpf_iter_path *it) __weak __ksym;
-+extern void bpf_iter_path_destroy(struct bpf_iter_path *it) __weak __ksym;
-+
- #endif
-diff --git a/tools/testing/selftests/bpf/prog_tests/path_iter.c b/tools/testing/selftests/bpf/prog_tests/path_iter.c
-new file mode 100644
-index 000000000000..3c99c24fbd96
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/path_iter.c
-@@ -0,0 +1,12 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+
-+#include <test_progs.h>
-+#include <bpf/libbpf.h>
-+#include <bpf/btf.h>
-+#include "path_iter.skel.h"
-+
-+void test_path_iter(void)
-+{
-+	RUN_TESTS(path_iter);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/path_iter.c b/tools/testing/selftests/bpf/progs/path_iter.c
-new file mode 100644
-index 000000000000..be804fb4302c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/path_iter.c
-@@ -0,0 +1,134 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_misc.h"
-+#include "bpf_experimental.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+char path_name[256];
-+char xattr_val[64];
-+
-+static __always_inline void access_path_dentry(struct path *p)
-+{
-+	struct bpf_dynptr ptr;
-+	struct dentry *dentry;
-+
-+	if (!p)
-+		return;
-+
-+	bpf_dynptr_from_mem(xattr_val, sizeof(xattr_val), 0, &ptr);
-+	bpf_path_d_path(p, path_name, sizeof(path_name));
-+
-+	dentry = p->dentry;
-+	if (dentry)
-+		bpf_get_dentry_xattr(dentry, "user.xattr", &ptr);
-+}
-+
-+SEC("lsm.s/file_open")
-+__success
-+int BPF_PROG(open_code, struct file *f)
-+{
-+	struct bpf_iter_path path_it;
-+	struct path *p;
-+	int ret;
-+
-+	ret = bpf_iter_path_new(&path_it, &f->f_path, 0);
-+	if (ret) {
-+		bpf_iter_path_destroy(&path_it);
-+		return 0;
-+	}
-+
-+	p = bpf_iter_path_next(&path_it);
-+	access_path_dentry(p);
-+	bpf_iter_path_destroy(&path_it);
-+
-+	return 0;
-+}
-+
-+SEC("lsm.s/file_open")
-+__success
-+int BPF_PROG(for_each, struct file *f)
-+{
-+	struct path *p;
-+
-+	bpf_for_each(path, p, &f->f_path, 0)
-+		access_path_dentry(p);
-+
-+	return 0;
-+}
-+
-+SEC("lsm.s/file_open")
-+__failure __msg("Unreleased reference")
-+int BPF_PROG(missing_destroy, struct file *f)
-+{
-+	struct bpf_iter_path path_it;
-+
-+	bpf_iter_path_new(&path_it, &f->f_path, 0);
-+
-+	return 0;
-+}
-+
-+SEC("lsm.s/file_open")
-+__failure __msg("expected an initialized iter_path")
-+int BPF_PROG(missing_new, struct file *f)
-+{
-+	struct bpf_iter_path path_it;
-+
-+	bpf_iter_path_destroy(&path_it);
-+	return 0;
-+}
-+
-+SEC("lsm.s/file_open")
-+__failure __msg("expected uninitialized iter_path")
-+int BPF_PROG(new_twice, struct file *f)
-+{
-+	struct bpf_iter_path path_it;
-+
-+	bpf_iter_path_new(&path_it, &f->f_path, 0);
-+	bpf_iter_path_new(&path_it, &f->f_path, 0);
-+	bpf_iter_path_destroy(&path_it);
-+	return 0;
-+}
-+
-+SEC("lsm.s/file_open")
-+__failure __msg("expected an initialized iter_path")
-+int BPF_PROG(destroy_twice, struct file *f)
-+{
-+	struct bpf_iter_path path_it;
-+
-+	bpf_iter_path_new(&path_it, &f->f_path, 0);
-+	bpf_iter_path_destroy(&path_it);
-+	bpf_iter_path_destroy(&path_it);
-+	return 0;
-+}
-+
-+SEC("lsm.s/file_open")
-+__success
-+int BPF_PROG(reuse_path_iter, struct file *f)
-+{
-+	struct bpf_iter_path path_it;
-+
-+	bpf_iter_path_new(&path_it, &f->f_path, 0);
-+	bpf_iter_path_destroy(&path_it);
-+	bpf_iter_path_new(&path_it, &f->f_path, 0);
-+	bpf_iter_path_destroy(&path_it);
-+	return 0;
-+}
-+
-+SEC("lsm.s/file_open")
-+__failure __msg("invalid read from stack off")
-+int BPF_PROG(invalid_read_path_iter, struct file *f)
-+{
-+	struct bpf_iter_path path_it;
-+	struct bpf_iter_path path_it_2;
-+
-+
-+	bpf_iter_path_new(&path_it, &f->f_path, 0);
-+	path_it_2 = path_it;
-+	bpf_iter_path_destroy(&path_it_2);
-+	return 0;
-+}
--- 
-2.47.1
+I haven't looked at the patch in detail, but to me it sounds
+a bit like the checks io_uring_init is doing.
+
+I hope this is in same way helpful here :-)
+
+metze
 
 
