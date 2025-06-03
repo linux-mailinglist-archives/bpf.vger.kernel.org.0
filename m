@@ -1,241 +1,122 @@
-Return-Path: <bpf+bounces-59532-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59533-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DFEDACCD38
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 20:41:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CB90ACCD40
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 20:43:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8846A7A35A0
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 18:39:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78F133A4A90
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 18:43:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAAA5288C89;
-	Tue,  3 Jun 2025 18:40:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E52B288CA1;
+	Tue,  3 Jun 2025 18:43:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jHHll8Zz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RZ1SFDya"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C09BA1E5B8A;
-	Tue,  3 Jun 2025 18:40:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86E2A288C23;
+	Tue,  3 Jun 2025 18:43:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748976054; cv=none; b=qJmJYD96WKOgxQ++jHe/hczFDPlpbZ3KrEj4XYQrhGUS+tJObNweRHHWEsqklpuBGxbeVrg3cbPS0iw9FVQK6bkn5Mbko5r6iE2jTN/ckM03Jm0BUYfNkrcEnSoz1Ps/30338hs9YJln8W1AFBwhY2EWxPYd65pEv++pn6U8RLI=
+	t=1748976226; cv=none; b=OU0oXicmh2tDEgT2GIeTRqgzO1woV++aGf5AmB2n1RFtHxlR+e5mdhW5vMEVnV/tuvV5it7e22rC4k+32/B3HA/JOFffYzt1LERJqFoRM7WicH6LM84Lisk9uIK1P+0e1XN+rIcAU4tpkKKd8/bcSFKtAIq82BmSZ/6B3n90nR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748976054; c=relaxed/simple;
-	bh=xbDtn2fi3WAJ9480GbfunPJlIeXQH6U2IoiqNVQk5l0=;
+	s=arc-20240116; t=1748976226; c=relaxed/simple;
+	bh=kch8Nb5zEEuVRy69il7fuRGCjksvYPemCS0QdMlvh9o=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qFAqr8qmNOGc6vngWG6KPZxAg2IHErHMN3yJFk6WiNG4S3Yww+tNzHCkSR2ph77Uw4Y5YMWDVhtgdIJHtVjRSEmBsklnnP8q4p8psrP84fuCnaYPZCas3L567Mg2ydEhbPsIZFZz5jgA9YdkJ7IpcL3RTxP1pUfE+V/koWplxbc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jHHll8Zz; arc=none smtp.client-ip=209.85.210.181
+	 To:Cc:Content-Type; b=sbs2EI6Hbrr/S+0pfRX6/mPzPzi1LJrTifHLHealaEhQDIU1kOqSKLUrq5kudqSUwIXqCy+B4fnHel47EdFplnvlCyORF+USz4D/aiUA6/4fs3snjZhGaGueKCFUr+T5BPta54ieiAJKoSFQm6+7gCi2ynPj8clI958XCe8ZQR0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RZ1SFDya; arc=none smtp.client-ip=209.85.221.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-745fe311741so6743809b3a.0;
-        Tue, 03 Jun 2025 11:40:52 -0700 (PDT)
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3a4f72cba73so130440f8f.1;
+        Tue, 03 Jun 2025 11:43:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748976052; x=1749580852; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1748976223; x=1749581023; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=P0c5kIgA/yHehlLlbKZmWK2XOT9lH9ivDjxdXwP91u8=;
-        b=jHHll8ZzI4FjmfXdsVw21EmDX2A4pK7uHqL34rXEwhVV164oF234OX4kFbJjEc4kO/
-         8hIFA5B/3ZW9fwDgmmhJz3k35wpWgnek0lSATurFWzkg146DHfrYt1i7luZI91f6t+ZX
-         gOwcH9JCGxD0FrqiBAGY6DYIxDH24tqEcPxR6xeNiZIzpSSkb+66tTD3IGrQ8j0E1Wlx
-         kQJT8GencvCpbKvxT03gDAOCt9qmViZU5k81RdewhipK+iAcj4ZxOA7pZnK6k8sRWYoY
-         PwL0vvrx1+q/wA3iAfzHKFQddymPAO6n1BvVM8PLJD+BWqWkDqxGghbe4xw7qggWd6HO
-         N3Yw==
+        bh=kch8Nb5zEEuVRy69il7fuRGCjksvYPemCS0QdMlvh9o=;
+        b=RZ1SFDya8Wh30DIZdv/yFFD6VYMHeiXoTSqVVuNLZHvtuMEZHua+zssM/hzclu00Lm
+         G5Y756/A53gn29St7a1vH3x5ET8scAT5JV+Q+MBw4zA2tsJMcaC0nfd+3UzL5FrnBT4p
+         6y5IFp9hOhBwQyL1e8jJIbf7YbUvbRta1EkAqBLjksPcsSj35fZDXw1g+dOsOomRPb4n
+         FJP/D4Wde6li3qVUWLZtx7ZmveBcA0pa5TUWGSVVkz7apkjKjndvEIJXxPJVcel/T6Fh
+         QG87q1a2yd5QfE1xtArT6WK3OYC3jMuqth1E2hyC+Nt9BKKDFw5kWR4UG7E7qlZnAQ9R
+         3yhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748976052; x=1749580852;
+        d=1e100.net; s=20230601; t=1748976223; x=1749581023;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=P0c5kIgA/yHehlLlbKZmWK2XOT9lH9ivDjxdXwP91u8=;
-        b=wPtPSQGVnli2rTsnHlHeiBuCEiO1ZZKPFomElVTRkB3j9vbCq+tQCTsvAxGvkxdIEl
-         QBubj2sGpmsK9QAuS1Y8eFaDWsnE42NgCpjh4dDM/ufrjIwrFzfnXjMSqL5i4Ph7BiY+
-         X3XYR/L9DiFOxngK2dCAheEiQ8LpS+xbMBd1sa7YPLt51HyxENMQr49+FclWff3rl4qt
-         +G3vlgeXBbeVpISpDCLcd7qnvMr9KXErM6R5snOEhR6KHwHjXj6ql7YUFog7LOD2Swss
-         TKe2h/myKP+1i9f4rAhm3qvjRPW0a6T/nwXK2QSAjxSmMa1tEisujUtt95g/bhC3/Xnu
-         L/4w==
-X-Forwarded-Encrypted: i=1; AJvYcCU7ir5yz769hsfuzgMhPUrOYd7H4D4JL55ajM7l1UPGURsY8QF8rPahI7Kg2P9v0cywNn9HjMg5wZGUHQpD@vger.kernel.org, AJvYcCUBIJ/3S9Om6lZX+YV1Q/jbFLvCuByvMcsTiTlq6nstCYSpcwe5AJhKVstcF5EasNrFljN1DM6zHEx+qWBsX2wx/MXIMort@vger.kernel.org, AJvYcCVdjTxQns2ErAfxclN2VBn6yO7gbC7MLpWQtyfJD6WqM7OT/UlQX4FObplYyT03/jx275Ckorpu4bbGmXsP@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw3VlW4kEN3laIm5zn0SIHIWMpz1C5b276UrGRpd0IKAWFijios
-	pSY9hq062RizrH++BXvJT95hkDLx4IqZwtXPwik0RFcFU97e4mhqpeHAWktehBxMPY9+dPE1S84
-	2KaYW/2S2dnx+KJNzYPYA6WZHDloUcNE=
-X-Gm-Gg: ASbGncsyFl2wWNAQ551XzbvJK0vnhdqcnky392FnZljksTwQEdBqIpsRuVPlCiSJ+kA
-	s4+zJsYQQ7uUI84s7Sh1O0PFtTy+Xp0Y6AW/X5699DSja0Yu3zajoGzlcURS5ulKvhDUfiOrCMq
-	rcY6KqKwRGDpii+5M0HJPMz5BiCcHr0SO6cWVcJgJ6TwxZrkuhk4RtX9nPKto=
-X-Google-Smtp-Source: AGHT+IGwXtJkXZadcITVM3MaJkEh7UElRf0oozLdPIVh/p58yS+6AcfPfaCnbPMtPOWqtgCV0oNF4lVpeFsoiKFlcXY=
-X-Received: by 2002:a05:6a00:92a8:b0:746:25d1:b711 with SMTP id
- d2e1a72fcca58-7480b4204f4mr184627b3a.17.1748976051964; Tue, 03 Jun 2025
- 11:40:51 -0700 (PDT)
+        bh=kch8Nb5zEEuVRy69il7fuRGCjksvYPemCS0QdMlvh9o=;
+        b=KNlMojUM+PsxzvGYRUOU7fci3RvU4+j8/Fv2C4xWKPtvDPKZ/vafo0O/1schqYnHUG
+         HCepfvmxv6iV83L32bsdKSyPomq7XpCz9NSWAtl+nh3oLubQ3A7vzU4rQeg9/Ll99aGy
+         2h7AkARJf/IY9q4Ve2URaCgOESwpqs1PqRni99VKLshuZpjWMCnpCiRxtcxNst2jcBKP
+         ZuLLp+QahQVgHmviqBZKD6+LP+uEUALMWHAKHNYyCJeWkZB3BAfPLIwC9aNxCEtgQjCL
+         izJzhOcRCrO4KdQT/Xac25YyKzcGA9YSG/EbPKFu0k/GcK9xIEcHLRynnEy5qnWJL4s+
+         46wQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUKb2oTkW6RlJWkJYkEXI6dVWI5bV4cebdFVoZi/klk2Ie36sknoHzNn8dAKIoZ/2vaxmM=@vger.kernel.org, AJvYcCV1f5FP+mpRcGma13IkM6u9q2e5WUeOinP3NR03xsaGp6unbs4qWY0QWF4JSn7CG45Pwyaybg9TMAK5Q6YiF5Lb1w==@vger.kernel.org, AJvYcCXft3HM3L8wqFT2OGJhmkNOV9kg4Tl6un3LulczlVu9M1DO3FqncD+nYX9/ZcQGIDitxd0uNWDqZlVmQYbI@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx7aTAOa+7d8Rm70u+aylc1f3n+EwYQsnimpXHgiZippUKDtPBt
+	KyKf04Plq9noBALw1Vw6OmugxMbrBAzWXuk9o8FpVw721JS80pDU2VflCv9ASBHrMqJdws7NhOJ
+	nvcQc0tsT4AmQT8KuZWiI5MtiOXzpYZ4=
+X-Gm-Gg: ASbGnct0rBH8IlewOX+uyMu70uODgO5MTH81VwpeumRhrEKUB09wAlKFWz5PgB6Rv9f
+	mvZeF66j4hJSY/yz2dpukHyQ5O1sRURs0JxVvQGb/EwPqHUHHwR8C6wwoLlLqRFgKR7wn/cnps6
+	AqPRS22HQB9gtK8Mck1hn1Of/6h9T6HOwlO4RmLWpXWTEEaH+qS+jDHik0v6g=
+X-Google-Smtp-Source: AGHT+IHtAF6H5lxG7AUR9eWXQtiTtAAlk2tzZWQDxyPjZxQeyvoi6n/3OdG5W8tknilp89tmpfnxn3B+hx96ybhtJIo=
+X-Received: by 2002:a5d:5847:0:b0:3a4:ed9a:7016 with SMTP id
+ ffacd0b85a97d-3a5141cfce3mr3213641f8f.26.1748976222612; Tue, 03 Jun 2025
+ 11:43:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250603065920.3404510-1-song@kernel.org> <20250603065920.3404510-4-song@kernel.org>
-In-Reply-To: <20250603065920.3404510-4-song@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 3 Jun 2025 11:40:40 -0700
-X-Gm-Features: AX0GCFuo51rtttA89KFpmjZLTa4QlZtMgelr7QNzWz69dtsj3Vk94eqK0oBk_L8
-Message-ID: <CAEf4BzasOmqHDnuKd7LCT_FEBVMuJxmVNgvs52y5=qLd1bB=rg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 3/4] bpf: Introduce path iterator
-To: Song Liu <song@kernel.org>
-Cc: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, viro@zeniv.linux.org.uk, 
-	brauner@kernel.org, jack@suse.cz, kpsingh@kernel.org, 
-	mattbobrowski@google.com, amir73il@gmail.com, repnop@google.com, 
-	jlayton@kernel.org, josef@toxicpanda.com, mic@digikod.net, gnoack@google.com, 
-	m@maowtm.org
+References: <20250521222725.3895192-1-blakejones@google.com>
+ <20250521222725.3895192-2-blakejones@google.com> <aC9iF4_eASPkPxXd@x1>
+ <CAP_z_Cg_vH1+BAm87U4gYQ0hDRGtHkkYb2DHtTRSd_QNvg3ZLQ@mail.gmail.com>
+ <CAP_z_ChErhmooT5rhyXH8L-Ltkz3xdJ7PG20UKDpn9usMUgqTA@mail.gmail.com>
+ <aDntjJcJsrQWfPkB@google.com> <CAP_z_CjLtMq_FvmijnFUQbD5UUw=T9jP_pHWCw5fS=38dgSh9g@mail.gmail.com>
+ <CAP_z_Ch8hKvGvot7140ShuCZOxkb+7M7Wpa4AY-D-Arp9P5ffg@mail.gmail.com>
+In-Reply-To: <CAP_z_Ch8hKvGvot7140ShuCZOxkb+7M7Wpa4AY-D-Arp9P5ffg@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 3 Jun 2025 11:43:29 -0700
+X-Gm-Features: AX0GCFsPfQN6jWaDMpO2qBFUYadYsNqbhI_iC3UvHyKkQ97waCljVp6CsG0xuY4
+Message-ID: <CAADnVQ+pnP-L7WOxBHGfiT2yF5WBWa_6=UccnYib8ugm+o6G3Q@mail.gmail.com>
+Subject: Re: [PATCH 1/3] perf: add support for printing BTF character arrays
+ as strings
+To: Blake Jones <blakejones@google.com>
+Cc: Namhyung Kim <namhyung@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers <irogers@google.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	Chun-Tse Shao <ctshao@google.com>, Zhongqiu Han <quic_zhonhan@quicinc.com>, 
+	James Clark <james.clark@linaro.org>, Charlie Jenkins <charlie@rivosinc.com>, 
+	Andi Kleen <ak@linux.intel.com>, Dmitry Vyukov <dvyukov@google.com>, Leo Yan <leo.yan@arm.com>, 
+	Yujie Liu <yujie.liu@intel.com>, Graham Woodward <graham.woodward@arm.com>, 
+	Yicong Yang <yangyicong@hisilicon.com>, Ben Gainey <ben.gainey@arm.com>, 
+	LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"linux-perf-use." <linux-perf-users@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 2, 2025 at 11:59=E2=80=AFPM Song Liu <song@kernel.org> wrote:
+On Tue, Jun 3, 2025 at 11:24=E2=80=AFAM Blake Jones <blakejones@google.com>=
+ wrote:
 >
-> Introduce a path iterator, which reliably walk a struct path toward
-> the root. This path iterator is based on path_walk_parent. A fixed
-> zero'ed root is passed to path_walk_parent(). Therefore, unless the
-> user terminates it earlier, the iterator will terminate at the real
-> root.
->
-> Signed-off-by: Song Liu <song@kernel.org>
-> ---
->  kernel/bpf/Makefile    |  1 +
->  kernel/bpf/helpers.c   |  3 +++
->  kernel/bpf/path_iter.c | 58 ++++++++++++++++++++++++++++++++++++++++++
->  kernel/bpf/verifier.c  |  5 ++++
->  4 files changed, 67 insertions(+)
->  create mode 100644 kernel/bpf/path_iter.c
->
-> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-> index 3a335c50e6e3..454a650d934e 100644
-> --- a/kernel/bpf/Makefile
-> +++ b/kernel/bpf/Makefile
-> @@ -56,6 +56,7 @@ obj-$(CONFIG_BPF_SYSCALL) +=3D kmem_cache_iter.o
->  ifeq ($(CONFIG_DMA_SHARED_BUFFER),y)
->  obj-$(CONFIG_BPF_SYSCALL) +=3D dmabuf_iter.o
->  endif
-> +obj-$(CONFIG_BPF_SYSCALL) +=3D path_iter.o
->
->  CFLAGS_REMOVE_percpu_freelist.o =3D $(CC_FLAGS_FTRACE)
->  CFLAGS_REMOVE_bpf_lru_list.o =3D $(CC_FLAGS_FTRACE)
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index b71e428ad936..b190c78e40f6 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -3397,6 +3397,9 @@ BTF_ID_FLAGS(func, bpf_iter_dmabuf_next, KF_ITER_NE=
-XT | KF_RET_NULL | KF_SLEEPAB
->  BTF_ID_FLAGS(func, bpf_iter_dmabuf_destroy, KF_ITER_DESTROY | KF_SLEEPAB=
-LE)
->  #endif
->  BTF_ID_FLAGS(func, __bpf_trap)
-> +BTF_ID_FLAGS(func, bpf_iter_path_new, KF_ITER_NEW | KF_SLEEPABLE)
-> +BTF_ID_FLAGS(func, bpf_iter_path_next, KF_ITER_NEXT | KF_RET_NULL | KF_S=
-LEEPABLE)
-> +BTF_ID_FLAGS(func, bpf_iter_path_destroy, KF_ITER_DESTROY | KF_SLEEPABLE=
-)
->  BTF_KFUNCS_END(common_btf_ids)
->
->  static const struct btf_kfunc_id_set common_kfunc_set =3D {
-> diff --git a/kernel/bpf/path_iter.c b/kernel/bpf/path_iter.c
-> new file mode 100644
-> index 000000000000..0d972ec84beb
-> --- /dev/null
-> +++ b/kernel/bpf/path_iter.c
-> @@ -0,0 +1,58 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-> +#include <linux/bpf.h>
-> +#include <linux/bpf_mem_alloc.h>
-> +#include <linux/namei.h>
-> +#include <linux/path.h>
-> +
-> +/* open-coded iterator */
-> +struct bpf_iter_path {
-> +       __u64 __opaque[3];
-> +} __aligned(8);
-> +
-> +struct bpf_iter_path_kern {
-> +       struct path path;
-> +       __u64 flags;
-> +} __aligned(8);
-> +
-> +__bpf_kfunc_start_defs();
-> +
-> +__bpf_kfunc int bpf_iter_path_new(struct bpf_iter_path *it,
-> +                                 struct path *start,
-> +                                 __u64 flags)
-> +{
-> +       struct bpf_iter_path_kern *kit =3D (void *)it;
-> +
-> +       BUILD_BUG_ON(sizeof(*kit) > sizeof(*it));
-> +       BUILD_BUG_ON(__alignof__(*kit) !=3D __alignof__(*it));
-> +
-> +       if (flags) {
-> +               memset(&kit->path, 0, sizeof(struct path));
-> +               return -EINVAL;
-> +       }
-> +
-> +       kit->path =3D *start;
-> +       path_get(&kit->path);
-> +       kit->flags =3D flags;
-> +
-> +       return 0;
-> +}
-> +
-> +__bpf_kfunc struct path *bpf_iter_path_next(struct bpf_iter_path *it)
-> +{
-> +       struct bpf_iter_path_kern *kit =3D (void *)it;
-> +       struct path root =3D {};
-> +
-> +       if (!path_walk_parent(&kit->path, &root))
-> +               return NULL;
-> +       return &kit->path;
-> +}
-> +
-> +__bpf_kfunc void bpf_iter_path_destroy(struct bpf_iter_path *it)
-> +{
-> +       struct bpf_iter_path_kern *kit =3D (void *)it;
-> +
-> +       path_put(&kit->path);
+> The libbpf patch set is under discussion right now. Once it converges,
+> is there a way to include those patches in the perf tree without
+> waiting for them to go up to the main tree and then back down? Could I
+> resend them here, or include them as the first part of my next patch
+> series?
 
-note, destroy() will be called even if construction of iterator fails
-or we exhausted iterator. So you need to make sure that you have
-bpf_iter_path state where you can detect that there is no path present
-and skip path_put().
-
-> +}
-> +
-> +__bpf_kfunc_end_defs();
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index a7d6e0c5928b..45b45cdfb223 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -7036,6 +7036,10 @@ BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct socket) {
->         struct sock *sk;
->  };
->
-> +BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct path) {
-> +       struct dentry *dentry;
-> +};
-> +
->  static bool type_is_rcu(struct bpf_verifier_env *env,
->                         struct bpf_reg_state *reg,
->                         const char *field_name, u32 btf_id)
-> @@ -7076,6 +7080,7 @@ static bool type_is_trusted_or_null(struct bpf_veri=
-fier_env *env,
->                                     const char *field_name, u32 btf_id)
->  {
->         BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct socket));
-> +       BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct path));
->
->         return btf_nested_type_is_trusted(&env->log, reg, field_name, btf=
-_id,
->                                           "__safe_trusted_or_null");
-> --
-> 2.47.1
->
+Not really. libbpf is developed in kernel tree, sync to github
+and released from github.
 
