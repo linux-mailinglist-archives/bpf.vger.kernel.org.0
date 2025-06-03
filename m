@@ -1,48 +1,48 @@
-Return-Path: <bpf+bounces-59524-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59525-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C0BCACCC67
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 19:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 072BAACCC68
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 19:46:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86849175084
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 17:46:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FDD81759DB
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 17:46:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B16B1E5B8A;
-	Tue,  3 Jun 2025 17:46:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 860FF1E5B99;
+	Tue,  3 Jun 2025 17:46:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="goF5UN/s"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G8vkgwvQ"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D7FD2C3242;
-	Tue,  3 Jun 2025 17:46:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0352E1E491B;
+	Tue,  3 Jun 2025 17:46:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748972787; cv=none; b=POW13eTFBa3COhB3fZ5+YRu619Av2k6kuhwwyZ0e+syiIPnAGLejwSrnxehLXTaUfFGPKsrbhnndzbZBvCBrHCI7tXJR4UDNuQk3H2hhS8WeIuhnG13YVged1+SBFNke9awskQTzVqzSMM8O1SAx7nXUc5use1Uh54PrNRPd34Q=
+	t=1748972794; cv=none; b=sPZ3D5olnzWXqZkqTthNlbggIxgQoj+c8QSmhaT3xEv3x9JUXfJ0oZcXhFDIhNtd56Yqp99kAzrthYqhscE4fr3zsnRaxKV7U0HP+bbJavklZgbkbkwUPCA4EXlSmE86BKd0c4jp667+cx5wuWuOO8cVnzskj8tw0l+3w9AVhWk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748972787; c=relaxed/simple;
-	bh=pPGqq/khaOlApziNAsBe7r3FMrqclQn0oOxLpIyDN44=;
+	s=arc-20240116; t=1748972794; c=relaxed/simple;
+	bh=cQMSEfxHGG8Dm77wIoKa4HHmMVOd9aj8W1pMm7ROYXA=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=d+pJ9ooikHkPIL/huURLkECqVaxBdy756k8sSw2JCopN9ZGFgkUquVJl4U7Xapv5FYS5I1J9RyvmNUIbZhJYNh0MZe6Z8uY6HQQuxCkjX8PHC9fbBoHQjM76fYqd56iAVXN1av1fMkMUAw7/fhBT0SZv98M/IzcVD9fdN/4DApI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=goF5UN/s; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7131DC4CEED;
-	Tue,  3 Jun 2025 17:46:23 +0000 (UTC)
+	 MIME-Version:Content-Type; b=OlajiS82JEFQgzZ/67hhgUCA99B47NlHwmLYpJF4bq6bH+cDariAoiGW+1Z1VCZo7uzdDh8r4KLcm8dGDiWSB+zv/ldrV5yub4ca5YOivv55T/74GAFoX7vIPqDqGmayjRFlVzBm3osMZFJPH72V5RbMsDBPQECpOt6HrGljoxU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G8vkgwvQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51854C4CEED;
+	Tue,  3 Jun 2025 17:46:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748972787;
-	bh=pPGqq/khaOlApziNAsBe7r3FMrqclQn0oOxLpIyDN44=;
+	s=k20201202; t=1748972793;
+	bh=cQMSEfxHGG8Dm77wIoKa4HHmMVOd9aj8W1pMm7ROYXA=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=goF5UN/sK6FL713/c18g9US/a8WdNQSZ6iD7XlMmQVv+4aeVX/7xoSc6JQlfae4Yz
-	 ZE0MxHPb2DIop046sUIOIdpwM0KMtFVASREhF4xBTQ6TrGl6zaAmWqb4noxW+CWhvT
-	 ZrSLyLUHRpETJgNN4HkiiopD7DVLUH+QtKaubjTAoLKOSxc+olRyE9dnZPF1TDxFJC
-	 QNK0L8cYimjc0zhifR5JU9LWgRS2JT27xHZR1wKUxqKx4VJDeQnAwPW0qIuSGA1iHl
-	 TcEkc4cu0mSfc+JZZAn2bCqyMaifXko4e4BDI4kdwXOGm2/a4m/19D76D6wejb5YPR
-	 IRue+SaL1tjPg==
-Subject: [PATCH bpf-next V1 5/7] net: veth: Read xdp metadata from rx_meta
- struct if available
+	b=G8vkgwvQQmQjsUHwO/cWRaqTBwd1GE+s2ZZDvrDX8MPDYaU6cYTfe5+i3eaH+D/qE
+	 T+C0lRDYaHUMLVtLwckhTLmY0ZZj4apRnB6PRKD2ycnK7pNT/nDcjwrm0pa0Byo+c3
+	 ZSxiJ/v8vSUIHzyeer5qVSfZ8oGRNVUkWdVnkNK3DnkYef0uGPI+hu/th0KbBv2wDd
+	 EJx1hvsrN5WEq7zA9kSEpwz1kLsNidpTkbNs4KUOdURR+YgShiJ0IZHmuiCaiscWYz
+	 4Q6yp4mCf4t0R/2eBvLMTpoQrv0IF5xFeOp+P4Z2tmrJsjaJIdOKvSr81M3SBgEEfW
+	 kdYCEYsRZBoQQ==
+Subject: [PATCH bpf-next V1 6/7] bpf: selftests: Add rx_meta store kfuncs
+ selftest
 From: Jesper Dangaard Brouer <hawk@kernel.org>
 To: bpf@vger.kernel.org, netdev@vger.kernel.org,
  Jakub Kicinski <kuba@kernel.org>, lorenzo@kernel.org
@@ -53,8 +53,8 @@ Cc: Jesper Dangaard Brouer <hawk@kernel.org>,
  "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
  sdf@fomichev.me, kernel-team@cloudflare.com, arthur@arthurfabre.com,
  jakub@cloudflare.com
-Date: Tue, 03 Jun 2025 19:46:21 +0200
-Message-ID: <174897278159.1677018.3349798909066020659.stgit@firesoul>
+Date: Tue, 03 Jun 2025 19:46:28 +0200
+Message-ID: <174897278834.1677018.7674555608317742053.stgit@firesoul>
 In-Reply-To: <174897271826.1677018.9096866882347745168.stgit@firesoul>
 References: <174897271826.1677018.9096866882347745168.stgit@firesoul>
 User-Agent: StGit/1.5
@@ -69,130 +69,294 @@ Content-Transfer-Encoding: 7bit
 
 From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-Report xdp_rx_meta info if available in xdp_buff struct in
-xdp_metadata_ops callbacks for veth driver
+Introduce bpf selftests for the XDP rx_meta store kfuncs.
 
 Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 ---
- drivers/net/veth.c |   12 +++++++++++
- include/net/xdp.h  |   57 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 69 insertions(+)
+ .../testing/selftests/bpf/prog_tests/xdp_rxmeta.c  |  166 ++++++++++++++++++++
+ .../selftests/bpf/progs/xdp_rxmeta_receiver.c      |   44 +++++
+ .../selftests/bpf/progs/xdp_rxmeta_redirect.c      |   48 ++++++
+ 3 files changed, 258 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_rxmeta.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_rxmeta_receiver.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_rxmeta_redirect.c
 
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index 7bb53961c0ea..94b470b6b680 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -1614,6 +1614,10 @@ static int veth_xdp(struct net_device *dev, struct netdev_bpf *xdp)
- static int veth_xdp_rx_timestamp(const struct xdp_md *ctx, u64 *timestamp)
- {
- 	struct veth_xdp_buff *_ctx = (void *)ctx;
-+	const struct xdp_buff *xdp = &_ctx->xdp;
+diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_rxmeta.c b/tools/testing/selftests/bpf/prog_tests/xdp_rxmeta.c
+new file mode 100644
+index 000000000000..544279b58e10
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/xdp_rxmeta.c
+@@ -0,0 +1,166 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <test_progs.h>
++#include <network_helpers.h>
++#include <bpf/btf.h>
++#include <linux/if_link.h>
 +
-+	if (!xdp_load_rx_ts_from_buff(xdp, timestamp))
-+		return 0;
- 
- 	if (!_ctx->skb)
- 		return -ENODATA;
-@@ -1626,8 +1630,12 @@ static int veth_xdp_rx_hash(const struct xdp_md *ctx, u32 *hash,
- 			    enum xdp_rss_hash_type *rss_type)
- {
- 	struct veth_xdp_buff *_ctx = (void *)ctx;
-+	const struct xdp_buff *xdp = &_ctx->xdp;
- 	struct sk_buff *skb = _ctx->skb;
- 
-+	if (!xdp_load_rx_hash_from_buff(xdp, hash, rss_type))
-+		return 0;
++#include "xdp_rxmeta_redirect.skel.h"
++#include "xdp_rxmeta_receiver.skel.h"
 +
- 	if (!skb)
- 		return -ENODATA;
- 
-@@ -1641,9 +1649,13 @@ static int veth_xdp_rx_vlan_tag(const struct xdp_md *ctx, __be16 *vlan_proto,
- 				u16 *vlan_tci)
- {
- 	const struct veth_xdp_buff *_ctx = (void *)ctx;
-+	const struct xdp_buff *xdp = &_ctx->xdp;
- 	const struct sk_buff *skb = _ctx->skb;
- 	int err;
- 
-+	if (!xdp_load_rx_vlan_tag_from_buff(xdp, vlan_proto, vlan_tci))
-+		return 0;
++#define LOCAL_NETNS_NAME	"local"
++#define FWD_NETNS_NAME		"forward"
++#define DST_NETNS_NAME		"dest"
 +
- 	if (!skb)
- 		return -ENODATA;
- 
-diff --git a/include/net/xdp.h b/include/net/xdp.h
-index 1ecbfe2053f2..6d93f0cf1b53 100644
---- a/include/net/xdp.h
-+++ b/include/net/xdp.h
-@@ -158,6 +158,23 @@ static __always_inline bool xdp_buff_has_valid_meta_area(struct xdp_buff *xdp)
- 	return !!(xdp->flags & XDP_FLAGS_META_AREA);
- }
- 
-+static __always_inline bool
-+xdp_buff_has_rx_meta_hash(const struct xdp_buff *xdp)
++#define LOCAL_NAME	"local"
++#define FWD0_NAME	"fwd0"
++#define FWD1_NAME	"fwd1"
++#define DST_NAME	"dest"
++
++#define LOCAL_MAC	"00:00:00:00:00:01"
++#define FWD0_MAC	"00:00:00:00:00:02"
++#define FWD1_MAC	"00:00:00:00:01:01"
++#define DST_MAC		"00:00:00:00:01:02"
++
++#define LOCAL_ADDR	"10.0.0.1"
++#define FWD0_ADDR	"10.0.0.2"
++#define FWD1_ADDR	"20.0.0.1"
++#define DST_ADDR	"20.0.0.2"
++
++#define PREFIX_LEN	"8"
++#define NUM_PACKETS	10
++
++static int run_ping(const char *dst, int num_ping)
 +{
-+	return !!(xdp->flags & XDP_FLAGS_META_RX_HASH);
-+}
-+
-+static __always_inline bool
-+xdp_buff_has_rx_meta_vlan(const struct xdp_buff *xdp)
-+{
-+	return !!(xdp->flags & XDP_FLAGS_META_RX_VLAN);
-+}
-+
-+static __always_inline bool xdp_buff_has_rx_meta_ts(const struct xdp_buff *xdp)
-+{
-+	return !!(xdp->flags & XDP_FLAGS_META_RX_TS);
-+}
-+
- static __always_inline void
- xdp_init_buff(struct xdp_buff *xdp, u32 frame_sz, struct xdp_rxq_info *rxq)
- {
-@@ -708,4 +725,44 @@ static __always_inline u32 bpf_prog_run_xdp(const struct bpf_prog *prog,
- 
- 	return act;
- }
-+
-+static inline int xdp_load_rx_hash_from_buff(const struct xdp_buff *xdp,
-+					     u32 *hash,
-+					     enum xdp_rss_hash_type *rss_type)
-+{
-+	if (!xdp_buff_has_rx_meta_hash(xdp))
-+		return -ENODATA;
-+
-+	*hash = xdp->rx_meta->hash.val;
-+	*rss_type = xdp->rx_meta->hash.type;
-+
++	SYS(fail, "ping -c%d -W1 -i0.5 %s >/dev/null", num_ping, dst);
 +	return 0;
++fail:
++	return -1;
 +}
 +
-+static inline int xdp_load_rx_vlan_tag_from_buff(const struct xdp_buff *xdp,
-+						 __be16 *vlan_proto,
-+						 u16 *vlan_tci)
++void test_xdp_rxmeta(void)
 +{
-+	if (!xdp_buff_has_rx_meta_vlan(xdp))
-+		return -ENODATA;
++	struct xdp_rxmeta_redirect *skel_redirect = NULL;
++	struct xdp_rxmeta_receiver *skel_receiver = NULL;
++	struct bpf_devmap_val val = {};
++	struct bpf_program *prog;
++	__u32 key = 0, stats;
++	struct nstoken *tok;
++	int ret, index;
 +
-+	*vlan_proto = xdp->rx_meta->vlan.proto;
-+	*vlan_tci = xdp->rx_meta->vlan.tci;
++	SYS(out, "ip netns add " LOCAL_NETNS_NAME);
++	SYS(out, "ip netns add " FWD_NETNS_NAME);
++	SYS(out, "ip netns add " DST_NETNS_NAME);
 +
-+	return 0;
++	tok = open_netns(LOCAL_NETNS_NAME);
++	if (!ASSERT_OK_PTR(tok, "setns"))
++		goto out;
++
++	SYS(out, "ip link add " LOCAL_NAME " type veth peer " FWD0_NAME);
++	SYS(out, "ip link set " FWD0_NAME " netns " FWD_NETNS_NAME);
++	SYS(out, "ip link set dev " LOCAL_NAME " address " LOCAL_MAC);
++	SYS(out, "ip addr add " LOCAL_ADDR "/" PREFIX_LEN " dev " LOCAL_NAME);
++	SYS(out, "ip link set dev " LOCAL_NAME " up");
++	SYS(out, "ip route add default via " FWD0_ADDR);
++	close_netns(tok);
++
++	tok = open_netns(DST_NETNS_NAME);
++	if (!ASSERT_OK_PTR(tok, "setns"))
++		goto out;
++
++	SYS(out, "ip link add " DST_NAME " type veth peer " FWD1_NAME);
++	SYS(out, "ip link set " FWD1_NAME " netns " FWD_NETNS_NAME);
++	SYS(out, "ip link set dev " DST_NAME " address " DST_MAC);
++	SYS(out, "ip addr add " DST_ADDR "/" PREFIX_LEN " dev " DST_NAME);
++	SYS(out, "ip link set dev " DST_NAME " up");
++	SYS(out, "ip route add default via " FWD1_ADDR);
++
++	skel_receiver = xdp_rxmeta_receiver__open();
++	if (!ASSERT_OK_PTR(skel_receiver, "open skel_receiver"))
++		goto out;
++
++	prog = bpf_object__find_program_by_name(skel_receiver->obj,
++						"xdp_rxmeta_receiver");
++	index = if_nametoindex(DST_NAME);
++	bpf_program__set_ifindex(prog, index);
++	bpf_program__set_flags(prog, BPF_F_XDP_DEV_BOUND_ONLY);
++
++	if (!ASSERT_OK(xdp_rxmeta_receiver__load(skel_receiver),
++		       "load skel_receiver"))
++		goto out;
++
++	ret = bpf_xdp_attach(index,
++			     bpf_program__fd(skel_receiver->progs.xdp_rxmeta_receiver),
++			     XDP_FLAGS_DRV_MODE, NULL);
++	if (!ASSERT_GE(ret, 0, "bpf_xdp_attach rx_meta_redirect"))
++		goto out;
++
++	close_netns(tok);
++	tok = open_netns(FWD_NETNS_NAME);
++	if (!ASSERT_OK_PTR(tok, "setns"))
++		goto out;
++
++	SYS(out, "ip link set dev " FWD0_NAME " address " FWD0_MAC);
++	SYS(out, "ip addr add " FWD0_ADDR "/" PREFIX_LEN " dev " FWD0_NAME);
++	SYS(out, "ip link set dev " FWD0_NAME " up");
++
++	SYS(out, "ip link set dev " FWD1_NAME " address " FWD1_MAC);
++	SYS(out, "ip addr add " FWD1_ADDR "/" PREFIX_LEN " dev " FWD1_NAME);
++	SYS(out, "ip link set dev " FWD1_NAME " up");
++
++	SYS(out, "sysctl -qw net.ipv4.conf.all.forwarding=1");
++
++	skel_redirect = xdp_rxmeta_redirect__open();
++	if (!ASSERT_OK_PTR(skel_redirect, "open skel_redirect"))
++		goto out;
++
++	prog = bpf_object__find_program_by_name(skel_redirect->obj,
++						"xdp_rxmeta_redirect");
++	index = if_nametoindex(FWD0_NAME);
++	bpf_program__set_ifindex(prog, index);
++	bpf_program__set_flags(prog, BPF_F_XDP_DEV_BOUND_ONLY);
++
++	if (!ASSERT_OK(xdp_rxmeta_redirect__load(skel_redirect),
++		       "load skel_redirect"))
++		goto out;
++
++	val.ifindex = if_nametoindex(FWD1_NAME);
++	ret = bpf_map_update_elem(bpf_map__fd(skel_redirect->maps.dev_map),
++				  &key, &val, 0);
++	if (!ASSERT_GE(ret, 0, "bpf_map_update_elem"))
++		goto out;
++
++	ret = bpf_xdp_attach(index,
++			     bpf_program__fd(skel_redirect->progs.xdp_rxmeta_redirect),
++			     XDP_FLAGS_DRV_MODE, NULL);
++	if (!ASSERT_GE(ret, 0, "bpf_xdp_attach rxmeta_redirect"))
++		goto out;
++
++	close_netns(tok);
++	tok = open_netns(LOCAL_NETNS_NAME);
++	if (!ASSERT_OK_PTR(tok, "setns"))
++		goto out;
++
++	if (!ASSERT_OK(run_ping(DST_ADDR, NUM_PACKETS), "ping"))
++		goto out;
++
++	close_netns(tok);
++	tok = open_netns(DST_NETNS_NAME);
++	if (!ASSERT_OK_PTR(tok, "setns"))
++		goto out;
++
++	ret = bpf_map__lookup_elem(skel_receiver->maps.stats,
++				   &key, sizeof(key),
++				   &stats, sizeof(stats), 0);
++	if (!ASSERT_GE(ret, 0, "bpf_map_update_elem"))
++		goto out;
++
++	ASSERT_EQ(stats, NUM_PACKETS, "rx_meta stats");
++out:
++	xdp_rxmeta_redirect__destroy(skel_redirect);
++	xdp_rxmeta_receiver__destroy(skel_receiver);
++	if (tok)
++		close_netns(tok);
++	SYS_NOFAIL("ip netns del " LOCAL_NETNS_NAME);
++	SYS_NOFAIL("ip netns del " FWD_NETNS_NAME);
++	SYS_NOFAIL("ip netns del " DST_NETNS_NAME);
 +}
+diff --git a/tools/testing/selftests/bpf/progs/xdp_rxmeta_receiver.c b/tools/testing/selftests/bpf/progs/xdp_rxmeta_receiver.c
+new file mode 100644
+index 000000000000..1033fa558970
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/xdp_rxmeta_receiver.c
+@@ -0,0 +1,44 @@
++// SPDX-License-Identifier: GPL-2.0
++#define BPF_NO_KFUNC_PROTOTYPES
++#include <vmlinux.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_endian.h>
 +
-+static inline int xdp_load_rx_ts_from_buff(const struct xdp_buff *xdp, u64 *ts)
++extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *hash,
++				    enum xdp_rss_hash_type *rss_type) __ksym;
++extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
++					 __u64 *timestamp) __ksym;
++
++#define RX_TIMESTAMP	0x12345678
++#define RX_HASH		0x1234
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__type(key, __u32);
++	__type(value, __u32);
++	__uint(max_entries, 1);
++} stats SEC(".maps");
++
++SEC("xdp")
++int xdp_rxmeta_receiver(struct xdp_md *ctx)
 +{
-+	struct skb_shared_info *sinfo;
++	enum xdp_rss_hash_type rss_type;
++	__u64 timestamp;
++	__u32 hash;
 +
-+	if (!xdp_buff_has_rx_meta_ts(xdp))
-+		return -ENODATA;
++	if (!bpf_xdp_metadata_rx_hash(ctx, &hash, &rss_type) &&
++	    !bpf_xdp_metadata_rx_timestamp(ctx, &timestamp)) {
++		if (hash == RX_HASH && rss_type == XDP_RSS_L4_TCP &&
++		    timestamp == RX_TIMESTAMP) {
++			__u32 *val, key = 0;
 +
-+	sinfo = xdp_get_shared_info_from_buff(xdp);
-+	*ts = sinfo->hwtstamps.hwtstamp;
++			val = bpf_map_lookup_elem(&stats, &key);
++			if (val)
++				 __sync_add_and_fetch(val, 1);
++		}
++	}
 +
-+	return 0;
++	return XDP_PASS;
 +}
 +
- #endif /* __LINUX_NET_XDP_H__ */
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/xdp_rxmeta_redirect.c b/tools/testing/selftests/bpf/progs/xdp_rxmeta_redirect.c
+new file mode 100644
+index 000000000000..1606454a1fbc
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/xdp_rxmeta_redirect.c
+@@ -0,0 +1,48 @@
++// SPDX-License-Identifier: GPL-2.0
++#define BPF_NO_KFUNC_PROTOTYPES
++#include <vmlinux.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_endian.h>
++
++extern void bpf_xdp_store_rx_hash(struct xdp_md *ctx, u32 hash,
++				  enum xdp_rss_hash_type rss_type) __ksym;
++extern void bpf_xdp_store_rx_ts(struct xdp_md *ctx, __u64 ts) __ksym;
++
++#define RX_TIMESTAMP	0x12345678
++#define RX_HASH		0x1234
++
++#define ETH_ALEN	6
++#define ETH_P_IP	0x0800
++
++struct {
++	__uint(type, BPF_MAP_TYPE_DEVMAP);
++	__uint(key_size, sizeof(__u32));
++	__uint(value_size, sizeof(struct bpf_devmap_val));
++	__uint(max_entries, 1);
++} dev_map SEC(".maps");
++
++SEC("xdp")
++int xdp_rxmeta_redirect(struct xdp_md *ctx)
++{
++	__u8 src_mac[] = { 0x00, 0x00, 0x00, 0x00, 0x01, 0x01 };
++	__u8 dst_mac[] = { 0x00, 0x00, 0x00, 0x00, 0x01, 0x02 };
++	void *data_end = (void *)(long)ctx->data_end;
++	void *data = (void *)(long)ctx->data;
++	struct ethhdr *eh = data;
++
++	if (eh + 1 > (struct ethhdr *)data_end)
++		return XDP_DROP;
++
++	if (eh->h_proto != bpf_htons(ETH_P_IP))
++		return XDP_PASS;
++
++	__builtin_memcpy(eh->h_source, src_mac, ETH_ALEN);
++	__builtin_memcpy(eh->h_dest, dst_mac, ETH_ALEN);
++
++	bpf_xdp_store_rx_hash(ctx, RX_HASH, XDP_RSS_L4_TCP);
++	bpf_xdp_store_rx_ts(ctx, RX_TIMESTAMP);
++
++	return bpf_redirect_map(&dev_map, ctx->rx_queue_index, XDP_PASS);
++}
++
++char _license[] SEC("license") = "GPL";
 
 
 
