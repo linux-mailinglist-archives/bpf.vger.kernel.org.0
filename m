@@ -1,130 +1,151 @@
-Return-Path: <bpf+bounces-59562-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59563-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FABEACCF9D
-	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 00:10:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05BC4ACCFA6
+	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 00:14:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 83CE51895F75
-	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 22:10:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AEA393A5DFC
+	for <lists+bpf@lfdr.de>; Tue,  3 Jun 2025 22:13:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14127253941;
-	Tue,  3 Jun 2025 22:10:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9868624DCF9;
+	Tue,  3 Jun 2025 22:14:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Apt0Rs/F"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qKyaMqJe"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f73.google.com (mail-oa1-f73.google.com [209.85.160.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 807081A2643;
-	Tue,  3 Jun 2025 22:10:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1D4A200B99
+	for <bpf@vger.kernel.org>; Tue,  3 Jun 2025 22:14:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748988600; cv=none; b=SaYdIpLSQbLrRefqeMESOR0NVl6+f+plYdg+zt7K6+ieQZAWK09U/vMxDv8oirRnnRZIKjpUhtLX3+ZzQyjHN9Q3noLt2iDHgueE0ZPdEKW9zjDI1UEm2C2r7ZVz8cnv9L6k0vSCLzSiAk/Ed7uu59PFDCdLpfyVqZyTrOVSUeI=
+	t=1748988848; cv=none; b=lAI4ApXRc7xI8Zl+UiebPZde8ElNCOvByPXadVs4ZNXt4I+qlEItlKrKb6ioKxxEEbLMXi/xPCGuXWkTGljZpY3fIprf9wR7tIXEPCoWzNHJ/WrgdVIYd6X4zG0zLBhSk1noPTegw7wdlOA2RqxENompkFXR6xDvm6gf+huY8PE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748988600; c=relaxed/simple;
-	bh=yDwtTU7q5ftKQNzN/brcoLgZJNUcYEqPo41Z09sqrYg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Vq9qJypbB4RKsqWLi+p6nc+aZeEXtCbz3as2fXDClEGr8pIePcw2mLPSnQkIGd8Ybmdu3AbVoSVcVeaPN3iGXrvTnEZoCVxjzvet1zwN0N3e26kHKovfEhJFnmCgS9ZcQBBx7YxE36CchfM/Oppjh1UiyiEVhGRkvl5EvhZC9Us=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Apt0Rs/F; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6BFDC4CEED;
-	Tue,  3 Jun 2025 22:09:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748988599;
-	bh=yDwtTU7q5ftKQNzN/brcoLgZJNUcYEqPo41Z09sqrYg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Apt0Rs/FW6gf736dQ7/ejmjD8IszQ0GRdGw8RM8CkIvCUW5W90Q4FH11vJtYRblqv
-	 9rBtkWZtP1QBc0roa36IRl6YBNwscgbBxKPNYTLm4Q8S83ewbFYqEBU9gdQ4vErvcl
-	 AnSGRhGgcfbyionV6zX/0pca7M/EYPtc3JLL1wq3fLe35Vc2J/sK5kZHKxh4QpG6ov
-	 ELZ7m7pqIdkCakQNZ54g8b8Ajwo5NXI1mkl1QFCQNCOcb7m+RzgD2gkdblyBDywx7O
-	 ZLvgFm374M7uOMrUw9mIaP4CigRkLt9XBk4XZvoxaM8MfpnodsmvfUNDdmrmtcxIog
-	 sUBaoSIdiNSFg==
-Date: Tue, 3 Jun 2025 15:09:57 -0700
-From: Namhyung Kim <namhyung@kernel.org>
-To: Blake Jones <blakejones@google.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Chun-Tse Shao <ctshao@google.com>,
-	Zhongqiu Han <quic_zhonhan@quicinc.com>,
-	James Clark <james.clark@linaro.org>,
-	Charlie Jenkins <charlie@rivosinc.com>,
-	Andi Kleen <ak@linux.intel.com>, Dmitry Vyukov <dvyukov@google.com>,
-	Leo Yan <leo.yan@arm.com>, Yujie Liu <yujie.liu@intel.com>,
-	Graham Woodward <graham.woodward@arm.com>,
-	Yicong Yang <yangyicong@hisilicon.com>,
-	Ben Gainey <ben.gainey@arm.com>, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH 2/3] perf: collect BPF metadata from existing BPF programs
-Message-ID: <aD9yte49C_BM5oA9@google.com>
-References: <20250521222725.3895192-1-blakejones@google.com>
- <20250521222725.3895192-3-blakejones@google.com>
- <aD9Xxhwqpm8BDeKe@google.com>
- <CAP_z_Cj_8uTBGzaoFmi1f956dXi1qDnF4kqc49MSn0jDHYFfxg@mail.gmail.com>
- <aD9sxuFwwxwHGzNi@google.com>
- <CAP_z_Cg+mPpdzxg-d+VV5J9t7vTTNXQmKLdnfuNETm1H40OA+g@mail.gmail.com>
+	s=arc-20240116; t=1748988848; c=relaxed/simple;
+	bh=hduZuFIuqUufg3qRvz7EfqJxi8VCTStcJd48NQA7LAI=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Content-Type; b=OyhC/TVrEPuRcuy0JaIKipdWGd8KFbfgvYAG/tG6/OHoxkilgAianPlMIShGppjhLTobYQ+pMf0SXO4zcXJ6r6QfNziUlDd05H0MTVHp6IPDqvMPaq+KzgSqsHvohpufXlViRgLy9dHrcAZxCmCaPnQBJeQrdoHgM0qGHY2d1DQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qKyaMqJe; arc=none smtp.client-ip=209.85.160.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-oa1-f73.google.com with SMTP id 586e51a60fabf-2d5723630a2so9906178fac.2
+        for <bpf@vger.kernel.org>; Tue, 03 Jun 2025 15:14:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1748988845; x=1749593645; darn=vger.kernel.org;
+        h=to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=HBvqis6Gd/BZXWR1PaU818LTftivU69Sy8CHjNdsMnI=;
+        b=qKyaMqJeNgIcHz22wWe1EiUZr+tSQlS8BqQhH0AZjZJbcn/rWP8MQjeSVp4dTHGXhG
+         11K7DZFGczHUHclij6+8mJWotgMegn9sj/i0x6xzXa5oKd6+qsFz2Fd6AG4nfZjGWW6G
+         Kd8kl4rbcKxLk7QagBZqH+ONoEHZpr+4BMzK7Ga5zEjfhLugtAIcH5P9rU83GqqxnfLT
+         RTDsRTodoRgS2+yTsTqumj4E/sq/O2j6I7JYstwL2jpkZ/DMLNEw8hb/Eqm+IjkVi+2E
+         z2Gh1bg/tNvMB1ko84ecJSBDQsSp0/s+QKamzUUDRGcII/JQVq8jGVDwKYVqhDUeZZVf
+         qnJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748988845; x=1749593645;
+        h=to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HBvqis6Gd/BZXWR1PaU818LTftivU69Sy8CHjNdsMnI=;
+        b=GHlDj448bRmgEmNKi78ZNWjAu2bLO7Seh4UrGJH3gOoB8cZDTN+Uhxc50RoHvrtQ48
+         crfu35e2M7GL3mmowwmtoiuhlD/0FPRtchEtM7aEek7FmxrDUrcxlfw+G3hsmVOcZpYd
+         RwyS5l4wXZ1I+0aWCYR5/QZuxU73jURimfeiQyawyL3X5nLao13xYS5w9Vt48Cqw/ZYS
+         6ZrJlGhHbep5TDlRkxDVf7mL6huLxMxdQ2rQU/jUeTDfYViDXgVBkDl4y5rATjTyqJFN
+         oFeW2ms4OLJnndsECFP7wrHMs9V7ibJTeeJ3E2cIi69vAii+sfwMa2AQAFbLwJXVULaU
+         b7vw==
+X-Forwarded-Encrypted: i=1; AJvYcCX+MsDjWDok9fr572Ng4dB3DKPxynMbB7khSLr7qkbd2asQYolL1KZw3rpSgIxJz8NjMUk=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywo8ICJunSMZl5FQHelToO3R8u2enyv34+dWxa6zhX+QC16o5Xr
+	j7NNyq854oMwvY1qGEck4fF/46R44hwKgxccTcEa7RV17EfE+4wJ8hyAw7ywuDGkGhQ2X0Wn+R8
+	sfMtpOgUoyQ==
+X-Google-Smtp-Source: AGHT+IGQdxlydEspoa/IRPzLHst/hTjDxEHz14OBx3FOg3qc8iUmmhkOkFokPCY6u/UhkfkGLnOX2+IRxdXd
+X-Received: from oabhp23.prod.google.com ([2002:a05:6870:9a97:b0:2e8:febf:9eae])
+ (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6870:164c:b0:2d5:ba2d:80ed
+ with SMTP id 586e51a60fabf-2e9bf40e7fbmr293777fac.25.1748988845743; Tue, 03
+ Jun 2025 15:14:05 -0700 (PDT)
+Date: Tue,  3 Jun 2025 15:13:58 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP_z_Cg+mPpdzxg-d+VV5J9t7vTTNXQmKLdnfuNETm1H40OA+g@mail.gmail.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.49.0.1204.g71687c7c1d-goog
+Message-ID: <20250603221358.2562167-1-irogers@google.com>
+Subject: [PATCH v1] tools/build: Remove some unused libbpf pre-1.0 feature
+ test logic
+From: Ian Rogers <irogers@google.com>
+To: Namhyung Kim <namhyung@kernel.org>, Arnaldo Carvalho de Melo <acme@redhat.com>, 
+	Ian Rogers <irogers@google.com>, "Steven Rostedt (Google)" <rostedt@goodmis.org>, 
+	Quentin Monnet <qmo@kernel.org>, James Clark <james.clark@linaro.org>, 
+	Tomas Glozar <tglozar@redhat.com>, "Steinar H. Gunderson" <sesse@google.com>, 
+	Guilherme Amadio <amadio@gentoo.org>, Leo Yan <leo.yan@arm.com>, 
+	Yang Jihong <yangjihong@bytedance.com>, Charlie Jenkins <charlie@rivosinc.com>, 
+	Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Jun 03, 2025 at 02:54:50PM -0700, Blake Jones wrote:
-> Hi Namhyung,
-> 
-> On Tue, Jun 3, 2025 at 2:44 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> > > > IIUC the metadata is collected for each BPF program which may have
-> > > > multiple subprograms.  Then this patch creates multiple PERF_RECORD_
-> > > > BPF_METADATA for each subprogram, right?
-> > > >
-> > > > Can it be shared using the BPF program ID?
-> > >
-> > > In theory, yes, it could be shared. But I want to be able to correlate them
-> > > with the corresponding PERF_RECORD_KSYMBOL events, and KSYMBOL events for
-> > > subprograms don't have the full-program ID, so I wouldn't be able to do that.
-> >
-> > It's unfortunate that KSYMBOL doesn't have the program ID, but IIRC the
-> > following BPF_EVENT should have it.  I think it's safe to think KSYMBOLs
-> > belong to the BPF_EVENT when they are from the same thread.
-> 
-> Hmmm. Is that documented and tested anywhere? Offhand it sounds like an
-> implementation detail that I wouldn't feel great about depending on -
-> certainly not without a strong guarantee that it wouldn't change.
+Commit 76a97cf2e169 ("perf build: Remove libbpf pre-1.0 feature
+tests") removed the libbpf feature test logic used by perf in favor of
+using LIBBPF_MAJOR_VERSION. Remove some build targets that should have
+been removed as part of that clean up.
 
-Good point.  Maybe BPF folks have some idea?
+Fixes: 76a97cf2e169 ("perf build: Remove libbpf pre-1.0 feature tests")
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/build/Makefile.feature |  6 ------
+ tools/build/feature/Makefile | 21 ---------------------
+ 2 files changed, 27 deletions(-)
 
-Anyway the current code generates them together in a function.
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/events/core.c?h=v6.15#n9825
-
-> 
-> Can you say more about why the duplicated records concern you?
-
-More data means more chance to lost something.  I don't expect this is
-gonna be a practical concern but in general we should pursue less data.
-
-Thanks,
-Namhyung
+diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
+index 1f44ca677ad3..05f6671a2d07 100644
+--- a/tools/build/Makefile.feature
++++ b/tools/build/Makefile.feature
+@@ -127,12 +127,6 @@ FEATURE_TESTS_EXTRA :=                  \
+          llvm                           \
+          clang                          \
+          libbpf                         \
+-         libbpf-btf__load_from_kernel_by_id \
+-         libbpf-bpf_prog_load           \
+-         libbpf-bpf_object__next_program \
+-         libbpf-bpf_object__next_map    \
+-         libbpf-bpf_program__set_insns  \
+-         libbpf-bpf_create_map		\
+          libpfm4                        \
+          libdebuginfod			\
+          clang-bpf-co-re		\
+diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
+index b8b5fb183dd4..4aa166d3eab6 100644
+--- a/tools/build/feature/Makefile
++++ b/tools/build/feature/Makefile
+@@ -339,27 +339,6 @@ $(OUTPUT)test-bpf.bin:
+ $(OUTPUT)test-libbpf.bin:
+ 	$(BUILD) -lbpf
+ 
+-$(OUTPUT)test-libbpf-btf__load_from_kernel_by_id.bin:
+-	$(BUILD) -lbpf
+-
+-$(OUTPUT)test-libbpf-bpf_prog_load.bin:
+-	$(BUILD) -lbpf
+-
+-$(OUTPUT)test-libbpf-bpf_map_create.bin:
+-	$(BUILD) -lbpf
+-
+-$(OUTPUT)test-libbpf-bpf_object__next_program.bin:
+-	$(BUILD) -lbpf
+-
+-$(OUTPUT)test-libbpf-bpf_object__next_map.bin:
+-	$(BUILD) -lbpf
+-
+-$(OUTPUT)test-libbpf-bpf_program__set_insns.bin:
+-	$(BUILD) -lbpf
+-
+-$(OUTPUT)test-libbpf-btf__raw_data.bin:
+-	$(BUILD) -lbpf
+-
+ $(OUTPUT)test-sdt.bin:
+ 	$(BUILD)
+ 
+-- 
+2.49.0.1204.g71687c7c1d-goog
 
 
