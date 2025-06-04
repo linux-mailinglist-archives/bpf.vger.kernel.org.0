@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-59603-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59604-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2472BACD3A8
-	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 03:20:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B756FACD3DB
+	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 03:23:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B767173C40
-	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 01:20:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3BB57A8060
+	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 01:20:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 560F52676FF;
-	Wed,  4 Jun 2025 01:03:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84A73268FF1;
+	Wed,  4 Jun 2025 01:03:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GjT+7FnR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gotgzUs4"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CED8120B80A;
-	Wed,  4 Jun 2025 01:03:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04C5864A98;
+	Wed,  4 Jun 2025 01:03:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748998997; cv=none; b=P+TA9wtpKmw1QAEcI+/ZQw8Iw1bSVqQuXXCD566HnbwmteJqjA8bw5Yi6sTjWaD0XaK/kO7g4PHvmH2oK0JkYSZPQpvLVIoVTzLph7eChvRLrfGQeWJck76TS3ZwL7yv2PSakApS+kWGkoDs6IYZBzGZ9Qw5AA9fbjgYPjOcE34=
+	t=1748999034; cv=none; b=SIeNZfr+SWS4Cse0L7uIY7agXoVBHUR091jF3bSGDhucLT3drraRYPaHbxIeHE50vLNEy0J+jvCBftwwIrw2z8LDk8kvGiwGZcWy1+XCxPSQ/DluVDtf+fKVE4CNJvO8gRmmlmegcZhuZuTEbkLczOdItEtWgz0FEPBA9QS65bs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748998997; c=relaxed/simple;
-	bh=QPlJ5Ae3hEFzcu3c/DHx4+RYC8ZkKklfWqcwBXZ3LbU=;
+	s=arc-20240116; t=1748999034; c=relaxed/simple;
+	bh=A2yyTQextaFgnYpzNJwvmAv75QHhFSZZJjE1B8BCEtU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=R6fwb4ac3N1XvrruqI7+BpbZtnCTKiWZHnyZ0c4C4yF7TbVLHbs+77uUiw9tePIdmtqclZPEZc78k/y1P/DXpvpaNDLIusY4Z6WcXKQiK9gl1Up5zC+VqMifv88y6FRSHAFybzAG8vT9g0ukrG8H9XLCa3QrEqaCY9DR9iv3O0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GjT+7FnR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DC1BC4CEED;
-	Wed,  4 Jun 2025 01:03:16 +0000 (UTC)
+	 MIME-Version:Content-Type; b=AB+i3slw1yceMDQEcuc9otKKKDlXoqiXDZ8EWmcjh4rE4mspp7gvp50xWdxJz+SeVSUkhEHQZ4sNMwgc3VgcIi826kffHVVgB5+Ag1hHmMIyQS50l0SwYFjXiFUSe/mq5LY1YbrI0mUR1+M4LERHrO+EH9qbCnLoVOnjHLQcTIs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gotgzUs4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0E51C4CEF1;
+	Wed,  4 Jun 2025 01:03:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748998997;
-	bh=QPlJ5Ae3hEFzcu3c/DHx4+RYC8ZkKklfWqcwBXZ3LbU=;
+	s=k20201202; t=1748999033;
+	bh=A2yyTQextaFgnYpzNJwvmAv75QHhFSZZJjE1B8BCEtU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GjT+7FnRcrx5ogx5eS61tEe1ShTrYAzrjL33hgXLKOqNPkHO+x2pa6AwPIYfA+ONp
-	 5TaUg75WqmDkCilEBz+SP5OQSY8nrRhJXDvAmtWt3Xe7zLgjJjVvekRx4oYpuSg6HC
-	 8aGnTL/b3Lb7C2zG5e8/Ynje9hEqi8evwBwg0gYkMytR/nEHstiuJhXTVRgCrM4AlY
-	 EmmZuhCvcZuSLONSq5SmT5nqvwYUjOe25nsxJ+OIMx48MWChXgJZdwC0IUHXbUaUj7
-	 bkuYfhkaYPjlS9f1cCleYRQNXjPqOddxca5u94ua+qQSSuTbUzijviHSWjM+o8q0SM
-	 dwU+AKz61X0KQ==
+	b=gotgzUs4DzzhJnFB6vqSB35wmrYDTSzTmFQkUuH6bfA+tjGjesShyl0yowCPPvMKF
+	 aHjwox5jjZksHu89gqgJFlQLJFJdx1R+sbpKoQao15vYHB7O49q8KtWBeGwh4/ZMJI
+	 MJb3UqKX5WBDg41XOnHmnYCNG1hO0TgSMPZE8zY010ip6Y7Uyi1tR1if7LhA2GkxOA
+	 4CLAdIlSRCOGstoGFIaNa6YdFuSdOW0oCNlLVxgnVC/QJ3p5gQ8R+YhNywyMdqTLwd
+	 BRGjKIwqJgSgN2kjWY+qOK/EZ1rcZuIQG0VXVZTNUuibxHirhwyr3gldHWV8tTo3Dp
+	 NuZYuYfIGAonw==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
-Cc: Alan Maguire <alan.maguire@oracle.com>,
+Cc: Jiayuan Chen <jiayuan.chen@linux.dev>,
 	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	eddyz87@gmail.com,
-	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	jakub@cloudflare.com,
+	netdev@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 36/62] libbpf: Add identical pointer detection to btf_dedup_is_equiv()
-Date: Tue,  3 Jun 2025 21:01:47 -0400
-Message-Id: <20250604010213.3462-36-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 56/62] bpf, sockmap: Fix data lost during EAGAIN retries
+Date: Tue,  3 Jun 2025 21:02:07 -0400
+Message-Id: <20250604010213.3462-56-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250604010213.3462-1-sashal@kernel.org>
 References: <20250604010213.3462-1-sashal@kernel.org>
@@ -69,118 +69,115 @@ X-stable-base: Linux 6.6.92
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Alan Maguire <alan.maguire@oracle.com>
+From: Jiayuan Chen <jiayuan.chen@linux.dev>
 
-[ Upstream commit 8e64c387c942229c551d0f23de4d9993d3a2acb6 ]
+[ Upstream commit 7683167196bd727ad5f3c3fc6a9ca70f54520a81 ]
 
-Recently as a side-effect of
+We call skb_bpf_redirect_clear() to clean _sk_redir before handling skb in
+backlog, but when sk_psock_handle_skb() return EAGAIN due to sk_rcvbuf
+limit, the redirect info in _sk_redir is not recovered.
 
-commit ac053946f5c4 ("compiler.h: introduce TYPEOF_UNQUAL() macro")
+Fix skb redir loss during EAGAIN retries by restoring _sk_redir
+information using skb_bpf_set_redir().
 
-issues were observed in deduplication between modules and kernel BTF
-such that a large number of kernel types were not deduplicated so
-were found in module BTF (task_struct, bpf_prog etc).  The root cause
-appeared to be a failure to dedup struct types, specifically those
-with members that were pointers with __percpu annotations.
+Before this patch:
+'''
+./bench sockmap -c 2 -p 1 -a --rx-verdict-ingress
+Setting up benchmark 'sockmap'...
+create socket fd c1:13 p1:14 c2:15 p2:16
+Benchmark 'sockmap' started.
+Send Speed 1343.172 MB/s, BPF Speed 1343.238 MB/s, Rcv Speed   65.271 MB/s
+Send Speed 1352.022 MB/s, BPF Speed 1352.088 MB/s, Rcv Speed   0 MB/s
+Send Speed 1354.105 MB/s, BPF Speed 1354.105 MB/s, Rcv Speed   0 MB/s
+Send Speed 1355.018 MB/s, BPF Speed 1354.887 MB/s, Rcv Speed   0 MB/s
+'''
+Due to the high send rate, the RX processing path may frequently hit the
+sk_rcvbuf limit. Once triggered, incorrect _sk_redir will cause the flow
+to mistakenly enter the "!ingress" path, leading to send failures.
+(The Rcv speed depends on tcp_rmem).
 
-The issue in dedup is at the point that we are deduplicating structures,
-we have not yet deduplicated reference types like pointers.  If multiple
-copies of a pointer point at the same (deduplicated) integer as in this
-case, we do not see them as identical.  Special handling already exists
-to deal with structures and arrays, so add pointer handling here too.
+After this patch:
+'''
+./bench sockmap -c 2 -p 1 -a --rx-verdict-ingress
+Setting up benchmark 'sockmap'...
+create socket fd c1:13 p1:14 c2:15 p2:16
+Benchmark 'sockmap' started.
+Send Speed 1347.236 MB/s, BPF Speed 1347.367 MB/s, Rcv Speed   65.402 MB/s
+Send Speed 1353.320 MB/s, BPF Speed 1353.320 MB/s, Rcv Speed   65.536 MB/s
+Send Speed 1353.186 MB/s, BPF Speed 1353.121 MB/s, Rcv Speed   65.536 MB/s
+'''
 
-Reported-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20250429161042.2069678-1-alan.maguire@oracle.com
+Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
+Link: https://lore.kernel.org/r/20250407142234.47591-2-jiayuan.chen@linux.dev
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
 
-Based on my comprehensive analysis of the commit message, code changes,
-historical patterns, and kernel repository context, here is my
-recommendation: **YES** This commit should be backported to stable
-kernel trees for the following reasons: ## Critical Bug Fix Analysis
-**1. Fixes a Real User-Impacting Regression:** - The commit addresses a
-regression introduced by `commit ac053946f5c4 ("compiler.h: introduce
-TYPEOF_UNQUAL() macro")` - This regression causes "a large number of
-kernel types" (task_struct, bpf_prog, etc.) to fail deduplication -
-Results in broken BPF functionality for kernel modules, which is user-
-visible **2. Follows Established Stable Tree Criteria:** - **Important
-bugfix**: ✅ Fixes BTF deduplication failures affecting core BPF
-functionality - **Minimal risk**: ✅ Small, targeted change following
-existing patterns - **No architectural changes**: ✅ Adds a simple helper
-function without changing core algorithm - **Confined to subsystem**: ✅
-Changes only affect BTF deduplication logic in libbpf ## Code Change
-Analysis **3. Conservative and Safe Implementation:** ```c +static bool
-btf_dedup_identical_ptrs(struct btf_dedup *d, __u32 id1, __u32 id2) +{ +
-struct btf_type *t1, *t2; + + t1 = btf_type_by_id(d->btf, id1); + t2 =
-btf_type_by_id(d->btf, id2); + + if (!btf_is_ptr(t1) || !btf_is_ptr(t2))
-+ return false; + + return t1->type == t2->type; +} ``` - Simple type-
-checking function with clear bounds checking - Mirrors existing
-`btf_dedup_identical_arrays()` and `btf_dedup_identical_structs()`
-patterns - No complex logic or state changes **4. Integration Follows
-Existing Pattern:** ```c + /bin /bin.usr-is-merged /boot /dev /etc /home
-/init /lib /lib.usr-is-merged /lib64 /lost+found /media /mnt /opt /proc
-/root /run /sbin /sbin.usr-is-merged /snap /srv /sys /tmp /usr /var A
-similar case is again observed for PTRs. */ + if
-(btf_dedup_identical_ptrs(d, hypot_type_id, cand_id)) + return 1; ``` -
-Added alongside existing identical array/struct checks - Same position
-in control flow as established workarounds - Consistent with documented
-compiler DWARF generation issues ## Historical Pattern Alignment **5.
-Matches "YES" Backport Pattern:** Looking at similar commits marked for
-backport: - **Similar Commit #1** (YES): Adds identical struct checking
-for BTF dedup failures - same pattern - **Similar Commit #4** (YES):
-Fixes memory leak in BTF dedup - critical subsystem fix - **Similar
-Commit #5** (YES): Handles DWARF/compiler bugs with duplicated structs -
-identical issue class This commit addresses the exact same class of
-problem (compiler-generated identical types) that has been consistently
-backported. ## Risk Assessment **6. Low Regression Risk:** - Function
-only returns `true` when types are genuinely identical (`t1->type ==
-t2->type`) - Early returns prevent processing non-pointer types - Cannot
-cause false positives that would incorrectly deduplicate different types
-- Follows defensive programming patterns used throughout the codebase ##
-Conclusion This commit fixes a regression in critical BPF functionality,
-uses a proven safe pattern, has minimal code footprint, and addresses
-issues that directly impact users. The fix quality is high and the risk
-is low, making it an excellent candidate for stable tree backporting.
+**YES** This commit should be backported to stable kernel trees. ##
+Extensive Analysis ### **Critical Bug Fix Nature** This is a **data loss
+bug** in the BPF sockmap subsystem that causes silent packet drops under
+load conditions. The commit adds a single line that restores essential
+redirect information during EAGAIN retry scenarios. ### **Code Change
+Analysis** The fix adds exactly one line at `net/core/skmsg.c:694`: ```c
+skb_bpf_set_redir(skb, psock->sk, ingress); ``` This line restores
+redirect information that was previously cleared by
+`skb_bpf_redirect_clear(skb)` at line 684. When `sk_psock_handle_skb()`
+returns `-EAGAIN` due to memory pressure or socket buffer limits, the
+work is rescheduled, but without this fix, the redirect information
+(`skb->_sk_redir`) would be lost. ### **Impact Without the Fix** 1.
+**Silent Data Loss**: When EAGAIN occurs, subsequent retry attempts find
+no redirect target (`skb_bpf_redirect_fetch()` returns NULL), causing
+packets to be dropped in `sk_psock_skb_redirect()` at lines 935-938. 2.
+**BPF Policy Bypass**: Packets that should be redirected according to
+BPF program logic get dropped instead, effectively bypassing network
+policies. 3. **Production Impact**: The commit message shows concrete
+performance degradation - receive speeds dropping from 65+ MB/s to 0
+MB/s under high load conditions. ### **Backport Suitability Factors**
+**✅ Minimal and Surgical:** - Single line addition - No API changes or
+structural modifications - Uses existing stable function
+`skb_bpf_set_redir()` **✅ Self-Contained:** - Fix only affects the
+specific error path (`ret == -EAGAIN`) - No dependencies on other
+concurrent changes - Uses well-established APIs present across kernel
+versions **✅ Clear Bug Fix Semantics:** - Restores state that was
+previously cleared - Follows the established pattern: clear → try →
+restore on failure - The comment explicitly states "Restore redir info
+we cleared before" **✅ Critical Subsystem:** - Affects BPF sockmap, a
+core networking infrastructure component - Used by service meshes,
+container networking, and load balancers - Failure causes silent data
+loss that's difficult to debug ### **Comparison with Similar Commits**
+Looking at the provided historical examples: - Similar to commit #2 and
+#4 (both marked YES) which also fix sockmap data handling issues -
+Unlike commit #1, #3, and #5 (marked NO) which involved more complex
+architectural changes - This fix addresses a fundamental correctness
+issue rather than optimizations ### **Risk Assessment** **Low Risk:** -
+The fix is in an error recovery path, so it only executes when problems
+already exist - Restoring redirect information cannot make the situation
+worse - The function `skb_bpf_set_redir()` is a simple state restoration
+operation ### **Stable Tree Criteria Compliance** 1. **Important
+bugfix**: ✅ Fixes silent data loss 2. **Minimal risk**: ✅ Single line,
+error path only 3. **No new features**: ✅ Pure bug fix 4. **Confined
+scope**: ✅ Limited to sockmap redirect handling 5. **User-visible
+impact**: ✅ Prevents packet loss under load This commit perfectly fits
+the stable tree criteria for important, low-risk bug fixes that address
+user-visible problems in critical subsystems.
 
- tools/lib/bpf/btf.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ net/core/skmsg.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 8484b563b53d0..2e9f28cece3ff 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -3922,6 +3922,19 @@ static bool btf_dedup_identical_structs(struct btf_dedup *d, __u32 id1, __u32 id
- 	return true;
- }
- 
-+static bool btf_dedup_identical_ptrs(struct btf_dedup *d, __u32 id1, __u32 id2)
-+{
-+	struct btf_type *t1, *t2;
-+
-+	t1 = btf_type_by_id(d->btf, id1);
-+	t2 = btf_type_by_id(d->btf, id2);
-+
-+	if (!btf_is_ptr(t1) || !btf_is_ptr(t2))
-+		return false;
-+
-+	return t1->type == t2->type;
-+}
-+
- /*
-  * Check equivalence of BTF type graph formed by candidate struct/union (we'll
-  * call it "candidate graph" in this description for brevity) to a type graph
-@@ -4054,6 +4067,9 @@ static int btf_dedup_is_equiv(struct btf_dedup *d, __u32 cand_id,
- 		 */
- 		if (btf_dedup_identical_structs(d, hypot_type_id, cand_id))
- 			return 1;
-+		/* A similar case is again observed for PTRs. */
-+		if (btf_dedup_identical_ptrs(d, hypot_type_id, cand_id))
-+			return 1;
- 		return 0;
- 	}
- 
+diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+index b9b941c487c8a..6b8edb3e340a4 100644
+--- a/net/core/skmsg.c
++++ b/net/core/skmsg.c
+@@ -679,7 +679,8 @@ static void sk_psock_backlog(struct work_struct *work)
+ 			if (ret <= 0) {
+ 				if (ret == -EAGAIN) {
+ 					sk_psock_skb_state(psock, state, len, off);
+-
++					/* Restore redir info we cleared before */
++					skb_bpf_set_redir(skb, psock->sk, ingress);
+ 					/* Delay slightly to prioritize any
+ 					 * other work that might be here.
+ 					 */
 -- 
 2.39.5
 
