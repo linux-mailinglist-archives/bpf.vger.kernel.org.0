@@ -1,140 +1,156 @@
-Return-Path: <bpf+bounces-59678-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59679-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF686ACE5C2
-	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 22:29:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D958BACE5D1
+	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 22:38:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 080F5189A71F
-	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 20:29:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FD7E3A8B6E
+	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 20:37:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D410F1EB5C2;
-	Wed,  4 Jun 2025 20:29:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 511EF20D4EB;
+	Wed,  4 Jun 2025 20:38:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b="rEFzY9e6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W/LA0hwo"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00206402.pphosted.com (mx0a-00206402.pphosted.com [148.163.148.77])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C67C5339A1
-	for <bpf@vger.kernel.org>; Wed,  4 Jun 2025 20:29:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.148.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7208219ABC6;
+	Wed,  4 Jun 2025 20:38:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749068954; cv=none; b=hsDo8ypUyPsHBlAOYVQ5w+DDgrABDGOhSSiPydticbWrONWMtL9rk1stGIaPq/4SqI1PPJGdoe6FueIuZ5VVBZirDCGWUYeSkI2sJ5o+/ETqt10jtI5DkU4xtpVHA49dlX0pvyMMD+a6rbPwR4ifIR3nsff2OaPRMzf99cUfnQw=
+	t=1749069484; cv=none; b=tO5BV+t5Vshi17aOmFh+Y/w7ygBFzPOtSgUL2Qn3ZYF/cvss9XY0+/S7uIa0AtNn7KhdS7G7OGQYaN++ov7JhW+OzsoE3EL7lzSwlvYxvZsVJlpVW4G4qH8JEsw/jbO/LUEK/5WrwA7UxExd+IlPK6BQbzxZCILOxcFaFAVCrvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749068954; c=relaxed/simple;
-	bh=0uii7h7FZ1NVWJ6MjZE1CWqnpQer1aZIP2TNrTuzQgE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=aCGFpKBjpHcVsia2mQdv9MZCIka++bgvlDXfrloi9goKKxv5WV9+IhaVSNa/r62FXC5LI6+y49DO9prwILCpaOzO+27gj5tACzcY5nRMDwZcgvrxI0FmwiV7o3YWlCpmmeDR7TcV8LfJFwg1Ke3VG4X3iIIGnVqDqsPFN+SaW5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com; spf=pass smtp.mailfrom=crowdstrike.com; dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b=rEFzY9e6; arc=none smtp.client-ip=148.163.148.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crowdstrike.com
-Received: from pps.filterd (m0354652.ppops.net [127.0.0.1])
-	by mx0a-00206402.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 554H8T7Q011480;
-	Wed, 4 Jun 2025 20:29:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com;
-	 h=cc:content-transfer-encoding:content-type:date:from
-	:in-reply-to:message-id:mime-version:references:subject:to; s=
-	default; bh=0uii7h7FZ1NVWJ6MjZE1CWqnpQer1aZIP2TNrTuzQgE=; b=rEFz
-	Y9e6+5tTCySpxuQQvVfrdiTos+j+vzUv1jwBZSktrIg03+waVtEwdyPZDv5tUuCX
-	FgEpUnzvr4bFk0VSJvVBz+AtEgEtDvXo9+HXFumT6m8Qwe7ZmY/q3QkOnHNdvW37
-	0+FewcRkp7Jo9ismnqHgrtGPSTMjhioA/1674R+L3rdsqYFfI0yT6iFdgjxFcTEc
-	14NdetzjELyIJ+XoRdvNAe2brUHjfUduTDoeIQps7nYangt88Havr8c2k1y7bP7Y
-	6JhMl8YPRLLK2sWd8hatpr7gJeAfaBmvyVhm8YdYQ1TUHJzCoV3LGeDfDJtHxqmB
-	R7vrxbFeku8shHRJ4Q==
-Received: from mail.crowdstrike.com (74-209-223-77.static.ash01.latisys.net [74.209.223.77] (may be forged))
-	by mx0a-00206402.pphosted.com (PPS) with ESMTPS id 4728uccfje-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 04 Jun 2025 20:29:03 +0000 (GMT)
-Received: from [10.82.59.34] (10.100.11.122) by 03WPEXCH010.crowdstrike.sys
- (10.80.52.162) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 4 Jun 2025
- 20:29:00 +0000
-Message-ID: <8b53b900-a0cc-4373-b005-b47b7199566f@crowdstrike.com>
-Date: Wed, 4 Jun 2025 16:28:59 -0400
+	s=arc-20240116; t=1749069484; c=relaxed/simple;
+	bh=pgJKEv2jAnuX/L7yciDsQWLunIL8XZIPetYx1VK+E88=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MAfiKLSkLktL3EyUKjWnltMSF/wBxFnvUVzp561SkbnpTUNV9qY0UDG78+nwAm7bIanixKfC2BXLEdxRo1TFsAQVQ25yqVw9ftkUKq6m95NIg24TFbeduqM75bDURLTjVSVDuEDy0/oVqUutDVC9JP9GqE89pjDIpDy+MJY1FzM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W/LA0hwo; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-313132d1f7aso228541a91.3;
+        Wed, 04 Jun 2025 13:38:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749069483; x=1749674283; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=joBU8n6b8tl+3db8kE736wD5+CIbZIG5tMRWUz70vaU=;
+        b=W/LA0hwo1RzsTsHrWu/A8K4NOk3fROA777SEBCnUYZv3DIB1LUOwRk2jf4Xlae7+dW
+         1o1k+yWt4k0NdMEbHKy4OP4pNKmNDEv5KXbcRoTRTjA1jmFGUnxZNFGF3Sc8njxOI91W
+         RzoxLU/Q7FIEpaBWNyuCUuAEi1GN0sPQmUI3RD+7J5A9Whx1vZOstICos+CDLfwavdR/
+         OvSAAmcjs+lx1chjpx7czpiwyVxyTt6WAF72/iMI8vmPniaMtP3hjXOB0LdjlegNXlmn
+         rSZ3FoC/jTzW1vOwSmiEvpnNFU9K0owRasfogULR1R0/Kva2xqvIBNug/UcwaGYgDkNK
+         Us5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749069483; x=1749674283;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=joBU8n6b8tl+3db8kE736wD5+CIbZIG5tMRWUz70vaU=;
+        b=VZtc9KpPMetS2PfKtRgYFKmRZRbV6LxKtx4nCjA4r15TBJMnE+N8PZUyJERkpupAyH
+         3sM62VCvoYbjcTGDdHl0Mz5Bl1hE14QtF9lAY157sOP5HILFjFL280o2oBgQEW55m2/Z
+         pykRTfRqq6uixzVsRbvaWDwG8+cF2ZP11Vi29zramnj4ogFvI4JlSD0q54BwMPCnuKeJ
+         04vGaoZptUANs3V9JH8a/tUWPKU63RT9js0lR8VQwJhjuKOr/kNlzq8KVjm45zA2FkfH
+         5TsmMlry6HFlpK71GP5dhBEln0giQPjRnvLDh7v5N6DZnnkGn6RHrnCOppblNPR3VJfY
+         Snfw==
+X-Forwarded-Encrypted: i=1; AJvYcCV7C2sNaB+ouuvegHHtjaxhQRgpa0juPn+WQgbNxDX0+knWR6KIcZ2lK1zRq7XZHjJQeCdMEb/EdTg3D6fE@vger.kernel.org, AJvYcCVxxk8QpVvEFtwH/crODHhFytsDMhMK3QPDAtvOpL1fpBeBCOSicJJiPCZCjTI++MQfV7IrvOYsyKmYwq/tEz7642VjagoO@vger.kernel.org, AJvYcCXE+tAHQS9V+enwoviLdLUcb86+ykNp/+cYBYnZT4rdSW4NNdJp8ZpuuVTQ0MlohKlcdJV96QFUNP1ymHYh@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy+vuuXtROBq72Gx293kGFg1DqCA1FC4Id+2bRMBOVCw5U/rLyk
+	EMI28/C2kTJ5tN5eVjus7pPiri/wXWhprhmGkTDuYZoO6K7YRaYAGkj0NRTIiCG76jQqbBnOYfo
+	NCQLjhztbwxkErSnrEZ3rXnix6vndp+s=
+X-Gm-Gg: ASbGncts5gbETusCcCLwkeW80Ff6ZVJGU4T9xNrCRn+tC3BDpEOSI89XQUudOG046tx
+	ft2UzwOYVtzNWwo9Lz2WhKBvKvOsEwqIbO5uq6sMt0IP8HRNUzcraDHGLxnXKAB4r+AJiKJBT2r
+	2n3HzeAq/IkifmS2n3aQNIWwZqGgZ+nGv4Z6PO8flp37Z3oVXy
+X-Google-Smtp-Source: AGHT+IECfyYi0yVRcK3x9dFDCPgy4jR7OngRwkOnLgyo6IvNQ91klesbnTdovQlIv7SDSNTL4qcVhbVXW3tZuQKdg7I=
+X-Received: by 2002:a17:90b:5588:b0:311:fde5:c4be with SMTP id
+ 98e67ed59e1d1-3130cd7e428mr6357096a91.35.1749069482560; Wed, 04 Jun 2025
+ 13:38:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [External] Re: Bad vmalloc address during BPF hooks unload
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC: Jiri Olsa <olsajiri@gmail.com>, bpf <bpf@vger.kernel.org>,
-        <joe.kimpel@crowdstrike.com>,
-        Mark Fontana <mark.fontana@crowdstrike.com>,
-        Viktor Malik <vmalik@redhat.com>
-References: <6947880c-a749-438f-bfcb-91afe7238d7e@crowdstrike.com>
- <aD9vDX0boYLzvibc@krava>
- <7831ec6d-8d5c-4fc1-9bd9-1b0dfc93eb16@crowdstrike.com>
- <CAADnVQKONAkX8G2qXYS8gBVKq52gn4Pb39x_3fRi0EetVPT3jw@mail.gmail.com>
-Content-Language: en-US
-From: Andrey Grodzovsky <andrey.grodzovsky@crowdstrike.com>
-In-Reply-To: <CAADnVQKONAkX8G2qXYS8gBVKq52gn4Pb39x_3fRi0EetVPT3jw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: base64
-X-ClientProxiedBy: 04WPEXCH016.crowdstrike.sys (10.100.11.68) To
- 03WPEXCH010.crowdstrike.sys (10.80.52.162)
-X-Disclaimer: USA
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjA0MDE2MyBTYWx0ZWRfXygcPXinvjtsn
- UQGl9LnzZrj+mHqyVBxG83rK5+rK3orGLAT5DOPfqjsDX35oLFKgP/xqztqHF4O3Jg6TWsExSUj
- CgzoVlgc8SHrsP883IjmfAetQMPTIrleQeIRGHV5gWVV1q92KEzNygFE6b/oZ0Hs6Bm0i9nOKhU
- ZZcffrM5Z9q4443n3uKId+3JNud0TQaIHbOZe7PNhIUnVtRMjZLTy0U8CzkFG5uQGziKXmhCrDa
- 1ct9ElMsVR4F7rXrhy554/k2JZeSxzgUvFP1pbfBwOn9gnKaw04Ig/EfFeXY29RhfCEJNbVl2TB
- LhvdB+n+acso05u8E0+J9RTiUbAHS0zbeYXWpqw4ZXStdBELCkYQFU++/EVRnbFm2b75ZOO0JtI
- vjSxFsTpMdjTvI7YTbJ1PMmU9ozXX+Hq0AIpTVw42XXh7zl37agJCqBTw9nbBqPw6semg34s
-X-Authority-Analysis: v=2.4 cv=UJbdHDfy c=1 sm=1 tr=0 ts=6840ac8f cx=c_pps
- a=gZx6DIAxr9wtOoIAvRqG0Q==:117 a=gZx6DIAxr9wtOoIAvRqG0Q==:17
- a=EjBHVkixTFsA:10 a=IkcTkHD0fZMA:10 a=6IFa9wvqVegA:10 a=pl6vuDidAAAA:8
- a=IQLERqfcJWVY-AbuucoA:9 a=QEXdDO2ut3YA:10
-X-Proofpoint-GUID: VfxM04-0yxSjuEET6lZScoJTthik6Ao5
-X-Proofpoint-ORIG-GUID: VfxM04-0yxSjuEET6lZScoJTthik6Ao5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-06-04_04,2025-06-03_02,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- malwarescore=0 mlxscore=0 lowpriorityscore=0 clxscore=1011 spamscore=0
- adultscore=0 impostorscore=0 suspectscore=0 priorityscore=1501 bulkscore=0
- mlxlogscore=906 phishscore=0 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
- definitions=main-2506040163
+References: <20250603065920.3404510-1-song@kernel.org> <20250603065920.3404510-4-song@kernel.org>
+ <CAEf4BzasOmqHDnuKd7LCT_FEBVMuJxmVNgvs52y5=qLd1bB=rg@mail.gmail.com>
+ <CAPhsuW7mwut7SYubAUa5Ji7meDP1Bn8ZD9s+4sqjBDim7jGrWA@mail.gmail.com>
+ <CAEf4Bzbm=mnRM=PYBLDTogrb+bNk2TnTj-kGr3=oFNEyQm8hKw@mail.gmail.com> <CAPhsuW6rdJpP4pqtgU2WC8-KOkNObeY5ELMy_ga_0YjJJj0NaA@mail.gmail.com>
+In-Reply-To: <CAPhsuW6rdJpP4pqtgU2WC8-KOkNObeY5ELMy_ga_0YjJJj0NaA@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 4 Jun 2025 13:37:50 -0700
+X-Gm-Features: AX0GCFsvLc9sN7lYehGRiq33H23gnkjaUpl0qWQVrE8H5jwC0y-8E4yobGq-z3g
+Message-ID: <CAEf4BzZpG05EHK20RDKJq2BXHKtZ4Z7CLvhQNJN5AUpTDYcMOw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 3/4] bpf: Introduce path iterator
+To: Song Liu <song@kernel.org>
+Cc: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, viro@zeniv.linux.org.uk, 
+	brauner@kernel.org, jack@suse.cz, kpsingh@kernel.org, 
+	mattbobrowski@google.com, amir73il@gmail.com, repnop@google.com, 
+	jlayton@kernel.org, josef@toxicpanda.com, mic@digikod.net, gnoack@google.com, 
+	m@maowtm.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-T24gNi80LzI1IDE1OjM3LCBBbGV4ZWkgU3Rhcm92b2l0b3Ygd3JvdGU6DQo+IE9uIFdlZCwg
-SnVuIDQsIDIwMjUgYXQgNzo0OeKAr0FNIEFuZHJleSBHcm9kem92c2t5DQo+IDxhbmRyZXku
-Z3JvZHpvdnNreUBjcm93ZHN0cmlrZS5jb20+IHdyb3RlOg0KPj4gT24gNi8zLzI1IDE3OjU0
-LCBKaXJpIE9sc2Egd3JvdGU6DQo+Pj4gT24gVHVlLCBKdW4gMDMsIDIwMjUgYXQgMDQ6MTM6
-MThQTSAtMDQwMCwgQW5kcmV5IEdyb2R6b3Zza3kgd3JvdGU6DQo+Pj4+IEhpLCB3ZSBvYnNl
-cnZlIGJlbGxvdyByYW5kb20gd2FybmluZyBvY2Nhc2lvbmFsbHkgZHVyaW5nIEJQRiBob29r
-cyB1bmxvYWQsDQo+Pj4+IHdlIG9ubHkgc2VlIGl0IG9uIHJoZWw4IGtlcm5lbHMgcmFuZ2lu
-ZyBmcm9tIDguNi04LjEwIHNvIGl0IG1pZ2h0IGJlDQo+Pj4+IHNvbWV0aGluZyBSSEVMIHNw
-ZWNpZmljIGFuZCBub3QgdXBzdHJlYW0gaXNzdWVzLCBpIHN0aWxsIHdhcyBob3BpbmcgdG8g
-Z2V0DQo+Pj4+IHNvbWUgYWR2aXNlIG9yIGNsdWVzIGZyb20gQlBGIGV4cGVydHMgaGVyZS4N
-Cj4+PiBoaSwNCj4+PiB1bmxlc3MgeW91IHJlcHJvZHVjZSBvbiB1cHN0cmVhbSBvciBzb21l
-IHN0YWJsZSBrZXJuZWwgSSdtIGFmcmFpZCB0aGVyZSdzIG5vdA0KPj4+IG11Y2ggdGhhdCBj
-YW4gYmUgZG9uZSBpbiBoZXJlDQo+Pj4NCj4+PiBqaXJrYQ0KPj4NCj4+IFRoYW5rcyBKaXJp
-LCB5ZXMsIGkgdW5kZXJzdGFuZCB0aGUgbGltaXRhdGlvbnMgc2luY2UgdGhpcyBtaWdodCBi
-ZSBhDQo+PiByZXN1bHQgb2Ygc29tZQ0KPj4gUkhFTCBrZXJuZWwgdHJlZSBzcGVjaWZpYyBi
-YWQgcGF0Y2hlcyBjaGVycnktcGlraW5nL21lcmdlIGZyb20gdXBzdHJlYW0NCj4+IGludG8g
-dGhlaXIgb3duIHRyZWVzLiBJIHdhcw0KPj4ganVzdCBob3BwaW5nIHRoYXQgdGhpcyByaW5n
-cyBhbnkgYmVsbHMgdG8gYW55b25lIGluIHRoZSBFLUJQRiBjb21tdW5pdHkNCj4+IGFzIGl0
-IHR1cm5zDQo+PiB0byBiZSByZWFsbHkgaGFyZCB0byByZXBybyBhbmQgaGVuY2UgYWxzbyB0
-byBiaXNlY3QuDQo+IEkgZG9uJ3QgcmVtZW1iZXIgc2VlaW5nIHNwbGF0IGxpa2UgdGhpcy4N
-Cj4NCj4gQWxzbyBtbS92bWFsbG9jLmM6MzMwIHRlbGxzIHVzIG5vdGhpbmcuDQo+IEl0J3Mg
-bm90IGNsZWFyIHdoYXQgdm1hbGxvY190b19wYWdlKCkgaXMgY29tcGxhaW5pbmcgYWJvdXQu
-DQo+IEknbSBndWVzc2luZyB0aGF0IGl0J3Mgbm90IGEgdm1hbGxvYyBhZGRyZXNzID8NCg0K
-IEZyb20gbG9va2luZyBhdCB0aGUgcmVsZXZhbnQgUkhFTCBrZXJuZWwgc291cmNlIHRyZWUg
-aSBzZWUgdGhhdCANCm1tL3ZtYWxsb2MuYzozMzAgbWFwcyB0byBXQVJOX09OX09OQ0UocG1k
-X2JhZCgqcG1kKSk7IFNvIGl0IHBhc3NlZCB0aGUgDQpwdWRfYmFkIGNoZWNrIHJpZ2h0IGJl
-Zm9yZSB0aGF0IGJ1dCBmYWlsZWQgb24gdGhpcyBvbmUuIFRoZSBSSEVMIA0KZnVuY3Rpb24g
-aXMgaWRlbnRpY2FsIHRvIHRoZSB1cHN0cmVhbSBzdGFnaW5nIHY0LjE4L3NvdXJjZS9tbS92
-bWFsbG9jLmMgDQotIHZtYWxsb2NfdG9fcGFnZSgpDQoNCkluIGFueSBjYXNlLCB0aGFua3Mg
-Zm9yIHlvdXIgYWR2aXNlIGFuZCBzdXBwb3J0LCBJIHdpbGwgdHJ5IHRvIGZvbGxvdyB1cCAN
-CndpdGggUkhFTCBrZXJuZWwgdGVhbSBhbmQgcG9zc2libHkNClZpY3RvciBoZXJlIGZyb20g
-UmVkaGF0IGNhbiBnaXZlIG1lIHNvbWUgcG9pbnRlciB3aG8gdG8gYXBwcm9hY2ggZm9yIA0K
-dGhpcyBmcm9tIFJlZGhhdCA/DQoNCkFuZHJleQ0KDQo+IFdoaWNoIHdvdWxkIG1lYW4gdGhh
-dCBpbS0+aXBfYWZ0ZXJfY2FsbCBwb2ludHMgc29tZXdoZXJlIHdyb25nLg0KPiBBbmQgd2h5
-IHdvdWxkIHRoYXQgYmUgc3BvcmFkaWMgaXMgYW55Ym9keSdzIGd1ZXNzLg0KDQoNCg==
+On Tue, Jun 3, 2025 at 4:20=E2=80=AFPM Song Liu <song@kernel.org> wrote:
+>
+> On Tue, Jun 3, 2025 at 2:45=E2=80=AFPM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Tue, Jun 3, 2025 at 2:09=E2=80=AFPM Song Liu <song@kernel.org> wrote=
+:
+> > >
+> > > On Tue, Jun 3, 2025 at 11:40=E2=80=AFAM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > > [...]
+> > > > > +__bpf_kfunc struct path *bpf_iter_path_next(struct bpf_iter_path=
+ *it)
+> > > > > +{
+> > > > > +       struct bpf_iter_path_kern *kit =3D (void *)it;
+> > > > > +       struct path root =3D {};
+> > > > > +
+> > > > > +       if (!path_walk_parent(&kit->path, &root))
+> > > > > +               return NULL;
+> > > > > +       return &kit->path;
+> > > > > +}
+> > > > > +
+> > > > > +__bpf_kfunc void bpf_iter_path_destroy(struct bpf_iter_path *it)
+> > > > > +{
+> > > > > +       struct bpf_iter_path_kern *kit =3D (void *)it;
+> > > > > +
+> > > > > +       path_put(&kit->path);
+> > > >
+> > > > note, destroy() will be called even if construction of iterator fai=
+ls
+> > > > or we exhausted iterator. So you need to make sure that you have
+> > > > bpf_iter_path state where you can detect that there is no path pres=
+ent
+> > > > and skip path_put().
+> > >
+> > > In bpf_iter_path_next(), when path_walk_parent() returns false, we
+> > > still hold reference to kit->path, then _destroy() will release it. S=
+o we
+> > > should be fine, no?
+> >
+> > you still need to handle iterators that failed to be initialized,
+> > though? And one can argue that if path_walk_parent() returns false, we
+> > need to put that last path before returning NULL, no?
+>
+> kit->path is zero'ed on initialization failures, so we can path_put() it
+> safely. For _next() returns NULL case, we can either put kit->path
+> in _destroy(), which is the logic now, or put kit->path in the last
+> _next() call and make _destroy() a no-op in that case. I don't have
+> a strong preference either way.
+
+I didn't realize path_put() is a no-op for zeroed-out struct path. I'd
+probably leave a comment for future selves, I don't have strong
+preference otherwise.
+
+>
+> Thanks,
+> Song
 
