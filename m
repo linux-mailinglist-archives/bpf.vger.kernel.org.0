@@ -1,61 +1,59 @@
-Return-Path: <bpf+bounces-59595-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59596-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CE45ACD30D
-	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 03:14:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F6CBACD312
+	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 03:14:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBC423A340A
-	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 01:13:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 058593A2F5F
+	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 01:14:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E010025EFBF;
-	Wed,  4 Jun 2025 01:00:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8A6625F7A4;
+	Wed,  4 Jun 2025 01:00:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ihmS67Wi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QoMWuMO8"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F1781D8E01;
-	Wed,  4 Jun 2025 01:00:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C8A71D8E01;
+	Wed,  4 Jun 2025 01:00:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748998833; cv=none; b=dO4jac99tY5wXIaP2bhjj/pYyqzjXw7xZhXoBzF4CRIgss9sFCgUEEVBnaSivRkH0QDG986tfKeDf3IGy+iXHwNHf53uBCkEEkeF8QdYGLj7kZDpy74cCaPRO2VzQ0w2jJHI/cT+w5OXV+NNE8DkmnDrpvbsaGBgbIiKD72qCm4=
+	t=1748998840; cv=none; b=moaj2cUX/iDqx5lwVoZDSDzPJ7/1MpoX+jW/ZxBunm/0T6r1Y9jwlBMPo+no6o9A0+aqyvT5V2sne2EON+1LRWURZqH5CkY1cxU1zvm9QgmdUcgvHpGvLd38rtwm1Wi/fYeIKr6LblmsU0fizvB9EzK58d2Y7XMDK6g3BjZ0JLs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748998833; c=relaxed/simple;
-	bh=CGlUeXlAS/kQgGDZAKLhIDakIvO74PaLIE+8TWQnlXw=;
+	s=arc-20240116; t=1748998840; c=relaxed/simple;
+	bh=NzBnFaeNeW7QU3SCfvyeUzcHLpbQ+QOwgZQwYI54gkU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FnZbvtyWF2RcXZ7+jWIA6HPabBocp386moXf16c+K+FHpFDsaBJGasWnUAYwh6ejBf0931Ox3TIY4N06/7ZApfMv/prvqauNbWH2EojwVRQ2kox+tZJEwmQ4aXRMG57hMYi4EjGiC14F8vGiM2kJs/fGW7hpRC6bZ8AqesNKSxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ihmS67Wi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03EAFC4CEED;
-	Wed,  4 Jun 2025 01:00:31 +0000 (UTC)
+	 MIME-Version:Content-Type; b=XMz3Q2LsY+ouPtZElsSjkXwOIYWrdi/3KjJXa0PsIfJdJpUmpxktCwQa6ItsZ8qyIMxCUwFho3Bb0p1/cX3cdeCu49SkqJA8MDXq85g2Moy/ZCrUwffpigSO88sHi9xGjcSf4FEZb6tf47gtVHjAywyDxxnLh3dwVMgIzcpjZ4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QoMWuMO8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5C3EC4CEED;
+	Wed,  4 Jun 2025 01:00:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748998833;
-	bh=CGlUeXlAS/kQgGDZAKLhIDakIvO74PaLIE+8TWQnlXw=;
+	s=k20201202; t=1748998839;
+	bh=NzBnFaeNeW7QU3SCfvyeUzcHLpbQ+QOwgZQwYI54gkU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ihmS67WiWPi3EYytcBWIVPxdI6QjkRASGEQ2f0B7J6rXpUwxYiliYiAzbXJgx9DRk
-	 g1rdDytJloaMZ17kTth2KCPhd98d96g4DRateVX8KEGKGJldOQwxpgGkjoNrj3hu11
-	 Mm5yp2UIUN706QbUylJi4RyZ5CMnOm3CQFaOhAeQ/LU+TZnGapuxo6i+1mVc+D/Tpk
-	 Tq6xxurlhJb7EJKSqlKOVB9wXtOtyRiOtY8N6oME0WLS4BFcTsZFgYM0sGS/3Q8vGv
-	 Ek07lBqzDqHwmyKpFNZDuhGuKqnaoocISQPaTFcRJapZb3eAdmdw2m2F4jOGybRvhd
-	 blAhxcSPTBkuA==
+	b=QoMWuMO8qTRpEia5TouJm4Ct6+mPmZBYQcY44Tw47GuvmUbIvQcuv/DEkZD0kQsZv
+	 uw2QkfBrngbY2eteekq0nUwNbouGBHL2Gz2baUekG80u12G2Tv3mwXSBMkRqkYfejj
+	 EehSycPV46aWPjHQZaGSW/7gsippysScrCxhhtypmTBDRRJiZcnyjSQ23VOv4WYRTE
+	 TDsQ9ihWIwDElJMWUto+SBIQ3reYcl4vCuynA1Oyzk35BzIKfxBjflkwUU7/nMFbDf
+	 VZ2Jy2EN3XjCsEOaz29JqRNNeKTUIZszewk+5xBbqAtnfqGMBYu0K9SOBV61GXU3gM
+	 HI+Bu8YYVDbZw==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
-Cc: Ilya Leoshkevich <iii@linux.ibm.com>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
+Cc: Mykyta Yatsenko <yatsenko@meta.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	martin.lau@linux.dev,
+	ast@kernel.org,
 	daniel@iogearbox.net,
-	andrii@kernel.org,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.12 40/93] bpf: Pass the same orig_call value to trampoline functions
-Date: Tue,  3 Jun 2025 20:58:26 -0400
-Message-Id: <20250604005919.4191884-40-sashal@kernel.org>
+	eddyz87@gmail.com,
+	bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.12 43/93] libbpf: Check bpf_map_skeleton link for NULL
+Date: Tue,  3 Jun 2025 20:58:29 -0400
+Message-Id: <20250604005919.4191884-43-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250604005919.4191884-1-sashal@kernel.org>
 References: <20250604005919.4191884-1-sashal@kernel.org>
@@ -68,88 +66,91 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.12.31
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Ilya Leoshkevich <iii@linux.ibm.com>
+From: Mykyta Yatsenko <yatsenko@meta.com>
 
-[ Upstream commit 94bde253d3ae5d8a01cb958663b12daef1d06574 ]
+[ Upstream commit d0445d7dd3fd9b15af7564c38d7aa3cbc29778ee ]
 
-There is currently some confusion in the s390x JIT regarding whether
-orig_call can be NULL and what that means. Originally the NULL value
-was used to distinguish the struct_ops case, but this was superseded by
-BPF_TRAMP_F_INDIRECT (see commit 0c970ed2f87c ("s390/bpf: Fix indirect
-trampoline generation").
+Avoid dereferencing bpf_map_skeleton's link field if it's NULL.
+If BPF map skeleton is created with the size, that indicates containing
+link field, but the field was not actually initialized with valid
+bpf_link pointer, libbpf crashes. This may happen when using libbpf-rs
+skeleton.
+Skeleton loading may still progress, but user needs to attach struct_ops
+map separately.
 
-The remaining reason to have this check is that NULL can actually be
-passed to the arch_bpf_trampoline_size() call - but not to the
-respective arch_prepare_bpf_trampoline()! call - by
-bpf_struct_ops_prepare_trampoline().
-
-Remove this asymmetry by passing stub_func to both functions, so that
-JITs may rely on orig_call never being NULL.
-
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Acked-by: Martin KaFai Lau <martin.lau@kernel.org>
-Link: https://lore.kernel.org/r/20250512221911.61314-2-iii@linux.ibm.com
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20250514113220.219095-1-mykyta.yatsenko5@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
 
-**YES** This commit should be backported to stable kernel trees. ##
-Analysis **Nature of the Fix:** This commit addresses an asymmetry in
-the BPF trampoline infrastructure where `NULL` could be passed to
-`arch_bpf_trampoline_size()` but not to `arch_prepare_bpf_trampoline()`.
-The fix ensures that `stub_func` is consistently passed to both
-functions, allowing JIT implementations to rely on `orig_call` never
-being `NULL`. **Code Changes Analysis:** The change is minimal and
-surgical - only one line in `kernel/bpf/bpf_struct_ops.c`: ```c - size =
-arch_bpf_trampoline_size(model, flags, tlinks, NULL); + size =
-arch_bpf_trampoline_size(model, flags, tlinks, stub_func); ``` This
-passes `stub_func` instead of `NULL` to `arch_bpf_trampoline_size()`,
-creating consistency with the `arch_prepare_bpf_trampoline()` call on
-line 620 which already receives `stub_func`. **Why This Should Be
-Backported:** 1. **Fixes Architectural Inconsistency:** Based on the
-repository analysis, this addresses confusion in JIT implementations
-(particularly s390x) about when `orig_call` can be `NULL` and what that
-signifies. 2. **Prevents Potential Crashes:** The repository history
-shows that similar asymmetries in BPF trampoline handling caused crashes
-on architectures like RISC-V and incorrect code generation on s390x. 3.
-**Minimal Risk:** The change is extremely contained - it only affects
-the parameter passed to `arch_bpf_trampoline_size()` in the struct_ops
-path. Since this function is used for size calculation, passing a valid
-function pointer instead of `NULL` should not break existing
-functionality. 4. **Follows Stable Tree Criteria:** - **Important
-bugfix:** Prevents JIT confusion and potential incorrect behavior -
-**Minimal risk:** Single line change with clear semantics - **Confined
-to subsystem:** Only affects BPF struct_ops trampoline generation - **No
-architectural changes:** Does not modify core BPF infrastructure 5.
-**Related Historical Precedent:** Looking at the similar commits in the
-analysis, commit #3 (s390/bpf: Let arch_prepare_bpf_trampoline return
-program size) was marked "YES" for backporting, and it was a similar
-cleanup/consistency fix for the BPF trampoline infrastructure. 6.
-**Prevents Future Issues:** This fix eliminates a source of confusion
-for JIT maintainers and ensures all architectures can implement
-consistent `NULL` checking logic. The fix aligns with the principle
-established in commit 0c970ed2f87c that JITs should use the
-`BPF_TRAMP_F_INDIRECT` flag rather than checking for `NULL` parameters,
-and this change supports that by ensuring parameters are never `NULL` in
-the first place.
+Now I have enough information to provide a comprehensive analysis.
+**YES** This commit should be backported to stable kernel trees. Here's
+my extensive analysis: ## Critical Vulnerability Fix This commit
+addresses a **NULL pointer dereference vulnerability** in the
+`bpf_object__attach_skeleton()` function. The fix adds a simple but
+crucial NULL check for the `link` pointer before dereferencing it. ##
+Analysis of the Code Changes ### The Problem Looking at lines
+14104-14114 in the current code: ```c link = map_skel->link; if (!link)
+{ pr_warn("map '%s': BPF map skeleton link is uninitialized\n",
+bpf_map__name(map)); continue; } if (*link) continue; ``` The commit
+adds a NULL check for `link` before attempting to dereference it with
+`*link`. **Without this check, if `link` is NULL, the code would crash
+when executing `if (*link)`**. ### Why This is Critical 1. **Immediate
+crash potential**: The missing NULL check can cause immediate
+segmentation faults when `map_skel->link` is NULL 2. **Common
+occurrence**: This can happen when using libbpf-rs skeletons or other
+third-party skeleton generators that may not properly initialize the
+link field 3. **User-facing impact**: The commit message explicitly
+states this affects libbpf-rs skeleton usage, indicating real-world
+impact ## Comparison with Historical Patterns This fix follows **exactly
+the same pattern** as Similar Commit #1 (marked YES for backporting),
+which added a NULL check to `bpf_object__destroy_skeleton()`: -
+**Similar Commit #1**: Added `if (!s) return;` to prevent NULL deref in
+destroy_skeleton - **Current Commit**: Adds `if (!link)` check to
+prevent NULL deref in attach_skeleton Both are small, defensive
+programming fixes that prevent crashes without changing functionality.
+## Consistency with Existing Code Looking at the current kernel tree,
+`bpf_object__destroy_skeleton()` already has a NULL check (line
+14154-14155): ```c void bpf_object__destroy_skeleton(struct
+bpf_object_skeleton *s) { if (!s) return; ``` This commit brings
+`bpf_object__attach_skeleton()` in line with the same defensive
+programming pattern. ## Stable Tree Criteria Assessment ✅ **Fixes
+important bug**: Prevents NULL pointer dereference crashes ✅ **Small and
+contained**: Only adds 4 lines of code ✅ **No architectural changes**:
+Pure defensive programming ✅ **Minimal regression risk**: Cannot break
+existing functionality ✅ **Clear side effects**: Only prevents crashes,
+no behavioral changes ✅ **Confined to subsystem**: Only affects libbpf
+skeleton handling ## Risk Assessment - **Regression risk**: **Extremely
+low** - the check only prevents crashes - **Compatibility**: **Perfect**
+- no API changes, only prevents invalid operations - **Dependencies**:
+**None** - standalone fix with no external dependencies This is a
+textbook example of a stable tree candidate: a small, safe fix that
+prevents crashes without changing any functionality or introducing new
+behavior.
 
- kernel/bpf/bpf_struct_ops.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/lib/bpf/libbpf.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-index 477947456371a..2285b27ce68c7 100644
---- a/kernel/bpf/bpf_struct_ops.c
-+++ b/kernel/bpf/bpf_struct_ops.c
-@@ -577,7 +577,7 @@ int bpf_struct_ops_prepare_trampoline(struct bpf_tramp_links *tlinks,
- 	if (model->ret_size > 0)
- 		flags |= BPF_TRAMP_F_RET_FENTRY_RET;
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 6e4d417604fa0..edd69d01bad0f 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -13983,6 +13983,12 @@ int bpf_object__attach_skeleton(struct bpf_object_skeleton *s)
+ 		}
  
--	size = arch_bpf_trampoline_size(model, flags, tlinks, NULL);
-+	size = arch_bpf_trampoline_size(model, flags, tlinks, stub_func);
- 	if (size <= 0)
- 		return size ? : -EFAULT;
+ 		link = map_skel->link;
++		if (!link) {
++			pr_warn("map '%s': BPF map skeleton link is uninitialized\n",
++				bpf_map__name(map));
++			continue;
++		}
++
+ 		if (*link)
+ 			continue;
  
 -- 
 2.39.5
