@@ -1,162 +1,139 @@
-Return-Path: <bpf+bounces-59685-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59689-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DFA6ACE696
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 00:12:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9FD5ACE6A4
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 00:28:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01C2F1893F40
-	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 22:12:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DF623A8848
+	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 22:28:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77994224220;
-	Wed,  4 Jun 2025 22:12:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DC97221FBC;
+	Wed,  4 Jun 2025 22:28:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QTNYLMal"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="bx5qwgSN"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E70A129A2;
-	Wed,  4 Jun 2025 22:12:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ED4A1EEA47
+	for <bpf@vger.kernel.org>; Wed,  4 Jun 2025 22:28:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749075143; cv=none; b=UgUCiBANBw43q/wiNLYVi8JvQL0GeonIH34oGzsBwilf04TwqAGS9rfFlN0oOCfCQwxWc0Nd3U5eOv8+qCjqrPE+WbzEWO1CR4bQclUkcm+gmEmSUEnWcLp3qEtiKBIgEwGbHELjW90X0KdT5EW0u/D7OcNuTXD4U/PLTFkMjYE=
+	t=1749076126; cv=none; b=rmACtGYM0fYpXM41qJDnUhCAwN4q5v12LPMOqrA1CojA7lL04xcnGuV7AJ7q3nhOES1E0TjGh9sHD1J7Uv8ibsycSnBOgK/krGzesWJdQNdKfUaRu594uvJAz4hAbMfmlg0Q/VhcIfomlHjeRO9KyyRZXF0FOA6WeYCBuTPBLXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749075143; c=relaxed/simple;
-	bh=ZgNC/tzUGjuhabSWLf9s/V5Dj4iYLMJ7BsfBi8LCeDs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mXlxBfkTp7hI6am1UQYy8hwqeM3pFNkjwaRmA7lDAwDEaAF8kiUEJdmdvAtoBfg7S2l3mTZHPkYKk7M70As4GNR8LCByWQFpVmM5nI5b4ZUBVUhpyzVJT/UaGrXI9azLip6O+2X7aJIYxqJQAFpo+SO4RIHOPPR+onMVI41lRZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QTNYLMal; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7931C4CEE4;
-	Wed,  4 Jun 2025 22:12:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749075142;
-	bh=ZgNC/tzUGjuhabSWLf9s/V5Dj4iYLMJ7BsfBi8LCeDs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QTNYLMalq6elO/8yeakwihsxnK3xe5UkzqTnVdvj9JT74aJBxwpgy1Foz0W+0aoXj
-	 uZ3cbrt51gg0ovSDbusEIHfxRm1CiA7O19bpk/sC1M/4ZKRtoBLFKShyXV9S6ajM6+
-	 Q5QjVH8AAMxJqXMbNlQfQAESEXBmZtBKXxPJHRVBOJNpFXyP3uW3o0VXpPv4KQ8hdA
-	 XWTltp1U/6wqSQMnRagDlQJlYDY/l/foDyVLSJ02/Wkga+MhhIPC1ygW+418vVYkvm
-	 lR5Hp9HDqTuqZ1OpViq/XiN5etrqzbBv0L95mmk9Tdz9CVGno+7ds6Zdh+NVVjGCts
-	 IN744KBfKdVEA==
-Date: Wed, 4 Jun 2025 19:12:19 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Blake Jones <blakejones@google.com>, Song Liu <song@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Chun-Tse Shao <ctshao@google.com>,
-	Zhongqiu Han <quic_zhonhan@quicinc.com>,
-	James Clark <james.clark@linaro.org>,
-	Charlie Jenkins <charlie@rivosinc.com>,
-	Andi Kleen <ak@linux.intel.com>, Dmitry Vyukov <dvyukov@google.com>,
-	Leo Yan <leo.yan@arm.com>, Yujie Liu <yujie.liu@intel.com>,
-	Graham Woodward <graham.woodward@arm.com>,
-	Yicong Yang <yangyicong@hisilicon.com>,
-	Ben Gainey <ben.gainey@arm.com>, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH 2/3] perf: collect BPF metadata from existing BPF programs
-Message-ID: <aEDEw7bCDAtEXfGC@x1>
-References: <20250521222725.3895192-1-blakejones@google.com>
- <20250521222725.3895192-3-blakejones@google.com>
- <aD9Xxhwqpm8BDeKe@google.com>
- <CAP_z_Cj_8uTBGzaoFmi1f956dXi1qDnF4kqc49MSn0jDHYFfxg@mail.gmail.com>
- <aD9sxuFwwxwHGzNi@google.com>
- <CAP_z_Cg+mPpdzxg-d+VV5J9t7vTTNXQmKLdnfuNETm1H40OA+g@mail.gmail.com>
- <aD9yte49C_BM5oA9@google.com>
- <CAP_z_Cg0ZCfvEFpJpvhuRcUkjV_paCODw2J61D3YQMm7dg0aGg@mail.gmail.com>
- <aEC9UqkKeEj4on3M@google.com>
+	s=arc-20240116; t=1749076126; c=relaxed/simple;
+	bh=g77+F/9L/hdLiDx9MjZAJxoDKD/hIa2VWgCLKTXDfjk=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=fhvMR3m7XsyAyvZGTE/ty6amEmSqRaUanzTkGdy3Dz698WiavFioKimebNSlWdFnvW2EpOk8WVRCjwUPptYO46x2COKPfxvFp31XeKtpdnYxLPVJFVu28wsN92x8FuF/Y/4O8emNS7n/rGv6N/eT6lACa3TwTUUB0V/o9CnNlN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=bx5qwgSN; arc=none smtp.client-ip=67.231.145.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 554MPElh003313
+	for <bpf@vger.kernel.org>; Wed, 4 Jun 2025 15:28:43 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:reply-to:subject:to; s=s2048-2021-q4; bh=QJ3kaiJ2s
+	/+6QS3wVA0z4CUNu9ayRmt3DqsqGnMWoJ0=; b=bx5qwgSNVrinv532HFGnVw0my
+	BQcFQejPucb1OBU5DcpAFSqOCSJ4Lj6zOkNIl4HD7bNKWJQutsvcr74BQdUdhiR7
+	eYi9RwmK620tEMeRLHKbWkNaRwzIXq7RSUHsWrId6Ywe1EjYb20IBJC900d38vgc
+	dbaeRUydwW+WZqu8Zp9In8d8gReuL87Oh0Gv8KWXMAePUCQJ9ZduMMGQ4FbwDnPn
+	iYjMLw5FqG3y1RUW9G/zdKhDuAlYAuPGXzniYQAWx5qWbHPM7vMbJzEhQ6+HrIj+
+	UQ5Ovpr+NIneZjuXslp44LeDoLy5cP0IMXqWagKLN7Ib3oa+5j17qmLrlxduQ==
+Received: from maileast.thefacebook.com ([163.114.135.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 472mnjw8us-11
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Wed, 04 Jun 2025 15:28:43 -0700 (PDT)
+Received: from twshared71637.05.prn6.facebook.com (2620:10d:c0a8:1c::1b) by
+ mail.thefacebook.com (2620:10d:c0a9:6f::8fd4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1748.24; Wed, 4 Jun 2025 22:28:14 +0000
+Received: by devvm7589.cco0.facebook.com (Postfix, from userid 669379)
+	id 1C8BC46C87A; Wed,  4 Jun 2025 15:27:59 -0700 (PDT)
+From: Ihor Solodrai <isolodrai@meta.com>
+To: <andrii@kernel.org>
+CC: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <eddyz87@gmail.com>, <mykolal@fb.com>, <yonghong.song@linux.dev>,
+        <kernel-team@meta.com>
+Subject: [PATCH bpf-next v3 1/3] bpf: make reg_not_null() true for CONST_PTR_TO_MAP
+Date: Wed, 4 Jun 2025 15:27:27 -0700
+Message-ID: <20250604222729.3351946-1-isolodrai@meta.com>
+X-Mailer: git-send-email 2.47.1
+Reply-To: <ihor.solodrai@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aEC9UqkKeEj4on3M@google.com>
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjA0MDE4NSBTYWx0ZWRfX8wtvDamEXXKz uBnONDZrAAwyWEBqlvRiIWYKYEdbVkvQPfUqfg1/nEy6akxY4r2fPUoldNTlAhg7twKa5L9hp02 EZz06FrFt20OAgmnfWtE2KuEYKkxYcH6cqL4rkC28gpeaDdq3ogoLm8zbVO7FfyrS/3+NWHrY1c
+ /Ppudty/DPh2a/CVgciWpTdmhjKNNVnJmYJ816mZKhZo1Y3qrybV1YnPO4AZQt4BJxQFG2Dd+aD rxxN79vzUs4vy109Gb+Rvaq3FBHKU8c6XsmHHUiUKe/kvV6SJlSKLq6/IXG/YxIeyZmWpBTbFdp Aoo/M3gCa7uP5oUCUyIZO7jfq5oonBbj0Vb098SQ31nVeBl43JS4+g9i6MMMf6XYbS/8k7IP0/v
+ KYHiOOzprX2mHmr14w44FNVxoWm3a5xMIFXWXjvQePHnfFhVjatT55VzQWtUVSGys52Zi4Ey
+X-Authority-Analysis: v=2.4 cv=S+zZwJsP c=1 sm=1 tr=0 ts=6840c89b cx=c_pps a=MfjaFnPeirRr97d5FC5oHw==:117 a=MfjaFnPeirRr97d5FC5oHw==:17 a=6IFa9wvqVegA:10 a=VabnemYjAAAA:8 a=eyZTgQFGG2VFfHX4qDcA:9 a=gKebqoRLp9LExxC7YDUY:22
+X-Proofpoint-ORIG-GUID: rUkeLNYhX8flc3CMFFpyCQ0Nr1g9xmzv
+X-Proofpoint-GUID: rUkeLNYhX8flc3CMFFpyCQ0Nr1g9xmzv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-06-04_04,2025-06-03_02,2025-03-28_01
 
-On Wed, Jun 04, 2025 at 02:40:34PM -0700, Namhyung Kim wrote:
-> On Tue, Jun 03, 2025 at 03:29:35PM -0700, Blake Jones wrote:
-> > On Tue, Jun 3, 2025 at 3:10 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> > > > Hmmm. Is that documented and tested anywhere? Offhand it sounds like an
-> > > > implementation detail that I wouldn't feel great about depending on -
-> > > > certainly not without a strong guarantee that it wouldn't change.
+When reg->type is CONST_PTR_TO_MAP, it can not be null. However the
+verifier explores the branches under rX =3D=3D 0 in check_cond_jmp_op()
+even if reg->type is CONST_PTR_TO_MAP, because it was not checked for
+in reg_not_null().
 
-> > > Good point.  Maybe BPF folks have some idea?
+Fix this by adding CONST_PTR_TO_MAP to the set of types that are
+considered non nullable in reg_not_null().
 
-> > > Anyway the current code generates them together in a function.
+An old "unpriv: cmp map pointer with zero" selftest fails with this
+change, because now early out correctly triggers in
+check_cond_jmp_op(), making the verification to pass.
 
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/events/core.c?h=v6.15#n9825
+In practice verifier may allow pointer to null comparison in unpriv,
+since in many cases the relevant branch and comparison op are removed
+as dead code. So change the expected test result to __success_unpriv.
 
-> > It certainly does, yeah. But I don't want to have that become another
-> > instance of https://www.hyrumslaw.com/.
+Signed-off-by: Ihor Solodrai <isolodrai@meta.com>
+---
+ kernel/bpf/verifier.c                               | 3 ++-
+ tools/testing/selftests/bpf/progs/verifier_unpriv.c | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-> Thanks for sharing this.
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index a7d6e0c5928b..0c100e430744 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -405,7 +405,8 @@ static bool reg_not_null(const struct bpf_reg_state *=
+reg)
+ 		type =3D=3D PTR_TO_MAP_KEY ||
+ 		type =3D=3D PTR_TO_SOCK_COMMON ||
+ 		(type =3D=3D PTR_TO_BTF_ID && is_trusted_reg(reg)) ||
+-		type =3D=3D PTR_TO_MEM;
++		type =3D=3D PTR_TO_MEM ||
++		type =3D=3D CONST_PTR_TO_MAP;
+ }
+=20
+ static struct btf_record *reg_btf_record(const struct bpf_reg_state *reg=
+)
+diff --git a/tools/testing/selftests/bpf/progs/verifier_unpriv.c b/tools/=
+testing/selftests/bpf/progs/verifier_unpriv.c
+index a4a5e2071604..28200f068ce5 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_unpriv.c
++++ b/tools/testing/selftests/bpf/progs/verifier_unpriv.c
+@@ -619,7 +619,7 @@ __naked void pass_pointer_to_tail_call(void)
+=20
+ SEC("socket")
+ __description("unpriv: cmp map pointer with zero")
+-__success __failure_unpriv __msg_unpriv("R1 pointer comparison")
++__success __success_unpriv
+ __retval(0)
+ __naked void cmp_map_pointer_with_zero(void)
+ {
+--=20
+2.47.1
 
-> I'm curious about the semantics of the KSYMBOL and BPF_EVENT.  And I
-> feel like there should be a connection between them.
-
-So, the comment in:
-
-tools/perf/util/bpf-event.c
-
-Is:
-
- * Synthesize PERF_RECORD_KSYMBOL and PERF_RECORD_BPF_EVENT for one bpf
- * program. One PERF_RECORD_BPF_EVENT is generated for the program. And
- * one PERF_RECORD_KSYMBOL is generated for each sub program.
-
-which is not so nicely worded tho :-\
-
-"One KSYMBOL per program", followed by "one KSYMBOL per sub program".
-
-But that matches the referenced:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/events/core.c?h=v6.15#n9825
-
-So, for these bpf_metadata_ variables, would that be strictly per
-program or would it be perf 'sub program'?
-
-Couldn't get an answer from looking at tools/bpf/bpftool/prog.c, but
-seems to be with progs, not subprogs, i.e. just the PERF_RECORD_KSYMBOL
-associated with progs (not subprogs) will have those variables.
-
-But then it seems those variables _are_ associated with at least one
-PERF_RECORD_KSYMBOL, right?
-
-- Arnaldo
-
-> Song and Jiri, what do you think?
-
-> Thanks,
-> Namhyung
-
-> > > > Can you say more about why the duplicated records concern you?
-> > >
-> > > More data means more chance to lost something.  I don't expect this is
-> > > gonna be a practical concern but in general we should pursue less data.
-> > 
-> > That makes sense. In this case, it will only show up for BPF programs that
-> > define "bpf_metadata_" variables (which is already an opt-in action), and
-> > the number of variables a given program defines is likely to be quite small.
-> > So I think the cost of the marginal increase in data generated is outweighed
-> > by the usability and reliability benefits of being able to match these events
-> > 1:1 with the KSYMBOL events. If this proves to be a problem in practice,
-> > it can be revisited.
 
