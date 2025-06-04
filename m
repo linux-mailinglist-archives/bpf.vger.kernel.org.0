@@ -1,61 +1,59 @@
-Return-Path: <bpf+bounces-59581-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59582-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65573ACD1CE
-	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 03:00:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA144ACD1D3
+	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 03:00:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 936A53A899A
-	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 00:57:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A201178325
+	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 00:59:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 457011A315D;
-	Wed,  4 Jun 2025 00:54:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C2E71EDA12;
+	Wed,  4 Jun 2025 00:55:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QpQagqK4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gNvWo4Sg"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7923339A1;
-	Wed,  4 Jun 2025 00:54:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 755B51CAA65;
+	Wed,  4 Jun 2025 00:54:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748998445; cv=none; b=lNL/g2ZeHKffJ7nORfiSSX5RFAl4x5Khe5Op2P7LfYuANritcdbftJaC+dzvutN/kSpcAii88w24a38mZFAjFNJ/5YZ9yQLjFohSVoWPKXaQn321IXoJz14MEpHFAiDVFYwVZECD3PHH8OEVbt4GvycqhTT5wWt0S5ETqfuc7X8=
+	t=1748998499; cv=none; b=SvoPyJ+MQoVaApC6zXMIkwvjwVVxzE5LDHPRLlElqU+52cerW94Ocr+VZgeG5t5cKxZIpl56rTyIRJ8igE/QSzRSU9hdGEi+vLlAW2Ii+cDl4XafokzBbSBesMbZ9oqdBsAkTTsRn//L7ZWkcE5LFTuJfqXC1rd03OUICm6+QNs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748998445; c=relaxed/simple;
-	bh=sfHx1hTqLGVOG+aV2+C8B9seik7nkZppqOZi66ICyeA=;
+	s=arc-20240116; t=1748998499; c=relaxed/simple;
+	bh=kMap7xQWBdgSP7l4o30roZd9ADTEnhR/mpKdpt8tsFc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=c+OsLJd1knSyW9s4Cuci3PVsQXV5FXSxtCjWsfqPiTCNMOv1dYU0zQW+IjfouUfx6SbCDRRpdLgfd3D5iH+kvXxNuqbyVnJI23EEAwhxHKLh/sPJ82jaNXGB/94bDAHvxx7ogFldpX7mB8usJXQt5/Htmb7qmgXC/CzHgFowK0c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QpQagqK4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A303C4CEEF;
-	Wed,  4 Jun 2025 00:54:04 +0000 (UTC)
+	 MIME-Version:Content-Type; b=S6UOGrRi/hcN8T04vKcU4L7Qyf/l9FPZaKofexuWsQW82en0lhlGesqAwQRP3veQWJnzVGN79cvIWgupxa1ASN6WVQ74EYTRX16fahovV2zZr7wZGEQDVueDzGyI8DDg0kyafoFiT8G7xNHAK0fOyajiiApVoeUV6AlY5LN1WJQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gNvWo4Sg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFF0DC4CEED;
+	Wed,  4 Jun 2025 00:54:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748998445;
-	bh=sfHx1hTqLGVOG+aV2+C8B9seik7nkZppqOZi66ICyeA=;
+	s=k20201202; t=1748998499;
+	bh=kMap7xQWBdgSP7l4o30roZd9ADTEnhR/mpKdpt8tsFc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=QpQagqK4FDcPQbOGM+CLphg7YZpLMzyant+84kLNFRMxKAstRTZouxBmp+F8JVZ1K
-	 cMwuQ9+F3+qnDs/Ty+QVaj0yDPjG3tpjCDbzwgJRLrep7Ue9maLP4R7OYUSEzwHJNv
-	 UrHZy4CD4KnOzO/UHtv4zgAClc1KaQy1+rW+XqN87HLeArayvpigoJq+PVe0jNIFWc
-	 i/mzhSiZEgjk/dE7zmgGtmrFVpz1qMS+jGPXahkRMmfztoumqq4ctI3ScepC/+ZkZY
-	 YZ6T/+o/jLq+VcKvVPMIrL5VmmWRpr5deiKOll0Ce+E8s+RWsQg5MQwUBdQ6j2geL8
-	 c0coaTG7zvumg==
+	b=gNvWo4Sggxf3gf7Kpn3aWKae6arzejrze4l4TOTWVyfSM6jqBDbOliBC4tRgsJXIO
+	 gXrA0QQNudgqlHjqlOoQolNsN85ULDrgAN03QwvHGB7X4OSUEtR7+ali7ciZ5+GiQx
+	 Nu33QDT1gOiFtRie53QgFlMeYP1tfVm4jyUeEMePWCTmK12QwXoUGJEhdJFPV4Dh0n
+	 cTS6kXo1e5DasV82YRKeDC9Ay+DB5x9qGhV1bpHrVkt0BtbcYykGCLgO2s4YBgaAgh
+	 TLNYgaI9NyKbMsNhB06FBWSYqb1iCpeVjGV9pGFm9uq8Opb6f9U7OTJ5C1wYEk7M+E
+	 66a99x236SsWQ==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
-Cc: Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+Cc: Jiayuan Chen <jiayuan.chen@linux.dev>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	martin.lau@linux.dev,
-	ast@kernel.org,
-	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	jakub@cloudflare.com,
+	netdev@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.15 081/118] bpf: Use proper type to calculate bpf_raw_tp_null_args.mask index
-Date: Tue,  3 Jun 2025 20:50:12 -0400
-Message-Id: <20250604005049.4147522-81-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.15 107/118] bpf, sockmap: Fix data lost during EAGAIN retries
+Date: Tue,  3 Jun 2025 20:50:38 -0400
+Message-Id: <20250604005049.4147522-107-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250604005049.4147522-1-sashal@kernel.org>
 References: <20250604005049.4147522-1-sashal@kernel.org>
@@ -71,130 +69,115 @@ X-stable-base: Linux 6.15
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+From: Jiayuan Chen <jiayuan.chen@linux.dev>
 
-[ Upstream commit 53ebef53a657d7957d35dc2b953db64f1bb28065 ]
+[ Upstream commit 7683167196bd727ad5f3c3fc6a9ca70f54520a81 ]
 
-The calculation of the index used to access the mask field in 'struct
-bpf_raw_tp_null_args' is done with 'int' type, which could overflow when
-the tracepoint being attached has more than 8 arguments.
+We call skb_bpf_redirect_clear() to clean _sk_redir before handling skb in
+backlog, but when sk_psock_handle_skb() return EAGAIN due to sk_rcvbuf
+limit, the redirect info in _sk_redir is not recovered.
 
-While none of the tracepoints mentioned in raw_tp_null_args[] currently
-have more than 8 arguments, there do exist tracepoints that had more
-than 8 arguments (e.g. iocost_iocg_forgive_debt), so use the correct
-type for calculation and avoid Smatch static checker warning.
+Fix skb redir loss during EAGAIN retries by restoring _sk_redir
+information using skb_bpf_set_redir().
 
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Signed-off-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Link: https://lore.kernel.org/bpf/20250418074946.35569-1-shung-hsi.yu@suse.com
+Before this patch:
+'''
+./bench sockmap -c 2 -p 1 -a --rx-verdict-ingress
+Setting up benchmark 'sockmap'...
+create socket fd c1:13 p1:14 c2:15 p2:16
+Benchmark 'sockmap' started.
+Send Speed 1343.172 MB/s, BPF Speed 1343.238 MB/s, Rcv Speed   65.271 MB/s
+Send Speed 1352.022 MB/s, BPF Speed 1352.088 MB/s, Rcv Speed   0 MB/s
+Send Speed 1354.105 MB/s, BPF Speed 1354.105 MB/s, Rcv Speed   0 MB/s
+Send Speed 1355.018 MB/s, BPF Speed 1354.887 MB/s, Rcv Speed   0 MB/s
+'''
+Due to the high send rate, the RX processing path may frequently hit the
+sk_rcvbuf limit. Once triggered, incorrect _sk_redir will cause the flow
+to mistakenly enter the "!ingress" path, leading to send failures.
+(The Rcv speed depends on tcp_rmem).
 
-Closes: https://lore.kernel.org/r/843a3b94-d53d-42db-93d4-be10a4090146@stanley.mountain/
+After this patch:
+'''
+./bench sockmap -c 2 -p 1 -a --rx-verdict-ingress
+Setting up benchmark 'sockmap'...
+create socket fd c1:13 p1:14 c2:15 p2:16
+Benchmark 'sockmap' started.
+Send Speed 1347.236 MB/s, BPF Speed 1347.367 MB/s, Rcv Speed   65.402 MB/s
+Send Speed 1353.320 MB/s, BPF Speed 1353.320 MB/s, Rcv Speed   65.536 MB/s
+Send Speed 1353.186 MB/s, BPF Speed 1353.121 MB/s, Rcv Speed   65.536 MB/s
+'''
+
+Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
+Link: https://lore.kernel.org/r/20250407142234.47591-2-jiayuan.chen@linux.dev
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
 
-Now I have enough context to analyze this commit: **Analysis:** **YES**
-- This commit should be backported to stable kernel trees. **Extensive
-Explanation:** ## Issue Description The commit fixes a potential integer
-overflow in the BPF BTF subsystem. The bug is in lines 6830 and 6833 of
-`kernel/bpf/btf.c` where the calculation `(arg capability_test
-capability_test.c f2fs_folio_analysis.md ipv4_multipath_analysis.md
-ipv6_route_allocation_rcu_analysis.md ixgbe_e610_set_phys_id_analysis.md
-linux lpfc_timeout_analysis.md rtl_bb_delay_analysis.md
-rtw89_mlo_analysis.md tcp_multipath_load_balance_analysis.md
-type_size_check type_size_check.c veth_driver_analysis.md 4)` is done
-with `int` type when `arg` can theoretically be large enough to cause
-overflow. ## Code Analysis 1. **Variable Types**: - `arg` is declared as
-`u32` (from `btf_ctx_arg_idx` return type) - The shift operation was
-using `int` arithmetic: `(0x1 << (arg capability_test capability_test.c
-f2fs_folio_analysis.md ipv4_multipath_analysis.md
-ipv6_route_allocation_rcu_analysis.md ixgbe_e610_set_phys_id_analysis.md
-linux lpfc_timeout_analysis.md rtl_bb_delay_analysis.md
-rtw89_mlo_analysis.md tcp_multipath_load_balance_analysis.md
-type_size_check type_size_check.c veth_driver_analysis.md 4))` - The fix
-changes it to `unsigned long long`: `(0x1ULL << (arg capability_test
-capability_test.c f2fs_folio_analysis.md ipv4_multipath_analysis.md
-ipv6_route_allocation_rcu_analysis.md ixgbe_e610_set_phys_id_analysis.md
-linux lpfc_timeout_analysis.md rtl_bb_delay_analysis.md
-rtw89_mlo_analysis.md tcp_multipath_load_balance_analysis.md
-type_size_check type_size_check.c veth_driver_analysis.md 4))` 2. **The
-Overflow Scenario**: - When `arg >= 8`, the expression `(arg
-capability_test capability_test.c f2fs_folio_analysis.md
-ipv4_multipath_analysis.md ipv6_route_allocation_rcu_analysis.md
-ixgbe_e610_set_phys_id_analysis.md linux lpfc_timeout_analysis.md
-rtl_bb_delay_analysis.md rtw89_mlo_analysis.md
-tcp_multipath_load_balance_analysis.md type_size_check type_size_check.c
-veth_driver_analysis.md 4)` could be >= 32 - Shifting by >= 32 bits on a
-32-bit `int` causes undefined behavior - Even on 64-bit systems, large
-values could overflow the intermediate calculation 3. **Specific
-Changes**: ```c // Before (vulnerable): if (raw_tp_null_args[i].mask &
-(0x1 << (arg capability_test capability_test.c f2fs_folio_analysis.md
-ipv4_multipath_analysis.md ipv6_route_allocation_rcu_analysis.md
-ixgbe_e610_set_phys_id_analysis.md linux lpfc_timeout_analysis.md
-rtl_bb_delay_analysis.md rtw89_mlo_analysis.md
-tcp_multipath_load_balance_analysis.md type_size_check type_size_check.c
-veth_driver_analysis.md 4))) if (raw_tp_null_args[i].mask & (0x2 << (arg
-capability_test capability_test.c f2fs_folio_analysis.md
-ipv4_multipath_analysis.md ipv6_route_allocation_rcu_analysis.md
-ixgbe_e610_set_phys_id_analysis.md linux lpfc_timeout_analysis.md
-rtl_bb_delay_analysis.md rtw89_mlo_analysis.md
-tcp_multipath_load_balance_analysis.md type_size_check type_size_check.c
-veth_driver_analysis.md 4))) // After (fixed): if
-(raw_tp_null_args[i].mask & (0x1ULL << (arg capability_test
-capability_test.c f2fs_folio_analysis.md ipv4_multipath_analysis.md
-ipv6_route_allocation_rcu_analysis.md ixgbe_e610_set_phys_id_analysis.md
-linux lpfc_timeout_analysis.md rtl_bb_delay_analysis.md
-rtw89_mlo_analysis.md tcp_multipath_load_balance_analysis.md
-type_size_check type_size_check.c veth_driver_analysis.md 4))) if
-(raw_tp_null_args[i].mask & (0x2ULL << (arg capability_test
-capability_test.c f2fs_folio_analysis.md ipv4_multipath_analysis.md
-ipv6_route_allocation_rcu_analysis.md ixgbe_e610_set_phys_id_analysis.md
-linux lpfc_timeout_analysis.md rtl_bb_delay_analysis.md
-rtw89_mlo_analysis.md tcp_multipath_load_balance_analysis.md
-type_size_check type_size_check.c veth_driver_analysis.md 4))) ``` ##
-Why This Should Be Backported 1. **Bug Fix**: This is a clear bug fix
-addressing undefined behavior that could cause incorrect BPF program
-verification. 2. **Small and Contained**: The fix is minimal - only
-changes two lines by adding `ULL` suffix to ensure 64-bit arithmetic. 3.
-**No Side Effects**: The change maintains the same logic but uses proper
-types, eliminating undefined behavior without changing functionality. 4.
-**Critical Subsystem**: This affects BPF verification, which is
-security-critical. Incorrect verification could lead to security issues.
-5. **Static Analysis Detection**: The commit was triggered by a Smatch
-static checker warning, indicating this is a real issue that static
-analysis tools flag. 6. **Potential Real-World Impact**: While the
-commit mentions no current tracepoints have >8 arguments, the code path
-could be triggered by future tracepoints or module tracepoints, making
-this a defensive fix. 7. **Follows Stable Criteria**: - Important bugfix
-✓ - Minimal risk ✓ - No architectural changes ✓ - Confined to BPF
-subsystem ✓ ## Comparison with Similar Commits Looking at the historical
-examples, this commit is most similar to "Similar Commit #5" which was
-marked as "Backport Status: YES" - it's a small type safety fix in BPF
-BTF code that prevents undefined behavior. The fix prevents a subtle but
-potentially serious issue in BPF program verification, making it an
-excellent candidate for stable backporting.
+**YES** This commit should be backported to stable kernel trees. ##
+Extensive Analysis ### **Critical Bug Fix Nature** This is a **data loss
+bug** in the BPF sockmap subsystem that causes silent packet drops under
+load conditions. The commit adds a single line that restores essential
+redirect information during EAGAIN retry scenarios. ### **Code Change
+Analysis** The fix adds exactly one line at `net/core/skmsg.c:694`: ```c
+skb_bpf_set_redir(skb, psock->sk, ingress); ``` This line restores
+redirect information that was previously cleared by
+`skb_bpf_redirect_clear(skb)` at line 684. When `sk_psock_handle_skb()`
+returns `-EAGAIN` due to memory pressure or socket buffer limits, the
+work is rescheduled, but without this fix, the redirect information
+(`skb->_sk_redir`) would be lost. ### **Impact Without the Fix** 1.
+**Silent Data Loss**: When EAGAIN occurs, subsequent retry attempts find
+no redirect target (`skb_bpf_redirect_fetch()` returns NULL), causing
+packets to be dropped in `sk_psock_skb_redirect()` at lines 935-938. 2.
+**BPF Policy Bypass**: Packets that should be redirected according to
+BPF program logic get dropped instead, effectively bypassing network
+policies. 3. **Production Impact**: The commit message shows concrete
+performance degradation - receive speeds dropping from 65+ MB/s to 0
+MB/s under high load conditions. ### **Backport Suitability Factors**
+**✅ Minimal and Surgical:** - Single line addition - No API changes or
+structural modifications - Uses existing stable function
+`skb_bpf_set_redir()` **✅ Self-Contained:** - Fix only affects the
+specific error path (`ret == -EAGAIN`) - No dependencies on other
+concurrent changes - Uses well-established APIs present across kernel
+versions **✅ Clear Bug Fix Semantics:** - Restores state that was
+previously cleared - Follows the established pattern: clear → try →
+restore on failure - The comment explicitly states "Restore redir info
+we cleared before" **✅ Critical Subsystem:** - Affects BPF sockmap, a
+core networking infrastructure component - Used by service meshes,
+container networking, and load balancers - Failure causes silent data
+loss that's difficult to debug ### **Comparison with Similar Commits**
+Looking at the provided historical examples: - Similar to commit #2 and
+#4 (both marked YES) which also fix sockmap data handling issues -
+Unlike commit #1, #3, and #5 (marked NO) which involved more complex
+architectural changes - This fix addresses a fundamental correctness
+issue rather than optimizations ### **Risk Assessment** **Low Risk:** -
+The fix is in an error recovery path, so it only executes when problems
+already exist - Restoring redirect information cannot make the situation
+worse - The function `skb_bpf_set_redir()` is a simple state restoration
+operation ### **Stable Tree Criteria Compliance** 1. **Important
+bugfix**: ✅ Fixes silent data loss 2. **Minimal risk**: ✅ Single line,
+error path only 3. **No new features**: ✅ Pure bug fix 4. **Confined
+scope**: ✅ Limited to sockmap redirect handling 5. **User-visible
+impact**: ✅ Prevents packet loss under load This commit perfectly fits
+the stable tree criteria for important, low-risk bug fixes that address
+user-visible problems in critical subsystems.
 
- kernel/bpf/btf.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/core/skmsg.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 16ba36f34dfab..656ee11aff676 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -6829,10 +6829,10 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
- 			/* Is this a func with potential NULL args? */
- 			if (strcmp(tname, raw_tp_null_args[i].func))
- 				continue;
--			if (raw_tp_null_args[i].mask & (0x1 << (arg * 4)))
-+			if (raw_tp_null_args[i].mask & (0x1ULL << (arg * 4)))
- 				info->reg_type |= PTR_MAYBE_NULL;
- 			/* Is the current arg IS_ERR? */
--			if (raw_tp_null_args[i].mask & (0x2 << (arg * 4)))
-+			if (raw_tp_null_args[i].mask & (0x2ULL << (arg * 4)))
- 				ptr_err_raw_tp = true;
- 			break;
- 		}
+diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+index 0ddc4c7188332..29cb5ffd56c0b 100644
+--- a/net/core/skmsg.c
++++ b/net/core/skmsg.c
+@@ -680,7 +680,8 @@ static void sk_psock_backlog(struct work_struct *work)
+ 			if (ret <= 0) {
+ 				if (ret == -EAGAIN) {
+ 					sk_psock_skb_state(psock, state, len, off);
+-
++					/* Restore redir info we cleared before */
++					skb_bpf_set_redir(skb, psock->sk, ingress);
+ 					/* Delay slightly to prioritize any
+ 					 * other work that might be here.
+ 					 */
 -- 
 2.39.5
 
