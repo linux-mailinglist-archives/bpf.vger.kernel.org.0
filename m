@@ -1,184 +1,285 @@
-Return-Path: <bpf+bounces-59610-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59613-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72098ACD459
-	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 03:28:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1EF4ACD5EA
+	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 04:54:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E74F616F03D
-	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 01:28:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F10E31882715
+	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 02:53:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E16A8274674;
-	Wed,  4 Jun 2025 01:06:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ojo1x7hC"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7AEA2309B9;
+	Wed,  4 Jun 2025 02:53:10 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CDEF1922FD;
-	Wed,  4 Jun 2025 01:06:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43580214228;
+	Wed,  4 Jun 2025 02:53:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748999177; cv=none; b=ZHoPmqf0/m23BaZVevCos+BnfCDc8A7CIX2GBnHDt7UPMXFWVLW4SfCVFA9YQWtjlRbecHl3YDCuopy4WQg14GdirOp8ZPsvx76TMXUfhwBEnRPOYSzj/fd48ipwy0tQq9g5VLIz2KU03h6yCFOu7SlmL/nw0rp353x1KvSckbw=
+	t=1749005590; cv=none; b=GYDFlTjw/Gmjz9JIRlfLRXXcVrQ9m1nSJbF99n1nhCDBW5zvvF6y0wwRAz9ZUzVYe8uYobo4jBOQb+NbRxpzwnUMX2WW/KyNi0iEsqDXV7Zp4BHfWSFanPEQdKCsemG83uTSqKHrLpDDSqFlXfI8iOeeeIuTCUE+K6gmwXGOokw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748999177; c=relaxed/simple;
-	bh=6PpL0gCbXfBRyt7NE6srUXN+h5ji8hiZ69L/Eo6UrBg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jhqQAcQ5dLS00KPdyqfot/O1MuYC4abdFdzXC7sxHU+sDXTLCO6G/IZDX4FmzZMiO6CivQlS3tQ4YCnT7/ALqy1uN1uR2JbKUzJ8hLsHDssZuFzaat9F8kuorjU8kwbw3lkD6Z+pbTZ0jRwevAFNzFsLUwBa92kGpwA7AFQadjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ojo1x7hC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25089C4CEED;
-	Wed,  4 Jun 2025 01:06:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748999177;
-	bh=6PpL0gCbXfBRyt7NE6srUXN+h5ji8hiZ69L/Eo6UrBg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Ojo1x7hCoWGNW5Arp4D8puaMp4sbWeQ23srJA9c9v1+O+y+rfgp+XHbbhqz1NNqCp
-	 r5x7ibO+iY04Ii1XEGkjK7TYdRrlxHIub0fqPpFPm6lKLf/rGT38wmGub2F+DW//u2
-	 fUlDDzxCG3UwFY+mPI3NTHC4CssiwrXKdl9VO8nNnWvqXpCJxs57iH53HwAGhwlZWd
-	 XZg/OMC1iNhCUhjXmmfS2YR9FN8Hg1WVG+HkQEx+WdU5JHfULn5qXSO/ZDpqnHNSZw
-	 gL7fkJ4u19kwgIBNv8e6d/eMU58ng9X3vHj+6xK/B7FHqcZJ/wzDz2C4TfZ3Vp+gv/
-	 YwvuPSmg9rBSA==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: Jiayuan Chen <jiayuan.chen@linux.dev>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
+	s=arc-20240116; t=1749005590; c=relaxed/simple;
+	bh=WwXiCyZhb6yzKKt9THlSbvf+dnLCzsV7abwnY/VLqio=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=Vj7YAFUqTpRmF9iJ9LxMjbhIhF4JJtpYm282YrhHnMA9pOTr34dizZq2vFdP4PD2AtSdJ51eQ72cTqO1OoX+7qH4XYKLncjkd50gW7m4APpZaJSiJqJEAYLB+zA1wC6Nah0o2Rxbur+EXOsey2ZV28qdyvSQLpc9VltIg0OGA/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-681ff7000002311f-ba-683fb5094085
+From: Byungchul Park <byungchul@sk.com>
+To: willy@infradead.org,
+	netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	kernel_team@skhynix.com,
+	kuba@kernel.org,
+	almasrymina@google.com,
+	ilias.apalodimas@linaro.org,
+	harry.yoo@oracle.com,
+	hawk@kernel.org,
+	akpm@linux-foundation.org,
+	davem@davemloft.net,
 	john.fastabend@gmail.com,
-	jakub@cloudflare.com,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 32/33] bpf, sockmap: Fix data lost during EAGAIN retries
-Date: Tue,  3 Jun 2025 21:05:23 -0400
-Message-Id: <20250604010524.6091-32-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250604010524.6091-1-sashal@kernel.org>
-References: <20250604010524.6091-1-sashal@kernel.org>
+	andrew+netdev@lunn.ch,
+	asml.silence@gmail.com,
+	toke@redhat.com,
+	tariqt@nvidia.com,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	saeedm@nvidia.com,
+	leon@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	david@redhat.com,
+	lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com,
+	vbabka@suse.cz,
+	rppt@kernel.org,
+	surenb@google.com,
+	mhocko@suse.com,
+	horms@kernel.org,
+	linux-rdma@vger.kernel.org,
+	bpf@vger.kernel.org,
+	vishal.moola@gmail.com
+Subject: [RFC v4 00/18] Split netmem from struct page
+Date: Wed,  4 Jun 2025 11:52:28 +0900
+Message-Id: <20250604025246.61616-1-byungchul@sk.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAAzWRXUhTcRiH/Z9zds7ZdHBcWicDrdEHDsoMpRcq86LgDwkJXRQF5chDW80p
+	WzM1wmnLaOSKDBJdNalMp7Va6paJ2bLSEjJHsdKcKDNBW+hy+EXliu4enoffe/OypKyZSmDV
+	2tOCTqvUyGkJJfkeU7dZ3LpbtdV2OQmsjmYamuaK4P6IWwRWexuCn/ODDIS639Bwpy5MgvW9
+	iYJZxwIJgdejDPjrxynouOgiYfRKDw2VpkUSyt0NBPS3WURwfeEeCS7jCAPedisNw82/RTDu
+	qaSgt6aRAr8lE17bVkL43RSCboeLgPDlmzRUDdhoGDP5EQy8HKWgtsyCwNHpE8HinJXOXIdb
+	Gj8T+GnNVwbbnAb8pEGBzb4BEjvtl2jsnLnG4KFPHTTuqV6k8FN3iMCV54M0ng58ofCPzo80
+	drR8pHCfrZvBIWdiNndYsjNX0KgLBV1KRo5E1e6qZQomdhSFgx9oI7qRYkZilufS+FsBE21G
+	7F+esJdENM1t4n2+eTLCcVwqHxp9Q5mRhCW5oIgPWBeJSFjBpfPDg2EmwhS3gZ8M3hZFWLrs
+	A4Ex9O9+Et/0qIuMjHlumOEn/UvEv7Caf9Hgo66iaBuKsiOZWluYp1Rr0raoirXqoi3H8/Oc
+	aPmH9eeWjrjRTP8BD+JYJI+RuocyVDKRslBfnOdBPEvK46RJyctKmqssLhF0+cd0Bo2g96A1
+	LCVfJd0WPpMr404oTwunBKFA0P2vBCtOMKLYV72xF/aaf+2Z6qqoD7W39pyMisJH4dCCN7kt
+	y0W8vRZTc+TxMW+KodQ+XVXRtC9jrUNsPH4ivevTA1NiQzxRv2f/813TFZtGhIeUIlD2zRN/
+	0KtIGPGuN9VaF8prcsTbFZeKN9/9ED7bt7HTMnh/9uCzrNLs7DtkZpohGF3dKKf0KmWqgtTp
+	lX8ARprZHr8CAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAAwGiAl39CAMSjwQaCGludGVybmFsIgYKBApOO4MtCbU/aDCh8wo4nK+sBjir
+	+Hg4p+C4BTicqrYBOPT52wc488THBjijofYDOJzPhAQ49a/6AzjlxuIHON+m5gQ4vIe3Azji
+	j8gGOI2E+wM4grioAjjDnckFONC2jgU4lPqlAzi3gOAHONO6nAY43qz/BTjmwo0EOMmaqQQ4
+	345AOMagFjj2y+wBOMSvtwI49oydBjiT0qAGOOOE3wE40sPiBDibgY4BOK++2AU4+/icBkAi
+	SLSp2QJIuZrdB0igsnVIs6gqSIrY0gNIsqqJBkiy8pIHSNzWvAZIyJj7BEi5uPMCSI2D7gZI
+	8eXaBEjvvtUGSKPo8AJIr7TVBEjMoMQHUBFaCjxkZWxpdmVyLz5gCmi6t5sHcOg7ePbu0QaA
+	AZcvigEICBgQNBjoqnqKAQkIBhAnGNjY+QOKAQkIFBAxGPPixwSKAQoIAxDuBRjlnPsCigEJ
+	CBMQNRje2/YHigEJCAQQJRjr7p8FigEJCA0QNRjl5eMBigEJCBgQHxirsMADkAEIoAEAqgEU
+	aW52bWFpbDUuc2toeW5peC5jb22yAQYKBKZ9/JG4AfTTR8IBEAgBIgwNuNw+aBIFYXZzeW3C
+	ARgIAyIUDR8pPmgSDWRheXplcm9fcnVsZXPCARsIBCIXDUpXZWASEGdhdGVrZWVwZXJfcnVs
+	ZXPCAQIICRqAAYWF2lLhMnhFUz+v8J2j/wIGgDEfykPfRw1GVNckynP3CQ1j0OfA1ZBz2k/g
+	Qq1CxIt5b9xPybk4pXrZkv/O+FcWB4iqt9+H6vWJU9jiT+fJAkkgYFGDzrQvwHJV3SFGjmBW
+	qL09FCEscsVDvz9j9pWPZqAriysoNGmfYYdTyIT+IgRzaGExKgNyc2Hu9aA3ogIAAA==
+X-CFilter-Loop: Reflected
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.184
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 
-From: Jiayuan Chen <jiayuan.chen@linux.dev>
+The MM subsystem is trying to reduce struct page to a single pointer.
+The first step towards that is splitting struct page by its individual
+users, as has already been done with folio and slab.  This patchset does
+that for netmem which is used for page pools.
 
-[ Upstream commit 7683167196bd727ad5f3c3fc6a9ca70f54520a81 ]
+Matthew Wilcox tried and stopped the same work, you can see in:
 
-We call skb_bpf_redirect_clear() to clean _sk_redir before handling skb in
-backlog, but when sk_psock_handle_skb() return EAGAIN due to sk_rcvbuf
-limit, the redirect info in _sk_redir is not recovered.
+   https://lore.kernel.org/linux-mm/20230111042214.907030-1-willy@infradead.org/
 
-Fix skb redir loss during EAGAIN retries by restoring _sk_redir
-information using skb_bpf_set_redir().
+Mina Almasry already has done a lot fo prerequisite works by luck.  I
+stacked my patches on the top of his work e.i. netmem.
 
-Before this patch:
-'''
-./bench sockmap -c 2 -p 1 -a --rx-verdict-ingress
-Setting up benchmark 'sockmap'...
-create socket fd c1:13 p1:14 c2:15 p2:16
-Benchmark 'sockmap' started.
-Send Speed 1343.172 MB/s, BPF Speed 1343.238 MB/s, Rcv Speed   65.271 MB/s
-Send Speed 1352.022 MB/s, BPF Speed 1352.088 MB/s, Rcv Speed   0 MB/s
-Send Speed 1354.105 MB/s, BPF Speed 1354.105 MB/s, Rcv Speed   0 MB/s
-Send Speed 1355.018 MB/s, BPF Speed 1354.887 MB/s, Rcv Speed   0 MB/s
-'''
-Due to the high send rate, the RX processing path may frequently hit the
-sk_rcvbuf limit. Once triggered, incorrect _sk_redir will cause the flow
-to mistakenly enter the "!ingress" path, leading to send failures.
-(The Rcv speed depends on tcp_rmem).
+I focused on removing the page pool members in struct page this time,
+not moving the allocation code of page pool from net to mm.  It can be
+done later if needed.
 
-After this patch:
-'''
-./bench sockmap -c 2 -p 1 -a --rx-verdict-ingress
-Setting up benchmark 'sockmap'...
-create socket fd c1:13 p1:14 c2:15 p2:16
-Benchmark 'sockmap' started.
-Send Speed 1347.236 MB/s, BPF Speed 1347.367 MB/s, Rcv Speed   65.402 MB/s
-Send Speed 1353.320 MB/s, BPF Speed 1353.320 MB/s, Rcv Speed   65.536 MB/s
-Send Speed 1353.186 MB/s, BPF Speed 1353.121 MB/s, Rcv Speed   65.536 MB/s
-'''
+The final patch removing the page pool fields will be submitted once
+all the converting work of page to netmem are done:
 
-Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
-Link: https://lore.kernel.org/r/20250407142234.47591-2-jiayuan.chen@linux.dev
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+   1. converting of libeth_fqe by Tony Nguyen.
+   2. converting of mlx5 by Tariq Toukan.
+   3. converting of prueth_swdata (on me).
+   4. converting of freescale driver (on me).
+
+For our discussion, I'm sharing what the final patch looks like the
+following.
+
+	Byungchul
+--8<--
+commit 1847d9890f798456b21ccb27aac7545303048492
+Author: Byungchul Park <byungchul@sk.com>
+Date:   Wed May 28 20:44:55 2025 +0900
+
+    mm, netmem: remove the page pool members in struct page
+    
+    Now that all the users of the page pool members in struct page have been
+    gone, the members can be removed from struct page.
+    
+    However, since struct netmem_desc still uses the space in struct page,
+    the important offsets should be checked properly, until struct
+    netmem_desc has its own instance from slab.
+    
+    Remove the page pool members in struct page and modify static checkers
+    for the offsets.
+    
+    Signed-off-by: Byungchul Park <byungchul@sk.com>
+
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 32ba5126e221..db2fe0d0ebbf 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -120,17 +120,6 @@ struct page {
+ 			 */
+ 			unsigned long private;
+ 		};
+-		struct {	/* page_pool used by netstack */
+-			/**
+-			 * @pp_magic: magic value to avoid recycling non
+-			 * page_pool allocated pages.
+-			 */
+-			unsigned long pp_magic;
+-			struct page_pool *pp;
+-			unsigned long _pp_mapping_pad;
+-			unsigned long dma_addr;
+-			atomic_long_t pp_ref_count;
+-		};
+ 		struct {	/* Tail pages of compound page */
+ 			unsigned long compound_head;	/* Bit zero is set */
+ 		};
+diff --git a/include/net/netmem.h b/include/net/netmem.h
+index 8f354ae7d5c3..3414f184d018 100644
+--- a/include/net/netmem.h
++++ b/include/net/netmem.h
+@@ -42,11 +42,8 @@ struct netmem_desc {
+ 	static_assert(offsetof(struct page, pg) == \
+ 		      offsetof(struct netmem_desc, desc))
+ NETMEM_DESC_ASSERT_OFFSET(flags, _flags);
+-NETMEM_DESC_ASSERT_OFFSET(pp_magic, pp_magic);
+-NETMEM_DESC_ASSERT_OFFSET(pp, pp);
+-NETMEM_DESC_ASSERT_OFFSET(_pp_mapping_pad, _pp_mapping_pad);
+-NETMEM_DESC_ASSERT_OFFSET(dma_addr, dma_addr);
+-NETMEM_DESC_ASSERT_OFFSET(pp_ref_count, pp_ref_count);
++NETMEM_DESC_ASSERT_OFFSET(lru, pp_magic);
++NETMEM_DESC_ASSERT_OFFSET(mapping, _pp_mapping_pad);
+ #undef NETMEM_DESC_ASSERT_OFFSET
+ 
+ /*
 ---
+Changes from v3:
+	1. Relocates ->owner and ->type of net_iov out of netmem_desc
+	   and make them be net_iov specific.
+	2. Remove __force when casting struct page to struct netmem_desc.
 
-**YES** This commit should be backported to stable kernel trees. ##
-Extensive Analysis ### **Critical Bug Fix Nature** This is a **data loss
-bug** in the BPF sockmap subsystem that causes silent packet drops under
-load conditions. The commit adds a single line that restores essential
-redirect information during EAGAIN retry scenarios. ### **Code Change
-Analysis** The fix adds exactly one line at `net/core/skmsg.c:694`: ```c
-skb_bpf_set_redir(skb, psock->sk, ingress); ``` This line restores
-redirect information that was previously cleared by
-`skb_bpf_redirect_clear(skb)` at line 684. When `sk_psock_handle_skb()`
-returns `-EAGAIN` due to memory pressure or socket buffer limits, the
-work is rescheduled, but without this fix, the redirect information
-(`skb->_sk_redir`) would be lost. ### **Impact Without the Fix** 1.
-**Silent Data Loss**: When EAGAIN occurs, subsequent retry attempts find
-no redirect target (`skb_bpf_redirect_fetch()` returns NULL), causing
-packets to be dropped in `sk_psock_skb_redirect()` at lines 935-938. 2.
-**BPF Policy Bypass**: Packets that should be redirected according to
-BPF program logic get dropped instead, effectively bypassing network
-policies. 3. **Production Impact**: The commit message shows concrete
-performance degradation - receive speeds dropping from 65+ MB/s to 0
-MB/s under high load conditions. ### **Backport Suitability Factors**
-**✅ Minimal and Surgical:** - Single line addition - No API changes or
-structural modifications - Uses existing stable function
-`skb_bpf_set_redir()` **✅ Self-Contained:** - Fix only affects the
-specific error path (`ret == -EAGAIN`) - No dependencies on other
-concurrent changes - Uses well-established APIs present across kernel
-versions **✅ Clear Bug Fix Semantics:** - Restores state that was
-previously cleared - Follows the established pattern: clear → try →
-restore on failure - The comment explicitly states "Restore redir info
-we cleared before" **✅ Critical Subsystem:** - Affects BPF sockmap, a
-core networking infrastructure component - Used by service meshes,
-container networking, and load balancers - Failure causes silent data
-loss that's difficult to debug ### **Comparison with Similar Commits**
-Looking at the provided historical examples: - Similar to commit #2 and
-#4 (both marked YES) which also fix sockmap data handling issues -
-Unlike commit #1, #3, and #5 (marked NO) which involved more complex
-architectural changes - This fix addresses a fundamental correctness
-issue rather than optimizations ### **Risk Assessment** **Low Risk:** -
-The fix is in an error recovery path, so it only executes when problems
-already exist - Restoring redirect information cannot make the situation
-worse - The function `skb_bpf_set_redir()` is a simple state restoration
-operation ### **Stable Tree Criteria Compliance** 1. **Important
-bugfix**: ✅ Fixes silent data loss 2. **Minimal risk**: ✅ Single line,
-error path only 3. **No new features**: ✅ Pure bug fix 4. **Confined
-scope**: ✅ Limited to sockmap redirect handling 5. **User-visible
-impact**: ✅ Prevents packet loss under load This commit perfectly fits
-the stable tree criteria for important, low-risk bug fixes that address
-user-visible problems in critical subsystems.
+Changes from v2:
+	1. Introduce a netmem API, virt_to_head_netmem(), and use it
+	   when it's needed.
+	2. Introduce struct netmem_desc as a new struct and union'ed
+	   with the existing fields in struct net_iov.
+	3. Make page_pool_page_is_pp() access ->pp_magic through struct
+	   netmem_desc instead of struct page.
+	4. Move netmem alloc APIs from include/net/netmem.h to
+	   net/core/netmem_priv.h.
+	5. Apply trivial feedbacks, thanks to Mina, Pavel, and Toke.
+	6. Add given 'Reviewed-by's, thanks to Mina.
 
- net/core/skmsg.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Changes from v1:
+	1. Rebase on net-next's main as of May 26.
+	2. Check checkpatch.pl, feedbacked by SJ Park.
+	3. Add converting of page to netmem in mt76.
+	4. Revert 'mlx5: use netmem descriptor and APIs for page pool'
+	   since it's on-going by Tariq Toukan.  I will wait for his
+	   work to be done.
+	5. Revert 'page_pool: use netmem APIs to access page->pp_magic
+	   in page_pool_page_is_pp()' since we need more discussion.
+	6. Revert 'mm, netmem: remove the page pool members in struct
+	   page' since there are some prerequisite works to remove the
+	   page pool fields from struct page.  I can submit this patch
+	   separatedly later.
+	7. Cancel relocating a page pool member in struct page.
+	8. Modify static assert for offests and size of struct
+	   netmem_desc.
 
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index a5947aa559837..3ae1704a8a7c1 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -663,7 +663,8 @@ static void sk_psock_backlog(struct work_struct *work)
- 			if (ret <= 0) {
- 				if (ret == -EAGAIN) {
- 					sk_psock_skb_state(psock, state, len, off);
--
-+					/* Restore redir info we cleared before */
-+					skb_bpf_set_redir(skb, psock->sk, ingress);
- 					/* Delay slightly to prioritize any
- 					 * other work that might be here.
- 					 */
+Changes from rfc:
+	1. Rebase on net-next's main branch.
+	   https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/
+	2. Fix a build error reported by kernel test robot.
+	   https://lore.kernel.org/all/202505100932.uzAMBW1y-lkp@intel.com/
+	3. Add given 'Reviewed-by's, thanks to Mina and Ilias.
+	4. Do static_assert() on the size of struct netmem_desc instead
+	   of placing place-holder in struct page, feedbacked by
+	   Matthew.
+	5. Do struct_group_tagged(netmem_desc) on struct net_iov instead
+	   of wholly renaming it to strcut netmem_desc, feedbacked by
+	   Mina and Pavel.
+
+Byungchul Park (18):
+  netmem: introduce struct netmem_desc mirroring struct page
+  netmem: introduce netmem alloc APIs to wrap page alloc APIs
+  page_pool: use netmem alloc/put APIs in __page_pool_alloc_page_order()
+  page_pool: rename __page_pool_alloc_page_order() to
+    __page_pool_alloc_netmem_order()
+  page_pool: use netmem alloc/put APIs in __page_pool_alloc_pages_slow()
+  page_pool: rename page_pool_return_page() to page_pool_return_netmem()
+  page_pool: use netmem put API in page_pool_return_netmem()
+  page_pool: rename __page_pool_release_page_dma() to
+    __page_pool_release_netmem_dma()
+  page_pool: rename __page_pool_put_page() to __page_pool_put_netmem()
+  page_pool: rename __page_pool_alloc_pages_slow() to
+    __page_pool_alloc_netmems_slow()
+  mlx4: use netmem descriptor and APIs for page pool
+  netmem: use _Generic to cover const casting for page_to_netmem()
+  netmem: remove __netmem_get_pp()
+  page_pool: make page_pool_get_dma_addr() just wrap
+    page_pool_get_dma_addr_netmem()
+  netdevsim: use netmem descriptor and APIs for page pool
+  netmem: introduce a netmem API, virt_to_head_netmem()
+  mt76: use netmem descriptor and APIs for page pool
+  page_pool: access ->pp_magic through struct netmem_desc in
+    page_pool_page_is_pp()
+
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  48 +++---
+ drivers/net/ethernet/mellanox/mlx4/en_tx.c    |   8 +-
+ drivers/net/ethernet/mellanox/mlx4/mlx4_en.h  |   4 +-
+ drivers/net/netdevsim/netdev.c                |  19 +--
+ drivers/net/netdevsim/netdevsim.h             |   2 +-
+ drivers/net/wireless/mediatek/mt76/dma.c      |   6 +-
+ drivers/net/wireless/mediatek/mt76/mt76.h     |  12 +-
+ .../net/wireless/mediatek/mt76/sdio_txrx.c    |  24 +--
+ drivers/net/wireless/mediatek/mt76/usb.c      |  10 +-
+ include/linux/mm.h                            |  12 --
+ include/net/netmem.h                          | 138 ++++++++++++------
+ include/net/page_pool/helpers.h               |   7 +-
+ mm/page_alloc.c                               |   1 +
+ net/core/netmem_priv.h                        |  14 ++
+ net/core/page_pool.c                          | 103 ++++++-------
+ 15 files changed, 234 insertions(+), 174 deletions(-)
+
+
+base-commit: 90b83efa6701656e02c86e7df2cb1765ea602d07
 -- 
-2.39.5
+2.17.1
 
 
