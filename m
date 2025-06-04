@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-59597-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59598-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8335ACD325
-	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 03:15:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00DEBACD358
+	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 03:17:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7A2C177A96
-	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 01:14:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 59B107A7700
+	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 01:13:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEC551624C5;
-	Wed,  4 Jun 2025 01:00:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1486F25F990;
+	Wed,  4 Jun 2025 01:01:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JCr7kybc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GXJeJ1Ct"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FE3C25F970;
-	Wed,  4 Jun 2025 01:00:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 876D44A2D;
+	Wed,  4 Jun 2025 01:01:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748998851; cv=none; b=GU5G4PeQcQiUYLiX4wM6xiQ5oSyj399egc3hGmx0LrzBGwhXHcKcERpKb1jKJgxBKP0irF1VhI4zdxLJwj9XhjIOuan7UeuNs5KglbneDdPBwgbE0IdnioaH56XuKMiRdI+98I5mTrNV0m9bBik1RXx1CKPVqVJa1++YqIsEX/w=
+	t=1748998860; cv=none; b=M2UTzvkvHpROAXXOI3xfPBPGStQ1yP8YF9C5Q6ek4OkDmleJuFm3Abp2lm4I6IgW+KrIYCnV3votd7X4JSpNT1O4DrrCZ8RCUTc6A4gpbRDwjdi1Cw28xFfE41GkwBNYz9u0IoP3kwjDe+rYo5rH/p14jM1tMPdvDk7VxBL9Wi8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748998851; c=relaxed/simple;
-	bh=Etm61AhtO/C1dwvSa9q/Kwqu/vrMwNX7x0FBLFgk6Cg=;
+	s=arc-20240116; t=1748998860; c=relaxed/simple;
+	bh=JBFQ27W42OI79xsIeC5r00AwiUjoUJtnCQWh+JQDDZw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=rQGihCaJPNjbN4nZOjpOOuLqQeuxzycisxwymrkWZpFTOUmeeS20a/oYfzsj3C+hH3IqnZFL4diHuqY9M5MBImc5Xo2ac94ZLZZF62tXtpWlwDbWhM38SpWAjcxzcaFPxTRGnac9a/gynmu3za+q+Yi4MSSIi6OgRIvOoyY6g8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JCr7kybc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED481C4CEF1;
-	Wed,  4 Jun 2025 01:00:49 +0000 (UTC)
+	 MIME-Version:Content-Type; b=JfxDfKG0GwOD45XIRKUcu8ypKxv0JgWhdtPrp3HN8BEU6YrL+umXF/xPQAvvT6YbTffJCe+WazXCdS2lXJt2F1YFwglXhtpEJOKdOjTppDoxWkic2FvMb5immi+nC6EwT4wQkY9og7pO2B1nucrtV6oKKvSV/ulZeTcPs8Zjumk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GXJeJ1Ct; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AE1FC4CEEF;
+	Wed,  4 Jun 2025 01:00:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748998851;
-	bh=Etm61AhtO/C1dwvSa9q/Kwqu/vrMwNX7x0FBLFgk6Cg=;
+	s=k20201202; t=1748998860;
+	bh=JBFQ27W42OI79xsIeC5r00AwiUjoUJtnCQWh+JQDDZw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=JCr7kybcTVTSVQ7tIEVy1lustG3ZAssPqVnYMAfboeSthlgb8VYoSCnEHoNSQqDNT
-	 mwjTkTJrRwA/oaaShG8xRwCeY3GRYF1kMQurCrmH61aUA7cUi56169FpMh5Mr8M+69
-	 +6xaIgnIWZclasPeYW3krU8ZsNvl5ZcgURA8RWTPo2hmwNNRANxnkPdr5xI14QEUgU
-	 MnMPP6etHaldiDDFFAg6EzdD9E8EtDLkMoMnXTN0bWoBvLl74HrSbIDqqL6FM2Mn9A
-	 NL47o59n2rrH8TUX4ipysnkcWQz4vitpFHulKpJ2Rw8ciLWlk7FZsh3WqjJspzQI9E
-	 yE+jl1rqo7q3w==
+	b=GXJeJ1CtoahkwFJOZKPT3W4jK63w5WlFzraBgdAPlFOkEw8NiH7IJjf0/ME82kBkL
+	 ro/zPRhm2Zojc1alhBp5phlVN6PNrR5dGAAGmnhlJCDYm2tn0gjyB2ynJxXa41k1+c
+	 NBFHdDNIkCnrXdWu3HSwHTSpYInHUTpbpabl/wp4tBsMZP6JE6qLVoqBnhpv5WTkQm
+	 TT1rHmLEB021G99q/gphyaY591x13JcwCk7PYA0mTNVYf2Whv+IBTmhlxdFLhMtx6W
+	 BnAKNAVWBTVi+iB3L8bWpHRDRCmMuAEkErDvrG/b8RHWFMDpKEGrcV5BeMJ9/8YiOI
+	 GAxF9aE9bAYSQ==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@kernel.org>,
-	Quentin Monnet <qmo@kernel.org>,
-	Takshak Chahande <ctakshak@meta.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
+Cc: Alan Maguire <alan.maguire@oracle.com>,
 	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
+	daniel@iogearbox.net,
+	eddyz87@gmail.com,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.12 49/93] bpftool: Fix cgroup command to only show cgroup bpf programs
-Date: Tue,  3 Jun 2025 20:58:35 -0400
-Message-Id: <20250604005919.4191884-49-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.12 55/93] libbpf: Add identical pointer detection to btf_dedup_is_equiv()
+Date: Tue,  3 Jun 2025 20:58:41 -0400
+Message-Id: <20250604005919.4191884-55-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250604005919.4191884-1-sashal@kernel.org>
 References: <20250604005919.4191884-1-sashal@kernel.org>
@@ -66,167 +66,121 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.12.31
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Martin KaFai Lau <martin.lau@kernel.org>
+From: Alan Maguire <alan.maguire@oracle.com>
 
-[ Upstream commit b69d4413aa1961930fbf9ffad8376d577378daf9 ]
+[ Upstream commit 8e64c387c942229c551d0f23de4d9993d3a2acb6 ]
 
-The netkit program is not a cgroup bpf program and should not be shown
-in the output of the "bpftool cgroup show" command.
+Recently as a side-effect of
 
-However, if the netkit device happens to have ifindex 3,
-the "bpftool cgroup show" command will output the netkit
-bpf program as well:
+commit ac053946f5c4 ("compiler.h: introduce TYPEOF_UNQUAL() macro")
 
-> ip -d link show dev nk1
-3: nk1@if2: ...
-    link/ether ...
-    netkit mode ...
+issues were observed in deduplication between modules and kernel BTF
+such that a large number of kernel types were not deduplicated so
+were found in module BTF (task_struct, bpf_prog etc).  The root cause
+appeared to be a failure to dedup struct types, specifically those
+with members that were pointers with __percpu annotations.
 
-> bpftool net show
-tc:
-nk1(3) netkit/peer tw_ns_nk2phy prog_id 469447
+The issue in dedup is at the point that we are deduplicating structures,
+we have not yet deduplicated reference types like pointers.  If multiple
+copies of a pointer point at the same (deduplicated) integer as in this
+case, we do not see them as identical.  Special handling already exists
+to deal with structures and arrays, so add pointer handling here too.
 
-> bpftool cgroup show /sys/fs/cgroup/...
-ID       AttachType      AttachFlags     Name
-...      ...                             ...
-469447   netkit_peer                     tw_ns_nk2phy
-
-The reason is that the target_fd (which is the cgroup_fd here) and
-the target_ifindex are in a union in the uapi/linux/bpf.h. The bpftool
-iterates all values in "enum bpf_attach_type" which includes
-non cgroup attach types like netkit. The cgroup_fd is usually 3 here,
-so the bug is triggered when the netkit ifindex just happens
-to be 3 as well.
-
-The bpftool's cgroup.c already has a list of cgroup-only attach type
-defined in "cgroup_attach_types[]". This patch fixes it by iterating
-over "cgroup_attach_types[]" instead of "__MAX_BPF_ATTACH_TYPE".
-
-Cc: Quentin Monnet <qmo@kernel.org>
-Reported-by: Takshak Chahande <ctakshak@meta.com>
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
-Acked-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: Quentin Monnet <qmo@kernel.org>
-Link: https://lore.kernel.org/r/20250507203232.1420762-1-martin.lau@linux.dev
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Reported-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20250429161042.2069678-1-alan.maguire@oracle.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
 
-This file seems unrelated to the current commit. Let me now analyze the
-specific commit to understand if it should be backported. **Analysis of
-the commit:** ## YES **Extensive explanation:** This commit should be
-backported to stable kernel trees because it fixes a clear functional
-bug with specific user-visible incorrect behavior. Here's why: ### 1.
-**Fixes a clear user-visible bug** The commit fixes a specific issue
-where `bpftool cgroup show` incorrectly displays non-cgroup BPF programs
-(specifically netkit programs) when their interface index happens to
-match the cgroup file descriptor. This is documented as causing
-confusing output where netkit programs appear in cgroup listings where
-they don't belong. ### 2. **Small, contained fix with minimal risk**
-Looking at the code changes in `tools/bpf/bpftool/cgroup.c`: - **Lines
-321-325**: Changed from `enum bpf_attach_type type;` to `unsigned int
-i;` in `do_show()` - **Lines 373-381**: Changed from `for (type = 0;
-type < __MAX_BPF_ATTACH_TYPE; type++)` to `for (i = 0; i <
-ARRAY_SIZE(cgroup_attach_types); i++)` and using
-`cgroup_attach_types[i]` instead of `type` - **Lines 403-405**: Same
-pattern change in `do_show_tree_fn()` - **Lines 437-438**: Same pattern
-change in the tree function loop The fix is straightforward: instead of
-iterating through all possible BPF attach types
-(`__MAX_BPF_ATTACH_TYPE`), it now only iterates through the predefined
-array `cgroup_attach_types[]` which contains only cgroup-specific attach
-types. ### 3. **Root cause is clearly identified** The bug occurs
-because: - `target_fd` (cgroup_fd) and `target_ifindex` are in a union
-in the BPF uapi - When iterating through all attach types including non-
-cgroup types like `BPF_NETKIT_PRIMARY`, the kernel interprets the
-cgroup_fd as an ifindex - When the cgroup_fd value (often 3) matches a
-netkit device's ifindex, the query succeeds and incorrectly shows the
-netkit program as a cgroup program ### 4. **Existing infrastructure used
-correctly** The fix leverages the existing `cgroup_attach_types[]` array
-that was already defined in the file (lines 22-52) but not being used in
-the iteration loops. This array contains only legitimate cgroup attach
-types, making the fix both correct and consistent with the existing
-codebase. ### 5. **No functional changes to legitimate use cases** The
-change only affects what gets queried - it will no longer query non-
-cgroup attach types, which should never have been relevant to cgroup
-operations anyway. All legitimate cgroup functionality remains
-unchanged. ### 6. **Typical stable tree material** This fits the stable
-tree criteria perfectly: - **Important bug fix**: Fixes
-incorrect/confusing output that misleads users - **Small and obvious**:
-The change is minimal and the fix is clear - **No architectural
-changes**: This is just correcting the iteration logic - **Low
-regression risk**: The change only restricts what gets queried to the
-appropriate types - **Userspace tool fix**: While this is a userspace
-tool, bpftool is part of the kernel tree and these fixes are commonly
-backported ### 7. **Matches pattern of similar commits** Looking at the
-similar commits provided, while they were marked as "NO" for
-backporting, those were mostly feature additions (adding netkit support,
-implementing new functionality, etc.). This commit is fundamentally
-different - it's a pure bug fix that corrects existing functionality
-rather than adding new features. The commit explicitly states it's a
-"Fix" in the subject line and clearly describes the incorrect behavior
-being corrected, making it a strong candidate for stable backporting.
+Based on my comprehensive analysis of the commit message, code changes,
+historical patterns, and kernel repository context, here is my
+recommendation: **YES** This commit should be backported to stable
+kernel trees for the following reasons: ## Critical Bug Fix Analysis
+**1. Fixes a Real User-Impacting Regression:** - The commit addresses a
+regression introduced by `commit ac053946f5c4 ("compiler.h: introduce
+TYPEOF_UNQUAL() macro")` - This regression causes "a large number of
+kernel types" (task_struct, bpf_prog, etc.) to fail deduplication -
+Results in broken BPF functionality for kernel modules, which is user-
+visible **2. Follows Established Stable Tree Criteria:** - **Important
+bugfix**: ✅ Fixes BTF deduplication failures affecting core BPF
+functionality - **Minimal risk**: ✅ Small, targeted change following
+existing patterns - **No architectural changes**: ✅ Adds a simple helper
+function without changing core algorithm - **Confined to subsystem**: ✅
+Changes only affect BTF deduplication logic in libbpf ## Code Change
+Analysis **3. Conservative and Safe Implementation:** ```c +static bool
+btf_dedup_identical_ptrs(struct btf_dedup *d, __u32 id1, __u32 id2) +{ +
+struct btf_type *t1, *t2; + + t1 = btf_type_by_id(d->btf, id1); + t2 =
+btf_type_by_id(d->btf, id2); + + if (!btf_is_ptr(t1) || !btf_is_ptr(t2))
++ return false; + + return t1->type == t2->type; +} ``` - Simple type-
+checking function with clear bounds checking - Mirrors existing
+`btf_dedup_identical_arrays()` and `btf_dedup_identical_structs()`
+patterns - No complex logic or state changes **4. Integration Follows
+Existing Pattern:** ```c + /bin /bin.usr-is-merged /boot /dev /etc /home
+/init /lib /lib.usr-is-merged /lib64 /lost+found /media /mnt /opt /proc
+/root /run /sbin /sbin.usr-is-merged /snap /srv /sys /tmp /usr /var A
+similar case is again observed for PTRs. */ + if
+(btf_dedup_identical_ptrs(d, hypot_type_id, cand_id)) + return 1; ``` -
+Added alongside existing identical array/struct checks - Same position
+in control flow as established workarounds - Consistent with documented
+compiler DWARF generation issues ## Historical Pattern Alignment **5.
+Matches "YES" Backport Pattern:** Looking at similar commits marked for
+backport: - **Similar Commit #1** (YES): Adds identical struct checking
+for BTF dedup failures - same pattern - **Similar Commit #4** (YES):
+Fixes memory leak in BTF dedup - critical subsystem fix - **Similar
+Commit #5** (YES): Handles DWARF/compiler bugs with duplicated structs -
+identical issue class This commit addresses the exact same class of
+problem (compiler-generated identical types) that has been consistently
+backported. ## Risk Assessment **6. Low Regression Risk:** - Function
+only returns `true` when types are genuinely identical (`t1->type ==
+t2->type`) - Early returns prevent processing non-pointer types - Cannot
+cause false positives that would incorrectly deduplicate different types
+- Follows defensive programming patterns used throughout the codebase ##
+Conclusion This commit fixes a regression in critical BPF functionality,
+uses a proven safe pattern, has minimal code footprint, and addresses
+issues that directly impact users. The fix quality is high and the risk
+is low, making it an excellent candidate for stable tree backporting.
 
- tools/bpf/bpftool/cgroup.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ tools/lib/bpf/btf.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
-index 9af426d432993..955bea7b12200 100644
---- a/tools/bpf/bpftool/cgroup.c
-+++ b/tools/bpf/bpftool/cgroup.c
-@@ -318,11 +318,11 @@ static int show_bpf_progs(int cgroup_fd, enum bpf_attach_type type,
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index 4a486798fe4c0..b770702dab372 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -4176,6 +4176,19 @@ static bool btf_dedup_identical_structs(struct btf_dedup *d, __u32 id1, __u32 id
+ 	return true;
+ }
  
- static int do_show(int argc, char **argv)
- {
--	enum bpf_attach_type type;
- 	int has_attached_progs;
- 	const char *path;
- 	int cgroup_fd;
- 	int ret = -1;
-+	unsigned int i;
- 
- 	query_flags = 0;
- 
-@@ -370,14 +370,14 @@ static int do_show(int argc, char **argv)
- 		       "AttachFlags", "Name");
- 
- 	btf_vmlinux = libbpf_find_kernel_btf();
--	for (type = 0; type < __MAX_BPF_ATTACH_TYPE; type++) {
-+	for (i = 0; i < ARRAY_SIZE(cgroup_attach_types); i++) {
- 		/*
- 		 * Not all attach types may be supported, so it's expected,
- 		 * that some requests will fail.
- 		 * If we were able to get the show for at least one
- 		 * attach type, let's return 0.
++static bool btf_dedup_identical_ptrs(struct btf_dedup *d, __u32 id1, __u32 id2)
++{
++	struct btf_type *t1, *t2;
++
++	t1 = btf_type_by_id(d->btf, id1);
++	t2 = btf_type_by_id(d->btf, id2);
++
++	if (!btf_is_ptr(t1) || !btf_is_ptr(t2))
++		return false;
++
++	return t1->type == t2->type;
++}
++
+ /*
+  * Check equivalence of BTF type graph formed by candidate struct/union (we'll
+  * call it "candidate graph" in this description for brevity) to a type graph
+@@ -4308,6 +4321,9 @@ static int btf_dedup_is_equiv(struct btf_dedup *d, __u32 cand_id,
  		 */
--		if (show_bpf_progs(cgroup_fd, type, 0) == 0)
-+		if (show_bpf_progs(cgroup_fd, cgroup_attach_types[i], 0) == 0)
- 			ret = 0;
- 	}
- 
-@@ -400,9 +400,9 @@ static int do_show(int argc, char **argv)
- static int do_show_tree_fn(const char *fpath, const struct stat *sb,
- 			   int typeflag, struct FTW *ftw)
- {
--	enum bpf_attach_type type;
- 	int has_attached_progs;
- 	int cgroup_fd;
-+	unsigned int i;
- 
- 	if (typeflag != FTW_D)
+ 		if (btf_dedup_identical_structs(d, hypot_type_id, cand_id))
+ 			return 1;
++		/* A similar case is again observed for PTRs. */
++		if (btf_dedup_identical_ptrs(d, hypot_type_id, cand_id))
++			return 1;
  		return 0;
-@@ -434,8 +434,8 @@ static int do_show_tree_fn(const char *fpath, const struct stat *sb,
  	}
  
- 	btf_vmlinux = libbpf_find_kernel_btf();
--	for (type = 0; type < __MAX_BPF_ATTACH_TYPE; type++)
--		show_bpf_progs(cgroup_fd, type, ftw->level);
-+	for (i = 0; i < ARRAY_SIZE(cgroup_attach_types); i++)
-+		show_bpf_progs(cgroup_fd, cgroup_attach_types[i], ftw->level);
- 
- 	if (errno == EINVAL)
- 		/* Last attach type does not support query.
 -- 
 2.39.5
 
