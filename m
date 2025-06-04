@@ -1,230 +1,162 @@
-Return-Path: <bpf+bounces-59635-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59636-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5578CACDBF0
-	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 12:25:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EBFFACE014
+	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 16:18:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16E8917724F
-	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 10:25:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FAA33A7D28
+	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 14:17:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA7A828CF75;
-	Wed,  4 Jun 2025 10:25:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62452290DA6;
+	Wed,  4 Jun 2025 14:17:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UgEQxibD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DQ6cHHDv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73B4F225A20;
-	Wed,  4 Jun 2025 10:25:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E4BE290D8B;
+	Wed,  4 Jun 2025 14:17:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749032739; cv=none; b=CrDaWmnd7lul8Q/SqkoCnMrIKfd9mzzSYLlwbh+wac/a7iI6jSKNMHMfTJ92lhWgUQehXCtvLY+b8SgxIetJfv1uFbPRxin81FbIAEJmohYQ/vPWRD5Cu8CTddzaNk9Tqg5Y1C8lBKq+ar8ofMuICtPyXdh/OeccCflqtCpkU6A=
+	t=1749046643; cv=none; b=QzUdKQrSoVt4kyq/pYHGdqp9IrCOW0DEb1Vml8z/SqsSE+JSk58/EJn9cv/GpSWt07fsD9tYb5ZBdxMhzsYkh2+1rmSRjnmB5Anb4Km5lW/TiUn3wtGO/DO4659al2WdLm7kYqok2uhj8cOhP57Bo4zjaEAnRvNLqQXTkbcGJnk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749032739; c=relaxed/simple;
-	bh=xL+N//WjnuF0hOc7kdx62x8VitK0nxlNLXcupQQspzk=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Uq7VxX2PbNJzLSUV3w68iBA5N6H1DyTUQcnwqWqgfNG7Sxohq7eG5Wa5P9zpkQczLJRr7esFepLR0vZ30QwYAt/wcu4OwBPQsKN63/xMtRWK6k9v2KV6AOACJUM7Bhe5XJgIBlJklzm29PVTD4OX0rwJTD5jmGxeDou4Rx+0Cig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UgEQxibD; arc=none smtp.client-ip=209.85.128.50
+	s=arc-20240116; t=1749046643; c=relaxed/simple;
+	bh=Nnuyl9wD25Z9WoJOMjCag6e7edZarcfbMnxn+kgonFI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qE5L/4RGsSdfrZ9OXHdJ6ARln2k76NiIjAKN5lAM3lolt5v2Cykt9iti2QDJWeXrocYxhsXHAY87HX5Uv/xejLCDtc2qs0zMcBZ3DVVBpnsDbS6aRr+lsL2CDM65eKXoZgMTNsxqlayJVnaLDP4N9tEzwixaCABIH4GrypY3QXg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DQ6cHHDv; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-450d37d4699so33335885e9.0;
-        Wed, 04 Jun 2025 03:25:37 -0700 (PDT)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-234b9dfb842so65165595ad.1;
+        Wed, 04 Jun 2025 07:17:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749032736; x=1749637536; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=yyzqZAFPiecVZ8v3jVi3mxvHGnKj1UzTNsDM6WLqpOU=;
-        b=UgEQxibDLapiBdm/1/HNLLsNesRLx6vy5kwALtzTbYFIHi2YnvD25d6wbzEephiEIo
-         yC0e7EOzhEuFhyC8modzDTH4/G+of8Pxd99EPd4SA+BSbo/xtIYxzr5Lxi3sb8E0fOoJ
-         lnl/WQ6QKhMuLtGPenczeQbk6BnQnnvb51kYuPQ+HWrpYmVBx4rfLlLMDfaZdcZ2qxwX
-         ugQ3S0z6pUERMIAFk0nPNeQSRqqN0r3LHkmPybQ24kSRinneRvV/xktk8w1YPdCEzXM4
-         t1L/V3V3qorK53JJ/b8yJDxZyWB73ZP57bLmuyC20ad9T8VOQ8z3zAIpxhgWwr7CTrPO
-         sDtw==
+        d=gmail.com; s=20230601; t=1749046642; x=1749651442; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cbNMtoTuh7H5yqZEP3R1sHyOOtxrJsRVIWBb21IBiJI=;
+        b=DQ6cHHDvTraqcsf/V6XzWpJh0wRCZ6GNIGeAJlTc6gB8vmEs+9HrytmMwZ6d6MPoNz
+         6nx4pq17I4nvMDF4VT03hfRi0coR4lDO74O7kNOvkAHszEZ/PjS6DGAvUXXlksNj6Y4k
+         uPRaKp3c40nc9Vzs03noNcHewp1YYYU/N4xSQswOfh+ppeevaVrrlSGePBHCzvqh/s80
+         RvWPdoarWGGlAI2pxELJGa6CqUGP+ON+BPGQZ57XTo9TJkytNif0aiKxkucpnRIMmQOE
+         6dlASWoZN22/7EZlk5qt8NEq+a/pf269bI9MdgUpr9qzxYancwjNH6ZOcvkX31HjqlIU
+         MitA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749032736; x=1749637536;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
+        d=1e100.net; s=20230601; t=1749046642; x=1749651442;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yyzqZAFPiecVZ8v3jVi3mxvHGnKj1UzTNsDM6WLqpOU=;
-        b=BDz3BmoLoK6xPvTry9AcFabRIItehJBHHLNN1qTA85D8/vegtrH6G8Ig26m5VpX/80
-         MpniZfDkcj6/RxV4jOKD/YAvel+tIpYL2nD8gIYjZug6UyG9Oq1ZFRBSp/VxTIP2E2R/
-         mL80NePLEEmWNffrpJIxwry0oKhnV625QxW6ZIS56mEU181GUJF8LQ5vDg05Q7P08vx1
-         8byi5F6nq7VncbBD1/yZdEIvJhBrmCpepSqDDSs/On/L7GC9E17iU1vuJqakx+2gd9zh
-         pqNISXp2pMCrrSM+PWQsKbBk/YXhQMMYPAcinHQfb0vUdsWwP8Pvuyw2t1YsDSE/FWmX
-         k2gA==
-X-Forwarded-Encrypted: i=1; AJvYcCVC7hgsDC4TneJnh79UYKWxjNy/yXQsH3rV6PMlXl8U3qbIK5MgskECycXEL4fDo2usFj0PVvVX+nxoKzXRdz9F2Q==@vger.kernel.org, AJvYcCX5vwG03Hds8c8LJQqC/IB7vh0PdyuXYyX1Qd7dgyC2wU2k+aHKvK2kukoh+lvPIZVCA74=@vger.kernel.org, AJvYcCXttMm+C8a45D5WjLm7yviM23/skBnIMnszms4ujXplbrB3j6/GULhALEX7x0tJv291G7iTMUjsSJpAWEYB@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy+RI0/lFSnc5OJECfDzWnDlDwsLfhDQXZsdEYOKT2glJlCWMLO
-	1oC7Ebr7ZUJITsrRIQapYa2dAT1akOYstyPYptt+jNowhxKMNBpsOXgtoSZazOQyKzop7w==
-X-Gm-Gg: ASbGncs4U5XXWjYJaIMZODpcZ13G9pL3c6jNWu7ruZh3xRVg7eUaBot9kMi8M6foEn3
-	GOUjumnsnu1kg+BV4ZqS0v42c6h2WvxF/sx1qqmmUz8ARjcK7FfIsVQnh6cgLgT/fZ98Zzyx4Z2
-	4hjUibA1arTXlXJBvBiNuaP/lrPeAV49y5b2yigUFqLA3Ohsm9Ys5BcoqYny+4aVeDGwEo56CTC
-	CJkkijIqcBB7/356gKLxM92Kuo0NoCmtuuwN+l1FNsQbdCSjE8zFH8AQj/Pd0Q45OAGUVinyXFx
-	yXAok9EBYIeJYJVR5YXEcRedyTVHCx1cppNDG4s=
-X-Google-Smtp-Source: AGHT+IFymM6noBC/NQKxn6oL2pO5mt03fzXdx6wOmLhOIQ4wn2u93ARJ20EQbs1qQuX1oAkAWNMMWw==
-X-Received: by 2002:a05:600c:609b:b0:43c:f616:f08 with SMTP id 5b1f17b1804b1-451f0f247b4mr19281225e9.8.1749032735577;
-        Wed, 04 Jun 2025 03:25:35 -0700 (PDT)
-Received: from krava ([176.74.159.170])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a4efe5b849sm21424103f8f.14.2025.06.04.03.25.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Jun 2025 03:25:35 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 4 Jun 2025 12:25:33 +0200
-To: Howard Chu <howardchu95@gmail.com>, Namhyung Kim <namhyung@kernel.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, acme@kernel.org,
-	mingo@redhat.com, mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com, irogers@google.com,
-	adrian.hunter@intel.com, peterz@infradead.org,
-	kan.liang@linux.intel.com, linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Song Liu <song@kernel.org>,
-	bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [RFC PATCH v1] perf trace: Mitigate failures in parallel perf
- trace instances
-Message-ID: <aEAfHYLEyc7xGy7E@krava>
-References: <20250529065537.529937-1-howardchu95@gmail.com>
- <aDpBTLoeOJ3NAw_-@google.com>
- <CAH0uvojGoLX6mpK9wA1cw-EO-y_fUmdndAU8eZ1pa70Lc_rvvw@mail.gmail.com>
- <20250602181743.1c3dabea@gandalf.local.home>
+        bh=cbNMtoTuh7H5yqZEP3R1sHyOOtxrJsRVIWBb21IBiJI=;
+        b=kIWwDmzCJJi83MHjz9rwsfYHdOuZNFVZ0Y4qYGUKhsIsDxl9LZpLsXaJzDOZX0Hedn
+         qlbTqHif3FV7JDAy424q8ZAKa69u3iFxHL3svAOAAW2w73dm8I8Hz8fMtmPTWrVlmXWS
+         DPIecgnDvCE3n2QnZQqqdZQg5TBhMsJl2dtShQRN7L+sQGAV9wVJwM5aSoQCubjvqqxW
+         M5Qfu/JFZ2EIh+oMui3cQ1LeW18m6h8MudLH4GMUj/zceqe636QxAMBUoNyre5K2+PQA
+         inY8QkxVLivViTmUA8b4OQpcLUg65l9DdxKAPKXbcsCxGTa25sJsODBIwFW6FO+Wy4BR
+         9Zkg==
+X-Forwarded-Encrypted: i=1; AJvYcCUgRXznLIKqF+5EqTW72JdD9xksl0ueeCZBv+P33pRlk/cAka4/0CMXh+IZUPwDOMVRI7U=@vger.kernel.org, AJvYcCVCcvT5xW+9quX2/ZAklhtt6Yegn4KB2uD7sprd5GFHutR+hXX6FNLE2KRXd1fvJJn+ZZnw7gbV@vger.kernel.org, AJvYcCXpQO0Yf0k85sqPoUMq/+3Iwy+ZOibUP3s55M6c2rL/GRM4nOHraJMcaVqU9YX3KF7Emc4mQ9YZxDxVzNJq@vger.kernel.org
+X-Gm-Message-State: AOJu0YxDVJqeHqbG6AdDrfZf2Sxwk3Lt5f1NTqdzujYLIUvAnG1BQoNU
+	VgFWhe6mBSe5Wpo2txBoOaArEhIaR2lMzD+bAoSGSwigRskHRM2o3LIP
+X-Gm-Gg: ASbGncuyMJncbv2+MqxPv4tW0yo0qbAe4Cy1rNuuCud+9BNWYjwFxjzmCsD2Au0oZ8X
+	WGz+KQ9hMAIntKiB+Duv290NDAfNzXe6kmWBOV+bT41WSuK3cftQmYg+LT39CzQm5iTqvu8CpzE
+	mVZaN+Fsu5jwiQzs+S8t8lXrgDD8sM+JdBZuqXLO+UIS9eGEf9mZ2kpbb57LiCUgo28ok7iE5jR
+	g4ukmov13oPXHzHD6b0SeSR4a3me3MIdz6pNXYW5H25dk778RUYHth/zHomw6V5rtB3WFhWhu4V
+	yVaJVJqG1F/uJ1l9LBtBhzVM+LbHzAQmvsDGrh8QRMZqjE/THthfkdf4AtZqK9lCDlZBAkw4ib9
+	wJ5feSnlnjKa38ypp/b+HZuvT1y5HGw==
+X-Google-Smtp-Source: AGHT+IE828D8E7wNAmkp2vuWIY7rdgflYp7evYs/pZp1n9PqsG0ZfmxYtWnexCMgGjwdtHSFbk9D6Q==
+X-Received: by 2002:a17:902:c94d:b0:234:bca7:2920 with SMTP id d9443c01a7336-235e11c91abmr48459595ad.24.1749046641673;
+        Wed, 04 Jun 2025 07:17:21 -0700 (PDT)
+Received: from ?IPV6:2001:ee0:4f0e:fb30:8915:1d85:9b14:f198? ([2001:ee0:4f0e:fb30:8915:1d85:9b14:f198])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23506bd93f7sm103883575ad.95.2025.06.04.07.17.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Jun 2025 07:17:21 -0700 (PDT)
+Message-ID: <0bc8547d-aa8f-4d96-9191-fd52d1bec74e@gmail.com>
+Date: Wed, 4 Jun 2025 21:17:09 +0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] virtio-net: drop the multi-buffer XDP packet in
+ zerocopy
+To: Jason Wang <jasowang@redhat.com>
+Cc: netdev@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
+ Xuan Zhuo <xuanzhuo@linux.alibaba.com>, =?UTF-8?Q?Eugenio_P=C3=A9rez?=
+ <eperezma@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, virtualization@lists.linux.dev,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org, stable@vger.kernel.org
+References: <20250603150613.83802-1-minhquangbui99@gmail.com>
+ <CACGkMEuHDLJiw=VdX38xqkaS-FJPTAU6+XUNwfGkNZGfp+6tKg@mail.gmail.com>
+Content-Language: en-US
+From: Bui Quang Minh <minhquangbui99@gmail.com>
+In-Reply-To: <CACGkMEuHDLJiw=VdX38xqkaS-FJPTAU6+XUNwfGkNZGfp+6tKg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250602181743.1c3dabea@gandalf.local.home>
 
-On Mon, Jun 02, 2025 at 06:17:43PM -0400, Steven Rostedt wrote:
-> On Fri, 30 May 2025 17:00:38 -0700
-> Howard Chu <howardchu95@gmail.com> wrote:
-> 
-> > Hello Namhyung,
-> > 
-> > On Fri, May 30, 2025 at 4:37 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> > >
-> > > Hello,
-> > >
-> > > (Adding tracing folks)  
-> > 
-> > (That's so convenient wow)
-> 
-> Shouldn't the BPF folks be more relevant. I don't see any of the tracing
-> code involved here.
-> 
-> > 
-> > >
-> > > On Wed, May 28, 2025 at 11:55:36PM -0700, Howard Chu wrote:  
-> > > > perf trace utilizes the tracepoint utility, the only filter in perf
-> > > > trace is a filter on syscall type. For example, if perf traces only
-> > > > openat, then it filters all the other syscalls, such as readlinkat,
-> > > > readv, etc.
-> > > >
-> > > > This filtering is flawed. Consider this case: two perf trace
-> > > > instances are running at the same time, trace instance A tracing
-> > > > readlinkat, trace instance B tracing openat. When an openat syscall
-> > > > enters, it triggers both BPF programs (sys_enter) in both perf trace
-> > > > instances, these kernel functions will be executed:
-> > > >
-> > > > perf_syscall_enter
-> > > >   perf_call_bpf_enter
-> > > >     trace_call_bpf
-> 
-> This is in bpf_trace.c (BPF related, not tracing related).
-> 
-> -- Steve
-> 
-> 
-> > > >       bpf_prog_run_array
-> > > >
-> > > > In bpf_prog_run_array:
-> > > > ~~~
-> > > > while ((prog = READ_ONCE(item->prog))) {
-> > > >       run_ctx.bpf_cookie = item->bpf_cookie;
-> > > >       ret &= run_prog(prog, ctx);
-> > > >       item++;
-> > > > }
-> > > > ~~~
-> > > >
-> > > > I'm not a BPF expert, but by tinkering I found that if one of the BPF
-> > > > programs returns 0, there will be no tracepoint sample. That is,
-> > > >
-> > > > (Is there a sample?) = ProgRetA & ProgRetB & ProgRetC
-> > > >
-> > > > Where ProgRetA is the return value of one of the BPF programs in the BPF
-> > > > program array.
-> > > >
-> > > > Go back to the case, when two perf trace instances are tracing two
-> > > > different syscalls, again, A is tracing readlinkat, B is tracing openat,
-> > > > when an openat syscall enters, it triggers the sys_enter program in
-> > > > instance A, call it ProgA, and the sys_enter program in instance B,
-> > > > ProgB, now ProgA will return 0 because ProgA cares about readlinkat only,
-> > > > even though ProgB returns 1; (Is there a sample?) = ProgRetA (0) &
-> > > > ProgRetB (1) = 0. So there won't be a tracepoint sample in B's output,
-> > > > when there really should be one.  
-> > >
-> > > Sounds like a bug.  I think it should run bpf programs attached to the
-> > > current perf_event only.  Isn't it the case for tracepoint + perf + bpf?  
-> > 
-> > I really can't answer that question.
+On 6/4/25 07:37, Jason Wang wrote:
+> On Tue, Jun 3, 2025 at 11:07 PM Bui Quang Minh <minhquangbui99@gmail.com> wrote:
+>> In virtio-net, we have not yet supported multi-buffer XDP packet in
+>> zerocopy mode when there is a binding XDP program. However, in that
+>> case, when receiving multi-buffer XDP packet, we skip the XDP program
+>> and return XDP_PASS. As a result, the packet is passed to normal network
+>> stack which is an incorrect behavior. This commit instead returns
+>> XDP_DROP in that case.
+>>
+>> Fixes: 99c861b44eb1 ("virtio_net: xsk: rx: support recv merge mode")
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
+>> ---
+>>   drivers/net/virtio_net.c | 11 ++++++++---
+>>   1 file changed, 8 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+>> index e53ba600605a..4c35324d6e5b 100644
+>> --- a/drivers/net/virtio_net.c
+>> +++ b/drivers/net/virtio_net.c
+>> @@ -1309,9 +1309,14 @@ static struct sk_buff *virtnet_receive_xsk_merge(struct net_device *dev, struct
+>>          ret = XDP_PASS;
+> It would be simpler to just assign XDP_DROP here?
+>
+> Or if you wish to stick to the way, we can simply remove this assignment.
 
-bpf programs for tracepoint are executed before the perf event specific
-check/trigger in perf_trace_run_bpf_submit
+This XDP_PASS is returned for the case when there is no XDP program 
+binding (!prog).
 
-bpf programs array is part of struct trace_event_call so it's global per
-tracepoint, not per perf event
-
-IIRC perf trace needs the perf event sample and the bpf program is there
-to do the filter and some other related stuff?
-
-if that's the case I wonder we could switch bpf_prog_run_array logic
-to be permissive like below, and perhaps make that as tracepoint specific
-change, because bpf_prog_run_array is used in other place
-
-or make it somehow configurable.. otherwise I fear that might break existing
-use cases.. FWIW bpf ci tests [1] survived the change below
-
-jirka
+>
+>>          rcu_read_lock();
+>>          prog = rcu_dereference(rq->xdp_prog);
+>> -       /* TODO: support multi buffer. */
+>> -       if (prog && num_buf == 1)
+>> -               ret = virtnet_xdp_handler(prog, xdp, dev, xdp_xmit, stats);
+>> +       if (prog) {
+>> +               /* TODO: support multi buffer. */
+>> +               if (num_buf == 1)
+>> +                       ret = virtnet_xdp_handler(prog, xdp, dev, xdp_xmit,
+>> +                                                 stats);
+>> +               else
+>> +                       ret = XDP_DROP;
+>> +       }
+>>          rcu_read_unlock();
+>>
+>>          switch (ret) {
+>> --
+>> 2.43.0
+>>
+> Thanks
+>
 
 
-[1] https://github.com/kernel-patches/bpf/pull/9044
+Thanks,
+Quang Minh.
 
----
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 5b25d278409b..4ca8afe0217c 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2218,12 +2218,12 @@ bpf_prog_run_array(const struct bpf_prog_array *array,
- 	const struct bpf_prog *prog;
- 	struct bpf_run_ctx *old_run_ctx;
- 	struct bpf_trace_run_ctx run_ctx;
--	u32 ret = 1;
-+	u32 ret = 0;
- 
- 	RCU_LOCKDEP_WARN(!rcu_read_lock_held(), "no rcu lock held");
- 
- 	if (unlikely(!array))
--		return ret;
-+		return 1;
- 
- 	run_ctx.is_uprobe = false;
- 
-@@ -2232,7 +2232,7 @@ bpf_prog_run_array(const struct bpf_prog_array *array,
- 	item = &array->items[0];
- 	while ((prog = READ_ONCE(item->prog))) {
- 		run_ctx.bpf_cookie = item->bpf_cookie;
--		ret &= run_prog(prog, ctx);
-+		ret |= run_prog(prog, ctx);
- 		item++;
- 	}
- 	bpf_reset_run_ctx(old_run_ctx);
+
 
