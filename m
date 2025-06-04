@@ -1,122 +1,127 @@
-Return-Path: <bpf+bounces-59646-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59647-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE09DACE266
-	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 18:45:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC49CACE26F
+	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 18:53:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CC0917670E
-	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 16:45:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9FA23A6457
+	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 16:52:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F44E1E32D3;
-	Wed,  4 Jun 2025 16:45:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C95D1EA7EB;
+	Wed,  4 Jun 2025 16:53:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RDjpz6Xc"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dvgBp8vC"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDFA91A5BA0
-	for <bpf@vger.kernel.org>; Wed,  4 Jun 2025 16:45:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B9211BEF8C
+	for <bpf@vger.kernel.org>; Wed,  4 Jun 2025 16:53:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749055509; cv=none; b=WjmLpJuG+0NDiAjzuAw6UtKvBlWsgQNufhLp/Dv70GVmhDEylMljYadZ8SLeTF0JfxGDJ5yFzpl72UetwlOydUoifNG6qHIZCITDz4BhstbkqwisA2yOKet0e2vthydDOuANVL/aJctI0YHXw++5LYRsMMklPNIc6M7ZoREnpkM=
+	t=1749055990; cv=none; b=GByAsmnObha8u+uoWOxgEqjUkBeE2KqxMY1pBKHy+xRJqpYlRULMf1RaWgQNK0K6lfzc3Locve5mrfIA0TexFKDmIb05x1hiiYGm9wlXia+7jXWTzczhSZQSgxR6nu/lRDS+LRZ9yEmr2V4GkaqrUf7bhYagtxldq3ba615BEVU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749055509; c=relaxed/simple;
-	bh=6wy/ti0G3wZnGhfqhfVYU2CkCy3cQbafhicsYvhq40Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nZVWjT0BZMWX9sEYz4XwWrHJvUTnUpim9RETHKPgQUjHKyuKc3LHRs+Vi2ZQtfG1w/3WF4ZfyqX25qlm+Pu27+8alJJzRkcV5G/doX7z/nrxMSE/Q0mjybeuLuaOLPb89HfLUWSH6IMEaJx85RsDjYe/qJzHGRItvt3xcizstIQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RDjpz6Xc; arc=none smtp.client-ip=95.215.58.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <f93ce37e-e155-4165-88e2-1a3cadee7c82@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1749055504;
+	s=arc-20240116; t=1749055990; c=relaxed/simple;
+	bh=Y6psz76j6Q54BLu/dla5y9lVeHPkpDqvYnlf52GvYWU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=bKdzPl/NAqpsI3nJiQIGU6DfuOgIvf3KII9XXnQ4eY8VwXq0ej4H+9igr8SYqt78mZ6DTLpXAG/kr/e8ooqN64Fjce51yzJKCU/Z3xelLSzTYMk5spiJCJvSxAcBFnxvqli1vGbu8QWc8G5lu58f4gnu1b5B8d94+g5AoYtGmnY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dvgBp8vC; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1749055987;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9DMrr5KCHutBYTCA6gU+/RGbKiJDm3jw//nbW/aOSzo=;
-	b=RDjpz6XcpHNpJi6JJkvOUqHyVSSavi+DtQfJBBq6BfUt7n46FpINmnW/gCf3+kpm8wmbHT
-	CXApF4lmOQUDWwOoqUXQ7VZO3SZ5yJaMlfUN+hphK51DEfxB3vnnd0GycLU1xKMfVIsW+A
-	IQLV73oILOlRleGBYf0mNCPXSoLdV7c=
-Date: Wed, 4 Jun 2025 09:44:54 -0700
+	bh=Y6psz76j6Q54BLu/dla5y9lVeHPkpDqvYnlf52GvYWU=;
+	b=dvgBp8vC/q8thG/Z5+iTVw4PwPwI6svJq+U/Cc2do8UgvUl57QswQvHC29L8VJnrNlNpSP
+	XLAKWHRK+AzJKQXv2zZ5QsBPAuFnblZTFMzbDJ9UbhNOP6pn26Nsl4HKwx2nwg+y0Ctgil
+	3RPPY/t+Py+f72Xk88p45eYRJxU6iI4=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-284-t677tnRGPuagrKrk_CbJAg-1; Wed, 04 Jun 2025 12:53:06 -0400
+X-MC-Unique: t677tnRGPuagrKrk_CbJAg-1
+X-Mimecast-MFC-AGG-ID: t677tnRGPuagrKrk_CbJAg_1749055985
+Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-32a72e28932so5695561fa.1
+        for <bpf@vger.kernel.org>; Wed, 04 Jun 2025 09:53:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749055985; x=1749660785;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Y6psz76j6Q54BLu/dla5y9lVeHPkpDqvYnlf52GvYWU=;
+        b=lKucEC18LQo348Mz0fb79vcHkDRJ3iGX2p1a7k02gNxmNlGR2mnmll5tnR8T7yTE9d
+         YZ779lzgD6ZRhYfW4GoUXo9Ox14c41lYMFmtPzHymUNUFt6CtEddwi/+WEjWswemjLYD
+         lobMjeV5c9GHB2qaIX0yF9CyJufB0rLFgpaPSSBrPE/re7IsINb7acy4M7NRkVNqHTl4
+         NiRCTIKzKNpnrPqgD3Ah+moFp/Xs5w8zXTypviv3XZ9/XkYuN75o/VEYkMCq37Q4iNlC
+         VyXQv68cgvukFE3Lp56ALeZhnBl7oel6iFRQYFdGdft5Ygw1z7CICBQNxktR986bzcem
+         yhVw==
+X-Forwarded-Encrypted: i=1; AJvYcCVACL6JWxn/7vhu5mkYUGtTD1B9Jv2eBxpvikzlpjJ15I2uNvXuh2QGg6pk8qvOuSBUXD0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyzsO+DsRc3hftZxj/DTQZ8JHi+TDk+7Sz4sJYPr8COBvUq9ICb
+	ODX7guI16SJIgDJbabF/1pnqLIGvbcOW68CgNbdPDslg8atvcrl9Ldxi+reoQodYDhWgZhNsqln
+	LvpDF0AZb0FPdsL8EHqxXdJU9xgeoKYGdGyO+oN+kIie1CKniCIkcGw==
+X-Gm-Gg: ASbGnct0fIjbyn0yFZeJat7vePDvawA33xfVt+ewkudWYaswHyTCrjp8qS9hD2xHHQN
+	Oq7wWimd4RFDMUfp4zV7Sg4SPvzj58vSsKjXFvTC/wS85734mEHtSocP0rltDZuzVYHh8vSA57b
+	L0k0kfzX9BJfwi+ZA6xom8w4BYimE5dVtOcyhf8r2E0nMuMFtHJWBh+QOZLlg+4EV2ZiCId538Y
+	VTf5p1/2eXXwf7Y4S/K5MiU8X6n7+j0KEaTluogurSMpg3N4s60fLOwZ9rT8X2IQoAUDqkCFh+m
+	JILfingXS6lplLP8B/TdZqZCsun6EFaKlpG1
+X-Received: by 2002:a05:651c:1508:b0:309:20da:6188 with SMTP id 38308e7fff4ca-32ad11be38amr1206351fa.6.1749055984824;
+        Wed, 04 Jun 2025 09:53:04 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFOVkK8aXlCZgkjT/0iG8wOa9KpXdYeRE73KlsXw6lWnYujNdB6WOp6huRvzJhw27fbEzbHrw==
+X-Received: by 2002:a05:651c:1508:b0:309:20da:6188 with SMTP id 38308e7fff4ca-32ad11be38amr1206111fa.6.1749055984366;
+        Wed, 04 Jun 2025 09:53:04 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-32a85b527e1sm22753181fa.47.2025.06.04.09.53.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Jun 2025 09:53:03 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id B3D351AA9156; Wed, 04 Jun 2025 18:53:02 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Byungchul Park <byungchul@sk.com>, willy@infradead.org,
+ netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ kernel_team@skhynix.com, kuba@kernel.org, almasrymina@google.com,
+ ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
+ akpm@linux-foundation.org, davem@davemloft.net, john.fastabend@gmail.com,
+ andrew+netdev@lunn.ch, asml.silence@gmail.com, tariqt@nvidia.com,
+ edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com,
+ leon@kernel.org, ast@kernel.org, daniel@iogearbox.net, david@redhat.com,
+ lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
+ rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org,
+ linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com
+Subject: Re: [RFC v4 01/18] netmem: introduce struct netmem_desc mirroring
+ struct page
+In-Reply-To: <20250604025246.61616-2-byungchul@sk.com>
+References: <20250604025246.61616-1-byungchul@sk.com>
+ <20250604025246.61616-2-byungchul@sk.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Wed, 04 Jun 2025 18:53:02 +0200
+Message-ID: <877c1rwis1.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 2/3] selftests/bpf: add
- cmp_map_pointer_with_const test
-To: andrii@kernel.org
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- eddyz87@gmail.com, mykolal@fb.com, kernel-team@meta.com
-References: <20250604003759.1020745-1-isolodrai@meta.com>
- <20250604003759.1020745-2-isolodrai@meta.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-In-Reply-To: <20250604003759.1020745-2-isolodrai@meta.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 6/3/25 5:37 PM, Ihor Solodrai wrote:
-> Add a test for CONST_PTR_TO_MAP comparison with a non-0 constant. A
-> BPF program with this code must not pass verification in unpriv.
-> 
-> Signed-off-by: Ihor Solodrai <isolodrai@meta.com>
-> ---
->   .../selftests/bpf/progs/verifier_unpriv.c       | 17 +++++++++++++++++
->   1 file changed, 17 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/bpf/progs/verifier_unpriv.c b/tools/testing/selftests/bpf/progs/verifier_unpriv.c
-> index 28200f068ce5..85b41f927272 100644
-> --- a/tools/testing/selftests/bpf/progs/verifier_unpriv.c
-> +++ b/tools/testing/selftests/bpf/progs/verifier_unpriv.c
-> @@ -634,6 +634,23 @@ l0_%=:	r0 = 0;						\
->   	: __clobber_all);
->   }
->   
-> +SEC("socket")
-> +__description("unpriv: cmp map pointer with const")
-> +__success __failure_unpriv __msg_unpriv("R1 pointer comparison prohibited")
-> +__retval(0)
-> +__naked void cmp_map_pointer_with_const(void)
-> +{
-> +	asm volatile ("					\
-> +	r1 = 0;						\
-> +	r1 = %[map_hash_8b] ll;				\
-> +	if r1 == 0xcafefeeddeadbeef goto l0_%=;		\
+Byungchul Park <byungchul@sk.com> writes:
 
-GCC BPF caught (correctly) that this is not a valid instruction because 
-imm is supposed to be 32bit [1]:
+> To simplify struct page, the page pool members of struct page should be
+> moved to other, allowing these members to be removed from struct page.
+>
+> Introduce a network memory descriptor to store the members, struct
+> netmem_desc, and make it union'ed with the existing fields in struct
+> net_iov, allowing to organize the fields of struct net_iov.
+>
+> Signed-off-by: Byungchul Park <byungchul@sk.com>
 
-     progs/verifier_unpriv.c: Assembler messages:
-     progs/verifier_unpriv.c:643: Error: immediate out of range, shall 
-fit in 32 bits
-     make: *** [Makefile:751: 
-/tmp/work/bpf/bpf/src/tools/testing/selftests/bpf/bpf_gcc/verifier_unpriv.bpf.o] 
-Error 1
-
-But LLVM 20 let it compile and the test passes. I wonder whether it's a 
-bug in LLVM worth reporting?
-
-[1] 
-https://github.com/kernel-patches/bpf/actions/runs/15430930573/job/43428666342
-
-> +l0_%=:	r0 = 0;						\
-> +	exit;						\
-> +"	:
-> +	: __imm_addr(map_hash_8b)
-> +	: __clobber_all);
-> +}
-> +
->   SEC("socket")
->   __description("unpriv: write into frame pointer")
->   __failure __msg("frame pointer is read only")
+Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
 
