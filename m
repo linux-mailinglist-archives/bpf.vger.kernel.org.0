@@ -1,59 +1,61 @@
-Return-Path: <bpf+bounces-59598-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59599-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00DEBACD358
-	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 03:17:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36841ACD391
+	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 03:19:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 59B107A7700
-	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 01:13:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3E34189C2B5
+	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 01:15:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1486F25F990;
-	Wed,  4 Jun 2025 01:01:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C9561DE4E6;
+	Wed,  4 Jun 2025 01:01:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GXJeJ1Ct"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JmPuZqof"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 876D44A2D;
-	Wed,  4 Jun 2025 01:01:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 941CE16D9BF;
+	Wed,  4 Jun 2025 01:01:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748998860; cv=none; b=M2UTzvkvHpROAXXOI3xfPBPGStQ1yP8YF9C5Q6ek4OkDmleJuFm3Abp2lm4I6IgW+KrIYCnV3votd7X4JSpNT1O4DrrCZ8RCUTc6A4gpbRDwjdi1Cw28xFfE41GkwBNYz9u0IoP3kwjDe+rYo5rH/p14jM1tMPdvDk7VxBL9Wi8=
+	t=1748998878; cv=none; b=CZG1Qvq2mXryr9kVK71BaM5ZpJ4oY+SX3Ut6rp/LEegoaLMhxAahraHOe4JS2iMl7gRsT+V6S0dFCOxm+TYMjRz8vAZoX/FO+hPxNVRI+L3aW+t42DRZY62bBxSNJCALA0iAAc8P+ZGEdmrWkk1t490GkmB4HAWL+o3loQl5W9c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748998860; c=relaxed/simple;
-	bh=JBFQ27W42OI79xsIeC5r00AwiUjoUJtnCQWh+JQDDZw=;
+	s=arc-20240116; t=1748998878; c=relaxed/simple;
+	bh=xrbVIrODA0xNVk8j0F/sq5bDWaqDJHmLHFLBk9Cc75A=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JfxDfKG0GwOD45XIRKUcu8ypKxv0JgWhdtPrp3HN8BEU6YrL+umXF/xPQAvvT6YbTffJCe+WazXCdS2lXJt2F1YFwglXhtpEJOKdOjTppDoxWkic2FvMb5immi+nC6EwT4wQkY9og7pO2B1nucrtV6oKKvSV/ulZeTcPs8Zjumk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GXJeJ1Ct; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AE1FC4CEEF;
-	Wed,  4 Jun 2025 01:00:59 +0000 (UTC)
+	 MIME-Version:Content-Type; b=V8IdDqJKq59gROrfZHrzgKeHCGag25df3X61pBVqUvnQDJgAtp2xJ/ygSG2JvSGz6PWzYPtXRANPWia4jFI7VJknRIXCBVGQdJcklNGlTjaezlc07v9BgB9IdgPDauewhl/yEqIQp5O78f/3ypyP7wQ8/G7OqNnluuwfm4ThJkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JmPuZqof; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2AF6C4CEF2;
+	Wed,  4 Jun 2025 01:01:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748998860;
-	bh=JBFQ27W42OI79xsIeC5r00AwiUjoUJtnCQWh+JQDDZw=;
+	s=k20201202; t=1748998878;
+	bh=xrbVIrODA0xNVk8j0F/sq5bDWaqDJHmLHFLBk9Cc75A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GXJeJ1CtoahkwFJOZKPT3W4jK63w5WlFzraBgdAPlFOkEw8NiH7IJjf0/ME82kBkL
-	 ro/zPRhm2Zojc1alhBp5phlVN6PNrR5dGAAGmnhlJCDYm2tn0gjyB2ynJxXa41k1+c
-	 NBFHdDNIkCnrXdWu3HSwHTSpYInHUTpbpabl/wp4tBsMZP6JE6qLVoqBnhpv5WTkQm
-	 TT1rHmLEB021G99q/gphyaY591x13JcwCk7PYA0mTNVYf2Whv+IBTmhlxdFLhMtx6W
-	 BnAKNAVWBTVi+iB3L8bWpHRDRCmMuAEkErDvrG/b8RHWFMDpKEGrcV5BeMJ9/8YiOI
-	 GAxF9aE9bAYSQ==
+	b=JmPuZqoffLmrO+IN+UZkfWCRX9PBDN+d2qMl8y2tniX2k5n4o0CNqgYeRgv5nNBz2
+	 QX8/ShIOyv6pMY39YBTx4yQYNpKBo4aoMJDg6kNqXlb6AtSlL75u6E9Wo3UXJZUOtu
+	 xmAfohgUhAd+35tRQEZooJ/zcEA+F/MX79fUzDvv4SX5WCLpFg+RSNFe4DyXbm4M4A
+	 4xVPI0yNIsjCCJE7giAqykIpcgh2osJablxaMMYrtCw5nYeMSW2+pEuozh3e4gx9qa
+	 wOo3l4uIQa9GpEaig+oVGz2JdV6nDNLNN7f9VPhzM72t5uCkX+2tPAWeNy6qMU70mj
+	 P0ECdbqv5GB9A==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
-Cc: Alan Maguire <alan.maguire@oracle.com>,
-	Alexei Starovoitov <ast@kernel.org>,
+Cc: Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
 	Sasha Levin <sashal@kernel.org>,
+	martin.lau@linux.dev,
+	ast@kernel.org,
 	daniel@iogearbox.net,
-	eddyz87@gmail.com,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.12 55/93] libbpf: Add identical pointer detection to btf_dedup_is_equiv()
-Date: Tue,  3 Jun 2025 20:58:41 -0400
-Message-Id: <20250604005919.4191884-55-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.12 64/93] bpf: Use proper type to calculate bpf_raw_tp_null_args.mask index
+Date: Tue,  3 Jun 2025 20:58:50 -0400
+Message-Id: <20250604005919.4191884-64-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250604005919.4191884-1-sashal@kernel.org>
 References: <20250604005919.4191884-1-sashal@kernel.org>
@@ -69,118 +71,130 @@ X-stable-base: Linux 6.12.31
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Alan Maguire <alan.maguire@oracle.com>
+From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 
-[ Upstream commit 8e64c387c942229c551d0f23de4d9993d3a2acb6 ]
+[ Upstream commit 53ebef53a657d7957d35dc2b953db64f1bb28065 ]
 
-Recently as a side-effect of
+The calculation of the index used to access the mask field in 'struct
+bpf_raw_tp_null_args' is done with 'int' type, which could overflow when
+the tracepoint being attached has more than 8 arguments.
 
-commit ac053946f5c4 ("compiler.h: introduce TYPEOF_UNQUAL() macro")
+While none of the tracepoints mentioned in raw_tp_null_args[] currently
+have more than 8 arguments, there do exist tracepoints that had more
+than 8 arguments (e.g. iocost_iocg_forgive_debt), so use the correct
+type for calculation and avoid Smatch static checker warning.
 
-issues were observed in deduplication between modules and kernel BTF
-such that a large number of kernel types were not deduplicated so
-were found in module BTF (task_struct, bpf_prog etc).  The root cause
-appeared to be a failure to dedup struct types, specifically those
-with members that were pointers with __percpu annotations.
-
-The issue in dedup is at the point that we are deduplicating structures,
-we have not yet deduplicated reference types like pointers.  If multiple
-copies of a pointer point at the same (deduplicated) integer as in this
-case, we do not see them as identical.  Special handling already exists
-to deal with structures and arrays, so add pointer handling here too.
-
-Reported-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Signed-off-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20250429161042.2069678-1-alan.maguire@oracle.com
+Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Link: https://lore.kernel.org/bpf/20250418074946.35569-1-shung-hsi.yu@suse.com
+
+Closes: https://lore.kernel.org/r/843a3b94-d53d-42db-93d4-be10a4090146@stanley.mountain/
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
 
-Based on my comprehensive analysis of the commit message, code changes,
-historical patterns, and kernel repository context, here is my
-recommendation: **YES** This commit should be backported to stable
-kernel trees for the following reasons: ## Critical Bug Fix Analysis
-**1. Fixes a Real User-Impacting Regression:** - The commit addresses a
-regression introduced by `commit ac053946f5c4 ("compiler.h: introduce
-TYPEOF_UNQUAL() macro")` - This regression causes "a large number of
-kernel types" (task_struct, bpf_prog, etc.) to fail deduplication -
-Results in broken BPF functionality for kernel modules, which is user-
-visible **2. Follows Established Stable Tree Criteria:** - **Important
-bugfix**: ✅ Fixes BTF deduplication failures affecting core BPF
-functionality - **Minimal risk**: ✅ Small, targeted change following
-existing patterns - **No architectural changes**: ✅ Adds a simple helper
-function without changing core algorithm - **Confined to subsystem**: ✅
-Changes only affect BTF deduplication logic in libbpf ## Code Change
-Analysis **3. Conservative and Safe Implementation:** ```c +static bool
-btf_dedup_identical_ptrs(struct btf_dedup *d, __u32 id1, __u32 id2) +{ +
-struct btf_type *t1, *t2; + + t1 = btf_type_by_id(d->btf, id1); + t2 =
-btf_type_by_id(d->btf, id2); + + if (!btf_is_ptr(t1) || !btf_is_ptr(t2))
-+ return false; + + return t1->type == t2->type; +} ``` - Simple type-
-checking function with clear bounds checking - Mirrors existing
-`btf_dedup_identical_arrays()` and `btf_dedup_identical_structs()`
-patterns - No complex logic or state changes **4. Integration Follows
-Existing Pattern:** ```c + /bin /bin.usr-is-merged /boot /dev /etc /home
-/init /lib /lib.usr-is-merged /lib64 /lost+found /media /mnt /opt /proc
-/root /run /sbin /sbin.usr-is-merged /snap /srv /sys /tmp /usr /var A
-similar case is again observed for PTRs. */ + if
-(btf_dedup_identical_ptrs(d, hypot_type_id, cand_id)) + return 1; ``` -
-Added alongside existing identical array/struct checks - Same position
-in control flow as established workarounds - Consistent with documented
-compiler DWARF generation issues ## Historical Pattern Alignment **5.
-Matches "YES" Backport Pattern:** Looking at similar commits marked for
-backport: - **Similar Commit #1** (YES): Adds identical struct checking
-for BTF dedup failures - same pattern - **Similar Commit #4** (YES):
-Fixes memory leak in BTF dedup - critical subsystem fix - **Similar
-Commit #5** (YES): Handles DWARF/compiler bugs with duplicated structs -
-identical issue class This commit addresses the exact same class of
-problem (compiler-generated identical types) that has been consistently
-backported. ## Risk Assessment **6. Low Regression Risk:** - Function
-only returns `true` when types are genuinely identical (`t1->type ==
-t2->type`) - Early returns prevent processing non-pointer types - Cannot
-cause false positives that would incorrectly deduplicate different types
-- Follows defensive programming patterns used throughout the codebase ##
-Conclusion This commit fixes a regression in critical BPF functionality,
-uses a proven safe pattern, has minimal code footprint, and addresses
-issues that directly impact users. The fix quality is high and the risk
-is low, making it an excellent candidate for stable tree backporting.
+Now I have enough context to analyze this commit: **Analysis:** **YES**
+- This commit should be backported to stable kernel trees. **Extensive
+Explanation:** ## Issue Description The commit fixes a potential integer
+overflow in the BPF BTF subsystem. The bug is in lines 6830 and 6833 of
+`kernel/bpf/btf.c` where the calculation `(arg capability_test
+capability_test.c f2fs_folio_analysis.md ipv4_multipath_analysis.md
+ipv6_route_allocation_rcu_analysis.md ixgbe_e610_set_phys_id_analysis.md
+linux lpfc_timeout_analysis.md rtl_bb_delay_analysis.md
+rtw89_mlo_analysis.md tcp_multipath_load_balance_analysis.md
+type_size_check type_size_check.c veth_driver_analysis.md 4)` is done
+with `int` type when `arg` can theoretically be large enough to cause
+overflow. ## Code Analysis 1. **Variable Types**: - `arg` is declared as
+`u32` (from `btf_ctx_arg_idx` return type) - The shift operation was
+using `int` arithmetic: `(0x1 << (arg capability_test capability_test.c
+f2fs_folio_analysis.md ipv4_multipath_analysis.md
+ipv6_route_allocation_rcu_analysis.md ixgbe_e610_set_phys_id_analysis.md
+linux lpfc_timeout_analysis.md rtl_bb_delay_analysis.md
+rtw89_mlo_analysis.md tcp_multipath_load_balance_analysis.md
+type_size_check type_size_check.c veth_driver_analysis.md 4))` - The fix
+changes it to `unsigned long long`: `(0x1ULL << (arg capability_test
+capability_test.c f2fs_folio_analysis.md ipv4_multipath_analysis.md
+ipv6_route_allocation_rcu_analysis.md ixgbe_e610_set_phys_id_analysis.md
+linux lpfc_timeout_analysis.md rtl_bb_delay_analysis.md
+rtw89_mlo_analysis.md tcp_multipath_load_balance_analysis.md
+type_size_check type_size_check.c veth_driver_analysis.md 4))` 2. **The
+Overflow Scenario**: - When `arg >= 8`, the expression `(arg
+capability_test capability_test.c f2fs_folio_analysis.md
+ipv4_multipath_analysis.md ipv6_route_allocation_rcu_analysis.md
+ixgbe_e610_set_phys_id_analysis.md linux lpfc_timeout_analysis.md
+rtl_bb_delay_analysis.md rtw89_mlo_analysis.md
+tcp_multipath_load_balance_analysis.md type_size_check type_size_check.c
+veth_driver_analysis.md 4)` could be >= 32 - Shifting by >= 32 bits on a
+32-bit `int` causes undefined behavior - Even on 64-bit systems, large
+values could overflow the intermediate calculation 3. **Specific
+Changes**: ```c // Before (vulnerable): if (raw_tp_null_args[i].mask &
+(0x1 << (arg capability_test capability_test.c f2fs_folio_analysis.md
+ipv4_multipath_analysis.md ipv6_route_allocation_rcu_analysis.md
+ixgbe_e610_set_phys_id_analysis.md linux lpfc_timeout_analysis.md
+rtl_bb_delay_analysis.md rtw89_mlo_analysis.md
+tcp_multipath_load_balance_analysis.md type_size_check type_size_check.c
+veth_driver_analysis.md 4))) if (raw_tp_null_args[i].mask & (0x2 << (arg
+capability_test capability_test.c f2fs_folio_analysis.md
+ipv4_multipath_analysis.md ipv6_route_allocation_rcu_analysis.md
+ixgbe_e610_set_phys_id_analysis.md linux lpfc_timeout_analysis.md
+rtl_bb_delay_analysis.md rtw89_mlo_analysis.md
+tcp_multipath_load_balance_analysis.md type_size_check type_size_check.c
+veth_driver_analysis.md 4))) // After (fixed): if
+(raw_tp_null_args[i].mask & (0x1ULL << (arg capability_test
+capability_test.c f2fs_folio_analysis.md ipv4_multipath_analysis.md
+ipv6_route_allocation_rcu_analysis.md ixgbe_e610_set_phys_id_analysis.md
+linux lpfc_timeout_analysis.md rtl_bb_delay_analysis.md
+rtw89_mlo_analysis.md tcp_multipath_load_balance_analysis.md
+type_size_check type_size_check.c veth_driver_analysis.md 4))) if
+(raw_tp_null_args[i].mask & (0x2ULL << (arg capability_test
+capability_test.c f2fs_folio_analysis.md ipv4_multipath_analysis.md
+ipv6_route_allocation_rcu_analysis.md ixgbe_e610_set_phys_id_analysis.md
+linux lpfc_timeout_analysis.md rtl_bb_delay_analysis.md
+rtw89_mlo_analysis.md tcp_multipath_load_balance_analysis.md
+type_size_check type_size_check.c veth_driver_analysis.md 4))) ``` ##
+Why This Should Be Backported 1. **Bug Fix**: This is a clear bug fix
+addressing undefined behavior that could cause incorrect BPF program
+verification. 2. **Small and Contained**: The fix is minimal - only
+changes two lines by adding `ULL` suffix to ensure 64-bit arithmetic. 3.
+**No Side Effects**: The change maintains the same logic but uses proper
+types, eliminating undefined behavior without changing functionality. 4.
+**Critical Subsystem**: This affects BPF verification, which is
+security-critical. Incorrect verification could lead to security issues.
+5. **Static Analysis Detection**: The commit was triggered by a Smatch
+static checker warning, indicating this is a real issue that static
+analysis tools flag. 6. **Potential Real-World Impact**: While the
+commit mentions no current tracepoints have >8 arguments, the code path
+could be triggered by future tracepoints or module tracepoints, making
+this a defensive fix. 7. **Follows Stable Criteria**: - Important bugfix
+✓ - Minimal risk ✓ - No architectural changes ✓ - Confined to BPF
+subsystem ✓ ## Comparison with Similar Commits Looking at the historical
+examples, this commit is most similar to "Similar Commit #5" which was
+marked as "Backport Status: YES" - it's a small type safety fix in BPF
+BTF code that prevents undefined behavior. The fix prevents a subtle but
+potentially serious issue in BPF program verification, making it an
+excellent candidate for stable backporting.
 
- tools/lib/bpf/btf.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ kernel/bpf/btf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 4a486798fe4c0..b770702dab372 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -4176,6 +4176,19 @@ static bool btf_dedup_identical_structs(struct btf_dedup *d, __u32 id1, __u32 id
- 	return true;
- }
- 
-+static bool btf_dedup_identical_ptrs(struct btf_dedup *d, __u32 id1, __u32 id2)
-+{
-+	struct btf_type *t1, *t2;
-+
-+	t1 = btf_type_by_id(d->btf, id1);
-+	t2 = btf_type_by_id(d->btf, id2);
-+
-+	if (!btf_is_ptr(t1) || !btf_is_ptr(t2))
-+		return false;
-+
-+	return t1->type == t2->type;
-+}
-+
- /*
-  * Check equivalence of BTF type graph formed by candidate struct/union (we'll
-  * call it "candidate graph" in this description for brevity) to a type graph
-@@ -4308,6 +4321,9 @@ static int btf_dedup_is_equiv(struct btf_dedup *d, __u32 cand_id,
- 		 */
- 		if (btf_dedup_identical_structs(d, hypot_type_id, cand_id))
- 			return 1;
-+		/* A similar case is again observed for PTRs. */
-+		if (btf_dedup_identical_ptrs(d, hypot_type_id, cand_id))
-+			return 1;
- 		return 0;
- 	}
- 
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 2c54c148a94f3..f83bd019db141 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -6684,10 +6684,10 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+ 			/* Is this a func with potential NULL args? */
+ 			if (strcmp(tname, raw_tp_null_args[i].func))
+ 				continue;
+-			if (raw_tp_null_args[i].mask & (0x1 << (arg * 4)))
++			if (raw_tp_null_args[i].mask & (0x1ULL << (arg * 4)))
+ 				info->reg_type |= PTR_MAYBE_NULL;
+ 			/* Is the current arg IS_ERR? */
+-			if (raw_tp_null_args[i].mask & (0x2 << (arg * 4)))
++			if (raw_tp_null_args[i].mask & (0x2ULL << (arg * 4)))
+ 				ptr_err_raw_tp = true;
+ 			break;
+ 		}
 -- 
 2.39.5
 
