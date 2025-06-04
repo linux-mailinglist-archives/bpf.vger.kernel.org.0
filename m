@@ -1,46 +1,79 @@
-Return-Path: <bpf+bounces-59642-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59641-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4663ACE1E6
-	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 18:04:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50DB8ACE19E
+	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 17:38:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04E26166FDD
-	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 16:04:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95B227A10BC
+	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 15:32:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0A811CB518;
-	Wed,  4 Jun 2025 16:04:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A245018B47D;
+	Wed,  4 Jun 2025 15:33:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G/PhBZgT"
 X-Original-To: bpf@vger.kernel.org
-Received: from dediextern.your-server.de (dediextern.your-server.de [85.10.215.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAD0018E1F;
-	Wed,  4 Jun 2025 16:04:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.10.215.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34D0C4C6D
+	for <bpf@vger.kernel.org>; Wed,  4 Jun 2025 15:33:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749053046; cv=none; b=s1wAFkeK2R2FZyIgeA13q75UY43xGOZB2OJG3Th5z9PYX5xVc8PqWjCRUJbWgBkVh0MpXNc014ESlYyLZprjSeN0tXublBF3AstzbRrqYVAdXs8ColRI6LImhe0WQxvvfCbsEJMHogsPmlwHIQju0SMr3CH0CU8GAgtf4mqhxjk=
+	t=1749051236; cv=none; b=atQR0oPOobxf7D+ie9s55o1wSiuwn/OJkk6ux7WxQ3fsGW4aiN7LxL/a1927we1jPBPT5vWXbkh88wPRCg5iWME10qf8eWk49+M9VmJBi/TlaTbSgOymG3MZIhZpmYmfW2EWiNLIMjcL1AR+5mN2Xyvb62j0DPX0C9yrKndLtLs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749053046; c=relaxed/simple;
-	bh=Vbss+hkHN6igBHYC0QfKfg2uSLdRpUecKqmMSm0PGo8=;
-	h=Message-ID:Date:MIME-Version:From:To:Cc:Subject:Content-Type; b=ZbAFKeOVvve15XtFfmS4tYFQ51oZUmvfig+WPCwM3qpFKryuB/NyyrCpw8nF1byjyMWhCNi1NRb9jDWOPcKhvHbUWMQz7yiM64kgVg8MXxYpZMc40XhatDQnOlD1KzgaZK3o8ivSdEat8kxmdITyIdfYCXCtmxNevxSQmGTrhdQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hetzner-cloud.de; spf=pass smtp.mailfrom=hetzner-cloud.de; arc=none smtp.client-ip=85.10.215.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hetzner-cloud.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hetzner-cloud.de
-Received: from sslproxy08.your-server.de ([78.47.166.52])
-	by dediextern.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <marcus.wichelmann@hetzner-cloud.de>)
-	id 1uMq7W-000Q0d-RO; Wed, 04 Jun 2025 17:33:39 +0200
-Received: from localhost ([127.0.0.1])
-	by sslproxy08.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <marcus.wichelmann@hetzner-cloud.de>)
-	id 1uMq7W-000E76-2k;
-	Wed, 04 Jun 2025 17:33:39 +0200
-Message-ID: <9da42688-bfaa-4364-8797-e9271f3bdaef@hetzner-cloud.de>
-Date: Wed, 4 Jun 2025 17:33:36 +0200
+	s=arc-20240116; t=1749051236; c=relaxed/simple;
+	bh=6b3zxrb+PozCfbXK7eS8mAVfZVdd5sPvpgXkc9wx0NQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Nrj9O8dxTVawlbG28m/opk04cJC2GH5FHliaNvhnpI8QyeCmumFctWabnRQqH6QAzYXUBDG5Tm57XhDhDng/bJ0cbZF8ov/T/TIg3VDreCblY3SFCw894GmyfFM1uXs7SFfECQXxsUGvEi/5zySNQhVrYZrtC8+kawg0ULvykOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G/PhBZgT; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-606b6dbe316so3214743a12.3
+        for <bpf@vger.kernel.org>; Wed, 04 Jun 2025 08:33:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749051232; x=1749656032; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=E9yrFrvYUOHlu8TBn2+VpeGXDGgpFbCCMLs57kDqroA=;
+        b=G/PhBZgTgktmcfW4ZLYAAdl5YjhIL3ssi07S1tYdLjYtx8TXQqmp2cuUp/SqdLLELC
+         MP8HtkqL1tQdaUFQoCA0YG00yAgXJIQJrjRMVAm1vBgDcfGAVvg1JiBEzWCDWhq0PPkQ
+         2doG7IojzluADfLkv1QMkaGRZ9IeU6lFjCPT5DhAM7JWW0dHgolBn/oV4SPyC9hqFZJL
+         /foMWFV6OolZc+jBEquCd8nV3aHTuqxd/aUh21rQYk/ji7oJc5pDte1iP2rRfNaEb1Co
+         YZRDm05oADWaRy33l/21oR4x5NVhGIiKYXBRC3UIe2bgWSCCV88kMhSeWHI5eqHMTJT+
+         rWdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749051232; x=1749656032;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=E9yrFrvYUOHlu8TBn2+VpeGXDGgpFbCCMLs57kDqroA=;
+        b=qc0SCLLtqefZozOlDGfMMYFKIJMYpqBlSE91T3PQfE6JH/6oUGbY1uiihTtFXObPFe
+         AG0Fassa3cSjAsDAcwq0+dJDy7ke6SyOEbQ8njMP+dxpwk/047Dw5mt//5+C+lB6qibn
+         bCEHa9o5KxM/gpa3TT/bUfjUoVx+3JPZNGf7Sop6tq7JGLU/frLoFfMzXaw/AVIEYyzm
+         pm9ptMe1FbyAxvEMs2AB80sVOFiHniKQqJGazzLowE3wXBYNGJGcre0PkdQFjrJ48mMo
+         XVawxkzZZRh36XuvI45lsrXM34dHvZXpBIukTgqRiqBCFuHq/r1UiAfg9Cdec335a85R
+         V0KQ==
+X-Gm-Message-State: AOJu0YxuEdE47YDVW5XKZfvwvxAAyR1IcBEfF/IUY8D1PaUNCzbZl+V0
+	OkgkviBqq1Mjl+lxoSOqqWxhxZzTvuZ7Uf7Sq+dNq1KU/atKAuXcYiqO
+X-Gm-Gg: ASbGncspCgf/7dRfqNg7Vytna1Baq1l14vibN9S1aA5z3jVe9IMfDPtiI8FK+yGIpCg
+	svCsnuzkkDhL3/9AE0CH+t4kc2QPJEzfUlIhaY0k2LJ5ynHEMG2MARFstLxpnyrgn+PAoxsppZ2
+	is2KUQn+E+CvUfJNoNgc7BlMdAOOFLje2fPA32hme6WOyHRK8ga45HsiBwF23ueQPaUyxuRoOFa
+	j5b3b+6sgokGGhl4aBOzLWYaHawurU3psn2r4yye/7IrztbQhlE3SlOm6pUCMZp/ttDAVx+SQci
+	50VTz5GN3Zkes9gmFvTddVp7AD7Qn/hw+TozcjMiDd8GCN8wLPFizD2k/7P1VHLdUL5TXuiLWQf
+	gTGa0BbSSSqOT
+X-Google-Smtp-Source: AGHT+IH8iPp7tMkQQNeMbI97hUASF6CgmSyGFZQMn/orSpy+WtvU5PLLAMJCz92VlmbRVP3/NyzfxQ==
+X-Received: by 2002:a17:907:7b82:b0:ad8:a4a8:102c with SMTP id a640c23a62f3a-addf8c98f79mr286277766b.11.1749051232082;
+        Wed, 04 Jun 2025 08:33:52 -0700 (PDT)
+Received: from ?IPV6:2a03:83e0:1126:4:49bb:abfc:9369:86b1? ([2620:10d:c092:500::7:8931])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-60566c59f81sm8945990a12.18.2025.06.04.08.33.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Jun 2025 08:33:51 -0700 (PDT)
+Message-ID: <e4738330-e6e8-4950-9226-36a5090736a3@gmail.com>
+Date: Wed, 4 Jun 2025 16:33:50 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -48,185 +81,254 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next] selftests/bpf: support array presets in veristat
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com,
+ eddyz87@gmail.com, Mykyta Yatsenko <yatsenko@meta.com>
+References: <20250603141539.86878-1-mykyta.yatsenko5@gmail.com>
+ <CAEf4Bzb3=brMXMBZ-AGj8xdr80XEs2Og0XeZ1zuiHnFNWWPJJQ@mail.gmail.com>
 Content-Language: en-US
-From: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
-Autocrypt: addr=marcus.wichelmann@hetzner-cloud.de; keydata=
- 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
- wySmewx3h/yfMh0aFxHhvLPxrO2IEQ==
-To: Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org,
- netdev@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>,
- Jiri Pirko <jiri@resnulli.us>, linux-kernel@vger.kernel.org
-Subject: [BUG] veth: TX drops with NAPI enabled and crash in combination with
- qdisc
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: marcus.wichelmann@hetzner-cloud.de
-X-Virus-Scanned: Clear (ClamAV 1.0.7/27658/Wed Jun  4 10:36:16 2025)
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+In-Reply-To: <CAEf4Bzb3=brMXMBZ-AGj8xdr80XEs2Og0XeZ1zuiHnFNWWPJJQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi,
+On 6/3/25 22:24, Andrii Nakryiko wrote:
+> On Tue, Jun 3, 2025 at 7:15 AM Mykyta Yatsenko
+> <mykyta.yatsenko5@gmail.com> wrote:
+>> From: Mykyta Yatsenko <yatsenko@meta.com>
+>>
+>> Implement support for presetting values for array elements in veristat.
+>> For example:
+>> ```
+>> sudo ./veristat set_global_vars.bpf.o -G "struct1[2].struct2[1].u.var_u8[2] = 3" -G "arr[3] = 9"
+>> ```
+>> Arrays of structures and structure of arrays work, but each individual
+>> scalar value has to be set separately: `foo[1].bar[2] = value`.
+>>
+>> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+>> ---
+>>   .../selftests/bpf/prog_tests/test_veristat.c  |  9 +--
+>>   .../selftests/bpf/progs/set_global_vars.c     | 12 ++--
+>>   tools/testing/selftests/bpf/veristat.c        | 63 +++++++++++++++++--
+>>   3 files changed, 70 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/test_veristat.c b/tools/testing/selftests/bpf/prog_tests/test_veristat.c
+>> index 47b56c258f3f..1af5d02bb2d0 100644
+>> --- a/tools/testing/selftests/bpf/prog_tests/test_veristat.c
+>> +++ b/tools/testing/selftests/bpf/prog_tests/test_veristat.c
+>> @@ -60,12 +60,13 @@ static void test_set_global_vars_succeeds(void)
+>>              " -G \"var_s8 = -128\" "\
+>>              " -G \"var_u8 = 255\" "\
+>>              " -G \"var_ea = EA2\" "\
+>> -           " -G \"var_eb = EB2\" "\
+>> -           " -G \"var_ec = EC2\" "\
+>> +           " -G \"var_eb  =  EB2\" "\
+>> +           " -G \"var_ec=EC2\" "\
+> What was the problem previously with not handling this case?
+%s consumes input until whitespace or end of string, so var=val will be 
+written to a single string.
+>
+>>              " -G \"var_b = 1\" "\
+>> -           " -G \"struct1.struct2.u.var_u8 = 170\" "\
+>> +           " -G \"struct1[2].struct2[1].u.var_u8[2]=170\" "\
+>>              " -G \"union1.struct3.var_u8_l = 0xaa\" "\
+>>              " -G \"union1.struct3.var_u8_h = 0xaa\" "\
+>> +           " -G \"arr[2] = 0xaa\" "    \
+>>              "-vl2 > %s", fix->veristat, fix->tmpfile);
+>>
+>>          read(fix->fd, fix->output, fix->sz);
+> [...]
+>
+>> @@ -81,8 +80,9 @@ int test_set_globals(void *ctx)
+>>          a = var_eb;
+>>          a = var_ec;
+>>          a = var_b;
+>> -       a = struct1.struct2.u.var_u8;
+>> +       a = struct1[2].struct2[1].u.var_u8[2];
+>>          a = union1.var_u16;
+>> +       a = arr[3];
+>>
+> let's add tests for at least:
+>    a) multi-dimensional arrays
+>    b) arrays of pointers (that's unlikely to happen in practice, but
+> still, we should avoid just messing stuff up silently). We can also
+> explicitly error out on pointers, I suppose.
+>    c) what about using enums as indices?
+>    d) can we have some typedef'ed types both with array-based and
+> direct accesses (to validate we skipped typedefs where appropriate)
+Should we support multi-dimensional arrays?
+How to implement enum indexes, iterate over all btf and check if the 
+name equals?
+>
+> I'd suggest splitting selftests from veristat changes. They are in the
+> same selftests/bpf directory, but conceptually they are tool vs tests
+> patches, so better kept separate, IMO.
+>
+> pw-bot: cr
+>
+>>          return a;
+>>   }
+>> diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
+>> index b2bb20b00952..79c5ea6476ca 100644
+>> --- a/tools/testing/selftests/bpf/veristat.c
+>> +++ b/tools/testing/selftests/bpf/veristat.c
+>> @@ -1379,7 +1379,7 @@ static int append_var_preset(struct var_preset **presets, int *cnt, const char *
+>>          memset(cur, 0, sizeof(*cur));
+>>          (*cnt)++;
+>>
+>> -       if (sscanf(expr, "%s = %s %n", var, val, &n) != 2 || n != strlen(expr)) {
+>> +       if (sscanf(expr, "%[][a-zA-Z0-9_.] = %s %n", var, val, &n) != 2 || n != strlen(expr)) {
+>>                  fprintf(stderr, "Failed to parse expression '%s'\n", expr);
+>>                  return -EINVAL;
+>>          }
+>> @@ -1486,6 +1486,39 @@ static bool is_preset_supported(const struct btf_type *t)
+>>          return btf_is_int(t) || btf_is_enum(t) || btf_is_enum64(t);
+>>   }
+>>
+>> +static int adjust_array_secinfo(const struct btf *btf, const struct btf_type *t,
+>> +                               struct btf_var_secinfo *sinfo, const char *var)
+>> +{
+>> +       struct btf_array *barr;
+>> +       const struct btf_type *type;
+>> +       char arr[64], idx[64];
+>> +       int i = 0, tid;
+>> +
+>> +       if (!btf_is_array(t))
+>> +               return 0;
+> this shouldn't be called for non-array, no? if yes, then we should
+> either drop unnecessary safety check or error out
+>
+>> +
+>> +       barr = btf_array(t);
+>> +       tid = btf__resolve_type(btf, barr->type);
+>> +       type = btf__type_by_id(btf, tid);
+>> +
+>> +       /* var may contain chained expression e.g.: foo[1].bar */
+> this feels a bit hacky that we re-parse those string specifiers...
+> maybe we should parse them once, prepare some structured
+> representation such that the rest of the code can easily check whether
+> each access is array or non-array, and have parsed index number for
+> arrays
+>
+>> +       if (sscanf(var, "%[a-zA-Z0-9_][%[a-zA-Z0-9]]", arr, idx) != 2) {
+>> +               fprintf(stderr, "Could not parse array expression %s\n", var);
+>> +               return -EINVAL;
+>> +       }
+>> +       errno = 0;
+>> +       i = strtol(idx, NULL, 0);
+>> +       if (errno || i < 0 || i >= barr->nelems) {
+>> +               fprintf(stderr, "Preset index %s is invalid or out of bounds [0, %d]\n",
+>> +                       idx, barr->nelems);
+>> +               return -EINVAL;
+>> +       }
+>> +       sinfo->size = type->size;
+> hm... what if type is another array? we need to calculate the size
+> properly, not just take type->size directly. Or what if it's a pointer
+> type and type->size is actually type->type?
+Is type an another array in case of multidimensional arrays?
+>> +       sinfo->type = tid;
+>> +       sinfo->offset += i * type->size;
+>> +       return 0;
+>> +}
+>> +
+>>   const int btf_find_member(const struct btf *btf,
+>>                            const struct btf_type *parent_type,
+>>                            __u32 parent_offset,
+>> @@ -1493,7 +1526,7 @@ const int btf_find_member(const struct btf *btf,
+>>                            int *member_tid,
+>>                            __u32 *member_offset)
+>>   {
+>> -       int i;
+>> +       int i, err;
+>>
+>>          if (!btf_is_composite(parent_type))
+>>                  return -EINVAL;
+>> @@ -1511,8 +1544,12 @@ const int btf_find_member(const struct btf *btf,
+>>                  member_type = btf__type_by_id(btf, tid);
+>>                  if (member->name_off) {
+>>                          const char *name = btf__name_by_offset(btf, member->name_off);
+>> +                       int name_len = strlen(name);
+>>
+>> -                       if (strcmp(member_name, name) == 0) {
+>> +                       if (strcmp(member_name, name) == 0 ||
+>> +                           (btf_is_array(member_type) &&
+>> +                            strncmp(name, member_name, name_len) == 0 &&
+>> +                            member_name[name_len] == '[')) {
+> It looks like you are trying to do too much here at the same time...
+> Why not handle array case separately and explicitly? And we can
+> provide a nice message if array vs non-array access is detected
+>
+> Let's also restructure btf_find_member loop logic a bit to reduce nestedness:
+>
+> const char *name = ...;
+>
+> if (name[0] == '\0' && btf_is_composite(...)) { /* anon struct/union */
+>      /* recur btf_find_member in hope to find a match */
+>      ...
+> } else if (name[0] && btf_is_array(member_type)) {
+>      /* if member_name is *NOT* blah[something] - nice error, exit with
+> -EINVAL */
+>      ... new array element-specific logic
+> } else if (name[0]) {
+>      /* if member_name *IS* blah[something] - nice error, exit with -EINVAL */
+>      ... old logic ...
+> }
+>
+>
+> BTW, we should probably use -ESRCH to specify "we didn't find match"
+> (and that's ok, we keep backtracking) vs -EINVAL due to array vs
+> non-array mismatch or bitfield usage. The latter are real error
+> conditions, while the former should be silently ignored.
+>
+>
+>>                                  if (btf_member_bitfield_size(parent_type, i) != 0) {
+>>                                          fprintf(stderr, "Bitfield presets are not supported %s\n",
+>>                                                  name);
+>> @@ -1520,6 +1557,16 @@ const int btf_find_member(const struct btf *btf,
+>>                                  }
+>>                                  *member_offset = parent_offset + member->offset;
+>>                                  *member_tid = tid;
+>> +                               if (btf_is_array(member_type)) {
+>> +                                       struct btf_var_secinfo sinfo = {.offset = 0};
+>> +
+>> +                                       err = adjust_array_secinfo(btf, member_type,
+>> +                                                                  &sinfo, member_name);
+>> +                                       if (err)
+>> +                                               return err;
+>> +                                       *member_tid = sinfo.type;
+>> +                                       *member_offset += sinfo.offset * 8;
+>> +                               }
+>>                                  return 0;
+>>                          }
+>>                  } else if (btf_is_composite(member_type)) {
+>> @@ -1548,6 +1595,13 @@ static int adjust_var_secinfo(struct btf *btf, const struct btf_type *t,
+>>          snprintf(expr, sizeof(expr), "%s", var);
+>>          strtok_r(expr, ".", &saveptr);
+>>
+>> +       if (btf_is_array(base_type)) {
+>> +               err = adjust_array_secinfo(btf, base_type, sinfo, var);
+>> +               if (err)
+>> +                       return err;
+>> +               base_type = btf__type_by_id(btf, sinfo->type);
+>> +       }
+>> +
+>>          while ((name = strtok_r(NULL, ".", &saveptr))) {
+>>                  err = btf_find_member(btf, base_type, 0, name, &member_tid, &member_offset);
+>>                  if (err) {
+>> @@ -1673,7 +1727,8 @@ static int set_global_vars(struct bpf_object *obj, struct var_preset *presets, i
+>>
+>>                                  if (strncmp(var_name, presets[k].name, var_len) != 0 ||
+>>                                      (presets[k].name[var_len] != '\0' &&
+>> -                                    presets[k].name[var_len] != '.'))
+>> +                                    presets[k].name[var_len] != '.' &&
+>> +                                    presets[k].name[var_len] != '['))
+>>                                          continue;
+>>
+>>                                  if (presets[k].applied) {
+>> --
+>> 2.49.0
+>>
 
-while experimenting with XDP_REDIRECT from a veth-pair to another interface, I
-noticed that the veth-pair looses lots of packets when multiple TCP streams go
-through it, resulting in stalling TCP connections and noticeable instabilities.
-
-This doesn't seem to be an issue with just XDP but rather occurs whenever the
-NAPI mode of the veth driver is active.
-I managed to reproduce the same behavior just by bringing the veth-pair into
-NAPI mode (see commit d3256efd8e8b ("veth: allow enabling NAPI even without
-XDP")) and running multiple TCP streams through it using a network namespace.
-
-Here is how I reproduced it:
-
-  ip netns add lb
-  ip link add dev to-lb type veth peer name in-lb netns lb
-
-  # Enable NAPI
-  ethtool -K to-lb gro on
-  ethtool -K to-lb tso off
-  ip netns exec lb ethtool -K in-lb gro on
-  ip netns exec lb ethtool -K in-lb tso off
-
-  ip link set dev to-lb up
-  ip -netns lb link set dev in-lb up
-
-Then run a HTTP server inside the "lb" namespace that serves a large file:
-
-  fallocate -l 10G testfiles/10GB.bin
-  caddy file-server --root testfiles/
-
-Download this file from within the root namespace multiple times in parallel:
-
-  curl http://[fe80::...%to-lb]/10GB.bin -o /dev/null
-
-In my tests, I ran four parallel curls at the same time and after just a few
-seconds, three of them stalled while the other one "won" over the full bandwidth
-and completed the download.
-
-This is probably a result of the veth's ptr_ring running full, causing many
-packet drops on TX, and the TCP congestion control reacting to that.
-
-In this context, I also took notice of Jesper's patch which describes a very
-similar issue and should help to resolve this:
-  commit dc82a33297fc ("veth: apply qdisc backpressure on full ptr_ring to
-  reduce TX drops")
-
-But when repeating the above test with latest mainline, which includes this
-patch, and enabling qdisc via
-  tc qdisc add dev in-lb root sfq perturb 10
-the Kernel crashed just after starting the second TCP stream (see output below).
-
-So I have two questions:
-- Is my understanding of the described issue correct and is Jesper's patch
-  sufficient to solve this?
-- Is my qdisc configuration to make use of this patch correct and the kernel
-  crash is likely a bug?
-
-------------[ cut here ]------------
-UBSAN: array-index-out-of-bounds in net/sched/sch_sfq.c:203:12
-index 65535 is out of range for type 'sfq_head [128]'
-CPU: 1 UID: 0 PID: 24 Comm: ksoftirqd/1 Not tainted 6.15.0+ #1 PREEMPT(voluntary) 
-Hardware name: GIGABYTE MP32-AR1-SW-HZ-001/MP32-AR1-00, BIOS F31n (SCP: 2.10.20220810) 09/30/2022
-Call trace:
- show_stack+0x24/0x50 (C)
- dump_stack_lvl+0x80/0x140
- dump_stack+0x1c/0x38
- __ubsan_handle_out_of_bounds+0xd0/0x128
- sfq_dequeue+0x37c/0x3e0 [sch_sfq]
- __qdisc_run+0x90/0x760
- net_tx_action+0x1b8/0x3b0
- handle_softirqs+0x13c/0x418
- run_ksoftirqd+0x9c/0xe8
- smpboot_thread_fn+0x1c0/0x2e0
- kthread+0x150/0x230
- ret_from_fork+0x10/0x20
----[ end trace ]---
-------------[ cut here ]------------
-UBSAN: array-index-out-of-bounds in net/sched/sch_sfq.c:208:8
-index 65535 is out of range for type 'sfq_head [128]'
-CPU: 1 UID: 0 PID: 24 Comm: ksoftirqd/1 Not tainted 6.15.0+ #1 PREEMPT(voluntary) 
-Hardware name: GIGABYTE MP32-AR1-SW-HZ-001/MP32-AR1-00, BIOS F31n (SCP: 2.10.20220810) 09/30/2022
-Call trace:
- show_stack+0x24/0x50 (C)
- dump_stack_lvl+0x80/0x140
- dump_stack+0x1c/0x38
- __ubsan_handle_out_of_bounds+0xd0/0x128
- sfq_dequeue+0x394/0x3e0 [sch_sfq]
- __qdisc_run+0x90/0x760
- net_tx_action+0x1b8/0x3b0
- handle_softirqs+0x13c/0x418
- run_ksoftirqd+0x9c/0xe8
- smpboot_thread_fn+0x1c0/0x2e0
- kthread+0x150/0x230
- ret_from_fork+0x10/0x20
----[ end trace ]---
-Unable to handle kernel NULL pointer dereference at virtual address 0000000000000005
-Mem abort info:
-  ESR = 0x0000000096000004
-  EC = 0x25: DABT (current EL), IL = 32 bits
-  SET = 0, FnV = 0
-  EA = 0, S1PTW = 0
-  FSC = 0x04: level 0 translation fault
-Data abort info:
-  ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
-  CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-  GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-user pgtable: 4k pages, 48-bit VAs, pgdp=000008002ad67000
-[0000000000000005] pgd=0000000000000000, p4d=0000000000000000
-Internal error: Oops: 0000000096000004 [#1]  SMP
-
-CPU: Ampere(R) Altra(R) Processor Q80-30 CPU @ 3.0GHz
-
-# tc qdisc
-qdisc sfq 8001: dev in-lb root refcnt 81 limit 127p quantum 1514b depth 127 divisor 1024 perturb 10sec 
-
-Thanks,
-Marcus
 
