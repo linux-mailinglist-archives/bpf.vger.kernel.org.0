@@ -1,142 +1,166 @@
-Return-Path: <bpf+bounces-59691-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59692-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 319C0ACE6F2
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 01:02:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB48DACE6F4
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 01:04:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A7691891195
-	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 23:02:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDE4C188F822
+	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 23:04:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA7F81D88AC;
-	Wed,  4 Jun 2025 23:02:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CD5726B2A9;
+	Wed,  4 Jun 2025 23:04:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N7bfktWr"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rn2j89AA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com [209.85.217.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 895461C861D
-	for <bpf@vger.kernel.org>; Wed,  4 Jun 2025 23:02:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09C5526AA85
+	for <bpf@vger.kernel.org>; Wed,  4 Jun 2025 23:04:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749078153; cv=none; b=G8sOvtTXXyRoV+4KrCjK3PU6KiGZf9/+rqPlJhyE9D7iWL9WHKHgUBHwdOV8p8lUpq42C8SJBNgO+vTlKW0A/ef8EvwZ5c0OyoMwLCdrRTgIfKwcMU+Iuigwm1kDFzPzrqVgc/Gc9SqHFAIrm8wxN7FQHJyu/6MF1ny6ne5i7UU=
+	t=1749078265; cv=none; b=mNuFosWRVd352r7KnlLbuvZwAPFXBIfHlgHW56XUB0u2VJ8e9TDb3nU3RsU2of1kLZ87zHh46/3FavKteOjgyTaEJfF+KJqaIYi4zf+EyuVWPBKB56qvQK1lc/I6dBpxTZ6OK52JJDlXAAEu1FJWSMIkbQJ8rXjVcBC7JQa6x/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749078153; c=relaxed/simple;
-	bh=6Q2Xf0hO6UVHBnoN/VD4br2Y/EFeArGvFeNwP9QL9nE=;
+	s=arc-20240116; t=1749078265; c=relaxed/simple;
+	bh=exRGgbwr9yCyeN9A0lefWzXikKL4jaZ58HpeXk6pkoc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YC8VcCR42/h3zwanBtZEHMh71nUXeX4ZxD/SY2kG7loINduvo/hwhmT/EZbcxEBIWHbHALarPbcfHlUoT+RpnoG3r6xtSE15aKHtlG0vxogy4xiJq+xuuo5iKSV0YtPn1Vge65c4Z0MVbeC8vIUSlUqaTGpa33jTLKA0MsdEu1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N7bfktWr; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3a5257748e1so261920f8f.2
-        for <bpf@vger.kernel.org>; Wed, 04 Jun 2025 16:02:31 -0700 (PDT)
+	 To:Cc:Content-Type; b=MgIljPKvA70tPNW/TrN5qr21FUfNDX6gz+Cr2bpu76Rl9WuYIZZjKXoELk3PI3xvDrON3JOA+/hEGvUROhk1WsfPGKyO4EihBEukSqE5n5xrCRPhvszr+OnN4Zs9w/IokBV9V8Z3+odx+P4Nhl4sRgMEP1eLijJBM4pa9ZIze6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rn2j89AA; arc=none smtp.client-ip=209.85.217.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vs1-f49.google.com with SMTP id ada2fe7eead31-4e58a9bb8fcso118258137.2
+        for <bpf@vger.kernel.org>; Wed, 04 Jun 2025 16:04:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749078150; x=1749682950; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1749078261; x=1749683061; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GFcBOmqaRy3pzTDVSd8u2+Hosf+SSBT5ctjbfjV1ysY=;
-        b=N7bfktWrmNc1E6y4/8xWyDaOtnm6lq2oaeAHZfJteQvSFaJDYE+x0WBtQUkt25ZYFf
-         0p3xoaAfELoaiIPDKdjcvOo8yw/bRrKa45kCn26iWjMiLE/6xxoSw3U12S0fPrXg0dTz
-         c9DUB+jcs1Me+MAhms1vL5WffKcDfywz9rP+Hhvs69QBnKARqEwJhgY0aUD87cqBrx1t
-         9jMymrPf8G4LccGpFq9g3uLYVsEmegzCn/bhDgaIXJm++hXjRKBVNrhTy8M1SBwhYUld
-         TGsYERw/IipEg+JT2s8v8iemrhJJ9A8NfHh8QH/cl+k2zprKqxPv+INGKVCiu1dcaVcJ
-         p+uw==
+        bh=AmWygWroaE3CgfzylRy20SRQE724eqiHcqgPFBV3jdc=;
+        b=rn2j89AA1+ggWl/NrdUsr4E2vTn+Im0wURmdRqbt1JlGT9hd17tdubdhDHU7FDkHib
+         wCTmK9VhgFrAFR3OBFsWSS6QhtaGsJ3vXZGFzTCaiFLWd73sX84uTzc4GxX7vsSX7Mfs
+         zVZBj8SCaUQIWqt17oDDMC/hNEsK90426Uor6rKrOyFVZDhAZxkbECjIzVCRv8KLYnwy
+         1sTIIMPtfORJRyBB4Zk4br9BSdsFY4qGdtiKaT0gj9Yy4zb2/7UQPKtO8mQl/eMIa8Vj
+         mc8qcgK9Y3Y06FCyzX4r5Bkx0kHK0hm8xjZfw1p5Nc4br8/w7bFH2nfyM2H5+sdwJ33D
+         8JWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749078150; x=1749682950;
+        d=1e100.net; s=20230601; t=1749078261; x=1749683061;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GFcBOmqaRy3pzTDVSd8u2+Hosf+SSBT5ctjbfjV1ysY=;
-        b=xQQmKHdCjEvAIviroy7Ym2bWajmaJFwuqi2YcU0VieOyJTigPFiCALXu1VtJz7g5Ir
-         QWHAJ5xO5TiBb8D0EtwLldAJ6dncoD7nh4XScYZ4ImW4BCA8hL8gyypaxGOUrGzwidkq
-         4Lq+DEvrBLppPsqhYnJmh1DRgoGMLXteLnWeEclfi+lKVTBzGoWj0SvcH5EhTjPijNcc
-         cZor9bz0S9WnTRjenWQ8/2pdP2UkZkysTfFYe9yOZ9TgxYp9j6QatdcnpDOYCNqo2ssp
-         4QO9gjdJ6BctoXSAyx532pHW9Wkz3duaa19f8GuPyo28cF5qtbtS+hrJ2wcELsOE0EoY
-         FLZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUR7+60KenEW+lAElmTdLyXeGHVKmXos5qVfJjX8TDA8dj4DNKJO+LFCZvkl1ocb/QVz+U=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxKX9Copxm02FPx2l0BRLGtHggoGIP7euvGZjgp95xQLzmfLTkM
-	8LCWkPqkSzC5Wxc06YJDzY4NsYWAo3JGx7iWD9ya7iFBuF8DTGF6sq7+fh6B5gwT/nX1w5GIQbg
-	Jd2n1ooKcpCqBegoSupAHA5qCKisvuOqqwg==
-X-Gm-Gg: ASbGnctpxL23bLuQxSPUzZ/L7iS8xe3pkaDug3rlC0VjjiAL4VU0d4WNas3nszt12xF
-	nWWki8umuMrqi/QOicw6F/FlxIAwStCD2LuWd647fz0+0GyYBDxDdEmrTh7CVsjvwgTm3Su6DUs
-	i7vVGsgqukHx/5ke4SaJk7Q67C9UWnfGi75vv31GkOI/G7fSA+
-X-Google-Smtp-Source: AGHT+IGuefjFB0gJhG1Ap0qb5UVNOdTV/zWN4e3zKdJG6gQstnpXDgARLgQICChtMvHkIrq/j+OgtKuP6xvINuYl3bI=
-X-Received: by 2002:a05:6000:18ac:b0:3a4:ec02:739f with SMTP id
- ffacd0b85a97d-3a51d9838a3mr3613686f8f.53.1749078149548; Wed, 04 Jun 2025
- 16:02:29 -0700 (PDT)
+        bh=AmWygWroaE3CgfzylRy20SRQE724eqiHcqgPFBV3jdc=;
+        b=SqOK+FbyUI4ml7KWlNuoOSW2vkxIS4XsD1xeORxpCz+4lF58j4pZpY54Y33whS94Ci
+         kAYoPabUT8K26mxEl///1U375uCJbY0hu+mSirw93Zhal0qjM6alQgp+n0Zs9ZeKwF3A
+         w/vjlIuoVAcPHVMHa8kvTXA+vZP24bQ12/L9piLsuz0Ui/Rn4vX794nUSzmSsIHP2m1f
+         2oWdHGRw1/8YM3iwA7Dj6a1OfKLHAta86dHEwHacQ1e5u+r9oiQAG1CjfsX07X8eqf+y
+         fdTu0+ZDmteybdaPCalGk/Phrux7lz0htzvS5I+1eDn+oZTRY9aG+sy/ZJtEde1l1hWV
+         3I+Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXUSsi0Ft1cslS9bQxqxJemjxYUNh8NykUR60nTZITwnxB2RW4oI+4mp8LZgVdHrAe6EwE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxQJTPpP3X5PYQsVje7OlPBGtKjXDOyAZKbyAVh98qJAELCQmWx
+	u+EFQn++vH6f3I167q6uNl9A68d0uPuIzXsIJw20ewNvYCxAHqZBKSPv/poVxCV4gb0QViHWRiH
+	PymFBkK4gFgV/MbKLhJu+dCYe/4VnklJtTUrDQ8ip
+X-Gm-Gg: ASbGnct9whgCwWCUWEhYoWPQ/llolffBzuCJOweTj73RyqoV7PEYZqBkWDU1CT/qQh8
+	jmLFLQ36dzHbpqlWGKvxEdrMVQymmMuf6IuBrjdZPQBjxFiJqkSMzwwiZF9Vp5SuCvHzZ+uuSdf
+	jGPa+OltWkEIYaZsHIxsj7cTtSxFgkXY8SSc6/fzOkO5w=
+X-Google-Smtp-Source: AGHT+IHMQ0HEf1QGjZKS2FKHFK7WceR4QcvBJZVnXk0gSCJXLZWNY34EB7jNoARv3FwK/IDiJPQd/DA4fgwGFkmqZWo=
+X-Received: by 2002:a05:6102:4406:b0:4e6:e126:6238 with SMTP id
+ ada2fe7eead31-4e746ce24bcmr4227663137.3.1749078260388; Wed, 04 Jun 2025
+ 16:04:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250420105524.2115690-1-rjsu26@gmail.com> <20250420105524.2115690-4-rjsu26@gmail.com>
- <m27c2l1ihl.fsf@gmail.com> <CAADnVQJZpyqY9TWanRKjmViOZxppAeh7FGAnxV_1CKAih7drkA@mail.gmail.com>
- <CAE5sdEh3NuXUcjScj4Auvtc2701NAS6fu0hpzLGVnaoQ7ESnfg@mail.gmail.com>
- <CAADnVQKX2=jYfs5TBBKdKxHPi_ssUvrSuxbr22-dmYoP_e3=dA@mail.gmail.com>
- <CAM6KYssQwOnOqQT6TxHuu1_vDmmuw+OtFB=FwPLqbFcv+QdVrg@mail.gmail.com>
- <CAADnVQLFM9s_Ss7eqyx47tiY8i2b2dt=RMPHMC_s67Ang1rNBw@mail.gmail.com> <CAM6KYsuVe10f39kfaJaQEUGGA7xjmkALxjRSQxJRcGKAw4KtGQ@mail.gmail.com>
-In-Reply-To: <CAM6KYsuVe10f39kfaJaQEUGGA7xjmkALxjRSQxJRcGKAw4KtGQ@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 4 Jun 2025 16:02:18 -0700
-X-Gm-Features: AX0GCFsEvdgTN4INjtXq7_9z6jUor-bYET-mWOf3kiwqSFD-IHYrJ4kjZ0lX4nM
-Message-ID: <CAADnVQ+qS2V4j8ADCK+6GoUXcDnS+6+t3yLiTQY-GQ=Kmj0ymQ@mail.gmail.com>
-Subject: Re: [RFC bpf-next 3/4] bpf: Generating a stubbed version of BPF
- program for termination
-To: Raj Sahu <rjsu26@gmail.com>
-Cc: Siddharth Chintamaneni <sidchintamaneni@gmail.com>, Eduard Zingerman <eddyz87@gmail.com>, 
-	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Dan Williams <djwillia@vt.edu>, miloc@vt.edu, ericts@vt.edu, 
-	rahult@vt.edu, doniaghazy@vt.edu, quanzhif@vt.edu, 
-	Jinghao Jia <jinghao7@illinois.edu>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+References: <20250521222725.3895192-1-blakejones@google.com>
+ <20250521222725.3895192-3-blakejones@google.com> <aD9Xxhwqpm8BDeKe@google.com>
+ <CAP_z_Cj_8uTBGzaoFmi1f956dXi1qDnF4kqc49MSn0jDHYFfxg@mail.gmail.com>
+ <aD9sxuFwwxwHGzNi@google.com> <CAP_z_Cg+mPpdzxg-d+VV5J9t7vTTNXQmKLdnfuNETm1H40OA+g@mail.gmail.com>
+ <aD9yte49C_BM5oA9@google.com> <CAP_z_Cg0ZCfvEFpJpvhuRcUkjV_paCODw2J61D3YQMm7dg0aGg@mail.gmail.com>
+ <aEC9UqkKeEj4on3M@google.com> <aEDEw7bCDAtEXfGC@x1>
+In-Reply-To: <aEDEw7bCDAtEXfGC@x1>
+From: Blake Jones <blakejones@google.com>
+Date: Wed, 4 Jun 2025 16:04:09 -0700
+X-Gm-Features: AX0GCFuBtJRBiLPJLWcckQqQphG1Vff1V02DcY2BL7rNUhiI2R9BuvLLkZ8arFw
+Message-ID: <CAP_z_CjQktMSMVhgX1gBkBh+0sAnWwAjUfBgJ1he1oaR7ULeRg@mail.gmail.com>
+Subject: Re: [PATCH 2/3] perf: collect BPF metadata from existing BPF programs
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>, Song Liu <song@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers <irogers@google.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	Chun-Tse Shao <ctshao@google.com>, Zhongqiu Han <quic_zhonhan@quicinc.com>, 
+	James Clark <james.clark@linaro.org>, Charlie Jenkins <charlie@rivosinc.com>, 
+	Andi Kleen <ak@linux.intel.com>, Dmitry Vyukov <dvyukov@google.com>, Leo Yan <leo.yan@arm.com>, 
+	Yujie Liu <yujie.liu@intel.com>, Graham Woodward <graham.woodward@arm.com>, 
+	Yicong Yang <yangyicong@hisilicon.com>, Ben Gainey <ben.gainey@arm.com>, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 28, 2025 at 12:11=E2=80=AFAM Raj Sahu <rjsu26@gmail.com> wrote:
+On Wed, Jun 4, 2025 at 3:12=E2=80=AFPM Arnaldo Carvalho de Melo <acme@kerne=
+l.org> wrote:
+> So, the comment in:
 >
-> > That's exactly the case I was concerned about earlier.
-> > These two insns might generate different JIT images,
-> > so to prepare patches for text_poke_bp_batch()
-> > the verifier needs to coordinate with JIT.
-> > Replacing call with mov is a danger zone.
-> > iirc "mov %eax, 1" is 5 bytes, just like "call foo" is 5 bytes.
-> > But this is pure luck.
-> > We should only replace a call with a call or a jmp or a nop.
-> > See map_poke_track/untrack/run logic.
-> > Maybe we can reuse some of it.
-> .
-> .
-> > text_poke_bp() takes care of that.
-> > That's what the "_bp" suffix signifies. It's modifying live text
-> > via 'bp' (breakpoint). It has a multistep process to make it safe.
+> tools/perf/util/bpf-event.c
 >
-> We were exploring the suggested design on a high-level.
-> The idea of moving patch generation after verification is really
-> simplifying the code.  We are also exploring whether we can
-> move it all the way after JIT.
-> There is a clarification needed.
-> If we need to support global termination, we need the call sites
-> (prepared during load-time) and pass it to text_poke_queue() which
-> will take care of patching the call instructions in-memory.
-> In this case, the only information we need is the call sites and not
-> the patched program (which we can free-up towards the end of program
-> load once the call_site information is obtained).
+> Is:
 >
-> However, if we want to support per-CPU termination (for the case of a
-> super large per-CPU map causing large runtime, etc), we will need the
-> patch to stay around.
-> In this case, the termination handler (bpf_die in code) will perform
-> the `rip` change and stack modifications.
+>  * Synthesize PERF_RECORD_KSYMBOL and PERF_RECORD_BPF_EVENT for one bpf
+>  * program. One PERF_RECORD_BPF_EVENT is generated for the program. And
+>  * one PERF_RECORD_KSYMBOL is generated for each sub program.
 >
-> So, are we looking to support both, or just global termination?
+> which is not so nicely worded tho :-\
+>
+> "One KSYMBOL per program", followed by "one KSYMBOL per sub program".
+>
+> But that matches the referenced:
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/k=
+ernel/events/core.c?h=3Dv6.15#n9825
 
-I would keep things simple and support global termination only.
+Indeed, we get one KSYMBOL per subprogram, but one BPF_EVENT per program.
+(I found that the term "subprogram" is used inconsistently; sometimes it
+includes the main program, while other times it doesn't. In the case of
+that comment, and the function perf_event__synthesize_one_bpf_prog, it does
+include the main program, which has sub_id =3D 0.)
+
+> So, for these bpf_metadata_ variables, would that be strictly per
+> program or would it be perf 'sub program'?
+
+These BPF metadata records would be generated for each subprogram.
+
+My goal here is to allow PERF_RECORD_SAMPLE events with IPs in BPF code
+to be associated with any metadata that describes that code. As the
+comment points out, each subprogram gets its own PERF_RECORD_KSYMBOL event,
+and that event indicates where the subprogram's starting and ending
+addresses are. With one PERF_RECORD_BPF_METADATA event per subprogram, it's
+then straightforward to associate the metadata with a range of IPs.
+
+If I only generated the metadata records per program rather than per
+subprogram, I could only associate them with a PERF_RECORD_BPF_EVENT event.
+That event has the full program's tag, but it doesn't have a list of the
+subprogram tags for that program. So it doesn't have enough information on
+its own to construct the relevant list of virtual address ranges. And I'd
+be quite concerned about assuming that the BPF_EVENT events immediately
+follow their related KSYMBOL events, especially for events generated while
+the system was generating SAMPLE events.
+
+Blake
+
+> Couldn't get an answer from looking at tools/bpf/bpftool/prog.c, but
+> seems to be with progs, not subprogs, i.e. just the PERF_RECORD_KSYMBOL
+> associated with progs (not subprogs) will have those variables.
+>
+> But then it seems those variables _are_ associated with at least one
+> PERF_RECORD_KSYMBOL, right?
 
