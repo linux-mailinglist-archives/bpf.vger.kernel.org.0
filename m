@@ -1,108 +1,140 @@
-Return-Path: <bpf+bounces-59677-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59678-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F7B5ACE516
-	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 21:39:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF686ACE5C2
+	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 22:29:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2F483A36AC
-	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 19:38:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 080F5189A71F
+	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 20:29:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 355D4212FBD;
-	Wed,  4 Jun 2025 19:38:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D410F1EB5C2;
+	Wed,  4 Jun 2025 20:29:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jyaij+1R"
+	dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b="rEFzY9e6"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0a-00206402.pphosted.com (mx0a-00206402.pphosted.com [148.163.148.77])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70679227E94;
-	Wed,  4 Jun 2025 19:38:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C67C5339A1
+	for <bpf@vger.kernel.org>; Wed,  4 Jun 2025 20:29:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.148.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749065891; cv=none; b=IqZ7T416J94j7GFb/lZq9SWMFdaX/wTwGJfLUKQzmvgE1tu96BxDQFLxt13ZO7cbYu4Ip/0lsRg7hFPDPrd+Q1QGR16EFDHT7GbcLLi6cXVl38BCpFalQ4u8ZZfu28zIX124atK/utsO6evCHKRKlVN2rOroSKNtqWx8y9BWVGI=
+	t=1749068954; cv=none; b=hsDo8ypUyPsHBlAOYVQ5w+DDgrABDGOhSSiPydticbWrONWMtL9rk1stGIaPq/4SqI1PPJGdoe6FueIuZ5VVBZirDCGWUYeSkI2sJ5o+/ETqt10jtI5DkU4xtpVHA49dlX0pvyMMD+a6rbPwR4ifIR3nsff2OaPRMzf99cUfnQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749065891; c=relaxed/simple;
-	bh=/Fsr2JgrwCrO2YLARhwC0MuK0FfYy7hIxMp1Wh7CEko=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cIfkHr8WQXrDJBUUO/C/Dpyh3DjIzg4pY+jpo5oL6O+U1/SVMhBPN8kjo/NHd2D/lSgroaYNThtBdgVaZesAoLkoIcvFFmhIp7lAb6aNWahru6jNtye0cTPJ0vYJJtJppiMoFwgavA0V5ez8w4NrAoMRRFjBD8T5xA37dQmCGLc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jyaij+1R; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA582C4CEF1;
-	Wed,  4 Jun 2025 19:38:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749065890;
-	bh=/Fsr2JgrwCrO2YLARhwC0MuK0FfYy7hIxMp1Wh7CEko=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Jyaij+1RYNsrbeCJNkZY4AACcG5zbk/igKjumGQg8hWUaDWrgNmsm6VekfJVxE3Ir
-	 LNaqRas2vuQ18NuAv+qgasubKJC1mcOwkL+4DBqUK42EmDzHsL/MKC7tYz+AzWpA48
-	 ZT4Ccrx3cRWMgNH/Y71SMajjwioCfsmAyknEddjO7qE6z1C0hz3ZBZEqeDdnoIvYr9
-	 jBMFq9hso9lpNkS0qKZzeIVqQ22nA7p8JMkO0anVDiIiwvLM7keij7thP0kRReo+W6
-	 K7wVU73Qhpfz632RN17/HVTK5RR4E2Dybt9vo678hLdCatLK7mDAnuJxTqvNrCbJgG
-	 9earos8ypQX9g==
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-4a4323fe8caso1107721cf.2;
-        Wed, 04 Jun 2025 12:38:10 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUvTe2rlkaa8sfAJ2PaDuu3Ueu7unQmCwc8g0ZrceUxpL5y3UuzJgYzmcXguvM3vlHqzSE8RoAF4auk6CY+@vger.kernel.org, AJvYcCWovNq9kRl4H4sk8WISUblcQ33pnEtobkQOmd9cVLyaNBVWySxqEnq0BPsex55xKBEKgVTY8pUyXnWQrAeP@vger.kernel.org, AJvYcCXYmGnxBV2ZXlMpCFUcqxo9ztLXO2hUGooGwDDsWRblBPmpyGzE58FVgOUd338RJ9GBvx/+YRIsnhxvJkK6O3bi0GR6yvcg@vger.kernel.org
-X-Gm-Message-State: AOJu0YyKxCH0D1F/KRw+GyBX77PtedeHJU/U765b3hsQqukipLu9Yzp0
-	aJKbUXKN8OzorlE/zWS98Y7uJZ0chd7Wnstu82DJPn0I/yVYV+oGqs1RpzrJJqyxBrHwQ6nEYjL
-	GphnOTchWblzFsIgWnBOasxQWZ+4pqyQ=
-X-Google-Smtp-Source: AGHT+IHHR7SptpMPNEHrz/xa0ziqGgFVxhtqzkkl3ym1gi8z5oE6+wH/IsRr/B7okkvCHoRrEMUsjGgMNvwm/sLWuUY=
-X-Received: by 2002:a05:622a:4cc4:b0:4a4:3913:c1a5 with SMTP id
- d75a77b69052e-4a5a5759b61mr71030331cf.16.1749065890044; Wed, 04 Jun 2025
- 12:38:10 -0700 (PDT)
+	s=arc-20240116; t=1749068954; c=relaxed/simple;
+	bh=0uii7h7FZ1NVWJ6MjZE1CWqnpQer1aZIP2TNrTuzQgE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=aCGFpKBjpHcVsia2mQdv9MZCIka++bgvlDXfrloi9goKKxv5WV9+IhaVSNa/r62FXC5LI6+y49DO9prwILCpaOzO+27gj5tACzcY5nRMDwZcgvrxI0FmwiV7o3YWlCpmmeDR7TcV8LfJFwg1Ke3VG4X3iIIGnVqDqsPFN+SaW5Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com; spf=pass smtp.mailfrom=crowdstrike.com; dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b=rEFzY9e6; arc=none smtp.client-ip=148.163.148.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crowdstrike.com
+Received: from pps.filterd (m0354652.ppops.net [127.0.0.1])
+	by mx0a-00206402.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 554H8T7Q011480;
+	Wed, 4 Jun 2025 20:29:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com;
+	 h=cc:content-transfer-encoding:content-type:date:from
+	:in-reply-to:message-id:mime-version:references:subject:to; s=
+	default; bh=0uii7h7FZ1NVWJ6MjZE1CWqnpQer1aZIP2TNrTuzQgE=; b=rEFz
+	Y9e6+5tTCySpxuQQvVfrdiTos+j+vzUv1jwBZSktrIg03+waVtEwdyPZDv5tUuCX
+	FgEpUnzvr4bFk0VSJvVBz+AtEgEtDvXo9+HXFumT6m8Qwe7ZmY/q3QkOnHNdvW37
+	0+FewcRkp7Jo9ismnqHgrtGPSTMjhioA/1674R+L3rdsqYFfI0yT6iFdgjxFcTEc
+	14NdetzjELyIJ+XoRdvNAe2brUHjfUduTDoeIQps7nYangt88Havr8c2k1y7bP7Y
+	6JhMl8YPRLLK2sWd8hatpr7gJeAfaBmvyVhm8YdYQ1TUHJzCoV3LGeDfDJtHxqmB
+	R7vrxbFeku8shHRJ4Q==
+Received: from mail.crowdstrike.com (74-209-223-77.static.ash01.latisys.net [74.209.223.77] (may be forged))
+	by mx0a-00206402.pphosted.com (PPS) with ESMTPS id 4728uccfje-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 04 Jun 2025 20:29:03 +0000 (GMT)
+Received: from [10.82.59.34] (10.100.11.122) by 03WPEXCH010.crowdstrike.sys
+ (10.80.52.162) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 4 Jun 2025
+ 20:29:00 +0000
+Message-ID: <8b53b900-a0cc-4373-b005-b47b7199566f@crowdstrike.com>
+Date: Wed, 4 Jun 2025 16:28:59 -0400
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250603065920.3404510-1-song@kernel.org> <20250603065920.3404510-3-song@kernel.org>
- <20250603.Av6paek5saes@digikod.net>
-In-Reply-To: <20250603.Av6paek5saes@digikod.net>
-From: Song Liu <song@kernel.org>
-Date: Wed, 4 Jun 2025 12:37:55 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW6J_hDtXZm4MH_OAz=GCpRW0NMM1EXMrJ=nqsTdpf8vcg@mail.gmail.com>
-X-Gm-Features: AX0GCFvGYg67wlJhC9iGRdUkRWP0aI7G3iTqfEbemzY0cj4E61U_duxvBA3fbBE
-Message-ID: <CAPhsuW6J_hDtXZm4MH_OAz=GCpRW0NMM1EXMrJ=nqsTdpf8vcg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 2/4] landlock: Use path_walk_parent()
-To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, viro@zeniv.linux.org.uk, 
-	brauner@kernel.org, jack@suse.cz, kpsingh@kernel.org, 
-	mattbobrowski@google.com, amir73il@gmail.com, repnop@google.com, 
-	jlayton@kernel.org, josef@toxicpanda.com, gnoack@google.com, m@maowtm.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [External] Re: Bad vmalloc address during BPF hooks unload
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC: Jiri Olsa <olsajiri@gmail.com>, bpf <bpf@vger.kernel.org>,
+        <joe.kimpel@crowdstrike.com>,
+        Mark Fontana <mark.fontana@crowdstrike.com>,
+        Viktor Malik <vmalik@redhat.com>
+References: <6947880c-a749-438f-bfcb-91afe7238d7e@crowdstrike.com>
+ <aD9vDX0boYLzvibc@krava>
+ <7831ec6d-8d5c-4fc1-9bd9-1b0dfc93eb16@crowdstrike.com>
+ <CAADnVQKONAkX8G2qXYS8gBVKq52gn4Pb39x_3fRi0EetVPT3jw@mail.gmail.com>
+Content-Language: en-US
+From: Andrey Grodzovsky <andrey.grodzovsky@crowdstrike.com>
+In-Reply-To: <CAADnVQKONAkX8G2qXYS8gBVKq52gn4Pb39x_3fRi0EetVPT3jw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: base64
+X-ClientProxiedBy: 04WPEXCH016.crowdstrike.sys (10.100.11.68) To
+ 03WPEXCH010.crowdstrike.sys (10.80.52.162)
+X-Disclaimer: USA
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjA0MDE2MyBTYWx0ZWRfXygcPXinvjtsn
+ UQGl9LnzZrj+mHqyVBxG83rK5+rK3orGLAT5DOPfqjsDX35oLFKgP/xqztqHF4O3Jg6TWsExSUj
+ CgzoVlgc8SHrsP883IjmfAetQMPTIrleQeIRGHV5gWVV1q92KEzNygFE6b/oZ0Hs6Bm0i9nOKhU
+ ZZcffrM5Z9q4443n3uKId+3JNud0TQaIHbOZe7PNhIUnVtRMjZLTy0U8CzkFG5uQGziKXmhCrDa
+ 1ct9ElMsVR4F7rXrhy554/k2JZeSxzgUvFP1pbfBwOn9gnKaw04Ig/EfFeXY29RhfCEJNbVl2TB
+ LhvdB+n+acso05u8E0+J9RTiUbAHS0zbeYXWpqw4ZXStdBELCkYQFU++/EVRnbFm2b75ZOO0JtI
+ vjSxFsTpMdjTvI7YTbJ1PMmU9ozXX+Hq0AIpTVw42XXh7zl37agJCqBTw9nbBqPw6semg34s
+X-Authority-Analysis: v=2.4 cv=UJbdHDfy c=1 sm=1 tr=0 ts=6840ac8f cx=c_pps
+ a=gZx6DIAxr9wtOoIAvRqG0Q==:117 a=gZx6DIAxr9wtOoIAvRqG0Q==:17
+ a=EjBHVkixTFsA:10 a=IkcTkHD0fZMA:10 a=6IFa9wvqVegA:10 a=pl6vuDidAAAA:8
+ a=IQLERqfcJWVY-AbuucoA:9 a=QEXdDO2ut3YA:10
+X-Proofpoint-GUID: VfxM04-0yxSjuEET6lZScoJTthik6Ao5
+X-Proofpoint-ORIG-GUID: VfxM04-0yxSjuEET6lZScoJTthik6Ao5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-06-04_04,2025-06-03_02,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ malwarescore=0 mlxscore=0 lowpriorityscore=0 clxscore=1011 spamscore=0
+ adultscore=0 impostorscore=0 suspectscore=0 priorityscore=1501 bulkscore=0
+ mlxlogscore=906 phishscore=0 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
+ definitions=main-2506040163
 
-On Tue, Jun 3, 2025 at 6:46=E2=80=AFAM Micka=C3=ABl Sala=C3=BCn <mic@digiko=
-d.net> wrote:
->
-> Landlock tests with hostfs fail:
->
-> ok 126 layout3_fs.hostfs.tag_inode_file
-> #  RUN           layout3_fs.hostfs.release_inodes ...
-> # fs_test.c:5555:release_inodes:Expected EACCES (13) =3D=3D test_open(TMP=
-_DIR, O_RDONLY) (0)
->
-> This specific test checks that an access to a (denied) mount point over
-> an allowed directory is indeed denied.
-
-I am having trouble understanding the test. It appears to me
-the newly mounted tmpfs on /tmp is allowed, but accesses to
-/ and thus mount point /tmp is denied? What would the walk in
-is_access_to_paths_allowed look like?
-
-> It's not clear to me the origin of the issue, but it seems to be related
-> to choose_mountpoint().
->
-> You can run these tests with `check-linux.sh build kselftest` from
-> https://github.com/landlock-lsm/landlock-test-tools
-
-How should I debug this test? printk doesn't seem to work.
-
-Thanks,
-Song
+T24gNi80LzI1IDE1OjM3LCBBbGV4ZWkgU3Rhcm92b2l0b3Ygd3JvdGU6DQo+IE9uIFdlZCwg
+SnVuIDQsIDIwMjUgYXQgNzo0OeKAr0FNIEFuZHJleSBHcm9kem92c2t5DQo+IDxhbmRyZXku
+Z3JvZHpvdnNreUBjcm93ZHN0cmlrZS5jb20+IHdyb3RlOg0KPj4gT24gNi8zLzI1IDE3OjU0
+LCBKaXJpIE9sc2Egd3JvdGU6DQo+Pj4gT24gVHVlLCBKdW4gMDMsIDIwMjUgYXQgMDQ6MTM6
+MThQTSAtMDQwMCwgQW5kcmV5IEdyb2R6b3Zza3kgd3JvdGU6DQo+Pj4+IEhpLCB3ZSBvYnNl
+cnZlIGJlbGxvdyByYW5kb20gd2FybmluZyBvY2Nhc2lvbmFsbHkgZHVyaW5nIEJQRiBob29r
+cyB1bmxvYWQsDQo+Pj4+IHdlIG9ubHkgc2VlIGl0IG9uIHJoZWw4IGtlcm5lbHMgcmFuZ2lu
+ZyBmcm9tIDguNi04LjEwIHNvIGl0IG1pZ2h0IGJlDQo+Pj4+IHNvbWV0aGluZyBSSEVMIHNw
+ZWNpZmljIGFuZCBub3QgdXBzdHJlYW0gaXNzdWVzLCBpIHN0aWxsIHdhcyBob3BpbmcgdG8g
+Z2V0DQo+Pj4+IHNvbWUgYWR2aXNlIG9yIGNsdWVzIGZyb20gQlBGIGV4cGVydHMgaGVyZS4N
+Cj4+PiBoaSwNCj4+PiB1bmxlc3MgeW91IHJlcHJvZHVjZSBvbiB1cHN0cmVhbSBvciBzb21l
+IHN0YWJsZSBrZXJuZWwgSSdtIGFmcmFpZCB0aGVyZSdzIG5vdA0KPj4+IG11Y2ggdGhhdCBj
+YW4gYmUgZG9uZSBpbiBoZXJlDQo+Pj4NCj4+PiBqaXJrYQ0KPj4NCj4+IFRoYW5rcyBKaXJp
+LCB5ZXMsIGkgdW5kZXJzdGFuZCB0aGUgbGltaXRhdGlvbnMgc2luY2UgdGhpcyBtaWdodCBi
+ZSBhDQo+PiByZXN1bHQgb2Ygc29tZQ0KPj4gUkhFTCBrZXJuZWwgdHJlZSBzcGVjaWZpYyBi
+YWQgcGF0Y2hlcyBjaGVycnktcGlraW5nL21lcmdlIGZyb20gdXBzdHJlYW0NCj4+IGludG8g
+dGhlaXIgb3duIHRyZWVzLiBJIHdhcw0KPj4ganVzdCBob3BwaW5nIHRoYXQgdGhpcyByaW5n
+cyBhbnkgYmVsbHMgdG8gYW55b25lIGluIHRoZSBFLUJQRiBjb21tdW5pdHkNCj4+IGFzIGl0
+IHR1cm5zDQo+PiB0byBiZSByZWFsbHkgaGFyZCB0byByZXBybyBhbmQgaGVuY2UgYWxzbyB0
+byBiaXNlY3QuDQo+IEkgZG9uJ3QgcmVtZW1iZXIgc2VlaW5nIHNwbGF0IGxpa2UgdGhpcy4N
+Cj4NCj4gQWxzbyBtbS92bWFsbG9jLmM6MzMwIHRlbGxzIHVzIG5vdGhpbmcuDQo+IEl0J3Mg
+bm90IGNsZWFyIHdoYXQgdm1hbGxvY190b19wYWdlKCkgaXMgY29tcGxhaW5pbmcgYWJvdXQu
+DQo+IEknbSBndWVzc2luZyB0aGF0IGl0J3Mgbm90IGEgdm1hbGxvYyBhZGRyZXNzID8NCg0K
+IEZyb20gbG9va2luZyBhdCB0aGUgcmVsZXZhbnQgUkhFTCBrZXJuZWwgc291cmNlIHRyZWUg
+aSBzZWUgdGhhdCANCm1tL3ZtYWxsb2MuYzozMzAgbWFwcyB0byBXQVJOX09OX09OQ0UocG1k
+X2JhZCgqcG1kKSk7IFNvIGl0IHBhc3NlZCB0aGUgDQpwdWRfYmFkIGNoZWNrIHJpZ2h0IGJl
+Zm9yZSB0aGF0IGJ1dCBmYWlsZWQgb24gdGhpcyBvbmUuIFRoZSBSSEVMIA0KZnVuY3Rpb24g
+aXMgaWRlbnRpY2FsIHRvIHRoZSB1cHN0cmVhbSBzdGFnaW5nIHY0LjE4L3NvdXJjZS9tbS92
+bWFsbG9jLmMgDQotIHZtYWxsb2NfdG9fcGFnZSgpDQoNCkluIGFueSBjYXNlLCB0aGFua3Mg
+Zm9yIHlvdXIgYWR2aXNlIGFuZCBzdXBwb3J0LCBJIHdpbGwgdHJ5IHRvIGZvbGxvdyB1cCAN
+CndpdGggUkhFTCBrZXJuZWwgdGVhbSBhbmQgcG9zc2libHkNClZpY3RvciBoZXJlIGZyb20g
+UmVkaGF0IGNhbiBnaXZlIG1lIHNvbWUgcG9pbnRlciB3aG8gdG8gYXBwcm9hY2ggZm9yIA0K
+dGhpcyBmcm9tIFJlZGhhdCA/DQoNCkFuZHJleQ0KDQo+IFdoaWNoIHdvdWxkIG1lYW4gdGhh
+dCBpbS0+aXBfYWZ0ZXJfY2FsbCBwb2ludHMgc29tZXdoZXJlIHdyb25nLg0KPiBBbmQgd2h5
+IHdvdWxkIHRoYXQgYmUgc3BvcmFkaWMgaXMgYW55Ym9keSdzIGd1ZXNzLg0KDQoNCg==
 
