@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-59579-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59580-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F144CACD1A0
-	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 02:59:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFEB3ACD1BF
+	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 02:59:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED0CF188661E
-	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 00:56:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 826113A57D2
+	for <lists+bpf@lfdr.de>; Wed,  4 Jun 2025 00:56:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D6077261F;
-	Wed,  4 Jun 2025 00:53:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D291019B5B1;
+	Wed,  4 Jun 2025 00:53:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VpPHazHO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tmGDdGVA"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB734846C;
-	Wed,  4 Jun 2025 00:53:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5467484D02;
+	Wed,  4 Jun 2025 00:53:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748998415; cv=none; b=Fzy+CUDGzuyS2QT4Kc/gpEb4eX8si7WicPxTyrQQ6Cgo/mf1OxJ5WNO3Sy5JVMmagUu1LwL8WLy+ntYb1xvG51Nk1eWk5j6D1KcagAyE0Ne5WSJzF3RiqoY246roZHa/zjml3YDWXCbWxLsvx9N21zzr7d4qwwY7NF6qbXnTFtg=
+	t=1748998421; cv=none; b=ucusFfD78qHjYJe5cO/LoxAUYLwRfXMIuvyKCUDZuBVfoMpd+PMoyJF3Blud4WzVCZpwIAymROXu9WlRrVNxMlvI22sJ3qO1vusuILOiQq0+2uZWYp+eNTJkgWi2dvYTQAFSBpPXZMsymvt48uDFAPIj26wFMcLbBOmKELB443k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748998415; c=relaxed/simple;
-	bh=xe/CrK7SS2C/1B1Yl/DyWjiY7L0y/VPeKg3dtT1UHe0=;
+	s=arc-20240116; t=1748998421; c=relaxed/simple;
+	bh=uJSPlHZMC/DzIpVnHgi7TnQEoWslDqBK/lfF6ZJUQjQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=JuGvmSZMPM7J+e2gbNIWrjHkT9Bmx2qhnYx2tanvhrkwNzDbkVl7x6tBeMfNKHTWZB40CLH7ATxLklttZpbexUoHOKF/ik8bBoCNMztbmZb4k4aPf3GNW4iIhuUKkVVu32aZmwCwRMR8j5OMSCEQl4nWs+HNekzr1jpf2tGuXLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VpPHazHO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80EEAC4CEEF;
-	Wed,  4 Jun 2025 00:53:34 +0000 (UTC)
+	 MIME-Version:Content-Type; b=ZVCU1wBb0NqG8IoaBVOvja4yKQ4IZP5iyrcjvbYfuIX8E4GRRQDFdpdAl7W81xcFwx+JQ889nFBhpoydiObFNhtGyKGSvcGkCBRLgJDJf66+xR6rLzM4DWqas2SH3tJwMJzN36Az7zW2Dh6iHwNjWfNqGljf2Ab6iptI7ktZGwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tmGDdGVA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3387FC4CEED;
+	Wed,  4 Jun 2025 00:53:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748998415;
-	bh=xe/CrK7SS2C/1B1Yl/DyWjiY7L0y/VPeKg3dtT1UHe0=;
+	s=k20201202; t=1748998421;
+	bh=uJSPlHZMC/DzIpVnHgi7TnQEoWslDqBK/lfF6ZJUQjQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=VpPHazHO6ra+dg+bdZMywZLrL/64qA/Bb204EpHD4w38RUfj2gTwB7FgzJlkPJGUW
-	 3oLL1p53PuzIgSliPjJrInECJxvOYLh+9APdLwxj11iKkbw9Rw6784ELeMLAbp1U4J
-	 WWHgVtDcMaDYi2BbXR39otWO7iu9qMq0IpXzhbpNM5xmfm+lqwbtrslJSviMcGtM97
-	 ozJV5ZmBdIpzF2id+gP/OSr/4XrRmAg3vbg5qo+guR55W5nSb+Bb0/LBSsoJ1EH0bN
-	 sT31Nh7Vu7SCBCFy2pjP8ot7PscEaoOC3cvUOd1CLnLV2FK8saKd98AsDN4+34CzzQ
-	 QyN3hlnVZv0nQ==
+	b=tmGDdGVAADVDqjaRKCizxzaslTpjYTkqv2QgVnowT7sIUgxyc7LRBke5cUWrIZEME
+	 ULJJRfavt/0FjTJ16S51U2luo+vGhcQrdDWCP5DJMQioaJFHfGyDYq3pkmH1ZbHWWN
+	 j/EN4ggqOzD04CDPAEUmgac9LaUsIIvRMbXLpGYDgsQBxsDfuTYX1u5Xylg/IlJUJZ
+	 NDftD502xUXNzy2t6DArIM0HBkK2nhepr8XczcEJ3eUcYL+Co7ySrt2XEIpWRqFpA5
+	 kXZzBRAtTR5xjY3AoSlkAWSAMb4j/m/OameVRuuJer3QwI6OZvYUihHiBz521QsfnW
+	 D9ucEjw/0Hzug==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+Cc: Alan Maguire <alan.maguire@oracle.com>,
 	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
+	eddyz87@gmail.com,
 	daniel@iogearbox.net,
-	andrii@kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.15 068/118] bpf: Add bpf_rbtree_{root,left,right} kfunc
-Date: Tue,  3 Jun 2025 20:49:59 -0400
-Message-Id: <20250604005049.4147522-68-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.15 072/118] libbpf: Add identical pointer detection to btf_dedup_is_equiv()
+Date: Tue,  3 Jun 2025 20:50:03 -0400
+Message-Id: <20250604005049.4147522-72-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250604005049.4147522-1-sashal@kernel.org>
 References: <20250604005049.4147522-1-sashal@kernel.org>
@@ -66,299 +66,121 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.15
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Martin KaFai Lau <martin.lau@kernel.org>
+From: Alan Maguire <alan.maguire@oracle.com>
 
-[ Upstream commit 9e3e66c553f705de51707c7ddc7f35ce159a8ef1 ]
+[ Upstream commit 8e64c387c942229c551d0f23de4d9993d3a2acb6 ]
 
-In a bpf fq implementation that is much closer to the kernel fq,
-it will need to traverse the rbtree:
-https://lore.kernel.org/bpf/20250418224652.105998-13-martin.lau@linux.dev/
+Recently as a side-effect of
 
-The much simplified logic that uses the bpf_rbtree_{root,left,right}
-to traverse the rbtree is like:
+commit ac053946f5c4 ("compiler.h: introduce TYPEOF_UNQUAL() macro")
 
-struct fq_flow {
-	struct bpf_rb_node	fq_node;
-	struct bpf_rb_node	rate_node;
-	struct bpf_refcount	refcount;
-	unsigned long		sk_long;
-};
+issues were observed in deduplication between modules and kernel BTF
+such that a large number of kernel types were not deduplicated so
+were found in module BTF (task_struct, bpf_prog etc).  The root cause
+appeared to be a failure to dedup struct types, specifically those
+with members that were pointers with __percpu annotations.
 
-struct fq_flow_root {
-	struct bpf_spin_lock lock;
-	struct bpf_rb_root root __contains(fq_flow, fq_node);
-};
+The issue in dedup is at the point that we are deduplicating structures,
+we have not yet deduplicated reference types like pointers.  If multiple
+copies of a pointer point at the same (deduplicated) integer as in this
+case, we do not see them as identical.  Special handling already exists
+to deal with structures and arrays, so add pointer handling here too.
 
-struct fq_flow *fq_classify(...)
-{
-	struct bpf_rb_node *tofree[FQ_GC_MAX];
-	struct fq_flow_root *root;
-	struct fq_flow *gc_f, *f;
-	struct bpf_rb_node *p;
-	int i, fcnt = 0;
-
-	/* ... */
-
-	f = NULL;
-	bpf_spin_lock(&root->lock);
-	p = bpf_rbtree_root(&root->root);
-	while (can_loop) {
-		if (!p)
-			break;
-
-		gc_f = bpf_rb_entry(p, struct fq_flow, fq_node);
-		if (gc_f->sk_long == sk_long) {
-			f = bpf_refcount_acquire(gc_f);
-			break;
-		}
-
-		/* To be removed from the rbtree */
-		if (fcnt < FQ_GC_MAX && fq_gc_candidate(gc_f, jiffies_now))
-			tofree[fcnt++] = p;
-
-		if (gc_f->sk_long > sk_long)
-			p = bpf_rbtree_left(&root->root, p);
-		else
-			p = bpf_rbtree_right(&root->root, p);
-	}
-
-	/* remove from the rbtree */
-	for (i = 0; i < fcnt; i++) {
-		p = tofree[i];
-		tofree[i] = bpf_rbtree_remove(&root->root, p);
-	}
-
-	bpf_spin_unlock(&root->lock);
-
-	/* bpf_obj_drop the fq_flow(s) that have just been removed
-	 * from the rbtree.
-	 */
-	for (i = 0; i < fcnt; i++) {
-		p = tofree[i];
-		if (p) {
-			gc_f = bpf_rb_entry(p, struct fq_flow, fq_node);
-			bpf_obj_drop(gc_f);
-		}
-	}
-
-	return f;
-
-}
-
-The above simplified code needs to traverse the rbtree for two purposes,
-1) find the flow with the desired sk_long value
-2) while searching for the sk_long, collect flows that are
-   the fq_gc_candidate. They will be removed from the rbtree.
-
-This patch adds the bpf_rbtree_{root,left,right} kfunc to enable
-the rbtree traversal. The returned bpf_rb_node pointer will be a
-non-owning reference which is the same as the returned pointer
-of the exisiting bpf_rbtree_first kfunc.
-
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
-Link: https://lore.kernel.org/r/20250506015857.817950-4-martin.lau@linux.dev
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Reported-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20250429161042.2069678-1-alan.maguire@oracle.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
 
-NO This commit should not be backported to stable kernel trees. Here's
-my extensive analysis: ## Primary Reason: New Feature Addition This
-commit adds three new kfunc functions (`bpf_rbtree_root`,
-`bpf_rbtree_left`, `bpf_rbtree_right`) to the BPF rbtree API. These are
-entirely new capabilities that enable rbtree traversal functionality
-that did not exist before. ## Specific Code Analysis ### 1. New Function
-Implementations ```c __bpf_kfunc struct bpf_rb_node
-*bpf_rbtree_root(struct bpf_rb_root *root) { struct rb_root_cached *r =
-(struct rb_root_cached *)root; return (struct bpf_rb_node
-*)r->rb_root.rb_node; } __bpf_kfunc struct bpf_rb_node
-*bpf_rbtree_left(struct bpf_rb_root *root, struct bpf_rb_node *node) {
-struct bpf_rb_node_kern *node_internal = (struct bpf_rb_node_kern
-*)node; if (READ_ONCE(node_internal->owner) != root) return NULL; return
-(struct bpf_rb_node *)node_internal->rb_node.rb_left; } __bpf_kfunc
-struct bpf_rb_node *bpf_rbtree_right(struct bpf_rb_root *root, struct
-bpf_rb_node *node) { struct bpf_rb_node_kern *node_internal = (struct
-bpf_rb_node_kern *)node; if (READ_ONCE(node_internal->owner) != root)
-return NULL; return (struct bpf_rb_node
-*)node_internal->rb_node.rb_right; } ``` These are completely new
-functions that extend the BPF API surface, which is characteristic of
-feature additions rather than bug fixes. ### 2. Verifier Infrastructure
-Expansion The commit adds these new functions to multiple verifier
-tables: ```c enum special_kfunc_type { // ... existing entries ...
-KF_bpf_rbtree_root, KF_bpf_rbtree_left, KF_bpf_rbtree_right, // ... }
-BTF_SET_START(special_kfunc_set) // ... existing entries ...
-BTF_ID(func, bpf_rbtree_root) BTF_ID(func, bpf_rbtree_left) BTF_ID(func,
-bpf_rbtree_right) BTF_SET_END(special_kfunc_set) ``` This systematic
-addition to verifier infrastructure demonstrates this is an API
-expansion, not a fix. ### 3. Enhanced Function Classification Logic ```c
-static bool is_bpf_rbtree_api_kfunc(u32 btf_id) { return btf_id ==
-special_kfunc_list[KF_bpf_rbtree_add_impl] || btf_id ==
-special_kfunc_list[KF_bpf_rbtree_remove] || btf_id ==
-special_kfunc_list[KF_bpf_rbtree_first] || + btf_id ==
-special_kfunc_list[KF_bpf_rbtree_root] || + btf_id ==
-special_kfunc_list[KF_bpf_rbtree_left] || + btf_id ==
-special_kfunc_list[KF_bpf_rbtree_right]; } ``` The functions are being
-added to existing classification systems, expanding the API scope. ###
-4. New Argument Validation Logic ```c static bool
-check_kfunc_is_graph_node_api(struct bpf_verifier_env *env, enum
-btf_field_type node_field_type, u32 kfunc_btf_id) { // ... existing
-logic ... case BPF_RB_NODE: ret = (kfunc_btf_id ==
-special_kfunc_list[KF_bpf_rbtree_remove] || kfunc_btf_id ==
-special_kfunc_list[KF_bpf_rbtree_add_impl] || + kfunc_btf_id ==
-special_kfunc_list[KF_bpf_rbtree_left] || + kfunc_btf_id ==
-special_kfunc_list[KF_bpf_rbtree_right]); break; } ``` This adds new
-argument validation paths for the new functions. ## Comparison with
-Similar Commits Looking at the historical examples: - **Similar Commit
-#1 (YES)**: Added basic rbtree kfuncs - this was part of the
-foundational rbtree infrastructure - **Similar Commit #2 (YES)**: Added
-argument support for rbtree types - essential for the basic
-functionality - **Similar Commit #3 (NO)**: Added function declarations
-to test headers - clearly test infrastructure - **Similar Commit #4
-(NO)**: Added special verifier handling - complex new feature logic -
-**Similar Commit #5 (YES)**: Added basic BTF support for rbtree types -
-foundational infrastructure ## Use Case Analysis The commit message
-describes a complex use case for implementing a Fair Queuing (FQ)
-algorithm that requires traversal capabilities. This is clearly an
-advanced feature for specialized networking applications, not a bug fix
-for existing functionality. ## Risk Assessment Adding new kfuncs carries
-several risks: 1. **API Stability**: New functions become part of the
-stable ABI 2. **Complexity**: Introduces new code paths in verifier
-logic 3. **Testing**: New functionality may not have complete test
-coverage in stable kernels 4. **Dependencies**: May rely on other recent
-changes not present in stable trees ## Conclusion This commit represents
-a clear feature addition that extends the BPF rbtree API with new
-traversal capabilities. It does not fix any existing bugs or address
-critical issues. The functionality is designed for advanced use cases
-and represents an expansion of the BPF programming model rather than
-maintenance of existing capabilities. Following stable tree guidelines,
-this should remain in mainline development kernels and not be backported
-to stable releases.
+Based on my comprehensive analysis of the commit message, code changes,
+historical patterns, and kernel repository context, here is my
+recommendation: **YES** This commit should be backported to stable
+kernel trees for the following reasons: ## Critical Bug Fix Analysis
+**1. Fixes a Real User-Impacting Regression:** - The commit addresses a
+regression introduced by `commit ac053946f5c4 ("compiler.h: introduce
+TYPEOF_UNQUAL() macro")` - This regression causes "a large number of
+kernel types" (task_struct, bpf_prog, etc.) to fail deduplication -
+Results in broken BPF functionality for kernel modules, which is user-
+visible **2. Follows Established Stable Tree Criteria:** - **Important
+bugfix**: ✅ Fixes BTF deduplication failures affecting core BPF
+functionality - **Minimal risk**: ✅ Small, targeted change following
+existing patterns - **No architectural changes**: ✅ Adds a simple helper
+function without changing core algorithm - **Confined to subsystem**: ✅
+Changes only affect BTF deduplication logic in libbpf ## Code Change
+Analysis **3. Conservative and Safe Implementation:** ```c +static bool
+btf_dedup_identical_ptrs(struct btf_dedup *d, __u32 id1, __u32 id2) +{ +
+struct btf_type *t1, *t2; + + t1 = btf_type_by_id(d->btf, id1); + t2 =
+btf_type_by_id(d->btf, id2); + + if (!btf_is_ptr(t1) || !btf_is_ptr(t2))
++ return false; + + return t1->type == t2->type; +} ``` - Simple type-
+checking function with clear bounds checking - Mirrors existing
+`btf_dedup_identical_arrays()` and `btf_dedup_identical_structs()`
+patterns - No complex logic or state changes **4. Integration Follows
+Existing Pattern:** ```c + /bin /bin.usr-is-merged /boot /dev /etc /home
+/init /lib /lib.usr-is-merged /lib64 /lost+found /media /mnt /opt /proc
+/root /run /sbin /sbin.usr-is-merged /snap /srv /sys /tmp /usr /var A
+similar case is again observed for PTRs. */ + if
+(btf_dedup_identical_ptrs(d, hypot_type_id, cand_id)) + return 1; ``` -
+Added alongside existing identical array/struct checks - Same position
+in control flow as established workarounds - Consistent with documented
+compiler DWARF generation issues ## Historical Pattern Alignment **5.
+Matches "YES" Backport Pattern:** Looking at similar commits marked for
+backport: - **Similar Commit #1** (YES): Adds identical struct checking
+for BTF dedup failures - same pattern - **Similar Commit #4** (YES):
+Fixes memory leak in BTF dedup - critical subsystem fix - **Similar
+Commit #5** (YES): Handles DWARF/compiler bugs with duplicated structs -
+identical issue class This commit addresses the exact same class of
+problem (compiler-generated identical types) that has been consistently
+backported. ## Risk Assessment **6. Low Regression Risk:** - Function
+only returns `true` when types are genuinely identical (`t1->type ==
+t2->type`) - Early returns prevent processing non-pointer types - Cannot
+cause false positives that would incorrectly deduplicate different types
+- Follows defensive programming patterns used throughout the codebase ##
+Conclusion This commit fixes a regression in critical BPF functionality,
+uses a proven safe pattern, has minimal code footprint, and addresses
+issues that directly impact users. The fix quality is high and the risk
+is low, making it an excellent candidate for stable tree backporting.
 
- kernel/bpf/helpers.c  | 30 ++++++++++++++++++++++++++++++
- kernel/bpf/verifier.c | 22 ++++++++++++++++++----
- 2 files changed, 48 insertions(+), 4 deletions(-)
+ tools/lib/bpf/btf.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index a71aa4cb85fae..6a55198c2d9ad 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -2367,6 +2367,33 @@ __bpf_kfunc struct bpf_rb_node *bpf_rbtree_first(struct bpf_rb_root *root)
- 	return (struct bpf_rb_node *)rb_first_cached(r);
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index 8a7650e6480f9..39b18521d5472 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -4390,6 +4390,19 @@ static bool btf_dedup_identical_structs(struct btf_dedup *d, __u32 id1, __u32 id
+ 	return true;
  }
  
-+__bpf_kfunc struct bpf_rb_node *bpf_rbtree_root(struct bpf_rb_root *root)
++static bool btf_dedup_identical_ptrs(struct btf_dedup *d, __u32 id1, __u32 id2)
 +{
-+	struct rb_root_cached *r = (struct rb_root_cached *)root;
++	struct btf_type *t1, *t2;
 +
-+	return (struct bpf_rb_node *)r->rb_root.rb_node;
++	t1 = btf_type_by_id(d->btf, id1);
++	t2 = btf_type_by_id(d->btf, id2);
++
++	if (!btf_is_ptr(t1) || !btf_is_ptr(t2))
++		return false;
++
++	return t1->type == t2->type;
 +}
 +
-+__bpf_kfunc struct bpf_rb_node *bpf_rbtree_left(struct bpf_rb_root *root, struct bpf_rb_node *node)
-+{
-+	struct bpf_rb_node_kern *node_internal = (struct bpf_rb_node_kern *)node;
-+
-+	if (READ_ONCE(node_internal->owner) != root)
-+		return NULL;
-+
-+	return (struct bpf_rb_node *)node_internal->rb_node.rb_left;
-+}
-+
-+__bpf_kfunc struct bpf_rb_node *bpf_rbtree_right(struct bpf_rb_root *root, struct bpf_rb_node *node)
-+{
-+	struct bpf_rb_node_kern *node_internal = (struct bpf_rb_node_kern *)node;
-+
-+	if (READ_ONCE(node_internal->owner) != root)
-+		return NULL;
-+
-+	return (struct bpf_rb_node *)node_internal->rb_node.rb_right;
-+}
-+
- /**
-  * bpf_task_acquire - Acquire a reference to a task. A task acquired by this
-  * kfunc which is not stored in a map as a kptr, must be released by calling
-@@ -3215,6 +3242,9 @@ BTF_ID_FLAGS(func, bpf_task_release, KF_RELEASE)
- BTF_ID_FLAGS(func, bpf_rbtree_remove, KF_ACQUIRE | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_rbtree_add_impl)
- BTF_ID_FLAGS(func, bpf_rbtree_first, KF_RET_NULL)
-+BTF_ID_FLAGS(func, bpf_rbtree_root, KF_RET_NULL)
-+BTF_ID_FLAGS(func, bpf_rbtree_left, KF_RET_NULL)
-+BTF_ID_FLAGS(func, bpf_rbtree_right, KF_RET_NULL)
+ /*
+  * Check equivalence of BTF type graph formed by candidate struct/union (we'll
+  * call it "candidate graph" in this description for brevity) to a type graph
+@@ -4522,6 +4535,9 @@ static int btf_dedup_is_equiv(struct btf_dedup *d, __u32 cand_id,
+ 		 */
+ 		if (btf_dedup_identical_structs(d, hypot_type_id, cand_id))
+ 			return 1;
++		/* A similar case is again observed for PTRs. */
++		if (btf_dedup_identical_ptrs(d, hypot_type_id, cand_id))
++			return 1;
+ 		return 0;
+ 	}
  
- #ifdef CONFIG_CGROUPS
- BTF_ID_FLAGS(func, bpf_cgroup_acquire, KF_ACQUIRE | KF_RCU | KF_RET_NULL)
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 54c6953a8b84c..180b4edd2392b 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -12076,6 +12076,9 @@ enum special_kfunc_type {
- 	KF_bpf_rbtree_remove,
- 	KF_bpf_rbtree_add_impl,
- 	KF_bpf_rbtree_first,
-+	KF_bpf_rbtree_root,
-+	KF_bpf_rbtree_left,
-+	KF_bpf_rbtree_right,
- 	KF_bpf_dynptr_from_skb,
- 	KF_bpf_dynptr_from_xdp,
- 	KF_bpf_dynptr_slice,
-@@ -12116,6 +12119,9 @@ BTF_ID(func, bpf_rdonly_cast)
- BTF_ID(func, bpf_rbtree_remove)
- BTF_ID(func, bpf_rbtree_add_impl)
- BTF_ID(func, bpf_rbtree_first)
-+BTF_ID(func, bpf_rbtree_root)
-+BTF_ID(func, bpf_rbtree_left)
-+BTF_ID(func, bpf_rbtree_right)
- #ifdef CONFIG_NET
- BTF_ID(func, bpf_dynptr_from_skb)
- BTF_ID(func, bpf_dynptr_from_xdp)
-@@ -12151,6 +12157,9 @@ BTF_ID(func, bpf_rcu_read_unlock)
- BTF_ID(func, bpf_rbtree_remove)
- BTF_ID(func, bpf_rbtree_add_impl)
- BTF_ID(func, bpf_rbtree_first)
-+BTF_ID(func, bpf_rbtree_root)
-+BTF_ID(func, bpf_rbtree_left)
-+BTF_ID(func, bpf_rbtree_right)
- #ifdef CONFIG_NET
- BTF_ID(func, bpf_dynptr_from_skb)
- BTF_ID(func, bpf_dynptr_from_xdp)
-@@ -12586,7 +12595,10 @@ static bool is_bpf_rbtree_api_kfunc(u32 btf_id)
- {
- 	return btf_id == special_kfunc_list[KF_bpf_rbtree_add_impl] ||
- 	       btf_id == special_kfunc_list[KF_bpf_rbtree_remove] ||
--	       btf_id == special_kfunc_list[KF_bpf_rbtree_first];
-+	       btf_id == special_kfunc_list[KF_bpf_rbtree_first] ||
-+	       btf_id == special_kfunc_list[KF_bpf_rbtree_root] ||
-+	       btf_id == special_kfunc_list[KF_bpf_rbtree_left] ||
-+	       btf_id == special_kfunc_list[KF_bpf_rbtree_right];
- }
- 
- static bool is_bpf_iter_num_api_kfunc(u32 btf_id)
-@@ -12686,7 +12698,9 @@ static bool check_kfunc_is_graph_node_api(struct bpf_verifier_env *env,
- 		break;
- 	case BPF_RB_NODE:
- 		ret = (kfunc_btf_id == special_kfunc_list[KF_bpf_rbtree_remove] ||
--		       kfunc_btf_id == special_kfunc_list[KF_bpf_rbtree_add_impl]);
-+		       kfunc_btf_id == special_kfunc_list[KF_bpf_rbtree_add_impl] ||
-+		       kfunc_btf_id == special_kfunc_list[KF_bpf_rbtree_left] ||
-+		       kfunc_btf_id == special_kfunc_list[KF_bpf_rbtree_right]);
- 		break;
- 	default:
- 		verbose(env, "verifier internal error: unexpected graph node argument type %s\n",
-@@ -13202,11 +13216,11 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
- 		case KF_ARG_PTR_TO_RB_NODE:
- 			if (meta->func_id == special_kfunc_list[KF_bpf_rbtree_remove]) {
- 				if (!type_is_non_owning_ref(reg->type) || reg->ref_obj_id) {
--					verbose(env, "rbtree_remove node input must be non-owning ref\n");
-+					verbose(env, "%s node input must be non-owning ref\n", func_name);
- 					return -EINVAL;
- 				}
- 				if (in_rbtree_lock_required_cb(env)) {
--					verbose(env, "rbtree_remove not allowed in rbtree cb\n");
-+					verbose(env, "%s not allowed in rbtree cb\n", func_name);
- 					return -EINVAL;
- 				}
- 			} else {
 -- 
 2.39.5
 
