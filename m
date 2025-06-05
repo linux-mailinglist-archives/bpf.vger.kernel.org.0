@@ -1,48 +1,80 @@
-Return-Path: <bpf+bounces-59757-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59758-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FEAAACF20A
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 16:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BAAEACF212
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 16:34:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 968F816B6DD
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 14:33:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5067316C15D
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 14:33:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A47B819AD48;
-	Thu,  5 Jun 2025 14:32:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2364419AD5C;
+	Thu,  5 Jun 2025 14:33:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hQJ6vm58"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GsVM8EhG"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1779214A4C7;
-	Thu,  5 Jun 2025 14:32:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EF2619C542;
+	Thu,  5 Jun 2025 14:33:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749133972; cv=none; b=Z1IarepFfkOivVD9RjLD4qUZhZ7kDR0fTUULTfFDgfzqJkJGY8kJ2YdGryCLUBur7nNsk8OzeWKt9KAMldtNJet0HtPWmLn9PABbvHbvUkymPPXhnzQtTnMajHsDteabyUF8xTQUAdjG/x2tArxNeQYNEDg1NQfLJ9cFqIXUI9s=
+	t=1749134014; cv=none; b=TiYAhbbO62Onln4MncNmVhZ6yURvHVR1wviBI3hyB9c8Aa/QtMYPThlFFwOe/w7h5/h/Ynwq/k0wluypgTyKfgfVgpT3H9qpvCApTu7FgivEONzhYt+4XroPw5CfEUKEfpxXnt+LVM0BcFKXWSGMVaGLMM2cUYQzQmtY0rgCSKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749133972; c=relaxed/simple;
-	bh=dJhCM9RPviR0g7JT1D5tY8Qs8gank6kHriTlr+jVdk8=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=I3NH5XrAyiyk/zduSXUiubruK6bnsGA6qq+xAWiRCTD6MraiU545+2cFMIO2Nes8nSZc4z+1KP6joLn1ts1jCu5s4FsW9JA3u8Yv6uhtkaPlW3hT189jSSfIBspTA+CYAI6OUD79/dCDWqf9YkQQnPQal4wN9S9Gv51aOSvTTGg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hQJ6vm58; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A35A7C4CEE7;
-	Thu,  5 Jun 2025 14:32:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749133971;
-	bh=dJhCM9RPviR0g7JT1D5tY8Qs8gank6kHriTlr+jVdk8=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=hQJ6vm58a9sKrWs9pbShbS3RA6iSmi0wkOqOIohbxsH9H+Q56BxXzsFbZ+ejQ1ycp
-	 3HiA6msSez1IKjXj45/iK33pnzB2iuvu+keB9Cfeg+Xgut99Tu90vSSq1zRkSeOMGO
-	 fbKbvoGkG/hF/zHS7/Wz1RRGwQwUFZHoANS2Xw+kzuh7GQES6DzUaYmOkKr1PLmepz
-	 k9VBLzQG0R6cbmHU+tgErk05+UtA79vzuWFGsQgQBgb1M3fM1u6T1d38LkHS5bLh/m
-	 V6zUEf7o8M06Dv8P+qWU1JspV1TZXG/+kxnPZ+jlj7V6H0rSt13SJOXVlpFSV8StHm
-	 bkkhv+tpwoK2A==
-Message-ID: <8ea2aefc-2847-433e-b56e-5caad49e54f2@kernel.org>
-Date: Thu, 5 Jun 2025 16:32:44 +0200
+	s=arc-20240116; t=1749134014; c=relaxed/simple;
+	bh=tr58EZgbVcJISngjP+ObYSCUQbAQYsfVcd2Vwdp3hD0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UhGOjePFXhDAEYoypZqklx24DRYVwjP+PGYDs2rvbrOX7uwmzc9u0LcnB9C+Xh0Gtimo45kKB5fG2ETlNTFQakZRcojOKogTXtOsjn0KPdOsn85eyZJ1C4IFFxWuQnaBV9vCt5aRMln6MHj5JKf9BfT6MF8JMz0IvDKzNhVMeT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GsVM8EhG; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-2320d06b728so9716915ad.1;
+        Thu, 05 Jun 2025 07:33:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749134012; x=1749738812; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=l9avWjVFt6aWkiQYT2o6nDnnWjkbc+AGyVyiibpfVvU=;
+        b=GsVM8EhGv7fTMgIBH0lnq3zDiuuT1H5O/fBIN9Lu1VLCOyPOjtH/DkknEHRu/WXJxa
+         lAjBoSLe7hy+XQ5/btvefKyqrgFwNSEXHFKHYtjmoYYZoV8c0Vdod6lSkm+aVYc/qdPd
+         PNZ0Oy0MWrP6VyWYsvcTP6quvYCRT7E5qvj70f3fZE5z5JfIGUsiKWnRuG0DNTSWC0J3
+         rW1P9eg1SIFFMWyEtP74GV/j4A2IEuZ53tnEXWbJj36Xtngesc5d+9FJyKwWYrL+tHK6
+         4mnNljzrBWX1ed+aEKdyxVMKsY5LYz7GV9HmXxBWXqKove/mkSZRfvRlQ0jAEWMLy/iB
+         aqmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749134012; x=1749738812;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=l9avWjVFt6aWkiQYT2o6nDnnWjkbc+AGyVyiibpfVvU=;
+        b=lZWk13Ab4iY2tGsAv/joZxaq+1L6o/BKdhCrBrfXU6fCkpB0KsJyg4yMB2kKfUv8J4
+         Wd7r3VF9QBWkEdJU1CIDyRAm22SyyBS8df7FPOH9MMTKUsrVXa0LcNi3SIgDv6CQt3io
+         3alXS2DloAbuIVZWcfAX32rPqDowXz/EJUhNbummzQxU3A+LGmv+D2juNMxRcHj9DhXl
+         jlk9ujilYT1MkPg5EBu8tDrVSnE7kxHtw4D23X6QA1N49ppTxqDJK8VI2L8Mf5ba+s1b
+         UZJ29O/gTuM7HKRucMykfwlIXSCOctonP7HJBzIR1uvYMPZaorVHEqZMYL1/LW2LEvln
+         IhNg==
+X-Forwarded-Encrypted: i=1; AJvYcCV6CPqf5uO3cl1XtWNCyVpgHykMCHi8FnmcsAhYXW5o8xogm5cf9bBdzw6XduOKrT6TTov7xBC0@vger.kernel.org, AJvYcCVBCYKsMMlJUTwrKQ4W75r+g6NJ4nNB9cE/qLFBKZUqr/CqQdXoDXMBnAbBfeTqj7NBxwctqQT2@vger.kernel.org, AJvYcCXT+Blp8V8pm/UeXbyRbgwSmjFtXdRC/Lwv5LT7Ge2oybj3R/49PVSEDBaV+JiyCXx74aE=@vger.kernel.org, AJvYcCXg2lG6cHAMSIEFXMOuJkX/Z23CbwGz8gq8AfTtRCdTbHmWCahlwYaTRN1bJxc75yZtMvBNPijtdMyNjiGB@vger.kernel.org
+X-Gm-Message-State: AOJu0YzXVNdzFm69CgZd/5rnOWBR1sEFfSWI4LWR3nZIpPsa9vMYpHUV
+	r8Aw0jjXK+2BOjFvZASKOAaJ6UWTF85WkUPZDU2tGbKhppmf2WTmyGXD5gXCGw==
+X-Gm-Gg: ASbGncsfsBBXxA+K2Qt49viKfnlv77wZmNRMKAV9NINlDeLUDo6reE8jxKf9mnhF9HN
+	vMq6ZrtV3DXnrq75VeUog7X/ooq8FITWcOwQsF2MDE/3lAXiqZAQ2axdej43DHORhhAvy5fCeUI
+	TQdWK/dH3+rxxhnWhh16mLPE4E8h4Ip9kf5ExqaJw1JJ3iFIqAx/vb4CyrAhbkHTZ8hOFVu3MXt
+	yvDa/Q3bzIFsXPPFq0JGvEtYsNGBIvA+0lwXPofKFgScs4H+R1sZRjWXzY+jjNzW1Tkqsoy0dIB
+	gVa+cOgOWXRucw3+qfqv1Gv7ZqTlTkHmrkNqQyWEVAlX9Q9Gk9X+nnWtfGAlHYMthtza7L2R6Ph
+	5wGbA5on99Uq5eBW7OfbVG5g3Vck=
+X-Google-Smtp-Source: AGHT+IHoYsehzq4W4hQnnnjTlH/Y7tcjh0kuCIpQiDNFzibOyjGm7QM3TfN7RjAAdMWkvPfyNTl5uw==
+X-Received: by 2002:a17:902:d550:b0:224:1af1:87f4 with SMTP id d9443c01a7336-235e14bc5d2mr113225345ad.22.1749134012316;
+        Thu, 05 Jun 2025 07:33:32 -0700 (PDT)
+Received: from ?IPV6:2001:ee0:4f0e:fb30:fe1:cf75:ee2d:d934? ([2001:ee0:4f0e:fb30:fe1:cf75:ee2d:d934])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23506cd8cf0sm120472525ad.155.2025.06.05.07.33.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Jun 2025 07:33:31 -0700 (PDT)
+Message-ID: <f6d7610b-abfe-415d-adf8-08ce791e4e72@gmail.com>
+Date: Thu, 5 Jun 2025 21:33:26 +0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -50,160 +82,51 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Large modules with 6.15 [was: [PATCH v4 6/6] percpu/x86: Enable
- strict percpu checks via named AS qualifiers]
-From: Jiri Slaby <jirislaby@kernel.org>
-To: Uros Bizjak <ubizjak@gmail.com>, x86@kernel.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
- linux-arch@vger.kernel.org, netdev@vger.kernel.org
-Cc: Nadav Amit <nadav.amit@gmail.com>, Dennis Zhou <dennis@kernel.org>,
- Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@kernel.org>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Andy Lutomirski <luto@kernel.org>, Brian Gerst <brgerst@gmail.com>,
- Peter Zijlstra <peterz@infradead.org>, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>, bpf <bpf@vger.kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>
-References: <20250127160709.80604-1-ubizjak@gmail.com>
- <20250127160709.80604-7-ubizjak@gmail.com>
- <02c00acd-9518-4371-be2c-eb63e5d11d9c@kernel.org>
+Subject: Re: [PATCH net] virtio-net: drop the multi-buffer XDP packet in
+ zerocopy
+To: Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org
+Cc: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
+ Xuan Zhuo <xuanzhuo@linux.alibaba.com>, =?UTF-8?Q?Eugenio_P=C3=A9rez?=
+ <eperezma@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, virtualization@lists.linux.dev,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org, stable@vger.kernel.org
+References: <20250603150613.83802-1-minhquangbui99@gmail.com>
+ <dd087fdf-5d6c-4015-bed3-29760002f859@redhat.com>
 Content-Language: en-US
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <02c00acd-9518-4371-be2c-eb63e5d11d9c@kernel.org>
+From: Bui Quang Minh <minhquangbui99@gmail.com>
+In-Reply-To: <dd087fdf-5d6c-4015-bed3-29760002f859@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-Cc BPF people, just so you know.
+On 6/5/25 18:03, Paolo Abeni wrote:
+> On 6/3/25 5:06 PM, Bui Quang Minh wrote:
+>> In virtio-net, we have not yet supported multi-buffer XDP packet in
+>> zerocopy mode when there is a binding XDP program. However, in that
+>> case, when receiving multi-buffer XDP packet, we skip the XDP program
+>> and return XDP_PASS. As a result, the packet is passed to normal network
+>> stack which is an incorrect behavior.
+> Why? AFAICS the multi-buffer mode depends on features negotiation, which
+> is not controlled by the VM user.
+>
+> Let's suppose the user wants to attach an XDP program to do some per
+> packet stats accounting. That suddenly would cause drop packets
+> depending on conditions not controlled by the (guest) user. It looks
+> wrong to me.
 
-On 05. 06. 25, 16:27, Jiri Slaby wrote:
-> On 27. 01. 25, 17:05, Uros Bizjak wrote:
->> This patch declares percpu variables in __seg_gs/__seg_fs named AS
->> and keeps them named AS qualified until they are dereferenced with
->> percpu accessor. This approach enables various compiler check
->> for cross-namespace variable assignments.
->>
->> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
->> Acked-by: Nadav Amit <nadav.amit@gmail.com>
->> Cc: Dennis Zhou <dennis@kernel.org>
->> Cc: Tejun Heo <tj@kernel.org>
->> Cc: Christoph Lameter <cl@linux.com>
->> Cc: Thomas Gleixner <tglx@linutronix.de>
->> Cc: Ingo Molnar <mingo@kernel.org>
->> Cc: Borislav Petkov <bp@alien8.de>
->> Cc: Dave Hansen <dave.hansen@linux.intel.com>
->> Cc: "H. Peter Anvin" <hpa@zytor.com>
->> Cc: Linus Torvalds <torvalds@linux-foundation.org>
->> Cc: Andy Lutomirski <luto@kernel.org>
->> Cc: Brian Gerst <brgerst@gmail.com>
->> Cc: Peter Zijlstra <peterz@infradead.org>
->> ---
->>   arch/x86/include/asm/percpu.h | 15 ++++++++++++---
->>   1 file changed, 12 insertions(+), 3 deletions(-)
->>
->> diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/ 
->> percpu.h
->> index 27f668660abe..474d648bca9a 100644
->> --- a/arch/x86/include/asm/percpu.h
->> +++ b/arch/x86/include/asm/percpu.h
->> @@ -95,9 +95,18 @@
->>   #endif /* CONFIG_SMP */
->> -#define __my_cpu_type(var)    typeof(var) __percpu_seg_override
->> -#define __my_cpu_ptr(ptr)    (__my_cpu_type(*(ptr))*)(__force 
->> uintptr_t)(ptr)
->> -#define __my_cpu_var(var)    (*__my_cpu_ptr(&(var)))
->> +#if defined(CONFIG_USE_X86_SEG_SUPPORT) && defined(USE_TYPEOF_UNQUAL)
->> +# define __my_cpu_type(var)    typeof(var)
->> +# define __my_cpu_ptr(ptr)    (ptr)
->> +# define __my_cpu_var(var)    (var)
->> +
->> +# define __percpu_qual        __percpu_seg_override
->> +#else
->> +# define __my_cpu_type(var)    typeof(var) __percpu_seg_override
->> +# define __my_cpu_ptr(ptr)    (__my_cpu_type(*(ptr))*)(__force 
->> uintptr_t)(ptr)
->> +# define __my_cpu_var(var)    (*__my_cpu_ptr(&(var)))
->> +#endif
->> +
-> 
-> Another issue with this is this causes all modules in 6.15 are 2-4 times 
-> (compressed size) bigger:
-> $ ll /usr/lib/modules/*-[0-9]-default/kernel/drivers/atm/atmtcp.ko.zst
->  > -rw-r--r--. 1 root root 10325 May 13 11:49 /usr/lib/modules/6.14.6-2- 
-> default/kernel/drivers/atm/atmtcp.ko.zst
->  > -rw-r--r--. 1 root root 39677 Jun  2 09:13 /usr/lib/modules/6.15.0-1- 
-> default/kernel/drivers/atm/atmtcp.ko.zst
-> 
-> It's due to larger .BTF section:
-> .BTF              PROGBITS         0000000000000000  [-00003080-]
-> [-       00000000000011a8-]  {+00003100+}
-> {+       0000000000012cf8+}  0000000000000000           0     0     1
-> 
-> There are a lot of new BTF types defined in each module like:
-> +attribute_group STRUCT
-> +backing_dev_info STRUCT
-> +bdi_writeback STRUCT
-> +bin_attribute STRUCT
-> +bio_end_io_t TYPEDEF
-> +bio_list STRUCT
-> +bio_set STRUCT
-> +bio STRUCT
-> +bio_vec STRUCT
-> 
-> Reverting this gives me back to normal sizes.
-> 
-> Any ideas?
-> 
-> FTR downstream report:
-> https://bugzilla.suse.com/show_bug.cgi?id=1244135
-> 
-> thanks,
+But currently, if a multi-buffer packet arrives, it will not go through 
+XDP program so it doesn't increase the stats but still goes to network 
+stack. So I think it's not a correct behavior.
 
--- 
-js
-suse labs
+>
+> XDP_ABORTED looks like a better choice.
+>
+> /P
+>
 
+Thanks,
+Quang Minh.
 
