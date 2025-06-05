@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-59784-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59785-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF9C9ACF74E
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 20:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DEF45ACF74F
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 20:42:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E7EA17A303
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 18:42:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F73117B397
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 18:42:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0219827E1C3;
-	Thu,  5 Jun 2025 18:36:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6CA727C16A;
+	Thu,  5 Jun 2025 18:36:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fe+KomcB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MGW0qxvM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8907827A46A
-	for <bpf@vger.kernel.org>; Thu,  5 Jun 2025 18:36:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 113C927E7C0
+	for <bpf@vger.kernel.org>; Thu,  5 Jun 2025 18:36:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749148614; cv=none; b=n5ekDJ5Y096bu8x/Ic6s2pFu3vgu0p3gJ2VOJQnPz0PuKtAzFUPJD3J+HMpWEqzLZ7M9Z6jyyiUFZ9QzNFTveC2SInSj7QL8IWVv75E0PejNTZIKPNwoV/3p7eZq0GhBOlyUA4iu2H3JlhzZO0ADKQyv5VHFiSBk+WZxR/Q20+E=
+	t=1749148617; cv=none; b=DL4AYdbBQWxab0xOyzb5JoDfpoiBscwFjeMwtmyujR7wC1SMFaQZjFeqvxll/uXPuqXjsKNX49A7hZ3Wcyv098slElBtysPv/yl7UCrn+l9tANA1zpFj7Lwi+LSmAn26xTtDuKP8iiLf6sV+4Z5IzEFSJ97Y9+KT/KfoGZAG+vA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749148614; c=relaxed/simple;
-	bh=feUZGaX1Ma1gpkMD4UT3SEipboh2fgKlrjSyrTsoRx4=;
+	s=arc-20240116; t=1749148617; c=relaxed/simple;
+	bh=RkvZunxF7Edxio+ho+lhiY9x2UGud1Gq1HlW3lVCBfs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RhOBmR2WAdHLTM2RWaOkMQzDXW5BQmsmZ8zL2PbWlXuIqb25ag8E/u9vMD2bnRYQq4QHjkZxCzd8AtQdWkvFf1tnJ252wd/ptE2QjyxQFfGzgrY2OVHgZeQpT+SNdu5Q6Bl4oR4VkbARuXAjjYSQlGsEbKDY//L6ewa2gexkr2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fe+KomcB; arc=none smtp.client-ip=209.85.208.52
+	 MIME-Version; b=bcVPuomY21os8W6bjDweJBbNvJjXUvRlrw98tJ1ezJBJ24NauTQfiyrWAomw6N/+IjEiz7HZsENXlUCkj43VW0HsKkhZVdDUTn1yT6PicLfRj/9Ss9GakV7YsTkJKeFHsTyvIZY2ef4LsB1L0LZDHdHHSTaAc2ok3VIl4/VwQU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MGW0qxvM; arc=none smtp.client-ip=209.85.208.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-606b6dbe316so2327022a12.3
-        for <bpf@vger.kernel.org>; Thu, 05 Jun 2025 11:36:52 -0700 (PDT)
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-6020ff8d35dso2837906a12.0
+        for <bpf@vger.kernel.org>; Thu, 05 Jun 2025 11:36:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749148611; x=1749753411; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1749148613; x=1749753413; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=g4evGhVXmNbz2EMXDnGKXDlPcx+RUvTs6qdzWKZAQgc=;
-        b=fe+KomcB5zncosXXyhF2TMXu7KofKATpAGtqebiY6DN6QlC/Xwq8+bJd8JDTQKDokO
-         IqnYL29QGbM/Hs1rbljFdpuQL2G/e52b+wgnCont+owcLTyl9IGTOXEXoCEHJPlutNFi
-         E5zPgDgofj34RxthjK7jEfnfWfljuMsakFBIgV7y54G1ObOcxCmMCB/eJyd/jJTLx9ck
-         4MhAFz5BcdHuwJ7h6cZ1fl1wRzJ2bVIoZSLV3lSwN302wHAl8ZrzwIDFA8xTb+T0pgRo
-         WMOGUkY08BBjMncTFOTOJKDjCP/YihCVlDfL6wFVrb1ciNZQXpjAjenJWHev67nmCC4P
-         TyLw==
+        bh=R4I0fWteE6rgz0RrqtrPJXroPeAGBVzASzfZptQU6G0=;
+        b=MGW0qxvMk0pq5X9VbHNdf7NhpMVbHeIxxroJtV2z7BA8w/mS7RJ8HUlE2/ntngRlf+
+         xXPscUFMDrhig1O4shzjytQLSFq6qshGemtjy2aR+9uWSZmJtSn0DCkzUK4omVovQX9b
+         e/tmy3WuHfZ382fdXPyxYcjY3AM4UFeeVCqlmsGUE0JQagRpRjKVF9iYXWJ9AYJhkiHe
+         zX+qqarqTF2n0tYuCdoYhIs8D6Z1beHyMYeU2gIVzSYwgIH9Hl7hFcTDKqe98XDCAfDj
+         HarhDTZdqzsi28mVF+0rwPATplKxAD/qTVcvCJKEGpGVxw8qednueebZex1vl/PSfiQw
+         COyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749148611; x=1749753411;
+        d=1e100.net; s=20230601; t=1749148613; x=1749753413;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=g4evGhVXmNbz2EMXDnGKXDlPcx+RUvTs6qdzWKZAQgc=;
-        b=xC6bsioHR0pitLrxrs6mEPcDlOrhy/Y+MPNb3K+LiRjVob+Ft9jVc4U+0IOfS6ZU7P
-         FMv1iiTVTveEPhyCZpaltGE41Z4lBWaTTmnozlIO+53yykOelBKfXL1C6+gHy3/kjOBt
-         Cf102rndeEoOme6AmmSP+mFq2UdgWm5WWignapX717R0J+s4ynuUeWBZT3ZUTru4Nu4G
-         ARri7M/3THc6F8b7M5AsH1akwiz84qa+mkR8SJMUMJNFpKlqZ4VJOfhP3U6XeSDVzAHK
-         41Haw/ZJ6mLD2UcpgcdruwDdu5kBZdAsvOS7C0pr33UvJGZNkKcWJKk/vKGbWZWpvAfG
-         ycGA==
-X-Gm-Message-State: AOJu0YxX1zt0oYFQjps6/jdcMTZ7ql1oWVP0rf1N6zsPIzdDpvv337Eq
-	SHukTu+LI/RQxtEON37fK9D03/a+fegYO91e+mbYxnTRopwXteqw89zeVHftvu+rdYo=
-X-Gm-Gg: ASbGncvsbZMH5NxCOPUm5z8klt98v+KBaTrpGFaG+vk9tFcCtJXbAxIQLH+OSR9jK4j
-	SvLXEj/tyroiESUOHXKgr8fTZI07X8wh2BleWEIsZhesF18/xMLIY2Wf1aroq6M2Hzw5L/G2GsX
-	YrqrtCcBH0ug03vapP13ix3h13jdwP1MmBUbjXFCyMymtBQunYTaFUREIMUayo41XkOnrifa2O9
-	j16vN+RZ9PNuXLROafetDRiLguIAZ/91yoDFlLqIrZDDd8gi8d7Ll5Xr5qas4AWPOwSZNw4G52a
-	zBeasmNP55LqKG//bsno/u7Hh1Mry50=
-X-Google-Smtp-Source: AGHT+IEMPOuo73sQ5jtVrGMRLC7WCWgEtmBQaEOWrOiY74ETmOR0WmClXoRNfn1FHjn+4Cj99yQCag==
-X-Received: by 2002:a17:907:94cc:b0:add:fa4e:8a61 with SMTP id a640c23a62f3a-ade1a9e805emr31013166b.38.1749148610686;
-        Thu, 05 Jun 2025 11:36:50 -0700 (PDT)
+        bh=R4I0fWteE6rgz0RrqtrPJXroPeAGBVzASzfZptQU6G0=;
+        b=PGJ7RwoTG1s5EfjPO76a3bUdidDp6NZssZ3DbozyliQnNZt2Iu+tFuTFPVXiHgRVNe
+         R9D8Wr9fEaze6VDMNbEM9cRTAG502VG0HV6iIo/6f/U+kDpptz4Nmo3ojMTkW71KXxgn
+         8bUkgcBf1ye+H2CwpdjuXrVxiQCkfMcDniq6oPyRrmRTTN+/21WRfvg/drdux/4eAS/h
+         nPzmhzByMqCc2CBqdoaqPEAGgRRPfkf//3VOs7o/dzlSfRuoCLSk7wkoo51AIQU6mVtt
+         inS1optEWrnr8FBFM6b0/xeNqCl78SvnrlO7wHQWvlgka7txCQhsHMOVYvtJ/D6gEVxk
+         S9YQ==
+X-Gm-Message-State: AOJu0Ywwf2AObvp0Bc8pu4bEFkHUYj6pKqLXibWv2O1oPg+zvupgXOr9
+	Qlrvy/blqpmPMow1qPWl5hOoVaLTpO0XtBIs5bZeRFHXoVXGU2eoNnc8gLAwGbeP0DU=
+X-Gm-Gg: ASbGncsQ5bGIRmvM7ZTuVoh+bWBB/upd/XjDv03J/KMg8drpy5SS15Q1wag0w7Y1TC0
+	SIwopsXVWALGedkyx4bCkKYka5pYjePy/s9f7SZynBI4PAl7BQtzxIgwulpKzkrhxjMvHm9GoZZ
+	NTsczr5cmEWXPJfF+MyObCPAdfPTn4BW2fRBogm8p4eLK6R4riYdbwo5JtCxJ848WXer3d697ov
+	ajL5DmtZxg1Wd9iR+nGwSUnyyDe6nNFDzTQQOsusfbRvRf2o2zUhBwrx1VdBrvXD01HYca2YolK
+	E08FZa4+Yw+Nr1tY/YoWlnqO3otAxv8=
+X-Google-Smtp-Source: AGHT+IFsV+DLnwEZL/e5+ipY/v1E6nGhAS8xhI3Po4N8Uynpsetm15bginvJKvie5Zgq6pIsbXp+Mg==
+X-Received: by 2002:a05:6402:1941:b0:5f4:8c80:77d with SMTP id 4fb4d7f45d1cf-60772b61907mr288133a12.6.1749148613285;
+        Thu, 05 Jun 2025 11:36:53 -0700 (PDT)
 Received: from localhost ([2620:10d:c092:500::7:1013])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ada5d82e87esm1301764566b.63.2025.06.05.11.36.50
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-60600898ef9sm6594610a12.33.2025.06.05.11.36.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Jun 2025 11:36:50 -0700 (PDT)
+        Thu, 05 Jun 2025 11:36:52 -0700 (PDT)
 From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -80,9 +80,9 @@ To: bpf@vger.kernel.org,
 	kernel-team@meta.com,
 	eddyz87@gmail.com
 Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next v2 2/3] selftests/bpf: support array presets in veristat
-Date: Thu,  5 Jun 2025 19:36:41 +0100
-Message-ID: <20250605183642.1323795-3-mykyta.yatsenko5@gmail.com>
+Subject: [PATCH bpf-next v2 3/3] selftests/bpf: test array presets in veristat
+Date: Thu,  5 Jun 2025 19:36:42 +0100
+Message-ID: <20250605183642.1323795-4-mykyta.yatsenko5@gmail.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250605183642.1323795-1-mykyta.yatsenko5@gmail.com>
 References: <20250605183642.1323795-1-mykyta.yatsenko5@gmail.com>
@@ -96,247 +96,242 @@ Content-Transfer-Encoding: 8bit
 
 From: Mykyta Yatsenko <yatsenko@meta.com>
 
-Implement support for presetting values for array elements in veristat.
-For example:
-```
-sudo ./veristat set_global_vars.bpf.o -G "arr[3] = 1"
-```
-Arrays of structures and structure of arrays work, but each individual
-scalar value has to be set separately: `foo[1].bar[2] = value`.
+Modify existing veristat tests to verify that array presets are applied
+as expected.
+Introduce few negative tests as well to check that common error modes
+are handled.
 
 Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
 ---
- tools/testing/selftests/bpf/veristat.c | 145 +++++++++++++++++++++----
- 1 file changed, 126 insertions(+), 19 deletions(-)
+ .../selftests/bpf/prog_tests/test_veristat.c  | 86 ++++++++++++++++++-
+ .../selftests/bpf/progs/set_global_vars.c     | 51 +++++++----
+ 2 files changed, 114 insertions(+), 23 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
-index bd6f907f3868..5358417099a9 100644
---- a/tools/testing/selftests/bpf/veristat.c
-+++ b/tools/testing/selftests/bpf/veristat.c
-@@ -165,6 +165,7 @@ struct variant {
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_veristat.c b/tools/testing/selftests/bpf/prog_tests/test_veristat.c
+index 47b56c258f3f..057c249c82fa 100644
+--- a/tools/testing/selftests/bpf/prog_tests/test_veristat.c
++++ b/tools/testing/selftests/bpf/prog_tests/test_veristat.c
+@@ -60,12 +60,15 @@ static void test_set_global_vars_succeeds(void)
+ 	    " -G \"var_s8 = -128\" "\
+ 	    " -G \"var_u8 = 255\" "\
+ 	    " -G \"var_ea = EA2\" "\
+-	    " -G \"var_eb = EB2\" "\
+-	    " -G \"var_ec = EC2\" "\
++	    " -G \"var_eb  =  EB2\" "\
++	    " -G \"var_ec=EC2\" "\
+ 	    " -G \"var_b = 1\" "\
+-	    " -G \"struct1.struct2.u.var_u8 = 170\" "\
++	    " -G \"struct1[2].struct2[1].u.var_u8[2]=170\" "\
+ 	    " -G \"union1.struct3.var_u8_l = 0xaa\" "\
+ 	    " -G \"union1.struct3.var_u8_h = 0xaa\" "\
++	    " -G \"arr[3]= 171\" "	\
++	    " -G \"arr[EA2] =172\" "	\
++	    " -G \"enum_arr[EC2]=EA3\" "	\
+ 	    "-vl2 > %s", fix->veristat, fix->tmpfile);
  
- struct var_preset_atom {
- 	char *name;
-+	struct variant index;
+ 	read(fix->fd, fix->output, fix->sz);
+@@ -81,8 +84,11 @@ static void test_set_global_vars_succeeds(void)
+ 	__CHECK_STR("_w=12 ", "var_eb = EB2");
+ 	__CHECK_STR("_w=13 ", "var_ec = EC2");
+ 	__CHECK_STR("_w=1 ", "var_b = 1");
+-	__CHECK_STR("_w=170 ", "struct1.struct2.u.var_u8 = 170");
++	__CHECK_STR("_w=170 ", "struct1.struct2[1].u.var_u8[2] = 170");
+ 	__CHECK_STR("_w=0xaaaa ", "union1.var_u16 = 0xaaaa");
++	__CHECK_STR("_w=171 ", "arr[3]= 171");
++	__CHECK_STR("_w=172 ", "arr[EA2] =172");
++	__CHECK_STR("_w=10 ", "enum_arr[EC2]=EA3");
+ 
+ out:
+ 	teardown_fixture(fix);
+@@ -129,6 +135,66 @@ static void test_set_global_vars_out_of_range(void)
+ 	teardown_fixture(fix);
+ }
+ 
++static void test_unsupported_2dim_array_type(void)
++{
++	struct fixture *fix = init_fixture();
++
++	SYS_FAIL(out,
++		 "%s set_global_vars.bpf.o -G \"matrix[0][0] = 1\" -vl2 2> %s",
++		 fix->veristat, fix->tmpfile);
++
++	read(fix->fd, fix->output, fix->sz);
++	__CHECK_STR("Could not parse 'matrix[0][0]'", "matrix");
++
++out:
++	teardown_fixture(fix);
++}
++
++static void test_unsupported_ptr_array_type(void)
++{
++	struct fixture *fix = init_fixture();
++
++	SYS_FAIL(out,
++		 "%s set_global_vars.bpf.o -G \"ptr_arr[0] = 0\" -vl2 2> %s",
++		 fix->veristat, fix->tmpfile);
++
++	read(fix->fd, fix->output, fix->sz);
++	__CHECK_STR("Unsupported array type for variable ptr_arr", "ptr_arr");
++
++out:
++	teardown_fixture(fix);
++}
++
++static void test_array_out_of_bounds(void)
++{
++	struct fixture *fix = init_fixture();
++
++	SYS_FAIL(out,
++		 "%s set_global_vars.bpf.o -G \"arr[99] = 0\" -vl2 2> %s",
++		 fix->veristat, fix->tmpfile);
++
++	read(fix->fd, fix->output, fix->sz);
++	__CHECK_STR("Preset index 99 is invalid or out of bounds", "arr[99]");
++
++out:
++	teardown_fixture(fix);
++}
++
++static void test_array_index_not_found(void)
++{
++	struct fixture *fix = init_fixture();
++
++	SYS_FAIL(out,
++		 "%s set_global_vars.bpf.o -G \"arr[EG2] = 0\" -vl2 2> %s",
++		 fix->veristat, fix->tmpfile);
++
++	read(fix->fd, fix->output, fix->sz);
++	__CHECK_STR("Could not find array index as enum value EG2", "arr[EG2]");
++
++out:
++	teardown_fixture(fix);
++}
++
+ void test_veristat(void)
+ {
+ 	if (test__start_subtest("set_global_vars_succeeds"))
+@@ -139,6 +205,18 @@ void test_veristat(void)
+ 
+ 	if (test__start_subtest("set_global_vars_from_file_succeeds"))
+ 		test_set_global_vars_from_file_succeeds();
++
++	if (test__start_subtest("test_unsupported_2dim_array_type"))
++		test_unsupported_2dim_array_type();
++
++	if (test__start_subtest("test_unsupported_ptr_array_type"))
++		test_unsupported_ptr_array_type();
++
++	if (test__start_subtest("test_array_out_of_bounds"))
++		test_array_out_of_bounds();
++
++	if (test__start_subtest("test_array_index_not_found"))
++		test_array_index_not_found();
+ }
+ 
+ #undef __CHECK_STR
+diff --git a/tools/testing/selftests/bpf/progs/set_global_vars.c b/tools/testing/selftests/bpf/progs/set_global_vars.c
+index 90f5656c3991..a022c08895b9 100644
+--- a/tools/testing/selftests/bpf/progs/set_global_vars.c
++++ b/tools/testing/selftests/bpf/progs/set_global_vars.c
+@@ -7,22 +7,30 @@
+ 
+ char _license[] SEC("license") = "GPL";
+ 
+-enum Enum { EA1 = 0, EA2 = 11 };
++typedef __s32 s32;
++typedef s32 i32;
++typedef __u8 u8;
++
++enum Enum { EA1 = 0, EA2 = 11, EA3 = 10 };
+ enum Enumu64 {EB1 = 0llu, EB2 = 12llu };
+ enum Enums64 { EC1 = 0ll, EC2 = 13ll };
+ 
+ const volatile __s64 var_s64 = -1;
+ const volatile __u64 var_u64 = 0;
+-const volatile __s32 var_s32 = -1;
++const volatile i32 var_s32 = -1;
+ const volatile __u32 var_u32 = 0;
+ const volatile __s16 var_s16 = -1;
+ const volatile __u16 var_u16 = 0;
+ const volatile __s8 var_s8 = -1;
+-const volatile __u8 var_u8 = 0;
++const volatile u8 var_u8 = 0;
+ const volatile enum Enum var_ea = EA1;
+ const volatile enum Enumu64 var_eb = EB1;
+ const volatile enum Enums64 var_ec = EC1;
+ const volatile bool var_b = false;
++const volatile i32 arr[32];
++const volatile enum Enum enum_arr[32];
++const volatile i32 matrix[32][32];
++const volatile i32 *ptr_arr[32];
+ 
+ struct Struct {
+ 	int:16;
+@@ -35,34 +43,36 @@ struct Struct {
+ 		volatile struct {
+ 			const int:1;
+ 			union {
+-				const volatile __u8 var_u8;
++				const volatile u8 var_u8[3];
+ 				const volatile __s16 filler3;
+ 				const int:1;
+ 			} u;
+ 		};
+-	} struct2;
++	} struct2[2];
  };
  
- struct var_preset {
-@@ -1404,7 +1405,8 @@ static int process_prog(const char *filename, struct bpf_object *obj, struct bpf
+ const volatile __u32 stru = 0; /* same prefix as below */
+-const volatile struct Struct struct1 = {.struct2 = {.u = {.var_u8 = 1}}};
++const volatile struct Struct struct1[3] = {{.struct2 = {{}, {.u = {.var_u8 = {1}}}}}};
  
- static int parse_var_atoms(const char *full_var, struct var_preset *preset)
- {
--	char expr[256], *name, *saveptr;
-+	char expr[256], var[256], idx[256], *name, *saveptr;
-+	int n, err;
+-union Union {
+-	__u16 var_u16;
+-	struct Struct3 {
+-		struct {
+-			__u8 var_u8_l;
+-		};
++struct Struct3 {
++	struct {
++		u8 var_u8_l;
++	};
++	struct {
+ 		struct {
+-			struct {
+-				__u8 var_u8_h;
+-			};
++			u8 var_u8_h;
+ 		};
+-	} struct3;
++	};
+ };
  
- 	snprintf(expr, sizeof(expr), "%s", full_var);
- 	preset->atom_count = 0;
-@@ -1418,9 +1420,25 @@ static int parse_var_atoms(const char *full_var, struct var_preset *preset)
- 		}
- 		preset->atom_count++;
+-const volatile union Union union1 = {.var_u16 = -1};
++typedef struct Struct3 Struct3_t;
  
--		preset->atoms[i].name = strdup(name);
--		if (!preset->atoms[i].name)
--			return -ENOMEM;
-+		if (sscanf(name, "%[a-zA-Z0-9_][%[a-zA-Z0-9]] %n", var, idx, &n) == 2 &&
-+		    strlen(name) == n) {
-+			/* current atom is an array, parse index */
-+			preset->atoms[i].name = strdup(var);
-+			if (!preset->atoms[i].name)
-+				return -ENOMEM;
-+			err = parse_variant(idx, &preset->atoms[i].index);
-+			if (err)
-+				return err;
-+		} else if (sscanf(name, "%[a-zA-Z0-9_] %n", var, &n) == 1 &&
-+			   strlen(name) == n) {
-+			preset->atoms[i].name = strdup(name);
-+			if (!preset->atoms[i].name)
-+				return -ENOMEM;
-+			preset->atoms[i].index.type = NONE;
-+		} else {
-+			fprintf(stderr, "Could not parse '%s'", name);
-+			return -EINVAL;
-+		}
- 	}
- 	return 0;
+-char arr[4] = {0};
++union Union {
++	__u16 var_u16;
++	Struct3_t struct3;
++};
++
++const volatile union Union union1 = {.var_u16 = -1};
+ 
+ SEC("socket")
+ int test_set_globals(void *ctx)
+@@ -81,8 +91,11 @@ int test_set_globals(void *ctx)
+ 	a = var_eb;
+ 	a = var_ec;
+ 	a = var_b;
+-	a = struct1.struct2.u.var_u8;
++	a = struct1[2].struct2[1].u.var_u8[2];
+ 	a = union1.var_u16;
++	a = arr[3];
++	a = arr[EA2];
++	a = enum_arr[EC2];
+ 
+ 	return a;
  }
-@@ -1440,7 +1458,7 @@ static int append_var_preset(struct var_preset **presets, int *cnt, const char *
- 	memset(cur, 0, sizeof(*cur));
- 	(*cnt)++;
- 
--	if (sscanf(expr, "%s = %s %n", var, val, &n) != 2 || n != strlen(expr)) {
-+	if (sscanf(expr, "%[][a-zA-Z0-9_.] = %s %n", var, val, &n) != 2 || n != strlen(expr)) {
- 		fprintf(stderr, "Failed to parse expression '%s'\n", expr);
- 		return -EINVAL;
- 	}
-@@ -1533,6 +1551,74 @@ static bool is_preset_supported(const struct btf_type *t)
- 	return btf_is_int(t) || btf_is_enum(t) || btf_is_enum64(t);
- }
- 
-+static int find_enum_value(const struct btf *btf, const char *name, int *value)
-+{
-+	const struct btf_type *t;
-+	int cnt, i;
-+	long long lvalue;
-+
-+	cnt = btf__type_cnt(btf);
-+	for (i = 1; i != cnt; ++i) {
-+		t = btf__type_by_id(btf, i);
-+
-+		if (!btf_is_any_enum(t))
-+			continue;
-+
-+		if (enum_value_from_name(btf, t, name, &lvalue) == 0) {
-+			*value = (int)lvalue;
-+			return 0;
-+		}
-+	}
-+	return -ESRCH;
-+}
-+
-+static int adjust_array_secinfo(const struct btf *btf, const struct btf_type *t,
-+				const struct var_preset_atom *var_atom,
-+				struct btf_var_secinfo *sinfo)
-+{
-+	struct btf_array *barr;
-+	const struct btf_type *type;
-+	int tid, index;
-+
-+	if (!btf_is_array(t))
-+		return -EINVAL;
-+
-+	barr = btf_array(t);
-+	tid = btf__resolve_type(btf, barr->type);
-+	type = btf__type_by_id(btf, tid);
-+	if (!btf_is_int(type) && !btf_is_any_enum(type) && !btf_is_composite(type)) {
-+		fprintf(stderr,
-+			"Unsupported array type for variable %s. Only int, enum, struct, union are supported\n",
-+			var_atom->name);
-+		return -EINVAL;
-+	}
-+	switch (var_atom->index.type) {
-+	case INTEGRAL:
-+		index = var_atom->index.ivalue;
-+		break;
-+	case ENUMERATOR:
-+		if (find_enum_value(btf, var_atom->index.svalue, &index) != 0) {
-+			fprintf(stderr, "Could not find array index as enum value %s",
-+				var_atom->index.svalue);
-+			return -EINVAL;
-+		}
-+		break;
-+	case NONE:
-+		fprintf(stderr, "Array index is expected for %s\n", var_atom->name);
-+		return -EINVAL;
-+	}
-+
-+	if (index < 0 || index >= barr->nelems) {
-+		fprintf(stderr, "Preset index %d is invalid or out of bounds [0, %d]\n",
-+			index, barr->nelems);
-+		return -EINVAL;
-+	}
-+	sinfo->size = type->size;
-+	sinfo->type = tid;
-+	sinfo->offset += index * type->size;
-+	return 0;
-+}
-+
- const int btf_find_member(const struct btf *btf,
- 			  const struct btf_type *parent_type,
- 			  __u32 parent_offset,
-@@ -1540,7 +1626,7 @@ const int btf_find_member(const struct btf *btf,
- 			  int *member_tid,
- 			  __u32 *member_offset)
- {
--	int i;
-+	int i, err;
- 
- 	if (!btf_is_composite(parent_type))
- 		return -EINVAL;
-@@ -1559,16 +1645,27 @@ const int btf_find_member(const struct btf *btf,
- 		if (member->name_off) {
- 			const char *name = btf__name_by_offset(btf, member->name_off);
- 
--			if (strcmp(var_atom->name, name) == 0) {
--				if (btf_member_bitfield_size(parent_type, i) != 0) {
--					fprintf(stderr, "Bitfield presets are not supported %s\n",
--						name);
--					return -EINVAL;
--				}
--				*member_offset = parent_offset + member->offset;
--				*member_tid = tid;
--				return 0;
-+			if (strcmp(var_atom->name, name) != 0)
-+				continue;
-+
-+			if (btf_member_bitfield_size(parent_type, i) != 0) {
-+				fprintf(stderr, "Bitfield presets are not supported %s\n",
-+					name);
-+				return -EINVAL;
-+			}
-+			*member_offset = parent_offset + member->offset;
-+			*member_tid = tid;
-+			if (btf_is_array(member_type)) {
-+				struct btf_var_secinfo sinfo = {.offset = 0};
-+
-+				err = adjust_array_secinfo(btf, member_type,
-+							   var_atom, &sinfo);
-+				if (err)
-+					return err;
-+				*member_tid = sinfo.type;
-+				*member_offset += sinfo.offset * 8;
- 			}
-+			return 0;
- 		} else if (btf_is_composite(member_type)) {
- 			int err;
- 
-@@ -1579,7 +1676,7 @@ const int btf_find_member(const struct btf *btf,
- 		}
- 	}
- 
--	return -EINVAL;
-+	return -ESRCH;
- }
- 
- static int adjust_var_secinfo(struct btf *btf, const struct btf_type *t,
-@@ -1590,6 +1687,12 @@ static int adjust_var_secinfo(struct btf *btf, const struct btf_type *t,
- 	__u32 member_offset = 0;
- 
- 	base_type = btf__type_by_id(btf, btf__resolve_type(btf, t->type));
-+	if (btf_is_array(base_type)) {
-+		err = adjust_array_secinfo(btf, base_type, &preset->atoms[0], sinfo);
-+		if (err)
-+			return err;
-+		base_type = btf__type_by_id(btf, sinfo->type);
-+	}
- 
- 	for (i = 1; i < preset->atom_count; ++i) {
- 		err = btf_find_member(btf, base_type, 0, &preset->atoms[i],
-@@ -1739,8 +1842,9 @@ static int set_global_vars(struct bpf_object *obj, struct var_preset *presets, i
- 	}
- 	for (i = 0; i < npresets; ++i) {
- 		if (!presets[i].applied) {
--			fprintf(stderr, "Global variable preset %s has not been applied\n",
--				presets[i].full_name);
-+			fprintf(stderr, "Global variable preset %s has not been applied %s\n",
-+				presets[i].full_name, presets[i].atoms[0].name);
-+			err = -EINVAL;
- 		}
- 		presets[i].applied = false;
- 	}
-@@ -2928,8 +3032,11 @@ int main(int argc, char **argv)
- 	free(env.deny_filters);
- 	for (i = 0; i < env.npresets; ++i) {
- 		free(env.presets[i].full_name);
--		for (j = 0; j < env.presets[i].atom_count; ++j)
-+		for (j = 0; j < env.presets[i].atom_count; ++j) {
- 			free(env.presets[i].atoms[j].name);
-+			if (env.presets[i].atoms[j].index.type == ENUMERATOR)
-+				free(env.presets[i].atoms[j].index.svalue);
-+		}
- 		free(env.presets[i].atoms);
- 		if (env.presets[i].value.type == ENUMERATOR)
- 			free(env.presets[i].value.svalue);
 -- 
 2.49.0
 
