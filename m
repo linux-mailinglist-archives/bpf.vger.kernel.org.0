@@ -1,153 +1,158 @@
-Return-Path: <bpf+bounces-59762-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59763-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 597F0ACF3C2
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 18:09:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 989B7ACF3CC
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 18:10:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64F6816A810
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 16:09:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 002CA3AD894
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 16:10:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BAC11E1DE2;
-	Thu,  5 Jun 2025 16:09:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD4612749E7;
+	Thu,  5 Jun 2025 16:10:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G69HpqSs"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZfuKyTca"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0930786347
-	for <bpf@vger.kernel.org>; Thu,  5 Jun 2025 16:08:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8118327465B;
+	Thu,  5 Jun 2025 16:10:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749139739; cv=none; b=qLmiQXe1XVDznmpXVnDLVqrJZAV5SYwjSmQjYwScbQvte5OGqn5ym6/oTBhT9asUsUUQBkjLo+XkbF3hpwRZ7fKhI06oA/aPYRC2gjghhhjPovYeq5oSeS7JDsa2yqiW+069bKEB7LB7oEnwe/uNU26SK84/me0ZJsVx+u1C4Zc=
+	t=1749139808; cv=none; b=jFcO788qlgC1R0dpFSoO5U5tZlohHHbKe0kauzndpgubnzya2ohFlExdkjk369rmX6EOccfItGCwlmFKHBZsPN58LzpXNFv7/lXbrNctwDMjHRWipIAZhR8NKIwMTcbqY1WnB8DYe1QSa+3S6e8/UUk7N9JOiCIArHInupGXd+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749139739; c=relaxed/simple;
-	bh=spYJIpXa1NqDDTQoy4h/XXUWLaPmBwqMXM+n+0MdYuc=;
+	s=arc-20240116; t=1749139808; c=relaxed/simple;
+	bh=YnIQvPD9lJYDOlBpOrCy1ioFdRL5RyD0q+hZaolXlzo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CcKZzgRmE4VnWyaLgxjWVrIlKl853uBsqWfn4WVw84u0km+Dt59OucGn+Z8BtuNopz5afjPs5lIwlHWqfA8iiGYQllAEFxqYG1GKSvac1m6jMOrlp0DgHYhQHQx93dICNyHj0VFAq1wzeAieCx12ZX4KTczdFrlbNdGnb6bbTjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G69HpqSs; arc=none smtp.client-ip=209.85.208.53
+	 To:Cc:Content-Type; b=Wn5pWzuZdMpAIaUseEMEeFekcvFyaCnOVbyneo3RAe0G0Zqzc9JxxkKeBVL0JoDHefh0p+87HoE43fLjzotMMsZQUgCPmF+qziqLSoGisVpMmPFLeVYBRHjZH6MpgIdOdkWTZb/ZOjEbSRhN80V28Y/8ozVrjMfjU3Sumowgoos=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZfuKyTca; arc=none smtp.client-ip=209.85.221.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-606bbe60c01so2016346a12.2
-        for <bpf@vger.kernel.org>; Thu, 05 Jun 2025 09:08:57 -0700 (PDT)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3a3673e12c4so741579f8f.2;
+        Thu, 05 Jun 2025 09:10:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749139736; x=1749744536; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1749139805; x=1749744605; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Dm9JIzpetDVbEWe3gNMtBsTFwCb3uAf0cHL049JxRW8=;
-        b=G69HpqSsJWKp9ono4d4rk/QyOA//nr5NPPl2N5U5rkFmMFydJsclqeT7TKF23IGpCK
-         ctekz+97LXpVxPP6AlLQrG60Cd26Y2T74S68GvBMV9HPi/haP56ccIm/2b/AuyxCCkcJ
-         BkEidruo6Peuxn2Z9bcANNJ2GjQ7JAImmMr9bUwyGQrb3Inn6dH+/9zNU4lgoGfkpaZ0
-         e90bMb0gfuVnNjNCh9MwNUsz0HhWJUd5m2Ti9hfdRrZehgJ8Qp27IRTgASGm6qqswigO
-         N9JnXv9sLTgGi0iJ/VJwJODyQYVlVqoGJzBQ6skjBlLflhZIwLweRx9D6/BHxcfU8HJ/
-         qLwQ==
+        bh=YnIQvPD9lJYDOlBpOrCy1ioFdRL5RyD0q+hZaolXlzo=;
+        b=ZfuKyTcaeJFqu+dTkbPlSa7ggOFULpTlQC0g4os60Fxs9toYm9QedRnswqwwPB0qtM
+         d4kq0tj94rZw/EGp99Hl5jXMwlI74USyXppVjuQXZngYp69zfb57C+3kK5AD907S6MFy
+         YdlpGlHzNqRhGIdxzQu0lja7DzWsXVeEK58VGUyjivC5DcWiACHH/my26n38VXG+rMD4
+         bfnWuJuDwkFfx0n0vYxDCWZaJSA4ebQUqhERQboADu7qpL7RRLFYg2ACyzASQw2VYeDy
+         Z3lZrDtDWJxa+wESUIvNINVdrZsCRHvffVwa1SSaHdNmxMuP28si3REGpurut0VU0bV/
+         qqbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749139736; x=1749744536;
+        d=1e100.net; s=20230601; t=1749139805; x=1749744605;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Dm9JIzpetDVbEWe3gNMtBsTFwCb3uAf0cHL049JxRW8=;
-        b=RVkX99BwQEiMxQhQB2yxUyKCChAT0eEqrU0jdYzO7v95A2ur2nkTuYK2ejH4wE9yFq
-         WETg3MNnZe0Pf018DkYn97klYeJDiu7nkXg5YWpVQ4inmHXLhieaBPFB4ato17xghLVP
-         neKerciA+jMOpogrXNZQcV2rCJKD/aXDxFZchJjm0gQpJlnu+FcWZrSJONlsGQYvxfSa
-         4hVODeFTwOgLZX2NHeV1orYXNybhem0vvrMOLkmfx7rxYEzNb43ZVVCZBXgdIQ50D/Mc
-         f0tE/0XdePeGaOMN/smlqZpnKbto13CGeYuc+1/EBLITju15pJcosVXN5KNQST6ilfr1
-         dVpA==
-X-Forwarded-Encrypted: i=1; AJvYcCWeJiEMPCD6pbTHV9Ul7V03pc+PLF+C4PNtA1ST89UL8i4vb1GuvhpCPzqo2hbEpSKnvYY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzWO4F+gAzZhshLqbvNR0XzCYK158Z4nAS5/6+QUrEYCxjIKTKp
-	WLBUpjzhalI9c51DMy/1n+zkU8e4euEd9O1pAmS6FWueqSaim0vbyfVa2hujdA/l4KmmdhuNFY3
-	5UrqtJxD2oOFcDJ079avTIs01uPUKppxBOJv3
-X-Gm-Gg: ASbGncsA6Kr4JYvg4UPsPgLYCj8tphuiD93H29xSX6mcYS3fk4iJh+SY0KmSVsWUpiH
-	puQ8EWmKXyzdm+oMzzMWAB2/H6IqbuyTBe0ZdS10k1NVZZxnzmg0d2w+2aYGgK5oAyNm+Z7SwM2
-	Pni+2BkWE3LEy762pcsZeKYoIOxOoGsGKrJphJV7ii3b4Rf7z+YV3Rgl23FdQ=
-X-Google-Smtp-Source: AGHT+IHFQn5kuMF4vw8Su7pnPy7CipLl+j07QltZ6usU82e8HvhZ6PbH7GgCa60026sckLCuUo7eVIZnrHoMIJgdPaw=
-X-Received: by 2002:a05:600c:34c2:b0:43c:f895:cb4e with SMTP id
- 5b1f17b1804b1-451f0b0c75emr82841545e9.17.1749139725761; Thu, 05 Jun 2025
- 09:08:45 -0700 (PDT)
+        bh=YnIQvPD9lJYDOlBpOrCy1ioFdRL5RyD0q+hZaolXlzo=;
+        b=vi+WHxLFmjDlPVV5+WXVUs73ef8DptcbpfV/F6+aBBd5IfpZ1cU/bgquwwcVO/92ni
+         0Pn9h3Gj0JEoW3lJL0Wx2AKHf3zi/ohDAuPKQHhumV1RucS09rajB2dtWQFaygIheMKE
+         8dRNZjL+aZSi3oxeuHgLwKaDHRXAvzdSMTHPJODSLOmAO9K/sSKrpRJw5UpEKR27zk1E
+         s2fFNLbbx2M9+WIeQoT5aGlG4SEUqeSBK4fq/41uc4sGZTXp4F8IR2Uo1+l4kibvjE3O
+         W97+CNckZlN3uo13Wi4bcm4DhC09uSTAGwwXx+w/BRsvR6G4iYbpUMwPvPvq4u3O7mnB
+         Yq7w==
+X-Forwarded-Encrypted: i=1; AJvYcCUZ1xrYrB6eFDe4rNOkEXKd4uZ+UMNjzGsRFgg2Zu7GbcF45F4QgWJZCIlFf9dPkKZyxahhfxjPqQ==@vger.kernel.org, AJvYcCX0MCDNvEBFXRBrxn7DNiVVVcYUFLyXRRyR76bDro/WOhL4T5YnFaq0vMo4XPI+yhn7eFqjWxHw/z29VQcw@vger.kernel.org, AJvYcCX4Ho6zlCGbRYw9yU6RTyRgbfB5nXBniZ2y3MZE75hsJKl9tk4UeSSPmGnnHn0hPPGXMfevwB5+sda9ydOLPRJC@vger.kernel.org, AJvYcCXsoUU8pcESvspGYzsM0eNqvjHZtEmDXv4h9PQEcxk4sjJSBuxDiGnbdBcVAtDixVgT4g0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzU85nEDqW6PtPQTbDGotUinYSZU3Qi+Tyuvxx7ml/17iftQ0q5
+	oXMMmcl1EANaETli/mds4zGXVsklpfokmRdLFbkpe9Txn54PczQctZIrkDYIQz7obBXUJ6fXmeV
+	ce/HCsmmhta5MVchiuZkVToQnA/en0Aw=
+X-Gm-Gg: ASbGncsE0/kKnqrrSF8kNEosTzO0r4e5b5UrDKPqg2vcHvdeZkv5jqMvcgU1J4ok+Jo
+	fFNFixpmEXkTnd6j+CIu5H1K478YN68R7DHb8n3QghYA+X6hOr0vNmrK3c56mESMhVro6hXdBm2
+	HuqKe1guNgrUvHY1ICZs7vJiPkdkFzt5pAUMHqoU1kb5GeobhqFKMt2VPhCDzGW9bUDikD+Q==
+X-Google-Smtp-Source: AGHT+IF4/r/MeCk1ofRbXjeQgnJMl2fjGGz6lBVtftByV5fvMH1+Rl6IDv+s6YX9w9uN5TsW5ALs3oMs2ojfpEr5ugw=
+X-Received: by 2002:a5d:4291:0:b0:3a5:2875:f986 with SMTP id
+ ffacd0b85a97d-3a52875fc63mr2749955f8f.44.1749139804629; Thu, 05 Jun 2025
+ 09:10:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250604222729.3351946-1-isolodrai@meta.com> <20250604222729.3351946-2-isolodrai@meta.com>
- <CAADnVQJr0JZ1BKeSEE0YM=xcnP0QEBM0smmCkjNs2oaOR1jcbw@mail.gmail.com> <38c56b31-ac8a-436d-bc4a-0731bc702ecf@linux.dev>
-In-Reply-To: <38c56b31-ac8a-436d-bc4a-0731bc702ecf@linux.dev>
+References: <20250411-many_args_arm64-v1-0-0a32fe72339e@bootlin.com>
+ <20250411-many_args_arm64-v1-1-0a32fe72339e@bootlin.com> <CAEf4Bzbn6BdXTOb0dTcsQmOMZpp5=DzGS2hHHQ3+dwcja=gv+w@mail.gmail.com>
+ <D98Q8BRNUVS9.11J60C67L1ALR@bootlin.com> <CAEf4BzZHMYyGDZ4c4eNXG7Fm=ecxCCbKhKbQTbCjvWmKtdwvBw@mail.gmail.com>
+ <D9E9IQQ3QKXM.3UJ17G9CBS1FH@bootlin.com> <DADMLIVHMSSO.3AXSI5216WCT6@bootlin.com>
+ <9a2ba0ad-b34d-42f8-89a6-d9a44f007bdc@linux.dev> <DAEFD2WH7HRV.2SOG9Q00QSEXH@bootlin.com>
+In-Reply-To: <DAEFD2WH7HRV.2SOG9Q00QSEXH@bootlin.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 5 Jun 2025 09:08:33 -0700
-X-Gm-Features: AX0GCFukhbVI03gXpaXt5jpAF-W2WV63cn1d-_P9R0Ht7j52_5g-dm6juIdgNdI
-Message-ID: <CAADnVQKcSi2fgJky4vOm9Xidar2QQWgmUoZZg0xauXjshDs1Nw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/3] selftests/bpf: add cmp_map_pointer_with_const
- test
-To: Ihor Solodrai <ihor.solodrai@linux.dev>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Eduard <eddyz87@gmail.com>, 
-	Mykola Lysenko <mykolal@fb.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	Kernel Team <kernel-team@meta.com>
+Date: Thu, 5 Jun 2025 09:09:53 -0700
+X-Gm-Features: AX0GCFt6yH5UVLu_OY8YyoKeWCoB2_l0Zw4RyPbCo3gsHpLrUJ01bzW8146d9WY
+Message-ID: <CAADnVQ+T_s6dAwJ5JKqNqA8tq1P+MdfPvPw0EoY5yOf8PnGT4g@mail.gmail.com>
+Subject: Re: [Question] attributes encoding in BTF
+To: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+Cc: Ihor Solodrai <ihor.solodrai@linux.dev>, Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Puranjay Mohan <puranjay@kernel.org>, Xu Kuohai <xukuohai@huaweicloud.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Florent Revest <revest@chromium.org>, Bastien Curutchet <bastien.curutchet@bootlin.com>, 
+	ebpf@linuxfoundation.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com, 
+	dwarves@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 4, 2025 at 8:04=E2=80=AFPM Ihor Solodrai <ihor.solodrai@linux.d=
-ev> wrote:
+On Thu, Jun 5, 2025 at 12:35=E2=80=AFAM Alexis Lothor=C3=A9
+<alexis.lothore@bootlin.com> wrote:
 >
-> On 6/4/25 3:41 PM, Alexei Starovoitov wrote:
-> > On Wed, Jun 4, 2025 at 3:28=E2=80=AFPM Ihor Solodrai <isolodrai@meta.co=
-m> wrote:
-> >>
-> >> Add a test for CONST_PTR_TO_MAP comparison with a non-0 constant. A
-> >> BPF program with this code must not pass verification in unpriv.
-> >>
-> >> Signed-off-by: Ihor Solodrai <isolodrai@meta.com>
-> >> ---
-> >>   .../selftests/bpf/progs/verifier_unpriv.c       | 17 +++++++++++++++=
-++
-> >>   1 file changed, 17 insertions(+)
-> >>
-> >> diff --git a/tools/testing/selftests/bpf/progs/verifier_unpriv.c b/too=
-ls/testing/selftests/bpf/progs/verifier_unpriv.c
-> >> index 28200f068ce5..c4a48b57e167 100644
-> >> --- a/tools/testing/selftests/bpf/progs/verifier_unpriv.c
-> >> +++ b/tools/testing/selftests/bpf/progs/verifier_unpriv.c
-> >> @@ -634,6 +634,23 @@ l0_%=3D:     r0 =3D 0;                           =
-              \
-> >>          : __clobber_all);
-> >>   }
-> >>
-> >> +SEC("socket")
-> >> +__description("unpriv: cmp map pointer with const")
-> >> +__success __failure_unpriv __msg_unpriv("R1 pointer comparison prohib=
-ited")
-> >> +__retval(0)
-> >> +__naked void cmp_map_pointer_with_const(void)
-> >> +{
-> >> +       asm volatile ("                                 \
-> >> +       r1 =3D 0;                                         \
-> >> +       r1 =3D %[map_hash_8b] ll;                         \
-> >> +       if r1 =3D=3D 0xdeadbeef goto l0_%=3D;         \
+> Hi Ihor,
+>
+> On Wed Jun 4, 2025 at 7:31 PM CEST, Ihor Solodrai wrote:
+> > On 6/4/25 2:02 AM, Alexis Lothor=C3=83=C2=A9 wrote:
+>
+> [...]
+>
+> >> Could I be missing something obvious ? Or did I misunderstand the actu=
+al
+> >> attribute encoding feature ?
 > >
-> > I bet this doesn't fit into imm32 either.
-> > It should fit into _signed_ imm32.
+> > Hi Alexis.
+> >
+> > The changes recently landed in pahole and libbpf re attributes had a
+> > very narrow goal: passing through particular attributes for some BPF
+> > kfuncs from the kernel source to vmlinux.h
+> >
+> > BTF now has a way of encoding any attribute (as opposed to only bpf
+> > type/decl tags) by setting type/decl tag kind flag [1]. So it is
+> > possible to represent attributes like packed and aligned in BTF.
+> >
+> > However, the BTF tags need to be generated by something, in case of
+> > vmlinux by pahole. Pahole generates BTF by parsing DWARF. And, as far a=
+s
+> > I understand, attributes are not (can not be?) represented in DWARF in =
+a
+> > generic way, it really depends on specifics of the attribute.
+> >
+> > In order to support packed/aligned, pahole needs to know how to figure
+> > them out from DWARF input and add the tags to BTF. And this does not
+> > happen right now, which is why you don't see anything in bpftool output=
+.
+> >
+> > [1]
+> > https://lore.kernel.org/bpf/20250130201239.1429648-1-ihor.solodrai@linu=
+x.dev/
 >
-> Apparently it's fine both for gcc and clang:
-> https://github.com/kernel-patches/bpf/actions/runs/15454151804
+> Thanks for the details ! I have missed this possibility, as I have been
+> assuming that DWARF info was exposing the needed info. I'll take a look a=
+t
+> it, but if those attributes can not be represented by DWARF, I'll have to
+> find another way of getting those packing/alignment modifications on data
+> type (eg: re-use/share btf__align_of from libbpf, as suggested by Andrii,
+> but it may not able to cover all cases).
 
-Both compilers are buggy then.
-
-> I guess the value from inline asm is just put into IMM bytes as
-> is. llvm-objdump is exactly the same, although the value is pretty
-> printed as negative:
->
-> 0000000000000320 <cmp_map_pointer_with_const>:
->       100:       b7 01 00 00 00 00 00 00 r1 =3D 0x0
->       101:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 =3D 0=
-x0 ll
->       103:       15 01 00 00 ef be ad de if r1 =3D=3D -0x21524111 goto +0=
-x0
-
-It's 64-bit 0xFFFFffffdeadbeef
-Not the same as 0xdeadbeef
+Not sure all the trouble is worth it.
+I feel it's a corner case. Something we don't need to fix.
 
