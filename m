@@ -1,63 +1,64 @@
-Return-Path: <bpf+bounces-59700-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59699-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20080ACEB58
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 09:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D1B95ACEB38
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 09:51:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EB1C189B97B
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 07:57:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48465189B783
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 07:52:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A1272066CE;
-	Thu,  5 Jun 2025 07:56:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E8FD1FECB4;
+	Thu,  5 Jun 2025 07:51:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="uLgXYQ7T"
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="AYd+VJE5"
 X-Original-To: bpf@vger.kernel.org
-Received: from out162-62-57-87.mail.qq.com (out162-62-57-87.mail.qq.com [162.62.57.87])
+Received: from out162-62-57-210.mail.qq.com (out162-62-57-210.mail.qq.com [162.62.57.210])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C554B201032;
-	Thu,  5 Jun 2025 07:56:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EC821F4176;
+	Thu,  5 Jun 2025 07:51:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.210
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749110178; cv=none; b=d2Cb8e6n1HSf5ZF+5uLE60Zt0jUfTsAMAk71hIFx+0jcXrQzlOgpI6B39DymbbXWm1+M1kbPWR5UmNYiEXh2bLsRS/Tj/DKzXnpnff5R07Uy4NecqZjUgL6nKMuLRRNqXhZO/QSpigcrKsmrCHglrOr0zQdgp294n+s3jS364lY=
+	t=1749109903; cv=none; b=HrvOzbPDqa+ScxXB4hi7ZvbVW/ENU0UiLU52ScFwUbEZWi/Y+KM+M7K+ykl14PBEgQiuM6jd7Mc6BdYod4xD9XE3HHgHRyLA+A01V6SfWtsQ49QWnp0Ho6mXxevmudnu+OpIs/nNbeOLjA2FtDMrfzl3Q0vtHJ5wIuy0RuB0zCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749110178; c=relaxed/simple;
-	bh=WhtXNG/sF0mg8Hxs4NlLF3kfugzYfq/+M0VX23qYy7s=;
+	s=arc-20240116; t=1749109903; c=relaxed/simple;
+	bh=ADAo4tuAn9RJse2Dsl/pLYasjN1HWf+dOgXZED+HZ0c=;
 	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=PC0vMd08Ojqbks90INab7iWsWB0yhp3WTPtgniSNat1+2iW8vdnnTLFTDZhm9KzN7NPHv1+ite01cc7+KcrElbPmqfxXwh4M5S3pmLiKDUfqnYfH7U/UTBVI4wq8tt0iSYFXKqsgJkZO6DHzzWiE1XAISWmZ+62Ktxsx1W4DboU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=uLgXYQ7T; arc=none smtp.client-ip=162.62.57.87
+	 MIME-Version; b=R5eSTmWsraynviKI4JR79fj6KAKZOUC5md8sAumYSJzI2IKUZ1PuIH8ygaPeaaaRA0GYAr1Y1LHMC9x8O84G4TsVLKgRTpX7LwPpIhkQXvbJkn/pto6Aom1UVICG/LtSLyT2dMra+AMNCEAUY8FErhmtjfK/gqlDebGPvuQcr5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=AYd+VJE5; arc=none smtp.client-ip=162.62.57.210
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1749109869;
-	bh=KGdcSsdIA4MrHGZNiW7o/ICS1J0ps9u96VST8rkt45k=;
+	s=s201512; t=1749109883;
+	bh=riOYvbqngrrZtJixWRHCaMdJe6DT8P5TkGFvEYl78Zg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=uLgXYQ7TryKIU15g5ziG1/V2J5bdlPtkZ5+PVMNpPdugQ4Vax/V/L2conTy6ZaBZx
-	 GUcjdxgByNMs1NjbSoYKsrv9HEQmzgmaIMSWkmf8/qgCC4bHRVnGveKdzmtB5t0L2T
-	 eaHVCQR9ZylyZDnzEep+az/LNh2Eblh1KcB3xDdk=
+	b=AYd+VJE5lKlEjhHf5oHs05oZUpDJ2BsMS3x+/D01ci4p5dtZTDLw/RtuQCezvK4H4
+	 9JOfr/k+yyHOMjRFZ+a+HK+2J9PF9ugugnt+8r4dMoSJQj3zvINBu7MroedVSc0Bky
+	 Ts0VX32LXNwaiOpUJPsFN8Sog3eTxdg6IHqu+MuA=
 Received: from NUC10.. ([39.156.73.10])
-	by newxmesmtplogicsvrszb16-1.qq.com (NewEsmtp) with SMTP
-	id CC4A785D; Thu, 05 Jun 2025 15:51:04 +0800
-X-QQ-mid: xmsmtpt1749109864twi44hfkg
-Message-ID: <tencent_FB1D31D70047E82DCBF3D257C5ED75653405@qq.com>
-X-QQ-XMAILINFO: MllZffuBkEb5SLh50X53HP3g51On3U391aYFG9zbjgvenvWjEUWP+y37mXdQ1I
-	 UgXtV3YewOmkeO1vGYQUqrZoRw3yDyf1OL5L/WSdQtZuWxvcNGJK+ccHbEvkq2XNNubS8d9STHCy
-	 BaqDyAyVwn7wZqh/vUeoR6T11cn4uCK+jjiWYf25h8yudglPaGuQxK3rxEuZ5lGYraVcPDQKyJtb
-	 HB0UvU5loWbK/sCV0YHCvqEdeweijS18P8P72C5Q5loxkam+VjHl04V8h++mBbe6aDvDcdTT4Ts9
-	 kCfWIoTAYf5OKozJ6WQMfFr9osqvWo1hTsWNDQc3KoIHqDH6sTBE8Uxj0O0YkIVthboCk2i+ud3m
-	 hdO1SAVfcTy7cU2unqbfJXwo1dhyoFD5EwYoIqkkOpRtN8DOu5mLhYVBC/15t3OSJIum5chhOqN6
-	 cxxv7dqGcNRC6uZqUCiIvpJrO0GhCzKa1dLB5ZxoukG148Cun9fv9cyAv0t70ekPMGfLxPqnW0AZ
-	 jxHl0Mln1gpHzC8jwwb+W9QZYo8pMCSbKGHofzUWxTO2jH4mwix3mQYvZ6iT5y/7wBhGgYVtpxGW
-	 UvzeqTNftudLhTatYPEOnO4fMe9dvi2vkmyONEY9hXpnC5gCgqJeuFhN15eKtsAsIAgX1Kl8h/Ij
-	 q2dEKeV7ar0o4qyzS5QR7TejjMyFDtdnLtkxI7caO+nMmaiAFKV0vyVtbXtYDwnyIsmo+DL9grWS
-	 v4ioYtg80Yc2cCPmARkC5GFVIYX7704DpFvJ+xlBa7ibDH1uMSCFD7kwyMTSi7rg04rr3qMj5sG8
-	 CnIxkwKwxkwrhtZK6UirzZEuA6Z0hTo8LCMVr55Wfiqzg20pBqF3Q1TQ+Vu+o3Sw8HjkyOqFJ0Um
-	 kF8Co3cxVOIFCrNe+1qNM4RW6YIGjQomLsY9T2FdM6H4OfnxvhGr9p9eqnypcr1HsMDXL7SfNoq2
-	 j3Q7B2kuul0SWppnDZge3su5ZOXvMRFPuA+IYHVLlmlN42EF86mmQIQhN+FLcOfWcwnf33qNA=
-X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
+	by newxmesmtplogicsvrszc16-0.qq.com (NewEsmtp) with SMTP
+	id CD1A1A28; Thu, 05 Jun 2025 15:51:17 +0800
+X-QQ-mid: xmsmtpt1749109877th51j190x
+Message-ID: <tencent_F85EF146D110170D48845EB3F02ED5549409@qq.com>
+X-QQ-XMAILINFO: MRMtjO3A6C9XKLqM7JeVPGU0RrgQGAi/gOOybpETim/eOO5nyhGqNka7shneg+
+	 EufHpPXJz532I2fJbZBPyyrG3nQTLAkguSn7BQRmDhkzAWl4orFo2S8X4OFdhxguZdsUGxFa9Mpo
+	 qHPVqqQ0mrHBhc7D1Q8wSg5YZkRCmYPtwpavBWcH18V9vABB8UGGspg4hfTxmR3qmO3u6+Ktjq3l
+	 vSoZbLqoXUFQYpoZc1j8UPk5Pucde7gn5Qqv3XoNlOZxzCzKmXwhxoloFjKx984LuvDP58qvzmrV
+	 mBpBBU38mmOuvsEgc9PIcUszCcbjXYPjMNSHGarFQ6Ziu2GG+nkRm0z2rJk1PPRWI75iMnAqOLZW
+	 wLUfRSTdc+7lTQzflFTgQC+qGbQwW+yS1Gxe3II6ct8IoL1K/TBbAVYeTydoWxc2CJP/Kbw+YPtt
+	 clrenvo9DNdjIDhr4qsbkIA2ZK0by+x5oYRX9CwdPEZa5jt8vBDQSoEFveJhTXhQw98xFdoDMpRb
+	 86nIuZfXCUsnJAazvQZu5OUmn5qVY70GFgY3duM3sAnyNJZhnJINFI9GcR2GDqYXmMB/g7wHcBjf
+	 pCuCYUITgbELJKl7b4Ib9pNISvM1/Afst8/uMe9vF5utiVAHpYQAZsiH/gu3xF6Yq6EyRlIk1pxn
+	 0XfryPS4YcCy8Op+GlanCOTtnMR+EHoJM/Nyj3sazXKTu2giouYGJsL5Fr0uaiTnze4uTe62qDtR
+	 N7lC+jSMoE6cqWm8TmhyHebAEt8C4SGbOWs4bok2Gwv1fWCyBvMKMy7zbAHb45a/u22oVs/WNY6q
+	 KdII5KSnQ6U4Xfkz3WLdYJH6qo+OdbkbtWi4IiOZfD5N71mg6yfCGkqHQ/h1jHRrRWv3VHrDXF1h
+	 cJr+2ZRobCb7qhbKiY5AwJjE1P8PFEY3PrAbWhmpIhkytZvI7wipn/g08cQpNg0/P6fcoY4dmVo4
+	 EwdfnowzxsSO0h1wfBAol3gVIBd1wjrL0d7KATx1GZv8t8k7SzViUFb0XAVT/tYe7OQmvCrP8mW9
+	 NdohZDZPVkg1QnDtxcZAM+hicZx+I=
+X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
 From: Rong Tao <rtoax@foxmail.com>
 To: Quentin Monnet <qmo@kernel.org>,
 	Alexei Starovoitov <ast@kernel.org>,
@@ -72,13 +73,15 @@ To: Quentin Monnet <qmo@kernel.org>,
 	Stanislav Fomichev <sdf@fomichev.me>,
 	Hao Luo <haoluo@google.com>,
 	Jiri Olsa <jolsa@kernel.org>,
+	Andrew Kreimer <algonell@gmail.com>,
+	Rong Tao <rongtao@cestc.cn>,
+	Lin Yikai <yikai.lin@vivo.com>,
 	bpf@vger.kernel.org (open list:BPF [TOOLING] (bpftool)),
 	linux-kernel@vger.kernel.org (open list)
-Cc: rongtao@cestc.cn,
-	rtoax@foxmail.com
-Subject: [PATCH bpf-next 1/2] bpftool: skel: Introduce NAME__open_and_load_opts()
-Date: Thu,  5 Jun 2025 15:51:02 +0800
-X-OQ-MSGID: <2b7aff0ccfd7a8e017f5568b476fdb3b8d5f9b2e.1749109589.git.rongtao@cestc.cn>
+Cc: rtoax@foxmail.com
+Subject: [PATCH bpf-next 2/2] bpftool: skel: Introduce NAME__open_and_load_opts()
+Date: Thu,  5 Jun 2025 15:51:13 +0800
+X-OQ-MSGID: <8c0f486b44591013c4fe538fb5edb908992978b8.1749109589.git.rongtao@cestc.cn>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1749109589.git.rongtao@cestc.cn>
 References: <cover.1749109589.git.rongtao@cestc.cn>
@@ -92,71 +95,40 @@ Content-Transfer-Encoding: 8bit
 
 From: Rong Tao <rongtao@cestc.cn>
 
-Introduce functions that support opts input parameters, Obviously, it is
-more convenient to use. for example, skel with name=tc will include the
-following functions:
-
-    static inline struct tc_bpf *
-    tc_bpf__open_and_load_opts(const struct bpf_object_open_opts *opts)
+Update Documentation for skel NAME__open_and_load_opts()
 
 Signed-off-by: Rong Tao <rongtao@cestc.cn>
 ---
- tools/bpf/bpftool/gen.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ tools/bpf/bpftool/Documentation/bpftool-gen.rst | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index 67a60114368f..1487e61c6970 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -1371,6 +1371,7 @@ static int do_skeleton(int argc, char **argv)
- 		#ifdef __cplusplus					    \n\
- 			static inline struct %1$s *open(const struct bpf_object_open_opts *opts = nullptr);\n\
- 			static inline struct %1$s *open_and_load();	    \n\
-+			static inline struct %1$s *open_and_load_opts(const struct bpf_object_open_opts *opts = nullptr);    \n\
- 			static inline int load(struct %1$s *skel);	    \n\
- 			static inline int attach(struct %1$s *skel);	    \n\
- 			static inline void detach(struct %1$s *skel);	    \n\
-@@ -1438,12 +1439,12 @@ static int do_skeleton(int argc, char **argv)
- 		}							    \n\
- 									    \n\
- 		static inline struct %1$s *				    \n\
--		%1$s__open_and_load(void)				    \n\
-+		%1$s__open_and_load_opts(const struct bpf_object_open_opts *opts)\n\
- 		{							    \n\
- 			struct %1$s *obj;				    \n\
- 			int err;					    \n\
- 									    \n\
--			obj = %1$s__open();				    \n\
-+			obj = %1$s__open_opts(opts);			    \n\
- 			if (!obj)					    \n\
- 				return NULL;				    \n\
- 			err = %1$s__load(obj);				    \n\
-@@ -1455,6 +1456,12 @@ static int do_skeleton(int argc, char **argv)
- 			return obj;					    \n\
- 		}							    \n\
- 									    \n\
-+		static inline struct %1$s *				    \n\
-+		%1$s__open_and_load(void)				    \n\
-+		{							    \n\
-+			return %1$s__open_and_load_opts(NULL);		    \n\
-+		}							    \n\
-+									    \n\
- 		static inline int					    \n\
- 		%1$s__attach(struct %1$s *obj)				    \n\
- 		{							    \n\
-@@ -1530,7 +1537,11 @@ static int do_skeleton(int argc, char **argv)
- 									    \n\
- 		#ifdef __cplusplus					    \n\
- 		struct %1$s *%1$s::open(const struct bpf_object_open_opts *opts) { return %1$s__open_opts(opts); }\n\
--		struct %1$s *%1$s::open_and_load() { return %1$s__open_and_load(); }	\n\
-+		struct %1$s *%1$s::open_and_load() { return %1$s__open_and_load(); }\n\
-+		struct %1$s *%1$s::open_and_load_opts(const struct bpf_object_open_opts *opts)\n\
-+		{							    \n\
-+			return %1$s__open_and_load_opts(opts);		    \n\
-+		}							    \n\
- 		int %1$s::load(struct %1$s *skel) { return %1$s__load(skel); }		\n\
- 		int %1$s::attach(struct %1$s *skel) { return %1$s__attach(skel); }	\n\
- 		void %1$s::detach(struct %1$s *skel) { %1$s__detach(skel); }		\n\
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-gen.rst b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
+index ca860fd97d8d..4dc2a624090e 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-gen.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
+@@ -107,8 +107,10 @@ bpftool gen skeleton *FILE*
+       global data maps. It corresponds to libbpf's **bpf_object__load**\ ()
+       API.
+ 
+-    - **example__open_and_load** combines **example__open** and
+-      **example__load** invocations in one commonly used operation.
++    - **example__open_and_load** and **example__open_and_load_opts**.
++      Combines **example__open** and **example__load** invocations in one
++      commonly used operation. **_opts** variants accepts extra
++      **bpf_object_open_opts** options.
+ 
+     - **example__attach** and **example__detach**.
+       This pair of functions allow to attach and detach, correspondingly,
+@@ -336,6 +338,9 @@ files into the final BPF ELF object file *example.bpf.o*.
+                 const struct bpf_object_open_opts *opts);
+   static inline struct example *example__open();
+   static inline int example__load(struct example *obj);
++  static inline struct example *example__open();
++  static inline struct example *example__open_and_load_opts(
++                const struct bpf_object_open_opts *opts);
+   static inline struct example *example__open_and_load();
+   static inline int example__attach(struct example *obj);
+   static inline void example__detach(struct example *obj);
 -- 
 2.49.0
 
