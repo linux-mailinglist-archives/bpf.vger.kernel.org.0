@@ -1,211 +1,113 @@
-Return-Path: <bpf+bounces-59799-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59800-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C3A6ACF8D9
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 22:34:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4A08ACF8E7
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 22:46:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B01173AC98E
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 20:34:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 33AF2189C6A3
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 20:46:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E71F27F165;
-	Thu,  5 Jun 2025 20:34:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F49A27F198;
+	Thu,  5 Jun 2025 20:45:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fA3EasR9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TGpzMmoA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D957E27A127
-	for <bpf@vger.kernel.org>; Thu,  5 Jun 2025 20:34:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50CEB19D880;
+	Thu,  5 Jun 2025 20:45:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749155683; cv=none; b=HtpeSd+aq+XsGdwKZvbEOm+7rurtOFZyBRoNnbxRT0GaiLOPb1RVIkSJjLxq18I0shLTMp/163IrTwpuK0ac9uTN/0JXzf7Far71GYEueWExpd/JRypyQxe947ui7zZpz+NC+31/yXGcDMWNSkuraRM0MNhiNwB9ruJTXNGcZ6I=
+	t=1749156358; cv=none; b=XaeYxAzXJgeU01/qxpKXkefmUDYeNO5qsU5hPJd8UxRJ0BZZoKJk0Spqi/sohm3ZYRmGWED9CdDuQgqyW/BWFyz8QOUkviYenhHNJtcMiJSkI+6w6rnIPVu1Vt6nAN9F5BTQ2bjHwuNsC/Gxlvk7a6u1xdmxYHkbdneMDWYbpKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749155683; c=relaxed/simple;
-	bh=0QII3GWTrtGjkUbjZoP+Vf2mHDWYUvjDCDt2cueIiOA=;
+	s=arc-20240116; t=1749156358; c=relaxed/simple;
+	bh=KaleJOZCFYwOjK3nI6qlWVXegytr99EwRh96RQIPuX8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jNXC6J4WrqG996ibpZiI/qeqXJZzCnmWA+pFDaqxNyCk+qFvkJh8EFwLxvBji13ZliHGDNsOABVwMoxFirxC/1kEVNSqC79BgNErLoOHQkd4c9iO8WqNKARVArsMqcnklQtmJhLR9KCoMc5NbT4a5MjZF/fB0g+g506i6Z423Z8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fA3EasR9; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2348ac8e0b4so19375ad.1
-        for <bpf@vger.kernel.org>; Thu, 05 Jun 2025 13:34:40 -0700 (PDT)
+	 To:Cc:Content-Type; b=WRjhpihuh4mEjOSefBEbaX1C4PLjDVQj1Fp5ENxdX405Vdc0bx0oMHZ14s5dtdpNEu/QGgUEp4hYr8+7eZ4QLezIZ1VdSpGyASiyq665MwQeNeosgRf+/mlFkL7s3JniDRLmx60VQYbklZKVoPMRsyNjMjRv9LWuN+h0KvgNuFk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TGpzMmoA; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-3122a63201bso1285309a91.0;
+        Thu, 05 Jun 2025 13:45:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1749155680; x=1749760480; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1749156356; x=1749761156; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4ZoLre5WJXzZI3tRwkyLjsbHGJ2C1Pcu+Ob2SlEJwY0=;
-        b=fA3EasR9DfNX2l8GwvcaT0MvZ7Aq938G5NX2vSzkm9JV0bUQL0daiUSzQFdmjjYXrc
-         KpH3ZVGuZoyFQ9dfZ8nHCf8UplLDYvkDfM8+6cMFPoXL+/Am9RgiKUfceEwmpnT9XVbF
-         lLc8/7mOUzCJv0zrO0uvzSNgpul5XRrZxFbUotDU+3qD/jZs/1QjZrJwTOl6VinxpHRC
-         kYyDpKqwBbuLfVWv4YureLecupPHUK9QLpthWcNBqLQ0PEM3X6SgKZ2AiQshJD6j/59O
-         KRB5oP+owa7iHToZIippsRv442PPbF6z3n0GPUpHELvthLJ6QL1vqeQuteCCh1Iq93Ud
-         KwpA==
+        bh=08nvIWQniSHmCFLizlsO6hV7YjeqPzOvfL/VB+gEMjQ=;
+        b=TGpzMmoArGh92boshPkIgyyRzUM76ISskMt0AysCDrtJMSsFOpxUwIJ3JkPcy/NDkL
+         0WK1odIwqI1cH8pMeiB25RFT+9kelTHkDJ7Z1jtQMv6P0ZLFPru7j+DHYynVV+7+7A8x
+         fV1/HLpDe9NemgeSEirjy7JXOSeRDOjUUfNpfWh9yPvyaEd88wdpCMK5FgyoFJ3Oyi1M
+         scm/Ji5d4mhHbDYTp9rJk2faS910QJiZignijW/Bq80iWod1Ya5BU81WY+K5mqh2HKI6
+         vvUIEDlikp69qzrhJ1MAhFKyefccbYZkKTR2IOAAH4jnigQwGsfBT1jMKo/TJkEAtQUO
+         omgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749155680; x=1749760480;
+        d=1e100.net; s=20230601; t=1749156356; x=1749761156;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4ZoLre5WJXzZI3tRwkyLjsbHGJ2C1Pcu+Ob2SlEJwY0=;
-        b=vcxlBe++UPAoOwAKiHmPaPH/1R0vA+aw+2EDXJsgKNw8/zv/M5Qt6CDbqFvfZPMQH3
-         u7DCOBsD0BGlDPH5wOkI9EH2PwglkVvBuV181h6Z3ooX93YQsunvVt4RjtUL5nxywxkb
-         T5zru/mHtfNvu+k0mnf3UHB/AhflXR2rGApHxv7P3k6QbVBnaCGJmkAvca3MZLRsbgMQ
-         zdRu1Wa0/1HA3kytrGncknFAQtVg2Mz0f8mqaJ4O/qyr2k/KTsfzWvlud2TQsa9ID3IB
-         D1Uhy2oDYIwyY3ttGFqOyjSGCA6edt/6HlYC1ppGyR0TLk3XEXjcNROiFyzkegJ4cDls
-         PynQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV1g3GLoUmD9NcpfoyoPKUllGFhp80jKuQhD341WTcHb9RzuQ56++MYUIxjkXXgDIA0KDs=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz5eXyUWlWV7WN+/IzYvMtsUxTVzV4AxrpRc4MSEl+aTVySi8Ac
-	8yr3ILZfZiJ0TlTd/SKM7tULRw0CcnNaD4P1QetItcQ0aS/gbjC3S27DdzhY3HmMJ9PjhjFJxdh
-	W0Is6rUq4ySa189k5ol0QXyYBXTpQAjZQvxiHXrHb
-X-Gm-Gg: ASbGncvaskAw8sPsEw5LLvFheS0NiEQGNqCRdTgk3maXWxVLNsbOZ4yIT4xW7N2FFAp
-	hYdE4uDew5jiKYmRxQG6mRzVSeqwKXq7XqrrHDZiqoGhmm0nXQy+Pzrh7xPSXEXgZTp8zXBnhLN
-	Cv7Vbuk4jJxJMVjmF2AuZ2FM+gne+FDjYF7npEt35dgAeP
-X-Google-Smtp-Source: AGHT+IEz65fw6eX6HnqKD1lGuCRGB/lwbhJS2C0P8T2RK/ATRMV91beDaRjDj92IaN4e2RiyHUifHQ+O8l0xyf76AkM=
-X-Received: by 2002:a17:902:f60b:b0:234:8eeb:d81a with SMTP id
- d9443c01a7336-236021e505cmr754845ad.16.1749155679795; Thu, 05 Jun 2025
- 13:34:39 -0700 (PDT)
+        bh=08nvIWQniSHmCFLizlsO6hV7YjeqPzOvfL/VB+gEMjQ=;
+        b=onsXXDYlnhU/qVvGFKDUCjXAs9P3VAkDkk1UNW6/rAgUkfheYoLFOazpgVL/eyWG3v
+         SevCI1kDBbkstsmzGCd7dHT+ZG0cm/A9y/RM2lkvI+QUfAaUGloY2cItKu8dvaYY48yA
+         MygN3lineQFsA8TDIyR6MOrSlw6jL7FxyFSOnqZOLynsR6VAd51R8nuhyhK9PRoEmf8i
+         rQUoSxpTjtAy+42dXAGHbXQ6gCJoSOluF6JoiJr5Yi3LtGrpNIa5cBg1bpujWM5/kHYE
+         Z3Q7EPsLnic0u6PJU6mlSnQyA+klnsEvcI/C0aT1xLi9VDNBAHuLdsA/SFldB2febp56
+         dqxg==
+X-Forwarded-Encrypted: i=1; AJvYcCWIRZPxpQCLGcIwnBbEy+cP7H0BqPlThj1xy3QDssXRWyYmzaMxyjts9zqh2I+va04+lQjbhJAejELXWUnt@vger.kernel.org, AJvYcCWftN1v4hoWtZaT0lyT3uTDeN7FX2tbpQdyZajetDyvZ1+P79/3Ie6ohaFR46uY+YjEBJo9P32wRdMhsUNsMDLU@vger.kernel.org, AJvYcCWp9my6zr39cSNW360avezYsHpclNdbbPc3NRXbKFKxMWCNwL+ty0O8URy7BWXpqFrk3nw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyuVfcmKcnLGRnSmPXkme7UDBR9izkHmfzLfgP48EIfVcNCL8tV
+	pgpgX2c8nFKGZDdbbdZ+ooXTJ4+4soquq9hWerdpt8uxiKa8cjaRqD6xrk4qbtzEDc/x5NKHu5M
+	0U7TVjjaqRvSnDimJJlQXSNNzDCafDd4=
+X-Gm-Gg: ASbGncsm8J2vaCxaDK7bGfQUkqy56nW6yX23MfcxhFDcq3Gd5T/PDP9/rL5P6c+Bpse
+	IlRGI8OIDPHkeqzD6W0OIidOkp7YX991fIaTexUtm4ufWXbsNwiwkGEVAeloUlKf+ERhs+WGPWN
+	1Awfgpqyno3ERq0+ZK5QLeEWRsy6MfU5+x5aEEgFKHA15upMa6rs/3+J8YkIc=
+X-Google-Smtp-Source: AGHT+IHsr9ttE7WIn3845WOdkjd+yiJ7dZGR1JHZtZQdlQhQ6XinR/AD3N+nP6o+ND2yd8oiZBZvEkpoETpzIV7L2t4=
+X-Received: by 2002:a17:90b:58cf:b0:311:ea13:2e63 with SMTP id
+ 98e67ed59e1d1-31347300dafmr1668278a91.13.1749156356548; Thu, 05 Jun 2025
+ 13:45:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250604025246.61616-1-byungchul@sk.com> <20250604025246.61616-4-byungchul@sk.com>
- <29f2c375-65e3-4d22-8274-552653222f8d@gmail.com> <CAHS8izMb23eaav-Fz50sefuS8BhF7as7=BX+Sv1wj01+0n6tMg@mail.gmail.com>
- <ec924af7-1330-4220-97be-1171ef6ffc75@gmail.com>
-In-Reply-To: <ec924af7-1330-4220-97be-1171ef6ffc75@gmail.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Thu, 5 Jun 2025 13:34:25 -0700
-X-Gm-Features: AX0GCFsZcj1hI7C7EPh1g4w7_P54Ew1pJG_c13sE__2Bloq-K4EM8uiIisV8cik
-Message-ID: <CAHS8izND_JonvNqJm4XpXm-sk9+v6KCGqeKb7ZUSAWoyckUY6A@mail.gmail.com>
-Subject: Re: [RFC v4 03/18] page_pool: use netmem alloc/put APIs in __page_pool_alloc_page_order()
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: Byungchul Park <byungchul@sk.com>, willy@infradead.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, kernel_team@skhynix.com, 
-	kuba@kernel.org, ilias.apalodimas@linaro.org, harry.yoo@oracle.com, 
-	hawk@kernel.org, akpm@linux-foundation.org, davem@davemloft.net, 
-	john.fastabend@gmail.com, andrew+netdev@lunn.ch, toke@redhat.com, 
-	tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com, 
-	leon@kernel.org, ast@kernel.org, daniel@iogearbox.net, david@redhat.com, 
-	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz, 
-	rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org, 
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com
+References: <20250603203701.520541-1-blakejones@google.com> <20250603203701.520541-2-blakejones@google.com>
+In-Reply-To: <20250603203701.520541-2-blakejones@google.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 5 Jun 2025 13:45:42 -0700
+X-Gm-Features: AX0GCFsF8bZqbHLzfHuC1RDhJourh4uvIqmM0-HJinP_vZEVbnxfekkB0vbUQNM
+Message-ID: <CAEf4BzYyn0=d-M45czJe-Qfk0tTuqLcjzCOge_p9iu6vXWR7hA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] Tests for the ".emit_strings" functionality in the
+ BTF dumper.
+To: Blake Jones <blakejones@google.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Ihor Solodrai <ihor.solodrai@linux.dev>, Namhyung Kim <namhyung@kernel.org>, 
+	Ian Rogers <irogers@google.com>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 5, 2025 at 1:26=E2=80=AFPM Pavel Begunkov <asml.silence@gmail.c=
-om> wrote:
+On Tue, Jun 3, 2025 at 1:37=E2=80=AFPM Blake Jones <blakejones@google.com> =
+wrote:
 >
-> On 6/5/25 20:39, Mina Almasry wrote:
-> > On Thu, Jun 5, 2025 at 3:25=E2=80=AFAM Pavel Begunkov <asml.silence@gma=
-il.com> wrote:
-> >>
-> >> On 6/4/25 03:52, Byungchul Park wrote:
-> >>> Use netmem alloc/put APIs instead of page alloc/put APIs and make it
-> >>> return netmem_ref instead of struct page * in
-> >>> __page_pool_alloc_page_order().
-> >>>
-> >>> Signed-off-by: Byungchul Park <byungchul@sk.com>
-> >>> Reviewed-by: Mina Almasry <almasrymina@google.com>
-> >>> ---
-> >>>    net/core/page_pool.c | 26 +++++++++++++-------------
-> >>>    1 file changed, 13 insertions(+), 13 deletions(-)
-> >>>
-> >>> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> >>> index 4011eb305cee..523354f2db1c 100644
-> >>> --- a/net/core/page_pool.c
-> >>> +++ b/net/core/page_pool.c
-> >>> @@ -518,29 +518,29 @@ static bool page_pool_dma_map(struct page_pool =
-*pool, netmem_ref netmem, gfp_t g
-> >>>        return false;
-> >>>    }
-> >>>
-> >>> -static struct page *__page_pool_alloc_page_order(struct page_pool *p=
-ool,
-> >>> -                                              gfp_t gfp)
-> >>> +static netmem_ref __page_pool_alloc_page_order(struct page_pool *poo=
-l,
-> >>> +                                            gfp_t gfp)
-> >>>    {
-> >>> -     struct page *page;
-> >>> +     netmem_ref netmem;
-> >>>
-> >>>        gfp |=3D __GFP_COMP;
-> >>> -     page =3D alloc_pages_node(pool->p.nid, gfp, pool->p.order);
-> >>> -     if (unlikely(!page))
-> >>> -             return NULL;
-> >>> +     netmem =3D alloc_netmems_node(pool->p.nid, gfp, pool->p.order);
-> >>> +     if (unlikely(!netmem))
-> >>> +             return 0;
-> >>>
-> >>> -     if (pool->dma_map && unlikely(!page_pool_dma_map(pool, page_to_=
-netmem(page), gfp))) {
-> >>> -             put_page(page);
-> >>> -             return NULL;
-> >>> +     if (pool->dma_map && unlikely(!page_pool_dma_map(pool, netmem, =
-gfp))) {
-> >>> +             put_netmem(netmem);
-> >>
-> >> It's a bad idea to have {put,get}_netmem in page pool's code, it has a
-> >> different semantics from what page pool expects for net_iov. I.e.
-> >> instead of releasing the netmem and allowing it to be reallocated by
-> >> page pool, put_netmem(niov) will drop a memory provider reference and
-> >> leak the net_iov. Depending on implementation it might even underflow
-> >> mp refs if a net_iov is ever passed here.
-> >>
-> >
-> > Hmm, put_netmem (I hope) is designed and implemented to do the right
-> > thing no matter what netmem you pass it (and it needs to, because we
-> > can't predict what netmem will be passed to it):
-> >
-> > - For non-pp pages, it drops a page ref.
-> > - For pp pages, it drops a pp ref.
-> > - For non-pp net_iovs (devmem TX), it drops a net_iov ref (which for
-> > devmem net_iovs is a binding ref)
-> > - For pp net_iovs, it drops a niov->pp ref (the same for both iouring
-> > and devmem).
+> When this mode is turned on, "emit_zeroes" and "compact" have no effect,
+> and embedded NUL characters always terminate printing of an array.
 >
-> void put_netmem(netmem_ref netmem)
-> {
->         struct net_iov *niov;
->
->         if (netmem_is_net_iov(netmem)) {
->                 niov =3D netmem_to_net_iov(netmem);
->                 if (net_is_devmem_iov(niov))
->                         net_devmem_put_net_iov(netmem_to_net_iov(netmem))=
-;
->                 return;
->         }
->
->         put_page(netmem_to_page(netmem));
-> }
-> EXPORT_SYMBOL(put_netmem);
->
-> void net_devmem_put_net_iov(struct net_iov *niov)
-> {
->         net_devmem_dmabuf_binding_put(net_devmem_iov_binding(niov));
-> }
->
-> Am I looking at an outdated version? for devmem net_iov it always puts
-> the binding and not niov refs, and it's always does put_page for pages.
-> And it'd also silently ignore io_uring. And we're also patching early
-> alloc/init failures in this series, so gauging if it's pp or non-pp
-> originated struct page might be dangerous and depend on init order. We
-> don't even need to think about all that if we continue to use put_page,
-> which is why I think it's a much better option.
+> Signed-off-by: Blake Jones <blakejones@google.com>
+> ---
+>  .../selftests/bpf/prog_tests/btf_dump.c       | 118 ++++++++++++++++++
+>  1 file changed, 118 insertions(+)
 >
 
-Oh, my bad. I was thinking of skb_page_unref, which actually handles
-all net_iov/page types correctly. You're right, put_netmem doesn't
-actually do that.
+Nice set of tests, thank you! Applied to bpf-next.
 
-In that case reverting to put_page would be better here indeed.
-
---=20
-Thanks,
-Mina
+[...]
 
