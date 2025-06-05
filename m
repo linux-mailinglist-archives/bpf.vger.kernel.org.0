@@ -1,287 +1,211 @@
-Return-Path: <bpf+bounces-59798-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59799-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 123CCACF8CA
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 22:30:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C3A6ACF8D9
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 22:34:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A4853A52C7
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 20:30:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B01173AC98E
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 20:34:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CBAD27A127;
-	Thu,  5 Jun 2025 20:30:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E71F27F165;
+	Thu,  5 Jun 2025 20:34:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YPiRwPVT"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fA3EasR9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AB22202C3E
-	for <bpf@vger.kernel.org>; Thu,  5 Jun 2025 20:30:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D957E27A127
+	for <bpf@vger.kernel.org>; Thu,  5 Jun 2025 20:34:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749155421; cv=none; b=KGIRdTi/ZqYJLih/9Yle/Dj5EFCWD7q19E9880udhBrz8F2Me0BxY8xAlWsCGpI3pp2j2+16fuYdNBF0xx4fekxjSzsDiNIYTjK4Shbejukxg1xanvP0me85lYw43Ofkvjf2CNYrJvqS8slf6JvtY1Wc6MtRETEALehO2ptSGD0=
+	t=1749155683; cv=none; b=HtpeSd+aq+XsGdwKZvbEOm+7rurtOFZyBRoNnbxRT0GaiLOPb1RVIkSJjLxq18I0shLTMp/163IrTwpuK0ac9uTN/0JXzf7Far71GYEueWExpd/JRypyQxe947ui7zZpz+NC+31/yXGcDMWNSkuraRM0MNhiNwB9ruJTXNGcZ6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749155421; c=relaxed/simple;
-	bh=0/JhifGZgkiissVpQcMiALRc7lMlIcTXWMxUCuYnw/I=;
+	s=arc-20240116; t=1749155683; c=relaxed/simple;
+	bh=0QII3GWTrtGjkUbjZoP+Vf2mHDWYUvjDCDt2cueIiOA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YhfAH9bUzw5IhJk6gx8MmAXcFP+TlhFOXBIOREUgJGgwNIkke62VnY3Oog1eQVXyv/dAsS5cmeYw6CHAmZ0dhNxdrP5cRTZTas+mu6we/x/4+fEyLU7AtyiPsKcsWJvroQN7MsjfY/9Y5G187Zyrq35VY6bGUKFsNo9CNa9UpoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YPiRwPVT; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-742c9907967so1396860b3a.1
-        for <bpf@vger.kernel.org>; Thu, 05 Jun 2025 13:30:18 -0700 (PDT)
+	 To:Cc:Content-Type; b=jNXC6J4WrqG996ibpZiI/qeqXJZzCnmWA+pFDaqxNyCk+qFvkJh8EFwLxvBji13ZliHGDNsOABVwMoxFirxC/1kEVNSqC79BgNErLoOHQkd4c9iO8WqNKARVArsMqcnklQtmJhLR9KCoMc5NbT4a5MjZF/fB0g+g506i6Z423Z8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fA3EasR9; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2348ac8e0b4so19375ad.1
+        for <bpf@vger.kernel.org>; Thu, 05 Jun 2025 13:34:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749155418; x=1749760218; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1749155680; x=1749760480; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ozcYr68uEApKZ2A0plGojw6mIXU/V081khixEXz33uc=;
-        b=YPiRwPVTKrD0VVFbDGZsY99SsZhJU7TJ0uRoj/O1aDjSRpp7gYXtPCoZGlTfLCDRk4
-         fn7bpLDuhm/WgqK31p3is2TO8M8uO6T4nozikWrE5hFi7peAnZyhA1FdBoNYbTHitfL4
-         9knJnK3F6cBT4Kj4XgfOeAhiybx4yU01YJFdKw/4tacWODd38n/+wjBFPbIUFWdOEjlw
-         nNU/D0WahUwACAY345J+VTN0zuPA07vfKQGvxmdj+vpGDr3u41DWckSQcVVHQ/cVqkE4
-         b6qdto87ARB79YCSLS8KygjYwwuEfm1nVWl8hKEZLEGIlLX/M5tQ6sgtX0xS4ovLG7o4
-         3Pyw==
+        bh=4ZoLre5WJXzZI3tRwkyLjsbHGJ2C1Pcu+Ob2SlEJwY0=;
+        b=fA3EasR9DfNX2l8GwvcaT0MvZ7Aq938G5NX2vSzkm9JV0bUQL0daiUSzQFdmjjYXrc
+         KpH3ZVGuZoyFQ9dfZ8nHCf8UplLDYvkDfM8+6cMFPoXL+/Am9RgiKUfceEwmpnT9XVbF
+         lLc8/7mOUzCJv0zrO0uvzSNgpul5XRrZxFbUotDU+3qD/jZs/1QjZrJwTOl6VinxpHRC
+         kYyDpKqwBbuLfVWv4YureLecupPHUK9QLpthWcNBqLQ0PEM3X6SgKZ2AiQshJD6j/59O
+         KRB5oP+owa7iHToZIippsRv442PPbF6z3n0GPUpHELvthLJ6QL1vqeQuteCCh1Iq93Ud
+         KwpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749155418; x=1749760218;
+        d=1e100.net; s=20230601; t=1749155680; x=1749760480;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ozcYr68uEApKZ2A0plGojw6mIXU/V081khixEXz33uc=;
-        b=Dk6dxzTHXWR9bOX7dratk62Ds7G9m73lJW+H/ARJboVDs6uJt2X3bEMHktyadezgP7
-         ezgImROMlgm3a9hSKJlVx3Ln/kPkuvjis4IPZJ90gON40ESJosEtvBtp8MWNvrUuLd/u
-         ldlgEQDxz1zay0w9AznRIDBtmexhB/8SgwUBRuhF2b1Xs/0CvWmHQ9eZUpbX68jWkaNK
-         XMWjoysHrvLlrm26yxSz40qWCdqrIWg47jqk8Joxe3xQsZ/MlnxynmALImI35VZr9SM4
-         4HbJGNqLsTl9WOY7FJtZ/f227UQWdgFoaT/2+MZ3pVgHXpS5DKFpppivWq42q12sef+M
-         nTfA==
-X-Gm-Message-State: AOJu0YxCuY8Dn+5AYSDQmGjT/BKhS/UWOQwvqsJUx4Q9sQj6pMMuEvil
-	gNC0t/g7bmsdLnSJPPe4q5so8xiqyqq+22Y3v0VjljeFC9jGkrOP9ryEenTCrqN4myfOYHxZLpv
-	LOOv4xDb/mPJHBp0TMiEICRrwCbVY1ac=
-X-Gm-Gg: ASbGncvyjZMjv8kbAbVdBibaEQ/G2qC+t1TwBwoOLd1GqrgVOVIoSPc+kZTyL/XEZlf
-	94XBS7CznH+mc9jFX1SXWPrSVl2ZCMhGM9tq5hBG0bWaKBnAexCZTJNuB+d5UKIQ7FVIL1iKtMV
-	5GkZvEMUI+nzq90cZlK7HH1tYEbPtZwdOZ/RJM/y9za3ThticO5tulKNa20fo=
-X-Google-Smtp-Source: AGHT+IE0OsJafHC8PkKCfC5PxrQlx8v6GaqkxjDfd/2n+UToVJqDAeihNhHzpg1yckukSayIFC+GEE7YEXoYGefaW8k=
-X-Received: by 2002:a05:6a00:1142:b0:740:5927:bb8b with SMTP id
- d2e1a72fcca58-74827cfb07fmr1531522b3a.0.1749155418099; Thu, 05 Jun 2025
- 13:30:18 -0700 (PDT)
+        bh=4ZoLre5WJXzZI3tRwkyLjsbHGJ2C1Pcu+Ob2SlEJwY0=;
+        b=vcxlBe++UPAoOwAKiHmPaPH/1R0vA+aw+2EDXJsgKNw8/zv/M5Qt6CDbqFvfZPMQH3
+         u7DCOBsD0BGlDPH5wOkI9EH2PwglkVvBuV181h6Z3ooX93YQsunvVt4RjtUL5nxywxkb
+         T5zru/mHtfNvu+k0mnf3UHB/AhflXR2rGApHxv7P3k6QbVBnaCGJmkAvca3MZLRsbgMQ
+         zdRu1Wa0/1HA3kytrGncknFAQtVg2Mz0f8mqaJ4O/qyr2k/KTsfzWvlud2TQsa9ID3IB
+         D1Uhy2oDYIwyY3ttGFqOyjSGCA6edt/6HlYC1ppGyR0TLk3XEXjcNROiFyzkegJ4cDls
+         PynQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV1g3GLoUmD9NcpfoyoPKUllGFhp80jKuQhD341WTcHb9RzuQ56++MYUIxjkXXgDIA0KDs=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz5eXyUWlWV7WN+/IzYvMtsUxTVzV4AxrpRc4MSEl+aTVySi8Ac
+	8yr3ILZfZiJ0TlTd/SKM7tULRw0CcnNaD4P1QetItcQ0aS/gbjC3S27DdzhY3HmMJ9PjhjFJxdh
+	W0Is6rUq4ySa189k5ol0QXyYBXTpQAjZQvxiHXrHb
+X-Gm-Gg: ASbGncvaskAw8sPsEw5LLvFheS0NiEQGNqCRdTgk3maXWxVLNsbOZ4yIT4xW7N2FFAp
+	hYdE4uDew5jiKYmRxQG6mRzVSeqwKXq7XqrrHDZiqoGhmm0nXQy+Pzrh7xPSXEXgZTp8zXBnhLN
+	Cv7Vbuk4jJxJMVjmF2AuZ2FM+gne+FDjYF7npEt35dgAeP
+X-Google-Smtp-Source: AGHT+IEz65fw6eX6HnqKD1lGuCRGB/lwbhJS2C0P8T2RK/ATRMV91beDaRjDj92IaN4e2RiyHUifHQ+O8l0xyf76AkM=
+X-Received: by 2002:a17:902:f60b:b0:234:8eeb:d81a with SMTP id
+ d9443c01a7336-236021e505cmr754845ad.16.1749155679795; Thu, 05 Jun 2025
+ 13:34:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250530173812.1823479-1-yonghong.song@linux.dev> <20250530173822.1824144-1-yonghong.song@linux.dev>
-In-Reply-To: <20250530173822.1824144-1-yonghong.song@linux.dev>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 5 Jun 2025 13:30:06 -0700
-X-Gm-Features: AX0GCFt1AMrDzDPB9I4DWcynaZD55i75CmXyoD3Cj6yS_ptdYlo7-EN6mGdU81U
-Message-ID: <CAEf4BzZnE4rU7OpW8a4HYAN3=kJBB6j_YysjRHL-77PGstWkDQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 2/5] bpf: Implement mprog API on top of
- existing cgroup progs
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
-	Martin KaFai Lau <martin.lau@kernel.org>
+References: <20250604025246.61616-1-byungchul@sk.com> <20250604025246.61616-4-byungchul@sk.com>
+ <29f2c375-65e3-4d22-8274-552653222f8d@gmail.com> <CAHS8izMb23eaav-Fz50sefuS8BhF7as7=BX+Sv1wj01+0n6tMg@mail.gmail.com>
+ <ec924af7-1330-4220-97be-1171ef6ffc75@gmail.com>
+In-Reply-To: <ec924af7-1330-4220-97be-1171ef6ffc75@gmail.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Thu, 5 Jun 2025 13:34:25 -0700
+X-Gm-Features: AX0GCFsZcj1hI7C7EPh1g4w7_P54Ew1pJG_c13sE__2Bloq-K4EM8uiIisV8cik
+Message-ID: <CAHS8izND_JonvNqJm4XpXm-sk9+v6KCGqeKb7ZUSAWoyckUY6A@mail.gmail.com>
+Subject: Re: [RFC v4 03/18] page_pool: use netmem alloc/put APIs in __page_pool_alloc_page_order()
+To: Pavel Begunkov <asml.silence@gmail.com>
+Cc: Byungchul Park <byungchul@sk.com>, willy@infradead.org, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, kernel_team@skhynix.com, 
+	kuba@kernel.org, ilias.apalodimas@linaro.org, harry.yoo@oracle.com, 
+	hawk@kernel.org, akpm@linux-foundation.org, davem@davemloft.net, 
+	john.fastabend@gmail.com, andrew+netdev@lunn.ch, toke@redhat.com, 
+	tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com, 
+	leon@kernel.org, ast@kernel.org, daniel@iogearbox.net, david@redhat.com, 
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz, 
+	rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org, 
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 30, 2025 at 10:38=E2=80=AFAM Yonghong Song <yonghong.song@linux=
-.dev> wrote:
+On Thu, Jun 5, 2025 at 1:26=E2=80=AFPM Pavel Begunkov <asml.silence@gmail.c=
+om> wrote:
 >
-> Current cgroup prog ordering is appending at attachment time. This is not
-> ideal. In some cases, users want specific ordering at a particular cgroup
-> level. To address this, the existing mprog API seems an ideal solution wi=
-th
-> supporting BPF_F_BEFORE and BPF_F_AFTER flags.
+> On 6/5/25 20:39, Mina Almasry wrote:
+> > On Thu, Jun 5, 2025 at 3:25=E2=80=AFAM Pavel Begunkov <asml.silence@gma=
+il.com> wrote:
+> >>
+> >> On 6/4/25 03:52, Byungchul Park wrote:
+> >>> Use netmem alloc/put APIs instead of page alloc/put APIs and make it
+> >>> return netmem_ref instead of struct page * in
+> >>> __page_pool_alloc_page_order().
+> >>>
+> >>> Signed-off-by: Byungchul Park <byungchul@sk.com>
+> >>> Reviewed-by: Mina Almasry <almasrymina@google.com>
+> >>> ---
+> >>>    net/core/page_pool.c | 26 +++++++++++++-------------
+> >>>    1 file changed, 13 insertions(+), 13 deletions(-)
+> >>>
+> >>> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> >>> index 4011eb305cee..523354f2db1c 100644
+> >>> --- a/net/core/page_pool.c
+> >>> +++ b/net/core/page_pool.c
+> >>> @@ -518,29 +518,29 @@ static bool page_pool_dma_map(struct page_pool =
+*pool, netmem_ref netmem, gfp_t g
+> >>>        return false;
+> >>>    }
+> >>>
+> >>> -static struct page *__page_pool_alloc_page_order(struct page_pool *p=
+ool,
+> >>> -                                              gfp_t gfp)
+> >>> +static netmem_ref __page_pool_alloc_page_order(struct page_pool *poo=
+l,
+> >>> +                                            gfp_t gfp)
+> >>>    {
+> >>> -     struct page *page;
+> >>> +     netmem_ref netmem;
+> >>>
+> >>>        gfp |=3D __GFP_COMP;
+> >>> -     page =3D alloc_pages_node(pool->p.nid, gfp, pool->p.order);
+> >>> -     if (unlikely(!page))
+> >>> -             return NULL;
+> >>> +     netmem =3D alloc_netmems_node(pool->p.nid, gfp, pool->p.order);
+> >>> +     if (unlikely(!netmem))
+> >>> +             return 0;
+> >>>
+> >>> -     if (pool->dma_map && unlikely(!page_pool_dma_map(pool, page_to_=
+netmem(page), gfp))) {
+> >>> -             put_page(page);
+> >>> -             return NULL;
+> >>> +     if (pool->dma_map && unlikely(!page_pool_dma_map(pool, netmem, =
+gfp))) {
+> >>> +             put_netmem(netmem);
+> >>
+> >> It's a bad idea to have {put,get}_netmem in page pool's code, it has a
+> >> different semantics from what page pool expects for net_iov. I.e.
+> >> instead of releasing the netmem and allowing it to be reallocated by
+> >> page pool, put_netmem(niov) will drop a memory provider reference and
+> >> leak the net_iov. Depending on implementation it might even underflow
+> >> mp refs if a net_iov is ever passed here.
+> >>
+> >
+> > Hmm, put_netmem (I hope) is designed and implemented to do the right
+> > thing no matter what netmem you pass it (and it needs to, because we
+> > can't predict what netmem will be passed to it):
+> >
+> > - For non-pp pages, it drops a page ref.
+> > - For pp pages, it drops a pp ref.
+> > - For non-pp net_iovs (devmem TX), it drops a net_iov ref (which for
+> > devmem net_iovs is a binding ref)
+> > - For pp net_iovs, it drops a niov->pp ref (the same for both iouring
+> > and devmem).
 >
-> But there are a few obstacles to directly use kernel mprog interface.
-> Currently cgroup bpf progs already support prog attach/detach/replace
-> and link-based attach/detach/replace. For example, in struct
-> bpf_prog_array_item, the cgroup_storage field needs to be together
-> with bpf prog. But the mprog API struct bpf_mprog_fp only has bpf_prog
-> as the member, which makes it difficult to use kernel mprog interface.
+> void put_netmem(netmem_ref netmem)
+> {
+>         struct net_iov *niov;
 >
-> In another case, the current cgroup prog detach tries to use the
-> same flag as in attach. This is different from mprog kernel interface
-> which uses flags passed from user space.
->
-> So to avoid modifying existing behavior, I made the following changes to
-> support mprog API for cgroup progs:
->  - The support is for prog list at cgroup level. Cross-level prog list
->    (a.k.a. effective prog list) is not supported.
->  - Previously, BPF_F_PREORDER is supported only for prog attach, now
->    BPF_F_PREORDER is also supported by link-based attach.
->  - For attach, BPF_F_BEFORE/BPF_F_AFTER/BPF_F_ID/BPF_F_LINK is supported
->    similar to kernel mprog but with different implementation.
->  - For detach and replace, use the existing implementation.
->  - For attach, detach and replace, the revision for a particular prog
->    list, associated with a particular attach type, will be updated
->    by increasing count by 1.
->
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-> ---
->  include/uapi/linux/bpf.h       |   7 ++
->  kernel/bpf/cgroup.c            | 197 +++++++++++++++++++++++++++++----
->  kernel/bpf/syscall.c           |  43 ++++---
->  tools/include/uapi/linux/bpf.h |   7 ++
->  4 files changed, 216 insertions(+), 38 deletions(-)
->
-
-[...]
-
-> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> index 9122c39870bf..bab580df5908 100644
-> --- a/kernel/bpf/cgroup.c
-> +++ b/kernel/bpf/cgroup.c
-> @@ -658,6 +658,131 @@ static struct bpf_prog_list *find_attach_entry(stru=
-ct hlist_head *progs,
->         return NULL;
->  }
->
-> +static struct bpf_cgroup_link *bpf_get_anchor_link(u32 flags, u32 id_or_=
-fd,
-> +                                                  enum bpf_prog_type typ=
-e)
-> +{
-> +       struct bpf_link *link =3D ERR_PTR(-EINVAL);
-> +
-> +       if (flags & BPF_F_ID)
-> +               link =3D bpf_link_by_id(id_or_fd);
-> +       else if (id_or_fd)
-> +               link =3D bpf_link_get_from_fd(id_or_fd);
-> +       if (IS_ERR(link))
-> +               return ERR_PTR(PTR_ERR(link));
-> +       if (link->type !=3D BPF_LINK_TYPE_CGROUP || link->prog->type !=3D=
- type) {
-
-This check is a bit redundant and incomplete at the same time, so I'm
-wondering if it's better to just drop this check?
-
-It's redundant because if link or program is of wrong type, we won't
-find it in cgroup's list of links/progs and return -ENOENT.
-
-It's incomplete, because attach_type should be checked together with
-prog_type. But again, this doesn't matter because correct prog_type
-and incorrect attach_type would result in not finding the anchor link.
-
-So I'm just thinking if it would be just better to not check type here
-and let anchor prog/link logic return -ENOENT? WDYT?
-
-> +               bpf_link_put(link);
-> +               return ERR_PTR(-EINVAL);
-> +       }
-> +
-> +       return container_of(link, struct bpf_cgroup_link, link);
-> +}
-> +
-> +static struct bpf_prog *bpf_get_anchor_prog(u32 flags, u32 id_or_fd, enu=
-m bpf_prog_type type)
-> +{
-> +       struct bpf_prog *prog =3D ERR_PTR(-EINVAL);
-> +
-> +       if (flags & BPF_F_ID)
-> +               prog =3D bpf_prog_by_id(id_or_fd);
-> +       else if (id_or_fd)
-> +               prog =3D bpf_prog_get(id_or_fd);
-> +       if (IS_ERR(prog))
-> +               return prog;
-> +       if (prog->type !=3D type) {
-
-same as for links above, it would make sense to check attach_type as
-well, but it ultimately doesn't matter because user will get
--ENOENT... It's just the inconsistency (-EINVAL if prog_type
-mismatches, -ENOENT if attach_type mismatches), that makes we want to
-not check this type info here at all...
-
-> +               bpf_prog_put(prog);
-> +               return ERR_PTR(-EINVAL);
-> +       }
-> +
-> +       return prog;
-> +}
-> +
-
-[...]
-
->  #define BPF_PROG_ATTACH_LAST_FIELD expected_revision
->
->  #define BPF_F_ATTACH_MASK_BASE \
-> @@ -4215,7 +4234,7 @@ static int bpf_prog_attach(const union bpf_attr *at=
-tr)
->         if (bpf_mprog_supported(ptype)) {
->                 if (attr->attach_flags & ~BPF_F_ATTACH_MASK_MPROG)
->                         return -EINVAL;
-> -       } else {
-> +       } else if (!is_cgroup_prog_type(ptype, 0, false)) {
-
-wouldn't we skip checking flags altogether for cgroup program types?  maybe=
-:
-
-if (is_cgroup_prog_type(...)) {
-   /* check flags for cgroups */
-} else {
-   ...
-}
-
-would be a safer pattern?
-
-pw-bot: cr
-
->                 if (attr->attach_flags & ~BPF_F_ATTACH_MASK_BASE)
->                         return -EINVAL;
->                 if (attr->relative_fd ||
-> @@ -4243,20 +4262,6 @@ static int bpf_prog_attach(const union bpf_attr *a=
-ttr)
->         case BPF_PROG_TYPE_FLOW_DISSECTOR:
->                 ret =3D netns_bpf_prog_attach(attr, prog);
->                 break;
-> -       case BPF_PROG_TYPE_CGROUP_DEVICE:
-> -       case BPF_PROG_TYPE_CGROUP_SKB:
-> -       case BPF_PROG_TYPE_CGROUP_SOCK:
-> -       case BPF_PROG_TYPE_CGROUP_SOCK_ADDR:
-> -       case BPF_PROG_TYPE_CGROUP_SOCKOPT:
-> -       case BPF_PROG_TYPE_CGROUP_SYSCTL:
-> -       case BPF_PROG_TYPE_SOCK_OPS:
-> -       case BPF_PROG_TYPE_LSM:
-> -               if (ptype =3D=3D BPF_PROG_TYPE_LSM &&
-> -                   prog->expected_attach_type !=3D BPF_LSM_CGROUP)
-> -                       ret =3D -EINVAL;
-> -               else
-> -                       ret =3D cgroup_bpf_prog_attach(attr, ptype, prog)=
+>         if (netmem_is_net_iov(netmem)) {
+>                 niov =3D netmem_to_net_iov(netmem);
+>                 if (net_is_devmem_iov(niov))
+>                         net_devmem_put_net_iov(netmem_to_net_iov(netmem))=
 ;
-> -               break;
->         case BPF_PROG_TYPE_SCHED_CLS:
->                 if (attr->attach_type =3D=3D BPF_TCX_INGRESS ||
->                     attr->attach_type =3D=3D BPF_TCX_EGRESS)
-> @@ -4265,7 +4270,10 @@ static int bpf_prog_attach(const union bpf_attr *a=
-ttr)
->                         ret =3D netkit_prog_attach(attr, prog);
->                 break;
->         default:
-> -               ret =3D -EINVAL;
-> +               if (!is_cgroup_prog_type(ptype, prog->expected_attach_typ=
-e, true))
-> +                       ret =3D -EINVAL;
-> +               else
-> +                       ret =3D cgroup_bpf_prog_attach(attr, ptype, prog)=
-;
+>                 return;
 >         }
 >
->         if (ret)
-> @@ -4295,6 +4303,9 @@ static int bpf_prog_detach(const union bpf_attr *at=
-tr)
->                         if (IS_ERR(prog))
->                                 return PTR_ERR(prog);
->                 }
-> +       } else if (is_cgroup_prog_type(ptype, 0, false)) {
-> +               if (attr->attach_flags || attr->relative_fd)
-> +                       return -EINVAL;
->         } else if (attr->attach_flags ||
->                    attr->relative_fd ||
->                    attr->expected_revision) {
+>         put_page(netmem_to_page(netmem));
+> }
+> EXPORT_SYMBOL(put_netmem);
+>
+> void net_devmem_put_net_iov(struct net_iov *niov)
+> {
+>         net_devmem_dmabuf_binding_put(net_devmem_iov_binding(niov));
+> }
+>
+> Am I looking at an outdated version? for devmem net_iov it always puts
+> the binding and not niov refs, and it's always does put_page for pages.
+> And it'd also silently ignore io_uring. And we're also patching early
+> alloc/init failures in this series, so gauging if it's pp or non-pp
+> originated struct page might be dangerous and depend on init order. We
+> don't even need to think about all that if we continue to use put_page,
+> which is why I think it's a much better option.
+>
 
-[...]
+Oh, my bad. I was thinking of skb_page_unref, which actually handles
+all net_iov/page types correctly. You're right, put_netmem doesn't
+actually do that.
+
+In that case reverting to put_page would be better here indeed.
+
+--=20
+Thanks,
+Mina
 
