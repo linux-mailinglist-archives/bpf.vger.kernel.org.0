@@ -1,80 +1,48 @@
-Return-Path: <bpf+bounces-59756-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59757-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC567ACF1F3
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 16:31:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FEAAACF20A
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 16:33:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43A981885FDC
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 14:29:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 968F816B6DD
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 14:33:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EA1327B51C;
-	Thu,  5 Jun 2025 14:25:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A47B819AD48;
+	Thu,  5 Jun 2025 14:32:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pi/GTs2I"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hQJ6vm58"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8136027B4EE;
-	Thu,  5 Jun 2025 14:25:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1779214A4C7;
+	Thu,  5 Jun 2025 14:32:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749133514; cv=none; b=ZaTQ42bAhS8LrU+KLToB7ppD5rR37v/ZO2wUInTioLY8bCpXQ2F+4u7oj/OZ0Jqpu5V6KSsd6Bio49NVKT10WOv7CuMA14anvt3KF2OAMOJw+oXonY74X84UMm9ZWCjjkY8W+oTg9v6OpslV+NC1GU3CmtqnswtNv7IEohgJSQk=
+	t=1749133972; cv=none; b=Z1IarepFfkOivVD9RjLD4qUZhZ7kDR0fTUULTfFDgfzqJkJGY8kJ2YdGryCLUBur7nNsk8OzeWKt9KAMldtNJet0HtPWmLn9PABbvHbvUkymPPXhnzQtTnMajHsDteabyUF8xTQUAdjG/x2tArxNeQYNEDg1NQfLJ9cFqIXUI9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749133514; c=relaxed/simple;
-	bh=X600dW54IagONIXRnn2TcBhMfRUF8CY7hzPPC9iyc/o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Soxz+agPFV1YleUn8ip5Vjx2Bawk3OojEqVM2omgLEn0eE6cPszm9LSndZX0qOjT6EGXOPICOUjk1vVVNfMarkBrM5h/PnS7+D9bha46Po6Ffg3tH7+7b30Ozrx/lyEYDv7dzvbfwJT8YZsNQQbUPLHqSI7fxfa98C0bBI6iZYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Pi/GTs2I; arc=none smtp.client-ip=209.85.210.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-7426c44e014so1031967b3a.3;
-        Thu, 05 Jun 2025 07:25:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749133512; x=1749738312; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gqic3Vsyj4bzSmL05WQaZvcda3GIaM4YL+rFO5Ane1s=;
-        b=Pi/GTs2IvN8OwPkdYTnlGne0go3cLQMyf3p/XMhJM4aZxXhFoF+RKUyiilz8ehpWep
-         g4OWm5VBR6Afe24I8JT633CW+ZAaVG1e86kKcVhMTqirrqg2OyYpup/WHQ/CzfX6ck/v
-         X5u14Q6YD9sIOYZZzXSBP9U6vLfopkexY79x5KoM66ily1P4GFRqP52PUasbtUSbd3RV
-         ssxYbVpXPgblwpqhfujE4ogjp3pHq399fP824FQWDKrvRuiLysrXA/C3lMYtFT7Z/nk2
-         iJtOtx1i72fgCJGM5S+HDn9l0qMMvTngmTzjsNM+BgTmur42euyDleAuBBbEA9y7y51f
-         sUvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749133512; x=1749738312;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gqic3Vsyj4bzSmL05WQaZvcda3GIaM4YL+rFO5Ane1s=;
-        b=h7Xksn78F6Y6qD2q7cMekg9QfkffzRqKRHNzZXqICcBLgoLbqv84Q5lRDsAmlrfmnp
-         WgL1M8d8ehGX5s1J8KBnyQHfghh65bQNQHrOxbbt+67Pk4FYmudP1un4gbtmEQ14QCff
-         6ZcbWeAx/Xxxm+IutuXoKAcQatwJZJGBet8iZlQy0hCw+IaaTOrpESl49NvjMft8u7y3
-         mnCHm8SlsBfDUnTiXXHhRo7wzHwr2MPDHX06eWENkbgpZtYI1b04MDuiYyPaJssr+ffh
-         4BL6Iw9JD22V9mRHOy1QFRqRqw1k6OrNhbQKUFLSZNv4iVs35qnqd56g8sP7TXm/hO7C
-         ovqA==
-X-Forwarded-Encrypted: i=1; AJvYcCU080ShRva8+cLV/172TLvvqkhydyf0KQ1OiG82cx94hj6lY5zXa2VpX0UrY9TvB45xrPM=@vger.kernel.org, AJvYcCVZzrYWtXBuXLBRNB2jqTaiCyKTczsSBxFl8nHp8fC89XepTNnvC5ix6nAA0+6quLFGVlyUK0RO@vger.kernel.org, AJvYcCVqljEmaHa+a0dqdsa7LUO8AedRZEmE2wSC+aG9Sfg3w/13Nkmoh9bBmk9qAw/fOaixefRLof1TmZeozUSW@vger.kernel.org
-X-Gm-Message-State: AOJu0YwxoDJOC2ETv7/WOTm7XAz2Ubm8HaUZvPuOCzhPNmPnsYEDNhWo
-	cAgbsh99qPxXlB4+JluhvJ5XIKzP6e2RQLwSj9eviXsLIgT7ozFHBEvg
-X-Gm-Gg: ASbGnculQQCEYbkWAXZcbcCTyoejAUITTXuNIPt3yEnv2BP2GKSysovNtNVqfj2EHyS
-	vTCTMMt78aGha6NweJDIK4EyUQM93W4nZCT+N/AuQadY2+MHd4AgXluCkRqHVM5lvTVkjBA8lOV
-	Ar9gdtCTjpUPYpLlVS4u+JTHk0/3plL5ttzKRklVFluX8Y/NFwSJpHQXPC+I+GE30mCdCv50hq6
-	ZOFPjgsUCSo1YOYQK6JBlEbMvNGac2hZT3PYgGQRmzWEZahd/mCZ3FRApT+IbKsBIg+9xrIFWwE
-	7kVLC/Y4t6XQVtPthp6E+/vmjDrhIaGPgxfZameScalpcYGYEWLhpuxdbM2uTHuFdYQmQ9z/h3p
-	Gj0BQzfgs2Gtr23TcGZYuuBGQjOQ=
-X-Google-Smtp-Source: AGHT+IH4vL0ow3LtCX+mnTgMUIKUpP6tlNeWjyc30axYR85Pz7Znrto5PFXe7BtNog4L00G5ukEv0w==
-X-Received: by 2002:a05:6a00:13a2:b0:736:5e28:cfba with SMTP id d2e1a72fcca58-7480d023dc6mr9016645b3a.18.1749133511687;
-        Thu, 05 Jun 2025 07:25:11 -0700 (PDT)
-Received: from ?IPV6:2001:ee0:4f0e:fb30:fe1:cf75:ee2d:d934? ([2001:ee0:4f0e:fb30:fe1:cf75:ee2d:d934])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-747afeabad9sm13367104b3a.51.2025.06.05.07.25.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Jun 2025 07:25:11 -0700 (PDT)
-Message-ID: <099a66e1-c271-488c-8997-daf07602d16b@gmail.com>
-Date: Thu, 5 Jun 2025 21:25:03 +0700
+	s=arc-20240116; t=1749133972; c=relaxed/simple;
+	bh=dJhCM9RPviR0g7JT1D5tY8Qs8gank6kHriTlr+jVdk8=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=I3NH5XrAyiyk/zduSXUiubruK6bnsGA6qq+xAWiRCTD6MraiU545+2cFMIO2Nes8nSZc4z+1KP6joLn1ts1jCu5s4FsW9JA3u8Yv6uhtkaPlW3hT189jSSfIBspTA+CYAI6OUD79/dCDWqf9YkQQnPQal4wN9S9Gv51aOSvTTGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hQJ6vm58; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A35A7C4CEE7;
+	Thu,  5 Jun 2025 14:32:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749133971;
+	bh=dJhCM9RPviR0g7JT1D5tY8Qs8gank6kHriTlr+jVdk8=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+	b=hQJ6vm58a9sKrWs9pbShbS3RA6iSmi0wkOqOIohbxsH9H+Q56BxXzsFbZ+ejQ1ycp
+	 3HiA6msSez1IKjXj45/iK33pnzB2iuvu+keB9Cfeg+Xgut99Tu90vSSq1zRkSeOMGO
+	 fbKbvoGkG/hF/zHS7/Wz1RRGwQwUFZHoANS2Xw+kzuh7GQES6DzUaYmOkKr1PLmepz
+	 k9VBLzQG0R6cbmHU+tgErk05+UtA79vzuWFGsQgQBgb1M3fM1u6T1d38LkHS5bLh/m
+	 V6zUEf7o8M06Dv8P+qWU1JspV1TZXG/+kxnPZ+jlj7V6H0rSt13SJOXVlpFSV8StHm
+	 bkkhv+tpwoK2A==
+Message-ID: <8ea2aefc-2847-433e-b56e-5caad49e54f2@kernel.org>
+Date: Thu, 5 Jun 2025 16:32:44 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -82,79 +50,160 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] virtio-net: drop the multi-buffer XDP packet in
- zerocopy
-To: Zvi Effron <zeffron@riotgames.com>
-Cc: netdev@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
- Jason Wang <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
- =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+Subject: Re: Large modules with 6.15 [was: [PATCH v4 6/6] percpu/x86: Enable
+ strict percpu checks via named AS qualifiers]
+From: Jiri Slaby <jirislaby@kernel.org>
+To: Uros Bizjak <ubizjak@gmail.com>, x86@kernel.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+ linux-arch@vger.kernel.org, netdev@vger.kernel.org
+Cc: Nadav Amit <nadav.amit@gmail.com>, Dennis Zhou <dennis@kernel.org>,
+ Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@kernel.org>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Andy Lutomirski <luto@kernel.org>, Brian Gerst <brgerst@gmail.com>,
+ Peter Zijlstra <peterz@infradead.org>, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
  Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, virtualization@lists.linux.dev,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org, stable@vger.kernel.org
-References: <20250603150613.83802-1-minhquangbui99@gmail.com>
- <CAC1LvL0xTSv9sBRYnD-ykDqQr+Reg7yB0uwAR158-+aAm1J1Ew@mail.gmail.com>
+ John Fastabend <john.fastabend@gmail.com>, bpf <bpf@vger.kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>
+References: <20250127160709.80604-1-ubizjak@gmail.com>
+ <20250127160709.80604-7-ubizjak@gmail.com>
+ <02c00acd-9518-4371-be2c-eb63e5d11d9c@kernel.org>
 Content-Language: en-US
-From: Bui Quang Minh <minhquangbui99@gmail.com>
-In-Reply-To: <CAC1LvL0xTSv9sBRYnD-ykDqQr+Reg7yB0uwAR158-+aAm1J1Ew@mail.gmail.com>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <02c00acd-9518-4371-be2c-eb63e5d11d9c@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 6/4/25 23:55, Zvi Effron wrote:
-> On Tue, Jun 3, 2025 at 8:09 AM Bui Quang Minh <minhquangbui99@gmail.com> wrote:
->> In virtio-net, we have not yet supported multi-buffer XDP packet in
->> zerocopy mode when there is a binding XDP program. However, in that
->> case, when receiving multi-buffer XDP packet, we skip the XDP program
->> and return XDP_PASS. As a result, the packet is passed to normal network
->> stack which is an incorrect behavior. This commit instead returns
->> XDP_DROP in that case.
-> Does it make more sense to return XDP_ABORTED? This seems like an unexpected
-> exception case to me, but I'm not familiar enough with virtio-net's multibuffer
-> support.
+Cc BPF people, just so you know.
 
-The following code after this treats XDP_DROP and XDP_ABORTED in the 
-same way. I don't have strong opinion between these 2 values here. We 
-may add a call to trace_xdp_exception in case we want XDP_ABORTED here.
-
-Thanks,
-Quang Minh.
-
->
->> Fixes: 99c861b44eb1 ("virtio_net: xsk: rx: support recv merge mode")
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
+On 05. 06. 25, 16:27, Jiri Slaby wrote:
+> On 27. 01. 25, 17:05, Uros Bizjak wrote:
+>> This patch declares percpu variables in __seg_gs/__seg_fs named AS
+>> and keeps them named AS qualified until they are dereferenced with
+>> percpu accessor. This approach enables various compiler check
+>> for cross-namespace variable assignments.
+>>
+>> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+>> Acked-by: Nadav Amit <nadav.amit@gmail.com>
+>> Cc: Dennis Zhou <dennis@kernel.org>
+>> Cc: Tejun Heo <tj@kernel.org>
+>> Cc: Christoph Lameter <cl@linux.com>
+>> Cc: Thomas Gleixner <tglx@linutronix.de>
+>> Cc: Ingo Molnar <mingo@kernel.org>
+>> Cc: Borislav Petkov <bp@alien8.de>
+>> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+>> Cc: "H. Peter Anvin" <hpa@zytor.com>
+>> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+>> Cc: Andy Lutomirski <luto@kernel.org>
+>> Cc: Brian Gerst <brgerst@gmail.com>
+>> Cc: Peter Zijlstra <peterz@infradead.org>
 >> ---
->> drivers/net/virtio_net.c | 11 ++++++++---
->> 1 file changed, 8 insertions(+), 3 deletions(-)
+>>   arch/x86/include/asm/percpu.h | 15 ++++++++++++---
+>>   1 file changed, 12 insertions(+), 3 deletions(-)
 >>
->> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
->> index e53ba600605a..4c35324d6e5b 100644
->> --- a/drivers/net/virtio_net.c
->> +++ b/drivers/net/virtio_net.c
->> @@ -1309,9 +1309,14 @@ static struct sk_buff *virtnet_receive_xsk_merge(struct net_device *dev, struct
->> ret = XDP_PASS;
->> rcu_read_lock();
->> prog = rcu_dereference(rq->xdp_prog);
->> - /* TODO: support multi buffer. */
->> - if (prog && num_buf == 1)
->> - ret = virtnet_xdp_handler(prog, xdp, dev, xdp_xmit, stats);
->> + if (prog) {
->> + /* TODO: support multi buffer. */
->> + if (num_buf == 1)
->> + ret = virtnet_xdp_handler(prog, xdp, dev, xdp_xmit,
->> + stats);
->> + else
->> + ret = XDP_DROP;
->> + }
->> rcu_read_unlock();
->>
->> switch (ret) {
->> --
->> 2.43.0
->>
->>
+>> diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/ 
+>> percpu.h
+>> index 27f668660abe..474d648bca9a 100644
+>> --- a/arch/x86/include/asm/percpu.h
+>> +++ b/arch/x86/include/asm/percpu.h
+>> @@ -95,9 +95,18 @@
+>>   #endif /* CONFIG_SMP */
+>> -#define __my_cpu_type(var)    typeof(var) __percpu_seg_override
+>> -#define __my_cpu_ptr(ptr)    (__my_cpu_type(*(ptr))*)(__force 
+>> uintptr_t)(ptr)
+>> -#define __my_cpu_var(var)    (*__my_cpu_ptr(&(var)))
+>> +#if defined(CONFIG_USE_X86_SEG_SUPPORT) && defined(USE_TYPEOF_UNQUAL)
+>> +# define __my_cpu_type(var)    typeof(var)
+>> +# define __my_cpu_ptr(ptr)    (ptr)
+>> +# define __my_cpu_var(var)    (var)
+>> +
+>> +# define __percpu_qual        __percpu_seg_override
+>> +#else
+>> +# define __my_cpu_type(var)    typeof(var) __percpu_seg_override
+>> +# define __my_cpu_ptr(ptr)    (__my_cpu_type(*(ptr))*)(__force 
+>> uintptr_t)(ptr)
+>> +# define __my_cpu_var(var)    (*__my_cpu_ptr(&(var)))
+>> +#endif
+>> +
+> 
+> Another issue with this is this causes all modules in 6.15 are 2-4 times 
+> (compressed size) bigger:
+> $ ll /usr/lib/modules/*-[0-9]-default/kernel/drivers/atm/atmtcp.ko.zst
+>  > -rw-r--r--. 1 root root 10325 May 13 11:49 /usr/lib/modules/6.14.6-2- 
+> default/kernel/drivers/atm/atmtcp.ko.zst
+>  > -rw-r--r--. 1 root root 39677 Jun  2 09:13 /usr/lib/modules/6.15.0-1- 
+> default/kernel/drivers/atm/atmtcp.ko.zst
+> 
+> It's due to larger .BTF section:
+> .BTF              PROGBITS         0000000000000000  [-00003080-]
+> [-       00000000000011a8-]  {+00003100+}
+> {+       0000000000012cf8+}  0000000000000000           0     0     1
+> 
+> There are a lot of new BTF types defined in each module like:
+> +attribute_group STRUCT
+> +backing_dev_info STRUCT
+> +bdi_writeback STRUCT
+> +bin_attribute STRUCT
+> +bio_end_io_t TYPEDEF
+> +bio_list STRUCT
+> +bio_set STRUCT
+> +bio STRUCT
+> +bio_vec STRUCT
+> 
+> Reverting this gives me back to normal sizes.
+> 
+> Any ideas?
+> 
+> FTR downstream report:
+> https://bugzilla.suse.com/show_bug.cgi?id=1244135
+> 
+> thanks,
+
+-- 
+js
+suse labs
 
 
