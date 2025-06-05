@@ -1,157 +1,201 @@
-Return-Path: <bpf+bounces-59794-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59795-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B466ACF872
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 21:55:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48CDCACF892
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 22:07:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 421B7189E029
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 19:56:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1248617103B
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 20:07:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B16A527E7C0;
-	Thu,  5 Jun 2025 19:55:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA0031FDA82;
+	Thu,  5 Jun 2025 20:07:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Uvn0v0VU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a9VWKlme"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0D9127D773
-	for <bpf@vger.kernel.org>; Thu,  5 Jun 2025 19:55:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7E6717548
+	for <bpf@vger.kernel.org>; Thu,  5 Jun 2025 20:07:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749153346; cv=none; b=KQQXN5VwLpT21WPPrdmyLQfwnEpkNNK9iJ1aFk9MiLhEDqLbIzLTCUvR3r1w23V5DbKYQ60lPbv1Slfe7zRl9002R8gxuOTFGHDZYiy/uFAjryC9YyPbTlAyRut6TlVi1Z419kVIdcjj6pLbehTOQUe5ovJ5ljdL9iTZjLwi4ls=
+	t=1749154032; cv=none; b=uSnt2kle8734szIzymqFGGr4yxrVIxq0/RhuIVB2mbAqPhyCGElG4AWzxe4ovGJapWb5KNrvP2KMF9ic08AF3gg2Vd9bJXhfZ0sWyoXOO7OI1x4+4SbiWLbSLSizB0qI462xhykIR35Ijm+hN70fhKDGHSvekm+DvFqANzHdcqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749153346; c=relaxed/simple;
-	bh=o9mEMtyvFGc0zBf2lesOPiM6c+iqKDwQ57v5sgzNAbw=;
+	s=arc-20240116; t=1749154032; c=relaxed/simple;
+	bh=4y6bOAh3LezccjBU81YEe9PRxtjG8v/L93iU2uHGhB0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gcJnwKzm8Y6CzmwPY/5M/4lt2BohA3S1k88Eq9Wr/h1ZDk5TezX/RyMPORR1uNDaOJrWUyx9WAuX1/VUrn7cYmXlmeuTFA0tj4tkIjfNggxXk4Q7vfYwU+LgtR5HXCFJsxvAxZmtEd86nN/S8F/c8lssaJgwc6sXtIOmN1VKPDw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Uvn0v0VU; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-2348ac8e0b4so8425ad.1
-        for <bpf@vger.kernel.org>; Thu, 05 Jun 2025 12:55:44 -0700 (PDT)
+	 To:Cc:Content-Type; b=L7zYrHLL3X1Hc1nKQe3ANVO5FAcpSywrROeMHIAENt/HADxYByAUmnhqIBEBHaeLYffS9gaBbYJ7xNFcfjld04fwe2cn+VJ5UTE/N5VQjbrTpQyYN4pk5M85HwQ+h8NqXNcMoOCIo/9gWapt/YCg7mT2EYSZOJZEFhVX9G41zxQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a9VWKlme; arc=none smtp.client-ip=209.85.215.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-b2d46760950so1391638a12.3
+        for <bpf@vger.kernel.org>; Thu, 05 Jun 2025 13:07:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1749153344; x=1749758144; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1749154030; x=1749758830; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aaGimUCU1zGGvfY9Mn8mz26Pj9z4GAUe4JLOgwbUwZQ=;
-        b=Uvn0v0VUAT9wYUVYjQOEfkoU2eYmf1eCfpB9Omq813WZYW6h/6R+vb+0fxKvFzHe7D
-         Iwe6VoKGfaD8V5Cv7lsOHJCIpCK45SAIgHlyk59fjwYidtntxPieolOsaGCuvXjgHMG4
-         V3vy/ZGR3icgf5nc8V/wcuY0Iu0sT0N8jaqq1r3Y5jbe2gWSrc8rX3MXIhPj65CIwlSy
-         RKJPreZ1rvuLyegJINlCYobUfSQ/LyHxGghiCYww7blMy32pR6EdMMSHPqiSFUXMAx5h
-         FVObqUympGQxBUoEsES8FYmrM2hILBsud/o00EdWZ+/2BgcbcsbOfxlDv9mVMEX5OeFQ
-         733Q==
+        bh=uJjbzVHFjg3Y6z8KCB32S7BynoUA2s/HHYlqsAeq6lk=;
+        b=a9VWKlmewM5ZnhNN6Ifk/cBwpXC9h8dzE8RY9ZiJdVfafyINkgxuyBR9zzNjUbzXJv
+         lzI8Sbq//mCNtWrTfx5EEiXwnIF2MJO5EXLN9Ei/MMRl2sC+IO1IODN+ZpzyWBMw9wJC
+         g0+PJafJJtqRwqy7jYm0Ina6e8RnMJjfBqzKwsIcZ6vRfMWuyUYPPMqyjRbhDae51tXb
+         AAqcnMoSJxAi1u71Y3xpVoIOvNR0h3ZbSSfm1DX/CU9Oo/uPRb0oL2f7qek8honndVgt
+         ljticUDBsjVob70wGumMAlOWvUwaOfYzxEgTPL2Y5srfF0mpqFxIrvm/gDybaogSukGE
+         ocqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749153344; x=1749758144;
+        d=1e100.net; s=20230601; t=1749154030; x=1749758830;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aaGimUCU1zGGvfY9Mn8mz26Pj9z4GAUe4JLOgwbUwZQ=;
-        b=EfRP2eBtTLxK4vFLmW2qOz/7s9rTjHZmAevFFqxqrNQyUS5MAbePov37PT6i9J0BYs
-         c+50gdCLyRil8oMpAEmJRVcRaSa9f+kw9EY3YctErv4K4H3nyNmKfrefxOZ0wBdoxxCa
-         LPUgmdOX0v2LHsqjcc7rA5FQblUu69Gui6lotNgBO8bALvegAXPcPqjHq12GZ6rmcvAk
-         z1h24+nfev8bb0Cng+6zVrd8FQFHrrgZGZ6ttWosrTlY46Role0va/nPwmeOi/AcRrcI
-         W6tjvo3CHXU9XPa1zxakz2Ud93j053xpu4H2yVqGpWI7RnEGt7PPvupAc0DYJPnmhcm4
-         FhmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUl60ltVWfWN5Wrfy+yhh3UiHEsVFN3IRGiivP4drfGhiDAsnrd9G1KWLUue8KO2DWEjGM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxRoDzQ3YL/SCXGBWUxz8t2vMn8KwN4JBRNLOuzUJCn48ArRegm
-	rZk4ZGgNGJJrHmTCs3iu/jmTqYXpqL6mBOdKPuUD0UgPYuGEI31j7in3rw0sZFJvRBe9h2ndAhy
-	57932Q4gndOnDsZVCPDIq6pyYeAx5WU0UjUaT4Tya
-X-Gm-Gg: ASbGncuMheTn1FX5knW+QbKavGsfL9iEKFLPNQ6IpzVlSbW+ukLWy3xpZnZ9nLa8+i+
-	qNsoLGRfji28iyywTnk4acgJVBftLylCvVfbHOTuHTAYA5+/tLjN5xztR/UtR/AAhXCIIdy8R7w
-	2sTKnEcJSFHRqb7KBRPghd6+2LJhGTdgKIJe4hvZyMysE73Sud1ZNq5Aw=
-X-Google-Smtp-Source: AGHT+IEbDYUxJCrIU5Brh7cnuMJfzIWyAE8NR3PlzWoOLOAmknLGWMiWPBhbHrXSP1lOx8L1UkuKv0q/wSg0HLr5qIM=
-X-Received: by 2002:a17:902:bd01:b0:235:e1d6:5343 with SMTP id
- d9443c01a7336-23602368069mr421065ad.20.1749153343599; Thu, 05 Jun 2025
- 12:55:43 -0700 (PDT)
+        bh=uJjbzVHFjg3Y6z8KCB32S7BynoUA2s/HHYlqsAeq6lk=;
+        b=A/ITod6LK2QmwLzBFQ/jFHSJXsKfjhpY7PDmEUizkS9vzASX7g2gwhOH7l45hHyaee
+         XWQJk7ejhvyriMonMxm+E+zP9QpwOJN/oZMBegfui4NP5l9aQXfETkD+NhVMicnrC9M+
+         7GyHrST94E8E2+yBqjglZea4jHxqkmCjgyRDLKqh/6y6QYS5n3lndRc/73Tiw/m1ppeq
+         Cf4WwNbF77rl+RCq15VUFFZ4NnkrQklN7x1Fj2gAxtUd/5C5Qd+v32vNnZ252IyvolXy
+         zB21SdoaR2FD/toJTywDR5g6d3P5twqRbMB4XF/PngPGKujzFAoYjK2TWeMBEmWgoplW
+         Bhag==
+X-Gm-Message-State: AOJu0YzQNAgwM4hY1SdAepIPcLoEV0sRVOKRmzMEGDSBiYZn1Mz1h3pB
+	htYI0WWTw4tkfEiPR44myg4f0ZdxB6/GEMFQuyXiqkuF2gPVFsyPm4SgeLunr/VENSTZVc2RMHB
+	ivNCLjF1+3xXBoW2s83gRgfkw1B62DxI=
+X-Gm-Gg: ASbGncunlfTZ0hZ5DEWuRa27fj0Monl8VKTUamzfF7T+Nwy8ZKI3xmowrEs7vftukPY
+	03BOyoXd9XHb0rTvWXnY6lZwpyyWFUAqP+87FjsfCvPON6422dI93Qvbb6M1MZIe7BfsqUkTMak
+	boXlAP4hEZt4ZuG+EIT+EYfnPAxdXbLgOA6maQ5xttWCgKw5vD1NQI224KCk0=
+X-Google-Smtp-Source: AGHT+IFz+IwDEPNyOyWA398lO9mfRRtWfu/tF6gqpK3Jmp2gtr3hecos38Qdu3cjcetl4MF4gz1JRzC+qQsEOM8/g9Y=
+X-Received: by 2002:a05:6a20:1604:b0:21a:ef2f:100b with SMTP id
+ adf61e73a8af0-21ee2618f6cmr746275637.24.1749154029877; Thu, 05 Jun 2025
+ 13:07:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250604025246.61616-1-byungchul@sk.com> <20250604032319.GA69870@system.software.com>
-In-Reply-To: <20250604032319.GA69870@system.software.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Thu, 5 Jun 2025 12:55:30 -0700
-X-Gm-Features: AX0GCFuuQ92ndxwEnSpPABdXmG7bIUeEpcPA_xt_UklLH28k3XHKW3c6yOYdwC4
-Message-ID: <CAHS8izPNKe+3A9HAk13idouEzvePnp5Tih0GmSQNzEcsxuvoPA@mail.gmail.com>
-Subject: Re: [RFC v4 00/18] Split netmem from struct page
-To: Byungchul Park <byungchul@sk.com>
-Cc: willy@infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	kernel_team@skhynix.com, kuba@kernel.org, ilias.apalodimas@linaro.org, 
-	harry.yoo@oracle.com, hawk@kernel.org, akpm@linux-foundation.org, 
-	davem@davemloft.net, john.fastabend@gmail.com, andrew+netdev@lunn.ch, 
-	asml.silence@gmail.com, toke@redhat.com, tariqt@nvidia.com, 
-	edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com, leon@kernel.org, 
-	ast@kernel.org, daniel@iogearbox.net, david@redhat.com, 
-	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz, 
-	rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org, 
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com, 
-	netdev@vger.kernel.org
+References: <20250524011849.681425-1-memxor@gmail.com> <20250524011849.681425-10-memxor@gmail.com>
+In-Reply-To: <20250524011849.681425-10-memxor@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 5 Jun 2025 13:06:57 -0700
+X-Gm-Features: AX0GCFvvkz7D4TA7c-285zL0-TN_1GXgd2GizSqyW6aSYspVKTqmoalq2d6HfCY
+Message-ID: <CAEf4BzZ1w1j4CQdLyqGV_v0OkFDHi9NL+5EFGQDBBRnHwCXudw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 09/11] libbpf: Introduce bpf_prog_stream_read()
+ API
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Emil Tsalapatis <emil@etsalapatis.com>, Barret Rhoden <brho@google.com>, 
+	Matt Bobrowski <mattbobrowski@google.com>, kkd@meta.com, kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 3, 2025 at 8:23=E2=80=AFPM Byungchul Park <byungchul@sk.com> wr=
-ote:
+On Fri, May 23, 2025 at 6:19=E2=80=AFPM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
 >
-> On Wed, Jun 04, 2025 at 11:52:28AM +0900, Byungchul Park wrote:
-> > The MM subsystem is trying to reduce struct page to a single pointer.
-> > The first step towards that is splitting struct page by its individual
-> > users, as has already been done with folio and slab.  This patchset doe=
-s
-> > that for netmem which is used for page pools.
-> >
-> > Matthew Wilcox tried and stopped the same work, you can see in:
-> >
-> >    https://lore.kernel.org/linux-mm/20230111042214.907030-1-willy@infra=
-dead.org/
-> >
-> > Mina Almasry already has done a lot fo prerequisite works by luck.  I
-> > stacked my patches on the top of his work e.i. netmem.
-> >
-> > I focused on removing the page pool members in struct page this time,
-> > not moving the allocation code of page pool from net to mm.  It can be
-> > done later if needed.
-> >
-> > The final patch removing the page pool fields will be submitted once
-> > all the converting work of page to netmem are done:
-> >
-> >    1. converting of libeth_fqe by Tony Nguyen.
-> >    2. converting of mlx5 by Tariq Toukan.
-> >    3. converting of prueth_swdata (on me).
-> >    4. converting of freescale driver (on me).
-> >
-> > For our discussion, I'm sharing what the final patch looks like the
-> > following.
+> Introduce a libbpf API so that users can read data from a given BPF
+> stream for a BPF prog fd. For now, only the low-level syscall wrapper
+> is provided, we can add a bpf_program__* accessor as a follow up if
+> needed.
 >
-> To Willy and Mina,
->
-> I believe this version might be the final version.  Please check the
-> direction if it's going as you meant so as to go ahead convinced.
->
-> As I mentioned above, the final patch should be submitted later once all
-> the required works on drivers are done, but you can check what it looks
-> like, in the following embedded patch in this cover letter.
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  tools/lib/bpf/bpf.c      | 16 ++++++++++++++++
+>  tools/lib/bpf/bpf.h      | 15 +++++++++++++++
+>  tools/lib/bpf/libbpf.map |  1 +
+>  3 files changed, 32 insertions(+)
 >
 
-We need this tested with at least 1 of devmem TCP and io_uring zc to
-make sure the net_iov stuff isn't broken (I'll get to that when I have
-time).
+LGTM from libbpf side of things, but please see nits and questions below.
 
-And we need page_pool benchmark numbers before/after this series,
-please run those yourself, if at all possible:
-https://lore.kernel.org/netdev/20250525034354.258247-1-almasrymina@google.c=
-om/
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-This series adds a bunch of netmem/page casts. I expect them not to
-affect fast-path perf, but making sure would be nice.
+> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+> index a9c3e33d0f8a..4b9f3a2096c8 100644
+> --- a/tools/lib/bpf/bpf.c
+> +++ b/tools/lib/bpf/bpf.c
+> @@ -1331,3 +1331,19 @@ int bpf_token_create(int bpffs_fd, struct bpf_toke=
+n_create_opts *opts)
+>         fd =3D sys_bpf_fd(BPF_TOKEN_CREATE, &attr, attr_sz);
+>         return libbpf_err_errno(fd);
+>  }
+> +
+> +int bpf_prog_stream_read(int prog_fd, __u32 stream_id, void *stream_buf,=
+ __u32 stream_buf_len)
 
---=20
-Thanks,
-Mina
+nit: I'd use shorter and no less clear "buf" and "buf_len". If
+anything, the buffer itself isn't really "a stream buffer", it's just
+a buffer into which we copy stream data..
+
+> +{
+> +       const size_t attr_sz =3D offsetofend(union bpf_attr, prog_stream_=
+read);
+> +       union bpf_attr attr;
+> +       int err;
+> +
+> +       memset(&attr, 0, attr_sz);
+> +       attr.prog_stream_read.stream_buf =3D ptr_to_u64(stream_buf);
+> +       attr.prog_stream_read.stream_buf_len =3D stream_buf_len;
+> +       attr.prog_stream_read.stream_id =3D stream_id;
+> +       attr.prog_stream_read.prog_fd =3D prog_fd;
+> +
+> +       err =3D sys_bpf(BPF_PROG_STREAM_READ_BY_FD, &attr, attr_sz);
+> +       return libbpf_err_errno(err);
+> +}
+> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+> index 777627d33d25..9fa7be3d92d3 100644
+> --- a/tools/lib/bpf/bpf.h
+> +++ b/tools/lib/bpf/bpf.h
+> @@ -704,6 +704,21 @@ struct bpf_token_create_opts {
+>  LIBBPF_API int bpf_token_create(int bpffs_fd,
+>                                 struct bpf_token_create_opts *opts);
+>
+> +/**
+> + * @brief **bpf_prog_stream_read** reads data from the BPF stream of a g=
+iven BPF
+> + * program.
+> + *
+> + * @param prog_fd FD for the BPF program whose BPF stream is to be read.
+> + * @param stream_id ID of the BPF stream to be read.
+
+Is it documented anywhere that 1 is BPF_STDOUT and 2 is BPF_STDERR?
+That seems like an important user-visible thing, no? In patch #1 these
+constants are kernel-internal, is that intentional? If yes, how are
+users going to know which value to pass here?
+
+> + * @param stream_buf Buffer to read data into from the BPF stream.
+> + * @param stream_buf_len Maximum number of bytes to read from the BPF st=
+ream.
+> + *
+> + * @return The number of bytes read, on success; negative error code, ot=
+herwise
+> + * (errno is also set to the error code)
+> + */
+> +LIBBPF_API int bpf_prog_stream_read(int prog_fd, __u32 stream_id, void *=
+stream_buf,
+> +                                   __u32 stream_buf_len);
+
+Do you anticipate adding some extra parameters, flags, etc? Should we
+add empty opts struct from the very beginning instead of later having
+bpf_prog_stream_read() and bpf_prog_stream_read_opts() APIs?
+
+> +
+>  #ifdef __cplusplus
+>  } /* extern "C" */
+>  #endif
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index 1205f9a4fe04..4359527c8442 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -437,6 +437,7 @@ LIBBPF_1.6.0 {
+>                 bpf_linker__add_fd;
+>                 bpf_linker__new_fd;
+>                 bpf_object__prepare;
+> +               bpf_prog_stream_read;
+>                 bpf_program__func_info;
+>                 bpf_program__func_info_cnt;
+>                 bpf_program__line_info;
+> --
+> 2.47.1
+>
 
