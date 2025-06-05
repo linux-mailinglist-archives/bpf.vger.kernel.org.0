@@ -1,154 +1,160 @@
-Return-Path: <bpf+bounces-59755-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59756-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E43FBACF1F5
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 16:31:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC567ACF1F3
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 16:31:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2A253B0898
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 14:28:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43A981885FDC
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 14:29:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37B501DC9B8;
-	Thu,  5 Jun 2025 14:25:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EA1327B51C;
+	Thu,  5 Jun 2025 14:25:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aEygzrRf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pi/GTs2I"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E65615DBC1;
-	Thu,  5 Jun 2025 14:25:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8136027B4EE;
+	Thu,  5 Jun 2025 14:25:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749133508; cv=none; b=cX1gmN/b3gxSE87a6HrqoOZ+xGC/ABb4A71L9YMUZcRY15IKNWlanfGQnYkuo1RHhm2SB7jZEUnPi8XECDnpdH6GjITzqCFBPF0LB8D5AiXAk5ztsncz3wXgqE+AomhC92krTeVya0Rb2LDLKT2znoM78b6lxWyWsXIb+Ss99GA=
+	t=1749133514; cv=none; b=ZaTQ42bAhS8LrU+KLToB7ppD5rR37v/ZO2wUInTioLY8bCpXQ2F+4u7oj/OZ0Jqpu5V6KSsd6Bio49NVKT10WOv7CuMA14anvt3KF2OAMOJw+oXonY74X84UMm9ZWCjjkY8W+oTg9v6OpslV+NC1GU3CmtqnswtNv7IEohgJSQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749133508; c=relaxed/simple;
-	bh=1hPIlsrNsl+45wh7cNZIvl0GeyoSxulCp7FX15MTo+Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WslPjkByMg8sE/8KJCmFA9/WUuNFyOiDzNa4O0Ta9HWnx1bR01iDuyZE7vHHbDKVDodYb2b8NuQzjUSKsc7wqGuw3emB8RwC24Cm2sm9OH04N24rJ2P/vxQIYz4CAYB5shVpuyApTBCVxXjGRPnzGwhsHQWAqCgB4DbLXAPuRsg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aEygzrRf; arc=none smtp.client-ip=209.85.214.170
+	s=arc-20240116; t=1749133514; c=relaxed/simple;
+	bh=X600dW54IagONIXRnn2TcBhMfRUF8CY7hzPPC9iyc/o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Soxz+agPFV1YleUn8ip5Vjx2Bawk3OojEqVM2omgLEn0eE6cPszm9LSndZX0qOjT6EGXOPICOUjk1vVVNfMarkBrM5h/PnS7+D9bha46Po6Ffg3tH7+7b30Ozrx/lyEYDv7dzvbfwJT8YZsNQQbUPLHqSI7fxfa98C0bBI6iZYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Pi/GTs2I; arc=none smtp.client-ip=209.85.210.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-23035b3edf1so9883305ad.3;
-        Thu, 05 Jun 2025 07:25:07 -0700 (PDT)
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-7426c44e014so1031967b3a.3;
+        Thu, 05 Jun 2025 07:25:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749133506; x=1749738306; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+pFlKswJoY6P2XiNr0PqOnuFgA3sLrQBP5t6JTGgE2o=;
-        b=aEygzrRftb9ZGtXuovGZKV78ftzlsflMhb9s+atyOqtks+qlCrvF2kdn7wgibB5Kyp
-         9gdwyyxurLJ0OiVtAUCls6ovWpACrThiZ6PoKlm7G6tBqyPcmvI+L9UXUTB/JgzY/YXD
-         LZrw9ZMNrIFAZHubE3/ASn6nogyfEW9NT61V/g6RAlaHuhVzsYc6QevqG/DVnsREgnRl
-         uzlI9U4L+cHSkJyass0vMRi2ICLAOjLKwvsZHCNH8j6CTyfhKJ229Vr8LknW7vGVpET3
-         TXGVjW2UlQUspGhxmn/5ROcZb+DeBg/PpV2wPRu0min+H4fu5yQiXaf0KfUp81i2ebmt
-         12GQ==
+        d=gmail.com; s=20230601; t=1749133512; x=1749738312; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gqic3Vsyj4bzSmL05WQaZvcda3GIaM4YL+rFO5Ane1s=;
+        b=Pi/GTs2IvN8OwPkdYTnlGne0go3cLQMyf3p/XMhJM4aZxXhFoF+RKUyiilz8ehpWep
+         g4OWm5VBR6Afe24I8JT633CW+ZAaVG1e86kKcVhMTqirrqg2OyYpup/WHQ/CzfX6ck/v
+         X5u14Q6YD9sIOYZZzXSBP9U6vLfopkexY79x5KoM66ily1P4GFRqP52PUasbtUSbd3RV
+         ssxYbVpXPgblwpqhfujE4ogjp3pHq399fP824FQWDKrvRuiLysrXA/C3lMYtFT7Z/nk2
+         iJtOtx1i72fgCJGM5S+HDn9l0qMMvTngmTzjsNM+BgTmur42euyDleAuBBbEA9y7y51f
+         sUvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749133506; x=1749738306;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+pFlKswJoY6P2XiNr0PqOnuFgA3sLrQBP5t6JTGgE2o=;
-        b=O90OV7e9zS/GDF95VydmDwJBR6TFx+kLQutCrpGVKM7ERwsf7uZ0hybO3UsF2Hfk84
-         /JdWUpgTY2Lf6TPRKgRRZUBYZGp6jgs/PPTsTjafgKW4M56YGFO7GwcM2brB79sLPlcD
-         7DwQ+Ul/AzxxEA7387xkGnxNkoPHa+w1sayqvjLfL7CrMCto+N4+y2/a4IGZo3iv7cRK
-         ryKlHtUU889wRtlgS/CUqcM6KZ8i7R/Sj0j+CHxmFYXDViZzoK3OwXosQGWkVaAC8Ulc
-         umiJ4vzDipkyDfOzZzgc6INgk102W8xh6uKoJGD/jjcvv+qZCUsU0FzqN59ZHC7HQDDf
-         mjvA==
-X-Forwarded-Encrypted: i=1; AJvYcCWhJjBUVbDhrfm4x0HJZuNg19AJ5oX1kxjzrmLsIs4Zdg3CCUCJAyQP+WxFEfb4EKVbCOMEXfEJ@vger.kernel.org, AJvYcCX6RZo3KWZWn8ZsnWXkUTU4WTw4hiMTvZo6M/oqZXXBfileKXWgPdGuWprzjixobDvalxeRjbauCTcAEjg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxeVfflqHvm+DlxBwmx70VVWDyuB0t5paaZMLkgTPaxcWWTxLQ6
-	zHQPEk23r2Bs50tXIMCHjyKHhNWJKk7qWon6ag1nxi+ndzOpo4uve5PZkWaLwA==
-X-Gm-Gg: ASbGncuQn4epr8RN+KE9FjA0luPDkQlJVx+5IxWau3+WCuxZBKXNACPyPflWmNiHebW
-	+hXk0CsoCelv9oityXTtcFH8SlIdgVo6+FhW/yeFrLOi+R5yiNRRNaDzUs0L8UNBYTMjyXwgEGj
-	v0tc91iCDMgOgbUSI7lg3h88YOLlHp7v4tdY1VpKHGOiCEV4H/aHq9r54eHxCQx+V/ynib/a83K
-	xcpBe2NyhTyjaMYZwqDTOCy6KIx2W/mhO9Nm+hBKSAJatrDwhMSm7ePzUOPMYm6f71d0Nhjyrmx
-	dH8MNcLdODXTmRhjsLgqenE+WcXGENo+zRflu1MNb6eBhV2ZFslDHBZgxr0OrQ==
-X-Google-Smtp-Source: AGHT+IFrBIEMgXDVVN0JFzsrx9ZHWUFzHY6I2msZa2Zg3LKqUQhvxhhRstpjP3bkwkgpP1HV2dLqmQ==
-X-Received: by 2002:a17:902:cec4:b0:224:910:23f6 with SMTP id d9443c01a7336-235e1518937mr100031975ad.45.1749133506248;
-        Thu, 05 Jun 2025 07:25:06 -0700 (PDT)
-Received: from gmail.com ([98.97.41.44])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23506cd34edsm120316355ad.126.2025.06.05.07.25.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Jun 2025 07:25:05 -0700 (PDT)
-Date: Thu, 5 Jun 2025 07:24:48 -0700
-From: John Fastabend <john.fastabend@gmail.com>
-To: Jiayuan Chen <jiayuan.chen@linux.dev>
-Cc: bpf@vger.kernel.org, Jakub Sitnicki <jakub@cloudflare.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v1] bpf, sockmap: Fix psock incorrectly pointing
- to sk
-Message-ID: <20250605142448.3llri3w7wbclfxwc@gmail.com>
-References: <20250523162220.52291-1-jiayuan.chen@linux.dev>
- <20250528234650.n5orke2yq55qnoen@gmail.com>
- <fefe50c6ec558074ec7de944175cec82bb426f10@linux.dev>
+        d=1e100.net; s=20230601; t=1749133512; x=1749738312;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gqic3Vsyj4bzSmL05WQaZvcda3GIaM4YL+rFO5Ane1s=;
+        b=h7Xksn78F6Y6qD2q7cMekg9QfkffzRqKRHNzZXqICcBLgoLbqv84Q5lRDsAmlrfmnp
+         WgL1M8d8ehGX5s1J8KBnyQHfghh65bQNQHrOxbbt+67Pk4FYmudP1un4gbtmEQ14QCff
+         6ZcbWeAx/Xxxm+IutuXoKAcQatwJZJGBet8iZlQy0hCw+IaaTOrpESl49NvjMft8u7y3
+         mnCHm8SlsBfDUnTiXXHhRo7wzHwr2MPDHX06eWENkbgpZtYI1b04MDuiYyPaJssr+ffh
+         4BL6Iw9JD22V9mRHOy1QFRqRqw1k6OrNhbQKUFLSZNv4iVs35qnqd56g8sP7TXm/hO7C
+         ovqA==
+X-Forwarded-Encrypted: i=1; AJvYcCU080ShRva8+cLV/172TLvvqkhydyf0KQ1OiG82cx94hj6lY5zXa2VpX0UrY9TvB45xrPM=@vger.kernel.org, AJvYcCVZzrYWtXBuXLBRNB2jqTaiCyKTczsSBxFl8nHp8fC89XepTNnvC5ix6nAA0+6quLFGVlyUK0RO@vger.kernel.org, AJvYcCVqljEmaHa+a0dqdsa7LUO8AedRZEmE2wSC+aG9Sfg3w/13Nkmoh9bBmk9qAw/fOaixefRLof1TmZeozUSW@vger.kernel.org
+X-Gm-Message-State: AOJu0YwxoDJOC2ETv7/WOTm7XAz2Ubm8HaUZvPuOCzhPNmPnsYEDNhWo
+	cAgbsh99qPxXlB4+JluhvJ5XIKzP6e2RQLwSj9eviXsLIgT7ozFHBEvg
+X-Gm-Gg: ASbGnculQQCEYbkWAXZcbcCTyoejAUITTXuNIPt3yEnv2BP2GKSysovNtNVqfj2EHyS
+	vTCTMMt78aGha6NweJDIK4EyUQM93W4nZCT+N/AuQadY2+MHd4AgXluCkRqHVM5lvTVkjBA8lOV
+	Ar9gdtCTjpUPYpLlVS4u+JTHk0/3plL5ttzKRklVFluX8Y/NFwSJpHQXPC+I+GE30mCdCv50hq6
+	ZOFPjgsUCSo1YOYQK6JBlEbMvNGac2hZT3PYgGQRmzWEZahd/mCZ3FRApT+IbKsBIg+9xrIFWwE
+	7kVLC/Y4t6XQVtPthp6E+/vmjDrhIaGPgxfZameScalpcYGYEWLhpuxdbM2uTHuFdYQmQ9z/h3p
+	Gj0BQzfgs2Gtr23TcGZYuuBGQjOQ=
+X-Google-Smtp-Source: AGHT+IH4vL0ow3LtCX+mnTgMUIKUpP6tlNeWjyc30axYR85Pz7Znrto5PFXe7BtNog4L00G5ukEv0w==
+X-Received: by 2002:a05:6a00:13a2:b0:736:5e28:cfba with SMTP id d2e1a72fcca58-7480d023dc6mr9016645b3a.18.1749133511687;
+        Thu, 05 Jun 2025 07:25:11 -0700 (PDT)
+Received: from ?IPV6:2001:ee0:4f0e:fb30:fe1:cf75:ee2d:d934? ([2001:ee0:4f0e:fb30:fe1:cf75:ee2d:d934])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-747afeabad9sm13367104b3a.51.2025.06.05.07.25.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Jun 2025 07:25:11 -0700 (PDT)
+Message-ID: <099a66e1-c271-488c-8997-daf07602d16b@gmail.com>
+Date: Thu, 5 Jun 2025 21:25:03 +0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fefe50c6ec558074ec7de944175cec82bb426f10@linux.dev>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] virtio-net: drop the multi-buffer XDP packet in
+ zerocopy
+To: Zvi Effron <zeffron@riotgames.com>
+Cc: netdev@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
+ Jason Wang <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+ =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, virtualization@lists.linux.dev,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org, stable@vger.kernel.org
+References: <20250603150613.83802-1-minhquangbui99@gmail.com>
+ <CAC1LvL0xTSv9sBRYnD-ykDqQr+Reg7yB0uwAR158-+aAm1J1Ew@mail.gmail.com>
+Content-Language: en-US
+From: Bui Quang Minh <minhquangbui99@gmail.com>
+In-Reply-To: <CAC1LvL0xTSv9sBRYnD-ykDqQr+Reg7yB0uwAR158-+aAm1J1Ew@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 2025-05-29 02:42:14, Jiayuan Chen wrote:
-> May 29, 2025 at 07:46, "John Fastabend" <john.fastabend@gmail.com> wrote:
-> 
-> 
-> 
-> > 
-> > On 2025-05-24 00:22:19, Jiayuan Chen wrote:
-> > 
-> > > 
-> > > We observed an issue from the latest selftest: sockmap_redir where
-> > > 
-> > >  sk_psock(psock->sk) != psock in the backlog. The root cause is the special
-> > >  behavior in sockmap_redir - it frequently performs map_update() and
-> > >  map_delete() on the same socket. During map_update(), we create a new
-> > >  psock and during map_delete(), we eventually free the psock via rcu_work
-> > >  in sk_psock_drop(). However, pending workqueues might still exist and not
-> > >  be processed yet. If users immediately perform another map_update(), a new
-> > >  psock will be allocated for the same sk, resulting in two psocks pointing
-> > >  to the same sk.
+On 6/4/25 23:55, Zvi Effron wrote:
+> On Tue, Jun 3, 2025 at 8:09 AM Bui Quang Minh <minhquangbui99@gmail.com> wrote:
+>> In virtio-net, we have not yet supported multi-buffer XDP packet in
+>> zerocopy mode when there is a binding XDP program. However, in that
+>> case, when receiving multi-buffer XDP packet, we skip the XDP program
+>> and return XDP_PASS. As a result, the packet is passed to normal network
+>> stack which is an incorrect behavior. This commit instead returns
+>> XDP_DROP in that case.
+> Does it make more sense to return XDP_ABORTED? This seems like an unexpected
+> exception case to me, but I'm not familiar enough with virtio-net's multibuffer
+> support.
 
-[...]
+The following code after this treats XDP_DROP and XDP_ABORTED in the 
+same way. I don't have strong opinion between these 2 values here. We 
+may add a call to trace_xdp_exception in case we want XDP_ABORTED here.
 
-> > 
-> > Can we add this to sk_psock_stop where we have the TX_ENABLED bit
-> > 
-> > cleared.
-> 
-> 
-> 
-> Thanks, I just add SK_PSOCK_TX_ENABLED checking at the start of sk_psock_backlog().
-> Every works fine, and truly no more flag needed !
-> 
-> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-> index 34c51eb1a14f..83c78379932e 100644
-> --- a/net/core/skmsg.c
-> +++ b/net/core/skmsg.c
-> @@ -656,6 +656,13 @@ static void sk_psock_backlog(struct work_struct *work)
->         bool ingress;
->         int ret;
-> 
-> +       /* If sk is quickly removed from the map and then added back, the old
-> +        * psock should not be scheduled, because there are now two psocks
-> +        * pointing to the same sk.
-> +        */
-> +       if (!sk_psock_test_state(psock, SK_PSOCK_TX_ENABLED))
-> +               return;
-> +
->         /* Increment the psock refcnt to synchronize with close(fd) path in
->          * sock_map_close(), ensuring we wait for backlog thread completion
->          * before sk_socket freed. If refcnt increment fails, it indicates
-> 
+Thanks,
+Quang Minh.
 
-Thanks. Please submit an official patch so we can get it merged.
+>
+>> Fixes: 99c861b44eb1 ("virtio_net: xsk: rx: support recv merge mode")
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
+>> ---
+>> drivers/net/virtio_net.c | 11 ++++++++---
+>> 1 file changed, 8 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+>> index e53ba600605a..4c35324d6e5b 100644
+>> --- a/drivers/net/virtio_net.c
+>> +++ b/drivers/net/virtio_net.c
+>> @@ -1309,9 +1309,14 @@ static struct sk_buff *virtnet_receive_xsk_merge(struct net_device *dev, struct
+>> ret = XDP_PASS;
+>> rcu_read_lock();
+>> prog = rcu_dereference(rq->xdp_prog);
+>> - /* TODO: support multi buffer. */
+>> - if (prog && num_buf == 1)
+>> - ret = virtnet_xdp_handler(prog, xdp, dev, xdp_xmit, stats);
+>> + if (prog) {
+>> + /* TODO: support multi buffer. */
+>> + if (num_buf == 1)
+>> + ret = virtnet_xdp_handler(prog, xdp, dev, xdp_xmit,
+>> + stats);
+>> + else
+>> + ret = XDP_DROP;
+>> + }
+>> rcu_read_unlock();
+>>
+>> switch (ret) {
+>> --
+>> 2.43.0
+>>
+>>
+
 
