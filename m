@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-59730-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59731-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C57BACF052
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 15:24:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A398ACF055
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 15:24:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8E997A4D99
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 13:23:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27B8C1892DE4
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 13:24:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9867522FDE8;
-	Thu,  5 Jun 2025 13:24:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56ACE230278;
+	Thu,  5 Jun 2025 13:24:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nj5vRre8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r8iOc2oT"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1880122AE7A;
-	Thu,  5 Jun 2025 13:24:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C064A22F16F;
+	Thu,  5 Jun 2025 13:24:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749129850; cv=none; b=LYoy5CRmCpKvWHCULsBaV9CKHidxg9mY91ZmFUYMOSnIaZxSxXjQBhL2LefC6YtPwSPCY2kC/ld4GELqayYQKzTN4Ht7/5eD8uuMQP6m0Zd40QPOZ+wqvy4Hbpgw+H7c/LIgHHKSpM0Mb6Bbt53p4DEFA7mQIjSU6zYQx+BeWQ8=
+	t=1749129861; cv=none; b=YlUdpNGNC7gu0ge7xmgOJAxQtMFHHCTwca/LQOxhhMqvGDBih12nKBa/ESQr9+EPjzwShbng/BuvfvAjUHY/AH0LJ8f8mwUhhocLqeslkKiXFADnA47suRUvzb2nq7VxQSTsPSmqy9c2LdigiWGzS8CQibpdq8C4MFi3zQgu+QM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749129850; c=relaxed/simple;
-	bh=c43NnMviDZa2eH2KyaypLO/fvk/dDaweiwsox7eBBFQ=;
+	s=arc-20240116; t=1749129861; c=relaxed/simple;
+	bh=YN/iRdu/Eod58TheBe92HjzKgNnaktv3EJzqaR1QufU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ah9hsul0Hz61Md7mjcLM5IUVp6ViJf8jxjaC2W8p0b31u3VMi6ZNfZ/z0HFyuUes/G6jNJsHvSJYtk05gBHhZBzXaWKRj7AZDR6UTGhz0PjHz+cJLs2BvoIn7OpayGXa1GNaLYfagpPH86X+O2dYohOdSaB9ce6M5dojlWq93Ic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nj5vRre8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43F5CC4CEE7;
-	Thu,  5 Jun 2025 13:24:05 +0000 (UTC)
+	 MIME-Version; b=Y/M7Sz8N3OaT5UNbSwNgL8nkUA3n/iGG1cavVkMe3tMG0TaaK4JkmI3UZP2B8m07ro7xMXJ1sVxtohF4biew+VEL+2gkFX2xoemk5Whigc+Vy/V2SwmcWmE5qrNp3S5JJDsfMZNcM4TVChCTuI/pxzIWFK3fq8/zOAq788OsADk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r8iOc2oT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CAB8C4CEEF;
+	Thu,  5 Jun 2025 13:24:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749129849;
-	bh=c43NnMviDZa2eH2KyaypLO/fvk/dDaweiwsox7eBBFQ=;
+	s=k20201202; t=1749129861;
+	bh=YN/iRdu/Eod58TheBe92HjzKgNnaktv3EJzqaR1QufU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Nj5vRre8Io1eVpn8rBm1Lvz3QxjVuHGRUy7JxrYC+orFEYgOmZJ9zWVlsMqjsSRBf
-	 Oxx8SfS9Z3aZCUmox41Iz5qRWYGxHEbtXelRn2A9kWTVtTSQ7d2aSTBxDBjgBY9OAX
-	 ZRzdDQrlj/Yoee/v/a9I88AJR/RKnbHEbuKt5diXt6YPQ6EvD/1fx7U/MOiH/8oEQp
-	 4M7mVAg0owlmPe3KIcuVxATNwX2/Dm7uFHfYgo0ONQDsqnIv7mEB7qxsHuilCyYGHz
-	 6Ytzpu7FBbQck+MEN4269ioMXETMUSR0cI68FFYLRe3w0xubDjAUGuNYoS6gNuCrRe
-	 BAgY31wfTXTMw==
+	b=r8iOc2oT+tw4/yIzRzhYp8DPGsD6dTmMFZS5TFkxjOPJXikuZ2rdvy5xjit8lZdne
+	 8CQZpzu0IBT86AYoJZDE1FhwYjSEqihKGNKtgoEsopUmTP8wHpvS73poM9v6JoBbyY
+	 g5c9PEy90BDlkpZ5ObJw2BfiiXT6ZUidmJ7cbE7cinIhPuq/zR6lOG5hmEzqXm9BcV
+	 9Oo+scHlQKsYszaai6cNfbXf7hBG1MEJeYPq+cRiwOiX5E34gTR+AuZGC2A1+AryaE
+	 fFoKMGUmx5ydKpUFzhTV9AbwwMGLOeDPKAOP48hvd+tARX0y1Zpm0Lg5BglODg9n2Y
+	 hoelUDvfiXdgQ==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -59,9 +59,9 @@ Cc: bpf@vger.kernel.org,
 	David Laight <David.Laight@ACULAB.COM>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <thomas@t-8ch.de>,
 	Ingo Molnar <mingo@kernel.org>
-Subject: [PATCHv3 perf/core 01/22] uprobes: Remove breakpoint in unapply_uprobe under mmap_write_lock
-Date: Thu,  5 Jun 2025 15:23:28 +0200
-Message-ID: <20250605132350.1488129-2-jolsa@kernel.org>
+Subject: [PATCHv3 perf/core 02/22] uprobes: Rename arch_uretprobe_trampoline function
+Date: Thu,  5 Jun 2025 15:23:29 +0200
+Message-ID: <20250605132350.1488129-3-jolsa@kernel.org>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250605132350.1488129-1-jolsa@kernel.org>
 References: <20250605132350.1488129-1-jolsa@kernel.org>
@@ -73,53 +73,65 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently unapply_uprobe takes mmap_read_lock, but it might call
-remove_breakpoint which eventually changes user pages.
+We are about to add uprobe trampoline, so cleaning up the namespace.
 
-Current code writes either breakpoint or original instruction, so it can
-go away with read lock as explained in here [1]. But with the upcoming
-change that writes multiple instructions on the probed address we need
-to ensure that any update to mm's pages is exclusive.
-
-[1] https://lore.kernel.org/all/20240710140045.GA1084@redhat.com/
-
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Acked-by: Oleg Nesterov <oleg@redhat.com>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- kernel/events/uprobes.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/x86/kernel/uprobes.c | 2 +-
+ include/linux/uprobes.h   | 2 +-
+ kernel/events/uprobes.c   | 4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
+diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
+index 6d383839e839..77050e5a4680 100644
+--- a/arch/x86/kernel/uprobes.c
++++ b/arch/x86/kernel/uprobes.c
+@@ -338,7 +338,7 @@ extern u8 uretprobe_trampoline_entry[];
+ extern u8 uretprobe_trampoline_end[];
+ extern u8 uretprobe_syscall_check[];
+ 
+-void *arch_uprobe_trampoline(unsigned long *psize)
++void *arch_uretprobe_trampoline(unsigned long *psize)
+ {
+ 	static uprobe_opcode_t insn = UPROBE_SWBP_INSN;
+ 	struct pt_regs *regs = task_pt_regs(current);
+diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
+index 516217c39094..01112f27cd21 100644
+--- a/include/linux/uprobes.h
++++ b/include/linux/uprobes.h
+@@ -224,7 +224,7 @@ extern bool arch_uprobe_ignore(struct arch_uprobe *aup, struct pt_regs *regs);
+ extern void arch_uprobe_copy_ixol(struct page *page, unsigned long vaddr,
+ 					 void *src, unsigned long len);
+ extern void uprobe_handle_trampoline(struct pt_regs *regs);
+-extern void *arch_uprobe_trampoline(unsigned long *psize);
++extern void *arch_uretprobe_trampoline(unsigned long *psize);
+ extern unsigned long uprobe_get_trampoline_vaddr(void);
+ #else /* !CONFIG_UPROBES */
+ struct uprobes_state {
 diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 84ee7b590861..257581432cd8 100644
+index 257581432cd8..4e8e607abda8 100644
 --- a/kernel/events/uprobes.c
 +++ b/kernel/events/uprobes.c
-@@ -483,7 +483,7 @@ static int __uprobe_write_opcode(struct vm_area_struct *vma,
-  * @opcode_vaddr: the virtual address to store the opcode.
-  * @opcode: opcode to be written at @opcode_vaddr.
-  *
-- * Called with mm->mmap_lock held for read or write.
-+ * Called with mm->mmap_lock held for write.
-  * Return 0 (success) or a negative errno.
-  */
- int uprobe_write_opcode(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
-@@ -1464,7 +1464,7 @@ static int unapply_uprobe(struct uprobe *uprobe, struct mm_struct *mm)
- 	struct vm_area_struct *vma;
- 	int err = 0;
- 
--	mmap_read_lock(mm);
-+	mmap_write_lock(mm);
- 	for_each_vma(vmi, vma) {
- 		unsigned long vaddr;
- 		loff_t offset;
-@@ -1481,7 +1481,7 @@ static int unapply_uprobe(struct uprobe *uprobe, struct mm_struct *mm)
- 		vaddr = offset_to_vaddr(vma, uprobe->offset);
- 		err |= remove_breakpoint(uprobe, vma, vaddr);
- 	}
--	mmap_read_unlock(mm);
-+	mmap_write_unlock(mm);
- 
- 	return err;
+@@ -1727,7 +1727,7 @@ static int xol_add_vma(struct mm_struct *mm, struct xol_area *area)
+ 	return ret;
  }
+ 
+-void * __weak arch_uprobe_trampoline(unsigned long *psize)
++void * __weak arch_uretprobe_trampoline(unsigned long *psize)
+ {
+ 	static uprobe_opcode_t insn = UPROBE_SWBP_INSN;
+ 
+@@ -1759,7 +1759,7 @@ static struct xol_area *__create_xol_area(unsigned long vaddr)
+ 	init_waitqueue_head(&area->wq);
+ 	/* Reserve the 1st slot for get_trampoline_vaddr() */
+ 	set_bit(0, area->bitmap);
+-	insns = arch_uprobe_trampoline(&insns_size);
++	insns = arch_uretprobe_trampoline(&insns_size);
+ 	arch_uprobe_copy_ixol(area->page, 0, insns, insns_size);
+ 
+ 	if (!xol_add_vma(mm, area))
 -- 
 2.49.0
 
