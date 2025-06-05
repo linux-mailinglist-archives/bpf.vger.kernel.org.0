@@ -1,182 +1,192 @@
-Return-Path: <bpf+bounces-59765-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59766-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 914EAACF3E5
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 18:15:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 115E3ACF3F5
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 18:17:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4438189765C
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 16:15:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 307BA189B2E8
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 16:18:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB4DB1E25E3;
-	Thu,  5 Jun 2025 16:15:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88ACE1F91D6;
+	Thu,  5 Jun 2025 16:17:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="e2m58g95"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dsWQZHnL"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C43DF1624F7
-	for <bpf@vger.kernel.org>; Thu,  5 Jun 2025 16:15:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CCE51DC9BB;
+	Thu,  5 Jun 2025 16:17:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749140128; cv=none; b=oYbqAEk0RWBEUFaarNFW3EjAV9Ah4PW/XHL5wNu8Wz/hUavtaUooxd2adTKLWZQEvSzINKPnhYSZVu/MzYdZPqq32RDUcEAZhILJHaVcxiqE6wVja86akPO6DQ7bSKVkcPGsqB3IfrCHUIs5WlH57ZFdkW1jd3SSYZTJlQGml0Y=
+	t=1749140255; cv=none; b=nsRhlSvOQBfj+0D2hyf/tpLhFekKwJAbx9iBiv8uFzmzC0BNAkHwS8cz9JZILpZxSR8LyNqFH81pPVj8mL5BHaxgu8VuBGnr1XcGvh1pp77d4883/0w8GUv0No72Uoyn/Tve9dcxrLCLH6duMPzz4Y8Yr/kPTxa9mC/OwHXsuIk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749140128; c=relaxed/simple;
-	bh=5YRfXPx9urXs5R9JeRsxMZW2JAsNkY5U5iQs48ngJ1w=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=HjGXjYRJzb+rIdJwkqrMS7Q9I07krcy4z01hO7gBbSAcGiYuPlzI2AzUaldChOPLk3rlE1IfBEsxoULSZoKflhY8HlkF5Pg5VO9+jesJsTuJV8fjOGfmHIU9UGNAHSVPhwrHxOKymHve7og8Nrb0mdPpE1P81sNtx1BGTulCswo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=e2m58g95; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1749140125;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8oBJwL5i85fvyuh1/EIGr7LIagSUnBICErVA++ejqYk=;
-	b=e2m58g95HkT0N0JYxdRVU2aiBFdSv/mWJubu7OJx8Oc54sgQ5EUF9TChS6zsd6WqgSWHgc
-	U2Ur0MSUvIF1tTtTFGgQytaAh3oaPufiZ9OJm4EkiSfIHXyqcjwdJZlgPYzGQIFgceH8/Z
-	BmZuQkz9xIjURJdbLue0bR8htWXMtp4=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-590-OrDv4OGxPL2A3_w13mQlkg-1; Thu, 05 Jun 2025 12:15:23 -0400
-X-MC-Unique: OrDv4OGxPL2A3_w13mQlkg-1
-X-Mimecast-MFC-AGG-ID: OrDv4OGxPL2A3_w13mQlkg_1749140122
-Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-5532a0f21e4so557664e87.3
-        for <bpf@vger.kernel.org>; Thu, 05 Jun 2025 09:15:23 -0700 (PDT)
+	s=arc-20240116; t=1749140255; c=relaxed/simple;
+	bh=jiNQHaHwrEJnwf9xrdZ5xZApiTYZdF4xgyB3brVqBe8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UK+kqZPYo9obGDPOl3PpypeFev/gXdhzWu+zumKmiJdv3KK58dI06NiUYrTa6lymN5ttV3MncUnvYR9eP1659+1qOsFgdM/jOuMd+MHz/qaBvUr+iAr6qhAQyAtiTYjHftHSGYQ1lnHxgTdAWmN2dVshCvc3sMiIEi6SnlmQvaw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dsWQZHnL; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-442fda876a6so9564345e9.0;
+        Thu, 05 Jun 2025 09:17:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749140251; x=1749745051; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/dGbqrQdsgTzP3UjIz0kbTw/JkIIyQml15jcZJHvF5Y=;
+        b=dsWQZHnLtzUjsZkcrrt2KLTTchmo+CZZiERCiy9e+xjW5PHXFiXBKdcQof0nVSYO/+
+         yHzR20Wljvv7g736oZQiINnq+0vhFKu0vBONuOjuZDc6OQekY+iJebfJw6dPw3t1+2+h
+         hV6c3ZD2F/icEgcADabC3JoJD7O04mhjO4iDn3aTL+xdQiiIYOo7bCWOy/dS3LZaqZHK
+         46fpvI4vthZ7JGPUkkDKF7WVOHyVrtH97tzpkVQAeYrCKOMW9LjxAgzf2HpAD6X1ePPQ
+         83xcIMfli2nMLn3dnSO933kXadrpEqbGlhmqWtnsv/W9FPA+youks3F4ZtlvD7HZTdf5
+         hUhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749140122; x=1749744922;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8oBJwL5i85fvyuh1/EIGr7LIagSUnBICErVA++ejqYk=;
-        b=Y6chTqP5pKVdhIl4m9ae83YFG4wcW2r+Ajrm9P16NSGUFG1qwLG5FVqT2NyBVp91Ah
-         XN9ViiGPNsfrwLqJC4nFnfq1rLvB/OfDGh42kMtalh4MCicTkvs846RH9RUpreu2hk/V
-         oHpM6d4FmN59RuFtMcrHnKhxqXM5U+Pz8p/n9erNHf0eoe1KM2ce2x4cXxCP8wkvVAnx
-         ahLrJEYI9Y29nKYCtWtXZY+GX028SKRrBOLd7hN5HMtfPjosSPHnDp4CXMgD8BJuQH8f
-         yo+WHBNJolD6ZuuLlVIw+J93UzyfkM6DDK1L/5H1wR1l+ItLMLqJT9iPJeb8aQvrEirq
-         rwiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXMglHjAbo33gklTrgMou9hSOhTln4MHiAmV8/D0bJAqxG75tj6/lMKsVKqs0dLtmx1X38=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzaz74c/u+e1Mt3lyTlXEDb4uzx1h8axyw86d85ApUHkDAGCp+z
-	7+2/jFeNl4WdOyIe46KOZl8DDLPOk6NdmHeYTRfVAQGGKysz8NqvBYVemflZYxwRxjHiMAjD0A9
-	qZYnafxcGCIsAP/sJ1sqDb6+1hxUqYKyNe6cSJfjBKdC3Aq8+SrLg/w==
-X-Gm-Gg: ASbGncvoMKLSby1wqcpSQ+J5pMkoEcMZcwcPTmvGevN4oYPqb7JGUrsIHJ4L6d9PeR6
-	TXvg0oKVimjmt8Uxa4qZ+0l0IHKTK3bKJZtP6dhmi79ZE3fp5YdtWRpJCIRJCTmYFHJB+NxtFst
-	cDVEmtB9vdA1V5ioIZSm3HS6zG/Lz5gFQJDfV1UBwbKGfrTuPYXHsYXj2P+JQgpAwws0R4er5xF
-	DNHys6afEGj0JspTLt2Cz+pyUYGTwDH+f0VJ7eLQz6v8R+Z952/nQbKCo5kdBZnr7VNvkRqO2NL
-	i4rxLgHRK2XoWc6Aevc=
-X-Received: by 2002:a05:6512:1195:b0:553:2633:8a63 with SMTP id 2adb3069b0e04-55356bf0810mr2550095e87.17.1749140121796;
-        Thu, 05 Jun 2025 09:15:21 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFyEGbTPkSKROw9FM9QAr8F2/I2JIMKK1z9Bn5SHjSwSvXY3jUXjSWANlqa0vsJXPbGPEkgrA==
-X-Received: by 2002:a05:6512:1195:b0:553:2633:8a63 with SMTP id 2adb3069b0e04-55356bf0810mr2550079e87.17.1749140121308;
-        Thu, 05 Jun 2025 09:15:21 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-553378a13d2sm2650604e87.74.2025.06.05.09.15.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Jun 2025 09:15:20 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 60FF81AA92F7; Thu, 05 Jun 2025 18:15:18 +0200 (CEST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>, Jesper Dangaard
- Brouer <hawk@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, Andrew
- Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Jamal Hadi Salim <jhs@mojatatu.com>, Cong
- Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
- linux-kernel@vger.kernel.org
-Subject: Re: [BUG] veth: TX drops with NAPI enabled and crash in combination
- with qdisc
-In-Reply-To: <9da42688-bfaa-4364-8797-e9271f3bdaef@hetzner-cloud.de>
-References: <9da42688-bfaa-4364-8797-e9271f3bdaef@hetzner-cloud.de>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Thu, 05 Jun 2025 18:15:18 +0200
-Message-ID: <87zfemtbah.fsf@toke.dk>
+        d=1e100.net; s=20230601; t=1749140251; x=1749745051;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/dGbqrQdsgTzP3UjIz0kbTw/JkIIyQml15jcZJHvF5Y=;
+        b=K7HMZAZZyKFEbkboQ0nYSbfydEr1ikn/i15AvLBRSalE0DvhCyS0IVPWQzclQu0tYV
+         fKM76Ws44e4q8G6Xudmnt4jiDaWIFlrkVg9lCp8GhbSHeYObgaZdcoJxndRgWSbtq32u
+         aWQC3ixGUsXpBJ+nOlYAqiXkN38lGLTXaQobhCBaQXq0pTCbt8xKm8o2c8eHU82sJUxr
+         5HQJxOpfF06Ckr56an3nhEC05Ek3GwI9nk5xuDQWXyKdIxhNjaOtxa5vCb7ek6cp8zds
+         QCsolO4vVUqialWk/4pdUnK3gZgI6NfdmQLq8zxyeHe6QcHN+q5tIma6tceVA42sSZAF
+         +5yg==
+X-Forwarded-Encrypted: i=1; AJvYcCUiyrp6vJLuutvPyfMJuo3vMSQH/6YJwJpXouglHeFnBy6h1fMihqWYHZEXpx+MpO1CsmCmjoaS3r4tOg==@vger.kernel.org, AJvYcCWgahJcgRMJm+2KaTeSsqMUwRyQkLWDzCTulXiTiYpiQb8zQLVsJapv2h/xEVwnRbvIXVUB8ijE@vger.kernel.org, AJvYcCWo6sD0P8A9nn93XS0GiF5/RaXb/rNcS3k8+Dp1r3xUbZOjCmK9U+EP5qD9AKZEA257BakYmjpVWafSwa5VM5A=@vger.kernel.org, AJvYcCWpQ7ePuhqsJH+3yrL4t1DUqaF7jeyjT2FZQtGpxIEl5o06JzaRSxx2Ro5HLRR3Aqy5pCE=@vger.kernel.org, AJvYcCX6Rugxcv6dU8fqEOLSWTu0WFuaYAd/xeU2KR86T3uESgwR0QpC2aI8xXeKS64IuRIzA1YjGiskYxR1SxH4@vger.kernel.org
+X-Gm-Message-State: AOJu0YxYUmYyPXfQ76MQpDLApg/cC/Jaa1At6JZc+TmxIldH8D6MZtF/
+	4V117mcaqfdvTa8hIR+CmNsNJcp81G883AEhLj356bF7gFqenq2b7Q+2X991il8YRQPT1RyGIdl
+	Deo/e6UDdadWZjOMKXV0lIok4JTdSo+U=
+X-Gm-Gg: ASbGnct7xX2GwRi3arf4iOQqHCwfo4J9WCl+1eTBMgElGIgtcRZ0W+tgfx0+y4kpl6h
+	MBL902ZU7ohHILnZ5Q1bmM7MoDx51VW+6/6l3QoXL0xCzHodp4v9pjthcMh/9T2AE+dBkwVMTm7
+	ZVRnKSuRNHsMkD8uK16t8iECv4PEFRmzXfAEisQ5z9bZVLXHeU
+X-Google-Smtp-Source: AGHT+IHljy+LoIqRi4m59r5NW96Zx9RUujcAPzsJblEj/I1z4yadqfI1VE3DoTtvbIg5PXHzHL/unxbytcYK+wMwODQ=
+X-Received: by 2002:a05:600c:6298:b0:43c:fe15:41cb with SMTP id
+ 5b1f17b1804b1-451f0ac62ddmr74940415e9.15.1749140251202; Thu, 05 Jun 2025
+ 09:17:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20250127160709.80604-1-ubizjak@gmail.com> <20250127160709.80604-7-ubizjak@gmail.com>
+ <02c00acd-9518-4371-be2c-eb63e5d11d9c@kernel.org> <8ea2aefc-2847-433e-b56e-5caad49e54f2@kernel.org>
+In-Reply-To: <8ea2aefc-2847-433e-b56e-5caad49e54f2@kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 5 Jun 2025 09:17:19 -0700
+X-Gm-Features: AX0GCFvfio4DaSSiJPkWxk8FfTQS7aYWnm7rRe7RN7TCaeYNdx8m0LgRscw5pY4
+Message-ID: <CAADnVQ+ukqmyNJ7eT8Z=2GY5cGAt38VJtzOjEbH_3aKCUC5qLg@mail.gmail.com>
+Subject: Re: Large modules with 6.15 [was: [PATCH v4 6/6] percpu/x86: Enable
+ strict percpu checks via named AS qualifiers]
+To: Jiri Slaby <jirislaby@kernel.org>
+Cc: Uros Bizjak <ubizjak@gmail.com>, X86 ML <x86@kernel.org>, linux-mm <linux-mm@kvack.org>, 
+	LKML <linux-kernel@vger.kernel.org>, linux-bcachefs@vger.kernel.org, 
+	linux-arch <linux-arch@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, 
+	Nadav Amit <nadav.amit@gmail.com>, Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>, 
+	Christoph Lameter <cl@linux.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@kernel.org>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	"H. Peter Anvin" <hpa@zytor.com>, Linus Torvalds <torvalds@linux-foundation.org>, 
+	Andy Lutomirski <luto@kernel.org>, Brian Gerst <brgerst@gmail.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Shung-Hsi Yu <shung-hsi.yu@suse.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de> writes:
+On Thu, Jun 5, 2025 at 7:32=E2=80=AFAM Jiri Slaby <jirislaby@kernel.org> wr=
+ote:
+>
+> Cc BPF people, just so you know.
+>
+> On 05. 06. 25, 16:27, Jiri Slaby wrote:
+> > On 27. 01. 25, 17:05, Uros Bizjak wrote:
+> >> This patch declares percpu variables in __seg_gs/__seg_fs named AS
+> >> and keeps them named AS qualified until they are dereferenced with
+> >> percpu accessor. This approach enables various compiler check
+> >> for cross-namespace variable assignments.
+> >>
+> >> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+> >> Acked-by: Nadav Amit <nadav.amit@gmail.com>
+> >> Cc: Dennis Zhou <dennis@kernel.org>
+> >> Cc: Tejun Heo <tj@kernel.org>
+> >> Cc: Christoph Lameter <cl@linux.com>
+> >> Cc: Thomas Gleixner <tglx@linutronix.de>
+> >> Cc: Ingo Molnar <mingo@kernel.org>
+> >> Cc: Borislav Petkov <bp@alien8.de>
+> >> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> >> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> >> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> >> Cc: Andy Lutomirski <luto@kernel.org>
+> >> Cc: Brian Gerst <brgerst@gmail.com>
+> >> Cc: Peter Zijlstra <peterz@infradead.org>
+> >> ---
+> >>   arch/x86/include/asm/percpu.h | 15 ++++++++++++---
+> >>   1 file changed, 12 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/
+> >> percpu.h
+> >> index 27f668660abe..474d648bca9a 100644
+> >> --- a/arch/x86/include/asm/percpu.h
+> >> +++ b/arch/x86/include/asm/percpu.h
+> >> @@ -95,9 +95,18 @@
+> >>   #endif /* CONFIG_SMP */
+> >> -#define __my_cpu_type(var)    typeof(var) __percpu_seg_override
+> >> -#define __my_cpu_ptr(ptr)    (__my_cpu_type(*(ptr))*)(__force
+> >> uintptr_t)(ptr)
+> >> -#define __my_cpu_var(var)    (*__my_cpu_ptr(&(var)))
+> >> +#if defined(CONFIG_USE_X86_SEG_SUPPORT) && defined(USE_TYPEOF_UNQUAL)
+> >> +# define __my_cpu_type(var)    typeof(var)
+> >> +# define __my_cpu_ptr(ptr)    (ptr)
+> >> +# define __my_cpu_var(var)    (var)
+> >> +
+> >> +# define __percpu_qual        __percpu_seg_override
+> >> +#else
+> >> +# define __my_cpu_type(var)    typeof(var) __percpu_seg_override
+> >> +# define __my_cpu_ptr(ptr)    (__my_cpu_type(*(ptr))*)(__force
+> >> uintptr_t)(ptr)
+> >> +# define __my_cpu_var(var)    (*__my_cpu_ptr(&(var)))
+> >> +#endif
+> >> +
+> >
+> > Another issue with this is this causes all modules in 6.15 are 2-4 time=
+s
+> > (compressed size) bigger:
+> > $ ll /usr/lib/modules/*-[0-9]-default/kernel/drivers/atm/atmtcp.ko.zst
+> >  > -rw-r--r--. 1 root root 10325 May 13 11:49 /usr/lib/modules/6.14.6-2=
+-
+> > default/kernel/drivers/atm/atmtcp.ko.zst
+> >  > -rw-r--r--. 1 root root 39677 Jun  2 09:13 /usr/lib/modules/6.15.0-1=
+-
+> > default/kernel/drivers/atm/atmtcp.ko.zst
+> >
+> > It's due to larger .BTF section:
+> > .BTF              PROGBITS         0000000000000000  [-00003080-]
+> > [-       00000000000011a8-]  {+00003100+}
+> > {+       0000000000012cf8+}  0000000000000000           0     0     1
+> >
+> > There are a lot of new BTF types defined in each module like:
+> > +attribute_group STRUCT
+> > +backing_dev_info STRUCT
+> > +bdi_writeback STRUCT
+> > +bin_attribute STRUCT
+> > +bio_end_io_t TYPEDEF
+> > +bio_list STRUCT
+> > +bio_set STRUCT
+> > +bio STRUCT
+> > +bio_vec STRUCT
+> >
+> > Reverting this gives me back to normal sizes.
+> >
+> > Any ideas?
 
-> Hi,
->
-> while experimenting with XDP_REDIRECT from a veth-pair to another interface, I
-> noticed that the veth-pair looses lots of packets when multiple TCP streams go
-> through it, resulting in stalling TCP connections and noticeable instabilities.
->
-> This doesn't seem to be an issue with just XDP but rather occurs whenever the
-> NAPI mode of the veth driver is active.
-> I managed to reproduce the same behavior just by bringing the veth-pair into
-> NAPI mode (see commit d3256efd8e8b ("veth: allow enabling NAPI even without
-> XDP")) and running multiple TCP streams through it using a network namespace.
->
-> Here is how I reproduced it:
->
->   ip netns add lb
->   ip link add dev to-lb type veth peer name in-lb netns lb
->
->   # Enable NAPI
->   ethtool -K to-lb gro on
->   ethtool -K to-lb tso off
->   ip netns exec lb ethtool -K in-lb gro on
->   ip netns exec lb ethtool -K in-lb tso off
->
->   ip link set dev to-lb up
->   ip -netns lb link set dev in-lb up
->
-> Then run a HTTP server inside the "lb" namespace that serves a large file:
->
->   fallocate -l 10G testfiles/10GB.bin
->   caddy file-server --root testfiles/
->
-> Download this file from within the root namespace multiple times in parallel:
->
->   curl http://[fe80::...%to-lb]/10GB.bin -o /dev/null
->
-> In my tests, I ran four parallel curls at the same time and after just a few
-> seconds, three of them stalled while the other one "won" over the full bandwidth
-> and completed the download.
->
-> This is probably a result of the veth's ptr_ring running full, causing many
-> packet drops on TX, and the TCP congestion control reacting to that.
->
-> In this context, I also took notice of Jesper's patch which describes a very
-> similar issue and should help to resolve this:
->   commit dc82a33297fc ("veth: apply qdisc backpressure on full ptr_ring to
->   reduce TX drops")
->
-> But when repeating the above test with latest mainline, which includes this
-> patch, and enabling qdisc via
->   tc qdisc add dev in-lb root sfq perturb 10
-> the Kernel crashed just after starting the second TCP stream (see output below).
->
-> So I have two questions:
-> - Is my understanding of the described issue correct and is Jesper's patch
->   sufficient to solve this?
-
-Hmm, yeah, this does sound likely.
-
-> - Is my qdisc configuration to make use of this patch correct and the kernel
->   crash is likely a bug?
->
-> ------------[ cut here ]------------
-> UBSAN: array-index-out-of-bounds in net/sched/sch_sfq.c:203:12
-> index 65535 is out of range for type 'sfq_head [128]'
-
-This (the 'index 65535') kinda screams "integer underflow". So certainly
-looks like a kernel bug, yeah. Don't see any obvious reason why Jesper's
-patch would trigger this; maybe Eric has an idea?
-
-Does this happen with other qdiscs as well, or is it specific to sfq?
-
--Toke
-
+Try newer pahole ?
+It was fixed by:
+https://lore.kernel.org/bpf/20250429161042.2069678-1-alan.maguire@oracle.co=
+m/
 
