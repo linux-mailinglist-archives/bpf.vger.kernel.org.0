@@ -1,338 +1,336 @@
-Return-Path: <bpf+bounces-59785-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59786-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEF45ACF74F
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 20:42:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11946ACF756
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 20:43:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F73117B397
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 18:42:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6437D1885C25
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 18:43:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6CA727C16A;
-	Thu,  5 Jun 2025 18:36:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C61F727A445;
+	Thu,  5 Jun 2025 18:42:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MGW0qxvM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Co0hf//j"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 113C927E7C0
-	for <bpf@vger.kernel.org>; Thu,  5 Jun 2025 18:36:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9DAD225405;
+	Thu,  5 Jun 2025 18:42:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749148617; cv=none; b=DL4AYdbBQWxab0xOyzb5JoDfpoiBscwFjeMwtmyujR7wC1SMFaQZjFeqvxll/uXPuqXjsKNX49A7hZ3Wcyv098slElBtysPv/yl7UCrn+l9tANA1zpFj7Lwi+LSmAn26xTtDuKP8iiLf6sV+4Z5IzEFSJ97Y9+KT/KfoGZAG+vA=
+	t=1749148932; cv=none; b=YZox5M+3YCPKlgrcfwVh7u7ujJ0dALXaY/0/jJK4lqN5B//qKa0TO1QQoSdk6Rwt0IFlFM8d+PiOM2c25dYDJnVtD5MAXUNnmn3BL9dVnamX5t1XmNDZAz561DxKKeOscKUkG8Tw9UoHz5GS5Z6ncahB/6CiADSTNGHt03JHc2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749148617; c=relaxed/simple;
-	bh=RkvZunxF7Edxio+ho+lhiY9x2UGud1Gq1HlW3lVCBfs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bcVPuomY21os8W6bjDweJBbNvJjXUvRlrw98tJ1ezJBJ24NauTQfiyrWAomw6N/+IjEiz7HZsENXlUCkj43VW0HsKkhZVdDUTn1yT6PicLfRj/9Ss9GakV7YsTkJKeFHsTyvIZY2ef4LsB1L0LZDHdHHSTaAc2ok3VIl4/VwQU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MGW0qxvM; arc=none smtp.client-ip=209.85.208.46
+	s=arc-20240116; t=1749148932; c=relaxed/simple;
+	bh=8A1uXNWW2809SvO52PJIvs8C0+8RcTEdczSyPA4VTJs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=noil+QL8creiGDnn4O0LNWhH9ZSOne4QaQMachGVlzhk/Q/DvG7PnMOfzfkozKidBQoojZWlLvJMFaXDGl6F9K9B/b8c8f3S5RZiHfPkhMcJZ0Sdsh61PdVThFI67hK6zRw0VGk1m61aJnCVGSkQTIXJcBEHrxEwzND9LIW2DRw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Co0hf//j; arc=none smtp.client-ip=209.85.210.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-6020ff8d35dso2837906a12.0
-        for <bpf@vger.kernel.org>; Thu, 05 Jun 2025 11:36:54 -0700 (PDT)
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-742c9907967so1310775b3a.1;
+        Thu, 05 Jun 2025 11:42:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749148613; x=1749753413; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1749148930; x=1749753730; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=R4I0fWteE6rgz0RrqtrPJXroPeAGBVzASzfZptQU6G0=;
-        b=MGW0qxvMk0pq5X9VbHNdf7NhpMVbHeIxxroJtV2z7BA8w/mS7RJ8HUlE2/ntngRlf+
-         xXPscUFMDrhig1O4shzjytQLSFq6qshGemtjy2aR+9uWSZmJtSn0DCkzUK4omVovQX9b
-         e/tmy3WuHfZ382fdXPyxYcjY3AM4UFeeVCqlmsGUE0JQagRpRjKVF9iYXWJ9AYJhkiHe
-         zX+qqarqTF2n0tYuCdoYhIs8D6Z1beHyMYeU2gIVzSYwgIH9Hl7hFcTDKqe98XDCAfDj
-         HarhDTZdqzsi28mVF+0rwPATplKxAD/qTVcvCJKEGpGVxw8qednueebZex1vl/PSfiQw
-         COyg==
+        bh=J0mxh4Vh4mJ7p/VlQscr8sPVdvImTOagfcs541Xc3GY=;
+        b=Co0hf//jrGWWdF1VuHP/8BRZuD1OydJsmpyYR8qTYP2BvsmqQcipPQblQe7U/mDa8Z
+         EM1ACunEpku9waKSLVmxapdU6wgnxc3/cp9Gg7bHIUlYWAgbpxwwzuYCNvouuzvTYvKW
+         eFBOF+Cg2k/2luOM2mtpBM6KjQ72bqXevluVJZVb7eCYyih/VpBa92a1bqy/Gz+zStua
+         qdQ2PaktkP9VQk8f7rFCHT4Wu32AVqeYu9kl0Gq6JjnAriXRywY8Xqmz29jco9gW+QEw
+         0jxlDJB2erm3ngGblgVRUwCMJvEqjgLksmW5Pcfbz8tdW5DemL3AbS4O/q8wN3tIsqpe
+         73sQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749148613; x=1749753413;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1749148930; x=1749753730;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=R4I0fWteE6rgz0RrqtrPJXroPeAGBVzASzfZptQU6G0=;
-        b=PGJ7RwoTG1s5EfjPO76a3bUdidDp6NZssZ3DbozyliQnNZt2Iu+tFuTFPVXiHgRVNe
-         R9D8Wr9fEaze6VDMNbEM9cRTAG502VG0HV6iIo/6f/U+kDpptz4Nmo3ojMTkW71KXxgn
-         8bUkgcBf1ye+H2CwpdjuXrVxiQCkfMcDniq6oPyRrmRTTN+/21WRfvg/drdux/4eAS/h
-         nPzmhzByMqCc2CBqdoaqPEAGgRRPfkf//3VOs7o/dzlSfRuoCLSk7wkoo51AIQU6mVtt
-         inS1optEWrnr8FBFM6b0/xeNqCl78SvnrlO7wHQWvlgka7txCQhsHMOVYvtJ/D6gEVxk
-         S9YQ==
-X-Gm-Message-State: AOJu0Ywwf2AObvp0Bc8pu4bEFkHUYj6pKqLXibWv2O1oPg+zvupgXOr9
-	Qlrvy/blqpmPMow1qPWl5hOoVaLTpO0XtBIs5bZeRFHXoVXGU2eoNnc8gLAwGbeP0DU=
-X-Gm-Gg: ASbGncsQ5bGIRmvM7ZTuVoh+bWBB/upd/XjDv03J/KMg8drpy5SS15Q1wag0w7Y1TC0
-	SIwopsXVWALGedkyx4bCkKYka5pYjePy/s9f7SZynBI4PAl7BQtzxIgwulpKzkrhxjMvHm9GoZZ
-	NTsczr5cmEWXPJfF+MyObCPAdfPTn4BW2fRBogm8p4eLK6R4riYdbwo5JtCxJ848WXer3d697ov
-	ajL5DmtZxg1Wd9iR+nGwSUnyyDe6nNFDzTQQOsusfbRvRf2o2zUhBwrx1VdBrvXD01HYca2YolK
-	E08FZa4+Yw+Nr1tY/YoWlnqO3otAxv8=
-X-Google-Smtp-Source: AGHT+IFsV+DLnwEZL/e5+ipY/v1E6nGhAS8xhI3Po4N8Uynpsetm15bginvJKvie5Zgq6pIsbXp+Mg==
-X-Received: by 2002:a05:6402:1941:b0:5f4:8c80:77d with SMTP id 4fb4d7f45d1cf-60772b61907mr288133a12.6.1749148613285;
-        Thu, 05 Jun 2025 11:36:53 -0700 (PDT)
-Received: from localhost ([2620:10d:c092:500::7:1013])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-60600898ef9sm6594610a12.33.2025.06.05.11.36.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Jun 2025 11:36:52 -0700 (PDT)
-From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	kafai@meta.com,
-	kernel-team@meta.com,
-	eddyz87@gmail.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next v2 3/3] selftests/bpf: test array presets in veristat
-Date: Thu,  5 Jun 2025 19:36:42 +0100
-Message-ID: <20250605183642.1323795-4-mykyta.yatsenko5@gmail.com>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250605183642.1323795-1-mykyta.yatsenko5@gmail.com>
-References: <20250605183642.1323795-1-mykyta.yatsenko5@gmail.com>
+        bh=J0mxh4Vh4mJ7p/VlQscr8sPVdvImTOagfcs541Xc3GY=;
+        b=QNZ3i7bdiNmISiyzTK/nn90LD+E2l9OLAURH6uj3TQon5XBB2n9u/jqq+HrgKM7pdY
+         0EQnbaTJcIEndnTs+ywUSp0QZLvs3LQRy/riv2BgJUWnuTbGmDoLuqRPl+irTbsAvM0u
+         YMNDb4828/Oemfk4PBiIprHjBQlF7UgUHngsv9YxDHpIIPKwzhkAUoHq4MX9/YGYBo9O
+         sKhG5TmMFU0AXewnU/9Jeh5X2xri9vAu3ULe+c/PrIb1HOy+E0kACaj6BMYLQvhxreKD
+         9SFt0lr2kVMcv/HF0HUgQMkJptMlXGKQnER5pjLxDYBOHKIkIABj///qsa4/2kRi7xmR
+         WO9A==
+X-Forwarded-Encrypted: i=1; AJvYcCWFpW9PoPxHrwanDJpwrcO5/w/9tYduqtgsyVTTojZXVGX6lpRD/u09VM7aoN6jtsjPBKKiYpFo5sF7JDmP@vger.kernel.org, AJvYcCXUwl8sPlfdWBih8FGU2U3lusTBlger1gH72J6NbmN6eojFqyLi2twEfBxfBcJyN+/F3h0=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyo9vrCdfe5wqr4e0Yp/L/SSm92OGpWuR82DuxBdin9gM48V2p2
+	riEWYrxsDS0g3SyMwr7WA6zuXUc6OS2nHFJbhDZxJxotddxjWXCEmM/AhQcWCUFeOsTOTBBGFFU
+	N6hSrkb9hZevxYxtJzz8a4c4VE6k4aqk=
+X-Gm-Gg: ASbGncvDTOGC1QhQYoLC1qT2RPBT4loDvO48fwjWLt2mxED7x4wM3Iev3vQBZG9VxJl
+	qoHTa2SRzYReJ7pzT1S1eYt9VMc+HuKR0xS71mWl8xzfVN2XGhXXmwqLUkhHO2ojx+rn+xVRaV8
+	7oPGrNDtlSQV9xmSzldKQIoZ7vGBfDetQO1ZaeFPo65vMyaR3G
+X-Google-Smtp-Source: AGHT+IFqfyYxtIAbk45UebUFLib9TE4AwrdAOQ8dQjfv0i8SmVPLhjpFLEuxtTuvVn3ycy+/MMBp1Wxq/Blh+0YNl+k=
+X-Received: by 2002:a05:6a00:1390:b0:737:678d:fb66 with SMTP id
+ d2e1a72fcca58-74827e4ebddmr976443b3a.5.1749148929823; Thu, 05 Jun 2025
+ 11:42:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250604163723.3175258-1-chen.dylane@linux.dev>
+In-Reply-To: <20250604163723.3175258-1-chen.dylane@linux.dev>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 5 Jun 2025 11:41:57 -0700
+X-Gm-Features: AX0GCFs7Ti8oMoMVNO8WJhBo2K6eC9zHWIcD5LPUdthDUVuA-lwdu2IWi7uzBZo
+Message-ID: <CAEf4BzasaZYD7y+4Po=K=jBq3Q7JSUMpJ_NSQv7B9=v6fieZ7g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Add show_fdinfo for perf_event
+To: Tao Chen <chen.dylane@linux.dev>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Mykyta Yatsenko <yatsenko@meta.com>
+On Wed, Jun 4, 2025 at 9:37=E2=80=AFAM Tao Chen <chen.dylane@linux.dev> wro=
+te:
+>
+> After commit 1b715e1b0ec5 ("bpf: Support ->fill_link_info for perf_event"=
+) add
+> perf_event info, we can also show the info with the method of cat /proc/[=
+fd]/fdinfo.
+>
+> kprobe fdinfo:
+> link_type:      perf
+> link_id:        2
+> prog_tag:       bcf7977d3b93787c
+> prog_id:        18
+> name:   bpf_fentry_test1
+> offset: 0
+> missed: 0
+> addr:   ffffffffaea8d134
+> event_type:     3
+> cookie: 3735928559
+>
+> uprobe fdinfo:
+> link_type:      perf
+> link_id:        6
+> prog_tag:       bcf7977d3b93787c
+> prog_id:        7
+> name:   /proc/self/exe
+> offset: 6507541
+> event_type:     1
+> cookie: 3735928559
+>
+> tracepoint fdinfo:
+> link_type:      perf
+> link_id:        4
+> prog_tag:       bcf7977d3b93787c
+> prog_id:        8
+> tp_name:        sched_switch
+> event_type:     5
+> cookie: 3735928559
+>
+> perf_event fdinfo:
+> link_type:      perf
+> link_id:        5
+> prog_tag:       bcf7977d3b93787c
+> prog_id:        9
+> type:   1
+> config: 2
+> event_type:     6
+> cookie: 3735928559
+>
+> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+> ---
+>  kernel/bpf/syscall.c | 126 +++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 126 insertions(+)
+>
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 9794446bc8..9af54852eb 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -3793,6 +3793,35 @@ static int bpf_perf_link_fill_kprobe(const struct =
+perf_event *event,
+>         info->perf_event.kprobe.cookie =3D event->bpf_cookie;
+>         return 0;
+>  }
+> +
+> +static void bpf_perf_link_fdinfo_kprobe(const struct perf_event *event,
+> +                                       struct seq_file *seq)
+> +{
+> +       const char *name;
+> +       int err;
+> +       u32 prog_id, type;
+> +       u64 offset, addr;
+> +       unsigned long missed;
+> +
+> +       err =3D bpf_get_perf_event_info(event, &prog_id, &type, &name,
+> +                                     &offset, &addr, &missed);
+> +       if (err)
+> +               return;
+> +
+> +       if (type =3D=3D BPF_FD_TYPE_KRETPROBE)
+> +               type =3D BPF_PERF_EVENT_KRETPROBE;
+> +       else
+> +               type =3D BPF_PERF_EVENT_KPROBE;
 
-Modify existing veristat tests to verify that array presets are applied
-as expected.
-Introduce few negative tests as well to check that common error modes
-are handled.
+maybe use "kretprobe" and "kprobe" strings?
 
-Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
----
- .../selftests/bpf/prog_tests/test_veristat.c  | 86 ++++++++++++++++++-
- .../selftests/bpf/progs/set_global_vars.c     | 51 +++++++----
- 2 files changed, 114 insertions(+), 23 deletions(-)
+> +
+> +       seq_printf(seq,
+> +                  "name:\t%s\n"
+> +                  "offset:\t%llu\n"
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_veristat.c b/tools/testing/selftests/bpf/prog_tests/test_veristat.c
-index 47b56c258f3f..057c249c82fa 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_veristat.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_veristat.c
-@@ -60,12 +60,15 @@ static void test_set_global_vars_succeeds(void)
- 	    " -G \"var_s8 = -128\" "\
- 	    " -G \"var_u8 = 255\" "\
- 	    " -G \"var_ea = EA2\" "\
--	    " -G \"var_eb = EB2\" "\
--	    " -G \"var_ec = EC2\" "\
-+	    " -G \"var_eb  =  EB2\" "\
-+	    " -G \"var_ec=EC2\" "\
- 	    " -G \"var_b = 1\" "\
--	    " -G \"struct1.struct2.u.var_u8 = 170\" "\
-+	    " -G \"struct1[2].struct2[1].u.var_u8[2]=170\" "\
- 	    " -G \"union1.struct3.var_u8_l = 0xaa\" "\
- 	    " -G \"union1.struct3.var_u8_h = 0xaa\" "\
-+	    " -G \"arr[3]= 171\" "	\
-+	    " -G \"arr[EA2] =172\" "	\
-+	    " -G \"enum_arr[EC2]=EA3\" "	\
- 	    "-vl2 > %s", fix->veristat, fix->tmpfile);
- 
- 	read(fix->fd, fix->output, fix->sz);
-@@ -81,8 +84,11 @@ static void test_set_global_vars_succeeds(void)
- 	__CHECK_STR("_w=12 ", "var_eb = EB2");
- 	__CHECK_STR("_w=13 ", "var_ec = EC2");
- 	__CHECK_STR("_w=1 ", "var_b = 1");
--	__CHECK_STR("_w=170 ", "struct1.struct2.u.var_u8 = 170");
-+	__CHECK_STR("_w=170 ", "struct1.struct2[1].u.var_u8[2] = 170");
- 	__CHECK_STR("_w=0xaaaa ", "union1.var_u16 = 0xaaaa");
-+	__CHECK_STR("_w=171 ", "arr[3]= 171");
-+	__CHECK_STR("_w=172 ", "arr[EA2] =172");
-+	__CHECK_STR("_w=10 ", "enum_arr[EC2]=EA3");
- 
- out:
- 	teardown_fixture(fix);
-@@ -129,6 +135,66 @@ static void test_set_global_vars_out_of_range(void)
- 	teardown_fixture(fix);
- }
- 
-+static void test_unsupported_2dim_array_type(void)
-+{
-+	struct fixture *fix = init_fixture();
-+
-+	SYS_FAIL(out,
-+		 "%s set_global_vars.bpf.o -G \"matrix[0][0] = 1\" -vl2 2> %s",
-+		 fix->veristat, fix->tmpfile);
-+
-+	read(fix->fd, fix->output, fix->sz);
-+	__CHECK_STR("Could not parse 'matrix[0][0]'", "matrix");
-+
-+out:
-+	teardown_fixture(fix);
-+}
-+
-+static void test_unsupported_ptr_array_type(void)
-+{
-+	struct fixture *fix = init_fixture();
-+
-+	SYS_FAIL(out,
-+		 "%s set_global_vars.bpf.o -G \"ptr_arr[0] = 0\" -vl2 2> %s",
-+		 fix->veristat, fix->tmpfile);
-+
-+	read(fix->fd, fix->output, fix->sz);
-+	__CHECK_STR("Unsupported array type for variable ptr_arr", "ptr_arr");
-+
-+out:
-+	teardown_fixture(fix);
-+}
-+
-+static void test_array_out_of_bounds(void)
-+{
-+	struct fixture *fix = init_fixture();
-+
-+	SYS_FAIL(out,
-+		 "%s set_global_vars.bpf.o -G \"arr[99] = 0\" -vl2 2> %s",
-+		 fix->veristat, fix->tmpfile);
-+
-+	read(fix->fd, fix->output, fix->sz);
-+	__CHECK_STR("Preset index 99 is invalid or out of bounds", "arr[99]");
-+
-+out:
-+	teardown_fixture(fix);
-+}
-+
-+static void test_array_index_not_found(void)
-+{
-+	struct fixture *fix = init_fixture();
-+
-+	SYS_FAIL(out,
-+		 "%s set_global_vars.bpf.o -G \"arr[EG2] = 0\" -vl2 2> %s",
-+		 fix->veristat, fix->tmpfile);
-+
-+	read(fix->fd, fix->output, fix->sz);
-+	__CHECK_STR("Could not find array index as enum value EG2", "arr[EG2]");
-+
-+out:
-+	teardown_fixture(fix);
-+}
-+
- void test_veristat(void)
- {
- 	if (test__start_subtest("set_global_vars_succeeds"))
-@@ -139,6 +205,18 @@ void test_veristat(void)
- 
- 	if (test__start_subtest("set_global_vars_from_file_succeeds"))
- 		test_set_global_vars_from_file_succeeds();
-+
-+	if (test__start_subtest("test_unsupported_2dim_array_type"))
-+		test_unsupported_2dim_array_type();
-+
-+	if (test__start_subtest("test_unsupported_ptr_array_type"))
-+		test_unsupported_ptr_array_type();
-+
-+	if (test__start_subtest("test_array_out_of_bounds"))
-+		test_array_out_of_bounds();
-+
-+	if (test__start_subtest("test_array_index_not_found"))
-+		test_array_index_not_found();
- }
- 
- #undef __CHECK_STR
-diff --git a/tools/testing/selftests/bpf/progs/set_global_vars.c b/tools/testing/selftests/bpf/progs/set_global_vars.c
-index 90f5656c3991..a022c08895b9 100644
---- a/tools/testing/selftests/bpf/progs/set_global_vars.c
-+++ b/tools/testing/selftests/bpf/progs/set_global_vars.c
-@@ -7,22 +7,30 @@
- 
- char _license[] SEC("license") = "GPL";
- 
--enum Enum { EA1 = 0, EA2 = 11 };
-+typedef __s32 s32;
-+typedef s32 i32;
-+typedef __u8 u8;
-+
-+enum Enum { EA1 = 0, EA2 = 11, EA3 = 10 };
- enum Enumu64 {EB1 = 0llu, EB2 = 12llu };
- enum Enums64 { EC1 = 0ll, EC2 = 13ll };
- 
- const volatile __s64 var_s64 = -1;
- const volatile __u64 var_u64 = 0;
--const volatile __s32 var_s32 = -1;
-+const volatile i32 var_s32 = -1;
- const volatile __u32 var_u32 = 0;
- const volatile __s16 var_s16 = -1;
- const volatile __u16 var_u16 = 0;
- const volatile __s8 var_s8 = -1;
--const volatile __u8 var_u8 = 0;
-+const volatile u8 var_u8 = 0;
- const volatile enum Enum var_ea = EA1;
- const volatile enum Enumu64 var_eb = EB1;
- const volatile enum Enums64 var_ec = EC1;
- const volatile bool var_b = false;
-+const volatile i32 arr[32];
-+const volatile enum Enum enum_arr[32];
-+const volatile i32 matrix[32][32];
-+const volatile i32 *ptr_arr[32];
- 
- struct Struct {
- 	int:16;
-@@ -35,34 +43,36 @@ struct Struct {
- 		volatile struct {
- 			const int:1;
- 			union {
--				const volatile __u8 var_u8;
-+				const volatile u8 var_u8[3];
- 				const volatile __s16 filler3;
- 				const int:1;
- 			} u;
- 		};
--	} struct2;
-+	} struct2[2];
- };
- 
- const volatile __u32 stru = 0; /* same prefix as below */
--const volatile struct Struct struct1 = {.struct2 = {.u = {.var_u8 = 1}}};
-+const volatile struct Struct struct1[3] = {{.struct2 = {{}, {.u = {.var_u8 = {1}}}}}};
- 
--union Union {
--	__u16 var_u16;
--	struct Struct3 {
--		struct {
--			__u8 var_u8_l;
--		};
-+struct Struct3 {
-+	struct {
-+		u8 var_u8_l;
-+	};
-+	struct {
- 		struct {
--			struct {
--				__u8 var_u8_h;
--			};
-+			u8 var_u8_h;
- 		};
--	} struct3;
-+	};
- };
- 
--const volatile union Union union1 = {.var_u16 = -1};
-+typedef struct Struct3 Struct3_t;
- 
--char arr[4] = {0};
-+union Union {
-+	__u16 var_u16;
-+	Struct3_t struct3;
-+};
-+
-+const volatile union Union union1 = {.var_u16 = -1};
- 
- SEC("socket")
- int test_set_globals(void *ctx)
-@@ -81,8 +91,11 @@ int test_set_globals(void *ctx)
- 	a = var_eb;
- 	a = var_ec;
- 	a = var_b;
--	a = struct1.struct2.u.var_u8;
-+	a = struct1[2].struct2[1].u.var_u8[2];
- 	a = union1.var_u16;
-+	a = arr[3];
-+	a = arr[EA2];
-+	a = enum_arr[EC2];
- 
- 	return a;
- }
--- 
-2.49.0
+llx, hex makes most sense (we had similar discussion within the
+context of bpftool reporting)
 
+pw-bot: cr
+
+> +                  "missed:\t%lu\n"
+> +                  "addr:\t%llx\n"
+
+ditto, address -> hex
+
+> +                  "event_type:\t%u\n"
+> +                  "cookie:\t%llu\n",
+> +                  name, offset, missed, addr, type, event->bpf_cookie);
+> +}
+>  #endif
+>
+>  #ifdef CONFIG_UPROBE_EVENTS
+> @@ -3820,6 +3849,34 @@ static int bpf_perf_link_fill_uprobe(const struct =
+perf_event *event,
+>         info->perf_event.uprobe.cookie =3D event->bpf_cookie;
+>         return 0;
+>  }
+> +
+> +static void bpf_perf_link_fdinfo_uprobe(const struct perf_event *event,
+> +                                       struct seq_file *seq)
+> +{
+> +       const char *name;
+> +       int err;
+> +       u32 prog_id, type;
+> +       u64 offset, addr;
+> +       unsigned long missed;
+> +
+> +       err =3D bpf_get_perf_event_info(event, &prog_id, &type, &name,
+> +                                     &offset, &addr, &missed);
+> +       if (err)
+> +               return;
+> +
+> +       if (type =3D=3D BPF_FD_TYPE_URETPROBE)
+> +               type =3D BPF_PERF_EVENT_URETPROBE;
+> +       else
+> +               type =3D BPF_PERF_EVENT_UPROBE;
+
+strings, just as above
+
+> +
+> +       seq_printf(seq,
+> +                  "name:\t%s\n"
+> +                  "offset:\t%llu\n"
+
+hex
+
+> +                  "event_type:\t%u\n"
+> +                  "cookie:\t%llu\n",
+> +                  name, offset, type, event->bpf_cookie);
+> +
+> +}
+>  #endif
+>
+>  static int bpf_perf_link_fill_probe(const struct perf_event *event,
+> @@ -3888,10 +3945,79 @@ static int bpf_perf_link_fill_link_info(const str=
+uct bpf_link *link,
+>         }
+>  }
+>
+> +static void bpf_perf_event_link_show_fdinfo(const struct perf_event *eve=
+nt,
+> +                                           struct seq_file *seq)
+> +{
+> +       seq_printf(seq,
+> +                  "type:\t%u\n"
+> +                  "config:\t%llu\n"
+> +                  "event_type:\t%u\n"
+
+string?
+
+> +                  "cookie:\t%llu\n",
+> +                  event->attr.type, event->attr.config,
+> +                  BPF_PERF_EVENT_EVENT, event->bpf_cookie);
+> +}
+> +
+> +static void bpf_tracepoint_link_show_fdinfo(const struct perf_event *eve=
+nt,
+> +                                           struct seq_file *seq)
+> +{
+> +       int err;
+> +       const char *name;
+> +       u32 prog_id;
+> +
+> +       err =3D bpf_get_perf_event_info(event, &prog_id, NULL, &name, NUL=
+L,
+> +                                     NULL, NULL);
+> +       if (err)
+> +               return;
+> +
+> +       seq_printf(seq,
+> +                  "tp_name:\t%s\n"
+> +                  "event_type:\t%u\n"
+
+string
+
+> +                  "cookie:\t%llu\n",
+> +                  name, BPF_PERF_EVENT_TRACEPOINT, event->bpf_cookie);
+> +}
+> +
+> +static void bpf_probe_link_show_fdinfo(const struct perf_event *event,
+> +                                      struct seq_file *seq)
+> +{
+> +#ifdef CONFIG_KPROBE_EVENTS
+> +       if (event->tp_event->flags & TRACE_EVENT_FL_KPROBE)
+> +               return bpf_perf_link_fdinfo_kprobe(event, seq);
+> +#endif
+> +
+> +#ifdef CONFIG_UPROBE_EVENTS
+> +       if (event->tp_event->flags & TRACE_EVENT_FL_UPROBE)
+> +               return bpf_perf_link_fdinfo_uprobe(event, seq);
+> +#endif
+> +}
+> +
+> +static void bpf_perf_link_show_fdinfo(const struct bpf_link *link,
+> +                                     struct seq_file *seq)
+> +{
+> +       struct bpf_perf_link *perf_link;
+> +       const struct perf_event *event;
+> +
+> +       perf_link =3D container_of(link, struct bpf_perf_link, link);
+> +       event =3D perf_get_event(perf_link->perf_file);
+> +       if (IS_ERR(event))
+> +               return;
+> +
+> +       switch (event->prog->type) {
+> +       case BPF_PROG_TYPE_PERF_EVENT:
+> +               return bpf_perf_event_link_show_fdinfo(event, seq);
+> +       case BPF_PROG_TYPE_TRACEPOINT:
+> +               return bpf_tracepoint_link_show_fdinfo(event, seq);
+> +       case BPF_PROG_TYPE_KPROBE:
+> +               return bpf_probe_link_show_fdinfo(event, seq);
+> +       default:
+> +               return;
+> +       }
+> +}
+> +
+>  static const struct bpf_link_ops bpf_perf_link_lops =3D {
+>         .release =3D bpf_perf_link_release,
+>         .dealloc =3D bpf_perf_link_dealloc,
+>         .fill_link_info =3D bpf_perf_link_fill_link_info,
+> +       .show_fdinfo =3D bpf_perf_link_show_fdinfo,
+>  };
+>
+>  static int bpf_perf_link_attach(const union bpf_attr *attr, struct bpf_p=
+rog *prog)
+> --
+> 2.43.0
+>
 
