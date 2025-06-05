@@ -1,267 +1,182 @@
-Return-Path: <bpf+bounces-59764-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59765-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C35BACF3DF
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 18:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 914EAACF3E5
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 18:15:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F5601892087
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 16:14:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4438189765C
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 16:15:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD3E41F03D6;
-	Thu,  5 Jun 2025 16:14:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB4DB1E25E3;
+	Thu,  5 Jun 2025 16:15:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Coh5xMBA"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="e2m58g95"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4B5833062
-	for <bpf@vger.kernel.org>; Thu,  5 Jun 2025 16:14:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C43DF1624F7
+	for <bpf@vger.kernel.org>; Thu,  5 Jun 2025 16:15:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749140057; cv=none; b=tLLBoG/nAKRR0DVPirPs6pNG4sd1b+CMDtGhXnwar3GsTVrQ1YSReOY/vfeAuGEkCR2GEY01CxIN3VB5pyae/T8TL51G4XxdsLJT0IiDIVeXFvDqcHdqzGzkAMtSsZDMPB9RRfsDPEw9BGcteC7uH3JYF3UjAbHo+rk3T6e3RTs=
+	t=1749140128; cv=none; b=oYbqAEk0RWBEUFaarNFW3EjAV9Ah4PW/XHL5wNu8Wz/hUavtaUooxd2adTKLWZQEvSzINKPnhYSZVu/MzYdZPqq32RDUcEAZhILJHaVcxiqE6wVja86akPO6DQ7bSKVkcPGsqB3IfrCHUIs5WlH57ZFdkW1jd3SSYZTJlQGml0Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749140057; c=relaxed/simple;
-	bh=IdQ430D5cDAmb+lVXjjoZuxeLfzoJEGxP+MmbYarROs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=h+W0iJyJ3nVVuPE88GSVHihBJlj8bbClpWTYe6/LrP8S6TmQn21wcmYZEljwLsi3aAF9FId/fTa6HBOkXnF10r7dsBl5S6CZa7fo/RApm1yBBZl+g74KlwanWvJGrW0j75x5NQvJGz+cZkCMNwhPnQEWrLH+4gjkMPBvWroFhwI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Coh5xMBA; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-742c27df0daso1201909b3a.1
-        for <bpf@vger.kernel.org>; Thu, 05 Jun 2025 09:14:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749140055; x=1749744855; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+tLd2baN3clQD9xQ4RP9N5U7djxyCU7Z0TIlqeg4QNY=;
-        b=Coh5xMBAjYFtwBLQN16/tUig7rGPsCr0R2V2x7oVny45whrYe5SXXdxwK7176UQrDL
-         Rr1Wk4ZdobZBjQJug+KV59nZ9oZhYRqX8fVWXBHjAm/4tKhdB/XiriXXRO0GV80iaQWi
-         BGW7LPMNB8Zva2ANxP4ypGZLQY7grav4L6SOeNaSo4xxrEaA8vQ5JS0xXWYQ2BwQzKN7
-         iwUKaleGb4PaXA7uBcqodtRH/1FGqJ/Y9FiQ1EF5YxXpGtXqw23ns87rVGjG1PjOBMQL
-         NDwnBE+9lzty2c4QhZ/mdvafLXKxLW07LL/XbLEQ4/MzO3nEtVTpJ7o09YsqCjKY+G66
-         kbdQ==
+	s=arc-20240116; t=1749140128; c=relaxed/simple;
+	bh=5YRfXPx9urXs5R9JeRsxMZW2JAsNkY5U5iQs48ngJ1w=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=HjGXjYRJzb+rIdJwkqrMS7Q9I07krcy4z01hO7gBbSAcGiYuPlzI2AzUaldChOPLk3rlE1IfBEsxoULSZoKflhY8HlkF5Pg5VO9+jesJsTuJV8fjOGfmHIU9UGNAHSVPhwrHxOKymHve7og8Nrb0mdPpE1P81sNtx1BGTulCswo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=e2m58g95; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1749140125;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8oBJwL5i85fvyuh1/EIGr7LIagSUnBICErVA++ejqYk=;
+	b=e2m58g95HkT0N0JYxdRVU2aiBFdSv/mWJubu7OJx8Oc54sgQ5EUF9TChS6zsd6WqgSWHgc
+	U2Ur0MSUvIF1tTtTFGgQytaAh3oaPufiZ9OJm4EkiSfIHXyqcjwdJZlgPYzGQIFgceH8/Z
+	BmZuQkz9xIjURJdbLue0bR8htWXMtp4=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-590-OrDv4OGxPL2A3_w13mQlkg-1; Thu, 05 Jun 2025 12:15:23 -0400
+X-MC-Unique: OrDv4OGxPL2A3_w13mQlkg-1
+X-Mimecast-MFC-AGG-ID: OrDv4OGxPL2A3_w13mQlkg_1749140122
+Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-5532a0f21e4so557664e87.3
+        for <bpf@vger.kernel.org>; Thu, 05 Jun 2025 09:15:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749140055; x=1749744855;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+tLd2baN3clQD9xQ4RP9N5U7djxyCU7Z0TIlqeg4QNY=;
-        b=d14rwo3mQyiAp+05wmVQeLhVja9uc8LNmp2s86vuCEVT42IrSnplMtz6bVK9+LTY3q
-         o06zG6FrGvpYKxtCwKDdzI6+a0c4e7oWokUUTbd449fVqZ/KV6HoWRDjhq2R0fE2JIva
-         byrvJdNoKtrTpRqrftoqupRaDiFu1HDD5Rb+1y1aPiyZlCvi5wTozTkpafm080hUNehm
-         d+0FR1cny/HoB3KXV8tyi7eMpZSlYkBKcxVh3JkPeA3e5b6qgq0aSiZrE1gIV/HJcpuP
-         TLVz4Ac1/z8ZwquwrObvynNEAb7WGx+XAGfTQwIlsH2tZCYvzawpG6Mt9f5rJFTxIR6y
-         BVyQ==
-X-Gm-Message-State: AOJu0YydlyVRsKVDkmDYGOV2InxZfmc4gSqXfRr9Sj1y4Bj0DBS1R/Ag
-	HWxyTmB3Y6q21zyyeH+EpR8Hz9zm4UvO8s+VbMDcVx2z66C21ajioFRBb+UGrruXluruj+vvNuV
-	KrWkLxQThQ196ACu+zTEP571gQSOY3fK0bA==
-X-Gm-Gg: ASbGncvS+3rz2dMc3+xkv+hTpoA2UDWBerafNnsVOQ7bJj9rAFnN/8PnkfSXrPRXAJH
-	rCrHqIgp0YU2tODXaGnT58l7f+Xwzy6c3i/wHqnlWh5H6PCYfJ9GWNvL0Fd0OxIjEVvib/IlAgD
-	riqNQhwxMPEeUYeGuQ0WvpeGWnIfisJ7S6iYYZ3wAJdvO5dBys
-X-Google-Smtp-Source: AGHT+IHz62OYbvADHuMRmH3bv+iwVzEsEoeRyfERdJsO0srw+4D64eZFvkdUkncSstPeBOyWLRoXfc1/y9d5HFEy448=
-X-Received: by 2002:aa7:88c6:0:b0:746:298e:4ed0 with SMTP id
- d2e1a72fcca58-74827ff601fmr373613b3a.13.1749140054733; Thu, 05 Jun 2025
- 09:14:14 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1749140122; x=1749744922;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8oBJwL5i85fvyuh1/EIGr7LIagSUnBICErVA++ejqYk=;
+        b=Y6chTqP5pKVdhIl4m9ae83YFG4wcW2r+Ajrm9P16NSGUFG1qwLG5FVqT2NyBVp91Ah
+         XN9ViiGPNsfrwLqJC4nFnfq1rLvB/OfDGh42kMtalh4MCicTkvs846RH9RUpreu2hk/V
+         oHpM6d4FmN59RuFtMcrHnKhxqXM5U+Pz8p/n9erNHf0eoe1KM2ce2x4cXxCP8wkvVAnx
+         ahLrJEYI9Y29nKYCtWtXZY+GX028SKRrBOLd7hN5HMtfPjosSPHnDp4CXMgD8BJuQH8f
+         yo+WHBNJolD6ZuuLlVIw+J93UzyfkM6DDK1L/5H1wR1l+ItLMLqJT9iPJeb8aQvrEirq
+         rwiQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXMglHjAbo33gklTrgMou9hSOhTln4MHiAmV8/D0bJAqxG75tj6/lMKsVKqs0dLtmx1X38=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzaz74c/u+e1Mt3lyTlXEDb4uzx1h8axyw86d85ApUHkDAGCp+z
+	7+2/jFeNl4WdOyIe46KOZl8DDLPOk6NdmHeYTRfVAQGGKysz8NqvBYVemflZYxwRxjHiMAjD0A9
+	qZYnafxcGCIsAP/sJ1sqDb6+1hxUqYKyNe6cSJfjBKdC3Aq8+SrLg/w==
+X-Gm-Gg: ASbGncvoMKLSby1wqcpSQ+J5pMkoEcMZcwcPTmvGevN4oYPqb7JGUrsIHJ4L6d9PeR6
+	TXvg0oKVimjmt8Uxa4qZ+0l0IHKTK3bKJZtP6dhmi79ZE3fp5YdtWRpJCIRJCTmYFHJB+NxtFst
+	cDVEmtB9vdA1V5ioIZSm3HS6zG/Lz5gFQJDfV1UBwbKGfrTuPYXHsYXj2P+JQgpAwws0R4er5xF
+	DNHys6afEGj0JspTLt2Cz+pyUYGTwDH+f0VJ7eLQz6v8R+Z952/nQbKCo5kdBZnr7VNvkRqO2NL
+	i4rxLgHRK2XoWc6Aevc=
+X-Received: by 2002:a05:6512:1195:b0:553:2633:8a63 with SMTP id 2adb3069b0e04-55356bf0810mr2550095e87.17.1749140121796;
+        Thu, 05 Jun 2025 09:15:21 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFyEGbTPkSKROw9FM9QAr8F2/I2JIMKK1z9Bn5SHjSwSvXY3jUXjSWANlqa0vsJXPbGPEkgrA==
+X-Received: by 2002:a05:6512:1195:b0:553:2633:8a63 with SMTP id 2adb3069b0e04-55356bf0810mr2550079e87.17.1749140121308;
+        Thu, 05 Jun 2025 09:15:21 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-553378a13d2sm2650604e87.74.2025.06.05.09.15.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Jun 2025 09:15:20 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 60FF81AA92F7; Thu, 05 Jun 2025 18:15:18 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>, Jesper Dangaard
+ Brouer <hawk@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, Andrew
+ Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Jamal Hadi Salim <jhs@mojatatu.com>, Cong
+ Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [BUG] veth: TX drops with NAPI enabled and crash in combination
+ with qdisc
+In-Reply-To: <9da42688-bfaa-4364-8797-e9271f3bdaef@hetzner-cloud.de>
+References: <9da42688-bfaa-4364-8797-e9271f3bdaef@hetzner-cloud.de>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Thu, 05 Jun 2025 18:15:18 +0200
+Message-ID: <87zfemtbah.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250603141539.86878-1-mykyta.yatsenko5@gmail.com>
- <CAEf4Bzb3=brMXMBZ-AGj8xdr80XEs2Og0XeZ1zuiHnFNWWPJJQ@mail.gmail.com> <e4738330-e6e8-4950-9226-36a5090736a3@gmail.com>
-In-Reply-To: <e4738330-e6e8-4950-9226-36a5090736a3@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 5 Jun 2025 09:14:01 -0700
-X-Gm-Features: AX0GCFvX8JAujO0C_24GpdyLQUCZUuIGdYehQSOcF3bSuVZBU7vbPcTLP25F6T4
-Message-ID: <CAEf4BzYTdngAtJ0ro3yCsOyx5Bu=CmmZLNpKtUv5Gs7-Sb-wTw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: support array presets in veristat
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, eddyz87@gmail.com, 
-	Mykyta Yatsenko <yatsenko@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Wed, Jun 4, 2025 at 8:33=E2=80=AFAM Mykyta Yatsenko
-<mykyta.yatsenko5@gmail.com> wrote:
+Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de> writes:
+
+> Hi,
 >
-> On 6/3/25 22:24, Andrii Nakryiko wrote:
-> > On Tue, Jun 3, 2025 at 7:15=E2=80=AFAM Mykyta Yatsenko
-> > <mykyta.yatsenko5@gmail.com> wrote:
-> >> From: Mykyta Yatsenko <yatsenko@meta.com>
-> >>
-> >> Implement support for presetting values for array elements in veristat=
-.
-> >> For example:
-> >> ```
-> >> sudo ./veristat set_global_vars.bpf.o -G "struct1[2].struct2[1].u.var_=
-u8[2] =3D 3" -G "arr[3] =3D 9"
-> >> ```
-> >> Arrays of structures and structure of arrays work, but each individual
-> >> scalar value has to be set separately: `foo[1].bar[2] =3D value`.
-> >>
-> >> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
-> >> ---
-> >>   .../selftests/bpf/prog_tests/test_veristat.c  |  9 +--
-> >>   .../selftests/bpf/progs/set_global_vars.c     | 12 ++--
-> >>   tools/testing/selftests/bpf/veristat.c        | 63 +++++++++++++++++=
---
-> >>   3 files changed, 70 insertions(+), 14 deletions(-)
-> >>
-> >> diff --git a/tools/testing/selftests/bpf/prog_tests/test_veristat.c b/=
-tools/testing/selftests/bpf/prog_tests/test_veristat.c
-> >> index 47b56c258f3f..1af5d02bb2d0 100644
-> >> --- a/tools/testing/selftests/bpf/prog_tests/test_veristat.c
-> >> +++ b/tools/testing/selftests/bpf/prog_tests/test_veristat.c
-> >> @@ -60,12 +60,13 @@ static void test_set_global_vars_succeeds(void)
-> >>              " -G \"var_s8 =3D -128\" "\
-> >>              " -G \"var_u8 =3D 255\" "\
-> >>              " -G \"var_ea =3D EA2\" "\
-> >> -           " -G \"var_eb =3D EB2\" "\
-> >> -           " -G \"var_ec =3D EC2\" "\
-> >> +           " -G \"var_eb  =3D  EB2\" "\
-> >> +           " -G \"var_ec=3DEC2\" "\
-> > What was the problem previously with not handling this case?
-> %s consumes input until whitespace or end of string, so var=3Dval will be
-> written to a single string.
+> while experimenting with XDP_REDIRECT from a veth-pair to another interface, I
+> noticed that the veth-pair looses lots of packets when multiple TCP streams go
+> through it, resulting in stalling TCP connections and noticeable instabilities.
+>
+> This doesn't seem to be an issue with just XDP but rather occurs whenever the
+> NAPI mode of the veth driver is active.
+> I managed to reproduce the same behavior just by bringing the veth-pair into
+> NAPI mode (see commit d3256efd8e8b ("veth: allow enabling NAPI even without
+> XDP")) and running multiple TCP streams through it using a network namespace.
+>
+> Here is how I reproduced it:
+>
+>   ip netns add lb
+>   ip link add dev to-lb type veth peer name in-lb netns lb
+>
+>   # Enable NAPI
+>   ethtool -K to-lb gro on
+>   ethtool -K to-lb tso off
+>   ip netns exec lb ethtool -K in-lb gro on
+>   ip netns exec lb ethtool -K in-lb tso off
+>
+>   ip link set dev to-lb up
+>   ip -netns lb link set dev in-lb up
+>
+> Then run a HTTP server inside the "lb" namespace that serves a large file:
+>
+>   fallocate -l 10G testfiles/10GB.bin
+>   caddy file-server --root testfiles/
+>
+> Download this file from within the root namespace multiple times in parallel:
+>
+>   curl http://[fe80::...%to-lb]/10GB.bin -o /dev/null
+>
+> In my tests, I ran four parallel curls at the same time and after just a few
+> seconds, three of them stalled while the other one "won" over the full bandwidth
+> and completed the download.
+>
+> This is probably a result of the veth's ptr_ring running full, causing many
+> packet drops on TX, and the TCP congestion control reacting to that.
+>
+> In this context, I also took notice of Jesper's patch which describes a very
+> similar issue and should help to resolve this:
+>   commit dc82a33297fc ("veth: apply qdisc backpressure on full ptr_ring to
+>   reduce TX drops")
+>
+> But when repeating the above test with latest mainline, which includes this
+> patch, and enabling qdisc via
+>   tc qdisc add dev in-lb root sfq perturb 10
+> the Kernel crashed just after starting the second TCP stream (see output below).
+>
+> So I have two questions:
+> - Is my understanding of the described issue correct and is Jesper's patch
+>   sufficient to solve this?
 
-Ah, makes sense. It was worth mentioning this separately (or even
-doing it as a separate patch with Fixes: tag).
+Hmm, yeah, this does sound likely.
 
-> >
-> >>              " -G \"var_b =3D 1\" "\
-> >> -           " -G \"struct1.struct2.u.var_u8 =3D 170\" "\
-> >> +           " -G \"struct1[2].struct2[1].u.var_u8[2]=3D170\" "\
-> >>              " -G \"union1.struct3.var_u8_l =3D 0xaa\" "\
-> >>              " -G \"union1.struct3.var_u8_h =3D 0xaa\" "\
-> >> +           " -G \"arr[2] =3D 0xaa\" "    \
-> >>              "-vl2 > %s", fix->veristat, fix->tmpfile);
-> >>
-> >>          read(fix->fd, fix->output, fix->sz);
-> > [...]
-> >
-> >> @@ -81,8 +80,9 @@ int test_set_globals(void *ctx)
-> >>          a =3D var_eb;
-> >>          a =3D var_ec;
-> >>          a =3D var_b;
-> >> -       a =3D struct1.struct2.u.var_u8;
-> >> +       a =3D struct1[2].struct2[1].u.var_u8[2];
-> >>          a =3D union1.var_u16;
-> >> +       a =3D arr[3];
-> >>
-> > let's add tests for at least:
-> >    a) multi-dimensional arrays
-> >    b) arrays of pointers (that's unlikely to happen in practice, but
-> > still, we should avoid just messing stuff up silently). We can also
-> > explicitly error out on pointers, I suppose.
-> >    c) what about using enums as indices?
-> >    d) can we have some typedef'ed types both with array-based and
-> > direct accesses (to validate we skipped typedefs where appropriate)
-> Should we support multi-dimensional arrays?
+> - Is my qdisc configuration to make use of this patch correct and the kernel
+>   crash is likely a bug?
+>
+> ------------[ cut here ]------------
+> UBSAN: array-index-out-of-bounds in net/sched/sch_sfq.c:203:12
+> index 65535 is out of range for type 'sfq_head [128]'
 
-Yeah, why not? That's where the more structured parsing of "accessor"
-string would make sense. You can either have field reference or array
-indexing, and go over this list one step at a time.
+This (the 'index 65535') kinda screams "integer underflow". So certainly
+looks like a kernel bug, yeah. Don't see any obvious reason why Jesper's
+patch would trigger this; maybe Eric has an idea?
 
-> How to implement enum indexes, iterate over all btf and check if the
-> name equals?
+Does this happen with other qdiscs as well, or is it specific to sfq?
 
-Doesn't veristat already support using enums by name? Can we support
-that here for indexing as well? Take symbolic enum value, find its
-matching integer value, use that to index.
+-Toke
 
-> >
-> > I'd suggest splitting selftests from veristat changes. They are in the
-> > same selftests/bpf directory, but conceptually they are tool vs tests
-> > patches, so better kept separate, IMO.
-> >
-> > pw-bot: cr
-> >
-> >>          return a;
-> >>   }
-> >> diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/se=
-lftests/bpf/veristat.c
-> >> index b2bb20b00952..79c5ea6476ca 100644
-> >> --- a/tools/testing/selftests/bpf/veristat.c
-> >> +++ b/tools/testing/selftests/bpf/veristat.c
-> >> @@ -1379,7 +1379,7 @@ static int append_var_preset(struct var_preset *=
-*presets, int *cnt, const char *
-> >>          memset(cur, 0, sizeof(*cur));
-> >>          (*cnt)++;
-> >>
-> >> -       if (sscanf(expr, "%s =3D %s %n", var, val, &n) !=3D 2 || n !=
-=3D strlen(expr)) {
-> >> +       if (sscanf(expr, "%[][a-zA-Z0-9_.] =3D %s %n", var, val, &n) !=
-=3D 2 || n !=3D strlen(expr)) {
-> >>                  fprintf(stderr, "Failed to parse expression '%s'\n", =
-expr);
-> >>                  return -EINVAL;
-> >>          }
-> >> @@ -1486,6 +1486,39 @@ static bool is_preset_supported(const struct bt=
-f_type *t)
-> >>          return btf_is_int(t) || btf_is_enum(t) || btf_is_enum64(t);
-> >>   }
-> >>
-> >> +static int adjust_array_secinfo(const struct btf *btf, const struct b=
-tf_type *t,
-> >> +                               struct btf_var_secinfo *sinfo, const c=
-har *var)
-> >> +{
-> >> +       struct btf_array *barr;
-> >> +       const struct btf_type *type;
-> >> +       char arr[64], idx[64];
-> >> +       int i =3D 0, tid;
-> >> +
-> >> +       if (!btf_is_array(t))
-> >> +               return 0;
-> > this shouldn't be called for non-array, no? if yes, then we should
-> > either drop unnecessary safety check or error out
-> >
-> >> +
-> >> +       barr =3D btf_array(t);
-> >> +       tid =3D btf__resolve_type(btf, barr->type);
-> >> +       type =3D btf__type_by_id(btf, tid);
-> >> +
-> >> +       /* var may contain chained expression e.g.: foo[1].bar */
-> > this feels a bit hacky that we re-parse those string specifiers...
-> > maybe we should parse them once, prepare some structured
-> > representation such that the rest of the code can easily check whether
-> > each access is array or non-array, and have parsed index number for
-> > arrays
-> >
-> >> +       if (sscanf(var, "%[a-zA-Z0-9_][%[a-zA-Z0-9]]", arr, idx) !=3D =
-2) {
-> >> +               fprintf(stderr, "Could not parse array expression %s\n=
-", var);
-> >> +               return -EINVAL;
-> >> +       }
-> >> +       errno =3D 0;
-> >> +       i =3D strtol(idx, NULL, 0);
-> >> +       if (errno || i < 0 || i >=3D barr->nelems) {
-> >> +               fprintf(stderr, "Preset index %s is invalid or out of =
-bounds [0, %d]\n",
-> >> +                       idx, barr->nelems);
-> >> +               return -EINVAL;
-> >> +       }
-> >> +       sinfo->size =3D type->size;
-> > hm... what if type is another array? we need to calculate the size
-> > properly, not just take type->size directly. Or what if it's a pointer
-> > type and type->size is actually type->type?
-> Is type an another array in case of multidimensional arrays?
-
-yep
-
-> >> +       sinfo->type =3D tid;
-> >> +       sinfo->offset +=3D i * type->size;
-> >> +       return 0;
-> >> +}
-> >> +
-
-[...]
 
