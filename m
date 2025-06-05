@@ -1,154 +1,170 @@
-Return-Path: <bpf+bounces-59769-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59770-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AFC3ACF443
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 18:28:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABDCEACF455
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 18:30:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D8E77A367D
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 16:26:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D10D7A53F4
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 16:28:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4C4320D4F9;
-	Thu,  5 Jun 2025 16:28:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FE3C205ABB;
+	Thu,  5 Jun 2025 16:29:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VlIpjcJz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Px+Fvknc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC08D1F91D6
-	for <bpf@vger.kernel.org>; Thu,  5 Jun 2025 16:28:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48FEE1EFFB8
+	for <bpf@vger.kernel.org>; Thu,  5 Jun 2025 16:29:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749140891; cv=none; b=pEy6umEPxuHc5xbJZVvD6mA7UKi8cFk4D6Cb1Binyqv/oqA9Mf2zdR3a59JHJtoQ59yaDRtlRZR1YLPEaTkbTi3bCWhXhPcwN/RTScdWPyUpoWvuyN7VXwc6XvNwmw1l6nZ8ldWyf8KKS/wkhPLcXMPN2jHEp2qrTFHOl7mT3JQ=
+	t=1749140995; cv=none; b=EdtrLYHdEQPY7/u+zY7whryTxT8U0VHZM0ItN/vxGiX8EZZUOFokPFM6y4oD5Z1yT+nJVUUayypFAShaifUaqq7YHKoLKsNLS7aesd7cy2b+sGPaJ4qhOQvh8aNskqxWqHOkjQnhNreXpKJPtRhGKZqg0g9XLGuJ49sz6w1d5cU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749140891; c=relaxed/simple;
-	bh=g5t/olr55aSwW+HLd38avmEAm+zq+Q4KZjLtxJkXZPg=;
+	s=arc-20240116; t=1749140995; c=relaxed/simple;
+	bh=iNaVm8JZH6WIYEzgh1nONnDGn2Snl76ecvHCUjn4cbQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WVzu6FNW+8GhkMMjqvkzrvmCmfPhoxCy4Wyym8Nt6TUR2bda74JEpt6eUJqCZk6xEgXly0WRH2iQbLPCGyQq5gVxYT744v3BRYQruHZg4GxFnqJILMaM017bcFGjOODXdWWaqjka7ob6outAoCEBCR5AFe3RDUQKMelcnBDzzic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VlIpjcJz; arc=none smtp.client-ip=209.85.210.182
+	 To:Cc:Content-Type; b=Ti395JWOMuAwKilrF6uRnexT2t6h+UZD0LDnbqx54fTBZ/Xro0EeN/A6HSyM4G5PZq9wfOW+mPkICvfbOoBeoezoLQf5FnpZI2nnBt4NnIa1TsX2KBubLcJ1DGSD/jNC5KnpXGJR2nmJ5t/YIQPTZHqyC8QhH4FJ+8j3RFPHfjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Px+Fvknc; arc=none smtp.client-ip=209.85.216.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-747fc7506d4so1348701b3a.0
-        for <bpf@vger.kernel.org>; Thu, 05 Jun 2025 09:28:09 -0700 (PDT)
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-3114c943367so1353993a91.1
+        for <bpf@vger.kernel.org>; Thu, 05 Jun 2025 09:29:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749140889; x=1749745689; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1749140993; x=1749745793; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gf6eJ5quJ74zPQ6211v+isFEmHY4WXbh4VTLL+uY7Kk=;
-        b=VlIpjcJz/MrYRmY6fCG/jfamDqoVOS8IS6MFfm4mn7uoCWrF1B/y6tGL4I18pjyRba
-         sL0ywnTc5MHDdHmiAiU9Py5vKL0lb7komR5bmrj65S/9IRnR/gXXRTH5yT8zaEZvy2ru
-         DrsXBy/KpsXhKn1V55E58YhZwpZLcmEX+ZW9i2Bzlnw8qNke21YFOTFoB1zNqOxu9WYZ
-         ognRrTsAO8VclJNGW88v9oEeYxyImCWs2JPm3m8WLM8QO5Q5ynwxafreishfsxHnETok
-         P/twPkOkiUY5WYVd6JvuA9pDs+cbevEeLTTh6ybnqTf8RgUk6ySAJXfrB6sp7IIC0pc8
-         I/0g==
+        bh=LWboKgQmyvEny+YPSz0HyPkdBIN7LfL0ALc97sPUpmY=;
+        b=Px+Fvknca84y3/UrYGW3zKK72U4iQcWbYsYdVsk3Stn8awWm4KW4e+OpllWsCPT23h
+         o0pABKcpYfaDqh0VNHydJjlL0wpQQHD/8ZdyLtzZ21/cAb3uc+5fX/J9wy6QWG71zf6v
+         vobTxcWVl6QaNZzyEfNh3PQbC+2T7CrLROh6qa12MB6S0S/liPOPcCseKgjtNVQked2K
+         MwkFcyF6oM85vHBvPyU+siAF8QMrygJf7lzn930IKoR0Kuw/eN0sDsimnmW+FGgVRPM2
+         pWDReJ78khUghmTYfgL1R5/shZk2R1SYYpBVVeN6VyVOvocJBVxq6/L0EZfzbTUQu1sJ
+         IAJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749140889; x=1749745689;
+        d=1e100.net; s=20230601; t=1749140993; x=1749745793;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gf6eJ5quJ74zPQ6211v+isFEmHY4WXbh4VTLL+uY7Kk=;
-        b=OPGKYQ5ZyD12mL5ijKIIkrYdIox+IhJFwbKtU/LozV+kk7uoyZ2ZhiSqQTxRcLRkrF
-         9DOiYPeThOGWrma+TAEQfNWFPPdTdXGgv108INdHJtFh9G/HtNLxrebt2TXMFdi7AKOI
-         Rs7bEAvUyjeEMK68n27TYc4TNwNfSSY146XggZ6BIrh9LZFsh0ErvaGmCxcFP+FgOR2n
-         59lFV5jK7vOH1sfeKJqtOdHY522PJgS6G7j3EFLYWryN/HdT8zSD7aZM3JjX/E55Smm4
-         VIp+9hhQCr8jkwvj9dEIz2BUhrSxrPeIYTo+j6LPObbfGmixleLom8ctjXkHrhyfqvMe
-         GxnA==
-X-Forwarded-Encrypted: i=1; AJvYcCU1QDF27cUpCHRh9iSg3qlu52Q1kwIX4WlLVopCa6xjE0JqpeFjz93zDvgTMCI2xA18eag=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxX2Iae8YMv1vVmHjy/PzV7+f8ZSMhMOdGFZU0T1JhS7uZLmRL6
-	E5Tbjtw/OU2VwCBOsFKD7tvr3flqdkU2QNpor11+GCq/NkhbaoMRSW0iPo1ZXCQQJWuxheqiEwu
-	gkIiwLww2LuzaFB/1izcCEmtgiZ3sbYc=
-X-Gm-Gg: ASbGncs3Ca81JSZ//g68lOeyPjr014aejHUIeyJCVOEWYFeQjalAmXQvQjaq/CCXM8d
-	n3EOGFxGuU1qJ7OMxXoWwMb9qDM2hJyds5yQzLxCy4nFmJX/CH46Tdsig0QgIU/S6rXA+jOa8jJ
-	oPr5L1MUadqql8N68/EWTRMNpL5Zxe6ajCw0LuaWKZY8A2ULEN
-X-Google-Smtp-Source: AGHT+IENchaYP/X3n1K7uZynOifCYAU/6nnziUCSrS4+9xXdfH6LMxq2gOoC2XiP/FKlELNOgMs3zYFH8QJQOoq2k1c=
-X-Received: by 2002:a05:6a00:882:b0:742:9fea:a2d1 with SMTP id
- d2e1a72fcca58-74827f379bbmr442147b3a.23.1749140888938; Thu, 05 Jun 2025
- 09:28:08 -0700 (PDT)
+        bh=LWboKgQmyvEny+YPSz0HyPkdBIN7LfL0ALc97sPUpmY=;
+        b=PR9mqpvmM0Zai0KGPW9xwccTxuPDoIBc9qLW0M6DcTQMinFwWAg8lIfhL3CUtiWJQQ
+         FR0TwhlTBXMWo+8czOxvxyyOSLjDD0YFGYzGD8e6X3dFZN9ok34zAffxnY02oSSRwkDg
+         rx1kh4QJdXPvWblKRdJMCWsZF4iQxNx7TjhHeHxMnWap+blZHWidAOYQK8r9mTQ31Rkc
+         W9oiHTRVmE4Cg7I+lxFNgmyDmDUEHQyRyNy9mgt1XxEA95Lr+XgMtEjAIKYlP75pVqNJ
+         vzdcU2LaS9TRfvI8mYzFD9iz63r/U85E5vO/yzubDL5QjkpsKZoVWbnzykDmGcZ9JCb/
+         KP+g==
+X-Forwarded-Encrypted: i=1; AJvYcCVBtFgduSei04f7DtJQBUAaoT+ZCixRaygsMgCOaNZys8eI3nzU5eVNiopgtyPvz2yaAto=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxjcI2Jzq9zBUwA/I2G9sKz/KOdPeIgH9Ur2mbamJ9XlH62QHAM
+	bXM8VcXbfV27006wyHoilykT3HozUTchxsAwO1CSUVE28LSblcyjtgl0xFBso1p1kUS9iudEAnh
+	Q04A1WwTO65pu7tMSx4e1OLSiEGWBEJeb1Q==
+X-Gm-Gg: ASbGnct9n8Dti1HGeVMBmYoh0sBYZkpGluc4jLc3i34N8/pG85Og4ymo85JF2RAHYQ8
+	Qt0gJQiF7FTq++1O2Gnz8ZGamqOg3xpWykimZxX2exFl25fCknN145r6m/Gf9WiMeIeKeuFenvA
+	IFDdzKQ0EncgqeUk9M1uKR8Eh6iawdULKdEAjwGr2kt7fVfXZ1
+X-Google-Smtp-Source: AGHT+IF7UIlmo5LXi4kHR49aeoH/VQ9Z8vewHuWt9590Ytu4lTxyPC81TJgJy+NS0myey0hy/aa9xKwIb/X4PVNvP80=
+X-Received: by 2002:a17:90b:1b51:b0:311:b0ec:135b with SMTP id
+ 98e67ed59e1d1-3134768152amr464614a91.24.1749140993346; Thu, 05 Jun 2025
+ 09:29:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250604222729.3351946-1-isolodrai@meta.com>
-In-Reply-To: <20250604222729.3351946-1-isolodrai@meta.com>
+References: <20250526162146.24429-1-leon.hwang@linux.dev> <20250526162146.24429-3-leon.hwang@linux.dev>
+ <CAADnVQJZ1dpSf3AtfNsvovogfC75eVs=PiYXMivUpDHDow3Row@mail.gmail.com>
+ <CAEf4Bzbw9G4HhL4_ecbgc2=bDbZuVEA2zLnChgqT_WCsq11krQ@mail.gmail.com>
+ <CAADnVQLxzJMAYymtWMFZb6eAK+ha_shRfh+m3W3yFO4dLn-YeA@mail.gmail.com>
+ <CAEf4BzYUW4oAm4JJ-Kh4HhtfP4GXuQFx+tJ3p7vjMpPYoVv5GQ@mail.gmail.com>
+ <d6f9ca33-977f-4486-9d62-8f497858764b@linux.dev> <CAEf4BzZ1A6+uhX5gvCKSZUjvj_TG00-13jEWKbmqfXYEQ5fEZA@mail.gmail.com>
+ <5e8a00cb-a5ac-4e5e-b157-62215933fb7e@linux.dev>
+In-Reply-To: <5e8a00cb-a5ac-4e5e-b157-62215933fb7e@linux.dev>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 5 Jun 2025 09:27:55 -0700
-X-Gm-Features: AX0GCFtAzA-gJVZVjldA7HsUSNVAKqfhz9Ws-1Nl6OYOB58yO5ceaQ9fZMc76BY
-Message-ID: <CAEf4Bza6gOAWq9uXD8kxksNo=2h96jNSd2RCGar8YHLvN8MdvQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/3] bpf: make reg_not_null() true for CONST_PTR_TO_MAP
-To: ihor.solodrai@linux.dev
-Cc: andrii@kernel.org, bpf@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, mykolal@fb.com, 
-	yonghong.song@linux.dev, kernel-team@meta.com
+Date: Thu, 5 Jun 2025 09:29:40 -0700
+X-Gm-Features: AX0GCFuIFUHRCfYslb1wTaFPnTTARHKpJRAnFTMf7qKbCwo8f7A3OYl8t-VJDBE
+Message-ID: <CAEf4BzarBUTmbtPg2_q8jwAGdXdfrDwUuj2+0c86_wwD+DbEsA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/4] bpf, libbpf: Support global percpu data
+To: Leon Hwang <leon.hwang@linux.dev>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Yonghong Song <yonghong.song@linux.dev>, 
+	Song Liu <song@kernel.org>, Eduard <eddyz87@gmail.com>, Quentin Monnet <qmo@kernel.org>, 
+	Daniel Xu <dxu@dxuuu.xyz>, kernel-patches-bot@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 4, 2025 at 3:28=E2=80=AFPM Ihor Solodrai <isolodrai@meta.com> w=
-rote:
+On Mon, Jun 2, 2025 at 7:45=E2=80=AFPM Leon Hwang <leon.hwang@linux.dev> wr=
+ote:
 >
-> When reg->type is CONST_PTR_TO_MAP, it can not be null. However the
-> verifier explores the branches under rX =3D=3D 0 in check_cond_jmp_op()
-> even if reg->type is CONST_PTR_TO_MAP, because it was not checked for
-> in reg_not_null().
 >
-> Fix this by adding CONST_PTR_TO_MAP to the set of types that are
-> considered non nullable in reg_not_null().
 >
-> An old "unpriv: cmp map pointer with zero" selftest fails with this
-> change, because now early out correctly triggers in
-> check_cond_jmp_op(), making the verification to pass.
+> On 3/6/25 07:50, Andrii Nakryiko wrote:
+> > On Wed, May 28, 2025 at 7:44=E2=80=AFPM Leon Hwang <leon.hwang@linux.de=
+v> wrote:
+> >>
+> >>
+> >>
+> >> On 29/5/25 00:05, Andrii Nakryiko wrote:
+> >>> On Tue, May 27, 2025 at 7:35=E2=80=AFPM Alexei Starovoitov
+> >>> <alexei.starovoitov@gmail.com> wrote:
+> >>>>
+> >>
+> >> [...]
+> >>
+> >>>>
+> >>>> I guess this can be a follow up.
+> >>>> With extra flag lookup/update/delete can look into a new field
+> >>>> in that anonymous struct:
+> >>>>         struct { /* anonymous struct used by BPF_MAP_*_ELEM and
+> >>>> BPF_MAP_FREEZE commands */
+> >>>>                 __u32           map_fd;
+> >>>>                 __aligned_u64   key;
+> >>>>                 union {
+> >>>>                         __aligned_u64 value;
+> >>>>                         __aligned_u64 next_key;
+> >>>>                 };
+> >>>>                 __u64           flags;
+> >>>>         };
+> >>>>
+> >>>
+> >>> Yep, we'd have two flags: one for "apply across all CPUs", and anothe=
+r
+> >>> meaning "apply for specified CPU" + new CPU number field. Or the same
+> >>> flag with a special CPU number value (0xffffffff?).
+> >>>
+> >>>> There is also "batch" version of lookup/update/delete.
+> >>>> They probably will need to be extended as well for consistency ?
+> >>>> So I'd only go with the "use data to update all CPUs" flag for now.
+> >>>
+> >>> Agreed. But also looking at generic_map_update_batch() it seems like
+> >>> it just routes everything through single-element updates, so it
+> >>> shouldn't be hard to add batch support for all this either.
+> >>
+> >> Regarding BPF_MAP_UPDATE_{ELEM,BATCH} support for percpu_array maps =
+=E2=80=94
+> >> would it make sense to split the flags field as [cpu | flags]?
+> >
+> > We coul;d encode CPU number as part of flags, but I'm not sure what we
+> > are trying to achieve here. Adding a dedicated field for cpu number
+> > would be in line of what we did for BPF_PROG_TEST_RUN, so I don't see
+> > a big problem.
+> >
 >
-> In practice verifier may allow pointer to null comparison in unpriv,
-> since in many cases the relevant branch and comparison op are removed
-> as dead code. So change the expected test result to __success_unpriv.
->
-> Signed-off-by: Ihor Solodrai <isolodrai@meta.com>
-> ---
->  kernel/bpf/verifier.c                               | 3 ++-
->  tools/testing/selftests/bpf/progs/verifier_unpriv.c | 2 +-
->  2 files changed, 3 insertions(+), 2 deletions(-)
->
+> It's to avoid breaking existing APIs, such as libbpf's
+> bpf_map_update_elem() and bpf_map__update_elem(). Otherwise, we would
+> need to introduce new percpu-specific versions, like
+> bpf_map_update_percpu_elem() and bpf_map__update_percpu_elem().
 
-LGTM, thanks!
+Ok, makes sense. I don't think I have a strong preference, but if we
+did go with a separate field, we'd just introduce
+bpf_map_{update,delete}_elem_opts() and pass that CPU and flags
+through opts struct. It's not too bad either way.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index a7d6e0c5928b..0c100e430744 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -405,7 +405,8 @@ static bool reg_not_null(const struct bpf_reg_state *=
-reg)
->                 type =3D=3D PTR_TO_MAP_KEY ||
->                 type =3D=3D PTR_TO_SOCK_COMMON ||
->                 (type =3D=3D PTR_TO_BTF_ID && is_trusted_reg(reg)) ||
-> -               type =3D=3D PTR_TO_MEM;
-> +               type =3D=3D PTR_TO_MEM ||
-> +               type =3D=3D CONST_PTR_TO_MAP;
->  }
 >
->  static struct btf_record *reg_btf_record(const struct bpf_reg_state *reg=
-)
-> diff --git a/tools/testing/selftests/bpf/progs/verifier_unpriv.c b/tools/=
-testing/selftests/bpf/progs/verifier_unpriv.c
-> index a4a5e2071604..28200f068ce5 100644
-> --- a/tools/testing/selftests/bpf/progs/verifier_unpriv.c
-> +++ b/tools/testing/selftests/bpf/progs/verifier_unpriv.c
-> @@ -619,7 +619,7 @@ __naked void pass_pointer_to_tail_call(void)
->
->  SEC("socket")
->  __description("unpriv: cmp map pointer with zero")
-> -__success __failure_unpriv __msg_unpriv("R1 pointer comparison")
-> +__success __success_unpriv
->  __retval(0)
->  __naked void cmp_map_pointer_with_zero(void)
->  {
-> --
-> 2.47.1
+> Thanks,
+> Leon
 >
 
