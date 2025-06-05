@@ -1,66 +1,65 @@
-Return-Path: <bpf+bounces-59699-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59702-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1B95ACEB38
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 09:51:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9828CACEC5A
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 10:51:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48465189B783
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 07:52:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3373A17741A
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 08:52:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E8FD1FECB4;
-	Thu,  5 Jun 2025 07:51:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CB012063F0;
+	Thu,  5 Jun 2025 08:51:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="AYd+VJE5"
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="sHN411Tb"
 X-Original-To: bpf@vger.kernel.org
 Received: from out162-62-57-210.mail.qq.com (out162-62-57-210.mail.qq.com [162.62.57.210])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EC821F4176;
-	Thu,  5 Jun 2025 07:51:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9566C1DFE12;
+	Thu,  5 Jun 2025 08:51:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.210
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749109903; cv=none; b=HrvOzbPDqa+ScxXB4hi7ZvbVW/ENU0UiLU52ScFwUbEZWi/Y+KM+M7K+ykl14PBEgQiuM6jd7Mc6BdYod4xD9XE3HHgHRyLA+A01V6SfWtsQ49QWnp0Ho6mXxevmudnu+OpIs/nNbeOLjA2FtDMrfzl3Q0vtHJ5wIuy0RuB0zCI=
+	t=1749113512; cv=none; b=SOZ7o6r52Owf8jVDfTXzCytbJrbQSfUCnh0XPq/Wqi79V9MVEO5cN11S+W7Hipf1p9LN3yI7LrA6garLbXkK85kcstq5m4YclSYu1CDQKi5CIyUY2GCuFQfOz6HfFIL9xqJs++/sKx+rD+K+0kITaYlAA7pkui3K9KRos0Cv6pg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749109903; c=relaxed/simple;
-	bh=ADAo4tuAn9RJse2Dsl/pLYasjN1HWf+dOgXZED+HZ0c=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=R5eSTmWsraynviKI4JR79fj6KAKZOUC5md8sAumYSJzI2IKUZ1PuIH8ygaPeaaaRA0GYAr1Y1LHMC9x8O84G4TsVLKgRTpX7LwPpIhkQXvbJkn/pto6Aom1UVICG/LtSLyT2dMra+AMNCEAUY8FErhmtjfK/gqlDebGPvuQcr5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=AYd+VJE5; arc=none smtp.client-ip=162.62.57.210
+	s=arc-20240116; t=1749113512; c=relaxed/simple;
+	bh=DmWtOysdA0Nmoh/X3y+VMEQ694VNJeZDCcbZ+gNbVPU=;
+	h=Message-ID:From:To:Subject:Date:MIME-Version; b=gV5/ZTR65nMtd9Yq4yrRbFLTR43QN9VZM0gO7713MRoyKovyuKPHmMJNHfGfol+Kmizllc5/fc9X3bVqz+LyRoV2zLNWkV1/yOqFX53u3qcmUshuPQOXeqGvHyuayMI1mBNFsdFDGojWxUlKlJ8dJQtV8CxLPS8FZ+dxXvG/dkM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=sHN411Tb; arc=none smtp.client-ip=162.62.57.210
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1749109883;
-	bh=riOYvbqngrrZtJixWRHCaMdJe6DT8P5TkGFvEYl78Zg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=AYd+VJE5lKlEjhHf5oHs05oZUpDJ2BsMS3x+/D01ci4p5dtZTDLw/RtuQCezvK4H4
-	 9JOfr/k+yyHOMjRFZ+a+HK+2J9PF9ugugnt+8r4dMoSJQj3zvINBu7MroedVSc0Bky
-	 Ts0VX32LXNwaiOpUJPsFN8Sog3eTxdg6IHqu+MuA=
+	s=s201512; t=1749113503;
+	bh=Ns6Z7O8rmMKISC4J3f9FZ4mWtQOdi3wfP7xqU/uLv1o=;
+	h=From:To:Subject:Date;
+	b=sHN411TbxK859SJhTjstwxDSuMym9RTVjToryz7HvJnHrDoc3E+uvuffdcJla7aUv
+	 l1ybSgblwGQK+zMPc2/hYQ4LXk/wz3QHuSz/mhpoxQZHVW5zHrQ5fm8gMS9X6PSvXI
+	 z5/bOQFtIIjvvC6x7nBE0NKpEgMbVXIyut8J4uao=
 Received: from NUC10.. ([39.156.73.10])
-	by newxmesmtplogicsvrszc16-0.qq.com (NewEsmtp) with SMTP
-	id CD1A1A28; Thu, 05 Jun 2025 15:51:17 +0800
-X-QQ-mid: xmsmtpt1749109877th51j190x
-Message-ID: <tencent_F85EF146D110170D48845EB3F02ED5549409@qq.com>
-X-QQ-XMAILINFO: MRMtjO3A6C9XKLqM7JeVPGU0RrgQGAi/gOOybpETim/eOO5nyhGqNka7shneg+
-	 EufHpPXJz532I2fJbZBPyyrG3nQTLAkguSn7BQRmDhkzAWl4orFo2S8X4OFdhxguZdsUGxFa9Mpo
-	 qHPVqqQ0mrHBhc7D1Q8wSg5YZkRCmYPtwpavBWcH18V9vABB8UGGspg4hfTxmR3qmO3u6+Ktjq3l
-	 vSoZbLqoXUFQYpoZc1j8UPk5Pucde7gn5Qqv3XoNlOZxzCzKmXwhxoloFjKx984LuvDP58qvzmrV
-	 mBpBBU38mmOuvsEgc9PIcUszCcbjXYPjMNSHGarFQ6Ziu2GG+nkRm0z2rJk1PPRWI75iMnAqOLZW
-	 wLUfRSTdc+7lTQzflFTgQC+qGbQwW+yS1Gxe3II6ct8IoL1K/TBbAVYeTydoWxc2CJP/Kbw+YPtt
-	 clrenvo9DNdjIDhr4qsbkIA2ZK0by+x5oYRX9CwdPEZa5jt8vBDQSoEFveJhTXhQw98xFdoDMpRb
-	 86nIuZfXCUsnJAazvQZu5OUmn5qVY70GFgY3duM3sAnyNJZhnJINFI9GcR2GDqYXmMB/g7wHcBjf
-	 pCuCYUITgbELJKl7b4Ib9pNISvM1/Afst8/uMe9vF5utiVAHpYQAZsiH/gu3xF6Yq6EyRlIk1pxn
-	 0XfryPS4YcCy8Op+GlanCOTtnMR+EHoJM/Nyj3sazXKTu2giouYGJsL5Fr0uaiTnze4uTe62qDtR
-	 N7lC+jSMoE6cqWm8TmhyHebAEt8C4SGbOWs4bok2Gwv1fWCyBvMKMy7zbAHb45a/u22oVs/WNY6q
-	 KdII5KSnQ6U4Xfkz3WLdYJH6qo+OdbkbtWi4IiOZfD5N71mg6yfCGkqHQ/h1jHRrRWv3VHrDXF1h
-	 cJr+2ZRobCb7qhbKiY5AwJjE1P8PFEY3PrAbWhmpIhkytZvI7wipn/g08cQpNg0/P6fcoY4dmVo4
-	 EwdfnowzxsSO0h1wfBAol3gVIBd1wjrL0d7KATx1GZv8t8k7SzViUFb0XAVT/tYe7OQmvCrP8mW9
-	 NdohZDZPVkg1QnDtxcZAM+hicZx+I=
-X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
+	by newxmesmtplogicsvrszb16-1.qq.com (NewEsmtp) with SMTP
+	id B51A7CC6; Thu, 05 Jun 2025 16:45:17 +0800
+X-QQ-mid: xmsmtpt1749113117tqk3sbk1c
+Message-ID: <tencent_3DD7405C0839EBE2724AC5FA357B5402B105@qq.com>
+X-QQ-XMAILINFO: NFB6T0Z6Ys1E1T8LRCAA3Q5cCT745Of5aONkg7N3j82TuaUg4mVTA3qD1h39FH
+	 rFl7K8LOKeiXnbBQR3BZHn1EZCted/XMYS1CQsX/jB2sdX8m3gdmbsjHCmhq5L9rPa1nljn7FZCa
+	 FHahyWmgr+e5UCSTkAVdq2H/gQnn7rbVbKVlx9jVFIf4vO3XE7KD2LkABTWB0+5RVG0ZRN2p5GJw
+	 zb1REP4WCl8Cb2t4HkaSDKWTlSnAKMcaBWJFZO3xZeEU3ZMnZgR3wgeaq7deGE9BraznIi8mtzJL
+	 MJeYx2H21zxqLWBLj/LuMg6hyfqJsz/xUo9w7z1iUkhlvOtvsFxtJQ6JtXZPJwTHqX66gwyG18kZ
+	 lv0W+mcmMxlR43yGCfk38Wuqqn3AOFjr6vv61/kY0ini5UmUgxanb567xpWYZ78jzl5V33lu0x8v
+	 0rYwSRuYAKqJUjXWVfJQxJjPmf3vIbz74kmJhOi0PaU45hV2vYWmHktHMm8zoNfAfoLqrpMRxEuK
+	 IZGeTnnaa83RHffw2h5jrl/7OTUa7yPWkESmE0VeUyPIkoYq5nKZGjDgUJSL/aUS9I3PYa8LcGcH
+	 +c8akGjwRtmnwV9gcicH5PsoufybTB+2NefLATGMkxGjT7qk2MktpZCUbzLbMbgsL7jYyglDMVJ4
+	 svnz7x+y2wNjwSkrnYtkKALosKTtgn+kuitt6GBcbM3e/KZqrNp0h12YAArS/V42RK2vXJYGXAW2
+	 l03VsRVTsXn0qJ8MZlaF8XEIIH/W2/b/yuk6Y0aTJgc2QofraBuScScZ74ti7Syx1fJizxkUapcM
+	 hEeEeySVpcUMxDIIsPsCX2QwV4Vg8b8ULHrWO6D8+I3KAISIN7jTuJ5VmBvpdF3WPGxZwn341STz
+	 HMxoN2MegXFbR2c85UvvZLIBKg/PM617djQ2BxDkp9XlMBzG212meGt43qMTz9KkNmvz8n8hfGfo
+	 7szGmWIBhWlIP2Rho/4EBr4T13supbNEIRoSspWTE=
+X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
 From: Rong Tao <rtoax@foxmail.com>
-To: Quentin Monnet <qmo@kernel.org>,
+To: rongtao@cestc.cn,
+	rtoax@foxmail.com,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>,
@@ -73,18 +72,15 @@ To: Quentin Monnet <qmo@kernel.org>,
 	Stanislav Fomichev <sdf@fomichev.me>,
 	Hao Luo <haoluo@google.com>,
 	Jiri Olsa <jolsa@kernel.org>,
-	Andrew Kreimer <algonell@gmail.com>,
-	Rong Tao <rongtao@cestc.cn>,
-	Lin Yikai <yikai.lin@vivo.com>,
-	bpf@vger.kernel.org (open list:BPF [TOOLING] (bpftool)),
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)),
+	linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK),
 	linux-kernel@vger.kernel.org (open list)
-Cc: rtoax@foxmail.com
-Subject: [PATCH bpf-next 2/2] bpftool: skel: Introduce NAME__open_and_load_opts()
-Date: Thu,  5 Jun 2025 15:51:13 +0800
-X-OQ-MSGID: <8c0f486b44591013c4fe538fb5edb908992978b8.1749109589.git.rongtao@cestc.cn>
+Subject: [PATCH bpf-next] selftests/bpf: rbtree: Fix incorrect global variable usage
+Date: Thu,  5 Jun 2025 16:45:14 +0800
+X-OQ-MSGID: <20250605084516.287041-1-rtoax@foxmail.com>
 X-Mailer: git-send-email 2.49.0
-In-Reply-To: <cover.1749109589.git.rongtao@cestc.cn>
-References: <cover.1749109589.git.rongtao@cestc.cn>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -95,40 +91,47 @@ Content-Transfer-Encoding: 8bit
 
 From: Rong Tao <rongtao@cestc.cn>
 
-Update Documentation for skel NAME__open_and_load_opts()
+Within __add_three() function, should use function parameters instead of
+global variables. So that the variables groot_nested.inner.root and
+groot_nested.inner.glock in rbtree_add_nodes_nested() are tested
+correctly.
 
 Signed-off-by: Rong Tao <rongtao@cestc.cn>
 ---
- tools/bpf/bpftool/Documentation/bpftool-gen.rst | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ tools/testing/selftests/bpf/progs/rbtree.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-gen.rst b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-index ca860fd97d8d..4dc2a624090e 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-@@ -107,8 +107,10 @@ bpftool gen skeleton *FILE*
-       global data maps. It corresponds to libbpf's **bpf_object__load**\ ()
-       API.
+diff --git a/tools/testing/selftests/bpf/progs/rbtree.c b/tools/testing/selftests/bpf/progs/rbtree.c
+index a3620c15c136..49fe93d7e059 100644
+--- a/tools/testing/selftests/bpf/progs/rbtree.c
++++ b/tools/testing/selftests/bpf/progs/rbtree.c
+@@ -61,19 +61,19 @@ static long __add_three(struct bpf_rb_root *root, struct bpf_spin_lock *lock)
+ 	}
+ 	m->key = 1;
  
--    - **example__open_and_load** combines **example__open** and
--      **example__load** invocations in one commonly used operation.
-+    - **example__open_and_load** and **example__open_and_load_opts**.
-+      Combines **example__open** and **example__load** invocations in one
-+      commonly used operation. **_opts** variants accepts extra
-+      **bpf_object_open_opts** options.
+-	bpf_spin_lock(&glock);
+-	bpf_rbtree_add(&groot, &n->node, less);
+-	bpf_rbtree_add(&groot, &m->node, less);
+-	bpf_spin_unlock(&glock);
++	bpf_spin_lock(lock);
++	bpf_rbtree_add(root, &n->node, less);
++	bpf_rbtree_add(root, &m->node, less);
++	bpf_spin_unlock(lock);
  
-     - **example__attach** and **example__detach**.
-       This pair of functions allow to attach and detach, correspondingly,
-@@ -336,6 +338,9 @@ files into the final BPF ELF object file *example.bpf.o*.
-                 const struct bpf_object_open_opts *opts);
-   static inline struct example *example__open();
-   static inline int example__load(struct example *obj);
-+  static inline struct example *example__open();
-+  static inline struct example *example__open_and_load_opts(
-+                const struct bpf_object_open_opts *opts);
-   static inline struct example *example__open_and_load();
-   static inline int example__attach(struct example *obj);
-   static inline void example__detach(struct example *obj);
+ 	n = bpf_obj_new(typeof(*n));
+ 	if (!n)
+ 		return 3;
+ 	n->key = 3;
+ 
+-	bpf_spin_lock(&glock);
+-	bpf_rbtree_add(&groot, &n->node, less);
+-	bpf_spin_unlock(&glock);
++	bpf_spin_lock(lock);
++	bpf_rbtree_add(root, &n->node, less);
++	bpf_spin_unlock(lock);
+ 	return 0;
+ }
+ 
 -- 
 2.49.0
 
