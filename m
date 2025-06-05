@@ -1,118 +1,100 @@
-Return-Path: <bpf+bounces-59775-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59776-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 213A7ACF4A5
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 18:48:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EFF3ACF4D8
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 18:58:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11C4F3A1F80
-	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 16:47:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA65D189C87D
+	for <lists+bpf@lfdr.de>; Thu,  5 Jun 2025 16:58:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACCEA27603C;
-	Thu,  5 Jun 2025 16:47:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E43D8275855;
+	Thu,  5 Jun 2025 16:57:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iDHKrQ5t"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rrONN9qW"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 209A9272E60;
-	Thu,  5 Jun 2025 16:47:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FC8F5FEE6;
+	Thu,  5 Jun 2025 16:57:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749142070; cv=none; b=qyEkCQ/uFJDZsmA2ZOgQwXiKdlLZZ5UaeMO/tV9WN7sJdzuvQ4badHxc+dNzSVmuuHI2hGuWb7SRvQi5/cRYjAxa5NWVWl7oTxVGvP7xP/8xMVdUSxWYoOySEeI5uXsosUeyvKoLlsZ5TYCboqptJzdpK9sgaASIydFZAop23fI=
+	t=1749142675; cv=none; b=T77squOSJKkZSZxskI/lLo32JDQiXMV5zEdsT9NYBwnawa5ZJb8UVNo3TR9erujHdxhesvM5r8SDMS0sqKFjUn7mjIoAO1x03gX3amar+tQUyBxJOIFgoW0U6Q2EsgciPqn9GQeAfkant7zzmOLIJOxa8u/AdpM++siqH8g5vu8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749142070; c=relaxed/simple;
-	bh=3w8JkMR+dyq082xGIErStybqJdnFiDxHZZEpuJDxc3Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=t78ZdHSGvBxOJvjhuq1TFtxTehzF+kSEXd/YZJ9wK4ECc7lvdHv3RiguwS/y+euz5kUK0QRCtEclfoAA9ntwE5GJtUR7zoOM0ewGiBL7kkUPZtco+2mk2ugwtX+1ZX7ytORLeHG77pUSFyvCR68ECSAWZXVQUPoZ1xNAjqLZJqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iDHKrQ5t; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93F4AC4CEF0;
-	Thu,  5 Jun 2025 16:47:49 +0000 (UTC)
+	s=arc-20240116; t=1749142675; c=relaxed/simple;
+	bh=pjV3bNzBf1YJf1rM+e/SvZsaxG6fHSEEd/WI3ExKBGY=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=eF2cxZ0aTtsJSvz7zAk3RjltffNTC3/EzujLRKqNWkYFOFQDWhqeEOMAp9tk1NYbwdFuO2HH87loZcXUzFrdBtKkyAAERDf39poaKIQW5cIX2xsx4Lh1aSXO0Wh9EEFHXDi9Trc42LZGVgk/xnxQhuTSA37tJk1kAKaW4EBw5FI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rrONN9qW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C99E9C4CEE7;
+	Thu,  5 Jun 2025 16:57:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749142069;
-	bh=3w8JkMR+dyq082xGIErStybqJdnFiDxHZZEpuJDxc3Y=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=iDHKrQ5tePQjpI9sn8mjRk57YAtDPhlZJHvhfg6Iy0klF+8ltljpme/kPr9HYotO6
-	 f2kjL3muTlj2UikuaJw8/p4eztsNuYFFjX44gdIqlNiOmLH32Q4WmbGZFu9sAw2Pd9
-	 eIClFx2j337dEbMQbp1uJuNu2/Atsmu61vVysI0xRRZpUihquL35/iI0/yKf6FDzhC
-	 ecbP7VUy5Is+rFOxk1sucNSGQYZPVlDykshAAhtyd+AqsuQcVMnNL/uqvEqRCQPyEh
-	 JS0XdsnE4An0ESq+DhaC/rmHCWsX1xfXdmKyUbPkAZrsJ7KqnMWlXG3gz5c4AyNQuc
-	 jTEruXZlao9dQ==
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-4a4312b4849so14307471cf.1;
-        Thu, 05 Jun 2025 09:47:49 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUxo6pW5LL7LpftHK9emUuVT4TrCeZfS4ZJNv4fa93TORM1SyZ8w4KQio6f6yZ6WyrzBnW9tL58tjeCtiy9@vger.kernel.org, AJvYcCW4qbRvc3eWD/qENrkU0xfTIZoy8bS4xwdnQd2mKGA7akYwA/Q6ZwiYcURkJjpzWnJtvTwYQtC5IOVv3WFs@vger.kernel.org, AJvYcCXkCajXHkwdPoj5udeiTJjNs06/u/uoMUXfEFUSYiGfcHD6SUeLmMJWOjgEJSp94lwFaZ+8Yf+LQsCNLyB4l7qBYyjduNdi@vger.kernel.org
-X-Gm-Message-State: AOJu0YyTTuzSnr6lWhL4ZiL8W7bxMNOS+YcEKuNcAQ81mEt98QVgMnO2
-	KRq7IxRkYN5hauAQFy1kNH0Q/NALl9qzDOW+6J7FFbFMEcBdBDTcJ1Fku6Cpczci4igIJZ1OBsH
-	yfyeyLQiZU3BDWT9MYhW70ggJszta49I=
-X-Google-Smtp-Source: AGHT+IGiVWsRgna6YFtX3lIOZflyd/n65LzeA7u2H4Vn6CADHl7LjKAcdgMWsH2J9c3odTzb41X29luFgy3QJL3PEE0=
-X-Received: by 2002:a05:6214:248d:b0:6e8:fcde:58d5 with SMTP id
- 6a1803df08f44-6fb08fca70cmr1701456d6.42.1749142067979; Thu, 05 Jun 2025
- 09:47:47 -0700 (PDT)
+	s=k20201202; t=1749142674;
+	bh=pjV3bNzBf1YJf1rM+e/SvZsaxG6fHSEEd/WI3ExKBGY=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=rrONN9qW1aHmF5/UQgqLlnYMX7Q4VsokJ4R22HjDxXA934YUU0zNzq6yjAiwujQMa
+	 KT2BDFGdKRzP/RiPPMOj3guszhi3/xzuwAkbC8zf2uYgpL1CGRX07vzgnZ+LbK+xoO
+	 S2POrMn3TLOiLPh2aqFY3eGuyCbLN4ntVHjMM3uDVAdrSljSC7F2eLY7W2WdHOS1SE
+	 cy2QFsEcSrC8D7r4pgLvv2jWy1wy9HjfqVoMuyJZ3jhsnzspvg/5ibV+eTyT0dIGxA
+	 rMpal3yosEluCov6TPplKm4A0gxOA4DKDDgyiLlBBzwaH/JJD+eU+Jm3ASXDOvhYFq
+	 Mtl+lu6HSwUZw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB1FD39D60B4;
+	Thu,  5 Jun 2025 16:58:27 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250603065920.3404510-1-song@kernel.org> <20250603065920.3404510-3-song@kernel.org>
- <20250603.Av6paek5saes@digikod.net> <CAPhsuW6J_hDtXZm4MH_OAz=GCpRW0NMM1EXMrJ=nqsTdpf8vcg@mail.gmail.com>
-In-Reply-To: <CAPhsuW6J_hDtXZm4MH_OAz=GCpRW0NMM1EXMrJ=nqsTdpf8vcg@mail.gmail.com>
-From: Song Liu <song@kernel.org>
-Date: Thu, 5 Jun 2025 09:47:36 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7MtxryseFsHF2xqBFS2UWammJatjf8UxBhytgn_nA4=g@mail.gmail.com>
-X-Gm-Features: AX0GCFuxvd5FPNUUEpcc72D9DOeW57RE3kAaur20E9lAgQ4Gi6GJ17dndQGcnv8
-Message-ID: <CAPhsuW7MtxryseFsHF2xqBFS2UWammJatjf8UxBhytgn_nA4=g@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 2/4] landlock: Use path_walk_parent()
-To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, viro@zeniv.linux.org.uk, 
-	brauner@kernel.org, jack@suse.cz, kpsingh@kernel.org, 
-	mattbobrowski@google.com, amir73il@gmail.com, repnop@google.com, 
-	jlayton@kernel.org, josef@toxicpanda.com, gnoack@google.com, m@maowtm.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix compile error of
+ bin_attribute::read/write()
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <174914270651.3142609.5571647506914286281.git-patchwork-notify@kernel.org>
+Date: Thu, 05 Jun 2025 16:58:26 +0000
+References: <tencent_A6502A28AF21A3CA88B106F3421159869708@qq.com>
+In-Reply-To: <tencent_A6502A28AF21A3CA88B106F3421159869708@qq.com>
+To: Rong Tao <rtoax@foxmail.com>
+Cc: andrii@kernel.org, eddyz87@gmail.com, rongtao@cestc.cn, mykolal@fb.com,
+ ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, shuah@kernel.org,
+ mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
+ peterz@infradead.org, ameryhung@gmail.com, juntong.deng@outlook.com,
+ oleg@redhat.com, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 
-On Wed, Jun 4, 2025 at 12:37=E2=80=AFPM Song Liu <song@kernel.org> wrote:
->
-> On Tue, Jun 3, 2025 at 6:46=E2=80=AFAM Micka=C3=ABl Sala=C3=BCn <mic@digi=
-kod.net> wrote:
-> >
-> > Landlock tests with hostfs fail:
-> >
-> > ok 126 layout3_fs.hostfs.tag_inode_file
-> > #  RUN           layout3_fs.hostfs.release_inodes ...
-> > # fs_test.c:5555:release_inodes:Expected EACCES (13) =3D=3D test_open(T=
-MP_DIR, O_RDONLY) (0)
-> >
-> > This specific test checks that an access to a (denied) mount point over
-> > an allowed directory is indeed denied.
+Hello:
 
-I just realized this only fails on hostfs. AFAICT, hostfs is only used
-by um. Do we really need this to behave the same on um+hostfs?
+This patch was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-Thanks,
-Song
+On Wed,  4 Jun 2025 13:53:22 +0800 you wrote:
+> From: Rong Tao <rongtao@cestc.cn>
+> 
+> Since commit 97d06802d10a ("sysfs: constify bin_attribute argument of
+> bin_attribute::read/write()"), make bin_attribute parameter of
+> bin_attribute::read/write() const.
+> 
+> Signed-off-by: Rong Tao <rongtao@cestc.cn>
+> 
+> [...]
 
->
-> I am having trouble understanding the test. It appears to me
-> the newly mounted tmpfs on /tmp is allowed, but accesses to
-> / and thus mount point /tmp is denied? What would the walk in
-> is_access_to_paths_allowed look like?
->
-> > It's not clear to me the origin of the issue, but it seems to be relate=
-d
-> > to choose_mountpoint().
-> >
-> > You can run these tests with `check-linux.sh build kselftest` from
-> > https://github.com/landlock-lsm/landlock-test-tools
->
-> How should I debug this test? printk doesn't seem to work.
->
-> Thanks,
-> Song
+Here is the summary with links:
+  - [bpf-next] selftests/bpf: Fix compile error of bin_attribute::read/write()
+    https://git.kernel.org/bpf/bpf-next/c/4b65d5ae9714
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
