@@ -1,36 +1,36 @@
-Return-Path: <bpf+bounces-59908-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59909-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8DB5AD07A1
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 19:42:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9425CAD07A2
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 19:42:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86E6017ACA4
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 17:42:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0B163A6C3C
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 17:41:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4D5728C005;
-	Fri,  6 Jun 2025 17:42:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C55928C011;
+	Fri,  6 Jun 2025 17:42:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from 66-220-144-179.mail-mxout.facebook.com (66-220-144-179.mail-mxout.facebook.com [66.220.144.179])
+Received: from 66-220-144-178.mail-mxout.facebook.com (66-220-144-178.mail-mxout.facebook.com [66.220.144.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D090A288C05
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08D2528BA99
 	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 17:42:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.144.179
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.144.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749231723; cv=none; b=ZsF99dR+KAtW70Uwgd/RwNVGcpaIyjPl/EMdOSBCHc2O3LCOyzoZYwknfPVzayX3UwOuPBVrsCQRF2xDpYRLL3YxKMkLwE2eHZMmKvSJLUDEbgnYwFBEDxA1nodnAJ5kBXFw4Rd6or3bDv6saNchW0hg5csP/rwpLqooWg4zZDA=
+	t=1749231724; cv=none; b=l8Fhpz1v5AsGXenZeKvfbZMpCAjB4lCpcTZfGaTeztSuKUMDT1P84CZSdB9X2UAYd+ctilNZ9xGanRST36Lgv1aiTDfqE7lsa5msNCQbtrk18g5WXMDxOfrx7yM6k4mjAlfIs35ilo0xlCqpejMXJIc+iQu//7y2RGr3v/GvGxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749231723; c=relaxed/simple;
-	bh=5X4KtSXE65HbJUqdwkwuwl8cJgNXO8AWqJgsXCObhPo=;
+	s=arc-20240116; t=1749231724; c=relaxed/simple;
+	bh=NmJ+Msv6fUmqKhjBC4MSS0SFpd8+eyyd3BJsab8idZk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hHcJKH9rAMkF2Oubr2I08uNxDuvYGkvp0dOFtBnuj0by8ddrCD+CP6yoj9nX4SLpmfTlMB93XKpbz9XqPGKpKrNVfaDZ6NTQLqi33swJJoGmvJ3kDkxq1fp+je1feYO97OnkcixsGAY/ZfCxFXf/twNTPPwNdRCoBX43AnU/TOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.144.179
+	 MIME-Version; b=HQpy0Gw7e7xAwGZYB9vZynGg3oVTLWx28k7d6V0kMUDJS3dyl5CrnUQ14kBm/HZB3d5Li21GWSVgJLm45zlOSRv0mroH43QJtBt9HXJ7y0mB0We8ertH/7najKaIjJufJgDqaPYxE5731PiD7dHU4K4AShPuKIjDDkoFiRtPySc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.144.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
 Received: by devvm16039.vll0.facebook.com (Postfix, from userid 128203)
-	id 327719046D11; Fri,  6 Jun 2025 10:41:50 -0700 (PDT)
+	id 4B1E49046D2B; Fri,  6 Jun 2025 10:41:55 -0700 (PDT)
 From: Yonghong Song <yonghong.song@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -38,9 +38,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	kernel-team@fb.com,
 	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v2 2/4] selftests/bpf: Fix bpf_mod_race test failure with arm64 64KB page size
-Date: Fri,  6 Jun 2025 10:41:50 -0700
-Message-ID: <20250606174150.3037178-1-yonghong.song@linux.dev>
+Subject: [PATCH bpf-next v2 3/4] selftests/bpf: Fix ringbuf/ringbuf_write test failure with arm64 64KB page size
+Date: Fri,  6 Jun 2025 10:41:55 -0700
+Message-ID: <20250606174155.3037298-1-yonghong.song@linux.dev>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250606174139.3036576-1-yonghong.song@linux.dev>
 References: <20250606174139.3036576-1-yonghong.song@linux.dev>
@@ -52,30 +52,68 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Currently, uffd_register.range.len is set to 4096 for command
-'ioctl(uffd, UFFDIO_REGISTER, &uffd_register)'. For arm64 64KB page size,
-the len must be 64KB size aligned as page size alignment is required.
-See fs/userfaultfd.c:validate_unaligned_range().
+The ringbuf max_entries must be PAGE_ALIGNED. See kernel function
+ringbuf_map_alloc(). So for arm64 64KB page size, adjust max_entries
+properly.
 
 Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 ---
- tools/testing/selftests/bpf/prog_tests/bpf_mod_race.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/bpf/prog_tests/ringbuf.c       | 5 +++--
+ tools/testing/selftests/bpf/progs/test_ringbuf_write.c | 5 +++--
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_mod_race.c b/tool=
-s/testing/selftests/bpf/prog_tests/bpf_mod_race.c
-index fe2c502e5089..ecc3d47919ad 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_mod_race.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_mod_race.c
-@@ -78,7 +78,7 @@ static int test_setup_uffd(void *fault_addr)
- 	}
+diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/tes=
+ting/selftests/bpf/prog_tests/ringbuf.c
+index da430df45aa4..89fd3401a23e 100644
+--- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
++++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+@@ -97,7 +97,8 @@ static void ringbuf_write_subtest(void)
+ 	if (!ASSERT_OK_PTR(skel, "skel_open"))
+ 		return;
 =20
- 	uffd_register.range.start =3D (unsigned long)fault_addr;
--	uffd_register.range.len =3D 4096;
-+	uffd_register.range.len =3D getpagesize();
- 	uffd_register.mode =3D UFFDIO_REGISTER_MODE_MISSING;
- 	if (ioctl(uffd, UFFDIO_REGISTER, &uffd_register)) {
- 		close(uffd);
+-	skel->maps.ringbuf.max_entries =3D 0x4000;
++	skel->maps.ringbuf.max_entries =3D 4 * page_size;
++	skel->rodata->reserve_size =3D 3 * page_size;
+=20
+ 	err =3D test_ringbuf_write_lskel__load(skel);
+ 	if (!ASSERT_OK(err, "skel_load"))
+@@ -108,7 +109,7 @@ static void ringbuf_write_subtest(void)
+ 	mmap_ptr =3D mmap(NULL, page_size, PROT_READ | PROT_WRITE, MAP_SHARED, =
+rb_fd, 0);
+ 	if (!ASSERT_OK_PTR(mmap_ptr, "rw_cons_pos"))
+ 		goto cleanup;
+-	*mmap_ptr =3D 0x3000;
++	*mmap_ptr =3D 3 * page_size;
+ 	ASSERT_OK(munmap(mmap_ptr, page_size), "unmap_rw");
+=20
+ 	skel->bss->pid =3D getpid();
+diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf_write.c b/too=
+ls/testing/selftests/bpf/progs/test_ringbuf_write.c
+index 350513c0e4c9..9acef7afbe8a 100644
+--- a/tools/testing/selftests/bpf/progs/test_ringbuf_write.c
++++ b/tools/testing/selftests/bpf/progs/test_ringbuf_write.c
+@@ -12,6 +12,7 @@ struct {
+=20
+ /* inputs */
+ int pid =3D 0;
++const volatile int reserve_size =3D 0;
+=20
+ /* outputs */
+ long passed =3D 0;
+@@ -26,11 +27,11 @@ int test_ringbuf_write(void *ctx)
+ 	if (cur_pid !=3D pid)
+ 		return 0;
+=20
+-	sample1 =3D bpf_ringbuf_reserve(&ringbuf, 0x3000, 0);
++	sample1 =3D bpf_ringbuf_reserve(&ringbuf, reserve_size, 0);
+ 	if (!sample1)
+ 		return 0;
+ 	/* first one can pass */
+-	sample2 =3D bpf_ringbuf_reserve(&ringbuf, 0x3000, 0);
++	sample2 =3D bpf_ringbuf_reserve(&ringbuf, reserve_size, 0);
+ 	if (!sample2) {
+ 		bpf_ringbuf_discard(sample1, 0);
+ 		__sync_fetch_and_add(&discarded, 1);
 --=20
 2.47.1
 
