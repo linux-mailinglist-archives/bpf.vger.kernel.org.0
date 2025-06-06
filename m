@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-59971-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59972-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 501C3AD0A46
-	for <lists+bpf@lfdr.de>; Sat,  7 Jun 2025 01:29:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6432AD0A4A
+	for <lists+bpf@lfdr.de>; Sat,  7 Jun 2025 01:29:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5B183B06B9
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 23:29:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A9A33B3920
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 23:29:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AD9723FC6B;
-	Fri,  6 Jun 2025 23:29:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A8CA2405E5;
+	Fri,  6 Jun 2025 23:29:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H+AbwPUY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rldbgBXN"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2F9523D2AC;
-	Fri,  6 Jun 2025 23:29:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94BBF126C17;
+	Fri,  6 Jun 2025 23:29:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749252576; cv=none; b=mCf5iMc3rHGxUBmpAkzaaPjEk510CtdV3dLZcvhHDQ1kGJZ6UNH4P1/5ytdRdK4GLzYRl8BUxmaaiyXwLCIaHhHDzLhqEfKKjsW55AEozWhBVZ4hsP7N1kFTqe7FK8X83bVlfc6wUyGJMMjVSq3r+5r7V5t6CTrz6lZNn8YDmok=
+	t=1749252578; cv=none; b=TUE9wVb1RUatg+8YTAHANHAhF/wSG6G9ndW2qt0nCJ6BD0lvEi5TzO6NE4EYQpm274fAO3DDBYe1HibCclsHnqTIbRL5bljm9yVKPPV+luRc+kSl7+FNHDMMu60kNhrWBjBCx9C5bLimM3tZ4LVluK1XcVNkCz6F1jSk7U3+WN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749252576; c=relaxed/simple;
-	bh=4sjfI38kjc3em00fZ77tApMQym+r/4qYRjBSLJaimTQ=;
+	s=arc-20240116; t=1749252578; c=relaxed/simple;
+	bh=835MWSoe2nYoRy3aZgl+nKjMzA0rp3A9+bUlyUtQtaQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ijyh+nJv5QTMBaVCMWesNmy0uMHaLgwjsUE4po5nB93jBBj4cw1YiLGifwlOS5R0CtWV3Hi0fP9/TIKXh4O4U8sL+K8Fhu7sWfedcmfdTbUms7gA6ELPEO7g/wo4cmdW2qmAmPljDvHE7f8Pfnc0nJtc1DeQl7OohCkrav0VgIc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H+AbwPUY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F01F9C4CEEB;
-	Fri,  6 Jun 2025 23:29:33 +0000 (UTC)
+	 MIME-Version; b=XozYy/1Tij0+uGuWqls29NQiIfOnWLpIh3twGb2uN2sVU6KNWDrB7aHVjYsioKMn/N61iUwfEG6VQWpau44cTPM3uZ7RlhbWlCI9Jxm9L2v1d9vOUNhbzxK74gVEptgwbJ87zD8bOW15G3iP8mS+jL75gKJ1EEzO331uDcPov2Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rldbgBXN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38B08C4CEEB;
+	Fri,  6 Jun 2025 23:29:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749252575;
-	bh=4sjfI38kjc3em00fZ77tApMQym+r/4qYRjBSLJaimTQ=;
+	s=k20201202; t=1749252578;
+	bh=835MWSoe2nYoRy3aZgl+nKjMzA0rp3A9+bUlyUtQtaQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=H+AbwPUYBb1nUzQubA0PVU6Rcm8o+oH268QUtmfre7xyDa8ljDprhB7V7Ox6qhPWT
-	 b/gbHb8+jZUWNLgc0yPmGJxngMOleJ148TWP7vtPtvxQvRMoSetZ1PIt+Cc16zxMb1
-	 mWB9hxFKr0hoY4bwqTiOqJw6nOapfICYzsCWqrPNwkHBEHEE7be8iCLJbitikIEJxk
-	 hRSrbDEy1n4T5Z6+M86L1VjJQ8BEtesy68Jo46wcBp6Ro4bpSVoa32jo/P9/ONXn58
-	 BkURX4QCFztlUBJMRkSDsDmISlCbquhilUL1hk9GlctWzfoq0XYgc7fn04TGV3+Mua
-	 0QbBREajCG7Pw==
+	b=rldbgBXNncX7q4D9lvjftEhDefQpGti/7KAZQDak5t+YE98ouNcw7grTTwAivQpND
+	 S/gVoUfhzXoWdlKAUvgDlyFvH336Z1+h8NZu1T+eUPjJP0AfW6uNFGDj/cwSUpYR/K
+	 6XjfN/LU2IwoDBYWZhCyCYstuDk1X0D9rVbgvMraxOEhI1V4Sh0clHoxc5idOXTa/M
+	 vY2GSYpEov9APi/rSY/wO92oTqrBoYHFRQTY25RJ97EKAQbgkgp0w3gWaIrt6ugBzs
+	 SfDbN+D05ZhqNiyxMe+RldB6FewNkqzgjQPsHi9FBQW5UHOxu9lnqbJtUMIVryffVs
+	 s2zxJyPouT0cA==
 From: KP Singh <kpsingh@kernel.org>
 To: bpf@vger.kernel.org,
 	linux-security-module@vger.kernel.org
@@ -51,9 +51,9 @@ Cc: bboscaccy@linux.microsoft.com,
 	daniel@iogearbox.net,
 	andrii@kernel.org,
 	KP Singh <kpsingh@kernel.org>
-Subject: [PATCH 07/12] bpf: Return hashes of maps in BPF_OBJ_GET_INFO_BY_FD
-Date: Sat,  7 Jun 2025 01:29:09 +0200
-Message-ID: <20250606232914.317094-8-kpsingh@kernel.org>
+Subject: [PATCH 08/12] bpf: Implement signature verification for BPF programs
+Date: Sat,  7 Jun 2025 01:29:10 +0200
+Message-ID: <20250606232914.317094-9-kpsingh@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250606232914.317094-1-kpsingh@kernel.org>
 References: <20250606232914.317094-1-kpsingh@kernel.org>
@@ -65,180 +65,202 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently only array maps are supported, but the implementation can be
-extended for other maps and objects. The hash is memoized only for
-exclusive and frozen maps as their content is stable until the exclusive
-program modifies the map.
+This patch extends the BPF_PROG_LOAD command by adding three new fields
+to `union bpf_attr` in the user-space API:
 
-This is required  for BPF signing, enabling a trusted loader program to
-verify a map's integrity. The loader retrieves
-the map's runtime hash from the kernel and compares it against an
-expected hash computed at build time.
+  - signature: A pointer to the signature blob.
+  - signature_size: The size of the signature blob.
+  - keyring_id: The serial number of a loaded kernel keyring (e.g.,
+    the user or session keyring) containing the trusted public keys.
+
+When a BPF program is loaded with a signature, the kernel:
+
+1.  Retrieves the trusted keyring using the provided `keyring_id`.
+2.  Verifies the supplied signature against the BPF program's
+    instruction buffer.
+3.  If the signature is valid and was generated by a key in the trusted
+    keyring, the program load proceeds.
+4.  If no signature is provided, the load proceeds as before, allowing
+    for backward compatibility. LSMs can chose to restrict unsigned
+    programs and implement a security policy.
+5.  If signature verification fails for any reason,
+    the program is not loaded.
 
 Signed-off-by: KP Singh <kpsingh@kernel.org>
 ---
- include/linux/bpf.h            |  3 +++
- include/uapi/linux/bpf.h       |  2 ++
- kernel/bpf/arraymap.c          | 13 ++++++++++++
- kernel/bpf/syscall.c           | 38 ++++++++++++++++++++++++++++++++++
- tools/include/uapi/linux/bpf.h |  2 ++
- 5 files changed, 58 insertions(+)
+ include/linux/bpf.h            |  9 +++++++-
+ include/uapi/linux/bpf.h       | 10 +++++++++
+ kernel/bpf/syscall.c           | 39 +++++++++++++++++++++++++++++++++-
+ kernel/trace/bpf_trace.c       |  6 ++++--
+ tools/include/uapi/linux/bpf.h | 10 +++++++++
+ tools/lib/bpf/bpf.c            |  2 +-
+ 6 files changed, 71 insertions(+), 5 deletions(-)
 
 diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index cb1bea99702a..35f1a633d87a 100644
+index 35f1a633d87a..32a41803d61c 100644
 --- a/include/linux/bpf.h
 +++ b/include/linux/bpf.h
-@@ -7,6 +7,7 @@
- #include <uapi/linux/bpf.h>
- #include <uapi/linux/filter.h>
+@@ -2778,7 +2778,14 @@ bpf_jit_find_kfunc_model(const struct bpf_prog *prog,
+ int bpf_get_kfunc_addr(const struct bpf_prog *prog, u32 func_id,
+ 		       u16 btf_fd_idx, u8 **func_addr);
  
-+#include <crypto/sha2.h>
- #include <linux/workqueue.h>
- #include <linux/file.h>
- #include <linux/percpu.h>
-@@ -110,6 +111,7 @@ struct bpf_map_ops {
- 	long (*map_pop_elem)(struct bpf_map *map, void *value);
- 	long (*map_peek_elem)(struct bpf_map *map, void *value);
- 	void *(*map_lookup_percpu_elem)(struct bpf_map *map, void *key, u32 cpu);
-+	int (*map_get_hash)(struct bpf_map *map, u32 hash_buf_size, void *hash_buf);
- 
- 	/* funcs called by prog_array and perf_event_array map */
- 	void *(*map_fd_get_ptr)(struct bpf_map *map, struct file *map_file,
-@@ -262,6 +264,7 @@ struct bpf_list_node_kern {
- } __attribute__((aligned(8)));
- 
- struct bpf_map {
-+	u8 sha[SHA256_DIGEST_SIZE];
- 	const struct bpf_map_ops *ops;
- 	struct bpf_map *inner_map_meta;
- #ifdef CONFIG_SECURITY
+-struct bpf_core_ctx {
++__bpf_kfunc struct bpf_key *bpf_lookup_user_key(u32 serial, u64 flags);
++__bpf_kfunc struct bpf_key *bpf_lookup_system_key(u64 id);
++__bpf_kfunc void bpf_key_put(struct bpf_key *bkey);
++__bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_p,
++					   struct bpf_dynptr *sig_p,
++					   struct bpf_key *trusted_keyring);
++
++	struct bpf_core_ctx {
+ 	struct bpf_verifier_log *log;
+ 	const struct btf *btf;
+ };
 diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 6f2f4f3b3822..ffd9e11befc2 100644
+index ffd9e11befc2..5f7c82ebe10a 100644
 --- a/include/uapi/linux/bpf.h
 +++ b/include/uapi/linux/bpf.h
-@@ -6630,6 +6630,8 @@ struct bpf_map_info {
- 	__u32 btf_value_type_id;
- 	__u32 btf_vmlinux_id;
- 	__u64 map_extra;
-+	__aligned_u64 hash;
-+	__u32 hash_size;
- } __attribute__((aligned(8)));
+@@ -1589,6 +1589,16 @@ union bpf_attr {
+ 		 * continuous.
+ 		 */
+ 		__u32		fd_array_cnt;
++		/* Pointer to a buffer containing the signature of the BPF
++		 * program.
++		 */
++		__aligned_u64   signature;
++		/* Size of the signature buffer in bytes. */
++		__u32 		signature_size;
++		/* ID of the kernel keyring to be used for signature
++		 * verification.
++		 */
++		__u32 		keyring_id;
+ 	};
  
- struct bpf_btf_info {
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index 8719aa821b63..1fb989db03a2 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -12,6 +12,7 @@
- #include <uapi/linux/btf.h>
- #include <linux/rcupdate_trace.h>
- #include <linux/btf_ids.h>
-+#include <crypto/sha256_base.h>
- 
- #include "map_in_map.h"
- 
-@@ -174,6 +175,17 @@ static void *array_map_lookup_elem(struct bpf_map *map, void *key)
- 	return array->value + (u64)array->elem_size * (index & array->index_mask);
- }
- 
-+static int array_map_get_hash(struct bpf_map *map, u32 hash_buf_size,
-+			       void *hash_buf)
-+{
-+	struct bpf_array *array = container_of(map, struct bpf_array, map);
-+
-+	bpf_sha256(array->value, (u64)array->elem_size * array->map.max_entries,
-+	       hash_buf);
-+	memcpy(array->map.sha, hash_buf, sizeof(array->map.sha));
-+	return 0;
-+}
-+
- static int array_map_direct_value_addr(const struct bpf_map *map, u64 *imm,
- 				       u32 off)
- {
-@@ -805,6 +817,7 @@ const struct bpf_map_ops array_map_ops = {
- 	.map_mem_usage = array_map_mem_usage,
- 	.map_btf_id = &array_map_btf_ids[0],
- 	.iter_seq_info = &iter_seq_info,
-+	.map_get_hash = &array_map_get_hash,
- };
- 
- const struct bpf_map_ops percpu_array_map_ops = {
+ 	struct { /* anonymous struct used by BPF_OBJ_* commands */
 diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index bef9edcfdb76..c81be07fa4fa 100644
+index c81be07fa4fa..6cd5ba42d946 100644
 --- a/kernel/bpf/syscall.c
 +++ b/kernel/bpf/syscall.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /* Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
-  */
-+#include <crypto/sha2.h>
- #include <linux/bpf.h>
- #include <linux/bpf-cgroup.h>
- #include <linux/bpf_trace.h>
-@@ -5027,6 +5028,9 @@ static int bpf_map_get_info_by_fd(struct file *file,
- 	info_len = min_t(u32, sizeof(info), info_len);
- 
- 	memset(&info, 0, sizeof(info));
-+	if (copy_from_user(&info, uinfo, info_len))
-+		return -EFAULT;
-+
- 	info.type = map->map_type;
- 	info.id = map->id;
- 	info.key_size = map->key_size;
-@@ -5051,6 +5055,40 @@ static int bpf_map_get_info_by_fd(struct file *file,
- 			return err;
+@@ -2782,8 +2782,39 @@ static bool is_perfmon_prog_type(enum bpf_prog_type prog_type)
  	}
+ }
  
-+	if (map->ops->map_get_hash && map->frozen && map->excl_prog_sha) {
-+		err = map->ops->map_get_hash(map, SHA256_DIGEST_SIZE, &map->sha);
-+		if (err != 0)
-+			return err;
++static int bpf_prog_verify_signature(struct bpf_prog *prog, union bpf_attr *attr, bpfptr_t uattr)
++{
++	bpfptr_t usig = make_bpfptr(attr->signature, uattr.is_kernel);
++	struct bpf_dynptr_kern sig_ptr, insns_ptr;
++	struct bpf_key *key = NULL;
++	void *sig;
++	int err = 0;
++
++	key = bpf_lookup_user_key(attr->keyring_id, 0);
++	if (!key)
++		return -ENOKEY;
++
++	sig = kvmemdup_bpfptr(usig, attr->signature_size);
++	if (!sig) {
++		bpf_key_put(key);
++		return -ENOMEM;
 +	}
 +
-+	if (info.hash) {
-+		char __user *uhash = u64_to_user_ptr(info.hash);
++	bpf_dynptr_init(&sig_ptr, sig, BPF_DYNPTR_TYPE_LOCAL, 0,
++			attr->signature_size);
++	bpf_dynptr_init(&insns_ptr, prog->insnsi, BPF_DYNPTR_TYPE_LOCAL, 0,
++			prog->len * sizeof(struct bpf_insn));
 +
-+		if (!map->ops->map_get_hash)
-+			return -EINVAL;
++	err = bpf_verify_pkcs7_signature((struct bpf_dynptr *)&insns_ptr,
++					 (struct bpf_dynptr *)&sig_ptr, key);
 +
-+		if (info.hash_size < SHA256_DIGEST_SIZE)
-+			return -EINVAL;
++	bpf_key_put(key);
++	kvfree(sig);
++	return err;
++}
 +
-+		info.hash_size  = SHA256_DIGEST_SIZE;
-+
-+		if (map->excl_prog_sha && map->frozen) {
-+			if (copy_to_user(uhash, map->sha, SHA256_DIGEST_SIZE) !=
-+			    0)
-+				return -EFAULT;
-+		} else {
-+			u8 sha[SHA256_DIGEST_SIZE];
-+
-+			err = map->ops->map_get_hash(map, SHA256_DIGEST_SIZE,
-+						     sha);
-+			if (err != 0)
-+				return err;
-+
-+			if (copy_to_user(uhash, sha, SHA256_DIGEST_SIZE) != 0)
-+				return -EFAULT;
-+		}
+ /* last field in 'union bpf_attr' used by this command */
+-#define BPF_PROG_LOAD_LAST_FIELD fd_array_cnt
++#define BPF_PROG_LOAD_LAST_FIELD keyring_id
+ 
+ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
+ {
+@@ -2947,6 +2978,12 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
+ 	/* eBPF programs must be GPL compatible to use GPL-ed functions */
+ 	prog->gpl_compatible = license_is_gpl_compatible(license) ? 1 : 0;
+ 
++	if (attr->signature) {
++		err = bpf_prog_verify_signature(prog, attr, uattr);
++		if (err)
++			goto free_prog;
 +	}
 +
- 	if (copy_to_user(uinfo, &info, info_len) ||
- 	    put_user(info_len, &uattr->info.info_len))
- 		return -EFAULT;
+ 	prog->orig_prog = NULL;
+ 	prog->jited = 0;
+ 
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 132c8be6f635..0cce39e1a9ee 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1351,7 +1351,6 @@ __bpf_kfunc void bpf_key_put(struct bpf_key *bkey)
+ 	kfree(bkey);
+ }
+ 
+-#ifdef CONFIG_SYSTEM_DATA_VERIFICATION
+ /**
+  * bpf_verify_pkcs7_signature - verify a PKCS#7 signature
+  * @data_p: data to verify
+@@ -1367,6 +1366,7 @@ __bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_p,
+ 			       struct bpf_dynptr *sig_p,
+ 			       struct bpf_key *trusted_keyring)
+ {
++#ifdef CONFIG_SYSTEM_DATA_VERIFICATION
+ 	struct bpf_dynptr_kern *data_ptr = (struct bpf_dynptr_kern *)data_p;
+ 	struct bpf_dynptr_kern *sig_ptr = (struct bpf_dynptr_kern *)sig_p;
+ 	const void *data, *sig;
+@@ -1396,8 +1396,10 @@ __bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_p,
+ 				      trusted_keyring->key,
+ 				      VERIFYING_UNSPECIFIED_SIGNATURE, NULL,
+ 				      NULL);
+-}
++#else
++	return -EOPNOTSUPP;
+ #endif /* CONFIG_SYSTEM_DATA_VERIFICATION */
++}
+ 
+ __bpf_kfunc_end_defs();
+ 
 diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 6f2f4f3b3822..ffd9e11befc2 100644
+index ffd9e11befc2..5f7c82ebe10a 100644
 --- a/tools/include/uapi/linux/bpf.h
 +++ b/tools/include/uapi/linux/bpf.h
-@@ -6630,6 +6630,8 @@ struct bpf_map_info {
- 	__u32 btf_value_type_id;
- 	__u32 btf_vmlinux_id;
- 	__u64 map_extra;
-+	__aligned_u64 hash;
-+	__u32 hash_size;
- } __attribute__((aligned(8)));
+@@ -1589,6 +1589,16 @@ union bpf_attr {
+ 		 * continuous.
+ 		 */
+ 		__u32		fd_array_cnt;
++		/* Pointer to a buffer containing the signature of the BPF
++		 * program.
++		 */
++		__aligned_u64   signature;
++		/* Size of the signature buffer in bytes. */
++		__u32 		signature_size;
++		/* ID of the kernel keyring to be used for signature
++		 * verification.
++		 */
++		__u32 		keyring_id;
+ 	};
  
- struct bpf_btf_info {
+ 	struct { /* anonymous struct used by BPF_OBJ_* commands */
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index 11fa2d64ccca..1a85cfa4282c 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -240,7 +240,7 @@ int bpf_prog_load(enum bpf_prog_type prog_type,
+ 		  const struct bpf_insn *insns, size_t insn_cnt,
+ 		  struct bpf_prog_load_opts *opts)
+ {
+-	const size_t attr_sz = offsetofend(union bpf_attr, fd_array_cnt);
++	const size_t attr_sz = offsetofend(union bpf_attr, keyring_id);
+ 	void *finfo = NULL, *linfo = NULL;
+ 	const char *func_info, *line_info;
+ 	__u32 log_size, log_level, attach_prog_fd, attach_btf_obj_fd;
 -- 
 2.43.0
 
