@@ -1,117 +1,117 @@
-Return-Path: <bpf+bounces-59953-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59954-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E419AD09B2
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 23:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0143BAD09B6
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 23:52:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B771171C43
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 21:48:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC3AC1718C4
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 21:52:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A1A523815D;
-	Fri,  6 Jun 2025 21:48:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98782239090;
+	Fri,  6 Jun 2025 21:52:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WNHXw3FE"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ye/ySsnl"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 964A32AD22;
-	Fri,  6 Jun 2025 21:48:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE9AC2356BD
+	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 21:52:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749246522; cv=none; b=mucMRmyrC9T839/Ubx2vWBhuQXMeLJ78oL8DC9boaia1nOJjANYkRhikEaR80frsOPB9m6WKXT2oyljlBnUfDYi7Gb/qxxi6PQ9+Lg9EvjnGipJCeAuPTTy5nfmvkJgXPf4fKxI3DnplN3FL91qbiT/QHuBQg9nCS0nD/KmBoMY=
+	t=1749246729; cv=none; b=XSO1adsA0a8z6Nn2gdn+fiX8uN9gAYExMsLCcgHtXOr2cHN/3aHzP1sjgmAf03Z6seXMxr4DZb8tFHgRm1fqP1gDhNzYUUDolE0Y+bl2GyC0ZuYTdMZKywqeOKA3vWNJb69rPbkG9qbRovgthD0S5wFUctmC98GfzPPXiTTcO80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749246522; c=relaxed/simple;
-	bh=6OfzKA0KEGwHSKRNuz5HIV5smfII8VgMlF3DmNtFVdM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KB2BFTrwPorS0x7LKjAWa7/2lL1d5+0++bMU+Cmtg1U1NxYGNkRIv6yfdCnjFGNNua1HHp40yS1nQYUAG7b5dmNhujaiWd7TTt/suhYmBVRyDo7gS4xlOXPC6IOZKxbcO2hQ+Q+oLMQjHbu9E4loFHmyizkOpD5v8XhrkYlPv3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WNHXw3FE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 161F8C4CEEB;
-	Fri,  6 Jun 2025 21:48:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749246522;
-	bh=6OfzKA0KEGwHSKRNuz5HIV5smfII8VgMlF3DmNtFVdM=;
-	h=From:To:Cc:Subject:Date:From;
-	b=WNHXw3FEqv66od7d6UIHk5bsqBDoGzqTLztT0YO3N3nupKNy1fqG/v0OaC7z2m/XZ
-	 qil4RsalgKR+AL5I3dy9PorRKSZF0IxKeuwjcAePDx3TdVuWc0o5pRKd7RQpcASoPA
-	 ctYWFWpSk9OJG7kck55ITfCSUiVNahCRHOqZ75+JuljiKb4VIIdGOcJLXQGK/XX3OY
-	 SHuHGQ9H22s6YUuhlo9DHQhYdMYTLFliHHQTvwhlRTNlVhMIf8llhVQiUh/9vENcD+
-	 4P1F/dr44TZ9V1ZxV3rlIqcfkeN2I4d/ABUV63Ewkf7ICmqHoxjPiZm4cwhLujxGYe
-	 6LbTlTc2WceAg==
-From: Andrii Nakryiko <andrii@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	masahiroy@kernel.org,
-	ojeda@kernel.org,
-	nathan@kernel.org
-Cc: bpf@vger.kernel.org,
-	kernel-team@meta.com,
-	linux-pm@vger.kernel.org,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH v2] .gitignore: ignore compile_commands.json globally
-Date: Fri,  6 Jun 2025 14:48:40 -0700
-Message-ID: <20250606214840.3165754-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.47.1
+	s=arc-20240116; t=1749246729; c=relaxed/simple;
+	bh=wNRLXwP2AOV1TrHHUqrNrX9EWxb3G26pRZWwMmUbQTI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=chVD92E2JQf8hfdr7gFiSKeqNYKhg+U5vgKEu1Lf7Kh/EcIpSPJl4D+GKlK2zGBFWYnrjnuVqJ5OdJuhQagKVLuPehyY8NJM0RkaRH0ffxTyJTakZXL3DHdkHgrshDTk2EqMI8aCpW2jzM5k6FKXXAbNcWsB/4RYi2YA1OUWg5w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Ye/ySsnl; arc=none smtp.client-ip=209.85.221.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vk1-f170.google.com with SMTP id 71dfb90a1353d-530e4ba1032so411290e0c.3
+        for <bpf@vger.kernel.org>; Fri, 06 Jun 2025 14:52:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1749246726; x=1749851526; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lyOaDhp2PexLIt5LY+LfBmOnozOIIhJOKbnZ0qemSwI=;
+        b=Ye/ySsnl/Lp/EhoNzozti9Gb0z0+0TUWjTfrl9uwm+W1PYZv3oGquJ2TehMWBpMhuw
+         tY/JHmWD7XuiUQ43ww/FPniq1ijyZUEQBM2ugWr5qQnzhNfcDx8OKo0kbc9NJMNfTRE4
+         lnv82DpYgfh1jBus4ysdV1KyruIdz/J1/zd67DmWkyZExHGN5AYRlAyXlzffMfm4wSxl
+         qYHR+h0iOZvu+bolqm1oAP/ZOL52Pk9XIYm57i8jiSxglFfmAvzz1eJGZS+l1e5mtOjH
+         EULDLgPmjmkFg6Rwksnvsi+y45mV0R3s1oEC9Ec5eCoUN7oEDcOfFbc79WtggJ7lPRSH
+         IiRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749246726; x=1749851526;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lyOaDhp2PexLIt5LY+LfBmOnozOIIhJOKbnZ0qemSwI=;
+        b=A6Ef7E2WbmmNVulCyLmHYMsfqv7ikN1xLYYYn5srwMQBynawVtGuiEqUGcCC1xqf+i
+         rjK2x/CEiUQn9Zbip+m3BHzD3AQoutCVOYyM7DjILkbBPHlTr5ulaI6BKxmVAVYBag/S
+         Ay/lFbl0OPIMGAqRTcmcF7LyhgeEAOJlopMF3G6Q2VcMLUyByjVDIoROQXpOovFX+Qcu
+         pm8ZL+xs4V+F1bDV0X2LVXgkFmctUMfURlC7j1tFpGEr1ipYmyiKu7B1UzmiY2Q2D+h/
+         BupLgf8+Rm2gQnlalM+NP8XT6Bm1NrWP4oLoxXO95omjtq2ad5NEDyU9dTgMALIrMJMH
+         r71Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXXtuXKXX66LM8cxd7Id1fFVnWvzL6SoziQjzoqnpMJNM4Yt/VGI8R1YK84EzdJuL8f80I=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwaRGaZGcccCISPJUbsJ+fbnekuwD0lsYV9b/zpAlAkV+fKBJL2
+	ormf+3RouF9G93IuuOzUj5uzbAAhPvtRf7Bv1D/7UPcEg2F6L8oD5VGKIR0f4pEKuu8omQw57WR
+	r14Cg57xilVC1i6qhB36cKGoP2OF9NWiCKq3wa1QP
+X-Gm-Gg: ASbGncvbqIgUKuRfjaDlrAV2chcPHUoZGfXf51ey4MeqgsClv3XerQ8mjTVLgc0FUK5
+	ZFIfMmjfendRsP9B4miecG6XcZuEVWV7Pklf1aVVSX4ZyK+Ol8pIx17cNAJOm+GB+QkIa2TQkL6
+	C9nqs8SBP/OCAbC8qy872du/V3Y9EIgLBhRt59Ol+QPGI=
+X-Google-Smtp-Source: AGHT+IHVHFaA1ry8YDiIbyMGIfrve8HMzCRf6dRbsB1VOlu9MTykpwHA6tI71aPDkraqSY7CjR0ozhtFiZHyJm38vDY=
+X-Received: by 2002:a05:6122:1d41:b0:526:720:704 with SMTP id
+ 71dfb90a1353d-530e487a257mr5820895e0c.7.1749246726354; Fri, 06 Jun 2025
+ 14:52:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250605233934.1881839-1-blakejones@google.com>
+ <20250605233934.1881839-4-blakejones@google.com> <aEM7SeSC7yup7TJ7@google.com>
+In-Reply-To: <aEM7SeSC7yup7TJ7@google.com>
+From: Blake Jones <blakejones@google.com>
+Date: Fri, 6 Jun 2025 14:51:55 -0700
+X-Gm-Features: AX0GCFvT1RS7Fs_le6fa-v64xZAYCDvDqqmAEUDabdNRCY24PDqfLenkWkzvCCA
+Message-ID: <CAP_z_CiJrs5qsM557TgNrcFu2yyML6uMKfU0mDJ8Z=AKs_Kpaw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] perf: collect BPF metadata from new programs, and
+ display the new event
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Tomas Glozar <tglozar@redhat.com>, 
+	James Clark <james.clark@linaro.org>, Leo Yan <leo.yan@arm.com>, 
+	Guilherme Amadio <amadio@gentoo.org>, Yang Jihong <yangjihong@bytedance.com>, 
+	Charlie Jenkins <charlie@rivosinc.com>, Chun-Tse Shao <ctshao@google.com>, 
+	Aditya Gupta <adityag@linux.ibm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
+	Zhongqiu Han <quic_zhonhan@quicinc.com>, Andi Kleen <ak@linux.intel.com>, 
+	Dmitry Vyukov <dvyukov@google.com>, Yujie Liu <yujie.liu@intel.com>, 
+	Graham Woodward <graham.woodward@arm.com>, Yicong Yang <yangyicong@hisilicon.com>, 
+	Ben Gainey <ben.gainey@arm.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-compile_commands.json can be used with clangd to enable language server
-protocol-based assistance. For kernel itself this can be built with
-scripts/gen_compile_commands.py, but other projects (e.g., libbpf, or
-BPF selftests) can benefit from their own compilation database file,
-which can be generated successfully using external tools, like bear [0].
+Hi Namhyung,
 
-So, instead of adding compile_commands.json to .gitignore in respective
-individual projects, let's just ignore it globally anywhere in Linux repo.
+On Fri, Jun 6, 2025 at 12:02=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
+wrote:
+> Can you please split the final synthesis and the processing/display
+> parts?  I prefer commits doing one at a time.
 
-While at it, remove exactly such a local .gitignore rule under
-tools/power/cpupower.
+Sorry about that - when I was doing development these two parts seemed
+inextricably tied up, but when I went back over them just now they were
+easy to separate. v3 will have these split out.
 
-  [0] https://github.com/rizsotto/Bear
-
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
-v1->v2:
-  - clean up tools/power/cpupower's .gitignore (Miguel Ojeda).
-
- .gitignore                      | 2 +-
- tools/power/cpupower/.gitignore | 3 ---
- 2 files changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/.gitignore b/.gitignore
-index bf5ee6e01cd4..451dff66275d 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -175,7 +175,7 @@ x509.genkey
- *.kdev4
- 
- # Clang's compilation database file
--/compile_commands.json
-+compile_commands.json
- 
- # Documentation toolchain
- sphinx_*/
-diff --git a/tools/power/cpupower/.gitignore b/tools/power/cpupower/.gitignore
-index 5113d5a7aee0..7677329c42a6 100644
---- a/tools/power/cpupower/.gitignore
-+++ b/tools/power/cpupower/.gitignore
-@@ -27,6 +27,3 @@ debug/i386/intel_gsic
- debug/i386/powernow-k8-decode
- debug/x86_64/centrino-decode
- debug/x86_64/powernow-k8-decode
--
--# Clang's compilation database file
--compile_commands.json
--- 
-2.47.1
-
+Blake
 
