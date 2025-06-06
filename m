@@ -1,78 +1,81 @@
-Return-Path: <bpf+bounces-59956-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59957-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68A01AD09BD
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B8EAAD09BB
 	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 23:53:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7A5477AB5D1
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 21:51:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2E9C3B30FC
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 21:53:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBDFE23C8CD;
-	Fri,  6 Jun 2025 21:52:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8BEA238C0F;
+	Fri,  6 Jun 2025 21:52:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HSHC/aNz"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uK/aKTd/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D77AF23BD1A
-	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 21:52:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE59623C516
+	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 21:52:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749246773; cv=none; b=dmBBaLcLhXNq13qqmd8ty9/Gb5w1Q6C8O1psyFEfHZOhfGupgjFVwn7fEET5dNImZy92posu+/UzFcARBxfeTWq5KCCacdttnVjvdISKF5dvwwPtDHaEoSsFOyN6dZswvrIPchJ5Q3S6CP/YbNPG3gyCN+3h3OEx9TXfXDGDhSY=
+	t=1749246775; cv=none; b=GMxUOUT2X1k/0wA2jzgN4ntoZGqi+tG32HCH2bny1r/8pu1/wlrupce3JPS4t934peUOpLWEjMPnBQS1poCD5PyrwYQ2rFBPAzlAYO1HqDXDdDeSkxFU8PShdNxuGkHsMDogKbn4/xOHjBnCvTQUUfXbwlvqlXBzeHGeKe0AUe4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749246773; c=relaxed/simple;
-	bh=DrzXWiPuCmbk7FJS7JCekeQvqnlzYqzj17AkfJe1vpU=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=fygxSzuyWA2jGelTbXsMdTt4qcd5tySGbaXe+UlGH0idSbCHN01Ji0e/JNXBAXNB0kX5rGIMaVt5EdoE06YqkfWG9RDNG8gmDA9SHOAuXfSNwrX47a1uuQ/ipmvOQnjjmGCBZHyYUdo6KJfLEjE1kNpepIR6FOmkaFSV19R2U2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--blakejones.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HSHC/aNz; arc=none smtp.client-ip=209.85.215.202
+	s=arc-20240116; t=1749246775; c=relaxed/simple;
+	bh=fdk50WYueaBLzSwBgidVg7pckEa/1AfhDiTbjBNVjvo=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=QXVckRjwWkRQi+Wbwgxaq7BKDwpq30SGiN8IV2PoUbwHKbEMCk6cl2EVSHCn3JPlyeEIIXegje0qQD5dq/OeEyTLZP93W5Rg0GHpm40tl37eD+hAotm2aFipZ/nJDR64u/ZDzw7+0IVabccsW2bUES6rJu0bm+qeZ0GQ/dXu6ig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--blakejones.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=uK/aKTd/; arc=none smtp.client-ip=209.85.216.73
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--blakejones.bounces.google.com
-Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-b2f4c436301so1662368a12.0
-        for <bpf@vger.kernel.org>; Fri, 06 Jun 2025 14:52:51 -0700 (PDT)
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-3132c1942a1so3212448a91.2
+        for <bpf@vger.kernel.org>; Fri, 06 Jun 2025 14:52:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1749246771; x=1749851571; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=cJCp9bhXIYOrZprd5csWtnV312LuqeYykGnUBhaYz2k=;
-        b=HSHC/aNz28ICZZDCa/1D9+4IC9PRfamCGEjsMY6te6LeEQcaaPwqOeYVlTeEwuEcUM
-         qmgH8KSL4hfLhOt6fSz9fBNHOyEVKJnxW2Q5f3fB29Un05e+2z/fPLH04yy3BLjcxusX
-         0S4KD6UxBtEAFpEuPXLO4maEFaH2p3RJkBV4Qs3a6VOCy40TYDQ3tI9Ng7i/MACo2OdT
-         mUOcx537DOqlV3UZ/QHEVObwOAVcHtcMU0/9kEn67msQt+y92UaSisuRE9TFFz/9K4x2
-         kdaki8H86XMip+vPI5QGK9yP0+IKdYE+ctPxP3wKTwLYQiBHI7E9SpkMn742jPEatY2/
-         TGxg==
+        d=google.com; s=20230601; t=1749246773; x=1749851573; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=D+kZBatEUrJrZZ6PE0Z1l/q9xeZJJ3Utgr+97hvf5fQ=;
+        b=uK/aKTd/Adr+/dFRFxIfcWYYJ00FUhuc0ocrZJKSq5kXY/09xgScHNf4OK6ylS48hf
+         ihlOqcmixyysf7LSwErV7gm/xMaMClXYpnhbnF6MGBL5GKYtSfzuWEG+l9TGICe/QGOz
+         Z5TjyIYXzIMo+3GpAUz8ynJGjA/keqSMtYyMCj7Bp+zkgqrOP5xVeXGkBSgXhYtxRJpA
+         OnSgbG2p76EIpJfog9lOqw4Z1OgdMAra9aSWJEbFOjKpPeCb4DCZNhfMz2c1tzfh5k5o
+         7bN+E2LfUapjXbUPlwLTYNiyTu/8rfD8Ek7gLm0Bzkm2eIAS1eCi2ftqTLAruZY5bPzb
+         As8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749246771; x=1749851571;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cJCp9bhXIYOrZprd5csWtnV312LuqeYykGnUBhaYz2k=;
-        b=d+7c4Cqaf/x3cMo6IxVxy72+atPTetfTD+Pf31xBZoXCFGccea+09izM+F8mkiZMTe
-         gnPfQea5LEjni26MgJiQbiiHUIlwgJhFJgEcvZvMPQlgroe6+Cf9J9Wzx33RjaYyIVjr
-         948mnrz69yfKj/T+utF3gBPVllDwHnGlB+EsHfFb2S5COzNwnboDSM6m9+jEe/MW+UaL
-         ZFZqm5fccn1BdQn6tjzPIb33oLtFPuZrfLSmwr6NkyO5MXtqsaz98+lLG9ak3GoRbJjq
-         3uDB1aCszXQ02l8Toa1bcyVsMZViK998FEKUieyBr8GVC680S4sU1BgSgJm+TkOZ6gaj
-         n5oQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUGDj+4Z89Vxp9WEZfB5t1fdses5CjtIwiiz+8YoGw1Sne62CXVn+UpAQhrGomvZnvu2d0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxLDXY284V4REGEntd05lFIXEGzpIgU8nBQGQGubN6jIZhfYdaq
-	RGsUqe99ctKCdG2YQTEeH2ZNGudbmd+qhUTdBMfarDMqs6iXo2oce9W65QAin+PTcqphWMRhR5T
-	dinUxIGoJ/1NMcHawb8Lx6A==
-X-Google-Smtp-Source: AGHT+IHtAou0XK/BoD58er+yz9x+egUh/LuWKeft+0QX/UE/N3mLSX/t4UT7aHt0qw+XiS+FEn1+jFIFWWYT0jW+
-X-Received: from pgg20.prod.google.com ([2002:a05:6a02:4d94:b0:b2f:795e:379a])
+        d=1e100.net; s=20230601; t=1749246773; x=1749851573;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=D+kZBatEUrJrZZ6PE0Z1l/q9xeZJJ3Utgr+97hvf5fQ=;
+        b=AwN1YKXGdLYTYNJIMqvo/r/Pq+UqYQAiUHbuTb53/lNHk3wSPcuQDunsTcVCgDS1RM
+         U+KDxds6OiJEp5gGG7fSic4Yait14ufloq339KacBiGM9AcdSJ3usecuREETH0b2w0rS
+         MNF/XogJncvmx/AoddO2iaCZzDjt+gegBEyarT6LQBJWmowpjXEcNOXLWPCMlNqVwcE8
+         QwdbVyW4t5ej76F7lpsg7uLfRHjlKkdJc/pCPoQ6KqZkiqgiHIAx9xXWSgdn76W9gnFI
+         /oKO3suXhENgcZiThnhWO8c2Kp+Lqw2cEP5bOl1nq3pj3oE5xSZj+glkuQ9/nIpYPaam
+         MhXA==
+X-Forwarded-Encrypted: i=1; AJvYcCVdqb/HaFWca8++27tnzzP+QUHR7hlnhtJzWm9FsWquHouRl+vohXQVev4mjkudjuw7ALw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzIECUFl66m2AkpppnoNsSCHNM7f3rWKkO1hdmoHLWjh+sSkXre
+	lIIi1xwqL2z8JRpMJpYMWMdIQZkdarezloIa/2KcF2ROU8+iQx4MQ8zXzUv3SZABzvt1i/3BX7P
+	Fiq5eVQCBveUDqqDyP+M4ew==
+X-Google-Smtp-Source: AGHT+IGUB45yrNx9LuqRMIDTKKRwgWQUuD4w9NE1Ld77LnJv215C9tYBR+DSbX0KgD3MHda8qh5AmDJxb4IqBytr
+X-Received: from pjm5.prod.google.com ([2002:a17:90b:2fc5:b0:313:245:8921])
  (user=blakejones job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:903:22c4:b0:234:5ea1:6041 with SMTP id d9443c01a7336-236136095camr4698875ad.10.1749246771234;
- Fri, 06 Jun 2025 14:52:51 -0700 (PDT)
-Date: Fri,  6 Jun 2025 14:52:41 -0700
+ 2002:a17:90b:1dcb:b0:312:639:a064 with SMTP id 98e67ed59e1d1-3134768d9cbmr7402437a91.28.1749246773007;
+ Fri, 06 Jun 2025 14:52:53 -0700 (PDT)
+Date: Fri,  6 Jun 2025 14:52:42 -0700
+In-Reply-To: <20250606215246.2419387-1-blakejones@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20250606215246.2419387-1-blakejones@google.com>
 X-Mailer: git-send-email 2.50.0.rc0.604.gd4ff7b7c86-goog
-Message-ID: <20250606215246.2419387-1-blakejones@google.com>
-Subject: [PATCH v3 0/5] perf: generate events for BPF metadata
+Message-ID: <20250606215246.2419387-2-blakejones@google.com>
+Subject: [PATCH v3 1/5] perf: detect support for libbpf's emit_strings option
 From: Blake Jones <blakejones@google.com>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
 	Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>, 
@@ -93,91 +96,134 @@ Cc: Mark Rutland <mark.rutland@arm.com>,
 	Blake Jones <blakejones@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Commit ffa915f46193 ("Merge branch 'bpf_metadata'"), from September 2020,
-added support to the kernel, libbpf, and bpftool to treat read-only BPF
-variables that have names starting with 'bpf_metadata_' specially. This
-patch series updates perf to handle these variables similarly, allowing a
-perf.data file to capture relevant information about BPF programs on the
-system being profiled.
+This creates a config option that detects libbpf's ability to display
+character arrays as strings, which was just added to the BPF tree
+(https://git.kernel.org/bpf/bpf-next/c/87c9c79a02b4).
 
-When it encounters a BPF program, it reads the program's maps to find an
-'.rodata' map with 'bpf_metadata_' variables. If it finds one, it extracts
-their values as strings, and creates a new PERF_RECORD_BPF_METADATA
-synthetic event using that data. It does this both for BPF programs that
-were loaded when a 'perf record' starts, as well as for programs that are
-loaded while the profile is running. For the latter case, it stores the
-metadata for the duration of the profile, and then dumps it at the end of
-the profile, where it's in a better context to do so.
+To test this change, I built perf (from later in this patch set) with:
 
-The PERF_RECORD_BPF_METADATA event holds an array of key-value pairs, where
-the key is the variable name (minus the "bpf_metadata_" prefix) and the
-value is the variable's value, formatted as a string. There is one such
-event generated for each BPF subprogram. Generating it per subprogram
-rather than per program allows it to be correlated with PERF_RECORD_KSYMBOL
-events; the metadata event's "prog_name" is designed to be identical to the
-"name" field of a perf_record_ksymbol. This allows specific BPF metadata to
-be associated with each BPF address range in the collection.
+- static libbpf (default, using source from kernel tree)
+- dynamic libbpf (LIBBPF_DYNAMIC=1 LIBBPF_INCLUDE=/usr/local/include)
 
-Changes:
+For both the static and dynamic versions, I used headers with and without
+the ".emit_strings" option.
 
-* v2 -> v3:
-  - Split out event collection from event display.
-  - Resync with tmp.perf-tools-next.
-  - Link to v2:
-    https://lore.kernel.org/linux-perf-users/20250605233934.1881839-1-blakejones@google.com/T/#t
+I verified that of the four resulting binaries, the two with
+".emit_strings" would successfully record BPF_METADATA events, and the two
+without wouldn't.  All four binaries would successfully display
+BPF_METADATA events, because the relevant bit of libbpf code is only used
+during "perf record".
 
-* v1 -> v2:
-  - Split out libbpf change and send it to the bpf tree.
-  - Add feature detection to perf to detect the libbpf change.
-  - Allow the feature to be skipped if the libbpf support is not found.
-  - Add an example of a PERF_RECORD_BPF_METADATA record.
-  - Change calloc() calls to zalloc().
-  - Don't check for NULL before calling free().
-  - Update the perf_event header when it is created, rather than
-    storing the event size and updating it later.
-  - Add a BPF metadata variable (with the perf version) to all
-    perf BPF programs.
-  - Update the selftest to look for the new perf_version variable.
-  - Split out the selftest into its own patch.
-  - Link to v1:
-    https://lore.kernel.org/linux-perf-users/20250521222725.3895192-1-blakejones@google.com/T/#t
-
-Blake Jones (5):
-  perf: detect support for libbpf's emit_strings option
-  perf: collect BPF metadata from existing BPF programs
-  perf: collect BPF metadata from new programs
-  perf: display the new PERF_RECORD_BPF_METADATA event
-  perf: add test for PERF_RECORD_BPF_METADATA collection
-
- tools/build/Makefile.feature                |   1 +
- tools/build/feature/Makefile                |   4 +
- tools/build/feature/test-libbpf-strings.c   |  10 +
- tools/lib/perf/include/perf/event.h         |  18 +
- tools/perf/Documentation/perf-check.txt     |   1 +
- tools/perf/Makefile.config                  |  12 +
- tools/perf/Makefile.perf                    |   3 +-
- tools/perf/builtin-check.c                  |   1 +
- tools/perf/builtin-inject.c                 |   1 +
- tools/perf/builtin-record.c                 |   8 +
- tools/perf/builtin-script.c                 |  15 +-
- tools/perf/tests/shell/test_bpf_metadata.sh |  76 ++++
- tools/perf/util/bpf-event.c                 | 378 ++++++++++++++++++++
- tools/perf/util/bpf-event.h                 |  13 +
- tools/perf/util/bpf_skel/perf_version.h     |  17 +
- tools/perf/util/env.c                       |  19 +-
- tools/perf/util/env.h                       |   4 +
- tools/perf/util/event.c                     |  21 ++
- tools/perf/util/event.h                     |   1 +
- tools/perf/util/header.c                    |   1 +
- tools/perf/util/session.c                   |   4 +
- tools/perf/util/synthetic-events.h          |   2 +
- tools/perf/util/tool.c                      |  14 +
- tools/perf/util/tool.h                      |   3 +-
- 24 files changed, 622 insertions(+), 5 deletions(-)
+Signed-off-by: Blake Jones <blakejones@google.com>
+---
+ tools/build/Makefile.feature              |  1 +
+ tools/build/feature/Makefile              |  4 ++++
+ tools/build/feature/test-libbpf-strings.c | 10 ++++++++++
+ tools/perf/Documentation/perf-check.txt   |  1 +
+ tools/perf/Makefile.config                | 12 ++++++++++++
+ tools/perf/builtin-check.c                |  1 +
+ 6 files changed, 29 insertions(+)
  create mode 100644 tools/build/feature/test-libbpf-strings.c
- create mode 100755 tools/perf/tests/shell/test_bpf_metadata.sh
- create mode 100644 tools/perf/util/bpf_skel/perf_version.h
 
+diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
+index 3a1fddd38db0..2e5f4c8b6547 100644
+--- a/tools/build/Makefile.feature
++++ b/tools/build/Makefile.feature
+@@ -126,6 +126,7 @@ FEATURE_TESTS_EXTRA :=                  \
+          llvm                           \
+          clang                          \
+          libbpf                         \
++         libbpf-strings                 \
+          libpfm4                        \
+          libdebuginfod			\
+          clang-bpf-co-re		\
+diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
+index 4aa166d3eab6..0c4e541ed56e 100644
+--- a/tools/build/feature/Makefile
++++ b/tools/build/feature/Makefile
+@@ -59,6 +59,7 @@ FILES=                                          \
+          test-lzma.bin                          \
+          test-bpf.bin                           \
+          test-libbpf.bin                        \
++         test-libbpf-strings.bin                \
+          test-get_cpuid.bin                     \
+          test-sdt.bin                           \
+          test-cxx.bin                           \
+@@ -339,6 +340,9 @@ $(OUTPUT)test-bpf.bin:
+ $(OUTPUT)test-libbpf.bin:
+ 	$(BUILD) -lbpf
+ 
++$(OUTPUT)test-libbpf-strings.bin:
++	$(BUILD)
++
+ $(OUTPUT)test-sdt.bin:
+ 	$(BUILD)
+ 
+diff --git a/tools/build/feature/test-libbpf-strings.c b/tools/build/feature/test-libbpf-strings.c
+new file mode 100644
+index 000000000000..83e6c45f5c85
+--- /dev/null
++++ b/tools/build/feature/test-libbpf-strings.c
+@@ -0,0 +1,10 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <bpf/btf.h>
++
++int main(void)
++{
++	struct btf_dump_type_data_opts opts;
++
++	opts.emit_strings = 0;
++	return opts.emit_strings;
++}
+diff --git a/tools/perf/Documentation/perf-check.txt b/tools/perf/Documentation/perf-check.txt
+index a764a4629220..799982d8d868 100644
+--- a/tools/perf/Documentation/perf-check.txt
++++ b/tools/perf/Documentation/perf-check.txt
+@@ -52,6 +52,7 @@ feature::
+                 dwarf-unwind            /  HAVE_DWARF_UNWIND_SUPPORT
+                 auxtrace                /  HAVE_AUXTRACE_SUPPORT
+                 libbfd                  /  HAVE_LIBBFD_SUPPORT
++                libbpf-strings          /  HAVE_LIBBPF_STRINGS_SUPPORT
+                 libcapstone             /  HAVE_LIBCAPSTONE_SUPPORT
+                 libcrypto               /  HAVE_LIBCRYPTO_SUPPORT
+                 libdw-dwarf-unwind      /  HAVE_LIBDW_SUPPORT
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index d1ea7bf44964..647ade45e4e5 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -595,8 +595,20 @@ ifndef NO_LIBELF
+           LIBBPF_STATIC := 1
+           $(call detected,CONFIG_LIBBPF)
+           CFLAGS += -DHAVE_LIBBPF_SUPPORT
++          ifneq ($(OUTPUT),)
++            LIBBPF_INCLUDE = $(abspath $(OUTPUT))/libbpf/include
++          else
++            LIBBPF_INCLUDE = $(CURDIR)/libbpf/include
++          endif
+         endif
+       endif
++
++      FEATURE_CHECK_CFLAGS-libbpf-strings="-I$(LIBBPF_INCLUDE)"
++      $(call feature_check,libbpf-strings)
++      ifeq ($(feature-libbpf-strings), 1)
++        $(call detected,CONFIG_LIBBPF_STRINGS)
++        CFLAGS += -DHAVE_LIBBPF_STRINGS_SUPPORT
++      endif
+     endif
+   endif # NO_LIBBPF
+ endif # NO_LIBELF
+diff --git a/tools/perf/builtin-check.c b/tools/perf/builtin-check.c
+index 9a509cb3bb9a..f4827f0ddb47 100644
+--- a/tools/perf/builtin-check.c
++++ b/tools/perf/builtin-check.c
+@@ -43,6 +43,7 @@ struct feature_status supported_features[] = {
+ 	FEATURE_STATUS("dwarf-unwind", HAVE_DWARF_UNWIND_SUPPORT),
+ 	FEATURE_STATUS("auxtrace", HAVE_AUXTRACE_SUPPORT),
+ 	FEATURE_STATUS_TIP("libbfd", HAVE_LIBBFD_SUPPORT, "Deprecated, license incompatibility, use BUILD_NONDISTRO=1 and install binutils-dev[el]"),
++	FEATURE_STATUS("libbpf-strings", HAVE_LIBBPF_STRINGS_SUPPORT),
+ 	FEATURE_STATUS("libcapstone", HAVE_LIBCAPSTONE_SUPPORT),
+ 	FEATURE_STATUS("libcrypto", HAVE_LIBCRYPTO_SUPPORT),
+ 	FEATURE_STATUS("libdw-dwarf-unwind", HAVE_LIBDW_SUPPORT),
 -- 
 2.50.0.rc0.604.gd4ff7b7c86-goog
 
