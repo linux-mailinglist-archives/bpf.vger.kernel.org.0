@@ -1,165 +1,149 @@
-Return-Path: <bpf+bounces-59846-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59848-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 640A0ACFDAC
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 09:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CCE4ACFE02
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 10:12:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24B18178B2E
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 07:46:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 15A66177AAB
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 08:12:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FBA128466F;
-	Fri,  6 Jun 2025 07:46:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D8AA2853EE;
+	Fri,  6 Jun 2025 08:12:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="FbcBo+GO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KtpAb7rw"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D9177FD;
-	Fri,  6 Jun 2025 07:46:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FAE62356B8;
+	Fri,  6 Jun 2025 08:11:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749195969; cv=none; b=eivzPudLjAH+J1MKnD8/S1ehzccLES+whzAZb6gjUWAyi0+D5mE/gN8AgVAfPxWtiUf7GyQIarifMksYyrwLNIWGLnZTuSk7bNWirPDmclr/7/vKFIT4Ko6lP4yANvDR4v0Y8P8iR14dhVXY+HdjwT94N+rMmAOZQNPUMVIfVtg=
+	t=1749197519; cv=none; b=aM6emf6h6MFqDU1ungCVPbPX4/zPl7PF/wq7/QTSdXDdNy1DseFQ2K5Qc9lNQpIQmds8v46XIpKnEDHKx4z9tVX72oU2uaRYJPlDUtPm4hcVVPs4nu1JoGIkC5mQpHIUCYd35SPrZNqI3Opr/T1McRSG2NIc7FrAciXIsj9YudU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749195969; c=relaxed/simple;
-	bh=IEkQc1BcGqv1X56aDpUHvaulzc1YvNTUmrX5u2YHMKA=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=mnYLa+95DkpOdHLKhfU0gjbNmOhw+2BH+mn440O7GY6Yy9QxWDLdiIvJeZelH4ERZbbP+qfwkC1mwEM33/xNZNWKsynYEBum80scZZCDrymm62cJfJ9KHSm0PY/soe8VXWgn9Pigty6DVhJO+PxliRV/CRk6v/i63Eg3MOGGoyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=FbcBo+GO; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 3B90F442AE;
-	Fri,  6 Jun 2025 07:45:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1749195958;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2+a4tmR/A6ANRwQiGU6A/fzxxPhMQUHBWtsMGAxzq3M=;
-	b=FbcBo+GO49Gf4nun+ACzzLWBd7hkcSEKiitgBAVSvqrZiijkTwKBI0uSbwLisokMQt1oD+
-	qDpcmFva4f3cqTdmgZTVwjY61/BXc4vuqQM3UzFLSJA5BHlVsHBzlkMa9vTg4KcETJp+sN
-	yJ66JPB2utPtj9hgCyWKd57/wxZ5BfRrnZsHixXZxwynbcCfBEycAPgZefFV2OAm0YTuas
-	03uBMg5uX+ZbI/KYG2jwsizN8uEb5UQkZOnTwidlDSIdxRgZlDTKmOukYH8rdpD319jPgf
-	pGQzZuy3BZ0YrMvdehF+RGesgL2H5RIPdqFTxOZoAKNvQrWWKZLxSK8NJxAAGQ==
+	s=arc-20240116; t=1749197519; c=relaxed/simple;
+	bh=ZuDJMQx0bckQqQYAX8ktUsiM7fLLnYTzUNDL9d0esbs=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lv8sokWta3jBAaeXtsSPELUaO9EBllVNOM40Z5U4kvbDP39aBdJfXt/3b+xW1XeFpspHhwcuXuBe4dx1ZDnD7O+6XXyFJBvhazi0zJh9BC6BNxpGHG51BTYmT8kvBPt+7Hl+QniH4X1I3g8kPkjPyikk9b94Mf+7Vw+SsnOp5VA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KtpAb7rw; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-6071ac9dc3eso2910569a12.1;
+        Fri, 06 Jun 2025 01:11:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749197516; x=1749802316; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TgApWI0+BVOjkWxGB075M4gC4i26wr9y4+tNmb0C/Mg=;
+        b=KtpAb7rwJFao9JAOAvvkHOcO+DKApjMcr9ZFF0EOX1p87BGDIhmkKGNeJl/AcPHJtv
+         AZ7xmIiNGewHniRCvqJY5kMBwm32Xxo1Um+SNuZCnn7oJu/53RZ93RtSlLqunRWbW1q0
+         m/v1HxoeuFgzaRilL3bE5Kb7o7v74epLPRy8TOOA2DwEtjaGYudKkcwR8fs6KSlZMuYN
+         rmen9R71rTGppi3F/jc8r72xtzmKmNG7K+wYvdET+u4hFv8GGyxjpUwpqcw8qBnLjPee
+         vFb/WDQU/4iQ66g2ucGGtmMnr4h2CLcBrnuLMI6rCVJDZoqJdlKmzzTUN/rs8DsKqZrS
+         aD6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749197516; x=1749802316;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TgApWI0+BVOjkWxGB075M4gC4i26wr9y4+tNmb0C/Mg=;
+        b=QXpOEYS5GjgiL58dKtFEyyX+ZrErV+K8zXyrX/3sCcw6K4CUWzJvmdT7ZHs8b8Oiq8
+         0zZ8specE/sLfg10RlNJtZZ3GssBV6JEgkox7LpP3ieELPM8fKefW4Akrdl1+JrT+IS+
+         9dmrb8PeWrE5fz50VkEyy8iZ/QjbPDKBmLwRGRDnrk80wZu62YJzp9+LhcfCFk7NQ3xH
+         V6pl74sIlHR1S+1nt4CBPwMhrwcYsBYjsX25gBO8v9vvC4C/Rp2hnPjmLXlZ/L9h38IE
+         jIFNi38g1itXVK/vtXzeHko1hpHvANiBN6u4mxQ0wE+Fn350x42leyIBK2ADvsuhnypV
+         jhqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVNA8kdYHokTaZbgCxycGTpxHMrFK0cF3162sUDvHVWsoO9IjmWPIoRb+kMK2lYdlrAst/yrwGT@vger.kernel.org, AJvYcCVsC+BUgIFvhBtnz0xKPAPATJL5y4U0vOBWAOgo3pIgqxe8piyYiFOg0u/u5kQiGAZj5Gc=@vger.kernel.org, AJvYcCX4Rl1132zoNpdT9jkGaHa7sXWoXwGb0EqkMgX7AavuMuCiIRZXL7LXaJtXsheUBcUk/+O/M9TYQQ6fxwW8@vger.kernel.org
+X-Gm-Message-State: AOJu0YzqDn48VRkbrrx1rszO8Gc4IS7/jdqKJCd6kaCzhgEcEk3XCYH3
+	TktJHBxtTAseqq27VfcaAnTTOaWcKiL6VJSGetHEX9G3VVoBoyviLRM1
+X-Gm-Gg: ASbGncsM/wUa82JIVLOEbw9se+QZTruKd/jdb28KkitBAkDJZCDMzaYMWj0Z9G/x3r3
+	4MxcQIcoLFh3xneykZ8tTpwJZI7WYQv6UvrbLD9eLSlVB09ilg8l1wdG/GFZvNAnMmDjwawYUv9
+	4oG6yDh3JDAXky1J32u9MvBeHnsP9fM8xEv80hH/ina5x2QwTk8MlU2FcjNO5RXpsWE6TLFsfbz
+	KFVpqo+zSXTyKVQTiw7tVVMHBntFTa3yyNjKRD7aUHRU7eVXUSbwMhLho9BGY+kBv/xX/C4jTvE
+	OLUSJ76BET0dhPAxviKHsjruJ0q42UO+lCiNQg==
+X-Google-Smtp-Source: AGHT+IHf3kWkZJUnkGKGDtasZxLAsJqT2XOamn0NT4qFa01M0qYWTtrfBtVc1Eqbs4sG8b8aQ7MZtQ==
+X-Received: by 2002:a17:907:c25:b0:ad8:8c52:d61f with SMTP id a640c23a62f3a-ade1aab9f4dmr176003166b.35.1749197515955;
+        Fri, 06 Jun 2025 01:11:55 -0700 (PDT)
+Received: from krava ([173.38.220.52])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ade1d7542b1sm79027666b.35.2025.06.06.01.11.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Jun 2025 01:11:55 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 6 Jun 2025 10:11:53 +0200
+To: Suleiman Souhlal <suleiman@google.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Masahiro Yamada <masahiroy@kernel.org>,
+	Ian Rogers <irogers@google.com>, ssouhlal@freebsd.org,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev, stable@vger.kernel.org
+Subject: Re: [PATCH v2] tools/resolve_btfids: Fix build when cross compiling
+ kernel with clang.
+Message-ID: <aEKiyUwKGDUAs3sf@krava>
+References: <20250606074538.1608546-1-suleiman@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 06 Jun 2025 09:45:51 +0200
-Message-Id: <DAFA7QSTVFQF.3MG5408HBVNT7@bootlin.com>
-Cc: "Ihor Solodrai" <ihor.solodrai@linux.dev>, "Andrii Nakryiko"
- <andrii.nakryiko@gmail.com>, "Alexei Starovoitov" <ast@kernel.org>, "Daniel
- Borkmann" <daniel@iogearbox.net>, "John Fastabend"
- <john.fastabend@gmail.com>, "Andrii Nakryiko" <andrii@kernel.org>, "Martin
- KaFai Lau" <martin.lau@linux.dev>, "Eduard Zingerman" <eddyz87@gmail.com>,
- "Song Liu" <song@kernel.org>, "Yonghong Song" <yonghong.song@linux.dev>,
- "KP Singh" <kpsingh@kernel.org>, "Stanislav Fomichev" <sdf@fomichev.me>,
- "Hao Luo" <haoluo@google.com>, "Jiri Olsa" <jolsa@kernel.org>, "Puranjay
- Mohan" <puranjay@kernel.org>, "Xu Kuohai" <xukuohai@huaweicloud.com>,
- "Catalin Marinas" <catalin.marinas@arm.com>, "Will Deacon"
- <will@kernel.org>, "Mykola Lysenko" <mykolal@fb.com>, "Shuah Khan"
- <shuah@kernel.org>, "Maxime Coquelin" <mcoquelin.stm32@gmail.com>,
- "Alexandre Torgue" <alexandre.torgue@foss.st.com>, "Florent Revest"
- <revest@chromium.org>, "Bastien Curutchet" <bastien.curutchet@bootlin.com>,
- <ebpf@linuxfoundation.org>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, "bpf" <bpf@vger.kernel.org>, "LKML"
- <linux-kernel@vger.kernel.org>, "linux-arm-kernel"
- <linux-arm-kernel@lists.infradead.org>, "open list:KERNEL SELFTEST
- FRAMEWORK" <linux-kselftest@vger.kernel.org>,
- <linux-stm32@st-md-mailman.stormreply.com>, <dwarves@vger.kernel.org>
-Subject: Re: [Question] attributes encoding in BTF
-From: =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-To: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
-X-Mailer: aerc 0.20.1-0-g2ecb8770224a
-References: <20250411-many_args_arm64-v1-0-0a32fe72339e@bootlin.com>
- <20250411-many_args_arm64-v1-1-0a32fe72339e@bootlin.com>
- <CAEf4Bzbn6BdXTOb0dTcsQmOMZpp5=DzGS2hHHQ3+dwcja=gv+w@mail.gmail.com>
- <D98Q8BRNUVS9.11J60C67L1ALR@bootlin.com>
- <CAEf4BzZHMYyGDZ4c4eNXG7Fm=ecxCCbKhKbQTbCjvWmKtdwvBw@mail.gmail.com>
- <D9E9IQQ3QKXM.3UJ17G9CBS1FH@bootlin.com>
- <DADMLIVHMSSO.3AXSI5216WCT6@bootlin.com>
- <9a2ba0ad-b34d-42f8-89a6-d9a44f007bdc@linux.dev>
- <DAEFD2WH7HRV.2SOG9Q00QSEXH@bootlin.com>
- <CAADnVQ+T_s6dAwJ5JKqNqA8tq1P+MdfPvPw0EoY5yOf8PnGT4g@mail.gmail.com>
-In-Reply-To: <CAADnVQ+T_s6dAwJ5JKqNqA8tq1P+MdfPvPw0EoY5yOf8PnGT4g@mail.gmail.com>
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddugdegjeelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpegggfgtfffkvefuhffvofhfjgesthhqredtredtjeenucfhrhhomheptehlvgigihhsucfnohhthhhorhoruceorghlvgigihhsrdhlohhthhhorhgvsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeelkeehiefhfeehvefhtdegueelkeehffffffeuvdekkeekuddvueeguefgieeukeenucffohhmrghinhepsghoohhtlhhinhdrtghomhenucfkphepvdduvddruddthedrudehtddrvdehvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvuddvrddutdehrdduhedtrddvhedvpdhhvghloheplhhotggrlhhhohhsthdpmhgrihhlfhhrohhmpegrlhgvgihishdrlhhothhhohhrvgessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepfeefpdhrtghpthhtoheprghlvgigvghirdhsthgrrhhovhhoihhtohhvsehgmhgrihhlrdgtohhmpdhrtghpthhtohepihhhohhrrdhsohhlohgurhgriheslhhinhhugidruggvvhdprhgtphhtthhopegrnhgurhhiihdrnhgrkhhrhihikhhosehgmhgrihhlrdgtohhmpdhrtghpthhtoheprghstheskhgvrhhnvghlrdhorhhgpdhrt
- ghpthhtohepuggrnhhivghlsehiohhgvggrrhgsohigrdhnvghtpdhrtghpthhtohepjhhohhhnrdhfrghsthgrsggvnhgusehgmhgrihhlrdgtohhmpdhrtghpthhtoheprghnughrihhisehkvghrnhgvlhdrohhrghdprhgtphhtthhopehmrghrthhinhdrlhgruheslhhinhhugidruggvvh
-X-GND-Sasl: alexis.lothore@bootlin.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250606074538.1608546-1-suleiman@google.com>
 
-Hi Alexei,
+On Fri, Jun 06, 2025 at 04:45:38PM +0900, Suleiman Souhlal wrote:
+> When cross compiling the kernel with clang, we need to override
+> CLANG_CROSS_FLAGS when preparing the step libraries.
+> 
+> Prior to commit d1d096312176 ("tools: fix annoying "mkdir -p ..." logs
+> when building tools in parallel"), MAKEFLAGS would have been set to a
+> value that wouldn't set a value for CLANG_CROSS_FLAGS, hiding the
+> fact that we weren't properly overriding it.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 56a2df7615fa ("tools/resolve_btfids: Compile resolve_btfids as host program")
+> Signed-off-by: Suleiman Souhlal <suleiman@google.com>
 
-On Thu Jun 5, 2025 at 6:09 PM CEST, Alexei Starovoitov wrote:
-> On Thu, Jun 5, 2025 at 12:35=E2=80=AFAM Alexis Lothor=C3=A9
-> <alexis.lothore@bootlin.com> wrote:
->>
->> Hi Ihor,
->>
->> On Wed Jun 4, 2025 at 7:31 PM CEST, Ihor Solodrai wrote:
->> > On 6/4/25 2:02 AM, Alexis Lothor=C3=83=C2=A9 wrote:
+lgtm
 
-[...]
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
->> Thanks for the details ! I have missed this possibility, as I have been
->> assuming that DWARF info was exposing the needed info. I'll take a look =
-at
->> it, but if those attributes can not be represented by DWARF, I'll have t=
-o
->> find another way of getting those packing/alignment modifications on dat=
-a
->> type (eg: re-use/share btf__align_of from libbpf, as suggested by Andrii=
-,
->> but it may not able to cover all cases).
->
-> Not sure all the trouble is worth it.
-> I feel it's a corner case. Something we don't need to fix.
+thanks,
+jirka
 
-TBH I don't own any specific use case really needing this handling, so if
-it does not feel worth the trouble, I'm fine with not trying to support
-this. My effort is rather motivated by the goal of aligning the ARM64
-features with other platform, and so of getting rid of
-tools/testing/selftests/bpf/DENYLIST.aarch64.
-
-For the record, this effort also showed that the same kind of issue affects
-other platforms already supporting many args + structs passed by value ([1]=
-)
-- structs alignment with specific alignment constraints are not
-  specifically handled (eg: a struct with an __int128 as a top-level
-  member, leading to a 16 byte alignment requirement)
-- packing and custom alignment is not handled
-
-From there, I could do two different things:
-1. do nothing, keep ARM64 as-is with the current version which has been
-  recently merged: ARM64 then denies attachment to any function trying to
-  pass a struct by value on stack. We keep the tracing_struct tests denied
-  for ARM64. Other platforms still allow to attach such functions, but may
-  be parsing wrongly arguments in those specific cases.
-2. add the constraint applied on ARM64 (refusing attachment when structs ar=
-e
-  passed through stack) to other JIT compilers. Then update the
-  tracing_struct test to ensure this specific case is properly denied on
-  all platforms to avoid risking reading wrongly arguments passed through
-  stack when structs or large types are involved.
-
-I tend to think 2. is better, but let me know if you have a different
-opinion here.
-
-Thanks,
-
-Alexis
-
---=20
-Alexis Lothor=C3=A9, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
+> ---
+> v2:
+> - "Signed-off-by:" instead of "Signed-of-by".
+> 
+> v1: https://lore.kernel.org/lkml/20250606052301.810338-1-suleiman@google.com/
+> ---
+>  tools/bpf/resolve_btfids/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
+> index afbddea3a39c..ce1b556dfa90 100644
+> --- a/tools/bpf/resolve_btfids/Makefile
+> +++ b/tools/bpf/resolve_btfids/Makefile
+> @@ -17,7 +17,7 @@ endif
+>  
+>  # Overrides for the prepare step libraries.
+>  HOST_OVERRIDES := AR="$(HOSTAR)" CC="$(HOSTCC)" LD="$(HOSTLD)" ARCH="$(HOSTARCH)" \
+> -		  CROSS_COMPILE="" EXTRA_CFLAGS="$(HOSTCFLAGS)"
+> +		  CROSS_COMPILE="" CLANG_CROSS_FLAGS="" EXTRA_CFLAGS="$(HOSTCFLAGS)"
+>  
+>  RM      ?= rm
+>  HOSTCC  ?= gcc
+> -- 
+> 2.50.0.rc0.642.g800a2b2222-goog
+> 
 
