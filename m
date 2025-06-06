@@ -1,267 +1,202 @@
-Return-Path: <bpf+bounces-59850-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59851-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AA28ACFED5
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 11:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 857C9ACFF83
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 11:41:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D124F3A6768
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 09:07:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 517BA3B1C4D
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 09:40:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50B4A2868AC;
-	Fri,  6 Jun 2025 09:06:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28E86286D53;
+	Fri,  6 Jun 2025 09:40:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KR8o8gwP"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DsbKINYz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC6DD2868AA
-	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 09:06:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C48D6286D47
+	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 09:40:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749200815; cv=none; b=NxNk3xj2u9HPFoA3Or2LUY7dHGazZai9GP1Gtpw/Fn6JhjKrLBky1zlDu7d7uRkXETv1yqx3RdVHrDNWHW9xwLIQe/aoCc593NUyQFJHQFG/7Po2pt5NnU+MJIwTKf8vCS87zoFj3g+FAH2NDl3MphmicLyAagUlRCuhkIc9wSQ=
+	t=1749202847; cv=none; b=g10bZwWGQK2EpEpwQaV9VdOfZJq3L/RsQEH9F8QeuHjCNRQaBYiflVDiWqXdya7KfHlsxwI73+EijG/iyRRZLmeytEdeIOZCx/Z3etDM1T2GWoiqaTVDIH1f3PQCWXKFzKHqMSm9UYRnAuqOKys9CVTBECGHqZhAj8qE9BRCDtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749200815; c=relaxed/simple;
-	bh=5/GIpoiLEODukIITVP+GzuZ7UBw9dQMUpLlMC4ZVZgw=;
+	s=arc-20240116; t=1749202847; c=relaxed/simple;
+	bh=PnuyZEF43PAaG6ER7b1YMQ31IpCLXqhEAlrLZbQXrG0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=APXPeM8AKpBoT4kXZlJgarvaUioPtDFIgIbh2/D1xpMPmB7hBtRFTE3PN9gMeZYz3ylb6Rp3QJiJ1a9oK4rlVCixENHmeYMgOcc/ruiDAHsRIPm2j6AcjuIKk6HH/hkjwS6Oo7sHFcmbPywzCpG0xUa0Ii3idplPI4Xsd+HQEsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KR8o8gwP; arc=none smtp.client-ip=209.85.160.171
+	 To:Cc:Content-Type; b=LwmiHl7+2063papboIbdfDlbup8rrfXpWE9xzLzHuNpPQLHmezMZqqKFyZ/XjMhmdsL9axCBLSf2xxMBIU+bvTbDkguRArbZtYMAeaveyz7ADlAdFmZvfkCwJJMZzT28R9zcJmCO+yKUPJcfrklGqIS9yOzavY8nzEiRfzJ28B8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DsbKINYz; arc=none smtp.client-ip=209.85.208.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-4a3db0666f2so40312471cf.1
-        for <bpf@vger.kernel.org>; Fri, 06 Jun 2025 02:06:52 -0700 (PDT)
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-601a67c6e61so8963a12.0
+        for <bpf@vger.kernel.org>; Fri, 06 Jun 2025 02:40:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1749200812; x=1749805612; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1749202844; x=1749807644; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7Juf4jrcJwc7M/PUKZ2NRoIutSSX565sEIodIwjaKUU=;
-        b=KR8o8gwPU/AKH4wTlHWbYqWLn0K0H3kLCForFgwD9iy+n/I1Lal+DC5SHj2RrLAvEL
-         c6mlOwWS/Aq2NZLWA2ALG9dkk3qXZkCm4kE1UfE031IP+eBpl2PiQJv9Lo3Yk3xSDehw
-         OkkOe6AL52t9NluxQCi6TEgsejukLlR7f+5nvzmRWaaDf1Jb/W2T+/bRsy5NeLmNZ5/T
-         nRYzUp7zLsK9h5Do+Zfa04PF0QXWMJj9X9JlnGGAkC7bQKv0BMA8p2B1YnZaBY5WD4H0
-         EJY8zE4XUFJgy2OhCBcd1Ka79ERkP3AEjPJGEqcAknnsL+yKA/qvPzmyfHV65nKITpU2
-         Z4dg==
+        bh=zAfTd10Yw9K2pZvfr2dRb9UAhgYnCFwO4TyYe6PRuSc=;
+        b=DsbKINYzOMHiBlWUKnsmgf8+axxYICImRNi2MXXt0Y0MgwSzHxPwz76C6BqhnHeGyv
+         3KMohnEVC6iAyxsL2MgOcjjgu8jcsdsHEEkcLjK66nonGXBErAu7K8TnDGdem6EUlEhu
+         NxOtLGA2Oad1/7T+CYG9Spny9o7Jg/j4BUj5GFn9Z36XjJGJntKolP76aGJaDI1QoVwh
+         70ezE8uXmQwYV9s/DVOeEiWEzY8LFSEYWPOnraE/jFJZcFwbD2l6qyaJ0Lh2suguxOil
+         Wulhjict75GlVRLpxTmJWGnSF8x1/yaFpsgoCIT3/Jqvr5g9Uwzehh+9XciCgOBQVtuo
+         hJdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749200812; x=1749805612;
+        d=1e100.net; s=20230601; t=1749202844; x=1749807644;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7Juf4jrcJwc7M/PUKZ2NRoIutSSX565sEIodIwjaKUU=;
-        b=PkiojTblA6a/Py6uAsWaXpuhVpAzZYibGpm2k6nIy9uaZnhl1n/YvCCbsttAX5ZAe4
-         sLG1ImvJLuUYTHRD8dA67pvUzd4tONzExK0ZAMFpD6N12TavMUBERpU0dBhP3O5XAf1y
-         atqNjUn06cMzqRtcxk6JSl/9Cbi9Fja/F/K1vH1ztOJkDLHd2GZj5cclBhPpqhzBk3Px
-         AOPRNwhSnI15Y6sq10TXfy02cqKBanwBNCmaL3UJEACYRYfR+Vt/w1+ZkW0d1LDJJyrO
-         odQvk4VreV2W2aU/zMYoihTu6dzPYtZzufU2jh6kteFbA25o5eYO9NCgKWF7f5idQAXt
-         MnwA==
-X-Forwarded-Encrypted: i=1; AJvYcCW2PAGgwBr/uRblkK+SAcCi2zb0eEOEtZCyysoMI4RyvJvA3THtIMzCKjE21W7p+kuoz1E=@vger.kernel.org
-X-Gm-Message-State: AOJu0YznEKQ+ZWjefFvcQmpgqKfLf5o649ox11XRmEHFoy+BzAZxrb8a
-	JJn8BeHWCVDOyl4tX/rAE53QhOdAhxgw77vonW3uD8N1P88zqXNREhYcvqdHWqeWV2QjljtGJd8
-	kPkW2AI7QWV1o/LwQFhgiVdpaa81zPD55Y4/HuYL8maDL7fvWWhZ6BbPZIJM=
-X-Gm-Gg: ASbGncuuaz9Tefl8yjcfix0acJANuo5uo8k27bDPLiIWwYSGLEWGmcz7c4HUBr8/pEp
-	fgPpTpQtmfz4Rhc4pMPgQtopjy2GtgpgtSq0QlAmqi84Zqm+6N5QlJqtXnvhxbZ5r7OjMuvg3Ib
-	hZGz2OryOmoLVQeQDoywWlsIHO/6qXIxnm+p1kYeur9X9AB/EKjHhPs7X7cLXkefKAO90NcuMTU
-	DEHVA==
-X-Google-Smtp-Source: AGHT+IHrlc9mecNqwz2N+nw+P4UYGvVjpnyOb92OYDI8uLthwW+8fWcUH8+t4NPziYSbwMH5pv1fl34SjJ41A6Aw6oE=
-X-Received: by 2002:a05:622a:4a15:b0:4a4:3b41:916c with SMTP id
- d75a77b69052e-4a5b9a38b4bmr50944651cf.17.1749200811395; Fri, 06 Jun 2025
- 02:06:51 -0700 (PDT)
+        bh=zAfTd10Yw9K2pZvfr2dRb9UAhgYnCFwO4TyYe6PRuSc=;
+        b=Upfr09VArOGXmTsrGpygyAE3LBSS4KmhCgCeCTI878/W/lJpeaogu24nlgI1r/wStm
+         V2mDUZzO3E8Giz5nEkasFI5GxEwGWu6OPnNf4AscppjCk2lZRxcJBb04pHBrb7ZlKoIB
+         hkYbuBUQ/kdRX1O/Jj6XmCzrzzB2+r9MZy6lH4jQDMtOjaG6jH/ooTiQG25HnleTI0Kz
+         hbM1NoU+D9eMI+oUI6TCYivCnnd1Loec0UEP0jOn2aNrhmFBGZ7oXqYiDHw4BLRFcX5y
+         qBV2jI29mTpfuiLIcK62hgKyeNmHQqMlAf8zUhGk03FzgCIR6vHtWRZ8F6mmIRc1/gjQ
+         +DEw==
+X-Forwarded-Encrypted: i=1; AJvYcCVK6pqzqiudabfDZuf0Y/OLxsaPii6E7tmgon9jLxbSJ2VfAQylA/hynMjNBPm4hGPRM88=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxYJHJl/s1z/+lI6t9wRgKlknIUqzZNPU8xI7x1txsjb/++Ft0Y
+	tdv1RIzTF9PSMLCoRg7viGpp5s0Pt7yxIXmyTLdDOxIgl/C44r+mcz+Cu5oAAj46962kLAb/dvD
+	6uQbWmUQuZs3dnU87yvPK5AyHm3iRgd6QegIgAjq4
+X-Gm-Gg: ASbGncsMbEfs9Xm2sPrFSAmLbZxtuTO3FzQsv6xtS+RUKstxxSm5posgf29iXJ/kH6b
+	VaFzTpb5tIkJ9lwvt4+q4/Lf35hqPW7476yAqxtf3hjYeV0VHHu9ywkeajOsQ2QKj0nKFuhZ4Cp
+	aWtmvWAy99YhpC32YSy0zQZakyKHSzDjRaTHihxj9dvx/GhYysV8mzVOcR310duV8HMHTRkeSQ1
+	chL
+X-Google-Smtp-Source: AGHT+IGKKbLOyqwWS4IZGmwjDIgoabOvBLdPv+RQWjr5FaPAucKt8M0vS/txudh3ymwJQKw69mVr2CPYgfW54HNZ9Po=
+X-Received: by 2002:a05:6402:3125:b0:606:b6da:5028 with SMTP id
+ 4fb4d7f45d1cf-6077295a9c2mr81449a12.0.1749202843719; Fri, 06 Jun 2025
+ 02:40:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <9da42688-bfaa-4364-8797-e9271f3bdaef@hetzner-cloud.de>
- <87zfemtbah.fsf@toke.dk> <CANn89i+7crgdpf-UXDpTNdWfei95+JHyMD_dBD8efTbLBnvZUQ@mail.gmail.com>
- <CANn89iKpZ5aLNpv66B9M4R1d_Pn5ZX=8-XaiyCLgKRy3marUtQ@mail.gmail.com> <5f19b555-b0fa-472a-a5f3-6673c0b69c5c@hetzner-cloud.de>
-In-Reply-To: <5f19b555-b0fa-472a-a5f3-6673c0b69c5c@hetzner-cloud.de>
-From: Eric Dumazet <edumazet@google.com>
-Date: Fri, 6 Jun 2025 02:06:40 -0700
-X-Gm-Features: AX0GCFuvatprhbrKC4R-61A0CpjrF1M_FzEpByoJmTe1A2qJ9Yyf7FigygmAcu0
-Message-ID: <CANn89iJAR3HvWXNqNSR=y9qYm4W5sD40La+UpRraF4NE8yhfrA@mail.gmail.com>
-Subject: Re: [BUG] veth: TX drops with NAPI enabled and crash in combination
- with qdisc
-To: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
-Cc: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, 
-	Jiri Pirko <jiri@resnulli.us>, linux-kernel@vger.kernel.org
+References: <20250604210604.257036-1-kuba@kernel.org> <CANP3RGfRaYwve_xgxH6Tp2zenzKn2-DjZ9tg023WVzfdJF3p_w@mail.gmail.com>
+ <20250605062234.1df7e74a@kernel.org> <CANP3RGc=U4g7aGfX9Hmi24FGQ0daBXLVv_S=Srk288x57amVDg@mail.gmail.com>
+ <20250605070131.53d870f6@kernel.org> <684231d3bb907_208a5f2945f@willemb.c.googlers.com.notmuch>
+ <20250605173142.1c370506@kernel.org>
+In-Reply-To: <20250605173142.1c370506@kernel.org>
+From: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+Date: Fri, 6 Jun 2025 11:40:31 +0200
+X-Gm-Features: AX0GCFvkymAy0ucuJORzcFDXtLnLbeZp-CZZfSawlnJHrrBGX7mUqZoSXJ1VWkQ
+Message-ID: <CANP3RGfXNrL7b+BPUCPc_=iiExtxZVxLhpQR=vyzgksuuLYkeA@mail.gmail.com>
+Subject: Re: [PATCH net] net: clear the dst when changing skb protocol
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, davem@davemloft.net, 
+	netdev@vger.kernel.org, edumazet@google.com, pabeni@redhat.com, 
+	andrew+netdev@lunn.ch, horms@kernel.org, martin.lau@linux.dev, 
+	daniel@iogearbox.net, john.fastabend@gmail.com, eddyz87@gmail.com, 
+	sdf@fomichev.me, haoluo@google.com, willemb@google.com, 
+	william.xuanziyang@huawei.com, alan.maguire@oracle.com, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 5, 2025 at 3:17=E2=80=AFPM Marcus Wichelmann
-<marcus.wichelmann@hetzner-cloud.de> wrote:
+On Fri, Jun 6, 2025 at 2:31=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> wro=
+te:
 >
-> Am 06.06.25 um 00:11 schrieb Eric Dumazet:
-> > On Thu, Jun 5, 2025 at 9:46=E2=80=AFAM Eric Dumazet <edumazet@google.co=
-m> wrote:
-> >>
-> >> On Thu, Jun 5, 2025 at 9:15=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgense=
-n <toke@redhat.com> wrote:
-> >>>
-> >>> Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de> writes:
-> >>>
-> >>>> Hi,
-> >>>>
-> >>>> while experimenting with XDP_REDIRECT from a veth-pair to another in=
-terface, I
-> >>>> noticed that the veth-pair looses lots of packets when multiple TCP =
-streams go
-> >>>> through it, resulting in stalling TCP connections and noticeable ins=
-tabilities.
-> >>>>
-> >>>> This doesn't seem to be an issue with just XDP but rather occurs whe=
-never the
-> >>>> NAPI mode of the veth driver is active.
-> >>>> I managed to reproduce the same behavior just by bringing the veth-p=
-air into
-> >>>> NAPI mode (see commit d3256efd8e8b ("veth: allow enabling NAPI even =
-without
-> >>>> XDP")) and running multiple TCP streams through it using a network n=
-amespace.
-> >>>>
-> >>>> Here is how I reproduced it:
-> >>>>
-> >>>>   ip netns add lb
-> >>>>   ip link add dev to-lb type veth peer name in-lb netns lb
-> >>>>
-> >>>>   # Enable NAPI
-> >>>>   ethtool -K to-lb gro on
-> >>>>   ethtool -K to-lb tso off
-> >>>>   ip netns exec lb ethtool -K in-lb gro on
-> >>>>   ip netns exec lb ethtool -K in-lb tso off
-> >>>>
-> >>>>   ip link set dev to-lb up
-> >>>>   ip -netns lb link set dev in-lb up
-> >>>>
-> >>>> Then run a HTTP server inside the "lb" namespace that serves a large=
- file:
-> >>>>
-> >>>>   fallocate -l 10G testfiles/10GB.bin
-> >>>>   caddy file-server --root testfiles/
-> >>>>
-> >>>> Download this file from within the root namespace multiple times in =
-parallel:
-> >>>>
-> >>>>   curl http://[fe80::...%to-lb]/10GB.bin -o /dev/null
-> >>>>
-> >>>> In my tests, I ran four parallel curls at the same time and after ju=
-st a few
-> >>>> seconds, three of them stalled while the other one "won" over the fu=
-ll bandwidth
-> >>>> and completed the download.
-> >>>>
-> >>>> This is probably a result of the veth's ptr_ring running full, causi=
-ng many
-> >>>> packet drops on TX, and the TCP congestion control reacting to that.
-> >>>>
-> >>>> In this context, I also took notice of Jesper's patch which describe=
-s a very
-> >>>> similar issue and should help to resolve this:
-> >>>>   commit dc82a33297fc ("veth: apply qdisc backpressure on full ptr_r=
-ing to
-> >>>>   reduce TX drops")
-> >>>>
-> >>>> But when repeating the above test with latest mainline, which includ=
-es this
-> >>>> patch, and enabling qdisc via
-> >>>>   tc qdisc add dev in-lb root sfq perturb 10
-> >>>> the Kernel crashed just after starting the second TCP stream (see ou=
-tput below).
-> >>>>
-> >>>> So I have two questions:
-> >>>> - Is my understanding of the described issue correct and is Jesper's=
- patch
-> >>>>   sufficient to solve this?
-> >>>
-> >>> Hmm, yeah, this does sound likely.
-> >>>
-> >>>> - Is my qdisc configuration to make use of this patch correct and th=
-e kernel
-> >>>>   crash is likely a bug?
-> >>>>
-> >>>> ------------[ cut here ]------------
-> >>>> UBSAN: array-index-out-of-bounds in net/sched/sch_sfq.c:203:12
-> >>>> index 65535 is out of range for type 'sfq_head [128]'
-> >>>
-> >>> This (the 'index 65535') kinda screams "integer underflow". So certai=
-nly
-> >>> looks like a kernel bug, yeah. Don't see any obvious reason why Jespe=
-r's
-> >>> patch would trigger this; maybe Eric has an idea?
-> >>>
-> >>> Does this happen with other qdiscs as well, or is it specific to sfq?
-> >>
-> >> This seems like a bug in sfq, we already had recent fixes in it, and
-> >> other fixes in net/sched vs qdisc_tree_reduce_backlog()
-> >>
-> >> It is possible qdisc_pkt_len() could be wrong in this use case (TSO of=
-f ?)
+> On Thu, 05 Jun 2025 20:09:55 -0400 Willem de Bruijn wrote:
+> > > > It does make a fair bit of sense.
+> > > > Question: does calling it as a kfunc require kernel BTF?
+> > > > Specifically some ram limited devices want to disable CONFIG_DEBUG_=
+INFO_BTF...
+> > > > I know normal bpf helpers don't need that...
+> > > > I guess you could always convert ipv4 -> ipv6 -> ipv4 ;-)
+> > >
+> > > Not sure how BPF folks feel about that, but technically we could
+> > > also add a flag to bpf_skb_adjust_room() or bpf_skb_change_proto().
 > >
-> > This seems to be a very old bug, indeed caused by sch->gso_skb
-> > contribution to sch->q.qlen
-> >
-> > diff --git a/net/sched/sch_sfq.c b/net/sched/sch_sfq.c
-> > index b912ad99aa15d95b297fb28d0fd0baa9c21ab5cd..77fa02f2bfcd56a36815199=
-aa2e7987943ea226f
-> > 100644
-> > --- a/net/sched/sch_sfq.c
-> > +++ b/net/sched/sch_sfq.c
-> > @@ -310,7 +310,10 @@ static unsigned int sfq_drop(struct Qdisc *sch,
-> > struct sk_buff **to_free)
-> >                 /* It is difficult to believe, but ALL THE SLOTS HAVE
-> > LENGTH 1. */
-> >                 x =3D q->tail->next;
-> >                 slot =3D &q->slots[x];
-> > -               q->tail->next =3D slot->next;
-> > +               if (slot->next =3D=3D x)
-> > +                       q->tail =3D NULL; /* no more active slots */
-> > +               else
-> > +                       q->tail->next =3D slot->next;
-> >                 q->ht[slot->hash] =3D SFQ_EMPTY_SLOT;
-> >                 goto drop;
-> >         }
-> >
+> > To invert the question: what is the value in keeping the dst?
 >
-> Hi,
+> I guess simplicity defined as "how many English words are needed to
+> explain the semantics".
 >
-> thank you for looking into it.
-> I'll give your patch a try and will also do tests with other qdiscs as we=
-ll when I'm back
-> in office.
+> The semantics I have in mind would be - dst is dropped if (1) proto
+> is changed (this patch), or (2) "CLEAR_DST" flag is explicitly set
+> (future extension).
 >
+> If we drop on encap (which I supposed is the counter proposal)
+> we may end up with: dst is dropped if (1) proto is changed,
+> (2) encap flags are set (1+2 =3D alternative patch), or (3) "CLEAR_DST"
+> flag is explicitly set (future extension).
+>
+> Don't think we can rule out the need for a CLEAR_DST flag as not all
+> re-routings are encaps.
+>
+> But both you and Maciej consider dropping for all encaps more
+> intuitive, so I'll do that in v2 unless someone objects.
+>
+> > The test refers to a nat6to4.bpf.o, but this is not included.
+>
+> I reused an existing BPF prog, it does what we need -
+> it turns a v4 packet into a v6 one :)
 
-I have been using this repro :
+I haven't yet written code like this, so I'm not sure which specific
+helpers would be used, but here's what I'm aware of:
 
-ip netns add lb
+nat46/nat64 translation - obviously the dst should be dropped, as it
+cannot be correct
+- note that the bpf skb change proto helper is not always enough,
+as it always adjusts by 20, but for fragments you need to adjust by 8
+more (ipv4 had frag info straight in the core ipv4 header, ipv6
+requires an extra 8 byte extension header),
+thus our latest Android clat/nat64/nat46 code sometimes calls:
+  bpf_skb_adjust_room(skb, -(__s32)sizeof(struct frag_hdr),
+BPF_ADJ_ROOM_NET, /*flags*/0))
 
-ip link add dev to-lb type veth peer name in-lb netns lb
+(and should also do the reverse +8 in the other direction, but that's
+not yet implemented)
+Anyway in theory this bpf_skb_adjust_room(BPF_ADJ_ROOM_NET) likely
+shouldn't clear dst.
 
-# force qdisc to requeue gso_skb
-ethtool -K to-lb tso off
+ipv4-in-ipv6/ipv6-in-ipv4 decap/encap - drop, cannot be correct
 
-# Enable NAPI
-ip netns exec lb ethtool -K in-lb gro on
+ipv4-in-ipv4/ipv6-in-ipv6 decap/encap - the dst ip is almost always
+different in inner vs outer packet, so again drop seems correct,
+though yeah I guess it could be conditional
 
-ip link set dev to-lb up
-ip -netns lb link set dev in-lb up
+now, what other cases do we have where we need to insert stuff at the
+beginning of the packet (I assume we're not talking about cases where
+we change something at the end)
 
-ip addr add dev to-lb 192.168.20.1/24
-ip -netns lb addr add dev in-lb 192.168.20.2/24
+I can think of 2 more:
 
-tc qdisc replace dev to-lb root sfq limit 100
+(a) forwarding to an interface with a different L2 header size
 
-ip netns exec lb netserver
+specifically I think in Android when we forward (tethering offload)
+from rawip to ether we have to adjust the front of the packet to add
+an ethernet header: bpf_skb_change_head(skb, sizeof(struct ethhdr),
+/*flags*/ 0))
+- in practice, for v4, we just did manual nat44 so the dst is garbage,
+while for v6 we didn't so the dst would in theory still be valid (but
+we immediately bpf_redirect(EGRESS) so dst is also likely useless)
 
-netperf -H 192.168.20.2 -l 100 &
-netperf -H 192.168.20.2 -l 100 &
-netperf -H 192.168.20.2 -l 100 &
-netperf -H 192.168.20.2 -l 100 &
+I think we might unconditionally add the ethernet header when
+forwarding from rawip to rawip as well, because I think the kernel
+then just drops / ignores it when egressing (via bpf_redirect) through
+a rawip interface.
+
+Honestly this stuff is annoying as hell to deal with (unfortunately
+true of bpf in general).
+
+(b) adding/removing some sort of vlan tag / mpls tag / ipv4
+options/ipv6 extension headers / tcp options or something - most of
+these likely should keep the dst
+
+I think this wouldn't use BPF_F_ADJ_ROOM_ENCAP_L3_IPV4 & friends but
+something else, and at least some of these should likely not
+invalidate the dst.
+
+I'm not clear on what all the 'proper' apis are for all these different cas=
+es.
+
+(I thought I had a 3rd case, but I can't remember it any more...)
+
+Hopefully this is helpful?
+
+--
+Maciej =C5=BBenczykowski, Kernel Networking Developer @ Google
 
