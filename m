@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-59854-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59855-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62F13AD00BA
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 12:47:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 388E0AD010F
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 13:11:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95D103B144C
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 10:46:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87A6D3AF12B
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 11:10:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B8612857CF;
-	Fri,  6 Jun 2025 10:46:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8425B286D7E;
+	Fri,  6 Jun 2025 11:11:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="zqPERQUg"
+	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="RgxR09BG"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-bc0a.mail.infomaniak.ch (smtp-bc0a.mail.infomaniak.ch [45.157.188.10])
+Received: from smtp-bc0b.mail.infomaniak.ch (smtp-bc0b.mail.infomaniak.ch [45.157.188.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0CD027FB35
-	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 10:46:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.157.188.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85052748D;
+	Fri,  6 Jun 2025 11:11:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.157.188.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749206796; cv=none; b=Qb1WMbcpVMjOx1TGrh3FVsaUn7Gq/Ie5FjyhSvMt+2FobnE37LXp/9MDxZakD6RNjlbd5L+AEOn9EpCJSaegwSNu/CmIy+L2Q+pZcPrxhWmLUnxK+tMGCFTbTftU04gevUFp0caRi8zPSL+2gNN/jwpzzCzuTwE8tZNHAjYYwtQ=
+	t=1749208265; cv=none; b=o9jMTvlWDFJbKbbmuQUmnwPl3ugY8sGv5DO3LKEzglxWBrmM0dMgVrRE2pt4aPb+Z381JXMtrPP/0atM/HIce2LbdjQl9+Kaa8Rf1jbFa/BTRAy2CIUBmAn5uTFQxca2SdIjMVIKYbBtRpHjbh59T0aw2VjpK690uhOEe+/fSEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749206796; c=relaxed/simple;
-	bh=EdISCY8+Nwj/6Ck2qwx1KqleTaHrkAdcHuOQ931eBqc=;
+	s=arc-20240116; t=1749208265; c=relaxed/simple;
+	bh=HjIlCtToBX0793ETmjSGkQ3kuPJXvm4Zz5or687MsQc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sMqgYSReQjSckn1V9J/da0yf2Qa6hhZJK4pkT9V1QPrFHpAgb/04ArtjPz9SPf5yjRZyHsZqARXCdVX8VyphRBWP3s+8pmlZCBwZ9VhPFaOIX2RN4/hRKc3l7/RCnvD/EGF4w1RX55wNKdHijaIYY03lQUaUJQ8xKn9vmNSAWtg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=zqPERQUg; arc=none smtp.client-ip=45.157.188.10
+	 Content-Type:Content-Disposition:In-Reply-To; b=mNf0u4O8nWERZQqFJXhvYWCJ+ps6LcIzGgYZURlS5HIOtP0Kn9xYC1zjVinfgMIc8LvwFoFnnnXodUy3c/mOGQTHFSEwH3DSadUR6EiRTkcFQB6DWnOT9i8PjRCua/7dCrykjbHa60zNSLa1m2qcZLCuddN6XST+4JHMKJED+bY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=RgxR09BG; arc=none smtp.client-ip=45.157.188.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
-Received: from smtp-3-0001.mail.infomaniak.ch (smtp-3-0001.mail.infomaniak.ch [10.4.36.108])
-	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4bDJ0747jqz5rT;
-	Fri,  6 Jun 2025 12:46:31 +0200 (CEST)
+Received: from smtp-4-0000.mail.infomaniak.ch (smtp-4-0000.mail.infomaniak.ch [10.7.10.107])
+	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4bDJXH3y9mz9Kx;
+	Fri,  6 Jun 2025 13:10:55 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digikod.net;
-	s=20191114; t=1749206791;
-	bh=hiQyTj6n+Gg20Nh1xHG8uksvLeu5UW/Ze/TPfn76o9k=;
+	s=20191114; t=1749208255;
+	bh=GOulkok+KExfCKo8WPt2m9yynYFekTZ9q95jHQcC2jw=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=zqPERQUgAHkRj+EGCmB9c3YgKTMwsZbMGsK/qDMZwD9Lbj13miqcFlVMURYAAubK2
-	 i3B1WOlx1T6ZOUgtjJ7iZXjsqnEa4LKxII8BScUkuboPqOuMTLNxP2K6Xw7639aa52
-	 Jt8of9CfhDl4RPMREdx+2Zl5Z0PPL9Czm1Wrphfo=
-Received: from unknown by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4bDJ062Hb4zhsp;
-	Fri,  6 Jun 2025 12:46:30 +0200 (CEST)
-Date: Fri, 6 Jun 2025 12:46:29 +0200
+	b=RgxR09BGQ3TSIRLg9SVZJ0OuHx5aAwd4k1EnNLr/ue6nMG8BGy54CtP4S9PsaJj4R
+	 JWYTALIIv4FOMs0uOannuNbx8vZDFHs0o8c//quSYFHV7LKlMeV0g4ipq46jKbTGkV
+	 Iq8SrXlPaN5CPev7ZJn6tJrIC4U7JEKYETNxFLp4=
+Received: from unknown by smtp-4-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4bDJXG4l6LzPSt;
+	Fri,  6 Jun 2025 13:10:54 +0200 (CEST)
+Date: Fri, 6 Jun 2025 13:10:54 +0200
 From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
 To: Song Liu <song@kernel.org>
 Cc: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
@@ -52,13 +52,11 @@ Cc: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
 	martin.lau@linux.dev, viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz, 
 	kpsingh@kernel.org, mattbobrowski@google.com, amir73il@gmail.com, repnop@google.com, 
 	jlayton@kernel.org, josef@toxicpanda.com, gnoack@google.com, m@maowtm.org
-Subject: Re: [PATCH v2 bpf-next 2/4] landlock: Use path_walk_parent()
-Message-ID: <20250606.zo5aekae6Da6@digikod.net>
+Subject: Re: [PATCH v2 bpf-next 1/4] namei: Introduce new helper function
+ path_walk_parent()
+Message-ID: <20250606.ayaib4feaGae@digikod.net>
 References: <20250603065920.3404510-1-song@kernel.org>
- <20250603065920.3404510-3-song@kernel.org>
- <20250603.Av6paek5saes@digikod.net>
- <CAPhsuW6J_hDtXZm4MH_OAz=GCpRW0NMM1EXMrJ=nqsTdpf8vcg@mail.gmail.com>
- <CAPhsuW7MtxryseFsHF2xqBFS2UWammJatjf8UxBhytgn_nA4=g@mail.gmail.com>
+ <20250603065920.3404510-2-song@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -67,67 +65,107 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPhsuW7MtxryseFsHF2xqBFS2UWammJatjf8UxBhytgn_nA4=g@mail.gmail.com>
+In-Reply-To: <20250603065920.3404510-2-song@kernel.org>
 X-Infomaniak-Routing: alpha
 
-On Thu, Jun 05, 2025 at 09:47:36AM -0700, Song Liu wrote:
-> On Wed, Jun 4, 2025 at 12:37 PM Song Liu <song@kernel.org> wrote:
-> >
-> > On Tue, Jun 3, 2025 at 6:46 AM Mickaël Salaün <mic@digikod.net> wrote:
-> > >
-> > > Landlock tests with hostfs fail:
-> > >
-> > > ok 126 layout3_fs.hostfs.tag_inode_file
-> > > #  RUN           layout3_fs.hostfs.release_inodes ...
-> > > # fs_test.c:5555:release_inodes:Expected EACCES (13) == test_open(TMP_DIR, O_RDONLY) (0)
-> > >
-> > > This specific test checks that an access to a (denied) mount point over
-> > > an allowed directory is indeed denied.
+On Mon, Jun 02, 2025 at 11:59:17PM -0700, Song Liu wrote:
+> This helper walks an input path to its parent. Logic are added to handle
+> walking across mount tree.
 > 
-> I just realized this only fails on hostfs. AFAICT, hostfs is only used
-> by um. Do we really need this to behave the same on um+hostfs?
-
-Yes, this would be a regression, and in fact it is not related to hostfs
-and it would be a new security bug.
-
-The issue is that the path_walk_parent() doesn't return the parent
-dentry but the underlying mount point if any.  When choose_mountpoint()
-returns true, path_walk_parent() should continue to the following root
-check and potentiall the dget_parent() call.  We need to be careful with
-the path_put() though.
-
-This issue was only spotted by this hostfs test because this one adds a
-rule which is tied to the inode of the mount which is in fact the same
-inode of the mount point because the mount is a bind mount.  I'll send a
-new test that check the same thing but with tmpfs (for convenience, but
-it would be the same for any filesystem).
-
+> This will be used by landlock, and BPF LSM.
 > 
-> Thanks,
-> Song
+> Signed-off-by: Song Liu <song@kernel.org>
+> ---
+>  fs/namei.c            | 52 +++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/namei.h |  2 ++
+>  2 files changed, 54 insertions(+)
 > 
-> >
-> > I am having trouble understanding the test. It appears to me
-> > the newly mounted tmpfs on /tmp is allowed, but accesses to
-> > / and thus mount point /tmp is denied? What would the walk in
-> > is_access_to_paths_allowed look like?
+> diff --git a/fs/namei.c b/fs/namei.c
+> index 4bb889fc980b..7d5bf2bb604f 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -1424,6 +1424,58 @@ static bool choose_mountpoint(struct mount *m, const struct path *root,
+>  	return found;
+>  }
+>  
+> +/**
+> + * path_walk_parent - Walk to the parent of path
+> + * @path: input and output path.
+> + * @root: root of the path walk, do not go beyond this root. If @root is
+> + *        zero'ed, walk all the way to real root.
+> + *
+> + * Given a path, find the parent path. Replace @path with the parent path.
+> + * If we were already at the real root or a disconnected root, @path is
+> + * not changed.
+> + *
+> + * The logic of path_walk_parent() is similar to follow_dotdot(), except
+> + * that path_walk_parent() will continue walking for !path_connected case.
+> + * This effectively means we are walking from disconnectedbind mount to the
+> + * original mount point. If this behavior is not desired, the caller can
+> + * add a check like:
+> + *
+> + *   if (path_walk_parent(&path) && !path_connected(path.mnt, path.dentry)
+> + *           // continue walking
+> + *   else
+> + *           // stop walking
+> + *
+> + * Returns:
+> + *  true  - if @path is updated to its parent.
+> + *  false - if @path is already the root (real root or @root).
+> + */
+> +bool path_walk_parent(struct path *path, const struct path *root)
+> +{
+> +	struct dentry *parent;
+> +
+> +	if (path_equal(path, root))
+> +		return false;
+> +
+> +	if (unlikely(path->dentry == path->mnt->mnt_root)) {
+> +		struct path p;
+> +
+> +		if (!choose_mountpoint(real_mount(path->mnt), root, &p))
+> +			return false;
+> +		path_put(path);
+> +		*path = p;
+> +		return true;
 
-The test checks that a mount is not wrongly identified as the underlying
-mount point.
+It should not return here but continue with the following checks until
+the potential dget_parent() call.
 
-> >
-> > > It's not clear to me the origin of the issue, but it seems to be related
-> > > to choose_mountpoint().
-> > >
-> > > You can run these tests with `check-linux.sh build kselftest` from
-> > > https://github.com/landlock-lsm/landlock-test-tools
-> >
-> > How should I debug this test? printk doesn't seem to work.
+I sent a test to check this issue:
+https://lore.kernel.org/r/20250606110811.211297-1-mic@digikod.net
 
-The console log level is set to warn, so you can use pr_warn().
 
-> >
-> > Thanks,
-> > Song
+> +	}
+> +
+> +	if (unlikely(IS_ROOT(path->dentry)))
+> +		return false;
+> +
+> +	parent = dget_parent(path->dentry);
+> +	dput(path->dentry);
+> +	path->dentry = parent;
+> +	return true;
+> +}
+> +EXPORT_SYMBOL_GPL(path_walk_parent);
+> +
+>  /*
+>   * Perform an automount
+>   * - return -EISDIR to tell follow_managed() to stop and return the path we
+> diff --git a/include/linux/namei.h b/include/linux/namei.h
+> index 5d085428e471..cba5373ecf86 100644
+> --- a/include/linux/namei.h
+> +++ b/include/linux/namei.h
+> @@ -85,6 +85,8 @@ extern int follow_down_one(struct path *);
+>  extern int follow_down(struct path *path, unsigned int flags);
+>  extern int follow_up(struct path *);
+>  
+> +bool path_walk_parent(struct path *path, const struct path *root);
+> +
+>  extern struct dentry *lock_rename(struct dentry *, struct dentry *);
+>  extern struct dentry *lock_rename_child(struct dentry *, struct dentry *);
+>  extern void unlock_rename(struct dentry *, struct dentry *);
+> -- 
+> 2.47.1
+> 
+> 
 
