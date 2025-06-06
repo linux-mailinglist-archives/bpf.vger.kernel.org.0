@@ -1,109 +1,99 @@
-Return-Path: <bpf+bounces-59894-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59895-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98FEEAD071D
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 18:59:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 665F3AD0720
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 19:01:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A3327AA4DD
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 16:58:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF981189C297
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 17:02:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76BF328AAFC;
-	Fri,  6 Jun 2025 16:59:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A648289E12;
+	Fri,  6 Jun 2025 17:01:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pMcwHXVo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gtsMTZx1"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6890B28A1C6;
-	Fri,  6 Jun 2025 16:59:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F311C78F32;
+	Fri,  6 Jun 2025 17:01:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749229144; cv=none; b=i2MPeILpZCy8KPSZN0RVsrk97CqF7RaoUOSQYPOBFlz4s/DdaIFUQW6a5xt/8kJ08ykT5gwORDPYFAyxDkc7zAUcSXvLbH1+UyUIqsQrWXX6C9XFXRxlEg21Ab9HIl+Jz0GbKkoVJVu/CC7YWp8p0m3w1WQQupXocaHWKI5AgLk=
+	t=1749229299; cv=none; b=Kr1XhJguiQ0BH3CGGw/sNrZnz63uG9dlD4YV7UErj7CQMBaG1/4pZhUn0gJFCjCOLnvhLshA55wY1jL4Ilabhy17XyxSOAZwlpeXbLBS/mk8KVhwpDRnw2SB6u7nmQzYMpkYoMyNqwHji8duihZ5k/aoNz++jXVpnNq9LQbMXAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749229144; c=relaxed/simple;
-	bh=nyvr1Ps7hfsjB59J+PLls5tm0y5DvhYk5tNGwvjSVIY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=l2SavXR/SviyI9twRcXY1xKDdg793xZQhbf1fujqz415NEnyfVr+MhFRu3AH0xQHmkeE7alHs4hPkH1DBUHQwfr22DSuYmD6jkEQAJBXFVg3NPjgVLDlPWOZ/oxVdp83zHFMkc81SZ5cDDhvgYQqrSR8jEQa5aVj48zhHegGFxU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pMcwHXVo; arc=none smtp.client-ip=91.218.175.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1749229140;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4W6nyxaAuTdUb1jq+F6lNxI7paZc1KWXJrcEaRmIK6k=;
-	b=pMcwHXVoXVPwn9p7Tk0AGT8HutswanrjzBIkr0iTl7ZvbqbD590n9vnBjVcK/3k+B/bonI
-	3zAuj4cIlaXQfTV8p3PkOJjGH2l/Z4tDLSwUK28wfbQK8c5eUOhgwsrLoppWISjsgiYdYD
-	aWDUpM3I2dIkOsPZcp6egNibMxgpz3Q=
-From: Tao Chen <chen.dylane@linux.dev>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	qmo@kernel.org,
-	jolsa@kernel.org
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Tao Chen <chen.dylane@linux.dev>
-Subject: [PATCH bpf-next  5/5] bpf: Add cookie in fdinfo for raw_tp
-Date: Sat,  7 Jun 2025 00:58:18 +0800
-Message-Id: <20250606165818.3394397-5-chen.dylane@linux.dev>
-In-Reply-To: <20250606165818.3394397-1-chen.dylane@linux.dev>
-References: <20250606165818.3394397-1-chen.dylane@linux.dev>
+	s=arc-20240116; t=1749229299; c=relaxed/simple;
+	bh=zT4sKuFfw4xqA2QcApAwj6XA/t5bPgFmkMq4rQo7XSs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=n5K1ow2rLtwKr4A7psDOO8i80ikNfGi+fdvUuE96FlQp4FMw1Rcc67qLwlRokELa6LY1noAlE/VZTTyU35yo+eXgaRCzm3bp4uPMyQcz2r+Uz7wlXVm3jZah3aLZUZFq6TOYy0efbA0804OV7aZ3et3GqJKtAPNvZ8Mxb4fW+xE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gtsMTZx1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73409C4CEF3;
+	Fri,  6 Jun 2025 17:01:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749229298;
+	bh=zT4sKuFfw4xqA2QcApAwj6XA/t5bPgFmkMq4rQo7XSs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=gtsMTZx1yWC/tSkVqaOgwFKGuQ98lnIMb532AjF6hx/O739rjGGGwIw44DbqR8Std
+	 AjacvuXrKDIQqXRtuK6/t1lR1i76dLmSgUYS4SLBFMHbUxGN5DKfG6WVw3ENVPt4Pn
+	 PUNJb/Q5ytdz5Uizj2kw0aZVxDemf0NyUKxuH2potcyyHefSMwaQN7VD6QyeK80ubn
+	 hNfIfA0/x9S+vzp5s/gysWImrg5i4mK9J6eApn6tAhvOJodIAv33StZLETCvJNBfez
+	 vQReMHkym5yqbnS9zpRezAhcACxvY3saQhzj6Fn0KMUmcotgAIZQcPX0cFhUVpCD1J
+	 KpdhohDVcALzg==
+Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-7c5f720c717so376558385a.0;
+        Fri, 06 Jun 2025 10:01:38 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCU1Zr7RvGKtegjnFt3FOBQFdEZJlD8Vet4j1rQDSze7w+wY++nms/twdD3zTGGBDw+/ai1T8lZ95SPnmpCKvyLpWdY9uuT8@vger.kernel.org, AJvYcCWx1hJaOOZxAyUFo7SEJ6z1arP9iG/sd1vEg0f+36ZRvfWVCwA0GM9Ftr7G/de/SeAWXnFCik5vx1TrEnNc@vger.kernel.org, AJvYcCX38rwhCz0+rHH0EYqecoHQ92YL3GOM1i5DaeeQLpDat0PQku4Nlm0rwrM4RTcy6+3rS6PT3gzV6ECH1MIv@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywr+SMWLuzZDtujfZlPGA0NUXHry1iFuy+YtsG7MxNsZkTGL6Jd
+	jPTZXnlZG8/wgnVPdZtH+YM92M7vDECZlVvZBBhgTaFmKlC0p24870u2RoTZ1/cEVvrMHKjHsRJ
+	UVG3HWx4yp4ZTvLFaq7cvdeF6zMx7wzk=
+X-Google-Smtp-Source: AGHT+IGUP8KmwWsyJVkbFL3ChhSRLJM0hfwN3udKweQ31QmMpDI2+5lcOPPfybMB/iI0kyV9jSgunDkpQrwkzvMsC6c=
+X-Received: by 2002:a05:6214:1d07:b0:6fa:a4b7:c664 with SMTP id
+ 6a1803df08f44-6fb09c63bd2mr51564626d6.22.1749229297515; Fri, 06 Jun 2025
+ 10:01:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250603065920.3404510-1-song@kernel.org> <20250603065920.3404510-2-song@kernel.org>
+ <20250606144058.GW299672@ZenIV>
+In-Reply-To: <20250606144058.GW299672@ZenIV>
+From: Song Liu <song@kernel.org>
+Date: Fri, 6 Jun 2025 10:01:26 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7UeycwNjmm1mH9q1ZhjKLC4Shc0hbZ_o7a5zD2bRMzQQ@mail.gmail.com>
+X-Gm-Features: AX0GCFucxmg5JO3P3a3C0kxsaNoBTalGKKNBxoM4YNJ9bu19AeAlrfXDOWhXvvs
+Message-ID: <CAPhsuW7UeycwNjmm1mH9q1ZhjKLC4Shc0hbZ_o7a5zD2bRMzQQ@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 1/4] namei: Introduce new helper function path_walk_parent()
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, brauner@kernel.org, jack@suse.cz, 
+	kpsingh@kernel.org, mattbobrowski@google.com, amir73il@gmail.com, 
+	repnop@google.com, jlayton@kernel.org, josef@toxicpanda.com, mic@digikod.net, 
+	gnoack@google.com, m@maowtm.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add cookie in fdinfo for raw_tp, the info as follows:
+On Fri, Jun 6, 2025 at 7:41=E2=80=AFAM Al Viro <viro@zeniv.linux.org.uk> wr=
+ote:
+>
+> On Mon, Jun 02, 2025 at 11:59:17PM -0700, Song Liu wrote:
+> > This helper walks an input path to its parent. Logic are added to handl=
+e
+> > walking across mount tree.
+> >
+> > This will be used by landlock, and BPF LSM.
+>
+> Unless I'm misreading that, it does *NOT* walk to parent - it treats
+> step into mountpoint as a separate step.  NAK in that form - it's
+> simply a wrong primitive.
 
-link_type:	raw_tracepoint
-link_id:	31
-prog_tag:	9dfdf8ef453843bf
-prog_id:	32
-tp_name:	sys_enter
-cookie:	23925373020405760
+I think this should be fixed by Micka=C3=ABl's comment. I will send v3 with
+it.
 
-Signed-off-by: Tao Chen <chen.dylane@linux.dev>
----
- kernel/bpf/syscall.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index d6eba1339ad..51ba1a7aa43 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -3654,8 +3654,10 @@ static void bpf_raw_tp_link_show_fdinfo(const struct bpf_link *link,
- 		container_of(link, struct bpf_raw_tp_link, link);
- 
- 	seq_printf(seq,
--		   "tp_name:\t%s\n",
--		   raw_tp_link->btp->tp->name);
-+		   "tp_name:\t%s\n"
-+		   "cookie:\t%llu\n",
-+		   raw_tp_link->btp->tp->name,
-+		   raw_tp_link->cookie);
- }
- 
- static int bpf_copy_to_user(char __user *ubuf, const char *buf, u32 ulen,
--- 
-2.43.0
-
+Thanks,
+Song
 
