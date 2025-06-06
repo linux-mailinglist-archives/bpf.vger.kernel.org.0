@@ -1,223 +1,141 @@
-Return-Path: <bpf+bounces-59902-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59903-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F29CAD078F
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 19:36:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D9ACAD0792
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 19:37:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 918F4189146F
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 17:36:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 186631794DD
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 17:37:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86892289E24;
-	Fri,  6 Jun 2025 17:36:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEA70289E3F;
+	Fri,  6 Jun 2025 17:37:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NwyMUiGt"
+	dkim=pass (2048-bit key) header.d=manifault-com.20230601.gappssmtp.com header.i=@manifault-com.20230601.gappssmtp.com header.b="nj9ce7m+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BC271DF24F
-	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 17:36:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC764289819
+	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 17:37:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749231384; cv=none; b=DuZrAb+rDzd0U/pIyoyNfA7v+F6WUpbrlRP2gdPSWo73KUH+9RxkOteiZswocBgy0uR+8KL0leCEBQxgFPsQBPgDP8NXS9u7tFCllZTL2mfiDBmHoAsOwjC+q6FHDIfRldWHGmQJH53IYNtFPWEOtdtluEBv8LRSK5p8vNA3+5w=
+	t=1749231456; cv=none; b=PkK8KDPZF+bDGQhAVgHWQtiVqHYTaqtyB3DE91MdesUTVJhKcp8zJbK5zj6cQZLiChQMUGl4aQYG0LmbR4MVSMcAEOvyKI23fm4mSZlbpzLdabf0utiy/xYTG80W/VEh5IlADtfXFYXi+Ss0NnRLWmXUspzOD8NiRAtQCtb2h2U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749231384; c=relaxed/simple;
-	bh=ibZ/pXjsXnJfTxrGojJsxb2yIsofXWUoZqqINf7C1mw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EEv4LY9Rp9SkTl07/g4BGvjtJ/EeR0MSzNn4s78vC89xHYuk7t7SC0fbqGPtYRIlbz0f96mLLIyZmH2B+45rjTWrCQgWOeMDvo5gq1VdUm767LGFPLaQTFhX/dL+7iYLiOYCu0SwzgViQ1478gjeIEkmE10WCRoeB+6FKpraZlw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NwyMUiGt; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5f438523d6fso755a12.1
-        for <bpf@vger.kernel.org>; Fri, 06 Jun 2025 10:36:22 -0700 (PDT)
+	s=arc-20240116; t=1749231456; c=relaxed/simple;
+	bh=vPIpEDJIxKfhkTcu+dZoQqd7Um5ZG/Wxw0SY+43oEc8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=f3e7zLphZzlR7OG+DOvo2v++176Nz2Idw2/R7ImKA9AJbhVHC7jr177iO+Y2UKezBGsZzjeQEHad7ord6wY/YULztR4OHJLSA4/r2uAkCPrbi+AXpADHTiuM5+W48R/KqnseuGdWUdQVxP1hFOhF17X7QbK62hmOkNq1OBprdmI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=manifault.com; dkim=pass (2048-bit key) header.d=manifault-com.20230601.gappssmtp.com header.i=@manifault-com.20230601.gappssmtp.com header.b=nj9ce7m+; arc=none smtp.client-ip=209.85.166.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=manifault.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manifault.com
+Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-86d0c598433so71944139f.3
+        for <bpf@vger.kernel.org>; Fri, 06 Jun 2025 10:37:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1749231381; x=1749836181; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=manifault-com.20230601.gappssmtp.com; s=20230601; t=1749231454; x=1749836254; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Rl4rTtpucK40LHC2+iC2J8rO9G79cIPz4dOeykqh3e8=;
-        b=NwyMUiGtzncClqEBKfMRr4bs6UqMkGOOHNfzCeZhvo+6fgkphsRK/YzXwVfk86pMRI
-         4DYhpsJ5u8SG6AtIIH/e/YbRzJzvBuihVEZFwZgdRtK32tyI1x9uNAlgYlr2ppzt909K
-         3Rhwn67C7aOVkCmSg/qCE+yZmuV7wFnYY3QDkC/XqNdXbSxmtRjIgtXJHlm0IruF0wkQ
-         9J2YK4eav0yzDou2nGSOKjT+3AGLqsF866fPjUyzb6OwHjQvx2PWpCmTKUmygqL9xIZN
-         bArjRAGRiL/bhdwrj+DQnrXWTmApQ9kOuChwRlbYHwEh7yafy/fdgeGKCexYeIENz43P
-         uwmQ==
+        bh=hjmgHwU8i86bDRJzXQwmHUhM8F0hM0j8Ly1R4pl+zL0=;
+        b=nj9ce7m+LS9kWr33Xbps7GYPrBhf+zKcynj5dwMCfPAR0zjNQcc6m1BNkKACFCbJFd
+         ZDMuElTUilOvCqtWdizp4+13QNKoG/VGJBst1IBEabO6HBHOB0++xy5UAVzsah7OHg6L
+         HYL6TBWDsbon6Cl2iWF3JP8NWGH/Ac8qGYGctuSSzAFHub9JxHM4C/bldmKGinjhCQHT
+         UFrZwc7LwCAuas1o0nh6GL3GLPYaK8e2PeD6C3KjkmBNxDkBw7nrCYS5YyJQFQPpmGFg
+         wH0sSiLd/Lk6omwMMsXhYz5oXg/0wAOQpoBzNIKNbW20RLYFhDqOJtjJ+phmG4mHsAL6
+         svAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749231381; x=1749836181;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1749231454; x=1749836254;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Rl4rTtpucK40LHC2+iC2J8rO9G79cIPz4dOeykqh3e8=;
-        b=TabuCGcCb8PpMJu+CwYqDhN4PZjhpTYdTJfSyMP7LzFFMnVyKo8MhQmUUa94jfNl6e
-         KlJoFdRR8iSqx3bctWVP3sVyepPAbFzFmrlcHLPMukbkhRFnxp0lGNdIn3diPJOGTEaI
-         yXuErUMB4CF3MfNLOC81fIsIbgRxgwS51vu0rftiSgQ5eWsbki4OMzjR2HY5hjBYfJfH
-         bDAQ8ZqxVBasCwLpUx47WAkRd+bVQzdCjZODlAMWx9aYRiEZVNNh9sQ2yyOga0vsrH9q
-         CzdvH0mjokVeBpueJtXxXhRxW4VYZT9XWBPmYpQfjkE6qhBRqTZruS6Suo/3kaEd5Xbq
-         QYbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUHhK2ewT3F4MFTtXsOEtV/B02Qbi4SsJiSM18aRBj4gA1TVa8ggUSrNvN2xps97nw2dFI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxtDDzp8v+1rbi2CVtHA10Dx5hLLO9VXa2b/SVaLbp+qfBCCnmi
-	tsa4UuHxtIDTCZC7qhg2YXS/dFsmoDWS7ZCF0SKY8tFQUjnrBlptquygH3XElY/7pbiENePyiH/
-	mrgEbAA5t2yIjBxE3HMOkk/CP3xiWPK/4jBYXc0oQ
-X-Gm-Gg: ASbGncsXaWGngjPRd0jAamFP1xANnbDf94fa/5xGzDKKI32dbm4+jGbmfPStVeGeYbF
-	1GJyozku5uP92vmtBLfwDKOjO/ulG0vuOhJE1ASoTDG/0roPOvDx3TPq7lh2S4kRHntaPVwYrTo
-	44N5f2KL3ISxHLuBUDx4w+hiYeuRu+tVqH+qd/DoDQGDH42OJsQAOCQ0pMXams0NfghzH35lTrK
-	10p
-X-Google-Smtp-Source: AGHT+IETGwpaakC/78l7PTlE6xzbDp9M49kfLW27GKe7s70jAX6nYZ1GTzF3AtnRQ3MmA3isFbwSmTpBklREE4ctV+o=
-X-Received: by 2002:a05:6402:175c:b0:606:efc1:949b with SMTP id
- 4fb4d7f45d1cf-607793bc04bmr102799a12.3.1749231380477; Fri, 06 Jun 2025
- 10:36:20 -0700 (PDT)
+        bh=hjmgHwU8i86bDRJzXQwmHUhM8F0hM0j8Ly1R4pl+zL0=;
+        b=HDbph0WUYYWJ7qCG+7gcPNHRMaANfu5K7dJN6vQfQzLuVMQD3LBssYtZOzLQGxz1Oc
+         7GjYz+sU+tU9dPmaMou9zOaquOGEw4B7YpxJj29GsyQ+TN7ABP5/aLKmfSCH62Uo+ZcR
+         WKn1LeXBALoiXPhfRTnwejtxoow0lMUTnBk6IvOVvhjaMaPxdbFdjIFVa+u3+66Ce5ML
+         KvepmvPKRZJ5pBbDaYkVed1jWtFiA2LmxVJGMtrnCMrbg5+Lf8ycFBKOoOLGfxUyZ7mR
+         /zDvXeLwSzIuWlbgbKHGK+OvCCLl+A6UAev7qlclP1BZsfVcjkBqo/zMg9ZXT0hhQ8N5
+         6NUw==
+X-Forwarded-Encrypted: i=1; AJvYcCX9ijrhiL88skRLipd9z18zsgAUL042yFqre5lxbMKOn/6SRoDgUFsAjn2BAO4gyODbjoU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxR5eTuE0J2imhLwJT4lzrbbSt5l0/3UjP9c6yGdto7lmV/BLuK
+	BRawwpfnc9NNECfoK/e5LIL5PedL6hWFhTL3bia4gBPj59KOwr3yf1Poi9aI+rI5IBv+5qM5qsX
+	F6TzGXfG5EfI=
+X-Gm-Gg: ASbGncsgUh0wLXQIb91XjgmsKAByaDONr0sodk4jolELzCYrBucG3Tfornq/nMIFqza
+	bbNfxoee/A9Hh5yxgfAIYId8kVWEHRDB5BIoLTCiyUT9MNciOTgnokBaCpWFWFqDg6PZEGMqa7k
+	c6AS7BWGxLhNJdpMLdoRPhleIcEbW/gNfgY96BRHb7pWfHzd8ycECiT5KXBvraRRDd0d3VgTYdF
+	hk0PY3vzN6G4LBMGRKNTd6vB/rwMfRjSpNo6aKBgegSesnkR5H/pbPr9SkFh5n4KIM2Df7FEfb5
+	tGwvnE2AeWJJbJ3LqF8x0pBZ2WHHnq3o/lcBcCxuxxT3yGzimIfknfD5hlfnAdtJPmWUXQ==
+X-Google-Smtp-Source: AGHT+IEWFeYDgHF2aPKD60TtUWh5UCpHGwpxG1vz1cbPOgZ3p661GBvZaintCfTEI5JlxH7z7nAidw==
+X-Received: by 2002:a05:6e02:1c0f:b0:3dd:a13c:b663 with SMTP id e9e14a558f8ab-3ddce495e82mr44503905ab.14.1749231453912;
+        Fri, 06 Jun 2025 10:37:33 -0700 (PDT)
+Received: from localhost (c-76-141-129-107.hsd1.il.comcast.net. [76.141.129.107])
+        by smtp.gmail.com with UTF8SMTPSA id 8926c6da1cb9f-500df585606sm529431173.64.2025.06.06.10.37.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Jun 2025 10:37:33 -0700 (PDT)
+Date: Fri, 6 Jun 2025 12:37:32 -0500
+From: David Vernet <void@manifault.com>
+To: Dave Thaler <dthaler1968@googlemail.com>
+Cc: 'Eslam Khafagy' <eslam.medhat1993@gmail.com>, ast@kernel.org, 
+	linux-doc@vger.kernel.org, skhan@linuxfoundation.org, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next] Documentation: Fix spelling mistake.
+Message-ID: <nlb4qwgyrx3iyw3tzy2t7f2t5z77k7rskqusfwfnh3aa6vif7x@zcdkq5tjjqt3>
+References: <20250606100511.368450-1-eslam.medhat1993@gmail.com>
+ <04a101dbd6f6$2635cac0$72a16040$@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250604210604.257036-1-kuba@kernel.org> <CANP3RGfRaYwve_xgxH6Tp2zenzKn2-DjZ9tg023WVzfdJF3p_w@mail.gmail.com>
- <20250605062234.1df7e74a@kernel.org> <CANP3RGc=U4g7aGfX9Hmi24FGQ0daBXLVv_S=Srk288x57amVDg@mail.gmail.com>
- <20250605070131.53d870f6@kernel.org> <684231d3bb907_208a5f2945f@willemb.c.googlers.com.notmuch>
- <20250605173142.1c370506@kernel.org> <CANP3RGfXNrL7b+BPUCPc_=iiExtxZVxLhpQR=vyzgksuuLYkeA@mail.gmail.com>
- <20250606101106.133cb314@kernel.org>
-In-Reply-To: <20250606101106.133cb314@kernel.org>
-From: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
-Date: Fri, 6 Jun 2025 19:36:09 +0200
-X-Gm-Features: AX0GCFtsFMbc2iPM7V7_jO6OBxXtwW3waSVt6NewQZvFmRU11Bll8cN36Dp-3bU
-Message-ID: <CANP3RGdcR_5WfHRF1NtzMZL3+44nC7wfJQOa+nt2qXgcOWKdBg@mail.gmail.com>
-Subject: Re: [PATCH net] net: clear the dst when changing skb protocol
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, davem@davemloft.net, 
-	netdev@vger.kernel.org, edumazet@google.com, pabeni@redhat.com, 
-	andrew+netdev@lunn.ch, horms@kernel.org, martin.lau@linux.dev, 
-	daniel@iogearbox.net, john.fastabend@gmail.com, eddyz87@gmail.com, 
-	sdf@fomichev.me, haoluo@google.com, willemb@google.com, 
-	william.xuanziyang@huawei.com, alan.maguire@oracle.com, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="k3ir7k5vvyhxzszp"
+Content-Disposition: inline
+In-Reply-To: <04a101dbd6f6$2635cac0$72a16040$@gmail.com>
+User-Agent: NeoMutt/20250510-dirty
+
+
+--k3ir7k5vvyhxzszp
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next] Documentation: Fix spelling mistake.
+MIME-Version: 1.0
 
-On Fri, Jun 6, 2025 at 7:11=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wro=
-te:
->
-> On Fri, 6 Jun 2025 11:40:31 +0200 Maciej =C5=BBenczykowski wrote:
-> > Hopefully this is helpful?
->
-> So IIUC this is what we should do?
-> Cover the cases where we are 99% sure dropping dst is right without
-> being overeager ?
->
-> ---->8-----
->
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 327ca73f9cd7..d5917d6446f2 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -3401,18 +3401,24 @@ BPF_CALL_3(bpf_skb_change_proto, struct sk_buff *=
-, skb, __be16, proto,
->          * care of stores.
->          *
->          * Currently, additional options and extension header space are
->          * not supported, but flags register is reserved so we can adapt
->          * that. For offloads, we mark packet as dodgy, so that headers
->          * need to be verified first.
->          */
->         ret =3D bpf_skb_proto_xlat(skb, proto);
-> +       if (ret)
-> +               return ret;
-> +
->         bpf_compute_data_pointers(skb);
-> -       return ret;
-> +       if (skb_valid_dst(skb))
-> +               skb_dst_drop(skb);
-> +
-> +       return 0;
->  }
->
->  static const struct bpf_func_proto bpf_skb_change_proto_proto =3D {
->         .func           =3D bpf_skb_change_proto,
->         .gpl_only       =3D false,
->         .ret_type       =3D RET_INTEGER,
->         .arg1_type      =3D ARG_PTR_TO_CTX,
->         .arg2_type      =3D ARG_ANYTHING,
-> @@ -3549,16 +3555,19 @@ static int bpf_skb_net_grow(struct sk_buff *skb, =
-u32 off, u32 len_diff,
->
->                 /* Match skb->protocol to new outer l3 protocol */
->                 if (skb->protocol =3D=3D htons(ETH_P_IP) &&
->                     flags & BPF_F_ADJ_ROOM_ENCAP_L3_IPV6)
->                         skb->protocol =3D htons(ETH_P_IPV6);
->                 else if (skb->protocol =3D=3D htons(ETH_P_IPV6) &&
->                          flags & BPF_F_ADJ_ROOM_ENCAP_L3_IPV4)
->                         skb->protocol =3D htons(ETH_P_IP);
-> +
-> +               if (skb_valid_dst(skb))
-> +                       skb_dst_drop(skb);
->         }
->
->         if (skb_is_gso(skb)) {
->                 struct skb_shared_info *shinfo =3D skb_shinfo(skb);
->
->                 /* Header must be checked, and gso_segs recomputed. */
->                 shinfo->gso_type |=3D gso_type;
->                 shinfo->gso_segs =3D 0;
-> @@ -3576,16 +3585,17 @@ static int bpf_skb_net_grow(struct sk_buff *skb, =
-u32 off, u32 len_diff,
->         }
->
->         return 0;
->  }
->
->  static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff=
-,
->                               u64 flags)
->  {
-> +       bool decap =3D flags & BPF_F_ADJ_ROOM_DECAP_L3_MASK;
->         int ret;
->
->         if (unlikely(flags & ~(BPF_F_ADJ_ROOM_FIXED_GSO |
->                                BPF_F_ADJ_ROOM_DECAP_L3_MASK |
->                                BPF_F_ADJ_ROOM_NO_CSUM_RESET)))
->                 return -EINVAL;
->
->         if (skb_is_gso(skb) && !skb_is_gso_tcp(skb)) {
-> @@ -3598,23 +3608,28 @@ static int bpf_skb_net_shrink(struct sk_buff *skb=
-, u32 off, u32 len_diff,
->         ret =3D skb_unclone(skb, GFP_ATOMIC);
->         if (unlikely(ret < 0))
->                 return ret;
->
->         ret =3D bpf_skb_net_hdr_pop(skb, off, len_diff);
->         if (unlikely(ret < 0))
->                 return ret;
->
-> -       /* Match skb->protocol to new outer l3 protocol */
-> -       if (skb->protocol =3D=3D htons(ETH_P_IP) &&
-> -           flags & BPF_F_ADJ_ROOM_DECAP_L3_IPV6)
-> -               skb->protocol =3D htons(ETH_P_IPV6);
-> -       else if (skb->protocol =3D=3D htons(ETH_P_IPV6) &&
-> -                flags & BPF_F_ADJ_ROOM_DECAP_L3_IPV4)
-> -               skb->protocol =3D htons(ETH_P_IP);
-> +       if (decap) {
-> +               /* Match skb->protocol to new outer l3 protocol */
-> +               if (skb->protocol =3D=3D htons(ETH_P_IP) &&
-> +                   flags & BPF_F_ADJ_ROOM_DECAP_L3_IPV6)
-> +                       skb->protocol =3D htons(ETH_P_IPV6);
-> +               else if (skb->protocol =3D=3D htons(ETH_P_IPV6) &&
-> +                        flags & BPF_F_ADJ_ROOM_DECAP_L3_IPV4)
-> +                       skb->protocol =3D htons(ETH_P_IP);
-> +
-> +               if (skb_valid_dst(skb))
-> +                       skb_dst_drop(skb);
-> +       }
->
->         if (skb_is_gso(skb)) {
->                 struct skb_shared_info *shinfo =3D skb_shinfo(skb);
->
->                 /* Due to header shrink, MSS can be upgraded. */
->                 if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO))
->                         skb_increase_gso_size(shinfo, len_diff);
->
+On Fri, Jun 06, 2025 at 08:17:41AM -0700, Dave Thaler wrote:
+> > -----Original Message-----
+> > From: Eslam Khafagy <eslam.medhat1993@gmail.com>
+> > Sent: Friday, June 6, 2025 3:05 AM
+> > To: void@manifault.com; ast@kernel.org
+> > Cc: linux-doc@vger.kernel.org; skhan@linuxfoundation.org;
+> bpf@vger.kernel.org;
+> > Eslam Khafagy <eslam.medhat1993@gmail.com>
+> > Subject: [PATCH bpf-next] Documentation: Fix spelling mistake.
+> >=20
+> > Fix typo "desination =3D> destination"
+> > in file
+> > Documentation/bpf/standardization/instruction-set.rst
+> >=20
+> > Signed-off-by: Eslam Khafagy <eslam.medhat1993@gmail.com>
 
-This looks reasonable to me... not that I feel very qualified to make
-that statement ;-)
+Acked-by: David Vernet <void@manifault.com>
+
+> However the phrase "dividing -1" is one I find confusing.  E.g.,
+> "INT_MIN dividing -1" sounds like "-1 / INT_MIN" rather than the inverse.
+> Perhaps "divided by" instead of "dividing" assuming the inverse is meant.
+
++1, probably worth fixing in a follow-on diff
+
+--k3ir7k5vvyhxzszp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCaEMnXAAKCRBZ5LhpZcTz
+ZDuHAQDW8/3XFM2RbdM24rGGM4R9Zkq8guM4rEpeulA7x2GllAEAzHxglTp3OZoS
+E4RHfjMtOSFTIjMqhsGUXgg31cZ7gg8=
+=p148
+-----END PGP SIGNATURE-----
+
+--k3ir7k5vvyhxzszp--
 
