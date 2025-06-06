@@ -1,131 +1,123 @@
-Return-Path: <bpf+bounces-59822-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59823-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 773B0ACFB30
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 04:18:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5A8FACFB43
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 04:31:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22FDF7A911C
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 02:16:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4031718985C1
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 02:31:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFE053F9D2;
-	Fri,  6 Jun 2025 02:18:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6355C3B1A4;
+	Fri,  6 Jun 2025 02:31:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xin/XJhp"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="w+6KgyMH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A61DB5C96
-	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 02:18:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A622029A9
+	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 02:31:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749176282; cv=none; b=l3f99fj8VDvDo6dT4+u4mhP8t9Waqb6nkv4Uc1vaxHl0bIb5gUwuadN8JU3IHig5ZgZY/26Swb1GfJTQSVwJ7wRWvjuCUgsUG6XMKVAgj+2CFID8dEjqQZKHTSiK53HxBuY1ei+Cv2b+ZVwMXfxsn32pkIyokB4+0fqnJq4h0QU=
+	t=1749177095; cv=none; b=LGh8/izssjEn2KOMOPXBdY/4JYSL+EkiY5O9aNwJp2hoqxroQL/ep3RHTo+Kuur8UfHwKCudjfee2Sx5Hr66eQawl/XYfCqrxCFZdFRTmZv8cXnBZKVuCSJNxMTbuw4Mpk3VcqBdfj7fxy8p5Bz2+pbklU8YXpWRRDHEKRje92Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749176282; c=relaxed/simple;
-	bh=uvOhobty7kNB2sXa+NRz6orLutA7gq+4/Pm9CjdotaQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sEwEDbHqsp5axVoq3C2ssCFaImJ2IooNDc+9OjMQ9sd5GHAHZxtzB3QO8yz0Rd37KSYizFceBK4LsEYS4Pvua34JxbK3xyRi6GHSj/ukgT/H/R3qOrq3Ap/eaq4uu3jq/TqfVFZPpZReUltOibHgsi+FHEI3BakzyqG6ZE+GSVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xin/XJhp; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3a528243636so977783f8f.3
-        for <bpf@vger.kernel.org>; Thu, 05 Jun 2025 19:18:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749176279; x=1749781079; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3g0sqL8IG2IRshvufeKVQAfAmiWFqLWOe7WcG6UXXoY=;
-        b=Xin/XJhp+DrwdoO/jP1VNg80GD3hzZFf+VnhoM2N7NxOOlyUOEBI7BnR+l46SFiswd
-         dXRew07r0yD+katw5W+/clO+Lwpu+a85xgf1AQaynCoBAHeLvXYNU7goY+++SVAgESC8
-         Pd47nXOCZZJd0gxXeDGnCSnBYeEEFKvGy1ZRzlHoNlWAaSawS5NxDBLSiX5BBG4dkKM7
-         o7SE2xNubUZpOxORLZiN26eF3c2atcLE8KxIJNqYM4wZDLSQ6yBB/HtLVn8zfxHbMuBT
-         xdjUGefvUE157iGpdXT6DPKEWDXA/VVPMhwpxfEAPRfv+QeKrfZtGuWRF6sHCG6s6g1Y
-         I6Hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749176279; x=1749781079;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3g0sqL8IG2IRshvufeKVQAfAmiWFqLWOe7WcG6UXXoY=;
-        b=vD0LBTgNpm6YLw/GDZnWqzhpGtsGpmf/wglin6aRUoPezQifGWHNC5tta+KJ/4pYGm
-         1SrtN5GDNvRzs6p98snSoJa0Zo1l/z6TTSiZaVggormGjILi6niJP1321dVNOZQxx9pv
-         1Im8HkSkU+qRh0bQN7GKQS1sy910VFsskWKF+HIkYOH72rjMGWhf4kyo7tUr3kFs1HVp
-         XBqdf5KaEMi4V8d/a8PYiodVSIEtLXvp/dvPd10KayTnU0yo5DyN4nR102mMNv56BnT3
-         /DirXp4IKKLU608gvT3zwGPuLEY9LfVkthWybR+ZS5K/Pps5JBrfhuy8FMSKs2QUgEHj
-         B5dg==
-X-Gm-Message-State: AOJu0YyeLOxEatPlNZIc+INSMRKtWycbdLJ6eof9wYuNCu4/7hBzjKU/
-	oriCWHkerjc9Qzadm81l4utZ/n1M9MSv2wFeBu7zd6R71nUeApQwtG7bvyHDBnwyp1UcFRE6GX0
-	Wl+EAKZtIjwySEHKjzoZn4jFjixEL8lY=
-X-Gm-Gg: ASbGncvUl8zeQ2s9BmaPmyUc3ggcBiPnmlCWrmSZMSphBp0lINwH16I3R3MgijVcCmV
-	qyLdlHVPMtEF07uQxpal0xFpB6CqxScV1as0zMA7RTYDPlEH7wtPsN9BmCuMfJdVZcfBmCgTt8P
-	aaMMyXOkBVtjzilKkMTs//IxQd14AXFPadfLRXxOUuZDaQrifJJWTuZMA9ri5na0QGj2dbqq1d
-X-Google-Smtp-Source: AGHT+IFa/Zq4v9+2gWWEnW5m2/DVWjKOrZAnZGZXkQtjTNTsDIpGLSEyXtyPkfJVzR60U4D05zc8pqF9ScKFvD3e97o=
-X-Received: by 2002:a05:6000:18a5:b0:3a4:f6f1:faef with SMTP id
- ffacd0b85a97d-3a53188e4acmr1236366f8f.32.1749176278704; Thu, 05 Jun 2025
- 19:17:58 -0700 (PDT)
+	s=arc-20240116; t=1749177095; c=relaxed/simple;
+	bh=NHbJRMovU5g1h1phG6fHk9x/84oGG3tK+HK1g+xz/uU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=o3rGTPV+BUzZMm+XfyXM1LKcO6JtsXrRIFVCS5MvLKNqlFeob5vDKHUB2YKLAaFwojLVptnOoL5EZ2uQsZumu4oqVIxm5pVX9A05CKy/6CaaawCo+2wcPpH2ROPKnPA2NLgxcWQZcYDARKT4DtP2PHApT7Cxp+KVCsgk2UGuoEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=w+6KgyMH; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <29d26dea-a0c1-4b1d-adf5-6161c4b16c0d@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1749177088;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aaVf2/WsdO7AkFVReBhXK3K/lsQylWvH/nAD0ji5RbE=;
+	b=w+6KgyMHLmbfykr6belYApv97m3vg6x8PktJwYUoVSdbsyV7dxs71UUiGd69gjYyFL4bCp
+	LgV09goKUHkelW7RmTjxjysj/rZMTMGMxRzqk7DKfCufLfSPLE74mZBZauIq2BCekkUnRA
+	XFneJ4rzQAQ/ehA7V+FmXNGb27dWspk=
+Date: Fri, 6 Jun 2025 10:31:15 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250605230609.1444980-1-eddyz87@gmail.com> <20250605230609.1444980-3-eddyz87@gmail.com>
- <8bf346133b103ee586f7ffd1a47572f9ee000704.camel@gmail.com>
-In-Reply-To: <8bf346133b103ee586f7ffd1a47572f9ee000704.camel@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 5 Jun 2025 19:17:46 -0700
-X-Gm-Features: AX0GCFveGPPwT6plWD6Thv0zfvDRIFDgdfg-jJ6IJ1-_fTaK54OkfHWz74mc3HY
-Message-ID: <CAADnVQKsfQSM76q88o38GboUrSuts9xEYAMZ=36AUCcrwG34Jg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 2/2] veristat: memory accounting for bpf programs
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Kernel Team <kernel-team@fb.com>, 
-	Yonghong Song <yonghong.song@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next] bpf: Add show_fdinfo for perf_event
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250604163723.3175258-1-chen.dylane@linux.dev>
+ <aEIR8SBXrV9PgQ0L@krava>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Tao Chen <chen.dylane@linux.dev>
+In-Reply-To: <aEIR8SBXrV9PgQ0L@krava>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Jun 5, 2025 at 6:04=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
- wrote:
->
-> On Thu, 2025-06-05 at 16:06 -0700, Eduard Zingerman wrote:
->
-> [...]
->
-> > +/*
-> > + * Enters new cgroup namespace and mounts cgroupfs at /tmp/veristat-cg=
-roup-mount-XXXXXX,
-> > + * enables "memory" controller for the root cgroup.
-> > + */
-> > +static int mount_cgroupfs(void)
-> > +{
-> > +     char buf[PATH_MAX + 1];
-> > +     int err;
-> > +
-> > +     env.memory_peak_fd =3D -1;
-> > +
-> > +     err =3D unshare(CLONE_NEWCGROUP);
-> > +     if (err < 0) {
-> > +             err =3D log_errno("unshare(CLONE_NEWCGROUP)");
-> > +             goto err_out;
-> > +     }
->
-> The `unshare` call is useless. I thought it would grant me a new
-> hierarchy with separate cgroup.subtree_control in the root.
-> But that's now how things work, hierarchy is shared across namespaces.
-> I'll drop this call and just complain if "memory" controller is not enabl=
-ed.
->
-> The "mount" part can remain, I use it to avoid searching for cgroupfs
-> mount point. Alternatively I can inspect /proc/self/mountinfo and
-> complain if cgroupfs is not found. Please let me know which way is
-> preferred.
+在 2025/6/6 05:53, Jiri Olsa 写道:
+> On Thu, Jun 05, 2025 at 12:37:22AM +0800, Tao Chen wrote:
+> 
+> SNIP
+> 
+>> +static void bpf_perf_link_fdinfo_uprobe(const struct perf_event *event,
+>> +					struct seq_file *seq)
+>> +{
+>> +	const char *name;
+>> +	int err;
+>> +	u32 prog_id, type;
+>> +	u64 offset, addr;
+>> +	unsigned long missed;
+>> +
+>> +	err = bpf_get_perf_event_info(event, &prog_id, &type, &name,
+>> +				      &offset, &addr, &missed);
+> 
+> hi,
+> addr now gets ref_ctr_offset:
+>    823153334042 bpf: Add support to retrieve ref_ctr_offset for uprobe perf link
+> 
+> so let's display that
+> 
 
-I would keep unshare and mount,
-and if possible share the code with setup_cgroup_environment()
-from cgroup_helpers.c
+will add it in v2, thanks.
+
+> thanks,
+> jirka
+> 
+> 
+> 
+>> +	if (err)
+>> +		return;
+>> +
+>> +	if (type == BPF_FD_TYPE_URETPROBE)
+>> +		type = BPF_PERF_EVENT_URETPROBE;
+>> +	else
+>> +		type = BPF_PERF_EVENT_UPROBE;
+>> +
+>> +	seq_printf(seq,
+>> +		   "name:\t%s\n"
+>> +		   "offset:\t%llu\n"
+>> +		   "event_type:\t%u\n"
+>> +		   "cookie:\t%llu\n",
+>> +		   name, offset, type, event->bpf_cookie);
+>> +
+>> +}
+>>   #endif
+>>   
+> 
+> SNIP
+
+
+-- 
+Best Regards
+Tao Chen
 
