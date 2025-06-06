@@ -1,169 +1,223 @@
-Return-Path: <bpf+bounces-59901-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59902-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3365AD074D
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 19:20:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F29CAD078F
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 19:36:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 708373AEF7A
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 17:19:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 918F4189146F
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 17:36:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BC9E289E29;
-	Fri,  6 Jun 2025 17:19:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86892289E24;
+	Fri,  6 Jun 2025 17:36:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RlrFKfFr"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NwyMUiGt"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C527288CA0
-	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 17:19:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BC271DF24F
+	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 17:36:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749230389; cv=none; b=Gq7Y1M527pWX+wwlzHXa+NA9XZxeUd/ODtOjucYvhVa2tGEh5GCL31oxobUuAkbdlv1iMbrtsfa6FsFIKdezcR5gPzR5OTR5BnBNX+DlgHClFDsNUMq2eYn6XmbHDcL7StZVZLQXxP+h2Uy46zcJmd9r8tEX+CAyWtrrAUzIaCM=
+	t=1749231384; cv=none; b=DuZrAb+rDzd0U/pIyoyNfA7v+F6WUpbrlRP2gdPSWo73KUH+9RxkOteiZswocBgy0uR+8KL0leCEBQxgFPsQBPgDP8NXS9u7tFCllZTL2mfiDBmHoAsOwjC+q6FHDIfRldWHGmQJH53IYNtFPWEOtdtluEBv8LRSK5p8vNA3+5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749230389; c=relaxed/simple;
-	bh=kgQ6NZHf48OXBh/kWi1nyRh0LMF+Cpmxi3mlN/qCjT4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kSSTZggQ3wqbFcnkr1WcaU2xyuyFe4NxGlAjaPHG3UhwtHAUI78rrkkUBbsNpmOhZJq3nQEMrMcBXGhNeXDDXYQwuSzMUTnS7ipu8msK9F/OkHPL4wouj1YVM5svPNs6auNDO5pgUHaW3lnEBz6Oqk3f3OqqMz95dxRQx1L6aEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RlrFKfFr; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <766f97fa-0b28-4dcd-ba49-3adee4fe2e80@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1749230385;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9/gQb1TkrMP9mU3dCN1P6thZzFneio0TO0TZ5+pF5tk=;
-	b=RlrFKfFrUh88LzeMPA3NT9XYPTgKY0czPQsUtvq25YThiz49izLOgUowzuI9noS//p/LUf
-	NJglizIeTW6Qz96QsOysdSJTuD89Yt5VNc7B7pv1gNJsvBJS/pWw7mH8CwFD/F3vhua70p
-	BhNsNTUqVWbwNUCWiMvN4CtOMgUSFNM=
-Date: Fri, 6 Jun 2025 10:19:37 -0700
+	s=arc-20240116; t=1749231384; c=relaxed/simple;
+	bh=ibZ/pXjsXnJfTxrGojJsxb2yIsofXWUoZqqINf7C1mw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EEv4LY9Rp9SkTl07/g4BGvjtJ/EeR0MSzNn4s78vC89xHYuk7t7SC0fbqGPtYRIlbz0f96mLLIyZmH2B+45rjTWrCQgWOeMDvo5gq1VdUm767LGFPLaQTFhX/dL+7iYLiOYCu0SwzgViQ1478gjeIEkmE10WCRoeB+6FKpraZlw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NwyMUiGt; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5f438523d6fso755a12.1
+        for <bpf@vger.kernel.org>; Fri, 06 Jun 2025 10:36:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1749231381; x=1749836181; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Rl4rTtpucK40LHC2+iC2J8rO9G79cIPz4dOeykqh3e8=;
+        b=NwyMUiGtzncClqEBKfMRr4bs6UqMkGOOHNfzCeZhvo+6fgkphsRK/YzXwVfk86pMRI
+         4DYhpsJ5u8SG6AtIIH/e/YbRzJzvBuihVEZFwZgdRtK32tyI1x9uNAlgYlr2ppzt909K
+         3Rhwn67C7aOVkCmSg/qCE+yZmuV7wFnYY3QDkC/XqNdXbSxmtRjIgtXJHlm0IruF0wkQ
+         9J2YK4eav0yzDou2nGSOKjT+3AGLqsF866fPjUyzb6OwHjQvx2PWpCmTKUmygqL9xIZN
+         bArjRAGRiL/bhdwrj+DQnrXWTmApQ9kOuChwRlbYHwEh7yafy/fdgeGKCexYeIENz43P
+         uwmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749231381; x=1749836181;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Rl4rTtpucK40LHC2+iC2J8rO9G79cIPz4dOeykqh3e8=;
+        b=TabuCGcCb8PpMJu+CwYqDhN4PZjhpTYdTJfSyMP7LzFFMnVyKo8MhQmUUa94jfNl6e
+         KlJoFdRR8iSqx3bctWVP3sVyepPAbFzFmrlcHLPMukbkhRFnxp0lGNdIn3diPJOGTEaI
+         yXuErUMB4CF3MfNLOC81fIsIbgRxgwS51vu0rftiSgQ5eWsbki4OMzjR2HY5hjBYfJfH
+         bDAQ8ZqxVBasCwLpUx47WAkRd+bVQzdCjZODlAMWx9aYRiEZVNNh9sQ2yyOga0vsrH9q
+         CzdvH0mjokVeBpueJtXxXhRxW4VYZT9XWBPmYpQfjkE6qhBRqTZruS6Suo/3kaEd5Xbq
+         QYbQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUHhK2ewT3F4MFTtXsOEtV/B02Qbi4SsJiSM18aRBj4gA1TVa8ggUSrNvN2xps97nw2dFI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxtDDzp8v+1rbi2CVtHA10Dx5hLLO9VXa2b/SVaLbp+qfBCCnmi
+	tsa4UuHxtIDTCZC7qhg2YXS/dFsmoDWS7ZCF0SKY8tFQUjnrBlptquygH3XElY/7pbiENePyiH/
+	mrgEbAA5t2yIjBxE3HMOkk/CP3xiWPK/4jBYXc0oQ
+X-Gm-Gg: ASbGncsXaWGngjPRd0jAamFP1xANnbDf94fa/5xGzDKKI32dbm4+jGbmfPStVeGeYbF
+	1GJyozku5uP92vmtBLfwDKOjO/ulG0vuOhJE1ASoTDG/0roPOvDx3TPq7lh2S4kRHntaPVwYrTo
+	44N5f2KL3ISxHLuBUDx4w+hiYeuRu+tVqH+qd/DoDQGDH42OJsQAOCQ0pMXams0NfghzH35lTrK
+	10p
+X-Google-Smtp-Source: AGHT+IETGwpaakC/78l7PTlE6xzbDp9M49kfLW27GKe7s70jAX6nYZ1GTzF3AtnRQ3MmA3isFbwSmTpBklREE4ctV+o=
+X-Received: by 2002:a05:6402:175c:b0:606:efc1:949b with SMTP id
+ 4fb4d7f45d1cf-607793bc04bmr102799a12.3.1749231380477; Fri, 06 Jun 2025
+ 10:36:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 0/4] selftests/bpf: Fix a few test failures with
- arm64 64KB page
-To: Yonghong Song <yonghong.song@linux.dev>,
- Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
-References: <20250606032309.444401-1-yonghong.song@linux.dev>
- <CAEf4Bzb+rPo6bfYe71vOzAsqQb4JM6Gu-Hi66qPj0ioF=PFF9g@mail.gmail.com>
- <8ff0934e-3073-4535-9ec1-f9ee1379ff4e@linux.dev>
- <9e9d08a4-6e27-4cab-959d-e730cacd75f4@linux.dev>
- <dc7f1234-598e-46a5-afd0-a0de8fba3de9@linux.dev>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-In-Reply-To: <dc7f1234-598e-46a5-afd0-a0de8fba3de9@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250604210604.257036-1-kuba@kernel.org> <CANP3RGfRaYwve_xgxH6Tp2zenzKn2-DjZ9tg023WVzfdJF3p_w@mail.gmail.com>
+ <20250605062234.1df7e74a@kernel.org> <CANP3RGc=U4g7aGfX9Hmi24FGQ0daBXLVv_S=Srk288x57amVDg@mail.gmail.com>
+ <20250605070131.53d870f6@kernel.org> <684231d3bb907_208a5f2945f@willemb.c.googlers.com.notmuch>
+ <20250605173142.1c370506@kernel.org> <CANP3RGfXNrL7b+BPUCPc_=iiExtxZVxLhpQR=vyzgksuuLYkeA@mail.gmail.com>
+ <20250606101106.133cb314@kernel.org>
+In-Reply-To: <20250606101106.133cb314@kernel.org>
+From: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+Date: Fri, 6 Jun 2025 19:36:09 +0200
+X-Gm-Features: AX0GCFtsFMbc2iPM7V7_jO6OBxXtwW3waSVt6NewQZvFmRU11Bll8cN36Dp-3bU
+Message-ID: <CANP3RGdcR_5WfHRF1NtzMZL3+44nC7wfJQOa+nt2qXgcOWKdBg@mail.gmail.com>
+Subject: Re: [PATCH net] net: clear the dst when changing skb protocol
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, davem@davemloft.net, 
+	netdev@vger.kernel.org, edumazet@google.com, pabeni@redhat.com, 
+	andrew+netdev@lunn.ch, horms@kernel.org, martin.lau@linux.dev, 
+	daniel@iogearbox.net, john.fastabend@gmail.com, eddyz87@gmail.com, 
+	sdf@fomichev.me, haoluo@google.com, willemb@google.com, 
+	william.xuanziyang@huawei.com, alan.maguire@oracle.com, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 6/6/25 10:03 AM, Yonghong Song wrote:
-> 
-> 
-> On 6/6/25 9:49 AM, Ihor Solodrai wrote:
->> On 6/6/25 9:43 AM, Yonghong Song wrote:
->>>
->>>
->>> On 6/6/25 9:30 AM, Andrii Nakryiko wrote:
->>>> On Thu, Jun 5, 2025 at 8:23 PM Yonghong Song 
->>>> <yonghong.song@linux.dev> wrote:
->>>>> My local arm64 host has 64KB page size and the VM to run test_progs
->>>>> also has 64KB page size. There are a few self tests assuming 4KB page
->>>>> and hence failed in my envorinment. Patch 1 tries to reduce long 
->>>>> assert
->>>> typo: environment
->>>>
->>>>> logs when tail failed. Patches 2-4 fixed three selftest failures.
->>>> How come our BPF CI doesn't catch this on aarch64?.. Ihor, any 
->>>> thoughts?
->>>
->>> In CI for aarch64, the page size is 4KB. For example, for this link:
->>>
->>> https://github.com/kernel-patches/bpf/actions/runs/15482212552/ 
->>> job/43590176563?pr=9053
->>>
->>> Find the kconfig, and we have
->>>
->>>    CONFIG_ARM64_4K_PAGES=y
->>>    # CONFIG_ARM64_16K_PAGES is not set
->>>    # CONFIG_ARM64_64K_PAGES is not set
->>>
->>> and for 4K page, all these tests are fine, but not for 64K page.
->>
->> Ah right, I just realized the host pagesize doesn't matter, the kernel
->> we are running tests against needs to be re-compiled with the right
->> config.
-> 
-> Actually, the host pagesize matters too.
-> 
-> For example, for trace_printk.lskel.h which is used to build bpf binary at
-> an aarch64 host and that aarch64 host is 64KB page.
-> In trace_printk.lskel.h, we have
->     ...
->     skel->bss = skel_finalize_map_data(&skel->maps.bss.initial_value,
->         65536, PROT_READ | PROT_WRITE, skel->maps.bss.map_fd);
->     ...
-> 
-> Note that the number '65536' is used here to do mmap.
-> 
-> For an x86 host, the number will be 4096 (4KB) instead of 64KB.
-> 
-> For this bpf prog on aarch64, if the VM has page size 4KB,
-> something could go wrong.
-> 
-> So the best is to have the same page size for host and VM for selftests.
+On Fri, Jun 6, 2025 at 7:11=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wro=
+te:
+>
+> On Fri, 6 Jun 2025 11:40:31 +0200 Maciej =C5=BBenczykowski wrote:
+> > Hopefully this is helpful?
+>
+> So IIUC this is what we should do?
+> Cover the cases where we are 99% sure dropping dst is right without
+> being overeager ?
+>
+> ---->8-----
+>
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 327ca73f9cd7..d5917d6446f2 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -3401,18 +3401,24 @@ BPF_CALL_3(bpf_skb_change_proto, struct sk_buff *=
+, skb, __be16, proto,
+>          * care of stores.
+>          *
+>          * Currently, additional options and extension header space are
+>          * not supported, but flags register is reserved so we can adapt
+>          * that. For offloads, we mark packet as dodgy, so that headers
+>          * need to be verified first.
+>          */
+>         ret =3D bpf_skb_proto_xlat(skb, proto);
+> +       if (ret)
+> +               return ret;
+> +
+>         bpf_compute_data_pointers(skb);
+> -       return ret;
+> +       if (skb_valid_dst(skb))
+> +               skb_dst_drop(skb);
+> +
+> +       return 0;
+>  }
+>
+>  static const struct bpf_func_proto bpf_skb_change_proto_proto =3D {
+>         .func           =3D bpf_skb_change_proto,
+>         .gpl_only       =3D false,
+>         .ret_type       =3D RET_INTEGER,
+>         .arg1_type      =3D ARG_PTR_TO_CTX,
+>         .arg2_type      =3D ARG_ANYTHING,
+> @@ -3549,16 +3555,19 @@ static int bpf_skb_net_grow(struct sk_buff *skb, =
+u32 off, u32 len_diff,
+>
+>                 /* Match skb->protocol to new outer l3 protocol */
+>                 if (skb->protocol =3D=3D htons(ETH_P_IP) &&
+>                     flags & BPF_F_ADJ_ROOM_ENCAP_L3_IPV6)
+>                         skb->protocol =3D htons(ETH_P_IPV6);
+>                 else if (skb->protocol =3D=3D htons(ETH_P_IPV6) &&
+>                          flags & BPF_F_ADJ_ROOM_ENCAP_L3_IPV4)
+>                         skb->protocol =3D htons(ETH_P_IP);
+> +
+> +               if (skb_valid_dst(skb))
+> +                       skb_dst_drop(skb);
+>         }
+>
+>         if (skb_is_gso(skb)) {
+>                 struct skb_shared_info *shinfo =3D skb_shinfo(skb);
+>
+>                 /* Header must be checked, and gso_segs recomputed. */
+>                 shinfo->gso_type |=3D gso_type;
+>                 shinfo->gso_segs =3D 0;
+> @@ -3576,16 +3585,17 @@ static int bpf_skb_net_grow(struct sk_buff *skb, =
+u32 off, u32 len_diff,
+>         }
+>
+>         return 0;
+>  }
+>
+>  static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff=
+,
+>                               u64 flags)
+>  {
+> +       bool decap =3D flags & BPF_F_ADJ_ROOM_DECAP_L3_MASK;
+>         int ret;
+>
+>         if (unlikely(flags & ~(BPF_F_ADJ_ROOM_FIXED_GSO |
+>                                BPF_F_ADJ_ROOM_DECAP_L3_MASK |
+>                                BPF_F_ADJ_ROOM_NO_CSUM_RESET)))
+>                 return -EINVAL;
+>
+>         if (skb_is_gso(skb) && !skb_is_gso_tcp(skb)) {
+> @@ -3598,23 +3608,28 @@ static int bpf_skb_net_shrink(struct sk_buff *skb=
+, u32 off, u32 len_diff,
+>         ret =3D skb_unclone(skb, GFP_ATOMIC);
+>         if (unlikely(ret < 0))
+>                 return ret;
+>
+>         ret =3D bpf_skb_net_hdr_pop(skb, off, len_diff);
+>         if (unlikely(ret < 0))
+>                 return ret;
+>
+> -       /* Match skb->protocol to new outer l3 protocol */
+> -       if (skb->protocol =3D=3D htons(ETH_P_IP) &&
+> -           flags & BPF_F_ADJ_ROOM_DECAP_L3_IPV6)
+> -               skb->protocol =3D htons(ETH_P_IPV6);
+> -       else if (skb->protocol =3D=3D htons(ETH_P_IPV6) &&
+> -                flags & BPF_F_ADJ_ROOM_DECAP_L3_IPV4)
+> -               skb->protocol =3D htons(ETH_P_IP);
+> +       if (decap) {
+> +               /* Match skb->protocol to new outer l3 protocol */
+> +               if (skb->protocol =3D=3D htons(ETH_P_IP) &&
+> +                   flags & BPF_F_ADJ_ROOM_DECAP_L3_IPV6)
+> +                       skb->protocol =3D htons(ETH_P_IPV6);
+> +               else if (skb->protocol =3D=3D htons(ETH_P_IPV6) &&
+> +                        flags & BPF_F_ADJ_ROOM_DECAP_L3_IPV4)
+> +                       skb->protocol =3D htons(ETH_P_IP);
+> +
+> +               if (skb_valid_dst(skb))
+> +                       skb_dst_drop(skb);
+> +       }
+>
+>         if (skb_is_gso(skb)) {
+>                 struct skb_shared_info *shinfo =3D skb_shinfo(skb);
+>
+>                 /* Due to header shrink, MSS can be upgraded. */
+>                 if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO))
+>                         skb_increase_gso_size(shinfo, len_diff);
+>
 
-If the host/vm page size difference only impacts certain tests, we
-could denylist them. But if it makes the kernel or selftests more
-unstable in general, then we'll have to switch the hosts.
-
-I don't know how difficult it is to get a 64k page machine on AWS,
-could be a challenge.
-
-> 
-> 
->>
->> If this is important to test on CI, it can be another matrix dimension
->> with customized kconfig. Do we want to do that?
->>
->>
->>>
->>>
->>>>
->>>>> Yonghong Song (4):
->>>>>    selftests/bpf: Reduce test_xdp_adjust_frags_tail_grow logs
->>>>>    selftests/bpf: Fix bpf_mod_race test failure with arm64 64KB 
->>>>> page size
->>>>>    selftests/bpf: Fix ringbuf/ringbuf_write test failure with arm64 
->>>>> 64KB
->>>>>      page size
->>>>>    selftests/bpf: Fix a user_ringbuf failure with arm64 64KB page size
->>>>>
->>>>>   .../selftests/bpf/prog_tests/bpf_mod_race.c    |  2 +-
->>>>>   .../testing/selftests/bpf/prog_tests/ringbuf.c |  5 +++--
->>>>>   .../selftests/bpf/prog_tests/user_ringbuf.c    |  6 ++++--
->>>>>   .../selftests/bpf/prog_tests/xdp_adjust_tail.c | 18 +++++++++++ 
->>>>> +------
->>>>>   .../selftests/bpf/progs/test_ringbuf_write.c   |  5 +++--
->>>>>   5 files changed, 23 insertions(+), 13 deletions(-)
->>>>>
->>>>> -- 
->>>>> 2.47.1
->>>>>
->>>
->>
-> 
-
+This looks reasonable to me... not that I feel very qualified to make
+that statement ;-)
 
