@@ -1,200 +1,258 @@
-Return-Path: <bpf+bounces-59914-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59915-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADBD2AD07F6
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 20:22:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B6B4AD0818
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 20:27:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA7A23B1A43
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 18:21:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D12F1899F9C
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 18:28:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74C471F0994;
-	Fri,  6 Jun 2025 18:21:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40D0C1F0995;
+	Fri,  6 Jun 2025 18:27:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VAxRVTfv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BlhySpem"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 747CC1EF092
-	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 18:21:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF1B11E98F3;
+	Fri,  6 Jun 2025 18:27:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749234110; cv=none; b=GOj1r1iUWhz/+MPwkcftsOYYOJ1TH9hEgs5eTDpYUhMqVzGd6lPU2UsF6eKXWgCRIuizIwUNsvDsfBeYJtMXQUYZ5Als289LU4fK7suGsRPndYWPvkMAljeee5/npAICQQNwngk2yIXWZFTwjbOWqHd3cGz6sMD/8QYrXnvZfpI=
+	t=1749234451; cv=none; b=Lsr3K9+JtF9ne8OGD9nGliNj+t7iCbCPBINw/S6sjP+kwl2H0wZ6e2b/vAJdjhXEXkYJ0oqweU4y39/3WqRpH4EMJKu5kog7UE+VFLX7omh+d5pphLVJxwpD2xGBoS7HG+x78fEPWoV/KyELA0p9JjylAugD08m/NMTjxoMZCQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749234110; c=relaxed/simple;
-	bh=LSb8gbfmgM6oxHI3hpEdSh0jWI0kfx0xiJSxrD1lnzk=;
+	s=arc-20240116; t=1749234451; c=relaxed/simple;
+	bh=coEURojyF2RYr3/NNYFNcZUu9iisklHxAaAxm1k7pW8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OH1aXFwOVSrX2VH9rMuX9PWqsxAOqdswuslq4ST9mBKUjb9YxVTN63w3NmJXtdPapAyWGJaaEgD6r8TRESYgoJaAUmE7NgoNL4ucPJKMQ04XVpM1N3ne3zeOnO6/v4vWKoeyPkUuc66Ho3v5ptPUtbX9MRpldAVGkxqHw8dC0Vc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VAxRVTfv; arc=none smtp.client-ip=209.85.214.178
+	 To:Cc:Content-Type; b=ACm2hUyPf9CVp9gTpYAmRx0JKcIwwioK0VBzr3gp5OGJnwjVLOGtsEOfufyCCLxc1aFdoLZFueEAuUdqumzWBeIDvsRg3iRYieveyAhnzgYhplXZF6Bi533QEZ2SFfYjuK4P/dU36GgMrPMuF1PTm+KtI9lGAmNtNSDp3aygGrA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BlhySpem; arc=none smtp.client-ip=209.85.221.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2350b1b9129so15796425ad.0
-        for <bpf@vger.kernel.org>; Fri, 06 Jun 2025 11:21:48 -0700 (PDT)
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3a3758b122cso1548313f8f.1;
+        Fri, 06 Jun 2025 11:27:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749234108; x=1749838908; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1749234448; x=1749839248; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JdE//DoHn7WIYzDXpPpiovMo2LSFdj/zCDpxeY88hWY=;
-        b=VAxRVTfvqyWbncc/BLr8KPbhjExYNXAWowa3nKDaO1dvRz0BSuYpN4SGEMWjyfR8RO
-         vEJnroRV6MQn5KB2w/MJT4zA0xxTglneb0F4VBaDMc5+w6i+YLCcGnOSCHM+oamn11W3
-         z8RdMy6lvg1pG+k19/WRIwmgimPIlTdVyEo/Z79m3nUg5JTqiYwFYdVSUE/rwJBUybbS
-         4zE7GyuV/TCMRkH2Yj4ao8Els4y6zR6U//FsJyblvVOXhGZS8u3NESAPTZ5yZNbWdxBU
-         m/04dwoJ5CAC3f3X2R660IDvA743+SA/WWRrLQ4sTApRVs+j9wfzLYsN3hJjYsOgPNLw
-         xZ/A==
+        bh=rbNInwmCXurTgn6zhiZL579Qtyh8Q8n0xxLohpO7vO0=;
+        b=BlhySpem2UcE2W+/TTOwseOJKvRiuz7I/wtUnzaS/wpGhUZoeIiIL80RvY+lc3Harq
+         BBU4nnu7ifi/RMGNoBMpXZ7tT0His1ZLVhXsKBjxe2MNKXy4xfyB/cbxq6cleLzCw29X
+         8P8+Ef/1xl+JT6ZrnJ4QzGWd2LIpDhjoai29cqxnWDj8FfCzN4cE/UwI+P9W9RioAe4W
+         iPnrKcINeI3/4t5RCyew+GKR9cW3L8HqsYTY/xftcy4iuobMgQ+yMtMnNgtzfuBgoKCW
+         4v7IsN4tX1WtjlZF8Rxt0Y49zJShyU/FF7D3HO64KWuVUOCIgzjsFYKxgbfaAgPzNxH+
+         Zk4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749234108; x=1749838908;
+        d=1e100.net; s=20230601; t=1749234448; x=1749839248;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JdE//DoHn7WIYzDXpPpiovMo2LSFdj/zCDpxeY88hWY=;
-        b=GCoZAGzlip3LxxyhidPFeEZrVRrqv3+4OCW5pbGlNYcjjHMmyAw5Q/I+iK6ZPIydH0
-         9vEC38+7+t8ZHQ4HIw0Pa5cfSaa/ZUk8ev7SAqX6l0JF5IuCQIM1WNu7aYor+l5qh1Jw
-         mBIrsWQKktoxhw54V818SdnjwRNV5kvIOuH4NWgDeCalbuEfhMDCfCUaV0QKJXsUU8HK
-         Oj3xba9QEbj/zUa0IMLoJqQ0f2iquIaPCtTmxGX81lxZL4vTNMIui32Hv6k6qJvU5PXP
-         gZQ65kulQPPyTw5HKehzRLJvwcBvUFRcc1rtzuieDqgvZuLv2AvXbi8txWQk03bgtMlp
-         Gt4w==
-X-Forwarded-Encrypted: i=1; AJvYcCV7EK46fPW6HEWrTX2elQ0PhI9ITr0iCgtyKaZiMuh5VvFfobZao5iqDKRPUevz9p6isec=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz1BBazVb/eqplE1fkTH46AUcx0dhLjeB7BwIO9BlsLThO0qFKx
-	8oarKUVNCJCrVQ/AHQsgzJnm/Q0+k982UuZjKBHhDzzgMnINVDuGmlPYKBVNLmWqnhQ0rrNBP/Y
-	wgz//84kLX3k0Traz/vKgZTHpW7OZiNc=
-X-Gm-Gg: ASbGncvaUOsTz4tmuJYyfRRojyh1sbqkOUgkrVhiNe7QSVuyIiGyYU6OTOhlEOR050u
-	8u6VWW/pyXq0fqR9IJRchLO9ecixGeONLLQUwTt5nMCe0rTW7f40NYClfbIcvXmstVPwky1O1r+
-	zo8Z6DZ7E2MXw1AuT5/gZo27cxTKnqKJ4iGGb/HaFgmw==
-X-Google-Smtp-Source: AGHT+IGVn2aqKJuqBawJNaY1lZSuCyjPXeNSjRNe2+NcqyrUNzYxGqFrKgUjLQRLrkwh34K9m1rCOMD0nvi32jddgFk=
-X-Received: by 2002:a17:90b:554d:b0:311:c5d9:2c79 with SMTP id
- 98e67ed59e1d1-31346c50561mr5468634a91.21.1749234107658; Fri, 06 Jun 2025
- 11:21:47 -0700 (PDT)
+        bh=rbNInwmCXurTgn6zhiZL579Qtyh8Q8n0xxLohpO7vO0=;
+        b=fJ2JCJgdWq3jccwC61AsZYgNFjSZstIy4i0j+QkoI6C/fW1cA/KTmQsIlxHlblNls7
+         DgATlghe6ZCVjc5hViirVhHLQOTC1K7JgR64aa2HmfXOYfKKri1X4185BO+xDVU8bK+k
+         aMn6BIsjgqFuo8xwWI5/fCgfT4WXVBk/y2vqWBLjbdTtRwnOmNkVIb5ZoiSOY8JP4tv7
+         9Yro5ukIAvj5COtlO71jr4JjBQVj5uYQCPAoeoeIwo9VJuawgEjEWLT5WCCxLkwxn4To
+         mnH1nU1e9dnDQSZhSlFFy8MQmuW81cCkP67yQ/Afe3VtGz6k1Xi/HOWTTK8gF7wkpCOn
+         BJXA==
+X-Forwarded-Encrypted: i=1; AJvYcCVqYhdX2nf4bb3y0t5WoTZrK9LJdb5gJmUQJEM/goF2wQbkot5KjZD1T03myzZTi2ToJplDN5otHxrUG9lk@vger.kernel.org, AJvYcCVzcaeHUM1BT4amATmtpI1kimsvuroy2ictiZrXkcWj8zcZVuSwN6DyGpqhBBqgr7r3j1HEMvpZwIgrzkqZf0KklA==@vger.kernel.org, AJvYcCXRWkNNpYCy4NKLG/uTPM2gaueoApJvVNhhszrlwcuDcNwqwhu32NeJdcEAVBgQ/Tjijxw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yydtko+e4ymTr1CI6s93gKcRHCZF3dSiPJVRM3GQR1TsnRAKuS4
+	VkjUD0z+Xy8w9HuAISoBEWcHctxxrU8qLwZ0DZWcSMTPeqZFwbPl1VeGA2SHsSQTipzJgkdSDVx
+	7YeDQ82PwEwhFIfYuqSO/IHpvUfYEBLk=
+X-Gm-Gg: ASbGnctcVFO+sbc8LJQjlXKzBNv85CXhHBpfaGPabOzx1mxf+mNi7pN1LcUotyLdRQD
+	kcQ5la0wMJ9Xz2iu6zGp+IC6H0hMu71h/dtcKXiSB9SX5SzJHZR8ge4/rxko8kyvgnBYF/9eAuq
+	p+/2QwU7d7KsFlcXpDtf1S6MAN5BGtemePs7GCgLyPc+z2xszDLHQXBAuhkr7WOPmbTk0zvsve
+X-Google-Smtp-Source: AGHT+IFDfg5zQNFFQhQ3znGa/eV6pg5oooCOcd3jscmyAaPp0/p7fZ9C2+elcLblHORV0vFrWJtDiExcvoa0BG3+RCo=
+X-Received: by 2002:a05:6000:220d:b0:3a4:f7f3:2d02 with SMTP id
+ ffacd0b85a97d-3a531abdf59mr3483496f8f.17.1749234448058; Fri, 06 Jun 2025
+ 11:27:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250606032309.444401-1-yonghong.song@linux.dev>
- <CAEf4Bzb+rPo6bfYe71vOzAsqQb4JM6Gu-Hi66qPj0ioF=PFF9g@mail.gmail.com>
- <8ff0934e-3073-4535-9ec1-f9ee1379ff4e@linux.dev> <9e9d08a4-6e27-4cab-959d-e730cacd75f4@linux.dev>
- <CAEf4BzYDkYiJdBJyPv4P_3jYJg8JegkvDOYWTam-vBgDQHOQtA@mail.gmail.com> <4d010777-ecce-4cf5-933f-121e1dde6bf2@linux.dev>
-In-Reply-To: <4d010777-ecce-4cf5-933f-121e1dde6bf2@linux.dev>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 6 Jun 2025 11:21:34 -0700
-X-Gm-Features: AX0GCFtRveIXPe_ROBJfKp2O9q_HhjTzb15dykwlq2X3H5eduYEll7ewa7_EVp4
-Message-ID: <CAEf4BzYLiDstXhjh75zbs3OR5Komw9j_-qmqj-nDsj6pckW4xw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/4] selftests/bpf: Fix a few test failures with
- arm64 64KB page
-To: Ihor Solodrai <ihor.solodrai@linux.dev>
-Cc: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
-	Martin KaFai Lau <martin.lau@kernel.org>
+References: <20250529065537.529937-1-howardchu95@gmail.com>
+ <aDpBTLoeOJ3NAw_-@google.com> <CAH0uvojGoLX6mpK9wA1cw-EO-y_fUmdndAU8eZ1pa70Lc_rvvw@mail.gmail.com>
+ <20250602181743.1c3dabea@gandalf.local.home> <aEAfHYLEyc7xGy7E@krava>
+In-Reply-To: <aEAfHYLEyc7xGy7E@krava>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 6 Jun 2025 11:27:16 -0700
+X-Gm-Features: AX0GCFtu_4copkwLu7w1Y3LJbOxFzibxvD5MnH8zkQWQwdSOwtRB3Lw8U1qWBHA
+Message-ID: <CAADnVQJBG=nHRCJBcxXuEjpNp8iy1CD+Hg=g571uOTr61b8Peg@mail.gmail.com>
+Subject: Re: [RFC PATCH v1] perf trace: Mitigate failures in parallel perf
+ trace instances
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Howard Chu <howardchu95@gmail.com>, Namhyung Kim <namhyung@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers <irogers@google.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Kan Liang <kan.liang@linux.intel.com>, 
+	"linux-perf-use." <linux-perf-users@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Steven Rostedt <rostedt@goodmis.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 6, 2025 at 10:15=E2=80=AFAM Ihor Solodrai <ihor.solodrai@linux.=
-dev> wrote:
+On Wed, Jun 4, 2025 at 3:25=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrote=
+:
 >
-> On 6/6/25 9:57 AM, Andrii Nakryiko wrote:
-> > On Fri, Jun 6, 2025 at 9:49=E2=80=AFAM Ihor Solodrai <ihor.solodrai@lin=
-ux.dev> wrote:
-> >>
-> >> On 6/6/25 9:43 AM, Yonghong Song wrote:
-> >>>
-> >>>
-> >>> On 6/6/25 9:30 AM, Andrii Nakryiko wrote:
-> >>>> On Thu, Jun 5, 2025 at 8:23=E2=80=AFPM Yonghong Song <yonghong.song@=
-linux.dev>
-> >>>> wrote:
-> >>>>> My local arm64 host has 64KB page size and the VM to run test_progs
-> >>>>> also has 64KB page size. There are a few self tests assuming 4KB pa=
-ge
-> >>>>> and hence failed in my envorinment. Patch 1 tries to reduce long as=
-sert
-> >>>> typo: environment
-> >>>>
-> >>>>> logs when tail failed. Patches 2-4 fixed three selftest failures.
-> >>>> How come our BPF CI doesn't catch this on aarch64?.. Ihor, any thoug=
-hts?
-> >>>
-> >>> In CI for aarch64, the page size is 4KB. For example, for this link:
-> >>>
-> >>> https://github.com/kernel-patches/bpf/actions/runs/15482212552/
-> >>> job/43590176563?pr=3D9053
-> >>>
-> >>> Find the kconfig, and we have
-> >>>
-> >>>     CONFIG_ARM64_4K_PAGES=3Dy
-> >>>     # CONFIG_ARM64_16K_PAGES is not set
-> >>>     # CONFIG_ARM64_64K_PAGES is not set
-> >>>
-> >>> and for 4K page, all these tests are fine, but not for 64K page.
-> >>
-> >> Ah right, I just realized the host pagesize doesn't matter, the kernel
-> >> we are running tests against needs to be re-compiled with the right
-> >> config.
-> >>
-> >> If this is important to test on CI, it can be another matrix dimension
-> >> with customized kconfig. Do we want to do that?
-> >>
+> On Mon, Jun 02, 2025 at 06:17:43PM -0400, Steven Rostedt wrote:
+> > On Fri, 30 May 2025 17:00:38 -0700
+> > Howard Chu <howardchu95@gmail.com> wrote:
 > >
-> > Can we just use 64KB page size for aarch64 (no 4KB variant for arm64)?
+> > > Hello Namhyung,
+> > >
+> > > On Fri, May 30, 2025 at 4:37=E2=80=AFPM Namhyung Kim <namhyung@kernel=
+.org> wrote:
+> > > >
+> > > > Hello,
+> > > >
+> > > > (Adding tracing folks)
+> > >
+> > > (That's so convenient wow)
+> >
+> > Shouldn't the BPF folks be more relevant. I don't see any of the tracin=
+g
+> > code involved here.
+> >
+> > >
+> > > >
+> > > > On Wed, May 28, 2025 at 11:55:36PM -0700, Howard Chu wrote:
+> > > > > perf trace utilizes the tracepoint utility, the only filter in pe=
+rf
+> > > > > trace is a filter on syscall type. For example, if perf traces on=
+ly
+> > > > > openat, then it filters all the other syscalls, such as readlinka=
+t,
+> > > > > readv, etc.
+> > > > >
+> > > > > This filtering is flawed. Consider this case: two perf trace
+> > > > > instances are running at the same time, trace instance A tracing
+> > > > > readlinkat, trace instance B tracing openat. When an openat sysca=
+ll
+> > > > > enters, it triggers both BPF programs (sys_enter) in both perf tr=
+ace
+> > > > > instances, these kernel functions will be executed:
+> > > > >
+> > > > > perf_syscall_enter
+> > > > >   perf_call_bpf_enter
+> > > > >     trace_call_bpf
+> >
+> > This is in bpf_trace.c (BPF related, not tracing related).
+> >
+> > -- Steve
+> >
+> >
+> > > > >       bpf_prog_run_array
+> > > > >
+> > > > > In bpf_prog_run_array:
+> > > > > ~~~
+> > > > > while ((prog =3D READ_ONCE(item->prog))) {
+> > > > >       run_ctx.bpf_cookie =3D item->bpf_cookie;
+> > > > >       ret &=3D run_prog(prog, ctx);
+> > > > >       item++;
+> > > > > }
+> > > > > ~~~
+> > > > >
+> > > > > I'm not a BPF expert, but by tinkering I found that if one of the=
+ BPF
+> > > > > programs returns 0, there will be no tracepoint sample. That is,
+> > > > >
+> > > > > (Is there a sample?) =3D ProgRetA & ProgRetB & ProgRetC
+> > > > >
+> > > > > Where ProgRetA is the return value of one of the BPF programs in =
+the BPF
+> > > > > program array.
+> > > > >
+> > > > > Go back to the case, when two perf trace instances are tracing tw=
+o
+> > > > > different syscalls, again, A is tracing readlinkat, B is tracing =
+openat,
+> > > > > when an openat syscall enters, it triggers the sys_enter program =
+in
+> > > > > instance A, call it ProgA, and the sys_enter program in instance =
+B,
+> > > > > ProgB, now ProgA will return 0 because ProgA cares about readlink=
+at only,
+> > > > > even though ProgB returns 1; (Is there a sample?) =3D ProgRetA (0=
+) &
+> > > > > ProgRetB (1) =3D 0. So there won't be a tracepoint sample in B's =
+output,
+> > > > > when there really should be one.
+> > > >
+> > > > Sounds like a bug.  I think it should run bpf programs attached to =
+the
+> > > > current perf_event only.  Isn't it the case for tracepoint + perf +=
+ bpf?
+> > >
+> > > I really can't answer that question.
 >
-> We certainly can, but *not* testing 4k pages on any arch seems like a
-> bad idea to me.
+> bpf programs for tracepoint are executed before the perf event specific
+> check/trigger in perf_trace_run_bpf_submit
+>
+> bpf programs array is part of struct trace_event_call so it's global per
+> tracepoint, not per perf event
 
-No-no, x86 should stay 4KB (can it even be 64KB page size on x86?).
-But if it's hard to do 64KB on AWS arm64, so be it.
+right.
+looks like perf is attaching two different progs to the same sys_enter
+tracepoint and one of them returns 0.
+That's expected behavior.
+The rule is all-yes-is-yes, any-no-is-no.
+We apply this logic to majority (if not all) bpf prog return values.
 
+> IIRC perf trace needs the perf event sample and the bpf program is there
+> to do the filter and some other related stuff?
 >
-> If we think a step further, there are many permutations of important
-> configs that we do not test. And it's impractical to test *everything*
-> for each pending patch.
+> if that's the case I wonder we could switch bpf_prog_run_array logic
+> to be permissive like below, and perhaps make that as tracepoint specific
+> change, because bpf_prog_run_array is used in other place
+
+No. That might break somebody and we don't want to deviate from the rule.
+
+> or make it somehow configurable.. otherwise I fear that might break exist=
+ing
+> use cases.. FWIW bpf ci tests [1] survived the change below
 >
-> What we could do is split BPF CI into two domains:
-> * test most important configurations on every patch like we do now
-> * test other config permutations on base branches (bpf-next, bpf)
-> *sometimes*
->
-> We have reserved hardware that is often idle when there is low
-> activity on the list, and it could be used to run other things:
-> older/newer compilers, different page sizes, particular kconfigs etc.
->
-> This way we would catch problems earlier without overloading/expanding
-> the CI infra.
->
-> It's an effort to setup of course, but that's how I would approach it
-> if we're serious about testing uncommon things.
+> jirka
 >
 >
-> >>
-> >>>
-> >>>
-> >>>>
-> >>>>> Yonghong Song (4):
-> >>>>>     selftests/bpf: Reduce test_xdp_adjust_frags_tail_grow logs
-> >>>>>     selftests/bpf: Fix bpf_mod_race test failure with arm64 64KB pa=
-ge
-> >>>>> size
-> >>>>>     selftests/bpf: Fix ringbuf/ringbuf_write test failure with arm6=
-4 64KB
-> >>>>>       page size
-> >>>>>     selftests/bpf: Fix a user_ringbuf failure with arm64 64KB page =
-size
-> >>>>>
-> >>>>>    .../selftests/bpf/prog_tests/bpf_mod_race.c    |  2 +-
-> >>>>>    .../testing/selftests/bpf/prog_tests/ringbuf.c |  5 +++--
-> >>>>>    .../selftests/bpf/prog_tests/user_ringbuf.c    |  6 ++++--
-> >>>>>    .../selftests/bpf/prog_tests/xdp_adjust_tail.c | 18 ++++++++++++=
-------
-> >>>>>    .../selftests/bpf/progs/test_ringbuf_write.c   |  5 +++--
-> >>>>>    5 files changed, 23 insertions(+), 13 deletions(-)
-> >>>>>
-> >>>>> --
-> >>>>> 2.47.1
-> >>>>>
-> >>>
-> >>
+> [1] https://github.com/kernel-patches/bpf/pull/9044
+>
+> ---
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 5b25d278409b..4ca8afe0217c 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -2218,12 +2218,12 @@ bpf_prog_run_array(const struct bpf_prog_array *a=
+rray,
+>         const struct bpf_prog *prog;
+>         struct bpf_run_ctx *old_run_ctx;
+>         struct bpf_trace_run_ctx run_ctx;
+> -       u32 ret =3D 1;
+> +       u32 ret =3D 0;
+>
+>         RCU_LOCKDEP_WARN(!rcu_read_lock_held(), "no rcu lock held");
+>
+>         if (unlikely(!array))
+> -               return ret;
+> +               return 1;
+>
+>         run_ctx.is_uprobe =3D false;
+>
+> @@ -2232,7 +2232,7 @@ bpf_prog_run_array(const struct bpf_prog_array *arr=
+ay,
+>         item =3D &array->items[0];
+>         while ((prog =3D READ_ONCE(item->prog))) {
+>                 run_ctx.bpf_cookie =3D item->bpf_cookie;
+> -               ret &=3D run_prog(prog, ctx);
+> +               ret |=3D run_prog(prog, ctx);
+>                 item++;
+>         }
+>         bpf_reset_run_ctx(old_run_ctx);
 >
 
