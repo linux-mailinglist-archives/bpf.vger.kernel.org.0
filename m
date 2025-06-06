@@ -1,282 +1,157 @@
-Return-Path: <bpf+bounces-59869-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59870-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBBC1AD04B6
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 17:08:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7B33AD0506
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 17:17:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 114101650FB
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 15:07:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7310318996B1
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 15:18:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A075E28A719;
-	Fri,  6 Jun 2025 15:03:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47B9B27FB02;
+	Fri,  6 Jun 2025 15:17:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="u7ARvbu/"
+	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="AtXqnNfv"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00F7C28C5A9
-	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 15:03:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CB5519D071;
+	Fri,  6 Jun 2025 15:17:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749222217; cv=none; b=hbYR+ZP39tFXmmBiPzBJSHQVhHfojUgvzXzZ+c8yBwn5X/n1Jl6IxQ+znWw368e5NRJ/W6dKWMpobJLTOs61FtLIJASFbJ09Kp1A2SvMv+ygaf0SIvtN696C5EoJGymRmhSz8Stqr1e5ILzgBj+EMour189u0WyZjKtzQ7I0hBE=
+	t=1749223065; cv=none; b=a4+yMWltrpojeKRi08sVZVz39LSB6z3KWSgawtJS9SUI6rPrgkuiU6KrZX41L6uzuGo+xdAt+q2v3nHACXeSKLRRZpvaE7KEX0A6DnmgkJ1dtNISDkkfblvVkeZDZLgX3mVUrGzoWjBMtO4dyj0aPARJs9RC7es5XpqWTNyj08g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749222217; c=relaxed/simple;
-	bh=DRVrh8AqSjSv5TXQJ3G55uv/2k+YOtrWpqdhnHMfGCo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BX5kpvd8wDsLugOCbicOxCr0EJdoN/3XJe24GrLatg4XpsrCGeWMk0paUh1rjG9gNPPeb56GTCoyrBVgtN6AGUpR80bkgS462/upPkh17KQmBo1J24UuGBXyfQ7yqjZBFvw5hFpp+fmuEIlUPKLKBQGQxnFPNVzWE3wI8Jy5zQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=u7ARvbu/; arc=none smtp.client-ip=95.215.58.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1749222210;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=qAtVAk3ktG/11zUq9KHayxDPp/WA9lPsPFV1ZKBYtiA=;
-	b=u7ARvbu/JzSUVWLY8cd49nFOwDoNbZbc7BxwPr0P/Vu7xmxtyo3bV4YHLYBk01rRT1P7Mz
-	TSW/8A5IJKY0e2c/LtfR8RouSikixGy0ffXl0bAbgpNMCHWfarhMNWdSkzlTrUI/x4//r5
-	xaN896qIkM5mY1zgBKi7zbiLiofnWHs=
-From: Tao Chen <chen.dylane@linux.dev>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Tao Chen <chen.dylane@linux.dev>
-Subject: [PATCH bpf-next v2] bpf: Add show_fdinfo for perf_event
-Date: Fri,  6 Jun 2025 23:02:58 +0800
-Message-Id: <20250606150258.3385166-1-chen.dylane@linux.dev>
+	s=arc-20240116; t=1749223065; c=relaxed/simple;
+	bh=3UnBpzUviYG1OvG09DHAzrYS1o7O3VgVe3waneM87ps=;
+	h=From:To:Cc:References:In-Reply-To:Subject:Date:Message-ID:
+	 MIME-Version:Content-Type; b=lzJ8nXMhvCnrTZbRo/3J8j5iVl8VYzdvAs8rnCezdsEvpKQZxTzpWhfS2yGlTJqgGfgm11kZTMmq9eHmU1qDRyZI2Gptv78+S1irtmJBcvhL48076F2zra6gWzMcxPEjVbyJ8wkw3609xWPjkuyY43aRZBGlfV8ukYAhwzmo/og=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=AtXqnNfv; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-235f9ea8d08so15462905ad.1;
+        Fri, 06 Jun 2025 08:17:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20230601; t=1749223063; x=1749827863; darn=vger.kernel.org;
+        h=content-language:thread-index:content-transfer-encoding
+         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pvm1FZURgSU9OU+MVCUdN5gY3oGzxceKRQOHuHZzJBk=;
+        b=AtXqnNfvNdVKn+HXtUePxysMehac26tFFtrqa2EUNnCCS+MwXkmJkb+xly3VKSOa7/
+         9aCVQxqK3KNYa+gAzZISkyWV9zIBU0mxbMqMoeU2c7jcIF6ux+H8rWIL0dUHrYdrUTll
+         ZAOmqezZFyYTiXjFNxaXMStKPQtu+jDiwP7TWx24AjCYzOM5qjKB++15MVVQ5uS/mgGC
+         n4ElGcvzT4rbDao4I0L+4hKJeyy1iZcUeu+yl2FSaS4OAFUVr5tokOApXFCshGwIiUXt
+         EkV3BnSXAb6Lth+4ZskTRMDc4rlowFCGVydVs9QG59RbRIwSUk24JSnF/Lq0SnP2S14p
+         vPEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749223063; x=1749827863;
+        h=content-language:thread-index:content-transfer-encoding
+         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pvm1FZURgSU9OU+MVCUdN5gY3oGzxceKRQOHuHZzJBk=;
+        b=RQi65xzp0LkwWIKBEetdELJ7XuD5KGAZScKOQH50YfHjGF8n9+2FPd0s5DfrlrpINQ
+         1H4dBN/QeF+il6Kh0VlsUHRYKZBfv6O3FFChNdP9ORk5bQMvCY26jGie+VZW9wpEJ3h4
+         6xGeiS4OpYE19qxjBRYH340geqcrVb+DlLVtKv6bL3ZdARfvkwviMDJttldzH782zSmt
+         cSX4GAPXXFKyLG4HkuDpgP9U7SOg7iraAH2gLJUtk8tOEtQ0xzIJ3hh024NSR86kefaV
+         a4z7Ui0Jq1l/+DIHwGK98Czd4s9kQAb/9RRg6ijyWiufxuXS8FpJS+vFBikKzLvRWn43
+         ZLPQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXpmtXysR8lJHtfOmZ+H/BPeksWXZYyVRImyFkpQ/ITtX2SDXCflEmAMuZxcWPBjxuZ64U=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwbuaMQdE4N+lXvfLLbHZgGYY6WtHTjSN2AX8L48YyfBfQKq2Bz
+	eWVBGlD68+cZxQBsohx+iFyjTHqaOotn2v8pn9Xtpq3PqlzMi0Y611hL1VR4yA==
+X-Gm-Gg: ASbGncv91K9IDYu2f+pyRjQJ+phXHq9pdOi6XygnbsV3H2yJM6bypqMWtPNJcQ6UNHa
+	DHsCqDwZZdOf1qUV/OL93317Si0Royxv0207njxqF4ylq/3AT5vI35MhT2/qSDBxkPRU/0Kg5Uy
+	h4bO0fKMSp8Ch3yyTPbq6pZoOUb7N/BHGJ9L9rmhIdGMurP4TDeeT6KnrEGJS+JT4MqRF1k5kzY
+	87aRGFcVxtPItSlU1FMC+OQrxMfrKZRS2tebkB3sbGhxAE4y5TREy1wDGbtifilDl5J9otQrHVn
+	EqJSCs3EU4ZHx/bX7gtIV70gAmbyJPYMYUQ9ChSnqQWf+iDEgQjUw94FJ2XelzX3FaeR0bjoWuo
+	=
+X-Google-Smtp-Source: AGHT+IF7tFr98jpphQmWIkFrc/Bd5LYrI7G1X8jhiiA4jQkKgPeoIT0VWF3YItds7uvTxgZXzWVqKg==
+X-Received: by 2002:a17:903:18f:b0:223:4d7e:e52c with SMTP id d9443c01a7336-23601e21f1dmr56067835ad.5.1749223063503;
+        Fri, 06 Jun 2025 08:17:43 -0700 (PDT)
+Received: from ArmidaleLaptop ([2601:600:877f:ad30:85c9:29bc:53c5:fe3])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23603405189sm13508385ad.148.2025.06.06.08.17.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 06 Jun 2025 08:17:43 -0700 (PDT)
+From: Dave Thaler <dthaler1968@googlemail.com>
+X-Google-Original-From: "Dave Thaler" <dthaler1968@gmail.com>
+To: "'Eslam Khafagy'" <eslam.medhat1993@gmail.com>,
+	<void@manifault.com>,
+	<ast@kernel.org>
+Cc: <linux-doc@vger.kernel.org>,
+	<skhan@linuxfoundation.org>,
+	<bpf@vger.kernel.org>
+References: <20250606100511.368450-1-eslam.medhat1993@gmail.com>
+In-Reply-To: <20250606100511.368450-1-eslam.medhat1993@gmail.com>
+Subject: RE: [PATCH bpf-next] Documentation: Fix spelling mistake.
+Date: Fri, 6 Jun 2025 08:17:41 -0700
+Message-ID: <04a101dbd6f6$2635cac0$72a16040$@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQDY3jRyHAFXzUPlJpq2nKQRCvydhLX8LziQ
+Content-Language: en-us
 
-After commit 1b715e1b0ec5 ("bpf: Support ->fill_link_info for perf_event") add
-perf_event info, we can also show the info with the method of cat /proc/[fd]/fdinfo.
 
-kprobe fdinfo:
-link_type:	perf
-link_id:	10
-prog_tag:	bcf7977d3b93787c
-prog_id:	20
-name:	bpf_fentry_test1
-offset:	0
-missed:	0
-addr:	ffffffffa28a2904
-event_type:	kprobe
-cookie:	3735928559
 
-uprobe fdinfo:
-link_type:	perf
-link_id:	13
-prog_tag:	bcf7977d3b93787c
-prog_id:	21
-name:	/proc/self/exe
-offset:	63dce4
-ref_ctr_offset:	33eee2a
-event_type:	uprobe
-cookie:	3735928559
+> -----Original Message-----
+> From: Eslam Khafagy <eslam.medhat1993@gmail.com>
+> Sent: Friday, June 6, 2025 3:05 AM
+> To: void@manifault.com; ast@kernel.org
+> Cc: linux-doc@vger.kernel.org; skhan@linuxfoundation.org;
+bpf@vger.kernel.org;
+> Eslam Khafagy <eslam.medhat1993@gmail.com>
+> Subject: [PATCH bpf-next] Documentation: Fix spelling mistake.
+> 
+> Fix typo "desination => destination"
+> in file
+> Documentation/bpf/standardization/instruction-set.rst
+> 
+> Signed-off-by: Eslam Khafagy <eslam.medhat1993@gmail.com>
+> ---
+>  Documentation/bpf/standardization/instruction-set.rst | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/bpf/standardization/instruction-set.rst
+> b/Documentation/bpf/standardization/instruction-set.rst
+> index fbe975585236..ac950a5bb6ad 100644
+> --- a/Documentation/bpf/standardization/instruction-set.rst
+> +++ b/Documentation/bpf/standardization/instruction-set.rst
+> @@ -350,9 +350,9 @@ Underflow and overflow are allowed during arithmetic
+> operations, meaning  the 64-bit or 32-bit value will wrap. If BPF program
+execution
+> would  result in division by zero, the destination register is instead set
+to zero.
+>  Otherwise, for ``ALU64``, if execution would result in ``LLONG_MIN``
+-dividing -1,
+> the desination register is instead set to ``LLONG_MIN``. For
+> +dividing -1, the destination register is instead set to ``LLONG_MIN``.
+> +For
+>  ``ALU``, if execution would result in ``INT_MIN`` dividing -1, the
+-desination register
+> is instead set to ``INT_MIN``.
+> +destination register is instead set to ``INT_MIN``.
+> 
+>  If execution would result in modulo by zero, for ``ALU64`` the value of
+the
+> destination register is unchanged whereas for ``ALU`` the upper
+> --
+> 2.43.0
 
-tracepoint fdinfo:
-link_type:	perf
-link_id:	11
-prog_tag:	bcf7977d3b93787c
-prog_id:	22
-tp_name:	sched_switch
-event_type:	tracepoint
-cookie:	3735928559
+For just the spelling correction:
+Acked-by: Dave Thaler <dthaler1968@gmail.com>
 
-perf_event fdinfo:
-link_type:	perf
-link_id:	12
-prog_tag:	bcf7977d3b93787c
-prog_id:	23
-type:	1
-config:	2
-event_type:	event
-cookie:	3735928559
+However the phrase "dividing -1" is one I find confusing.  E.g.,
+"INT_MIN dividing -1" sounds like "-1 / INT_MIN" rather than the inverse.
+Perhaps "divided by" instead of "dividing" assuming the inverse is meant.
 
-Signed-off-by: Tao Chen <chen.dylane@linux.dev>
----
- kernel/bpf/syscall.c | 118 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 118 insertions(+)
-
-Change list:
-- v1 -> v2:
-   - Andrii suggested:
-     1. define event_type with string
-     2. print offset and addr with hex
-
-   - Jiri suggested:
-     1. add ref_ctr_offset for uprobe
-- v1:
-    https://lore.kernel.org/bpf/20250604163723.3175258-1-chen.dylane@linux.dev
-
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 89d027cd7ca..928ff129087 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -3795,6 +3795,31 @@ static int bpf_perf_link_fill_kprobe(const struct perf_event *event,
- 	info->perf_event.kprobe.cookie = event->bpf_cookie;
- 	return 0;
- }
-+
-+static void bpf_perf_link_fdinfo_kprobe(const struct perf_event *event,
-+					struct seq_file *seq)
-+{
-+	const char *name;
-+	int err;
-+	u32 prog_id, type;
-+	u64 offset, addr;
-+	unsigned long missed;
-+
-+	err = bpf_get_perf_event_info(event, &prog_id, &type, &name,
-+				      &offset, &addr, &missed);
-+	if (err)
-+		return;
-+
-+	seq_printf(seq,
-+		   "name:\t%s\n"
-+		   "offset:\t%llx\n"
-+		   "missed:\t%lu\n"
-+		   "addr:\t%llx\n"
-+		   "event_type:\t%s\n"
-+		   "cookie:\t%llu\n",
-+		   name, offset, missed, addr, type == BPF_FD_TYPE_KRETPROBE ?
-+		   "kretprobe" : "kprobe", event->bpf_cookie);
-+}
- #endif
- 
- #ifdef CONFIG_UPROBE_EVENTS
-@@ -3823,6 +3848,30 @@ static int bpf_perf_link_fill_uprobe(const struct perf_event *event,
- 	info->perf_event.uprobe.ref_ctr_offset = ref_ctr_offset;
- 	return 0;
- }
-+
-+static void bpf_perf_link_fdinfo_uprobe(const struct perf_event *event,
-+					struct seq_file *seq)
-+{
-+	const char *name;
-+	int err;
-+	u32 prog_id, type;
-+	u64 offset, ref_ctr_offset;
-+	unsigned long missed;
-+
-+	err = bpf_get_perf_event_info(event, &prog_id, &type, &name,
-+				      &offset, &ref_ctr_offset, &missed);
-+	if (err)
-+		return;
-+
-+	seq_printf(seq,
-+		   "name:\t%s\n"
-+		   "offset:\t%llx\n"
-+		   "ref_ctr_offset:\t%llx\n"
-+		   "event_type:\t%s\n"
-+		   "cookie:\t%llu\n",
-+		   name, offset, ref_ctr_offset, type == BPF_FD_TYPE_URETPROBE ?
-+		   "uretprobe" : "uprobe", event->bpf_cookie);
-+}
- #endif
- 
- static int bpf_perf_link_fill_probe(const struct perf_event *event,
-@@ -3891,10 +3940,79 @@ static int bpf_perf_link_fill_link_info(const struct bpf_link *link,
- 	}
- }
- 
-+static void bpf_perf_event_link_show_fdinfo(const struct perf_event *event,
-+					    struct seq_file *seq)
-+{
-+	seq_printf(seq,
-+		   "type:\t%u\n"
-+		   "config:\t%llu\n"
-+		   "event_type:\t%s\n"
-+		   "cookie:\t%llu\n",
-+		   event->attr.type, event->attr.config,
-+		   "event", event->bpf_cookie);
-+}
-+
-+static void bpf_tracepoint_link_show_fdinfo(const struct perf_event *event,
-+					    struct seq_file *seq)
-+{
-+	int err;
-+	const char *name;
-+	u32 prog_id;
-+
-+	err = bpf_get_perf_event_info(event, &prog_id, NULL, &name, NULL,
-+				      NULL, NULL);
-+	if (err)
-+		return;
-+
-+	seq_printf(seq,
-+		   "tp_name:\t%s\n"
-+		   "event_type:\t%s\n"
-+		   "cookie:\t%llu\n",
-+		   name, "tracepoint", event->bpf_cookie);
-+}
-+
-+static void bpf_probe_link_show_fdinfo(const struct perf_event *event,
-+				       struct seq_file *seq)
-+{
-+#ifdef CONFIG_KPROBE_EVENTS
-+	if (event->tp_event->flags & TRACE_EVENT_FL_KPROBE)
-+		return bpf_perf_link_fdinfo_kprobe(event, seq);
-+#endif
-+
-+#ifdef CONFIG_UPROBE_EVENTS
-+	if (event->tp_event->flags & TRACE_EVENT_FL_UPROBE)
-+		return bpf_perf_link_fdinfo_uprobe(event, seq);
-+#endif
-+}
-+
-+static void bpf_perf_link_show_fdinfo(const struct bpf_link *link,
-+				      struct seq_file *seq)
-+{
-+	struct bpf_perf_link *perf_link;
-+	const struct perf_event *event;
-+
-+	perf_link = container_of(link, struct bpf_perf_link, link);
-+	event = perf_get_event(perf_link->perf_file);
-+	if (IS_ERR(event))
-+		return;
-+
-+	switch (event->prog->type) {
-+	case BPF_PROG_TYPE_PERF_EVENT:
-+		return bpf_perf_event_link_show_fdinfo(event, seq);
-+	case BPF_PROG_TYPE_TRACEPOINT:
-+		return bpf_tracepoint_link_show_fdinfo(event, seq);
-+	case BPF_PROG_TYPE_KPROBE:
-+		return bpf_probe_link_show_fdinfo(event, seq);
-+	default:
-+		return;
-+	}
-+}
-+
- static const struct bpf_link_ops bpf_perf_link_lops = {
- 	.release = bpf_perf_link_release,
- 	.dealloc = bpf_perf_link_dealloc,
- 	.fill_link_info = bpf_perf_link_fill_link_info,
-+	.show_fdinfo = bpf_perf_link_show_fdinfo,
- };
- 
- static int bpf_perf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
--- 
-2.43.0
+Dave
 
 
