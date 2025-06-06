@@ -1,246 +1,279 @@
-Return-Path: <bpf+bounces-59912-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59913-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AD2EAD07E7
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 20:13:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 118F7AD07F4
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 20:19:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44EBD173B88
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 18:13:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40AD9188E019
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 18:19:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8580F28C012;
-	Fri,  6 Jun 2025 18:13:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95C061E834F;
+	Fri,  6 Jun 2025 18:19:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lST+aomr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m1jqLNHz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 896CE19DF7A
-	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 18:13:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92BFA42AB0
+	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 18:19:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749233604; cv=none; b=IM9wiyeP+qu5dUyS1Gj+UbGlYae0lz4c3rpwFEqI0n7BrsbwvcGMZESjYH2DgKNE8NyrTwgE9djySEocUQjdZA5Ms/qDfuVkt8o8O88SkrGIw1RZuCaYekbNIh1t+uSm3/SPzyNJXhWNSMsXudB7XyuR5N25olgBZYXvvgogpSY=
+	t=1749233976; cv=none; b=nn9wO0gEjovGPvXDPYztG4sCdfmzM0nBPQomtOAa5rNjQOGwGds3WHSXEamEZAhbBMMbnWfeoUH04mQtj79+PAq8SR3mL0OO2kmAoJQogEnbxEwTXkSheHaBPhW0L//XMebVoahU+EDQpVlUPk5oFRylEX2CnHsDxj550LrixD8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749233604; c=relaxed/simple;
-	bh=uOgM+clqQQCqi8eGfdAcZYzgfyhN44h7yJUkAF6YUdA=;
+	s=arc-20240116; t=1749233976; c=relaxed/simple;
+	bh=fvcIe9FyjpxA73KLYYA0alKcg+V3mhcmigMYwqvTizI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LERcnCLhhk7hULCNWMKrHzmzC5Xsn1AVzA6p1JutQwAmEoUXJL6rt76Bxdv+DqpLjhY2IygerjYl6wWnq6zAxqY1Jpc44Q4A6O8QoBSXfMNQBViMv7eqQEOn17RLK0+KjpYkDLw+Br72ptaQcsxxDbWF9y8IpdFn3igfwzqZFZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lST+aomr; arc=none smtp.client-ip=209.85.166.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-3ddc99e0b77so23815ab.0
-        for <bpf@vger.kernel.org>; Fri, 06 Jun 2025 11:13:22 -0700 (PDT)
+	 To:Cc:Content-Type; b=DjQibjF+4z3aLAXsNNZxLy/sGb3kt7VZPxN4g/Gz0j7mLCmGUva77rQTJHQIhVFAnyfGZT1NM4S78IFhBxbHYPUQ+TA0UKlRuH58LE9HvsEzRgZp059mU1AogKebiQ9U62S1C2DTyplo+emCDp4/rI6YbMr+WhCJD4uRfgE1HQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m1jqLNHz; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-742c46611b6so3108955b3a.1
+        for <bpf@vger.kernel.org>; Fri, 06 Jun 2025 11:19:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1749233602; x=1749838402; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1749233974; x=1749838774; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zt8+YlsWUWtVNI1tXIPQN5PMXhCaHc68mpFbT3w923o=;
-        b=lST+aomrFtI0yu2pTptD6br2jY6FgNKG9Wv5Wls9Njm4E7/kSeJugLMd8lDYxGOIfr
-         EJTP6llHqgFzYvO6vc45Y9dJg1dv1eH2CPdPdqhbUeWUeE6CUzcPXlJOQPYxQajN+P1O
-         Ew5l8qNKSX2AaTBTCW00VOoVi9m2/gizCKHwGCbRBwpfnuWzsGvo8vlFan8AVVCC2gdk
-         Z3WYXpGuC7uIeCcL+oCyDBBUEy1s6n6EOacDi0irJMZtkrpXeOUV8PJ0EWFF3iaszCt8
-         T3BzgG87gzCX7BXEWQeDDIq7zvl31gGqBtQ3Q9pJdnozckjS7Ke7G1p8tVFj+LD2biyr
-         GFpw==
+        bh=ldLgSmg7TknrVAAxhCw8o2a0F+gv5t5ihqjim9Ita3M=;
+        b=m1jqLNHzJ0+znhDTerr7mgX0yMxrlS5+1yMcCXX7Vqvw840+615w9XE9pFLc1spOHD
+         aWtidebRSin2Ga1+BCSR4eUr1RJGT7HEv5ptqnXrBR5aGMPGMviu/9nkvtqlqgISYfRf
+         bCuOgr19JXRNEX5nMw42BjtmQqTjABT3Yw22Y2YdTSOvOsnujOfMPh3R7tU5Kgmfg89r
+         tJFSl+u58iJD2ZczolzDf+76EJX7ms/EPls7LKKrYqsYIL24cOBM1q8sW2ora8m+eJj8
+         hmnxZtO1rL9HxHpmWvVXpuwl1JPCuA91jOLOvWbqUbtn3tJbFOMc0rpWH4DYibthUPTb
+         wJfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749233602; x=1749838402;
+        d=1e100.net; s=20230601; t=1749233974; x=1749838774;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zt8+YlsWUWtVNI1tXIPQN5PMXhCaHc68mpFbT3w923o=;
-        b=Y2rennkLC/pqfBzpJFnZ8mEEo/Fw6gXU4nLRJ1ABukxM9MBc1blX1NcSr+ZLH2xUPO
-         l3b01bWXA5z0fSKK9yzC7hSjWtAC/l8GVXaTzYIOyvXVBNd5NxIcv662kq6mULjO6AWn
-         aOkY6nme7okDtd49bGuCeSntZ34HbPsCQPBoK3LC1dlRy5gGgqamNdoVx2M6yR/MGJey
-         G+BBG4EizeXwnKJwAme9oTMuc3KObMqv8m4UeeCs1KHj6wFdYpPy1KSdKBLjCQdPm4ni
-         2Mm52RW3oAsphk5Garh8skyy4ybXCtCTGBw1rllPqj2kAlezirMDZEC2WXOmyPsriShM
-         dA5g==
-X-Forwarded-Encrypted: i=1; AJvYcCUJ1zjwXg/2/kwRl1V6OlyxVsBVcuxRAK5I5DFbLeQa5vZTP52FLhVssZgf2anJcs7ySxI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxAqMFSB+npnZaTwmXlAOxY27vvFedj7O7sg9IpWskeNCct+ouF
-	rqnfn9iYgorekHlVjPPX2aOVvLUx6MK3NlNukSpk8oVEEKauU1a8xJTY4BMEVQwUri4t5WEC2Gi
-	fuznC6XifVW38r5ge68wDbjgjLNuZNjJrGT5QfUf9
-X-Gm-Gg: ASbGncuy7CJlTfpgxQqR4Dp0Fj7pQhRkPnK1zmN5JW3IdTqRls4P4tecdxP87aRHqjy
-	2CiDJm7Ccbx+tlOUnGCifIKjdrjeZd/TVZT5+IWLkOwHkYziQfLvWKDFtwfOrSA06DyEuwgx4fT
-	fDxZKYAKEbzx9q4ZZcFMnIYsG9fbV30B70nRYyJ0LCM//q
-X-Google-Smtp-Source: AGHT+IEP1tIKhbdH4lqSSc295DJ6xTef6f7Idag/2cBRhGqPw5sYxBJgOV57opfblDqW6p+d7sX840GMamXgEQHqKMA=
-X-Received: by 2002:a05:6e02:4416:10b0:3dd:bdcc:5b29 with SMTP id
- e9e14a558f8ab-3ddd766ba6amr92655ab.21.1749233601372; Fri, 06 Jun 2025
- 11:13:21 -0700 (PDT)
+        bh=ldLgSmg7TknrVAAxhCw8o2a0F+gv5t5ihqjim9Ita3M=;
+        b=MbcpdCL2+BQkN16+9+UE8z1xsBvqd3DTC1eki8P8Hn8cCmp3oYaVGBNWFQ1ujanIAW
+         IjUemPDCaVv2k/ZpBavPcQDYaVcUfIF5NjiwScoQN4OEIbTSud8r6EE1KkrTFOuECkoj
+         fjOv8Nv2jmkbd+sCiJb4l8o5AGifdzHnKUl3MMBna/JmzNadNidB2Tjy2cBSEAjW4shE
+         wgV7DD/CjA4sEh7l4dVijX8sFh7VFJdTXv+tGPqfGArgiycyT7YuGvxkkCHPaepXv3Lj
+         lFSb4hy/z0sDbpp6qVK12tZr7Zsql1Nr8gobLEGw1qhQTkcdPqAo3RtdAike7RYMq9sO
+         01ZA==
+X-Forwarded-Encrypted: i=1; AJvYcCVyTlGkyfjopadbSyacFUZ1L1jFZ6DK4kV96hT5bRIvB6WH0SVEFjingcRbGNy6lIBqlFQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwcEMEo+DIwgxHr9xVlbBJrKQJx2fwYmbIzOrRx6dFdMkmjmCuH
+	hJa3M9NlG9nntXv5xsz3SpsAgRVkdiNeVTmp2r2tT306oj9Jsd4fWTivEHx1IWzdyJ3axOPTS8A
+	5oZ+6+9ZqNI96WiF4HZyZlQ+bg1G17WqHy70e
+X-Gm-Gg: ASbGncvVOUwTAE9SA6PpfgQs5Y2Vf7b09bU1E2tP29IEQmCFNhgKkApu4utqs5N2Uno
+	IiPjmCFczfqVe1DjjO/C699H1p/tjEnTMV8aggn7iRbhHW2lLJ/4udzux+i3FU89bN9EuJAl/b/
+	maZnktF7yIr5uAd7w7oj2VzzcNNeitx1qDNA/M/4l3mQ==
+X-Google-Smtp-Source: AGHT+IE18JOG2gIJ4VvduVbUavrAvxsCwH/WNOVhhosgoegPuVjkz1EAyPFeHXmN1kd1KWRLim0011fCP2eab+rRf7M=
+X-Received: by 2002:a05:6a00:cc2:b0:747:bd28:1ca1 with SMTP id
+ d2e1a72fcca58-74827e52521mr7085114b3a.3.1749233973815; Fri, 06 Jun 2025
+ 11:19:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250604174545.2853620-1-irogers@google.com> <20250604174545.2853620-4-irogers@google.com>
- <aEMoSj0kmWo9LEaF@google.com>
-In-Reply-To: <aEMoSj0kmWo9LEaF@google.com>
-From: Ian Rogers <irogers@google.com>
-Date: Fri, 6 Jun 2025 11:13:10 -0700
-X-Gm-Features: AX0GCFufpphanskcS_VgTeM5MLC0aivwUbtBDsVA8RxKaTOFneXfioIpUTtMSWM
-Message-ID: <CAP-5=fWDaJwC6uzkbmcT1tD1jOuPT8rNEaAuO+MSq6X8BH7shw@mail.gmail.com>
-Subject: Re: [PATCH v4 03/10] perf parse-events: Add parse_uid_filter helper
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	James Clark <james.clark@linaro.org>, Dapeng Mi <dapeng1.mi@linux.intel.com>, 
-	Thomas Richter <tmricht@linux.ibm.com>, Veronika Molnarova <vmolnaro@redhat.com>, 
-	Chun-Tse Shao <ctshao@google.com>, Leo Yan <leo.yan@arm.com>, Hao Ge <gehao@kylinos.cn>, 
-	Howard Chu <howardchu95@gmail.com>, Weilin Wang <weilin.wang@intel.com>, 
-	Levi Yun <yeoreum.yun@arm.com>, "Dr. David Alan Gilbert" <linux@treblig.org>, 
-	Gautam Menghani <gautam@linux.ibm.com>, Tengda Wu <wutengda@huaweicloud.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
+References: <20250605230609.1444980-1-eddyz87@gmail.com> <20250605230609.1444980-3-eddyz87@gmail.com>
+ <3dd16f19-63a4-4090-abd0-9b84fb07346b@gmail.com> <efe0cc259f70b11ffd3e398441efd0de5aa98c3e.camel@gmail.com>
+In-Reply-To: <efe0cc259f70b11ffd3e398441efd0de5aa98c3e.camel@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 6 Jun 2025 11:19:21 -0700
+X-Gm-Features: AX0GCFtpmVXfwsVZrzLmsx31ssZ6dMoFTo7WQfI0nmJEAkI7_kXsGU5a7jvGRkM
+Message-ID: <CAEf4BzY2CzZy8DMe==F7OmvEO2gkGG___SaZgu8dGDJd4LG4_Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 2/2] veristat: memory accounting for bpf programs
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, ast@kernel.org, 
+	andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
+	kernel-team@fb.com, yonghong.song@linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 6, 2025 at 10:41=E2=80=AFAM Namhyung Kim <namhyung@kernel.org> =
-wrote:
+On Fri, Jun 6, 2025 at 10:03=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
 >
-> Hi Ian,
+> On Fri, 2025-06-06 at 17:53 +0100, Mykyta Yatsenko wrote:
 >
-> On Wed, Jun 04, 2025 at 10:45:37AM -0700, Ian Rogers wrote:
-> > Add parse_uid_filter filter as a helper to parse_filter, that
-> > constructs a uid filter string. As uid filters don't work with
-> > tracepoint filters, add a is_possible_tp_filter function so the
-> > tracepoint filter isn't attempted for tracepoint evsels.
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/perf/util/parse-events.c | 33 ++++++++++++++++++++++++++++++++-
-> >  tools/perf/util/parse-events.h |  1 +
-> >  2 files changed, 33 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-eve=
-nts.c
-> > index d96adf23dc94..7f34e602fc08 100644
-> > --- a/tools/perf/util/parse-events.c
-> > +++ b/tools/perf/util/parse-events.c
-> > @@ -25,6 +25,7 @@
-> >  #include "pmu.h"
-> >  #include "pmus.h"
-> >  #include "asm/bug.h"
-> > +#include "ui/ui.h"
-> >  #include "util/parse-branch-options.h"
-> >  #include "util/evsel_config.h"
-> >  #include "util/event.h"
-> > @@ -2561,6 +2562,12 @@ foreach_evsel_in_last_glob(struct evlist *evlist=
-,
-> >       return 0;
-> >  }
-> >
-> > +/* Will a tracepoint filter work for str or should a BPF filter be use=
-d? */
-> > +static bool is_possible_tp_filter(const char *str)
-> > +{
-> > +     return strstr(str, "uid") =3D=3D NULL;
-> > +}
-> > +
-> >  static int set_filter(struct evsel *evsel, const void *arg)
-> >  {
-> >       const char *str =3D arg;
-> > @@ -2573,7 +2580,7 @@ static int set_filter(struct evsel *evsel, const =
-void *arg)
-> >               return -1;
-> >       }
-> >
-> > -     if (evsel->core.attr.type =3D=3D PERF_TYPE_TRACEPOINT) {
-> > +     if (evsel->core.attr.type =3D=3D PERF_TYPE_TRACEPOINT && is_possi=
-ble_tp_filter(str)) {
-> >               if (evsel__append_tp_filter(evsel, str) < 0) {
-> >                       fprintf(stderr,
-> >                               "not enough memory to hold filter string\=
-n");
-> > @@ -2609,6 +2616,30 @@ int parse_filter(const struct option *opt, const=
- char *str,
-> >                                         (const void *)str);
-> >  }
-> >
-> > +int parse_uid_filter(struct evlist *evlist, uid_t uid)
+> [...]
 >
-> It failed to build on alpine 3.18.
+> > > +/*
+> > > + * Creates a cgroup at /tmp/veristat-cgroup-mount-XXXXXX/accounting-=
+<pid>,
+> > > + * moves current process to this cgroup.
+> > > + */
+> > > +static int create_stat_cgroup(void)
+> > > +{
+> > > +   char buf[PATH_MAX + 1];
+> > > +   int err;
+> > > +
+> > > +   if (!env.cgroup_fs_mount[0])
+> > > +           return -1;
+> > > +
+> > > +   env.memory_peak_fd =3D -1;
+> > > +
+> > > +   snprintf_trunc(buf, sizeof(buf), "%s/accounting-%d", env.cgroup_f=
+s_mount, getpid());
+> > > +   err =3D mkdir(buf, 0777);
+> > > +   if (err < 0) {
+> > > +           err =3D log_errno("mkdir(%s)", buf);
+> > > +           goto err_out;
+> > > +   }
+> > > +   strcpy(env.stat_cgroup, buf);
+> > > +
+> > > +   snprintf_trunc(buf, sizeof(buf), "%s/cgroup.procs", env.stat_cgro=
+up);
+> > > +   err =3D write_one_line(buf, "%d\n", getpid());
+> > > +   if (err < 0) {
+> > > +           err =3D log_errno("echo %d > %s", getpid(), buf);
+> > > +           goto err_out;
+> > > +   }
+> > > +
+> > > +   snprintf_trunc(buf, sizeof(buf), "%s/memory.peak", env.stat_cgrou=
+p);
+> > > +   env.memory_peak_fd =3D open(buf, O_RDWR | O_APPEND);
+> >
+> > Why is it necessary to open in RW|APPEND mode? Won't O_RDONLY cut it?
 >
-> util/parse-events.h:48:45: error: unknown type name 'uid_t'
->    48 | int parse_uid_filter(struct evlist *evlist, uid_t uid);
->       |                                             ^~~~~
+> With current implementation -- not necessary, O_RDONLY should be sufficie=
+nt.
 >
-> I'll add this.
+> > > +   if (env.memory_peak_fd < 0) {
+> > > +           err =3D log_errno("open(%s)", buf);
+> > > +           goto err_out;
+> > > +   }
+> > > +
+> > > +   return 0;
+> > > +
+> > > +err_out:
+> > > +   destroy_stat_cgroup();
+> > > +   return err;
+> > > +}
+>
+> [...]
+>
+> > > +/* Current value of /tmp/veristat-cgroup-mount-XXXXXX/accounting-<pi=
+d>/memory.peak */
+> > > +static long cgroup_memory_peak(void)
+> > > +{
+> > > +   long err, memory_peak;
+> > > +   char buf[32];
+> > > +
+> > > +   if (env.memory_peak_fd < 0)
+> > > +           return -1;
+> > > +
+> > > +   err =3D pread(env.memory_peak_fd, buf, sizeof(buf) - 1, 0);
+> > > +   if (err <=3D 0) {
+> > > +           log_errno("read(%s/memory.peak)", env.stat_cgroup);
+> > > +           return -1;
+> > > +   }
+> > > +
+> > > +   buf[err] =3D 0;
+> >
+> > nit: maybe rename err to len here?
+>
+> Sure, will rename.
+>
+> > > +   errno =3D 0;
+> > > +   memory_peak =3D strtoll(buf, NULL, 10);
+> > > +   if (errno) {
+> > > +           log_errno("unrecognized %s/memory.peak format: %s", env.s=
+tat_cgroup, buf);
+> > > +           return -1;
+> > > +   }
+> > > +
+> > > +   return memory_peak;
+> > > +}
+> > > +
+>
+> [...]
+>
+> > > @@ -1332,7 +1551,16 @@ static int process_prog(const char *filename, =
+struct bpf_object *obj, struct bpf
+> > >     if (env.force_reg_invariants)
+> > >             bpf_program__set_flags(prog, bpf_program__flags(prog) | B=
+PF_F_TEST_REG_INVARIANTS);
+> > >
+> > > -   err =3D bpf_object__load(obj);
+> > > +   err =3D bpf_object__prepare(obj);
+> > > +   if (!err) {
+> > > +           cgroup_err =3D create_stat_cgroup();
+> > > +           mem_peak_a =3D cgroup_memory_peak();
+> > > +           err =3D bpf_object__load(obj);
+> > > +           mem_peak_b =3D cgroup_memory_peak();
+> > > +           destroy_stat_cgroup();
+> >
+> > What if we do create_stat_cgroup/destory_stat_cgroup in
+> > handle_verif_mode along with mount/umount_cgroupfs.
+> > It may speed things up a little bit here and moving all cgroup
+> > preparations into the single place seems reasonable.
+> > Will memory counter behave differently? We are checking the difference
+> > around bpf_object__load, from layman's
+> > perspective it should be the same.
+>
+> The memory.peak file accounts for peak memory consumption, so one
+> would need to reset this counter between program verifications.
+> Doc [1] describes such mechanism:
+>
+>     memory.peak
+>
+>       A read-write single value file which exists on non-root cgroups.
+>
+>       The max memory usage recorded for the cgroup and its descendants
+>       since either the creation of the cgroup or the most recent reset
+>       for that FD.
+>
+>       A write of any non-empty string to this file resets it to the
+>       current memory usage for subsequent reads through the same file
+>       descriptor.
+>
+>     memory.reclaim
+>
+>       A write-only nested-keyed file which exists for all cgroups.
+>
+>       This is a simple interface to trigger memory reclaim in the target
+>       cgroup.
+>
+>       Example:
+>
+>         echo "1G" > memory.reclaim
+>
+>       Please note that the kernel can over or under reclaim from the
+>       target cgroup. If less bytes are reclaimed than the specified
+>       amount, -EAGAIN is returned.
+>
+> As mentioned in cover letter, I tried using a combination of the above,
+> while creating a cgroup only once. For reasons I don't understand this
+> did not produce stable measurements. E.g. depending on a program being
 
-Thanks Namhyung! I see this in tmp.perf-tools-next so I'll assume
-there's no need for a v5.
+Looking at memory_peak_write() in mm/memcontrol.c it looks reasonable
+and should have worked (we do reset pc->local_watermark). But note if
+(usage > peer_ctx->value) logic and /* initial write, register watcher
+*/ comment. I'm totally guessing and speculating, but maybe you didn't
+close and re-open the file in between and so you had stale "watcher"
+with already recorded high watermark?..
 
-Ian
+I'd try again but be very careful what cgroup and at what point this
+is being reset...
 
-> Thanks,
-> Namhyung
+> verified in isolation or as part of a batch results vary from 5mb to 2mb.
 >
+> [1] https://docs.kernel.org/admin-guide/cgroup-v2.html
 >
-> ---8<---
-> diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-event=
-s.h
-> index ab242f6710313993..931780911e071ec6 100644
-> --- a/tools/perf/util/parse-events.h
-> +++ b/tools/perf/util/parse-events.h
-> @@ -11,6 +11,7 @@
->  #include <linux/perf_event.h>
->  #include <stdio.h>
->  #include <string.h>
-> +#include <sys/types.h>
+> > > +           if (!cgroup_err && mem_peak_a >=3D 0 && mem_peak_b >=3D 0=
+)
+> > > +                   mem_peak =3D mem_peak_b - mem_peak_a;
+> > > +   }
+> > >     env.progs_processed++;
+> > >
+> > >     stats->file_name =3D strdup(base_filename);
+> > > @@ -1341,6 +1569,7 @@ static int process_prog(const char *filename, s=
+truct bpf_object *obj, struct bpf
 >
->  struct evsel;
->  struct evlist;
+> [...]
 >
+> > Acked-by: Mykyta Yatsenko <yatsenko@meta.com>
 >
+> Thank you. I will have to send a v2 avoiding mount operations and
+> controllers file modification.
 >
-> > +{
-> > +     struct option opt =3D {
-> > +             .value =3D &evlist,
-> > +     };
-> > +     char buf[128];
-> > +     int ret;
-> > +
-> > +     snprintf(buf, sizeof(buf), "uid =3D=3D %d", uid);
-> > +     ret =3D parse_filter(&opt, buf, /*unset=3D*/0);
-> > +     if (ret) {
-> > +             if (use_browser >=3D 1) {
-> > +                     /*
-> > +                      * Use ui__warning so a pop up appears above the
-> > +                      * underlying BPF error message.
-> > +                      */
-> > +                     ui__warning("Failed to add UID filtering that use=
-s BPF filtering.\n");
-> > +             } else {
-> > +                     fprintf(stderr, "Failed to add UID filtering that=
- uses BPF filtering.\n");
-> > +             }
-> > +     }
-> > +     return ret;
-> > +}
-> > +
-> >  static int add_exclude_perf_filter(struct evsel *evsel,
-> >                                  const void *arg __maybe_unused)
-> >  {
-> > diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-eve=
-nts.h
-> > index ab242f671031..46e5a01be61c 100644
-> > --- a/tools/perf/util/parse-events.h
-> > +++ b/tools/perf/util/parse-events.h
-> > @@ -45,6 +45,7 @@ static inline int parse_events(struct evlist *evlist,=
- const char *str,
-> >  int parse_event(struct evlist *evlist, const char *str);
-> >
-> >  int parse_filter(const struct option *opt, const char *str, int unset)=
-;
-> > +int parse_uid_filter(struct evlist *evlist, uid_t uid);
-> >  int exclude_perf(const struct option *opt, const char *arg, int unset)=
-;
-> >
-> >  enum parse_events__term_val_type {
-> > --
-> > 2.50.0.rc0.604.gd4ff7b7c86-goog
-> >
 
