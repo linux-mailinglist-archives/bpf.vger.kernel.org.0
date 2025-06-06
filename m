@@ -1,839 +1,112 @@
-Return-Path: <bpf+bounces-59883-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59885-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72EFDAD06AB
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 18:32:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3FA3AD06C5
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 18:38:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DFC317B16C
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 16:32:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 704AB7A9097
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 16:36:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A30BE289E26;
-	Fri,  6 Jun 2025 16:32:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 597A4289343;
+	Fri,  6 Jun 2025 16:37:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="V4MRcB0w"
 X-Original-To: bpf@vger.kernel.org
-Received: from 69-171-232-180.mail-mxout.facebook.com (69-171-232-180.mail-mxout.facebook.com [69.171.232.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2CC7289E0E
-	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 16:32:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 454551448E3
+	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 16:37:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749227524; cv=none; b=G6q7Jp50ZYgofZaPoQ6mrbJo+eHo1IDcfJGAlTBQGRGFR1qMqGufQbcasu6f7vrK9rXbW1Plnu3lCGfWA+3jBhYw7C+PdxVyFA1YhZEJ4tX4R8MJAwE4/fEQtUbgHyec4r3enUsJ8YkBXFqblla2jZhW1+GoU4630ELO/1uctVM=
+	t=1749227873; cv=none; b=iWIPfw5o5TwTxOC8AVzafqAWY+Oe7CPVEAsYKXVZEGyH3kZ0rFf/oRWunAIt4F7aTxsQCtXgNCOGePF4ZhLK7rInK5lUB2g7eea6iq5LAISSrAzilL75QQljsQd9QlHCdVBb3ArOvvDw+7Pu1zgSh9MTasQnzUTVbSpb816d4lA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749227524; c=relaxed/simple;
-	bh=9oX7ngILOCbAdrA0pixEVw2zz5ucx9hOwRtNDC7hrRM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hhX15ZgE13ne/YRgCB2TWxNRkdqxeT1S3MERhpR8C+tupTC+Ulmkbi66sNPO9FO3jW6IJqTMi4SpIXy+9e8h3+JVcnNyfb815o2nAGhIwSuDsFl5KxSCsU55NxUX6c4uErvQ0D9PYg1QUjonEo26A35EMXtiYWGQXxPQxRU4GQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
-Received: by devvm16039.vll0.facebook.com (Postfix, from userid 128203)
-	id BFCD5902F97A; Fri,  6 Jun 2025 09:31:56 -0700 (PDT)
-From: Yonghong Song <yonghong.song@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	kernel-team@fb.com,
-	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v5 5/5] selftests/bpf: Add two selftests for mprog API based cgroup progs
-Date: Fri,  6 Jun 2025 09:31:56 -0700
-Message-ID: <20250606163156.2429955-1-yonghong.song@linux.dev>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20250606163131.2428225-1-yonghong.song@linux.dev>
-References: <20250606163131.2428225-1-yonghong.song@linux.dev>
+	s=arc-20240116; t=1749227873; c=relaxed/simple;
+	bh=iNM4P6pKkuhu/6ob32+PYtBHFblWYXa1rhn7uHON4UU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HnfT2qoXhHDoUzMtg1QPznzI0Q//wtu9mYPa/UD9eRy8Ggnqk7SfGj/TE2vLF039SQT1f7Sh7v7Xtd9FFTxrynnKUKfyvEjWDjz2iAkTY7KLMb4tA1oP7nC+bmYoORKv1bLjKurvObmRxi/hM6IkWvuja9gn68U0xxAksMnr/I4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=V4MRcB0w; arc=none smtp.client-ip=95.215.58.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <711f5fb8-b4c2-49d7-9c7a-bd300f6da040@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1749227869;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FxZmL24CoSYk40DKoSFiJPJVDRCxlaz9j9+YxgOKfbM=;
+	b=V4MRcB0w+0sPrgejXOgKldglidboL7yZsoKKUmB5fZLNkhQ4jrbgYsrgIjNwnjC2g0iW8/
+	pEfRYsQO13srhHi5/ybOqg/7BU0V14CSUTGde8pmzuZWc1P7uM0zM8Jb8ha7GKfaxa07AZ
+	r+UwaK0qvFsKToVxKueMfEuT1Zu9eXY=
+Date: Fri, 6 Jun 2025 09:37:37 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next 0/4] selftests/bpf: Fix a few test failures with
+ arm64 64KB page
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+ Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
+References: <20250606032309.444401-1-yonghong.song@linux.dev>
+ <CAEf4Bzb+rPo6bfYe71vOzAsqQb4JM6Gu-Hi66qPj0ioF=PFF9g@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+In-Reply-To: <CAEf4Bzb+rPo6bfYe71vOzAsqQb4JM6Gu-Hi66qPj0ioF=PFF9g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Two tests are added:
-  - cgroup_mprog_opts, which mimics tc_opts.c ([1]). Both prog and link
-    attach are tested. Some negative tests are also included.
-  - cgroup_mprog_ordering, which actually runs the program with some mpro=
-g
-    API flags.
+On 6/6/25 9:30 AM, Andrii Nakryiko wrote:
+> On Thu, Jun 5, 2025 at 8:23 PM Yonghong Song <yonghong.song@linux.dev> wrote:
+>>
+>> My local arm64 host has 64KB page size and the VM to run test_progs
+>> also has 64KB page size. There are a few self tests assuming 4KB page
+>> and hence failed in my envorinment. Patch 1 tries to reduce long assert
+> 
+> typo: environment
+> 
+>> logs when tail failed. Patches 2-4 fixed three selftest failures.
+> 
+> How come our BPF CI doesn't catch this on aarch64?.. Ihor, any thoughts?
 
-  [1] https://github.com/torvalds/linux/blob/master/tools/testing/selftes=
-ts/bpf/prog_tests/tc_opts.c
+Because our aarch64 hosts use 4K pagesize...
 
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
----
- .../bpf/prog_tests/cgroup_mprog_opts.c        | 617 ++++++++++++++++++
- .../bpf/prog_tests/cgroup_mprog_ordering.c    |  77 +++
- .../selftests/bpf/progs/cgroup_mprog.c        |  30 +
- 3 files changed, 724 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_mprog_o=
-pts.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_mprog_o=
-rdering.c
- create mode 100644 tools/testing/selftests/bpf/progs/cgroup_mprog.c
+$ uname -a
+Linux ip-10-0-0-103.us-west-1.compute.internal 
+5.10.228-219.884.amzn2.aarch64 #1 SMP Wed Oct 23 17:17:31 UTC 2024 
+aarch64 aarch64 aarch64 GNU/Linux
+[ec2-user@ip-10-0-0-103 ~]$ getconf PAGESIZE
+4096
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_mprog_opts.c b=
-/tools/testing/selftests/bpf/prog_tests/cgroup_mprog_opts.c
-new file mode 100644
-index 000000000000..bb60704a3ef9
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_mprog_opts.c
-@@ -0,0 +1,617 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+#include <test_progs.h>
-+#include "cgroup_helpers.h"
-+#include "cgroup_mprog.skel.h"
-+
-+static void assert_mprog_count(int cg, int atype, int expected)
-+{
-+	__u32 count =3D 0, attach_flags =3D 0;
-+	int err;
-+
-+	err =3D bpf_prog_query(cg, atype, 0, &attach_flags,
-+			     NULL, &count);
-+	ASSERT_EQ(count, expected, "count");
-+	ASSERT_EQ(err, 0, "prog_query");
-+}
-+
-+static void test_prog_attach_detach(int atype)
-+{
-+	LIBBPF_OPTS(bpf_prog_attach_opts, opta);
-+	LIBBPF_OPTS(bpf_prog_detach_opts, optd);
-+	LIBBPF_OPTS(bpf_prog_query_opts, optq);
-+	__u32 fd1, fd2, fd3, fd4, id1, id2, id3, id4;
-+	struct cgroup_mprog *skel;
-+	__u32 prog_ids[10];
-+	int cg, err;
-+
-+	cg =3D test__join_cgroup("/prog_attach_detach");
-+	if (!ASSERT_GE(cg, 0, "join_cgroup /prog_attach_detach"))
-+		return;
-+
-+	skel =3D cgroup_mprog__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_load"))
-+		goto cleanup;
-+
-+	fd1 =3D bpf_program__fd(skel->progs.getsockopt_1);
-+	fd2 =3D bpf_program__fd(skel->progs.getsockopt_2);
-+	fd3 =3D bpf_program__fd(skel->progs.getsockopt_3);
-+	fd4 =3D bpf_program__fd(skel->progs.getsockopt_4);
-+
-+	id1 =3D id_from_prog_fd(fd1);
-+	id2 =3D id_from_prog_fd(fd2);
-+	id3 =3D id_from_prog_fd(fd3);
-+	id4 =3D id_from_prog_fd(fd4);
-+
-+	assert_mprog_count(cg, atype, 0);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_BEFORE | BPF_F_AFTER,
-+		.expected_revision =3D 1,
-+	);
-+
-+	/* ordering: [fd1] */
-+	err =3D bpf_prog_attach_opts(fd1, cg, atype, &opta);
-+	if (!ASSERT_EQ(err, 0, "prog_attach"))
-+		goto cleanup;
-+
-+	assert_mprog_count(cg, atype, 1);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_BEFORE,
-+		.expected_revision =3D 2,
-+	);
-+
-+	/* ordering: [fd2, fd1] */
-+	err =3D bpf_prog_attach_opts(fd2, cg, atype, &opta);
-+	if (!ASSERT_EQ(err, 0, "prog_attach"))
-+		goto cleanup1;
-+
-+	assert_mprog_count(cg, atype, 2);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_AFTER,
-+		.relative_fd =3D fd2,
-+		.expected_revision =3D 3,
-+	);
-+
-+	/* ordering: [fd2, fd3, fd1] */
-+	err =3D bpf_prog_attach_opts(fd3, cg, atype, &opta);
-+	if (!ASSERT_EQ(err, 0, "prog_attach"))
-+		goto cleanup2;
-+
-+	assert_mprog_count(cg, atype, 3);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.flags =3D BPF_F_ALLOW_MULTI,
-+		.expected_revision =3D 4,
-+	);
-+
-+	/* ordering: [fd2, fd3, fd1, fd4] */
-+	err =3D bpf_prog_attach_opts(fd4, cg, atype, &opta);
-+	if (!ASSERT_EQ(err, 0, "prog_attach"))
-+		goto cleanup3;
-+
-+	assert_mprog_count(cg, atype, 4);
-+
-+	/* retrieve optq.prog_cnt */
-+	err =3D bpf_prog_query_opts(cg, atype, &optq);
-+	if (!ASSERT_OK(err, "prog_query"))
-+		goto cleanup4;
-+
-+	/* optq.prog_cnt will be used in below query */
-+	memset(prog_ids, 0, sizeof(prog_ids));
-+	optq.prog_ids =3D prog_ids;
-+	err =3D bpf_prog_query_opts(cg, atype, &optq);
-+	if (!ASSERT_OK(err, "prog_query"))
-+		goto cleanup4;
-+
-+	ASSERT_EQ(optq.count, 4, "count");
-+	ASSERT_EQ(optq.revision, 5, "revision");
-+	ASSERT_EQ(optq.prog_ids[0], id2, "prog_ids[0]");
-+	ASSERT_EQ(optq.prog_ids[1], id3, "prog_ids[1]");
-+	ASSERT_EQ(optq.prog_ids[2], id1, "prog_ids[2]");
-+	ASSERT_EQ(optq.prog_ids[3], id4, "prog_ids[3]");
-+	ASSERT_EQ(optq.prog_ids[4], 0, "prog_ids[4]");
-+	ASSERT_EQ(optq.link_ids, NULL, "link_ids");
-+
-+cleanup4:
-+	optd.expected_revision =3D 5;
-+	err =3D bpf_prog_detach_opts(fd4, cg, atype, &optd);
-+	ASSERT_OK(err, "prog_detach");
-+	assert_mprog_count(cg, atype, 3);
-+
-+cleanup3:
-+	LIBBPF_OPTS_RESET(optd);
-+	err =3D bpf_prog_detach_opts(fd3, cg, atype, &optd);
-+	ASSERT_OK(err, "prog_detach");
-+	assert_mprog_count(cg, atype, 2);
-+
-+	/* Check revision after two detach operations */
-+	err =3D bpf_prog_query_opts(cg, atype, &optq);
-+	ASSERT_OK(err, "prog_query");
-+	ASSERT_EQ(optq.revision, 7, "revision");
-+
-+cleanup2:
-+	err =3D bpf_prog_detach_opts(fd2, cg, atype, &optd);
-+	ASSERT_OK(err, "prog_detach");
-+	assert_mprog_count(cg, atype, 1);
-+
-+cleanup1:
-+	err =3D bpf_prog_detach_opts(fd1, cg, atype, &optd);
-+	ASSERT_OK(err, "prog_detach");
-+	assert_mprog_count(cg, atype, 0);
-+
-+cleanup:
-+	cgroup_mprog__destroy(skel);
-+	close(cg);
-+}
-+
-+static void test_link_attach_detach(int atype)
-+{
-+	LIBBPF_OPTS(bpf_cgroup_opts, opta);
-+	LIBBPF_OPTS(bpf_cgroup_opts, optd);
-+	LIBBPF_OPTS(bpf_prog_query_opts, optq);
-+	struct bpf_link *link1, *link2, *link3, *link4;
-+	__u32 fd1, fd2, fd3, fd4, id1, id2, id3, id4;
-+	struct cgroup_mprog *skel;
-+	__u32 prog_ids[10];
-+	int cg, err;
-+
-+	cg =3D test__join_cgroup("/link_attach_detach");
-+	if (!ASSERT_GE(cg, 0, "join_cgroup /link_attach_detach"))
-+		return;
-+
-+	skel =3D cgroup_mprog__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_load"))
-+		goto cleanup;
-+
-+	fd1 =3D bpf_program__fd(skel->progs.getsockopt_1);
-+	fd2 =3D bpf_program__fd(skel->progs.getsockopt_2);
-+	fd3 =3D bpf_program__fd(skel->progs.getsockopt_3);
-+	fd4 =3D bpf_program__fd(skel->progs.getsockopt_4);
-+
-+	id1 =3D id_from_prog_fd(fd1);
-+	id2 =3D id_from_prog_fd(fd2);
-+	id3 =3D id_from_prog_fd(fd3);
-+	id4 =3D id_from_prog_fd(fd4);
-+
-+	assert_mprog_count(cg, atype, 0);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.expected_revision =3D 1,
-+	);
-+
-+	/* ordering: [fd1] */
-+	link1 =3D bpf_program__attach_cgroup_opts(skel->progs.getsockopt_1, cg,=
- &opta);
-+	if (!ASSERT_OK_PTR(link1, "link_attach"))
-+		goto cleanup;
-+
-+	assert_mprog_count(cg, atype, 1);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.flags =3D BPF_F_BEFORE | BPF_F_LINK,
-+		.relative_id =3D id_from_link_fd(bpf_link__fd(link1)),
-+		.expected_revision =3D 2,
-+	);
-+
-+	/* ordering: [fd2, fd1] */
-+	link2 =3D bpf_program__attach_cgroup_opts(skel->progs.getsockopt_2, cg,=
- &opta);
-+	if (!ASSERT_OK_PTR(link2, "link_attach"))
-+		goto cleanup1;
-+
-+	assert_mprog_count(cg, atype, 2);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.flags =3D BPF_F_AFTER | BPF_F_LINK,
-+		.relative_fd =3D bpf_link__fd(link2),
-+		.expected_revision =3D 3,
-+	);
-+
-+	/* ordering: [fd2, fd3, fd1] */
-+	link3 =3D bpf_program__attach_cgroup_opts(skel->progs.getsockopt_3, cg,=
- &opta);
-+	if (!ASSERT_OK_PTR(link3, "link_attach"))
-+		goto cleanup2;
-+
-+	assert_mprog_count(cg, atype, 3);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.expected_revision =3D 4,
-+	);
-+
-+	/* ordering: [fd2, fd3, fd1, fd4] */
-+	link4 =3D bpf_program__attach_cgroup_opts(skel->progs.getsockopt_4, cg,=
- &opta);
-+	if (!ASSERT_OK_PTR(link4, "link_attach"))
-+		goto cleanup3;
-+
-+	assert_mprog_count(cg, atype, 4);
-+
-+	/* retrieve optq.prog_cnt */
-+	err =3D bpf_prog_query_opts(cg, atype, &optq);
-+	if (!ASSERT_OK(err, "prog_query"))
-+		goto cleanup4;
-+
-+	/* optq.prog_cnt will be used in below query */
-+	memset(prog_ids, 0, sizeof(prog_ids));
-+	optq.prog_ids =3D prog_ids;
-+	err =3D bpf_prog_query_opts(cg, atype, &optq);
-+	if (!ASSERT_OK(err, "prog_query"))
-+		goto cleanup4;
-+
-+	ASSERT_EQ(optq.count, 4, "count");
-+	ASSERT_EQ(optq.revision, 5, "revision");
-+	ASSERT_EQ(optq.prog_ids[0], id2, "prog_ids[0]");
-+	ASSERT_EQ(optq.prog_ids[1], id3, "prog_ids[1]");
-+	ASSERT_EQ(optq.prog_ids[2], id1, "prog_ids[2]");
-+	ASSERT_EQ(optq.prog_ids[3], id4, "prog_ids[3]");
-+	ASSERT_EQ(optq.prog_ids[4], 0, "prog_ids[4]");
-+	ASSERT_EQ(optq.link_ids, NULL, "link_ids");
-+
-+cleanup4:
-+	bpf_link__destroy(link4);
-+	assert_mprog_count(cg, atype, 3);
-+
-+cleanup3:
-+	bpf_link__destroy(link3);
-+	assert_mprog_count(cg, atype, 2);
-+
-+	/* Check revision after two detach operations */
-+	err =3D bpf_prog_query_opts(cg, atype, &optq);
-+	ASSERT_OK(err, "prog_query");
-+	ASSERT_EQ(optq.revision, 7, "revision");
-+
-+cleanup2:
-+	bpf_link__destroy(link2);
-+	assert_mprog_count(cg, atype, 1);
-+
-+cleanup1:
-+	bpf_link__destroy(link1);
-+	assert_mprog_count(cg, atype, 0);
-+
-+cleanup:
-+	cgroup_mprog__destroy(skel);
-+	close(cg);
-+}
-+
-+static void test_preorder_prog_attach_detach(int atype)
-+{
-+	LIBBPF_OPTS(bpf_prog_attach_opts, opta);
-+	LIBBPF_OPTS(bpf_prog_detach_opts, optd);
-+	__u32 fd1, fd2, fd3, fd4;
-+	struct cgroup_mprog *skel;
-+	int cg, err;
-+
-+	cg =3D test__join_cgroup("/preorder_prog_attach_detach");
-+	if (!ASSERT_GE(cg, 0, "join_cgroup /preorder_prog_attach_detach"))
-+		return;
-+
-+	skel =3D cgroup_mprog__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_load"))
-+		goto cleanup;
-+
-+	fd1 =3D bpf_program__fd(skel->progs.getsockopt_1);
-+	fd2 =3D bpf_program__fd(skel->progs.getsockopt_2);
-+	fd3 =3D bpf_program__fd(skel->progs.getsockopt_3);
-+	fd4 =3D bpf_program__fd(skel->progs.getsockopt_4);
-+
-+	assert_mprog_count(cg, atype, 0);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.flags =3D BPF_F_ALLOW_MULTI,
-+		.expected_revision =3D 1,
-+	);
-+
-+	/* ordering: [fd1] */
-+	err =3D bpf_prog_attach_opts(fd1, cg, atype, &opta);
-+	if (!ASSERT_EQ(err, 0, "prog_attach"))
-+		goto cleanup;
-+
-+	assert_mprog_count(cg, atype, 1);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_PREORDER,
-+		.expected_revision =3D 2,
-+	);
-+
-+	/* ordering: [fd1, fd2] */
-+	err =3D bpf_prog_attach_opts(fd2, cg, atype, &opta);
-+	if (!ASSERT_EQ(err, 0, "prog_attach"))
-+		goto cleanup1;
-+
-+	assert_mprog_count(cg, atype, 2);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_AFTER,
-+		.relative_fd =3D fd2,
-+		.expected_revision =3D 3,
-+	);
-+
-+	err =3D bpf_prog_attach_opts(fd3, cg, atype, &opta);
-+	if (!ASSERT_EQ(err, -EINVAL, "prog_attach"))
-+		goto cleanup2;
-+
-+	assert_mprog_count(cg, atype, 2);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_AFTER | BPF_F_PREORDER,
-+		.relative_fd =3D fd2,
-+		.expected_revision =3D 3,
-+	);
-+
-+	/* ordering: [fd1, fd2, fd3] */
-+	err =3D bpf_prog_attach_opts(fd3, cg, atype, &opta);
-+	if (!ASSERT_EQ(err, 0, "prog_attach"))
-+		goto cleanup2;
-+
-+	assert_mprog_count(cg, atype, 3);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.flags =3D BPF_F_ALLOW_MULTI,
-+		.expected_revision =3D 4,
-+	);
-+
-+	/* ordering: [fd2, fd3, fd1, fd4] */
-+	err =3D bpf_prog_attach_opts(fd4, cg, atype, &opta);
-+	if (!ASSERT_EQ(err, 0, "prog_attach"))
-+		goto cleanup3;
-+
-+	assert_mprog_count(cg, atype, 4);
-+
-+	err =3D bpf_prog_detach_opts(fd4, cg, atype, &optd);
-+	ASSERT_OK(err, "prog_detach");
-+	assert_mprog_count(cg, atype, 3);
-+
-+cleanup3:
-+	err =3D bpf_prog_detach_opts(fd3, cg, atype, &optd);
-+	ASSERT_OK(err, "prog_detach");
-+	assert_mprog_count(cg, atype, 2);
-+
-+cleanup2:
-+	err =3D bpf_prog_detach_opts(fd2, cg, atype, &optd);
-+	ASSERT_OK(err, "prog_detach");
-+	assert_mprog_count(cg, atype, 1);
-+
-+cleanup1:
-+	err =3D bpf_prog_detach_opts(fd1, cg, atype, &optd);
-+	ASSERT_OK(err, "prog_detach");
-+	assert_mprog_count(cg, atype, 0);
-+
-+cleanup:
-+	cgroup_mprog__destroy(skel);
-+	close(cg);
-+}
-+
-+static void test_preorder_link_attach_detach(int atype)
-+{
-+	LIBBPF_OPTS(bpf_cgroup_opts, opta);
-+	struct bpf_link *link1, *link2, *link3, *link4;
-+	struct cgroup_mprog *skel;
-+	__u32 fd2;
-+	int cg;
-+
-+	cg =3D test__join_cgroup("/preorder_link_attach_detach");
-+	if (!ASSERT_GE(cg, 0, "join_cgroup /preorder_link_attach_detach"))
-+		return;
-+
-+	skel =3D cgroup_mprog__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_load"))
-+		goto cleanup;
-+
-+	fd2 =3D bpf_program__fd(skel->progs.getsockopt_2);
-+
-+	assert_mprog_count(cg, atype, 0);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.expected_revision =3D 1,
-+	);
-+
-+	/* ordering: [fd1] */
-+	link1 =3D bpf_program__attach_cgroup_opts(skel->progs.getsockopt_1, cg,=
- &opta);
-+	if (!ASSERT_OK_PTR(link1, "link_attach"))
-+		goto cleanup;
-+
-+	assert_mprog_count(cg, atype, 1);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.flags =3D BPF_F_PREORDER,
-+		.expected_revision =3D 2,
-+	);
-+
-+	/* ordering: [fd1, fd2] */
-+	link2 =3D bpf_program__attach_cgroup_opts(skel->progs.getsockopt_2, cg,=
- &opta);
-+	if (!ASSERT_OK_PTR(link2, "link_attach"))
-+		goto cleanup1;
-+
-+	assert_mprog_count(cg, atype, 2);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.flags =3D BPF_F_AFTER,
-+		.relative_fd =3D fd2,
-+		.expected_revision =3D 3,
-+	);
-+
-+	link3 =3D bpf_program__attach_cgroup_opts(skel->progs.getsockopt_3, cg,=
- &opta);
-+	if (!ASSERT_ERR_PTR(link3, "link_attach"))
-+		goto cleanup2;
-+
-+	assert_mprog_count(cg, atype, 2);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.flags =3D BPF_F_AFTER | BPF_F_PREORDER | BPF_F_LINK,
-+		.relative_fd =3D bpf_link__fd(link2),
-+		.expected_revision =3D 3,
-+	);
-+
-+	/* ordering: [fd1, fd2, fd3] */
-+	link3 =3D bpf_program__attach_cgroup_opts(skel->progs.getsockopt_3, cg,=
- &opta);
-+	if (!ASSERT_OK_PTR(link3, "link_attach"))
-+		goto cleanup2;
-+
-+	assert_mprog_count(cg, atype, 3);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.expected_revision =3D 4,
-+	);
-+
-+	/* ordering: [fd2, fd3, fd1, fd4] */
-+	link4 =3D bpf_program__attach_cgroup_opts(skel->progs.getsockopt_4, cg,=
- &opta);
-+	if (!ASSERT_OK_PTR(link4, "prog_attach"))
-+		goto cleanup3;
-+
-+	assert_mprog_count(cg, atype, 4);
-+
-+	bpf_link__destroy(link4);
-+	assert_mprog_count(cg, atype, 3);
-+
-+cleanup3:
-+	bpf_link__destroy(link3);
-+	assert_mprog_count(cg, atype, 2);
-+
-+cleanup2:
-+	bpf_link__destroy(link2);
-+	assert_mprog_count(cg, atype, 1);
-+
-+cleanup1:
-+	bpf_link__destroy(link1);
-+	assert_mprog_count(cg, atype, 0);
-+
-+cleanup:
-+	cgroup_mprog__destroy(skel);
-+	close(cg);
-+}
-+
-+static void test_invalid_attach_detach(int atype)
-+{
-+	LIBBPF_OPTS(bpf_prog_attach_opts, opta);
-+	__u32 fd1, fd2, id2;
-+	struct cgroup_mprog *skel;
-+	int cg, err;
-+
-+	cg =3D test__join_cgroup("/invalid_attach_detach");
-+	if (!ASSERT_GE(cg, 0, "join_cgroup /invalid_attach_detach"))
-+		return;
-+
-+	skel =3D cgroup_mprog__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_load"))
-+		goto cleanup;
-+
-+	fd1 =3D bpf_program__fd(skel->progs.getsockopt_1);
-+	fd2 =3D bpf_program__fd(skel->progs.getsockopt_2);
-+
-+	id2 =3D id_from_prog_fd(fd2);
-+
-+	assert_mprog_count(cg, atype, 0);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_BEFORE | BPF_F_AFTER,
-+		.relative_id =3D id2,
-+	);
-+
-+	err =3D bpf_prog_attach_opts(fd1, cg, atype, &opta);
-+	ASSERT_EQ(err, -EINVAL, "prog_attach");
-+	assert_mprog_count(cg, atype, 0);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_BEFORE | BPF_F_ID,
-+	);
-+
-+	err =3D bpf_prog_attach_opts(fd1, cg, atype, &opta);
-+	ASSERT_EQ(err, -ENOENT, "prog_attach");
-+	assert_mprog_count(cg, atype, 0);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_AFTER | BPF_F_ID,
-+	);
-+
-+	err =3D bpf_prog_attach_opts(fd1, cg, atype, &opta);
-+	ASSERT_EQ(err, -ENOENT, "prog_attach");
-+	assert_mprog_count(cg, atype, 0);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_BEFORE | BPF_F_AFTER,
-+		.relative_id =3D id2,
-+	);
-+
-+	err =3D bpf_prog_attach_opts(fd1, cg, atype, &opta);
-+	ASSERT_EQ(err, -EINVAL, "prog_attach");
-+	assert_mprog_count(cg, atype, 0);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_LINK,
-+		.relative_id =3D id2,
-+	);
-+
-+	err =3D bpf_prog_attach_opts(fd1, cg, atype, &opta);
-+	ASSERT_EQ(err, -EINVAL, "prog_attach");
-+	assert_mprog_count(cg, atype, 0);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.flags =3D BPF_F_ALLOW_MULTI,
-+		.relative_id =3D id2,
-+	);
-+
-+	err =3D bpf_prog_attach_opts(fd1, cg, atype, &opta);
-+	ASSERT_EQ(err, -EINVAL, "prog_attach");
-+	assert_mprog_count(cg, atype, 0);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_BEFORE,
-+		.relative_fd =3D fd1,
-+	);
-+
-+	err =3D bpf_prog_attach_opts(fd1, cg, atype, &opta);
-+	ASSERT_EQ(err, -ENOENT, "prog_attach");
-+	assert_mprog_count(cg, atype, 0);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_AFTER,
-+		.relative_fd =3D fd1,
-+	);
-+
-+	err =3D bpf_prog_attach_opts(fd1, cg, atype, &opta);
-+	ASSERT_EQ(err, -ENOENT, "prog_attach");
-+	assert_mprog_count(cg, atype, 0);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.flags =3D BPF_F_ALLOW_MULTI,
-+	);
-+
-+	err =3D bpf_prog_attach_opts(fd1, cg, atype, &opta);
-+	if (!ASSERT_EQ(err, 0, "prog_attach"))
-+		goto cleanup;
-+	assert_mprog_count(cg, atype, 1);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_AFTER,
-+	);
-+
-+	err =3D bpf_prog_attach_opts(fd1, cg, atype, &opta);
-+	ASSERT_EQ(err, -EINVAL, "prog_attach");
-+	assert_mprog_count(cg, atype, 1);
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.flags =3D BPF_F_ALLOW_MULTI | BPF_F_REPLACE | BPF_F_AFTER,
-+		.replace_prog_fd =3D fd1,
-+	);
-+
-+	err =3D bpf_prog_attach_opts(fd1, cg, atype, &opta);
-+	ASSERT_EQ(err, -EINVAL, "prog_attach");
-+	assert_mprog_count(cg, atype, 1);
-+cleanup:
-+	cgroup_mprog__destroy(skel);
-+	close(cg);
-+}
-+
-+void test_cgroup_mprog_opts(void)
-+{
-+	if (test__start_subtest("prog_attach_detach"))
-+		test_prog_attach_detach(BPF_CGROUP_GETSOCKOPT);
-+	if (test__start_subtest("link_attach_detach"))
-+		test_link_attach_detach(BPF_CGROUP_GETSOCKOPT);
-+	if (test__start_subtest("preorder_prog_attach_detach"))
-+		test_preorder_prog_attach_detach(BPF_CGROUP_GETSOCKOPT);
-+	if (test__start_subtest("preorder_link_attach_detach"))
-+		test_preorder_link_attach_detach(BPF_CGROUP_GETSOCKOPT);
-+	if (test__start_subtest("invalid_attach_detach"))
-+		test_invalid_attach_detach(BPF_CGROUP_GETSOCKOPT);
-+}
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_mprog_ordering=
-.c b/tools/testing/selftests/bpf/prog_tests/cgroup_mprog_ordering.c
-new file mode 100644
-index 000000000000..4a4e9710b474
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_mprog_ordering.c
-@@ -0,0 +1,77 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+#include <test_progs.h>
-+#include "cgroup_helpers.h"
-+#include "cgroup_preorder.skel.h"
-+
-+static int run_getsockopt_test(int cg_parent, int sock_fd, bool has_rela=
-tive_fd)
-+{
-+	LIBBPF_OPTS(bpf_prog_attach_opts, opts);
-+	enum bpf_attach_type prog_p_atype, prog_p2_atype;
-+	int prog_p_fd, prog_p2_fd;
-+	struct cgroup_preorder *skel =3D NULL;
-+	struct bpf_program *prog;
-+	__u8 *result, buf;
-+	socklen_t optlen;
-+	int err =3D 0;
-+
-+	skel =3D cgroup_preorder__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "cgroup_preorder__open_and_load"))
-+		return 0;
-+
-+	LIBBPF_OPTS_RESET(opts);
-+	opts.flags =3D BPF_F_ALLOW_MULTI;
-+	prog =3D skel->progs.parent;
-+	prog_p_fd =3D bpf_program__fd(prog);
-+	prog_p_atype =3D bpf_program__expected_attach_type(prog);
-+	err =3D bpf_prog_attach_opts(prog_p_fd, cg_parent, prog_p_atype, &opts)=
-;
-+	if (!ASSERT_OK(err, "bpf_prog_attach_opts-parent"))
-+		goto close_skel;
-+
-+	opts.flags =3D BPF_F_ALLOW_MULTI | BPF_F_BEFORE;
-+	if (has_relative_fd)
-+		opts.relative_fd =3D prog_p_fd;
-+	prog =3D skel->progs.parent_2;
-+	prog_p2_fd =3D bpf_program__fd(prog);
-+	prog_p2_atype =3D bpf_program__expected_attach_type(prog);
-+	err =3D bpf_prog_attach_opts(prog_p2_fd, cg_parent, prog_p2_atype, &opt=
-s);
-+	if (!ASSERT_OK(err, "bpf_prog_attach_opts-parent_2"))
-+		goto detach_parent;
-+
-+	err =3D getsockopt(sock_fd, SOL_IP, IP_TOS, &buf, &optlen);
-+	if (!ASSERT_OK(err, "getsockopt"))
-+		goto detach_parent_2;
-+
-+	result =3D skel->bss->result;
-+	ASSERT_TRUE(result[0] =3D=3D 4 && result[1] =3D=3D 3, "result values");
-+
-+detach_parent_2:
-+	ASSERT_OK(bpf_prog_detach2(prog_p2_fd, cg_parent, prog_p2_atype),
-+		  "bpf_prog_detach2-parent_2");
-+detach_parent:
-+	ASSERT_OK(bpf_prog_detach2(prog_p_fd, cg_parent, prog_p_atype),
-+		  "bpf_prog_detach2-parent");
-+close_skel:
-+	cgroup_preorder__destroy(skel);
-+	return err;
-+}
-+
-+void test_cgroup_mprog_ordering(void)
-+{
-+	int cg_parent =3D -1, sock_fd =3D -1;
-+
-+	cg_parent =3D test__join_cgroup("/parent");
-+	if (!ASSERT_GE(cg_parent, 0, "join_cgroup /parent"))
-+		goto out;
-+
-+	sock_fd =3D socket(AF_INET, SOCK_STREAM, 0);
-+	if (!ASSERT_GE(sock_fd, 0, "socket"))
-+		goto out;
-+
-+	ASSERT_OK(run_getsockopt_test(cg_parent, sock_fd, false), "getsockopt_t=
-est_1");
-+	ASSERT_OK(run_getsockopt_test(cg_parent, sock_fd, true), "getsockopt_te=
-st_2");
-+
-+out:
-+	close(sock_fd);
-+	close(cg_parent);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/cgroup_mprog.c b/tools/tes=
-ting/selftests/bpf/progs/cgroup_mprog.c
-new file mode 100644
-index 000000000000..6a0ea02c4de2
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/cgroup_mprog.c
-@@ -0,0 +1,30 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+SEC("cgroup/getsockopt")
-+int getsockopt_1(struct bpf_sockopt *ctx)
-+{
-+	return 1;
-+}
-+
-+SEC("cgroup/getsockopt")
-+int getsockopt_2(struct bpf_sockopt *ctx)
-+{
-+	return 1;
-+}
-+
-+SEC("cgroup/getsockopt")
-+int getsockopt_3(struct bpf_sockopt *ctx)
-+{
-+	return 1;
-+}
-+
-+SEC("cgroup/getsockopt")
-+int getsockopt_4(struct bpf_sockopt *ctx)
-+{
-+	return 1;
-+}
---=20
-2.47.1
+
+> 
+>>
+>> Yonghong Song (4):
+>>    selftests/bpf: Reduce test_xdp_adjust_frags_tail_grow logs
+>>    selftests/bpf: Fix bpf_mod_race test failure with arm64 64KB page size
+>>    selftests/bpf: Fix ringbuf/ringbuf_write test failure with arm64 64KB
+>>      page size
+>>    selftests/bpf: Fix a user_ringbuf failure with arm64 64KB page size
+>>
+>>   .../selftests/bpf/prog_tests/bpf_mod_race.c    |  2 +-
+>>   .../testing/selftests/bpf/prog_tests/ringbuf.c |  5 +++--
+>>   .../selftests/bpf/prog_tests/user_ringbuf.c    |  6 ++++--
+>>   .../selftests/bpf/prog_tests/xdp_adjust_tail.c | 18 ++++++++++++------
+>>   .../selftests/bpf/progs/test_ringbuf_write.c   |  5 +++--
+>>   5 files changed, 23 insertions(+), 13 deletions(-)
+>>
+>> --
+>> 2.47.1
+>>
 
 
