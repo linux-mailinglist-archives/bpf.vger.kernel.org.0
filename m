@@ -1,125 +1,139 @@
-Return-Path: <bpf+bounces-59940-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59941-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF724AD0967
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 23:23:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8825BAD0971
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 23:30:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AFD2417AD4F
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 21:23:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2B763B46ED
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 21:30:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49A3723506A;
-	Fri,  6 Jun 2025 21:23:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37313236A79;
+	Fri,  6 Jun 2025 21:30:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YF6/WaLW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hCB85euJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D39A1E9906
-	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 21:23:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A05001A76BC;
+	Fri,  6 Jun 2025 21:30:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749245030; cv=none; b=OtzFM4HeWdEZ5XbJGUPYYSirhvDCz7JCoDdu+lTvC9UtR3czxZrTPcLvqR1BgRn0Hnij6wU0jkBpgzie+qk/H4b8h/byTNqyv0QiXW6GiL5lFeDmUHRf76SgazVfe+wj34EW7MGX32+FTVTQQ0GP20yZ2+0lN8EJhJdnEh42Uq0=
+	t=1749245424; cv=none; b=PZnbDmw6h3h+BVwsGUNe7lfqtte17UY+6W5kZU4tt8ekjjKPXIN+MnFR1HZL1V/72dxNGPmQ2rWF2sPnlO+qMjz4ZQ8e7VOSr6Wcsf99uajrT6DAkrNLO7ZGlItg4lML5Og0Tvy3lD4PVdiJIO0Y1DJArCnPmXle2j1UA/Ibu+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749245030; c=relaxed/simple;
-	bh=e8KIp1E7wOMyEG9Cxf0GM5kI67QemCg6sXeuxPjmYyg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Rl2SkL9ULy6IwFhx0+y8QGcBezFyCruXWsZIQU9RXfsp5Mw36NVZxZ1KKuAHbRLGWTRmT8MEK1YrH79FA+IOOmyzbvXj8PEMsiocehdMeCX2aKwDgJ9XWlTJtm2xyo9v42IQ3YV2kwG9SBaW08PbyNh4Uu2+bonjihdISisZQgE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YF6/WaLW; arc=none smtp.client-ip=95.215.58.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <2afefc5b-5bb9-416e-894d-e604f39d7ab7@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1749245019;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EqQan0Qh/7ETb6I/nMU1V8V+yIXgsd7Yyir5duNSl0A=;
-	b=YF6/WaLWf0AnVGw98cyb/eovUJt2ZIb5ROEZXUb6PcFrnq4Xg0p34c3KeHgrBw2f45W/PF
-	qT5f3dSof01WyiTFKl/sXll+lHVJATwgJrswiodhk7cKab8kCqYQBh0/ftMy5ZAydevA0i
-	q8zOObkIG65yvmhxrkSGS8uiwJHlwQM=
-Date: Fri, 6 Jun 2025 14:23:31 -0700
+	s=arc-20240116; t=1749245424; c=relaxed/simple;
+	bh=L+1GPDYfhNOgc+mO/H4gde3c82WpRfUT5pLQa3xR3Ww=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GzvBwriyAY28dWlBVl0xU7tsu3mgeN5heX6GAe6bkqLSwY4tyik+TDv3AEUIj7dZ4F/0+FC+zJFffnkUps9K/ROAVsRhrk0BS62oengH4K5gGFBK/+xLA8wmUedjrbpAqQaBNUl0CD+cNRH7keKDJXyVXpYVW91uoHF3yXtmQBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hCB85euJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AF36C4CEEB;
+	Fri,  6 Jun 2025 21:30:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749245424;
+	bh=L+1GPDYfhNOgc+mO/H4gde3c82WpRfUT5pLQa3xR3Ww=;
+	h=From:To:Cc:Subject:Date:From;
+	b=hCB85euJkYT+0y7l3nmpSXI5JYMqrzlPKjDLcQnAJoR+P3z8OT+pGtfXu1E1cDxTE
+	 fppAQiToSm9u7Opxp41uhSrVdwxELX3N6ZAEerLFT8RwkMWlIxxPfyNFrC5CfL72ir
+	 1WNkESJOskl7d4Tfo7+eMWXf+lkTYrlNcmXMoQTNmNo00musdrZwbE6kjpMVy+JD49
+	 IaWdZbqJEN+UhKFMZ8jd0UdVN8mcVIEh/C00X1Lcr0I9f4wMzouLv6QYUoTkx1Z/F3
+	 Fe42LkCzmqVsXyPa4d/bO3i68PIAWE7F/Wvw3MQe/93A1A61GCOSUc6vwsEGKkIc7g
+	 v612eVKGyFUdA==
+From: Song Liu <song@kernel.org>
+To: bpf@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-security-module@vger.kernel.org
+Cc: kernel-team@meta.com,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	viro@zeniv.linux.org.uk,
+	brauner@kernel.org,
+	jack@suse.cz,
+	kpsingh@kernel.org,
+	mattbobrowski@google.com,
+	amir73il@gmail.com,
+	repnop@google.com,
+	jlayton@kernel.org,
+	josef@toxicpanda.com,
+	mic@digikod.net,
+	gnoack@google.com,
+	m@maowtm.org,
+	Song Liu <song@kernel.org>
+Subject: [PATCH v3 bpf-next 0/5] bpf path iterator
+Date: Fri,  6 Jun 2025 14:30:10 -0700
+Message-ID: <20250606213015.255134-1-song@kernel.org>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 3/4] selftests/bpf: Fix ringbuf/ringbuf_write
- test failure with arm64 64KB page size
-Content-Language: en-GB
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
-References: <20250606174139.3036576-1-yonghong.song@linux.dev>
- <20250606174155.3037298-1-yonghong.song@linux.dev>
- <CAADnVQJ+eOP7N4ihV6fkOQHiEc6fkH4qkcJnHogUoLWexsj-PA@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAADnVQJ+eOP7N4ihV6fkOQHiEc6fkH4qkcJnHogUoLWexsj-PA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
+In security use cases, it is common to apply rules to VFS subtrees.
+However, filtering files in a subtree is not straightforward [1].
 
-On 6/6/25 1:53 PM, Alexei Starovoitov wrote:
-> On Fri, Jun 6, 2025 at 10:42 AM Yonghong Song <yonghong.song@linux.dev> wrote:
->> The ringbuf max_entries must be PAGE_ALIGNED. See kernel function
->> ringbuf_map_alloc(). So for arm64 64KB page size, adjust max_entries
->> properly.
->>
->> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
->> ---
->>   tools/testing/selftests/bpf/prog_tests/ringbuf.c       | 5 +++--
->>   tools/testing/selftests/bpf/progs/test_ringbuf_write.c | 5 +++--
->>   2 files changed, 6 insertions(+), 4 deletions(-)
->>
->> diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
->> index da430df45aa4..89fd3401a23e 100644
->> --- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
->> +++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
->> @@ -97,7 +97,8 @@ static void ringbuf_write_subtest(void)
->>          if (!ASSERT_OK_PTR(skel, "skel_open"))
->>                  return;
->>
->> -       skel->maps.ringbuf.max_entries = 0x4000;
->> +       skel->maps.ringbuf.max_entries = 4 * page_size;
->> +       skel->rodata->reserve_size = 3 * page_size;
->>
->>          err = test_ringbuf_write_lskel__load(skel);
->>          if (!ASSERT_OK(err, "skel_load"))
->> @@ -108,7 +109,7 @@ static void ringbuf_write_subtest(void)
->>          mmap_ptr = mmap(NULL, page_size, PROT_READ | PROT_WRITE, MAP_SHARED, rb_fd, 0);
->>          if (!ASSERT_OK_PTR(mmap_ptr, "rw_cons_pos"))
->>                  goto cleanup;
->> -       *mmap_ptr = 0x3000;
->> +       *mmap_ptr = 3 * page_size;
->>          ASSERT_OK(munmap(mmap_ptr, page_size), "unmap_rw");
->>
->>          skel->bss->pid = getpid();
->> diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf_write.c b/tools/testing/selftests/bpf/progs/test_ringbuf_write.c
->> index 350513c0e4c9..9acef7afbe8a 100644
->> --- a/tools/testing/selftests/bpf/progs/test_ringbuf_write.c
->> +++ b/tools/testing/selftests/bpf/progs/test_ringbuf_write.c
->> @@ -12,6 +12,7 @@ struct {
->>
->>   /* inputs */
->>   int pid = 0;
->> +const volatile int reserve_size = 0;
-> See CI failure:
-> |test_ringbuf_write.bpf.o|test_ringbuf_write|success -> failure (!!)|+0.00 % |
->
-> I think it's better to init reserve_size with some reasonable
-> constant to keep veristat happy.
+One solution to this problem is to start from a path and walk up the VFS
+tree (towards the root). Among in-tree LSMs, Landlock uses this solution.
 
-Yes, I am aware of this and actually fixed locally already. Will send out v3 soon.
+BPF LSM solutions, such like Tetragon [2], also use similar approaches.
+However, due to lack of proper helper/kfunc support, BPF LSM solutions
+usually do the path walk with probe read, which is racy.
 
->
-> pw-bot: cr
+This patchset introduces a new helper path_walk_parent, which walks
+path to its VFS parent. The helper is used in Landlock.
 
+A new BPF iterator, path iterator, is introduced to do the path walking.
+The BPF path iterator uses the new path_walk_parent help to walk the VFS
+tree.
+
+Changes v2 => v3:
+1. Fix an issue with path_walk_parent.
+2. Move bpf path iterator to fs/bpf_fs_kfuncs.c
+3. Optimize bpf path iterator (less memory).
+4. Add more selftests.
+5. Add more comments.
+
+v2: https://lore.kernel.org/bpf/20250603065920.3404510-1-song@kernel.org/
+
+Changes v1 => v2:
+1. Rename path_parent => path_walk_parent.
+2. Remove path_connected check in path_walk_parent.
+3. Fix is_access_to_paths_allowed().
+4. Remove mode for path iterator, add a flag instead.
+
+v1: https://lore.kernel.org/bpf/20250528222623.1373000-1-song@kernel.org/
+
+[1] https://lpc.events/event/18/contributions/1940/
+[2] https://github.com/cilium/tetragon/
+
+Song Liu (5):
+  namei: Introduce new helper function path_walk_parent()
+  landlock: Use path_walk_parent()
+  bpf: Introduce path iterator
+  selftests/bpf: Add tests for bpf path iterator
+  selftests/bpf: Path walk test
+
+ fs/bpf_fs_kfuncs.c                            |  73 +++++++++
+ fs/namei.c                                    |  51 ++++++
+ include/linux/namei.h                         |   2 +
+ kernel/bpf/verifier.c                         |   5 +
+ security/landlock/fs.c                        |  31 ++--
+ .../testing/selftests/bpf/bpf_experimental.h  |   6 +
+ .../selftests/bpf/prog_tests/path_iter.c      | 111 ++++++++++++++
+ tools/testing/selftests/bpf/progs/path_iter.c | 145 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/path_walk.c |  59 +++++++
+ 9 files changed, 462 insertions(+), 21 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/path_iter.c
+ create mode 100644 tools/testing/selftests/bpf/progs/path_iter.c
+ create mode 100644 tools/testing/selftests/bpf/progs/path_walk.c
+
+--
+2.47.1
 
