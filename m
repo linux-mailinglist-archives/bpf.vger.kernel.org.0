@@ -1,182 +1,176 @@
-Return-Path: <bpf+bounces-59876-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59877-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A15AAD0687
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 18:21:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83573AD068C
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 18:22:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1420A17B2F6
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 16:21:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 682097AB523
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 16:21:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCF02289E03;
-	Fri,  6 Jun 2025 16:21:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80CF6289E0E;
+	Fri,  6 Jun 2025 16:22:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N2WbI4JF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AkgXZ7UD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6BF21DE3C7;
-	Fri,  6 Jun 2025 16:21:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A9CD1A38F9;
+	Fri,  6 Jun 2025 16:22:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749226883; cv=none; b=S2lJiVMbOKv6mTtm5WSfTQBgxbxgLF4i0ZUiUqKbXuqpvdB4ekpwWgKPAsOaHBG1ReLOEi4TL/w9Q+QqwKgNs+eFxVk0ukW74yEcPRuMptv47Vdo05pNP5AFvVCVHkR3zLoSWakkwwyffe5zHnmFMv+oPPi7a19JIBX9HhKUhFU=
+	t=1749226959; cv=none; b=fm6bcHjXiVi9A3prklGc9FJzVHDh05S6JhT4KRG0YxDjUv/Ivtkgx98uSIr0IWiaCaby1RGDzsnOnFYN4SizgXoBYnuDG3VqxnBHijzfKLjbgyzPOluqeyaH1jH5lGRG+e9O/bhy7uTkuQCTtIggyI+iiys26pIPwP55ZrOjcvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749226883; c=relaxed/simple;
-	bh=SsABznqS+74Ku7nIalgWQ6r5XRamMp7UZkh/psf+9Kw=;
+	s=arc-20240116; t=1749226959; c=relaxed/simple;
+	bh=jn0A54m+AigrC0Kje3Ksl/fHLeDP7CfNeV5+EpwZARg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=vDYq6o5CmK9pKW6vv35JBBnTBhpVxDlxErkU0QzzRhFyq+orgWNbXtBtwCHrVSLzuqyEjhs5w7E6CkSOaFsqNM79uzyRlUBUarmL9lzpdMWkNd/N9vVO+HwEFEj8MmNSoPcHahRQL4km+nDpZQ4FnOmLya7QWu61WUhaeyoMvJY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N2WbI4JF; arc=none smtp.client-ip=209.85.161.54
+	 To:Cc:Content-Type; b=ucVkzGH6dyL7zsQDSNp9HaXFqWA9x/PoCGVtPI827VfKvkkfVtcXB+fQAyFvTCKLwuEgPGzXX7QqNaNX+9vcRVOs6A+aeE/mf6qrXTmcyf2S/UynX7nrCQ+/coGob4iBXn5CvjhxA80KGrwSUVOhbjoBzVlHMRWjt22UaNYHL1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AkgXZ7UD; arc=none smtp.client-ip=209.85.221.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-60ef6bf2336so1651651eaf.0;
-        Fri, 06 Jun 2025 09:21:21 -0700 (PDT)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3a503d9ef59so1842938f8f.3;
+        Fri, 06 Jun 2025 09:22:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749226881; x=1749831681; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1749226956; x=1749831756; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0JA6lc95yGfo9qkQDGqCiJRxdLRQP3UK8ri3kJPzAPU=;
-        b=N2WbI4JF3w3EA9UJgkWvMFTQ2bVl8oNgttV8Ej4S5RBZIN2vdhkisTGaty8wngUiY4
-         LHEeAltvtAHfRb570Y4bo9HG5Th3zs6vGtF+imAzVX9RZZ7XATusrcNJykTz8cbhjR0R
-         QzQoyRe0fYHZ4YmMANUUcwX5U+gLdB8Gshd5aNTOIoEqHZwVsoTsaNDZBvXKzewCMyhL
-         DY4a4zWiTXxBBXcHCTBPLQtXqwFdxA+1K1AyUURLgjfSl1RuMo8tvuMJGvMcuqq7Myng
-         YQoGcGikfsUb8VNy+L+QTP0IhEOmGUqyFxqGsA8iRzrX1d/gfkMv55nQqlVSqeS9HXtq
-         NQng==
+        bh=KP+8ZJbQ3Iy35rM91JKh8W2oEf1yzBugHuEwD4w/SXs=;
+        b=AkgXZ7UDFNmFeYGhbkVSl3n2NGvuvMlYq0xAE5qojNwJCIuj1h8CxGwj1sEbx3Sm9X
+         gAhku1mlnsCXc+oNOgKd9oy6DeT6OXAscJntKBGypIcpmMem8lkKSsNnJIhC3a+9HH9k
+         +92yRFDFdsK1Kf9E6lvHf4gVJ2T0xZn8fm2Km8G+St/p2rwGPH1oEvON1brbevZ+UrMP
+         ycTqgPHpWUFSQFocgicFUl0pKJLRuRJt7yXnIqQ7nVLdeaNCxqu/AcjqtXLoKdQhSYa6
+         CHfcBTCLj7uB/5fgQpX+ygypYTvCni65ByH8JhssS6sIzJus9rQEn6+7wqkumPfYVj+y
+         2z8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749226881; x=1749831681;
+        d=1e100.net; s=20230601; t=1749226956; x=1749831756;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0JA6lc95yGfo9qkQDGqCiJRxdLRQP3UK8ri3kJPzAPU=;
-        b=rP1vvip3dblsHW6GkUewKmPhisPDkuBvyVUnI3Pmx9Cn9Re6cvd3xX6PKh4CAbKMld
-         h5DqjnC0FT/tJqeYRK/nTCZV0Ld8qwCVtTnn2n9ehEcyvxSuvXxw5Vmv7C7n6iwcmDdD
-         nVL97BS+Wt2F4kkOFCPdMsnXhRgaDlYJeY6XBsISGJ74qcPMJBwfYh2m+GflCvLtvR9I
-         S1cHr++mKTHN+UpN1ioXFisfGkbFwcW747yHgf3amDKRlTTUWVuXd8xhvggwXa4+nA7v
-         jwjPBaPww0YIVDnkX88za7I2GtxKpdlPc+8uuJ64G/DrEnVu4CGySgQZG9x8LgVVcOB8
-         q26w==
-X-Forwarded-Encrypted: i=1; AJvYcCU5s0Eu5dOlJdViK1kzl2omw3YNa2ZIkhb56osdPKFhNxQ3W3YBMONou3aGodp23bsms2FQaK+MloRBTVyR@vger.kernel.org, AJvYcCUXKAkAtfzXq4yGta0nBRTH7cwYFzVQC9Buih0EDx1jr+mt4Q9lg9RZSvIRN5h6QwWXTlQ=@vger.kernel.org, AJvYcCUqB29CaP9qPybkSFYFcRB+vxCz+H54n30VAKQjCzfON2ZSnz1NNP9F3wnuAHs9764paf4ZBqxGA185m3D02PyUTQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwcdH2KGDlew4zttOokwb7UrRwh+tVSRrdqPpUhI/P0ECpRLZEl
-	lY8BPWHRlJ3F4bsdKBBDDafuAohKMkMrpyvWdPQFY1MFQGCoWpPCZpsu9rlfBd2GQ7ymNa/Ezfj
-	RlPfbiLmnDqI1tOx+yH7QrTZ8QIsyamWNrJIt
-X-Gm-Gg: ASbGnctweFQIPV66/Ddjum8E0w7JzrJnvqC+MtBnaPAsSYcdtoHWnfH/QI2xlNJFztm
-	wIsDbzbzblShzb9PDmZZm4NcKru3VfyAdkXj5uXTo2ZIXgSb/I1ZPxUKUSX8O+rEjc4G7KpCXfR
-	8h5Wtn/Cu9SUFLD3WukDcpgFGhfnpQZDLlqOAqDjbBQw==
-X-Google-Smtp-Source: AGHT+IGCSqQp15n0QAdFL76AqBOrGxXPE6HwOt3EeXCbeyYM1elDNyrslevOvDrZHELS/En4ToKZPvY/UKYPR7KOVsc=
-X-Received: by 2002:a17:90b:2252:b0:311:f684:d3cd with SMTP id
- 98e67ed59e1d1-313472fcd3dmr7263430a91.12.1749226869675; Fri, 06 Jun 2025
- 09:21:09 -0700 (PDT)
+        bh=KP+8ZJbQ3Iy35rM91JKh8W2oEf1yzBugHuEwD4w/SXs=;
+        b=C9luDzNnwEj/qVwbg+hZDwbvQkRn+OSx7imKbIsjf5brvJxhSlf8g3xDleDVPP8ccy
+         W2m6soXzU6hWJww8rCos+Z0np2pps7itTnFPPXT6aUI4dG85dxNMz6mKxzSi5w8NgYK3
+         eGmRE6qoaAgo9KW9RqeTF2giuMx4Gsen6x50ULFjm7Tftw7/yW/fRMBH5Ndo9C5R5XK+
+         eUerEbdO7mYkuI+lGrN+BCzRMV/uhngKuuqG/2qX65IUqYK2IgyfKKsFiQPwb02vY81F
+         nw2il4r1JJYLSJX4eHxrnPscfPaPOoixpd0YzQpcZ9ZmNrdWifOrhYkT16EsiQ+bvvGH
+         3lLA==
+X-Forwarded-Encrypted: i=1; AJvYcCUJbyizmhBsoQVseY5v6Obm4QSZ/vwxmy3cyZY2bzR+TOw60tG/GCfXdcsX0NOEE2dYH4kDJLpqPyiIJNkrAaRW@vger.kernel.org, AJvYcCWfzbpivWrRUMsbWdttOB8g5Ys4PkXV3luJljFy9yKSDfleilrbxc1FkLEmwlqqbzfbcCmfQsrFAA==@vger.kernel.org, AJvYcCX/FfMbyS9bcZPDc7PkzsC0uleYO5MWU8m9iMCuu29TVd5nFxsR6PQwOBf12zHyNbO6mPA=@vger.kernel.org, AJvYcCX6TCrxZ0lb5eiU3Xwa2sytpqCixep6zVUjm+lIZ5YcWnmS92EVxiotd0s5/U5niLzwEHNSmSev+rCRdkzQ@vger.kernel.org
+X-Gm-Message-State: AOJu0YyYQ9ns578lsokB+R8bo+pWe0UiApeTD98NcSYhhOAmp8H4tn3J
+	7xDDlvTszRhjgwKweVhz/FWV8yBTxafaf9UWYa9ss7fvqPebvSA4hO1hhqF2/lO6rXW4QypNsG2
+	PY0Ay1//YIxj4yKQ19xgmkY7GPLFrjuo=
+X-Gm-Gg: ASbGncvmLMLfmjTMW3A7SS1QZiaAxXAVfKkeI4+nDMC3KjPJG90joNpnYXD3gIVhtX5
+	GqZGpDU2l6VY0ZInLSZSFHnVv4QICM08GRPouRyTc/j5TeCNGBxZfs3zREtiavMA88JzHXhr6pO
+	j2V4gxZEOJFiphY90uFaGl/JYEdGIqPq2bkFJ5ZNyH8pjQVZC2OWSZ2offN4eWtg==
+X-Google-Smtp-Source: AGHT+IGVEAky3KX3oy4NEAVyuC3jToJkW1CmYjw5OMscoOz7z7KXYJisj9AihaxTJFjuwXjoE5ERBeNQiq7yk/6UiSY=
+X-Received: by 2002:a05:6000:288c:b0:3a4:db49:94aa with SMTP id
+ ffacd0b85a97d-3a531ab5272mr3524523f8f.21.1749226955387; Fri, 06 Jun 2025
+ 09:22:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <aEMLU2li1x2bAO4w@x1> <20250606161406.GH8020@e132581.arm.com>
-In-Reply-To: <20250606161406.GH8020@e132581.arm.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 6 Jun 2025 09:20:57 -0700
-X-Gm-Features: AX0GCFuUPtZk0JRK5pyxo55eADkqd6qDCZKEMFWm6cVuCiPqwkVJVPXOPFUNfQc
-Message-ID: <CAEf4BzY2UEe9e53Ums=d-mMVgBdc5JnVAboKz1LLmvKRk5O=jA@mail.gmail.com>
-Subject: Re: BTF loading failing on perf
-To: Leo Yan <leo.yan@arm.com>, Lorenz Bauer <lmb@isovalent.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Alan Maguire <alan.maguire@oracle.com>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org
+References: <20250411-many_args_arm64-v1-0-0a32fe72339e@bootlin.com>
+ <20250411-many_args_arm64-v1-1-0a32fe72339e@bootlin.com> <CAEf4Bzbn6BdXTOb0dTcsQmOMZpp5=DzGS2hHHQ3+dwcja=gv+w@mail.gmail.com>
+ <D98Q8BRNUVS9.11J60C67L1ALR@bootlin.com> <CAEf4BzZHMYyGDZ4c4eNXG7Fm=ecxCCbKhKbQTbCjvWmKtdwvBw@mail.gmail.com>
+ <D9E9IQQ3QKXM.3UJ17G9CBS1FH@bootlin.com> <DADMLIVHMSSO.3AXSI5216WCT6@bootlin.com>
+ <9a2ba0ad-b34d-42f8-89a6-d9a44f007bdc@linux.dev> <DAEFD2WH7HRV.2SOG9Q00QSEXH@bootlin.com>
+ <CAADnVQ+T_s6dAwJ5JKqNqA8tq1P+MdfPvPw0EoY5yOf8PnGT4g@mail.gmail.com> <DAFA7QSTVFQF.3MG5408HBVNT7@bootlin.com>
+In-Reply-To: <DAFA7QSTVFQF.3MG5408HBVNT7@bootlin.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 6 Jun 2025 09:22:24 -0700
+X-Gm-Features: AX0GCFtcDPhEpzZqMjlQoxov485AHY3mrKKmWdCvVJeIQl1NL0jKc2KqPI-LVsc
+Message-ID: <CAADnVQKr3ftNt1uQVrXBE0a2o37ZYRo2PHqCoHUnw6PE5T2LoA@mail.gmail.com>
+Subject: Re: [Question] attributes encoding in BTF
+To: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+Cc: Ihor Solodrai <ihor.solodrai@linux.dev>, Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Puranjay Mohan <puranjay@kernel.org>, Xu Kuohai <xukuohai@huaweicloud.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Florent Revest <revest@chromium.org>, Bastien Curutchet <bastien.curutchet@bootlin.com>, 
+	ebpf@linuxfoundation.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com, 
+	dwarves@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 6, 2025 at 9:14=E2=80=AFAM Leo Yan <leo.yan@arm.com> wrote:
+On Fri, Jun 6, 2025 at 12:45=E2=80=AFAM Alexis Lothor=C3=A9
+<alexis.lothore@bootlin.com> wrote:
 >
-> Hi Arnaldo,
+> Hi Alexei,
 >
-> On Fri, Jun 06, 2025 at 12:37:55PM -0300, Arnaldo Carvalho de Melo wrote:
-> > root@number:~# perf trace -e openat --max-events=3D1
-> > libbpf: failed to read kernel BTF from '/sys/kernel/btf/vmlinux': -ENOD=
-EV
-> > libbpf: failed to read kernel BTF from '/sys/kernel/btf/vmlinux': -ENOD=
-EV
-> >      0.000 ( 0.016 ms): ptyxis-agent/4375 openat(dfd: CWD, filename: "/=
-proc/6593/cmdline", flags: RDONLY|CLOEXEC) =3D 13
-> > root@number:~#
+> On Thu Jun 5, 2025 at 6:09 PM CEST, Alexei Starovoitov wrote:
+> > On Thu, Jun 5, 2025 at 12:35=E2=80=AFAM Alexis Lothor=C3=A9
+> > <alexis.lothore@bootlin.com> wrote:
+> >>
+> >> Hi Ihor,
+> >>
+> >> On Wed Jun 4, 2025 at 7:31 PM CEST, Ihor Solodrai wrote:
+> >> > On 6/4/25 2:02 AM, Alexis Lothor=C3=83=C2=A9 wrote:
+>
+> [...]
+>
+> >> Thanks for the details ! I have missed this possibility, as I have bee=
+n
+> >> assuming that DWARF info was exposing the needed info. I'll take a loo=
+k at
+> >> it, but if those attributes can not be represented by DWARF, I'll have=
+ to
+> >> find another way of getting those packing/alignment modifications on d=
+ata
+> >> type (eg: re-use/share btf__align_of from libbpf, as suggested by Andr=
+ii,
+> >> but it may not able to cover all cases).
 > >
-> > openat(AT_FDCWD, "/sys/kernel/btf/vmlinux", O_RDONLY) =3D 258
-> > mmap(NULL, 6519699, PROT_READ, MAP_PRIVATE, 258, 0) =3D -1 ENODEV (No s=
-uch device)
-> > libbpf: failed to read kernel BTF from '/sys/kernel/btf/vmlinux': -ENOD=
-EV
+> > Not sure all the trouble is worth it.
+> > I feel it's a corner case. Something we don't need to fix.
 >
-> Have you included the commit below in the kernel side?
-
-It doesn't matter, libbpf should silently fallback to non-mmap() way,
-and it clearly doesn't.
-
-We need something like this:
-
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index f1d495dc66bb..37682908cb0f 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -1384,12 +1384,12 @@ static struct btf *btf_parse_raw_mmap(const
-char *path, struct btf *base_btf)
-
-        fd =3D open(path, O_RDONLY);
-        if (fd < 0)
--               return libbpf_err_ptr(-errno);
-+               return ERR_PTR(-errno);
-
-        if (fstat(fd, &st) < 0) {
-                err =3D -errno;
-                close(fd);
--               return libbpf_err_ptr(err);
-+               return ERR_PTR(err);
-        }
-
-        data =3D mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
-@@ -1397,7 +1397,7 @@ static struct btf *btf_parse_raw_mmap(const char
-*path, struct btf *base_btf)
-        close(fd);
-
-        if (data =3D=3D MAP_FAILED)
--               return libbpf_err_ptr(err);
-+               return ERR_PTR(err);
-
-        btf =3D btf_new(data, st.st_size, base_btf, true);
-        if (IS_ERR(btf))
-
-libbpf_err_ptr() should be used for user-facing API functions, they
-return NULL on error and set errno, so checking for IS_ERR() is wrong
-here.
-
-Lorenz, can you please test and send a proper fix ASAP?
-
+> TBH I don't own any specific use case really needing this handling, so if
+> it does not feel worth the trouble, I'm fine with not trying to support
+> this. My effort is rather motivated by the goal of aligning the ARM64
+> features with other platform, and so of getting rid of
+> tools/testing/selftests/bpf/DENYLIST.aarch64.
 >
-> commit a539e2a6d51d1c12d89eec149ccc72ec561639bc
-> Author: Lorenz Bauer <lmb@isovalent.com>
-> Date:   Tue May 20 14:01:17 2025 +0100
+> For the record, this effort also showed that the same kind of issue affec=
+ts
+> other platforms already supporting many args + structs passed by value ([=
+1])
+> - structs alignment with specific alignment constraints are not
+>   specifically handled (eg: a struct with an __int128 as a top-level
+>   member, leading to a 16 byte alignment requirement)
+> - packing and custom alignment is not handled
 >
->     btf: Allow mmap of vmlinux btf
+> From there, I could do two different things:
+> 1. do nothing, keep ARM64 as-is with the current version which has been
+>   recently merged: ARM64 then denies attachment to any function trying to
+>   pass a struct by value on stack. We keep the tracing_struct tests denie=
+d
+>   for ARM64. Other platforms still allow to attach such functions, but ma=
+y
+>   be parsing wrongly arguments in those specific cases.
+> 2. add the constraint applied on ARM64 (refusing attachment when structs =
+are
+>   passed through stack) to other JIT compilers. Then update the
+>   tracing_struct test to ensure this specific case is properly denied on
+>   all platforms to avoid risking reading wrongly arguments passed through
+>   stack when structs or large types are involved.
 >
->     User space needs access to kernel BTF for many modern features of BPF=
-.
->     Right now each process needs to read the BTF blob either in pieces or
->     as a whole. Allow mmaping the sysfs file so that processes can direct=
-ly
->     access the memory allocated for it in the kernel.
->
->     remap_pfn_range is used instead of vm_insert_page due to aarch64
->     compatibility issues.
->
->     Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
->     Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
->     Tested-by: Alan Maguire <alan.maguire@oracle.com>
->     Reviewed-by: Shakeel Butt <shakeel.butt@linux.dev>
->     Link: https://lore.kernel.org/bpf/20250520-vmlinux-mmap-v5-1-e8c941ac=
-c414@isovalent.com
->
-> Thanks,
-> Leo
+> I tend to think 2. is better, but let me know if you have a different
+> opinion here.
+
+Agree. tracing_struct_many_args is working on x86, but assumptions
+about BTF being able to express everything about calling convention
+were not correct, so let's roll back.
 
