@@ -1,278 +1,87 @@
-Return-Path: <bpf+bounces-59946-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59947-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5472FAD0988
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 23:32:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF638AD098A
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 23:32:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9E6297AAC25
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 21:30:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7485C189E958
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 21:32:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C2E724166C;
-	Fri,  6 Jun 2025 21:30:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EEzWkcOy"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45DE6218EB1;
+	Fri,  6 Jun 2025 21:31:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from 69-171-232-180.mail-mxout.facebook.com (69-171-232-180.mail-mxout.facebook.com [69.171.232.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B999B241136;
-	Fri,  6 Jun 2025 21:30:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 557DA218ABD
+	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 21:31:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749245452; cv=none; b=d8PsHORPLQtBF3S3Nslqb9FVQIQVHzosfki11DPx2QRn813u/jF6UA0PjAfPaLvjj7C5l7EQ23wUsn4nBhcw6Jj3qlEQdBXMoxEOGeD5l2qKAYe+uRcPFtWZLBWpVtvdlZwY9f9T6BiBWe+9mVbcmqv2/nWQKe0k77aR0HxsHCE=
+	t=1749245464; cv=none; b=oqBwfGYwRq4tdW5n2ADedqR0vQg3LGPtoO8EuJq7GWL9EBjmlOqxboSqGJ2g2kecAn1FqKdOJ4KLvfpTiHzgJIe+CErPi/2rXPLMrxpTpaWa4hvTSRVymJgBmUHPzvhcbo/C2eOErC6oBjuL0+XX+ps+DZ32bS9Ny+aqoZcTjNk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749245452; c=relaxed/simple;
-	bh=vl/pVqr2RXH2Xn1E+8wtiXLeu/mTXlC3sdSyiyVMmIA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Lv/FXN5cUDTeYSj4sBgdUgv8rY4f1lBn++oBAWS+XdAgtJT1xtmmJwQdJayWie2XHw0MgsVnKkvzcMhDnZNlETQgNmC9O0CztTMR3fMTUXkdCZ3H9+uHd4QMG88JNJiauMFMk2liIpdCvg/akHpNDzQzWmW4xYWX1Rky7ck04VA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EEzWkcOy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70B3CC4CEEF;
-	Fri,  6 Jun 2025 21:30:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749245452;
-	bh=vl/pVqr2RXH2Xn1E+8wtiXLeu/mTXlC3sdSyiyVMmIA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EEzWkcOyrqoaWqtG1eRTxvfwoQcINpoRi36EuVXRcKvYvhxhbTytJeZmTjE7Pg2rd
-	 DjYGM45FK5kDqJeFQXxdxMjw/AfNsxhPHmtd3RDnODTMSn6YovlMmS1Z3HLfZ8kpQ3
-	 Cv4IxEdLaFgrQAg3vCkm2Uo0n3oCLRE32G/48XIQMP/a9VhEK5LNUfAWKmJoPzpYDN
-	 znpJOwgECxmY4qlSGPndywZOl8qzk73sAp+Ynu0/y9koJ9ddF7QRYCSNobzrLZE16o
-	 ftLkNL2gB6pWxkzNaNYSDc4olFCIvOIfBGzBDgAnwyJEmREBTRfh10rWtxsfEUvBwe
-	 FMgFRgRmdKwsg==
-From: Song Liu <song@kernel.org>
-To: bpf@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-security-module@vger.kernel.org
-Cc: kernel-team@meta.com,
-	andrii@kernel.org,
-	eddyz87@gmail.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	viro@zeniv.linux.org.uk,
-	brauner@kernel.org,
-	jack@suse.cz,
-	kpsingh@kernel.org,
-	mattbobrowski@google.com,
-	amir73il@gmail.com,
-	repnop@google.com,
-	jlayton@kernel.org,
-	josef@toxicpanda.com,
-	mic@digikod.net,
-	gnoack@google.com,
-	m@maowtm.org,
-	Song Liu <song@kernel.org>
-Subject: [PATCH v3 bpf-next 5/5] selftests/bpf: Path walk test
-Date: Fri,  6 Jun 2025 14:30:15 -0700
-Message-ID: <20250606213015.255134-6-song@kernel.org>
+	s=arc-20240116; t=1749245464; c=relaxed/simple;
+	bh=+t4kwPB9BG24lIscLL/ZklajC/RZJgLmE9H0mLnP8Uc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IFabWCHoKV4vCrhgSed8CUOFh2yiV+u+hPlR6DlhMZ6MCp7Bi8NJdR1g8mia3zHFNFOHhBftSKwLwy02buN1uQrRZ8/tVaSMvltADIP9o1R6XB1WchkLFtDPu79aJE2g6ChnCF9mq6YF71z/2tezFE7R8n5MjmBG5j9gf2F7WNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devvm16039.vll0.facebook.com (Postfix, from userid 128203)
+	id 1C32F906E1F6; Fri,  6 Jun 2025 14:30:48 -0700 (PDT)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next v3 0/4] selftests/bpf: Fix a few test failures with arm64 64KB page
+Date: Fri,  6 Jun 2025 14:30:48 -0700
+Message-ID: <20250606213048.340421-1-yonghong.song@linux.dev>
 X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20250606213015.255134-1-song@kernel.org>
-References: <20250606213015.255134-1-song@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 
-Add an end-to-end test with path_iter on security hook file_open.
+My local arm64 host has 64KB page size and the VM to run test_progs
+also has 64KB page size. There are a few self tests assuming 4KB page
+and failed in my environment.
 
-A test file is created in folder /tmp/test_progs_path_iter/folder. On
-file_open, walk file->f_path up to its parent and grand parent, and test
-bpf_get_dentry_xattr and bpf_path_d_path on the folders.
+Patch 1 reduced long assert logs so if the test fails, developers
+can check logs easily. Patches 2-4 fixed three selftest failures.
 
-Signed-off-by: Song Liu <song@kernel.org>
----
- .../selftests/bpf/prog_tests/path_iter.c      | 99 +++++++++++++++++++
- tools/testing/selftests/bpf/progs/path_walk.c | 59 +++++++++++
- 2 files changed, 158 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/path_walk.c
+Changelogs:
+  v2 -> v3:
+    - v2: https://lore.kernel.org/bpf/20250606174139.3036576-1-yonghong.s=
+ong@linux.dev/
+    - Fix veristat failure with bpf object file test_ringbuf_write.bpf.o.
+  v1 -> v2:
+    - v1: https://lore.kernel.org/bpf/20250606032309.444401-1-yonghong.so=
+ng@linux.dev/
+    - Fix a problem with selftest release build, basically from
+      BUILD_BUG_ON to ASSERT_LT.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/path_iter.c b/tools/testing/selftests/bpf/prog_tests/path_iter.c
-index 3c99c24fbd96..b9772026fbf7 100644
---- a/tools/testing/selftests/bpf/prog_tests/path_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/path_iter.c
-@@ -2,11 +2,110 @@
- /* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
- 
- #include <test_progs.h>
-+#include <fcntl.h>
- #include <bpf/libbpf.h>
- #include <bpf/btf.h>
-+#include <sys/stat.h>
-+#include <sys/xattr.h>
-+
- #include "path_iter.skel.h"
-+#include "path_walk.skel.h"
-+
-+static const char grand_parent_path[] = "/tmp/test_progs_path_iter";
-+static const char parent_path[] = "/tmp/test_progs_path_iter/folder";
-+static const char file_path[] = "/tmp/test_progs_path_iter/folder/file";
-+static const char xattr_name[] = "user.bpf.selftests";
-+static const char xattr_value[] = "selftest_path_iter";
-+
-+static void cleanup_files(void)
-+{
-+	remove(file_path);
-+	rmdir(parent_path);
-+	rmdir(grand_parent_path);
-+}
-+
-+static int setup_files_and_xattrs(void)
-+{
-+	int ret = -1;
-+
-+	/* create test folders */
-+	if (mkdir(grand_parent_path, 0755))
-+		goto error;
-+	if (mkdir(parent_path, 0755))
-+		goto error;
-+
-+	/* setxattr for test folders */
-+	ret = setxattr(grand_parent_path, xattr_name,
-+		       xattr_value, sizeof(xattr_value), 0);
-+	if (ret < 0) {
-+		/* return errno, so that we can handle EOPNOTSUPP in the caller */
-+		ret = errno;
-+		goto error;
-+	}
-+	ret = setxattr(parent_path, xattr_name,
-+		       xattr_value, sizeof(xattr_value), 0);
-+	if (ret < 0) {
-+		/* return errno, so that we can handle EOPNOTSUPP in the caller */
-+		ret = errno;
-+		goto error;
-+	}
-+
-+	return 0;
-+error:
-+	cleanup_files();
-+	return ret;
-+}
-+
-+static void test_path_walk(void)
-+{
-+	struct path_walk *skel = NULL;
-+	int file_fd;
-+	int err;
-+
-+	err = setup_files_and_xattrs();
-+	if (err == EOPNOTSUPP) {
-+		printf("%s:SKIP:local fs doesn't support xattr (%d)\n"
-+		       "To run this test, make sure /tmp filesystem supports xattr.\n",
-+		       __func__, errno);
-+		test__skip();
-+		return;
-+	}
-+
-+	if (!ASSERT_OK(err, "setup_file"))
-+		return;
-+
-+	skel = path_walk__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "path_walk__open_and_load"))
-+		goto cleanup;
-+
-+	skel->bss->monitored_pid = getpid();
-+	if (!ASSERT_OK(path_walk__attach(skel), "path_walk__attach"))
-+		goto cleanup;
-+
-+	file_fd = open(file_path, O_CREAT);
-+	if (!ASSERT_OK_FD(file_fd, "open_file"))
-+		goto cleanup;
-+	close(file_fd);
-+
-+	ASSERT_OK(strncmp(skel->bss->parent_xattr_buf, xattr_value, strlen(xattr_value)),
-+		  "parent_xattr");
-+	ASSERT_OK(strncmp(skel->bss->grand_parent_xattr_buf, xattr_value, strlen(xattr_value)),
-+		  "grand_parent_xattr");
-+
-+	ASSERT_OK(strncmp(skel->bss->parent_path_buf, parent_path, strlen(parent_path)),
-+		  "parent_d_path");
-+	ASSERT_OK(strncmp(skel->bss->grand_parent_path_buf, grand_parent_path,
-+			  strlen(grand_parent_path)),
-+		  "grand_parent_d_path");
-+
-+cleanup:
-+	path_walk__destroy(skel);
-+	cleanup_files();
-+}
- 
- void test_path_iter(void)
- {
- 	RUN_TESTS(path_iter);
-+	if (test__start_subtest("path_walk_example"))
-+		test_path_walk();
- }
-diff --git a/tools/testing/selftests/bpf/progs/path_walk.c b/tools/testing/selftests/bpf/progs/path_walk.c
-new file mode 100644
-index 000000000000..1e1ae82b47a2
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/path_walk.c
-@@ -0,0 +1,59 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+
-+#include "vmlinux.h"
-+#include <errno.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_core_read.h>
-+#include "bpf_kfuncs.h"
-+#include "bpf_misc.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+__u32 monitored_pid;
-+
-+#define BUF_SIZE 1024
-+char parent_path_buf[BUF_SIZE] = {};
-+char parent_xattr_buf[BUF_SIZE] = {};
-+char grand_parent_path_buf[BUF_SIZE] = {};
-+char grand_parent_xattr_buf[BUF_SIZE] = {};
-+
-+static __always_inline void d_path_and_read_xattr(struct path *p, char *path, char *xattr)
-+{
-+	struct bpf_dynptr ptr;
-+	struct dentry *dentry;
-+
-+	if (!p)
-+		return;
-+	bpf_path_d_path(p, path, BUF_SIZE);
-+	bpf_dynptr_from_mem(xattr, BUF_SIZE, 0, &ptr);
-+	dentry = p->dentry;
-+	if (dentry)
-+		bpf_get_dentry_xattr(dentry, "user.bpf.selftests", &ptr);
-+}
-+
-+SEC("lsm.s/file_open")
-+int BPF_PROG(test_file_open, struct file *f)
-+{
-+	__u32 pid = bpf_get_current_pid_tgid() >> 32;
-+	struct bpf_iter_path path_it;
-+	struct path *p;
-+
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	bpf_iter_path_new(&path_it, &f->f_path, 0);
-+
-+	/* Get d_path and xattr for the parent directory */
-+	p = bpf_iter_path_next(&path_it);
-+	d_path_and_read_xattr(p, parent_path_buf, parent_xattr_buf);
-+
-+	/* Get d_path and xattr for the grand parent directory */
-+	p = bpf_iter_path_next(&path_it);
-+	d_path_and_read_xattr(p, grand_parent_path_buf, grand_parent_xattr_buf);
-+
-+	bpf_iter_path_destroy(&path_it);
-+
-+	return 0;
-+}
--- 
+Yonghong Song (4):
+  selftests/bpf: Reduce test_xdp_adjust_frags_tail_grow logs
+  selftests/bpf: Fix bpf_mod_race test failure with arm64 64KB page size
+  selftests/bpf: Fix ringbuf/ringbuf_write test failure with arm64 64KB
+    page size
+  selftests/bpf: Fix a user_ringbuf failure with arm64 64KB page size
+
+ .../selftests/bpf/prog_tests/bpf_mod_race.c    |  2 +-
+ .../testing/selftests/bpf/prog_tests/ringbuf.c |  4 ++--
+ .../selftests/bpf/prog_tests/user_ringbuf.c    | 10 +++++++---
+ .../selftests/bpf/prog_tests/xdp_adjust_tail.c | 18 ++++++++++++------
+ .../selftests/bpf/progs/test_ringbuf_write.c   |  9 ++++++---
+ 5 files changed, 28 insertions(+), 15 deletions(-)
+
+--=20
 2.47.1
 
 
