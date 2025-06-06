@@ -1,74 +1,76 @@
-Return-Path: <bpf+bounces-59926-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59927-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78A15AD0942
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 23:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 88AE2AD0943
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 23:04:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61A3C3B505C
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 21:04:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADF0E3B4DDB
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 21:04:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F79D21B185;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE3E4215773;
 	Fri,  6 Jun 2025 21:04:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ATKdDj7P"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KgK9v+sS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE87EA31
-	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 21:04:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9599F214A97
+	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 21:04:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749243872; cv=none; b=E/sHPQLBWmIisJeeAkFvt1xyon167k5MOAYHm1LUf87Y5o5BaWw5BuTgEDplHb0IAEMLjPiSVVHEG2/0FdaEj2i155WthCY1IRJ1LjSjaWjU3+Xl3397QECz7h/euczgCj3UlWTVey++KBAoMtKw3+jp8HNQxjAKCvBa2nZX1lg=
+	t=1749243873; cv=none; b=b1WwexoB9btUP59KtnESWtta9zlNLFARBuCzyGip+1UgtctlSdBOVA9HJ9Hy00sAmh4D/LlkZv7ehuB0rV1SZ26qi32hIsDbiTu3GuNgZ+y9Zx01zULyHzoOMnPkxHGVb8HShI07L4DcQIZ2j52Ftqn42ZDgkiljv5GSghGnnUE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749243872; c=relaxed/simple;
-	bh=4SkBHtmc9H3AJeQuv3c311Pel/9N+27oMXghCHD6oKs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=COLQ846XDnIOrHv0uD4E8wEcfpfUwYTUCOeFzrqY52bmlwNQl/DpMocQs45X+uZHEWoSK5qUYm3trFCysR5sSpY2mh3PNMGcQeQSjfKCaF/AnJ7SePXFWZtqVIoY0D14i8mvWKSldNjNA8t7LU/uIhv4q1lGcMl2GfhFWDpKDpA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ATKdDj7P; arc=none smtp.client-ip=209.85.214.172
+	s=arc-20240116; t=1749243873; c=relaxed/simple;
+	bh=kxiEtG/QhF2W+aPer9NMrs8JmhkIuUv6U6AS15yXgnw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=kt3aF9i3L+wh6Q5O4hYb2+VbMgtQ24KLiC6H2JE9HXY9ZHDJ5HV9i3iGWpFvRNL17zj6PMaClPqJ4YBW0LMkRsy/mV0nBBrmFWj1vO4OueDQ64UaP3k076ODmJEtpAqoxciHXoT/CEPPxhpL5oRII4+47IqgCgRdZWJC2l4AiEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KgK9v+sS; arc=none smtp.client-ip=209.85.215.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-234c5b57557so24390955ad.3
-        for <bpf@vger.kernel.org>; Fri, 06 Jun 2025 14:04:30 -0700 (PDT)
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-7fd35b301bdso2418212a12.2
+        for <bpf@vger.kernel.org>; Fri, 06 Jun 2025 14:04:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749243870; x=1749848670; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Idc3GiWzhJGiCp70TyYxay+PJjY3nhZgc2KSe3k7/6U=;
-        b=ATKdDj7P+Nd6mz8GtY+VQjpvP3IHOyKtSN33eaQV30I898vdiWscBYQ/RNux0J2KGH
-         zbDQUI/Y7hqr4kQLPbfdKSxZdAqRCpMEeO4wwkWfw0NVqZfz+lz7tvMbgZnNooh8ljnx
-         oniCHq5TVmeJhVSDkS0YqXO51ba3DR8hhRSeZUxI5wxKqcfgBXqb9mRRBCCsr5u+SRlg
-         knfkjFawJt3f3Xsorsh8ZvtyUUDE9EJoaqcQ2hZjxEIw+v55v/Ej1hoU63Gcv7jzQq/6
-         VcL37mavYBA6Py/CEZ8vwn6q7QZ5oCKwrzcV40FCfGcPGVX1a5uv2EK+eJP194AiNuc3
-         CGmw==
+        d=gmail.com; s=20230601; t=1749243871; x=1749848671; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1VmMedRryzwDs+RWX3d4itNwntYAEkDZZKY9VE/6qg0=;
+        b=KgK9v+sSFgoumQEldZyTNmVc4hOVzKaY8Z0rKGR3VP09nbwHfVc8Ok7S+Etv4N0EJH
+         0qQhKW0ZH41FRgwgKzjXlubpPg8QguFAbGjaZZAQvSaiuUp2prjMcNkvCGWkz3zXERrh
+         raRUtcYQThhKYJf3QBRFlCxkWKxSUegjryvNKkzwg72s3ZyTV91USmrZhxWu6t++wUoq
+         B7sJZ/eRl71RN3PQPXgrFvp1AkZjWVplZsnawItv35/CV6Fk34KvfK7ErgNVuklaNADu
+         XomBcMUtOULCKBDfXEILitJzGh6gWuwDVKYMUkcU4q1H29g6pud7x7qx4fWMS2KsBX08
+         fn+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749243870; x=1749848670;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Idc3GiWzhJGiCp70TyYxay+PJjY3nhZgc2KSe3k7/6U=;
-        b=GqdMLU3QA6e9FfV6wYR3v7QzWLyLNA9S0dFr+yq6Hc8VdGq3cb4hE0pztPTR23oE7q
-         nHkPs6ySLSp1vy5rsTRM+/FELVZH8mb+tGP8kiJbNjSTc5BIKZpu7XqB1t0Rz/dOcIBj
-         /QlWhQSErxwGHEiVNHaUjevustLjIP2plPCyqtdmUfdNtv6ynBaGbQ4+J1B7PXOoELij
-         lp2UAOt+lfB6NDQHBePz9G6VvnYcXmJtnWs57lUr4raGHAp2UxR2qw+Cad/3WzWK7kZD
-         cqQDG8lCTXu7O5ePeZ+fakKoFF7BgNLoDLZzuYC/uovXpra/v1zGyMsLvl7463q+WJpB
-         BW6Q==
-X-Gm-Message-State: AOJu0YxvTJkp+CYIwEj7Yu4e7trx9eeEplo0d5ONUSSq7ZvJyZdF8DQI
-	VgwoL0Yx4+aL+091vrSJ4SxiEAcqnVAVJKFhyVS7X2mJwiuJQuQj1x19RoHAvA34
-X-Gm-Gg: ASbGncudl1YVeLogUFH5QWjp/2CtWPdLTup1qLYBeZU8u+9lBbcqtTvE4IP8cAIQdu+
-	m/eIegngD6SpuRbJUA5/zDzjqcHcEXwCPwUOyQYHfuwpihUiThFUVQoe4/q6l60pw1sMecmc5g7
-	MNO2OEyLqkrtCgtagk+gS5cBV68hu4y+TwDQho8+fUWDhI/BBdV4Xx598/gxyTd7PwyAanVtnTJ
-	1yGzybK2CwQfmbBHD9BIsga8vb1sqtf75m3EUm8+UuCMhoeH+CQIwZWbXgYgRU/0BqV4jZ+sMA8
-	d7Z+di/d9T4huFP5QIKrlY0ETqJl1zoT06iVEmgRzmCF7FiLs0F0mfHcmg==
-X-Google-Smtp-Source: AGHT+IF+rYCD9HigCj4Rd3VTrSNvylLu8KFULHvLHP2uH78gvzY0Vvzy/GhhSMY4NapQglHJndaSwA==
-X-Received: by 2002:a17:902:ced1:b0:234:d292:be8f with SMTP id d9443c01a7336-23601cf3065mr72099295ad.1.1749243869769;
-        Fri, 06 Jun 2025 14:04:29 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1749243871; x=1749848671;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1VmMedRryzwDs+RWX3d4itNwntYAEkDZZKY9VE/6qg0=;
+        b=iieY5YWgxAsOO0za3WAfAQ1ofNtpG2NXJbQqjC+QUE1paDmgtjMxACxMnBuoqz7w0t
+         Mjsqe+dvBXEKOzNZ3BQbILzHhP8zqDgsc8q4RvLD2Ao7N7THlgF1HITmfstT88cHogNl
+         PkfVlp91ERWw6E5KJ8fcatTZwBC2OEOJLGuTuMnMfhCc5J4vx/dOLJiz+5BVVic82Pgx
+         kOfr+xee1609T/3WiyQacZSr8kO06pjvv5mq7LjcfYEg/KoS7YwnNAQPiSIUhYZiUD4T
+         oaaMVFJSBOZX+v84F3surncvFjr85Y524xucH56VkdhYKz78m4SdXtLyONmTVw7LfnkJ
+         CtlQ==
+X-Gm-Message-State: AOJu0Yy1YWPJ9MY1SXiKiBiaMryuSEPgD/FZXVb4336mgsx1O02RbNCe
+	ftDoXcsvZhbB4gAPidqLs6Q2wN1zShAhJcx42ZgT2H35z2Ck5pRpC7rbQN+FLRvb
+X-Gm-Gg: ASbGncvzB3Q4p6kLMirEr35DpL2JO1e87JHfia0HMCbsVob+tMqHVPtcDhuTQleNwtG
+	91iN5lfJ805On6xx9DBI4Pxd9fVxvLuWLpri5qWWz/qSNpA0yAIzIepf0CgqQTxZgG7jfgTLoQ1
+	hCz/SRNL31k0GKRAaLCzBWlYb1tNsbfGFRH//bh72045PqB0uFuhS1HRmOIOy+zaT70jnYgyynr
+	y39P18sHSRvXBhlxdSl78uGb64Tq/PQBli+mdsIbw7hWSRlzLC5ZwZ84kOpeeOEZ27pGgCChYtT
+	zEWncmSSpiDPjRJrN51LMqkdlkE2OHcq2z4eA1jKLDyxeh6Sf1TnFPI4OA==
+X-Google-Smtp-Source: AGHT+IGhxO1p63O8iqMXkhvyQIc9yqGbnPGafPQoQ9IhiU6fHoWgU0F/F+uoauPg7wXc3IlqUJUAig==
+X-Received: by 2002:a17:90b:1f84:b0:312:1c83:58f7 with SMTP id 98e67ed59e1d1-31346b4d61emr8209833a91.0.1749243870593;
+        Fri, 06 Jun 2025 14:04:30 -0700 (PDT)
 Received: from honey-badger.. ([38.34.87.7])
         by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b2f5ed58beasm1352640a12.15.2025.06.06.14.04.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Jun 2025 14:04:29 -0700 (PDT)
+        Fri, 06 Jun 2025 14:04:30 -0700 (PDT)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -78,10 +80,12 @@ Cc: andrii@kernel.org,
 	kernel-team@fb.com,
 	yonghong.song@linux.dev,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v2 00/11] bpf: propagate read/precision marks over state graph backedges
-Date: Fri,  6 Jun 2025 14:03:41 -0700
-Message-ID: <20250606210352.1692944-1-eddyz87@gmail.com>
+Subject: [PATCH bpf-next v2 01/11] Revert "bpf: use common instruction history across all states"
+Date: Fri,  6 Jun 2025 14:03:42 -0700
+Message-ID: <20250606210352.1692944-2-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.48.1
+In-Reply-To: <20250606210352.1692944-1-eddyz87@gmail.com>
+References: <20250606210352.1692944-1-eddyz87@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -90,225 +94,361 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Current loop_entry-based states comparison logic does not handle the
-following case:
+This reverts commit 96a30e469ca1d2b8cc7811b40911f8614b558241.
+Next patches in the series modify propagate_precision() to allow
+arbitrary starting state. Precision propagation requires access to
+jump history, and arbitrary states represent history not belonging to
+`env->cur_state`.
 
- .-> A --.  Assume the states are visited in the order A, B, C.
- |   |   |  Assume that state B reaches a state equivalent to state A.
- |   v   v  At this point, state C is not processed yet, so state A
- '-- B   C  has not received any read or precision marks from C.
-            As a result, these marks won't be propagated to B.
+Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+---
+ include/linux/bpf_verifier.h |  19 +++----
+ kernel/bpf/verifier.c        | 107 ++++++++++++++++++-----------------
+ 2 files changed, 63 insertions(+), 63 deletions(-)
 
-If B has incomplete marks, it is unsafe to use it in states_equal()
-checks. This issue was first reported in [1].
-
-This patch-set
---------------
-
-Here is the gist of the algorithm implemented by this patch-set:
-- Compute strongly connected components (SCCs) in the program CFG.
-- When a verifier state enters an SCC, that state is recorded as the
-  SCC's entry point.
-- When a verifier state is found to be equivalent to another
-  (e.g., B to A in the example above), it is recorded as a
-  states-graph backedge.
-- Backedges are accumulated per SCC (*).
-- When an SCC entry state reaches `branches == 0`, propagate read and
-  precision marks through the backedges until a fixed point is reached
-  (e.g., from A to B, from C to A, and then again from A to B).
-
-(*) This is an oversimplification, see patch #8 for details.
-
-Unfortunately, this means that commit [2] needs to be reverted,
-as precision propagation requires access to jump history,
-and backedges represent history not belonging to `env->cur_state`.
-
-Details are provided in patch #8; a comment in `is_state_visited()`
-explains most of the mechanics.
-
-Patch #2 adds a `compute_scc()` function, which computes SCCs in the
-program CFG. This function was tested using property-based testing in
-[3], but it is not included in selftests.
-
-Previous attempt
-----------------
-
-A previous attempt to fix this is described in [4]:
-1. Within the states loop, `states_equal(... RANGE_WITHIN)` ignores
-   read and precision marks.
-2. For states outside the loop, all registers for states within the
-   loop are marked as read and precise.
-
-This approach led to an 86x regression on the `cond_break1` selftest.
-In that test, one loop was followed by another, and a certain variable
-was incremented in the second loop. This variable was marked as
-precise due to rule (2), which hindered convergence in the first loop.
-
-After some off-list discussion, it was decided that this might be a
-typical case and such regressions are undesirable.
-
-This patch-set avoids such eager precision markings.
-
-Alternatives
-------------
-
-Another option is to associate a mask of read/written/precise stack
-slots with each instruction. This mask can be populated during
-verifier states exploration. Upon reaching an `EXIT` instruction or an
-equivalent state, the accumulated masks can be used to propagate
-read/written/precise bits across the program's control flow graph
-using an analysis similar to use-def.
-
-Unfortunately, a naive implementation of this approach [5] results in
-a 10x regression in `veristat` for some `sched_ext` programs due to
-the inability to express the must-write property. This issue requires
-further investigation.
-
-Changes in verification performance
------------------------------------
-
-There are some veristat regressions when comparing with master using
-selftests and sched_ext BPF binaries. The comparison is done using
-master from [6] and this patch-set from [7] where memory accounting
-logic is added to veristat.
-
-========= selftests: master vs patch-set =========
-
-File                             Program                              Insns                          Peak memory (KiB)
--------------------------------  -----------------------------------  -----  ----  ----------------  ----  -----  ----------------
-arena_list.bpf.o                 arena_list_add                         374   406      +32 (+8.56%)     0      0       +0 (+0.00%)
-dynptr_success.bpf.o             test_copy_from_user_str_dynptr         268   284      +16 (+5.97%)   768   1024    +256 (+33.33%)
-dynptr_success.bpf.o             test_probe_read_kernel_dynptr          994  1101    +107 (+10.76%)  1024   1240    +216 (+21.09%)
-dynptr_success.bpf.o             test_probe_read_user_dynptr           1000  1107    +107 (+10.70%)  1024   1240    +216 (+21.09%)
-iters.bpf.o                      checkpoint_states_deletion            1211  1216       +5 (+0.41%)   512   1288   +776 (+151.56%)
-iters.bpf.o                      clean_live_states                      588   620      +32 (+5.44%)   256    764   +508 (+198.44%)
-pyperf600_iter.bpf.o             on_event                              2591  5929  +3338 (+128.83%)  4648  11320  +6672 (+143.55%)
-
-Total progs: 3600
-Old success: 2084
-New success: 2084
-
-total_insns diff min     :    0.00 %
-total_insns diff max     :  128.83 %
-total_insns abs max old  : 837,487
-total_insns abs max new  : 837,487
-   0 .. 5    %: 3592
-   5 .. 15   %: 6
-  20 .. 30   %: 1
- 125 .. 130  %: 1
-
-mem_peak diff min     : -100.00 %
-mem_peak diff max     :  198.44 %
-mem_peak abs max old  : 269,312 KiB
-mem_peak abs max new  : 269,312 KiB
--100 .. -95  %: 63
- -60 .. -50  %: 1
- -10 .. 0    %: 20
-   0 .. 5    %: 3413
-   5 .. 15   %: 6
-  20 .. 30   %: 4
-  30 .. 40   %: 7
-  40 .. 50   %: 1
-  50 .. 60   %: 3
-  60 .. 70   %: 1
- 140 .. 150  %: 1
- 150 .. 160  %: 1
- 195 .. 200  %: 1
-0 -> something: 78
-
-========= scx: master vs patch-set =========
-
-Program                   Insns                          Peak memory (KiB)
-------------------------  -----  -----  ---------------  -----  -----  -----------------
-arena_topology_node_init   2129   2391   +262 (+12.31%)    768    768        +0 (+0.00%)
-arena_topology_node_init   2129   2391   +262 (+12.31%)    768    768        +0 (+0.00%)
-arena_topology_print        591    826   +235 (+39.76%)    256    256        +0 (+0.00%)
-arena_topology_print        591    826   +235 (+39.76%)    256    256        +0 (+0.00%)
-chaos_init                 4261   5090   +829 (+19.46%)   2540   3032     +492 (+19.37%)
-lavd_cpu_offline           5074   5706   +632 (+12.46%)   3940   6304    +2364 (+60.00%)
-lavd_cpu_online            5074   5706   +632 (+12.46%)   3940   6304    +2364 (+60.00%)
-lavd_dispatch             41769  47578  +5809 (+13.91%)   6208  29200  +22992 (+370.36%)
-lavd_enqueue              24190  27749  +3559 (+14.71%)  22740  42872   +20132 (+88.53%)
-lavd_init                  6748   7474   +726 (+10.76%)   5096   6864    +1768 (+34.69%)
-lavd_select_cpu           27243  30802  +3559 (+13.06%)  26056  45048   +18992 (+72.89%)
-layered_dispatch           8909  13295  +4386 (+49.23%)   7976  18028  +10052 (+126.03%)
-layered_dump               1890   2097   +207 (+10.95%)   2036   3036    +1000 (+49.12%)
-layered_init               4149   4531    +382 (+9.21%)   2716   2896      +180 (+6.63%)
-layered_runnable           2566   2601     +35 (+1.36%)    748   1244     +496 (+66.31%)
-p2dq_init                  3640   4474   +834 (+22.91%)   2004   2504     +500 (+24.95%)
-refresh_layer_cpumasks      735   1048   +313 (+42.59%)    256    756    +500 (+195.31%)
-rusty_init_task           31104  31104      +0 (+0.00%)   2164   2368      +204 (+9.43%)
-rusty_select_cpu           1110   1110      +0 (+0.00%)    768   1004     +236 (+30.73%)
-tp_cgroup_attach_task       149    203    +54 (+36.24%)      0      0        +0 (+0.00%)
-
-Total progs: 147
-Old success: 134
-New success: 134
-total_insns diff min     :    0.00 %
-total_insns diff max     :   49.23 %
-total_insns abs max old  :  72,434
-total_insns abs max new  :  72,434
-   0 .. 5    %: 132
-   5 .. 15   %: 9
-  15 .. 25   %: 2
-  35 .. 45   %: 3
-  45 .. 50   %: 1
-
-mem_peak diff min     :   -0.95 %
-mem_peak diff max     :  370.36 %
-mem_peak abs max old  :  26,056 KiB
-mem_peak abs max new  :  45,048 KiB
-  -5 .. 0    %: 4
-   0 .. 5    %: 128
-   5 .. 15   %: 2
-  15 .. 25   %: 2
-  30 .. 40   %: 2
-  45 .. 55   %: 1
-  60 .. 70   %: 3
-  70 .. 80   %: 1
-  85 .. 95   %: 1
- 125 .. 135  %: 1
- 195 .. 205  %: 1
- 370 .. 375  %: 1
-
-Changelog
----------
-
-v1: https://lore.kernel.org/bpf/20250524191932.389444-1-eddyz87@gmail.com/
-v1 -> v2:
-- Rebase
-- added mem_peak statistics (Alexei)
-- selftests: fixed comments and removed useless r7 assignments (Yonghong)
-
-Links
------
-
-[1] https://lore.kernel.org/bpf/20250312031344.3735498-1-eddyz87@gmail.com/
-[2] commit 96a30e469ca1 ("bpf: use common instruction history across all states")
-[3] https://github.com/eddyz87/scc-test
-[4] https://lore.kernel.org/bpf/20250426104634.744077-1-eddyz87@gmail.com/
-[5] https://github.com/eddyz87/bpf/tree/propagate-read-and-precision-in-cfg
-[6] https://github.com/eddyz87/bpf/tree/veristat-memory-accounting
-[7] https://github.com/eddyz87/bpf/tree/scc-accumulate-backedges
-
-Eduard Zingerman (11):
-  Revert "bpf: use common instruction history across all states"
-  bpf: compute SCCs in program control flow graph
-  bpf: frame_insn_idx() utility function
-  bpf: starting_state parameter for __mark_chain_precision()
-  bpf: set 'changed' status if propagate_precision() did any updates
-  bpf: set 'changed' status if propagate_liveness() did any updates
-  bpf: move REG_LIVE_DONE check to clean_live_states()
-  bpf: propagate read/precision marks over state graph backedges
-  bpf: remove {update,get}_loop_entry functions
-  bpf: include backedges in peak_states stat
-  selftests/bpf: tests with a loop state missing read/precision mark
-
- include/linux/bpf_verifier.h              |  77 +-
- kernel/bpf/verifier.c                     | 970 +++++++++++++++-------
- tools/testing/selftests/bpf/progs/iters.c | 277 ++++++
- 3 files changed, 998 insertions(+), 326 deletions(-)
-
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index 256274acb1d8..489105d0c8ab 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -344,7 +344,7 @@ struct bpf_func_state {
+ 
+ #define MAX_CALL_FRAMES 8
+ 
+-/* instruction history flags, used in bpf_insn_hist_entry.flags field */
++/* instruction history flags, used in bpf_jmp_history_entry.flags field */
+ enum {
+ 	/* instruction references stack slot through PTR_TO_STACK register;
+ 	 * we also store stack's frame number in lower 3 bits (MAX_CALL_FRAMES is 8)
+@@ -366,7 +366,7 @@ enum {
+ static_assert(INSN_F_FRAMENO_MASK + 1 >= MAX_CALL_FRAMES);
+ static_assert(INSN_F_SPI_MASK + 1 >= MAX_BPF_STACK / 8);
+ 
+-struct bpf_insn_hist_entry {
++struct bpf_jmp_history_entry {
+ 	u32 idx;
+ 	/* insn idx can't be bigger than 1 million */
+ 	u32 prev_idx : 20;
+@@ -459,14 +459,13 @@ struct bpf_verifier_state {
+ 	 * See get_loop_entry() for more information.
+ 	 */
+ 	struct bpf_verifier_state *loop_entry;
+-	/* Sub-range of env->insn_hist[] corresponding to this state's
+-	 * instruction history.
+-	 * Backtracking is using it to go from last to first.
+-	 * For most states instruction history is short, 0-3 instructions.
++	/* jmp history recorded from first to last.
++	 * backtracking is using it to go from last to first.
++	 * For most states jmp_history_cnt is [0-3].
+ 	 * For loops can go up to ~40.
+ 	 */
+-	u32 insn_hist_start;
+-	u32 insn_hist_end;
++	struct bpf_jmp_history_entry *jmp_history;
++	u32 jmp_history_cnt;
+ 	u32 dfs_depth;
+ 	u32 callback_unroll_depth;
+ 	u32 may_goto_depth;
+@@ -775,9 +774,7 @@ struct bpf_verifier_env {
+ 		int cur_postorder;
+ 	} cfg;
+ 	struct backtrack_state bt;
+-	struct bpf_insn_hist_entry *insn_hist;
+-	struct bpf_insn_hist_entry *cur_hist_ent;
+-	u32 insn_hist_cap;
++	struct bpf_jmp_history_entry *cur_hist_ent;
+ 	u32 pass_cnt; /* number of times do_check() was called */
+ 	u32 subprog_cnt;
+ 	/* number of instructions analyzed by the verifier */
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index e31f6b0ccb30..98130b982a37 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -1659,6 +1659,13 @@ static void free_func_state(struct bpf_func_state *state)
+ 	kfree(state);
+ }
+ 
++static void clear_jmp_history(struct bpf_verifier_state *state)
++{
++	kfree(state->jmp_history);
++	state->jmp_history = NULL;
++	state->jmp_history_cnt = 0;
++}
++
+ static void free_verifier_state(struct bpf_verifier_state *state,
+ 				bool free_self)
+ {
+@@ -1669,6 +1676,7 @@ static void free_verifier_state(struct bpf_verifier_state *state,
+ 		state->frame[i] = NULL;
+ 	}
+ 	kfree(state->refs);
++	clear_jmp_history(state);
+ 	if (free_self)
+ 		kfree(state);
+ }
+@@ -1733,6 +1741,13 @@ static int copy_verifier_state(struct bpf_verifier_state *dst_state,
+ 	struct bpf_func_state *dst;
+ 	int i, err;
+ 
++	dst_state->jmp_history = copy_array(dst_state->jmp_history, src->jmp_history,
++					  src->jmp_history_cnt, sizeof(*dst_state->jmp_history),
++					  GFP_USER);
++	if (!dst_state->jmp_history)
++		return -ENOMEM;
++	dst_state->jmp_history_cnt = src->jmp_history_cnt;
++
+ 	/* if dst has more stack frames then src frame, free them, this is also
+ 	 * necessary in case of exceptional exits using bpf_throw.
+ 	 */
+@@ -1750,8 +1765,6 @@ static int copy_verifier_state(struct bpf_verifier_state *dst_state,
+ 	dst_state->parent = src->parent;
+ 	dst_state->first_insn_idx = src->first_insn_idx;
+ 	dst_state->last_insn_idx = src->last_insn_idx;
+-	dst_state->insn_hist_start = src->insn_hist_start;
+-	dst_state->insn_hist_end = src->insn_hist_end;
+ 	dst_state->dfs_depth = src->dfs_depth;
+ 	dst_state->callback_unroll_depth = src->callback_unroll_depth;
+ 	dst_state->used_as_loop_entry = src->used_as_loop_entry;
+@@ -2807,14 +2820,9 @@ static struct bpf_verifier_state *push_async_cb(struct bpf_verifier_env *env,
+ 	 * The caller state doesn't matter.
+ 	 * This is async callback. It starts in a fresh stack.
+ 	 * Initialize it similar to do_check_common().
+-	 * But we do need to make sure to not clobber insn_hist, so we keep
+-	 * chaining insn_hist_start/insn_hist_end indices as for a normal
+-	 * child state.
+ 	 */
+ 	elem->st.branches = 1;
+ 	elem->st.in_sleepable = is_sleepable;
+-	elem->st.insn_hist_start = env->cur_state->insn_hist_end;
+-	elem->st.insn_hist_end = elem->st.insn_hist_start;
+ 	frame = kzalloc(sizeof(*frame), GFP_KERNEL);
+ 	if (!frame)
+ 		goto err;
+@@ -3843,10 +3851,11 @@ static void linked_regs_unpack(u64 val, struct linked_regs *s)
+ }
+ 
+ /* for any branch, call, exit record the history of jmps in the given state */
+-static int push_insn_history(struct bpf_verifier_env *env, struct bpf_verifier_state *cur,
+-			     int insn_flags, u64 linked_regs)
++static int push_jmp_history(struct bpf_verifier_env *env, struct bpf_verifier_state *cur,
++			    int insn_flags, u64 linked_regs)
+ {
+-	struct bpf_insn_hist_entry *p;
++	u32 cnt = cur->jmp_history_cnt;
++	struct bpf_jmp_history_entry *p;
+ 	size_t alloc_size;
+ 
+ 	/* combine instruction flags if we already recorded this instruction */
+@@ -3866,32 +3875,29 @@ static int push_insn_history(struct bpf_verifier_env *env, struct bpf_verifier_s
+ 		return 0;
+ 	}
+ 
+-	if (cur->insn_hist_end + 1 > env->insn_hist_cap) {
+-		alloc_size = size_mul(cur->insn_hist_end + 1, sizeof(*p));
+-		p = kvrealloc(env->insn_hist, alloc_size, GFP_USER);
+-		if (!p)
+-			return -ENOMEM;
+-		env->insn_hist = p;
+-		env->insn_hist_cap = alloc_size / sizeof(*p);
+-	}
++	cnt++;
++	alloc_size = kmalloc_size_roundup(size_mul(cnt, sizeof(*p)));
++	p = krealloc(cur->jmp_history, alloc_size, GFP_USER);
++	if (!p)
++		return -ENOMEM;
++	cur->jmp_history = p;
+ 
+-	p = &env->insn_hist[cur->insn_hist_end];
++	p = &cur->jmp_history[cnt - 1];
+ 	p->idx = env->insn_idx;
+ 	p->prev_idx = env->prev_insn_idx;
+ 	p->flags = insn_flags;
+ 	p->linked_regs = linked_regs;
+-
+-	cur->insn_hist_end++;
++	cur->jmp_history_cnt = cnt;
+ 	env->cur_hist_ent = p;
+ 
+ 	return 0;
+ }
+ 
+-static struct bpf_insn_hist_entry *get_insn_hist_entry(struct bpf_verifier_env *env,
+-						       u32 hist_start, u32 hist_end, int insn_idx)
++static struct bpf_jmp_history_entry *get_jmp_hist_entry(struct bpf_verifier_state *st,
++						        u32 hist_end, int insn_idx)
+ {
+-	if (hist_end > hist_start && env->insn_hist[hist_end - 1].idx == insn_idx)
+-		return &env->insn_hist[hist_end - 1];
++	if (hist_end > 0 && st->jmp_history[hist_end - 1].idx == insn_idx)
++		return &st->jmp_history[hist_end - 1];
+ 	return NULL;
+ }
+ 
+@@ -3908,26 +3914,25 @@ static struct bpf_insn_hist_entry *get_insn_hist_entry(struct bpf_verifier_env *
+  * history entry recording a jump from last instruction of parent state and
+  * first instruction of given state.
+  */
+-static int get_prev_insn_idx(const struct bpf_verifier_env *env,
+-			     struct bpf_verifier_state *st,
+-			     int insn_idx, u32 hist_start, u32 *hist_endp)
++static int get_prev_insn_idx(struct bpf_verifier_state *st, int i,
++			     u32 *history)
+ {
+-	u32 hist_end = *hist_endp;
+-	u32 cnt = hist_end - hist_start;
++	u32 cnt = *history;
+ 
+-	if (insn_idx == st->first_insn_idx) {
++	if (i == st->first_insn_idx) {
+ 		if (cnt == 0)
+ 			return -ENOENT;
+-		if (cnt == 1 && env->insn_hist[hist_start].idx == insn_idx)
++		if (cnt == 1 && st->jmp_history[0].idx == i)
+ 			return -ENOENT;
+ 	}
+ 
+-	if (cnt && env->insn_hist[hist_end - 1].idx == insn_idx) {
+-		(*hist_endp)--;
+-		return env->insn_hist[hist_end - 1].prev_idx;
++	if (cnt && st->jmp_history[cnt - 1].idx == i) {
++		i = st->jmp_history[cnt - 1].prev_idx;
++		(*history)--;
+ 	} else {
+-		return insn_idx - 1;
++		i--;
+ 	}
++	return i;
+ }
+ 
+ static const char *disasm_kfunc_name(void *data, const struct bpf_insn *insn)
+@@ -4108,7 +4113,7 @@ static void fmt_stack_mask(char *buf, ssize_t buf_sz, u64 stack_mask)
+ /* If any register R in hist->linked_regs is marked as precise in bt,
+  * do bt_set_frame_{reg,slot}(bt, R) for all registers in hist->linked_regs.
+  */
+-static void bt_sync_linked_regs(struct backtrack_state *bt, struct bpf_insn_hist_entry *hist)
++static void bt_sync_linked_regs(struct backtrack_state *bt, struct bpf_jmp_history_entry *hist)
+ {
+ 	struct linked_regs linked_regs;
+ 	bool some_precise = false;
+@@ -4153,7 +4158,7 @@ static bool calls_callback(struct bpf_verifier_env *env, int insn_idx);
+  *   - *was* processed previously during backtracking.
+  */
+ static int backtrack_insn(struct bpf_verifier_env *env, int idx, int subseq_idx,
+-			  struct bpf_insn_hist_entry *hist, struct backtrack_state *bt)
++			  struct bpf_jmp_history_entry *hist, struct backtrack_state *bt)
+ {
+ 	struct bpf_insn *insn = env->prog->insnsi + idx;
+ 	u8 class = BPF_CLASS(insn->code);
+@@ -4571,7 +4576,7 @@ static void mark_all_scalars_imprecise(struct bpf_verifier_env *env, struct bpf_
+  * SCALARS, as well as any other registers and slots that contribute to
+  * a tracked state of given registers/stack slots, depending on specific BPF
+  * assembly instructions (see backtrack_insns() for exact instruction handling
+- * logic). This backtracking relies on recorded insn_hist and is able to
++ * logic). This backtracking relies on recorded jmp_history and is able to
+  * traverse entire chain of parent states. This process ends only when all the
+  * necessary registers/slots and their transitive dependencies are marked as
+  * precise.
+@@ -4688,9 +4693,8 @@ static int __mark_chain_precision(struct bpf_verifier_env *env, int regno)
+ 
+ 	for (;;) {
+ 		DECLARE_BITMAP(mask, 64);
+-		u32 hist_start = st->insn_hist_start;
+-		u32 hist_end = st->insn_hist_end;
+-		struct bpf_insn_hist_entry *hist;
++		u32 history = st->jmp_history_cnt;
++		struct bpf_jmp_history_entry *hist;
+ 
+ 		if (env->log.level & BPF_LOG_LEVEL2) {
+ 			verbose(env, "mark_precise: frame%d: last_idx %d first_idx %d subseq_idx %d \n",
+@@ -4728,7 +4732,7 @@ static int __mark_chain_precision(struct bpf_verifier_env *env, int regno)
+ 				err = 0;
+ 				skip_first = false;
+ 			} else {
+-				hist = get_insn_hist_entry(env, hist_start, hist_end, i);
++				hist = get_jmp_hist_entry(st, history, i);
+ 				err = backtrack_insn(env, i, subseq_idx, hist, bt);
+ 			}
+ 			if (err == -ENOTSUPP) {
+@@ -4745,7 +4749,7 @@ static int __mark_chain_precision(struct bpf_verifier_env *env, int regno)
+ 				 */
+ 				return 0;
+ 			subseq_idx = i;
+-			i = get_prev_insn_idx(env, st, i, hist_start, &hist_end);
++			i = get_prev_insn_idx(st, i, &history);
+ 			if (i == -ENOENT)
+ 				break;
+ 			if (i >= env->prog->len) {
+@@ -5109,7 +5113,7 @@ static int check_stack_write_fixed_off(struct bpf_verifier_env *env,
+ 	}
+ 
+ 	if (insn_flags)
+-		return push_insn_history(env, env->cur_state, insn_flags, 0);
++		return push_jmp_history(env, env->cur_state, insn_flags, 0);
+ 	return 0;
+ }
+ 
+@@ -5416,7 +5420,7 @@ static int check_stack_read_fixed_off(struct bpf_verifier_env *env,
+ 		insn_flags = 0; /* we are not restoring spilled register */
+ 	}
+ 	if (insn_flags)
+-		return push_insn_history(env, env->cur_state, insn_flags, 0);
++		return push_jmp_history(env, env->cur_state, insn_flags, 0);
+ 	return 0;
+ }
+ 
+@@ -16539,7 +16543,7 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
+ 	if (dst_reg->type == SCALAR_VALUE && dst_reg->id)
+ 		collect_linked_regs(this_branch, dst_reg->id, &linked_regs);
+ 	if (linked_regs.cnt > 1) {
+-		err = push_insn_history(env, this_branch, 0, linked_regs_pack(&linked_regs));
++		err = push_jmp_history(env, this_branch, 0, linked_regs_pack(&linked_regs));
+ 		if (err)
+ 			return err;
+ 	}
+@@ -19037,7 +19041,7 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+ 
+ 	force_new_state = env->test_state_freq || is_force_checkpoint(env, insn_idx) ||
+ 			  /* Avoid accumulating infinitely long jmp history */
+-			  cur->insn_hist_end - cur->insn_hist_start > 40;
++			  cur->jmp_history_cnt > 40;
+ 
+ 	/* bpf progs typically have pruning point every 4 instructions
+ 	 * http://vger.kernel.org/bpfconf2019.html#session-1
+@@ -19236,7 +19240,7 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+ 			 * the current state.
+ 			 */
+ 			if (is_jmp_point(env, env->insn_idx))
+-				err = err ? : push_insn_history(env, cur, 0, 0);
++				err = err ? : push_jmp_history(env, cur, 0, 0);
+ 			err = err ? : propagate_precision(env, &sl->state);
+ 			if (err)
+ 				return err;
+@@ -19318,8 +19322,8 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+ 
+ 	cur->parent = new;
+ 	cur->first_insn_idx = insn_idx;
+-	cur->insn_hist_start = cur->insn_hist_end;
+ 	cur->dfs_depth = new->dfs_depth + 1;
++	clear_jmp_history(cur);
+ 	list_add(&new_sl->node, head);
+ 
+ 	/* connect new state to parentage chain. Current frame needs all
+@@ -19487,7 +19491,7 @@ static int do_check(struct bpf_verifier_env *env)
+ 		}
+ 
+ 		if (is_jmp_point(env, env->insn_idx)) {
+-			err = push_insn_history(env, state, 0, 0);
++			err = push_jmp_history(env, state, 0, 0);
+ 			if (err)
+ 				return err;
+ 		}
+@@ -24202,7 +24206,6 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
+ 	if (!is_priv)
+ 		mutex_unlock(&bpf_verifier_lock);
+ 	vfree(env->insn_aux_data);
+-	kvfree(env->insn_hist);
+ err_free_env:
+ 	kvfree(env->cfg.insn_postorder);
+ 	kvfree(env);
 -- 
 2.48.1
 
