@@ -1,164 +1,121 @@
-Return-Path: <bpf+bounces-59889-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59890-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4F66AD070F
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 18:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 22AE7AD0714
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 18:59:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA5103B2B96
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 16:57:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF8203B3101
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 16:58:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E092289E29;
-	Fri,  6 Jun 2025 16:57:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5012289E21;
+	Fri,  6 Jun 2025 16:58:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kD8mVj3Q"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KvxB4Uao"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 301AF2882B6
-	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 16:57:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3126728A1C5
+	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 16:58:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749229076; cv=none; b=Vfq6vquIhjVxylHIxx1brLZVYE+ChZJp7/zk1MXreN3ms3yfb1sRslA3RDxMIs1UhNt1mPo2EzrvT3u8rgEkC03tl2ON2u/jLGsbXZIHVJvUgtXuQLo2JaBT+CLUyMUx42n4YmhaGTUEEcoVtSUDLI/xpgnzIMGZVed+VLvLvhg=
+	t=1749229125; cv=none; b=uirRoXK2McST00ADWv3yPUySUU4MJARLvsa40JroXyrEFhku8Vps+IvwQPfq/BlVYf9UdxrTXmxqOAX4hCNNKE29NKzI+3D9k+U4g+ZroO3QICVAv3PWGrLxRioOD6PA6Tf8LEUGWImq7EYiAcPAVROi0ZpD9jivib1d1kMGwWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749229076; c=relaxed/simple;
-	bh=SlXqxge8owU6P2xwr/IVFY+7KYg8Y+OqlqbBXt+chbc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FOnmygA5Lq52/sEkwo0SPd3SQwj67Icks+Ouc1tZ33xWLhnwqPBXX+KUfJs4yvwPTE6sZ2qi9Fow1ky5FaP/GGOJC30pU7ZYtF9cqcqmZEYozM3c6BK4en6BJANaKeARCu117nj5MoZs2RnXGIR/sO3Z83Y60mqv3Na/WDzqaCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kD8mVj3Q; arc=none smtp.client-ip=209.85.215.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-b1fd59851baso1311855a12.0
-        for <bpf@vger.kernel.org>; Fri, 06 Jun 2025 09:57:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749229074; x=1749833874; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bMirHgklVZBoyFHnM0CPcsjfCIHjd+q8nqkjwrSjDiQ=;
-        b=kD8mVj3QLFZ4E4VpUIpA2a2HxBvRT4w63fURMOqKdhPyphAvkvHNnRTbivWPSmf8Ax
-         m/JUesZ/BaB8ukl5aprBl4LOGXEd/BG0ATrnx02VVPd8E/XIX5y+tQJCkavCkHZFqpfh
-         AicE7sUv7ZWNkp8dvbvka7LkOMOjVtZtYU5+SmesoOMqhIpwCBWm//m1TLv0b99BE3jn
-         Ko1LepAduasv5ClpjoNFWBltPjc/yoyiRNLaBHuOlAdv3AyXEyu+WG/NDYWt3L2g7e40
-         JEQ8XsffVUHEQJuD4k8qGi2f3z9HF+XrYcxXYywPV9vdPW9K7q3to0A7pMnvOH9S7z8Y
-         3Hqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749229074; x=1749833874;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bMirHgklVZBoyFHnM0CPcsjfCIHjd+q8nqkjwrSjDiQ=;
-        b=g0VOcxlsET9/5+uhbnWIrbXeyj5ItE5tvlEA/h/YYFM6f2MCzqgs+9Rbx/CcR3dm2p
-         SgQtDiV8ojWRO8D259mLXEghzX1xdFX07gc9nF6TeRmTu/DtbER5nv+OudCNkNS8A9CI
-         vWyKTz5XJ2CQl32aq9QFe6EoHuoTCNanuQDq5M7+LgjuqIHS2KQCGZ1eGjQ3zVeaiI+L
-         d0fWSXRaLFU4SIlXy/c5AYoOnRNtP34KjaLFylPU9dLHgWSWnYsjh3t0m3XzvBrxv2Nf
-         NjxMOKnyQTUlAaSufWxUmZjKxh+da6AXSJEMSM1yLMNtWvKWmLJylbGxNofe+LpXM86J
-         kZHg==
-X-Forwarded-Encrypted: i=1; AJvYcCW+RZvcXBWmGI+GyXInv//0J3JYhxvIuBdGY4Oz1pOXfXlauIpfJvOfUUnSKttQurUSXSw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwvO/euvgpklE9qwhrqf/AX2kHSBad8UblLvv67yFRXbFvpnEUM
-	qZuS0J58YfuTQ11E/uXhZ84ZYRuUC6gn3mb0vha4fhyDbj6KbI20QYp0Uall8AoqWLJgkpQ5AgU
-	7kFSly7gT77ssp6XIzPCWPHGsSxRgIG0=
-X-Gm-Gg: ASbGncs7vmIzsXURr8MHk6cI48TcM3cqiTK9HZJ5rR2A4LtigblSLq5hi89Yjh86MXG
-	PIn0gkTGj/Os6p++KWAyq2F9UExmMv80lroZMkD25oW2uRIIfiK0GivPaFpohj7F8qg1rY5/YBB
-	GPhVBRTAlCdFWI9/y4C/UyPBHE3ruInm4=
-X-Google-Smtp-Source: AGHT+IHvE6Eew7mvjhvNAkd3O4B1zORonVA7tBtzB3aHvWL6LL5Cnh2Fnzn7HwebOSS/BWeATnK00CXUGyvf0FgwiaE=
-X-Received: by 2002:a17:90a:c10e:b0:311:abba:53c9 with SMTP id
- 98e67ed59e1d1-31346af9a80mr6717073a91.7.1749229074403; Fri, 06 Jun 2025
- 09:57:54 -0700 (PDT)
+	s=arc-20240116; t=1749229125; c=relaxed/simple;
+	bh=tufv0EOfIRCcGCuoeIAQzVp2+83siqI9hecekbLVrcY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rkyTEPerHM69ICHJjAInhyMan31fqhFUc3WKfP8ZqnJLsvrj/yXBlzeDrFTJoiMiZzVkOn3LuYTCJhuTguUK9E5iDdShp0zgs+5hSsYUiig6SNHAPI4iCHac+tto7aIF7hb5ezsOFY+UhJaWN6IV/jvapaEMqhD5J1wMCL3FZPc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KvxB4Uao; arc=none smtp.client-ip=95.215.58.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1749229121;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=5NdfrsbIRzOD8vK2LDNBZuEFwBMyM/EzGFaa7yMA5lU=;
+	b=KvxB4UaoKQG/EngKwI9mNfIlykekVYow+Qp3zffmi1L8gB7BO50YIf8DX0uU94w7AIBKSs
+	ElFlOi1KES1jkQly9HWPmF/cb0UA9d0OqeC2X8BJLCKykfuhqVGgp4JaC0A9uwpitr1ptK
+	2tEff5IgCyrEwYBBHVDrlMy4BWv7A24=
+From: Tao Chen <chen.dylane@linux.dev>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	qmo@kernel.org,
+	jolsa@kernel.org
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Tao Chen <chen.dylane@linux.dev>
+Subject: [PATCH bpf-next  1/5] bpf: Add cookie to tracing bpf_link_info
+Date: Sat,  7 Jun 2025 00:58:14 +0800
+Message-Id: <20250606165818.3394397-1-chen.dylane@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250606032309.444401-1-yonghong.song@linux.dev>
- <CAEf4Bzb+rPo6bfYe71vOzAsqQb4JM6Gu-Hi66qPj0ioF=PFF9g@mail.gmail.com>
- <8ff0934e-3073-4535-9ec1-f9ee1379ff4e@linux.dev> <9e9d08a4-6e27-4cab-959d-e730cacd75f4@linux.dev>
-In-Reply-To: <9e9d08a4-6e27-4cab-959d-e730cacd75f4@linux.dev>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 6 Jun 2025 09:57:42 -0700
-X-Gm-Features: AX0GCFvrgizLYaREx5AtOBwV8BnQbWpLEY8hz67tDYAYcfVVZkRGZxhEayo3GVs
-Message-ID: <CAEf4BzYDkYiJdBJyPv4P_3jYJg8JegkvDOYWTam-vBgDQHOQtA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/4] selftests/bpf: Fix a few test failures with
- arm64 64KB page
-To: Ihor Solodrai <ihor.solodrai@linux.dev>
-Cc: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
-	Martin KaFai Lau <martin.lau@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Jun 6, 2025 at 9:49=E2=80=AFAM Ihor Solodrai <ihor.solodrai@linux.d=
-ev> wrote:
->
-> On 6/6/25 9:43 AM, Yonghong Song wrote:
-> >
-> >
-> > On 6/6/25 9:30 AM, Andrii Nakryiko wrote:
-> >> On Thu, Jun 5, 2025 at 8:23=E2=80=AFPM Yonghong Song <yonghong.song@li=
-nux.dev>
-> >> wrote:
-> >>> My local arm64 host has 64KB page size and the VM to run test_progs
-> >>> also has 64KB page size. There are a few self tests assuming 4KB page
-> >>> and hence failed in my envorinment. Patch 1 tries to reduce long asse=
-rt
-> >> typo: environment
-> >>
-> >>> logs when tail failed. Patches 2-4 fixed three selftest failures.
-> >> How come our BPF CI doesn't catch this on aarch64?.. Ihor, any thought=
-s?
-> >
-> > In CI for aarch64, the page size is 4KB. For example, for this link:
-> >
-> > https://github.com/kernel-patches/bpf/actions/runs/15482212552/
-> > job/43590176563?pr=3D9053
-> >
-> > Find the kconfig, and we have
-> >
-> >    CONFIG_ARM64_4K_PAGES=3Dy
-> >    # CONFIG_ARM64_16K_PAGES is not set
-> >    # CONFIG_ARM64_64K_PAGES is not set
-> >
-> > and for 4K page, all these tests are fine, but not for 64K page.
->
-> Ah right, I just realized the host pagesize doesn't matter, the kernel
-> we are running tests against needs to be re-compiled with the right
-> config.
->
-> If this is important to test on CI, it can be another matrix dimension
-> with customized kconfig. Do we want to do that?
->
+bpf_tramp_link includes cookie info, we can add it in bpf_link_info.
 
-Can we just use 64KB page size for aarch64 (no 4KB variant for arm64)?
->
-> >
-> >
-> >>
-> >>> Yonghong Song (4):
-> >>>    selftests/bpf: Reduce test_xdp_adjust_frags_tail_grow logs
-> >>>    selftests/bpf: Fix bpf_mod_race test failure with arm64 64KB page
-> >>> size
-> >>>    selftests/bpf: Fix ringbuf/ringbuf_write test failure with arm64 6=
-4KB
-> >>>      page size
-> >>>    selftests/bpf: Fix a user_ringbuf failure with arm64 64KB page siz=
-e
-> >>>
-> >>>   .../selftests/bpf/prog_tests/bpf_mod_race.c    |  2 +-
-> >>>   .../testing/selftests/bpf/prog_tests/ringbuf.c |  5 +++--
-> >>>   .../selftests/bpf/prog_tests/user_ringbuf.c    |  6 ++++--
-> >>>   .../selftests/bpf/prog_tests/xdp_adjust_tail.c | 18 ++++++++++++---=
+Signed-off-by: Tao Chen <chen.dylane@linux.dev>
 ---
-> >>>   .../selftests/bpf/progs/test_ringbuf_write.c   |  5 +++--
-> >>>   5 files changed, 23 insertions(+), 13 deletions(-)
-> >>>
-> >>> --
-> >>> 2.47.1
-> >>>
-> >
->
+ include/uapi/linux/bpf.h       | 2 ++
+ kernel/bpf/syscall.c           | 1 +
+ tools/include/uapi/linux/bpf.h | 2 ++
+ 3 files changed, 5 insertions(+)
+
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index f1160ebbf52..fd4869d8cd1 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -6658,6 +6658,8 @@ struct bpf_link_info {
+ 			__u32 attach_type;
+ 			__u32 target_obj_id; /* prog_id for PROG_EXT, otherwise btf object id */
+ 			__u32 target_btf_id; /* BTF type id inside the object */
++			__u32 :32;
++			__u64 cookie;
+ 		} tracing;
+ 		struct {
+ 			__u64 cgroup_id;
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 89d027cd7ca..4c0ac083518 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3416,6 +3416,7 @@ static int bpf_tracing_link_fill_link_info(const struct bpf_link *link,
+ 		container_of(link, struct bpf_tracing_link, link.link);
+ 
+ 	info->tracing.attach_type = tr_link->attach_type;
++	info->tracing.cookie = tr_link->link.cookie;
+ 	bpf_trampoline_unpack_key(tr_link->trampoline->key,
+ 				  &info->tracing.target_obj_id,
+ 				  &info->tracing.target_btf_id);
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index f1160ebbf52..fd4869d8cd1 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -6658,6 +6658,8 @@ struct bpf_link_info {
+ 			__u32 attach_type;
+ 			__u32 target_obj_id; /* prog_id for PROG_EXT, otherwise btf object id */
+ 			__u32 target_btf_id; /* BTF type id inside the object */
++			__u32 :32;
++			__u64 cookie;
+ 		} tracing;
+ 		struct {
+ 			__u64 cgroup_id;
+-- 
+2.43.0
+
 
