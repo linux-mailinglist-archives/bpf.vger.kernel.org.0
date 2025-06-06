@@ -1,122 +1,164 @@
-Return-Path: <bpf+bounces-59878-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59879-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32676AD06A4
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 18:30:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDB8FAD06A7
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 18:31:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF757179FC0
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 16:30:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 357217A28E1
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 16:30:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72603287500;
-	Fri,  6 Jun 2025 16:30:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gsHufE6j"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1B09289826;
+	Fri,  6 Jun 2025 16:31:47 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+Received: from 66-220-144-178.mail-mxout.facebook.com (66-220-144-178.mail-mxout.facebook.com [66.220.144.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FC5270823
-	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 16:30:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18F2270823
+	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 16:31:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.144.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749227431; cv=none; b=T2ym99UWmI+IT2GMCe8sAJZMIzBpui2f7xGfosFgZjykFFtFcheLiwcQ8C0GLjyxZVSHs6kqTOT3KTW20j5EcC8x8WTI3PIS++rcT/a0ppAcL46jTyaX//AVaqGz5Ravh+tN71CxL/fgOZcbDl1lMQ/dWjFyXliEtFDTl+GAjUE=
+	t=1749227507; cv=none; b=EoefByHAY/y2j2k7XR3mgh4k7KjDcPmj8b0czwuayZAhKdywu7hwNmgKN7ViyHAlh762/qmTZIgG69SixIoTv7Tyn2j2Yvj1CDGLmHmhlQZQ46vHbEfg9YTB9JQOBYNr5s4reUrjof7Eqca6kOfKQE8lvJ2ZDB+8QXMebqUkC0E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749227431; c=relaxed/simple;
-	bh=oI/mCailHwwKQdMW2qOYYV5En0qxAv5XvjFB+QVnxbk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZHClRqhMSQE9mdvF0WDKdfGaoprusv1mYP9jskAS6fnq7yx+fAaqITU/Rh/Rdt6xX6TmxuFvsIyFJOf6uvsGt7NDCKFjyBvNh4vuD3Jaonhontt4CdKrx0S+w7ww8kA7EgwY2KnDcrVmH8YFX9SagCvPtfABPHupmznk66vzfTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gsHufE6j; arc=none smtp.client-ip=209.85.215.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-b170c99aa49so1376542a12.1
-        for <bpf@vger.kernel.org>; Fri, 06 Jun 2025 09:30:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749227429; x=1749832229; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yDrkv4xBSDG8l5wSzhGuvwwphsjfAZm9QGyAPSCwIEc=;
-        b=gsHufE6jhWAfAo+rGVYEt5vgek1C6GF3KApSvqYrFYM+EYKxolOjD9+Q6BiMmmPLFN
-         7gNqLplutXuI1o7XrsTRdMGexBXCN1u8+FIt1HXSlRtOXczc9iTck+vZrG77XZ2hd4hQ
-         FVyD1ZVGTZ+k7bC0ldtOpJKwGOCpjcCjL1pZglT4dMXI4rUaG92H0S9mHLH5wdfAI9Js
-         bnpXdNeB3xOgpHv7pEJWzDzMX27X1jHxJabpahv105nq0V//36L1ChXBqao8W5QklA+4
-         xgpsnZ3o7nFmRHMf9RWf67TgpZe5tPpJuU4QNzZrT7Qfhjum4huqsysp6zZTCQIDHEh7
-         0LEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749227429; x=1749832229;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yDrkv4xBSDG8l5wSzhGuvwwphsjfAZm9QGyAPSCwIEc=;
-        b=XHZrmWvHhH0VMonRWblYGQwAD5ZxbISamwOvEE/uOF6YeZvQgCYVpgkkPcqq7YGMBW
-         byfhJVwmK0ButLx5Rt2m03gUffRZ91SBU8/SBNeKLQTm43WQ0KQ2x/6gF2dBYeW5dzU2
-         yhy+wVW6Vga5yzxby1BXcozRPTWwsvrn/PC+KvQtuAa10tS+rOUmUO2R9+N971q87Qg9
-         M64L7L7P9aYjlujLH57fxf7S790ObJEu5IL/sahJMDSOZAKS6j8Xfm6VbrFknwo9+7ys
-         VgylG6Nk0MorMau7KU/YhumKbAWzZwTv+lmNdK5B47rNC17N3zOqQsNYhFG/vfMPgmO9
-         cNVg==
-X-Gm-Message-State: AOJu0YzD70YGlHkpTOhjdeFQ0EFRHKfVsTGkte1Q9x5bwnDSv/EImy3C
-	bDUMnW1bDfARSUz+EXMivxXDIN5NVusarbRzF86EbGQRIwQq7rF2vb+BhdmFE244tFPEK2M3fqs
-	nl0XwjykcYd2npvQz9qvbwee1R1vgpSYUfw==
-X-Gm-Gg: ASbGncsGYooXJnB/ufemSPZP2fLMk2ro8qYcBW7uEmMPHyQnKpemgllrZRPMBtxuasQ
-	GrkT4kaDgh4rxaJGwoMAz5HcLhSbK9ewkfiXCZcBOvUq96Z8hU5XlzQ2NOTfbifRuklzIh6OwVf
-	/H9dr3exlvihaTNLKGtMV8zyK7rVOlYN8avf1wYtS/Sg==
-X-Google-Smtp-Source: AGHT+IFF6D+yswqh6E8h5H5I6ovLpnpbFDQHNU41Vny7BYpxXLe8kHgJB3NqKxxeBjMv9wyMJvtEG4wk5bPZsn7EpMI=
-X-Received: by 2002:a17:90b:1847:b0:311:eb85:96df with SMTP id
- 98e67ed59e1d1-31346b56aedmr7494444a91.17.1749227428615; Fri, 06 Jun 2025
- 09:30:28 -0700 (PDT)
+	s=arc-20240116; t=1749227507; c=relaxed/simple;
+	bh=N326Dw7gCXedbOAIkdiLmhIoVv2W5Ah367mL2eMzjR4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oGnJ4MVOBuJ2magoxUxRwon/Bf29YfBKG6kRfTfdzKQ59M+RAc2Ae+DGmod/s4P7RR8zdKe2Trd+tVeOuXN4FwDdrPC1DgW2xAout7F7ANZzUJt8N+v9QolQIZoKLwEobAvHwakKJRI6AHFZ96nthSJ6X2ItnGJYDFUewYK3uBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.144.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devvm16039.vll0.facebook.com (Postfix, from userid 128203)
+	id 4AD33902F8E5; Fri,  6 Jun 2025 09:31:31 -0700 (PDT)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next v5 0/5] bpf: Implement mprog API on top of existing cgroup progs
+Date: Fri,  6 Jun 2025 09:31:31 -0700
+Message-ID: <20250606163131.2428225-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250606032309.444401-1-yonghong.song@linux.dev>
-In-Reply-To: <20250606032309.444401-1-yonghong.song@linux.dev>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 6 Jun 2025 09:30:16 -0700
-X-Gm-Features: AX0GCFvC7O1uNzeJ1HObZE0dBUyGHq9ZD_pcw6Xlt5WWdO_m1mYkL7EA-sFO_Zg
-Message-ID: <CAEf4Bzb+rPo6bfYe71vOzAsqQb4JM6Gu-Hi66qPj0ioF=PFF9g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/4] selftests/bpf: Fix a few test failures with
- arm64 64KB page
-To: Yonghong Song <yonghong.song@linux.dev>, Ihor Solodrai <ihor.solodrai@linux.dev>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
-	Martin KaFai Lau <martin.lau@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 5, 2025 at 8:23=E2=80=AFPM Yonghong Song <yonghong.song@linux.d=
-ev> wrote:
->
-> My local arm64 host has 64KB page size and the VM to run test_progs
-> also has 64KB page size. There are a few self tests assuming 4KB page
-> and hence failed in my envorinment. Patch 1 tries to reduce long assert
+Current cgroup prog ordering is appending at attachment time. This is not
+ideal. In some cases, users want specific ordering at a particular cgroup
+level. For example, in Meta, we have a case where three different
+applications all have cgroup/setsockopt progs and they require specific
+ordering. Current approach is to use a bpfchainer where one bpf prog
+contains multiple global functions and each global function can be
+freplaced by a prog for a specific application. The ordering of global
+functions decides the ordering of those application specific bpf progs.
+Using bpfchainer is a centralized approach and is not desirable as
+one of applications acts as a daemon. The decentralized attachment
+approach is more favorable for those applications.
 
-typo: environment
+To address this, the existing mprog API ([2]) seems an ideal solution wit=
+h
+supporting BPF_F_BEFORE and BPF_F_AFTER flags on top of existing cgroup
+bpf implementation. More specifically, the support is added for prog/link
+attachment with BPF_F_BEFORE and BPF_F_AFTER. The kernel mprog
+interface ([2]) is not used and the implementation is directly done in
+cgroup bpf code base. The mprog 'revision' is also implemented in
+attach/detach/replace, so users can query revision number to check the
+change of cgroup prog list.
 
-> logs when tail failed. Patches 2-4 fixed three selftest failures.
+The patch set contains 5 patches. Patch 1 adds revision support for
+cgroup bpf progs. Patch 2 implements mprog API implementation for
+prog/link attach and revision update. Patch 3 adds a new libbpf
+API to do cgroup link attach with flags like BPF_F_BEFORE/BPF_F_AFTER.
+Patches 4 and 5 add two tests to validate the implementation.
 
-How come our BPF CI doesn't catch this on aarch64?.. Ihor, any thoughts?
+  [1] https://lore.kernel.org/r/20250224230116.283071-1-yonghong.song@lin=
+ux.dev
+  [2] https://lore.kernel.org/r/20230719140858.13224-2-daniel@iogearbox.n=
+et
 
->
-> Yonghong Song (4):
->   selftests/bpf: Reduce test_xdp_adjust_frags_tail_grow logs
->   selftests/bpf: Fix bpf_mod_race test failure with arm64 64KB page size
->   selftests/bpf: Fix ringbuf/ringbuf_write test failure with arm64 64KB
->     page size
->   selftests/bpf: Fix a user_ringbuf failure with arm64 64KB page size
->
->  .../selftests/bpf/prog_tests/bpf_mod_race.c    |  2 +-
->  .../testing/selftests/bpf/prog_tests/ringbuf.c |  5 +++--
->  .../selftests/bpf/prog_tests/user_ringbuf.c    |  6 ++++--
->  .../selftests/bpf/prog_tests/xdp_adjust_tail.c | 18 ++++++++++++------
->  .../selftests/bpf/progs/test_ringbuf_write.c   |  5 +++--
->  5 files changed, 23 insertions(+), 13 deletions(-)
->
-> --
-> 2.47.1
->
+Changelogs:
+  v4 -> v5:
+    - v4: https://lore.kernel.org/bpf/20250530173812.1823479-1-yonghong.s=
+ong@linux.dev/
+    - Remove early prog/link checking based flags and id_or_fd as later c=
+ode
+      will do checking as well.
+    - Do proper cgroup flag checking for bpf_prog_attach().
+  v3 -> v4:
+    - v3: https://lore.kernel.org/bpf/20250517162720.4077882-1-yonghong.s=
+ong@linux.dev/
+    - Refactor some to make BPF_F_BEFORE/BPF_F_AFTER handling easier to u=
+nderstand.
+    - Perviously, I degraded 'link' to 'prog' for later mprog handling. T=
+his is
+      not correct. Similar to mprog.c, we should be check 'link' instead =
+link->prog
+      since it is possible two different links may have the same underlyi=
+ng prog and
+      we do not want to miss supporting such use case.
+  v2 -> v3:
+    - v2: https://lore.kernel.org/bpf/20250508223524.487875-1-yonghong.so=
+ng@linux.dev/
+    - Big change to replace get_anchor_prog() to get_prog_list() so the
+      'struct bpf_prog_list *' is returned directly.
+    - Support 'BPF_F_BEFORE | BPF_F_AFTER' attachment if the prog list is=
+ empty
+      and flags do not have 'BPF_F_LINK | BPF_F_ID' and id_or_fd is 0.
+    - Add BPF_F_LINK support.
+    - Patch 4 is added to reuse id_from_prog_fd() and id_from_link_fd().
+  v1 -> v2:
+    - v1: https://lore.kernel.org/bpf/20250411011523.1838771-1-yonghong.s=
+ong@linux.dev/
+    - Change cgroup_bpf.revisions from atomic64_t to u64.
+    - Added missing bpf_prog_put in various places.
+    - Rename get_cmp_prog() to get_anchor_prog(). The implementation trie=
+s to
+      find the anchor prog regardless of whether id_or_fd is non-NULL or =
+not.
+    - Rename bpf_cgroup_prog_attached() to is_cgroup_prog_type() and hand=
+le
+      BPF_PROG_TYPE_LSM properly (with BPF_LSM_CGROUP attach type).
+    - I kept 'id || id_or_fd' condition as the condition 'id' is also use=
+d
+      in mprog.c so I assume it is okay in cgroup.c as well.
+
+Yonghong Song (5):
+  cgroup: Add bpf prog revisions to struct cgroup_bpf
+  bpf: Implement mprog API on top of existing cgroup progs
+  libbpf: Support link-based cgroup attach with options
+  selftests/bpf: Move some tc_helpers.h functions to test_progs.h
+  selftests/bpf: Add two selftests for mprog API based cgroup progs
+
+ include/linux/bpf-cgroup-defs.h               |   1 +
+ include/uapi/linux/bpf.h                      |   7 +
+ kernel/bpf/cgroup.c                           | 188 +++++-
+ kernel/bpf/syscall.c                          |  44 +-
+ kernel/cgroup/cgroup.c                        |   5 +
+ tools/include/uapi/linux/bpf.h                |   7 +
+ tools/lib/bpf/bpf.c                           |  44 ++
+ tools/lib/bpf/bpf.h                           |   5 +
+ tools/lib/bpf/libbpf.c                        |  28 +
+ tools/lib/bpf/libbpf.h                        |  15 +
+ tools/lib/bpf/libbpf.map                      |   1 +
+ .../bpf/prog_tests/cgroup_mprog_opts.c        | 617 ++++++++++++++++++
+ .../bpf/prog_tests/cgroup_mprog_ordering.c    |  77 +++
+ .../selftests/bpf/prog_tests/tc_helpers.h     |  28 -
+ .../selftests/bpf/progs/cgroup_mprog.c        |  30 +
+ tools/testing/selftests/bpf/test_progs.h      |  28 +
+ 16 files changed, 1060 insertions(+), 65 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_mprog_o=
+pts.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_mprog_o=
+rdering.c
+ create mode 100644 tools/testing/selftests/bpf/progs/cgroup_mprog.c
+
+--=20
+2.47.1
+
 
