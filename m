@@ -1,208 +1,148 @@
-Return-Path: <bpf+bounces-59924-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59925-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E65C1AD0907
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 22:23:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9257BAD0930
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 22:53:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4EBF6189EFC1
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 20:23:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF896189F140
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 20:53:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91927215793;
-	Fri,  6 Jun 2025 20:23:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75C7A2185A0;
+	Fri,  6 Jun 2025 20:53:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QKyzK8DO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F9DjOLmA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C3AB202961;
-	Fri,  6 Jun 2025 20:23:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 419201DE887
+	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 20:53:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749241389; cv=none; b=bNOlWsJ03x7P/KQ2VQPcHoCAcM3O9zv/7uTP3Vx16FBtxgSCB2sg+oBTczcKTewzBlKRp7LAEsDe+5JxxGIkWXFfSZRSrYSfENiQse9rxbr2A0Ic5ZoG6I8YNZbcxptKnBR6hfm6A3gduMOdqDBrBVMmmdAWU8X1mvhoIEAA3jY=
+	t=1749243213; cv=none; b=oGFBkmgkBc41Rsi8nLdarLzSdzRXXlpIdj+Hu16UwGf1McR9LD8EohOAylnKnKnrnVkZiBAkt7Sg9XS93CFe1D3OcpTAgud05zD7u9P6MnmiuWYgXv2kDSrIq5MOnne3W73UKq9GwojvtygBYM6wwi10MFvsOkWrs0TS9oViS7I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749241389; c=relaxed/simple;
-	bh=nDiegZWc7QxPGHerpam1Ue4vcVP/T6DHz9YPR1xmVhE=;
+	s=arc-20240116; t=1749243213; c=relaxed/simple;
+	bh=F9LTagr2Fh2zelSLKCBCTnQXJQiDTJ+cMAhBOnqgrJ8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tHZtZsaukEujGza2tkdskRJ7SxeYUwy62N71sqLPQJ4U5YKFGxJL4juLwXD54VzeTNuvsS3wVIX67Amn3/9B5uXikWdPyjw2UJoUPVgAl8bCd9ELWeAHmc9cQkzm4prxfQrTNwONLAgCGjx7qgXv1WM625N/jo/xDre31K/9rWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QKyzK8DO; arc=none smtp.client-ip=209.85.214.180
+	 To:Cc:Content-Type; b=n9wZAp100302Hj8NnvcwVtdsDJGaZDkBktg5svC69JiFvsRlI1kznYKgXs2kLdp7Nn5i96cRgTgsmiQMM3GT4BbgK9ON+Bz0j2YcY5xqItXoD5R3LtKUVILMnLZu7JdL0ZRR+MUmZanM9Xkv84N0xnJ52mdek84p5W+BHMlz2B0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F9DjOLmA; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-231e8553248so26239545ad.1;
-        Fri, 06 Jun 2025 13:23:07 -0700 (PDT)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-450ccda1a6eso23518465e9.2
+        for <bpf@vger.kernel.org>; Fri, 06 Jun 2025 13:53:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749241387; x=1749846187; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1749243209; x=1749848009; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aTCCTUeTTG7ew0R5pNM6c5gfbUJ/nSL/1xswiZTrzKU=;
-        b=QKyzK8DO5BP5Xnpzmlk+BOPX99RTRMk8XxKi3QODPAHme//LAXK+qEcSvrE/q1bhuO
-         LYUxpFdThwfI6jwafPU+xQSC2mGJ2i+EFyZicZ5ZEvd7DCdo5wthYPz9VsgEnwgIhl24
-         /6SUFVsYwMiXivibXXC0QC75c11WsbmzohWfCjBUNPZWfrjsfNQq0Gw/3fG1uySJjvIS
-         kNNv6JFy/AaVAUhDHDHlGNdZzcwjlwps+APGKpyPHYcLvdcHNSFo7vz7mxDysBK4nKiE
-         IEWPeNGNkzvb4mi1RDy8jxIAFpz3E1DUeDi8aohBbqoP56h6QXQGPLUUDHI8NwJrsQLl
-         lfTg==
+        bh=2MignPCS61pk0vm1qQ1ywny+6GXztivphDQcMBkvPhs=;
+        b=F9DjOLmA7t+hYXbTKmxSqpXu0+kMYTO/EmqTEm9qTFyHhUFV0x3pG0ZXk6o1V9CEVk
+         zeqPvcs7DMUZ9q+r1GtF22u6rDBuI/bDt7flTCCggPm8PcGXIsbUzjRiUHn8qsTYf6+C
+         ewCfEMUlQYLOpIyeTnMcdRttTmBNsFt9b+6rR/A2/zFdIdG3RVk6cCyUUkV9f/0srjYj
+         E5ws2ue5pB0xN9cz2f4bWBGtRH6Lm3tVrp7u6Dd6BRjBn0JmawIWkkc/yKIb8DpYcLxF
+         UIvOhbeEGpvGC9hXpo2qVIijH00g98ZHGbm8TtA1xMjFIvx6UnU+jDuQYfPKcrlPIl+E
+         MO3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749241387; x=1749846187;
+        d=1e100.net; s=20230601; t=1749243209; x=1749848009;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aTCCTUeTTG7ew0R5pNM6c5gfbUJ/nSL/1xswiZTrzKU=;
-        b=EDW397xRHThhrMeVmvUHEbJ+s28KLVwC3vxYzl+tROUj8PUaPcno6C82iG+uicutfk
-         j/BFi2xMBlvfRY9ui1UqlGjKFPto2w43fajNZukaV/pF+dG9QMhrPuANq37DCB3Ybyst
-         JQ4dY/VR/Ue45xWAFLeVKN/YKKTc4WS50vo75LtAyQ4RtjWxBroiYoMOy/j3fpt2zfBp
-         imPbyPq0PTkeew5RH3HNte8Gzd8zvk9FOFE7TIsM68OUnnoo4qd0v4Mt0SSLVh5BhYs4
-         t13NmJDNBe1X5cKTi+No4Rm4E9aQQAflFPTmWTwWbw/XuGet50k2RI3e8UDgp3l5pVaE
-         to0w==
-X-Forwarded-Encrypted: i=1; AJvYcCVNA4gLVMm1HnOW+CR3ikhURPhKrw3/zN5K+5B2xjUvXNTkO6eayOzW1u9GFbbo+KOfwOovkFgD4WXBiwGH@vger.kernel.org, AJvYcCXBpRH6qysxknKX0IV3PYVQ3uVfZOMYAdJyDvK8sYy9P7vSc0cI50M1QQ5p8ORRzpSNGuiZxfdp6OGDCxdZL+LUzA==@vger.kernel.org, AJvYcCXkmLR/an1ZxSavSffz9MXRgb8y+SFw2pKamLtE7JSPKsMVVgRuRuXoJNNcc4mGD7CGexo=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw8c69mlYmxYbOX0txQnLE5sKFPKKiKjFlwLFYMTuCUXnuCRAwx
-	JNfj2BKDGELaB/+Csc6t0LNU2tqE6gSt0KYIZD6ND6+1YDxOg4Ccdrw6GXQQe3P3dKlAOFIM1PC
-	6ANNZD4DskkogJyE0iOzihqXqYADOWCs=
-X-Gm-Gg: ASbGncsecWerHWtpK63ErjFvQj5BIqbkUtfWnv2rgFUFxBQr0jVZ+zKLam27dBx4qfJ
-	+CASg5tt3axzK+qAF0gsjxSZa5oGVIaqYP8V6g5hqvTKrZl8HMa9ZuyegY4VShT8eKUlos2M6Lm
-	NFWg96XwkVxSUHis5L+8yG2m7Uxu8aEMw=
-X-Google-Smtp-Source: AGHT+IEcN3y6nUZfm5SWkKO7cd/uZKIO6wYCAONvneGjgRMRISsIMh1EuvF90Jw9iYqSEuAjitgo9NpwL2k0MB4sywk=
-X-Received: by 2002:a17:902:db10:b0:235:91a:2c with SMTP id
- d9443c01a7336-23601d82d3fmr57184385ad.42.1749241386736; Fri, 06 Jun 2025
- 13:23:06 -0700 (PDT)
+        bh=2MignPCS61pk0vm1qQ1ywny+6GXztivphDQcMBkvPhs=;
+        b=oljeukzJQEdYtEXaDkKVpY1xJnh2dT7PNlbCCI0PkaQsY9EZe02dwZNCzTzCfiOz0x
+         whlp812HpsJbsB844l1QQ3ovMjDxI/mbdfmhDNg8AOdWM7vHzE8kacvjOS/jL2WZkctg
+         InG+iiINR+RFHd6drj9Ypr4pk1Z1LbGoVR2NmlZLLU1fFudH49RsAL6zDATM3rKji3+t
+         25BZqf10QRLYkFQssyioOJ6KxoSyY6huUKsCri9ifEHh1c4AOAxOQ8ERHu0WijCStCSg
+         rqNOh9q1Zu16Rt/zSIywhGFblNZPz2+fB407UH7xw+7cL2LqYMjS8exXn/rEAwr4i1Lr
+         pHWw==
+X-Gm-Message-State: AOJu0YzhmLNg4cwqgJjwrFZfHVOAombiRYf8K5fMZtJ6oELJ7mjpkDjj
+	JMK+6bnCU+Rkxu07sKxlTsciIx8Ig9L+JAzF0CIgmz8UGh9d8aKJ3jkACjD1CDEtvlUi6a0GnrA
+	T1a5bZEGjaspENvVCx1uGwD5FFzM6JLI=
+X-Gm-Gg: ASbGncuIDA27oUYOcjEFQtDbKO4WrNqMcvvKvwKZdsOzj67fHkBlqhCrG3tVn+ESFKg
+	eV1HBwMfbLTqUgztHK8qAt8GV30nKv8HPncgKyvWRIrO5jqGaLZSEHVaICA34x6YwmTGk9ALcGT
+	PS6TLsvVlgMMCC5QoG791VGMIRjZN8sQDGo+iB/Ze/lbZV/dn3yintyKgg8HwwvQDb6nbUIcgY
+X-Google-Smtp-Source: AGHT+IH0Uwi2rZs/k5R5FlcTrVg6hIogZnXUjzd+I9T0HapIr9+cg7fCcWG9Wjajf0JbxqF8OaEDM/chwbJWrNbqGn8=
+X-Received: by 2002:a5d:64c5:0:b0:3a5:2ec5:35a9 with SMTP id
+ ffacd0b85a97d-3a531882274mr3667273f8f.3.1749243209237; Fri, 06 Jun 2025
+ 13:53:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <aEMLU2li1x2bAO4w@x1> <20250606161406.GH8020@e132581.arm.com>
- <CAEf4BzY2UEe9e53Ums=d-mMVgBdc5JnVAboKz1LLmvKRk5O=jA@mail.gmail.com> <aENKD6yUCN9UXves@x1>
-In-Reply-To: <aENKD6yUCN9UXves@x1>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 6 Jun 2025 13:22:54 -0700
-X-Gm-Features: AX0GCFvJKLjRmeAOzJrfXVX7mPidS077DNLeeKytLj_QuruaL7TOLtFznyTKeCc
-Message-ID: <CAEf4Bzaz4usXMNB_ffWDiZhVseCD6EFA+TJGtWMA-K4_cqdfNA@mail.gmail.com>
-Subject: Re: BTF loading failing on perf
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Leo Yan <leo.yan@arm.com>, Lorenz Bauer <lmb@isovalent.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org
+References: <20250606174139.3036576-1-yonghong.song@linux.dev> <20250606174155.3037298-1-yonghong.song@linux.dev>
+In-Reply-To: <20250606174155.3037298-1-yonghong.song@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 6 Jun 2025 13:53:18 -0700
+X-Gm-Features: AX0GCFukYwVVWQKzQdaH4iDeO_zvZfmRCiIp7TeJ7_T6tUNHon-13SYbIm2gHCw
+Message-ID: <CAADnVQJ+eOP7N4ihV6fkOQHiEc6fkH4qkcJnHogUoLWexsj-PA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/4] selftests/bpf: Fix ringbuf/ringbuf_write
+ test failure with arm64 64KB page size
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 6, 2025 at 1:05=E2=80=AFPM Arnaldo Carvalho de Melo <acme@kerne=
-l.org> wrote:
+On Fri, Jun 6, 2025 at 10:42=E2=80=AFAM Yonghong Song <yonghong.song@linux.=
+dev> wrote:
 >
-> On Fri, Jun 06, 2025 at 09:20:57AM -0700, Andrii Nakryiko wrote:
-> > On Fri, Jun 6, 2025 at 9:14=E2=80=AFAM Leo Yan <leo.yan@arm.com> wrote:
-> > > On Fri, Jun 06, 2025 at 12:37:55PM -0300, Arnaldo Carvalho de Melo wr=
-ote:
-> > > > root@number:~# perf trace -e openat --max-events=3D1
-> > > > libbpf: failed to read kernel BTF from '/sys/kernel/btf/vmlinux': -=
-ENODEV
-> > > > libbpf: failed to read kernel BTF from '/sys/kernel/btf/vmlinux': -=
-ENODEV
-> > > >      0.000 ( 0.016 ms): ptyxis-agent/4375 openat(dfd: CWD, filename=
-: "/proc/6593/cmdline", flags: RDONLY|CLOEXEC) =3D 13
-> > > > root@number:~#
-> > > >
-> > > > openat(AT_FDCWD, "/sys/kernel/btf/vmlinux", O_RDONLY) =3D 258
-> > > > mmap(NULL, 6519699, PROT_READ, MAP_PRIVATE, 258, 0) =3D -1 ENODEV (=
-No such device)
-> > > > libbpf: failed to read kernel BTF from '/sys/kernel/btf/vmlinux': -=
-ENODEV
-> > >
-> > > Have you included the commit below in the kernel side?
-> >
-> > It doesn't matter, libbpf should silently fallback to non-mmap() way,
+> The ringbuf max_entries must be PAGE_ALIGNED. See kernel function
+> ringbuf_map_alloc(). So for arm64 64KB page size, adjust max_entries
+> properly.
 >
-> Right, it has to work with older kernels, etc.
+> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+> ---
+>  tools/testing/selftests/bpf/prog_tests/ringbuf.c       | 5 +++--
+>  tools/testing/selftests/bpf/progs/test_ringbuf_write.c | 5 +++--
+>  2 files changed, 6 insertions(+), 4 deletions(-)
 >
-> > and it clearly doesn't.
+> diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/tes=
+ting/selftests/bpf/prog_tests/ringbuf.c
+> index da430df45aa4..89fd3401a23e 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+> @@ -97,7 +97,8 @@ static void ringbuf_write_subtest(void)
+>         if (!ASSERT_OK_PTR(skel, "skel_open"))
+>                 return;
 >
-> > We need something like this:
-> > +++ b/tools/lib/bpf/btf.c
-> > @@ -1384,12 +1384,12 @@ static struct btf *btf_parse_raw_mmap(const
-> > char *path, struct btf *base_btf)
-> >
-> >         fd =3D open(path, O_RDONLY);
-> >         if (fd < 0)
-> > -               return libbpf_err_ptr(-errno);
-> > +               return ERR_PTR(-errno);
-> >
-> >         if (fstat(fd, &st) < 0) {
-> >                 err =3D -errno;
-> >                 close(fd);
-> > -               return libbpf_err_ptr(err);
-> > +               return ERR_PTR(err);
-> >         }
-> >
-> >         data =3D mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
-> > @@ -1397,7 +1397,7 @@ static struct btf *btf_parse_raw_mmap(const char
-> > *path, struct btf *base_btf)
-> >         close(fd);
-> >
-> >         if (data =3D=3D MAP_FAILED)
-> > -               return libbpf_err_ptr(err);
-> > +               return ERR_PTR(err);
-> >
-> >         btf =3D btf_new(data, st.st_size, base_btf, true);
-> >         if (IS_ERR(btf))
-> >
-> > libbpf_err_ptr() should be used for user-facing API functions, they
-> > return NULL on error and set errno, so checking for IS_ERR() is wrong
-> > here.
+> -       skel->maps.ringbuf.max_entries =3D 0x4000;
+> +       skel->maps.ringbuf.max_entries =3D 4 * page_size;
+> +       skel->rodata->reserve_size =3D 3 * page_size;
 >
-> And the only user of the above function is:
+>         err =3D test_ringbuf_write_lskel__load(skel);
+>         if (!ASSERT_OK(err, "skel_load"))
+> @@ -108,7 +109,7 @@ static void ringbuf_write_subtest(void)
+>         mmap_ptr =3D mmap(NULL, page_size, PROT_READ | PROT_WRITE, MAP_SH=
+ARED, rb_fd, 0);
+>         if (!ASSERT_OK_PTR(mmap_ptr, "rw_cons_pos"))
+>                 goto cleanup;
+> -       *mmap_ptr =3D 0x3000;
+> +       *mmap_ptr =3D 3 * page_size;
+>         ASSERT_OK(munmap(mmap_ptr, page_size), "unmap_rw");
 >
->                 btf =3D btf_parse_raw_mmap(sysfs_btf_path, NULL);
->                 if (IS_ERR(btf))
->                         btf =3D btf__parse(sysfs_btf_path, NULL);
+>         skel->bss->pid =3D getpid();
+> diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf_write.c b/too=
+ls/testing/selftests/bpf/progs/test_ringbuf_write.c
+> index 350513c0e4c9..9acef7afbe8a 100644
+> --- a/tools/testing/selftests/bpf/progs/test_ringbuf_write.c
+> +++ b/tools/testing/selftests/bpf/progs/test_ringbuf_write.c
+> @@ -12,6 +12,7 @@ struct {
 >
-> That expects ERR_PTR() to then use IS_ERR().
->
-> I think this could be automated with something like coccinnele(sp)?
->
-> Anyway, I tested the patch above and it seems to fix the issue, so:
->
-> Reported-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> Reviewed-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
->
+>  /* inputs */
+>  int pid =3D 0;
+> +const volatile int reserve_size =3D 0;
 
-Just sent a quick fix to not leave this waiting over the weekend.
-Thanks for catching and reporting, Arnaldo!
+See CI failure:
+|test_ringbuf_write.bpf.o|test_ringbuf_write|success -> failure (!!)|+0.00 =
+% |
 
-> - Arnaldo
->
->
-> > Lorenz, can you please test and send a proper fix ASAP?
-> >
-> > >
-> > > commit a539e2a6d51d1c12d89eec149ccc72ec561639bc
-> > > Author: Lorenz Bauer <lmb@isovalent.com>
-> > > Date:   Tue May 20 14:01:17 2025 +0100
-> > >
-> > >     btf: Allow mmap of vmlinux btf
-> > >
-> > >     User space needs access to kernel BTF for many modern features of=
- BPF.
-> > >     Right now each process needs to read the BTF blob either in piece=
-s or
-> > >     as a whole. Allow mmaping the sysfs file so that processes can di=
-rectly
-> > >     access the memory allocated for it in the kernel.
-> > >
-> > >     remap_pfn_range is used instead of vm_insert_page due to aarch64
-> > >     compatibility issues.
-> > >
-> > >     Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
-> > >     Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > >     Tested-by: Alan Maguire <alan.maguire@oracle.com>
-> > >     Reviewed-by: Shakeel Butt <shakeel.butt@linux.dev>
-> > >     Link: https://lore.kernel.org/bpf/20250520-vmlinux-mmap-v5-1-e8c9=
-41acc414@isovalent.com
-> > >
-> > > Thanks,
-> > > Leo
+I think it's better to init reserve_size with some reasonable
+constant to keep veristat happy.
+
+pw-bot: cr
 
