@@ -1,153 +1,91 @@
-Return-Path: <bpf+bounces-59839-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59840-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3F80ACFC54
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 08:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 120F2ACFC5C
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 08:05:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 952F27A45EA
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 05:59:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF7037A859D
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 06:04:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B43D1242930;
-	Fri,  6 Jun 2025 06:00:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C56FE1E7C03;
+	Fri,  6 Jun 2025 06:05:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cinwqVeV"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="zisg+DrU"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1459F2417C8
-	for <bpf@vger.kernel.org>; Fri,  6 Jun 2025 06:00:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3553F1A5BB7;
+	Fri,  6 Jun 2025 06:05:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749189625; cv=none; b=nanX7H/JxnIvjXnPb6FRZ8B3wgUUlSTkW3yFMuvIsNvjGVFtq1iibY0X5nks8z+yvdHqrWcL06qUv9hPEQhUZb74IM/KoFaV544D10ajJnEY8eo1GslzxBjcK6EhAWrM+JtHovCuuoUtQk10HAArfcW0UFgM1VbNRuNrxhg2/D8=
+	t=1749189911; cv=none; b=PgGBOENFRW+gCC07Snj4ah16lt04dbtoGMCkkaclG/E+ESnxpIF6pmBrkijIk6zMk4n9YWAAL6JNAj6j/o6+kajP+dTx+/ZA14FDDGATvUDQaf5fw7bZKniDGPO/sDh5mG/wFsZ16yYwCMkS2IJSyTT88Zdb+fsO7GseGR8RLOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749189625; c=relaxed/simple;
-	bh=0RJcQq9aIpcZjLYtdJ/j1Rs6jeDH6DKoRW5a8f364Ws=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=WNKCEvgeJMedA6q4Zf+1+Q4/eZGkYUUTRTmUPEZSbv6Lg3deTlN8X/GJuOdmCYIPXxs9JeFhvAMUNyau5xuOaXu+R7xCyp+4pb2C+QbkqTBcA0A89ePSV5/391RUWM/rEaY1a/1LnQw6b2IKZ/yv86T8Uk2kopL0wb6ihhalV/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cinwqVeV; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <0e1160e2-5d62-467e-8eb7-b2e95c904bd8@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1749189620;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BDoxShwpov2IyeknKKnXDK91cdZPy+oE0MIWpBt9ebs=;
-	b=cinwqVeVZS+bNZgjDTdafFjtgn2XShlsZo1Eq4Tv2C3q7DnM3ME611XQyWogkZxXdpVj3v
-	cugHH+XS/Poa1idXryBF8Wg9PYM5sFPogx3q1E8u1TzHepeznjinpYNnHh2lbpvXjjXiDO
-	yI6/xPKO3H7ukcYaWu0+eW7SwTxgGgs=
-Date: Thu, 5 Jun 2025 23:00:16 -0700
+	s=arc-20240116; t=1749189911; c=relaxed/simple;
+	bh=DTzL7DH5w6RieyjzqD07L9LNs315gRs2qw8zCLb94/Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HoS73HsJScGaK9OSdO12NYWe0K9hVlkWUz4R3V56vqVhleN6D8LdJUjSQg4YTsEMLTCNidcaKc727MGLbH/N4g0+MMYLIPs4nyrkqAWmxcmJTsQgJPfIHPKdSqLIyaydpJJXGKWkoBqzYKDFXqzDVfGJKPgvOmtdNQA6/emyESU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=zisg+DrU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2643CC4CEEF;
+	Fri,  6 Jun 2025 06:05:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1749189908;
+	bh=DTzL7DH5w6RieyjzqD07L9LNs315gRs2qw8zCLb94/Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=zisg+DrUcu+dtFL2LRXv292Qiq5YWXVFY18by/5ETlckTfiAEsP35H4yv5eZxogg/
+	 Tb8L7G6msi6VLJMysGTo5+0TEN2637NOGT3hCKwF6I0yHfm+4VcIjoc4jutZ40LD68
+	 I8LaNQ9Pnq2YSIoH8VUA2i2Gj06n/haivsU1se+E=
+Date: Fri, 6 Jun 2025 08:05:04 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Suleiman Souhlal <suleiman@google.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Ian Rogers <irogers@google.com>, ssouhlal@freebsd.org,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev, stable@vger.kernel.org
+Subject: Re: [RESEND][PATCH] tools/resolve_btfids: Fix build when cross
+ compiling kernel with clang.
+Message-ID: <2025060650-detached-boozy-8716@gregkh>
+References: <20250606052301.810338-1-suleiman@google.com>
+ <20250606053650.863215-1-suleiman@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 4/4] selftests/bpf: Fix a user_ringbuf failure
- with arm64 64KB page size
-Content-Language: en-GB
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
- Martin KaFai Lau <martin.lau@kernel.org>
-References: <20250606032309.444401-1-yonghong.song@linux.dev>
- <20250606032330.446016-1-yonghong.song@linux.dev>
- <22e00248-0b0a-457e-8516-d19d38ac15f9@linux.dev>
-In-Reply-To: <22e00248-0b0a-457e-8516-d19d38ac15f9@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250606053650.863215-1-suleiman@google.com>
 
+On Fri, Jun 06, 2025 at 02:36:50PM +0900, Suleiman Souhlal wrote:
+> When cross compiling the kernel with clang, we need to override
+> CLANG_CROSS_FLAGS when preparing the step libraries for
+> resolve_btfids.
+> 
+> Prior to commit d1d096312176 ("tools: fix annoying "mkdir -p ..." logs
+> when building tools in parallel"), MAKEFLAGS would have been set to a
+> value that wouldn't set a value for CLANG_CROSS_FLAGS, hiding the
+> fact that we weren't properly overriding it.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 56a2df7615fa ("tools/resolve_btfids: Compile resolve_btfids as host program")
+> Signed-off-by: Suleiman Souhlal <suleiman@google.com>
+> ---
+>  tools/bpf/resolve_btfids/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-On 6/5/25 10:52 PM, Yonghong Song wrote:
->
->
-> On 6/5/25 8:23 PM, Yonghong Song wrote:
->> The ringbuf max_entries must be PAGE_ALIGNED. See kernel function
->> ringbuf_map_alloc(). So for arm64 64KB page size, adjust max_entries
->> properly.
->>
->> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
->> ---
->>   tools/testing/selftests/bpf/prog_tests/user_ringbuf.c | 6 ++++--
->>   1 file changed, 4 insertions(+), 2 deletions(-)
->>
->> diff --git a/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c 
->> b/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
->> index d424e7ecbd12..f50aa8e7f6c2 100644
->> --- a/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
->> +++ b/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
->> @@ -21,8 +21,7 @@
->>   #include "../progs/test_user_ringbuf.h"
->>     static const long c_sample_size = sizeof(struct sample) + 
->> BPF_RINGBUF_HDR_SZ;
->> -static const long c_ringbuf_size = 1 << 12; /* 1 small page */
->> -static const long c_max_entries = c_ringbuf_size / c_sample_size;
->> +static long c_ringbuf_size, c_max_entries;
->>     static void drain_current_samples(void)
->>   {
->> @@ -686,6 +685,9 @@ void test_user_ringbuf(void)
->>   {
->>       int i;
->>   +    c_ringbuf_size = getpagesize(); /* 1 page */
->> +    c_max_entries = c_ringbuf_size / c_sample_size;
->> +
->>       for (i = 0; i < ARRAY_SIZE(success_tests); i++) {
->>           if (!test__start_subtest(success_tests[i].test_name))
->>               continue;
->
-> CI reports a build failure error:
->
-> /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c:426:2: 
-> error: call to '__compiletime_assert_0' declared with 'error' 
-> attribute: BUILD_BUG_ON failed: total_samples <= c_max_entries   426 | 
-> BUILD_BUG_ON(total_samples <= c_max_entries     |
->
-> /tmp/work/bpf/bpf/tools/include/linux/build_bug.h:50:2: note: expanded 
-> from macro 'BUILD_BUG_ON' 50 | BUILD_BUG_ON_MSG(condition, 
-> "BUILD_BUG_ON failed: " #condition) | ^ 
-> /tmp/work/bpf/bpf/tools/include/linux/build_bug.h:39:37: note: 
-> expanded from macro 'BUILD_BUG_ON_MSG' 39 | #define 
-> BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg) | ^ 
-> /tmp/work/bpf/bpf/tools/include/linux/compiler.h:37:2: note: expanded 
-> from macro 'compiletime_assert' 37 | _compiletime_assert(condition, 
-> msg, __compiletime_assert_, __COUNTER__) | ^ 
-> /tmp/work/bpf/bpf/tools/include/linux/compiler.h:25:2: note: expanded 
-> from macro '_compiletime_assert' 25 | __compiletime_assert(condition, 
-> msg, prefix, suffix) | ^ 
-> /tmp/work/bpf/bpf/tools/include/linux/compiler.h:18:4: note: expanded 
-> from macro '__compiletime_assert' 18 | prefix ## suffix(); \ | ^ 
-> <scratch space>:60:1: note: expanded from here 60 | 
-> __compiletime_assert_0
->
-> | ^ This happens for the release build (RELEASE=1 in build command 
-> line where -O2 is used in stead of -O0). Converting the BUILD_BUG_ON 
-> to ASSERT can fix the problem. diff --git 
-> a/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c 
-> b/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c index 
-> f50aa8e7f6c2..467b5b8beecc 100644 --- 
-> a/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c +++ 
-> b/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c @@ -423,7 
-> +423,9 @@ static void test_user_ringbuf_loop(void) uint32_t 
-> remaining_samples = total_samples; int err; - 
-> BUILD_BUG_ON(total_samples <= c_max_entries); + if 
-> (!ASSERT_LE(total_samples, c_max_entries, "compare_c_max_entries")) + 
-> return; + err = load_skel_create_user_ringbuf(&skel, &ringbuf); I will 
-> wait for some further comments before posting v2.
-
-
-Sorry for mess up. Basically, need to replace a BUILD_BUG_ON with a ASSERT...
-I already tried to format the code properly but somehow still messed up.
-Will debug/double-check this next time.
-
+You forgot to say why this is a resend :(
 
 
