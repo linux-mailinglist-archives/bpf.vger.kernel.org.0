@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-59972-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59973-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6432AD0A4A
-	for <lists+bpf@lfdr.de>; Sat,  7 Jun 2025 01:29:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3D4CAD0A4C
+	for <lists+bpf@lfdr.de>; Sat,  7 Jun 2025 01:29:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A9A33B3920
-	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 23:29:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79B9B17568E
+	for <lists+bpf@lfdr.de>; Fri,  6 Jun 2025 23:29:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A8CA2405E5;
-	Fri,  6 Jun 2025 23:29:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46A7123F41A;
+	Fri,  6 Jun 2025 23:29:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rldbgBXN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K8ZQHsrF"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94BBF126C17;
-	Fri,  6 Jun 2025 23:29:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC1B51F4C94;
+	Fri,  6 Jun 2025 23:29:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749252578; cv=none; b=TUE9wVb1RUatg+8YTAHANHAhF/wSG6G9ndW2qt0nCJ6BD0lvEi5TzO6NE4EYQpm274fAO3DDBYe1HibCclsHnqTIbRL5bljm9yVKPPV+luRc+kSl7+FNHDMMu60kNhrWBjBCx9C5bLimM3tZ4LVluK1XcVNkCz6F1jSk7U3+WN4=
+	t=1749252580; cv=none; b=mvl2ghF98bKQ+LuZtmDJNNSGyBhqEPbXNS8KMI31q9xTG2JvjQk35qIjCV97ikEfG6+Ix8cgULKqUqu3bgbgoYhVy2FoY5RmXH40TkItgOgFUK8tC47Iqvkr/qfKlpKtngYBDdBkxOxWcCzPZlN3JyKelvIKO6IOMFWpQJOJIPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749252578; c=relaxed/simple;
-	bh=835MWSoe2nYoRy3aZgl+nKjMzA0rp3A9+bUlyUtQtaQ=;
+	s=arc-20240116; t=1749252580; c=relaxed/simple;
+	bh=0vLjJm41PJNMAxExS1w9RYwKvN27S2/KOcukoFpI9+Q=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XozYy/1Tij0+uGuWqls29NQiIfOnWLpIh3twGb2uN2sVU6KNWDrB7aHVjYsioKMn/N61iUwfEG6VQWpau44cTPM3uZ7RlhbWlCI9Jxm9L2v1d9vOUNhbzxK74gVEptgwbJ87zD8bOW15G3iP8mS+jL75gKJ1EEzO331uDcPov2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rldbgBXN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38B08C4CEEB;
-	Fri,  6 Jun 2025 23:29:36 +0000 (UTC)
+	 MIME-Version; b=leyEXVNDVLtwKo79LVZMjq3zaZdIP543Wwpc0msYBKY9jL/9imIRDvdJopEN8wFxUk5U6hdwDLhjBNlo5CZf0tn8gNfQ/8I0DNjUNUJhMyslWlQQMdDVPB4Rp1wUlu5A2gEGeRSLQq/0YkPZe0i5zQNpLPibp11GwMRSdJ9f4vw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K8ZQHsrF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7544BC4CEF2;
+	Fri,  6 Jun 2025 23:29:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749252578;
-	bh=835MWSoe2nYoRy3aZgl+nKjMzA0rp3A9+bUlyUtQtaQ=;
+	s=k20201202; t=1749252580;
+	bh=0vLjJm41PJNMAxExS1w9RYwKvN27S2/KOcukoFpI9+Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rldbgBXNncX7q4D9lvjftEhDefQpGti/7KAZQDak5t+YE98ouNcw7grTTwAivQpND
-	 S/gVoUfhzXoWdlKAUvgDlyFvH336Z1+h8NZu1T+eUPjJP0AfW6uNFGDj/cwSUpYR/K
-	 6XjfN/LU2IwoDBYWZhCyCYstuDk1X0D9rVbgvMraxOEhI1V4Sh0clHoxc5idOXTa/M
-	 vY2GSYpEov9APi/rSY/wO92oTqrBoYHFRQTY25RJ97EKAQbgkgp0w3gWaIrt6ugBzs
-	 SfDbN+D05ZhqNiyxMe+RldB6FewNkqzgjQPsHi9FBQW5UHOxu9lnqbJtUMIVryffVs
-	 s2zxJyPouT0cA==
+	b=K8ZQHsrFYqICw4E+pXvuulu/upMh5DdY7ubE5dG7NGaQBzLL+rhukuFjyXZIOj4oI
+	 8gtapODsPSA/RAyTJH6Kx9rEXY59zE9UwB66cni3bpMFQWKJuQ/DrSc1DYWN9P/G8N
+	 49v9/eJ6dNg6ho7ZuHIsjHOJhccZiLlqNMQwcqwqP6JDKj9ffFrZn1/oDYs7/a5OJp
+	 VepU6duVVxWysO6Y0zAjk8JYIIlqLcz8M3MqJ+7HPfNQUMqM9Tspwa698yveDBM40B
+	 KF7Od1iYtCKObr8QFKTYKkQiKbwG8EoEnRBF5M9qST7Ii6JesBN17/HzZYHwDf4YMC
+	 SQwn0gWbSVaTQ==
 From: KP Singh <kpsingh@kernel.org>
 To: bpf@vger.kernel.org,
 	linux-security-module@vger.kernel.org
@@ -51,9 +51,9 @@ Cc: bboscaccy@linux.microsoft.com,
 	daniel@iogearbox.net,
 	andrii@kernel.org,
 	KP Singh <kpsingh@kernel.org>
-Subject: [PATCH 08/12] bpf: Implement signature verification for BPF programs
-Date: Sat,  7 Jun 2025 01:29:10 +0200
-Message-ID: <20250606232914.317094-9-kpsingh@kernel.org>
+Subject: [PATCH 09/12] libbpf: Update light skeleton for signing
+Date: Sat,  7 Jun 2025 01:29:11 +0200
+Message-ID: <20250606232914.317094-10-kpsingh@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250606232914.317094-1-kpsingh@kernel.org>
 References: <20250606232914.317094-1-kpsingh@kernel.org>
@@ -65,202 +65,147 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch extends the BPF_PROG_LOAD command by adding three new fields
-to `union bpf_attr` in the user-space API:
+* The metadata map is created with as an exclusive map (with an
+excl_prog_hash) This restricts map access exclusively to the signed
+loader program, preventing tampering by other processes.
 
-  - signature: A pointer to the signature blob.
-  - signature_size: The size of the signature blob.
-  - keyring_id: The serial number of a loaded kernel keyring (e.g.,
-    the user or session keyring) containing the trusted public keys.
+* The map is then frozen, making it read-only from userspace.
 
-When a BPF program is loaded with a signature, the kernel:
+* BPF_OBJ_GET_INFO_BY_ID instructs the kernel to compute the hash of the
+  metadata map (H') and store it in bpf_map->sha.
 
-1.  Retrieves the trusted keyring using the provided `keyring_id`.
-2.  Verifies the supplied signature against the BPF program's
-    instruction buffer.
-3.  If the signature is valid and was generated by a key in the trusted
-    keyring, the program load proceeds.
-4.  If no signature is provided, the load proceeds as before, allowing
-    for backward compatibility. LSMs can chose to restrict unsigned
-    programs and implement a security policy.
-5.  If signature verification fails for any reason,
-    the program is not loaded.
+* The loader is then loaded with the signature which is then verified by
+  the kernel.
+
+The sekeleton currently uses the session keyring
+(KEY_SPEC_SESSION_KEYRING) by default but this can
+be overridden by the user of the skeleton.
 
 Signed-off-by: KP Singh <kpsingh@kernel.org>
 ---
- include/linux/bpf.h            |  9 +++++++-
- include/uapi/linux/bpf.h       | 10 +++++++++
- kernel/bpf/syscall.c           | 39 +++++++++++++++++++++++++++++++++-
- kernel/trace/bpf_trace.c       |  6 ++++--
- tools/include/uapi/linux/bpf.h | 10 +++++++++
- tools/lib/bpf/bpf.c            |  2 +-
- 6 files changed, 71 insertions(+), 5 deletions(-)
+ tools/lib/bpf/skel_internal.h | 57 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 54 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 35f1a633d87a..32a41803d61c 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2778,7 +2778,14 @@ bpf_jit_find_kfunc_model(const struct bpf_prog *prog,
- int bpf_get_kfunc_addr(const struct bpf_prog *prog, u32 func_id,
- 		       u16 btf_fd_idx, u8 **func_addr);
- 
--struct bpf_core_ctx {
-+__bpf_kfunc struct bpf_key *bpf_lookup_user_key(u32 serial, u64 flags);
-+__bpf_kfunc struct bpf_key *bpf_lookup_system_key(u64 id);
-+__bpf_kfunc void bpf_key_put(struct bpf_key *bkey);
-+__bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_p,
-+					   struct bpf_dynptr *sig_p,
-+					   struct bpf_key *trusted_keyring);
-+
-+	struct bpf_core_ctx {
- 	struct bpf_verifier_log *log;
- 	const struct btf *btf;
+diff --git a/tools/lib/bpf/skel_internal.h b/tools/lib/bpf/skel_internal.h
+index 4d5fa079b5d6..25502925ff36 100644
+--- a/tools/lib/bpf/skel_internal.h
++++ b/tools/lib/bpf/skel_internal.h
+@@ -13,6 +13,7 @@
+ #include <unistd.h>
+ #include <sys/syscall.h>
+ #include <sys/mman.h>
++#include <linux/keyctl.h>
+ #include <stdlib.h>
+ #include "bpf.h"
+ #endif
+@@ -64,6 +65,11 @@ struct bpf_load_and_run_opts {
+ 	__u32 data_sz;
+ 	__u32 insns_sz;
+ 	const char *errstr;
++	void *signature;
++	__u32 signature_sz;
++	__u32 keyring_id;
++	void * excl_prog_hash;
++	__u32 excl_prog_hash_sz;
  };
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index ffd9e11befc2..5f7c82ebe10a 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1589,6 +1589,16 @@ union bpf_attr {
- 		 * continuous.
- 		 */
- 		__u32		fd_array_cnt;
-+		/* Pointer to a buffer containing the signature of the BPF
-+		 * program.
-+		 */
-+		__aligned_u64   signature;
-+		/* Size of the signature buffer in bytes. */
-+		__u32 		signature_size;
-+		/* ID of the kernel keyring to be used for signature
-+		 * verification.
-+		 */
-+		__u32 		keyring_id;
- 	};
  
- 	struct { /* anonymous struct used by BPF_OBJ_* commands */
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index c81be07fa4fa..6cd5ba42d946 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2782,8 +2782,39 @@ static bool is_perfmon_prog_type(enum bpf_prog_type prog_type)
- 	}
+ long kern_sys_bpf(__u32 cmd, void *attr, __u32 attr_size);
+@@ -218,16 +224,21 @@ static inline int skel_closenz(int fd)
+ 
+ static inline int skel_map_create(enum bpf_map_type map_type,
+ 				  const char *map_name,
++				  const void *excl_prog_hash,
++				__u32 excl_prog_hash_sz,
+ 				  __u32 key_size,
+ 				  __u32 value_size,
+ 				  __u32 max_entries)
+ {
+-	const size_t attr_sz = offsetofend(union bpf_attr, map_extra);
++	const size_t attr_sz = offsetofend(union bpf_attr, excl_prog_hash);
+ 	union bpf_attr attr;
+ 
+ 	memset(&attr, 0, attr_sz);
+ 
+ 	attr.map_type = map_type;
++	attr.excl_prog_hash = (unsigned long) excl_prog_hash;
++	attr.excl_prog_hash_size = excl_prog_hash_sz;
++
+ 	strncpy(attr.map_name, map_name, sizeof(attr.map_name));
+ 	attr.key_size = key_size;
+ 	attr.value_size = value_size;
+@@ -300,6 +311,26 @@ static inline int skel_link_create(int prog_fd, int target_fd,
+ 	return skel_sys_bpf(BPF_LINK_CREATE, &attr, attr_sz);
  }
  
-+static int bpf_prog_verify_signature(struct bpf_prog *prog, union bpf_attr *attr, bpfptr_t uattr)
++static inline int skel_obj_get_info_by_fd(int fd)
 +{
-+	bpfptr_t usig = make_bpfptr(attr->signature, uattr.is_kernel);
-+	struct bpf_dynptr_kern sig_ptr, insns_ptr;
-+	struct bpf_key *key = NULL;
-+	void *sig;
-+	int err = 0;
++	const size_t attr_sz = offsetofend(union bpf_attr, info);
++	union bpf_attr attr;
 +
-+	key = bpf_lookup_user_key(attr->keyring_id, 0);
-+	if (!key)
-+		return -ENOKEY;
-+
-+	sig = kvmemdup_bpfptr(usig, attr->signature_size);
-+	if (!sig) {
-+		bpf_key_put(key);
-+		return -ENOMEM;
-+	}
-+
-+	bpf_dynptr_init(&sig_ptr, sig, BPF_DYNPTR_TYPE_LOCAL, 0,
-+			attr->signature_size);
-+	bpf_dynptr_init(&insns_ptr, prog->insnsi, BPF_DYNPTR_TYPE_LOCAL, 0,
-+			prog->len * sizeof(struct bpf_insn));
-+
-+	err = bpf_verify_pkcs7_signature((struct bpf_dynptr *)&insns_ptr,
-+					 (struct bpf_dynptr *)&sig_ptr, key);
-+
-+	bpf_key_put(key);
-+	kvfree(sig);
-+	return err;
++	memset(&attr, 0, attr_sz);
++	attr.info.bpf_fd = fd;
++	return skel_sys_bpf(BPF_OBJ_GET_INFO_BY_FD, &attr, attr_sz);
 +}
 +
- /* last field in 'union bpf_attr' used by this command */
--#define BPF_PROG_LOAD_LAST_FIELD fd_array_cnt
-+#define BPF_PROG_LOAD_LAST_FIELD keyring_id
++static inline int skel_map_freeze(int fd)
++{
++	const size_t attr_sz = offsetofend(union bpf_attr, map_fd);
++	union bpf_attr attr;
++
++	memset(&attr, 0, attr_sz);
++	attr.map_fd = fd;
++
++	return skel_sys_bpf(BPF_MAP_FREEZE, &attr, attr_sz);
++}
+ #ifdef __KERNEL__
+ #define set_err
+ #else
+@@ -308,12 +339,15 @@ static inline int skel_link_create(int prog_fd, int target_fd,
  
- static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
+ static inline int bpf_load_and_run(struct bpf_load_and_run_opts *opts)
  {
-@@ -2947,6 +2978,12 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
- 	/* eBPF programs must be GPL compatible to use GPL-ed functions */
- 	prog->gpl_compatible = license_is_gpl_compatible(license) ? 1 : 0;
+-	const size_t prog_load_attr_sz = offsetofend(union bpf_attr, fd_array);
++	const size_t prog_load_attr_sz = offsetofend(union bpf_attr, keyring_id);
+ 	const size_t test_run_attr_sz = offsetofend(union bpf_attr, test);
+ 	int map_fd = -1, prog_fd = -1, key = 0, err;
+ 	union bpf_attr attr;
  
-+	if (attr->signature) {
-+		err = bpf_prog_verify_signature(prog, attr, uattr);
-+		if (err)
-+			goto free_prog;
+-	err = map_fd = skel_map_create(BPF_MAP_TYPE_ARRAY, "__loader.map", 4, opts->data_sz, 1);
++	err = map_fd = skel_map_create(BPF_MAP_TYPE_ARRAY, "__loader.map",
++				       opts->excl_prog_hash,
++				       opts->excl_prog_hash_sz, 4,
++				       opts->data_sz, 1);
+ 	if (map_fd < 0) {
+ 		opts->errstr = "failed to create loader map";
+ 		set_err;
+@@ -327,10 +361,27 @@ static inline int bpf_load_and_run(struct bpf_load_and_run_opts *opts)
+ 		goto out;
+ 	}
+ 
++	err = skel_map_freeze(map_fd);
++	if (err < 0) {
++		opts->errstr = "failed to freeze map";
++		set_err;
++		goto out;
 +	}
 +
- 	prog->orig_prog = NULL;
- 	prog->jited = 0;
- 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 132c8be6f635..0cce39e1a9ee 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1351,7 +1351,6 @@ __bpf_kfunc void bpf_key_put(struct bpf_key *bkey)
- 	kfree(bkey);
- }
- 
--#ifdef CONFIG_SYSTEM_DATA_VERIFICATION
- /**
-  * bpf_verify_pkcs7_signature - verify a PKCS#7 signature
-  * @data_p: data to verify
-@@ -1367,6 +1366,7 @@ __bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_p,
- 			       struct bpf_dynptr *sig_p,
- 			       struct bpf_key *trusted_keyring)
- {
-+#ifdef CONFIG_SYSTEM_DATA_VERIFICATION
- 	struct bpf_dynptr_kern *data_ptr = (struct bpf_dynptr_kern *)data_p;
- 	struct bpf_dynptr_kern *sig_ptr = (struct bpf_dynptr_kern *)sig_p;
- 	const void *data, *sig;
-@@ -1396,8 +1396,10 @@ __bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_p,
- 				      trusted_keyring->key,
- 				      VERIFYING_UNSPECIFIED_SIGNATURE, NULL,
- 				      NULL);
--}
-+#else
-+	return -EOPNOTSUPP;
- #endif /* CONFIG_SYSTEM_DATA_VERIFICATION */
-+}
- 
- __bpf_kfunc_end_defs();
- 
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index ffd9e11befc2..5f7c82ebe10a 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -1589,6 +1589,16 @@ union bpf_attr {
- 		 * continuous.
- 		 */
- 		__u32		fd_array_cnt;
-+		/* Pointer to a buffer containing the signature of the BPF
-+		 * program.
-+		 */
-+		__aligned_u64   signature;
-+		/* Size of the signature buffer in bytes. */
-+		__u32 		signature_size;
-+		/* ID of the kernel keyring to be used for signature
-+		 * verification.
-+		 */
-+		__u32 		keyring_id;
- 	};
- 
- 	struct { /* anonymous struct used by BPF_OBJ_* commands */
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index 11fa2d64ccca..1a85cfa4282c 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -240,7 +240,7 @@ int bpf_prog_load(enum bpf_prog_type prog_type,
- 		  const struct bpf_insn *insns, size_t insn_cnt,
- 		  struct bpf_prog_load_opts *opts)
- {
--	const size_t attr_sz = offsetofend(union bpf_attr, fd_array_cnt);
-+	const size_t attr_sz = offsetofend(union bpf_attr, keyring_id);
- 	void *finfo = NULL, *linfo = NULL;
- 	const char *func_info, *line_info;
- 	__u32 log_size, log_level, attach_prog_fd, attach_btf_obj_fd;
++	err = skel_obj_get_info_by_fd(map_fd);
++	if (err < 0) {
++		opts->errstr = "failed to fetch obj info";
++		set_err;
++		goto out;
++	}
++
+ 	memset(&attr, 0, prog_load_attr_sz);
+ 	attr.prog_type = BPF_PROG_TYPE_SYSCALL;
+ 	attr.insns = (long) opts->insns;
+ 	attr.insn_cnt = opts->insns_sz / sizeof(struct bpf_insn);
++	attr.signature = (long) opts->signature;
++	attr.signature_size = opts->signature_sz;
++	attr.keyring_id = opts->keyring_id;
+ 	attr.license = (long) "Dual BSD/GPL";
+ 	memcpy(attr.prog_name, "__loader.prog", sizeof("__loader.prog"));
+ 	attr.fd_array = (long) &map_fd;
 -- 
 2.43.0
 
