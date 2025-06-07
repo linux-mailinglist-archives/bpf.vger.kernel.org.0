@@ -1,127 +1,119 @@
-Return-Path: <bpf+bounces-59994-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59993-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B5B3AD0C1E
-	for <lists+bpf@lfdr.de>; Sat,  7 Jun 2025 11:28:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30280AD0C1B
+	for <lists+bpf@lfdr.de>; Sat,  7 Jun 2025 11:27:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D08E07A8DC7
-	for <lists+bpf@lfdr.de>; Sat,  7 Jun 2025 09:26:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB3BB3B0B57
+	for <lists+bpf@lfdr.de>; Sat,  7 Jun 2025 09:27:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F6CD20C492;
-	Sat,  7 Jun 2025 09:27:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98B4920C47B;
+	Sat,  7 Jun 2025 09:27:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="c3KYT5CS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NPVF1F0m"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 663672080C1;
-	Sat,  7 Jun 2025 09:27:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C926D1C5F2C;
+	Sat,  7 Jun 2025 09:27:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749288455; cv=none; b=XNa0mfDLZi9voUtMurHQYbH5kItn/Oc2EpXTluUmQRYT86MvOJK2EU9+OGG4nebNJ5YjONy65LyBq0hK90OhITUNAUNtrMyn/w/SjQYkKGdirVHPzNTVMYTVfdk3UzUq2Ts4MrENTeRzIVwUMidZZcwnUXmeX+4Dj2KJO7fylbM=
+	t=1749288440; cv=none; b=TY3Ym4qXNtNV2dd1Xcu/tB427URagWpL8hMFABNGroiNrz3LcCiVxpC+Cue/4soCsfE+6EwlF0voy7MJ/MwnUzGDsrrGzEBc3/QdDgwEnFI7ObFF9yhZLTsXbVZHOnkSHu3CYjyd0j3nKkyIlHHKhC+OyhVjjRHRAWhYfu03i58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749288455; c=relaxed/simple;
-	bh=KwlFk+eTqnenejKew/WrKTQbxas+2O1dcqt7GtJkX4E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tkzvdpCxK6O6zSMIU+svFHXD+ogG6G/gS/IL9/reIX9fdxuV0hOr0OmedTwn5MJKZRx0pmCdpkJYTX+58D05hcJVqBAelRJIGkTWZ+RShPUMkNJzm5aUc3SrWMZbHCnhVwsUnrJpR0LGQeHK3Abx3VQ8mmgKttTpOaDCYpZGWA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=c3KYT5CS; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1749288454; x=1780824454;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=KwlFk+eTqnenejKew/WrKTQbxas+2O1dcqt7GtJkX4E=;
-  b=c3KYT5CSSz5JWXIyVu73C0ebu596hL4FTQ8NbV33lG7TwJ8vnRCiViAA
-   AUXBtT+MHk6tZ442EqTqpOqN+bc6ExSiGIyHSxR2bpSIoQ78jBwSr3t5V
-   Mqsq8D+mJA/omNxQmiPcMss0UVLLxObthkL3JHSsZa9Lg5HfTx46j5wOi
-   5qVOlQMuGIfvAb9AZ0myrxbLO1P0Hi8ZCCIvi3gjld+MWgv6JOgCO7+Gi
-   v6nmaQFCp/7lMJlWTnQf1XRHdsc996W7lcj9mXPCKLyTrWvxD9g3WLdDP
-   tICQulk7HaDvXi3Jv5utG6HR0dAt/pGzjCS1QW5/uTa0nv1YL+Qv40BYA
-   w==;
-X-CSE-ConnectionGUID: VXYJC0wUT36ZojtmkZd0MA==
-X-CSE-MsgGUID: Qd5h417gTjeQz7KWPIRdgg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11456"; a="51528824"
-X-IronPort-AV: E=Sophos;i="6.16,217,1744095600"; 
-   d="scan'208";a="51528824"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2025 02:27:33 -0700
-X-CSE-ConnectionGUID: Fl2Uz7DPQ0aq9MskZ5dlfg==
-X-CSE-MsgGUID: PxT8sDgfQJGWQvoLVmzSzw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,217,1744095600"; 
-   d="scan'208";a="146984835"
-Received: from lkp-server01.sh.intel.com (HELO e8142ee1dce2) ([10.239.97.150])
-  by fmviesa009.fm.intel.com with ESMTP; 07 Jun 2025 02:27:30 -0700
-Received: from kbuild by e8142ee1dce2 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uNppo-0005af-25;
-	Sat, 07 Jun 2025 09:27:28 +0000
-Date: Sat, 7 Jun 2025 17:26:39 +0800
-From: kernel test robot <lkp@intel.com>
-To: KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org,
-	linux-security-module@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, bboscaccy@linux.microsoft.com,
-	paul@paul-moore.com, kys@microsoft.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org,
-	KP Singh <kpsingh@kernel.org>
-Subject: Re: [PATCH 07/12] bpf: Return hashes of maps in
- BPF_OBJ_GET_INFO_BY_FD
-Message-ID: <202506071738.5MZFjRuA-lkp@intel.com>
-References: <20250606232914.317094-8-kpsingh@kernel.org>
+	s=arc-20240116; t=1749288440; c=relaxed/simple;
+	bh=EimdEfbxy9f3n4pqz8glXweRRH2yRxI2qczGEFcb/9k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ECeJbxFudNRHplvfPZkSS9GszWE/k09uFltQmgAPmAlwGQMW7usHN2kqFEGWl5yGAvm8ELETcn7l9lQXD3LUDZHE5H8Y8RLasGRBHH0TO9saEjTco5fEm4XIR414tBggZokLali3N31FbvlmDsbdm4GzSsTmo8JTFWnNyjjWwhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NPVF1F0m; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-234ae2bf851so4409945ad.1;
+        Sat, 07 Jun 2025 02:27:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749288437; x=1749893237; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YQ618K/9B+ws58WKtKVcQe8gIJGwOodDGL8PPYqV65Q=;
+        b=NPVF1F0mQJqunwR8VMd+RjWj/q5lCFhFItWAUFMwNF5QST5fdbkTNiy1ZE/HiNvlqL
+         f0SoAF7UX0H0Uh/srvKgHwID59HtjRxgpvSFbVnkX6azJ40yUoqr07uYBe2gkj7Gq/Ly
+         Zc0FDO0ohz6N4PUzG15bGlEH/tQXtLC3vHXJUBXs+nAxfLepEmq0jNNXLZupV/SiWuQ0
+         pHYgDUGCKhmiXvs13RS4fVHJf6RGyPl9gjSDHCLEgLNel61tyte3TyMrJlBsbk03GJYZ
+         zJ96T5ay7s2smVR+9OIgYhT6lJE3LkVxp9vB04h1R2vLeF7E6S+9AIiUs1LhLdQvcoJ3
+         e0XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749288437; x=1749893237;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YQ618K/9B+ws58WKtKVcQe8gIJGwOodDGL8PPYqV65Q=;
+        b=aBG4UQNUy9DzOyTjpttm1sOkb0YUjlfpB1jSmj0C36iIKOLHxlS6m2M+nIXZ5FGEAL
+         HT3CyGpwGB12NL9C643jBjEP4ilOx4yP1AO1vS3iM++WgdRMqRS81oiGY1LRYasXrZ9y
+         eiZhKhQ5doruBWBlYNxrqX9I9ljN+QORjZrhEZ2dkjZtW2nItiIiAJXT2cxQpVv8EzSx
+         MOEMUEdexClGkNtZTmUyzyYKEpKeiF9hfYGq6Xep6LQY3FkembginHaLymdARuYIn8pO
+         uVi3I4zEtxNiTdQdIbOgUuA8Kkzek3PQNFny77vFgPvVoISwginTn2FCe9+3w9GdkYcG
+         dOmw==
+X-Forwarded-Encrypted: i=1; AJvYcCUYagH7yVgeRdP0ClEM3HIRsJcNvyr0hEysBjuewX3ZIJYcBD4N5Abso6KI52yUX8nse83wEe/Tljg=@vger.kernel.org, AJvYcCXMSMagOVBiEOwSWXzzR47x2Wkd1vZkVPDfbNghjPcLC7AprMaxtshEe8S78raN14Z/WE0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzLncso1TxcKtspmWLIeqA0CcWn4ec1gWAFSfYPVIz72l7ffafw
+	AFa1TtAkdYnD7K0yYKgdZN5QQAXAsNOyrFxDsc82i9re/xdoADkgSxNvifxo7uUPIntj7sMO7vK
+	TnCZtFaMCHFE4JkvFP8Z66jmpEf/c6Bk=
+X-Gm-Gg: ASbGnctk5n7K9En/xI4ZI7sd4DxFfXhyoTSNX7+H5QOSpg+lSTtBi4LMWuPHg3Wnb9A
+	N1YY3EGY7tlGIuK6A+FySxZr/vkPLy/Zy+axiE9jOXNK7vVz4q++Aw14MqrljoYzZmID0kMJ399
+	D/xjtH/JBmK4EIhvA8Ajcc/utkJ6/pEf3RjOsNJvb9uWrfRJB7jNJ52w==
+X-Google-Smtp-Source: AGHT+IGeYeKXl3hgG+Fp/G3HE7APEoKAwmE4M3Tyz0AMmqc1zE6hRZt1BFPjsCs2HVZDcx8eLr2OyyXzRJWzUum43vg=
+X-Received: by 2002:a17:90b:3d04:b0:311:9c9a:58e2 with SMTP id
+ 98e67ed59e1d1-3134e418de8mr2864012a91.7.1749288436994; Sat, 07 Jun 2025
+ 02:27:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250606232914.317094-8-kpsingh@kernel.org>
+References: <20250606214840.3165754-1-andrii@kernel.org>
+In-Reply-To: <20250606214840.3165754-1-andrii@kernel.org>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Sat, 7 Jun 2025 11:27:04 +0200
+X-Gm-Features: AX0GCFvji-yOOYaLkUD3HloEKDD6XOA1rmp4GBK4VajWZsqIV0W1a5ingTaeHno
+Message-ID: <CANiq72kDA3MPpjMzX+LutOoLgKqm9uz8xAT_-iBzhR3pFC+L_Q@mail.gmail.com>
+Subject: Re: [PATCH v2] .gitignore: ignore compile_commands.json globally
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-kernel@vger.kernel.org, masahiroy@kernel.org, ojeda@kernel.org, 
+	nathan@kernel.org, bpf@vger.kernel.org, kernel-team@meta.com, 
+	linux-pm@vger.kernel.org, Eduard Zingerman <eddyz87@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi KP,
+On Fri, Jun 6, 2025 at 11:48=E2=80=AFPM Andrii Nakryiko <andrii@kernel.org>=
+ wrote:
+>
+> compile_commands.json can be used with clangd to enable language server
+> protocol-based assistance. For kernel itself this can be built with
+> scripts/gen_compile_commands.py, but other projects (e.g., libbpf, or
+> BPF selftests) can benefit from their own compilation database file,
+> which can be generated successfully using external tools, like bear [0].
+>
+> So, instead of adding compile_commands.json to .gitignore in respective
+> individual projects, let's just ignore it globally anywhere in Linux repo=
+.
+>
+> While at it, remove exactly such a local .gitignore rule under
+> tools/power/cpupower.
+>
+>   [0] https://github.com/rizsotto/Bear
+>
+> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
-kernel test robot noticed the following build errors:
+Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
 
-[auto build test ERROR on bpf-next/net]
-[also build test ERROR on bpf-next/master bpf/master linus/master next-20250606]
-[cannot apply to v6.15]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Thanks!
 
-url:    https://github.com/intel-lab-lkp/linux/commits/KP-Singh/bpf-Implement-an-internal-helper-for-SHA256-hashing/20250607-073052
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git net
-patch link:    https://lore.kernel.org/r/20250606232914.317094-8-kpsingh%40kernel.org
-patch subject: [PATCH 07/12] bpf: Return hashes of maps in BPF_OBJ_GET_INFO_BY_FD
-config: x86_64-buildonly-randconfig-005-20250607 (https://download.01.org/0day-ci/archive/20250607/202506071738.5MZFjRuA-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250607/202506071738.5MZFjRuA-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202506071738.5MZFjRuA-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> kernel/bpf/arraymap.c:15:10: fatal error: crypto/sha256_base.h: No such file or directory
-      15 | #include <crypto/sha256_base.h>
-         |          ^~~~~~~~~~~~~~~~~~~~~~
-   compilation terminated.
-
-
-vim +15 kernel/bpf/arraymap.c
-
-  > 15	#include <crypto/sha256_base.h>
-    16	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Cheers,
+Miguel
 
