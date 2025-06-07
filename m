@@ -1,136 +1,213 @@
-Return-Path: <bpf+bounces-59990-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-59991-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E35E4AD0B6B
-	for <lists+bpf@lfdr.de>; Sat,  7 Jun 2025 08:14:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60CE5AD0BF7
+	for <lists+bpf@lfdr.de>; Sat,  7 Jun 2025 10:13:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 74FB37A6390
-	for <lists+bpf@lfdr.de>; Sat,  7 Jun 2025 06:13:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC3EF1892D95
+	for <lists+bpf@lfdr.de>; Sat,  7 Jun 2025 08:13:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B459925A65C;
-	Sat,  7 Jun 2025 06:13:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEE8F1FBEA8;
+	Sat,  7 Jun 2025 08:13:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0CUeoO+Z"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xqcd8z2U"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-f201.google.com (mail-oi1-f201.google.com [209.85.167.201])
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBEBF25A357
-	for <bpf@vger.kernel.org>; Sat,  7 Jun 2025 06:13:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F11BA184F
+	for <bpf@vger.kernel.org>; Sat,  7 Jun 2025 08:13:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749276805; cv=none; b=JjHu1GdY328FstEgHwHcb54+AR6KIUMsBHHMmYfv3l6XQNmaNWUifXpiO9ZYx6cJT9jKmjnX/feOpmqbiefkjYJ7XeKFIyXmhpJor3wwAR+7OyMhK3bVbiV7sHYDhBhnxoVAnz78QFhHFbhi2dc0s/M/9wDyNCe8RamDMYUf6/k=
+	t=1749284011; cv=none; b=eNXcw35GQTBMeig+sU+bWL1hwIZuBZPtZkJQN6GuPFmXeiybawnDdg1EXi/3TG+jqXXras5G8fdXIDRxXN8zMTHkdKrN8Bvihj1dTTpPMFDnuSIwekiwmb26PrBBORMqjj6JeS6WsA/fQgO88jRnp/VTkNk4tN1ZCDR1T2Kk+20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749276805; c=relaxed/simple;
-	bh=bfHS/emfGlHnhoC/ZDSKlVMnpqM4aGBGfYvFX8Gj9tA=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Content-Type; b=rksRIz00nV6ZGTH4sZXcZMVSe5WDVfzg+GkpnB2x5/SuWp8SocDyhxCvX/XMcwtNeU4PHON4XV0H4lPzibp8XYCx5XjZvHZX7d7eJY1IZIR1rJWFQZ+6c5W4kzxCFkOcpuqndhoT1aWQV3IGiFN/dD37oeAUpJhaClkbhkD0WJ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0CUeoO+Z; arc=none smtp.client-ip=209.85.167.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-oi1-f201.google.com with SMTP id 5614622812f47-4067704b6f8so720472b6e.3
-        for <bpf@vger.kernel.org>; Fri, 06 Jun 2025 23:13:23 -0700 (PDT)
+	s=arc-20240116; t=1749284011; c=relaxed/simple;
+	bh=7/fsjhUJlKrW1XPn4BNIL3kjwsPLgH543YHeXofckWk=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=lvbCYNu4UvnX2BhRSdlXhGO6WrsS+gxHxvo9WJCnrb59ndMzz2L66epSVTZj9ht/n2rhiKqvAUPskqGzqArBIAAp4CEEMMtB3AH73V5IAjsJWPRPL+AG4fUlHOfIHIdlvRfes33vMvl+ggKUJ4XKyYMplY+TQ5c7Tvip1nZal8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xqcd8z2U; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-31332cff2d5so2075994a91.1
+        for <bpf@vger.kernel.org>; Sat, 07 Jun 2025 01:13:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1749276803; x=1749881603; darn=vger.kernel.org;
-        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4/b3j+1gq1V00//t0ia9GN0R+cu1hGQ0HBZAPtJXD44=;
-        b=0CUeoO+ZyLFZMnyh7mCshFxuBfZVZHP6cQlNyXdcLmzzOe/rizvarU8U++1ZWZRXr3
-         7qgGmL3ccgpYoCLCi4jqXgny/h1Kx8plTu/N3YxiTKF8qBObru8t+7YBWxV2MTRdI+nc
-         MiwsadIO195z7SkX//SWamVtbc9DXxL8L78Ps1UBgoDpqp8G41Z9LhTNiQIw4+iMR0FJ
-         rWWXHNaYX+d5f1FNbpNxtcMD7OiuCWnB00hynu7jrnKGqEI7nZk0x8hpIabBOqE1Kduy
-         wLCMH9oUKsyuHqW2yet0USQMcQehCPpnyHE51JvEDG0mizdpKxPCQxGWjF11X58JIvw9
-         qqdQ==
+        d=gmail.com; s=20230601; t=1749284009; x=1749888809; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=z1bBfwpPJkB1WWfdIQjxKEJ8JENPWh0D9QKUoUQFuY8=;
+        b=Xqcd8z2Ub6gWdbfmkMYrTL8bTzQMfhNLN3PZZ8SP8o32ikYamqxZcHzqvJgiD9rGvL
+         9kTlEqoU01Fj6tmEr89wjlbdlSFkRqTioK2XSkJMxDk8508ajjxXa7MMlBEEmnpusoqn
+         60qj3qZnGjOPzQ546iiOqUDz+9+XtrnN/zwG27kC0p/HKUghZMucGa0X85QdGpnNrH/x
+         /Xt24+E4OyEq6SwB4nT1CzN3GV+U4lxMUEIcZianyxzeTNPZDOoApgGWbdyDQmYECR6w
+         BvtKxy3n2C9GjcL0M05Xk76sbsW+53aD+OLec6EhxIIiRObTvIdR2KpIZTbUcOMo7D4m
+         SYag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749276803; x=1749881603;
-        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4/b3j+1gq1V00//t0ia9GN0R+cu1hGQ0HBZAPtJXD44=;
-        b=ZsZ7AgNQnuhX3di8algQptIODzuIMte4O6H6TefhdtiO+7byHyMJBXhAEVCPatA3BM
-         Bh/ZO+URV6jSwE2gyf8r57HjtBItPKkZuRImF8ClFKuN+CLDy/u0z/uo/VOa3PM7v7rG
-         75h9Q7kX2GdB7eXXaPvalz9IP5nh/HsgSZs7l7oEHw/jCV9g92EZxePpkFe+cqa0xPhj
-         QO55BwQ61lvgcwvanL9Kl/Yq57R3j39zR0rTluSsiY35T5g2MLT1mSrjsTQlDrxdew0k
-         4248Kc01I/kI94QPsmO0RvRALbtf3u21HnqN7gkTqFKdcUpJB39gZNiRwgwNwqWkVgqX
-         Qwkg==
-X-Forwarded-Encrypted: i=1; AJvYcCWFpvk7AIKvvD8k6ee09gEPYhpNHTks+Zdb6EMbiL3OlhSQj6tyq8pxg90IZHuqL2e/lGo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxNhfuUWEm/IINS0d7+k+xErM70znMVwPYLL9G6FnDj+KCHlLJT
-	Pbu5zFdMWK5j0ZOj7eukEm0zMjDzYhrxScyypnsxp0cxO+Djw99qm1LcddcuBG1sDBtbsXYjUD2
-	ir2Z1xWIPEA==
-X-Google-Smtp-Source: AGHT+IH772Rq2nXLQ5qLnBdp+yzi4nlFBMyEJIs4tK7/s8fbstOvndVR3+Izd3s0kfth2t5zaU7EubzrZgF9
-X-Received: from oabwh6.prod.google.com ([2002:a05:6871:a686:b0:2da:6d76:b15c])
- (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6870:b6a6:b0:2d5:b2ae:2ebd
- with SMTP id 586e51a60fabf-2ea0153d81dmr3661056fac.34.1749276803057; Fri, 06
- Jun 2025 23:13:23 -0700 (PDT)
-Date: Fri,  6 Jun 2025 23:12:38 -0700
-In-Reply-To: <20250607061238.161756-1-irogers@google.com>
+        d=1e100.net; s=20230601; t=1749284009; x=1749888809;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=z1bBfwpPJkB1WWfdIQjxKEJ8JENPWh0D9QKUoUQFuY8=;
+        b=uahQruJk97FNp9wQex//zQF3V9B1loXVbfUQsQw6XaBzi6SwM9CGcJnr62AD/miXZg
+         CRzJeDmBP6HRQxyJnbSJ7SFwfYWHjKB1SVTNh/+0ewAR6zdShKcyy6mM6X7J8JT2C8vN
+         KdflWcZLln0yUYnP8F39J/hBYqSitoPYiikq2BwInMywb+eWwX72qXT9jVfQ43s3YKet
+         qm66weG6tt3yOumonElctBNFiBr8I9JlK/AZ1Xxli2BMS95EFvv8grEk+ceikM026xgk
+         tPHVQLUzW/MpYOPKiSmxu6avzdFilBY/3rM6WQ9f45t/3uAFdm26NCUUTYJFPcZaAMTK
+         4LdA==
+X-Forwarded-Encrypted: i=1; AJvYcCVv4Y0bAkdNNakq0nNfvj584kf6LAH/oFgapuvFfudL5PQxepeJPTBIb1qT3pLNM47X44k=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwxOlC5E4cSk3oVpSeQSSrKM5LvgQ60fcaCY8f8c7E0/Jf4TXqh
+	OatG2hsyBzxZoRfO3dVCLGMVxPN9e9Caq4QrQ17gdC9hxyBbchJtK+P9WJ/A0Vvc
+X-Gm-Gg: ASbGnctYwCDwSD41c96JC+KYluJWxD6XIo6qqVxUoN1rTV/d5sHuoclNqsbxY/W2J+S
+	5T1at453cCSa8gM+s38yqmbZhy9F9SJGbg0seAXSEwodgstL7aexSwB2rQfw9Zl7kYNaEWW8aIu
+	sA0GfkyHRdHnpFJpu0f9Nree6yjWWjuGz1M7AEZtSbZYRNdqZh34Jbqcoy6Pj4XO206239D8REH
+	tmBU+vE8tFHSGSxGer0+uOBa6TWC4eZjJVIQruwx4E4UZIQaHFVq07EF8NvXMD0wNYNKIPX94ex
+	l/e0IgZuUk55DrqbVWveohOyPUSNeCUpambHaDQyR3MIDXyHB//oDI3LOg==
+X-Google-Smtp-Source: AGHT+IGliPMRrc7wHdX98WMDMaLKYLKjeyIERUvx8BmMigeQHaiz3SRFpk8qBKtrKatP9q1ZFHy0Jg==
+X-Received: by 2002:a17:90b:3c04:b0:311:ba2e:bdca with SMTP id 98e67ed59e1d1-31347065472mr9510308a91.28.1749284009008;
+        Sat, 07 Jun 2025 01:13:29 -0700 (PDT)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31349fe0048sm2361695a91.42.2025.06.07.01.13.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Jun 2025 01:13:28 -0700 (PDT)
+Message-ID: <ae7b709f618ecd75214e62f2a300fe2949d9b567.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v1 2/2] veristat: memory accounting for bpf
+ programs
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, 
+	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+ martin.lau@linux.dev, 	kernel-team@fb.com, yonghong.song@linux.dev
+Date: Sat, 07 Jun 2025 01:13:26 -0700
+In-Reply-To: <CAEf4BzY2CzZy8DMe==F7OmvEO2gkGG___SaZgu8dGDJd4LG4_Q@mail.gmail.com>
+References: <20250605230609.1444980-1-eddyz87@gmail.com>
+	 <20250605230609.1444980-3-eddyz87@gmail.com>
+	 <3dd16f19-63a4-4090-abd0-9b84fb07346b@gmail.com>
+	 <efe0cc259f70b11ffd3e398441efd0de5aa98c3e.camel@gmail.com>
+	 <CAEf4BzY2CzZy8DMe==F7OmvEO2gkGG___SaZgu8dGDJd4LG4_Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20250607061238.161756-1-irogers@google.com>
-X-Mailer: git-send-email 2.50.0.rc0.604.gd4ff7b7c86-goog
-Message-ID: <20250607061238.161756-5-irogers@google.com>
-Subject: [PATCH v1 4/4] perf header: Don't write empty BPF/BTF info
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, James Clark <james.clark@linaro.org>, 
-	Zhongqiu Han <quic_zhonhan@quicinc.com>, Yicong Yang <yangyicong@hisilicon.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
 
-If there are no values in bpf_prog_info or bpf_btf feature don't write
-the data into the header.
+On Fri, 2025-06-06 at 11:19 -0700, Andrii Nakryiko wrote:
 
-Signed-off-by: Ian Rogers <irogers@google.com>
+[...]
+
+> Looking at memory_peak_write() in mm/memcontrol.c it looks reasonable
+> and should have worked (we do reset pc->local_watermark). But note if
+> (usage > peer_ctx->value) logic and /* initial write, register watcher
+> */ comment. I'm totally guessing and speculating, but maybe you didn't
+> close and re-open the file in between and so you had stale "watcher"
+> with already recorded high watermark?..
+>=20
+> I'd try again but be very careful what cgroup and at what point this
+> is being reset...
+
+The way I read memcontrol.c:memory_peak_write(), it always transfers
+current memcg->memory (aka memory.current) to the ofp->value of the
+currently open file (aka memory.peak). So this should work as
+documentation suggests: one needs to keep a single fd for memory.peak
+and periodically write something to it to reset the value.
+
 ---
- tools/perf/util/header.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-index 69e4f6aae293..6657b02d4a81 100644
---- a/tools/perf/util/header.c
-+++ b/tools/perf/util/header.c
-@@ -1016,10 +1016,13 @@ static int write_bpf_prog_info(struct feat_fd *ff,
- 	struct perf_env *env = &ff->ph->env;
- 	struct rb_root *root;
- 	struct rb_node *next;
--	int ret;
-+	int ret = 0;
- 
- 	down_read(&env->bpf_progs.lock);
- 
-+	if (env->bpf_progs.infos_cnt == 0)
-+		goto out;
-+
- 	ret = do_write(ff, &env->bpf_progs.infos_cnt,
- 		       sizeof(env->bpf_progs.infos_cnt));
- 	if (ret < 0)
-@@ -1058,10 +1061,13 @@ static int write_bpf_btf(struct feat_fd *ff,
- 	struct perf_env *env = &ff->ph->env;
- 	struct rb_root *root;
- 	struct rb_node *next;
--	int ret;
-+	int ret = 0;
- 
- 	down_read(&env->bpf_progs.lock);
- 
-+	if (env->bpf_progs.btfs_cnt == 0)
-+		goto out;
-+
- 	ret = do_write(ff, &env->bpf_progs.btfs_cnt,
- 		       sizeof(env->bpf_progs.btfs_cnt));
- 
--- 
-2.50.0.rc0.604.gd4ff7b7c86-goog
+I tried several versions with selftests and scx BPF binaries:
+- version as in this patch-set, aka "many cg";
+- version with a single control group that writes to memory.reclaim
+  and then to memory.peak between program verifications (while holding
+  same FDs for these files), aka "reset+reclaim", implementation is in [1];
+- version with a single control group same as "reset+reclaim" but
+  without "reclaim" part, aka "reset only", implementation can be
+  trivially derived from [1].
+
+Here are stats for each of the versions, where I try to figure out the
+stability of results. Each version was run twice and generated results
+compared.
+
+|                                    |         |        one cg |     one cg=
+ |        |
+|                                    | many cg | reclaim+reset | reset only=
+ | master |
+|------------------------------------+---------+---------------+-----------=
+-+--------|
+| SCX                                |         |               |           =
+ |        |
+|------------------------------------+---------+---------------+-----------=
+-+--------|
+| running time (sec)                 |      48 |            50 |         46=
+ |     43 |
+| jitter mem_peak_diff!=3D0  (of 172)  |       3 |            93 |         =
+80 |        |
+| jitter mem_peak_diff>256 (of 172)  |       0 |             5 |          7=
+ |        |
+|------------------------------------+---------+---------------+-----------=
+-+--------|
+| selftests                          |         |               |           =
+ |        |
+|------------------------------------+---------+---------------+-----------=
+-+--------|
+| running time (sec)                 |     108 |           140 |         90=
+ |     86 |
+| jitter mem_peak_diff!=3D0  (of 3601) |     195 |          1751 |       11=
+81 |        |
+| jitter mem_peak_diff>256 (of 3601) |       1 |            22 |         14=
+ |        |
+
+- "jitter mem_peak_diff!=3D0" means that veristat was run two times and
+  results were compared to produce a number of differences:
+  `veristat -C -f "mem_peak_diff!=3D0" first-run.csv second-run.csv| wc -l`
+- "jitter mem_peak_diff>256" is the same, but the filter expression
+  was "mem_peak_diff>256", meaning difference is greater than 256KiB.
+
+The big jitter comes from `0->256KiB` and `256KiB->0` transitions
+occurring to very small programs. There are a lot of such programs in
+selftests.
+
+Comparison of results quality between many cg and other types (same
+metrics as above, but different veristat versions were used to produce
+CSVs for comparison):
+
+|                                    |          many cg |       many cg |
+|                                    | vs reset+reclaim | vs reset-only |
+|------------------------------------+------------------+---------------|
+| SCX                                |                  |               |
+|------------------------------------+------------------+---------------|
+| jitter mem_peak_diff!=3D0  (of 172)  |              108 |            70 |
+| jitter mem_peak_diff>256 (of 172)  |                6 |             2 |
+|------------------------------------+------------------+---------------|
+| sleftests                          |                  |               |
+|------------------------------------+------------------+---------------|
+| jitter mem_peak_diff!=3D0  (of 3601) |             1885 |           942 |
+| jitter mem_peak_diff>256 (of 3601) |               27 |            11 |
+
+
+As can be seen, most of the difference in collected stats is not
+bigger than 256KiB.
+
+---
+
+Given above I'm inclined to stick with "many cg" approach, as it has
+less jitter and is reasonably performant. I need to wrap-up parallel
+veristat version anyway (and many cg should be easier to manage for
+parallel run).
+
+---
+
+[1] https://github.com/eddyz87/bpf/tree/veristat-memory-accounting.one-cg
+
+P.S.
+
+The only difference between [1] and my initial experiments is that I
+used dprintf instead of pwrite to access memory.{peak,reclaim},
+=C2=AF\_(=E3=83=84)_/=C2=AF.
+
 
 
