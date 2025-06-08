@@ -1,189 +1,145 @@
-Return-Path: <bpf+bounces-60007-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60008-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D90F6AD1195
-	for <lists+bpf@lfdr.de>; Sun,  8 Jun 2025 10:46:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85766AD11C7
+	for <lists+bpf@lfdr.de>; Sun,  8 Jun 2025 12:09:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA3223AC340
-	for <lists+bpf@lfdr.de>; Sun,  8 Jun 2025 08:45:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F008E3AADB0
+	for <lists+bpf@lfdr.de>; Sun,  8 Jun 2025 10:09:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 343271FDE09;
-	Sun,  8 Jun 2025 08:45:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2743B20C469;
+	Sun,  8 Jun 2025 10:09:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b="hEHPKKK3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O3yi5PhF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4B0F156CA;
-	Sun,  8 Jun 2025 08:45:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17AE2A927;
+	Sun,  8 Jun 2025 10:09:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749372358; cv=none; b=SCcXiZhxp5TNhq/bC+f1QJoNE1O+hcIrrhwut39g54xnBI4WWYRn9YSvpNCVQY3AWec2qIPlKd2JV5ZKxSyvwtM4v8TXmT4fyrTZaZ6jwTvwajFgzmnuCesEjeauhDh/2mRK45Y10/I1PfP8j7+SpJFXrwOeGlwxsIlKl+FneTo=
+	t=1749377367; cv=none; b=N1NmVCEeYG+YcCGxUrCDTX10FWOucHPMIiSJIdSQjp1Xi+msgqDSDByxmATkyKywOLYLMNqaRCNWNr+ks9o1DkR/BvZVcmj/suwcPAO/yAr9aB6Cdrjrzto8rrQ7a7BuAInbQCgjHW7c0lwQrvn9opVWG0WJYt229tZ6N91Sfts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749372358; c=relaxed/simple;
-	bh=v4PkM/Ar22LVKA1uuGEftCXiCqmcHBsUUBjFLYyvYiI=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ExTaebQla9ryWNBp0BJXFPVvC2hKkBdZPWr84BFW0fqCPIpW+LCUZt7hFv2Prloj2uW2ujGVWTURAn1bbGhxYEiDm1Zh6qyWFC98O2KUrn2kUJbemRvZq4P/225sJyZN71QS75L0OFicfUOVey8NPCwX/Dc5zg7BGTD4fyXCo/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b=hEHPKKK3; arc=none smtp.client-ip=212.227.15.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1749372338; x=1749977138; i=spasswolf@web.de;
-	bh=EdEG80i6V1qMQITbp6edf3dtJZUmhxxsKi7heRnjiwg=;
-	h=X-UI-Sender-Class:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
-	 References:Content-Type:MIME-Version:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=hEHPKKK3kdkSbkgnyzXo3MrxRSvK6LwLLb7qKRPXzWD9KGC17Z9IErE3Z9qRZNvB
-	 vbpMyvcgxaUvqAtEo9laPpcSPVgEL9jkJH0WgAifPhcfjD/mAHECBdZ8rfaxAlQeR
-	 wKMLA4IBZ90yWs8CO6Wa7GoOrC9dRtpGWsA2i67uDuXTVFeu2mtWHfXwWmqgFQWLX
-	 pPmK1cCyvItwktisbU2K3BoXWkqoZqLlkOdtAQoPaKpmDFgx7fE0MYt7kuP2VEv32
-	 Z7dJmWSXDteH8QZIHEuKF8hMr1yBr8TTl2mxJT3wuMRcuSgiDWTX2Lo12xof4Lb4r
-	 dg0x37OFPhDP7mw8Gw==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.0.101] ([95.223.134.88]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1M4sXj-1uNMJR1tHL-0091Bv; Sun, 08
- Jun 2025 10:45:38 +0200
-Message-ID: <0b1f48ba715a16c4d4874ae65bc01914de4d5a90.camel@web.de>
-Subject: Re: BUG: scheduling while atomic with PREEMPT_RT=y and bpf selftests
-From: Bert Karwatzki <spasswolf@web.de>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Steven Rostedt
-	 <rostedt@goodmis.org>
-Cc: linux-kernel@vger.kernel.org, linux-next@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-rt-users@vger.kernel.org, 
-	linux-rt-devel@lists.linux.dev, Thomas Gleixner <tglx@linutronix.de>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>, spasswolf@web.de
-Date: Sun, 08 Jun 2025 10:45:36 +0200
-In-Reply-To: <20250605125133.RSTingmi@linutronix.de>
-References: <20250605091904.5853-1-spasswolf@web.de>
-		 <20250605084816.3e5d1af1@gandalf.local.home>
-		 <20250605125133.RSTingmi@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.56.1-1 
+	s=arc-20240116; t=1749377367; c=relaxed/simple;
+	bh=mw52m+pDqfoXz3jkWtw7E4/3TvjKzk+8qk4ny2CFayo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hVO/z0gXJ4QH1NjYe2aUruHdmqlgy2sNBd7MXQy1z5LyKnRWSIjn53gKdlfspL2EmsIKS8Ruu0wtSYnGy9loStbV+m09U/DguXSPPtLe2/wtZeHj/NSUCn5FWucHcu9n6RgqTsnPgoiKjsii3wrEWxradFMAcTyPDP39q6eWUxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O3yi5PhF; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-45310223677so1367945e9.0;
+        Sun, 08 Jun 2025 03:09:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749377364; x=1749982164; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5+2LvGJ+RQAGkJd/RVuC75PuOLPGNzsYlk9uL8LVulU=;
+        b=O3yi5PhFlp5GRCB0HENFVwih6GehBBBtUQGXHmYy9FdKLXRWdT2KHcYN1S5VpzTpsS
+         Hq8hSXhXyGVvx5nLBkVMnQSTDtvHX9pEO68ZEGzXuUgWvC2FuhCsvbam42GEood+yIMr
+         gpnZzBei+5AyPZ9VZ1tw1W9v15iWs8vsoFpTayldQcRF9pvWW1Vpdyec+h7OM7R9KyS6
+         rf/dpF2XmVWtSupRW/xg4ySun6Jm0VgbDsMytt1XDWjfAOtj4NQLGUfMDEQ+usCxY7Zp
+         bAZTi4Jn+kU9/HluGRriPkzYJfhoX8J0HznROqmzmULy8Q7QGBkxzAarthDc/+pdG6Fn
+         FDtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749377364; x=1749982164;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5+2LvGJ+RQAGkJd/RVuC75PuOLPGNzsYlk9uL8LVulU=;
+        b=E/e85kpJn3iPPd+URNyWWyZ4H+Qjf8wcf6hvUYKlqFMLVqKwenr8CHU1JW32Kd4dkj
+         hsTVTBLAMzQTI4DxDrlxvFz+rFmjGYMwquQL/ZpEzZCTxCmAwWoQCjefxnAxu5rSBkHt
+         8BNX2vEMWwFhLMJa7V4Ke5ZzYVxeT7fDLLyVF2ewPzUnaqFxWWDoVWNoAMUHqBHN2N2b
+         9p+w0L4/q0iNUqVDCYpPFQ8bV2LM6X7oSkrRvSAZe13jTmPPKve6cOuLQx0VwCN1gSMD
+         7pYvwm2QLPGcsxukguUZDEOBGBSHugBG2f2fpz7mKW5yGScCbxhIUyBum62x5rITWzk/
+         yMPA==
+X-Forwarded-Encrypted: i=1; AJvYcCURdqc4yzKMuDI9Rsz4ylYNdJvz8Ept+RuX+/cChoYSe+HARew8YCjXQmLlG3n31gVah5Ha1OWs@vger.kernel.org, AJvYcCVIYnBpz71PnFBXu1mb1W/Nt0qIuQ+VFovhVEpI6cemV9lvPiW3oqiWSCDLDEbSu3/28xI=@vger.kernel.org, AJvYcCXsMB0gpnevmA2RAN8P0+g8zBaIvR0B2jhMVwEL2bibJNXKBoVhD5C9p3nZS8ZXkM6QdgN8p/IxvgvCxTEm@vger.kernel.org, AJvYcCXxSB33xDVQi8ZIOgDN9c9o83Rclak5ACzcug7lJHGQtA7sMx/Dbg2pL7ByeaNMvm+Nvtpf+sGcGdCSIA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwZ13xXhnMpadFETN7MLtNlTXC0wCtkKDilyLXTOEzYaBMBMK7S
+	DLAJv4qLon2A3uU/1pXtxjjgi1vBhCHnBWKzkmT91XNEOBpCM0W5Bpml
+X-Gm-Gg: ASbGncvz+Ule7EFCjs1YY1CxR4hnIK5o5Rxje0EsRc47HcVJl4rq4JYBYAuzX0rFUNw
+	5HRtMmMJqOMaF9+RNjTxYKDBgb7E0vOsViq5CWMS1JD9Yz5zYFQ2PtXws7KBS5KBoVllg2xmh3V
+	EEjX3xTt3bLtN/jcUJr2q3q2eosTTOhQP0e2roNAz1q2xS5HO7FOtwaYET+6jfX1LS8I/NaeAAL
+	jKLg7MaW+7xxgA6O8SBEqBK/TzKxrevQMD8ck8oSeI372wvoMTwxJ4n6WZV0u8Pd/UBj62HNZM5
+	4dOarLgWbjrh/j142kdj2Ukjh85NqHyOsMuZPEroyLjCuzxuaSMoAIgMKiZeEDZFtbnV7pyrz4T
+	44B79uQY=
+X-Google-Smtp-Source: AGHT+IHbeHUTLV+ijJ93umxha7U3N+Doc5TIXNx5qFgkM9Xzh1vqFqFHHXuDnm01fTZ3xIh2LwMSAg==
+X-Received: by 2002:a05:600c:5396:b0:43c:f44c:72a6 with SMTP id 5b1f17b1804b1-45201364c47mr99899725e9.2.1749377364074;
+        Sun, 08 Jun 2025 03:09:24 -0700 (PDT)
+Received: from [172.27.58.200] ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4526e05636dsm80089865e9.4.2025.06.08.03.09.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 08 Jun 2025 03:09:23 -0700 (PDT)
+Message-ID: <c8196bc9-ea3d-4171-b99b-b38898081681@gmail.com>
+Date: Sun, 8 Jun 2025 13:09:16 +0300
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Avuy5UJuZKURJRTxQ764K+K7sZX230PJvIemxiufXAdVCKOLnBJ
- doNxe9ya2SO8EH2duok+ueOTbm8cZCc4GLSAK7En2qdmqPZFIN7jrZBeUqo/rUAxm2tzaaL
- f9EA6sZrqgu/F40AxBI9SvI6Wo5/i1ufEjFlbMI5riowijuk7bvxF7cqfoVFOsBQVcDG/52
- r0UWHzHzHRiJGTK0ztbwA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:BA8NKV7akWg=;dBQYN42GqmZDJpDPPWyybh4vwaO
- oJgQkIydP4h5AgfVf+w9Hb87kLTRcTNDUSsc3lHYIQDyRFAxyEJ5T8viT5DqmKPW/26HZhORm
- 5LaXO10qKZOgUxQVva9Lj1AbuUyGGRvOVeV6Csoc7CdT0VF/yBI+kCk1ss87C3tJokZncLHVu
- YvE65cHTIKsPwt7z+W0EL5xUybwTd28ur/0yvhcoUSHCgpFrybWmEN6ZqOAulXBIRAEHQzomL
- W60A5AoLxeZF/8blzxcAED1rq7+h0NN2qW2iLxmPHKTtBVpZmn5mmWcFKQDpfuj/JvKFGY/Wv
- qELLU6ANqyu6eo+ixlQHUALt/5pbrGoyI4Ysbt8g9LWS0JbJd7VOcP9m1MHj3J7SU8CdlP/wZ
- I2IHPe3qj8qRFWJqp37mazaQ4mglgn0NrY3XCE3h7bH3LWjTf+RoixgYuq/fRc+0q0Ij/ASDw
- vHPsz/CMq6PWY/SGxLN62dZtrKQCmuiedA9hZEZ7QEGsKG1bx2kmJazO6He61JkoN97wmg65r
- lCbt3/406jJjemyxM0PucfxbHoYuiKAQTRMyc9pgjMHzCwHHMWSA9aaWcXW1RR8XcJ99DgWfC
- 6kaG4o1SHwI4AhvozY8KJlDmMgeDUlesI7y+7srhELzlbC12HEtQV72PpxuJBSJCuwQECRzLV
- DG61+7h7LXhC722sE+sq88i/lrn3DKWK6oNF2ZNqxG2tPtDHogRjyTXq6te14J3hByuji2uEW
- MRTz2l0ujieHInSh/kVtNDvNvquW3KaWzLMzpnqzEwKNqAO+0R0/gVTr8xSnTLxr60irWUwde
- 2pwrEFZQcmpyLDnzTNA6tehnssoDq3J4aAVK/ToYJeevuPvEJwVSBzqUxocWcgnrmIK17yUgy
- m0w4Gy0poeJ9F9ac8jTjzvK0q0kylGOVmeznM/fFoFO34dsBM6LQYLOBRuHcyLCEAyVPfWoN5
- cLwe5YuI/rH1aW+3rT8V1Uh5VISorHkOZvyetBs/Cni8LR1eQmZT1yc8/r2zKS0yMtXLUec9e
- RT5K5y+Z4ftHkRRGwayZXWuBfr7U0vJL25r+1iXHLizNf3mcTjRpu+iiboQTpaNJQ7U8b7cP2
- ci4B3VHY2QpXIBm94Q3/UOjkNXoYWRj8WDn5WOyZlt8kCydex9KAsdG78Rmf1qujHqbOoXzTV
- U8IxjFTdFmglsFfA9PdB7sChHwZggLzwDoggAVJebCJIv52EtYgqi317OXUUlxwCUNwk+GHFX
- GbhhErooY5OH1mncqcR1V0fQMo66G71gdECe/w35XKaDWvtQAZ5hynJjM2b/tgA7mNHWe1PtX
- RLmszphCPgst93VImgAeBPGH1qhD0w8OdxlrXRtUvmJi4zbuJX+x6fXWi9eDcz4dmLbZP0pCX
- rUHfc6pcCWEY8TBWXY64GYOi4SqR2J/c74hZHKbwQUkuOJirAI0nfWUS/2nP3iGCeM0l+lm45
- LdcWVavEgLBLbDY13SQLcU6dPSgRC2rHsGHsId0V8ASfcYf9sZqD8yUwGO6mb0mjEI8gj0Lc3
- hwsBIzwrqiD9H9rnbl4hCmbFrxc9K5L0orexGlw9Hdc+S0HbRHTYEJWufDQitWjq0xVgI3dqb
- NlmkwLZYnL3IFIlBTUQ8i9id7rQ5ccJIv3IR04/0R7LtHTE8oTF10LXc8qrFff3yMF7ALp3X1
- EHemVygPm02cF+8+b7G7u5LIop8cAGZXd+PeC0bIPK085OaXMUl+pgXe8pwrCspIIBNMdY42q
- g7DWvrA2oa4Yow+B2vp6UHHGps6IJUd95okh+6c3wQmT53C1cRYBUZm/EvJ8KkFLKkNqq0Ivn
- pgVZqGdcT4PNseS0bLA1NpecBfTdg8DUC3nNIk0ZWxgZW7P+9N0O7lVC2S5w6TCy6KfmMarZv
- DdHEUVgKNviBIiiOnOJmw6VoxBMXnNuank51Ui/Vqmy3QdyrHsagYOqGO4gW7/SE5wNGmQuLR
- NORD8lTdO6EKC3ZCJmxN1cOdTlTBgoRNcE95/PBRXewe+7/J07QFu7Mm+1NJi7W9bovnKl45O
- QBX4vRK55v7elkXzMEhs+LwtAN/AOP/O0NB5nUQH7HJhU+Pz7c5eiiIXQjrh2mCuq/vpTe6go
- IdtshJZrK4bscIcQlALzMVlCDaY53x2bzcsTK33ZpAd/m+9ilRMTs48gmqao87bFCw/yetRxo
- PaP0qMghKuwAjyNtNjJrIJc7xl5sgWuNup8hqV3vrTnAYh4xx9v62W2gZa/KieXXEisZo78nJ
- Gu4yHShRTzzpq1hVjMIykqO32mBb1mOEz3K4CSppw2v+G+z8PukP+RvwdD3rcJML6PCqS7l5v
- skZXXPG5C7zrz2vCRawvv9dOsgfF+VqVgl/o4XHAYlVk2j5VkxFbt2h4/sApWtoYhgXhtFcKa
- 9C5q7IgVzDMAuhqI+2TK3RUPcMQVpdrcRu0K1lI87dBWg7WvAPrD7W7SvjdGVXYDclgqlO218
- dxIpVho8wWMFP+6h2mrIyFqX+PP06a16aeBkh78MuaqljjT3/Or06ttMlxt85pHZE+F7favA8
- HbZ1O7B1Ry045SwEJhjFOZLQnqyD9KQHD5wTjd3o6M9XvQEarN2DIkXmz387AnKv10L9GqOef
- cc1xmBG3JeZnGz++42NrD7We/ZZXcvCTGvdLFBKitQJ9j6qreN9iv7iQJgZfVvxsNTMpjdN9h
- /aJCNj9cg4vf75KlpOul9BdkMygV2ThF8W56/60xXkaegKT6eWPTq4xbJMfrDf8Q6rDntkrhl
- bUpYJfLDNATIAXzrLpoiRoeLeDyx04SnpOf5ywB01w2fC9SztXkbSBXYasq1xvfKLDTlDcQIe
- +hfYOOmTMqR+lDiFqKIaBW91qNtCQc02RIV9o5I4l4HECeXHm0htXab8Ti69S+MPN3Q4yzP3g
- s/WHRIebdfvhgswQZ/JbNmzbf7BhX/xnUOEn4BW85O9p4paIR90w5pCieOoA2+ff4vJFtM42L
- e0/16jtZpw1DKHJ8fbEsHIZ3JKGqKfDWYOHBMPkbIb6hVjpWuNoka0Mn0wehKUcyTx1WXDtn+
- +LkRisaI0Y18Ef5PgYZmv5Q3pRSpjVuXoy3JrUEOdynullOdNFhvTZsXiNiEhiMi4DeO0MxOB
- l4G4ntTxhJ4IKX+/79asBiGeb1iNgB/TfjBGNYC6k/x6EAkxdnzPrHBEsfqSRSKfixFdtjyzi
- i3scDrGIxRCsyUiiTifMwoN16zoNrfrNefaHfuCrk4xZyMbZDWilYrf4DE3341ZhhAEs=
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next V2 07/11] net/mlx5e: SHAMPO: Headers page pool
+ stats
+To: Cosmin Ratiu <cratiu@nvidia.com>, "kuba@kernel.org" <kuba@kernel.org>,
+ "saeed@kernel.org" <saeed@kernel.org>
+Cc: "andrew+netdev@lunn.ch" <andrew+netdev@lunn.ch>,
+ "hawk@kernel.org" <hawk@kernel.org>,
+ "davem@davemloft.net" <davem@davemloft.net>,
+ "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+ "leon@kernel.org" <leon@kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "edumazet@google.com" <edumazet@google.com>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+ "ast@kernel.org" <ast@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
+ "richardcochran@gmail.com" <richardcochran@gmail.com>,
+ Dragos Tatulea <dtatulea@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>, Tariq Toukan
+ <tariqt@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ Gal Pressman <gal@nvidia.com>, "daniel@iogearbox.net"
+ <daniel@iogearbox.net>, Moshe Shemesh <moshe@nvidia.com>
+References: <1747950086-1246773-1-git-send-email-tariqt@nvidia.com>
+ <1747950086-1246773-8-git-send-email-tariqt@nvidia.com>
+ <20250522153142.11f329d3@kernel.org> <aC-sIWriYzWbQSxc@x130>
+ <2c0dbde8d0e65678eeb0847db1710aaef3a8ce91.camel@nvidia.com>
+Content-Language: en-US
+From: Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <2c0dbde8d0e65678eeb0847db1710aaef3a8ce91.camel@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Am Donnerstag, dem 05.06.2025 um 14:51 +0200 schrieb Sebastian Andrzej Sie=
-wior:
-> On 2025-06-05 08:48:38 [-0400], Steven Rostedt wrote:
-> > On Thu,  5 Jun 2025 11:19:03 +0200
-> > Bert Karwatzki <spasswolf@web.de> wrote:
-> >=20
-> > > This patch seems to create so much output that the orginal error mes=
-sage and
-> > > backtrace often get lost, so I needed several runs to get a meaningf=
-ul message
-> > > when running
-> >=20
-> > Are you familiar with preempt count tracing?
->=20
-> I have an initial set of patches to tackle this problem, I'm going to
-> send them after the merge window.
->=20
-> Sebastian
 
-I've found the reason for the "mysterious" increase of preempt_count:
 
-[   70.821750] [   T2746] bpf_link_settle calling fd_install() preemt_coun=
-t =3D 0
-[   70.821751] [   T2746] preempt_count_add 5898: preempt_count =3D 0x0 co=
-unter =3D 0x1b232c
-[   70.821752] [   T2746] preempt_count_add 5900: preempt_count =3D 0x1 co=
-unter =3D 0x1b232d
-[   70.821754] [   T2746] preempt_count_sub 5966: preempt_count =3D 0x1 co=
-unter =3D 0x1b232e
-[   70.821755] [   T2746] preempt_count_sub 5968: preempt_count =3D 0x0 co=
-unter =3D 0x1b232f
-[   70.821761] [   T2746] __bpf_trace_sys_enter 18: preempt_count =3D 0x0
-[   70.821762] [   T2746] __bpf_trace_sys_enter 18: preempt_count =3D 0x1
-[   70.821764] [   T2746] __bpf_trace_run: preempt_count =3D 1
-[   70.821765] [   T2746] bpf_prog_run: preempt_count =3D 1
-[   70.821766] [   T2746] __bpf_prog_run: preempt_count =3D 1
+On 06/06/2025 13:43, Cosmin Ratiu wrote:
+> On Thu, 2025-05-22 at 15:58 -0700, Saeed Mahameed wrote:
+>> On 22 May 15:31, Jakub Kicinski wrote:
+>>> On Fri, 23 May 2025 00:41:22 +0300 Tariq Toukan wrote:
+>>>> Expose the stats of the new headers page pool.
+>>>
+>>> Nope. We have a netlink API for page pool stats.
+>>>
+>>
+>> We already expose the stats of the main pool in ethtool.
+>> So it will be an inconvenience to keep exposing half of the stats.
+>> So either we delete both or keep both. Some of us rely on this for
+>> debug
+>>
+> 
+> What is the conclusion here?
+> Do we keep this patch, to have all the stats in the same place?
+> Or do we remove it, and then half of the stats will be accessible
+> through both ethtool and netlink, and the other half only via netlink?
+> 
+> Cosmin.
 
-It's caused by this macro from include/trace/bpf_probe.h (with my pr_err()=
-):
+IIRC, the netlink API shows only the overall/sum, right?
 
-#define __BPF_DECLARE_TRACE_SYSCALL(call, proto, args) \
-static notrace void \
-__bpf_trace_##call(void *__data, proto) \
-{ \
- might_fault(); \
- if (!strcmp(get_current()->comm, "test_progs")) \
- pr_err("%s %d: preempt_count =3D 0x%x", __func__, __LINE__, preempt_count=
-());\
- preempt_disable_notrace(); \
- if (!strcmp(get_current()->comm, "test_progs")) \
- pr_err("%s %d: preempt_count =3D 0x%x", __func__, __LINE__, preempt_count=
-());\
- CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(__data, CAST_TO_U64(args)); =
-\
- preempt_enable_notrace(); \
-}
+ethtool stats show you per-ring numbers, this is very helpful for system 
+monitoring and perf debug.
 
-The preempt_{en,dis}able_notrace were introduced in
-commit 4aadde89d81f ("tracing/bpf: disable preemption in syscall probe")
-This commit is present in v6.14 and v6.15, but the bug already appears in
-v6.12 so in that case preemption is disable somewhere else.=20
 
-Bert Karwatzki
 
