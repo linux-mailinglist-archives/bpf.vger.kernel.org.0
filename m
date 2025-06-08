@@ -1,349 +1,189 @@
-Return-Path: <bpf+bounces-60006-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60007-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A81BAD1176
-	for <lists+bpf@lfdr.de>; Sun,  8 Jun 2025 09:36:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D90F6AD1195
+	for <lists+bpf@lfdr.de>; Sun,  8 Jun 2025 10:46:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2E4EA7A4FD8
-	for <lists+bpf@lfdr.de>; Sun,  8 Jun 2025 07:35:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA3223AC340
+	for <lists+bpf@lfdr.de>; Sun,  8 Jun 2025 08:45:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1C971FAC23;
-	Sun,  8 Jun 2025 07:36:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 343271FDE09;
+	Sun,  8 Jun 2025 08:45:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NGV8eASj"
+	dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b="hEHPKKK3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [212.227.15.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0CBB1632C8
-	for <bpf@vger.kernel.org>; Sun,  8 Jun 2025 07:36:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4B0F156CA;
+	Sun,  8 Jun 2025 08:45:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749368195; cv=none; b=AmYhKuYN2Om5T4T3g5X0j+uWp7zAhSz+8KaYRqOC6eT7snO4lbHUIOp/j3axwsC1bNVph9mbA6xTMOw0A4J5QBiMAtqPP03DFnd5C2RLFG8ieC/wdMywpZuiaMbtgnXWhIlfRzlcaF5nRLmtKqwhltnKpTjGz7XBFhkJjCAn6Jk=
+	t=1749372358; cv=none; b=SCcXiZhxp5TNhq/bC+f1QJoNE1O+hcIrrhwut39g54xnBI4WWYRn9YSvpNCVQY3AWec2qIPlKd2JV5ZKxSyvwtM4v8TXmT4fyrTZaZ6jwTvwajFgzmnuCesEjeauhDh/2mRK45Y10/I1PfP8j7+SpJFXrwOeGlwxsIlKl+FneTo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749368195; c=relaxed/simple;
-	bh=QpcZpybBVcgxni5MbzhH2ZuHK8J6dsPvzct7OeWjlmQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=fWd9LoEscfylh/h4fvNnFSenOTxN3fsSxes1LxyFoeGAB3v4S+BYQqguOzlnk/G1USDNyg8F3m+hbptFt7bGBcZ5IxRJIn0UwTLEwG3RewC6v/A7kt67kqIXixpqkiYMz89nHTZ1IIkcvuNPHmN5maKrZE1wl2lXfYb9A40JrlQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NGV8eASj; arc=none smtp.client-ip=209.85.215.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-b2c4331c50eso2555452a12.3
-        for <bpf@vger.kernel.org>; Sun, 08 Jun 2025 00:36:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749368193; x=1749972993; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=f9lEJCOWjCrNLanGPK9i8bcj5uBRqN1K5GYShhRAjFY=;
-        b=NGV8eASjEjohYwdoJom4+ME+XmiAch4Dt/112gdCrJvrCo5IkGvFHG/T9IDlDECS+6
-         x03Bemvo0kQAgSjHyo5fF1gV1BA7wIkDswe1QLXtiCpysyFem/t+WfuXkSLCGoi5o/zj
-         XlZnCWdZug0P/eDxSf66W48ckbo9W9ZAy3GZQhcpCF02qQg/HVgLAMkyLZgxP/oJTwjT
-         ZT/yKBQgfd/fZ29neV93jWS2lPUNcrK/bT3nPQzuxNXb52ArAWOddIT0mxIs0Lj1V1cM
-         hdA9Z/BunwtcTR8pEiCipEoUfAxyjU/LET/GCGIPiLPlxvcjq2UxWJCzol6ZfvSBDL4L
-         HhQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749368193; x=1749972993;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=f9lEJCOWjCrNLanGPK9i8bcj5uBRqN1K5GYShhRAjFY=;
-        b=XskHbjRlXxABbPHYQ//wVuK1vWpLuOv4UxIV07BzGJMXBSm/eyC2G3bZVM6Les+Yu3
-         6OyTSaPLYFAbMukSU9nJbh5L4oit1khxhk+bH6Q+o6m9YEV0kQqMez0Nehh2HpbXp+2m
-         9UuL4olUXwjAlPKTP3Zmaqln1pV0WwT+IJWentYZlRNuXwKkUeForU27hbv6CAV6Oy02
-         pqncSLy+YCdn5gnNwj/0uO+w7KhLQW2m6M0zgoxuTrDnwTEtaR5pZVWM434ikVrjrwy3
-         h6PuxAElW+fMm+Fb6pgPVgmGbr0siplNSoBFCVRZTLSiZNYrXpmETo4XMZQPiFKeEorH
-         KZ4Q==
-X-Gm-Message-State: AOJu0YyFm4Jg8oJnUgnKwNGA6YHKR7J3toITzZgrmJ4kAv4Hxgnrg800
-	0uqCTomR9wfEIVeILS7zThmW9yLwpjWDksGsbPEYyyrFdOjazR2EoAN3
-X-Gm-Gg: ASbGnctPw/3p4auHh5G9sq1Tns96XeSSpjOlNSaQJEvO6fs1SX8qfVzShq+QB6NXmqP
-	qroKTLt3FmZOo1fw9xvqXFjOVCM1VquG0arxPZ6t+s6q7GrSKnuuZ1mfsDCQZYUcUFNhGZJ5lIq
-	Jwtw0nntndsvwBZQdD/ol6vwjauiXxs80PYgmd54jnoV3uSGg+ilxXHOgUTc/CtaCo16Pbauj+D
-	gvabplU+lXz6bAM/QLWEX5kXDbUQZ5/4f+iMeDLNut3P+QYeVpfCtzLlIfDTE13+wa7xbZiOwy0
-	RwOX/heLKeRrcrZx2awz9uKRr0enbV0U/7THjp1agVvzWFZ4+eeXUhIChkdZlBohHpZ+7llAcBA
-	=
-X-Google-Smtp-Source: AGHT+IH+roLvCwL0RLEOwGDdimU3DFVb+abEuCH4pjflLQlZie2hiEZ/+bR/mB7zOMXl8Ear6n6mFA==
-X-Received: by 2002:a17:90b:3503:b0:312:639:a06a with SMTP id 98e67ed59e1d1-313470738f1mr11748734a91.31.1749368193162;
-        Sun, 08 Jun 2025 00:36:33 -0700 (PDT)
-Received: from localhost.localdomain ([39.144.124.91])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-236035069c3sm35968135ad.234.2025.06.08.00.36.24
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sun, 08 Jun 2025 00:36:32 -0700 (PDT)
-From: Yafang Shao <laoar.shao@gmail.com>
-To: akpm@linux-foundation.org,
-	david@redhat.com,
-	ziy@nvidia.com,
-	baolin.wang@linux.alibaba.com,
-	lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com,
-	npache@redhat.com,
-	ryan.roberts@arm.com,
-	dev.jain@arm.com,
-	hannes@cmpxchg.org,
-	usamaarif642@gmail.com,
-	gutierrez.asier@huawei-partners.com,
-	willy@infradead.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org
-Cc: bpf@vger.kernel.org,
-	linux-mm@kvack.org,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH v3 5/5] selftests/bpf: Add selftest for THP adjustment
-Date: Sun,  8 Jun 2025 15:35:16 +0800
-Message-Id: <20250608073516.22415-6-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
-In-Reply-To: <20250608073516.22415-1-laoar.shao@gmail.com>
-References: <20250608073516.22415-1-laoar.shao@gmail.com>
+	s=arc-20240116; t=1749372358; c=relaxed/simple;
+	bh=v4PkM/Ar22LVKA1uuGEftCXiCqmcHBsUUBjFLYyvYiI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ExTaebQla9ryWNBp0BJXFPVvC2hKkBdZPWr84BFW0fqCPIpW+LCUZt7hFv2Prloj2uW2ujGVWTURAn1bbGhxYEiDm1Zh6qyWFC98O2KUrn2kUJbemRvZq4P/225sJyZN71QS75L0OFicfUOVey8NPCwX/Dc5zg7BGTD4fyXCo/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b=hEHPKKK3; arc=none smtp.client-ip=212.227.15.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1749372338; x=1749977138; i=spasswolf@web.de;
+	bh=EdEG80i6V1qMQITbp6edf3dtJZUmhxxsKi7heRnjiwg=;
+	h=X-UI-Sender-Class:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
+	 References:Content-Type:MIME-Version:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=hEHPKKK3kdkSbkgnyzXo3MrxRSvK6LwLLb7qKRPXzWD9KGC17Z9IErE3Z9qRZNvB
+	 vbpMyvcgxaUvqAtEo9laPpcSPVgEL9jkJH0WgAifPhcfjD/mAHECBdZ8rfaxAlQeR
+	 wKMLA4IBZ90yWs8CO6Wa7GoOrC9dRtpGWsA2i67uDuXTVFeu2mtWHfXwWmqgFQWLX
+	 pPmK1cCyvItwktisbU2K3BoXWkqoZqLlkOdtAQoPaKpmDFgx7fE0MYt7kuP2VEv32
+	 Z7dJmWSXDteH8QZIHEuKF8hMr1yBr8TTl2mxJT3wuMRcuSgiDWTX2Lo12xof4Lb4r
+	 dg0x37OFPhDP7mw8Gw==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.0.101] ([95.223.134.88]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1M4sXj-1uNMJR1tHL-0091Bv; Sun, 08
+ Jun 2025 10:45:38 +0200
+Message-ID: <0b1f48ba715a16c4d4874ae65bc01914de4d5a90.camel@web.de>
+Subject: Re: BUG: scheduling while atomic with PREEMPT_RT=y and bpf selftests
+From: Bert Karwatzki <spasswolf@web.de>
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Steven Rostedt
+	 <rostedt@goodmis.org>
+Cc: linux-kernel@vger.kernel.org, linux-next@vger.kernel.org, 
+	bpf@vger.kernel.org, linux-rt-users@vger.kernel.org, 
+	linux-rt-devel@lists.linux.dev, Thomas Gleixner <tglx@linutronix.de>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>, spasswolf@web.de
+Date: Sun, 08 Jun 2025 10:45:36 +0200
+In-Reply-To: <20250605125133.RSTingmi@linutronix.de>
+References: <20250605091904.5853-1-spasswolf@web.de>
+		 <20250605084816.3e5d1af1@gandalf.local.home>
+		 <20250605125133.RSTingmi@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.56.1-1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Avuy5UJuZKURJRTxQ764K+K7sZX230PJvIemxiufXAdVCKOLnBJ
+ doNxe9ya2SO8EH2duok+ueOTbm8cZCc4GLSAK7En2qdmqPZFIN7jrZBeUqo/rUAxm2tzaaL
+ f9EA6sZrqgu/F40AxBI9SvI6Wo5/i1ufEjFlbMI5riowijuk7bvxF7cqfoVFOsBQVcDG/52
+ r0UWHzHzHRiJGTK0ztbwA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:BA8NKV7akWg=;dBQYN42GqmZDJpDPPWyybh4vwaO
+ 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
 
-This test case uses a BPF program to enforce the following THP allocation
-policy:
-- Current task will wakeup khugepaged to allocate THP
+Am Donnerstag, dem 05.06.2025 um 14:51 +0200 schrieb Sebastian Andrzej Sie=
+wior:
+> On 2025-06-05 08:48:38 [-0400], Steven Rostedt wrote:
+> > On Thu,  5 Jun 2025 11:19:03 +0200
+> > Bert Karwatzki <spasswolf@web.de> wrote:
+> >=20
+> > > This patch seems to create so much output that the orginal error mes=
+sage and
+> > > backtrace often get lost, so I needed several runs to get a meaningf=
+ul message
+> > > when running
+> >=20
+> > Are you familiar with preempt count tracing?
+>=20
+> I have an initial set of patches to tackle this problem, I'm going to
+> send them after the merge window.
+>=20
+> Sebastian
 
-The result is as follows,
-  $ ./test_progs --name="thp_adjust"
-  #437     thp_adjust:OK
-  Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+I've found the reason for the "mysterious" increase of preempt_count:
 
-CONFIG_TRANSPARENT_HUGEPAGE=y is required for this test.
+[   70.821750] [   T2746] bpf_link_settle calling fd_install() preemt_coun=
+t =3D 0
+[   70.821751] [   T2746] preempt_count_add 5898: preempt_count =3D 0x0 co=
+unter =3D 0x1b232c
+[   70.821752] [   T2746] preempt_count_add 5900: preempt_count =3D 0x1 co=
+unter =3D 0x1b232d
+[   70.821754] [   T2746] preempt_count_sub 5966: preempt_count =3D 0x1 co=
+unter =3D 0x1b232e
+[   70.821755] [   T2746] preempt_count_sub 5968: preempt_count =3D 0x0 co=
+unter =3D 0x1b232f
+[   70.821761] [   T2746] __bpf_trace_sys_enter 18: preempt_count =3D 0x0
+[   70.821762] [   T2746] __bpf_trace_sys_enter 18: preempt_count =3D 0x1
+[   70.821764] [   T2746] __bpf_trace_run: preempt_count =3D 1
+[   70.821765] [   T2746] bpf_prog_run: preempt_count =3D 1
+[   70.821766] [   T2746] __bpf_prog_run: preempt_count =3D 1
 
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
----
- tools/testing/selftests/bpf/config            |   1 +
- .../selftests/bpf/prog_tests/thp_adjust.c     | 158 ++++++++++++++++++
- .../selftests/bpf/progs/test_thp_adjust.c     |  38 +++++
- 3 files changed, 197 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/thp_adjust.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust.c
+It's caused by this macro from include/trace/bpf_probe.h (with my pr_err()=
+):
 
-diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-index f74e1ea0ad3b..1c3c44fd536d 100644
---- a/tools/testing/selftests/bpf/config
-+++ b/tools/testing/selftests/bpf/config
-@@ -118,3 +118,4 @@ CONFIG_XDP_SOCKETS=y
- CONFIG_XFRM_INTERFACE=y
- CONFIG_TCP_CONG_DCTCP=y
- CONFIG_TCP_CONG_BBR=y
-+CONFIG_TRANSPARENT_HUGEPAGE=y
-diff --git a/tools/testing/selftests/bpf/prog_tests/thp_adjust.c b/tools/testing/selftests/bpf/prog_tests/thp_adjust.c
-new file mode 100644
-index 000000000000..ee8a731f53d4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/thp_adjust.c
-@@ -0,0 +1,158 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <sys/mman.h>
-+#include <test_progs.h>
-+#include "test_thp_adjust.skel.h"
-+
-+#define LEN (4 * 1024 * 1024) /* 4MB */
-+#define THP_ENABLED_PATH "/sys/kernel/mm/transparent_hugepage/enabled"
-+#define SMAPS_PATH "/proc/self/smaps"
-+#define ANON_HUGE_PAGES "AnonHugePages:"
-+
-+static char *thp_addr;
-+static char old_mode[32];
-+
-+int thp_mode_save(void)
-+{
-+	const char *start, *end;
-+	char buf[128];
-+	int fd, err;
-+	size_t len;
-+
-+	fd = open(THP_ENABLED_PATH, O_RDONLY);
-+	if (fd == -1)
-+		return -1;
-+
-+	err = read(fd, buf, sizeof(buf) - 1);
-+	if (err == -1)
-+		goto close;
-+
-+	start = strchr(buf, '[');
-+	end = start ? strchr(start, ']') : NULL;
-+	if (!start || !end || end <= start) {
-+		err = -1;
-+		goto close;
-+	}
-+
-+	len = end - start - 1;
-+	if (len >= sizeof(old_mode))
-+		len = sizeof(old_mode) - 1;
-+	strncpy(old_mode, start + 1, len);
-+	old_mode[len] = '\0';
-+
-+close:
-+	close(fd);
-+	return err;
-+}
-+
-+int thp_set(const char *desired_mode)
-+{
-+	int fd, err;
-+
-+	fd = open(THP_ENABLED_PATH, O_RDWR);
-+	if (fd == -1)
-+		return -1;
-+
-+	err = write(fd, desired_mode, strlen(desired_mode));
-+	close(fd);
-+	return err;
-+}
-+
-+int thp_reset(void)
-+{
-+	int fd, err;
-+
-+	fd = open(THP_ENABLED_PATH, O_WRONLY);
-+	if (fd == -1)
-+		return -1;
-+
-+	err = write(fd, old_mode, strlen(old_mode));
-+	close(fd);
-+	return err;
-+}
-+
-+int thp_alloc(void)
-+{
-+	int err, i;
-+
-+	thp_addr = mmap(NULL, LEN, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
-+	if (thp_addr == MAP_FAILED)
-+		return -1;
-+
-+	for (i = 0; i < LEN; i += 4096)
-+		thp_addr[i] = 1;
-+
-+	err = madvise(thp_addr, LEN, MADV_HUGEPAGE);
-+	if (err == -1)
-+		goto unmap;
-+	return 0;
-+
-+unmap:
-+	munmap(thp_addr, LEN);
-+	return -1;
-+}
-+
-+void thp_free(void)
-+{
-+	if (!thp_addr)
-+		return;
-+	munmap(thp_addr, LEN);
-+}
-+
-+void test_thp_adjust(void)
-+{
-+	struct bpf_link *fentry_link, *ops_link;
-+	struct test_thp_adjust *skel;
-+	int err, first_calls;
-+
-+	if (!ASSERT_NEQ(thp_mode_save(), -1, "THP mode save"))
-+		return;
-+	if (!ASSERT_GE(thp_set("madvise"), 0, "THP mode set"))
-+		return;
-+
-+	skel = test_thp_adjust__open();
-+	if (!ASSERT_OK_PTR(skel, "open"))
-+		goto thp_reset;
-+
-+	skel->bss->target_pid = getpid();
-+
-+	err = test_thp_adjust__load(skel);
-+	if (!ASSERT_OK(err, "load"))
-+		goto destroy;
-+
-+	fentry_link = bpf_program__attach_trace(skel->progs.thp_run);
-+	if (!ASSERT_OK_PTR(fentry_link, "attach fentry"))
-+		goto destroy;
-+
-+	ops_link = bpf_map__attach_struct_ops(skel->maps.thp);
-+	if (!ASSERT_OK_PTR(ops_link, "attach struct_ops"))
-+		goto destroy;
-+
-+	if (!ASSERT_NEQ(thp_alloc(), -1, "THP alloc"))
-+		goto destroy;
-+
-+	/* After attaching struct_ops, THP will be allocated. */
-+	if (!ASSERT_GT(skel->bss->khugepaged_enter, 0, "khugepaged enter"))
-+		goto thp_free;
-+
-+	first_calls = skel->bss->khugepaged_enter;
-+
-+	thp_free();
-+
-+	if (!ASSERT_GE(thp_set("never"), 0, "THP set"))
-+		goto destroy;
-+
-+	if (!ASSERT_NEQ(thp_alloc(), -1, "THP alloc"))
-+		goto destroy;
-+
-+	/* In "never" mode, THP won't be allocated even if the prog is attached. */
-+	if (!ASSERT_EQ(skel->bss->khugepaged_enter, first_calls, "khugepaged enter"))
-+		goto thp_free;
-+
-+thp_free:
-+	thp_free();
-+destroy:
-+	test_thp_adjust__destroy(skel);
-+thp_reset:
-+	ASSERT_GE(thp_reset(), 0, "THP mode reset");
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_thp_adjust.c b/tools/testing/selftests/bpf/progs/test_thp_adjust.c
-new file mode 100644
-index 000000000000..9a3d8bfcd124
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_thp_adjust.c
-@@ -0,0 +1,38 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+#define THP_ALLOC_KHUGEPAGED (1<<1)
-+
-+int target_pid;
-+int khugepaged_enter;
-+
-+SEC("fentry/__khugepaged_enter")
-+int BPF_PROG(thp_run, struct mm_struct *mm)
-+{
-+	struct task_struct *current = bpf_get_current_task_btf();
-+
-+	if (current->mm == mm && current->pid == target_pid)
-+		khugepaged_enter++;
-+	return 0;
-+}
-+
-+SEC("struct_ops/allocator")
-+int BPF_PROG(bpf_thp_allocator)
-+{
-+	struct task_struct *current = bpf_get_current_task_btf();
-+
-+	/* Allocate THP for this task in khugepaged. */
-+	if (current->pid == target_pid)
-+		return THP_ALLOC_KHUGEPAGED;
-+	return 0;
-+}
-+
-+SEC(".struct_ops.link")
-+struct bpf_thp_ops thp = {
-+	.allocator = (void *)bpf_thp_allocator,
-+};
--- 
-2.43.5
+#define __BPF_DECLARE_TRACE_SYSCALL(call, proto, args) \
+static notrace void \
+__bpf_trace_##call(void *__data, proto) \
+{ \
+ might_fault(); \
+ if (!strcmp(get_current()->comm, "test_progs")) \
+ pr_err("%s %d: preempt_count =3D 0x%x", __func__, __LINE__, preempt_count=
+());\
+ preempt_disable_notrace(); \
+ if (!strcmp(get_current()->comm, "test_progs")) \
+ pr_err("%s %d: preempt_count =3D 0x%x", __func__, __LINE__, preempt_count=
+());\
+ CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(__data, CAST_TO_U64(args)); =
+\
+ preempt_enable_notrace(); \
+}
 
+The preempt_{en,dis}able_notrace were introduced in
+commit 4aadde89d81f ("tracing/bpf: disable preemption in syscall probe")
+This commit is present in v6.14 and v6.15, but the bug already appears in
+v6.12 so in that case preemption is disable somewhere else.=20
+
+Bert Karwatzki
 
