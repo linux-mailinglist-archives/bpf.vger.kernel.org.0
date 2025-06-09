@@ -1,323 +1,227 @@
-Return-Path: <bpf+bounces-60088-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60089-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2922AD2831
-	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 22:55:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01FCFAD2839
+	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 22:57:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 26B39169CC3
-	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 20:55:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE2723B0B8A
+	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 20:57:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38B5B2222D7;
-	Mon,  9 Jun 2025 20:55:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBDF9221DB0;
+	Mon,  9 Jun 2025 20:57:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Kig4iVeJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C6DYf9p0"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48A71221F18;
-	Mon,  9 Jun 2025 20:55:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D79FD207A20
+	for <bpf@vger.kernel.org>; Mon,  9 Jun 2025 20:57:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749502541; cv=none; b=k57mqoG6SOPpVrB31JH4hK3MK++g0vyew3JyBiP1d6pZRu0i8BG9vjj0OgXNYW8+ha9avVclHN1RC8Q1HTbE1P6WbD52zQX8tpg/xa2bJM/VCE9f8RmswjJKR8NKk4P2aWVu251s+BNT1Ou3ThoMNxEfkgRvAaJOT6NXweM/xG4=
+	t=1749502655; cv=none; b=PbyfdN1uh3rEAdtblTEJHEE0BFcGstwgblTw8g97cOHyGqkSDUx0gXjKkoFuq0mF83K5fM04AVEKBLRkupdTZtUXecRzBjZzqCKLURMxjxB83k3zzP6Snq05cjKlbolbg7QFrodmifraJSP1ClULisiM4uQYdCOhspC6FpXNJJ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749502541; c=relaxed/simple;
-	bh=ulPoIuEevlMIIKdXPh4CCGzBiapcu453jjJws2ncaOg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
-	 In-Reply-To:Content-Type; b=MSUrua8Hi51kJ27/ONBb1gQG0E3raEH30G1Zwop2NtMfKoLfCBOMZsSivqoJw9si1vGeySB1sjxu8qsriUwr8BSrav7OMdxzSeevHQPcJr+5Q1LFtD/WascrVgS3qUx232D7NkoSaxSdaen8zy6OOuI7X9Na3MJYH8e+0XecQd8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Kig4iVeJ; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <6fd7a5b5-ee26-4cc5-8eb0-449c4e326ccc@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1749502525;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=moMYIgmuLZy1hidmNlTOsqYI1DYCvfc+CrXgD/4VkFs=;
-	b=Kig4iVeJuCHUE6f/mmHJ6sXSwW0Pd1uuGgDHlPBkUjF75WIsHkWvd2Qim4qijLLd0auT+I
-	JeWEf9YBUgxMdYFkd0axHAE6hqJcAC2dS6s2s9iBUHy+vsQ4byL2zqbLO5AqsiIsZI5Ile
-	DnyKL5IakDJqDNw1Gf2IhRmGBQNw5Ls=
-Date: Mon, 9 Jun 2025 13:55:18 -0700
+	s=arc-20240116; t=1749502655; c=relaxed/simple;
+	bh=97pEk7Alokl3lT3etwa57FtI9tBcrsxoW2l7gvgagRw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=un67OSpRv6KPUb85d+OTgj9ear6EaiG/aHe3dn+sycqqMfcVd9Dpyk3UZOJwH1f2QWXRVBD5ACu6n0RiuSz+QmqloKieOkeQGw+GwpmFL0zh9G+ZK9pTdQAt9f7kJMFDMMV5g/KURHAdi5pVrIerrNO6ULERUqyE5M0KoWToYOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C6DYf9p0; arc=none smtp.client-ip=209.85.216.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-311da0bef4aso4937731a91.3
+        for <bpf@vger.kernel.org>; Mon, 09 Jun 2025 13:57:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749502653; x=1750107453; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0MBSbUByCXi61Uzy5p8SYW/g9IEEN5kSWnsMlqqWABQ=;
+        b=C6DYf9p0hBYRTXmnB4Fu/10EprUHmD1wt039uwakGGCoPByCwkqmtl+CSlIuHhTwOr
+         c3wJSRXDDoM/t81GDdk1PDFGLz2pZpMmD1PgFM5VpA60qpKGwLyR+7eW0ZFy5YR2nQM4
+         wou25lyGiJLlz3eWeqoQVbHFKJHYxQZAoszFdWKmJ3K5zpmicoHzb+T98Lf/xd4FBsuN
+         OWPsSFV1xyUxo6azoMNVhDe1ogrokoG/uJ8Z/30LxEgeOuRbEC+GIL1KUWxu54jDWJ4O
+         s46SScpT7RyudxLVkgR7ZnWq87nOO8eXMG5zMp8Hw9Rxx3uVokHfHhOzSGp4E4OffmGR
+         rhcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749502653; x=1750107453;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0MBSbUByCXi61Uzy5p8SYW/g9IEEN5kSWnsMlqqWABQ=;
+        b=QvzZqvjqM9L1HictCgIEIbjTuP9nFQfqTSazBiED2IelY4xCvpUTqfJW3EZvIGehGB
+         Cb3mz4/l7cgT9/O15NqzZvIl+VO6A/TsEHqX+0TOreCz0vAZ1j/M6SxLdjqePeYnngR6
+         GQxY5HWZ2fdT5K4QC++NwTMsUr/Yjv/Az19tdcZ2dT48hrlZmkmgV+YjVvCV7lSoejG/
+         1ez5WNlrDSTVySdtH3/GaISRl2QddeB6WWLxtdfg3HCD5Y/9Ch5YHKvwG3JJYeFk1xyl
+         UHJlQ93+H0faHMhZyrzytS4jrHgLgndfdaftxg33WCMeijOfDgW5jMixxOCRuUZ1wn4G
+         A+6w==
+X-Forwarded-Encrypted: i=1; AJvYcCXBG3rDcwfKGW9kd0YmLozheitJRBKVJqrfKcPonX2gIub6PSwQFVx2IjRUlsNB18G3Qzs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxVJF8IEbfGoRmX2htH/0KtMvRiDZadnciiktjgDfT/Wdopirr8
+	wbpPJQ2jhvg1Yt6BtNVYTEA5H0ptya85rtp4KTvm2BimqFIdPCqPCa10qUK8Y/UpQ9GNIBEewoF
+	9QavC1FAeS5bdvW6ta4V2qraWeK5BnAY=
+X-Gm-Gg: ASbGncsObHJcI60ng7D52uI69vWYZ0PHbErQTra3SJJnh8CrqxMcc0yLSoK9dH1KdMD
+	q1UxlPcZmLBvg69uvLXGOzBkNQZiWdOdFbxP91xfF9KupqX6xDDyxkKZzcmQlBM9maxtlzVqn/u
+	3RBt9wAz0GzaLjeXVv7wl+4BfH/W4mMrg2Ud5J0j4aOQ2f7Xc0ftsOYyyYocQ=
+X-Google-Smtp-Source: AGHT+IHi7euOZ+j1mT1wGrM9kcneT67iKsEY1lm+oGxsoVcZS4fPh45qdSijTf2pnUlzsyNxnvUvdtTGS+Mn9mkF/bs=
+X-Received: by 2002:a17:90b:1dcb:b0:312:639:a064 with SMTP id
+ 98e67ed59e1d1-3134768d9cbmr20690893a91.28.1749502653084; Mon, 09 Jun 2025
+ 13:57:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [syzbot] [net?] general protection fault in veth_xdp_rcv
-To: syzbot <syzbot+c4c7bf27f6b0c4bd97fe@syzkaller.appspotmail.com>,
- Jason@zx2c4.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, pabeni@redhat.com, syzkaller-bugs@googlegroups.com,
- wireguard@lists.zx2c4.com, bpf <bpf@vger.kernel.org>
-References: <683da55e.a00a0220.d8eae.0052.GAE@google.com>
-Content-Language: en-US
-Cc: Alexei Starovoitov <ast@kernel.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-In-Reply-To: <683da55e.a00a0220.d8eae.0052.GAE@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250605230609.1444980-1-eddyz87@gmail.com> <20250605230609.1444980-3-eddyz87@gmail.com>
+ <3dd16f19-63a4-4090-abd0-9b84fb07346b@gmail.com> <efe0cc259f70b11ffd3e398441efd0de5aa98c3e.camel@gmail.com>
+ <CAEf4BzY2CzZy8DMe==F7OmvEO2gkGG___SaZgu8dGDJd4LG4_Q@mail.gmail.com> <ae7b709f618ecd75214e62f2a300fe2949d9b567.camel@gmail.com>
+In-Reply-To: <ae7b709f618ecd75214e62f2a300fe2949d9b567.camel@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 9 Jun 2025 13:57:21 -0700
+X-Gm-Features: AX0GCFsJIPZTakQ00KotEuc9ZiMBpW475fCFxhRdd3LjD-tQNGy3avFDUyn-aqc
+Message-ID: <CAEf4BzYHvPBcG+eUFh4+Rbhzfw=_937BgCv7ZGKcbABhrjYCZA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 2/2] veristat: memory accounting for bpf programs
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, ast@kernel.org, 
+	andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
+	kernel-team@fb.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 6/2/25 6:21 AM, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    4cb6c8af8591 selftests/filesystems: Fix build of anon_inod..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=11e8300c580000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=5319177d225a42f1
-> dashboard link: https://syzkaller.appspot.com/bug?extid=c4c7bf27f6b0c4bd97fe
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> Downloadable assets:
-> disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-4cb6c8af.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/bc0e5dfdd686/vmlinux-4cb6c8af.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/2cdd323de6ca/bzImage-4cb6c8af.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+c4c7bf27f6b0c4bd97fe@syzkaller.appspotmail.com
-> 
-> Oops: general protection fault, probably for non-canonical address 0xdffffc0000000098: 0000 [#1] SMP KASAN NOPTI
-> KASAN: null-ptr-deref in range [0x00000000000004c0-0x00000000000004c7]
-> CPU: 1 UID: 0 PID: 5975 Comm: kworker/1:4 Not tainted 6.15.0-syzkaller-10402-g4cb6c8af8591 #0 PREEMPT(full)
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-> Workqueue: wg-kex-wg0 wg_packet_handshake_receive_worker
-> RIP: 0010:netdev_get_tx_queue include/linux/netdevice.h:2636 [inline]
-> RIP: 0010:veth_xdp_rcv.constprop.0+0x142/0xda0 drivers/net/veth.c:912
-> Code: 54 d9 31 fb 45 85 e4 0f 85 db 08 00 00 e8 06 de 31 fb 48 8d bd c0 04 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 18 0c 00 00 44 8b a5 c0 04 00
-> RSP: 0018:ffffc900006a09b8 EFLAGS: 00010202
-> RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff868a1686
-> RDX: 0000000000000098 RSI: ffffffff868a0d9a RDI: 00000000000004c0
-> RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000000
-> R10: 0000000000000001 R11: ffffc900006a0ff8 R12: 0000000000000001
-> R13: 1ffff920000d4145 R14: ffffc900006a0e58 R15: ffff8880503d0000
-> FS:  0000000000000000(0000) GS:ffff8880d686e000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007fe5e3a6ad58 CR3: 000000000e382000 CR4: 0000000000352ef0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->   <IRQ>
->   veth_poll+0x19c/0x9c0 drivers/net/veth.c:979
->   __napi_poll.constprop.0+0xba/0x550 net/core/dev.c:7414
->   napi_poll net/core/dev.c:7478 [inline]
->   net_rx_action+0xa9f/0xfe0 net/core/dev.c:7605
->   handle_softirqs+0x219/0x8e0 kernel/softirq.c:579
->   do_softirq kernel/softirq.c:480 [inline]
->   do_softirq+0xb2/0xf0 kernel/softirq.c:467
->   </IRQ>
->   <TASK>
->   __local_bh_enable_ip+0x100/0x120 kernel/softirq.c:407
->   local_bh_enable include/linux/bottom_half.h:33 [inline]
->   fpregs_unlock arch/x86/include/asm/fpu/api.h:77 [inline]
->   kernel_fpu_end+0x5e/0x70 arch/x86/kernel/fpu/core.c:476
->   blake2s_compress+0x7f/0xe0 arch/x86/lib/crypto/blake2s-glue.c:46
->   blake2s_final+0xc9/0x150 lib/crypto/blake2s.c:54
->   hmac.constprop.0+0x335/0x420 drivers/net/wireguard/noise.c:333
->   kdf.constprop.0+0x122/0x280 drivers/net/wireguard/noise.c:360
->   mix_dh+0xe8/0x150 drivers/net/wireguard/noise.c:413
->   wg_noise_handshake_consume_initiation+0x265/0x880 drivers/net/wireguard/noise.c:608
->   wg_receive_handshake_packet+0x219/0xbf0 drivers/net/wireguard/receive.c:144
->   wg_packet_handshake_receive_worker+0x17f/0x3a0 drivers/net/wireguard/receive.c:213
->   process_one_work+0x9cc/0x1b70 kernel/workqueue.c:3238
->   process_scheduled_works kernel/workqueue.c:3321 [inline]
->   worker_thread+0x6c8/0xf10 kernel/workqueue.c:3402
->   kthread+0x3c2/0x780 kernel/kthread.c:464
->   ret_from_fork+0x5d4/0x6f0 arch/x86/kernel/process.c:148
->   ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
->   </TASK>
-> Modules linked in:
-> ---[ end trace 0000000000000000 ]---
-> RIP: 0010:netdev_get_tx_queue include/linux/netdevice.h:2636 [inline]
-> RIP: 0010:veth_xdp_rcv.constprop.0+0x142/0xda0 drivers/net/veth.c:912
-> Code: 54 d9 31 fb 45 85 e4 0f 85 db 08 00 00 e8 06 de 31 fb 48 8d bd c0 04 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 18 0c 00 00 44 8b a5 c0 04 00
-> RSP: 0018:ffffc900006a09b8 EFLAGS: 00010202
-> RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff868a1686
-> RDX: 0000000000000098 RSI: ffffffff868a0d9a RDI: 00000000000004c0
-> RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000000
-> R10: 0000000000000001 R11: ffffc900006a0ff8 R12: 0000000000000001
-> R13: 1ffff920000d4145 R14: ffffc900006a0e58 R15: ffff8880503d0000
-> FS:  0000000000000000(0000) GS:ffff8880d686e000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007fe5e3a6ad58 CR3: 000000000e382000 CR4: 0000000000352ef0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> ----------------
-
-Got a very similar call trace on current bpf-next (e41079f53e87) [1],
-see a paste below.  It's flaky, couldn't reproduce so far.
-
-Any relevant fixes in flight?
-
-#629/1   xdp_veth_broadcast_redirect/0/BROADCAST:OK
-#629/2   xdp_veth_broadcast_redirect/0/(BROADCAST | EXCLUDE_INGRESS):OK
-#629/3   xdp_veth_broadcast_redirect/DRV_MODE/BROADCAST:OK
-#629/4   xdp_veth_broadcast_redirect/DRV_MODE/(BROADCAST | 
-EXCLUDE_INGRESS):OK
-#629/5   xdp_veth_broadcast_redirect/SKB_MODE/BROADCAST:OK
-#629/6   xdp_veth_broadcast_redirect/SKB_MODE/(BROADCAST | 
-EXCLUDE_INGRESS):OK
-#629     xdp_veth_broadcast_redirect:OK
-[  343.217465] BUG: kernel NULL pointer dereference, address: 
-0000000000000018
-[  343.218173] #PF: supervisor read access in kernel mode
-[  343.218644] #PF: error_code(0x0000) - not-present page
-[  343.219128] PGD 0 P4D 0
-[  343.219379] Oops: Oops: 0000 [#1] SMP NOPTI
-[  343.219768] CPU: 1 UID: 0 PID: 7635 Comm: kworker/1:11 Tainted: G 
-    W  OE       6.15.0-g2b36f2252b0a-dirty #7 PREEMPT(full)
-[  343.220844] Tainted: [W]=WARN, [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
-[  343.221436] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 
-1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-[  343.222356] Workqueue: mld mld_dad_work
-[  343.222730] RIP: 0010:veth_xdp_rcv.constprop.0+0x6b/0x380
-[  343.223242] Code: 01 48 89 84 24 90 00 00 00 31 c0 48 8b aa 80 0c 00 
-00 f3 48 ab e8 f5 e3 48 00 85 c0 0f 85 9c 02 00 00 4c 8d 34 5b 49 c1 e6 
-07 <4c> 03 75 18 45 85 e4 0f 8e ec 02 00 00 31 db 31 ed eb 4c 48 83 e6
-[  343.224977] RSP: 0018:ffff9aaa400e8ca8 EFLAGS: 00010246
-[  343.225475] RAX: 0000000000000001 RBX: 0000000000000000 RCX: 
-0000000000000002
-[  343.226139] RDX: 0000000000000001 RSI: ffff8f22912a5000 RDI: 
-ffff9aaa400e8d38
-[  343.226808] RBP: 0000000000000000 R08: 0000000000000001 R09: 
-0000000000000000
-[  343.227484] R10: 0000000000000001 R11: ffff9aaa400e8ff8 R12: 
-0000000000000040
-[  343.228143] R13: ffff9aaa400e8d78 R14: 0000000000000000 R15: 
-ffff8f220ad0f000
-[  343.228820] FS:  0000000000000000(0000) GS:ffff8f22912a5000(0000) 
-knlGS:0000000000000000
-[  343.229572] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  343.230118] CR2: 0000000000000018 CR3: 000000010ce45005 CR4: 
-0000000000770ef0
-[  343.230794] PKRU: 55555554
-[  343.231061] Call Trace:
-[  343.231306]  <IRQ>
-[  343.231522]  veth_poll+0x7b/0x3a0
-[  343.231856]  __napi_poll.constprop.0+0x28/0x1d0
-[  343.232297]  net_rx_action+0x199/0x350
-[  343.232682]  handle_softirqs+0xd3/0x400
-[  343.233057]  ? __dev_queue_xmit+0x27b/0x1250
-[  343.233473]  do_softirq+0x43/0x90
-[  343.233804]  </IRQ>
-[  343.234016]  <TASK>
-[  343.234226]  __local_bh_enable_ip+0xb5/0xd0
-[  343.234622]  ? __dev_queue_xmit+0x27b/0x1250
-[  343.235035]  __dev_queue_xmit+0x290/0x1250
-[  343.235431]  ? lock_acquire+0xbe/0x2c0
-[  343.235797]  ? ip6_finish_output+0x25e/0x540
-[  343.236210]  ? mark_held_locks+0x40/0x70
-[  343.236583]  ip6_finish_output2+0x38f/0xb80
-[  343.237002]  ? lock_release+0xc6/0x290
-[  343.237364]  ip6_finish_output+0x25e/0x540
-[  343.237761]  mld_sendpack+0x1c1/0x3a0
-[  343.238123]  mld_dad_work+0x3e/0x150
-[  343.238473]  process_one_work+0x1f8/0x580
-[  343.238859]  worker_thread+0x1ce/0x3c0
-[  343.239224]  ? __pfx_worker_thread+0x10/0x10
-[  343.239638]  kthread+0x128/0x250
-     [  343.239954]  ? __pfx_kthread+0x10/0x10
-     [  343.240320]  ? __pfx_kthread+0x10/0x10
-     [  343.240691]  ret_from_fork+0x15c/0x1b0
-     [  343.241056]  ? __pfx_kthread+0x10/0x10
-     [  343.241418]  ret_from_fork_asm+0x1a/0x30
-     [  343.241800]  </TASK>
-     [  343.242021] Modules linked in: bpf_testmod(OE) [last unloaded: 
-bpf_test_no_cfi(OE)]
-     [  343.242737] CR2: 0000000000000018
-     [  343.243064] ---[ end trace 0000000000000000 ]---
-     [  343.243503] RIP: 0010:veth_xdp_rcv.constprop.0+0x6b/0x380
-     [  343.244014] Code: 01 48 89 84 24 90 00 00 00 31 c0 48 8b aa 80 
-0c 00 00 f3 48 ab e8 f5 e3 48 00 85 c0 0f 85 9c 02 00 00 4c 8d 34 5b 49 
-c1 e6 07 <4c> 03 75 18 45 85 e4 0f 8e ec 02 00 00 31 db 31 ed eb 4c 48 83 e6
-     [  343.245743] RSP: 0018:ffff9aaa400e8ca8 EFLAGS: 00010246
-     [  343.246236] RAX: 0000000000000001 RBX: 0000000000000000 RCX: 
-0000000000000002
-     [  343.246897] RDX: 0000000000000001 RSI: ffff8f22912a5000 RDI: 
-ffff9aaa400e8d38
-     [  343.247557] RBP: 0000000000000000 R08: 0000000000000001 R09: 
-0000000000000000
-     [  343.248219] R10: 0000000000000001 R11: ffff9aaa400e8ff8 R12: 
-0000000000000040
-     [  343.248868] R13: ffff9aaa400e8d78 R14: 0000000000000000 R15: 
-ffff8f220ad0f000
-     [  343.249496] FS:  0000000000000000(0000) 
-GS:ffff8f22912a5000(0000) knlGS:0000000000000000
-     [  343.250109] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-     [  343.250651] CR2: 0000000000000018 CR3: 000000010ce45005 CR4: 
-0000000000770ef0
-     [  343.251320] PKRU: 55555554
-     [  343.251548] Kernel panic - not syncing: Fatal exception in interrupt
-     [  343.252317] Kernel Offset: 0x27000000 from 0xffffffff81000000 
-(relocation range: 0xffffffff80000000-0xffffffffbfffffff)
-     Failed to run command
-
-     Caused by:
-         0: Failed to QGA guest-exec-status
-         1: error running guest_exec_status
-         2: Broken pipe (os error 32)
-         3: Broken pipe (os error 32)
-     ##[error]Process completed with exit code 2.
-
-
-[1] 
-https://github.com/kernel-patches/bpf/actions/runs/15543380196/job/43759847203
-
-
-
-> Code disassembly (best guess):
->     0:	54                   	push   %rsp
->     1:	d9 31                	fnstenv (%rcx)
->     3:	fb                   	sti
->     4:	45 85 e4             	test   %r12d,%r12d
->     7:	0f 85 db 08 00 00    	jne    0x8e8
->     d:	e8 06 de 31 fb       	call   0xfb31de18
->    12:	48 8d bd c0 04 00 00 	lea    0x4c0(%rbp),%rdi
->    19:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
->    20:	fc ff df
->    23:	48 89 fa             	mov    %rdi,%rdx
->    26:	48 c1 ea 03          	shr    $0x3,%rdx
-> * 2a:	0f b6 04 02          	movzbl (%rdx,%rax,1),%eax <-- trapping instruction
->    2e:	84 c0                	test   %al,%al
->    30:	74 08                	je     0x3a
->    32:	3c 03                	cmp    $0x3,%al
->    34:	0f 8e 18 0c 00 00    	jle    0xc52
->    3a:	44                   	rex.R
->    3b:	8b                   	.byte 0x8b
->    3c:	a5                   	movsl  %ds:(%rsi),%es:(%rdi)
->    3d:	c0                   	.byte 0xc0
->    3e:	04 00                	add    $0x0,%al
-> 
-> 
+On Sat, Jun 7, 2025 at 1:13=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com>=
+ wrote:
+>
+> On Fri, 2025-06-06 at 11:19 -0700, Andrii Nakryiko wrote:
+>
+> [...]
+>
+> > Looking at memory_peak_write() in mm/memcontrol.c it looks reasonable
+> > and should have worked (we do reset pc->local_watermark). But note if
+> > (usage > peer_ctx->value) logic and /* initial write, register watcher
+> > */ comment. I'm totally guessing and speculating, but maybe you didn't
+> > close and re-open the file in between and so you had stale "watcher"
+> > with already recorded high watermark?..
+> >
+> > I'd try again but be very careful what cgroup and at what point this
+> > is being reset...
+>
+> The way I read memcontrol.c:memory_peak_write(), it always transfers
+> current memcg->memory (aka memory.current) to the ofp->value of the
+> currently open file (aka memory.peak). So this should work as
+> documentation suggests: one needs to keep a single fd for memory.peak
+> and periodically write something to it to reset the value.
+>
 > ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
-> 
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
-> 
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
-> 
-> If you want to undo deduplication, reply with:
-> #syz undup
+>
+> I tried several versions with selftests and scx BPF binaries:
+> - version as in this patch-set, aka "many cg";
+> - version with a single control group that writes to memory.reclaim
+>   and then to memory.peak between program verifications (while holding
+>   same FDs for these files), aka "reset+reclaim", implementation is in [1=
+];
+> - version with a single control group same as "reset+reclaim" but
+>   without "reclaim" part, aka "reset only", implementation can be
+>   trivially derived from [1].
+>
+> Here are stats for each of the versions, where I try to figure out the
+> stability of results. Each version was run twice and generated results
+> compared.
+>
+> |                                    |         |        one cg |     one =
+cg |        |
+> |                                    | many cg | reclaim+reset | reset on=
+ly | master |
+> |------------------------------------+---------+---------------+---------=
+---+--------|
+> | SCX                                |         |               |         =
+   |        |
+> |------------------------------------+---------+---------------+---------=
+---+--------|
+> | running time (sec)                 |      48 |            50 |         =
+46 |     43 |
+> | jitter mem_peak_diff!=3D0  (of 172)  |       3 |            93 |       =
+  80 |        |
+> | jitter mem_peak_diff>256 (of 172)  |       0 |             5 |         =
+ 7 |        |
+> |------------------------------------+---------+---------------+---------=
+---+--------|
+> | selftests                          |         |               |         =
+   |        |
+> |------------------------------------+---------+---------------+---------=
+---+--------|
+> | running time (sec)                 |     108 |           140 |         =
+90 |     86 |
+> | jitter mem_peak_diff!=3D0  (of 3601) |     195 |          1751 |       =
+1181 |        |
+> | jitter mem_peak_diff>256 (of 3601) |       1 |            22 |         =
+14 |        |
+>
+> - "jitter mem_peak_diff!=3D0" means that veristat was run two times and
+>   results were compared to produce a number of differences:
+>   `veristat -C -f "mem_peak_diff!=3D0" first-run.csv second-run.csv| wc -=
+l`
+> - "jitter mem_peak_diff>256" is the same, but the filter expression
+>   was "mem_peak_diff>256", meaning difference is greater than 256KiB.
+>
+> The big jitter comes from `0->256KiB` and `256KiB->0` transitions
+> occurring to very small programs. There are a lot of such programs in
+> selftests.
+>
+> Comparison of results quality between many cg and other types (same
+> metrics as above, but different veristat versions were used to produce
+> CSVs for comparison):
+>
+> |                                    |          many cg |       many cg |
+> |                                    | vs reset+reclaim | vs reset-only |
+> |------------------------------------+------------------+---------------|
+> | SCX                                |                  |               |
+> |------------------------------------+------------------+---------------|
+> | jitter mem_peak_diff!=3D0  (of 172)  |              108 |            70=
+ |
+> | jitter mem_peak_diff>256 (of 172)  |                6 |             2 |
+> |------------------------------------+------------------+---------------|
+> | sleftests                          |                  |               |
+> |------------------------------------+------------------+---------------|
+> | jitter mem_peak_diff!=3D0  (of 3601) |             1885 |           942=
+ |
+> | jitter mem_peak_diff>256 (of 3601) |               27 |            11 |
+>
+>
+> As can be seen, most of the difference in collected stats is not
+> bigger than 256KiB.
+>
+> ---
+>
+> Given above I'm inclined to stick with "many cg" approach, as it has
+> less jitter and is reasonably performant. I need to wrap-up parallel
+> veristat version anyway (and many cg should be easier to manage for
+> parallel run).
 
+As I mentioned in offline discussion, this 256KB jitter seems minor
+and is not on the order of "interesting memory usage", IMO. So I'd go
+with a single cgroup approach with reset and keep runtime quite
+significantly faster. Mykyta is working on a series to further speed
+up veristat's mass verification by relying on bpf_object__prepare()
+and bpf_prog_load() for each program, instead of re-opening and
+re-parsing the same object file all over again. So it would be good to
+not add extra 18 seconds of runtime just for creation of cgroups.
+
+FWIW, we can count mem_peak in megabytes and the jitter will be gone
+(and we'll probably still get all the useful signal we wanted with
+this measurement), if that's the concern.
+
+>
+> ---
+>
+> [1] https://github.com/eddyz87/bpf/tree/veristat-memory-accounting.one-cg
+>
+> P.S.
+>
+> The only difference between [1] and my initial experiments is that I
+> used dprintf instead of pwrite to access memory.{peak,reclaim},
+> =C2=AF\_(=E3=83=84)_/=C2=AF.
+>
+>
 
