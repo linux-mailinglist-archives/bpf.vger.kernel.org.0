@@ -1,77 +1,89 @@
-Return-Path: <bpf+bounces-60075-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60076-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD962AD2546
-	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 20:01:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 211D5AD2548
+	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 20:01:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E69216DA99
-	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 18:01:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AFB89188C5F4
+	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 18:02:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00D7B21C9F5;
-	Mon,  9 Jun 2025 18:01:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4071521D3C0;
+	Mon,  9 Jun 2025 18:01:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="RmJ1DlfE"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="iI86gj+t"
 X-Original-To: bpf@vger.kernel.org
 Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2066.outbound.protection.outlook.com [40.107.236.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D50F01F19A;
-	Mon,  9 Jun 2025 18:01:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0511821CA02;
+	Mon,  9 Jun 2025 18:01:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.66
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749492102; cv=fail; b=VacGDY6OUQIctpLL3cZEpOkaM18Ou0Vios14FMRD/gW7LIeQY0XFZA+liMIpcqXsOy0VUnCE40h9tMFXSlkmqGCACYd7EKhHGo5iYpqQQJewA1SSncFLFrG7XAZhd/STzc0veLGBTeBtcAMXrEEEr6LYNjMT7x2rlAjKVB+Zlzo=
+	t=1749492104; cv=fail; b=J6sYt0DkX+RWn3cXkPYpIG22Oo8/fC1igJmyY0N8BBoghMujF8lZoZeAeR4PhTn9m6INV02wnhVxCpMYFiM+OTGYKvaVmAPgI/rD1w0YQUA4fMEfvLu9mE3PBFWcCFKHQp6+yRu0YNl/1fJWTUdtfEkbA6szAqc0SLliIsI/xeY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749492102; c=relaxed/simple;
-	bh=nVPFhhvUDPOYV6vHXi3/LwWSe65kBRaqEIY+xeA4gdY=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=Nx3AMbOGvmf8aGGlogXq2gfmUrVXFTW1b3gNEerb3omMpcWcgZ2M3vsb+VGsystWZfoBgVeTyLZxeqX97KG1DLR4KmLG1Kb2zNcHUK7aNUUra6lWBL3HXEA8qSpwVF92fZwVaxnPYYp9R6nIPVlAPynFyCb5lFBG1p5EyRhH5Zk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=RmJ1DlfE; arc=fail smtp.client-ip=40.107.236.66
+	s=arc-20240116; t=1749492104; c=relaxed/simple;
+	bh=wZq9bw4BwO+DvxW33PWGyz1tKvkyhgV6KkM1qJ2qY2Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=H3ArQ6vVwyqls2i13ibSGjd7a2FWWCwRHKwt0evAE2hWNgQcvBZaiqMtkJhBlSp9wOqyuJCDIQ5o79qRV21cdzyZPDFveh+UfEOPMLL0MYcPehkV2/vCPSm+wi/npJrfkpowT/5bZDZBjntfx4/cyRmqh6/iQCgXSk3nTEQ/DKc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=iI86gj+t; arc=fail smtp.client-ip=40.107.236.66
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=yc65Gb5A0SJYKGN7O9HZY1gJyVzxieoS1z12F4/3gbxSk4Aiw0STrNPfPcZYDxuWZakjmOTKD7hd7EXHFLsTR8HzBtZMmMD+S94rEpwuue6XfvG8Tu9Juhk1voD0Gr+TslAUQ5MuCZvg0phA4OuhpgnvYpO6YbgY4+SHO7hT3A7zhPWhDqYJjicHbucJrr0aH5JRwyXGJwh4Xwl8Sf02jINZu7PlPq3QumAlW7mhnXbd3S1A0gG8VaE7u9QerwGc8ZD2AQ70PgVeSZWuhkmIsp8y6RcAzhyhwvOIVbg+Sk+dAdLx6Ch14WuPEu9wr1gvw5//2DLzN0Jl0Hmm8qSEcg==
+ b=c2TIhYhLTKXENAW7h15RgKDV9B9cwuUqxvezQ6dZJf/6EAkJbR7zqb079HKPjci6/TIIpCOzvUZLFN9cj4cCaVoqEPOJjavNbL/C9jH8p0UprG5RdtBIrfCzQkC9TW+PGV95fbKWc4XZUu/LOKU5Fc2nKHAFeF7lqsptkROXE+pIF39ENPrWV/xpowCvQvrSjJbYP0AyPzbpeZbx+6tgJ/LV1DIKzMUvu8ocQCUOSPDOzlFBynC4QjabpwA0z7tyKviBNAFCklGYdZNzKL6AtkO+MkMHiFo+tfOE+489orCza2lj3qCQIVVpR3dqPT+yX9n8QLAwK1T6agV6nTCMPg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=aaIy+KJFEtwP81OlOZZyT3bxJjFww3XcWt0oOHWdhxs=;
- b=hMDXQlasyCVGpREK5U8dSjvFRGkQmmtpHQMR4/ZR4UhL45dRTY+G68CTfcCcWXvEPcyvdxoRsWPY//JaLQVc13qAKfAY+n64hXGhkFYmq51zJYJuE1luqgiDZGukf7t1hp986/ujlNU+kp0Q8sKr1bw0JhvGfnc3AoOyN55wIkeSCjCDbattjoEhG4u0hGga+O2NAYqcRwboPMFlWWaUSCdda1UnNindAIVYkscUJl4EOwmKZhcq0DSgHnsPwmXsPzvk9+zfWS0Fy4s/u1+JpdkjkjgTpiWJxK/3zwmGMNMlhqemYBcAAzmtXWrChdOfknL8PGPwnzDraoP618zYYA==
+ bh=eRKEI0Pc4Dx937hdKf5CN/csepu/oS1JjnlgcNzeL/c=;
+ b=ttmLMVn5ea7UTqDzhAwAd60mo+genI2U8RzGFAKLRAtlyz3V5IhyeUVnjQ8qT/kJMPnHmxz7OuLfhooIhU7CAwT23rsy7unxXBPB/JZKpSR8e846D2Y4GgD0du+AfgqxViOvgCmMls3K/GgnoUvw/22+10iHlIAUbqwMdI/05KndzgIdqxrzp7yrnPfIlslTU82MrXF0k0XqjN1Q7bIK0hye6TJOhSRYSe02d/XB2CXqTz9o0QXzivdurX0FAZO2t48ivGyh79qQ08z7fACM/t5zA7dZeWgpe32TIXiQc3tO7D29bJt1vi6JZAKVpRHe421TCKn+zepfzjrwDYT25g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aaIy+KJFEtwP81OlOZZyT3bxJjFww3XcWt0oOHWdhxs=;
- b=RmJ1DlfEuSj2UHF47bpITNA4CJcLJIEL7cWZqdAf5O80D9Xgbx0Hid+X2tG1w0oIjtQWJmLPvqLN6RmB/5fo9wxUZ7TWyOGMYZoUra+DTwmCRGffz7WY7UpeZRj/GLLt+omsSPjQP0g2EQo+z9Js6VQbFjzme9GNDKDyNmK0FypYQmVglVyQtw/TvQTXmCmdnsC3QJMxDpSKfA/KWFxnGfo+auP6hN/7umysoK+TN4dDZBrnHSIoC0gGX6pG2tO+UceYVxoig9NNBpr7/+RpcfW4gRciI5CBGPnNuINs4ttQjPtpV0cgy+tm75x09NAdBBWNO9zRxqGuVBvMDGkT2g==
+ bh=eRKEI0Pc4Dx937hdKf5CN/csepu/oS1JjnlgcNzeL/c=;
+ b=iI86gj+tFu1aXsF7Ou97y0yIULcdxQGWbU9cS8IchylfdmXMAl3ZRp73W4Wq9IcV7biEmcD39b/FpqCvs6zy9OI8uMN4iiDWhPT/MZMd+aFwGZ2e3KPDGiAx/PdoVGW+YSfzWvQ6ddKH6y1B91MGit9b7i8fN2k+yNFCb4KAPMDJBGEKMRNR9ESwznMqYylwlQJwplPwBXlC2zeuFqECKi+pZ0sHLA7JyV0Mb3cWB9SUcSG9Rts8/WGEoxTBfCJQryhUQ+1ZwldY+dtb+rmFeYGyDGN+RN9Mkx1v3xmBXl3U1CJ4RAgu/ERo32laEb9E7CP+qtUKu/kImqZQ3SX3hg==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
  by PH7PR12MB6660.namprd12.prod.outlook.com (2603:10b6:510:212::10) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8792.38; Mon, 9 Jun
- 2025 18:01:32 +0000
+ 2025 18:01:35 +0000
 Received: from SN7PR12MB8059.namprd12.prod.outlook.com
  ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
  ([fe80::4ee2:654e:1fe8:4b91%3]) with mapi id 15.20.8792.034; Mon, 9 Jun 2025
- 18:01:32 +0000
+ 18:01:35 +0000
 From: Joel Fernandes <joelagnelf@nvidia.com>
 To: linux-kernel@vger.kernel.org,
+	"Paul E. McKenney" <paulmck@kernel.org>,
 	Frederic Weisbecker <frederic@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>
 Cc: Xiongfeng Wang <wangxiongfeng2@huawei.com>,
 	rcu@vger.kernel.org,
 	bpf@vger.kernel.org,
 	Joel Fernandes <joelagnelf@nvidia.com>
-Subject: [PATCH 1/2] context_tracking: Provide helper to determine if we're in IRQ
-Date: Mon,  9 Jun 2025 14:01:23 -0400
-Message-ID: <20250609180125.2988129-1-joelagnelf@nvidia.com>
+Subject: [PATCH 2/2] rcu: Fix lockup when RCU reader used while IRQ exiting
+Date: Mon,  9 Jun 2025 14:01:24 -0400
+Message-ID: <20250609180125.2988129-2-joelagnelf@nvidia.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20250609180125.2988129-1-joelagnelf@nvidia.com>
+References: <20250609180125.2988129-1-joelagnelf@nvidia.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: BN9PR03CA0105.namprd03.prod.outlook.com
- (2603:10b6:408:fd::20) To SN7PR12MB8059.namprd12.prod.outlook.com
+X-ClientProxiedBy: BN8PR15CA0072.namprd15.prod.outlook.com
+ (2603:10b6:408:80::49) To SN7PR12MB8059.namprd12.prod.outlook.com
  (2603:10b6:806:32b::7)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -81,133 +93,155 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|PH7PR12MB6660:EE_
-X-MS-Office365-Filtering-Correlation-Id: 88ab0787-d435-4d10-2013-08dda77faa93
+X-MS-Office365-Filtering-Correlation-Id: 4342669e-ebb2-425b-b213-08dda77faca5
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014;
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|366016|7416014|376014|921020;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?LMH6C+gT9dU0+WQbQeLJUYBcHfjHkHEPJ5PMkxLkxxU2H6mX5R2IGgb7V+AU?=
- =?us-ascii?Q?FH5CpoO9aY+H8w7m7JSBjt72bOVe0qyJBD+Bp7LcG76Ih0LKoOPS4ck/k4q6?=
- =?us-ascii?Q?Q+DbM2co0t25EMG9g7TO0FbeGEfkFLVxo88D/oTJzMXSFoDU6zhm5B6WzsQp?=
- =?us-ascii?Q?GHx84miuRlgC4V9oSlKzDyUnf9MTy+UsMmn1Lgi6J05CduqqrnhnDyEwFSB1?=
- =?us-ascii?Q?KEaybo/C4CJJRixNj81E3vWglm4dlHWktPDkcgRYiEK50zfI2JZjwdF0BlRq?=
- =?us-ascii?Q?FZgsM57GIvZ30dzWRGh5UhP6LQXdFdoAxSbZb1lRslru9z7ruq77fGM9CFL8?=
- =?us-ascii?Q?prFEB39FaGJ94PJnZdzybhtt/Ev47zWEg9cSsWh8/Q+kmLrTgJjKFOv+RfSy?=
- =?us-ascii?Q?zdWVbnlrxrimR0a5W2mWGugdt65i3jYS/MnJz0vT/1vsF5O8mvmvTThEwkmH?=
- =?us-ascii?Q?+QfS41OQCpHC6pgV0Kjw+rTNIdQZ6CT/uov1+ytrcX/3jeeXqLBRKTL+rAM4?=
- =?us-ascii?Q?xRMm8EH3PUTuWU4RE8CuLe5SfjP9GOpnmD6W1LHX63LZZe/bNceqe3q3jDC1?=
- =?us-ascii?Q?z/FZ6oCkPaQ4ABSfJn+T3mkGTwZABw2w12PfrHVRCKTaiju6P2rXRfe/9Axr?=
- =?us-ascii?Q?rbFbUogqoF8xMWZmuDwYDHoeNmvvSA0Y1BAgxwi3JHEgyUcToefOwF5rRuxI?=
- =?us-ascii?Q?IPA/j8JBMdlN5h5W17O/2fv5CVXKu7HamW+4t1H7ybS3OrvVPqpifj8AhdKb?=
- =?us-ascii?Q?6seMCujfq3RN7/0HDhDdAOWHn7lYcVEFIR2Qd6TPDa0beadR6c7PEQbOxn4c?=
- =?us-ascii?Q?w5YzHBcfXIAK2nTkt8MsSH4GETNS6rjIwNcKw8qcZSoXtVHQ1m7QFqoC7YWE?=
- =?us-ascii?Q?94WN0vwZ5gBcp1hOF0lpCxbsKcveGIxZAtw5KErtKSiqv5sYBItg6OIZaivN?=
- =?us-ascii?Q?iqdFB41C5dnMZKaVGfdDIObcKXeEK4Cb+56R+9CLxqYFG5JZV16LI/Irw9zC?=
- =?us-ascii?Q?rvsHHNLAkku9/gNEzmbkINgAHVPK9bA7o0kfeNJqQl2Nphxbsl+YCxuTKkIV?=
- =?us-ascii?Q?4NHQ0wbpySwuN/ANsYPLAOkOg9N/Bgi3SPO4cY7nfceDoeuisni2Zh0HlfEG?=
- =?us-ascii?Q?9gH+kHGRexF5glh8zboV6JAyv+Sv0hgacu+kvckJevxYqPvHiwEjG18erhT+?=
- =?us-ascii?Q?lxmuFNLvfleOHwaDfuceC1fqK6q1ujN/jTlK7Dxlc5Ks4+IHbeok0AbA59Hb?=
- =?us-ascii?Q?0JFNo3wXZwEWOPegYg6bWckecCVTw/9JdY0EkBqaIYDit+r0Qp136oHdAZd0?=
- =?us-ascii?Q?Cs+cTfX501kLMi0KQgVDj2z3kLsZH+pS9telqore0DqZ3FYccRYngUOSUo0P?=
- =?us-ascii?Q?oqc1NLZsxbHXp8s19X2yyswprylncCGoZVfo5wjP+/WHN7MpWDXs3fj8oFKg?=
- =?us-ascii?Q?NGvyBEeu5QA=3D?=
+	=?us-ascii?Q?KLT/lI6EyK3+IbmIo5vdltJRDTHrDwv7opXJL2NcB0XCgDH5YDHrd5zKuWLe?=
+ =?us-ascii?Q?PXzD92kyaOlhhfecGNGvJduoBb2CMblNnbDwF4f5iRbs17QRa1qaJI1dyCto?=
+ =?us-ascii?Q?V6K/lvz6FhrqtciZh6ZkkOiAcNLy0cO/CPveFUb1DT1zVhGgl/3djh2K/UAB?=
+ =?us-ascii?Q?1CxQDt/bCAZb69sJolbsOyeOac+D5pETAzlaobiOCe9ubRUmSBY4Zz8hcVdX?=
+ =?us-ascii?Q?/AUzQ74c5OBuBECeNlzz1g7YfFkhfqg5yltvR5owZeTauz1Tom7XzB+DeW3y?=
+ =?us-ascii?Q?Mm837vZ9/vLfFAQyQIYfMZfQnHhowYYkcpKKzd/+c0gef/Wn/HJaZ4CLVTQU?=
+ =?us-ascii?Q?jPJIag5JpPkHfqLeRcXbOgj5Ty4sjxxIAYlWIcpKSTGNhrOw7b8hx/RbiKjx?=
+ =?us-ascii?Q?ALZerHKsRnvwRlMQH4bNXHVGgZykbAXtBJbNPjSq3OqkWg3OMIsSUh71NTXs?=
+ =?us-ascii?Q?5VA7yqE11Drd/vw17F4lx1I8T38FY2CheJR/r9M7wZK1jdO/zjKH1GtmT2jy?=
+ =?us-ascii?Q?8UVOlh5ZIwX2BFZsI8Wp1rsVb7/RMrGfeQTWQaJMb8PwAY+yjF9MWCn80zwV?=
+ =?us-ascii?Q?z7HOwd7f6GFwiJDoFd1itlYUk6UMUnGNpsGtf05Yglo7MLVGxFAwoHt3EkWU?=
+ =?us-ascii?Q?3yUPtFe5e8jrn/ZdWdOfPnmCHdTugudgIiyiuLxMgqOn+nKRwG1zgGgmEEm/?=
+ =?us-ascii?Q?g76a+/8tIhiUUgGNHU5GxyvVzesk0XKwwA+Q/9xsZVx1nf5/OoYqbnKc3FtI?=
+ =?us-ascii?Q?UgsMozY1duKwl8MsGH0rE2TaBAoJY3ZXhSR6i3WlMm3H8/ow8B/jU/fD4hfg?=
+ =?us-ascii?Q?30YOGu/FpzbENvewJk89S/nPKMv6YbR28d55UAt2RVwnqs3v0gBmAiJc5hz0?=
+ =?us-ascii?Q?FZCy18NKPQttEUj4/79a+nkZ3foiz5v4aMcmEHh8wwEigaspnm7hcnAl6A+X?=
+ =?us-ascii?Q?36uiaaGim2MQJaLgcpfto6p9cTwU5Zv8ZvmE/0I2zMAKKjbyg6wXVspeu+Va?=
+ =?us-ascii?Q?xxWdSMJXeH2rJcr5YHUV+wTJIQXVFn0MEUtWvJzgucU0aQ9DXxjTpj4a7DbJ?=
+ =?us-ascii?Q?2jRGMhAlMG3CmtJvT2fcwu6hbuROC848QaC2Hy2OP3KJ732j5tYzFDUFvZQ9?=
+ =?us-ascii?Q?SkUEiL21FXQT46WyeJKZ6nwSXQy5nVig3l/4k24/gHIpRQ4CX0qGzrLrcZGL?=
+ =?us-ascii?Q?UNL2a1dkB4bfCnI85irx9QEGYV80ZhqGnLRAFyeD7bw9ir5VmBxRSvYCJohF?=
+ =?us-ascii?Q?YTexvSUmOsoZNWDs3I2asJOd2+v/LHd8hGU9xSeQOp23RPkc53OVfrKFerrI?=
+ =?us-ascii?Q?KXh3oCGwYkoLTEDhaUVZpULcDuEQmhcyGoYykydtD1hMHUkM6N7sdBOdUL+a?=
+ =?us-ascii?Q?7hHz2VJeFtOfFEDBIMsT0cg1r47FYwAxrCXjH2k5yvWQkihKC/ZINtGEZ2+W?=
+ =?us-ascii?Q?LSEZs1/mofNSthq+EDuvrj9KrB7+W9co7NNx8Z4U3MvV1tOkriQb5g=3D=3D?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014)(921020);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?9XuvX3Od74+Y7dFHTVIbBgCWNv9KMP+h9YFA3I1LcZ+Ij6fCKf8axy/iQvO2?=
- =?us-ascii?Q?SjBsZAHtL1Qa56Cr4chfLzAymAA91XnF4eLkryndAo2hf7E0CSbyU3DWo7FK?=
- =?us-ascii?Q?BqmElFI/YLSPOHl2c8fa6yGvRt+MaAmn+HA7fL8lexUeu65WTGaZMxgL1jIr?=
- =?us-ascii?Q?pfqo67Ferq7jaE+k6GRK2Dm6STg1zqwvLjo2MpkqYvhMt2ufaVnzyBa01EMd?=
- =?us-ascii?Q?la3fivRsQtkHAw5S7+EQnJxFQpAH2gvt7BI9gD6YYTggK8WLZ10XZT2xFqRG?=
- =?us-ascii?Q?0n4ue09YLqv3ePmAVqOH5HpagxCZ227TgTh/AY8fn0feAcaXMjVTJf/Qlqvk?=
- =?us-ascii?Q?FyeD2ww/yySrvI9sN3XQvbpUcFXOitjsr59IdgGiAyz0D9Vdv8mmjJyDwwPQ?=
- =?us-ascii?Q?46BHA/k/zUlwJlK++zEdjFYVwHhlWJEpJbO2aasEikCz9glQ1t9+L2JdGI6y?=
- =?us-ascii?Q?sSu5UZpWBPq5ax1J8tA1vWo99IjJXpmi+8ZzsWaXSMFQ7N+2kHkrH8Z2Xy1B?=
- =?us-ascii?Q?161EFpak3hBufXY+4of8BeQcWIm4hGbiyfG6LUXMODTRolzyNfgQH0QEOcoC?=
- =?us-ascii?Q?pIZK+Lwtp8Ml6n836uaOjHYNiRKsoe/iDUlNcvgov7FSUyI6giP6nLaCIAeU?=
- =?us-ascii?Q?/PyofIO2A8X8EoFPtVjJhwkZetgZkdXpqSoAuSI2e0GwmDmboPJL7tCF3ncT?=
- =?us-ascii?Q?Vw+G0TXrxIOxHBp/4IL/1GgsBtKdLaDao1Ps8fYO/IMB/tjwQo9Ci8hFzthu?=
- =?us-ascii?Q?v0W/miiczSwyi31Oe2eVWXuLtnFwS+PgvMHWA14O1mJ1DyMjiinYOMWiNt6y?=
- =?us-ascii?Q?fyv1VObfUcY0OAhyRuD3V5lpQGvvhn5+tTJRfKtpaTgov0C5g05U748/IvXR?=
- =?us-ascii?Q?HfMO26NxQSTriCfjTvGQnDROFbiag82yMEhGzoDp1T3nUqGtUrgsDlNBigII?=
- =?us-ascii?Q?ih+Nv9Sd13hY58bDSj/mj2GqgLTS9iad0TfbxaOYQfExeWyy1Y04z+2w+vni?=
- =?us-ascii?Q?4TAWHVrR9BnBKUx2z84fHd8+mlhcA4XoJhFt0qOeaF9l07SroYL+Fo/DWWtr?=
- =?us-ascii?Q?2jo03sTHBDzpih4rHPb5wK+kEiIJ5j+uiFBzLPUsPcIcUSM8sBbWxkfG2L4d?=
- =?us-ascii?Q?O6UPvTNAz4hy8HH09zXEI1dfLtNysQQg/od3MffYlNn+qI3mkWHyqTeCvEmh?=
- =?us-ascii?Q?wvVznrZ1R+I9TmPeRpwhuutvpxCSjgKcZUAxbVXQDTTH7UERZoDgdYPKDNks?=
- =?us-ascii?Q?mKYTwN9dOIe5fNERgBhwAlhmn1I7OmeWXk2ojey8xE7V+dO/gEQ6VBGHR0fS?=
- =?us-ascii?Q?gXaZajGMbAg31pYHiCIU4ZvVcm0Dk5YKPoVeNA4BHzimjTDQko1BygFTTC5V?=
- =?us-ascii?Q?B6huDoYmZ59+9rnlxa2tF6MjQOYwBjL4kiXpwUMH2RE967HHPcvNYARRM/HP?=
- =?us-ascii?Q?zZsakrVlpuxVJKoSR2gEkDW/zF7ccDH69kAj5Bl7dfpbbVgggTVMoa6VNbTx?=
- =?us-ascii?Q?d5u2tlA/ACNmImVDgfwN1t9zgHQR00hWsXwgIql3hztMt3yq2My9nYHFiA7T?=
- =?us-ascii?Q?cvRJF+oe4Tqq54DaNKuuc5N8P1MH8ST22JflBO9x?=
+	=?us-ascii?Q?qgEsu817dPIU9G7HDvsQALzMLz4UA6IV6Y2jFH6sgR/SjygZX7m36JCkXgHs?=
+ =?us-ascii?Q?uuiEroqIMHTrduZQeFy4uRt52HSkjRVfUMKqtZnzjNxzZCvZ3rREI9g0D9/B?=
+ =?us-ascii?Q?AHH4CnoXnGKBYNrSQ2T/7m0RKo/2XIK3JOuasI/1Wq8FyPs7wjz7ciu8IjWl?=
+ =?us-ascii?Q?2e/pYBxgoluXEjBzMcVSd20I1i5AL+uin7PjFu17gV3iSlKmI4/BzuNBitQj?=
+ =?us-ascii?Q?55O7KTgE2y8S/tzchbWlovSjqBw+JM5pe5Ai19B7LE+xrH+qbV8tuWWUcAbz?=
+ =?us-ascii?Q?4YCjh7/n905IDR8ZEjxwX6QUKi0EHzstFatnK1zwObnKxAv7/QTEFTVsCOcJ?=
+ =?us-ascii?Q?aXE7Qay7m92D97CL2rX/xUMRgz4cB3aHUoGhcWpCXOk84Wv3SQ79JvCMZh2d?=
+ =?us-ascii?Q?zZ0i7Ks9iXySCH9gtfx9eQ10yBNXlAWlY4Gmfk6sHkdb88/m5Gc8Vc/fdn+m?=
+ =?us-ascii?Q?I8M0wVzBI0N6rEo0IpQ5nT5rb48lmj5rYuCTtOaSKeeaCXiQ3oirP8oVpEKn?=
+ =?us-ascii?Q?cOT135M7J39EWtA8VJwyyOV0aXEW+MMgv2Fcft0rjQQnRhAo/dExAS/gIkwB?=
+ =?us-ascii?Q?a04YZWA/eQk/XptXQy0yhVHSWJW1KSin/yLuaGmx812wNKwafRR13jaImSel?=
+ =?us-ascii?Q?PSqwC+Hg6nOBi5SCrwZr7eelTdTMRplTSRw3TANFD5WobyR8Osy4x8+Xwo4g?=
+ =?us-ascii?Q?L6W7ZW3SgfZ8ijf6Ca4SczcltcYdPTOyOpO+7/33R4tKBUwdufaJGaHfv1Wq?=
+ =?us-ascii?Q?MakIAK3pczo33GxiCVAILkiF2PBfOZvUTYVoO5yVMsZ5uTRYE4TteEmPBcRD?=
+ =?us-ascii?Q?pont4ww84tow/YEvMa+Qa32QKaIM2uEMMTgy6HFWAuPfLTUcieJwDr92KTlG?=
+ =?us-ascii?Q?DFJ6hB2/N0Bq075XXZVqUcXTF93VB7vxouY+qU0A6rOPy4ZvjmYZ6R2H4wL+?=
+ =?us-ascii?Q?v1Yvzh1T9tDTaNURkjGZvRHqVFV7DYo7b5GgoDPeH7r0iZNe/bwAC+ovWL9/?=
+ =?us-ascii?Q?NqJaRDbzF0L5YFzmIqGBxNXrkHBTwiOlpSCaB/9GIk8WjYjPZI7HAVyWkhkm?=
+ =?us-ascii?Q?AFfYotLPeuKgCJLVy/TuwAMFRicR7Ohj0IrN0vYJL+nwtAVRcN0xLUM4n0po?=
+ =?us-ascii?Q?YuNQOt8DIqRYQU2axuto3oA9sz+kKn6nZh5PLMAefvT3Xx0BDUnfuvpb4ZBm?=
+ =?us-ascii?Q?pGfFTHj4+4gpM2hhXsw5Ednpt7fdQBvttKns5hI0sxD8TM0LSNjQQB9ODD9t?=
+ =?us-ascii?Q?+gr3zcnmsZWbrNVNw9X6z9L19BIuptj1gqBT7SBNxC7dJ8plCMd0wDGV9VGg?=
+ =?us-ascii?Q?fVV8i2/ASRKYw11W8jpSqo6u0Ae3ncZlsxBsezyKcBwC1pQCcNfXBG0+1Mbs?=
+ =?us-ascii?Q?lOodkTtdnNxMFQ4906iJQb9q4ZXTzFFwDJdqJN3M1XMNYHNb+1FoDBOXCnc+?=
+ =?us-ascii?Q?QoIfu1OUZUOqgH9Qed+dluc6Gfj23ayuV63J0R0QhU1kbG0D6ceg11W8lmbn?=
+ =?us-ascii?Q?9RC/hsvV8rqcjfK7wtA+SrydxxEOkE9mvH1KNLxqKFqyx7l0o/vKNoa2cJPX?=
+ =?us-ascii?Q?c5KvhJfK7EHIAgbZ5R6JGJ1Lo96pxvd3GEc5NuE8?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 88ab0787-d435-4d10-2013-08dda77faa93
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4342669e-ebb2-425b-b213-08dda77faca5
 X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2025 18:01:32.2216
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2025 18:01:35.6746
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UNGK2gtVWoxtvQhYXoIbQiSnYE3Wh5afJO7oIwbWfbD0mTg6OqiTmNi88FUVmLTTf5kByU543rkjzKn8tvc9Yw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: FCAfdGrdUdsdfiOkXqrON6zAzb3qmyGfkUic02J319iiwvSH54fHywvGFoJUPCMUug22Sl/J51Ks2G68Diaz2g==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6660
 
-context_tracking keeps track of whether we're handling IRQ well after
-the preempt masks give take it off their books. We need this
-functionality in a follow-up patch to fix a bug. Provide a helper API
-for the same.
+During rcu_read_unlock_special(), if this happens during irq_exit(), we
+can lockup if an IPI is issued. This is because the IPI itself triggers
+the irq_exit() path causing a recursive lock up.
 
+This is precisely what Xiongfeng found when invoking a BPF program on
+the trace_tick_stop() tracepoint As shown in the trace below. Fix by
+using context-tracking to tell us if we're still in an IRQ.
+context-tracking keeps track of the IRQ until after the tracepoint, so
+it cures the issues.
+
+irq_exit()
+  __irq_exit_rcu()
+    /* in_hardirq() returns false after this */
+    preempt_count_sub(HARDIRQ_OFFSET)
+    tick_irq_exit()
+      tick_nohz_irq_exit()
+	    tick_nohz_stop_sched_tick()
+	      trace_tick_stop()  /* a bpf prog is hooked on this trace point */
+		   __bpf_trace_tick_stop()
+		      bpf_trace_run2()
+			    rcu_read_unlock_special()
+                              /* will send a IPI to itself */
+			      irq_work_queue_on(&rdp->defer_qs_iw, rdp->cpu);
+
+A simple reproducer can also be obtained by doing the following in
+tick_irq_exit(). It will hang on boot without the patch:
+
+  static inline void tick_irq_exit(void)
+  {
+ +	rcu_read_lock();
+ +	WRITE_ONCE(current->rcu_read_unlock_special.b.need_qs, true);
+ +	rcu_read_unlock();
+ +
+
+While at it, add some comments to this code.
+
+Reported-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Closes: https://lore.kernel.org/all/9acd5f9f-6732-7701-6880-4b51190aa070@huawei.com/
+Tested-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
 Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
 ---
- include/linux/context_tracking_irq.h |  2 ++
- kernel/context_tracking.c            | 12 ++++++++++++
- 2 files changed, 14 insertions(+)
+ kernel/rcu/tree_plugin.h | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/context_tracking_irq.h b/include/linux/context_tracking_irq.h
-index 197916ee91a4..35a5ad971514 100644
---- a/include/linux/context_tracking_irq.h
-+++ b/include/linux/context_tracking_irq.h
-@@ -9,6 +9,7 @@ void ct_irq_enter_irqson(void);
- void ct_irq_exit_irqson(void);
- void ct_nmi_enter(void);
- void ct_nmi_exit(void);
-+bool ct_in_irq(void);
- #else
- static __always_inline void ct_irq_enter(void) { }
- static __always_inline void ct_irq_exit(void) { }
-@@ -16,6 +17,7 @@ static inline void ct_irq_enter_irqson(void) { }
- static inline void ct_irq_exit_irqson(void) { }
- static __always_inline void ct_nmi_enter(void) { }
- static __always_inline void ct_nmi_exit(void) { }
-+static inline bool ct_in_irq(void) { return false; }
- #endif
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 3c0bbbbb686f..53d8b3415776 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -653,6 +653,9 @@ static void rcu_read_unlock_special(struct task_struct *t)
+ 		struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+ 		struct rcu_node *rnp = rdp->mynode;
  
- #endif
-diff --git a/kernel/context_tracking.c b/kernel/context_tracking.c
-index fb5be6e9b423..d0759ef9a6bd 100644
---- a/kernel/context_tracking.c
-+++ b/kernel/context_tracking.c
-@@ -392,6 +392,18 @@ noinstr void ct_irq_exit(void)
- 	ct_nmi_exit();
- }
- 
-+/**
-+ * ct_in_irq - check if CPU is in a context-tracked IRQ context.
-+ *
-+ * Returns true if ct_irq_enter() has been called and ct_irq_exit()
-+ * has not yet been called. This indicates the CPU is currently
-+ * processing an interrupt.
-+ */
-+bool ct_in_irq(void)
-+{
-+	return ct_nmi_nesting() != 0;
-+}
-+
- /*
-  * Wrapper for ct_irq_enter() where interrupts are enabled.
-  *
++		// In cases where the RCU-reader is boosted, we'd attempt deboost sooner than
++		// later to prevent inducing latency to other RT tasks. Also, expedited GPs
++		// should not be delayed too much. Track both these needs in expboost.
+ 		expboost = (t->rcu_blocked_node && READ_ONCE(t->rcu_blocked_node->exp_tasks)) ||
+ 			   (rdp->grpmask & READ_ONCE(rnp->expmask)) ||
+ 			   (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) &&
+@@ -670,10 +673,15 @@ static void rcu_read_unlock_special(struct task_struct *t)
+ 			// Also if no expediting and no possible deboosting,
+ 			// slow is OK.  Plus nohz_full CPUs eventually get
+ 			// tick enabled.
++			//
++			// Also prevent doing this if context-tracking thinks
++			// we're handling an IRQ (including when we're exiting
++			// one -- required to prevent self-IPI deadloops).
+ 			set_tsk_need_resched(current);
+ 			set_preempt_need_resched();
+ 			if (IS_ENABLED(CONFIG_IRQ_WORK) && irqs_were_disabled &&
+-			    expboost && !rdp->defer_qs_iw_pending && cpu_online(rdp->cpu)) {
++			    expboost && !rdp->defer_qs_iw_pending && cpu_online(rdp->cpu) &&
++			    !ct_in_irq()) {
+ 				// Get scheduler to re-evaluate and call hooks.
+ 				// If !IRQ_WORK, FQS scan will eventually IPI.
+ 				if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) &&
 -- 
 2.34.1
 
