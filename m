@@ -1,191 +1,166 @@
-Return-Path: <bpf+bounces-60035-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60037-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC70CAD17FA
-	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 06:35:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 141FCAD188D
+	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 08:24:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11ABD16B049
-	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 04:35:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7263166C35
+	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 06:23:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79484283FF0;
-	Mon,  9 Jun 2025 04:32:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3142728033C;
+	Mon,  9 Jun 2025 06:23:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u06q4XRJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 218AF280334;
-	Mon,  9 Jun 2025 04:32:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99C641A7AE3;
+	Mon,  9 Jun 2025 06:23:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749443565; cv=none; b=RyaN+Z1ZmmpOysE4noM77YKG/JS4LZa5hMe6U1eGwHJnrbqJXh9WDA8WXCPe2SAPJOqPeMwFFW8L1dxbHgQJB/fyAJOUl4NBhbLuuuZYq62rBjom7PpkjpEfnGvmxC/SJ+0pGHWz+5l5Z5RwYtR1AHK/3NkgJwTwxEZzpq0WOuI=
+	t=1749450226; cv=none; b=bMbevv++F9K037wFwwG5xuj9moa3yRmJ/mNFVQzWPgMoWN2+9tuuKBEDCsHddXMg+BoqHJLoClpP1+6OWXfXuLKZsVkw3/fQJisvgMbIcYlmw+jpGsSUEQ8aNkgmuAFZyeFDE+1VNiDoNsOJb8R2Onr6+XBeBMGfXFDbzYzElCA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749443565; c=relaxed/simple;
-	bh=Lmy+RFwqYXPu6N1bxf4/Xzdmx3q5DYPNxpm9jG4/57A=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Z9wm0zTthy+Jj9AlVa8gldBINJv95FTeaLEhwgMdgu2rm+F5iBk5l2eDzZXWJdYNF+w7Hxw+U1X2Vfg6Qb/cAOfsnTVwouLaalf6KlE51eer4yHbxvjn+DNp2amOV/VvJUCPG2D4Is9IPoVDQ4Qt+l0X36lP4s2S0/C//EqJP5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-669ff7000002311f-a3-684663e4a09b
-From: Byungchul Park <byungchul@sk.com>
-To: willy@infradead.org,
-	netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	kernel_team@skhynix.com,
-	kuba@kernel.org,
-	almasrymina@google.com,
-	ilias.apalodimas@linaro.org,
-	harry.yoo@oracle.com,
-	hawk@kernel.org,
-	akpm@linux-foundation.org,
-	davem@davemloft.net,
-	john.fastabend@gmail.com,
-	andrew+netdev@lunn.ch,
-	asml.silence@gmail.com,
-	toke@redhat.com,
-	tariqt@nvidia.com,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	saeedm@nvidia.com,
-	leon@kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	david@redhat.com,
-	lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com,
-	vbabka@suse.cz,
-	rppt@kernel.org,
-	surenb@google.com,
-	mhocko@suse.com,
-	horms@kernel.org,
-	linux-rdma@vger.kernel.org,
-	bpf@vger.kernel.org,
-	vishal.moola@gmail.com
-Subject: [PATCH net-next 9/9] page_pool: access ->pp_magic through struct netmem_desc in page_pool_page_is_pp()
-Date: Mon,  9 Jun 2025 13:32:25 +0900
-Message-Id: <20250609043225.77229-10-byungchul@sk.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20250609043225.77229-1-byungchul@sk.com>
-References: <20250609043225.77229-1-byungchul@sk.com>
+	s=arc-20240116; t=1749450226; c=relaxed/simple;
+	bh=XvsNeIKAvfYxeWu94vpzujuaP/jIFZurJxIpc+BHVpI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KvlrUc0a1+Cmj1vWXjQCjppfd4A6LDzLeu9Gtb1P6zKMFWnOlB4Qwwy+hN6c9bitqHQffQS8nJuJNR2R3fdl7ahmDm/UvIz9O48Q5QDS6kDzAHax4ZRSceRfMLa1xwHgYlJXKyEi3RcuU3sumpkvB1GaKOo7L9lPMk5erwxhb/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u06q4XRJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33EE4C4CEEB;
+	Mon,  9 Jun 2025 06:23:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749450224;
+	bh=XvsNeIKAvfYxeWu94vpzujuaP/jIFZurJxIpc+BHVpI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=u06q4XRJsHiDSTpvSWKH2Z/pNiXWEcSmbPCXaa439I67fDtvI1Lu+hOcNanh8d2Te
+	 Vapusw1KEUaelaQBwKBQnURlQrhBoXtAJvC1oq0JccikGONLOHZKco6sEGS++gUpj0
+	 FfCPVQyrXrLjSVbEVSuxXCP7XhKV0cNBUGa++/QY1Is6lMWrGnA/q8wulLJrBfdLmv
+	 t91KB0QxgT5gxAjvAY2smUWLcoRsD8TU75ZEnHlJjGsOD6pfM42IJWLe/LahNSc+3C
+	 fB6jQpKo7Z9aClERVeLDNXZuTk3e6sAYfSekwc6dyaQCoN9IjKn8q9cTubf4AgudXA
+	 p3UYxbFglHIXw==
+Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-6f8b2682d61so54550356d6.0;
+        Sun, 08 Jun 2025 23:23:44 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVSrSavIDfN8TLsPFAaU5spdJHOknUK+WDl80p76J8THNW8WXgpQ0+s9Szuy393/0OcMNRttLdCUSyveqrRrA==@vger.kernel.org, AJvYcCWnCpMdRPiQNOZsvaLy0uFb/lnqYJEd4ReJG8kTvqdPQubZvdimJoRBJKqsfrKfknKJeV5fHf6MPqaWUec0mZkAnY4VFiKZ@vger.kernel.org, AJvYcCX7qCrI0zYJZoZhwvYTdVyQL/+F8raYyPgUldMQpk/25uV+sNnoIQHv/6eDDxL218uonLw=@vger.kernel.org, AJvYcCXKtn7z5WeRl+Uk+bBEaews8YGeNbPqX8sB3riWoFjNWG4Fr9sBkprwN0a1lRlxK1NlJukowUGOQr5k977u@vger.kernel.org
+X-Gm-Message-State: AOJu0YwOZbaXzf4cm7e/kGDVSikTPTKA8+Qh4MY8Z/B+GuC5bhp4qmOW
+	tLfu3pzSuEGGXTRSaxrbkpOaQd0lKWbVsYRkrKu/y2VL8jtK5cFBIAK/5v5Z282aiYsshpYCNQs
+	waC14hOOIm9O1/RHg/gV3Xl7PHNDG1k4=
+X-Google-Smtp-Source: AGHT+IFZKIPiFOniWwO3JrSqHR8EFdDF+J9SLDjDaY4aBJDBvQcgJT8acvrljCKcpwaPOgLoEBVL6sspTmqVKcaeq4w=
+X-Received: by 2002:ad4:5c42:0:b0:6f8:c773:26e with SMTP id
+ 6a1803df08f44-6fb10b73db7mr130561536d6.18.1749450223383; Sun, 08 Jun 2025
+ 23:23:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SXUhTYRjHefe+5+y4XJ1m1MmyaBTVUMuweC5KhDDerpLsoi/IMQ9tNT+Y
-	H2mUaC6qpRalqHPaxLKpxWLlXCFRU3KipGnF+tQ0vSojV2NqUZ4k6u7H//l/3DwcVl1gIjlD
-	Ro5oytAa1ayCKD6HN8R81O3Sbw7cjgSb8xYLraF8uDniYcDW4kbwbfqNHAJd3Sw0NgQx2PrN
-	BL47ZzCMPxmVw3DTBIGOc+0YRi/5WCgzz2I443HIYMBdzkDFzA0M7UUjchh6YGPh/a1fDEx4
-	ywj0WJsJDJcnwhP7Ugj2fkLQ5WyXQbC0joWrg3YWxszDCAY7RwnUFpcjcD70MzAbsrGJa+i9
-	5lcyet/6Tk7trlx616GhFv8gpq6WCyx1TV2R07cvO1jqq54l9L4nIKNlJZMs/Tr+mtAvD1+w
-	1HnvBaF99i45DbhWJfMHFdvTRKMhTzRtSkhV6Mdaf8qzyiLyK3zl8iJ0mbegME7g44XQ+Q5k
-	Qdwfnr64UJJZfr3g909jiZfwcUJgtJtYkILD/CQjjNtmZdIhgs8UJp5V/GHCrxMaq32MxEp+
-	m9BWOYnm+1cLrXceYak/bE4f8edIsorfKnifO/C8fbHQU/ORSBY8t+usV0kynkuWtNViaVbg
-	mznBe+0pma9cLjx2+MllxFv/i1v/xa3/xe0ItyCVISMvXWswxsfqCzIM+bG6zHQXmnuQptM/
-	DnnQ1ECKF/EcUocrU6uS9CpGm5ddkO5FAofVS5T88E69SpmmLTgpmjKPmHKNYrYXreCIeply
-	S/BEmoo/qs0Rj4tilmj6e5VxYZFF6Fibp7/CJla+2xh8rNvXtHL3RJU5qy96ES7cMBT5cqiR
-	FkcpNHFRnWtjDpRsSFiZYExJrA3jY2Xvx0KdDaVLDx/ScSl1bG54YZJhf4zPvMOgi6mewXtZ
-	Nxa6a5M1jhBx2w52LqhxX7fsMd+erDGm1g98iH6jOdXeezY1V8OoSbZeG6fBpmztb/NMs34c
-	AwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRjHefeenR1Xi+O0PNSHYlCBpSmkPFCUdH0TunyIAgly2KkNr2w6
-	NJGsSZG6lWlYa9rSNG+0mDO1MmKazgpWmrGu2qbrgpe8ZM0ltRVR3378/7/neb48DJaOUksZ
-	ZVomr0qTp8hoMSXes0EbMZy0QxF1s1cMRnMTDY3fs+HGUJsQjA23Ecx4X4tguquHhuprsxiM
-	jgIKvprnMIx0u0QwWOuh4N6ZVgyuc3YadAU+DKfa6gTQWdErhKe39UIom6vB0Jo/JIL+O0Ya
-	3jX9FILHpqOg11BPwaA+DrpNS2D28SiCLnOrAGaLK2go7TPR4C4YRNDX6aLgykk9AvN9pxB8
-	3410nIxY618KSLvhrYiYLFmkuS6cFDr7MLE0nKWJZeqCiLx5cY8m9ks+irS3TQuITjtOk8mR
-	VxSZuD9Ak+qPXwTEbB2gyBNTl2hfcIJ44xE+RanhVes2JYoV7sZ5UYYuJLvMrhflo/NsIWIY
-	jl3PeYsWFaIghmZXc06nFwc4lI3mpl09VCESM5gdF3IjRp8gUISw6ZznWdlvptiVXPUluzDA
-	EjaWa7k4jgLMscu5xlsPcGB/kD8fcmYGYikbw9me1+E/ejDXe3mYCijYf9dcKQ3E2D+pbbmC
-	zyOJ4T/L8M8y/GeZEG5Aoco0TapcmRITqU5W5KQpsyOT0lMtyP8DtXk/StrQTP9OG2IZJFso
-	SSzfrpAK5Rp1TqoNcQyWhUrYwa0KqeSIPOc4r0o/rMpK4dU2tIyhZGGS+IN8opQ9Js/kk3k+
-	g1f9bQVM0NJ8VJqbm7BmNq7809ptSf1lVbn1u+5q5n/OPD26IiJ8xUzF1eLTGZ74kqH18Q7b
-	xIGQbwtqwuaryFRJkSc42xS1/3py8+6zxoef3avmqysjHMWTH/IiMmtyo7Zv3rJ3rMOreueY
-	cy8+4bt+yKrhvR3WIqPuUWls3cgGV8f7sWXFl7Vz5TJKrZBHh2OVWv4LhMCT+P8CAAA=
-X-CFilter-Loop: Reflected
+References: <20250606213015.255134-1-song@kernel.org> <dbc7ee0f1f483b7bc2ec9757672a38d99015e9ae.1749402769@maowtm.org>
+In-Reply-To: <dbc7ee0f1f483b7bc2ec9757672a38d99015e9ae.1749402769@maowtm.org>
+From: Song Liu <song@kernel.org>
+Date: Sun, 8 Jun 2025 23:23:30 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7n_+u-M7bnUwX4Go0D+jj7oZZVopE1Bj5S_nHM1+8PZg@mail.gmail.com>
+X-Gm-Features: AX0GCFst8MCLxlAk4KkSJ6q3kT2d11EjKvEwczcwJRDGZGVDyszvu-NNmnxwdA8
+Message-ID: <CAPhsuW7n_+u-M7bnUwX4Go0D+jj7oZZVopE1Bj5S_nHM1+8PZg@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 0/5] bpf path iterator
+To: Tingmao Wang <m@maowtm.org>
+Cc: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
+	Al Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, amir73il@gmail.com, 
+	andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net, 
+	eddyz87@gmail.com, gnoack@google.com, jack@suse.cz, jlayton@kernel.org, 
+	josef@toxicpanda.com, kernel-team@meta.com, kpsingh@kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, martin.lau@linux.dev, 
+	mattbobrowski@google.com, repnop@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-To simplify struct page, the effort to separate its own descriptor from
-struct page is required and the work for page pool is on going.
+On Sun, Jun 8, 2025 at 10:34=E2=80=AFAM Tingmao Wang <m@maowtm.org> wrote:
+[...]
+> Hi Song, Christian, Al and others,
+>
+> Previously I proposed in [1] to add ability to do a reference-less parent
+> walk for Landlock.  However, as Christian pointed out and I do agree in
+> hindsight, it is not a good idea to do things like this in non-VFS code.
+>
+> However, I still think this is valuable to consider given the performance
+> improvement, and after some discussion with Micka=C3=ABl, I would like to
+> propose extending Song's helper to support such usage.  While I recognize
+> that this patch series is already in its v3, and I do not want to delay i=
+t
+> by too much, putting this proposal out now is still better than after thi=
+s
+> has merged, so that we may consider signature changes.
+>
+> I've created a proof-of-concept and did some brief testing.  The
+> performance improvement attained here is the same as in [1] (with a "git
+> status" workload, median landlock overhead 35% -> 28%, median time in
+> landlock decreases by 26.6%).
+>
+> If this idea is accepted, I'm happy to work on it further, split out this
+> patch, update the comments and do more testing etc, potentially in
+> collaboration with Song.
+>
+> An alternative to this is perhaps to add a new helper
+> path_walk_parent_rcu, also living in namei.c, that will be used directly
+> by Landlock.  I'm happy to do it either way, but with some experimentatio=
+n
+> I personally think that the code in this patch is still clean enough, and
+> can avoid some duplication.
+>
+> Patch title: path_walk_parent: support reference-less walk
+>
+> A later commit will update the BPF path iterator to use this.
+>
+> Signed-off-by: Tingmao Wang <m@maowtm.org>
+[...]
+>
+> -bool path_walk_parent(struct path *path, const struct path *root);
+> +struct parent_iterator {
+> +       struct path path;
+> +       struct path root;
+> +       bool rcu;
+> +       /* expected seq of path->dentry */
+> +       unsigned next_seq;
+> +       unsigned m_seq, r_seq;
 
-To achieve that, all the code should avoid directly accessing page pool
-members of struct page.
+Most of parent_iterator is not really used by reference walk.
+So it is probably just separate the two APIs?
 
-Access ->pp_magic through struct netmem_desc instead of directly
-accessing it through struct page in page_pool_page_is_pp().  Plus, move
-page_pool_page_is_pp() from mm.h to netmem.h to use struct netmem_desc
-without header dependency issue.
+Also, is it ok to make m_seq and r_seq available out of fs/?
 
-Signed-off-by: Byungchul Park <byungchul@sk.com>
-Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- include/linux/mm.h   | 12 ------------
- include/net/netmem.h | 14 ++++++++++++++
- mm/page_alloc.c      |  1 +
- 3 files changed, 15 insertions(+), 12 deletions(-)
+> +};
+> +
+> +#define PATH_WALK_PARENT_UPDATED               0
+> +#define PATH_WALK_PARENT_ALREADY_ROOT  -1
+> +#define PATH_WALK_PARENT_RETRY                 -2
+> +
+> +void path_walk_parent_start(struct parent_iterator *pit,
+> +                           const struct path *path, const struct path *r=
+oot,
+> +                           bool ref_less);
+> +int path_walk_parent(struct parent_iterator *pit, struct path *next_pare=
+nt);
+> +int path_walk_parent_end(struct parent_iterator *pit);
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index e51dba8398f7..f23560853447 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -4311,16 +4311,4 @@ int arch_lock_shadow_stack_status(struct task_struct *t, unsigned long status);
-  */
- #define PP_MAGIC_MASK ~(PP_DMA_INDEX_MASK | 0x3UL)
- 
--#ifdef CONFIG_PAGE_POOL
--static inline bool page_pool_page_is_pp(struct page *page)
--{
--	return (page->pp_magic & PP_MAGIC_MASK) == PP_SIGNATURE;
--}
--#else
--static inline bool page_pool_page_is_pp(struct page *page)
--{
--	return false;
--}
--#endif
--
- #endif /* _LINUX_MM_H */
-diff --git a/include/net/netmem.h b/include/net/netmem.h
-index d84ab624b489..8f354ae7d5c3 100644
---- a/include/net/netmem.h
-+++ b/include/net/netmem.h
-@@ -56,6 +56,20 @@ NETMEM_DESC_ASSERT_OFFSET(pp_ref_count, pp_ref_count);
-  */
- static_assert(sizeof(struct netmem_desc) <= offsetof(struct page, _refcount));
- 
-+#ifdef CONFIG_PAGE_POOL
-+static inline bool page_pool_page_is_pp(struct page *page)
-+{
-+	struct netmem_desc *desc = (struct netmem_desc *)page;
-+
-+	return (desc->pp_magic & PP_MAGIC_MASK) == PP_SIGNATURE;
-+}
-+#else
-+static inline bool page_pool_page_is_pp(struct page *page)
-+{
-+	return false;
-+}
-+#endif
-+
- /* net_iov */
- 
- DECLARE_STATIC_KEY_FALSE(page_pool_mem_providers);
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 4f29e393f6af..be0752c0ac92 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -55,6 +55,7 @@
- #include <linux/delayacct.h>
- #include <linux/cacheinfo.h>
- #include <linux/pgalloc_tag.h>
-+#include <net/netmem.h>
- #include <asm/div64.h>
- #include "internal.h"
- #include "shuffle.h"
--- 
-2.17.1
+I think it is better to make this rcu walk a separate set of APIs.
+IOW, we will have:
 
+int path_walk_parent(struct path *path, struct path *root);
+
+and
+
+void path_walk_parent_rcu_start(struct parent_iterator *pit,
+                           const struct path *path, const struct path *root=
+);
+int path_walk_parent_rcu_next(struct parent_iterator *pit, struct path
+*next_parent);
+int path_walk_parent_rcu_end(struct parent_iterator *pit);
+
+Thanks,
+Song
+
+[...]
 
