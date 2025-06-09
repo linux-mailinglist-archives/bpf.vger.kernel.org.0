@@ -1,130 +1,176 @@
-Return-Path: <bpf+bounces-60020-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60021-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B83D1AD13D1
-	for <lists+bpf@lfdr.de>; Sun,  8 Jun 2025 20:45:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EA4AAD16A8
+	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 04:10:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4332C1692FE
-	for <lists+bpf@lfdr.de>; Sun,  8 Jun 2025 18:45:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A66F3AA45B
+	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 02:09:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBDAF1CBEB9;
-	Sun,  8 Jun 2025 18:45:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9484218C932;
+	Mon,  9 Jun 2025 02:09:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=maowtm.org header.i=@maowtm.org header.b="kMUkXmV8";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="SB20Qrrq"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YMMgk8yf"
 X-Original-To: bpf@vger.kernel.org
-Received: from flow-a2-smtp.messagingengine.com (flow-a2-smtp.messagingengine.com [103.168.172.137])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB43B1373;
-	Sun,  8 Jun 2025 18:45:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.137
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F719126BF1
+	for <bpf@vger.kernel.org>; Mon,  9 Jun 2025 02:09:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749408322; cv=none; b=HDn1YDT5S4xCrGa/vcTu9wPYGUtiP5Gmwb3fwJYl+K+f4YJq6dEDg6xBrNSK7sgX2p+MQU5Kyc+ei/IX/NG4/vY0qAzxklqhuyJr8bqIgo4FfiRNUMl19BBrB7BkrL0bDFp2qxIvH+m5KJz6W6H873u/Q2xx5vQNhLe2sgkpICQ=
+	t=1749434988; cv=none; b=LQxr3fkJrxAok73UQxqN59y1N1DXetevWvHwWEI5dQsBzo3OrZYYv+Fr+Rk/CsxWPGL7K3WfdwzzDsIfxEEwrisw0mYfqzfL1ZObbQmg0dgIVsFh/hUiQiT20pHEg8I68k/rNMPrSMGPq4SNB5bGpPXI7TIlyIgnKuSuOoFl/fg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749408322; c=relaxed/simple;
-	bh=jpY6WF/tyt8ZsPJiNzCryKKly+ppwn8MYx1ZpTHcCgY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AesIm6umFBGxn+2gH1iw5/1poIuSiPY5cY20RS9klLAsFcOnFi32mnftAqjziVTe1sBF+cIzeTrXOSIDdt+g88NSiGgsmGa+BwTLuoZYAxN4m/FsONazfHQPkWf3rxTMOP0K0QN8Rhpw/I0Jv6n9eAGSYBDcEYyt6Ei4fkV3vYg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=maowtm.org; spf=pass smtp.mailfrom=maowtm.org; dkim=pass (2048-bit key) header.d=maowtm.org header.i=@maowtm.org header.b=kMUkXmV8; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=SB20Qrrq; arc=none smtp.client-ip=103.168.172.137
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=maowtm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=maowtm.org
-Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
-	by mailflow.phl.internal (Postfix) with ESMTP id B0C602001E3;
-	Sun,  8 Jun 2025 14:45:17 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-01.internal (MEProxy); Sun, 08 Jun 2025 14:45:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maowtm.org; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1749408317;
-	 x=1749415517; bh=pyrxZyuzA0cB9TzK2o1GmFpNIisvskLmghcpCRapKuw=; b=
-	kMUkXmV8EzPikhkBJFVGnuS2wjWadeQwnEeO8kvDsxqi1B3KOiEmaCMg8Na/AyDY
-	O2WTnl0Jk2J/jEU+O+6wh0ZEaQAs/ozWfCMvy8q7QWlrbpIbG5XRgt79h5Q8ay2W
-	6SxSUbcv9H8UeMJeBC4ruQXNvgtx37voEedgebrNaIgyjD+xnik2rtywBsMqf4o6
-	qY26eFDPG8SMurYooUA73L3m8BPwAK3+oYwCU820KpHaaMls5gi4H1l3gTHgRgLu
-	ccHRt72DxBAyGdX+yBaV5lRfOKgmtJ1jg31NJBVGmF4n2HfH/C4etpp19GF3Sk6P
-	pNbKDCs/Yv26hg6/vl1s8w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1749408317; x=
-	1749415517; bh=pyrxZyuzA0cB9TzK2o1GmFpNIisvskLmghcpCRapKuw=; b=S
-	B20Qrrql1HNlKE1ptu8rl23aoSFI6mz0aVxTbs4CVsBgaDV2SohoAV+10qivzr7e
-	r1O+psm6WbxtSCY1VNQYODT0sZwl20ZVKVlhAe904CgutowEqCPUayuu/0ghy06h
-	dwdCRAw1wS+7BKynxI96fQfosh0UZVV4ef8PBlZFuqSMyX2V11zOdbfCUNaafUOq
-	ZRbuyqSoQzB4E5NHVuzZu8oo0yAimfOITw8KwY+W4eslcF/pQhU5tTHdiZoEk5m8
-	atuzBHe8bnvBFLVrUoX3Ldhr+gGMmK+KdSvtiG7HVLe8RL7NvqPdlgK6sYTkH9hw
-	WjhmTD7d2mM2ty8LVvd/Q==
-X-ME-Sender: <xms:PNpFaHYshTA3LU5gNz43Nj_WBEJrsG8Iwd3h7mEg3mm6WYYNOzvQpA>
-    <xme:PNpFaGYOZOf4xu9iTv7sKvajyvvha3dPrAOkz7cj48MdK2tdJHDv2N_I6STGnCoZG
-    nkgpBnDkp2dLA-E_GQ>
-X-ME-Received: <xmr:PNpFaJ8d8htT03ZwUBUKVK6O6wK4_nm4XFMVxB1WnpY2XKYF9Berg4vzYRNx0ZaVNqVf7d5TCFRFY7ec3p2J-jfU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddugdekvdefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnecujfgurhepkfffgggfuffvvehfhfgjtgfgsehtjeertddtvdej
-    necuhfhrohhmpefvihhnghhmrghoucghrghnghcuoehmsehmrghofihtmhdrohhrgheqne
-    cuggftrfgrthhtvghrnhepfedvheeluedthfelgfevvdfgkeelgfelkeegtddvhedvgfdt
-    feeilefhudetgfdunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepmhesmhgrohifthhmrdhorhhgpdhnsggprhgtphhtthhopedvvddpmhhouggv
-    pehsmhhtphhouhhtpdhrtghpthhtohepshhonhhgsehkvghrnhgvlhdrohhrghdprhgtph
-    htthhopehmihgtseguihhgihhkohgurdhnvghtpdhrtghpthhtohepsghpfhesvhhgvghr
-    rdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhfshguvghvvghlsehvgh
-    gvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehv
-    ghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqshgvtghurhhith
-    ihqdhmohguuhhlvgesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehkvghr
-    nhgvlhdqthgvrghmsehmvghtrgdrtghomhdprhgtphhtthhopegrnhgurhhiiheskhgvrh
-    hnvghlrdhorhhgpdhrtghpthhtohepvgguugihiiekjeesghhmrghilhdrtghomh
-X-ME-Proxy: <xmx:PNpFaNriKuIzFK9kRzEYtsir3VqqWPxxbJAXix0gL3l9wlgw6H8p2Q>
-    <xmx:PNpFaCo3Tj1OngIRGlU5jI42t42-BKAHBV1mwdF2b1mFETNrCMGd6g>
-    <xmx:PNpFaDTVeydiphFBsN45HGYRHj8wYJDT_pSsmIzdor-LIQzeZtEOuw>
-    <xmx:PNpFaKoQ1CeYbxcFjmLZCflVjLepySL-h7GNqXzx4sba9V5LsoSllA>
-    <xmx:PdpFaJJUm4zDI-kB9H60bpmvYQeK62y7VYsXeJIBn_ZUolts2aQ6k6s6>
-Feedback-ID: i580e4893:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 8 Jun 2025 14:45:14 -0400 (EDT)
-Message-ID: <7e457120-6c9e-4318-9f92-e794223bfce6@maowtm.org>
-Date: Sun, 8 Jun 2025 19:45:12 +0100
+	s=arc-20240116; t=1749434988; c=relaxed/simple;
+	bh=GeWygMgxmy9e5D7IMTdYwFaop2Xjvnmt7KoVFbT7EBM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HymeV4xe+LyRCIX1cd0qUyepiu5hTmVDrCDviWNPI+C5hjaMalLxNcEtv5pGYUl0JeuzvJMA9OP38VLqUc+zgF5U5hVFLRL5QzAtOm+jopEQBIQAPcWs1fv7LgZaUslvOj4oGX2+Asp087Q6BTD6LDc4WBKRGErLZyzA5HA/Cv4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YMMgk8yf; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1749434973;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=iN+SXm4q7iQ2OIKW68klB939c0ZWm/n4ntMalSnwg/s=;
+	b=YMMgk8yfvm6x41gj4xWjJ/JH/vBM5FgS2p2lIdzQbKrzY0Jz4l7mj5YDL+40w3Yi6Hq/Iz
+	7G4108kGpVdJu6p6uzHi/EJlhg2ikV7BeMUjMFKbtvo9SEwLJJTQqVyA2b1wWlqym/qXl9
+	qBSvAf30AviTh330YB+gr6+7cKII9h8=
+From: Jiayuan Chen <jiayuan.chen@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Jiayuan Chen <jiayuan.chen@linux.dev>,
+	Boris Pismenny <borisp@nvidia.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Ihor Solodrai <isolodrai@meta.com>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next v2 0/2] bpf,ktls: Fix data corruption caused by using bpf_msg_pop_data() in ktls
+Date: Mon,  9 Jun 2025 10:08:51 +0800
+Message-ID: <20250609020910.397930-1-jiayuan.chen@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 bpf-next 2/5] landlock: Use path_walk_parent()
-To: Song Liu <song@kernel.org>, =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?=
- <mic@digikod.net>
-Cc: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
- kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
- daniel@iogearbox.net, martin.lau@linux.dev, viro@zeniv.linux.org.uk,
- brauner@kernel.org, jack@suse.cz, kpsingh@kernel.org,
- mattbobrowski@google.com, amir73il@gmail.com, repnop@google.com,
- jlayton@kernel.org, josef@toxicpanda.com, gnoack@google.com
-References: <20250606213015.255134-1-song@kernel.org>
- <20250606213015.255134-3-song@kernel.org>
-Content-Language: en-US
-From: Tingmao Wang <m@maowtm.org>
-In-Reply-To: <20250606213015.255134-3-song@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 6/6/25 22:30, Song Liu wrote:
-> Use path_walk_parent() to walk a path up to its parent.
-> 
-> No functional changes intended.
-> 
-> Signed-off-by: Song Liu <song@kernel.org>
 
-There is also path walk code in collect_domain_accesses even though that
-one doesn't walk pass mount points.  Not sure if that one should be
-updated to use this helper as well, or maybe fine to keep using
-dget_parent.
+Cong reported an issue where running 'test_sockmap' in the current
+bpf-next tree results in an error [1].
+
+The specific test case that triggered the error is a combined test
+involving ktls and bpf_msg_pop_data().
+
+Root Cause:
+When sending plaintext data, we initially calculated the corresponding
+ciphertext length. However, if we later reduced the plaintext data length
+via socket policy, we failed to recalculate the ciphertext length.
+
+This results in transmitting buffers containing uninitialized data during
+ciphertext transmission.
+
+This causes uninitialized bytes to be appended after a complete
+"Application Data" packet, leading to errors on the receiving end when
+parsing TLS record.
+
+This issue has existed for a long time but was only exposed after the
+following test code was merged.
+commit 47eae080410b ("selftests/bpf: Add more tests for test_txmsg_push_pop in test_sockmap")
+
+Although we already had tests for pop data before this commit, the
+pop data length was insufficient (less than 5 bytes). This meant that the
+corrupted TLS records with data length <5 bytes were cached without being
+parsed, resulting in no error being triggered.
+
+After this fix, all tests pass.
+
+ 1/ 6  sockmap::txmsg test passthrough:OK
+ 2/ 6  sockmap::txmsg test redirect:OK
+ 3/ 2  sockmap::txmsg test redirect wait send mem:OK
+ 4/ 6  sockmap::txmsg test drop:OK
+ 5/ 6  sockmap::txmsg test ingress redirect:OK
+ 6/ 7  sockmap::txmsg test skb:OK
+ 7/12  sockmap::txmsg test apply:OK
+ 8/12  sockmap::txmsg test cork:OK
+ 9/ 3  sockmap::txmsg test hanging corks:OK
+10/11  sockmap::txmsg test push_data:OK
+11/17  sockmap::txmsg test pull-data:OK
+12/ 9  sockmap::txmsg test pop-data:OK
+13/ 6  sockmap::txmsg test push/pop data:OK
+14/ 1  sockmap::txmsg test ingress parser:OK
+15/ 1  sockmap::txmsg test ingress parser2:OK
+16/ 6 sockhash::txmsg test passthrough:OK
+17/ 6 sockhash::txmsg test redirect:OK
+18/ 2 sockhash::txmsg test redirect wait send mem:OK
+19/ 6 sockhash::txmsg test drop:OK
+20/ 6 sockhash::txmsg test ingress redirect:OK
+21/ 7 sockhash::txmsg test skb:OK
+22/12 sockhash::txmsg test apply:OK
+23/12 sockhash::txmsg test cork:OK
+24/ 3 sockhash::txmsg test hanging corks:OK
+25/11 sockhash::txmsg test push_data:OK
+26/17 sockhash::txmsg test pull-data:OK
+27/ 9 sockhash::txmsg test pop-data:OK
+28/ 6 sockhash::txmsg test push/pop data:OK
+29/ 1 sockhash::txmsg test ingress parser:OK
+30/ 1 sockhash::txmsg test ingress parser2:OK
+31/ 6 sockhash:ktls:txmsg test passthrough:OK
+32/ 6 sockhash:ktls:txmsg test redirect:OK
+33/ 2 sockhash:ktls:txmsg test redirect wait send mem:OK
+34/ 6 sockhash:ktls:txmsg test drop:OK
+35/ 6 sockhash:ktls:txmsg test ingress redirect:OK
+36/ 7 sockhash:ktls:txmsg test skb:OK
+37/12 sockhash:ktls:txmsg test apply:OK
+38/12 sockhash:ktls:txmsg test cork:OK
+39/ 3 sockhash:ktls:txmsg test hanging corks:OK
+40/11 sockhash:ktls:txmsg test push_data:OK
+41/17 sockhash:ktls:txmsg test pull-data:OK
+42/ 9 sockhash:ktls:txmsg test pop-data:OK
+43/ 6 sockhash:ktls:txmsg test push/pop data:OK
+44/ 1 sockhash:ktls:txmsg test ingress parser:OK
+45/ 0 sockhash:ktls:txmsg test ingress parser2:OK
+Pass: 45 Fail: 0
+
+[1]: https://lore.kernel.org/bpf/CAM_iQpU7=4xjbefZoxndKoX9gFFMOe7FcWMq5tHBsymbrnMHxQ@mail.gmail.com/
+---
+v2 -> v1: Removed WARN_ON() check and added Reviewed-by tag.
+https://lore.kernel.org/bpf/20250605145529.3q3aqr6iygpa6xg6@gmail.com/
+
+Jiayuan Chen (2):
+  bpf,ktls: Fix data corruption when using bpf_msg_pop_data() in ktls
+  selftests/bpf: Add test to cover ktls with bpf_msg_pop_data
+
+ net/tls/tls_sw.c                              | 13 +++
+ .../selftests/bpf/prog_tests/sockmap_ktls.c   | 91 +++++++++++++++++++
+ .../selftests/bpf/progs/test_sockmap_ktls.c   |  4 +
+ 3 files changed, 108 insertions(+)
+
+-- 
+2.47.1
+
 
