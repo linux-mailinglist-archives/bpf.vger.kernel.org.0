@@ -1,86 +1,86 @@
-Return-Path: <bpf+bounces-60096-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60097-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6996AD28E0
-	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 23:40:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACD20AD28E3
+	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 23:42:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C3171709FA
-	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 21:40:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C6D51892E82
+	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 21:42:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 867AA223DC7;
-	Mon,  9 Jun 2025 21:39:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54A54223DC9;
+	Mon,  9 Jun 2025 21:42:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J0xvQlcx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EUOkYfhO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6337121B9F7;
-	Mon,  9 Jun 2025 21:39:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EE3221B9F7;
+	Mon,  9 Jun 2025 21:42:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749505195; cv=none; b=KiVko5cofWTNVRPj+df7ugzLAiaCxMJiU2odHaNP1fdaajAX4wkYX5QIY3Cfsjte3dC6H+LeXN13iozTfOjPsy50/9PuED/W2NcNEwLHUOUSRa2xtKZz1Hz82NgHFUAbu9qFGEgJm04NaruwYFiDlJQepV1JfLTaAEFvd0Xldg0=
+	t=1749505333; cv=none; b=fq1RJlRC5d5I5rMUOFOASB700fUjSCajX+InNi3HZi5tT+FA6b7bcRkCToslc0gTC3jKxBB26lDGEdyzG2jXx5tweF2LGVqPhUotLJBPTyPX2chloM2fU+ZNuV7K9FvrXGWuFWOsXy1G+iZ2Nrklq10ULh0glrxHawaS6NgL3Mw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749505195; c=relaxed/simple;
-	bh=dHTBJtRUwHwwJnO8gh9HlrtWQyq7cn60TV9L28XqLX8=;
+	s=arc-20240116; t=1749505333; c=relaxed/simple;
+	bh=fEn8/0HkyrXwRON5f0fHHuZFdubbiPUf+RiP9sX5LK0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=D+JeDNAOD7VA7NKqZIWmwQA1nNjAJjKV8EaII59On/9LbJShcBDdo6tF6ZsAPKMeEUVHL2YuvWWR6w4+gw5IqtcjcLQ4TU/FyfPvXPMqeDIw6DHJbqADe7haWsmiKvY1LG8f07Gv2J1sif7gRRJRFYaCyI7v/tiJ0BxpwidimS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J0xvQlcx; arc=none smtp.client-ip=209.85.221.50
+	 To:Cc:Content-Type; b=pdT+HxTg4dEHhuEvq41rRnRQBdMB3X6wQVTZYYRWHR/AnF9s083jx4hNDKnIrHaRuYwRyt7/CikB+G8CQJjqH48EJ1+2cPC7XviRvYt5rtgl1sU4kZe8uhaVRhfbi2U02NglmMWpgmJzJOHMIxNdQROebd+6tBfxiffGqML1y0I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EUOkYfhO; arc=none smtp.client-ip=209.85.221.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3a54700a463so1020222f8f.1;
-        Mon, 09 Jun 2025 14:39:53 -0700 (PDT)
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3a4f71831abso4491903f8f.3;
+        Mon, 09 Jun 2025 14:42:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749505192; x=1750109992; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1749505330; x=1750110130; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2mH2wTySiZjdMqcHG8KkPrIxg8vpz0eL/SdtBTWh3O8=;
-        b=J0xvQlcxO/Yo1llL29nWDeFsxiKMI+fCh9jl2UtUXTFb6Ur8sw5euXq3oV1Ve9hyUc
-         62XzaGOoMkxMwF6kz2YpunKvQL7z4zUIeWHxOqgrGDHWaZ1LQbeL3qGmsKDE87FO2Ldd
-         ctBnb3A6Mf7ZzwELbh5zidP+7mm5AUBH75fM+tQed9Y67DffBfX7cm3LkHbXGdvhhywh
-         xPAIbAvuYC4q83wHpT8lEKFCMvUYuFEJrZmAMoSnmA2xzKE7qiS7MrKrmSAePmryKN8r
-         6El+NnYp6/4/P9Waai6EseloJFX4V4jzkAyxjl8dothajiqGJV9mFnyv/0RKqvA16JH0
-         39Ow==
+        bh=dCBloPaoNdHC/G5CG18Wcy2IdjGNUbVAE/fYYNOTkFc=;
+        b=EUOkYfhODyebtg66UoRIl2NWSPs300GaSwPg2uZYpxfngOz8t1JAGGtpbYgJD8atZu
+         37PSPO/nGJtD54Z0xiutjD8QDSSOjbfQA1yv0fp1tSTfDLwBxN2ISnId2n0+ik0TP9i6
+         8QPDZi9BKa/yFM9/mXEHEqRd/UcGiI+qZ5ZI6ImBUFQsYqsDdVlykPwGtwNIUA0OoJn5
+         uAdZhOcNGwKy4PIOr+/3xhfrBA/FVJeBhf8d9PlHkIxSg9aftjfKtwpL5Gx7pJ/eXdMK
+         umaBlx7hdI7mBJgqCJ818lTZWtSvfid3ZGln/GzpOxfhO4LiVoLkfgOkjlHewFdxrYgS
+         uMrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749505192; x=1750109992;
+        d=1e100.net; s=20230601; t=1749505330; x=1750110130;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2mH2wTySiZjdMqcHG8KkPrIxg8vpz0eL/SdtBTWh3O8=;
-        b=lPPSHu75uH+OgfMCkyt/3HVsvscz0kZmCFQ30z18ZAQz5egB2at8dfD4+tr2m9gDaO
-         YGVLGEWiWRy7sQLH8RXdNMXKZixX6bhcRVeale+kC94qP82K/+SCO0dkCGXqkTMhrkyn
-         EjHR0NwaVqp17jWVdarS1Voom+9Pl9N1Ae/7onwkILwChZt+pPc2IzetzkxTi6gULa29
-         SUQXTYROJdQrqa6tiJidpTCL1A7lL6oMyr5Pf7oR7y4lF6deafFkFeoyKfrtUG76znoh
-         tbbh2MU3HaNU8DpHpe7DyHsEOzlPREGAYwY77PDwuB3bl7JMn6ls3INrJi6TXVunytFr
-         lb8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXBDljuPdHi2aU9JMq01H8hY11twRi60f7Pc93NcPAVKadFppQhAxrtzf0hLQP3yFJGW+lI9DISE6pKOoArFjB7zpfwVFs=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw55qY0J2CWATVFud9rFITtyvS18WW3+ppSVnGzodxDE2iD0Uki
-	h9bkc0bZTjoxPDBHksFEkIyiAbfU5SC4Fg0cy1+SG4FsSWgADNLRlvAoTY1Fs8HvWm0Gf1+rd42
-	iyMZlfC4B25BDldjQYBvsQYduVvcvXyg=
-X-Gm-Gg: ASbGncscyRtCIYqcEtP/3AxPrt8XA5zBkC1fZA6CHiIzOnlnlAnqiZG/Ek7iiCrYJxK
-	PmaNK6o2A6WYyIovVY6WvsvOkd6UXBsHtof44bNK68B+iwvn05m2tjR47Zy+DbX0oVdfMwTZEhb
-	MlgT0jYVIJl8Q1z323GdDQLpDhW0QFoSxwuvCx34Vj8lyK6qSV8iSi/zinryFsff8hmmf/dJef
-X-Google-Smtp-Source: AGHT+IGBGcife4PrPtBb9sMk8n2tVgUVRU7AcRoZfcTHTqo407hJpEfra9mWFGuPDdorsgEQOPIY9JOZ9x3rVz2GQc8=
-X-Received: by 2002:adf:cb13:0:b0:3a3:76d8:67a7 with SMTP id
- ffacd0b85a97d-3a55140272emr688705f8f.20.1749505191604; Mon, 09 Jun 2025
- 14:39:51 -0700 (PDT)
+        bh=dCBloPaoNdHC/G5CG18Wcy2IdjGNUbVAE/fYYNOTkFc=;
+        b=waW1IAbapF7DWAYSnePJMi/ok9g4Q+2Jf2wSfsnOG8S4kKZJ+ow9Lk47B9bIluGIKK
+         wCi3pKf2NlrqDS9LJ1I5rs/kqlQEQYz1nGkPw5SkqhCWRyW6xevlfZhIJWqNKkzBPRPm
+         u8Sognx4w9qwLGlmjZbhhB/3Mvz2XhA7n8Gr788o232n12IBprFHzDvHyPMep+RD4x+R
+         S2Q6m/xa9rrFOV/9p/rz6IV88citHrYNEnvX4jrr1svHjLTW7SEOMNNzUdB7RYqP8If7
+         qSol//FzHh+UpZd1rLuICSXrRi1I2OhGiwiE9xfXb2pQUulPeJvCXmacQX8AhOarbJFL
+         UavQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWYwlYqCN7fHCDwfEKGTo8Ik/2MtfLlZB4FAo9o0adfYTTh9gzakI7nlk/Q9R92ttIslRyrS5Wff7hOW4f44oLkXW4Jv2w=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx79ISoge1GiQdGhJrsprdy/QO/vxiZ8CqEqSrAoaAOyhoKhMSe
+	9VY3vTMJQdHBfuaF8IZ0fY9pxpnWnhJPyyGt+jT0/DLAppvyG6JQm71zoEbnRDMt2zUXhg8E+YF
+	au7fvEyWBkx4bhl+flnVrfOjHtfIHmVU=
+X-Gm-Gg: ASbGncsxgjoZQbsPnU1xjrPIMXgQuBVg36fuz4hCD+Ab9PQDxE+CZFuXs0Ay5pWAqTw
+	C78x75wvCoeQD+ETxznj6nSwa19L3g2dYEraJlk2qzPaNvF8cEbRASlnv0t5bKGY+wykDRBBUID
+	iJBWxCg/bUpU1PXiuxoKKIo8KNVPA/TpRtMQLLS9KirwntXefSf/GR3OVospTKX8LELR72hfL8
+X-Google-Smtp-Source: AGHT+IHJ7W1mSPonkcCgJ8Y9Ouao3XkJaGa7oogiMGUCPVQHDYE8TFsoVa2jGWMsfggIfL0S8F/ypwmBOTrhpzw1CFE=
+X-Received: by 2002:a05:6000:2c11:b0:3a5:27ba:47d0 with SMTP id
+ ffacd0b85a97d-3a531cb25demr12790275f8f.56.1749505330434; Mon, 09 Jun 2025
+ 14:42:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250606232914.317094-1-kpsingh@kernel.org> <20250606232914.317094-9-kpsingh@kernel.org>
-In-Reply-To: <20250606232914.317094-9-kpsingh@kernel.org>
+References: <20250606232914.317094-1-kpsingh@kernel.org> <20250606232914.317094-10-kpsingh@kernel.org>
+In-Reply-To: <20250606232914.317094-10-kpsingh@kernel.org>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 9 Jun 2025 14:39:39 -0700
-X-Gm-Features: AX0GCFsJMmFNI49GGWJLgbLF4O1tlonGGxOLwKEohwKuP9XgnQyv-AQNA90sojw
-Message-ID: <CAADnVQ+DvsdW60Edou4NcmrZnae7KYr70kD02pvAy1kYxmguQw@mail.gmail.com>
-Subject: Re: [PATCH 08/12] bpf: Implement signature verification for BPF programs
+Date: Mon, 9 Jun 2025 14:41:59 -0700
+X-Gm-Features: AX0GCFupa3mdGz7A-31ns4i6fXFiEq_D54-edp6SfI1Dh9-JLAqTXLnj55HpVo4
+Message-ID: <CAADnVQ+oe28FG_FNouBCK3bzOgMDy1QRU2Zru7cEWnKo7nxsxQ@mail.gmail.com>
+Subject: Re: [PATCH 09/12] libbpf: Update light skeleton for signing
 To: KP Singh <kpsingh@kernel.org>
 Cc: bpf <bpf@vger.kernel.org>, LSM List <linux-security-module@vger.kernel.org>, 
 	Blaise Boscaccy <bboscaccy@linux.microsoft.com>, Paul Moore <paul@paul-moore.com>, 
@@ -91,73 +91,61 @@ Content-Transfer-Encoding: quoted-printable
 
 On Fri, Jun 6, 2025 at 4:29=E2=80=AFPM KP Singh <kpsingh@kernel.org> wrote:
 >
-> This patch extends the BPF_PROG_LOAD command by adding three new fields
-> to `union bpf_attr` in the user-space API:
+> * The metadata map is created with as an exclusive map (with an
+> excl_prog_hash) This restricts map access exclusively to the signed
+> loader program, preventing tampering by other processes.
 >
->   - signature: A pointer to the signature blob.
->   - signature_size: The size of the signature blob.
->   - keyring_id: The serial number of a loaded kernel keyring (e.g.,
->     the user or session keyring) containing the trusted public keys.
+> * The map is then frozen, making it read-only from userspace.
 >
-> When a BPF program is loaded with a signature, the kernel:
+> * BPF_OBJ_GET_INFO_BY_ID instructs the kernel to compute the hash of the
+>   metadata map (H') and store it in bpf_map->sha.
 >
-> 1.  Retrieves the trusted keyring using the provided `keyring_id`.
-> 2.  Verifies the supplied signature against the BPF program's
->     instruction buffer.
-> 3.  If the signature is valid and was generated by a key in the trusted
->     keyring, the program load proceeds.
-> 4.  If no signature is provided, the load proceeds as before, allowing
->     for backward compatibility. LSMs can chose to restrict unsigned
->     programs and implement a security policy.
-> 5.  If signature verification fails for any reason,
->     the program is not loaded.
+> * The loader is then loaded with the signature which is then verified by
+>   the kernel.
+>
+> The sekeleton currently uses the session keyring
+> (KEY_SPEC_SESSION_KEYRING) by default but this can
+> be overridden by the user of the skeleton.
 >
 > Signed-off-by: KP Singh <kpsingh@kernel.org>
 > ---
->  include/linux/bpf.h            |  9 +++++++-
->  include/uapi/linux/bpf.h       | 10 +++++++++
->  kernel/bpf/syscall.c           | 39 +++++++++++++++++++++++++++++++++-
->  kernel/trace/bpf_trace.c       |  6 ++++--
->  tools/include/uapi/linux/bpf.h | 10 +++++++++
->  tools/lib/bpf/bpf.c            |  2 +-
->  6 files changed, 71 insertions(+), 5 deletions(-)
+>  tools/lib/bpf/skel_internal.h | 57 +++++++++++++++++++++++++++++++++--
+>  1 file changed, 54 insertions(+), 3 deletions(-)
 >
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 35f1a633d87a..32a41803d61c 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -2778,7 +2778,14 @@ bpf_jit_find_kfunc_model(const struct bpf_prog *pr=
-og,
->  int bpf_get_kfunc_addr(const struct bpf_prog *prog, u32 func_id,
->                        u16 btf_fd_idx, u8 **func_addr);
->
-> -struct bpf_core_ctx {
-> +__bpf_kfunc struct bpf_key *bpf_lookup_user_key(u32 serial, u64 flags);
-
-No need for __bpf_kfunc attribute in prototypes.
-It's only meaningful in definition.
-
-> +__bpf_kfunc struct bpf_key *bpf_lookup_system_key(u64 id);
-> +__bpf_kfunc void bpf_key_put(struct bpf_key *bkey);
-> +__bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_p,
-> +                                          struct bpf_dynptr *sig_p,
-> +                                          struct bpf_key *trusted_keyrin=
-g);
-> +
-
-We probably need to move them to kernel/bpf/helper.c first.
-Since kernel/trace/bpf_trace.c depends on:
-config BPF_EVENTS
-        depends on BPF_SYSCALL
-        depends on (KPROBE_EVENTS || UPROBE_EVENTS) && PERF_EVENTS
-
-They will still be guarded by CONFIG_KEYS, of course.
-
-> +       struct bpf_core_ctx {
-
-drop extra tab.
-
->         struct bpf_verifier_log *log;
->         const struct btf *btf;
+> diff --git a/tools/lib/bpf/skel_internal.h b/tools/lib/bpf/skel_internal.=
+h
+> index 4d5fa079b5d6..25502925ff36 100644
+> --- a/tools/lib/bpf/skel_internal.h
+> +++ b/tools/lib/bpf/skel_internal.h
+> @@ -13,6 +13,7 @@
+>  #include <unistd.h>
+>  #include <sys/syscall.h>
+>  #include <sys/mman.h>
+> +#include <linux/keyctl.h>
+>  #include <stdlib.h>
+>  #include "bpf.h"
+>  #endif
+> @@ -64,6 +65,11 @@ struct bpf_load_and_run_opts {
+>         __u32 data_sz;
+>         __u32 insns_sz;
+>         const char *errstr;
+> +       void *signature;
+> +       __u32 signature_sz;
+> +       __u32 keyring_id;
+> +       void * excl_prog_hash;
+> +       __u32 excl_prog_hash_sz;
 >  };
+>
+>  long kern_sys_bpf(__u32 cmd, void *attr, __u32 attr_size);
+> @@ -218,16 +224,21 @@ static inline int skel_closenz(int fd)
+>
+>  static inline int skel_map_create(enum bpf_map_type map_type,
+>                                   const char *map_name,
+> +                                 const void *excl_prog_hash,
+> +                               __u32 excl_prog_hash_sz,
+>                                   __u32 key_size,
+>                                   __u32 value_size,
+>                                   __u32 max_entries)
+
+A bit odd to insert new args in the middle. Add them to the end.
 
