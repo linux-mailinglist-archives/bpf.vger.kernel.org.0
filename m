@@ -1,344 +1,268 @@
-Return-Path: <bpf+bounces-60052-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60053-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 780CEAD2116
-	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 16:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C868AD21A5
+	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 17:02:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 64FAB188A7EA
-	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 14:37:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6ECA3188F61E
+	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 15:01:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CD0C25DD0F;
-	Mon,  9 Jun 2025 14:37:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AEBA219312;
+	Mon,  9 Jun 2025 14:59:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="F0jTwKPU"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="q32QKvRS"
 X-Original-To: bpf@vger.kernel.org
-Received: from SJ2PR03CU002.outbound.protection.outlook.com (mail-westusazon11023109.outbound.protection.outlook.com [52.101.44.109])
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2066.outbound.protection.outlook.com [40.107.92.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 243AA25CC54;
-	Mon,  9 Jun 2025 14:37:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.44.109
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A57AD218EBE;
+	Mon,  9 Jun 2025 14:59:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.66
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749479843; cv=fail; b=jMKxNrGUkARUzwcX3kAxzEV5N74bKgZKS45EaeNbUq0bskrbAav5F1+ai/o6exuEgfkhXtXXmVSm/lQx1Q7aRpJPOZYdj4g3EGWUYgSY+xgVVVQ20FHV1PhqOnH2Eqw/u6zs1T7TBxpYfzII7iv8tuw05ZbKNfeJsFuBP2Rr/WA=
+	t=1749481142; cv=fail; b=fHP/Qy6IST50HyJYhuHlLNlMmoH9gDGTVMmiuGLujJkQSzWl8AJ1pmiz88jo4G++4yg+XhoylDwsQDKaHVaqB0wuXqi40oFUQb+sDNiOT8r0GVUSYMLoJrrECR52eqx+MsbKFdaP/AhAGrKWU/36yiRPnLmc1QBsM1Qie9ssEoY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749479843; c=relaxed/simple;
-	bh=f8VK67e4BcQW2yIVhiPqTVje5WOnKHbb3YgsJYhvXdQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=ba0HGWN4sgTDOejxJU5dbt1RuR1D5oztANJfFp+/btG0KutUtYQOav+DjpOA6az6pxRjxpYLH764xbeQJONV78vDfAHsN5psQxebBZl/xffnbSI2S8gJvjDOP01/n8Yms+alhchmx/UqjhqkmpgQWtmyiB2poAMGF8OXWDietwM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=F0jTwKPU; arc=fail smtp.client-ip=52.101.44.109
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+	s=arc-20240116; t=1749481142; c=relaxed/simple;
+	bh=R6G0kDwmzQHfanlClpKwlbA0XTg7a750/QLsBuPyBog=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=as7iNvkmtObKqPBqBlmg9nEkLiuVRPr3MpN0e9y8yS8I5LNjKqxXCUHEYz3wKXHrjmE17HBVP93JACwbiya6i0s90tydmvytsRqnelTs1P2NQytnEogmSt52LUtOhG0lMW7Cck8Qr698wHTwGDH7YCLFKCpRSCWzuyk4Dli31KI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=q32QKvRS; arc=fail smtp.client-ip=40.107.92.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=u/sEkdSvAWFdVyhHLYTGbVZSkfgP/0cW51qTEDcgWKJDjuYmlIfuJ85SJzHKT0Nz//Y6XsYd1GepZZvxXh8NCPawTUZA3VC0nIwaOECohzB8BjCcHQUETOy3V9nJVxQZeS+p2Mr1rCEYBSXEa5Ggt1LSLm3SzD4mWxmcHlYlaOUw6Ynnx/HxOkrxEjO6kuEnyedHOjedrmfvVwV3P26QyMpSTnj9EnJep/+G4H7nmclfiDzcXA4V/8icftFt5ySUIvyzwCrdU1qhPfRcfWlu5n+lYu7RWRM6MJYTq8cJTpL443rt0Cufw6GQ96aPxf6B+YPP8xslVnqmPSJviziJyg==
+ b=PPaLhEBHfK1D+hRpx3gBlgZu+DL5EfNDHeZseNnVg6Wn5mhJnJNGRJc/gLNd+Eq7lhJAr6iKSVqwL76tyQzhf/PCSwWAr2/5Mt4L+heJ4EM+rxPLU9q2Au2uJ5VScSFEAEVVWPl4oomdEclhD0Igk9jygONzGm/0L9JxEt7NnErPw8itVThQ2Wcb0Fz8KJUmR1ufEhD8tZANUdkoFJMYWyHgCH30RLcs51Zd+B9dw5hFpb0x8C0DPNdq2S+h6PZn8cqtEFiMUCA+czgeHFZtOw9HJPsADKKoaMW7S27Uc6uQas0Fp3xl9/AwNrBCcgEe+roAI+WLodmuIcqwjio0ZQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LEVJy38ZhR1vIrKiCt4/w60bcbF60LsE0SdQYNHt1d4=;
- b=eozY3zPxbPhnnUtI+8ppYbuB/ArvwXhb8oebo2Ds4koAoxw87jlaBqtIKc9HFzsdJcQJH4z/D/nMfasuDxaqV7ObSS0VPRRm0WpoC4ql/mbCLivEdr1diPhy/qsaWVX58V/+4/eUkKVmYs/XFH2Zmhbu/AI0FcizxGbKAgIDwXlvtIsu/6T4pN5+W66x5RKGQmcxy7Wffa/FS+mTLRgTe6MHjjsuaQpW1wpOYxtkR8o9CGtV1mMiorHOuUvLYT5QuF7S9zyuj0aTCrLO5FJJx8FgTbdcdHJdnNYS4F4sNyjUGljxGgqRLsrcA81qn5knXBORx+YFLlSfn9m9RnCJNQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ bh=+GbowO8zUKBBkEJbildRgcO9cyGc+z3pdinvYJym1OA=;
+ b=J38m5yrT1hiWBAM93Y0IVFQLSpsMY4cpQDocseE9xlZ6n7RTeNWVGh/fOw9RD3Q+I5sBOTXDqnS+c9aNGG/OYXZzCFlenZjsQwPBj5GH5+OBjBlC3wmUx2gBZucGXP9mcpRiQyAUTjAOUmpoPcYexW4CaHUsRt7n5Ywatzk943HM6a56YH4xsIcosCVQFDD6nOnQIgqW0nY2ATB7jsMdbidZVIV7ZdKXKsZd0R7ITaZlOI9Q9MFXklTiVQ05w0V6ImtttbNqYdqJ41vqqxFvDLWS1cpMilHCqW7yrjB84YLStU0WM1oYuIXqH987VEzXRoZ+nZ7O9Y7UXtuUpQGeBw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LEVJy38ZhR1vIrKiCt4/w60bcbF60LsE0SdQYNHt1d4=;
- b=F0jTwKPUzmBxlRgWEJS0k3mTOCrnz+Fzg0UP21F0thG5L/9382WX/CX+jbfloqWrGu8ICA8F9kmcf5BjUSvAn0qu6ukK5V25ceNNXPBzv6QfZi9yeNdVsEp5ELTGd0CNYiO4Q+bDWu5n+NIdxp/gv7jL2BImABrj5V1pRHHpY8Y=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-Received: from MN0PR21MB3606.namprd21.prod.outlook.com (2603:10b6:208:3d1::17)
- by MN0PR21MB3727.namprd21.prod.outlook.com (2603:10b6:208:3ce::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8835.9; Mon, 9 Jun
- 2025 14:37:18 +0000
-Received: from MN0PR21MB3606.namprd21.prod.outlook.com
- ([fe80::5120:641f:e060:2dc4]) by MN0PR21MB3606.namprd21.prod.outlook.com
- ([fe80::5120:641f:e060:2dc4%6]) with mapi id 15.20.8813.008; Mon, 9 Jun 2025
- 14:37:17 +0000
-From: Haiyang Zhang <haiyangz@microsoft.com>
-To: linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org
-Cc: haiyangz@microsoft.com,
-	decui@microsoft.com,
-	stephen@networkplumber.org,
-	kys@microsoft.com,
-	paulros@microsoft.com,
-	olaf@aepfle.de,
-	vkuznets@redhat.com,
-	davem@davemloft.net,
-	wei.liu@kernel.org,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	leon@kernel.org,
-	longli@microsoft.com,
-	ssengar@linux.microsoft.com,
-	linux-rdma@vger.kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	bpf@vger.kernel.org,
-	ast@kernel.org,
-	hawk@kernel.org,
-	tglx@linutronix.de,
-	shradhagupta@linux.microsoft.com,
-	andrew+netdev@lunn.ch,
-	kotaranov@microsoft.com,
-	horms@kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next,v6] net: mana: Add handler for hardware servicing events
-Date: Mon,  9 Jun 2025 07:36:04 -0700
-Message-Id: <1749479764-5992-1-git-send-email-haiyangz@microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-Content-Type: text/plain
-X-ClientProxiedBy: MW4PR03CA0207.namprd03.prod.outlook.com
- (2603:10b6:303:b8::32) To MN0PR21MB3606.namprd21.prod.outlook.com
- (2603:10b6:208:3d1::17)
+ bh=+GbowO8zUKBBkEJbildRgcO9cyGc+z3pdinvYJym1OA=;
+ b=q32QKvRSEVstU6/qIhmKktuItBBfW+87p1iSdL+5vb1IvdUFEzV+VU6ogZ3vBesjrKQkMC79gTdjTyAKJTbON84EIz8930Zm9wurFuLaJcfjwPCGErwVDCTMGro3Qd6PulZixT14sJ8WRvQDySNQ6cODZ/3lFqwNQzrkBEMH4KeNTpv8BY6a421jwR2RDGZi8yWn0SJYZYO1fllT/dkUL17sKWU1dP4nkDKxrc94hn52U+TBlgUA8Qk4iusPJnR1CWXhLwoiGEwUiQg/tZZWFm5faGF2PIunt6mrdwRsS3w008Xk+/szQqykqhuCDuNp5L+q8Dq+UNnopya3lf6wEQ==
+Received: from DM6PR07CA0042.namprd07.prod.outlook.com (2603:10b6:5:74::19) by
+ CYXPR12MB9319.namprd12.prod.outlook.com (2603:10b6:930:e8::11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8792.39; Mon, 9 Jun 2025 14:58:57 +0000
+Received: from DS2PEPF00003448.namprd04.prod.outlook.com
+ (2603:10b6:5:74:cafe::77) by DM6PR07CA0042.outlook.office365.com
+ (2603:10b6:5:74::19) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8792.22 via Frontend Transport; Mon,
+ 9 Jun 2025 14:58:57 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ DS2PEPF00003448.mail.protection.outlook.com (10.167.17.75) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8835.15 via Frontend Transport; Mon, 9 Jun 2025 14:58:56 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Mon, 9 Jun 2025
+ 07:58:43 -0700
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Mon, 9 Jun
+ 2025 07:58:42 -0700
+Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.8)
+ with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Mon, 9 Jun
+ 2025 07:58:37 -0700
+From: Mark Bloch <mbloch@nvidia.com>
+To: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, "Andrew
+ Lunn" <andrew+netdev@lunn.ch>
+CC: <saeedm@nvidia.com>, <gal@nvidia.com>, <leonro@nvidia.com>,
+	<tariqt@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Simon Horman
+	<horms@kernel.org>, Richard Cochran <richardcochran@gmail.com>, "Alexei
+ Starovoitov" <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+	"Jesper Dangaard Brouer" <hawk@kernel.org>, John Fastabend
+	<john.fastabend@gmail.com>, <netdev@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<bpf@vger.kernel.org>, Mark Bloch <mbloch@nvidia.com>
+Subject: [PATCH net-next v3 00/12] net/mlx5e: Add support for devmem and io_uring TCP zero-copy
+Date: Mon, 9 Jun 2025 17:58:21 +0300
+Message-ID: <20250609145833.990793-1-mbloch@nvidia.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Sender: LKML haiyangz <lkmlhyz@microsoft.com>
-X-MS-Exchange-MessageSentRepresentingType: 2
+Content-Type: text/plain; charset="y"
+Content-Transfer-Encoding: 8bit
+X-NV-OnPremToCloud: AnonymousSubmission
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR21MB3606:EE_|MN0PR21MB3727:EE_
-X-MS-Office365-Filtering-Correlation-Id: 97399c15-c88b-45f8-5b1c-08dda7632200
+X-MS-TrafficTypeDiagnostic: DS2PEPF00003448:EE_|CYXPR12MB9319:EE_
+X-MS-Office365-Filtering-Correlation-Id: b235af9d-3f74-4a1a-e3ce-08dda76628e2
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|7416014|52116014|366016|376014|1800799024|38350700014;
+	BCL:0;ARA:13230040|1800799024|82310400026|36860700013|376014|7416014;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?ddTIsUCW3yULj0GKAfEJ5zGuLjhkVuGZu8pk7D8pSgJsdka1Ml7TCuwx4L9n?=
- =?us-ascii?Q?Tw3KNqANws3F/uFtNB3LKHWt1pcRmTaoZQBgLBJgQyxa/mqxtZ5f+B5F8IEe?=
- =?us-ascii?Q?Ns1P5EHRCiX3R3Sy3NVgIajyw6GAr75CSNJnsGbkrKRDl8jM4kHBFaAyQOTf?=
- =?us-ascii?Q?C3yM+hMjik+WxRoxdSlapY1YoJuj0QRaANdgfgqKqJ8Zp4+kR+Dz4LTo4Czc?=
- =?us-ascii?Q?y85un1SVEpYi8d4EioSSp/SCUUA1bQV7gZA2RdY8JZFltFwjQbwDpkSUXBtQ?=
- =?us-ascii?Q?I2rlR/OK1E2+qGSbbNO9UEyg9/FCzmnvdswdXg8qqmeA0CM8vOIy/jGdsfTX?=
- =?us-ascii?Q?ye1gQnELEgiELI0JQKLqJJbX/+I4wH3/FWekBxLuWFmL7K+/+PM57F3j7yUF?=
- =?us-ascii?Q?++KBnlP9urXGZzGSwEzglgiTB2yps7JhbRQRtwHBunyziNBRmycNsyaOAsdA?=
- =?us-ascii?Q?RS4rtL5UokJkziK77cMhkmaqU0LDMjrsvsfXMabbvZKumvfVWhKeWLEAEUiN?=
- =?us-ascii?Q?EU+UoF+LmxIvUTHAk97SqBiIgCztXK4tvZ/y82+PluG6QyVExS2QYoS91tUK?=
- =?us-ascii?Q?G1Kq/tjtU6go4MH9vOJYiHUUrgbVdDs4Up9JvOOPbXJ9c4JuLfPvMuvFEAMx?=
- =?us-ascii?Q?WNwMuiEYrMhujABabO3pCRWw0tA1jcvPkRuRmcOP4Qz+hTqHUqSzCH7bHwgD?=
- =?us-ascii?Q?zg8vxHkY1a3idYZ83UWCO8121OBhWNC/gU+Ic3Dw2lUxm7EnjORKPYcBHP6w?=
- =?us-ascii?Q?tT4zqzfOWj/apUIjRaCYFoPrTJ1zePlyMvjrwtoo+qGJnLE2F3V7ckA1SYex?=
- =?us-ascii?Q?avqwobsm+nb7NNpgKKH4o5yLEGJmuAUQ8vFJGAN/vVQ/8EINguzfdzpv1jMN?=
- =?us-ascii?Q?kdtUDSPSH2FG+LfEkdVhr1kD+89lMSDtB2GnISXRk8c/y06ZSa16y4p5V9ap?=
- =?us-ascii?Q?ag7F7Rr6SAlm47D+VHkRyKxNJmKU5ynd6O8tRMyo4eX+itulLSyUBvnIBZuo?=
- =?us-ascii?Q?vw9lK4PUlJpGKnEOyUg+eh6c806rEysJ5DfYHb3hNt6i17ZvmIfRCON5HQYW?=
- =?us-ascii?Q?nO7G+TSQOV1t1X/ABwNadFQzpmmjxn40bfnzr2hgooVDg7H0UkV5f/OqwQ61?=
- =?us-ascii?Q?27cRXx7nSW0ZJdh4/x6fKM1T5I+B149VtXu6rYHpEXxlITubDZOIOwdQtKRn?=
- =?us-ascii?Q?QDY9895ULmYAqrzFIYQC4/+H0dfMOoV05OumVQDerEJkYJCfovOTQo3E8nPD?=
- =?us-ascii?Q?5CHSMFkOAZbPRFbxdyWi0SuL9rbJQe19PUIE0sJOT/fBhE1jm2hXGBDja7F+?=
- =?us-ascii?Q?veRJBKQ6PTu3wHSEUX7AVEHgZ65Q+4xQl8rQfpSsolDnITJ7QYXziLTfhEr9?=
- =?us-ascii?Q?nM5BTeT4W9xryZAFHzLJgxJSgU7dW2f2bI4xlpcJuoqVIAmHG7wfRrebB7D5?=
- =?us-ascii?Q?Mag1CHTedU8plwEW3fGyXXNsleFlF1kMMDP2j3S3qSaaLuKqzLGOMg=3D=3D?=
+	=?us-ascii?Q?AeEYkpRZFjYWUzsX4ZQ9ykUppWnK/x6CRJi5QSU7zm5rQbEHkWFrIXO0WqP/?=
+ =?us-ascii?Q?/DlLZRJyqHmE2odA8is82wXTp7QMgZmbxVxQu4gH6oTLPyfEnCB/C9cHFl2t?=
+ =?us-ascii?Q?j8fMxE0w7uHlpm/soPQbi5j1rJkmBXC7G/okDy+HXqI5vGJ0mKYZmqjrZj2O?=
+ =?us-ascii?Q?eOixPNxJQgIWapyYEN5QEL9DROlrHpLvAT2rl2Y8RTOh0kz/nzvuLa0nILPX?=
+ =?us-ascii?Q?IdVaTsprw/RjiOupB9ASU3OF0/FYbswuOzSBo69JiHkZ1CYnOuRF1mT9ZwyC?=
+ =?us-ascii?Q?TSVVwEn8QudiuXwJ76BuOvljPhS5r6GUwgR7Qe4Q2HDg/rLWDiRnmn4kA3Md?=
+ =?us-ascii?Q?sUcmdsUUALLCRxmn5mSgTlB9fDLgPOY92ZMaKS2WxYdVpVw5hjIT3CQXRl4C?=
+ =?us-ascii?Q?MNrJ7YP1yYH9eVKkyoDg/Hp+gC64bfkxDLQSqXqsaHDwwzQK5sZSFjhknbN1?=
+ =?us-ascii?Q?V8HkxSnNJ9LyPVAyRsCwoXnnxiMut/D3esWM6lsNl2D40Lh7hES67k813tsy?=
+ =?us-ascii?Q?YvkZ+/ZonDqCkEO1vgfrMYO4DoAkV6xZvHecZ5dqMpGbe45Ficz9cAF90Clj?=
+ =?us-ascii?Q?1/CSMhe7gRLsk2J9ljbROtp/QZP5FRZhf+A9WzWNdAsMdH881Muss851gTgZ?=
+ =?us-ascii?Q?y+RmuyX4nlFTH+S0buZfsuB3N4iasdt03JOTTSLgoW6Cc5vJ4J3jOhmq5BKS?=
+ =?us-ascii?Q?Tf95AKb8EqZugSh+GQ3OCsX5xZ/2CKYB7xFhASX7Bk6GwBMqpcDlrDEYifus?=
+ =?us-ascii?Q?Pf1IQKQ5COtfp26P1gA+D4qmab+8G3YX8cAelQuum7CKjY65UdZTUu06Yxly?=
+ =?us-ascii?Q?t7AXgyiAt/VvMrxLFhHKAFWi5Z8PHJl7JEOiKmijRwzNGhYH/qCwEiAHWFqd?=
+ =?us-ascii?Q?/WRnlr1q/elq8f7LqAGJZUvoBf4XKTy1lZVh3Qk43n+3493GEJ5l68D3DoZE?=
+ =?us-ascii?Q?+jjmHvk67Rir58zcskYLnJOAduIn0DF0Crvw7zuOGKJMq1CAOdiO20/lO0SZ?=
+ =?us-ascii?Q?I9/GcoBMn+f1K3XtafYQDmbSWfxUt5jRfCztUTMQon6WL6gX2DBZU5KXrclv?=
+ =?us-ascii?Q?OOcmYnZcZ0dQllZQ/a1vj0KReUrB899WgjYH1ymjm9l3QsApNOBD6D+6kBT6?=
+ =?us-ascii?Q?VDt/VRkAumnOWAFad8B07nLGGOWdw9hLhjyAF2KXvSJMLCh3K3kU1bXp3lgI?=
+ =?us-ascii?Q?KI75f/8znIinAwUbS9L71WHM8w3Qw4lMlr7mSf8MkXhzlxoAroOXxYCri2W0?=
+ =?us-ascii?Q?xzfzEHcJj9ByemrjEzdc1Qu9KQpXOqYEy3P5PE67WSi5M3SzQoXriNbL4IOh?=
+ =?us-ascii?Q?RlG5SmxxfqfDW6S4bNPpZA7QxCYAwvBc/Y/Xy0Xoc0E/W5MHAOx9uNjTvqXg?=
+ =?us-ascii?Q?4XelfRB1g/xNpVcPzM8mZYmRViPl9mxWrWUdQVrXF6Cnu1/LEe66evL33DDw?=
+ =?us-ascii?Q?7xR8eYbZk3lMRGPpMI6pvR59K0mxt8dhzXqpywAu1ITrS9tZyIxoYtPCPSVE?=
+ =?us-ascii?Q?N/kkysWyMbKNCo+xpflJHgLX8mP/ym2/arLnw6VZg02GqvpLqDv+JmtJoA?=
+ =?us-ascii?Q?=3D=3D?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR21MB3606.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(52116014)(366016)(376014)(1800799024)(38350700014);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?RiMwzWqppG4dyS3fHB1P28zbU+G3k/pO8gkPBRER+tBtoadYNGrVHgngp2zS?=
- =?us-ascii?Q?t4Re2LCMNTh4AZV3ysVk39g7mzTu5UzpQf4EUSEU2OgXMeOStHzkAfm5hvUl?=
- =?us-ascii?Q?CKzw1gsJ2Pm3TuBkT5j7ZqZ+y1XjOlwNQs637gw7NnK/W72O23b9s/KeCDco?=
- =?us-ascii?Q?mhYeEoja6rfKqE01ZbpcmhkubEwZXY0MJApx3F91OT/kAnNnnHPhcnBvOTsK?=
- =?us-ascii?Q?gWPnBEGASyEjEmlzBXE01HF/NaGSwuYhmG2bBkGxGExXv+6AV6TjwbP8OJVH?=
- =?us-ascii?Q?DaUhT9MNzkFKjXrUulrSqtpmEsekWBzasRIf8uDfcPLH9ArGEBlNK/irM0UC?=
- =?us-ascii?Q?xyimg1E3D1fAVhmEPC3hU3mTpDtPHg6RFJz6ipwkOwgMGButvXzEE8bvVjEp?=
- =?us-ascii?Q?uPmnVve2Vm6Hqg90ni9yw75VLy1TRk2siJnij3ce7ZcRUvLvg8VUN6BbsTKc?=
- =?us-ascii?Q?CVAjNMRxYbA8+uZGhFYKsuPXEciEsWBBkhE591shzrYsdpH2rakE6lVJhhPp?=
- =?us-ascii?Q?B2j3+EXaAqJJSfi4t6RoLOfo5yoxLEOJGN8+CkN5MfIf/Mg12VpPSWF5o998?=
- =?us-ascii?Q?aI5kvbFB2lLA0uSp+CcwfQFKydHXs9cT+3Oosbt7uFTl4LOjxFP1WT1xXfm8?=
- =?us-ascii?Q?Q6QuNc7XYFCHnK/W3gg4NFqjc9IS26FDBYFkLCRBnjuIko1BB1iNbRQ9f+hK?=
- =?us-ascii?Q?Be+Geyyc7mgN9rQhqCIsbzWa6rOVpVRr62N8ZouTZ7/pIp2Mmm3BpIa3yz6c?=
- =?us-ascii?Q?J3ab0OFAS87oNKQfoChqbx+kTHwA/v9/T4bSr35QX0ojKS3WiSWNmuXGBO1f?=
- =?us-ascii?Q?krgSDb4ZFkp4T5dPU2XedYa2Ffjpik7y+0DN5G0RvV8IuP/n0Y0PPUh9cN3z?=
- =?us-ascii?Q?jIGjiQ7A1xoABkFWoSww37zKbzPu5QdO2+VpOePEAZd9UOBPg0q8nToAyloH?=
- =?us-ascii?Q?neumb6kM2yRhpVtuFwhLl4PgXqdcBmV8khLSgo9d5X1DrdLZObfAW1SpmTnw?=
- =?us-ascii?Q?E5b/GDiwMXJ8ZNC7zU1UVyGaHC1U+SjnhRVmtI5mwt1g0H3aIHjNV/96t1IO?=
- =?us-ascii?Q?OsfFYm836bR7M+zHI7LeALY0LaM75reBvEW/AA+jZkUK9KxzQtk4CfEQJ904?=
- =?us-ascii?Q?GkvzOf5J3bKZ/dYdSZAHFS0ReSlu8eU93BYjNuLuphAqV84MsJhtmVd+weMW?=
- =?us-ascii?Q?nFqTChgQR/k4orIa2PF4Le3nGUH/hVoqAJU+cg+X8JbkmX7hiFD0tEcrRO59?=
- =?us-ascii?Q?wLDy++XpLEqANFpbzPhetqZFWOSY9zM6/LrCIoFxU2j6ulNf0lUUgzJ7FB3u?=
- =?us-ascii?Q?VTAbYnqFm3iDuRsiJusBdreW/CxFdh+Tj5T4eQdtv6DBHpAyUXIfX8PsHeYx?=
- =?us-ascii?Q?MUHRF6V9gwuX8qFC0fQU6N54V9LGUW9x+woF464H2r6d9IYsICclXfA4O0iw?=
- =?us-ascii?Q?2+FWB7GCC2LUe7SmNy1p27UywkLUlSbsNLnhbpMxPzxEdWu4Yzx+6DRs4A4L?=
- =?us-ascii?Q?xQejODAB1q/pPVGGhDObq4040dlCOCElR/jko1pu323n1fyj9+FuqHf2abWc?=
- =?us-ascii?Q?yzJKv5n0uZfsrMrT5Na8CHe43o0eLfxsvq1P1QFB?=
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 97399c15-c88b-45f8-5b1c-08dda7632200
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR21MB3606.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2025 14:37:17.5767
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(36860700013)(376014)(7416014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2025 14:58:56.9464
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5KUEihu9lrR4ZjJ33r4+TbUj1k91PHkQOFJxhfSF3Mj2RVAAbM35i+dthOGYEYPOu2xmoRsLK+fV2qzSiQvHhA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR21MB3727
+X-MS-Exchange-CrossTenant-Network-Message-Id: b235af9d-3f74-4a1a-e3ce-08dda76628e2
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DS2PEPF00003448.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYXPR12MB9319
 
-To collaborate with hardware servicing events, upon receiving the special
-EQE notification from the HW channel, remove the devices on this bus.
-Then, after a waiting period based on the device specs, rescan the parent
-bus to recover the devices.
+Quick note before diving into the series details, Tariq is on vacation
+for a few days, I’ll be handling the mlx5 core/netdev submissions
+in his absence.
 
-Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
-Reviewed-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
-Reviewed-by: Simon Horman <horms@kernel.org>
----
-v6:
-Not acquiring module refcnt as suggested by Paolo Abeni.
+This series adds support for zerocopy rx TCP with devmem and io_uring
+for ConnectX7 NICs and above. For performance reasons and simplicity
+HW-GRO will also be turned on when header-data split mode is on.
 
-v5:
-Get refcnt of the pdev struct to avoid removal before running the work
-as suggested by Jakub Kicinski.
+Performance
+===========
 
-v4:
-Renamed EQE type 135 to GDMA_EQE_HWC_RESET_REQUEST, since there can
-be multiple cases of this reset request.
+Test setup:
 
-v3:
-Updated for checkpatch warnings as suggested by Simon Horman.
+* CPU: Intel(R) Xeon(R) Platinum 8380 CPU @ 2.30GHz (single NUMA)
+* NIC: ConnectX7
+* Benchmarking tool: kperf [0]
+* Single TCP flow
+* Test duration: 60s
 
-v2:
-Added dev_dbg for service type as suggested by Shradha Gupta.
-Added driver cap bit.
----
- .../net/ethernet/microsoft/mana/gdma_main.c   | 67 +++++++++++++++++++
- include/net/mana/gdma.h                       | 10 ++-
- 2 files changed, 75 insertions(+), 2 deletions(-)
+With application thread and interrupts pinned to the *same* core:
 
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index 4ffaf7588885..999cf7f88d5d 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -352,11 +352,58 @@ void mana_gd_ring_cq(struct gdma_queue *cq, u8 arm_bit)
- }
- EXPORT_SYMBOL_NS(mana_gd_ring_cq, "NET_MANA");
- 
-+#define MANA_SERVICE_PERIOD 10
-+
-+struct mana_serv_work {
-+	struct work_struct serv_work;
-+	struct pci_dev *pdev;
-+};
-+
-+static void mana_serv_func(struct work_struct *w)
-+{
-+	struct mana_serv_work *mns_wk;
-+	struct pci_bus *bus, *parent;
-+	struct pci_dev *pdev;
-+
-+	mns_wk = container_of(w, struct mana_serv_work, serv_work);
-+	pdev = mns_wk->pdev;
-+
-+	pci_lock_rescan_remove();
-+
-+	if (!pdev)
-+		goto out;
-+
-+	bus = pdev->bus;
-+	if (!bus) {
-+		dev_err(&pdev->dev, "MANA service: no bus\n");
-+		goto out;
-+	}
-+
-+	parent = bus->parent;
-+	if (!parent) {
-+		dev_err(&pdev->dev, "MANA service: no parent bus\n");
-+		goto out;
-+	}
-+
-+	pci_stop_and_remove_bus_device(bus->self);
-+
-+	msleep(MANA_SERVICE_PERIOD * 1000);
-+
-+	pci_rescan_bus(parent);
-+
-+out:
-+	pci_unlock_rescan_remove();
-+
-+	pci_dev_put(pdev);
-+	kfree(mns_wk);
-+}
-+
- static void mana_gd_process_eqe(struct gdma_queue *eq)
- {
- 	u32 head = eq->head % (eq->queue_size / GDMA_EQE_SIZE);
- 	struct gdma_context *gc = eq->gdma_dev->gdma_context;
- 	struct gdma_eqe *eq_eqe_ptr = eq->queue_mem_ptr;
-+	struct mana_serv_work *mns_wk;
- 	union gdma_eqe_info eqe_info;
- 	enum gdma_eqe_type type;
- 	struct gdma_event event;
-@@ -400,6 +447,26 @@ static void mana_gd_process_eqe(struct gdma_queue *eq)
- 		eq->eq.callback(eq->eq.context, eq, &event);
- 		break;
- 
-+	case GDMA_EQE_HWC_FPGA_RECONFIG:
-+		dev_info(gc->dev, "Recv MANA service type:%d\n", type);
-+
-+		if (gc->in_service) {
-+			dev_info(gc->dev, "Already in service\n");
-+			break;
-+		}
-+
-+		mns_wk = kzalloc(sizeof(*mns_wk), GFP_ATOMIC);
-+		if (!mns_wk)
-+			break;
-+
-+		dev_info(gc->dev, "Start MANA service type:%d\n", type);
-+		gc->in_service = true;
-+		mns_wk->pdev = to_pci_dev(gc->dev);
-+		pci_dev_get(mns_wk->pdev);
-+		INIT_WORK(&mns_wk->serv_work, mana_serv_func);
-+		schedule_work(&mns_wk->serv_work);
-+		break;
-+
- 	default:
- 		break;
- 	}
-diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-index 228603bf03f2..150ab3610869 100644
---- a/include/net/mana/gdma.h
-+++ b/include/net/mana/gdma.h
-@@ -58,7 +58,7 @@ enum gdma_eqe_type {
- 	GDMA_EQE_HWC_INIT_EQ_ID_DB	= 129,
- 	GDMA_EQE_HWC_INIT_DATA		= 130,
- 	GDMA_EQE_HWC_INIT_DONE		= 131,
--	GDMA_EQE_HWC_SOC_RECONFIG	= 132,
-+	GDMA_EQE_HWC_FPGA_RECONFIG	= 132,
- 	GDMA_EQE_HWC_SOC_RECONFIG_DATA	= 133,
- 	GDMA_EQE_RNIC_QP_FATAL		= 176,
- };
-@@ -388,6 +388,8 @@ struct gdma_context {
- 	u32			test_event_eq_id;
- 
- 	bool			is_pf;
-+	bool			in_service;
-+
- 	phys_addr_t		bar0_pa;
- 	void __iomem		*bar0_va;
- 	void __iomem		*shm_base;
-@@ -558,12 +560,16 @@ enum {
- /* Driver can handle holes (zeros) in the device list */
- #define GDMA_DRV_CAP_FLAG_1_DEV_LIST_HOLES_SUP BIT(11)
- 
-+/* Driver can self reset on FPGA Reconfig EQE notification */
-+#define GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE BIT(17)
-+
- #define GDMA_DRV_CAP_FLAGS1 \
- 	(GDMA_DRV_CAP_FLAG_1_EQ_SHARING_MULTI_VPORT | \
- 	 GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX | \
- 	 GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG | \
- 	 GDMA_DRV_CAP_FLAG_1_VARIABLE_INDIRECTION_TABLE_SUPPORT | \
--	 GDMA_DRV_CAP_FLAG_1_DEV_LIST_HOLES_SUP)
-+	 GDMA_DRV_CAP_FLAG_1_DEV_LIST_HOLES_SUP | \
-+	 GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE)
- 
- #define GDMA_DRV_CAP_FLAGS2 0
- 
+|------+-----------+----------|
+| MTU  | epoll     | io_uring |
+|------+-----------+----------|
+| 1500 | 61.6 Gbps | 114 Gbps |
+| 4096 | 69.3 Gbps | 151 Gbps |
+| 9000 | 67.8 Gbps | 187 Gbps |
+|------+-----------+----------|
+
+The CPU usage for io_uring is 95%.
+
+Reproduction steps for io_uring:
+
+server --no-daemon -a 2001:db8::1 --no-memcmp --iou --iou_sendzc \
+	--iou_zcrx --iou_dev_name eth2 --iou_zcrx_queue_id 2
+
+server --no-daemon -a 2001:db8::2 --no-memcmp --iou --iou_sendzc
+
+client --src 2001:db8::2 --dst 2001:db8::1 \
+	--msg-zerocopy -t 60 --cpu-min=2 --cpu-max=2
+
+Patch overview:
+================
+
+First, a netmem API for skb_can_coalesce is added to the core to be able
+to do skb fragment coalescing on netmems.
+
+The next patches introduce some cleanups in the internal SHAMPO code and
+improvements to hw gro capability checks in FW.
+
+A separate page_pool is introduced for headers, to be used only when
+the rxq has a memory provider. Ethtool stats are added as well.
+
+Then the driver is converted to use the netmem API and to allow support
+for unreadable netmem page pool.
+
+The queue management ops are implemented.
+
+Finally, the tcp-data-split ring parameter is exposed.
+
+Changelog
+=========
+
+Changes from v2 [2]:
+- Added support for netmem TX.
+- Changed skb_can_coalesce_netmem() based on Mina's suggestion.
+- Reworked tcp_data_split setting to no longer change HW-GRO in
+  wanted_features.
+- Switched to a single page pool when rxq has no memory providers.
+
+Changes from v1 [1]:
+- Added support for skb_can_coalesce_netmem().
+- Avoid netmem_to_page() casts in the driver.
+- Fixed code to abide 80 char limit with some exceptions to avoid
+  code churn.
+
+References
+==========
+[0] kperf: git://git.kernel.dk/kperf.git
+[1] v1: https://lore.kernel.org/all/20250116215530.158886-1-saeed@kernel.org/
+[2] v2: https://lore.kernel.org/all/1747950086-1246773-1-git-send-email-tariqt@nvidia.com/
+
+Dragos Tatulea (3):
+  net: Allow const args for of page_to_netmem()
+  net: Add skb_can_coalesce for netmem
+  net/mlx5e: Add TX support for netmems
+
+Saeed Mahameed (9):
+  net/mlx5e: SHAMPO: Reorganize mlx5_rq_shampo_alloc
+  net/mlx5e: SHAMPO: Remove redundant params
+  net/mlx5e: SHAMPO: Improve hw gro capability checking
+  net/mlx5e: SHAMPO: Separate pool for headers
+  net/mlx5e: SHAMPO: Headers page pool stats
+  net/mlx5e: Convert over to netmem
+  net/mlx5e: Add support for UNREADABLE netmem page pools
+  net/mlx5e: Implement queue mgmt ops and single channel swap
+  net/mlx5e: Support ethtool tcp-data-split settings
+
+ drivers/net/ethernet/mellanox/mlx5/core/en.h  |  11 +-
+ .../ethernet/mellanox/mlx5/core/en/params.c   |  36 ++-
+ .../net/ethernet/mellanox/mlx5/core/en/txrx.h |   3 +-
+ .../ethernet/mellanox/mlx5/core/en_ethtool.c  |  33 +-
+ .../net/ethernet/mellanox/mlx5/core/en_main.c | 305 +++++++++++++-----
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   | 136 ++++----
+ .../ethernet/mellanox/mlx5/core/en_stats.c    |  54 ++++
+ .../ethernet/mellanox/mlx5/core/en_stats.h    |  24 ++
+ include/linux/skbuff.h                        |  12 +-
+ include/net/netmem.h                          |   2 +-
+ 10 files changed, 449 insertions(+), 167 deletions(-)
+
+
+base-commit: 2c7e4a2663a1ab5a740c59c31991579b6b865a26
 -- 
 2.34.1
 
