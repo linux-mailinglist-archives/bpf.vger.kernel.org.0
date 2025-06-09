@@ -1,88 +1,84 @@
-Return-Path: <bpf+bounces-60099-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60100-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DCECAD28F4
-	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 23:50:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F351AD2906
+	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 23:59:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37FE5160C07
-	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 21:50:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB9443B368B
+	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 21:59:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C13921FF49;
-	Mon,  9 Jun 2025 21:50:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4A35223DC7;
+	Mon,  9 Jun 2025 21:59:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DAhiRgCe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WiR2EBbx"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6A7A1401C
-	for <bpf@vger.kernel.org>; Mon,  9 Jun 2025 21:50:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57A1119E992;
+	Mon,  9 Jun 2025 21:59:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749505820; cv=none; b=YLN+/idHnjsRUm89qhJsMjnuAqrsrrp+N0K3V8auZCO/fXqiZSMrQyNJ9U9fubqDDPzq7l8MnmOpMZauIxK2RYhHfrY+/Bge3kk8vkxFsVxTazNn/o8cduX828LYmP9SsVdU/OTDoG8GHS52O0oBxDXce+hAXAY2ftAF8qz9KWo=
+	t=1749506372; cv=none; b=AYEhP8PwSrCQwwtvF+wfSAWpI/f190vKlwnJNlClVkmVxf7dFDm+N2JaNLPW2ru/TLZQMekf8HccvsCf6EOUzZf4QoHTMmgosuWjCeAJictDol9589L5oMb294+gVotk40KEoyKO+XRcU/55iZHvYWrcPdgXs39gzu7rtOQl4ao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749505820; c=relaxed/simple;
-	bh=IUTwAphWgJacqZzXuUcXpIQzKEy/zEhPJ1GKx2EbSas=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VaxCR+jPhefVPq2JJLDBEYxFZocTY2P9ld2NgUH254zUl9eZ9vCVScxQ1Ph72gFM3eSU94BdTs1daN5GG2Siz6VKoBkien5ODLDtq4uhi5t+Y81n3bNCLy3WdNJ5vsVxUdKCb2QUkZ7ObeAQxvR6jH7U/P8FMyI5OInVfN64p84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DAhiRgCe; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <27e23bda-eaf9-4fb2-991c-71dbb3ee9f4c@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1749505804;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gf07GSMj+WxyCGAFqt8qw1Fl21dEj2hZCLfaOZpV9+0=;
-	b=DAhiRgCeabofWEy2yg3Wo3UFkN2Jg/rSYJJCoSHNSlgMsXnw61w8DeQN0rRI4uweOhhmXu
-	Y+jd8SqXPB1E+DxtgC+470/gYEEmRkct9hIzRUh46gvRQDI3T9Phg061syixaoiIu8yVWp
-	oAy0HLQIt+BZXis+RyunJ0R4jnZ1C0c=
-Date: Mon, 9 Jun 2025 14:49:58 -0700
+	s=arc-20240116; t=1749506372; c=relaxed/simple;
+	bh=n3Z1ZQMAO9NraVCRE5x8t+QaCYLmuLEY6KV8qMZWOPo=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=mUCcLT3KZNsOkLdeyj9xfV57vrKT43Br5Jgf9+yM22NqxkmBU9YwXE5JJTBtqgwmIjCJUh7aFSMmqDNtibFyCiM5OIjoFoIHTEdYf4jF7RXhD4HLo+Swy5FHC8I9Q5Cw44yiJiCbrrS5lUlW6FH5u2XSgDx6QdfVJiHN25WGykM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WiR2EBbx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31778C4CEEB;
+	Mon,  9 Jun 2025 21:59:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749506371;
+	bh=n3Z1ZQMAO9NraVCRE5x8t+QaCYLmuLEY6KV8qMZWOPo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=WiR2EBbxHhpZIfdbKe3mYOmRR78gmnAsvcYjJJc32H5oCxq+ER09bD0IVydvU//vh
+	 gq8rJA9cQpqCserjwOmfJqn0XSmaCg6RjR04qJq6JVbmV2cEC321BsPVBLTLP9NP/F
+	 24rebBlciVAIjpMr4A+W+bH625MG8VsDQUAJyyUev0tp3HGPMAxvev9RSEiY0iG8rT
+	 yjhY9fjfBIKhEIgp/Aplr79/q8/jip2Tkxfa2RKVqE06HBPmKiUJmNGyW6ijMVAa8z
+	 1s/wym+yON/e41GzOaPKWYgLjkSgnyKQ7xyL4BvHEZs1IHE65Z2F1iUdwh/oY4BMuw
+	 pzigiTdf52HRg==
+Date: Mon, 9 Jun 2025 14:59:28 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Maciej =?UTF-8?B?xbtlbmN6eWtvd3NraQ==?= <maze@google.com>
+Cc: davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com,
+ pabeni@redhat.com, andrew+netdev@lunn.ch, horms@kernel.org, Daniel Borkmann
+ <daniel@iogearbox.net>, martin.lau@linux.dev, john.fastabend@gmail.com,
+ eddyz87@gmail.com, sdf@fomichev.me, haoluo@google.com, willemb@google.com,
+ william.xuanziyang@huawei.com, alan.maguire@oracle.com,
+ bpf@vger.kernel.org, shuah@kernel.org, linux-kselftest@vger.kernel.org,
+ yonghong.song@linux.dev
+Subject: Re: [PATCH net v2] net: clear the dst when changing skb protocol
+Message-ID: <20250609145928.014a72c6@kernel.org>
+In-Reply-To: <CANP3RGcUbSG3dQQbDrsYq9YSMStXbmEsq6U34jcieA_45H4_JQ@mail.gmail.com>
+References: <20250607204734.1588964-1-kuba@kernel.org>
+	<CANP3RGcUbSG3dQQbDrsYq9YSMStXbmEsq6U34jcieA_45H4_JQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: BPF CI update: veristat-scx job
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, linux-kernel@vger.kernel.org,
- Kernel Team <kernel-team@meta.com>, kernel-ci@meta.com,
- Alexei Starovoitov <ast@kernel.org>, tj@kernel.org, mkutsevol@meta.com,
- scottbpc@meta.com, jakehillion@meta.com, mykolal@meta.com
-References: <c17b2e6c-3626-4d69-8784-01b13a9e2851@linux.dev>
- <CAEf4BzbWZrg1Aq1p0c2h-s2Ro=Fm2Dk1uE7frFynOd3CwZqFZA@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-In-Reply-To: <CAEf4BzbWZrg1Aq1p0c2h-s2Ro=Fm2Dk1uE7frFynOd3CwZqFZA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On 6/9/25 2:43 PM, Andrii Nakryiko wrote:
-> On Mon, Jun 9, 2025 at 2:30 PM Ihor Solodrai <ihor.solodrai@linux.dev> wrote:
->>
->> [...]
->>
->> See an example of successful job run here:
->> https://github.com/kernel-patches/bpf/actions/runs/15543439297/job/43761685117
-> 
-> Unsuccessful veristat runs are actually more interesting :) Do you
-> have a link to some examples with veristat failures?
+On Sat, 7 Jun 2025 23:33:39 +0200 Maciej =C5=BBenczykowski wrote:
+> 1 meta question: as this is a fix and will thus be backported into
+> 5.4+ LTS, should this be split into two patches? Either making the
+> test a follow up, or even going with only the crash fix in patch 1 and
+> putting the 4-in-4 and 6-in-6 behavioural change in patch 2?  We'd end
+> up in the same state at tip of tree... but it would affect the LTS
+> backports.  Honestly I'm not even sure what's best.
 
-Here is a recent one (although it's not that interesting either):
-https://github.com/kernel-patches/bpf/actions/runs/15496531493/job/43634843627
+:) Did we go from wondering if we can strip dst unconditionally to
+wondering if stripping it on encap/decap may introduce regressions?
 
-> 
->>
->> [1] https://github.com/sched-ext/scx
->> [2] https://github.com/libbpf/veristat
->>
-
+I suppose it may be useful to split, just to make it clear which
+portion of the change is the crash fix and which one is just because
+we think it's more consistent.
+--=20
+pw-bot: cr
 
