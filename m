@@ -1,66 +1,68 @@
-Return-Path: <bpf+bounces-60085-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60086-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90240AD26C8
-	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 21:33:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39F2CAD26D5
+	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 21:34:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4CFAD7A9447
-	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 19:31:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26B073A3E12
+	for <lists+bpf@lfdr.de>; Mon,  9 Jun 2025 19:34:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E47C821FF23;
-	Mon,  9 Jun 2025 19:32:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 505F2221281;
+	Mon,  9 Jun 2025 19:34:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RuNIprlM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oWk0zO2A"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B8BA20C480;
-	Mon,  9 Jun 2025 19:32:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCAA82F4A;
+	Mon,  9 Jun 2025 19:34:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749497578; cv=none; b=pfuP3iXm3AL4fkAHNGvkWe2QYRdJy6xPUtDQealw3EhSiQEBxBnSzWLrRbUAIDa5GwezNxw5Z6G46fSxhAxY2IwnD2X7gZHn01M89Oi4Z1cTMWKvntcI+opQqL7J+ZGOAY/viwxVYWCLLQFXuta/1O5t1ITtRjGqiAoy0w616Yk=
+	t=1749497640; cv=none; b=hdU3fKuGpM4eLJ95fSkWZAl8IGqksk9GGYwFR3w9xWTyKxHy6feg0F9te1Pm6BhDYyTKjozTYTvDjPzaVjQntrH36kLl6+RSe7a9d+PHNGVSHID8EamNZrV1q10yVsmutb5XpWxLh0i/QPsdrEHQWRHKm9IiPjedY+1l30iMjP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749497578; c=relaxed/simple;
-	bh=HcZIjrW0jm/JSJd6+mO+/i0r77unJFHWKpYgNW70c7Y=;
+	s=arc-20240116; t=1749497640; c=relaxed/simple;
+	bh=0jArhGSz3UMEtySAtlHbYE5pxnqUAOSkObNt8gqJUmQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Bhb4EaUDlaEDHBvSl/K2zJAWRnJQcGGzyKpIJS4AE1hS7pnneMALf6iSRcx1Yi3kSv18FotwGoZXNVZw1LGp/FooIu9HcARSaIoYwlQAB7iTF4kKtj/jvNvbLKJ4yY1WZPJ+OrtZYl9/lKWw1B0DJooePpCQ6ZmZ9b98HLzO/yE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RuNIprlM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBFD2C4CEEB;
-	Mon,  9 Jun 2025 19:32:56 +0000 (UTC)
+	 MIME-Version:Content-Type; b=POqN3PV9F+BTgUOoopAV2DZXAxQS+JjnopVKofCeHRJIi3YfZ2WGVaIUIZiqi42K8xVaAijCvPzmGt7HY3kq/KZ2r8ranuI7YiarStFzmVLCGWFbHxmRWQ+SIm40phb09KzI75QSkefWypWtaL8coR2uq5gT59khPP1/u3TuAT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oWk0zO2A; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E807C4CEEB;
+	Mon,  9 Jun 2025 19:33:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749497577;
-	bh=HcZIjrW0jm/JSJd6+mO+/i0r77unJFHWKpYgNW70c7Y=;
+	s=k20201202; t=1749497640;
+	bh=0jArhGSz3UMEtySAtlHbYE5pxnqUAOSkObNt8gqJUmQ=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=RuNIprlM/03pt2+kYdMFiMNcIZSFuPeIyIPGB7plON7IfYmTJRVJihkaLTtq3yJKL
-	 9pmGhnKOP19kgIq5HWf36qw9Lh1E/QuJMPzzvh/o4JtNLxbLy/G6ljHu353ZFtJQhy
-	 erbCFN2FgZpwoB18x/oAKYO7eVeQW67nOfNXNaxYU0chKv8fflMyLx4ubKbDejXdkm
-	 ZM1aYGrS2xKvFhhGNejpdXRAJtd999N9o13wWSvuMWm83rKhjWLJNR7F8NhwOxyYVV
-	 jkBp9POInlPrEo0gIfo+v4Q0pbEVYuQYGvVLgDp1l6ES5F82adY4GpeuTE3K4IIYki
-	 PzOOSB8NqOwuQ==
-Date: Mon, 9 Jun 2025 12:32:55 -0700
+	b=oWk0zO2A/E5mkOyjsJrGSXoEVjj7lQELngE4VTdtxHfnd1D9IIxqbmRCZE0CCQ0lB
+	 pZx6mXFrD+xWoNYyOyvEcuHCvDDybsUw7lrmlP9ItzWP35jd2hd4cqMnmPi8KpdJaz
+	 HG00rp0hH5/N8goHNuGxIN28Zn4EszcN01xQqfKi3dXM+rgRgLaJg040nKMMWwC16/
+	 VYsFmy1JbySlXU/zfOKtPILSew2VuwjjrDCn4e6e2JHXV/nySoLnUmfUTVTqwiDjne
+	 19SaoPXa5f6wptD93yqQkS4plcXR16klSqbC5rSxrHF25JJQYTjCtMcfBmbZq4NuJG
+	 2N+SMb423lTlQ==
+Date: Mon, 9 Jun 2025 12:33:58 -0700
 From: Jakub Kicinski <kuba@kernel.org>
-To: Byungchul Park <byungchul@sk.com>
-Cc: willy@infradead.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org, kernel_team@skhynix.com,
- almasrymina@google.com, ilias.apalodimas@linaro.org, harry.yoo@oracle.com,
- hawk@kernel.org, akpm@linux-foundation.org, davem@davemloft.net,
- john.fastabend@gmail.com, andrew+netdev@lunn.ch, asml.silence@gmail.com,
- toke@redhat.com, tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com,
- saeedm@nvidia.com, leon@kernel.org, ast@kernel.org, daniel@iogearbox.net,
- david@redhat.com, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
- vbabka@suse.cz, rppt@kernel.org, surenb@google.com, mhocko@suse.com,
- horms@kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
- vishal.moola@gmail.com
-Subject: Re: [PATCH net-next 1/9] netmem: introduce struct netmem_desc
- mirroring struct page
-Message-ID: <20250609123255.18f14000@kernel.org>
-In-Reply-To: <20250609043225.77229-2-byungchul@sk.com>
-References: <20250609043225.77229-1-byungchul@sk.com>
-	<20250609043225.77229-2-byungchul@sk.com>
+To: Jiayuan Chen <jiayuan.chen@linux.dev>
+Cc: bpf@vger.kernel.org, Cong Wang <xiyou.wangcong@gmail.com>, John
+ Fastabend <john.fastabend@gmail.com>, Boris Pismenny <borisp@nvidia.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Simon Horman
+ <horms@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
+ <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
+ <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, Ihor Solodrai
+ <isolodrai@meta.com>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 1/2] bpf,ktls: Fix data corruption when
+ using bpf_msg_pop_data() in ktls
+Message-ID: <20250609123358.4e024e62@kernel.org>
+In-Reply-To: <20250609020910.397930-2-jiayuan.chen@linux.dev>
+References: <20250609020910.397930-1-jiayuan.chen@linux.dev>
+	<20250609020910.397930-2-jiayuan.chen@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -70,21 +72,17 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Mon,  9 Jun 2025 13:32:17 +0900 Byungchul Park wrote:
-> To simplify struct page, the page pool members of struct page should be
-> moved to other, allowing these members to be removed from struct page.
+On Mon,  9 Jun 2025 10:08:52 +0800 Jiayuan Chen wrote:
+> When sending plaintext data, we initially calculated the corresponding
+> ciphertext length. However, if we later reduced the plaintext data length
+> via socket policy, we failed to recalculate the ciphertext length.
 > 
-> Introduce a network memory descriptor to store the members, struct
-> netmem_desc, and make it union'ed with the existing fields in struct
-> net_iov, allowing to organize the fields of struct net_iov.
+> This results in transmitting buffers containing uninitialized data during
+> ciphertext transmission.
+> 
+> This causes uninitialized bytes to be appended after a complete
+> "Application Data" packet, leading to errors on the receiving end when
+> parsing TLS record.
 
-What's the intended relation between the types?
-
-netmem_ref exists to clearly indicate that memory may not be readable.
-Majority of memory we expect to allocate from page pool must be
-kernel-readable. What's the plan for reading the "single pointer"
-memory within the kernel?
-
-I think you're approaching this problem from the easiest and least
-relevant direction. Are you coordinating with David Howells?
+Acked-by: Jakub Kicinski <kuba@kernel.org>
 
