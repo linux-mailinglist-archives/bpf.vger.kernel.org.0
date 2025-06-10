@@ -1,109 +1,141 @@
-Return-Path: <bpf+bounces-60248-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60249-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 155A1AD45FE
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 00:31:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76A5EAD4602
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 00:32:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B408189E651
-	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 22:31:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E6F37A336E
+	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 22:30:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB95C26A0D5;
-	Tue, 10 Jun 2025 22:31:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0439286D71;
+	Tue, 10 Jun 2025 22:32:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qm5Pm4O7"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="NqW38djB"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6727423BCF8
-	for <bpf@vger.kernel.org>; Tue, 10 Jun 2025 22:31:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C95A32686A0
+	for <bpf@vger.kernel.org>; Tue, 10 Jun 2025 22:32:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749594689; cv=none; b=r7i40cluzPF40q+FfXcxCnmb7jnf1RhJjb1Eh/cxQxVOnatqAp/x4VLVDCmS9U+lNTMIEe7YF2DirNOfD+3Ug9ankZ8OcvhYhEZOcDtk7JMlhuqNO3apAggWBey7QlkgDKL0xvVIIyLLK6QcXWO2cPJJc+nVQGxj4V4f3Y3QY/I=
+	t=1749594723; cv=none; b=LSe+z61AvfbED70UCoA/WKRemudBhzSkPNy1uw3O4yq+y1sW3h5nnsT5+6ZVfLVIap/g9fBNsPRc9W2Ejw61SWHWqKbbgQKPbaTmk7Leg8POYLkiSofvx/8435VmdYhxYitIbYqIIVL95X+hfGWYapOeWLRpL5kfarZNBh6hKaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749594689; c=relaxed/simple;
-	bh=MRCA5gigBB12gHq8b+uPLnP70ZYR7F2Kp2X02sHv340=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qTqjBegbEoEMUFV1Q6nM7PpN10YyYlqvfe8dYrZEU8I8ZLvzRleocUmqvn+rKQeagWvkXaNh+SpHPoNSTkycQ9VMazP7kesHyuJYUkJHpao+DZ8cJeM+AHqZO/b8glh37nBpcOOT0ZVg661gwaIOt0TeUU3XmpHaU0vjLOpre5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qm5Pm4O7; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 10 Jun 2025 15:31:03 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1749594674;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vd5c7+zpIFxx088X8wapBIhJBo1Up9NuD1sLD2mdoiU=;
-	b=qm5Pm4O7hNmP8p6fGEp8Cj96t7jzkuSBcT1Whh4vxvdY2C9QUf/qLN5wleStRoeAb2OLTm
-	93HjPupqxMfpEWRpne2BzfFyvjP6oOZO1Op/rHGAmJXIuKKe7FYZ+n5hlbd2F0zcr3lfSc
-	ULqNBOaxu3iWDDdEWvtGThgfwXWYZeE=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Tejun Heo <tj@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	Vlastimil Babka <vbabka@suse.cz>, Alexei Starovoitov <ast@kernel.org>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Harry Yoo <harry.yoo@oracle.com>, Yosry Ahmed <yosry.ahmed@linux.dev>, bpf@vger.kernel.org, 
-	linux-mm@kvack.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Meta kernel team <kernel-team@meta.com>
-Subject: Re: [PATCH 2/3] cgroup: make css_rstat_updated nmi safe
-Message-ID: <35ppn2muk4bsyosca4nxnbv5l6qv4ov2cxg5ksypst5ldf5zc4@vwrpziws4wjy>
-References: <20250609225611.3967338-1-shakeel.butt@linux.dev>
- <20250609225611.3967338-3-shakeel.butt@linux.dev>
- <aEijC1iHehAxdsfi@slm.duckdns.org>
+	s=arc-20240116; t=1749594723; c=relaxed/simple;
+	bh=fVyuMs5wEHh9PifuXzZaCZW55tmcH2IrOUzv8Hv71RU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ujv2jsZC67KXr7pDX2tDKzrbDvPSXmdwyTiGIojeShGXDMSFX7j3rZgl1P0rGSfBbyeoDWAkVNq3bUZEeAirPz8+8ngRTcdobn2tBv5CQznusOYNiNovqtS4ZrqPnWQnC/mJz+xXyGJezl1FeCQVeH1aPeE7g/VJtA/CAW+lXVk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=NqW38djB; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-70a57a8ffc3so59473237b3.0
+        for <bpf@vger.kernel.org>; Tue, 10 Jun 2025 15:32:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1749594721; x=1750199521; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oJ6l+yEiVxr1pNGEQGaOqFOGipnplcDF76/qLPufpH0=;
+        b=NqW38djBal1sFYmcvT1Y5SWVL1A3FB9maQnCFvEN1ARxvdVp8pXn2Knhpy7c5V/Cnz
+         Cg9Lld367PXPqTp0rKRoEuvpX7qU5L6FI1pRYdC+43FQSluYeBGC1LHLBPr3zbT9m7Zn
+         npsxmd5pb6VwBIW+it7fWa4YxTU9vyi6OKs7obXJ7GcsIXOvb8z9NyyGolN7OdXdXmVU
+         xSD33064aAlHe7lhugObMq+qPERjW1xuter1GkmGygBpcMnLX6M7J427RfNg2pswxpEJ
+         vo6B1h1mRXwEmu23VSL1HeswvJFNtIKK9iz3uUj2N3V812GtwW/QsyX7dA0lSq9bWVnr
+         v91g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749594721; x=1750199521;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oJ6l+yEiVxr1pNGEQGaOqFOGipnplcDF76/qLPufpH0=;
+        b=LsVSLrHPWaHvL0d9jNdobu//gL4pKZ07X5Y/6AcmcfMEgqj18qhgNpmRAklZS26mXl
+         8cubthALeTMp4j21ZqZK6BW1FK/6GZPX7HbvNRJPzvVFjcJenYGcBqcly7I9utR3Y001
+         UBueMZIyztWIUP5XbiNGixMsfQ+PKTYvC39w9Ac8ZoJdriMHRZz/C1BUC6mwFERQ2jy6
+         yR5VuNaNLc/BBeHO89uBnzPnt1PeWkXBmYIvyjbOEJmEo33mH6wxujoGbpdaDtuJlynI
+         XfCaitN1YUWM2hX9yjVMB8kaNLincfCt8KS4UZruo0/mEbbhXHSDFj+NFC/q2B8sIOBe
+         kbLg==
+X-Forwarded-Encrypted: i=1; AJvYcCXfMUsaXzVJiV631kooTKN2OmgTS4+ECRyFQBhX676wfAxJLR8JREFf6t9bJjxh5vkmccI=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy3SzAD38BlnmgAzIELLIJhBqoEcb40PHwGGQ+H3oYO9aEkmrIM
+	U9Vzgj8o/Bn4Y8neyNUklbLqcgpCihaAz3D5AnY1+AgQnxJcOcmuD48cw6BfolXXZso+CEc9nCo
+	swDs7uQoCVt2ZDYZOXaA3fWDk+U/BtXT1cExj5qtC
+X-Gm-Gg: ASbGncvzjw7mY168RMwhSK/36EAUImKUJ6n0Ywf/Y093W3cxYZ0BMyvlFqxfiVf0y3f
+	a033FiaHyKg3JrQZ8SHw9Z3C+uWA1Uef+xqczSol5hQP6oBQFo14aUftZmpyyXHrCfJgAmyQNA8
+	Cbr4eEFLtU/CCwQ2KoeiTOIp7fiDnceEQPpxUqFFPzG18=
+X-Google-Smtp-Source: AGHT+IHaaUlD03n52oEjNObUj+hcQLQUuNTQ+nktkM3lhu1/6afPeePwmkD0IMlQ7EJD8bQTEj5lyIh1mDJ9wD2+8BE=
+X-Received: by 2002:a05:690c:6f07:b0:70d:f07c:f593 with SMTP id
+ 00721157ae682-711423b5f53mr11433127b3.6.1749594720772; Tue, 10 Jun 2025
+ 15:32:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aEijC1iHehAxdsfi@slm.duckdns.org>
-X-Migadu-Flow: FLOW_OUT
+References: <20250606232914.317094-1-kpsingh@kernel.org> <20250606232914.317094-11-kpsingh@kernel.org>
+ <87qzzrleuw.fsf@microsoft.com> <CACYkzJ6M7kA7Se4=AXWNVF1UyeHK3t+3Y_8Ap1L9pkUTbqys9Q@mail.gmail.com>
+ <87o6uvlaxs.fsf@microsoft.com> <CACYkzJ74MJkwejki7kFNR4RWh+EnJ++0Vop8eRkSwY6pJepMEQ@mail.gmail.com>
+ <8cf2c1cc15e0c5e4b87a91a2cb42e04f38ac1094.camel@HansenPartnership.com>
+In-Reply-To: <8cf2c1cc15e0c5e4b87a91a2cb42e04f38ac1094.camel@HansenPartnership.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Tue, 10 Jun 2025 18:31:49 -0400
+X-Gm-Features: AX0GCFsNQ7O8dBGMdD6GCumtjN-NVq04ERQppfo2oV-EpzEuuGYvZnKQs2MiuKA
+Message-ID: <CAHC9VhS6EwOXX7LBFh+odVLj4vB6t=HADAK-787r-H1p4kpHuA@mail.gmail.com>
+Subject: Re: [PATCH 10/12] libbpf: Embed and verify the metadata hash in the loader
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc: KP Singh <kpsingh@kernel.org>, Blaise Boscaccy <bboscaccy@linux.microsoft.com>, 
+	bpf@vger.kernel.org, linux-security-module@vger.kernel.org, kys@microsoft.com, 
+	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 10, 2025 at 11:26:35AM -1000, Tejun Heo wrote:
-> Hello,
-> 
-> On Mon, Jun 09, 2025 at 03:56:10PM -0700, Shakeel Butt wrote:
-> ...
-> > +	self = &rstatc->lnode;
-> > +	if (!try_cmpxchg(&(rstatc->lnode.next), &self, NULL))
-> >  		return;
-> >  
-> > +	llist_add(&rstatc->lnode, lhead);
-> 
-> I may be missing something but when you say multiple inserters, you mean the
-> function being re-entered from stacked contexts - ie. process context, BH,
-> irq, nmi?
+On Tue, Jun 10, 2025 at 5:24=E2=80=AFPM James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
+> On Tue, 2025-06-10 at 21:47 +0200, KP Singh wrote:
+> > It's been repeatedly mentioned that trusted loaders (whether kernel
+> > or BPF programs) are the only way because a large number of BPF
+> > use-cases dynamically generate BPF programs.
+>
+> You keep asserting this, but it isn't supported by patches already
+> proposed.  Specifically, there already exists a patch set:
+>
+> https://lore.kernel.org/all/20250528215037.2081066-1-bboscaccy@linux.micr=
+osoft.com/
+>
+> that supports both signed trusted loaders and exact hash chain
+> verification of loaders plus program maps.  The core kernel code that
+> does it is only about 10 lines and looks to me like it could easily be
+> added to your current patch set.  This means BPF signing could support
+> both dynamically generated and end to end integrity use cases with the
+> signer being in the position of deciding what they want and no loss of
+> generality for either use case.
+>
+> >  So whatever we build needs to work for everyone and not just your
+> > specific use-case or your affinity to an implementation.
+>
+> The linked patch supports both your trusted loader use case and the
+> exact hash chain verification one the security people want.  Your
+> current patch only seems to support your use case, which seems a little
+> bit counter to the quote above.  However, it also seems that
+> reconciling both patch sets to give everyone what they want is easily
+> within reach so I think that's what we should all work towards.
 
-Yes.
+I agree with James, I see no reason why the two schemes could not
+coexist in the kernel; support both and let the user/admin/distro
+decide which is appropriate for their needs through policy.
 
-> If so, would it make sense to make the nmi and non-nmi paths use
-> separate lnode? In non-nmi path, we can just disable irq and test whether
-> lnode is empty and add it. nmi path can just test whether its lnode is empty
-> and add it. I suppose nmi's don't nest, right? If they do, we can do
-> try_cmpxchg() there I suppose.
-> 
-> While the actual addition to the list would be relatively low frequency,
-> css_rstat_updated() itself can be called pretty frequently. Before, the hot
-> path was early exit after data_race(css_rstat_cpu(css, cpu)->updated_next).
-> After, the hot path is now !try_cmpxchg() which doesn't seem great.
-> 
+I'm sure Blaise would be willing to build on top of KP's patchset if
+that really is a sticking point.
 
-Couple of lines above I have llist_on_list(&rstatc->lnode) check which
-should be as cheap as data_race(css_rstat_cpu(css, cpu)->updated_next). 
-So, I can add lnode for nmi and non-nmi contexts (with irqs disabled)
-but I think that is not needed. Actually I ran the netperf benchmark (36
-parallel instances) and I see no significant differences with and
-without the patch.
+Finally, I just wanted to bring some attention to my last comment on
+Blaise's latest patchset as the needs mentioned there seem to have
+been ignored in this patchset.
 
-Thanks for taking a look.
-Shakeel
+https://lore.kernel.org/linux-security-module/CAHC9VhQT=3Dymqssa9ymXtvssHTd=
+VH_64T8Mpb0Mh8oxRD0Guo_Q@mail.gmail.com/
+
+--=20
+paul-moore.com
 
