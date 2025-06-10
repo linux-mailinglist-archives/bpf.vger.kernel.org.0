@@ -1,216 +1,314 @@
-Return-Path: <bpf+bounces-60197-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60198-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF043AD3E01
-	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 17:56:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAD6CAD3E06
+	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 17:56:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3BDE178DA2
-	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 15:56:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6F403A289C
+	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 15:56:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B81E123A99D;
-	Tue, 10 Jun 2025 15:56:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5832323BCEB;
+	Tue, 10 Jun 2025 15:56:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="njzSRSE8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rWlt4FDv"
 X-Original-To: bpf@vger.kernel.org
-Received: from lamorak.hansenpartnership.com (lamorak.hansenpartnership.com [198.37.111.173])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3BC01D5147;
-	Tue, 10 Jun 2025 15:56:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.37.111.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF834239E9C;
+	Tue, 10 Jun 2025 15:56:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749570971; cv=none; b=mBOOHoq9/W2dn+p/AXD6eFNiYu0jQUtGP+anX5zg9dhkbMqH431NK7z9DvNBHrlfhE4ZZGV+odHipCn/xMlxDmsAKZalzr/JLx95znvEO6HReDpIaiah0z7Di9PajaS+rmU+qeoTHlW741SOcH4wdakPnQvo2QyZvrB0RuWiVtU=
+	t=1749571004; cv=none; b=CD/E+xEFb+XE2KKtSmsVpbUhmLwcjebbUh+PZsHaulbvj6SQpNF6xkKY5QG6gxgNWHMniz+b0yzQFpHNFMs3isFfNdS1SB5Ybw7QRVeNnzqQegYy2GtuqZaEnwE9X/jKg9vIjB8JxVOJX8ShDC9hQdtX5fEnqkO/oNxj9Pmo/Js=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749570971; c=relaxed/simple;
-	bh=M9GcF+EcD9l0CS4gWQRVjfs3z+a2l3Yme2wYycY2ml4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=r7FItRj1O+QCs/cNudf4H7FoZoUonbZgoUU+A4SsSLrWtYm3wZNDBemczoI7GGGNNxLBmoVK2bwzz5w5CSARecFwT8D/AeDgF/s3odMmF/rBAogO18vw6QHgsNZdx5QmaJlYfgW7rI5nLHNIPYNrYSf2TCiYw9wUmmaM0nDTUR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=njzSRSE8; arc=none smtp.client-ip=198.37.111.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1749570967;
-	bh=M9GcF+EcD9l0CS4gWQRVjfs3z+a2l3Yme2wYycY2ml4=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=njzSRSE8BBOIQJDX4eIjNkaI5Lb88laVFYgnwTtk89SSMylihac4sceXFcYhA2ERt
-	 mO1NdJWdvRMaXJddc6nnBQJirYDdjNWCXgRha0JHOjYll4p0b+8kFmfiZ9QInJnohf
-	 By7doVtDLOQZenEYiUQNqlJ2XKDbdyjV3peLMtd0=
-Received: from [IPv6:2601:5c4:4302:c21::a774] (unknown [IPv6:2601:5c4:4302:c21::a774])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by lamorak.hansenpartnership.com (Postfix) with ESMTPSA id 100101C0179;
-	Tue, 10 Jun 2025 11:56:07 -0400 (EDT)
-Message-ID: <7d0bdd9f40d1e4e1c9ff5605e5e875b1b9f5654a.camel@HansenPartnership.com>
-Subject: Re: [PATCH 11/12] bpftool: Add support for signing BPF programs
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: KP Singh <kpsingh@kernel.org>
-Cc: bpf@vger.kernel.org, linux-security-module@vger.kernel.org, 
- bboscaccy@linux.microsoft.com, paul@paul-moore.com, kys@microsoft.com, 
- ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- keyrings@vger.kernel.org
-Date: Tue, 10 Jun 2025 11:56:06 -0400
-In-Reply-To: <CACYkzJ7Mh=VV0FDsfWZbWBcdC6qLdVp4RDbnoMM_Fb4LW7t4=Q@mail.gmail.com>
-References: <20250606232914.317094-1-kpsingh@kernel.org>
-	 <20250606232914.317094-12-kpsingh@kernel.org>
-	 <b2a0c3d722c78de38ffa2664f71654a422d77121.camel@HansenPartnership.com>
-	 <CACYkzJ7Mh=VV0FDsfWZbWBcdC6qLdVp4RDbnoMM_Fb4LW7t4=Q@mail.gmail.com>
-Autocrypt: addr=James.Bottomley@HansenPartnership.com;
- prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	s=arc-20240116; t=1749571004; c=relaxed/simple;
+	bh=wICxtVu5Lsj+Zevcdn4I6vg3yDs0R3dVoEYnrcfdjJQ=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=s11O2rtSi8dhhfiCPqd5TmulSjGKkpCQwELT+GUszyqmzhIUFKyv5n0SkAUCyJ89iZIhGjAzDd7nXvXAXy7NM1MBKt+0XWmDyGWW4fCynD6a08ESiJz/2vfsNS01GBWq/W8pZ5usgf3lTRIAaxvF9aATMoRzK3+AbmE06LuhRhs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rWlt4FDv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19018C4CEF0;
+	Tue, 10 Jun 2025 15:56:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749571004;
+	bh=wICxtVu5Lsj+Zevcdn4I6vg3yDs0R3dVoEYnrcfdjJQ=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+	b=rWlt4FDvZ7VxEg8kx8g84T6Yo+YvodwaC0Dx5lZdvM5E+6OcziJiZ1gYHpGYeGM+2
+	 MjfjFruWN+Rx/LtHIkEeK3f3mBUzMXO1pquDshrUm8bUJF4yi3fdMlgmhcbiPG/6HA
+	 am5V2yVdH/cK9AOeSIA9N9PG6VdmTVjTiWdsvToON46tiCWI3RL/Ry5bnT8ZyjUXO4
+	 yOk1LRWvwClEFD4B2+FFmY5yeg/tHrLmzp8cBDnYXa4nSM1yNXkLHHu/NbSzDe912/
+	 q2E4+1GW2Jekl9vEG2xRgq/C96RPiZ3e5bZIW/JerTcoQT4i+o3TW6s2VEkH+hKV2K
+	 tGg6l7W3h58eQ==
+Message-ID: <46a47776-dcd9-4c6f-8d71-f94b22b077e2@kernel.org>
+Date: Tue, 10 Jun 2025 17:56:38 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-
-On Tue, 2025-06-10 at 10:50 +0200, KP Singh wrote:
-> On Sun, Jun 8, 2025 at 4:03=E2=80=AFPM James Bottomley
-> <James.Bottomley@hansenpartnership.com> wrote:
-> >=20
-> > [+keyrings]
-> > On Sat, 2025-06-07 at 01:29 +0200, KP Singh wrote:
-> > [...]
-> > > diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-> > > index f010295350be..e1dbbca91e34 100644
-> > > --- a/tools/bpf/bpftool/prog.c
-> > > +++ b/tools/bpf/bpftool/prog.c
-> > > @@ -23,6 +23,7 @@
-> > > =C2=A0#include <linux/err.h>
-> > > =C2=A0#include <linux/perf_event.h>
-> > > =C2=A0#include <linux/sizes.h>
-> > > +#include <linux/keyctl.h>
-> > >=20
-> > > =C2=A0#include <bpf/bpf.h>
-> > > =C2=A0#include <bpf/btf.h>
-> > > @@ -1875,6 +1876,8 @@ static int try_loader(struct
-> > > gen_loader_opts
-> > > *gen)
-> > > =C2=A0{
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct bpf_load_and_run_opts opts =3D =
-{};
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct bpf_loader_ctx *ctx;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 char sig_buf[MAX_SIG_SIZE];
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 __u8 prog_sha[SHA256_DIGEST_LENGTH];
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ctx_sz =3D sizeof(*ctx) + 64 * max=
-(sizeof(struct
-> > > bpf_map_desc),
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sizeof(struct
-> > > bpf_prog_desc));
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int log_buf_sz =3D (1u << 24) - 1;
-> > > @@ -1898,6 +1901,24 @@ static int try_loader(struct
-> > > gen_loader_opts
-> > > *gen)
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 opts.insns =3D gen->insns;
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 opts.insns_sz =3D gen->insns_sz;
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fds_before =3D count_open_fds();
-> > > +
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 if (sign_progs) {
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 opts.excl_prog_hash =3D prog_sha;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 opts.excl_prog_hash_sz =3D sizeof(prog_sha);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 opts.signature =3D sig_buf;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 opts.signature_sz =3D MAX_SIG_SIZE;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 opts.keyring_id =3D KEY_SPEC_SESSION_KEYRING;
-> > > +
-> >=20
-> > This looks wrong on a couple of levels.=C2=A0 Firstly, if you want
-> > system level integrity you can't search the session keyring because
-> > any process can join (subject to keyring permissions) and the
-> > owner, who is presumably the one inserting the bpf program, can add
-> > any key they like.
-> >=20
->=20
-> Wanting system level integrity is a security policy question, so this
-> is something that needs to be implemented at the security layer, the
-> LSM can deny the keys / keyring IDs they don't trust.=C2=A0 Session
-> keyrings are for sure useful for delegated signing of BPF programs
-> when dynamically generated.
-
-The problem is you're hard coding it at light skeleton creation time.=20
-Plus there doesn't seem to be any ability to use the system keyrings
-anyway as the kernel code only looks up the user keyrings.  Since
-actual key ids are volatile handles which change from boot to boot (so
-can't be stored in anything durable) this can only be used for keyring
-specifiers, so it would also make sense to check this is actually a
-specifier (system keyring specifiers are positive and user specifiers
-negative, so it's easy to check for the range).
-
-> > The other problem with this scheme is that the keyring_id itself
-> > has no checked integrity, which means that even if a script was
-> > marked as
->=20
-> If an attacker can modify a binary that has permissions to load BPF
-> programs and update the keyring ID then we have other issues.
-
-It's a classic supply chain attack (someone modifies the light skeleton
-between the creator and the consumer), even Google is claiming SLSA
-guarantees, so you can't just wave it away as "other issues".
-
->  So, this does not work in independence, signed BPF programs do not
-> really make sense without trusted execution).
-
-The other patch set provided this ability using signed hash chains, so
-absolutely there are signed bpf programmes that can work absent a
-trusted user execution environment.  It may not be what you want for
-your use case (which is why the other patch set allowed for both), but
-there are lots of integrity use cases out there wanting precisely this.
-
-> > system keyring only anyone can binary edit the user space program
-> > to change it to their preferred keyring and it will still work.=C2=A0 I=
-f
-> > you want variable keyrings, they should surely be part of the
-> > validated policy.
->=20
-> The policy is what I expect to be implemented in the LSM layer. A
-> variable keyring ID is a critical part of the UAPI to create
-> different "rings of trust" e.g. LSM can enforce that network programs
-> can be loaded with a derived key, and have a different keyring for
-> unprivileged BPF programs.
-
-You can't really have it both ways: either the keyring is part of the
-LSM supplied policy in which case it doesn't make much sense to have it
-in the durable attributes (and the LSM would have to set it before the
-signature is verified) or it's part of the durable attribute embedded
-security information and should be integrity protected.
-
-I suppose we could compromise and say it should not be part of the
-light skeleton durable attributes but should be set (or supplied by
-policy) at BPF_PROG_LOAD time.
-
-I should also note that when other systems use derived keys in
-different keyrings, they usually have a specific named trusted keyring
-(like _ima and .ima) which has policy enforced rules for adding keys.
-
-Regards,
-
-James
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next V7 2/2] veth: apply qdisc backpressure on full
+ ptr_ring to reduce TX drops
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+To: Ihor Solodrai <ihor.solodrai@linux.dev>, netdev@vger.kernel.org,
+ Jakub Kicinski <kuba@kernel.org>
+Cc: bpf@vger.kernel.org, tom@herbertland.com,
+ Eric Dumazet <eric.dumazet@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
+ =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+ dsahern@kernel.org, makita.toshiaki@lab.ntt.co.jp,
+ kernel-team@cloudflare.com, phil@nwl.cc,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+References: <174559288731.827981.8748257839971869213.stgit@firesoul>
+ <174559294022.827981.1282809941662942189.stgit@firesoul>
+ <fecfcad0-7a16-42b8-bff2-66ee83a6e5c4@linux.dev>
+ <b158cffc-582b-4a2f-bb13-a27c8f58b6fc@kernel.org>
+Content-Language: en-US
+In-Reply-To: <b158cffc-582b-4a2f-bb13-a27c8f58b6fc@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
-> This patch implements the signing support, not the security policy
-> for it.
->=20
-> - KP
 
+On 10/06/2025 13.43, Jesper Dangaard Brouer wrote:
+> 
+> On 10/06/2025 00.09, Ihor Solodrai wrote:
+>> On 4/25/25 7:55 AM, Jesper Dangaard Brouer wrote:
+[...]
+>>> ---
+>>>   drivers/net/veth.c |   57 
+>>> +++++++++++++++++++++++++++++++++++++++++++---------
+>>>   1 file changed, 47 insertions(+), 10 deletions(-)
+>>>
+>>> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+>>> index 7bb53961c0ea..e58a0f1b5c5b 100644
+>>> --- a/drivers/net/veth.c
+>>> +++ b/drivers/net/veth.c
+>>> @@ -307,12 +307,10 @@ static void __veth_xdp_flush(struct veth_rq *rq)
+>>>   static int veth_xdp_rx(struct veth_rq *rq, struct sk_buff *skb)
+>>>   {
+>>> -    if (unlikely(ptr_ring_produce(&rq->xdp_ring, skb))) {
+>>> -        dev_kfree_skb_any(skb);
+>>> -        return NET_RX_DROP;
+>>> -    }
+>>> +    if (unlikely(ptr_ring_produce(&rq->xdp_ring, skb)))
+>>> +        return NETDEV_TX_BUSY; /* signal qdisc layer */
+>>> -    return NET_RX_SUCCESS;
+>>> +    return NET_RX_SUCCESS; /* same as NETDEV_TX_OK */
+>>>   }
+>>>   static int veth_forward_skb(struct net_device *dev, struct sk_buff 
+>>> *skb,
+>>> @@ -346,11 +344,11 @@ static netdev_tx_t veth_xmit(struct sk_buff 
+>>> *skb, struct net_device *dev)
+>>>   {
+>>>       struct veth_priv *rcv_priv, *priv = netdev_priv(dev);
+>>>       struct veth_rq *rq = NULL;
+>>> -    int ret = NETDEV_TX_OK;
+>>> +    struct netdev_queue *txq;
+>>>       struct net_device *rcv;
+>>>       int length = skb->len;
+>>>       bool use_napi = false;
+>>> -    int rxq;
+>>> +    int ret, rxq;
+>>>       rcu_read_lock();
+>>>       rcv = rcu_dereference(priv->peer);
+>>> @@ -373,17 +371,45 @@ static netdev_tx_t veth_xmit(struct sk_buff 
+>>> *skb, struct net_device *dev)
+>>>       }
+>>>       skb_tx_timestamp(skb);
+>>> -    if (likely(veth_forward_skb(rcv, skb, rq, use_napi) == 
+>>> NET_RX_SUCCESS)) {
+>>> +
+>>> +    ret = veth_forward_skb(rcv, skb, rq, use_napi);
+>>> +    switch (ret) {
+>>> +    case NET_RX_SUCCESS: /* same as NETDEV_TX_OK */
+>>>           if (!use_napi)
+>>>               dev_sw_netstats_tx_add(dev, 1, length);
+>>>           else
+>>>               __veth_xdp_flush(rq);
+>>> -    } else {
+>>> +        break;
+>>> +    case NETDEV_TX_BUSY:
+>>> +        /* If a qdisc is attached to our virtual device, returning
+>>> +         * NETDEV_TX_BUSY is allowed.
+>>> +         */
+>>> +        txq = netdev_get_tx_queue(dev, rxq);
+>>> +
+>>> +        if (qdisc_txq_has_no_queue(txq)) {
+>>> +            dev_kfree_skb_any(skb);
+>>> +            goto drop;
+>>> +        }
+>>> +        /* Restore Eth hdr pulled by dev_forward_skb/eth_type_trans */
+>>> +        __skb_push(skb, ETH_HLEN);
+>>> +        /* Depend on prior success packets started NAPI consumer via
+>>> +         * __veth_xdp_flush(). Cancel TXQ stop if consumer stopped,
+>>> +         * paired with empty check in veth_poll().
+>>> +         */
+>>> +        netif_tx_stop_queue(txq);
+>>> +        smp_mb__after_atomic();
+>>> +        if (unlikely(__ptr_ring_empty(&rq->xdp_ring)))
+>>> +            netif_tx_wake_queue(txq);
+>>> +        break;
+>>> +    case NET_RX_DROP: /* same as NET_XMIT_DROP */
+>>>   drop:
+>>>           atomic64_inc(&priv->dropped);
+>>>           ret = NET_XMIT_DROP;
+>>> +        break;
+>>> +    default:
+>>> +        net_crit_ratelimited("%s(%s): Invalid return code(%d)",
+>>> +                     __func__, dev->name, ret);
+>>>       }
+>>> -
+>>>       rcu_read_unlock();
+>>>       return ret;
+>>> @@ -874,9 +900,17 @@ static int veth_xdp_rcv(struct veth_rq *rq, int 
+>>> budget,
+>>>               struct veth_xdp_tx_bq *bq,
+>>>               struct veth_stats *stats)
+>>>   {
+>>> +    struct veth_priv *priv = netdev_priv(rq->dev);
+>>> +    int queue_idx = rq->xdp_rxq.queue_index;
+>>> +    struct netdev_queue *peer_txq;
+>>> +    struct net_device *peer_dev;
+>>>       int i, done = 0, n_xdpf = 0;
+>>>       void *xdpf[VETH_XDP_BATCH];
+>>> +    /* NAPI functions as RCU section */
+>>> +    peer_dev = rcu_dereference_check(priv->peer, 
+>>> rcu_read_lock_bh_held());
+>>> +    peer_txq = netdev_get_tx_queue(peer_dev, queue_idx);
+>>> +
+>>>       for (i = 0; i < budget; i++) {
+>>>           void *ptr = __ptr_ring_consume(&rq->xdp_ring);
+>>>
+>>
+>> Hi Jesper.
+>>
+>> Could you please take a look at the reported call traces and help
+>> understand whether this patch may have introduced a null dereference?
+> 
+> I'm investigating... thanks for reporting.
+> (more below)
+> 
+>> Pasting a snippet, for full logs (2 examples) see the link:
+>> https://lore.kernel.org/bpf/6fd7a5b5-ee26-4cc5-8eb0-449c4e326ccc@linux.dev/
+
+Do you have any qdisc's attached to the veth device when reproducing?
+
+Via above link I see that you managed to reproduce by running BPF 
+selftest "xdp_veth_broadcast_redirect".  (Is this correct?)
+
+How often does this happen?
+
+Does this only happen with XDP redirected frames?
+(Func veth_xdp_rcv() also active for SKBs when veth is in GRO mode)
+
+I'm not able to reproduce this running selftests (bpf-next at 5fcf896efe28c)
+Below example selecting all "xdp_veth*" related tests:
+
+$ sudo ./test_progs --name=xdp_veth
+#630/1   xdp_veth_broadcast_redirect/0/BROADCAST:OK
+#630/2   xdp_veth_broadcast_redirect/0/(BROADCAST | EXCLUDE_INGRESS):OK
+#630/3   xdp_veth_broadcast_redirect/DRV_MODE/BROADCAST:OK
+#630/4   xdp_veth_broadcast_redirect/DRV_MODE/(BROADCAST | 
+EXCLUDE_INGRESS):OK
+#630/5   xdp_veth_broadcast_redirect/SKB_MODE/BROADCAST:OK
+#630/6   xdp_veth_broadcast_redirect/SKB_MODE/(BROADCAST | 
+EXCLUDE_INGRESS):OK
+#630     xdp_veth_broadcast_redirect:OK
+#631/1   xdp_veth_egress/0/egress:OK
+#631/2   xdp_veth_egress/DRV_MODE/egress:OK
+#631/3   xdp_veth_egress/SKB_MODE/egress:OK
+#631     xdp_veth_egress:OK
+#632/1   xdp_veth_redirect/0:OK
+#632/2   xdp_veth_redirect/DRV_MODE:OK
+#632/3   xdp_veth_redirect/SKB_MODE:OK
+#632     xdp_veth_redirect:OK
+Summary: 3/12 PASSED, 0 SKIPPED, 0 FAILED
+
+
+>> [  343.217465] BUG: kernel NULL pointer dereference, address: 
+>> 0000000000000018
+>> [  343.218173] #PF: supervisor read access in kernel mode
+>> [  343.218644] #PF: error_code(0x0000) - not-present page
+>> [  343.219128] PGD 0 P4D 0
+>> [  343.219379] Oops: Oops: 0000 [#1] SMP NOPTI
+>> [  343.219768] CPU: 1 UID: 0 PID: 7635 Comm: kworker/1:11 Tainted: G
+>>      W  OE       6.15.0-g2b36f2252b0a-dirty #7 PREEMPT(full)
+                             ^^^^^^^^^^^^
+The SHA 2b36f2252b0 doesn't seem to exist.
+What upstream kernel commit SHA is this kernel based on?
+
+>> [  343.220844] Tainted: [W]=WARN, [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
+>> [  343.221436] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 
+>> 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+>> [  343.222356] Workqueue: mld mld_dad_work
+>> [  343.222730] RIP: 0010:veth_xdp_rcv.constprop.0+0x6b/0x380
+>>
+> 
+> Can you give me the output from below command (on your compiled kernel):
+> 
+>   ./scripts/faddr2line drivers/net/veth.o veth_xdp_rcv.constprop.0+0x6b
+> 
+
+Still need above data/info please.
+
+--Jesper
+
+>>      [...]
+>>
+>> [  343.231061] Call Trace:
+>> [  343.231306]  <IRQ>
+>> [  343.231522]  veth_poll+0x7b/0x3a0
+>> [  343.231856]  __napi_poll.constprop.0+0x28/0x1d0
+>> [  343.232297]  net_rx_action+0x199/0x350
+>> [  343.232682]  handle_softirqs+0xd3/0x400
+>> [  343.233057]  ? __dev_queue_xmit+0x27b/0x1250
+>> [  343.233473]  do_softirq+0x43/0x90
+>> [  343.233804]  </IRQ>
+>> [  343.234016]  <TASK>
+>> [  343.234226]  __local_bh_enable_ip+0xb5/0xd0
+>> [  343.234622]  ? __dev_queue_xmit+0x27b/0x1250
+>> [  343.235035]  __dev_queue_xmit+0x290/0x1250
+>> [  343.235431]  ? lock_acquire+0xbe/0x2c0
+>> [  343.235797]  ? ip6_finish_output+0x25e/0x540
+>> [  343.236210]  ? mark_held_locks+0x40/0x70
+>> [  343.236583]  ip6_finish_output2+0x38f/0xb80
+>> [  343.237002]  ? lock_release+0xc6/0x290
+>> [  343.237364]  ip6_finish_output+0x25e/0x540
+>> [  343.237761]  mld_sendpack+0x1c1/0x3a0
+>> [  343.238123]  mld_dad_work+0x3e/0x150
+>> [  343.238473]  process_one_work+0x1f8/0x580
+>> [  343.238859]  worker_thread+0x1ce/0x3c0
+>> [  343.239224]  ? __pfx_worker_thread+0x10/0x10
+>> [  343.239638]  kthread+0x128/0x250
+>> [  343.239954]  ? __pfx_kthread+0x10/0x10
+>> [  343.240320]  ? __pfx_kthread+0x10/0x10
+>> [  343.240691]  ret_from_fork+0x15c/0x1b0
+>> [  343.241056]  ? __pfx_kthread+0x10/0x10
+>> [  343.241418]  ret_from_fork_asm+0x1a/0x30
+>> [  343.241800]  </TASK>
+>> [  343.242021] Modules linked in: bpf_testmod(OE) [last unloaded:
+>> est_no_cfi(OE)]
+>> [  343.242737] CR2: 0000000000000018
+>> [  343.243064] ---[ end trace 0000000000000000 ]---
+>>
+>>
+>> Thank you.
+>>
+>>
+>>> @@ -925,6 +959,9 @@ static int veth_xdp_rcv(struct veth_rq *rq, int 
+>>> budget,
+>>>       rq->stats.vs.xdp_packets += done;
+>>>       u64_stats_update_end(&rq->stats.syncp);
+>>> +    if (unlikely(netif_tx_queue_stopped(peer_txq)))
+>>> +        netif_tx_wake_queue(peer_txq);
+>>> +
+>>>       return done;
+>>>   }
+>>>
+>>>
+>>
 
