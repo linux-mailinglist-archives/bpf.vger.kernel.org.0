@@ -1,160 +1,267 @@
-Return-Path: <bpf+bounces-60202-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60203-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1819CAD3F10
-	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 18:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DC48FAD3F29
+	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 18:38:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 642FC3A5468
-	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 16:34:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A19E3A97F9
+	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 16:37:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ECBC1E8338;
-	Tue, 10 Jun 2025 16:34:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14212241C8C;
+	Tue, 10 Jun 2025 16:37:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="FuSvHggU"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="BtPbV9Dw"
 X-Original-To: bpf@vger.kernel.org
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EB22241131;
-	Tue, 10 Jun 2025 16:34:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CDFF2397B0;
+	Tue, 10 Jun 2025 16:37:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749573291; cv=none; b=O5lOugp0qW7l/ckmmg5GhkBR6n7Yb5eEeVyzU7pARy2OJbDouMgxPe3l0J1CXDpNj9nocOwrE2hePWIWeeRfsNwFlef7S+8y8yAHktF/iMWiSeTjCF3NSG2BDmFCFjNuT3cJlZYjQOUDrawZq+htLQHf45mw7NLpK4jf03f5I68=
+	t=1749573478; cv=none; b=JZzbAN0k36QCqOUui681FyIk0SKxXlyb9Mk9/vcvbza5d16tiww/6x3VYcHPprXhaRSmjbsVxdE1s+ILNPwId9MqngGHLgXr06rj15l/JzKw3DmA6JcV0C7tDMsTVLQSk1ngTPh1InITLphr1anKP050MceKdBBbcda++YXCo5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749573291; c=relaxed/simple;
-	bh=MbD/u28BR8ERLB/j8X2W/jdes+afjbjp7ZuEE/CdZZY=;
+	s=arc-20240116; t=1749573478; c=relaxed/simple;
+	bh=mQrDXnHcOHPJjj8G/Ti38m2s3G6ZIUO09EXNmOIN0gE=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=TgUYS+IE9GRWF+KBjxGYx6JYl3n6GJrWVWqlzndp9cYQsm2xkaeqn6BojtMGzHrqWFV55EVLJ1crUraNqaTQoegN9RZ3FrzyFmi2pQStVwem7ny7oKIR5smv9tM4Ds0ZU1jEjw41HQI/wIhD4fev4c41+zmzOpjCq2b91XtcA6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=FuSvHggU; arc=none smtp.client-ip=13.77.154.182
+	 MIME-Version:Content-Type; b=S94JRKDSVk69Xi9kPxbilkbOE19BKeqbOWrHZkN35IY4llVhan83kqVntbbFlZOD1BUd6D7g7P2igFq/6lK2N/0irokTib2zvVBQYOn+w1KHcy9xrh+LNMsxf5naBHinNyyt1XscbQ8SqHJS+G0BDYaFU2gYlK3y5huwU7lfarM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=BtPbV9Dw; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: from narnia (unknown [40.78.13.147])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 09B9F211759C;
-	Tue, 10 Jun 2025 09:34:47 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 09B9F211759C
+	by linux.microsoft.com (Postfix) with ESMTPSA id 08105211759D;
+	Tue, 10 Jun 2025 09:37:55 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 08105211759D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1749573288;
-	bh=wvIiAiIzAXXqVw6oYEs0WaX0Ysoflu42+b7kSlPUEsc=;
+	s=default; t=1749573476;
+	bh=AifVZIrgw/I8RRqBgLIX/E9qA/HFM3mkvb8pC5ikP34=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=FuSvHggU/4ILCtF7737bncbcEaZNkN86T9SOifu1CpgEMIUQYyfEQ4ml3OV8cVEdz
-	 TV5ePTD+k9/IEvpacXc5AHMyks17M33K0AxJlBNUl8l6nYmsuYlVmik0y4j3om4liy
-	 uwQOWM9QTf4f9RQ1s1lvp/3EtT5GUbcnn7at591w=
+	b=BtPbV9Dw949zFmhvdL6zgnhdAqslDHRMT69dA7UijSxLA0sZAcQF/cfIFB/MXY9lR
+	 R59o4YMWi7AOKVXK1o9TKIxbzqQG0d3xSWEZsOfskaOsudDW5oEUMvgBbLs7DksXwt
+	 Iylhxgf7qY2O9YDFuTcuf2KlULWM8DMwLUe39n3I=
 From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
-To: KP Singh <kpsingh@kernel.org>, James Bottomley
- <James.Bottomley@hansenpartnership.com>
-Cc: bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
- paul@paul-moore.com, kys@microsoft.com, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, keyrings@vger.kernel.org
-Subject: Re: [PATCH 11/12] bpftool: Add support for signing BPF programs
-In-Reply-To: <CACYkzJ7Mh=VV0FDsfWZbWBcdC6qLdVp4RDbnoMM_Fb4LW7t4=Q@mail.gmail.com>
+To: KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org,
+ linux-security-module@vger.kernel.org
+Cc: paul@paul-moore.com, kys@microsoft.com, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, KP Singh <kpsingh@kernel.org>
+Subject: Re: [PATCH 08/12] bpf: Implement signature verification for BPF
+ programs
+In-Reply-To: <20250606232914.317094-9-kpsingh@kernel.org>
 References: <20250606232914.317094-1-kpsingh@kernel.org>
- <20250606232914.317094-12-kpsingh@kernel.org>
- <b2a0c3d722c78de38ffa2664f71654a422d77121.camel@HansenPartnership.com>
- <CACYkzJ7Mh=VV0FDsfWZbWBcdC6qLdVp4RDbnoMM_Fb4LW7t4=Q@mail.gmail.com>
-Date: Tue, 10 Jun 2025 09:34:46 -0700
-Message-ID: <87zfeflfmh.fsf@microsoft.com>
+ <20250606232914.317094-9-kpsingh@kernel.org>
+Date: Tue, 10 Jun 2025 09:37:54 -0700
+Message-ID: <87wm9jlfh9.fsf@microsoft.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
 KP Singh <kpsingh@kernel.org> writes:
 
-> On Sun, Jun 8, 2025 at 4:03=E2=80=AFPM James Bottomley
-> <James.Bottomley@hansenpartnership.com> wrote:
->>
->> [+keyrings]
->> On Sat, 2025-06-07 at 01:29 +0200, KP Singh wrote:
->> [...]
->> > diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
->> > index f010295350be..e1dbbca91e34 100644
->> > --- a/tools/bpf/bpftool/prog.c
->> > +++ b/tools/bpf/bpftool/prog.c
->> > @@ -23,6 +23,7 @@
->> >  #include <linux/err.h>
->> >  #include <linux/perf_event.h>
->> >  #include <linux/sizes.h>
->> > +#include <linux/keyctl.h>
->> >
->> >  #include <bpf/bpf.h>
->> >  #include <bpf/btf.h>
->> > @@ -1875,6 +1876,8 @@ static int try_loader(struct gen_loader_opts
->> > *gen)
->> >  {
->> >       struct bpf_load_and_run_opts opts =3D {};
->> >       struct bpf_loader_ctx *ctx;
->> > +     char sig_buf[MAX_SIG_SIZE];
->> > +     __u8 prog_sha[SHA256_DIGEST_LENGTH];
->> >       int ctx_sz =3D sizeof(*ctx) + 64 * max(sizeof(struct
->> > bpf_map_desc),
->> >                                            sizeof(struct
->> > bpf_prog_desc));
->> >       int log_buf_sz =3D (1u << 24) - 1;
->> > @@ -1898,6 +1901,24 @@ static int try_loader(struct gen_loader_opts
->> > *gen)
->> >       opts.insns =3D gen->insns;
->> >       opts.insns_sz =3D gen->insns_sz;
->> >       fds_before =3D count_open_fds();
->> > +
->> > +     if (sign_progs) {
->> > +             opts.excl_prog_hash =3D prog_sha;
->> > +             opts.excl_prog_hash_sz =3D sizeof(prog_sha);
->> > +             opts.signature =3D sig_buf;
->> > +             opts.signature_sz =3D MAX_SIG_SIZE;
->> > +             opts.keyring_id =3D KEY_SPEC_SESSION_KEYRING;
->> > +
->>
->> This looks wrong on a couple of levels.  Firstly, if you want system
->> level integrity you can't search the session keyring because any
->> process can join (subject to keyring permissions) and the owner, who is
->> presumably the one inserting the bpf program, can add any key they
->> like.
->>
+> This patch extends the BPF_PROG_LOAD command by adding three new fields
+> to `union bpf_attr` in the user-space API:
 >
-> Wanting system level integrity is a security policy question, so this
-> is something that needs to be implemented at the security layer, the
-> LSM can deny the keys / keyring IDs they don't trust.  Session
-> keyrings are for sure useful for delegated signing of BPF programs
-> when dynamically generated.
+>   - signature: A pointer to the signature blob.
+>   - signature_size: The size of the signature blob.
+>   - keyring_id: The serial number of a loaded kernel keyring (e.g.,
+>     the user or session keyring) containing the trusted public keys.
 >
->> The other problem with this scheme is that the keyring_id itself has no
->> checked integrity, which means that even if a script was marked as
+> When a BPF program is loaded with a signature, the kernel:
 >
-> If an attacker can modify a binary that has permissions to load BPF
-> programs and update the keyring ID then we have other issues. So, this
-> does not work in independence, signed BPF programs do not really make
-> sense without trusted execution).
+> 1.  Retrieves the trusted keyring using the provided `keyring_id`.
+> 2.  Verifies the supplied signature against the BPF program's
+>     instruction buffer.
+> 3.  If the signature is valid and was generated by a key in the trusted
+>     keyring, the program load proceeds.
+> 4.  If no signature is provided, the load proceeds as before, allowing
+>     for backward compatibility. LSMs can chose to restrict unsigned
+>     programs and implement a security policy.
+> 5.  If signature verification fails for any reason,
+>     the program is not loaded.
 >
+> Signed-off-by: KP Singh <kpsingh@kernel.org>
+> ---
+>  include/linux/bpf.h            |  9 +++++++-
+>  include/uapi/linux/bpf.h       | 10 +++++++++
+>  kernel/bpf/syscall.c           | 39 +++++++++++++++++++++++++++++++++-
+>  kernel/trace/bpf_trace.c       |  6 ++++--
+>  tools/include/uapi/linux/bpf.h | 10 +++++++++
+>  tools/lib/bpf/bpf.c            |  2 +-
+>  6 files changed, 71 insertions(+), 5 deletions(-)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 35f1a633d87a..32a41803d61c 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -2778,7 +2778,14 @@ bpf_jit_find_kfunc_model(const struct bpf_prog *prog,
+>  int bpf_get_kfunc_addr(const struct bpf_prog *prog, u32 func_id,
+>  		       u16 btf_fd_idx, u8 **func_addr);
+>  
+> -struct bpf_core_ctx {
+> +__bpf_kfunc struct bpf_key *bpf_lookup_user_key(u32 serial, u64 flags);
+> +__bpf_kfunc struct bpf_key *bpf_lookup_system_key(u64 id);
+> +__bpf_kfunc void bpf_key_put(struct bpf_key *bkey);
+> +__bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_p,
+> +					   struct bpf_dynptr *sig_p,
+> +					   struct bpf_key *trusted_keyring);
+> +
+> +	struct bpf_core_ctx {
+>  	struct bpf_verifier_log *log;
+>  	const struct btf *btf;
+>  };
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index ffd9e11befc2..5f7c82ebe10a 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1589,6 +1589,16 @@ union bpf_attr {
+>  		 * continuous.
+>  		 */
+>  		__u32		fd_array_cnt;
+> +		/* Pointer to a buffer containing the signature of the BPF
+> +		 * program.
+> +		 */
+> +		__aligned_u64   signature;
+> +		/* Size of the signature buffer in bytes. */
+> +		__u32 		signature_size;
+> +		/* ID of the kernel keyring to be used for signature
+> +		 * verification.
+> +		 */
+> +		__u32 		keyring_id;
+>  	};
+>  
+>  	struct { /* anonymous struct used by BPF_OBJ_* commands */
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index c81be07fa4fa..6cd5ba42d946 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -2782,8 +2782,39 @@ static bool is_perfmon_prog_type(enum bpf_prog_type prog_type)
+>  	}
+>  }
+>  
+> +static int bpf_prog_verify_signature(struct bpf_prog *prog, union bpf_attr *attr, bpfptr_t uattr)
+> +{
+> +	bpfptr_t usig = make_bpfptr(attr->signature, uattr.is_kernel);
+> +	struct bpf_dynptr_kern sig_ptr, insns_ptr;
+> +	struct bpf_key *key = NULL;
+> +	void *sig;
+> +	int err = 0;
+> +
+> +	key = bpf_lookup_user_key(attr->keyring_id, 0);
+> +	if (!key)
+> +		return -ENOKEY;
+> +
+> +	sig = kvmemdup_bpfptr(usig, attr->signature_size);
+> +	if (!sig) {
+> +		bpf_key_put(key);
+> +		return -ENOMEM;
+> +	}
+> +
+> +	bpf_dynptr_init(&sig_ptr, sig, BPF_DYNPTR_TYPE_LOCAL, 0,
+> +			attr->signature_size);
+> +	bpf_dynptr_init(&insns_ptr, prog->insnsi, BPF_DYNPTR_TYPE_LOCAL, 0,
+> +			prog->len * sizeof(struct bpf_insn));
+> +
+> +	err = bpf_verify_pkcs7_signature((struct bpf_dynptr *)&insns_ptr,
+> +					 (struct bpf_dynptr *)&sig_ptr, key);
+> +
+> +	bpf_key_put(key);
+> +	kvfree(sig);
+> +	return err;
+> +}
+> +
+>  /* last field in 'union bpf_attr' used by this command */
+> -#define BPF_PROG_LOAD_LAST_FIELD fd_array_cnt
+> +#define BPF_PROG_LOAD_LAST_FIELD keyring_id
+>  
+>  static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
+>  {
+> @@ -2947,6 +2978,12 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
+>  	/* eBPF programs must be GPL compatible to use GPL-ed functions */
+>  	prog->gpl_compatible = license_is_gpl_compatible(license) ? 1 : 0;
+>  
+> +	if (attr->signature) {
+> +		err = bpf_prog_verify_signature(prog, attr, uattr);
+> +		if (err)
+> +			goto free_prog;
+> +	}
+> +
+>  	prog->orig_prog = NULL;
+>  	prog->jited = 0;
+>  
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 132c8be6f635..0cce39e1a9ee 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -1351,7 +1351,6 @@ __bpf_kfunc void bpf_key_put(struct bpf_key *bkey)
+>  	kfree(bkey);
+>  }
+>  
+> -#ifdef CONFIG_SYSTEM_DATA_VERIFICATION
+>  /**
+>   * bpf_verify_pkcs7_signature - verify a PKCS#7 signature
+>   * @data_p: data to verify
+> @@ -1367,6 +1366,7 @@ __bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_p,
+>  			       struct bpf_dynptr *sig_p,
+>  			       struct bpf_key *trusted_keyring)
+>  {
+> +#ifdef CONFIG_SYSTEM_DATA_VERIFICATION
+>  	struct bpf_dynptr_kern *data_ptr = (struct bpf_dynptr_kern *)data_p;
+>  	struct bpf_dynptr_kern *sig_ptr = (struct bpf_dynptr_kern *)sig_p;
+>  	const void *data, *sig;
+> @@ -1396,8 +1396,10 @@ __bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_p,
+>  				      trusted_keyring->key,
+>  				      VERIFYING_UNSPECIFIED_SIGNATURE, NULL,
+>  				      NULL);
+> -}
 
-Untrusted userspace/root is precisely the issue I solved with previous
-patchsets for this effort. Signed BPF programs absolutely work without
-trusted execution.
+The usage for this is no longer unspecified. VERIFYING_BPF_SIGNATURE or
+similar would add clarity here.
 
--blaise
-
->> system keyring only anyone can binary edit the user space program to
->> change it to their preferred keyring and it will still work.  If you
->> want variable keyrings, they should surely be part of the validated
->> policy.
->
-> The policy is what I expect to be implemented in the LSM layer. A
-> variable keyring ID is a critical part of the UAPI to create different
-> "rings of trust" e.g. LSM can enforce that network programs can be
-> loaded with a derived key, and have a different keyring for
-> unprivileged BPF programs.
->
-> This patch implements the signing support, not the security policy for it.
->
-> - KP
->
->>
->> Regards,
->>
->> James
->>
+> +#else
+> +	return -EOPNOTSUPP;
+>  #endif /* CONFIG_SYSTEM_DATA_VERIFICATION */
+> +}
+>  
+>  __bpf_kfunc_end_defs();
+>  
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index ffd9e11befc2..5f7c82ebe10a 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -1589,6 +1589,16 @@ union bpf_attr {
+>  		 * continuous.
+>  		 */
+>  		__u32		fd_array_cnt;
+> +		/* Pointer to a buffer containing the signature of the BPF
+> +		 * program.
+> +		 */
+> +		__aligned_u64   signature;
+> +		/* Size of the signature buffer in bytes. */
+> +		__u32 		signature_size;
+> +		/* ID of the kernel keyring to be used for signature
+> +		 * verification.
+> +		 */
+> +		__u32 		keyring_id;
+>  	};
+>  
+>  	struct { /* anonymous struct used by BPF_OBJ_* commands */
+> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+> index 11fa2d64ccca..1a85cfa4282c 100644
+> --- a/tools/lib/bpf/bpf.c
+> +++ b/tools/lib/bpf/bpf.c
+> @@ -240,7 +240,7 @@ int bpf_prog_load(enum bpf_prog_type prog_type,
+>  		  const struct bpf_insn *insns, size_t insn_cnt,
+>  		  struct bpf_prog_load_opts *opts)
+>  {
+> -	const size_t attr_sz = offsetofend(union bpf_attr, fd_array_cnt);
+> +	const size_t attr_sz = offsetofend(union bpf_attr, keyring_id);
+>  	void *finfo = NULL, *linfo = NULL;
+>  	const char *func_info, *line_info;
+>  	__u32 log_size, log_level, attach_prog_fd, attach_btf_obj_fd;
+> -- 
+> 2.43.0
 
