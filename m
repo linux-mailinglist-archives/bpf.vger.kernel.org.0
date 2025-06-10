@@ -1,221 +1,146 @@
-Return-Path: <bpf+bounces-60124-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60125-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 843D9AD2AD3
-	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 02:13:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF0C8AD2AFB
+	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 02:46:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B91A83B1FD1
-	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 00:12:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A399A1700AA
+	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 00:46:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D6978479;
-	Tue, 10 Jun 2025 00:13:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6501199EBB;
+	Tue, 10 Jun 2025 00:45:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M9N28LeP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dLnIS+Lv"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA18A645;
-	Tue, 10 Jun 2025 00:13:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DC3118FC84;
+	Tue, 10 Jun 2025 00:45:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749514383; cv=none; b=ddRETkGKVgaf5xlg/MDSURj7wam2vWVFBUlFNpFTO48z9KmFi905lL2jbdrC+mgZbo7PRm7PUt3FEtaVw50ce7CNUiYPhgZ0rNbT15FMSGzZDW2KoDiLbFUsHU7Drz4/z9Gp7iIFcMJFPEd0ZLNh5xC422fUS9uF55hpHgpkRLo=
+	t=1749516342; cv=none; b=h6f76A7ws5HTi9ns4MQ/IOsBGyHn3zHL+rYXxW2RRN8BKHlOtwcIerxd/3UmwV8iqGizGwxAt0VHNvxlUdqHADbaLTNvHS6+CI1kmyn8VdytzC9NqPn1/UDZVBXxR+OT1dZv2+bBBERZg6ET65676RHWHFeMJIjO9u9XzpJx2iM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749514383; c=relaxed/simple;
-	bh=EB5B/sD194nGvooI5Aa9H25sIT/lJMIiyYJPqiS3Kcs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=SLN8X6QUrmqwfdU54UkibhwrrC8Sj4RkbeNKkpCskUYDh/NRP4gGE8JdY1+fY+o2wt+PKibi52tXy6W5CZAo8brK53ADHSBiFPFZQMyDsxt/02TogJpW3Oy8vw2EuAtPvVh3BQIMQUxro95EdxDvMCidnHH//uqpaRDdvlDyY8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M9N28LeP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D10D3C4CEEB;
-	Tue, 10 Jun 2025 00:13:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749514383;
-	bh=EB5B/sD194nGvooI5Aa9H25sIT/lJMIiyYJPqiS3Kcs=;
-	h=From:To:Cc:Subject:Date:From;
-	b=M9N28LePt8TMwfwr4f2GpM5qPRZZI1o8C4x3/5/2So2Yd+IPVI3g7XPN0nksNHRfr
-	 3n50MaHMUIxKI8Gd1I+/CuC/I5PNRKH5rgNHU/z4ae0C5Evk85XD4SUKVpv7H6gcL6
-	 tYzg6k5rmTR+JwonU7AR7OH1lCbMYWKU7cjxSomMtt5mUSDgPvJsNXGZV/doqdUbsF
-	 ReFAT5QDY/g9sRAfA+mnOQyJ5FrnG8FmkNilhlG1UlZ/kkIgXomBnuyItsnSd94a80
-	 G8PtkUAo7Fm+Hx3sLsoiV6teZO7F2bi51vFZAwetn80yHdEhWKgbBlAgfRjdx7v0A6
-	 jdd8NbGkU4kEg==
-From: Jakub Kicinski <kuba@kernel.org>
-To: davem@davemloft.net
-Cc: netdev@vger.kernel.org,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	andrew+netdev@lunn.ch,
-	horms@kernel.org,
-	willemdebruijn.kernel@gmail.com,
-	maze@google.com,
-	daniel@iogearbox.net,
-	Jakub Kicinski <kuba@kernel.org>,
-	stable@vger.kernel.org,
-	martin.lau@linux.dev,
-	john.fastabend@gmail.com,
-	eddyz87@gmail.com,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	willemb@google.com,
-	william.xuanziyang@huawei.com,
-	alan.maguire@oracle.com,
-	bpf@vger.kernel.org,
-	shuah@kernel.org,
-	linux-kselftest@vger.kernel.org,
-	yonghong.song@linux.dev
-Subject: [PATCH net v3 1/2] net: clear the dst when changing skb protocol
-Date: Mon,  9 Jun 2025 17:12:44 -0700
-Message-ID: <20250610001245.1981782-1-kuba@kernel.org>
-X-Mailer: git-send-email 2.49.0
+	s=arc-20240116; t=1749516342; c=relaxed/simple;
+	bh=Ori/KbuAQ4TV3cThealG1w6+EdbLKa/ruRtxvhkgFIY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Aba4HAsB47kXBqzVH5h1RD1F+KTfnwQ5NDa7MJt4t7cZRBizrfqrmmhfsptaVnCaGnKLVlaVXRcjLvR0IV5bE5TsJqqgClK2jkQM4qQDdOzxPDrHg7WA/HDwPaneM+6KhXilO1u40NxzCUOiHrNRj9Z5wzRjfCLp1M6V9Pcl5NM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dLnIS+Lv; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3a54836cb7fso1100375f8f.2;
+        Mon, 09 Jun 2025 17:45:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749516339; x=1750121139; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S/nvCmvL9TnMGgsBBImgevjJBae5i0pFldeGSR1tm0E=;
+        b=dLnIS+LvuOk9ViQ3ZW3mZl12MhAGjEx3cBWeHPOL5fwjQ1F5FUjFOYW7vhbS7qD75E
+         1e4yrrgm/MA1/0MaFdPz07yuq47iulJt84pYgLqVqzlmdQbE3g9Tt8slgipm8L5+B8PB
+         td1gP97jIDyxzAHemPrFtD5r8Z1vvhlnVYSSKFIQ0JBH0P7NnFXdGHs7TYoFxv9y0bIH
+         5xRjUvGJXftI9A3WIuk/48X1wHFpWvTO4+Yxh+LhhIB71SRwfBdjbM7/6sX2KBStRHNF
+         XWSK5R5NiLN/WfSkN0Wg+QL85cscJoYKpbA3MheJ5Io8YoMcIui9Dvf3NnaWR3/UeUSl
+         fT6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749516339; x=1750121139;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=S/nvCmvL9TnMGgsBBImgevjJBae5i0pFldeGSR1tm0E=;
+        b=WIIMiML+3t+nxnWiDWTsI2ucG7IBVQo3AgXPGOmJWVFC5U5iD9UZ94DPmW/Edrpe6m
+         clMAHx6bEzlgiVH7Yfla0mVW1zi/kxh07jWUZaAHCCg/VLNDYTwNFIBetlzIHja4zNQD
+         kgTH1TlR4Op8iO3YPAIVe/ww7SiwV9am/wnaXs02lFsItLHX2zlpWzf35eVwB0MDzA36
+         Adoc6bxOs2vWLU/D3wNzDa4+7l38/Q19ksrnMgagKqo8sOiFl3n+ibiScj9CxcLmb2L1
+         jpm4OuGLvi2+pq4moObP3UhWxER87jMtiiJOzLCa+FmYBxErRHhykDraC/qNkHoIeaXs
+         e7Cg==
+X-Forwarded-Encrypted: i=1; AJvYcCVUwyiT7fyJXWZWoQON6mFwPiPuXDUfGwHAJV4hd/QqZFlxvoEF70hyJAs6WJpC9w8UPiel3dRA6yAy8AzcEq0LU9Ourbs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwNb24CLc0i6LuTh5LYU6u5SbQIE5ouoBhy44t5k5CLr85IyItQ
+	VxbZ98EQ9OcEniD8BxT/RigDhXkYa/ONlZ0zII4EpO/sEQjEClOB3t0xNUVBkemUTAlxusVyozV
+	Z4v3YWj33N3eVCAKcUsN3pDyhnnoZyZ4=
+X-Gm-Gg: ASbGncsiqWPMU00WyY4axFY9ynr6VmgUaAtPUTrrrnViP3ZW4ab94PRc65heRjfpHPN
+	GwJmODWtTPrGb1scqaKLK0Dh6Oc9RR1bZtQL2B+p6AZP9zopzzl5Nf8d8X9EcXyeA8R+1UIm5fH
+	PLdPAfkPHmSzW0lRflVZQyTrsSr1jPnHnDgikhhmraVsNhLhvMj06CrrwFgOKGUCG6iX4pAvEv
+X-Google-Smtp-Source: AGHT+IF2ws0FrcnMf32JfSTC7LGj9R/Fh7ZxxsVNs0jZPTiiRf8bCb68MykSBcwGYLgfBNob+mJWDPFx2/JKIPjEV4U=
+X-Received: by 2002:a5d:64ec:0:b0:3a4:dbac:2db6 with SMTP id
+ ffacd0b85a97d-3a531cb89e6mr12172556f8f.49.1749516338557; Mon, 09 Jun 2025
+ 17:45:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20250606232914.317094-1-kpsingh@kernel.org> <20250606232914.317094-13-kpsingh@kernel.org>
+In-Reply-To: <20250606232914.317094-13-kpsingh@kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 9 Jun 2025 17:45:27 -0700
+X-Gm-Features: AX0GCFtaCkx1n4RY_ghqGoBiTLzBBMUqEHRvoWT2T7yPn4PUCVKPTQ9iljpQ5wk
+Message-ID: <CAADnVQ+bBXJMt1fK-mVzfFyK=k8xDgZuLuQ8J-SAFug294ibqw@mail.gmail.com>
+Subject: Re: [PATCH 12/12] selftests/bpf: Enable signature verification for
+ all lskel tests
+To: KP Singh <kpsingh@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, LSM List <linux-security-module@vger.kernel.org>, 
+	Blaise Boscaccy <bboscaccy@linux.microsoft.com>, Paul Moore <paul@paul-moore.com>, 
+	"K. Y. Srinivasan" <kys@microsoft.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-A not-so-careful NAT46 BPF program can crash the kernel
-if it indiscriminately flips ingress packets from v4 to v6:
+On Fri, Jun 6, 2025 at 4:29=E2=80=AFPM KP Singh <kpsingh@kernel.org> wrote:
+>
+> Convert the kernel's generated verification certificate into a C header
+> file using xxd.  Finally, update the main test runner to load this
+> certificate into the session keyring via the add_key() syscall before
+> executing any tests.
+>
+> The kernel's module signing verification certificate is converted to a
+> headerfile and loaded as a session key and all light skeleton tests are
+> updated to be signed.
+>
+> Signed-off-by: KP Singh <kpsingh@kernel.org>
+> ---
+>  tools/testing/selftests/bpf/.gitignore   |  1 +
+>  tools/testing/selftests/bpf/Makefile     | 13 +++++++++++--
+>  tools/testing/selftests/bpf/test_progs.c | 13 +++++++++++++
+>  3 files changed, 25 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selft=
+ests/bpf/.gitignore
+> index e2a2c46c008b..5ab96f8ab1c9 100644
+> --- a/tools/testing/selftests/bpf/.gitignore
+> +++ b/tools/testing/selftests/bpf/.gitignore
+> @@ -45,3 +45,4 @@ xdp_redirect_multi
+>  xdp_synproxy
+>  xdp_hw_metadata
+>  xdp_features
+> +verification_cert.h
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
+ts/bpf/Makefile
+> index cf5ed3bee573..778b54be7ef4 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -7,6 +7,7 @@ CXX ?=3D $(CROSS_COMPILE)g++
+>
+>  CURDIR :=3D $(abspath .)
+>  TOOLSDIR :=3D $(abspath ../../..)
+> +CERTSDIR :=3D $(abspath ../../../../certs)
+>  LIBDIR :=3D $(TOOLSDIR)/lib
+>  BPFDIR :=3D $(LIBDIR)/bpf
+>  TOOLSINCDIR :=3D $(TOOLSDIR)/include
+> @@ -534,7 +535,7 @@ HEADERS_FOR_BPF_OBJS :=3D $(wildcard $(BPFDIR)/*.bpf.=
+h)               \
+>  # $1 - test runner base binary name (e.g., test_progs)
+>  # $2 - test runner extra "flavor" (e.g., no_alu32, cpuv4, bpf_gcc, etc)
+>  define DEFINE_TEST_RUNNER
+> -
+> +LSKEL_SIGN :=3D -S -k $(CERTSDIR)/signing_key.pem -i $(CERTSDIR)/signing=
+_key.x509
 
-  BUG: kernel NULL pointer dereference, address: 0000000000000000
-    ip6_rcv_core (net/ipv6/ip6_input.c:190:20)
-    ipv6_rcv (net/ipv6/ip6_input.c:306:8)
-    process_backlog (net/core/dev.c:6186:4)
-    napi_poll (net/core/dev.c:6906:9)
-    net_rx_action (net/core/dev.c:7028:13)
-    do_softirq (kernel/softirq.c:462:3)
-    netif_rx (net/core/dev.c:5326:3)
-    dev_loopback_xmit (net/core/dev.c:4015:2)
-    ip_mc_finish_output (net/ipv4/ip_output.c:363:8)
-    NF_HOOK (./include/linux/netfilter.h:314:9)
-    ip_mc_output (net/ipv4/ip_output.c:400:5)
-    dst_output (./include/net/dst.h:459:9)
-    ip_local_out (net/ipv4/ip_output.c:130:9)
-    ip_send_skb (net/ipv4/ip_output.c:1496:8)
-    udp_send_skb (net/ipv4/udp.c:1040:8)
-    udp_sendmsg (net/ipv4/udp.c:1328:10)
-
-The output interface has a 4->6 program attached at ingress.
-We try to loop the multicast skb back to the sending socket.
-Ingress BPF runs as part of netif_rx(), pushes a valid v6 hdr
-and changes skb->protocol to v6. We enter ip6_rcv_core which
-tries to use skb_dst(). But the dst is still an IPv4 one left
-after IPv4 mcast output.
-
-Clear the dst in all BPF helpers which change the protocol.
-Try to preserve metadata dsts, those may carry non-routing
-metadata.
-
-Cc: stable@vger.kernel.org
-Reviewed-by: Maciej Żenczykowski <maze@google.com>
-Acked-by: Daniel Borkmann <daniel@iogearbox.net>
-Fixes: d219df60a70e ("bpf: Add ipip6 and ip6ip decap support for bpf_skb_adjust_room()")
-Fixes: 1b00e0dfe7d0 ("bpf: update skb->protocol in bpf_skb_net_grow")
-Fixes: 6578171a7ff0 ("bpf: add bpf_skb_change_proto helper")
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
----
-v3:
- - go back to v1, the encap / decap which don't change proto
-   will be added in -next
- - split out the test
-v2: https://lore.kernel.org/20250607204734.1588964-1-kuba@kernel.org
- - drop on encap/decap
- - fix typo (protcol)
- - add the test to the Makefile
-v1: https://lore.kernel.org/20250604210604.257036-1-kuba@kernel.org
-
-I wonder if we should not skip ingress (tc_skip_classify?)
-for looped back packets in the first place. But that doesn't
-seem robust enough vs multiple redirections to solve the crash.
-
-Ignoring LOOPBACK packets (like the NAT46 prog should) doesn't
-work either, since BPF can change pkt_type arbitrarily.
-
-CC: martin.lau@linux.dev
-CC: daniel@iogearbox.net
-CC: john.fastabend@gmail.com
-CC: eddyz87@gmail.com
-CC: sdf@fomichev.me
-CC: haoluo@google.com
-CC: willemb@google.com
-CC: william.xuanziyang@huawei.com
-CC: alan.maguire@oracle.com
-CC: bpf@vger.kernel.org
-CC: edumazet@google.com
-CC: maze@google.com
-CC: shuah@kernel.org
-CC: linux-kselftest@vger.kernel.org
-CC: yonghong.song@linux.dev
----
- net/core/filter.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
-
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 327ca73f9cd7..7a72f766aacf 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -3233,6 +3233,13 @@ static const struct bpf_func_proto bpf_skb_vlan_pop_proto = {
- 	.arg1_type      = ARG_PTR_TO_CTX,
- };
- 
-+static void bpf_skb_change_protocol(struct sk_buff *skb, u16 proto)
-+{
-+	skb->protocol = htons(proto);
-+	if (skb_valid_dst(skb))
-+		skb_dst_drop(skb);
-+}
-+
- static int bpf_skb_generic_push(struct sk_buff *skb, u32 off, u32 len)
- {
- 	/* Caller already did skb_cow() with len as headroom,
-@@ -3329,7 +3336,7 @@ static int bpf_skb_proto_4_to_6(struct sk_buff *skb)
- 		}
- 	}
- 
--	skb->protocol = htons(ETH_P_IPV6);
-+	bpf_skb_change_protocol(skb, ETH_P_IPV6);
- 	skb_clear_hash(skb);
- 
- 	return 0;
-@@ -3359,7 +3366,7 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
- 		}
- 	}
- 
--	skb->protocol = htons(ETH_P_IP);
-+	bpf_skb_change_protocol(skb, ETH_P_IP);
- 	skb_clear_hash(skb);
- 
- 	return 0;
-@@ -3550,10 +3557,10 @@ static int bpf_skb_net_grow(struct sk_buff *skb, u32 off, u32 len_diff,
- 		/* Match skb->protocol to new outer l3 protocol */
- 		if (skb->protocol == htons(ETH_P_IP) &&
- 		    flags & BPF_F_ADJ_ROOM_ENCAP_L3_IPV6)
--			skb->protocol = htons(ETH_P_IPV6);
-+			bpf_skb_change_protocol(skb, ETH_P_IPV6);
- 		else if (skb->protocol == htons(ETH_P_IPV6) &&
- 			 flags & BPF_F_ADJ_ROOM_ENCAP_L3_IPV4)
--			skb->protocol = htons(ETH_P_IP);
-+			bpf_skb_change_protocol(skb, ETH_P_IP);
- 	}
- 
- 	if (skb_is_gso(skb)) {
-@@ -3606,10 +3613,10 @@ static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
- 	/* Match skb->protocol to new outer l3 protocol */
- 	if (skb->protocol == htons(ETH_P_IP) &&
- 	    flags & BPF_F_ADJ_ROOM_DECAP_L3_IPV6)
--		skb->protocol = htons(ETH_P_IPV6);
-+		bpf_skb_change_protocol(skb, ETH_P_IPV6);
- 	else if (skb->protocol == htons(ETH_P_IPV6) &&
- 		 flags & BPF_F_ADJ_ROOM_DECAP_L3_IPV4)
--		skb->protocol = htons(ETH_P_IP);
-+		bpf_skb_change_protocol(skb, ETH_P_IP);
- 
- 	if (skb_is_gso(skb)) {
- 		struct skb_shared_info *shinfo = skb_shinfo(skb);
--- 
-2.49.0
-
+Can we do a fallback for setups without CONFIG_MODULE_SIG ?
+Reuse setup() helper from verify_sig_setup.sh ?
+Doesn't have to be right away. It can be a follow up.
 
