@@ -1,85 +1,156 @@
-Return-Path: <bpf+bounces-60218-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60219-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0EE0AD4157
-	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 19:57:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 059A1AD41CF
+	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 20:16:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 817BE189F75C
-	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 17:58:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD6213A3D35
+	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 18:15:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 895D3248176;
-	Tue, 10 Jun 2025 17:57:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0146024679C;
+	Tue, 10 Jun 2025 18:16:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C8lA2SJe"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="cQbpKaOa"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B62A2459E5
-	for <bpf@vger.kernel.org>; Tue, 10 Jun 2025 17:57:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 123C7236429;
+	Tue, 10 Jun 2025 18:16:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749578221; cv=none; b=s2ltWzCfugL8XCjj5/wrkmFLg1gK2JQ/sjBS6qNSrgQwkuFgFLo4X697DTab4mPIoqg6M4/9NoKDdvTdHaJSyYb/M2gcUqkojzQ1+2Re5E7sehWrArlXVjpc8ZNDF+cX+2XMDlHayej3GYcrCMG82NRExttBxHhs00ZOHV2CBlI=
+	t=1749579363; cv=none; b=Yy8yPT1WvSXnMx4jPyb42j8Jkt2UEQAnZGdSRlPfkUeZ7OxrzfDaKCLtqRdRe/wm9x9bCNbI5ejlGh9hmzDumH7F/LzDYo7WTTRLOocXMyhwppV7pFVxEpzr1w8ZiZqaP6OR5XKF1RJap2AbjfrW3pTSuDTyAGJnVAxco06VG9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749578221; c=relaxed/simple;
-	bh=o/EIqDhRHXNwC661Ix/Xh07w858mX3cfWZTrFQXedL8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jMOBfbFaR3/VPuBvDwb+et6ZRhCJyB/PJiFOhaOPWDPYn5DEC38RzqeP935MdGJYdjpY7lfsJq8WzrEc8gNkeVEP+EwhRRY8kJ0Kxxx4jloT/elORgU7OyWW+KPvIEjo7FWEJE6ljtHDLNu2heWg05CjcWRRHS9uSE7pw6IOFPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C8lA2SJe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAF12C4CEF4
-	for <bpf@vger.kernel.org>; Tue, 10 Jun 2025 17:57:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749578220;
-	bh=o/EIqDhRHXNwC661Ix/Xh07w858mX3cfWZTrFQXedL8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=C8lA2SJeEYhikdL+aZZWnFPTO8dh+r7awAOO0N6zOr2Y1JSszkaghSQ6g2jc5TsaG
-	 bRXjG/WJwjW0YgCzD3fRLjSraJN88Ih3AccAMiAZBJaEJv/Tet940P0Zpfr9z6IfF6
-	 V/Eq4N++eRmnwMXWi00mtB26HFk8wESbAHZW8OrJJ3qB1v+q+mRZf+sksu7fZs4tgU
-	 UgXblbBx+nSd3/lvIqxkuou2Crr7jJXZj4mQU0X6Oda4F5TWhQ5PSbCuVzGUCLTDak
-	 7+bSybB1XsAGTbVZ7vgXLQlqm7A0Bm26swXpbKEzIXYlitePywArEXCCk53Pvh1GJD
-	 qzebgfYrFh2JA==
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-60779962c00so5622335a12.0
-        for <bpf@vger.kernel.org>; Tue, 10 Jun 2025 10:57:00 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yx2ACn/ybc4GErfnwbIXPkomPLMAJoWhyYUigeUfLbkabsGVbX3
-	ahQ97r2rMKZ6c7o4WWyAOkK6+muOSLp+Bmfv8hGgo4rYZANWQS8n1EVbkCLd5a1XdXuYeNJxQf8
-	F3hPGFmS3gMV4ql4+iqwurLfGm0LV1jGMITVaMby6
-X-Google-Smtp-Source: AGHT+IGZXUq7dF0vWaS7EQJBO5eVjQ/62SvrC56EQBE7WguprI9Qv3UDt+jKNg2wBvmdSxFLEb1PFEKm0hwONKUXytE=
-X-Received: by 2002:a05:6402:d0d:b0:604:bb1d:938d with SMTP id
- 4fb4d7f45d1cf-60846d30b2dmr95190a12.34.1749578219228; Tue, 10 Jun 2025
- 10:56:59 -0700 (PDT)
+	s=arc-20240116; t=1749579363; c=relaxed/simple;
+	bh=9fp7W+ilQi7LKO2vKSvuyyMXb9voxhG2ZetMSlcsxxI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=NBBbOaJGkciHBh5h7iGFnKHFwgooeZpuN4xpWL+IX72pYOOC1M2UUQd/jWxOE9Q6y/hczZL4S5xXIXQzXFu+ix7sTxX+d4EymCc3DULNJOZA1tRKKSWyY3mp69f2ZJzwzpjom7/5APnn8WG4NiWbOiR2Ot8EHE0qPsF/2vWWHng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=cQbpKaOa; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from narnia (unknown [40.78.13.147])
+	by linux.microsoft.com (Postfix) with ESMTPSA id DE971211759D;
+	Tue, 10 Jun 2025 11:16:00 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DE971211759D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1749579361;
+	bh=SFCxouW8bosm/IUtRADZwmLxWA1XsxpThmTh5x0wqlc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=cQbpKaOaHskP9do1I7m1ETHBen/GX0z+szCeBwT3k6x5r+r9rfSVWHnCxbkIdNWOc
+	 JqX0Eoy+BP3p7qvWZFsugTNAvxoUtLRr4xMKhfaVMY5HBi+0cDsiHKwABGAKRNTzrF
+	 3pcrfq0eUXOz7YMLtsPkAMpFXX4RvS0L8Db+WPJo=
+From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+To: KP Singh <kpsingh@kernel.org>
+Cc: bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
+ paul@paul-moore.com, kys@microsoft.com, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org
+Subject: Re: [PATCH 10/12] libbpf: Embed and verify the metadata hash in the
+ loader
+In-Reply-To: <CACYkzJ6M7kA7Se4=AXWNVF1UyeHK3t+3Y_8Ap1L9pkUTbqys9Q@mail.gmail.com>
+References: <20250606232914.317094-1-kpsingh@kernel.org>
+ <20250606232914.317094-11-kpsingh@kernel.org>
+ <87qzzrleuw.fsf@microsoft.com>
+ <CACYkzJ6M7kA7Se4=AXWNVF1UyeHK3t+3Y_8Ap1L9pkUTbqys9Q@mail.gmail.com>
+Date: Tue, 10 Jun 2025 11:15:59 -0700
+Message-ID: <87o6uvlaxs.fsf@microsoft.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250610175442.2138504-1-stfomichev@gmail.com>
-In-Reply-To: <20250610175442.2138504-1-stfomichev@gmail.com>
-From: KP Singh <kpsingh@kernel.org>
-Date: Tue, 10 Jun 2025 19:56:48 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ6Y+wcBeVgU-SbxFbimQQ5ve3p3J1YEAcb=VhPJwaYFvA@mail.gmail.com>
-X-Gm-Features: AX0GCFugYv_WEc-J17kTVrbFElExKOsgJjQw9bwraM1ZC-OWcx0MedIOHxHss0E
-Message-ID: <CACYkzJ6Y+wcBeVgU-SbxFbimQQ5ve3p3J1YEAcb=VhPJwaYFvA@mail.gmail.com>
-Subject: Re: [PATCH bpf] MAINTAINERS: add myself as bpf networking reviewer
-To: Stanislav Fomichev <stfomichev@gmail.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
-	song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, haoluo@google.com, 
-	jolsa@kernel.org, akpm@linux-foundation.org, lumag@kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 10, 2025 at 7:54=E2=80=AFPM Stanislav Fomichev <stfomichev@gmai=
-l.com> wrote:
->
-> I've been focusing on networking BPF bits lately, add myself as a
-> reviewer.
->
-> Signed-off-by: Stanislav Fomichev <stfomichev@gmail.com>
+KP Singh <kpsingh@kernel.org> writes:
 
-Acked-by: KP Singh <kpsingh@kernel.org>
+[...]
+
+>>
+>> The above code gets generated per-program and exists out-of-tree in a
+>> very unreadable format in it's final form. I have general objections to
+>> being forced to "trust" out-of-tree code, when it's demostrably trivial
+>
+> This is not out of tree. It's very much within the kernel tree.
+
+No, it's not.
+
+Running something like
+
+bpftool gen skeleton -S -k <private_key> -i <identity_cert>
+fentry_test.bpf.o
+
+will yield a header file fentery_test.h or whatever. That header file
+contains a customized and one-off version of the templated code in this
+patch. That header file and the resultant loader it gets compiled into
+exists out-of-tree.
+
+>
+>> to perform this check in-kernel, without impeding any of the other
+>> stated use cases. There is no possible audit log nor LSM hook for these
+>> operations. There is no way to know that this check was ever performed.
+>>
+>> Further, this check ends up happeing in an entirely different syscall,
+>> the LSM layer and the end user may both see invalid programs successfully
+>> being loaded into the kernel, that may fail mysteriously later.
+>>
+>> Also, this patch seems to rely on hacking into struct internals and
+>> magic binary layouts.
+>
+> These magical binary layouts are BPF programs, as I mentioned, if you
+> don't like this you (i.e an advanced user like Microsoft) can
+> implement your own trusted loader in whatever format you like. We are
+> not forcing you.
+>
+> If you really want to do it in the kernel, you can do it out of tree
+> and maintain these patches (that's what "out of tree" actually means),
+> this is not a direction the BPF maintainers are interested in as it
+> does not meet the broader community's use-cases. We don=E2=80=99t want an
+> unnecessary extension to the UAPI when some BPF programs do have
+> stable instructions already (e.g. network) and some that can
+> potentially have someday.
+>
+
+Yes, you are forcing us. Saying we are only allowed to use "trusted"
+loaders, and that no one is allowed to have any in-kernel, in-tree code
+that inspects user inputs or target programs directly is very
+non-consentual on my end. This is a design mandate, being forced upon
+other people, by you, with no concrete reasons, other than vague statements
+around UAPI design, need or necessity.
+
+-blaise
+
+> RE The struct internals will be replaced by calling BPF_OBJ_GET_INFO
+> directly from the loader program as I mentioned in the commit.=E2=80=9D
+>
+>
+> - KP
+>
+>
+>>
+>> -blaise
+>>
+>> >  void bpf_gen__record_attach_target(struct bpf_gen *gen, const char *a=
+ttach_name,
+>> >                                  enum bpf_attach_type type)
+>> >  {
+>> > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+>> > index b6ee9870523a..084372fa54f4 100644
+>> > --- a/tools/lib/bpf/libbpf.h
+>> > +++ b/tools/lib/bpf/libbpf.h
+>> > @@ -1803,9 +1803,10 @@ struct gen_loader_opts {
+>> >       const char *insns;
+>> >       __u32 data_sz;
+>> >       __u32 insns_sz;
+>> > +     bool gen_hash;
+>> >  };
+>> >
+>> > -#define gen_loader_opts__last_field insns_sz
+>> > +#define gen_loader_opts__last_field gen_hash
+>> >  LIBBPF_API int bpf_object__gen_loader(struct bpf_object *obj,
+>> >                                     struct gen_loader_opts *opts);
+>> >
+>> > --
+>> > 2.43.0
 
