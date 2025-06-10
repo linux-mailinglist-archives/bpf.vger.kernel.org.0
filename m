@@ -1,57 +1,57 @@
-Return-Path: <bpf+bounces-60203-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60204-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC48FAD3F29
-	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 18:38:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80B8FAD3F31
+	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 18:39:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A19E3A97F9
-	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 16:37:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35F75168487
+	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 16:39:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14212241C8C;
-	Tue, 10 Jun 2025 16:37:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D047242905;
+	Tue, 10 Jun 2025 16:39:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="BtPbV9Dw"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="OCab6z7h"
 X-Original-To: bpf@vger.kernel.org
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CDFF2397B0;
-	Tue, 10 Jun 2025 16:37:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AA4D20EB;
+	Tue, 10 Jun 2025 16:39:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749573478; cv=none; b=JZzbAN0k36QCqOUui681FyIk0SKxXlyb9Mk9/vcvbza5d16tiww/6x3VYcHPprXhaRSmjbsVxdE1s+ILNPwId9MqngGHLgXr06rj15l/JzKw3DmA6JcV0C7tDMsTVLQSk1ngTPh1InITLphr1anKP050MceKdBBbcda++YXCo5Y=
+	t=1749573575; cv=none; b=QOL130IMqbahA9Svpe3si9jJ/KxVgfqZNC1aeasorO+o4YVu/WjZM1TM2iGfT6MNNWGcG6AzYL+q73gU2FjZlSN2G60ZQN2/8bmRNtH+Drmx5U+5Ur1lDAtL0BX4Txwn9qDcO0+yRtan9xEWoC4XAj4az9puJ0hYwgtIwtW+Hb8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749573478; c=relaxed/simple;
-	bh=mQrDXnHcOHPJjj8G/Ti38m2s3G6ZIUO09EXNmOIN0gE=;
+	s=arc-20240116; t=1749573575; c=relaxed/simple;
+	bh=IzbaMB9OvXXQvX/1E8JH+mMCYHDXzFNFdohAOhkI6pM=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=S94JRKDSVk69Xi9kPxbilkbOE19BKeqbOWrHZkN35IY4llVhan83kqVntbbFlZOD1BUd6D7g7P2igFq/6lK2N/0irokTib2zvVBQYOn+w1KHcy9xrh+LNMsxf5naBHinNyyt1XscbQ8SqHJS+G0BDYaFU2gYlK3y5huwU7lfarM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=BtPbV9Dw; arc=none smtp.client-ip=13.77.154.182
+	 MIME-Version:Content-Type; b=H7D6bXDPFH47/enE3AvWuafG0VvWShwrRiaGyO58grjjpyo3irED+DRKRoU3U4/1PgXM3NulhsrYLiHr+5gEROMdwrzLTIqOvTOkr1tsca3ooQxMhfzsjfOIbcMbaCM8rSSXAI/anlRTw7gtPJwvuYq6CW1qugle3Xie9+dQeoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=OCab6z7h; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: from narnia (unknown [40.78.13.147])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 08105211759D;
-	Tue, 10 Jun 2025 09:37:55 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 08105211759D
+	by linux.microsoft.com (Postfix) with ESMTPSA id 086042114D87;
+	Tue, 10 Jun 2025 09:39:32 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 086042114D87
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1749573476;
-	bh=AifVZIrgw/I8RRqBgLIX/E9qA/HFM3mkvb8pC5ikP34=;
+	s=default; t=1749573574;
+	bh=yx3CvqerorMDTClRiMNhud56+B+k5vow3fMsAkUnrHU=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=BtPbV9Dw949zFmhvdL6zgnhdAqslDHRMT69dA7UijSxLA0sZAcQF/cfIFB/MXY9lR
-	 R59o4YMWi7AOKVXK1o9TKIxbzqQG0d3xSWEZsOfskaOsudDW5oEUMvgBbLs7DksXwt
-	 Iylhxgf7qY2O9YDFuTcuf2KlULWM8DMwLUe39n3I=
+	b=OCab6z7hG/k9mCuBybtz0151IRJIwz5Xijd/R9kAUvzFQys7wilLnCz43djRHteCb
+	 wehvZwhL/7V36ph+5PVp11ZXP2Y1rMXHzsgP6FksYQEUmd+6HvQ3O1+f6DwRP2krXE
+	 WxbkYIJqD/KNC+bq2NrIfzhSZVl2Ha3ERJNkd+UM=
 From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
 To: KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org,
  linux-security-module@vger.kernel.org
 Cc: paul@paul-moore.com, kys@microsoft.com, ast@kernel.org,
  daniel@iogearbox.net, andrii@kernel.org, KP Singh <kpsingh@kernel.org>
-Subject: Re: [PATCH 08/12] bpf: Implement signature verification for BPF
- programs
-In-Reply-To: <20250606232914.317094-9-kpsingh@kernel.org>
+Subject: Re: [PATCH 12/12] selftests/bpf: Enable signature verification for
+ all lskel tests
+In-Reply-To: <20250606232914.317094-13-kpsingh@kernel.org>
 References: <20250606232914.317094-1-kpsingh@kernel.org>
- <20250606232914.317094-9-kpsingh@kernel.org>
-Date: Tue, 10 Jun 2025 09:37:54 -0700
-Message-ID: <87wm9jlfh9.fsf@microsoft.com>
+ <20250606232914.317094-13-kpsingh@kernel.org>
+Date: Tue, 10 Jun 2025 09:39:31 -0700
+Message-ID: <87tt4nlfek.fsf@microsoft.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -62,206 +62,133 @@ Content-Type: text/plain
 
 KP Singh <kpsingh@kernel.org> writes:
 
-> This patch extends the BPF_PROG_LOAD command by adding three new fields
-> to `union bpf_attr` in the user-space API:
+> Convert the kernel's generated verification certificate into a C header
+> file using xxd.  Finally, update the main test runner to load this
+> certificate into the session keyring via the add_key() syscall before
+> executing any tests.
 >
->   - signature: A pointer to the signature blob.
->   - signature_size: The size of the signature blob.
->   - keyring_id: The serial number of a loaded kernel keyring (e.g.,
->     the user or session keyring) containing the trusted public keys.
->
-> When a BPF program is loaded with a signature, the kernel:
->
-> 1.  Retrieves the trusted keyring using the provided `keyring_id`.
-> 2.  Verifies the supplied signature against the BPF program's
->     instruction buffer.
-> 3.  If the signature is valid and was generated by a key in the trusted
->     keyring, the program load proceeds.
-> 4.  If no signature is provided, the load proceeds as before, allowing
->     for backward compatibility. LSMs can chose to restrict unsigned
->     programs and implement a security policy.
-> 5.  If signature verification fails for any reason,
->     the program is not loaded.
+> The kernel's module signing verification certificate is converted to a
+> headerfile and loaded as a session key and all light skeleton tests are
+> updated to be signed.
 >
 > Signed-off-by: KP Singh <kpsingh@kernel.org>
 > ---
->  include/linux/bpf.h            |  9 +++++++-
->  include/uapi/linux/bpf.h       | 10 +++++++++
->  kernel/bpf/syscall.c           | 39 +++++++++++++++++++++++++++++++++-
->  kernel/trace/bpf_trace.c       |  6 ++++--
->  tools/include/uapi/linux/bpf.h | 10 +++++++++
->  tools/lib/bpf/bpf.c            |  2 +-
->  6 files changed, 71 insertions(+), 5 deletions(-)
+>  tools/testing/selftests/bpf/.gitignore   |  1 +
+>  tools/testing/selftests/bpf/Makefile     | 13 +++++++++++--
+>  tools/testing/selftests/bpf/test_progs.c | 13 +++++++++++++
+>  3 files changed, 25 insertions(+), 2 deletions(-)
 >
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 35f1a633d87a..32a41803d61c 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -2778,7 +2778,14 @@ bpf_jit_find_kfunc_model(const struct bpf_prog *prog,
->  int bpf_get_kfunc_addr(const struct bpf_prog *prog, u32 func_id,
->  		       u16 btf_fd_idx, u8 **func_addr);
+> diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
+> index e2a2c46c008b..5ab96f8ab1c9 100644
+> --- a/tools/testing/selftests/bpf/.gitignore
+> +++ b/tools/testing/selftests/bpf/.gitignore
+> @@ -45,3 +45,4 @@ xdp_redirect_multi
+>  xdp_synproxy
+>  xdp_hw_metadata
+>  xdp_features
+> +verification_cert.h
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index cf5ed3bee573..778b54be7ef4 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -7,6 +7,7 @@ CXX ?= $(CROSS_COMPILE)g++
 >  
-> -struct bpf_core_ctx {
-> +__bpf_kfunc struct bpf_key *bpf_lookup_user_key(u32 serial, u64 flags);
-> +__bpf_kfunc struct bpf_key *bpf_lookup_system_key(u64 id);
-> +__bpf_kfunc void bpf_key_put(struct bpf_key *bkey);
-> +__bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_p,
-> +					   struct bpf_dynptr *sig_p,
-> +					   struct bpf_key *trusted_keyring);
+>  CURDIR := $(abspath .)
+>  TOOLSDIR := $(abspath ../../..)
+> +CERTSDIR := $(abspath ../../../../certs)
+>  LIBDIR := $(TOOLSDIR)/lib
+>  BPFDIR := $(LIBDIR)/bpf
+>  TOOLSINCDIR := $(TOOLSDIR)/include
+> @@ -534,7 +535,7 @@ HEADERS_FOR_BPF_OBJS := $(wildcard $(BPFDIR)/*.bpf.h)		\
+>  # $1 - test runner base binary name (e.g., test_progs)
+>  # $2 - test runner extra "flavor" (e.g., no_alu32, cpuv4, bpf_gcc, etc)
+>  define DEFINE_TEST_RUNNER
+> -
+> +LSKEL_SIGN := -S -k $(CERTSDIR)/signing_key.pem -i $(CERTSDIR)/signing_key.x509
+>  TRUNNER_OUTPUT := $(OUTPUT)$(if $2,/)$2
+>  TRUNNER_BINARY := $1$(if $2,-)$2
+>  TRUNNER_TEST_OBJS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.test.o,	\
+> @@ -601,7 +602,7 @@ $(TRUNNER_BPF_LSKELS): %.lskel.h: %.bpf.o $(BPFTOOL) | $(TRUNNER_OUTPUT)
+>  	$(Q)$$(BPFTOOL) gen object $$(<:.o=.llinked2.o) $$(<:.o=.llinked1.o)
+>  	$(Q)$$(BPFTOOL) gen object $$(<:.o=.llinked3.o) $$(<:.o=.llinked2.o)
+>  	$(Q)diff $$(<:.o=.llinked2.o) $$(<:.o=.llinked3.o)
+> -	$(Q)$$(BPFTOOL) gen skeleton -L $$(<:.o=.llinked3.o) name $$(notdir $$(<:.bpf.o=_lskel)) > $$@
+> +	$(Q)$$(BPFTOOL) gen skeleton $(LSKEL_SIGN) $$(<:.o=.llinked3.o) name $$(notdir $$(<:.bpf.o=_lskel)) > $$@
+>  	$(Q)rm -f $$(<:.o=.llinked1.o) $$(<:.o=.llinked2.o) $$(<:.o=.llinked3.o)
+>  
+>  $(LINKED_BPF_OBJS): %: $(TRUNNER_OUTPUT)/%
+> @@ -697,6 +698,13 @@ $(OUTPUT)/$(TRUNNER_BINARY): $(TRUNNER_TEST_OBJS)			\
+>  
+>  endef
+>  
+> +CERT_HEADER := verification_cert.h
+> +CERT_SOURCE := $(CERTSDIR)/signing_key.x509
 > +
-> +	struct bpf_core_ctx {
->  	struct bpf_verifier_log *log;
->  	const struct btf *btf;
->  };
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index ffd9e11befc2..5f7c82ebe10a 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -1589,6 +1589,16 @@ union bpf_attr {
->  		 * continuous.
->  		 */
->  		__u32		fd_array_cnt;
-> +		/* Pointer to a buffer containing the signature of the BPF
-> +		 * program.
-> +		 */
-> +		__aligned_u64   signature;
-> +		/* Size of the signature buffer in bytes. */
-> +		__u32 		signature_size;
-> +		/* ID of the kernel keyring to be used for signature
-> +		 * verification.
-> +		 */
-> +		__u32 		keyring_id;
->  	};
+> +$(CERT_HEADER): $(CERT_SOURCE)
+> +	@echo "GEN-CERT-HEADER: $(CERT_HEADER) from $<"
+> +	$(Q)xxd -i -n test_progs_verification_cert $< > $@
+> +
+>  # Define test_progs test runner.
+>  TRUNNER_TESTS_DIR := prog_tests
+>  TRUNNER_BPF_PROGS_DIR := progs
+> @@ -716,6 +724,7 @@ TRUNNER_EXTRA_SOURCES := test_progs.c		\
+>  			 disasm.c		\
+>  			 disasm_helpers.c	\
+>  			 json_writer.c 		\
+> +			 $(CERT_HEADER)		\
+>  			 flow_dissector_load.h	\
+>  			 ip_check_defrag_frags.h
+>  TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read				\
+> diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+> index 309d9d4a8ace..02a85dda30e6 100644
+> --- a/tools/testing/selftests/bpf/test_progs.c
+> +++ b/tools/testing/selftests/bpf/test_progs.c
+> @@ -14,12 +14,14 @@
+>  #include <netinet/in.h>
+>  #include <sys/select.h>
+>  #include <sys/socket.h>
+> +#include <linux/keyctl.h>
+>  #include <sys/un.h>
+>  #include <bpf/btf.h>
+>  #include <time.h>
+>  #include "json_writer.h"
 >  
->  	struct { /* anonymous struct used by BPF_OBJ_* commands */
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index c81be07fa4fa..6cd5ba42d946 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -2782,8 +2782,39 @@ static bool is_perfmon_prog_type(enum bpf_prog_type prog_type)
+>  #include "network_helpers.h"
+> +#include "verification_cert.h"
+>  
+>  /* backtrace() and backtrace_symbols_fd() are glibc specific,
+>   * use header file when glibc is available and provide stub
+> @@ -1928,6 +1930,13 @@ static void free_test_states(void)
 >  	}
 >  }
 >  
-> +static int bpf_prog_verify_signature(struct bpf_prog *prog, union bpf_attr *attr, bpfptr_t uattr)
+> +static __u32 register_session_key(const char *key_data, size_t key_data_size)
 > +{
-> +	bpfptr_t usig = make_bpfptr(attr->signature, uattr.is_kernel);
-> +	struct bpf_dynptr_kern sig_ptr, insns_ptr;
-> +	struct bpf_key *key = NULL;
-> +	void *sig;
-> +	int err = 0;
-> +
-> +	key = bpf_lookup_user_key(attr->keyring_id, 0);
-> +	if (!key)
-> +		return -ENOKEY;
-> +
-> +	sig = kvmemdup_bpfptr(usig, attr->signature_size);
-> +	if (!sig) {
-> +		bpf_key_put(key);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	bpf_dynptr_init(&sig_ptr, sig, BPF_DYNPTR_TYPE_LOCAL, 0,
-> +			attr->signature_size);
-> +	bpf_dynptr_init(&insns_ptr, prog->insnsi, BPF_DYNPTR_TYPE_LOCAL, 0,
-> +			prog->len * sizeof(struct bpf_insn));
-> +
-> +	err = bpf_verify_pkcs7_signature((struct bpf_dynptr *)&insns_ptr,
-> +					 (struct bpf_dynptr *)&sig_ptr, key);
-> +
-> +	bpf_key_put(key);
-> +	kvfree(sig);
-> +	return err;
+> +	return syscall(__NR_add_key, "asymmetric", "libbpf_session_key",
+> +			(const void *)key_data, key_data_size,
+> +			KEY_SPEC_SESSION_KEYRING);
 > +}
 > +
->  /* last field in 'union bpf_attr' used by this command */
-> -#define BPF_PROG_LOAD_LAST_FIELD fd_array_cnt
-> +#define BPF_PROG_LOAD_LAST_FIELD keyring_id
->  
->  static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
+>  int main(int argc, char **argv)
 >  {
-> @@ -2947,6 +2978,12 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
->  	/* eBPF programs must be GPL compatible to use GPL-ed functions */
->  	prog->gpl_compatible = license_is_gpl_compatible(license) ? 1 : 0;
+>  	static const struct argp argp = {
+> @@ -1961,6 +1970,10 @@ int main(int argc, char **argv)
+>  	/* Use libbpf 1.0 API mode */
+>  	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
+>  	libbpf_set_print(libbpf_print_fn);
+> +	err = register_session_key((const char *)test_progs_verification_cert,
+> +				   test_progs_verification_cert_len);
+> +	if (err < 0)
+> +		return err;
 >  
-> +	if (attr->signature) {
-> +		err = bpf_prog_verify_signature(prog, attr, uattr);
-> +		if (err)
-> +			goto free_prog;
-> +	}
-> +
->  	prog->orig_prog = NULL;
->  	prog->jited = 0;
+>  	traffic_monitor_set_print(traffic_monitor_print_fn);
 >  
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 132c8be6f635..0cce39e1a9ee 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -1351,7 +1351,6 @@ __bpf_kfunc void bpf_key_put(struct bpf_key *bkey)
->  	kfree(bkey);
->  }
->  
-> -#ifdef CONFIG_SYSTEM_DATA_VERIFICATION
->  /**
->   * bpf_verify_pkcs7_signature - verify a PKCS#7 signature
->   * @data_p: data to verify
-> @@ -1367,6 +1366,7 @@ __bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_p,
->  			       struct bpf_dynptr *sig_p,
->  			       struct bpf_key *trusted_keyring)
->  {
-> +#ifdef CONFIG_SYSTEM_DATA_VERIFICATION
->  	struct bpf_dynptr_kern *data_ptr = (struct bpf_dynptr_kern *)data_p;
->  	struct bpf_dynptr_kern *sig_ptr = (struct bpf_dynptr_kern *)sig_p;
->  	const void *data, *sig;
-> @@ -1396,8 +1396,10 @@ __bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_p,
->  				      trusted_keyring->key,
->  				      VERIFYING_UNSPECIFIED_SIGNATURE, NULL,
->  				      NULL);
-> -}
-
-The usage for this is no longer unspecified. VERIFYING_BPF_SIGNATURE or
-similar would add clarity here.
-
-> +#else
-> +	return -EOPNOTSUPP;
->  #endif /* CONFIG_SYSTEM_DATA_VERIFICATION */
-> +}
->  
->  __bpf_kfunc_end_defs();
->  
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> index ffd9e11befc2..5f7c82ebe10a 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -1589,6 +1589,16 @@ union bpf_attr {
->  		 * continuous.
->  		 */
->  		__u32		fd_array_cnt;
-> +		/* Pointer to a buffer containing the signature of the BPF
-> +		 * program.
-> +		 */
-> +		__aligned_u64   signature;
-> +		/* Size of the signature buffer in bytes. */
-> +		__u32 		signature_size;
-> +		/* ID of the kernel keyring to be used for signature
-> +		 * verification.
-> +		 */
-> +		__u32 		keyring_id;
->  	};
->  
->  	struct { /* anonymous struct used by BPF_OBJ_* commands */
-> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> index 11fa2d64ccca..1a85cfa4282c 100644
-> --- a/tools/lib/bpf/bpf.c
-> +++ b/tools/lib/bpf/bpf.c
-> @@ -240,7 +240,7 @@ int bpf_prog_load(enum bpf_prog_type prog_type,
->  		  const struct bpf_insn *insns, size_t insn_cnt,
->  		  struct bpf_prog_load_opts *opts)
->  {
-> -	const size_t attr_sz = offsetofend(union bpf_attr, fd_array_cnt);
-> +	const size_t attr_sz = offsetofend(union bpf_attr, keyring_id);
->  	void *finfo = NULL, *linfo = NULL;
->  	const char *func_info, *line_info;
->  	__u32 log_size, log_level, attach_prog_fd, attach_btf_obj_fd;
 > -- 
 > 2.43.0
+
+
+There aren't any test cases showing the "trusted" loader doing any sort
+of enforcement of blocking invalid programs or maps.
+
+-blaise
 
