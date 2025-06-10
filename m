@@ -1,169 +1,196 @@
-Return-Path: <bpf+bounces-60246-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60247-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CA9AAD45F3
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 00:26:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 582BFAD45F5
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 00:27:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F22DF189CAB2
-	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 22:26:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A3A43A4C0A
+	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 22:26:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA45528BAA8;
-	Tue, 10 Jun 2025 22:26:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30A3F28C010;
+	Tue, 10 Jun 2025 22:26:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pjp088z+"
+	dkim=pass (2048-bit key) header.d=maowtm.org header.i=@maowtm.org header.b="OIvzHK+K";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="SzYUHwkp"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from flow-a2-smtp.messagingengine.com (flow-a2-smtp.messagingengine.com [103.168.172.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3782B27FD73;
-	Tue, 10 Jun 2025 22:26:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03991242D7D;
+	Tue, 10 Jun 2025 22:26:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.137
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749594390; cv=none; b=g0CYj6KoYZMUzmDcJyHHGAbHYNtA8Z+fSCxhx7jnNWYhOdSF6+VnPxkzaO2aOfVHMu8AmiRZyxAcHbOKymF9Vd1C3MQ1CO08GpJOa1ysdUdhv0IZsxdX1CwY7q74Q6ptsyR/cTBiIkCKbf2hczGnNuv5gg55c57L42ZtjMk3dT8=
+	t=1749594409; cv=none; b=icAlwjLQfWnjsaQRxmzpxtIRvypZ71RuSBna50yMdhghoMhCdt446SGyVZY38URZcPTKFOQa7TA++0hZdMOE2VnCsgzblm3H18r3RqUNO9UxoNGHkbC6mTcUm4ORtLMIRpOUGssNGAcPtHKqmTny03t+xfqSaSM7xQuT2KHoqhM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749594390; c=relaxed/simple;
-	bh=6wPcP7bMx/JJAoXO55SI+6bSUFw7itbX7Ix25yYf7i8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BFuy29w57T0D9wKqdSJMwdlhP1Y5MxmS7Whxx0bO3FVTZcVqTcDjOG2JnSgsWEfrjcqTQPf3sGhMa8e6JlH/4eDGrWtCu26afP4NcXBDCi6uD09CDFoMkX6Y+E74oHzy9E/aw6kybv/ARCbaLIZUP22xRhPyvTXi+qO2SvgwQ5U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pjp088z+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D10FC4CEED;
-	Tue, 10 Jun 2025 22:26:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749594389;
-	bh=6wPcP7bMx/JJAoXO55SI+6bSUFw7itbX7Ix25yYf7i8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pjp088z+6v3jKwmVkIVs16nHmHSXtUL7cmDG+iCRKMiOwlOBuLlElc2Y5AuQycJs6
-	 KmQUCdg5oQ1xnpCIyAG5WCgxbfJ6xvcUPzaAy8ftKsVd0Myu6OoU//9UJ6u9wmWS6t
-	 e8SqjcIHTLTPiHW6ZSJAh+7mrx1fll75HFz8/W7E0hnRu35Ug9Pho5FH6ZoZT1iRjX
-	 J2QYJXek3EQjoUO0yHHZLPjYGC9UGBCiQMbdPXwHzxBJUWtuXXtYm6Z8SmT7MQaKRP
-	 8Vrs/Yt7un7OrvOXw5SUfLE3eS7jDhPso4Zv2k5IBl+NSMczJxWqo1qqlx/slPwb1L
-	 u/JKZmmzOikwA==
-Date: Wed, 11 Jun 2025 00:26:25 +0200
-From: Lorenzo Bianconi <lorenzo@kernel.org>
-To: Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>,
-	Stanislav Fomichev <stfomichev@gmail.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <borkmann@iogearbox.net>,
-	Eric Dumazet <eric.dumazet@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Paolo Abeni <pabeni@redhat.com>, sdf@fomichev.me,
-	kernel-team@cloudflare.com, arthur@arthurfabre.com,
-	jakub@cloudflare.com, Magnus Karlsson <magnus.karlsson@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: Re: [PATCH bpf-next V1 7/7] net: xdp: update documentation for
- xdp-rx-metadata.rst
-Message-ID: <aEixEV-nZxb1yjyk@lore-rh-laptop>
-References: <174897271826.1677018.9096866882347745168.stgit@firesoul>
- <174897279518.1677018.5982630277641723936.stgit@firesoul>
- <aEJWTPdaVmlIYyKC@mini-arch>
- <bf7209aa-8775-448d-a12e-3a30451dad22@iogearbox.net>
- <87plfbcq4m.fsf@toke.dk>
+	s=arc-20240116; t=1749594409; c=relaxed/simple;
+	bh=n8Q4u2oeyOV/7+exq8azslKtTa2cYnR5fxSWc0KScxc=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=EeX7eE3y5VoB18jp6S6rH0nS5zM1OALG1cp+6Ve3vWae4nNzeNwSFLRVptbjxDS2aWaBnG2NBALlQFiyag4pTxI9VGh9Q9orZNgA9rGg+tEWCtMMkM2erlCAyQReZTlt3XiDzn/q1oNP8Zqo7//oRTI2UwsZgrjWvxxtQ+PUY34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=maowtm.org; spf=pass smtp.mailfrom=maowtm.org; dkim=pass (2048-bit key) header.d=maowtm.org header.i=@maowtm.org header.b=OIvzHK+K; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=SzYUHwkp; arc=none smtp.client-ip=103.168.172.137
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=maowtm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=maowtm.org
+Received: from phl-compute-09.internal (phl-compute-09.phl.internal [10.202.2.49])
+	by mailflow.phl.internal (Postfix) with ESMTP id E19692002FE;
+	Tue, 10 Jun 2025 18:26:45 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-09.internal (MEProxy); Tue, 10 Jun 2025 18:26:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maowtm.org; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1749594405;
+	 x=1749601605; bh=TxAnDEWJjQsKX26bwE46ame44kXTPSaz+0UXyq1anCs=; b=
+	OIvzHK+K6Tfy6RB6U4Jns32ib4vRtt7zkMrmZPFB/IM29aKjcQTs22DFN1+JrMI0
+	NJe2io+254WdvKYyNYM/h0jHpcKX+7HjMa2wTAs1JexjcTaGChj9AgmDGoBTmF4Y
+	mP6SVWscVaNiSViTcEO8qhut6MMsUgFZ/1YCmxy7IcRwh4omDhFqtjQ5PRESfgBn
+	8YzAoytXOBLaDfXOF8zCmyzkFf9gTwp/GzD/bj9Ezcbuj1/Gz0DBgZtW0yFdkTfB
+	m0Lm4MDY9+Hz1UGy3OgDYmoFs8kHcHTvBgR7bOulRIHQ6HjgvCaIJWN/3RpL9NXu
+	ccJEh9DDbyh3asuksIrBcQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1749594405; x=
+	1749601605; bh=TxAnDEWJjQsKX26bwE46ame44kXTPSaz+0UXyq1anCs=; b=S
+	zYUHwkpatPE5DmHQMXURlWceO6/Xr9241OzrPNC5wR4hDA1HQvwc87Fsal1Nejb7
+	hlSaNvKO/dmX1OKjHyIxI/5Zx4sgkcNmcDYsqiuPi9iQq3Jn+FuywMEHZxQ257jB
+	/Hd49YbsfUvmtHVWbyHIIo9Vgl6os97jmPv1t4eJA9R8S148zi0pZwQfzA7Y1WzF
+	HV3ADwxMB11tI5ZK7qCsb54Un9icIwYIYYL8NgZ8r5GS2iYAj6MbPlKe+7W+KZlZ
+	FtqOh3qHkspgIsvVe4xI91nm9ldTgyEKGI4VZXKiLl8yGHxlfApn7U19y83LjsCT
+	go3jMeqmxNRhwyxwkYwSA==
+X-ME-Sender: <xms:JLFIaKFnBAS5bR4XB4wiKssU2_fEjDwWRXYpfTLyiFggD6q4svqG-Q>
+    <xme:JLFIaLXhXBkxRePNPL1Bvc2wbOhI6cmJuGfSAceaw-2kkDGo9IE48cWogwcnD9EqQ
+    QO_Qvi5yO6kk8MQQH0>
+X-ME-Received: <xmr:JLFIaEIQkT-5YS7sYuUPvWGNPenACNYPPPKEAHrAS9QqF2SfqxN2Xr7fRaDssVcAJcZ8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddugdduudeffecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenucfjughrpefkffggfgfhuffvvehfjggtgfesthekredttddv
+    jeenucfhrhhomhepvfhinhhgmhgrohcuhggrnhhguceomhesmhgrohifthhmrdhorhhgqe
+    enucggtffrrghtthgvrhhnpedvgeduuefgudejgfdtteffudejjeelleeiudekueejudeh
+    tefghfegvdetveffueenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehmsehmrghofihtmhdrohhrghdpnhgspghrtghpthhtohepvddvpdhmohgu
+    vgepshhmthhpohhuthdprhgtphhtthhopehsohhngheskhgvrhhnvghlrdhorhhgpdhrtg
+    hpthhtohepmhhitgesughighhikhhougdrnhgvthdprhgtphhtthhopegsphhfsehvghgv
+    rhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqfhhsuggvvhgvlhesvh
+    hgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhes
+    vhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhsvggtuhhrih
+    hthidqmhhoughulhgvsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepkhgv
+    rhhnvghlqdhtvggrmhesmhgvthgrrdgtohhmpdhrtghpthhtoheprghnughrihhisehkvg
+    hrnhgvlhdrohhrghdprhgtphhtthhopegvugguhiiikeejsehgmhgrihhlrdgtohhm
+X-ME-Proxy: <xmx:JLFIaEGkGuPc-ZHIo2fTCLBNjfrkcLmdcfLodzJyLOv2Af9sDeOdhA>
+    <xmx:JLFIaAUaGqiaWfBpvoWs-zuEgr6PS_sNpConKTnVXV_UAiDUOFjAaQ>
+    <xmx:JLFIaHMuANo8ROhHG_OEcaqpafbD87NO8KIXakg5IzDidkSPE0ueZw>
+    <xmx:JLFIaH2qcPoeib2UOGrqOx57u33HIi-kh-nlyNs8ec2RufFDK47HAQ>
+    <xmx:JbFIaKEOWGvRZRhdNbaTX6Iq_7XYUXUvezcGjKK8FHo00ftQBgTU2hFa>
+Feedback-ID: i580e4893:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 10 Jun 2025 18:26:42 -0400 (EDT)
+Message-ID: <d7d755ea-5942-440b-8154-21198cb6a0f1@maowtm.org>
+Date: Tue, 10 Jun 2025 23:26:41 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="rQvr/Q3jiYP0UDkh"
-Content-Disposition: inline
-In-Reply-To: <87plfbcq4m.fsf@toke.dk>
+User-Agent: Mozilla Thunderbird
+From: Tingmao Wang <m@maowtm.org>
+Subject: Re: [PATCH v3 bpf-next 1/5] namei: Introduce new helper function
+ path_walk_parent()
+To: Song Liu <song@kernel.org>, =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?=
+ <mic@digikod.net>
+Cc: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
+ kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
+ daniel@iogearbox.net, martin.lau@linux.dev, viro@zeniv.linux.org.uk,
+ brauner@kernel.org, jack@suse.cz, kpsingh@kernel.org,
+ mattbobrowski@google.com, amir73il@gmail.com, repnop@google.com,
+ jlayton@kernel.org, josef@toxicpanda.com, gnoack@google.com
+References: <20250606213015.255134-1-song@kernel.org>
+ <20250606213015.255134-2-song@kernel.org> <20250610.rox7aeGhi7zi@digikod.net>
+ <CAPhsuW5G0Th+9dRSmxDjo5E7CxV1E9N8AiKjw3cKyEhOBVWJFw@mail.gmail.com>
+Content-Language: en-US
+In-Reply-To: <CAPhsuW5G0Th+9dRSmxDjo5E7CxV1E9N8AiKjw3cKyEhOBVWJFw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+On 6/10/25 18:26, Song Liu wrote:
+> On Tue, Jun 10, 2025 at 10:19 AM Mickaël Salaün <mic@digikod.net> wrote:
+>>
+>> On Fri, Jun 06, 2025 at 02:30:11PM -0700, Song Liu wrote:
+>>> [...]
+>>> + * Returns:
+>>> + *  true  - if @path is updated to its parent.
+>>> + *  false - if @path is already the root (real root or @root).
+>>> + */
+>>> +bool path_walk_parent(struct path *path, const struct path *root)
+>>> +{
+>>> +     struct dentry *parent;
+>>> +
+>>> +     if (path_equal(path, root))
+>>> +             return false;
+>>> +
+>>> +     if (unlikely(path->dentry == path->mnt->mnt_root)) {
+>>> +             struct path p;
+>>> +
+>>> +             if (!choose_mountpoint(real_mount(path->mnt), root, &p))
+>>> +                     return false;
+>>> +             path_put(path);
+>>> +             *path = p;
+>>> +     }
+>>> +
+>>> +     if (unlikely(IS_ROOT(path->dentry)))
+>>
+>> path would be updated while false is returned, which is not correct.
+> 
+> Good catch.. How about the following:
+> 
+> bool path_walk_parent(struct path *path, const struct path *root)
+> {
+>         struct dentry *parent;
+>         bool ret = false;
+> 
+>         if (path_equal(path, root))
+>                 return false;
+> 
+>         if (unlikely(path->dentry == path->mnt->mnt_root)) {
+>                 struct path p;
+> 
+>                 if (!choose_mountpoint(real_mount(path->mnt), root, &p))
+>                         return false;
+>                 path_put(path);
+>                 *path = p;
+>                 ret = true;
+>         }
+> 
+>         if (unlikely(IS_ROOT(path->dentry)))
+>                 return ret;
 
---rQvr/Q3jiYP0UDkh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Returning true here would be the wrong semantic right?  This whole thing
+is only possible when some mount shadows "/".  Say if you have a landlock
+rule on the old "/", but then we mount a new "/" and chroot into it (via
+"/.."), the landlock rule on the old "/" should not apply, but if we
+change *path and return true here then this will "expose" that old "/" to
+landlock.
 
-> Daniel Borkmann <daniel@iogearbox.net> writes:
->=20
-[...]
-> >>=20
-> >> Why not have a new flag for bpf_redirect that transparently stores all
-> >> available metadata? If you care only about the redirect -> skb case.
-> >> Might give us more wiggle room in the future to make it work with
-> >> traits.
-> >
-> > Also q from my side: If I understand the proposal correctly, in order t=
-o fully
-> > populate an skb at some point, you have to call all the bpf_xdp_metadat=
-a_* kfuncs
-> > to collect the data from the driver descriptors (indirect call), and th=
-en yet
-> > again all equivalent bpf_xdp_store_rx_* kfuncs to re-store the data in =
-struct
-> > xdp_rx_meta again. This seems rather costly and once you add more kfunc=
-s with
-> > meta data aren't you better off switching to tc(x) directly so the driv=
-er can
-> > do all this natively? :/
->=20
-> I agree that the "one kfunc per metadata item" scales poorly. IIRC, the
-> hope was (back when we added the initial HW metadata support) that we
-> would be able to inline them to avoid the function call overhead.
->=20
-> That being said, even with half a dozen function calls, that's still a
-> lot less overhead from going all the way to TC(x). The goal of the use
-> case here is to do as little work as possible on the CPU that initially
-> receives the packet, instead moving the network stack processing (and
-> skb allocation) to a different CPU with cpumap.
->=20
-> So even if the *total* amount of work being done is a bit higher because
-> of the kfunc overhead, that can still be beneficial because it's split
-> between two (or more) CPUs.
->=20
-> I'm sure Jesper has some concrete benchmarks for this lying around
-> somewhere, hopefully he can share those :)
+A quick suggestion although I haven't tested anything - maybe we should do
+a special case check for IS_ROOT inside the
+    if (unlikely(path->dentry == path->mnt->mnt_root))
+? Before "path_put(path);", if IS_ROOT(p.dentry) then we just path_get(p)
+and return false.
 
-Another possible approach would be to have some utility functions (not kfun=
-cs)
-used to 'store' the hw metadata in the xdp_frame that are executed in each
-driver codebase before performing XDP_REDIRECT. The downside of this approa=
-ch
-is we need to parse the hw metadata twice if the eBPF program that is bound=
-ed
-to the NIC is consuming these info. What do you think?
+> 
+>         parent = dget_parent(path->dentry);
+>         dput(path->dentry);
+>         path->dentry = parent;
+>         return true;
+> }
+> 
+> Thanks,
+> Song
 
-Regards,
-Lorenzo
-
->=20
-> > Also, have you thought about taking the opportunity to generalize the e=
-xisting
-> > struct xsk_tx_metadata? It would be nice to actually use the same/simil=
-ar struct
-> > for RX and TX, similarly as done in struct virtio_net_hdr. Such that we=
- have
-> > XDP_{RX,TX}_METADATA and XDP_{RX,TX}MD_FLAGS_* to describe what meta da=
-ta we
-> > have and from a developer PoV this will be a nicely consistent API in X=
-DP. Then
-> > you could store at the right location in the meta data region just with
-> > bpf_xdp_metadata_* kfuncs (and/or plain BPF code) and finally set XDP_R=
-X_METADATA
-> > indicator bit.
->=20
-> Wouldn't this make the whole thing (effectively) UAPI?
->=20
-> -Toke
->=20
-
---rQvr/Q3jiYP0UDkh
-Content-Type: application/pgp-signature; name=signature.asc
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCaEixDwAKCRA6cBh0uS2t
-rJ/+AQCU4KqKc4HlNK1xWh72nioKOj93PVApUchVG/suCzEVQAEA2dXHsUhz6N80
-EQaT0viqZObt97Zje4q4B/J4MdOmlA0=
-=/t4b
------END PGP SIGNATURE-----
-
---rQvr/Q3jiYP0UDkh--
 
