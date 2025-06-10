@@ -1,101 +1,125 @@
-Return-Path: <bpf+bounces-60252-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60253-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F52CAD4617
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 00:39:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00B56AD467A
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 01:08:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 53572178D70
-	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 22:39:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 057051896EA9
+	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 23:08:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C9DD24676A;
-	Tue, 10 Jun 2025 22:39:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 939CE2D5419;
+	Tue, 10 Jun 2025 23:08:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iA45rXjf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VmmtZeb2"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D40C281357;
-	Tue, 10 Jun 2025 22:39:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A3552D5403;
+	Tue, 10 Jun 2025 23:08:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749595161; cv=none; b=fvsNqmjcTeHb/+7NTIzjxJz7lBdscUywgFN7zokNEI4LRd2KrW95n7gALRVYL/iXmO+79UXyP2Y7ZaykCwEGXFovnus3cVVFbGwyteJPrrr8am+SSUptE3u/X7ZxFOxmOZpkas+m4ellhJSHCLScYcYhjOi93dQ/Q8TWkFKCIFI=
+	t=1749596901; cv=none; b=GXrJvOInJqXcegEKcPxNK/LqSASSrlLNFnvaTQnwTPaqrwCBtrfNlnNrIji945MxLmo52OI7olt7mjKPZaHcNO4eQx2ZYydZX2gZstblVdPGuz6ZBOZ7DSpm86r7qM74W4kz6IaD6s5O8Yfos6pSoDjixlDCk8SroX7SjUl6U+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749595161; c=relaxed/simple;
-	bh=+IqBi5TvZDiOz6C2BvPBxPsgAN4p4qlLrgsfuFspjGo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NxajI8yUzgODQY3FOekFsiPd1QTBEegu/qbLdK3ZOeIk0RPRqwZrL+Bjyvn73PAioA1SSmiV516leAQZCmU+LOlnxxFx1k+7GXpi4fdz6vGeXvanb7WU5rV1UbQTHcRmnFbL04TCA7zjxblrqy8LVsXCSWibmOv34lMKI9O0X24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iA45rXjf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A9FBC4CEED;
-	Tue, 10 Jun 2025 22:39:19 +0000 (UTC)
+	s=arc-20240116; t=1749596901; c=relaxed/simple;
+	bh=vOAAvEx4E+8UjppT46gHSojDmxrWyNLo9cdzD7FA+rc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tiUBMoxRdmiWlrbACaDuEKcdPN+KBhgseA3C1MzQsXMk+6yGCWMminrTzS784aid2+gZX3s9qBRfl0uzbbL1NW+Cs+bh0oHPKRoZUGLDme32AIARjMEPblUUE9BwLt3Ea6Znjl/MTltpJBZazJVB82XSOurnYy5BpZqQZmTIAbs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VmmtZeb2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F4E4C4CEF3;
+	Tue, 10 Jun 2025 23:08:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749595159;
-	bh=+IqBi5TvZDiOz6C2BvPBxPsgAN4p4qlLrgsfuFspjGo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=iA45rXjfts3BL4hUeIUxxe+byrtKWMod75y24CPGNN9SvmqJ6rqAd+CqWKZW3yG6w
-	 kaDyCJ4wjLA+FqXK7EkN76If5n4Hj0k4ILNtarEO1jq/st6cUjbPwTKFtKsoajE9H2
-	 HecPOJr4de83Yml+8tI9KJuPPpw+eCcGSKt615dRrpaiE77SGPxk608iLyZdDCfRGT
-	 q+VmnC2mbqeyj6GZGUQT/iG1PVQrFDvNNQsteEeadKnFyDy9EEVYYoOI94hbkRiys5
-	 +PgqlvtSk9XDM/zk8Qd/9GQu1+WeLghEI4ZH3sUSslOZTwEhaM87BBg6QfjElWcET7
-	 QZm5qvYbr0JtA==
-Date: Tue, 10 Jun 2025 12:39:18 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Harry Yoo <harry.yoo@oracle.com>,
-	Yosry Ahmed <yosry.ahmed@linux.dev>, bpf@vger.kernel.org,
-	linux-mm@kvack.org, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Meta kernel team <kernel-team@meta.com>
-Subject: Re: [PATCH 2/3] cgroup: make css_rstat_updated nmi safe
-Message-ID: <aEi0FplA6eZUHF01@slm.duckdns.org>
-References: <20250609225611.3967338-1-shakeel.butt@linux.dev>
- <20250609225611.3967338-3-shakeel.butt@linux.dev>
- <aEijC1iHehAxdsfi@slm.duckdns.org>
- <35ppn2muk4bsyosca4nxnbv5l6qv4ov2cxg5ksypst5ldf5zc4@vwrpziws4wjy>
+	s=k20201202; t=1749596900;
+	bh=vOAAvEx4E+8UjppT46gHSojDmxrWyNLo9cdzD7FA+rc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=VmmtZeb2utDRFMCLcnI+EFjIb/ePZ95my4a6Yj5o8dvzSu8CKzuCsIsjsyYKCSzP4
+	 C/yPlvqqAqgpMqdOxWr3yOw/WxE5b2nbVKtJ8kiMNQiV+u6HfOultf1pxoGJgvPunu
+	 E1nQ+y2fg/SZtPcq/v6IPFppzZa+oQhimwTGRgnHXxp3ddZjPrgtdPTI/Cg1wvyTFH
+	 EUO9u9o6HrdExqGY0WBoAHzJwEL+ponltPd49UHDAohzv7l0P1BDeGptO8LSag9eOV
+	 h1mNbgQTvX0fEUymrmrHmhFqHpGgUwiiCYhUq4+B1MLTe6puTI+PWOj9T7v5stQ1l0
+	 RK9s/BSzdEnjw==
+Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-6facba680a1so64133896d6.3;
+        Tue, 10 Jun 2025 16:08:20 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVpK65AR5lENARFbWAXWK7hiOhF6o5swPnQ4U3J1EP8dbKX3OjlOA+Olp5fj4fuHqnRCi7G50hjTEC91BZKyQ==@vger.kernel.org, AJvYcCWV49yNcfMcMh1uB1g5r1tIn0aUmiTKX0ifofTQr1s6Hg4jQYUVrtEtlIQNx5YdFY9quuWCb3CRo/i9NCoUdRfZLoOYNQst@vger.kernel.org, AJvYcCXCH0yCfFA2EkQfhoLI41CoONXY3UdOglvB6OdIum+p80dSr3FvxHylvj2c1r0jEweWEQw=@vger.kernel.org, AJvYcCXSryMujoKhPsA+1XGUZlO7xJ9prgliFRnO76Vsyb/NKH5ugCw8N5bQ6LbW3XMeeykmzQN4fMQxzcIkz6yS@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzt04GyBK6gMse60zDorxJwKHm65144fmk0tX6g3nWklzedvnnG
+	4REJFlDAafXHlLXgOna+zauMGEnANS/vwdS4YbPDzigVZHH/bKpxO8EDcMBynAzM9wN29Ha/ZgY
+	+vYOUAkKQWnl8w4SDeh+r7i7laUqiWb0=
+X-Google-Smtp-Source: AGHT+IGQwb7bLPJ7uaxum7qOUIy/8C94KF54pMNu1cwD2A2emExMuBIuVS0BNScxi1yUGqW5hw93a0PxpKiAZS9jT/k=
+X-Received: by 2002:ad4:5d46:0:b0:6fa:bb09:43d0 with SMTP id
+ 6a1803df08f44-6fb2c3723bbmr22557596d6.32.1749596899582; Tue, 10 Jun 2025
+ 16:08:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <35ppn2muk4bsyosca4nxnbv5l6qv4ov2cxg5ksypst5ldf5zc4@vwrpziws4wjy>
+References: <20250606213015.255134-1-song@kernel.org> <20250606213015.255134-2-song@kernel.org>
+ <20250610.rox7aeGhi7zi@digikod.net> <CAPhsuW5G0Th+9dRSmxDjo5E7CxV1E9N8AiKjw3cKyEhOBVWJFw@mail.gmail.com>
+ <d7d755ea-5942-440b-8154-21198cb6a0f1@maowtm.org>
+In-Reply-To: <d7d755ea-5942-440b-8154-21198cb6a0f1@maowtm.org>
+From: Song Liu <song@kernel.org>
+Date: Tue, 10 Jun 2025 16:08:08 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW75h3efyXmCcYE_UEmZGXR5KMSEw8h-_vrZH82BYU=WVw@mail.gmail.com>
+X-Gm-Features: AX0GCFvLr6ZpvpJJmf_Db7fELs42Mf-Bt8O_6VwLs3YNEtG0tanEPc7gL84uHg8
+Message-ID: <CAPhsuW75h3efyXmCcYE_UEmZGXR5KMSEw8h-_vrZH82BYU=WVw@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 1/5] namei: Introduce new helper function path_walk_parent()
+To: Tingmao Wang <m@maowtm.org>
+Cc: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
+	bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, viro@zeniv.linux.org.uk, 
+	brauner@kernel.org, jack@suse.cz, kpsingh@kernel.org, 
+	mattbobrowski@google.com, amir73il@gmail.com, repnop@google.com, 
+	jlayton@kernel.org, josef@toxicpanda.com, gnoack@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Tue, Jun 10, 2025 at 3:26=E2=80=AFPM Tingmao Wang <m@maowtm.org> wrote:
+[..]
+> >
+> >                 if (!choose_mountpoint(real_mount(path->mnt), root, &p)=
+)
+> >                         return false;
+> >                 path_put(path);
+> >                 *path =3D p;
+> >                 ret =3D true;
+> >         }
+> >
+> >         if (unlikely(IS_ROOT(path->dentry)))
+> >                 return ret;
+>
+> Returning true here would be the wrong semantic right?  This whole thing
+> is only possible when some mount shadows "/".  Say if you have a landlock
+> rule on the old "/", but then we mount a new "/" and chroot into it (via
+> "/.."), the landlock rule on the old "/" should not apply, but if we
+> change *path and return true here then this will "expose" that old "/" to
+> landlock.
 
-On Tue, Jun 10, 2025 at 03:31:03PM -0700, Shakeel Butt wrote:
-...
-> Couple of lines above I have llist_on_list(&rstatc->lnode) check which
-> should be as cheap as data_race(css_rstat_cpu(css, cpu)->updated_next). 
+Could you please provide more specific information about this case?
 
-Ah, I missed that.
+Thanks,
+Song
 
-> So, I can add lnode for nmi and non-nmi contexts (with irqs disabled)
-> but I think that is not needed. Actually I ran the netperf benchmark (36
-> parallel instances) and I see no significant differences with and
-> without the patch.
-
-Yeah, as long as the hot path doesn't hit the extra cmpxchg, I think it
-should be fine. Can you fortify the comments a bit that the synchronization
-is against the stacking contexts on the same CPU. The use of cmpxchg for
-something like this is a bit unusual and it'd be nice to have explanation on
-why it's done this way and why the overhead doesn't matter.
-
-Thanks.
-
--- 
-tejun
+> A quick suggestion although I haven't tested anything - maybe we should d=
+o
+> a special case check for IS_ROOT inside the
+>     if (unlikely(path->dentry =3D=3D path->mnt->mnt_root))
+> ? Before "path_put(path);", if IS_ROOT(p.dentry) then we just path_get(p)
+> and return false.
+>
+> >
+> >         parent =3D dget_parent(path->dentry);
+> >         dput(path->dentry);
+> >         path->dentry =3D parent;
+> >         return true;
+> > }
+> >
+> > Thanks,
+> > Song
+>
 
