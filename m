@@ -1,219 +1,118 @@
-Return-Path: <bpf+bounces-60242-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60243-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82B2DAD450C
-	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 23:52:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 301F5AD45A5
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 00:07:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CC0F177A3E
-	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 21:52:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1C4B17D822
+	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 22:07:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E7DE283138;
-	Tue, 10 Jun 2025 21:52:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCF05285401;
+	Tue, 10 Jun 2025 22:07:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lEiE4Fm8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TCwltYqj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
+Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E93E11DD9D3
-	for <bpf@vger.kernel.org>; Tue, 10 Jun 2025 21:52:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9A4E242D7D
+	for <bpf@vger.kernel.org>; Tue, 10 Jun 2025 22:07:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749592352; cv=none; b=TpJPI4SgmNG9BsW7hCrkuacg+Y7+/2GU/y2DYceAxFGVY6ulzlROhV0pXDdIpFTrL8GAUVJ1brvXstZu1csfhyt56ux5WEKCylOwh9ox/3G+sN6bn1PL0+3DTXS1u54E612H5xIYQB0kVfT0o9crLBMO71mOhWoIVQoSzaG5A0Q=
+	t=1749593229; cv=none; b=TvnXk6i1JhU903+i6UdiZCyR4YubNK2vSX12gkWAQcdVoCdE95ixEydOgybpy6Td5VyjJDBOTbrJL3qwjZnYj9m+NioPInTl3KvAm7V08COozy26ybNEY2kIbjUp1avi0p1M+DglBbV55zWoFpqsKgpGgI+ast7RVozelD9zv1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749592352; c=relaxed/simple;
-	bh=dmx/2Ahpx1NcM9OhYDInW+o2Lsmr4ZRv2tXie4El0iU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gvVfIS+IjJohVxaHlrJ0iFJNdL4+bnLoiJCjXaxkKmZk5qoMHBW21ntrXlrvvRkzotprvWnXLmIG4x9Poyd1eKOgyftHGr7GaJSTh3B0QmH8IjuArvR8uEyK9xxd4Bt+jwL1PAHJc2ihvoMKbO31MadHo0kvNzDyeEHgYznKv3A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lEiE4Fm8; arc=none smtp.client-ip=209.85.219.179
+	s=arc-20240116; t=1749593229; c=relaxed/simple;
+	bh=PZvRaVCE7okIo2tgpW5k522S63hTARZDWLPBWXq472Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZGTUZ7jtmLVbjK9QYQZVLF8lzLQE+XXJNgD1G4qsiLFhI68xsCYuB1AxzZ+TBsseimqkAqrSmbiQMKAnSmQy6Cjz+zoA1+jq24vb18FdC59Uswqbd5fEEdOyVFYQCEV+1W8F1CxTi8r4UP9KJxGtv3KiNNgb/pBf9b8TKhzSSFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TCwltYqj; arc=none smtp.client-ip=209.85.167.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-e81f311a86fso1234975276.3
-        for <bpf@vger.kernel.org>; Tue, 10 Jun 2025 14:52:30 -0700 (PDT)
+Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-401f6513cb2so176696b6e.0
+        for <bpf@vger.kernel.org>; Tue, 10 Jun 2025 15:07:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749592349; x=1750197149; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=X7Dy+XMCp2eegTp6LjXFjKnkNwCF2ho2mg8UrlJemoY=;
-        b=lEiE4Fm8H4GN3li2XOonFcm6UWiRfc8qqMznndmAbvfze/SKiVcnHRkqFWYwDGxKbe
-         E7jAsb0xAiswcp4KDhzrPOuC5aalRb0XBnhVoRS3fcosIlgpcDnIazQ8U45s6vGO6KH5
-         pDpY9bhpuGvhpJvEZv58cVtQ2QytLtGzmCQtJrPaXw5+Bvqzhsp2MZh7z+crrW/wGSUF
-         wx441C4Z33Mw8QhUrxHDe5uPBn33VcCvqMF+XKAQDSfnZ2a0u+evuLMi7I1EoD2jRnTz
-         fBSBK3dnHd00+Qmfwd9KDcEF2db3ZQgpJS6w9B/nKFle+mZ2CTG2neG1kSO+JPnihw1m
-         F1Uw==
+        d=gmail.com; s=20230601; t=1749593227; x=1750198027; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=PZvRaVCE7okIo2tgpW5k522S63hTARZDWLPBWXq472Y=;
+        b=TCwltYqjlnXVpesK3UlirdWovVk7lm1eXlnZPT/rzXEtosX3XnV3qgNb58wOTErzDD
+         fxZIEaQ9a565eqTW1hmFqN9UIYLs72TG/2F4zsAFRMvdtNrEbx4ga6lT5lkjICvsKCF5
+         sKO0DiRNLuH22ey+weMj7bwT1FDruTwpLAKHKF+RB9DHz+VJDy/dimY5rCRSafDTZhIU
+         ax/AY/Bh574aGwz2j6MTdk+0CAmNHa6GvfFfurqDM1XUWz6oJKvvGfCnMpaVvpO2dmXr
+         WomGG+o0+DEcBXfuiKQBvSxoLYPmBEPMJqdZQ73yEy59kRhhpq1V3xF9qGt98jWDyYl2
+         EtlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749592349; x=1750197149;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1749593227; x=1750198027;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=X7Dy+XMCp2eegTp6LjXFjKnkNwCF2ho2mg8UrlJemoY=;
-        b=L7VbKWsmBsTz0cJtGHTISHgOxZM3QnybOyx0zB42K+ztB0irVP7ap1YCI8ZPgL3v7J
-         HsA7Ol1En1OeQjk0z0LqN1aQ3CXZ0SEWhzYMTPgZN+3XPG/UTrf4tz2OkLDDaAnpYI4l
-         /aQv5yRd5vlvPLZ9wHSrkaydVfJoj4cJyHYbLwwdXlYaNSBn/ziwLYHrAs2l9VUuLdvk
-         uiXgsfz3PKUuUf+QMoPdX1dg8T3fHF0Ti6/Qn2S28+A6eNaE204HT2LCWmuTLrgQUMw6
-         u7vG4ZWqq7+eOT2mwnkASWal+Is6De1dMBymUVbxo8bPv1grmHW3/p07lv+kgp4fYpun
-         FaCg==
-X-Gm-Message-State: AOJu0YyL1aknYZD3fS+apBsR09+TsTFtUiBdNzPnODxQsXI/0p+n9mxi
-	yWm6TmoaeyCUnY5njtstYoPURx//BtkJB7AB9J7T92Vlh6y2jWTj1tTcRMYjaUGc
-X-Gm-Gg: ASbGncu8qZ87SZtEfRCeVHYQF8pf3BhznvGZOSFl5Rj9G+nVy0YKgb0agOwj2ek2/AN
-	q+T8D/zhesp57gyF6Px4F1W/ph0/xhPm/7A8coekbIJ9YNK7ob4vxArxgrpbo7Dp2BMCVvXxqyr
-	cDjcWfB7oeJSWUhECyk7A6V9ovoerwRx2NofiV+TWEzskwvVC1M6uCxTqyG1l2ze7sFzG2g9+Ku
-	kbbMivKqZTFiYX53cXrmTDWxE6+9eD2IuKGmc8DmdLrD4QEwCGiX9xh6MCsMEgQPSxh5iID3mVv
-	h3iXKA3hMJEQEuaV+4L/4ElDdFvm4kJzT29kqqZSKeQiDucWcOk9Qg==
-X-Google-Smtp-Source: AGHT+IHJEgWG6RGaro5tkU1J1eVyaY739G6tVUKndFkjHA4IdoXehAhWg9LBCRNsCe0f2YdaT2GPiA==
-X-Received: by 2002:a05:6902:2e09:b0:e81:b843:43f6 with SMTP id 3f1490d57ef6-e81fe6a7d3fmr1605444276.21.1749592349377;
-        Tue, 10 Jun 2025 14:52:29 -0700 (PDT)
-Received: from localhost ([2a03:2880:25ff:56::])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e81e7ad68a6sm1174494276.3.2025.06.10.14.52.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Jun 2025 14:52:29 -0700 (PDT)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	andrii@kernel.org
-Cc: daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	kernel-team@fb.com,
-	yonghong.song@linux.dev,
-	eddyz87@gmail.com,
-	mykyta.yatsenko5@gmail.com,
-	laoar.shao@gmail.com
-Subject: [PATCH bpf-next] selftests/bpf: more precise cpu_mitigations state detection
-Date: Tue, 10 Jun 2025 14:52:21 -0700
-Message-ID: <20250610215221.846484-1-eddyz87@gmail.com>
-X-Mailer: git-send-email 2.47.1
+        bh=PZvRaVCE7okIo2tgpW5k522S63hTARZDWLPBWXq472Y=;
+        b=Nu6nzJksPZuN5Pl8QpY6J1OaXpdj+uLVZwlHKN45/7RVN3rwbZHly2D2pR2OgWUwWr
+         TAcMjqCGV+zL8qmOsDea40C10KEqJAGUujo4CSuzMa4MjkqY2GLn8wAkm/ym53IxQrFH
+         PbphI+AHA2LVERBet368o6d7CXl5Tu3c7Kzo4WRdljyiET6Q263tjO3wX/7hBYB02TBE
+         SLXtfLnS0GSypIfWS74gG69wnjGODDUwu2DvbA4qfdF/R0tDMkX8KwD/2TN4EPjeH371
+         /YdhD+5sPKNJ0Qbc0731T2cR3IacHkRn2+h+apMfPDjTZLRvmd3c4DCr/tXJMqp3gzwh
+         U4ZA==
+X-Forwarded-Encrypted: i=1; AJvYcCUo0CCjchuzhG4c2INQ5OkkIJo58ZfLCQBxjxYe/BicTEgelyiZH2ppcn4qg6R9UQfDQC0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyIaGvJcmPVth5Vo3q4BIrDKi/H2gkcC1pSm8PG7l5NeAiPeqU4
+	vL+orO3hYLSs1joa/uX2DPMfdaGhsQarlTuTV8LBYH+sV2GFvyEIAXjVszuIIHwpdOQwGACFFdS
+	yDL/L2EP/DBTwjoZ97RrVfWrExDg3fx62PRde
+X-Gm-Gg: ASbGncuKUBS3rMmK5PLwyTfBQwHvFik6CgowPLEYYnuCZFl7pJNxpNRBkuMQa7GexRH
+	Dai+85RiXi2zJd++vb3i8DR8F1ng1YO0VeL+FQkIeDkFZk5OKF2pV9Ms1BkFkmmkbywOjaOHAUG
+	+3kRUkY1wdqjukijTfNFxWR+rPzGmvsQQreCD/LKHy/ILSvGnozMMXvJUPRtw0P9pAnS+OddC2c
+	F2w
+X-Google-Smtp-Source: AGHT+IEfko8L3PvJSWqlRrAv5vgDddDXt2zKplWebsJkcnWReTSqKinwMysugOAlz/WcPU///JLjhthO2m+jvS3JEco=
+X-Received: by 2002:a05:6122:1314:b0:524:2fe0:61bc with SMTP id
+ 71dfb90a1353d-53121e69f35mr1706848e0c.5.1749593216288; Tue, 10 Jun 2025
+ 15:06:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250420105524.2115690-1-rjsu26@gmail.com> <20250420105524.2115690-4-rjsu26@gmail.com>
+ <m27c2l1ihl.fsf@gmail.com> <CAADnVQJZpyqY9TWanRKjmViOZxppAeh7FGAnxV_1CKAih7drkA@mail.gmail.com>
+ <CAE5sdEh3NuXUcjScj4Auvtc2701NAS6fu0hpzLGVnaoQ7ESnfg@mail.gmail.com>
+ <CAADnVQKX2=jYfs5TBBKdKxHPi_ssUvrSuxbr22-dmYoP_e3=dA@mail.gmail.com>
+ <CAM6KYssQwOnOqQT6TxHuu1_vDmmuw+OtFB=FwPLqbFcv+QdVrg@mail.gmail.com>
+ <CAADnVQLFM9s_Ss7eqyx47tiY8i2b2dt=RMPHMC_s67Ang1rNBw@mail.gmail.com>
+ <CAM6KYsuVe10f39kfaJaQEUGGA7xjmkALxjRSQxJRcGKAw4KtGQ@mail.gmail.com> <CAADnVQ+qS2V4j8ADCK+6GoUXcDnS+6+t3yLiTQY-GQ=Kmj0ymQ@mail.gmail.com>
+In-Reply-To: <CAADnVQ+qS2V4j8ADCK+6GoUXcDnS+6+t3yLiTQY-GQ=Kmj0ymQ@mail.gmail.com>
+From: Siddharth Chintamaneni <sidchintamaneni@gmail.com>
+Date: Tue, 10 Jun 2025 15:06:44 -0700
+X-Gm-Features: AX0GCFuUVLmLA3i8UW_hk9UEAW6ZmausDk4VJ-IxrDQ5J74TjQxSCVpcSCj10Ek
+Message-ID: <CAE5sdEgmDBkQYnv2qReOW8fYBpK09VpZigLkAe_GObRXOpgZAw@mail.gmail.com>
+Subject: Re: [RFC bpf-next 3/4] bpf: Generating a stubbed version of BPF
+ program for termination
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Raj Sahu <rjsu26@gmail.com>, Eduard Zingerman <eddyz87@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Dan Williams <djwillia@vt.edu>, miloc@vt.edu, ericts@vt.edu, 
+	rahult@vt.edu, doniaghazy@vt.edu, quanzhif@vt.edu, 
+	Jinghao Jia <jinghao7@illinois.edu>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 
-test_progs and test_verifier binaries execute unpriv tests under the
-following conditions:
-- unpriv BPF is enabled;
-- CPU mitigations are enabled (see [1] for details).
+<SNIP>
 
-The detection of the "mitigations enabled" state is performed by
-unpriv_helpers.c:get_mitigations_off() via inspecting kernel boot
-command line, looking for a parameter "mitigations=off".
+> > > text_poke_bp() takes care of that.
+> > > That's what the "_bp" suffix signifies. It's modifying live text
+> > > via 'bp' (breakpoint). It has a multistep process to make it safe.
+> >
 
-Such detection scheme won't work for certain configurations,
-e.g. when CONFIG_CPU_MIGITGATIONS is disabled and boot parameter is
-not supplied.
+We are almost there with our next iteration, but we are stuck with a
+WARNING that is getting triggered when calling
+smp_text_poke_batch_patch which internally call
 
-Miss-detection leads to test_progs executing tests meant to be run
-only with mitigations enabled, e.g.
-verifier_and.c:known_subreg_with_unknown_reg(), and reporting false
-failures.
 
-Internally, verifier sets bpf_verifier_env->bypass_spec_{v1,v4}
-basing on the value returned by kernel/cpu.c:cpu_mitigations_off().
-This function is backed by a variable kernel/cpu.c:cpu_mitigations.
+smp_call_function_many_cond during a watchdog callback trigger.
+https://elixir.bootlin.com/linux/v6.15.1/source/kernel/smp.c#L815
 
-This state is not fully introspect-able via sysfs. The closest proxy
-is /sys/devices/system/cpu/vulnerabilities/spectre_v1, but it reports
-"vulnerable" state only if mitigations are disabled *and* current cpu
-is vulnerable, while verifier does not check cpu state.
-
-There are only two ways the kernel/cpu.c:cpu_mitigations can be set:
-- via boot parameter;
-- via CONFIG_CPU_MIGITGATIONS option.
-
-This commit updates unpriv_helpers.c:get_mitigations_off() to scan
-/proc/config.gz for CONFIG_CPU_MIGITGATIONS value in addition to boot
-command line check.
-
-Tested using the following configurations:
-- mitigations enabled (unpriv tests are enabled)
-- mitigations disabled via boot cmdline (unpriv tests skipped)
-- mitigations disabled via CONFIG_CPU_MIGITGATIONS
-  (unpriv tests skipped)
-
-[1] https://lore.kernel.org/bpf/20231025031144.5508-1-laoar.shao@gmail.com/
-
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
----
- tools/testing/selftests/bpf/unpriv_helpers.c | 45 +++++++++++++++++++-
- 1 file changed, 43 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/unpriv_helpers.c b/tools/testing/selftests/bpf/unpriv_helpers.c
-index 220f6a963813..1dec3c6b3d70 100644
---- a/tools/testing/selftests/bpf/unpriv_helpers.c
-+++ b/tools/testing/selftests/bpf/unpriv_helpers.c
-@@ -6,10 +6,46 @@
- #include <string.h>
- #include <unistd.h>
- #include <fcntl.h>
-+#include <zlib.h>
- 
- #include "unpriv_helpers.h"
- 
--static bool get_mitigations_off(void)
-+static bool scan_config(const char *pat)
-+{
-+	bool ret = false;
-+	const char *msg;
-+	char buf[1024];
-+	gzFile config;
-+	int n, err;
-+
-+	config = gzopen("/proc/config.gz", "rb");
-+	if (!config) {
-+		perror("gzopen /proc/config.gz");
-+		goto out;
-+	}
-+	for (;;) {
-+		if (!gzgets(config, buf, sizeof(buf))) {
-+			msg = gzerror(config, &err);
-+			if (err == Z_ERRNO)
-+				perror("gzgets /proc/config.gz");
-+			else if (err != Z_OK)
-+				fprintf(stderr, "gzgets /proc/config.gz: %s", msg);
-+			goto out;
-+		}
-+		n = strlen(buf);
-+		if (buf[n - 1] == '\n')
-+			buf[n - 1] = 0;
-+		if (strcmp(buf, pat) == 0) {
-+			ret = true;
-+			goto out;
-+		}
-+	}
-+out:
-+	gzclose(config);
-+	return ret;
-+}
-+
-+static bool scan_cmdline(const char *pat)
- {
- 	char cmdline[4096], *c;
- 	int fd, ret = false;
-@@ -27,7 +63,7 @@ static bool get_mitigations_off(void)
- 
- 	cmdline[sizeof(cmdline) - 1] = '\0';
- 	for (c = strtok(cmdline, " \n"); c; c = strtok(NULL, " \n")) {
--		if (strncmp(c, "mitigations=off", strlen(c)))
-+		if (strncmp(c, pat, strlen(c)))
- 			continue;
- 		ret = true;
- 		break;
-@@ -37,6 +73,11 @@ static bool get_mitigations_off(void)
- 	return ret;
- }
- 
-+static bool get_mitigations_off(void)
-+{
-+	return scan_cmdline("mitigations=off") || !scan_config("CONFIG_CPU_MITIGATIONS=y");
-+}
-+
- bool get_unpriv_disabled(void)
- {
- 	bool disabled;
--- 
-2.47.1
-
+Please let us know if you have any suggestions around this?
 
