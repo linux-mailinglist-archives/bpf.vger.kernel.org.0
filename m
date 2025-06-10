@@ -1,124 +1,150 @@
-Return-Path: <bpf+bounces-60134-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60135-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63A42AD2D48
-	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 07:30:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D5BFAD2D50
+	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 07:31:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AC483B25EE
-	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 05:29:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 261B23A765D
+	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 05:31:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB6D325EF86;
-	Tue, 10 Jun 2025 05:30:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F27EE25EFB9;
+	Tue, 10 Jun 2025 05:31:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KVrYpges"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IDlm2AoN"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 477CD380;
-	Tue, 10 Jun 2025 05:30:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2075380;
+	Tue, 10 Jun 2025 05:31:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749533409; cv=none; b=sZ8fEd4V4fZ4bsVt2lahAxD05LzKVpJBqaQZp4aK8c8k0/PW3de9g30+yeGDb8zM2YyTTAInrVX6B1BCWdeUY9GFkj6PiVDeDAu1yVPnUSCkRPVsFk+q9V1aubTkZOdl48hRsFeE1ln5A9UTXPlqF2nYaF4vbof6b42xdtAc4EQ=
+	t=1749533507; cv=none; b=uANIAN/pvSpYKn8pYTeFap3Uy0RNhPnV5UPNQuchKGYPgMUgFuAKuXgu3afX2+P17uCwpFhVed19fgiZ8tTlcJ+5iYswg/snFs6CqMUAA6BW8wnsw6j9ovUG3duZPraArc8p21N5vqC0+pxyxCz1KXqIjfzHH0WHRVViGzC+asY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749533409; c=relaxed/simple;
-	bh=AirqLxaAn1XDcww7YIT/2rzH+IYyH+8RkAxc6uGReYs=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=jMSQKMn0ADly4fIv59ycvAFXaRxLR/yGqzq5dll00KlU+V39Hyu59U+Xt+hfIdUKmxW2oF4zzRAd4SXbM0eR3bWXg5UdK2KCMkmV1fU722XX+UJOUtLpAJT7kiCmA9bPBsUO3DoI2ZuQi5rKvIDpD0iaRig5wlvkao55Koc3+rE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KVrYpges; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5CF0C4CEEF;
-	Tue, 10 Jun 2025 05:30:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749533408;
-	bh=AirqLxaAn1XDcww7YIT/2rzH+IYyH+8RkAxc6uGReYs=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=KVrYpgesvClwcE62Y4eoV7SPMtyy0KeY1N9kYJS6gk6L+ykyW0g4V/rmMlRwsHekm
-	 e5b/s6tAKzy+VIsxLBLkGQDD6LY1mkeIUKS9+BKAOVk1QV5Iu9Xl8/ymgkykmhyiIi
-	 qCF8YFGPF3nAqDWaBMaSQmhtnCIlJT1fZ6h7VLeMUv9/GR3IQL13mRFA8cv1/skCSI
-	 v1ObDw7MhTmaj9QOP+rsMT8ne4vhAbSuSm9bE2EYkO0jwY5H4lS+68vnt9mThfMih0
-	 AsujfctxEEua0TUSrPFraj3Ycg0QWLUnMJAMP896nShsL1RmqIy95R7nJ42gITAAHS
-	 T2NuytqPyee7A==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70C0C3822D49;
-	Tue, 10 Jun 2025 05:30:40 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1749533507; c=relaxed/simple;
+	bh=BwUvV9resS0KVNH2HRLp2myVkNYOXjscA41YiBvlfa8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=giF9hqC2TUnkbdrbPb1sCoEQTaNAguffuPWvyx1fr3hvbQBJUC4f3dUOmUSlPHySzGmQ7ABo8tHchQgnZdVlcenoLbpYhdfwtSVqE2d2ee6MMatDJVXTRGR1w2FixnsOduP7wiuuYXZpmdbAEJWH2IoJvpEHtt0UVlIqk09uW2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IDlm2AoN; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4531e146a24so1770675e9.0;
+        Mon, 09 Jun 2025 22:31:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749533503; x=1750138303; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=f6NSSSUaPkJ2Knx1I9AqaaAXzKIj7ARZfjyL5txYCRc=;
+        b=IDlm2AoNYX9iUVO+yMlshSe05roLf4m3/vmDTK+g48BB/8PfFjm7d0pLgavVEGgMeO
+         HNkegqkeF3PZDClunoO8dhh6AE/bAfjz3L2JljwrtC8zNq2b2LUW4sD8lV3XMwz+35sb
+         ODMeriMUMkK1wa6do8wvv/BOqkbmOSmCOrouToPSFdYMVmMoWS2ioUP4fY4JA74FL422
+         n3ccG9hKS5l+gOCVB74wMnyFdCbkBG4ArShwRUOrrB+kA2ZIE4xNBKtospiZmj+mCD8O
+         2vs3/n3/7st0TjOkMxbzHAUd4L7QJV2jvCBFHD+FSkNkI25LeHqyIMkvWvaMYkmw0nNY
+         KrZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749533503; x=1750138303;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=f6NSSSUaPkJ2Knx1I9AqaaAXzKIj7ARZfjyL5txYCRc=;
+        b=SOnpPxddws6xMsmH9dtsk+8Qb5tQ2NGqxk7D145C/0QBNzNtjymx/RwEJdhos+b68v
+         iAeabQTF6WOWB/eNSP4rmui4/pDx8V3wXvDQRI9FvwlkZa09pgEVSq4xqp2eDgxcUTWA
+         pEjnG/33FM6fPzb5KSape/CUWXRTS+TWKcPRrDL8y2C7XiDrWQDeZ6qbPU2MeDKcL/7M
+         T5L4ch9q2DlRLeJt1ghRl5MB9NLXWucKbkC6qo0xhErGgsvoy18n+fC7rHoKP5Cp+E9J
+         RFx2zU/YEdl6ij0/C7IFd4Q4eGlm5Ho2BNSEw+MY0+Bux8FOXYi4C0GShZjX+p4KFtdL
+         DnRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV/Gcu1fEyjnEFUL4C/WlNeEclpvrHmF4YEj4eP2GkjGfSs6xeEbyMDDgvh5vGqP5oxWe2Hy/wnAJQUbvdT@vger.kernel.org, AJvYcCWq6P2Vnp/rv2qbXsuo7Jmj+9rieUmRkx6+sY0aVIBPUUykwSK2XULuh7i29/ddyLAACdo=@vger.kernel.org, AJvYcCXE/MMYd7Ojtbm+2vO2ecN03xCo9dVvMnATbmFH2xNQnHnMN9sVBXnL6c6eazVkrarXlQfIHdyF1QTIWneFcSgN@vger.kernel.org
+X-Gm-Message-State: AOJu0YyMsQgAXXc2JCRVyaKoGDIQBJgRHc7eGO7GT0q9GdUGfg7enVko
+	cAHVDVA+VmJEvA+hW06exo6FxcKQIKqb+39HSE+Mcd0fMHlqDf+kigPs0wXaKhoqraCFLL3dCsa
+	7CHVwNAIDuB54MDHNJpS0f9mOGj3D4q0=
+X-Gm-Gg: ASbGncuEWmOQlTLaWWiaeGOv7a77cUPiRjA7mrxwRtHrR2801HLwSLF2YO+vcYTnXOA
+	6ue1tSTRV89SqgLwc0loQ/odN+ikYJU/ey4R4+srUX9X/wdwzBHKyWx24Ix16cUM8QYKW9ZpPj2
+	8QDInChK+5RZ0x9+asxqJHX9I+4ZDW8IU6R0994ev/EDCv+hAhVKBudOC8gnJvjTqdxUCFfhZM
+X-Google-Smtp-Source: AGHT+IGnCeVQwIATlfQCLPScvjR4zfSPZh3YpkxJkw/tAxQe10VCPdtaHGA0BCwCT9Hg5US8pQ1ILNVZfG578sV+3Yo=
+X-Received: by 2002:a05:600c:34d2:b0:441:d4e8:76c6 with SMTP id
+ 5b1f17b1804b1-4531de9f85amr9648765e9.30.1749533502763; Mon, 09 Jun 2025
+ 22:31:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v4 0/9] bpf: Mitigate Spectre v1 using barriers
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <174953343925.1751142.14175959764771904757.git-patchwork-notify@kernel.org>
-Date: Tue, 10 Jun 2025 05:30:39 +0000
-References: <20250603205800.334980-1-luis.gerhorst@fau.de>
-In-Reply-To: <20250603205800.334980-1-luis.gerhorst@fau.de>
+References: <20250603205800.334980-1-luis.gerhorst@fau.de> <20250603213232.339242-1-luis.gerhorst@fau.de>
+In-Reply-To: <20250603213232.339242-1-luis.gerhorst@fau.de>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 9 Jun 2025 22:31:31 -0700
+X-Gm-Features: AX0GCFu_O3ZRZr-RlnDuwnEJp2OCNNw_nXP9ivn8MSmq6jESTI3dBrI5bUO4Iuo
+Message-ID: <CAADnVQLC_zViaCs5Huu63Jr2oCx1NGY3f_VCkJhrKvqst7HL=g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 9/9] bpf: Fall back to nospec for sanitization-failures
 To: Luis Gerhorst <luis.gerhorst@fau.de>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, puranjay@kernel.org,
- xukuohai@huaweicloud.com, catalin.marinas@arm.com, will@kernel.org,
- hbathini@linux.ibm.com, christophe.leroy@csgroup.eu, naveen@kernel.org,
- maddy@linux.ibm.com, mpe@ellerman.id.au, npiggin@gmail.com, mykolal@fb.com,
- shuah@kernel.org, henriette.herzog@rub.de, skb99@linux.ibm.com,
- cupertino.miranda@oracle.com, mrpre@163.com, m.shachnai@gmail.com,
- dimitar.kanaliev@siteground.com, shung-hsi.yu@suse.com, dxu@dxuuu.xyz,
- bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-kselftest@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, 
+	Xu Kuohai <xukuohai@huaweicloud.com>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Hari Bathini <hbathini@linux.ibm.com>, 
+	Christophe Leroy <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, 
+	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
+	Nicholas Piggin <npiggin@gmail.com>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Henriette Herzog <henriette.herzog@rub.de>, Saket Kumar Bhaskar <skb99@linux.ibm.com>, 
+	Cupertino Miranda <cupertino.miranda@oracle.com>, Jiayuan Chen <mrpre@163.com>, 
+	Matan Shachnai <m.shachnai@gmail.com>, Dimitar Kanaliev <dimitar.kanaliev@siteground.com>, 
+	Shung-Hsi Yu <shung-hsi.yu@suse.com>, Daniel Xu <dxu@dxuuu.xyz>, bpf <bpf@vger.kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
+	ppc-dev <linuxppc-dev@lists.ozlabs.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Maximilian Ott <ott@cs.fau.de>, Milan Stephan <milan.stephan@fau.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Tue, Jun 3, 2025 at 2:32=E2=80=AFPM Luis Gerhorst <luis.gerhorst@fau.de>=
+ wrote:
+>
+> ALU sanitization was introduced to ensure that a subsequent ptr access
+> can never go OOB, even under speculation. This is required because we
+> currently allow speculative scalar confusion. Spec. scalar confusion is
+> possible because Spectre v4 sanitization only adds a nospec after
+> critical stores (e.g., scalar overwritten with a pointer).
+>
+> If we add a nospec before the ALU op, none of the operands can be
+> subject to scalar confusion. As an ADD/SUB can not introduce scalar
+> confusion itself, the result will also not be subject to scalar
+> confusion. Therefore, the subsequent ptr access is always safe.
+>
+> We directly fall back to nospec for the sanitization errors
+> REASON_BOUNDS, _TYPE, _PATHS, and _LIMIT, even if we are not on a
+> speculative path.
+>
+> For REASON_STACK, we return the error -ENOMEM directly now. Previously,
+> sanitize_err() returned -EACCES for this case but we change it to
+> -ENOMEM because doing so prevents do_check() from falling back to a
+> nospec if we are on a speculative path. This would not be a serious
+> issue (the verifier would probably run into the -ENOMEM again shortly on
+> the next non-speculative path and still abort verification), but -ENOMEM
+> is more fitting here anyway. An alternative would be -EFAULT, which is
+> also returned for some of the other cases where push_stack() fails, but
+> this is more frequently used for verifier-internal bugs.
+>
+> Signed-off-by: Luis Gerhorst <luis.gerhorst@fau.de>
+> Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> Acked-by: Henriette Herzog <henriette.herzog@rub.de>
+> Cc: Maximilian Ott <ott@cs.fau.de>
+> Cc: Milan Stephan <milan.stephan@fau.de>
+> ---
+>  kernel/bpf/verifier.c                         | 89 ++++++-----------
+>  .../selftests/bpf/progs/verifier_bounds.c     |  5 +-
+>  .../bpf/progs/verifier_bounds_deduction.c     | 45 ++++++---
+>  .../selftests/bpf/progs/verifier_map_ptr.c    | 20 +++-
+>  .../bpf/progs/verifier_value_ptr_arith.c      | 97 ++++++++++++++++---
+>  5 files changed, 160 insertions(+), 96 deletions(-)
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Tue,  3 Jun 2025 22:57:51 +0200 you wrote:
-> This improves the expressiveness of unprivileged BPF by inserting
-> speculation barriers instead of rejecting the programs.
-> 
-> The approach was previously presented at LPC'24 [1] and RAID'24 [2].
-> 
-> To mitigate the Spectre v1 (PHT) vulnerability, the kernel rejects
-> potentially-dangerous unprivileged BPF programs as of
-> commit 9183671af6db ("bpf: Fix leakage under speculation on mispredicted
-> branches"). In [2], we have analyzed 364 object files from open source
-> projects (Linux Samples and Selftests, BCC, Loxilb, Cilium, libbpf
-> Examples, Parca, and Prevail) and found that this affects 31% to 54% of
-> programs.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next,v4,1/9] bpf: Move insn if/else into do_check_insn()
-    https://git.kernel.org/bpf/bpf-next/c/8b7df50fd40d
-  - [bpf-next,v4,2/9] bpf: Return -EFAULT on misconfigurations
-    https://git.kernel.org/bpf/bpf-next/c/fd508bde5d64
-  - [bpf-next,v4,3/9] bpf: Return -EFAULT on internal errors
-    https://git.kernel.org/bpf/bpf-next/c/6b84d7895d78
-  - [bpf-next,v4,4/9] bpf, arm64, powerpc: Add bpf_jit_bypass_spec_v1/v4()
-    https://git.kernel.org/bpf/bpf-next/c/03c68a0f8c68
-  - [bpf-next,v4,5/9] bpf, arm64, powerpc: Change nospec to include v1 barrier
-    https://git.kernel.org/bpf/bpf-next/c/dff883d9e93a
-  - [bpf-next,v4,6/9] bpf: Rename sanitize_stack_spill to nospec_result
-    https://git.kernel.org/bpf/bpf-next/c/9124a4508007
-  - [bpf-next,v4,7/9] bpf: Fall back to nospec for Spectre v1
-    https://git.kernel.org/bpf/bpf-next/c/d6f1c85f2253
-  - [bpf-next,v4,8/9] selftests/bpf: Add test for Spectre v1 mitigation
-    https://git.kernel.org/bpf/bpf-next/c/4a8765d9a527
-  - [bpf-next,v4,9/9] bpf: Fall back to nospec for sanitization-failures
-    (no matching commit)
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+I applied the first 8, but this patch had odd merge conflicts
+and I didn't want to risk it. Please rebase.
 
