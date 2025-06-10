@@ -1,254 +1,142 @@
-Return-Path: <bpf+bounces-60209-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60210-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B573AAD3F7F
-	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 18:51:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0431AAD4001
+	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 19:05:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D55D1890ED3
-	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 16:51:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5060B175844
+	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 17:05:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9521923C4F6;
-	Tue, 10 Jun 2025 16:51:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC500245014;
+	Tue, 10 Jun 2025 17:05:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="A5JFk4yG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SfpsGX0Z"
 X-Original-To: bpf@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97AF98BF8;
-	Tue, 10 Jun 2025 16:51:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B20E242D97;
+	Tue, 10 Jun 2025 17:05:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749574283; cv=none; b=NqjQLo0GW0DS/w/j51bEYFCu61c8HCoh7aXyBneF7EWNUlWUq7kyF1/Q8hsUfY/9fyPYEeGMhK4IaDa9AVdNkIIju+BVc5eDSxflV6N0zMIyvN6lEl8sxXZVg45GMsJq5JCmE9/ujwYjourWuCnAHTU10HpCJWSJSoQ18zEii64=
+	t=1749575105; cv=none; b=rdNuqenKJ6LSlQqKFkIeIyDQGWY3BVxbo7fI2ZChFnDbYIW6IsDou0Oz/RpvGgqdQDki+xbcZje2qDRnRFBRoMSZtqZJU2E7d8nZ1jfqvheuAJsGfBd4jbt8LPkVjV58F07zGyeSNtdQ2HrNL8noS9WM8kRg5M8pm+jpNCs8rIs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749574283; c=relaxed/simple;
-	bh=Vnp2pGDBFC1FRRFjLh56HzSPYJIAcN4hN39e6nTO3i4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=WVVo3KzLjmt/l1d3J9GfT4zgDtzWpkBjYmzmhBh7xlrZeHb2nU5rj5CCaJqTawIFwDU/YeHzX9zg2m9Qs9PY50xgI70lpLTFi2LjZzssQaodsLR8chYMPo5+5QAlpft9plxDZ+PG0gprwwgj5Bwmj6ZyA0bfmXGthCK4217Smn8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=A5JFk4yG; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from narnia (unknown [40.78.13.147])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 91EA82027DFC;
-	Tue, 10 Jun 2025 09:51:20 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 91EA82027DFC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1749574281;
-	bh=iVKMmCMXdyVuVJ1kvt9F0Q2gH7f1XhSnOnf/XpzVitw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=A5JFk4yGJS5XEuWBZTeYrfGmtBBXea+cmST9lD8/cf1L0D9DCjGgTmar/1Fm/6dzU
-	 VGvi4Tejr5AD58W3+8GRIoW8H3UdkdGPIrjPSJcodTnJ2h194vjC+xL50Dw7jMPJJ8
-	 pazSZmDxGbst9HlObyY/qAWlzG3D7RscbLKkBI6g=
-From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
-To: KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org,
- linux-security-module@vger.kernel.org
-Cc: paul@paul-moore.com, kys@microsoft.com, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, KP Singh <kpsingh@kernel.org>
-Subject: Re: [PATCH 10/12] libbpf: Embed and verify the metadata hash in the
- loader
-In-Reply-To: <20250606232914.317094-11-kpsingh@kernel.org>
-References: <20250606232914.317094-1-kpsingh@kernel.org>
- <20250606232914.317094-11-kpsingh@kernel.org>
-Date: Tue, 10 Jun 2025 09:51:19 -0700
-Message-ID: <87qzzrleuw.fsf@microsoft.com>
+	s=arc-20240116; t=1749575105; c=relaxed/simple;
+	bh=JBxPDRS54QsCassj9KUUxdCzVPFut9fUWIWYPGNEnPU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=g+z0OUEbEYpOF3epLfpWozhuU5eK+kKsVmTcpUNRk4UJzNn5Xyo72LwLqtS97cPFymOxhMd/oW/fwDZwB7brOmxsUl4lHefd30Dm/ItTwpdp73UcuGctIY0Z9wczlz3d19Sti28ew9ajSO4/tm8PqP8LH/gFsnZGoZrXZ9TwrH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SfpsGX0Z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BDC9C4CEED;
+	Tue, 10 Jun 2025 17:05:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749575104;
+	bh=JBxPDRS54QsCassj9KUUxdCzVPFut9fUWIWYPGNEnPU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=SfpsGX0ZvFdtc4pO/uOWQTZGh1yf6O3gU0Cc3p669puGk6tQX8Qm8NEDbkdWYexbO
+	 7M+/1zG7uZTS68fBuAdRZAhAjwaRzDwrg22uOCXfLDcx3u5MRYpXRSawCCMpeBqiIf
+	 45L375RnzVUJa5Gp8UY1f5nYzFB/Jcv6sZ+arOR1u5syaE18MVmPV2WsN4ze4Fj095
+	 7ce8iDPEz/p53+UfmYxpyo6G3w2egKu0VdBNtlSy9Kdorh4uF2dL3QrUUWXydyawyX
+	 JF9NHUy3HIu9OuVsQ2S8AEbNERbuTHUKcKkOBLL3eDHrE0zrObkDC4b3cdslrj92Al
+	 0B4tQnIa/z8PQ==
+Message-ID: <5d8b9310-e471-4f24-afa4-67a6224a2fec@kernel.org>
+Date: Tue, 10 Jun 2025 19:04:58 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird Beta
+Subject: Re: [PATCH net-next v1 0/7] netlink: specs: fix all the yamllint
+ errors
+Content-Language: en-GB, fr-BE
+To: Donald Hunter <donald.hunter@gmail.com>
+Cc: donald.hunter@redhat.com, netdev@vger.kernel.org,
+ Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ Simon Horman <horms@kernel.org>, mptcp@lists.linux.dev,
+ kernel-tls-handshake@lists.linux.dev, bpf@vger.kernel.org
+References: <20250610125944.85265-1-donald.hunter@gmail.com>
+From: Matthieu Baerts <matttbe@kernel.org>
+Autocrypt: addr=matttbe@kernel.org; keydata=
+ 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
+ lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
+Organization: NGI0 Core
+In-Reply-To: <20250610125944.85265-1-donald.hunter@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-KP Singh <kpsingh@kernel.org> writes:
+Hi Donald,
 
-> To fulfill the BPF signing contract, represented as Sig(I_loader ||
-> H_meta), the generated trusted loader program must verify the integrity
-> of the metadata. This signature cryptographically binds the loader's
-> instructions (I_loader) to a hash of the metadata (H_meta).
->
-> The verification process is embedded directly into the loader program.
-> Upon execution, the loader loads the runtime hash from struct bpf_map
-> i.e. BPF_PSEUDO_MAP_IDX and compares this runtime hash against an
-> expected hash value that has been hardcoded directly by
-> bpf_obj__gen_loader.
->
-> The load from bpf_map can be improved by calling
-> BPF_OBJ_GET_INFO_BY_FD from the kernel context after BPF_OBJ_GET_INFO_BY_FD
-> has been updated for being called from the kernel context.
->
-> The following instructions are generated:
->
->     ld_imm64 r1, const_ptr_to_map // insn[0].src_reg == BPF_PSEUDO_MAP_IDX
->     r2 = *(u64 *)(r1 + 0);
->     ld_imm64 r3, sha256_of_map_part1 // constant precomputed by
-> bpftool (part of H_meta)
->     if r2 != r3 goto out;
->
->     r2 = *(u64 *)(r1 + 8);
->     ld_imm64 r3, sha256_of_map_part2 // (part of H_meta)
->     if r2 != r3 goto out;
->
->     r2 = *(u64 *)(r1 + 16);
->     ld_imm64 r3, sha256_of_map_part3 // (part of H_meta)
->     if r2 != r3 goto out;
->
->     r2 = *(u64 *)(r1 + 24);
->     ld_imm64 r3, sha256_of_map_part4 // (part of H_meta)
->     if r2 != r3 goto out;
->     ...
->
-> Signed-off-by: KP Singh <kpsingh@kernel.org>
-> ---
->  tools/lib/bpf/bpf_gen_internal.h |  2 ++
->  tools/lib/bpf/gen_loader.c       | 52 ++++++++++++++++++++++++++++++++
->  tools/lib/bpf/libbpf.h           |  3 +-
->  3 files changed, 56 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/lib/bpf/bpf_gen_internal.h b/tools/lib/bpf/bpf_gen_internal.h
-> index 6ff963a491d9..49af4260b8e6 100644
-> --- a/tools/lib/bpf/bpf_gen_internal.h
-> +++ b/tools/lib/bpf/bpf_gen_internal.h
-> @@ -4,6 +4,7 @@
->  #define __BPF_GEN_INTERNAL_H
->  
->  #include "bpf.h"
-> +#include "libbpf_internal.h"
->  
->  struct ksym_relo_desc {
->  	const char *name;
-> @@ -50,6 +51,7 @@ struct bpf_gen {
->  	__u32 nr_ksyms;
->  	int fd_array;
->  	int nr_fd_array;
-> +	int hash_insn_offset[SHA256_DWORD_SIZE];
->  };
->  
->  void bpf_gen__init(struct bpf_gen *gen, int log_level, int nr_progs, int nr_maps);
-> diff --git a/tools/lib/bpf/gen_loader.c b/tools/lib/bpf/gen_loader.c
-> index 113ae4abd345..3d672c09e948 100644
-> --- a/tools/lib/bpf/gen_loader.c
-> +++ b/tools/lib/bpf/gen_loader.c
-> @@ -110,6 +110,7 @@ static void emit2(struct bpf_gen *gen, struct bpf_insn insn1, struct bpf_insn in
->  
->  static int add_data(struct bpf_gen *gen, const void *data, __u32 size);
->  static void emit_sys_close_blob(struct bpf_gen *gen, int blob_off);
-> +static void bpf_gen__signature_match(struct bpf_gen *gen);
->  
->  void bpf_gen__init(struct bpf_gen *gen, int log_level, int nr_progs, int nr_maps)
->  {
-> @@ -152,6 +153,8 @@ void bpf_gen__init(struct bpf_gen *gen, int log_level, int nr_progs, int nr_maps
->  	/* R7 contains the error code from sys_bpf. Copy it into R0 and exit. */
->  	emit(gen, BPF_MOV64_REG(BPF_REG_0, BPF_REG_7));
->  	emit(gen, BPF_EXIT_INSN());
-> +	if (gen->opts->gen_hash)
-> +		bpf_gen__signature_match(gen);
->  }
->  
->  static int add_data(struct bpf_gen *gen, const void *data, __u32 size)
-> @@ -368,6 +371,25 @@ static void emit_sys_close_blob(struct bpf_gen *gen, int blob_off)
->  	__emit_sys_close(gen);
->  }
->  
-> +static int compute_sha_udpate_offsets(struct bpf_gen *gen)
-> +{
-> +	__u64 sha[SHA256_DWORD_SIZE];
-> +	int i, err;
-> +
-> +	err = libbpf_sha256(gen->data_start, gen->data_cur - gen->data_start, sha);
-> +	if (err < 0) {
-> +		pr_warn("sha256 computation of the metadata failed");
-> +		return err;
-> +	}
-> +	for (i = 0; i < SHA256_DWORD_SIZE; i++) {
-> +		struct bpf_insn *insn =
-> +			(struct bpf_insn *)(gen->insn_start + gen->hash_insn_offset[i]);
-> +		insn[0].imm = (__u32)sha[i];
-> +		insn[1].imm = sha[i] >> 32;
-> +	}
-> +	return 0;
-> +}
-> +
->  int bpf_gen__finish(struct bpf_gen *gen, int nr_progs, int nr_maps)
->  {
->  	int i;
-> @@ -394,6 +416,12 @@ int bpf_gen__finish(struct bpf_gen *gen, int nr_progs, int nr_maps)
->  			      blob_fd_array_off(gen, i));
->  	emit(gen, BPF_MOV64_IMM(BPF_REG_0, 0));
->  	emit(gen, BPF_EXIT_INSN());
-> +	if (gen->opts->gen_hash) {
-> +		gen->error = compute_sha_udpate_offsets(gen);
-> +		if (gen->error)
-> +			return gen->error;
-> +	}
-> +
->  	pr_debug("gen: finish %s\n", errstr(gen->error));
->  	if (!gen->error) {
->  		struct gen_loader_opts *opts = gen->opts;
-> @@ -557,6 +585,30 @@ void bpf_gen__map_create(struct bpf_gen *gen,
->  		emit_sys_close_stack(gen, stack_off(inner_map_fd));
->  }
->  
-> +static void bpf_gen__signature_match(struct bpf_gen *gen)
-> +{
-> +	__s64 off = -(gen->insn_cur - gen->insn_start - gen->cleanup_label) / 8 - 1;
-> +	int i;
-> +
-> +	for (i = 0; i < SHA256_DWORD_SIZE; i++) {
-> +		emit2(gen, BPF_LD_IMM64_RAW_FULL(BPF_REG_1, BPF_PSEUDO_MAP_IDX,
-> +						 0, 0, 0, 0));
-> +		emit(gen, BPF_LDX_MEM(BPF_DW, BPF_REG_2, BPF_REG_1, i * sizeof(__u64)));
-> +		gen->hash_insn_offset[i] = gen->insn_cur - gen->insn_start;
-> +		emit2(gen,
-> +		      BPF_LD_IMM64_RAW_FULL(BPF_REG_3, 0, 0, 0, 0, 0));
-> +
-> +		if (is_simm16(off)) {
-> +			emit(gen, BPF_MOV64_IMM(BPF_REG_7, -EINVAL));
-> +			emit(gen,
-> +			     BPF_JMP_REG(BPF_JNE, BPF_REG_2, BPF_REG_3, off));
-> +		} else {
-> +			gen->error = -ERANGE;
-> +			emit(gen, BPF_JMP_IMM(BPF_JA, 0, 0, -1));
-> +		}
-> +	}
-> +}
-> +
+On 10/06/2025 14:59, Donald Hunter wrote:
+> yamllint reported ~500 errors and warnings in the netlink specs. Fix all
+> the reported issues.
 
-The above code gets generated per-program and exists out-of-tree in a
-very unreadable format in it's final form. I have general objections to
-being forced to "trust" out-of-tree code, when it's demostrably trivial
-to perform this check in-kernel, without impeding any of the other
-stated use cases. There is no possible audit log nor LSM hook for these
-operations. There is no way to know that this check was ever performed.
+Thank you for this big cleanup!
 
-Further, this check ends up happeing in an entirely different syscall,
-the LSM layer and the end user may both see invalid programs successfully
-being loaded into the kernel, that may fail mysteriously later.
+> Donald Hunter (7):
+>   netlink: specs: add doc start markers to yaml
+>   netlink: specs: clean up spaces in brackets
+>   netlink: specs: fix up spaces before comments
+>   netlink: specs: fix up truthy values
+>   netlink: specs: fix up indentation errors
+>   netlink: specs: wrap long doc lines (>80 chars)
+>   netlink: specs: fix a couple of yamllint warnings
 
-Also, this patch seems to rely on hacking into struct internals and
-magic binary layouts.
+(...)
 
--blaise
+>  Documentation/netlink/specs/mptcp_pm.yaml     | 192 ++++++++--------
 
->  void bpf_gen__record_attach_target(struct bpf_gen *gen, const char *attach_name,
->  				   enum bpf_attach_type type)
->  {
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index b6ee9870523a..084372fa54f4 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -1803,9 +1803,10 @@ struct gen_loader_opts {
->  	const char *insns;
->  	__u32 data_sz;
->  	__u32 insns_sz;
-> +	bool gen_hash;
->  };
->  
-> -#define gen_loader_opts__last_field insns_sz
-> +#define gen_loader_opts__last_field gen_hash
->  LIBBPF_API int bpf_object__gen_loader(struct bpf_object *obj,
->  				      struct gen_loader_opts *opts);
->  
-> -- 
-> 2.43.0
+For the changes to Documentation/netlink/specs/mptcp_pm.yaml:
+
+Reviewed-by: Matthieu Baerts (NGI0) <matttbe@kernel.org> # mptcp_pm.yaml
+
+Cheers,
+Matt
+-- 
+Sponsored by the NGI0 Core fund.
+
 
