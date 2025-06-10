@@ -1,104 +1,258 @@
-Return-Path: <bpf+bounces-60186-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60187-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8ED91AD3B14
-	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 16:25:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28212AD3B7B
+	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 16:44:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C3EE3A40FF
-	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 14:25:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 378453AB418
+	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 14:43:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10DC92BCF47;
-	Tue, 10 Jun 2025 14:25:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BZNQ2Kpp"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96B8F230997;
+	Tue, 10 Jun 2025 14:40:59 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dediextern.your-server.de (dediextern.your-server.de [85.10.215.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8925629ACE5;
-	Tue, 10 Jun 2025 14:25:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D95D022B8AB;
+	Tue, 10 Jun 2025 14:40:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.10.215.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749565544; cv=none; b=JWjYAh8h06Cv+2iqqdID5p9+Q/WsXI0uzrkNAPMahp1u07v1lIAtQFevrPqzAZ8S/iCDRD0edqMAomn7A3Y2BpYkFWGo5fkAnhGckH5YOt9rKQk0SpjnKp9m5+n6FPqOLIly7bjKT8/QeQRr+i6L69l8DV3Z1DgWLQVeS+1t9gg=
+	t=1749566459; cv=none; b=OMuYP83xeIy3X9Nz/GBlweHo7Fmxgz+aogCPTT8St8EMmafFvRVRCsK4Uv9MAdwo5allliAggHb3HQWl0K5UiRXy9Zy+u0lkwWdbplfCA0zqP1sdrn0MzPxX2iVyK3/GvWdW+FabImzVUvw67WfFmWvTaI0yM6i6I1KbNse6bnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749565544; c=relaxed/simple;
-	bh=Hr/xqZLGagafgLn98UXv2mQCJHm38h+zvwi9d47piSA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=IEYjYtR/R0W8pFxoMWtPJ4JlIzc5H4dzFFML5AoI3SNHCs3W8Eua3aXBhi+QUWMqA1kGkPDQQiyWwXHw7xHF4L2uqQNzjpcB0uThPLDU03zWV5BgPGOcjFE4r7l+FZOWitoD3nCHFQgvhL6EtwvKir981eEQlmHN8QNWX0P775Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BZNQ2Kpp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A86EBC4CEED;
-	Tue, 10 Jun 2025 14:25:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749565544;
-	bh=Hr/xqZLGagafgLn98UXv2mQCJHm38h+zvwi9d47piSA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=BZNQ2Kpp4Dtc1AQ+9XMzczvKlk9RSkZO9VRp3KXgSpgyzGAieavlfH+HjOVMiDlQ4
-	 KAJjb7uzSUwAkqLSl6nssLLKNlsjmzfp9HLEQVznemKy+8gqXuBFjISrMoUjPFmSbj
-	 WSD9Q0fxczwp8JikhzF53zNqeudodxfK8fHZZIrxzQlOhu0beGloW4sVvc+3dQFxmk
-	 MUt4TJU8mQ6WC9IxRpxzVIbH4IknAN3mCMQpzmHNnDxI7LHObBuwo3VRsg/WnCSLTO
-	 6Wtcce2v+wO+CWbBtG35xeH+cQHCNpHn90rltjnFDTfJaT48LB5LmUVJDF9da9vrSm
-	 0MpVuCBuANAzQ==
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 6AC991AF6B3F; Tue, 10 Jun 2025 16:25:29 +0200 (CEST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-To: KP Singh <kpsingh@kernel.org>
-Cc: bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
- bboscaccy@linux.microsoft.com, paul@paul-moore.com, kys@microsoft.com,
- ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Subject: Re: [PATCH 00/12] Signed BPF programs
-In-Reply-To: <CACYkzJ7mOk2CbFpKi_eg16a81AEeTZU1O6r6zOgwAjwSReYedA@mail.gmail.com>
-References: <20250606232914.317094-1-kpsingh@kernel.org>
- <87h60ppbqj.fsf@toke.dk>
- <CACYkzJ6_VXiWauPBMWOzX+QHedj4noYxfmt_usUzXCiifuEuLA@mail.gmail.com>
- <87cybcdj5k.fsf@toke.dk>
- <CACYkzJ6SLvJNfGiQ7DegBGv2vryxtdHq8isme29ByrAeKwhwDA@mail.gmail.com>
- <877c1jerkq.fsf@toke.dk>
- <CACYkzJ7mOk2CbFpKi_eg16a81AEeTZU1O6r6zOgwAjwSReYedA@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Tue, 10 Jun 2025 16:25:29 +0200
-Message-ID: <87v7p3d67a.fsf@toke.dk>
+	s=arc-20240116; t=1749566459; c=relaxed/simple;
+	bh=oLcHXzZbfxkyWuSpFWR0PuAz9UabAeQdJSISj8eTHuo=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:From:Subject:
+	 In-Reply-To:Content-Type; b=oCookz8XXLob3onVdeRB9dUdvLp0Z1X88CvpL0JZ52gZ+KKYub/nvC98Xrrx3vx6FYpgTSHWelVlgcVeq5/bjxQmPH2M5riGEW6MLqYHbgiQg4wHrlbxmeXv598E3Q9fA2+EyMghY8o3nmxlpccWITcfA3XghNtJmJFgUvbFy+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hetzner-cloud.de; spf=pass smtp.mailfrom=hetzner-cloud.de; arc=none smtp.client-ip=85.10.215.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hetzner-cloud.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hetzner-cloud.de
+Received: from sslproxy07.your-server.de ([78.47.199.104])
+	by dediextern.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <marcus.wichelmann@hetzner-cloud.de>)
+	id 1uP09d-0008pe-4v; Tue, 10 Jun 2025 16:40:45 +0200
+Received: from localhost ([127.0.0.1])
+	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <marcus.wichelmann@hetzner-cloud.de>)
+	id 1uP09c-000ILZ-26;
+	Tue, 10 Jun 2025 16:40:44 +0200
+Message-ID: <3d520952-c343-4ae5-98c0-c9965dc7e320@hetzner-cloud.de>
+Date: Tue, 10 Jun 2025 16:40:43 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+To: Eric Dumazet <edumazet@google.com>
+Cc: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+ Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Jamal Hadi Salim <jhs@mojatatu.com>,
+ Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
+ linux-kernel@vger.kernel.org
+References: <9da42688-bfaa-4364-8797-e9271f3bdaef@hetzner-cloud.de>
+ <87zfemtbah.fsf@toke.dk>
+ <CANn89i+7crgdpf-UXDpTNdWfei95+JHyMD_dBD8efTbLBnvZUQ@mail.gmail.com>
+ <CANn89iKpZ5aLNpv66B9M4R1d_Pn5ZX=8-XaiyCLgKRy3marUtQ@mail.gmail.com>
+ <5f19b555-b0fa-472a-a5f3-6673c0b69c5c@hetzner-cloud.de>
+ <CANn89iJAR3HvWXNqNSR=y9qYm4W5sD40La+UpRraF4NE8yhfrA@mail.gmail.com>
+Content-Language: en-US
+From: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
+Autocrypt: addr=marcus.wichelmann@hetzner-cloud.de; keydata=
+ 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
+ wySmewx3h/yfMh0aFxHhvLPxrO2IEQ==
+Subject: Re: [BUG] veth: TX drops with NAPI enabled and crash in combination
+ with qdisc
+In-Reply-To: <CANn89iJAR3HvWXNqNSR=y9qYm4W5sD40La+UpRraF4NE8yhfrA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: Clear (ClamAV 1.0.7/27664/Tue Jun 10 10:41:04 2025)
 
-KP Singh <kpsingh@kernel.org> writes:
-
+Am 06.06.25 um 11:06 schrieb Eric Dumazet:
+> On Thu, Jun 5, 2025 at 3:17 PM Marcus Wichelmann
+> <marcus.wichelmann@hetzner-cloud.de> wrote:
 >>
->> Right, but this patch series has no mechanism for establishing a
->> userspace loader binary as trusted (right?). The paragraph I quoted
->> makes it sound like these are related, and I was trying to figure out
->> what the relation was. But it sounds like the answer is that they are
->> not?
+>> Am 06.06.25 um 00:11 schrieb Eric Dumazet:
+>>> On Thu, Jun 5, 2025 at 9:46 AM Eric Dumazet <edumazet@google.com> wrote:
+>>>>
+>>>> On Thu, Jun 5, 2025 at 9:15 AM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+>>>>>
+>>>>> Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de> writes:
+>>>>>
+>>>>>> Hi,
+>>>>>>
+>>>>>> while experimenting with XDP_REDIRECT from a veth-pair to another interface, I
+>>>>>> noticed that the veth-pair looses lots of packets when multiple TCP streams go
+>>>>>> through it, resulting in stalling TCP connections and noticeable instabilities.
+>>>>>>
+>>>>>> This doesn't seem to be an issue with just XDP but rather occurs whenever the
+>>>>>> NAPI mode of the veth driver is active.
+>>>>>> I managed to reproduce the same behavior just by bringing the veth-pair into
+>>>>>> NAPI mode (see commit d3256efd8e8b ("veth: allow enabling NAPI even without
+>>>>>> XDP")) and running multiple TCP streams through it using a network namespace.
+>>>>>>
+>>>>>> Here is how I reproduced it:
+>>>>>>
+>>>>>>   ip netns add lb
+>>>>>>   ip link add dev to-lb type veth peer name in-lb netns lb
+>>>>>>
+>>>>>>   # Enable NAPI
+>>>>>>   ethtool -K to-lb gro on
+>>>>>>   ethtool -K to-lb tso off
+>>>>>>   ip netns exec lb ethtool -K in-lb gro on
+>>>>>>   ip netns exec lb ethtool -K in-lb tso off
+>>>>>>
+>>>>>>   ip link set dev to-lb up
+>>>>>>   ip -netns lb link set dev in-lb up
+>>>>>>
+>>>>>> Then run a HTTP server inside the "lb" namespace that serves a large file:
+>>>>>>
+>>>>>>   fallocate -l 10G testfiles/10GB.bin
+>>>>>>   caddy file-server --root testfiles/
+>>>>>>
+>>>>>> Download this file from within the root namespace multiple times in parallel:
+>>>>>>
+>>>>>>   curl http://[fe80::...%to-lb]/10GB.bin -o /dev/null
+>>>>>>
+>>>>>> In my tests, I ran four parallel curls at the same time and after just a few
+>>>>>> seconds, three of them stalled while the other one "won" over the full bandwidth
+>>>>>> and completed the download.
+>>>>>>
+>>>>>> This is probably a result of the veth's ptr_ring running full, causing many
+>>>>>> packet drops on TX, and the TCP congestion control reacting to that.
+>>>>>>
+>>>>>> In this context, I also took notice of Jesper's patch which describes a very
+>>>>>> similar issue and should help to resolve this:
+>>>>>>   commit dc82a33297fc ("veth: apply qdisc backpressure on full ptr_ring to
+>>>>>>   reduce TX drops")
+>>>>>>
+>>>>>> But when repeating the above test with latest mainline, which includes this
+>>>>>> patch, and enabling qdisc via
+>>>>>>   tc qdisc add dev in-lb root sfq perturb 10
+>>>>>> the Kernel crashed just after starting the second TCP stream (see output below).
+>>>>>>
+>>>>>> So I have two questions:
+>>>>>> - Is my understanding of the described issue correct and is Jesper's patch
+>>>>>>   sufficient to solve this?
+>>>>>
+>>>>> Hmm, yeah, this does sound likely.
+>>>>>
+>>>>>> - Is my qdisc configuration to make use of this patch correct and the kernel
+>>>>>>   crash is likely a bug?
+>>>>>>
+>>>>>> ------------[ cut here ]------------
+>>>>>> UBSAN: array-index-out-of-bounds in net/sched/sch_sfq.c:203:12
+>>>>>> index 65535 is out of range for type 'sfq_head [128]'
+>>>>>
+>>>>> This (the 'index 65535') kinda screams "integer underflow". So certainly
+>>>>> looks like a kernel bug, yeah. Don't see any obvious reason why Jesper's
+>>>>> patch would trigger this; maybe Eric has an idea?
+>>>>>
+>>>>> Does this happen with other qdiscs as well, or is it specific to sfq?
+>>>>
+>>>> This seems like a bug in sfq, we already had recent fixes in it, and
+>>>> other fixes in net/sched vs qdisc_tree_reduce_backlog()
+>>>>
+>>>> It is possible qdisc_pkt_len() could be wrong in this use case (TSO off ?)
+>>>
+>>> This seems to be a very old bug, indeed caused by sch->gso_skb
+>>> contribution to sch->q.qlen
+>>>
+>>> diff --git a/net/sched/sch_sfq.c b/net/sched/sch_sfq.c
+>>> index b912ad99aa15d95b297fb28d0fd0baa9c21ab5cd..77fa02f2bfcd56a36815199aa2e7987943ea226f
+>>> 100644
+>>> --- a/net/sched/sch_sfq.c
+>>> +++ b/net/sched/sch_sfq.c
+>>> @@ -310,7 +310,10 @@ static unsigned int sfq_drop(struct Qdisc *sch,
+>>> struct sk_buff **to_free)
+>>>                 /* It is difficult to believe, but ALL THE SLOTS HAVE
+>>> LENGTH 1. */
+>>>                 x = q->tail->next;
+>>>                 slot = &q->slots[x];
+>>> -               q->tail->next = slot->next;
+>>> +               if (slot->next == x)
+>>> +                       q->tail = NULL; /* no more active slots */
+>>> +               else
+>>> +                       q->tail->next = slot->next;
+>>>                 q->ht[slot->hash] = SFQ_EMPTY_SLOT;
+>>>                 goto drop;
+>>>         }
+>>>
 >>
->
-> The relation here is that no matter what we do, the kernel cannot be
-> the only trusted blob on the system and this was aimed at answering
-> questions people had earlier when I proposed the design. This patch
-> does add signing support and this allows us to add the following
-> policy, it does not directly add any user space support.
->
-> bprm_committed_creds (check signature of program, if verifies with a
-> separate key) add a blob that allows:
->
->  * unsigned bpf programs
->  * signed with a derived key
->
-> security_bpf:
->
->  * Check for the right attributes for signing.
->  * restrict which program types can be loaded.
->
-> (additional key hooks for restricting which keys are allowed to verify
-> programs).
+>> Hi,
+>>
+>> thank you for looking into it.
+>> I'll give your patch a try and will also do tests with other qdiscs as well when I'm back
+>> in office.
+>>
+> 
+> I have been using this repro :
+> 
+> [...]
 
-Right, gotcha - thanks for clarifying! :)
+Hi,
 
--Toke
+I can confirm that the sfq qdisc is now stable in this setup, thanks to your fix.
+
+I also experimented with other qdiscs and fq_codel works as well.
+
+The sfq/fq_codel qdisc works hand-in-hand now with Jesper's patch to resolve the original
+issue. Multiple TCP connections run very stable, even when NAPI/XDP is active on the veth
+device, and I can see that the packets are being requeued instead of being dropped in the
+veth driver.
+
+Thank you for your help!
+
+Marcus
 
