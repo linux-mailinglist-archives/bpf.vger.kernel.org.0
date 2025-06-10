@@ -1,231 +1,186 @@
-Return-Path: <bpf+bounces-60207-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60208-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 992F5AD3F58
-	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 18:43:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DE47AD3F63
+	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 18:45:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D34117D70C
-	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 16:43:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E27F33A4506
+	for <lists+bpf@lfdr.de>; Tue, 10 Jun 2025 16:45:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F097244684;
-	Tue, 10 Jun 2025 16:42:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0F22239E95;
+	Tue, 10 Jun 2025 16:45:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jj1aDPDd"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Aq4NoVjI"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13BBB244678
-	for <bpf@vger.kernel.org>; Tue, 10 Jun 2025 16:42:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCFB91494CC
+	for <bpf@vger.kernel.org>; Tue, 10 Jun 2025 16:45:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749573747; cv=none; b=nnhXJMiTibc0xqnofE7o+LY1Hn0L316AT8qyiegYwQC52VYAqf2TEcMZ83IuPuiTNP7Eelvki8rRvedR52pIcKFcvWbaEEWS2HkXtUWAlk1WJmSaKrZ4U6Y5OMvwvcgjUEwNSJxt7BIVOQUIQYCpjLE2j0Tv9HayvAn1NI0DHK4=
+	t=1749573945; cv=none; b=pZq+cgYODzppiFToKSi56yfUyJbe0R+xbKStWH457r9YjU9WKXp9JF7kzglEPuRgTs36bF4pVeKJ+8lNxAYOil8Scg51Bdu3dqGGTAvrvtiGUbUAPqnFmWJFK6k7ey5Sy2OZoPl8/Qxno6YXsgvozkCbh89aCOuO6VmBokqh158=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749573747; c=relaxed/simple;
-	bh=iUWEfepFxW5+wP1S6dLjzww/GMltVpjy2p3xoDW7Px8=;
+	s=arc-20240116; t=1749573945; c=relaxed/simple;
+	bh=XsQiHcimeh6Cmf2APHqKLrrlNOcRZ1yK77dtDdyjiag=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=K5JxJJtjj+4mJGyqghBv9/KL5dn21G+w2OYGEszf26PSjbDZiUAQrPx/yq9KOV+p2t9xdafGsUG9TyE98OhbfUnjaBiNW69JguoA7gHry8M5LkhaCZk6FxvX3fgmEl/bxpLtTxW9SHLkk5dc5e1PauS9LjFve2BzEpflILIN/FM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jj1aDPDd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD8B5C4AF0D
-	for <bpf@vger.kernel.org>; Tue, 10 Jun 2025 16:42:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749573746;
-	bh=iUWEfepFxW5+wP1S6dLjzww/GMltVpjy2p3xoDW7Px8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Jj1aDPDdPL5wTnYiOVqO7qQ8/LyJAD7a0fIuAECDTBvV89xIt/xOgukclzaIGzjSO
-	 oLnYIL8zJjIkvKrs/MaXZveNy+mqPiYOpKfAmpFYFYQDfOV9FtXIKiqORmNdI8v4AE
-	 5H9/Xwnoy7y8KakK9Lo6hUAYyLFq7f4+RdaGLX+HWOPrPugsD5wluVA7nh7Daqd0UD
-	 n+aJ/XKkNGn+cfsRQSA1RUAN8DjzXk6n1voqt+HzAQBrlpu1vRuIYiBi6Fzgk+8J1T
-	 i5ql46usSp6xfW/AG1iBulKnECNDmrjl0qsnNcfn90RQRc7BhQzYxIlB/zOPnAs3cB
-	 fXwBLnXNMgCWA==
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-604f5691bceso11542095a12.0
-        for <bpf@vger.kernel.org>; Tue, 10 Jun 2025 09:42:26 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yz2u+TyjTPh9P51PGYFCAwI8hS6TN3JZjbJ0p9sxEJgdA9gi5GK
-	4u9FP9iKyLg+LYCZMgTMhw6TbxPlgxLe14aVW/8tohizqAwv1nQVwrb5gCUaekwvZfwJ7R/aogj
-	6VK5nRYB8d1kctikCY2+sllnlS63ToQqQ6Yg2L36h
-X-Google-Smtp-Source: AGHT+IF7QSZQlLmKQg2Q9QejlfTK6KpGhHPVrA+LwfTIu1aqn1R5gZeJALWyLPvtOg16poRBKeRtAKnqf1n+xwsdgk4=
-X-Received: by 2002:a05:6402:35ca:b0:604:e602:77a5 with SMTP id
- 4fb4d7f45d1cf-6082d59fd13mr2857239a12.15.1749573745257; Tue, 10 Jun 2025
- 09:42:25 -0700 (PDT)
+	 To:Cc:Content-Type; b=RSjuuhvzdaWSRK+vMzZpQomqFab4OUs5fsIeC5pCli4tfT/UcSbFhT3Arl8PbmozfRdyqnBG85qwkDeoTRjS1W/PWin+Zan0zfzhy88wJlcP0YkNa+Q816bXqoITWy0Ns6l3lgmujdgJ/PrR8gm6zlbOQjPoXEopqw/vuwh8o4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Aq4NoVjI; arc=none smtp.client-ip=209.85.219.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-e733cd55f9eso5292219276.1
+        for <bpf@vger.kernel.org>; Tue, 10 Jun 2025 09:45:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749573942; x=1750178742; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u0IIv5yDyniLUZTK2Pm5zd6QeVxF8nIXASjXHPRi95g=;
+        b=Aq4NoVjICqMDL12oYkKTfGB9mwBx1L8MC+YrjUJ/Y1ej1OTUOOgOenye5rgBh5hhie
+         oWxMXYbNemjcYcJyfsMZCOuubZy/St3jMAvPgqvR9fXeNKt59+NlDt0v51Rk8OZctE0i
+         U/Wcud2OKrqKjFu4zMzyF6BCjK2wHTViJFK7rEgeIGXTHe7CtFJ6JuTAyI7j8wPg3vMb
+         iwcUA/jJ8K16fm5lCn92ZlJybmloWiJj7ih41lv1TgFj884Kc6CDVJWmeoXVVPs2xKi9
+         84yw+HZGQGQESiFPNu3MYR3e5B3biU/ubxvEM5AIHDBUeYt3u4ib8vsC4VjVIgad7EjU
+         hfUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749573942; x=1750178742;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u0IIv5yDyniLUZTK2Pm5zd6QeVxF8nIXASjXHPRi95g=;
+        b=HagkiRCOVIW2TiWDlqMKUogdsv7RG/Gw7Z04DyL1QuQBCXyhS9xIrEh1C47I5jYED7
+         MuH59qIB3XMgAsGK8GKAFvQX2GNyBwlkR7dD7+W5m1GGPEcW6RKO8qpO/2xf1rkaKKDY
+         XTjGWFvkGp/bdYM1ZKDIFHYzvPQ1B1F5VudWm0+jN17fjG5BQdDfhqYJagjFednsCd2a
+         o+duRjTmburvubGxaaPLqZyeODgW/4Hql18sqe8Mqg4xvTPtBppSyMF0f8kqDzMiEkNq
+         VIbp6NL8AouCTvMp0o9zeDqX4bfb5oLwQFGjR+fuaYV8MUr60OrhdXsxHBDXKgLwy/oH
+         VHzw==
+X-Forwarded-Encrypted: i=1; AJvYcCW95hDI29tVTXni6SUyjlm3zQFcVZc5rAu+K2nvIpYHLtQu2SK9Vp9n0pt5Rg09duUqP6E=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzrizzEHd83M8I9UQOKzN2a5lUb36taFnuJwKU19tcjHQeKi+1u
+	XDa36D0+shwjvvKLORkS6oqAYwJ5MJqsxPR1VHWJio9vc8qk1/jVaLMomIZFDB7XJ42/mivMWTf
+	IhoMbrvGLe6g7O+1xnsNQJFBJ0mVeUPg=
+X-Gm-Gg: ASbGncvBGkD1gCt8CHxBT3MpNpIKVoOZM3I+EuCbgus4kOKbmqRFFipcdlgUaLrt4y0
+	6L9a+6kNPs1WOdp9XaaG6TV7AZbqk0Crv3HAlxMmTA/VgB7Fc/Pc6BINMvquPfaXTj72WwkzFd/
+	KMKIlnjI8+mctcRgtdACOsod5Lvbt8i8TkUrMIWfFtUns=
+X-Google-Smtp-Source: AGHT+IEZj2UwRghgJOQ+x0T2dTUBfsgHlBGY2dRZMzDqUsGHHdxKkr+w8S1ycXwYNk0ZN1F3BkBs9Uetzab1czDHhyI=
+X-Received: by 2002:a05:6902:12c6:b0:e81:b0ae:43c0 with SMTP id
+ 3f1490d57ef6-e81fe6a3ed7mr401309276.27.1749573942522; Tue, 10 Jun 2025
+ 09:45:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250606232914.317094-1-kpsingh@kernel.org> <20250606232914.317094-13-kpsingh@kernel.org>
- <87tt4nlfek.fsf@microsoft.com>
-In-Reply-To: <87tt4nlfek.fsf@microsoft.com>
-From: KP Singh <kpsingh@kernel.org>
-Date: Tue, 10 Jun 2025 18:42:14 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ7y1ztHKH0+-uw9FzMzkJb3a6bKCXET5Dd5F1UV6+i4_A@mail.gmail.com>
-X-Gm-Features: AX0GCFvi3cgmiI0nO_Xd7RGL0PTif_FtdHXMUKnH3pPettbEfGiDwfxnIpG_rCY
-Message-ID: <CACYkzJ7y1ztHKH0+-uw9FzMzkJb3a6bKCXET5Dd5F1UV6+i4_A@mail.gmail.com>
-Subject: Re: [PATCH 12/12] selftests/bpf: Enable signature verification for
- all lskel tests
-To: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
-Cc: bpf@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	paul@paul-moore.com, kys@microsoft.com, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org
+References: <20250609232746.1030044-4-ameryhung@gmail.com> <8c4943cb40967d152abe032b4208a7cdd89b539da26783afaa61e37eb6663cbf@mail.kernel.org>
+In-Reply-To: <8c4943cb40967d152abe032b4208a7cdd89b539da26783afaa61e37eb6663cbf@mail.kernel.org>
+From: Amery Hung <ameryhung@gmail.com>
+Date: Tue, 10 Jun 2025 09:45:31 -0700
+X-Gm-Features: AX0GCFvFewdnyka08ySjSCO9SiUHin3bBeOE24bM4c7Rb6B3J_AWj_duXT7i_F8
+Message-ID: <CAMB2axPNx3d4MtSri+2iYujUhKsFerbZzD6xvA8RyJwxEprZeQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 4/4] selftests/bpf: Test accessing struct_ops
+ this pointer in timer callback
+To: bot+bpf-ci@kernel.org
+Cc: kernel-ci@meta.com, andrii@kernel.org, daniel@iogearbox.net, 
+	martin.lau@linux.dev, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 10, 2025 at 6:39=E2=80=AFPM Blaise Boscaccy
-<bboscaccy@linux.microsoft.com> wrote:
+On Mon, Jun 9, 2025 at 5:42=E2=80=AFPM <bot+bpf-ci@kernel.org> wrote:
 >
-> KP Singh <kpsingh@kernel.org> writes:
+> Dear patch submitter,
 >
-> > Convert the kernel's generated verification certificate into a C header
-> > file using xxd.  Finally, update the main test runner to load this
-> > certificate into the session keyring via the add_key() syscall before
-> > executing any tests.
-> >
-> > The kernel's module signing verification certificate is converted to a
-> > headerfile and loaded as a session key and all light skeleton tests are
-> > updated to be signed.
-> >
-> > Signed-off-by: KP Singh <kpsingh@kernel.org>
-> > ---
-> >  tools/testing/selftests/bpf/.gitignore   |  1 +
-> >  tools/testing/selftests/bpf/Makefile     | 13 +++++++++++--
-> >  tools/testing/selftests/bpf/test_progs.c | 13 +++++++++++++
-> >  3 files changed, 25 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/sel=
-ftests/bpf/.gitignore
-> > index e2a2c46c008b..5ab96f8ab1c9 100644
-> > --- a/tools/testing/selftests/bpf/.gitignore
-> > +++ b/tools/testing/selftests/bpf/.gitignore
-> > @@ -45,3 +45,4 @@ xdp_redirect_multi
-> >  xdp_synproxy
-> >  xdp_hw_metadata
-> >  xdp_features
-> > +verification_cert.h
-> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selft=
-ests/bpf/Makefile
-> > index cf5ed3bee573..778b54be7ef4 100644
-> > --- a/tools/testing/selftests/bpf/Makefile
-> > +++ b/tools/testing/selftests/bpf/Makefile
-> > @@ -7,6 +7,7 @@ CXX ?=3D $(CROSS_COMPILE)g++
-> >
-> >  CURDIR :=3D $(abspath .)
-> >  TOOLSDIR :=3D $(abspath ../../..)
-> > +CERTSDIR :=3D $(abspath ../../../../certs)
-> >  LIBDIR :=3D $(TOOLSDIR)/lib
-> >  BPFDIR :=3D $(LIBDIR)/bpf
-> >  TOOLSINCDIR :=3D $(TOOLSDIR)/include
-> > @@ -534,7 +535,7 @@ HEADERS_FOR_BPF_OBJS :=3D $(wildcard $(BPFDIR)/*.bp=
-f.h)             \
-> >  # $1 - test runner base binary name (e.g., test_progs)
-> >  # $2 - test runner extra "flavor" (e.g., no_alu32, cpuv4, bpf_gcc, etc=
-)
-> >  define DEFINE_TEST_RUNNER
-> > -
-> > +LSKEL_SIGN :=3D -S -k $(CERTSDIR)/signing_key.pem -i $(CERTSDIR)/signi=
-ng_key.x509
-> >  TRUNNER_OUTPUT :=3D $(OUTPUT)$(if $2,/)$2
-> >  TRUNNER_BINARY :=3D $1$(if $2,-)$2
-> >  TRUNNER_TEST_OBJS :=3D $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.test.o,   =
- \
-> > @@ -601,7 +602,7 @@ $(TRUNNER_BPF_LSKELS): %.lskel.h: %.bpf.o $(BPFTOOL=
-) | $(TRUNNER_OUTPUT)
-> >       $(Q)$$(BPFTOOL) gen object $$(<:.o=3D.llinked2.o) $$(<:.o=3D.llin=
-ked1.o)
-> >       $(Q)$$(BPFTOOL) gen object $$(<:.o=3D.llinked3.o) $$(<:.o=3D.llin=
-ked2.o)
-> >       $(Q)diff $$(<:.o=3D.llinked2.o) $$(<:.o=3D.llinked3.o)
-> > -     $(Q)$$(BPFTOOL) gen skeleton -L $$(<:.o=3D.llinked3.o) name $$(no=
-tdir $$(<:.bpf.o=3D_lskel)) > $$@
-> > +     $(Q)$$(BPFTOOL) gen skeleton $(LSKEL_SIGN) $$(<:.o=3D.llinked3.o)=
- name $$(notdir $$(<:.bpf.o=3D_lskel)) > $$@
-> >       $(Q)rm -f $$(<:.o=3D.llinked1.o) $$(<:.o=3D.llinked2.o) $$(<:.o=
-=3D.llinked3.o)
-> >
-> >  $(LINKED_BPF_OBJS): %: $(TRUNNER_OUTPUT)/%
-> > @@ -697,6 +698,13 @@ $(OUTPUT)/$(TRUNNER_BINARY): $(TRUNNER_TEST_OBJS) =
-                       \
-> >
-> >  endef
-> >
-> > +CERT_HEADER :=3D verification_cert.h
-> > +CERT_SOURCE :=3D $(CERTSDIR)/signing_key.x509
-> > +
-> > +$(CERT_HEADER): $(CERT_SOURCE)
-> > +     @echo "GEN-CERT-HEADER: $(CERT_HEADER) from $<"
-> > +     $(Q)xxd -i -n test_progs_verification_cert $< > $@
-> > +
-> >  # Define test_progs test runner.
-> >  TRUNNER_TESTS_DIR :=3D prog_tests
-> >  TRUNNER_BPF_PROGS_DIR :=3D progs
-> > @@ -716,6 +724,7 @@ TRUNNER_EXTRA_SOURCES :=3D test_progs.c            =
- \
-> >                        disasm.c               \
-> >                        disasm_helpers.c       \
-> >                        json_writer.c          \
-> > +                      $(CERT_HEADER)         \
-> >                        flow_dissector_load.h  \
-> >                        ip_check_defrag_frags.h
-> >  TRUNNER_EXTRA_FILES :=3D $(OUTPUT)/urandom_read                       =
-         \
-> > diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/s=
-elftests/bpf/test_progs.c
-> > index 309d9d4a8ace..02a85dda30e6 100644
-> > --- a/tools/testing/selftests/bpf/test_progs.c
-> > +++ b/tools/testing/selftests/bpf/test_progs.c
-> > @@ -14,12 +14,14 @@
-> >  #include <netinet/in.h>
-> >  #include <sys/select.h>
-> >  #include <sys/socket.h>
-> > +#include <linux/keyctl.h>
-> >  #include <sys/un.h>
-> >  #include <bpf/btf.h>
-> >  #include <time.h>
-> >  #include "json_writer.h"
-> >
-> >  #include "network_helpers.h"
-> > +#include "verification_cert.h"
-> >
-> >  /* backtrace() and backtrace_symbols_fd() are glibc specific,
-> >   * use header file when glibc is available and provide stub
-> > @@ -1928,6 +1930,13 @@ static void free_test_states(void)
-> >       }
-> >  }
-> >
-> > +static __u32 register_session_key(const char *key_data, size_t key_dat=
-a_size)
-> > +{
-> > +     return syscall(__NR_add_key, "asymmetric", "libbpf_session_key",
-> > +                     (const void *)key_data, key_data_size,
-> > +                     KEY_SPEC_SESSION_KEYRING);
-> > +}
-> > +
-> >  int main(int argc, char **argv)
-> >  {
-> >       static const struct argp argp =3D {
-> > @@ -1961,6 +1970,10 @@ int main(int argc, char **argv)
-> >       /* Use libbpf 1.0 API mode */
-> >       libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
-> >       libbpf_set_print(libbpf_print_fn);
-> > +     err =3D register_session_key((const char *)test_progs_verificatio=
-n_cert,
-> > +                                test_progs_verification_cert_len);
-> > +     if (err < 0)
-> > +             return err;
-> >
-> >       traffic_monitor_set_print(traffic_monitor_print_fn);
-> >
-> > --
-> > 2.43.0
+> CI has tested the following submission:
+> Status:     FAILURE
+> Name:       [bpf-next,v1,4/4] selftests/bpf: Test accessing struct_ops th=
+is pointer in timer callback
+> Patchwork:  https://patchwork.kernel.org/project/netdevbpf/list/?series=
+=3D970053&state=3D*
+> Matrix:     https://github.com/kernel-patches/bpf/actions/runs/1554714778=
+8
 >
+> Failed jobs:
+> test_progs-aarch64-gcc-14: https://github.com/kernel-patches/bpf/actions/=
+runs/15547147788/job/43771213307
+> test_progs_cpuv4-aarch64-gcc-14: https://github.com/kernel-patches/bpf/ac=
+tions/runs/15547147788/job/43771213280
+> test_progs_no_alu32-aarch64-gcc-14: https://github.com/kernel-patches/bpf=
+/actions/runs/15547147788/job/43771213268
+> test_progs-s390x-gcc-14: https://github.com/kernel-patches/bpf/actions/ru=
+ns/15547147788/job/43771045529
+> test_progs_cpuv4-s390x-gcc-14: https://github.com/kernel-patches/bpf/acti=
+ons/runs/15547147788/job/43771045522
+> test_progs_no_alu32-s390x-gcc-14: https://github.com/kernel-patches/bpf/a=
+ctions/runs/15547147788/job/43771045519
 >
-> There aren't any test cases showing the "trusted" loader doing any sort
-> of enforcement of blocking invalid programs or maps.
+> First test_progs failure (test_progs-aarch64-gcc-14):
+> #409 struct_ops_this_ptr
+> tester_init:PASS:tester_log_buf 0 nsec
+> process_subtest:PASS:obj_open_mem 0 nsec
+> process_subtest:PASS:specs_alloc 0 nsec
+> #409/1 struct_ops_this_ptr/test1
+> run_subtest:PASS:obj_open_mem 0 nsec
+> libbpf: prog 'test1': BPF program load failed: -EACCES
+> libbpf: prog 'test1': failed to load: -EACCES
+> libbpf: failed to load object 'struct_ops_this_ptr'
+> run_subtest:FAIL:unexpected_load_failure unexpected error: -13 (errno 13)
+> VERIFIER LOG:
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> Private stack not supported by jit
 
-Sure, we can add some more test cases.
+The selftests failed to pass CI since bpf_testmod_ops3 is using
+private stack. I will change selftests to be based on other struct_ops
+in bpf_testmod.c
 
+> processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 pe=
+ak_states 0 mark_read 0
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> #409/2 struct_ops_this_ptr/syscall_this_ptr
+> run_subtest:PASS:obj_open_mem 0 nsec
+> libbpf: prog 'test1': BPF program load failed: -EACCES
+> libbpf: prog 'test1': -- BEGIN PROG LOAD LOG --
+> Private stack not supported by jit
+> processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 pe=
+ak_states 0 mark_read 0
+> -- END PROG LOAD LOG --
+> libbpf: prog 'test1': failed to load: -EACCES
+> libbpf: failed to load object 'struct_ops_this_ptr'
+> run_subtest:FAIL:unexpected_load_failure unexpected error: -13 (errno 13)
+> VERIFIER LOG:
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> #409/3 struct_ops_this_ptr/struct_ops_this_ptr_in_timer
+> libbpf: prog 'test1': BPF program load failed: -EACCES
+> libbpf: prog 'test1': -- BEGIN PROG LOAD LOG --
+> Private stack not supported by jit
+> processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 pe=
+ak_states 0 mark_read 0
+> -- END PROG LOAD LOG --
+> libbpf: prog 'test1': failed to load: -EACCES
+> libbpf: failed to load object 'struct_ops_this_ptr_in_timer'
+> libbpf: failed to load BPF skeleton 'struct_ops_this_ptr_in_timer': -EACC=
+ES
+> test_struct_ops_this_ptr_in_timer_common:FAIL:skel_open_and_load unexpect=
+ed error: -13
+> #409/4 struct_ops_this_ptr/struct_ops_this_ptr_in_timer_after_detach
+> libbpf: prog 'test1': BPF program load failed: -EACCES
+> libbpf: prog 'test1': -- BEGIN PROG LOAD LOG --
+> Private stack not supported by jit
+> processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 pe=
+ak_states 0 mark_read 0
+> -- END PROG LOAD LOG --
+> libbpf: prog 'test1': failed to load: -EACCES
+> libbpf: failed to load object 'struct_ops_this_ptr_in_timer'
+> libbpf: failed to load BPF skeleton 'struct_ops_this_ptr_in_timer': -EACC=
+ES
+> test_struct_ops_this_ptr_in_timer_common:FAIL:skel_open_and_load unexpect=
+ed error: -13
 >
-> -blaise
+>
+> Please note: this email is coming from an unmonitored mailbox. If you hav=
+e
+> questions or feedback, please reach out to the Meta Kernel CI team at
+> kernel-ci@meta.com.
 
