@@ -1,91 +1,82 @@
-Return-Path: <bpf+bounces-60318-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60319-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 114CBAD5671
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 15:05:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D025AD56A1
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 15:13:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D8C781BC4FA7
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 13:03:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91B6C3A41F8
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 13:12:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E936A2749E7;
-	Wed, 11 Jun 2025 13:03:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58311283CAA;
+	Wed, 11 Jun 2025 13:12:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OEejDtVM"
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="FEwOF0va"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from lamorak.hansenpartnership.com (lamorak.hansenpartnership.com [198.37.111.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B77B826E6FD;
-	Wed, 11 Jun 2025 13:02:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22CF3273D6D;
+	Wed, 11 Jun 2025 13:12:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.37.111.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749646981; cv=none; b=DdfHxRwmDNiFCm6We47toN8uFDCzADxKxQUccdbzeTnquV2IfSvhuQsHLx0qiyK2lSnzWsw5TWEEXf8+C50z5G7PO9yasxutcjgEAz0BaS33siQmRru+DZ+CgeRhwoSqbBlzg8e2UcLCaI5VPlWiZfy9G/NL0wtaBjn7FSwRSOo=
+	t=1749647575; cv=none; b=Y6P0Ho1OiCg/6qOBXRp4ZNVQgEhZJtenGi3kC8vz2zqDCzB56STpqRYBbl+azPzmfEDYSAuLAcyChjgqgBCuvVCIFqmZX571v9H7pZ3eDaDVSmsbmicQuf8tG3ILn4U77NnnJudXOUbaGAe5F8P6yx0omTma7wSOV7D9x4IEPnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749646981; c=relaxed/simple;
-	bh=Acfz1JqeLHdleEU/mUPfyIzmkEGrb5tVaxY+E7oFaX4=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=X3WpF0j0gbxgd5Zhf/tWG5MocWl83Ab3yHVOeKguNarWTNLJ97fU5XcB7EGXrF56uxLhUoIugd7PgQGHSqwbttAcFiASf7aRQAUHWd47h67l6bBkAptfaqGzRdBO+bzAHsEnNQhlV9lrEO09flJZZm960bjmkzfSfzcOI4FJ2qM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OEejDtVM; arc=none smtp.client-ip=209.85.215.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-b2fd091f826so185823a12.1;
-        Wed, 11 Jun 2025 06:02:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749646978; x=1750251778; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lcPiLbu+L7ytyP5aI8MDC2OToFoTTKHxHfoX0oiN0iA=;
-        b=OEejDtVMIMx0prXiA3a+9110BLahFsTmXxHGBfagzr3byPyBUeh1hcdE+uM1ZVBNGx
-         25VwMu87JLc9D+8oEKjPrZ3MU9zdZ5yCgsVJPUdj/ZjHQPr0Cjqo90Blo+lFHRVaaTGK
-         dKWVhbm/JtC8VZWHLUPI0GZ9+2LOBl5Na3ZYgfQhAzAct2cbrQNnvnqgS8JltPFnDVvC
-         kunTsA10lyNNXa7k4znTW9ybJKn7dKyE3a1jR4kqN4Wy29Dri6DdSkaicnGK2sZ2n9Mm
-         ptxBJiv0aO3Qylggp6B6/CpBDMEMehBwPvUHQBgAIi2/wdVt5Iy9RXF8XfGs+xlVhViG
-         RYpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749646978; x=1750251778;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=lcPiLbu+L7ytyP5aI8MDC2OToFoTTKHxHfoX0oiN0iA=;
-        b=d5CnofFUp7vHvrWgsrDboY7yaNPCKluxxGdHEwlixYKITM/4V9cr60E1UFm58yuJn5
-         HeSsHBKKqOWoiM0lwtStGv+04oQHpUNz5zxOXQRiP7J0EpDNFl+52XtLyQiCcmubBQJc
-         hOOHwxu5WcWWiCGSectaNoDdfkNXFo4Gt3V8lm4ph7H2UuiKFyHi9j7p2zesgCDwcJcY
-         KYVteBtzg0zrmajpsQoZpgo3n82wG32BDQmvxyyC4gOfFdbTJ3ZilwnQGDsVlpiJ6GrY
-         TR5kC92DIQqfj4tW1CEIrgOxzB50H5WQEk8BdInXW4orHJ584tZQlAuG0cGqwes+Tkkt
-         nIIQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVU26lwwcK2RrZcj/zaEZo7ZWJT+GiMT0II56gopDm2VD1CwGORIEAv8QCN27iuAfISZ28=@vger.kernel.org, AJvYcCWmMQvuTktSKvGY4+XM2H29riluQeUelm7ak8pQm0lKar6IRIOQ7dmN4XPLsk4rwdzgfpCNJKDjexEj6uIv@vger.kernel.org
-X-Gm-Message-State: AOJu0YyQpQYr8KrEyOs9CIZ4s0OsOERMDLu9PBjAyOAHR7e9vriLbHMh
-	0FdrULRXbN71Brm2VXueuWiIsTrAqZzRdo7ZRPhkTqLmftms0vrkFK+MWiL4XRKfaPU=
-X-Gm-Gg: ASbGncvWLQ+nyYUWxEk7rQIo+XWxZ7wfR7HP/1/kKw6nwiLNY792bqg28wLn+Uiej97
-	ib93/SB3ECTjwwdoa2Wl1CZMyTBzmomdKiYGkhcQdmeWRmgSUQZqA4hUwAHMctKCabZq4EQ70kl
-	Az8fEC8WZi6AOA2vImJ4ztdbD0bZyf0jgCf34Z57or3CcsUxgyrJNonK83oM9CK37R0p/im6Pe+
-	HBi/vPiAlAjKzsk2YPUkOLTZnCEC9qG2ce++2uJpDnltKrBWcX3+Q2o6kkzRkbG9B5yaDgWZyi4
-	V4rPKyqs5AimgfeAgJa7eg2/+K6jnorHm3rnVpDVT5kP6OCQ7ew7uQvE/Q==
-X-Google-Smtp-Source: AGHT+IE+tCMEFwCrOYPgc6aKsfUwF0lX+OYZ1Ju0x6P/3V3leHB57enyf9KbA8gKKYnfAnncz9gBtg==
-X-Received: by 2002:a17:902:e551:b0:231:e413:986c with SMTP id d9443c01a7336-236416dabbdmr42876595ad.11.1749646977711;
-        Wed, 11 Jun 2025 06:02:57 -0700 (PDT)
-Received: from [192.168.0.56] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-236032fcd58sm87487055ad.122.2025.06.11.06.02.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Jun 2025 06:02:57 -0700 (PDT)
-Message-ID: <38862a832b91382cddb083dddd92643bed0723b8.camel@gmail.com>
-Subject: Re: [syzbot] [bpf?] KASAN: slab-use-after-free Read in do_check
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- daniel@iogearbox.net, 	haoluo@google.com, john.fastabend@gmail.com,
- jolsa@kernel.org, kpsingh@kernel.org, 	linux-kernel@vger.kernel.org,
- martin.lau@linux.dev, sdf@fomichev.me, 	song@kernel.org,
- syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Date: Wed, 11 Jun 2025 06:02:55 -0700
-In-Reply-To: <68497853.050a0220.33aa0e.036a.GAE@google.com>
-References: <68497853.050a0220.33aa0e.036a.GAE@google.com>
+	s=arc-20240116; t=1749647575; c=relaxed/simple;
+	bh=w65Lcx1k3X1HhHwCUTJCDJKiKl+P8THQxJs0i9kf2k4=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=isbAg/catyY9lZ78wDOq0uRqQBvIZLU6WA6JFHckE2hSrCAZu2687NYvRsYUtyjY8Yw4U0GGYter8RUOBjZ31qxYe/GaojAOMPEyNrlTWK8kFia8Wcl1Ol5BHPJgKslXUsn3eal1U9HsPcmrjQvshWj64IKpV7WgMOdM10MgYgU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=FEwOF0va; arc=none smtp.client-ip=198.37.111.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1749647572;
+	bh=w65Lcx1k3X1HhHwCUTJCDJKiKl+P8THQxJs0i9kf2k4=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=FEwOF0vaJbHeoVii9TovfWjyIMM8VXtTm0Rv2hGm/OYziJY9FbtvVKXGdVD4OYCow
+	 1x3b2uVR6UyBMTSRe5kiCQcL2RSXeso6jD69D9pkAxCmA1a8StD7hokYZH8Sy+hG8p
+	 WoOdKZtmW/DCy5BeKjjEUkjqp/OhhmhpIyX1GLYo=
+Received: from [IPv6:2601:5c4:4302:c21::a774] (unknown [IPv6:2601:5c4:4302:c21::a774])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by lamorak.hansenpartnership.com (Postfix) with ESMTPSA id 911971C0024;
+	Wed, 11 Jun 2025 09:12:52 -0400 (EDT)
+Message-ID: <12d7049f41675a087b254c853b4c5d50969e68fd.camel@HansenPartnership.com>
+Subject: Re: [PATCH 10/12] libbpf: Embed and verify the metadata hash in the
+ loader
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: KP Singh <kpsingh@kernel.org>
+Cc: Blaise Boscaccy <bboscaccy@linux.microsoft.com>, bpf@vger.kernel.org, 
+ linux-security-module@vger.kernel.org, paul@paul-moore.com,
+ kys@microsoft.com,  ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Date: Wed, 11 Jun 2025 09:12:51 -0400
+In-Reply-To: <CACYkzJ4T5ZFuY5PDKp1VZmsdEyEYUbbajAbhqr+5FE6tqy195A@mail.gmail.com>
+References: <20250606232914.317094-1-kpsingh@kernel.org>
+	 <20250606232914.317094-11-kpsingh@kernel.org>
+	 <87qzzrleuw.fsf@microsoft.com>
+	 <CACYkzJ6M7kA7Se4=AXWNVF1UyeHK3t+3Y_8Ap1L9pkUTbqys9Q@mail.gmail.com>
+	 <87o6uvlaxs.fsf@microsoft.com>
+	 <CACYkzJ74MJkwejki7kFNR4RWh+EnJ++0Vop8eRkSwY6pJepMEQ@mail.gmail.com>
+	 <8cf2c1cc15e0c5e4b87a91a2cb42e04f38ac1094.camel@HansenPartnership.com>
+	 <CACYkzJ6yNjFOTzC04uOuCmFn=+51_ie2tB9_x-u2xbcO=yobTw@mail.gmail.com>
+	 <6f8e0d217d02dc8327a2a21e8787d3aec9693c2c.camel@HansenPartnership.com>
+	 <CACYkzJ4T5ZFuY5PDKp1VZmsdEyEYUbbajAbhqr+5FE6tqy195A@mail.gmail.com>
+Autocrypt: addr=James.Bottomley@HansenPartnership.com;
+ prefer-encrypt=mutual;
+ keydata=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
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -93,228 +84,90 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Wed, 2025-06-11 at 05:36 -0700, syzbot wrote:
-> Hello,
+On Wed, 2025-06-11 at 14:33 +0200, KP Singh wrote:
+> On Wed, Jun 11, 2025 at 1:59=E2=80=AFPM James Bottomley
+> <James.Bottomley@hansenpartnership.com> wrote:
+> >=20
+> > On Wed, 2025-06-11 at 00:35 +0200, KP Singh wrote:
+> > > On Tue, Jun 10, 2025 at 11:24=E2=80=AFPM James Bottomley
+> > > <James.Bottomley@hansenpartnership.com> wrote:
+> > > >=20
+> > > > On Tue, 2025-06-10 at 21:47 +0200, KP Singh wrote:
+> > > > > It's been repeatedly mentioned that trusted loaders (whether
+> > > > > kernel or BPF programs) are the only way because a large
+> > > > > number
+> > > > > of BPF use-cases dynamically generate BPF programs.
+> > > >=20
+> > > > You keep asserting this, but it isn't supported by patches
+> > > > already
+> > >=20
+> > > This is supported for sure. But it's not what the patches are
+> > > providing a reference implementation for. The patches provide a
+> > > stand alone reference implementation using in-kernel / BPF
+> > > loaders but you can surely implement this (see below):
+> > >=20
+> > > > proposed.=C2=A0 Specifically, there already exists a patch set:
+> > > >=20
+> > > > https://lore.kernel.org/all/20250528215037.2081066-1-bboscaccy@linu=
+x.microsoft.com/
+> > >=20
+> > > The patch-set takes a very narrow view by adding additional UAPI
+> > > and ties us into an implementation.
+> >=20
+> > What do you mean by this?=C2=A0 When kernel people say UAPI, they think
+> > of the contract between the kernel and userspace.=C2=A0 So for both
+> > patch sets the additional attr. entries which user space adds and
+> > the kernel parses for the signature would conventionally be thought
+> > to extend the UAPI.
+> >=20
+> > Additionally, the content of the signature (what it's over) is a
+> > UAPI contract.=C2=A0 When adding to the kernel UAPI we don't look not t=
+o
+> > change it, we look to change it in a way that is extensible.=C2=A0 It
+> > strikes me that actually only the linked patch does this because
+> > the UAPI addition for your signature scheme doesn't seem to be that
+> > extensible.
 >=20
-> syzbot found the following issue on:
->=20
-> HEAD commit:    19a60293b992 Add linux-next specific files for 20250611
-> git tree:       linux-next
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D15472d7058000=
-0
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D76ed3656d7159=
-e27
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3Db5eb72a560b8149=
-a1885
-> compiler:       Debian clang version 20.1.6 (++20250514063057+1e4d39e0775=
-7-1~exp1~20250514183223.118), Debian LLD 20.1.6
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D16af860c580=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D174db60c58000=
-0
->=20
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/c453c11565fa/dis=
-k-19a60293.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/4034ded42b2e/vmlinu=
-x-19a60293.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/5355903cdb8f/b=
-zImage-19a60293.xz
->=20
-> IMPORTANT: if you fix the issue, please add the following tag to the comm=
-it:
-> Reported-by: syzbot+b5eb72a560b8149a1885@syzkaller.appspotmail.com
->=20
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> BUG: KASAN: slab-use-after-free in do_check+0xb388/0xe170 kernel/bpf/veri=
-fier.c:19756
-> Read of size 1 at addr ffff88801deeef79 by task syz-executor672/5842
->=20
-> CPU: 1 UID: 0 PID: 5842 Comm: syz-executor672 Not tainted 6.16.0-rc1-next=
--20250611-syzkaller #0 PREEMPT(full)=20
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
-oogle 05/07/2025
-> Call Trace:
->  <TASK>
->  dump_stack_lvl+0x189/0x250 lib/dump_stack.c:120
->  print_address_description mm/kasan/report.c:408 [inline]
->  print_report+0xd2/0x2b0 mm/kasan/report.c:521
->  kasan_report+0x118/0x150 mm/kasan/report.c:634
->  do_check+0xb388/0xe170 kernel/bpf/verifier.c:19756
->  do_check_common+0x168d/0x20b0 kernel/bpf/verifier.c:22905
->  do_check_main kernel/bpf/verifier.c:22996 [inline]
->  bpf_check+0x1381e/0x19e50 kernel/bpf/verifier.c:24162
->  bpf_prog_load+0x1318/0x1930 kernel/bpf/syscall.c:2972
->  __sys_bpf+0x5f1/0x860 kernel/bpf/syscall.c:5978
->  __do_sys_bpf kernel/bpf/syscall.c:6085 [inline]
->  __se_sys_bpf kernel/bpf/syscall.c:6083 [inline]
->  __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:6083
->  do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
->  do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
->  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> RIP: 0033:0x7f7586cdbeb9
-> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 c1 17 00 00 90 48 89 f8 48 89 f=
-7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff=
- ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007ffc2e683128 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f7586cdbeb9
-> RDX: 0000000000000094 RSI: 0000200000000840 RDI: 0000000000000005
-> RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000006
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000001
->  </TASK>
->=20
-> Allocated by task 5842:
->  kasan_save_stack mm/kasan/common.c:47 [inline]
->  kasan_save_track+0x3e/0x80 mm/kasan/common.c:68
->  poison_kmalloc_redzone mm/kasan/common.c:377 [inline]
->  __kasan_kmalloc+0x93/0xb0 mm/kasan/common.c:394
->  kasan_kmalloc include/linux/kasan.h:260 [inline]
->  __kmalloc_cache_noprof+0x230/0x3d0 mm/slub.c:4359
->  kmalloc_noprof include/linux/slab.h:905 [inline]
->  kzalloc_noprof include/linux/slab.h:1039 [inline]
->  do_check_common+0x13f/0x20b0 kernel/bpf/verifier.c:22798
->  do_check_main kernel/bpf/verifier.c:22996 [inline]
->  bpf_check+0x1381e/0x19e50 kernel/bpf/verifier.c:24162
->  bpf_prog_load+0x1318/0x1930 kernel/bpf/syscall.c:2972
->  __sys_bpf+0x5f1/0x860 kernel/bpf/syscall.c:5978
->  __do_sys_bpf kernel/bpf/syscall.c:6085 [inline]
->  __se_sys_bpf kernel/bpf/syscall.c:6083 [inline]
->  __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:6083
->  do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
->  do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
->  entry_SYSCALL_64_after_hwframe+0x77/0x7f
->=20
-> Freed by task 5842:
->  kasan_save_stack mm/kasan/common.c:47 [inline]
->  kasan_save_track+0x3e/0x80 mm/kasan/common.c:68
->  kasan_save_free_info+0x46/0x50 mm/kasan/generic.c:576
->  poison_slab_object mm/kasan/common.c:247 [inline]
->  __kasan_slab_free+0x62/0x70 mm/kasan/common.c:264
->  kasan_slab_free include/linux/kasan.h:233 [inline]
->  slab_free_hook mm/slub.c:2381 [inline]
->  slab_free mm/slub.c:4643 [inline]
->  kfree+0x18e/0x440 mm/slub.c:4842
->  push_stack+0x247/0x3c0 kernel/bpf/verifier.c:2069
->  check_cond_jmp_op+0x1069/0x2340 kernel/bpf/verifier.c:16562
->  do_check_insn kernel/bpf/verifier.c:19621 [inline]
->  do_check+0x672c/0xe170 kernel/bpf/verifier.c:19755
->  do_check_common+0x168d/0x20b0 kernel/bpf/verifier.c:22905
->  do_check_main kernel/bpf/verifier.c:22996 [inline]
->  bpf_check+0x1381e/0x19e50 kernel/bpf/verifier.c:24162
->  bpf_prog_load+0x1318/0x1930 kernel/bpf/syscall.c:2972
->  __sys_bpf+0x5f1/0x860 kernel/bpf/syscall.c:5978
->  __do_sys_bpf kernel/bpf/syscall.c:6085 [inline]
->  __se_sys_bpf kernel/bpf/syscall.c:6083 [inline]
->  __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:6083
->  do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
->  do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
->  entry_SYSCALL_64_after_hwframe+0x77/0x7f
->=20
-> The buggy address belongs to the object at ffff88801deeef00
->  which belongs to the cache kmalloc-192 of size 192
-> The buggy address is located 121 bytes inside of
->  freed 192-byte region [ffff88801deeef00, ffff88801deeefc0)
->=20
-> The buggy address belongs to the physical page:
-> page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1dee=
-e
-> flags: 0xfff00000000000(node=3D0|zone=3D1|lastcpupid=3D0x7ff)
-> page_type: f5(slab)
-> raw: 00fff00000000000 ffff88801a4413c0 ffffea00006fca40 dead000000000004
-> raw: 0000000000000000 0000000000100010 00000000f5000000 0000000000000000
-> page dumped because: kasan: bad access detected
-> page_owner tracks the page as allocated
-> page last allocated via order 0, migratetype Unmovable, gfp_mask 0x52820(=
-GFP_ATOMIC|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP), pid 1, tgid 1 (swapper/0=
-), ts 2954361175, free_ts 2954343552
->  set_page_owner include/linux/page_owner.h:32 [inline]
->  post_alloc_hook+0x240/0x2a0 mm/page_alloc.c:1704
->  prep_new_page mm/page_alloc.c:1712 [inline]
->  get_page_from_freelist+0x21e4/0x22c0 mm/page_alloc.c:3669
->  __alloc_frozen_pages_noprof+0x181/0x370 mm/page_alloc.c:4959
->  alloc_pages_mpol+0x232/0x4a0 mm/mempolicy.c:2419
->  alloc_slab_page mm/slub.c:2451 [inline]
->  allocate_slab+0x8a/0x3b0 mm/slub.c:2619
->  new_slab mm/slub.c:2673 [inline]
->  ___slab_alloc+0xbfc/0x1480 mm/slub.c:3859
->  __slab_alloc mm/slub.c:3949 [inline]
->  __slab_alloc_node mm/slub.c:4024 [inline]
->  slab_alloc_node mm/slub.c:4185 [inline]
->  __do_kmalloc_node mm/slub.c:4327 [inline]
->  __kmalloc_node_noprof+0x2fd/0x4e0 mm/slub.c:4334
->  kmalloc_node_noprof include/linux/slab.h:932 [inline]
->  __vmalloc_area_node mm/vmalloc.c:3690 [inline]
->  __vmalloc_node_range_noprof+0x5a9/0x12f0 mm/vmalloc.c:3885
->  vmalloc_huge_node_noprof+0xb3/0xf0 mm/vmalloc.c:4001
->  vmalloc_huge include/linux/vmalloc.h:185 [inline]
->  alloc_large_system_hash+0x2b8/0x5e0 mm/mm_init.c:2515
->  posixtimer_init+0x140/0x270 kernel/time/posix-timers.c:1561
->  do_one_initcall+0x233/0x820 init/main.c:1274
->  do_initcall_level+0x137/0x1f0 init/main.c:1336
->  do_initcalls+0x69/0xd0 init/main.c:1352
->  kernel_init_freeable+0x3d9/0x570 init/main.c:1584
->  kernel_init+0x1d/0x1d0 init/main.c:1474
-> page last free pid 1 tgid 1 stack trace:
->  reset_page_owner include/linux/page_owner.h:25 [inline]
->  free_pages_prepare mm/page_alloc.c:1248 [inline]
->  __free_frozen_pages+0xc71/0xe70 mm/page_alloc.c:2706
->  __kasan_populate_vmalloc mm/kasan/shadow.c:383 [inline]
->  kasan_populate_vmalloc+0x18a/0x1a0 mm/kasan/shadow.c:417
->  alloc_vmap_area+0xd51/0x1490 mm/vmalloc.c:2084
->  __get_vm_area_node+0x1f8/0x300 mm/vmalloc.c:3179
->  __vmalloc_node_range_noprof+0x301/0x12f0 mm/vmalloc.c:3845
->  vmalloc_huge_node_noprof+0xb3/0xf0 mm/vmalloc.c:4001
->  vmalloc_huge include/linux/vmalloc.h:185 [inline]
->  alloc_large_system_hash+0x2b8/0x5e0 mm/mm_init.c:2515
->  posixtimer_init+0x140/0x270 kernel/time/posix-timers.c:1561
->  do_one_initcall+0x233/0x820 init/main.c:1274
->  do_initcall_level+0x137/0x1f0 init/main.c:1336
->  do_initcalls+0x69/0xd0 init/main.c:1352
->  kernel_init_freeable+0x3d9/0x570 init/main.c:1584
->  kernel_init+0x1d/0x1d0 init/main.c:1474
->  ret_from_fork+0x3f9/0x770 arch/x86/kernel/process.c:148
->  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
->=20
-> Memory state around the buggy address:
->  ffff88801deeee00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->  ffff88801deeee80: 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc
-> > ffff88801deeef00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->                                                                 ^
->  ffff88801deeef80: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
->  ffff88801deef000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->=20
->=20
-> ---
+> James, I am adding less attributes, it's always extensible, adding
+> more UAPI than strictly needed is what's not flexible.
 
-Accessed memory is freed at an error path in push_stack():
+To repeat: the object should be extensibility not minimization.  If an
+API is extensible it doesn't tie you to a specific implementation
+regardless of how many arguments it adds.  The attr structure uses the
+standard kernel way of doing this: it can grow but may never lose
+elements and  features added at the end are always optional so an older
+kernel that doesn't see them can still process everything it does
+understand.
 
-  static struct bpf_verifier_state *push_stack(...)
-  {
-  	...
-  err:
-  	free_verifier_state(env->cur_state, true); // <-- KASAN points here
-  	...
-  }
+> The attributes I proposed remain valid in a world where the BPF
+> instruction set is stable at compile time, for trusted user space
+> loaders (applications like Cilium) that can already have a stable
+> instruction buffer, the attributes Blaise proposed do not.
 
-And is accessed after being freed here:
+I don't follow.  For stable compilation (I'm more familiar with the way
+systemd does this but I presume cilium does the same: by constructing
+ebpf byte code on the fly that doesn't require relocation and then
+inserting it directly) you simply program the loader to do the
+restrictions (about insertion point and the like) and sign it, correct?
+That's covered in the linked patch in the !attr->signature_maps_size
+case, so what Blaise proposed most definitely does do this.
 
-  static int do_check(struct bpf_verifier_env *env)
-  {
-  	...
-		err =3D do_check_insn(env, &do_print_state);
-KASAN -->	if (state->speculative && error_recoverable_with_nospec(err)) ...
-  	...
-  }
- =20
-[...]
+> I believe we have discussed this enough. Let's have the BPF
+> maintainers decide.
 
-Either 'state =3D env->cur_state' is needed after 'do_check_insn()' or
-error path should not free env->cur_state (seems logical).
+But this is obviously an important point otherwise you wouldn't be
+arguing about it.  If pure minimization were all that's required then
+it's easy to do since we're using pkcs7 signatures, the signature can
+contain a data structure with authenticatedAttributes that are
+validated by the signature, so I could do the Blaise patch with fewer
+attr elements than you simply by moving the maps and their count into
+the athenticatedAttributes element of the pkcs7 signature.  I could
+also do the same with your keyring_id and, bonus, it would be integrity
+validated.  Then each of you adds the same number of UAPI attr's so
+there's no argument about who adds fewer attributes.
+
+Regards,
+
+James
 
 
