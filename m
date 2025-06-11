@@ -1,81 +1,81 @@
-Return-Path: <bpf+bounces-60409-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60410-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7723DAD6258
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 00:23:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B096FAD6266
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 00:37:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13A503A8416
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 22:22:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E14981BC0CDE
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 22:37:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FBBA24A049;
-	Wed, 11 Jun 2025 22:23:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9675A2494F0;
+	Wed, 11 Jun 2025 22:37:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rn7rmUA/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TQfdrNK/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3823F185B61;
-	Wed, 11 Jun 2025 22:23:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A237CDF49;
+	Wed, 11 Jun 2025 22:36:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749680592; cv=none; b=fxhYufuIyQzAJASS1JhwQvS3ANEXt2BjrvsipxjxQFJou9jIdkl9BQLxQypMAowvuCm4a24PzBi4awYLiruTN64sEI3JDcn0YIJew1YriAZhuukOF8QPUHrzIXJuSw+yZ9cd8Rpyc/DNjefn07i4P4SiZjh65NMzY7hSDJX9Boo=
+	t=1749681420; cv=none; b=t4lR7xU09EkAfZuBCjB8a3C8cAhxc1ZJ8I3QOMDfIvSAWZvX7fdBzJ5OHQAuCik6OJ2GFjlrDrwLwyM9Bcp+40BHGYY0x01uKm8xS3fQGAw4hZofemgmAaUFOyjG2txcfo6h6QjPStEIIxMjtfXEkkPkDltZKdpcUOcaYX2IILk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749680592; c=relaxed/simple;
-	bh=qQpv1pCUz1GO0RCKVrv+eVIX66xPkLSWnaiCqdqyVpw=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=TCQ5yh4PeSotKi8pdPAuiMNuoP8t4uKMwN/NTnga/csANew0+E6qOuFwSKjEObQhyu3sZS7FGacr4xpt4V/kcmxEq70jNwvNmUK2LlZ2RONm/CQpfDJy3vkVLS3dgbrHnKn4op6flOr/hcCW3zZpVL6qkZJnOG6CKUprH+S9OW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rn7rmUA/; arc=none smtp.client-ip=209.85.214.182
+	s=arc-20240116; t=1749681420; c=relaxed/simple;
+	bh=5f2E+EXc2DZqW2oloEm8WkZhdeV5+LJ4dcl1CoRMOg0=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=TjU63BvjuaXbF7J9JYPSsMXJrt2uJPUtpUyPdkodT3AhNqDy/q6W4o+7QwPBhk2eidLS+zgQi9UhVYF60q2le0AwmzDHcNdhJvUVyk0s0S27n2PJ+dfgc31zhzZEYuuJJse0auC7yngRzdHmT0VImZL1XhkMbKs/1jvIqOhN8VA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TQfdrNK/; arc=none smtp.client-ip=209.85.210.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-234b440afa7so3368105ad.0;
-        Wed, 11 Jun 2025 15:23:10 -0700 (PDT)
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-7376dd56f8fso514492b3a.2;
+        Wed, 11 Jun 2025 15:36:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749680589; x=1750285389; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1749681418; x=1750286218; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=hH7V1Cwx9ulTLJQwiy8rhYwEEe+FtFXFruDqwN1k0zs=;
-        b=Rn7rmUA/tmoN5ejQ4rDGhzru8J/VeMmG7wUCVwQTRNqU3vofNNzsQWPGoIaqHkMohf
-         RqXQhBycleQgYo/QNMGOQAK3AfbH/6TXtPGTAB9AMcxmltWWJMVFDdLTcqiMdl1l0v0z
-         AgudbKFmV6EwLWy+cSpyMEVgfaArmG7e6GH5hIc6FmdBLIGC7QhYVFSDzP6/8/atqqse
-         JoRLVRTlFfVOIWst7RGq61Nuup/UB2cT6ofl3JL8OEyyYqzyG5fR5nnK/jFw5E1bvGuY
-         Xx5fBOKU37B60Yhu3Ef5kxQgmZ98sHJVslWjY1UWzaMERiTaSSebc4LPmif27bn7dCwU
-         xGww==
+         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Hhf1uehRjhJs5pv4ny+0Okf/DqV+mB2pWhG99O6ENKM=;
+        b=TQfdrNK/xB86puW5hbroBeMBYJ07plLtHEdDCmhixNsIXYzRDQoVAgXoyIbWTEVkSE
+         JANnbz6MytiwiTagFgyBclmIZ4ppD+Tkgo9K/TbhV4cFrxO5OhgDvxAZ30Cs/QanoWbU
+         GDaFIGDlzQ5I1jxSbopl9Cxye/ksf9CBKhwlKz9wvtXK3LjBeSRBsm06AKLJdlK3Kf09
+         XRE904xc9XSuz4pcWFARpPf9zcymJUdSCVJsvACWlYhG51k8GM5xrsEBaXWzyToV8cgQ
+         9FoeKSlcHjIfeFoGOmkE/Nr2+QAJyZWTFvoDPSZj/eZpo7cEAwv15MxwIb2kwiw7FipV
+         7eMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749680589; x=1750285389;
+        d=1e100.net; s=20230601; t=1749681418; x=1750286218;
         h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hH7V1Cwx9ulTLJQwiy8rhYwEEe+FtFXFruDqwN1k0zs=;
-        b=NOnuMGgfmQmMfRdTODQtJPygdA5eDV3e4DCuL/wrK1kHcJsEnPzB3R989s2cqtSlUh
-         w8KCyOE+2vQ9r3AHJaUOekzHKPSor7fAQcYXmCylOwXZJvxrHmJhZgKMCVmY4+UGH2qq
-         oMvTdK56IzYaPk2jVep7R4B3IDD6G0zAPrhIjA0AyqyPY4tzPycy3IS9E5Dg8a3x8Y8p
-         agq/L0LdTKCUljsHg3K7BWSW5H1lnwLNgGbECx3Iqp3d3zT58TqIcr3OJwd2nowO0IIz
-         9GDCSLz+BS6oHHnV8a9LDSXP9r1vx3Aac75b9mUonxGxw/eXoYpqkdIxiSw+L/mmi0aj
-         ZJqw==
-X-Forwarded-Encrypted: i=1; AJvYcCWucBVOGM05UnKpjcj9h3iX3cPTF1qpGXaYufvlox/92ZIY66/wYGxxtG9t1W2kjBpwgEYbMmt6rzZGAH9+@vger.kernel.org, AJvYcCX6SwQ4eR3uYxyFYKeovm0nd7Gz+0NHEkka0pJBPC57IPN6VefDdsNlt38FacDMn1CZTFE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyOxBnZ3Y6o3fP8eLWAwHzwp4uLg60KyPW8iF9uFsKzOEVYYEgn
-	R95l1rvR2wdH/ymggN/an+u99SRO+thsYx2mdO9RCtPKfx2a3GIkpo8ZTgOorn2LViTfRw==
-X-Gm-Gg: ASbGncv0G+EFsatHQrJEmTcxK/Gtzb4Lo+ML4797a7ZPKtsIVRKW0lrEpczGeQRwinO
-	+08XPCP1yQF9uyadHZGnx7Dl7JInd5HNZ4l+po6v0N91YHCFgXXZLc7us0GvIxChSMDx5u1474y
-	RvfFvHHW7YE47LoHB8ajzr5bThKGA7HOIIBNM0QTKkBJcHeLQWnn+AIBgPqciAWRWOpP84zrKd+
-	QZxjVllMaX841+boaSxDmEccnqPSLJfczbH0kgBV0G5qnUMYWil+D3VMoCuyVqgeziV1HjVgVZ7
-	r2nlpneVQzAGxJoOvLtA8cQ6UUQXSl/CWg7CmrTgwzxhd1OBEB7c5J0K7QvlVQQEFuSYNYtfyvT
-	FSj730bXWVg==
-X-Google-Smtp-Source: AGHT+IGCkvbEgrLZPkxE+t4S+oALPtAEE4uihKyURBYGx17yST1MMjsmq44jSnAQrY7SINQCz9l2fQ==
-X-Received: by 2002:a17:903:41cb:b0:231:c792:205 with SMTP id d9443c01a7336-23641aa234dmr73085205ad.4.1749680589533;
-        Wed, 11 Jun 2025 15:23:09 -0700 (PDT)
+         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=Hhf1uehRjhJs5pv4ny+0Okf/DqV+mB2pWhG99O6ENKM=;
+        b=K8Dz4dkKQkF6fj3d/rdwFfL5f3OcuRbsXhAy9vxTjBmFdUa2qb/EfYYkt9sqsj580k
+         L9LCVoXM4yIkQ3ppISqeuWTZu1nQj4pu38zVnNCWUh5e1Zoih8EXtHV+agTGl+NHtuon
+         ohE/MkpJIyf1a/Egxq3uXvXVl7B8V7dSmgt+lVJAPxAfZk/tgZjK0YXWCgZqhtqWnA3T
+         mofmH5QRaLS8M2MaraLDLSMW2Qi7yz3h8gKmG1TPvfaYPkv3ZaXxh54zey5i7N+yJErz
+         RiLSTMr73z0zq3DxD1VbWcJI+DGhOL8Hm5XsZeD/umVRxxfmLOWhDcUHYcfshk6YJBE0
+         veYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUqARl7ZYGpFvV2Ed/EpbbRHpVCuMUMvTuNxhkd0WtBzejrOIc6igU8mmYenQFWQSLEhR3BPikXtxEFEZX5@vger.kernel.org, AJvYcCVWkMd+7kxs6FotXINQ0Mdz96Xpegwzux8Qx5OUmIVQfSAYeGshgvCgB1Fw0FeA9QEpeE4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzmtaPntukkx6it4V3r7isqF95Z+KFZCzTBXXs0FVQ6ka2syhvr
+	4Jv1a9lrUeD8Y8pTzz2LQVxkbMdF3JUzE9t3NkHJgAB2q8YKvF5GagKo
+X-Gm-Gg: ASbGncsxCNQ6mfoySKK56Gwk7cGTBpid/SC8R8beX7ucoA8w+HfmnFDvn9eMwgSuRxA
+	Dj5+wagw77WhT/G50K49kGi3x1kILI3RQto8/4PPagRCwrEO275yfD8Bm8EIEh/EwnK2NHsBwZh
+	zW+gGFKtR/UG/t5FfciddqSo5G32L+Ak7HT5eg7sLlmLVuasu92dwr/r0Das8mULyvqeLhDrFbb
+	W3c+YPJUm7ZRLEZoTimrAm3pD0tEcMh1k/EX/pWgvL1hCM/o4/xV8H66ZYPGootFAGzrXk/Nc4k
+	l4D7V/irw3mv6hguH3f24mG/sqPHLzVYMuONz2d4Nr477Uq4flPSv72HFSiardEx3TXAAAglg5d
+	pVSY+Si9qaYq3mJJ5l8mb
+X-Google-Smtp-Source: AGHT+IFUg1MKtIofsyQGj6cN0ii/Cuud84cId2ClEBQrDGWE4i/ezu24W10KwuWVwTNnzAYpfc4CcQ==
+X-Received: by 2002:a05:6a21:a45:b0:1f5:6e71:e55 with SMTP id adf61e73a8af0-21f866000c9mr7364924637.6.1749681417811;
+        Wed, 11 Jun 2025 15:36:57 -0700 (PDT)
 Received: from ?IPv6:2a03:83e0:115c:1:b1d2:545:de25:d977? ([2620:10d:c090:500::7:d234])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2364e6fa254sm701525ad.168.2025.06.11.15.23.07
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7488087a260sm97152b3a.17.2025.06.11.15.36.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Jun 2025 15:23:09 -0700 (PDT)
-Message-ID: <01c816691c132dd6c8c2588f396b240f033ce201.camel@gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Fix state use-after-free on push_stack()
- err
+        Wed, 11 Jun 2025 15:36:57 -0700 (PDT)
+Message-ID: <19f50af28e3a90cbd24b2325da8025e47f221739.camel@gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Remove redundant
+ free_verifier_state()/pop_stack()
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: Luis Gerhorst <luis.gerhorst@fau.de>, Alexei Starovoitov
  <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
@@ -83,14 +83,11 @@ To: Luis Gerhorst <luis.gerhorst@fau.de>, Alexei Starovoitov
  KaFai Lau <martin.lau@linux.dev>, Song Liu	 <song@kernel.org>, Yonghong
  Song <yonghong.song@linux.dev>, KP Singh	 <kpsingh@kernel.org>, Stanislav
  Fomichev <sdf@fomichev.me>, Hao Luo	 <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Kumar Kartikeya Dwivedi	 <memxor@gmail.com>, Henriette
- Herzog <henriette.herzog@rub.de>, 	bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: syzbot+b5eb72a560b8149a1885@syzkaller.appspotmail.com
-Date: Wed, 11 Jun 2025 15:23:06 -0700
-In-Reply-To: <20250611210728.266563-1-luis.gerhorst@fau.de>
+ <jolsa@kernel.org>, bpf@vger.kernel.org, 	linux-kernel@vger.kernel.org
+Date: Wed, 11 Jun 2025 15:36:55 -0700
+In-Reply-To: <20250611211431.275731-1-luis.gerhorst@fau.de>
 References: <b6931bd0dd72327c55287862f821ca6c4c3eb69a.camel@gmail.com>
-	 <20250611210728.266563-1-luis.gerhorst@fau.de>
+	 <20250611211431.275731-1-luis.gerhorst@fau.de>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
@@ -101,52 +98,102 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Wed, 2025-06-11 at 23:07 +0200, Luis Gerhorst wrote:
-
-[...]
-
+On Wed, 2025-06-11 at 23:14 +0200, Luis Gerhorst wrote:
+> This patch removes duplicated code.
+>=20
+> Eduard points out [1]:
+>=20
+>     Same cleanup cycles are done in push_stack() and push_async_cb(),
+>     both functions are only reachable from do_check_common() via
+>     do_check() -> do_check_insn().
+>=20
+>     Hence, I think that cur state should not be freed in push_*()
+>     functions and pop_stack() loop there is not needed.
+>=20
+> This would also fix the 'symptom' for [2], but the issue also has a
+> simpler fix which was sent separately. This fix also makes sure the
+> push_*() callers always return an error for which
+> error_recoverable_with_nospec(err) is false. This is required because
+> otherwise we try to recover and access the stale `state`.
+>=20
+> [1] https://lore.kernel.org/all/b6931bd0dd72327c55287862f821ca6c4c3eb69a.=
+camel@gmail.com/
+> [2] https://lore.kernel.org/all/68497853.050a0220.33aa0e.036a.GAE@google.=
+com/
+>=20
+> Reported-by: Eduard Zingerman <eddyz87@gmail.com>
+> Link: https://lore.kernel.org/all/b6931bd0dd72327c55287862f821ca6c4c3eb69=
+a.camel@gmail.com/
 > Signed-off-by: Luis Gerhorst <luis.gerhorst@fau.de>
-
-I reproduced the error locally and this patch fixes it.
-Also double-checked places where free_verifier_state is called
-and error codes used in error_recoverable_with_nospec() are used.
-Looks like env->cur_state should be always ok if
-error_recoverable_with_nospec() recovers, env internal structures
-in healthy state.
+> ---
 
 Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
-> ---
->  kernel/bpf/verifier.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  kernel/bpf/verifier.c | 26 +++++++++++---------------
+>  1 file changed, 11 insertions(+), 15 deletions(-)
 >=20
 > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index b1f797616f20..d3bff0385a55 100644
+> index d3bff0385a55..fa147c207c4b 100644
 > --- a/kernel/bpf/verifier.c
 > +++ b/kernel/bpf/verifier.c
-> @@ -14229,7 +14229,7 @@ static int sanitize_err(struct bpf_verifier_env *=
-env,
->  	case REASON_STACK:
->  		verbose(env, "R%d could not be pushed for speculative verification, %s=
-\n",
->  			dst, err);
-> -		break;
-> +		return -ENOMEM;
+> @@ -2066,10 +2066,10 @@ static struct bpf_verifier_state *push_stack(stru=
+ct bpf_verifier_env *env,
+>  	}
+>  	return &elem->st;
+>  err:
+> -	free_verifier_state(env->cur_state, true);
+> -	env->cur_state =3D NULL;
+> -	/* pop all elements and return */
+> -	while (!pop_stack(env, NULL, NULL, false));
+> +	/* free_verifier_state() and pop_stack() loop will be done in
+> +	 * do_check_common(). Caller must return an error for which
+> +	 * error_recoverable_with_nospec(err) is false.
+> +	 */
 
-Good catch, I would have probably missed it.
+Nit: I think these comments are unnecessary as same logic applies to many p=
+laces.
 
->  	default:
->  		verbose(env, "verifier internal error: unknown reason (%d)\n",
->  			reason);
-> @@ -19753,7 +19753,7 @@ static int do_check(struct bpf_verifier_env *env)
->  			goto process_bpf_exit;
+>  	return NULL;
+>  }
 > =20
->  		err =3D do_check_insn(env, &do_print_state);
-> -		if (state->speculative && error_recoverable_with_nospec(err)) {
-> +		if (error_recoverable_with_nospec(err) && state->speculative) {
->  			/* Prevent this speculative path from ever reaching the
->  			 * insn that would have been unsafe to execute.
->  			 */
+> @@ -2838,10 +2838,10 @@ static struct bpf_verifier_state *push_async_cb(s=
+truct bpf_verifier_env *env,
+>  	elem->st.frame[0] =3D frame;
+>  	return &elem->st;
+>  err:
+> -	free_verifier_state(env->cur_state, true);
+> -	env->cur_state =3D NULL;
+> -	/* pop all elements and return */
+> -	while (!pop_stack(env, NULL, NULL, false));
+> +	/* free_verifier_state() and pop_stack() loop will be done in
+> +	 * do_check_common(). Caller must return an error for which
+> +	 * error_recoverable_with_nospec(err) is false.
+> +	 */
+>  	return NULL;
+>  }
+> =20
+> @@ -22904,13 +22904,9 @@ static int do_check_common(struct bpf_verifier_e=
+nv *env, int subprog)
+> =20
+>  	ret =3D do_check(env);
+>  out:
+> -	/* check for NULL is necessary, since cur_state can be freed inside
+> -	 * do_check() under memory pressure.
+> -	 */
+> -	if (env->cur_state) {
+> -		free_verifier_state(env->cur_state, true);
+> -		env->cur_state =3D NULL;
+> -	}
+> +	WARN_ON_ONCE(!env->cur_state);
+> +	free_verifier_state(env->cur_state, true);
+> +	env->cur_state =3D NULL;
+>  	while (!pop_stack(env, NULL, NULL, false));
+
+Nit: while at it, I'd push both free_verifier_state() and pop_stack()
+     into free_states() a few lines below.
+
+>  	if (!ret && pop_log)
+>  		bpf_vlog_reset(&env->log, 0);
 >=20
-> base-commit: 2d72dd14d77f31a7caa619fe0b889304844e612e
+> base-commit: 1d251153a480fc7467d00a8c5dabc55cc6166c43
 
