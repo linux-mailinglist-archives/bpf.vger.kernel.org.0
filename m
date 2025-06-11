@@ -1,179 +1,139 @@
-Return-Path: <bpf+bounces-60321-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60322-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 950E3AD56E5
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 15:25:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B5B0AD571C
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 15:33:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5459E17DC8C
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 13:25:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0EEA6168AE9
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 13:33:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C12D6288503;
-	Wed, 11 Jun 2025 13:25:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBC9628A1F0;
+	Wed, 11 Jun 2025 13:33:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hPXxBxIQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KvOfYCOy"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 478201E485
-	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 13:25:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BECEC28F1
+	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 13:32:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749648311; cv=none; b=VxZvsVdP+H03U0/1AWsJOoM4ZD7w5hfHwMCfyoMJ8AoCOcbh1bZap2XD4vKg7iepf2GbWXWn84F07UDnwATVydLGgDawGwHaeheG4vqMfg9xVoiqU/XxNKXe6z6IJz9+vf9Pj/9lWtqjG30398/rvmsfgst7OLstiJDKfwrHigA=
+	t=1749648780; cv=none; b=UNWell+aP2j8KRXaJabZgzDS9yXqic/isZrKOHxjblbxrb6YdATXp8MxPMkexypMsl1AFewY99LgntwamBklwtLv5+DnC2ghWjsqBbgusoIAB9ejkUEm5Y+CZcosoz53ROSt/xadf65DRkbyYKwizv2gXJWqavQEDYHzMd+hvo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749648311; c=relaxed/simple;
-	bh=65kslE6qYV3dzV4TzXBWDQ0E+yOHagxY2R/q066gasY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nWCxYgfjWhY1BPLDMy8MJrOkUqIV8x96JKGaBQfOKJ65P8sM/IBEYiqQAgWLcc74moCEWiyZtlQ03Pn120ZEZF3/Hyr6PhHSL9pqzuBaPYcg9GUR00bEpjTYSf2n+jy93e+iNkiwJIMw2hQzNzpLaWrIEppGX6w9aJbMaNRGIE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hPXxBxIQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3A32C4CEF5
-	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 13:25:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749648310;
-	bh=65kslE6qYV3dzV4TzXBWDQ0E+yOHagxY2R/q066gasY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=hPXxBxIQze8qkz9hQKtX0VbyQ2+gO5bGsODEl45hF6hnwdaOxxv/pFXTuZIGY9S73
-	 BzmWn79paXwNVzWG+fFL+W7qaHDJTR/p6G811LxTIm8riykEXi5fMin/ftw4RjP6Bk
-	 3LPomFbtzYtQqfCZEfqHPcjgRG0kwmlEU7rF2boNduPEhZx/D7cCgQ53sCzea8VvlP
-	 CcF+6VfFoAgQof0BRmlKsFZBvk0CfxhsATtdG/GRtuLLfxuTE2LUA8uXQ81G/f93JS
-	 jrxHFCwZF1bvmAq+YqAEnYMJVIhJ7mutPB3U1QtZGEXl02EgSEFp9D30O1KWPzBnbi
-	 f3soD9+U58cGg==
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-607b59b447bso7420760a12.1
-        for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 06:25:10 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWgpCYRPF05VQYPO77JrDYRsTmjdSL7WqHt2MvSv6p3sZ6gzUgZR19T82d0pKGOWkRU2Co=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzaFYEULvth47I5GuVRzdVJDkVph/7qUghBKYVskTUcrbhxNUe/
-	NtgE3FOz9A1ZwIcIqfTKgRR+U0TJl02RKc2u5gv6FMNt0RvtBcd9AoK+V9JE8l7lcZ1pazBm33j
-	V/B6JgKSjvRGoZnuvDAkYF0isLeX53teskcKwnWbf
-X-Google-Smtp-Source: AGHT+IGhE6M6Y2hLMscAsD/sYn6L9tLVA3I6Ph+Q9G80ZZhNmESb7rLDXSnc0RBlKXVe4bB2gJoS3ANvXv//CMj5ihM=
-X-Received: by 2002:a05:6402:13d0:b0:601:6c34:5ed2 with SMTP id
- 4fb4d7f45d1cf-60846aa5910mr2531159a12.4.1749648308992; Wed, 11 Jun 2025
- 06:25:08 -0700 (PDT)
+	s=arc-20240116; t=1749648780; c=relaxed/simple;
+	bh=RlvSUTGYIbeSTiqY4MtMBVB+6+V4KPHCUeg0jXRyQ3A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Rl5RzWi4PUdeIpp7Lget9zkHZflIUw2uG2J2vPb60G0XXjj7raeRdsEdHPpgcMRSdXDem3VxBA8k6Bxx7f7UPHIyE0qph67adEnY38c0WNek/FJxt2dtNFOI4HRhe/8QRcTDM6zv+4bkJqPR847q2Tl9BFXnoMqI2L7ywTLi/TQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KvOfYCOy; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-43edecbfb46so56731955e9.0
+        for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 06:32:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749648777; x=1750253577; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vuL4NjPFVmODP/l92ar/+jHwJj49w2M9zdvr1k+d3Io=;
+        b=KvOfYCOy8mpwznWYkhgrUNTYuMJNwQCZy+RXnoP3JqL0/VZoo3O2oSWtf4hjkBDldK
+         IyI7XHmGxABLjJkSAwva64nhHC8tcSsEfxQBbVY9YYNFWPaF5xByyBGAoJ4XqXPh4oA9
+         FSIFIlSDHt0bPnHZXemZwBarMaj/rgej5yHahbgJHUB2Z1M3WP17oWiDOi7MkQaqM5Rc
+         pBj5ePPUK+0dnb6ZGsstHS9LtQOFyAPACn65fRxxprp3Qfe5836DtoICFlsyZEwyZdo4
+         Wgc6lPTqfrNSzO9nduXedrUovxBsmg73XENhDtc3sGClJ3122l4JeuJK8+D2u6vpYmJN
+         uGdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749648777; x=1750253577;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vuL4NjPFVmODP/l92ar/+jHwJj49w2M9zdvr1k+d3Io=;
+        b=wE00O2rkZtpxzamH12/yhAmzyPWSUgACa1O1eI2WtAx5Oh6XHqM9GYDd1KRoS2n1+4
+         +Mr1oA6cc50Xntd0V9exDwSmYUrNxzEnPJ9i7D2luMOcFmX9/cr0irMN1Zr+zRgvPRWF
+         JfFvRCsA0LTeROxIczFd4hasTfXAeol+k1mB2GWSjKUD9B8wDxqMEsltgrpJ2OLnYeo/
+         iwO0KD3q9QnnoVz2hHmrvYHkmzW3MyENuxhJkTWfp7R7AkxL2OMCXB7kEasIMqHxWN0Z
+         iyNQWF70FCNwZ+r+cVfAkjiSDq32/8FAebeF275QJy2qrGfdlR9Ys9P471tFIT3l02wO
+         CdAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUAXDxpLHAPGjXTMYr/kV5ilJlmQVApZCPDANN1fA1uKwpVcCzTdCOxNQPvgXsZ3luuGyc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxC7a3k4x/7Rpnl+f5yr153EH919SiDZ/HEj4t+x+k4p8fA9KwL
+	tfOeV/oABNovZvL95rd1G0Jfx6dz+WPNZgh5krvMC2ShmmpHm0TQFbQt
+X-Gm-Gg: ASbGncs9HzywubZNVvOoCsThAm9csILKFlN6BHgghapsGjKTOLpgx7kuapuDbBH7K5x
+	+Zp/+4KSoEUIHxWX0dqtdeFBXwR2UKtL4hEBkJVLplUHHD8d48YDtDbttnk/GT3+hdOnm8RnypU
+	2TqoatZum/qKjOFDf/tICWw66f9CvZy/ziyHj+iBDJV63kdZLVtXlJqA45I48JM7D5iSFHcwZD6
+	P9qSZ9RHGhvBXDgJbXJFJyJu72PIRIb3EKqTuLkYg67I9qZtcz9pS1G/L2vE+CuY5JPgTsZkiUp
+	9jWM/tlx7WwzB4FbS7ouoSjDI5poItjdNb9FUKF1oaRikUXx8eH4FkZpE2oYXqC01j4QuW8tE6P
+	vYCPZXgN8jH+G7h/ke+80koAUrSCd6Bls0OSZlTmwYwzhMA==
+X-Google-Smtp-Source: AGHT+IF4Bzv5pUg7BOJl1QoiQ/+HpT4AZe7ViGci2KCTIXtyzsQUmVZg8+Q6Igb9COpP6/hQQ/Nukw==
+X-Received: by 2002:a05:6000:2dc3:b0:3a4:f902:3872 with SMTP id ffacd0b85a97d-3a558aad921mr2270163f8f.19.1749648776751;
+        Wed, 11 Jun 2025 06:32:56 -0700 (PDT)
+Received: from ?IPV6:2a01:4b00:bf28:2e00:106b:a16d:4d49:8ce9? ([2a01:4b00:bf28:2e00:106b:a16d:4d49:8ce9])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a5323b67ccsm15345333f8f.40.2025.06.11.06.32.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Jun 2025 06:32:56 -0700 (PDT)
+Message-ID: <7914de29-4510-4eb2-8baf-31f131565877@gmail.com>
+Date: Wed, 11 Jun 2025 14:32:55 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250606232914.317094-1-kpsingh@kernel.org> <20250606232914.317094-11-kpsingh@kernel.org>
- <87qzzrleuw.fsf@microsoft.com> <CACYkzJ6M7kA7Se4=AXWNVF1UyeHK3t+3Y_8Ap1L9pkUTbqys9Q@mail.gmail.com>
- <87o6uvlaxs.fsf@microsoft.com> <CACYkzJ74MJkwejki7kFNR4RWh+EnJ++0Vop8eRkSwY6pJepMEQ@mail.gmail.com>
- <8cf2c1cc15e0c5e4b87a91a2cb42e04f38ac1094.camel@HansenPartnership.com>
- <CACYkzJ6yNjFOTzC04uOuCmFn=+51_ie2tB9_x-u2xbcO=yobTw@mail.gmail.com>
- <6f8e0d217d02dc8327a2a21e8787d3aec9693c2c.camel@HansenPartnership.com>
- <CACYkzJ4T5ZFuY5PDKp1VZmsdEyEYUbbajAbhqr+5FE6tqy195A@mail.gmail.com> <12d7049f41675a087b254c853b4c5d50969e68fd.camel@HansenPartnership.com>
-In-Reply-To: <12d7049f41675a087b254c853b4c5d50969e68fd.camel@HansenPartnership.com>
-From: KP Singh <kpsingh@kernel.org>
-Date: Wed, 11 Jun 2025 15:24:57 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ4-0WFs+GHw3n+W_EVRM7+JTy=ZVZZ0a+t7tTM_j+z2JQ@mail.gmail.com>
-X-Gm-Features: AX0GCFsOFslGXD5idWaVsBY78vnqvx_rruIq7PTVA1_RpI2mq8uliQxFe-UKUzM
-Message-ID: <CACYkzJ4-0WFs+GHw3n+W_EVRM7+JTy=ZVZZ0a+t7tTM_j+z2JQ@mail.gmail.com>
-Subject: Re: [PATCH 10/12] libbpf: Embed and verify the metadata hash in the loader
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc: Blaise Boscaccy <bboscaccy@linux.microsoft.com>, bpf@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, paul@paul-moore.com, kys@microsoft.com, 
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v3 2/3] selftests/bpf: support array presets in
+ veristat
+To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
+ ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com,
+ kernel-team@meta.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+References: <20250610190840.1758122-1-mykyta.yatsenko5@gmail.com>
+ <20250610190840.1758122-3-mykyta.yatsenko5@gmail.com>
+ <4ff2fafb99131f599901580eac96dca34ca20cc0.camel@gmail.com>
+ <c1cb9bd3-c99d-4af3-bbcc-2ff3c2250ca1@gmail.com>
+ <8134154a25af0153411c263df923acd350253c25.camel@gmail.com>
+Content-Language: en-US
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+In-Reply-To: <8134154a25af0153411c263df923acd350253c25.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jun 11, 2025 at 3:12=E2=80=AFPM James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
+On 6/11/25 13:21, Eduard Zingerman wrote:
+> What do you think about a more recursive representation for presets?
+> E.g. as follows:
 >
-> On Wed, 2025-06-11 at 14:33 +0200, KP Singh wrote:
-> > On Wed, Jun 11, 2025 at 1:59=E2=80=AFPM James Bottomley
-> > <James.Bottomley@hansenpartnership.com> wrote:
-> > >
-> > > On Wed, 2025-06-11 at 00:35 +0200, KP Singh wrote:
-> > > > On Tue, Jun 10, 2025 at 11:24=E2=80=AFPM James Bottomley
-> > > > <James.Bottomley@hansenpartnership.com> wrote:
-> > > > >
-> > > > > On Tue, 2025-06-10 at 21:47 +0200, KP Singh wrote:
-> > > > > > It's been repeatedly mentioned that trusted loaders (whether
-> > > > > > kernel or BPF programs) are the only way because a large
-> > > > > > number
-> > > > > > of BPF use-cases dynamically generate BPF programs.
-> > > > >
-> > > > > You keep asserting this, but it isn't supported by patches
-> > > > > already
-> > > >
-> > > > This is supported for sure. But it's not what the patches are
-> > > > providing a reference implementation for. The patches provide a
-> > > > stand alone reference implementation using in-kernel / BPF
-> > > > loaders but you can surely implement this (see below):
-> > > >
-> > > > > proposed.  Specifically, there already exists a patch set:
-> > > > >
-> > > > > https://lore.kernel.org/all/20250528215037.2081066-1-bboscaccy@li=
-nux.microsoft.com/
-> > > >
-> > > > The patch-set takes a very narrow view by adding additional UAPI
-> > > > and ties us into an implementation.
-> > >
-> > > What do you mean by this?  When kernel people say UAPI, they think
-> > > of the contract between the kernel and userspace.  So for both
-> > > patch sets the additional attr. entries which user space adds and
-> > > the kernel parses for the signature would conventionally be thought
-> > > to extend the UAPI.
-> > >
-> > > Additionally, the content of the signature (what it's over) is a
-> > > UAPI contract.  When adding to the kernel UAPI we don't look not to
-> > > change it, we look to change it in a way that is extensible.  It
-> > > strikes me that actually only the linked patch does this because
-> > > the UAPI addition for your signature scheme doesn't seem to be that
-> > > extensible.
-> >
-> > James, I am adding less attributes, it's always extensible, adding
-> > more UAPI than strictly needed is what's not flexible.
+>    struct rvalue {
+>      long long i; /* use find_enum_value() at parse time to avoid union */
+>    };
+>    
+>    struct lvalue {
+>      enum { VAR, FIELD, ARRAY } type;
+>      union {
+>        struct {
+>          char *name;
+>        } var;
+>        struct {
+>          struct lvalue *base;
+>          char *name;
+>        } field;
+>        struct {
+>          struct lvalue *base;
+>          struct rvalue index;
+>        } array;
+>      };
+>    };
+>    
+>    struct preset {
+>      struct lvalue *lv;
+>      struct rvalue rv;
+>    };
 >
-> To repeat: the object should be extensibility not minimization.  If an
-> API is extensible it doesn't tie you to a specific implementation
-> regardless of how many arguments it adds.  The attr structure uses the
-> standard kernel way of doing this: it can grow but may never lose
-> elements and  features added at the end are always optional so an older
-> kernel that doesn't see them can still process everything it does
-> understand.
+> It can handle matrices ("a[2][3]") and offset/type computation would
+> be a simple recursive function.
 >
-> > The attributes I proposed remain valid in a world where the BPF
-> > instruction set is stable at compile time, for trusted user space
-> > loaders (applications like Cilium) that can already have a stable
-> > instruction buffer, the attributes Blaise proposed do not.
->
-> I don't follow.  For stable compilation (I'm more familiar with the way
-> systemd does this but I presume cilium does the same: by constructing
-> ebpf byte code on the fly that doesn't require relocation and then
-> inserting it directly) you simply program the loader to do the
-> restrictions (about insertion point and the like) and sign it, correct?
-
-There is no loader program if the instruction buffer is stable.
-
-> That's covered in the linked patch in the !attr->signature_maps_size
-> case, so what Blaise proposed most definitely does do this.
->
-> > I believe we have discussed this enough. Let's have the BPF
-> > maintainers decide.
->
-> But this is obviously an important point otherwise you wouldn't be
-> arguing about it.  If pure minimization were all that's required then
-> it's easy to do since we're using pkcs7 signatures, the signature can
-> contain a data structure with authenticatedAttributes that are
-> validated by the signature, so I could do the Blaise patch with fewer
-> attr elements than you simply by moving the maps and their count into
-> the athenticatedAttributes element of the pkcs7 signature.  I could
-
-Can we discuss this as a follow up as Paul proposed? I have limited
-bandwidth to work on this, so this only delays what I think is a solid
-baseline implementation.
-
-- KP
-
-> also do the same with your keyring_id and, bonus, it would be integrity
-> validated.  Then each of you adds the same number of UAPI attr's so
-> there's no argument about who adds fewer attributes.
->
-> Regards,
->
-> James
->
+Yes, this looks cleaner, if we want to support multi-dimensional arrays,
+recursive representation works well. A minor problem is that we don't 
+have BTF at parsing time,
+so resolving enums early won't be possible.
 
