@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-60272-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60268-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72C93AD47AD
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 03:05:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 387FEAD47A4
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 03:03:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77DB33A97A6
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 01:04:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 09F8F189EC63
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 01:03:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCF1A1A08B1;
-	Wed, 11 Jun 2025 01:03:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A857149E13;
+	Wed, 11 Jun 2025 01:03:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0016.hostedemail.com [216.40.44.16])
+Received: from relay.hostedemail.com (smtprelay0012.hostedemail.com [216.40.44.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EB7D18DF89;
-	Wed, 11 Jun 2025 01:03:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DD5D28F3;
+	Wed, 11 Jun 2025 01:03:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749603790; cv=none; b=eHQzLugOLxh5UkbdX4PO2dqZg5Xhega0AHLMkoo6O6KJurxsWj0iVt9YcyIIMrByQ14/mAAqdUqLRMhv3dzhpwdhlqhet9w7PLnzJNjp+r58vUzo4kd7BFGZVzfip0ug//DCZuAv/bf0Eiy2Sz8neozsj/lY8B161p5vS83RDKM=
+	t=1749603786; cv=none; b=T5LGyGxeUkKcN5EPuKBdJiQnSX1qtq3AfJh5filZrHVTeKgH4NGSZ1X1cadjDHObu9pb5JX1midK1ZLfSZ8Zgy74kd4dvu41xWLz7J+1749hyqBLqHfgQItjg2iiR3iiN+CizAc9J0PSbtVrWY8ynd/0oDRwm7QtEMGCvdOkflE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749603790; c=relaxed/simple;
-	bh=NHVnbwkzh7GFRR5baZ3ij4wNo4wbf13vG+/fcMqC+yM=;
+	s=arc-20240116; t=1749603786; c=relaxed/simple;
+	bh=6b2lgHU+YTRGKr3H+RCukY/c20EcCa8J6t7gWzfZy6k=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=YFeDLutEW8PXjIGC9SdQAZJJO29xPO40HCPQ+q77asWEWh1Nt1s0IFG5bLZcgULuD9MlEbdvPcCmu+P8shrbo1hIqtah4UPDI6GMpzRyfg7Ro98dgENqbYGdqgWGZjpzcDfWLdMd0Mhx21OXHzGa6uLkOmEQaU/taTYkNkol0ko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.16
+	 Content-Type; b=u7hgCri6bh2Kqj0aYiUdnOzuwPzFwjpyvKUvOnvsiBFryac6AV8FyuFQbjAlseaU29hg5j1ZJxlBlh/xxJN1SOBfmce66Wq7ssw1khANjp0B3PXKwG8ZVq0PonIicjYyXvRZjCxqBu9KR/oQd31xeQT9qhQiOKxwAjQyD/rqpgY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf16.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay06.hostedemail.com (Postfix) with ESMTP id C3F511012D8;
+Received: from omf02.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay05.hostedemail.com (Postfix) with ESMTP id 001625F698;
 	Wed, 11 Jun 2025 01:02:59 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: nevets@goodmis.org) by omf16.hostedemail.com (Postfix) with ESMTPA id 965C32000D;
+Received: from [HIDDEN] (Authenticated sender: nevets@goodmis.org) by omf02.hostedemail.com (Postfix) with ESMTPA id DB14E80013;
 	Wed, 11 Jun 2025 01:02:56 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.98.2)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1uP9tE-00000000v9j-38fn;
+	id 1uP9tE-00000000vAD-3qiA;
 	Tue, 10 Jun 2025 21:04:28 -0400
-Message-ID: <20250611010428.603778772@goodmis.org>
+Message-ID: <20250611010428.770214773@goodmis.org>
 User-Agent: quilt/0.68
-Date: Tue, 10 Jun 2025 20:54:26 -0400
+Date: Tue, 10 Jun 2025 20:54:27 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org,
@@ -61,7 +61,7 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Jens Remus <jremus@linux.ibm.com>,
  Linus Torvalds <torvalds@linux-foundation.org>,
  Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH v10 05/14] unwind_user/deferred: Add unwind cache
+Subject: [PATCH v10 06/14] unwind_user/deferred: Add deferred unwinding interface
 References: <20250611005421.144238328@goodmis.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -70,155 +70,277 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: 965C32000D
-X-Stat-Signature: 3saap8xhb9ht7aqm6fxm5qhxfj85y3ds
+X-Stat-Signature: h7tid9h9g6p3jfie3enwd3r1pouym6mt
+X-Rspamd-Server: rspamout02
+X-Rspamd-Queue-Id: DB14E80013
 X-Session-Marker: 6E657665747340676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX18Ok2o1cxfxVsuZmgzG49KIB60ysAb0rSk=
-X-HE-Tag: 1749603776-372355
-X-HE-Meta: U2FsdGVkX19PEX1xacieGEJ04oubI975S3Sm/XxALQIdvppjm5f/tBi/PPu+W7cRK8n7lC3ghbtB+ZuyuFz9yF44vtHWxBNXIes1SyH/AHSfeXc+1AUiBQGImKAvqjh8Mk7RENAXQtiVA+tmeMuYuYc3H2Et0CHGxF8//I+h2SwuMgRwaLA0ID50JSOAFTaKBFO1pZZ6qtmJmtOlpyg0qVUU6XdoMETxLJYNNhRL6gM/NtrKOkTPvSimxXq2hcQRC1aKqf3Jn3IcUCfTJG25MgUyjOYOcgyTpdy/UzDjI6JqeYu7pSb9+9KUByPWqMc6al727XpVZhQqbVZnKZYU7YT0QkFJnI4NhBArID4PJwDJLDqu19AbBZBioT6IxwyIg7jb8NQFespL06vF8r4dhuEQ/ir+xus2Ya0Zuw2WVhk=
+X-Session-ID: U2FsdGVkX18MSDjUIgXJahJMz2fk9ahqJjmSyy/w7OQ=
+X-HE-Tag: 1749603776-426910
+X-HE-Meta: U2FsdGVkX1+v8hSqakDLRIeDthy5tc+8OmIRaLhHq3eEtnotOdCg+1luRA+Cv2X4ig8qH9+o1+BdZS7RHXlj3U8nyc2mTR7Q0501UPDsVKs0uCtA32jat9INtu1Cxme5IOaGDiHkI4ZBR5cf5G/3aGim1k1NWid0IeR23TDLvZ8dqEgGXuo+RMuV8I+fudLJGljATBig0qllXaPczKhRmE0RjFZNmudHKlSb9sKywDJjidr+XAjn3ySOGoQHefLQBh1b2cwHOOJh79V8b5xmC5+GRmKuogOb+Q2W1U/GA7cJ5YqWylp3gFi8b8TVPeq0ugY+9AvHQZpL8EKj3DyjPPQc9qJbZ0W32JfDFX7xkB6LTBi2ir+FWE2+HWDeXW9Eg6BxlK9hUNxIpq36dpUlkY3b6wDEv6S/fJ4kdzifaVw=
 
 From: Josh Poimboeuf <jpoimboe@kernel.org>
 
-Cache the results of the unwind to ensure the unwind is only performed
-once, even when called by multiple tracers.
+Add an interface for scheduling task work to unwind the user space stack
+before returning to user space. This solves several problems for its
+callers:
 
-The cache nr_entries gets cleared every time the task exits the kernel.
-When a stacktrace is requested, nr_entries gets set to the number of
-entries in the stacktrace. If another stacktrace is requested, if
-nr_entries is not zero, then it contains the same stacktrace that would be
-retrieved so it is not processed again and the entries is given to the
-caller.
+  - Ensure the unwind happens in task context even if the caller may be
+    running in interrupt context.
+
+  - Avoid duplicate unwinds, whether called multiple times by the same
+    caller or by different callers.
+
+  - Take a timestamp when the first request comes in since the task
+    entered the kernel. This will be returned to the calling function
+    along with the stack trace when the task leaves the kernel. This
+    timestamp can be used to correlate kernel unwinds/traces with the user
+    unwind.
+
+The timestamp is created to detect when the stacktrace is the same. It is
+generated the first time a user space stacktrace is requested after the
+task enters the kernel.
+
+The timestamp is passed to the caller on request, and when the stacktrace is
+generated upon returning to user space, it call the requester's callback
+with the timestamp as well as the stacktrace.
 
 Co-developed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- include/linux/entry-common.h          |  2 ++
- include/linux/unwind_deferred.h       |  8 ++++++++
- include/linux/unwind_deferred_types.h |  7 ++++++-
- kernel/unwind/deferred.c              | 26 ++++++++++++++++++++------
- 4 files changed, 36 insertions(+), 7 deletions(-)
+ include/linux/unwind_deferred.h       |  18 ++++
+ include/linux/unwind_deferred_types.h |   3 +
+ kernel/unwind/deferred.c              | 131 +++++++++++++++++++++++++-
+ 3 files changed, 151 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
-index f94f3fdf15fc..6e850c9d3f0c 100644
---- a/include/linux/entry-common.h
-+++ b/include/linux/entry-common.h
-@@ -12,6 +12,7 @@
- #include <linux/resume_user_mode.h>
- #include <linux/tick.h>
- #include <linux/kmsan.h>
-+#include <linux/unwind_deferred.h>
- 
- #include <asm/entry-common.h>
- #include <asm/syscall.h>
-@@ -362,6 +363,7 @@ static __always_inline void exit_to_user_mode(void)
- 	lockdep_hardirqs_on_prepare();
- 	instrumentation_end();
- 
-+	unwind_exit_to_user_mode();
- 	user_enter_irqoff();
- 	arch_exit_to_user_mode();
- 	lockdep_hardirqs_on(CALLER_ADDR0);
 diff --git a/include/linux/unwind_deferred.h b/include/linux/unwind_deferred.h
-index 5064ebe38c4f..7d6cb2ffd084 100644
+index 7d6cb2ffd084..a384eef719a3 100644
 --- a/include/linux/unwind_deferred.h
 +++ b/include/linux/unwind_deferred.h
-@@ -12,6 +12,12 @@ void unwind_task_free(struct task_struct *task);
+@@ -2,9 +2,19 @@
+ #ifndef _LINUX_UNWIND_USER_DEFERRED_H
+ #define _LINUX_UNWIND_USER_DEFERRED_H
+ 
++#include <linux/task_work.h>
+ #include <linux/unwind_user.h>
+ #include <linux/unwind_deferred_types.h>
+ 
++struct unwind_work;
++
++typedef void (*unwind_callback_t)(struct unwind_work *work, struct unwind_stacktrace *trace, u64 timestamp);
++
++struct unwind_work {
++	struct list_head		list;
++	unwind_callback_t		func;
++};
++
+ #ifdef CONFIG_UNWIND_USER
+ 
+ void unwind_task_init(struct task_struct *task);
+@@ -12,10 +22,15 @@ void unwind_task_free(struct task_struct *task);
  
  int unwind_deferred_trace(struct unwind_stacktrace *trace);
  
-+static __always_inline void unwind_exit_to_user_mode(void)
-+{
-+	if (unlikely(current->unwind_info.cache))
-+		current->unwind_info.cache->nr_entries = 0;
-+}
++int unwind_deferred_init(struct unwind_work *work, unwind_callback_t func);
++int unwind_deferred_request(struct unwind_work *work, u64 *timestamp);
++void unwind_deferred_cancel(struct unwind_work *work);
 +
- #else /* !CONFIG_UNWIND_USER */
+ static __always_inline void unwind_exit_to_user_mode(void)
+ {
+ 	if (unlikely(current->unwind_info.cache))
+ 		current->unwind_info.cache->nr_entries = 0;
++	current->unwind_info.timestamp = 0;
+ }
  
- static inline void unwind_task_init(struct task_struct *task) {}
-@@ -19,6 +25,8 @@ static inline void unwind_task_free(struct task_struct *task) {}
+ #else /* !CONFIG_UNWIND_USER */
+@@ -24,6 +39,9 @@ static inline void unwind_task_init(struct task_struct *task) {}
+ static inline void unwind_task_free(struct task_struct *task) {}
  
  static inline int unwind_deferred_trace(struct unwind_stacktrace *trace) { return -ENOSYS; }
++static inline int unwind_deferred_init(struct unwind_work *work, unwind_callback_t func) { return -ENOSYS; }
++static inline int unwind_deferred_request(struct unwind_work *work, u64 *timestamp) { return -ENOSYS; }
++static inline void unwind_deferred_cancel(struct unwind_work *work) {}
  
-+static inline void unwind_exit_to_user_mode(void) {}
-+
- #endif /* !CONFIG_UNWIND_USER */
+ static inline void unwind_exit_to_user_mode(void) {}
  
- #endif /* _LINUX_UNWIND_USER_DEFERRED_H */
 diff --git a/include/linux/unwind_deferred_types.h b/include/linux/unwind_deferred_types.h
-index aa32db574e43..db5b54b18828 100644
+index db5b54b18828..5df264cf81ad 100644
 --- a/include/linux/unwind_deferred_types.h
 +++ b/include/linux/unwind_deferred_types.h
-@@ -2,8 +2,13 @@
- #ifndef _LINUX_UNWIND_USER_DEFERRED_TYPES_H
- #define _LINUX_UNWIND_USER_DEFERRED_TYPES_H
+@@ -9,6 +9,9 @@ struct unwind_cache {
  
-+struct unwind_cache {
-+	unsigned int		nr_entries;
-+	unsigned long		entries[];
-+};
-+
  struct unwind_task_info {
--	unsigned long		*entries;
-+	struct unwind_cache	*cache;
+ 	struct unwind_cache	*cache;
++	struct callback_head	work;
++	u64			timestamp;
++	int			pending;
  };
  
  #endif /* _LINUX_UNWIND_USER_DEFERRED_TYPES_H */
 diff --git a/kernel/unwind/deferred.c b/kernel/unwind/deferred.c
-index 0bafb95e6336..e3913781c8c6 100644
+index e3913781c8c6..b76c704ddc6d 100644
 --- a/kernel/unwind/deferred.c
 +++ b/kernel/unwind/deferred.c
-@@ -24,6 +24,7 @@
- int unwind_deferred_trace(struct unwind_stacktrace *trace)
- {
- 	struct unwind_task_info *info = &current->unwind_info;
-+	struct unwind_cache *cache;
+@@ -2,13 +2,35 @@
+ /*
+  * Deferred user space unwinding
+  */
++#include <linux/sched/task_stack.h>
++#include <linux/unwind_deferred.h>
++#include <linux/sched/clock.h>
++#include <linux/task_work.h>
+ #include <linux/kernel.h>
+ #include <linux/sched.h>
+ #include <linux/slab.h>
+-#include <linux/unwind_deferred.h>
++#include <linux/mm.h>
  
- 	/* Should always be called from faultable context */
- 	might_fault();
-@@ -31,17 +32,30 @@ int unwind_deferred_trace(struct unwind_stacktrace *trace)
- 	if (current->flags & PF_EXITING)
- 		return -EINVAL;
+ #define UNWIND_MAX_ENTRIES 512
  
--	if (!info->entries) {
--		info->entries = kmalloc_array(UNWIND_MAX_ENTRIES, sizeof(long),
--					      GFP_KERNEL);
--		if (!info->entries)
-+	if (!info->cache) {
-+		info->cache = kzalloc(struct_size(cache, entries, UNWIND_MAX_ENTRIES),
-+				      GFP_KERNEL);
-+		if (!info->cache)
- 			return -ENOMEM;
- 	}
- 
-+	cache = info->cache;
-+	trace->entries = cache->entries;
++/* Guards adding to and reading the list of callbacks */
++static DEFINE_MUTEX(callback_mutex);
++static LIST_HEAD(callbacks);
 +
-+	if (cache->nr_entries) {
-+		/*
-+		 * The user stack has already been previously unwound in this
-+		 * entry context.  Skip the unwind and use the cache.
-+		 */
-+		trace->nr = cache->nr_entries;
-+		return 0;
-+	}
++/*
++ * Read the task context timestamp, if this is the first caller then
++ * it will set the timestamp.
++ */
++static u64 get_timestamp(struct unwind_task_info *info)
++{
++	lockdep_assert_irqs_disabled();
 +
- 	trace->nr = 0;
--	trace->entries = info->entries;
- 	unwind_user(trace, UNWIND_MAX_ENTRIES);
- 
-+	cache->nr_entries = trace->nr;
++	if (!info->timestamp)
++		info->timestamp = local_clock();
 +
++	return info->timestamp;
++}
++
+ /**
+  * unwind_deferred_trace - Produce a user stacktrace in faultable context
+  * @trace: The descriptor that will store the user stacktrace
+@@ -59,11 +81,117 @@ int unwind_deferred_trace(struct unwind_stacktrace *trace)
  	return 0;
  }
  
-@@ -56,5 +70,5 @@ void unwind_task_free(struct task_struct *task)
++static void unwind_deferred_task_work(struct callback_head *head)
++{
++	struct unwind_task_info *info = container_of(head, struct unwind_task_info, work);
++	struct unwind_stacktrace trace;
++	struct unwind_work *work;
++	u64 timestamp;
++
++	if (WARN_ON_ONCE(!info->pending))
++		return;
++
++	/* Allow work to come in again */
++	WRITE_ONCE(info->pending, 0);
++
++	/*
++	 * From here on out, the callback must always be called, even if it's
++	 * just an empty trace.
++	 */
++	trace.nr = 0;
++	trace.entries = NULL;
++
++	unwind_deferred_trace(&trace);
++
++	timestamp = info->timestamp;
++
++	guard(mutex)(&callback_mutex);
++	list_for_each_entry(work, &callbacks, list) {
++		work->func(work, &trace, timestamp);
++	}
++}
++
++/**
++ * unwind_deferred_request - Request a user stacktrace on task exit
++ * @work: Unwind descriptor requesting the trace
++ * @timestamp: The time stamp of the first request made for this task
++ *
++ * Schedule a user space unwind to be done in task work before exiting the
++ * kernel.
++ *
++ * The returned @timestamp output is the timestamp of the very first request
++ * for a user space stacktrace for this task since it entered the kernel.
++ * It can be from a request by any caller of this infrastructure.
++ * Its value will also be passed to the callback function.  It can be
++ * used to stitch kernel and user stack traces together in post-processing.
++ *
++ * It's valid to call this function multiple times for the same @work within
++ * the same task entry context.  Each call will return the same timestamp
++ * while the task hasn't left the kernel. If the callback is not pending because
++ * it has already been previously called for the same entry context, it will be
++ * called again with the same stack trace and timestamp.
++ *
++ * Return: 1 if the the callback was already queued.
++ *         0 if the callback successfully was queued.
++ *         Negative if there's an error.
++ *         @timestamp holds the timestamp of the first request by any user
++ */
++int unwind_deferred_request(struct unwind_work *work, u64 *timestamp)
++{
++	struct unwind_task_info *info = &current->unwind_info;
++	int ret;
++
++	*timestamp = 0;
++
++	if (WARN_ON_ONCE(in_nmi()))
++		return -EINVAL;
++
++	if ((current->flags & (PF_KTHREAD | PF_EXITING)) ||
++	    !user_mode(task_pt_regs(current)))
++		return -EINVAL;
++
++	guard(irqsave)();
++
++	*timestamp = get_timestamp(info);
++
++	/* callback already pending? */
++	if (info->pending)
++		return 1;
++
++	/* The work has been claimed, now schedule it. */
++	ret = task_work_add(current, &info->work, TWA_RESUME);
++	if (WARN_ON_ONCE(ret))
++		return ret;
++
++	info->pending = 1;
++	return 0;
++}
++
++void unwind_deferred_cancel(struct unwind_work *work)
++{
++	if (!work)
++		return;
++
++	guard(mutex)(&callback_mutex);
++	list_del(&work->list);
++}
++
++int unwind_deferred_init(struct unwind_work *work, unwind_callback_t func)
++{
++	memset(work, 0, sizeof(*work));
++
++	guard(mutex)(&callback_mutex);
++	list_add(&work->list, &callbacks);
++	work->func = func;
++	return 0;
++}
++
+ void unwind_task_init(struct task_struct *task)
  {
  	struct unwind_task_info *info = &task->unwind_info;
  
--	kfree(info->entries);
-+	kfree(info->cache);
+ 	memset(info, 0, sizeof(*info));
++	init_task_work(&info->work, unwind_deferred_task_work);
+ }
+ 
+ void unwind_task_free(struct task_struct *task)
+@@ -71,4 +199,5 @@ void unwind_task_free(struct task_struct *task)
+ 	struct unwind_task_info *info = &task->unwind_info;
+ 
+ 	kfree(info->cache);
++	task_work_cancel(task, &info->work);
  }
 -- 
 2.47.2
