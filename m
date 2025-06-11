@@ -1,201 +1,156 @@
-Return-Path: <bpf+bounces-60310-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60311-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44EF7AD541C
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 13:37:03 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0A64AD5430
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 13:39:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DC43189922E
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 11:37:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2ED2B7A76A7
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 11:38:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F06CE2517AA;
-	Wed, 11 Jun 2025 11:36:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50FC825BF0E;
+	Wed, 11 Jun 2025 11:38:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lAAMFrzm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OYheEREL"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 668382E610C;
-	Wed, 11 Jun 2025 11:36:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25843242D99
+	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 11:38:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749641814; cv=none; b=ouqgIGUE24cuGqZuYsI0EXdd7/aq/eMItyhvQh190UPgZ05saviCmxtly0J41BpQGtvRs3pHFDJqpmAo1jY74+s88hYCIHzFpeqNSOw/8EWF2mL85gPaj22n9ylJ2yXdhxwUrQNjpoJUgA9i3rKNLpTD59iPPtfKx4qFtnkH4iw=
+	t=1749641925; cv=none; b=OEv680tkkZvdeTHRCgZrvxx7VGyAPQKJs9s5LC5pxuZEs1B2rFih6Y6w4imDYNN7XylU3Kw9xFqv0xR5wSmeTmU/28q0+btAvd0Hn1GpxQuteL3uJZZMa8NqY5Tpqc7SKINsx4HuC3rfvKfsJcQWnV06d8ALo429I2QMQ7Ckv6w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749641814; c=relaxed/simple;
-	bh=tXcGTOft1K2ZjeGPYHByKIvWsDYDZGjFIvK1fLYm37k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q3F7rj884dA1xfKmSViJBavlNhwR1LBY99vail/LZjvd497SuyxHUS8T4Tc9BnpI7bJDBR1sAC+P6TJiSS370PuXPqN7RP2Kn1INPyhCh+JT7UefTxuVhrhXeiipgRHitKdUZwePyzWv4BL/hNpbzfW9SncOL0kYS9MlXhpcjlM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lAAMFrzm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C030C4CEEE;
-	Wed, 11 Jun 2025 11:36:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749641814;
-	bh=tXcGTOft1K2ZjeGPYHByKIvWsDYDZGjFIvK1fLYm37k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lAAMFrzmMdbLqG2eV/Tb9nLSFiQvkj1g2mFx+AIAfIxYA0Zp7tXVlhmqARSVJJcKB
-	 FQ5PpcPP3L902FMZUMnZmil5vyYdYnGR36yLK+KQyUPYIARY6DlQIdcglLqbSKuIcG
-	 CFAiPAWOUCJI95wE4KW4Z9CuOcBTyNGdR8wNCc/MMzWJ54RKRqohKQp/wgN25NtEmq
-	 uk2qx5mgjtPNQP/mYJ19Y8X0QiRk00+hznjp+XePCot1xO1LETEy6+8yBa9jp1sEws
-	 DcocQUbO3sob7L5Km0NsVhZZKSh9sHFFbMY3A4G6fGTvB39j5BPagQ/sYiOYoJKLM7
-	 BXiNOA3dk8efw==
-Date: Wed, 11 Jun 2025 13:36:46 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Tingmao Wang <m@maowtm.org>
-Cc: Song Liu <song@kernel.org>, 
-	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>, Al Viro <viro@zeniv.linux.org.uk>, amir73il@gmail.com, 
-	andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net, 
-	eddyz87@gmail.com, gnoack@google.com, jack@suse.cz, jlayton@kernel.org, 
-	josef@toxicpanda.com, kernel-team@meta.com, kpsingh@kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, martin.lau@linux.dev, mattbobrowski@google.com, 
-	repnop@google.com
-Subject: Re: [PATCH v3 bpf-next 0/5] bpf path iterator
-Message-ID: <20250611-bindung-pulver-6158a3053c87@brauner>
-References: <20250606213015.255134-1-song@kernel.org>
- <dbc7ee0f1f483b7bc2ec9757672a38d99015e9ae.1749402769@maowtm.org>
- <CAPhsuW7n_+u-M7bnUwX4Go0D+jj7oZZVopE1Bj5S_nHM1+8PZg@mail.gmail.com>
- <97cdb6c5-0b46-4442-b19f-9980e33450c0@maowtm.org>
+	s=arc-20240116; t=1749641925; c=relaxed/simple;
+	bh=Bq92rZ7ykYbrzlOTwGooCmchE8kqjwmXTD6s0VkCtck=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kNKN2mkERtjQjyN9WZSbgX4olxrqbkeA8Iw4y4lr6BLlRxA2l8Oyq+2HgzYWLeNd475LZ2REtkb7sKU6zZBC+bO3x0i6RHH6Eb7KRtlhJbipHEhWljOuix6Lyshozn+FZvY2xBhzwvLc9rS6YWRlhqaH7G14vERCQU68XaUEu0M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OYheEREL; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3a4fea34e07so3778641f8f.1
+        for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 04:38:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749641922; x=1750246722; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=B6SEZdiLQw/RwNaBz2D/cGuEstSSncWshk0SDWhera4=;
+        b=OYheERELEB6jdDqNeNR7yo1PUTmNr+DB7uSk29DrAam7hrU8MfWgv01jgxR+dsBCoU
+         b1iRRbcbbxtH8zEwwxT1DGHubKQS4LCz9RvsJg3YbAfVBFSsZLX/M8B11h8BTxcVhOHO
+         W51k43Z4NHGcTc9JY2FD/3yoCnhQh7fZYMitRXipnq+XQcU3wiJN7XH1UZTjVfWYU1AD
+         jXKiO+k4F+VUCvdgTQOdDBNbovQ1N6F1ZvnwkRrBGLeCnK+05Erc7lI6HixThhQ9zFe5
+         X5brt7EAX5eW2uI0Hi4T61egvUTgM/fWjGIwNqSRlfck/ETR9dnDHKWFSDUvmMc0WTpx
+         cshQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749641922; x=1750246722;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=B6SEZdiLQw/RwNaBz2D/cGuEstSSncWshk0SDWhera4=;
+        b=S50Ob2x3Fdvd+zCJKm+EvMasWttkWXKdQi4klmQdheSANd/HPP9EN8oh0rvbVaNbOh
+         i45g0pi7lghedDTG0xAYmHiZljKY3M2nhz+dONNkfLW3jtP+b/QuSt0YznygI0tehLJ8
+         JU1CaL7MSDAsxDpjeVJ5oleJd7gwatCq/W6aWxgzkMk6cFhqbpXrV0sfpGO0muf953lj
+         bLk74/Cx1KoPwHGCyjeDRCK23u7qeOC3uxMgAfgi9hUV3tAoRZPtFrpfRN6oEz87l+g+
+         veciRJj6lb53AXCnhq2LEOvBDPP28NbC4BRhKfnowYNff0UnmwCI6ItsgsStWPxkIqls
+         zO0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXdRd+Vfy7n4O8PNfEIxWDug+ToJ+LHDfBWiVaL4JeelUEQdFU8og/TO6+5/IsLgIR/pzk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxZ0hfHuh+m/6XmRerOnkH6gnnFvTcPzVk9+vvkjzYDMw15BY+6
+	1l4T3rI5UpA2ZHdX+xKcMwdnaMMNuxQcVZEOJQbl0FA89PLjBTZ+D7Gx
+X-Gm-Gg: ASbGnctMkuGRRGMriK4LxGnxyR93yXkOGFrv8PH7dHdo5/tAvFCcgljoDiZDsDvmkUg
+	nzJqljVDJubVXtbcfUKDU3uBYYg0vSNy+VzbWQuTIQgYelrnLAPtAkcaEVsTjFcJR2nKm6G1mDG
+	7HltQKNKYV1cYOu9eM5hv8qVocY0m8lTHri1VhIeiox/mTJeFIKgfyjX7Zt0QmOOWT/bUYoO21d
+	RmMCNOHIO1uR/r5EsHkA7UWv9uE0XAjk6py5CmK4zsGWMMLeJPKKnXgOcE8Z/jGlppnuFdxkH7N
+	pl5keLUsZaS4nCptcWDhtKkh1zF38/brnmxuypmKsG6llIBCzHoZJtR6TFQBYnW3N7Jb9553U64
+	t9C+Rw+JZFGhvMEwKXIPHXqHOnjvB/rqCT/iqiPdvBijvEQ==
+X-Google-Smtp-Source: AGHT+IE5wV2W8YBfnh4M0jQOvGMg8cda9sDufhvl8CBBr/+7dQRHmOsNOIPWAz9EYvXw2ROek7p4ww==
+X-Received: by 2002:a05:6000:188d:b0:3a4:edf5:b942 with SMTP id ffacd0b85a97d-3a558800b81mr2592647f8f.57.1749641922149;
+        Wed, 11 Jun 2025 04:38:42 -0700 (PDT)
+Received: from ?IPV6:2a01:4b00:bf28:2e00:106b:a16d:4d49:8ce9? ([2a01:4b00:bf28:2e00:106b:a16d:4d49:8ce9])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a53229de48sm15336059f8f.10.2025.06.11.04.38.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Jun 2025 04:38:41 -0700 (PDT)
+Message-ID: <c1cb9bd3-c99d-4af3-bbcc-2ff3c2250ca1@gmail.com>
+Date: Wed, 11 Jun 2025 12:38:41 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <97cdb6c5-0b46-4442-b19f-9980e33450c0@maowtm.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v3 2/3] selftests/bpf: support array presets in
+ veristat
+To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
+ ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com,
+ kernel-team@meta.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+References: <20250610190840.1758122-1-mykyta.yatsenko5@gmail.com>
+ <20250610190840.1758122-3-mykyta.yatsenko5@gmail.com>
+ <4ff2fafb99131f599901580eac96dca34ca20cc0.camel@gmail.com>
+Content-Language: en-US
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+In-Reply-To: <4ff2fafb99131f599901580eac96dca34ca20cc0.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jun 09, 2025 at 09:08:34AM +0100, Tingmao Wang wrote:
-> On 6/9/25 07:23, Song Liu wrote:
-> > On Sun, Jun 8, 2025 at 10:34 AM Tingmao Wang <m@maowtm.org> wrote:
-> > [...]
-> >> Hi Song, Christian, Al and others,
-> >>
-> >> Previously I proposed in [1] to add ability to do a reference-less parent
-> >> walk for Landlock.  However, as Christian pointed out and I do agree in
-> >> hindsight, it is not a good idea to do things like this in non-VFS code.
-> >>
-> >> However, I still think this is valuable to consider given the performance
-> >> improvement, and after some discussion with Mickaël, I would like to
-> >> propose extending Song's helper to support such usage.  While I recognize
-> >> that this patch series is already in its v3, and I do not want to delay it
-> >> by too much, putting this proposal out now is still better than after this
-> >> has merged, so that we may consider signature changes.
-> >>
-> >> I've created a proof-of-concept and did some brief testing.  The
-> >> performance improvement attained here is the same as in [1] (with a "git
-> >> status" workload, median landlock overhead 35% -> 28%, median time in
-> >> landlock decreases by 26.6%).
-> >>
-> >> If this idea is accepted, I'm happy to work on it further, split out this
-> >> patch, update the comments and do more testing etc, potentially in
-> >> collaboration with Song.
-> >>
-> >> An alternative to this is perhaps to add a new helper
-> >> path_walk_parent_rcu, also living in namei.c, that will be used directly
-> >> by Landlock.  I'm happy to do it either way, but with some experimentation
-> >> I personally think that the code in this patch is still clean enough, and
-> >> can avoid some duplication.
-> >>
-> >> Patch title: path_walk_parent: support reference-less walk
-> >>
-> >> A later commit will update the BPF path iterator to use this.
-> >>
-> >> Signed-off-by: Tingmao Wang <m@maowtm.org>
-> > [...]
-> >>
-> >> -bool path_walk_parent(struct path *path, const struct path *root);
-> >> +struct parent_iterator {
-> >> +       struct path path;
-> >> +       struct path root;
-> >> +       bool rcu;
-> >> +       /* expected seq of path->dentry */
-> >> +       unsigned next_seq;
-> >> +       unsigned m_seq, r_seq;
-> > 
-> > Most of parent_iterator is not really used by reference walk.
-> > So it is probably just separate the two APIs?
-> 
-> I don't mind either way, but I feel like it might be nice to just have one
-> style of APIs (i.e. an iterator with start / end / next vs just one
-> function), even though this is not totally necessary for the ref-taking
-> walk.  After all, the BPF use case is iterator-based.  This also means
-> that the code at the user's side (mostly thinking of Landlock here) is
-> slightly simpler.
-> 
-> But I've not experimented with the other way.  I'm open to both, and I'm
-> happy to send a patch later for a separate API (in that case that would
-> not depend on this and I might just start a new series).
-> 
-> Would like to hear what VFS folks thinks of this first tho, and whether
-> there's any preference in one or two APIs.
+On 6/11/25 01:45, Eduard Zingerman wrote:
+> On Tue, 2025-06-10 at 20:08 +0100, Mykyta Yatsenko wrote:
+>> From: Mykyta Yatsenko <yatsenko@meta.com>
+>>
+>> Implement support for presetting values for array elements in
+>> veristat.
+>> For example:
+>> ```
+>> sudo ./veristat set_global_vars.bpf.o -G "arr[3] = 1"
+>> ```
+>> Arrays of structures and structure of arrays work, but each
+>> individual
+>> scalar value has to be set separately: `foo[1].bar[2] = value`.
+>>
+>> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+>> ---
+> A few nits regarding error reporting:
+>
+>    ./veristat -q -G ptr_arr[10]=0 set_global_vars.bpf.o
+>    Unsupported array element type for variable ptr_arr. Only int, enum, struct, union are supported
+>                                                                                                   ^^^
+> 											 missing dot
+>
+>    ./veristat -G arr[[10]]=0 set_global_vars.bpf.o
+>    Could not parse 'arr[[10]]'Failed to parse global variable presets: arr[[10]]=0
+>    ^^^^^^^^^                ^^^                                                  ^^^
+>    Can't ?		   dot or comma                                 missing dot
+>
+>    ./veristat -q -G "struct1[0] = 0" set_global_vars.bpf.o
+>    Setting value for type Struct is not supported
+>                                             ^^^^^^^^^
+> 					   report full_name here?
+>
+> I applied a diff as in the attachment, to see what offsets are being assigned.
+> Looks like this shows a bug:
+>
+>    ./veristat  -q -G "struct1[0].filler = 42" set_global_vars.bpf.o > /dev/null
+>    setting struct1[0].filler: offset 54, kind int, value 42
+>
+> Shouldn't offset be 2 in this case?
+>
+> (maybe print such info in debug (-d) mode?)
+>
+> Unrelated to this patch, but still a bug:
+>
+>    # Catches range error:
+>    ./veristat -q -G "struct1[0].filler2 = 100500" set_global_vars.bpf.o
+>    Variable unsigned short value 100500 is out of range [0; 65535]
+>    # Does not range error:
+>    ./veristat -q -G "struct1[0].filler2 = -1" set_global_vars.bpf.o
+Thanks for taking a look and checking few testcases.
+I'll fix this one in the next patch, along with the error messages.
+>    ... success ...
+>
+> [...]
 
-I really dislike exposing the sequence number for mounts an for
-dentries. That's just nonsense and a non-VFS low-level consumer of this
-API has zero business caring about any of that. It's easy to
-misunderstand, it's easy to abuse so that's not a good way of doing
-this. It's the wrong API.
-
-> 
-> > 
-> > Also, is it ok to make m_seq and r_seq available out of fs/?
-
-No, it's not.
-
-> 
-> The struct is not intended to be used directly by code outside.  Not sure
-
-That doesn't mean anything. It's simply the wrong API if it has to spill
-so much of its bowels.
-
-> what is the standard way to do this but we can make it private by e.g.
-> putting the seq values in another struct, if needed.  Alternatively I
-> think we can hide the entire struct behind an opaque pointer by doing the
-> allocation ourselves.
-> 
-> > 
-> >> +};
-> >> +
-> >> +#define PATH_WALK_PARENT_UPDATED               0
-> >> +#define PATH_WALK_PARENT_ALREADY_ROOT  -1
-> >> +#define PATH_WALK_PARENT_RETRY                 -2
-> >> +
-> >> +void path_walk_parent_start(struct parent_iterator *pit,
-> >> +                           const struct path *path, const struct path *root,
-> >> +                           bool ref_less);
-> >> +int path_walk_parent(struct parent_iterator *pit, struct path *next_parent);
-> >> +int path_walk_parent_end(struct parent_iterator *pit);
-> > 
-> > I think it is better to make this rcu walk a separate set of APIs.
-> > IOW, we will have:
-> > 
-> > int path_walk_parent(struct path *path, struct path *root);
-> > 
-> > and
-> > 
-> > void path_walk_parent_rcu_start(struct parent_iterator *pit,
-> >                            const struct path *path, const struct path *root);
-> > int path_walk_parent_rcu_next(struct parent_iterator *pit, struct path
-> > *next_parent);
-> > int path_walk_parent_rcu_end(struct parent_iterator *pit);
-> 
-> (replied above)
-
-Exposing two sets of different APIs for essentially the same things is
-not going to happen.
-
-The VFS doesn't expose a rcu variant and a non-rcu variant for itself so
-we are absolutely not going to do that for outside stuff.
-
-It always does the try RCU first, then try to continue the walk by
-falling back to REF walk (e.g., via try_to_unlazy()). If that doesn't
-work then let the caller know and require them to decide whether to
-abort or redo everything in ref-walk.
-
-There's zero need in that scheme for the caller to see any of the
-internals of the VFS and that's what you should aim for.
 
