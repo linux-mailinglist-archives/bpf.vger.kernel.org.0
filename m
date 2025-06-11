@@ -1,204 +1,147 @@
-Return-Path: <bpf+bounces-60273-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60263-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1450AD47AF
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 03:05:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FF65AD4791
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 02:56:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DAA53A9955
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 01:04:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 68BE016C8C1
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 00:56:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 036001A3BD8;
-	Wed, 11 Jun 2025 01:03:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A30FF42AAF;
+	Wed, 11 Jun 2025 00:56:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ix7qs+1O"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0016.hostedemail.com [216.40.44.16])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EAC018DF86;
-	Wed, 11 Jun 2025 01:03:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1878B5695;
+	Wed, 11 Jun 2025 00:56:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749603790; cv=none; b=L6EVe0Kh771KW9u9uW62zLNqOB2GUCYxXaoMrXwVEJEdJC2j7sk7kXH8MiIinNmvmW09aPIPA7TuWUhvVmpQFIUNmUf/ceogxBltAsCFls5qia5bjkCAT9MKAvKJm2AeTOMzgNbgYu08nGTCPUE1x93C+971JY9fIUUliDdVUfU=
+	t=1749603375; cv=none; b=j35bMFGyOAy7se/lXdbdoHUEtOs8NYNiSb4sc5anrLSll9FBN8PUD3qQu1L05L1SwpDkvVZtBL8OqtSQqO4ueHZwtUudlerTP3O2iSdObSJNsd2JthN5jiLXxjTxvvC6gsT79Oo2aHJVfszVYy3v2ugXTb5kJpzRQBs+BvPl204=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749603790; c=relaxed/simple;
-	bh=bPBajh8EGf4+bDng5T4QRryXcyGpgQ9DELBqLYicx48=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=jyYnHZj/DnL1SP/v1t0gouLFV0fgYpeupc+cOuM6OkGaLu9yha5dOc3wqLgR32+Y838p8ux5KiMmDOB58oYVats86aSIqgxNDi1eLtf9A0t/TTjf/Sn5ZcgRnbz5+THmbHScmvXa7+Ooa+xLbicMD5o/tzI1xCJQttAkr87gYjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf02.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay05.hostedemail.com (Postfix) with ESMTP id 314A45F7BD;
-	Wed, 11 Jun 2025 01:03:01 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: nevets@goodmis.org) by omf02.hostedemail.com (Postfix) with ESMTPA id 2CAEB8000E;
-	Wed, 11 Jun 2025 01:02:58 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.98.2)
-	(envelope-from <rostedt@goodmis.org>)
-	id 1uP9tG-00000000vE6-1AAw;
-	Tue, 10 Jun 2025 21:04:30 -0400
-Message-ID: <20250611010430.123232579@goodmis.org>
-User-Agent: quilt/0.68
-Date: Tue, 10 Jun 2025 20:54:35 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org,
- bpf@vger.kernel.org,
- x86@kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Josh Poimboeuf <jpoimboe@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>,
- Ingo Molnar <mingo@kernel.org>,
- Jiri Olsa <jolsa@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>,
- Andrii Nakryiko <andrii@kernel.org>,
- Indu Bhagat <indu.bhagat@oracle.com>,
- "Jose E. Marchesi" <jemarch@gnu.org>,
- Beau Belgrave <beaub@linux.microsoft.com>,
- Jens Remus <jremus@linux.ibm.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH v10 14/14] unwind_user/x86: Enable compat mode frame pointer unwinding on x86
-References: <20250611005421.144238328@goodmis.org>
+	s=arc-20240116; t=1749603375; c=relaxed/simple;
+	bh=yW2+s1S0dYwBFjAXmnAj4igW3DXypljO3osHyrjTWuo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pbhJYwScE1o4jB2AANuh96Fo6OxPh7zkCip4muhUNszep23bIUQXUlUrcZbRC8UKntNHrTw1UqS1gsORhIJf4UHiT9z+wU/66pdTbU1cuPoJarwQbAi2+ZF2Bf42bKmlpANESGikAMvyTedrw0luKljz6zfmPgZU8NkgMqUoElI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ix7qs+1O; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AEB6C4CEF7;
+	Wed, 11 Jun 2025 00:56:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749603373;
+	bh=yW2+s1S0dYwBFjAXmnAj4igW3DXypljO3osHyrjTWuo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Ix7qs+1OOS03g3OgEyAqtA3tJ1Km6thWuMpTMlUAB4t3wtHZs1xKmfp4yAhk+kPXD
+	 u9cL2ZGQJmwYFaQgjA6n2vk9Bv2plghnHQEop9bltf4sJopPBhGfV7kKTCZasn53hO
+	 2AYpoTZsAwqVOg+OvKXDphjI0SGVu7CWFyIu2YlWbLxi4WAhuF/3l5d/Jwz7wCJR3x
+	 nR0RkqB7mIekEjtAFKb/YgjSzVnwk9/iuNFhIQH0cKuGkUFFUdK+iwmYZn3PQX3c4J
+	 wmhjVvKBqb0seaoFY/mD9B6DneC1383fkc48KhXl1UGdZBU7Z9vOXmj47Dz0lJ9g6Z
+	 bUuSzQBBQBf6w==
+Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-6f8a87f0c0fso66824376d6.0;
+        Tue, 10 Jun 2025 17:56:13 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCX/kX6uL4WK6/foPfomJNn7nDoRlg95354czakrcZ0wqm0uAMxgjJgqNq2N9c6zn28MY2TIOdt9MvAR/WIo@vger.kernel.org, AJvYcCX81Gk5VdtTdnrAjfNKlSBsLpQEE/CIaaQicfKhf/Hc5gfmk5umZ+gxQQuNoQyu2TaTXwy6cD8anFPa5o1YEQ==@vger.kernel.org, AJvYcCXB4etdv/Dg8BAf9r69SVd526/OmWqRDsxCJIFRmt31seehrIK+C8q2lfKvlHcvOMdhGD8gHqT1YtkcBxbVRfMLp0AYdUTe@vger.kernel.org, AJvYcCXYeGVn645RuHHGhb96oqWh9pRLyAdXnqX+f/2Wlj5uAekt2g3NVqB1xkLioIdmMaraKSo=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywbe5WWIKoezrujSp+/4xyxgfU9hGx7HAN203stASTv1fMmpqNv
+	u18AsS8FshYU8ODD354JurqT44hSC1/T+3LOmZhlkgQPpTsy51Lriu1+5dOlgRtsdV82MUqXErW
+	lbjtWez9cQqqziSRYa5Y/0bufUUnKVNY=
+X-Google-Smtp-Source: AGHT+IGSVeuJ+FOXkPbiyzb4l38dn5Y2lPF187pto/+/yD/Nj5qfj6UaX5J81ibPmEr9a8rn1ItvqlL0uinCvFk/UwU=
+X-Received: by 2002:a05:6214:e87:b0:6f4:cb2e:25cc with SMTP id
+ 6a1803df08f44-6fb2c375cbcmr25386766d6.32.1749603372419; Tue, 10 Jun 2025
+ 17:56:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Rspamd-Queue-Id: 2CAEB8000E
-X-Rspamd-Server: rspamout08
-X-Stat-Signature: xtsqf539zgjt8abwi56oeejptekfnsiy
-X-Session-Marker: 6E657665747340676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1/Z5lvnMFhI3Ba4nW/U9c/pN3/34EKD5Bs=
-X-HE-Tag: 1749603778-441344
-X-HE-Meta: U2FsdGVkX1/gv6KFmGkvhJ9fjkJYNLktsCGvhOkgNiXiPGe4f3c0Ub8SSRV2pPNu+Nedz1j+af1NzU7fkW5lYvaO4psTf5JaKiCgw73Xe/eGTOeQROKZxuUWVhtpEca0H1ZUyWwfb82W7yljgnugyhDhd7LJ29D+hdr2aFCZIUWguFfGx51GFespPeGGU6nSIqGBmqNMUEv+lSa6kTam9nSvWfxffb1Pt0n6f4iJQGjGZzrvDkR/Tj5ngV7T/GCwJcQzOTZM3VvNrgFAl4rzc5a2yRTyd2bcke+osnGVFpn0p+dgNYad8G5taDkanS+TGw4XQNcgX4Z3T0U1OIQD+kD4+q7qJMtU7lG2eQBRgWPq0HOVQt/IbGYNFJgP7qbRL0gZHodRTqLcBkuxd0CCz3Zb4fU4zpIFbKWLxgMqKYA=
+References: <20250606213015.255134-1-song@kernel.org> <20250606213015.255134-2-song@kernel.org>
+ <174959847640.608730.1496017556661353963@noble.neil.brown.name>
+In-Reply-To: <174959847640.608730.1496017556661353963@noble.neil.brown.name>
+From: Song Liu <song@kernel.org>
+Date: Tue, 10 Jun 2025 17:56:01 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6oet8_LbL+6mVi7Lc4U_8i7O-PN5F1zOm5esV52sBu0A@mail.gmail.com>
+X-Gm-Features: AX0GCFvEtC27CfJCDtYJnIsvh1XG7Q2O9NKGpEtUlKwZpyuicB1tN-YkqmLZmHU
+Message-ID: <CAPhsuW6oet8_LbL+6mVi7Lc4U_8i7O-PN5F1zOm5esV52sBu0A@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 1/5] namei: Introduce new helper function path_walk_parent()
+To: NeilBrown <neil@brown.name>
+Cc: Jan Kara <jack@suse.cz>, bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, viro@zeniv.linux.org.uk, 
+	brauner@kernel.org, kpsingh@kernel.org, mattbobrowski@google.com, 
+	amir73il@gmail.com, repnop@google.com, jlayton@kernel.org, 
+	josef@toxicpanda.com, mic@digikod.net, gnoack@google.com, m@maowtm.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Josh Poimboeuf <jpoimboe@kernel.org>
+Hi Neil,
 
-Use ARCH_INIT_USER_COMPAT_FP_FRAME to describe how frame pointers are
-unwound on x86, and implement the hooks needed to add the segment base
-addresses.  Enable HAVE_UNWIND_USER_COMPAT_FP if the system has compat
-mode compiled in.
+Thanks for your suggestion! It does look like a good solution.
 
-Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
-Changes since v9: https://lore.kernel.org/linux-trace-kernel/20250513223551.966925463@goodmis.org/
+On Tue, Jun 10, 2025 at 4:34=E2=80=AFPM NeilBrown <neil@brown.name> wrote:
 
-- Remove unneeded include of perf_event.h
+> The above looks a lot like follow_dotdot().  This is good because it
+> means that it is likely correct.  But it is bad because it means there
+> are two copies of essentially the same code - making maintenance harder.
+>
+> I think it would be good to split the part that you want out of
+> follow_dotdot() and use that.  Something like the following.
+>
+> You might need a small wrapper in landlock which would, for example,
+> pass LOOKUP_BENEATH and replace path->dentry with the parent on success.
+>
+> NeilBrown
+>
+> diff --git a/fs/namei.c b/fs/namei.c
+> index 4bb889fc980b..b81d07b4417b 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -2048,36 +2048,65 @@ static struct dentry *follow_dotdot_rcu(struct na=
+meidata *nd)
+>         return nd->path.dentry;
+>  }
+>
+> -static struct dentry *follow_dotdot(struct nameidata *nd)
+> +/**
+> + * path_walk_parent - Find the parent of the given struct path
+> + * @path  - The struct path to start from
+> + * @root  - A struct path which serves as a boundary not to be crosses
+> + * @flags - Some LOOKUP_ flags
+> + *
+> + * Find and return the dentry for the parent of the given path (mount/de=
+ntry).
+> + * If the given path is the root of a mounted tree, it is first updated =
+to
+> + * the mount point on which that tree is mounted.
+> + *
+> + * If %LOOKUP_NO_XDEV is given, then *after* the path is updated to a ne=
+w mount,
+> + * the error EXDEV is returned.
+> + * If no parent can be found, either because the tree is not mounted or =
+because
+> + * the @path matches the @root, then @path->dentry is returned unless @f=
+lags
+> + * contains %LOOKUP_BENEATH, in which case -EXDEV is returned.
+> + *
+> + * Returns: either an ERR_PTR() or the chosen parent which will have had=
+ the
+> + * refcount incremented.
+> + */
+> +struct dentry *path_walk_parent(struct path *path, struct path *root, in=
+t flags)
 
- arch/x86/Kconfig                         |  1 +
- arch/x86/include/asm/unwind_user.h       | 49 ++++++++++++++++++++++++
- arch/x86/include/asm/unwind_user_types.h | 17 ++++++++
- 3 files changed, 67 insertions(+)
- create mode 100644 arch/x86/include/asm/unwind_user_types.h
+We can probably call this __path_walk_parent() and make it static.
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 2cdb5cf91541..3f7bdc9e3cec 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -302,6 +302,7 @@ config X86
- 	select HAVE_SYSCALL_TRACEPOINTS
- 	select HAVE_UACCESS_VALIDATION		if HAVE_OBJTOOL
- 	select HAVE_UNSTABLE_SCHED_CLOCK
-+	select HAVE_UNWIND_USER_COMPAT_FP	if IA32_EMULATION
- 	select HAVE_UNWIND_USER_FP		if X86_64
- 	select HAVE_USER_RETURN_NOTIFIER
- 	select HAVE_GENERIC_VDSO
-diff --git a/arch/x86/include/asm/unwind_user.h b/arch/x86/include/asm/unwind_user.h
-index 8597857bf896..43f8554c1d70 100644
---- a/arch/x86/include/asm/unwind_user.h
-+++ b/arch/x86/include/asm/unwind_user.h
-@@ -2,10 +2,59 @@
- #ifndef _ASM_X86_UNWIND_USER_H
- #define _ASM_X86_UNWIND_USER_H
- 
-+#include <linux/unwind_user_types.h>
-+#include <asm/ptrace.h>
-+
- #define ARCH_INIT_USER_FP_FRAME							\
- 	.cfa_off	= (s32)sizeof(long) *  2,				\
- 	.ra_off		= (s32)sizeof(long) * -1,				\
- 	.fp_off		= (s32)sizeof(long) * -2,				\
- 	.use_fp		= true,
- 
-+#ifdef CONFIG_IA32_EMULATION
-+
-+#define ARCH_INIT_USER_COMPAT_FP_FRAME						\
-+	.cfa_off	= (s32)sizeof(u32)  *  2,				\
-+	.ra_off		= (s32)sizeof(u32)  * -1,				\
-+	.fp_off		= (s32)sizeof(u32)  * -2,				\
-+	.use_fp		= true,
-+
-+#define in_compat_mode(regs) !user_64bit_mode(regs)
-+
-+static inline void arch_unwind_user_init(struct unwind_user_state *state,
-+					 struct pt_regs *regs)
-+{
-+	unsigned long cs_base, ss_base;
-+
-+	if (state->type != UNWIND_USER_TYPE_COMPAT_FP)
-+		return;
-+
-+	scoped_guard(irqsave) {
-+		cs_base = segment_base_address(regs->cs);
-+		ss_base = segment_base_address(regs->ss);
-+	}
-+
-+	state->arch.cs_base = cs_base;
-+	state->arch.ss_base = ss_base;
-+
-+	state->ip += cs_base;
-+	state->sp += ss_base;
-+	state->fp += ss_base;
-+}
-+#define arch_unwind_user_init arch_unwind_user_init
-+
-+static inline void arch_unwind_user_next(struct unwind_user_state *state)
-+{
-+	if (state->type != UNWIND_USER_TYPE_COMPAT_FP)
-+		return;
-+
-+	state->ip += state->arch.cs_base;
-+	state->fp += state->arch.ss_base;
-+}
-+#define arch_unwind_user_next arch_unwind_user_next
-+
-+#endif /* CONFIG_IA32_EMULATION */
-+
-+#include <asm-generic/unwind_user.h>
-+
- #endif /* _ASM_X86_UNWIND_USER_H */
-diff --git a/arch/x86/include/asm/unwind_user_types.h b/arch/x86/include/asm/unwind_user_types.h
-new file mode 100644
-index 000000000000..d7074dc5f0ce
---- /dev/null
-+++ b/arch/x86/include/asm/unwind_user_types.h
-@@ -0,0 +1,17 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_UNWIND_USER_TYPES_H
-+#define _ASM_UNWIND_USER_TYPES_H
-+
-+#ifdef CONFIG_IA32_EMULATION
-+
-+struct arch_unwind_user_state {
-+	unsigned long ss_base;
-+	unsigned long cs_base;
-+};
-+#define arch_unwind_user_state arch_unwind_user_state
-+
-+#endif /* CONFIG_IA32_EMULATION */
-+
-+#include <asm-generic/unwind_user_types.h>
-+
-+#endif /* _ASM_UNWIND_USER_TYPES_H */
--- 
-2.47.2
+Then we can add an exported path_walk_parent() that calls
+__path_walk_parent() and adds extra logic.
 
+If this looks good to folks, I can draft v4 based on this idea.
 
+Thanks,
+Song
+
+[...]
 
