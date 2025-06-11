@@ -1,137 +1,122 @@
-Return-Path: <bpf+bounces-60346-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60347-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D98AAAD5C09
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 18:25:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81D61AD5C2A
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 18:31:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 854213A6488
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 16:24:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27FA0189EAE9
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 16:32:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EE291E9915;
-	Wed, 11 Jun 2025 16:25:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F105520127D;
+	Wed, 11 Jun 2025 16:31:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m/WvkbOb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JJvLKc7I"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E346819D8A7;
-	Wed, 11 Jun 2025 16:25:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 638511F0E39;
+	Wed, 11 Jun 2025 16:31:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749659108; cv=none; b=IvuEHCZOCnZsF4ykEW7EDT6H5v3bs0NBb8h5HFFXhAz6NQi/r6ewBpETHD6VPrmnOViRlMloJsYwNp9uc+4E647Q4ecgw+1XDAmJsrhr6KamHnvRdZ9RVh0ivvMXs/rG1E9n6Tqiw4olx72cR837CHo0jqo1ULtWOVcmBNJHJ0Q=
+	t=1749659499; cv=none; b=LakKbJu9sqE64mpvVdSHD/QGc/75LotY9+Oy+aLEI43vO3ZTEouVI5VoKfi9P31xBeAnR94naBpneX62KzFIgX3BvzhDlooj5j15jS6T+qohS92iBfmj1nvhC9tJWgH2axxZUMDFGwpvH0bh0zNP1NV9atBxl3uXewASteJInCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749659108; c=relaxed/simple;
-	bh=G+T8wW9Nt6f9EEFn99e/NM3xHauN4ohp03gUHIvPj4c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UAOW/QCSAvz8mW+AlYxsxkrcDjZlXO216U/2UP+IHc0s213wW9j61pcUuKnhrLliWbXYKy9kVJ6C6PlkZvYoJVJs/IPCHv3njE1wPfkgEbWOLzdKADEgC6Re9oZ+naEexX9GLylzfRvDsy6mtrKJfrl+615qk6fRK4HJJWtlcdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m/WvkbOb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E01CAC4CEE3;
-	Wed, 11 Jun 2025 16:25:06 +0000 (UTC)
+	s=arc-20240116; t=1749659499; c=relaxed/simple;
+	bh=wHBQRhTvoZjP5hYlhu6PAF/AqN1dtZGC7ByNEkL8uk8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CCTwOECmEgbXP1aNt+SPdCcpWC5gjPsyQgYUZRwfpJWqCoCbajbDaKh17OoUxl5R2FAP0PcIUVBO4igcJN/oH18ahuZK54eEIy6oxay9+QOCEOBoYh3BN4kg8Um7gjN+x60ZDYxip3TyIlcMJPMJrTYqEtebQ51N+2L8x2P1CK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JJvLKc7I; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCE8CC4CEF5;
+	Wed, 11 Jun 2025 16:31:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749659107;
-	bh=G+T8wW9Nt6f9EEFn99e/NM3xHauN4ohp03gUHIvPj4c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=m/WvkbObsbjNbgbEriiSoaQKl/8tmYm0VWOix2l+jaU6aISJJ/jeU4XPGeiPg5ecr
-	 o9NIzLQh4Blqe5BtVC/JF9ULmsTdW6ESVq2KjPgTvv4ex0vGX849E/ZuVfz7mqOVOs
-	 f2PKfEQ/gdnBcd8WlJlgh19glj4Tks3/+5R6ZATk+p6io3uzrtmefSZSPx1jOi7O8h
-	 QLXNRFeDP9FqtS9il+mFfflReX29kL/C9p8NG3XsMRMezyP+7Uc3OtWG9APQXlKfa3
-	 cClW3aYu+/KJf9YA4zo/vjFVQtPLJ1rG3012zm/Y4cA8tB/y9WaVadgP+4yZVoTeaG
-	 hlsk3GsEB01FA==
-Date: Wed, 11 Jun 2025 18:25:04 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: linux-kernel@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-	Xiongfeng Wang <wangxiongfeng2@huawei.com>, rcu@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH 1/2] context_tracking: Provide helper to determine if
- we're in IRQ
-Message-ID: <aEmt4Aa3-gULNtic@localhost.localdomain>
-References: <20250609180125.2988129-1-joelagnelf@nvidia.com>
+	s=k20201202; t=1749659498;
+	bh=wHBQRhTvoZjP5hYlhu6PAF/AqN1dtZGC7ByNEkL8uk8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=JJvLKc7IROMKKelWLCQtsFKYQEuV5DVSTk4jtVvozIZtXoYprNJfLZu4kKj6ondQd
+	 L2wjcqMql+MQcTw5uE2TroXEQgwmpm2W9elvE3eC8RVNpD03r4L6/XV7+eXYKuTvxF
+	 kiuHceMjoaWRZ3R8IRAyVFftX4aprswSeURh3o7iqGxixiDE1im3RTbixraRi6n/tB
+	 z3MX7iW6bSlCkF9FbB/DaLNAgkyD6/G2Hg9HH3Ok5/bngxo/GjSU/BU+idijJft85B
+	 6SnneFTyWbUXvepgpz8urF41dLIOx1omo4cwgtPVQm242RKA8ji0VxLS8ie1msRpvR
+	 o7U55sl3HkXdw==
+Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-6fb0eb0f0fbso85456d6.1;
+        Wed, 11 Jun 2025 09:31:38 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUm/Y5+XONlilsbAmRz6jP7G7SKNRdjgSa1ecbeZLR4Tkl5UPJxa95NPg7cMFu1iWHFhqhDlsBSolskUKDo@vger.kernel.org, AJvYcCV92Bi7IGFFZASZr+s5IYIQmDjAZPGTrTw3PJoRPbe2kZ1Vft/p0VEhy8PCWF8jVDpfTF6pRYgqhUrLJP3NnTz3Bf15HOZ3@vger.kernel.org, AJvYcCVUv/dcnkIWyylkkmGfvFkxt9/0KzD5rVwue5fvmjOdEVWJgCEtqljYwEdP9Edb/igcrv8=@vger.kernel.org, AJvYcCVW+4ppSmsGGRQxIQGUNqqJMJboTczuILWrkbpYj7UD9P+S4YVPco3qyXaqDXs0WD5x+dqy5viiNaKQ9X9+2A==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyQDFKZybw9e5Spxl364cF1ZG7pJo8EaJkrTHO4PkMisyIfVrjp
+	8dGpQF4tDfp5uTCeSSpt39vAZ2YM/4W/uhgzeZZnRaGnNuEvPKzDBsI7GH5HGZgjaKKeIiOByyb
+	syJGS0eH6rMoL4eIUi2pahpnGC3t8KC8=
+X-Google-Smtp-Source: AGHT+IHww/o74BxPrTUbg+/oYp3tE0Qny5VDLaUUtEl/gCVQ64aG0JYxPSDJ7sXz6hjpvQbWvubaQVRVtTW5qUDhHi8=
+X-Received: by 2002:a05:6214:500c:b0:6fa:fdf5:a604 with SMTP id
+ 6a1803df08f44-6fb347f3af5mr938296d6.12.1749659497922; Wed, 11 Jun 2025
+ 09:31:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250609180125.2988129-1-joelagnelf@nvidia.com>
+References: <20250606213015.255134-1-song@kernel.org> <20250606213015.255134-2-song@kernel.org>
+ <174959847640.608730.1496017556661353963@noble.neil.brown.name>
+ <CAPhsuW6oet8_LbL+6mVi7Lc4U_8i7O-PN5F1zOm5esV52sBu0A@mail.gmail.com> <20250611.Bee1Iohoh4We@digikod.net>
+In-Reply-To: <20250611.Bee1Iohoh4We@digikod.net>
+From: Song Liu <song@kernel.org>
+Date: Wed, 11 Jun 2025 09:31:26 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6jZxRBEgz00KV4SasiMhBGyMHoP5dMktoyCOeMbJwmgg@mail.gmail.com>
+X-Gm-Features: AX0GCFsKHEibU3SwfO1PDkPH059MHGcDhjOXxl4R9bB8VLTrCd0m_aTAtlTdLGI
+Message-ID: <CAPhsuW6jZxRBEgz00KV4SasiMhBGyMHoP5dMktoyCOeMbJwmgg@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 1/5] namei: Introduce new helper function path_walk_parent()
+To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
+Cc: NeilBrown <neil@brown.name>, Jan Kara <jack@suse.cz>, bpf@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, kernel-team@meta.com, 
+	andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, daniel@iogearbox.net, 
+	martin.lau@linux.dev, viro@zeniv.linux.org.uk, brauner@kernel.org, 
+	kpsingh@kernel.org, mattbobrowski@google.com, amir73il@gmail.com, 
+	repnop@google.com, jlayton@kernel.org, josef@toxicpanda.com, 
+	gnoack@google.com, m@maowtm.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Le Mon, Jun 09, 2025 at 02:01:23PM -0400, Joel Fernandes a écrit :
-> context_tracking keeps track of whether we're handling IRQ well after
-> the preempt masks give take it off their books. We need this
-> functionality in a follow-up patch to fix a bug. Provide a helper API
-> for the same.
-> 
-> Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
-> ---
->  include/linux/context_tracking_irq.h |  2 ++
->  kernel/context_tracking.c            | 12 ++++++++++++
->  2 files changed, 14 insertions(+)
-> 
-> diff --git a/include/linux/context_tracking_irq.h b/include/linux/context_tracking_irq.h
-> index 197916ee91a4..35a5ad971514 100644
-> --- a/include/linux/context_tracking_irq.h
-> +++ b/include/linux/context_tracking_irq.h
-> @@ -9,6 +9,7 @@ void ct_irq_enter_irqson(void);
->  void ct_irq_exit_irqson(void);
->  void ct_nmi_enter(void);
->  void ct_nmi_exit(void);
-> +bool ct_in_irq(void);
->  #else
->  static __always_inline void ct_irq_enter(void) { }
->  static __always_inline void ct_irq_exit(void) { }
-> @@ -16,6 +17,7 @@ static inline void ct_irq_enter_irqson(void) { }
->  static inline void ct_irq_exit_irqson(void) { }
->  static __always_inline void ct_nmi_enter(void) { }
->  static __always_inline void ct_nmi_exit(void) { }
-> +static inline bool ct_in_irq(void) { return false; }
->  #endif
->  
->  #endif
-> diff --git a/kernel/context_tracking.c b/kernel/context_tracking.c
-> index fb5be6e9b423..d0759ef9a6bd 100644
-> --- a/kernel/context_tracking.c
-> +++ b/kernel/context_tracking.c
-> @@ -392,6 +392,18 @@ noinstr void ct_irq_exit(void)
->  	ct_nmi_exit();
->  }
->  
-> +/**
-> + * ct_in_irq - check if CPU is in a context-tracked IRQ context.
-> + *
-> + * Returns true if ct_irq_enter() has been called and ct_irq_exit()
-> + * has not yet been called. This indicates the CPU is currently
-> + * processing an interrupt.
-> + */
-> +bool ct_in_irq(void)
-> +{
-> +	return ct_nmi_nesting() != 0;
+On Wed, Jun 11, 2025 at 8:42=E2=80=AFAM Micka=C3=ABl Sala=C3=BCn <mic@digik=
+od.net> wrote:
+[...]
+> > We can probably call this __path_walk_parent() and make it static.
+> >
+> > Then we can add an exported path_walk_parent() that calls
+> > __path_walk_parent() and adds extra logic.
+> >
+> > If this looks good to folks, I can draft v4 based on this idea.
+>
+> This looks good but it would be better if we could also do a full path
+> walk within RCU when possible.
 
-If rcu_is_watching() and not in an interrupt, ct_nmi_nesting()
-is actually CT_NESTING_IRQ_NONIDLE. If rcu_is_watching() and
-in an interrupt, ct_nmi_nesting() can be CT_NESTING_IRQ_NONIDLE + whatever.
+I think we will need some callback mechanism for this. Something like:
 
-So this doesn't work. I wish we could remove that CT_NESTING_IRQ_NONIDLE
-that is there for hysterical raisins but that doesn't fit in an urgent pile.
+for_each_parents(starting_path, root, callback_fn, cb_data, bool try_rcu) {
+   if (!try_rcu)
+      goto ref_walk;
 
-So probably:
+   __read_seqcount_begin();
+    /* rcu walk parents, from starting_path until root */
+   walk_rcu(starting_path, root, path) {
+    callback_fn(path, cb_data);
+  }
+  if (!read_seqcount_retry())
+    return xxx;  /* successful rcu walk */
 
-bool ct_in_irq(void)
-{
-	long nesting = ct_nmi_nesting();
-
-	return (nesting && nesting != CT_NESTING_IRQ_NONIDLE);
+ref_walk:
+  /* ref walk parents, from starting_path until root */
+   walk(starting_path, root, path) {
+    callback_fn(path, cb_data);
+  }
+  return xxx;
 }
 
-Thanks.
+Personally, I don't like this version very much, because the callback
+mechanism is not very flexible, and it is tricky to use it in BPF LSM.
 
--- 
-Frederic Weisbecker
-SUSE Labs
+Thanks,
+Song
 
