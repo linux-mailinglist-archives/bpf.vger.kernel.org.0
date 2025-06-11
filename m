@@ -1,50 +1,84 @@
-Return-Path: <bpf+bounces-60387-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60389-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDE78AD60C0
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 23:10:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41D04AD612C
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 23:24:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5A6F3AADC4
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 21:09:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5CEEF7A5B68
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 21:23:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F71B2BDC34;
-	Wed, 11 Jun 2025 21:10:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEE4D24503C;
+	Wed, 11 Jun 2025 21:23:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gL0dKys7"
+	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="GB7QRGZ5"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx-rz-1.rrze.uni-erlangen.de (mx-rz-1.rrze.uni-erlangen.de [131.188.11.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96FDE28850C;
-	Wed, 11 Jun 2025 21:10:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7AC91BD9CE;
+	Wed, 11 Jun 2025 21:23:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749676208; cv=none; b=kAilPs8VIksjn2+ZXNarJawneT9j0VepK0Hlvobr6jVZg9TYtTxJWb4l88M+ONai97mwerd9m+ss8GhxMWr5IHu3asHiIDOW4F1Li4aVyoBv7BdPO9ZqYvsVCSGcsHhdXVy9atCtI/9zet1Rd/iXa1mJlMaezAjLRt3Kt2Zqxm4=
+	t=1749677039; cv=none; b=bulC0PajIt2khmUIQghsRSLVKqwkKS3fdZQKeKGs4Zg7ZWkBWYd/ej67pLHg8W8yyui0f+UVMzzzbxfSI9FyhX7JiFfnzGL0823U3MTj5SScqF7HF4WYXltBrTFkOFiv+weTDQhnnn8ZfgDaDqe0ZHq0RmBMfikUQCkeijfNU5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749676208; c=relaxed/simple;
-	bh=yoZJsoXICfhX05KpANME2Lttp2iQeV3DjkQP8RzmicE=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=W8AwK2JFiwypa8IwNtDL6MD2ACc4BnU7tsEiRPhBtT02jIX/cLLxSTxcIMpNB4j8XXpfqf0eQPZXLENw7xQy4pYm44WvDZrZtFz9FBiV/98B2I6sf70nrm8VVDOI/mLPlcnRLrXqMZeRfVD3jUF27XXJpO2Iu8IP66QDiw4z34k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gL0dKys7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25806C4CEE3;
-	Wed, 11 Jun 2025 21:10:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749676208;
-	bh=yoZJsoXICfhX05KpANME2Lttp2iQeV3DjkQP8RzmicE=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=gL0dKys7kONY6Sqa0j/qwgNuku1s+rT0Al/A7o8Rvk49e4nYcswnjcXrs6WlkBaka
-	 Z7pLuR5y9EF7HDLUJCwo8jnw1eTsALX6uBICJOln4uhbuXWjH+cZuUgP6zFWEcd3yX
-	 qYCnJOiF1EnYtj48UY2WMiXWVR+Kwxri/vkE5663zSmITSsF0xtUXpGtcaXMigjWBS
-	 X3ut8e4cjc8fE+GSKeXzHRa3TVue3ODNZAUeCjtPimL0WuWSfy3i/40mI22s/LoKSa
-	 HdnF/cqmfPavUzvCeI4BqneJ4pXM/faifqeNreSd4KyvIbELzC4CbpEEB3Qdv58hRR
-	 n5pxLfRMmNu/A==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70DFD380DBE9;
-	Wed, 11 Jun 2025 21:10:39 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1749677039; c=relaxed/simple;
+	bh=t1zJH4Rmm4htAzj/dQwNCS9TEe1c1gCbgRoNZ2a76h4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=pmjGXMk3QCKFgFTT68iAmRpIwKmw34sleU895c+CEsdg15rSKJJqlR+aB62ooiKlYt6qxQISHckIahuxK1gE55QH1o3NNUs9PUUuxiLBRZ9aJMVJtqnnEzk/047LEXygW8m46lQTewkpHDYyQocm1SSt3rmJW/RFsLiKtzgfQak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=GB7QRGZ5; arc=none smtp.client-ip=131.188.11.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
+	t=1749676562; bh=S2j0xHEZeQOTVtx7TJX88U0NbtEMbxvs08E3DcOiM3k=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From:To:CC:
+	 Subject;
+	b=GB7QRGZ5lNQDix0fSkRgtNjMUUycMz/UHj26osAKdXgqXZKpzhvC7+v9XyS8QmlYC
+	 azUB/LpaFU0XoJC/mJ0vbZ/D59tDhDxJBssj5jaqn1fbH695ZHK/xkgYdQIE7kK+sS
+	 N5j8WALlbhpLQrq98pYbzkDR7mjZlqOt+NDyWZyph3hi749A9BIreU1ETu6Pg/Pma7
+	 QZXaBnZdUvryQAzJbNaE60AG/8ryVYMTcyp52o6CfoGab8AYoxvbeVrnlVBXMvDLHI
+	 OyijBtu3r24T5wMOIZBqjwlbpMaG3cg0dUtM4NFqKqTy0xGay1OeXO7hnwnR+7souS
+	 uQpsPOkO1Iuxg==
+Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-rz-1.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4bHdkB0q3Sz8sk1;
+	Wed, 11 Jun 2025 23:16:02 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at boeck1.rrze.uni-erlangen.de (RRZE)
+X-RRZE-Flag: Not-Spam
+X-RRZE-Submit-IP: 2001:9e8:3626:500:39da:8819:39bd:1255
+Received: from luis-tp.fritz.box (unknown [IPv6:2001:9e8:3626:500:39da:8819:39bd:1255])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: U2FsdGVkX19Vu+9xQHHGMkmfqtW7CJMHQ2bOqLm6aCk=)
+	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4bHdk70Msdz8spC;
+	Wed, 11 Jun 2025 23:15:58 +0200 (CEST)
+From: Luis Gerhorst <luis.gerhorst@fau.de>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Luis Gerhorst <luis.gerhorst@fau.de>
+Subject: [PATCH bpf-next] bpf: Remove redundant free_verifier_state()/pop_stack()
+Date: Wed, 11 Jun 2025 23:14:31 +0200
+Message-ID: <20250611211431.275731-1-luis.gerhorst@fau.de>
+X-Mailer: git-send-email 2.49.0
+In-Reply-To: <b6931bd0dd72327c55287862f821ca6c4c3eb69a.camel@gmail.com>
+References: <b6931bd0dd72327c55287862f821ca6c4c3eb69a.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -52,62 +86,88 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v1 0/7] netlink: specs: fix all the yamllint
- errors
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <174967623825.3484955.9903714612397953732.git-patchwork-notify@kernel.org>
-Date: Wed, 11 Jun 2025 21:10:38 +0000
-References: <20250610125944.85265-1-donald.hunter@gmail.com>
-In-Reply-To: <20250610125944.85265-1-donald.hunter@gmail.com>
-To: Donald Hunter <donald.hunter@gmail.com>
-Cc: netdev@vger.kernel.org, kuba@kernel.org, davem@davemloft.net,
- edumazet@google.com, pabeni@redhat.com, horms@kernel.org,
- mptcp@lists.linux.dev, kernel-tls-handshake@lists.linux.dev,
- bpf@vger.kernel.org, donald.hunter@redhat.com
 
-Hello:
+This patch removes duplicated code.
 
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+Eduard points out [1]:
 
-On Tue, 10 Jun 2025 13:59:37 +0100 you wrote:
-> yamllint reported ~500 errors and warnings in the netlink specs. Fix all
-> the reported issues.
-> 
-> Link: https://lore.kernel.org/netdev/m2tt4tt3wv.fsf@gmail.com/
-> 
-> Donald Hunter (7):
->   netlink: specs: add doc start markers to yaml
->   netlink: specs: clean up spaces in brackets
->   netlink: specs: fix up spaces before comments
->   netlink: specs: fix up truthy values
->   netlink: specs: fix up indentation errors
->   netlink: specs: wrap long doc lines (>80 chars)
->   netlink: specs: fix a couple of yamllint warnings
-> 
-> [...]
+    Same cleanup cycles are done in push_stack() and push_async_cb(),
+    both functions are only reachable from do_check_common() via
+    do_check() -> do_check_insn().
 
-Here is the summary with links:
-  - [net-next,v1,1/7] netlink: specs: add doc start markers to yaml
-    https://git.kernel.org/netdev/net-next/c/ce6bd277e1f7
-  - [net-next,v1,2/7] netlink: specs: clean up spaces in brackets
-    https://git.kernel.org/netdev/net-next/c/880d43ca9aa4
-  - [net-next,v1,3/7] netlink: specs: fix up spaces before comments
-    https://git.kernel.org/netdev/net-next/c/2338bab56951
-  - [net-next,v1,4/7] netlink: specs: fix up truthy values
-    https://git.kernel.org/netdev/net-next/c/3c90fd2baaa0
-  - [net-next,v1,5/7] netlink: specs: fix up indentation errors
-    https://git.kernel.org/netdev/net-next/c/ec362192aa9e
-  - [net-next,v1,6/7] netlink: specs: wrap long doc lines (>80 chars)
-    https://git.kernel.org/netdev/net-next/c/d26552d38c82
-  - [net-next,v1,7/7] netlink: specs: fix a couple of yamllint warnings
-    https://git.kernel.org/netdev/net-next/c/97c6383113b5
+    Hence, I think that cur state should not be freed in push_*()
+    functions and pop_stack() loop there is not needed.
 
-You are awesome, thank you!
+This would also fix the 'symptom' for [2], but the issue also has a
+simpler fix which was sent separately. This fix also makes sure the
+push_*() callers always return an error for which
+error_recoverable_with_nospec(err) is false. This is required because
+otherwise we try to recover and access the stale `state`.
+
+[1] https://lore.kernel.org/all/b6931bd0dd72327c55287862f821ca6c4c3eb69a.camel@gmail.com/
+[2] https://lore.kernel.org/all/68497853.050a0220.33aa0e.036a.GAE@google.com/
+
+Reported-by: Eduard Zingerman <eddyz87@gmail.com>
+Link: https://lore.kernel.org/all/b6931bd0dd72327c55287862f821ca6c4c3eb69a.camel@gmail.com/
+Signed-off-by: Luis Gerhorst <luis.gerhorst@fau.de>
+---
+ kernel/bpf/verifier.c | 26 +++++++++++---------------
+ 1 file changed, 11 insertions(+), 15 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index d3bff0385a55..fa147c207c4b 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -2066,10 +2066,10 @@ static struct bpf_verifier_state *push_stack(struct bpf_verifier_env *env,
+ 	}
+ 	return &elem->st;
+ err:
+-	free_verifier_state(env->cur_state, true);
+-	env->cur_state = NULL;
+-	/* pop all elements and return */
+-	while (!pop_stack(env, NULL, NULL, false));
++	/* free_verifier_state() and pop_stack() loop will be done in
++	 * do_check_common(). Caller must return an error for which
++	 * error_recoverable_with_nospec(err) is false.
++	 */
+ 	return NULL;
+ }
+ 
+@@ -2838,10 +2838,10 @@ static struct bpf_verifier_state *push_async_cb(struct bpf_verifier_env *env,
+ 	elem->st.frame[0] = frame;
+ 	return &elem->st;
+ err:
+-	free_verifier_state(env->cur_state, true);
+-	env->cur_state = NULL;
+-	/* pop all elements and return */
+-	while (!pop_stack(env, NULL, NULL, false));
++	/* free_verifier_state() and pop_stack() loop will be done in
++	 * do_check_common(). Caller must return an error for which
++	 * error_recoverable_with_nospec(err) is false.
++	 */
+ 	return NULL;
+ }
+ 
+@@ -22904,13 +22904,9 @@ static int do_check_common(struct bpf_verifier_env *env, int subprog)
+ 
+ 	ret = do_check(env);
+ out:
+-	/* check for NULL is necessary, since cur_state can be freed inside
+-	 * do_check() under memory pressure.
+-	 */
+-	if (env->cur_state) {
+-		free_verifier_state(env->cur_state, true);
+-		env->cur_state = NULL;
+-	}
++	WARN_ON_ONCE(!env->cur_state);
++	free_verifier_state(env->cur_state, true);
++	env->cur_state = NULL;
+ 	while (!pop_stack(env, NULL, NULL, false));
+ 	if (!ret && pop_log)
+ 		bpf_vlog_reset(&env->log, 0);
+
+base-commit: 1d251153a480fc7467d00a8c5dabc55cc6166c43
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.49.0
 
 
