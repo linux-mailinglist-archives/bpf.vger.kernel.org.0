@@ -1,253 +1,201 @@
-Return-Path: <bpf+bounces-60309-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60310-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96429AD5222
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 12:39:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 44EF7AD541C
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 13:37:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98F421BC52E7
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 10:37:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DC43189922E
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 11:37:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E89226A0BE;
-	Wed, 11 Jun 2025 10:34:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F06CE2517AA;
+	Wed, 11 Jun 2025 11:36:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cFBh94E5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lAAMFrzm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC6EF27605C;
-	Wed, 11 Jun 2025 10:34:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 668382E610C;
+	Wed, 11 Jun 2025 11:36:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749638095; cv=none; b=fXvswhKo09cnawczjHw9zO4JqbMJdxbWsyCiQ1I5g9QqrIPG6Ou3WdJyHJvdg+d+c2coPayLC+QtGm8kwt1ysrbvrvaPwtWFZAsjUViaJgtJw1KHVIdTDsP9DiLCOuGuOybfN5GnsZwLXrFpuXTIt5mmBPA3z0XYMHj07vPCUeI=
+	t=1749641814; cv=none; b=ouqgIGUE24cuGqZuYsI0EXdd7/aq/eMItyhvQh190UPgZ05saviCmxtly0J41BpQGtvRs3pHFDJqpmAo1jY74+s88hYCIHzFpeqNSOw/8EWF2mL85gPaj22n9ylJ2yXdhxwUrQNjpoJUgA9i3rKNLpTD59iPPtfKx4qFtnkH4iw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749638095; c=relaxed/simple;
-	bh=ogpnT5Ct5eysAH74HW6uLq8kQrXagSiHRmkpMn3ObqI=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E0FnS4dpcO4ASxe0wXS7Wmkrq8k4/I55KeT21S/j7S3HaHoUwFIFsUBSRvyiEBtsxUCIYjCxDtyo2aLvOLZZwDTLu0rVYQ9Aal4tRrvgmX2rEssLUQNSu1oiRZSkP4lnTNlX/xwuWH2sNzkYx9j4TbdwvT6L1QjV6m1KbTqdmcQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cFBh94E5; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-addfe17ec0bso151183966b.1;
-        Wed, 11 Jun 2025 03:34:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749638092; x=1750242892; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=x0uKW1VeGsneSncVbCyz+LkK6o18HmhOxqfXFR/PnMI=;
-        b=cFBh94E5DTlpPrBPyFbpAunYDuTcimiWv6KbSTKFbBTNakOgKXmJsnCWwK/Cs3lcCZ
-         Wo/DOwJ72ayhcAEwQk1iq3X3t2mK8H/RtQJa0ZBuD7gR6qHThmqCTnTe9ZElcTNBPyCm
-         T7yxfZGNWTo3OAMXRQOa56uWxPRsE2lWUd9uJhUHKwjszD+Nw/DN5effihL5CJqwl8BV
-         jd71shao+LuY9qqwNSeA9525Vmag5TnKi8JFZuReyz+wAmAplzHHXM7BMh9NXpAWn1oJ
-         6TWZLXiGJ1aGkEjag9LEAl6aV239TlgXWPN4dZ+CzWczYN89Bj4Q/PzLm4fnzG+I13+q
-         JSaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749638092; x=1750242892;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x0uKW1VeGsneSncVbCyz+LkK6o18HmhOxqfXFR/PnMI=;
-        b=PkBCH8C0pb6Kb4Dj6Hs+prhSHn+lLdnwZVBn+2TzvFbOwEEPVU/gMgfjZ/B708zonj
-         FBl1HqqCyLfaJljJaQb0Az6qOnKPNp/rDCCgtHeTYUGBHkG3E2w/a97AiqtmcjNo32GK
-         K2aqw6tzi1janxwziaM5Ue//FbmGXqiCPXWbBCKTEOBdY+rq8HcYX+ytXbiOrysP7v2W
-         E/TeiTk1+pgOj2rhHY3uOvFhoQebWKBbXZpaY7YpRGapiocSGUwHNUdZ35srKX2xB4hw
-         WojwJGDttvbORX0SkBhQdNeSnUas6gYMcqVH9L5Kcn5UhZDSymJ8SIVW4WXS0g61tSW6
-         nzHA==
-X-Forwarded-Encrypted: i=1; AJvYcCU+YsqCCIiB1i/KfOL+vVQQZ4WLrDI/tlVayOue30Hml/1mc+z/dnM46DuXso3Yb0/MGz9Hpy5Us2ejSCgJ@vger.kernel.org, AJvYcCUFU1liK5V4n5dV++hY1SqoNFnK6KM5yz89g553PRsR+LWTTo39A4Wap52/KpcbVeOZnB46r7+m9KMb5vj/X3+w@vger.kernel.org, AJvYcCVNdcrdK3DE8uOw+gJjeTEx1daAGhNct5rOIlASv9NZyA2fLhB+HDxa0RWQvX/h9T1Kakk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxf8UfFVqz2Ys46S7vsRe8kDhrBrsbsfTLdBHTOZWwgRD6qGZjv
-	0nke/HIGQjjWFJ2LlzB9H+OLAScICUeHsQw/qnI5VaBeN7PYZy7MnCGC
-X-Gm-Gg: ASbGncuFNcPXZZMSwPKEGIaG9PcfougnGTS1NCPPCDZ5nlVMSqnl5QELCwV4XJykT9/
-	a2Q0y9f/8nFxu4fsdy5OHT1WE+91sZaNsiKiMSxSBdgGKinTMFLXWDfP2sHAz2DIelLUp12aL2x
-	3DyoQWsgN9fG9zA75NnrWLLGrbd0dcO+YTNVaPcE9JuXJfBp9F/EpR/kv0TR8XT8Rl4pilCdHSK
-	N+7mo7pTSrK//LUY80P6sBRwBxRQG/HzvLOxrhBKHbI7MJ4qWLKZeJ03EKUEUtMqm/5Hbdypfzr
-	UyGN6Pd3zKI3qbGakaTKZjfNkMEQJhgCPxbt0n1WVTADV0U0
-X-Google-Smtp-Source: AGHT+IE8SIVFSPxHy04F/nR2Xhi3uUbPpm4yM6gc7UZ2MMWfC9Kpbmt7MaJOGFiADTq+5YH+jRAfWw==
-X-Received: by 2002:a17:906:2442:b0:ade:9b52:4d79 with SMTP id a640c23a62f3a-ade9b525d84mr18040866b.1.1749638091955;
-        Wed, 11 Jun 2025 03:34:51 -0700 (PDT)
-Received: from krava ([173.38.220.55])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ade1dc1c7e2sm863976666b.73.2025.06.11.03.34.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Jun 2025 03:34:51 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 11 Jun 2025 12:34:49 +0200
-To: Blake Jones <blakejones@google.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Ihor Solodrai <ihor.solodrai@linux.dev>,
-	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] libbpf: add support for printing BTF character
- arrays as strings
-Message-ID: <aElbyWY-cIQNf4wp@krava>
-References: <20250603203701.520541-1-blakejones@google.com>
+	s=arc-20240116; t=1749641814; c=relaxed/simple;
+	bh=tXcGTOft1K2ZjeGPYHByKIvWsDYDZGjFIvK1fLYm37k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q3F7rj884dA1xfKmSViJBavlNhwR1LBY99vail/LZjvd497SuyxHUS8T4Tc9BnpI7bJDBR1sAC+P6TJiSS370PuXPqN7RP2Kn1INPyhCh+JT7UefTxuVhrhXeiipgRHitKdUZwePyzWv4BL/hNpbzfW9SncOL0kYS9MlXhpcjlM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lAAMFrzm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C030C4CEEE;
+	Wed, 11 Jun 2025 11:36:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749641814;
+	bh=tXcGTOft1K2ZjeGPYHByKIvWsDYDZGjFIvK1fLYm37k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lAAMFrzmMdbLqG2eV/Tb9nLSFiQvkj1g2mFx+AIAfIxYA0Zp7tXVlhmqARSVJJcKB
+	 FQ5PpcPP3L902FMZUMnZmil5vyYdYnGR36yLK+KQyUPYIARY6DlQIdcglLqbSKuIcG
+	 CFAiPAWOUCJI95wE4KW4Z9CuOcBTyNGdR8wNCc/MMzWJ54RKRqohKQp/wgN25NtEmq
+	 uk2qx5mgjtPNQP/mYJ19Y8X0QiRk00+hznjp+XePCot1xO1LETEy6+8yBa9jp1sEws
+	 DcocQUbO3sob7L5Km0NsVhZZKSh9sHFFbMY3A4G6fGTvB39j5BPagQ/sYiOYoJKLM7
+	 BXiNOA3dk8efw==
+Date: Wed, 11 Jun 2025 13:36:46 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Tingmao Wang <m@maowtm.org>
+Cc: Song Liu <song@kernel.org>, 
+	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>, Al Viro <viro@zeniv.linux.org.uk>, amir73il@gmail.com, 
+	andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net, 
+	eddyz87@gmail.com, gnoack@google.com, jack@suse.cz, jlayton@kernel.org, 
+	josef@toxicpanda.com, kernel-team@meta.com, kpsingh@kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, martin.lau@linux.dev, mattbobrowski@google.com, 
+	repnop@google.com
+Subject: Re: [PATCH v3 bpf-next 0/5] bpf path iterator
+Message-ID: <20250611-bindung-pulver-6158a3053c87@brauner>
+References: <20250606213015.255134-1-song@kernel.org>
+ <dbc7ee0f1f483b7bc2ec9757672a38d99015e9ae.1749402769@maowtm.org>
+ <CAPhsuW7n_+u-M7bnUwX4Go0D+jj7oZZVopE1Bj5S_nHM1+8PZg@mail.gmail.com>
+ <97cdb6c5-0b46-4442-b19f-9980e33450c0@maowtm.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250603203701.520541-1-blakejones@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <97cdb6c5-0b46-4442-b19f-9980e33450c0@maowtm.org>
 
-On Tue, Jun 03, 2025 at 01:37:00PM -0700, Blake Jones wrote:
-> The BTF dumper code currently displays arrays of characters as just that -
-> arrays, with each character formatted individually. Sometimes this is what
-> makes sense, but it's nice to be able to treat that array as a string.
+On Mon, Jun 09, 2025 at 09:08:34AM +0100, Tingmao Wang wrote:
+> On 6/9/25 07:23, Song Liu wrote:
+> > On Sun, Jun 8, 2025 at 10:34 AM Tingmao Wang <m@maowtm.org> wrote:
+> > [...]
+> >> Hi Song, Christian, Al and others,
+> >>
+> >> Previously I proposed in [1] to add ability to do a reference-less parent
+> >> walk for Landlock.  However, as Christian pointed out and I do agree in
+> >> hindsight, it is not a good idea to do things like this in non-VFS code.
+> >>
+> >> However, I still think this is valuable to consider given the performance
+> >> improvement, and after some discussion with Mickaël, I would like to
+> >> propose extending Song's helper to support such usage.  While I recognize
+> >> that this patch series is already in its v3, and I do not want to delay it
+> >> by too much, putting this proposal out now is still better than after this
+> >> has merged, so that we may consider signature changes.
+> >>
+> >> I've created a proof-of-concept and did some brief testing.  The
+> >> performance improvement attained here is the same as in [1] (with a "git
+> >> status" workload, median landlock overhead 35% -> 28%, median time in
+> >> landlock decreases by 26.6%).
+> >>
+> >> If this idea is accepted, I'm happy to work on it further, split out this
+> >> patch, update the comments and do more testing etc, potentially in
+> >> collaboration with Song.
+> >>
+> >> An alternative to this is perhaps to add a new helper
+> >> path_walk_parent_rcu, also living in namei.c, that will be used directly
+> >> by Landlock.  I'm happy to do it either way, but with some experimentation
+> >> I personally think that the code in this patch is still clean enough, and
+> >> can avoid some duplication.
+> >>
+> >> Patch title: path_walk_parent: support reference-less walk
+> >>
+> >> A later commit will update the BPF path iterator to use this.
+> >>
+> >> Signed-off-by: Tingmao Wang <m@maowtm.org>
+> > [...]
+> >>
+> >> -bool path_walk_parent(struct path *path, const struct path *root);
+> >> +struct parent_iterator {
+> >> +       struct path path;
+> >> +       struct path root;
+> >> +       bool rcu;
+> >> +       /* expected seq of path->dentry */
+> >> +       unsigned next_seq;
+> >> +       unsigned m_seq, r_seq;
+> > 
+> > Most of parent_iterator is not really used by reference walk.
+> > So it is probably just separate the two APIs?
 > 
-> This change adds a special case to the btf_dump functionality to allow
-> 0-terminated arrays of single-byte integer values to be printed as
-> character strings. Characters for which isprint() returns false are
-> printed as hex-escaped values. This is enabled when the new ".emit_strings"
-> is set to 1 in the btf_dump_type_data_opts structure.
+> I don't mind either way, but I feel like it might be nice to just have one
+> style of APIs (i.e. an iterator with start / end / next vs just one
+> function), even though this is not totally necessary for the ref-taking
+> walk.  After all, the BPF use case is iterator-based.  This also means
+> that the code at the user's side (mostly thinking of Landlock here) is
+> slightly simpler.
 > 
-> As an example, here's what it looks like to dump the string "hello" using
-> a few different field values for btf_dump_type_data_opts (.compact = 1):
+> But I've not experimented with the other way.  I'm open to both, and I'm
+> happy to send a patch later for a separate API (in that case that would
+> not depend on this and I might just start a new series).
 > 
-> - .emit_strings = 0, .skip_names = 0:  (char[6])['h','e','l','l','o',]
-> - .emit_strings = 0, .skip_names = 1:  ['h','e','l','l','o',]
-> - .emit_strings = 1, .skip_names = 0:  (char[6])"hello"
-> - .emit_strings = 1, .skip_names = 1:  "hello"
+> Would like to hear what VFS folks thinks of this first tho, and whether
+> there's any preference in one or two APIs.
 
-hi,
-could this be used in bpftool map dump? ;-) I checked, but it looks like
-bpftool map dump is using something else to dump data.. I admit I haven't
-spent much on time that
-
-thanks,
-jirka
-
+I really dislike exposing the sequence number for mounts an for
+dentries. That's just nonsense and a non-VFS low-level consumer of this
+API has zero business caring about any of that. It's easy to
+misunderstand, it's easy to abuse so that's not a good way of doing
+this. It's the wrong API.
 
 > 
-> Here's the string "h\xff", dumped with .compact = 1 and .skip_names = 1:
+> > 
+> > Also, is it ok to make m_seq and r_seq available out of fs/?
+
+No, it's not.
+
 > 
-> - .emit_strings = 0:  ['h',-1,]
-> - .emit_strings = 1:  "h\xff"
+> The struct is not intended to be used directly by code outside.  Not sure
+
+That doesn't mean anything. It's simply the wrong API if it has to spill
+so much of its bowels.
+
+> what is the standard way to do this but we can make it private by e.g.
+> putting the seq values in another struct, if needed.  Alternatively I
+> think we can hide the entire struct behind an opaque pointer by doing the
+> allocation ourselves.
 > 
-> Signed-off-by: Blake Jones <blakejones@google.com>
-> ---
->  tools/lib/bpf/btf.h      |  3 ++-
->  tools/lib/bpf/btf_dump.c | 55 +++++++++++++++++++++++++++++++++++++++-
->  2 files changed, 56 insertions(+), 2 deletions(-)
+> > 
+> >> +};
+> >> +
+> >> +#define PATH_WALK_PARENT_UPDATED               0
+> >> +#define PATH_WALK_PARENT_ALREADY_ROOT  -1
+> >> +#define PATH_WALK_PARENT_RETRY                 -2
+> >> +
+> >> +void path_walk_parent_start(struct parent_iterator *pit,
+> >> +                           const struct path *path, const struct path *root,
+> >> +                           bool ref_less);
+> >> +int path_walk_parent(struct parent_iterator *pit, struct path *next_parent);
+> >> +int path_walk_parent_end(struct parent_iterator *pit);
+> > 
+> > I think it is better to make this rcu walk a separate set of APIs.
+> > IOW, we will have:
+> > 
+> > int path_walk_parent(struct path *path, struct path *root);
+> > 
+> > and
+> > 
+> > void path_walk_parent_rcu_start(struct parent_iterator *pit,
+> >                            const struct path *path, const struct path *root);
+> > int path_walk_parent_rcu_next(struct parent_iterator *pit, struct path
+> > *next_parent);
+> > int path_walk_parent_rcu_end(struct parent_iterator *pit);
 > 
-> diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
-> index 4392451d634b..ccfd905f03df 100644
-> --- a/tools/lib/bpf/btf.h
-> +++ b/tools/lib/bpf/btf.h
-> @@ -326,9 +326,10 @@ struct btf_dump_type_data_opts {
->  	bool compact;		/* no newlines/indentation */
->  	bool skip_names;	/* skip member/type names */
->  	bool emit_zeroes;	/* show 0-valued fields */
-> +	bool emit_strings;	/* print char arrays as strings */
->  	size_t :0;
->  };
-> -#define btf_dump_type_data_opts__last_field emit_zeroes
-> +#define btf_dump_type_data_opts__last_field emit_strings
->  
->  LIBBPF_API int
->  btf_dump__dump_type_data(struct btf_dump *d, __u32 id,
-> diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-> index 460c3e57fadb..7c2f1f13f958 100644
-> --- a/tools/lib/bpf/btf_dump.c
-> +++ b/tools/lib/bpf/btf_dump.c
-> @@ -68,6 +68,7 @@ struct btf_dump_data {
->  	bool compact;
->  	bool skip_names;
->  	bool emit_zeroes;
-> +	bool emit_strings;
->  	__u8 indent_lvl;	/* base indent level */
->  	char indent_str[BTF_DATA_INDENT_STR_LEN];
->  	/* below are used during iteration */
-> @@ -2028,6 +2029,52 @@ static int btf_dump_var_data(struct btf_dump *d,
->  	return btf_dump_dump_type_data(d, NULL, t, type_id, data, 0, 0);
->  }
->  
-> +static int btf_dump_string_data(struct btf_dump *d,
-> +				const struct btf_type *t,
-> +				__u32 id,
-> +				const void *data)
-> +{
-> +	const struct btf_array *array = btf_array(t);
-> +	const char *chars = data;
-> +	__u32 i;
-> +
-> +	/* Make sure it is a NUL-terminated string. */
-> +	for (i = 0; i < array->nelems; i++) {
-> +		if ((void *)(chars + i) >= d->typed_dump->data_end)
-> +			return -E2BIG;
-> +		if (chars[i] == '\0')
-> +			break;
-> +	}
-> +	if (i == array->nelems) {
-> +		/* The caller will print this as a regular array. */
-> +		return -EINVAL;
-> +	}
-> +
-> +	btf_dump_data_pfx(d);
-> +	btf_dump_printf(d, "\"");
-> +
-> +	for (i = 0; i < array->nelems; i++) {
-> +		char c = chars[i];
-> +
-> +		if (c == '\0') {
-> +			/*
-> +			 * When printing character arrays as strings, NUL bytes
-> +			 * are always treated as string terminators; they are
-> +			 * never printed.
-> +			 */
-> +			break;
-> +		}
-> +		if (isprint(c))
-> +			btf_dump_printf(d, "%c", c);
-> +		else
-> +			btf_dump_printf(d, "\\x%02x", (__u8)c);
-> +	}
-> +
-> +	btf_dump_printf(d, "\"");
-> +
-> +	return 0;
-> +}
-> +
->  static int btf_dump_array_data(struct btf_dump *d,
->  			       const struct btf_type *t,
->  			       __u32 id,
-> @@ -2055,8 +2102,13 @@ static int btf_dump_array_data(struct btf_dump *d,
->  		 * char arrays, so if size is 1 and element is
->  		 * printable as a char, we'll do that.
->  		 */
-> -		if (elem_size == 1)
-> +		if (elem_size == 1) {
-> +			if (d->typed_dump->emit_strings &&
-> +			    btf_dump_string_data(d, t, id, data) == 0) {
-> +				return 0;
-> +			}
->  			d->typed_dump->is_array_char = true;
-> +		}
->  	}
->  
->  	/* note that we increment depth before calling btf_dump_print() below;
-> @@ -2544,6 +2596,7 @@ int btf_dump__dump_type_data(struct btf_dump *d, __u32 id,
->  	d->typed_dump->compact = OPTS_GET(opts, compact, false);
->  	d->typed_dump->skip_names = OPTS_GET(opts, skip_names, false);
->  	d->typed_dump->emit_zeroes = OPTS_GET(opts, emit_zeroes, false);
-> +	d->typed_dump->emit_strings = OPTS_GET(opts, emit_strings, false);
->  
->  	ret = btf_dump_dump_type_data(d, NULL, t, id, data, 0, 0);
->  
-> -- 
-> 2.49.0.1204.g71687c7c1d-goog
-> 
+> (replied above)
+
+Exposing two sets of different APIs for essentially the same things is
+not going to happen.
+
+The VFS doesn't expose a rcu variant and a non-rcu variant for itself so
+we are absolutely not going to do that for outside stuff.
+
+It always does the try RCU first, then try to continue the walk by
+falling back to REF walk (e.g., via try_to_unlazy()). If that doesn't
+work then let the caller know and require them to decide whether to
+abort or redo everything in ref-walk.
+
+There's zero need in that scheme for the caller to see any of the
+internals of the VFS and that's what you should aim for.
 
