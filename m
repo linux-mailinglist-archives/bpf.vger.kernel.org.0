@@ -1,102 +1,136 @@
-Return-Path: <bpf+bounces-60368-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60369-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3CCBAD5F2C
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 21:40:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9C69AD5F7F
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 21:53:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 083F53AA111
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 19:40:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 538843AB230
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 19:52:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D71332BDC37;
-	Wed, 11 Jun 2025 19:40:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F20902BD5A7;
+	Wed, 11 Jun 2025 19:51:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zm85XNkS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SrXTWMuN"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5585628853E;
-	Wed, 11 Jun 2025 19:40:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA95D221F1C;
+	Wed, 11 Jun 2025 19:51:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749670808; cv=none; b=CYbZ4RxALhdUFlDUMxuANx6/gEy60bt8YcXb/JomoZeaHA7pTxQLPThi+5i/RZ0EI6qrEywtGpcU2s7UIUoQ2HllOVNbwVD0EFSr3TPdBTM94GvUQ+XiGQ59l0Pq6O+k8YbSUw0vFfBMeLNJ5kSeb+tFB/PEoakhBbzdYMF5jjU=
+	t=1749671495; cv=none; b=KEZNVumRuFDbFszZ51AVzC1IJuut1AH0xipC/IlMXcueYBxob2q4aOeSvygTqdXqPyeHm6BOn7qftDahuzE42DJlY2jpAUN6Vy1Nmm5m5RvdHOUc0x5KYoso5dLA+x2VPSJQ1bNwfn3nnV4Pk4ulHPpOALGVEkYAfKV8HdUUBUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749670808; c=relaxed/simple;
-	bh=P+77/chWEkT7CmAB48ybuVAEZkvc5wpADMBeS/stKf8=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=FKONSRGyzK/3/0AE3vI9wCChA3FDo/s1jQH+p3HvORFX+HHko9TmQRGNFl4XBIVewDcYyYsidpDKgN8Eo6Z8dXYcy/AFyOQkzRotYcg/WPsnLfPns3zqFDXC1p3pC1J1jYbPY9CnDdY2dKKSlcWQlgzo6Gep++1K4ZfamxW7noE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zm85XNkS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDEF7C4CEE3;
-	Wed, 11 Jun 2025 19:40:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749670807;
-	bh=P+77/chWEkT7CmAB48ybuVAEZkvc5wpADMBeS/stKf8=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Zm85XNkS7FdAfyj4Pz0aSQ5tUEtqSvr5wyZfp5OWjboW+BHrHtGWFfKJkcnW9B+uU
-	 b0Maq23yv+fssenODQNYpzy+VnoSrkCrT/U/KwkDNaXXmyvrjuCEGbRXvxs7Xp1Y1K
-	 HqZnGe+vnqEpP2nCyocuKUq2+Pi7atgw7L68KU8UlZHRq/J+N2wipGArkfSMhzMWd2
-	 QLwimXXf8vW8LY0UyEFliO3UOOUiQLTampm/oSYAvOqLf4ZZtLfrZzuipgGogm8Sy0
-	 lGJmnUO7uXbLb1j39cj4TsASWF5hLHPQ4zlyTsb8hhXsKS1XhwxYeY944mU+qCUI+Z
-	 ixngWT3uJDZYQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33DE8380DBE9;
-	Wed, 11 Jun 2025 19:40:39 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1749671495; c=relaxed/simple;
+	bh=X/OA1aXD+x1kt5nNgWcOiOS8Y92tVVSfC0Xz93AMSXc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fGtIYJBQELJMVB3HW74mK6FwczlrMq40e63u+DIRN/QW7X0iYWQ3pNGcHOOYH3E/qUlp8Bk/NMWy6LR0PpNqmN6dxo0rvTKpCHG6nkWUxhJH0V+P8AuAcgMddhS7L9f3jn20YB3EQjyopPEssySgEnZ0pk+H9b5FRjq2QRzu9tc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SrXTWMuN; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3a54700a46eso253470f8f.1;
+        Wed, 11 Jun 2025 12:51:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749671492; x=1750276292; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JQzMghNz4SMc/jj8ZNDpIvLoMQsd+F/Mm9SKGgQM0Dg=;
+        b=SrXTWMuNKADkbaTmDXEOzjg3hBT3owisiPs58b3332j9ikLYYthd0Jpo3V2/3G89Pb
+         8GSxsv9S+SnCTMfcuilkHJdzOIli1xS9/r9ZhvLEVE+DTCPAANyBuCOr8MEmVhfJTi/n
+         t7fO9SybEoTTNh9qjCHj/oNGcT8KBiEnzpQNjms18ops0f5RFYvNVMYIJUVnD69kLTza
+         Ag1KMWIzs4qF4kxOhZEepCUESklrtWZQgr6oTJOYfg9KnNT5Hx6Pl6CNHVWI+qabX0Hj
+         zDAdDu1omNz1AjYpp24bIWYpMsHLjk/b8kO/SksDH6yPDev84lT264cPdGese7yMaJYG
+         fo5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749671492; x=1750276292;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JQzMghNz4SMc/jj8ZNDpIvLoMQsd+F/Mm9SKGgQM0Dg=;
+        b=EsTiJbh33ycicovKW+uneABEbOCEcNFRKkXFldCkjlFF0ubcunYw8eS1PsWhXwKpNn
+         8rJoQAVx7TyKie+G71b42YO6TanZbTI48UQy3lAKy60GpQRnfO605bV0xETASpHKnWuh
+         Pe9a/DKGDMjJtxhMzoCqPn8VSxq3LCZn1lEH+jnCRIqZKrVNAgvuuELg5NuofMCVPS/N
+         HQjAbE0reiq8LIuwsCDhwx06dw3dpkdA7FodfhMf5bLztyl1jxFN8A5aUCoPYvthOstW
+         dEr74olygQVgr20gakjtxr007sMz7PQmr+3fjyS+g2D9HhBewwe1cBrasZIZs/t/wnEU
+         +5Xw==
+X-Forwarded-Encrypted: i=1; AJvYcCVVxIcjAC5K8EXlC1+3T6TkkNYUrKNJBKansWhIROjv3suLO9glMg1ypNXF+GtRFLKeHltyl/dz5InjYRy3k4JS@vger.kernel.org, AJvYcCWUkXQLRCQfTFqtm5xz7UMaFgbLgqVkCCHLSCAxrywRlPc2eV4Bn2Cp0p1Alu6W4dfWxARliP7DrQ5MfICU@vger.kernel.org, AJvYcCX5K1RlWzuUglHbOKXAO3Vlm50OP78qLFs2FD/d2N2TYyB6q4D7aji9E6UyNLXcvXPuMn4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwBP08Nxc2jtPRX6gD71n3srFWhhTYmpKLeUmiLpFVcT1TDMLL3
+	r/11upLfepHn3ggNeJVzKx1p8i4XqoC9uvCa8H0dLqvT3NyPgMrDqk5VPIhrIc264AC6DMfl6wH
+	fwNpQgFdRiG0DA1FYOL7bQsQqK1eQAoM=
+X-Gm-Gg: ASbGncuVb+8YJptp5+0TekWxz7gB6feAualKjULSLJHoeVKHmqXsQpEu78q15EEeQfl
+	ByFukQrY+dLDUU3DwB9g0lCc6ADyKNG/5Gw0VPxDqHlBvEPFKRfE0YqU8C1+Jh4XfJ6e22K1Bf6
+	bKDmQY4KRYGP0VkLtXOwR2rocS6Y/N6KyvcKSKmvr2gZE1wD++QjyQ+wF0ZeTWQdkADBvOy+Uz
+X-Google-Smtp-Source: AGHT+IHsMOspB6UuSIxOVa8i+vzccdKZaI+htNn9UjH3qwVgBZvxXthrfaJmH1ZHicGFh3pG6c73MfkN8aXZP5JK+T4=
+X-Received: by 2002:a05:6000:310a:b0:3a4:d53d:be20 with SMTP id
+ ffacd0b85a97d-3a558695d45mr3327455f8f.18.1749671492015; Wed, 11 Jun 2025
+ 12:51:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v3] net: Fix RCU usage in task_cls_state() for
- BPF
- programs
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <174967083774.3454768.14388619349258228793.git-patchwork-notify@kernel.org>
-Date: Wed, 11 Jun 2025 19:40:37 +0000
-References: <20250611-rcu-fix-task_cls_state-v3-1-3d30e1de753f@posteo.net>
-In-Reply-To: <20250611-rcu-fix-task_cls_state-v3-1-3d30e1de753f@posteo.net>
-To: Charalampos Mitrodimas <charmitro@posteo.net>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, horms@kernel.org, martin.lau@linux.dev,
- daniel@iogearbox.net, john.fastabend@gmail.com, ast@kernel.org,
- andrii@kernel.org, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, yangfeng@kylinos.cn, tj@kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- syzbot+b4169a1cfb945d2ed0ec@syzkaller.appspotmail.com
+References: <20250608143623.25242-1-wangfushuai@baidu.com>
+In-Reply-To: <20250608143623.25242-1-wangfushuai@baidu.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 11 Jun 2025 12:51:21 -0700
+X-Gm-Features: AX0GCFv7vXXDLbAwxkRk67UWzs3RvlU2LBWLjvW30iGM-xMtg-Wi-MUDz_hGEmI
+Message-ID: <CAADnVQ+SSPhZNN05F2-MS_79Vhp+mSTWF3Ss1rcoWRnaDjFx+A@mail.gmail.com>
+Subject: Re: [PATCH] selftests/bpf: fix signedness bug in redir_partial()
+To: wangfushuai <wangfushuai@baidu.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard <eddyz87@gmail.com>, 
+	Mykola Lysenko <mykolal@fb.com>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Shuah Khan <shuah@kernel.org>, Michal Luczaj <mhal@rbox.co>, 
+	Jakub Sitnicki <jakub@cloudflare.com>, Kui-Feng Lee <thinker.li@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Sun, Jun 8, 2025 at 7:38=E2=80=AFAM wangfushuai <wangfushuai@baidu.com> =
+wrote:
+>
+> When xsend() returns -1 (error), the check 'n < sizeof(buf)' incorrectly
+> treats it as success due to unsigned promotion. Explicitly check for -1
+> first.
+>
+> Fixes: a4b7193d8efd ("selftests/bpf: Add sockmap test for redirecting par=
+tial skb data")
+> Signed-off-by: wangfushuai <wangfushuai@baidu.com>
 
-This patch was applied to bpf/bpf-next.git (net)
-by Daniel Borkmann <daniel@iogearbox.net>:
+Looks good, but please spell out your name as First Last
+in both From and Signed-off
 
-On Wed, 11 Jun 2025 17:20:43 +0000 you wrote:
-> The commit ee971630f20f ("bpf: Allow some trace helpers for all prog
-> types") made bpf_get_cgroup_classid_curr helper available to all BPF
-> program types, not just networking programs.
-> 
-> This helper calls __task_get_classid() which internally calls
-> task_cls_state() requiring rcu_read_lock_bh_held(). This works in
-> networking/tc context where RCU BH is held, but triggers an RCU
-> warning when called from other contexts like BPF syscall programs that
-> run under rcu_read_lock_trace():
-> 
-> [...]
+Also use [PATCH bpf-next] in subject
 
-Here is the summary with links:
-  - [bpf-next,v3] net: Fix RCU usage in task_cls_state() for BPF programs
-    https://git.kernel.org/bpf/bpf-next/c/7f12c3385048
+pw-bot: cr
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> ---
+>  tools/testing/selftests/bpf/prog_tests/sockmap_listen.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/to=
+ols/testing/selftests/bpf/prog_tests/sockmap_listen.c
+> index 1d98eee7a2c3..f1bdccc7e4e7 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
+> @@ -924,6 +924,8 @@ static void redir_partial(int family, int sotype, int=
+ sock_map, int parser_map)
+>                 goto close;
+>
+>         n =3D xsend(c1, buf, sizeof(buf), 0);
+> +       if (n =3D=3D -1)
+> +               goto close;
+>         if (n < sizeof(buf))
+>                 FAIL("incomplete write");
+>
+> --
+> 2.36.1
+>
 
