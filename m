@@ -1,115 +1,158 @@
-Return-Path: <bpf+bounces-60300-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60301-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1DA3AD4A63
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 07:24:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82B92AD4A64
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 07:24:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D6583A4254
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 05:23:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8785C189AEC4
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 05:24:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1A8C2253A4;
-	Wed, 11 Jun 2025 05:23:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45A4322652D;
+	Wed, 11 Jun 2025 05:23:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VVNFubDV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vcj1FQp1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F147317BB6
-	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 05:23:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 606FC17BB6;
+	Wed, 11 Jun 2025 05:23:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749619432; cv=none; b=aREecfX4CtZTWPnJmMoZo+o+UuR8ldhuFhJ63Xx2CLNfzSj8NbxrzZUgivlNbtYNLY0/koRggRVzckgCdJZYYZ603TZ9E5oUVmI9bP+7gJPjB3Y4Zkor3VMNWxfwEu5CcHNKQQ12D0a2R6rcenciw2X7CLvYww1vw14mudO2Gxk=
+	t=1749619436; cv=none; b=JNedICMiTzBybk59oD8n1k5+zQOgxTzd3O4ef+6vYYjlCJ7uklGUdeU/Hdbh3PBOc4ixaTVZ8T4jTKnV8d0S3eMjQg2e8JI3ddo/hgNHAjKU1iDR5yC5z3GT/NReUlE7eICc7DcyGuEY7j11USWCIa3pzjDeUvQ79ax0t0H9y+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749619432; c=relaxed/simple;
-	bh=zOmcyg+pUs/ogdgfn/R1e1FclruaAMkCvgsc9YCCf9Y=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=nH9xMNcb2CoZQdObFO7sBeMfMGuKJ7V5m863nxxIj+KRRilGhj9EJmRdubeCo8I47VTlhCd91LMYQRSIJ+RYDhB8BwtdKnVMhalCiyDI2TPqMzgxkZRqon9rtZP2/dFaB05dYU/Js3SnJ9Ld1r+wyV1Hpl0PvUYnt+DpbHN9gIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VVNFubDV; arc=none smtp.client-ip=209.85.214.182
+	s=arc-20240116; t=1749619436; c=relaxed/simple;
+	bh=QdkrtsbUzTDgsS/mT7ppoJf+YPJWtOY2mETjuHwI8bg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DDnDvzPBOnwb5iqy5y3IMQs0m3eD25gfvoMVCfUPVkFEHQzvWhK9jA9EVVrWpmy/rS865i751nNDoptaM5ZhA8ohs+jlG/6pI+qSIeO4YfIRSYn7nzll6fByTgg5AIimPCfEV66hkWJo7ZnmlkpriyM9zSrhmnRQM12PjDSwLiI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vcj1FQp1; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-236377f00easo20100025ad.1
-        for <bpf@vger.kernel.org>; Tue, 10 Jun 2025 22:23:50 -0700 (PDT)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-2363616a1a6so15664565ad.3;
+        Tue, 10 Jun 2025 22:23:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749619430; x=1750224230; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=YPTeK8aSQJIhjLkQZ7HE4k83chR30nEdMZU7uow+gf0=;
-        b=VVNFubDVhm+QnokCDr90Y8fFLG4c6TrgBjK3apac6ph63oWaf95CZve0YCyt80rTjV
-         4pM7yBVQh1IUgG6GersAymXVWpqe18qxerMcxDiiOG8YSDAk4OaUBfMYCsPaxERwffuS
-         lEqjJtmfqWjtzrZ/dMLKLl4Tr7H8Bd01+yQ3ru4QY297TeMizs2TcOItl1Uyh0M8bXjG
-         fhRc7DdLzxozFmDhfW2TLGeb9CD+Sx4lS4ZhK2JCVFPrR65eXuspwlv8q9+065xl7p0D
-         qIeizqzJGQ9djHWpfXyHTPQ7LDp2LhWZ47b3m1kIrXfKKksLdMavl6VplFJ71+cAqmlb
-         o7Lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749619430; x=1750224230;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+        d=gmail.com; s=20230601; t=1749619435; x=1750224235; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=YPTeK8aSQJIhjLkQZ7HE4k83chR30nEdMZU7uow+gf0=;
-        b=ocR/eIq5up/j0RudFAFEAIYg1RnXVsu4LpJ77k1JrnjkmCThOwFogCm77XqYhCVSvL
-         iWPGr/jCDJv4rO+m+cZDna+DZwiTcxIMMFW5lj6Dhka1YltmKNJitKgVhF7OgXrrQt0J
-         rRKw94vQVptxY/ETqm1W3AQiaOhsSnD/CH3pOgSnvGR75TWKHqrmyuV2HPy+q9rF7s4+
-         ylgRJUaIO3ELlFCmHxYlaa6p3cbkC7M5X5pSQlEtZTnyyJQs9PhnzSmh1FtENYYbQIrE
-         9Jv//OYndkJ+DXFrRuTnRhv7a1GmRFQMDmrLawnOT+jqw08vZ5YVUJCRUb9WhnuCQW4X
-         l9cQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXUdP6QBwL8XpbA1/5smKm6Q1SuIXqpVvPD2JMYOOE/5lSLcANbfjgOhjwoE9Qu+6B1aFM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxK1kan8HWzG8jJPjDeeF528CCsayp7pFBwFXdp9BAgZdKMcpkF
-	c/CB0aVvZmtEksqp6lhEHpxWmeSPJ01hAy8jjoxDn3NsbieB2Hnu8/Dl
-X-Gm-Gg: ASbGnctLKCD/p0B2zfs8HQ8O5GqL8Mi99nR91E/5ExIYb+W1QlR+YUSWnuGJ/Q5eA1I
-	AWezP+dojt+/Pyh29pX0rzjRLtxaopvViuDJqf59gm5PG2ab+BJR1f4c7fPu+7IQ2yyxsbqt6O5
-	MWRNNWHRFulwm7n7eIHcf3iahK+nn5uplmoR1WBN7zCXQqqpjSEkBXtxBnlxXtAmQ060cP+4ihW
-	k5aGdTYEx7UPq1nGkWyJXHeozZBYXdcY54hBa0ATlFGHnkTrGPG+7mZK0wTnYmFG+ci92Wn2JRt
-	T2dzuhigOCjhOI4vFQXSRowYA80hw21BMOpovNtVwuttfkJpYurQCyYSUic=
-X-Google-Smtp-Source: AGHT+IFiGGEaMLgaa32gPws1+QDd9McRh81QysBF4oy84pdgW3JiSNb4VLs7LDtnwxatVhyUd3lCoA==
-X-Received: by 2002:a17:902:dacf:b0:234:f4da:7eef with SMTP id d9443c01a7336-236426d6cfbmr21123285ad.52.1749619429974;
-        Tue, 10 Jun 2025 22:23:49 -0700 (PDT)
-Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b2f5f66a88dsm7669933a12.40.2025.06.10.22.23.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Jun 2025 22:23:49 -0700 (PDT)
-Message-ID: <1764a937e91b80c922f6189fa4706fab42364e06.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/3] selftests/bpf: support array presets in
- veristat
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, 
-	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, 
-	kernel-team@meta.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Date: Tue, 10 Jun 2025 22:23:47 -0700
-In-Reply-To: <4ff2fafb99131f599901580eac96dca34ca20cc0.camel@gmail.com>
-References: <20250610190840.1758122-1-mykyta.yatsenko5@gmail.com>
-		 <20250610190840.1758122-3-mykyta.yatsenko5@gmail.com>
-	 <4ff2fafb99131f599901580eac96dca34ca20cc0.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        bh=2130SYJpBwgCGHXYYTpNm5sjUlFw+z+qbv0CH8rq1ec=;
+        b=Vcj1FQp1PhGuXiyJO+dGE4calnsN2EGldJYYwmYijs5a5AY5Y+r1Uvb2YokrJot2mA
+         n7S3bvaIW539ZXaIbyfmHRW9RP8tbJ6xkcBME4DtTh0/cDuGveS7O1R1Xlc2J7DnjyfU
+         GTQltmeP8VQ0bRCMTUmjFLqXUnyT1ESXZN30flDuLA8PNVljjgoQI4f5ltDi5w+QDn+7
+         zKWNr9Ai0FPyDPsNJO3GqU7qbxLqeAC01NUlDv5W6gL7uVDENAKMjfqmPjX+TmZTjQXl
+         pWFAg7A9z+QVRMBi/FvEoBAAhGC1/r8v1dKUPOAmP+oREhuSyIOBw3bOxKjd0VuW7yZ6
+         hk3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749619435; x=1750224235;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2130SYJpBwgCGHXYYTpNm5sjUlFw+z+qbv0CH8rq1ec=;
+        b=KHqs0Zt9+eoNOc0n2uCFWWoz/WWE6nBwUiBbsTsCjMdO05VRAf3ieTZpRmgHtjYYBD
+         Bm86X1Y1p2fKSXB8M1/usP4zgvGsD81yrOrzSiOfavAPedI1VuqpDXdY1NtFYNqRfEN3
+         PQhiPVRvmvTc0lfCpCjkLjtDO0f/jvsKcuDyX3JL0xJH5UfPyIeWvntq++uwBHHtlKDp
+         l7l9Xcdy1SLBELpRMMEyJQm+zkN2KBqMDZIkdQIRtLMLZgVaVk2kfWUWNg/8eZ11bLwM
+         1pWk5o9nbzP/0EX1hPo3hC/ejEKm+dOPzkIYGqyls/f9+VYIQgakr3gMytwEANdH1EqV
+         y6Zw==
+X-Forwarded-Encrypted: i=1; AJvYcCUA8BuaHBcDjURyyADhi9qQM1QQy4/hhe0uM633tPP/AIfGCtxKAKOluyDxrhKYjEn8CzjIuEXi8Uo0eqEs@vger.kernel.org, AJvYcCV+AQQxwxGhu2QM32eUMV0x+ChPCq9rjh2+y+XDomGggoQdOqsySXyBIC3nGK9aRYfrgrM=@vger.kernel.org, AJvYcCVVnv0CYICJGzi7l+F/NtgFv0bhkkDJ9BcRNZ6qVUFn8g8eDkeMdEpHH3d/qPF+k+N37fuwV+d0zw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyrqfTkfqsEdZWo6TFd/Q4ALsBZjyMf53NSx9hFSqWyQvNk2q6P
+	cfGWAjgx6Oe/u86vqoFe1YP6K/0P25a++jT2ENlD4Tfes5/QYSTEuM2uHUe+5Q==
+X-Gm-Gg: ASbGnctNG1pnLSEoo4cQuzIIrIwqDp+hOckVB7TgnLFkxMsbsidymrqM7UM7CvihOM5
+	XEtCMkRGtRL3x02/Y1IMuQdHhy9DX+jCSu/4JoRexlcML+thsTxuzmby/wJWZV+iZDjBqaNcSz2
+	lOFJEAn94eAYo8BI38ZDTAm2/Yn0s92JIENoI06/Z67zV4oed8uzQKFSpgsduyxEWjpSpkO903Y
+	/Wmqg05VNxFit0YIW/2XtacKGt9lkOO5/RlHvhmpFCZA1xR5ivQ4LkQ3Kjw0anwX0a1R3Q/NZt5
+	a4RrKHkLiY4LcqETUNOaZKTtTDgG+EBQgtWZrsH/nmZmiSi7SBSL0an1IA8lfvgye2kxase2tj9
+	YC/P5TyeZKExEJxHV6+ZSwGWKBQa/+6AnbqY=
+X-Google-Smtp-Source: AGHT+IEYoGt2DW8dmU8G7W8VbLXAXyReelYumM1CpQ6rdvCFn1U5bH0sa6DJ8R25zLoOr18TTOa5+g==
+X-Received: by 2002:a17:902:cf0f:b0:234:e0c3:8406 with SMTP id d9443c01a7336-23641a8ac31mr24808175ad.1.1749619434535;
+        Tue, 10 Jun 2025 22:23:54 -0700 (PDT)
+Received: from [192.168.4.196] (c-76-103-195-132.hsd1.ca.comcast.net. [76.103.195.132])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23603c6c325sm78316115ad.173.2025.06.10.22.23.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Jun 2025 22:23:53 -0700 (PDT)
+Message-ID: <9cf00007-f068-4ced-8977-f39a792eef6a@gmail.com>
+Date: Tue, 10 Jun 2025 22:23:51 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] cgroup: make css_rstat_updated nmi safe
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Tejun Heo <tj@kernel.org>,
+ Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
+ Muchun Song <muchun.song@linux.dev>, Vlastimil Babka <vbabka@suse.cz>,
+ Alexei Starovoitov <ast@kernel.org>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Harry Yoo <harry.yoo@oracle.com>, Yosry Ahmed <yosry.ahmed@linux.dev>,
+ bpf@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>
+References: <20250609225611.3967338-1-shakeel.butt@linux.dev>
+ <20250609225611.3967338-3-shakeel.butt@linux.dev>
+Content-Language: en-US
+From: JP Kobryn <inwardvessel@gmail.com>
+In-Reply-To: <20250609225611.3967338-3-shakeel.butt@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, 2025-06-10 at 17:45 -0700, Eduard Zingerman wrote:
+On 6/9/25 3:56 PM, Shakeel Butt wrote:
+[..]
+> diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+> index a5608ae2be27..4fabd7973067 100644
+> --- a/kernel/cgroup/rstat.c
+> +++ b/kernel/cgroup/rstat.c
+> @@ -138,13 +138,15 @@ void _css_rstat_cpu_unlock(struct cgroup_subsys_state *css, int cpu,
+>    * @css: target cgroup subsystem state
+>    * @cpu: cpu on which rstat_cpu was updated
+>    *
+> - * @css's rstat_cpu on @cpu was updated. Put it on the parent's matching
+> - * rstat_cpu->updated_children list. See the comment on top of
+> - * css_rstat_cpu definition for details.
+> + * Atomically inserts the css in the ss's llist for the given cpu. This is nmi
+> + * safe. The ss's llist will be processed at the flush time to create the update
+> + * tree.
+>    */
+>   __bpf_kfunc void css_rstat_updated(struct cgroup_subsys_state *css, int cpu)
+>   {
+> -	unsigned long flags;
+> +	struct llist_head *lhead = ss_lhead_cpu(css->ss, cpu);
+> +	struct css_rstat_cpu *rstatc = css_rstat_cpu(css, cpu);
+> +	struct llist_node *self;
+>   
+>   	/*
 
-[...]
+> -	flags = _css_rstat_cpu_lock(css, cpu, true);
+> +	llist_add(&rstatc->lnode, lhead);
+> +}
+[..]
+> +
+> +static void css_process_update_tree(struct cgroup_subsys *ss, int cpu)
+> +{
+> +	struct llist_head *lhead = ss_lhead_cpu(ss, cpu);
+> +	struct llist_node *lnode;
+> +
+> +	while ((lnode = llist_del_first_init(lhead))) {
+> +		struct css_rstat_cpu *rstatc;
+>   
+> -	_css_rstat_cpu_unlock(css, cpu, flags, true);
+> +		rstatc = container_of(lnode, struct css_rstat_cpu, lnode);
+> +		__css_process_update_tree(rstatc->owner, cpu);
+> +	}
+>   }
+>   
+>   /**
+> @@ -300,6 +331,8 @@ static struct cgroup_subsys_state *css_rstat_updated_list(
+>   
+>   	flags = _css_rstat_cpu_lock(root, cpu, false);
 
-> I applied a diff as in the attachment, to see what offsets are being assi=
-gned.
-> Looks like this shows a bug:
->=20
->   ./veristat  -q -G "struct1[0].filler =3D 42" set_global_vars.bpf.o > /d=
-ev/null
->   setting struct1[0].filler: offset 54, kind int, value 42
->=20
-> Shouldn't offset be 2 in this case?
-
-Nevermind, it's an offset inside section, sorry for the noise.
-
-[...]
+The subsystem per-cpu locks were used to synchronize updater and flusher
+on a given cpu. Since you no longer use them on the updater side, it
+seems these locks can be removed altogether.
 
