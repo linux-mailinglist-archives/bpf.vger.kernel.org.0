@@ -1,139 +1,132 @@
-Return-Path: <bpf+bounces-60322-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60323-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B5B0AD571C
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 15:33:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7371AD5767
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 15:41:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0EEA6168AE9
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 13:33:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1226A3A2E33
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 13:41:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBC9628A1F0;
-	Wed, 11 Jun 2025 13:33:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A05928B41A;
+	Wed, 11 Jun 2025 13:41:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KvOfYCOy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NEQV99lG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BECEC28F1
-	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 13:32:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E421C28313D
+	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 13:41:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749648780; cv=none; b=UNWell+aP2j8KRXaJabZgzDS9yXqic/isZrKOHxjblbxrb6YdATXp8MxPMkexypMsl1AFewY99LgntwamBklwtLv5+DnC2ghWjsqBbgusoIAB9ejkUEm5Y+CZcosoz53ROSt/xadf65DRkbyYKwizv2gXJWqavQEDYHzMd+hvo0=
+	t=1749649303; cv=none; b=IphcFmcQ1Xy1AHbLwuc3crM92fWHRKn1j/LHBxg2kyll0DWnIlcOBX2sUAns8w1yPyjN/IUAxy+uLzh0uvOyl5ji0TvhEGMHAflxfYZpJaWY2dMeBG+5Nq87OPpVkWuTjQFfnh78M5cQKCVxVopoT5cc+s9tJOBw4waL9b/FzSg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749648780; c=relaxed/simple;
-	bh=RlvSUTGYIbeSTiqY4MtMBVB+6+V4KPHCUeg0jXRyQ3A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Rl5RzWi4PUdeIpp7Lget9zkHZflIUw2uG2J2vPb60G0XXjj7raeRdsEdHPpgcMRSdXDem3VxBA8k6Bxx7f7UPHIyE0qph67adEnY38c0WNek/FJxt2dtNFOI4HRhe/8QRcTDM6zv+4bkJqPR847q2Tl9BFXnoMqI2L7ywTLi/TQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KvOfYCOy; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-43edecbfb46so56731955e9.0
-        for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 06:32:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749648777; x=1750253577; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vuL4NjPFVmODP/l92ar/+jHwJj49w2M9zdvr1k+d3Io=;
-        b=KvOfYCOy8mpwznWYkhgrUNTYuMJNwQCZy+RXnoP3JqL0/VZoo3O2oSWtf4hjkBDldK
-         IyI7XHmGxABLjJkSAwva64nhHC8tcSsEfxQBbVY9YYNFWPaF5xByyBGAoJ4XqXPh4oA9
-         FSIFIlSDHt0bPnHZXemZwBarMaj/rgej5yHahbgJHUB2Z1M3WP17oWiDOi7MkQaqM5Rc
-         pBj5ePPUK+0dnb6ZGsstHS9LtQOFyAPACn65fRxxprp3Qfe5836DtoICFlsyZEwyZdo4
-         Wgc6lPTqfrNSzO9nduXedrUovxBsmg73XENhDtc3sGClJ3122l4JeuJK8+D2u6vpYmJN
-         uGdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749648777; x=1750253577;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vuL4NjPFVmODP/l92ar/+jHwJj49w2M9zdvr1k+d3Io=;
-        b=wE00O2rkZtpxzamH12/yhAmzyPWSUgACa1O1eI2WtAx5Oh6XHqM9GYDd1KRoS2n1+4
-         +Mr1oA6cc50Xntd0V9exDwSmYUrNxzEnPJ9i7D2luMOcFmX9/cr0irMN1Zr+zRgvPRWF
-         JfFvRCsA0LTeROxIczFd4hasTfXAeol+k1mB2GWSjKUD9B8wDxqMEsltgrpJ2OLnYeo/
-         iwO0KD3q9QnnoVz2hHmrvYHkmzW3MyENuxhJkTWfp7R7AkxL2OMCXB7kEasIMqHxWN0Z
-         iyNQWF70FCNwZ+r+cVfAkjiSDq32/8FAebeF275QJy2qrGfdlR9Ys9P471tFIT3l02wO
-         CdAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUAXDxpLHAPGjXTMYr/kV5ilJlmQVApZCPDANN1fA1uKwpVcCzTdCOxNQPvgXsZ3luuGyc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxC7a3k4x/7Rpnl+f5yr153EH919SiDZ/HEj4t+x+k4p8fA9KwL
-	tfOeV/oABNovZvL95rd1G0Jfx6dz+WPNZgh5krvMC2ShmmpHm0TQFbQt
-X-Gm-Gg: ASbGncs9HzywubZNVvOoCsThAm9csILKFlN6BHgghapsGjKTOLpgx7kuapuDbBH7K5x
-	+Zp/+4KSoEUIHxWX0dqtdeFBXwR2UKtL4hEBkJVLplUHHD8d48YDtDbttnk/GT3+hdOnm8RnypU
-	2TqoatZum/qKjOFDf/tICWw66f9CvZy/ziyHj+iBDJV63kdZLVtXlJqA45I48JM7D5iSFHcwZD6
-	P9qSZ9RHGhvBXDgJbXJFJyJu72PIRIb3EKqTuLkYg67I9qZtcz9pS1G/L2vE+CuY5JPgTsZkiUp
-	9jWM/tlx7WwzB4FbS7ouoSjDI5poItjdNb9FUKF1oaRikUXx8eH4FkZpE2oYXqC01j4QuW8tE6P
-	vYCPZXgN8jH+G7h/ke+80koAUrSCd6Bls0OSZlTmwYwzhMA==
-X-Google-Smtp-Source: AGHT+IF4Bzv5pUg7BOJl1QoiQ/+HpT4AZe7ViGci2KCTIXtyzsQUmVZg8+Q6Igb9COpP6/hQQ/Nukw==
-X-Received: by 2002:a05:6000:2dc3:b0:3a4:f902:3872 with SMTP id ffacd0b85a97d-3a558aad921mr2270163f8f.19.1749648776751;
-        Wed, 11 Jun 2025 06:32:56 -0700 (PDT)
-Received: from ?IPV6:2a01:4b00:bf28:2e00:106b:a16d:4d49:8ce9? ([2a01:4b00:bf28:2e00:106b:a16d:4d49:8ce9])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a5323b67ccsm15345333f8f.40.2025.06.11.06.32.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Jun 2025 06:32:56 -0700 (PDT)
-Message-ID: <7914de29-4510-4eb2-8baf-31f131565877@gmail.com>
-Date: Wed, 11 Jun 2025 14:32:55 +0100
+	s=arc-20240116; t=1749649303; c=relaxed/simple;
+	bh=4tmp676+IQ949gs6/CrHDkVmXb8eSg5m8lRI4y1hgYU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Xu08iYfglsqzQ4blwRrzfaBsvxcIsjxlAJ/11waSQG+YfzXQLHg6AwyUGe6loC2NX81zcQ+gzDNawom7IcZsucwVQ67ENceIvcVbkjiANgM8Zcq/Gk8lQS6SxCpQXHHqW9dbsTBjCcxYd0mTY1oVZh+A/enWlPF6r0uhU2FKZg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NEQV99lG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71A12C4AF09
+	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 13:41:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749649302;
+	bh=4tmp676+IQ949gs6/CrHDkVmXb8eSg5m8lRI4y1hgYU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=NEQV99lG2FAjSgOVKrFlK4KaUiHRv1Q+ymZh9IjtSqdf7X09GUJj9M6mKwL61PcYg
+	 qKOQFVOTY/8uLUIPU8fYtbE5n9lkfpWr/bXHupcioDTw6q9V0p5opJHQfCKx8fnmpG
+	 nFLO1ggDRU0vmDAGey8YLwf6G7HRSEG5wZj4thOkqXe9eJSszKSPwLF0Hql9Dg+edV
+	 wDqS9Obmg2GnQd0uGVYjn24yNu/4aF5pKNkOJZ6/qob/jjFQUvPh1gk8Y7BQeZd5lA
+	 a2GF+RVWsGpEcTYNignyPRV5j2m0ca2NcYm9w7PeASvtFvBRpf+06wlIiTY1b1xfsm
+	 gdAi83HYwHIjg==
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-60768f080d8so10255391a12.1
+        for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 06:41:42 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXH1wKJv2LZ4btMSgFJzuhzbchnKGo5LEBMw4z166qULCI8JwcMXS0OBTGD/JuVkopVdGE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwxTYfEmI3Yt7NX7V3kJwpgbqXC8wqI/CR8+/mvLoCzE1uiS2WP
+	hjPaa4WFZOB+BVFUivhRvQ14ZMWYCK0uLXKKjR1I3tcfnLaWaC+1Be46qXYvfvyGG+isjFGz6Zv
+	h04tDyg0IYsewk2w9LH2SGnXRJ40RJrndma/NExsX
+X-Google-Smtp-Source: AGHT+IGHC4d+/ja02Pdc6Uwk6I+BZyyFjpYdMueX68hcAmX9GCs+uYJpN1/hb62pYNuX1Ph3Ln8s8ahhhzXhfr915dw=
+X-Received: by 2002:aa7:d985:0:b0:608:50ab:7e38 with SMTP id
+ 4fb4d7f45d1cf-60850abc0d2mr1700831a12.14.1749649301001; Wed, 11 Jun 2025
+ 06:41:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 2/3] selftests/bpf: support array presets in
- veristat
-To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
- ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com,
- kernel-team@meta.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-References: <20250610190840.1758122-1-mykyta.yatsenko5@gmail.com>
- <20250610190840.1758122-3-mykyta.yatsenko5@gmail.com>
- <4ff2fafb99131f599901580eac96dca34ca20cc0.camel@gmail.com>
- <c1cb9bd3-c99d-4af3-bbcc-2ff3c2250ca1@gmail.com>
- <8134154a25af0153411c263df923acd350253c25.camel@gmail.com>
-Content-Language: en-US
-From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-In-Reply-To: <8134154a25af0153411c263df923acd350253c25.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20250606232914.317094-1-kpsingh@kernel.org> <20250606232914.317094-11-kpsingh@kernel.org>
+ <87qzzrleuw.fsf@microsoft.com> <CACYkzJ6M7kA7Se4=AXWNVF1UyeHK3t+3Y_8Ap1L9pkUTbqys9Q@mail.gmail.com>
+ <87o6uvlaxs.fsf@microsoft.com> <CACYkzJ74MJkwejki7kFNR4RWh+EnJ++0Vop8eRkSwY6pJepMEQ@mail.gmail.com>
+ <8cf2c1cc15e0c5e4b87a91a2cb42e04f38ac1094.camel@HansenPartnership.com>
+ <CACYkzJ6yNjFOTzC04uOuCmFn=+51_ie2tB9_x-u2xbcO=yobTw@mail.gmail.com>
+ <6f8e0d217d02dc8327a2a21e8787d3aec9693c2c.camel@HansenPartnership.com>
+ <CACYkzJ4T5ZFuY5PDKp1VZmsdEyEYUbbajAbhqr+5FE6tqy195A@mail.gmail.com> <fa526e6ed52e2c5f72aeb24fa24f3731bac6f74d.camel@HansenPartnership.com>
+In-Reply-To: <fa526e6ed52e2c5f72aeb24fa24f3731bac6f74d.camel@HansenPartnership.com>
+From: KP Singh <kpsingh@kernel.org>
+Date: Wed, 11 Jun 2025 15:41:30 +0200
+X-Gmail-Original-Message-ID: <CACYkzJ4JYDXEkYpN=XBn4bOmv6Fg7bSgV-YAKHfEL2NxJiMh0A@mail.gmail.com>
+X-Gm-Features: AX0GCFv86LhfY9bz8qjJjWyl5JM6Chhze6kRDIuvQLuHxjxt-POwDqAw8UiU5E8
+Message-ID: <CACYkzJ4JYDXEkYpN=XBn4bOmv6Fg7bSgV-YAKHfEL2NxJiMh0A@mail.gmail.com>
+Subject: Re: [PATCH 10/12] libbpf: Embed and verify the metadata hash in the loader
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc: Blaise Boscaccy <bboscaccy@linux.microsoft.com>, bpf@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, paul@paul-moore.com, kys@microsoft.com, 
+	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 6/11/25 13:21, Eduard Zingerman wrote:
-> What do you think about a more recursive representation for presets?
-> E.g. as follows:
+On Wed, Jun 11, 2025 at 3:18=E2=80=AFPM James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
 >
->    struct rvalue {
->      long long i; /* use find_enum_value() at parse time to avoid union */
->    };
->    
->    struct lvalue {
->      enum { VAR, FIELD, ARRAY } type;
->      union {
->        struct {
->          char *name;
->        } var;
->        struct {
->          struct lvalue *base;
->          char *name;
->        } field;
->        struct {
->          struct lvalue *base;
->          struct rvalue index;
->        } array;
->      };
->    };
->    
->    struct preset {
->      struct lvalue *lv;
->      struct rvalue rv;
->    };
+> On Wed, 2025-06-11 at 14:33 +0200, KP Singh wrote:
+> > [...]
+> > I have read and understood the code, there is no technical
+> > misalignment.
+> >
+> > I am talking about a trusted user space loader. You seem to confuse
+> > the trusted BPF loader program as userspace, no this is not
+> > userspace, it runs in the kernel context.
 >
-> It can handle matrices ("a[2][3]") and offset/type computation would
-> be a simple recursive function.
+> So your criticism isn't that it doesn't cover your use case from the
+> signature point of view but that it didn't include a loader for it?
 >
-Yes, this looks cleaner, if we want to support multi-dimensional arrays,
-recursive representation works well. A minor problem is that we don't 
-have BTF at parsing time,
-so resolving enums early won't be possible.
+> The linked patch was a sketch of how to verify signatures not a full
+
+It was a non functional sketch that did not address much of the
+feedback that was given, that's not how collaboration works.
+
+> implementation.  The pieces like what the loader looks like and which
+> keyring gets used are implementation details which can be filled in
+> later by combining the patch series with review and discussion.  It's
+> not a requirement that one person codes everyone's use case before they
+> get theirs in, it's usually a collaborative effort ... I mean, why
+
+Yeah, it's surely a collaborative effort, but the collaboration has
+been aggressive and tied to a specific implementation (at least from
+some folks). Rather than working with the feedback received it has
+been accusational of mandating and forcing. If the intent is to really
+collaborate, let's land this base implementation and discuss further.
+I am not willing to add additional stuff into this base
+implementation.
+
+> would you want Microsoft coding up the loader?  If they don't have a
+> use case for it they don't have much incentive to test it thoroughly
+> whereas you do.
+
+It seems that your incentives are purely aligned with Microsoft and
+not that of the BPF community at large (this is also visible from the
+patches and the engagement). FWIW, There is no urgency for my employer
+to have signed BPF programs, yet I am working on this purely to help
+you and the community.
+
+- KP
+
+>
+> Regards,
+>
+> James
+>
 
