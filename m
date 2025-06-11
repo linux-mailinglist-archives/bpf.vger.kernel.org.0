@@ -1,186 +1,158 @@
-Return-Path: <bpf+bounces-60356-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60358-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E2A0AD5D2A
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 19:23:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BDE6AD5D36
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 19:26:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1102317C764
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 17:23:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90201188D547
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 17:24:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0AAE221DB9;
-	Wed, 11 Jun 2025 17:20:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AF202248BF;
+	Wed, 11 Jun 2025 17:21:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WJuuEwr4"
+	dkim=pass (3072-bit key) header.d=posteo.net header.i=@posteo.net header.b="A5Md52u3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE967213224;
-	Wed, 11 Jun 2025 17:20:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EACDA222561
+	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 17:21:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749662446; cv=none; b=NnGlMOQmD9rYviBsD2vI+4VKP1CWe+Nkc6/RryGWMOsnULecpVyh86979v+tkdojmGTrULMsdcTg+Qgip+RaoegOmMHVjmgI3wB+/rOfVa7tMrb+0Ba8X0o5Ilno/w4quuFkGvma7jNsFn7y3h/OgDUhOQDTDLNX7AzMUqZcnzE=
+	t=1749662471; cv=none; b=qnOH5IEg/mKwGuevTWBRHpoZXI8EjsMxKdNg7Nw1sWc7U3KWQDEpi18dlZ2vuKm6ZWfrIy+qBjG2SXrX95fTYD7cEtSX6fMkdC4+0SX86tU6HV4FqEWWVR8JH3G3shzOpvYCHwPcvHhoRS8zvNc+aevrTlNeG/92bMyjgp9zysw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749662446; c=relaxed/simple;
-	bh=Sx72HRw3Yn4RGEQZlP+yprFbOX9B2FZRRX0q7mBUedI=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=b7H2yCP1bjDDVvyoczreTUcz244r5z8R4qAEbJhqOoOw32+YULXhp2AMfDZcWnh8EUU1ebRU6GleuNnu8x3tJYwSEmw1uj8bVrdcf2epEsh1KzVrlrSqQVHtq5j58Ahhe4x7PMZlchbRtUTQj38iFzRIkm7BmictFqgFDqird1s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WJuuEwr4; arc=none smtp.client-ip=209.85.216.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-313a001d781so130415a91.3;
-        Wed, 11 Jun 2025 10:20:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749662444; x=1750267244; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=cRCQe7LEqIZN/9wZ4INmjcrgEW8kPovwHFWEMLe8e2s=;
-        b=WJuuEwr4JFs3hAhk3txMWroWQa1bvD8n6W8WIBUh8g3Ip8iHQ0dfTCMlURDtcqOHf0
-         VJhQ5vQ6UFGihz1UJ5XHHSIcsa4YllUhPIwGPTxNjCfLpLrrU7GTd+oY02t8PKW+Z0Ji
-         arWHFeJwTCZU5FWwLdSaHtHcXIbvnJs8rXLgki1DnorYHUT8A801lwXC2YAAx9+q1S0O
-         nPOn8dXQCdUxCkWAwhwlaKQ4lTT9QFl1xahwWoLhz4xz8baJKEBrMoo7Sc5hnc+IGo2G
-         CQDaROXNMwiW0aG087xu4LqTkmI2oXK4BPqQPr8lZ86TB/KAV8pRmKJRSfyzx9Bng1N4
-         tT9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749662444; x=1750267244;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cRCQe7LEqIZN/9wZ4INmjcrgEW8kPovwHFWEMLe8e2s=;
-        b=d4+iXQ5NEAZpoCMSbdukuKCQbl7CDyoZtEXkCGUfuyWYA0kSrOewo63RgeXSEn2oGP
-         T7u90W6a7y9eYuKplvgGsuC06QldF1T32qkFuxUjwyY33DMFuAec6lSHytFxb7gDfevd
-         12rJN2X9WqXOByUT4sDJhVhxNV1sD+zQtdUBF1oGRhidjdWHUmwo8H61dKZh/HkESgll
-         D6oNAArpbFcXC9J5ripvI9kUvSPtuivfTNpj6CIn29LDhngeaNTXrl+7XCSGUOuN6I1R
-         RTsKJVLIb1BtTNR48BiG21M47+k+MgyEaux4sgfunLmHAQ4SbKiqE5ou6AU2GQvLJLHk
-         eiNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUlQGEXAmQfFSAl4BSml1FHLeqZz+XBZ2kxODoHLs3UOH4lyP87TsXJ99Hi+17MKtInuR3TuLyhXt/+hfXx@vger.kernel.org, AJvYcCXPc08QRx3WOj8icdziNr64HY8F4i8Jv+wm3ZiGkMdE6lOuYEv6qNfSuyJeK/9M3gMXTw8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx/6iaBMjGOpk+C6/HRpmQtGKZ9u6nPenuLwjjC0kH4izqpH34j
-	Bh8Uw8SQZsnSOcqF+A62sUMWZ4qyq652PtIttPIhjP8jiVKr/DmavILy
-X-Gm-Gg: ASbGncu/sozgVvNFBUap+Zb8lZc/nIyqzpLNLa/BgzmRgu/74QBE3lsFOpy3Z1aw4lX
-	lgVSS8R3DWRyOeS4M8K/+T7Xiq0XWFIHFb2e3DmM0quGp9yWFSwsq41/hH7wDmMACn+jHldEB4i
-	516QPpC9Af4eNelc/lMeGVMbcuu6Qpoqc1zgBrX700R4y53pNhuWBBrXxwfThzjDFz113OYM3m6
-	OibrLXVY0hBwmNmm4V8duDPmX4l+iUS+8EemIl086xLA584LfJG6epGgAYxNIsAuXCvgpW4RzXk
-	d21edZLZpexdrS1Suj8cDzz3taXSYfjiBQN5OjV6lhEomD32ReGTB7uSSHrdwjim/TOPP4PJ9v9
-	+vFDr3LvIQLU3D3z1xyPd
-X-Google-Smtp-Source: AGHT+IEjYarozUxyVFKxunE1PiLYMLbHE9SCdBC+v1q5zJGeSpPkCSJioDtC3uQQvGR0VYPNKy7B6w==
-X-Received: by 2002:a17:90b:5706:b0:311:b0ec:1360 with SMTP id 98e67ed59e1d1-313bfc15c8fmr439284a91.29.1749662443650;
-        Wed, 11 Jun 2025 10:20:43 -0700 (PDT)
-Received: from ?IPv6:2a03:83e0:115c:1:b1d2:545:de25:d977? ([2620:10d:c090:500::7:d234])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-313b200a09csm1558604a91.16.2025.06.11.10.20.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Jun 2025 10:20:43 -0700 (PDT)
-Message-ID: <b6931bd0dd72327c55287862f821ca6c4c3eb69a.camel@gmail.com>
-Subject: Re: [syzbot] [bpf?] KASAN: slab-use-after-free Read in do_check
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Luis Gerhorst <luis.gerhorst@fau.de>
-Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- daniel@iogearbox.net, 	haoluo@google.com, john.fastabend@gmail.com,
- jolsa@kernel.org, kpsingh@kernel.org, 	linux-kernel@vger.kernel.org,
- martin.lau@linux.dev, sdf@fomichev.me, 	song@kernel.org,
- syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Date: Wed, 11 Jun 2025 10:20:40 -0700
-In-Reply-To: <87frg6gysw.fsf@fau.de>
-References: <68497853.050a0220.33aa0e.036a.GAE@google.com>
-		<38862a832b91382cddb083dddd92643bed0723b8.camel@gmail.com>
-	 <87frg6gysw.fsf@fau.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	s=arc-20240116; t=1749662471; c=relaxed/simple;
+	bh=u5Kk1jfvzFrOwlCXwYxoep/9dBDPOwrOQVQdE3Geobw=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=C9Woqk2GWImZm18X++r/v4f+Tz/54iG9LqN25UikQcgsMFIukmRLqJQg90gSjQ5bUQV24yO0UtWDI+MiwtjV3dnD+OC1F71HTTF8tTGm2zDTuPFor1ACjLJQc6FeXKuHNgKT/hyt7Ku/CbRtHN+FLzcARj1WeYpRKAn8t6xKGBY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (3072-bit key) header.d=posteo.net header.i=@posteo.net header.b=A5Md52u3; arc=none smtp.client-ip=185.67.36.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
+Received: from submission (posteo.de [185.67.36.169]) 
+	by mout02.posteo.de (Postfix) with ESMTPS id 5B212240101
+	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 19:21:07 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net;
+	s=1984.ea087b; t=1749662467;
+	bh=u5Kk1jfvzFrOwlCXwYxoep/9dBDPOwrOQVQdE3Geobw=;
+	h=From:Date:Subject:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding:Message-Id:To:Cc:From;
+	b=A5Md52u3STlkO+A8jTT+13k1GA3nD1EBgT6khcCenX/tpCDQSURx9JPPCVEBBHfXb
+	 eZzOT1HsHBVaGUqYPzH02x4srcEGZer2OgO0WGiv6/dueoIu4mcT8Pu6NXpP2Ndhxq
+	 yq5/9d83/1d0Qz5W58Oqj7yjbCwIcjq3oL1yaIx28k1hClgRVafa/GdYJVtb2nmOhJ
+	 GlPPnpmIArGpb0ls3pFhioBSjphuortNfRRXyibVYOozphg/KxuQ5k+8OXh0QMWoOC
+	 TjYVvv62gb/mCO8W+dpH3oPPUOcGi2Mx++WS/ldb4SLfBDidrseF7OVhgYMvi5pFAp
+	 xQRM30E1zv/K7YuEcXOb+nQr8jaHLir+p64PvyIH3QZN0B8nfE7Gpf8QoupLV+wDNb
+	 V8c4lRb+/aLqXNaqd8oAMP45JlSvR6nfEtEyHEinPQMeJB5aemwbxl1SgZYFLDjoYD
+	 kWR2mzs87p7pGq9RKP419oYEJ8aMqwSALe52YeKvIpFpxcxQUOP
+Received: from customer (localhost [127.0.0.1])
+	by submission (posteo.de) with ESMTPSA id 4bHXW323xjz9rxQ;
+	Wed, 11 Jun 2025 19:21:03 +0200 (CEST)
+From: Charalampos Mitrodimas <charmitro@posteo.net>
+Date: Wed, 11 Jun 2025 17:20:43 +0000
+Subject: [PATCH bpf-next v3] net: Fix RCU usage in task_cls_state() for BPF
+ programs
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20250611-rcu-fix-task_cls_state-v3-1-3d30e1de753f@posteo.net>
+X-B4-Tracking: v=1; b=H4sIAOq6SWgC/4XNQQ6CMBAF0KuQrq1ppxWIK+9hDCllkEZDSac2G
+ sLdLax0YVz+yf9vZkYYHBI7FjMLmBw5P+agdgWzgxmvyF2XMwMBB1GKmgf74L178mjo1tg7NRR
+ NRC6wq1SvVdVJZHk8BcytDT5fch4cRR9e258k1+tfMkkuOZi11upSqPY0eYro9yNGtpoJPhwpf
+ zqQHWmq3oKuQYH5cpZleQNGtF7QBQEAAA==
+X-Change-ID: 20250608-rcu-fix-task_cls_state-0ed73f437d1e
+To: "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Feng Yang <yangfeng@kylinos.cn>, 
+ Tejun Heo <tj@kernel.org>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ bpf@vger.kernel.org, syzbot+b4169a1cfb945d2ed0ec@syzkaller.appspotmail.com, 
+ Charalampos Mitrodimas <charmitro@posteo.net>
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1749662443; l=2729;
+ i=charmitro@posteo.net; s=20250526; h=from:subject:message-id;
+ bh=u5Kk1jfvzFrOwlCXwYxoep/9dBDPOwrOQVQdE3Geobw=;
+ b=cOJU/Y97B/mIsiD6ycUzLbHOj+hDqh9honeXQ3bF5ZN1FpCw/P9xFzMlBjxDgS6XhO9jdIj0R
+ BW5omZ1EtlGBMPPQfoVetlQvPuxjKIUWGThuj0Mz8r5uXn4WqXjI4A4
+X-Developer-Key: i=charmitro@posteo.net; a=ed25519;
+ pk=PNHEh5o1dcr5kfKoZhfwdsfm3CxVfRje7vFYKIW0Mp4=
 
-On Wed, 2025-06-11 at 16:03 +0200, Luis Gerhorst wrote:
-> Eduard Zingerman <eddyz87@gmail.com> writes:
->=20
-> > Accessed memory is freed at an error path in push_stack():
-> >=20
-> >   static struct bpf_verifier_state *push_stack(...)
-> >   {
-> >   	...
-> >   err:
-> >   	free_verifier_state(env->cur_state, true); // <-- KASAN points here
-> >   	...
-> >   }
-> >=20
-> > And is accessed after being freed here:
-> >=20
-> >   static int do_check(struct bpf_verifier_env *env)
-> >   {
-> >   	...
-> > 		err =3D do_check_insn(env, &do_print_state);
-> > KASAN -->	if (state->speculative && error_recoverable_with_nospec(err))=
- ...
-> >   	...
-> >   }
-> >  =20
-> > [...]
-> >=20
-> > Either 'state =3D env->cur_state' is needed after 'do_check_insn()' or
-> > error path should not free env->cur_state (seems logical).
->=20
-> Sorry, this was my error from [1]. Thanks for the pointer.
->=20
-> Yes, I think the former makes sense (with the respective `state &&`
-> added to the if).
->=20
-> The latter might also be possible, but I guess it would require more
-> significant changes.
+The commit ee971630f20f ("bpf: Allow some trace helpers for all prog
+types") made bpf_get_cgroup_classid_curr helper available to all BPF
+program types, not just networking programs.
 
-do_check_common() has the following logic:
+This helper calls __task_get_classid() which internally calls
+task_cls_state() requiring rcu_read_lock_bh_held(). This works in
+networking/tc context where RCU BH is held, but triggers an RCU
+warning when called from other contexts like BPF syscall programs that
+run under rcu_read_lock_trace():
 
-   out:
-         /* check for NULL is necessary, since cur_state can be freed insid=
-e                                                                          =
-                                                                           =
-                                                                     =20
-          * do_check() under memory pressure.                              =
-                                                                           =
-                                                                           =
-                                                                     =20
-          */
-         if (env->cur_state) {
-                 free_verifier_state(state: env->cur_state, free_self: true=
-);
-                 env->cur_state =3D NULL;
-         }
-         while (!pop_stack(env, prev_insn_idx: NULL, insn_idx: NULL, pop_lo=
-g: false));
-         if (!ret && pop_log)
-                 bpf_vlog_reset(log: &env->log, new_pos: 0);
-         free_states(env);
-         return ret;
+  WARNING: suspicious RCU usage
+  6.15.0-rc4-syzkaller-g079e5c56a5c4 #0 Not tainted
+  -----------------------------
+  net/core/netclassid_cgroup.c:24 suspicious rcu_dereference_check() usage!
 
-Same cleanup cycles are done in push_stack() and push_async_cb(),
-both functions are only reachable from do_check_common() via
-do_check() -> do_check_insn().
+Fix this by also accepting rcu_read_lock_held() and
+rcu_read_lock_trace_held() as valid RCU contexts in the
+task_cls_state() function. This ensures the helper works correctly in
+all RCU contexts where it might be called, regular RCU, RCU BH (for
+networking), and RCU trace (for BPF syscall programs).
 
-Hence, I think that cur state should not be freed in push_*()
-functions and pop_stack() loop there is not needed.
+Reported-by: syzbot+b4169a1cfb945d2ed0ec@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=b4169a1cfb945d2ed0ec
+Fixes: ee971630f20f ("bpf: Allow some trace helpers for all prog types")
+Signed-off-by: Charalampos Mitrodimas <charmitro@posteo.net>
+---
+Changes in v3:
+- Add rcu_read_lock_held() check as well 
+- Link to v2: https://lore.kernel.org/r/20250611-rcu-fix-task_cls_state-v2-1-1a7fc248232a@posteo.net
 
-> state->speculative does not make sense if the error path of push_stack()
-> ran. In that case, `state->speculative &&
-> error_recoverable_with_nospec(err)` as a whole should already never
-> evaluate to true (because all cases where push_stack() fails also return
-> a non-recoverable error -ENOMEM/-EFAULT).
->=20
-> Alternatively to adding `state =3D env->cur_state` and `state &&`, turnin=
-g
-> the check around would avoid the use-after-free. However, I think your
-> idea is better because it is more explicit compared to this:
->=20
-> 	if (error_recoverable_with_nospec(err) && state->speculative) ...
->=20
-> Does this make sense to you? If yes I can send the fix later today.
+Changes in v2:
+- Fix RCU usage in task_cls_state() instead of BPF helper
+- Add rcu_read_lock_trace_held() check to accept trace RCU as valid
+  context
+- Drop the approach of using task_cls_classid() which has in_interrupt()
+  check
+- Link to v1: https://lore.kernel.org/r/20250608-rcu-fix-task_cls_state-v1-1-2a2025b4603b@posteo.net
+---
+ net/core/netclassid_cgroup.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-I think this flip makes perfect sense and should be done.
+diff --git a/net/core/netclassid_cgroup.c b/net/core/netclassid_cgroup.c
+index d22f0919821e931fbdedf5a8a7a2998d59d73978..dff66d8fb325d28bb15f42641b9ec738b0022353 100644
+--- a/net/core/netclassid_cgroup.c
++++ b/net/core/netclassid_cgroup.c
+@@ -21,7 +21,9 @@ static inline struct cgroup_cls_state *css_cls_state(struct cgroup_subsys_state
+ struct cgroup_cls_state *task_cls_state(struct task_struct *p)
+ {
+ 	return css_cls_state(task_css_check(p, net_cls_cgrp_id,
+-					    rcu_read_lock_bh_held()));
++					    rcu_read_lock_held() ||
++					    rcu_read_lock_bh_held() ||
++					    rcu_read_lock_trace_held()));
+ }
+ EXPORT_SYMBOL_GPL(task_cls_state);
+ 
 
-[...]
+---
+base-commit: 079e5c56a5c41d285068939ff7b0041ab10386fa
+change-id: 20250608-rcu-fix-task_cls_state-0ed73f437d1e
+
+Best regards,
+-- 
+Charalampos Mitrodimas <charmitro@posteo.net>
+
 
