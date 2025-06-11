@@ -1,50 +1,50 @@
-Return-Path: <bpf+bounces-60319-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60320-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D025AD56A1
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 15:13:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 803C7AD56C9
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 15:19:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91B6C3A41F8
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 13:12:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 838BC3A2BD8
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 13:18:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58311283CAA;
-	Wed, 11 Jun 2025 13:12:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 676B2283CAC;
+	Wed, 11 Jun 2025 13:18:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="FEwOF0va"
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="fwBQR9+F"
 X-Original-To: bpf@vger.kernel.org
 Received: from lamorak.hansenpartnership.com (lamorak.hansenpartnership.com [198.37.111.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22CF3273D6D;
-	Wed, 11 Jun 2025 13:12:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CAFB1A285;
+	Wed, 11 Jun 2025 13:18:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.37.111.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749647575; cv=none; b=Y6P0Ho1OiCg/6qOBXRp4ZNVQgEhZJtenGi3kC8vz2zqDCzB56STpqRYBbl+azPzmfEDYSAuLAcyChjgqgBCuvVCIFqmZX571v9H7pZ3eDaDVSmsbmicQuf8tG3ILn4U77NnnJudXOUbaGAe5F8P6yx0omTma7wSOV7D9x4IEPnQ=
+	t=1749647905; cv=none; b=fgJLnlrI0spoVpnioiewRhlcHsjNw6eJqxPKmQwhUigXVcpKsiYwVScQuF3zaJL2kMYsUuyNEaRSjmcSGF6zqrnyJy+Jxp6KRsMtv+48Ca9UCfmquhQnEfpNdGkrI9tR0yiuS+pW9js7kCHJPijUiiPFQi03PpEZEEVP836QHlA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749647575; c=relaxed/simple;
-	bh=w65Lcx1k3X1HhHwCUTJCDJKiKl+P8THQxJs0i9kf2k4=;
+	s=arc-20240116; t=1749647905; c=relaxed/simple;
+	bh=cvk8mJcO6H682aq0ytNtxnfB2xmTuYNrH6k8/yeEVfQ=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=isbAg/catyY9lZ78wDOq0uRqQBvIZLU6WA6JFHckE2hSrCAZu2687NYvRsYUtyjY8Yw4U0GGYter8RUOBjZ31qxYe/GaojAOMPEyNrlTWK8kFia8Wcl1Ol5BHPJgKslXUsn3eal1U9HsPcmrjQvshWj64IKpV7WgMOdM10MgYgU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=FEwOF0va; arc=none smtp.client-ip=198.37.111.173
+	 Content-Type:MIME-Version; b=Krjf8c2Oz3F5HyOnfiXkLQzBgj32R1GQROBKVqXlG9UDZlx4BaIIEjOs3jeisKZDhdCaIkYsZ3QcxVel50S0jfet+wldqumUtlASLRN8mYsAeqcZjtbZIIEwFsSKzm7KczBW+JM7w1MsqcQwsLFnhC8CwUR1AZtkmSFwV76gDi4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=fwBQR9+F; arc=none smtp.client-ip=198.37.111.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1749647572;
-	bh=w65Lcx1k3X1HhHwCUTJCDJKiKl+P8THQxJs0i9kf2k4=;
+	d=hansenpartnership.com; s=20151216; t=1749647902;
+	bh=cvk8mJcO6H682aq0ytNtxnfB2xmTuYNrH6k8/yeEVfQ=;
 	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=FEwOF0vaJbHeoVii9TovfWjyIMM8VXtTm0Rv2hGm/OYziJY9FbtvVKXGdVD4OYCow
-	 1x3b2uVR6UyBMTSRe5kiCQcL2RSXeso6jD69D9pkAxCmA1a8StD7hokYZH8Sy+hG8p
-	 WoOdKZtmW/DCy5BeKjjEUkjqp/OhhmhpIyX1GLYo=
+	b=fwBQR9+FWv4IwCMZtDuM2IPmRM/nHLnVDn/AJicf4HaP33m5kz6LPpqle5yv+8hhW
+	 0fNXVn/v5U+XSosK349/WC233W73uc/Punpdj3KB9hPGIt2M8hbkKC2284wP70Ptof
+	 2nZ2EYqh6i6kSTkOxXmsqXGVGsBQDmCsY9KfEFq8=
 Received: from [IPv6:2601:5c4:4302:c21::a774] (unknown [IPv6:2601:5c4:4302:c21::a774])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange x25519)
 	(No client certificate requested)
-	by lamorak.hansenpartnership.com (Postfix) with ESMTPSA id 911971C0024;
-	Wed, 11 Jun 2025 09:12:52 -0400 (EDT)
-Message-ID: <12d7049f41675a087b254c853b4c5d50969e68fd.camel@HansenPartnership.com>
+	by lamorak.hansenpartnership.com (Postfix) with ESMTPSA id 1FAF11C0287;
+	Wed, 11 Jun 2025 09:18:22 -0400 (EDT)
+Message-ID: <fa526e6ed52e2c5f72aeb24fa24f3731bac6f74d.camel@HansenPartnership.com>
 Subject: Re: [PATCH 10/12] libbpf: Embed and verify the metadata hash in the
  loader
 From: James Bottomley <James.Bottomley@HansenPartnership.com>
@@ -52,7 +52,7 @@ To: KP Singh <kpsingh@kernel.org>
 Cc: Blaise Boscaccy <bboscaccy@linux.microsoft.com>, bpf@vger.kernel.org, 
  linux-security-module@vger.kernel.org, paul@paul-moore.com,
  kys@microsoft.com,  ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Date: Wed, 11 Jun 2025 09:12:51 -0400
+Date: Wed, 11 Jun 2025 09:18:21 -0400
 In-Reply-To: <CACYkzJ4T5ZFuY5PDKp1VZmsdEyEYUbbajAbhqr+5FE6tqy195A@mail.gmail.com>
 References: <20250606232914.317094-1-kpsingh@kernel.org>
 	 <20250606232914.317094-11-kpsingh@kernel.org>
@@ -85,86 +85,26 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
 On Wed, 2025-06-11 at 14:33 +0200, KP Singh wrote:
-> On Wed, Jun 11, 2025 at 1:59=E2=80=AFPM James Bottomley
-> <James.Bottomley@hansenpartnership.com> wrote:
-> >=20
-> > On Wed, 2025-06-11 at 00:35 +0200, KP Singh wrote:
-> > > On Tue, Jun 10, 2025 at 11:24=E2=80=AFPM James Bottomley
-> > > <James.Bottomley@hansenpartnership.com> wrote:
-> > > >=20
-> > > > On Tue, 2025-06-10 at 21:47 +0200, KP Singh wrote:
-> > > > > It's been repeatedly mentioned that trusted loaders (whether
-> > > > > kernel or BPF programs) are the only way because a large
-> > > > > number
-> > > > > of BPF use-cases dynamically generate BPF programs.
-> > > >=20
-> > > > You keep asserting this, but it isn't supported by patches
-> > > > already
-> > >=20
-> > > This is supported for sure. But it's not what the patches are
-> > > providing a reference implementation for. The patches provide a
-> > > stand alone reference implementation using in-kernel / BPF
-> > > loaders but you can surely implement this (see below):
-> > >=20
-> > > > proposed.=C2=A0 Specifically, there already exists a patch set:
-> > > >=20
-> > > > https://lore.kernel.org/all/20250528215037.2081066-1-bboscaccy@linu=
-x.microsoft.com/
-> > >=20
-> > > The patch-set takes a very narrow view by adding additional UAPI
-> > > and ties us into an implementation.
-> >=20
-> > What do you mean by this?=C2=A0 When kernel people say UAPI, they think
-> > of the contract between the kernel and userspace.=C2=A0 So for both
-> > patch sets the additional attr. entries which user space adds and
-> > the kernel parses for the signature would conventionally be thought
-> > to extend the UAPI.
-> >=20
-> > Additionally, the content of the signature (what it's over) is a
-> > UAPI contract.=C2=A0 When adding to the kernel UAPI we don't look not t=
-o
-> > change it, we look to change it in a way that is extensible.=C2=A0 It
-> > strikes me that actually only the linked patch does this because
-> > the UAPI addition for your signature scheme doesn't seem to be that
-> > extensible.
->=20
-> James, I am adding less attributes, it's always extensible, adding
-> more UAPI than strictly needed is what's not flexible.
+> [...]
+> I have read and understood the code, there is no technical
+> misalignment.
+> =20
+> I am talking about a trusted user space loader. You seem to confuse
+> the trusted BPF loader program as userspace, no this is not
+> userspace, it runs in the kernel context.
 
-To repeat: the object should be extensibility not minimization.  If an
-API is extensible it doesn't tie you to a specific implementation
-regardless of how many arguments it adds.  The attr structure uses the
-standard kernel way of doing this: it can grow but may never lose
-elements and  features added at the end are always optional so an older
-kernel that doesn't see them can still process everything it does
-understand.
+So your criticism isn't that it doesn't cover your use case from the
+signature point of view but that it didn't include a loader for it?
 
-> The attributes I proposed remain valid in a world where the BPF
-> instruction set is stable at compile time, for trusted user space
-> loaders (applications like Cilium) that can already have a stable
-> instruction buffer, the attributes Blaise proposed do not.
-
-I don't follow.  For stable compilation (I'm more familiar with the way
-systemd does this but I presume cilium does the same: by constructing
-ebpf byte code on the fly that doesn't require relocation and then
-inserting it directly) you simply program the loader to do the
-restrictions (about insertion point and the like) and sign it, correct?
-That's covered in the linked patch in the !attr->signature_maps_size
-case, so what Blaise proposed most definitely does do this.
-
-> I believe we have discussed this enough. Let's have the BPF
-> maintainers decide.
-
-But this is obviously an important point otherwise you wouldn't be
-arguing about it.  If pure minimization were all that's required then
-it's easy to do since we're using pkcs7 signatures, the signature can
-contain a data structure with authenticatedAttributes that are
-validated by the signature, so I could do the Blaise patch with fewer
-attr elements than you simply by moving the maps and their count into
-the athenticatedAttributes element of the pkcs7 signature.  I could
-also do the same with your keyring_id and, bonus, it would be integrity
-validated.  Then each of you adds the same number of UAPI attr's so
-there's no argument about who adds fewer attributes.
+The linked patch was a sketch of how to verify signatures not a full
+implementation.  The pieces like what the loader looks like and which
+keyring gets used are implementation details which can be filled in
+later by combining the patch series with review and discussion.  It's
+not a requirement that one person codes everyone's use case before they
+get theirs in, it's usually a collaborative effort ... I mean, why
+would you want Microsoft coding up the loader?  If they don't have a
+use case for it they don't have much incentive to test it thoroughly
+whereas you do.
 
 Regards,
 
