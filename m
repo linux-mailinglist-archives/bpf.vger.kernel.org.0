@@ -1,117 +1,103 @@
-Return-Path: <bpf+bounces-60413-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60414-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1706CAD6383
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 01:07:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB7A0AD63A9
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 01:10:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C930B7AF065
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 23:05:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A83B63AE7ED
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 23:08:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11F88254B03;
-	Wed, 11 Jun 2025 22:57:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dcO1MOyW"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8822A25CC51;
+	Wed, 11 Jun 2025 23:00:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 353E924C66F
-	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 22:57:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EF07246781
+	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 23:00:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749682660; cv=none; b=hrwH71qhndfLCp8GOB7fLv21JUAQIrUZRSpjEnKL+tpsvdEd0WAAgwC66Opsh1ts818ZVOoSdnRG33eZA8lITEaqzo+y+bGQX2HidMvX0+jtW+UoAVKrIIxfuHjhxgrdri0VQiwffRqkSQCIve7NFqO5aHrVjHECa4M2ARtgQ+8=
+	t=1749682806; cv=none; b=hIxcBU/tnWEyZeAhxKrKFHqqKmmMInmMvPkJFx9+QcZVGq0DKujx/r8Zczm6cKVB9HnywbPSx+9F+XMB5Br6MsxJlc5k9VqNudkEtBhqBlDZJauF0o5tRC5mrqRt33uC/JdhDgL6VGQKRlx3pDMoIhvNdmlSZ+uKg7SOTcC2dNA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749682660; c=relaxed/simple;
-	bh=BCalHRmW8p0kOjeyEqvr2tjY4Juiw3vlvjSuFd3gU1I=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=RfBcXAeK/67AXaxZGqGmQ41IPuHOJWpd0ueYnXEk3aIbVEZ3NBwRUv4m5OvL62geL/wLpvcYJXUbI+lT0WBE2BJdwhWePP/fgJ4/umAcmYGjtibMMmFYBH5cITi1Hm5XfQX79zGlR0kPySVdS5FrUEemZOokFFyKecCQmfGqP2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dcO1MOyW; arc=none smtp.client-ip=209.85.216.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-311da0bef4aso472962a91.3
-        for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 15:57:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749682655; x=1750287455; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=XnEk2tYVdilXAbv2eev8nUUTVdCmN3+YHzNqF6ISZZE=;
-        b=dcO1MOyWRfhype0ThlVpacrdRqaov7M0rjxGfPqDbDy94N9LsUxglINXLywBaQZdpa
-         HCpPzLu09RHsbTAB8tvq++UZdtOpUIl/zhMvuhuW+6prpULWCJ/ZXaogLaqJEE0oqTGL
-         0p9r4hiCB22QR6jMe+r4cs9ks2Wg9VeYEtiFSJIHkU0t7pom0iW0z9Q65QqjOMIkvLqh
-         NhIAemwhn6JjEAX/SByE+qSWl1skTpgZpUCYxJYociT9AsU9nZa/STkrFZekwGVUq9VZ
-         IBRBqiWMW9YqrogU41BbYAJE7IXtIC6OfUYUbHltM784CusVE6luwdmGRZSMpV7yKIaT
-         Er7Q==
+	s=arc-20240116; t=1749682806; c=relaxed/simple;
+	bh=Vf49EGmfjQiqZUocvGp+B+CNd2yii4KZkNjbexAHLYM=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=ArAyaHviWz3CDCg5ZP3h8huNBFDJqRaWMdXs1/3r1Sos94k6QkzML72KNFdW7ZSRYLggE24emyKrdDpaBYtGJg8qSRQNeOsQaNENMAgxbQjNjp7JrmAAJwpe9kc2BvxigffRIbEJtontZAf7jDHtjMKEAc5J8xKCEGrpcYGkH8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-86d54e66cefso36034839f.1
+        for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 16:00:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749682655; x=1750287455;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XnEk2tYVdilXAbv2eev8nUUTVdCmN3+YHzNqF6ISZZE=;
-        b=J73aTRlaBhmQO7PRDBHaN7Qwy0RW7OlzOB0mvX58B3k1knvvogIUfTl2vW+QLdFNRv
-         hSNv6IuMT1QOZqkybm3ecTjPmwYBrJ/xJfP9u39VMMVw1dtZqHSnB0E9fNEnjIZmuj/E
-         qNP8tZAMclCCFMMQbf1hjdwuA8NdhFNbleCAV/eEoWngnm2HY3Aspr/nO53PP1bRs9J1
-         78sh1W9Yd9Y43sKCqYseL95E38K8DtxUcYePVGMc6suuhnBYQti3vjBUbuk0Z7vi9Vp8
-         ezzjsBaauT7Q6pTqMvIdsp8ypaF4XOLyO+C1Bo2qKVFWujpnvtkbv4IpA998I697IT+p
-         ZIbQ==
-X-Gm-Message-State: AOJu0YwJl19DTjqTLJgbq4m8kePkH6+FzsFJCtMMdGyq6/zwXhnbBwm/
-	xE5Y/cEyEdULxy6cOhFkBq7rZJy8+IzTXsm7ULG0moxFa3BrgngzIiAo
-X-Gm-Gg: ASbGncuAKV4DX0kRyhpEiZ7rfX/WBqNwzSoXa965SuQgoo7NXuxYpgsm8eqP1twmKNG
-	+iFxiB4/CSAWMytroAHpYuUhVO0oVfDnFjdgYDgPdEkPTCaZZSX8NX3NctP2VEU4mjCPAEyqBeW
-	+/dd0ljva7/Hmbs7UyPlVFXV6LasuE9ggGD6fTXBXuTiI3r+aGtsOUDS+DfvlnBZii7njw5eR9K
-	mfcx646pon/3mIPUyY5QUJKBtCX89iAkycb9ZOIR/5AlPBxcTUWoTHb2+Sowm5MqdnmqB6wFEXX
-	wi2xvnmqKBl2lWGKrFXuVyhI/nd+utpCH/9G3n/jcLReSAdxdINISl6//SyKyPBT+ymyxNsKqEQ
-	eUwxlosuWQQ==
-X-Google-Smtp-Source: AGHT+IG7iUo3d6D97stS9FMmla0k3EqlEVn9ADWnDQP9JBvsu2x5z0+VecXSNX+JiQfFELLK3weamA==
-X-Received: by 2002:a17:90b:498b:b0:311:b6d2:4c36 with SMTP id 98e67ed59e1d1-313c08cfc79mr1052139a91.26.1749682655413;
-        Wed, 11 Jun 2025 15:57:35 -0700 (PDT)
-Received: from ?IPv6:2a03:83e0:115c:1:b1d2:545:de25:d977? ([2620:10d:c090:500::7:d234])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-313c19b810dsm166695a91.6.2025.06.11.15.57.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Jun 2025 15:57:35 -0700 (PDT)
-Message-ID: <82d86ef16658c3d7ffbdecaf7a76d2e35897a869.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3 01/11] Revert "bpf: use common instruction
- history across all states"
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Andrii
- Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau	 <martin.lau@linux.dev>, Kernel Team <kernel-team@fb.com>,
- Yonghong Song	 <yonghong.song@linux.dev>
-Date: Wed, 11 Jun 2025 15:57:33 -0700
-In-Reply-To: <CAADnVQ+J+ZUXb6Kgry520V2Dvo85f7MeBnKH5OMm6fqoAJFqnw@mail.gmail.com>
-References: <20250611200836.4135542-1-eddyz87@gmail.com>
-	 <CAADnVQ+J+ZUXb6Kgry520V2Dvo85f7MeBnKH5OMm6fqoAJFqnw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        d=1e100.net; s=20230601; t=1749682804; x=1750287604;
+        h=content-transfer-encoding:to:from:subject:message-id:in-reply-to
+         :date:mime-version:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9vj0wabI4VIuyOapUUNmfqjGwRxtS9HaDBmLvM1X5Hc=;
+        b=loGJF6k9zcJ9INwLvooQTBH37Gu3JNDpMzgRsTyW9EIzbF8wKdkZN3iBsIewYW7Zbc
+         wGk/NkqkOGNLQVINTfN7NEt9hg/ccIrqvb/f+yA9AZDnFhLxC/JToyuzncaJJnTP0QJ7
+         Qbs/ivjE9CjhM/1DtrDLyciie/ZDJDeVtq6Y5LSmPFcytqWvM8rfEsMGzCM4BBJt2syn
+         PdoX7MyMsFSjNb0swil1ftKxKib+2KRo7jXgbOHsa17h2L8vPXv+iGqVLY8/bK5UnKyb
+         8HQiyqpwMjLLepCi0sOd9ZlmVSUEnl2hjRbeTBSJQbKQNb74udl5luzeIlZaLT2NGV5g
+         nmqw==
+X-Forwarded-Encrypted: i=1; AJvYcCWweY4PhERC4tnbhvHG6guCVsK2CaqXv9hrSSzUxGr+k1gXxn9QEGLKN395toBtMerP48o=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx+iimaRJ9dO99Uj3mDgBUbq+PWo6NiXpS/h7maEf+ZgtYPtq/b
+	INIfG16tQ3BWdO0tbrU4r6cscxd819kmxUQvhSsGPpGF4IiDUe8QWQrW35kN2gPKg1zMuTaeVBj
+	e8qpIbiuZzl7uB1XPwc9lRV9Z9gPkpc8WLfnbRUDeUfu/5NLTPXqVQZpua78=
+X-Google-Smtp-Source: AGHT+IHkU4buI3Au8WqU3EjLzuGOxFPtCqXnyADQDPoQih7sVqZJr+jEKYoGzubR+RLMPJCe8HWHbkqI4LrjGNgCKnUGOnLrpgHN
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:1788:b0:3dd:d194:f72d with SMTP id
+ e9e14a558f8ab-3ddf423f4bemr56878825ab.8.1749682803758; Wed, 11 Jun 2025
+ 16:00:03 -0700 (PDT)
+Date: Wed, 11 Jun 2025 16:00:03 -0700
+In-Reply-To: <26122837c64946d89cb5d0a3a568bdc2b4854ba6.camel@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <684a0a73.050a0220.be214.0285.GAE@google.com>
+Subject: Re: [syzbot] [bpf?] KASAN: slab-use-after-free Read in do_check
+From: syzbot <syzbot+b5eb72a560b8149a1885@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me, 
+	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2025-06-11 at 15:45 -0700, Alexei Starovoitov wrote:
+Hello,
 
-[...]
+syzbot tried to test the proposed patch but the build/boot failed:
 
-> Though it's fixed later in patch 8 as:
-> -               err =3D push_insn_history(env, this_branch, insn_flags, 0=
-);
-> +               err =3D push_jmp_history(env, this_branch, insn_flags, 0)=
-;
->=20
-> It would have been a bisect issue if not caught by CI:
-> https://netdev.bots.linux.dev/static/nipa/971030/14115002/build_clang/sum=
-mary
->=20
-> I fixed up patch 1 and 8 while applying.
-> Pls pay attention to such things in the future.
+failed to checkout kernel repo git@github.com:kernel-patches/bpf.git on com=
+mit 974c296e39c3b2462bbf1f926d5a5db64399359f: failed to run ["git" "fetch" =
+"--force" "--tags" "73aba3dff4d9ee1b85deaa6efdc44b9d57c62235" "974c296e39c3=
+b2462bbf1f926d5a5db64399359f"]: exit status 128
+Host key verification failed.
+fatal: Could not read from remote repository.
 
-Ack, sorry, it's a rebase artefact, squashed the change on top of the
-wrong commit.
+Please make sure you have the correct access rights
+and the repository exists.
+
+
+
+Tested on:
+
+commit:         [unknown=20
+git tree:       git@github.com:kernel-patches/bpf.git 974c296e39c3b2462bbf1=
+f926d5a5db64399359f
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3D76ed3656d7159e2=
+7
+dashboard link: https://syzkaller.appspot.com/bug?extid=3Db5eb72a560b8149a1=
+885
+compiler:      =20
+
+Note: no patches were applied.
 
