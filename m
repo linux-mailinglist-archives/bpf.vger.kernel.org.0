@@ -1,103 +1,116 @@
-Return-Path: <bpf+bounces-60414-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60415-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB7A0AD63A9
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 01:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 072D5AD63B2
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 01:11:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A83B63AE7ED
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 23:08:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE6E83AF561
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 23:08:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8822A25CC51;
-	Wed, 11 Jun 2025 23:00:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 620182376FD;
+	Wed, 11 Jun 2025 23:05:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J2KnsuCb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EF07246781
-	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 23:00:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCDE024A078
+	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 23:05:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749682806; cv=none; b=hIxcBU/tnWEyZeAhxKrKFHqqKmmMInmMvPkJFx9+QcZVGq0DKujx/r8Zczm6cKVB9HnywbPSx+9F+XMB5Br6MsxJlc5k9VqNudkEtBhqBlDZJauF0o5tRC5mrqRt33uC/JdhDgL6VGQKRlx3pDMoIhvNdmlSZ+uKg7SOTcC2dNA=
+	t=1749683124; cv=none; b=jDcitCFVYy1ss4UiEzUfBv2WKgDu1AH5jaLkwZxY3r+Jid+9ZW7uMkEpoCEcZFdwebKyo2ypgkcHFqpXBDyuTp98tNmJluLfOjDbjQs+1iiG0N/PQuET6mweiVpErb6flS1eCKUhsthQb2B1SsRyvbbllRxOUBLsoGpiuV3YEy8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749682806; c=relaxed/simple;
-	bh=Vf49EGmfjQiqZUocvGp+B+CNd2yii4KZkNjbexAHLYM=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=ArAyaHviWz3CDCg5ZP3h8huNBFDJqRaWMdXs1/3r1Sos94k6QkzML72KNFdW7ZSRYLggE24emyKrdDpaBYtGJg8qSRQNeOsQaNENMAgxbQjNjp7JrmAAJwpe9kc2BvxigffRIbEJtontZAf7jDHtjMKEAc5J8xKCEGrpcYGkH8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-86d54e66cefso36034839f.1
-        for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 16:00:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749682804; x=1750287604;
-        h=content-transfer-encoding:to:from:subject:message-id:in-reply-to
-         :date:mime-version:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9vj0wabI4VIuyOapUUNmfqjGwRxtS9HaDBmLvM1X5Hc=;
-        b=loGJF6k9zcJ9INwLvooQTBH37Gu3JNDpMzgRsTyW9EIzbF8wKdkZN3iBsIewYW7Zbc
-         wGk/NkqkOGNLQVINTfN7NEt9hg/ccIrqvb/f+yA9AZDnFhLxC/JToyuzncaJJnTP0QJ7
-         Qbs/ivjE9CjhM/1DtrDLyciie/ZDJDeVtq6Y5LSmPFcytqWvM8rfEsMGzCM4BBJt2syn
-         PdoX7MyMsFSjNb0swil1ftKxKib+2KRo7jXgbOHsa17h2L8vPXv+iGqVLY8/bK5UnKyb
-         8HQiyqpwMjLLepCi0sOd9ZlmVSUEnl2hjRbeTBSJQbKQNb74udl5luzeIlZaLT2NGV5g
-         nmqw==
-X-Forwarded-Encrypted: i=1; AJvYcCWweY4PhERC4tnbhvHG6guCVsK2CaqXv9hrSSzUxGr+k1gXxn9QEGLKN395toBtMerP48o=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx+iimaRJ9dO99Uj3mDgBUbq+PWo6NiXpS/h7maEf+ZgtYPtq/b
-	INIfG16tQ3BWdO0tbrU4r6cscxd819kmxUQvhSsGPpGF4IiDUe8QWQrW35kN2gPKg1zMuTaeVBj
-	e8qpIbiuZzl7uB1XPwc9lRV9Z9gPkpc8WLfnbRUDeUfu/5NLTPXqVQZpua78=
-X-Google-Smtp-Source: AGHT+IHkU4buI3Au8WqU3EjLzuGOxFPtCqXnyADQDPoQih7sVqZJr+jEKYoGzubR+RLMPJCe8HWHbkqI4LrjGNgCKnUGOnLrpgHN
+	s=arc-20240116; t=1749683124; c=relaxed/simple;
+	bh=6sdCZW/+GhpSl+RtKW0x7XG0A6+UV4qkX3rQBHvdm4c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hpjkn3cn1ysBhuc43lmNqAp9Oij2GK7bWtCRJ46m07V8/OQNpfoz98mL5sDPJe9hJ/voaFUKAnmqD6KlIe3uqhQ+IEKqC6movvrMK6n/csnUwGpf8YjouwUqbQzV5ZL3TVHt6IqfUEyTmAW/yUfbh0cwaeaiO4zZn84uuV5mgjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J2KnsuCb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EDA5C4CEF1
+	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 23:05:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749683124;
+	bh=6sdCZW/+GhpSl+RtKW0x7XG0A6+UV4qkX3rQBHvdm4c=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=J2KnsuCbBMwX/XPshJbcYXORIh+8IPTm3nG+q69w64koLkZ0HGuugnQmwMk5cGNmV
+	 U1fRaRrp5fEBFNvfYqGKSV/iyGKofMSA6Fxrhjj0v/tpqvSmlA9xbuco4Mx01wvZf5
+	 vu0SPnyUg5G44KT/LuZOxU2MHIhZqKELmWvrjGGC/UlmZQ/mJ866xmHNDld0CL8qJ0
+	 qK2ZfOAXAF0zpsKRfug/bSuBkjRaESuS929I+V4uZ2fdf95OplFH8pK70EG60Supng
+	 fJyMGOJlWK0lnAseb0KlgfJv9lgzcsZzayMhOs58GMU48MdhW3bTvjRmCWqXqEW4WI
+	 uW8IDUbyaGEPg==
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-604f5691bceso1059523a12.0
+        for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 16:05:24 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzyKC+kJVF9jWUxsQmVQaiKPhSTw+w4/pnRpFCI6jgwOQQ/+Kza
+	JWHk5sNbbQ3cdiH2IadD9i1X0qve0dn5mnFeB1apX5fw6g216LTgIirFrNMDLUsad9Zq7wPlG/D
+	DNpjetp3Hpqg5TsXJ7gGy0C+UE6BHGr+Iy+pW2/Vi
+X-Google-Smtp-Source: AGHT+IGqLuGXesUn9zIoncb8f8aS9r6D6qdVTN6Nv6A9YlUfmlExwFuYhMKW+GFByuLazj9cCB2r60LtXKpbGweQuu0=
+X-Received: by 2002:a05:6402:5190:b0:607:f513:4800 with SMTP id
+ 4fb4d7f45d1cf-60846aefabfmr4727809a12.10.1749683123066; Wed, 11 Jun 2025
+ 16:05:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1788:b0:3dd:d194:f72d with SMTP id
- e9e14a558f8ab-3ddf423f4bemr56878825ab.8.1749682803758; Wed, 11 Jun 2025
- 16:00:03 -0700 (PDT)
-Date: Wed, 11 Jun 2025 16:00:03 -0700
-In-Reply-To: <26122837c64946d89cb5d0a3a568bdc2b4854ba6.camel@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <684a0a73.050a0220.be214.0285.GAE@google.com>
-Subject: Re: [syzbot] [bpf?] KASAN: slab-use-after-free Read in do_check
-From: syzbot <syzbot+b5eb72a560b8149a1885@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me, 
-	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+References: <20250606232914.317094-1-kpsingh@kernel.org> <20250606232914.317094-4-kpsingh@kernel.org>
+ <CAADnVQLMff33qY+xY3Ztybbo38Wr9-bp_GPcoFna4EbtgTrWrg@mail.gmail.com>
+ <CACYkzJ4v+n_6-dVSt9mgkhJPEa3r1q7YW5Zrh0c-j+gos_UOxw@mail.gmail.com> <CAADnVQK5J2REAWXp_KrLThOp9n1=QA=ugxB2Mb7=JmXnSFxQYg@mail.gmail.com>
+In-Reply-To: <CAADnVQK5J2REAWXp_KrLThOp9n1=QA=ugxB2Mb7=JmXnSFxQYg@mail.gmail.com>
+From: KP Singh <kpsingh@kernel.org>
+Date: Thu, 12 Jun 2025 01:05:12 +0200
+X-Gmail-Original-Message-ID: <CACYkzJ6zmgrOBzTKoQ_Ta9cwyQAC6H0H=JcbX2d-9tV36SoEVA@mail.gmail.com>
+X-Gm-Features: AX0GCFvzJxE1np6RWJHBCz1Jzuv-8vyIb2oF73EMf8JTPyKVshfCKExZX012zhk
+Message-ID: <CACYkzJ6zmgrOBzTKoQ_Ta9cwyQAC6H0H=JcbX2d-9tV36SoEVA@mail.gmail.com>
+Subject: Re: [PATCH 03/12] bpf: Implement exclusive map creation
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, LSM List <linux-security-module@vger.kernel.org>, 
+	Blaise Boscaccy <bboscaccy@linux.microsoft.com>, Paul Moore <paul@paul-moore.com>, 
+	"K. Y. Srinivasan" <kys@microsoft.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Thu, Jun 12, 2025 at 12:55=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Jun 11, 2025 at 2:44=E2=80=AFPM KP Singh <kpsingh@kernel.org> wro=
+te:
+> >
+> > On Mon, Jun 9, 2025 at 10:58=E2=80=AFPM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
 
-syzbot tried to test the proposed patch but the build/boot failed:
+[...]
 
-failed to checkout kernel repo git@github.com:kernel-patches/bpf.git on com=
-mit 974c296e39c3b2462bbf1f926d5a5db64399359f: failed to run ["git" "fetch" =
-"--force" "--tags" "73aba3dff4d9ee1b85deaa6efdc44b9d57c62235" "974c296e39c3=
-b2462bbf1f926d5a5db64399359f"]: exit status 128
-Host key verification failed.
-fatal: Could not read from remote repository.
+> > can add inner maps. I think this is a valid combination as it would
+> > still retain exclusivity over the outer maps elements.
+>
+> I don't follow.
+> What do you mean by "map can add inner maps ?"
 
-Please make sure you have the correct access rights
-and the repository exists.
+Ah, I missed this bit, a program cannot call bpf_map_update_elem on
+maps of maps and such updates happen only in userspace.
+
+Thanks, updated the code.
+
+- KP
 
 
-
-Tested on:
-
-commit:         [unknown=20
-git tree:       git@github.com:kernel-patches/bpf.git 974c296e39c3b2462bbf1=
-f926d5a5db64399359f
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3D76ed3656d7159e2=
-7
-dashboard link: https://syzkaller.appspot.com/bug?extid=3Db5eb72a560b8149a1=
-885
-compiler:      =20
-
-Note: no patches were applied.
+> The exclusivity is a contract between prog<->map.
+> It doesn't matter whether the map is outer or inner.
+> The prog cannot add an inner map.
+> Only the user space can and such inner maps are detached
+> from anything.
+> Technically we can come up with a requirement that inner maps
+> have to have the same prog sha as outer map.
+> This can be enforced by bpf_map_meta_equal() logic.
+> But that feels like overkill.
+> The user space can query prog's sha, create an inner map with
+> such prog sha and add it to outer map. So the additional check
+> in bpf_map_meta_equal() would be easy to bypass.
+> Since so, I would not add such artificial obstacle.
+> Let all types of maps have this exclusive feature.
 
