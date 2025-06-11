@@ -1,152 +1,253 @@
-Return-Path: <bpf+bounces-60308-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60309-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8028AD4F55
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 11:07:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96429AD5222
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 12:39:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 885BA3A9B70
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 09:05:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98F421BC52E7
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 10:37:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32034255F25;
-	Wed, 11 Jun 2025 09:04:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E89226A0BE;
+	Wed, 11 Jun 2025 10:34:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (3072-bit key) header.d=posteo.net header.i=@posteo.net header.b="TLTRiRSr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cFBh94E5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01BA2253937
-	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 09:04:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC6EF27605C;
+	Wed, 11 Jun 2025 10:34:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749632678; cv=none; b=QDac7VJnjIoeF/3/LAAy+/XF0XVRtOkAOkiznAeeY6Wty34DlAxcI/FVYSABlk6cOQDniMyyblg+0pg5dTgA9GhvUdj/8hrcG5wnijEnfcpeEkQefg1ZStt6+6rAySx6casW/vRwFHcEvI+AsSsZUyGDKqoQp6pZWBefaWt/FsY=
+	t=1749638095; cv=none; b=fXvswhKo09cnawczjHw9zO4JqbMJdxbWsyCiQ1I5g9QqrIPG6Ou3WdJyHJvdg+d+c2coPayLC+QtGm8kwt1ysrbvrvaPwtWFZAsjUViaJgtJw1KHVIdTDsP9DiLCOuGuOybfN5GnsZwLXrFpuXTIt5mmBPA3z0XYMHj07vPCUeI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749632678; c=relaxed/simple;
-	bh=jLq8TQOAMhHdsylHL7FElHZIu/bvuM8qtmokE4WqBTs=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=aZDs++23vkB4sBX1DIsITFudrofPow+8qEL5dUvre9dtNAkBMaOtZhht7af0MzKI+mb38Gvvjr8MRSjKyYuGtTUwW/nB0F7FNHdJuo2WkBX4utnWbh2na6mmhRI7jNWVJTOKRAd1SAGice1XPCoZ8WlnP2wNYr74LClaoOHdby8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (3072-bit key) header.d=posteo.net header.i=@posteo.net header.b=TLTRiRSr; arc=none smtp.client-ip=185.67.36.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
-Received: from submission (posteo.de [185.67.36.169]) 
-	by mout01.posteo.de (Postfix) with ESMTPS id 69C7324002B
-	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 11:04:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net;
-	s=1984.ea087b; t=1749632674;
-	bh=jLq8TQOAMhHdsylHL7FElHZIu/bvuM8qtmokE4WqBTs=;
-	h=From:Date:Subject:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding:Message-Id:To:Cc:From;
-	b=TLTRiRSralZsGm3Chv0w46FoF9yz05ZenISNsjEbDf1uAv57sSKGwfxX5t39QR7tY
-	 6OdFvRBFohyAo8lqz3dbBh2kKYnZWmrGcJ6ElmMeJ2n6lvCl39S9Uoe+TizkYSN+cm
-	 kfPuRcaEWToQKHP85flDWDLB9qMtdChPMUHnBIGXCp4fEjL6sSq/dXeoDdJmoNFqJA
-	 xOa4RlWzmmiFEGgkUb5RJXOQtYI8PM47xnxzf5bqMnSZscL7BhaMZ7kHQzj9MEeo1G
-	 vDX7kz0yBJT66DqbnQwPzlj/iomKdjzaFSme88s2k8PR7cf71zEoqTCzs+EQzvtNT0
-	 hMPKDKYlFIzmlE0BGMrwRICgF31FdjK4+GLE8X8txDXRB8ir+s476XCFx01VYBtapw
-	 KFBPqbtoJ+eLnr8xUHXcbOqTeYc0LJUdCOp7OH1xP/qrjvhOKPcZNpASFUzVPnfPFK
-	 0CXk/6CgSd7q0TpGWzOvtvWXApDDUIKtvaMaZ+0wJxL7Q5n5mVa
-Received: from customer (localhost [127.0.0.1])
-	by submission (posteo.de) with ESMTPSA id 4bHKV61lB6z9rxD;
-	Wed, 11 Jun 2025 11:04:30 +0200 (CEST)
-From: Charalampos Mitrodimas <charmitro@posteo.net>
-Date: Wed, 11 Jun 2025 09:04:06 +0000
-Subject: [PATCH bpf-next v2] net: Fix RCU usage in task_cls_state() for BPF
- programs
+	s=arc-20240116; t=1749638095; c=relaxed/simple;
+	bh=ogpnT5Ct5eysAH74HW6uLq8kQrXagSiHRmkpMn3ObqI=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=E0FnS4dpcO4ASxe0wXS7Wmkrq8k4/I55KeT21S/j7S3HaHoUwFIFsUBSRvyiEBtsxUCIYjCxDtyo2aLvOLZZwDTLu0rVYQ9Aal4tRrvgmX2rEssLUQNSu1oiRZSkP4lnTNlX/xwuWH2sNzkYx9j4TbdwvT6L1QjV6m1KbTqdmcQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cFBh94E5; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-addfe17ec0bso151183966b.1;
+        Wed, 11 Jun 2025 03:34:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749638092; x=1750242892; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=x0uKW1VeGsneSncVbCyz+LkK6o18HmhOxqfXFR/PnMI=;
+        b=cFBh94E5DTlpPrBPyFbpAunYDuTcimiWv6KbSTKFbBTNakOgKXmJsnCWwK/Cs3lcCZ
+         Wo/DOwJ72ayhcAEwQk1iq3X3t2mK8H/RtQJa0ZBuD7gR6qHThmqCTnTe9ZElcTNBPyCm
+         T7yxfZGNWTo3OAMXRQOa56uWxPRsE2lWUd9uJhUHKwjszD+Nw/DN5effihL5CJqwl8BV
+         jd71shao+LuY9qqwNSeA9525Vmag5TnKi8JFZuReyz+wAmAplzHHXM7BMh9NXpAWn1oJ
+         6TWZLXiGJ1aGkEjag9LEAl6aV239TlgXWPN4dZ+CzWczYN89Bj4Q/PzLm4fnzG+I13+q
+         JSaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749638092; x=1750242892;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x0uKW1VeGsneSncVbCyz+LkK6o18HmhOxqfXFR/PnMI=;
+        b=PkBCH8C0pb6Kb4Dj6Hs+prhSHn+lLdnwZVBn+2TzvFbOwEEPVU/gMgfjZ/B708zonj
+         FBl1HqqCyLfaJljJaQb0Az6qOnKPNp/rDCCgtHeTYUGBHkG3E2w/a97AiqtmcjNo32GK
+         K2aqw6tzi1janxwziaM5Ue//FbmGXqiCPXWbBCKTEOBdY+rq8HcYX+ytXbiOrysP7v2W
+         E/TeiTk1+pgOj2rhHY3uOvFhoQebWKBbXZpaY7YpRGapiocSGUwHNUdZ35srKX2xB4hw
+         WojwJGDttvbORX0SkBhQdNeSnUas6gYMcqVH9L5Kcn5UhZDSymJ8SIVW4WXS0g61tSW6
+         nzHA==
+X-Forwarded-Encrypted: i=1; AJvYcCU+YsqCCIiB1i/KfOL+vVQQZ4WLrDI/tlVayOue30Hml/1mc+z/dnM46DuXso3Yb0/MGz9Hpy5Us2ejSCgJ@vger.kernel.org, AJvYcCUFU1liK5V4n5dV++hY1SqoNFnK6KM5yz89g553PRsR+LWTTo39A4Wap52/KpcbVeOZnB46r7+m9KMb5vj/X3+w@vger.kernel.org, AJvYcCVNdcrdK3DE8uOw+gJjeTEx1daAGhNct5rOIlASv9NZyA2fLhB+HDxa0RWQvX/h9T1Kakk=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxf8UfFVqz2Ys46S7vsRe8kDhrBrsbsfTLdBHTOZWwgRD6qGZjv
+	0nke/HIGQjjWFJ2LlzB9H+OLAScICUeHsQw/qnI5VaBeN7PYZy7MnCGC
+X-Gm-Gg: ASbGncuFNcPXZZMSwPKEGIaG9PcfougnGTS1NCPPCDZ5nlVMSqnl5QELCwV4XJykT9/
+	a2Q0y9f/8nFxu4fsdy5OHT1WE+91sZaNsiKiMSxSBdgGKinTMFLXWDfP2sHAz2DIelLUp12aL2x
+	3DyoQWsgN9fG9zA75NnrWLLGrbd0dcO+YTNVaPcE9JuXJfBp9F/EpR/kv0TR8XT8Rl4pilCdHSK
+	N+7mo7pTSrK//LUY80P6sBRwBxRQG/HzvLOxrhBKHbI7MJ4qWLKZeJ03EKUEUtMqm/5Hbdypfzr
+	UyGN6Pd3zKI3qbGakaTKZjfNkMEQJhgCPxbt0n1WVTADV0U0
+X-Google-Smtp-Source: AGHT+IE8SIVFSPxHy04F/nR2Xhi3uUbPpm4yM6gc7UZ2MMWfC9Kpbmt7MaJOGFiADTq+5YH+jRAfWw==
+X-Received: by 2002:a17:906:2442:b0:ade:9b52:4d79 with SMTP id a640c23a62f3a-ade9b525d84mr18040866b.1.1749638091955;
+        Wed, 11 Jun 2025 03:34:51 -0700 (PDT)
+Received: from krava ([173.38.220.55])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ade1dc1c7e2sm863976666b.73.2025.06.11.03.34.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Jun 2025 03:34:51 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 11 Jun 2025 12:34:49 +0200
+To: Blake Jones <blakejones@google.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Ihor Solodrai <ihor.solodrai@linux.dev>,
+	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] libbpf: add support for printing BTF character
+ arrays as strings
+Message-ID: <aElbyWY-cIQNf4wp@krava>
+References: <20250603203701.520541-1-blakejones@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250611-rcu-fix-task_cls_state-v2-1-1a7fc248232a@posteo.net>
-X-B4-Tracking: v=1; b=H4sIAIVGSWgC/4WNXQ6CMBCEr0L22TX9QTA+cQ9DSKGLNBpKupVoS
- O9u4QI+fpOZbzZgCo4YbsUGgVbHzs8Z1KmAYTLzg9DZzKCEuohKXDEMbxzdB6PhZze8uONoIqE
- gW+ux1LWVBHm8BMqtQ3xvM0+Oow/f42eVe/pXuUqUqMxe68tK6L5ZPEfy55kitCmlHwADJY29A
- AAA
-X-Change-ID: 20250608-rcu-fix-task_cls_state-0ed73f437d1e
-To: "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Feng Yang <yangfeng@kylinos.cn>, 
- Tejun Heo <tj@kernel.org>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
- bpf@vger.kernel.org, syzbot+b4169a1cfb945d2ed0ec@syzkaller.appspotmail.com, 
- Charalampos Mitrodimas <charmitro@posteo.net>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1749632650; l=2465;
- i=charmitro@posteo.net; s=20250526; h=from:subject:message-id;
- bh=jLq8TQOAMhHdsylHL7FElHZIu/bvuM8qtmokE4WqBTs=;
- b=ut6ePDZlYIfJ1ZYNH55TQtCyEKaPR4TU6r3rukgknfjavYlrrn/IkxJBy746Ht37XV5aI87Ex
- oBOn6hKvQS4C7IH8VFFYisxJPoXcJkH3SO1bxjld9hRyPF4Iq2fnFUw
-X-Developer-Key: i=charmitro@posteo.net; a=ed25519;
- pk=PNHEh5o1dcr5kfKoZhfwdsfm3CxVfRje7vFYKIW0Mp4=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250603203701.520541-1-blakejones@google.com>
 
-The commit ee971630f20f ("bpf: Allow some trace helpers for all prog
-types") made bpf_get_cgroup_classid_curr helper available to all BPF
-program types, not just networking programs.
+On Tue, Jun 03, 2025 at 01:37:00PM -0700, Blake Jones wrote:
+> The BTF dumper code currently displays arrays of characters as just that -
+> arrays, with each character formatted individually. Sometimes this is what
+> makes sense, but it's nice to be able to treat that array as a string.
+> 
+> This change adds a special case to the btf_dump functionality to allow
+> 0-terminated arrays of single-byte integer values to be printed as
+> character strings. Characters for which isprint() returns false are
+> printed as hex-escaped values. This is enabled when the new ".emit_strings"
+> is set to 1 in the btf_dump_type_data_opts structure.
+> 
+> As an example, here's what it looks like to dump the string "hello" using
+> a few different field values for btf_dump_type_data_opts (.compact = 1):
+> 
+> - .emit_strings = 0, .skip_names = 0:  (char[6])['h','e','l','l','o',]
+> - .emit_strings = 0, .skip_names = 1:  ['h','e','l','l','o',]
+> - .emit_strings = 1, .skip_names = 0:  (char[6])"hello"
+> - .emit_strings = 1, .skip_names = 1:  "hello"
 
-This helper calls __task_get_classid() which internally calls
-task_cls_state() requiring rcu_read_lock_bh_held(). This works in
-networking/tc context where RCU BH is held, but triggers an RCU
-warning when called from other contexts like BPF syscall programs that
-run under rcu_read_lock_trace():
+hi,
+could this be used in bpftool map dump? ;-) I checked, but it looks like
+bpftool map dump is using something else to dump data.. I admit I haven't
+spent much on time that
 
-  WARNING: suspicious RCU usage
-  6.15.0-rc4-syzkaller-g079e5c56a5c4 #0 Not tainted
-  -----------------------------
-  net/core/netclassid_cgroup.c:24 suspicious rcu_dereference_check() usage!
+thanks,
+jirka
 
-Fix this by also accepting rcu_read_lock_trace_held() as a valid RCU
-context in the task_cls_state() function. This is safe because BPF
-programs are non-sleepable and task_cls_state() is only doing an RCU
-dereference to get the classid.
 
-Reported-by: syzbot+b4169a1cfb945d2ed0ec@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=b4169a1cfb945d2ed0ec
-Fixes: ee971630f20f ("bpf: Allow some trace helpers for all prog types")
-Signed-off-by: Charalampos Mitrodimas <charmitro@posteo.net>
----
-Changes in v2:
-- Fix RCU usage in task_cls_state() instead of BPF helper
-- Add rcu_read_lock_trace_held() check to accept trace RCU as valdi
-  context
-- Drop the approach of using task_cls_classid() which has in_interrupt()
-  check
-- Link to v1: https://lore.kernel.org/r/20250608-rcu-fix-task_cls_state-v1-1-2a2025b4603b@posteo.net
----
- net/core/netclassid_cgroup.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/net/core/netclassid_cgroup.c b/net/core/netclassid_cgroup.c
-index d22f0919821e931fbdedf5a8a7a2998d59d73978..df86f82d747ac40e99597d6f2d921e8cc2834e64 100644
---- a/net/core/netclassid_cgroup.c
-+++ b/net/core/netclassid_cgroup.c
-@@ -21,7 +21,8 @@ static inline struct cgroup_cls_state *css_cls_state(struct cgroup_subsys_state
- struct cgroup_cls_state *task_cls_state(struct task_struct *p)
- {
- 	return css_cls_state(task_css_check(p, net_cls_cgrp_id,
--					    rcu_read_lock_bh_held()));
-+					    rcu_read_lock_bh_held() ||
-+					    rcu_read_lock_trace_held()));
- }
- EXPORT_SYMBOL_GPL(task_cls_state);
- 
-
----
-base-commit: 079e5c56a5c41d285068939ff7b0041ab10386fa
-change-id: 20250608-rcu-fix-task_cls_state-0ed73f437d1e
-
-Best regards,
--- 
-Charalampos Mitrodimas <charmitro@posteo.net>
-
+> 
+> Here's the string "h\xff", dumped with .compact = 1 and .skip_names = 1:
+> 
+> - .emit_strings = 0:  ['h',-1,]
+> - .emit_strings = 1:  "h\xff"
+> 
+> Signed-off-by: Blake Jones <blakejones@google.com>
+> ---
+>  tools/lib/bpf/btf.h      |  3 ++-
+>  tools/lib/bpf/btf_dump.c | 55 +++++++++++++++++++++++++++++++++++++++-
+>  2 files changed, 56 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+> index 4392451d634b..ccfd905f03df 100644
+> --- a/tools/lib/bpf/btf.h
+> +++ b/tools/lib/bpf/btf.h
+> @@ -326,9 +326,10 @@ struct btf_dump_type_data_opts {
+>  	bool compact;		/* no newlines/indentation */
+>  	bool skip_names;	/* skip member/type names */
+>  	bool emit_zeroes;	/* show 0-valued fields */
+> +	bool emit_strings;	/* print char arrays as strings */
+>  	size_t :0;
+>  };
+> -#define btf_dump_type_data_opts__last_field emit_zeroes
+> +#define btf_dump_type_data_opts__last_field emit_strings
+>  
+>  LIBBPF_API int
+>  btf_dump__dump_type_data(struct btf_dump *d, __u32 id,
+> diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+> index 460c3e57fadb..7c2f1f13f958 100644
+> --- a/tools/lib/bpf/btf_dump.c
+> +++ b/tools/lib/bpf/btf_dump.c
+> @@ -68,6 +68,7 @@ struct btf_dump_data {
+>  	bool compact;
+>  	bool skip_names;
+>  	bool emit_zeroes;
+> +	bool emit_strings;
+>  	__u8 indent_lvl;	/* base indent level */
+>  	char indent_str[BTF_DATA_INDENT_STR_LEN];
+>  	/* below are used during iteration */
+> @@ -2028,6 +2029,52 @@ static int btf_dump_var_data(struct btf_dump *d,
+>  	return btf_dump_dump_type_data(d, NULL, t, type_id, data, 0, 0);
+>  }
+>  
+> +static int btf_dump_string_data(struct btf_dump *d,
+> +				const struct btf_type *t,
+> +				__u32 id,
+> +				const void *data)
+> +{
+> +	const struct btf_array *array = btf_array(t);
+> +	const char *chars = data;
+> +	__u32 i;
+> +
+> +	/* Make sure it is a NUL-terminated string. */
+> +	for (i = 0; i < array->nelems; i++) {
+> +		if ((void *)(chars + i) >= d->typed_dump->data_end)
+> +			return -E2BIG;
+> +		if (chars[i] == '\0')
+> +			break;
+> +	}
+> +	if (i == array->nelems) {
+> +		/* The caller will print this as a regular array. */
+> +		return -EINVAL;
+> +	}
+> +
+> +	btf_dump_data_pfx(d);
+> +	btf_dump_printf(d, "\"");
+> +
+> +	for (i = 0; i < array->nelems; i++) {
+> +		char c = chars[i];
+> +
+> +		if (c == '\0') {
+> +			/*
+> +			 * When printing character arrays as strings, NUL bytes
+> +			 * are always treated as string terminators; they are
+> +			 * never printed.
+> +			 */
+> +			break;
+> +		}
+> +		if (isprint(c))
+> +			btf_dump_printf(d, "%c", c);
+> +		else
+> +			btf_dump_printf(d, "\\x%02x", (__u8)c);
+> +	}
+> +
+> +	btf_dump_printf(d, "\"");
+> +
+> +	return 0;
+> +}
+> +
+>  static int btf_dump_array_data(struct btf_dump *d,
+>  			       const struct btf_type *t,
+>  			       __u32 id,
+> @@ -2055,8 +2102,13 @@ static int btf_dump_array_data(struct btf_dump *d,
+>  		 * char arrays, so if size is 1 and element is
+>  		 * printable as a char, we'll do that.
+>  		 */
+> -		if (elem_size == 1)
+> +		if (elem_size == 1) {
+> +			if (d->typed_dump->emit_strings &&
+> +			    btf_dump_string_data(d, t, id, data) == 0) {
+> +				return 0;
+> +			}
+>  			d->typed_dump->is_array_char = true;
+> +		}
+>  	}
+>  
+>  	/* note that we increment depth before calling btf_dump_print() below;
+> @@ -2544,6 +2596,7 @@ int btf_dump__dump_type_data(struct btf_dump *d, __u32 id,
+>  	d->typed_dump->compact = OPTS_GET(opts, compact, false);
+>  	d->typed_dump->skip_names = OPTS_GET(opts, skip_names, false);
+>  	d->typed_dump->emit_zeroes = OPTS_GET(opts, emit_zeroes, false);
+> +	d->typed_dump->emit_strings = OPTS_GET(opts, emit_strings, false);
+>  
+>  	ret = btf_dump_dump_type_data(d, NULL, t, id, data, 0, 0);
+>  
+> -- 
+> 2.49.0.1204.g71687c7c1d-goog
+> 
 
