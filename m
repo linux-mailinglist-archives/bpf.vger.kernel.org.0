@@ -1,136 +1,119 @@
-Return-Path: <bpf+bounces-60369-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60370-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9C69AD5F7F
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 21:53:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 367E6AD5F8C
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 21:56:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 538843AB230
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 19:52:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2F301BC2333
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 19:56:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F20902BD5A7;
-	Wed, 11 Jun 2025 19:51:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SrXTWMuN"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E2ED2BD5B4;
+	Wed, 11 Jun 2025 19:56:29 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay.hostedemail.com (smtprelay0012.hostedemail.com [216.40.44.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA95D221F1C;
-	Wed, 11 Jun 2025 19:51:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D027228853E;
+	Wed, 11 Jun 2025 19:56:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749671495; cv=none; b=KEZNVumRuFDbFszZ51AVzC1IJuut1AH0xipC/IlMXcueYBxob2q4aOeSvygTqdXqPyeHm6BOn7qftDahuzE42DJlY2jpAUN6Vy1Nmm5m5RvdHOUc0x5KYoso5dLA+x2VPSJQ1bNwfn3nnV4Pk4ulHPpOALGVEkYAfKV8HdUUBUQ=
+	t=1749671789; cv=none; b=HZdaUxlgsbAhHPzuq1IFN30fXDubVhivpDAPhyYEnkL425I5LP6HTGgNSRhT7Px2U8csjhh4vOhufqvrnGzjaSk0sYa0d0mDOdFb6XrxeIGxRK7SjZNUZKnbA/ht4S/BcvUg7CnKfJm72VAkgywMkdi43rRBvBaC8YawIIhsZF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749671495; c=relaxed/simple;
-	bh=X/OA1aXD+x1kt5nNgWcOiOS8Y92tVVSfC0Xz93AMSXc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fGtIYJBQELJMVB3HW74mK6FwczlrMq40e63u+DIRN/QW7X0iYWQ3pNGcHOOYH3E/qUlp8Bk/NMWy6LR0PpNqmN6dxo0rvTKpCHG6nkWUxhJH0V+P8AuAcgMddhS7L9f3jn20YB3EQjyopPEssySgEnZ0pk+H9b5FRjq2QRzu9tc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SrXTWMuN; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3a54700a46eso253470f8f.1;
-        Wed, 11 Jun 2025 12:51:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749671492; x=1750276292; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JQzMghNz4SMc/jj8ZNDpIvLoMQsd+F/Mm9SKGgQM0Dg=;
-        b=SrXTWMuNKADkbaTmDXEOzjg3hBT3owisiPs58b3332j9ikLYYthd0Jpo3V2/3G89Pb
-         8GSxsv9S+SnCTMfcuilkHJdzOIli1xS9/r9ZhvLEVE+DTCPAANyBuCOr8MEmVhfJTi/n
-         t7fO9SybEoTTNh9qjCHj/oNGcT8KBiEnzpQNjms18ops0f5RFYvNVMYIJUVnD69kLTza
-         Ag1KMWIzs4qF4kxOhZEepCUESklrtWZQgr6oTJOYfg9KnNT5Hx6Pl6CNHVWI+qabX0Hj
-         zDAdDu1omNz1AjYpp24bIWYpMsHLjk/b8kO/SksDH6yPDev84lT264cPdGese7yMaJYG
-         fo5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749671492; x=1750276292;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JQzMghNz4SMc/jj8ZNDpIvLoMQsd+F/Mm9SKGgQM0Dg=;
-        b=EsTiJbh33ycicovKW+uneABEbOCEcNFRKkXFldCkjlFF0ubcunYw8eS1PsWhXwKpNn
-         8rJoQAVx7TyKie+G71b42YO6TanZbTI48UQy3lAKy60GpQRnfO605bV0xETASpHKnWuh
-         Pe9a/DKGDMjJtxhMzoCqPn8VSxq3LCZn1lEH+jnCRIqZKrVNAgvuuELg5NuofMCVPS/N
-         HQjAbE0reiq8LIuwsCDhwx06dw3dpkdA7FodfhMf5bLztyl1jxFN8A5aUCoPYvthOstW
-         dEr74olygQVgr20gakjtxr007sMz7PQmr+3fjyS+g2D9HhBewwe1cBrasZIZs/t/wnEU
-         +5Xw==
-X-Forwarded-Encrypted: i=1; AJvYcCVVxIcjAC5K8EXlC1+3T6TkkNYUrKNJBKansWhIROjv3suLO9glMg1ypNXF+GtRFLKeHltyl/dz5InjYRy3k4JS@vger.kernel.org, AJvYcCWUkXQLRCQfTFqtm5xz7UMaFgbLgqVkCCHLSCAxrywRlPc2eV4Bn2Cp0p1Alu6W4dfWxARliP7DrQ5MfICU@vger.kernel.org, AJvYcCX5K1RlWzuUglHbOKXAO3Vlm50OP78qLFs2FD/d2N2TYyB6q4D7aji9E6UyNLXcvXPuMn4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwBP08Nxc2jtPRX6gD71n3srFWhhTYmpKLeUmiLpFVcT1TDMLL3
-	r/11upLfepHn3ggNeJVzKx1p8i4XqoC9uvCa8H0dLqvT3NyPgMrDqk5VPIhrIc264AC6DMfl6wH
-	fwNpQgFdRiG0DA1FYOL7bQsQqK1eQAoM=
-X-Gm-Gg: ASbGncuVb+8YJptp5+0TekWxz7gB6feAualKjULSLJHoeVKHmqXsQpEu78q15EEeQfl
-	ByFukQrY+dLDUU3DwB9g0lCc6ADyKNG/5Gw0VPxDqHlBvEPFKRfE0YqU8C1+Jh4XfJ6e22K1Bf6
-	bKDmQY4KRYGP0VkLtXOwR2rocS6Y/N6KyvcKSKmvr2gZE1wD++QjyQ+wF0ZeTWQdkADBvOy+Uz
-X-Google-Smtp-Source: AGHT+IHsMOspB6UuSIxOVa8i+vzccdKZaI+htNn9UjH3qwVgBZvxXthrfaJmH1ZHicGFh3pG6c73MfkN8aXZP5JK+T4=
-X-Received: by 2002:a05:6000:310a:b0:3a4:d53d:be20 with SMTP id
- ffacd0b85a97d-3a558695d45mr3327455f8f.18.1749671492015; Wed, 11 Jun 2025
- 12:51:32 -0700 (PDT)
+	s=arc-20240116; t=1749671789; c=relaxed/simple;
+	bh=Cu3nmlEkWuwjxDNV/0+pvJpDjndzyTJCZaXYdMngeh4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=ZrXULkYUwg47/3OM+UGzMHhbaCfhFfbz2p9JTVPHa18GtfvcsXkAsXW0nuhsvTUppVMZCMqvgvGovssOMBVdTAh2GWszAjU+MlnIfamblKxA82mXLk6XOJQjPzoSeHQuHtJom7mMtUoioPZbJR7R5Vsh3qGaM1tC3C0y2d1biSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf05.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay10.hostedemail.com (Postfix) with ESMTP id 11AE0C153C;
+	Wed, 11 Jun 2025 19:56:25 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf05.hostedemail.com (Postfix) with ESMTPA id CABC320019;
+	Wed, 11 Jun 2025 19:56:22 +0000 (UTC)
+Date: Wed, 11 Jun 2025 15:56:15 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>, Linux trace kernel
+ <linux-trace-kernel@vger.kernel.org>, bpf@vger.kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller"
+ <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard
+ Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>
+Subject: [PATCH] xdp: Remove unused events xdp_redirect_map and
+ xdp_redirect_map_err
+Message-ID: <20250611155615.0c2cf61c@batman.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250608143623.25242-1-wangfushuai@baidu.com>
-In-Reply-To: <20250608143623.25242-1-wangfushuai@baidu.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 11 Jun 2025 12:51:21 -0700
-X-Gm-Features: AX0GCFv7vXXDLbAwxkRk67UWzs3RvlU2LBWLjvW30iGM-xMtg-Wi-MUDz_hGEmI
-Message-ID: <CAADnVQ+SSPhZNN05F2-MS_79Vhp+mSTWF3Ss1rcoWRnaDjFx+A@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: fix signedness bug in redir_partial()
-To: wangfushuai <wangfushuai@baidu.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard <eddyz87@gmail.com>, 
-	Mykola Lysenko <mykolal@fb.com>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Shuah Khan <shuah@kernel.org>, Michal Luczaj <mhal@rbox.co>, 
-	Jakub Sitnicki <jakub@cloudflare.com>, Kui-Feng Lee <thinker.li@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: pdykq43w8igi8jwatgzsxdq8xngwqecd
+X-Rspamd-Server: rspamout02
+X-Rspamd-Queue-Id: CABC320019
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1+idN4t/5BvaMxfbcOBfj6t8p+kzKNs5J8=
+X-HE-Tag: 1749671782-645701
+X-HE-Meta: U2FsdGVkX19UAxdIQXcHLtYE1Q9eBHt1EaP924LY6qY76d5BTDjx02G6DZrigR7mDjc0ng9bCuiDNdSMtowH8DN69rz3KxE1xQN+MXhHx+RNDSGwMqsPKAAXi9R3+M6rOotPxvTalbe9r/DOIWqnHmueKKqY113ottk4HG9LSxRqmlglnH9EG2xloQ5DjBD6dZPd1fz3nEHKQjx2fKOh5N8vp+30XAb9nHQTmE85V7OmRz1wT7lo74xXxgd3XMXGdXhcuz2aPmC+4nPWy5zHTaPQQLfI/Nu5mL67YT6KrACV/D3Nc0xzmxvcZWExr0Fi1Gy3370SIDYbwPuWLIGbQPWzxbIb3S67bxiDAmM1NOUUHc2SuDM6enMEP3NU2FvC
 
-On Sun, Jun 8, 2025 at 7:38=E2=80=AFAM wangfushuai <wangfushuai@baidu.com> =
-wrote:
->
-> When xsend() returns -1 (error), the check 'n < sizeof(buf)' incorrectly
-> treats it as success due to unsigned promotion. Explicitly check for -1
-> first.
->
-> Fixes: a4b7193d8efd ("selftests/bpf: Add sockmap test for redirecting par=
-tial skb data")
-> Signed-off-by: wangfushuai <wangfushuai@baidu.com>
+From: Steven Rostedt <rostedt@goodmis.org>
 
-Looks good, but please spell out your name as First Last
-in both From and Signed-off
+Each TRACE_EVENT() defined can take up around 5K of text and meta data
+regardless if they are used or not. New code is being developed that will
+warn when a tracepoint is defined but not used.
 
-Also use [PATCH bpf-next] in subject
+The trace events xdp_redirect_map and xdp_redirect_map_err are defined but
+not used, but there's also a comment that states these are kept around for
+backward compatibility. Which is interesting because since they are not
+used, any old BPF program that expects them to exist will get incorrect
+data (no data) when they use them. It's worse than not working, it's
+silently failing.
 
-pw-bot: cr
+Remove them as they will soon cause warnings, or if they really need to
+stick around, then code needs to be added to use them.
 
-> ---
->  tools/testing/selftests/bpf/prog_tests/sockmap_listen.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/to=
-ols/testing/selftests/bpf/prog_tests/sockmap_listen.c
-> index 1d98eee7a2c3..f1bdccc7e4e7 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-> @@ -924,6 +924,8 @@ static void redir_partial(int family, int sotype, int=
- sock_map, int parser_map)
->                 goto close;
->
->         n =3D xsend(c1, buf, sizeof(buf), 0);
-> +       if (n =3D=3D -1)
-> +               goto close;
->         if (n < sizeof(buf))
->                 FAIL("incomplete write");
->
-> --
-> 2.36.1
->
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ include/trace/events/xdp.h | 19 -------------------
+ 1 file changed, 19 deletions(-)
+
+diff --git a/include/trace/events/xdp.h b/include/trace/events/xdp.h
+index d3ef86c97ae3..0fe0893c2567 100644
+--- a/include/trace/events/xdp.h
++++ b/include/trace/events/xdp.h
+@@ -168,25 +168,6 @@ DEFINE_EVENT(xdp_redirect_template, xdp_redirect_err,
+ #define _trace_xdp_redirect_map_err(dev, xdp, to, map_type, map_id, index, err) \
+ 	 trace_xdp_redirect_err(dev, xdp, to, err, map_type, map_id, index)
+ 
+-/* not used anymore, but kept around so as not to break old programs */
+-DEFINE_EVENT(xdp_redirect_template, xdp_redirect_map,
+-	TP_PROTO(const struct net_device *dev,
+-		 const struct bpf_prog *xdp,
+-		 const void *tgt, int err,
+-		 enum bpf_map_type map_type,
+-		 u32 map_id, u32 index),
+-	TP_ARGS(dev, xdp, tgt, err, map_type, map_id, index)
+-);
+-
+-DEFINE_EVENT(xdp_redirect_template, xdp_redirect_map_err,
+-	TP_PROTO(const struct net_device *dev,
+-		 const struct bpf_prog *xdp,
+-		 const void *tgt, int err,
+-		 enum bpf_map_type map_type,
+-		 u32 map_id, u32 index),
+-	TP_ARGS(dev, xdp, tgt, err, map_type, map_id, index)
+-);
+-
+ TRACE_EVENT(xdp_cpumap_kthread,
+ 
+ 	TP_PROTO(int map_id, unsigned int processed,  unsigned int drops,
+-- 
+2.47.2
+
 
