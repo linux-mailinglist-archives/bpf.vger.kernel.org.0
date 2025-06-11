@@ -1,215 +1,125 @@
-Return-Path: <bpf+bounces-60306-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60307-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A047AD4E69
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 10:30:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 964B4AD4F00
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 10:58:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BEB73189CCB2
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 08:31:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48CF67AB71D
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 08:56:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6853223ABAF;
-	Wed, 11 Jun 2025 08:30:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 976F5242D6D;
+	Wed, 11 Jun 2025 08:57:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jfwCpNrC"
+	dkim=pass (1024-bit key) header.d=datadoghq.com header.i=@datadoghq.com header.b="LoaQ6g0m"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC98D221262;
-	Wed, 11 Jun 2025 08:30:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE34323F43C
+	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 08:57:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749630642; cv=none; b=MBg/C2S8gxLfeOnfkt3SsixWkfPQm2gztfc56G3z2I+S7+rpLIcx29WhbMYVTa74LbhHHJHnZZDzuEatO5z2o3T9e3Mh2arplNoz2soy3wVbNqBrmPwrUB5a18DNdKbPJ9wNUEEYMwgt0s8LGs6l1HNXzQgLrJLsWJMwcGwHtKc=
+	t=1749632275; cv=none; b=Y9oHb+kst8ZxfwGgvlQiBwcwG8+wyxHQMU9ZUYeCLEXnqXSYI8HMN90UYjDxOjUmCatGHgNOJqLjHEnxRT+W3eG584q5sScPRNVUK1g9WtBberPAANxBnm+9eP2x4sfifWHkIlMiHkOQ7iZ6zxQdto90jHuQiS10CLCH+EgOGzQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749630642; c=relaxed/simple;
-	bh=nG4MAcdamN7DYqmVn2ZlJNXQKWZHpSsi/rSOtqPEcyY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MBX21LIuDcyoEECJ2AohHAPjuq1OiqlOTzSfg185IjdOrqCJ7mQQ3hK9Xegci+L841FxnAzk9KS3iYvTH3nHUjsbPqSEMUT2M2R0odrl43MRix8/JrlsVMNP5zV2NpMVDHK/JEJjwQvfx1tsjMFiCXlPFSp+/ryUp4suHSQsa5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jfwCpNrC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB381C4CEEE;
-	Wed, 11 Jun 2025 08:30:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749630641;
-	bh=nG4MAcdamN7DYqmVn2ZlJNXQKWZHpSsi/rSOtqPEcyY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jfwCpNrCcxqvPhKBaCbhYFsRFLlO18PPVHXLvw2HY9kVggJurf6gzE4REuwGtmzvm
-	 ePt0eNwshe+wg4RUY6rMyiyDL7HAJLXGIN+hYutgjnbUvU2tSX4+QZRiJIQ9HiMkRG
-	 Orv6XjeJ7JucWelpLZpaBUJ0GAN3IwPf6JyHXk0UaKtmP+QuEpyADkYEJ4jPGLobU0
-	 925QkioSUiGC4JrKUws8vTjjvO9hHUR1mnG9aO2ZOp6AWegJHVzYd8u9SM/f5QPBB8
-	 hnydKj2l4s9y/RJtJdjOBo1QJyT7ODPF4/rwj7YdZqhUP+4pcN4xe+a7HwOvucQSnJ
-	 RQILoZkx/XSRQ==
-Date: Wed, 11 Jun 2025 10:30:35 +0200
-From: Alejandro Colomar <alx@kernel.org>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org, Song Liu <songliubraving@fb.com>, 
-	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, 
-	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, 
-	David Laight <David.Laight@aculab.com>, Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>, 
-	Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCHv3 22/22] man2: Add uprobe syscall page
-Message-ID: <k32xtpz5y4qdxe43fd6pgjypm3dvtn5lkokjkj7palxcqtxf5a@6crskezmzcch>
-References: <20250605132350.1488129-1-jolsa@kernel.org>
- <20250605132350.1488129-23-jolsa@kernel.org>
+	s=arc-20240116; t=1749632275; c=relaxed/simple;
+	bh=PuA2ndzsf6qV8+DZjFJzpHjynq2dG7WznWmQHytru3g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=IYIl+ATWcOCMRQ1FIqp8pmIiqetE258c04OafSMhiRpb9LKUB40Y8+I2AgqFVnrivu8CZZoHgZNgvOFav9fq2CLbRP+FKj+6WBB++rDcJLI5qTZeUhtho230NKCYVC/amo6KyIIoFEef+fO5Sq7njhAHfx/U95hZRDXF8PVtwUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=datadoghq.com; spf=pass smtp.mailfrom=datadoghq.com; dkim=pass (1024-bit key) header.d=datadoghq.com header.i=@datadoghq.com header.b=LoaQ6g0m; arc=none smtp.client-ip=209.85.128.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=datadoghq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=datadoghq.com
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-71101efedabso288847b3.2
+        for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 01:57:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=datadoghq.com; s=google; t=1749632273; x=1750237073; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jjvJV8ZhcGRvupyFP8whmvE6fGj3kxjqSux4Bqr/JI4=;
+        b=LoaQ6g0mPMhTb7fyzIU3bmntaTCp7CGdK/drhZbkPs/hRBJgjgce0mZWwYrPtYAhsJ
+         OtwXhEVollwO1PWAYd2HxLyh2S38tSadJGED6CgS03qv9vZjTHStV4aX4uAfN4EO2x9h
+         jqyBiNl6fba1d0LS+N3YUdQXh5M8WKvBK+VjQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749632273; x=1750237073;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jjvJV8ZhcGRvupyFP8whmvE6fGj3kxjqSux4Bqr/JI4=;
+        b=WuthaynrWDAgarhNQmCqV7U3g7sAUkLahKDYXoXHx4ZdIgi1/oQFO4JVm9Qb2uHAf8
+         qH/zxMNsYAUgwUmrtng4BKg1c40N8Chd2NLHSrfKOYN9yMB69MaJxgE3yCxoj8tzffNj
+         IwCzUFeO1ENgXeyWVPFiLlds71DmezobPC5DfG9jY2uh5Fc8D8Af6gIX7EYJJ25ncUem
+         2oj08araGYwY07lqj4/93bV0NsOv/Y1o2nONlbUdUAwum3k3WgE3bzkkmPxRYyqyAwmt
+         6xbm6NWHvz0RDqaIL0PTVAacApq+/rA5yGUjRWIlydA2sJcfphq1w2ny9gno5Wd/sVsr
+         Uauw==
+X-Forwarded-Encrypted: i=1; AJvYcCX/03qCRkkIcNyrkQSlbaAKcHP7FIm+hmII8P7K7UcWk9V7+6i6jXmEuwzEAB97k5km2bQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwvTaJiF26XM9xYExPXTYlhxelHOOA26pqen7jOx5q7Mz6QNYqW
+	uIFlGO7pro/1rk9o9Gu86MqtTWCQVYSHv+7qbgWCe+uZtGJk2sQaRLrs7QZt1yKk3VGNHcKqf3U
+	FSi+fx9PEadPSdayku3fUaX7i2YcII5Et9+h5YAS1LQ==
+X-Gm-Gg: ASbGncttVnJj6+zjT5A0ZdNNRDhFNRQrq1oBSIsiACra9b6d885p0Ep6kn0WTVYfGcy
+	Xd4ljQrgchbtEt1iOwGzvfFBaQr5a0k6DbktRnfEJUyR/mhcX9y0QmVmuvZ8NzsOrgG9QJYimU5
+	Qm9SDy9SrCFYhu4nQZn6G3tmox4hruPN/ifGoT4Ol7+1mO/9ZsHLjxvYhK
+X-Google-Smtp-Source: AGHT+IFFUX7swcm0JEVkBkoeXBxQqu33hMdHpH5TkNq62BrSmW92rmo/SE91S3zNAbTom0l5kxhyos7zTLCHUuzheJg=
+X-Received: by 2002:a05:690c:3685:b0:70e:4cdc:6e7a with SMTP id
+ 00721157ae682-71140ae3679mr14818867b3.6.1749632272516; Wed, 11 Jun 2025
+ 01:57:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="adcwlsquorqhz652"
-Content-Disposition: inline
-In-Reply-To: <20250605132350.1488129-23-jolsa@kernel.org>
-
-
---adcwlsquorqhz652
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
+References: <20250609-sockmap-splice-v2-0-9c50645cfa32@datadoghq.com>
+ <20250609-sockmap-splice-v2-1-9c50645cfa32@datadoghq.com> <20250609122146.3e92eaef@kernel.org>
+In-Reply-To: <20250609122146.3e92eaef@kernel.org>
+From: Vincent Whitchurch <vincent.whitchurch@datadoghq.com>
+Date: Wed, 11 Jun 2025 10:57:41 +0200
+X-Gm-Features: AX0GCFthcjUN2-ZcbaCjBFu9eICTHSIis43T6ijos1tz5aAY4JHlgHWN205uMSw
+Message-ID: <CALye=__1_5Zr99AEZhxXXBtzbTPDC_KEZz_WCDDavjwujECYtQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/5] net: Add splice_read to prot
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Vincent Whitchurch via B4 Relay <devnull+vincent.whitchurch.datadoghq.com@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Jakub Sitnicki <jakub@cloudflare.com>, 
+	Kuniyuki Iwashima <kuniyu@amazon.com>, netdev@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-From: Alejandro Colomar <alx@kernel.org>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org, Song Liu <songliubraving@fb.com>, 
-	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, 
-	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, 
-	David Laight <David.Laight@aculab.com>, Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>, 
-	Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCHv3 22/22] man2: Add uprobe syscall page
-References: <20250605132350.1488129-1-jolsa@kernel.org>
- <20250605132350.1488129-23-jolsa@kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <20250605132350.1488129-23-jolsa@kernel.org>
 
-On Thu, Jun 05, 2025 at 03:23:49PM +0200, Jiri Olsa wrote:
-> Changing uretprobe syscall man page to be shared with new
-> uprobe syscall man page.
->=20
-> Cc: Alejandro Colomar <alx@kernel.org>
+On Mon, Jun 9, 2025 at 9:21=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wro=
+te:
+> Can we not override proto_ops in tcp_bpf for some specific reason?
+> TLS does that, IIUC.
 
-Reviewed-by: Alejandro Colomar <alx@kernel.org>
+I see that TLS writes to sk->sk_socket->ops to override the proto_ops.
+I added some prints to tcp_bpf_update_proto() but there I see that
+sk->sk_socket is NULL in some code paths, like the one below.
 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  man/man2/uprobe.2    |  1 +
->  man/man2/uretprobe.2 | 36 ++++++++++++++++++++++++------------
->  2 files changed, 25 insertions(+), 12 deletions(-)
->  create mode 100644 man/man2/uprobe.2
->=20
-> diff --git a/man/man2/uprobe.2 b/man/man2/uprobe.2
-> new file mode 100644
-> index 000000000000..ea5ccf901591
-> --- /dev/null
-> +++ b/man/man2/uprobe.2
-> @@ -0,0 +1 @@
-> +.so man2/uretprobe.2
-> diff --git a/man/man2/uretprobe.2 b/man/man2/uretprobe.2
-> index bbbfb0c59335..df0e5d92e5ed 100644
-> --- a/man/man2/uretprobe.2
-> +++ b/man/man2/uretprobe.2
-> @@ -2,22 +2,28 @@
->  .\"
->  .\" SPDX-License-Identifier: Linux-man-pages-copyleft
->  .\"
-> -.TH uretprobe 2 (date) "Linux man-pages (unreleased)"
-> +.TH uprobe 2 (date) "Linux man-pages (unreleased)"
->  .SH NAME
-> +uprobe,
->  uretprobe
->  \-
-> -execute pending return uprobes
-> +execute pending entry or return uprobes
->  .SH SYNOPSIS
->  .nf
-> +.B int uprobe(void);
->  .B int uretprobe(void);
->  .fi
->  .SH DESCRIPTION
-> +.BR uprobe ()
-> +is an alternative to breakpoint instructions
-> +for triggering entry uprobe consumers.
-> +.P
->  .BR uretprobe ()
->  is an alternative to breakpoint instructions
->  for triggering return uprobe consumers.
->  .P
->  Calls to
-> -.BR uretprobe ()
-> +these system calls
->  are only made from the user-space trampoline provided by the kernel.
->  Calls from any other place result in a
->  .BR SIGILL .
-> @@ -26,22 +32,28 @@ The return value is architecture-specific.
->  .SH ERRORS
->  .TP
->  .B SIGILL
-> -.BR uretprobe ()
-> -was called by a user-space program.
-> +These system calls
-> +were called by a user-space program.
->  .SH VERSIONS
->  The behavior varies across systems.
->  .SH STANDARDS
->  None.
->  .SH HISTORY
-> +.TP
-> +.BR uprobe ()
-> +TBD
-> +.TP
-> +.BR uretprobe ()
->  Linux 6.11.
->  .P
-> -.BR uretprobe ()
-> -was initially introduced for the x86_64 architecture
-> -where it was shown to be faster than breakpoint traps.
-> -It might be extended to other architectures.
-> +These system calls
-> +were initially introduced for the x86_64 architecture
-> +where they were shown to be faster than breakpoint traps.
-> +They might be extended to other architectures.
->  .SH CAVEATS
-> -.BR uretprobe ()
-> -exists only to allow the invocation of return uprobe consumers.
-> -It should
-> +These system calls
-> +exist only to allow the invocation of
-> +entry or return uprobe consumers.
-> +They should
->  .B never
->  be called directly.
-> --=20
-> 2.49.0
->=20
-
---=20
-<https://www.alejandro-colomar.es/>
-
---adcwlsquorqhz652
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEES7Jt9u9GbmlWADAi64mZXMKQwqkFAmhJPqsACgkQ64mZXMKQ
-wqm0/Q//W3YHaJa/TGiGlsMiUbKmmkHg/5ZAffu3BKgS+7NgyowntxwY5DAaC7Os
-B3qeBQhmKwSrc/sJ1AqfV1TnIt/zjj0Ye9pKx4QE08JRCafo+lew5F4v/Op4mKhD
-9LmiTUsPyojlXp+h/slFR+i58CWrrv4cltmiHgEkB9aj0UgjXrLr8SyMM5bT2WoF
-YnG1QaxiZj0gWX1/05gMfu0GEJmqI/TXLbZ1I0JRQCo4Q2k76PdFTomNyAtnYh1w
-SDICEh8zQhFqkDAC6pWp01gP+9L5LsSGpGxrtNtewrK62GBnWNECHJZcoTCHItlp
-htZLgnyWMnjO3XWFH2d+bveD8+c0OinvF3RSAxb0BagoyH9OnOLa6tf2raAYkDkC
-s3+1QHPbgLSlWlWfdJx8+wrYUlhR+eofikK/o5p8FtY6S8QhXEBalb+Tm+2/VJNP
-0vEFBr0G53TjDG1rM/4xD633GxbCssRbiifHH04erwC/YVmu6ygb8DBwN76hWfRF
-XXpFfDASRM9nFPWzCUTqRX1lcqQlAvqPSTyKpHCxF8eGyStOa7MooVClFYDvU94i
-07jmvGiT4xRa3BeISdvubY4o/DG5HSkiDcjAyCwsITYliRIDfZhydu2icnRJZa3k
-Wk4yqGz9sVv1G98JhoBvZ+G4CJS8aGjKolPzV3IAVTO0DaXogFg=
-=6rmh
------END PGP SIGNATURE-----
-
---adcwlsquorqhz652--
+ tcp_bpf_update_proto: restore 0 sk_prot 000000002cf13dcc sk_socket
+0000000000000000
+ CPU: 0 UID: 0 PID: 392 Comm: test_sockmap Not tainted
+6.15.0-12313-g39e87f4ff7c3-dirty #77 PREEMPT(voluntary)
+ Call Trace:
+  <IRQ>
+  dump_stack_lvl+0x83/0xa0
+  tcp_bpf_update_proto+0x116/0x790
+  sock_map_link+0x425/0xdd0
+  sock_map_update_common+0xb8/0x6a0
+  bpf_sock_map_update+0x102/0x190
+  bpf_prog_4d9ceaf804942d01_bpf_sockmap+0x79/0x81
+  __cgroup_bpf_run_filter_sock_ops+0x1db/0x4b0
+  tcp_init_transfer+0x852/0xc00
+  tcp_rcv_state_process+0x3147/0x4b30
+  tcp_child_process+0x346/0x8b0
+  tcp_v4_rcv+0x1616/0x3e10
+  ip_protocol_deliver_rcu+0x93/0x370
+  ip_local_deliver_finish+0x29c/0x420
+  ip_local_deliver+0x193/0x450
+  ip_rcv+0x497/0x710
+  __netif_receive_skb_one_core+0x164/0x1b0
+  process_backlog+0x3a7/0x12b0
+  __napi_poll.constprop.0+0xa0/0x440
+  net_rx_action+0x8ce/0xca0
+  handle_softirqs+0x1c3/0x7b0
+  do_softirq+0xa5/0xd0
 
