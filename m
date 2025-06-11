@@ -1,87 +1,50 @@
-Return-Path: <bpf+bounces-60388-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60387-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EA82AD60E2
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 23:14:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDE78AD60C0
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 23:10:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A5C41E0C6B
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 21:14:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5A6F3AADC4
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 21:09:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 490ED2BDC2C;
-	Wed, 11 Jun 2025 21:14:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F71B2BDC34;
+	Wed, 11 Jun 2025 21:10:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="TTxOyECL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gL0dKys7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx-rz-2.rrze.uni-erlangen.de (mx-rz-2.rrze.uni-erlangen.de [131.188.11.21])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6828B1F7904;
-	Wed, 11 Jun 2025 21:14:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96FDE28850C;
+	Wed, 11 Jun 2025 21:10:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749676444; cv=none; b=EHZCb1cnOr5HaLaMwqlWmJ6KpnhWjRN39ZrI8eZT1VfAzU0MSR4lgUCCQBymtVIpoiAQrOO8aFjxsMWTDw/ldLWUFj+hHgQrvFJWm3WB2A41MoN4VuPxGomaTdbeQ+yQ5xqtKeH9xCrvAQXlBnn+K8wxmidr3xBwZrIZQT0B6Uo=
+	t=1749676208; cv=none; b=kAilPs8VIksjn2+ZXNarJawneT9j0VepK0Hlvobr6jVZg9TYtTxJWb4l88M+ONai97mwerd9m+ss8GhxMWr5IHu3asHiIDOW4F1Li4aVyoBv7BdPO9ZqYvsVCSGcsHhdXVy9atCtI/9zet1Rd/iXa1mJlMaezAjLRt3Kt2Zqxm4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749676444; c=relaxed/simple;
-	bh=123Y/VUR32niZhCHmmjiMZx7FMUBE0IJr1z6U7X4cNE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gIXZRaw1NVNbZP8QTZjh3kuadGpGY6AvA8zGTTkgwSjDmd9XdpJ8daiJdMDmb/03rmYU7olNPB4jQvC4W/8j20PFc6Q8v8/eYSRT42NB6djm/g55wIEVGbaoLL30al6xfzdiiZe2TqYuRMjaEg2nZ1G8l9bV/uh27c7vI5PJhM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=TTxOyECL; arc=none smtp.client-ip=131.188.11.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
-	t=1749676106; bh=SCKfOOSOyeoVjmJnLCPkDxbbVBBcC0ITZCX1zItnZbI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From:To:CC:
-	 Subject;
-	b=TTxOyECLcB9SDsb2/N6+cXBw3ZgEPfYveEtZaPg9pX40OqZHp5PSX2yGkhh8DgVdz
-	 dWnP1jcsZhWVOPVHGujAZdylhyUWQFMaqDGmOAUXt6sB40bAnc/FRgp3IG938oP5jd
-	 EbXveXMUyFlGnnhe86ASG8hbXITApl21ujueGKCBf3s90KO9+u5YqkN4EmmHSxGWf0
-	 truTIaCRpjcgFgnQXlQypO8aZ09Y/TqDWFzA1Z6eGUGotCq5sy6BX6cSAmO4NdVSH4
-	 v+I0CPVULxBWq6++OoQkaMwqcpso/5Afnv4XCfPG4OXMelHF/4DLRfl/pj/n4SJW5f
-	 wE65+xLMnklRw==
-Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-rz-2.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4bHdYQ5phXzPk2s;
-	Wed, 11 Jun 2025 23:08:26 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at boeck2.rrze.uni-erlangen.de (RRZE)
-X-RRZE-Flag: Not-Spam
-X-RRZE-Submit-IP: 2001:9e8:3626:500:39da:8819:39bd:1255
-Received: from luis-tp.fritz.box (unknown [IPv6:2001:9e8:3626:500:39da:8819:39bd:1255])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: U2FsdGVkX19M3XQgzUSjR5vKVmuW0oXhCVKObzOx14A=)
-	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4bHdYM4FmRzPjmG;
-	Wed, 11 Jun 2025 23:08:23 +0200 (CEST)
-From: Luis Gerhorst <luis.gerhorst@fau.de>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Luis Gerhorst <luis.gerhorst@fau.de>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Henriette Herzog <henriette.herzog@rub.de>,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: syzbot+b5eb72a560b8149a1885@syzkaller.appspotmail.com
-Subject: [PATCH bpf-next] bpf: Fix state use-after-free on push_stack() err
-Date: Wed, 11 Jun 2025 23:07:28 +0200
-Message-ID: <20250611210728.266563-1-luis.gerhorst@fau.de>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <b6931bd0dd72327c55287862f821ca6c4c3eb69a.camel@gmail.com>
-References: <b6931bd0dd72327c55287862f821ca6c4c3eb69a.camel@gmail.com>
+	s=arc-20240116; t=1749676208; c=relaxed/simple;
+	bh=yoZJsoXICfhX05KpANME2Lttp2iQeV3DjkQP8RzmicE=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=W8AwK2JFiwypa8IwNtDL6MD2ACc4BnU7tsEiRPhBtT02jIX/cLLxSTxcIMpNB4j8XXpfqf0eQPZXLENw7xQy4pYm44WvDZrZtFz9FBiV/98B2I6sf70nrm8VVDOI/mLPlcnRLrXqMZeRfVD3jUF27XXJpO2Iu8IP66QDiw4z34k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gL0dKys7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25806C4CEE3;
+	Wed, 11 Jun 2025 21:10:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749676208;
+	bh=yoZJsoXICfhX05KpANME2Lttp2iQeV3DjkQP8RzmicE=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=gL0dKys7kONY6Sqa0j/qwgNuku1s+rT0Al/A7o8Rvk49e4nYcswnjcXrs6WlkBaka
+	 Z7pLuR5y9EF7HDLUJCwo8jnw1eTsALX6uBICJOln4uhbuXWjH+cZuUgP6zFWEcd3yX
+	 qYCnJOiF1EnYtj48UY2WMiXWVR+Kwxri/vkE5663zSmITSsF0xtUXpGtcaXMigjWBS
+	 X3ut8e4cjc8fE+GSKeXzHRa3TVue3ODNZAUeCjtPimL0WuWSfy3i/40mI22s/LoKSa
+	 HdnF/cqmfPavUzvCeI4BqneJ4pXM/faifqeNreSd4KyvIbELzC4CbpEEB3Qdv58hRR
+	 n5pxLfRMmNu/A==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70DFD380DBE9;
+	Wed, 11 Jun 2025 21:10:39 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -89,67 +52,62 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v1 0/7] netlink: specs: fix all the yamllint
+ errors
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <174967623825.3484955.9903714612397953732.git-patchwork-notify@kernel.org>
+Date: Wed, 11 Jun 2025 21:10:38 +0000
+References: <20250610125944.85265-1-donald.hunter@gmail.com>
+In-Reply-To: <20250610125944.85265-1-donald.hunter@gmail.com>
+To: Donald Hunter <donald.hunter@gmail.com>
+Cc: netdev@vger.kernel.org, kuba@kernel.org, davem@davemloft.net,
+ edumazet@google.com, pabeni@redhat.com, horms@kernel.org,
+ mptcp@lists.linux.dev, kernel-tls-handshake@lists.linux.dev,
+ bpf@vger.kernel.org, donald.hunter@redhat.com
 
-Without this, `state->speculative` is used after the cleanup cycles in
-push_stack() or push_async_cb() freed `env->cur_state` (i.e., `state`).
-Avoid this by relying on the short-circuit logic to only access `state`
-if the error is recoverable (and make sure it never is after push_*()
-failed).
+Hello:
 
-push_*() callers must always return an error for which
-error_recoverable_with_nospec(err) is false if push_*() returns NULL,
-otherwise we try to recover and access the stale `state`. This is only
-violated by sanitize_ptr_alu(), thus also fix this case to return
--ENOMEM.
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-state->speculative does not make sense if the error path of push_*()
-ran. In that case, `state->speculative &&
-error_recoverable_with_nospec(err)` as a whole should already never
-evaluate to true (because all cases where push_stack() fails must return
--ENOMEM/-EFAULT). As mentioned, this is only violated by the
-push_stack() call in sanitize_speculative_path() which returns -EACCES
-without [1] (through REASON_STACK in sanitize_err() after
-sanitize_ptr_alu()). To fix this, return -ENOMEM for REASON_STACK (which
-is also the behavior we will have after [1]).
+On Tue, 10 Jun 2025 13:59:37 +0100 you wrote:
+> yamllint reported ~500 errors and warnings in the netlink specs. Fix all
+> the reported issues.
+> 
+> Link: https://lore.kernel.org/netdev/m2tt4tt3wv.fsf@gmail.com/
+> 
+> Donald Hunter (7):
+>   netlink: specs: add doc start markers to yaml
+>   netlink: specs: clean up spaces in brackets
+>   netlink: specs: fix up spaces before comments
+>   netlink: specs: fix up truthy values
+>   netlink: specs: fix up indentation errors
+>   netlink: specs: wrap long doc lines (>80 chars)
+>   netlink: specs: fix a couple of yamllint warnings
+> 
+> [...]
 
-Checked that it fixes the syzbot reproducer as expected.
+Here is the summary with links:
+  - [net-next,v1,1/7] netlink: specs: add doc start markers to yaml
+    https://git.kernel.org/netdev/net-next/c/ce6bd277e1f7
+  - [net-next,v1,2/7] netlink: specs: clean up spaces in brackets
+    https://git.kernel.org/netdev/net-next/c/880d43ca9aa4
+  - [net-next,v1,3/7] netlink: specs: fix up spaces before comments
+    https://git.kernel.org/netdev/net-next/c/2338bab56951
+  - [net-next,v1,4/7] netlink: specs: fix up truthy values
+    https://git.kernel.org/netdev/net-next/c/3c90fd2baaa0
+  - [net-next,v1,5/7] netlink: specs: fix up indentation errors
+    https://git.kernel.org/netdev/net-next/c/ec362192aa9e
+  - [net-next,v1,6/7] netlink: specs: wrap long doc lines (>80 chars)
+    https://git.kernel.org/netdev/net-next/c/d26552d38c82
+  - [net-next,v1,7/7] netlink: specs: fix a couple of yamllint warnings
+    https://git.kernel.org/netdev/net-next/c/97c6383113b5
 
-[1] https://lore.kernel.org/all/20250603213232.339242-1-luis.gerhorst@fau.de/
-
-Fixes: d6f1c85f2253 ("bpf: Fall back to nospec for Spectre v1")
-Reported-by: syzbot+b5eb72a560b8149a1885@syzkaller.appspotmail.com
-Reported-by: Eduard Zingerman <eddyz87@gmail.com>
-Link: https://lore.kernel.org/all/38862a832b91382cddb083dddd92643bed0723b8.camel@gmail.com/
-Signed-off-by: Luis Gerhorst <luis.gerhorst@fau.de>
----
- kernel/bpf/verifier.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index b1f797616f20..d3bff0385a55 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -14229,7 +14229,7 @@ static int sanitize_err(struct bpf_verifier_env *env,
- 	case REASON_STACK:
- 		verbose(env, "R%d could not be pushed for speculative verification, %s\n",
- 			dst, err);
--		break;
-+		return -ENOMEM;
- 	default:
- 		verbose(env, "verifier internal error: unknown reason (%d)\n",
- 			reason);
-@@ -19753,7 +19753,7 @@ static int do_check(struct bpf_verifier_env *env)
- 			goto process_bpf_exit;
- 
- 		err = do_check_insn(env, &do_print_state);
--		if (state->speculative && error_recoverable_with_nospec(err)) {
-+		if (error_recoverable_with_nospec(err) && state->speculative) {
- 			/* Prevent this speculative path from ever reaching the
- 			 * insn that would have been unsafe to execute.
- 			 */
-
-base-commit: 2d72dd14d77f31a7caa619fe0b889304844e612e
+You are awesome, thank you!
 -- 
-2.49.0
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
