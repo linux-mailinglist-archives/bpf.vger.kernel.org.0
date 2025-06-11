@@ -1,105 +1,213 @@
-Return-Path: <bpf+bounces-60332-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60333-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA15FAD59DD
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 17:11:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D43DAD5AC1
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 17:39:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5519E17DBB5
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 15:10:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F05A37A417A
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 15:38:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A71E1A304A;
-	Wed, 11 Jun 2025 15:10:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 381291C6FF6;
+	Wed, 11 Jun 2025 15:39:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Uxjl5+hS"
+	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="vfLV4yUB"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtp-bc0e.mail.infomaniak.ch (smtp-bc0e.mail.infomaniak.ch [45.157.188.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A26731925AB;
-	Wed, 11 Jun 2025 15:10:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 866641ABEA5
+	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 15:39:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.157.188.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749654602; cv=none; b=HG7YJpHyh/HBU/oZA0VWS1f9inNMSjkf90Ht/Yo57uUnQi13uLl4LmJZ0M2O5hiNopDOR9r4GYivLp8Po3Z5b1+BR2z8IWXVvjDX5ZBoqLDyTLRIRXU2/XVoyIPLNav6x9YwynZzwy4/70hx5woxtuKUhdjzBII3phBGQ50QTus=
+	t=1749656353; cv=none; b=YiGMsMnVnwsmD27x63Q6yar96xcg4zlnsQMo2Xhj9EUMldjEG+lHunk7i4rQIaHTQcBTjz7w9rFeX87j7o+ZUODg8BN3hIb/Fp5YvERkZuwm4k6EG2nNwisjJHPsu7MIEa9f7s1qMobWAhXQn1hTZIa3V6ijNnr3sad1BlVJnKE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749654602; c=relaxed/simple;
-	bh=guKx/eVi2Puq98lD0YDWfUIP3bFaTVE4m7+rdn1ALhg=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=r2MLn4Ey+RffrvldeHQ0w8FvJfbbPs1kidNA2E/HxF9J/tzemZ+jgBUD5AIkJYkq454qMTUvFVf6e2YxIYwo13dPVaxObpFkMFR8xxcXC3UTxVpaWqSUNnk3ndDUqsPZHrXZulYRSG5lV6SjaiGmzgi5HolV6TM+G7P7IGHmAg8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Uxjl5+hS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 169E1C4CEE3;
-	Wed, 11 Jun 2025 15:10:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749654602;
-	bh=guKx/eVi2Puq98lD0YDWfUIP3bFaTVE4m7+rdn1ALhg=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Uxjl5+hSuA3qGWEACdYUufGb7KdAXvbKM4SVrAiQ7qGPTR/UXWJz2doaRJQMG0sTI
-	 IRlqYL+rY5rllS3WPdMUf8mRcVRO1OJPGX+X6NchKjdSTWK26M7KZRMmyIxQjTuE6b
-	 uUoge4ZhwmQ7PWg2lWvhKpun36dSiVrXViaNN12HvCvvucoY5k3tvnAslP1RTVtiTz
-	 9koeb9YtkYKY9vwRr82AoEd8FbIL6rZ9fpzuBR/OKhc64marCPno/838iehN/GdMwI
-	 Q6kFBjm5Z/EEH36RE/Pg3tH3QbGA9rQXR/yccJ2spxqdq2omSIdjKhxwY5qOx+KxEt
-	 CCF4V/eHJgLKw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70CC739EFFC5;
-	Wed, 11 Jun 2025 15:10:33 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1749656353; c=relaxed/simple;
+	bh=Z0sKrBxfihPScDuniaiZHTw+yqzf95mga2fD3ZZfc90=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SQKTJkNgLqIjUZ95O+hyFU9jJMiedml3UkzlHnns1I1zq8Q4shxLpE/ZNrJPmq3rbbHIsvsCnKDzaKIwuj7eKJEdlAAXC2ZN/P2QVqsX6o6gKCjJux5fDYEzl07BQhvMzEuqpi3HpugVUfIU/DA7LL3q+zqBwidjIstUCBayCzY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=vfLV4yUB; arc=none smtp.client-ip=45.157.188.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
+Received: from smtp-3-0000.mail.infomaniak.ch (unknown [IPv6:2001:1600:4:17::246b])
+	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4bHVFL4l42zCry;
+	Wed, 11 Jun 2025 17:39:02 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digikod.net;
+	s=20191114; t=1749656342;
+	bh=tbYnPfL1kN2Ag3wnMq+882FR27P/mux6vrQe2oeb2ag=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=vfLV4yUBHwPf4+pUjala63K88RN932+jPgEAZ00GlUIvAWhfOT/yComLM6A5bKPSA
+	 cmENBy5H+YbcpHlnllKrEKcOvfIo3aemt2J8CBjEpUpk6X9X6U+/W+sWui0WeX8cSS
+	 2ETQp8U5P2xD4yt35d3cD8WZvYthrTcSPuV1GXIs=
+Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4bHVFK4M0dzpjX;
+	Wed, 11 Jun 2025 17:39:01 +0200 (CEST)
+Date: Wed, 11 Jun 2025 17:39:00 +0200
+From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Tingmao Wang <m@maowtm.org>, Song Liu <song@kernel.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>, amir73il@gmail.com, andrii@kernel.org, ast@kernel.org, 
+	bpf@vger.kernel.org, daniel@iogearbox.net, eddyz87@gmail.com, gnoack@google.com, 
+	jack@suse.cz, jlayton@kernel.org, josef@toxicpanda.com, kernel-team@meta.com, 
+	kpsingh@kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, martin.lau@linux.dev, mattbobrowski@google.com, 
+	repnop@google.com
+Subject: Re: [PATCH v3 bpf-next 0/5] bpf path iterator
+Message-ID: <20250611.faich0Chohg3@digikod.net>
+References: <20250606213015.255134-1-song@kernel.org>
+ <dbc7ee0f1f483b7bc2ec9757672a38d99015e9ae.1749402769@maowtm.org>
+ <CAPhsuW7n_+u-M7bnUwX4Go0D+jj7oZZVopE1Bj5S_nHM1+8PZg@mail.gmail.com>
+ <97cdb6c5-0b46-4442-b19f-9980e33450c0@maowtm.org>
+ <20250611-bindung-pulver-6158a3053c87@brauner>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2 0/2] bpf,ktls: Fix data corruption caused by
- using
- bpf_msg_pop_data() in ktls
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <174965463225.3362912.890575326348538837.git-patchwork-notify@kernel.org>
-Date: Wed, 11 Jun 2025 15:10:32 +0000
-References: <20250609020910.397930-1-jiayuan.chen@linux.dev>
-In-Reply-To: <20250609020910.397930-1-jiayuan.chen@linux.dev>
-To: Jiayuan Chen <jiayuan.chen@linux.dev>
-Cc: bpf@vger.kernel.org, borisp@nvidia.com, john.fastabend@gmail.com,
- kuba@kernel.org, davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
- horms@kernel.org, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org,
- isolodrai@meta.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
+In-Reply-To: <20250611-bindung-pulver-6158a3053c87@brauner>
+X-Infomaniak-Routing: alpha
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (net)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Mon,  9 Jun 2025 10:08:51 +0800 you wrote:
-> Cong reported an issue where running 'test_sockmap' in the current
-> bpf-next tree results in an error [1].
+On Wed, Jun 11, 2025 at 01:36:46PM +0200, Christian Brauner wrote:
+> On Mon, Jun 09, 2025 at 09:08:34AM +0100, Tingmao Wang wrote:
+> > On 6/9/25 07:23, Song Liu wrote:
+> > > On Sun, Jun 8, 2025 at 10:34 AM Tingmao Wang <m@maowtm.org> wrote:
+> > > [...]
+> > >> Hi Song, Christian, Al and others,
+> > >>
+> > >> Previously I proposed in [1] to add ability to do a reference-less parent
+> > >> walk for Landlock.  However, as Christian pointed out and I do agree in
+> > >> hindsight, it is not a good idea to do things like this in non-VFS code.
+> > >>
+> > >> However, I still think this is valuable to consider given the performance
+> > >> improvement, and after some discussion with Mickaël, I would like to
+> > >> propose extending Song's helper to support such usage.  While I recognize
+> > >> that this patch series is already in its v3, and I do not want to delay it
+> > >> by too much, putting this proposal out now is still better than after this
+> > >> has merged, so that we may consider signature changes.
+> > >>
+> > >> I've created a proof-of-concept and did some brief testing.  The
+> > >> performance improvement attained here is the same as in [1] (with a "git
+> > >> status" workload, median landlock overhead 35% -> 28%, median time in
+> > >> landlock decreases by 26.6%).
+> > >>
+> > >> If this idea is accepted, I'm happy to work on it further, split out this
+> > >> patch, update the comments and do more testing etc, potentially in
+> > >> collaboration with Song.
+> > >>
+> > >> An alternative to this is perhaps to add a new helper
+> > >> path_walk_parent_rcu, also living in namei.c, that will be used directly
+> > >> by Landlock.  I'm happy to do it either way, but with some experimentation
+> > >> I personally think that the code in this patch is still clean enough, and
+> > >> can avoid some duplication.
+> > >>
+> > >> Patch title: path_walk_parent: support reference-less walk
+> > >>
+> > >> A later commit will update the BPF path iterator to use this.
+> > >>
+> > >> Signed-off-by: Tingmao Wang <m@maowtm.org>
+> > > [...]
+> > >>
+> > >> -bool path_walk_parent(struct path *path, const struct path *root);
+> > >> +struct parent_iterator {
+> > >> +       struct path path;
+> > >> +       struct path root;
+> > >> +       bool rcu;
+> > >> +       /* expected seq of path->dentry */
+> > >> +       unsigned next_seq;
+> > >> +       unsigned m_seq, r_seq;
+> > > 
+> > > Most of parent_iterator is not really used by reference walk.
+> > > So it is probably just separate the two APIs?
+> > 
+> > I don't mind either way, but I feel like it might be nice to just have one
+> > style of APIs (i.e. an iterator with start / end / next vs just one
+> > function), even though this is not totally necessary for the ref-taking
+> > walk.  After all, the BPF use case is iterator-based.  This also means
+> > that the code at the user's side (mostly thinking of Landlock here) is
+> > slightly simpler.
+> > 
+> > But I've not experimented with the other way.  I'm open to both, and I'm
+> > happy to send a patch later for a separate API (in that case that would
+> > not depend on this and I might just start a new series).
+> > 
+> > Would like to hear what VFS folks thinks of this first tho, and whether
+> > there's any preference in one or two APIs.
 > 
-> The specific test case that triggered the error is a combined test
-> involving ktls and bpf_msg_pop_data().
+> I really dislike exposing the sequence number for mounts an for
+> dentries. That's just nonsense and a non-VFS low-level consumer of this
+> API has zero business caring about any of that. It's easy to
+> misunderstand, it's easy to abuse so that's not a good way of doing
+> this. It's the wrong API.
 > 
-> Root Cause:
-> When sending plaintext data, we initially calculated the corresponding
-> ciphertext length. However, if we later reduced the plaintext data length
-> via socket policy, we failed to recalculate the ciphertext length.
+> > 
+> > > 
+> > > Also, is it ok to make m_seq and r_seq available out of fs/?
 > 
-> [...]
+> No, it's not.
+> 
+> > 
+> > The struct is not intended to be used directly by code outside.  Not sure
+> 
+> That doesn't mean anything. It's simply the wrong API if it has to spill
+> so much of its bowels.
+> 
+> > what is the standard way to do this but we can make it private by e.g.
+> > putting the seq values in another struct, if needed.  Alternatively I
+> > think we can hide the entire struct behind an opaque pointer by doing the
+> > allocation ourselves.
+> > 
+> > > 
+> > >> +};
+> > >> +
+> > >> +#define PATH_WALK_PARENT_UPDATED               0
+> > >> +#define PATH_WALK_PARENT_ALREADY_ROOT  -1
+> > >> +#define PATH_WALK_PARENT_RETRY                 -2
+> > >> +
+> > >> +void path_walk_parent_start(struct parent_iterator *pit,
+> > >> +                           const struct path *path, const struct path *root,
+> > >> +                           bool ref_less);
+> > >> +int path_walk_parent(struct parent_iterator *pit, struct path *next_parent);
+> > >> +int path_walk_parent_end(struct parent_iterator *pit);
+> > > 
+> > > I think it is better to make this rcu walk a separate set of APIs.
+> > > IOW, we will have:
+> > > 
+> > > int path_walk_parent(struct path *path, struct path *root);
+> > > 
+> > > and
+> > > 
+> > > void path_walk_parent_rcu_start(struct parent_iterator *pit,
+> > >                            const struct path *path, const struct path *root);
+> > > int path_walk_parent_rcu_next(struct parent_iterator *pit, struct path
+> > > *next_parent);
+> > > int path_walk_parent_rcu_end(struct parent_iterator *pit);
+> > 
+> > (replied above)
+> 
+> Exposing two sets of different APIs for essentially the same things is
+> not going to happen.
+> 
+> The VFS doesn't expose a rcu variant and a non-rcu variant for itself so
+> we are absolutely not going to do that for outside stuff.
+> 
+> It always does the try RCU first, then try to continue the walk by
+> falling back to REF walk (e.g., via try_to_unlazy()). If that doesn't
+> work then let the caller know and require them to decide whether to
+> abort or redo everything in ref-walk.
 
-Here is the summary with links:
-  - [bpf-next,v2,1/2] bpf,ktls: Fix data corruption when using bpf_msg_pop_data() in ktls
-    https://git.kernel.org/bpf/bpf-next/c/178f6a5c8cb3
-  - [bpf-next,v2,2/2] selftests/bpf: Add test to cover ktls with bpf_msg_pop_data
-    https://git.kernel.org/bpf/bpf-next/c/f1c025773f25
+That's indeed what is done by choose_mountpoint() (relying on
+choose_mountpoint_rcu() when possible), but this proposal is about doing
+a full path walk (i.e. multiple calls to path_walk_parent) within RCU.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> 
+> There's zero need in that scheme for the caller to see any of the
+> internals of the VFS and that's what you should aim for.
 
-
+Yes, but how could we detect if a full path walk is invalid (because of
+a rename or mount change)?
 
