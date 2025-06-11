@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-60375-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60376-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3658CAD5FD6
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 22:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D779FAD5FD7
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 22:09:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBBE23A912A
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 20:08:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 709CF3A90C4
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 20:08:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB2392BDC28;
-	Wed, 11 Jun 2025 20:08:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A563F18787A;
+	Wed, 11 Jun 2025 20:08:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QiD5BruP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="REl9JAEL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7A6C2BDC2D
-	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 20:08:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99BF5289811
+	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 20:08:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749672533; cv=none; b=R1DBhWlw20D6CyJd8pW4DcYJpMZmjhRmrZ9OrzaUxdTSzMK/6IIwlLz0nFc6JpZOkhXhDX80hp3sHfjvcmmJyrcJ0pYC+I07SPVuvpJjf4miHjP0tV6vpSOy0snXrM81qlsTjbzYskCvWvuIemBEsKpagtwMFxZmG3FIafLETgw=
+	t=1749672538; cv=none; b=HPIHRDnqMyfnDy7tPiFkxOrh0LodmSZROZChh58V8jjhd+aBSz4jWgDPpK1lrZ9EYxTnbgwS5TiHm5QunOfkGE5Qg8947a7JjPY57B2dLRd0awvu2Rz/PiDrEp45rGX+QNO/gA+qD51q2UZj+FmkS1rVs4PdQKhmfoRlsuXdK+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749672533; c=relaxed/simple;
-	bh=VnW3DdDP5YoarpS0x3INs2A2TF+HJwyymEdAF6oUhI8=;
+	s=arc-20240116; t=1749672538; c=relaxed/simple;
+	bh=c0Z95poBtGjyucIKkjBz/s4RHHDWJebw4JbN2KGFA9Q=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GQfMljXIeYXcm2h+A34sjnBZsME51MJO56srrk8yjhOAumcIHH+tbrfubSMyEgUXWZPWwxVr9Ea915aIRFm3041w+m67lqr+aIsYpJXZNdhR0Ja701sjj5IRTBHyOcPJX5tkMZwhp+eVtNuir49w7NrN0OEEfrRAKFEkd/VBFVU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QiD5BruP; arc=none smtp.client-ip=209.85.128.179
+	 MIME-Version; b=jlPcQHvN5OwsLqA3VM8icyjb2d4zBF2zOcxF+khshKTsm8eMoroiaQjxysMahDfbRGW0iylmWwPhMiNqMXqE0rCOPwFY4osp9cpgK4nTzxH17AquWnuQRpdYn+PX+mMUznn779eO280a7s7vMHuT1SdaeudSESZxXjOkARNcnb0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=REl9JAEL; arc=none smtp.client-ip=209.85.128.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-70e3c6b88dbso1379687b3.0
-        for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 13:08:51 -0700 (PDT)
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-710e344bbf9so1491217b3.2
+        for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 13:08:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749672530; x=1750277330; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1749672535; x=1750277335; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sZKY2C45rCdeHretGGp2q5zY9d8eM4JgUMBb3dtZfls=;
-        b=QiD5BruPde3K3unHTyHisUAnUXbkJu6kS1UYcAUXwu/cCelZZ+ZzuespbLm5C9LVbx
-         f2GqNgeCDBk5qQ6to6tcNBmiy5V82yz6QkQh2vNPHDDPiYJWnMjhZlvoWTtaECmNFvU9
-         AHUE9SpjUqYWidMDbm+k/VNWe5g3ulavCHK/WBouYA1FIwqqtB2Xt2fo3JihqIo1l/MW
-         hH/8HrKbPMw8l22OR4LW/nUASBEYDx0DMlQsw0JciMtMwi54EBRSJDyN1obV2JMtdfmr
-         xCyw20YObzlRz7xyX21CNKRcHxFeCTjCabjlhRt5ElSxflJaLDz1c2EQ9KP+GD2DoQJP
-         VxSQ==
+        bh=ha9e9zJwMBZt6u69dWTCkRNd6OmnBc/td+5GINgFeiU=;
+        b=REl9JAELLvxDAmnz7Wtm8jhcmekD/I9vzP7m5fsuOk5pgfojlYu9ZjdGDANSiIizZS
+         4vqlfcXyZ4mE5MLR6zIC0FYoTFoYl1c6KvQAsqoDVJ+MlvfAzHNbheq9usHnN0tPJU8P
+         5m0NMuErT6D6XT0C1oGPRHo4GvlqZ9hyTA+0CC10m24Y+I5+g1XgS7dBUW54W7AsxmjM
+         nvWBkDnmNVSlcPE+q0T+Tuyg14cSNykfkO7+k5yc5kbmyhDPENNexVilMM/7hmfYnk+C
+         E655PmIhY0TaaowaYeDRyd1BelTZvCIuX4sxmEyK9pzoG/exI7kyf7iJAqS7l1U65Tii
+         hC/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749672530; x=1750277330;
+        d=1e100.net; s=20230601; t=1749672535; x=1750277335;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sZKY2C45rCdeHretGGp2q5zY9d8eM4JgUMBb3dtZfls=;
-        b=JmOT4C+x1t11H85nGNhIz/WWhMDjXRJV4ZbniQdWVNDzOC/6yMf+9BKf+SrrVxByRP
-         oTAvTTA7AFi+GDjCYEeTUkdSvmDcd3kv19BBeQqeVdPKEY20Jfsm6C4QK7onGtaG9AWQ
-         gDm7+P7qj90UF5/YAk0cvjzRbHoaUNoqIESWDU+CAeTQexDgPRTg2faFIYvEPAhICQup
-         MtR5OwRm3tmwUJUDS99KxXMapIdXtiqxQ7v3nw+iNerPfOsE1+PiTWP+vY8AHYYx+YDf
-         +JKpueRUoAYbFvxTG+lRliq/QsbO+Jdz7/GvGIOacW7bHUxdJT/djLpqOKwtK41SHd1S
-         DmCg==
-X-Gm-Message-State: AOJu0Ywb5op5IHA/f8AVsTYuzK54YAVSNdU2Ang9/Oe3kgmos5XZxk+Y
-	rRvvispSnqV6u6GsIkkBrnvO1CBCZJsfG4bQkdsuocW2Z8pviF2xP0+bXV4rDg6u
-X-Gm-Gg: ASbGnctboVS/WosBIR4aNlv0SCScF4rG4mevZNIEefcwc676TM7pThmuxDc8R/L1Z/Y
-	p38BjkJqMav5/wUwXcSdOjOZv/2l2/b8vhReRI/JIkTX3hMY4yyfIeWKMGrIC1nlzLxVvYLgVbH
-	TyusQNaZL6Y6mqy5oWXMEeqVB/JVsoc79VU4L8c1mYNh3N7Yv6rrT6zmVatTRLi3rsG21R3k9S/
-	CfZOYB6DmE5/bvsT0do3ZsuRRp6vXss6zaRL9ZRM9ZqdGPNFUJlC+EuBfkF2nKZI11tD21Rlu1y
-	/9VQiJ3wbJQvsi7Fsa+5eSYWZ4dDxnrkus1g/srsKZ7Xgs33O/EsWg==
-X-Google-Smtp-Source: AGHT+IHxIYikH4y5GhXn71wuCnxF5Yc8lVQ/9ljRHRC7rT+u29kG47jcOEQvw25/G3dmMYaWuA5LYA==
-X-Received: by 2002:a05:690c:360e:b0:6fb:1c5a:80ea with SMTP id 00721157ae682-71140b056a3mr75159377b3.32.1749672530434;
-        Wed, 11 Jun 2025 13:08:50 -0700 (PDT)
-Received: from localhost ([2a03:2880:25ff:46::])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-711520c0fd3sm148727b3.55.2025.06.11.13.08.50
+        bh=ha9e9zJwMBZt6u69dWTCkRNd6OmnBc/td+5GINgFeiU=;
+        b=WHL7GsERykYCaSa2SboCngJzNce54Yg3WYKTUibOMc4Ugt74ePEPvlAgVxrv2AfZrO
+         kHkCQxsegO4B44RN88/5YTl21+EYFTAAJuyvZDvgPxs3dnrGHKIW2Uo5dTJ5tSk399Gy
+         jcOdoVO59cNNC6H1zZr4nr3xUMDvp6bV+IBRXRm/1mCYArgB9NnKTVNgfGjWxz3xbIQ6
+         vmzVIXzME7Nrx/MHQzJfrjToeyfNHZmEA/9Adz3NJDHWxKxVn/63xdybvrtwOgepP48h
+         46wuqzEdbKeDJquavjM0CwyxsQ91+7XTqxVESILDdZ2Fu5TlrBTx6zI2DgnzKPhn96lq
+         QYzA==
+X-Gm-Message-State: AOJu0YxymzGcA0peD/hSdenRiinhRw209SM9v9lrEhmqiiTVimchKFGt
+	m4VjZZo8/lwu6KOxlYE7XxhL+PTh2+y9GAuFcUULYraw3BWlwExumJyocFyqR4KS
+X-Gm-Gg: ASbGncukEMgugiw8CFJ+90a4s83IXrfT2M8uhVQ4A532Gvcl2jxvtasqvsKmh80ehmo
+	KgvwtUjy0YLWm7bPKJTwVAp9TvjBJm1pWpHEU0r5ZoLEyCMXDWccjGrOzn3HlWbIhE5CeaHdjlP
+	fTcsncc+UPpt1mnNZsBauS4lRqgMTwWYF9x6WnhaY4mk3bwBA5X9Z+tuSyiI7j3we1aUayLOtbn
+	2pNBNPC3QZa8XcXmBgpxyFBud8otP0HXVja2rYWA3VIRG0IwHZUtYMrGirnc7pLjo80yDlV37wT
+	jac3Q3f1dUN9DaAmT5JnMI3Mzxn58+90/6VzdPbi8oS0B9MY0qhiLQ==
+X-Google-Smtp-Source: AGHT+IHxdr/IQ7hB3iSh6Os2ynpEaaOeQmFSNFtX5sPjvN5lgqEXe5TlmyfkOyTTlE27K6e4+2i0lA==
+X-Received: by 2002:a05:690c:d07:b0:70d:f338:8333 with SMTP id 00721157ae682-71150a8028bmr7110287b3.22.1749672535394;
+        Wed, 11 Jun 2025 13:08:55 -0700 (PDT)
+Received: from localhost ([2a03:2880:25ff:11::])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-711527d8b5esm109227b3.123.2025.06.11.13.08.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Jun 2025 13:08:50 -0700 (PDT)
+        Wed, 11 Jun 2025 13:08:55 -0700 (PDT)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -80,9 +80,9 @@ Cc: daniel@iogearbox.net,
 	kernel-team@fb.com,
 	yonghong.song@linux.dev,
 	eddyz87@gmail.com
-Subject: [PATCH bpf-next v3 04/11] bpf: starting_state parameter for __mark_chain_precision()
-Date: Wed, 11 Jun 2025 13:08:29 -0700
-Message-ID: <20250611200836.4135542-4-eddyz87@gmail.com>
+Subject: [PATCH bpf-next v3 05/11] bpf: set 'changed' status if propagate_precision() did any updates
+Date: Wed, 11 Jun 2025 13:08:30 -0700
+Message-ID: <20250611200836.4135542-5-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250611200836.4135542-1-eddyz87@gmail.com>
 References: <20250611200836.4135542-1-eddyz87@gmail.com>
@@ -94,100 +94,134 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Allow `mark_chain_precision()` to run from an arbitrary starting state
-by replacing direct references to `env->cur_state` with a parameter.
+Add an out parameter to `propagate_precision()` to record whether any
+new precision bits were set during its execution.
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- kernel/bpf/verifier.c | 24 +++++++++++++-----------
- 1 file changed, 13 insertions(+), 11 deletions(-)
+ kernel/bpf/verifier.c | 35 +++++++++++++++++++++++------------
+ 1 file changed, 23 insertions(+), 12 deletions(-)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 002d1e9b2260..63f8d2ee8a1b 100644
+index 63f8d2ee8a1b..25b50a98558b 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -4677,12 +4677,13 @@ static void mark_all_scalars_imprecise(struct bpf_verifier_env *env, struct bpf_
-  * mark_all_scalars_imprecise() to hopefully get more permissive and generic
+@@ -4678,7 +4678,9 @@ static void mark_all_scalars_imprecise(struct bpf_verifier_env *env, struct bpf_
   * finalized states which help in short circuiting more future states.
   */
--static int __mark_chain_precision(struct bpf_verifier_env *env, int regno)
-+static int __mark_chain_precision(struct bpf_verifier_env *env,
-+				  struct bpf_verifier_state *starting_state, int regno)
+ static int __mark_chain_precision(struct bpf_verifier_env *env,
+-				  struct bpf_verifier_state *starting_state, int regno)
++				  struct bpf_verifier_state *starting_state,
++				  int regno,
++				  bool *changed)
  {
-+	struct bpf_verifier_state *st = starting_state;
+ 	struct bpf_verifier_state *st = starting_state;
  	struct backtrack_state *bt = &env->bt;
--	struct bpf_verifier_state *st = env->cur_state;
- 	int first_idx = st->first_insn_idx;
--	int last_idx = env->insn_idx;
-+	int last_idx = starting_state->insn_idx;
+@@ -4686,13 +4688,14 @@ static int __mark_chain_precision(struct bpf_verifier_env *env,
+ 	int last_idx = starting_state->insn_idx;
  	int subseq_idx = -1;
  	struct bpf_func_state *func;
++	bool tmp, skip_first = true;
  	struct bpf_reg_state *reg;
-@@ -4693,7 +4694,7 @@ static int __mark_chain_precision(struct bpf_verifier_env *env, int regno)
+-	bool skip_first = true;
+ 	int i, fr, err;
+ 
+ 	if (!env->bpf_capable)
  		return 0;
  
++	changed = changed ?: &tmp;
  	/* set frame number from which we are starting to backtrack */
--	bt_init(bt, env->cur_state->curframe);
-+	bt_init(bt, starting_state->curframe);
+ 	bt_init(bt, starting_state->curframe);
  
- 	/* Do sanity checks against current state of register and/or stack
- 	 * slot, but don't set precise flag in current state, as precision
-@@ -4757,7 +4758,7 @@ static int __mark_chain_precision(struct bpf_verifier_env *env, int regno)
- 				err = backtrack_insn(env, i, subseq_idx, hist, bt);
- 			}
- 			if (err == -ENOTSUPP) {
--				mark_all_scalars_precise(env, env->cur_state);
-+				mark_all_scalars_precise(env, starting_state);
- 				bt_reset(bt);
+@@ -4738,8 +4741,10 @@ static int __mark_chain_precision(struct bpf_verifier_env *env,
+ 				for_each_set_bit(i, mask, 32) {
+ 					reg = &st->frame[0]->regs[i];
+ 					bt_clear_reg(bt, i);
+-					if (reg->type == SCALAR_VALUE)
++					if (reg->type == SCALAR_VALUE) {
+ 						reg->precise = true;
++						*changed = true;
++					}
+ 				}
  				return 0;
- 			} else if (err) {
-@@ -4845,7 +4846,7 @@ static int __mark_chain_precision(struct bpf_verifier_env *env, int regno)
- 	 * fallback to marking all precise
- 	 */
- 	if (!bt_empty(bt)) {
--		mark_all_scalars_precise(env, env->cur_state);
-+		mark_all_scalars_precise(env, starting_state);
- 		bt_reset(bt);
- 	}
+ 			}
+@@ -4798,10 +4803,12 @@ static int __mark_chain_precision(struct bpf_verifier_env *env,
+ 					bt_clear_frame_reg(bt, fr, i);
+ 					continue;
+ 				}
+-				if (reg->precise)
++				if (reg->precise) {
+ 					bt_clear_frame_reg(bt, fr, i);
+-				else
++				} else {
+ 					reg->precise = true;
++					*changed = true;
++				}
+ 			}
  
-@@ -4854,15 +4855,16 @@ static int __mark_chain_precision(struct bpf_verifier_env *env, int regno)
+ 			bitmap_from_u64(mask, bt_frame_stack_mask(bt, fr));
+@@ -4816,10 +4823,12 @@ static int __mark_chain_precision(struct bpf_verifier_env *env,
+ 					continue;
+ 				}
+ 				reg = &func->stack[i].spilled_ptr;
+-				if (reg->precise)
++				if (reg->precise) {
+ 					bt_clear_frame_slot(bt, fr, i);
+-				else
++				} else {
+ 					reg->precise = true;
++					*changed = true;
++				}
+ 			}
+ 			if (env->log.level & BPF_LOG_LEVEL2) {
+ 				fmt_reg_mask(env->tmp_str_buf, TMP_STR_BUF_LEN,
+@@ -4855,7 +4864,7 @@ static int __mark_chain_precision(struct bpf_verifier_env *env,
  
  int mark_chain_precision(struct bpf_verifier_env *env, int regno)
  {
--	return __mark_chain_precision(env, regno);
-+	return __mark_chain_precision(env, env->cur_state, regno);
+-	return __mark_chain_precision(env, env->cur_state, regno);
++	return __mark_chain_precision(env, env->cur_state, regno, NULL);
  }
  
  /* mark_chain_precision_batch() assumes that env->bt is set in the caller to
-  * desired reg and stack masks across all relevant frames
-  */
--static int mark_chain_precision_batch(struct bpf_verifier_env *env)
-+static int mark_chain_precision_batch(struct bpf_verifier_env *env,
-+				      struct bpf_verifier_state *starting_state)
+@@ -4864,7 +4873,7 @@ int mark_chain_precision(struct bpf_verifier_env *env, int regno)
+ static int mark_chain_precision_batch(struct bpf_verifier_env *env,
+ 				      struct bpf_verifier_state *starting_state)
  {
--	return __mark_chain_precision(env, -1);
-+	return __mark_chain_precision(env, starting_state, -1);
+-	return __mark_chain_precision(env, starting_state, -1);
++	return __mark_chain_precision(env, starting_state, -1, NULL);
  }
  
  static bool is_spillable_regtype(enum bpf_reg_type type)
-@@ -9515,7 +9517,7 @@ static int get_constant_map_key(struct bpf_verifier_env *env,
- 	 * to prevent pruning on it.
- 	 */
- 	bt_set_frame_slot(&env->bt, key->frameno, spi);
--	err = mark_chain_precision_batch(env);
-+	err = mark_chain_precision_batch(env, env->cur_state);
- 	if (err < 0)
- 		return err;
- 
-@@ -18939,7 +18941,7 @@ static int propagate_precision(struct bpf_verifier_env *env,
+@@ -18893,7 +18902,9 @@ static int propagate_liveness(struct bpf_verifier_env *env,
+  * propagate them into the current state
+  */
+ static int propagate_precision(struct bpf_verifier_env *env,
+-			       const struct bpf_verifier_state *old)
++			       const struct bpf_verifier_state *old,
++			       struct bpf_verifier_state *cur,
++			       bool *changed)
+ {
+ 	struct bpf_reg_state *state_reg;
+ 	struct bpf_func_state *state;
+@@ -18941,7 +18952,7 @@ static int propagate_precision(struct bpf_verifier_env *env,
  			verbose(env, "\n");
  	}
  
--	err = mark_chain_precision_batch(env);
-+	err = mark_chain_precision_batch(env, env->cur_state);
+-	err = mark_chain_precision_batch(env, env->cur_state);
++	err = __mark_chain_precision(env, cur, -1, changed);
  	if (err < 0)
  		return err;
  
+@@ -19264,7 +19275,7 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+ 			 */
+ 			if (is_jmp_point(env, env->insn_idx))
+ 				err = err ? : push_jmp_history(env, cur, 0, 0);
+-			err = err ? : propagate_precision(env, &sl->state);
++			err = err ? : propagate_precision(env, &sl->state, cur, NULL);
+ 			if (err)
+ 				return err;
+ 			return 1;
 -- 
 2.47.1
 
