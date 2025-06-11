@@ -1,110 +1,89 @@
-Return-Path: <bpf+bounces-60354-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60355-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 946B1AD5CE8
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 19:15:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 519A6AD5D28
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 19:23:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FEB83A8A26
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 17:15:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 972C01666A3
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 17:23:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08AC61F09B3;
-	Wed, 11 Jun 2025 17:15:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C0C1220F20;
+	Wed, 11 Jun 2025 17:20:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WTJtKseq"
 X-Original-To: bpf@vger.kernel.org
-Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E26431CD208
-	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 17:15:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0B75213224;
+	Wed, 11 Jun 2025 17:20:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749662150; cv=none; b=EX6Jq8P3VFj4+k08zD4Oofu4WRtyxpk8xW4t2wI4uqCJfR2NQJU7YG9PDDy3yng2pN65VDv62grnWacaQhSIcayEqmPlXoVg+jpLPNrZSgIlGFW9pvAo+C+V2a0TYX+vcTsTfgaHiRPKKbq/N5LZAnKwmEHjeaoijrJrJKoLKnY=
+	t=1749662437; cv=none; b=ivYIM0kG0aaQaxN3RuqeEB8cByHc+JJdpZesvFxZY+IFyHedx9FCNdzbkX0fHKiM4HC7r88q6PasxmkWZbR8gsrMSgdMH+rueVRt4rxuZ6KJI3m2gxaNHfQIm6Sg5kIvissn5PGrA+I8OSpXzGyJiWzFbfFwbDj9C+7UUjKzi20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749662150; c=relaxed/simple;
-	bh=jJgT63k4r+/mDJ1wI8n6mvKTyi6x10RwgW4AYPOjMNU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jny55tY3BEMQKCxQxa4mEz4nigGmYoOxdH7UgG0mw4uznXEBm0duBjpyNvoSLxILvFCCsSR7ualBa7M3L9IQYqhWjM9FS1Y0KslCdawLFNHqNgeCGZjUK9JPlvu2wVZtJQpkH6koy/Zkr3x1Sg4OIyWpB7jtsbWKyTQU6s+GaPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
-Received: by devvm16039.vll0.facebook.com (Postfix, from userid 128203)
-	id 056A59680C77; Wed, 11 Jun 2025 10:15:35 -0700 (PDT)
-From: Yonghong Song <yonghong.song@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	kernel-team@fb.com,
-	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v2 3/3] selftests/bpf: Fix xdp_do_redirect failure with 64KB page size
-Date: Wed, 11 Jun 2025 10:15:34 -0700
-Message-ID: <20250611171535.2034440-1-yonghong.song@linux.dev>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20250611171519.2033193-1-yonghong.song@linux.dev>
-References: <20250611171519.2033193-1-yonghong.song@linux.dev>
+	s=arc-20240116; t=1749662437; c=relaxed/simple;
+	bh=YZICx0KSzKcX7gcnTUFRwPR+ezOylYj6NCOpKgZqwYs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Q8cAAbFkrtQQHVzReLV/Ez2aJMOoZAoRfZutqxDZxo0bs3LhZI3KNT4TAzry+jvhrPhOt6xCTjUZ8B0WoU9LD1D8q+kdDi6bcvMjzbFJIuAGXDTzIENVa7UCBsq8/55S/yDrHSSvCt6sV/gkt/Cv6TZkZQaoymAWrY1U1zIXZvs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WTJtKseq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D4E9C4CEF3;
+	Wed, 11 Jun 2025 17:20:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749662437;
+	bh=YZICx0KSzKcX7gcnTUFRwPR+ezOylYj6NCOpKgZqwYs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=WTJtKseqTuGizuHNR1aDk34b2x6xW25Zll2rcr9hzyo20E59IPzkyTBSFLQK0gLTe
+	 Ufj+U9TyE1vchEn51LB3OkhewC5lJngK0YdpIrdpXYXMXZG3kGrEdGZyrilggLSvvP
+	 x/8Rbzw1JF5VebVXUbQS5VZuS5UxtZh/BjC4khMtI3TI5mi6FR9sWEF2DevgwsqJYy
+	 LdllSNuSS8lpjL7MtCof+oVzWqD1DQsVo5MKfKqHOD/JMu2dqF01G6Gc0Wfsq26oS4
+	 Texp4oLexLhXTmu+GcU7SmnEHpv8n/37Jg/9g9lsZI9UNi/q4leDOQcr4Gaqp79sZL
+	 1DqLUIhU5FIdA==
+Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-6fb0a05b56cso2262456d6.3;
+        Wed, 11 Jun 2025 10:20:37 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUA6QV0MUIdFMf+lZdhSJnH6xwJ5ZcR3BhTGiQHmUWrZDMr88MmhZxQN2OLua+XpUWty8k=@vger.kernel.org, AJvYcCVg8TYGz7SE3gQDUFnOFbXVitGa+vWoRX+rIHBIlCXMEv0yZstWM1LlEwAIT+og0z8Udx+7ls2xebTfy7Ew@vger.kernel.org, AJvYcCWJVSKvy5Fg0pK5hOx1Wlu+X/I8K9bxckS8U1r15TN2Z2aFENqTxPEfYW1eeT+berwifsC3TmMwyGzcAmGWL6Hfw7rH@vger.kernel.org
+X-Gm-Message-State: AOJu0YwIiA7IDkdxzSkQ+Tc9xiSL/jvFmwpLfzPZj6Ine2xeDGCH+/ch
+	1Th67ZpVoCV48Oy6dTOhhdggOaFSxDOJmsQZJrtlOECboZfw75PEFCiL+GQX68DCZEKIv3r9s5F
+	En61scsW1Q0hMnqOQCHsS6jPt/SLlGBk=
+X-Google-Smtp-Source: AGHT+IEVXtL8oSFPZ4IKwlc45sx39EmMBPKX56xW/hjXfI79LlsTkEJ5SAx6+Cq/ZtYXcRFK7raxPOXw269Fy3iNVHE=
+X-Received: by 2002:ad4:5ba6:0:b0:6fa:bb44:fde5 with SMTP id
+ 6a1803df08f44-6fb346190bfmr5884426d6.17.1749662436376; Wed, 11 Jun 2025
+ 10:20:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20250611154859.259682-1-chen.dylane@linux.dev>
+In-Reply-To: <20250611154859.259682-1-chen.dylane@linux.dev>
+From: Song Liu <song@kernel.org>
+Date: Wed, 11 Jun 2025 10:20:25 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6ibk-9J21sUWkEbbQEhnFHpD4kT4m=KDQNYhk=9hZdWQ@mail.gmail.com>
+X-Gm-Features: AX0GCFuJ8rNu57C9FJ-Wz3R5VfjRW0Vsyy5lGcpdRHFGBSp7SWZZftUouh-S_XE
+Message-ID: <CAPhsuW6ibk-9J21sUWkEbbQEhnFHpD4kT4m=KDQNYhk=9hZdWQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: clear user buf when bpf_d_path failed
+To: Tao Chen <chen.dylane@linux.dev>
+Cc: kpsingh@kernel.org, mattbobrowski@google.com, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
+	eddyz87@gmail.com, yonghong.song@linux.dev, john.fastabend@gmail.com, 
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, rostedt@goodmis.org, 
+	mhiramat@kernel.org, mathieu.desnoyers@efficios.com, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On arm64 with 64KB page size, the selftest xdp_do_redirect failed like
-below:
-  ...
-  test_xdp_do_redirect:PASS:pkt_count_tc 0 nsec
-  test_max_pkt_size:PASS:prog_run_max_size 0 nsec
-  test_max_pkt_size:FAIL:prog_run_too_big unexpected prog_run_too_big: ac=
-tual -28 !=3D expected -22
+On Wed, Jun 11, 2025 at 8:49=E2=80=AFAM Tao Chen <chen.dylane@linux.dev> wr=
+ote:
+>
+> The bpf_d_path() function may fail. If it does,
+> clear the user buf, like bpf_probe_read etc.
+>
+> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
 
-With 64KB page size, the xdp frame size will be much bigger so
-the existing test will fail.
+Acked-by: Song Liu <song@kernel.org>
 
-Adjust various parameters so the test can also work on 64K page size.
-
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
----
- .../selftests/bpf/prog_tests/xdp_do_redirect.c      | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c b/t=
-ools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
-index 7dac044664ac..dd34b0cc4b4e 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
-@@ -66,16 +66,25 @@ static int attach_tc_prog(struct bpf_tc_hook *hook, i=
-nt fd)
- #else
- #define MAX_PKT_SIZE 3408
- #endif
-+
-+#define PAGE_SIZE_4K  4096
-+#define PAGE_SIZE_64K 65536
-+
- static void test_max_pkt_size(int fd)
- {
--	char data[MAX_PKT_SIZE + 1] =3D {};
-+	char data[PAGE_SIZE_64K + 1] =3D {};
- 	int err;
- 	DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
- 			    .data_in =3D &data,
--			    .data_size_in =3D MAX_PKT_SIZE,
- 			    .flags =3D BPF_F_TEST_XDP_LIVE_FRAMES,
- 			    .repeat =3D 1,
- 		);
-+
-+	if (getpagesize() =3D=3D PAGE_SIZE_64K)
-+		opts.data_size_in =3D MAX_PKT_SIZE + PAGE_SIZE_64K - PAGE_SIZE_4K;
-+	else
-+		opts.data_size_in =3D MAX_PKT_SIZE;
-+
- 	err =3D bpf_prog_test_run_opts(fd, &opts);
- 	ASSERT_OK(err, "prog_run_max_size");
-=20
---=20
-2.47.1
-
+[...]
 
