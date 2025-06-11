@@ -1,80 +1,94 @@
-Return-Path: <bpf+bounces-60312-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60313-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38DD6AD54D6
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 13:59:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 903A3AD555C
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 14:21:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A475F7A49CC
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 11:58:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4243D3ABDFA
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 12:21:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75BFC274671;
-	Wed, 11 Jun 2025 11:59:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDF9427E1CA;
+	Wed, 11 Jun 2025 12:21:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="lis150ni"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NW3yRWkB"
 X-Original-To: bpf@vger.kernel.org
-Received: from lamorak.hansenpartnership.com (lamorak.hansenpartnership.com [198.37.111.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9075C78F34;
-	Wed, 11 Jun 2025 11:59:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.37.111.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 362D523AB86
+	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 12:21:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749643184; cv=none; b=EYNCw8mCzNunWuCu0lP2zA4Gq22H6DS6yp84EHqE2iVAjendKpd88LUKNuxTaWUDfxlXzU5XnAlA/cebrxFhz9nhejiKUW7l+3P1EUA6PSPpQOuPBncNT8mfh1IwmlCqZr0SCuuFMXtC2xyRMQ7uMrBfU4v3nr04nQcYvc6dTCI=
+	t=1749644483; cv=none; b=UUdnp56wDgVFbiKiyaiMzQrU5CJ00xm5M3Ohe292+ondPxGiqPO7e2Zt4yobUOa8AXyAgEaANQ30IZlZqWTIcIYAsIJWecs7Cve8gZZRJ9ikVZTRYaOFTS4YHiv6AtWOOv0SJ/1mzIrF8a9x8qWG6jIr0+JyoEwzczAXfSf1vz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749643184; c=relaxed/simple;
-	bh=/37Ka+a87KtXvQdD5+12WwcSuAfc1weOFMINjvyyq/c=;
+	s=arc-20240116; t=1749644483; c=relaxed/simple;
+	bh=K9rwAHDLDs2lzgnKjaAsjH6iFs1RTsMso7nypALzI4w=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=GzckWCFPBVYUuWzgaAcmFCJXjefejlI6yhE2WzeB4zbF+uCgpnPaZ3Yok1GMtmDAwdJNYkBe2bU0pYITQpfIFCkkCwKwDlT2CrzmpxcngR5WEe/e57lNGecrRzslNulvaojfqDt3qCQDTRmjJxoWZezK6E8L6tyKQG4NI7Fe7lY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=lis150ni; arc=none smtp.client-ip=198.37.111.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1749643180;
-	bh=/37Ka+a87KtXvQdD5+12WwcSuAfc1weOFMINjvyyq/c=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=lis150niUds+rM/FXtEMFMjqOiiQAmfhYr5vo/sUFovgU5nnsOmRNRhfDeYYZjbw+
-	 jA6u9Rr+TR0Ot+NbYcGpMXQbEQnfWl/9akuVAYrX+3cSHFraIlg2fhpfOlEb6CAsSV
-	 YHVxCNKtTwiQtkJIYqNun1a/gHNzacHQQtvScEeI=
-Received: from [IPv6:2601:5c4:4302:c21::a774] (unknown [IPv6:2601:5c4:4302:c21::a774])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by lamorak.hansenpartnership.com (Postfix) with ESMTPSA id 8C1DA1C0176;
-	Wed, 11 Jun 2025 07:59:39 -0400 (EDT)
-Message-ID: <6f8e0d217d02dc8327a2a21e8787d3aec9693c2c.camel@HansenPartnership.com>
-Subject: Re: [PATCH 10/12] libbpf: Embed and verify the metadata hash in the
- loader
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: KP Singh <kpsingh@kernel.org>
-Cc: Blaise Boscaccy <bboscaccy@linux.microsoft.com>, bpf@vger.kernel.org, 
- linux-security-module@vger.kernel.org, paul@paul-moore.com,
- kys@microsoft.com,  ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Date: Wed, 11 Jun 2025 07:59:36 -0400
-In-Reply-To: <CACYkzJ6yNjFOTzC04uOuCmFn=+51_ie2tB9_x-u2xbcO=yobTw@mail.gmail.com>
-References: <20250606232914.317094-1-kpsingh@kernel.org>
-	 <20250606232914.317094-11-kpsingh@kernel.org>
-	 <87qzzrleuw.fsf@microsoft.com>
-	 <CACYkzJ6M7kA7Se4=AXWNVF1UyeHK3t+3Y_8Ap1L9pkUTbqys9Q@mail.gmail.com>
-	 <87o6uvlaxs.fsf@microsoft.com>
-	 <CACYkzJ74MJkwejki7kFNR4RWh+EnJ++0Vop8eRkSwY6pJepMEQ@mail.gmail.com>
-	 <8cf2c1cc15e0c5e4b87a91a2cb42e04f38ac1094.camel@HansenPartnership.com>
-	 <CACYkzJ6yNjFOTzC04uOuCmFn=+51_ie2tB9_x-u2xbcO=yobTw@mail.gmail.com>
-Autocrypt: addr=James.Bottomley@HansenPartnership.com;
- prefer-encrypt=mutual;
- keydata=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
+	 Content-Type:MIME-Version; b=jHhbaTc9Sg2wZ5jewMj4teIvbQ0+38q9wZFh8b9zzEpFlNn9yRjOnLLaxPAm72NCBfNKzp0RvveYuBa05x24cdp9loIOCyZGxRHxjs38q3jHbV+OKjCUoDwuAU/NtRGf0opTVfpH+bvzUtPt6ptaqzLnAtJAkXnBgyfNlwN8xY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NW3yRWkB; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-312116d75a6so5135006a91.3
+        for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 05:21:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749644481; x=1750249281; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=E1B7DnBXy0IdcP/jrCL8jZJHqdRALJZzS/AHCMhDUxs=;
+        b=NW3yRWkBNY1xCHPP6wfA9jk1iN9E1j4W5vtd+K1Yv9QOMfHG/BERGhu8xc9pDmgwdM
+         B6brdv1I32IckMToZLruaK1NyTUl9WLLv2rI6PzYlRSov9IMnRRVYE3NYNlrAJepGF33
+         +kY4D6cgC+YMBxG1+zYNZ9NCX2jbxE5whCMt/pdAgYDY00+tASP/Vr3OJvMK2bK7WKWc
+         dWzFAmnWM2iZ0diBXtCniUklv1yC6LdG5DkjIfK3D6LZUXrZeycCNvtcpfq0LGg+7V9U
+         SQ9LTjQGvWQ13PKBg7LQ0lL9N9jVCrQWllC/JXLOcrSiErxkP+huhjgNXp5QGJN2WN9f
+         m90Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749644481; x=1750249281;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=E1B7DnBXy0IdcP/jrCL8jZJHqdRALJZzS/AHCMhDUxs=;
+        b=fwS6vrwjxSRvTNdSmyjQXGyjTk+rGcd+ilTt7fmD72h1JWF/4RBaDBTW8gbXl/Hr1x
+         rcbW4r3hJV75cZk6IcGWMJwsrjybathK8uj0puKkCxjVBc1q5HLs0thfyNJf1BIUpOuY
+         eu6IfBCHif4F8/HhsRH30koN7WdfeyOjdoGhPjFcAJpurTO74UtgU810jMSE1RgCEe7R
+         +x1qAwY4lvZVEplmdG6tsGpRCY2PQ1/GrSEBLIHDsWOrRgAJpfc081AQE+sY1EW/jct+
+         8EqKAsnNimO1/fjXu0swBlTRIsXM7GkdPRLeibbq391cbUGj5xzkRB3qLutaa+ByPtnd
+         9h/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWEhM9KmXxRSk2W3XbeuZJkRpJ6F+VsMFj0Bi7i4C1dhty1rY/KCfDQWDRvsv2bd3YDXtU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyFoCO6/9cQ6wPxWEvYyIIat8ZfFLXk42KYPus16tQ/tArnb/3X
+	9u+bRKf3JCuC2wlXLaM4aWITxPAdi/Vgqj6O4K9d3w5IAQn4dDg+0sur
+X-Gm-Gg: ASbGnctxvmO7DnYWuNr2Pg5yghfLv+PWZ/FTxBnFP3Dr8D7dZJPI7iDVEwlYr3JHlSc
+	cU2sxDUnNipVvPApbFRRglhtQRBxCq23UDnarr39++RdkImGI+Ri3AsAkeFhq7re2D+4QKwzJrc
+	OIDJtmRk1VkgrojY1YKS03kM2FotedltUEk096NGGsIug13XuOpcNCmv9eWPyfMDhjlqdEW5kD5
+	qmGD09L6nafGShrV8PK1oMQdi85MIOc6cWofgxSK2th187T9zgEN6lA7tifriThw8Xs187blcPt
+	0fRtSto+F+CjsdxUG6FkpI2mHECnsopwNJW/uvRE2jPGsb664S/izMalrg==
+X-Google-Smtp-Source: AGHT+IGbUQo1xGdrVwb8b8NwbMXS0J9qAxcb5SMY5jzCP7dTZJpP/Y6HCT28dMPdp28wdP2MfR0RwA==
+X-Received: by 2002:a17:90b:582e:b0:313:1c7b:fc62 with SMTP id 98e67ed59e1d1-313af1afbd5mr3752888a91.22.1749644481334;
+        Wed, 11 Jun 2025 05:21:21 -0700 (PDT)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-313b201d324sm1278484a91.22.2025.06.11.05.21.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Jun 2025 05:21:20 -0700 (PDT)
+Message-ID: <8134154a25af0153411c263df923acd350253c25.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/3] selftests/bpf: support array presets in
+ veristat
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, 
+	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, 
+	kernel-team@meta.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+Date: Wed, 11 Jun 2025 05:21:18 -0700
+In-Reply-To: <c1cb9bd3-c99d-4af3-bbcc-2ff3c2250ca1@gmail.com>
+References: <20250610190840.1758122-1-mykyta.yatsenko5@gmail.com>
+	 <20250610190840.1758122-3-mykyta.yatsenko5@gmail.com>
+	 <4ff2fafb99131f599901580eac96dca34ca20cc0.camel@gmail.com>
+	 <c1cb9bd3-c99d-4af3-bbcc-2ff3c2250ca1@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -82,84 +96,36 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Wed, 2025-06-11 at 00:35 +0200, KP Singh wrote:
-> On Tue, Jun 10, 2025 at 11:24=E2=80=AFPM James Bottomley
-> <James.Bottomley@hansenpartnership.com> wrote:
-> >=20
-> > On Tue, 2025-06-10 at 21:47 +0200, KP Singh wrote:
-> > > It's been repeatedly mentioned that trusted loaders (whether
-> > > kernel or BPF programs) are the only way because a large number
-> > > of BPF use-cases dynamically generate BPF programs.
-> >=20
-> > You keep asserting this, but it isn't supported by patches already
->=20
-> This is supported for sure. But it's not what the patches are
-> providing a reference implementation for. The patches provide a stand
-> alone reference implementation using in-kernel / BPF loaders but you
-> can surely implement this (see below):
->=20
-> > proposed.=C2=A0 Specifically, there already exists a patch set:
-> >=20
-> > https://lore.kernel.org/all/20250528215037.2081066-1-bboscaccy@linux.mi=
-crosoft.com/
->=20
-> The patch-set takes a very narrow view by adding additional UAPI and
-> ties us into an implementation.
+What do you think about a more recursive representation for presets?
+E.g. as follows:
 
-What do you mean by this?  When kernel people say UAPI, they think of
-the contract between the kernel and userspace.  So for both patch sets
-the additional attr. entries which user space adds and the kernel
-parses for the signature would conventionally be thought to extend the
-UAPI.
+  struct rvalue {
+    long long i; /* use find_enum_value() at parse time to avoid union */
+  };
+ =20
+  struct lvalue {
+    enum { VAR, FIELD, ARRAY } type;
+    union {
+      struct {
+        char *name;
+      } var;
+      struct {
+        struct lvalue *base;
+        char *name;
+      } field;
+      struct {
+        struct lvalue *base;
+        struct rvalue index;
+      } array;
+    };
+  };
+ =20
+  struct preset {
+    struct lvalue *lv;
+    struct rvalue rv;
+  };
 
-Additionally, the content of the signature (what it's over) is a UAPI
-contract.  When adding to the kernel UAPI we don't look not to change
-it, we look to change it in a way that is extensible.  It strikes me
-that actually only the linked patch does this because the UAPI addition
-for your signature scheme doesn't seem to be that extensible.
-
->  Whereas the current approach keeps the UAPI clean while still
-> meeting all the use-cases and keeps the implementation flexible
-> should it need to change. (no tie into the hash chain approach, if we
-> are able to move to stable BPF instruction buffers in the future).
->=20
-> Blaise's patches also do not handle the trusted user-space loader
-> space and the "signature_maps" are not relevant to dynamic generation
-> or simple BPF programs like networking, see below.
-
-OK, is this just a technical misreading?  I missed the fact that it
-supported both schemes on first reading as well.  If you look in this
-patch:
-
-https://lore.kernel.org/all/20250528215037.2081066-2-bboscaccy@linux.micros=
-oft.com/
-
-It's this addition in bpf_check_signature():
-
-> +	if (!attr->signature_maps_size) {
-> +		sha256((u8 *)prog->insnsi, prog->len * sizeof(struct bpf_insn), (u8 *)=
-&hash);
-> +		err =3D verify_pkcs7_signature(hash, sizeof(hash), signature, attr->si=
-gnature_size,
-> +				     VERIFY_USE_SECONDARY_KEYRING,
-> +				     VERIFYING_EBPF_SIGNATURE,
-> +				     NULL, NULL);
-> +	} else {
-> +		used_maps =3D kmalloc_array(attr->signature_maps_size,
-> +					  sizeof(*used_maps), GFP_KERNEL);
-> [...]
-
-The first leg of the if is your use case: a zero map size means the
-signature is a single hash of the loader only.  The else clause
-encompasses a hash chain over the maps as well.  This means the signer
-can choose which scheme they want.
-
-I'll skip responding to the rest since it seems to be assuming that
-Blaise's patch excludes your use case (which the above should
-demonstrate it doesn't) and we'd be talking past each other.
-
-Regards,
-
-James
+It can handle matrices ("a[2][3]") and offset/type computation would
+be a simple recursive function.
 
 
