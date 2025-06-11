@@ -1,322 +1,320 @@
-Return-Path: <bpf+bounces-60317-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60318-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57534AD5633
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 15:00:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 114CBAD5671
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 15:05:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 205E017E83E
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 12:59:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D8C781BC4FA7
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 13:03:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C65E2283CA2;
-	Wed, 11 Jun 2025 12:59:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E936A2749E7;
+	Wed, 11 Jun 2025 13:03:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zq5xiR67"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OEejDtVM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f193.google.com (mail-yb1-f193.google.com [209.85.219.193])
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A18928368A;
-	Wed, 11 Jun 2025 12:59:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B77B826E6FD;
+	Wed, 11 Jun 2025 13:02:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749646748; cv=none; b=e0Yqg+l8/DwtZ8kPJ5wOMErt6ZOa7XZI7S8Qip3KueIe58B1iDtkj/L8V6JlgFtg9y4DCYYaHZu/3uhLP179XhScR42Xzl2XaIQNab5RtR+iLYS7TUG6is/LQdC2g5xZ/x/fKELX9Ulyq4JHiGc/XyuX6jqRk2cMqgcqHCEJgi8=
+	t=1749646981; cv=none; b=DdfHxRwmDNiFCm6We47toN8uFDCzADxKxQUccdbzeTnquV2IfSvhuQsHLx0qiyK2lSnzWsw5TWEEXf8+C50z5G7PO9yasxutcjgEAz0BaS33siQmRru+DZ+CgeRhwoSqbBlzg8e2UcLCaI5VPlWiZfy9G/NL0wtaBjn7FSwRSOo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749646748; c=relaxed/simple;
-	bh=TEbmEwQaZo1k6d+HLhHK8lz4ydaqObBICtsRj7AWe3Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IhCaXe5U6rGqwlsd5WHdd9UynJuovdZDI+y/Mp68IlqeQvzcESVw37xtOqd6UVEOKCczEY9P4w492oX+uanrgZtpTDpxBWVfe6rf8Wpc3SuTPOWBkKF239JasWMmUSLIs8UFnjQvRNvAITXqJgZfCJktgIjA3+P40geowalIkQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Zq5xiR67; arc=none smtp.client-ip=209.85.219.193
+	s=arc-20240116; t=1749646981; c=relaxed/simple;
+	bh=Acfz1JqeLHdleEU/mUPfyIzmkEGrb5tVaxY+E7oFaX4=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=X3WpF0j0gbxgd5Zhf/tWG5MocWl83Ab3yHVOeKguNarWTNLJ97fU5XcB7EGXrF56uxLhUoIugd7PgQGHSqwbttAcFiASf7aRQAUHWd47h67l6bBkAptfaqGzRdBO+bzAHsEnNQhlV9lrEO09flJZZm960bjmkzfSfzcOI4FJ2qM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OEejDtVM; arc=none smtp.client-ip=209.85.215.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f193.google.com with SMTP id 3f1490d57ef6-e7569ccf04cso5574019276.0;
-        Wed, 11 Jun 2025 05:59:06 -0700 (PDT)
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-b2fd091f826so185823a12.1;
+        Wed, 11 Jun 2025 06:02:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749646745; x=1750251545; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1749646978; x=1750251778; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lQj6b0SBqwQGE53yAFebvvv3EX1u84Alox45W+Sf0YA=;
-        b=Zq5xiR67GbltUoUkV4zJhYo+daczr6ThxW1ZpJxcYpdetbueuqfDipYHaaWr2fbEoR
-         ph5FU9jxac55tpEObcOOVKxEvXUki4CHCoZf7fMoZN1JAWJ7h1bG1RRDTrXUIL7Uwwvc
-         5p6jCvOR6zz8sYVdtaRhj6KZUI+wrJf4OPLReGxkpjuO05Wf/z//o0fCMQp44NPeV0in
-         QlQuhgxvnv7hMD04A/9FdQdD806dVG5dkCOx6HcQVLXTeq+aZzbbyGeTDCnplMU5AWhE
-         /MbWQN7clBf7BeNDC+vyick3/at0HCZIHUM8KUSodkS0WtYklpP2sLyUkeh9K3g+Ck/D
-         T2Gg==
+        bh=lcPiLbu+L7ytyP5aI8MDC2OToFoTTKHxHfoX0oiN0iA=;
+        b=OEejDtVMIMx0prXiA3a+9110BLahFsTmXxHGBfagzr3byPyBUeh1hcdE+uM1ZVBNGx
+         25VwMu87JLc9D+8oEKjPrZ3MU9zdZ5yCgsVJPUdj/ZjHQPr0Cjqo90Blo+lFHRVaaTGK
+         dKWVhbm/JtC8VZWHLUPI0GZ9+2LOBl5Na3ZYgfQhAzAct2cbrQNnvnqgS8JltPFnDVvC
+         kunTsA10lyNNXa7k4znTW9ybJKn7dKyE3a1jR4kqN4Wy29Dri6DdSkaicnGK2sZ2n9Mm
+         ptxBJiv0aO3Qylggp6B6/CpBDMEMehBwPvUHQBgAIi2/wdVt5Iy9RXF8XfGs+xlVhViG
+         RYpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749646745; x=1750251545;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lQj6b0SBqwQGE53yAFebvvv3EX1u84Alox45W+Sf0YA=;
-        b=rtbT0YsxnszONOgU4xMsVjHk1bjgULjEUys/XKgxojwzgpHwyslRjV9jtM0JK7DwMl
-         Hqg4BQ6RFUrkrO1sfCDLc8BmAGzUKriA1Yivg+3X05bpuFElCohj5tJYzipE2rqAvYXJ
-         60ZUtpVz1m5HTHeabSSZiVLcPgf2hu48EXrAdxefnGdKjf/QYSOQv3oRNViU2CfcC8kB
-         GHjPBq4DI4PJ/wL7VFA9UiBasPWqiVj+QLyGecOws5PTczPMsc8foW/P7OuToz7b/Sk5
-         Aeuu6SaBbwsNCJC+ltDu+WjwuVb10mrxhAKfjbgLOfNO+KE4zLat7+Kjr3kWfnnaE1xY
-         AsJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUW4h/VlE83a2jx2emEtgfBDQ9FEXhXUGjW+2+fXEYNO0K17lKumwAHK3BYQo4hyttokSrdk9nEVPKLGeAd@vger.kernel.org, AJvYcCW98nE2CLZKJo3p6UoMyM68gsunNqpzYE18MvL4HyHJrtNkMABc5CLJhhRr6OKANQ8IZ3c=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyUUa11kwJwqJ689ljZPl0V44pbcmGnZpEnkTDCU6y/0wwMrwzp
-	QVkU/qN5RCqknLhgGqUc7m2nnotMWRFMggTU6+I0q0TrStu/IO5S9nrvTQv4tAerWlztpTA+WQb
-	9Vmd8SB4nDQJ/imz36Jdc7F5HALcVBLM=
-X-Gm-Gg: ASbGnctjAJaJVsY919Kfm8qOazvdvPN2qs0/8u7MiK2iigidTRq2KagPo+Dpc6xbf07
-	cattyKCCZiJVfdvp1S/AzShDp0eA73Sswe3cUtgUr3CTSvpr02LNyKQ8MsREMvruLSX3vfJa4mo
-	WDioiuDPyeuCpgYJxiN/Kl+MNignI62pib22yx+Q99ZX8=
-X-Google-Smtp-Source: AGHT+IExmlWlxcIhOioTWDmp+zo6jZ4h1h9wIpneS7VyOkADi7SCKSCddY07YgZlg4NU9nFtHJGroVoIdjG66pSjqL8=
-X-Received: by 2002:a05:6902:1105:b0:e81:9ebf:f5e4 with SMTP id
- 3f1490d57ef6-e81fd96717emr4347256276.22.1749646744788; Wed, 11 Jun 2025
- 05:59:04 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1749646978; x=1750251778;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=lcPiLbu+L7ytyP5aI8MDC2OToFoTTKHxHfoX0oiN0iA=;
+        b=d5CnofFUp7vHvrWgsrDboY7yaNPCKluxxGdHEwlixYKITM/4V9cr60E1UFm58yuJn5
+         HeSsHBKKqOWoiM0lwtStGv+04oQHpUNz5zxOXQRiP7J0EpDNFl+52XtLyQiCcmubBQJc
+         hOOHwxu5WcWWiCGSectaNoDdfkNXFo4Gt3V8lm4ph7H2UuiKFyHi9j7p2zesgCDwcJcY
+         KYVteBtzg0zrmajpsQoZpgo3n82wG32BDQmvxyyC4gOfFdbTJ3ZilwnQGDsVlpiJ6GrY
+         TR5kC92DIQqfj4tW1CEIrgOxzB50H5WQEk8BdInXW4orHJ584tZQlAuG0cGqwes+Tkkt
+         nIIQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVU26lwwcK2RrZcj/zaEZo7ZWJT+GiMT0II56gopDm2VD1CwGORIEAv8QCN27iuAfISZ28=@vger.kernel.org, AJvYcCWmMQvuTktSKvGY4+XM2H29riluQeUelm7ak8pQm0lKar6IRIOQ7dmN4XPLsk4rwdzgfpCNJKDjexEj6uIv@vger.kernel.org
+X-Gm-Message-State: AOJu0YyQpQYr8KrEyOs9CIZ4s0OsOERMDLu9PBjAyOAHR7e9vriLbHMh
+	0FdrULRXbN71Brm2VXueuWiIsTrAqZzRdo7ZRPhkTqLmftms0vrkFK+MWiL4XRKfaPU=
+X-Gm-Gg: ASbGncvWLQ+nyYUWxEk7rQIo+XWxZ7wfR7HP/1/kKw6nwiLNY792bqg28wLn+Uiej97
+	ib93/SB3ECTjwwdoa2Wl1CZMyTBzmomdKiYGkhcQdmeWRmgSUQZqA4hUwAHMctKCabZq4EQ70kl
+	Az8fEC8WZi6AOA2vImJ4ztdbD0bZyf0jgCf34Z57or3CcsUxgyrJNonK83oM9CK37R0p/im6Pe+
+	HBi/vPiAlAjKzsk2YPUkOLTZnCEC9qG2ce++2uJpDnltKrBWcX3+Q2o6kkzRkbG9B5yaDgWZyi4
+	V4rPKyqs5AimgfeAgJa7eg2/+K6jnorHm3rnVpDVT5kP6OCQ7ew7uQvE/Q==
+X-Google-Smtp-Source: AGHT+IE+tCMEFwCrOYPgc6aKsfUwF0lX+OYZ1Ju0x6P/3V3leHB57enyf9KbA8gKKYnfAnncz9gBtg==
+X-Received: by 2002:a17:902:e551:b0:231:e413:986c with SMTP id d9443c01a7336-236416dabbdmr42876595ad.11.1749646977711;
+        Wed, 11 Jun 2025 06:02:57 -0700 (PDT)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-236032fcd58sm87487055ad.122.2025.06.11.06.02.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Jun 2025 06:02:57 -0700 (PDT)
+Message-ID: <38862a832b91382cddb083dddd92643bed0723b8.camel@gmail.com>
+Subject: Re: [syzbot] [bpf?] KASAN: slab-use-after-free Read in do_check
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, 	haoluo@google.com, john.fastabend@gmail.com,
+ jolsa@kernel.org, kpsingh@kernel.org, 	linux-kernel@vger.kernel.org,
+ martin.lau@linux.dev, sdf@fomichev.me, 	song@kernel.org,
+ syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Date: Wed, 11 Jun 2025 06:02:55 -0700
+In-Reply-To: <68497853.050a0220.33aa0e.036a.GAE@google.com>
+References: <68497853.050a0220.33aa0e.036a.GAE@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250528034712.138701-1-dongml2@chinatelecom.cn> <CAADnVQ+G+mQPJ+O1Oc9+UW=J17CGNC5B=usCmUDxBA-ze+gZGw@mail.gmail.com>
-In-Reply-To: <CAADnVQ+G+mQPJ+O1Oc9+UW=J17CGNC5B=usCmUDxBA-ze+gZGw@mail.gmail.com>
-From: Menglong Dong <menglong8.dong@gmail.com>
-Date: Wed, 11 Jun 2025 20:58:33 +0800
-X-Gm-Features: AX0GCFs9ilfFEGwOClPoazvFzVbzPd9HdtA9H3TwxVtX91Ei5UjsoTy-PvHgkfY
-Message-ID: <CADxym3YhE23r0p31xLE=UHay7mm3DJ8+n6GcaP7Va8BaKCxRfA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 00/25] bpf: tracing multi-link support
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Menglong Dong <dongml2@chinatelecom.cn>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On 6/11/25 11:32, Alexei Starovoitov wrote:
-> On Tue, May 27, 2025 at 8:49=E2=80=AFPM Menglong Dong <menglong8.dong@gma=
-il.com> wrote:
->>
->> 1. Add per-function metadata storage support.
->> 2. Add bpf global trampoline support for x86_64.
->> 3. Add bpf global trampoline link support.
->> 4. Add tracing multi-link support.
->> 5. Compatibility between tracing and tracing_multi.
->
-> ...
->
->> ... and I think it will be a
->> liberation to split it out to another series :/
->
-> There are lots of interesting ideas here and you know
-> already what the next step should be...
-> Split it into small chunks.
-> As presented it's hard to review and even if maintainers take on
-> that challenge the set is unlandable, since it spans various
-> subsystems.
->
-> In a small reviewable patch set we can argue about
-> approach A vs B while the current set has too many angles
-> to argue about.
+On Wed, 2025-06-11 at 05:36 -0700, syzbot wrote:
+> Hello,
+>=20
+> syzbot found the following issue on:
+>=20
+> HEAD commit:    19a60293b992 Add linux-next specific files for 20250611
+> git tree:       linux-next
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D15472d7058000=
+0
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D76ed3656d7159=
+e27
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3Db5eb72a560b8149=
+a1885
+> compiler:       Debian clang version 20.1.6 (++20250514063057+1e4d39e0775=
+7-1~exp1~20250514183223.118), Debian LLD 20.1.6
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D16af860c580=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D174db60c58000=
+0
+>=20
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/c453c11565fa/dis=
+k-19a60293.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/4034ded42b2e/vmlinu=
+x-19a60293.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/5355903cdb8f/b=
+zImage-19a60293.xz
+>=20
+> IMPORTANT: if you fix the issue, please add the following tag to the comm=
+it:
+> Reported-by: syzbot+b5eb72a560b8149a1885@syzkaller.appspotmail.com
+>=20
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> BUG: KASAN: slab-use-after-free in do_check+0xb388/0xe170 kernel/bpf/veri=
+fier.c:19756
+> Read of size 1 at addr ffff88801deeef79 by task syz-executor672/5842
+>=20
+> CPU: 1 UID: 0 PID: 5842 Comm: syz-executor672 Not tainted 6.16.0-rc1-next=
+-20250611-syzkaller #0 PREEMPT(full)=20
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
+oogle 05/07/2025
+> Call Trace:
+>  <TASK>
+>  dump_stack_lvl+0x189/0x250 lib/dump_stack.c:120
+>  print_address_description mm/kasan/report.c:408 [inline]
+>  print_report+0xd2/0x2b0 mm/kasan/report.c:521
+>  kasan_report+0x118/0x150 mm/kasan/report.c:634
+>  do_check+0xb388/0xe170 kernel/bpf/verifier.c:19756
+>  do_check_common+0x168d/0x20b0 kernel/bpf/verifier.c:22905
+>  do_check_main kernel/bpf/verifier.c:22996 [inline]
+>  bpf_check+0x1381e/0x19e50 kernel/bpf/verifier.c:24162
+>  bpf_prog_load+0x1318/0x1930 kernel/bpf/syscall.c:2972
+>  __sys_bpf+0x5f1/0x860 kernel/bpf/syscall.c:5978
+>  __do_sys_bpf kernel/bpf/syscall.c:6085 [inline]
+>  __se_sys_bpf kernel/bpf/syscall.c:6083 [inline]
+>  __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:6083
+>  do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+>  do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+>  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> RIP: 0033:0x7f7586cdbeb9
+> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 c1 17 00 00 90 48 89 f8 48 89 f=
+7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff=
+ ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007ffc2e683128 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f7586cdbeb9
+> RDX: 0000000000000094 RSI: 0000200000000840 RDI: 0000000000000005
+> RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000006
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+> R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000001
+>  </TASK>
+>=20
+> Allocated by task 5842:
+>  kasan_save_stack mm/kasan/common.c:47 [inline]
+>  kasan_save_track+0x3e/0x80 mm/kasan/common.c:68
+>  poison_kmalloc_redzone mm/kasan/common.c:377 [inline]
+>  __kasan_kmalloc+0x93/0xb0 mm/kasan/common.c:394
+>  kasan_kmalloc include/linux/kasan.h:260 [inline]
+>  __kmalloc_cache_noprof+0x230/0x3d0 mm/slub.c:4359
+>  kmalloc_noprof include/linux/slab.h:905 [inline]
+>  kzalloc_noprof include/linux/slab.h:1039 [inline]
+>  do_check_common+0x13f/0x20b0 kernel/bpf/verifier.c:22798
+>  do_check_main kernel/bpf/verifier.c:22996 [inline]
+>  bpf_check+0x1381e/0x19e50 kernel/bpf/verifier.c:24162
+>  bpf_prog_load+0x1318/0x1930 kernel/bpf/syscall.c:2972
+>  __sys_bpf+0x5f1/0x860 kernel/bpf/syscall.c:5978
+>  __do_sys_bpf kernel/bpf/syscall.c:6085 [inline]
+>  __se_sys_bpf kernel/bpf/syscall.c:6083 [inline]
+>  __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:6083
+>  do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+>  do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+>  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+>=20
+> Freed by task 5842:
+>  kasan_save_stack mm/kasan/common.c:47 [inline]
+>  kasan_save_track+0x3e/0x80 mm/kasan/common.c:68
+>  kasan_save_free_info+0x46/0x50 mm/kasan/generic.c:576
+>  poison_slab_object mm/kasan/common.c:247 [inline]
+>  __kasan_slab_free+0x62/0x70 mm/kasan/common.c:264
+>  kasan_slab_free include/linux/kasan.h:233 [inline]
+>  slab_free_hook mm/slub.c:2381 [inline]
+>  slab_free mm/slub.c:4643 [inline]
+>  kfree+0x18e/0x440 mm/slub.c:4842
+>  push_stack+0x247/0x3c0 kernel/bpf/verifier.c:2069
+>  check_cond_jmp_op+0x1069/0x2340 kernel/bpf/verifier.c:16562
+>  do_check_insn kernel/bpf/verifier.c:19621 [inline]
+>  do_check+0x672c/0xe170 kernel/bpf/verifier.c:19755
+>  do_check_common+0x168d/0x20b0 kernel/bpf/verifier.c:22905
+>  do_check_main kernel/bpf/verifier.c:22996 [inline]
+>  bpf_check+0x1381e/0x19e50 kernel/bpf/verifier.c:24162
+>  bpf_prog_load+0x1318/0x1930 kernel/bpf/syscall.c:2972
+>  __sys_bpf+0x5f1/0x860 kernel/bpf/syscall.c:5978
+>  __do_sys_bpf kernel/bpf/syscall.c:6085 [inline]
+>  __se_sys_bpf kernel/bpf/syscall.c:6083 [inline]
+>  __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:6083
+>  do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+>  do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+>  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+>=20
+> The buggy address belongs to the object at ffff88801deeef00
+>  which belongs to the cache kmalloc-192 of size 192
+> The buggy address is located 121 bytes inside of
+>  freed 192-byte region [ffff88801deeef00, ffff88801deeefc0)
+>=20
+> The buggy address belongs to the physical page:
+> page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1dee=
+e
+> flags: 0xfff00000000000(node=3D0|zone=3D1|lastcpupid=3D0x7ff)
+> page_type: f5(slab)
+> raw: 00fff00000000000 ffff88801a4413c0 ffffea00006fca40 dead000000000004
+> raw: 0000000000000000 0000000000100010 00000000f5000000 0000000000000000
+> page dumped because: kasan: bad access detected
+> page_owner tracks the page as allocated
+> page last allocated via order 0, migratetype Unmovable, gfp_mask 0x52820(=
+GFP_ATOMIC|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP), pid 1, tgid 1 (swapper/0=
+), ts 2954361175, free_ts 2954343552
+>  set_page_owner include/linux/page_owner.h:32 [inline]
+>  post_alloc_hook+0x240/0x2a0 mm/page_alloc.c:1704
+>  prep_new_page mm/page_alloc.c:1712 [inline]
+>  get_page_from_freelist+0x21e4/0x22c0 mm/page_alloc.c:3669
+>  __alloc_frozen_pages_noprof+0x181/0x370 mm/page_alloc.c:4959
+>  alloc_pages_mpol+0x232/0x4a0 mm/mempolicy.c:2419
+>  alloc_slab_page mm/slub.c:2451 [inline]
+>  allocate_slab+0x8a/0x3b0 mm/slub.c:2619
+>  new_slab mm/slub.c:2673 [inline]
+>  ___slab_alloc+0xbfc/0x1480 mm/slub.c:3859
+>  __slab_alloc mm/slub.c:3949 [inline]
+>  __slab_alloc_node mm/slub.c:4024 [inline]
+>  slab_alloc_node mm/slub.c:4185 [inline]
+>  __do_kmalloc_node mm/slub.c:4327 [inline]
+>  __kmalloc_node_noprof+0x2fd/0x4e0 mm/slub.c:4334
+>  kmalloc_node_noprof include/linux/slab.h:932 [inline]
+>  __vmalloc_area_node mm/vmalloc.c:3690 [inline]
+>  __vmalloc_node_range_noprof+0x5a9/0x12f0 mm/vmalloc.c:3885
+>  vmalloc_huge_node_noprof+0xb3/0xf0 mm/vmalloc.c:4001
+>  vmalloc_huge include/linux/vmalloc.h:185 [inline]
+>  alloc_large_system_hash+0x2b8/0x5e0 mm/mm_init.c:2515
+>  posixtimer_init+0x140/0x270 kernel/time/posix-timers.c:1561
+>  do_one_initcall+0x233/0x820 init/main.c:1274
+>  do_initcall_level+0x137/0x1f0 init/main.c:1336
+>  do_initcalls+0x69/0xd0 init/main.c:1352
+>  kernel_init_freeable+0x3d9/0x570 init/main.c:1584
+>  kernel_init+0x1d/0x1d0 init/main.c:1474
+> page last free pid 1 tgid 1 stack trace:
+>  reset_page_owner include/linux/page_owner.h:25 [inline]
+>  free_pages_prepare mm/page_alloc.c:1248 [inline]
+>  __free_frozen_pages+0xc71/0xe70 mm/page_alloc.c:2706
+>  __kasan_populate_vmalloc mm/kasan/shadow.c:383 [inline]
+>  kasan_populate_vmalloc+0x18a/0x1a0 mm/kasan/shadow.c:417
+>  alloc_vmap_area+0xd51/0x1490 mm/vmalloc.c:2084
+>  __get_vm_area_node+0x1f8/0x300 mm/vmalloc.c:3179
+>  __vmalloc_node_range_noprof+0x301/0x12f0 mm/vmalloc.c:3845
+>  vmalloc_huge_node_noprof+0xb3/0xf0 mm/vmalloc.c:4001
+>  vmalloc_huge include/linux/vmalloc.h:185 [inline]
+>  alloc_large_system_hash+0x2b8/0x5e0 mm/mm_init.c:2515
+>  posixtimer_init+0x140/0x270 kernel/time/posix-timers.c:1561
+>  do_one_initcall+0x233/0x820 init/main.c:1274
+>  do_initcall_level+0x137/0x1f0 init/main.c:1336
+>  do_initcalls+0x69/0xd0 init/main.c:1352
+>  kernel_init_freeable+0x3d9/0x570 init/main.c:1584
+>  kernel_init+0x1d/0x1d0 init/main.c:1474
+>  ret_from_fork+0x3f9/0x770 arch/x86/kernel/process.c:148
+>  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+>=20
+> Memory state around the buggy address:
+>  ffff88801deeee00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>  ffff88801deeee80: 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc
+> > ffff88801deeef00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>                                                                 ^
+>  ffff88801deeef80: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+>  ffff88801deef000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>=20
+>=20
+> ---
 
+Accessed memory is freed at an error path in push_stack():
 
-Hi, Alexei.
+  static struct bpf_verifier_state *push_stack(...)
+  {
+  	...
+  err:
+  	free_verifier_state(env->cur_state, true); // <-- KASAN points here
+  	...
+  }
 
+And is accessed after being freed here:
 
-You are right. In the very beginning, I planned to make the kernel function
-metadata to be the first series. However, it's hard to judge if the functio=
-n
-metadata is useful without the usage of the BPF tracing multi-link. So I
-kneaded them together in this series.
+  static int do_check(struct bpf_verifier_env *env)
+  {
+  	...
+		err =3D do_check_insn(env, &do_print_state);
+KASAN -->	if (state->speculative && error_recoverable_with_nospec(err)) ...
+  	...
+  }
+ =20
+[...]
 
+Either 'state =3D env->cur_state' is needed after 'do_check_insn()' or
+error path should not free env->cur_state (seems logical).
 
-The features in this series can be split into 4 part:
-* kernel function metadata
-* BPF global trampoline
-* tracing multi-link support
-* gtramp work together with trampoline
-
-
-I was planning to split out the 4th part out of this series. And now, I'm
-not sure if we should split it in the following way:
-
-* series 1: kernel function metadata
-* series 2: BPF global trampoline + tracing multi-link support
-* series 3: gtramp work together with trampoline
-
->
-> Like the new concept of global trampoline.
-> It's nice to write bpf_global_caller() in asm
-> compared to arch_prepare_bpf_trampoline() that emits asm
-> on the fly, but it seems the only thing where it truly
-> needs asm is register save/restore. The rest can be done in C.
-
-
-We also need to get the function ip from the stack and do the origin
-call with asm.
-
-
->
-> I suspect the whole gtramp can be written in C.
-> There is an attribute(interrupt) that all compilers support...
-> or use no attributes and inline asm for regs save/restore ?
-> or attribute(naked) and more inline asm ?
-
-
-That's a nice shot, which will make the bpf_global_caller() much easier.
-I believe it worth a try.
-
-
->
->> no-mitigate + hash table mode
->> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
->> nop     | fentry    | fm_single | fm_all    | km_single | km_all
->> 9.014ms | 162.378ms | 180.511ms | 446.286ms | 220.634ms | 1465.133ms
->> 9.038ms | 161.600ms | 178.757ms | 445.807ms | 220.656ms | 1463.714ms
->> 9.048ms | 161.435ms | 180.510ms | 452.530ms | 220.943ms | 1487.494ms
->> 9.030ms | 161.585ms | 178.699ms | 448.167ms | 220.107ms | 1463.785ms
->> 9.056ms | 161.530ms | 178.947ms | 445.609ms | 221.026ms | 1560.584ms
->
-> ...
->
->> no-mitigate + function padding mode
->> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
->> nop     | fentry    | fm_single | fm_all    | km_single | km_all
->> 9.320ms | 166.454ms | 184.094ms | 193.884ms | 227.320ms | 1441.462ms
->> 9.326ms | 166.651ms | 183.954ms | 193.912ms | 227.503ms | 1544.634ms
->> 9.313ms | 170.501ms | 183.985ms | 191.738ms | 227.801ms | 1441.284ms
->> 9.311ms | 166.957ms | 182.086ms | 192.063ms | 410.411ms | 1489.665ms
->> 9.329ms | 166.332ms | 182.196ms | 194.154ms | 227.443ms | 1511.272ms
->>
->> The overhead of fentry_multi_all is a little higher than the
->> fentry_multi_single. Maybe it is because the function
->> ktime_get_boottime_ns(), which is used in bpf_testmod_bench_run(), is al=
-so
->> traced? I haven't figured it out yet, but it doesn't matter :/
->
-> I think it matters a lot.
-> Looking at patch 25 the fm_all (in addition to fm_single) only
-> suppose to trigger from ktime_get_boottime,
-> but for hash table mode the difference is huge.
-> 10M bpf_fentry_test1() calls are supposed to dominate 2 calls
-> to ktime_get and whatever else is called there,
-> but this is not what numbers tell.
->
-> Same discrepancy with kprobe_multi. 7x difference has to be understood,
-> since it's a sign that the benchmark is not really measuring
-> what it is supposed to measure. Which casts doubts on all numbers.
-
-
-I think there is some misunderstand here. In the hash table mode, we trace
-all the kernel function for fm_all and km_all. Compared to fm_single and
-km_single, the overhead of fm_all and km_all suffer from the hash lookup,
-as we traced 40k+ functions in these case.
-
-
-The overhead of kprobe_multi has a linear relation with the total kernel
-function number in fprobe, so the 7x difference is reasonable. The same
-to fentry_multi in hash table mode.
-
-
-NOTE: The hash table lookup is not O(1) if the function number that we
-traced more than 1k. According to my research, the loop count that we use
-to find bpf_fentry_test1() with hlist_for_each_entry() is about 35 when
-the functions number in the hash table is 47k.
-
-BTW, the array length of the hash table that we use is 1024.
-
-
-The CPU I used for the testing is:
-AMD Ryzen 9 7940HX with Radeon Graphics
-
-
->
-> Another part is how come fentry is 20x slower than nop.
-> We don't see it in the existing bench-es. That's another red flag.
-
-
-I think this has a strong relation with the Kconfig I use. When I do the
-testing with "make tinyconfig" as the base, the fentry is ~9x slower than
-nop. I do this test with the Kconfig of debian12 (6.1 kernel), and I think
-there is more overhead to rcu_read_lock, migrate_disable, etc, in this
-Kconfig.
-
-
->
-> You need to rethink benchmarking strategy. The bench itself
-> should be spotless. Don't invent new stuff. Add to existing benchs.
-> They already measure nop, fentry, kprobe, kprobe-multi.
-
-
-Great! It seems that I did so many useless works on the bench testing :/
-
-
->
-> Then only introduce a global trampoline with a simple hash tab.
-> Compare against current numbers for fentry.
-> fm_single has to be within couple percents of fentry.
-> Then make fm_all attach to everything except funcs that bench trigger cal=
-ls.
-> fm_all has to be exactly equal to fm_single.
-> If the difference is 2.5x like here (180 for fm_single vs 446 for fm_all)
-> something is wrong. Investigate it and don't proceed without full
-> understanding.
-
-
-Emm......Like what I explain above, the 2.5X difference is reasonable, and
-this is exact the reason why we need the function padding based metadata,
-which is able to make fentry_multi and kprobe_multi(in the feature) out of
-overhead of the hash lookup.
-
-
->
-> And only then introduce 5 byte special insn that indices into
-> an array for fast access to metadata.
-> Your numbers are a bit suspicious, but they show that fm_single
-> with hash tab is the same speed as the special kfunc_md_arch_support().
-> Which is expected.
-> With fm_all that triggers small set of kernel function
-> in a tight benchmark loop the performance of hashtab vs special
-> should _also_ be the same, because hashtab will perform O(1) lookup
-> that is hot in the cache (or hashtab has bad collisions and should be fix=
-ed).
-
-
-I think this is the problem. The kernel function number is much more than
-the array length, which makes the hash lookup not O(1) anymore.
-
-Sorry that I wanted to show the performance of function padding based
-metadata, and made the kernel function number that we traced huge, which
-is ~47k.
-
-
-When the function number less than 2k, the performance of fm_single and
-fm_all don't have much difference, according to my previous testing :/
-
-
->
-> fm_all should have the same speed as fm_single too,
-> because bench will only attach to things outside of the tight bench loop.
-> So attaching to thousands of kernel functions that are not being
-> triggered by the benchmark should not affect results.
-
-
-This is 47k kernel functions in this testing :/
-
-
-> The performance advantage of special kfunc_md_arch_support()
-> can probably only be seen in production when fentry.multi attaches
-> to thousands of kernel functions and random functions are called.
-> Then hash tab cache misses will be noticeable vs direct access.
-> There will be cache misses in both cases, but significantly more misses
-> for hash tab. Only then we can decide where special stuff is truly necess=
-ary.
-> So patches 2 and 3 are really last. After everything had already landed.
-
-
-Emm......The cache miss is something I didn't expect. The only thing I
-concerned before is just the overhead of the hash lookup. To my utter
-astonishment, this actually helps with cache misses as well!
-
-
-BTW, should I still split out the function padding based metadata in
-the last series?
-
-
-Thanks!
-Menglong Dong
 
