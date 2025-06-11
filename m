@@ -1,116 +1,116 @@
-Return-Path: <bpf+bounces-60415-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60416-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 072D5AD63B2
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 01:11:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D675AAD63AD
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 01:11:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE6E83AF561
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 23:08:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A8257A9AC6
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 23:09:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 620182376FD;
-	Wed, 11 Jun 2025 23:05:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 725772505CB;
+	Wed, 11 Jun 2025 23:10:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J2KnsuCb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F2gMLPxA"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCDE024A078
-	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 23:05:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E805B24EAAF
+	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 23:10:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749683124; cv=none; b=jDcitCFVYy1ss4UiEzUfBv2WKgDu1AH5jaLkwZxY3r+Jid+9ZW7uMkEpoCEcZFdwebKyo2ypgkcHFqpXBDyuTp98tNmJluLfOjDbjQs+1iiG0N/PQuET6mweiVpErb6flS1eCKUhsthQb2B1SsRyvbbllRxOUBLsoGpiuV3YEy8=
+	t=1749683414; cv=none; b=T9Q7P5H3ydRd73a2wvAnt560Mrc7WCMKdgTCks8fSCUZQp2c/1R41d6ZmlX275s6HKWOfPo/CiDqjYXeHuRnXidH16GgoKDAsy6ZXqV1TVWJTwTf2ro3q+ka/i4eEUPjZ91KgXd/8DTjMsglRWb3z+/cRZ1ZsDu1YTbB4Y+WwOk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749683124; c=relaxed/simple;
-	bh=6sdCZW/+GhpSl+RtKW0x7XG0A6+UV4qkX3rQBHvdm4c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hpjkn3cn1ysBhuc43lmNqAp9Oij2GK7bWtCRJ46m07V8/OQNpfoz98mL5sDPJe9hJ/voaFUKAnmqD6KlIe3uqhQ+IEKqC6movvrMK6n/csnUwGpf8YjouwUqbQzV5ZL3TVHt6IqfUEyTmAW/yUfbh0cwaeaiO4zZn84uuV5mgjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J2KnsuCb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EDA5C4CEF1
-	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 23:05:24 +0000 (UTC)
+	s=arc-20240116; t=1749683414; c=relaxed/simple;
+	bh=0ohRqrwkF7nose7c550XgQX7gEtSowg8VJQPhejwJTw=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=gDnJMgyKzB414jB+/hPnMSp3uS+6xRUz8XPmQMkg0N64WSuJfOulOIAXVIaMaayRfSQfdJm1IeShZACierJ2pFQ/DDZ5RV/lxqnhvKnMhNQ69sYzzy7lxF8KueRKp87zF3uXQuqdwTu/P0Dt+EXNWBbCHyBMiENljCocUFl3518=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F2gMLPxA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72FD9C4CEE3;
+	Wed, 11 Jun 2025 23:10:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749683124;
-	bh=6sdCZW/+GhpSl+RtKW0x7XG0A6+UV4qkX3rQBHvdm4c=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=J2KnsuCbBMwX/XPshJbcYXORIh+8IPTm3nG+q69w64koLkZ0HGuugnQmwMk5cGNmV
-	 U1fRaRrp5fEBFNvfYqGKSV/iyGKofMSA6Fxrhjj0v/tpqvSmlA9xbuco4Mx01wvZf5
-	 vu0SPnyUg5G44KT/LuZOxU2MHIhZqKELmWvrjGGC/UlmZQ/mJ866xmHNDld0CL8qJ0
-	 qK2ZfOAXAF0zpsKRfug/bSuBkjRaESuS929I+V4uZ2fdf95OplFH8pK70EG60Supng
-	 fJyMGOJlWK0lnAseb0KlgfJv9lgzcsZzayMhOs58GMU48MdhW3bTvjRmCWqXqEW4WI
-	 uW8IDUbyaGEPg==
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-604f5691bceso1059523a12.0
-        for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 16:05:24 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzyKC+kJVF9jWUxsQmVQaiKPhSTw+w4/pnRpFCI6jgwOQQ/+Kza
-	JWHk5sNbbQ3cdiH2IadD9i1X0qve0dn5mnFeB1apX5fw6g216LTgIirFrNMDLUsad9Zq7wPlG/D
-	DNpjetp3Hpqg5TsXJ7gGy0C+UE6BHGr+Iy+pW2/Vi
-X-Google-Smtp-Source: AGHT+IGqLuGXesUn9zIoncb8f8aS9r6D6qdVTN6Nv6A9YlUfmlExwFuYhMKW+GFByuLazj9cCB2r60LtXKpbGweQuu0=
-X-Received: by 2002:a05:6402:5190:b0:607:f513:4800 with SMTP id
- 4fb4d7f45d1cf-60846aefabfmr4727809a12.10.1749683123066; Wed, 11 Jun 2025
- 16:05:23 -0700 (PDT)
+	s=k20201202; t=1749683413;
+	bh=0ohRqrwkF7nose7c550XgQX7gEtSowg8VJQPhejwJTw=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=F2gMLPxAC5Pq82obJYkeVRn/ICAqSgmTADN5f+6LBFEtEJ2lJ8nl7utanO5fHdzPv
+	 n3CCk6aEcqbdgA6xvu3gPl0q3y8S+aKWAHwY/anCxi//5wQkDUXWSs62F7Vh/Rf6PC
+	 K7K5k/Vnh1kJwHHIyyY9IQnQmXLamiSqZhiYj2zvyKrsrQfjDxKW5c4ENej1lfKqFn
+	 Y9z6po6Kfep4sipFVq8Uv4dbKdsRGjkjIOYVq5/14i80ask1/bZDrOi9isiosoNvo2
+	 60Mi0JlCsaNThwdp9B0SR4bySBdq2bksvHnFq1q6njVc/Kkex2J2NUJXIkMRpwNMFA
+	 aohu7dyas5niQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADE0F380DBE9;
+	Wed, 11 Jun 2025 23:10:44 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250606232914.317094-1-kpsingh@kernel.org> <20250606232914.317094-4-kpsingh@kernel.org>
- <CAADnVQLMff33qY+xY3Ztybbo38Wr9-bp_GPcoFna4EbtgTrWrg@mail.gmail.com>
- <CACYkzJ4v+n_6-dVSt9mgkhJPEa3r1q7YW5Zrh0c-j+gos_UOxw@mail.gmail.com> <CAADnVQK5J2REAWXp_KrLThOp9n1=QA=ugxB2Mb7=JmXnSFxQYg@mail.gmail.com>
-In-Reply-To: <CAADnVQK5J2REAWXp_KrLThOp9n1=QA=ugxB2Mb7=JmXnSFxQYg@mail.gmail.com>
-From: KP Singh <kpsingh@kernel.org>
-Date: Thu, 12 Jun 2025 01:05:12 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ6zmgrOBzTKoQ_Ta9cwyQAC6H0H=JcbX2d-9tV36SoEVA@mail.gmail.com>
-X-Gm-Features: AX0GCFvzJxE1np6RWJHBCz1Jzuv-8vyIb2oF73EMf8JTPyKVshfCKExZX012zhk
-Message-ID: <CACYkzJ6zmgrOBzTKoQ_Ta9cwyQAC6H0H=JcbX2d-9tV36SoEVA@mail.gmail.com>
-Subject: Re: [PATCH 03/12] bpf: Implement exclusive map creation
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, LSM List <linux-security-module@vger.kernel.org>, 
-	Blaise Boscaccy <bboscaccy@linux.microsoft.com>, Paul Moore <paul@paul-moore.com>, 
-	"K. Y. Srinivasan" <kys@microsoft.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v3 00/11] bpf: propagate read/precision marks
+ over
+ state graph backedges
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <174968344350.3524559.14906547029551737094.git-patchwork-notify@kernel.org>
+Date: Wed, 11 Jun 2025 23:10:43 +0000
+References: <20250611200546.4120963-1-eddyz87@gmail.com>
+In-Reply-To: <20250611200546.4120963-1-eddyz87@gmail.com>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
+ yonghong.song@linux.dev
 
-On Thu, Jun 12, 2025 at 12:55=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Jun 11, 2025 at 2:44=E2=80=AFPM KP Singh <kpsingh@kernel.org> wro=
-te:
-> >
-> > On Mon, Jun 9, 2025 at 10:58=E2=80=AFPM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
+Hello:
 
-[...]
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-> > can add inner maps. I think this is a valid combination as it would
-> > still retain exclusivity over the outer maps elements.
->
-> I don't follow.
-> What do you mean by "map can add inner maps ?"
+On Wed, 11 Jun 2025 13:05:35 -0700 you wrote:
+> Current loop_entry-based states comparison logic does not handle the
+> following case:
+> 
+>  .-> A --.  Assume the states are visited in the order A, B, C.
+>  |   |   |  Assume that state B reaches a state equivalent to state A.
+>  |   v   v  At this point, state C is not processed yet, so state A
+>  '-- B   C  has not received any read or precision marks from C.
+>             As a result, these marks won't be propagated to B.
+> 
+> [...]
 
-Ah, I missed this bit, a program cannot call bpf_map_update_elem on
-maps of maps and such updates happen only in userspace.
+Here is the summary with links:
+  - [bpf-next,v3,01/11] Revert "bpf: use common instruction history across all states"
+    (no matching commit)
+  - [bpf-next,v3,02/11] bpf: compute SCCs in program control flow graph
+    https://git.kernel.org/bpf/bpf-next/c/de270addb499
+  - [bpf-next,v3,03/11] bpf: frame_insn_idx() utility function
+    https://git.kernel.org/bpf/bpf-next/c/2ca9f34850d6
+  - [bpf-next,v3,04/11] bpf: starting_state parameter for __mark_chain_precision()
+    https://git.kernel.org/bpf/bpf-next/c/8e1acf430049
+  - [bpf-next,v3,05/11] bpf: set 'changed' status if propagate_precision() did any updates
+    https://git.kernel.org/bpf/bpf-next/c/a8b96f6950d5
+  - [bpf-next,v3,06/11] bpf: set 'changed' status if propagate_liveness() did any updates
+    https://git.kernel.org/bpf/bpf-next/c/6b3f95cd99f8
+  - [bpf-next,v3,07/11] bpf: move REG_LIVE_DONE check to clean_live_states()
+    https://git.kernel.org/bpf/bpf-next/c/d297ccb27e04
+  - [bpf-next,v3,08/11] bpf: propagate read/precision marks over state graph backedges
+    (no matching commit)
+  - [bpf-next,v3,09/11] bpf: remove {update,get}_loop_entry functions
+    https://git.kernel.org/bpf/bpf-next/c/49af1fa94a93
+  - [bpf-next,v3,10/11] bpf: include backedges in peak_states stat
+    https://git.kernel.org/bpf/bpf-next/c/346757cf121d
+  - [bpf-next,v3,11/11] selftests/bpf: tests with a loop state missing read/precision mark
+    https://git.kernel.org/bpf/bpf-next/c/69afa150dfa2
 
-Thanks, updated the code.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-- KP
 
-
-> The exclusivity is a contract between prog<->map.
-> It doesn't matter whether the map is outer or inner.
-> The prog cannot add an inner map.
-> Only the user space can and such inner maps are detached
-> from anything.
-> Technically we can come up with a requirement that inner maps
-> have to have the same prog sha as outer map.
-> This can be enforced by bpf_map_meta_equal() logic.
-> But that feels like overkill.
-> The user space can query prog's sha, create an inner map with
-> such prog sha and add it to outer map. So the additional check
-> in bpf_map_meta_equal() would be easy to bypass.
-> Since so, I would not add such artificial obstacle.
-> Let all types of maps have this exclusive feature.
 
