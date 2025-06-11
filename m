@@ -1,35 +1,36 @@
-Return-Path: <bpf+bounces-60351-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60352-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A10EAD5CE5
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 19:15:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58AD0AD5CE6
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 19:15:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9884D3A8955
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 17:15:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77E461BC2754
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 17:16:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D932E1CD208;
-	Wed, 11 Jun 2025 17:15:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 088611F09B3;
+	Wed, 11 Jun 2025 17:15:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
+Received: from 66-220-144-178.mail-mxout.facebook.com (66-220-144-178.mail-mxout.facebook.com [66.220.144.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95C8AEBE
-	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 17:15:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2F7D176FB0
+	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 17:15:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.144.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749662137; cv=none; b=VMtQ9ox0gKM708Y8abS0r74oLkVp1DIHxThmIkbvkiWDuMLF15VCeTtgRFgupgltakUTzvCCDijOXAcdqHABWDYePbzRDsBAU5JWWWVbNCjWCB23LS4GYtPPIQGbZct8WxDZg1fEM+x/PjLAWnbY3ObUo1o9yY5TN3j16xGwXGE=
+	t=1749662139; cv=none; b=MWtGjiv5fK+cfyuRZs91UdoeCkok6sC9xRNWjzHP/4OuyfIi7nYt9Uh9ABf7wvrPKCM+umpE8wW6C60TCiDu/tL2LQ+7CHkUu/UkgWIYHMbgQnPsdkAKexzFzaSt2eIpmLBx9Lxcjo91TG/QqgulAIBmdRvGGClMqQHN+LNN3PU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749662137; c=relaxed/simple;
-	bh=b+2MQKAsAx2t/ZbIaeLCQ1JRUqIGwAJKGICh2nAYHvQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TYelbf/hZKKWsozOdOqYFYMwqm50a+pP7sorWHd4Qi1kkexmXAKPtYyJ4ajY7q+BF1hqgObKXZNKrqem/m+7BY1Ifp6Kdsc1u6G0U+H3xQu+YsmrD6upCkEowj1P7nfnXFNHdzizwG/rL0AmwEfjxniCqtYZvREEfzWurlyE70s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.181
+	s=arc-20240116; t=1749662139; c=relaxed/simple;
+	bh=tsR3mgpai7tGsrvkBO1E4u9z0EoTaC8wsDyWMpIm5wA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=TxC1UmhxgG3EnDDN74/3y6l5LD5NtwQf/Y8Wi7dhKf1aZ5sfeS+7I+xehvuoeaGIfcMqEIY2sj9k+4isAjND4bqCZohdKcd/69RPXFTkbL9LcgS6Xneh1fDwfGGcvTkuWmkczGmzlWNpu7p8FtkI5xrwa0WgWCoUbGtGqiqbhP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.144.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
 Received: by devvm16039.vll0.facebook.com (Postfix, from userid 128203)
-	id B46559680C19; Wed, 11 Jun 2025 10:15:19 -0700 (PDT)
+	id C89EC9680C3C; Wed, 11 Jun 2025 10:15:24 -0700 (PDT)
 From: Yonghong Song <yonghong.song@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -37,10 +38,12 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	kernel-team@fb.com,
 	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v2 0/3] bpf: Fix a few test failures with 64K page size
-Date: Wed, 11 Jun 2025 10:15:19 -0700
-Message-ID: <20250611171519.2033193-1-yonghong.song@linux.dev>
+Subject: [PATCH bpf-next v2 1/3] bpf: Fix an issue in bpf_prog_test_run_xdp when page size greater than 4K
+Date: Wed, 11 Jun 2025 10:15:24 -0700
+Message-ID: <20250611171524.2033657-1-yonghong.song@linux.dev>
 X-Mailer: git-send-email 2.47.1
+In-Reply-To: <20250611171519.2033193-1-yonghong.song@linux.dev>
+References: <20250611171519.2033193-1-yonghong.song@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -49,33 +52,216 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-This small patch set tried to fix a few networking related test failure f=
-ailures
-due to 64K page size. Please see each individual patch for details.
+The bpf selftest xdp_adjust_tail/xdp_adjust_frags_tail_grow failed on
+arm64 with 64KB page:
+   xdp_adjust_tail/xdp_adjust_frags_tail_grow:FAIL
 
-Changelog:
-  v1 -> v2:
-    - v1: https://lore.kernel.org/bpf/20250608165534.1019914-1-yonghong.s=
-ong@linux.dev/
-    - For xdp_adjust_tail, let kernel test_run can handle various page si=
-zes for xdp progs.
-    - For two change_tail tests, make code easier to understand.
-    - Resolved a new test failure (xdp_do_redirect).
+In bpf_prog_test_run_xdp(), the xdp->frame_sz is set to 4K, but later on
+when constructing frags, with 64K page size, the frag data_len could
+be more than 4K. This will cause problems in bpf_xdp_frags_increase_tail(=
+).
 
-Yonghong Song (3):
-  bpf: Fix an issue in bpf_prog_test_run_xdp when page size greater than
-    4K
-  selftests/bpf: Fix two net related test failures with 64K page size
-  selftests/bpf: Fix xdp_do_redirect failure with 64KB page size
+To fix the failure, the xdp->frame_sz is set to be PAGE_SIZE so kernel
+can test different page size properly. With the kernel change, the user
+space and bpf prog needs adjustment. Currently, the MAX_SKB_FRAGS default
+value is 17, so for 4K page, the maximum packet size will be less than 68=
+K.
+To test 64K page, a bigger maximum packet size than 68K is desired. So tw=
+o
+different functions are implemented for subtest xdp_adjust_frags_tail_gro=
+w.
+Depending on different page size, different data input/output sizes are u=
+sed
+to adapt with different page size.
 
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+---
  net/bpf/test_run.c                            |  2 +-
  .../bpf/prog_tests/xdp_adjust_tail.c          | 95 +++++++++++++++++--
- .../bpf/prog_tests/xdp_do_redirect.c          | 13 ++-
- .../bpf/progs/test_sockmap_change_tail.c      |  5 +-
- .../selftests/bpf/progs/test_tc_change_tail.c |  5 +-
  .../bpf/progs/test_xdp_adjust_tail_grow.c     |  8 +-
- 6 files changed, 115 insertions(+), 13 deletions(-)
+ 3 files changed, 96 insertions(+), 9 deletions(-)
 
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index aaf13a7d58ed..9728dbd4c66c 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -1255,7 +1255,7 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, co=
+nst union bpf_attr *kattr,
+ 		headroom -=3D ctx->data;
+ 	}
+=20
+-	max_data_sz =3D 4096 - headroom - tailroom;
++	max_data_sz =3D PAGE_SIZE - headroom - tailroom;
+ 	if (size > max_data_sz) {
+ 		/* disallow live data mode for jumbo frames */
+ 		if (do_live)
+diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c b/t=
+ools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
+index e361129402a1..133bde28a489 100644
+--- a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
++++ b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
+@@ -37,21 +37,25 @@ static void test_xdp_adjust_tail_shrink(void)
+ 	bpf_object__close(obj);
+ }
+=20
+-static void test_xdp_adjust_tail_grow(void)
++static void test_xdp_adjust_tail_grow(bool is_64k_pagesize)
+ {
+ 	const char *file =3D "./test_xdp_adjust_tail_grow.bpf.o";
+ 	struct bpf_object *obj;
+-	char buf[4096]; /* avoid segfault: large buf to hold grow results */
++	char buf[8192]; /* avoid segfault: large buf to hold grow results */
+ 	__u32 expect_sz;
+ 	int err, prog_fd;
+ 	LIBBPF_OPTS(bpf_test_run_opts, topts,
+ 		.data_in =3D &pkt_v4,
+-		.data_size_in =3D sizeof(pkt_v4),
+ 		.data_out =3D buf,
+ 		.data_size_out =3D sizeof(buf),
+ 		.repeat =3D 1,
+ 	);
+=20
++	if (is_64k_pagesize)
++		topts.data_size_in =3D sizeof(pkt_v4) - 1;
++	else
++		topts.data_size_in =3D sizeof(pkt_v4);
++
+ 	err =3D bpf_prog_test_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd);
+ 	if (!ASSERT_OK(err, "test_xdp_adjust_tail_grow"))
+ 		return;
+@@ -208,7 +212,7 @@ static void test_xdp_adjust_frags_tail_shrink(void)
+ 	bpf_object__close(obj);
+ }
+=20
+-static void test_xdp_adjust_frags_tail_grow(void)
++static void test_xdp_adjust_frags_tail_grow_4k(void)
+ {
+ 	const char *file =3D "./test_xdp_adjust_tail_grow.bpf.o";
+ 	__u32 exp_size;
+@@ -279,16 +283,93 @@ static void test_xdp_adjust_frags_tail_grow(void)
+ 	bpf_object__close(obj);
+ }
+=20
++static void test_xdp_adjust_frags_tail_grow_64k(void)
++{
++	const char *file =3D "./test_xdp_adjust_tail_grow.bpf.o";
++	__u32 exp_size;
++	struct bpf_program *prog;
++	struct bpf_object *obj;
++	int err, i, prog_fd;
++	__u8 *buf;
++	LIBBPF_OPTS(bpf_test_run_opts, topts);
++
++	obj =3D bpf_object__open(file);
++	if (libbpf_get_error(obj))
++		return;
++
++	prog =3D bpf_object__next_program(obj, NULL);
++	if (bpf_object__load(obj))
++		goto out;
++
++	prog_fd =3D bpf_program__fd(prog);
++
++	buf =3D malloc(262144);
++	if (!ASSERT_OK_PTR(buf, "alloc buf 256Kb"))
++		goto out;
++
++	/* Test case add 10 bytes to last frag */
++	memset(buf, 1, 262144);
++	exp_size =3D 90000 + 10;
++
++	topts.data_in =3D buf;
++	topts.data_out =3D buf;
++	topts.data_size_in =3D 90000;
++	topts.data_size_out =3D 262144;
++	err =3D bpf_prog_test_run_opts(prog_fd, &topts);
++
++	ASSERT_OK(err, "90Kb+10b");
++	ASSERT_EQ(topts.retval, XDP_TX, "90Kb+10b retval");
++	ASSERT_EQ(topts.data_size_out, exp_size, "90Kb+10b size");
++
++	for (i =3D 0; i < 90000; i++) {
++		if (buf[i] !=3D 1)
++			ASSERT_EQ(buf[i], 1, "90Kb+10b-old");
++	}
++
++	for (i =3D 90000; i < 90010; i++) {
++		if (buf[i] !=3D 0)
++			ASSERT_EQ(buf[i], 0, "90Kb+10b-new");
++	}
++
++	for (i =3D 90010; i < 262144; i++) {
++		if (buf[i] !=3D 1)
++			ASSERT_EQ(buf[i], 1, "90Kb+10b-untouched");
++	}
++
++	/* Test a too large grow */
++	memset(buf, 1, 262144);
++	exp_size =3D 90001;
++
++	topts.data_in =3D topts.data_out =3D buf;
++	topts.data_size_in =3D 90001;
++	topts.data_size_out =3D 262144;
++	err =3D bpf_prog_test_run_opts(prog_fd, &topts);
++
++	ASSERT_OK(err, "90Kb+10b");
++	ASSERT_EQ(topts.retval, XDP_DROP, "90Kb+10b retval");
++	ASSERT_EQ(topts.data_size_out, exp_size, "90Kb+10b size");
++
++	free(buf);
++out:
++	bpf_object__close(obj);
++}
++
+ void test_xdp_adjust_tail(void)
+ {
++	int page_size =3D getpagesize();
++
+ 	if (test__start_subtest("xdp_adjust_tail_shrink"))
+ 		test_xdp_adjust_tail_shrink();
+ 	if (test__start_subtest("xdp_adjust_tail_grow"))
+-		test_xdp_adjust_tail_grow();
++		test_xdp_adjust_tail_grow(page_size =3D=3D 65536);
+ 	if (test__start_subtest("xdp_adjust_tail_grow2"))
+ 		test_xdp_adjust_tail_grow2();
+ 	if (test__start_subtest("xdp_adjust_frags_tail_shrink"))
+ 		test_xdp_adjust_frags_tail_shrink();
+-	if (test__start_subtest("xdp_adjust_frags_tail_grow"))
+-		test_xdp_adjust_frags_tail_grow();
++	if (test__start_subtest("xdp_adjust_frags_tail_grow")) {
++		if (page_size =3D=3D 65536)
++			test_xdp_adjust_frags_tail_grow_64k();
++		else
++			test_xdp_adjust_frags_tail_grow_4k();
++	}
+ }
+diff --git a/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_grow.=
+c b/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_grow.c
+index dc74d8cf9e3f..93d55a2ca340 100644
+--- a/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_grow.c
++++ b/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_grow.c
+@@ -19,7 +19,9 @@ int _xdp_adjust_tail_grow(struct xdp_md *xdp)
+ 	/* Data length determine test case */
+=20
+ 	if (data_len =3D=3D 54) { /* sizeof(pkt_v4) */
+-		offset =3D 4096; /* test too large offset */
++		offset =3D 4096; /* test too large offset, 4k page size */
++	} else if (data_len =3D=3D 53) { /* sizeof(pkt_v4) - 1 */
++		offset =3D 65536; /* test too large offset, 64k page size */
+ 	} else if (data_len =3D=3D 74) { /* sizeof(pkt_v6) */
+ 		offset =3D 40;
+ 	} else if (data_len =3D=3D 64) {
+@@ -31,6 +33,10 @@ int _xdp_adjust_tail_grow(struct xdp_md *xdp)
+ 		offset =3D 10;
+ 	} else if (data_len =3D=3D 9001) {
+ 		offset =3D 4096;
++	} else if (data_len =3D=3D 90000) {
++		offset =3D 10;
++	} else if (data_len =3D=3D 90001) {
++		offset =3D 65536;
+ 	} else {
+ 		return XDP_ABORTED; /* No matching test */
+ 	}
 --=20
 2.47.1
 
