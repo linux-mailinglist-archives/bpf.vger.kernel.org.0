@@ -1,143 +1,118 @@
-Return-Path: <bpf+bounces-60325-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60326-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B33F1AD5847
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 16:15:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1B36AD5899
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 16:24:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFCB6188D90E
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 14:14:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12E7C7A377F
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 14:23:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4164295502;
-	Wed, 11 Jun 2025 14:14:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6CFA2BCF65;
+	Wed, 11 Jun 2025 14:24:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="jrbUQog9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L3ZTKswQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx-rz-3.rrze.uni-erlangen.de (mx-rz-3.rrze.uni-erlangen.de [131.188.11.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD6AA2253E8;
-	Wed, 11 Jun 2025 14:14:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C02BD1E485;
+	Wed, 11 Jun 2025 14:24:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749651249; cv=none; b=GkJCdrWcYH28p03TdeMRqqUbKhYpZxJ6kS0+o/eU+n5RJUV1gnM7ttgH/sfXcM8rlu04xtfuFxlO+KVesj2xXfT5LJyqci85QoQtzcspYy/QgJ+qC0iiZLyZlCv8dqNzKiORve8NGnrBuPJm6mpYAkq7pe3rhs0jcokZT0owZn0=
+	t=1749651878; cv=none; b=FouxsjJVtaTsG4BSsav4XKLU6cFqKrA29ciidCFht7HlzWzz00V1GGKahHRtAk8Pl2MzF1xtJOQGJovxa5aur0WEHAEAQZZ0A1/magfrXqEINwGj4odfGecVsFK8WUTaByjDkGkfhPssZnXuQhGBbOXetajgRuaOS/ZzBPfDqz0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749651249; c=relaxed/simple;
-	bh=jwlEb9ApPh5TY4JhPoXeYC7ccEQS1p8l4dqq+cESvoc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=JxhSGbd9GDsAZP6jhC424pfaq1+zPIG/9zSsSJjNPVu8p7StKXzOEyEJxo78DJ1Gqo/OkULAbYafD9MibSbmdCNGcDvpUPlCuooS1DeWJSC/zGtPeYqcbEaodziMMCz+vdMxEYvt/Xa6Bd0UDjvqfpMtZPCAgI5/yc3emHU1+GY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=jrbUQog9; arc=none smtp.client-ip=131.188.11.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
-	t=1749650643; bh=DmSXTFFqNu+tSRSDtP3K415illKbtXwDagR+sb8PWSM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From:To:CC:
-	 Subject;
-	b=jrbUQog9z+HQ/Dp8kigG9nQddbldTgzkGJpnK8R3LEp5sueblPULIGXu3rrBgx9V2
-	 /Ex8J3jFh9zxcEQIvyUH/XBELAgpzRmq51NcyqHgig4FQ74Smm5FlkuVQluwfheuuF
-	 4GfQ5THwT8Y5W1K5HW28bEKB7WXozWULCD6QGJONSNrnw8/yCtK2b9pkImjXSjnKRF
-	 mu6hjphxfw0NAs7O0wHE/HvOKbqMvfHr0xfpHNDQPfCcJkCklbe/+9T6a3aj/ciA4l
-	 1OY1yf35bmh7pMei0j2QC26MxXiDUieru8kKZ/z63Ztl7tJPPjdZxweZLFyWZTBsag
-	 dp7SgfJjQWOYQ==
-Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-rz-3.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4bHS7l1DmQz1yBD;
-	Wed, 11 Jun 2025 16:04:03 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at boeck5.rrze.uni-erlangen.de (RRZE)
-X-RRZE-Flag: Not-Spam
-X-RRZE-Submit-IP: 10.188.34.184
-Received: from localhost (i4laptop33.informatik.uni-erlangen.de [10.188.34.184])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: U2FsdGVkX18wRjiQhny3JMlHlBPKhYTTZ8dQUFezhPw=)
-	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4bHS7g31Hyz1xw7;
-	Wed, 11 Jun 2025 16:03:59 +0200 (CEST)
-From: Luis Gerhorst <luis.gerhorst@fau.de>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: andrii@kernel.org,  ast@kernel.org,  bpf@vger.kernel.org,
-  daniel@iogearbox.net,  haoluo@google.com,  john.fastabend@gmail.com,
-  jolsa@kernel.org,  kpsingh@kernel.org,  linux-kernel@vger.kernel.org,
-  martin.lau@linux.dev,  sdf@fomichev.me,  song@kernel.org,
-  syzkaller-bugs@googlegroups.com,  yonghong.song@linux.dev
-Subject: Re: [syzbot] [bpf?] KASAN: slab-use-after-free Read in do_check
-In-Reply-To: <38862a832b91382cddb083dddd92643bed0723b8.camel@gmail.com>
-	(Eduard Zingerman's message of "Wed, 11 Jun 2025 06:02:55 -0700")
-References: <68497853.050a0220.33aa0e.036a.GAE@google.com>
-	<38862a832b91382cddb083dddd92643bed0723b8.camel@gmail.com>
-User-Agent: mu4e 1.12.8; emacs 30.1
-Date: Wed, 11 Jun 2025 16:03:59 +0200
-Message-ID: <87frg6gysw.fsf@fau.de>
+	s=arc-20240116; t=1749651878; c=relaxed/simple;
+	bh=zhuxC+KhjOVBwtC+ZikFTxVlNB4jrxhuaXaa+Xblpxs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bwt9Djr4F3H3Xz74c3JUOEB1vP4DJ8wnUU3uQD1qYrcm8gdnDzINKGt/8f9VLWPDIWrCxhijtokhdA/XPk5JFtnYpIpv4BpiKU/4DpjEL4RTfXBMHLupYa04d7779ncjUNNK7hkE/Zgg1asvLNujHkQcxbg7bpIkrnuScBAXZjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L3ZTKswQ; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-451d3f72391so87617065e9.3;
+        Wed, 11 Jun 2025 07:24:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749651874; x=1750256674; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RTXKRBFGUAka08dub7+UBA5yiZf9fur0UOXcxOoy2sc=;
+        b=L3ZTKswQ5gCyfLURktJlabE68b4ktLtGrsOLVSGsn3ltwcsNMDcao4qi6ei7bDr/p6
+         9znCZxe78JZ5f9tv6L3RxqgLIbxdw7J7aMAnKDyacNy1hT29AOsQJhMQeXz+eCdv86sG
+         QLVcFa3TDmupxTiI2GiyyRmMKkUcjUQ3bSKHrzBUBdZDJmLT1qH89nSrP5LsWxkCHQA5
+         mNTXRM0GBgZFjc9COUguqZYyb+jXXF4gOHHoXsfLdSWOZPMJq6yh/BK2iFUV+CMDSnuB
+         0av/gY9jSovttr/wYx7TBH2SNWfBBxHyTDW5TcCu+JcaAurGNAwEKSd4jzz1PcyPYLWP
+         /ZDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749651874; x=1750256674;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RTXKRBFGUAka08dub7+UBA5yiZf9fur0UOXcxOoy2sc=;
+        b=mQmERdfe5B6ayEEsrsJJ9L6gcZbZ0/yWAlRPd6Yc5pAS/d8mxTp63nxOD6/AAptykO
+         ExWuK5iibIhct/ExlP7eCRphOAdluE6kfhSNxNDXJWPDHyGRfAObQczShzeBdAnDaJPY
+         bktPKLLjMTSCyQVDFzI7DnxBItUQaJNjL/cet78yBBiQZk6N8OdF3PmmuyzLjLujPi8B
+         8zF6bT4AL1I/HG2NNU+SRbS4ucQYOd48n7tIEVD4a4oe7C6EcGKs+sHk/aiJl4D+KRVE
+         H8aSXIHZyck1D+aOw0wr87b8PHcjtC/DOrxf6LXlrrg9qRktozIYuzcEd2bJTSQFFoUc
+         N0iw==
+X-Forwarded-Encrypted: i=1; AJvYcCUo936QnRflxbbvBf9CVnUtLdaPR4ZjP5N024t//zzIEZ6GpVXHzYLSTvZOXtPLdIa4fm/hYQFn@vger.kernel.org, AJvYcCVCdrfvZlg4nAT8QDm1aXkKX4DpT83BU1z0GZd/0vWylBKO7kGMAhHjO7rodGv4CJ+OQxI=@vger.kernel.org, AJvYcCWcDGfEN7hPR9Hs+clf4Ei21i+wXrBWWcr9Bhs805ZBbP/byQKrxUBLaN1DxEuCFohLh6cqR1iGhgPdzQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz7doMNuV5IXs8LKxwBCr56+etY6m7A7EWbHLwfXJ2hmGgNLvOH
+	YP06o6/PJvVUbzwB0ccMnA6oKf8M68gvGT3/XjTV2x08MrewiQabxgPV
+X-Gm-Gg: ASbGnctOqWXtDcykqLE2p+YQzWeDZZzCwyFXfb/7W/GDhoFPswcnbUzfhxJJdGFKmin
+	aTwRsDCCYaqywLyYYKJrckhfVopWyVEZ2uWk4my0Apza3KuouAWicIakwmFaBs51gDwWbFxDoah
+	YlRQy5vUnYdZ4GE51HuVw4IriDirTWN9e6YVbt/lOovtaBz1IB5QkMfulG0LPPrEODb87xT38H6
+	FSh5mpM7FDB7EdDT4LVaKmKlPCfuw8oFQcThcSZZVDXm692VA9FrCEY4RLqHdXQjzAnWePg+Q/p
+	GxyIMJ4ZGVrnb0YVigyfw9TW8XoEKm1UcfEkWSK923mINOlR9Qi+o0bZaAovXpNBWWOfdik=
+X-Google-Smtp-Source: AGHT+IHoeACtZ7Lq1d6rrqu6tvHRqZvx/wZr02IW/ChCWd4ssRnTymEzapp3q53gv8ZTjy+QowM5Nw==
+X-Received: by 2002:a05:600c:3586:b0:441:b3eb:574e with SMTP id 5b1f17b1804b1-4532b8c5658mr22745e9.5.1749651873795;
+        Wed, 11 Jun 2025 07:24:33 -0700 (PDT)
+Received: from [192.168.8.100] ([148.252.145.22])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a5323a8acasm15187999f8f.26.2025.06.11.07.24.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Jun 2025 07:24:33 -0700 (PDT)
+Message-ID: <8c7c1039-5b9c-4060-8292-87047dfd9845@gmail.com>
+Date: Wed, 11 Jun 2025 15:25:54 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 0/9] Split netmem from struct page
+To: Byungchul Park <byungchul@sk.com>, willy@infradead.org,
+ netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ kernel_team@skhynix.com, kuba@kernel.org, almasrymina@google.com,
+ ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
+ akpm@linux-foundation.org, davem@davemloft.net, john.fastabend@gmail.com,
+ andrew+netdev@lunn.ch, toke@redhat.com, tariqt@nvidia.com,
+ edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com, leon@kernel.org,
+ ast@kernel.org, daniel@iogearbox.net, david@redhat.com,
+ lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
+ rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org,
+ linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com
+References: <20250609043225.77229-1-byungchul@sk.com>
+Content-Language: en-US
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <20250609043225.77229-1-byungchul@sk.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Eduard Zingerman <eddyz87@gmail.com> writes:
+On 6/9/25 05:32, Byungchul Park wrote:
+> Hi all,
+> 
+> In this version, I'm posting non-controversial patches first.  I will
+> post the rest more carefully later.  In this version, no update has been
+> applied except excluding some patches from the previous version.  See
+> the changes below.
 
-> Accessed memory is freed at an error path in push_stack():
->
->   static struct bpf_verifier_state *push_stack(...)
->   {
->   	...
->   err:
->   	free_verifier_state(env->cur_state, true); // <-- KASAN points here
->   	...
->   }
->
-> And is accessed after being freed here:
->
->   static int do_check(struct bpf_verifier_env *env)
->   {
->   	...
-> 		err = do_check_insn(env, &do_print_state);
-> KASAN -->	if (state->speculative && error_recoverable_with_nospec(err)) ...
->   	...
->   }
->   
-> [...]
->
-> Either 'state = env->cur_state' is needed after 'do_check_insn()' or
-> error path should not free env->cur_state (seems logical).
+fwiw, I tried it with net_iov (zcrx), it didn't blow up during a
+short test.
 
-Sorry, this was my error from [1]. Thanks for the pointer.
+-- 
+Pavel Begunkov
 
-Yes, I think the former makes sense (with the respective `state &&`
-added to the if).
-
-The latter might also be possible, but I guess it would require more
-significant changes.
-
-state->speculative does not make sense if the error path of push_stack()
-ran. In that case, `state->speculative &&
-error_recoverable_with_nospec(err)` as a whole should already never
-evaluate to true (because all cases where push_stack() fails also return
-a non-recoverable error -ENOMEM/-EFAULT).
-
-Alternatively to adding `state = env->cur_state` and `state &&`, turning
-the check around would avoid the use-after-free. However, I think your
-idea is better because it is more explicit compared to this:
-
-	if (error_recoverable_with_nospec(err) && state->speculative) ...
-
-Does this make sense to you? If yes I can send the fix later today.
-
-I will also check that all other paths calling free_verifier_state() are
-sane. So far it looks good.
-
-The later
-
-	if (state->speculative && cur_aux(env)->nospec_result) {
-
-should already be fine, because !env->cur_state should imply that the
-previous if raises the error.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=d6f1c85f22534d2d9fea9b32645da19c91ebe7d2
 
