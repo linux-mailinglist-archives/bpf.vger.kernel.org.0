@@ -1,229 +1,200 @@
-Return-Path: <bpf+bounces-60361-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60362-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51D94AD5DE2
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 20:11:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0C03AD5E1D
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 20:29:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4DA01E2528
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 18:11:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5801E16B09D
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 18:29:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1A0B262FD8;
-	Wed, 11 Jun 2025 18:11:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13FEC23643F;
+	Wed, 11 Jun 2025 18:29:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PF5Gid47"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nX3gC0wi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5400C8FE;
-	Wed, 11 Jun 2025 18:11:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85EB31C8632;
+	Wed, 11 Jun 2025 18:29:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749665493; cv=none; b=EISor/rgLUhnHzlNpZZHCUvUPmyuI4QR1QK9198BwsPbFSeRMhEPcTll4oWCikqvSNddIZwIu2YRi4Bfe+eWYd0a8soDDwBWfi39+1FkSEyacm/ZVvJA6ONb17rlEkmh7+JUWAnfifTdwp+jC+o8kuU+gu19W5huXDQWVwIbc6c=
+	t=1749666569; cv=none; b=hzL8IK4JBi2hxAhKBscDQexcc+DDC0Hj6CpE3zckcfQToiJlSPeOSyAyLDjttdLQp5BM0fQ2wQrkVyFw1wEjvwH4Rb/kMWQu/k1OYANckfKZ8sIMrJSZKkyIHJmwkyuBhtoJQ+H0yQe9PJV0Ub7Ay4KHebuHpIk++Hgys0YBjUE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749665493; c=relaxed/simple;
-	bh=q0lsnchDljt8gnXfY6Q0eKP8Hkd+BZvrb4UfpWQHz5g=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=VPQTnNMw9wHcSSRIMnXjty1+snWbdvb1XBgJ4EVD6pcnxyPSHV/IhUgXznO36VzQ9oxYji1TMmSbmecN9eufKwUXLiVdkzfe4U0JR6ooUrPQZlSaPe7BTlU+JTMXZ2+A7tNuLyBikkro/RDr5NA7iHCff8dfdhQ9rmfdtpGrero=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PF5Gid47; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-73c17c770a7so242654b3a.2;
-        Wed, 11 Jun 2025 11:11:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749665491; x=1750270291; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ZPOZ6sJ2JCvmZJVnpnH5NP8n+2Ze7Gt4TkB1oDTQYj0=;
-        b=PF5Gid47ffMIq3paguM4inecW9KOTggvPLwm5Yyrs0Ui3Qk9z6aJdI9gcDFTO1MFuZ
-         yJq/oRif3zPtdO/z/67ydPIDfYjb740kvyS2JAbB0y644wHBYsBGGjDRZo3ZyV44y3fa
-         QPHemcPobWaeSXkLO2jqAl6qrEE4w3u9ZVU749A2lQgo4Wvw0PMb+goA6321uiw3IvNW
-         bsmlxnq+IpJxJ7Mcqv/fyQo3KARgVS22gAwBYCY+Bh7u7RQ/4ZXza98ytrt4oFF237Vt
-         HKuvN8KyV1AJd5CeJe/azybeRX0+mwi0tEvRlLC1NOP6qRTWwD5ENgc9jOpTplji8Jbn
-         Lazg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749665491; x=1750270291;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZPOZ6sJ2JCvmZJVnpnH5NP8n+2Ze7Gt4TkB1oDTQYj0=;
-        b=JpKa2ZYCu7rONJGbfszhFt+yHjoJLYv04VHNsujwVMTN1OGLh47/OZW140kyx7P1gD
-         BrsWJW8tAFSb/PW8BC4PrIXovKDB/I4Nr6/+1NoxNhbrzsPQEfcujB5fGeqze/+Qw5GB
-         8JslpmKxBgxaaXMZN2d8Jb3DR6m9WdkrNAmOC/WxH5mOIQ5XGnMGuHdv1yy5l684WVd8
-         gnQu1W2zVAoNMZT4Az6e+16HtM0uE/odCNMxHNrD4Phvm2AYRAA2cM7aCwYV9qhhYW8P
-         tjxpPaosC8zMGTug9g/jVxce2jOCgkaeS7oRauJ/VbjGGfmnoGGbxOQFDHFLqmzoMVKN
-         CDAw==
-X-Forwarded-Encrypted: i=1; AJvYcCWR/EmQ41C8RcfzC8BkixX89v+phJsp4g+MoCsZmOFgYfMIArtXwPpU5pZuTNyeqWZUErc=@vger.kernel.org, AJvYcCXMtZtm4qAE4RzRrIgT4UdS+nbgJ0mjmc2bPht4jmtiTM2ohalw84c5bwD32Vfbkw8ThiL+nIQu2Oy2KXBF@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy6ZPylLHW1rCyPiNxGq0JNElB1E7Pf3dfC6CytoPP6NnHSv5Od
-	qR/CRvn9AHxHfTGU+3AIU+FxpDPIpEH512Mif0gYAbch0e457b4Wanca
-X-Gm-Gg: ASbGncvyZeE9e5MJYPWRN2cW9HmYIkerkAxCNNFv3ffK9uKFwmqtcwj/h3bRB6AXbBt
-	dfOo+UJMpt1tPtLNr1A56QD71KqR51yG9Nm6QSOYTBPKG3fzo5c5+6TYK5/o0hAaxprWp4R9nXR
-	rFfy8JvClqcdvJecYF1ggmYzoMnunXbCEKAxcBUiLLP+RYkmj+1VYhvNiKs0z3sVKTqCB2FTzDU
-	o1jhvLeCndpYzKWVA2EYVH5zOgExPqJLjGluIprtmDgWr4qzv8I0f4v7cC+7F6fK6yztRbsZBt9
-	tNLaojW/6wfYziUfLO9tQoJ5xqXqp3GGUy99K9QzcvLW79P1kV/iIM9ASEJE4ASFfy4xDCG2WOR
-	hChmtyNHCi+zU/yNwppJ3
-X-Google-Smtp-Source: AGHT+IH3k5dvrTUz2/ALnQwF8EtBJmtajrGWHaF4qawZUYqpcqKqamU1sQf963afTQFW+2W9fsJKgA==
-X-Received: by 2002:a05:6a00:ac4:b0:737:678d:fb66 with SMTP id d2e1a72fcca58-7487e082857mr34077b3a.5.1749665491129;
-        Wed, 11 Jun 2025 11:11:31 -0700 (PDT)
-Received: from ?IPv6:2a03:83e0:115c:1:b1d2:545:de25:d977? ([2620:10d:c090:500::7:d234])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7482af7ab1fsm9801917b3a.54.2025.06.11.11.11.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Jun 2025 11:11:30 -0700 (PDT)
-Message-ID: <a39e1ed2db4121b690796c347f1259da09e23e13.camel@gmail.com>
-Subject: Re: [PATCH] bpf, verifier: Improve precision for BPF_ADD and BPF_SUB
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>, 
-	ast@kernel.org
-Cc: Matan Shachnai <m.shachnai@rutgers.edu>, Srinivas Narayana	
- <srinivas.narayana@rutgers.edu>, Santosh Nagarakatte	
- <santosh.nagarakatte@rutgers.edu>, Daniel Borkmann <daniel@iogearbox.net>, 
- John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko
- <andrii@kernel.org>, Martin KaFai Lau	 <martin.lau@linux.dev>, Song Liu
- <song@kernel.org>, Yonghong Song	 <yonghong.song@linux.dev>, KP Singh
- <kpsingh@kernel.org>, Stanislav Fomichev	 <sdf@fomichev.me>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 	bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Date: Wed, 11 Jun 2025 11:11:28 -0700
-In-Reply-To: <20250610221356.2663491-1-harishankar.vishwanathan@gmail.com>
-References: <20250610221356.2663491-1-harishankar.vishwanathan@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	s=arc-20240116; t=1749666569; c=relaxed/simple;
+	bh=hlsAtbfYpRIThbtTRngh3/kZOTRE3e61UWfWc/gSwJQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sTFnHMY0h9RdFqwWMkorKS/h6jsXsqKliHkyKiAzt8wstHx5FuzPpMcioMlzXeZ6blZ00fZtf1fJL+4C7KCwsyXjDTfUGI4ravyqz75ELZ6f8/x1S+dC/MV/AuCyboTSnkMlcMNCe/GA9gHfAasrHFPt86HH/IKLYRNu/FrWOYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nX3gC0wi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A7D8C4CEE3;
+	Wed, 11 Jun 2025 18:29:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749666569;
+	bh=hlsAtbfYpRIThbtTRngh3/kZOTRE3e61UWfWc/gSwJQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nX3gC0wihj8Q19OWZEkEWH62UQz4+L+hAl5wIfmnD5HPmK7cKzrNQiz7z0519Wq0B
+	 yAE+bLVWPCiwVg2WIFzGdMiPJ3vy0TXvN6PdkjjoBv2ROgrP1w9YQKYy/pEUVs41GF
+	 nHrNo01IAS3hN8kWUnp6QoLmxyaMbKR05IFlzfdcxpYD5y3i2Kwe5ulu44evO8gpqZ
+	 R0Nm426mhWO06ZIfUJ/srDoDoNHCuQ2ZhpLQsswx0ikTG6FzYXNHiItsv4GuUzoyk2
+	 onr6t1gvSgZNd+wUnIt+ZT7l1zY1sVk27eLxpSb2LGTU9qH/NsgOzIyW+gIjGS6pEQ
+	 zfv4+u0f5DtQA==
+Date: Wed, 11 Jun 2025 11:29:26 -0700
+From: Namhyung Kim <namhyung@kernel.org>
+To: Blake Jones <blakejones@google.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Tomas Glozar <tglozar@redhat.com>,
+	James Clark <james.clark@linaro.org>, Leo Yan <leo.yan@arm.com>,
+	Guilherme Amadio <amadio@gentoo.org>,
+	Yang Jihong <yangjihong@bytedance.com>,
+	Charlie Jenkins <charlie@rivosinc.com>,
+	Chun-Tse Shao <ctshao@google.com>,
+	Aditya Gupta <adityag@linux.ibm.com>,
+	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+	Zhongqiu Han <quic_zhonhan@quicinc.com>,
+	Andi Kleen <ak@linux.intel.com>, Dmitry Vyukov <dvyukov@google.com>,
+	Yujie Liu <yujie.liu@intel.com>,
+	Graham Woodward <graham.woodward@arm.com>,
+	Yicong Yang <yangyicong@hisilicon.com>,
+	Ben Gainey <ben.gainey@arm.com>, linux-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v3 0/5] perf: generate events for BPF metadata
+Message-ID: <aEnLBgCTuuZjeakP@google.com>
+References: <20250606215246.2419387-1-blakejones@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250606215246.2419387-1-blakejones@google.com>
 
-On Tue, 2025-06-10 at 18:13 -0400, Harishankar Vishwanathan wrote:
-> This patch improves the precison of the scalar(32)_min_max_add and
-> scalar(32)_min_max_sub functions, which update the u(32)min/u(32)_max
-> ranges for the BPF_ADD and BPF_SUB instructions. We discovered this more
-> precise operator using a technique we are developing for automatically
-> synthesizing functions for updating tnums and ranges.
->=20
-> According to the BPF ISA [1], "Underflow and overflow are allowed during
-> arithmetic operations, meaning the 64-bit or 32-bit value will wrap".
-> Our patch leverages the wrap-around semantics of unsigned overflow and
-> underflow to improve precision.
->=20
-> Below is an example of our patch for scalar_min_max_add; the idea is
-> analogous for all four functions.
->=20
-> There are three cases to consider when adding two u64 ranges [dst_umin,
-> dst_umax] and [src_umin, src_umax]. Consider a value x in the range
-> [dst_umin, dst_umax] and another value y in the range [src_umin,
-> src_umax].
->=20
-> (a) No overflow: No addition x + y overflows. This occurs when even the
-> largest possible sum, i.e., dst_umax + src_umax <=3D U64_MAX.
->=20
-> (b) Partial overflow: Some additions x + y overflow. This occurs when
-> the largest possible sum overflows (dst_umax + src_umax > U64_MAX), but
-> the smallest possible sum does not overflow (dst_umin + src_umin <=3D
-> U64_MAX).
->=20
-> (c) Full overflow: All additions x + y overflow. This occurs when both
-> the smallest possible sum and the largest possible sum overflow, i.e.,
-> both (dst_umin + src_umin) and (dst_umax + src_umax) are > U64_MAX.
->=20
-> The current implementation conservatively sets the output bounds to
-> unbounded, i.e, [umin=3D0, umax=3DU64_MAX], whenever there is *any*
-> possibility of overflow, i.e, in cases (b) and (c). Otherwise it
-> computes tight bounds as [dst_umin + src_umin, dst_umax + src_umax]:
->=20
-> if (check_add_overflow(*dst_umin, src_reg->umin_value, dst_umin) ||
->     check_add_overflow(*dst_umax, src_reg->umax_value, dst_umax)) {
-> 	*dst_umin =3D 0;
-> 	*dst_umax =3D U64_MAX;
-> }
->=20
-> Our synthesis-based technique discovered a more precise operator.
-> Particularly, in case (c), all possible additions x + y overflow and
-> wrap around according to eBPF semantics, and the computation of the
-> output range as [dst_umin + src_umin, dst_umax + src_umax] continues to
-> work. Only in case (b), do we need to set the output bounds to
-> unbounded, i.e., [0, U64_MAX].
->=20
-> Case (b) can be checked by seeing if the minimum possible sum does *not*
-> overflow and the maximum possible sum *does* overflow, and when that
-> happens, we set the output to unbounded:
->=20
-> min_overflow =3D check_add_overflow(*dst_umin, src_reg->umin_value, dst_u=
-min);
-> max_overflow =3D check_add_overflow(*dst_umax, src_reg->umax_value, dst_u=
-max);
->=20
-> if (!min_overflow && max_overflow) {
-> 	*dst_umin =3D 0;
-> 	*dst_umax =3D U64_MAX;
-> }
->=20
-> Below is an example eBPF program and the corresponding log from the
-> verifier. Before instruction 6, register r3 has bounds
-> [0x8000000000000000, U64_MAX].
->=20
-> The current implementation sets r3's bounds to [0, U64_MAX] after
-> instruction r3 +=3D r3, due to conservative overflow handling.
->=20
-> 0: R1=3Dctx() R10=3Dfp0
-> 0: (18) r3 =3D 0x8000000000000000       ; R3_w=3D0x8000000000000000
-> 2: (18) r4 =3D 0x0                      ; R4_w=3D0
-> 4: (87) r4 =3D -r4                      ; R4_w=3Dscalar()
-> 5: (4f) r3 |=3D r4                      ; R3_w=3Dscalar(smax=3D-1,umin=3D=
-0x8000000000000000,var_off=3D(0x8000000000000000; 0x7fffffffffffffff)) R4_w=
-=3Dscalar()
-> 6: (0f) r3 +=3D r3                      ; R3_w=3Dscalar()
-> 7: (b7) r0 =3D 1                        ; R0_w=3D1
-> 8: (95) exit
->=20
-> With our patch, r3's bounds after instruction 6 are set to a more precise
-> [0, 0xfffffffffffffffe].
->=20
-> ...
-> 6: (0f) r3 +=3D r3                      ; R3_w=3Dscalar(umax=3D0xffffffff=
-fffffffe)
-> 7: (b7) r0 =3D 1                        ; R0_w=3D1
-> 8: (95) exit
->=20
-> The logic for scalar32_min_max_add is analogous. For the
-> scalar(32)_min_max_sub functions, the reasoning is similar but applied
-> to detecting underflow instead of overflow.
->=20
-> We verified the correctness of the new implementations using Agni [3,4].
->=20
-> We since also discovered that a similar technique has been used to
-> calculate output ranges for unsigned interval addition and subtraction
-> in Hacker's Delight [2].
->=20
-> [1] https://docs.kernel.org/bpf/standardization/instruction-set.html
-> [2] Hacker's Delight Ch.4-2, Propagating Bounds through Add=E2=80=99s and=
- Subtract=E2=80=99s
-> [3] https://github.com/bpfverif/agni
-> [4] https://people.cs.rutgers.edu/~sn349/papers/sas24-preprint.pdf
->=20
-> Co-developed-by: Matan Shachnai <m.shachnai@rutgers.edu>
-> Signed-off-by: Matan Shachnai <m.shachnai@rutgers.edu>
-> Co-developed-by: Srinivas Narayana <srinivas.narayana@rutgers.edu>
-> Signed-off-by: Srinivas Narayana <srinivas.narayana@rutgers.edu>
-> Co-developed-by: Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>
-> Signed-off-by: Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>
-> Signed-off-by: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.c=
-om>
-> ---
+Hi Blake,
 
-Is this patch dictated by mere possibility of improvement or you
-observed some C programs that can benefit from the change?
+On Fri, Jun 06, 2025 at 02:52:41PM -0700, Blake Jones wrote:
+> Commit ffa915f46193 ("Merge branch 'bpf_metadata'"), from September 2020,
+> added support to the kernel, libbpf, and bpftool to treat read-only BPF
+> variables that have names starting with 'bpf_metadata_' specially. This
+> patch series updates perf to handle these variables similarly, allowing a
+> perf.data file to capture relevant information about BPF programs on the
+> system being profiled.
+> 
+> When it encounters a BPF program, it reads the program's maps to find an
+> '.rodata' map with 'bpf_metadata_' variables. If it finds one, it extracts
+> their values as strings, and creates a new PERF_RECORD_BPF_METADATA
+> synthetic event using that data. It does this both for BPF programs that
+> were loaded when a 'perf record' starts, as well as for programs that are
+> loaded while the profile is running. For the latter case, it stores the
+> metadata for the duration of the profile, and then dumps it at the end of
+> the profile, where it's in a better context to do so.
+> 
+> The PERF_RECORD_BPF_METADATA event holds an array of key-value pairs, where
+> the key is the variable name (minus the "bpf_metadata_" prefix) and the
+> value is the variable's value, formatted as a string. There is one such
+> event generated for each BPF subprogram. Generating it per subprogram
+> rather than per program allows it to be correlated with PERF_RECORD_KSYMBOL
+> events; the metadata event's "prog_name" is designed to be identical to the
+> "name" field of a perf_record_ksymbol. This allows specific BPF metadata to
+> be associated with each BPF address range in the collection.
+> 
+> Changes:
+> 
+> * v2 -> v3:
+>   - Split out event collection from event display.
+>   - Resync with tmp.perf-tools-next.
+>   - Link to v2:
+>     https://lore.kernel.org/linux-perf-users/20250605233934.1881839-1-blakejones@google.com/T/#t
+> 
+> * v1 -> v2:
+>   - Split out libbpf change and send it to the bpf tree.
+>   - Add feature detection to perf to detect the libbpf change.
+>   - Allow the feature to be skipped if the libbpf support is not found.
+>   - Add an example of a PERF_RECORD_BPF_METADATA record.
+>   - Change calloc() calls to zalloc().
+>   - Don't check for NULL before calling free().
+>   - Update the perf_event header when it is created, rather than
+>     storing the event size and updating it later.
+>   - Add a BPF metadata variable (with the perf version) to all
+>     perf BPF programs.
+>   - Update the selftest to look for the new perf_version variable.
+>   - Split out the selftest into its own patch.
+>   - Link to v1:
+>     https://lore.kernel.org/linux-perf-users/20250521222725.3895192-1-blakejones@google.com/T/#t
+> 
+> Blake Jones (5):
+>   perf: detect support for libbpf's emit_strings option
+>   perf: collect BPF metadata from existing BPF programs
+>   perf: collect BPF metadata from new programs
+>   perf: display the new PERF_RECORD_BPF_METADATA event
+>   perf: add test for PERF_RECORD_BPF_METADATA collection
 
-Could you please add selftests covering each overflow / underflow
-combination?
-Please use same framework as tools/testing/selftests/bpf/progs/verifier_and=
-.c.
+I tried to process your patches but it failed to build like below:
 
-[...]
+  util/bpf-event.h: In function 'bpf_metadata_free':
+  util/bpf-event.h:68:59: error: unused parameter 'metadata' [-Werror=unused-parameter]
+     68 | static inline void bpf_metadata_free(struct bpf_metadata *metadata)
+        |                                      ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
+
+It was a simple to fix by adding __maybe_unused but after that I got
+another build error so I stopped.
+
+  /usr/bin/ld: /tmp/tmp.N9VJQ2A3pl/perf-in.o: in function `cmd_record':
+  (.text+0x191ae): undefined reference to `perf_event__synthesize_final_bpf_metadata'
+  collect2: error: ld returned 1 exit status
+  make[4]: *** [Makefile.perf:804: /tmp/tmp.N9VJQ2A3pl/perf] Error 1
+  make[4]: *** Waiting for unfinished jobs....
+  make[3]: *** [Makefile.perf:290: sub-make] Error 2
+  make[2]: *** [Makefile:76: all] Error 2
+  make[1]: *** [tests/make:341: make_no_libbpf_O] Error 1
+  make: *** [Makefile:109: build-test] Error 2
+
+Please run 'make build-test' and send v4.
+
+Thanks,
+Namhyung
+
+> 
+>  tools/build/Makefile.feature                |   1 +
+>  tools/build/feature/Makefile                |   4 +
+>  tools/build/feature/test-libbpf-strings.c   |  10 +
+>  tools/lib/perf/include/perf/event.h         |  18 +
+>  tools/perf/Documentation/perf-check.txt     |   1 +
+>  tools/perf/Makefile.config                  |  12 +
+>  tools/perf/Makefile.perf                    |   3 +-
+>  tools/perf/builtin-check.c                  |   1 +
+>  tools/perf/builtin-inject.c                 |   1 +
+>  tools/perf/builtin-record.c                 |   8 +
+>  tools/perf/builtin-script.c                 |  15 +-
+>  tools/perf/tests/shell/test_bpf_metadata.sh |  76 ++++
+>  tools/perf/util/bpf-event.c                 | 378 ++++++++++++++++++++
+>  tools/perf/util/bpf-event.h                 |  13 +
+>  tools/perf/util/bpf_skel/perf_version.h     |  17 +
+>  tools/perf/util/env.c                       |  19 +-
+>  tools/perf/util/env.h                       |   4 +
+>  tools/perf/util/event.c                     |  21 ++
+>  tools/perf/util/event.h                     |   1 +
+>  tools/perf/util/header.c                    |   1 +
+>  tools/perf/util/session.c                   |   4 +
+>  tools/perf/util/synthetic-events.h          |   2 +
+>  tools/perf/util/tool.c                      |  14 +
+>  tools/perf/util/tool.h                      |   3 +-
+>  24 files changed, 622 insertions(+), 5 deletions(-)
+>  create mode 100644 tools/build/feature/test-libbpf-strings.c
+>  create mode 100755 tools/perf/tests/shell/test_bpf_metadata.sh
+>  create mode 100644 tools/perf/util/bpf_skel/perf_version.h
+> 
+> -- 
+> 2.50.0.rc0.604.gd4ff7b7c86-goog
+> 
 
