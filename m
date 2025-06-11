@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-60416-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60417-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D675AAD63AD
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 01:11:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0A2FAD63B1
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 01:11:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A8257A9AC6
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 23:09:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 210A418863A7
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 23:10:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 725772505CB;
-	Wed, 11 Jun 2025 23:10:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 205F2257448;
+	Wed, 11 Jun 2025 23:10:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F2gMLPxA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O9YySEnf"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E805B24EAAF
-	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 23:10:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92632254848;
+	Wed, 11 Jun 2025 23:10:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749683414; cv=none; b=T9Q7P5H3ydRd73a2wvAnt560Mrc7WCMKdgTCks8fSCUZQp2c/1R41d6ZmlX275s6HKWOfPo/CiDqjYXeHuRnXidH16GgoKDAsy6ZXqV1TVWJTwTf2ro3q+ka/i4eEUPjZ91KgXd/8DTjMsglRWb3z+/cRZ1ZsDu1YTbB4Y+WwOk=
+	t=1749683416; cv=none; b=fIPW5kvnirsUQ7VNeB4UL6/kCTSeNgVTPbl5Vbajy9YpN4VT3yKu0ActJQS11TkBvHiRf6hcqPm3Rv54vDSJKMALHWgl/KQdlwHG07ach2RlpvHwRUdg1AO8lZ2Nuv+ggMxyU65ig2cs4GgItj9XGI7i+gxtmchNY2pg30T4wOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749683414; c=relaxed/simple;
-	bh=0ohRqrwkF7nose7c550XgQX7gEtSowg8VJQPhejwJTw=;
+	s=arc-20240116; t=1749683416; c=relaxed/simple;
+	bh=S/zN57o/a580ZWcuxntqq1DlFtuBBkxLAkhEXK6n3Kk=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=gDnJMgyKzB414jB+/hPnMSp3uS+6xRUz8XPmQMkg0N64WSuJfOulOIAXVIaMaayRfSQfdJm1IeShZACierJ2pFQ/DDZ5RV/lxqnhvKnMhNQ69sYzzy7lxF8KueRKp87zF3uXQuqdwTu/P0Dt+EXNWBbCHyBMiENljCocUFl3518=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F2gMLPxA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72FD9C4CEE3;
-	Wed, 11 Jun 2025 23:10:13 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=pYNEx1yp9OrOQ5sqBkyyjUu2r1a0vVxgxYiw3sdLSVA01GFST9LVNnbZX5QX9x81tPSmfgv++wqFVLE13XMRzTyvOuz2nel+mAJlWwXdDNfsl/DrxvCt4auWTnjGXyqbCKi+Qwhr0wI7Swh/e6KeSPL3mClPGbHX8oCDiV8YOtM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O9YySEnf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29C9BC4CEE3;
+	Wed, 11 Jun 2025 23:10:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749683413;
-	bh=0ohRqrwkF7nose7c550XgQX7gEtSowg8VJQPhejwJTw=;
+	s=k20201202; t=1749683415;
+	bh=S/zN57o/a580ZWcuxntqq1DlFtuBBkxLAkhEXK6n3Kk=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=F2gMLPxAC5Pq82obJYkeVRn/ICAqSgmTADN5f+6LBFEtEJ2lJ8nl7utanO5fHdzPv
-	 n3CCk6aEcqbdgA6xvu3gPl0q3y8S+aKWAHwY/anCxi//5wQkDUXWSs62F7Vh/Rf6PC
-	 K7K5k/Vnh1kJwHHIyyY9IQnQmXLamiSqZhiYj2zvyKrsrQfjDxKW5c4ENej1lfKqFn
-	 Y9z6po6Kfep4sipFVq8Uv4dbKdsRGjkjIOYVq5/14i80ask1/bZDrOi9isiosoNvo2
-	 60Mi0JlCsaNThwdp9B0SR4bySBdq2bksvHnFq1q6njVc/Kkex2J2NUJXIkMRpwNMFA
-	 aohu7dyas5niQ==
+	b=O9YySEnfyfXm93lZDKpUcZMnK3Owl7UPmVV0M8tXmrmbnorwXuG+Dp5MLA7NxNwj2
+	 lNpLJyFdz96APUeAyJL3DyuBP+zIcdJ24PxejExWwu+px2PR3bz/d2RKQIQObNiF4c
+	 2ZSzYr68ItHZO2U45eN6eMSP/XMYLQ509OFf9FXfHhkZWvbNGWAEiolYmudGdcWjyo
+	 qRq329a6V+jRBXNTlkh0z+28NxFuIR+R0B80ABP+71ojQ0eBWvwCUCJjzp25x0ZEMe
+	 uFA88+OHxYOWgyKlMQsNRbt3VWHm48vkYL4xWTeI8mSBmb/ztBtkJ0OhG/9+i7Cdlc
+	 1Wa+VeL+lmZ2Q==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADE0F380DBE9;
-	Wed, 11 Jun 2025 23:10:44 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70C97380DBE9;
+	Wed, 11 Jun 2025 23:10:46 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,60 +52,45 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v3 00/11] bpf: propagate read/precision marks
- over
- state graph backedges
+Subject: Re: [PATCH bpf-next] bpf: Fix state use-after-free on push_stack()
+ err
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <174968344350.3524559.14906547029551737094.git-patchwork-notify@kernel.org>
-Date: Wed, 11 Jun 2025 23:10:43 +0000
-References: <20250611200546.4120963-1-eddyz87@gmail.com>
-In-Reply-To: <20250611200546.4120963-1-eddyz87@gmail.com>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
- yonghong.song@linux.dev
+ <174968344511.3524559.6735332386842029341.git-patchwork-notify@kernel.org>
+Date: Wed, 11 Jun 2025 23:10:45 +0000
+References: <20250611210728.266563-1-luis.gerhorst@fau.de>
+In-Reply-To: <20250611210728.266563-1-luis.gerhorst@fau.de>
+To: Luis Gerhorst <luis.gerhorst@fau.de>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, memxor@gmail.com,
+ henriette.herzog@rub.de, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ syzbot+b5eb72a560b8149a1885@syzkaller.appspotmail.com
 
 Hello:
 
-This series was applied to bpf/bpf-next.git (master)
+This patch was applied to bpf/bpf-next.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Wed, 11 Jun 2025 13:05:35 -0700 you wrote:
-> Current loop_entry-based states comparison logic does not handle the
-> following case:
+On Wed, 11 Jun 2025 23:07:28 +0200 you wrote:
+> Without this, `state->speculative` is used after the cleanup cycles in
+> push_stack() or push_async_cb() freed `env->cur_state` (i.e., `state`).
+> Avoid this by relying on the short-circuit logic to only access `state`
+> if the error is recoverable (and make sure it never is after push_*()
+> failed).
 > 
->  .-> A --.  Assume the states are visited in the order A, B, C.
->  |   |   |  Assume that state B reaches a state equivalent to state A.
->  |   v   v  At this point, state C is not processed yet, so state A
->  '-- B   C  has not received any read or precision marks from C.
->             As a result, these marks won't be propagated to B.
+> push_*() callers must always return an error for which
+> error_recoverable_with_nospec(err) is false if push_*() returns NULL,
+> otherwise we try to recover and access the stale `state`. This is only
+> violated by sanitize_ptr_alu(), thus also fix this case to return
+> -ENOMEM.
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next,v3,01/11] Revert "bpf: use common instruction history across all states"
-    (no matching commit)
-  - [bpf-next,v3,02/11] bpf: compute SCCs in program control flow graph
-    https://git.kernel.org/bpf/bpf-next/c/de270addb499
-  - [bpf-next,v3,03/11] bpf: frame_insn_idx() utility function
-    https://git.kernel.org/bpf/bpf-next/c/2ca9f34850d6
-  - [bpf-next,v3,04/11] bpf: starting_state parameter for __mark_chain_precision()
-    https://git.kernel.org/bpf/bpf-next/c/8e1acf430049
-  - [bpf-next,v3,05/11] bpf: set 'changed' status if propagate_precision() did any updates
-    https://git.kernel.org/bpf/bpf-next/c/a8b96f6950d5
-  - [bpf-next,v3,06/11] bpf: set 'changed' status if propagate_liveness() did any updates
-    https://git.kernel.org/bpf/bpf-next/c/6b3f95cd99f8
-  - [bpf-next,v3,07/11] bpf: move REG_LIVE_DONE check to clean_live_states()
-    https://git.kernel.org/bpf/bpf-next/c/d297ccb27e04
-  - [bpf-next,v3,08/11] bpf: propagate read/precision marks over state graph backedges
-    (no matching commit)
-  - [bpf-next,v3,09/11] bpf: remove {update,get}_loop_entry functions
-    https://git.kernel.org/bpf/bpf-next/c/49af1fa94a93
-  - [bpf-next,v3,10/11] bpf: include backedges in peak_states stat
-    https://git.kernel.org/bpf/bpf-next/c/346757cf121d
-  - [bpf-next,v3,11/11] selftests/bpf: tests with a loop state missing read/precision mark
-    https://git.kernel.org/bpf/bpf-next/c/69afa150dfa2
+  - [bpf-next] bpf: Fix state use-after-free on push_stack() err
+    https://git.kernel.org/bpf/bpf-next/c/1c66f4a3612c
 
 You are awesome, thank you!
 -- 
