@@ -1,202 +1,153 @@
-Return-Path: <bpf+bounces-60297-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60298-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A260AD4962
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 05:32:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB06EAD497D
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 05:40:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C339189EA36
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 03:32:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B388B3A607E
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 03:40:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CA271991A9;
-	Wed, 11 Jun 2025 03:32:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D82C31F7904;
+	Wed, 11 Jun 2025 03:40:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lKO6vSi1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZESwgR2e"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9169186A;
-	Wed, 11 Jun 2025 03:32:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EACC481749;
+	Wed, 11 Jun 2025 03:40:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749612754; cv=none; b=OWXlM/uNa2TfZInpXV2FYm1RCN1k08siyXoikslaBKkSGNll8L7enElTsc8IoOZ4z6nM/YbLwx8+i7r9o7umR78UmixlEHfV97iGJ7unaQpufRcwLyyCxHMtrvCtbSgFJW3t0AwrTAsWIytaUlpjYPhSVC3OIIZsCPm94wLOtzc=
+	t=1749613218; cv=none; b=ZYFaSi0CSdfoszg/meuFj7NtB31w54BQzy4utcavC+qeryozt/vgWDJlTVkpNz92vWbdHgBIHu9hvjMm7+huipNWyVwPqFzYHn0fdchRHx/XChW3M5bv8VukIJBoyGZup9Y+vXrRJQ3KhY2sH+o3iT+yR7q4gWFFTqzjecBFGOk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749612754; c=relaxed/simple;
-	bh=1E/wjok6CGwwgtqBs99Yk4TdTKJQWmkuSCyoxzkv1wI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lUdjLIOiuXxGPug8n6sm0PB2Q60gZjWXu5J2u9/aj3WFrRDq7tfF53LL3kYaLEFO+T9yvVZIcj6UyPO4RsmmeA2boIkgdcL8hGXR6UwL0DmiESkdD8mLl6LqXjIfHTaQYVOR+eWQbaLxgI9yROepLSFqkdHeYCMBiiTTGCqVHg0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lKO6vSi1; arc=none smtp.client-ip=209.85.221.51
+	s=arc-20240116; t=1749613218; c=relaxed/simple;
+	bh=rPVriNA7cxls0TdVbUs4Xq8KhWGVGAU8k13T96+qt+k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TUG4GHYG6zwex4FB99knROU0Us9RVziJKtZy/dbqRhGj/gU5Fd/h36BLFbXmG54PxCJhhg0uy7RRdDwM37r04IHhezlEXRGyMj8xw8+ru5BWZgIlioVmBV2uFF1yibC7mU4vhq8F1yj2t/pWLjfQ15GvnZGMTVqZOW0qQWlwA4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZESwgR2e; arc=none smtp.client-ip=209.85.216.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3a4fd1ba177so307474f8f.0;
-        Tue, 10 Jun 2025 20:32:32 -0700 (PDT)
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-312028c644bso4706237a91.0;
+        Tue, 10 Jun 2025 20:40:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749612751; x=1750217551; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nLenIOOCLQXfsIRKzbAicYiRT1mXnLSvtehG1XdOuXw=;
-        b=lKO6vSi1/MI3Tz6r7fT1bc1gpxgHvUTloI7SGcGsORyIM3KKZ+eP61jPUFS4kDEL10
-         J1N0B0t9jjOSdkFPlHN2x4JSErccTnv4s3ey5TIXKWKt7fwuNahs5zuwmecIL6uhO/xl
-         Mx6YkyeHbL9J1WKkeTo+80cDCVrv7uFuM6F0helCsH1AMpYWI4eKyC8AmEbUg36+G2vt
-         SZp/JEnwU0E6Sdk/EeHtkpl0yieZaBwkZYnwHpps+3OJOxYPKep9Oe6HoQ+J2z79brM3
-         PYmDMPuyqTVm8flHS1ul97OHqRivOEtcErNaSoUjjTtmsn53f7T0vi5blBiEJIq4ok2c
-         dYuw==
+        d=gmail.com; s=20230601; t=1749613216; x=1750218016; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZHZXq9/HSysGqtsKjHNbmYLUzfUw6ExCfU0Zi8dr+gw=;
+        b=ZESwgR2eV9qBwoxBdb+R3O/sqRzKQN0fS5mxaVulebOETj6rkkPGqYBiFWTREmwcC3
+         WXXibFMRHctCUjp+lL6E82Og+vr/l2K7xanlOj5IwQ5pE4PyQexZNx2SyI8OaF8WEwDZ
+         drasFVtqTiNq3yR9pzWDlbnJBcUMWId23djAvrgKt5bepv6JTSFaKP6NVFYEp3rWTTcy
+         wW1FEtbnuQY1UkxCOsqT6MnWcft6zihvmeziMwrNYO+JZ4cxGEs5Tpk0DY+1+/sNXN0I
+         XNh4wsFi1kSHYkGE4AkX7Lbo5g8ZUu/9+kV8/pCa5RQXOPjY6lw677v2nrvX3vN7euCn
+         bJqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749612751; x=1750217551;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nLenIOOCLQXfsIRKzbAicYiRT1mXnLSvtehG1XdOuXw=;
-        b=OpHVZpeJirHzPrh8o5072We9uWX40yl5+5Ug0ubpMb2Cxz7fCrvpgRdSvBTezWNhmp
-         U1wSo7X6pASYxpe21lqcfB8H2yKrKg4AT82YSAb9JzIg6IAQKOe/xLpQqgmWwnFq6Y7H
-         SS4MXxEvjjd+5lBPyxEtUKNj70zu0wX9FpM0PEBMhhac0zHn3CFSssZVYsXvX7ZbKIMa
-         76pU91O7ZjcxY+p1pnBxEhvcq2vZFWuObers6HPtSN+6mbUsyZunAFt8FtK3eZVy8jJv
-         tlldVqdpRoIo+RFPQEXKqQ+tB8YytNuLXDW5sCjRHWY4e9VFQyTiBc12CUFQers+WtvQ
-         F9Zw==
-X-Forwarded-Encrypted: i=1; AJvYcCU+dZrxwY/v0i/E/sLUaRkwhDMhkhBu0g0NwvPDMX7RJ0WNZxM6AWh4g3fKjR9NE8ihHoc=@vger.kernel.org, AJvYcCVaSmLpUnYdun2uqkx2KIqWw1auT/3BQjb0oZLDAYOtOlw7L1WTdHsOZbj2Yn6sqPfWJkGfAt/sy+b81Afy@vger.kernel.org
-X-Gm-Message-State: AOJu0YzGUKnq4keXjhF5OBnZrGnn36ChYhXGm2Qa9rEd1V3CqCDxVmad
-	/trJpcHisrtWAdjcdMhMXujAFmgfWgPMhSXSRbxj5jucODyHtkk6AETameaU/wYzZMHpfYG5m/l
-	zXrhoz6srMuuo98hUfHDvDEubtKGaTVA=
-X-Gm-Gg: ASbGncuxmOuDslDRaQ6j7mVusFD03IxaxAn8G5qAT6BKCR3zxiWs3p4bql7XU+UrGnc
-	3aUfJffTYfSrTRA1Hf+3ZBMJ2niH0EP6uZppdkH8xcqzOxgEDL1uvPAgX2ZZib6Xte/oKTs5r0c
-	1gb4AG12NyhYSSoq9VtxdqRuS6rd5k1TOs/8y1Iuv06el9pyXo6nry9yYQ7pYWa+7mxtYgJwuO
-X-Google-Smtp-Source: AGHT+IH/r58d0YG7LtQz9Os1cCp4W28yg6nFPp8bPRjmdKTBD8o5lW2KoBCX4QfjTf911mmlc2+WvBofQjVI+4GjbLw=
-X-Received: by 2002:a05:6000:2405:b0:3a5:281b:9fac with SMTP id
- ffacd0b85a97d-3a5582431f7mr1118417f8f.17.1749612751076; Tue, 10 Jun 2025
- 20:32:31 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1749613216; x=1750218016;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZHZXq9/HSysGqtsKjHNbmYLUzfUw6ExCfU0Zi8dr+gw=;
+        b=JQbbCZidXsJY1G7ovVyKszsB40bXweybL7sUUsEu9PFmbGF1Ew8/f/HEXwBT0aujOd
+         Kohn3qjKRKtUnqSVoTe0UuHpOlqyTZ/S5XD7YMG1HhT1csbbB7ZMO1XUyl3f+Hrf+Mk3
+         GbUjEDAFn2c5oQQ35dUAM9+0GQjTwyJi15ddTs+bwpotIUVYhEoyl0tHTLvT8YCDZphH
+         +0JCyaD8DnTlI8jqfSBe5WgTEq8CllKVoWoHgqN66LuxmKCYQ2EWyr75WHqW1FZD0Y0w
+         xWweVKE5qYhwr61/UpViwagMm+cdm7Uoka87WRdyr5DKB1VwmCN+Rth7r7rtDmbgj2lj
+         Q0XQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVU/r9DUx4SR9Ss0wMMd44dDQ2LLmm4OTQMrLkBGgAfkn2JUXEWQZGuGD8sUNLCMGvb40wrx0fm@vger.kernel.org, AJvYcCXP0uia2tSPf6wKjlYmscruEvROISr6MEIHd4oA1orfhwUHBf4whtU2urN/XA45n7TIUZw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyIZsXkkl1hESu4+2xX08F87XDkdt0BtHzf8xGlhvLNy8SFpQ+t
+	DtulveK4GepEXBmtdYkJiN+jKd8607oXbsbbPNCc3c7O0Kd2q+Xr8Ns=
+X-Gm-Gg: ASbGncvnYw7ptOAI5MEgBL/kFLrGnwbaD3K/VzblKWPb+lHChPS7iy0fay7EDceVg4V
+	9RLzNEocaTfCymQLCXmmH8WTmi86jXNff8XGMsjNDvmj2qiv4L3qpZy3n+Ov9QzanBBPAAb+g5N
+	0+ZXJ3+UYYqoWrL+oIRT+ivz0sZEq/Tt+XpIW4Z2mb8kjPVM/ZVWc/ai/ppuWYHQDs1KX+v261y
+	6VdpA1hCJlrJakwQsVfnzAhATQ8sKdjwZtb/50taDRaGjA6s0caoF5afh8xdayvyBaIKIOshUul
+	Po41aG2NXcBYwO3Vk2IR607jpRMtYreQBz7YE3ZAiVGmhX9udCbAV2LLDFkYi5HS23OwYfeuy+P
+	Bqp2D6P2qwJnd6/CLxevj79o=
+X-Google-Smtp-Source: AGHT+IHvl4h1exi8ywoBtqahTT6cB9WdxUmxRjR4cIi8C/TCYDUq70I/2vURRUdE43RufRpKbowwuw==
+X-Received: by 2002:a17:90b:5107:b0:312:1c83:58e7 with SMTP id 98e67ed59e1d1-313af11f53dmr2459071a91.1.1749613216026;
+        Tue, 10 Jun 2025 20:40:16 -0700 (PDT)
+Received: from localhost (c-73-158-218-242.hsd1.ca.comcast.net. [73.158.218.242])
+        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-23603504eefsm78038785ad.218.2025.06.10.20.40.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Jun 2025 20:40:15 -0700 (PDT)
+Date: Tue, 10 Jun 2025 20:40:14 -0700
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Lorenzo Bianconi <lorenzo@kernel.org>
+Cc: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org,
+	netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <borkmann@iogearbox.net>,
+	Eric Dumazet <eric.dumazet@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Paolo Abeni <pabeni@redhat.com>, sdf@fomichev.me,
+	kernel-team@cloudflare.com, arthur@arthurfabre.com,
+	jakub@cloudflare.com, Magnus Karlsson <magnus.karlsson@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: Re: [PATCH bpf-next V1 7/7] net: xdp: update documentation for
+ xdp-rx-metadata.rst
+Message-ID: <aEj6nqH85uBe2IlW@mini-arch>
+References: <174897271826.1677018.9096866882347745168.stgit@firesoul>
+ <174897279518.1677018.5982630277641723936.stgit@firesoul>
+ <aEJWTPdaVmlIYyKC@mini-arch>
+ <bf7209aa-8775-448d-a12e-3a30451dad22@iogearbox.net>
+ <87plfbcq4m.fsf@toke.dk>
+ <aEixEV-nZxb1yjyk@lore-rh-laptop>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250528034712.138701-1-dongml2@chinatelecom.cn>
-In-Reply-To: <20250528034712.138701-1-dongml2@chinatelecom.cn>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 10 Jun 2025 20:32:20 -0700
-X-Gm-Features: AX0GCFtkUmz4z26cipOWR3NlyYNmRVyLxzGnqs4BY6NbTkQ2hzmnJshZZYUpsOE
-Message-ID: <CAADnVQ+G+mQPJ+O1Oc9+UW=J17CGNC5B=usCmUDxBA-ze+gZGw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 00/25] bpf: tracing multi-link support
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Menglong Dong <dongml2@chinatelecom.cn>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <aEixEV-nZxb1yjyk@lore-rh-laptop>
 
-On Tue, May 27, 2025 at 8:49=E2=80=AFPM Menglong Dong <menglong8.dong@gmail=
-.com> wrote:
->
-> 1. Add per-function metadata storage support.
-> 2. Add bpf global trampoline support for x86_64.
-> 3. Add bpf global trampoline link support.
-> 4. Add tracing multi-link support.
-> 5. Compatibility between tracing and tracing_multi.
+On 06/11, Lorenzo Bianconi wrote:
+> > Daniel Borkmann <daniel@iogearbox.net> writes:
+> > 
+> [...]
+> > >> 
+> > >> Why not have a new flag for bpf_redirect that transparently stores all
+> > >> available metadata? If you care only about the redirect -> skb case.
+> > >> Might give us more wiggle room in the future to make it work with
+> > >> traits.
+> > >
+> > > Also q from my side: If I understand the proposal correctly, in order to fully
+> > > populate an skb at some point, you have to call all the bpf_xdp_metadata_* kfuncs
+> > > to collect the data from the driver descriptors (indirect call), and then yet
+> > > again all equivalent bpf_xdp_store_rx_* kfuncs to re-store the data in struct
+> > > xdp_rx_meta again. This seems rather costly and once you add more kfuncs with
+> > > meta data aren't you better off switching to tc(x) directly so the driver can
+> > > do all this natively? :/
+> > 
+> > I agree that the "one kfunc per metadata item" scales poorly. IIRC, the
+> > hope was (back when we added the initial HW metadata support) that we
+> > would be able to inline them to avoid the function call overhead.
+> > 
+> > That being said, even with half a dozen function calls, that's still a
+> > lot less overhead from going all the way to TC(x). The goal of the use
+> > case here is to do as little work as possible on the CPU that initially
+> > receives the packet, instead moving the network stack processing (and
+> > skb allocation) to a different CPU with cpumap.
+> > 
+> > So even if the *total* amount of work being done is a bit higher because
+> > of the kfunc overhead, that can still be beneficial because it's split
+> > between two (or more) CPUs.
+> > 
+> > I'm sure Jesper has some concrete benchmarks for this lying around
+> > somewhere, hopefully he can share those :)
+> 
+> Another possible approach would be to have some utility functions (not kfuncs)
+> used to 'store' the hw metadata in the xdp_frame that are executed in each
+> driver codebase before performing XDP_REDIRECT. The downside of this approach
+> is we need to parse the hw metadata twice if the eBPF program that is bounded
+> to the NIC is consuming these info. What do you think?
 
-...
-
-> ... and I think it will be a
-> liberation to split it out to another series :/
-
-There are lots of interesting ideas here and you know
-already what the next step should be...
-Split it into small chunks.
-As presented it's hard to review and even if maintainers take on
-that challenge the set is unlandable, since it spans various
-subsystems.
-
-In a small reviewable patch set we can argue about
-approach A vs B while the current set has too many angles
-to argue about.
-Like the new concept of global trampoline.
-It's nice to write bpf_global_caller() in asm
-compared to arch_prepare_bpf_trampoline() that emits asm
-on the fly, but it seems the only thing where it truly
-needs asm is register save/restore. The rest can be done in C.
-I suspect the whole gtramp can be written in C.
-There is an attribute(interrupt) that all compilers support...
-or use no attributes and inline asm for regs save/restore ?
-or attribute(naked) and more inline asm ?
-
-> no-mitigate + hash table mode
-> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> nop     | fentry    | fm_single | fm_all    | km_single | km_all
-> 9.014ms | 162.378ms | 180.511ms | 446.286ms | 220.634ms | 1465.133ms
-> 9.038ms | 161.600ms | 178.757ms | 445.807ms | 220.656ms | 1463.714ms
-> 9.048ms | 161.435ms | 180.510ms | 452.530ms | 220.943ms | 1487.494ms
-> 9.030ms | 161.585ms | 178.699ms | 448.167ms | 220.107ms | 1463.785ms
-> 9.056ms | 161.530ms | 178.947ms | 445.609ms | 221.026ms | 1560.584ms
-
-...
-
-> no-mitigate + function padding mode
-> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> nop     | fentry    | fm_single | fm_all    | km_single | km_all
-> 9.320ms | 166.454ms | 184.094ms | 193.884ms | 227.320ms | 1441.462ms
-> 9.326ms | 166.651ms | 183.954ms | 193.912ms | 227.503ms | 1544.634ms
-> 9.313ms | 170.501ms | 183.985ms | 191.738ms | 227.801ms | 1441.284ms
-> 9.311ms | 166.957ms | 182.086ms | 192.063ms | 410.411ms | 1489.665ms
-> 9.329ms | 166.332ms | 182.196ms | 194.154ms | 227.443ms | 1511.272ms
->
-> The overhead of fentry_multi_all is a little higher than the
-> fentry_multi_single. Maybe it is because the function
-> ktime_get_boottime_ns(), which is used in bpf_testmod_bench_run(), is als=
-o
-> traced? I haven't figured it out yet, but it doesn't matter :/
-
-I think it matters a lot.
-Looking at patch 25 the fm_all (in addition to fm_single) only
-suppose to trigger from ktime_get_boottime,
-but for hash table mode the difference is huge.
-10M bpf_fentry_test1() calls are supposed to dominate 2 calls
-to ktime_get and whatever else is called there,
-but this is not what numbers tell.
-
-Same discrepancy with kprobe_multi. 7x difference has to be understood,
-since it's a sign that the benchmark is not really measuring
-what it is supposed to measure. Which casts doubts on all numbers.
-
-Another part is how come fentry is 20x slower than nop.
-We don't see it in the existing bench-es. That's another red flag.
-
-You need to rethink benchmarking strategy. The bench itself
-should be spotless. Don't invent new stuff. Add to existing benchs.
-They already measure nop, fentry, kprobe, kprobe-multi.
-
-Then only introduce a global trampoline with a simple hash tab.
-Compare against current numbers for fentry.
-fm_single has to be within couple percents of fentry.
-Then make fm_all attach to everything except funcs that bench trigger calls=
-.
-fm_all has to be exactly equal to fm_single.
-If the difference is 2.5x like here (180 for fm_single vs 446 for fm_all)
-something is wrong. Investigate it and don't proceed without full
-understanding.
-
-And only then introduce 5 byte special insn that indices into
-an array for fast access to metadata.
-Your numbers are a bit suspicious, but they show that fm_single
-with hash tab is the same speed as the special kfunc_md_arch_support().
-Which is expected.
-With fm_all that triggers small set of kernel function
-in a tight benchmark loop the performance of hashtab vs special
-should _also_ be the same, because hashtab will perform O(1) lookup
-that is hot in the cache (or hashtab has bad collisions and should be fixed=
-).
-fm_all should have the same speed as fm_single too,
-because bench will only attach to things outside of the tight bench loop.
-So attaching to thousands of kernel functions that are not being
-triggered by the benchmark should not affect results.
-
-The performance advantage of special kfunc_md_arch_support()
-can probably only be seen in production when fentry.multi attaches
-to thousands of kernel functions and random functions are called.
-Then hash tab cache misses will be noticeable vs direct access.
-There will be cache misses in both cases, but significantly more misses
-for hash tab. Only then we can decide where special stuff is truly necessar=
-y.
-So patches 2 and 3 are really last. After everything had already landed.
+That's the option I was asking about. I'm assuming we should be able
+to reuse existing xmo metadata callbacks for this. We should be able
+to hide it from the drivers also hopefully.
 
