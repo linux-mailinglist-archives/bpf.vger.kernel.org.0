@@ -1,184 +1,269 @@
-Return-Path: <bpf+bounces-60314-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60315-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C87F8AD559C
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 14:33:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 367B5AD55B0
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 14:36:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 381ED3A5B82
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 12:33:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFF351E084A
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 12:36:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FFEC27FB27;
-	Wed, 11 Jun 2025 12:33:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lL1NA0m3"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7820280CEE;
+	Wed, 11 Jun 2025 12:36:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB1CE235044
-	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 12:33:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF88E27C864
+	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 12:36:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749645195; cv=none; b=ArGunGrcflW4jAgV8IG2h+3+pKVUD+PejzbKbkhUUNYWT36J1oWp5X5sAf2Ts542D9Bz1iJwgn32r9++KKwlPeYN6bxv+LcVGRadVeeam/ke3Z0rOLayTOB3hyIP8Td6KbznZ8SNgDzn+nLMDpYXdoCYXQTcWs+zwgBkRtSBjMY=
+	t=1749645398; cv=none; b=AAeax1fxCEEObGrV0xO4f+kuihn0Q/UgHrtd3Yli0ZmkFPUP65q5HfopLh06qP53WT4QRX9dzcg3yY0qFRbFZ7W3K+B8ovlJFEd3zyFXw1HdVlI7BRy5o0hs1ascDK3wWCg4m9ni7BT9RJ/OxfBI6jAAk+Eigbl9AYMSA8Mg9xE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749645195; c=relaxed/simple;
-	bh=5LplqxcjvsXWXyULlG+fwCr5loIPsnByI2A9V+2TZdk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=g7vw662C9BQuCNQJ5ey+sXFI1wQerv4UNoOBqdcFpKbH+UE3HiXREpxwXXcJGw1bIP6g1kqBX9uKwoVOuxUwyvAIdFbz0VEN5g3ptnQONZ9W2kKv8KEslMcRYsQnLyuNx7Kuxj2QvxvG+csgSdtThc4ggvUjhK/eC95MSVzsMpo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lL1NA0m3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7365BC4CEF3
-	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 12:33:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749645195;
-	bh=5LplqxcjvsXWXyULlG+fwCr5loIPsnByI2A9V+2TZdk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=lL1NA0m3AeI+Qc/rOtPk3Yr+s53wFblEYvK5uKfqe8IFcUsVpw8+SDCV4kDaFGlhY
-	 sIHyq8RSVehqNbYBE0dma3DaOt3IFIbLke2ANDwaplzO9n74FhTMwJxVsFhZau1q3V
-	 sdTCX4xl5zjLBe1mPLM/BVhJN2QjjmuvMxDwU02VIkCdP0To+dNxeC3kyBRFZWd53b
-	 yPfocxxuHPZ9IWX6bDlDLskzzcHCRNEhOoEkFrE45IBs7xaEDOeV+kqXM14yrByzY0
-	 8NLyhIZqaFX3MIXdD6mc3Il7FV8NRUK29fNet+D/Pg2pIPo8YLCeO6xmy0+mP8zHs5
-	 6tUEbqw3snR1g==
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-607b59b447bso7322606a12.1
-        for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 05:33:15 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCW4aJ7DDJm09gElPsBDJPzFlfOVkPFeu/9p4iFmk4IxNetrawiiReBVwrYqeq04DaIgAEg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxxCIAHSsIBV0yyObkMA35I8IzzVle2Wqe/JPWR9o7s/Iiziu+7
-	Re7sZb2kabEB03IjJyIfKnDhMXXRTnWeYWozIs96wF1ynj/Uowy6e9uduFaVleDvEDU2G4OEry1
-	fdNey7RvDxA5CdnRbpf6b5/AWf7+SM3b8ua2NNguJ
-X-Google-Smtp-Source: AGHT+IHnHo1sp65gTeHjFWrjyecYP4KUKXYXAirIMn3mz+yHmyss73COzFYIVqA+WU566YCXi6ePCiqo5KTjaXQq2Ac=
-X-Received: by 2002:a05:6402:120d:b0:602:1b8b:2902 with SMTP id
- 4fb4d7f45d1cf-60846b2f16bmr2054905a12.15.1749645193964; Wed, 11 Jun 2025
- 05:33:13 -0700 (PDT)
+	s=arc-20240116; t=1749645398; c=relaxed/simple;
+	bh=yKpCwjJaP90v4BwUK+lpsjNv+QBZ9GHAu+qY2CR45cM=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=f1EWQ+fUy5uDod84vl09ezhqPDtZh3Hsl8IonCAmZUOgDJVQ1/x3Ftiep1opkBQF8WJ3ERpNSwgxtj29FfOzwyZJt3N7xn00H5Z86kH3BLt4gPIgPSOn2IALlJW/CuycR4KvRI2GbqpX8tR3ovQ1gFFW//7ht0aFFH2T+jMKrF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-86d01ff56ebso934358939f.1
+        for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 05:36:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749645396; x=1750250196;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Iw6ADe4CFHdktnmFDzNrIt1KISUCTDLdjZLC5ZGoeg4=;
+        b=Mi/FDlLFPE2M/VdPUdIDPma+MHCcE5cdJdYXN1394XhNsYuV6ktw0aiW3E/LXYTaX6
+         U2ayM/p1okTyJD6bWmlivdUY2zFZOib4/gQT1iM7rpfw5uSg9V4LUmHVSFUUN09R3V+h
+         1CLYJn+pHtZQ2j+Mpw+p+OGHcdgrMCzUKxFYbY5+54qIhnYqS5IfzwGXuJeNTK+spcbF
+         KBqMxDqgSVxgiANzrRdJ2HqTfujWXHv9gFn0fwuSaxn7goJKzwe248uROtBykMqk50If
+         1G0w4ZlrepHiGZQ33nLSsLNXSjaTH3OnXNl1iaMzK3GFKHoC6tWhJWW7lvCEwaoaPBMR
+         qzyg==
+X-Forwarded-Encrypted: i=1; AJvYcCXdKWQmvc07aEMEe5BXOSE1FcxTCs8FmcMSacv/HlB32zvolUtt+C/JtdA8sgmuC4vjmKU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzCToVJxCSBeeSHSKktZR4AdBxn+xdOXKN6BeqEkdCArFkjcSwA
+	5Lh4BK9zuiJ7u/HWUAXMLCiD81WX0ZMEb/c98RPSWl9zO25UD2DehwO6+oqSGl12vs4pxNdHivO
+	poYus0gMimNwy9SCydt9GuVbF5n2a4AEMpFRHzaKCWAuReLBE4/eeGxv3Cac=
+X-Google-Smtp-Source: AGHT+IFJywhnA4l5/2x4KoI8aRAdVtqHWKeUISFEcnuPZGgCasiC9IRsERd6QXRsR0w/fJ/iPNAK+t5dbjGWuovJweIWBh3RsdJE
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250606232914.317094-1-kpsingh@kernel.org> <20250606232914.317094-11-kpsingh@kernel.org>
- <87qzzrleuw.fsf@microsoft.com> <CACYkzJ6M7kA7Se4=AXWNVF1UyeHK3t+3Y_8Ap1L9pkUTbqys9Q@mail.gmail.com>
- <87o6uvlaxs.fsf@microsoft.com> <CACYkzJ74MJkwejki7kFNR4RWh+EnJ++0Vop8eRkSwY6pJepMEQ@mail.gmail.com>
- <8cf2c1cc15e0c5e4b87a91a2cb42e04f38ac1094.camel@HansenPartnership.com>
- <CACYkzJ6yNjFOTzC04uOuCmFn=+51_ie2tB9_x-u2xbcO=yobTw@mail.gmail.com> <6f8e0d217d02dc8327a2a21e8787d3aec9693c2c.camel@HansenPartnership.com>
-In-Reply-To: <6f8e0d217d02dc8327a2a21e8787d3aec9693c2c.camel@HansenPartnership.com>
-From: KP Singh <kpsingh@kernel.org>
-Date: Wed, 11 Jun 2025 14:33:03 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ4T5ZFuY5PDKp1VZmsdEyEYUbbajAbhqr+5FE6tqy195A@mail.gmail.com>
-X-Gm-Features: AX0GCFuFQjcGWCNNEXoMDm4GJGMvIlT26_y09n7QBUmNReGXQjm22TvJL8ihqRE
-Message-ID: <CACYkzJ4T5ZFuY5PDKp1VZmsdEyEYUbbajAbhqr+5FE6tqy195A@mail.gmail.com>
-Subject: Re: [PATCH 10/12] libbpf: Embed and verify the metadata hash in the loader
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc: Blaise Boscaccy <bboscaccy@linux.microsoft.com>, bpf@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, paul@paul-moore.com, kys@microsoft.com, 
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+X-Received: by 2002:a05:6e02:b44:b0:3dc:8bb8:28bf with SMTP id
+ e9e14a558f8ab-3ddf4256fbcmr37462665ab.5.1749645395804; Wed, 11 Jun 2025
+ 05:36:35 -0700 (PDT)
+Date: Wed, 11 Jun 2025 05:36:35 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68497853.050a0220.33aa0e.036a.GAE@google.com>
+Subject: [syzbot] [bpf?] KASAN: slab-use-after-free Read in do_check
+From: syzbot <syzbot+b5eb72a560b8149a1885@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me, 
+	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 11, 2025 at 1:59=E2=80=AFPM James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
->
-> On Wed, 2025-06-11 at 00:35 +0200, KP Singh wrote:
-> > On Tue, Jun 10, 2025 at 11:24=E2=80=AFPM James Bottomley
-> > <James.Bottomley@hansenpartnership.com> wrote:
-> > >
-> > > On Tue, 2025-06-10 at 21:47 +0200, KP Singh wrote:
-> > > > It's been repeatedly mentioned that trusted loaders (whether
-> > > > kernel or BPF programs) are the only way because a large number
-> > > > of BPF use-cases dynamically generate BPF programs.
-> > >
-> > > You keep asserting this, but it isn't supported by patches already
-> >
-> > This is supported for sure. But it's not what the patches are
-> > providing a reference implementation for. The patches provide a stand
-> > alone reference implementation using in-kernel / BPF loaders but you
-> > can surely implement this (see below):
-> >
-> > > proposed.  Specifically, there already exists a patch set:
-> > >
-> > > https://lore.kernel.org/all/20250528215037.2081066-1-bboscaccy@linux.=
-microsoft.com/
-> >
-> > The patch-set takes a very narrow view by adding additional UAPI and
-> > ties us into an implementation.
->
-> What do you mean by this?  When kernel people say UAPI, they think of
-> the contract between the kernel and userspace.  So for both patch sets
-> the additional attr. entries which user space adds and the kernel
-> parses for the signature would conventionally be thought to extend the
-> UAPI.
->
-> Additionally, the content of the signature (what it's over) is a UAPI
-> contract.  When adding to the kernel UAPI we don't look not to change
-> it, we look to change it in a way that is extensible.  It strikes me
-> that actually only the linked patch does this because the UAPI addition
-> for your signature scheme doesn't seem to be that extensible.
+Hello,
 
-James, I am adding less attributes, it's always extensible, adding
-more UAPI than strictly needed is what's not flexible.
+syzbot found the following issue on:
 
-The attributes I proposed remain valid in a world where the BPF
-instruction set is stable at compile time, for trusted user space
-loaders (applications like Cilium) that can already have a stable
-instruction buffer, the attributes Blaise proposed do not.
+HEAD commit:    19a60293b992 Add linux-next specific files for 20250611
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=15472d70580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=76ed3656d7159e27
+dashboard link: https://syzkaller.appspot.com/bug?extid=b5eb72a560b8149a1885
+compiler:       Debian clang version 20.1.6 (++20250514063057+1e4d39e07757-1~exp1~20250514183223.118), Debian LLD 20.1.6
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16af860c580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=174db60c580000
 
-I believe we have discussed this enough. Let's have the BPF maintainers dec=
-ide.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/c453c11565fa/disk-19a60293.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/4034ded42b2e/vmlinux-19a60293.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/5355903cdb8f/bzImage-19a60293.xz
 
->
-> >  Whereas the current approach keeps the UAPI clean while still
-> > meeting all the use-cases and keeps the implementation flexible
-> > should it need to change. (no tie into the hash chain approach, if we
-> > are able to move to stable BPF instruction buffers in the future).
-> >
-> > Blaise's patches also do not handle the trusted user-space loader
-> > space and the "signature_maps" are not relevant to dynamic generation
-> > or simple BPF programs like networking, see below.
->
-> OK, is this just a technical misreading?  I missed the fact that it
-> supported both schemes on first reading as well.  If you look in this
-> patch:
->
-> https://lore.kernel.org/all/20250528215037.2081066-2-bboscaccy@linux.micr=
-osoft.com/
->
-> It's this addition in bpf_check_signature():
->
-> > +     if (!attr->signature_maps_size) {
-> > +             sha256((u8 *)prog->insnsi, prog->len * sizeof(struct bpf_=
-insn), (u8 *)&hash);
-> > +             err =3D verify_pkcs7_signature(hash, sizeof(hash), signat=
-ure, attr->signature_size,
-> > +                                  VERIFY_USE_SECONDARY_KEYRING,
-> > +                                  VERIFYING_EBPF_SIGNATURE,
-> > +                                  NULL, NULL);
-> > +     } else {
-> > +             used_maps =3D kmalloc_array(attr->signature_maps_size,
-> > +                                       sizeof(*used_maps), GFP_KERNEL)=
-;
-> > [...]
->
-> The first leg of the if is your use case: a zero map size means the
-> signature is a single hash of the loader only.  The else clause
-> encompasses a hash chain over the maps as well.  This means the signer
-> can choose which scheme they want.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b5eb72a560b8149a1885@syzkaller.appspotmail.com
 
-I have read and understood the code, there is no technical misalignment.
+==================================================================
+BUG: KASAN: slab-use-after-free in do_check+0xb388/0xe170 kernel/bpf/verifier.c:19756
+Read of size 1 at addr ffff88801deeef79 by task syz-executor672/5842
 
-I am talking about a trusted user space loader. You seem to confuse
-the trusted BPF loader program as userspace, no this is not userspace,
-it runs in the kernel context.
+CPU: 1 UID: 0 PID: 5842 Comm: syz-executor672 Not tainted 6.16.0-rc1-next-20250611-syzkaller #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0x189/0x250 lib/dump_stack.c:120
+ print_address_description mm/kasan/report.c:408 [inline]
+ print_report+0xd2/0x2b0 mm/kasan/report.c:521
+ kasan_report+0x118/0x150 mm/kasan/report.c:634
+ do_check+0xb388/0xe170 kernel/bpf/verifier.c:19756
+ do_check_common+0x168d/0x20b0 kernel/bpf/verifier.c:22905
+ do_check_main kernel/bpf/verifier.c:22996 [inline]
+ bpf_check+0x1381e/0x19e50 kernel/bpf/verifier.c:24162
+ bpf_prog_load+0x1318/0x1930 kernel/bpf/syscall.c:2972
+ __sys_bpf+0x5f1/0x860 kernel/bpf/syscall.c:5978
+ __do_sys_bpf kernel/bpf/syscall.c:6085 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:6083 [inline]
+ __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:6083
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f7586cdbeb9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 c1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc2e683128 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f7586cdbeb9
+RDX: 0000000000000094 RSI: 0000200000000840 RDI: 0000000000000005
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000006
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
 
-- KP
+Allocated by task 5842:
+ kasan_save_stack mm/kasan/common.c:47 [inline]
+ kasan_save_track+0x3e/0x80 mm/kasan/common.c:68
+ poison_kmalloc_redzone mm/kasan/common.c:377 [inline]
+ __kasan_kmalloc+0x93/0xb0 mm/kasan/common.c:394
+ kasan_kmalloc include/linux/kasan.h:260 [inline]
+ __kmalloc_cache_noprof+0x230/0x3d0 mm/slub.c:4359
+ kmalloc_noprof include/linux/slab.h:905 [inline]
+ kzalloc_noprof include/linux/slab.h:1039 [inline]
+ do_check_common+0x13f/0x20b0 kernel/bpf/verifier.c:22798
+ do_check_main kernel/bpf/verifier.c:22996 [inline]
+ bpf_check+0x1381e/0x19e50 kernel/bpf/verifier.c:24162
+ bpf_prog_load+0x1318/0x1930 kernel/bpf/syscall.c:2972
+ __sys_bpf+0x5f1/0x860 kernel/bpf/syscall.c:5978
+ __do_sys_bpf kernel/bpf/syscall.c:6085 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:6083 [inline]
+ __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:6083
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
->
-> I'll skip responding to the rest since it seems to be assuming that
-> Blaise's patch excludes your use case (which the above should
-> demonstrate it doesn't) and we'd be talking past each other.
->
-> Regards,
->
-> James
->
+Freed by task 5842:
+ kasan_save_stack mm/kasan/common.c:47 [inline]
+ kasan_save_track+0x3e/0x80 mm/kasan/common.c:68
+ kasan_save_free_info+0x46/0x50 mm/kasan/generic.c:576
+ poison_slab_object mm/kasan/common.c:247 [inline]
+ __kasan_slab_free+0x62/0x70 mm/kasan/common.c:264
+ kasan_slab_free include/linux/kasan.h:233 [inline]
+ slab_free_hook mm/slub.c:2381 [inline]
+ slab_free mm/slub.c:4643 [inline]
+ kfree+0x18e/0x440 mm/slub.c:4842
+ push_stack+0x247/0x3c0 kernel/bpf/verifier.c:2069
+ check_cond_jmp_op+0x1069/0x2340 kernel/bpf/verifier.c:16562
+ do_check_insn kernel/bpf/verifier.c:19621 [inline]
+ do_check+0x672c/0xe170 kernel/bpf/verifier.c:19755
+ do_check_common+0x168d/0x20b0 kernel/bpf/verifier.c:22905
+ do_check_main kernel/bpf/verifier.c:22996 [inline]
+ bpf_check+0x1381e/0x19e50 kernel/bpf/verifier.c:24162
+ bpf_prog_load+0x1318/0x1930 kernel/bpf/syscall.c:2972
+ __sys_bpf+0x5f1/0x860 kernel/bpf/syscall.c:5978
+ __do_sys_bpf kernel/bpf/syscall.c:6085 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:6083 [inline]
+ __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:6083
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+The buggy address belongs to the object at ffff88801deeef00
+ which belongs to the cache kmalloc-192 of size 192
+The buggy address is located 121 bytes inside of
+ freed 192-byte region [ffff88801deeef00, ffff88801deeefc0)
+
+The buggy address belongs to the physical page:
+page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1deee
+flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
+page_type: f5(slab)
+raw: 00fff00000000000 ffff88801a4413c0 ffffea00006fca40 dead000000000004
+raw: 0000000000000000 0000000000100010 00000000f5000000 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 0, migratetype Unmovable, gfp_mask 0x52820(GFP_ATOMIC|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP), pid 1, tgid 1 (swapper/0), ts 2954361175, free_ts 2954343552
+ set_page_owner include/linux/page_owner.h:32 [inline]
+ post_alloc_hook+0x240/0x2a0 mm/page_alloc.c:1704
+ prep_new_page mm/page_alloc.c:1712 [inline]
+ get_page_from_freelist+0x21e4/0x22c0 mm/page_alloc.c:3669
+ __alloc_frozen_pages_noprof+0x181/0x370 mm/page_alloc.c:4959
+ alloc_pages_mpol+0x232/0x4a0 mm/mempolicy.c:2419
+ alloc_slab_page mm/slub.c:2451 [inline]
+ allocate_slab+0x8a/0x3b0 mm/slub.c:2619
+ new_slab mm/slub.c:2673 [inline]
+ ___slab_alloc+0xbfc/0x1480 mm/slub.c:3859
+ __slab_alloc mm/slub.c:3949 [inline]
+ __slab_alloc_node mm/slub.c:4024 [inline]
+ slab_alloc_node mm/slub.c:4185 [inline]
+ __do_kmalloc_node mm/slub.c:4327 [inline]
+ __kmalloc_node_noprof+0x2fd/0x4e0 mm/slub.c:4334
+ kmalloc_node_noprof include/linux/slab.h:932 [inline]
+ __vmalloc_area_node mm/vmalloc.c:3690 [inline]
+ __vmalloc_node_range_noprof+0x5a9/0x12f0 mm/vmalloc.c:3885
+ vmalloc_huge_node_noprof+0xb3/0xf0 mm/vmalloc.c:4001
+ vmalloc_huge include/linux/vmalloc.h:185 [inline]
+ alloc_large_system_hash+0x2b8/0x5e0 mm/mm_init.c:2515
+ posixtimer_init+0x140/0x270 kernel/time/posix-timers.c:1561
+ do_one_initcall+0x233/0x820 init/main.c:1274
+ do_initcall_level+0x137/0x1f0 init/main.c:1336
+ do_initcalls+0x69/0xd0 init/main.c:1352
+ kernel_init_freeable+0x3d9/0x570 init/main.c:1584
+ kernel_init+0x1d/0x1d0 init/main.c:1474
+page last free pid 1 tgid 1 stack trace:
+ reset_page_owner include/linux/page_owner.h:25 [inline]
+ free_pages_prepare mm/page_alloc.c:1248 [inline]
+ __free_frozen_pages+0xc71/0xe70 mm/page_alloc.c:2706
+ __kasan_populate_vmalloc mm/kasan/shadow.c:383 [inline]
+ kasan_populate_vmalloc+0x18a/0x1a0 mm/kasan/shadow.c:417
+ alloc_vmap_area+0xd51/0x1490 mm/vmalloc.c:2084
+ __get_vm_area_node+0x1f8/0x300 mm/vmalloc.c:3179
+ __vmalloc_node_range_noprof+0x301/0x12f0 mm/vmalloc.c:3845
+ vmalloc_huge_node_noprof+0xb3/0xf0 mm/vmalloc.c:4001
+ vmalloc_huge include/linux/vmalloc.h:185 [inline]
+ alloc_large_system_hash+0x2b8/0x5e0 mm/mm_init.c:2515
+ posixtimer_init+0x140/0x270 kernel/time/posix-timers.c:1561
+ do_one_initcall+0x233/0x820 init/main.c:1274
+ do_initcall_level+0x137/0x1f0 init/main.c:1336
+ do_initcalls+0x69/0xd0 init/main.c:1352
+ kernel_init_freeable+0x3d9/0x570 init/main.c:1584
+ kernel_init+0x1d/0x1d0 init/main.c:1474
+ ret_from_fork+0x3f9/0x770 arch/x86/kernel/process.c:148
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+
+Memory state around the buggy address:
+ ffff88801deeee00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff88801deeee80: 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc
+>ffff88801deeef00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                                ^
+ ffff88801deeef80: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+ ffff88801deef000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
