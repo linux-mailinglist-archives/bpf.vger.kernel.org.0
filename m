@@ -1,189 +1,217 @@
-Return-Path: <bpf+bounces-60330-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60331-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9686FAD5932
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 16:46:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 198D6AD598B
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 17:05:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EA7B3A207E
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 14:45:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0EDBB17E95C
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 15:05:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E42F817B506;
-	Wed, 11 Jun 2025 14:45:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EBC01B4F1F;
+	Wed, 11 Jun 2025 15:04:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fD4Glr51"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GUEtUsMY"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CB60284682
-	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 14:45:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA2491ADFFB;
+	Wed, 11 Jun 2025 15:04:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749653131; cv=none; b=mEbqT3VbK/kQXbFDpim7CdPPPm71L00E3im6d1F8y5xNFN1HiePEOY2KdhxRqE9WX7Ci+O7PZnFgzxSkfajBxmIhyd46XYndbcL+E31Wdatgavz6Y0oSSapxXSk14L5YW6nHGHBRck769XNnmlBxtv+YMkfRpCdmVZNRnmjTfts=
+	t=1749654284; cv=none; b=cnVgyfut4xTkrgZJd3qA7Fn6NoEoQB296vKbnJ9IumfYQXaRQ+wz+YW0GxlBtlxWkvSgCG8ovYoC1WNmTXCKqgY3/qW5Y6Kh5KSnohI5SFwZjZe7aHrqaUPBFJcwtF30hML1qG9cYhUjSrZZSO1bz/e9o79dGKI24SmqFG54MF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749653131; c=relaxed/simple;
-	bh=5VHxGroRuRm391u8BhsTPRQW9M6NX9bcClfVhDzNO0o=;
+	s=arc-20240116; t=1749654284; c=relaxed/simple;
+	bh=wCdTYRWpCahjIsqcoraZdokvJ/dzGrBWyCkh+Nxso44=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=b63Skn/+e6GvzFao9KxCqpKcGDzclsknYJG22tW7NL4rmrC3s+aj/12uVTIOSASC/GfQaoq7ouE31mKQOrBukDZ6Alo5DRXRXc+Kt/C8YWq7eGG5FAo35zbn5+3VI2iSRvLo69YhzyTOOxrJwctDtlFIVBK08q1UGMu2ysosKkM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fD4Glr51; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D56D0C4CEF5
-	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 14:45:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749653130;
-	bh=5VHxGroRuRm391u8BhsTPRQW9M6NX9bcClfVhDzNO0o=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=fD4Glr51h5qqjPwEf3dAnKCfaXM+acDehidO80eu3ckGvpgI89jJGlTRtaukmVQQ3
-	 O5Qdzg1g0Yt17BsewFJUBmVwUp3Xj7iF8cmg1WFu7LH1yL/BTREH5OkHvqdkIWwhnG
-	 cY4f7C1e5EENkmZsW2c+f5LDaTs6L4jTSTxjHj0eRHW7L/H3P2dLKhJodhTVP8JfeX
-	 vI/5a52jktLrYWx38K0l3aE/0orl3kqK9Oa+jL0lWn0rJtHHqeN6/yd45MfnTwUY2c
-	 bKWQBSiBCPHy3x0It8o8T1bhx7+5pY+o4hu4jDs0jK1ne+hKYgGHMm5zCPWtCy1wtS
-	 HuwwYvwL2nRag==
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-addda47ebeaso1295645766b.1
-        for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 07:45:30 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCV/BOMR3p8A4xApKZgJ5QaaB0Qw5W1+M2rA7a83I5vLPxovmLNbEPbPs6uE+YKHhL3aydc=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz4eSBa+qIcS2ieZjz4HZ1U3ix/sPOEh3mW5P7z9nr+JTqf3Dhs
-	wWL1WSWu9LvduNTFyKMDXWFkMOMgO0qt21nkVunod7zaiTftDctdsZQunrySPddH2Gb3vrj71L8
-	CHxemWWm2jqXI6bgQfY83B3D+189x5yfSLiQw225y
-X-Google-Smtp-Source: AGHT+IHH/RSWeCFyljxeeflZttHDDEwTP1h0nixjCalFERKbyAewsp04ybkVezs+u8zp1KcHf+CP1jhu9ruOLvPl4xI=
-X-Received: by 2002:a17:907:c0c:b0:ad8:9466:3344 with SMTP id
- a640c23a62f3a-ade8c8993d1mr293077066b.43.1749653129219; Wed, 11 Jun 2025
- 07:45:29 -0700 (PDT)
+	 To:Cc:Content-Type; b=eJs2D5ltnYWuRt2XyizAjUowmXUSwBHLQQFnIROaw89hOlzchjav5wVHa2kbaM2Ic0ohoqb5FLP6wKg8XU/UImAnxZmcDzwjhptVD86jEiGltY7noXCF0A5axPgpe1qp2O2sJ/9yhfBrorHxvOILATSwYGdogttnpESod+5Z1Es=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GUEtUsMY; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3a53ee6fcd5so2517325f8f.1;
+        Wed, 11 Jun 2025 08:04:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749654281; x=1750259081; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nJVpdQmzOms9l4a11tO5AbxujAROVkXSwTeecd0Po/c=;
+        b=GUEtUsMYP0hrQYaFoEgHqHdAlz6HKb85K1BI4Q6DVcpvS1/M8H7DAGXsqbN8Y6AiTI
+         k9DHOemYwz9E4boklss1WPzAl4G9kTg8hcE4ZlbDpVqTsHBW17PpiG7emIFHfFHVJCbe
+         Wesvx5wMMLIr2VbjvwY/u9mLDh/Ezo3NbowRrEFWlTXTbiWsqfXcgfrpmyoySgqg6UvR
+         2DVqgIo+rOwIfZm0Q4awSyhCDFlRDYZkzCosVo088/44ZZhVxTHsYoqW6wM3kB0ZptlH
+         /e4qXpU6LyIcXa8iZdnSfM9WsXOkiLfGiF1Jdcg9eFX474tK/34EadfLvbfZBlMxiSK+
+         ZBKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749654281; x=1750259081;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nJVpdQmzOms9l4a11tO5AbxujAROVkXSwTeecd0Po/c=;
+        b=rop7ZOHYwOpefaOcVG06nuXJQOM/LzR+iYlRhF9yYDeHe17r9W7Obwg945BXChTxbz
+         HcPExPD3i9ZYcW9RKgapxYX6Xa0SzKLQUYfKJLfKcY/mLw/6K82fAWQyclzxaVtul6Qs
+         rgryAiXxfRMzp7+hpSy/hsiHt/6RDegjLSfoud+uGdwZpmqtngB+09Yeq61W/eiz6RGK
+         kd04R1olrT9IG20FINKxQtkDqzKSTqb6JTeFAWSKo7PiUF1DMKDW6CjMFIinslGSmNw2
+         4KyHHua07ScaMTIoxcthWHNkVMACjgauMoT9hdfbczlKteIQxbeZfqW1v0NPbah+IdRf
+         x6/A==
+X-Forwarded-Encrypted: i=1; AJvYcCX/7XVX4zv0iXU9qdIqd+8qali89lQIbUxSV+a5KdLyrL1QZnzpG6mzKm9V11XF8YKR/xFZ10Urh6LVZSrzapg6ublGxec=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxnm1sm1lZlpQLp90VBICQcLfCU30rrh5Ru7cNSfEs+ajDr97xU
+	VtI1HuGPOk4yMHy24raYa9c8sHep/PYCLi7936QDLBlf8/xJRzvKpGgbHQN6L2K5mQmU9UVJEL+
+	T4sJq4acgpYOV1kWGmA86hh+hxy/QCGWCJQ==
+X-Gm-Gg: ASbGnctIUjPS3N+n2gA87ONwRJP7ZAawvzklqjMBUu7U7Mxdjb+npLht4XFOotIXQdN
+	PMuZW5MwKDAxiH9CHJxdiMlDfx5KHUDjU4e3FPDYdZhActRDP1mGA7ujF0dYYQDEU9ZK7iFsFpO
+	I17PbGJwa7MlAYNNIVedFuaDN6U/hwB65PHAVbXPgaiCON8tR1ii4ewKVBe106L8S+rvWVFwh7
+X-Google-Smtp-Source: AGHT+IHBn5+0LGgyVrYZhgzWDo92zhGJRYc/dUG2SDjx5YVtS9COoMd6GZucqacIqskiySmaEz+0NC8uksN9F9aC3xk=
+X-Received: by 2002:a05:6000:2088:b0:3a5:276b:1ec0 with SMTP id
+ ffacd0b85a97d-3a558afec9cmr2509421f8f.45.1749654279251; Wed, 11 Jun 2025
+ 08:04:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250606232914.317094-1-kpsingh@kernel.org> <20250606232914.317094-11-kpsingh@kernel.org>
- <87qzzrleuw.fsf@microsoft.com> <CACYkzJ6M7kA7Se4=AXWNVF1UyeHK3t+3Y_8Ap1L9pkUTbqys9Q@mail.gmail.com>
- <87o6uvlaxs.fsf@microsoft.com> <CACYkzJ74MJkwejki7kFNR4RWh+EnJ++0Vop8eRkSwY6pJepMEQ@mail.gmail.com>
- <8cf2c1cc15e0c5e4b87a91a2cb42e04f38ac1094.camel@HansenPartnership.com>
- <CACYkzJ6yNjFOTzC04uOuCmFn=+51_ie2tB9_x-u2xbcO=yobTw@mail.gmail.com>
- <6f8e0d217d02dc8327a2a21e8787d3aec9693c2c.camel@HansenPartnership.com>
- <CACYkzJ4T5ZFuY5PDKp1VZmsdEyEYUbbajAbhqr+5FE6tqy195A@mail.gmail.com>
- <fa526e6ed52e2c5f72aeb24fa24f3731bac6f74d.camel@HansenPartnership.com>
- <CACYkzJ4JYDXEkYpN=XBn4bOmv6Fg7bSgV-YAKHfEL2NxJiMh0A@mail.gmail.com> <3088dc5f59ab3bc8b0ed2a9a2800589bc1435b66.camel@HansenPartnership.com>
-In-Reply-To: <3088dc5f59ab3bc8b0ed2a9a2800589bc1435b66.camel@HansenPartnership.com>
-From: KP Singh <kpsingh@kernel.org>
-Date: Wed, 11 Jun 2025 16:45:17 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ5GXqdcFx0za0aWpezLj5n5x61fuug5T+5dXmd2f9BEKw@mail.gmail.com>
-X-Gm-Features: AX0GCFvo9EmlotBLU0VnmVvLfMVn7bQL-6F7VlvAdC8fXT56SAbCueNIbzxr24o
-Message-ID: <CACYkzJ5GXqdcFx0za0aWpezLj5n5x61fuug5T+5dXmd2f9BEKw@mail.gmail.com>
-Subject: Re: [PATCH 10/12] libbpf: Embed and verify the metadata hash in the loader
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc: Blaise Boscaccy <bboscaccy@linux.microsoft.com>, bpf@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, paul@paul-moore.com, kys@microsoft.com, 
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+References: <20250606232914.317094-1-kpsingh@kernel.org> <20250606232914.317094-8-kpsingh@kernel.org>
+ <CAADnVQL7Roi1gmAWZFSx-T4YVLtHu2cDneKCkLdBvB2+y_S1Uw@mail.gmail.com> <CACYkzJ4_NL=U525D56mVcyfxX64BDrkP3FiFotNPQ8+EDKNRQQ@mail.gmail.com>
+In-Reply-To: <CACYkzJ4_NL=U525D56mVcyfxX64BDrkP3FiFotNPQ8+EDKNRQQ@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 11 Jun 2025 08:04:28 -0700
+X-Gm-Features: AX0GCFuYEml8R879TFDM6N1Ru6jvNrO8OhLliHxrGcakpporZz3qvpB220-HUPU
+Message-ID: <CAADnVQLmrbOFbJZAdx3auye8YVwVJvMM4qp0L_-mFyD4xDedUA@mail.gmail.com>
+Subject: Re: [PATCH 07/12] bpf: Return hashes of maps in BPF_OBJ_GET_INFO_BY_FD
+To: KP Singh <kpsingh@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, LSM List <linux-security-module@vger.kernel.org>, 
+	Blaise Boscaccy <bboscaccy@linux.microsoft.com>, Paul Moore <paul@paul-moore.com>, 
+	"K. Y. Srinivasan" <kys@microsoft.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 11, 2025 at 4:43=E2=80=AFPM James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
+On Wed, Jun 11, 2025 at 7:27=E2=80=AFAM KP Singh <kpsingh@kernel.org> wrote=
+:
 >
-> On Wed, 2025-06-11 at 15:41 +0200, KP Singh wrote:
-> > On Wed, Jun 11, 2025 at 3:18=E2=80=AFPM James Bottomley
-> > <James.Bottomley@hansenpartnership.com> wrote:
-> > >
-> > > On Wed, 2025-06-11 at 14:33 +0200, KP Singh wrote:
-> > > > [...]
-> > > > I have read and understood the code, there is no technical
-> > > > misalignment.
-> > > >
-> > > > I am talking about a trusted user space loader. You seem to
-> > > > confuse the trusted BPF loader program as userspace, no this is
-> > > > not userspace, it runs in the kernel context.
-> > >
-> > > So your criticism isn't that it doesn't cover your use case from
-> > > the signature point of view but that it didn't include a loader for
-> > > it?
-> > >
-> > > The linked patch was a sketch of how to verify signatures not a
-> > > full
+> On Mon, Jun 9, 2025 at 11:30=E2=80=AFPM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> > It was a non functional sketch that did not address much of the
-> > feedback that was given, that's not how collaboration works.
+> > On Fri, Jun 6, 2025 at 4:29=E2=80=AFPM KP Singh <kpsingh@kernel.org> wr=
+ote:
 >
-> It was somewhat functional for the security use case but could be
-> extended for yours and provably allowed both was the point of the
-> sketch.  The feedback it addressed was your desire for a signed trusted
-> loader.
+> [...]
 >
-> > > implementation.  The pieces like what the loader looks like and
-> > > which keyring gets used are implementation details which can be
-> > > filled in later by combining the patch series with review and
-> > > discussion.  It's not a requirement that one person codes
-> > > everyone's use case before they get theirs in, it's usually a
-> > > collaborative effort ... I mean, why
+> > >
+> > > +       if (map->ops->map_get_hash && map->frozen && map->excl_prog_s=
+ha) {
+> > > +               err =3D map->ops->map_get_hash(map, SHA256_DIGEST_SIZ=
+E, &map->sha);
 > >
-> > Yeah, it's surely a collaborative effort, but the collaboration has
-> > been aggressive and tied to a specific implementation (at least from
-> > some folks). Rather than working with the feedback received it has
-> > been accusational of mandating and forcing.
+> > & in &map->sha looks suspicious. Should be just map->sha ?
 >
-> I don't see how that squares with producing a sketch that supports your
-> use case ... clearly feedback has been incorporated.
+> yep, fixed.
 >
-> >  If the intent is to really collaborate, let's land this base
-> > implementation and discuss further. I am not willing to add
-> > additional stuff into this base implementation.
->
-> Just so I'm clear: your definition of collaboration means Blaise takes
-> feedback from you at all times but you don't take it from him until
-> you've got your use case upstream?  This might be OK if the two use
-> cases were thousands of lines apart, but, as I've said before, it seems
-> to be less than a hundred lines which doesn't seem to be a huge
-> integration burden given the size of the patch set you're trying to
-> land.  I'm sure Blaise would be willing to produce the patch set that
-> adds the incremental over what you've published here to demonstrate its
-> smallness.
->
-> > > would you want Microsoft coding up the loader?  If they don't have
-> > > a use case for it they don't have much incentive to test it
-> > > thoroughly whereas you do.
 > >
-> > It seems that your incentives are purely aligned with Microsoft and
-> > not that of the BPF community at large (this is also visible from the
-> > patches and the engagement).
+> > > +               if (err !=3D 0)
+> > > +                       return err;
+> > > +       }
+> > > +
+> > > +       if (info.hash) {
+> > > +               char __user *uhash =3D u64_to_user_ptr(info.hash);
+> > > +
+> > > +               if (!map->ops->map_get_hash)
+> > > +                       return -EINVAL;
+> > > +
+> > > +               if (info.hash_size < SHA256_DIGEST_SIZE)
+> >
+> > Similar to prog let's =3D=3D here?
 >
-> No, as has been stated many times before there are other companies than
-> Microsoft who want supply chain integrity for BPF code which the data
-> block hash chaining you proposed but didn't implement does perfectly.
-> I shouldn't have to remind people that open source is about scratching
-> your own itch and thus you can determine a company's investments in
-> open source by its goals.   I've even given a few talks about this:
+> Thanks, yeah agreed.
 >
-> https://archive.fosdem.org/2020/schedule/event/selfish_contributor/
+> >
+> > > +                       return -EINVAL;
+> > > +
+> > > +               info.hash_size  =3D SHA256_DIGEST_SIZE;
+> > > +
+> > > +               if (map->excl_prog_sha && map->frozen) {
+> > > +                       if (copy_to_user(uhash, map->sha, SHA256_DIGE=
+ST_SIZE) !=3D
+> > > +                           0)
+> > > +                               return -EFAULT;
+> >
+> > I would drop above and keep below part only.
+> >
+> > > +               } else {
+> > > +                       u8 sha[SHA256_DIGEST_SIZE];
+> > > +
+> > > +                       err =3D map->ops->map_get_hash(map, SHA256_DI=
+GEST_SIZE,
+> > > +                                                    sha);
+> >
+> > Here the kernel can write into map->sha and then copy it to uhash.
+> > I think the concern was to disallow 2nd map_get_hash on exclusive
+> > and frozen map, right?
+> > But I think that won't be an issue for signed lskel loader.
+> > Since the map is frozen the user space cannot modify it.
+> > Since the map is exclusive another bpf prog cannot modify it.
+> > If user space calls map_get_hash 2nd time the sha will be
+> > exactly the same until loader prog writes into the map.
+> > So I see no harm generalizing this bit of code.
+> > I don't have a particular use case in mind,
+> > but it seems fine to allow user space to recompute sha
+> > of exclusive and frozen map.
+> > The loader will check the sha of its map as the very first operation,
+> > so if user space did two map_get_hash() it just wasted cpu cycles.
+> > If user space is calling map_get_hash() while loader prog
+> > reads and writes into it the map->sha will change, but
+> > it doesn't matter to the loader program anymore.
+> >
+> > Also I wouldn't special case the !info.hash case for exclusive maps.
+> > It seems cleaner to waste few bytes on stack in
+> > skel_obj_get_info_by_fd() later in patch 9.
+> > Let it point to valid u8 sha[] on stack.
+> > The skel won't use it, but this way we can kernel behavior
+> > consistent.
+> > if info.hash !=3D NULL -> compute sha, update map->sha, copy to user sp=
+ace.
 >
-> As a Linux community we're usually good at creaming off additional
-> things around the edges,  such as integrating the two approaches, which
-> I'm sure Microsoft will be happy to invest Blaise's time on, but I'm
-> equally sure they won't invest huge amounts in testing the trusted
-> loader until they have a use case for it.
+> Here's what I updated it to:
 >
-> >  FWIW, There is no urgency for my employer to have signed BPF
-> > programs, yet I am working on this purely to help you and the
-> > community.
+>     if (info.hash) {
+>         char __user *uhash =3D u64_to_user_ptr(info.hash);
 >
-> From what I heard Google is using signed BPF internally but has no
-> urgency to get it upstream.  However, in my experience Google always
+>         if (!map->ops->map_get_hash)
+>             return -EINVAL;
+>
+>         if (info.hash_size !=3D SHA256_DIGEST_SIZE)
+>             return -EINVAL;
+>
+>         if (!map->excl_prog_sha || !map->frozen)
+>             return -EINVAL;
+>
+>          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>          I think we still need this check as we want the program to
+> have exclusive control over the map when the hash is being calculated
+> right?
 
-This is incorrect.
+Why add such a restriction?
+Whether it's frozen or exclusive or both it still races with map_get_hash.
+It's up to the user to make sure that the computed hash
+will be meaningful.
+I would allow for all maps.
+The callback will work for arrays initially, but that
+can be improved in the future.
 
-> has a lack of upstream urgency until they run into a backporting
-> problem, so I'm sure they'll give you credit for avoiding potential
-
-Also not correct, please stop assuming things.
-
-> future backport issues.
-
-
-
+>         err =3D map->ops->map_get_hash(map, SHA256_DIGEST_SIZE, map->sha)=
+;
+>         if (err !=3D 0)
+>             return err;
 >
-> Regards,
->
-> James
->
+>         if (copy_to_user(uhash, map->sha, SHA256_DIGEST_SIZE) !=3D 0)
+>             return -EFAULT;
+>     } else if (info.hash_size) {
+>         return -EINVAL;
+>     }
+
+yep.
 
