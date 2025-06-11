@@ -1,187 +1,307 @@
-Return-Path: <bpf+bounces-60262-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60270-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8161AD478B
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 02:45:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 255CFAD47A8
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 03:04:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6042E17BBCA
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 00:45:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F9C817BBA9
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 01:04:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D77018E20;
-	Wed, 11 Jun 2025 00:45:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="frYTcKa8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59898178395;
+	Wed, 11 Jun 2025 01:03:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E7475695
-	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 00:45:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CE958BE5;
+	Wed, 11 Jun 2025 01:03:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749602723; cv=none; b=aZvFDwpwtyQgvKTRum0AGDt+es7zts+fttGmx7oWTU8Ly5l7/hvww6IC9Lr0gBTx1OHAGU+ze04u32eMnjvzgI+RePa56AXt5DR0n3eEl79XS4aXZQf3+POaiV4PdFz6pZtEG9jVxG77znyHBmX3ucDEd5Ykw2uSknUXmegtm4E=
+	t=1749603787; cv=none; b=TBdHWd+z/ooVvTR79hSIPOu/m0L2q5+S9mjX6zFU2S3WukVN6Xi+/aobFrvctQCvWOTeKY7wpmffjPOqBm/7ucn1IMavGlG2wp8QC5iKGkIysGbZk2ipZiFyCQKojpcv9bKZT8HXFWWQyBR97mWIG4+94qVjFklAqxjvnQJsM04=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749602723; c=relaxed/simple;
-	bh=GL7dXZ6TYN2daR8uY9dujj/NsJJD55NmhRegf2PWVSw=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=l5/a+gAZS3QMtpnkbNHLqPEoSf2i+pfRfqzYwmpVqKZVyqr/T/GIih5a6tpAlkDhWDREmKdzg3Q4rFNp/cLQw6VRpfYh3atbhA6JZ+YFSsIigkG13vr0LRPB+6cxB3cXyG9cIoFJD5ALUBpJ4ulNdc7awH2OVbcL33QPKb7yt2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=frYTcKa8; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-739b3fe7ce8so4751553b3a.0
-        for <bpf@vger.kernel.org>; Tue, 10 Jun 2025 17:45:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749602720; x=1750207520; darn=vger.kernel.org;
-        h=mime-version:user-agent:references:in-reply-to:date:cc:to:from
-         :subject:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=wisaM9cKhtKwrendSa4f005YgS+BgCeTiLO0WcTFBrY=;
-        b=frYTcKa8q9GVWOpot4Uj+pSu5HgK6pFonIjbIvSbmmUsHe0F8iWT/+CR+oa+aaf+5H
-         OU6xTpYswZ/5owpgIlDHj59Pd/LVOSxM1NpKtqO0DlauCeM7If7xY/mCtPKJvTMEL3l8
-         yTRiNlXY3fh+j/pSR2rF9ZDSSo5a3G9RLfmErKs6BzfWYMlmq5O951Wtx98FuvaRzwcb
-         lRiIdF79KdTj5a+F+TgzM4rldHtmsHS90h/emCdFwsGLx3+8SsXLG2pNsKCmEUPWRk/w
-         LqafRivd6FOa+pe0TaeESl2HvwH3jXLVc4Cn88/3BFSmZHkYm3LqpWJIu1twjaCzY67T
-         vwXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749602720; x=1750207520;
-        h=mime-version:user-agent:references:in-reply-to:date:cc:to:from
-         :subject:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wisaM9cKhtKwrendSa4f005YgS+BgCeTiLO0WcTFBrY=;
-        b=arPueTqPoGCJ8r2Fhd7o914t/j0yjN30e0YUmIQLfjkON609sccpgiKy3iuYGNTpjc
-         JaJ4GTo85ci5YR55EEAKrwCz43inmMgvaorTBFhIRHn417SnwK8dsh3FjXHuOY7RonwY
-         iGp65zuyFjlNdJHgVIpdeIZLpykS4ftiyj5mukOPaWMMuCLlEMXiarDkf/i2FzOnls1F
-         F3pJ++KuPL4/mPIfr9RVG/a+bDjlCqe6G8p4TXe5F1dKHs5V+w1wRH6trd3BYYtgk/c4
-         mY3nos5i6pHfx9LdOwy86BM7jCzAV0ZkvVQwgyPsjeKNWxNHLW8hBgIsxR3gTVO8InuV
-         qwaQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUx57tI7eETmGHwi5D3g2HPaEVFhqD92UihlLD7sFjoTsC9UQknEvFm/BpGkqV14RHv+mM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzE35fPEkSJNrYHv/ZSW9VplvhN4+a/57ig5I0c0+EBGgkzzFGM
-	rn4PkORhyby2IaGnxeM8y74059Qp4Vc4s+EgrADbBntvXGyINu38e/cpYjCOJ67P
-X-Gm-Gg: ASbGnct3VliNnbw22iRStjy4Kl3obrZlOhFsW1X2C1JzGJ7+j9lwlWQKLe7EifrhtKC
-	S6lBtPAPxx9e3YRcLs/hLZjD77AEjLg+EuSNw0WTD/pGHlBScuQuLNhWL/W3p5PmVVs5G2RAghN
-	TmsnQIktjC+k1iQZuLbm3baLN7shziFBu90JUFFcfMxYj4ffuT+mINqVPkXpQWHv+nINZ3Uisa3
-	cWBTBPTCztXwyBkH0xWQbdZMFueOXsp2+RINyQusj/LhCB9iEJOIgprktc8HVBF4cW8yLFICazC
-	Yhr8/aMQY1sfXxqhUyHDiN5BUW+L1xNDv7OkxPYxDeNt68DZCohpetsiKIFhjz1jb1QD
-X-Google-Smtp-Source: AGHT+IH17wNsF+I+Vtfu2F+7vRaIe6glBJ4D2z4YIU8jV8CvyIdVl1OoMbIXCQAXmNpyFYOjE0fDwQ==
-X-Received: by 2002:a05:6a21:998e:b0:21f:5409:32f4 with SMTP id adf61e73a8af0-21f865b9433mr2192461637.8.1749602720267;
-        Tue, 10 Jun 2025 17:45:20 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c096:14a::647? ([2620:10d:c090:600::1:e4f4])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b2f5ef88914sm7448712a12.33.2025.06.10.17.45.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Jun 2025 17:45:19 -0700 (PDT)
-Message-ID: <4ff2fafb99131f599901580eac96dca34ca20cc0.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/3] selftests/bpf: support array presets in
- veristat
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, 
-	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, 
-	kernel-team@meta.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Date: Tue, 10 Jun 2025 17:45:17 -0700
-In-Reply-To: <20250610190840.1758122-3-mykyta.yatsenko5@gmail.com>
-References: <20250610190840.1758122-1-mykyta.yatsenko5@gmail.com>
-	 <20250610190840.1758122-3-mykyta.yatsenko5@gmail.com>
-Content-Type: multipart/mixed; boundary="=-xG4L2sl2ldRrvmcrfkMc"
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	s=arc-20240116; t=1749603787; c=relaxed/simple;
+	bh=exb7JUf+tbib6ikx7I8pISV7GGgz6+WoccCrxsZNBcw=;
+	h=Message-ID:Date:From:To:Cc:Subject; b=sHEhQnSmMAfh9Th1EuPpFY22TfhneE9HJzlyt93l+G+hemOxIoRcQmX+eRUqimG7iV85ozhRampXDapJQstGX+iPUBQDKr7xURzFYG3RPUr1ScI7dlsnj4NBEn/HEBfaazoQjHQMQJ4MtsgY7TfoXC39grXk0lE2vcAji5cP/Bc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf14.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay06.hostedemail.com (Postfix) with ESMTP id 78199101B92;
+	Wed, 11 Jun 2025 01:02:59 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: nevets@goodmis.org) by omf14.hostedemail.com (Postfix) with ESMTPA id 5528933;
+	Wed, 11 Jun 2025 01:02:56 +0000 (UTC)
+Received: from rostedt by gandalf with local (Exim 4.98.2)
+	(envelope-from <rostedt@goodmis.org>)
+	id 1uP9tD-00000000v7H-3kGs;
+	Tue, 10 Jun 2025 21:04:27 -0400
+Message-ID: <20250611005421.144238328@goodmis.org>
+User-Agent: quilt/0.68
+Date: Tue, 10 Jun 2025 20:54:21 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org,
+ x86@kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Josh Poimboeuf <jpoimboe@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Ingo Molnar <mingo@kernel.org>,
+ Jiri Olsa <jolsa@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Andrii Nakryiko <andrii@kernel.org>,
+ Indu Bhagat <indu.bhagat@oracle.com>,
+ "Jose E. Marchesi" <jemarch@gnu.org>,
+ Beau Belgrave <beaub@linux.microsoft.com>,
+ Jens Remus <jremus@linux.ibm.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH v10 00/14] unwind_user: x86: Deferred unwinding infrastructure
+X-Stat-Signature: pfzjw5btcbh94deject8f4jaqahsmhrs
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: 5528933
+X-Session-Marker: 6E657665747340676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX19fiif6H0yu55Yf92uluMYalVBefPqirDU=
+X-HE-Tag: 1749603776-527289
+X-HE-Meta: U2FsdGVkX1/PfzX7LNy/3kSVETEkmSSBUf2zi+0dIhoXabJj7R8E1enq/Yiqz8Wyjzp9a8I0lBrnAHTRLzY+LLbZj/gTGaFydDbfpSRUTh62O/CYn6T3D7bCqbGIkXgr36xNf08hI8XbUAaybDJu5XSirKKnXsiwqwhHsRA18lDeoqVPV4awpbFuW3rYvWZnc+exsEx5f/bXsIh9MRwZBMQuppGTkt2YxE8IoSd4vnbEiHYvQOxy+nKpmTPipiFlXNA7FHwfD86n37JqJAS5vyDCrCEL7aizAgS0YL5aNpOxcg+2+A+dbYAhEieX+yeIcl3GbkljKAMzJxjriqDaooV6BQFbKuy3KDh+uShyIQnqTE5NGk/VTUhebJ8khIaJTf+Ziv0LQy9PlwsGGYSLBC6QdELSKRGQqMKSIVxq58LNsaRz8iIHsQ==
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-
---=-xG4L2sl2ldRrvmcrfkMc
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, 2025-06-10 at 20:08 +0100, Mykyta Yatsenko wrote:
-> From: Mykyta Yatsenko <yatsenko@meta.com>
->=20
-> Implement support for presetting values for array elements in
-> veristat.
-> For example:
-> ```
-> sudo ./veristat set_global_vars.bpf.o -G "arr[3] =3D 1"
-> ```
-> Arrays of structures and structure of arrays work, but each
-> individual
-> scalar value has to be set separately: `foo[1].bar[2] =3D value`.
->=20
-> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
-> ---
-
-A few nits regarding error reporting:
-
-  ./veristat -q -G ptr_arr[10]=3D0 set_global_vars.bpf.o=20
-  Unsupported array element type for variable ptr_arr. Only int, enum, stru=
-ct, union are supported
-                                                                           =
-                      ^^^
-											 missing dot
-
-  ./veristat -G arr[[10]]=3D0 set_global_vars.bpf.o=20
-  Could not parse 'arr[[10]]'Failed to parse global variable presets: arr[[=
-10]]=3D0
-  ^^^^^^^^^                ^^^                                             =
-     ^^^
-  Can't ?		   dot or comma                                 missing dot
-
-  ./veristat -q -G "struct1[0] =3D 0" set_global_vars.bpf.o=20
-  Setting value for type Struct is not supported
-                                           ^^^^^^^^^
-					   report full_name here?
-
-I applied a diff as in the attachment, to see what offsets are being assign=
-ed.
-Looks like this shows a bug:
-
-  ./veristat  -q -G "struct1[0].filler =3D 42" set_global_vars.bpf.o > /dev=
-/null
-  setting struct1[0].filler: offset 54, kind int, value 42
-
-Shouldn't offset be 2 in this case?
-
-(maybe print such info in debug (-d) mode?)
-
-Unrelated to this patch, but still a bug:
-
-  # Catches range error:
-  ./veristat -q -G "struct1[0].filler2 =3D 100500" set_global_vars.bpf.o=
-=20
-  Variable unsigned short value 100500 is out of range [0; 65535]
-  # Does not range error:
-  ./veristat -q -G "struct1[0].filler2 =3D -1" set_global_vars.bpf.o
-  ... success ...
-
-[...]
-
---=-xG4L2sl2ldRrvmcrfkMc
-Content-Disposition: attachment; filename="show-offset.patch"
-Content-Transfer-Encoding: base64
-Content-Type: text/x-patch; name="show-offset.patch"; charset="UTF-8"
-
-ZGlmZiAtLWdpdCBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi92ZXJpc3RhdC5jIGIvdG9v
-bHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3ZlcmlzdGF0LmMKaW5kZXggYmM5ZWJmNWEyOTg1Li43
-ZjNlOGJhNzVhY2MgMTAwNjQ0Ci0tLSBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi92ZXJp
-c3RhdC5jCisrKyBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi92ZXJpc3RhdC5jCkBAIC0x
-NzI1LDYgKzE3MjUsOCBAQCBzdGF0aWMgaW50IGFkanVzdF92YXJfc2VjaW5mbyhzdHJ1Y3QgYnRm
-ICpidGYsIGNvbnN0IHN0cnVjdCBidGZfdHlwZSAqdCwKICAgICAgICByZXR1cm4gMDsKIH0KIAor
-Y29uc3QgY2hhciAqYnRmX2tpbmRfc3RyKGNvbnN0IHN0cnVjdCBidGZfdHlwZSAqdCk7CisKIHN0
-YXRpYyBpbnQgc2V0X2dsb2JhbF92YXIoc3RydWN0IGJwZl9vYmplY3QgKm9iaiwgc3RydWN0IGJ0
-ZiAqYnRmLAogICAgICAgICAgICAgICAgICAgICAgICAgIHN0cnVjdCBicGZfbWFwICptYXAsIHN0
-cnVjdCBidGZfdmFyX3NlY2luZm8gKnNpbmZvLAogICAgICAgICAgICAgICAgICAgICAgICAgIHN0
-cnVjdCB2YXJfcHJlc2V0ICpwcmVzZXQpCkBAIC0xNzYxLDYgKzE3NjMsOSBAQCBzdGF0aWMgaW50
-IHNldF9nbG9iYWxfdmFyKHN0cnVjdCBicGZfb2JqZWN0ICpvYmosIHN0cnVjdCBidGYgKmJ0ZiwK
-ICAgICAgICAgICAgICAgIH0KICAgICAgICB9CiAKKyAgICAgICBmcHJpbnRmKHN0ZGVyciwgInNl
-dHRpbmcgJXM6IG9mZnNldCAlZCwga2luZCAlcywgdmFsdWUgJWxsZFxuIiwKKyAgICAgICAgICAg
-ICAgIHByZXNldC0+ZnVsbF9uYW1lLCBzaW5mby0+b2Zmc2V0LCBidGZfa2luZF9zdHIoYmFzZV90
-eXBlKSwgdmFsdWUpOworCiAgICAgICAgLyogQ2hlY2sgaWYgdmFsdWUgZml0cyBpbnRvIHRoZSB0
-YXJnZXQgdmFyaWFibGUgc2l6ZSAqLwogICAgICAgIGlmICAoc2luZm8tPnNpemUgPCBzaXplb2Yo
-dmFsdWUpKSB7CiAgICAgICAgICAgICAgICBib29sIGlzX3NpZ25lZCA9IGlzX3NpZ25lZF90eXBl
-KGJhc2VfdHlwZSk7Cg==
 
 
---=-xG4L2sl2ldRrvmcrfkMc--
+Hi Peter and Ingo,
+
+This is the first patch series of a set that will make it possible to be able
+to use SFrames[1] in the Linux kernel. A quick recap of the motivation for
+doing this.
+
+Currently the only way to get a user space stack trace from a stack
+walk (and not just copying large amount of user stack into the kernel
+ring buffer) is to use frame pointers. This has a few issues. The biggest
+one is that compiling frame pointers into every application and library
+has been shown to cause performance overhead.
+
+Another issue is that the format of the frames may not always be consistent
+between different compilers and some architectures (s390) has no defined
+format to do a reliable stack walk. The only way to perform user space
+profiling on these architectures is to copy the user stack into the kernel
+buffer.
+
+SFrames is now supported in gcc binutils and soon will also be supported
+by LLVM. SFrames acts more like ORC, and lives in the ELF executable
+file as its own section. Like ORC it has two tables where the first table
+is sorted by instruction pointers (IP) and using the current IP and finding
+it's entry in the first table, it will take you to the second table which
+will tell you where the return address of the current function is located
+and then you can use that address to look it up in the first table to find
+the return address of that function, and so on. This performs a user
+space stack walk.
+
+Now because the SFrame section lives in the ELF file it needs to be faulted
+into memory when it is used. This means that walking the user space stack
+requires being in a faultable context. As profilers like perf request a stack
+trace in interrupt or NMI context, it cannot do the walking when it is
+requested. Instead it must be deferred until it is safe to fault in user
+space. One place this is known to be safe is when the task is about to return
+back to user space.
+
+Josh originally wrote the PoC of this code and his last version he posted
+was back in January:
+
+   https://lore.kernel.org/all/cover.1737511963.git.jpoimboe@kernel.org/
+
+That series contained everything from adding a new faultable user space
+stack walking code, deferring the stack walk, implementing sframes,
+fixing up x86 (VDSO), and even added both the kernel and user space side
+of perf to make it work. But Josh also ran out of time to work on it and
+I picked it up. As there's several parts to this series, I also broke
+it out. Especially since there's parts of his series that do not depend
+on each other.
+
+This series contains only the core infrastructure that all the rest needs.
+Of the 14 patches, only 3 are x86 specific. The rest is simply the unwinding
+code that s390 can build against. I moved the 3 x86 specific to the end
+of the series too.
+
+Since multiple tracers (like perf, ftrace, bpf, etc) can attach to the
+deferred unwinder and each of these tracers can attach to some or all
+of the tasks to trace, there is a many to many relationship. This relationship
+needs to be made in interrupt or NMI context so it can not rely on any
+allocation. To handle this, a bitmask is used. There's a global bitmask of
+size long which will allocate a single bit when a tracer registers for
+deferred stack traces. The task struct will also have a bitmask where a
+request comes in from one of the tracers to have a deferred stack trace, it
+will set the corresponding bit for that tracer it its mask. As one of the bits
+represents that a request has been made, this means at most 31 on 32 bit
+systems or 63 on 64 bit systems of tracers may be registered at a given time.
+This should not be an issue as only one perf application, or ftrace instance
+should request a bit. BPF should also use only one bit and handle any
+multiplexing for its users.
+
+When the first request is made for a deferred stack trace from a task, it will
+take a timestamp. This timestamp will be used as the identifier for the user
+space stack trace. As the user space stack trace does not change while the
+task is in the kernel, requests that come in after the first request and
+before the task goes back to user space will get the same timestamp. This
+timestamp also serves the purpose of knowing how far back a given user space
+stack trace goes. If there's dropped events, and the events dropped miss a
+task entering user space and coming back to the kernel, the new stack trace
+taken when it goes back to user space should not be used with the events
+before the drop happened.
+
+When a tracer makes a request, it gets this timestamp, and the tasks bitmask
+sets the bit for the requesting tracer. A task work is used to have the task
+do the callbacks before it goes back to user space. When it does, it will scan
+its bitmask and call all the callbacks for the tracers that have their
+representing bit set. The callback will receive the user space stack trace as
+well as the timestamp that was used.
+
+That's the basic idea. Obviously there's more to it than the above
+explanation, but each patch explains what it is doing, and it is broken up
+step by step.
+
+I fully tested these patches in my own test suite, which it did find minor
+bugs which I fixed.
+
+I run two SFrame meetings once a month (one in Asia friendly timezone and
+the other in Europe friendly). We have developers from Google, Oracle, Red Hat,
+IBM, EfficiOS, Meta, Microsoft, and more that attend. (If anyone is interested
+in attending let me know). I have been running this since December of 2024.
+Last year in GNU Cauldron, a few of us got together to discuss the design
+and such. We are pretty confident that the current design is sound. We have
+working code on top of this and have been testing it.
+
+Since the s390 folks want to start working on this (they have patches to
+sframes already from working on the prototypes), I would like this series
+to be a separate branch based on top of v6.16-rc2. Then all the subsystems
+that want to work on top of this can as there's no real dependency between
+them.
+
+I have more patches on top of this series that add perf support, ftrace
+support, sframe support and the x86 fix ups (for VDSO). But each of those
+patch series can be worked on independently, but they all depend on this
+series (although the x86 specific patches at the end isn't necessarily
+needed, at least for other architectures).
+
+Please review, and if you are happy with them, lets get them in a branch
+that we all can use. I'm happy to take it in my tree if I can get acks on the
+x86 code. Or it can be in the tip tree as a separate branch on top of 6.16-rc2
+(or rc3 if someone finds some issues), and I'll just base my work on top of
+that. Doesn't matter either way.
+
+Thanks!
+
+-- Steve
+
+
+[1] https://sourceware.org/binutils/wiki/sframe
+
+Changes since v9: https://lore.kernel.org/linux-trace-kernel/20250513223435.636200356@goodmis.org/
+
+- As asm-generic headers are not included when an architecture defines the
+  header, having more than one #ifndef and setting variables does not work
+  with those checks in the asm-generic header and the architecture header
+  does not define all the values.
+    
+  o Move ARCH_INIT_USER_FP_FRAME check to linux/user_unwind.h
+    
+  o Have linux/user_unwind.h include asm/user_unwind.h and not have C files
+    have to call the asm header directly
+    
+  o Remove unnecessary frame initialization
+    
+  o Added unwind_user.h to asm-generic/Kbuild
+
+  o Move #indef arch_unwind_user_state to linux/user_unwind_types.h
+    
+  o Move the following to linux/unwind_user.h:
+       #ifndef ARCH_INIT_USER_COMPAT_FP_FRAME
+       #ifndef arch_unwind_user_init
+       #ifndef arch_unwind_user_next
+    
+- Changed UNWIND_GET_USER_LONG() to use "unsigned long" instead of u64 as
+  this can be called on 32 bit architectures and just because
+  "compat_state()" returns false doesn't mean that the value is 64 bit.
+
+- Check for ret < 0 instead of just ret != 0 from return code of
+  task_work_add(). Don't want to just assume it's less than zero as it
+  needs to return a negative on error.
+
+- Use BIT() macro for bit setting and testing.
+
+- Moved the "unwind_mask" from the task_struct into the task->unwind_info
+  structure.
+
+- Fix compare with ~UNWIND_PENDING_BIT to be ~UNWIND_PENDING
+
+- Remove unneeded include of perf_event.h
+
+
+This series can be found at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
+unwind/core
+
+
+
+Josh Poimboeuf (9):
+      unwind_user: Add user space unwinding API
+      unwind_user: Add frame pointer support
+      unwind_user: Add compat mode frame pointer support
+      unwind_user/deferred: Add unwind cache
+      unwind_user/deferred: Add deferred unwinding interface
+      unwind_user/deferred: Make unwind deferral requests NMI-safe
+      unwind_user/x86: Enable frame pointer unwinding on x86
+      perf/x86: Rename and move get_segment_base() and make it global
+      unwind_user/x86: Enable compat mode frame pointer unwinding on x86
+
+Steven Rostedt (5):
+      unwind_user/deferred: Add unwind_deferred_trace()
+      unwind deferred: Use bitmask to determine which callbacks to call
+      unwind deferred: Use SRCU unwind_deferred_task_work()
+      unwind: Clear unwind_mask on exit back to user space
+      unwind: Finish up unwind when a task exits
+
+----
+ MAINTAINERS                              |   8 +
+ arch/Kconfig                             |  11 +
+ arch/x86/Kconfig                         |   2 +
+ arch/x86/events/core.c                   |  44 +---
+ arch/x86/include/asm/ptrace.h            |   2 +
+ arch/x86/include/asm/unwind_user.h       |  60 +++++
+ arch/x86/include/asm/unwind_user_types.h |  17 ++
+ arch/x86/kernel/ptrace.c                 |  38 +++
+ include/asm-generic/Kbuild               |   2 +
+ include/asm-generic/unwind_user.h        |   5 +
+ include/asm-generic/unwind_user_types.h  |   5 +
+ include/linux/entry-common.h             |   2 +
+ include/linux/sched.h                    |   5 +
+ include/linux/unwind_deferred.h          |  75 ++++++
+ include/linux/unwind_deferred_types.h    |  18 ++
+ include/linux/unwind_user.h              |  33 +++
+ include/linux/unwind_user_types.h        |  39 ++++
+ kernel/Makefile                          |   1 +
+ kernel/exit.c                            |   2 +
+ kernel/fork.c                            |   4 +
+ kernel/unwind/Makefile                   |   1 +
+ kernel/unwind/deferred.c                 | 383 +++++++++++++++++++++++++++++++
+ kernel/unwind/user.c                     | 128 +++++++++++
+ 23 files changed, 846 insertions(+), 39 deletions(-)
+ create mode 100644 arch/x86/include/asm/unwind_user.h
+ create mode 100644 arch/x86/include/asm/unwind_user_types.h
+ create mode 100644 include/asm-generic/unwind_user.h
+ create mode 100644 include/asm-generic/unwind_user_types.h
+ create mode 100644 include/linux/unwind_deferred.h
+ create mode 100644 include/linux/unwind_deferred_types.h
+ create mode 100644 include/linux/unwind_user.h
+ create mode 100644 include/linux/unwind_user_types.h
+ create mode 100644 kernel/unwind/Makefile
+ create mode 100644 kernel/unwind/deferred.c
+ create mode 100644 kernel/unwind/user.c
 
