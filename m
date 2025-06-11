@@ -1,158 +1,126 @@
-Return-Path: <bpf+bounces-60336-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60337-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54AB9AD5B43
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 17:59:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAA7EAD5B51
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 18:00:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1429F17B028
-	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 15:59:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C628189298D
+	for <lists+bpf@lfdr.de>; Wed, 11 Jun 2025 16:00:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35B2B1DFE20;
-	Wed, 11 Jun 2025 15:58:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D9371A8F82;
+	Wed, 11 Jun 2025 15:59:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GTnfmwYh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ldm6CpJ3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AD0A1BEF77;
-	Wed, 11 Jun 2025 15:58:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E1F5A92E
+	for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 15:59:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749657530; cv=none; b=G4qDvXUz1J1RMT21D7RoVmazpMlPzKCXcUxLbP5B0OyUfHLo2GRQlAwjsy1cv8eeC3KP4D0/LP6idXkUp8lE+bjU4l6Z1E0Lr7Xx9kEA3NBRvNpopaxAV71Guoktw0e97HSc4MYT9yqdjfwkXQp53crcKOkyWeAoptlBvxT+X2E=
+	t=1749657582; cv=none; b=qmh5dgNo0j6wSLtwuZuajY5N+dtD0ExTP1u8jeNw0blKGrrj7LR+AP9LkX0wD3Lfoi6HGTP66AL0+B8nJVdtbAcJdn1GmJg1Ohq3jcpkOGJ2KbJx57SWiYVgWYFaT5sp3bG9ZnRrUKfLMDUU5WGx5UQX5QjfyaP6qS0n/Vnwkp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749657530; c=relaxed/simple;
-	bh=+/YRa0wYW2XQycJf9G9n8i2I2YEgSld3UVEyRw8s7iQ=;
+	s=arc-20240116; t=1749657582; c=relaxed/simple;
+	bh=dH7XBgPYH39O6w+3ANk9pZ4bO4zC8SkrUYvpzBBmM2w=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Nr0ZNmiSOz+Tf5U72pBXM+SPnz8LrvEm188qHst6MfjBwbU9NNyxMOR/T3qlfb4zTtrM3kE6IO2aHS07n5uj+1L/bEa1sXc9z3jk8WgJa8xMLJkh3KvBIHiubMDRR4BOKZm5QxLqk1auyAlr+2il4+2ikzZCOdwQ8Hc9b5JUY7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GTnfmwYh; arc=none smtp.client-ip=209.85.221.49
+	 To:Cc:Content-Type; b=LBzycVfap6wHj7d9H5wAb4oNiD6mqvutyxHhVy5gf+BWlJXcriOv3988efBt9BUJiilNYPX4qtXO80AIUdRIvASP3DRMCjzn6+w5VK1/o6pLw6k+/ZLZ9n3w4wLT78Qkwuu2Ok9GI+Al0L4EO4TiN4bln8IrR390ukrcXzIA15w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ldm6CpJ3; arc=none smtp.client-ip=209.85.221.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3a35c894313so35165f8f.2;
-        Wed, 11 Jun 2025 08:58:48 -0700 (PDT)
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3a4ef2c2ef3so42881f8f.2
+        for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 08:59:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749657527; x=1750262327; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1749657579; x=1750262379; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aqvSrdo/59RzPZSWugP8CS5Vm3+/F5kf6kB2XqXUuHc=;
-        b=GTnfmwYhbNLsuC7C2Gja6CQ6ichzUVuDWjJoJLuElXdahHidQy6L+5M63OX7CY5aro
-         rLYZ6X+DyNlf73cpPQ4gGbW7OxX8JmccKuxiGpqjYxtF7GX6umeh7rrfL5KspxP9xzkN
-         6N6lmstgzNDy/oUQMmGZYNOqsqBdhQ3YGZ2JypVEqUFAWTP/Ux10dLuLQA+M6i2vDIUL
-         XOUg/u6UxTghog/tpnxLseFt5jTJ/O8W+lL2F9I4CMJ49kAolY/2fcSOtRIy8S9pgW5j
-         wN2N01gO0TgJ2ZeW3YuY18SjWowcRcgdw+zprAQkG6vmKRwNOxGo6CzIyI172kmQBrxT
-         X3eA==
+        bh=dH7XBgPYH39O6w+3ANk9pZ4bO4zC8SkrUYvpzBBmM2w=;
+        b=ldm6CpJ3tCeCPyVNPM/WUbkUs1iqYj2Lg1zpTPuvZyd8gJlEV1pUAYYtFLl0KbZDSm
+         2idEccTFitujxz6gDEpy4Gx6QWewum+86QdOWenL3X32Px+6bVYWaoFNYq4zZXVY+NDW
+         GpiUGaCoYfHAI6sXbH5vkKdDxpNiTwM4OskjTAq8zOVWdZyUzkMmFSSCuxLG/cuzcHIb
+         Gzo0BjtrKZm2IeaMPA88ukfgkGMUQP9N1sgfMV/YtgTi5/3HWLF+KEVA6t8my68OBHEt
+         fWxnnGBXr1QcXMa7/6U+4X0AiD1orQVjyDlO6boBnLmTP6OAPcmUTX9j5bWLm1dGnzpz
+         4nPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749657527; x=1750262327;
+        d=1e100.net; s=20230601; t=1749657579; x=1750262379;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aqvSrdo/59RzPZSWugP8CS5Vm3+/F5kf6kB2XqXUuHc=;
-        b=fKwnIK5pZ8yzr1bqCMLXtKPY6FEkU56nRuHDvPq4ezXuk12yVnSiVW3m2y3AVuTLUh
-         hCI7mA6NELs84Q6FyUij+9Yd8rLXKKQOv19j5qVywHa19hz8X7Lb+Ul+XT54hu9imORo
-         amt1SlnlpQ0Y7WFrOcvq+AehGq4WMwTd3fDzBO8cQ/dCWLvn3eFyjY2Gniaqf0B6AYgi
-         pCKlCE1TZCoujCeOSxgxk5dspUD7x11P13jpyTYjT6DrIz+G3/JuM1mr/rsjTf5i6wsX
-         76HI8B4+FVkWYd8eWmIO/BdS9xcQlF0CUtlWX2v71NBkZ5OtTNw0CzqEyyFuTlB0PLhb
-         P7eA==
-X-Forwarded-Encrypted: i=1; AJvYcCV89SyM1EyTbcrd/CTmGI7v+ARAWBbZbcZgYvyJR+oKgxIybUJSlMajzNlrPkoiX6GAIMFAdzto@vger.kernel.org, AJvYcCVJq7JB/pCXHOW/s+8Rfv9pC4TUgqDDE1PP6Fa/b/Lqst8oTvUTO1vRQNmXiCls+dmYfQ17apWbau2bliuy@vger.kernel.org, AJvYcCWCSqmJ3A/POoRjLze2i/M0nJBurI12MHPJyeZC5eHxf69zUDDJn6un9aufAR/zKXVznLA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxolEfA/DyP3BiHaLNnuM9KOj0t4DUS35C2J9YHUz0LINSnf5vD
-	P0HsasEm6RbY2oWcB2bhHq26d+Q/qMciWT01B81FvdIDVrC+yxDKLrI2NavNaoTSfmNyp4Hyosr
-	3uMjB8Hlmew7D9POjU4XplDR8sxOiH6Q=
-X-Gm-Gg: ASbGncsk53OPduf8/9bYlGAFOKQR4uRwfdTKxPbqjtv51ObuCbullyDNOa4n89SSdlV
-	d9nWXx+ToFRIRhzxqfkbqzPomikDXYt1xgDIMOHizJ5ioaEmDw//Ba5qCYMpSkbmGXDsD6SdbXM
-	oeYZ7lg8nFPdujZEcAw34ELAnzlyjN91VFqimHYpqoUKN3eKeMK5333cMrCD4ghFVYz6odnNgg
-X-Google-Smtp-Source: AGHT+IHSt+/THqHxhgz827jHJko2BKpI8+bIByOu4nG7vw0qyRbYM4ZzDDA4culSWmIwZsXkz9mnMVne/6J48SeBfws=
-X-Received: by 2002:a05:6000:2c11:b0:3a5:2694:d75f with SMTP id
- ffacd0b85a97d-3a558a27355mr3302299f8f.52.1749657527027; Wed, 11 Jun 2025
- 08:58:47 -0700 (PDT)
+        bh=dH7XBgPYH39O6w+3ANk9pZ4bO4zC8SkrUYvpzBBmM2w=;
+        b=lTfINeLOqkIwFMzgO+CLWQN+fvMpvZd7ZfZxcNalVeEa6nLsApUuiOvdMcHZAz0GS3
+         41deWjhIuDLO4aa4AOwsLUHmu70JxDsRtRBTTxdajVnVNUYf4eMfT/qHJUC1jxEUUznu
+         GAj9eGJqWLZDrWICP0XvtL2XVoMggDpBXXIJhVT9PhXCtX82Np8t36wpDGeEmFoBkVMk
+         /HSz1lVLYldBO8qDB9yUpDvprTlpOpc3MPZKCbCmH1GjTiCHZbmgxA8KUZYq7jGjjYEL
+         H9gtykLhLvfb9ZAsvZe2VzqYzERh7pOq3HF/5PX0Ljzs7lLGFqTyy2cu2QmyHLByDa55
+         l6FQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU2VW3EN3SvALXHz4qA6++Vtcswj2rX50CAJ4g5x5dFNju+gUDR7h9CJzxUvT6Jisp799c=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz20bcwDnLYtufmHS3cnZpwWhxmldjl3ZEqbzi8JQH30CzHZg+a
+	08p8voyGzFQ7127V4BX14YjBbthbrPTxsor1aMgpUNULhWH3CYh2KymyqRUspNOcI0r5K4GDD1J
+	yN1kN8/zLxC75r5DmfjW5UUBndIofeaMelQ==
+X-Gm-Gg: ASbGncsEpSbr2dpJFhITbng81yba6xppzTTcCb0CXUUFbaDK2jCDvl/5djm2MnzXJFQ
+	RkjX9yukSI/WPoxNFvKvLAxHUfj7FanQ3xGDYqdslSgeJzMN2grHLkYmhYFPkd4TJmr+fsSIpia
+	gck/LdjX1C5lJ9ZW5njEOQskH8AbXFnBfqqkN5qmv1XSP0z4/K+vu2vqP1Jzu5XFDUgQhf20Uz
+X-Google-Smtp-Source: AGHT+IHCaXUAQp5iGJUiBCeCLolYWdTwdRyOz0/OM8TZjkcRtq499PND20fOwh9BM33NgDMEGbhCSw3kJhOrQk3mqmM=
+X-Received: by 2002:a05:6000:18a5:b0:3a4:f41d:696e with SMTP id
+ ffacd0b85a97d-3a558a2774emr3248146f8f.27.1749657578578; Wed, 11 Jun 2025
+ 08:59:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250611-rcu-fix-task_cls_state-v2-1-1a7fc248232a@posteo.net>
-In-Reply-To: <20250611-rcu-fix-task_cls_state-v2-1-1a7fc248232a@posteo.net>
+References: <20250420105524.2115690-1-rjsu26@gmail.com> <20250420105524.2115690-4-rjsu26@gmail.com>
+ <m27c2l1ihl.fsf@gmail.com> <CAADnVQJZpyqY9TWanRKjmViOZxppAeh7FGAnxV_1CKAih7drkA@mail.gmail.com>
+ <CAE5sdEh3NuXUcjScj4Auvtc2701NAS6fu0hpzLGVnaoQ7ESnfg@mail.gmail.com>
+ <CAADnVQKX2=jYfs5TBBKdKxHPi_ssUvrSuxbr22-dmYoP_e3=dA@mail.gmail.com>
+ <CAM6KYssQwOnOqQT6TxHuu1_vDmmuw+OtFB=FwPLqbFcv+QdVrg@mail.gmail.com>
+ <CAADnVQLFM9s_Ss7eqyx47tiY8i2b2dt=RMPHMC_s67Ang1rNBw@mail.gmail.com>
+ <CAM6KYsuVe10f39kfaJaQEUGGA7xjmkALxjRSQxJRcGKAw4KtGQ@mail.gmail.com>
+ <CAADnVQ+qS2V4j8ADCK+6GoUXcDnS+6+t3yLiTQY-GQ=Kmj0ymQ@mail.gmail.com> <CAE5sdEgmDBkQYnv2qReOW8fYBpK09VpZigLkAe_GObRXOpgZAw@mail.gmail.com>
+In-Reply-To: <CAE5sdEgmDBkQYnv2qReOW8fYBpK09VpZigLkAe_GObRXOpgZAw@mail.gmail.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 11 Jun 2025 08:58:35 -0700
-X-Gm-Features: AX0GCFtxfPHbu8laTtgXcPRa4SllbCu8OCyANjPGc6H3zzfi2xMc1cA263W5PUA
-Message-ID: <CAADnVQJu3fYTfdRTWxeB5hraqe3_Esm7cgKfO38nxodknABeHg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] net: Fix RCU usage in task_cls_state() for
- BPF programs
-To: Charalampos Mitrodimas <charmitro@posteo.net>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Feng Yang <yangfeng@kylinos.cn>, Tejun Heo <tj@kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	bpf <bpf@vger.kernel.org>, syzbot+b4169a1cfb945d2ed0ec@syzkaller.appspotmail.com
+Date: Wed, 11 Jun 2025 08:59:27 -0700
+X-Gm-Features: AX0GCFur8OG5gwx-WXZ3wFhvLRMdm9IMNjJSydenoqf1SLMPiI4-Hd6eJMN_eGU
+Message-ID: <CAADnVQJ3yXo1BVwB31rymfJyY_HL2VW4_QFipOgmKxrMaOKZyA@mail.gmail.com>
+Subject: Re: [RFC bpf-next 3/4] bpf: Generating a stubbed version of BPF
+ program for termination
+To: Siddharth Chintamaneni <sidchintamaneni@gmail.com>
+Cc: Raj Sahu <rjsu26@gmail.com>, Eduard Zingerman <eddyz87@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Dan Williams <djwillia@vt.edu>, miloc@vt.edu, ericts@vt.edu, 
+	rahult@vt.edu, doniaghazy@vt.edu, quanzhif@vt.edu, 
+	Jinghao Jia <jinghao7@illinois.edu>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 11, 2025 at 2:04=E2=80=AFAM Charalampos Mitrodimas
-<charmitro@posteo.net> wrote:
+On Tue, Jun 10, 2025 at 3:07=E2=80=AFPM Siddharth Chintamaneni
+<sidchintamaneni@gmail.com> wrote:
 >
-> The commit ee971630f20f ("bpf: Allow some trace helpers for all prog
-> types") made bpf_get_cgroup_classid_curr helper available to all BPF
-> program types, not just networking programs.
+> <SNIP>
 >
-> This helper calls __task_get_classid() which internally calls
-> task_cls_state() requiring rcu_read_lock_bh_held(). This works in
-> networking/tc context where RCU BH is held, but triggers an RCU
-> warning when called from other contexts like BPF syscall programs that
-> run under rcu_read_lock_trace():
+> > > > text_poke_bp() takes care of that.
+> > > > That's what the "_bp" suffix signifies. It's modifying live text
+> > > > via 'bp' (breakpoint). It has a multistep process to make it safe.
+> > >
 >
->   WARNING: suspicious RCU usage
->   6.15.0-rc4-syzkaller-g079e5c56a5c4 #0 Not tainted
->   -----------------------------
->   net/core/netclassid_cgroup.c:24 suspicious rcu_dereference_check() usag=
-e!
+> We are almost there with our next iteration, but we are stuck with a
+> WARNING that is getting triggered when calling
+> smp_text_poke_batch_patch which internally call
 >
-> Fix this by also accepting rcu_read_lock_trace_held() as a valid RCU
-> context in the task_cls_state() function. This is safe because BPF
-> programs are non-sleepable and task_cls_state() is only doing an RCU
-> dereference to get the classid.
 >
-> Reported-by: syzbot+b4169a1cfb945d2ed0ec@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=3Db4169a1cfb945d2ed0ec
-> Fixes: ee971630f20f ("bpf: Allow some trace helpers for all prog types")
-> Signed-off-by: Charalampos Mitrodimas <charmitro@posteo.net>
-> ---
-> Changes in v2:
-> - Fix RCU usage in task_cls_state() instead of BPF helper
-> - Add rcu_read_lock_trace_held() check to accept trace RCU as valdi
->   context
-> - Drop the approach of using task_cls_classid() which has in_interrupt()
->   check
-> - Link to v1: https://lore.kernel.org/r/20250608-rcu-fix-task_cls_state-v=
-1-1-2a2025b4603b@posteo.net
-> ---
->  net/core/netclassid_cgroup.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> smp_call_function_many_cond during a watchdog callback trigger.
+> https://elixir.bootlin.com/linux/v6.15.1/source/kernel/smp.c#L815
 >
-> diff --git a/net/core/netclassid_cgroup.c b/net/core/netclassid_cgroup.c
-> index d22f0919821e931fbdedf5a8a7a2998d59d73978..df86f82d747ac40e99597d6f2=
-d921e8cc2834e64 100644
-> --- a/net/core/netclassid_cgroup.c
-> +++ b/net/core/netclassid_cgroup.c
-> @@ -21,7 +21,8 @@ static inline struct cgroup_cls_state *css_cls_state(st=
-ruct cgroup_subsys_state
->  struct cgroup_cls_state *task_cls_state(struct task_struct *p)
->  {
->         return css_cls_state(task_css_check(p, net_cls_cgrp_id,
-> -                                           rcu_read_lock_bh_held()));
-> +                                           rcu_read_lock_bh_held() ||
-> +                                           rcu_read_lock_trace_held()));
+> Please let us know if you have any suggestions around this?
 
-This is incomplete. It only addresses one particular syzbot report.
-It needs to include rcu_read_lock_held() as well.
-
-pw-bot: cr
+That warn is correct. You're doing something wrong, but it's
+impossible to suggest the fix without seeing patches.
 
