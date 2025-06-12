@@ -1,223 +1,97 @@
-Return-Path: <bpf+bounces-60433-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60434-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFF24AD65DA
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 04:48:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7845AD65DF
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 04:53:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B061F1BC1A8D
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 02:48:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C43201BC1B27
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 02:53:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E26771E5B8A;
-	Thu, 12 Jun 2025 02:48:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MYS5Rlpn"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66AAB1D5ACE;
+	Thu, 12 Jun 2025 02:52:55 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ACE61C1F13;
-	Thu, 12 Jun 2025 02:48:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DCCD28F1
+	for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 02:52:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749696485; cv=none; b=dUOY9Hl80evHkeQxW2rYj4KRRvyJo2KtwSWtMu4QcpoGl+rb/P/VgZeydLzfOo3b3W5mC7MNYJki4+mrI02+Wu3RUAhQs/4aQd3eKD23xRrimGaxgw3Bj5KCfi9oZ9rlKJy5UQY4ggWNuthqxZWZMhSyqGFR+bKrgRMB+AsnkhI=
+	t=1749696775; cv=none; b=lQ8cxOtDHlu43Ul4F84sgkPf6pxw4VhxHIljbVeiduqN7McczyBYzrSsf+kwDX2pogDoQPGjRLR4ZlIFrOHlj0Sk8Vj7GoNe8KU/GCEZK6SNYsd27JocheHrtkuLkoaldPSAPB6rt3W3cLQ8RFrahndp5qFVTFZ93Aq3HhnV6bM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749696485; c=relaxed/simple;
-	bh=f4H7Y+r48HQSZ7EuN5UKYiS6BVNKq79Svws0Lv+F8LI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NGDbAY9KRqMdMEk6CUAIbC0ZGmWyLyhOYWUeY6FFa3ZAOF7a/7Cw5OhMKbq8IV4u8+rYlrKAzVc2rg0IZygA5SgiuwpHDzc1iJejqsl7VS2ZrhDdff0hP0Wiei3rGH66eDkbo/ll8TyXzGBZyRxOi1pjyJKc6/IiY7zPjjtXCJo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MYS5Rlpn; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3a53359dea5so313684f8f.0;
-        Wed, 11 Jun 2025 19:48:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749696482; x=1750301282; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vz148ZUApP4uOQdhUfpaPucEXS8RXsBePf4DAtP/7aA=;
-        b=MYS5Rlpnor2/MvAa36QmSikd+Wh3IfhnQrf5mKpflRLvfEMuXWPOIxwvL9Zx0mq+2l
-         hrbvXTlr2mBaxfDRV4vGyzEMw702GLdyIv/nUqnXf0RQejYXy0FsCgYynMZPoatb9aDI
-         po39TTl4Olh3i7ikqU8eUOI0XcGzR5I7kfd7nESJZP4gMO8LdUrkWvhIEGhOBlYYshzZ
-         4wFgentpGZFq5ODhvzBHqGjy1rO4qrX8MBYtGPzch0ebuoHScR0gsdW2BP1P/SQ3lYeB
-         dD+usiIKUEH9w+MgxUPjVDLNkaYTViJuJlTaRz9IYBbYxGPQU8IFjO7Kji4Nq7+Mr6Ic
-         lYsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749696482; x=1750301282;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vz148ZUApP4uOQdhUfpaPucEXS8RXsBePf4DAtP/7aA=;
-        b=fmkInfJqicJiULxw3BGf4mhMX6oyJuVdB8rV7wO3aQ/Sx3rjwc33c9D/YpFmrzHZiA
-         sQ2XdNn7diQAaDnPBJoueLfXWosH1WXBeMrHaXWU399j2YnK0rbsSUmpfFuIo4HlPauP
-         cjerbgx9Adbm0vHX+UkGJuafJbnlMEv09qbE8r/tYIwIZBWbcaVPE9k8Pc7hWIFEXRfh
-         uAxOpVBBhoQf4+GSwS7YE4K9UQmSojWlnmQa2NcnlVsFwMLLSwfe4xyGYYeKQFZ6AwUW
-         Q3jpoaDVs1/QaAkZaiGKmAaDglzME4lg27X56m1Vt3bX2LJAFRUmCyHhgD6lRH9cdorf
-         cN3g==
-X-Forwarded-Encrypted: i=1; AJvYcCUFxwJ2WXxgS3Xyy2AxH8ahBis6KAKHR5CP9nzpjk1+XVgX5SBNQNfJHQVxqPgT1z2RbzZrg+StRR3hwmcs@vger.kernel.org, AJvYcCWj2WKp1dbvjCEwEXptYfw+1ahNzPqT/C9EqlcRk1bGnJ4GbLApYXF6HXMnzcm040QPaJ4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YypeSmdUQ76oHn4S2+TJfzrE1rJquQabjo8eOTyVD3EcfRb6Onm
-	ONUXbfc9g7q40gRrhbppLlLSqUHogmw2XN8FobzxSxbdwYJJF/xpdH9dVBK3RidmaRCyilkN0qE
-	beEysucB21OEeOwJ1kdU+8TUSABmQAW8=
-X-Gm-Gg: ASbGncsxJB8omhMfEz5nIDxdokSGIP40MH+SUgtLSXMZUAAqn90rLNRkAZrmvA45uFu
-	XVTTkFSPMI4EzdI25sb5dwFQzgncezPAwmbWqtOoFPDsSt7AAj16M53LKZcUobvw/ipiFm6NuFr
-	FmzFLz/5y0es5lYAikk/Gcu2h4JhEdMb5loCF4JLk8ptc33IKjQYjC2pa+WX5xJYcTxikxDdpT
-X-Google-Smtp-Source: AGHT+IG0h9jaSAfIckQc+5yClXVhCcGIYDKsgqCETtZ4Rmbkq6wPTIOJFNrLjX1KFcb3wWcy6w1fBUfp7W4VGxZonhY=
-X-Received: by 2002:a05:6000:18a8:b0:3a4:e6d7:6160 with SMTP id
- ffacd0b85a97d-3a5612f0b3dmr713407f8f.6.1749696481781; Wed, 11 Jun 2025
- 19:48:01 -0700 (PDT)
+	s=arc-20240116; t=1749696775; c=relaxed/simple;
+	bh=H158XPi9RANcSXiN0lzSeHifL+9udRgVA1GlXPYQCAQ=;
+	h=To:Cc:From:Subject:Message-ID:Date:MIME-Version:Content-Type; b=WO/7zHjansxwKo4UxyJDKJfl2KDE1LflVgHdUqJXJOJAs33JheMuKbdUYivQq7xXWEaHsVqRgtYhf3HVuwU6qi/9KBcIC2mbNGZhHfjHERqr+aZVjAEEOb7/Qw6oaqOue95DAX2ZuGmLXz/d6dPzipQUXYDbfpHMGu0xxN5yA1A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [113.200.148.30])
+	by gateway (Coremail) with SMTP id _____8AxSWr6QEpox2gUAQ--.14101S3;
+	Thu, 12 Jun 2025 10:52:42 +0800 (CST)
+Received: from [10.130.10.66] (unknown [113.200.148.30])
+	by front1 (Coremail) with SMTP id qMiowMBxLsf4QEpoMgwXAQ--.9322S3;
+	Thu, 12 Jun 2025 10:52:41 +0800 (CST)
+To: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: [Build Error Report] Implicit Function declaration for bpf-next tree
+Message-ID: <d602ae87-8bed-1633-d5b6-41c5bd8bbcdc@loongson.cn>
+Date: Thu, 12 Jun 2025 10:52:40 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1749214572.git.asml.silence@gmail.com> <c4de7ed6e165f54e2166e84bc88632887d87cfdf.1749214572.git.asml.silence@gmail.com>
-In-Reply-To: <c4de7ed6e165f54e2166e84bc88632887d87cfdf.1749214572.git.asml.silence@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 11 Jun 2025 19:47:50 -0700
-X-Gm-Features: AX0GCFsF8TengxXbdw4Na3vitrpKct7_UfoZ8uTTIUrWlnDfIh3GU3rfFF7cuWg
-Message-ID: <CAADnVQJgxnQEL+rtVkp7TB_qQ1JKHiXe=p48tB_-N6F+oaDLyQ@mail.gmail.com>
-Subject: Re: [RFC v2 5/5] io_uring/bpf: add basic kfunc helpers
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: io-uring@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:qMiowMBxLsf4QEpoMgwXAQ--.9322S3
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj9xXoW7Wr1Dtr13Cw15Ar15GryUurX_yoWkJrgE9r
+	n2q3W7uF1UWr48t3s7WFs8ZFW5tw1Iqr9Ikw1YqFnxA3WkX3yUCFs8uryfXF1UXr1DGrs5
+	t3Wjyry5ArZ7AosvyTuYvTs0mTUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUj1kv1TuYvT
+	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+	cSsGvfJTRUUUbx8YFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+	vaj40_Wr0E3s1l1IIY67AEw4v_JrI_Jryl8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+	W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0
+	oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc02F4
+	0EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_
+	Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbI
+	xvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AK
+	xVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrx
+	kI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v2
+	6r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8Jw
+	CI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07URa0PUUUUU
+	=
 
-On Fri, Jun 6, 2025 at 6:58=E2=80=AFAM Pavel Begunkov <asml.silence@gmail.c=
-om> wrote:
->
-> A handle_events program should be able to parse the CQ and submit new
-> requests, add kfuncs to cover that. The only essential kfunc here is
-> bpf_io_uring_submit_sqes, and the rest are likely be removed in a
-> non-RFC version in favour of a more general approach.
->
-> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-> ---
->  io_uring/bpf.c | 86 ++++++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 86 insertions(+)
->
-> diff --git a/io_uring/bpf.c b/io_uring/bpf.c
-> index f86b12f280e8..9494e4289605 100644
-> --- a/io_uring/bpf.c
-> +++ b/io_uring/bpf.c
-> @@ -1,12 +1,92 @@
->  #include <linux/mutex.h>
->  #include <linux/bpf_verifier.h>
->
-> +#include "io_uring.h"
->  #include "bpf.h"
->  #include "register.h"
->
->  static const struct btf_type *loop_state_type;
->  DEFINE_MUTEX(io_bpf_ctrl_mutex);
->
-> +__bpf_kfunc_start_defs();
-> +
-> +__bpf_kfunc int bpf_io_uring_submit_sqes(struct io_ring_ctx *ctx,
-> +                                        unsigned nr)
-> +{
-> +       return io_submit_sqes(ctx, nr);
-> +}
-> +
-> +__bpf_kfunc int bpf_io_uring_post_cqe(struct io_ring_ctx *ctx,
-> +                                     u64 data, u32 res, u32 cflags)
-> +{
-> +       bool posted;
-> +
-> +       posted =3D io_post_aux_cqe(ctx, data, res, cflags);
-> +       return posted ? 0 : -ENOMEM;
-> +}
-> +
-> +__bpf_kfunc int bpf_io_uring_queue_sqe(struct io_ring_ctx *ctx,
-> +                                       void *bpf_sqe, int mem__sz)
-> +{
-> +       unsigned tail =3D ctx->rings->sq.tail;
-> +       struct io_uring_sqe *sqe;
-> +
-> +       if (mem__sz !=3D sizeof(*sqe))
-> +               return -EINVAL;
-> +
-> +       ctx->rings->sq.tail++;
-> +       tail &=3D (ctx->sq_entries - 1);
-> +       /* double index for 128-byte SQEs, twice as long */
-> +       if (ctx->flags & IORING_SETUP_SQE128)
-> +               tail <<=3D 1;
-> +       sqe =3D &ctx->sq_sqes[tail];
-> +       memcpy(sqe, bpf_sqe, sizeof(*sqe));
-> +       return 0;
-> +}
-> +
-> +__bpf_kfunc
-> +struct io_uring_cqe *bpf_io_uring_get_cqe(struct io_ring_ctx *ctx, u32 i=
-dx)
-> +{
-> +       unsigned max_entries =3D ctx->cq_entries;
-> +       struct io_uring_cqe *cqe_array =3D ctx->rings->cqes;
-> +
-> +       if (ctx->flags & IORING_SETUP_CQE32)
-> +               max_entries *=3D 2;
-> +       return &cqe_array[idx & (max_entries - 1)];
-> +}
-> +
-> +__bpf_kfunc
-> +struct io_uring_cqe *bpf_io_uring_extract_next_cqe(struct io_ring_ctx *c=
-tx)
-> +{
-> +       struct io_rings *rings =3D ctx->rings;
-> +       unsigned int mask =3D ctx->cq_entries - 1;
-> +       unsigned head =3D rings->cq.head;
-> +       struct io_uring_cqe *cqe;
-> +
-> +       /* TODO CQE32 */
-> +       if (head =3D=3D rings->cq.tail)
-> +               return NULL;
-> +
-> +       cqe =3D &rings->cqes[head & mask];
-> +       rings->cq.head++;
-> +       return cqe;
-> +}
-> +
-> +__bpf_kfunc_end_defs();
-> +
-> +BTF_KFUNCS_START(io_uring_kfunc_set)
-> +BTF_ID_FLAGS(func, bpf_io_uring_submit_sqes, KF_SLEEPABLE);
-> +BTF_ID_FLAGS(func, bpf_io_uring_post_cqe, KF_SLEEPABLE);
-> +BTF_ID_FLAGS(func, bpf_io_uring_queue_sqe, KF_SLEEPABLE);
-> +BTF_ID_FLAGS(func, bpf_io_uring_get_cqe, 0);
-> +BTF_ID_FLAGS(func, bpf_io_uring_extract_next_cqe, KF_RET_NULL);
-> +BTF_KFUNCS_END(io_uring_kfunc_set)
+There exists the following build error for bpf-next tree on LoongArch:
 
-This is not safe in general.
-The verifier doesn't enforce argument safety here.
-As a minimum you need to add KF_TRUSTED_ARGS flag to all kfunc.
-And once you do that you'll see that the verifier
-doesn't recognize the cqe returned from bpf_io_uring_get_cqe*()
-as trusted.
-Looking at your example:
-https://github.com/axboe/liburing/commit/706237127f03e15b4cc9c7c31c16d34dbf=
-f37cdc
-it doesn't care about contents of cqe and doesn't pass it further.
-So sort-of ok-ish right now,
-but if you need to pass cqe to another kfunc
-you would need to add an open coded iterator for cqe-s
-with appropriate KF_ITER* flags
-or maybe add acquire/release semantics for cqe.
-Like, get_cqe will be KF_ACQUIRE, and you'd need
-matching KF_RELEASE kfunc,
-so that 'cqe' is not lost.
-Then 'cqe' will be trusted and you can pass it as actual 'cqe'
-into another kfunc.
-Without KF_ACQUIRE the verifier sees that get_cqe*() kfuncs
-return 'struct io_uring_cqe *' and it's ok for tracing
-or passing into kfuncs like bpf_io_uring_queue_sqe()
-that don't care about a particular type,
-but not ok for full tracking of objects.
+   CC      drivers/acpi/numa/srat.o
+drivers/acpi/numa/srat.c: In function ‘acpi_parse_cfmws’:
+drivers/acpi/numa/srat.c:467:13: error: implicit declaration of function 
+‘numa_add_reserved_memblk’ [-Wimplicit-function-declaration]
+   467 |         if (numa_add_reserved_memblk(node, start, end) < 0) {
+       |             ^~~~~~~~~~~~~~~~~~~~~~~~
+make[5]: *** [scripts/Makefile.build:203: drivers/acpi/numa/srat.o] Error 1
+make[4]: *** [scripts/Makefile.build:470: drivers/acpi/numa] Error 2
+make[3]: *** [scripts/Makefile.build:470: drivers/acpi] Error 2
+make[2]: *** [scripts/Makefile.build:470: drivers] Error 2
 
-For next revision please post all selftest, examples,
-and bpf progs on the list,
-so people don't need to search github.
+This is because the following two commits are not in bpf-next tree:
+
+   commit 9559d5806319 ("LoongArch: Increase max supported CPUs up to 2048")
+   commit a24f2fb70cb6 ("LoongArch: Introduce the numa_memblks conversion")
+
+Is it possible to update bpf-next tree based on 6.16-rc1 or at least
+apply the above two commits to avoid the build error?
+
+Thanks,
+Tiezhu
+
 
