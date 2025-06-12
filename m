@@ -1,105 +1,98 @@
-Return-Path: <bpf+bounces-60456-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60457-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25877AD6E6C
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 12:55:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C90D6AD6F32
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 13:38:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 746A83A1735
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 10:55:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB8351898CE3
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 11:38:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB41223C516;
-	Thu, 12 Jun 2025 10:54:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 236E223C8C5;
+	Thu, 12 Jun 2025 11:37:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="APrOtndh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LfKNkqMJ"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B70A238C09;
-	Thu, 12 Jun 2025 10:54:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9120AEC2;
+	Thu, 12 Jun 2025 11:37:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749725683; cv=none; b=mDsi1rMDnQplP6xT8C71CC6Ap791QKZ0ad/4OEKUVQeDIej+rg7dm9U3qcFJHcmHEkEXmOdlVipiNyBoaLi/GvSMmbdcyvti9ZwzCFHbQSeyPlM6ubtRgP4C8PemLbwi2s4h7YpDUONjB/PHj0dX8ZdDfgSe8LSEP/Mpw6Jpaxs=
+	t=1749728271; cv=none; b=hpnjNZtSL+dD+NklP9VWjGpAM57H8odvCMHAigv1FwtGJNhwMry3LdwzL7mz/+V9ohQkV3qjN6VWF1uM+B9j0B+ZIfdWrrM4A0r27lRFrPdrIjZUPG1bH3sB0Ego85Vs5fQ51C7qDJ3Aq/OkKYV3gJu4TQguOdmIm23n1tvoIH8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749725683; c=relaxed/simple;
-	bh=ipOkFqoZaaO0FvWvQy4SEgTGfv0EjxKZ+FWyZ8Rb/VM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=R2kG92eXiTK+s4nXJz2WRHB636avfslj/EKPYlDVxwHKc8KyfDObceq09i8kRkgg1FblnHFhDVXMOdRI2H531x+iVO3SOsHwHsEeM26JaqVfASOcxsVvHXDwu84E/M4YAogDEOq/K2x8gVuq7D84vOcvvms/LvGMy609SBLCSHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=APrOtndh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 336CEC4CEEA;
-	Thu, 12 Jun 2025 10:54:39 +0000 (UTC)
+	s=arc-20240116; t=1749728271; c=relaxed/simple;
+	bh=RC6e67q4bD7RzUdBsPC19A7/O1+Ylly3nWUTzq8H6C0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=usGvXV6dmIgCuiYWR78MlC1fV5ADpotvMBAq788jkm6nqOhPoCewFMU/8D5V6vifaz05xJOTulXBnLddjnDCL4v4Bhzr07fZk9a7Pja/h2pWkKetmdQ6MdZfQhCmEBiKmyVzrmu6OwXQMqHXTv8QxQXaHquaiWds7ZK/LfDLrH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LfKNkqMJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFDB6C4CEEA;
+	Thu, 12 Jun 2025 11:37:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749725682;
-	bh=ipOkFqoZaaO0FvWvQy4SEgTGfv0EjxKZ+FWyZ8Rb/VM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=APrOtndhFLGCGq6HJIGdnCmTqMrzFsRVbOGhcNRU/4HB09tWSpyA7maL98/cq9nOo
-	 7DrIyU9qPpOL8MPaPjl0jbJDW8Fk6qeD7Y0hFlKAsDE1kqaA7nYoCaLUSINHdUMf1u
-	 r85TQtK8i2oIL8b3rT871kwZgzMu0b3MhTGjjcm6HkLqMfCuU+XVzV5r9zIBXN/XKM
-	 k4BnGac/CVfrukKHXFX/0kcJw870L2XugLgv6JiQjHuWv6txbqueLeJndTnd+L32FX
-	 gp7mFHRejbEWTLwGCZxA/+sURp62CYEDJGY2KpX4LYgvMXbSeJG3lustAgOGBVLugy
-	 9qParxTZMPIYA==
-Message-ID: <4af27621-6d81-4316-b57a-b546c8a7ad08@kernel.org>
-Date: Thu, 12 Jun 2025 12:54:37 +0200
+	s=k20201202; t=1749728271;
+	bh=RC6e67q4bD7RzUdBsPC19A7/O1+Ylly3nWUTzq8H6C0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=LfKNkqMJ230N0EmQJ6n6F5hxs2eDHc2gDzUqnaFqxjR2BzP+se/A2VupzCMhrI4gb
+	 9NYBUQi6O74YbTU15kOTP7LtYwDO6nlpekDG4/rRf81shqTxXz5puLtCfFMvrC1Ez8
+	 lC0MdZSRw4aOzUbAy3MWk4X+otN1Bl7AvHQP+2SamIX9i1DphEmtbMo4CBHyTrmcS0
+	 MUdzc/iYg1tYTc5iGlJ+oeZUq/maoaBSzH0FDgLo2Lkc4GZua4eYLruLegRywdBiqV
+	 mpLSscXiDGCpK6qASc0UCBqdRsHIBwtAVRWHdD2/UFkcmRUXp26vKsR4TOHPK4TG94
+	 WUZI4sxPL5xPQ==
+Date: Thu, 12 Jun 2025 13:37:48 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Cc: Joel Fernandes <joelagnelf@nvidia.com>, linux-kernel@vger.kernel.org,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+	bpf@vger.kernel.org, xiqi2@huawei.com
+Subject: Re: [PATCH 2/2] rcu: Fix lockup when RCU reader used while IRQ
+ exiting
+Message-ID: <aEq8DAHY0ycCOmoN@localhost.localdomain>
+References: <20250609180125.2988129-1-joelagnelf@nvidia.com>
+ <20250609180125.2988129-2-joelagnelf@nvidia.com>
+ <aEgjvGkYB0RoQFvg@localhost.localdomain>
+ <5568ff6b-6d5c-ea63-3c4a-c0714103aa9d@huawei.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] xdp: Remove unused events xdp_redirect_map and
- xdp_redirect_map_err
-To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>,
- Steven Rostedt <rostedt@goodmis.org>, LKML <linux-kernel@vger.kernel.org>,
- Linux trace kernel <linux-trace-kernel@vger.kernel.org>, bpf@vger.kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>
-References: <20250611155615.0c2cf61c@batman.local.home>
- <87bjqtb6c1.fsf@toke.dk>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <87bjqtb6c1.fsf@toke.dk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <5568ff6b-6d5c-ea63-3c4a-c0714103aa9d@huawei.com>
 
-
-
-On 12/06/2025 12.30, Toke Høiland-Jørgensen wrote:
-> Steven Rostedt <rostedt@goodmis.org> writes:
+Le Thu, Jun 12, 2025 at 11:06:07AM +0800, Xiongfeng Wang a �crit :
+> +cc (Qi, my colleague who helps testing the modification)
 > 
->> From: Steven Rostedt <rostedt@goodmis.org>
->>
->> Each TRACE_EVENT() defined can take up around 5K of text and meta data
->> regardless if they are used or not. New code is being developed that will
->> warn when a tracepoint is defined but not used.
->>
->> The trace events xdp_redirect_map and xdp_redirect_map_err are defined but
->> not used, but there's also a comment that states these are kept around for
->> backward compatibility. Which is interesting because since they are not
->> used, any old BPF program that expects them to exist will get incorrect
->> data (no data) when they use them. It's worse than not working, it's
->> silently failing.
->>
->> Remove them as they will soon cause warnings, or if they really need to
->> stick around, then code needs to be added to use them.
->>
->> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> On 2025/6/10 20:23, Frederic Weisbecker wrote:
+> > Le Mon, Jun 09, 2025 at 02:01:24PM -0400, Joel Fernandes a �crit :
+> >> During rcu_read_unlock_special(), if this happens during irq_exit(), we
 > 
-> I guess that makes sense; I have no objections to getting rid of them.
+> ...skipped...
 > 
-> Reviewed-by: Toke Høiland-Jørgensen <toke@kernel.org>
+> We have tested the below modification without the modification written by Joel
+> using the previous syzkaller benchmark. The kernel still panic.
+> The dmesg log is attached.
 
-Make sense.
+Yes, it's a cleanup that doesn't include Joel's change yet. So this is
+expected.
 
+Thanks.
 
-Toke we have to check how XDP-tools handle when these tracepoints 
-disappears.
-
-Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
+-- 
+Frederic Weisbecker
+SUSE Labs
 
