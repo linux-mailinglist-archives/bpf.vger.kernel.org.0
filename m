@@ -1,102 +1,154 @@
-Return-Path: <bpf+bounces-60469-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60470-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82C1DAD738B
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 16:20:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BD91AD73BA
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 16:25:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C4721882874
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 14:16:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5DB817B270
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 14:25:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E32AC1B414E;
-	Thu, 12 Jun 2025 14:16:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3D1022F76C;
+	Thu, 12 Jun 2025 14:24:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="NTT0IDBi"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A3CC42048;
-	Thu, 12 Jun 2025 14:16:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE62142048;
+	Thu, 12 Jun 2025 14:24:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749737780; cv=none; b=Uj9v6AREAdWHLALE+ZgaWPdqn7PG8oDXk5IRlXsQf8H9thqns1MCQJe6Cxu2FUwoPypiHm+8WwRz55lujsS2qHlljw7wLaeBmxNECMpjcZgoC/64XtP5WStf0UGvK++Yqe+/jsU6zgbBzXerewsx6Aimb2u7cWGnbYY6Uju1no0=
+	t=1749738298; cv=none; b=lgXWC+sm3qtTXS3wgn2vHseB4PudUuORfdlcMdU1aL8ulT5i1H0OUT7vGxtn5SZ3gxgudaTSlOfQ2Pefa4GFwgu2KdWD7hsenAD8l3/Q7iLErxZ/G2vx0YV02ZxeTa4vVUZRJH77AO0CWP1sCf3YZTSLtB+9XdpzWa2tMaSBTQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749737780; c=relaxed/simple;
-	bh=qrWplOJ10X4pm1s0y3f27TzILjMBsOKq8Qs8gbRCNso=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=oEfsNxt9MaE1G7TKAXkdkLbZENmyEzk1cKD6tvOfa4eqws/S2M0wR6CKu1V8hzbVmmBtlp683/EXLSTTLm5cdOCcHhVR49Ycx7o8gEPs1s27udUzlQo9hsx+3OFh7XloG3sdvm8h5kou05/bRLDtd8v6i3oWT2UVZCw73/sTCFU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf09.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay09.hostedemail.com (Postfix) with ESMTP id 523D181154;
-	Thu, 12 Jun 2025 14:16:16 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf09.hostedemail.com (Postfix) with ESMTPA id 11D9520034;
-	Thu, 12 Jun 2025 14:16:13 +0000 (UTC)
-Date: Thu, 12 Jun 2025 10:16:12 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux trace kernel
- <linux-trace-kernel@vger.kernel.org>, bpf@vger.kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	"David S. Miller\"   <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard   Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>"@web.codeaurora.org
-Subject: [PATCH] xdp: tracing: Hide some xdp events under CONFIG_BPF_SYSCALL
-Message-ID: <20250612101612.3d4509cc@batman.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1749738298; c=relaxed/simple;
+	bh=n848NJ06tU1aMhvRmUA+JLpdZq1hoRv/nkLcBgujkYI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VYADbmsDiWza5zGNmTzd5WKSJhTwzbGtNTMX+oEffHZrmTiYak8qq91E3oqrPsZhAQ/ETKWwYFIeUjO36Y30m9X2sxwGZB14+aQ2fG0J0vsyclSjbGXuQ+PgRr0PmFeq8R7gRoY72RyJq9TWr1IZJgd2WZuNxY3KpPXio8n7lX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=NTT0IDBi; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=UzBNYBaVd/RU8dYmTTL3ZxJIMxETu61GMjP6ByBX5DU=; b=NTT0IDBi0d3Btt7DjWXLdE87DA
+	eWeujd+N+GTAh25pqbR8HXJH+FdqBKm46xQNazhZQWPEsd0m1V7igMgIgIEESA2tkyrzP0cCoVElQ
+	DE2ugNCUvQ5hn9TXsBr4/pf7KoXfLBMAJrQneOL+i2X96cuu+xb0uBJZ78IKmF/AuW8WXAetKNmh+
+	FuxHGMrAwYFmUIqbXftNhtiZs9S+ZqLGXv99SgcUzHgm6qXBpg9BJuYA02Q8TwKD8QJ30reGVjNO7
+	Bmcov35CgxbsxXbLGlVSGYHclUjxVZJs6nF1dEnGuSWcqaZFWcmtqK511ommXglgZrVvwVkPKMqbA
+	ke3Lg8ug==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1uPirH-000ANH-0S;
+	Thu, 12 Jun 2025 16:24:47 +0200
+Received: from localhost ([127.0.0.1])
+	by sslproxy02.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1uPirG-000CPH-0f;
+	Thu, 12 Jun 2025 16:24:46 +0200
+Message-ID: <9098ff24-435e-4e5b-a865-f446de933257@iogearbox.net>
+Date: Thu, 12 Jun 2025 16:24:46 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] potential negative index dereference fix in
+ get_exec_path()
+To: Ruslan Semchenko <uncleruc2075@gmail.com>, bpf@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, ast@kernel.org
+References: <20250612131816.1870-1-uncleruc2075@gmail.com>
+Content-Language: en-US
+From: Daniel Borkmann <daniel@iogearbox.net>
+Autocrypt: addr=daniel@iogearbox.net; keydata=
+ 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
+In-Reply-To: <20250612131816.1870-1-uncleruc2075@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 11D9520034
-X-Rspamd-Server: rspamout08
-X-Stat-Signature: 9hqsohk4k1swyaj4fneziy7xjpjeeea7
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX18PXqm3lbcNbcwLPE/xFkUYzq26klDeJnA=
-X-HE-Tag: 1749737773-116136
-X-HE-Meta: U2FsdGVkX1/tmg2kusMKmWbH1yjUBWpNH4f4UUEmC1N4NlxI7UViqR/toP2SUNhWAharn5P649W28JDDyCeLq7qlCG7XlNQxYd/QGrH16eGCHUihy8alNT19WNh8+YFazlEQ80OnbeatjLvUplnZ/TF0WU95/zNrkftoizE5jU+/XY2k9uFVx7miw7uOdLtF68merSbsWeAbRnkYPrgOE4UQOgPQSbLJaNPjzGwYRvfbHwum6pD/b4Q5x8+GdQsE2jTZr4g2ym9m964e2mSizgO8E2WA+o36FjROQEIS9Phe9xAexS3VwoVleCCMLon7Eq5ReW06OsmxtiN6vGTSPoxy6JD+UvtoUcnFoOVv6LRDgKrJmWejjg8q56V65x4G
+X-Virus-Scanned: Clear (ClamAV 1.0.7/27666/Thu Jun 12 10:37:53 2025)
 
-From: Steven Rostedt <rostedt@goodmis.org>
+On 6/12/25 3:18 PM, Ruslan Semchenko wrote:
+> If readlink() fails, len will be -1, which can cause negative indexing
+> and undefined behavior. This patch ensures that len is set to 0 on
+> readlink failure, preventing such issues.
+> 
+> Signed-off-by: Ruslan Semchenko <uncleruc2075@gmail.com>
 
-The events xdp_cpumap_kthread, xdp_cpumap_enqueue and xdp_devmap_xmit are
-only called when CONFIG_BPF_SYSCALL is defined.  As each event can take up
-to 5K regardless if they are used or not, it's best not to define them
-when they are not used. Add #ifdef around these events when they are not
-used.
+Looks reasonable, thanks! When applying patch $subj can be tweaked into:
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
-Note, I will be adding code soon that will make unused events cause a waring.
+   "tools/bpf_jit_disasm: Fix potential negative tpath index in get_exec_path()"
 
- include/trace/events/xdp.h | 2 ++
- 1 file changed, 2 insertions(+)
+(bpf-next tree is fine)
 
-diff --git a/include/trace/events/xdp.h b/include/trace/events/xdp.h
-index 0fe0893c2567..18c0ac514fcb 100644
---- a/include/trace/events/xdp.h
-+++ b/include/trace/events/xdp.h
-@@ -168,6 +168,7 @@ DEFINE_EVENT(xdp_redirect_template, xdp_redirect_err,
- #define _trace_xdp_redirect_map_err(dev, xdp, to, map_type, map_id, index, err) \
- 	 trace_xdp_redirect_err(dev, xdp, to, err, map_type, map_id, index)
- 
-+#ifdef CONFIG_BPF_SYSCALL
- TRACE_EVENT(xdp_cpumap_kthread,
- 
- 	TP_PROTO(int map_id, unsigned int processed,  unsigned int drops,
-@@ -281,6 +282,7 @@ TRACE_EVENT(xdp_devmap_xmit,
- 		  __entry->sent, __entry->drops,
- 		  __entry->err)
- );
-+#endif /* CONFIG_BPF_SYSCALL */
- 
- /* Expect users already include <net/xdp.h>, but not xdp_priv.h */
- #include <net/xdp_priv.h>
--- 
-2.47.2
+Acked-by: Daniel Borkmann <daniel@iogearbox.net>
+
+> ---
+>   tools/bpf/bpf_jit_disasm.c | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/tools/bpf/bpf_jit_disasm.c b/tools/bpf/bpf_jit_disasm.c
+> index 1baee9e2aba9..5ab8f80e2834 100644
+> --- a/tools/bpf/bpf_jit_disasm.c
+> +++ b/tools/bpf/bpf_jit_disasm.c
+> @@ -45,6 +45,8 @@ static void get_exec_path(char *tpath, size_t size)
+>   	assert(path);
+>   
+>   	len = readlink(path, tpath, size);
+> +	if (len < 0)
+> +		len = 0;
+>   	tpath[len] = 0;
+>   
+>   	free(path);
 
 
