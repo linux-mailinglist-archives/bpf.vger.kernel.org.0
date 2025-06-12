@@ -1,107 +1,79 @@
-Return-Path: <bpf+bounces-60431-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60432-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EFE9AD65A8
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 04:29:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C8BEAD65D3
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 04:45:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 737EA3AB3D7
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 02:28:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE84D3ABF9C
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 02:44:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FD411C3BEB;
-	Thu, 12 Jun 2025 02:29:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB22B1CD215;
+	Thu, 12 Jun 2025 02:45:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KXMGfPat"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KnQj/4ZL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81B61145A05;
-	Thu, 12 Jun 2025 02:29:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7267A4C85
+	for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 02:45:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749695346; cv=none; b=UWwmeDVYjjaGTNHqqsIxwv5ROHle6O99Pa/0HIJH5LJkpRpKQDoqLV2ku1+e1D/ShIPo/RhGbqSKuuxQB6P1KV5IBQA96TUNq16LqoXEUAz0rUM08jGKrBmO4YbQFsLmB5ZGzM1hwyXlfgwHEJ04h6mvI1/5aCfi6KtZggeO2uw=
+	t=1749696314; cv=none; b=pEChhFMmr9GWTXxYnRloXVe9+FzcVVPvufrCafiSrljQraZ497tFRVtEfs9rH/0v+faEX5J82kIUyzt9Nmi04ntdh8KBx20C8GKm2xb7xiumY2keO0nlvRaCgxs3ZFtcXmAdzraA69+RV4hhnh9fpyFsSgRZGMM7yZITnSjcfFc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749695346; c=relaxed/simple;
-	bh=1yx/CtYYMkIYLlBitWl2jga21GCJ3Qcpst09DXhUHkU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FIRjQwsJ5bAQC6yZVBd7i0RJHZ59l/cbw8Tj+f8DMAu2aLhXRe1QKG5FFFZkzSZFEehW0YKV3aFwl1TLNykZ77Cjbr14tUU7BfmVh11BcFymkVluG0qetHYKGJI/QsqWMnTL1sYmy26OPVwpMZJ9XSI66711fHlrRFoB6S6LSH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KXMGfPat; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-450cfb6a794so2030845e9.1;
-        Wed, 11 Jun 2025 19:29:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749695343; x=1750300143; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h3x8R7ufLmteVH4OA1UzHwd2KXuYEyzj47Ro+nITLM4=;
-        b=KXMGfPatcKHQbmueCMyqPHAM2vmiRIpwMEN84yCsGm+OolVpU2Siv4Acq5eCurYrxr
-         /eDOvNtD/u/N9guaqG+A37v5A+zRtMb+K0tubdwByKGq0H9ew/vAoUIu5EnDnm4paBAp
-         Q+1wm6ppIYNVtVz4p5jJnJGuh+ksYwG+9sUaSLatmInUltFXr9rIkBeS5yF10MAthg2u
-         b/Xx07DkudUos1icAEPwV4Kyh5+CNq2diP+xVcKcF+n5SDD6TEBUQn+hmnUmJkGJQH5H
-         nZOqRgho1F7AGUulrBTcnoeAOGSyjjgkuvcoz1UqJrsUf6PKsyPbXtwQs8SUyAa6K5r8
-         VjTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749695343; x=1750300143;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=h3x8R7ufLmteVH4OA1UzHwd2KXuYEyzj47Ro+nITLM4=;
-        b=g0qL1q6IsV48gj10bQom1zDUYQnzJnMgyI+aT+aurFAi1I492FQqtbJmZiUzsiB3iS
-         ybToJgqiKWzmDzbN4fXrIGS4DoUNRP9izeDfMlcRp9oaKei8IZfvWowtXkQI9hgRJDyv
-         Eo9wSVkmz9jP7WU2OrkNgn9cTkl7sYBSnuvwzHIJV2G6YlnjavyiykcJr9bErChDF9iA
-         +BRj0tZney1vUZVrk7m86TLiTWS6HFPO+pGYqO5y87Wxg2oGNEYRvrChnL7CRP50kva8
-         gsEkp4SjZ8x0O1QsyXpDccpUSTHBusGdizABqgV2x5JqcaratJXmR7zRJSl8CN8rgdyE
-         t6ow==
-X-Forwarded-Encrypted: i=1; AJvYcCULCQs+GHFsgHuBf8stwuYl7RRBqvZRmgTQm9S2GqtmBW7ZEmQU2MrnObG2VanxKERpu2KRYVbmG2IXRda8@vger.kernel.org, AJvYcCUXAeiEyE34wc5ig2Bxg01qS5DXoBH2o91XnUl/i36BXOHOnQLTtkvGA/ZMYQsPsflWqe0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzBy1mgXZg7+/2J90bXkT90pus41W2Ker7F3d4EpD+U+A0+GB38
-	iZg2gryvygureRPgwYrmHTNY9NNMsjBc9lBC2Huz6zAtY2642zhcYcT4Udv2hFYrAjsxQZRtclY
-	wZiCx+2Yi5ZrlqMvgfszgvZBUW8ksU+k=
-X-Gm-Gg: ASbGncsxAOv795McWVU465ojeiYm8St0dZ0cl/gD1DRu5LwpvOidYKhDbkc9At8lrtg
-	UX9DbV43jADFxqdfpe0mLLZsS2cm7rOMNMvJTRJw5iCs0+hfTGYL1UIh4B8EnNt9yNcaSHV5sBA
-	mE0c9cDKsQPrOw0KBVXH3iOPWVbja38I7cueiJOQ5B9jY+atw+EdMkCDeBs8BxaJi0ivu7ULg2
-X-Google-Smtp-Source: AGHT+IEZB2wxVHINVKq4iRUQtbIomagqoERsY8hxYiTuXGjbCJonhldKnS0F9vORggm5x5uWXGyk4UrwdKyRGEThAv0=
-X-Received: by 2002:a05:6000:2301:b0:3a5:42:b17b with SMTP id
- ffacd0b85a97d-3a5586cac26mr4006697f8f.29.1749695342735; Wed, 11 Jun 2025
- 19:29:02 -0700 (PDT)
+	s=arc-20240116; t=1749696314; c=relaxed/simple;
+	bh=OVWO3CV+yuyka5mc1xZ9OJK/ON3GerdV7QUhqWfG9ic=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=BcFU+tQjVaJNPqpxHOpf2CLwP5hfhYGJrE3ulRnAv8y2I6g+7LEV5FsImWHJT8hLoQnb/DOiyb45sYJBxj6unwHedzFM/TUZcURzI9dkE7TW+UyOaBENPHhZAf5p2JYokQyaZVd60zs4uH6yQmaEdjpSywqh3aGJgIb/5Bov4/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KnQj/4ZL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC965C4CEE3;
+	Thu, 12 Jun 2025 02:45:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749696314;
+	bh=OVWO3CV+yuyka5mc1xZ9OJK/ON3GerdV7QUhqWfG9ic=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=KnQj/4ZLIt8Ajkzo7wA09ueQR6YI0MphpdlrHJ9YyJ1js78vOKV8Auu3n1nWlt+Vq
+	 uni0VFl+8c3emBqFnWx8Wtc9+CJeUZzbtbdsPL09zFx4pv9nmCIgoqjU0uY0bSlRs5
+	 9Cv1Ry8Ft59nnsO/YpGyO9w+ydsfHvWNvIwzOUtXB7qylYGdo0rd4kiZ6Y6SsdR17f
+	 /YBE5YJ+C9ys7zSL0qVu9KxVpxEeiGpejePWs2Xdwl4yW35qv7+UAGss8xs2EON4zK
+	 nopmigXXA+AUhMtQ9m0If5AWOozeRp7PYUO5eZaxm/Z+2JxNaPiHtrvxNbhSZCVlWC
+	 nmxS5yk17VMHw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33E193822D1A;
+	Thu, 12 Jun 2025 02:45:45 +0000 (UTC)
+Subject: Re: [GIT PULL] BPF fixes for 6.16-rc2
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20250612011913.48375-1-alexei.starovoitov@gmail.com>
+References: <20250612011913.48375-1-alexei.starovoitov@gmail.com>
+X-PR-Tracked-List-Id: <bpf.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20250612011913.48375-1-alexei.starovoitov@gmail.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/bpf-fixes
+X-PR-Tracked-Commit-Id: 9cf1e25053c269d64b9e9fa25e8697d6d58028d4
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 2c4a1f3fe03edab80db66688360685031802160a
+Message-Id: <174969634392.3583528.10767487193451534229.pr-tracker-bot@kernel.org>
+Date: Thu, 12 Jun 2025 02:45:43 +0000
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: torvalds@linux-foundation.org, bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <cover.1749214572.git.asml.silence@gmail.com> <1c8fcadfb605269011618e285a4d9e066542dba2.1749214572.git.asml.silence@gmail.com>
-In-Reply-To: <1c8fcadfb605269011618e285a4d9e066542dba2.1749214572.git.asml.silence@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 11 Jun 2025 19:28:50 -0700
-X-Gm-Features: AX0GCFshDLU67Oa0IBrUdbtHw-aZ6NmsI162Jz2TbY3PO1lWW5160SW5P3V808M
-Message-ID: <CAADnVQKOmYmFZwMZJmtAc5v9v1gBJqO-FyGeBZDZe1tT5qPKWA@mail.gmail.com>
-Subject: Re: [RFC v2 4/5] io_uring/bpf: add handle events callback
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: io-uring@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 6, 2025 at 6:58=E2=80=AFAM Pavel Begunkov <asml.silence@gmail.c=
-om> wrote:
->
-> +static inline int io_run_bpf(struct io_ring_ctx *ctx, struct iou_loop_st=
-ate *state)
-> +{
-> +       scoped_guard(mutex, &ctx->uring_lock) {
-> +               if (!ctx->bpf_ops)
-> +                       return IOU_EVENTS_STOP;
-> +               return ctx->bpf_ops->handle_events(ctx, state);
-> +       }
-> +}
+The pull request you sent on Wed, 11 Jun 2025 18:19:13 -0700:
 
-you're grabbing the mutex before calling bpf prog and doing
-it in a loop million times a second?
-Looks like massive overhead for program invocation.
-I'm surprised it's fast.
+> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/bpf-fixes
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/2c4a1f3fe03edab80db66688360685031802160a
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
