@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-60520-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60521-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87A3FAD7B6B
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 21:50:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 181B9AD7B6C
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 21:50:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 853A81896A86
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 19:50:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 155D63A3D99
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 19:50:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18EBC2D877E;
-	Thu, 12 Jun 2025 19:49:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F03F52D8796;
+	Thu, 12 Jun 2025 19:49:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1Ohk/U6M"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Mzv98nda"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A42C2D540D
-	for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 19:49:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DDDB2D876E
+	for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 19:49:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749757790; cv=none; b=qodkb7fh00S6j3UwByDgXpeLdc2ncyJRjzoOYPZ6nw7XzlVFM6IHgyzcKofY8cfBD42oJfYiDcUjCQpcFhpX1hOTKouudonpUIhZL3ywNhwk3C4422hiLx6Fhqz5AtNQGKHh7B30r0adWRidkA9CXtH/hk5LBWW6LNjFqDkscH0=
+	t=1749757792; cv=none; b=N3P6UHC9BT697BNRI2amoKzgK6xR11PNHSMhRXt12hvY95vrQZYnkBx6pkpmFCK8gvWtN9FNODnwC7U5RB8z2UYrRFSI7Ux3L5n7D2ugMhKvNJsVHuB4aZhP2BTIT6SfqCpCAKn0CEZUiT7wYjY1u7GAa3RKE+VVQWJzrzcbn68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749757790; c=relaxed/simple;
-	bh=ia2kNtooLXZtddxtzmjyLOZyIOrYzFIrc2YWBoyTzE0=;
+	s=arc-20240116; t=1749757792; c=relaxed/simple;
+	bh=Zpl+gL2iTdwOtoVI5LL2teb9gquZyRVctFv0bvAwr08=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=DxprOFFXMign6UXYJ0UPmGg4jxAKFYbq2Pz/8Q5SM4RW7g+aYNCevLzIBqaGbauTOB0CTYzeKhhbOjHltfSPktmlgreNVxl2Ex0x6rvTNC6HduhJglLy/yfGZNMbqJ03lNfmm0T7BvJ3VG/tj38nuZyeYm5e2nXGECmG2QOpsss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--blakejones.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1Ohk/U6M; arc=none smtp.client-ip=209.85.210.201
+	 To:Cc:Content-Type; b=MWOOMMSEjYqs+MiO8Yl6dj8yK0c4zbL94FOyJaUoaN9008MCJfz5sLdwhV/B/kvckC2ff3RQ6n+MvPSr0l9oXIBcx74Cccv4u9mg4V5d7w5qBh5eAQeIz3mipFtOEohZb+1/72xRZnU80sqEYEzsgaXIsNqxjX71Cu+MxiS/ISE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--blakejones.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Mzv98nda; arc=none smtp.client-ip=209.85.214.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--blakejones.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-740270e168aso1111800b3a.1
-        for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 12:49:48 -0700 (PDT)
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-2362e130be8so11813525ad.0
+        for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 12:49:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1749757788; x=1750362588; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1749757789; x=1750362589; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RwgwORwGUH9uFoqt6oU2k4z3IDDLnBCDkrf4pU2pZuE=;
-        b=1Ohk/U6M+HM73qFP/xGDW255KKxSiq2eW1YSJzUK8AmKuRlERHf6M8TS9O5o+ke91q
-         BN6Sg51MBNeKt3Xq+FhAZEb2WfQ2mZPyh7x9mYHJiBrBO329NiFlyStDyX5/THsLPg7G
-         RL/tv0VKpoYZ6nuP7t3kMrHllKgQ4E2WjWE9rBQnQRkkAGrBdW++xuGVtNCPFcq37ABd
-         Vr7byi/ULYmIWHrFFLBfsKWECy2qGFMXjRheh/EgYZ8SfeoDo5Ft1rvbV/1lpRPb57LG
-         bbMTH6WhEHvmz5FS1fg6JKFwOH/6m1ghDjfgQLqurGSC5vSKTt38DZRYiOPQn0GkbMiK
-         4ZYA==
+        bh=CMS8RaOBfbTI0bE4f4YZc13pYHrZ07AfQzpRmzcnsGg=;
+        b=Mzv98nda/DQZhtE2tTTwiRWOoxE/JMPye1u/9w2xVMerL3k7U31gRQ7WPI5jN62jSm
+         WH5gkM3l9lVy1B+8vCeGDnYxGs41CIaq4n6FmSewfnbkgyhnBvmcqIJ1F+v8CWltRWUL
+         sKYSaA2ftdTdEXtjrrEOrGuR8ZvhbR6vK3ujhGy6zzb0lipZgxyk+uLDRorDDhRaDRm1
+         l4YJLR/Dnur4SxWXAMkGeQH9aoKznojoPerzRoZokORTkp7X/fMJWrF49F6ZNfb1JrzO
+         Il+41Gx394+mIq2Qs9PbnK/4fz7TDpLfprA4FiH7ADLXa9eShHXrzYmUWN9uF9B/0VGe
+         +CbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749757788; x=1750362588;
+        d=1e100.net; s=20230601; t=1749757789; x=1750362589;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RwgwORwGUH9uFoqt6oU2k4z3IDDLnBCDkrf4pU2pZuE=;
-        b=nVa9HesSpCH/n87aN541Vn5TBD8JNlHoWGO328Wp2dV3SaqwhI+QBmSeakPRM6YRez
-         jET2leqgAW5Tulw5CmbOt3ILLTZAGWdkSMKj+sFjLodWP1N9Wj6aBizJOBvULD/nXhKU
-         hsaP/Tj7p/PChVnt+hR62WXy5u7dRyEwecEuiDqTJQXgQnkPkFsNOIeABXopK2moKfEB
-         iEYTQTyK9YZ2nKpWML9XprWEseZPewWQ7U+IuJJFWKePysva9LlZDNUbgz0p6TwS7aqM
-         8cXNDv5tfKAs3mIDfM833G5rVmqI8NLQN7AFox/v7JZTCUbBlsdIbeLE7XM1jH7eATsU
-         HQ7A==
-X-Forwarded-Encrypted: i=1; AJvYcCUV+M27/W75dnYXkebGf5daob1oTqZQhoJ8BGVuQvujsu8c5YRdqwhvXmHcMbVuGyUnpoQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx5SpOd9MkazyK5Dn1hczC29Q5QYpK/yQUC/TB1INSW6VDiQcc2
-	dL/8oq0M8WadLvfoCf1TkdO7DRTl8dSYNybG699D5CBhjUBgFiOpZKJhbOAL/uwfhEFQkLR2Xm3
-	rPptZdYg1yUGhKDRkXhzQMw==
-X-Google-Smtp-Source: AGHT+IGNw4lkpwjaf4v6bXxIOzfZmFO85pS43p7oo8MRgEqWKeMneT7/6nkmbDJ+tkgVhVSPF+Jk1alL6QtQUiX0
-X-Received: from pfbkq16.prod.google.com ([2002:a05:6a00:4b10:b0:73c:29d8:b795])
+        bh=CMS8RaOBfbTI0bE4f4YZc13pYHrZ07AfQzpRmzcnsGg=;
+        b=PJNci5tBqQopy0mcQRE3q7+1Awal1hLMWEFDqCup6J3uCEXrnRv/882sl8jCt+9tjD
+         PcvhcpIbGBufa7GgPKjAezhl4X1gPzm4e/PWok7qMtj5MKhIYCtWGvKFJWng9I9QQszg
+         fXhoj9NUkPPE9KUV+8S0LcCS5EdV9sCUslWK5Yxg1zvkclQJ3GrWemR2wEksWQE5vUHT
+         WTxGbLCIlNp+hyNr2GVQaISw8b8K9tyF6zDuIubXITrclfc+vQY9O2O80mxPt3E5W1Ip
+         xMRIOGT6XW3w01DEzSbTAA3ETalHaaajwAGmztX1d/T2pXTsRC+agncTyqzksK5Ac5+M
+         Y6EA==
+X-Forwarded-Encrypted: i=1; AJvYcCVtkSxrjrW9F02M0XrCY0eGm26G4HJ7csXG1/C1RTkq06MEDyyRLzMv2f7himTjRRXaN0w=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyCeLei+YOt3keYUv6AwYBqk32ma/EFbtC0IxwvF/IwKTVirwJ5
+	9bvtpiDQzQvGQA2PFYS0WBU2an85lqkWYruX64kPuJwKU4yEkRAe/uzoBLbG8P3eNYJw3AWNE8x
+	ltN15lnTtOESISomolXNE7Q==
+X-Google-Smtp-Source: AGHT+IGijBJNdMzlmqcrnuW61J+eMb7bY/1t6JzudPAqfBJ4Jq8Dm1Qx+hCW1yYkPQ17bT9aX+jWCEUm1c6CuFer
+X-Received: from plbmm15.prod.google.com ([2002:a17:903:a0f:b0:234:9673:1d13])
  (user=blakejones job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:6a00:c89:b0:736:a540:c9ad with SMTP id d2e1a72fcca58-7488f71e782mr688264b3a.20.1749757787828;
- Thu, 12 Jun 2025 12:49:47 -0700 (PDT)
-Date: Thu, 12 Jun 2025 12:49:37 -0700
+ 2002:a17:902:f689:b0:235:ea0d:ae21 with SMTP id d9443c01a7336-2365dc09ad7mr4825965ad.35.1749757789645;
+ Thu, 12 Jun 2025 12:49:49 -0700 (PDT)
+Date: Thu, 12 Jun 2025 12:49:38 -0700
 In-Reply-To: <20250612194939.162730-1-blakejones@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -74,8 +74,8 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20250612194939.162730-1-blakejones@google.com>
 X-Mailer: git-send-email 2.50.0.rc1.591.g9c95f17f64-goog
-Message-ID: <20250612194939.162730-4-blakejones@google.com>
-Subject: [PATCH v4 3/5] perf: collect BPF metadata from new programs
+Message-ID: <20250612194939.162730-5-blakejones@google.com>
+Subject: [PATCH v4 4/5] perf: display the new PERF_RECORD_BPF_METADATA event
 From: Blake Jones <blakejones@google.com>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
 	Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>, 
@@ -96,235 +96,251 @@ Cc: Mark Rutland <mark.rutland@arm.com>,
 	Blake Jones <blakejones@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-This collects metadata for any BPF programs that were loaded during a
-"perf record" run, and emits it at the end of the run.
+Here's some example "perf script -D" output for the new event type. The
+": unhandled!" message is from tool.c, analogous to other behavior there.
+I've elided some rows with all NUL characters for brevity, and I wrapped
+one of the >75-column lines to fit in the commit guidelines.
+
+0x50fc8@perf.data [0x260]: event: 84
+.
+. ... raw event: size 608 bytes
+.  0000:  54 00 00 00 00 00 60 02 62 70 66 5f 70 72 6f 67  T.....`.bpf_prog
+.  0010:  5f 31 65 30 61 32 65 33 36 36 65 35 36 66 31 61  _1e0a2e366e56f1a
+.  0020:  32 5f 70 65 72 66 5f 73 61 6d 70 6c 65 5f 66 69  2_perf_sample_fi
+.  0030:  6c 74 65 72 00 00 00 00 00 00 00 00 00 00 00 00  lter............
+.  0040:  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+[...]
+.  0110:  74 65 73 74 5f 76 61 6c 75 65 00 00 00 00 00 00  test_value......
+.  0120:  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+[...]
+.  0150:  34 32 00 00 00 00 00 00 00 00 00 00 00 00 00 00  42..............
+.  0160:  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+[...]
+
+0 0x50fc8 [0x260]: PERF_RECORD_BPF_METADATA \
+      prog bpf_prog_1e0a2e366e56f1a2_perf_sample_filter
+  entry 0:           test_value = 42
+: unhandled!
 
 Signed-off-by: Blake Jones <blakejones@google.com>
 ---
- tools/perf/builtin-record.c        | 10 +++++++
- tools/perf/util/bpf-event.c        | 46 ++++++++++++++++++++++++++++++
- tools/perf/util/bpf-event.h        |  1 +
- tools/perf/util/env.c              | 19 +++++++++++-
- tools/perf/util/env.h              |  6 ++++
- tools/perf/util/header.c           |  1 +
- tools/perf/util/synthetic-events.h |  2 ++
- 7 files changed, 84 insertions(+), 1 deletion(-)
+ tools/perf/builtin-inject.c |  1 +
+ tools/perf/builtin-script.c | 15 +++++++++++++--
+ tools/perf/util/event.c     | 21 +++++++++++++++++++++
+ tools/perf/util/event.h     |  1 +
+ tools/perf/util/session.c   |  4 ++++
+ tools/perf/util/tool.c      | 14 ++++++++++++++
+ tools/perf/util/tool.h      |  3 ++-
+ 7 files changed, 56 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 0b566f300569..53971b9de3ba 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -2162,6 +2162,14 @@ static int record__synthesize(struct record *rec, bool tail)
- 	return err;
+diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
+index 11e49cafa3af..b15eac0716f7 100644
+--- a/tools/perf/builtin-inject.c
++++ b/tools/perf/builtin-inject.c
+@@ -2530,6 +2530,7 @@ int cmd_inject(int argc, const char **argv)
+ 	inject.tool.finished_init	= perf_event__repipe_op2_synth;
+ 	inject.tool.compressed		= perf_event__repipe_op4_synth;
+ 	inject.tool.auxtrace		= perf_event__repipe_auxtrace;
++	inject.tool.bpf_metadata	= perf_event__repipe_op2_synth;
+ 	inject.tool.dont_split_sample_group = true;
+ 	inject.session = __perf_session__new(&data, &inject.tool,
+ 					     /*trace_event_repipe=*/inject.output.is_pipe);
+diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+index 6c3bf74dd78c..4001e621b6cb 100644
+--- a/tools/perf/builtin-script.c
++++ b/tools/perf/builtin-script.c
+@@ -38,6 +38,7 @@
+ #include "print_insn.h"
+ #include "archinsn.h"
+ #include <linux/bitmap.h>
++#include <linux/compiler.h>
+ #include <linux/kernel.h>
+ #include <linux/stringify.h>
+ #include <linux/time64.h>
+@@ -50,6 +51,7 @@
+ #include <errno.h>
+ #include <inttypes.h>
+ #include <signal.h>
++#include <stdio.h>
+ #include <sys/param.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+@@ -2755,6 +2757,14 @@ process_bpf_events(const struct perf_tool *tool __maybe_unused,
+ 			   sample->tid);
  }
  
-+static void record__synthesize_final_bpf_metadata(struct record *rec __maybe_unused)
++static int
++process_bpf_metadata_event(struct perf_session *session __maybe_unused,
++			   union perf_event *event)
 +{
-+#ifdef HAVE_LIBBPF_SUPPORT
-+	perf_event__synthesize_final_bpf_metadata(rec->session,
-+						  process_synthesized_event);
-+#endif
++	perf_event__fprintf(event, NULL, stdout);
++	return 0;
 +}
 +
- static int record__process_signal_event(union perf_event *event __maybe_unused, void *data)
- {
- 	struct record *rec = data;
-@@ -2807,6 +2815,8 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 	trigger_off(&auxtrace_snapshot_trigger);
- 	trigger_off(&switch_output_trigger);
- 
-+	record__synthesize_final_bpf_metadata(rec);
-+
- 	if (opts->auxtrace_snapshot_on_exit)
- 		record__auxtrace_snapshot_exit(rec);
- 
-diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
-index 1f6e76ee6024..dc09a4730c50 100644
---- a/tools/perf/util/bpf-event.c
-+++ b/tools/perf/util/bpf-event.c
-@@ -472,6 +472,49 @@ void bpf_metadata_free(struct bpf_metadata *metadata __maybe_unused)
- 
- #endif /* HAVE_LIBBPF_STRINGS_SUPPORT */
- 
-+struct bpf_metadata_final_ctx {
-+	const struct perf_tool *tool;
-+	perf_event__handler_t process;
-+	struct machine *machine;
-+};
-+
-+static void synthesize_final_bpf_metadata_cb(struct bpf_prog_info_node *node,
-+					     void *data)
-+{
-+	struct bpf_metadata_final_ctx *ctx = (struct bpf_metadata_final_ctx *)data;
-+	struct bpf_metadata *metadata = node->metadata;
-+	int err;
-+
-+	if (metadata == NULL)
-+		return;
-+	err = synthesize_perf_record_bpf_metadata(metadata, ctx->tool,
-+						  ctx->process, ctx->machine);
-+	if (err != 0) {
-+		const char *prog_name = metadata->prog_names[0];
-+
-+		if (prog_name != NULL)
-+			pr_warning("Couldn't synthesize final BPF metadata for %s.\n", prog_name);
-+		else
-+			pr_warning("Couldn't synthesize final BPF metadata.\n");
-+	}
-+	bpf_metadata_free(metadata);
-+	node->metadata = NULL;
-+}
-+
-+void perf_event__synthesize_final_bpf_metadata(struct perf_session *session,
-+					       perf_event__handler_t process)
-+{
-+	struct perf_env *env = &session->header.env;
-+	struct bpf_metadata_final_ctx ctx = {
-+		.tool = session->tool,
-+		.process = process,
-+		.machine = &session->machines.host,
-+	};
-+
-+	perf_env__iterate_bpf_prog_info(env, synthesize_final_bpf_metadata_cb,
-+					&ctx);
-+}
-+
- /*
-  * Synthesize PERF_RECORD_KSYMBOL and PERF_RECORD_BPF_EVENT for one bpf
-  * program. One PERF_RECORD_BPF_EVENT is generated for the program. And
-@@ -612,6 +655,7 @@ static int perf_event__synthesize_one_bpf_prog(struct perf_session *session,
- 		}
- 
- 		info_node->info_linear = info_linear;
-+		info_node->metadata = NULL;
- 		if (!perf_env__insert_bpf_prog_info(env, info_node)) {
- 			free(info_linear);
- 			free(info_node);
-@@ -803,6 +847,7 @@ static void perf_env__add_bpf_info(struct perf_env *env, u32 id)
- 	arrays |= 1UL << PERF_BPIL_JITED_INSNS;
- 	arrays |= 1UL << PERF_BPIL_LINE_INFO;
- 	arrays |= 1UL << PERF_BPIL_JITED_LINE_INFO;
-+	arrays |= 1UL << PERF_BPIL_MAP_IDS;
- 
- 	info_linear = get_bpf_prog_info_linear(fd, arrays);
- 	if (IS_ERR_OR_NULL(info_linear)) {
-@@ -815,6 +860,7 @@ static void perf_env__add_bpf_info(struct perf_env *env, u32 id)
- 	info_node = malloc(sizeof(struct bpf_prog_info_node));
- 	if (info_node) {
- 		info_node->info_linear = info_linear;
-+		info_node->metadata = bpf_metadata_create(&info_linear->info);
- 		if (!perf_env__insert_bpf_prog_info(env, info_node)) {
- 			free(info_linear);
- 			free(info_node);
-diff --git a/tools/perf/util/bpf-event.h b/tools/perf/util/bpf-event.h
-index ef2dd3f1619e..60d2c6637af5 100644
---- a/tools/perf/util/bpf-event.h
-+++ b/tools/perf/util/bpf-event.h
-@@ -25,6 +25,7 @@ struct bpf_metadata {
- 
- struct bpf_prog_info_node {
- 	struct perf_bpil		*info_linear;
-+	struct bpf_metadata		*metadata;
- 	struct rb_node			rb_node;
+ static int process_text_poke_events(const struct perf_tool *tool,
+ 				    union perf_event *event,
+ 				    struct perf_sample *sample,
+@@ -2877,8 +2887,9 @@ static int __cmd_script(struct perf_script *script)
+ 		script->tool.finished_round = process_finished_round_event;
+ 	}
+ 	if (script->show_bpf_events) {
+-		script->tool.ksymbol = process_bpf_events;
+-		script->tool.bpf     = process_bpf_events;
++		script->tool.ksymbol	  = process_bpf_events;
++		script->tool.bpf	  = process_bpf_events;
++		script->tool.bpf_metadata = process_bpf_metadata_event;
+ 	}
+ 	if (script->show_text_poke_events) {
+ 		script->tool.ksymbol   = process_bpf_events;
+diff --git a/tools/perf/util/event.c b/tools/perf/util/event.c
+index 7544a3104e21..14b0d3689137 100644
+--- a/tools/perf/util/event.c
++++ b/tools/perf/util/event.c
+@@ -1,9 +1,12 @@
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <inttypes.h>
++#include <linux/compiler.h>
+ #include <linux/kernel.h>
+ #include <linux/types.h>
+ #include <perf/cpumap.h>
++#include <perf/event.h>
++#include <stdio.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <unistd.h>
+@@ -78,6 +81,7 @@ static const char *perf_event__names[] = {
+ 	[PERF_RECORD_COMPRESSED]		= "COMPRESSED",
+ 	[PERF_RECORD_FINISHED_INIT]		= "FINISHED_INIT",
+ 	[PERF_RECORD_COMPRESSED2]		= "COMPRESSED2",
++	[PERF_RECORD_BPF_METADATA]		= "BPF_METADATA",
  };
  
-diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
-index 36411749e007..05a4f2657d72 100644
---- a/tools/perf/util/env.c
-+++ b/tools/perf/util/env.c
-@@ -3,8 +3,10 @@
- #include "debug.h"
- #include "env.h"
- #include "util/header.h"
--#include "linux/compiler.h"
-+#include "util/rwsem.h"
-+#include <linux/compiler.h>
- #include <linux/ctype.h>
-+#include <linux/rbtree.h>
- #include <linux/string.h>
- #include <linux/zalloc.h>
- #include "cgroup.h"
-@@ -89,6 +91,20 @@ struct bpf_prog_info_node *perf_env__find_bpf_prog_info(struct perf_env *env,
- 	return node;
+ const char *perf_event__name(unsigned int id)
+@@ -505,6 +509,20 @@ size_t perf_event__fprintf_bpf(union perf_event *event, FILE *fp)
+ 		       event->bpf.type, event->bpf.flags, event->bpf.id);
  }
  
-+void perf_env__iterate_bpf_prog_info(struct perf_env *env,
-+				     void (*cb)(struct bpf_prog_info_node *node,
-+						void *data),
-+				     void *data)
++size_t perf_event__fprintf_bpf_metadata(union perf_event *event, FILE *fp)
 +{
-+	struct rb_node *first;
++	struct perf_record_bpf_metadata *metadata = &event->bpf_metadata;
++	size_t ret;
 +
-+	down_read(&env->bpf_progs.lock);
-+	first = rb_first(&env->bpf_progs.infos);
-+	for (struct rb_node *node = first; node != NULL; node = rb_next(node))
-+		(*cb)(rb_entry(node, struct bpf_prog_info_node, rb_node), data);
-+	up_read(&env->bpf_progs.lock);
++	ret = fprintf(fp, " prog %s\n", metadata->prog_name);
++	for (__u32 i = 0; i < metadata->nr_entries; i++) {
++		ret += fprintf(fp, "  entry %d: %20s = %s\n", i,
++			       metadata->entries[i].key,
++			       metadata->entries[i].value);
++	}
++	return ret;
 +}
 +
- bool perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node)
+ static int text_poke_printer(enum binary_printer_ops op, unsigned int val,
+ 			     void *extra, FILE *fp)
  {
- 	bool ret;
-@@ -174,6 +190,7 @@ static void perf_env__purge_bpf(struct perf_env *env)
- 		next = rb_next(&node->rb_node);
- 		rb_erase(&node->rb_node, root);
- 		zfree(&node->info_linear);
-+		bpf_metadata_free(node->metadata);
- 		free(node);
+@@ -602,6 +620,9 @@ size_t perf_event__fprintf(union perf_event *event, struct machine *machine, FIL
+ 	case PERF_RECORD_AUX_OUTPUT_HW_ID:
+ 		ret += perf_event__fprintf_aux_output_hw_id(event, fp);
+ 		break;
++	case PERF_RECORD_BPF_METADATA:
++		ret += perf_event__fprintf_bpf_metadata(event, fp);
++		break;
+ 	default:
+ 		ret += fprintf(fp, "\n");
  	}
+diff --git a/tools/perf/util/event.h b/tools/perf/util/event.h
+index 664bf39567ce..67ad4a2014bc 100644
+--- a/tools/perf/util/event.h
++++ b/tools/perf/util/event.h
+@@ -370,6 +370,7 @@ size_t perf_event__fprintf_namespaces(union perf_event *event, FILE *fp);
+ size_t perf_event__fprintf_cgroup(union perf_event *event, FILE *fp);
+ size_t perf_event__fprintf_ksymbol(union perf_event *event, FILE *fp);
+ size_t perf_event__fprintf_bpf(union perf_event *event, FILE *fp);
++size_t perf_event__fprintf_bpf_metadata(union perf_event *event, FILE *fp);
+ size_t perf_event__fprintf_text_poke(union perf_event *event, struct machine *machine,FILE *fp);
+ size_t perf_event__fprintf(union perf_event *event, struct machine *machine, FILE *fp);
  
-diff --git a/tools/perf/util/env.h b/tools/perf/util/env.h
-index d90e343cf1fa..c90c1d717e73 100644
---- a/tools/perf/util/env.h
-+++ b/tools/perf/util/env.h
-@@ -174,16 +174,22 @@ const char *perf_env__raw_arch(struct perf_env *env);
- int perf_env__nr_cpus_avail(struct perf_env *env);
+diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+index a320672c264e..38075059086c 100644
+--- a/tools/perf/util/session.c
++++ b/tools/perf/util/session.c
+@@ -12,6 +12,7 @@
+ #include <sys/types.h>
+ #include <sys/mman.h>
+ #include <perf/cpumap.h>
++#include <perf/event.h>
  
- void perf_env__init(struct perf_env *env);
-+#ifdef HAVE_LIBBPF_SUPPORT
- bool __perf_env__insert_bpf_prog_info(struct perf_env *env,
- 				      struct bpf_prog_info_node *info_node);
- bool perf_env__insert_bpf_prog_info(struct perf_env *env,
- 				    struct bpf_prog_info_node *info_node);
- struct bpf_prog_info_node *perf_env__find_bpf_prog_info(struct perf_env *env,
- 							__u32 prog_id);
-+void perf_env__iterate_bpf_prog_info(struct perf_env *env,
-+				     void (*cb)(struct bpf_prog_info_node *node,
-+						void *data),
-+				     void *data);
- bool perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node);
- bool __perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node);
- struct btf_node *perf_env__find_btf(struct perf_env *env, __u32 btf_id);
- struct btf_node *__perf_env__find_btf(struct perf_env *env, __u32 btf_id);
-+#endif // HAVE_LIBBPF_SUPPORT
+ #include "map_symbol.h"
+ #include "branch.h"
+@@ -1491,6 +1492,9 @@ static s64 perf_session__process_user_event(struct perf_session *session,
+ 	case PERF_RECORD_FINISHED_INIT:
+ 		err = tool->finished_init(session, event);
+ 		break;
++	case PERF_RECORD_BPF_METADATA:
++		err = tool->bpf_metadata(session, event);
++		break;
+ 	default:
+ 		err = -EINVAL;
+ 		break;
+diff --git a/tools/perf/util/tool.c b/tools/perf/util/tool.c
+index 37bd8ac63b01..204ec03071bc 100644
+--- a/tools/perf/util/tool.c
++++ b/tools/perf/util/tool.c
+@@ -1,12 +1,15 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include "data.h"
+ #include "debug.h"
++#include "event.h"
+ #include "header.h"
+ #include "session.h"
+ #include "stat.h"
+ #include "tool.h"
+ #include "tsc.h"
++#include <linux/compiler.h>
+ #include <sys/mman.h>
++#include <stddef.h>
+ #include <unistd.h>
  
- int perf_env__numa_node(struct perf_env *env, struct perf_cpu cpu);
- char *perf_env__find_pmu_cap(struct perf_env *env, const char *pmu_name,
-diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-index e3cdc3b7b4ab..7c477e2a93b3 100644
---- a/tools/perf/util/header.c
-+++ b/tools/perf/util/header.c
-@@ -3161,6 +3161,7 @@ static int process_bpf_prog_info(struct feat_fd *ff, void *data __maybe_unused)
- 		/* after reading from file, translate offset to address */
- 		bpil_offs_to_addr(info_linear);
- 		info_node->info_linear = info_linear;
-+		info_node->metadata = NULL;
- 		if (!__perf_env__insert_bpf_prog_info(env, info_node)) {
- 			free(info_linear);
- 			free(info_node);
-diff --git a/tools/perf/util/synthetic-events.h b/tools/perf/util/synthetic-events.h
-index b9c936b5cfeb..ee29615d68e5 100644
---- a/tools/perf/util/synthetic-events.h
-+++ b/tools/perf/util/synthetic-events.h
-@@ -92,6 +92,8 @@ int perf_event__synthesize_threads(const struct perf_tool *tool, perf_event__han
- int perf_event__synthesize_tracing_data(const struct perf_tool *tool, int fd, struct evlist *evlist, perf_event__handler_t process);
- int perf_event__synth_time_conv(const struct perf_event_mmap_page *pc, const struct perf_tool *tool, perf_event__handler_t process, struct machine *machine);
- pid_t perf_event__synthesize_comm(const struct perf_tool *tool, union perf_event *event, pid_t pid, perf_event__handler_t process, struct machine *machine);
-+void perf_event__synthesize_final_bpf_metadata(struct perf_session *session,
-+					       perf_event__handler_t process);
+ #ifdef HAVE_ZSTD_SUPPORT
+@@ -237,6 +240,16 @@ static int perf_session__process_compressed_event_stub(struct perf_session *sess
+ 	return 0;
+ }
  
- int perf_tool__process_synth_event(const struct perf_tool *tool, union perf_event *event, struct machine *machine, perf_event__handler_t process);
++static int perf_event__process_bpf_metadata_stub(struct perf_session *perf_session __maybe_unused,
++						 union perf_event *event)
++{
++	if (dump_trace)
++		perf_event__fprintf_bpf_metadata(event, stdout);
++
++	dump_printf(": unhandled!\n");
++	return 0;
++}
++
+ void perf_tool__init(struct perf_tool *tool, bool ordered_events)
+ {
+ 	tool->ordered_events = ordered_events;
+@@ -293,6 +306,7 @@ void perf_tool__init(struct perf_tool *tool, bool ordered_events)
+ 	tool->compressed = perf_session__process_compressed_event_stub;
+ #endif
+ 	tool->finished_init = process_event_op2_stub;
++	tool->bpf_metadata = perf_event__process_bpf_metadata_stub;
+ }
  
+ bool perf_tool__compressed_is_stub(const struct perf_tool *tool)
+diff --git a/tools/perf/util/tool.h b/tools/perf/util/tool.h
+index db1c7642b0d1..18b76ff0f26a 100644
+--- a/tools/perf/util/tool.h
++++ b/tools/perf/util/tool.h
+@@ -77,7 +77,8 @@ struct perf_tool {
+ 			stat,
+ 			stat_round,
+ 			feature,
+-			finished_init;
++			finished_init,
++			bpf_metadata;
+ 	event_op4	compressed;
+ 	event_op3	auxtrace;
+ 	bool		ordered_events;
 -- 
 2.50.0.rc1.591.g9c95f17f64-goog
 
