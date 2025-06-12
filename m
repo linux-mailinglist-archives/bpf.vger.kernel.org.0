@@ -1,118 +1,128 @@
-Return-Path: <bpf+bounces-60539-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60540-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 915CAAD7E85
-	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 00:38:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72A8FAD7E9E
+	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 00:52:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8955917B01F
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 22:38:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 497A23A3701
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 22:52:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 792E02E172B;
-	Thu, 12 Jun 2025 22:37:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02CA32E1730;
+	Thu, 12 Jun 2025 22:52:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fPWCwbPL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lD0A/v97"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F22F2E0B75
-	for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 22:37:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7052E153BD9;
+	Thu, 12 Jun 2025 22:52:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749767870; cv=none; b=cPuvCTTSEKB1cigyRvKkqno5IaSo5VXykikhRsaaGYl8SKDCk748oHS4cvMQGCTuj7VFBPoAsxf3SWjYSL5Ah5maXCC6sAxVNe6GB4Tz2gxHOpDeRyIw88o2tIbbU+xpUFawNjn4kubv5IKvR+n9IW2TF/YWnH0QQKbDgA7XHME=
+	t=1749768748; cv=none; b=jVo2ocwLNbqlTp2SpCTxrHiFDfA1gwNGM18pjK2VYjmiRwsfvPdShjC29WGHy+8Qqan4KHNKsdL9b4g8eUgY6+b5o1qY8/TZ6FsD4DGgSktfsUDtdXaxRVCP8T5k6P/I457kaC7D9/Pgz2wy25tr5zeNEbvb+76Xzzwm0a898VQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749767870; c=relaxed/simple;
-	bh=3a7nPZlsPGWRHfAftXsX31zw7DDHkQEQDQD5eHzBAPE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=DbHm6qYZFB9kE+TJ28WEJo9bh5O+oNeYikwkAN3eKlqxnxv4FhVo0kn1nHzeGHge/Q3duECjYw1Ue+Ua5Zx7PZyOJyTbWNMSgH2jA3VLJThf5qTYEtZDDVaNCuasYlg6e01CmPsbKDX8VAg50D6ZdElUe2SwWyDPKc1Ld3URSV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fPWCwbPL; arc=none smtp.client-ip=209.85.216.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-31393526d0dso1140501a91.0
-        for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 15:37:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749767868; x=1750372668; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=V2wHpc1TaOEqAK8AlHoW9toI8e+Dijn4cDsCR+hxs74=;
-        b=fPWCwbPL84ZK9gv2qMET4zYfA9C4cbrqNrdBRJwQaTjvQWBZV/72l9v6r9q63SPgKN
-         eJgfGau3XcQsrGZ031oiK/VcX1pbVDyxdRXGvWl3SolgcNnkRLMfDJMsZY+h2UjI+Zqi
-         CUtYXpcv/1fwIczusUuduo8xcufnT8swOfu+FQMHEpWbZgqDM9NAMLNN7UfIfWHhYoLa
-         AVkTRWIavyiduJS8v9nAr8lwV99V32Q+EU6p5dxrfUzklft2dfuud0f7hCwfxU/PACE0
-         SmTHupM1SkdWebOwELBWpqfzrubnNUFM5oEREE3zJ8QGje8SaAoQv9SlGPg9sJdZzKkV
-         Ui4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749767868; x=1750372668;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=V2wHpc1TaOEqAK8AlHoW9toI8e+Dijn4cDsCR+hxs74=;
-        b=dQq0weZc9GjfP6Pc9IBZRDKEF1Pv1uZbKBURHs2VG3ySTddGJBMGHI+WZ0+E+LnjRp
-         K+gyEdLGowqooVRn20ZxEOmGH5WQX7M7KrZg8JljW+cjvwGdEicSBjHCKirGdYvJPW6Y
-         izF4brKvfqJYtI2gERimEQnBeeTRtb3smnihYYTiqoIqafOGZle2vJ+FbN391tJCDWRn
-         9Bt0tOOxrnRDz0cwgSu8vJ7OUNjpwc34qpRMa7q0yETIQLb5NGXX96aD0CfluyYWeXtG
-         8WTeiNPLWKwJ4D7WYkbrRdFvb+4T48HZlgjCHVITyDKjECp+i+WTvgFDEiLINyGMCpNT
-         N9hw==
-X-Forwarded-Encrypted: i=1; AJvYcCWP8OvMQbC+C8iPHh2GZIWjrTqvhaptuaMl8AhIlxwliV4vtjseVU/c6p7Gwfd81Wzee8E=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzw1+j5Wj6yqUVV//KU3I5GN0/BEaux8jK/pZeu9bUUgy6bNx6T
-	eHeXoGkj5t+g3B9ScKq7XnT/1ZVKWJoff/sQGQyw9a6T9c0GyoRduVE5
-X-Gm-Gg: ASbGncuWQbFMuH9gx7zd1t3dic6TaZ1xAsjy0FCDvJ38RT37vMP51ZMf+K0lCrUxAGa
-	yPnOS0e3nNGK8/tnrmrh5rnE5jkyBCQXaN6jmpDMkCezowb1v37gsS5UI3xHQ7L8yleCDth0sk3
-	JWNfLAhPiK5bmxE/mlI9SD+wieQfdGYF4sPNAHCEv5H6BAuefCTFG/rSUnkKZbFizVcoQgFBEoB
-	y20eX0n76GWp4UcjZIqFaJwes9fDyajALrjA+3SGu1Li2caSDKDL0Cbth2cWFWBxe/roYn32t5M
-	lgqWCImcEgwjSfqbdSOCW7OmVb24TnadGs1jgYrUaNH+ICFdshSpIWOM3RiZV/n+rn5HlA==
-X-Google-Smtp-Source: AGHT+IHg4HVQPtXqUPZrvfbrivXQJXse9xAPi7ibWV0+2GKjP/rx+1ds6Z/TnZKIHWFIsHCc1IfFLg==
-X-Received: by 2002:a17:90b:264e:b0:313:28e7:af14 with SMTP id 98e67ed59e1d1-313d9e93c27mr1204256a91.19.1749767867818;
-        Thu, 12 Jun 2025 15:37:47 -0700 (PDT)
-Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2365de78314sm2335865ad.91.2025.06.12.15.37.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Jun 2025 15:37:47 -0700 (PDT)
-Message-ID: <b1b7fa02e26569220612961fceaa53c8050a82bc.camel@gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Initialize "tmp" in propagate_liveness
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Song Liu <song@kernel.org>, bpf@vger.kernel.org
-Cc: kernel-team@meta.com, andrii@kernel.org, ast@kernel.org,
- daniel@iogearbox.net, 	martin.lau@linux.dev
-Date: Thu, 12 Jun 2025 15:37:44 -0700
-In-Reply-To: <52242417d9fd90cc13c0bbe009adde93384a4748.camel@gmail.com>
-References: <20250612221100.2153401-1-song@kernel.org>
-	 <52242417d9fd90cc13c0bbe009adde93384a4748.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	s=arc-20240116; t=1749768748; c=relaxed/simple;
+	bh=jMlxmZZTo6rTWsBUudaRKPlf+d5/G0AfKjYQwml7YHc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=BR9nx8qrCxiclZsv6oJChAHkO0QDwa6PFqbNoS12lbnu6Xap152DIQYrv2DHJ+a80i4rzMjTivl135OPT3buUysX3YYOOCsXNepo9g1sZKBNUk85IeoJ7MJH9+QZ+IBjXOxZDLG41RCutl/nqH5a6/e+hY1vx1QxGoCkf2/X63k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lD0A/v97; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 014C8C4CEEA;
+	Thu, 12 Jun 2025 22:52:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749768748;
+	bh=jMlxmZZTo6rTWsBUudaRKPlf+d5/G0AfKjYQwml7YHc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=lD0A/v97SwM7Ga6ASEYxETAyNTwLSdN9s3YarAstt4LKd3yaRfck6VrPAmTsB1fCJ
+	 7ngZQ/kF6eslIdK8f1HF4+o1Jofu7ii0hMbI17a3FGvvxqwgPIsgD4e+9jM6jsf7g3
+	 UceH90Za5OPGojj1WUxg+hALC5Np95bcXQ3NJ73PNS0n+lZHr2XDxHdpTOtEY+9u9u
+	 DHzzIyj0fXgkemhBSFp1HpglGlxbmHRAkpESftpqd4wMHfVqqY6phJRLPrDuuOmRNs
+	 ygTAkQkpCdhUirmI4qmoboVN2wPS4c7tJyOC3k2fdM5CM9a/LuYw06T6m+aPX+uMFs
+	 QDhbVW8dmozgg==
+Date: Thu, 12 Jun 2025 15:52:26 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Mina Almasry <almasrymina@google.com>
+Cc: Cosmin Ratiu <cratiu@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Dragos
+ Tatulea <dtatulea@nvidia.com>, "andrew+netdev@lunn.ch"
+ <andrew+netdev@lunn.ch>, "hawk@kernel.org" <hawk@kernel.org>,
+ "davem@davemloft.net" <davem@davemloft.net>, "john.fastabend@gmail.com"
+ <john.fastabend@gmail.com>, "leon@kernel.org" <leon@kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "pabeni@redhat.com" <pabeni@redhat.com>, "ast@kernel.org" <ast@kernel.org>,
+ "richardcochran@gmail.com" <richardcochran@gmail.com>, Leon Romanovsky
+ <leonro@nvidia.com>, "linux-rdma@vger.kernel.org"
+ <linux-rdma@vger.kernel.org>, "edumazet@google.com" <edumazet@google.com>,
+ "horms@kernel.org" <horms@kernel.org>, "daniel@iogearbox.net"
+ <daniel@iogearbox.net>, Tariq Toukan <tariqt@nvidia.com>, Saeed Mahameed
+ <saeedm@nvidia.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Gal
+ Pressman <gal@nvidia.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH net-next v3 10/12] net/mlx5e: Implement queue mgmt ops
+ and single channel swap
+Message-ID: <20250612155226.770f0676@kernel.org>
+In-Reply-To: <CAHS8izOG+LoJ-GvyRu6zSVCUvoW4VzYX5CEdDhCdVLimOSP0KQ@mail.gmail.com>
+References: <20250609145833.990793-1-mbloch@nvidia.com>
+	<20250609145833.990793-11-mbloch@nvidia.com>
+	<CAHS8izOX8t-Xu+mseiRBvLDYmk6G+iH=tX6t4SWY2TKBau7r-Q@mail.gmail.com>
+	<9107e96e488a741c79e0f5de33dd73261056c033.camel@nvidia.com>
+	<CAHS8izOG+LoJ-GvyRu6zSVCUvoW4VzYX5CEdDhCdVLimOSP0KQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, 2025-06-12 at 15:31 -0700, Eduard Zingerman wrote:
-> On Thu, 2025-06-12 at 15:11 -0700, Song Liu wrote:
-> > With input changed =3D=3D NULL, a local variable is used for "changed".
-> > Initialize tmp properly, so that it can be used in the following:
-> >    *changed |=3D err > 0;
-> >=20
-> > Otherwise, UBSAN will complain:
-> >=20
-> > UBSAN: invalid-load in kernel/bpf/verifier.c:18924:4
-> > load of value <some random value> is not a valid value for type '_Bool'
-> >=20
-> > Fixes: 6b3f95cd99f8 ("bpf: set 'changed' status if propagate_liveness()=
- did any updates")
-> > Signed-off-by: Song Liu <song@kernel.org>
-> > ---
->=20
-> Should add UBSAN to my config, sorry.
-> There is also a `tmp` in __mark_chain_precision, unitialized as well.
-> Could you please re-send v2 with both fixed?
+On Thu, 12 Jun 2025 13:44:44 -0700 Mina Almasry wrote:
+> > On Wed, 2025-06-11 at 22:33 -0700, Mina Almasry wrote:  
+> > > Is this really better than maintaining uniformity of behavior between
+> > > the drivers that support the queue mgmt api and just doing the
+> > > mlx5e_deactivate_priv_channels and mlx5e_close_channel in the stop
+> > > like core sorta expects?
+> > >
+> > > We currently use the ndos to restart a queue, but I'm imagining in
+> > > the
+> > > future we can expand it to create queues on behalf of the queues. The
+> > > stop queue API may be reused in other contexts, like maybe to kill a
+> > > dynamically created devmem queue or something, and this specific
+> > > driver may stop working because stop actually doesn't do anything?
+> > >  
+> >
+> > The .ndo_queue_stop operation doesn't make sense by itself for mlx5,
+> > because the current mlx5 architecture is to atomically swap in all of
+> > the channels.
+> > The scenario you are describing, with a hypothetical ndo_queue_stop for
+> > dynamically created devmem queues would leave all of the queues stopped
+> > and the old channel deallocated in the channel array. Worse problems
+> > would happen in that state than with today's approach, which leaves the
+> > driver in functional state.
+> >
+> > Perhaps Saeed can add more details to this?  
+> 
+> I see, so essentially mlx5 supports restarting a queue but not
+> necessarily stopping and starting a queue as separate actions?
+> 
+> If so, can maybe the comment on the function be reworded to more
+> strongly indicate that this is a limitation? Just asking because
+> future driver authors interested in implementing the queue API will
+> probably look at one of mlx5/gve/bnxt to see what an existing
+> implementation looks like, and I would rather them follow bnxt/gve
+> that is more in line with core's expectations if possible. But that's
+> a minor concern; I'm fine with this patch.
+> 
+> FWIW this may break in the future if core decides to add code that
+> actually uses the stop operation as a 'stop', not as a stepping stone
+> to 'restart', but I'm not sure we can do anything about that if it's a
+> driver limitation.
 
-Nevermind, in __mark_chain_precision it is only written to.
+Agreed, would be good to add a TODO and follow up on this.
+It will bite us sooner or later. I suppose state_lock may
+need to be dropped in favor of the netdev instance lock first?
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+I'm disappointed that mlx5 once again disrupts all rings to restart 
+a single one. But all existing drivers seem to do this, so I guess
+it'd be unfair to push back based on just that :|
 
