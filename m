@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-60421-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60422-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD14BAD64A6
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 02:41:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F11A4AD64AB
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 02:41:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04DF71BC396E
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 00:41:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9161F3AC97A
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 00:41:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B390129A78;
-	Thu, 12 Jun 2025 00:40:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54A711474B8;
+	Thu, 12 Jun 2025 00:40:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 518575258;
-	Thu, 12 Jun 2025 00:40:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D3393B280;
+	Thu, 12 Jun 2025 00:40:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749688809; cv=none; b=akNkf5l+r+7iov0/ybiFvOkri6zy6dOiDAvfL4TTxXdGoPdnNacf5BdWQQyyCnLrJASnn/w70cmhi+/xw5mPyMKea4Rlnpm4nnxDAangFFg2TOMF/VXdCr0RdoJZ82Z3tbPKVWAzcZUifh0Sw68Lw5Yb36jv/Gax/9eeiFxhXZU=
+	t=1749688837; cv=none; b=OjXMrVtMRy4nLg9UJp5eK0wPs7YAtaYchLENMFrQO3FiNn811ooqn4+Lqc9YzkzK2SsL1okrC1/PC7HPdAY3Oql4ttqGZZl/3F9oeKGvSqc/qno2xhVC6A7IwxHbm7h3BVTnz5hNMNQCZV0YpYFuGqXBzQZ+solCbNBFzQ6dPWI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749688809; c=relaxed/simple;
-	bh=NyPPNQeFrrcMeaekAXsQqeAlWSYzdoBw9X5oLRlU1Eg=;
+	s=arc-20240116; t=1749688837; c=relaxed/simple;
+	bh=sEo29Y4UUQrtzYpx+2sKnZH/o6C4OT1r4wZBTH7Tvls=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d4tJZ7qFBCAR8frgg0o4ykpHkSV9XQbPkNkCM0Ns8Ser9+B2qteQmfG5FDMVZBKpvWMBMr10dVZlkaV8QDJU+2fEGset4AX65Pz1JGDYiE9k3qUgJpkqFQOg3Vgnz3uW4ViQ1BgkPIG68HbingqSayIx6c8zsvwPoOiIFCT3jjg=
+	 Content-Type:Content-Disposition:In-Reply-To; b=HVgF5K5I7PBaUWpiXXHcuF5cmKrFbkTs5yHYWEZ5DG99rPGOjDpeSkGL3mAFMG978nvUKXJ9Mjj3Ixk0eXvC5J+tkPNsrCE3vbRgH3UHweQk2DjRhf7hVovyY+R9P1BKYiU9/d51S1F9fYLq//yzTeRM3h/kQOj5nmili5T3bJg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-669ff7000002311f-7f-684a21dbc596
-Date: Thu, 12 Jun 2025 09:39:49 +0900
+X-AuditID: a67dfc5b-669ff7000002311f-1b-684a21ffb9fe
+Date: Thu, 12 Jun 2025 09:40:26 +0900
 From: Byungchul Park <byungchul@sk.com>
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: Mina Almasry <almasrymina@google.com>, willy@infradead.org,
+To: Mina Almasry <almasrymina@google.com>
+Cc: Pavel Begunkov <asml.silence@gmail.com>, willy@infradead.org,
 	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
 	linux-mm@kvack.org, kernel_team@skhynix.com, kuba@kernel.org,
 	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
@@ -44,14 +44,11 @@ Cc: Mina Almasry <almasrymina@google.com>, willy@infradead.org,
 	surenb@google.com, mhocko@suse.com, horms@kernel.org,
 	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
 	vishal.moola@gmail.com
-Subject: Re: [PATCH net-next 9/9] page_pool: access ->pp_magic through struct
- netmem_desc in page_pool_page_is_pp()
-Message-ID: <20250612003949.GA41589@system.software.com>
+Subject: Re: [PATCH net-next 0/9] Split netmem from struct page
+Message-ID: <20250612004026.GB41589@system.software.com>
 References: <20250609043225.77229-1-byungchul@sk.com>
- <20250609043225.77229-10-byungchul@sk.com>
- <CAHS8izMLnyJNnK-K-kR1cSt0LOaZ5iGSYsM2R=QhTQDSjCm8pg@mail.gmail.com>
- <20250610014500.GB65598@system.software.com>
- <937e62c5-0d12-4bea-b0c1-a267c491cf72@gmail.com>
+ <8c7c1039-5b9c-4060-8292-87047dfd9845@gmail.com>
+ <CAHS8izNiFA71bbLd1fq3sFh1CuC5Zh19f53XMPYk2Dj8iOfkOA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -61,144 +58,87 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <937e62c5-0d12-4bea-b0c1-a267c491cf72@gmail.com>
+In-Reply-To: <CAHS8izNiFA71bbLd1fq3sFh1CuC5Zh19f53XMPYk2Dj8iOfkOA@mail.gmail.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRjHfc95d3YcDo7T6tWgcBKBoaYZPVRG9CGOfeliRHdbeWojXTLT
-	plDMMixLi5LMuWomqZk1WjanidkybymZZq2Ll9Tph65uJZZ2cZPIbz/+//d9fs+Hh6VlxaJA
-	VqU+LGjUigQ5I8GSTz7XQ98GrVMutvRGgsFUwcCtcS2U9ltFYCi3IPj2460YXA1NDBQXjdFg
-	eJaJ4bvpJw2OxgEx9JUMY6jNqqJh4FwzAzmZEzQct5ZR0GHJFUHezxs0VOn6xdBVY2Cgt+KP
-	CIZtORha9Dcx9OWuhkbjbBh7+hFBg6mKgrGzVxi42GlkYDCzD0Hn4wEMhRm5CEx1dhFMjBuY
-	1UF85c3XFF+t7xHzRnMKf68shM+2d9K8ufw0w5udF8T8u5e1DN98eQLz1VYXxeec+Mzwo443
-	mP9S183wpspuzLcZG8S8yzxvA7ddsjJeSFClCprwVXskytz8SZzUGqQ92dFO6ZAjIBuxLOGi
-	yNDrzdnI24M1Iy/EbsbcAlJa89DDDLeQ2O0/aDf7c4vIh1e2qVzC0txHETFlWbC78ONSSNaz
-	854PUg7Il8G7nkcy7gxFxk+58HThS1oKhjxMT02dvNpJu5egubmk9Dc7Hc8nJ+4XemTeXDRp
-	b24WuXkWF0zqLU2UeybhrCwpyqnH01sHkEdldnwe+epnKPQzFPr/Cv0MhRHhciRTqVMTFaqE
-	qDBlmlqlDdt3KNGMpk6n5OjkDitydsTaEMciuY/UqoxRykSK1OS0RBsiLC33l872m4qk8Yq0
-	dEFzKE6TkiAk29BcFsvnSCPHjsTLuAOKw8JBQUgSNP9aivUO1KHY/r1d/RuvhOhi2i99vWbb
-	VTfoG5OoXXlU7LAmjdy57TU/KXj7krhC+aeGwP09Z7bqHtTubom7tn6Z0RmhDrfmm12FzvCd
-	+9+vefK8dVThc7U0eh0bnbHNZCtbmq31+n56+aSFYgq25K0okTtfpZf/al3btDZoU+iSDT6h
-	x44PtWXp5ThZqYgIoTXJir/o4XKSNgMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTcRiH+Z/bjsPV8baO+iFahGR0owtvdLM+1CkogwipiDrVoY3clE3F
-	RYHlanbZukI2ZyxE55aw8rKtMaympGblrcs0zbA2gyzzkmhKNheR3x5+v/d93i8vjUfryQRa
-	ocoS1Co+XUaJCfHu9flL3y/YKV9RMxAPZkcFBffHc8H60U2C2e5EMDrxXgQj9Q0UlNwbw8Hc
-	oiPgp+MXDoFnfSLoLQsS4NW7cOi72kiBQTeJwzl3OQZ1xU0ktDqNJNz6VYqDK++jCDo8Zgo+
-	VEyTEPQZCGgy2QjoNabAM4sUxpoHENQ7XBiMXSmm4Ga7hYJPul4E7XV9BBSdNSJw1PpJmBw3
-	UykyrtrWiXGPTD0izlKZzVWVJ3OX/O04V2m/SHGVwzdEXPdbL8U1Fk4S3CP3CMYZ8r9T3FCg
-	i+AGa99QXMmXHxjnqH5DcC8s9aI9UQfEG44L6YocQb180xGx3Hh7ish8viD3fOtLLA8F4i+h
-	CJplVrOe/teiGSaYRazV8zjMFJPE+v0T+AzHMkvYr+98oVxM48wAyTr0TmKmiGGyWX3LtfCC
-	hAF28NPD8FA0cxljxwtGiL9FFNt053OY8ZB16m57yEqHOJG1/qb/xvPZ/Jqi8LEIZiP7srGR
-	nOE4ZiH7xNmAXUNzTLNMplkm03+TaZbJggg7ilWocpS8In3NMs1JuValyF12LENZiULvUXZm
-	6robjXZs9yGGRrJIiVu+Qx5N8jkardKHWBqXxUqkMaFIcpzXnhLUGYfV2emCxocSaUI2T7Iz
-	TTgSzZzgs4STgpApqP+1GB2RkIesBbVHTb7kLXuD3sKk2lWJem9wNPI6HRX3dl9kolRr/xY8
-	mxpPDqaWXK442C9dlzqtel5UBc2vFj+oaLM8bQ74DrV5beP9t+5MDJ22uTJLtl3Y2sB7koZ3
-	GbpLD8cUv3Bt1qVdnGO8v0mZ3dW6H1X10Ie+rG3TFDi1hXWqzrlXZYRGzq9MxtUa/g/f9oLO
-	GgMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0iTURzGPXsve10OXqeto4XiuirYjT78qaigD50kwzC6mbiVL201V2xl
+	GlhWi0iadjGouWyilZdoNW9TTGuJZhcSu7AuZlhZdJnk1DJX5qtEfvvxPH+eHwcORymKmXBO
+	Z9grGA0avYqV0bJvQUWxI1Fx2vk+8zSwOa6xUPEzA66+dTFgK69B0D/0Sgq+5lYWiosGKbA9
+	NtMw4PhFwYeWbil0XemhoeF4LQXdefdYsJiHKTjiKpVAe00uA/m/LlNQm/1WCk/qbSy8uTbC
+	QI/bQkObtYyGrtwV0GJXwuCDrwiaHbUSGDx5kYWzHXYW3pm7EHTc7aah4HAuAkejh4HhnzZ2
+	RRSpKnshIXXWTimxO/eRytIYkuPpoIiz/ARLnH1npOT18waW3Ds/TJM6l09CLEe9LPn+4SVN
+	ehufscRR9YwmD+3NUuJzRiTwW2RLUwW9Ll0wzlumlmmL3IeZPTdkGWXmHiYbmbkcFMhhfhFu
+	t7xichA3xu87D4kxzc/EzqffpCKz/Gzs8QxRIofy0bik8fTouYyjeC+Drw/VjxUh/HL84/U7
+	VmQ5D9g31MaKRwregXB20xc0XgTjtgvvaZGp0VV/YQcliil+Kr76hxuPI/HR6oKxzUB+He7p
+	amREnsxPx7drWiXiJuYbOHzfewyNPyAM3yn10KdQsHWCwjpBYf2vsE5Q2BFdjhQ6Q3qaRqdf
+	NFebadBlzN2+O82JRr/OlSx/kgv1tSe6Ec8hVZDcpV2tVTCadFNmmhthjlKFypUho5E8VZN5
+	QDDuTjHu0wsmN5rK0aop8oWD+1MV/A7NXmGXIOwRjP9aCRcYno3i0h7G+5O2LVCGxsTLTqy5
+	/DslmcrxHpkzc5kqwq8OD03xL1+8M96CrLZa1ZcZVc7cJWELIzZX1bP9tyqpJxkVsauiTCcH
+	Dm44p3Ekzki+FBD0edPdR8FZYZKS+1sTlDtmTVobXRiw9tjNcwGR6qAKdVP1x5ru9Z8MK/O+
+	9pL6jfkvVLRJq1kQQxlNmr+mcmk/NgMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTcRjG++9cdlwtjtcOGkmrsItZgcGbRkYQ/ZUIg27Uh1zt0EbbjM1E
+	u5DmMhy5NLuumQvNvESLaW6GaGxiSkY2W9jFJlomWJq35VIyV0R++/E8D7/3y8sQQblUOKNQ
+	p/EatVQpoUWkaFd8ztqZpUny9QNOBkyWBzRUT2bA/R47BaaqOgTjvvdCGGt+RkPpXS8Bppc6
+	EiYsPwn43NIrBE95PwkNF20E9F5upSFfN0XAeXuFAJzFbRR01BkouPrzHgG2rB4hdD4x0fDx
+	wQwF/Y58EtqMlSR4DFuhxRwG3udfETRbbALwXiqmochlpqFP50HgcvaScDvbgMDS2EXB1KSJ
+	3irBtZVvBbje2C3EZutJXFOxGuu7XAS2VuXR2Dp6RYg/vGmgcevNKRLX28cEOD9niMYjn9+R
+	eLjRTePSge8CbKl1k7jd3CxMDjwo2izjlYp0XrNuS4pIfteRTZ14JMqo1PVTWUjH6BHDcGws
+	96n7nB4FMCS7grO+/ib0M81GcV1dPsLPIewqrqyxkNIjEUOwQxT30PfkTxHMJnA/PvTRfhaz
+	wI352mj/KIi1IC6raRD9LQK5tlufSD8Ts9bpOy7Cf5hgI7j7v5i/cSSX8/j2H2cAu5vr9zRS
+	fg5ll3FP654JCtBC4xyTcY7J+N9knGMyI7IKhSjU6SqpQrkxRntcnqlWZMQcTVVZ0ex3lJ+d
+	LrSj8c4dDsQySLJAbJcnyoMoabo2U+VAHENIQsRhwbORWCbNPMVrUg9rTip5rQNFMKRkkThp
+	P58SxB6TpvHHef4Er/nXCpiA8CwkXzP6a0/fznkbkqOqS3rcNwabhl5NIm0CljQcYIOzhfHq
+	a4ZmR9Glkt17j6zT13hVm2TOF4dSWhSx7La49unumS86kypv/sSFRdcLwojnr4fbQ0siNbeS
+	c23u4AVn9kW/kGviFqau3FK/eKdsInp57PYlZa3GuIq0stP5Ix0fqxMlpFYu3bCa0GilvwFy
+	0WHmGQMAAA==
 X-CFilter-Loop: Reflected
 
-On Wed, Jun 11, 2025 at 03:30:28PM +0100, Pavel Begunkov wrote:
-> On 6/10/25 02:45, Byungchul Park wrote:
-> > On Mon, Jun 09, 2025 at 10:39:06AM -0700, Mina Almasry wrote:
-> > > On Sun, Jun 8, 2025 at 9:32 PM Byungchul Park <byungchul@sk.com> wrote:
-> > > > 
-> > > > To simplify struct page, the effort to separate its own descriptor from
-> > > > struct page is required and the work for page pool is on going.
-> > > > 
-> > > > To achieve that, all the code should avoid directly accessing page pool
-> > > > members of struct page.
-> > > > 
-> > > > Access ->pp_magic through struct netmem_desc instead of directly
-> > > > accessing it through struct page in page_pool_page_is_pp().  Plus, move
-> > > > page_pool_page_is_pp() from mm.h to netmem.h to use struct netmem_desc
-> > > > without header dependency issue.
-> > > > 
-> > > > Signed-off-by: Byungchul Park <byungchul@sk.com>
-> > > > Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
-> > > > ---
-> > > >   include/linux/mm.h   | 12 ------------
-> > > >   include/net/netmem.h | 14 ++++++++++++++
-> > > >   mm/page_alloc.c      |  1 +
-> > > >   3 files changed, 15 insertions(+), 12 deletions(-)
-> > > > 
-> > > > diff --git a/include/linux/mm.h b/include/linux/mm.h
-> > > > index e51dba8398f7..f23560853447 100644
-> > > > --- a/include/linux/mm.h
-> > > > +++ b/include/linux/mm.h
-> > > > @@ -4311,16 +4311,4 @@ int arch_lock_shadow_stack_status(struct task_struct *t, unsigned long status);
-> > > >    */
-> > > >   #define PP_MAGIC_MASK ~(PP_DMA_INDEX_MASK | 0x3UL)
-> > > > 
-> > > > -#ifdef CONFIG_PAGE_POOL
-> > > > -static inline bool page_pool_page_is_pp(struct page *page)
-> > > > -{
-> > > > -       return (page->pp_magic & PP_MAGIC_MASK) == PP_SIGNATURE;
-> > > > -}
-> > > > -#else
-> > > > -static inline bool page_pool_page_is_pp(struct page *page)
-> > > > -{
-> > > > -       return false;
-> > > > -}
-> > > > -#endif
-> > > > -
-> > > >   #endif /* _LINUX_MM_H */
-> > > > diff --git a/include/net/netmem.h b/include/net/netmem.h
-> > > > index d84ab624b489..8f354ae7d5c3 100644
-> > > > --- a/include/net/netmem.h
-> > > > +++ b/include/net/netmem.h
-> > > > @@ -56,6 +56,20 @@ NETMEM_DESC_ASSERT_OFFSET(pp_ref_count, pp_ref_count);
-> > > >    */
-> > > >   static_assert(sizeof(struct netmem_desc) <= offsetof(struct page, _refcount));
-> > > > 
-> > > > +#ifdef CONFIG_PAGE_POOL
-> > > > +static inline bool page_pool_page_is_pp(struct page *page)
-> > > > +{
-> > > > +       struct netmem_desc *desc = (struct netmem_desc *)page;
-> > > > +
-> > > > +       return (desc->pp_magic & PP_MAGIC_MASK) == PP_SIGNATURE;
-> > > > +}
-> > > > +#else
-> > > > +static inline bool page_pool_page_is_pp(struct page *page)
-> > > > +{
-> > > > +       return false;
-> > > > +}
-> > > > +#endif
-> > > > +
-> > > >   /* net_iov */
-> > > > 
-> > > >   DECLARE_STATIC_KEY_FALSE(page_pool_mem_providers);
-> > > > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> > > > index 4f29e393f6af..be0752c0ac92 100644
-> > > > --- a/mm/page_alloc.c
-> > > > +++ b/mm/page_alloc.c
-> > > > @@ -55,6 +55,7 @@
-> > > >   #include <linux/delayacct.h>
-> > > >   #include <linux/cacheinfo.h>
-> > > >   #include <linux/pgalloc_tag.h>
-> > > > +#include <net/netmem.h>
-> > > 
-> > > mm files starting to include netmem.h is a bit interesting. I did not
-> > > expect/want dependencies outside of net. If anything the netmem stuff
-> > > include linux/mm.h
-> > 
-> > That's what I also concerned.  However, now that there are no way to
-> > check the type of memory in a general way but require to use one of pp
-> > fields, page_pool_page_is_pp() should be served by pp code e.i. network
-> > subsystem.
-> > 
-> > This should be changed once either 1) mm provides a general way to check
-> > the type or 2) pp code is moved to mm code.  I think this approach
-> > should acceptable until then.
+On Wed, Jun 11, 2025 at 01:48:36PM -0700, Mina Almasry wrote:
+> On Wed, Jun 11, 2025 at 7:24 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
+> >
+> > On 6/9/25 05:32, Byungchul Park wrote:
+> > > Hi all,
+> > >
+> > > In this version, I'm posting non-controversial patches first.  I will
+> > > post the rest more carefully later.  In this version, no update has been
+> > > applied except excluding some patches from the previous version.  See
+> > > the changes below.
+> >
+> > fwiw, I tried it with net_iov (zcrx), it didn't blow up during a
+> > short test.
+> >
 > 
-> I'd argue in the end the helper should be in mm.h as mm is going to
-> dictate how to check the type and keep them enumerated.
+> FWIW, I ran my devmem TCP tests, and pp benchmark regression tests.
+> Both look good to me. For the pp benchmark:
 
-Definitely yes, I agree.  However, mm cannot do that for now.  With the
-current way, it should be served by pp code since the type checking is
-done through the pp fields.
+Thanks for the test.
 
 	Byungchul
 > 
-> Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
+> Before:
+> 
+> Fast path results:
+> no-softirq-page_pool01 Per elem: 11 cycles(tsc) 4.337 ns
+> 
+> ptr_ring results:
+> no-softirq-page_pool02 Per elem: 529 cycles(tsc) 196.073 ns
+> 
+> slow path results:
+> no-softirq-page_pool03 Per elem: 554 cycles(tsc) 205.195 ns
+> 
+> After:
+> 
+> Fast path results:
+> no-softirq-page_pool01 Per elem: 11 cycles(tsc) 4.401 ns
+> 
+> ptr_ring results:
+> no-softirq-page_pool02 Per elem: 530 cycles(tsc) 196.443 ns
+> 
+> slow path results:
+> no-softirq-page_pool03 Per elem: 551 cycles(tsc) 204.287 ns
+> 
+> 
 > 
 > -- 
-> Pavel Begunkov
+> Thanks,
+> Mina
 
