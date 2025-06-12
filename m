@@ -1,133 +1,150 @@
-Return-Path: <bpf+bounces-60524-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60525-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D3DEAD7C7C
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 22:35:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AD8AAD7C9B
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 22:45:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CFDF3B6B1F
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 20:35:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7746B3A79DE
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 20:44:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA0742D660A;
-	Thu, 12 Jun 2025 20:35:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B61932D8787;
+	Thu, 12 Jun 2025 20:44:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b6kYlCh9"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="I2iLAhFz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0727170A26;
-	Thu, 12 Jun 2025 20:35:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8D5D2D6615
+	for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 20:44:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749760548; cv=none; b=EW3aqxkFgLiEaiweyuqAgFsOX1nR7T5xgkTlD5FsyB96PXyJMjxWSoUm1sQntGp/U7jiydYRDkwMmXUd0BDLcGpHs2SBFdPZ9BYAV4wB1C5jq8B+nstyKe/uDP6lvjRa8lxjog4V7TIezu78yL3NNzOkQ+oi3tgK5A1eYMDHImg=
+	t=1749761099; cv=none; b=ct9FurU4lPPAcopCmdpttfVLMXOUjWjN7ZOesL2i/l3lQmxVtCopAXlwpBKqHHq+LUDeN5PdrgSNO+OA1vzVDZKvtsJvXoyQh+QFgU2+mDlB6C1rB527c2Qr4kke/xWClx5i/twANhLBWZSvgMuewaIeGLxbYISV9jJYbh2+gGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749760548; c=relaxed/simple;
-	bh=VKOjouIkPbjnpquNldGEURnFbitxXv7Hj66iDotFJR0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f9Rw2hL159mGlZrP91Mf7Z/DiUslwOcnWWczlBUjbD19iP8hw++kOWUn92uaRYjqIyZsSteO8trsHSs18FhkSktepxmpBQ9AGL1eyuzJq8zCuQ4r3jTZvFcUJZwnxEUNiGcM9qNWzLQO92YRlO7Q3FmvImE4ThprPkfsrxBksRw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b6kYlCh9; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-2351227b098so12316755ad.2;
-        Thu, 12 Jun 2025 13:35:46 -0700 (PDT)
+	s=arc-20240116; t=1749761099; c=relaxed/simple;
+	bh=0shdeU3Nmns13gIvSpekGMtrKZaAuIpc2PTkyCP2Tbc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jRlNRXm5RX6dJ2LwP3i/gnq/XBoE0HMT7ynmhLJgP/gXWmcGdwCwNeLdYUOsnUFC2eNT3EdOVuRBhYhSHfhknZjou9Ow2U6mZQjea2osx9XTzyFr+u4a0dZ0bRFjass39Hct8hCyk2MBhHunApjmC8209zXEFAHYr0MT8ukP3iU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=I2iLAhFz; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-235ca5eba8cso56925ad.0
+        for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 13:44:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749760546; x=1750365346; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=4QWSoYdyhatNabwZvPhcwiKLVaajSTZN35CYhP3BmVc=;
-        b=b6kYlCh9kOijbqdENnbpDYmLn+Pn2IBLOyKa3RfiD0ybqqXcBEvIqnGixFH1dEKQ5i
-         7XdbTyz3w8iwdZDNSnGrAFL3St9Ve8Ku3lwH0FW6Eg8PX5QZ10HvmaEo0kXHuL08DO0+
-         b8HaxyuWw+lOQRgUcgzy3vlmj+ZUpG4IwuRIsoxMZuCly9mricCfi0XjBRv8F7UgPYNi
-         YKEiesCoLfECGne+4LE6cE+IX1MIinAQwAMY0wJeyExXNzzl1/A+z/JEr/Hr6+w2pH1T
-         jdtAZItonO3pSE6e37bO8bPi0KrwibKMm33U6EnPEZfTfZ/hQRRBVkkX41kqsaLDl3CM
-         bNDQ==
+        d=google.com; s=20230601; t=1749761097; x=1750365897; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0shdeU3Nmns13gIvSpekGMtrKZaAuIpc2PTkyCP2Tbc=;
+        b=I2iLAhFzijgdQ1YNvUeyvqvftSrEFW1ueLbsQMK8NMgetrYBJj7Fs12MvPJ7zbLifs
+         yq0SZMlQb66p/GwBtC96c2S/vj+n/byGC/IwccATCNzh3ECLtciyKj+5tVyn/TePniAb
+         R52oTb2kv0+g3xSj3bL1ANoWy1SFuhWqTi7ISqoArdOjj0I9pH8A+izFsDGdvhE6JEHn
+         9VbBRTuGnjqfK23IPzFhmuNgtxCyzw75erN4u18qqlrQraVBNIsnzFgTBYg6oke6I9lB
+         6hqiGgR8nCGG9NZU7zwDzKG4NDYaBt9nPoPJnwTCHEJ9Cry7Xe1VuDmfs4DW1a6Hf1zh
+         oB9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749760546; x=1750365346;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4QWSoYdyhatNabwZvPhcwiKLVaajSTZN35CYhP3BmVc=;
-        b=wo1MhcqXd0VoT9k2c6UiZ7n3mEWzogl44l5Wv7JETC7vf/npGt3fOOSr2vwWmIAy+D
-         HsjhgMED/0TC3zeoo69+b57O5AOYPhzT5QSXChi43rFSib6kKxciaCAlV2ZUhJ5c0tj7
-         G0kABmXvqRv9Z4rims6JrsXrK9J7uSiZosgDPPArSl6mo0Ue4kh+cw9EtwkJ7Q52oPyg
-         ywu7/+szH50yKCrwmpMwMUew2YBj+r7MkFgFUz3fyiFAgeUv79w6ZMzGyf2nz0eZo9+T
-         uOCombzcD/xVPwHZxexmAtA+RwOJRyfwiQyl8bLbOtWxalx3NiMeKRtgsbXk/B9d1Gm0
-         2urQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVbaKWVzvX/SuSi3poGvtFuXX1hdTTs8BT8DWQucFt1oDs26rGeqmitdEDUKDevlwIQhyY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxB8L9GB1q+4OXiQeFq95foESAmuSIGfXlVnkUxiFTv7RrXIRi+
-	HswzSMDYddZr3e44wm/GQX4umYklM3EJV0K+RQQUKhmXnHKdyYcXcmGx
-X-Gm-Gg: ASbGncvW4GfzHirTp8gocOBuwKaVIfJYRxZ/7dYAd9nlZhHLBwhKI9EOv6llo+FXXFP
-	Go9n88v2DzSIOhqXt+XVTudE1dIZHDPy2KtZfItQvfbcbr5gf9pxLzToPbgahf8+bH48KcZNbuj
-	ohsN2KW8p8BfMwVxiskRXFLNeYeD4x4Om3Q2s0GR3BDgTOzy32MUQR7O0n8ms2BM/45TDQIaNq9
-	vzYUyhM5v6KyIYsOMdkJHTo+0RzxgiFd49GHj3QdjqVIjyHkR94glZ6Jv8PVngU6gcYvjGRJi9l
-	rqF2VxCj6qlK5T3uWcRODB28H1+SQE6b9I3EXZxCVAET8eBCNDlDROjxvap0L+BQ1P6/3YRtcRf
-	d
-X-Google-Smtp-Source: AGHT+IH9btAUftjr4XnFGe6XjhQpAuBtvJF3bOSgSEruSMF5xgFR20FqFzrIqcz4tAx8eUoBIc5zsA==
-X-Received: by 2002:a17:903:234e:b0:235:eb8d:800b with SMTP id d9443c01a7336-2365da0858cmr6108555ad.26.1749760546142;
-        Thu, 12 Jun 2025 13:35:46 -0700 (PDT)
-Received: from localhost ([129.210.115.104])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2365decb864sm1371725ad.213.2025.06.12.13.35.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Jun 2025 13:35:44 -0700 (PDT)
-Date: Thu, 12 Jun 2025 13:35:43 -0700
-From: Cong Wang <xiyou.wangcong@gmail.com>
-To: Alban Crequy <alban.crequy@gmail.com>
-Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	Yucong Sun <fallentree@fb.com>, mauriciovasquezbernal@gmail.com,
-	albancrequy@microsoft.com
-Subject: Re: Loading custom BPF programs at early boot (initrd)
-Message-ID: <aEs6H4sVGY/YqcQl@pop-os.localdomain>
-References: <CAMXgnP4nfgJ+gEvXLummspjRegsZsQ=e5Q8GFAONb2yCxVZLnA@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1749761097; x=1750365897;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0shdeU3Nmns13gIvSpekGMtrKZaAuIpc2PTkyCP2Tbc=;
+        b=M3oTRmw0I76gxXiVU8qfu27WGE/pJfWlxJSG7wM9co3uCRjX8iaJft8aC3+LEjSsM6
+         uvPfCVUxDUeS9xXJxODMwb4hKXzSUPRzRP7AV6Vp/ChhnmqxX2OHMdl8+PcaQqjilw2/
+         EMqRDRWfYcgV1A34Dcbni0kGKU/42Q0wkWHPmRBsT7yVaqcmhBMS0K3Vn9VWliGsOv9Z
+         5l6Gm1YZnYMcz+cw3Kn1KhV4cUeaJ9USCw+8oFdIG4ujeWXDo8NS4bzcyuXoT+bQFJXp
+         HiHv77PpvCMVbGgJTSSB2eT0EHXTgvziAWyJESov9KOk6tySDUaMll9/To4LgAH0egp7
+         Cmbg==
+X-Forwarded-Encrypted: i=1; AJvYcCWk4VZqGKsxqDDdSA0zygCbwQH5GYaKcNd9Pqyi0i9f24V6rpwT5CnW5Gw7v7izv+bz3SE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwlisP3M4aQ7/Kwow0oCkMkKVUM7RePn7VZAW/N161ECewi7cSZ
+	3xQxyInA1T7ED+Ir2guJWbToJdRWy+zHDuLsFwM1SLAIEv0BuTp7pzBeWuJyOqvR+CRH0bM/tiG
+	x35yoz2RzXUEZvcZJYJ3fN+qR/yoa4MQy+1JeXXZo
+X-Gm-Gg: ASbGnctqyou1qAUF8xI1V8Jl58ATFsTq23cGph95xy2FWxGpEsnGzUF3WUxB6zK0e6n
+	9b3WSSi7L8qLhuZBhmNCBXlxlZe4a+nM1PfNkQ8szkmgn8LZdr8Cu4m8k9QRbrcOs3zKgfHQT6W
+	ebcPNUVWkUyxcECa/8Gt7kmzzuBoJDu4LEXOLpgBhVITs211F++grFoJFJwjSFUTk9SpfeaSaou
+	A==
+X-Google-Smtp-Source: AGHT+IFQpp/hgcePI2xWrpQ53G9VWOawnMErUaqEJq2tPNn7M+/QfKB23VjAX85ytCeOgogiZvSGZYySA5m/hlCuyso=
+X-Received: by 2002:a17:902:d48d:b0:223:ff93:322f with SMTP id
+ d9443c01a7336-2365e8c8cf4mr545805ad.2.1749761096753; Thu, 12 Jun 2025
+ 13:44:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMXgnP4nfgJ+gEvXLummspjRegsZsQ=e5Q8GFAONb2yCxVZLnA@mail.gmail.com>
+References: <20250609145833.990793-1-mbloch@nvidia.com> <20250609145833.990793-11-mbloch@nvidia.com>
+ <CAHS8izOX8t-Xu+mseiRBvLDYmk6G+iH=tX6t4SWY2TKBau7r-Q@mail.gmail.com> <9107e96e488a741c79e0f5de33dd73261056c033.camel@nvidia.com>
+In-Reply-To: <9107e96e488a741c79e0f5de33dd73261056c033.camel@nvidia.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Thu, 12 Jun 2025 13:44:44 -0700
+X-Gm-Features: AX0GCFsbgTfnHYCyryWuORz2W8YB0hxZo0nQDPNGkYposr4yQdjwdikAQJMpVe0
+Message-ID: <CAHS8izOG+LoJ-GvyRu6zSVCUvoW4VzYX5CEdDhCdVLimOSP0KQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 10/12] net/mlx5e: Implement queue mgmt ops and
+ single channel swap
+To: Cosmin Ratiu <cratiu@nvidia.com>
+Cc: Mark Bloch <mbloch@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>, 
+	"andrew+netdev@lunn.ch" <andrew+netdev@lunn.ch>, "hawk@kernel.org" <hawk@kernel.org>, 
+	"davem@davemloft.net" <davem@davemloft.net>, "john.fastabend@gmail.com" <john.fastabend@gmail.com>, 
+	"leon@kernel.org" <leon@kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>, 
+	"ast@kernel.org" <ast@kernel.org>, "richardcochran@gmail.com" <richardcochran@gmail.com>, 
+	Leon Romanovsky <leonro@nvidia.com>, 
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, "edumazet@google.com" <edumazet@google.com>, 
+	"horms@kernel.org" <horms@kernel.org>, "kuba@kernel.org" <kuba@kernel.org>, 
+	"daniel@iogearbox.net" <daniel@iogearbox.net>, Tariq Toukan <tariqt@nvidia.com>, 
+	Saeed Mahameed <saeedm@nvidia.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
+	Gal Pressman <gal@nvidia.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Alban,
+On Thu, Jun 12, 2025 at 2:05=E2=80=AFAM Cosmin Ratiu <cratiu@nvidia.com> wr=
+ote:
+>
+> On Wed, 2025-06-11 at 22:33 -0700, Mina Almasry wrote:
+> > Is this really better than maintaining uniformity of behavior between
+> > the drivers that support the queue mgmt api and just doing the
+> > mlx5e_deactivate_priv_channels and mlx5e_close_channel in the stop
+> > like core sorta expects?
+> >
+> > We currently use the ndos to restart a queue, but I'm imagining in
+> > the
+> > future we can expand it to create queues on behalf of the queues. The
+> > stop queue API may be reused in other contexts, like maybe to kill a
+> > dynamically created devmem queue or something, and this specific
+> > driver may stop working because stop actually doesn't do anything?
+> >
+>
+> The .ndo_queue_stop operation doesn't make sense by itself for mlx5,
+> because the current mlx5 architecture is to atomically swap in all of
+> the channels.
+> The scenario you are describing, with a hypothetical ndo_queue_stop for
+> dynamically created devmem queues would leave all of the queues stopped
+> and the old channel deallocated in the channel array. Worse problems
+> would happen in that state than with today's approach, which leaves the
+> driver in functional state.
+>
+> Perhaps Saeed can add more details to this?
 
-On Wed, Jun 04, 2025 at 04:50:15PM +0200, Alban Crequy wrote:
-> Hello,
-> 
-> I’m looking to load and attach a BPF program at early boot, that is
-> before the rootfs is mounted in read-write mode. This is for tracing
-> I/O operations on disk.
-> 
-> Without BPF, this can be done with a kernel module and then use Dracut
-> + dkms to update the initrd. But I am looking to avoid custom kernel
-> modules and I would like to have a solution with BPF working on most
-> Linux distros without too much maintenance work for each distro.
-> 
-> I’ve noticed the bpf_preload module, but from the discussion below, I
-> gather that it does not allow to load custom bpf modules:
-> https://github.com/torvalds/linux/tree/master/kernel/bpf/preload
-> https://lwn.net/Articles/889466/
-> 
-> Do you know of prior-art or recommendation how to do this correctly,
-> and hopefully without a custom kernel module?
+I see, so essentially mlx5 supports restarting a queue but not
+necessarily stopping and starting a queue as separate actions?
 
-I must miss something here... but dracut should allow to pack any binary
-(e.g. your own eBPF program) into initramfs and allow to customize your
-own init script too. With the eBPF binary and bpftool and/or other
-loading script packed into initramfs, you can get what you want without
-bothering a kernel module?
+If so, can maybe the comment on the function be reworded to more
+strongly indicate that this is a limitation? Just asking because
+future driver authors interested in implementing the queue API will
+probably look at one of mlx5/gve/bnxt to see what an existing
+implementation looks like, and I would rather them follow bnxt/gve
+that is more in line with core's expectations if possible. But that's
+a minor concern; I'm fine with this patch.
 
-Something like below?
+FWIW this may break in the future if core decides to add code that
+actually uses the stop operation as a 'stop', not as a stepping stone
+to 'restart', but I'm not sure we can do anything about that if it's a
+driver limitation.
 
-install_items+="/path/to/your/ebpf_program"
-# pack bpftool if you need
-# pack libbpf if you need
-inst_hook pre-mount 50 "/path/to/your_loading_script"
-
-Regards,
-Cong
+--=20
+Thanks,
+Mina
 
