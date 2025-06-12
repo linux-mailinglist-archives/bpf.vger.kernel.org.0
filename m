@@ -1,118 +1,149 @@
-Return-Path: <bpf+bounces-60509-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60510-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7317CAD7AB5
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 21:05:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22301AD7ADD
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 21:08:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E62913B1020
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 19:04:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB4883ABA29
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 19:07:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB1DF2D8DC5;
-	Thu, 12 Jun 2025 19:01:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A02452737E7;
+	Thu, 12 Jun 2025 19:08:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="A4L79eJ5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HyA7FmaM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD2212D4B54
-	for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 19:01:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27F1245948;
+	Thu, 12 Jun 2025 19:08:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749754862; cv=none; b=NxpzFelX20IlC2pO5JGJW338ylqqbNwsfTnc2friiKsIxUnG2C5Mnji2YkzARt9hvGNSf9Sm9v91ItQKRR3NjcBypHoll3L96PtWe9lrwLCMeqvwlI2n5wOFyeNA6y93uo88nTSNDz6NFItxAxtzWOhFKDF6wunYUp057+FCGcQ=
+	t=1749755286; cv=none; b=gEwtUe0GUIxRPxDIdqFImXDumIzG9YOXSlvBBdAk1X/FcwAnsvs//Ry0IjH7lSSXKsgYg7TB0dLL0MW2zdLI1O8ZKZUNsEXSeecXsiWwFlw3eZpACerfks8huUO9bfC30nlpHMQ6weIJHX4UQ0uQGtkOJmElbIsGHGhBGqN05Vg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749754862; c=relaxed/simple;
-	bh=ZwlMsaTHjZOtEXv/YqtnnEPbYBwwh6k+wD4c3F2kUr0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ba5XxZpDFgmhb8OfdG+ZoidbDUe43wxP/wQzr93g1lJU99McyT9AjT12qQDxfsSHCbNHZi9ml44Ux/Iig32zPZ82TUw3zz8qARdRypxuaaDVRPyKSOHE05n4nRqgWsDVen1qJrkhOazlyHJOahv6zNb+Hf99iUmM3wAQNBisyHU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=A4L79eJ5; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-2357c61cda7so30695ad.1
-        for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 12:01:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1749754860; x=1750359660; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZwlMsaTHjZOtEXv/YqtnnEPbYBwwh6k+wD4c3F2kUr0=;
-        b=A4L79eJ54S8X/R6hdBRCGJERy7H+zrEjPyMVVBDEq73jX4tDGzH3TXGyFFeViSYU5x
-         IGzAXqwuH26ZZPVqh2BTD5c3EpOFjYyeo1I9HO28R5rcfjJlc2TAXXEdCVOvI8HMDWfp
-         M7wJn59bo/R0KEjXzu89S81WRPMoZVOOhkc21AJp4jsxBc+Z1Ovope1S+Euh07I4obrz
-         XE0AA8khB6StZ406/4PRkf1tmhWHpT5xPcwwyRiaVgrHj8YsHyvkoiansK9tWjlLAHxI
-         FYIg/BMQu0jDDqJ66Tbft8Y7n2iHJ/TnY54dW18edX+W/DKljg8uhbbwI+IRKCUqSyD8
-         Ja2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749754860; x=1750359660;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZwlMsaTHjZOtEXv/YqtnnEPbYBwwh6k+wD4c3F2kUr0=;
-        b=jx7UOHMLZWlCg2pKES/56HTr7k0BZmmbwAbJlt1eb0nuWAmEfJjS9656YsAArEVpoj
-         ZwhUx8gwqdsBymGeRd9PYSZThelxl4fu3t7F+q47saY9+VY2yb2+eVgI1hVo1RgxeemV
-         GI3wvyQ1veNsCBliL9V2SuRRYRRdYA9PJ0tICDRkYN2A4OWucJPCQeVGqRw7QP2sC8jg
-         5AU5ErzfmFnfKEAaID9/+lxf4UQpX1oOaXDvFsyIwhvTL7hBkAdC3fTQspjTL2SK6P97
-         5ro3YOp2kbUEGyfTyPJUmCxw1IjpUVEf55pkf03+QnUKWxz2mrge5UB/ixQZN3Vcxqi8
-         4tPA==
-X-Forwarded-Encrypted: i=1; AJvYcCU4zpniO2z5KPj/dWjnE+zS3WHthlShVgcd6mdMJJ/J27HpGeOD+Dc9CyXz0126tgmyXqU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyNaQlJbuQ4VYrJ6Dl9UMv8o17cAZ5Pws+A+P5rPd8KS12pI6pI
-	R9CH0Avh9tPkcvhOG+1teJaVKPRIdGwTHft97/cehxW07IX1uTlSTW408u06kKWR0GumsUNUfVh
-	Gul5jf26ItnSn1uqltI61ud7dIndEfE8PqgStVjLd
-X-Gm-Gg: ASbGncuubMwKy/iLH3C1B8c3rMalYvcqCSNmCgt5ktZV5FjgrJDyIoMMvFcSRcUE+3A
-	y2RcscZdvZ7EyyqHBjMV/5lc8xpdjHbffOSi7/dJJjqqZi19oV4bMrQuWyqORCQOdN2HCTGynCt
-	bZjCXDoeAlIeUlimA1sfbXTECfeZxRpATPva92I03jWfFy+T/VpjVAdu/5Z61jAV64GO/Td4fff
-	g==
-X-Google-Smtp-Source: AGHT+IF+DrhTdw1EVP33Lsxs8pEmeKyxPiFeWCjxcFQq5i+dtpZuy+WTSh+WvsQ3zeAWf1tAffKMVahMPLgaOisNCFA=
-X-Received: by 2002:a17:902:d54a:b0:235:e1d6:5339 with SMTP id
- d9443c01a7336-2365e950001mr97625ad.26.1749754859927; Thu, 12 Jun 2025
- 12:00:59 -0700 (PDT)
+	s=arc-20240116; t=1749755286; c=relaxed/simple;
+	bh=XwRA2/G52VP10pm/zUbYtKCTie/rmiKByPwc14x/Ios=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qvWiPDXoIznqrJaS2vWdFT3L+NS+G0tWXONieKFz1rEUtC8hcIOU1AhquHxPExjOXbYrTShmxmbLS5KZWtYYiwvuJQpZN3rO0dRP/ieAyOmt4m4jTUPEUVihFO39ipNjiUHvKX3DQRqBoVViZPDs2plzLWETZ03napYf9dOp9Rw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HyA7FmaM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D3DBC4CEEA;
+	Thu, 12 Jun 2025 19:08:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749755285;
+	bh=XwRA2/G52VP10pm/zUbYtKCTie/rmiKByPwc14x/Ios=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HyA7FmaMfpoB3XaGWCdmLEMJgk5q0k8a7wpBNy1Xs2JgI2KA7jJtQMCE68Bvn5x1T
+	 xDf9bS/jL6lHuyubaM12njg9cDJo+fb9uTfbShNFoAD2RoMUoa8IoQewEFbnEwLzwm
+	 nMWtRQDTkyrfLt9lReo0ES2LrZRKg3NjI9d7d/h821Fo76UWo+XjFEN+ZBKf6BCl0x
+	 CWbRYifE/pz4xKhngPPrgZKSGfSM4Y8MNhMma9uixSVs4L5Sixilb4AcXO03wD6Hpt
+	 d40vpA6hSZj6AS8wCM7NnGBHUUERtF6pAiOUorw/Z2Z5RcMhVkpNOQNbOE5QLSDavE
+	 NluK7SyvAylnQ==
+Date: Thu, 12 Jun 2025 12:07:39 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: KP Singh <kpsingh@kernel.org>
+Cc: bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
+	bboscaccy@linux.microsoft.com, paul@paul-moore.com,
+	kys@microsoft.com, ast@kernel.org, daniel@iogearbox.net,
+	andrii@kernel.org
+Subject: Re: [PATCH 01/12] bpf: Implement an internal helper for SHA256
+ hashing
+Message-ID: <20250612190739.GC1283@sol>
+References: <20250606232914.317094-1-kpsingh@kernel.org>
+ <20250606232914.317094-2-kpsingh@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250612154648.1161201-1-mbloch@nvidia.com> <20250612154648.1161201-4-mbloch@nvidia.com>
-In-Reply-To: <20250612154648.1161201-4-mbloch@nvidia.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Thu, 12 Jun 2025 12:00:45 -0700
-X-Gm-Features: AX0GCFs8bIh3dxPetT87B5xeJSISXmwVqrXxvRLSdCTJ2AOZNbM701RU8f8TtdA
-Message-ID: <CAHS8izNe_g9o92C0RbOe6vtbSfBMbJJJc4K1HubpozN4xwrcuA@mail.gmail.com>
-Subject: Re: [PATCH net-next v5 03/12] page_pool: Add page_pool_dev_alloc_netmems
- helper
-To: Mark Bloch <mbloch@nvidia.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, Simon Horman <horms@kernel.org>, saeedm@nvidia.com, 
-	gal@nvidia.com, leonro@nvidia.com, tariqt@nvidia.com, 
-	Leon Romanovsky <leon@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Richard Cochran <richardcochran@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	Dragos Tatulea <dtatulea@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250606232914.317094-2-kpsingh@kernel.org>
 
-On Thu, Jun 12, 2025 at 8:52=E2=80=AFAM Mark Bloch <mbloch@nvidia.com> wrot=
-e:
->
-> From: Dragos Tatulea <dtatulea@nvidia.com>
->
-> This is the netmem counterpart of page_pool_dev_alloc_pages() which
-> uses the default GFP flags for RX.
->
-> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
-> Signed-off-by: Mark Bloch <mbloch@nvidia.com>
+On Sat, Jun 07, 2025 at 01:29:03AM +0200, KP Singh wrote:
+> This patch introduces bpf_sha256, an internal helper function
+> that wraps the standard kernel crypto API to compute SHA256 digests of
+> the program insns and map content
+> 
+> Signed-off-by: KP Singh <kpsingh@kernel.org>
+> ---
+>  include/linux/bpf.h |  1 +
+>  kernel/bpf/core.c   | 39 +++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 40 insertions(+)
+> 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 5b25d278409b..d5ae43b36e68 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -2086,6 +2086,7 @@ static inline bool map_type_contains_progs(struct bpf_map *map)
+>  }
+>  
+>  bool bpf_prog_map_compatible(struct bpf_map *map, const struct bpf_prog *fp);
+> +int bpf_sha256(u8 *data, size_t data_size, u8 *output_digest);
+>  int bpf_prog_calc_tag(struct bpf_prog *fp);
+>  
+>  const struct bpf_func_proto *bpf_get_trace_printk_proto(void);
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index a3e571688421..607d5322ef94 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -17,6 +17,7 @@
+>   * Kris Katterjohn - Added many additional checks in bpf_check_classic()
+>   */
+>  
+> +#include <crypto/hash.h>
+>  #include <uapi/linux/btf.h>
+>  #include <linux/filter.h>
+>  #include <linux/skbuff.h>
+> @@ -287,6 +288,44 @@ void __bpf_prog_free(struct bpf_prog *fp)
+>  	vfree(fp);
+>  }
+>  
+> +int bpf_sha256(u8 *data, size_t data_size, u8 *output_digest)
+> +{
+> +	struct crypto_shash *tfm;
+> +	struct shash_desc *shash_desc;
+> +	size_t desc_size;
+> +	int ret = 0;
+> +
+> +	tfm = crypto_alloc_shash("sha256", 0, 0);
+> +	if (IS_ERR(tfm))
+> +		return PTR_ERR(tfm);
+> +
+> +
+> +	desc_size = crypto_shash_descsize(tfm) + sizeof(*shash_desc);
+> +	shash_desc = kmalloc(desc_size, GFP_KERNEL);
+> +	if (!shash_desc) {
+> +		crypto_free_shash(tfm);
+> +		return -ENOMEM;
+> +	}
+> +
+> +	shash_desc->tfm = tfm;
+> +	ret = crypto_shash_init(shash_desc);
+> +	if (ret)
+> +		goto out_free_desc;
+> +
+> +	ret = crypto_shash_update(shash_desc, data, data_size);
+> +	if (ret)
+> +		goto out_free_desc;
+> +
+> +	ret = crypto_shash_final(shash_desc, output_digest);
+> +	if (ret)
+> +		goto out_free_desc;
+> +
+> +out_free_desc:
+> +	kfree(shash_desc);
+> +	crypto_free_shash(tfm);
+> +	return ret;
+> +}
+> +
 
-Thank you!
+You're looking for sha256() from <crypto/sha2.h>.  Just use that instead.
 
-Reviewed-by: Mina Almasry <almasrymina@google.com>
+You'll just need to select CRYPTO_LIB_SHA256.
 
---=20
-Thanks,
-Mina
+- Eric
 
