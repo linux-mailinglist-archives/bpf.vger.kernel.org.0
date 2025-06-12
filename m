@@ -1,159 +1,232 @@
-Return-Path: <bpf+bounces-60453-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60454-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D4BEAD6C84
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 11:46:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3C0CAD6C9A
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 11:49:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 670113AFCC0
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 09:45:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83B1D16D1E4
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 09:49:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11EC222B5B8;
-	Thu, 12 Jun 2025 09:46:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 302F722D9ED;
+	Thu, 12 Jun 2025 09:49:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="SBKpd59Z"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Q4g2x00U";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lazIq7L/";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KDQWFtwP";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="V15LNSs7"
 X-Original-To: bpf@vger.kernel.org
-Received: from lelvem-ot02.ext.ti.com (lelvem-ot02.ext.ti.com [198.47.23.235])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFDCC1F92E;
-	Thu, 12 Jun 2025 09:46:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.235
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06BDE20F07C
+	for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 09:49:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749721573; cv=none; b=qtVsP2w2h/ZdvcORkWO9WTUcYIoQUSUUaoyMAj83KwP3CyvWZF2fPp37Xh11iQ0hDGK6wWXp/rosB3TSYzVpBQUBpUwu6gIGiThBYQHU/qm9tCb1EW42PE0kRkI5FdUydbkf+VO6ITi/V4yZFZcSZSpsHAtmnNDryc03PJw5e6Q=
+	t=1749721753; cv=none; b=SXr7J+PMeBw3g+j/0ChIG4myvZuN5vOeAZWZEcdCNc0efHRSmtuH6dP74gs3Xr5x43SlqK2vcncESMaS20vSgs+jmqZ4mSxMo61fYYywcT4TRGAFDD+3Qs6uYQ2pLI8DNjejpII9zQlDrvg2ROQ1oEeXHjnRXeTrpFwQY8cFnDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749721573; c=relaxed/simple;
-	bh=Dh0E6ChvgZtODSm2CyrhYN1/rcw1qbw6D7lUcqZQoPI=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=B9Ueg86MPA9q2FzX5t47mmYMDu8/Ln7aNYXnWy9qXqZRVljltXecJVGNUX8gJiaC0lNYNAhDxC6Eqd47bdqhIQd6ov8o+n9HqPNvlfFGsi384A1oFdaplb3OVwfzLHp/leLYYmrjHiT1qo1yWQ7IjJJwll14rqsixMp+nIgxarg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=SBKpd59Z; arc=none smtp.client-ip=198.47.23.235
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllvem-sh04.itg.ti.com ([10.64.41.54])
-	by lelvem-ot02.ext.ti.com (8.15.2/8.15.2) with ESMTP id 55C9jRZX1635161;
-	Thu, 12 Jun 2025 04:45:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1749721527;
-	bh=1wGCQc0mcjPV9WgUkNTeUr3SyYHwhLuPypKWT3sxnDM=;
-	h=From:To:CC:Subject:Date;
-	b=SBKpd59ZfkK9r8jsdEr/Qis3VM6MSHyCwkYAyVVxxkHKaiYT263Q39aEo0HB8jbxL
-	 Xyp4KaI/iG+HKlysjnGrKMt0Znr+MLgkMUrJGVSe7CPLnGnD6Yo6OK+svo8aTbvtz8
-	 diFfqWDvjpAdBk1zeHlxnzBedKBTMiNlD56ACPrQ=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-	by fllvem-sh04.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 55C9jRrE1841138
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=FAIL);
-	Thu, 12 Jun 2025 04:45:27 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55; Thu, 12
- Jun 2025 04:45:27 -0500
-Received: from fllvem-mr07.itg.ti.com (10.64.41.89) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55 via
- Frontend Transport; Thu, 12 Jun 2025 04:45:27 -0500
-Received: from fllv0122.itg.ti.com (fllv0122.itg.ti.com [10.247.120.72])
-	by fllvem-mr07.itg.ti.com (8.18.1/8.18.1) with ESMTP id 55C9jRVC490857;
-	Thu, 12 Jun 2025 04:45:27 -0500
-Received: from localhost (meghana-pc.dhcp.ti.com [10.24.69.13] (may be forged))
-	by fllv0122.itg.ti.com (8.14.7/8.14.7) with ESMTP id 55C9jP8J021791;
-	Thu, 12 Jun 2025 04:45:26 -0500
-From: Meghana Malladi <m-malladi@ti.com>
-To: <namcao@linutronix.de>, <m-malladi@ti.com>, <john.fastabend@gmail.com>,
-        <hawk@kernel.org>, <daniel@iogearbox.net>, <ast@kernel.org>,
-        <pabeni@redhat.com>, <kuba@kernel.org>, <edumazet@google.com>,
-        <davem@davemloft.net>, <andrew+netdev@lunn.ch>
-CC: <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <srk@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Roger Quadros
-	<rogerq@kernel.org>, <danishanwar@ti.com>
-Subject: [PATCH net] net: ti: icssg-prueth: Fix packet handling for XDP_TX
-Date: Thu, 12 Jun 2025 15:15:23 +0530
-Message-ID: <20250612094523.1615719-1-m-malladi@ti.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1749721753; c=relaxed/simple;
+	bh=YD67daV/sh0oAnENBZMV2vwdUfWUI981+DHZ4CztA9c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ir7On3q04D5TEL23GN/XGyZorm9VHHU0yMld1pHe/bWqs+IKGfv4pphaSCaU4rpJtVZQi/69qJNsMPi2rSC1fLYngJ/XGLCKG1Ek7gAFpKbInUiyC8AgqAa8vJLm1K29wVn6gaO+neh+vDKXeuK4Xy2ZZtEX5iE3TqSP6eq45K4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Q4g2x00U; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lazIq7L/; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KDQWFtwP; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=V15LNSs7; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B297F202B8;
+	Thu, 12 Jun 2025 09:49:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1749721750; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4aQoZ9hateQPHSja0+LHPW8SP7JLzubYSoax7mQaH9k=;
+	b=Q4g2x00U1KTyQJsb6R494Mr0EnvI/sRN7SbLlUy1Doyf1pwNawRtURcYCy8yvf9Uin+Eqi
+	6oJi0fFSw1RO5CJ7j6joyvyPVD/q3YYsbsJyaDMWYmirPg5IrCRw/H2r3RPYL/VeIMpw09
+	U/i7h5M9DcqBJu4Sf/H90qZYZOTYSek=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1749721750;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4aQoZ9hateQPHSja0+LHPW8SP7JLzubYSoax7mQaH9k=;
+	b=lazIq7L/Qqx7hNXl+D2fwX28XaINqV9rlbAmDCRw2Am5Sf449/fizVEHjHkKq+K8r/2NOj
+	inoO/DcbB7kTdTCQ==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=KDQWFtwP;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=V15LNSs7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1749721748; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4aQoZ9hateQPHSja0+LHPW8SP7JLzubYSoax7mQaH9k=;
+	b=KDQWFtwP0sZX3fPFwiVLZTfCokfoYLQFwP68ioULjmnK/9QPkzhEbVt5o9S7DhwEOo6sgf
+	yUW1UZpRjiVGwBVKgb+YiUmPwZWaZI3TIberMtFTkeHm0Yl88iVwRVbwcPj1CUa8sk4tDY
+	oduK3GA7jxHg7JcHu5R2G9COvsmmCcE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1749721748;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4aQoZ9hateQPHSja0+LHPW8SP7JLzubYSoax7mQaH9k=;
+	b=V15LNSs7Ab8jhGwEs70ZDCvS1Xw77jHF2VukAgpKr2Us17voozes7boppxCnKrgzF32vCJ
+	RAWeCLmcSCQM3FBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A34CE132D8;
+	Thu, 12 Jun 2025 09:49:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id XnSVJ5SiSmg2RgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 12 Jun 2025 09:49:08 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 547A1A099E; Thu, 12 Jun 2025 11:49:08 +0200 (CEST)
+Date: Thu, 12 Jun 2025 11:49:08 +0200
+From: Jan Kara <jack@suse.cz>
+To: Song Liu <song@kernel.org>
+Cc: Tingmao Wang <m@maowtm.org>, 
+	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>, NeilBrown <neil@brown.name>, Jan Kara <jack@suse.cz>, 
+	bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, 
+	ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
+	viro@zeniv.linux.org.uk, brauner@kernel.org, kpsingh@kernel.org, mattbobrowski@google.com, 
+	amir73il@gmail.com, repnop@google.com, jlayton@kernel.org, josef@toxicpanda.com, 
+	gnoack@google.com
+Subject: Re: [PATCH v3 bpf-next 1/5] namei: Introduce new helper function
+ path_walk_parent()
+Message-ID: <zlpjk36aplguzvc2feyu4j5levmbxlzwvrn3bo5jpsc5vjztm2@io27pkd44pow>
+References: <20250606213015.255134-1-song@kernel.org>
+ <20250606213015.255134-2-song@kernel.org>
+ <174959847640.608730.1496017556661353963@noble.neil.brown.name>
+ <CAPhsuW6oet8_LbL+6mVi7Lc4U_8i7O-PN5F1zOm5esV52sBu0A@mail.gmail.com>
+ <20250611.Bee1Iohoh4We@digikod.net>
+ <CAPhsuW6jZxRBEgz00KV4SasiMhBGyMHoP5dMktoyCOeMbJwmgg@mail.gmail.com>
+ <e7115b18-84fc-4e8f-afdb-0d3d3e574497@maowtm.org>
+ <CAPhsuW4LfhtVCe8Kym4qM6s-7n5rRMY-bBkhwoWU7SPGQdk=bw@mail.gmail.com>
+ <csh2jbt5gythdlqps7b4jgizfeww6siuu7de5ftr6ygpnta6bd@umja7wbmnw7j>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+In-Reply-To: <csh2jbt5gythdlqps7b4jgizfeww6siuu7de5ftr6ygpnta6bd@umja7wbmnw7j>
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: B297F202B8
+X-Rspamd-Action: no action
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_COUNT_THREE(0.00)[3];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[24];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_CC(0.00)[maowtm.org,digikod.net,brown.name,suse.cz,vger.kernel.org,meta.com,kernel.org,gmail.com,iogearbox.net,linux.dev,zeniv.linux.org.uk,google.com,toxicpanda.com];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
+X-Spam-Score: -4.01
+X-Spam-Level: 
 
-While transmitting XDP frames for XDP_TX, page_pool is
-used to get the DMA buffers (already mapped to the pages)
-and need to be freed/reycled once the transmission is complete.
-This need not be explicitly done by the driver as this is handled
-more gracefully by the xdp driver while returning the xdp frame.
-__xdp_return() frees the XDP memory based on its memory type,
-under which page_pool memory is also handled. This change fixes
-the transmit queue timeout while running XDP_TX.
+On Thu 12-06-25 11:01:16, Jan Kara wrote:
+> On Wed 11-06-25 11:08:30, Song Liu wrote:
+> > On Wed, Jun 11, 2025 at 10:50 AM Tingmao Wang <m@maowtm.org> wrote:
+> > [...]
+> > > > I think we will need some callback mechanism for this. Something like:
+> > > >
+> > > > for_each_parents(starting_path, root, callback_fn, cb_data, bool try_rcu) {
+> > > >    if (!try_rcu)
+> > > >       goto ref_walk;
+> > > >
+> > > >    __read_seqcount_begin();
+> > > >     /* rcu walk parents, from starting_path until root */
+> > > >    walk_rcu(starting_path, root, path) {
+> > > >     callback_fn(path, cb_data);
+> > > >   }
+> > > >   if (!read_seqcount_retry())
+> > > >     return xxx;  /* successful rcu walk */
+> > > >
+> > > > ref_walk:
+> > > >   /* ref walk parents, from starting_path until root */
+> > > >    walk(starting_path, root, path) {
+> > > >     callback_fn(path, cb_data);
+> > > >   }
+> > > >   return xxx;
+> > > > }
+> > > >
+> > > > Personally, I don't like this version very much, because the callback
+> > > > mechanism is not very flexible, and it is tricky to use it in BPF LSM.
+> > >
+> > > Aside from the "exposing mount seqcounts" problem, what do you think about
+> > > the parent_iterator approach I suggested earlier?  I feel that it is
+> > > better than such a callback - more flexible, and also fits in right with
+> > > the BPF API you already designed (i.e. with a callback you might then have
+> > > to allow BPF to pass a callback?).  There are some specifics that I can
+> > > improve - Mickaël suggested some in our discussion:
+> > >
+> > > - Letting the caller take rcu_read_lock outside rather than doing it in
+> > > path_walk_parent_start
+> > >
+> > > - Instead of always requiring a struct parent_iterator, allow passing in
+> > > NULL for the iterator to path_walk_parent to do a reference walk without
+> > > needing to call path_walk_parent_start - this way might be simpler and
+> > > path_walk_parent_start/end can just be for rcu case.
+> > >
+> > > but what do you think about the overall shape of it?
+> > 
+> > Personally, I don't have strong objections to this design. But VFS
+> > folks may have other concerns with it.
+> 
+> From what I've read above I'm not sure about details of the proposal but I
+> don't think mixing of RCU & non-RCU walk in a single function / iterator is
+> a good idea. IMHO the code would be quite messy. After all we have
+> follow_dotdot_rcu() and follow_dotdot() as separate functions for a reason.
+> Also given this series went through several iterations and we don't yet
+> have an acceptable / correct solution suggests getting even the standard
+> walk correct is hard enough. RCU walk is going to be only worse. So I'd
+> suggest to get the standard walk finished and agreed on first and
+> investigate feasibility of RCU variant later.
 
-logs:
-[  309.069682] icssg-prueth icssg1-eth eth2: NETDEV WATCHDOG: CPU: 0: transmit queue 0 timed out 45860 ms
-[  313.933780] icssg-prueth icssg1-eth eth2: NETDEV WATCHDOG: CPU: 0: transmit queue 0 timed out 50724 ms
-[  319.053656] icssg-prueth icssg1-eth eth2: NETDEV WATCHDOG: CPU: 0: transmit queue 0 timed out 55844 ms
-...
+OK, I've now read some of Tingmaon's and Christian's replies which I've
+missed previously so I guess I now better understand why you complicate
+things with RCU walking but still I'm of the opinion that we should start
+with getting the standard walk working. IMHO pulling in RCU walk into the
+iterator will bring it to a completely new complexity level...
 
-Signed-off-by: Meghana Malladi <m-malladi@ti.com>
----
- drivers/net/ethernet/ti/icssg/icssg_common.c | 19 ++-----------------
- 1 file changed, 2 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/net/ethernet/ti/icssg/icssg_common.c b/drivers/net/ethernet/ti/icssg/icssg_common.c
-index 5b8fdb882172..12f25cec6255 100644
---- a/drivers/net/ethernet/ti/icssg/icssg_common.c
-+++ b/drivers/net/ethernet/ti/icssg/icssg_common.c
-@@ -98,20 +98,11 @@ void prueth_xmit_free(struct prueth_tx_chn *tx_chn,
- {
- 	struct cppi5_host_desc_t *first_desc, *next_desc;
- 	dma_addr_t buf_dma, next_desc_dma;
--	struct prueth_swdata *swdata;
--	struct page *page;
- 	u32 buf_dma_len;
- 
- 	first_desc = desc;
- 	next_desc = first_desc;
- 
--	swdata = cppi5_hdesc_get_swdata(desc);
--	if (swdata->type == PRUETH_SWDATA_PAGE) {
--		page = swdata->data.page;
--		page_pool_recycle_direct(page->pp, swdata->data.page);
--		goto free_desc;
--	}
--
- 	cppi5_hdesc_get_obuf(first_desc, &buf_dma, &buf_dma_len);
- 	k3_udma_glue_tx_cppi5_to_dma_addr(tx_chn->tx_chn, &buf_dma);
- 
-@@ -135,7 +126,6 @@ void prueth_xmit_free(struct prueth_tx_chn *tx_chn,
- 		k3_cppi_desc_pool_free(tx_chn->desc_pool, next_desc);
- 	}
- 
--free_desc:
- 	k3_cppi_desc_pool_free(tx_chn->desc_pool, first_desc);
- }
- EXPORT_SYMBOL_GPL(prueth_xmit_free);
-@@ -612,13 +602,8 @@ u32 emac_xmit_xdp_frame(struct prueth_emac *emac,
- 	k3_udma_glue_tx_dma_to_cppi5_addr(tx_chn->tx_chn, &buf_dma);
- 	cppi5_hdesc_attach_buf(first_desc, buf_dma, xdpf->len, buf_dma, xdpf->len);
- 	swdata = cppi5_hdesc_get_swdata(first_desc);
--	if (page) {
--		swdata->type = PRUETH_SWDATA_PAGE;
--		swdata->data.page = page;
--	} else {
--		swdata->type = PRUETH_SWDATA_XDPF;
--		swdata->data.xdpf = xdpf;
--	}
-+	swdata->type = PRUETH_SWDATA_XDPF;
-+	swdata->data.xdpf = xdpf;
- 
- 	/* Report BQL before sending the packet */
- 	netif_txq = netdev_get_tx_queue(ndev, tx_chn->id);
-
-base-commit: 5d6d67c4cb10a4b4d3ae35758d5eeed6239afdc8
+								Honza
 -- 
-2.43.0
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
