@@ -1,198 +1,149 @@
-Return-Path: <bpf+bounces-60529-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60530-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64557AD7D8C
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 23:28:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0105AD7D9A
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 23:30:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7A7A7A44C2
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 21:27:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A83783B5D5B
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 21:29:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27DA92D8790;
-	Thu, 12 Jun 2025 21:28:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7622C2D8DA1;
+	Thu, 12 Jun 2025 21:29:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hlEXkERD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R+of4RXm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 222C42E0B69;
-	Thu, 12 Jun 2025 21:28:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D66018DB2A;
+	Thu, 12 Jun 2025 21:29:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749763684; cv=none; b=dZR7CO4+X4g+RrMnn9Qi595N52MoLbE/0IWHAo8d6g8cjRV/NuEdcZkAPDpLLT8r6pqLJWuXP7nAIhsW/I/nOtlyTNZzhITG5t6FZZk66bNMkFzIftgfGfFwpRrTbxcIjzSGSxSyoheztwVEdcVs2g0WxgOSkbo0J+fwO/AXWt0=
+	t=1749763767; cv=none; b=lATfi39hhp+j0uGCz3TEBqPiiZwrQFQPvIKDtZLw5j7q1UaK63wpzduFLJnRbWSCb8V7dxCOqX+dp3PIioLjzZjdK4EikWVyTTqi1CbAP/2v4cU8IVTq796zmel7vqUQG+sjx5KDrf7pnPAumYMTtz6+w6/D7Iu8Qzl97JX7oMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749763684; c=relaxed/simple;
-	bh=Jy/yZ6vY7PvDZK4lQadHfmUekwMYcxQX96889QzZIQI=;
+	s=arc-20240116; t=1749763767; c=relaxed/simple;
+	bh=5W/YqfShlCHUTyY/DIeDvpacRhlL+WLbiLqLA5CCOMg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=C2jII8QDEKL3vEL71ORPeglFpB+ZGGlEwAGPtqcLNdl1s5qAshhYRERdGQyAZA/wZP1niX2+m8dGWwN9ficz8l9B8t4U5UajRn1sQ/oEVA50LhgUxlNcHHcNmhLIK3PmuBnsmNePfaWwrxilvzDNZTi4WD5c/wAB43NJvpJP2XY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hlEXkERD; arc=none smtp.client-ip=209.85.215.174
+	 To:Cc:Content-Type; b=BBWvPwsuPk4f3MH7KfgA1qAHb9KIrWrFVkJKiccZV1NmvCWdKePsy+f1l19S4yyvxi1StIwB+qyv7IcapulMxfEhTTPeDcAdNnEs49zcu1Ack3ukj5me44M9zJbsBFMiztD+ccBjMrdrVAVxvP3WoBGgfbstAR1aUKMKL42FGIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R+of4RXm; arc=none smtp.client-ip=209.85.210.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-afc857702d1so1126940a12.3;
-        Thu, 12 Jun 2025 14:28:02 -0700 (PDT)
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-73972a54919so1416295b3a.3;
+        Thu, 12 Jun 2025 14:29:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749763682; x=1750368482; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1749763765; x=1750368565; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=v/jVN4FCRaxQzsD77p3tTDX0LkCrSNulyTd+dxPmoWs=;
-        b=hlEXkERDGnlO5hJAj58h8iB83f7lSAt20ubWLlSJ+RzKgmP+WYcb8aj4WQX7Anhr8D
-         K6UVGGhckU5DPXifrByKFNYMdzkZEVjx8HwQRdLOAtqAHv5+mlb2wThYkLBH0ix+qqc4
-         0meuggSEm9hBFXteJxaw8j9HDhcIQ1yzaioMN9BnGWMGu7lr3EYc8VxBrtWxJBA2q0nt
-         2UwHlwq3wwP/wER+8sDOYmizDjFmeWC8bjdUXIRtBwx8cvSRlp0ogdEiw+V1VrmIRQI1
-         /4AI/qSQ7V4kulSFLvN8CCichI08kwmqLs+s+/+RpLrHlGZ/r5mggkk8gMpyNLKoc40x
-         p+vw==
+        bh=QUOuGKmouWTCGC9WhLKzsnt3gDMUj6WGMFR+tJi5hws=;
+        b=R+of4RXmq4WJhfk47H9bCRffw/9REBzFGijQZ2E17JG2ahNkSwZpyMAKEZ6fE6oHOX
+         MAV8g7OnGDCIc02M1SESLfDPTVtmn9Cui64XUJ4mtn4J/FpcFApSBTh2FHD/ixip/uM9
+         AihVnHuSo8J6x6ZVTJiP2LoMsGnKU7HSXTzt4sHT7hf8sY4AjJZRnwaQmLUF2W2UVcNT
+         0IJ3rNbJH+rtdvrmSPPZQkJDHwirZ+MkhiHtPcAZDZ78fDXPA6653Yo/dFW3l5J9FZY1
+         HNqMp49KGfSFOLwhqAqIW6K5hG6uiFYkOkHoTs1kUKYGgzUD69p1FnDoNtbfze8Kgfw2
+         psaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749763682; x=1750368482;
+        d=1e100.net; s=20230601; t=1749763765; x=1750368565;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=v/jVN4FCRaxQzsD77p3tTDX0LkCrSNulyTd+dxPmoWs=;
-        b=l9ExXP6KeQYQqOdUeVKjBnTRwSbiWUBJw1/2EPzSGqGbWacPISYrhZBrhMzljwXm0Q
-         BkQYOcILRkncYrAf08RbpYWZkiqQ3q4BMM7d/FQZ1wXWAcuqejdJ4toZ1OZgMHkkRBXp
-         1RnIBuy7jP8vAGqDEyFIBBB1q1Xwr/D6XLwtxzBqYLpYK/AbeBu/ouIVBDtLacIhTTX/
-         I2kGcOYZ7TJUwezsVCr1fNNo7YfyyfV0fnbNXgPq3QF9+piaWMA5lNHgPWudyzb0HEUC
-         7SkT9ENXtAvNDKTA/N+Vhl5ZFgADHgT13HXZghc1LifSkHhtNdt7SgNBlxZAFHhLMcK4
-         Khxg==
-X-Forwarded-Encrypted: i=1; AJvYcCUdLSZ8mDNPYiZDR2RkVadGQg70cex18RXOVigRaTCqeZfDpE0wWb+7YwqmJsHo5/ATK8db8ee9IlgLojOvPqE11gJy@vger.kernel.org, AJvYcCWZD2Qxr/8NBtMkWfcOrUdG9619rVMs+D6b7R3xfCOHPTBCt9gOAOa1odpWfiFV/6hm7a4=@vger.kernel.org, AJvYcCX7rDzY9ga6KSwwx3LzNgI6gaUZ9HKDEul3pnTaDwhqQ1o/ouGzSE3mRSkOrV4d8HE+PVU5RXcJEXAU1N2c@vger.kernel.org
-X-Gm-Message-State: AOJu0YzZNaUabELnaHwIwpp6sbDjY7NNlAHLL5h9XCdlZo6AkXA2dhpW
-	N9e+44oQm5CPczceGhbgaO8cu22yECfyvk/g1hkv2i3iJy3wN7MRGWgNXCjjk23AhjVFFsc1HLb
-	LoeIg1uI6gUIUGadq8hhGMUOaBFwCwFQ=
-X-Gm-Gg: ASbGncs9H5F68jZgfyPOS4j6ITe6AfNwAD8krJuv7xm0W4enKLmyZwBCq0iVd+B12Yj
-	kEdfEnJF1VbxqUq9PQ8HdLzkRgYrKLbTffKgmM8qyX9YKa1WHw/27pcClmo46UFbFsEfYj4wzz2
-	GeJLyan/uNa5Cvkm3plOQ9tBVtKqoszzPd8ItNOkrSv3DI+a48wmnJy/rONPM=
-X-Google-Smtp-Source: AGHT+IHC71UZaYX6LBU/R1I5IFL9TBpwhd5z6utXefL5DI7/jMlJA/Vzpc/3QGBxhZAe7aFb0RkhQsxJO9pQouTlCgM=
-X-Received: by 2002:a05:6a20:7fa3:b0:1ee:e33d:f477 with SMTP id
- adf61e73a8af0-21facbc3112mr701553637.15.1749763682304; Thu, 12 Jun 2025
- 14:28:02 -0700 (PDT)
+        bh=QUOuGKmouWTCGC9WhLKzsnt3gDMUj6WGMFR+tJi5hws=;
+        b=DXNz7ogxX9sjGpCsCR0M7M+cz/VIIOdlx/AVD3Vuhi5qvcaoYXUgll2OgccT4ec+ZL
+         GGaOAwLu4sqadj90IXrnA9hVt+Lw1rJSGzJ+Ob7yjkreLzLLV5ej2CgZnqzEVTIgZ1/6
+         tIgLBQFsnqnHiHf9N+ZZghB0BRg+GdqD4zX07ikDbppEmMKwHzBYtn5jwJec3apZs31i
+         ygzOyL0QloSWO1p5JSuivTEgUHGlb6OST8J7oiE/5ZbyYvuF/5qZ4j1X81hBmxr1Kn5L
+         +LpSL2JBj6HgdrVDcbMtHZ3eh6O1IKLcKPrySBYjORg4szbcZbCCYIjtQB6r51Eq9JHf
+         vrng==
+X-Forwarded-Encrypted: i=1; AJvYcCV+rIRtpISPmJOeMcvnl+NMrBdDDgoET4emNr/Wdp12ZA8WUgTE0aEKz4xdFlGEmuLpO3RWe14BV++Y24fW@vger.kernel.org, AJvYcCVXtb0X+Bz/lIYCtzu/OipNEXEO01pKkt/t9Xw4jxp027hN7alZ2bY+BhQ7v5sgt1cXVgg=@vger.kernel.org, AJvYcCX8+mV80yFxzZZTCYjtqfbCU6TLXXh2Qhmzeio2T2+suu2MCbISN7aVGfOCVYyV7tE6HbMtDkUdjq9c2mdHlx2KudqM@vger.kernel.org
+X-Gm-Message-State: AOJu0YyX8/L3zaDiQI7GigEsAIyXD5qqU385e8PhuPTt6cFo/0FWuJ1U
+	BR4xzoyACKeTUhCV3a6h0vNDIshykQ2vNdMN5vbzNOJaV8zVLTG21HDyU32LsFaRwoCESwMTZvo
+	mApfONpTGEEO9iHwUH5q/aXuNjYc24co=
+X-Gm-Gg: ASbGncu/ZcqILicYRFM49bHt5I0P06cW1BriqV+GH2207HVIOKUTY6eCRyVKXEpzJd/
+	7yCqyKP6QI4PFXOwU/s5YdHWDRwHFWK668keeSYKtltDPmsUZEVNDNno4GbEQ866Ukq2sOKA4vh
+	iY72gwlJhbur6ZCSCdAMaWOes1LyUNNvyaph50Rs7HcFvZpVz+DrArEDKDhtA=
+X-Google-Smtp-Source: AGHT+IGogl48W5RBmja4Gye95lYVyB0DCcNPxyl1oM0sjLSuMS+F8qW5ia7I3pwUYbU1rVX71Bar7YpLieQmF3fONXc=
+X-Received: by 2002:a05:6a21:6da1:b0:217:4f95:6a51 with SMTP id
+ adf61e73a8af0-21facc878c1mr674145637.29.1749763764823; Thu, 12 Jun 2025
+ 14:29:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250612115556.295103-1-chen.dylane@linux.dev>
-In-Reply-To: <20250612115556.295103-1-chen.dylane@linux.dev>
+References: <20250611154859.259682-1-chen.dylane@linux.dev>
+In-Reply-To: <20250611154859.259682-1-chen.dylane@linux.dev>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 12 Jun 2025 14:27:49 -0700
-X-Gm-Features: AX0GCFttX6D2UIAegCADzLgzq3nurhhoxgD7HPEfDH6erHkUkFSrCjNJPjF5G_k
-Message-ID: <CAEf4BzbxGS85nKK8qAYkSE1HEj7hVshmr9xGsZcP5di0Fu02xQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add show_fdinfo for uprobe_multi
+Date: Thu, 12 Jun 2025 14:29:12 -0700
+X-Gm-Features: AX0GCFvJFhBgfXD5SqubEiQJZ0Dc6KFRm6d2kuM9JQhOBCsd9ou8DGkqwmhgrKs
+Message-ID: <CAEf4Bzbn=RVhMOR7RapYwi+s8gbVS=1msOuZ7MhPvgz8zHiE9w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: clear user buf when bpf_d_path failed
 To: Tao Chen <chen.dylane@linux.dev>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, 
-	mattbobrowski@google.com, rostedt@goodmis.org, mhiramat@kernel.org, 
+Cc: kpsingh@kernel.org, mattbobrowski@google.com, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
+	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, sdf@fomichev.me, haoluo@google.com, 
+	jolsa@kernel.org, rostedt@goodmis.org, mhiramat@kernel.org, 
 	mathieu.desnoyers@efficios.com, bpf@vger.kernel.org, 
 	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 12, 2025 at 4:56=E2=80=AFAM Tao Chen <chen.dylane@linux.dev> wr=
+On Wed, Jun 11, 2025 at 8:49=E2=80=AFAM Tao Chen <chen.dylane@linux.dev> wr=
 ote:
 >
-> Show uprobe_multi link info with fdinfo, the info as follows:
+> The bpf_d_path() function may fail. If it does,
+> clear the user buf, like bpf_probe_read etc.
 >
-> link_type:      uprobe_multi
-> link_id:        9
-> prog_tag:       e729f789e34a8eca
-> prog_id:        39
-> type:   uprobe_multi
-> func_cnt:       3
-> pid:    0
-> path:   /home/dylane/bpf/tools/testing/selftests/bpf/test_progs
-> offset: 0xa69ed7
-> ref_ctr_offset: 0x0
-> cookie: 3
-> offset: 0xa69ee2
-> ref_ctr_offset: 0x0
-> cookie: 1
-> offset: 0xa69eed
-> ref_ctr_offset: 0x0
-> cookie: 2
->
+
+But that doesn't mean we *have to* do memset(0) for bpf_d_path(),
+though. Especially given that path buffer can be pretty large (4KB).
+
+Is there an issue you are trying to address with this, or is it more
+of a consistency clean up? Note, that more or less recently we made
+this zero filling behavior an option with an extra flag
+(BPF_F_PAD_ZEROS) for newer APIs. And if anything, bpf_d_path() is
+more akin to variable-sized string probing APIs rather than
+fixed-sized bpf_probe_read* family.
+
+In short, I feel like we should revert this and let users do
+zero-filling, if they really need to. bpf_probe_read_kernel(dst, sz,
+NULL) would do. But we should think about adding dynptr-based
+bpf_dynptr_memset() API for cases when the size is not known
+statically, IMO.
+
+
 > Signed-off-by: Tao Chen <chen.dylane@linux.dev>
 > ---
->  kernel/trace/bpf_trace.c | 48 ++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 48 insertions(+)
+>  kernel/trace/bpf_trace.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 >
 > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 24b94870b50..c4ad82b8fd8 100644
+> index 0998cbbb963..bb1003cb271 100644
 > --- a/kernel/trace/bpf_trace.c
 > +++ b/kernel/trace/bpf_trace.c
-> @@ -3157,10 +3157,58 @@ static int bpf_uprobe_multi_link_fill_link_info(c=
-onst struct bpf_link *link,
->         return err;
->  }
->
-> +#ifdef CONFIG_PROC_FS
-> +static void bpf_uprobe_multi_show_fdinfo(const struct bpf_link *link,
-> +                                        struct seq_file *seq)
-> +{
-> +       struct bpf_uprobe_multi_link *umulti_link;
-> +       char *p, *buf;
-> +
-> +       umulti_link =3D container_of(link, struct bpf_uprobe_multi_link, =
-link);
-> +
-> +       buf =3D kmalloc(PATH_MAX, GFP_KERNEL);
-> +       if (!buf)
-> +               return;
-> +
-> +       p =3D d_path(&umulti_link->path, buf, PATH_MAX);
-> +       if (IS_ERR(p)) {
-> +               kfree(buf);
-> +               return;
+> @@ -916,11 +916,14 @@ BPF_CALL_3(bpf_d_path, struct path *, path, char *,=
+ buf, u32, sz)
+>          * potentially broken verifier.
+>          */
+>         len =3D copy_from_kernel_nofault(&copy, path, sizeof(*path));
+> -       if (len < 0)
+> +       if (len < 0) {
+> +               memset(buf, 0, sz);
+>                 return len;
 > +       }
-> +
-> +       seq_printf(seq,
-> +                  "type:\t%s\n"
-> +                  "func_cnt:\t%u\n"
-
-it's not really *func* (e.g., for USDTs it's basically guaranteed to
-be somewhere inside the function, potentially in many places within
-the same function), I'd use generic "uprobe_{cnt,count}"
-
-
-> +                  "pid:\t%u\n"
-> +                  "path:\t%s\n",
-> +                  umulti_link->flags =3D=3D BPF_F_UPROBE_MULTI_RETURN ?
-> +                                        "uretprobe_multi" : "uprobe_mult=
-i",
-> +                  umulti_link->cnt,
-> +                  umulti_link->task ? task_pid_nr_ns(umulti_link->task,
-> +                          task_active_pid_ns(current)) : 0,
-> +                  p);
-> +
-> +       for (int i =3D 0; i < umulti_link->cnt; i++) {
-> +               seq_printf(seq,
-> +                          "offset:\t%#llx\n"
-> +                          "ref_ctr_offset:\t%#lx\n"
-> +                          "cookie:\t%llu\n",
-> +                          umulti_link->uprobes[i].offset,
-> +                          umulti_link->uprobes[i].ref_ctr_offset,
-> +                          umulti_link->uprobes[i].cookie);
-> +       }
-> +
-> +       kfree(buf);
-> +}
-> +#endif
-> +
->  static const struct bpf_link_ops bpf_uprobe_multi_link_lops =3D {
->         .release =3D bpf_uprobe_multi_link_release,
->         .dealloc_deferred =3D bpf_uprobe_multi_link_dealloc,
->         .fill_link_info =3D bpf_uprobe_multi_link_fill_link_info,
-> +#ifdef CONFIG_PROC_FS
-> +       .show_fdinfo =3D bpf_uprobe_multi_show_fdinfo,
-> +#endif
->  };
 >
->  static int uprobe_prog_run(struct bpf_uprobe *uprobe,
+>         p =3D d_path(&copy, buf, sz);
+>         if (IS_ERR(p)) {
+> +               memset(buf, 0, sz);
+>                 len =3D PTR_ERR(p);
+>         } else {
+>                 len =3D buf + sz - p;
 > --
 > 2.48.1
+>
 >
 
