@@ -1,166 +1,214 @@
-Return-Path: <bpf+bounces-60443-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60444-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8781AD6736
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 07:20:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74124AD6762
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 07:34:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A3483A7CAA
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 05:19:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2355317ABC1
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 05:34:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1047E1E7C12;
-	Thu, 12 Jun 2025 05:20:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 868D11EFF9F;
+	Thu, 12 Jun 2025 05:33:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3QyJY/qX"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3rxnklgl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f169.google.com (mail-il1-f169.google.com [209.85.166.169])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C0701D7E57
-	for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 05:19:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40F091A5BA4
+	for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 05:33:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749705600; cv=none; b=Cz8XUradXyIzGo3F+l2SVd8zoX4mbRcW9k4PEYuaAKnBknNDR219mjji3M1FWrT96eHPy79N7b5e2EX9QXTCfo3MGJ5tyozzq0xBevODV/2TAmdvvOBmSqrNZsgoUeQQniz1RVy0yb27JdvHulsr56+pPCczwUBwVSSE3nTF6l8=
+	t=1749706438; cv=none; b=sQ90pwufYD+10nlmNrSG4ApJX9o2b5fjkTZH1PcOxVWE4SYPYIKrTldJhKNUbKCt+hgASd1UJHQSfax71a/nDCZtMvIw2odlR3PN75frBYc3Y0D8LU7XGFJaMWf4iIOZxKVLM4lAGbC+RULyhfEbmYlJyN7NDGy905Q/vJntqV4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749705600; c=relaxed/simple;
-	bh=/P/DJBNjnkE1qjkQdZ+TBvKziziGjZZ0noq0dtdTInY=;
+	s=arc-20240116; t=1749706438; c=relaxed/simple;
+	bh=Esu639NQ3h0pUolsE+L62kqRdItgxrjwHM5dB+O9x3E=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pWwgDLAyYRP84D7qkHhCkC1bRGFCS1B4LtMQxFN2V33K1CENtsMyoI5t1rKuEnSyuKSf63t5jbQfbHScoofcRTotb/KR+99JujvCpFrtqrl/IXkwA7vVfQCGqR2UTUbIL5lKBU1b/YQOHsVnpP7ufyAD2cGJSFMRFDHmtuDuYLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3QyJY/qX; arc=none smtp.client-ip=209.85.166.169
+	 To:Cc:Content-Type; b=C3YQ1NVP8cKzV80sZk6k5lT7xv/QbXIWiGyqYz/cg/e05m5HAlQlA+uHZD8c48OzbKadIjhysUUxhHoN1mk+nx0LajIpgAbHyrUEjAvlRyrF5B2NEYILM+nueSeFNK0KAzUl8ks1Rzd+p7NvpyG6cgeq5ML7agjfeiX+e5LWRjo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3rxnklgl; arc=none smtp.client-ip=209.85.214.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f169.google.com with SMTP id e9e14a558f8ab-3ddc10f09easo104045ab.0
-        for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 22:19:58 -0700 (PDT)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-2348ac8e0b4so82285ad.1
+        for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 22:33:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1749705598; x=1750310398; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1749706434; x=1750311234; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EPdoN3ANegyWeQsOHYYrepeIprAZYiuTk2oe8aUOr7k=;
-        b=3QyJY/qXBgE/3JI1FBWFZSMjw0HV6K0Po6G1v/Hgvink9N4Aoy374zYsIxEG4PIXaN
-         t+R+iguaZq5hkUXQJxHhrRrXArpJYIDkP4rauhz8oAzOkBwb3StW2ZFEPdGclXa8rK3b
-         yrMLJ+pSiR1z/8PNn+XDdEBDIHyAxNkcWDSJIS4kqvPeLuyh0hFjTm+SSX6RynJfSDZ5
-         3FiX2qMUjbSbK6B/2X2ZOudeiCz9Ccsvm4k0tXYW/OSA/5lpefkYLNq89MhFfAa2c7BN
-         9vbeyuBQope0mpZrmE163PPXi2mgrmMXSnpkorZLOUKB9DCyHUWFb2jD0NBqV8vYiD47
-         pCTw==
+        bh=0MG8DHTvq/qRGMg3QrUciQGDqEK1excvKUOp84PPj3c=;
+        b=3rxnklgli8VZrJiIqyvzeFF3ekCi35NjXdlTzK5t1ap/H1dnt/DlbrtZQOeRgvUO/7
+         dZRGUNIr7gNxeGWoe5y+aAt/EJVbDpz+/Q00y3/GGaHwPCgpXQUa9eWb7odGB4vzerZN
+         zgzncDR/9mZ3o08dQX3U4eMUlZeaWiW/F0bEabvFRVebimCJYMGDte/qoY5J8mzb9EQR
+         30a5xgTmjBQGOJGKj0Fyi637Qmw43GpalD98aDQFJy8RvTvkozeSmh1TFY4AUPTF55+7
+         BBjvxqABbIyTFhRvvtJGCUE2rcnnpqQvncyompZwvLaWGZT5f5dCrp4VdOUa3SA6/alO
+         eM/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749705598; x=1750310398;
+        d=1e100.net; s=20230601; t=1749706434; x=1750311234;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=EPdoN3ANegyWeQsOHYYrepeIprAZYiuTk2oe8aUOr7k=;
-        b=OqKqoDpEgzITnpJ0AKKZ63rMOMk8axRIk97XbDEk0rZ6bL8wMCauUZfm5cqI3n9l0l
-         Bb1ccBcdtDrfyZ9gHhAFqhD23xLyqGJluB8ve3d8Vu+fvKWj9E/MSTDRdNDKg2wlWiJg
-         wetGnF9/sNOygEUkW1iTFh2Fskf+gIugg097MIe5pPtrf2wbjltjpZ0PSGFGmuLAqlZc
-         Jikq5qlioFFcsjGajSR23mNRb4cfs7ldz0l5Dcfu6GqL7vYrJqrmO994E6DlVqRa1uPm
-         XWVdO8Hdh4yp/SSOiM3RUem1joUc26jQSFl0DGyiduPECb2iRA8BpypqbYVeIDfBCcHl
-         +3+g==
-X-Forwarded-Encrypted: i=1; AJvYcCXqtpu0NoJg9IzOv6lOo+wMquZ1IqGAruO6KmNkISSfiP5uv/6sNweKxroNXyY+rDDDZI8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzhoEno5CPAj7vGO1WuwqA4SS6CoZJtyALMesWgacwZe5iMZEpM
-	9+9gr3FSyJNEIrbcBWUk7BEZnGUtqoJXgHlhG5eRhLoNPwP6rMxFrr8vbimxfGaVAXPKwU+BnKg
-	xtz6otP9W6wZvU1jzeZInHfJ0vVU6tqYlmxs1HMyo
-X-Gm-Gg: ASbGncvRvxK6BEkjWHydEMZ7yGMPPG5h+2shdTnbf+MS3/F0nKS7IadnllWVkvl0txP
-	eACjil81sJD09OPu7STS+Ek0ZqcxOdNnhNrbgslaProYFQ2Lqp3eCyTh+DTKAImNZGuIgJgECTI
-	UxyE1EOO3wPrYc/14W4kEP+rtPzYKyR9CAXR67BU7mNCZS
-X-Google-Smtp-Source: AGHT+IE6oV9iOMyIcpwlHWNYge5b/BoungKrS8bwm6ti65Mcya/37bLaga6JzbosXVWRoP8lK6P3M/Ks+VBczEJ7PTA=
-X-Received: by 2002:a05:6e02:1c2e:b0:3dc:a380:3ab2 with SMTP id
- e9e14a558f8ab-3ddfbf0ad0dmr1082915ab.21.1749705597948; Wed, 11 Jun 2025
- 22:19:57 -0700 (PDT)
+        bh=0MG8DHTvq/qRGMg3QrUciQGDqEK1excvKUOp84PPj3c=;
+        b=B45R6wcOqdilzv4nHKIZdpCNn0955vTjYg0rHeKHPsMpTSsGQ16hwSv3UfpPE4XwUz
+         CmFW+sfKYmOGfI8Yh3bZgbp3kzXdW3Uk9Dt1JT9AuiNKnQfJsY7mINUUahcjfe7+kQXq
+         KvQkrKMiBJBMpESiDhEYc9KMc7XBHKumo+UZhVDsaDBPtUdeKRZQeoBIAV85YF4dbFCJ
+         016MN4cNOh3WI7l+TOPCZ11cPYqGUOrRmcaCJ4yzc+9GWy+uXC0iBh1z09bcq3cLiCrl
+         +J8e919aClZW68TPDIjYgkDm6ZGnHEPi1bDcUgpLxNcRddh6AFhgxofR17S+y1ycy640
+         QS5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWdyYRANM0rcIs78/NmnCSINIaXqiEmtAyDrFyHuVAjc00KDRvAyLFqvLfzMzhqMZyq8vU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwXfx+dK1QgKMrJSSWAaKo+bGssW/M4rKzCvM4QY3V5cFp0N0K3
+	5E2MsLwVFKPC1WIl72rqRsiCP7iTGb9FbWEoucMPbETHhLJcoR1IkY0mVMbk9AYHkVz+wC+CKaI
+	sVfkhATOEj3tC0ITgfddnrxG9A0dITjxBlKV0Itgl
+X-Gm-Gg: ASbGncus9OO6mNUoDqouKUk3HlD9I964BBVZ2/eMDi9Hgmuk0HehGXrU9O3ZRElnTHF
+	xOBVjWbs+XW1p/KFemcCQ+htXmFUT71WFfm1kx3LNu81mOV0rMefg7C+pY5iHXqNqZ076/fmcpW
+	SX8J1ifYJ9Jp9OeCoiG2PyjHYe+TrbxxRobBvLO91lNYVk
+X-Google-Smtp-Source: AGHT+IGXAg/B6LBkZbDCWSh7HnwG3gh9i4+QKa2dl2PrE4nN9ppued4dSt9P5QJ+xN+GLNCTbDB2L7Rfw46DFAwqD5E=
+X-Received: by 2002:a17:902:e545:b0:22c:3cda:df11 with SMTP id
+ d9443c01a7336-2364dd812f0mr1702785ad.10.1749706434224; Wed, 11 Jun 2025
+ 22:33:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250606215246.2419387-1-blakejones@google.com>
- <aEnLBgCTuuZjeakP@google.com> <CAP_z_Ci2HtnSX8h51Lg=XcW_-5OryGb3PAH7MJjWg60Bjpdpng@mail.gmail.com>
-In-Reply-To: <CAP_z_Ci2HtnSX8h51Lg=XcW_-5OryGb3PAH7MJjWg60Bjpdpng@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Wed, 11 Jun 2025 22:19:44 -0700
-X-Gm-Features: AX0GCFte5AogP3jzRMvEYvmxDFDHCWazF4ReJJeWZMJbQRTGtHjlNclFAxfsZPw
-Message-ID: <CAP-5=fW1FhaDcG54OS=_65gxmehjDTR+1XqCPWMX-aw9reJHdA@mail.gmail.com>
-Subject: Re: [PATCH v3 0/5] perf: generate events for BPF metadata
-To: Blake Jones <blakejones@google.com>
-Cc: Namhyung Kim <namhyung@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Tomas Glozar <tglozar@redhat.com>, 
-	James Clark <james.clark@linaro.org>, Leo Yan <leo.yan@arm.com>, 
-	Guilherme Amadio <amadio@gentoo.org>, Yang Jihong <yangjihong@bytedance.com>, 
-	Charlie Jenkins <charlie@rivosinc.com>, Chun-Tse Shao <ctshao@google.com>, 
-	Aditya Gupta <adityag@linux.ibm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
-	Zhongqiu Han <quic_zhonhan@quicinc.com>, Andi Kleen <ak@linux.intel.com>, 
-	Dmitry Vyukov <dvyukov@google.com>, Yujie Liu <yujie.liu@intel.com>, 
-	Graham Woodward <graham.woodward@arm.com>, Yicong Yang <yangyicong@hisilicon.com>, 
-	Ben Gainey <ben.gainey@arm.com>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+References: <20250609145833.990793-1-mbloch@nvidia.com> <20250609145833.990793-11-mbloch@nvidia.com>
+In-Reply-To: <20250609145833.990793-11-mbloch@nvidia.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Wed, 11 Jun 2025 22:33:41 -0700
+X-Gm-Features: AX0GCFsYSgx73nrC-SXHzv68aZPiBHRhi1b3Qjgt6e6IXA1Ei-CkUqpGNyxM2ik
+Message-ID: <CAHS8izOX8t-Xu+mseiRBvLDYmk6G+iH=tX6t4SWY2TKBau7r-Q@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 10/12] net/mlx5e: Implement queue mgmt ops and
+ single channel swap
+To: Mark Bloch <mbloch@nvidia.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, 
+	Andrew Lunn <andrew+netdev@lunn.ch>, saeedm@nvidia.com, gal@nvidia.com, 
+	leonro@nvidia.com, tariqt@nvidia.com, Leon Romanovsky <leon@kernel.org>, 
+	Simon Horman <horms@kernel.org>, Richard Cochran <richardcochran@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	Dragos Tatulea <dtatulea@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 11, 2025 at 5:39=E2=80=AFPM Blake Jones <blakejones@google.com>=
- wrote:
+On Mon, Jun 9, 2025 at 8:08=E2=80=AFAM Mark Bloch <mbloch@nvidia.com> wrote=
+:
 >
-> Hi Namhyung,
+> From: Saeed Mahameed <saeedm@nvidia.com>
 >
-> On Wed, Jun 11, 2025 at 11:29=E2=80=AFAM Namhyung Kim <namhyung@kernel.or=
-g> wrote:
-> > I tried to process your patches but it failed to build like below:
-> > [...]
-> > Please run 'make build-test' and send v4.
+> The bulk of the work is done in mlx5e_queue_mem_alloc, where we allocate
+> and create the new channel resources, similar to
+> mlx5e_safe_switch_params, but here we do it for a single channel using
+> existing params, sort of a clone channel.
+> To swap the old channel with the new one, we deactivate and close the
+> old channel then replace it with the new one, since the swap procedure
+> doesn't fail in mlx5, we do it all in one place (mlx5e_queue_start).
 >
-> Very sorry about that. I've fixed the two issues you noticed, as well as
-> one additional one where I was using the wrong include path to check for
-> the presence of the libbpf-strings feature.
+> Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
+> Signed-off-by: Cosmin Ratiu <cratiu@nvidia.com>
+> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+> Signed-off-by: Mark Bloch <mbloch@nvidia.com>
+> ---
+>  .../net/ethernet/mellanox/mlx5/core/en_main.c | 97 +++++++++++++++++++
+>  1 file changed, 97 insertions(+)
 >
-> I'm trying to test my fixes using "make build-test", but it's proving a b=
-it
-> of a challenge. I installed libgtk-4-dev, binutils-dev, and libopencsd-de=
-v
-> to fix build problems as they came up; I also installed libtraceevent-dev=
-,
-> but somehow it still wasn't detected by the build process and so I had to
-> use NO_LIBTRACEEVENT=3D1.
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/=
+net/ethernet/mellanox/mlx5/core/en_main.c
+> index a51e204bd364..90687392545c 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> @@ -5494,6 +5494,102 @@ static const struct netdev_stat_ops mlx5e_stat_op=
+s =3D {
+>         .get_base_stats      =3D mlx5e_get_base_stats,
+>  };
 >
-> Even after installing these libraries, I'm still hitting errors when doin=
-g
-> "make build-test" on a copy of the perf source *without* my changes:
->
->     In file included from util/disasm_bpf.c:18:
->     .../tools/include/tools/dis-asm-compat.h:10:6:
->         error: redeclaration of 'enum disassembler_style'
->        10 | enum disassembler_style {DISASSEMBLER_STYLE_NOT_EMPTY};
->           |      ^~~~~~~~~~~~~~~~~~
->     In file included from util/disasm_bpf.c:15:
->     /usr/include/dis-asm.h:53:6: note: originally defined here
->        53 | enum disassembler_style
->           |      ^~~~~~~~~~~~~~~~~~
->
-> I noticed that tools/perf/BUILD_TEST_FEATURE_DUMP has
-> "feature-disassembler-four-args=3D0" and "feature-disassembler-init-style=
-d=3D0"
-> as of when this failed, which seems to be upstream of the observed failur=
-e
-> (the version of binutils-dev that I installed seems to have newer-style
-> versions of these interfaces).
+> +struct mlx5_qmgmt_data {
+> +       struct mlx5e_channel *c;
+> +       struct mlx5e_channel_param cparam;
+> +};
+> +
+> +static int mlx5e_queue_mem_alloc(struct net_device *dev, void *newq,
+> +                                int queue_index)
+> +{
+> +       struct mlx5_qmgmt_data *new =3D (struct mlx5_qmgmt_data *)newq;
+> +       struct mlx5e_priv *priv =3D netdev_priv(dev);
+> +       struct mlx5e_channels *chs =3D &priv->channels;
+> +       struct mlx5e_params params =3D chs->params;
+> +       struct mlx5_core_dev *mdev;
+> +       int err;
+> +
+> +       mutex_lock(&priv->state_lock);
+> +       if (!test_bit(MLX5E_STATE_OPENED, &priv->state)) {
+> +               err =3D -ENODEV;
+> +               goto unlock;
+> +       }
+> +
+> +       if (queue_index >=3D chs->num) {
+> +               err =3D -ERANGE;
+> +               goto unlock;
+> +       }
+> +
+> +       if (MLX5E_GET_PFLAG(&chs->params, MLX5E_PFLAG_TX_PORT_TS) ||
+> +           chs->params.ptp_rx   ||
+> +           chs->params.xdp_prog ||
+> +           priv->htb) {
+> +               netdev_err(priv->netdev,
+> +                          "Cloning channels with Port/rx PTP, XDP or HTB=
+ is not supported\n");
+> +               err =3D -EOPNOTSUPP;
+> +               goto unlock;
+> +       }
+> +
+> +       mdev =3D mlx5_sd_ch_ix_get_dev(priv->mdev, queue_index);
+> +       err =3D mlx5e_build_channel_param(mdev, &params, &new->cparam);
+> +       if (err) {
+> +               return err;
+> +               goto unlock;
+> +       }
+> +
+> +       err =3D mlx5e_open_channel(priv, queue_index, &params, NULL, &new=
+->c);
+> +unlock:
+> +       mutex_unlock(&priv->state_lock);
+> +       return err;
+> +}
+> +
+> +static void mlx5e_queue_mem_free(struct net_device *dev, void *mem)
+> +{
+> +       struct mlx5_qmgmt_data *data =3D (struct mlx5_qmgmt_data *)mem;
+> +
+> +       /* not supposed to happen since mlx5e_queue_start never fails
+> +        * but this is how this should be implemented just in case
+> +        */
+> +       if (data->c)
+> +               mlx5e_close_channel(data->c);
+> +}
+> +
+> +static int mlx5e_queue_stop(struct net_device *dev, void *oldq, int queu=
+e_index)
+> +{
+> +       /* mlx5e_queue_start does not fail, we stop the old queue there *=
+/
+> +       return 0;
+> +}
 
-Fwiw, binutils is GPLv3 and license incompatible with perf which is
-largely GPLv2. This patch series deletes the code in perf using it and
-migrates the BPF disassembly to using capstone or libLLVM:
-https://lore.kernel.org/lkml/20250417230740.86048-1-irogers@google.com/
-The series isn't merged into upstream Linux but is in:
-https://github.com/googleprodkernel/linux-perf
+Is this really better than maintaining uniformity of behavior between
+the drivers that support the queue mgmt api and just doing the
+mlx5e_deactivate_priv_channels and mlx5e_close_channel in the stop
+like core sorta expects?
 
+We currently use the ndos to restart a queue, but I'm imagining in the
+future we can expand it to create queues on behalf of the queues. The
+stop queue API may be reused in other contexts, like maybe to kill a
+dynamically created devmem queue or something, and this specific
+driver may stop working because stop actually doesn't do anything?
+
+--=20
 Thanks,
-Ian
-
-> Is there anything written up about how to set up a machine so that
-> "make build-test" works reliably?
->
-> Thanks.
->
-> Blake
+Mina
 
