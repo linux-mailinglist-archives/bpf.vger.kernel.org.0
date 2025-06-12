@@ -1,142 +1,146 @@
-Return-Path: <bpf+bounces-60547-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60548-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDE71AD7EE2
-	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 01:27:59 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CB77AD7EED
+	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 01:30:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7EF693B087C
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 23:27:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C926D7AEB7F
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 23:29:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1F2F2D8773;
-	Thu, 12 Jun 2025 23:27:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 165802DECC7;
+	Thu, 12 Jun 2025 23:30:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GXny83TG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Lkx+8+w6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09E82233140;
-	Thu, 12 Jun 2025 23:27:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 393292288F9;
+	Thu, 12 Jun 2025 23:30:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749770871; cv=none; b=sFtLIw3fUecpLfB1XylT58pq4/ZJDJPfMphT76vi7lzS93/vNr5iOtoYoYvxJOmzUu4aTueWXQt/Wy1AhE2vzRj4zH+0ScJZynLs5ZrY4EGWdHCpgbyexP6X8A0zsK0liW2yymQIh73UywkioLjbVcktNYoEYVornofI98FhRow=
+	t=1749771015; cv=none; b=MClsyzYcdOJ5Rb5LIv+dLWu0AnvTm/BxRWSqMwFpxSZHYJ4kLhvgmArIqJ4aBMsYQXO8nPMp5l9XSThIhMgKP0smM8Ls348P1Lxx50MQR6n2y6h2Fjz6Pkja2d6sWdEXneKLQsz/psNLNEX62ZmlmbFGferk+CPCR44cZy8H8aA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749770871; c=relaxed/simple;
-	bh=atF+EYocQCk1rmvpg9cscQ5ifNYcqFKvdJiMYijPVHQ=;
+	s=arc-20240116; t=1749771015; c=relaxed/simple;
+	bh=QBSJJLbkVh/sfY6gCTyV9ImrIqi97ccBxBNjq9Z/JDc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=e2Mg/K5ipe6ZBeLQqRhqZRAcDeP8re8OXLiOUksivdx9U+EamwxNUyGsctlgNvXbaBu/IFw+3pWV+bhwC2RQQCZvhQja5+c1jDaowP+X5nrLCsDctK6I4KYfw8oNWUE8uj91Dyvt1dPdBZrid3XafhbJIG+4Ord+jrwhNtwA7+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GXny83TG; arc=none smtp.client-ip=209.85.215.179
+	 To:Cc:Content-Type; b=tMFomHGs8zC3cplDGFlWZuD6x5Q8jITLINjAl+Tjvqk7L1HIvpJ48WEMu0+qNXFJ6lV9Bc/CpArThfQ6ocoy1zaKl2uMOpz4k0qAbNambRYsBcCVVnWTfI4ioJBhrb+PbhUdN/x8XdKceFY8CEeo/GU6mLx8xhmXVVuKwKsLOlE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Lkx+8+w6; arc=none smtp.client-ip=209.85.214.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-b2c4476d381so1373873a12.0;
-        Thu, 12 Jun 2025 16:27:49 -0700 (PDT)
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-22c33677183so13794025ad.2;
+        Thu, 12 Jun 2025 16:30:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749770869; x=1750375669; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1749771013; x=1750375813; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=atF+EYocQCk1rmvpg9cscQ5ifNYcqFKvdJiMYijPVHQ=;
-        b=GXny83TGpcAZoj8BMphzmBzIfhAjGghwgyKZQOb94uBojqcZ0f3z+MAkSfAB/ywDjw
-         gcmtQbgEZNUBprXpnTst19i/cPIaxUF0WOWrnarBj9eup4n5BPHTIKVnLVWMlkzraBuj
-         arIQ6gWwVHYnH27707av8WpzigB3AqjvLtI7k+qRUJUmtycFeqeKzfCNC4H/UXQo++P+
-         Top0UtY5tFhTcyM6ZMofCnCApIfXLl/2+JAKqfegM7IVz6KSE65U8Kefprov3p6noXcu
-         TvBPc+GFgMWK9xk31sfL1h9qgIDfzEy4IXd0snjh7UIyUSTqX1uJyabQI//d7+TSjfbf
-         C79w==
+        bh=QBSJJLbkVh/sfY6gCTyV9ImrIqi97ccBxBNjq9Z/JDc=;
+        b=Lkx+8+w6rWIS0E+JX59ENY5rLUAdGex0kL0o1mCSxcyms7BmnBi+QNAEnFfsluea1M
+         q+I/MUeQhm4vsRPM7g5jfBu82eFM+yc6TXH7RPF5NH3kXaAO03cy6F2uo2AIWfeaE16g
+         shCSvGAyhvMoyH4deJ+yRUTn5hxYiJs5BkqggGnl+0RH084gbtTPOKbrJF48CXflUfbu
+         TgoVPXd9WqvEhpO/qHBbgtG5nY1iGadNZOPKOy/DySkWOrTsU2gJHziJIn8B2QkIhwfI
+         kJEDGPaT5lhTfmsyWLiSHNgtjtO/CZwKH2xWzEhl3uO5e0PPNnNIBvNDUUu9TkiWTN/S
+         eJBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749770869; x=1750375669;
+        d=1e100.net; s=20230601; t=1749771013; x=1750375813;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=atF+EYocQCk1rmvpg9cscQ5ifNYcqFKvdJiMYijPVHQ=;
-        b=l53snUtpm55oEOYZYitwiGZJP8AlK8Np2//n8UCF8h3tnw60sedZsbIDHAsAlZRrFu
-         +Fc8FjEsrrRqPYCbSqoLJzUb65CIpibo4iBabNNRM14qxtOWwQi9mEu9rmKwljNObQSW
-         WmtOvxQCzP+HrF32ocYRFzJjvfDJ0t4obtzyXz5iB52pfzfa04IFjNgggNgdq2+i2aM3
-         eFUKkZNm2kaLT12qK++2zQlI22R8lJnjzHtLzQMRRlkaOF2CDBg0hnyO4XmW2haIcsbU
-         mLL6xLu6lJrjx0hG6HUzT4Mrr9htNNSHgv+OAA2Pt2SsR3/YwSJ2bIe7D0ttWbv9IOdj
-         fcmw==
-X-Forwarded-Encrypted: i=1; AJvYcCVxMoWCHBzOppr7/AxuzDNX2nuz3G4M9l0nr1VG6OSLmnMVz8q6S99e98i33mHEe9LVUptFr5kwbROx8t2shJZ2d8K9@vger.kernel.org, AJvYcCWlQPK3SIbQsmOu7tx39eGPP1zuGvvLlGAVjp9Y8qf8e/4YwNt8fveg0cw+JhUAhDQkpi1Bgtlassg8gwF2@vger.kernel.org, AJvYcCXtPjSabknqfJK+Ua9Pkb3d/YwkbMq4A94D93I/NsKv58AUhYHWQ9piLqhjfyCOqxmrrwk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyh6cOxC+SvQqEzWQHUpUyAnRj9maEX1HctLZ69hRtIR3iu8SOy
-	Xa1AG4/fzO/FzkQgJPQxidhHodFvCcVN4mym94RcDSX74qveknWr8NJBNKSUrP5LGKj+aV7SpRj
-	QXuSMV5cGnlrxE0iEhuQkTHZLqkuqY2A=
-X-Gm-Gg: ASbGncvF3Q6sZHKmamNj1SfJijJylsjK5P5PlK4QtmUXOFRnSr5rNsQ5ZYdco0veaX1
-	OeCw9Lrnqx4ONlFY1PE9Q55kMYjyanlGJz1N1f2vj0fUc4ahvdlAqIZdBAmrivqL/byZE1ZIq9f
-	92hPggbtimB177lbgPNPsa81I2rFDnmJ6MVuxBTvzyPYqkMIadSWXljUN1hjw=
-X-Google-Smtp-Source: AGHT+IEzzpDco3Fuexy3Q4tv43B4lOQ5wSMPzAANo9hUSWLlGJg4zvkSgiYVEidfD8idIr/LR7Omg3H1+gknRpUpedM=
-X-Received: by 2002:a05:6a20:d48c:b0:21f:4ecc:119d with SMTP id
- adf61e73a8af0-21faeeab2bfmr466444637.7.1749770869221; Thu, 12 Jun 2025
- 16:27:49 -0700 (PDT)
+        bh=QBSJJLbkVh/sfY6gCTyV9ImrIqi97ccBxBNjq9Z/JDc=;
+        b=kbieJyX4wdA8wLhm8zRAENc5WfT6yeO4rgmcCKdL+xeFLTzGbisMrYxS6kwSn9lozT
+         wPNYrH/82lwrGIqIJLcduaiC0vrS6hoPvzoEOoI75pjpF/R8Qz+6QBFIiHA0j29TpGT4
+         EEk6eoDOtqWj2xqxb73q416S/7okwqpIoeIk/blyg9mIXbVqUTikl8XdWrF7ueGN6/aS
+         aHhm7Yx2jZ2cTjz8tJZ5iDPfY7axKBSQuUuAS9/85jU6RYWtBaH+y597WCbEXe2Q57eR
+         SiGTkq8L3Ggi0h+5cl08Y+QZ0x6gCMrpUvo5kxBjgnGn3h2tHm5TvnaxQgq05ousAm3i
+         XwnA==
+X-Forwarded-Encrypted: i=1; AJvYcCUlECxz5WNPWy4Nj4HXRcvNV3XhYKuaB32kd5dtvtN1ZrYvztNF3MGw8L29bEd4Izg2V3McqiS5e4pRi3OrY/xzYvXm@vger.kernel.org, AJvYcCUxoeZ3uHPqmqyg6fy/bxIu4r9Il7Suf9WCA4uibHoh3kuOvtJUoCzpkgOOxd1lxU8iJa8=@vger.kernel.org, AJvYcCXGtiqMWrnUYV72P7cvy5svnm9G4s54IqW5IMkJOTFfhJMtJ/HHZ+xOyGLtzpiQGiQ2UtF0nf1Ztm39NkzX@vger.kernel.org
+X-Gm-Message-State: AOJu0YwHRDeeUywZC/MzoEt53FCGGn1BEaxaZizvNTNOZlhTBG2Exxxl
+	yKQxu8C5SI/AxftK9bwo/bw338al7Ua6Sn9TFgO0YLCJzSLLyRNqjA5/56V+r1tzYjN6Dee9Cgo
+	TWoPWpm5RgV8TPdLnJXGYqWtPTEowlkQ=
+X-Gm-Gg: ASbGncv7ACjYo3i1Qvp55G2qjzTohUglVe8avOpZUMwHMI6hn388YEvuogn6ipGrlfs
+	h59tvG6OvsfGMwvMwbConMZigOfx0Aw5QUWbksl5F7ZmMeLe2xI1Fz3LLAhNM17LvcEV5Kt1wRw
+	VJP34melZP+uXavFVakuSngK2pCI6ng7kjSlN0nIqDeYY9NBxjuZBM4phg9uk=
+X-Google-Smtp-Source: AGHT+IEYqGdJqUNKIdRsB/HowX/im2B1kRSmkiEERPQ8iHBOmhhPb1gDj9rbaiZ0boo+XCSoL/M95mhC7FQ31TcKubA=
+X-Received: by 2002:a17:902:d584:b0:235:129e:f640 with SMTP id
+ d9443c01a7336-2365dc0a93fmr11974605ad.38.1749771013448; Thu, 12 Jun 2025
+ 16:30:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250611154859.259682-1-chen.dylane@linux.dev>
- <CAEf4Bzbn=RVhMOR7RapYwi+s8gbVS=1msOuZ7MhPvgz8zHiE9w@mail.gmail.com> <CAADnVQJ8cVi4KyJqWgEfyWYs+zSYQ73PevrNszPkisrdPSjYMg@mail.gmail.com>
-In-Reply-To: <CAADnVQJ8cVi4KyJqWgEfyWYs+zSYQ73PevrNszPkisrdPSjYMg@mail.gmail.com>
+References: <20250611005421.144238328@goodmis.org> <CAEf4BzZ9-wScwgYAc5ubEttZyZYUfkuAhr3dYiaqoVYu=yWKog@mail.gmail.com>
+ <ldnmzsofhpy7rxk7rslgs5mevep7s22ltaqd7pxuoshs67flvm@cakolwpjdkwm>
+In-Reply-To: <ldnmzsofhpy7rxk7rslgs5mevep7s22ltaqd7pxuoshs67flvm@cakolwpjdkwm>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 12 Jun 2025 16:27:37 -0700
-X-Gm-Features: AX0GCFuG1j7XqXwpxPfCGYZlUdp1A89WoDqKaHTopi4Uj0_x08EdUEorCPrcTvY
-Message-ID: <CAEf4BzayBd9e5c9fiEPgDKPoRm-E4uB_u__xKcRpXDz18kNnkA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: clear user buf when bpf_d_path failed
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Tao Chen <chen.dylane@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Matt Bobrowski <mattbobrowski@google.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>
+Date: Thu, 12 Jun 2025 16:30:00 -0700
+X-Gm-Features: AX0GCFsletYbAxfzTbaieGo9hqnFkli_Ooy53vK0_Wf5ogiiXP7rsCTVyenKqIs
+Message-ID: <CAEf4BzY4JtvZa=ubyiO8AKGcKpOjk_YX2yHqW5JzaBLjM5gjDw@mail.gmail.com>
+Subject: Re: [PATCH v10 00/14] unwind_user: x86: Deferred unwinding infrastructure
+To: Josh Poimboeuf <jpoimboe@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, x86@kernel.org, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	Andrii Nakryiko <andrii@kernel.org>, Indu Bhagat <indu.bhagat@oracle.com>, 
+	"Jose E. Marchesi" <jemarch@gnu.org>, Beau Belgrave <beaub@linux.microsoft.com>, 
+	Jens Remus <jremus@linux.ibm.com>, Linus Torvalds <torvalds@linux-foundation.org>, 
+	Andrew Morton <akpm@linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 12, 2025 at 2:40=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Jun 12, 2025 at 2:29=E2=80=AFPM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Wed, Jun 11, 2025 at 8:49=E2=80=AFAM Tao Chen <chen.dylane@linux.dev=
+On Thu, Jun 12, 2025 at 3:02=E2=80=AFPM Josh Poimboeuf <jpoimboe@kernel.org=
 > wrote:
-> > >
-> > > The bpf_d_path() function may fail. If it does,
-> > > clear the user buf, like bpf_probe_read etc.
-> > >
-> >
-> > But that doesn't mean we *have to* do memset(0) for bpf_d_path(),
-> > though. Especially given that path buffer can be pretty large (4KB).
-> >
-> > Is there an issue you are trying to address with this, or is it more
-> > of a consistency clean up? Note, that more or less recently we made
-> > this zero filling behavior an option with an extra flag
-> > (BPF_F_PAD_ZEROS) for newer APIs. And if anything, bpf_d_path() is
-> > more akin to variable-sized string probing APIs rather than
-> > fixed-sized bpf_probe_read* family.
 >
-> All old helpers had this BPF_F_PAD_ZEROS behavior
-> (or rather should have had).
-> So it makes sense to zero in this helper too for consistency.
-> I don't share performance concerns. This is an error path.
+> On Thu, Jun 12, 2025 at 02:44:18PM -0700, Andrii Nakryiko wrote:
+> > On Tue, Jun 10, 2025 at 6:03=E2=80=AFPM Steven Rostedt <rostedt@goodmis=
+.org> wrote:
+> > >
+> > >
+> > > Hi Peter and Ingo,
+> > >
+> > > This is the first patch series of a set that will make it possible to=
+ be able
+> > > to use SFrames[1] in the Linux kernel. A quick recap of the motivatio=
+n for
+> > > doing this.
+> > >
+> > > Currently the only way to get a user space stack trace from a stack
+> > > walk (and not just copying large amount of user stack into the kernel
+> > > ring buffer) is to use frame pointers. This has a few issues. The big=
+gest
+> > > one is that compiling frame pointers into every application and libra=
+ry
+> > > has been shown to cause performance overhead.
+> > >
+> > > Another issue is that the format of the frames may not always be cons=
+istent
+> > > between different compilers and some architectures (s390) has no defi=
+ned
+> > > format to do a reliable stack walk. The only way to perform user spac=
+e
+> > > profiling on these architectures is to copy the user stack into the k=
+ernel
+> > > buffer.
+> > >
+> > > SFrames is now supported in gcc binutils and soon will also be suppor=
+ted
+> > > by LLVM. SFrames acts more like ORC, and lives in the ELF executable
+> >
+> > Is there any upstream PR or discussion for SFrames support in LLVM to
+> > keep track of?
+>
+> https://github.com/llvm/llvm-project/issues/64449
 
-It's just a bizarre behavior as it stands right now.
+Great, thank you!
 
-On error, you'll have a zeroed out buffer, OK, good so far.
-
-On success, though, you'll have a buffer where first N bytes are
-filled out with good path information, but then the last sizeof(buf) -
-N bytes would be, effectively, garbage.
-
-All in all, you can't use that buffer as a key for hashmap looking
-(because of leftover non-zeroed bytes at the end), yet on error we
-still zero out bytes for no apparently useful reason.
-
-And then for the bpf_path_d_path(). What do we do about that one? It
-doesn't have zeroing out either in the error path, nor in the success
-path. So just more inconsistency all around.
+>
+> --
+> Josh
 
