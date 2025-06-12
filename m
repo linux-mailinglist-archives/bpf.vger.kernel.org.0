@@ -1,85 +1,119 @@
-Return-Path: <bpf+bounces-60466-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60467-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C834AAD733F
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 16:11:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D23CAD7345
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 16:11:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6ACEE16B3C3
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 14:08:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61BD0172BA6
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 14:08:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2683248884;
-	Thu, 12 Jun 2025 14:05:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3DE724C66F;
+	Thu, 12 Jun 2025 14:06:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eR0aFfUm"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="jLMaqWT1"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f43.google.com (mail-io1-f43.google.com [209.85.166.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FE6718A6AD;
-	Thu, 12 Jun 2025 14:05:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 160C8149C4D
+	for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 14:06:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749737121; cv=none; b=X1fPIwmbwCHLHubxJqhYXOMK3g01Y1ebIEODFJMcf35SRxvo24WrqQzoNxX71RSoyhJkye/qWupSkZAqXR2BQEqVbuKaTeuCZAxom7FBDeAwUmSEmnH7mC9zne+Z+/yBNVgfAgu2Gugu+hNuerO67YtDS6vRxQnkmzU9EvFb+80=
+	t=1749737179; cv=none; b=EpY864CtB1f/s52ZGt+6meVxQdlCov4jUi6nZJre50s1eAIz54wnbuA3yGGP1MMnnrifYfD7ZztzqwkoDDMZCcKaclhDZaZAUAn+ehSjZ7LBZ003fF/rYbfzWD2yvRm0nDABN0PYFb/Yf3Q42gz8CTOR18/ZiC/GiXVMXFstDUY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749737121; c=relaxed/simple;
-	bh=D+ukWm9CNFxSBTlUZVNF0wIvs0CoEpG0xs9KpKTy9KQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=L5Nj3Qziibs1y6av02eUWrOeNPJ/iiRZkKro0jNPBYgizioXuvcc9UWH9hYKHqm4g007vKnEiL2xsX7O++i/VcR/6zwakCEX0VrKFKnahwmTjbZnog/+bKK+RZaFfusBm/YVrqJnVklEZxKaimX5FNbG0D5z0ljN76D0AKRj1WQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eR0aFfUm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9944C4CEEA;
-	Thu, 12 Jun 2025 14:05:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749737120;
-	bh=D+ukWm9CNFxSBTlUZVNF0wIvs0CoEpG0xs9KpKTy9KQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=eR0aFfUmKoD4JNmSHuMj1DvfwBcFXu/5Z4iuX40Ipfj8dYXLNenDqefB817WtDBP1
-	 6Zuz9ZSoXj4rEgsclqUroR719YMhkU8qsbgEh6Ahm9Rzr2clvbgLx+xWfYHZOZV4Vs
-	 hmAl+GEvwQzjAllL4RIKmkQL3loC1NaBuCPEeCdLn7ODLwmeSPO2Ba6flhTrEmPBsB
-	 edQ8WWcbnYIpARAvJYeM7FBUlA2X8NaURP07au1QmIoEScIRix8pmermR4DxRl0KZ1
-	 8Fgv3snc4AR645TjgAUFLaOgzoawBqkegM3IMixd+/J3hHTU1E8FOC555K0KbeEUXj
-	 sPEIz7GNsHTGw==
-Date: Thu, 12 Jun 2025 07:05:18 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
-Cc: Breno Leitao <leitao@debian.org>, "David S. Miller"
- <davem@davemloft.net>, Jesper Dangaard Brouer <hawk@kernel.org>, Saeed
- Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq
- Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Ilias
- Apalodimas <ilias.apalodimas@linaro.org>, Simon Horman <horms@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Mina Almasry
- <almasrymina@google.com>, Yonglong Liu <liuyonglong@huawei.com>, Yunsheng
- Lin <linyunsheng@huawei.com>, Pavel Begunkov <asml.silence@gmail.com>,
- Matthew Wilcox <willy@infradead.org>, netdev@vger.kernel.org,
- bpf@vger.kernel.org, linux-rdma@vger.kernel.org, linux-mm@kvack.org,
- Qiuling Ren <qren@redhat.com>, Yuying Ma <yuma@redhat.com>,
- gregkh@linuxfoundation.org, sashal@kernel.org
-Subject: Re: [PATCH net-next v9 2/2] page_pool: Track DMA-mapped pages and
- unmap them when destroying the pool
-Message-ID: <20250612070518.69518466@kernel.org>
-In-Reply-To: <87jz5hbevp.fsf@toke.dk>
-References: <20250409-page-pool-track-dma-v9-0-6a9ef2e0cba8@redhat.com>
-	<20250409-page-pool-track-dma-v9-2-6a9ef2e0cba8@redhat.com>
-	<aEmwYU/V/9/Ul04P@gmail.com>
-	<20250611131241.6ff7cf5d@kernel.org>
-	<87jz5hbevp.fsf@toke.dk>
+	s=arc-20240116; t=1749737179; c=relaxed/simple;
+	bh=4ChK7e4PZIbGo6yIhGanb9DQUsVcV2UEtIFr/3kfE74=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gG1cVpkZd3mwmHGgHMXzAWUoHrTB6V5nHQwkrC9hvU20WGBL+B2zBz+QMi9lFryydzBMsJyQMRhdr2wFxq9Zer/87vdKg0tl3Am5aVxTUu+d8gkQJVA0uOqqafbT+glxaRr3IMiGOdFdNt5a50R4ENE7buSw8U927oY8vm2APwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=jLMaqWT1; arc=none smtp.client-ip=209.85.166.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-io1-f43.google.com with SMTP id ca18e2360f4ac-874a68f6516so84208339f.2
+        for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 07:06:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1749737176; x=1750341976; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bU6I8KFtIF7gtlB8ZnFNNleYs6udjVIddSeSWWR+RTk=;
+        b=jLMaqWT1BEgl0/V26AQ6QvbOzAwrlSs6JmaTA/YqKMgf3CGUpUJey8j6TYA9+bpF6z
+         hrHwFR4BplAvwb3U+OE70O4z2OhO4kfFkgBuiktW+5HKHPK+7FEwEd6xn4DMoJG1CCMi
+         4CpqQM37OLf3pxLphThmlhZSMVQnbiAPEalhpi6g9LSChwx4vATi7FTQiCwH/bItCC4t
+         OWfVrrWWKnksu6ZmXeamxhTmFU9JciUVqNXwJnhHasBMiG0a12bgqImDxEPgi1bk5smP
+         SOg+sxWUzPwnh2Q/DyLroiUYLmIgnFYbiLGwEJL80pU5XoQyfQyIieOmWomvjYZODEqP
+         5qKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749737176; x=1750341976;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bU6I8KFtIF7gtlB8ZnFNNleYs6udjVIddSeSWWR+RTk=;
+        b=CysfBx73p9AX8MjuchXlQq9bYCTReNtqv2Crw1DmTDT8tJPZjA0ubBQLRAKKjBP+Qe
+         DpxCXZ3nfJCGFNQHqnVgTFU1+uobuGRw6rRUtAQGWbPBA4MVW3359eqt9XepcAToXVMU
+         lX+dA+QEEmNhxa+wntzErVuo0zxg4P1y4vd1n3vi+vqlrK1pwCrp+zF8K/zBNszHqlpb
+         2aMSI/VMZKVkLZ2cz+j1WLEXxr1LdDrmiYdtVvRtxgPC1HPMalsMxIfB+ycl00ip8GmP
+         9QEpjYw55gMpReXxE8iDibO8dggafXRieRUVmtCWcPTmrIOAsoI4XrTzsAa44pUtZL7o
+         txew==
+X-Forwarded-Encrypted: i=1; AJvYcCXt9610Ac2k4C8i/7y0EfP6wrdUMjn7Sm+yw+PHW3NoXsAGMlRJy1kznwq5lfe0w0bSNEo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwMZBHz5GYRUpnoHWJHtS6OE+3XhTDSd9ffRp9f9sDE03C9pUli
+	9VCtXH7D/8fZZSXDoUlzDdcMd4YiFLvSi+RkRcrdK5EuSQNCJH0bAHWPjTdbiWPlvbk=
+X-Gm-Gg: ASbGnctJ9AUYtCd3PLRAKV3mCLhzs4iQRivxDktWTt4LbXltlcalsxuRZRcJzwmE6vC
+	8xrYnmUhTJOhA/Rub0lspDjI3hmfHgh3Z0Z6TyO/7OP/fVrMlbiygcJkBhO/HwBI1Ny9ElIy+ey
+	7xx1r/EM9hMYcCpAjbvhr60LTqPfx/iTMGYMdiPpL8FFUq+5vHgfgqvJmt7BpL+sZfarZMTTufl
+	w0Isl6bgnhIbaoEVY2Ms1eQpg/YkAf+C10WlL3TX0s4p5p6vcGxKmBLVAP404g/Ng+A8vDhFmur
+	ZWZKjS/Tm6ybtq0C3eEdifrcs+7tbMvRCHd2eZS71KNANjRbJiIg+tT1/Ds=
+X-Google-Smtp-Source: AGHT+IGwa/W/bwZ6mhkAXRr6G5LVK0LhE+hanV4uE2MJO+JAFyftWu8co4CAKe/KphaDCpHFbCPT8Q==
+X-Received: by 2002:a05:6602:3a03:b0:869:d4df:c2a6 with SMTP id ca18e2360f4ac-875bc49bbd2mr915998539f.14.1749737176105;
+        Thu, 12 Jun 2025 07:06:16 -0700 (PDT)
+Received: from [192.168.1.150] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id ca18e2360f4ac-875c7f64de6sm35469939f.33.2025.06.12.07.06.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Jun 2025 07:06:15 -0700 (PDT)
+Message-ID: <e6194c29-18de-4dc9-a2fb-2ad63816481d@kernel.dk>
+Date: Thu, 12 Jun 2025 08:06:14 -0600
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC v2 5/5] io_uring/bpf: add basic kfunc helpers
+To: Pavel Begunkov <asml.silence@gmail.com>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: io-uring@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+References: <cover.1749214572.git.asml.silence@gmail.com>
+ <c4de7ed6e165f54e2166e84bc88632887d87cfdf.1749214572.git.asml.silence@gmail.com>
+ <CAADnVQJgxnQEL+rtVkp7TB_qQ1JKHiXe=p48tB_-N6F+oaDLyQ@mail.gmail.com>
+ <8aa7b962-40a6-4bbc-8646-86dd7ce3380e@gmail.com>
+Content-Language: en-US
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <8aa7b962-40a6-4bbc-8646-86dd7ce3380e@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 
-On Thu, 12 Jun 2025 09:25:30 +0200 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> Hmm, okay, guess we should ask Sasha to drop these, then?
->=20
-> https://lore.kernel.org/r/20250610122811.1567780-1-sashal@kernel.org
-> https://lore.kernel.org/r/20250610120306.1543986-1-sashal@kernel.org
+On 6/12/25 7:26 AM, Pavel Begunkov wrote:
+>> For next revision please post all selftest, examples,
+>> and bpf progs on the list,
+>> so people don't need to search github.
+> 
+> Did the link in the cover letter not work for you? I'm confused
+> since it's all in a branch in my tree, but you linked to the same
+> patches but in Jens' tree, and I have zero clue what they're
+> doing there or how you found them.
 
-These links don't work for me?
+Puzzled me too, but if you go there, github will say:
+
+"This commit does not belong to any branch on this repository, and may
+ belong to a fork outside of the repository."
+
+which is exactly because it's not in my tree, but in your fork of
+my tree. Pretty wonky GH behavior if you ask me, but there it is.
+
+-- 
+Jens Axboe
 
