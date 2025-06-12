@@ -1,131 +1,128 @@
-Return-Path: <bpf+bounces-60424-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60425-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81FFEAD64DF
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 03:03:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A047AD6516
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 03:19:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F29E17E6BB
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 01:03:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A5173A7FD0
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 01:18:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3663A7080C;
-	Thu, 12 Jun 2025 01:03:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BAD072613;
+	Thu, 12 Jun 2025 01:19:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="M1OIudjf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Oht3aTsE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E91D8479
-	for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 01:03:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A263A20328
+	for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 01:19:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749690189; cv=none; b=SBkMzUDnICi+iJEOXmCTPetEdvAAjVuuXfMolUiq9DZdJ0B8swKyEpwDsLtgb3yraz30Dz2EVtFz5B/kKnSAOeZKmmzWIJ02FBZiECB76yhYMVZJG3NIY/zcYGeNInFGW+jHfZR9xoS+PP+OpzZXNfdKqXXzwwm0Q43n7NWS72k=
+	t=1749691158; cv=none; b=qYKhluH4C1PyfABNjiBqP7/L4vwYhyt5nlwDGjE3TArLjh34tPZtOukw1oQh5PEE02mOHKPdyXHWt3h/KqycGTZ7xfbfP8XsmJ6BqitMUqJHttW25dDMMrWpXend36QpO5bALcr44UHWOlECMrL0beX0vDXUWTaZxOqQpucrsak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749690189; c=relaxed/simple;
-	bh=sK8hh4GrbaJPxO5UXjT4uZdicZ+332w6O+W30ugAODc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=du+V06H1RDfsQTtHWR50PgFVslHCFswP/q4mt6/1h0zXIw5hrNkdxEg97onTvRyW+uEz/C8aYTEGxTDdCbhRz2D+cbp6yqVjcRZ57HJjw/WM/MoFXp24Brd28s3SwnoFqQrfOgIFQ1h05huOgEmeOh4ndJNbQtGcNujkVC4U/5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=M1OIudjf; arc=none smtp.client-ip=209.85.222.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-7c922169051so28156185a.0
-        for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 18:03:07 -0700 (PDT)
+	s=arc-20240116; t=1749691158; c=relaxed/simple;
+	bh=brEVAXm6LS10egOhiDKSgLl5YHN0iPvhRk6Gt5D+IS0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iPfn2sxZ6JBswXfYk157PwmFh5irKqRj85igtcz6TiZI6poaNrrMgtmDInVzIpOAmB8ACGUBLUtVLz65y7i1Cous5uj2uFgvjNgATUWt/3gKr0yWpbh9NcASBOOV56IQfs99ycHE63jLqdDci/+C0CYkqn+gsJUUlmDXF95p390=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Oht3aTsE; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-234b9dfb842so4757735ad.1
+        for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 18:19:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1749690187; x=1750294987; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JNmsutdsye3P3CJhJsMQlrvMgcaKzefaeXL9LWbLYu8=;
-        b=M1OIudjfa2mH0zjUKznhdtRGRlc5RAUo/l2vaYGQ4ua2JCJ0V0u+4OhBdtzyVBef0N
-         M1cp779MjH82xzL6X9uJDUTWM9OSmEMpMY7JDkcom7GyW7YTF3/tOTraah9LFUJkfmFI
-         DLOzA93CMspRpmSrk7rdHt4eSV6GXHs6cW2WJ35c3NYPyJNAbtvUqaA74lSIIi4XAE64
-         tiCLeZVJPucwgoMrAWCANtOv8SDINmREbGUtlD8ozo+C4AlLxqB9mw2B66OM1K4Gig9S
-         TnON6+4VUKe3hkHtFHejl+3MP/i2x6snsGiDU8pcSDITLg5caQLWp0a3JC68cgZ0tLS4
-         2zQA==
+        d=gmail.com; s=20230601; t=1749691156; x=1750295956; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=f4Yb4jOFV5ANiWnZ8jGh8e0X8foAY/v/u4htrI/rjTg=;
+        b=Oht3aTsEx5KjBxydb8sMZhNA2duNj9MbZRSLqDsipdZzRgLOBeZt3z5hAWtdTsqjzd
+         OpX8zn/c5a3Jcuc/vkT2VhM0b1HehHP99yPFurjFiqWkh5K3kqHklj9lS37o7oYaliHp
+         XmzBQT+Ibjv5VQPtYP+7hwbGLEsyFaAqNwoTR9qwECmKKkzAur1HuXgqRgnfHxXpnkN4
+         fZFZnNbkIrD70eullutg2uHntuJ4UbwgT4PAsyPdFgevsAwTPRU9w5iVhrbvTaRzHh/k
+         GQVe1ENfOvb/Mgg4d4lVDkgaUlUe4PLliBvpD9iFliPsQrlbY07Z4dbFfPMor99pvpJg
+         01+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749690187; x=1750294987;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JNmsutdsye3P3CJhJsMQlrvMgcaKzefaeXL9LWbLYu8=;
-        b=g5NkCrXMH3tohonjWUCkDRlu/HuIvpncTdck4GW3h9MYEXoM8+cDr4EoDj48Cc1xWR
-         bCOsS9Z4Ar8viK+ntXF61Nz7bwqXCWzk0kMqTCvXcYaUrX4AmXqED5x/YurPaK6xctGp
-         BKK87rQRuVcsVgk2t2Akc53AjhVlB9hoVVNqkCNvdOaJZ6t/v1ZhOUEUbr/gfNuJ7AHq
-         2YkjmRZV8z5coW4cnyzZ+c5oHmj3Qwdb98q37ETV1O9FX4yfpimMBDxBZObd35lrwv/L
-         bg11uYRVUJC79bKCz2RZkluJO8U6COG5Mrd3B9KqYQJ74ftZpYc06RNVXPqn7Uu3nVBd
-         Mtng==
-X-Forwarded-Encrypted: i=1; AJvYcCURy0CulByZPUmOQg5+2o04rl934eEx3Bw64PJD09x6huFPqnVy1UywJ/PSxuXwnzioKCQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxYYVTiFqBBKZfu4VJdmxTkcUVnOt4VZqzpiENpiyiYdyMVB8oj
-	S403jRU5frkrZ0Fo5itsZQp3tY1yL8q6SbiWJU+CoJSftYM1w5orq+yUKV4IgjF1zjpxj4gMjuZ
-	foNlui5K0HGOLFUd5BX1ZKcaNwaP1nRslbCYZICrw
-X-Gm-Gg: ASbGnctccZI2vBcGk/yN1s5R1FopOdv5BeBh0yEOdBq4goX6QrZPfJdOq2uP/FNYV09
-	zdEgHsAQ0WYBqjyiSdZTSGaGeqC1NA1NG2sCPomNw988qEIU96tMa1+iVuQV2JWba8vAHq/m01r
-	eF/zVHVrBK/Oukmc0jZ1ZaLsKWpXI8x55oVOY5SNw2WFs=
-X-Google-Smtp-Source: AGHT+IFp0H/SdT8TXZjBxo1iu5o7/B6/EdR3KllZkVhClS8c+6Ys31CAAk4hlmnPUPvNSofi1wCF4sFRdVdcowfqamQ=
-X-Received: by 2002:a05:620a:a21b:b0:7d2:cc6:b485 with SMTP id
- af79cd13be357-7d3b35c0047mr188173085a.8.1749690186830; Wed, 11 Jun 2025
- 18:03:06 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1749691156; x=1750295956;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=f4Yb4jOFV5ANiWnZ8jGh8e0X8foAY/v/u4htrI/rjTg=;
+        b=FpS/2t9lSBou9B1D87unuc7AY/9i+1cDb1lDa7V/WxJNez8dMcrNMhIgTLeoPFutql
+         tCLq5xooF8WJINv7NeuQ8FZ6TsL8Ee3aaj90fawwmFHdZDY67uUQbZN0ef+e1O4JpbHe
+         +4EcNS70CJQTKJpxkHB7T796rJTSU1H7vAvZX5l5Wi0wu0EZAy4wYtPXAFmsATM7XA0x
+         wmDqY8O2obyBvoYMTW9OatngunEirN7JBgfFsxM6mAAOIYU/ol40NT0+tewP720550m5
+         eTRSt9JqTUuyN7RTGp+BOi+02skrhUVGwdId3TC6aDEL1T4i4VaRb9f8btTyVft2x+jJ
+         U9nA==
+X-Gm-Message-State: AOJu0YwzgxeNuwxZNOIwiRuT3xUKObjezq4dsF3aNEEQvufan1H4enms
+	pe8VO1whKzIjYVdEIvxMROxHcYhoWiP/xIPSwI0CG4s09NV7aasIA1wvcIi+jA==
+X-Gm-Gg: ASbGnctCjdKsskh7jmj9PIg5nZrX2Xxx2FkFNpy2a9XY+UgY1iSf4sqR2qQqIIG4JGg
+	zyHV46/nGsxjR35f7itkmCysWhf5WRFrh5Zb7VJxo5rSCeEz1yk0otDOUlg4FTQlwpqJuC+T9gM
+	ZHyCvn65T0OG2d4vrHBUO5xXCMqT35vZzwqpam3uXvqq9J7EmX6uqU21N/3OK14+Q/rHcA6loxX
+	Ik/n7NH5KgnaXAIayfoJ0UnqpBxeqm6FlFsKHn/6VsQEejDtk9yvWQ6Y7xYmPpl88f29foOtID3
+	8nNQ+yg8OcK5rxt6I91lajIxzu3Awi3vN3+4P6AuthgwY4L1BAaVJvsYMefKslWIRFGCw35x9wa
+	x5BTpt7UmAHoydrngqi3num1WELQ=
+X-Google-Smtp-Source: AGHT+IENjlXT7cY8PLm8AMBrhyfVvO0vBRL2bMeBdCHfvXcMsgMOlrmYZnAaPiXWdDOmsAHdRaDbLQ==
+X-Received: by 2002:a17:903:288:b0:234:f182:a735 with SMTP id d9443c01a7336-2364d8c01f0mr17748025ad.34.1749691155864;
+        Wed, 11 Jun 2025 18:19:15 -0700 (PDT)
+Received: from localhost.localdomain ([2001:558:600a:7:a83d:600f:32cc:235a])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2364e6db039sm2173365ad.121.2025.06.11.18.19.15
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Wed, 11 Jun 2025 18:19:15 -0700 (PDT)
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: torvalds@linux-foundation.org
+Cc: bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@kernel.org
+Subject: [GIT PULL] BPF fixes for 6.16-rc2
+Date: Wed, 11 Jun 2025 18:19:13 -0700
+Message-Id: <20250612011913.48375-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250606215246.2419387-1-blakejones@google.com>
- <aEnLBgCTuuZjeakP@google.com> <CAP_z_Ci2HtnSX8h51Lg=XcW_-5OryGb3PAH7MJjWg60Bjpdpng@mail.gmail.com>
-In-Reply-To: <CAP_z_Ci2HtnSX8h51Lg=XcW_-5OryGb3PAH7MJjWg60Bjpdpng@mail.gmail.com>
-From: Blake Jones <blakejones@google.com>
-Date: Wed, 11 Jun 2025 18:02:55 -0700
-X-Gm-Features: AX0GCFsD9zg5ZgEveoY8yrj3fK_CYrXNLsmBVWmj9_aAH5Tq9sMRAl0BYKh9JCg
-Message-ID: <CAP_z_CjRB6MwNrXW_o_XyWSwcXZKpVHyGZoj1udJU4uBu1iw=g@mail.gmail.com>
-Subject: Re: [PATCH v3 0/5] perf: generate events for BPF metadata
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Tomas Glozar <tglozar@redhat.com>, 
-	James Clark <james.clark@linaro.org>, Leo Yan <leo.yan@arm.com>, 
-	Guilherme Amadio <amadio@gentoo.org>, Yang Jihong <yangjihong@bytedance.com>, 
-	Charlie Jenkins <charlie@rivosinc.com>, Chun-Tse Shao <ctshao@google.com>, 
-	Aditya Gupta <adityag@linux.ibm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
-	Zhongqiu Han <quic_zhonhan@quicinc.com>, Andi Kleen <ak@linux.intel.com>, 
-	Dmitry Vyukov <dvyukov@google.com>, Yujie Liu <yujie.liu@intel.com>, 
-	Graham Woodward <graham.woodward@arm.com>, Yicong Yang <yangyicong@hisilicon.com>, 
-	Ben Gainey <ben.gainey@arm.com>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jun 11, 2025 at 5:39=E2=80=AFPM Blake Jones <blakejones@google.com>=
- wrote:
-> Is there anything written up about how to set up a machine so that
-> "make build-test" works reliably?
+Hi Linus,
 
-Barring that, I've confirmed that each of my new patches builds successfull=
-y
-under the following build commands: (I have a copy of libbpf that supports
-".emit_strings" in /usr/local/include)
+The following changes since commit 7a912d04415b372324e5a8dfad3360d993d0c23a:
 
-    cd tools/perf
-    make clean
-    make NO_LIBTRACEEVENT=3D1 LIBBPF_DYNAMIC=3D1 LIBBPF_INCLUDE=3D/usr/loca=
-l/include
-    ./perf check feature libbpf-strings
+  Merge tag 'spi-v6.16-merge-window' of git://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi (2025-06-06 13:22:31 -0700)
 
-    make clean
-    make NO_LIBTRACEEVENT=3D1
-    ./perf check feature libbpf-strings
+are available in the Git repository at:
 
-    make clean
-    make NO_LIBTRACEEVENT=3D1 NO_LIBBPF=3D1
-    ./perf check feature libbpf-strings
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/bpf-fixes
 
-Please let me know if that seems like sufficient testing.
+for you to fetch changes up to 9cf1e25053c269d64b9e9fa25e8697d6d58028d4:
 
-Blake
+  MAINTAINERS: Add myself as bpf networking reviewer (2025-06-10 12:48:24 -0700)
+
+----------------------------------------------------------------
+- Fix libbpf backward compatibility (Andrii Nakryiko)
+
+- Add Stanislav Fomichev as bpf/net reviewer
+
+- Fix resolve_btfid build when cross compiling (Suleiman Souhlal)
+
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+----------------------------------------------------------------
+Andrii Nakryiko (1):
+      libbpf: Handle unsupported mmap-based /sys/kernel/btf/vmlinux correctly
+
+Stanislav Fomichev (1):
+      MAINTAINERS: Add myself as bpf networking reviewer
+
+Suleiman Souhlal (1):
+      tools/resolve_btfids: Fix build when cross compiling kernel with clang.
+
+ .mailmap                          | 1 +
+ MAINTAINERS                       | 3 +++
+ tools/bpf/resolve_btfids/Makefile | 2 +-
+ tools/lib/bpf/btf.c               | 6 +++---
+ 4 files changed, 8 insertions(+), 4 deletions(-)
 
