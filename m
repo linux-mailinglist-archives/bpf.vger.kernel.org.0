@@ -1,128 +1,229 @@
-Return-Path: <bpf+bounces-60540-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60541-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72A8FAD7E9E
-	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 00:52:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A80DAD7EA3
+	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 00:56:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 497A23A3701
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 22:52:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A81463B5D0D
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 22:55:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02CA32E1730;
-	Thu, 12 Jun 2025 22:52:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BC492327A1;
+	Thu, 12 Jun 2025 22:56:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lD0A/v97"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dM3Qtv6V"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7052E153BD9;
-	Thu, 12 Jun 2025 22:52:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AA02153BD9;
+	Thu, 12 Jun 2025 22:56:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749768748; cv=none; b=jVo2ocwLNbqlTp2SpCTxrHiFDfA1gwNGM18pjK2VYjmiRwsfvPdShjC29WGHy+8Qqan4KHNKsdL9b4g8eUgY6+b5o1qY8/TZ6FsD4DGgSktfsUDtdXaxRVCP8T5k6P/I457kaC7D9/Pgz2wy25tr5zeNEbvb+76Xzzwm0a898VQ=
+	t=1749768966; cv=none; b=BzGTAI/KqDR7jGz19feEX54lah6cnEXVcuHZRM8SFuwsnc4cJwfy5ouyUZrfxhW6deHClBHWLn8m2g0xrjM/r8MaB4x9T1sTh35+ab9x46O1X7UMYfswhIo/BhCk/KM07Zgmr0+HWdG5TBX03xME97iZaNOjluFOZcf1OtnYx1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749768748; c=relaxed/simple;
-	bh=jMlxmZZTo6rTWsBUudaRKPlf+d5/G0AfKjYQwml7YHc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BR9nx8qrCxiclZsv6oJChAHkO0QDwa6PFqbNoS12lbnu6Xap152DIQYrv2DHJ+a80i4rzMjTivl135OPT3buUysX3YYOOCsXNepo9g1sZKBNUk85IeoJ7MJH9+QZ+IBjXOxZDLG41RCutl/nqH5a6/e+hY1vx1QxGoCkf2/X63k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lD0A/v97; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 014C8C4CEEA;
-	Thu, 12 Jun 2025 22:52:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749768748;
-	bh=jMlxmZZTo6rTWsBUudaRKPlf+d5/G0AfKjYQwml7YHc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=lD0A/v97SwM7Ga6ASEYxETAyNTwLSdN9s3YarAstt4LKd3yaRfck6VrPAmTsB1fCJ
-	 7ngZQ/kF6eslIdK8f1HF4+o1Jofu7ii0hMbI17a3FGvvxqwgPIsgD4e+9jM6jsf7g3
-	 UceH90Za5OPGojj1WUxg+hALC5Np95bcXQ3NJ73PNS0n+lZHr2XDxHdpTOtEY+9u9u
-	 DHzzIyj0fXgkemhBSFp1HpglGlxbmHRAkpESftpqd4wMHfVqqY6phJRLPrDuuOmRNs
-	 ygTAkQkpCdhUirmI4qmoboVN2wPS4c7tJyOC3k2fdM5CM9a/LuYw06T6m+aPX+uMFs
-	 QDhbVW8dmozgg==
-Date: Thu, 12 Jun 2025 15:52:26 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Mina Almasry <almasrymina@google.com>
-Cc: Cosmin Ratiu <cratiu@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Dragos
- Tatulea <dtatulea@nvidia.com>, "andrew+netdev@lunn.ch"
- <andrew+netdev@lunn.ch>, "hawk@kernel.org" <hawk@kernel.org>,
- "davem@davemloft.net" <davem@davemloft.net>, "john.fastabend@gmail.com"
- <john.fastabend@gmail.com>, "leon@kernel.org" <leon@kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "pabeni@redhat.com" <pabeni@redhat.com>, "ast@kernel.org" <ast@kernel.org>,
- "richardcochran@gmail.com" <richardcochran@gmail.com>, Leon Romanovsky
- <leonro@nvidia.com>, "linux-rdma@vger.kernel.org"
- <linux-rdma@vger.kernel.org>, "edumazet@google.com" <edumazet@google.com>,
- "horms@kernel.org" <horms@kernel.org>, "daniel@iogearbox.net"
- <daniel@iogearbox.net>, Tariq Toukan <tariqt@nvidia.com>, Saeed Mahameed
- <saeedm@nvidia.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Gal
- Pressman <gal@nvidia.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH net-next v3 10/12] net/mlx5e: Implement queue mgmt ops
- and single channel swap
-Message-ID: <20250612155226.770f0676@kernel.org>
-In-Reply-To: <CAHS8izOG+LoJ-GvyRu6zSVCUvoW4VzYX5CEdDhCdVLimOSP0KQ@mail.gmail.com>
-References: <20250609145833.990793-1-mbloch@nvidia.com>
-	<20250609145833.990793-11-mbloch@nvidia.com>
-	<CAHS8izOX8t-Xu+mseiRBvLDYmk6G+iH=tX6t4SWY2TKBau7r-Q@mail.gmail.com>
-	<9107e96e488a741c79e0f5de33dd73261056c033.camel@nvidia.com>
-	<CAHS8izOG+LoJ-GvyRu6zSVCUvoW4VzYX5CEdDhCdVLimOSP0KQ@mail.gmail.com>
+	s=arc-20240116; t=1749768966; c=relaxed/simple;
+	bh=X6sZ0Yd5Wom0ChcuXMKZhTWW+WsXahKrCRICK3YwZGE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KHIzpeorg7cNN9VjxcYUr2tp0+KH2JNn3IF2DnF4i4yp/hovk1ukf1+ljRqU6IwZxSpJKnqclq2PlPEr1MYceqvp+te2oe+g6kQ93auXsSYRx+CkLQXDvRiQDMmz+n6wCicvycJzskKOZTe7qrJEWDgsZLMDCss/sDy5fZcd8wM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dM3Qtv6V; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-7399a2dc13fso1902880b3a.2;
+        Thu, 12 Jun 2025 15:56:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749768964; x=1750373764; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=meOGjJhSwT7qXsTwte/kIbqFN3wRA+oPn73O9vx1JGo=;
+        b=dM3Qtv6V/58sFhrIqOQJXNvKO0w5vzPlyUZ8k1De/X0o78AFRx8pBn/pQ3gerkDM5C
+         +ywfAN/x0+RdIIIT9GAe3zgSP2yFbx1OTzvFszSfiBjWrbWavtOJtWwtg7/xYSL3Z7x0
+         EnGcY8ky0Q6paCTEpjbO9oahxqFAxUzKAQ+tSaW6RHnJbu3NbSWYZfHfQR5YDU/Eg4eM
+         YGoULHHfPyXGQroN1XtApESTDH1cq5n1jkRFrgnUS5wrdC+bShGLvgRKa02CHTlnK9Ge
+         u3HYHITRmvvOT0GeghfdUeoMlSOhSX61f+UsJNgVHSUAZQub0XawJFRrMTzn2ZJQyoBn
+         pogw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749768964; x=1750373764;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=meOGjJhSwT7qXsTwte/kIbqFN3wRA+oPn73O9vx1JGo=;
+        b=OSL6J/8dwe7sepRticUlzNb3In0TiJDXdePwo2JXv1hYb5fjzDQp0iDRQ8IzGGZEgD
+         wnarqzD5siohY6QgncaCtQ3VK+3x6WSHI+mvYJ14Vn6S4GE39yXkGH0runqT8DCOl32H
+         I5h5YTzbdteedbJIzw0HJxhsn+nj+7Cl6oaLEThIM77xXutIluHSymV+NLTChn+rmlDH
+         /0x8rIZ/VYmYzJFumd1GujalvAwxZTqkesI3w29M9kE0O61negNOd8K6/r+Dj0o56a/P
+         McygOEJVkO6BXZM5ZDvsCPTgbrJL1jkUoaONzLERk0u75Q0U9W0ITyvR+3ig60mkOaGD
+         83wg==
+X-Forwarded-Encrypted: i=1; AJvYcCU0U0JQJnClSYQXGs5PADKPvWi+pfh73h+uuXxkcs27WIYlmAcm81G21B/IAtAyEZpoDoB0cMo0D+umVEHXyzUiPCk2xao=@vger.kernel.org
+X-Gm-Message-State: AOJu0YymIwRHXLB+kO8OQZUrUE2TTVBCenvzwHZHIXqDtnNtNlM5heyk
+	nfTmlSDnLIw9wDRRv/m5x1V/Y38oMyjDsXhTMmqABlwQ+MaxJsPcSVshzABObmCLvkMu2+MDG21
+	JP4sW7J6O0kaQ8E/7n9xkhVFHMAc7lv4=
+X-Gm-Gg: ASbGncuOCWPRQE4Vo98cNwNPve4yczx1qpoNqhH6OAk+ak5DuEoIHC+e777VbqQ5CTt
+	gcYiTjue0JEpnMnQk6SSna880V1+Wtg+PpcZuoJDgvgZaKcssy1UbdZHaijsZ8IXlvRhMOpZRx7
+	DAKmwkZZqv0o1wE+ttwaobqtAVhXfyjgYbPXvJM9Dk5xIS2PQCCYdJgE79f2Q=
+X-Google-Smtp-Source: AGHT+IEQzOG6n0ypj5znZ7us/yKg3gOclsk/RxdLEdbU4GwMnbUQlAjb4bkD/5S5+xgr5FaEbg32tr5OUxH4y9xWc7A=
+X-Received: by 2002:a05:6a20:7285:b0:215:e60b:3bcf with SMTP id
+ adf61e73a8af0-21facebaec0mr1138913637.30.1749768963859; Thu, 12 Jun 2025
+ 15:56:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20250606232914.317094-1-kpsingh@kernel.org> <20250606232914.317094-5-kpsingh@kernel.org>
+In-Reply-To: <20250606232914.317094-5-kpsingh@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 12 Jun 2025 15:55:49 -0700
+X-Gm-Features: AX0GCFvDmvbCIuhLi_XdR4f5yoZPh2STVJBY8j1FyidKUz0M03z2SUKKe9qAG8Y
+Message-ID: <CAEf4BzaAjO-EGvuHkx3dndKfchiifAdsU0OofuNMo819iprq7w@mail.gmail.com>
+Subject: Re: [PATCH 04/12] libbpf: Implement SHA256 internal helper
+To: KP Singh <kpsingh@kernel.org>
+Cc: bpf@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	bboscaccy@linux.microsoft.com, paul@paul-moore.com, kys@microsoft.com, 
+	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 12 Jun 2025 13:44:44 -0700 Mina Almasry wrote:
-> > On Wed, 2025-06-11 at 22:33 -0700, Mina Almasry wrote:  
-> > > Is this really better than maintaining uniformity of behavior between
-> > > the drivers that support the queue mgmt api and just doing the
-> > > mlx5e_deactivate_priv_channels and mlx5e_close_channel in the stop
-> > > like core sorta expects?
-> > >
-> > > We currently use the ndos to restart a queue, but I'm imagining in
-> > > the
-> > > future we can expand it to create queues on behalf of the queues. The
-> > > stop queue API may be reused in other contexts, like maybe to kill a
-> > > dynamically created devmem queue or something, and this specific
-> > > driver may stop working because stop actually doesn't do anything?
-> > >  
-> >
-> > The .ndo_queue_stop operation doesn't make sense by itself for mlx5,
-> > because the current mlx5 architecture is to atomically swap in all of
-> > the channels.
-> > The scenario you are describing, with a hypothetical ndo_queue_stop for
-> > dynamically created devmem queues would leave all of the queues stopped
-> > and the old channel deallocated in the channel array. Worse problems
-> > would happen in that state than with today's approach, which leaves the
-> > driver in functional state.
-> >
-> > Perhaps Saeed can add more details to this?  
-> 
-> I see, so essentially mlx5 supports restarting a queue but not
-> necessarily stopping and starting a queue as separate actions?
-> 
-> If so, can maybe the comment on the function be reworded to more
-> strongly indicate that this is a limitation? Just asking because
-> future driver authors interested in implementing the queue API will
-> probably look at one of mlx5/gve/bnxt to see what an existing
-> implementation looks like, and I would rather them follow bnxt/gve
-> that is more in line with core's expectations if possible. But that's
-> a minor concern; I'm fine with this patch.
-> 
-> FWIW this may break in the future if core decides to add code that
-> actually uses the stop operation as a 'stop', not as a stepping stone
-> to 'restart', but I'm not sure we can do anything about that if it's a
-> driver limitation.
+On Fri, Jun 6, 2025 at 4:29=E2=80=AFPM KP Singh <kpsingh@kernel.org> wrote:
+>
+> Use AF_ALG sockets to not have libbpf depend on OpenSSL. The helper is
+> used for the loader generation code to embed the metadata hash in the
+> loader program and also by the bpf_map__make_exclusive API to calculate
+> the hash of the program the map is exclusive to.
+>
+> Signed-off-by: KP Singh <kpsingh@kernel.org>
+> ---
+>  tools/lib/bpf/libbpf.c          | 57 +++++++++++++++++++++++++++++++++
+>  tools/lib/bpf/libbpf_internal.h |  9 ++++++
+>  2 files changed, 66 insertions(+)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index e9c641a2fb20..475038d04cb4 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -43,6 +43,9 @@
+>  #include <sys/vfs.h>
+>  #include <sys/utsname.h>
+>  #include <sys/resource.h>
+> +#include <sys/socket.h>
+> +#include <linux/if_alg.h>
+> +#include <linux/socket.h>
+>  #include <libelf.h>
+>  #include <gelf.h>
+>  #include <zlib.h>
+> @@ -14161,3 +14164,57 @@ void bpf_object__destroy_skeleton(struct bpf_obj=
+ect_skeleton *s)
+>         free(s->progs);
+>         free(s);
+>  }
+> +
+> +int libbpf_sha256(const void *data, size_t data_size, void *sha_out)
 
-Agreed, would be good to add a TODO and follow up on this.
-It will bite us sooner or later. I suppose state_lock may
-need to be dropped in favor of the netdev instance lock first?
+naming convention nit: in libbpf sources we usually use _sz suffix for size
 
-I'm disappointed that mlx5 once again disrupts all rings to restart 
-a single one. But all existing drivers seem to do this, so I guess
-it'd be unfair to push back based on just that :|
+> +{
+> +       int sock_fd =3D -1;
+> +       int op_fd =3D -1;
+> +       int err =3D 0;
+> +
+
+nit: unnecessary empty line, please keep all variable decls in one
+contiguous block
+
+> +       struct sockaddr_alg sa =3D {
+> +               .salg_family =3D AF_ALG,
+> +               .salg_type   =3D "hash",
+> +               .salg_name   =3D "sha256"
+> +       };
+> +
+> +       if (!data || !sha_out)
+> +               return -EINVAL;
+
+this is internal API, no need for this (and we don't really check for
+NULL for mandatory arguments even in public APIs), so let's just drop
+this check
+
+if anything, I'd probably require passing sha_out_sz and validate that
+it's equal to SHA256_DIGEST_LENGTH to prevent silent corruptions
+
+> +
+> +       sock_fd =3D socket(AF_ALG, SOCK_SEQPACKET, 0);
+> +       if (sock_fd < 0) {
+> +               err =3D -errno;
+> +               pr_warn("failed to create AF_ALG socket for SHA256: %s\n"=
+, errstr(err));
+> +               return libbpf_err(err);
+> +       }
+> +
+> +       if (bind(sock_fd, (struct sockaddr *)&sa, sizeof(sa)) < 0) {
+> +               err =3D -errno;
+> +               pr_warn("failed to bind to AF_ALG socket for SHA256: %s\n=
+", errstr(err));
+> +               goto out_sock;
+> +       }
+> +
+> +       op_fd =3D accept(sock_fd, NULL, 0);
+> +       if (op_fd < 0) {
+> +               err =3D -errno;
+> +               pr_warn("failed to accept from AF_ALG socket for SHA256: =
+%s\n", errstr(err));
+> +               goto out_sock;
+> +       }
+> +
+> +       if (write(op_fd, data, data_size) !=3D data_size) {
+> +               err =3D -errno;
+> +               pr_warn("failed to write data to AF_ALG socket for SHA256=
+: %s\n", errstr(err));
+> +               goto out;
+> +       }
+> +
+> +       if (read(op_fd, sha_out, SHA256_DIGEST_LENGTH) !=3D SHA256_DIGEST=
+_LENGTH) {
+> +               err =3D -errno;
+> +               pr_warn("failed to read SHA256 from AF_ALG socket: %s\n",=
+ errstr(err));
+> +               goto out;
+> +       }
+> +
+> +out:
+> +       close(op_fd);
+> +out_sock:
+> +       close(sock_fd);
+
+nit: given you init fds to -1, you can simplify out* jumping to just
+single out: clause with if (fd >=3D 0) close(fd); sequence
+
+> +       return libbpf_err(err);
+> +}
+> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_inter=
+nal.h
+> index 477a3b3389a0..79c6c0dac878 100644
+> --- a/tools/lib/bpf/libbpf_internal.h
+> +++ b/tools/lib/bpf/libbpf_internal.h
+> @@ -736,4 +736,13 @@ int elf_resolve_pattern_offsets(const char *binary_p=
+ath, const char *pattern,
+>
+>  int probe_fd(int fd);
+>
+> +#ifndef SHA256_DIGEST_LENGTH
+> +#define SHA256_DIGEST_LENGTH 32
+> +#endif
+> +
+> +#ifndef SHA256_DWORD_SIZE
+> +#define SHA256_DWORD_SIZE SHA256_DIGEST_LENGTH / sizeof(__u64)
+> +#endif
+
+do we really need ifndef guarding these?...
+
+
+> +
+> +int libbpf_sha256(const void *data, size_t data_size, void *sha_out);
+>  #endif /* __LIBBPF_LIBBPF_INTERNAL_H */
+> --
+> 2.43.0
+>
 
