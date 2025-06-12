@@ -1,128 +1,157 @@
-Return-Path: <bpf+bounces-60425-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60427-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A047AD6516
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 03:19:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3986AD6545
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 03:53:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A5173A7FD0
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 01:18:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B3333ACAF4
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 01:53:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BAD072613;
-	Thu, 12 Jun 2025 01:19:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C928185B67;
+	Thu, 12 Jun 2025 01:53:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Oht3aTsE"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="n6vZ/Eby"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A263A20328
-	for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 01:19:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A06217A2EA
+	for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 01:53:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749691158; cv=none; b=qYKhluH4C1PyfABNjiBqP7/L4vwYhyt5nlwDGjE3TArLjh34tPZtOukw1oQh5PEE02mOHKPdyXHWt3h/KqycGTZ7xfbfP8XsmJ6BqitMUqJHttW25dDMMrWpXend36QpO5bALcr44UHWOlECMrL0beX0vDXUWTaZxOqQpucrsak=
+	t=1749693206; cv=none; b=asHAIJKUv4zGWD69Sfv+gcVmXk08uI0rareayjkflh+yQ7kRb3GxC1nTmFrRPp3QhTTxeX5UK3UuLaSZMRG0/eFVragDU3NHtmgjPh+qIjQgjuC6fT5NSLdhPcZn/PHSUUX8TYTGEQmx41Ab10VfdqhZbTRws0+GOPP/EmRbJQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749691158; c=relaxed/simple;
-	bh=brEVAXm6LS10egOhiDKSgLl5YHN0iPvhRk6Gt5D+IS0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iPfn2sxZ6JBswXfYk157PwmFh5irKqRj85igtcz6TiZI6poaNrrMgtmDInVzIpOAmB8ACGUBLUtVLz65y7i1Cous5uj2uFgvjNgATUWt/3gKr0yWpbh9NcASBOOV56IQfs99ycHE63jLqdDci/+C0CYkqn+gsJUUlmDXF95p390=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Oht3aTsE; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-234b9dfb842so4757735ad.1
-        for <bpf@vger.kernel.org>; Wed, 11 Jun 2025 18:19:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749691156; x=1750295956; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=f4Yb4jOFV5ANiWnZ8jGh8e0X8foAY/v/u4htrI/rjTg=;
-        b=Oht3aTsEx5KjBxydb8sMZhNA2duNj9MbZRSLqDsipdZzRgLOBeZt3z5hAWtdTsqjzd
-         OpX8zn/c5a3Jcuc/vkT2VhM0b1HehHP99yPFurjFiqWkh5K3kqHklj9lS37o7oYaliHp
-         XmzBQT+Ibjv5VQPtYP+7hwbGLEsyFaAqNwoTR9qwECmKKkzAur1HuXgqRgnfHxXpnkN4
-         fZFZnNbkIrD70eullutg2uHntuJ4UbwgT4PAsyPdFgevsAwTPRU9w5iVhrbvTaRzHh/k
-         GQVe1ENfOvb/Mgg4d4lVDkgaUlUe4PLliBvpD9iFliPsQrlbY07Z4dbFfPMor99pvpJg
-         01+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749691156; x=1750295956;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=f4Yb4jOFV5ANiWnZ8jGh8e0X8foAY/v/u4htrI/rjTg=;
-        b=FpS/2t9lSBou9B1D87unuc7AY/9i+1cDb1lDa7V/WxJNez8dMcrNMhIgTLeoPFutql
-         tCLq5xooF8WJINv7NeuQ8FZ6TsL8Ee3aaj90fawwmFHdZDY67uUQbZN0ef+e1O4JpbHe
-         +4EcNS70CJQTKJpxkHB7T796rJTSU1H7vAvZX5l5Wi0wu0EZAy4wYtPXAFmsATM7XA0x
-         wmDqY8O2obyBvoYMTW9OatngunEirN7JBgfFsxM6mAAOIYU/ol40NT0+tewP720550m5
-         eTRSt9JqTUuyN7RTGp+BOi+02skrhUVGwdId3TC6aDEL1T4i4VaRb9f8btTyVft2x+jJ
-         U9nA==
-X-Gm-Message-State: AOJu0YwzgxeNuwxZNOIwiRuT3xUKObjezq4dsF3aNEEQvufan1H4enms
-	pe8VO1whKzIjYVdEIvxMROxHcYhoWiP/xIPSwI0CG4s09NV7aasIA1wvcIi+jA==
-X-Gm-Gg: ASbGnctCjdKsskh7jmj9PIg5nZrX2Xxx2FkFNpy2a9XY+UgY1iSf4sqR2qQqIIG4JGg
-	zyHV46/nGsxjR35f7itkmCysWhf5WRFrh5Zb7VJxo5rSCeEz1yk0otDOUlg4FTQlwpqJuC+T9gM
-	ZHyCvn65T0OG2d4vrHBUO5xXCMqT35vZzwqpam3uXvqq9J7EmX6uqU21N/3OK14+Q/rHcA6loxX
-	Ik/n7NH5KgnaXAIayfoJ0UnqpBxeqm6FlFsKHn/6VsQEejDtk9yvWQ6Y7xYmPpl88f29foOtID3
-	8nNQ+yg8OcK5rxt6I91lajIxzu3Awi3vN3+4P6AuthgwY4L1BAaVJvsYMefKslWIRFGCw35x9wa
-	x5BTpt7UmAHoydrngqi3num1WELQ=
-X-Google-Smtp-Source: AGHT+IENjlXT7cY8PLm8AMBrhyfVvO0vBRL2bMeBdCHfvXcMsgMOlrmYZnAaPiXWdDOmsAHdRaDbLQ==
-X-Received: by 2002:a17:903:288:b0:234:f182:a735 with SMTP id d9443c01a7336-2364d8c01f0mr17748025ad.34.1749691155864;
-        Wed, 11 Jun 2025 18:19:15 -0700 (PDT)
-Received: from localhost.localdomain ([2001:558:600a:7:a83d:600f:32cc:235a])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2364e6db039sm2173365ad.121.2025.06.11.18.19.15
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Wed, 11 Jun 2025 18:19:15 -0700 (PDT)
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: torvalds@linux-foundation.org
-Cc: bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@kernel.org
-Subject: [GIT PULL] BPF fixes for 6.16-rc2
-Date: Wed, 11 Jun 2025 18:19:13 -0700
-Message-Id: <20250612011913.48375-1-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+	s=arc-20240116; t=1749693206; c=relaxed/simple;
+	bh=XUHFYDabnW/sHUi4pscxPhWfq7LxDpuoSHs19JJ5lGg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hYzuMgiZLl6vxnT8ew7B8TaIZhE2QWBWo8IOYUraD034ad88MPj8yw/fXGNG6fDPi4BJ1D2IjE8ozheo3kCC+2t0kjsC33GVbfnklCd9Ay4gYT9hZlWONU1AjUwL/G9qygVljw+NUeN6defNKAHxYTDHkv0TtLdAPfmleap97iQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=n6vZ/Eby; arc=none smtp.client-ip=91.218.175.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <cb376d96-6fa0-40b9-8e63-a567a283ef1e@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1749693202;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3qKRdm4W8ugxJ7b78QUE79WzrwBWhUsmmEj+/+jlVG8=;
+	b=n6vZ/EbyfbQsFFNodhdS01Ozvxo9riLFwa9nz5Rlbk47NJptp8Bvb9VDMXavLml0OW/04U
+	mZCSXHix8pDvfFrI9swbw+k9whtInlqOpZcLjHdAMk/wUud/UKpTDSJZjT5Gd2cEDZn2Tc
+	ouKS+5YNss8+ySjt4SqBoCi2ghDkzsY=
+Date: Wed, 11 Jun 2025 18:53:16 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next v2 1/3] bpf: Fix an issue in
+ bpf_prog_test_run_xdp when page size greater than 4K
+Content-Language: en-GB
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
+References: <20250611171519.2033193-1-yonghong.song@linux.dev>
+ <20250611171524.2033657-1-yonghong.song@linux.dev>
+ <CAADnVQL3mBq_45EZcjFQeNMAeJXzT=TMAQo+1XpTcZxWLrTdkg@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAADnVQL3mBq_45EZcjFQeNMAeJXzT=TMAQo+1XpTcZxWLrTdkg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi Linus,
 
-The following changes since commit 7a912d04415b372324e5a8dfad3360d993d0c23a:
 
-  Merge tag 'spi-v6.16-merge-window' of git://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi (2025-06-06 13:22:31 -0700)
+On 6/11/25 12:24 PM, Alexei Starovoitov wrote:
+> On Wed, Jun 11, 2025 at 10:15 AM Yonghong Song <yonghong.song@linux.dev> wrote:
+>> The bpf selftest xdp_adjust_tail/xdp_adjust_frags_tail_grow failed on
+>> arm64 with 64KB page:
+>>     xdp_adjust_tail/xdp_adjust_frags_tail_grow:FAIL
+>>
+>> In bpf_prog_test_run_xdp(), the xdp->frame_sz is set to 4K, but later on
+>> when constructing frags, with 64K page size, the frag data_len could
+>> be more than 4K. This will cause problems in bpf_xdp_frags_increase_tail().
+>>
+>> To fix the failure, the xdp->frame_sz is set to be PAGE_SIZE so kernel
+>> can test different page size properly. With the kernel change, the user
+>> space and bpf prog needs adjustment. Currently, the MAX_SKB_FRAGS default
+>> value is 17, so for 4K page, the maximum packet size will be less than 68K.
+>> To test 64K page, a bigger maximum packet size than 68K is desired. So two
+>> different functions are implemented for subtest xdp_adjust_frags_tail_grow.
+>> Depending on different page size, different data input/output sizes are used
+>> to adapt with different page size.
+>>
+>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>> ---
+>>   net/bpf/test_run.c                            |  2 +-
+>>   .../bpf/prog_tests/xdp_adjust_tail.c          | 95 +++++++++++++++++--
+>>   .../bpf/progs/test_xdp_adjust_tail_grow.c     |  8 +-
+>>   3 files changed, 96 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+>> index aaf13a7d58ed..9728dbd4c66c 100644
+>> --- a/net/bpf/test_run.c
+>> +++ b/net/bpf/test_run.c
+>> @@ -1255,7 +1255,7 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
+>>                  headroom -= ctx->data;
+>>          }
+>>
+>> -       max_data_sz = 4096 - headroom - tailroom;
+>> +       max_data_sz = PAGE_SIZE - headroom - tailroom;
+>>          if (size > max_data_sz) {
+>>                  /* disallow live data mode for jumbo frames */
+>>                  if (do_live)
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
+>> index e361129402a1..133bde28a489 100644
+>> --- a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
+>> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
+>> @@ -37,21 +37,25 @@ static void test_xdp_adjust_tail_shrink(void)
+>>          bpf_object__close(obj);
+>>   }
+>>
+>> -static void test_xdp_adjust_tail_grow(void)
+>> +static void test_xdp_adjust_tail_grow(bool is_64k_pagesize)
+>>   {
+>>          const char *file = "./test_xdp_adjust_tail_grow.bpf.o";
+>>          struct bpf_object *obj;
+>> -       char buf[4096]; /* avoid segfault: large buf to hold grow results */
+>> +       char buf[8192]; /* avoid segfault: large buf to hold grow results */
+>>          __u32 expect_sz;
+>>          int err, prog_fd;
+>>          LIBBPF_OPTS(bpf_test_run_opts, topts,
+>>                  .data_in = &pkt_v4,
+>> -               .data_size_in = sizeof(pkt_v4),
+>>                  .data_out = buf,
+>>                  .data_size_out = sizeof(buf),
+>>                  .repeat = 1,
+>>          );
+>>
+>> +       if (is_64k_pagesize)
+>> +               topts.data_size_in = sizeof(pkt_v4) - 1;
+>> +       else
+>> +               topts.data_size_in = sizeof(pkt_v4);
+> Please add a comment that magic data size is a special
+> signal to bpf prog:
 
-are available in the Git repository at:
+Ok, will add a comment to explain this.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/bpf-fixes
+>
+>>          if (data_len == 54) { /* sizeof(pkt_v4) */
+>> -               offset = 4096; /* test too large offset */
+>> +               offset = 4096; /* test too large offset, 4k page size */
+>> +       } else if (data_len == 53) { /* sizeof(pkt_v4) - 1 */
+>> +               offset = 65536; /* test too large offset, 64k page size */
+>>          } else if (data_len == 74) { /* sizeof(pkt_v6) */
+>>                  offset = 40;
+> and comment about 90000, 90001 sizes.
 
-for you to fetch changes up to 9cf1e25053c269d64b9e9fa25e8697d6d58028d4:
+Ack as well.
 
-  MAINTAINERS: Add myself as bpf networking reviewer (2025-06-10 12:48:24 -0700)
 
-----------------------------------------------------------------
-- Fix libbpf backward compatibility (Andrii Nakryiko)
-
-- Add Stanislav Fomichev as bpf/net reviewer
-
-- Fix resolve_btfid build when cross compiling (Suleiman Souhlal)
-
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-----------------------------------------------------------------
-Andrii Nakryiko (1):
-      libbpf: Handle unsupported mmap-based /sys/kernel/btf/vmlinux correctly
-
-Stanislav Fomichev (1):
-      MAINTAINERS: Add myself as bpf networking reviewer
-
-Suleiman Souhlal (1):
-      tools/resolve_btfids: Fix build when cross compiling kernel with clang.
-
- .mailmap                          | 1 +
- MAINTAINERS                       | 3 +++
- tools/bpf/resolve_btfids/Makefile | 2 +-
- tools/lib/bpf/btf.c               | 6 +++---
- 4 files changed, 8 insertions(+), 4 deletions(-)
 
