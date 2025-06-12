@@ -1,134 +1,141 @@
-Return-Path: <bpf+bounces-60533-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60534-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6032EAD7DAF
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 23:43:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B2326AD7DB7
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 23:44:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D42EF3B3012
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 21:42:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D9B43B2FD7
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 21:44:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 711E422FE17;
-	Thu, 12 Jun 2025 21:42:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09BD02D322D;
+	Thu, 12 Jun 2025 21:44:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S69mlxp7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AmH1VtxT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60EFD79E1
-	for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 21:42:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A1B679E1;
+	Thu, 12 Jun 2025 21:44:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749764577; cv=none; b=A/PzlPB06qz/T267NkPUFXF+wkoT2cYXMZ/vvuLduUWRzgx5W4TwSHjmEus2X3YXNo2e2IelK5aPN29b9gXD2dgT5hhNOzin3Jp++Y3DYGWKrPUGVNqPxVOtRnYaEVIBkAkN7y6QZhVF+hwNzfiAEBWWz/M43FJRx/8v5jsyT1w=
+	t=1749764672; cv=none; b=TtRsYdhGkvLu5YJoaX9v4LSLk2zV1FKZW5/Kkv2tnqBOrN2k0c4FPI5dtXzsBFC1MT8z0lhtACcFfxK9CC+hrMER3KCitdifY1+ViDuGXvZ5Mzqtur8R4gP+weNGDgq1Bo3IwRcKqUnvaP9LCNNd/X0/0VmRM9xfykhqrP6a5Pc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749764577; c=relaxed/simple;
-	bh=LheihJJE8xELNQoHk9PMiV1HePcVudC3HlPaQGOTNDI=;
+	s=arc-20240116; t=1749764672; c=relaxed/simple;
+	bh=IATpOY238gFRIVo+bPshN1PINtZLZa5IPupP6GUEMmM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YqJz1ccmDQrPYoycNshqTYqDAIElzRy5hRiI0NZK1ELR4FNUk/EMBZpcmPc0Kr5dLKXgVSuOD/qQ4lPouPeM3oadtaFyVdi5kNBIlsFiJeSho8f6g66KwXyKN7rZ8IPizO0eimide8SN954djrbkLK3nTOcUWoClZjZp2aeimYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S69mlxp7; arc=none smtp.client-ip=209.85.221.48
+	 To:Cc:Content-Type; b=GwdZZlCWRB+ecEoYrKx0iJWRFOJ81wiNh65mmaC82gf3L7/tHH4p/mTM5MaXtfR+XG8T61IDhPPfqim1vr83Cm/qKzWBFte0ZKn4P0fljWYJ34jPPyNX7mo/5/fjEX1jSPwA6d7yVtZPdMt4PMgxrxZpNXYxaNRApgJ/zA0p3kU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AmH1VtxT; arc=none smtp.client-ip=209.85.215.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3a4f71831abso1367317f8f.3
-        for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 14:42:55 -0700 (PDT)
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-b1ff9b276c2so926102a12.1;
+        Thu, 12 Jun 2025 14:44:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749764574; x=1750369374; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1749764670; x=1750369470; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LheihJJE8xELNQoHk9PMiV1HePcVudC3HlPaQGOTNDI=;
-        b=S69mlxp7ZX8gvAVVdsx/Z8OIHZdUBV2LK9w0FyQ0TCWX/8KVr7EXqulTUgeSzp0CtJ
-         J/Bhs0VM0HnB3xOwpN/tcsCMtmWBuFRv/n3RGcWSwI2Yfuv8+yydIYw5+JCJhU0YfTp/
-         2PdNcuWT6hX5AEzDdvalX4R95Ps55fI85eC3xAwdfGjSGTeJDdXv3LlgworzvvFpxSV5
-         Ddpssb2VK+BHRAAAF7fbz9ZEtCqbVZDLNAUb6SxleDf9lZYkrRotPcZj8JFm83TTtxNV
-         J2eFweaskur1gNvG8a7yrkaPps5i6eliwWsewZA+9Los+MC02hZ1/I2ZpN1SXOfOI3gw
-         BbAQ==
+        bh=IATpOY238gFRIVo+bPshN1PINtZLZa5IPupP6GUEMmM=;
+        b=AmH1VtxTJ6oQ8w4jRl0n3RIJeChB9wEekCyNX9TLfS72xc/RDoNAqkmeq9euA6WBoZ
+         KFoUDw3eYbSSHyK81IviuOsOBl6MTAThNOXWrnUnQmCG6DQrOvF2IYyAebA2ESomVUZN
+         i9k9ONCKUwhQl3uBPQSGPHJSSOOzCvIrR06nUo0eYAsWVbhYrpKgOTDUscULkTT2Axsu
+         +uq82JlN/1anc4meN0xWVTtPHPP7PHZJN/NeYFWUx4UwT0n7kRbJNao3+rclBldbgxS0
+         pA4+oLm9Hb3ueqsnEHXf5o+kjGvbCLiaGkUhTBp4blN7j3DtxkqkDFGn20ib8ncfQDCV
+         1Hcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749764574; x=1750369374;
+        d=1e100.net; s=20230601; t=1749764670; x=1750369470;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LheihJJE8xELNQoHk9PMiV1HePcVudC3HlPaQGOTNDI=;
-        b=YYVrARXCG+OjkK952fkQBJBQG/jtfXnkU6oFtq3egNVNNJh1z+kxvRLnp+HCEkFmpx
-         kEuJvkwyJPSskdpz3F1KUkLR88kAKQcFWxNR+2pmDAiW4E5yAIjp3oiGn8+ScuS7Ftte
-         byWWpAhoFkxhhQABqz0Hjfo2E+8hCNWgtUeKpkDGr942HE40RDhO1OM70henJXiXM4gR
-         9JRAsAZfFlPlb0qiOYvVMFOfsuqswTgU/joKZrV28Jw93urabieUwnNc1BBIvubxRb3m
-         0szQ51TvyOAUYOnWrmOe6G+5p6eJWnCyAj3+aNNs8jqcp8VEpJQK/vsfLZ3YP7IduEej
-         8WAw==
-X-Forwarded-Encrypted: i=1; AJvYcCU5uStAPmxCaPrKXSzpS4zZXO2hhywUZoSNHpjnWHpdICvaxJn4C/XxKJKeT4Rd8VdRHx0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YykYOGX+/nYKEWQBQUtIxUUrjcOG1+qhW3d6o54gg3Ji/kIlEoy
-	tZlu52LIsSdVYx49HbN/MjZGmgIc65V/64QBXmbMBxjoiqkg2v13Q4puJerelasRhFENibd/ty4
-	ZzAL03qyC2Wa6KEETwzDaHyGffVhLB0A=
-X-Gm-Gg: ASbGncvhBFSnbSWtqc4+E+Z0wPt8u2tXrXd2mOIyGGusEUfVspbMGQ0FeGWRNMLcWER
-	2NhuJbTLXAt1c9zB2bNh9hC9KEwVvevn9kgyHsxrrZt/EsK6HK2pbcvExgteIYbdXvEkjp3RzXh
-	P6u4b0BGL8KScUXspkIGroURFPchRQuklzatsDuya+ynXSAsxiq66H3ZY34TfW5e68FGo1h3wBg
-	V1Ob7/ftSc=
-X-Google-Smtp-Source: AGHT+IGKl3Ey95Vkmx/olECEYr5KdO3UGLIhKpIpMHQpxijqVbGH5qtQsojq352guDHQW8TY1eQKzqPJ6gBIefBzAzo=
-X-Received: by 2002:a05:6000:4010:b0:3a4:bfda:1e9 with SMTP id
- ffacd0b85a97d-3a56877c2a9mr719191f8f.46.1749764573691; Thu, 12 Jun 2025
- 14:42:53 -0700 (PDT)
+        bh=IATpOY238gFRIVo+bPshN1PINtZLZa5IPupP6GUEMmM=;
+        b=fZUQzcxlUFR9uN5mt0iAtrpvjfr04fvBHj7/JHUud4bBehltk/Lhyf+sTp9aSDh28J
+         hqGygRoyQxwmnvKg+JP9JymjZ5EulXQh6VUATfhBOG5CCLU/31PquhO+QEH0I+auh/CB
+         /WvLyUtqlOlUZMmp2+OOW8CeuQCur7SmOV4Ttd8/6RgQu3cRtfp7vNAujGwau3UoMile
+         Xw9AMUFLcp455iBrSyfzASQ19ijOH39t+iYw7NQg0W4lMa0tlphagMiImxIxwVk8qmkH
+         WCv70236ROC2jfExze8FCGxNBHCA95Y6JiD0MeB/B2hkH13tYkiuAfvAbqlFvHBkeaGx
+         23NQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUxNqDQtILvA/j4uc1SSkS2g9q+qf7IQQm5FXP6UDAe6wns68UEBaxAMrHLC4cPONuHuq2dTBo8J8xVtB+jN9wRsHf5@vger.kernel.org, AJvYcCXfYAUf9VLfpUs/aaRHUpaU2JJQbdnl6Q30PEbvk6w4A0ergiRf6vJ8T8m603fITKa6Fek=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzKfkF4hRC8VIbncQqq+cgaC5eHzP81wPjrEugVMxHsqMzCmMi4
+	P8tk3BcZOKvEOAGxc3T2b+JQPcA0e4hsOoPC2TAJHxjcUqiebcw8VZ7zFWdFfIhM0ZmNisHH0eG
+	p7j9cyyewQOtTWT8h5JkKUHFlIz3Hp94=
+X-Gm-Gg: ASbGncvXP1WRgiO6HDtWbbb2EGwWfb4YBVkoIiL3KpuruKqv+ilVuy7mumFS1Gj6ODA
+	Fr7s+3XgSJ+SGxaHgG6tRypJHK/qSQ6G68Ssmcnw0DZLk8rwFi/slaXaQzeelT46FPvt+uJUs8T
+	QBUouWelNphwpKcc3xgGx0Y/2jgJFuLDeZ2l9ebFpe6MCFy5/AJsfVSzIDofA=
+X-Google-Smtp-Source: AGHT+IHhZCcPD/r3sFQ9gQrmnCeEnJ8w0ck2pNHkvamx2T5ty3OdoBVMzEXMPUIkDXYKLj4kAqcLWzf4CCp6+nV/vh8=
+X-Received: by 2002:a05:6a20:6a0b:b0:1fe:5921:44f2 with SMTP id
+ adf61e73a8af0-21facc8793bmr680738637.20.1749764670394; Thu, 12 Jun 2025
+ 14:44:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250612171938.2373564-1-yonghong.song@linux.dev>
- <5341c8c05537d6f9a4d252f5c98ec895ade09430.camel@gmail.com>
- <CAADnVQKNBps+MvPmHG3BGYtNV34ut6L8cF+wCNWCOLTiauuL0g@mail.gmail.com>
- <cbc60943-783e-4444-9d46-3a25e71a6e63@linux.dev> <b35717b7c65a0ee8baba9800dbbb2c9e58c62b32.camel@gmail.com>
- <CAADnVQKrrEFcUdUvagwSkrCLJSoud4Jv0=CM2rX7p5MYKYOC=Q@mail.gmail.com> <9665f3b3-1c8e-4dae-b8df-c3147b119ff2@linux.dev>
-In-Reply-To: <9665f3b3-1c8e-4dae-b8df-c3147b119ff2@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 12 Jun 2025 14:42:42 -0700
-X-Gm-Features: AX0GCFvUGb9wKamUhkLdWzurQamh_zZnd_Yq6dVB6ngqmQdmravNuChyn2fkoGg
-Message-ID: <CAADnVQL+xOejJySjwuL3X0M_Ysurwcuf5zRJq5K4E9CVMcq8gg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix some incorrect inline asm codes
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, "Jose E. Marchesi" <jose.marchesi@oracle.com>, 
-	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
+References: <20250611005421.144238328@goodmis.org>
+In-Reply-To: <20250611005421.144238328@goodmis.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 12 Jun 2025 14:44:18 -0700
+X-Gm-Features: AX0GCFsMARBAt82iHeyYKq9sfzlLjy1I8tyKt0b1U2KihKgFlzE187b6rKd18ik
+Message-ID: <CAEf4BzZ9-wScwgYAc5ubEttZyZYUfkuAhr3dYiaqoVYu=yWKog@mail.gmail.com>
+Subject: Re: [PATCH v10 00/14] unwind_user: x86: Deferred unwinding infrastructure
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, x86@kernel.org, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Josh Poimboeuf <jpoimboe@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	Andrii Nakryiko <andrii@kernel.org>, Indu Bhagat <indu.bhagat@oracle.com>, 
+	"Jose E. Marchesi" <jemarch@gnu.org>, Beau Belgrave <beaub@linux.microsoft.com>, 
+	Jens Remus <jremus@linux.ibm.com>, Linus Torvalds <torvalds@linux-foundation.org>, 
+	Andrew Morton <akpm@linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 12, 2025 at 2:39=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
-dev> wrote:
+On Tue, Jun 10, 2025 at 6:03=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
+> wrote:
 >
 >
+> Hi Peter and Ingo,
 >
-> On 6/12/25 2:15 PM, Alexei Starovoitov wrote:
-> > On Thu, Jun 12, 2025 at 12:49=E2=80=AFPM Eduard Zingerman <eddyz87@gmai=
-l.com> wrote:
-> >> On Thu, 2025-06-12 at 12:29 -0700, Yonghong Song wrote:
-> >>
-> >> [...]
-> >>
-> >>>> Warning in llvm/gcc on imm32 > UINT_MAX is not correct either.
-> >>>> llvm should probably accept 0xffffFFFFdeadbeef as imm32.
-> >>> In llvm, the value is represented as an int64, we probably
-> >>> can just check the upper 32bit must be 0 or 0xffffFFFF.
-> >>> Otherwise, the value is out of range.
-> >> I agree with Yonghong, supporting things like 0xffffFFFFdeadbeef and
-> >> rejecting things like 0x8000FFFFdeadbeef would require changes to the
-> >> assembly parser to behave differently for literals of length 8 (signe
-> >> extend them) and >8 (zero extend them), which might be surprising in
-> >> some other ways.
-> > Ok. So what's the summary?
-> > No selftest changes needed and we add a check to llvm
-> > to warn when upper 32 bits !=3D0 and !=3D 0xffffFFFF ?
+> This is the first patch series of a set that will make it possible to be =
+able
+> to use SFrames[1] in the Linux kernel. A quick recap of the motivation fo=
+r
+> doing this.
 >
-> I did a little more checking, I think the value range
-> in [INT_MIN, UINT_MAX] is what we want. This is also my v1 of
-> llvm patch.
+> Currently the only way to get a user space stack trace from a stack
+> walk (and not just copying large amount of user stack into the kernel
+> ring buffer) is to use frame pointers. This has a few issues. The biggest
+> one is that compiling frame pointers into every application and library
+> has been shown to cause performance overhead.
+>
+> Another issue is that the format of the frames may not always be consiste=
+nt
+> between different compilers and some architectures (s390) has no defined
+> format to do a reliable stack walk. The only way to perform user space
+> profiling on these architectures is to copy the user stack into the kerne=
+l
+> buffer.
+>
+> SFrames is now supported in gcc binutils and soon will also be supported
+> by LLVM. SFrames acts more like ORC, and lives in the ELF executable
 
-and that's buggy because it will reject 0xffffFFFFdeadbeef
+Is there any upstream PR or discussion for SFrames support in LLVM to
+keep track of?
 
-> Support we have 64bit value, 0xffffFFFF00000001,
-> truncating the top 32bit, it becomes 1 and this value 1
-> won't be able to sign extension properly to 0xffffFFFF00000001.
+> file as its own section. Like ORC it has two tables where the first table
+> is sorted by instruction pointers (IP) and using the current IP and findi=
+ng
+> it's entry in the first table, it will take you to the second table which
+> will tell you where the return address of the current function is located
+> and then you can use that address to look it up in the first table to fin=
+d
+> the return address of that function, and so on. This performs a user
+> space stack walk.
+>
 
-well, yeah, 0xfff.. case should match 31-bit, of course.
+[...]
 
