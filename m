@@ -1,204 +1,114 @@
-Return-Path: <bpf+bounces-60484-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60485-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CFD3AD7738
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 17:58:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C172AD7722
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 17:56:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 853DA18855F7
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 15:53:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D2E37ACFC5
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 15:54:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 635402D6608;
-	Thu, 12 Jun 2025 15:48:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA7262BD5A8;
+	Thu, 12 Jun 2025 15:53:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="dDXWLFhT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZAYplWd8"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2041.outbound.protection.outlook.com [40.107.94.41])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60CD629ACDB;
-	Thu, 12 Jun 2025 15:48:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.41
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749743332; cv=fail; b=RAhWAX3SdLkJdL9qqRyJo22NdyHzr2DOS65Fjj7si6gCinAEXTJEP8WDP/DbHsHwfkT5EVITqyMOJ70rv6deDmywY9FCPB3hEop8Dnyq4lVln/t6ejrlGlLO4WJIEJ/LDHo9isRpPlvw7IDmlbVDEosPfJhfIAO3Bau2fIlPfyc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749743332; c=relaxed/simple;
-	bh=ypQJG+aDW97no7gmy42u0A1zXaglAwSjDgNH18DbhY0=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JeRfo8S+HPtPxNwH+eG2v8EQuueeMFmPNVPeuS9ZfDar18f5BW4CXdn+fIovU5SLlngN5aiunrbqmkijrg7msikNl+zjXv3J+nqHZ08a/lS/otFeWg8yuiMPZr1hlk3LyFH2vQ4IosOlWFBgbCJN7QfFo53370l0g4O8fmkX+eQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=dDXWLFhT; arc=fail smtp.client-ip=40.107.94.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=J7YpEgKf+SpDkNvFiXLSuJwgm1mMfKDHM7YBR3UUO/kJ1i6DHrd9Z7E40NLK0Ekt2DZryVo+RFnZsrIxUsoXfraoH9llnZhfdg6/iY9Rp3WzvPmhUQU5IaEscJmPrxtM+ucoIK677eKwQQhcU8nSBD69wOmh/1hI2fmRsMRVobOTjlxb3up3LFauV6A3AueVqPdSwM1G2oMiSkRPveXJomkZWHN2SUC6VPt5GVb1AmxsiqzYgjVWp0RmP1i1TaXM6x6zPRQk+tLMV1RqZJs7jdU2fst5bWiNqJx2qw3qbpv8Z3RV8lauKYL8JH2d8j6ANYz0QflAjsf8vABsEmmy2Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=T3d+rp+RzV0WEVN0O9fYlYB8x0LoR+hZjfBHGlNCoyE=;
- b=LNF1YlZQh1Er9BfWIxj5WNsGZNVUG0ClMJGq51s9Td8Ad3CEScg1WIq4Z2lZbIQYScqjqbyBuvTgsNGMotg6VkViQKOHFP06pcngZmGwxoMchRTvCQur390TIKNgVE9TE6l3noqRL3chKHZB6bS1qjUwve1l1joC4ZRy0qXC5xsbPj1Mj72imBFo0s0442aDRUMYsl+3dNAUap1OqGSNdO9kQI3DdyxMvW/DPdWYlSz6IBfAgosefzNuONqRjpLs4Ivcv1SlA0KJdNYh+NiCUUu5tC2o527SbVajS+iRoDFQ467jHGEppC9S51mta5dJIRjf4Ry/ojuaRmkK/NyRGA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=T3d+rp+RzV0WEVN0O9fYlYB8x0LoR+hZjfBHGlNCoyE=;
- b=dDXWLFhTJ/Qcr6jZbDtEkRcu1o2etpDciBMfVAYPwbfxnOQA+eJE06ofjCp6GQH7BYbZmKj1O4c5NHA1l5xXrGKcKUZ12IMaL6g81+B7VkA6ghkiL3GBzSgwfgiR/sWo41vB1NK+pihB+/vpW0/a7/W6w/RkVyE6rixS0U3Du05hBYYw6s7bbKvsPeJPmwJX4fAHerHXH7sWhUsWOPpwFEFA3X++JjSIedhALpovAuZ/1wd8GUAYbty7Wm/Xn5PeEVXhSZhH9SWqK6dIoQZqit2QFbCESKfbQ6aXB/KHshwtR8Bn2iRF6zuYujifReJ103pFxKp67GSTvss9P6VKrw==
-Received: from CH0P221CA0035.NAMP221.PROD.OUTLOOK.COM (2603:10b6:610:11d::22)
- by CH2PR12MB9496.namprd12.prod.outlook.com (2603:10b6:610:27e::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8835.18; Thu, 12 Jun
- 2025 15:48:46 +0000
-Received: from CH1PEPF0000AD7B.namprd04.prod.outlook.com
- (2603:10b6:610:11d:cafe::44) by CH0P221CA0035.outlook.office365.com
- (2603:10b6:610:11d::22) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8792.24 via Frontend Transport; Thu,
- 12 Jun 2025 15:48:47 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- CH1PEPF0000AD7B.mail.protection.outlook.com (10.167.244.58) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8835.15 via Frontend Transport; Thu, 12 Jun 2025 15:48:46 +0000
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Thu, 12 Jun
- 2025 08:48:26 -0700
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail203.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Thu, 12 Jun
- 2025 08:48:26 -0700
-Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.6)
- with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Thu, 12
- Jun 2025 08:48:20 -0700
-From: Mark Bloch <mbloch@nvidia.com>
-To: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, "Andrew
- Lunn" <andrew+netdev@lunn.ch>, Simon Horman <horms@kernel.org>
-CC: <saeedm@nvidia.com>, <gal@nvidia.com>, <leonro@nvidia.com>,
-	<tariqt@nvidia.com>, Leon Romanovsky <leon@kernel.org>, "Jesper Dangaard
- Brouer" <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Richard Cochran <richardcochran@gmail.com>, Alexei Starovoitov
-	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
-	<john.fastabend@gmail.com>, <netdev@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<bpf@vger.kernel.org>, Dragos Tatulea <dtatulea@nvidia.com>, Mina Almasry
-	<almasrymina@google.com>, Mark Bloch <mbloch@nvidia.com>
-Subject: [PATCH net-next v5 12/12] net/mlx5e: Add TX support for netmems
-Date: Thu, 12 Jun 2025 18:46:48 +0300
-Message-ID: <20250612154648.1161201-13-mbloch@nvidia.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250612154648.1161201-1-mbloch@nvidia.com>
-References: <20250612154648.1161201-1-mbloch@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2709818FC91;
+	Thu, 12 Jun 2025 15:53:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1749743614; cv=none; b=UAS16/lxYv+a982DdXH3DHTCtqnAei1aRK3gKB6v5KDh7/t96DVA47aMoypL5XVDRXEql8v+bQqf7y+6rDflCnQ1Ll1lWKUdGzDfMbbKihT4Es93/ja42hz8GW0W6IFjIkpKwX0j/qtTBm7m+IT5F0kGQAw/OpTlqR+50pvOehE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1749743614; c=relaxed/simple;
+	bh=oJd9zlLqq+yGzcYCfQLO7Zx+Kd3Fc5whC5ZgR/zQbhE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZQyJb6WhVZf7pAXx7SqEb+IGJtfSfIdEzeWoxenJDM45UIZro91pbSsOSqRc+6fKoICYNAvsD0Ra0AfAq3paABu1VmmxxsyeqKXozLX7ipAESMhccnXZ1nAco693KO7GwM5TMwuLsrKCB1CoGIOjtC2fcjX/fRw7vMkN2JDSmMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZAYplWd8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C369C4CEEA;
+	Thu, 12 Jun 2025 15:53:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749743613;
+	bh=oJd9zlLqq+yGzcYCfQLO7Zx+Kd3Fc5whC5ZgR/zQbhE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ZAYplWd8EO10I6lKieJ2IK+172cR4sYjSUdunAyFL+3KIp8x4a8e88BjlTxL7ogsU
+	 nniAAbZ9lQtShuBoenvzSrwA4N0bblX45PZrj5zCS7xkPkOvUS4WRV5GDTXMfDtDn7
+	 JP/MKRudGD/uStsdBtb5I7ZxKPXTma9Q33GG6uAQlSg0QiTN3TZOvVCtFoPfK3nolJ
+	 oFsNKJ6ujjYu/WTytmhBi6OBuLaOH+fzNGIiJKcOTTBErrG5iofM1DGiwTPydax0R1
+	 XOD+KRmEQ7TtxUBW1xVOTMnqAOQLgocqCIazFzigzT8xskPYB2RaW5cr75A5u07Mxh
+	 gfUwT3HQllD6g==
+Message-ID: <f73a08e2-7793-447a-b7be-07909aa80425@kernel.org>
+Date: Thu, 12 Jun 2025 17:53:28 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: AnonymousSubmission
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH1PEPF0000AD7B:EE_|CH2PR12MB9496:EE_
-X-MS-Office365-Filtering-Correlation-Id: c522e589-4f01-4edd-3aae-08dda9c89e3c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700013|1800799024|7416014|82310400026|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?DOxzg3+8mhzAZG0Gd7EEJvzQAYkexC6cQ2aesOHWP3/XByr3geFc6lEqWi5w?=
- =?us-ascii?Q?mtQiGWkNam40BHSlRj/qZXDdStnNIfK5nv+r52xtit0Rqco1fXWwe9vmUvVo?=
- =?us-ascii?Q?/Teqj+uUVesaj4+CuaTYEzOh6w/LmNwcVm0dZxbxVyavqbklMCZ4cr7cJL0N?=
- =?us-ascii?Q?U3O+7jRsbOTNMOyDioyN+KOZgTr30HQ/AdYYfTHCFfwrR05aqUlHaS6w9Y37?=
- =?us-ascii?Q?7bP0ro8k1IXfAK61/2mey5KgD923BtojRp1dvwVoBzQq0ja6+Km/rJxawEr+?=
- =?us-ascii?Q?kZEjnaWM5R4wqYjG/mI5aI1h6t5OJYbJpGhlhZjPnW9wrkt6JuFBicer4j4Y?=
- =?us-ascii?Q?6yKDA0H1VuRyzP26Dl2mbPf7yLPIYkIxxYGrIjVPAB7yGYBx7Ri1DtIyM7/H?=
- =?us-ascii?Q?Q2VfiyyklEMqBf53/rirYOsICQEZ5YC3+wG04N7X7gLHYc4b3RRybOzCHLA6?=
- =?us-ascii?Q?v+ILSkCgNaNf2S+f5wcQ4bTl8Jnt0N8BpqmxD3x8eEA+Ym7cszcMCkjM1zqq?=
- =?us-ascii?Q?fsFx9xXCedOZhu/ExDMEPmsSoQ55xEg/McrMwkDGAA55QajZpmMkn0x9x6p2?=
- =?us-ascii?Q?z3qu+2jl7Y4GbQ099CyS7aj6kmj8mkMn0xmCq/KfQn/kIL0v7o5Ws84nd6hX?=
- =?us-ascii?Q?LxoiH7+MWeoF3hQVW2VG7CwvcRbrVfB+uDo7bqOjMNyhGAv24oRIb5KwTop8?=
- =?us-ascii?Q?AzWk3Uh0bCZeAYTd3YpWQy/JcQ2BAzW0nrZcBG6VktE+cb01ZHVbUCXrJPgs?=
- =?us-ascii?Q?PYlI3a++HaE1Frj96EzDQiSEId5VAjiiVS3SLe8QxGpNz9agmCfJOi27+2AG?=
- =?us-ascii?Q?0U58z9dIQyVLlvLLPKquWuZC8z+yNTdmOSULoajKmMbL3Lp0u5YfhyxMJgyi?=
- =?us-ascii?Q?oUncci/vGMRkkONMQ5MWRunLpHQpobjt+cNvpihQI46rbulJuR9l3uslpyZt?=
- =?us-ascii?Q?AP40iOdj9UVd7gj/ZiMHRdm8elxAfnj8G4c42z64DK9Dki5Ua/rx3ciFSqvM?=
- =?us-ascii?Q?AIc4QVycy/ofQzk3PlxqjiOPxbgQWlheko27MH4qoanD+YWX1f3STNzmohuk?=
- =?us-ascii?Q?bMM5JC+S/4LfD6nEYtRz9pnOiGhasoLez8eU4Hxv6H8O3h69kdcX5YB+f/CN?=
- =?us-ascii?Q?pDkxLxGDZ0WelGuaxlNzlYGEm74Hu8NLsKujqxntczd7lExmtsnhQ4+a/ovL?=
- =?us-ascii?Q?ufwyNhdoOz4mWytl4++DGPb14ZBFJ0XqAxbSBx8/l/TLGOH2RzQVu53/LIBN?=
- =?us-ascii?Q?fVG8xnREEPWX4r2zc5xjHhN0ggPGQrc1Ny5wDcEt6rFfzvnnJJIaH2p0yx5n?=
- =?us-ascii?Q?4kZHnkHrgvwJ8+eg2PA2sdIQz1bBVJDO2Xgr4wh8gTMnmKA6iomxRQH+jzKh?=
- =?us-ascii?Q?k104MXf3LPNgeyQvfgI2+GJzXQYcaXl+hTuM76hAU5V74SvZifJKEuUHr5Iz?=
- =?us-ascii?Q?SetfzFg5PAY2DdR0qFonVvKr7UskdjLDikZw7XF+EGwIevUegzbZgHUG1HJd?=
- =?us-ascii?Q?YBa+CcJXAbV+mY46+5pTXcAxahcZ2BxsUc4j?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(36860700013)(1800799024)(7416014)(82310400026)(376014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jun 2025 15:48:46.8201
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c522e589-4f01-4edd-3aae-08dda9c89e3c
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CH1PEPF0000AD7B.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB9496
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] xdp: tracing: Hide some xdp events under
+ CONFIG_BPF_SYSCALL
+To: Steven Rostedt <rostedt@goodmis.org>, LKML
+ <linux-kernel@vger.kernel.org>,
+ Linux trace kernel <linux-trace-kernel@vger.kernel.org>, bpf@vger.kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ "David S. Miller\"" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>
+References: <20250612101612.3d4509cc@batman.local.home>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <20250612101612.3d4509cc@batman.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Dragos Tatulea <dtatulea@nvidia.com>
 
-Declare netmem TX support in netdev.
 
-As required, use the netmem aware dma unmapping APIs
-for unmapping netmems in tx completion path.
+On 12/06/2025 16.16, Steven Rostedt wrote:
+> From: Steven Rostedt <rostedt@goodmis.org>
+> 
+> The events xdp_cpumap_kthread, xdp_cpumap_enqueue and xdp_devmap_xmit are
+> only called when CONFIG_BPF_SYSCALL is defined.  As each event can take up
+> to 5K regardless if they are used or not, it's best not to define them
+> when they are not used. Add #ifdef around these events when they are not
+> used.
+> 
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+> Note, I will be adding code soon that will make unused events cause a waring.
+> 
+>   include/trace/events/xdp.h | 2 ++
+>   1 file changed, 2 insertions(+)
 
-Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-Reviewed-by: Mina Almasry <almasrymina@google.com>
-Signed-off-by: Mark Bloch <mbloch@nvidia.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h | 3 ++-
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 2 ++
- 2 files changed, 4 insertions(+), 1 deletion(-)
+LGTM
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h b/drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h
-index e837c21d3d21..6501252359b0 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h
-@@ -362,7 +362,8 @@ mlx5e_tx_dma_unmap(struct device *pdev, struct mlx5e_sq_dma *dma)
- 		dma_unmap_single(pdev, dma->addr, dma->size, DMA_TO_DEVICE);
- 		break;
- 	case MLX5E_DMA_MAP_PAGE:
--		dma_unmap_page(pdev, dma->addr, dma->size, DMA_TO_DEVICE);
-+		netmem_dma_unmap_page_attrs(pdev, dma->addr, dma->size,
-+					    DMA_TO_DEVICE, 0);
- 		break;
- 	default:
- 		WARN_ONCE(true, "mlx5e_tx_dma_unmap unknown DMA type!\n");
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index 1be149aca1e2..288a7c46d564 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -5738,6 +5738,8 @@ static void mlx5e_build_nic_netdev(struct net_device *netdev)
- 
- 	netdev->priv_flags       |= IFF_UNICAST_FLT;
- 
-+	netdev->netmem_tx = true;
-+
- 	netif_set_tso_max_size(netdev, GSO_MAX_SIZE);
- 	mlx5e_set_xdp_feature(netdev);
- 	mlx5e_set_netdev_dev_addr(netdev);
--- 
-2.34.1
+Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
 
+
+> diff --git a/include/trace/events/xdp.h b/include/trace/events/xdp.h
+> index 0fe0893c2567..18c0ac514fcb 100644
+> --- a/include/trace/events/xdp.h
+> +++ b/include/trace/events/xdp.h
+> @@ -168,6 +168,7 @@ DEFINE_EVENT(xdp_redirect_template, xdp_redirect_err,
+>   #define _trace_xdp_redirect_map_err(dev, xdp, to, map_type, map_id, index, err) \
+>   	 trace_xdp_redirect_err(dev, xdp, to, err, map_type, map_id, index)
+>   
+> +#ifdef CONFIG_BPF_SYSCALL
+>   TRACE_EVENT(xdp_cpumap_kthread,
+>   
+>   	TP_PROTO(int map_id, unsigned int processed,  unsigned int drops,
+> @@ -281,6 +282,7 @@ TRACE_EVENT(xdp_devmap_xmit,
+>   		  __entry->sent, __entry->drops,
+>   		  __entry->err)
+>   );
+> +#endif /* CONFIG_BPF_SYSCALL */
+>   
+>   /* Expect users already include <net/xdp.h>, but not xdp_priv.h */
+>   #include <net/xdp_priv.h>
 
