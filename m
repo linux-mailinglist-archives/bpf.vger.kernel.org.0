@@ -1,83 +1,83 @@
-Return-Path: <bpf+bounces-60482-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60483-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00B8AAD7721
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 17:55:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30778AD772F
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 17:57:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 284A7179C68
-	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 15:52:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77F33164E9C
+	for <lists+bpf@lfdr.de>; Thu, 12 Jun 2025 15:53:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF2D12D3206;
-	Thu, 12 Jun 2025 15:48:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C493B2D4B65;
+	Thu, 12 Jun 2025 15:48:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Wb9GF0LV"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Su5xITaQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2086.outbound.protection.outlook.com [40.107.223.86])
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2060.outbound.protection.outlook.com [40.107.243.60])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 972A22D1F7C;
-	Thu, 12 Jun 2025 15:48:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.86
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99D3611CA0;
+	Thu, 12 Jun 2025 15:48:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.60
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749743315; cv=fail; b=ELVBm1x5Hbnk7RK2VexEbdiEhwUKL4a9kK33Zv1urqp2TsMfrbtnXoKrsvftGw5e4IRnhbd/APYA7EbhBQalNh4+oGoWy0y65IDYHwUE+5VJiy/CzLXV774kwO3UDNrrv1T8Naa0YUHriimhBZ2BaEvZ5le3jJAI4gsCKVFKWB8=
+	t=1749743328; cv=fail; b=oPxfZXsCl/59HB45wZymBYhbQIR2adKAbKfBWNW7hB6F+2m3sl9MNq5sRv2P2QCEoaJMDkiNLQJMUGfD4cAtSQYdIfn1vUPefsn+Em2haNs3nTiTt4dFB/wf4/+T6mK2yCHv34WJmqwq6phyFUF0kZ6ckif2Hi9RpN+8MtfHhkc=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749743315; c=relaxed/simple;
-	bh=fNDNijacQ6HXnsRmJVmczVXKMRsVzC5YyMTw3RBQ2KU=;
+	s=arc-20240116; t=1749743328; c=relaxed/simple;
+	bh=u5bCwSYJn2a1dX0NlLwRZShpAYJyAY8+sGmxjkf803s=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Puj+VtqyIV4Tk2ldBrapg5txR4DN0wAL9uyKGF8Gyw4OQDcgYtilpam1s8J8MWsRcLF2aORh/fwJIHs0rZYFgv3y+I7vnsaobGF4iW96BHs8HH+UtE9orU+QkJWnbHKx6JabpWhZRd3uTVtO0Kh5tYQrwohtOgq/9XrK1NBfUnw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Wb9GF0LV; arc=fail smtp.client-ip=40.107.223.86
+	 MIME-Version:Content-Type; b=RzzMTZI2rt6ka/DqnMt9VBgxKdyfycCEpI21AmhNwVB/SDdFwaBZ2XASVww4xTLp+r5icl5LYxpicnUqoozVvygElajrZCsnzS6vJ/9iDQuW4hj0SjYHj/TaF2IK2Ysk6n8CpfaPBSYlxI6BXUy2CuIa2hOBWBLhdt2maUfH6tY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Su5xITaQ; arc=fail smtp.client-ip=40.107.243.60
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ffvLHcHE++bJq6h1oWZuNLAEc1CqtxJWuC6NOKlbcNipp3Wy1ndiF1PN6fkzn/I8Mz/4twtp1DF7JhhmUITh1fxKJBXOEcxkqFqzHU3ds4C1gubeH22iUrnWmdlB/kOdsVrw/wXDCzsDtZkKOOA0WRm1/YusS3FC/9sazoNJ20BQ4f50aVi8RK0i58XKAQZdPdHfyzZWBxqwuqGrE2v9xVBdGaYUukr7yO2i9CSJ6SLgvpY70R20SWjaWjZXJ/nFnSkQEbZhiEq9BzLWvyLB49frCasLqAZjP5f/RGW2L9SPmk07gv/+wwkrotlSh5egf5CbVRSbFgqI+JPj6cr/kQ==
+ b=fgfZdnTpvyPTvQHIiGRDi5aQxAdnbjrAkWKWCJmDgZZQc3bz5Mtfz3BbJ+0smJGhA74F3BWivIxeF6NkkhcD6KQcfCc4srpqqD/N8M26UAx3bJl/3qZ5ddX+BSmUG4WHH1FHk5tfYmFtMt+02YY2JZvGTYuB8G+Y6j8jZVu7Io7OPAFP7kX1EZpsLDc34PbejPs3tNvaebxBuxdMIcx0XEze+wGGPPWMFAXPV6wE7AbMh1491UuOt1AJ2Z9IrZj/bKKorX7tHKIFxgO2zaWYpk9sKRcE0ilbDOBDIH8u4UFBnclKQ4zY9GqOhvJq3qJKz8bTokBRAYBz8hOgSVjnqg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=b4qaGDM9Nndt87AehHjDKTRzHc2WBx8aTjZcpC7LM6w=;
- b=NLIpwVaB4n9RZH3haCrWIOoRQ86F1+ZG3liVCiWtcfU5BaWF2slvJv1+n5sfoUJtLiacKo6Qh2sEpd4oQWNpeRxhFg8K1wCTVv1lCAX8srYg0tWx3QwUvLcwiDR5JGKjm11+ftJFqNj3KlT4VRfQhY8l4pULvlp0Jatc13RvbLAHX0gyuatFlfd6s4bdOwEvHdCfeeU3v79Xv9MPq7OYdPW+GcYhdHQFcdBltpe9WMDUcZurU/JZmQG1gMW3M6fl1qP/+S4oPLxduhwOXC/AISrgTjUY2J0+Hl39fB7W3OCePb0UydFARO8mssoK13wBuu6YUkFugWFzv7+IJBFFBA==
+ bh=GxJaiiPbsvq9+bJ7i5vFS+MBlGVWQgIlqwUhdOE3M0o=;
+ b=Uq7zzhzv4kbErKRnGiEOVaZxFO4VvV3V3jZvG2guDnxP6ircVFrZkY/zwxXD5L43iyHxzula7xG0tTJ2gSp0mBMn+SN9nLMQQrCxu0CYFGHoYsfGyg7zWxz/mxGCsbYr/fST2LC/mBAOuUajW6mGBKnCQ0OW6QnlJx8Opr+UcqoWN3o7r/SX15OPhJDG4ewp2YNETzXJYBrZwtkOhUEP0PF6pahoOv4SOo11BWIEW3NUtcIu7BGj0mCtJHK62n/T0RAHknRfVDkgxbIPOjjA2o2Stak4eSrhUPFbyAk36tn8RiA9/pq1g3wXJCCmMuzKOrFROfl5IjAr2lfdvhRcAQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
+ 216.228.117.161) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=b4qaGDM9Nndt87AehHjDKTRzHc2WBx8aTjZcpC7LM6w=;
- b=Wb9GF0LVgfONlAs4DJFj8bvoOLOXKnzamNfAXFX5FNe/wcIT7VBkjCNKI53Ki/jPWnyewXy5ousVp7WCs4dBWtKsjeEZwn/fG1Ia8mkJfoss3SDShCbc90ypsAhoskWWaU+gpSi4WBM6aGGtMjd1mWanCfLagZUQaOVboEoEvN89JSbO7EQHksm7biEMuUgXlqaKPEjabgvAOl0UtdM7rHh6UMIGkCgHpvYCs6sUm+0x+o4aFLKSC1WGVVF9HCtyGNFNmT5XQIgYt9Q7x45Sq5fg8sMtwsAUROrpseYe9X+YkbXpODLUdeXXfOOWuQW3ukybOtjEzKve7/gtyJGuHQ==
-Received: from CH0PR03CA0002.namprd03.prod.outlook.com (2603:10b6:610:b0::7)
- by MN2PR12MB4333.namprd12.prod.outlook.com (2603:10b6:208:1d3::23) with
+ bh=GxJaiiPbsvq9+bJ7i5vFS+MBlGVWQgIlqwUhdOE3M0o=;
+ b=Su5xITaQke9TRLAiG2T7GNlvCrn2Y/6Nu1Zdc/g/xfEBbAVV1Ey0cVu+EzLoh/CCveVsIi4y252XSDv51cST6q3BobtviHHiBKoDQI7QccLLCI2DewOIuzI+0xCPRVw19TTUScZ74WwjhRNSa54unhAOqxOq4ArkREYLwT976/FsCl6Irufhfz9kWmqLoIXxeHCxwGiFABwaoFRnOkfsrXATmdGaE8rkQbL4+w+K0LAQ7R2V6pmv60SqP5BTJgJzVjklyum3mT9ovll0R6sdm6wMrFAfe41GrBIDXmg7tp5Q9D7NyIOhALm3pkhV/0DK5ik+CiO56uwnjeada/pXnA==
+Received: from SA1PR02CA0007.namprd02.prod.outlook.com (2603:10b6:806:2cf::18)
+ by SA1PR12MB6751.namprd12.prod.outlook.com (2603:10b6:806:258::6) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8835.19; Thu, 12 Jun
- 2025 15:48:25 +0000
-Received: from CH1PEPF0000AD7A.namprd04.prod.outlook.com
- (2603:10b6:610:b0:cafe::30) by CH0PR03CA0002.outlook.office365.com
- (2603:10b6:610:b0::7) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8792.24 via Frontend Transport; Thu,
- 12 Jun 2025 15:48:25 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8792.36; Thu, 12 Jun
+ 2025 15:48:40 +0000
+Received: from SA2PEPF00003F64.namprd04.prod.outlook.com
+ (2603:10b6:806:2cf:cafe::a6) by SA1PR02CA0007.outlook.office365.com
+ (2603:10b6:806:2cf::18) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8835.23 via Frontend Transport; Thu,
+ 12 Jun 2025 15:48:40 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- CH1PEPF0000AD7A.mail.protection.outlook.com (10.167.244.59) with Microsoft
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ SA2PEPF00003F64.mail.protection.outlook.com (10.167.248.39) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8835.15 via Frontend Transport; Thu, 12 Jun 2025 15:48:25 +0000
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.8835.15 via Frontend Transport; Thu, 12 Jun 2025 15:48:40 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Thu, 12 Jun
- 2025 08:48:11 -0700
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail203.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
+ 2025 08:48:20 -0700
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Thu, 12 Jun
- 2025 08:48:10 -0700
+ 2025 08:48:18 -0700
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.6)
  with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Thu, 12
- Jun 2025 08:48:04 -0700
+ Jun 2025 08:48:12 -0700
 From: Mark Bloch <mbloch@nvidia.com>
 To: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, "Andrew
@@ -89,11 +89,11 @@ CC: <saeedm@nvidia.com>, <gal@nvidia.com>, <leonro@nvidia.com>,
 	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
 	<john.fastabend@gmail.com>, <netdev@vger.kernel.org>,
 	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<bpf@vger.kernel.org>, Dragos Tatulea <dtatulea@nvidia.com>, Mark Bloch
-	<mbloch@nvidia.com>
-Subject: [PATCH net-next v5 10/12] net/mlx5e: Implement queue mgmt ops and single channel swap
-Date: Thu, 12 Jun 2025 18:46:46 +0300
-Message-ID: <20250612154648.1161201-11-mbloch@nvidia.com>
+	<bpf@vger.kernel.org>, Cosmin Ratiu <cratiu@nvidia.com>, Dragos Tatulea
+	<dtatulea@nvidia.com>, Mark Bloch <mbloch@nvidia.com>
+Subject: [PATCH net-next v5 11/12] net/mlx5e: Support ethtool tcp-data-split settings
+Date: Thu, 12 Jun 2025 18:46:47 +0300
+Message-ID: <20250612154648.1161201-12-mbloch@nvidia.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250612154648.1161201-1-mbloch@nvidia.com>
 References: <20250612154648.1161201-1-mbloch@nvidia.com>
@@ -108,184 +108,170 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: AnonymousSubmission
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH1PEPF0000AD7A:EE_|MN2PR12MB4333:EE_
-X-MS-Office365-Filtering-Correlation-Id: 441ada30-a63c-42f2-7a2b-08dda9c89156
+X-MS-TrafficTypeDiagnostic: SA2PEPF00003F64:EE_|SA1PR12MB6751:EE_
+X-MS-Office365-Filtering-Correlation-Id: ac38f44e-d126-44f5-4a4a-08dda9c89a47
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|7416014|82310400026|36860700013|1800799024;
+	BCL:0;ARA:13230040|1800799024|376014|7416014|36860700013|82310400026;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?kKOwkE5Z0VKUqGvTS6uB3ViOlbH+EM7NPToZ0YvTef2nM/4a478EBFH7BJ47?=
- =?us-ascii?Q?gJHFv+tA4btyl1PqYM5gTryY5GiNPQU2kaDtBFQXKvZjhaIFT6aiM9tNZrzs?=
- =?us-ascii?Q?vwyQMCNLETaNKgFzN1NickoAMJtXO/V3Ez0rksxl9V2MKhRGOCgxL2SZ76Kn?=
- =?us-ascii?Q?aDp3wsMepYPiC/o1EKebfchPGkRX3xkhAvCxPWKEAz9QEQADqFzTqZL/9IxT?=
- =?us-ascii?Q?YQQ3HhLRUwydXarg9IhbKB+iwhJFnQdFYkLY8jvZWC81W2h1pAz/ZS1ztM4v?=
- =?us-ascii?Q?yFStdRPwPUK6frIkyaIG2VYFzXcWveUWxYy1bHPSDAzscFs4oRLOFT97Zulf?=
- =?us-ascii?Q?GOGWhJh87JvUPfE2+mGfY7Gltg8kD0UCAt3mzlQ/x7oGyG6x01c/1MSsldYM?=
- =?us-ascii?Q?EcxCFMwvD7CB2qdBJMWjM82Pbs/AixpQ2Ap5SD8j8wBZZsNqx2ra2JnKQmMQ?=
- =?us-ascii?Q?E4Qim1nXxeiVrl2zJqE4019pvcSr86ng3ZiOt9DFUgwB4k1JJB9nki08Fb+Z?=
- =?us-ascii?Q?2Dtlns/9R0qv+Jz22tBXjwt1N3GuBF9JmrtGE/c0XaSLUOHwELItJLYkOxtU?=
- =?us-ascii?Q?/7WRGB6jNP+pIthnEYAnZhP2F3gpm6biQL0zoAcU6cGRSbDMDq2uao30Pm2u?=
- =?us-ascii?Q?Bw6de37uJ3wQ8v1uPKSaH3xP35FezY9cacNyy+3mfPeJ70J1RcqChWmscBvv?=
- =?us-ascii?Q?rQTI24msO3Iy0xCxmKB6spsOvacsGds4alRp3plODianmrvKXgBkxJzreHRi?=
- =?us-ascii?Q?a66opJcLz9JLfiNxU4N/Tg/dCF0GVA5OEAoS1O88vri/XMUYWzSmKuXDNcaS?=
- =?us-ascii?Q?HGzU8NB31+bzvlAn6gJPXdsMS/It72ucs0+AEKO+LEmxjMpUan+8Lb+T2iGY?=
- =?us-ascii?Q?5patS7USnFK5ayVzPv+UOaToMKVgS1ItUNSTaC3nBcVHP05mZAc0F/kIYKsw?=
- =?us-ascii?Q?1fazO3lW6Lq4B1TgbYK0H0Ec5qewfX1DOxa7zMfdE877h2qTkL+PzTJZYJWy?=
- =?us-ascii?Q?Gf47346N6BQ/nfBqzF9KTn7Dbz9bw2OSrX4wUntXGiufF06L56sw9C9/IAGq?=
- =?us-ascii?Q?aqGfKeYRFWTgwMUvdYViUK+OAHXpvewOeLeOQR6qW2RBOnapR71DvClJGCg+?=
- =?us-ascii?Q?PAL5gZ0ncFD5DK0L8dn5ogRhO3ACLHVWOwkviR/bgbXpBfixDKsmwhpuC63v?=
- =?us-ascii?Q?qp2GetG8k636RelK6Y4igTaqU7svEKlF52Fk+j6KA/4SIlywet1XXZ3TG0JO?=
- =?us-ascii?Q?Xk3hJ+yEfk83GyakDsq3NwDHFCreNrzsWBKxLO1JyOVFnbeGrAwlhWVi9wRh?=
- =?us-ascii?Q?IMPFmhpY+wWVHC56yH1XHHLdhY6WTvfX/wP3SGsbuiX53GGRMagRbbUAMW+F?=
- =?us-ascii?Q?8npruXho9xC7a7hyk1gpQiiSlupi3hOlt8xgyOLW4mr+M+g5lbItWSkJMvzI?=
- =?us-ascii?Q?IC7VO4OR/YzGbHsHrCjEA/0K4P0SlglDZBvp7NgIAa41PzjbQkbzAp+EYcJP?=
- =?us-ascii?Q?9p/x432irxRzW0J74xx/rTZW0SrEcpFmrb9o?=
+	=?us-ascii?Q?ODcFnLHmtQy5rLSYPdR/QtWX/TrJ51iBcfg2d3yrAxyIPGaH/O/Xsd18E5Py?=
+ =?us-ascii?Q?qOpYfrCfdYxzk/HImE6tmW2wATtPbOr5/L98gsQiayhp5M538RI6aLF8Skj4?=
+ =?us-ascii?Q?/Y2LCFcKmzB/pKHwDLUhkmLGDia6fA+rffx/xb2UN/w2QcqpO6q4qx8lOzkA?=
+ =?us-ascii?Q?szmJJVA81JWWtOGn7Q1+zFe7SYDCN9f1iPgcvZz3vzlC+QaIAZ38hk1FvIKQ?=
+ =?us-ascii?Q?RYtQ3Lr0qYP1nxr6c8i+1lqBCw4OblKzr44fioy2jgWWIFeURpblE3fR/XUd?=
+ =?us-ascii?Q?IrQCYc6c4Leu44mwbZrAUsNTbtz3fNFs/iOqakaoBGavchFOzGPNvDnjr0l9?=
+ =?us-ascii?Q?kB6z8CLJy7b/jgroeFCj6fyzkZWvCP9qvQfgIkln37y5t7TQctKd85Ott1fd?=
+ =?us-ascii?Q?uGDbnPxkK0wGN5YZ7hnzukYCOlbLuZpIw+oDAGbAfh26xT/NRM0yv+8OdgSq?=
+ =?us-ascii?Q?OwC2c8Ryzpu6wdXOOAapFBV8DhrYKtcyIjbA1JtcVLDlH/EYYpDkgkyeST1b?=
+ =?us-ascii?Q?ON93L0k0y7I+eTJNmno7rCPc5H91Bqi0PMaEZ3qoi1dgu3DJ/Ddo4s9PAzwt?=
+ =?us-ascii?Q?n4cjKWRtLxcZnUsbLPAbqHTCMGxfDD0cI2pQ6iJ4nVlV5yMOJ9+ml+fTKB9h?=
+ =?us-ascii?Q?W4xzNA30Q/QdO5bseJ2Svadb2vEZMCZP/Eb0KK00NfiVzNE/PzYeLTRhGcPy?=
+ =?us-ascii?Q?cl59hz5v7ViqwJdKmNOowsUF+rtJiBuLeCBnn62vsHY8RCWGuKfInpuZ6U8R?=
+ =?us-ascii?Q?4CMx9ZmWYzyJ9WBkGcJjm1OxkWopCBMVmMzqzljLF7thymQvGPPZOXW/VRlD?=
+ =?us-ascii?Q?FOr/2EY1Qn4mMsGnlmWcK5oy8RYkMnWHnzDNbMK7sT46mYG8xUn56lJDG/pe?=
+ =?us-ascii?Q?h0CBdRJohDaF85Gpw7c5ethXffIHs/55K+X3hjHOKgGhfH40jeq+FJt+pCeM?=
+ =?us-ascii?Q?3Y2UKMn/S2VVMyomWRH6D3WHk+Ci0SL6a3P0wqRX1OgkJgkp+fi7IwgK8yqS?=
+ =?us-ascii?Q?c3V3qbAlEZg8PSDxTIlgkG3xude+ek+815oCwe6lVkYaMDpjtr0SBuSjmzXi?=
+ =?us-ascii?Q?Ndlq5OWr5Dpb6MS5ACl2zXhJLPWP4vwpY+dIuW+MCaXeRLrmI4OfJbvszQHv?=
+ =?us-ascii?Q?AO48LJoOxkk+OHkPzZ5+TYOcNuL4ULC6zcYLD5M82W0ZgIrJqDAkGOOR8UFr?=
+ =?us-ascii?Q?proy0Y+KSF3nb+qRdyDLF9Yi8yP7Q/pGLxrH9ckUUk1kCrgVMIQEMXYwExSq?=
+ =?us-ascii?Q?EBt0KVuKIRB//C1xYGnHxw1Ux5zTPjDTO3Ks0l1cxaKpkXgkSSkqQhz4Evaw?=
+ =?us-ascii?Q?nNFfV8eHnaDIRGKB4+iYG91k+sGpKn0HSBS5+1cOWUXRC7loygCvZyBVATv8?=
+ =?us-ascii?Q?/IoKfSCJDf0S13LZP7+04DZOsTuYkRdLFj8hYryqwqJqI3dQT7F6acnjAPNu?=
+ =?us-ascii?Q?dtsuLimGzf9tbQu1mRSOlnsYRZo1tnqWsu25MSwQYQd0LNySPgT90XJKBuMQ?=
+ =?us-ascii?Q?4Qw6va6hBNS5pLjR7lcbgX10iFZ6W1suYdeU?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(7416014)(82310400026)(36860700013)(1800799024);DIR:OUT;SFP:1101;
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(36860700013)(82310400026);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jun 2025 15:48:25.1744
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jun 2025 15:48:40.1898
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 441ada30-a63c-42f2-7a2b-08dda9c89156
+X-MS-Exchange-CrossTenant-Network-Message-Id: ac38f44e-d126-44f5-4a4a-08dda9c89a47
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	CH1PEPF0000AD7A.namprd04.prod.outlook.com
+	SA2PEPF00003F64.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4333
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB6751
 
 From: Saeed Mahameed <saeedm@nvidia.com>
 
-The bulk of the work is done in mlx5e_queue_mem_alloc, where we allocate
-and create the new channel resources, similar to
-mlx5e_safe_switch_params, but here we do it for a single channel using
-existing params, sort of a clone channel.
-To swap the old channel with the new one, we deactivate and close the
-old channel then replace it with the new one, since the swap procedure
-doesn't fail in mlx5, we do it all in one place (mlx5e_queue_start).
+In mlx5, tcp header-data split requires HW GRO to be on.
+
+Enabling it fails when HW GRO is off.
+mlx5e_fix_features now keeps HW GRO on when tcp data split is enabled.
+Finally, when tcp data split is disabled, features are updated to maybe
+remove the forced HW GRO.
 
 Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Signed-off-by: Cosmin Ratiu <cratiu@nvidia.com>
 Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
 Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
 Signed-off-by: Mark Bloch <mbloch@nvidia.com>
 ---
- .../net/ethernet/mellanox/mlx5/core/en_main.c | 95 +++++++++++++++++++
- 1 file changed, 95 insertions(+)
+ .../ethernet/mellanox/mlx5/core/en_ethtool.c  | 33 ++++++++++++++++---
+ .../net/ethernet/mellanox/mlx5/core/en_main.c |  8 +++++
+ 2 files changed, 36 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+index ea078c9f5d15..1761945e858c 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+@@ -32,6 +32,7 @@
+ 
+ #include <linux/dim.h>
+ #include <linux/ethtool_netlink.h>
++#include <net/netdev_queues.h>
+ 
+ #include "en.h"
+ #include "en/channels.h"
+@@ -366,11 +367,6 @@ void mlx5e_ethtool_get_ringparam(struct mlx5e_priv *priv,
+ 	param->tx_max_pending = 1 << MLX5E_PARAMS_MAXIMUM_LOG_SQ_SIZE;
+ 	param->rx_pending     = 1 << priv->channels.params.log_rq_mtu_frames;
+ 	param->tx_pending     = 1 << priv->channels.params.log_sq_size;
+-
+-	kernel_param->tcp_data_split =
+-		(priv->channels.params.packet_merge.type == MLX5E_PACKET_MERGE_SHAMPO) ?
+-		ETHTOOL_TCP_DATA_SPLIT_ENABLED :
+-		ETHTOOL_TCP_DATA_SPLIT_DISABLED;
+ }
+ 
+ static void mlx5e_get_ringparam(struct net_device *dev,
+@@ -383,6 +379,27 @@ static void mlx5e_get_ringparam(struct net_device *dev,
+ 	mlx5e_ethtool_get_ringparam(priv, param, kernel_param);
+ }
+ 
++static bool mlx5e_ethtool_set_tcp_data_split(struct mlx5e_priv *priv,
++					     u8 tcp_data_split,
++					     struct netlink_ext_ack *extack)
++{
++	struct net_device *dev = priv->netdev;
++
++	if (tcp_data_split == ETHTOOL_TCP_DATA_SPLIT_ENABLED &&
++	    !(dev->features & NETIF_F_GRO_HW)) {
++		NL_SET_ERR_MSG_MOD(extack,
++				   "TCP-data-split is not supported when GRO HW is disabled");
++		return false;
++	}
++
++	/* Might need to disable HW-GRO if it was kept on due to hds. */
++	if (tcp_data_split == ETHTOOL_TCP_DATA_SPLIT_DISABLED &&
++	    dev->cfg->hds_config == ETHTOOL_TCP_DATA_SPLIT_ENABLED)
++		netdev_update_features(priv->netdev);
++
++	return true;
++}
++
+ int mlx5e_ethtool_set_ringparam(struct mlx5e_priv *priv,
+ 				struct ethtool_ringparam *param,
+ 				struct netlink_ext_ack *extack)
+@@ -441,6 +458,11 @@ static int mlx5e_set_ringparam(struct net_device *dev,
+ {
+ 	struct mlx5e_priv *priv = netdev_priv(dev);
+ 
++	if (!mlx5e_ethtool_set_tcp_data_split(priv,
++					      kernel_param->tcp_data_split,
++					      extack))
++		return -EINVAL;
++
+ 	return mlx5e_ethtool_set_ringparam(priv, param, extack);
+ }
+ 
+@@ -2625,6 +2647,7 @@ const struct ethtool_ops mlx5e_ethtool_ops = {
+ 				     ETHTOOL_COALESCE_USE_ADAPTIVE |
+ 				     ETHTOOL_COALESCE_USE_CQE,
+ 	.supported_input_xfrm = RXH_XFRM_SYM_OR_XOR,
++	.supported_ring_params = ETHTOOL_RING_USE_TCP_DATA_SPLIT,
+ 	.get_drvinfo       = mlx5e_get_drvinfo,
+ 	.get_link          = ethtool_op_get_link,
+ 	.get_link_ext_state  = mlx5e_get_link_ext_state,
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index a51e204bd364..06a057ecaecc 100644
+index 06a057ecaecc..1be149aca1e2 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -5494,6 +5494,100 @@ static const struct netdev_stat_ops mlx5e_stat_ops = {
- 	.get_base_stats      = mlx5e_get_base_stats,
- };
- 
-+struct mlx5_qmgmt_data {
-+	struct mlx5e_channel *c;
-+	struct mlx5e_channel_param cparam;
-+};
-+
-+static int mlx5e_queue_mem_alloc(struct net_device *dev, void *newq,
-+				 int queue_index)
-+{
-+	struct mlx5_qmgmt_data *new = (struct mlx5_qmgmt_data *)newq;
-+	struct mlx5e_priv *priv = netdev_priv(dev);
-+	struct mlx5e_channels *chs = &priv->channels;
-+	struct mlx5e_params params = chs->params;
-+	struct mlx5_core_dev *mdev;
-+	int err;
-+
-+	mutex_lock(&priv->state_lock);
-+	if (!test_bit(MLX5E_STATE_OPENED, &priv->state)) {
-+		err = -ENODEV;
-+		goto unlock;
-+	}
-+
-+	if (queue_index >= chs->num) {
-+		err = -ERANGE;
-+		goto unlock;
-+	}
-+
-+	if (MLX5E_GET_PFLAG(&chs->params, MLX5E_PFLAG_TX_PORT_TS) ||
-+	    chs->params.ptp_rx   ||
-+	    chs->params.xdp_prog ||
-+	    priv->htb) {
-+		netdev_err(priv->netdev,
-+			   "Cloning channels with Port/rx PTP, XDP or HTB is not supported\n");
-+		err = -EOPNOTSUPP;
-+		goto unlock;
-+	}
-+
-+	mdev = mlx5_sd_ch_ix_get_dev(priv->mdev, queue_index);
-+	err = mlx5e_build_channel_param(mdev, &params, &new->cparam);
-+	if (err)
-+		goto unlock;
-+
-+	err = mlx5e_open_channel(priv, queue_index, &params, NULL, &new->c);
-+unlock:
-+	mutex_unlock(&priv->state_lock);
-+	return err;
-+}
-+
-+static void mlx5e_queue_mem_free(struct net_device *dev, void *mem)
-+{
-+	struct mlx5_qmgmt_data *data = (struct mlx5_qmgmt_data *)mem;
-+
-+	/* not supposed to happen since mlx5e_queue_start never fails
-+	 * but this is how this should be implemented just in case
-+	 */
-+	if (data->c)
-+		mlx5e_close_channel(data->c);
-+}
-+
-+static int mlx5e_queue_stop(struct net_device *dev, void *oldq, int queue_index)
-+{
-+	/* mlx5e_queue_start does not fail, we stop the old queue there */
-+	return 0;
-+}
-+
-+static int mlx5e_queue_start(struct net_device *dev, void *newq,
-+			     int queue_index)
-+{
-+	struct mlx5_qmgmt_data *new = (struct mlx5_qmgmt_data *)newq;
-+	struct mlx5e_priv *priv = netdev_priv(dev);
-+	struct mlx5e_channel *old;
-+
-+	mutex_lock(&priv->state_lock);
-+
-+	/* stop and close the old */
-+	old = priv->channels.c[queue_index];
-+	mlx5e_deactivate_priv_channels(priv);
-+	/* close old before activating new, to avoid napi conflict */
-+	mlx5e_close_channel(old);
-+
-+	/* start the new */
-+	priv->channels.c[queue_index] = new->c;
-+	mlx5e_activate_priv_channels(priv);
-+	mutex_unlock(&priv->state_lock);
-+	return 0;
-+}
-+
-+static const struct netdev_queue_mgmt_ops mlx5e_queue_mgmt_ops = {
-+	.ndo_queue_mem_size	=	sizeof(struct mlx5_qmgmt_data),
-+	.ndo_queue_mem_alloc	=	mlx5e_queue_mem_alloc,
-+	.ndo_queue_mem_free	=	mlx5e_queue_mem_free,
-+	.ndo_queue_start	=	mlx5e_queue_start,
-+	.ndo_queue_stop		=	mlx5e_queue_stop,
-+};
-+
- static void mlx5e_build_nic_netdev(struct net_device *netdev)
+@@ -4413,6 +4413,7 @@ static netdev_features_t mlx5e_fix_uplink_rep_features(struct net_device *netdev
+ static netdev_features_t mlx5e_fix_features(struct net_device *netdev,
+ 					    netdev_features_t features)
  {
++	struct netdev_config *cfg = netdev->cfg_pending;
  	struct mlx5e_priv *priv = netdev_priv(netdev);
-@@ -5504,6 +5598,7 @@ static void mlx5e_build_nic_netdev(struct net_device *netdev)
- 	SET_NETDEV_DEV(netdev, mdev->device);
+ 	struct mlx5e_vlan_table *vlan;
+ 	struct mlx5e_params *params;
+@@ -4479,6 +4480,13 @@ static netdev_features_t mlx5e_fix_features(struct net_device *netdev,
+ 		}
+ 	}
  
- 	netdev->netdev_ops = &mlx5e_netdev_ops;
-+	netdev->queue_mgmt_ops = &mlx5e_queue_mgmt_ops;
- 	netdev->xdp_metadata_ops = &mlx5e_xdp_metadata_ops;
- 	netdev->xsk_tx_metadata_ops = &mlx5e_xsk_tx_metadata_ops;
- 	netdev->request_ops_lock = true;
++	/* The header-data split ring param requires HW GRO to stay enabled. */
++	if (cfg && cfg->hds_config == ETHTOOL_TCP_DATA_SPLIT_ENABLED &&
++	    !(features & NETIF_F_GRO_HW)) {
++		netdev_warn(netdev, "Keeping HW-GRO enabled, TCP header-data split depends on it\n");
++		features |= NETIF_F_GRO_HW;
++	}
++
+ 	if (mlx5e_is_uplink_rep(priv)) {
+ 		features = mlx5e_fix_uplink_rep_features(netdev, features);
+ 		netdev->netns_immutable = true;
 -- 
 2.34.1
 
