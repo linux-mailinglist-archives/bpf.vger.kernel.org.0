@@ -1,132 +1,211 @@
-Return-Path: <bpf+bounces-60639-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60640-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90118AD9837
-	for <lists+bpf@lfdr.de>; Sat, 14 Jun 2025 00:27:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18F99AD9844
+	for <lists+bpf@lfdr.de>; Sat, 14 Jun 2025 00:36:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CFC4A7AE694
-	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 22:26:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02C933BB2BE
+	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 22:35:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 392F628DEFF;
-	Fri, 13 Jun 2025 22:27:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99D8C28E59E;
+	Fri, 13 Jun 2025 22:36:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aCkjVS5F"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V0MMfQ9L"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A28D6239E85;
-	Fri, 13 Jun 2025 22:27:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57A9223814C;
+	Fri, 13 Jun 2025 22:36:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749853666; cv=none; b=FULDPT4vxwk0lD0BmuPylY3m6NDWvBs6eylhKvHIyTqGwnMexIZc24EWvaFh5HCvKNbfeANNWRd7tGZh1R3Iely5UOeDeyWiaiaGIgndi7uhOsfk+8L8FlovDBmzVm3LlBHNiIJf2Mc4W6Csswa1m4qAdlsAHCwko5srNyUvnGY=
+	t=1749854172; cv=none; b=tbwGRjLunBM+irSwTSWAtqUzhJfvjVlUD9qIkY189vZ/I2P079zW5jaYic7HWs1d+B0xkNxUG4Nfw7a9kjSJ3b7cFZk3xMSzxOAsAEjgtlJHrHNqEvxozu07FAV3CxNP1KuNXbfEDO+yrOMDzmmKxsoCyqHs5k7g1rReKdHUqE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749853666; c=relaxed/simple;
-	bh=oz5GGeZK5HuwW8R1dyYQv0i5Y3h3LLimhUbd5OgIOdY=;
+	s=arc-20240116; t=1749854172; c=relaxed/simple;
+	bh=ZDhN0PQzQ9wgEHlw7OXTzGjuQH3XOnQA5xq1WBIqnek=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IEHmnPbVgTR2ADXhd1IXWHX0voc+u4JRkUCUs1FGHqLP2/ge9eiRIoAzjTaFoATUeGyU8AUO7AUWl7uDrsIKpWGomP1k7/7qnRxbBck19MjvaPZNESIrYukKbWvh4MrfIIKrCtOUmhWraGiOof1bu1MmXETGudOaDmHo4zFlPQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aCkjVS5F; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22397C4CEFB;
-	Fri, 13 Jun 2025 22:27:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749853666;
-	bh=oz5GGeZK5HuwW8R1dyYQv0i5Y3h3LLimhUbd5OgIOdY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=aCkjVS5FxDgUtqX8oVnyg6xn4mxlqiQ+M/pLPDwe7I1MJALISNIrn8GKHULqV7I4r
-	 kHChX13gq3l+CUgS3Ahb8tWITO9+Abym2+X1naKmv8Xk9Nv+M9jqWDQUjRm0AStq5Y
-	 /z+Nnk5/MQ1Y7+FzBlcCPnhGnrkJj0ntECW8wehUAb6YANOKl8OIzPNANCXoeCnmXD
-	 +IWgTHzuUuJ3TLN3TJTOnP5h0F+BHynHLfJMUlGMpGlFLPKU8oHpFt21kTAQAnCCIi
-	 K8eLxeBqRFU7NGRIiDDI3DJm5a86FcM5ihi8Dsy3/NleQ6KDM9mXRB2G7zs++c5XAd
-	 fYWWaNz+AMVFg==
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-4a44b0ed780so37103631cf.3;
-        Fri, 13 Jun 2025 15:27:46 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU35ZTP4YvEhF85h6pFJS83pZ4ZUMhLOPKk8I6DN8WO7kongiQ1AN2irMlkVwIAk55Gm28ae8C0ls3NAJN8@vger.kernel.org, AJvYcCUMthNvS9kkROTE9Oip4uc5uTFdNU0z8Fxg3+/FSWVj1kQCNTM/v08HKi+yssbkpmYqV4MMkOmGodctboBHNEcnq7X9NrN4@vger.kernel.org, AJvYcCWSbouNWmziph6Bni3TFS8ymb9TfeuLNyu6eF88l68Uy3l8iihr+iQ1Fll+uFuhRG/EtkcjHQXXX/Q18ILt@vger.kernel.org
-X-Gm-Message-State: AOJu0YzBlLQ3mptT7IMaf39zPj7ShTbDqnYXmyRKq/dgXtyiPJzzA8iF
-	VSgOq1+DUtfEYqQ+fFrH9Lt4K/1bCwCi42tZr27CgORx1wQ9ugiPHlQ6rcVWQ8URQL3jMuVk7on
-	3f+rxkh6Sy4dSf3zFueR+h0xwlDe5L7c=
-X-Google-Smtp-Source: AGHT+IGWkjVtdv83eE0pBs/jdfMfaxcVMpueUKvLdi3qvZP9yMR8Onxx6KI7dzY5aOnj72v0w6SET/QZNJny9oMPl7I=
-X-Received: by 2002:ac8:5a43:0:b0:4a3:fcc7:c73c with SMTP id
- d75a77b69052e-4a73c4fd271mr14044651cf.8.1749853665106; Fri, 13 Jun 2025
- 15:27:45 -0700 (PDT)
+	 To:Cc:Content-Type; b=K/sp72YL0BJbPMytT+pI1ho62UuE4i9Do923g1q7FvJW9gbIOPwG/c9mh3nTpUiwCTpkonNtBEyejikBLd+s3vw13gC4LIJF6EB/LpBx6M+wM5q8Nci/vfLJofi7dY2ly5lOR9iS7GRB0kXk6m4rGcY0xobBRVuwM8MfyhqRjWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V0MMfQ9L; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3a503d9ef59so2243830f8f.3;
+        Fri, 13 Jun 2025 15:36:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749854169; x=1750458969; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZDhN0PQzQ9wgEHlw7OXTzGjuQH3XOnQA5xq1WBIqnek=;
+        b=V0MMfQ9LnVFjKTXF/j9wodh39meUoxLTRuYmqR6UlVLco4MCSPFkyZ3TVgdbc03eYA
+         3yLlwoGSG8T4HnLNgLKGfhQmKhx/l8jvCN44pZddh1c66IhJH1mpigG5C2Rl2vYo3SkP
+         naMo0QZn/e4SHNMPnJmhf8taujDmwIM6EAJU6rMmOH1NsbjUVuf1dexFHDZvksmOrXf6
+         T9hBS2h32S+1atZsl91SDUhqF3R93ohXZkld4EjaIxb4gTaTfbLMBK/IoBLUJpRMCGJo
+         RL3uZXsh7n7njkZyWbpNqa7Kk/bdp1R655+0koEKH6yziNKQMpoiBKcfha2Apt23VLTA
+         FtPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749854169; x=1750458969;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZDhN0PQzQ9wgEHlw7OXTzGjuQH3XOnQA5xq1WBIqnek=;
+        b=DP4LeCxipuEqfRH/A2U6e54gykEjP3H8WEMNZ2815004YhU+gJAM75Ep86mc6cwu0U
+         sU0lWog3PIuRrhr87ACxCbJu7XbTX2LBbY4voVmOssDG5FOI4w6VINVtXwyTFBv3Kj5v
+         68MbKplggEERqahkd5FDqvUvjyjurLaJrkrQs8bI3Ncwcv65x8A8wlSrknk+tjYXzy95
+         o6H4I54gLkz2BJRvbBElZpQmog6M9fgU7OD5TfQGoBl8hDmJWCXV8Y1CEp/tCtqTOWE3
+         DPpZH0WyhmNp80DpS9/yw/eq2nIAlSc39UAiju6m2uYHUPJGOUjNCtwwxlUAX2OFf5i3
+         ee+A==
+X-Forwarded-Encrypted: i=1; AJvYcCUoYtPXQA1uonZ073rI2MQTnx7vh8vbs0CZCRSym1QzwDQuv6NwLIXJ0+NeznFNyNSH1+50HKyNLXsQfKs8@vger.kernel.org, AJvYcCVjXZP1T8WApTDB6z5tsMrbFQK12GdZtuo4tF1USUF5uaYuXR2eAKSRCFplpm43sH0Xqz7FFrSh@vger.kernel.org, AJvYcCVvlhQTmGOtxaZxoUYXhwk+c+TEffvp7aCFl3iix3+LUllcrwP/LyWhXfdwAg6fqLDx6b6w1Vo/TNxhbg==@vger.kernel.org, AJvYcCW3aYg3AI9cYfEnKrLIjIa4yyUWU8gi3edaUgLhE+ZyKNzma1VxhqXyt2J6oLyQkokz4pnutWegtkcPiswZSOPV@vger.kernel.org, AJvYcCXujocvSLLDKiMDLrc+W8B812qxkbpNvwDvihIZpAXdUL6+MoYyRv1ApO9qe+KFQ2hLtv8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzeBjcDMLiKMO1E2tsO4XxqMmBq8cy2hRZqk9/D8n8ENQ6nHbp2
+	tMBJ2GlIYAB4j6mYC5V+xcZTAID5mBkkV3ZElSkKV8xouQ8Vg2hXJkZE7sFdIj/9a4cKURft0HI
+	nlXc/yCSSeQNS2chc7tmRzkuIoAKmPC0=
+X-Gm-Gg: ASbGncvQSz/Iq49Vxr/l0p1voHBV7BElZxSaGoeGsxsXfe4RwBsu5iI/OnOZ9Q1f/Vw
+	+OoJABUOAz43h3Ow0Hnutijz3BbX8PzfCduLtMxZupYAeLY3vmEUTY5cqvdMlWD4OZA5JYaf3Bx
+	V15Ez1gewM9qaYhaTTbkZatLJ7ukp6Ac/XZSBrNLRVOntN6oWqJOzHP3fSwhqNGe8apV5nJ05y
+X-Google-Smtp-Source: AGHT+IGvAZU4d5tXw0nhgWlSwGRKFbuaQhR8GZiHa22TV57O0MRl7T0f9v9YaYzOJredMJW3TgBMxueem5pPB3YsBNg=
+X-Received: by 2002:a05:6000:40dd:b0:3a5:2694:d75f with SMTP id
+ ffacd0b85a97d-3a572e895fbmr1535518f8f.52.1749854168416; Fri, 13 Jun 2025
+ 15:36:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250611220220.3681382-1-song@kernel.org> <20250611220220.3681382-2-song@kernel.org>
- <174977345565.608730.2655286329643493783@noble.neil.brown.name>
-In-Reply-To: <174977345565.608730.2655286329643493783@noble.neil.brown.name>
-From: Song Liu <song@kernel.org>
-Date: Fri, 13 Jun 2025 15:27:33 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7V9MWXBqiEFbFipUVASwysbB1pX3Lz0NCncFJ9Gjpo5w@mail.gmail.com>
-X-Gm-Features: AX0GCFsvU1L3eassdPC77vEMHxMtYL1v9e9xJtapswAl6ledQxqg87gGstBk2wM
-Message-ID: <CAPhsuW7V9MWXBqiEFbFipUVASwysbB1pX3Lz0NCncFJ9Gjpo5w@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 1/5] namei: Introduce new helper function path_walk_parent()
-To: NeilBrown <neil@brown.name>
-Cc: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, viro@zeniv.linux.org.uk, 
-	brauner@kernel.org, jack@suse.cz, kpsingh@kernel.org, 
-	mattbobrowski@google.com, amir73il@gmail.com, repnop@google.com, 
-	jlayton@kernel.org, josef@toxicpanda.com, mic@digikod.net, gnoack@google.com, 
-	m@maowtm.org
+References: <20250613-deny_trampoline_structs_on_stack-v1-0-5be9211768c3@bootlin.com>
+ <20250613-deny_trampoline_structs_on_stack-v1-2-5be9211768c3@bootlin.com>
+ <20250613081150.GJ2273038@noisy.programming.kicks-ass.net>
+ <DAL9GRMH74F4.2IV0HN0NGU65X@bootlin.com> <20250613083232.GL2273038@noisy.programming.kicks-ass.net>
+ <DALA5WYA04OG.1283TZDOVLBPS@bootlin.com>
+In-Reply-To: <DALA5WYA04OG.1283TZDOVLBPS@bootlin.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 13 Jun 2025 15:35:57 -0700
+X-Gm-Features: AX0GCFvxnM-s8AungljiWEt_LCtzKmPe0DGMu2VqQrNsxFmjrZ6Pec_NoZEOn-E
+Message-ID: <CAADnVQ+sj9XhscN9PdmTzjVa7Eif21noAUH3y1K6x5bWcL-5pg@mail.gmail.com>
+Subject: Re: [PATCH bpf 2/7] bpf/x86: prevent trampoline attachment when args
+ location on stack is uncertain
+To: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>, 
+	"H. Peter Anvin" <hpa@zytor.com>, Menglong Dong <imagedong@tencent.com>, 
+	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	Pu Lehui <pulehui@huawei.com>, Puranjay Mohan <puranjay@kernel.org>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, 
+	Ilya Leoshkevich <iii@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, Hari Bathini <hbathini@linux.ibm.com>, 
+	Christophe Leroy <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, 
+	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
+	Nicholas Piggin <npiggin@gmail.com>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	ebpf@linuxfoundation.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+	Bastien Curutchet <bastien.curutchet@bootlin.com>, 
+	Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>, 
+	linux-riscv <linux-riscv@lists.infradead.org>, linux-s390 <linux-s390@vger.kernel.org>, 
+	ppc-dev <linuxppc-dev@lists.ozlabs.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 12, 2025 at 5:11=E2=80=AFPM NeilBrown <neil@brown.name> wrote:
-[...]
-> > +
-> > +false_out:
-> > +     path_put(path);
-> > +     memset(path, 0, sizeof(*path));
-> > +     return false;
-> > +}
+On Fri, Jun 13, 2025 at 1:59=E2=80=AFAM Alexis Lothor=C3=A9
+<alexis.lothore@bootlin.com> wrote:
 >
-> I think the public function should return 0 on success and -error on
-> failure.  That is a well established pattern.
-
-Yeah, I think we can use this pattern.
-
-> I also think you
-> shouldn't assume that all callers will want the same flags.
-
-__path_walk_parent() only handles two LOOKUP_ flags, so
-it is a bit weird to allow all the flags. But if folks think this is a
-good idea, I don't have strong objections to taking various flags.
-
+> On Fri Jun 13, 2025 at 10:32 AM CEST, Peter Zijlstra wrote:
+> > On Fri, Jun 13, 2025 at 10:26:37AM +0200, Alexis Lothor=C3=A9 wrote:
+> >> Hi Peter,
+> >>
+> >> On Fri Jun 13, 2025 at 10:11 AM CEST, Peter Zijlstra wrote:
+> >> > On Fri, Jun 13, 2025 at 09:37:11AM +0200, Alexis Lothor=C3=A9 (eBPF =
+Foundation) wrote:
 >
-> And it isn't clear to me why you want to path_put() on failure.
-
-In earlier versions, we would keep "path" unchanged when the
-walk stopped. However, this is not the case in this version
-(choose_mountpoint() =3D> in_root =3D> return -EXDEV). So I
-decided to just release it, so that we will not leak a path that
-the walk should not get to.
-
+> [...]
 >
-> I wonder if there might be other potential users in the kernel.
-> If so we should consider how well the interface meets their needs.
+> >> Maybe my commit wording is not precise enough, but indeed, there's not
+> >> doubt about whether the struct value is passed on the stack or through=
+ a
+> >> register/a pair of registers. The doubt is rather about the struct loc=
+ation
+> >> when it is passed _by value_ and _on the stack_: the ABI indeed clearl=
+y
+> >> states that "Structures and unions assume the alignment of their most
+> >> strictly aligned component" (p.13), but this rule is "silently broken"=
+ when
+> >> a struct has an __attribute__((packed)) or and __attribute__((aligned(=
+X))),
+> >> and AFAICT this case can not be detected at runtime with current BTF i=
+nfo.
+> >
+> > Ah, okay. So it is a failure of BTF. That was indeed not clear.
 >
-> autofs, devpts, nfsd, landlock all call follow_up...
-> maybe they should be using the new interface...
-> nfsd is the most likely to benefit - particularly nfsd_lookup_parent().
+> If I need to respin, I'll rewrite the commit message to include the detai=
+ls
+> above.
 
-AFAICT, autofs and devpts can just use follow_up().
-For nfsd, nfsd_lookup_parent() and nfsd4_encode_pathname4() can
-use path_walk_parent. And 2/5 covers landlock.
+No need to respin. The cover letter is quite detailed already.
 
-I think we can update nfsd in a follow up patch, just to keep this set
-simpler.
+But looking at the patch and this thread I think we need to agree
+on the long term approach to BTF, since people assume that
+it's a more compact dwarf and any missing information
+should be added to it.
+Like in this case special alignment case and packed attributes
+are not expressed in BTF and I believe they should not be.
+BTF is not a debug format and not a substitute for dwarf.
+There is no goal to express everything possible in C.
+It's minimal, because BTF is _practical_ description of
+types and data present in the kernel.
+I don't think the special case of packing and alignment exists
+in the kernel today, so the current format is sufficient.
+It doesn't miss anything.
+I think we made arm64 JIT unnecessary restrictive and now considering
+to make all other JITs restrictive too for hypothetical case
+of some future kernel functions.
+I feel we're going in the wrong direction.
+Instead we should teach pahole to sanitize BTF where functions
+are using this fancy alignment and packed structs.
+pahole can see it in dwarf and can skip emitting BTF for such
+functions. Then the kernel JITs on all architectures won't even
+see such cases.
 
-Thanks,
-Song
+The issue was initially discovered by a selftest:
+https://lore.kernel.org/bpf/20250411-many_args_arm64-v1-3-0a32fe72339e@boot=
+lin.com/
+that attempted to support these two types:
++struct bpf_testmod_struct_arg_4 {
++ __u64 a;
++ __u64 b;
++};
++
++struct bpf_testmod_struct_arg_5 {
++ __int128 a;
++};
 
-> Just a thought..
+The former is present in the kernel. It's more or less sockptr_t,
+and people want to access it for observability in tracing.
+The latter doesn't exist in the kernel and we cannot represent
+it properly in BTF without losing alignment.
 
-[...]
+So I think we should go back to that series:
+https://lore.kernel.org/bpf/20250411-many_args_arm64-v1-0-0a32fe72339e@boot=
+lin.com/
+
+remove __int128 selftest, but also teach pahole
+to recognize types that cannot be represented in BTF and
+don't emit them either into vmlinux or in kernel module
+(like in this case it was bpf_testmod.ko)
+I think that would be a better path forward aligned
+with the long term goal of BTF.
+
+And before people ask... pahole is a trusted component of the build
+system. We trust it just as we trust gcc, clang, linker, objtool.
 
