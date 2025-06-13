@@ -1,125 +1,158 @@
-Return-Path: <bpf+bounces-60552-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60553-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5F43AD7F5F
-	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 02:06:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE45AAD7F67
+	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 02:06:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 96D2B16FFF9
-	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 00:06:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72F27189035E
+	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 00:07:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E956B34545;
-	Fri, 13 Jun 2025 00:05:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D03201D52B;
+	Fri, 13 Jun 2025 00:06:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LHM2dMmz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kqcDmR3W"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D30972619
-	for <bpf@vger.kernel.org>; Fri, 13 Jun 2025 00:05:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA7AC3C26;
+	Fri, 13 Jun 2025 00:06:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749773156; cv=none; b=O7Adf+n/qz6d3b20Q8L9uHF6H6yrWle849AMkasc9DZemKqeoK2OLctSxPQ7Y4FCodpwPmygu62sx9vZpTG3UV1Ou7R6J8IIcXJSpisnIDZ66Afdi7M4TK+UWoc1gTXSG0SwrZ85WWFZCRI312VkuzKZEXU9E6NxdpKW7pK52W8=
+	t=1749773201; cv=none; b=MJ+5gr5MFs31pie9KFWEi3CqVzY79xjAu3jRLzPcTUcs+ScMJIZc+NaYmTQs1e5OdLVa5v51PIs9oKWfO5t74eJfDh1aZUQ12fFO7XGStqwh4tUi4OXRDMJfdJ3ONcNmMf5JzpDYFZDp1CteW+0ZCzJMK4EyF9Iiv8TIou1uXSg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749773156; c=relaxed/simple;
-	bh=Nd3cKNWGl5bKvi+bImgZ1oKnVlZ8gMBbQgLiCP768P8=;
+	s=arc-20240116; t=1749773201; c=relaxed/simple;
+	bh=d0RuPBuCSODcZVIzWEXGOpuiLX63DqP3/tASAAIxyNg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=d0NWimkoKwlYlt8m013JJ1XRxU5KjaQnE37I1+IlMcr6R7lbWwCF9OZcWoPgBAJFmSCrqDWxu5wC3g2LlstJTNtj60OiLVprqt3f3pkl5YzWtxdxihpPrM2Kc1Udc0Qr9Qnu7Hbr2TNcwx23HWxs9+z1DZdHzTXjJ0aSS8gCEIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LHM2dMmz; arc=none smtp.client-ip=209.85.210.169
+	 To:Cc:Content-Type; b=kXxA1U0FwSXia99N3uwLthYO6rQJbbj+kSmUWDNvrXACLzAt2Lx0digelssL+PjF+/Ss2C/i736AyEf31bWBaiWy6UEGkwYgJ/l3hqx1h/B0+lIoadI1YJfMekp59hYRzVrbTUWppIgWPrDK+RqIoFNpPgNJmCGdH9ChOtH6siU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kqcDmR3W; arc=none smtp.client-ip=209.85.214.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-747fc77bb2aso1410060b3a.3
-        for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 17:05:54 -0700 (PDT)
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-234d3261631so11271225ad.1;
+        Thu, 12 Jun 2025 17:06:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749773154; x=1750377954; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1749773199; x=1750377999; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BpeMeMoFffJniJpfyk1KR5/CdbLGYJFC2JPbovQOICw=;
-        b=LHM2dMmzYSDsHaOF7AAhWcJYKQSnDbHDYwWLnr3S3wo3a4ZLkotkbFESsOzDbO6a7f
-         9WbjP7Q3hhh1vqRQLSNtQIbdW+DgrIomvrQi81VCLqrJsOU4JjdL5UosLuj3Ii1N5qEO
-         Q5+0Q/idZUglO69aox62VeMWRChxU2FaVIi5lo0wqTSa5h2/G/UAyl2qpyXli0+Hds6p
-         Ha/1rqnNMAE4r2Bz2D+6tidpxChw03oYSCNt7NrU759CJkmRyJgrKNtrmxQSsLjjT5z+
-         MrlDfnWV0oRw2uZWPWRmQfu9Y/zKVYiHMICwjzRt+UJIjWiEM921jgewmqZD/wTQ5bgc
-         9L1Q==
+        bh=d0RuPBuCSODcZVIzWEXGOpuiLX63DqP3/tASAAIxyNg=;
+        b=kqcDmR3WAPGwCgwoYRc89Do89m2UihwWZad8jYW2PxBuY5FKEqBBa6vbxbjjb63Its
+         lOPf80u3Wai56BhjEI7fdS5UpKXQ2vi7pcRRbSO69zQgAmbgEbAADDY33ueZX2/nE1Ki
+         JgUyICIrn7v1YBjenv5Xzfe7eMh+CBUKDQuuVIX+Yq9neldEWafmhe2OAbrhIOJ6P1Qr
+         6GGOxJc7UP0u8g6EyqFccytCHrJHuez4RKcGVBDdNqD3fcproDm7bDwYdRyvEJY5kW/0
+         uUwiqbV+3dKu/deTpe4+4y3gnLmh9XqvQgIo5iJHFOLhXgdX69aYoALgKHja7bCP8+XR
+         wjLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749773154; x=1750377954;
+        d=1e100.net; s=20230601; t=1749773199; x=1750377999;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BpeMeMoFffJniJpfyk1KR5/CdbLGYJFC2JPbovQOICw=;
-        b=awOXLxJ7v4Z2dwlI9sQ45zNSxQQeJZIHz4v7dVKBc0tKxxnaDoRXxzuLSaEsdDh5XW
-         Kn9sBVUWze8Wzweig4U90ZR7Y6ha6P4Y6qFcuDQ+emeIkQut9HJX4OS2d/Fy0tlZJFT4
-         +XirISVno721ZvFC4HPM8Ff1HlZgsYUrGaTHt1c24gXsq8dOk7PhzfogUxE7Bf0HHq/k
-         ogfEcw2mPTSrOaXfzlm45CycLM+44DK9dS+Sqzndyb6tHwtBZqla/YC4JzXOfCsxu7F+
-         maMlB0lvHHnG0DC0YF4CVsNNs3rfypGjQtkcBMzPQWMphGjJm1gJtR0EF3iTzBOOw6hs
-         YLdQ==
-X-Gm-Message-State: AOJu0YzAqXK6gVWpnRNcekWZ4kiXOjRJyZTXotr2hZD/0j7+7NRmn+uD
-	Xkif4P4ry7VYJSRQXWs3QyRcq3Wj3zE21VhlN1CyFPsuEtQG0S/+3IHz/n7/Kvx0+Cx7/g0v0+A
-	6ehIDzAn77k2Zr/V61SNfIGkbHmfdSRo=
-X-Gm-Gg: ASbGncvqW3jsAePkU/I8G8qm24F3pCWumf+KMtA/kT/fd744oEXVCQfW1HcRL/dG/cx
-	wymxPTsHXPeXehD08aUgPRSUEMXyBQLB6W8pSN9rgD7YTG1tW+R9PSFc10fjFc/I8fp762ts4eM
-	Ycj7MghGjRPRsFd/6s5T+WuwclYSsc6op0G9MS7lBxcP6WBq3JJFsge+m2JO0=
-X-Google-Smtp-Source: AGHT+IF7NQKoXWQPnv/XvU2+BB2HLCqcrUWNiytkIZT/LckCW8wumDQCfm+AEGOzicvjY+Elcdeb5o5vPW3nzhLD6Jg=
-X-Received: by 2002:a05:6a20:7348:b0:21f:8d4f:9e3b with SMTP id
- adf61e73a8af0-21facbaecaemr1259862637.7.1749773154174; Thu, 12 Jun 2025
- 17:05:54 -0700 (PDT)
+        bh=d0RuPBuCSODcZVIzWEXGOpuiLX63DqP3/tASAAIxyNg=;
+        b=Ros+UnnoUZWJPI5n4dmXUxNzwjjIOEV52hzN3QOQ1MCuIq7lvPnlr41m2NcmkrAvqw
+         zQ3ccHlf1GfhXTa2xlovcI9jGwfqqZ1duShYhg3wZFqnftP7iGSWshaK1L3aT+nnyzop
+         vaXLc5DQmqAVtmlyOYak/ZDrTl2cn8ULj1azD6Ue20uOJ/iakDsZoLcKxk1T9psCFHD4
+         kx1pZ1+xemHbuYi8GdRF+CROj+ARAHW1p5ocGnYipCUcnhVuu0TW5prsHR+enpmyBF0M
+         PGQjZ9HbuyONFV2etcy2naYAgI2HtAo4kKzlaPyTqROQ5NM/cZvxYgcavJwKdg/GoOxh
+         3AjA==
+X-Forwarded-Encrypted: i=1; AJvYcCUXAJi9clpJjh6qpEfEZqkqfvYSrt09xaqKqjsr2ZhEpauA6B9vv9SMWedSjnfxjy1NIpA=@vger.kernel.org, AJvYcCWmW61MgIN9skJ1ymeFNs/U8zsGkO5n1Z7IH5qYoM9Z6VVSClkrzZnhztxT+X94QYh9jnKaAdRjcNyPSnQLkh58qRTz@vger.kernel.org, AJvYcCXArtR6HSvmu6SRHdlkOMS240+KSnPqCV/U0GJ9ZAFLXZHfYdC7OxuXfZMKCDp8Jhyh3PuUiL+98dkMhEMX@vger.kernel.org
+X-Gm-Message-State: AOJu0YywL48QahWdMqbdhbP5gYPp1cdaq4e+1PtSkdpGupMF6FbfCs2g
+	Yck5IMHRT7jIb0qOYF1MauSqV3IM3+zYM1fu3oLIDzkD3zum0baXhfyehZIjjL9P8ujL/L1Jq3M
+	0lTGWHKI7oEDaziJDcAw54QdpJvjlRuA=
+X-Gm-Gg: ASbGncuRgXVymIvlDGhTeOUd9eWJTS3f2K0sAuHqzNo5aQ3Mc+LUAkWibtawa4znbGu
+	0VpnxxcvN0qngN07tgGtge493aDZnS2s8R1yFqPk0xCd4uwfqGHD8h8pjo7jicMsBZQD/F2lXEY
+	rWEjrmGXSGZ2wkHW41DV3eLuUn9jwn2yDluyT9fPhbdRZvNrdPBkncmwFBFA0=
+X-Google-Smtp-Source: AGHT+IEPSLsTexGUKwbGZB+a2Mn+hEIdnHaQwmU6KUzaqp938CS+7Eeo1eX8520vbqupCXYDLWrets8alAP3ZKxaAPY=
+X-Received: by 2002:a17:903:1a0c:b0:22e:62f0:885f with SMTP id
+ d9443c01a7336-2365dc0c4ebmr14191995ad.40.1749773199120; Thu, 12 Jun 2025
+ 17:06:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250612130835.2478649-1-eddyz87@gmail.com> <20250612130835.2478649-2-eddyz87@gmail.com>
-In-Reply-To: <20250612130835.2478649-2-eddyz87@gmail.com>
+References: <20250611154859.259682-1-chen.dylane@linux.dev>
+ <CAEf4Bzbn=RVhMOR7RapYwi+s8gbVS=1msOuZ7MhPvgz8zHiE9w@mail.gmail.com>
+ <CAADnVQJ8cVi4KyJqWgEfyWYs+zSYQ73PevrNszPkisrdPSjYMg@mail.gmail.com>
+ <CAEf4BzayBd9e5c9fiEPgDKPoRm-E4uB_u__xKcRpXDz18kNnkA@mail.gmail.com> <CAADnVQKw2u9y-Cf+8idB0bZ0v-p6BtuyRV=JpmN4to3_1Z6GEA@mail.gmail.com>
+In-Reply-To: <CAADnVQKw2u9y-Cf+8idB0bZ0v-p6BtuyRV=JpmN4to3_1Z6GEA@mail.gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 12 Jun 2025 17:05:42 -0700
-X-Gm-Features: AX0GCFv6nkqY9-Zuk9ExL8CbrCF_zh5f9XqnY-FQSQknmDkiGPtXsJPS10FQaLc
-Message-ID: <CAEf4BzawQqu0z8Kq2MRpByPByw52Dq8NtNQnnQy1Mv_YVv4h4Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: include verifier memory allocations
- in memcg statistics
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
-	yonghong.song@linux.dev
+Date: Thu, 12 Jun 2025 17:06:25 -0700
+X-Gm-Features: AX0GCFtzlARaYcK7r342SFEPGz5cXS3H7NHCUuu0m_82OyNKtt6PfeiRsBWeHuc
+Message-ID: <CAEf4BzbScdvawnTZ7364bXxU2QpW_ooCB-tjohBgC4WSvFigFg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: clear user buf when bpf_d_path failed
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Tao Chen <chen.dylane@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Matt Bobrowski <mattbobrowski@google.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 12, 2025 at 6:08=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
+On Thu, Jun 12, 2025 at 4:56=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> This commit adds __GFP_ACCOUNT flag to verifier induced memory
-> allocations. The intent is to account for all allocations reachable
-> from BPF_PROG_LOAD command, which is needed to track verifier memory
-> consumption in veristat. This includes allocations done in verifier.c,
-> and some allocations in btf.c, functions in log.c do not allocate.
+> On Thu, Jun 12, 2025 at 4:27=E2=80=AFPM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Thu, Jun 12, 2025 at 2:40=E2=80=AFPM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Thu, Jun 12, 2025 at 2:29=E2=80=AFPM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > > >
+> > > > On Wed, Jun 11, 2025 at 8:49=E2=80=AFAM Tao Chen <chen.dylane@linux=
+.dev> wrote:
+> > > > >
+> > > > > The bpf_d_path() function may fail. If it does,
+> > > > > clear the user buf, like bpf_probe_read etc.
+> > > > >
+> > > >
+> > > > But that doesn't mean we *have to* do memset(0) for bpf_d_path(),
+> > > > though. Especially given that path buffer can be pretty large (4KB)=
+.
+> > > >
+> > > > Is there an issue you are trying to address with this, or is it mor=
+e
+> > > > of a consistency clean up? Note, that more or less recently we made
+> > > > this zero filling behavior an option with an extra flag
+> > > > (BPF_F_PAD_ZEROS) for newer APIs. And if anything, bpf_d_path() is
+> > > > more akin to variable-sized string probing APIs rather than
+> > > > fixed-sized bpf_probe_read* family.
+> > >
+> > > All old helpers had this BPF_F_PAD_ZEROS behavior
+> > > (or rather should have had).
+> > > So it makes sense to zero in this helper too for consistency.
+> > > I don't share performance concerns. This is an error path.
+> >
+> > It's just a bizarre behavior as it stands right now.
+> >
+> > On error, you'll have a zeroed out buffer, OK, good so far.
+> >
+> > On success, though, you'll have a buffer where first N bytes are
+> > filled out with good path information, but then the last sizeof(buf) -
+> > N bytes would be, effectively, garbage.
+> >
+> > All in all, you can't use that buffer as a key for hashmap looking
+> > (because of leftover non-zeroed bytes at the end), yet on error we
+> > still zero out bytes for no apparently useful reason.
+> >
+> > And then for the bpf_path_d_path(). What do we do about that one? It
+> > doesn't have zeroing out either in the error path, nor in the success
+> > path. So just more inconsistency all around.
 >
-> There is also a utility function bpf_memcg_flags() which selectively
-> adds GFP_ACCOUNT flag depending on the `cgroup.memory=3Dnobpf` option.
-> As far as I understand [1], the idea is to remove bpf_prog instances
-> and maps from memcg accounting as these objects do not strictly belong
-> to cgroup, hence it should not apply here.
+> Consistency with bpf_path_d_path() kfunc is indeed missing.
 >
-> (btf_parse_fields() is reachable from both program load and map
->  creation, but allocated record is not persistent as is freed as soon
->  as map_check_btf() exits).
->
-> [1] https://lore.kernel.org/all/20230210154734.4416-1-laoar.shao@gmail.co=
-m/
->
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> ---
->  kernel/bpf/btf.c      | 15 ++++++-----
->  kernel/bpf/verifier.c | 63 ++++++++++++++++++++++---------------------
->  2 files changed, 40 insertions(+), 38 deletions(-)
->
+> Ok, since you insist, dropped this patch, and force pushed.
 
-We have a bunch of GFP_USER allocs as well, e.g. for instruction
-history and state hashmap. At least the former is very much
-interesting, so should we add __GFP_ACCOUNT to those as well?
-
-[...]
+Great, thank you!
 
