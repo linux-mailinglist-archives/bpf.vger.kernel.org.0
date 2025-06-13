@@ -1,269 +1,197 @@
-Return-Path: <bpf+bounces-60557-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60558-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86256AD7F9C
-	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 02:25:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05013AD7FA6
+	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 02:31:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5063F17FFC2
-	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 00:25:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 678243B496E
+	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 00:31:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02CC81C3C1F;
-	Fri, 13 Jun 2025 00:25:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 227331A76AE;
+	Fri, 13 Jun 2025 00:31:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j8J114Y3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GjJzqbqP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB2ED219E0;
-	Fri, 13 Jun 2025 00:25:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4051419DF60
+	for <bpf@vger.kernel.org>; Fri, 13 Jun 2025 00:31:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749774322; cv=none; b=R5FNQj5748Ppvu6kbgFcUaukVfJ57OL8g1qmwHYoyCAFIUsKrOuIDg7kvRZF2uFnpg3t4MUZYd5e5sjCWS67x8EsAdysdHAFuaoO2KeYUTR7iLsjcuA5T2FoiMzz/UWI+GmWM8mVlUt9gewfVUJxBMvGKQkRp7gNP83UFmYtw8o=
+	t=1749774692; cv=none; b=PwDMdfwVhhMHR2M5Wa7zKg10r8DA+lwIFsfybuDlawn4T2W0ssppsC60lbxEf9X/mO947DNkHCf9eZFKEHy0TRmsTYkR44HXiYeOEts5sEr2nphQ1LwjtyCp1CWNxviPWQza8pD0SUv+A2TWNGAtIX9cjEoFmgPFAMeiKuiBW/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749774322; c=relaxed/simple;
-	bh=KOlum+J8kvBWXOiz2MOiHDhRZrX3PwYKoOaHJ27JLBA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fD8TAm0doDarZYNjVi/nTc/LCeJvYYc3Y2sR1lGf/lmCl5mVxsfOUPEu3HCqeRmqg+S1A/+p/NeR/AEmh6EYMweVr3x5Ge0csplEX6I94W7DMha06gnFivxyhopT9t2rYUmXdUmV8gKWx06O/ozd23w0XjuDRqd/ABLOad9HYO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j8J114Y3; arc=none smtp.client-ip=209.85.128.45
+	s=arc-20240116; t=1749774692; c=relaxed/simple;
+	bh=ySBCRAvDcI4dAIi2IBS1PJLr0y69G4hCyDnWPQfLVHA=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=HyhzoofIQcEKhPFh5+bizv79zlV0qgHpqpBuWLG4DpbtXWX4kRVJzW5qW0gjzxLPJmLTT/H460uZEDyIkkF3zjeM1TbYp/TXHPc3Jg650x6fmHe9NlkBmunw+yvMkWqDvmqUc9ABkkkARQoUKG6SwyFiZKmfqvXydHqeWo7Q3lk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GjJzqbqP; arc=none smtp.client-ip=209.85.214.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-442fda876a6so13331615e9.0;
-        Thu, 12 Jun 2025 17:25:20 -0700 (PDT)
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-236470b2dceso15161235ad.0
+        for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 17:31:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749774319; x=1750379119; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BtY2lCk3uzspSzuYUeIi/Qq4T39UA0U6nXtfkQzRaPA=;
-        b=j8J114Y3pPpctKy0PSRMQbEUjcliXudtxBq7v/v6YvbDe10vDFkM0R2Kx/IMASoGUd
-         3zHj9aNz2Qwvl7T3rxSZL7lCMTCPkwWRQmtH9tF9fwZycSHta0e9Ot2mtcPkTZoLxulS
-         baibHrGrtY+8RTOU1ez3opfN98NdBzweLhreBArQGMJSHZbup2tiVpZOk1kTaNv2KnWJ
-         4AQZAk9suMW1FcAc8pgn49ifexvkoj46X6TUENdgCC6pLkN98RDgE9LIlQV+vzylWdJO
-         GUDrtwtR0XjO6UBVgcanjAFpKtUyjrd6haVmysJ3RxY4NVGA+a1ZymexW2KK1pBEApCH
-         BSUg==
+        d=gmail.com; s=20230601; t=1749774690; x=1750379490; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=dZsojV1popn1Sw35hqoNeLysnk1NgNBziKN6UhicCsQ=;
+        b=GjJzqbqP6wmo+EHoyIEjPELCMHaxxlStQ1uZC5nZRzo2hr953cXoNu7oQ66MZvSW/U
+         pQsOM9c/mjPZ73+QT0/duMbEa5pshKRaPO/8rqudt6mEjUVfnNuYcepFAnud/roVCtXk
+         jFVZQMxfR3+rOIfbxebBG0pVjEbTLsJqnzhGbg+dTW578S/duvSe+CPF+Bhz2VHIWn2Y
+         /ftz3DihZkRwEZ44sJfGHGkXWKn87xlpj62bbDjNI/1BU0JPUe4Qm9ya8Emhh5PLBZBO
+         uts7uieGebNzNOCOh11WzVvQzZQYpJHd6V2VTYd2/lJlBF79LlzECJURBVFQDV5nlV8+
+         0EOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749774319; x=1750379119;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BtY2lCk3uzspSzuYUeIi/Qq4T39UA0U6nXtfkQzRaPA=;
-        b=njrwwbUHDX+ImClf95ubFSspgSJ/uxjPjFcBMRzWPhJqrnG47CeiZCZQvRBJVGtOPG
-         /9/4exXY8RkzGoacq4WgBcm/tuIto7eP4zW0y/yjTd13GauHGjr5TwgKkHiIo+gf6v1q
-         262LZO/CSCb5bCkL9Eov6QsjRSUeAygQA+iyYuJIx94PpYedvyfxAjTe2NQWoGr2aF9G
-         +SMV1V00B48ty8NYTbl8hzCI4DQyTP6gF4CMm7MgrC8GC7k3Ysbjuj/T8tzuLB9F8rIx
-         iCeaWWcC/L+HwMCelwzX7VUagF+m5t/bbkvnFVdhEWzuDD2HPnV+B6LRZnrKbOHV1Vo5
-         +fHg==
-X-Forwarded-Encrypted: i=1; AJvYcCV+BDUxJnU/xHjyXF+uZN0w+PBLCRy+gez7XoWeC2xHAOvkwIfRGHrnyBPFTE4Bi5G7pfs=@vger.kernel.org, AJvYcCWQ4KQGWFR9BwgUCDl7GMTSD8BdWaQxlTgGW9Gb0slEEV0Q9ilvIrTF+OsVCfDT7Zp8X6qXGc/tfqheWQyJ@vger.kernel.org
-X-Gm-Message-State: AOJu0YzeYkQ9PG6zh+DiLw+DYIMf/Bl1ub+EDWaD3g8dhWrdnjfPpaYR
-	vvpPET0F3FRM6/sZnVXw7R/B4jDo43Fj1OJy21eEpbkuKMeDoHrcD61bYvhBEw+FO6V4kvizxhy
-	1QSU7B3FwWck3kXZXWJsefAhUD/L34n8417PO
-X-Gm-Gg: ASbGncsS4nUNtSBcOJAQUfAGbxiZQgRt787Jb9sI/Hs7bTAhsYUxS5aL3XvwNyHfJq6
-	+zRkohnDqq5xI9fJ0H4TLCHYKBN7vOPQ27CabRTjQ9MlnXsQtBwPQb8Gd91OCnrJDWSuSa9/O4H
-	12tYbMkd+OaRfXxipIpP0cEvms2ei1xx5eMlC/qlehkU7pvWeOrvDKT1QEF30RjhwxBlAM7ehh
-X-Google-Smtp-Source: AGHT+IF76pGBYxGZYWw+CJokdxXh6p6fIroXhuyYAPs9g7npmaYdejWwOR9kgrMPXPQHyCCG3MzqkJp4opYixEpEZ9E=
-X-Received: by 2002:a5d:588a:0:b0:3a4:f52d:8b11 with SMTP id
- ffacd0b85a97d-3a5686f59e0mr1042820f8f.20.1749774318887; Thu, 12 Jun 2025
- 17:25:18 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1749774690; x=1750379490;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dZsojV1popn1Sw35hqoNeLysnk1NgNBziKN6UhicCsQ=;
+        b=HvW9TusiKNts7lin2+0bbldopEAUDsGrs1J122v17XyxBsxxi+kAxdSBb9/NGji+/Z
+         Sbp3CrTIISWOJeZN1um/EtdTxevvO0s9w2dKN+bjLGe2E842gpCQu2/dO1jvweP3+tLq
+         C5BfCOwbBDKttXbTrJg+EkXyroVZd7go3t3n/GT5SIZi0ZUGd95DoGanhZvL6CTdWaIY
+         Iylwi27MbOau41FAde9+rezv+3XXdj4arDTU8pPhrsM5iFWblOwiS5uLl+0m+rPTpsfW
+         h4AW64uwjGt2zJD0vW2yve4WTcXqJJRa87svXvavwYBVVOINLPaXAks35ozEQCWTjRiT
+         w9EA==
+X-Gm-Message-State: AOJu0Yzw858j5Fp7AXSe7eFpvnzOo6VyJpbp0lh791LapkAjQeg6/Eby
+	efLuUQKOQTWVtz7XYhSWnEC4aW6GP1kgJjPNRltz4lyVSdN+qcBEYTMZ
+X-Gm-Gg: ASbGncumm1BwVgSgr78m3wRJGSehtu7heYYbWJlJAzV5ppCfe2kLk10U5QF7PZjdVxB
+	I8Z9SgiDtcDQWJt3B4VgeY9F32y+x9bQ+aVcGmSKBSBEDGl5+tHDr8hs4qYAgdBzcbPxjhq4Axs
+	qWxzdhOvfZBAUlqwh5B3F3S6H386ijf1kHiMMzESDj7qp2o7HG48xnXv4z84vaGEmrnS/tq9+mA
+	mh6tLgx2QrGNb3zH6FTBj2fNU0Mb6/oJo31cXkX7LXYhS/ZRM5BG+Jk4X0+aCsSDemtGygvv97C
+	BRh02W6nNEca9aMOKiJGrJC0ctoTV5eqiu7Cx/nmhsd0Lv9I/tUrzAHCBaM=
+X-Google-Smtp-Source: AGHT+IFRfmAR/6gzgY58OsBYA0kDEQMKgNs5d0qe9g1glXrqpP4cuB1Wj7JtX5TcrqxiBy8UfOkUiw==
+X-Received: by 2002:a17:903:11c9:b0:235:be0:db4c with SMTP id d9443c01a7336-2365dc13c5fmr14615525ad.41.1749774690487;
+        Thu, 12 Jun 2025 17:31:30 -0700 (PDT)
+Received: from [192.168.0.226] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2365d8a183asm3347265ad.53.2025.06.12.17.31.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Jun 2025 17:31:30 -0700 (PDT)
+Message-ID: <bb0a4b1d12c8d3e7a5aba2cfce1f07143a7e2b71.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] veristat: memory accounting for bpf
+ programs
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, 	martin.lau@linux.dev, kernel-team@fb.com,
+ yonghong.song@linux.dev
+Date: Thu, 12 Jun 2025 17:31:28 -0700
+In-Reply-To: <CAEf4BzbTxyGXi=ZNU_yebe2a=zgNoeafRTK9pixJMihUwwo0Pg@mail.gmail.com>
+References: <20250612130835.2478649-1-eddyz87@gmail.com>
+	 <20250612130835.2478649-3-eddyz87@gmail.com>
+	 <CAEf4BzbTxyGXi=ZNU_yebe2a=zgNoeafRTK9pixJMihUwwo0Pg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1749214572.git.asml.silence@gmail.com> <c4de7ed6e165f54e2166e84bc88632887d87cfdf.1749214572.git.asml.silence@gmail.com>
- <CAADnVQJgxnQEL+rtVkp7TB_qQ1JKHiXe=p48tB_-N6F+oaDLyQ@mail.gmail.com> <8aa7b962-40a6-4bbc-8646-86dd7ce3380e@gmail.com>
-In-Reply-To: <8aa7b962-40a6-4bbc-8646-86dd7ce3380e@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 12 Jun 2025 17:25:07 -0700
-X-Gm-Features: AX0GCFsinQTNjdnmxTBWf-QlYZGnOFA6IRDU-2AFsvp0E2RrYTzY6ZCebXQDLVg
-Message-ID: <CAADnVQ+--s_zGdRg4VHv3H317dCrx_+nEGH7FNYzdywkdh3n-A@mail.gmail.com>
-Subject: Re: [RFC v2 5/5] io_uring/bpf: add basic kfunc helpers
-To: Pavel Begunkov <asml.silence@gmail.com>, Andrii Nakryiko <andrii@kernel.org>
-Cc: io-uring@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 12, 2025 at 6:25=E2=80=AFAM Pavel Begunkov <asml.silence@gmail.=
-com> wrote:
->
-> On 6/12/25 03:47, Alexei Starovoitov wrote:
-> > On Fri, Jun 6, 2025 at 6:58=E2=80=AFAM Pavel Begunkov <asml.silence@gma=
-il.com> wrote:
-> ...>> +__bpf_kfunc
-> >> +struct io_uring_cqe *bpf_io_uring_extract_next_cqe(struct io_ring_ctx=
- *ctx)
-> >> +{
-> >> +       struct io_rings *rings =3D ctx->rings;
-> >> +       unsigned int mask =3D ctx->cq_entries - 1;
-> >> +       unsigned head =3D rings->cq.head;
-> >> +       struct io_uring_cqe *cqe;
-> >> +
-> >> +       /* TODO CQE32 */
-> >> +       if (head =3D=3D rings->cq.tail)
-> >> +               return NULL;
-> >> +
-> >> +       cqe =3D &rings->cqes[head & mask];
-> >> +       rings->cq.head++;
-> >> +       return cqe;
-> >> +}
-> >> +
-> >> +__bpf_kfunc_end_defs();
-> >> +
-> >> +BTF_KFUNCS_START(io_uring_kfunc_set)
-> >> +BTF_ID_FLAGS(func, bpf_io_uring_submit_sqes, KF_SLEEPABLE);
-> >> +BTF_ID_FLAGS(func, bpf_io_uring_post_cqe, KF_SLEEPABLE);
-> >> +BTF_ID_FLAGS(func, bpf_io_uring_queue_sqe, KF_SLEEPABLE);
-> >> +BTF_ID_FLAGS(func, bpf_io_uring_get_cqe, 0);
-> >> +BTF_ID_FLAGS(func, bpf_io_uring_extract_next_cqe, KF_RET_NULL);
-> >> +BTF_KFUNCS_END(io_uring_kfunc_set)
-> >
-> > This is not safe in general.
-> > The verifier doesn't enforce argument safety here.
-> > As a minimum you need to add KF_TRUSTED_ARGS flag to all kfunc.
-> > And once you do that you'll see that the verifier
-> > doesn't recognize the cqe returned from bpf_io_uring_get_cqe*()
-> > as trusted.
->
-> Thanks, will add it. If I read it right, without the flag the
-> program can, for example, create a struct io_ring_ctx on stack,
-> fill it with nonsense and pass to kfuncs. Is that right?
+On Thu, 2025-06-12 at 17:01 -0700, Andrii Nakryiko wrote:
 
-No. The verifier will only allow a pointer to struct io_ring_ctx
-to be passed, but it may not be fully trusted.
+[...]
 
-The verifier has 3 types of pointers to kernel structures:
-1. ptr_to_btf_id
-2. ptr_to_btf_id | trusted
-3. ptr_to_btf_id | untrusted
+> > +static void destroy_stat_cgroup(void)
+> > +{
+> > +       char buf[PATH_MAX];
+> > +       int err;
+> > +
+> > +       close(env.memory_peak_fd);
+> > +
+> > +       if (env.orig_cgroup[0]) {
+> > +               snprintf_trunc(buf, sizeof(buf), "%s/cgroup.procs", env=
+.orig_cgroup);
+> > +               err =3D write_one_line(buf, "%d\n", getpid());
+> > +               if (err < 0)
+> > +                       log_errno("moving self to original cgroup %s\n"=
+, env.orig_cgroup);
+> > +       }
+> > +
+> > +       if (env.stat_cgroup[0]) {
+> > +               err =3D rmdir(env.stat_cgroup);
+>=20
+> We need to enter the original cgroup to successfully remove the one we
+> created, is that right? Otherwise, why bother reentering if we are on
+> our way out, no?
 
-1st was added long ago for tracing and gradually got adopted
-for non-tracing needs, but it has a foot gun, since
-all pointer walks keep ptr_to_btf_id type.
-It's fine in some cases to follow pointers, but not in all.
-Hence 2nd variant was added and there
-foo->bar dereference needs to be explicitly allowed
-instead of allowed by default like for 1st kind.
+Yes, cgroup can't be removed if there are member processes.
+I chose to organize this way because there would be a message printed
+with a name of stale group.
 
-All loads through 1 and 3 are implemented as probe_read_kernel.
-while loads from 2 are direct loads.
+>=20
+> > +               if (err < 0)
+> > +                       log_errno("deletion of cgroup %s", env.stat_cgr=
+oup);
+> > +       }
+> > +
+> > +       env.memory_peak_fd =3D -1;
+> > +       env.orig_cgroup[0] =3D 0;
+> > +       env.stat_cgroup[0] =3D 0;
+> > +}
+> > +
+> > +/*
+> > + * Creates a cgroup at /sys/fs/cgroup/veristat-accounting-<pid>,
+> > + * moves current process to this cgroup.
+> > + */
+> > +static void create_stat_cgroup(void)
+> > +{
+> > +       char cgroup_fs_mount[PATH_MAX + 1];
+> > +       char buf[PATH_MAX + 1];
+> > +       int err;
+> > +
+> > +       env.memory_peak_fd =3D -1;
+> > +
+> > +       if (!output_stat_enabled(MEMORY_PEAK))
+> > +               return;
+> > +
+> > +       err =3D scanf_one_line("/proc/self/mounts", 2, "%*s %" STR(PATH=
+_MAX) "s cgroup2 %s",
+>=20
+> let's just hard-code 1024 or something and not do that STR() magic,
+> please (same below).
+>=20
+> > +                            cgroup_fs_mount, buf);
+> > +       if (err !=3D 2) {
+> > +               if (err < 0)
+> > +                       log_errno("reading /proc/self/mounts");
+> > +               else if (!env.quiet)
+> > +                       fprintf(stderr, "Can't find cgroupfs v2 mount p=
+oint.\n");
+> > +               goto err_out;
+> > +       }
+> > +
+> > +       /* cgroup-v2.rst promises the line "0::<group>" for cgroups v2 =
+*/
+> > +       err =3D scanf_one_line("/proc/self/cgroup", 1, "0::%" STR(PATH_=
+MAX) "s", buf);
+>=20
+> do you think just hard-coding /sys/fs/cgroup would not work in
+> practice? It just feels like we are trying to be a bit too flexible
+> here...
 
-So kfuncs without KF_TRUSTED_ARGS with struct io_ring_ctx *ctx
-argument are likely fine and safe, since it's impossible
-to get this io_ring_ctx pointer by dereferencing some other pointer.
-But better to tighten safety from the start.
-We recommend KF_TRUSTED_ARGS for all kfuncs and
-eventually it will be the default.
+Idk, removing this saves 10 lines.
+On machines I have access to (one CentOS, one Fedora) the mount point
+is /sys/fs/cgroup.
 
-> > Looking at your example:
-> > https://github.com/axboe/liburing/commit/706237127f03e15b4cc9c7c31c16d3=
-4dbff37cdc
-> > it doesn't care about contents of cqe and doesn't pass it further.
-> > So sort-of ok-ish right now,
-> > but if you need to pass cqe to another kfunc
-> > you would need to add an open coded iterator for cqe-s
-> > with appropriate KF_ITER* flags
-> > or maybe add acquire/release semantics for cqe.
-> > Like, get_cqe will be KF_ACQUIRE, and you'd need
-> > matching KF_RELEASE kfunc,
-> > so that 'cqe' is not lost.
-> > Then 'cqe' will be trusted and you can pass it as actual 'cqe'
-> > into another kfunc.
-> > Without KF_ACQUIRE the verifier sees that get_cqe*() kfuncs
-> > return 'struct io_uring_cqe *' and it's ok for tracing
-> > or passing into kfuncs like bpf_io_uring_queue_sqe()
-> > that don't care about a particular type,
-> > but not ok for full tracking of objects.
->
-> I don't need type safety for SQEs / CQEs, they're supposed to be simple
-> memory blobs containing userspace data only. SQ / CQ are shared with
-> userspace, and the kfuncs can leak the content of passed CQE / SQE to
-> userspace. But I'd like to find a way to reject programs stashing
-> kernel pointers / data into them.
+>=20
+> > +       if (err !=3D 1) {
+> > +               if (err < 0)
+> > +                       log_errno("reading /proc/self/cgroup");
+> > +               else if (!env.quiet)
+> > +                       fprintf(stderr, "Can't infer veristat process c=
+group.");
+> > +               goto err_out;
+> > +       }
+> > +
+>=20
+> [...]
 
-That's impossible.
-If you're worried about bpf prog exposing kernel addresses
-to user space then abort the whole thing.
-CAP_PERFMON is required for the majority of bpf progs.
-
->
-> BPF_PROG(name, struct io_ring_ctx *io_ring)
-> {
->      struct io_uring_sqe *cqe =3D ...;
->      cqe->user_data =3D io_ring;
->      cqe->res =3D io_ring->private_field;
-> }
->
-> And I mentioned in the message, I rather want to get rid of half of the
-> kfuncs, and give BPF direct access to the SQ/CQ instead. Schematically
-> it should look like this:
->
-> BPF_PROG(name, struct io_ring_ctx *ring)
-> {
->      struct io_uring_sqe *sqes =3D get_SQ(ring);
->
->      sqes[ring->sq_tail]->opcode =3D OP_NOP;
->      bpf_kfunc_submit_sqes(ring, 1);
->
->      struct io_uring_cqe *cqes =3D get_CQ(ring);
->      print_cqe(&cqes[ring->cq_head]);
-> }
->
-> I hacked up RET_PTR_TO_MEM for kfuncs, the diff is below, but it'd be
-> great to get rid of the constness of the size argument. I need to
-> digest arenas first as conceptually they look very close.
-
-arena is a special memory region where every byte is writeable
-by user space.
-
->
-> > For next revision please post all selftest, examples,
-> > and bpf progs on the list,
-> > so people don't need to search github.
->
-> Did the link in the cover letter not work for you? I'm confused
-> since it's all in a branch in my tree, but you linked to the same
-> patches but in Jens' tree, and I have zero clue what they're
-> doing there or how you found them.
-
-External links can disappear. It's not good for reviewers and
-for keeping the history of conversation.
-
->
-> diff --git a/io_uring/bpf.c b/io_uring/bpf.c
-> index 9494e4289605..400a06a74b5d 100644
-> --- a/io_uring/bpf.c
-> +++ b/io_uring/bpf.c
-> @@ -2,6 +2,7 @@
->   #include <linux/bpf_verifier.h>
->
->   #include "io_uring.h"
-> +#include "memmap.h"
->   #include "bpf.h"
->   #include "register.h"
->
-> @@ -72,6 +73,14 @@ struct io_uring_cqe *bpf_io_uring_extract_next_cqe(str=
-uct io_ring_ctx *ctx)
->         return cqe;
->   }
->
-> +__bpf_kfunc
-> +void *bpf_io_uring_get_region(struct io_ring_ctx *ctx, u64 size__retsz)
-> +{
-> +       if (size__retsz > ((u64)ctx->ring_region.nr_pages << PAGE_SHIFT))
-> +               return NULL;
-> +       return io_region_get_ptr(&ctx->ring_region);
-> +}
-
-and bpf prog should be able to read/write anything in
-[ctx->ring_region->ptr, ..ptr + size] region ?
-
-Populating (creating) dynptr is probably better.
-See bpf_dynptr_from*()
-
-but what is the lifetime of that memory ?
+Ack for other points, thank you for taking a look.
 
