@@ -1,197 +1,152 @@
-Return-Path: <bpf+bounces-60558-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60559-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05013AD7FA6
-	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 02:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 847A2AD7FCD
+	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 02:54:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 678243B496E
-	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 00:31:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00E763B68FC
+	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 00:53:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 227331A76AE;
-	Fri, 13 Jun 2025 00:31:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A8CF1B0420;
+	Fri, 13 Jun 2025 00:54:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GjJzqbqP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FuM2C9eI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4051419DF60
-	for <bpf@vger.kernel.org>; Fri, 13 Jun 2025 00:31:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6231B1A3161
+	for <bpf@vger.kernel.org>; Fri, 13 Jun 2025 00:54:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749774692; cv=none; b=PwDMdfwVhhMHR2M5Wa7zKg10r8DA+lwIFsfybuDlawn4T2W0ssppsC60lbxEf9X/mO947DNkHCf9eZFKEHy0TRmsTYkR44HXiYeOEts5sEr2nphQ1LwjtyCp1CWNxviPWQza8pD0SUv+A2TWNGAtIX9cjEoFmgPFAMeiKuiBW/g=
+	t=1749776054; cv=none; b=XKGwffwpPgboXPhdKyPNudW4KDbGIuqELOOfWM+IdaYgcZOTr2zcmokX9sA1FR0/Cb3EdYFDuT166d30icptN7XLJgpUJ7pHRiFk4WYzdT49i9hT45sQwysRBDqWQ9vBpOj6uwOPmskmvBvQXYYe3vevfhxFQiz2llziJar0oIk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749774692; c=relaxed/simple;
-	bh=ySBCRAvDcI4dAIi2IBS1PJLr0y69G4hCyDnWPQfLVHA=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=HyhzoofIQcEKhPFh5+bizv79zlV0qgHpqpBuWLG4DpbtXWX4kRVJzW5qW0gjzxLPJmLTT/H460uZEDyIkkF3zjeM1TbYp/TXHPc3Jg650x6fmHe9NlkBmunw+yvMkWqDvmqUc9ABkkkARQoUKG6SwyFiZKmfqvXydHqeWo7Q3lk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GjJzqbqP; arc=none smtp.client-ip=209.85.214.170
+	s=arc-20240116; t=1749776054; c=relaxed/simple;
+	bh=3LhHtgtR8wC8DyUWTylcIMXiDF6RccGf4Q/xMUS4+zY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HaDL7KqGbR/OFY2aDMiY2Ntcq5DF9sGrPD9+qhMjUNd/RjBX3uL1H08iIiSz9f5N3M8E6P4KLzwKLnWrM7U/1p2VtnfN3wg4Ihr9eMTG30XADUa/mRAwUbDxbbw65VhW4Sw3yKZ+fR9BiEflrc2WWzYrLNYkOymzvxybwBxbja0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FuM2C9eI; arc=none smtp.client-ip=209.85.221.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-236470b2dceso15161235ad.0
-        for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 17:31:31 -0700 (PDT)
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3a531fcaa05so890450f8f.3
+        for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 17:54:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749774690; x=1750379490; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=dZsojV1popn1Sw35hqoNeLysnk1NgNBziKN6UhicCsQ=;
-        b=GjJzqbqP6wmo+EHoyIEjPELCMHaxxlStQ1uZC5nZRzo2hr953cXoNu7oQ66MZvSW/U
-         pQsOM9c/mjPZ73+QT0/duMbEa5pshKRaPO/8rqudt6mEjUVfnNuYcepFAnud/roVCtXk
-         jFVZQMxfR3+rOIfbxebBG0pVjEbTLsJqnzhGbg+dTW578S/duvSe+CPF+Bhz2VHIWn2Y
-         /ftz3DihZkRwEZ44sJfGHGkXWKn87xlpj62bbDjNI/1BU0JPUe4Qm9ya8Emhh5PLBZBO
-         uts7uieGebNzNOCOh11WzVvQzZQYpJHd6V2VTYd2/lJlBF79LlzECJURBVFQDV5nlV8+
-         0EOg==
+        d=gmail.com; s=20230601; t=1749776051; x=1750380851; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=22UTCPGms/Ay4tkXxYZ6Q7dqCJ0hDCL3wk9TuZRuH2k=;
+        b=FuM2C9eIVymofeMzS2Pzkm8n+bdaHJ3wTAYckrImKd5Y9RzcW4/OqxTXmfGg/3Wfgv
+         10/+AMeMljy1aEKIp2rwN9X3qjnb5ZmMTzjNeyePw7+AJfJgvNdpNsGxzaeD8j7HN0eB
+         iW0KgG6iov0O89gOVa7P+1Gh3nPidPN2zRYYrur1FRkV77U13hVgbvzsNMZFl7otN61e
+         a/UTPkSDf1ShHmxQtiQkhxDMkAspJKhsvKswKRgLFaTKFTTUNa0sC2E/I7WjHXrtC+D0
+         Sn7D8ysrUpwTXbPQREXm1QrliKYDWWtogCZWXesybU1Q9geQGyIu8NFbPZNnqaDPpEpd
+         Liqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749774690; x=1750379490;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dZsojV1popn1Sw35hqoNeLysnk1NgNBziKN6UhicCsQ=;
-        b=HvW9TusiKNts7lin2+0bbldopEAUDsGrs1J122v17XyxBsxxi+kAxdSBb9/NGji+/Z
-         Sbp3CrTIISWOJeZN1um/EtdTxevvO0s9w2dKN+bjLGe2E842gpCQu2/dO1jvweP3+tLq
-         C5BfCOwbBDKttXbTrJg+EkXyroVZd7go3t3n/GT5SIZi0ZUGd95DoGanhZvL6CTdWaIY
-         Iylwi27MbOau41FAde9+rezv+3XXdj4arDTU8pPhrsM5iFWblOwiS5uLl+0m+rPTpsfW
-         h4AW64uwjGt2zJD0vW2yve4WTcXqJJRa87svXvavwYBVVOINLPaXAks35ozEQCWTjRiT
-         w9EA==
-X-Gm-Message-State: AOJu0Yzw858j5Fp7AXSe7eFpvnzOo6VyJpbp0lh791LapkAjQeg6/Eby
-	efLuUQKOQTWVtz7XYhSWnEC4aW6GP1kgJjPNRltz4lyVSdN+qcBEYTMZ
-X-Gm-Gg: ASbGncumm1BwVgSgr78m3wRJGSehtu7heYYbWJlJAzV5ppCfe2kLk10U5QF7PZjdVxB
-	I8Z9SgiDtcDQWJt3B4VgeY9F32y+x9bQ+aVcGmSKBSBEDGl5+tHDr8hs4qYAgdBzcbPxjhq4Axs
-	qWxzdhOvfZBAUlqwh5B3F3S6H386ijf1kHiMMzESDj7qp2o7HG48xnXv4z84vaGEmrnS/tq9+mA
-	mh6tLgx2QrGNb3zH6FTBj2fNU0Mb6/oJo31cXkX7LXYhS/ZRM5BG+Jk4X0+aCsSDemtGygvv97C
-	BRh02W6nNEca9aMOKiJGrJC0ctoTV5eqiu7Cx/nmhsd0Lv9I/tUrzAHCBaM=
-X-Google-Smtp-Source: AGHT+IFRfmAR/6gzgY58OsBYA0kDEQMKgNs5d0qe9g1glXrqpP4cuB1Wj7JtX5TcrqxiBy8UfOkUiw==
-X-Received: by 2002:a17:903:11c9:b0:235:be0:db4c with SMTP id d9443c01a7336-2365dc13c5fmr14615525ad.41.1749774690487;
-        Thu, 12 Jun 2025 17:31:30 -0700 (PDT)
-Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2365d8a183asm3347265ad.53.2025.06.12.17.31.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Jun 2025 17:31:30 -0700 (PDT)
-Message-ID: <bb0a4b1d12c8d3e7a5aba2cfce1f07143a7e2b71.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/2] veristat: memory accounting for bpf
- programs
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, 	martin.lau@linux.dev, kernel-team@fb.com,
- yonghong.song@linux.dev
-Date: Thu, 12 Jun 2025 17:31:28 -0700
-In-Reply-To: <CAEf4BzbTxyGXi=ZNU_yebe2a=zgNoeafRTK9pixJMihUwwo0Pg@mail.gmail.com>
-References: <20250612130835.2478649-1-eddyz87@gmail.com>
-	 <20250612130835.2478649-3-eddyz87@gmail.com>
-	 <CAEf4BzbTxyGXi=ZNU_yebe2a=zgNoeafRTK9pixJMihUwwo0Pg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        d=1e100.net; s=20230601; t=1749776051; x=1750380851;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=22UTCPGms/Ay4tkXxYZ6Q7dqCJ0hDCL3wk9TuZRuH2k=;
+        b=NRN3iyyHUU3ieDXRsI2TNljQwgW4hyK9IDVdrrVARb3Jrlf4FT9mnidG34UELr0+hm
+         YvnTQV8Ae7kLj3ZpabupAuCPPIndV+ZDkeyCWJDNAwUkj6D1SClxSJSDepraXga7l05t
+         FLIQo4xLvckVPBYuiH4o4/DwmywqA/4BTstRp2/By7Ycx7LT+eCaSnbTVxRagXiTsuPE
+         Mp3EXF/m+ecifQmad6snYUQScPU8FtXmnkQQIHljN+xa4D55rY4Mz+Sta+YVSAvk6uzL
+         kSmdb6Oo50o6GtTmOw9CemBNeXGZeplFCn8vhaJVER3cX31MrZi7XR2wXi89HuVqUqlH
+         HWoA==
+X-Forwarded-Encrypted: i=1; AJvYcCU0kmEbEEnXPw5TiHxfwm9j4mMHJFX9hMExYItHFw2+PpD0WRegiRU33PBXUfbUf9rYmcU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxbvZ+4Tpfq8KIPaB4SDhqoUCC+z0Ik1g02RGi6O/rYxj5LFIVu
+	eH262xFO+RvEGpLOQfjSOa3CpXEP1UwEwv+wqTFmJPUysX5PT3a/sC3tMOIWeb7IYGTiusXYLCs
+	XPb72yg8Mm/C2reZNXKiWknf/vm//jYc=
+X-Gm-Gg: ASbGncvZHk4S6IHLXQ1mrIafqzG4j2Qk4WRTsRMtn5OsQEErt7vDBGrbELJ1MHeZFmt
+	TG5RAswSVrqhXSjWycVCvvFoWS6PuFtnZV9P5r99Y69BAtWMrENhIphMlOKCoHhW9F/z+CSy4r3
+	fr7mVRgkvAJve04CRKz2fJSRqyrXCK3HIrBEkP861ksdCFOHxAscHDdSVAyKfduz9WrPiQrV37
+X-Google-Smtp-Source: AGHT+IEjkZuX9r2pXyLhBMe7J7twLa9tv1jBJmTjjxg8M7zObtx3NG5S26rQGWloPdJ9lHNfeCJ6lwrC7hrpx0EkKYc=
+X-Received: by 2002:a05:6000:230e:b0:3a5:276b:1ec0 with SMTP id
+ ffacd0b85a97d-3a56870835emr899851f8f.45.1749776050582; Thu, 12 Jun 2025
+ 17:54:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20250612130835.2478649-1-eddyz87@gmail.com> <20250612130835.2478649-2-eddyz87@gmail.com>
+ <CAEf4BzawQqu0z8Kq2MRpByPByw52Dq8NtNQnnQy1Mv_YVv4h4Q@mail.gmail.com>
+ <1cd8ae804ef6c4b3682e040afea7554cb3bde2f8.camel@gmail.com> <CAEf4BzbSy_imqzs3Z+GAb1iA1WKs+vDkO1Q6pDmd3zzL-Ttzdg@mail.gmail.com>
+In-Reply-To: <CAEf4BzbSy_imqzs3Z+GAb1iA1WKs+vDkO1Q6pDmd3zzL-Ttzdg@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 12 Jun 2025 17:53:59 -0700
+X-Gm-Features: AX0GCFvafdOFRygc8KqbKY2XZpemqlfAEkz0Frsa8jR2jsEKC4Bu0weLPwmcKfA
+Message-ID: <CAADnVQJxQMEdbdTrDSZyb+SWxdwjJYWx6F6jmkff=OAeEoSTPQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: include verifier memory allocations
+ in memcg statistics
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Kernel Team <kernel-team@fb.com>, Yonghong Song <yonghong.song@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2025-06-12 at 17:01 -0700, Andrii Nakryiko wrote:
+On Thu, Jun 12, 2025 at 5:18=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Jun 12, 2025 at 5:15=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.c=
+om> wrote:
+> >
+> > On Thu, 2025-06-12 at 17:05 -0700, Andrii Nakryiko wrote:
+> >
+> > [...]
+> >
+> > > We have a bunch of GFP_USER allocs as well, e.g. for instruction
+> > > history and state hashmap. At least the former is very much
+> > > interesting, so should we add __GFP_ACCOUNT to those as well?
+> >
+> > Thank you for pointing this out.
+> > GFP_USER allocations are in 4 places in verifier.c:
+> > 1. copy of state->jmp_history in copy_verifier_state
+> > 2. realloc of state->jmp_history in push_jmp_history
+> > 3. allocation of struct bpf_prog for every subprogram in jit_subprogram=
+s
+> > 4. env->explored_states fixed size array of list heads in bpf_check
+> >
+> > GFP_USER is not used in btf.c and log.c.
+> >
+> > Is there any reason to keep 1-4 as GFP_USER?
+> > From gfp_types.h:
+> >
+> >   * %GFP_USER is for userspace allocations that also need to be directl=
+y
+> >   * accessibly by the kernel or hardware. It is typically used by hardw=
+are
+> >   * for buffers that are mapped to userspace (e.g. graphics) that hardw=
+are
+> >   * still must DMA to. cpuset limits are enforced for these allocations=
+. a
+> >
+> > I assume for (3) this might be used for programs offloading (?),
+> > but 1,2,4 are internal to verifier.
+> >
+> > Wdyt?
+>
+> Alexei might remember more details, but I think the thinking was that
+> all these allocations are user-induced based on specific BPF program
+> code, so at some point we were marking them as GFP_USER. But clearly
+> this is inconsistent, so perhaps just unifying to GFP_KERNEL_ACCOUNT
+> is a better way forward?
 
-[...]
-
-> > +static void destroy_stat_cgroup(void)
-> > +{
-> > +       char buf[PATH_MAX];
-> > +       int err;
-> > +
-> > +       close(env.memory_peak_fd);
-> > +
-> > +       if (env.orig_cgroup[0]) {
-> > +               snprintf_trunc(buf, sizeof(buf), "%s/cgroup.procs", env=
-.orig_cgroup);
-> > +               err =3D write_one_line(buf, "%d\n", getpid());
-> > +               if (err < 0)
-> > +                       log_errno("moving self to original cgroup %s\n"=
-, env.orig_cgroup);
-> > +       }
-> > +
-> > +       if (env.stat_cgroup[0]) {
-> > +               err =3D rmdir(env.stat_cgroup);
->=20
-> We need to enter the original cgroup to successfully remove the one we
-> created, is that right? Otherwise, why bother reentering if we are on
-> our way out, no?
-
-Yes, cgroup can't be removed if there are member processes.
-I chose to organize this way because there would be a message printed
-with a name of stale group.
-
->=20
-> > +               if (err < 0)
-> > +                       log_errno("deletion of cgroup %s", env.stat_cgr=
-oup);
-> > +       }
-> > +
-> > +       env.memory_peak_fd =3D -1;
-> > +       env.orig_cgroup[0] =3D 0;
-> > +       env.stat_cgroup[0] =3D 0;
-> > +}
-> > +
-> > +/*
-> > + * Creates a cgroup at /sys/fs/cgroup/veristat-accounting-<pid>,
-> > + * moves current process to this cgroup.
-> > + */
-> > +static void create_stat_cgroup(void)
-> > +{
-> > +       char cgroup_fs_mount[PATH_MAX + 1];
-> > +       char buf[PATH_MAX + 1];
-> > +       int err;
-> > +
-> > +       env.memory_peak_fd =3D -1;
-> > +
-> > +       if (!output_stat_enabled(MEMORY_PEAK))
-> > +               return;
-> > +
-> > +       err =3D scanf_one_line("/proc/self/mounts", 2, "%*s %" STR(PATH=
-_MAX) "s cgroup2 %s",
->=20
-> let's just hard-code 1024 or something and not do that STR() magic,
-> please (same below).
->=20
-> > +                            cgroup_fs_mount, buf);
-> > +       if (err !=3D 2) {
-> > +               if (err < 0)
-> > +                       log_errno("reading /proc/self/mounts");
-> > +               else if (!env.quiet)
-> > +                       fprintf(stderr, "Can't find cgroupfs v2 mount p=
-oint.\n");
-> > +               goto err_out;
-> > +       }
-> > +
-> > +       /* cgroup-v2.rst promises the line "0::<group>" for cgroups v2 =
-*/
-> > +       err =3D scanf_one_line("/proc/self/cgroup", 1, "0::%" STR(PATH_=
-MAX) "s", buf);
->=20
-> do you think just hard-coding /sys/fs/cgroup would not work in
-> practice? It just feels like we are trying to be a bit too flexible
-> here...
-
-Idk, removing this saves 10 lines.
-On machines I have access to (one CentOS, one Fedora) the mount point
-is /sys/fs/cgroup.
-
->=20
-> > +       if (err !=3D 1) {
-> > +               if (err < 0)
-> > +                       log_errno("reading /proc/self/cgroup");
-> > +               else if (!env.quiet)
-> > +                       fprintf(stderr, "Can't infer veristat process c=
-group.");
-> > +               goto err_out;
-> > +       }
-> > +
->=20
-> [...]
-
-Ack for other points, thank you for taking a look.
+Beetlejuice.
+1,2,4 can be converted to GFP_KERNEL_ACCOUNT,
+since it's a temp memory for the purpose of verification.
+3 should probably stay as GFP_USER, since it's a long term memory.
+GFP_USER is more restrictive than GFP_KERNEL, since
+it requires memory to be within cpuset limits set for the current task.
+The pages allocated for user space needs should be GFP_USER.
+One can argue that bpf prog is not accessed by any user task
+and prog itself is more like kernel module, so GFP_KERNEL is fine,
+but it will require a bigger code audit.
 
