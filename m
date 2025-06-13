@@ -1,140 +1,83 @@
-Return-Path: <bpf+bounces-60560-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60561-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB0E4AD8022
-	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 03:14:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28AB2AD8037
+	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 03:21:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C8AC7AE76F
-	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 01:13:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC5427A37B3
+	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 01:20:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E2B91DB13A;
-	Fri, 13 Jun 2025 01:13:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EF2A1DDC00;
+	Fri, 13 Jun 2025 01:21:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nkxk6dB+"
 X-Original-To: bpf@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6537F1D5175;
-	Fri, 13 Jun 2025 01:13:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4DCF1420DD;
+	Fri, 13 Jun 2025 01:21:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749777205; cv=none; b=qPkVOtyyjtOMtlk8TCl5kn0EwspoFm0whWeFvVJ4+Yp6h9SSjcQDFFddNXc5v+zVW4RxW6TPRtl9rlhkVuHE3KNA/ezR1cVfHU09R/LcJV48KO6MgFVTIVa/BS0IjDahXjf3THxf4BDXGSePK94qLVF3K7Tot61To8Z855YHVhs=
+	t=1749777705; cv=none; b=U/Ha37XdVIOnK5eY8r8EOhRgzsClXWTuwQIPLa0UhTWX2HqCKTQhOK7xGEkquxLmLCbPcZPsn3NCuDe8LWK72OA08HzKLkWk1ZE2DBMfk7gjtr6Z9V1pfcNXwrrTnJoR/I3NPr33wT1oR4MT0AD8OpLbY0UKBJZo6UhBN0WIKYg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749777205; c=relaxed/simple;
-	bh=8TekB/D+4/8UhrQsSM7eVVZa5ko+rsGTZDp4E3X4Ssk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QB3OXdatwUHr8wpE/U3JqXUGQd8urjprXeKABfaTRiOfsz21FJklOZZ8J+qOpU2nMMqacuAYRUOPlHBBM6yq5Ip2QNd9RXgYX/HkuIZM7P7jDlOdS1xBcINEfssWt1u7gzuAkYlP/y8bq1n6RkUdA6hhvGFKoB24je+eyw/fqjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-669ff7000002311f-cc-684b7b275ae5
-Date: Fri, 13 Jun 2025 10:13:05 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: willy@infradead.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	kernel_team@skhynix.com, almasrymina@google.com,
-	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
-	akpm@linux-foundation.org, davem@davemloft.net,
-	john.fastabend@gmail.com, andrew+netdev@lunn.ch,
-	asml.silence@gmail.com, toke@redhat.com, tariqt@nvidia.com,
-	edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com,
-	leon@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	david@redhat.com, lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
-	surenb@google.com, mhocko@suse.com, horms@kernel.org,
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-	vishal.moola@gmail.com
-Subject: Re: [PATCH net-next 1/9] netmem: introduce struct netmem_desc
- mirroring struct page
-Message-ID: <20250613011305.GA18998@system.software.com>
-References: <20250609043225.77229-1-byungchul@sk.com>
- <20250609043225.77229-2-byungchul@sk.com>
- <20250609123255.18f14000@kernel.org>
- <20250610013001.GA65598@system.software.com>
- <20250611185542.118230c1@kernel.org>
+	s=arc-20240116; t=1749777705; c=relaxed/simple;
+	bh=CkV7K9JkoZIX1EFm22k3RUVUrhM4a86eMgsQGHb5Sq4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=cPWnznb6HeueDMyqB+ZXTrIqwQJCqJsNh5XJ1e47SXj/IRWXJ887/k7op0FhKI101rf7rxATYmQewAH2FakwyGS74d0sY0Z8OyzS6B+0ohGCxL/uvM9xF3yYi9JorCz0sc9auNJqJMTaUQWiKJOVW2q+jb/RaL+8BzAaMHR5KyQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nkxk6dB+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0637AC4CEEA;
+	Fri, 13 Jun 2025 01:21:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749777705;
+	bh=CkV7K9JkoZIX1EFm22k3RUVUrhM4a86eMgsQGHb5Sq4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=nkxk6dB+kugt2d9edQ/jopnXbnc2+S8g1W/kk6Xj40u5oVCDdK2Ac+7WHs3i+Ve7q
+	 UuO6fsjybG3L9lyaHQqYQCkQQzutMrsElQN5uPcqKbx8kRxP5jB0kE3Fr7GMSNisqF
+	 AAU2YkbkGz8bgusMc32CgIpMtekatIgwW6YwoGBynF4mqhzv3PlQJ8G4xEppMr+r3N
+	 IQBPUMP0XPjLM9IE4UknlL7N0GirnB1Z2t92soRx0HmgP/dPHwZipUxU/UzF65VDA4
+	 BW0E74mnrKNGez1eU0emtxVYIN6CylOphGMPvZ2dmxocKgV4RWGdXDpisMmfz1QHEp
+	 tRGR37QgESr2g==
+Date: Thu, 12 Jun 2025 18:21:43 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Haiyang Zhang <haiyangz@linux.microsoft.com>
+Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+ haiyangz@microsoft.com, decui@microsoft.com, stephen@networkplumber.org,
+ kys@microsoft.com, paulros@microsoft.com, olaf@aepfle.de,
+ vkuznets@redhat.com, davem@davemloft.net, wei.liu@kernel.org,
+ edumazet@google.com, pabeni@redhat.com, leon@kernel.org,
+ longli@microsoft.com, ssengar@linux.microsoft.com,
+ linux-rdma@vger.kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+ bpf@vger.kernel.org, ast@kernel.org, hawk@kernel.org, tglx@linutronix.de,
+ shradhagupta@linux.microsoft.com, andrew+netdev@lunn.ch,
+ kotaranov@microsoft.com, horms@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next,v7] net: mana: Add handler for hardware
+ servicing events
+Message-ID: <20250612182143.16f857a9@kernel.org>
+In-Reply-To: <1749580942-17671-1-git-send-email-haiyangz@linux.microsoft.com>
+References: <1749580942-17671-1-git-send-email-haiyangz@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250611185542.118230c1@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SfUzMcRzH9/093a9bx88JX1o2pxaNSOHzhxkb23dYy5hZVtz0W3dTycXp
-	YSZk5ug8lIc7x66ZHq7s7EpdLQ+dQ5HRAztKl9A8JHS5HoWrGf+99n6/9977jzdPy3XsLF6d
-	slfUpCiTFJyUkX7xL1gYmrVetVh3dBKYrGUclA6mQ1GnnQWTpRJB/1CbBDzOhxxcLfDSYHqa
-	w8AP6zAN7x90ScBd2M1A7bEqGrpO1XOQmzNCw2F7MQXPKvUs5A9fo6Equ1MCLTUmDjrKfrHQ
-	7chloMFYwoBbvwoemKeD93EPAqe1igLvycsc5DWbOXib40bQfK+LgUuH9Aist10sjAyauFVz
-	SEXJS4pUG19LiNm2j5QXhxGdq5kmNstxjtj6zkpI+4tajtRfHGFItd1DkdwjvRz5/v4VQ77e
-	fs4Ra8VzhjSanRLisc2OEWKlKxLEJLVW1CxauUOqGiu8yaR2TE5vu3OMykYmfx3ieSxE4fyK
-	WB3yG8f2/CbWx4wQgmv1n2kfc0IodrmGxjlACMY55QZGh6Q8LXSz+MnZUspnTBXisaVtYJxl
-	AuCu4WLWF5ILHQifOPRBMmFMwQ2Gd4yPaSEMu8Y+Ur4RtBCIi8Z4n+wnROCnrobxyDRhLr5b
-	+ZCaGFfA41Zr+gTPxHXFLuY0Eoz/tRr/azX+azUj2oLk6hRtslKdFBWuykhRp4fv3J1sQ38e
-	UnhgdJsd9T3b5EACjxT+MqhZp5KzSm1aRrIDYZ5WBMhQ6x9JlqDMyBQ1u7dr9iWJaQ4UyDOK
-	GbIl3v0JciFRuVfcJYqpouavS/F+s7KRuU87smJP7sL5G4ZvmtvWZskHNvZG0MnaJbfYhqH+
-	oLhza781LdiapzdEnwuwZUfD6nhDUL/zzckbQe77hvPmC2eu+NW/iwzxdL+e/nOLe5luaeZc
-	deNO+5qBPP082fqmzXHx1x+R+5blCcGjLTFT6/T1kQcDLYneQLq/59MPT0WrgklTKSPCaE2a
-	8jdXI5EfHQMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTcRyG+Z+7w9FxWR2LPrjKQMosMn5llETQQcuMiKgPtZWHNjanbCra
-	BWYONEszU9A1YzHyWo2mqZldWEMdZaZmLe+tlKLQLLU5Q3NG5LeH932fby+DS8aIlYxSkyxo
-	NXK1lBIRotjIzI0h52IU4ff7IsBkvUNBtScNyocaSDBV1SGYmO6l4aejhQLLrSkcTO0GAiat
-	XhyGm900DJaNENCUVY+D+2orBbmGGRwuNlRg8LzUScLrujwSCr23cajXD9HQ1WiiYODOHAkj
-	9lwCnMZKAgbzoqDZvBymXnxD4LDWYzB1pZSC651mCj4aBhF0PncTcCMjD4H1iYuEGY+JipLy
-	tZXvMf6hsZ/mzbYUvqYilM9xdeK8reoSxdt+FNB839smim8tniH4hw0/MT43c5Tix4d7CH7s
-	STfFWz5/x3hrbTfBvzQ76LiA46Kd8YJamSpoN+2SiRSzZQ+IpIElab1PszA9MvnnID+GY7dy
-	fYUdpI8Jdh3XlPcV9zHFrudcrukFDmTXcoaaEiIHiRicHSG5toJqzFcsZU9wVb2/FljMAuf2
-	VpC+kYQdQNzljM/03yKAc5Z8InyMs6Gca/bLvMDM8yqufJbxxX7sZq7d5VyYLGPXcM/qWrB8
-	JDYuso2LbON/24zwKhSo1KQmyJXqiDCdSpGuUaaFnU5MsKH5G5Rd+H2tAU107bMjlkFSfzE0
-	RiskpDxVl55gRxyDSwPF6M18JI6Xp58VtIkntSlqQWdHqxhCukIcfVSQSdgz8mRBJQhJgvZf
-	izF+K/XohOPeoWBvWwYdvv1D0YCt27zt/paEwJaD6rjTx+L39K32RH2ynJeVvOtWRQblFIe/
-	apnTZ+radvYET3ovDHlqxy1ZNUdKA2RhG+r25g9leLJPxcVoQg47ow/k2nWNvzZij2Odo/07
-	PCw9elP0aHr/3SI6eC4z6FVXtko+mN+xe1hK6BTyzaG4Vif/A7IqLGUCAwAA
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jun 11, 2025 at 06:55:42PM -0700, Jakub Kicinski wrote:
-> On Tue, 10 Jun 2025 10:30:01 +0900 Byungchul Park wrote:
-> > > What's the intended relation between the types?  
-> > 
-> > One thing I'm trying to achieve is to remove pp fields from struct page,
-> > and make network code use struct netmem_desc { pp fields; } instead of
-> > sturc page for that purpose.
-> > 
-> > The reason why I union'ed it with the existing pp fields in struct
-> > net_iov *temporarily* for now is, to fade out the existing pp fields
-> > from struct net_iov so as to make the final form like:
-> 
-> I see, I may have mixed up the complaints there. I thought the effort
-> was also about removing the need for the ref count. And Rx is
-> relatively light on use of ref counting. 
-> 
-> > > netmem_ref exists to clearly indicate that memory may not be readable.
-> > > Majority of memory we expect to allocate from page pool must be
-> > > kernel-readable. What's the plan for reading the "single pointer"
-> > > memory within the kernel?
-> > > 
-> > > I think you're approaching this problem from the easiest and least  
-> > 
-> > No, I've never looked for the easiest way.  My bad if there are a better
-> > way to achieve it.  What would you recommend?
-> 
-> Sorry, I don't mean that the approach you took is the easiest way out.
-> I meant that between Rx and Tx handling Rx is the easier part because 
-> we already have the suitable abstraction. It's true that we use more
-> fields in page struct on Rx, but I thought Tx is also more urgent
-> as there are open reports for networking taking references on slab
-> pages.
-> 
-> In any case, please make sure you maintain clear separation between
-> readable and unreadable memory in the code you produce.
+On Tue, 10 Jun 2025 11:42:22 -0700 Haiyang Zhang wrote:
+> v6:
+> Not acquiring module refcnt as suggested by Paolo Abeni.
 
-Do you mean the current patches do not?  If yes, please point out one
-as example, which would be helpful to extract action items.
+TBH I'm not 100% sure this is correct.
+If the service worker operations end up unbinding the driver from
+the device holding the device ref may not prevent the module from
+being unloaded.
 
-If no, are there things I should do further for this series including
-non-controversial patches only?
-
-	Byungchul
+Could you try to trigger that condition? Make that msleep() in the work
+even longer and try to remove the module while the work is sleeping
+there?
 
