@@ -1,85 +1,86 @@
-Return-Path: <bpf+bounces-60551-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60552-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4DCDAD7F59
-	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 02:03:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5F43AD7F5F
+	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 02:06:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95803189841C
-	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 00:03:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 96D2B16FFF9
+	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 00:06:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5170256D;
-	Fri, 13 Jun 2025 00:02:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E956B34545;
+	Fri, 13 Jun 2025 00:05:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JKL/vnuZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LHM2dMmz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D3461AD3FA
-	for <bpf@vger.kernel.org>; Fri, 13 Jun 2025 00:02:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D30972619
+	for <bpf@vger.kernel.org>; Fri, 13 Jun 2025 00:05:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749772929; cv=none; b=Cc1/6/CJO480vUJx2eD2LYbbbBiiut7Whcb/HmwwKDMLWAguRWqoDzexV30AmimN+WpoBG8A0H+7tuCeomPQwv8vbWE8DKnAMMfRWJ7YN/mVWY+AAJK7ZzU5RN2zaxktmgb/tjVksvDXGPNQWJdlDSjEUevX10Q9t5nBjuDZAqk=
+	t=1749773156; cv=none; b=O7Adf+n/qz6d3b20Q8L9uHF6H6yrWle849AMkasc9DZemKqeoK2OLctSxPQ7Y4FCodpwPmygu62sx9vZpTG3UV1Ou7R6J8IIcXJSpisnIDZ66Afdi7M4TK+UWoc1gTXSG0SwrZ85WWFZCRI312VkuzKZEXU9E6NxdpKW7pK52W8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749772929; c=relaxed/simple;
-	bh=qee1kxcw1IWn60QfNigpk4yhEaHxahxlSfbHUkMh8lc=;
+	s=arc-20240116; t=1749773156; c=relaxed/simple;
+	bh=Nd3cKNWGl5bKvi+bImgZ1oKnVlZ8gMBbQgLiCP768P8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YXgCaSyRLIvyAZZXqCr0Eqim5okCL0CVbs6SFMzak9R4I/n5xUcLpc66SGZxgZE9LrEPgFEVPanQj1qzFbgKuUbvvjKrpBQRKhmSx9f7+liEyYaLKeOnmqMM9AUKO/gydK8uTQLMhYk7HEOeuKQEpKueQydPAULtJHfdUGXFZiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JKL/vnuZ; arc=none smtp.client-ip=209.85.215.171
+	 To:Cc:Content-Type; b=d0NWimkoKwlYlt8m013JJ1XRxU5KjaQnE37I1+IlMcr6R7lbWwCF9OZcWoPgBAJFmSCrqDWxu5wC3g2LlstJTNtj60OiLVprqt3f3pkl5YzWtxdxihpPrM2Kc1Udc0Qr9Qnu7Hbr2TNcwx23HWxs9+z1DZdHzTXjJ0aSS8gCEIg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LHM2dMmz; arc=none smtp.client-ip=209.85.210.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-b2c384b2945so1206490a12.0
-        for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 17:02:07 -0700 (PDT)
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-747fc77bb2aso1410060b3a.3
+        for <bpf@vger.kernel.org>; Thu, 12 Jun 2025 17:05:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749772927; x=1750377727; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1749773154; x=1750377954; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HMd/YG5C7GsDY+b3m8ixOMLNMNDa6GGsWfxX2dlwWIs=;
-        b=JKL/vnuZfPokpnRItMxU5s1UFEqT7gYIf6LlV6YZQPPNGvpYC1hc6YnwGwCsE3H7kF
-         BmpEoiJOdUrWuFJb4e3lgnGoYgHyG5ME9Zwd0sSzTb1yL6suebQH9/IpK90MqA+YuJxJ
-         RboASFbV7jmu/XxsXFPhIuKsnFCw3usnrCJOcBO+TXwWSPAYWnHcqvvYhh+HgK2c5xYr
-         ZJw15NRhKrYTLF55kabg91iFbqoKcQpIDXf9AlrEwj6YqeSvH70rt8zABvkoJxg9xs1w
-         4GgJ2ckg6rClXJe1yQxh5XhucCvD1XNqK4ack/5w/0PGBH8XMeghXwCASJIIOkIJAmx3
-         2kRw==
+        bh=BpeMeMoFffJniJpfyk1KR5/CdbLGYJFC2JPbovQOICw=;
+        b=LHM2dMmzYSDsHaOF7AAhWcJYKQSnDbHDYwWLnr3S3wo3a4ZLkotkbFESsOzDbO6a7f
+         9WbjP7Q3hhh1vqRQLSNtQIbdW+DgrIomvrQi81VCLqrJsOU4JjdL5UosLuj3Ii1N5qEO
+         Q5+0Q/idZUglO69aox62VeMWRChxU2FaVIi5lo0wqTSa5h2/G/UAyl2qpyXli0+Hds6p
+         Ha/1rqnNMAE4r2Bz2D+6tidpxChw03oYSCNt7NrU759CJkmRyJgrKNtrmxQSsLjjT5z+
+         MrlDfnWV0oRw2uZWPWRmQfu9Y/zKVYiHMICwjzRt+UJIjWiEM921jgewmqZD/wTQ5bgc
+         9L1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749772927; x=1750377727;
+        d=1e100.net; s=20230601; t=1749773154; x=1750377954;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HMd/YG5C7GsDY+b3m8ixOMLNMNDa6GGsWfxX2dlwWIs=;
-        b=wjSbdrbsJEX9F5HHYwSx911ujmBuubHxVxYgr3RozqL/HxVHIu90GDi5nwYMszqVlQ
-         M7sR+hGnZM4cqP7hkKy9bci4fzXJx1PdqIxyIfGNGsnmMoMAGA5qvJjyXy7XaKgnBY4j
-         xvFJGPj9v0Uc8ZAOH3DohjD3haL5RXCrvBg97RP1XVRJqNmkKuBv0HsYap5Y9sxeW2Bv
-         MCS09xDOssX8BN6YYubkCIcUeeFjM54t5EGMBF1JSPQGmQVvhmKONCVSxCuIB+msrA9G
-         1jpfUSsCdLrwHlcvCJh0nxi/jkIkTK2Jfb9HgfcS1bjJd4ltKqMYvMvjCK4G1cojfZLg
-         qSjA==
-X-Gm-Message-State: AOJu0YyMtML1/g87winFKH0am7lRvbiC3QovBan5MWy1g7Q/QjC/dhoL
-	tYKdaosnmoKS0plgnT4VuxZo+hWfTixX7Q4JY7yfSexP5AKEkT3pvjH0cbC35WzhLcgs+GEa9G7
-	mEWYEqWf+mwAbBSNQviA4s/VD9Fm7oqM=
-X-Gm-Gg: ASbGncuaBXTh/F30zIfbQnR4bfhvgcDSxQyUVFoxIC8iBQvl7LayccZlFaiHIM9Xrwr
-	u65ARBPPhco4LzB4a/eCBKuB/VTE4LzfwyokdWKeZA7mn4dQyLb3iBdHiaCSETWgHoaQjfEWe/1
-	tKOKWdKrNnNU3uWGF7yheZ02RSdWIpOCDMfIdFZcWVNQ8DHXn6azUDzmdt+Qdsnt6xaETfsA==
-X-Google-Smtp-Source: AGHT+IFYSpyyMe5ZwzhfEedFfqF8FVeun4GkN0ibIP5+ybwrdYHwYSIu9ITizCFF//PMMhHJL0PIaacSgyTYPbxseoA=
-X-Received: by 2002:a05:6a20:5493:b0:218:5954:128c with SMTP id
- adf61e73a8af0-21facc39d60mr1027715637.21.1749772926637; Thu, 12 Jun 2025
- 17:02:06 -0700 (PDT)
+        bh=BpeMeMoFffJniJpfyk1KR5/CdbLGYJFC2JPbovQOICw=;
+        b=awOXLxJ7v4Z2dwlI9sQ45zNSxQQeJZIHz4v7dVKBc0tKxxnaDoRXxzuLSaEsdDh5XW
+         Kn9sBVUWze8Wzweig4U90ZR7Y6ha6P4Y6qFcuDQ+emeIkQut9HJX4OS2d/Fy0tlZJFT4
+         +XirISVno721ZvFC4HPM8Ff1HlZgsYUrGaTHt1c24gXsq8dOk7PhzfogUxE7Bf0HHq/k
+         ogfEcw2mPTSrOaXfzlm45CycLM+44DK9dS+Sqzndyb6tHwtBZqla/YC4JzXOfCsxu7F+
+         maMlB0lvHHnG0DC0YF4CVsNNs3rfypGjQtkcBMzPQWMphGjJm1gJtR0EF3iTzBOOw6hs
+         YLdQ==
+X-Gm-Message-State: AOJu0YzAqXK6gVWpnRNcekWZ4kiXOjRJyZTXotr2hZD/0j7+7NRmn+uD
+	Xkif4P4ry7VYJSRQXWs3QyRcq3Wj3zE21VhlN1CyFPsuEtQG0S/+3IHz/n7/Kvx0+Cx7/g0v0+A
+	6ehIDzAn77k2Zr/V61SNfIGkbHmfdSRo=
+X-Gm-Gg: ASbGncvqW3jsAePkU/I8G8qm24F3pCWumf+KMtA/kT/fd744oEXVCQfW1HcRL/dG/cx
+	wymxPTsHXPeXehD08aUgPRSUEMXyBQLB6W8pSN9rgD7YTG1tW+R9PSFc10fjFc/I8fp762ts4eM
+	Ycj7MghGjRPRsFd/6s5T+WuwclYSsc6op0G9MS7lBxcP6WBq3JJFsge+m2JO0=
+X-Google-Smtp-Source: AGHT+IF7NQKoXWQPnv/XvU2+BB2HLCqcrUWNiytkIZT/LckCW8wumDQCfm+AEGOzicvjY+Elcdeb5o5vPW3nzhLD6Jg=
+X-Received: by 2002:a05:6a20:7348:b0:21f:8d4f:9e3b with SMTP id
+ adf61e73a8af0-21facbaecaemr1259862637.7.1749773154174; Thu, 12 Jun 2025
+ 17:05:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250612130835.2478649-1-eddyz87@gmail.com> <20250612130835.2478649-3-eddyz87@gmail.com>
-In-Reply-To: <20250612130835.2478649-3-eddyz87@gmail.com>
+References: <20250612130835.2478649-1-eddyz87@gmail.com> <20250612130835.2478649-2-eddyz87@gmail.com>
+In-Reply-To: <20250612130835.2478649-2-eddyz87@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 12 Jun 2025 17:01:54 -0700
-X-Gm-Features: AX0GCFsnhAenkEhjle65Di2MpyO-NfHVea3UIrtmfqEHHj4POvHIafWWJK35oJ0
-Message-ID: <CAEf4BzbTxyGXi=ZNU_yebe2a=zgNoeafRTK9pixJMihUwwo0Pg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/2] veristat: memory accounting for bpf programs
+Date: Thu, 12 Jun 2025 17:05:42 -0700
+X-Gm-Features: AX0GCFv6nkqY9-Zuk9ExL8CbrCF_zh5f9XqnY-FQSQknmDkiGPtXsJPS10FQaLc
+Message-ID: <CAEf4BzawQqu0z8Kq2MRpByPByw52Dq8NtNQnnQy1Mv_YVv4h4Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: include verifier memory allocations
+ in memcg statistics
 To: Eduard Zingerman <eddyz87@gmail.com>
 Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
 	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
@@ -90,207 +91,35 @@ Content-Transfer-Encoding: quoted-printable
 On Thu, Jun 12, 2025 at 6:08=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
 > wrote:
 >
-> This commit adds a new field mem_peak / "Peak memory (MiB)" field to a
-> set of gathered statistics. The field is intended as an estimate for
-> peak verifier memory consumption for processing of a given program.
+> This commit adds __GFP_ACCOUNT flag to verifier induced memory
+> allocations. The intent is to account for all allocations reachable
+> from BPF_PROG_LOAD command, which is needed to track verifier memory
+> consumption in veristat. This includes allocations done in verifier.c,
+> and some allocations in btf.c, functions in log.c do not allocate.
 >
-> Mechanically stat is collected as follows:
-> - At the beginning of handle_verif_mode() a new cgroup is created
->   and veristat process is moved into this cgroup.
-> - At each program load:
->   - bpf_object__load() is split into bpf_object__prepare() and
->     bpf_object__load() to avoid accounting for memory allocated for
->     maps;
->   - before bpf_object__load():
->     - a write to "memory.peak" file of the new cgroup is used to reset
->       cgroup statistics;
->     - updated value is read from "memory.peak" file and stashed;
->   - after bpf_object__load() "memory.peak" is read again and
->     difference between new and stashed values is used as a metric.
+> There is also a utility function bpf_memcg_flags() which selectively
+> adds GFP_ACCOUNT flag depending on the `cgroup.memory=3Dnobpf` option.
+> As far as I understand [1], the idea is to remove bpf_prog instances
+> and maps from memcg accounting as these objects do not strictly belong
+> to cgroup, hence it should not apply here.
 >
-> If any of the above steps fails veristat proceeds w/o collecting
-> mem_peak information for a program.
-
-"... and reports -1". It's important to note, IMO, because that's how
-we distinguish less than 1MB memory vs error.
-
+> (btf_parse_fields() is reachable from both program load and map
+>  creation, but allocated record is not persistent as is freed as soon
+>  as map_check_btf() exits).
 >
-> While memcg provides data in bytes (converted from pages), veristat
-> converts it to megabytes to avoid jitter when comparing results of
-> different executions.
->
-> The change has no measurable impact on veristat running time.
->
-> A correlation between "Peak states" and "Peak memory" fields provides
-> a sanity check for gathered statistics, e.g. a sample of data for
-> sched_ext programs:
->
-> Program                   Peak states  Peak memory (MiB)
-> ------------------------  -----------  -----------------
-> lavd_select_cpu                  2153                 44
-> lavd_enqueue                     1982                 41
-> lavd_dispatch                    3480                 28
-> layered_dispatch                 1417                 17
-> layered_enqueue                   760                 11
-> lavd_cpu_offline                  349                  6
-> lavd_cpu_online                   349                  6
-> lavd_init                         394                  6
-> rusty_init                        350                  5
-> layered_select_cpu                391                  4
-> ...
-> rusty_stopping                    134                  1
-> arena_topology_node_init          170                  0
+> [1] https://lore.kernel.org/all/20230210154734.4416-1-laoar.shao@gmail.co=
+m/
 >
 > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 > ---
->  tools/testing/selftests/bpf/veristat.c | 266 ++++++++++++++++++++++++-
->  1 file changed, 259 insertions(+), 7 deletions(-)
+>  kernel/bpf/btf.c      | 15 ++++++-----
+>  kernel/bpf/verifier.c | 63 ++++++++++++++++++++++---------------------
+>  2 files changed, 40 insertions(+), 38 deletions(-)
 >
-> diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selft=
-ests/bpf/veristat.c
-> index b2bb20b00952..e0ecacd1fe13 100644
-> --- a/tools/testing/selftests/bpf/veristat.c
-> +++ b/tools/testing/selftests/bpf/veristat.c
-> @@ -36,6 +36,9 @@
->  #define min(a, b) ((a) < (b) ? (a) : (b))
->  #endif
->
-> +#define STR_AUX(x) #x
-> +#define STR(x) STR_AUX(x)
-> +
->  enum stat_id {
->         VERDICT,
->         DURATION,
-> @@ -49,6 +52,7 @@ enum stat_id {
->         STACK,
->         PROG_TYPE,
->         ATTACH_TYPE,
-> +       MEMORY_PEAK,
->
->         FILE_NAME,
->         PROG_NAME,
-> @@ -208,6 +212,9 @@ static struct env {
->         int top_src_lines;
->         struct var_preset *presets;
->         int npresets;
-> +       char orig_cgroup[PATH_MAX + 1];
-> +       char stat_cgroup[PATH_MAX + 1];
 
-nit: PATH_MAX includes NUL terminator, so no need for +1
-
-> +       int memory_peak_fd;
->  } env;
->
->  static int libbpf_print_fn(enum libbpf_print_level level, const char *fo=
-rmat, va_list args)
-
-[...]
-
-> +/*
-> + * This works around GCC warning about snprintf truncating strings like:
-> + *
-> + *   char a[PATH_MAX], b[PATH_MAX];
-> + *   snprintf(a, "%s/foo", b);      // triggers -Wformat-truncation
-> + */
-
-um... maybe let's just disable that format-truncation warning instead
-of working around with wrapper functions? snprintf() is meant to
-handle truncation, so this warning feels bogus.
-
-> +__printf(3, 4)
-> +static int snprintf_trunc(char *str, volatile size_t size, const char *f=
-mt, ...)
-> +{
-> +       va_list ap;
-> +       int ret;
-> +
-> +       va_start(ap, fmt);
-> +       ret =3D vsnprintf(str, size, fmt, ap);
-> +       va_end(ap);
-> +       return ret;
-> +}
-> +
-> +static void destroy_stat_cgroup(void)
-> +{
-> +       char buf[PATH_MAX];
-> +       int err;
-> +
-> +       close(env.memory_peak_fd);
-> +
-> +       if (env.orig_cgroup[0]) {
-> +               snprintf_trunc(buf, sizeof(buf), "%s/cgroup.procs", env.o=
-rig_cgroup);
-> +               err =3D write_one_line(buf, "%d\n", getpid());
-> +               if (err < 0)
-> +                       log_errno("moving self to original cgroup %s\n", =
-env.orig_cgroup);
-> +       }
-> +
-> +       if (env.stat_cgroup[0]) {
-> +               err =3D rmdir(env.stat_cgroup);
-
-We need to enter the original cgroup to successfully remove the one we
-created, is that right? Otherwise, why bother reentering if we are on
-our way out, no?
-
-> +               if (err < 0)
-> +                       log_errno("deletion of cgroup %s", env.stat_cgrou=
-p);
-> +       }
-> +
-> +       env.memory_peak_fd =3D -1;
-> +       env.orig_cgroup[0] =3D 0;
-> +       env.stat_cgroup[0] =3D 0;
-> +}
-> +
-> +/*
-> + * Creates a cgroup at /sys/fs/cgroup/veristat-accounting-<pid>,
-> + * moves current process to this cgroup.
-> + */
-> +static void create_stat_cgroup(void)
-> +{
-> +       char cgroup_fs_mount[PATH_MAX + 1];
-> +       char buf[PATH_MAX + 1];
-> +       int err;
-> +
-> +       env.memory_peak_fd =3D -1;
-> +
-> +       if (!output_stat_enabled(MEMORY_PEAK))
-> +               return;
-> +
-> +       err =3D scanf_one_line("/proc/self/mounts", 2, "%*s %" STR(PATH_M=
-AX) "s cgroup2 %s",
-
-let's just hard-code 1024 or something and not do that STR() magic,
-please (same below).
-
-> +                            cgroup_fs_mount, buf);
-> +       if (err !=3D 2) {
-> +               if (err < 0)
-> +                       log_errno("reading /proc/self/mounts");
-> +               else if (!env.quiet)
-> +                       fprintf(stderr, "Can't find cgroupfs v2 mount poi=
-nt.\n");
-> +               goto err_out;
-> +       }
-> +
-> +       /* cgroup-v2.rst promises the line "0::<group>" for cgroups v2 */
-> +       err =3D scanf_one_line("/proc/self/cgroup", 1, "0::%" STR(PATH_MA=
-X) "s", buf);
-
-do you think just hard-coding /sys/fs/cgroup would not work in
-practice? It just feels like we are trying to be a bit too flexible
-here...
-
-> +       if (err !=3D 1) {
-> +               if (err < 0)
-> +                       log_errno("reading /proc/self/cgroup");
-> +               else if (!env.quiet)
-> +                       fprintf(stderr, "Can't infer veristat process cgr=
-oup.");
-> +               goto err_out;
-> +       }
-> +
+We have a bunch of GFP_USER allocs as well, e.g. for instruction
+history and state hashmap. At least the former is very much
+interesting, so should we add __GFP_ACCOUNT to those as well?
 
 [...]
 
