@@ -1,178 +1,190 @@
-Return-Path: <bpf+bounces-60609-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60610-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37B82AD929F
-	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 18:11:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49FA9AD92A2
+	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 18:11:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F4E0189D2E8
-	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 16:11:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DDD4189D341
+	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 16:11:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28152204C2F;
-	Fri, 13 Jun 2025 16:10:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52782205AD7;
+	Fri, 13 Jun 2025 16:11:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A0Zz/aeR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IQHkrkH/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1DAD1E5206;
-	Fri, 13 Jun 2025 16:10:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A4A73594F;
+	Fri, 13 Jun 2025 16:11:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749831053; cv=none; b=PObyLV2a92vBjXhz7w5MefTYBQ21nqYPP/rSlDqjcvzvpoprmtWCn5l4KjMBMFfFADAQr823E67k5kHFs57C+sKI5MDct2hiZ5v/RvSsjCPVMJ+Yb+zBRh6w8eHd5AeCk0s9AA5LwDZPy78Wjsd4w4DSB9C6pAE1KGOM2tGYWIg=
+	t=1749831092; cv=none; b=JudidRIwmIgbs70kC6gY1dQwc6albi4e6NL+RCxyP7HYzBWUHmDQUtpoePqn8iY1QKOdmQ7866Dmxp2I3us9Csk7VrdisSaD0BH++1WVQbdcZWmm6Fzrn0MczOKk26atzeZX3f5UlkbQFa9HRqpN00WH4IUjHmjgtm16NIPBcx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749831053; c=relaxed/simple;
-	bh=z+WePBzk4w5ikJl5l/DmIwsQJR4VLsERLZLA5wpvpHo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JF9oxrVcWHBhJxz3WMvS4y1rpwuSPUv7LjwAW5ry06H1iPSIscu9yvdzDRAf/dpUdl01HetBP9uDySOvdgarvRDqLeiLR42A3PmHTByGH9YYK044g9f5MQc6gGaTfML30CemldCDHkPu8fvaXLhdQebtpecepLCqX43SXGPJKjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A0Zz/aeR; arc=none smtp.client-ip=209.85.128.52
+	s=arc-20240116; t=1749831092; c=relaxed/simple;
+	bh=D1ITj4GdjLoyNT3sAnB4lgJg8AqZrOjpHHe8QAw1VM8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=isUDt5I2Iti5AmjsoxMbmbNYtAw3ePLiVOjT4d5tRffrL+rdByoz1snqOpQQZPfFNN9L1e89Ll9DEjBFY+p4T5bHZaDVolE0AaEtW4C1QTqNdE3dsSRbrZUVf1E1yYEiu7Drhvq5cK2E3zKQk0S94HBMB9iQIor9eW2DnisqWQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IQHkrkH/; arc=none smtp.client-ip=209.85.221.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-450cb2ddd46so13021545e9.2;
-        Fri, 13 Jun 2025 09:10:51 -0700 (PDT)
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3a507e88b0aso2291476f8f.1;
+        Fri, 13 Jun 2025 09:11:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749831050; x=1750435850; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DILrWX2YuLVPKDXNXPwayp6eHkUI1DUjfPvT2x/52No=;
-        b=A0Zz/aeRT5Jo+wSgW0+xG74Wir+VX5uAzyrnsg9bYXipbJhY0EkOlPcK4Ckxj75L2L
-         lHuC2ZU33hHL2m4G0XUfT9vxtuXJX+rreBewh71fG/b9mmOwUKthUlVW3oqN+pJlfCAI
-         fEKN/6PUUR9tyR4Roae07onCgrLNebLcbSvfBAqL4pjdFfyH5/IDNi6VKEQOw4W87ZHg
-         WY9czVbAW6bPcvgOOg39U4zK+DhYnFzsdy7cwtjqGqYZftRAmoKyQerehkoADA+xydAB
-         cu9WpdhDwKCtkhNsA33ASiuOfc2M3kSk8G+Km3cg8X0F08GEl8PHx7yD4S5lj+Tagmzn
-         hj8Q==
+        d=gmail.com; s=20230601; t=1749831089; x=1750435889; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=djTz91ov2i0srIIkJAlK+NfElm2rN6LPscfEqTdW4nw=;
+        b=IQHkrkH/oWSOU79lNvTeIhU35J0m4ncwPb/iFtNOohCY/JSfc1YkD5/6u3CNubG4vp
+         UtCshp8YjozVBfny7+CGYd3U0e86+RYg/1Lx475MEq5/Dcgn7CUM1WzfRfPUHJA9swcl
+         Nnvb2xeSEesqYLfcXc9811b/CUSd6zqKCFgAuMTR01uvrU0pGu7AMvivMexeZg/N0NYJ
+         WNdLNug/47ql+8v4Mi03bukkv3EpSXiA1KnbAdf+IJ8WRAwnfjPivLES1kParl+1c7V0
+         obTm0PTkyKkRZB03Kkvf4/az8DRrHIj9ec8FD/o8xs/MY9r0PzxHWSAdQBs7tWBXw2of
+         WRLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749831050; x=1750435850;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DILrWX2YuLVPKDXNXPwayp6eHkUI1DUjfPvT2x/52No=;
-        b=AaIeaPGv/BgeSRotOt+7bhRrxzUBGG+MLs4sidfXN2Kk7QRYa+N6TvjD8EDHsHmUba
-         MVVZPEb8JrAr7WseycayaH1jClnRJbr/fZ2bCxBqPTD85RDkhA4GHPiQ6sByb3DjqvDn
-         qElLBODmWHMKk0qQpZpx8M5KpnsUcthLk2ekUVAUkH1lSN7FvXjvwFoifPTzX+L7XPee
-         Iok3iYXGxE+DRX246Wgo4LuSxemMwM6I8Nx7YJdkMndB0Nz6L4M60NwzMHyQABKXY5xs
-         DoQaMpYK3bd8f8xBbhY7NW7AZuFXLSe5NSYtTKv/LXdRC4c8Qt6P+Qx/ssb9TjCLc/rW
-         aKfA==
-X-Forwarded-Encrypted: i=1; AJvYcCVe5rFeFNoyncD6vn26fnkmGKYyOBVxlqUpX8NhPOB+0oaeWeDwl3W3AbFDE1qCHfgPOKI=@vger.kernel.org, AJvYcCVgmC1LwvSg4QpPfWFk6uoZdAjXk5E6gOf2n29ZKpn2ihtPcB928IZ/sc3QsnLc/XAoYEIxzZGY@vger.kernel.org, AJvYcCX+eSpip8Q3IJJcbIGI5sECdP2/CkLxi9FYAez6Ft8xhu5ZueAUAXZ5T8KODKGs9u1RFBP2833EhgUGpmBV@vger.kernel.org
-X-Gm-Message-State: AOJu0YwHOEI7u7h4KGZydoF257nMoxYg2G4oE3uxDA8+rnhJbjW/i1wQ
-	3GSnY9yezNyPH+AFcZQ+qCp7BQgpnTFu1Ul9ig1HgV6DvhZCqWmQAkgZkrxrSuDEhgJ5IsQ41cO
-	/pytIGaZY65ydSCwllqX+rAnT7n8s/Tk=
-X-Gm-Gg: ASbGncvp1nP1wzNcPr+aUQRlWFJBIyGKa6X/aohXZfFDcfDCdURyfXd4Mn/4t2FJ8Zv
-	QXrm3/RDt7TGJIPJ6L2MiwGZJGC7GjNBjz9RIlCYG35J7Gab51pILpJURSXwazX70nEfnj4+Xld
-	oY4tZax+f0r6ZcZjDxAhV9+n1gaNii6BYmqyDayzcZABCGKDhytEfpS4huazJB8VNK1xB8BDZ4
-X-Google-Smtp-Source: AGHT+IHvQ9887CxdzTMcRoXeEnar7nGslX8aj5s2kzSmDQQlLukEzU6+YCFYK4flojxTe5ApiQs2oZJ0aOQNmI9cr3A=
-X-Received: by 2002:a05:600c:1c29:b0:43d:5ec:b2f4 with SMTP id
- 5b1f17b1804b1-4533ca55bc0mr2375445e9.10.1749831049931; Fri, 13 Jun 2025
- 09:10:49 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1749831089; x=1750435889;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=djTz91ov2i0srIIkJAlK+NfElm2rN6LPscfEqTdW4nw=;
+        b=mWlI3+i3eAXtc1DzYnqyffyF6956Y8C5onchr0WTqUDcAPssap6Pdykv6AXGKJHlMG
+         hOao3tg1g5uHGytNAAxFfCEDxa22CEQFgVWM/tUfG2+5AnqG3PNNeTwhTPYRUjOxTRVw
+         t4QScQQK4EPOIHU88AAhctgTyphUBQPAZwqVoLTw6oJ6pQ9lexOHwiM9krGOHQIViDSA
+         LBRGlRk6OyVgLODzz9tbDKIGdxeI1rdKiN20oEpu/ejLW5vJN3x6IBvQdzJq28MVVTCX
+         xlN2Mr2R08Al3tdEwX+KLaL4FhAd/Jn5H5/fJPvxUGv38vBqLN0KAVQ+Ji1CVLajfaL+
+         GErQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUrqTPvFAL4mkWuNleaLk6/lsTa6RUqT8RwlPLCs5Gbu+tUNoSm8RCrThMqwS+9jBxMJJs=@vger.kernel.org, AJvYcCVhcdWVlfO2qqpetB8fIkYSuM6Fw7XYQFQF0FVBT7v39gDZbDdBo7bk2XQoJ2v2UV7KlyMOLW+ynYDNFg9z@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx8k1XU0VoCbhvTGTm19jVKerFEUVTRUJy99x1RRQ/rXl/uoUoP
+	uDHu64IRUlAaojugzPzYRNI1Txrfu0V2bViWY/gAb1MRad2B3ernDngY
+X-Gm-Gg: ASbGncuH8fOE7X8GMabf3zoPo71t+CfnQUjyIfeYFclYaVkNXjzyrzH3wTqCAvmnjma
+	aOLIULLnyOi1ET6sDjPkQIxxkDoZZwIkamL7kgHLhXVOxXXGZUt20Uoz3YwHHmcNzk+86LtVqSO
+	a+Cx4BeH7nEPBDZyuumE+Rjw/6leuUP20clvgJ+ZkQr6zQaX26DNptDmjO/tuX1PocqoD0vAmH/
+	rXKOV639mVYiZ5e2TlHnrUjbh4S07jiHlu5ocDK70sjzO6kEdyxqOTqpNXJi+glzdM/ksmIwlcB
+	FPud53uPZNemXRtvzcOJHFDLXdBxPzaP1np9jicS8hLDCIkpDGm0UaETfl/JC12KmafZ+gXj
+X-Google-Smtp-Source: AGHT+IFokHB4xgytSk5N1+IyzZiwrf7Ig6qUaw4U17koCWUQXbNFfRlLKvmZzXK5VjhGo2Mzn0SwBg==
+X-Received: by 2002:a5d:5c84:0:b0:3a5:3e64:1ac4 with SMTP id ffacd0b85a97d-3a5723a2742mr359497f8f.33.1749831089151;
+        Fri, 13 Jun 2025 09:11:29 -0700 (PDT)
+Received: from [192.168.8.100] ([148.252.140.198])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a568a54d1fsm2743050f8f.2.2025.06.13.09.11.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Jun 2025 09:11:28 -0700 (PDT)
+Message-ID: <415993ef-0238-4fc0-a2e5-acb938ec2b10@gmail.com>
+Date: Fri, 13 Jun 2025 17:12:50 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <684bcf65.050a0220.be214.029b.GAE@google.com> <3c89e1105e611812ae86fb6aafd346be4445e055.camel@gmail.com>
-In-Reply-To: <3c89e1105e611812ae86fb6aafd346be4445e055.camel@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 13 Jun 2025 09:10:38 -0700
-X-Gm-Features: AX0GCFtsmhm4IcqZGd5BCX0XnZXe1ySkkEYzz3GResZBxUbVEx99pnvuB5kzGXU
-Message-ID: <CAADnVQKRsUcPkWBBA0442jakf-6dr9n9dii9pjSsSyqRS6NcgA@mail.gmail.com>
-Subject: Re: [syzbot] [bpf?] WARNING in do_check
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: syzbot <syzbot+a36aac327960ff474804@syzkaller.appspotmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Hao Luo <haoluo@google.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
-	KP Singh <kpsingh@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Network Development <netdev@vger.kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Song Liu <song@kernel.org>, 
-	syzkaller-bugs <syzkaller-bugs@googlegroups.com>, Yonghong Song <yonghong.song@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC v2 5/5] io_uring/bpf: add basic kfunc helpers
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>
+Cc: io-uring@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+References: <cover.1749214572.git.asml.silence@gmail.com>
+ <c4de7ed6e165f54e2166e84bc88632887d87cfdf.1749214572.git.asml.silence@gmail.com>
+ <CAADnVQJgxnQEL+rtVkp7TB_qQ1JKHiXe=p48tB_-N6F+oaDLyQ@mail.gmail.com>
+ <8aa7b962-40a6-4bbc-8646-86dd7ce3380e@gmail.com>
+ <CAADnVQ+--s_zGdRg4VHv3H317dCrx_+nEGH7FNYzdywkdh3n-A@mail.gmail.com>
+Content-Language: en-US
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <CAADnVQ+--s_zGdRg4VHv3H317dCrx_+nEGH7FNYzdywkdh3n-A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jun 13, 2025 at 12:56=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
-m> wrote:
->
-> On Fri, 2025-06-13 at 00:12 -0700, syzbot wrote:
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    1c66f4a3612c bpf: Fix state use-after-free on push_stac=
-k()..
-> > git tree:       bpf-next
-> > console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D1346ed70580=
-000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D73696606574=
-e3967
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3Da36aac327960f=
-f474804
-> > compiler:       Debian clang version 20.1.6 (++20250514063057+1e4d39e07=
-757-1~exp1~20250514183223.118), Debian LLD 20.1.6
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1392610c5=
-80000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D11a9ee0c580=
-000
-> >
-> > Downloadable assets:
-> > disk image: https://storage.googleapis.com/syzbot-assets/2ddb1df1c757/d=
-isk-1c66f4a3.raw.xz
-> > vmlinux: https://storage.googleapis.com/syzbot-assets/6a318fc92af0/vmli=
-nux-1c66f4a3.xz
-> > kernel image: https://storage.googleapis.com/syzbot-assets/76c58dddcb6c=
-/bzImage-1c66f4a3.xz
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the co=
-mmit:
-> > Reported-by: syzbot+a36aac327960ff474804@syzkaller.appspotmail.com
-> >
-> > ------------[ cut here ]------------
->
-> Fwiw, here is a repro converted to selftest.
-> I'll take detailed look on Friday:
->
-> SEC("socket")
-> __naked void syzbot_repro(void)
-> {
->         asm volatile (
->         "r8 =3D 0xff80;"
->         "r1 =3D 0xff110001085a0800 ll;"
->         "r2 =3D 20;"
->         "r3 =3D 0;"
->         "call %[bpf_ktime_get_ns];"
-> "1:"
->         "w9 =3D w10;"
->         "if r9 >=3D 0xff4ad400 goto 2f;"
->         "may_goto +13;"
->         "r2 =3D 0;"
->         "*(u8 *)(r10 -16) =3D r9;"
-> "2:"
->         "if r9 s< 0x1004 goto 3f;"
->         "lock *(u32 *)(r10 -16) +=3D r10;"
->         "r6 =3D r8;"
->         "r8 +=3D -8;"
->         "r4 =3D r10;"
-> "3:"
->         "r6 +=3D -16;"
->         "r2 =3D 8;"
->         "r2 =3D 0xff110001085a05d8 ll;"
->         "r5 =3D 8;"
->         "if w8 & 0x76 goto 1b;"
+On 6/13/25 01:25, Alexei Starovoitov wrote:
+> On Thu, Jun 12, 2025 at 6:25 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
+...>>>> +BTF_ID_FLAGS(func, bpf_io_uring_extract_next_cqe, KF_RET_NULL);
+>>>> +BTF_KFUNCS_END(io_uring_kfunc_set)
+>>>
+>>> This is not safe in general.
+>>> The verifier doesn't enforce argument safety here.
+>>> As a minimum you need to add KF_TRUSTED_ARGS flag to all kfunc.
+>>> And once you do that you'll see that the verifier
+>>> doesn't recognize the cqe returned from bpf_io_uring_get_cqe*()
+>>> as trusted.
+>>
+>> Thanks, will add it. If I read it right, without the flag the
+>> program can, for example, create a struct io_ring_ctx on stack,
+>> fill it with nonsense and pass to kfuncs. Is that right?
+> 
+> No. The verifier will only allow a pointer to struct io_ring_ctx
+> to be passed, but it may not be fully trusted.
+> 
+> The verifier has 3 types of pointers to kernel structures:
+> 1. ptr_to_btf_id
+> 2. ptr_to_btf_id | trusted
+> 3. ptr_to_btf_id | untrusted
+> 
+> 1st was added long ago for tracing and gradually got adopted
+> for non-tracing needs, but it has a foot gun, since
+> all pointer walks keep ptr_to_btf_id type.
+> It's fine in some cases to follow pointers, but not in all.
+> Hence 2nd variant was added and there
+> foo->bar dereference needs to be explicitly allowed
+> instead of allowed by default like for 1st kind.
+> 
+> All loads through 1 and 3 are implemented as probe_read_kernel.
+> while loads from 2 are direct loads.
+> 
+> So kfuncs without KF_TRUSTED_ARGS with struct io_ring_ctx *ctx
+> argument are likely fine and safe, since it's impossible
+> to get this io_ring_ctx pointer by dereferencing some other pointer.
+> But better to tighten safety from the start.
+> We recommend KF_TRUSTED_ARGS for all kfuncs and
+> eventually it will be the default.
 
-I suspect this might be the fix:
+Sure, I'll add it, thanks for the explanation
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index c378074516cf..e76eb0322912 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -23950,6 +23950,7 @@ static bool can_jump(struct bpf_insn *insn)
-        case BPF_JSLT:
-        case BPF_JSLE:
-        case BPF_JCOND:
-+       case BPF_JSET:
-                return true;
-        }
+...>> diff --git a/io_uring/bpf.c b/io_uring/bpf.c
+>> index 9494e4289605..400a06a74b5d 100644
+>> --- a/io_uring/bpf.c
+>> +++ b/io_uring/bpf.c
+>> @@ -2,6 +2,7 @@
+>>    #include <linux/bpf_verifier.h>
+>>
+>>    #include "io_uring.h"
+>> +#include "memmap.h"
+>>    #include "bpf.h"
+>>    #include "register.h"
+>>
+>> @@ -72,6 +73,14 @@ struct io_uring_cqe *bpf_io_uring_extract_next_cqe(struct io_ring_ctx *ctx)
+>>          return cqe;
+>>    }
+>>
+>> +__bpf_kfunc
+>> +void *bpf_io_uring_get_region(struct io_ring_ctx *ctx, u64 size__retsz)
+>> +{
+>> +       if (size__retsz > ((u64)ctx->ring_region.nr_pages << PAGE_SHIFT))
+>> +               return NULL;
+>> +       return io_region_get_ptr(&ctx->ring_region);
+>> +}
+> 
+> and bpf prog should be able to read/write anything in
+> [ctx->ring_region->ptr, ..ptr + size] region ?
+
+Right, and it's already rw mmap'ed into the user space.
+
+> Populating (creating) dynptr is probably better.
+> See bpf_dynptr_from*()
+> 
+> but what is the lifetime of that memory ?
+
+It's valid within a single run of the callback but shouldn't cross
+into another invocation. Specifically, it's protected by the lock,
+but that can be tuned. Does that match with what PTR_TO_MEM expects?
+
+I can add refcounting for longer term pinning, maybe to store it
+as a bpf map or whatever is the right way, but I'd rather avoid
+anything expensive in the kfunc as that'll likely be called on
+every program run.
+
+-- 
+Pavel Begunkov
+
 
