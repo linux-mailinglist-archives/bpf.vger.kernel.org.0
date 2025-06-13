@@ -1,104 +1,209 @@
-Return-Path: <bpf+bounces-60630-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60631-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FA1AAD94FF
-	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 21:10:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F75BAD95CE
+	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 21:51:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 730743B2A21
-	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 19:09:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C852F17EE4E
+	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 19:51:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2671523958A;
-	Fri, 13 Jun 2025 19:10:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3091324466B;
+	Fri, 13 Jun 2025 19:51:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZIeS2lir"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XOwKxyrl"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EE631A76AE
-	for <bpf@vger.kernel.org>; Fri, 13 Jun 2025 19:10:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBC0B1993B9;
+	Fri, 13 Jun 2025 19:51:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749841801; cv=none; b=lGUmNa2hPGoolzWi2KKLbXDeYUG8xS+Szz3hDYuyc7rke/Qh+SuGfnH58Izg/5V/5W/CL5qY+RmbxXVGoQFK/CHNFL8pgWoExqTG1zQOKYHooT0DShogn8q3xNRFGq5vrrnQFRRSZmcT8K/hcMVNTAb2gv+WCYfnfpnsACcFdFw=
+	t=1749844305; cv=none; b=L0XVfsjMi2Mo/BctX1AU+munYhMUKriTDG20WtTAqb1mTuqm+nFcXc0v16PtuB4DGla/komM5PxJI3eiho6jLJ7b4kI10osPW9UsW+BapO6nkFpfJRex2RG1hhxriG6ALchzjZ3idta6N7Pw4+kDI7fwAg74pHYmsGSPSzVyfzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749841801; c=relaxed/simple;
-	bh=xYJHst5Hfzee61Xx0ozv/FSpj14cso8bBqf0alluMJU=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=kz6O81eoSVEhP2cHm8hcctq11gNXD8O0Wj9H0XXXtUvJ4nK6vaMkB5eEjapu7cemKnqfHmivqT8jLMeKWfbvyl8c2RBDiF+91ueRFU6dr9Zg+nm1BbN5vOltfn8nONwzLYujchiH0AXOetw4Xat8zV3oyP5clnxbBLDfoJAOans=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZIeS2lir; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2981DC4CEE3;
-	Fri, 13 Jun 2025 19:10:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749841801;
-	bh=xYJHst5Hfzee61Xx0ozv/FSpj14cso8bBqf0alluMJU=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=ZIeS2lirNHz+pRWwEzzY/R4kB+uaOKXnhV+LF52fujjioBcoAaS6A5CVGfvVyWxGN
-	 Z2WZo6pOjWOtsbepHCM08vamWC+5TRPgY5tksdA4OssHI4/RFILBG+JZ/geNPxwcX7
-	 ucANmeZSdb2Y7lzuc3JX5u6L1jO6rQca3nuEuSXEWC7otm+FP8kJB5lbll4sBlNtk8
-	 1f2vVtyT/GBiHGTCU0+i0SA9y1Q7UkeWlSNy+lcf5NApq6jbCu5F3BDu0UsU7ehr6i
-	 Tv+PutQGrws5H504b5HtbokEDWV4vSxyLOnTysZLhnyyazcgvwgVngi6a4vsr79caA
-	 r861nO5beZ4hA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAFE5380AAD0;
-	Fri, 13 Jun 2025 19:10:31 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1749844305; c=relaxed/simple;
+	bh=hkjH3jGhp6c6JuTPd/+HwtyvCL+Paord2dnC/mZAr0Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JoCrEuEotnfMN1rgjKcd/8DMIB33m9ZYlddHhLMWIt2HMtdSgBetIIdQpyMY2jDMEyXkC4nw4LWf42nvsFCuT2Kx6Jq4C9oZSFAUKbl+dI2Hau06hh9OD3wQwp+qLLR7vdjfcWNCKUX2+K3EArPecd+9XmLdQ6CViDhu4VvQH3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XOwKxyrl; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3a528243636so1557163f8f.3;
+        Fri, 13 Jun 2025 12:51:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749844302; x=1750449102; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8RMTqA9/AALqHtkW2ZYDpZeXqFJrkLAJ7HRjWRQZhog=;
+        b=XOwKxyrl3zNGOzLcnd/iMSNlZ4qlPgIcR+U9elSiR78ol2Iw2OlKEt2A9OJ5B759mz
+         moNMNhc9/XK4mfJ5eW2TB7r67tGNIB2TKXXrHorZvr+UeMrT0dJoWPLLEJ0/qPYftCmW
+         jnJ7i5LuHGaG8booJQxwi7LorulWDwEy7b22CK5FI/uwerLHhnv/B00X8nmyhVNl8GTa
+         JFnaiIwjj/hdeadVvyn4efSqIcguSIFV/ThMPhOoU4IP5NhXeGk0Pz9JBDKe2u43FNRR
+         P3I3UhypSVk3Hv4Ove1sdd3ad7xhDufhNca2EGXVERJTcMI0tN+U1fnzsovtCcuwsqiY
+         NWIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749844302; x=1750449102;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8RMTqA9/AALqHtkW2ZYDpZeXqFJrkLAJ7HRjWRQZhog=;
+        b=XtSDEjFMfERSC5qUO9OgNXfZuLeoomeOKraLOPr6U4Ps/BEjdZ8B+ze4mqxUOl6j6S
+         XfsL5HUsuasLhpGV14wKFilJ0AJMN5SfDyGzQX2dlmvVAFHFIXaH/i/rRDUaAslvUpBC
+         JvbFbdqQ0mI7iIKnf6/B0KmFdEOUtqpIXdEN3Q3GjrpnBnbVNCIh5+ifIYXyzGvx0QIu
+         K53Auk+75eWaQZefNGvb7xnZk7D/E2/LNg3IxQ7bTDPrAm7xs2QZkPmDVAyY5Hb2fK5c
+         AHwibWVylSvBPUyrpfXIpYBLacTtHRFaVPNq5CaBg/PZV9VLt2f19lToOsdG7P1jiHB/
+         PPOA==
+X-Forwarded-Encrypted: i=1; AJvYcCWZrcwpGu6U3kcK65p2C0hktio9N3KrvngE8Oif1Bl2NP+77vfYengw2FUh7IXUjB9LWWuKKlwpM+0=@vger.kernel.org, AJvYcCXncfvJ7NhhGuabrHDbVL2dzotq1RJvAAe6vMezZBbABNOGqKRpoU1+wgX2S3exv+6FCaWon8VyutUg10fz@vger.kernel.org, AJvYcCXvitwY0h+tOS00jNFmFuJZDQc4A562NVcnPWZ/rcibYFjzNTbVxuGO/dIDM1VC9OKms38=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwdW+qKCF0QmU9cLRILOjqGGcIcuxmK2Nye0b4FHgbTYwuuorB/
+	cgbpDmViYqLBGqXyPg5BXNqwLSCGM64bemqzo/Y/Cpx5iM0Hp8XyYFAn4OZ+KIvJvnEnWPLLi8j
+	0cPIMrevKM/WaNYsK6iS2rYu48WLFpVQ=
+X-Gm-Gg: ASbGncvlwxviXx/yLUlwblJetCN2wmABoV5BpKwLM382/NdXEJjQEBHpvcPEQUfSXYg
+	+ZjYc7ALSA7/m3KxdlacsIoH/1tVjrMLWlPjog1JRbRf3HfjFRoGd9wFOXA5jn+WmBzHX5dBiuu
+	PBC0j9GfVjItcPbBI0lslOmGAyclt6QtKVT/srsE/15F5MTyz4ukloNevuvhjBChZW/252RRLF
+X-Google-Smtp-Source: AGHT+IEH6N/JU6XFU/9UHBpiejq+rpKEhEZl1TIDOk5TrZShSP3LJDXDw/ehw7Blrm6KrGOz1tOOQjcothNo/ahnBfQ=
+X-Received: by 2002:a05:6000:2003:b0:3a4:dd02:f565 with SMTP id
+ ffacd0b85a97d-3a572397756mr1002900f8f.3.1749844301956; Fri, 13 Jun 2025
+ 12:51:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v1 1/2] bpf: handle jset (if a & b ...) as a jump
- in
- CFG computation
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <174984183075.856264.12436732973812728838.git-patchwork-notify@kernel.org>
-Date: Fri, 13 Jun 2025 19:10:30 +0000
-References: <20250613175331.3238739-1-eddyz87@gmail.com>
-In-Reply-To: <20250613175331.3238739-1-eddyz87@gmail.com>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
- yonghong.song@linux.dev,
- syzbot+a36aac327960ff474804@syzkaller.appspotmail.com,
- alexei.starovoitov@gmail.com
+References: <cover.1749214572.git.asml.silence@gmail.com> <c4de7ed6e165f54e2166e84bc88632887d87cfdf.1749214572.git.asml.silence@gmail.com>
+ <CAADnVQJgxnQEL+rtVkp7TB_qQ1JKHiXe=p48tB_-N6F+oaDLyQ@mail.gmail.com>
+ <8aa7b962-40a6-4bbc-8646-86dd7ce3380e@gmail.com> <CAADnVQ+--s_zGdRg4VHv3H317dCrx_+nEGH7FNYzdywkdh3n-A@mail.gmail.com>
+ <415993ef-0238-4fc0-a2e5-acb938ec2b10@gmail.com>
+In-Reply-To: <415993ef-0238-4fc0-a2e5-acb938ec2b10@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 13 Jun 2025 12:51:30 -0700
+X-Gm-Features: AX0GCFuhJ8xUcwBe-bKhFldxUiIl1DHxYWxxcoKc081DDOnh-5dfvgQjYLVQl9g
+Message-ID: <CAADnVQKu6Q1ePFuxxSLNsm-xggZbUEmWb_Y=4zeU54aAt5o6HA@mail.gmail.com>
+Subject: Re: [RFC v2 5/5] io_uring/bpf: add basic kfunc helpers
+To: Pavel Begunkov <asml.silence@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, io-uring@vger.kernel.org, 
+	Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Fri, Jun 13, 2025 at 9:11=E2=80=AFAM Pavel Begunkov <asml.silence@gmail.=
+com> wrote:
+>
+> On 6/13/25 01:25, Alexei Starovoitov wrote:
+> > On Thu, Jun 12, 2025 at 6:25=E2=80=AFAM Pavel Begunkov <asml.silence@gm=
+ail.com> wrote:
+> ...>>>> +BTF_ID_FLAGS(func, bpf_io_uring_extract_next_cqe, KF_RET_NULL);
+> >>>> +BTF_KFUNCS_END(io_uring_kfunc_set)
+> >>>
+> >>> This is not safe in general.
+> >>> The verifier doesn't enforce argument safety here.
+> >>> As a minimum you need to add KF_TRUSTED_ARGS flag to all kfunc.
+> >>> And once you do that you'll see that the verifier
+> >>> doesn't recognize the cqe returned from bpf_io_uring_get_cqe*()
+> >>> as trusted.
+> >>
+> >> Thanks, will add it. If I read it right, without the flag the
+> >> program can, for example, create a struct io_ring_ctx on stack,
+> >> fill it with nonsense and pass to kfuncs. Is that right?
+> >
+> > No. The verifier will only allow a pointer to struct io_ring_ctx
+> > to be passed, but it may not be fully trusted.
+> >
+> > The verifier has 3 types of pointers to kernel structures:
+> > 1. ptr_to_btf_id
+> > 2. ptr_to_btf_id | trusted
+> > 3. ptr_to_btf_id | untrusted
+> >
+> > 1st was added long ago for tracing and gradually got adopted
+> > for non-tracing needs, but it has a foot gun, since
+> > all pointer walks keep ptr_to_btf_id type.
+> > It's fine in some cases to follow pointers, but not in all.
+> > Hence 2nd variant was added and there
+> > foo->bar dereference needs to be explicitly allowed
+> > instead of allowed by default like for 1st kind.
+> >
+> > All loads through 1 and 3 are implemented as probe_read_kernel.
+> > while loads from 2 are direct loads.
+> >
+> > So kfuncs without KF_TRUSTED_ARGS with struct io_ring_ctx *ctx
+> > argument are likely fine and safe, since it's impossible
+> > to get this io_ring_ctx pointer by dereferencing some other pointer.
+> > But better to tighten safety from the start.
+> > We recommend KF_TRUSTED_ARGS for all kfuncs and
+> > eventually it will be the default.
+>
+> Sure, I'll add it, thanks for the explanation
+>
+> ...>> diff --git a/io_uring/bpf.c b/io_uring/bpf.c
+> >> index 9494e4289605..400a06a74b5d 100644
+> >> --- a/io_uring/bpf.c
+> >> +++ b/io_uring/bpf.c
+> >> @@ -2,6 +2,7 @@
+> >>    #include <linux/bpf_verifier.h>
+> >>
+> >>    #include "io_uring.h"
+> >> +#include "memmap.h"
+> >>    #include "bpf.h"
+> >>    #include "register.h"
+> >>
+> >> @@ -72,6 +73,14 @@ struct io_uring_cqe *bpf_io_uring_extract_next_cqe(=
+struct io_ring_ctx *ctx)
+> >>          return cqe;
+> >>    }
+> >>
+> >> +__bpf_kfunc
+> >> +void *bpf_io_uring_get_region(struct io_ring_ctx *ctx, u64 size__rets=
+z)
+> >> +{
+> >> +       if (size__retsz > ((u64)ctx->ring_region.nr_pages << PAGE_SHIF=
+T))
+> >> +               return NULL;
+> >> +       return io_region_get_ptr(&ctx->ring_region);
+> >> +}
+> >
+> > and bpf prog should be able to read/write anything in
+> > [ctx->ring_region->ptr, ..ptr + size] region ?
+>
+> Right, and it's already rw mmap'ed into the user space.
+>
+> > Populating (creating) dynptr is probably better.
+> > See bpf_dynptr_from*()
+> >
+> > but what is the lifetime of that memory ?
+>
+> It's valid within a single run of the callback but shouldn't cross
+> into another invocation. Specifically, it's protected by the lock,
+> but that can be tuned. Does that match with what PTR_TO_MEM expects?
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+yes. PTR_TO_MEM lasts for duration of the prog.
 
-On Fri, 13 Jun 2025 10:53:30 -0700 you wrote:
-> BPF_JSET is a conditional jump and currently verifier.c:can_jump()
-> does not know about that. This can lead to incorrect live registers
-> and SCC computation.
-> 
-> E.g. in the following example:
-> 
->    1: r0 = 1;
->    2: r2 = 2;
->    3: if r1 & 0x7 goto +1;
->    4: exit;
->    5: r0 = r2;
->    6: exit;
-> 
-> [...]
+> I can add refcounting for longer term pinning, maybe to store it
+> as a bpf map or whatever is the right way, but I'd rather avoid
+> anything expensive in the kfunc as that'll likely be called on
+> every program run.
 
-Here is the summary with links:
-  - [bpf-next,v1,1/2] bpf: handle jset (if a & b ...) as a jump in CFG computation
-    https://git.kernel.org/bpf/bpf-next/c/3157f7e29996
-  - [bpf-next,v1,2/2] selftests/bpf: verify jset handling in CFG computation
-    https://git.kernel.org/bpf/bpf-next/c/4a4b84ba9e45
+yeah. let's not add any refcounting.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+It sounds like you want something similar to
+__bpf_kfunc __u8 *
+hid_bpf_get_data(struct hid_bpf_ctx *ctx, unsigned int offset, const
+size_t rdwr_buf_size)
 
+we have a special hack for it already in the verifier.
+The argument need to be called rdwr_buf_size,
+then it will be used to establish the range of PTR_TO_MEM.
+It has to be run-time constant.
 
+What you're proposing with "__retsz" is a cleaner version of the same.
+But consider bpf_dynptr_from_io_uring(struct io_ring_ctx *ctx)
+it can create a dynamically sized region,
+and later use bpf_dynptr_slice_rdwr() to get writeable chunk of it.
+
+I feel that __retsz approach may actually be a better fit at the end,
+if you're ok with constant arg.
 
