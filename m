@@ -1,153 +1,152 @@
-Return-Path: <bpf+bounces-60602-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60603-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42537AD873E
-	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 11:08:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D02AAD89E8
+	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 12:59:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E79BD189C81D
-	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 09:08:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 10A181E0E01
+	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 10:59:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0071279DB7;
-	Fri, 13 Jun 2025 09:08:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7EC02D5C7A;
+	Fri, 13 Jun 2025 10:59:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="JwjMVIzQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E8pGoORo"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx-rz-2.rrze.uni-erlangen.de (mx-rz-2.rrze.uni-erlangen.de [131.188.11.21])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A099272802;
-	Fri, 13 Jun 2025 09:08:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 696AB1DF258;
+	Fri, 13 Jun 2025 10:59:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749805685; cv=none; b=aHaSAgu9+10phNMF1vbi4mluDPNs4dhCmac7eaoEo1ZtkFd9ggF/kg7bDN1fkclfZAA/WIwpYLUTef7oerRFwhuFAF7cFdNEAeXJDWWh8+fiNeENbiP2KdWr/it+6ixWOPUGEyh4iEh0+3UaDn6IfoSCpK4y3R5SzFUzUtmioT4=
+	t=1749812380; cv=none; b=mqrOdujGg96eq449zG1sc4EwxxQWN1Ewnxu2wJNBQ/N4SBp5RH+Ue4yBsQnuTOzZyWqrLUZfqbi61Iq3lvXPuYrNc60ZaxqC6pet5Q5iyeEsRJ6D+h8ynx2ZInil3tmQvCJWXQNEFj3KRflPpjrmavDoEz7ddATlprIDEaXzsWQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749805685; c=relaxed/simple;
-	bh=d0nRz28PJt8t39/tBp8+FlGLIeidQBBqOTOjhcljsws=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=q4Zfd9t2jacTC7/mNilmWD0xJ1zj9YcZnQbrnOWcBCid1NL9iGyqPvYjQX5QuH0qrEZfsMpWFj/AJ8JuGhC2HUVt6VGnCvqNBGafRBerIdpPnRsbHbBKhEcmDSefO4I1w4Dpn3kitcv8FsGEOV12kJyxyD+QJCn9BBJ+wPgwKYo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=JwjMVIzQ; arc=none smtp.client-ip=131.188.11.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
-	t=1749805681; bh=yxcJ+W/1B/900NFk5AUkIrOU/OV84UCckpMYMsrXow8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From:To:CC:
-	 Subject;
-	b=JwjMVIzQNaZj9+FbbXJzpxwSmpYa1MnqnkUMAV10FT0jGUjglDE+yZ/4/oNbufgUP
-	 Lk+gUxfx0+Sa3V7D2Pfx5gXu9neAkvVaOSXvgNESxyoJm0b971Ssx3tCRwIdReRmML
-	 CSwmStzLnMOXNlPnntGdGGNfvCgJAzgCemEpTW95vRhZwQG/oaVLgdBGf4szE7CenX
-	 WloIm0L6ddnu+EWhrVQIL1++QQknQRDkNo1SmabAVc7H1FBLp2gZQ5sOTX//UJ07Si
-	 HNLXanOoTEzqrtF6q6mAns+ppBYviP6WKxj0P1w9HJyUKpTxuRAzp4EbsAmXAvsBa6
-	 7K9cWEBtwrejQ==
-Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-rz-2.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4bJYTF0q5PzPjxn;
-	Fri, 13 Jun 2025 11:08:01 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at boeck4.rrze.uni-erlangen.de (RRZE)
-X-RRZE-Flag: Not-Spam
-X-RRZE-Submit-IP: 37.201.192.232
-Received: from localhost (ip-037-201-192-232.um10.pools.vodafone-ip.de [37.201.192.232])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: U2FsdGVkX1+EprZ6QqAkNepeh2qpKNYCZhmROqRlwo4=)
-	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4bJYTB2KNXzPkPv;
-	Fri, 13 Jun 2025 11:07:58 +0200 (CEST)
-From: Luis Gerhorst <luis.gerhorst@fau.de>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,  Daniel Borkmann
- <daniel@iogearbox.net>,  John Fastabend <john.fastabend@gmail.com>,
-  Andrii Nakryiko <andrii@kernel.org>,  Martin KaFai Lau
- <martin.lau@linux.dev>,  Song Liu <song@kernel.org>,  Yonghong Song
- <yonghong.song@linux.dev>,  KP Singh <kpsingh@kernel.org>,  Stanislav
- Fomichev <sdf@fomichev.me>,  Hao Luo <haoluo@google.com>,  Jiri Olsa
- <jolsa@kernel.org>,  bpf@vger.kernel.org,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next] bpf: Remove redundant
- free_verifier_state()/pop_stack()
-In-Reply-To: <19f50af28e3a90cbd24b2325da8025e47f221739.camel@gmail.com>
-	(Eduard Zingerman's message of "Wed, 11 Jun 2025 15:36:55 -0700")
-References: <b6931bd0dd72327c55287862f821ca6c4c3eb69a.camel@gmail.com>
-	<20250611211431.275731-1-luis.gerhorst@fau.de>
-	<19f50af28e3a90cbd24b2325da8025e47f221739.camel@gmail.com>
-User-Agent: mu4e 1.12.8; emacs 30.1
-Date: Fri, 13 Jun 2025 11:07:57 +0200
-Message-ID: <878qlw3t76.fsf@fau.de>
+	s=arc-20240116; t=1749812380; c=relaxed/simple;
+	bh=8BPhB2JZF3kqe7+MUXT80kngr0DXMAQUCUO0KkK66Fs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=g79MNG+6VxD6lgZijYD7AY3TLT0cc0EmcRIGF4VFSjGpe7C4GyTLXSYk4jifxNEScIypMbV+XeYH8vEQtMuKdQyAtAAx6HrohAV3csXcfqXsTZyA4TCFt5LSImxOwdnnA7ZAdN8EJvDeTxI3+Oxf8hW7Dg5WK//bi7dbFSVAk8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E8pGoORo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADF46C4CEE3;
+	Fri, 13 Jun 2025 10:59:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749812379;
+	bh=8BPhB2JZF3kqe7+MUXT80kngr0DXMAQUCUO0KkK66Fs=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=E8pGoORo7JjAI5Gf8pcjM9GcdLfbtOp7aw9l0A49lEOrkGRdYINKd0IK/fxk5UdSX
+	 xkShKhDLO86C1A6feqTOBegRKg6JaBu0ev4hOpLJUXwTLzmx5HRqqSW7wdCVOfOClj
+	 q87wVJbOSZiCyg/aSndJuppyPYVK8/1XihHWGQ0ZuBsykJi4CUOB+5kEhDYtdSb0yM
+	 j/EkWtzw8JMqNYHdEBO1TtN56t/1nkrzogStq3aAO91cbSommV14kUlG0q2xFHfEKW
+	 SCVnDxOD8J1FyeHrj5uU3MrFSkRc1eOMIOzEcW2O7bFCnzrqQVBhlOHxkfzDn2sR1V
+	 KKwgCeHEPf5Cg==
+Message-ID: <ca38f2ed-999f-4ce1-8035-8ee9247f27f2@kernel.org>
+Date: Fri, 13 Jun 2025 12:59:32 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next V1 7/7] net: xdp: update documentation for
+ xdp-rx-metadata.rst
+To: Daniel Borkmann <borkmann@iogearbox.net>,
+ Stanislav Fomichev <stfomichev@gmail.com>,
+ Lorenzo Bianconi <lorenzo@kernel.org>
+Cc: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+ Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Eric Dumazet <eric.dumazet@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
+ sdf@fomichev.me, kernel-team@cloudflare.com, arthur@arthurfabre.com,
+ jakub@cloudflare.com, Magnus Karlsson <magnus.karlsson@intel.com>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>, arzeznik@cloudflare.com,
+ Yan Zhai <yan@cloudflare.com>
+References: <174897271826.1677018.9096866882347745168.stgit@firesoul>
+ <174897279518.1677018.5982630277641723936.stgit@firesoul>
+ <aEJWTPdaVmlIYyKC@mini-arch>
+ <bf7209aa-8775-448d-a12e-3a30451dad22@iogearbox.net> <87plfbcq4m.fsf@toke.dk>
+ <aEixEV-nZxb1yjyk@lore-rh-laptop> <aEj6nqH85uBe2IlW@mini-arch>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <aEj6nqH85uBe2IlW@mini-arch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Eduard Zingerman <eddyz87@gmail.com> writes:
 
-> On Wed, 2025-06-11 at 23:14 +0200, Luis Gerhorst wrote:
+
+
+On 11/06/2025 05.40, Stanislav Fomichev wrote:
+> On 06/11, Lorenzo Bianconi wrote:
+>>> Daniel Borkmann <daniel@iogearbox.net> writes:
+>>>
+>> [...]
+>>>>>
+>>>>> Why not have a new flag for bpf_redirect that transparently stores all
+>>>>> available metadata? If you care only about the redirect -> skb case.
+>>>>> Might give us more wiggle room in the future to make it work with
+>>>>> traits.
+>>>>
+>>>> Also q from my side: If I understand the proposal correctly, in order to fully
+>>>> populate an skb at some point, you have to call all the bpf_xdp_metadata_* kfuncs
+>>>> to collect the data from the driver descriptors (indirect call), and then yet
+>>>> again all equivalent bpf_xdp_store_rx_* kfuncs to re-store the data in struct
+>>>> xdp_rx_meta again. This seems rather costly and once you add more kfuncs with
+>>>> meta data aren't you better off switching to tc(x) directly so the driver can
+>>>> do all this natively? :/
+>>>
+>>> I agree that the "one kfunc per metadata item" scales poorly. IIRC, the
+>>> hope was (back when we added the initial HW metadata support) that we
+>>> would be able to inline them to avoid the function call overhead.
+>>>
+>>> That being said, even with half a dozen function calls, that's still a
+>>> lot less overhead from going all the way to TC(x). The goal of the use
+>>> case here is to do as little work as possible on the CPU that initially
+>>> receives the packet, instead moving the network stack processing (and
+>>> skb allocation) to a different CPU with cpumap.
+>>>
+>>> So even if the *total* amount of work being done is a bit higher because
+>>> of the kfunc overhead, that can still be beneficial because it's split
+>>> between two (or more) CPUs.
+>>>
+>>> I'm sure Jesper has some concrete benchmarks for this lying around
+>>> somewhere, hopefully he can share those :)
+>>
+>> Another possible approach would be to have some utility functions (not kfuncs)
+>> used to 'store' the hw metadata in the xdp_frame that are executed in each
+>> driver codebase before performing XDP_REDIRECT. The downside of this approach
+>> is we need to parse the hw metadata twice if the eBPF program that is bounded
+>> to the NIC is consuming these info. What do you think?
 > 
->>  kernel/bpf/verifier.c | 26 +++++++++++---------------
->>  1 file changed, 11 insertions(+), 15 deletions(-)
->> 
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index d3bff0385a55..fa147c207c4b 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -2066,10 +2066,10 @@ static struct bpf_verifier_state *push_stack(struct bpf_verifier_env *env,
->>  	}
->>  	return &elem->st;
->>  err:
->> -	free_verifier_state(env->cur_state, true);
->> -	env->cur_state = NULL;
->> -	/* pop all elements and return */
->> -	while (!pop_stack(env, NULL, NULL, false));
->> +	/* free_verifier_state() and pop_stack() loop will be done in
->> +	 * do_check_common(). Caller must return an error for which
->> +	 * error_recoverable_with_nospec(err) is false.
->> +	 */
->
-> Nit: I think these comments are unnecessary as same logic applies to many places.
+> That's the option I was asking about. I'm assuming we should be able
+> to reuse existing xmo metadata callbacks for this. We should be able
+> to hide it from the drivers also hopefully.
 
-In that case I turned `goto err` into `return NULL` directly.
+I'm not against this idea of transparently stores all available metadata
+into the xdp_frame (via some flag/config), but it does not fit our
+production use-case.  I also think that this can be added later.
 
->>  	return NULL;
->>  }
->>  
->> @@ -2838,10 +2838,10 @@ static struct bpf_verifier_state *push_async_cb(struct bpf_verifier_env *env,
->>  	elem->st.frame[0] = frame;
->>  	return &elem->st;
->>  err:
->> -	free_verifier_state(env->cur_state, true);
->> -	env->cur_state = NULL;
->> -	/* pop all elements and return */
->> -	while (!pop_stack(env, NULL, NULL, false));
->> +	/* free_verifier_state() and pop_stack() loop will be done in
->> +	 * do_check_common(). Caller must return an error for which
->> +	 * error_recoverable_with_nospec(err) is false.
->> +	 */
->>  	return NULL;
->>  }
->>  
->> @@ -22904,13 +22904,9 @@ static int do_check_common(struct bpf_verifier_env *env, int subprog)
->>  
->>  	ret = do_check(env);
->>  out:
->> -	/* check for NULL is necessary, since cur_state can be freed inside
->> -	 * do_check() under memory pressure.
->> -	 */
->> -	if (env->cur_state) {
->> -		free_verifier_state(env->cur_state, true);
->> -		env->cur_state = NULL;
->> -	}
->> +	WARN_ON_ONCE(!env->cur_state);
->> +	free_verifier_state(env->cur_state, true);
->> +	env->cur_state = NULL;
->>  	while (!pop_stack(env, NULL, NULL, false));
->
-> Nit: while at it, I'd push both free_verifier_state() and pop_stack()
->      into free_states() a few lines below.
+We need the ability to overwrite the RX-hash value, before redirecting
+packet to CPUMAP (remember as cover-letter describe RX-hash needed
+*before* the GRO engine processes the packet in CPUMAP. This is before
+TC/BPF).
 
-Both is in v2, thanks! (Also reran the syzbot reproducer with it.)
+Our use-case for overwriting the RX-hash value is load-balancing IPSEC
+encapsulated tunnel traffic at XDP stage via CPUMAP redirects.  This is
+generally applicable to tunneling in that we want the store the RX-hash
+of the tunnels inner-headers.  Our IPSEC use-case have a variation that
+we only decrypt[1] the first 32 bytes to calc a LB hash over
+inner-headers, and then redirect the original packet to CPUMAP.  The
+IPSEC packets travel into a veth device, which we discovered will send
+everything on a single RX-queue... because RX-hash (calc by netstack)
+will obviously use the outer-headers, meaning this LB doesn't scale.
+
+I hope this makes it clear, why we need BPF-prog ability to explicitly
+"store" the RX-hash in the xdp-frame.
+
+--Jesper
+
+[1] https://docs.ebpf.io/linux/kfuncs/bpf_crypto_decrypt/
 
