@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-60582-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60583-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6461AAD83FD
-	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 09:22:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06C52AD83FF
+	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 09:22:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8DC1189B008
-	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 07:22:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 325D6189AFE4
+	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 07:22:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6616F2C3269;
-	Fri, 13 Jun 2025 07:21:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 323342C327C;
+	Fri, 13 Jun 2025 07:21:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FWU1aQq/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SzP4zUrz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB3D127466E
-	for <bpf@vger.kernel.org>; Fri, 13 Jun 2025 07:21:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB5EB2C325F
+	for <bpf@vger.kernel.org>; Fri, 13 Jun 2025 07:21:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749799313; cv=none; b=QglUKV3VmTnzUd8jAgpGQA/x95le4BRRwTNC8KTzfAy3e8c8qBc7HNRIc+HctLQ6D2UuXJRaUprBtecHYR4Z/QuB3UODuSl1ajPlHxHYudBI+6okrmArtw7UMnRB9qz/+Y3VI2ri9v/dzq+9O6r8BMJpTEEyTavL6Evt9BTUHXw=
+	t=1749799314; cv=none; b=AZXnEyVCF1V3svdmljd5xCA4g/YVHbUN4l1Siv0TB3FWp6mdFG1xC6T/DUzq/so3TEHNMc9aXYI+sUe9FZUr/CyGT2tPba1kLScZ7LsmXhbvlTR/5FGcdOtuvqDn3+KIXZW8eIRZys3BYRXZ1c7NvwzxWyGqoWXKp8fwLyrrNKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749799313; c=relaxed/simple;
-	bh=d6bZQz3/n5jARsNZdxT27L5qG+2ouO40LZrbPJer0PE=;
+	s=arc-20240116; t=1749799314; c=relaxed/simple;
+	bh=uMpoufwuPHS3USeK0PjpjGMsperMs76Y5WRtPBIRmZQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=U+/TLlGUYAPUAOEX/DqWYyzQKFoMmrvMMAIvxiJ89OcF0JO3QyXDfSv/9sC4SEqKcXh0355AWq6SH+ygt9UTyNsYrDnDtZBaBKTrpc6nIdQ+IMQhQe74bIJzUsJLNlBonjQMNBYXQxa1OagQS+u8eslTAqjTlzLagzeuhfuyRyM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FWU1aQq/; arc=none smtp.client-ip=209.85.128.179
+	 MIME-Version; b=FeT277lDrquFHqBTi/ib5TO8WftUMDI++MZ9UX4Uh6d+ieThBzIjHevJ7d1E7gMK694P7ULdC5qv6GDcSqs6eoSjWdtYjhBBdp13UuhY9evbzA7yIs8bsFa1BrEh3hqaXhHmiFZoebj3wGWdNuVyX+rWg1eJNGIbhPSVCim/RrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SzP4zUrz; arc=none smtp.client-ip=209.85.219.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-7086dcab64bso15808717b3.1
-        for <bpf@vger.kernel.org>; Fri, 13 Jun 2025 00:21:51 -0700 (PDT)
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-e817b40d6e7so1691775276.1
+        for <bpf@vger.kernel.org>; Fri, 13 Jun 2025 00:21:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749799310; x=1750404110; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1749799311; x=1750404111; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IT+Ag5357vHHQ31Yg8tJM5YjKogrbiBMm3ScEf9JDSA=;
-        b=FWU1aQq//6vU6r49PQCr8NgmuDkzBpN3bwes7Rmfvta+9a6wAMDynIRnx1Jw3hAqDm
-         qstMVXAmLI09ZsSweVYIRJ8Fqj64y3kBQgOeIvDJZfNCuQUjKXV51LZ0nE9heTHtpPkY
-         eCBfALUog9jUStyR12UN2AbEtaQH5ihR2hMJxKGL4alUUDmdKR8FPfbdKqkeBrEUrKZB
-         /70bUlfwo875KvLOTQjU9NemHdJQvbMwmRP/Zj39S3JNaCOI/ishRLNk1dhVPcjtl3L5
-         dyfqWJAy6xuCVtG0QOvs8run6+52VDU5NDeqidovFvS+NSgL2TBL5E9PMpG3UZ8kzLNo
-         +1lw==
+        bh=2nOyjSFCRjLHIsUQxMhNqYBWFyuqVJ90Pe96xu0DIaM=;
+        b=SzP4zUrzHpd5SiFJeqqrjPhM8KCpTWdkSAWaTW0zFEU18YP04HacRs76bewplFi5xu
+         g0y3h8JP5jSEE4mOVkk5Dphz77BacroKE8HPEkJCfzZLuz1nFg99UW8VDN+w15CpuzeM
+         jKiNthcBVf6yK5mHuhlck7hoa7VKB48XInKlH4msAq+7eSXB0rLRwDPi3JnfCoVvQd6u
+         lw7TewGepBaay6YqRcBThp5wL6vvInehIiTcJj8RAGE5m4syIFyYftzUSD7NWEaD09e4
+         MNlQ/FMiGWjQl2X07D3u16IuJjAMjxuyqCKEzYEksGfawv+5VOv2UTAI9bie3wL1vlxR
+         eZmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749799310; x=1750404110;
+        d=1e100.net; s=20230601; t=1749799311; x=1750404111;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IT+Ag5357vHHQ31Yg8tJM5YjKogrbiBMm3ScEf9JDSA=;
-        b=QPhwm2vRKDZfT/nmr7HYZbqq7iibkbret7RzTs+3zRmEyLy5gnF0KSiCIOk4n/NmJY
-         eKDNZhtpTfw+kRskSHf0zIjgGTKnEEdhbAzepFbyBzrClZRzvrNci7w5AnWrPEMIfhhT
-         +txSGYvYNsEwnOywWq+4nCOBfXdiMC7ca7J3r7BRb2PBeQHYHhWAbd+pTGKIe7DYC2tZ
-         uWmy/t6Co4aOg5kLysnIy7beNijexJ+qxOUujfzbM3PKToLzZfFVVgrOEQEMRkgmnZrX
-         +j99sj06GFpu9jVuNfaRuJjr6oTlsbdZov0cFupbYx+BTHSs1Caq+Hai/JQ3ht7nppdb
-         bg4A==
-X-Gm-Message-State: AOJu0Yw4ssgKysQESj6EXTbkcWikFzNav8dZeGNvc0tZcEr43poS4LN/
-	4H/bFUxqFFlSmrNfkMXn7HMZVBwhdQMZi5+uAt2Lct2RW7bV+9M8JLXBb0RQXTAN
-X-Gm-Gg: ASbGncuzDsqzHARCHHJgawXiaLr5Lx8gHxZHSo9LIMe0amV85YlKzqKd+0wyzVdeZGm
-	gUNLdAk5KYXKAUF2Y7Fww7/tgf7Yuxd550ZCLPo0CT8eDi4bDTivrTKqrMK8lmDMMzGBNSraAgx
-	/I9XI8QcqN64K1Y/grMWgw7Mwr/Fupso2/VVYHVQpOu/WWu6RnocQ+302zJ/ua4970zpn6w7FQ3
-	azIlTgF4T2KTIZpeA8LBXVtPT5xy3DkzyJTZDDCwfAf2/lcxS8p7HS4hX6oAzdP+kyI5Mf5oy9b
-	9sCGJNZkUd5nEX1eiHnnJ6LvO9Se+zP8Vhygyn5L+y9MnpJkw/Ogxg==
-X-Google-Smtp-Source: AGHT+IFtBd44GyXRK7CD2/Mw+hodrFx+L2Whsyml5Ruqaq0m4Zi1Jys/WkUb27Pa0stPg+poigG+fQ==
-X-Received: by 2002:a05:690c:6b09:b0:70e:2b60:1562 with SMTP id 00721157ae682-71163658116mr32712527b3.16.1749799310430;
-        Fri, 13 Jun 2025 00:21:50 -0700 (PDT)
-Received: from localhost ([2a03:2880:25ff:4f::])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-711527b7937sm5505447b3.91.2025.06.13.00.21.49
+        bh=2nOyjSFCRjLHIsUQxMhNqYBWFyuqVJ90Pe96xu0DIaM=;
+        b=nYgs3AzbwQVZXQ9svNZW4Bj3CeD8xpVMa2QBhX0PyYFgsiDcNLjMrF8ZQCwj+KjTTy
+         meAgCxgZfDfdaPSnhJ/55xN3G595i31FcKz2h6LAAA25v6ZHFTi0BP/wUKw2EsoSGDF1
+         dDOpBkvjWXib/rFJEIgHh9S4SLSodIbh8WXXtatXPnOag74CTV8uAPpRuNwNWP/TUR7e
+         yDSC7Uod/AHadktRZN/k/EsdVGEqhj8MNXw/ucdHyYaZqX805h8+eB+4RvhJN9VdgEDc
+         srnQT/FYYEMUy6oj9uU8z6kFDO73MgL3f/0m2NY+Uotp5Oz6e/AEJdD85/F6ERdzJ5j1
+         ryRA==
+X-Gm-Message-State: AOJu0YzLNyVijzoC/I/4z6/A4nrrlLqSUwhoY1pKOcZX+t0mfUqdJayq
+	64PlZbEdssTso3nwJkpW4T38Kv3tO3DLMfv+5/8/AfgwFjolKyl1d+S2Rz0aFLmm
+X-Gm-Gg: ASbGncvoWl7Ck802bGZXeM616RS+xYQcRvCbiL9e/bxO3yK+JrcdY2hnOU2O4rtVEJI
+	6sGJqxkKNlncB26ml+5/97rH1fNGEB2YtaNoj5j/V2N8N6SN5U8cdAtBBIlcnh483JpXY7l0/Qg
+	JuIXIwzea19lnlDfU9/ZftuVzvJuKCQugdZYYsY2uB0gWQxnZKh91UAYZtcKu3qYrHxskbepDGP
+	CgUHzrwqmd1PfGNyVMK2bY7xGnthg0zxmq/NOrDUWezH/WA4udW8ZaWAWwu5eteYqUJf9XLOhxo
+	tZAIGuwrUfFU38DfHo9Vw906T1bDY5qQuHNBUD5U2Od2wb90Hcxo
+X-Google-Smtp-Source: AGHT+IHH8nXznI6GKWsNCXZ6sapDDWwhqgTxsyXBVt6NbTb+sCp33Bd/pl6wb0x7Of1xoSNlJjKwTg==
+X-Received: by 2002:a05:6902:10ca:b0:e81:20c5:cd04 with SMTP id 3f1490d57ef6-e821c31e0d1mr2436146276.46.1749799311427;
+        Fri, 13 Jun 2025 00:21:51 -0700 (PDT)
+Received: from localhost ([2a03:2880:25ff:c::])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e820e2be2easm929717276.34.2025.06.13.00.21.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Jun 2025 00:21:49 -0700 (PDT)
+        Fri, 13 Jun 2025 00:21:51 -0700 (PDT)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -81,9 +81,9 @@ Cc: daniel@iogearbox.net,
 	yonghong.song@linux.dev,
 	eddyz87@gmail.com,
 	mykyta.yatsenko5@gmail.com
-Subject: [PATCH bpf-next v3 1/2] bpf: include verifier memory allocations in memcg statistics
-Date: Fri, 13 Jun 2025 00:21:46 -0700
-Message-ID: <20250613072147.3938139-2-eddyz87@gmail.com>
+Subject: [PATCH bpf-next v3 2/2] veristat: memory accounting for bpf programs
+Date: Fri, 13 Jun 2025 00:21:47 -0700
+Message-ID: <20250613072147.3938139-3-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250613072147.3938139-1-eddyz87@gmail.com>
 References: <20250613072147.3938139-1-eddyz87@gmail.com>
@@ -95,380 +95,446 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit adds __GFP_ACCOUNT flag to verifier induced memory
-allocations. The intent is to account for all allocations reachable
-from BPF_PROG_LOAD command, which is needed to track verifier memory
-consumption in veristat. This includes allocations done in verifier.c,
-and some allocations in btf.c, functions in log.c do not allocate.
+This commit adds a new field mem_peak / "Peak memory (MiB)" field to a
+set of gathered statistics. The field is intended as an estimate for
+peak verifier memory consumption for processing of a given program.
 
-There is also a utility function bpf_memcg_flags() which selectively
-adds GFP_ACCOUNT flag depending on the `cgroup.memory=nobpf` option.
-As far as I understand [1], the idea is to remove bpf_prog instances
-and maps from memcg accounting as these objects do not strictly belong
-to cgroup, hence it should not apply here.
+Mechanically stat is collected as follows:
+- At the beginning of handle_verif_mode() a new cgroup is created
+  and veristat process is moved into this cgroup.
+- At each program load:
+  - bpf_object__load() is split into bpf_object__prepare() and
+    bpf_object__load() to avoid accounting for memory allocated for
+    maps;
+  - before bpf_object__load():
+    - a write to "memory.peak" file of the new cgroup is used to reset
+      cgroup statistics;
+    - updated value is read from "memory.peak" file and stashed;
+  - after bpf_object__load() "memory.peak" is read again and
+    difference between new and stashed values is used as a metric.
 
-(btf_parse_fields() is reachable from both program load and map
- creation, but allocated record is not persistent as is freed as soon
- as map_check_btf() exits).
+If any of the above steps fails veristat proceeds w/o collecting
+mem_peak information for a program, reporting mem_peak as -1.
 
-[1] https://lore.kernel.org/all/20230210154734.4416-1-laoar.shao@gmail.com/
+While memcg provides data in bytes (converted from pages), veristat
+converts it to megabytes to avoid jitter when comparing results of
+different executions.
+
+The change has no measurable impact on veristat running time.
+
+A correlation between "Peak states" and "Peak memory" fields provides
+a sanity check for gathered statistics, e.g. a sample of data for
+sched_ext programs:
+
+Program                   Peak states  Peak memory (MiB)
+------------------------  -----------  -----------------
+lavd_select_cpu                  2153                 44
+lavd_enqueue                     1982                 41
+lavd_dispatch                    3480                 28
+layered_dispatch                 1417                 17
+layered_enqueue                   760                 11
+lavd_cpu_offline                  349                  6
+lavd_cpu_online                   349                  6
+lavd_init                         394                  6
+rusty_init                        350                  5
+layered_select_cpu                391                  4
+...
+rusty_stopping                    134                  1
+arena_topology_node_init          170                  0
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- kernel/bpf/btf.c      | 15 +++++-----
- kernel/bpf/verifier.c | 69 ++++++++++++++++++++++---------------------
- 2 files changed, 43 insertions(+), 41 deletions(-)
+ tools/testing/selftests/bpf/Makefile   |   8 +
+ tools/testing/selftests/bpf/veristat.c | 248 ++++++++++++++++++++++++-
+ 2 files changed, 249 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 1d2cf898e21e..682acb1ed234 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -3443,7 +3443,8 @@ btf_find_graph_root(const struct btf *btf, const struct btf_type *pt,
- 	node_field_name = strstr(value_type, ":");
- 	if (!node_field_name)
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index cf5ed3bee573..dd598ca771c5 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -841,6 +841,14 @@ $(OUTPUT)/bench: $(OUTPUT)/bench.o \
+ 	$(call msg,BINARY,,$@)
+ 	$(Q)$(CC) $(CFLAGS) $(LDFLAGS) $(filter %.a %.o,$^) $(LDLIBS) -o $@
+ 
++# This works around GCC warning about snprintf truncating strings like:
++#
++#   char a[PATH_MAX], b[PATH_MAX];
++#   snprintf(a, "%s/foo", b);      // triggers -Wformat-truncation
++ifeq ($(LLVM),)
++$(OUTPUT)/veristat.o: CFLAGS+=-Wno-format-truncation
++endif
++
+ $(OUTPUT)/veristat.o: $(BPFOBJ)
+ $(OUTPUT)/veristat: $(OUTPUT)/veristat.o
+ 	$(call msg,BINARY,,$@)
+diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
+index b2bb20b00952..0a3be1282402 100644
+--- a/tools/testing/selftests/bpf/veristat.c
++++ b/tools/testing/selftests/bpf/veristat.c
+@@ -49,6 +49,7 @@ enum stat_id {
+ 	STACK,
+ 	PROG_TYPE,
+ 	ATTACH_TYPE,
++	MEMORY_PEAK,
+ 
+ 	FILE_NAME,
+ 	PROG_NAME,
+@@ -208,6 +209,9 @@ static struct env {
+ 	int top_src_lines;
+ 	struct var_preset *presets;
+ 	int npresets;
++	char orig_cgroup[PATH_MAX];
++	char stat_cgroup[PATH_MAX];
++	int memory_peak_fd;
+ } env;
+ 
+ static int libbpf_print_fn(enum libbpf_print_level level, const char *format, va_list args)
+@@ -219,6 +223,22 @@ static int libbpf_print_fn(enum libbpf_print_level level, const char *format, va
+ 	return vfprintf(stderr, format, args);
+ }
+ 
++#define log_errno(fmt, ...) log_errno_aux(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
++
++__printf(3, 4)
++static int log_errno_aux(const char *file, int line, const char *fmt, ...)
++{
++	int err = -errno;
++	va_list ap;
++
++	va_start(ap, fmt);
++	fprintf(stderr, "%s:%d: ", file, line);
++	vfprintf(stderr, fmt, ap);
++	fprintf(stderr, " failed with error '%s'.\n", strerror(errno));
++	va_end(ap);
++	return err;
++}
++
+ #ifndef VERISTAT_VERSION
+ #define VERISTAT_VERSION "<kernel>"
+ #endif
+@@ -734,13 +754,13 @@ static int append_file_from_file(const char *path)
+ }
+ 
+ static const struct stat_specs default_csv_output_spec = {
+-	.spec_cnt = 14,
++	.spec_cnt = 15,
+ 	.ids = {
+ 		FILE_NAME, PROG_NAME, VERDICT, DURATION,
+ 		TOTAL_INSNS, TOTAL_STATES, PEAK_STATES,
+ 		MAX_STATES_PER_INSN, MARK_READ_MAX_LEN,
+ 		SIZE, JITED_SIZE, PROG_TYPE, ATTACH_TYPE,
+-		STACK,
++		STACK, MEMORY_PEAK,
+ 	},
+ };
+ 
+@@ -781,6 +801,7 @@ static struct stat_def {
+ 	[STACK] = {"Stack depth", {"stack_depth", "stack"}, },
+ 	[PROG_TYPE] = { "Program type", {"prog_type"}, },
+ 	[ATTACH_TYPE] = { "Attach type", {"attach_type", }, },
++	[MEMORY_PEAK] = { "Peak memory (MiB)", {"mem_peak", }, },
+ };
+ 
+ static bool parse_stat_id_var(const char *name, size_t len, int *id,
+@@ -1278,16 +1299,214 @@ static int max_verifier_log_size(void)
+ 	return log_size;
+ }
+ 
++static bool output_stat_enabled(int id)
++{
++	int i;
++
++	for (i = 0; i < env.output_spec.spec_cnt; i++)
++		if (env.output_spec.ids[i] == id)
++			return true;
++	return false;
++}
++
++__printf(2, 3)
++static int write_one_line(const char *file, const char *fmt, ...)
++{
++	int err, saved_errno;
++	va_list ap;
++	FILE *f;
++
++	f = fopen(file, "w");
++	if (!f)
++		return -1;
++
++	va_start(ap, fmt);
++	errno = 0;
++	err = vfprintf(f, fmt, ap);
++	saved_errno = errno;
++	va_end(ap);
++	fclose(f);
++	errno = saved_errno;
++	return err < 0 ? -1 : 0;
++}
++
++__scanf(3, 4)
++static int scanf_one_line(const char *file, int fields_expected, const char *fmt, ...)
++{
++	int res = 0, saved_errno = 0;
++	char *line = NULL;
++	size_t line_len;
++	va_list ap;
++	FILE *f;
++
++	f = fopen(file, "r");
++	if (!f)
++		return -1;
++
++	va_start(ap, fmt);
++	while (getline(&line, &line_len, f) > 0) {
++		res = vsscanf(line, fmt, ap);
++		if (res == fields_expected)
++			goto out;
++	}
++	if (ferror(f)) {
++		saved_errno = errno;
++		res = -1;
++	}
++
++out:
++	va_end(ap);
++	free(line);
++	fclose(f);
++	errno = saved_errno;
++	return res;
++}
++
++static void destroy_stat_cgroup(void)
++{
++	char buf[PATH_MAX];
++	int err;
++
++	close(env.memory_peak_fd);
++
++	if (env.orig_cgroup[0]) {
++		snprintf(buf, sizeof(buf), "%s/cgroup.procs", env.orig_cgroup);
++		err = write_one_line(buf, "%d\n", getpid());
++		if (err < 0)
++			log_errno("moving self to original cgroup %s\n", env.orig_cgroup);
++	}
++
++	if (env.stat_cgroup[0]) {
++		err = rmdir(env.stat_cgroup);
++		if (err < 0)
++			log_errno("deletion of cgroup %s", env.stat_cgroup);
++	}
++
++	env.memory_peak_fd = -1;
++	env.orig_cgroup[0] = 0;
++	env.stat_cgroup[0] = 0;
++}
++
++/*
++ * Creates a cgroup at /sys/fs/cgroup/veristat-accounting-<pid>,
++ * moves current process to this cgroup.
++ */
++static void create_stat_cgroup(void)
++{
++	char cgroup_fs_mount[PATH_MAX];
++	char buf[PATH_MAX];
++	int err;
++
++	env.memory_peak_fd = -1;
++
++	if (!output_stat_enabled(MEMORY_PEAK))
++		return;
++
++	err = scanf_one_line("/proc/self/mounts", 2, "%*s %4095s cgroup2 %s",
++			     cgroup_fs_mount, buf);
++	if (err != 2) {
++		if (err < 0)
++			log_errno("reading /proc/self/mounts");
++		else if (!env.quiet)
++			fprintf(stderr, "Can't find cgroupfs v2 mount point.\n");
++		goto err_out;
++	}
++
++	/* cgroup-v2.rst promises the line "0::<group>" for cgroups v2 */
++	err = scanf_one_line("/proc/self/cgroup", 1, "0::%4095s", buf);
++	if (err != 1) {
++		if (err < 0)
++			log_errno("reading /proc/self/cgroup");
++		else if (!env.quiet)
++			fprintf(stderr, "Can't infer veristat process cgroup.");
++		goto err_out;
++	}
++
++	snprintf(env.orig_cgroup, sizeof(env.orig_cgroup), "%s/%s", cgroup_fs_mount, buf);
++
++	snprintf(buf, sizeof(buf), "%s/veristat-accounting-%d", cgroup_fs_mount, getpid());
++	err = mkdir(buf, 0777);
++	if (err < 0) {
++		log_errno("creation of cgroup %s", buf);
++		goto err_out;
++	}
++	strcpy(env.stat_cgroup, buf);
++
++	snprintf(buf, sizeof(buf), "%s/cgroup.procs", env.stat_cgroup);
++	err = write_one_line(buf, "%d\n", getpid());
++	if (err < 0) {
++		log_errno("entering cgroup %s", buf);
++		goto err_out;
++	}
++
++	snprintf(buf, sizeof(buf), "%s/memory.peak", env.stat_cgroup);
++	env.memory_peak_fd = open(buf, O_RDWR | O_APPEND);
++	if (env.memory_peak_fd < 0) {
++		log_errno("opening %s", buf);
++		goto err_out;
++	}
++
++	return;
++
++err_out:
++	if (!env.quiet)
++		fprintf(stderr, "Memory usage metric unavailable.\n");
++	destroy_stat_cgroup();
++}
++
++/* Current value of /sys/fs/cgroup/veristat-accounting-<pid>/memory.peak */
++static long cgroup_memory_peak(void)
++{
++	long err, memory_peak;
++	char buf[32];
++
++	if (env.memory_peak_fd < 0)
++		return -1;
++
++	err = pread(env.memory_peak_fd, buf, sizeof(buf) - 1, 0);
++	if (err <= 0) {
++		log_errno("pread(%s/memory.peak)", env.stat_cgroup);
++		return -1;
++	}
++
++	buf[err] = 0;
++	errno = 0;
++	memory_peak = strtoll(buf, NULL, 10);
++	if (errno) {
++		log_errno("%s/memory.peak:strtoll(%s)", env.stat_cgroup, buf);
++		return -1;
++	}
++
++	return memory_peak;
++}
++
++static int reset_stat_cgroup(void)
++{
++	char buf[] = "r\n";
++	int err;
++
++	if (env.memory_peak_fd < 0)
++		return -1;
++
++	err = pwrite(env.memory_peak_fd, buf, sizeof(buf), 0);
++	if (err <= 0) {
++		log_errno("pwrite(%s/memory.peak)", env.stat_cgroup);
++		return -1;
++	}
++	return 0;
++}
++
+ static int process_prog(const char *filename, struct bpf_object *obj, struct bpf_program *prog)
+ {
+ 	const char *base_filename = basename(strdupa(filename));
+ 	const char *prog_name = bpf_program__name(prog);
++	long mem_peak_a, mem_peak_b, mem_peak = -1;
+ 	char *buf;
+ 	int buf_sz, log_level;
+ 	struct verif_stats *stats;
+ 	struct bpf_prog_info info;
+ 	__u32 info_len = sizeof(info);
+-	int err = 0;
++	int err = 0, cgroup_err;
+ 	void *tmp;
+ 	int fd;
+ 
+@@ -1332,7 +1551,15 @@ static int process_prog(const char *filename, struct bpf_object *obj, struct bpf
+ 	if (env.force_reg_invariants)
+ 		bpf_program__set_flags(prog, bpf_program__flags(prog) | BPF_F_TEST_REG_INVARIANTS);
+ 
+-	err = bpf_object__load(obj);
++	err = bpf_object__prepare(obj);
++	if (!err) {
++		cgroup_err = reset_stat_cgroup();
++		mem_peak_a = cgroup_memory_peak();
++		err = bpf_object__load(obj);
++		mem_peak_b = cgroup_memory_peak();
++		if (!cgroup_err && mem_peak_a >= 0 && mem_peak_b >= 0)
++			mem_peak = mem_peak_b - mem_peak_a;
++	}
+ 	env.progs_processed++;
+ 
+ 	stats->file_name = strdup(base_filename);
+@@ -1341,6 +1568,7 @@ static int process_prog(const char *filename, struct bpf_object *obj, struct bpf
+ 	stats->stats[SIZE] = bpf_program__insn_cnt(prog);
+ 	stats->stats[PROG_TYPE] = bpf_program__type(prog);
+ 	stats->stats[ATTACH_TYPE] = bpf_program__expected_attach_type(prog);
++	stats->stats[MEMORY_PEAK] = mem_peak < 0 ? -1 : mem_peak / (1024 * 1024);
+ 
+ 	memset(&info, 0, info_len);
+ 	fd = bpf_program__fd(prog);
+@@ -1824,6 +2052,7 @@ static int cmp_stat(const struct verif_stats *s1, const struct verif_stats *s2,
+ 	case TOTAL_STATES:
+ 	case PEAK_STATES:
+ 	case MAX_STATES_PER_INSN:
++	case MEMORY_PEAK:
+ 	case MARK_READ_MAX_LEN: {
+ 		long v1 = s1->stats[id];
+ 		long v2 = s2->stats[id];
+@@ -2053,6 +2282,7 @@ static void prepare_value(const struct verif_stats *s, enum stat_id id,
+ 	case STACK:
+ 	case SIZE:
+ 	case JITED_SIZE:
++	case MEMORY_PEAK:
+ 		*val = s ? s->stats[id] : 0;
+ 		break;
+ 	default:
+@@ -2139,6 +2369,7 @@ static int parse_stat_value(const char *str, enum stat_id id, struct verif_stats
+ 	case MARK_READ_MAX_LEN:
+ 	case SIZE:
+ 	case JITED_SIZE:
++	case MEMORY_PEAK:
+ 	case STACK: {
+ 		long val;
+ 		int err, n;
+@@ -2776,7 +3007,7 @@ static void output_prog_stats(void)
+ 
+ static int handle_verif_mode(void)
+ {
+-	int i, err;
++	int i, err = 0;
+ 
+ 	if (env.filename_cnt == 0) {
+ 		fprintf(stderr, "Please provide path to BPF object file!\n\n");
+@@ -2784,11 +3015,12 @@ static int handle_verif_mode(void)
  		return -EINVAL;
--	value_type = kstrndup(value_type, node_field_name - value_type, GFP_KERNEL | __GFP_NOWARN);
-+	value_type = kstrndup(value_type, node_field_name - value_type,
-+			      GFP_KERNEL_ACCOUNT | __GFP_NOWARN);
- 	if (!value_type)
- 		return -ENOMEM;
- 	id = btf_find_by_name_kind(btf, value_type, BTF_KIND_STRUCT);
-@@ -3958,7 +3959,7 @@ struct btf_record *btf_parse_fields(const struct btf *btf, const struct btf_type
- 	/* This needs to be kzalloc to zero out padding and unused fields, see
- 	 * comment in btf_record_equal.
- 	 */
--	rec = kzalloc(struct_size(rec, fields, cnt), GFP_KERNEL | __GFP_NOWARN);
-+	rec = kzalloc(struct_size(rec, fields, cnt), GFP_KERNEL_ACCOUNT | __GFP_NOWARN);
- 	if (!rec)
- 		return ERR_PTR(-ENOMEM);
- 
-@@ -9019,7 +9020,7 @@ static struct bpf_cand_cache *populate_cand_cache(struct bpf_cand_cache *cands,
- 		bpf_free_cands_from_cache(*cc);
- 		*cc = NULL;
- 	}
--	new_cands = kmemdup(cands, sizeof_cands(cands->cnt), GFP_KERNEL);
-+	new_cands = kmemdup(cands, sizeof_cands(cands->cnt), GFP_KERNEL_ACCOUNT);
- 	if (!new_cands) {
- 		bpf_free_cands(cands);
- 		return ERR_PTR(-ENOMEM);
-@@ -9027,7 +9028,7 @@ static struct bpf_cand_cache *populate_cand_cache(struct bpf_cand_cache *cands,
- 	/* strdup the name, since it will stay in cache.
- 	 * the cands->name points to strings in prog's BTF and the prog can be unloaded.
- 	 */
--	new_cands->name = kmemdup_nul(cands->name, cands->name_len, GFP_KERNEL);
-+	new_cands->name = kmemdup_nul(cands->name, cands->name_len, GFP_KERNEL_ACCOUNT);
- 	bpf_free_cands(cands);
- 	if (!new_cands->name) {
- 		kfree(new_cands);
-@@ -9111,7 +9112,7 @@ bpf_core_add_cands(struct bpf_cand_cache *cands, const struct btf *targ_btf,
- 			continue;
- 
- 		/* most of the time there is only one candidate for a given kind+name pair */
--		new_cands = kmalloc(sizeof_cands(cands->cnt + 1), GFP_KERNEL);
-+		new_cands = kmalloc(sizeof_cands(cands->cnt + 1), GFP_KERNEL_ACCOUNT);
- 		if (!new_cands) {
- 			bpf_free_cands(cands);
- 			return ERR_PTR(-ENOMEM);
-@@ -9228,7 +9229,7 @@ int bpf_core_apply(struct bpf_core_ctx *ctx, const struct bpf_core_relo *relo,
- 	/* ~4k of temp memory necessary to convert LLVM spec like "0:1:0:5"
- 	 * into arrays of btf_ids of struct fields and array indices.
- 	 */
--	specs = kcalloc(3, sizeof(*specs), GFP_KERNEL);
-+	specs = kcalloc(3, sizeof(*specs), GFP_KERNEL_ACCOUNT);
- 	if (!specs)
- 		return -ENOMEM;
- 
-@@ -9253,7 +9254,7 @@ int bpf_core_apply(struct bpf_core_ctx *ctx, const struct bpf_core_relo *relo,
- 			goto out;
- 		}
- 		if (cc->cnt) {
--			cands.cands = kcalloc(cc->cnt, sizeof(*cands.cands), GFP_KERNEL);
-+			cands.cands = kcalloc(cc->cnt, sizeof(*cands.cands), GFP_KERNEL_ACCOUNT);
- 			if (!cands.cands) {
- 				err = -ENOMEM;
- 				goto out;
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index c378074516cf..fd81cff11617 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -1404,7 +1404,7 @@ static void *realloc_array(void *arr, size_t old_n, size_t new_n, size_t size)
- 		goto out;
- 
- 	alloc_size = kmalloc_size_roundup(size_mul(new_n, size));
--	new_arr = krealloc(arr, alloc_size, GFP_KERNEL);
-+	new_arr = krealloc(arr, alloc_size, GFP_KERNEL_ACCOUNT);
- 	if (!new_arr) {
- 		kfree(arr);
- 		return NULL;
-@@ -1421,7 +1421,7 @@ static void *realloc_array(void *arr, size_t old_n, size_t new_n, size_t size)
- static int copy_reference_state(struct bpf_verifier_state *dst, const struct bpf_verifier_state *src)
- {
- 	dst->refs = copy_array(dst->refs, src->refs, src->acquired_refs,
--			       sizeof(struct bpf_reference_state), GFP_KERNEL);
-+			       sizeof(struct bpf_reference_state), GFP_KERNEL_ACCOUNT);
- 	if (!dst->refs)
- 		return -ENOMEM;
- 
-@@ -1440,7 +1440,7 @@ static int copy_stack_state(struct bpf_func_state *dst, const struct bpf_func_st
- 	size_t n = src->allocated_stack / BPF_REG_SIZE;
- 
- 	dst->stack = copy_array(dst->stack, src->stack, n, sizeof(struct bpf_stack_state),
--				GFP_KERNEL);
-+				GFP_KERNEL_ACCOUNT);
- 	if (!dst->stack)
- 		return -ENOMEM;
- 
-@@ -1731,7 +1731,7 @@ static int copy_verifier_state(struct bpf_verifier_state *dst_state,
- 
- 	dst_state->jmp_history = copy_array(dst_state->jmp_history, src->jmp_history,
- 					  src->jmp_history_cnt, sizeof(*dst_state->jmp_history),
--					  GFP_USER);
-+					  GFP_KERNEL_ACCOUNT);
- 	if (!dst_state->jmp_history)
- 		return -ENOMEM;
- 	dst_state->jmp_history_cnt = src->jmp_history_cnt;
-@@ -1760,7 +1760,7 @@ static int copy_verifier_state(struct bpf_verifier_state *dst_state,
- 	for (i = 0; i <= src->curframe; i++) {
- 		dst = dst_state->frame[i];
- 		if (!dst) {
--			dst = kzalloc(sizeof(*dst), GFP_KERNEL);
-+			dst = kzalloc(sizeof(*dst), GFP_KERNEL_ACCOUNT);
- 			if (!dst)
- 				return -ENOMEM;
- 			dst_state->frame[i] = dst;
-@@ -1874,7 +1874,7 @@ static struct bpf_scc_visit *scc_visit_alloc(struct bpf_verifier_env *env,
- 	info = env->scc_info[scc];
- 	num_visits = info ? info->num_visits : 0;
- 	new_sz = sizeof(*info) + sizeof(struct bpf_scc_visit) * (num_visits + 1);
--	info = kvrealloc(env->scc_info[scc], new_sz, GFP_KERNEL);
-+	info = kvrealloc(env->scc_info[scc], new_sz, GFP_KERNEL_ACCOUNT);
- 	if (!info)
- 		return NULL;
- 	env->scc_info[scc] = info;
-@@ -2095,7 +2095,7 @@ static struct bpf_verifier_state *push_stack(struct bpf_verifier_env *env,
- 	struct bpf_verifier_stack_elem *elem;
- 	int err;
- 
--	elem = kzalloc(sizeof(struct bpf_verifier_stack_elem), GFP_KERNEL);
-+	elem = kzalloc(sizeof(struct bpf_verifier_stack_elem), GFP_KERNEL_ACCOUNT);
- 	if (!elem)
- 		goto err;
- 
-@@ -2862,7 +2862,7 @@ static struct bpf_verifier_state *push_async_cb(struct bpf_verifier_env *env,
- 	struct bpf_verifier_stack_elem *elem;
- 	struct bpf_func_state *frame;
- 
--	elem = kzalloc(sizeof(struct bpf_verifier_stack_elem), GFP_KERNEL);
-+	elem = kzalloc(sizeof(struct bpf_verifier_stack_elem), GFP_KERNEL_ACCOUNT);
- 	if (!elem)
- 		goto err;
- 
-@@ -2885,7 +2885,7 @@ static struct bpf_verifier_state *push_async_cb(struct bpf_verifier_env *env,
- 	 */
- 	elem->st.branches = 1;
- 	elem->st.in_sleepable = is_sleepable;
--	frame = kzalloc(sizeof(*frame), GFP_KERNEL);
-+	frame = kzalloc(sizeof(*frame), GFP_KERNEL_ACCOUNT);
- 	if (!frame)
- 		goto err;
- 	init_func_state(env, frame,
-@@ -3237,7 +3237,7 @@ static int add_kfunc_call(struct bpf_verifier_env *env, u32 func_id, s16 offset)
- 			return -EINVAL;
- 		}
- 
--		tab = kzalloc(sizeof(*tab), GFP_KERNEL);
-+		tab = kzalloc(sizeof(*tab), GFP_KERNEL_ACCOUNT);
- 		if (!tab)
- 			return -ENOMEM;
- 		prog_aux->kfunc_tab = tab;
-@@ -3253,7 +3253,7 @@ static int add_kfunc_call(struct bpf_verifier_env *env, u32 func_id, s16 offset)
- 		return 0;
- 
- 	if (!btf_tab && offset) {
--		btf_tab = kzalloc(sizeof(*btf_tab), GFP_KERNEL);
-+		btf_tab = kzalloc(sizeof(*btf_tab), GFP_KERNEL_ACCOUNT);
- 		if (!btf_tab)
- 			return -ENOMEM;
- 		prog_aux->kfunc_btf_tab = btf_tab;
-@@ -3939,7 +3939,7 @@ static int push_jmp_history(struct bpf_verifier_env *env, struct bpf_verifier_st
- 
- 	cnt++;
- 	alloc_size = kmalloc_size_roundup(size_mul(cnt, sizeof(*p)));
--	p = krealloc(cur->jmp_history, alloc_size, GFP_USER);
-+	p = krealloc(cur->jmp_history, alloc_size, GFP_KERNEL_ACCOUNT);
- 	if (!p)
- 		return -ENOMEM;
- 	cur->jmp_history = p;
-@@ -10356,7 +10356,7 @@ static int setup_func_entry(struct bpf_verifier_env *env, int subprog, int calls
  	}
  
- 	caller = state->frame[state->curframe];
--	callee = kzalloc(sizeof(*callee), GFP_KERNEL);
-+	callee = kzalloc(sizeof(*callee), GFP_KERNEL_ACCOUNT);
- 	if (!callee)
- 		return -ENOMEM;
- 	state->frame[state->curframe + 1] = callee;
-@@ -17693,17 +17693,18 @@ static int check_cfg(struct bpf_verifier_env *env)
- 	int *insn_stack, *insn_state, *insn_postorder;
- 	int ex_insn_beg, i, ret = 0;
- 
--	insn_state = env->cfg.insn_state = kvcalloc(insn_cnt, sizeof(int), GFP_KERNEL);
-+	insn_state = env->cfg.insn_state = kvcalloc(insn_cnt, sizeof(int), GFP_KERNEL_ACCOUNT);
- 	if (!insn_state)
- 		return -ENOMEM;
- 
--	insn_stack = env->cfg.insn_stack = kvcalloc(insn_cnt, sizeof(int), GFP_KERNEL);
-+	insn_stack = env->cfg.insn_stack = kvcalloc(insn_cnt, sizeof(int), GFP_KERNEL_ACCOUNT);
- 	if (!insn_stack) {
- 		kvfree(insn_state);
- 		return -ENOMEM;
- 	}
- 
--	insn_postorder = env->cfg.insn_postorder = kvcalloc(insn_cnt, sizeof(int), GFP_KERNEL);
-+	insn_postorder = env->cfg.insn_postorder =
-+		kvcalloc(insn_cnt, sizeof(int), GFP_KERNEL_ACCOUNT);
- 	if (!insn_postorder) {
- 		kvfree(insn_state);
- 		kvfree(insn_stack);
-@@ -17837,7 +17838,7 @@ static int check_btf_func_early(struct bpf_verifier_env *env,
- 	urecord = make_bpfptr(attr->func_info, uattr.is_kernel);
- 	min_size = min_t(u32, krec_size, urec_size);
- 
--	krecord = kvcalloc(nfuncs, krec_size, GFP_KERNEL | __GFP_NOWARN);
-+	krecord = kvcalloc(nfuncs, krec_size, GFP_KERNEL_ACCOUNT | __GFP_NOWARN);
- 	if (!krecord)
- 		return -ENOMEM;
- 
-@@ -17937,7 +17938,7 @@ static int check_btf_func(struct bpf_verifier_env *env,
- 	urecord = make_bpfptr(attr->func_info, uattr.is_kernel);
- 
- 	krecord = prog->aux->func_info;
--	info_aux = kcalloc(nfuncs, sizeof(*info_aux), GFP_KERNEL | __GFP_NOWARN);
-+	info_aux = kcalloc(nfuncs, sizeof(*info_aux), GFP_KERNEL_ACCOUNT | __GFP_NOWARN);
- 	if (!info_aux)
- 		return -ENOMEM;
- 
-@@ -18023,7 +18024,7 @@ static int check_btf_line(struct bpf_verifier_env *env,
- 	 * pass in a smaller bpf_line_info object.
- 	 */
- 	linfo = kvcalloc(nr_linfo, sizeof(struct bpf_line_info),
--			 GFP_KERNEL | __GFP_NOWARN);
-+			 GFP_KERNEL_ACCOUNT | __GFP_NOWARN);
- 	if (!linfo)
- 		return -ENOMEM;
- 
-@@ -19408,7 +19409,7 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
- 			if (loop) {
- 				struct bpf_scc_backedge *backedge;
- 
--				backedge = kzalloc(sizeof(*backedge), GFP_KERNEL);
-+				backedge = kzalloc(sizeof(*backedge), GFP_KERNEL_ACCOUNT);
- 				if (!backedge)
- 					return -ENOMEM;
- 				err = copy_verifier_state(&backedge->state, cur);
-@@ -19472,7 +19473,7 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
- 	 * When looping the sl->state.branches will be > 0 and this state
- 	 * will not be considered for equivalence until branches == 0.
- 	 */
--	new_sl = kzalloc(sizeof(struct bpf_verifier_state_list), GFP_KERNEL);
-+	new_sl = kzalloc(sizeof(struct bpf_verifier_state_list), GFP_KERNEL_ACCOUNT);
- 	if (!new_sl)
- 		return -ENOMEM;
- 	env->total_states++;
-@@ -22976,13 +22977,13 @@ static int do_check_common(struct bpf_verifier_env *env, int subprog)
- 	env->prev_linfo = NULL;
- 	env->pass_cnt++;
- 
--	state = kzalloc(sizeof(struct bpf_verifier_state), GFP_KERNEL);
-+	state = kzalloc(sizeof(struct bpf_verifier_state), GFP_KERNEL_ACCOUNT);
- 	if (!state)
- 		return -ENOMEM;
- 	state->curframe = 0;
- 	state->speculative = false;
- 	state->branches = 1;
--	state->frame[0] = kzalloc(sizeof(struct bpf_func_state), GFP_KERNEL);
-+	state->frame[0] = kzalloc(sizeof(struct bpf_func_state), GFP_KERNEL_ACCOUNT);
- 	if (!state->frame[0]) {
- 		kfree(state);
- 		return -ENOMEM;
-@@ -23208,7 +23209,7 @@ static void print_verification_stats(struct bpf_verifier_env *env)
- int bpf_prog_ctx_arg_info_init(struct bpf_prog *prog,
- 			       const struct bpf_ctx_arg_aux *info, u32 cnt)
- {
--	prog->aux->ctx_arg_info = kmemdup_array(info, cnt, sizeof(*info), GFP_KERNEL);
-+	prog->aux->ctx_arg_info = kmemdup_array(info, cnt, sizeof(*info), GFP_KERNEL_ACCOUNT);
- 	prog->aux->ctx_arg_info_size = cnt;
- 
- 	return prog->aux->ctx_arg_info ? 0 : -ENOMEM;
-@@ -24152,7 +24153,7 @@ static int compute_live_registers(struct bpf_verifier_env *env)
- 	 * - repeat the computation while {in,out} fields changes for
- 	 *   any instruction.
- 	 */
--	state = kvcalloc(insn_cnt, sizeof(*state), GFP_KERNEL);
-+	state = kvcalloc(insn_cnt, sizeof(*state), GFP_KERNEL_ACCOUNT);
- 	if (!state) {
- 		err = -ENOMEM;
- 		goto out;
-@@ -24244,10 +24245,10 @@ static int compute_scc(struct bpf_verifier_env *env)
- 	 * - 'low[t] == n' => smallest preorder number of the vertex reachable from 't' is 'n';
- 	 * - 'dfs' DFS traversal stack, used to emulate explicit recursion.
- 	 */
--	stack = kvcalloc(insn_cnt, sizeof(int), GFP_KERNEL);
--	pre = kvcalloc(insn_cnt, sizeof(int), GFP_KERNEL);
--	low = kvcalloc(insn_cnt, sizeof(int), GFP_KERNEL);
--	dfs = kvcalloc(insn_cnt, sizeof(*dfs), GFP_KERNEL);
-+	stack = kvcalloc(insn_cnt, sizeof(int), GFP_KERNEL_ACCOUNT);
-+	pre = kvcalloc(insn_cnt, sizeof(int), GFP_KERNEL_ACCOUNT);
-+	low = kvcalloc(insn_cnt, sizeof(int), GFP_KERNEL_ACCOUNT);
-+	dfs = kvcalloc(insn_cnt, sizeof(*dfs), GFP_KERNEL_ACCOUNT);
- 	if (!stack || !pre || !low || !dfs) {
- 		err = -ENOMEM;
- 		goto exit;
-@@ -24381,7 +24382,7 @@ static int compute_scc(struct bpf_verifier_env *env)
- 			dfs_sz--;
++	create_stat_cgroup();
+ 	for (i = 0; i < env.filename_cnt; i++) {
+ 		err = process_obj(env.filenames[i]);
+ 		if (err) {
+ 			fprintf(stderr, "Failed to process '%s': %d\n", env.filenames[i], err);
+-			return err;
++			goto out;
  		}
  	}
--	env->scc_info = kvcalloc(next_scc_id, sizeof(*env->scc_info), GFP_KERNEL);
-+	env->scc_info = kvcalloc(next_scc_id, sizeof(*env->scc_info), GFP_KERNEL_ACCOUNT);
- 	if (!env->scc_info) {
- 		err = -ENOMEM;
- 		goto exit;
-@@ -24409,7 +24410,7 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
- 	/* 'struct bpf_verifier_env' can be global, but since it's not small,
- 	 * allocate/free it every time bpf_check() is called
- 	 */
--	env = kvzalloc(sizeof(struct bpf_verifier_env), GFP_KERNEL);
-+	env = kvzalloc(sizeof(struct bpf_verifier_env), GFP_KERNEL_ACCOUNT);
- 	if (!env)
- 		return -ENOMEM;
  
-@@ -24472,7 +24473,7 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
+@@ -2796,7 +3028,9 @@ static int handle_verif_mode(void)
  
- 	env->explored_states = kvcalloc(state_htab_size(env),
- 				       sizeof(struct list_head),
--				       GFP_USER);
-+				       GFP_KERNEL_ACCOUNT);
- 	ret = -ENOMEM;
- 	if (!env->explored_states)
- 		goto skip_full_check;
-@@ -24603,7 +24604,7 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
- 		/* if program passed verifier, update used_maps in bpf_prog_info */
- 		env->prog->aux->used_maps = kmalloc_array(env->used_map_cnt,
- 							  sizeof(env->used_maps[0]),
--							  GFP_KERNEL);
-+							  GFP_KERNEL_ACCOUNT);
+ 	output_prog_stats();
  
- 		if (!env->prog->aux->used_maps) {
- 			ret = -ENOMEM;
-@@ -24618,7 +24619,7 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
- 		/* if program passed verifier, update used_btfs in bpf_prog_aux */
- 		env->prog->aux->used_btfs = kmalloc_array(env->used_btf_cnt,
- 							  sizeof(env->used_btfs[0]),
--							  GFP_KERNEL);
-+							  GFP_KERNEL_ACCOUNT);
- 		if (!env->prog->aux->used_btfs) {
- 			ret = -ENOMEM;
- 			goto err_release_maps;
+-	return 0;
++out:
++	destroy_stat_cgroup();
++	return err;
+ }
+ 
+ static int handle_replay_mode(void)
 -- 
 2.47.1
 
