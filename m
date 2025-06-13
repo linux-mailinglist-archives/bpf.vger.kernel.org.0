@@ -1,115 +1,114 @@
-Return-Path: <bpf+bounces-60563-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60564-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23527AD8085
-	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 03:51:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B2C2AD80C6
+	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 04:05:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D146817FB1E
-	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 01:51:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CCF41891363
+	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 02:05:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09BC71DFE0B;
-	Fri, 13 Jun 2025 01:51:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C8C51DF268;
+	Fri, 13 Jun 2025 02:04:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="WbLF8tKE"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RH+W2vxV"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C17592F4317;
-	Fri, 13 Jun 2025 01:51:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13C672F4317
+	for <bpf@vger.kernel.org>; Fri, 13 Jun 2025 02:04:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749779486; cv=none; b=VHuISwreBBL+bT8Wk8pU1+Zeho51ldKKGqYGd3h0Wkkuu4s1/rI424KEmUCMOvpnNvsHJNheja+j8q68C2GF7YMbXwrpdhzaQqEfzCfFauADytq5ix6DvM7HU8duzdryWkJFjdNhkprTqTC/hvkJfaNxtqgt8MdV5TVlEi8x2cc=
+	t=1749780299; cv=none; b=X879MANSh6TeKZZaMMvjk2Xmf/vkKrJZbEpBolZU/dZHvO8kA+ZvTCo9mQuGhhKGvcV3l1sZ9XgFSD1NWXMQeHtpK7McmXGX2RVPNEM0arJ2YiU6YbGRJd/bA+TC0f08e8MICiPB/HPrpuqwZeazMOLLk8fwWwSYNnVum/tWcUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749779486; c=relaxed/simple;
-	bh=ZcmbzzIH8NfdZu2s5rxXHIEvUaPQzWN18XnMuRodkYo=;
-	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To; b=KJkYMdbIMwsGTLM7i/c+Nu0rq0RGrhYqmFPLzXeFTw9DyWP5wt9k/M8gdbmmqYLrmjxG1/gxBlznmW2JZrKuKIL6obEWQKWtyg7YXNTBoniHn+LCR+HItGBv060y/QEwGJincVLKoBpqWP7O+nYXmY1rPGFX7F+bnT5na4MB/fY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=WbLF8tKE; arc=none smtp.client-ip=115.124.30.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1749779475; h=Message-ID:Subject:Date:From:To;
-	bh=yDetjs0aIvL2AA6xb/B29yP5noh604GTkuav4SUpDZ0=;
-	b=WbLF8tKET5waC7Zn6vhD/R1c7T7+n8h6quL13kTU4Eb80ihqCKf1CNWpoX9DGsrqDFlFY7M3PHRPBdiGo6g5L1je6AhARkvnTpVEsOocVJV/Y9VhxE54zvx7JqNBMVb0WV/5obOODdk/a0pGTHYS4TB2roOhe2Jxcljvn4XXVBI=
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0Wdik-bu_1749779474 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Fri, 13 Jun 2025 09:51:15 +0800
-Message-ID: <1749779468.7241242-3-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH net] virtio-net: drop the multi-buffer XDP packet in zerocopy
-Date: Fri, 13 Jun 2025 09:51:08 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: Bui Quang Minh <minhquangbui99@gmail.com>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>,
- Jason Wang <jasowang@redhat.com>,
- =?utf-8?q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- virtualization@lists.linux.dev,
- linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org,
- Bui Quang Minh <minhquangbui99@gmail.com>,
- stable@vger.kernel.org,
- netdev@vger.kernel.org
-References: <20250603150613.83802-1-minhquangbui99@gmail.com>
-In-Reply-To: <20250603150613.83802-1-minhquangbui99@gmail.com>
+	s=arc-20240116; t=1749780299; c=relaxed/simple;
+	bh=b1NwGXziPuiEtzg8q4rgrEA2clxx8KG5yocHGOauRww=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YS68ez3ixfwXhV8X42X8SFtLEgyk3zT6VEctjR/EFLPDSOcbDnHU1UtNA6m8PukxZEFGIu3lDwm4quv+qiOpnQccGEWOTfIp3B8zT8S/FKwi94YKg5eBsYzCLfGrCEt4/7Sp5BkEO4uj/fvWQeQYdgecEs0UZbkFDUNHyd4xAAk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RH+W2vxV; arc=none smtp.client-ip=95.215.58.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <ac5b07b0-97b5-4f51-84bd-343c19a00660@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1749780293;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=haQaEUxie13iosvitaSwvORL082+TwgVbxxuiIyz0D0=;
+	b=RH+W2vxVTs+2gmEBXo4uFSGNTVXouqa87yqnlzH4EuXmhr7Msj//PANRppwNF1AkUtctZa
+	aDuwAQiR5KnCDnB/6SekIiqErJBSDLXS69e15DIIwC83Ifso6lXeD/jksU/7dOC1CUyvnX
+	hFyD5/jraePRBaxfMO72BJN933IgGaE=
+Date: Thu, 12 Jun 2025 19:04:42 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix some incorrect inline asm
+ codes
+Content-Language: en-GB
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>,
+ "Jose E. Marchesi" <jose.marchesi@oracle.com>, bpf <bpf@vger.kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Kernel Team <kernel-team@fb.com>,
+ Martin KaFai Lau <martin.lau@kernel.org>
+References: <20250612171938.2373564-1-yonghong.song@linux.dev>
+ <5341c8c05537d6f9a4d252f5c98ec895ade09430.camel@gmail.com>
+ <CAADnVQKNBps+MvPmHG3BGYtNV34ut6L8cF+wCNWCOLTiauuL0g@mail.gmail.com>
+ <cbc60943-783e-4444-9d46-3a25e71a6e63@linux.dev>
+ <b35717b7c65a0ee8baba9800dbbb2c9e58c62b32.camel@gmail.com>
+ <CAADnVQKrrEFcUdUvagwSkrCLJSoud4Jv0=CM2rX7p5MYKYOC=Q@mail.gmail.com>
+ <9665f3b3-1c8e-4dae-b8df-c3147b119ff2@linux.dev>
+ <CAADnVQL+xOejJySjwuL3X0M_Ysurwcuf5zRJq5K4E9CVMcq8gg@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAADnVQL+xOejJySjwuL3X0M_Ysurwcuf5zRJq5K4E9CVMcq8gg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue,  3 Jun 2025 22:06:13 +0700, Bui Quang Minh <minhquangbui99@gmail.com> wrote:
-> In virtio-net, we have not yet supported multi-buffer XDP packet in
-> zerocopy mode when there is a binding XDP program. However, in that
-> case, when receiving multi-buffer XDP packet, we skip the XDP program
-> and return XDP_PASS. As a result, the packet is passed to normal network
-> stack which is an incorrect behavior. This commit instead returns
-> XDP_DROP in that case.
->
-> Fixes: 99c861b44eb1 ("virtio_net: xsk: rx: support recv merge mode")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
 
-Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 
-> ---
->  drivers/net/virtio_net.c | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
+On 6/12/25 2:42 PM, Alexei Starovoitov wrote:
+> On Thu, Jun 12, 2025 at 2:39 PM Yonghong Song <yonghong.song@linux.dev> wrote:
+>>
+>>
+>> On 6/12/25 2:15 PM, Alexei Starovoitov wrote:
+>>> On Thu, Jun 12, 2025 at 12:49 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
+>>>> On Thu, 2025-06-12 at 12:29 -0700, Yonghong Song wrote:
+>>>>
+>>>> [...]
+>>>>
+>>>>>> Warning in llvm/gcc on imm32 > UINT_MAX is not correct either.
+>>>>>> llvm should probably accept 0xffffFFFFdeadbeef as imm32.
+>>>>> In llvm, the value is represented as an int64, we probably
+>>>>> can just check the upper 32bit must be 0 or 0xffffFFFF.
+>>>>> Otherwise, the value is out of range.
+>>>> I agree with Yonghong, supporting things like 0xffffFFFFdeadbeef and
+>>>> rejecting things like 0x8000FFFFdeadbeef would require changes to the
+>>>> assembly parser to behave differently for literals of length 8 (signe
+>>>> extend them) and >8 (zero extend them), which might be surprising in
+>>>> some other ways.
+>>> Ok. So what's the summary?
+>>> No selftest changes needed and we add a check to llvm
+>>> to warn when upper 32 bits !=0 and != 0xffffFFFF ?
+>> I did a little more checking, I think the value range
+>> in [INT_MIN, UINT_MAX] is what we want. This is also my v1 of
+>> llvm patch.
+> and that's buggy because it will reject 0xffffFFFFdeadbeef
 >
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index e53ba600605a..4c35324d6e5b 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -1309,9 +1309,14 @@ static struct sk_buff *virtnet_receive_xsk_merge(struct net_device *dev, struct
->  	ret = XDP_PASS;
->  	rcu_read_lock();
->  	prog = rcu_dereference(rq->xdp_prog);
-> -	/* TODO: support multi buffer. */
-> -	if (prog && num_buf == 1)
-> -		ret = virtnet_xdp_handler(prog, xdp, dev, xdp_xmit, stats);
-> +	if (prog) {
-> +		/* TODO: support multi buffer. */
-> +		if (num_buf == 1)
-> +			ret = virtnet_xdp_handler(prog, xdp, dev, xdp_xmit,
-> +						  stats);
-> +		else
-> +			ret = XDP_DROP;
-> +	}
->  	rcu_read_unlock();
->
->  	switch (ret) {
-> --
-> 2.43.0
->
+>> Support we have 64bit value, 0xffffFFFF00000001,
+>> truncating the top 32bit, it becomes 1 and this value 1
+>> won't be able to sign extension properly to 0xffffFFFF00000001.
+> well, yeah, 0xfff.. case should match 31-bit, of course.
+
+Right. Just uploaded a new llvm patch for this issue:
+    https://github.com/llvm/llvm-project/pull/142989
+
 
