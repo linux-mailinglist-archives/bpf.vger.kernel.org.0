@@ -1,174 +1,131 @@
-Return-Path: <bpf+bounces-60594-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60595-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00EFEAD8526
-	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 10:01:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EFE8AD8549
+	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 10:12:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A787188E3C3
-	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 07:57:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4301917C257
+	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 08:12:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0C172DA75D;
-	Fri, 13 Jun 2025 07:56:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 398B12571BA;
+	Fri, 13 Jun 2025 08:12:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EkL1+33J"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="if3J+62J"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 238F22DA752;
-	Fri, 13 Jun 2025 07:56:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7B3D2DA777;
+	Fri, 13 Jun 2025 08:11:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749801404; cv=none; b=nL/4dR3CFEMT4BlGagoJOE9+Ig/fuBus5uRx0SLwR3kOBOqdFHM5DZsrWFuNor+tG2SuDj3IHsbh+ZX6iQUlUY4diCbqAULX2eD6EndMjCkrHcHM9Yz0rkUpnidt4YZugblCwvbKQzkL4Ws8bw1Ojkw1mzCeQdXLU4S6zNCFTbU=
+	t=1749802320; cv=none; b=JX2VYV7AwoGindnMHhqBsieTtBfrXelDjwiNURV6jh+NvmUUJ1+3KVE+n57e24hqox5ORQu9ukkfeBcop7QlzGg+59YRv/WLZuQIJkJnrj1jZ+h4wIKUYvtKSOuBz/AwUaEtcRh5vqPgLBmGPQxmPOj2o+WZoBpD7//Y4D34jxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749801404; c=relaxed/simple;
-	bh=cJwIY7LeFlkdqM3q5CBcb7DUXVjGRhCEix/XOSYGtM4=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=nOhEx7FStaRldHETwfmcf8H3MyF4kEq+GT+fZd+gjK/6x0TaeL163AK/oJ0cy6kHez8jca8CP7aQxg1uT1i3SJ1QkcKwA9ffDHcqT0KxjEksfo18n5S3dgXayQv/MV25q7xyjcj99hs+h70qFAnQp2Jx6kQ/ddM1Bly55S1pYMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EkL1+33J; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-236470b2dceso17319225ad.0;
-        Fri, 13 Jun 2025 00:56:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749801402; x=1750406202; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NSwG/HIIRb5Ru+o8dgoFYjJtj1lPDuEQqm8MMK/oXl4=;
-        b=EkL1+33JRmbfKwJ+JmB4XYCkJI4pNunsu33RVQDKbL8q5Wb1squRZnCMUpRjZ5i0pz
-         Qfph2tBRW7s0jhYjXgi0jCNwHKlc3bbCPiYFuW/azbXcdX01JezlSOWNRfXVWpHFzHMS
-         kuAhicwe/f/lbc25M/eWM8LG+TOLWuDQX041492hl66BhsGlA9xeSMWyPDaj2d/rWnZw
-         HXsJccV6IqrhZkrlLdENnxPjh/GpO1LQsOGuDhnlz6HgLxVD4pJFfr0y7OjnwYfGAJnc
-         n1LWFDuaJTOohn27V5lXuMbih/61eibzjYz2R2a0KuqsxxHAxd4ibrbeISgJhqRAgYQo
-         0zdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749801402; x=1750406202;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=NSwG/HIIRb5Ru+o8dgoFYjJtj1lPDuEQqm8MMK/oXl4=;
-        b=U7oG54xFvZrWG7l5hIfItJJE+lmuDFcCvgeAAfhkNTo0CRFY2wShcIMAvCsI2Q1Cg9
-         VJDzS1a/e/kjb7fDDUeeCI6CwkeBXLzerh/bztdeezCewOZ+F4EezSbIIgwBUxVcP7wC
-         pU/4iCq3Y/jEPPReTrWjwzuXHMINNsU8oHcHY8NkFOUleXH+s+xoxiZIRPBtWS7UszUC
-         Y3bNOxzlduCqx4b9b0n6nQQj0uS1sxXx4lHfdthCq6b7TxL8hJEz9NHvg9QqybNISttN
-         24yr+mLQpPwq4NJc1ct030Likv+sW5no7VBYnJ54Gr49chovnCYs6mJrOZbQQ+/EH4S6
-         SrPg==
-X-Forwarded-Encrypted: i=1; AJvYcCU1GsEriLWxSkqdcF2WiqCk7rCBtx6mWPD5UnErBZ6fJIDzThvm7jUWf2x2UtPCUVlXOxGlbN1Q@vger.kernel.org, AJvYcCWtZK/EtDRHdQtwbfubSLsUNIEvqd0Okj1VB4ZN0cgFoD2AxPumBOzBsP7w2I8V5zuGxYDZ9WfUhWxebZa7@vger.kernel.org, AJvYcCXOSVMjrazvHZLFjydTqkcZP0Zzs/TQQJbu3vejUULs4c+w9w7zhTmfYpW6Q+mefzQfZqc=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy8jViKUY5ZzKDGxndXQa8gYSvxCyWddcsyAfrGFaJAmOmXR7+Q
-	ldHS6s7d7l2eplFVFpppjxguqs12/Dnj6k9tTXuV7A4RnFnXem7ykC6k
-X-Gm-Gg: ASbGncupbnCMdrbUaMAB6Sv0Nig9NrIx1O+6jODWAeiSJ04iSCOKS2d3lvfVWGGLwq7
-	HRACmgQro6ZObBB7NCzTbwv2km+CN0mpf93Nu71vn5euIoUWVhoYpO0UytSrZSfZozIgtQKcAXe
-	iR9htT1w/NjQR+OAuP0cYUxHLqZXwkmlz5WgIJeRgP3v1aT6HLsPdEKAn8qLOLnNcnopVYKLNDU
-	qWQRI/MC3iqwYpc8rDr9J1QHhFqOErdeiv5Ka4+rvfhEZvB3lu8nc5RWuFcQHJe6w/eU8T/1rJ2
-	x0lvBBbjH3n0v/mswC5GIpLNU2vYMEGi2tDwORLXQ7N2SZ/DiVDy4nyFYQk=
-X-Google-Smtp-Source: AGHT+IHEyrz/ILDe7jbPjp6tJmahDSX4yonGX0uC2t43TAZnuhuFxHsNqcfzDcBA7S2p5LMYscMdKg==
-X-Received: by 2002:a17:902:c94a:b0:234:ef42:5d65 with SMTP id d9443c01a7336-2365dd4028bmr30650795ad.52.1749801402274;
-        Fri, 13 Jun 2025 00:56:42 -0700 (PDT)
-Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2365d88be1fsm8920275ad.8.2025.06.13.00.56.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Jun 2025 00:56:41 -0700 (PDT)
-Message-ID: <3c89e1105e611812ae86fb6aafd346be4445e055.camel@gmail.com>
-Subject: Re: [syzbot] [bpf?] WARNING in do_check
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: syzbot <syzbot+a36aac327960ff474804@syzkaller.appspotmail.com>, 
-	andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- daniel@iogearbox.net, 	haoluo@google.com, john.fastabend@gmail.com,
- jolsa@kernel.org, kpsingh@kernel.org, 	linux-kernel@vger.kernel.org,
- martin.lau@linux.dev, netdev@vger.kernel.org, 	sdf@fomichev.me,
- song@kernel.org, syzkaller-bugs@googlegroups.com, 	yonghong.song@linux.dev
-Date: Fri, 13 Jun 2025 00:56:39 -0700
-In-Reply-To: <684bcf65.050a0220.be214.029b.GAE@google.com>
-References: <684bcf65.050a0220.be214.029b.GAE@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	s=arc-20240116; t=1749802320; c=relaxed/simple;
+	bh=m4XILQdlyhOEuGIrG8GkhmJQpyqVphUns6R2oeWJu9E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ux6WqrkPPHvp26IPjrQaFQ4NOXfK0tiIsjn9KlZvNeDTIgFgfNwLN/EfZK9EPzDTvT5hkpaiqIBLJIf2viGfWIlx9+rqO+rn8oA/Tsijfq24Hfiw6BivycEgHjsP+sC/S6XqQb/hnfdhZNYYPZED0fodTfXTdZoYvwVecLsZy0A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=if3J+62J; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=m4XILQdlyhOEuGIrG8GkhmJQpyqVphUns6R2oeWJu9E=; b=if3J+62JkNzeEHqPi1mxH/620g
+	qbcmwRd9/sN2gu7fYdEieQ472dRs1NUjlLOrPe+LrNMaNOybKB9RJ5nrnr7JUciLzvr8yWDn5WPhd
+	rjx68mKpzXFARN/1pSa0P3Hjh/ruZo3UBs7yEl6mKcKGqmuiQwA+oehZrJYblS8IHty47WnzTfpUQ
+	aK6G7NQv89PMHFtnryrKWiKXkm0miAEO4njn+KucKk4gQdMqrpJ2Pgx/b6N0NaugMg1RZpmwXvhR3
+	WKMgULs4MBp5Rbde8GCQaNGQJSHdTMEtTXgvNN8I6oW0AsGX1eM4FtI1HAHXX1V39luP1oOz+HxZO
+	dQwXzi/g==;
+Received: from 2001-1c00-8d82-d000-266e-96ff-fe07-7dcc.cable.dynamic.v6.ziggo.nl ([2001:1c00:8d82:d000:266e:96ff:fe07:7dcc] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uPzVw-00000002v6a-2GjE;
+	Fri, 13 Jun 2025 08:11:52 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id DDD5E30BC59; Fri, 13 Jun 2025 10:11:50 +0200 (CEST)
+Date: Fri, 13 Jun 2025 10:11:50 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Alexis =?iso-8859-1?Q?Lothor=E9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Menglong Dong <imagedong@tencent.com>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+	Pu Lehui <pulehui@huawei.com>, Puranjay Mohan <puranjay@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+	Ilya Leoshkevich <iii@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Hari Bathini <hbathini@linux.ibm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Naveen N Rao <naveen@kernel.org>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	ebpf@linuxfoundation.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Bastien Curutchet <bastien.curutchet@bootlin.com>,
+	netdev@vger.kernel.org, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-kselftest@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH bpf 2/7] bpf/x86: prevent trampoline attachment when args
+ location on stack is uncertain
+Message-ID: <20250613081150.GJ2273038@noisy.programming.kicks-ass.net>
+References: <20250613-deny_trampoline_structs_on_stack-v1-0-5be9211768c3@bootlin.com>
+ <20250613-deny_trampoline_structs_on_stack-v1-2-5be9211768c3@bootlin.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250613-deny_trampoline_structs_on_stack-v1-2-5be9211768c3@bootlin.com>
 
-On Fri, 2025-06-13 at 00:12 -0700, syzbot wrote:
-> Hello,
->=20
-> syzbot found the following issue on:
->=20
-> HEAD commit:    1c66f4a3612c bpf: Fix state use-after-free on push_stack(=
-)..
-> git tree:       bpf-next
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D1346ed7058000=
-0
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D73696606574e3=
-967
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3Da36aac327960ff4=
-74804
-> compiler:       Debian clang version 20.1.6 (++20250514063057+1e4d39e0775=
-7-1~exp1~20250514183223.118), Debian LLD 20.1.6
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1392610c580=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D11a9ee0c58000=
-0
->=20
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/2ddb1df1c757/dis=
-k-1c66f4a3.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/6a318fc92af0/vmlinu=
-x-1c66f4a3.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/76c58dddcb6c/b=
-zImage-1c66f4a3.xz
->=20
-> IMPORTANT: if you fix the issue, please add the following tag to the comm=
-it:
-> Reported-by: syzbot+a36aac327960ff474804@syzkaller.appspotmail.com
->=20
-> ------------[ cut here ]------------
+On Fri, Jun 13, 2025 at 09:37:11AM +0200, Alexis Lothoré (eBPF Foundation) wrote:
+> When the target function receives more arguments than available
+> registers, the additional arguments are passed on stack, and so the
+> generated trampoline needs to read those to prepare the bpf context,
+> but also to prepare the target function stack when it is in charge of
+> calling it. This works well for scalar types, but if the value is a
+> struct, we can not know for sure the exact struct location, as it may
+> have been packed or manually aligned to a greater value.
 
-Fwiw, here is a repro converted to selftest.
-I'll take detailed look on Friday:
+https://refspecs.linuxbase.org/elf/x86_64-abi-0.99.pdf
 
-SEC("socket")
-__naked void syzbot_repro(void)
-{
-        asm volatile (
-        "r8 =3D 0xff80;"
-        "r1 =3D 0xff110001085a0800 ll;"
-        "r2 =3D 20;"
-        "r3 =3D 0;"
-        "call %[bpf_ktime_get_ns];"
-"1:"
-        "w9 =3D w10;"
-        "if r9 >=3D 0xff4ad400 goto 2f;"
-        "may_goto +13;"
-        "r2 =3D 0;"
-        "*(u8 *)(r10 -16) =3D r9;"
-"2:"
-        "if r9 s< 0x1004 goto 3f;"
-        "lock *(u32 *)(r10 -16) +=3D r10;"
-        "r6 =3D r8;"
-        "r8 +=3D -8;"
-        "r4 =3D r10;"
-"3:"
-        "r6 +=3D -16;"
-        "r2 =3D 8;"
-        "r2 =3D 0xff110001085a05d8 ll;"
-        "r5 =3D 8;"
-        "if w8 & 0x76 goto 1b;"
-        "r8 =3D r9;"
-        "if w8 !=3D 0x0 goto +0;"
-        "call %[bpf_get_prandom_u32];"
-        "r0 =3D 0;"
-        "exit;"
-        :
-        : __imm(bpf_get_prandom_u32),
-          __imm(bpf_ktime_get_ns)
-        : __clobber_all);
-}
+Has fairly clear rules on how arguments are encoded. Broadly speaking
+for the kernel, if the structure exceeds 2 registers in size, it is
+passed as a reference, otherwise it is passed as two registers.
 
-[...]
+
 
