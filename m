@@ -1,109 +1,180 @@
-Return-Path: <bpf+bounces-60606-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60607-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 780AEAD909F
-	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 17:02:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50E59AD915F
+	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 17:35:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDA981E2A43
-	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 15:02:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB78E3AAFBC
+	for <lists+bpf@lfdr.de>; Fri, 13 Jun 2025 15:34:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 457AA1E1E16;
-	Fri, 13 Jun 2025 15:02:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XbVKHHcY"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E027E1EF0BE;
+	Fri, 13 Jun 2025 15:35:02 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from 66-220-144-178.mail-mxout.facebook.com (66-220-144-178.mail-mxout.facebook.com [66.220.144.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94E731AA1DA;
-	Fri, 13 Jun 2025 15:02:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C6591EB19B
+	for <bpf@vger.kernel.org>; Fri, 13 Jun 2025 15:34:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.144.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749826924; cv=none; b=pbAcJdrzAx+kcsq3iHoQ0VmVG0Bxe144uIraH9wqCbSEG9HSstibU/9FxTbscpC9SVlV1MrXj+tt2aTXStaFyrsyKcyFT0Vpi5grI7OhUZKLV9kLdTS1S7K481fid8SY4xbUf+fBd80sPCRGAgtX9Yc8BQNPGJGKSKpcpoJY+sc=
+	t=1749828902; cv=none; b=gGlyh8R73G7LbohG4e7EDG5VecU81BET0RZILRKya0U3loDh5Bgw9flN6iKlUJx2vwEngwXwaCtB6ofGGlZpLKTTdzI+tgi6ifVwfsK5MxoHifD1QOudWaAp8N8lc81mvKWA7Iv0HhkJweeSbuUN3La3UTNEwMKyqXj40xnfjjc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749826924; c=relaxed/simple;
-	bh=lob9a/rX2zwMnk7MdQZvnP3dVbVbnvB5IIsgo3k2oTU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=g/tb4BLALc6umXuCH/eTMWZZQ+OvYQEiC4oSTsKh7gjBvvyiOd27owlvHLumvTzGYdZo0M4Nk4wym8Eo9DXgCbnPJa2CMKAO9fLLUJL3lSRowXZYvBuTO6KdOLSUQzsmcbQPwgXjSb7afovoPMW+CRjmS2c5kUvET9FZB3rpcJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XbVKHHcY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46D49C4CEF1;
-	Fri, 13 Jun 2025 15:02:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749826924;
-	bh=lob9a/rX2zwMnk7MdQZvnP3dVbVbnvB5IIsgo3k2oTU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=XbVKHHcYbWjQFPgfcHDfQUknwEZ2cdrEVDoTGz4IxmKoPUuVL8hcGiX3j881sSXXL
-	 6pBmArM20WrE8BPW5goFMp9o0PjDO49LbuWKjfSih/Lc52+/DzCdrn9ve7PiXBKfUX
-	 ipWpDsx5S5O566AJx+R7tq7NB7mgX/5B3mfVh0REc0uPkyWkgfPy0IATiOFW8Rvdyb
-	 FgiMLbQ+27rnCljyzryF2VwJ47J5RxezB820m7qt9uffyrz3jp6MnTQ94s+5QdSWK6
-	 8rOlQ9o7XHXe87mOoESjMr9z/fDxNOrgZJKY1ckS5CYpoDAf6+/xHQ6OnSaYddsryk
-	 BXEVCncYa7SMg==
-Date: Fri, 13 Jun 2025 08:02:02 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: sashal@kernel.org
-Cc: Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>, Breno
- Leitao <leitao@debian.org>, "David S. Miller" <davem@davemloft.net>, Jesper
- Dangaard Brouer <hawk@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Leon
- Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn
- <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Simon
- Horman <horms@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Mina
- Almasry <almasrymina@google.com>, Yonglong Liu <liuyonglong@huawei.com>,
- Yunsheng Lin <linyunsheng@huawei.com>, Pavel Begunkov
- <asml.silence@gmail.com>, Matthew Wilcox <willy@infradead.org>,
- netdev@vger.kernel.org, bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-mm@kvack.org, Qiuling Ren <qren@redhat.com>, Yuying Ma
- <yuma@redhat.com>, gregkh@linuxfoundation.org, stable@vger.kernel.org
-Subject: Re: [PATCH net-next v9 2/2] page_pool: Track DMA-mapped pages and
- unmap them when destroying the pool
-Message-ID: <20250613080202.28d25763@kernel.org>
-In-Reply-To: <87zfecrq3d.fsf@toke.dk>
-References: <20250409-page-pool-track-dma-v9-0-6a9ef2e0cba8@redhat.com>
-	<20250409-page-pool-track-dma-v9-2-6a9ef2e0cba8@redhat.com>
-	<aEmwYU/V/9/Ul04P@gmail.com>
-	<20250611131241.6ff7cf5d@kernel.org>
-	<87jz5hbevp.fsf@toke.dk>
-	<20250612070518.69518466@kernel.org>
-	<87zfecrq3d.fsf@toke.dk>
+	s=arc-20240116; t=1749828902; c=relaxed/simple;
+	bh=MQQkrIGq1vPghKvYALORsJ3AChXO74YD8tN/jlfb9vE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GjB+6I8+1XCh3D8jmePkPDyVZJn6/ClVKjhjhgtDxAYoM+aanKvQ7hAh0bsefTbdvLKwyZbOGP6WPBoyESSaUq1YnQxvX6wk/59HNrCXuqBxg8VojDAiD7+u8X5zFlAeZGpMU2ZqFPvFwHmkjWM+Aqx2uunueCAV3rAm7Vl78lY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.144.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devvm16039.vll0.facebook.com (Postfix, from userid 128203)
+	id DF299989C596; Fri, 13 Jun 2025 08:34:46 -0700 (PDT)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next] selftests/bpf: Fix usdt multispec failure with arm64/clang20 selftest build
+Date: Fri, 13 Jun 2025 08:34:46 -0700
+Message-ID: <20250613153446.2256725-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 13 Jun 2025 10:41:10 +0200 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> Jakub Kicinski <kuba@kernel.org> writes:
->=20
-> > On Thu, 12 Jun 2025 09:25:30 +0200 Toke H=C3=B8iland-J=C3=B8rgensen wro=
-te: =20
-> >> Hmm, okay, guess we should ask Sasha to drop these, then?
-> >>=20
-> >> https://lore.kernel.org/r/20250610122811.1567780-1-sashal@kernel.org
-> >> https://lore.kernel.org/r/20250610120306.1543986-1-sashal@kernel.org =
+When building the selftest with arm64/clang20, the following test failed:
+  ...
+  ubtest_multispec_usdt:PASS:usdt_100_called 0 nsec
+  subtest_multispec_usdt:PASS:usdt_100_sum 0 nsec
+  subtest_multispec_usdt:FAIL:usdt_300_bad_attach unexpected pointer: 0xa=
+aaad82a2a80
+  #469/2   usdt/multispec:FAIL
+  #469     usdt:FAIL
+
+But gcc11 built kernel/selftests succeeded. Further debug found clang gen=
+erated
+code has much less argument pattern after dedup, but gcc generated code h=
+as
+a lot more.
+
+Below is the test:usdt_100 stapsdt's with clang20 generated binary:
+
+  $ readelf -n usdt.test.o
+  Displaying notes found in: .note.stapsdt
+  Owner                Data size        Description
+  stapsdt              0x0000002e       NT_STAPSDT (SystemTap probe descr=
+iptors)
+    Provider: test
+    Name: usdt_100
+    Location: 0x0000000000000024, Base: 0x0000000000000000, Semaphore: 0x=
+0000000000000006
+    Arguments: -4@[x9]
+  stapsdt              0x0000002e       NT_STAPSDT (SystemTap probe descr=
+iptors)
+    Provider: test
+    Name: usdt_100
+    Location: 0x000000000000003c, Base: 0x0000000000000000, Semaphore: 0x=
+0000000000000006
+    Arguments: -4@[x9]
+  ...
+    stapsdt              0x0000002e       NT_STAPSDT (SystemTap probe des=
+criptors)
+    Provider: test
+    Name: usdt_100
+    Location: 0x0000000000000954, Base: 0x0000000000000000, Semaphore: 0x=
+0000000000000006
+    Arguments: -4@[x9]
+  stapsdt              0x0000002e       NT_STAPSDT (SystemTap probe descr=
+iptors)
+    Provider: test
+    Name: usdt_100
+    Location: 0x000000000000096c, Base: 0x0000000000000000, Semaphore: 0x=
+0000000000000006
+    Arguments: -4@[x8]
+
+Below is the test:usdt_100 stapsdt's with gcc11 generated binary:
+
+  $ readelf -n usdt.test.o
+  Displaying notes found in: .note.stapsdt
+  Owner                Data size        Description
+  ...
+  stapsdt              0x0000002e       NT_STAPSDT (SystemTap probe descr=
+iptors)
+    Provider: test
+    Name: usdt_100
+    Location: 0x000000000000470c, Base: 0x0000000000000000, Semaphore: 0x=
+0000000000000006
+    Arguments: -4@[sp]
+  stapsdt              0x00000031       NT_STAPSDT (SystemTap probe descr=
+iptors)
+    Provider: test
+    Name: usdt_100
+    Location: 0x0000000000004724, Base: 0x0000000000000000, Semaphore: 0x=
+0000000000000006
+    Arguments: -4@[sp, 4]
+  ...
+  stapsdt              0x00000033       NT_STAPSDT (SystemTap probe descr=
+iptors)
+    Provider: test
+    Name: usdt_100
+    Location: 0x000000000000503c, Base: 0x0000000000000000, Semaphore: 0x=
+0000000000000006
+    Arguments: -4@[sp, 392]
+  stapsdt              0x00000033       NT_STAPSDT (SystemTap probe descr=
+iptors)
+    Provider: test
+    Name: usdt_100
+    Location: 0x0000000000005054, Base: 0x0000000000000000, Semaphore: 0x=
+0000000000000006
+    Arguments: -4@[sp, 396]
+
+Considering libbpf dedup of usdt spec's, the clang generated code has 3 s=
+pec's, and
+gcc has 100 spec's. Due to this, bpf_program__attach_usdt() failed with g=
+cc but succeeded
+with clang. To fix the test failure for clang generated code, make bpf_pr=
+ogram__attach_usdt()
+succeed with necessary macro guards.
+
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+---
+ tools/testing/selftests/bpf/prog_tests/usdt.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/usdt.c b/tools/testin=
+g/selftests/bpf/prog_tests/usdt.c
+index 495d66414b57..7429029cbd63 100644
+--- a/tools/testing/selftests/bpf/prog_tests/usdt.c
++++ b/tools/testing/selftests/bpf/prog_tests/usdt.c
+@@ -272,12 +272,19 @@ static void subtest_multispec_usdt(void)
 =20
-> >
-> > These links don't work for me? =20
->=20
-> Oh, sorry, didn't realise the stable notifications are not archived on
-> lore. Here are the patches in the stable queue:
->=20
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git/t=
-ree/queue-6.12/page_pool-move-pp_magic-check-into-helper-functions.patch
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git/t=
-ree/queue-6.12/page_pool-track-dma-mapped-pages-and-unmap-them-when.patch
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git/t=
-ree/queue-6.15/page_pool-move-pp_magic-check-into-helper-functions.patch
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git/t=
-ree/queue-6.15/page_pool-track-dma-mapped-pages-and-unmap-them-when.patch
+ 	/* we'll reuse usdt_100 BPF program for usdt_300 test */
+ 	bpf_link__destroy(skel->links.usdt_100);
++
+ 	skel->links.usdt_100 =3D bpf_program__attach_usdt(skel->progs.usdt_100,=
+ -1, "/proc/self/exe",
+ 							"test", "usdt_300", NULL);
++#if __clang__ && defined(__aarch64__)
++	if (!ASSERT_OK_PTR(skel->links.usdt_100, "usdt_300_bad_attach"))
++		goto cleanup;
++	bpf_link__destroy(skel->links.usdt_100);
++#else
+ 	err =3D -errno;
+ 	if (!ASSERT_ERR_PTR(skel->links.usdt_100, "usdt_300_bad_attach"))
+ 		goto cleanup;
+ 	ASSERT_EQ(err, -E2BIG, "usdt_300_attach_err");
++#endif
+=20
+ 	/* let's check that there are no "dangling" BPF programs attached due
+ 	 * to partial success of the above test:usdt_300 attachment
+--=20
+2.47.1
 
-Thanks!
-
-Sasha, could we drop these please? They need more mileage before we
-send them to LTS.
 
