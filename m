@@ -1,129 +1,281 @@
-Return-Path: <bpf+bounces-60666-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60667-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B01DAD9E88
-	for <lists+bpf@lfdr.de>; Sat, 14 Jun 2025 19:33:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48161AD9F0B
+	for <lists+bpf@lfdr.de>; Sat, 14 Jun 2025 20:36:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6FBE81893B39
-	for <lists+bpf@lfdr.de>; Sat, 14 Jun 2025 17:33:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F197175387
+	for <lists+bpf@lfdr.de>; Sat, 14 Jun 2025 18:36:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05FD32E610A;
-	Sat, 14 Jun 2025 17:33:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 680292E62D3;
+	Sat, 14 Jun 2025 18:36:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="du/NcX7b"
+	dkim=pass (2048-bit key) header.d=maowtm.org header.i=@maowtm.org header.b="FnP5KKZg";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="AAnyZL0n"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+Received: from flow-a2-smtp.messagingengine.com (flow-a2-smtp.messagingengine.com [103.168.172.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F0C51C6FF3;
-	Sat, 14 Jun 2025 17:33:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F59C30100;
+	Sat, 14 Jun 2025 18:36:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.137
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749922400; cv=none; b=pnjsnBaphJzExbtA3HEPMtojCVpbuNpG3cgLtl9N8lMGQ7DQkufrlkdhCeNS2u1mxOUEvIO1gJjdHLLh9Ue2mopGVPfHSjDrRvMJemH4SoCI7siNDLIZ1BRJDaiWS5IcA9Twb7uEEkj2ka9jGj9Kqa5Ht6Kyo/Cikgig5HlmGHY=
+	t=1749926182; cv=none; b=hVQMnQsX2MFjgusgK+bjexSBGdiqDxzXIePUNYgT5EYptwtrdMuteZ1OqGQYdDrdGOklZZpICwysEUQ0Bd+Es4UDw+i2TSWFrhijn2IGas2Y3HGw/7pQnZb/rHIvhW0pHsWq+3SWfUTrkp+nBz6LGLqvt2ALeD5sEgTJ6tVPXsI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749922400; c=relaxed/simple;
-	bh=sYzhyuOMJlxaNLvwtjvQFPSqgL1EZJfEM0k8Hyk2zmE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HL4pN8WQ067L7Q0vF+74LoVPkb1U8NAetSoPPB2NzkNrWe1vE+ax25n8WsenkFfmJIkL3R15D4Ywv/KYkg3fX2mvRzQ+BPIyGAz/mDmEqeznN+xc1GYBaMRgPqF+4WTf6lwDS4TzUR+rudAUTaNq6Z8Mrdx9a3+v2G2mbQRDPRI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=du/NcX7b; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1749922399; x=1781458399;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=sYzhyuOMJlxaNLvwtjvQFPSqgL1EZJfEM0k8Hyk2zmE=;
-  b=du/NcX7bkNCz0oZ88U/JQ1x8ykVt0wktUtoNKlqz0PmRahCnToC7jXog
-   TNc+nctyKq3CJBqvPyjgRygDmbQegbiCDCcsRhJofNWrwA9Kz1K11zh+F
-   Iw9Ej1gwBcFrpCKQCQX97aewktbArK8GNLZ2/T4jtdnLE8nIYR0VnuqjJ
-   n5SdHcS9WS1M/I0OfV6jX+CoG83N45+vBpBtcW40Tu2Z02/qOnm0zKZwB
-   IbspEFcpM9mirUrwJeHxp2ReLeJBsrE0Gn65ytOka3jubU7XI3oUjBQXL
-   qjart1mEqd3SW9apSUftGci6vxAqN4FNKovbP4IwtUbt8RfYUtrNiXEER
-   g==;
-X-CSE-ConnectionGUID: JnxcsrzgS3W9XcsCqpRKBg==
-X-CSE-MsgGUID: +eLu2qJsSEO155J5jDAMMA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11464"; a="77510505"
-X-IronPort-AV: E=Sophos;i="6.16,237,1744095600"; 
-   d="scan'208";a="77510505"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2025 10:33:18 -0700
-X-CSE-ConnectionGUID: nRDaa7ccShCXOkP3q+4CNw==
-X-CSE-MsgGUID: nIM2ZCBoSemDGezcKbJKPg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,237,1744095600"; 
-   d="scan'208";a="147953425"
-Received: from lkp-server01.sh.intel.com (HELO e8142ee1dce2) ([10.239.97.150])
-  by fmviesa006.fm.intel.com with ESMTP; 14 Jun 2025 10:33:12 -0700
-Received: from kbuild by e8142ee1dce2 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uQUkg-000Dj2-1v;
-	Sat, 14 Jun 2025 17:33:10 +0000
-Date: Sun, 15 Jun 2025 01:32:53 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kuniyuki Iwashima <kuni1840@gmail.com>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev, Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>,
-	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-	=?iso-8859-1?Q?G=FCnther?= Noack <gnoack@google.com>,
-	Stephen Smalley <stephen.smalley.work@gmail.com>,
-	Ondrej Mosnacek <omosnace@redhat.com>,
-	Casey Schaufler <casey@schaufler-ca.com>,
-	Kuniyuki Iwashima <kuniyu@google.com>, bpf@vger.kernel.org,
-	linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH v2 bpf-next 1/4] af_unix: Don't pass struct socket to
- security_unix_may_send().
-Message-ID: <202506150111.BYSccpdo-lkp@intel.com>
-References: <20250613222411.1216170-2-kuni1840@gmail.com>
+	s=arc-20240116; t=1749926182; c=relaxed/simple;
+	bh=3dzdX4kZV66YVSeT4KnMyTAL6dUXfb3O9U7JJ4FkODI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JQwqo+xZROm6Dz2mS8YawzGB9UHo996fcpAULQKaPide5MLUokaIlWeljx/AUOqOZ8+0qzvFztHeXcfrZnffYq/Uw5jiqG5u/6WSHafnxsJS/OomMcvguU4OLyaEbgi24xBi4E3c3vojc3/GPd4DUQa5yNoaof8fboXxSALgMFk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=maowtm.org; spf=pass smtp.mailfrom=maowtm.org; dkim=pass (2048-bit key) header.d=maowtm.org header.i=@maowtm.org header.b=FnP5KKZg; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=AAnyZL0n; arc=none smtp.client-ip=103.168.172.137
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=maowtm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=maowtm.org
+Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
+	by mailflow.phl.internal (Postfix) with ESMTP id A3A5F2003C8;
+	Sat, 14 Jun 2025 14:36:19 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-01.internal (MEProxy); Sat, 14 Jun 2025 14:36:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maowtm.org; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1749926179;
+	 x=1749933379; bh=/gO+W1y6nHMFbF2yimL+ciEfWt1+14MU/pwHIvdjUTo=; b=
+	FnP5KKZgNUO6leHMMDdBy5FsnNZ0mI2GJbe6suSh8QUGaJgPVt8kAxIUvRBMDQaU
+	6NAIB46tv9axMeSbGSZV4xXzjrG1YNqbEqa2rcewXhK40QbXNrr1v348X1U4IA+S
+	Vr8w2N595iO8zB6lQJLRo2gW/a73Ei/U7AeJmApTT5/Zm243XGvqTV4vP0A6QhjC
+	m4vcWHRCugp9JUnouEcDfQMEB9HzUWjtHZOzwj7Di3IwjP7C/EEDVntcvXMhNWEi
+	273qzJ4OXi0sEhL3tpWGsowriLljF9eCKZxqNIhawspA+9kIom9Qqid9H0tB0i5U
+	CdxasjgRXpGz0RsnwEfFfQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1749926179; x=
+	1749933379; bh=/gO+W1y6nHMFbF2yimL+ciEfWt1+14MU/pwHIvdjUTo=; b=A
+	AnyZL0n1w+zeXR3mJrlqmLGJMNrDi7nNsjfJmh20Fz6jrgSo+J9pF63dJyG50ArR
+	ebfQp7L0rFkKVcV1duOywEog8RywIWqMQ6GuuetvNR5KZ/sP7359M1RkJ33o5Ss5
+	ZQmxH7rhdFH54YuF9Qzkv1ZXbIO4+cQ7Ed0kU9Az5jL+hDPBkPaxvzLeyCcFgX0F
+	UppWtrmyVjGzH9hPDNGFVupU5r58DUX3kHBi8OgWTmprGDRZrwBdhzMyDH4k/l5G
+	TdMfOVrsFf+bm5LeCMlKOuOp1TC3lfi9e6xpOkF1eznmflU8c/eeLXBbAEY2859A
+	p9hfJEXRhLwuHxEIzlHQw==
+X-ME-Sender: <xms:IsFNaDeD_Gi8NTqZZoLTfGIl8E-UInpCPgU5zj_jj_xoYikxdsTEBg>
+    <xme:IsFNaJNkEYJKFSRHeRwJ9QHgdZr54AQTyiCMenNPdL1YlF6pZyMKu8_zhTyRSQ2Mf
+    Hao6TFr-j6cZvJ_QPI>
+X-ME-Received: <xmr:IsFNaMg8qCp_49ecAFGvkePn9VQ78V8EU1DzRNld7ENDLt_MP6QhAQ_BivbZqmCn9sb0VfeOZ6xOd0wlRgGFFSU6>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddugddvudehiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenucfjughrpefkffggfgfuvfevfhfhjggtgfesthejredttddv
+    jeenucfhrhhomhepvfhinhhgmhgrohcuhggrnhhguceomhesmhgrohifthhmrdhorhhgqe
+    enucggtffrrghtthgvrhhnpeefvdehleeutdfhlefgvedvgfeklefgleekgedtvdehvdfg
+    tdefieelhfdutefgudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehmsehmrghofihtmhdrohhrghdpnhgspghrtghpthhtohepvdefpdhmohgu
+    vgepshhmthhpohhuthdprhgtphhtthhopehsohhngheskhgvrhhnvghlrdhorhhgpdhrtg
+    hpthhtohepsghpfhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhn
+    uhigqdhfshguvghvvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplh
+    hinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohep
+    lhhinhhugidqshgvtghurhhithihqdhmohguuhhlvgesvhhgvghrrdhkvghrnhgvlhdroh
+    hrghdprhgtphhtthhopehkvghrnhgvlhdqthgvrghmsehmvghtrgdrtghomhdprhgtphht
+    thhopegrnhgurhhiiheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepvgguugihiiekje
+    esghhmrghilhdrtghomhdprhgtphhtthhopegrshhtsehkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:IsFNaE_9gA1qCS1kON1G0tE7Kg3KeSJc93s1s96OxSF86eJyd_4iSA>
+    <xmx:IsFNaPuYmOZb8mS0aRSECHqRJduSLv8uihtnOEV1xxAMx3GwhEsIjg>
+    <xmx:IsFNaDFBtXoougFzwushMdUiIpXEaTbvjM99FVPdzCegKWNYk_ozTw>
+    <xmx:IsFNaGNZiCFf13m5XeErDqKW5SWqnrzvKbHqvqZ7yBr273mB4McuVg>
+    <xmx:I8FNaIWExtNumH1iBKrzaUemEDpeMiyc5znla2aSxmqTcWMeJbnGB0wY>
+Feedback-ID: i580e4893:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 14 Jun 2025 14:36:15 -0400 (EDT)
+Message-ID: <75ea3f6b-cf5b-4e97-9214-cbd3f299008c@maowtm.org>
+Date: Sat, 14 Jun 2025 19:36:14 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250613222411.1216170-2-kuni1840@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 bpf-next 1/5] namei: Introduce new helper function
+ path_walk_parent()
+To: Song Liu <song@kernel.org>
+Cc: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
+ kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
+ daniel@iogearbox.net, martin.lau@linux.dev, viro@zeniv.linux.org.uk,
+ brauner@kernel.org, jack@suse.cz, kpsingh@kernel.org,
+ mattbobrowski@google.com, amir73il@gmail.com, repnop@google.com,
+ jlayton@kernel.org, josef@toxicpanda.com, mic@digikod.net,
+ gnoack@google.com, neil@brown.name
+References: <20250611220220.3681382-1-song@kernel.org>
+ <20250611220220.3681382-2-song@kernel.org>
+Content-Language: en-US
+From: Tingmao Wang <m@maowtm.org>
+In-Reply-To: <20250611220220.3681382-2-song@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Kuniyuki,
+On 6/11/25 23:02, Song Liu wrote:
+> This helper walks an input path to its parent. Logic are added to handle
+> walking across mount tree.
+> 
+> This will be used by landlock, and BPF LSM.
+> 
+> Suggested-by: Neil Brown <neil@brown.name>
+> Signed-off-by: Song Liu <song@kernel.org>
+> ---
+>  fs/namei.c            | 99 +++++++++++++++++++++++++++++++++++++------
+>  include/linux/namei.h |  2 +
+>  2 files changed, 87 insertions(+), 14 deletions(-)
+> 
+> diff --git a/fs/namei.c b/fs/namei.c
+> index 4bb889fc980b..bc65361c5d13 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -2048,36 +2048,107 @@ static struct dentry *follow_dotdot_rcu(struct nameidata *nd)
+>  	return nd->path.dentry;
+>  }
+>  
+> -static struct dentry *follow_dotdot(struct nameidata *nd)
+> +/**
+> + * __path_walk_parent - Find the parent of the given struct path
+> + * @path  - The struct path to start from
+> + * @root  - A struct path which serves as a boundary not to be crosses.
+> + *        - If @root is zero'ed, walk all the way to global root.
+> + * @flags - Some LOOKUP_ flags.
+> + *
+> + * Find and return the dentry for the parent of the given path
+> + * (mount/dentry). If the given path is the root of a mounted tree, it
+> + * is first updated to the mount point on which that tree is mounted.
+> + *
+> + * If %LOOKUP_NO_XDEV is given, then *after* the path is updated to a new
+> + * mount, the error EXDEV is returned.
+> + *
+> + * If no parent can be found, either because the tree is not mounted or
+> + * because the @path matches the @root, then @path->dentry is returned
+> + * unless @flags contains %LOOKUP_BENEATH, in which case -EXDEV is returned.
+> + *
+> + * Returns: either an ERR_PTR() or the chosen parent which will have had
+> + * the refcount incremented.
+> + */
+> +static struct dentry *__path_walk_parent(struct path *path, const struct path *root, int flags)
+>  {
+>  	struct dentry *parent;
+>  
+> -	if (path_equal(&nd->path, &nd->root))
+> +	if (path_equal(path, root))
+>  		goto in_root;
+> -	if (unlikely(nd->path.dentry == nd->path.mnt->mnt_root)) {
+> -		struct path path;
+> +	if (unlikely(path->dentry == path->mnt->mnt_root)) {
+> +		struct path new_path;
+>  
+> -		if (!choose_mountpoint(real_mount(nd->path.mnt),
+> -				       &nd->root, &path))
+> +		if (!choose_mountpoint(real_mount(path->mnt),
+> +				       root, &new_path))
+>  			goto in_root;
+> -		path_put(&nd->path);
+> -		nd->path = path;
+> -		nd->inode = path.dentry->d_inode;
+> -		if (unlikely(nd->flags & LOOKUP_NO_XDEV))
+> +		path_put(path);
+> +		*path = new_path;
+> +		if (unlikely(flags & LOOKUP_NO_XDEV))
+>  			return ERR_PTR(-EXDEV);
+>  	}
+>  	/* rare case of legitimate dget_parent()... */
+> -	parent = dget_parent(nd->path.dentry);
+> -	if (unlikely(!path_connected(nd->path.mnt, parent))) {
+> +	parent = dget_parent(path->dentry);
+> +	if (unlikely(!path_connected(path->mnt, parent))) {
 
-kernel test robot noticed the following build warnings:
+This is checking path_connected here but also in follow_dotdot,
+path_connected is checked again. Is this check meant to be here?  It will
+also change the landlock behaviour right?
 
-[auto build test WARNING on bpf-next/master]
+(For some reason patch 2 rejects when I tried to apply it on v6.16-rc1, so
+I haven't actually tested this patch to see if this is really an issue)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Kuniyuki-Iwashima/af_unix-Don-t-pass-struct-socket-to-security_unix_may_send/20250614-062956
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20250613222411.1216170-2-kuni1840%40gmail.com
-patch subject: [PATCH v2 bpf-next 1/4] af_unix: Don't pass struct socket to security_unix_may_send().
-config: arm-randconfig-001-20250614 (https://download.01.org/0day-ci/archive/20250615/202506150111.BYSccpdo-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 8.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250615/202506150111.BYSccpdo-lkp@intel.com/reproduce)
+>  		dput(parent);
+>  		return ERR_PTR(-ENOENT);
+>  	}
+>  	return parent;
+>  
+>  in_root:
+> -	if (unlikely(nd->flags & LOOKUP_BENEATH))
+> +	if (unlikely(flags & LOOKUP_BENEATH))
+>  		return ERR_PTR(-EXDEV);
+> -	return dget(nd->path.dentry);
+> +	return dget(path->dentry);
+> +}
+> +
+> +/**
+> + * path_walk_parent - Walk to the parent of path
+> + * @path: input and output path.
+> + * @root: root of the path walk, do not go beyond this root. If @root is
+> + *        zero'ed, walk all the way to real root.
+> + *
+> + * Given a path, find the parent path. Replace @path with the parent path.
+> + * If we were already at the real root or a disconnected root, @path is
+> + * released and zero'ed.
+> + *
+> + * Returns:
+> + *  true  - if @path is updated to its parent.
+> + *  false - if @path is already the root (real root or @root).
+> + */
+> +bool path_walk_parent(struct path *path, const struct path *root)
+> +{
+> +	struct dentry *parent;
+> +
+> +	parent = __path_walk_parent(path, root, LOOKUP_BENEATH);
+> +
+> +	if (IS_ERR(parent))
+> +		goto false_out;
+> +
+> +	if (parent == path->dentry) {
+> +		dput(parent);
+> +		goto false_out;
+> +	}
+> +	dput(path->dentry);
+> +	path->dentry = parent;
+> +	return true;
+> +
+> +false_out:
+> +	path_put(path);
+> +	memset(path, 0, sizeof(*path));
+> +	return false;
+> +}
+> +
+> +static struct dentry *follow_dotdot(struct nameidata *nd)
+> +{
+> +	struct dentry *parent = __path_walk_parent(&nd->path, &nd->root, nd->flags);
+> +
+> +	if (IS_ERR(parent))
+> +		return parent;
+> +	if (unlikely(!path_connected(nd->path.mnt, parent))) {
+> +		dput(parent);
+> +		return ERR_PTR(-ENOENT);
+> +	}
+> +	nd->inode = nd->path.dentry->d_inode;
+> +	return parent;
+>  }
+>  
+>  static const char *handle_dots(struct nameidata *nd, int type)
+> diff --git a/include/linux/namei.h b/include/linux/namei.h
+> index 5d085428e471..cba5373ecf86 100644
+> --- a/include/linux/namei.h
+> +++ b/include/linux/namei.h
+> @@ -85,6 +85,8 @@ extern int follow_down_one(struct path *);
+>  extern int follow_down(struct path *path, unsigned int flags);
+>  extern int follow_up(struct path *);
+>  
+> +bool path_walk_parent(struct path *path, const struct path *root);
+> +
+>  extern struct dentry *lock_rename(struct dentry *, struct dentry *);
+>  extern struct dentry *lock_rename_child(struct dentry *, struct dentry *);
+>  extern void unlock_rename(struct dentry *, struct dentry *);
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202506150111.BYSccpdo-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> Warning: security/smack/smack_lsm.c:3892 function parameter 'sk' not described in 'smack_unix_may_send'
->> Warning: security/smack/smack_lsm.c:3892 Excess function parameter 'sock' description in 'smack_unix_may_send'
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
