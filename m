@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-60646-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60652-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E51D4AD99BE
-	for <lists+bpf@lfdr.de>; Sat, 14 Jun 2025 04:46:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3290AD99C9
+	for <lists+bpf@lfdr.de>; Sat, 14 Jun 2025 04:47:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41A277A8F62
-	for <lists+bpf@lfdr.de>; Sat, 14 Jun 2025 02:45:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1977B1BC3C0A
+	for <lists+bpf@lfdr.de>; Sat, 14 Jun 2025 02:47:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0D7F13D521;
-	Sat, 14 Jun 2025 02:46:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28B1A1AAA1C;
+	Sat, 14 Jun 2025 02:46:35 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0010.hostedemail.com [216.40.44.10])
+Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 244032E11C7;
-	Sat, 14 Jun 2025 02:46:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44BCF824A3;
+	Sat, 14 Jun 2025 02:46:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749869168; cv=none; b=o9HNVvjc+LUcOqzuZVzZe3JVvnMJFdzAkjMDdm8OdQZA43/ZOBiM2hNe6CgoAv2XoHX32TJYqsPSDSbDcWynsq6szierKYmrrKryre5u8jykyJJGxhO3CEl8v6IFIzNMK5JUY+c9itn6/8HAyIMmcNiTzKhQEeiUIN5citoveuY=
+	t=1749869194; cv=none; b=Jl/mkadNf1f01i3GWnFuGW2Pl5hovVH2hyopsyRIlGlWxQmw4e7DzT3slV5hr6/kApDWyZdark22INmnz6SHeXxLsvpIHrpiLKGnlVVYstWl/OF+AP+QrMNLB/84/rDlku8pFIv2iuXgxjr0k0Mx77JAo0o0iJe83qJNvUIIVWA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749869168; c=relaxed/simple;
-	bh=jSaCH9fSfaE32Q9CJil90S7s1YrkTXYN/48kzE9ehB0=;
+	s=arc-20240116; t=1749869194; c=relaxed/simple;
+	bh=DPo4WYUglCRQoDmeTokNZsGJVZcRwFRQLN/5HMBwRck=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=oMSnIzAoJYNGwdnHn7n+JR1B2d0+bZGkPx/arB49nhoy3VIuitEem15iHRBNqChIc0R173288YkiWRxoRyNw7S2wKh3JM39bW8KDqFQavYImT1EYPGJg0iLFZl0DdqMJjgQNU4W7RwC1jhuZ1WZFELBJO+DOa/8bw0aWx/LX5HY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.10
+	 Content-Type; b=HkKp5TkIL6o3hlMW5BGvqsILT8lp11lZGR4v9wb1MfMhdCZYZGzr+HEwwngCplGfsSLjqbp7WzfdyUhktvV0pxwdyjeLeYD8X7b/ht7Oquir7A6BnSsXWtkdA9ePj9wqVF+URW3kzKUo3X/FkaU0/zN7tNU9so1aXCUBTFp6DRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf14.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay06.hostedemail.com (Postfix) with ESMTP id D28F4102F32;
-	Sat, 14 Jun 2025 02:45:40 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: nevets@goodmis.org) by omf14.hostedemail.com (Postfix) with ESMTPA id A56E33C;
+Received: from omf17.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay09.hostedemail.com (Postfix) with ESMTP id 1605A81AF9;
+	Sat, 14 Jun 2025 02:45:41 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: nevets@goodmis.org) by omf17.hostedemail.com (Postfix) with ESMTPA id AEC911B;
 	Sat, 14 Jun 2025 02:45:37 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.98.2)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1uQGvM-00000002Sou-3GF7;
+	id 1uQGvM-00000002SpO-3ypb;
 	Fri, 13 Jun 2025 22:47:16 -0400
-Message-ID: <20250614024716.623432389@goodmis.org>
+Message-ID: <20250614024716.798086123@goodmis.org>
 User-Agent: quilt/0.68
-Date: Fri, 13 Jun 2025 22:46:11 -0400
+Date: Fri, 13 Jun 2025 22:46:12 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org,
@@ -61,7 +61,7 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Jens Remus <jremus@linux.ibm.com>,
  Linus Torvalds <torvalds@linux-foundation.org>,
  Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH v10 06/11] perf: Support deferred user callchains
+Subject: [PATCH v10 07/11] perf: Support deferred user callchains for per CPU events
 References: <20250614024605.597728558@goodmis.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -70,426 +70,501 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Rspamd-Queue-Id: A56E33C
-X-Rspamd-Server: rspamout08
-X-Stat-Signature: ujohf5ubrykdoqu4gfma34fczgc4pm5k
+X-Rspamd-Queue-Id: AEC911B
+X-Stat-Signature: yaby9xaxa4cobnb11jbxcikjnfg8nfqb
+X-Rspamd-Server: rspamout07
 X-Session-Marker: 6E657665747340676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX19z8DNk08rXWmGQUqyRfN4xxPDfI/v83RI=
-X-HE-Tag: 1749869137-478601
-X-HE-Meta: U2FsdGVkX1/10I4I71V8lWs6hjYL+RBHsEh/YFm7qRlkLHcf+AeBJZ+zStpvvDzwsMJR3eKkagGvkZtWGuoa6hekNLz4sT4iirxbGze9vh5X+2HeG81YI8ibHtwNjRDhwh/yb9SQpPH01V564AMeeQYNdH7qOkV5CQPtABV8yEKfJElWRm3kryXLh4ReQJx9N6jlAnCDPsPbvzRB+0G/mZXVqUfmOMCqOHhgB77GHmzUzoYpamZBnQeP7GJaE3vAs8zWhB2EdBJmP81AOO/08HGC5I50XYiHOa0Q5CmRmEdfkYMGhu9GOJLK6y7o9zjON1Igq3bpEX+p4EurKtM4bgS+0WaCCSpVJB4ONiD4mc9E/al57ZNyU4kSiihZtpjXhMhAyCFIJnJgrfiOybx+s5H+cy6pRBcLZkvlNyR9I5qIxwYmSnaIUEkeOF+U0J3bSg1NSBUWyLkVWHJpElHURobwht8JEWZ5Xz69qxDBKbw=
+X-Session-ID: U2FsdGVkX19O7CEwN1b/gbgIUQ+zoJiEyxCTFwayeWM=
+X-HE-Tag: 1749869137-565342
+X-HE-Meta: U2FsdGVkX19pU8n8S5xdP1KBvPD84117r4fTWGfP3QDUJubJnPom99sYbNQV1pZjE8JQiqFjeXE5utIK2Jrviin1tYISdp+FyY1dH37YhAzgQlheNRteSUFnVQdPyCpdskWJ7WwSUddTLAkctb5yzBnI0QLPq4u5phb1owxRWYG/mdyZc+C02yCBFyX79Dztuz6Y8NKJPrzMBw9Rf3KNqgBiiT355Ggzx6Da3T5DX+JT2WjfXWyfurS9hQEx5mnVEskKsvYndnFHC8HumxjFYk4Sq29k9aQ4i4xt+6FcBR8D4Sh5VZcUu+N3TwpaB0PFx8AdSOrvlcwKEs9XgRia4dqV4P3fjLx4vhgo6d2Tr5ueCmyPsaDCfvIbmxBHJsEMsY/N42D6LFQDaAOc75tJIdzff5oC9Bq0TZgSlZisHZw=
 
-From: Josh Poimboeuf <jpoimboe@kernel.org>
+From: Steven Rostedt <rostedt@goodmis.org>
 
-Use the new unwind_deferred_trace() interface (if available) to defer
-unwinds to task context.  This will allow the use of .sframe (when it
-becomes available) and also prevents duplicate userspace unwinds.
+The deferred unwinder works fine for task events (events that trace only a
+specific task), as it can use a task_work from an interrupt or NMI and
+when the task goes back to user space it will call the event's callback to
+do the deferred unwinding.
 
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Co-developed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
+But for per CPU events things are not so simple. When a per CPU event
+wants a deferred unwinding to occur, it can not simply use a task_work as
+there's a many to many relationship. If the task migrates and another task
+is scheduled in where the per CPU event wants a deferred unwinding to
+occur on that task as well, and the task that migrated to another CPU has
+that CPU's event want to unwind it too, each CPU may need unwinding from
+more than one task, and each task may have requests from many CPUs.
+
+To solve this, when a per CPU event is created that has defer_callchain
+attribute set, it will do a lookup from a global list
+(unwind_deferred_list), for a perf_unwind_deferred descriptor that has the
+id that matches the PID of the current task's group_leader.
+
+If it is not found, then it will create one and add it to the global list.
+This descriptor contains an array of all possible CPUs, where each element
+is a perf_unwind_cpu descriptor.
+
+The perf_unwind_cpu descriptor has a list of all the per CPU events that
+is tracing the matching CPU that corresponds to its index in the array,
+where the events belong to a task that has the same group_leader.
+It also has a processing bit and rcuwait to handle removal.
+
+For each occupied perf_unwind_cpu descriptor in the array, the
+perf_deferred_unwind descriptor increments its nr_cpu_events. When a
+perf_unwind_cpu descriptor is empty, the nr_cpu_events is decremented.
+This is used to know when to free the perf_deferred_unwind descriptor, as
+when it becomes empty, it is no longer referenced.
+
+Finally, the perf_deferred_unwind descriptor has an id that holds the PID
+of the group_leader for the tasks that the events were created by.
+
+When a second (or more) per CPU event is created where the
+perf_deferred_unwind descriptor is already created, it just adds itself to
+the perf_unwind_cpu array of that descriptor. Updating the necessary
+counter. This is used to map different per CPU events to each other based
+on their group leader PID.
+
+Each of these perf_deferred_unwind descriptors have a unwind_work that
+registers with the deferred unwind infrastructure via
+unwind_deferred_init(), where it also registers a callback to
+perf_event_deferred_cpu().
+
+Now when a per CPU event requests a deferred unwinding, it calls
+unwind_deferred_request() with the associated perf_deferred_unwind
+descriptor. It is expected that the program that uses this has events on
+all CPUs, as the deferred trace may not be called on the CPU event that
+requested it. That is, the task may migrate and its user stack trace will
+be recorded on the CPU event of the CPU that it exits back to user space
+on.
+
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
-Changes since v9: https://lore.kernel.org/20250611013739.390236324@goodmis.org
+Changes since v9: https://lore.kernel.org/20250611013740.234640670@goodmis.org
 
-- Remove CONFIG_HAVE_PERF_CALLCHAIN_DEFERRED as it is never used.
+- Fixed up the synchronization of rcuwait.
 
- include/linux/perf_event.h            |   7 +-
- include/uapi/linux/perf_event.h       |  19 ++-
- kernel/bpf/stackmap.c                 |   4 +-
- kernel/events/callchain.c             |  11 +-
- kernel/events/core.c                  | 168 +++++++++++++++++++++++++-
- tools/include/uapi/linux/perf_event.h |  19 ++-
- 6 files changed, 220 insertions(+), 8 deletions(-)
+- Added more comments to describe how the unwind deferred works.
+
+- Tagged the cpu_events with __rcu and added rcu annotation.
+
+ include/linux/perf_event.h |   5 +
+ kernel/events/core.c       | 297 +++++++++++++++++++++++++++++++++----
+ 2 files changed, 277 insertions(+), 25 deletions(-)
 
 diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index 75a0413172b1..416d55d2e81b 100644
+index 416d55d2e81b..2a45d445be93 100644
 --- a/include/linux/perf_event.h
 +++ b/include/linux/perf_event.h
-@@ -53,6 +53,7 @@
- #include <linux/security.h>
- #include <linux/static_call.h>
- #include <linux/lockdep.h>
-+#include <linux/unwind_deferred.h>
+@@ -695,6 +695,7 @@ struct swevent_hlist {
+ struct bpf_prog;
+ struct perf_cgroup;
+ struct perf_buffer;
++struct perf_unwind_deferred;
  
- #include <asm/local.h>
+ struct pmu_event_list {
+ 	raw_spinlock_t			lock;
+@@ -847,6 +848,9 @@ struct perf_event {
+ 	struct callback_head		pending_unwind_work;
+ 	struct rcuwait			pending_unwind_wait;
  
-@@ -842,6 +843,10 @@ struct perf_event {
- 	struct callback_head		pending_task;
- 	unsigned int			pending_work;
- 
-+	unsigned int			pending_unwind_callback;
-+	struct callback_head		pending_unwind_work;
-+	struct rcuwait			pending_unwind_wait;
++	struct perf_unwind_deferred	*unwind_deferred;
++	struct list_head		unwind_list;
 +
  	atomic_t			event_limit;
  
  	/* address range filters */
-@@ -1682,7 +1687,7 @@ extern void perf_callchain_user(struct perf_callchain_entry_ctx *entry, struct p
- extern void perf_callchain_kernel(struct perf_callchain_entry_ctx *entry, struct pt_regs *regs);
- extern struct perf_callchain_entry *
- get_perf_callchain(struct pt_regs *regs, bool kernel, bool user,
--		   u32 max_stack, bool crosstask, bool add_mark);
-+		   u32 max_stack, bool crosstask, bool add_mark, bool defer_user);
- extern int get_callchain_buffers(int max_stack);
- extern void put_callchain_buffers(void);
- extern struct perf_callchain_entry *get_callchain_entry(int *rctx);
-diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-index 78a362b80027..184740d1e79d 100644
---- a/include/uapi/linux/perf_event.h
-+++ b/include/uapi/linux/perf_event.h
-@@ -463,7 +463,8 @@ struct perf_event_attr {
- 				inherit_thread :  1, /* children only inherit if cloned with CLONE_THREAD */
- 				remove_on_exec :  1, /* event is removed from task on exec */
- 				sigtrap        :  1, /* send synchronous SIGTRAP on event */
--				__reserved_1   : 26;
-+				defer_callchain:  1, /* generate PERF_RECORD_CALLCHAIN_DEFERRED records */
-+				__reserved_1   : 25;
- 
- 	union {
- 		__u32		wakeup_events;	  /* wake up every n events */
-@@ -1239,6 +1240,21 @@ enum perf_event_type {
- 	 */
- 	PERF_RECORD_AUX_OUTPUT_HW_ID		= 21,
- 
-+	/*
-+	 * This user callchain capture was deferred until shortly before
-+	 * returning to user space.  Previous samples would have kernel
-+	 * callchains only and they need to be stitched with this to make full
-+	 * callchains.
-+	 *
-+	 * struct {
-+	 *	struct perf_event_header	header;
-+	 *	u64				nr;
-+	 *	u64				ips[nr];
-+	 *	struct sample_id		sample_id;
-+	 * };
-+	 */
-+	PERF_RECORD_CALLCHAIN_DEFERRED		= 22,
+@@ -887,6 +891,7 @@ struct perf_event {
+ #ifdef CONFIG_SECURITY
+ 	void *security;
+ #endif
 +
- 	PERF_RECORD_MAX,			/* non-ABI */
- };
- 
-@@ -1269,6 +1285,7 @@ enum perf_callchain_context {
- 	PERF_CONTEXT_HV				= (__u64)-32,
- 	PERF_CONTEXT_KERNEL			= (__u64)-128,
- 	PERF_CONTEXT_USER			= (__u64)-512,
-+	PERF_CONTEXT_USER_DEFERRED		= (__u64)-640,
- 
- 	PERF_CONTEXT_GUEST			= (__u64)-2048,
- 	PERF_CONTEXT_GUEST_KERNEL		= (__u64)-2176,
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index ec3a57a5fba1..339f7cbbcf36 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -315,7 +315,7 @@ BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
- 		max_depth = sysctl_perf_event_max_stack;
- 
- 	trace = get_perf_callchain(regs, kernel, user, max_depth,
--				   false, false);
-+				   false, false, false);
- 
- 	if (unlikely(!trace))
- 		/* couldn't fetch the stack trace */
-@@ -452,7 +452,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
- 		trace = get_callchain_entry_for_task(task, max_depth);
- 	else
- 		trace = get_perf_callchain(regs, kernel, user, max_depth,
--					   crosstask, false);
-+					   crosstask, false, false);
- 
- 	if (unlikely(!trace) || trace->nr < skip) {
- 		if (may_fault)
-diff --git a/kernel/events/callchain.c b/kernel/events/callchain.c
-index 16eb68f31810..b9080d86e4b3 100644
---- a/kernel/events/callchain.c
-+++ b/kernel/events/callchain.c
-@@ -218,7 +218,7 @@ static void fixup_uretprobe_trampoline_entries(struct perf_callchain_entry *entr
- 
- struct perf_callchain_entry *
- get_perf_callchain(struct pt_regs *regs, bool kernel, bool user,
--		   u32 max_stack, bool crosstask, bool add_mark)
-+		   u32 max_stack, bool crosstask, bool add_mark, bool defer_user)
- {
- 	struct perf_callchain_entry *entry;
- 	struct perf_callchain_entry_ctx ctx;
-@@ -251,6 +251,15 @@ get_perf_callchain(struct pt_regs *regs, bool kernel, bool user,
- 			regs = task_pt_regs(current);
- 		}
- 
-+		if (defer_user) {
-+			/*
-+			 * Foretell the coming of PERF_RECORD_CALLCHAIN_DEFERRED
-+			 * which can be stitched to this one.
-+			 */
-+			perf_callchain_store_context(&ctx, PERF_CONTEXT_USER_DEFERRED);
-+			goto exit_put;
-+		}
-+
- 		if (add_mark)
- 			perf_callchain_store_context(&ctx, PERF_CONTEXT_USER);
+ 	struct list_head		sb_list;
+ 	struct list_head		pmu_list;
  
 diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 55d5d4ded7ab..5a31f5c30299 100644
+index 5a31f5c30299..7074c7a24a54 100644
 --- a/kernel/events/core.c
 +++ b/kernel/events/core.c
-@@ -5564,6 +5564,89 @@ static bool exclusive_event_installable(struct perf_event *event,
+@@ -5564,10 +5564,185 @@ static bool exclusive_event_installable(struct perf_event *event,
  	return true;
  }
  
-+static void perf_pending_unwind_sync(struct perf_event *event)
++/* Holds a list of per CPU events that registered for deferred unwinding */
++struct perf_unwind_cpu {
++	struct list_head	list;
++	struct rcuwait		pending_unwind_wait;
++	int			processing;
++};
++
++struct perf_unwind_deferred {
++	struct list_head		list;
++	struct unwind_work		unwind_work;
++	struct perf_unwind_cpu __rcu	*cpu_events;
++	struct rcu_head			rcu_head;
++	int				nr_cpu_events;
++	int				id;
++};
++
++static DEFINE_MUTEX(unwind_deferred_mutex);
++static LIST_HEAD(unwind_deferred_list);
++
++static void perf_event_deferred_cpu(struct unwind_work *work,
++				    struct unwind_stacktrace *trace, u64 timestamp);
++
++/*
++ * Add a per CPU event.
++ *
++ * The deferred callstack can happen on a different CPU than what was
++ * requested. If one CPU event requests a deferred callstack, but the
++ * tasks migrates, it will execute on a different CPU and save the
++ * stack trace to that CPU event.
++ *
++ * In order to map all the CPU events with the same application,
++ * use the current->gorup_leader->pid as the identifier of what
++ * events share the same program.
++ *
++ * A perf_unwind_deferred descriptor is created for each unique
++ * group_leader pid, and all the events that have the same group_leader
++ * pid will be linked to the same deferred descriptor.
++ *
++ * If there's no descriptor that matches the current group_leader pid,
++ * one will be created.
++ */
++static int perf_add_unwind_deferred(struct perf_event *event)
 +{
-+	might_sleep();
++	struct perf_unwind_deferred *defer;
++	struct perf_unwind_cpu *cpu_events;
++	int id = current->group_leader->pid;
++	bool found = false;
++	int ret = 0;
 +
-+	if (!event->pending_unwind_callback)
-+		return;
++	if (event->cpu < 0)
++		return -EINVAL;
 +
-+	/*
-+	 * If the task is queued to the current task's queue, we
-+	 * obviously can't wait for it to complete. Simply cancel it.
-+	 */
-+	if (task_work_cancel(current, &event->pending_unwind_work)) {
-+		event->pending_unwind_callback = 0;
-+		local_dec(&event->ctx->nr_no_switch_fast);
-+		return;
++	guard(mutex)(&unwind_deferred_mutex);
++
++	list_for_each_entry(defer, &unwind_deferred_list, list) {
++		if (defer->id == id) {
++			found = true;
++			break;
++		}
++	}
++
++	if (!found) {
++		defer = kzalloc(sizeof(*defer), GFP_KERNEL);
++		if (!defer)
++			return -ENOMEM;
++		list_add(&defer->list, &unwind_deferred_list);
++		defer->id = id;
 +	}
 +
 +	/*
-+	 * All accesses related to the event are within the same RCU section in
-+	 * perf_event_callchain_deferred(). The RCU grace period before the
-+	 * event is freed will make sure all those accesses are complete by then.
++	 * The deferred desciptor has an array for every CPU.
++	 * Each entry in this array is a link list of all the CPU
++	 * events for the corresponding CPU. This is a quick way to
++	 * find the associated event for a given CPU in
++	 * perf_event_deferred_cpu().
 +	 */
-+	rcuwait_wait_event(&event->pending_unwind_wait, !event->pending_unwind_callback, TASK_UNINTERRUPTIBLE);
++	if (!defer->nr_cpu_events) {
++		cpu_events = kcalloc(num_possible_cpus(),
++				     sizeof(*cpu_events),
++				     GFP_KERNEL);
++		if (!cpu_events) {
++			ret = -ENOMEM;
++			goto free;
++		}
++		for (int cpu = 0; cpu < num_possible_cpus(); cpu++) {
++			rcuwait_init(&cpu_events[cpu].pending_unwind_wait);
++			INIT_LIST_HEAD(&cpu_events[cpu].list);
++		}
++
++		rcu_assign_pointer(defer->cpu_events, cpu_events);
++
++		ret = unwind_deferred_init(&defer->unwind_work,
++					   perf_event_deferred_cpu);
++		if (ret)
++			goto free;
++	}
++	cpu_events = rcu_dereference_protected(defer->cpu_events,
++				lockdep_is_held(&unwind_deferred_mutex));
++
++	if (list_empty(&cpu_events[event->cpu].list))
++		defer->nr_cpu_events++;
++	list_add_tail_rcu(&event->unwind_list, &cpu_events[event->cpu].list);
++
++	event->unwind_deferred = defer;
++	return 0;
++free:
++	if (found)
++		return ret;
++
++	list_del(&defer->list);
++	kfree(cpu_events);
++	kfree(defer);
++	return ret;
 +}
 +
-+struct perf_callchain_deferred_event {
-+	struct perf_event_header	header;
-+	u64				nr;
-+	u64				ips[];
-+};
++static void free_unwind_deferred_rcu(struct rcu_head *head)
++{
++	struct perf_unwind_cpu *cpu_events;
++	struct perf_unwind_deferred *defer =
++		container_of(head, struct perf_unwind_deferred, rcu_head);
 +
-+static void perf_event_callchain_deferred(struct callback_head *work)
++	/*
++	 * This is called by call_rcu() and there are no more
++	 * references to cpu_events.
++	 */
++	cpu_events = rcu_dereference_protected(defer->cpu_events, 1);
++	kfree(cpu_events);
++	kfree(defer);
++}
++
++static void perf_remove_unwind_deferred(struct perf_event *event)
++{
++	struct perf_unwind_deferred *defer = event->unwind_deferred;
++	struct perf_unwind_cpu *cpu_events, *cpu_unwind;
++
++	if (!defer)
++		return;
++
++	guard(mutex)(&unwind_deferred_mutex);
++	list_del_rcu(&event->unwind_list);
++
++	cpu_events = rcu_dereference_protected(defer->cpu_events,
++				lockdep_is_held(&unwind_deferred_mutex));
++	cpu_unwind = &cpu_events[event->cpu];
++
++	if (list_empty(&cpu_unwind->list)) {
++		defer->nr_cpu_events--;
++		if (!defer->nr_cpu_events)
++			unwind_deferred_cancel(&defer->unwind_work);
++	}
++
++	event->unwind_deferred = NULL;
++
++	/*
++	 * Make sure perf_event_deferred_cpu() is done with this event.
++	 * That function will set cpu_unwind->processing and then
++	 * call smp_mb() before iterating the list of its events.
++	 * If the event's unwind_deferred is NULL, it will be skipped.
++	 * The smp_mb() in that function matches the mb() in
++	 * rcuwait_wait_event().
++	 */
++	rcuwait_wait_event(&cpu_unwind->pending_unwind_wait,
++				   !cpu_unwind->processing, TASK_UNINTERRUPTIBLE);
++
++	/* Is this still being used by other per CPU events? */
++	if (defer->nr_cpu_events)
++		return;
++
++	list_del(&defer->list);
++	/* The defer->cpu_events is protected by RCU */
++	call_rcu(&defer->rcu_head, free_unwind_deferred_rcu);
++}
++
+ static void perf_pending_unwind_sync(struct perf_event *event)
+ {
+ 	might_sleep();
+ 
++	perf_remove_unwind_deferred(event);
++
+ 	if (!event->pending_unwind_callback)
+ 		return;
+ 
+@@ -5591,62 +5766,113 @@ static void perf_pending_unwind_sync(struct perf_event *event)
+ 
+ struct perf_callchain_deferred_event {
+ 	struct perf_event_header	header;
++	u64				timestamp;
+ 	u64				nr;
+ 	u64				ips[];
+ };
+ 
+-static void perf_event_callchain_deferred(struct callback_head *work)
++static void perf_event_callchain_deferred(struct perf_event *event,
++					  struct unwind_stacktrace *trace,
++					  u64 timestamp)
+ {
+-	struct perf_event *event = container_of(work, struct perf_event, pending_unwind_work);
+ 	struct perf_callchain_deferred_event deferred_event;
+ 	u64 callchain_context = PERF_CONTEXT_USER;
+-	struct unwind_stacktrace trace;
+ 	struct perf_output_handle handle;
+ 	struct perf_sample_data data;
+ 	u64 nr;
+ 
+-	if (!event->pending_unwind_callback)
+-		return;
+-
+-	if (unwind_deferred_trace(&trace) < 0)
+-		goto out;
+-
+-	/*
+-	 * All accesses to the event must belong to the same implicit RCU
+-	 * read-side critical section as the ->pending_unwind_callback reset.
+-	 * See comment in perf_pending_unwind_sync().
+-	 */
+-	guard(rcu)();
+-
+ 	if (current->flags & PF_KTHREAD)
+-		goto out;
++		return;
+ 
+-	nr = trace.nr + 1 ; /* '+1' == callchain_context */
++	nr = trace->nr + 1 ; /* '+1' == callchain_context */
+ 
+ 	deferred_event.header.type = PERF_RECORD_CALLCHAIN_DEFERRED;
+ 	deferred_event.header.misc = PERF_RECORD_MISC_USER;
+ 	deferred_event.header.size = sizeof(deferred_event) + (nr * sizeof(u64));
+ 
++	deferred_event.timestamp = timestamp;
+ 	deferred_event.nr = nr;
+ 
+ 	perf_event_header__init_id(&deferred_event.header, &data, event);
+ 
+ 	if (perf_output_begin(&handle, &data, event, deferred_event.header.size))
+-		goto out;
++		return;
+ 
+ 	perf_output_put(&handle, deferred_event);
+ 	perf_output_put(&handle, callchain_context);
+-	perf_output_copy(&handle, trace.entries, trace.nr * sizeof(u64));
++	perf_output_copy(&handle, trace->entries, trace->nr * sizeof(u64));
+ 	perf_event__output_id_sample(event, &handle, &data);
+ 
+ 	perf_output_end(&handle);
++}
++
++/* Deferred unwinding callback for task specific events */
++static void perf_event_deferred_task(struct callback_head *work)
 +{
 +	struct perf_event *event = container_of(work, struct perf_event, pending_unwind_work);
-+	struct perf_callchain_deferred_event deferred_event;
-+	u64 callchain_context = PERF_CONTEXT_USER;
 +	struct unwind_stacktrace trace;
-+	struct perf_output_handle handle;
-+	struct perf_sample_data data;
-+	u64 nr;
 +
 +	if (!event->pending_unwind_callback)
 +		return;
 +
-+	if (unwind_deferred_trace(&trace) < 0)
-+		goto out;
++	if (unwind_deferred_trace(&trace) >= 0) {
 +
-+	/*
-+	 * All accesses to the event must belong to the same implicit RCU
-+	 * read-side critical section as the ->pending_unwind_callback reset.
-+	 * See comment in perf_pending_unwind_sync().
-+	 */
++		/*
++		 * All accesses to the event must belong to the same implicit RCU
++		 * read-side critical section as the ->pending_unwind_callback reset.
++		 * See comment in perf_pending_unwind_sync().
++		 */
++		guard(rcu)();
++		perf_event_callchain_deferred(event, &trace, 0);
++	}
+ 
+-out:
+ 	event->pending_unwind_callback = 0;
+ 	local_dec(&event->ctx->nr_no_switch_fast);
+ 	rcuwait_wake_up(&event->pending_unwind_wait);
+ }
+ 
++/*
++ * Deferred unwinding callback for per CPU events.
++ * Note, the request for the deferred unwinding may have happened
++ * on a different CPU.
++ */
++static void perf_event_deferred_cpu(struct unwind_work *work,
++				    struct unwind_stacktrace *trace, u64 timestamp)
++{
++	struct perf_unwind_deferred *defer =
++		container_of(work, struct perf_unwind_deferred, unwind_work);
++	struct perf_unwind_cpu *cpu_events, *cpu_unwind;
++	struct perf_event *event;
++	int cpu;
++
 +	guard(rcu)();
++	guard(preempt)();
 +
-+	if (current->flags & PF_KTHREAD)
-+		goto out;
++	cpu = smp_processor_id();
++	cpu_events = rcu_dereference(defer->cpu_events);
++	cpu_unwind = &cpu_events[cpu];
 +
-+	nr = trace.nr + 1 ; /* '+1' == callchain_context */
++	WRITE_ONCE(cpu_unwind->processing, 1);
++	/*
++	 * Make sure the above is seen before the event->unwind_deferred
++	 * is checked. This matches the mb() in rcuwait_rcu_wait_event() in
++	 * perf_remove_unwind_deferred().
++	 */
++	smp_mb();
 +
-+	deferred_event.header.type = PERF_RECORD_CALLCHAIN_DEFERRED;
-+	deferred_event.header.misc = PERF_RECORD_MISC_USER;
-+	deferred_event.header.size = sizeof(deferred_event) + (nr * sizeof(u64));
++	list_for_each_entry_rcu(event, &cpu_unwind->list, unwind_list) {
++		/* If unwind_deferred is NULL the event is going away */
++		if (unlikely(!event->unwind_deferred))
++			continue;
++		perf_event_callchain_deferred(event, trace, timestamp);
++		/* Only the first CPU event gets the trace */
++		break;
++	}
 +
-+	deferred_event.nr = nr;
-+
-+	perf_event_header__init_id(&deferred_event.header, &data, event);
-+
-+	if (perf_output_begin(&handle, &data, event, deferred_event.header.size))
-+		goto out;
-+
-+	perf_output_put(&handle, deferred_event);
-+	perf_output_put(&handle, callchain_context);
-+	perf_output_copy(&handle, trace.entries, trace.nr * sizeof(u64));
-+	perf_event__output_id_sample(event, &handle, &data);
-+
-+	perf_output_end(&handle);
-+
-+out:
-+	event->pending_unwind_callback = 0;
-+	local_dec(&event->ctx->nr_no_switch_fast);
-+	rcuwait_wake_up(&event->pending_unwind_wait);
++	WRITE_ONCE(cpu_unwind->processing, 0);
++	rcuwait_wake_up(&cpu_unwind->pending_unwind_wait);
 +}
 +
  static void perf_free_addr_filters(struct perf_event *event);
  
  /* vs perf_event_alloc() error */
-@@ -5631,6 +5714,7 @@ static void _free_event(struct perf_event *event)
- {
- 	irq_work_sync(&event->pending_irq);
- 	irq_work_sync(&event->pending_disable_irq);
-+	perf_pending_unwind_sync(event);
- 
- 	unaccount_event(event);
- 
-@@ -8140,6 +8224,65 @@ static u64 perf_get_page_size(unsigned long addr)
- 
- static struct perf_callchain_entry __empty_callchain = { .nr = 0, };
- 
-+/* Returns the same as deferred_request() below */
-+static int deferred_request_nmi(struct perf_event *event)
-+{
-+	struct callback_head *work = &event->pending_unwind_work;
-+	int ret;
-+
-+	if (event->pending_unwind_callback)
-+		return 1;
-+
-+	ret = task_work_add(current, work, TWA_NMI_CURRENT);
-+	if (ret)
-+		return ret;
-+
-+	event->pending_unwind_callback = 1;
-+	return 0;
-+}
-+
-+/*
-+ * Returns:
-+*     > 0 : if already queued.
-+ *      0 : if it performed the queuing
-+ *    < 0 : if it did not get queued.
-+ */
-+static int deferred_request(struct perf_event *event)
-+{
-+	struct callback_head *work = &event->pending_unwind_work;
-+	int pending;
-+	int ret;
-+
-+	/* Only defer for task events */
-+	if (!event->ctx->task)
-+		return -EINVAL;
-+
-+	if ((current->flags & PF_KTHREAD) || !user_mode(task_pt_regs(current)))
-+		return -EINVAL;
-+
-+	if (in_nmi())
-+		return deferred_request_nmi(event);
-+
-+	guard(irqsave)();
-+
-+	/* callback already pending? */
-+	pending = READ_ONCE(event->pending_unwind_callback);
-+	if (pending)
-+		return 1;
-+
-+	/* Claim the work unless an NMI just now swooped in to do so. */
-+	if (!try_cmpxchg(&event->pending_unwind_callback, &pending, 1))
-+		return 1;
-+
-+	/* The work has been claimed, now schedule it. */
-+	ret = task_work_add(current, work, TWA_RESUME);
-+	if (WARN_ON_ONCE(ret)) {
-+		WRITE_ONCE(event->pending_unwind_callback, 0);
-+		return ret;
-+	}
-+	return 0;
-+}
-+
- struct perf_callchain_entry *
- perf_callchain(struct perf_event *event, struct pt_regs *regs)
- {
-@@ -8150,12 +8293,27 @@ perf_callchain(struct perf_event *event, struct pt_regs *regs)
- 	bool crosstask = event->ctx->task && event->ctx->task != current;
- 	const u32 max_stack = event->attr.sample_max_stack;
- 	struct perf_callchain_entry *callchain;
-+	bool defer_user = IS_ENABLED(CONFIG_UNWIND_USER) && user &&
-+			  event->attr.defer_callchain;
- 
- 	if (!kernel && !user)
- 		return &__empty_callchain;
- 
--	callchain = get_perf_callchain(regs, kernel, user,
--				       max_stack, crosstask, true);
-+	/* Disallow cross-task callchains. */
-+	if (event->ctx->task && event->ctx->task != current)
-+		return &__empty_callchain;
-+
-+	if (defer_user) {
-+		int ret = deferred_request(event);
-+		if (!ret)
-+			local_inc(&event->ctx->nr_no_switch_fast);
-+		else if (ret < 0)
-+			defer_user = false;
-+	}
-+
-+	callchain = get_perf_callchain(regs, kernel, user, max_stack,
-+				       crosstask, true, defer_user);
-+
- 	return callchain ?: &__empty_callchain;
+@@ -8241,6 +8467,15 @@ static int deferred_request_nmi(struct perf_event *event)
+ 	return 0;
  }
  
-@@ -12818,6 +12976,8 @@ perf_event_alloc(struct perf_event_attr *attr, int cpu,
- 	event->pending_disable_irq = IRQ_WORK_INIT_HARD(perf_pending_disable);
- 	init_task_work(&event->pending_task, perf_pending_task);
- 
-+	rcuwait_init(&event->pending_unwind_wait);
++static int deferred_unwind_request(struct perf_unwind_deferred *defer)
++{
++	u64 timestamp;
++	int ret;
 +
- 	mutex_init(&event->mmap_mutex);
- 	raw_spin_lock_init(&event->addr_filters.lock);
++	ret = unwind_deferred_request(&defer->unwind_work, &timestamp);
++	return ret < 0 ? ret : 0;
++}
++
+ /*
+  * Returns:
+ *     > 0 : if already queued.
+@@ -8250,14 +8485,19 @@ static int deferred_request_nmi(struct perf_event *event)
+ static int deferred_request(struct perf_event *event)
+ {
+ 	struct callback_head *work = &event->pending_unwind_work;
++	struct perf_unwind_deferred *defer;
+ 	int pending;
+ 	int ret;
  
-@@ -12986,6 +13146,10 @@ perf_event_alloc(struct perf_event_attr *attr, int cpu,
+-	/* Only defer for task events */
+-	if (!event->ctx->task)
++	if ((current->flags & PF_KTHREAD) || !user_mode(task_pt_regs(current)))
+ 		return -EINVAL;
+ 
+-	if ((current->flags & PF_KTHREAD) || !user_mode(task_pt_regs(current)))
++	defer = READ_ONCE(event->unwind_deferred);
++	if (defer)
++		return deferred_unwind_request(defer);
++
++	/* Per CPU events should have had unwind_deferred set! */
++	if (WARN_ON_ONCE(!event->ctx->task))
+ 		return -EINVAL;
+ 
+ 	if (in_nmi())
+@@ -13142,13 +13382,20 @@ perf_event_alloc(struct perf_event_attr *attr, int cpu,
+ 		}
+ 	}
+ 
++	/* Setup unwind deferring for per CPU events */
++	if (event->attr.defer_callchain && !task) {
++		err = perf_add_unwind_deferred(event);
++		if (err)
++			return ERR_PTR(err);
++	}
++
+ 	err = security_perf_event_alloc(event);
  	if (err)
  		return ERR_PTR(err);
  
-+	if (event->attr.defer_callchain)
-+		init_task_work(&event->pending_unwind_work,
-+			       perf_event_callchain_deferred);
-+
+ 	if (event->attr.defer_callchain)
+ 		init_task_work(&event->pending_unwind_work,
+-			       perf_event_callchain_deferred);
++			       perf_event_deferred_task);
+ 
  	/* symmetric to unaccount_event() in _free_event() */
  	account_event(event);
- 
-diff --git a/tools/include/uapi/linux/perf_event.h b/tools/include/uapi/linux/perf_event.h
-index 78a362b80027..184740d1e79d 100644
---- a/tools/include/uapi/linux/perf_event.h
-+++ b/tools/include/uapi/linux/perf_event.h
-@@ -463,7 +463,8 @@ struct perf_event_attr {
- 				inherit_thread :  1, /* children only inherit if cloned with CLONE_THREAD */
- 				remove_on_exec :  1, /* event is removed from task on exec */
- 				sigtrap        :  1, /* send synchronous SIGTRAP on event */
--				__reserved_1   : 26;
-+				defer_callchain:  1, /* generate PERF_RECORD_CALLCHAIN_DEFERRED records */
-+				__reserved_1   : 25;
- 
- 	union {
- 		__u32		wakeup_events;	  /* wake up every n events */
-@@ -1239,6 +1240,21 @@ enum perf_event_type {
- 	 */
- 	PERF_RECORD_AUX_OUTPUT_HW_ID		= 21,
- 
-+	/*
-+	 * This user callchain capture was deferred until shortly before
-+	 * returning to user space.  Previous samples would have kernel
-+	 * callchains only and they need to be stitched with this to make full
-+	 * callchains.
-+	 *
-+	 * struct {
-+	 *	struct perf_event_header	header;
-+	 *	u64				nr;
-+	 *	u64				ips[nr];
-+	 *	struct sample_id		sample_id;
-+	 * };
-+	 */
-+	PERF_RECORD_CALLCHAIN_DEFERRED		= 22,
-+
- 	PERF_RECORD_MAX,			/* non-ABI */
- };
- 
-@@ -1269,6 +1285,7 @@ enum perf_callchain_context {
- 	PERF_CONTEXT_HV				= (__u64)-32,
- 	PERF_CONTEXT_KERNEL			= (__u64)-128,
- 	PERF_CONTEXT_USER			= (__u64)-512,
-+	PERF_CONTEXT_USER_DEFERRED		= (__u64)-640,
- 
- 	PERF_CONTEXT_GUEST			= (__u64)-2048,
- 	PERF_CONTEXT_GUEST_KERNEL		= (__u64)-2176,
 -- 
 2.47.2
 
