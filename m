@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-60678-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60679-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23EA5ADA162
-	for <lists+bpf@lfdr.de>; Sun, 15 Jun 2025 10:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DBDD4ADA163
+	for <lists+bpf@lfdr.de>; Sun, 15 Jun 2025 10:56:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A4A53B396B
-	for <lists+bpf@lfdr.de>; Sun, 15 Jun 2025 08:55:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54C363B3B2C
+	for <lists+bpf@lfdr.de>; Sun, 15 Jun 2025 08:55:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8675265CB0;
-	Sun, 15 Jun 2025 08:55:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31EDA265291;
+	Sun, 15 Jun 2025 08:55:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R6s8tc4s"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IblLRluS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C60AC265291
-	for <bpf@vger.kernel.org>; Sun, 15 Jun 2025 08:55:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05BB0265603
+	for <bpf@vger.kernel.org>; Sun, 15 Jun 2025 08:55:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749977736; cv=none; b=CiMrsryUwta1cwTDi5SqAaBRJNh4kJCpHrwPCOBuSBgKpbhdHgGS1wjdONmFqpNLWdKpGU9qCww2C+P8ec3PlpGfbLPZObaAnr7Jdd/i/p8ETk0srN97D7QkxMX+ilo9j3rnYHZqsGYRnInqC92Ppud+/PkzQmlhT82o5J7bMLU=
+	t=1749977736; cv=none; b=lbefMloybtRCvlg5pcEKnvozHkTBSJ3GWlZv2nHMAoJxzn6azlgtZlggNouGhjPfLXP3jbjJ4h3kbvLKR71RaDrRnD4Fc/1T0QqN6KSLsBEBXeuPbV9X71xaXpxJ7n3r22ZBmptkB93ZQbwz88YWRss/HKetEJkRUN07JJHMIqA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1749977736; c=relaxed/simple;
-	bh=l07PHR6HSZKFupA5Ya8t2hdQLS7E8GzY9camrJIMidQ=;
+	bh=Llr3ZHhFI6nBY8SUGERPa/QkbfPY1GXOLybKnEWtsCs=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=lT4KFmJHwd7lbt3EaZWlKizK/zpJMI4pAWblYKPK2K6XGWXDzi6PzUuXkMPtut0nGPw+9DQajXP579fyZd/bWRFpJPN6e5kFo3Nu/07E5EX8R4EGaSzZxE76lr7qHYj2qP3IH9Aibk7XufoYxoRXfbDzexi00m9Qi/Nce/TZKto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R6s8tc4s; arc=none smtp.client-ip=209.85.128.51
+	 MIME-Version; b=CKomy4ieChN7YNYj2CVFpepa1kcka2goj0aQlPLx8xDwyWcd5Tf4J/PLKNzXnsUFFVcnNmVBXMlB8ORvPzL8G4mFECzvoZmjZGHYNNonTJ365BBJCnEc4YG2UNDZwbudRegM5cYVDgm2KfYFiOVkh+x0cK1MFQ69juBDRcNF8fk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IblLRluS; arc=none smtp.client-ip=209.85.221.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-450ce3a2dd5so32964535e9.3
-        for <bpf@vger.kernel.org>; Sun, 15 Jun 2025 01:55:33 -0700 (PDT)
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3a375e72473so1954340f8f.0
+        for <bpf@vger.kernel.org>; Sun, 15 Jun 2025 01:55:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1749977732; x=1750582532; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=myP7rU/iUilKrrqlHVrWTsRbCzKGYPuwZ69wpmH6wEs=;
-        b=R6s8tc4sqv/+mSqoaOeJ6eKqhBjMfyuGmGg9DpCl2O0k52VI2wWAdxN6WrOOB9Oe9j
-         MTF1fHLGKumg5Y9rdwrl46/jg/GVPXLWB54Z8f2Sxv8wwZm6u9gOt90RxOGmI84dVDzx
-         b+R0zEtvEJNBZ2h+j5qSeRRGJjwGHrkXkFAYQj7YkYsdjAbKE1uayorA+A+ZOzTTVG1r
-         +FPqSn0Sy6c8btQZsR9xBzYP+kKYrLBnPmm3m/9CY4W9juuTeQajQfwl3e03DGYNA6Dq
-         ++rFG7s2qZP58XthlyBVkpkMjHge+aTmsK/wazS/YVBYemvL/vtAT9+M/Dvq3IhoEq6Y
-         o4OQ==
+        bh=uSKtMRlvYTBBoRVmXZPpL76b2DYRvDC+ACCiLyc+oVE=;
+        b=IblLRluSwEqL82zKyZw/qIOqjdlXTIrQdz+b0VfJPhctIU+nRQv8nPAdCY13OTKa5R
+         fiaNY52nrOijw4BvtQy5hipk1+m2eGF070k4W/0LnLMjGSDEh7/2c55Z7gfjxHLwxJrD
+         3Go8ucqFWAZvlv+OqYLcTkVxV/ijZwiYSEotZA6d/ZYcDO+PL1svQpuBHrM3pcl4kHfC
+         XHapTxxVKghyoTH65o4FfldidHLpT7QmiwLv2J8TVuvynXoxin7xYvVtuFx6Iu70khMR
+         YSQE/hj6xRNoblLu3VzX9EtevXaXGhUBvCQO9CzlZGCVu+/bPXVExfVWWP+sysgrYBpC
+         qTYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1749977732; x=1750582532;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=myP7rU/iUilKrrqlHVrWTsRbCzKGYPuwZ69wpmH6wEs=;
-        b=QoRFeKc2/IYDXfxvy4OWuq0sRGTVBsX6+9NweUQQr5BaEl4xImbEGeWlM6WNUVTKjX
-         BU8Wk0mRzwDW9En7LpWzKwOBYb93pzdeaJwaS3dduaPsgU9pyK7Qqorpsj3PcJNZQHHO
-         oGq7h9uFM1ebCjPjrc3o1G3u1neYghr7/mmf0I9KwstH71+10d8wRMnYM4aHhTeLu4q7
-         JrBOz/AeZo2NwLN+2Xfv4rp2JMFsxNx+uTsloy/vjnQR3upbn0LgbvFbOIcrSTRuHrtZ
-         rUga37UFbISA99vjuRh4nBDYhNZb8nrszpx18tpQdPhXTTErtTOHieTU26TktBg6CrmC
-         vqSQ==
-X-Gm-Message-State: AOJu0YyUHzAhPG/eZEnqnWNVuzVl0yq6yA27dWXCz41SqqH/mAGze3Tn
-	AkxzG55ntkQckUDywtrZNDEOnxCBwvwzsPzPhLaIH9Rg4+Tg5kTMul1G7S0Gkg==
-X-Gm-Gg: ASbGncvHUZfsfD9mM9auRtvQrmHnQt9BhzNx+XOYKsz2BmyeFn4VoAsB6HFv3SZKTmT
-	yDKlO7SkrBQu5CwL83o3R8wZsBqTzbI6hpX9vNPa4WneGmMy5Knnwq+d7MqkyVVR4aBFHptNXpp
-	pgsIUUPd/vlERdAYdzBQnlJRxbHzPXbiMNgDWE1bbUlXook2Hg+qI+c3JHGznQDjaa8Kp6HK1T/
-	twdZsSvqTYSmyvqmwSfXj88c+qXD2xexTovx5C+9u0MgDEpYxZ/jpTLT7yJ5P0EZjaUuXwfIPR/
-	UQraVMlrDIJQB2GxXNlInvd11JCT5bY4twJfclbOEV/vnXu+X7JP9XcM/rV4a+T2AGZ4ebMr9c3
-	R/26q7Q==
-X-Google-Smtp-Source: AGHT+IH6FEOKT3w6S/lHz/SzqY7kwTriJkQAXFnQT3QtnFi1Zj3mQPDp4Mss4TEab8QrO8DcglGiHw==
-X-Received: by 2002:a05:6000:2013:b0:3a4:f744:e01b with SMTP id ffacd0b85a97d-3a5723af249mr4975788f8f.39.1749977731415;
-        Sun, 15 Jun 2025 01:55:31 -0700 (PDT)
+        bh=uSKtMRlvYTBBoRVmXZPpL76b2DYRvDC+ACCiLyc+oVE=;
+        b=eC9tz3aEJW7qoElz3dehdejEXBoSKOmrJgoA/3dHeJ8QMwP4hbeLSxe7xCWhLt3B52
+         SSHfOo/UQXo1Cox1xpAK+WwzSqE19vFaWBIHQqc2pY/7EuhwxXz8tcalSDhSoPBS/lJ6
+         DBDmhOLqRHQHYt4DnqydtnfxIBSE1EX4lMPCBVOQYM3AvicWahdhnwTrP20J9meVEyIB
+         PlxxdFmd9fMSI62wZdQ9MCMsAxMIjXzlNB+XPiIUjTOuNg8Bu9s+s9XrM3MIreiapvbK
+         BygcxlliMf0PSNquw03ep1dOGMVRjzYCaRPmhfyADjFD7KZzPOFGrapvDzcnwIHY2Aq7
+         nDlQ==
+X-Gm-Message-State: AOJu0YyjN1fiIrq62zEZ2VmZPPNGk2Yz9Cjsep35gGqC+I71vO0ofDIS
+	QK5kkLsDBBd+eDo/mUfueFJZ2K6rly5NEWPTp1o1wgkZ7eThbDpqvnB/u/AErA==
+X-Gm-Gg: ASbGncvD8gxPvsgh9ZE+2TTDKtZmhckViAlCfNcWfLhWRPpqVyZwpIAcSpciLbTRo07
+	mzVtZa124Iz5QL7g9UBdK11FyIyIMMeFDKYdo8OcTflF7eSN0njc0Y68JXHVnnrtQdRN3NdmXoX
+	lq/dtHgnZ+AWkF6WI0Ro82NqYmn2LL5mBvrLFLLyrY3mLWqRwO/T9gjo8cHOTgzc4CdiCUzH7Zg
+	+HzBi/oVWi7G/qq4pooUz+7myXA8a7twX6Jc5nWSiJ6sl3JGXbSppd7h5sxrH6IhgNqrOm6loEU
+	MmROVNYwN3YJSvTw6jTFksXipRao3jZL1XSxwZooPWZwDSUI6ypq6ToAfzCe1QxGeVxka31ZRwL
+	gvRXeBg==
+X-Google-Smtp-Source: AGHT+IHBMrZjdkoaqC5uok7+xKcJc+kR+8utF7QaLxmLip+wp2bzZNNIitmBpp87WI2pH2WrIgYOQQ==
+X-Received: by 2002:a05:6000:220e:b0:3a4:d53d:be22 with SMTP id ffacd0b85a97d-3a572e5db88mr4789118f8f.58.1749977732265;
+        Sun, 15 Jun 2025 01:55:32 -0700 (PDT)
 Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a568a633ddsm7196105f8f.26.2025.06.15.01.55.30
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a568a633ddsm7196105f8f.26.2025.06.15.01.55.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Jun 2025 01:55:30 -0700 (PDT)
+        Sun, 15 Jun 2025 01:55:31 -0700 (PDT)
 From: Anton Protopopov <a.s.protopopov@gmail.com>
 To: bpf@vger.kernel.org,
 	Alexei Starovoitov <ast@kernel.org>,
@@ -82,9 +82,9 @@ To: bpf@vger.kernel.org,
 	Quentin Monnet <qmo@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>
 Cc: Anton Protopopov <a.s.protopopov@gmail.com>
-Subject: [RFC bpf-next 5/9] bpf, x86: add support for indirect jumps
-Date: Sun, 15 Jun 2025 08:59:39 +0000
-Message-Id: <20250615085943.3871208-6-a.s.protopopov@gmail.com>
+Subject: [RFC bpf-next 6/9] bpf: workaround llvm behaviour with indirect jumps
+Date: Sun, 15 Jun 2025 08:59:40 +0000
+Message-Id: <20250615085943.3871208-7-a.s.protopopov@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250615085943.3871208-1-a.s.protopopov@gmail.com>
 References: <20250615085943.3871208-1-a.s.protopopov@gmail.com>
@@ -96,602 +96,132 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add support for a new instruction
+When indirect jumps are enabled in LLVM, it might generate
+unreachable instructions. For example, the following code
 
-    BPF_JMP|BPF_X|BPF_JA, SRC=0, DST=Rx, off=0, imm=fd(M)
+    SEC("syscall") int foo(struct simple_ctx *ctx)
+    {
+            switch (ctx->x) {
+            case 0:
+                    ret_user = 2;
+                    break;
+            case 11:
+                    ret_user = 3;
+                    break;
+            case 27:
+                    ret_user = 4;
+                    break;
+            case 31:
+                    ret_user = 5;
+                    break;
+            default:
+                    ret_user = 19;
+                    break;
+            }
 
-which does an indirect jump to a location stored in Rx. The map M
-is an instruction set map containing all possible targets for this
-particular jump.
+            return 0;
+    }
 
-On the jump the register Rx should have type PTR_TO_INSN. This new
-type assures that the Rx register contains a value (or a range of
-values) loaded from the map M. Typically, this will be done like this
-The code above could have been generated for a switch statement with
-(e.g., this could be a switch statement compiled with LLVM):
+compiles into
 
-    0:   r3 = r1                    # "switch (r3)"
-    1:   if r3 > 0x13 goto +0x666   # check r3 boundaries
-    2:   r3 <<= 0x3                 # r3 is void*, point to an address
-    3:   r1 = 0xbeef ll             # r1 is PTR_TO_MAP_VALUE, r1->map_ptr=M
-    5:   r1 += r3                   # r1 inherits boundaries from r3
-    6:   r1 = *(u64 *)(r1 + 0x0)    # r1 now has type INSN_TO_PTR
-    7:   gotox r1[,imm=fd(M)]       # verifier checks that M == r1->map_ptr
+    <foo>:
+    ;       switch (ctx->x) {
+         224:       79 11 00 00 00 00 00 00 r1 = *(u64 *)(r1 + 0x0)
+         225:       25 01 0f 00 1f 00 00 00 if r1 > 0x1f goto +0xf <foo+0x88>
+         226:       67 01 00 00 03 00 00 00 r1 <<= 0x3
+         227:       18 02 00 00 a8 00 00 00 00 00 00 00 00 00 00 00 r2 = 0xa8 ll
+                    0000000000000718:  R_BPF_64_64  .rodata
+         229:       0f 12 00 00 00 00 00 00 r2 += r1
+         230:       79 21 00 00 00 00 00 00 r1 = *(u64 *)(r2 + 0x0)
+         231:       0d 01 00 00 00 00 00 00 gotox r1
+         232:       05 00 08 00 00 00 00 00 goto +0x8 <foo+0x88>
+         233:       b7 01 00 00 02 00 00 00 r1 = 0x2
+    ;       switch (ctx->x) {
+         234:       05 00 07 00 00 00 00 00 goto +0x7 <foo+0x90>
+         235:       b7 01 00 00 04 00 00 00 r1 = 0x4
+    ;               break;
+         236:       05 00 05 00 00 00 00 00 goto +0x5 <foo+0x90>
+         237:       b7 01 00 00 03 00 00 00 r1 = 0x3
+    ;               break;
+         238:       05 00 03 00 00 00 00 00 goto +0x3 <foo+0x90>
+         239:       b7 01 00 00 05 00 00 00 r1 = 0x5
+    ;               break;
+         240:       05 00 01 00 00 00 00 00 goto +0x1 <foo+0x90>
+         241:       b7 01 00 00 13 00 00 00 r1 = 0x13
+         242:       18 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r2 = 0x0 ll
+                    0000000000000790:  R_BPF_64_64  ret_user
+         244:       7b 12 00 00 00 00 00 00 *(u64 *)(r2 + 0x0) = r1
+    ;       return 0;
+         245:       b4 00 00 00 00 00 00 00 w0 = 0x0
+         246:       95 00 00 00 00 00 00 00 exit
 
-On building the jump graph, and the static analysis, a new function
-of the INSN_SET is used: bpf_insn_set_iter_xlated_offset(map, n).
-It lets to iterate over unique slots in an instruction set (equal
-items can be generated, e.g., for a sparse jump table for a switch,
-where not all possible branches are taken).
+The jump table is
 
-Instruction (3) above loads an address of the first element of the
-map. From BPF point of view, the map is a jump table in native
-architecture, e.g., an array of jump targets. This patch allows
-to grab such an address and then later to adjust an offset, like in
-instruction (5). A value of such type can be dereferenced once to
-create a PTR_TO_INSN, see instruction (6).
+    242, 241, 241, 241, 241, 241, 241, 241,
+    241, 241, 241, 237, 241, 241, 241, 241,
+    241, 241, 241, 241, 241, 241, 241, 241,
+    241, 241, 241, 235, 241, 241, 241, 239
 
-When building the config, the high 16 bytes of the insn_state are
-used, so this patch (theoretically) supports jump tables of up to
-2^16 slots.
+The check
+
+    225:       25 01 0f 00 1f 00 00 00 if r1 > 0x1f goto +0xf <foo+0x88>
+
+makes sure that the r1 register is always loaded from the jump table.
+This makes the instruction
+
+    232:       05 00 08 00 00 00 00 00 goto +0x8 <foo+0x88>
+
+unreachable.
+
+Patch verifier to ignore such unreachable JA instructions.
 
 Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
 ---
- arch/x86/net/bpf_jit_comp.c  |   7 ++
- include/linux/bpf.h          |   2 +
- include/linux/bpf_verifier.h |   4 +
- kernel/bpf/bpf_insn_set.c    |  71 ++++++++++++-
- kernel/bpf/core.c            |   2 +
- kernel/bpf/verifier.c        | 198 ++++++++++++++++++++++++++++++++++-
- 6 files changed, 278 insertions(+), 6 deletions(-)
+ kernel/bpf/verifier.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 37dc83d91832..d20f6775605d 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -2520,6 +2520,13 @@ st:			if (is_imm8(insn->off))
- 
- 			break;
- 
-+		case BPF_JMP | BPF_JA | BPF_X:
-+		case BPF_JMP32 | BPF_JA | BPF_X:
-+			emit_indirect_jump(&prog,
-+					   reg2hex[insn->dst_reg],
-+					   is_ereg(insn->dst_reg),
-+					   image + addrs[i - 1]);
-+			break;
- 		case BPF_JMP | BPF_JA:
- 		case BPF_JMP32 | BPF_JA:
- 			if (BPF_CLASS(insn->code) == BPF_JMP) {
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 008bcd44c60e..3c5eaea2b476 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -952,6 +952,7 @@ enum bpf_reg_type {
- 	PTR_TO_ARENA,
- 	PTR_TO_BUF,		 /* reg points to a read/write buffer */
- 	PTR_TO_FUNC,		 /* reg points to a bpf program function */
-+	PTR_TO_INSN,		 /* reg points to a bpf program instruction */
- 	CONST_PTR_TO_DYNPTR,	 /* reg points to a const struct bpf_dynptr */
- 	__BPF_REG_TYPE_MAX,
- 
-@@ -3601,6 +3602,7 @@ int bpf_insn_set_ready(struct bpf_map *map);
- void bpf_insn_set_release(struct bpf_map *map);
- void bpf_insn_set_adjust(struct bpf_map *map, u32 off, u32 len);
- void bpf_insn_set_adjust_after_remove(struct bpf_map *map, u32 off, u32 len);
-+int bpf_insn_set_iter_xlated_offset(struct bpf_map *map, u32 iter_no);
- 
- struct bpf_insn_ptr {
- 	void *jitted_ip;
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 84b5e6b25c52..80d9afcca488 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -229,6 +229,10 @@ struct bpf_reg_state {
- 	enum bpf_reg_liveness live;
- 	/* if (!precise && SCALAR_VALUE) min/max/tnum don't affect safety */
- 	bool precise;
-+
-+	/* Used to track boundaries of a PTR_TO_INSN */
-+	u32 min_index;
-+	u32 max_index;
- };
- 
- enum bpf_stack_slot_type {
-diff --git a/kernel/bpf/bpf_insn_set.c b/kernel/bpf/bpf_insn_set.c
-index c20e99327118..316cecad60a9 100644
---- a/kernel/bpf/bpf_insn_set.c
-+++ b/kernel/bpf/bpf_insn_set.c
-@@ -9,6 +9,8 @@ struct bpf_insn_set {
- 	struct bpf_map map;
- 	struct mutex state_mutex;
- 	int state;
-+	u32 **unique_offsets;
-+	u32 unique_offsets_cnt;
- 	long *ips;
- 	DECLARE_FLEX_ARRAY(struct bpf_insn_ptr, ptrs);
- };
-@@ -50,6 +52,7 @@ static void insn_set_free(struct bpf_map *map)
- {
- 	struct bpf_insn_set *insn_set = cast_insn_set(map);
- 
-+	kfree(insn_set->unique_offsets);
- 	kfree(insn_set->ips);
- 	bpf_map_area_free(insn_set);
- }
-@@ -69,6 +72,12 @@ static struct bpf_map *insn_set_alloc(union bpf_attr *attr)
- 		return ERR_PTR(-ENOMEM);
- 	}
- 
-+	insn_set->unique_offsets = kzalloc(sizeof(long) * attr->max_entries, GFP_KERNEL);
-+	if (!insn_set->unique_offsets) {
-+		insn_set_free(&insn_set->map);
-+		return ERR_PTR(-ENOMEM);
-+	}
-+
- 	bpf_map_init_from_attr(&insn_set->map, attr);
- 
- 	mutex_init(&insn_set->state_mutex);
-@@ -165,10 +174,25 @@ static u64 insn_set_mem_usage(const struct bpf_map *map)
- 	u64 extra_size = 0;
- 
- 	extra_size += sizeof(long) * map->max_entries; /* insn_set->ips */
-+	extra_size += 4 * map->max_entries; /* insn_set->unique_offsets */
- 
- 	return insn_set_alloc_size(map->max_entries) + extra_size;
- }
- 
-+static int insn_set_map_direct_value_addr(const struct bpf_map *map, u64 *imm, u32 off)
-+{
-+	struct bpf_insn_set *insn_set = cast_insn_set(map);
-+
-+	/* for now, just reject all such loads */
-+	if (off > 0)
-+		return -EINVAL;
-+
-+	/* from BPF's point of view, this map is a jump table */
-+	*imm = (unsigned long)insn_set->ips;
-+
-+	return 0;
-+}
-+
- BTF_ID_LIST_SINGLE(insn_set_btf_ids, struct, bpf_insn_set)
- 
- const struct bpf_map_ops insn_set_map_ops = {
-@@ -181,6 +205,7 @@ const struct bpf_map_ops insn_set_map_ops = {
- 	.map_delete_elem = insn_set_delete_elem,
- 	.map_check_btf = insn_set_check_btf,
- 	.map_mem_usage = insn_set_mem_usage,
-+	.map_direct_value_addr = insn_set_map_direct_value_addr,
- 	.map_btf_id = &insn_set_btf_ids[0],
- };
- 
-@@ -217,6 +242,37 @@ static inline bool valid_offsets(const struct bpf_insn_set *insn_set,
- 	return true;
- }
- 
-+static int cmp_unique_offsets(const void *a, const void *b)
-+{
-+	return *(u32 *)a - *(u32 *)b;
-+}
-+
-+static int bpf_insn_set_init_unique_offsets(struct bpf_insn_set *insn_set)
-+{
-+	u32 cnt = insn_set->map.max_entries, ucnt = 1;
-+	u32 **off = insn_set->unique_offsets;
-+	int i;
-+
-+	/* [0,3,2,4,6,5,5,5,1,1,0,0] */
-+	for (i = 0; i < cnt; i++)
-+		off[i] = &insn_set->ptrs[i].user_value.xlated_off;
-+
-+	/* [0,0,0,1,1,2,3,4,5,5,5,6] */
-+	sort(off, cnt, sizeof(off[0]), cmp_unique_offsets, NULL);
-+
-+	/*
-+	 * [0,1,2,3,4,5,6,x,x,x,x,x]
-+	 *  \.........../
-+	 *    unique_offsets_cnt
-+	 */
-+	for (i = 1; i < cnt; i++)
-+		if (*off[i] != *off[ucnt-1])
-+			off[ucnt++] = off[i];
-+
-+	insn_set->unique_offsets_cnt = ucnt;
-+	return 0;
-+}
-+
- int bpf_insn_set_init(struct bpf_map *map, const struct bpf_prog *prog)
- {
- 	struct bpf_insn_set *insn_set = cast_insn_set(map);
-@@ -247,7 +303,10 @@ int bpf_insn_set_init(struct bpf_map *map, const struct bpf_prog *prog)
- 	for (i = 0; i < map->max_entries; i++)
- 		insn_set->ptrs[i].user_value.xlated_off = insn_set->ptrs[i].orig_xlated_off;
- 
--	return 0;
-+	/*
-+	 * Prepare a set of unique offsets
-+	 */
-+	return bpf_insn_set_init_unique_offsets(insn_set);
- }
- 
- int bpf_insn_set_ready(struct bpf_map *map)
-@@ -336,3 +395,13 @@ void bpf_prog_update_insn_ptr(struct bpf_prog *prog,
- 		}
- 	}
- }
-+
-+int bpf_insn_set_iter_xlated_offset(struct bpf_map *map, u32 iter_no)
-+{
-+	struct bpf_insn_set *insn_set = cast_insn_set(map);
-+
-+	if (iter_no >= insn_set->unique_offsets_cnt)
-+		return -ENOENT;
-+
-+	return *insn_set->unique_offsets[iter_no];
-+}
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index e536a34a32c8..058f5f463b74 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -1706,6 +1706,8 @@ bool bpf_opcode_in_insntable(u8 code)
- 		[BPF_LD | BPF_IND | BPF_B] = true,
- 		[BPF_LD | BPF_IND | BPF_H] = true,
- 		[BPF_LD | BPF_IND | BPF_W] = true,
-+		[BPF_JMP | BPF_JA | BPF_X] = true,
-+		[BPF_JMP32 | BPF_JA | BPF_X] = true,
- 		[BPF_JMP | BPF_JCOND] = true,
- 	};
- #undef BPF_INSN_3_TBL
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 8ac9a0b5af53..fba553f844f1 100644
+index fba553f844f1..2e4116c71f4b 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -206,6 +206,7 @@ static int ref_set_non_owning(struct bpf_verifier_env *env,
- static void specialize_kfunc(struct bpf_verifier_env *env,
- 			     u32 func_id, u16 offset, unsigned long *addr);
- static bool is_trusted_reg(const struct bpf_reg_state *reg);
-+static int add_used_map(struct bpf_verifier_env *env, int fd, struct bpf_map **map_ptr);
- 
- static bool bpf_map_ptr_poisoned(const struct bpf_insn_aux_data *aux)
- {
-@@ -5648,6 +5649,19 @@ static int check_map_access_type(struct bpf_verifier_env *env, u32 regno,
- 	return 0;
+@@ -17792,6 +17792,27 @@ static bool insn_is_gotox(struct bpf_insn *insn)
+ 	       BPF_SRC(insn->code) == BPF_X;
  }
  
-+static int check_insn_set_mem_access(struct bpf_verifier_env *env,
-+				     const struct bpf_map *map,
-+				     int off, int size, u32 mem_size)
-+{
-+	if ((off < 0) || (off % sizeof(long)) || (off/sizeof(long) >= map->max_entries))
-+		return -EACCES;
-+
-+	if (mem_size != 8 || size != 8)
-+		return -EACCES;
-+
-+	return 0;
-+}
-+
- /* check read/write into memory region (e.g., map value, ringbuf sample, etc) */
- static int __check_mem_access(struct bpf_verifier_env *env, int regno,
- 			      int off, int size, u32 mem_size,
-@@ -5666,6 +5680,10 @@ static int __check_mem_access(struct bpf_verifier_env *env, int regno,
- 			mem_size, off, size);
- 		break;
- 	case PTR_TO_MAP_VALUE:
-+		if (reg->map_ptr->map_type == BPF_MAP_TYPE_INSN_SET &&
-+		    check_insn_set_mem_access(env, reg->map_ptr, off, size, mem_size) == 0)
-+			return 0;
-+
- 		verbose(env, "invalid access to map value, value_size=%d off=%d size=%d\n",
- 			mem_size, off, size);
- 		break;
-@@ -7713,12 +7731,18 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
- static int save_aux_ptr_type(struct bpf_verifier_env *env, enum bpf_reg_type type,
- 			     bool allow_trust_mismatch);
- 
-+static bool map_is_insn_set(struct bpf_map *map)
-+{
-+	return map && map->map_type == BPF_MAP_TYPE_INSN_SET;
-+}
-+
- static int check_load_mem(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 			  bool strict_alignment_once, bool is_ldsx,
- 			  bool allow_trust_mismatch, const char *ctx)
- {
- 	struct bpf_reg_state *regs = cur_regs(env);
- 	enum bpf_reg_type src_reg_type;
-+	struct bpf_map *map_ptr_copy = NULL;
- 	int err;
- 
- 	/* check src operand */
-@@ -7733,6 +7757,9 @@ static int check_load_mem(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 
- 	src_reg_type = regs[insn->src_reg].type;
- 
-+	if (src_reg_type == PTR_TO_MAP_VALUE && map_is_insn_set(regs[insn->src_reg].map_ptr))
-+		map_ptr_copy = regs[insn->src_reg].map_ptr;
-+
- 	/* Check if (src_reg + off) is readable. The state of dst_reg will be
- 	 * updated by this call.
- 	 */
-@@ -7743,6 +7770,13 @@ static int check_load_mem(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 				       allow_trust_mismatch);
- 	err = err ?: reg_bounds_sanity_check(env, &regs[insn->dst_reg], ctx);
- 
-+	if (map_ptr_copy) {
-+		regs[insn->dst_reg].type = PTR_TO_INSN;
-+		regs[insn->dst_reg].map_ptr = map_ptr_copy;
-+		regs[insn->dst_reg].min_index = regs[insn->src_reg].min_index;
-+		regs[insn->dst_reg].max_index = regs[insn->src_reg].max_index;
-+	}
-+
- 	return err;
- }
- 
-@@ -15296,6 +15330,22 @@ static int adjust_reg_min_max_vals(struct bpf_verifier_env *env,
- 		return 0;
- 	}
- 
-+	if (dst_reg->type == PTR_TO_MAP_VALUE && map_is_insn_set(dst_reg->map_ptr)) {
-+		if (opcode != BPF_ADD) {
-+			verbose(env, "Operation %s on ptr to instruction set map is prohibited\n",
-+				bpf_alu_string[opcode >> 4]);
-+			return -EACCES;
-+		}
-+		src_reg = &regs[insn->src_reg];
-+		if (src_reg->type != SCALAR_VALUE) {
-+			verbose(env, "Adding non-scalar R%d to an instruction ptr is prohibited\n",
-+				insn->src_reg);
-+			return -EACCES;
-+		}
-+		dst_reg->min_index = src_reg->umin_value / sizeof(long);
-+		dst_reg->max_index = src_reg->umax_value / sizeof(long);
-+	}
-+
- 	if (dst_reg->type != SCALAR_VALUE)
- 		ptr_reg = dst_reg;
- 
-@@ -16797,6 +16847,11 @@ static int check_ld_imm(struct bpf_verifier_env *env, struct bpf_insn *insn)
- 			__mark_reg_unknown(env, dst_reg);
- 			return 0;
- 		}
-+		if (map->map_type == BPF_MAP_TYPE_INSN_SET) {
-+			dst_reg->type = PTR_TO_MAP_VALUE;
-+			dst_reg->off = aux->map_off;
-+			return 0;
-+		}
- 		dst_reg->type = PTR_TO_MAP_VALUE;
- 		dst_reg->off = aux->map_off;
- 		WARN_ON_ONCE(map->max_entries != 1);
-@@ -17552,6 +17607,62 @@ static int mark_fastcall_patterns(struct bpf_verifier_env *env)
- 	return 0;
- }
- 
-+#define SET_HIGH(STATE, LAST)	STATE = (STATE & 0xffffU) | ((LAST) << 16)
-+#define GET_HIGH(STATE)		((u16)((STATE) >> 16))
-+
-+static int gotox_sanity_check(struct bpf_verifier_env *env, int from, int to)
-+{
-+	/* TBD: check that to belongs to the same BPF function && whatever else */
-+
-+	return 0;
-+}
-+
-+static int push_goto_x_edge(int t, struct bpf_verifier_env *env, struct bpf_map *map)
-+{
-+	int *insn_stack = env->cfg.insn_stack;
-+	int *insn_state = env->cfg.insn_state;
-+	u16 prev_edge = GET_HIGH(insn_state[t]);
-+	int err;
-+	int w;
-+
-+	w = bpf_insn_set_iter_xlated_offset(map, prev_edge);
-+	if (w == -ENOENT)
-+		return DONE_EXPLORING;
-+	else if (w < 0)
-+		return w;
-+
-+	err = gotox_sanity_check(env, t, w);
-+	if (err)
-+		return err;
-+
-+	mark_prune_point(env, t);
-+
-+	if (env->cfg.cur_stack >= env->prog->len)
-+		return -E2BIG;
-+	insn_stack[env->cfg.cur_stack++] = w;
-+
-+	mark_jmp_point(env, w);
-+
-+	SET_HIGH(insn_state[t], prev_edge + 1);
-+	return KEEP_EXPLORING;
-+}
-+
-+/* "conditional jump with N edges" */
-+static int visit_goto_x_insn(int t, struct bpf_verifier_env *env, int fd)
-+{
-+	struct bpf_map *map;
-+	int ret;
-+
-+	ret = add_used_map(env, fd, &map);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (map->map_type != BPF_MAP_TYPE_INSN_SET)
-+		return -EINVAL;
-+
-+	return push_goto_x_edge(t, env, map);
-+}
-+
- /* Visits the instruction at index t and returns one of the following:
-  *  < 0 - an error occurred
-  *  DONE_EXPLORING - the instruction was fully explored
-@@ -17642,8 +17753,8 @@ static int visit_insn(int t, struct bpf_verifier_env *env)
- 		return visit_func_call_insn(t, insns, env, insn->src_reg == BPF_PSEUDO_CALL);
- 
- 	case BPF_JA:
--		if (BPF_SRC(insn->code) != BPF_K)
--			return -EINVAL;
-+		if (BPF_SRC(insn->code) == BPF_X)
-+			return visit_goto_x_insn(t, env, insn->imm);
- 
- 		if (BPF_CLASS(insn->code) == BPF_JMP)
- 			off = insn->off;
-@@ -17674,6 +17785,13 @@ static int visit_insn(int t, struct bpf_verifier_env *env)
- 	}
- }
- 
-+static bool insn_is_gotox(struct bpf_insn *insn)
++static bool insn_is_ja(struct bpf_insn *insn)
 +{
 +	return BPF_CLASS(insn->code) == BPF_JMP &&
 +	       BPF_OP(insn->code) == BPF_JA &&
-+	       BPF_SRC(insn->code) == BPF_X;
++	       BPF_SRC(insn->code) == BPF_K;
++}
++
++/*
++ * This is a workaround to overcome a LLVM "bug". The problem is that
++ * sometimes LLVM would generate code like
++ *
++ *     gotox rX
++ *     goto +offset
++ *
++ * even though rX never points to the goto +offset instruction.
++ */
++static inline bool magic_dead_ja(struct bpf_insn *insn, bool have_prev)
++{
++	return have_prev && insn_is_gotox(insn - 1) && insn_is_ja(insn);
 +}
 +
  /* non-recursive depth-first-search to detect loops in BPF program
   * loop == back-edge in directed graph
   */
-@@ -18786,11 +18904,22 @@ static bool func_states_equal(struct bpf_verifier_env *env, struct bpf_func_stat
- 			      struct bpf_func_state *cur, u32 insn_idx, enum exact_level exact)
- {
- 	u16 live_regs = env->insn_aux_data[insn_idx].live_regs_before;
-+	struct bpf_insn *insn;
- 	u16 i;
+@@ -17866,6 +17887,9 @@ static int check_cfg(struct bpf_verifier_env *env)
+ 		struct bpf_insn *insn = &env->prog->insnsi[i];
  
- 	if (old->callback_depth > cur->callback_depth)
- 		return false;
- 
-+	insn = &env->prog->insnsi[insn_idx];
-+	if (insn_is_gotox(insn)) {
-+		struct bpf_reg_state *old_dst = &old->regs[insn->dst_reg];
-+		struct bpf_reg_state *cur_dst = &cur->regs[insn->dst_reg];
+ 		if (insn_state[i] != EXPLORED) {
++			if (magic_dead_ja(insn, i > 0))
++				continue;
 +
-+		if (old_dst->min_index != cur_dst->min_index ||
-+		    old_dst->max_index != cur_dst->max_index)
-+			return false;
-+	}
-+
- 	for (i = 0; i < MAX_BPF_REG; i++)
- 		if (((1 << i) & live_regs) &&
- 		    !regsafe(env, &old->regs[i], &cur->regs[i],
-@@ -19654,6 +19783,55 @@ static int process_bpf_exit_full(struct bpf_verifier_env *env,
- 	return PROCESS_BPF_EXIT;
- }
- 
-+static int check_indirect_jump(struct bpf_verifier_env *env, struct bpf_insn *insn)
-+{
-+	struct bpf_verifier_state *other_branch;
-+	struct bpf_reg_state *dst_reg;
-+	struct bpf_map *map;
-+	int xoff;
-+	int err;
-+	u32 i;
-+
-+	/* this map should already have been added */
-+	err = add_used_map(env, insn->imm, &map);
-+	if (err < 0)
-+		return err;
-+
-+	dst_reg = reg_state(env, insn->dst_reg);
-+	if (dst_reg->type != PTR_TO_INSN) {
-+		verbose(env, "BPF_JA|BPF_X R%d has type %d, expected PTR_TO_INSN\n",
-+				insn->dst_reg, dst_reg->type);
-+		return -EINVAL;
-+	}
-+
-+	if (dst_reg->map_ptr != map) {
-+		verbose(env, "BPF_JA|BPF_X R%d was loaded from map id=%u, expected id=%u\n",
-+				insn->dst_reg, dst_reg->map_ptr->id, map->id);
-+		return -EINVAL;
-+	}
-+
-+	if (dst_reg->max_index >= map->max_entries)
-+		return -EINVAL;
-+
-+	for (i = dst_reg->min_index + 1; i <= dst_reg->max_index; i++) {
-+		xoff = bpf_insn_set_iter_xlated_offset(map, i);
-+		if (xoff == -ENOENT)
-+			break;
-+		if (xoff < 0)
-+			return xoff;
-+
-+		other_branch = push_stack(env, xoff, env->insn_idx, false);
-+		if (!other_branch)
-+			return -EFAULT;
-+	}
-+
-+	env->insn_idx = bpf_insn_set_iter_xlated_offset(map, dst_reg->min_index);
-+	if (env->insn_idx < 0)
-+		return env->insn_idx;
-+
-+	return 0;
-+}
-+
- static int do_check_insn(struct bpf_verifier_env *env, bool *do_print_state)
- {
- 	int err;
-@@ -19756,6 +19934,9 @@ static int do_check_insn(struct bpf_verifier_env *env, bool *do_print_state)
- 
- 			mark_reg_scratched(env, BPF_REG_0);
- 		} else if (opcode == BPF_JA) {
-+			if (BPF_SRC(insn->code) == BPF_X)
-+				return check_indirect_jump(env, insn);
-+
- 			if (BPF_SRC(insn->code) != BPF_K ||
- 			    insn->src_reg != BPF_REG_0 ||
- 			    insn->dst_reg != BPF_REG_0 ||
-@@ -20243,6 +20424,7 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
- 		case BPF_MAP_TYPE_QUEUE:
- 		case BPF_MAP_TYPE_STACK:
- 		case BPF_MAP_TYPE_ARENA:
-+		case BPF_MAP_TYPE_INSN_SET:
- 			break;
- 		default:
- 			verbose(env,
-@@ -20330,10 +20512,11 @@ static int __add_used_map(struct bpf_verifier_env *env, struct bpf_map *map)
-  * its index.
-  * Returns <0 on error, or >= 0 index, on success.
-  */
--static int add_used_map(struct bpf_verifier_env *env, int fd)
-+static int add_used_map(struct bpf_verifier_env *env, int fd, struct bpf_map **map_ptr)
- {
- 	struct bpf_map *map;
- 	CLASS(fd, f)(fd);
-+	int ret;
- 
- 	map = __bpf_map_get(f);
- 	if (IS_ERR(map)) {
-@@ -20341,7 +20524,10 @@ static int add_used_map(struct bpf_verifier_env *env, int fd)
- 		return PTR_ERR(map);
- 	}
- 
--	return __add_used_map(env, map);
-+	ret = __add_used_map(env, map);
-+	if (ret >= 0 && map_ptr)
-+		*map_ptr = map;
-+	return ret;
- }
- 
- /* find and rewrite pseudo imm in ld_imm64 instructions:
-@@ -20435,7 +20621,7 @@ static int resolve_pseudo_ldimm64(struct bpf_verifier_env *env)
- 				break;
- 			}
- 
--			map_idx = add_used_map(env, fd);
-+			map_idx = add_used_map(env, fd, NULL);
- 			if (map_idx < 0)
- 				return map_idx;
- 			map = env->used_maps[map_idx];
-@@ -21459,6 +21645,8 @@ static int jit_subprogs(struct bpf_verifier_env *env)
- 		func[i]->aux->jited_linfo = prog->aux->jited_linfo;
- 		func[i]->aux->linfo_idx = env->subprog_info[i].linfo_idx;
- 		func[i]->aux->arena = prog->aux->arena;
-+		func[i]->aux->used_maps = env->used_maps;
-+		func[i]->aux->used_map_cnt = env->used_map_cnt;
- 		num_exentries = 0;
- 		insn = func[i]->insnsi;
- 		for (j = 0; j < func[i]->len; j++, insn++) {
+ 			verbose(env, "unreachable insn %d\n", i);
+ 			ret = -EINVAL;
+ 			goto err_free;
 -- 
 2.34.1
 
