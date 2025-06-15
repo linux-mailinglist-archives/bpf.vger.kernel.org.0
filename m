@@ -1,154 +1,126 @@
-Return-Path: <bpf+bounces-60668-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60669-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C05DEAD9FC4
-	for <lists+bpf@lfdr.de>; Sat, 14 Jun 2025 22:40:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8AC9ADA06F
+	for <lists+bpf@lfdr.de>; Sun, 15 Jun 2025 02:47:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 439A917660B
-	for <lists+bpf@lfdr.de>; Sat, 14 Jun 2025 20:40:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED0431893B3E
+	for <lists+bpf@lfdr.de>; Sun, 15 Jun 2025 00:47:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E2F42E7F1E;
-	Sat, 14 Jun 2025 20:40:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F67227738;
+	Sun, 15 Jun 2025 00:47:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Iz+CjjiL"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="KiNwADhi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 543BA78F2B;
-	Sat, 14 Jun 2025 20:40:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2633C28EB;
+	Sun, 15 Jun 2025 00:47:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749933649; cv=none; b=ci5sNp1VU6ontIX2KHYJ5kaZuaqNRBuvf3av6dL8n4ogIJY2dVrQ/70l/IudPfVdcnFC9Ee3CRes+vRTPGa0+xoSnNyZh+BWZal9M+8f7Pgq1rZQ55ZkSVD9XIlGqCj2WunGEOQLdMF4f3MuiNDSmdB4/KnMyeYMXbK5fP8BC8M=
+	t=1749948442; cv=none; b=EgNRh0Fq8sUsKQqLka28ww13KdulGwOlXvMC3HNQUzfk/WOU5qi8OAcz68FEd2LUw+gvAuL9wb6Eer93ydWIXobJ+LjBxTRtMoyhVkSltZG76sizC0xpSUO3+gBai9bBFCPYaR/VIQNfyHFRBOypBMGdJ3pmuoOuDDsZY+C9dKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749933649; c=relaxed/simple;
-	bh=Ax85jcqZ/jyVchftvff81IQk1pa6W4aIgegRl2Cn004=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nB1ecVKB6Yb13EzgFC8Bqza6g3POPMYyHbx8XoI9TYM+uO2DBiZ4Q48Kjis+svSD1uA9TjShxKx6moOahRN80T9LUA3Fqt5pphdC8inXvRfrT1tyYnGXOlDm9gMiN4kV3bTlwHDt8GA6xg4vSjv0fysDLzcPF8VZyUkHTzNnqUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Iz+CjjiL; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-748764d8540so2930322b3a.0;
-        Sat, 14 Jun 2025 13:40:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749933647; x=1750538447; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nTlkYKHNNbkrNpkDfXuKI7LdPcN9fZ6NGt2sNIKi0Tk=;
-        b=Iz+CjjiL9J/lfWNWOFO7tvSrzoqdByoueOoLoAA1U5c5J4QbzX4fzUXxnaA6dslxxS
-         odCfMYD6lzBjQrnToCrFYtzDFeuTpAmoc2oJJNH/lPtogozpnoi6RTQ5pYP7tRpZe5Ab
-         RkPXm1EV0u0GLyHIw+XguDHd26RtkWSDuCAcJ4lxOI9tTiNkkzO3jpxtxXUQCNJAjhZT
-         zWQ7KGQDt3UpR0J9GpMaSn9GljYZOlaNq0cP0lUfUFFp+7Zlgl8HwP45D5wx1gI98Xuu
-         avHl4vAqMuykFem3zhYTSr8ame66KaTUnof4/j/3tMCHL43Czy05Gvg7IQpmH6oF3DGO
-         4VYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749933647; x=1750538447;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nTlkYKHNNbkrNpkDfXuKI7LdPcN9fZ6NGt2sNIKi0Tk=;
-        b=Rm244H7EgEQty7kIyc/6x8M9lwu2YXqZCAGi8zIrOg0ClW1CRatOOBcEMRYxubzyqf
-         mHJLnt+hcU9x+g15WRL7e8jZA38IREWYNlEmPzaTiF1rvGj31LPpP3bhEjeq7/jtfgIB
-         NQOan1+YAvuOH4lTK0mU3RWqin0/n1E634cUKKOgQ+yVaA+l9yHLIiHAvNqQs1wlsBR3
-         ea2qqcxXGVE99ilNMH/W8RUHGqnFaoHGq1rc7FJOXO2MUikgENH74d+Ct06GkndsTcmD
-         tEKvNm3Vz5sF8ivivGjKRyHn+L8K/ykqBU+ewNZiN7luk/YWO0daUhNfPfi+ioC2U4U/
-         UUfQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW3j5S43VBiAKVp98XGIDYSSjtWTR5jp+KGk1xdlTH+1OJCoMPgjNIG3s+oEhD43g5uI9Qvi/z/sg==@vger.kernel.org, AJvYcCWXoHaCH9swxKcTM97IRPRhZbnpHH13CqwWHAJCm3PImBpka6GNDb9kd4Kx3KUXX2KjyF8wwn66@vger.kernel.org, AJvYcCWvJTnY/uc04FiziWdQjYqj4j85fAP1OhsLF4rtVVNsnIca66YPdE+CbprEOOSCL6I8DpSrzTW8Ib2YNdS7//srpOzVOcS6@vger.kernel.org, AJvYcCXVENSLB0iAQk/teQHuM2UxFTQNWAFR0bdbjiyok0H+rJg4+amiSXpYXiGoquxHuI9X0KY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzLpUVlF1pcHtGnYD7YTR5B0J2OfbCfObWH8/E+x+INv63sBzGT
-	e6ckmlP7qjmxW6Wc3v5muyB1RUPD6U05yQqdZLxPidoAFzoaai5CmFc=
-X-Gm-Gg: ASbGncth94XsdDIhRXlOgtPnmNwMlfKTCZN0S8+QGgZu9oqr/ASPM8I+FzUaAeen8V+
-	R5siB0ODk/VP2ZDPS40kLcgwcpAX2Lge1SOWL5zH5xVSjsy4IXhO3HKLg9dl129DOUmgq1Btstm
-	7U5U0A+a2qyLk1PFeUnPp5sA5/fo0xRTZuPm2q4RRZQj4HvPqpUAFvCgqaIn+jrBsNF/fGXhqQn
-	UJoMwQRmt/t2A+fkr7F+kTQGAMX5u45B3+Y8vUzCn4DSfkEFDBAhmG27xE/QrKUwECIFkA24VK0
-	WOlgRuKl2YJ9iCuD16MiodSo/E3FqsIRlYg1Iy0=
-X-Google-Smtp-Source: AGHT+IEEfYBkfMvnd2ejMHCgcqw1lGIeuzdai2oQkNeRPlhWZdHmPJQTYFVmN/54ormHyqsjTnDGoQ==
-X-Received: by 2002:a05:6a00:2e11:b0:746:3040:4da2 with SMTP id d2e1a72fcca58-7489cf726c8mr6670373b3a.8.1749933647448;
-        Sat, 14 Jun 2025 13:40:47 -0700 (PDT)
-Received: from fedora.. ([2601:647:6700:3390::c8d1])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74890083fafsm3744908b3a.76.2025.06.14.13.40.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Jun 2025 13:40:46 -0700 (PDT)
-From: Kuniyuki Iwashima <kuni1840@gmail.com>
-To: paul@paul-moore.com
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
-	casey@schaufler-ca.com,
-	daniel@iogearbox.net,
-	eddyz87@gmail.com,
-	gnoack@google.com,
-	haoluo@google.com,
-	jmorris@namei.org,
-	john.fastabend@gmail.com,
-	jolsa@kernel.org,
-	kpsingh@kernel.org,
-	kuni1840@gmail.com,
-	kuniyu@google.com,
-	linux-security-module@vger.kernel.org,
-	martin.lau@linux.dev,
-	memxor@gmail.com,
-	mic@digikod.net,
-	netdev@vger.kernel.org,
-	omosnace@redhat.com,
-	sdf@fomichev.me,
-	selinux@vger.kernel.org,
-	serge@hallyn.com,
-	song@kernel.org,
-	stephen.smalley.work@gmail.com,
-	yonghong.song@linux.dev
-Subject: Re: [PATCH v2 bpf-next 0/4] af_unix: Allow BPF LSM to filter SCM_RIGHTS at sendmsg().
-Date: Sat, 14 Jun 2025 13:40:04 -0700
-Message-ID: <20250614204044.2190213-1-kuni1840@gmail.com>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <1976e40bd50.28a7.85c95baa4474aabc7814e68940a78392@paul-moore.com>
-References: <1976e40bd50.28a7.85c95baa4474aabc7814e68940a78392@paul-moore.com>
+	s=arc-20240116; t=1749948442; c=relaxed/simple;
+	bh=PTAC1rmoxxqDtDPyZ9wFnHW3Rmw7wCFiU51TtUkhBqE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qlPHioeZ526CITRZXHsrPEnFRK468EbSB3bkY8rumJz/hxhx6TfSaPeq6T1pATeELoTy/vmVFSRvnfQfg28+R9KXeWn2ZUcuVmNVoOMYXox2EBYVX6D/2Uw1Dl/WxRglHt+lvQFfQM6zsx8r00DAA3TRBQ95lykUNcxsXrG7odQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=KiNwADhi; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=RAkhQVDjAssyyIalBm4YtnfniE7oZf/ItqEztDaO6MU=; b=KiNwADhilk2jl6QODvMeJVWZ7j
+	hvrxxp8HJy0MOOZ9o+H9JDYI44HM6RjejuecLgRU7pbtm0B+obDnz5RUOdBXbSmiItU5b/zOZlurQ
+	G6LbVovOBe97eWNznBmzmENgrwoLW1xRoPrdFO9fIaf6WsmUFLyksLOFw/x24aIUchujP6eaZ12ya
+	FNT1j2aE5DhJSYgA2LqmpSRpCSvQL0ZcHhXMhrM4GoRMx2QzV8ugCrmJ0vKCs66BEjI1yj3RyZ9iL
+	Sd7FADhWgrCFUWTNUd7gQhkKNvzqvaVZ8B3f7ROo6XdYZGUB3NYQI7sMwcMuohDHmZKnNoyGDu3zl
+	/lrRSI6A==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uQbWp-0000000CoVX-1S8m;
+	Sun, 15 Jun 2025 00:47:19 +0000
+Date: Sun, 15 Jun 2025 01:47:19 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: linux-fsdevel@vger.kernel.org
+Cc: Christian Brauner <brauner@kernel.org>, bpf@vger.kernel.org
+Subject: [bpf_iter] get rid of redundant 3rd argument of prepare_seq_file()
+Message-ID: <20250615004719.GE3011112@ZenIV>
+References: <20250615003011.GD1880847@ZenIV>
+ <20250615003110.GA3011112@ZenIV>
+ <20250615003216.GB3011112@ZenIV>
+ <20250615003321.GC3011112@ZenIV>
+ <20250615003507.GD3011112@ZenIV>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250615003507.GD3011112@ZenIV>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-From: Paul Moore <paul@paul-moore.com>
-Date: Sat, 14 Jun 2025 07:43:46 -0400
-> On June 13, 2025 6:24:15 PM Kuniyuki Iwashima <kuni1840@gmail.com> wrote:
-> > From: Kuniyuki Iwashima <kuniyu@google.com>
-> >
-> > Since commit 77cbe1a6d873 ("af_unix: Introduce SO_PASSRIGHTS."),
-> > we can disable SCM_RIGHTS per socket, but it's not flexible.
-> >
-> > This series allows us to implement more fine-grained filtering for
-> > SCM_RIGHTS with BPF LSM.
-> 
-> My ability to review this over the weekend is limited due to device and 
-> network access, but I'll take a look next week.
-> 
-> That said, it would be good if you could clarify the "filtering" aspect of 
-> your comments; it may be obvious when I'm able to look at the full patchset
+[don't really care which tree that goes through; right now it's
+in viro/vfs.git #work.misc, but if somebody prefers to grab it
+through a different tree, just say so]
+always equal to __get_seq_info(2nd argument)
 
-I meant to mention that just below the quoted part :)
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+---
+ kernel/bpf/bpf_iter.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
----8<---
-Changes:
-  v2: Remove SCM_RIGHTS fd scrubbing functionality
----8<---
+diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
+index 380e9a7cac75..303ab1f42d3a 100644
+--- a/kernel/bpf/bpf_iter.c
++++ b/kernel/bpf/bpf_iter.c
+@@ -38,8 +38,7 @@ static DEFINE_MUTEX(link_mutex);
+ /* incremented on every opened seq_file */
+ static atomic64_t session_id;
+ 
+-static int prepare_seq_file(struct file *file, struct bpf_iter_link *link,
+-			    const struct bpf_iter_seq_info *seq_info);
++static int prepare_seq_file(struct file *file, struct bpf_iter_link *link);
+ 
+ static void bpf_iter_inc_seq_num(struct seq_file *seq)
+ {
+@@ -257,7 +256,7 @@ static int iter_open(struct inode *inode, struct file *file)
+ {
+ 	struct bpf_iter_link *link = inode->i_private;
+ 
+-	return prepare_seq_file(file, link, __get_seq_info(link));
++	return prepare_seq_file(file, link);
+ }
+ 
+ static int iter_release(struct inode *inode, struct file *file)
+@@ -586,9 +585,9 @@ static void init_seq_meta(struct bpf_iter_priv_data *priv_data,
+ 	priv_data->done_stop = false;
+ }
+ 
+-static int prepare_seq_file(struct file *file, struct bpf_iter_link *link,
+-			    const struct bpf_iter_seq_info *seq_info)
++static int prepare_seq_file(struct file *file, struct bpf_iter_link *link)
+ {
++	const struct bpf_iter_seq_info *seq_info = __get_seq_info(link);
+ 	struct bpf_iter_priv_data *priv_data;
+ 	struct bpf_iter_target_info *tinfo;
+ 	struct bpf_prog *prog;
+@@ -653,7 +652,7 @@ int bpf_iter_new_fd(struct bpf_link *link)
+ 	}
+ 
+ 	iter_link = container_of(link, struct bpf_iter_link, link);
+-	err = prepare_seq_file(file, iter_link, __get_seq_info(iter_link));
++	err = prepare_seq_file(file, iter_link);
+ 	if (err)
+ 		goto free_file;
+ 
+-- 
+2.39.5
 
-> in context, but the commit descriptions worry me that perhaps you are still 
-> intending on using the LSM framework to cut SCM_RIGHTS payloads from 
-> individual messages?  Blocking messages at send time if they contain 
-> SCM_RIGHTS is likely okay (pending proper implementation review), but 
-> modifying packets in flight in the LSM framework is not.
-> 
-> Also, a quick administrative note, I see you have marked this as 
-> "bpf-next", however given the diffstat of the proposed changes this 
-> patchset should go to Linus via the LSM tree and not the BPF tree.
-
-This was to kick the BPF CI for the selftest patch, and the __nullable
-arg suffix in patch 3 is BPF specific stuff, but I don't have preference
-here and whichever is fine to me.
 
