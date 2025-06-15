@@ -1,294 +1,165 @@
-Return-Path: <bpf+bounces-60670-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60671-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74278ADA09C
-	for <lists+bpf@lfdr.de>; Sun, 15 Jun 2025 04:18:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55490ADA0AC
+	for <lists+bpf@lfdr.de>; Sun, 15 Jun 2025 04:41:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD9F71731F4
-	for <lists+bpf@lfdr.de>; Sun, 15 Jun 2025 02:18:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BF81188FBB5
+	for <lists+bpf@lfdr.de>; Sun, 15 Jun 2025 02:41:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD4D83596A;
-	Sun, 15 Jun 2025 02:18:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EIetyNsj"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A486726057D;
+	Sun, 15 Jun 2025 02:41:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE3951C27
-	for <bpf@vger.kernel.org>; Sun, 15 Jun 2025 02:18:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B03362CCDB;
+	Sun, 15 Jun 2025 02:41:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749953920; cv=none; b=ApWAIstC/pTPkw8C38kRs8uScs47FnBhwFOf/b3yRadIDNYjn3TsL/G2RR+PjtY/QTC1UfH4Yw4ONsUd/EarnNosa1fDFlaBuEZXHzP6yzuM/MhBbQyC5pbnLkPZ+ZiM9k1lvabXdwWYegXjEX0TFPcOnWbak7q1sP1Dawsdtpo=
+	t=1749955277; cv=none; b=iedtHIqFxoNxCdUqrCqnCrOLSWxGn73ne7yZn7t3e2Km6591GHr9Qe95e5Vyn2ra/iog8llcgyGryeXn8QUrcM+DHbASry+XxvKwXuwnPAgTwk0mqJKHaFCGNEVzUvArTjMwT+xLhr9Fbv6bWN11RbrQmMHCk7WqpzyFaA/iNpc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749953920; c=relaxed/simple;
-	bh=UWXZ0RBYcrS5N2yhANMOjeqGX83mXg1QArCo9aA15Lk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=saV+uIzVbVMrqVwVKEJZXTldNRwGU6tqHRRb9f8N98Tc1Y/spXcnIsUhvppNlzbo/v2idcU2e91OHs2nSsf3dHE6F9zDPmEfiWJPpC+X1s/RfccOypfLGqesFTGgQHKsIOB3XXcW1Q9JaxpzfQSIm00VqMfVz6VCeVAwqaCdfKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EIetyNsj; arc=none smtp.client-ip=209.85.219.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-6f8aa9e6ffdso30436106d6.3
-        for <bpf@vger.kernel.org>; Sat, 14 Jun 2025 19:18:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749953917; x=1750558717; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XmoxOJFF15Lpw7/dBP7O2Tws9Sa12c7E69uYTb0BFWQ=;
-        b=EIetyNsjahdLAt+XeUskM1gKUz1F4Zcq0/XqkSPqwDnRm1ufK8mZFmbFtUsZ6JPzFi
-         FokQXA5asyqD1QYk7prZD5x0xaCs+DqI8m0shwMTnmPxZB425Pm5IXXhunkc6dLOajsI
-         HIooMxhVW5TDrcJ+FA24WwbYirD3NhjpM7/G3qw+KznP1YQEDrdh+ED4yeHtWFlChBrP
-         M8tsAm4r1+vn9WTaHZl7zPMY+ZFpxM1NiaBKec0po/UGirLLyht9wHCHvq2rhwcMxyWZ
-         SiWyqJBKP2NRnhEdMFt4OamAhDCNkhsC/+fEuTu5OYgna99atBmBWWmXktqtpDP2riSH
-         GHBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749953917; x=1750558717;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XmoxOJFF15Lpw7/dBP7O2Tws9Sa12c7E69uYTb0BFWQ=;
-        b=VGejmVrJnKNlcZS8GI3G4dkGqz/A2sOcUn9Bqk6OBbhOSkdCFynWEp4lYgaGVSfVME
-         AxpWQQAwIWv/8X4sPnJ1gSByuR6fh4uF+oYRKKJgVCawUE5VnpR84EIqm6SrHLIUMqWr
-         p//CPUxup+fTBT1W8279d/Xuy3FnqIZfrDHUavYMpHRJ4YXE3IyBgFqxJs5m8om9KfYI
-         D2zRAnhHWL2kc7WkAwInK8JHc8i2uinENzb/SSCdN4ioMKlqK3zGXU6wkNidbgt/k2Q/
-         A8e/7mlqJYftx4wl3bXtB83N0rsKIQ+CSRIYn3hoMmeIkrcmf54hOfSepuYo4hxkoxdo
-         5xgg==
-X-Gm-Message-State: AOJu0YxL56NbRZ44L6KWxi9vZmhA3hI98H4oyNUPbRiuvbNVU03A2kek
-	mre/cI3F6+662YuekRCz2w1UAqKFpTk/+ZnFkGcii0ONiiyztmSXTFHGXwSESH6vIM+HveV7a3e
-	abWPI1y3CGWsyGdONBPrdyWzMdkQI9i8=
-X-Gm-Gg: ASbGncvq8ZThEOb3BCTrg3YOfONC6usYwxYU6R/1dIEVYyIJ0J8HZ4tqvAcNnj62rRN
-	Ea4cwpai07ZhIjK6EnXYDzNmK9UxHvn0uhxtmghmDJGhpPKCmlaIcXnafCDBu/pYOTppPBqGJM1
-	ctECm+cgrU5JnO9FKE0z+TmTPSB+nfVrWQObqzz/WMrizB
-X-Google-Smtp-Source: AGHT+IFWG6f+C/wZ1FM7ucpLmE3CdfBOHDSNB8kG9sxhfuQekhNcoKGz2xgBY32A8FGR64SgsxDDdqkRqqV0le/1W/s=
-X-Received: by 2002:a05:6214:5014:b0:6e8:fe16:4d44 with SMTP id
- 6a1803df08f44-6fb4777ab3cmr75996916d6.31.1749953917635; Sat, 14 Jun 2025
- 19:18:37 -0700 (PDT)
+	s=arc-20240116; t=1749955277; c=relaxed/simple;
+	bh=42hHEKic1VacB13vV/becXEpEt+H8TRWfpKTXWoQMV8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=hRhvDZ6fksH6K5JDjaNGLjsH+3OyNGbfFQ7tkhDpe0GCXY2JtfCOQ5miObe5nBfXedWObjjXbj+dwcwwZhQHd3ienYRDdtyNyqfRkinXbWWNDptp7zhNWrdh+WPWmcfzvIMipLknLq0rl5QXmnGNQlG2cPfVchN2b+kRcXOHAps=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf16.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay03.hostedemail.com (Postfix) with ESMTP id 69D87BE48A;
+	Sun, 15 Jun 2025 02:41:12 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf16.hostedemail.com (Postfix) with ESMTPA id 420FE20018;
+	Sun, 15 Jun 2025 02:41:08 +0000 (UTC)
+Date: Sat, 14 Jun 2025 22:41:07 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, x86@kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, Jiri
+ Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, Indu
+ Bhagat <indu.bhagat@oracle.com>, "Jose E. Marchesi" <jemarch@gnu.org>, Beau
+ Belgrave <beaub@linux.microsoft.com>, Jens Remus <jremus@linux.ibm.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton
+ <akpm@linux-foundation.org>
+Subject: Re: [PATCH v10 07/11] perf: Support deferred user callchains for
+ per CPU events
+Message-ID: <20250614224107.5dfc9f9b@batman.local.home>
+In-Reply-To: <20250614024716.798086123@goodmis.org>
+References: <20250614024605.597728558@goodmis.org>
+	<20250614024716.798086123@goodmis.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250614050617.4161083-1-eddyz87@gmail.com> <20250614050617.4161083-2-eddyz87@gmail.com>
-In-Reply-To: <20250614050617.4161083-2-eddyz87@gmail.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Sun, 15 Jun 2025 10:18:01 +0800
-X-Gm-Features: AX0GCFuAi5r6VGNp9iPVby17BeKubcb6Yek_QblwSvtfkX-r75qpyUaEEpDn6QE
-Message-ID: <CALOAHbBpa_iAU-hCxUXwd0g8WdjSF4zFx44pByqJqZ++y0cWXA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/1] selftests/bpf: more precise
- cpu_mitigations state detection
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
-	yonghong.song@linux.dev, mykyta.yatsenko5@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 420FE20018
+X-Stat-Signature: gagcigm6c7ynt17aaadxay7m3th34881
+X-Rspamd-Server: rspamout06
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1/AgC/Hg0NQSm/NY+yVWvFc6hNX64fqZ10=
+X-HE-Tag: 1749955268-571584
+X-HE-Meta: U2FsdGVkX18lCD0oF62pyZw65mwLuJAHMAhN67MmLhqV6ghsR1XZJaO2RJjn5MfYCfzjG3xQkpp8R+VjIANl1rkY2OgB9NDggp8itSnBCvlQNUX2DXl2mfr1nzsy2uUEsnF538nURAmf2Cgh43IAEqHQ5mc+fOijY3PHg+eQuo/nsCR5PCFM6+BjaSVOClrpihmGvS0HweJhfXFEay0VPUjRR0LOpKdcCfukBv0nPNahLvAZza4zdys0a6aVF/Va8N9dpHTWmc7rH1EBmCwJFknEjpFXzwdxhKucVCC8lL8BBoQYMMl+PUEwj04mSmmHjW66XJIGKsajDHfiKsLVFhgDwiVX7tmTAFjMvET3CzR+XHERyecXHzsbVRAXeEhM
 
-On Sat, Jun 14, 2025 at 1:06=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> test_progs and test_verifier binaries execute unpriv tests under the
-> following conditions:
-> - unpriv BPF is enabled;
-> - CPU mitigations are enabled (see [1] for details).
->
-> The detection of the "mitigations enabled" state is performed by
-> unpriv_helpers.c:get_mitigations_off() via inspecting kernel boot
-> command line, looking for a parameter "mitigations=3Doff".
->
-> Such detection scheme won't work for certain configurations,
-> e.g. when CONFIG_CPU_MITIGATIONS is disabled and boot parameter is
-> not supplied.
->
-> Miss-detection leads to test_progs executing tests meant to be run
-> only with mitigations enabled, e.g.
-> verifier_and.c:known_subreg_with_unknown_reg(), and reporting false
-> failures.
->
-> Internally, verifier sets bpf_verifier_env->bypass_spec_{v1,v4}
-> basing on the value returned by kernel/cpu.c:cpu_mitigations_off().
-> This function is backed by a variable kernel/cpu.c:cpu_mitigations.
->
-> This state is not fully introspect-able via sysfs. The closest proxy
-> is /sys/devices/system/cpu/vulnerabilities/spectre_v1, but it reports
-> "vulnerable" state only if mitigations are disabled *and* current cpu
-> is vulnerable, while verifier does not check cpu state.
->
-> There are only two ways the kernel/cpu.c:cpu_mitigations can be set:
-> - via boot parameter;
-> - via CONFIG_CPU_MITIGATIONS option.
->
-> This commit updates unpriv_helpers.c:get_mitigations_off() to scan
-> /boot/config-$(uname -r) and /proc/config.gz for
-> CONFIG_CPU_MITIGATIONS value in addition to boot command line check.
->
-> Tested using the following configurations:
-> - mitigations enabled (unpriv tests are enabled)
-> - mitigations disabled via boot cmdline (unpriv tests skipped)
-> - mitigations disabled via CONFIG_CPU_MITIGATIONS
->   (unpriv tests skipped)
->
-> [1] https://lore.kernel.org/bpf/20231025031144.5508-1-laoar.shao@gmail.co=
-m/
->
-> Reported-by: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+On Fri, 13 Jun 2025 22:46:12 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Acked-by: Yafang Shao <laoar.shao@gmail.com>
-
-> ---
->  tools/testing/selftests/bpf/unpriv_helpers.c | 94 +++++++++++++++++++-
->  1 file changed, 91 insertions(+), 3 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/unpriv_helpers.c b/tools/testing=
-/selftests/bpf/unpriv_helpers.c
-> index 220f6a963813..625556a0e7f1 100644
-> --- a/tools/testing/selftests/bpf/unpriv_helpers.c
-> +++ b/tools/testing/selftests/bpf/unpriv_helpers.c
-> @@ -1,15 +1,76 @@
->  // SPDX-License-Identifier: GPL-2.0-only
->
-> +#include <errno.h>
->  #include <stdbool.h>
->  #include <stdlib.h>
->  #include <stdio.h>
->  #include <string.h>
-> +#include <sys/utsname.h>
->  #include <unistd.h>
->  #include <fcntl.h>
-> +#include <zlib.h>
->
->  #include "unpriv_helpers.h"
->
-> -static bool get_mitigations_off(void)
-> +static gzFile open_config(void)
+> +/*
+> + * Deferred unwinding callback for per CPU events.
+> + * Note, the request for the deferred unwinding may have happened
+> + * on a different CPU.
+> + */
+> +static void perf_event_deferred_cpu(struct unwind_work *work,
+> +				    struct unwind_stacktrace *trace, u64 timestamp)
 > +{
-> +       struct utsname uts;
-> +       char buf[PATH_MAX];
-> +       gzFile config;
+> +	struct perf_unwind_deferred *defer =
+> +		container_of(work, struct perf_unwind_deferred, unwind_work);
+> +	struct perf_unwind_cpu *cpu_events, *cpu_unwind;
+> +	struct perf_event *event;
+> +	int cpu;
 > +
-> +       if (uname(&uts)) {
-> +               perror("uname");
-> +               goto config_gz;
-> +       }
+> +	guard(rcu)();
+> +	guard(preempt)();
 > +
-> +       snprintf(buf, sizeof(buf), "/boot/config-%s", uts.release);
-> +       config =3D gzopen(buf, "rb");
-> +       if (config)
-> +               return config;
-> +       fprintf(stderr, "gzopen %s: %s\n", buf, strerror(errno));
+> +	cpu = smp_processor_id();
+> +	cpu_events = rcu_dereference(defer->cpu_events);
+> +	cpu_unwind = &cpu_events[cpu];
 > +
-> +config_gz:
-> +       config =3D gzopen("/proc/config.gz", "rb");
-> +       if (!config)
-> +               perror("gzopen /proc/config.gz");
-> +       return config;
+> +	WRITE_ONCE(cpu_unwind->processing, 1);
+> +	/*
+> +	 * Make sure the above is seen before the event->unwind_deferred
+> +	 * is checked. This matches the mb() in rcuwait_rcu_wait_event() in
+> +	 * perf_remove_unwind_deferred().
+> +	 */
+> +	smp_mb();
+> +
+> +	list_for_each_entry_rcu(event, &cpu_unwind->list, unwind_list) {
+> +		/* If unwind_deferred is NULL the event is going away */
+> +		if (unlikely(!event->unwind_deferred))
+> +			continue;
+> +		perf_event_callchain_deferred(event, trace, timestamp);
+> +		/* Only the first CPU event gets the trace */
+> +		break;
+> +	}
+> +
+
+Hmm, I think I need a smp_mb() here too.
+
+> +	WRITE_ONCE(cpu_unwind->processing, 0);
+> +	rcuwait_wake_up(&cpu_unwind->pending_unwind_wait);
 > +}
-> +
-> +static int config_contains(const char *pat)
-> +{
-> +       int n, err, ret =3D -1;
-> +       const char *msg;
-> +       char buf[1024];
-> +       gzFile config;
-> +
-> +       config =3D open_config();
-> +       if (!config)
-> +               goto out;
-> +
-> +       for (;;) {
-> +               if (!gzgets(config, buf, sizeof(buf))) {
-> +                       msg =3D gzerror(config, &err);
-> +                       if (err =3D=3D Z_ERRNO)
-> +                               perror("gzgets /proc/config.gz");
-> +                       else if (err !=3D Z_OK)
-> +                               fprintf(stderr, "gzgets /proc/config.gz: =
-%s", msg);
-> +                       goto out;
-> +               }
-> +               n =3D strlen(buf);
-> +               if (buf[n - 1] =3D=3D '\n')
-> +                       buf[n - 1] =3D 0;
-> +               if (strcmp(buf, pat) =3D=3D 0) {
-> +                       ret =3D true;
-> +                       goto out;
-> +               }
-> +       }
-> +       ret =3D false;
-> +out:
-> +       gzclose(config);
-> +       return ret;
-> +}
-> +
-> +static bool cmdline_contains(const char *pat)
->  {
->         char cmdline[4096], *c;
->         int fd, ret =3D false;
-> @@ -27,7 +88,7 @@ static bool get_mitigations_off(void)
->
->         cmdline[sizeof(cmdline) - 1] =3D '\0';
->         for (c =3D strtok(cmdline, " \n"); c; c =3D strtok(NULL, " \n")) =
-{
-> -               if (strncmp(c, "mitigations=3Doff", strlen(c)))
-> +               if (strncmp(c, pat, strlen(c)))
->                         continue;
->                 ret =3D true;
->                 break;
-> @@ -37,8 +98,21 @@ static bool get_mitigations_off(void)
->         return ret;
->  }
->
-> +static int get_mitigations_off(void)
-> +{
-> +       int enabled_in_config;
-> +
-> +       if (cmdline_contains("mitigations=3Doff"))
-> +               return true;
-> +       enabled_in_config =3D config_contains("CONFIG_CPU_MITIGATIONS=3Dy=
-");
-> +       if (enabled_in_config < 0)
-> +               return -1;
-> +       return !enabled_in_config;
-> +}
-> +
->  bool get_unpriv_disabled(void)
->  {
-> +       int mitigations_off;
->         bool disabled;
->         char buf[2];
->         FILE *fd;
-> @@ -52,5 +126,19 @@ bool get_unpriv_disabled(void)
->                 disabled =3D true;
->         }
->
-> -       return disabled ? true : get_mitigations_off();
-> +       if (disabled)
-> +               return true;
-> +
-> +       /*
-> +        * Some unpriv tests rely on spectre mitigations being on.
-> +        * If mitigations are off or status can't be determined
-> +        * assume that unpriv tests are disabled.
-> +        */
-> +       mitigations_off =3D get_mitigations_off();
-> +       if (mitigations_off < 0) {
-> +               fprintf(stderr,
-> +                       "Can't determine if mitigations are enabled, disa=
-bling unpriv tests.");
-> +               return true;
-> +       }
-> +       return mitigations_off;
->  }
-> --
-> 2.47.1
->
+
+The first smp_mb() is for synchronizing removing of the event from
+perf_remove_unwind_deferred() that has:
+
+	event->unwind_deferred = NULL;
+
+	/*
+	 * Make sure perf_event_deferred_cpu() is done with this event.
+	 * That function will set cpu_unwind->processing and then
+	 * call smp_mb() before iterating the list of its events.
+	 * If the event's unwind_deferred is NULL, it will be skipped.
+	 * The smp_mb() in that function matches the mb() in
+	 * rcuwait_wait_event().
+	 */
+	rcuwait_wait_event(&cpu_unwind->pending_unwind_wait,
+				   !cpu_unwind->processing, TASK_UNINTERRUPTIBLE);
 
 
---=20
-Regards
-Yafang
+So that the unwind_deferred setting to NULL is seen before the
+cpu_unwind->processing is checked. But I think, in theory, without the
+smp_mb() before the clearing of the cpu_unwind->procssing that it can
+be seen before the unwind_deferred is read.
+
+  CPU 0                                    CPU 1
+  -----                                    -----
+read event->unwind_deferred
+
+                                        write NULL > event->unwind_deferre
+                                        smp_mb() (in rcuwait)
+
+CPU writes 0 > cpu_unwind->processing (re-ordered)
+
+                                        reads cpu_unwind->processing == 0
+                                        Starts to free event
+
+Executes perf_event_callchain_deferred()
+
+
+I'll add another smp_mb() to be safe in v11.
+
+-- Steve
+
+
+
+
 
