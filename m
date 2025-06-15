@@ -1,36 +1,36 @@
-Return-Path: <bpf+bounces-60692-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60693-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9193ADA310
-	for <lists+bpf@lfdr.de>; Sun, 15 Jun 2025 20:54:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0913ADA30F
+	for <lists+bpf@lfdr.de>; Sun, 15 Jun 2025 20:54:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 333AE1889254
-	for <lists+bpf@lfdr.de>; Sun, 15 Jun 2025 18:54:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F21673AF570
+	for <lists+bpf@lfdr.de>; Sun, 15 Jun 2025 18:53:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0C5E27B4F9;
-	Sun, 15 Jun 2025 18:54:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E17927BF7E;
+	Sun, 15 Jun 2025 18:54:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from 66-220-144-178.mail-mxout.facebook.com (66-220-144-178.mail-mxout.facebook.com [66.220.144.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6A451922F4
-	for <bpf@vger.kernel.org>; Sun, 15 Jun 2025 18:54:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 206281922F4
+	for <bpf@vger.kernel.org>; Sun, 15 Jun 2025 18:54:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.144.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750013649; cv=none; b=lBDHFmCtdnRiCIEcxTzuq5uZyh34/7j2sbIzbDoufXiUoE1T2NPEnaZgBn95Li1kTpHrEqwQ2E+gr+qmMHEwL15VPUskk3y/ATyc7O0W+xA/7HhFtWSLVDVe/cogmRBQb1AcGdOpNECjg0wOaZJ694XM4064jke9IMMN3olQVys=
+	t=1750013654; cv=none; b=WzlYSgWxjFqIhgzTLfy/09mKbGzl7KCtvwlQsG2xPa4cvyy6FGhUo9NEc8UsIO6xUGc/lAGPet+mKtdzL0Y353/aZdCDH9U+HZWOuatNXlnwjQjpH0wR0jLbiWi2mm1Aymhdsa56kLij8CC9Gnl1VbecFHQRchAXjAK77BUezAM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750013649; c=relaxed/simple;
-	bh=5OAByZtwLWPOAIWSWTiXzyAD1FzoTFXBdESR19/4lSo=;
+	s=arc-20240116; t=1750013654; c=relaxed/simple;
+	bh=PDA1EHCWahQn73OLBZQBN859P/YbuxZhbNl7dcbzyuM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sfHSYgOasah071d35exvtmTr6lowphJhSKIQ6EFAmh6KDwIR1GO/INEdN8EBsRzP0t0a9xZ8aNQjLCBiM/gUZL2dBUioXCv6HvJekssDY9O1AxFw1wd8JUZzgim5tsNMbG2YHP2tT5q7N5jfEQ0vUdz9icqutDihUl5tevh+Ct4=
+	 MIME-Version; b=JiKOrODyRqg42vGLEt4013h0OTbwLrHe6a1fg5ChDzPYRSy9qGL/cX+i6zdTNcDXU+UEaDVNpnnvVeQiP2iwkvYQHHPC6VMWCXwGpqphkG05TB19AjFKD1qcr/D5pTfRM6FtqmSIkwB31CfBf7h7POcQMEsAlwdlaHTfQRFMAG4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.144.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
 Received: by devvm16039.vll0.facebook.com (Postfix, from userid 128203)
-	id 336F99A90F8A; Sun, 15 Jun 2025 11:53:56 -0700 (PDT)
+	id 4C9159A90FA3; Sun, 15 Jun 2025 11:54:01 -0700 (PDT)
 From: Yonghong Song <yonghong.song@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -38,9 +38,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	kernel-team@fb.com,
 	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v2 2/3] selftests/bpf: Add test_usdt_multispec.inc.h for sharing between multiple progs
-Date: Sun, 15 Jun 2025 11:53:56 -0700
-Message-ID: <20250615185356.2757535-1-yonghong.song@linux.dev>
+Subject: [PATCH bpf-next v2 3/3] selftests/bpf: Add subtest usdt_multispec_fail with adjustable BPF_USDT_MAX_SPEC_CNT
+Date: Sun, 15 Jun 2025 11:54:01 -0700
+Message-ID: <20250615185401.2757703-1-yonghong.song@linux.dev>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250615185345.2756663-1-yonghong.song@linux.dev>
 References: <20250615185345.2756663-1-yonghong.song@linux.dev>
@@ -52,98 +52,70 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Replace test_usdt_multispec.c to test_usdt_multispec.inc.h so the bpf pro=
-g
-usdt_100 can be used for multiple bpf programs. The newer test_usdt_multi=
-spec.c
-will just include test_usdt_multispec.inc.h.
+Add udst_multispec_fail subtest. For arm64/clang20 build, the
+BPF_USDT_MAX_SPEC_CNT is set to 2. Otherwise, the BPF_USDT_MAX_SPEC_CNT
+remains the default value 256. This resolved the previous test failure.
 
 Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 ---
- .../selftests/bpf/progs/test_usdt_multispec.c | 28 +----------------
- .../bpf/progs/test_usdt_multispec.inc.h       | 30 +++++++++++++++++++
- 2 files changed, 31 insertions(+), 27 deletions(-)
+ tools/testing/selftests/bpf/prog_tests/usdt.c          |  7 ++++---
+ .../selftests/bpf/progs/test_usdt_multispec_fail.c     | 10 ++++++++++
+ 2 files changed, 14 insertions(+), 3 deletions(-)
  create mode 100644 tools/testing/selftests/bpf/progs/test_usdt_multispec=
-.inc.h
+_fail.c
 
-diff --git a/tools/testing/selftests/bpf/progs/test_usdt_multispec.c b/to=
-ols/testing/selftests/bpf/progs/test_usdt_multispec.c
-index 962f3462066a..97c6082df328 100644
---- a/tools/testing/selftests/bpf/progs/test_usdt_multispec.c
-+++ b/tools/testing/selftests/bpf/progs/test_usdt_multispec.c
-@@ -1,30 +1,4 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
+diff --git a/tools/testing/selftests/bpf/prog_tests/usdt.c b/tools/testin=
+g/selftests/bpf/prog_tests/usdt.c
+index dc29ef94312a..cc7f38b03a96 100644
+--- a/tools/testing/selftests/bpf/prog_tests/usdt.c
++++ b/tools/testing/selftests/bpf/prog_tests/usdt.c
+@@ -7,6 +7,7 @@
 =20
--#include "vmlinux.h"
--#include <bpf/bpf_helpers.h>
--#include <bpf/usdt.bpf.h>
--
--/* this file is linked together with test_usdt.c to validate that usdt.b=
-pf.h
-- * can be included in multiple .bpf.c files forming single final BPF obj=
-ect
-- * file
-- */
--
--extern int my_pid;
--
--int usdt_100_called;
--int usdt_100_sum;
--
--SEC("usdt//proc/self/exe:test:usdt_100")
--int BPF_USDT(usdt_100, int x)
--{
--	if (my_pid !=3D (bpf_get_current_pid_tgid() >> 32))
--		return 0;
--
--	__sync_fetch_and_add(&usdt_100_called, 1);
--	__sync_fetch_and_add(&usdt_100_sum, x);
--
--	return 0;
--}
--
--char _license[] SEC("license") =3D "GPL";
-+#include "test_usdt_multispec.inc.h"
-diff --git a/tools/testing/selftests/bpf/progs/test_usdt_multispec.inc.h =
-b/tools/testing/selftests/bpf/progs/test_usdt_multispec.inc.h
+ #include "test_usdt.skel.h"
+ #include "test_urandom_usdt.skel.h"
++#include "test_usdt_multispec_fail.skel.h"
+=20
+ int lets_test_this(int);
+=20
+@@ -305,10 +306,10 @@ static void subtest_multispec_usdt(void)
+ static void subtest_multispec_fail_usdt(void)
+ {
+ 	LIBBPF_OPTS(bpf_usdt_opts, opts);
+-	struct test_usdt *skel;
++	struct test_usdt_multispec_fail *skel;
+ 	int err;
+=20
+-	skel =3D test_usdt__open_and_load();
++	skel =3D test_usdt_multispec_fail__open_and_load();
+ 	if (!ASSERT_OK_PTR(skel, "skel_open"))
+ 		return;
+=20
+@@ -322,7 +323,7 @@ static void subtest_multispec_fail_usdt(void)
+ 	ASSERT_EQ(err, -E2BIG, "usdt_300_attach_err");
+=20
+ cleanup:
+-	test_usdt__destroy(skel);
++	test_usdt_multispec_fail__destroy(skel);
+ }
+=20
+ static FILE *urand_spawn(int *pid)
+diff --git a/tools/testing/selftests/bpf/progs/test_usdt_multispec_fail.c=
+ b/tools/testing/selftests/bpf/progs/test_usdt_multispec_fail.c
 new file mode 100644
-index 000000000000..962f3462066a
+index 000000000000..4cca3d8d45fb
 --- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_usdt_multispec.inc.h
-@@ -0,0 +1,30 @@
++++ b/tools/testing/selftests/bpf/progs/test_usdt_multispec_fail.c
+@@ -0,0 +1,10 @@
 +// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
++/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
 +
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/usdt.bpf.h>
++#if defined(__clang__) && defined(__TARGET_ARCH_arm64)
++#define BPF_USDT_MAX_SPEC_CNT 2
++#endif
 +
-+/* this file is linked together with test_usdt.c to validate that usdt.b=
-pf.h
-+ * can be included in multiple .bpf.c files forming single final BPF obj=
-ect
-+ * file
-+ */
++int my_pid;
 +
-+extern int my_pid;
-+
-+int usdt_100_called;
-+int usdt_100_sum;
-+
-+SEC("usdt//proc/self/exe:test:usdt_100")
-+int BPF_USDT(usdt_100, int x)
-+{
-+	if (my_pid !=3D (bpf_get_current_pid_tgid() >> 32))
-+		return 0;
-+
-+	__sync_fetch_and_add(&usdt_100_called, 1);
-+	__sync_fetch_and_add(&usdt_100_sum, x);
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") =3D "GPL";
++#include "test_usdt_multispec.inc.h"
 --=20
 2.47.1
 
