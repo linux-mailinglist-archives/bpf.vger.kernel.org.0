@@ -1,45 +1,47 @@
-Return-Path: <bpf+bounces-60684-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60685-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85065ADA239
-	for <lists+bpf@lfdr.de>; Sun, 15 Jun 2025 17:05:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 143F2ADA23B
+	for <lists+bpf@lfdr.de>; Sun, 15 Jun 2025 17:06:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86C313AEAA2
-	for <lists+bpf@lfdr.de>; Sun, 15 Jun 2025 15:05:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 530D53AEA87
+	for <lists+bpf@lfdr.de>; Sun, 15 Jun 2025 15:05:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 332A725FA31;
-	Sun, 15 Jun 2025 15:05:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 588D2200132;
+	Sun, 15 Jun 2025 15:06:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bKvtJ6u9"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vQazZhLJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4151525F996
-	for <bpf@vger.kernel.org>; Sun, 15 Jun 2025 15:05:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93F152116EE
+	for <bpf@vger.kernel.org>; Sun, 15 Jun 2025 15:06:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749999946; cv=none; b=dfTxvH9K5RZjQVXa/amQOQ6QRmMI18WAJBs9YS9i0Mdj2dOFLT09NgpzZ+/N/0XCjw6G3Zk8YTua8RMj8FVWxQl/KeOnm4NjsypfehpVYhIDraysB4s1sFvYtF5Rpj3igWjDyIgb67fTLniHQ+8Aoluu8aEZMtHFRl9Fabd/04o=
+	t=1749999967; cv=none; b=Nlptd4iFRspuBty3H1MH1VF6lr0TF9XYEd8AOcA4QtS4KI9uIgPAoYDeg3tiKwKDH+LMmk9x9jld6G7i/50okSAvCg7oVk2cjVYe5hSJO8eo9IkYFwV3kIzwWJUHpAQLXqSx+Z6UDTvSpSx7c6LU2WbyBYMZ0zSXDXGvpr+OCzI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749999946; c=relaxed/simple;
-	bh=9x5d0MuH0alaGnZtLVJbiwg3/L6hyK1sziXN8OX+yS4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eFarJGL7e9YBgu/TgHzYZvj2rqHO1hNxPODLZQIJurbZ5OqoU6LkdJ51MKQaUbHYY/cntsiPRiHPyMP/+ZyNCcuejAY90ut2JvcvbgSoKp1wVnOjir27zdNsFpai2YOlM8N1qcXfu+Dstuw6RSoLT96qh55ghzFNUKGL6XZX/gY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bKvtJ6u9; arc=none smtp.client-ip=95.215.58.181
+	s=arc-20240116; t=1749999967; c=relaxed/simple;
+	bh=xNIUWzj16PhCwrAXHyDoUIlgH6ClK+EeYkFEw9nwUiQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=byzPoYvvqLRRq+/tvlRUL2J1Ves3pQXiUUVCqOQ6lp+9xRHBU9eimLo82d/UMPnDaeFCwuimXJcGh0ZK7MauYnEVUDPZEOm9NlhPjK6x2nzb9Wopf4xJ3wROr91DL38S+dW99lbqN+eMgJEBzjsHbCQ5GamAjuUrTt1qzwcY/HY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vQazZhLJ; arc=none smtp.client-ip=95.215.58.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1749999942;
+	t=1749999961;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=Xi5PEas38TLaRRKxnR4rXfoajkd7D2bySyWzaXWpC2A=;
-	b=bKvtJ6u9UmcUuUnsvV7wKQo4hMfeR3bPLWoEOVDvhy6/SkgL5L6diqee9HBwXsRnIOBGcW
-	PM1bVPb/zfkfKHa/luoQ9n24nVe3XpxcciJEeMETl12LaD5HreCUvHfnJGLRgBY86pA569
-	B0ml9SI4x9degePeM/O3+9ohHsPTKcs=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZnVXyo9YAc3mEYtp3xAGNvddXlHt2TT59D1agtzUoxA=;
+	b=vQazZhLJpo4STKY9wkJFHJO2MiNtBKI+Y29cEkFtlRsHCC4Pye5+gYR+Qs/yQdNaq0MeM9
+	ypsDz2SGYBsN41f/SqcbGbXCpu2RhVIvjo4IdCKGo8F8ryY4M4GpIoiGj3r5D9C/0uQRK/
+	hJwaMy8+r/cTiaQWcQRTqFKjfJaswM8=
 From: Tao Chen <chen.dylane@linux.dev>
 To: song@kernel.org,
 	jolsa@kernel.org,
@@ -61,9 +63,11 @@ Cc: bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org,
 	Tao Chen <chen.dylane@linux.dev>
-Subject: [PATCH bpf-next v2 1/2] bpf: Add show_fdinfo for uprobe_multi
-Date: Sun, 15 Jun 2025 23:05:13 +0800
-Message-ID: <20250615150514.418581-1-chen.dylane@linux.dev>
+Subject: [PATCH bpf-next v2 2/2] bpf: Add show_fdinfo for kprobe_multi
+Date: Sun, 15 Jun 2025 23:05:14 +0800
+Message-ID: <20250615150514.418581-2-chen.dylane@linux.dev>
+In-Reply-To: <20250615150514.418581-1-chen.dylane@linux.dev>
+References: <20250615150514.418581-1-chen.dylane@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -73,101 +77,85 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Show uprobe_multi link info with fdinfo, the info as follows:
+Show kprobe_multi link info with fdinfo, the info as follows:
 
-link_type:	uprobe_multi
-link_id:	9
-prog_tag:	e729f789e34a8eca
-prog_id:	58
-type:	uprobe_multi
-uprobe_cnt:	3
-pid:	0
-path:	/home/dylane/bpf/tools/testing/selftests/bpf/test_progs
-offset:	0xa69ed7
-ref_ctr_offset:	0x0
-cookie:	3
-offset:	0xa69ee2
-ref_ctr_offset:	0x0
+link_type:	kprobe_multi
+link_id:	3
+prog_tag:	e8225cbcc9cdffef
+prog_id:	29
+type:	kprobe_multi
+kprobe_cnt:	8
+missed:	0
+func:	bpf_fentry_test1+0x0/0x20
 cookie:	1
-offset:	0xa69eed
-ref_ctr_offset:	0x0
+func:	bpf_fentry_test2+0x0/0x20
+cookie:	7
+func:	bpf_fentry_test3+0x0/0x20
 cookie:	2
+func:	bpf_fentry_test4+0x0/0x20
+cookie:	3
+func:	bpf_fentry_test5+0x0/0x20
+cookie:	4
+func:	bpf_fentry_test6+0x0/0x20
+cookie:	5
+func:	bpf_fentry_test7+0x0/0x20
+cookie:	6
+func:	bpf_fentry_test8+0x0/0x10
+cookie:	8
 
 Signed-off-by: Tao Chen <chen.dylane@linux.dev>
 ---
- kernel/trace/bpf_trace.c | 48 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
-
-Change list:
-  v1 -> v2:
-    - replace 'func_cnt' with 'uprobe_cnt'.(Andrii)
-    - print func name is more readable and security for kprobe_multi.(Alexei)
-  v1:
-  https://lore.kernel.org/bpf/20250612115556.295103-1-chen.dylane@linux.dev
+ kernel/trace/bpf_trace.c | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
 diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 24b94870b50..9a8ca8a8e2b 100644
+index 9a8ca8a8e2b..d060c61e4e4 100644
 --- a/kernel/trace/bpf_trace.c
 +++ b/kernel/trace/bpf_trace.c
-@@ -3157,10 +3157,58 @@ static int bpf_uprobe_multi_link_fill_link_info(const struct bpf_link *link,
+@@ -2623,10 +2623,43 @@ static int bpf_kprobe_multi_link_fill_link_info(const struct bpf_link *link,
  	return err;
  }
  
 +#ifdef CONFIG_PROC_FS
-+static void bpf_uprobe_multi_show_fdinfo(const struct bpf_link *link,
++static void bpf_kprobe_multi_show_fdinfo(const struct bpf_link *link,
 +					 struct seq_file *seq)
 +{
-+	struct bpf_uprobe_multi_link *umulti_link;
-+	char *p, *buf;
++	struct bpf_kprobe_multi_link *kmulti_link;
++	char sym[KSYM_NAME_LEN];
 +
-+	umulti_link = container_of(link, struct bpf_uprobe_multi_link, link);
-+
-+	buf = kmalloc(PATH_MAX, GFP_KERNEL);
-+	if (!buf)
-+		return;
-+
-+	p = d_path(&umulti_link->path, buf, PATH_MAX);
-+	if (IS_ERR(p)) {
-+		kfree(buf);
-+		return;
-+	}
++	kmulti_link = container_of(link, struct bpf_kprobe_multi_link, link);
 +
 +	seq_printf(seq,
 +		   "type:\t%s\n"
-+		   "uprobe_cnt:\t%u\n"
-+		   "pid:\t%u\n"
-+		   "path:\t%s\n",
-+		   umulti_link->flags == BPF_F_UPROBE_MULTI_RETURN ?
-+					 "uretprobe_multi" : "uprobe_multi",
-+		   umulti_link->cnt,
-+		   umulti_link->task ? task_pid_nr_ns(umulti_link->task,
-+			   task_active_pid_ns(current)) : 0,
-+		   p);
++		   "kprobe_cnt:\t%u\n"
++		   "missed:\t%lu\n",
++		   kmulti_link->flags == BPF_F_KPROBE_MULTI_RETURN ? "kretprobe_multi" :
++					 "kprobe_multi",
++		   kmulti_link->cnt,
++		   kmulti_link->fp.nmissed);
 +
-+	for (int i = 0; i < umulti_link->cnt; i++) {
++	for (int i = 0; i < kmulti_link->cnt; i++) {
++		sprint_symbol(sym, kmulti_link->addrs[i]);
 +		seq_printf(seq,
-+			   "offset:\t%#llx\n"
-+			   "ref_ctr_offset:\t%#lx\n"
-+			   "cookie:\t%llu\n",
-+			   umulti_link->uprobes[i].offset,
-+			   umulti_link->uprobes[i].ref_ctr_offset,
-+			   umulti_link->uprobes[i].cookie);
++			  "func:\t%s\n"
++			  "cookie:\t%llu\n",
++			  sym,
++			  kmulti_link->cookies[i]
++			  );
 +	}
-+
-+	kfree(buf);
 +}
 +#endif
 +
- static const struct bpf_link_ops bpf_uprobe_multi_link_lops = {
- 	.release = bpf_uprobe_multi_link_release,
- 	.dealloc_deferred = bpf_uprobe_multi_link_dealloc,
- 	.fill_link_info = bpf_uprobe_multi_link_fill_link_info,
+ static const struct bpf_link_ops bpf_kprobe_multi_link_lops = {
+ 	.release = bpf_kprobe_multi_link_release,
+ 	.dealloc_deferred = bpf_kprobe_multi_link_dealloc,
+ 	.fill_link_info = bpf_kprobe_multi_link_fill_link_info,
 +#ifdef CONFIG_PROC_FS
-+	.show_fdinfo = bpf_uprobe_multi_show_fdinfo,
++	.show_fdinfo = bpf_kprobe_multi_show_fdinfo,
 +#endif
  };
  
- static int uprobe_prog_run(struct bpf_uprobe *uprobe,
+ static void bpf_kprobe_multi_cookie_swap(void *a, void *b, int size, const void *priv)
 -- 
 2.48.1
 
