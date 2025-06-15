@@ -1,211 +1,174 @@
-Return-Path: <bpf+bounces-60683-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60684-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16574ADA201
-	for <lists+bpf@lfdr.de>; Sun, 15 Jun 2025 16:01:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85065ADA239
+	for <lists+bpf@lfdr.de>; Sun, 15 Jun 2025 17:05:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 575CD18908D8
-	for <lists+bpf@lfdr.de>; Sun, 15 Jun 2025 14:01:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86C313AEAA2
+	for <lists+bpf@lfdr.de>; Sun, 15 Jun 2025 15:05:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D39F26B094;
-	Sun, 15 Jun 2025 14:00:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 332A725FA31;
+	Sun, 15 Jun 2025 15:05:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="A7TiUfOZ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bKvtJ6u9"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 801A33A1BA;
-	Sun, 15 Jun 2025 14:00:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4151525F996
+	for <bpf@vger.kernel.org>; Sun, 15 Jun 2025 15:05:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749996050; cv=none; b=RwXPbOBOndyo1bOT6Gx6Rdrd/Lx5lxwb1DQCae+A7KIqa/deBIrfw6HEn/10iYuN5YQZE4I1aa+UNdRmxr9puVh8RGMJEctZbTOazfhxYPlchC3NVpyuNXJ+kqy3pQUdTHcpCjuTa22DcT2MpsCPQXJZF0wBxilpXmIpOLKn46Q=
+	t=1749999946; cv=none; b=dfTxvH9K5RZjQVXa/amQOQ6QRmMI18WAJBs9YS9i0Mdj2dOFLT09NgpzZ+/N/0XCjw6G3Zk8YTua8RMj8FVWxQl/KeOnm4NjsypfehpVYhIDraysB4s1sFvYtF5Rpj3igWjDyIgb67fTLniHQ+8Aoluu8aEZMtHFRl9Fabd/04o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749996050; c=relaxed/simple;
-	bh=tzBgEfNbszZFjneQrhgK2sYcgixJ885U9DAEQALxusE=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=kSzcFHteaYoeGMavDklN0+PjIXX1jeftU40ZsklZ7btepxqWgq13OV/JUahTXFq2asRrWbRLMXxCsLFTj8U5ZdC7cfNN/GKiLKQdguoj0heH0eYSSjGoW6yWz5b8CAoBl/BNvszvnlcS4mqHfMD1BU7jruJMFZUDDs1CR+GiQPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=A7TiUfOZ; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id D7A6B205B1;
-	Sun, 15 Jun 2025 14:00:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1749996037;
+	s=arc-20240116; t=1749999946; c=relaxed/simple;
+	bh=9x5d0MuH0alaGnZtLVJbiwg3/L6hyK1sziXN8OX+yS4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eFarJGL7e9YBgu/TgHzYZvj2rqHO1hNxPODLZQIJurbZ5OqoU6LkdJ51MKQaUbHYY/cntsiPRiHPyMP/+ZyNCcuejAY90ut2JvcvbgSoKp1wVnOjir27zdNsFpai2YOlM8N1qcXfu+Dstuw6RSoLT96qh55ghzFNUKGL6XZX/gY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bKvtJ6u9; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1749999942;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YxXS5lj0DrF49L/g0V9R5FkVyXH9S7gR1QjB4hu3uuE=;
-	b=A7TiUfOZSoNCNlpd3feyEIMq7JweNSA26Ki+asH1Rd/WvFZi6wU8mGFvLOiyagoFjwL8JL
-	xo9M58/kDnjnSORKMzRqxzrCLgPAGB8Bu5MzN3EMIYoY6aN+6oHKGrYFTIO3qN/Pw67h/B
-	IMc2jyqqF5WnGXYgwIPTBVuwK7QfL9I9ZUJ6sI7veC8g4rtStWZ/IVP4WS757EaSs2cq3B
-	2xNCG4rBNC84HJC/1B3ddFVbvd1E5riocXBoJdq4moXdkt4MuVYmrwo0+OjTp/wdmH6h4R
-	eSQhByt4F2xarijNXWHhMAAbmtcVLzvls0lGIxnTZz73uWzR5oqhqzM6rTospw==
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Xi5PEas38TLaRRKxnR4rXfoajkd7D2bySyWzaXWpC2A=;
+	b=bKvtJ6u9UmcUuUnsvV7wKQo4hMfeR3bPLWoEOVDvhy6/SkgL5L6diqee9HBwXsRnIOBGcW
+	PM1bVPb/zfkfKHa/luoQ9n24nVe3XpxcciJEeMETl12LaD5HreCUvHfnJGLRgBY86pA569
+	B0ml9SI4x9degePeM/O3+9ohHsPTKcs=
+From: Tao Chen <chen.dylane@linux.dev>
+To: song@kernel.org,
+	jolsa@kernel.org,
+	kpsingh@kernel.org,
+	mattbobrowski@google.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	rostedt@goodmis.org,
+	mhiramat@kernel.org,
+	mathieu.desnoyers@efficios.com
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	Tao Chen <chen.dylane@linux.dev>
+Subject: [PATCH bpf-next v2 1/2] bpf: Add show_fdinfo for uprobe_multi
+Date: Sun, 15 Jun 2025 23:05:13 +0800
+Message-ID: <20250615150514.418581-1-chen.dylane@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Sun, 15 Jun 2025 16:00:30 +0200
-Message-Id: <DAN5THWRO6KS.XXZ00IOTQZH9@bootlin.com>
-Cc: "Peter Zijlstra" <peterz@infradead.org>, "Alexei Starovoitov"
- <ast@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>, "Andrii
- Nakryiko" <andrii@kernel.org>, "Martin KaFai Lau" <martin.lau@linux.dev>,
- "Eduard Zingerman" <eddyz87@gmail.com>, "Song Liu" <song@kernel.org>,
- "Yonghong Song" <yonghong.song@linux.dev>, "John Fastabend"
- <john.fastabend@gmail.com>, "KP Singh" <kpsingh@kernel.org>, "Stanislav
- Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>, "Jiri Olsa"
- <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>, "David Ahern"
- <dsahern@kernel.org>, "Thomas Gleixner" <tglx@linutronix.de>, "Ingo Molnar"
- <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>, "Dave Hansen"
- <dave.hansen@linux.intel.com>, "X86 ML" <x86@kernel.org>, "H. Peter Anvin"
- <hpa@zytor.com>, "Menglong Dong" <imagedong@tencent.com>,
- =?utf-8?q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>, "Pu Lehui"
- <pulehui@huawei.com>, "Puranjay Mohan" <puranjay@kernel.org>, "Paul
- Walmsley" <paul.walmsley@sifive.com>, "Palmer Dabbelt"
- <palmer@dabbelt.com>, "Albert Ou" <aou@eecs.berkeley.edu>, "Alexandre
- Ghiti" <alex@ghiti.fr>, "Ilya Leoshkevich" <iii@linux.ibm.com>, "Heiko
- Carstens" <hca@linux.ibm.com>, "Vasily Gorbik" <gor@linux.ibm.com>,
- "Alexander Gordeev" <agordeev@linux.ibm.com>, "Christian Borntraeger"
- <borntraeger@linux.ibm.com>, "Sven Schnelle" <svens@linux.ibm.com>, "Hari
- Bathini" <hbathini@linux.ibm.com>, "Christophe Leroy"
- <christophe.leroy@csgroup.eu>, "Naveen N Rao" <naveen@kernel.org>,
- "Madhavan Srinivasan" <maddy@linux.ibm.com>, "Michael Ellerman"
- <mpe@ellerman.id.au>, "Nicholas Piggin" <npiggin@gmail.com>, "Mykola
- Lysenko" <mykolal@fb.com>, "Shuah Khan" <shuah@kernel.org>, "Maxime
- Coquelin" <mcoquelin.stm32@gmail.com>, "Alexandre Torgue"
- <alexandre.torgue@foss.st.com>, <ebpf@linuxfoundation.org>, "Thomas
- Petazzoni" <thomas.petazzoni@bootlin.com>, "Bastien Curutchet"
- <bastien.curutchet@bootlin.com>, "Network Development"
- <netdev@vger.kernel.org>, "bpf" <bpf@vger.kernel.org>, "LKML"
- <linux-kernel@vger.kernel.org>, =?utf-8?q?Bj=C3=B6rn_T=C3=B6pel?=
- <bjorn@rivosinc.com>, "linux-riscv" <linux-riscv@lists.infradead.org>,
- "linux-s390" <linux-s390@vger.kernel.org>, "ppc-dev"
- <linuxppc-dev@lists.ozlabs.org>, "open list:KERNEL SELFTEST FRAMEWORK"
- <linux-kselftest@vger.kernel.org>,
- <linux-stm32@st-md-mailman.stormreply.com>, "linux-arm-kernel"
- <linux-arm-kernel@lists.infradead.org>, "dwarves" <dwarves@vger.kernel.org>
-Subject: Re: [PATCH bpf 2/7] bpf/x86: prevent trampoline attachment when
- args location on stack is uncertain
-From: =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-To: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
-X-Mailer: aerc 0.20.1-0-g2ecb8770224a
-References: <20250613-deny_trampoline_structs_on_stack-v1-0-5be9211768c3@bootlin.com> <20250613-deny_trampoline_structs_on_stack-v1-2-5be9211768c3@bootlin.com> <20250613081150.GJ2273038@noisy.programming.kicks-ass.net> <DAL9GRMH74F4.2IV0HN0NGU65X@bootlin.com> <20250613083232.GL2273038@noisy.programming.kicks-ass.net> <DALA5WYA04OG.1283TZDOVLBPS@bootlin.com> <CAADnVQ+sj9XhscN9PdmTzjVa7Eif21noAUH3y1K6x5bWcL-5pg@mail.gmail.com>
-In-Reply-To: <CAADnVQ+sj9XhscN9PdmTzjVa7Eif21noAUH3y1K6x5bWcL-5pg@mail.gmail.com>
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddugddvfeekkecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepggfgtgffkfevuffhvffofhgjsehtqhertdertdejnecuhfhrohhmpeetlhgvgihishcunfhothhhohhrrocuoegrlhgvgihishdrlhhothhhohhrvgessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepteekleehffevvedvudfhueelffeugfdtveefvdfguefgffehtdekleetheelleffnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepvdgrtddvmeekgedvkeemfhelgegtmegvtddtmeemsgehvgenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvrgdtvdemkeegvdekmehfleegtgemvgdttdemmegshegvpdhhvghloheplhhotggrlhhhohhsthdpmhgrihhlfhhrohhmpegrlhgvgihishdrlhhothhhohhrvgessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepiedtpdhrtghpthhtoheprghlvgigvghirdhsthgrrhhovhhoihhtohhvsehgmhgrihhlrdgtohhmpdhrtghpthhtohepphgvthgvrhiisehinhhfrhgruggvrggurdhorhhgpdhrtghpthhtoheprghstheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlsehiohhgvggrrhgso
- higrdhnvghtpdhrtghpthhtoheprghnughrihhisehkvghrnhgvlhdrohhrghdprhgtphhtthhopehmrghrthhinhdrlhgruheslhhinhhugidruggvvhdprhgtphhtthhopegvugguhiiikeejsehgmhgrihhlrdgtohhmpdhrtghpthhtohepshhonhhgsehkvghrnhgvlhdrohhrgh
-X-GND-Sasl: alexis.lothore@bootlin.com
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Sat Jun 14, 2025 at 12:35 AM CEST, Alexei Starovoitov wrote:
-> On Fri, Jun 13, 2025 at 1:59=E2=80=AFAM Alexis Lothor=C3=A9
-> <alexis.lothore@bootlin.com> wrote:
->>
->> On Fri Jun 13, 2025 at 10:32 AM CEST, Peter Zijlstra wrote:
->> > On Fri, Jun 13, 2025 at 10:26:37AM +0200, Alexis Lothor=C3=A9 wrote:
+Show uprobe_multi link info with fdinfo, the info as follows:
 
-[...]
+link_type:	uprobe_multi
+link_id:	9
+prog_tag:	e729f789e34a8eca
+prog_id:	58
+type:	uprobe_multi
+uprobe_cnt:	3
+pid:	0
+path:	/home/dylane/bpf/tools/testing/selftests/bpf/test_progs
+offset:	0xa69ed7
+ref_ctr_offset:	0x0
+cookie:	3
+offset:	0xa69ee2
+ref_ctr_offset:	0x0
+cookie:	1
+offset:	0xa69eed
+ref_ctr_offset:	0x0
+cookie:	2
 
->> If I need to respin, I'll rewrite the commit message to include the deta=
-ils
->> above.
->
-> No need to respin. The cover letter is quite detailed already.
->
-> But looking at the patch and this thread I think we need to agree
-> on the long term approach to BTF, since people assume that
-> it's a more compact dwarf and any missing information
-> should be added to it.
-> Like in this case special alignment case and packed attributes
-> are not expressed in BTF and I believe they should not be.
-> BTF is not a debug format and not a substitute for dwarf.
-> There is no goal to express everything possible in C.
-> It's minimal, because BTF is _practical_ description of
-> types and data present in the kernel.
-> I don't think the special case of packing and alignment exists
-> in the kernel today, so the current format is sufficient.
-> It doesn't miss anything.
-> I think we made arm64 JIT unnecessary restrictive and now considering
-> to make all other JITs restrictive too for hypothetical case
-> of some future kernel functions.
-> I feel we're going in the wrong direction.
-> Instead we should teach pahole to sanitize BTF where functions
-> are using this fancy alignment and packed structs.
-> pahole can see it in dwarf and can skip emitting BTF for such
-> functions. Then the kernel JITs on all architectures won't even
-> see such cases.
->
-> The issue was initially discovered by a selftest:
-> https://lore.kernel.org/bpf/20250411-many_args_arm64-v1-3-0a32fe72339e@bo=
-otlin.com/
-> that attempted to support these two types:
-> +struct bpf_testmod_struct_arg_4 {
-> + __u64 a;
-> + __u64 b;
-> +};
-> +
-> +struct bpf_testmod_struct_arg_5 {
-> + __int128 a;
-> +};
->
-> The former is present in the kernel. It's more or less sockptr_t,
-> and people want to access it for observability in tracing.
-> The latter doesn't exist in the kernel and we cannot represent
-> it properly in BTF without losing alignment.
->
-> So I think we should go back to that series:
-> https://lore.kernel.org/bpf/20250411-many_args_arm64-v1-0-0a32fe72339e@bo=
-otlin.com/
->
-> remove __int128 selftest, but also teach pahole
-> to recognize types that cannot be represented in BTF and
-> don't emit them either into vmlinux or in kernel module
-> (like in this case it was bpf_testmod.ko)
-> I think that would be a better path forward aligned
-> with the long term goal of BTF.
->
-> And before people ask... pahole is a trusted component of the build
-> system. We trust it just as we trust gcc, clang, linker, objtool.
+Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+---
+ kernel/trace/bpf_trace.c | 48 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
-So if I understand correctly your point, it would be better to just move ou=
-t
-those constraints from the JIT compilers, and just not represent those spec=
-ial
-cases in BTF, so that it becomes impossible to hook programs on those funct=
-ions,
-since they are not event present in BTF info.
-And so:
-- cancel this series
-- revert the small ARM64 check about struct passed on stack
-- update pahole to make sure that it does not encode info about this specif=
-ic
-  kind of functions.
+Change list:
+  v1 -> v2:
+    - replace 'func_cnt' with 'uprobe_cnt'.(Andrii)
+    - print func name is more readable and security for kprobe_multi.(Alexei)
+  v1:
+  https://lore.kernel.org/bpf/20250612115556.295103-1-chen.dylane@linux.dev
 
-I still expect some challenges with this. AFAIU pahole uses DWARF to genera=
-te
-BTF, and discussions in [1] highlighted the fact that the attributes alteri=
-ng
-the structs alignment are not reliably encoded in DWARF. Maybe pahole can
-"guess" if a struct has been altered, by doing something like
-btf_is_struct_packed in libbpf ? As Andrii mentioned in [2], it may not be
-able to cover all cases, but that could  be a start. If that's indeed the
-desired direction, I can take a further look at this.
-
-+ CC dwarves ML
-
-Alexis
-
-[1] https://lore.kernel.org/bpf/9a2ba0ad-b34d-42f8-89a6-d9a44f007bdc@linux.=
-dev/
-[2] https://lore.kernel.org/bpf/CAEf4BzZHMYyGDZ4c4eNXG7Fm=3DecxCCbKhKbQTbCj=
-vWmKtdwvBw@mail.gmail.com/
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 24b94870b50..9a8ca8a8e2b 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -3157,10 +3157,58 @@ static int bpf_uprobe_multi_link_fill_link_info(const struct bpf_link *link,
+ 	return err;
+ }
+ 
++#ifdef CONFIG_PROC_FS
++static void bpf_uprobe_multi_show_fdinfo(const struct bpf_link *link,
++					 struct seq_file *seq)
++{
++	struct bpf_uprobe_multi_link *umulti_link;
++	char *p, *buf;
++
++	umulti_link = container_of(link, struct bpf_uprobe_multi_link, link);
++
++	buf = kmalloc(PATH_MAX, GFP_KERNEL);
++	if (!buf)
++		return;
++
++	p = d_path(&umulti_link->path, buf, PATH_MAX);
++	if (IS_ERR(p)) {
++		kfree(buf);
++		return;
++	}
++
++	seq_printf(seq,
++		   "type:\t%s\n"
++		   "uprobe_cnt:\t%u\n"
++		   "pid:\t%u\n"
++		   "path:\t%s\n",
++		   umulti_link->flags == BPF_F_UPROBE_MULTI_RETURN ?
++					 "uretprobe_multi" : "uprobe_multi",
++		   umulti_link->cnt,
++		   umulti_link->task ? task_pid_nr_ns(umulti_link->task,
++			   task_active_pid_ns(current)) : 0,
++		   p);
++
++	for (int i = 0; i < umulti_link->cnt; i++) {
++		seq_printf(seq,
++			   "offset:\t%#llx\n"
++			   "ref_ctr_offset:\t%#lx\n"
++			   "cookie:\t%llu\n",
++			   umulti_link->uprobes[i].offset,
++			   umulti_link->uprobes[i].ref_ctr_offset,
++			   umulti_link->uprobes[i].cookie);
++	}
++
++	kfree(buf);
++}
++#endif
++
+ static const struct bpf_link_ops bpf_uprobe_multi_link_lops = {
+ 	.release = bpf_uprobe_multi_link_release,
+ 	.dealloc_deferred = bpf_uprobe_multi_link_dealloc,
+ 	.fill_link_info = bpf_uprobe_multi_link_fill_link_info,
++#ifdef CONFIG_PROC_FS
++	.show_fdinfo = bpf_uprobe_multi_show_fdinfo,
++#endif
+ };
+ 
+ static int uprobe_prog_run(struct bpf_uprobe *uprobe,
+-- 
+2.48.1
 
 
