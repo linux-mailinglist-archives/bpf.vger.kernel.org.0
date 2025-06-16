@@ -1,182 +1,201 @@
-Return-Path: <bpf+bounces-60738-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60739-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59955ADB6AF
-	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 18:24:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8CA8ADB733
+	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 18:40:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1875618816BC
-	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 16:24:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F5C8188A33D
+	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 16:40:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26221287512;
-	Mon, 16 Jun 2025 16:21:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 580B620FAA4;
+	Mon, 16 Jun 2025 16:40:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NQ5hE9Kn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BEWqZx5l"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23E63286D4C;
-	Mon, 16 Jun 2025 16:21:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDD6921FF37;
+	Mon, 16 Jun 2025 16:40:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750090917; cv=none; b=XB79kGYd/F0lOImTY2W4gY2eLbrGM/0fn8o/J892S41NYlZaNmpqH8//LbDvH6sUXh2I47FCv4CbS9natdJ6lNy22pwAXj+P3JRaRW2RmT2NQjtqNt8m/ta8VKyu21C7xz52CadR7TKqyn6IvSWwFzPpyZUIYYBdkrrB3iW8zW0=
+	t=1750092013; cv=none; b=BWHbjF/6HjOzbTYjz8gzQ7eM5YgTKTF2oivUh1k0d052A3Y7zbpEgP3NzAODQIG48unId+rsifVVor1dmOLjdm+opb7sMouowjc8/hw6mOlLgqD/h5WJew6qx7p3b0tD5zl96cbzDib7ZsYN8d3y1SaeuGwpPnmAQJMdXtltpYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750090917; c=relaxed/simple;
-	bh=RfRvUUYoMKCxEmMrEwHViOmEyxcA6EnHNTWW62LCo3I=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=EvRYQn2Xl3JoRqK3+UO0rKutNSFSP9qao8/RsIxgTpM0vG8te0LZXSK0TSXftNK+w02Wi+I129WuYk3a7InHITt8CcUfmx5GnF+6XIG73JA/RLjzroVWTGd2ASumsPIl67OM7ushdPlaohzPLT2rzrkWLSpn9/aQ5qDb1yZCkm0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NQ5hE9Kn; arc=none smtp.client-ip=209.85.160.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-4a589b7dd5fso75867011cf.0;
-        Mon, 16 Jun 2025 09:21:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750090915; x=1750695715; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jFLMSnoLv/CTUlJyxBIiOWdEUWj3gdBoK2X2AHkWCds=;
-        b=NQ5hE9KnhtQIP1yT6s+mD2afxS3Bpc4mpjC6ctAB6qD/3XL0FeWcM3AMPlTARSOpFy
-         7qMawJRKZfnpXOjoak4pzMhtwm9q0Wbuuw6J1iHfbGRrhTznlIrQqiXEMc8Vt1cxlMbI
-         hf0c92Uvg0Ze31WBztuoeqDs3e9qWliozk2ek4E+i8giQvnp3LBFcxSnCUQAzVtuACtT
-         GhErPpg6NdzNF+Bgq0hn5MXe+dexu4WDOuMAEDQotJApFRDJXe62eaHPD5loQkL3vsGH
-         YHRpDnBWBrxIXP2P7E+XOqjgCwFkHxMeL1p3nmqymSF3q/VBV0HQH/Cp7iS6NkuicJsJ
-         XG9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750090915; x=1750695715;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jFLMSnoLv/CTUlJyxBIiOWdEUWj3gdBoK2X2AHkWCds=;
-        b=YyDwn/uj0+SvYx7Cl2GoZ9+gtP1PR37p3JevAPz/C70QTRBbsG7dRqY+oW3134QdNN
-         59TJWzC9bKo04gjAqbVb6ea9ABBQ9PUmX7qyiSek9maIXCFdorrsjb9WH7Kfof6CAWDz
-         IVmJY8Lgo0HeRVSNJ5vOMBkZ2ytHTPHtAtvpNTsRP75K4I8n4lGKav3JngAOc7Itr3gA
-         Ys3rX1G5XKZNlegjxTIOYCr+ciYKRB5cytiwvgna5GT44rbVPwgm0AjnPEL5x6onYReJ
-         msSDpxT4JzxaTlPvGM7nAW9i1e4QNWmViusArjF5kpptAwhIWsq38ogXbwssKyNB8l3N
-         JiiA==
-X-Forwarded-Encrypted: i=1; AJvYcCWxj8leGOE0hYORg7KbdYYpj2muJYRerOeFEif64UXhKPWuVhUS5eiIbbvLgz4hI4+G1fERFW+siGXd1pk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwWDu1ahOurbjyaD6POAiQMCtQddNB5y8YjYM/yPBErpTtynO+C
-	lGpHJc+ovfDGDe79How80pLe1mAYDrq6wjnNQ2+3qQb3HyJgp+hDkGCd94Ruc18LCik=
-X-Gm-Gg: ASbGncu+5QRC0UCrovkcFI+W72fKbvKAnBBs0My9tL6jOeF6/KXrE7YxxwZ8XuMaoxX
-	HfqG3C8dmJOnThRwtQ6WzErTsafqd1BozRKB5RLkCvMj3YI2WBQYGiJey/Mo8D7QE3yRgiTvYIh
-	8cpXFf64ZuKN+PIvFhV65HEe0OKbmWuvHrcsLsAIytX98QT3mMkwLBrPOs4mr33pmKB1NmeGTgx
-	9hSBFlvOPnfjfZ8kkQAxrqoYcPddXp9iZdhpdPbXVtP02F1vJjJK7YxGRHtkELflOaW4tc+aiHa
-	tC4gpHpG6bD/HmKNX+pv3Ue950upS5tFktHaR+blREXIjYhvuOE30tz0m+UpZANEBL8iOACTB6e
-	Fo1VvPW4uw6xGG8w0fAap06Dctwy8SynM6CVVlxNK/A==
-X-Google-Smtp-Source: AGHT+IEOSfILcG9gkykewKvy4dyQpZ/6LjMM3OZLq4alndr+S6qX1BPsy940UsDGx+W57yjmAUHP5w==
-X-Received: by 2002:ac8:7d85:0:b0:477:64b0:6a21 with SMTP id d75a77b69052e-4a73c50a741mr165042891cf.23.1750090914508;
-        Mon, 16 Jun 2025 09:21:54 -0700 (PDT)
-Received: from localhost.localdomain (syn-184-074-055-142.biz.spectrum.com. [184.74.55.142])
-        by smtp.googlemail.com with ESMTPSA id d75a77b69052e-4a72a5298f2sm50952041cf.80.2025.06.16.09.21.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Jun 2025 09:21:54 -0700 (PDT)
-From: Robert Cross <quantumcross@gmail.com>
-To: netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org,
-	andrew@lunn.ch,
-	olteanv@gmail.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	linux-kernel@vger.kernel.org,
-	Robert Cross <quantumcross@gmail.com>
-Subject: [PATCH v2] net: dsa: mv88e6xxx: fix external smi for mv88e6176
-Date: Mon, 16 Jun 2025 12:20:25 -0400
-Message-Id: <20250616162023.2795566-1-quantumcross@gmail.com>
-X-Mailer: git-send-email 2.39.5
+	s=arc-20240116; t=1750092013; c=relaxed/simple;
+	bh=DW/mYNwTouTw10FCu2yR/A/2ODddX0eTePEGQ27HCEI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZkkKERW6i+JcGbxVZpa6en/EO++PbPeh8Q24Vgy6Cqhpox6jBNwH8V7BmtQ8VmqXVvSboFdekOwyB7V2rB2YDsFVq+1QHaBtThfdMYc/F5fhHP8btIqL0YGTmB0FEAMG2r9K264uE3+hBZhdqPXGrqx1ie3QSsgUqaVIPTArO9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BEWqZx5l; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F052DC4CEEA;
+	Mon, 16 Jun 2025 16:40:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1750092013;
+	bh=DW/mYNwTouTw10FCu2yR/A/2ODddX0eTePEGQ27HCEI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BEWqZx5lIfH8+gakxPxfUHRrDMUg5vM79KBdqR5ODrfT5TytEAZbAifZTI0i5/nA2
+	 8AeWFRLIBsqa0pOYYv+URXlYw3LrWz1zwpzuoSpr60tKJvS43jG35iHsMkpowjGMwh
+	 4z9q7nuvNthZA4XDqPJia5RbWIzfBYVaIxPjvdWyUqeZRVw5wMD8/y8tIVAxmEAbge
+	 FagM1IBgtCgKoN3CqHSsIQrVo7eVBTf1o1uKWq89wEHJAppKgSuprvxfaxY/4erHDU
+	 mU37kfV6w7GlXUVET68WRMQ3DM0WjHyHOulZRLvKRec+tW863oWSNnOYZAUgYK1C4B
+	 f5zldll0kZ3eA==
+Date: Mon, 16 Jun 2025 18:40:10 +0200
+From: Lorenzo Bianconi <lorenzo@kernel.org>
+To: Stanislav Fomichev <stfomichev@gmail.com>
+Cc: Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org,
+	netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <borkmann@iogearbox.net>,
+	Eric Dumazet <eric.dumazet@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Paolo Abeni <pabeni@redhat.com>, sdf@fomichev.me,
+	kernel-team@cloudflare.com, arthur@arthurfabre.com,
+	jakub@cloudflare.com, Magnus Karlsson <magnus.karlsson@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: Re: [PATCH bpf-next V1 7/7] net: xdp: update documentation for
+ xdp-rx-metadata.rst
+Message-ID: <aFBI6msJQn4-LZsH@lore-desk>
+References: <174897271826.1677018.9096866882347745168.stgit@firesoul>
+ <174897279518.1677018.5982630277641723936.stgit@firesoul>
+ <aEJWTPdaVmlIYyKC@mini-arch>
+ <bf7209aa-8775-448d-a12e-3a30451dad22@iogearbox.net>
+ <87plfbcq4m.fsf@toke.dk>
+ <aEixEV-nZxb1yjyk@lore-rh-laptop>
+ <aEj6nqH85uBe2IlW@mini-arch>
+ <aFAQJKQ5wM-htTWN@lore-desk>
+ <aFA8BzkbzHDQgDVD@mini-arch>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="sDj39uYRsqJWsHZB"
+Content-Disposition: inline
+In-Reply-To: <aFA8BzkbzHDQgDVD@mini-arch>
 
-(Sorry this is my second attempt, I fixed my email client)
 
-I was trying to enable external SMI on a mv88e6176.
-mv88e6390_g2_scratch_gpio_set_smi() would return -EBUSY when checking
-the scratch register Config DATA2 p0 mode to ensure that the external
-smi pins are free, but on my device, bit 4 of p0_mode was always 1,
-even if the port was completely disabled.
+--sDj39uYRsqJWsHZB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Unless someone with the datasheet can prove me wrong, I believe that
-at least for the 6176, the mode mask here is 3 bits wide, and the
-fourth bit is irrelevant or reserved.
+> On 06/16, Lorenzo Bianconi wrote:
+> > On Jun 10, Stanislav Fomichev wrote:
+> > > On 06/11, Lorenzo Bianconi wrote:
+> > > > > Daniel Borkmann <daniel@iogearbox.net> writes:
+> > > > >=20
+> > > > [...]
+> > > > > >>=20
+> > > > > >> Why not have a new flag for bpf_redirect that transparently st=
+ores all
+> > > > > >> available metadata? If you care only about the redirect -> skb=
+ case.
+> > > > > >> Might give us more wiggle room in the future to make it work w=
+ith
+> > > > > >> traits.
+> > > > > >
+> > > > > > Also q from my side: If I understand the proposal correctly, in=
+ order to fully
+> > > > > > populate an skb at some point, you have to call all the bpf_xdp=
+_metadata_* kfuncs
+> > > > > > to collect the data from the driver descriptors (indirect call)=
+, and then yet
+> > > > > > again all equivalent bpf_xdp_store_rx_* kfuncs to re-store the =
+data in struct
+> > > > > > xdp_rx_meta again. This seems rather costly and once you add mo=
+re kfuncs with
+> > > > > > meta data aren't you better off switching to tc(x) directly so =
+the driver can
+> > > > > > do all this natively? :/
+> > > > >=20
+> > > > > I agree that the "one kfunc per metadata item" scales poorly. IIR=
+C, the
+> > > > > hope was (back when we added the initial HW metadata support) tha=
+t we
+> > > > > would be able to inline them to avoid the function call overhead.
+> > > > >=20
+> > > > > That being said, even with half a dozen function calls, that's st=
+ill a
+> > > > > lot less overhead from going all the way to TC(x). The goal of th=
+e use
+> > > > > case here is to do as little work as possible on the CPU that ini=
+tially
+> > > > > receives the packet, instead moving the network stack processing =
+(and
+> > > > > skb allocation) to a different CPU with cpumap.
+> > > > >=20
+> > > > > So even if the *total* amount of work being done is a bit higher =
+because
+> > > > > of the kfunc overhead, that can still be beneficial because it's =
+split
+> > > > > between two (or more) CPUs.
+> > > > >=20
+> > > > > I'm sure Jesper has some concrete benchmarks for this lying around
+> > > > > somewhere, hopefully he can share those :)
+> > > >=20
+> > > > Another possible approach would be to have some utility functions (=
+not kfuncs)
+> > > > used to 'store' the hw metadata in the xdp_frame that are executed =
+in each
+> > > > driver codebase before performing XDP_REDIRECT. The downside of thi=
+s approach
+> > > > is we need to parse the hw metadata twice if the eBPF program that =
+is bounded
+> > > > to the NIC is consuming these info. What do you think?
+> > >=20
+> > > That's the option I was asking about. I'm assuming we should be able
+> > > to reuse existing xmo metadata callbacks for this. We should be able
+> > > to hide it from the drivers also hopefully.
+> >=20
+> > If we move the hw metadata 'store' operations to the driver codebase (r=
+unning
+> > xmo metadata callbacks before performing XDP_REDIRECT), we will parse t=
+he hw
+> > metadata twice if we attach to the NIC an AF_XDP program consuming the =
+hw
+> > metadata, right? One parsing is done by the AF_XDP hw metadata kfunc, a=
+nd the
+> > second one would be performed by the native driver codebase.
+>=20
+> The native driver codebase will parse the hw metadata only if the
+> bpf_redirect set some flag, so unless I'm missing something, there
+> should not be double parsing. (but it's all user controlled, so doesn't
+> sound like a problem?)
 
-To fix this, I add a field in mv88e6xxx_info to denote a
-p0_mode_mask_override to use. If this is set to the default
-value of 0, then the definition of
-MV88E6352_G2_SCRATCH_CONFIG_DATA2_P0_MODE_MASK will be used as normal.
+I do not have a strong opinion about it, I guess it is fine, but I am not
+100% sure if it fits in Jesper's use case.
+@Jesper: any input on it?
 
-I can confirm that this allows me to use external smi on my mv88e6176!
+Regards,
+Lorenzo
 
-Fixes: 2510babcfaf0 ("net: dsa: mv88e6xxx: scratch registers and external MDIO pins")
-Signed-off-by: Robert Cross <quantumcross@gmail.com>
----
- drivers/net/dsa/mv88e6xxx/chip.c            | 1 +
- drivers/net/dsa/mv88e6xxx/chip.h            | 7 +++++++
- drivers/net/dsa/mv88e6xxx/global2_scratch.c | 7 ++++++-
- 3 files changed, 14 insertions(+), 1 deletion(-)
+>=20
+> > Moreover, this approach seems less flexible. What do you think?
+>=20
+> Agreed on the flexibility. Just trying to understand whether we really
+> need that flexibility. My worry is that we might expose too much of
+> the stack's internals with this and introduce some unexpected
+> dependencies. The things like Jesper mentioned in another thread:
+> set skb->hash before redirect to make GRO go fast... We either have
+> to make the stack more robust (my preference), or document these
+> cases clearly and have test coverage to avoid breakage in the future.
 
-diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
-index 2281d6ab8c9ab..0fe7b6fc7016c 100644
---- a/drivers/net/dsa/mv88e6xxx/chip.c
-+++ b/drivers/net/dsa/mv88e6xxx/chip.c
-@@ -6013,6 +6013,7 @@ static const struct mv88e6xxx_info mv88e6xxx_table[] = {
- 		.multi_chip = true,
- 		.edsa_support = MV88E6XXX_EDSA_SUPPORTED,
- 		.ops = &mv88e6176_ops,
-+		.p0_mode_mask_override = 0x7,
- 	},
- 
- 	[MV88E6185] = {
-diff --git a/drivers/net/dsa/mv88e6xxx/chip.h b/drivers/net/dsa/mv88e6xxx/chip.h
-index 7d00482f53a3b..6307c225ce94c 100644
---- a/drivers/net/dsa/mv88e6xxx/chip.h
-+++ b/drivers/net/dsa/mv88e6xxx/chip.h
-@@ -178,6 +178,13 @@ struct mv88e6xxx_info {
- 	 * port 0, 1 means internal PHYs range starts at port 1, etc
- 	 */
- 	unsigned int internal_phys_offset;
-+
-+	/* Some chips use 3 bits for the port mode in scratch
-+         * register CONFIG Data2.
-+         * If this is set to 0x0, it will use the default mask of
-+         * MV88E6352_G2_SCRATCH_CONFIG_DATA2_P0_MODE_MASK
-+         */
-+	u8 p0_mode_mask_override;
- };
- 
- struct mv88e6xxx_atu_entry {
-diff --git a/drivers/net/dsa/mv88e6xxx/global2_scratch.c b/drivers/net/dsa/mv88e6xxx/global2_scratch.c
-index 53a6d3ed63b32..7f1657eba7a4e 100644
---- a/drivers/net/dsa/mv88e6xxx/global2_scratch.c
-+++ b/drivers/net/dsa/mv88e6xxx/global2_scratch.c
-@@ -255,6 +255,7 @@ int mv88e6390_g2_scratch_gpio_set_smi(struct mv88e6xxx_chip *chip,
- 	int config_data1 = MV88E6352_G2_SCRATCH_CONFIG_DATA1;
- 	int config_data2 = MV88E6352_G2_SCRATCH_CONFIG_DATA2;
- 	bool no_cpu;
-+	u8 p0_mode_mask;
- 	u8 p0_mode;
- 	int err;
- 	u8 val;
-@@ -263,7 +264,11 @@ int mv88e6390_g2_scratch_gpio_set_smi(struct mv88e6xxx_chip *chip,
- 	if (err)
- 		return err;
- 
--	p0_mode = val & MV88E6352_G2_SCRATCH_CONFIG_DATA2_P0_MODE_MASK;
-+	p0_mode_mask = chip->info->p0_mode_mask_override;
-+	if( p0_mode_mask == 0x0) {
-+		p0_mode_mask = MV88E6352_G2_SCRATCH_CONFIG_DATA2_P0_MODE_MASK;
-+	}
-+	p0_mode = val & p0_mode_mask;
- 
- 	if (p0_mode == 0x01 || p0_mode == 0x02)
- 		return -EBUSY;
--- 
-2.39.5
+--sDj39uYRsqJWsHZB
+Content-Type: application/pgp-signature; name=signature.asc
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCaFBI6gAKCRA6cBh0uS2t
+rDluAQDGPIrrlw65wQryPK9+Hj0hrdco/9ylRkdk0KC8Velo3AD/cttF4uhvrYLW
+YgYu1SWEYU0DYj7cb3qp5hK26dk6qwI=
+=QBjQ
+-----END PGP SIGNATURE-----
+
+--sDj39uYRsqJWsHZB--
 
