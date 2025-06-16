@@ -1,116 +1,165 @@
-Return-Path: <bpf+bounces-60697-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60698-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E8ADADA838
-	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 08:29:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6376ADA84D
+	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 08:35:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 89EBA7A4ACC
-	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 06:27:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05FD518922B3
+	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 06:34:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A0351DF26E;
-	Mon, 16 Jun 2025 06:29:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDAAC1E5201;
+	Mon, 16 Jun 2025 06:34:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="QXm5+uxr";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0cTukvmU"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="M4suDSk5"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from fllvem-ot03.ext.ti.com (fllvem-ot03.ext.ti.com [198.47.19.245])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9594E1DE2BD;
-	Mon, 16 Jun 2025 06:29:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 083D872608;
+	Mon, 16 Jun 2025 06:34:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.245
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750055345; cv=none; b=LqgU6hFqzV+CMWds9p4ZQrV56V1kE8xgv4tNcZytbC0NmTaA1J5aVeYXrXvp6a1rBmiJlykPR11z235KILhoSsd68SO+QBFP20rJojVxstQKZmPYCgU3QLDq5nDkcgqt5jUWRpbPvVDYNvHiiO/VxhMkvFkbPFEyCebY2kL6Y/w=
+	t=1750055653; cv=none; b=VUDJWdiB8OznvDINYY62oVlYdtIIAOHmWhZVjPBWptsm+J2qnsRoD5L4EfF5qXt2lPN8DYQ9ss/l/JcpzIYScP/OkZTDJh8mcrg3nxMUx1if/dMVolIOj70hwjrvzNq3KN5dsiy0k5J5QVQdbU+lleh54W//+G9VqTnrJmyIanE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750055345; c=relaxed/simple;
-	bh=9JJEZwJcy718D1DrMK8Hs+ZKn8NzsTjuogMc/xnMV6w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VuarvnaHEObucf1xLZ+CMJglbn3Xhq20U0c0NV+R4BZyFewGZm43tW0d2hErq0J9BtM+WjZCbS/3HC5n9sEKIoLlYLJtMosHFiZkFyz/sRDpqL+8IjVa0rKnKnRprJtJDRNRrAEPNJAFgKM/lyAPmT816urr32QvEvP0UXCr6KU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=QXm5+uxr; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=0cTukvmU; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 16 Jun 2025 08:28:53 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1750055335;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+LICzzU5v3SFqwCiAXYPpdpUgYqySOSePsKj/xJRbx4=;
-	b=QXm5+uxrJxDXN6WaP4aDXprPGZDiQmKTUXTpwed9hi+VP7xu8ZzQs1J7nmeTwua3lso/J1
-	kPN9kBLJREooVryRBDPOgiSssvgNcENdcdySSAb3oI+jKzpo1tMtUbBYYzXDwD4j3ro2+d
-	/XT3mrWzRh2oSGRcvGnxN8wqJZAPXVYIXOP6LjRlrAwminD+to6chtUP0q7QUHBFqhzIih
-	yWpeRQQnl1k5sJvJIgClncO/plKBTXVOrxLJLRoQPXYVxrQ3OTGmfTMlZAR16RJvrC063y
-	5sYzD8yTDxhcm+ueiBdzR4SphqHUj7n/u7GLAVFGbdrasVpIS3amxua7J4t/ZQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1750055335;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+LICzzU5v3SFqwCiAXYPpdpUgYqySOSePsKj/xJRbx4=;
-	b=0cTukvmUiSNPCOcrLgwcOuURn2EirANnSFbj9MA2OrOylAaL0PRh2ro8v1A0szyqq8xSST
-	X+gLHtnggF3lBrBg==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Bert Karwatzki <spasswolf@web.de>
-Cc: linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-	bpf@vger.kernel.org, linux-rt-users@vger.kernel.org,
-	linux-rt-devel@lists.linux.dev,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: BUG: scheduling while atomic with PREEMPT_RT=y and bpf selftests
-Message-ID: <20250616062853.G6JxYeK1@linutronix.de>
-References: <20250605091904.5853-1-spasswolf@web.de>
- <20250605084816.3e5d1af1@gandalf.local.home>
- <20250605125133.RSTingmi@linutronix.de>
- <0b1f48ba715a16c4d4874ae65bc01914de4d5a90.camel@web.de>
- <727212f9d3c324787ddd9ede9e2d800a02b629b2.camel@web.de>
- <0c0b2385452292d6b1df3066b7223b420066f0a1.camel@web.de>
- <aa28ef09763eeefd54d4c26fb01599fd5197b265.camel@web.de>
- <7937d287a3ff24ce7c7e3eb2cd18788521975511.camel@web.de>
+	s=arc-20240116; t=1750055653; c=relaxed/simple;
+	bh=NcfOR+xbcUtfA85Y9HH6vmCb9ZL4oKoRn9ZbKKZJ2Vw=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qB22mwo+XOvsLDGR5FJm7PnL9mp/YW2I1O8DN/tEhuttMw0Z2d3exUNcFyto4Sf4+r4mEUGKqYj2Jtmuvm0MpUnfuDNSHDBwKNVESc7wPJKyuLvanE8clzaIlghTS02RwwzGT9n9NzCru7MHCUWTUC/Vv49QkGCSU/XEqXAD/+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=M4suDSk5; arc=none smtp.client-ip=198.47.19.245
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelvem-sh02.itg.ti.com ([10.180.78.226])
+	by fllvem-ot03.ext.ti.com (8.15.2/8.15.2) with ESMTP id 55G6XOH23658728;
+	Mon, 16 Jun 2025 01:33:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1750055604;
+	bh=9BkVFrTKgC9rH1nlpqm8W5gPeCeKSxMCFUVpVGS1JwA=;
+	h=From:To:CC:Subject:Date;
+	b=M4suDSk5URjh3EEu2LT1eSO/deE9Cj1GublOs7d9aZyvMXJy85MJBLG0wY35rt/hQ
+	 /ZoBbvPQdMaJKtiHLySTzuAWHz7JqO4WsBEd+C6QBtpADloL8He/08jceiwymicDXa
+	 GtwX4YqGD3lmFzdOIIcD0p91qguu4JRY99N2xPl0=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+	by lelvem-sh02.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 55G6XOhw2410372
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=FAIL);
+	Mon, 16 Jun 2025 01:33:24 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55; Mon, 16
+ Jun 2025 01:33:23 -0500
+Received: from fllvem-mr08.itg.ti.com (10.64.41.88) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55 via
+ Frontend Transport; Mon, 16 Jun 2025 01:33:23 -0500
+Received: from lelv0854.itg.ti.com (lelv0854.itg.ti.com [10.181.64.140])
+	by fllvem-mr08.itg.ti.com (8.18.1/8.18.1) with ESMTP id 55G6XNHh3813524;
+	Mon, 16 Jun 2025 01:33:23 -0500
+Received: from localhost (meghana-pc.dhcp.ti.com [10.24.69.13] (may be forged))
+	by lelv0854.itg.ti.com (8.14.7/8.14.7) with ESMTP id 55G6XMuC003283;
+	Mon, 16 Jun 2025 01:33:23 -0500
+From: Meghana Malladi <m-malladi@ti.com>
+To: <namcao@linutronix.de>, <m-malladi@ti.com>, <john.fastabend@gmail.com>,
+        <hawk@kernel.org>, <daniel@iogearbox.net>, <ast@kernel.org>,
+        <pabeni@redhat.com>, <kuba@kernel.org>, <edumazet@google.com>,
+        <davem@davemloft.net>, <andrew+netdev@lunn.ch>
+CC: <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <srk@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Roger Quadros
+	<rogerq@kernel.org>, <danishanwar@ti.com>
+Subject: [PATCH net v2] net: ti: icssg-prueth: Fix packet handling for XDP_TX
+Date: Mon, 16 Jun 2025 12:03:19 +0530
+Message-ID: <20250616063319.3347541-1-m-malladi@ti.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <7937d287a3ff24ce7c7e3eb2cd18788521975511.camel@web.de>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
 
-On 2025-06-16 00:12:49 [+0200], Bert Karwatzki wrote:
-> These three patches fixes all the dmesg warning (with CONFIG_LOCKDEP) iss=
-ues when running the
-> bpf test_progs and does not cause deadlocks without CONFIG_LOCKDEP.
->=20
-=E2=80=A6
-> is fixed by this:
->=20
-> diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
-> index 183fa2aa2935..49257cb90209 100644
-> --- a/include/trace/bpf_probe.h
-> +++ b/include/trace/bpf_probe.h
-> @@ -58,9 +58,9 @@ static notrace void \
->  __bpf_trace_##call(void *__data, proto) \
->  { \
->  might_fault(); \
-> - preempt_disable_notrace(); \
-> + migrate_disable(); \
->  CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(__data, CAST_TO_U64(args));=
- \
-> - preempt_enable_notrace(); \
-> + migrate_enable(); \
->  }
+While transmitting XDP frames for XDP_TX, page_pool is
+used to get the DMA buffers (already mapped to the pages)
+and need to be freed/reycled once the transmission is complete.
+This need not be explicitly done by the driver as this is handled
+more gracefully by the xdp driver while returning the xdp frame.
+__xdp_return() frees the XDP memory based on its memory type,
+under which page_pool memory is also handled. This change fixes
+the transmit queue timeout while running XDP_TX.
 
-I doubt this can be fixed that way. I sent a series out
-	https://lore.kernel.org/all/20250613152218.1924093-1-bigeasy@linutronix.de/
+logs:
+[  309.069682] icssg-prueth icssg1-eth eth2: NETDEV WATCHDOG: CPU: 0: transmit queue 0 timed out 45860 ms
+[  313.933780] icssg-prueth icssg1-eth eth2: NETDEV WATCHDOG: CPU: 0: transmit queue 0 timed out 50724 ms
+[  319.053656] icssg-prueth icssg1-eth eth2: NETDEV WATCHDOG: CPU: 0: transmit queue 0 timed out 55844 ms
+...
 
-which is the first the step towards fixing this properly.
+Fixes: 62aa3246f462 ("net: ti: icssg-prueth: Add XDP support")
+Signed-off-by: Meghana Malladi <m-malladi@ti.com>
+---
+v2-v1:
+- Added the missing Fixes tag
 
-Sebastian
+v1: https://lore.kernel.org/all/20250612094523.1615719-1-m-malladi@ti.com/
+
+ drivers/net/ethernet/ti/icssg/icssg_common.c | 19 ++-----------------
+ 1 file changed, 2 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/net/ethernet/ti/icssg/icssg_common.c b/drivers/net/ethernet/ti/icssg/icssg_common.c
+index 5b8fdb882172..12f25cec6255 100644
+--- a/drivers/net/ethernet/ti/icssg/icssg_common.c
++++ b/drivers/net/ethernet/ti/icssg/icssg_common.c
+@@ -98,20 +98,11 @@ void prueth_xmit_free(struct prueth_tx_chn *tx_chn,
+ {
+ 	struct cppi5_host_desc_t *first_desc, *next_desc;
+ 	dma_addr_t buf_dma, next_desc_dma;
+-	struct prueth_swdata *swdata;
+-	struct page *page;
+ 	u32 buf_dma_len;
+ 
+ 	first_desc = desc;
+ 	next_desc = first_desc;
+ 
+-	swdata = cppi5_hdesc_get_swdata(desc);
+-	if (swdata->type == PRUETH_SWDATA_PAGE) {
+-		page = swdata->data.page;
+-		page_pool_recycle_direct(page->pp, swdata->data.page);
+-		goto free_desc;
+-	}
+-
+ 	cppi5_hdesc_get_obuf(first_desc, &buf_dma, &buf_dma_len);
+ 	k3_udma_glue_tx_cppi5_to_dma_addr(tx_chn->tx_chn, &buf_dma);
+ 
+@@ -135,7 +126,6 @@ void prueth_xmit_free(struct prueth_tx_chn *tx_chn,
+ 		k3_cppi_desc_pool_free(tx_chn->desc_pool, next_desc);
+ 	}
+ 
+-free_desc:
+ 	k3_cppi_desc_pool_free(tx_chn->desc_pool, first_desc);
+ }
+ EXPORT_SYMBOL_GPL(prueth_xmit_free);
+@@ -612,13 +602,8 @@ u32 emac_xmit_xdp_frame(struct prueth_emac *emac,
+ 	k3_udma_glue_tx_dma_to_cppi5_addr(tx_chn->tx_chn, &buf_dma);
+ 	cppi5_hdesc_attach_buf(first_desc, buf_dma, xdpf->len, buf_dma, xdpf->len);
+ 	swdata = cppi5_hdesc_get_swdata(first_desc);
+-	if (page) {
+-		swdata->type = PRUETH_SWDATA_PAGE;
+-		swdata->data.page = page;
+-	} else {
+-		swdata->type = PRUETH_SWDATA_XDPF;
+-		swdata->data.xdpf = xdpf;
+-	}
++	swdata->type = PRUETH_SWDATA_XDPF;
++	swdata->data.xdpf = xdpf;
+ 
+ 	/* Report BQL before sending the packet */
+ 	netif_txq = netdev_get_tx_queue(ndev, tx_chn->id);
+
+base-commit: 5d6d67c4cb10a4b4d3ae35758d5eeed6239afdc8
+-- 
+2.43.0
+
 
