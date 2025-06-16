@@ -1,171 +1,136 @@
-Return-Path: <bpf+bounces-60709-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60710-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B00E2ADB060
-	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 14:38:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F438ADB074
+	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 14:43:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A9DCB16A035
-	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 12:38:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BF411886741
+	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 12:43:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09A69292B3F;
-	Mon, 16 Jun 2025 12:38:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7940E285CBC;
+	Mon, 16 Jun 2025 12:43:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WS5IU3x+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bNEYiPqc"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80502292B2E;
-	Mon, 16 Jun 2025 12:37:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4F9126C3B7;
+	Mon, 16 Jun 2025 12:43:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750077479; cv=none; b=L1SBgoUKJpCQGXqtVEqnO8RPluP9i5ONizyQ2RFpswqnqv5tmscaoocpH8f9Lk3XG7WsXyC4IXae1LJ3mMNCtv2JW/Ys7DJ50T6vFjHyrqBmAmuhnch+lE3+eXn8rgKyNRLJSlbupyTLDnGfs9OtaFLjl2uJe4+t7rg8fVCInVo=
+	t=1750077789; cv=none; b=U2+ypWhWw509rkjNlBipQ0uyVOhzZ9NM1RDFA9dracfdHuXEuvU959IqcZbAQTzsBA3FA6vIID4Zr1TkgYaMe33RUJtNvsqR1uVyMNE9O7k20CjkWPXIzYkTg75qaX98EtpSZ1vbGAqI/Ongn5IfN098YJl7QsHBUeJoJNJwm+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750077479; c=relaxed/simple;
-	bh=JEPCADCrq2LrIHlVTuB+oCD1W34hSnP5MMMpgsVOuKA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H9Pnukv5oqrYvsUxCAynMlrBQe4hmqmSFrCqCJpfK90xLed9/57IQu3T032HaPPlRSaSlHksxEyVJlITByOX2uA6Iu9KHiKee0gpK/m+dxF8tcVaFa3pSXoEKjIkVdvLuk2S12ysXRXpGNcqFYTOeLaZTuhwTk1idlxz7sLnS54=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WS5IU3x+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C8BAC4CEF1;
-	Mon, 16 Jun 2025 12:37:58 +0000 (UTC)
+	s=arc-20240116; t=1750077789; c=relaxed/simple;
+	bh=rT/5O1pFR+fi1TbayQkW7zHw+KVBHF8HPxP4ZI+ohiw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=OSod2wewLaVxUxXv+6NaUiiFRKojoro0cnLk8oheBiHk2l8S5NXfdQPOqAfgVJKOfvYjWRScnE9cSW4AjJ+Ek/6VHrUvQSj2uq8pQ/eznwbeorJEVSPEv+hS47ulKCAUQ4BhefTc0hlr14XY8u/7jqQjD6AIT8dJVmEgBBF1w3s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bNEYiPqc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 369ECC4CEEA;
+	Mon, 16 Jun 2025 12:43:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750077479;
-	bh=JEPCADCrq2LrIHlVTuB+oCD1W34hSnP5MMMpgsVOuKA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WS5IU3x+XWWg1hmoTFlnpT1Z8p1Z6y/0Gbf107QHyL2Nb9C9uXW+NHqAmSLb3cyiz
-	 5ES1r/yqw3KFf6JspBh+fA3XvOX5H+FZK83cvjH4Zkrq7NxKGjPUNS4H12SDlk/7Gj
-	 HGyHTnZqqZHrXSRjvlYJOTSan1MUs2r32HbYvfEoMBsAPYY9VmjkMo0SXv5MT9DTh8
-	 XqxwgIWlThLhXpobS6Qq2vH9ke+RsaF3iX7Zg9pgHEAx8RZZ4xNn4A9j471piG1OgU
-	 zKi+zkgVmFtHZw25ARaTka3YtEy/wrQN5HsjebiFUVyH1I1+pFkYq8kc4D20SXtAes
-	 ksOGhLOPTC5Qg==
-Date: Mon, 16 Jun 2025 14:37:56 +0200
-From: Lorenzo Bianconi <lorenzo@kernel.org>
-To: Stanislav Fomichev <stfomichev@gmail.com>
-Cc: Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <borkmann@iogearbox.net>,
-	Eric Dumazet <eric.dumazet@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Paolo Abeni <pabeni@redhat.com>, sdf@fomichev.me,
-	kernel-team@cloudflare.com, arthur@arthurfabre.com,
-	jakub@cloudflare.com, Magnus Karlsson <magnus.karlsson@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: Re: [PATCH bpf-next V1 7/7] net: xdp: update documentation for
- xdp-rx-metadata.rst
-Message-ID: <aFAQJKQ5wM-htTWN@lore-desk>
-References: <174897271826.1677018.9096866882347745168.stgit@firesoul>
- <174897279518.1677018.5982630277641723936.stgit@firesoul>
- <aEJWTPdaVmlIYyKC@mini-arch>
- <bf7209aa-8775-448d-a12e-3a30451dad22@iogearbox.net>
- <87plfbcq4m.fsf@toke.dk>
- <aEixEV-nZxb1yjyk@lore-rh-laptop>
- <aEj6nqH85uBe2IlW@mini-arch>
+	s=k20201202; t=1750077788;
+	bh=rT/5O1pFR+fi1TbayQkW7zHw+KVBHF8HPxP4ZI+ohiw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=bNEYiPqcCX0Xpwqz42+6CfGJMEtShOH8ujQuf9BG7VBCUsH9vd7Xr1ugSdFJasGwP
+	 BLkm8ZN61wW8GOgv2qWLHIHSlCcUUGdoiaDcD2HThCeVSlRBFYHS2g+2dsau49GAy1
+	 vwhAGz2VzXx+BzFws1qEVysVByDWNsBanLYJhM2CeLqiQG0VHLHaufnv06sqTpmO0e
+	 MxSQ2FRPSMrvtwId+11+ppKOOcWPp9ICnKI2+ryTkEMR7TbvGEkQTk73XG7Dq4bgzW
+	 4kZOXyD8s4O/RVV5up9vQkDAH6B72CEPCDXM+Z2zr4NbF/JdR2fULsnbLqCZFVRiVu
+	 rMuhGNlAz1R/g==
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 667051AF7032; Mon, 16 Jun 2025 14:42:54 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
+To: Jesper Dangaard Brouer <hawk@kernel.org>, Steven Rostedt
+ <rostedt@goodmis.org>, LKML <linux-kernel@vger.kernel.org>, Linux trace
+ kernel <linux-trace-kernel@vger.kernel.org>, bpf@vger.kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller"
+ <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, John Fastabend
+ <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH] xdp: Remove unused events xdp_redirect_map and
+ xdp_redirect_map_err
+In-Reply-To: <20415ab5-5003-4725-bf1b-560f197465c4@kernel.org>
+References: <20250611155615.0c2cf61c@batman.local.home>
+ <87bjqtb6c1.fsf@toke.dk> <4af27621-6d81-4316-b57a-b546c8a7ad08@kernel.org>
+ <20415ab5-5003-4725-bf1b-560f197465c4@kernel.org>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Mon, 16 Jun 2025 14:42:54 +0200
+Message-ID: <87v7ovluwh.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="VywHLU06xENyqKzr"
-Content-Disposition: inline
-In-Reply-To: <aEj6nqH85uBe2IlW@mini-arch>
-
-
---VywHLU06xENyqKzr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Jun 10, Stanislav Fomichev wrote:
-> On 06/11, Lorenzo Bianconi wrote:
-> > > Daniel Borkmann <daniel@iogearbox.net> writes:
-> > >=20
-> > [...]
-> > > >>=20
-> > > >> Why not have a new flag for bpf_redirect that transparently stores=
- all
-> > > >> available metadata? If you care only about the redirect -> skb cas=
-e.
-> > > >> Might give us more wiggle room in the future to make it work with
-> > > >> traits.
-> > > >
-> > > > Also q from my side: If I understand the proposal correctly, in ord=
-er to fully
-> > > > populate an skb at some point, you have to call all the bpf_xdp_met=
-adata_* kfuncs
-> > > > to collect the data from the driver descriptors (indirect call), an=
-d then yet
-> > > > again all equivalent bpf_xdp_store_rx_* kfuncs to re-store the data=
- in struct
-> > > > xdp_rx_meta again. This seems rather costly and once you add more k=
-funcs with
-> > > > meta data aren't you better off switching to tc(x) directly so the =
-driver can
-> > > > do all this natively? :/
-> > >=20
-> > > I agree that the "one kfunc per metadata item" scales poorly. IIRC, t=
-he
-> > > hope was (back when we added the initial HW metadata support) that we
-> > > would be able to inline them to avoid the function call overhead.
-> > >=20
-> > > That being said, even with half a dozen function calls, that's still a
-> > > lot less overhead from going all the way to TC(x). The goal of the use
-> > > case here is to do as little work as possible on the CPU that initial=
-ly
-> > > receives the packet, instead moving the network stack processing (and
-> > > skb allocation) to a different CPU with cpumap.
-> > >=20
-> > > So even if the *total* amount of work being done is a bit higher beca=
-use
-> > > of the kfunc overhead, that can still be beneficial because it's split
-> > > between two (or more) CPUs.
-> > >=20
-> > > I'm sure Jesper has some concrete benchmarks for this lying around
-> > > somewhere, hopefully he can share those :)
-> >=20
-> > Another possible approach would be to have some utility functions (not =
-kfuncs)
-> > used to 'store' the hw metadata in the xdp_frame that are executed in e=
-ach
-> > driver codebase before performing XDP_REDIRECT. The downside of this ap=
-proach
-> > is we need to parse the hw metadata twice if the eBPF program that is b=
-ounded
-> > to the NIC is consuming these info. What do you think?
->=20
-> That's the option I was asking about. I'm assuming we should be able
-> to reuse existing xmo metadata callbacks for this. We should be able
-> to hide it from the drivers also hopefully.
+Jesper Dangaard Brouer <hawk@kernel.org> writes:
 
-If we move the hw metadata 'store' operations to the driver codebase (runni=
-ng
-xmo metadata callbacks before performing XDP_REDIRECT), we will parse the hw
-metadata twice if we attach to the NIC an AF_XDP program consuming the hw
-metadata, right? One parsing is done by the AF_XDP hw metadata kfunc, and t=
-he
-second one would be performed by the native driver codebase.  Moreover, this
-approach seems less flexible. What do you think?
+> On 12/06/2025 12.54, Jesper Dangaard Brouer wrote:
+>>=20
+>>=20
+>> On 12/06/2025 12.30, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>>> Steven Rostedt <rostedt@goodmis.org> writes:
+>>>
+>>>> From: Steven Rostedt <rostedt@goodmis.org>
+>>>>
+>>>> Each TRACE_EVENT() defined can take up around 5K of text and meta data
+>>>> regardless if they are used or not. New code is being developed that=20
+>>>> will
+>>>> warn when a tracepoint is defined but not used.
+>>>>
+>>>> The trace events xdp_redirect_map and xdp_redirect_map_err are=20
+>>>> defined but
+>>>> not used, but there's also a comment that states these are kept=20
+>>>> around for
+>>>> backward compatibility. Which is interesting because since they are not
+>>>> used, any old BPF program that expects them to exist will get incorrect
+>>>> data (no data) when they use them. It's worse than not working, it's
+>>>> silently failing.
+>>>>
+>>>> Remove them as they will soon cause warnings, or if they really need to
+>>>> stick around, then code needs to be added to use them.
+>>>>
+>>>> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+>>>
+>>> I guess that makes sense; I have no objections to getting rid of them.
+>>>
+>>> Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@kernel.org>
+>>=20
+>> Make sense.
+>>=20
+>>=20
+>> Toke we have to check how XDP-tools handle when these tracepoints=20
+>> disappears.
+>
+> To Toke, notice that userspace tools expect this tracepoint to be
+> available will fail as below (for kernel release v6.16):
+>
+>   $ sudo ./xdp-bench redirect mlx5p1 veth41
+>    libbpf: prog 'tp_xdp_redirect_map_err': failed to find kernel BTF=20
+> type ID of 'xdp_redirect_map_err': -3
+>    libbpf: prog 'tp_xdp_redirect_map_err': failed to prepare load=20
+> attributes: -3
+>    libbpf: prog 'tp_xdp_redirect_map_err': failed to load: -3
+>    libbpf: failed to load object 'xdp_redirect_basic'
+>   Failed to attach XDP program: No such process
+>
+> IMHO this is a userspace problem, that needs to be more flexible and
+> adapt to this change.
+>
+> This was changed in kernel v5.6 (Jan 2020) commit 1d233886dd90 ("xdp:
+> Use bulking for non-map XDP_REDIRECT and consolidate code paths").
+> So, I'm thinking that xdp-tools could just remove monitoring for these
+> tracepoints?
 
-Regards,
-Lorenzo
+Yeah, let's just get rid of them:
+https://github.com/xdp-project/xdp-tools/pull/513
 
---VywHLU06xENyqKzr
-Content-Type: application/pgp-signature; name=signature.asc
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCaFAQJAAKCRA6cBh0uS2t
-rKclAQCvfdnSjaqfL2sEVEPBTg9ms7jItZe4mgSn6ex5xtWOiwD+Lx/hyzIw/HoR
-RuExYSMdd4VZH0G/erckZ9r5j0ByWAI=
-=BJjO
------END PGP SIGNATURE-----
-
---VywHLU06xENyqKzr--
+-Toke
 
