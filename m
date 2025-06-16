@@ -1,56 +1,67 @@
-Return-Path: <bpf+bounces-60740-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60741-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22FA6ADB848
-	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 19:56:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56B1CADB898
+	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 20:15:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B91E9176870
-	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 17:56:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04D2D171D04
+	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 18:15:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2759C28937D;
-	Mon, 16 Jun 2025 17:55:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12702288C23;
+	Mon, 16 Jun 2025 18:15:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="yAPlr+kl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OP2hkkbH"
 X-Original-To: bpf@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D11C9289364;
-	Mon, 16 Jun 2025 17:55:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ECB31922D3;
+	Mon, 16 Jun 2025 18:15:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750096532; cv=none; b=G19lIr70ysVZNZmE83u02WiNKtUyRxjNFFzn/tRCklhDuD+c10LuYm8v8oRNGFoG7paPtopV1wLka9VvMWXzpjb2WD4qDOWoGjabwezAUx7g1HGAYh6q9e9zvehMyex72E3MJuVDZltv1LFKeLgu9OrtbTy9oxsS5GbNn5WBwh4=
+	t=1750097719; cv=none; b=X/LB5oRGODkdeBMI3NX2tpwfMCQPz6MTwufsbCqkU534cwFI9ba+lK8Fjc5fujmTHRXdSTMsfLPYVoClqtk5D5X4ld+eypoWk6BoDQL0032YZokhalDF6c99v3O0aftq5Yg9PIou9YI2A9hzmsiwOrFbpc1qyOKHFfLl/QXTT10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750096532; c=relaxed/simple;
-	bh=ETltWqzLgl/gGq5DSA9Qh1OzqOVZ9m9CvVQjWLVCqjw=;
+	s=arc-20240116; t=1750097719; c=relaxed/simple;
+	bh=yA7nQY6EB3++WTiYEV3GhWn+708ii7DZS9WFb6/7CHU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kXX7nk6f8UKqfpNrZgx9SoottUAjeRSpDDw1cDEsWdz+nJnSClNXqm+oGq90HP3gs0jvU5DQPhn4flF8u8nwTQJbkGR+NrfpEiAl5Sixj6ool5vJpaRhngwurk5rc00qOdERQE9SS9YVMlcuqEhq3NUXF96g2Fl36QqOxNp5QmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=yAPlr+kl; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=BcRhhx5dTEuRo7XGCUmzhFAayyoMnb2ih2YZjt2sEiM=; b=yAPlr+klWyZ635cfgEbu+zwi9X
-	km4KVSIyoJSyZ/95n8TCxREkaa6+xdTfskFRLhlG67kVKaoJ6LzCz+Pg1sqfUctMBQadV0nSyyR43
-	c0+qRbALrHHvoaFhpTtMoJHvu2cB8uUR3Yp/G6acyCJazL/rKCM3vOoJC+AEzGThUr4g=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1uRE3F-00G4ZV-WF; Mon, 16 Jun 2025 19:55:22 +0200
-Date: Mon, 16 Jun 2025 19:55:21 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Robert Cross <quantumcross@gmail.com>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, olteanv@gmail.com,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] net: dsa: mv88e6xxx: fix external smi for mv88e6176
-Message-ID: <3c5a8746-4d57-49d5-8a3d-5af7514c46b3@lunn.ch>
-References: <20250616162023.2795566-1-quantumcross@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=G83sY7LcVscC5thGD52wVi4Y8H1d5TE3Mp7ndcWDscNGKh28nOq8tMMv9dknXYCAYTxeB44uN7DwqMtIwGQZ4hTf9R6wd3fv2kI7bUZHOr34QYp/6hTLXWMcHkmDY8fPyIbpwMd1H3TzWZQKngYUe70B8Tdntwl+YUjUsVQOEoc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OP2hkkbH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF5CAC4CEF1;
+	Mon, 16 Jun 2025 18:15:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1750097718;
+	bh=yA7nQY6EB3++WTiYEV3GhWn+708ii7DZS9WFb6/7CHU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OP2hkkbH8ofhfta0N/V3Cd6gPLQX7bBJtzWLbXa6/z12V/OKP+hrdGdyL0OVh0Bbl
+	 0iDhqKqww7fOB6i6ybbv+R5ZKx9TJJP6OB8xVO5ip9SWlDfpSCZ6v05dTYyUqFVC4y
+	 DoQJPoCn2xAGql4W/aDC/vktQtbm1DGDz0d0ne6yb2t8aHNiafPQYhDUeNL9txbsGV
+	 /SsUF9NiZAxMU1PuUiURQe6QrO02J1GurlZf43Aez1IZIfF0gtIWiuhWjHnb1+9Qj4
+	 0OJwVkYDi6MLVY6YM2w68jS9SEtKuOLI45uaml0aH/bovsFIU2bzu69YuAphARxJFR
+	 NpwhVu6tJBUpw==
+Date: Mon, 16 Jun 2025 08:15:17 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	JP Kobryn <inwardvessel@gmail.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Harry Yoo <harry.yoo@oracle.com>,
+	Yosry Ahmed <yosry.ahmed@linux.dev>, bpf@vger.kernel.org,
+	linux-mm@kvack.org, cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Meta kernel team <kernel-team@meta.com>
+Subject: Re: [PATCH v2 0/4] cgroup: nmi safe css_rstat_updated
+Message-ID: <aFBfNRVAyE1FU9aQ@slm.duckdns.org>
+References: <20250611221532.2513772-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -59,23 +70,22 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250616162023.2795566-1-quantumcross@gmail.com>
+In-Reply-To: <20250611221532.2513772-1-shakeel.butt@linux.dev>
 
-On Mon, Jun 16, 2025 at 12:20:25PM -0400, Robert Cross wrote:
-> (Sorry this is my second attempt, I fixed my email client)
-> 
-> I was trying to enable external SMI on a mv88e6176.
+Hello,
 
-        MV88E6XXX_FAMILY_6352,  /* 6172 6176 6240 6352 */
+On Wed, Jun 11, 2025 at 03:15:28PM -0700, Shakeel Butt wrote:
+> Shakeel Butt (4):
+>   cgroup: support to enable nmi-safe css_rstat_updated
+>   cgroup: make css_rstat_updated nmi safe
+>   cgroup: remove per-cpu per-subsystem locks
+>   memcg: cgroup: call css_rstat_updated irrespective of in_nmi()
 
-So it is part of the 6352 family. That family does not have an
-internal and external MDIO bus. It has a single bus which is both
-internal and external.
+The patches look good to me. How should it be routed? Should I take all
+four, just the first three or would it better to route all through -mm?
 
-It is only the 6390 family and above which has two MDIO busses.
+Thanks.
 
-    Andrew
-
----
-pw-bot: cr
+-- 
+tejun
 
