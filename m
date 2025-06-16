@@ -1,165 +1,215 @@
-Return-Path: <bpf+bounces-60698-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60699-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6376ADA84D
-	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 08:35:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F14A4ADA99A
+	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 09:40:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05FD518922B3
-	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 06:34:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57507168D74
+	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 07:40:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDAAC1E5201;
-	Mon, 16 Jun 2025 06:34:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1795B20010C;
+	Mon, 16 Jun 2025 07:40:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="M4suDSk5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CRm7G+2O"
 X-Original-To: bpf@vger.kernel.org
-Received: from fllvem-ot03.ext.ti.com (fllvem-ot03.ext.ti.com [198.47.19.245])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 083D872608;
-	Mon, 16 Jun 2025 06:34:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.245
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D070D1F2C45;
+	Mon, 16 Jun 2025 07:40:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750055653; cv=none; b=VUDJWdiB8OznvDINYY62oVlYdtIIAOHmWhZVjPBWptsm+J2qnsRoD5L4EfF5qXt2lPN8DYQ9ss/l/JcpzIYScP/OkZTDJh8mcrg3nxMUx1if/dMVolIOj70hwjrvzNq3KN5dsiy0k5J5QVQdbU+lleh54W//+G9VqTnrJmyIanE=
+	t=1750059622; cv=none; b=j5dlBklxkhHDF5cZbCVVMNC6zGMjmfYrvbvJaK6Qi0EikoOOCFttqTFMIPxoyckxln7HArCBbbjUdLd8lT1YMsearHCb33b5Xb7HHe/76tDu4Iuppn4KL7Gd0WUPxC7XJ6L1Ad7F4FYOwnF0xipaTv+sJSTCILgjvXpCmtZ5Okk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750055653; c=relaxed/simple;
-	bh=NcfOR+xbcUtfA85Y9HH6vmCb9ZL4oKoRn9ZbKKZJ2Vw=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qB22mwo+XOvsLDGR5FJm7PnL9mp/YW2I1O8DN/tEhuttMw0Z2d3exUNcFyto4Sf4+r4mEUGKqYj2Jtmuvm0MpUnfuDNSHDBwKNVESc7wPJKyuLvanE8clzaIlghTS02RwwzGT9n9NzCru7MHCUWTUC/Vv49QkGCSU/XEqXAD/+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=M4suDSk5; arc=none smtp.client-ip=198.47.19.245
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelvem-sh02.itg.ti.com ([10.180.78.226])
-	by fllvem-ot03.ext.ti.com (8.15.2/8.15.2) with ESMTP id 55G6XOH23658728;
-	Mon, 16 Jun 2025 01:33:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1750055604;
-	bh=9BkVFrTKgC9rH1nlpqm8W5gPeCeKSxMCFUVpVGS1JwA=;
-	h=From:To:CC:Subject:Date;
-	b=M4suDSk5URjh3EEu2LT1eSO/deE9Cj1GublOs7d9aZyvMXJy85MJBLG0wY35rt/hQ
-	 /ZoBbvPQdMaJKtiHLySTzuAWHz7JqO4WsBEd+C6QBtpADloL8He/08jceiwymicDXa
-	 GtwX4YqGD3lmFzdOIIcD0p91qguu4JRY99N2xPl0=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-	by lelvem-sh02.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 55G6XOhw2410372
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=FAIL);
-	Mon, 16 Jun 2025 01:33:24 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55; Mon, 16
- Jun 2025 01:33:23 -0500
-Received: from fllvem-mr08.itg.ti.com (10.64.41.88) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55 via
- Frontend Transport; Mon, 16 Jun 2025 01:33:23 -0500
-Received: from lelv0854.itg.ti.com (lelv0854.itg.ti.com [10.181.64.140])
-	by fllvem-mr08.itg.ti.com (8.18.1/8.18.1) with ESMTP id 55G6XNHh3813524;
-	Mon, 16 Jun 2025 01:33:23 -0500
-Received: from localhost (meghana-pc.dhcp.ti.com [10.24.69.13] (may be forged))
-	by lelv0854.itg.ti.com (8.14.7/8.14.7) with ESMTP id 55G6XMuC003283;
-	Mon, 16 Jun 2025 01:33:23 -0500
-From: Meghana Malladi <m-malladi@ti.com>
-To: <namcao@linutronix.de>, <m-malladi@ti.com>, <john.fastabend@gmail.com>,
-        <hawk@kernel.org>, <daniel@iogearbox.net>, <ast@kernel.org>,
-        <pabeni@redhat.com>, <kuba@kernel.org>, <edumazet@google.com>,
-        <davem@davemloft.net>, <andrew+netdev@lunn.ch>
-CC: <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <srk@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Roger Quadros
-	<rogerq@kernel.org>, <danishanwar@ti.com>
-Subject: [PATCH net v2] net: ti: icssg-prueth: Fix packet handling for XDP_TX
-Date: Mon, 16 Jun 2025 12:03:19 +0530
-Message-ID: <20250616063319.3347541-1-m-malladi@ti.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1750059622; c=relaxed/simple;
+	bh=9R521yEvSoTRMuAWEVwLtelRmMlrAZtGKB1H7DGvnvc=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jKl6BNjVraJySZdAichQQjpbmkBCUHutb6jRVBQHOHlAddPfvAoJVQfcISdrzskiEkL4OfMihAb/l29qUpXwt6kZ9YM5ZKEW4IHowfAA5Z/sAIfD8fSCUSkfNNgM6By5V27xNtWIwx2yR+1ZysXgXkOoFG/SPPfCwrJIiwSoF64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CRm7G+2O; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-ad88d77314bso925030266b.1;
+        Mon, 16 Jun 2025 00:40:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1750059619; x=1750664419; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=h/VFqzJdBv7JH//nNz8fWrMW7ma2acRIz+sTqvArf+s=;
+        b=CRm7G+2Op+0XpT6VJ42d3QVh+vTH+SA0Tf8I2fJxeRehzgRquoB85MCuq6EvVUK1Ab
+         QdEAxpF2vd7Al5LFj8jxwWxyo+Naz2RB+2YBi+55b78MPSvGvmHKr+vp6D6v0jo5oJ6r
+         6YKMuXmixbUabKKuEnrpmVNe7i4/b4aEd8MoJ8LJ8HCGKD6U9LPALLFi632ylaZaJdVp
+         XBgWMfWuMy5gauC/gR6dw6DELgkhbQjlZdJUVtTLzxsFxp5XBNoquabANZ17pvz822Gw
+         L51LrG+5IuPjHa0lVntmmkxttMllZIzpQWhniKROB0AzBObDQJmCn4wsztPYDYZTghTq
+         Zwyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750059619; x=1750664419;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h/VFqzJdBv7JH//nNz8fWrMW7ma2acRIz+sTqvArf+s=;
+        b=MoXORlkFKRBWFRTbg42EcbChu0KlmubcRu5IuUgL8B4/1hEKE6R0wOZYzFcw4qrQeR
+         D+NOlqMWxRQLNzgsWk+aOAqtXWTgAqbwTweEnMxquqeIccYZHjl1sx5sAWpHtune+FDP
+         v5WZmkF17tZXcuKimf/yv3DdAsxAP2XgvP/ew+SO8nkirdN84cVXYL3dNa+NFT6WBN0M
+         wVkVk1o9ACYN/ET2obs0U8V3xUAvuOutvkitngCcMBvtbmQzKAD5LUyi6RW7vkqBarD1
+         2mRZgf5AKIEEwopKgcTx0R8kgVoQ6pdzPGqH841+OivBnkM7yyOQM8aY/vnYY0oGVKdw
+         cGSw==
+X-Forwarded-Encrypted: i=1; AJvYcCVlugjQWHZWZcTIVx6vWsWQks1bpzhyhV1VU73uAzq/BiIRS+DLL9953xhupsT/Qbd4kHY=@vger.kernel.org, AJvYcCX/Hg5VxZIoaZvV1lrg7RcLUg6wg896Sg8QcRP9a7cv036NTziY95rAWFx7OMUbSrztU9cWOqwBLpw8pqh4lfx+Tztr@vger.kernel.org, AJvYcCXPocRbNV+pots1Hzmm/q4/uVxFdKnlxijPHSrgq7NB0nbay9Sd+NAAi8ypNbywAKfAwdze7jw0Z0wUXOap@vger.kernel.org
+X-Gm-Message-State: AOJu0YxFzpQ6uhSbdbxdVqKW5fXfGW0+6+mxjlkz9/4P/jv9tE/VbVKw
+	npiqe3e0xxytTn4Q8HKvdTFgZLsHfVcixlVvk3Iwu0qpQTiHlldsz6Td
+X-Gm-Gg: ASbGncu04HtrVmrZCTUiGbLXAtB94QQu3q1+nnK63yhrqZrQxa5NPeFaZhM2QvvuEDG
+	jdS3so5BPiC6cReOxxoLtAT4G/uQr4cKxgOvdIX+CL/YF3Hh5YLnoVoXMV58YAk3X4v1lo17djT
+	kLe3a0Eb7Bb8/0EBps61eVm3R9EaLLj7L/5ULrOg8iOPUBLQwsWxyivGnT/dfRIM7b7/AnM1xZp
+	EFAD69vGr1e4QrWmel8Ocbwpwl2FDX3BAwZsdvIqzttVcOiiV/TRu/r2/wKaCUXQwZBHa4nSLPL
+	8grF1Zh0otqa67+K0Ifhl6aJnx+1n45O2rOJIYWGdgcCU+av
+X-Google-Smtp-Source: AGHT+IFBkUt1SLA2khCw9igvFJ2dxCo2xoj5v6KfMoQSZ+ORAKFruwVNHMfnbbIVVfe8zWgJnvjP+g==
+X-Received: by 2002:a17:907:d23:b0:ad8:9257:5742 with SMTP id a640c23a62f3a-adfad39cdd7mr795503566b.15.1750059618809;
+        Mon, 16 Jun 2025 00:40:18 -0700 (PDT)
+Received: from krava ([173.38.220.59])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-adec892e756sm612120666b.144.2025.06.16.00.40.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Jun 2025 00:40:18 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 16 Jun 2025 09:40:15 +0200
+To: Tao Chen <chen.dylane@linux.dev>
+Cc: song@kernel.org, kpsingh@kernel.org, mattbobrowski@google.com,
+	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+	martin.lau@linux.dev, eddyz87@gmail.com, yonghong.song@linux.dev,
+	john.fastabend@gmail.com, sdf@fomichev.me, haoluo@google.com,
+	rostedt@goodmis.org, mhiramat@kernel.org,
+	mathieu.desnoyers@efficios.com, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Add show_fdinfo for uprobe_multi
+Message-ID: <aE_KX66K-8yrSPtS@krava>
+References: <20250615150514.418581-1-chen.dylane@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250615150514.418581-1-chen.dylane@linux.dev>
 
-While transmitting XDP frames for XDP_TX, page_pool is
-used to get the DMA buffers (already mapped to the pages)
-and need to be freed/reycled once the transmission is complete.
-This need not be explicitly done by the driver as this is handled
-more gracefully by the xdp driver while returning the xdp frame.
-__xdp_return() frees the XDP memory based on its memory type,
-under which page_pool memory is also handled. This change fixes
-the transmit queue timeout while running XDP_TX.
+On Sun, Jun 15, 2025 at 11:05:13PM +0800, Tao Chen wrote:
+> Show uprobe_multi link info with fdinfo, the info as follows:
+> 
+> link_type:	uprobe_multi
+> link_id:	9
+> prog_tag:	e729f789e34a8eca
+> prog_id:	58
+> type:	uprobe_multi
+> uprobe_cnt:	3
+> pid:	0
+> path:	/home/dylane/bpf/tools/testing/selftests/bpf/test_progs
+> offset:	0xa69ed7
+> ref_ctr_offset:	0x0
+> cookie:	3
+> offset:	0xa69ee2
+> ref_ctr_offset:	0x0
+> cookie:	1
+> offset:	0xa69eed
+> ref_ctr_offset:	0x0
+> cookie:	2
 
-logs:
-[  309.069682] icssg-prueth icssg1-eth eth2: NETDEV WATCHDOG: CPU: 0: transmit queue 0 timed out 45860 ms
-[  313.933780] icssg-prueth icssg1-eth eth2: NETDEV WATCHDOG: CPU: 0: transmit queue 0 timed out 50724 ms
-[  319.053656] icssg-prueth icssg1-eth eth2: NETDEV WATCHDOG: CPU: 0: transmit queue 0 timed out 55844 ms
-...
+hi,
+does this need to be 'tag: value' format ? bpftool uses:
 
-Fixes: 62aa3246f462 ("net: ti: icssg-prueth: Add XDP support")
-Signed-off-by: Meghana Malladi <m-malladi@ti.com>
----
-v2-v1:
-- Added the missing Fixes tag
+        offset             ref_ctr_offset     cookies
+        0xe558             0x0                0x0
+        0x2574e            0x0                0x0
+        0x6c393            0x0                0x0
 
-v1: https://lore.kernel.org/all/20250612094523.1615719-1-m-malladi@ti.com/
+which might be more readable, or at least extra line after each uprobe?
+also using spaces instead of tabs  to align the values might help
 
- drivers/net/ethernet/ti/icssg/icssg_common.c | 19 ++-----------------
- 1 file changed, 2 insertions(+), 17 deletions(-)
+same for kprobe_multi, otherwise looks lgtm
 
-diff --git a/drivers/net/ethernet/ti/icssg/icssg_common.c b/drivers/net/ethernet/ti/icssg/icssg_common.c
-index 5b8fdb882172..12f25cec6255 100644
---- a/drivers/net/ethernet/ti/icssg/icssg_common.c
-+++ b/drivers/net/ethernet/ti/icssg/icssg_common.c
-@@ -98,20 +98,11 @@ void prueth_xmit_free(struct prueth_tx_chn *tx_chn,
- {
- 	struct cppi5_host_desc_t *first_desc, *next_desc;
- 	dma_addr_t buf_dma, next_desc_dma;
--	struct prueth_swdata *swdata;
--	struct page *page;
- 	u32 buf_dma_len;
- 
- 	first_desc = desc;
- 	next_desc = first_desc;
- 
--	swdata = cppi5_hdesc_get_swdata(desc);
--	if (swdata->type == PRUETH_SWDATA_PAGE) {
--		page = swdata->data.page;
--		page_pool_recycle_direct(page->pp, swdata->data.page);
--		goto free_desc;
--	}
--
- 	cppi5_hdesc_get_obuf(first_desc, &buf_dma, &buf_dma_len);
- 	k3_udma_glue_tx_cppi5_to_dma_addr(tx_chn->tx_chn, &buf_dma);
- 
-@@ -135,7 +126,6 @@ void prueth_xmit_free(struct prueth_tx_chn *tx_chn,
- 		k3_cppi_desc_pool_free(tx_chn->desc_pool, next_desc);
- 	}
- 
--free_desc:
- 	k3_cppi_desc_pool_free(tx_chn->desc_pool, first_desc);
- }
- EXPORT_SYMBOL_GPL(prueth_xmit_free);
-@@ -612,13 +602,8 @@ u32 emac_xmit_xdp_frame(struct prueth_emac *emac,
- 	k3_udma_glue_tx_dma_to_cppi5_addr(tx_chn->tx_chn, &buf_dma);
- 	cppi5_hdesc_attach_buf(first_desc, buf_dma, xdpf->len, buf_dma, xdpf->len);
- 	swdata = cppi5_hdesc_get_swdata(first_desc);
--	if (page) {
--		swdata->type = PRUETH_SWDATA_PAGE;
--		swdata->data.page = page;
--	} else {
--		swdata->type = PRUETH_SWDATA_XDPF;
--		swdata->data.xdpf = xdpf;
--	}
-+	swdata->type = PRUETH_SWDATA_XDPF;
-+	swdata->data.xdpf = xdpf;
- 
- 	/* Report BQL before sending the packet */
- 	netif_txq = netdev_get_tx_queue(ndev, tx_chn->id);
+thanks,
+jirka
 
-base-commit: 5d6d67c4cb10a4b4d3ae35758d5eeed6239afdc8
--- 
-2.43.0
 
+> 
+> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+> ---
+>  kernel/trace/bpf_trace.c | 48 ++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 48 insertions(+)
+> 
+> Change list:
+>   v1 -> v2:
+>     - replace 'func_cnt' with 'uprobe_cnt'.(Andrii)
+>     - print func name is more readable and security for kprobe_multi.(Alexei)
+>   v1:
+>   https://lore.kernel.org/bpf/20250612115556.295103-1-chen.dylane@linux.dev
+> 
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 24b94870b50..9a8ca8a8e2b 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -3157,10 +3157,58 @@ static int bpf_uprobe_multi_link_fill_link_info(const struct bpf_link *link,
+>  	return err;
+>  }
+>  
+> +#ifdef CONFIG_PROC_FS
+> +static void bpf_uprobe_multi_show_fdinfo(const struct bpf_link *link,
+> +					 struct seq_file *seq)
+> +{
+> +	struct bpf_uprobe_multi_link *umulti_link;
+> +	char *p, *buf;
+> +
+> +	umulti_link = container_of(link, struct bpf_uprobe_multi_link, link);
+> +
+> +	buf = kmalloc(PATH_MAX, GFP_KERNEL);
+> +	if (!buf)
+> +		return;
+> +
+> +	p = d_path(&umulti_link->path, buf, PATH_MAX);
+> +	if (IS_ERR(p)) {
+> +		kfree(buf);
+> +		return;
+> +	}
+> +
+> +	seq_printf(seq,
+> +		   "type:\t%s\n"
+> +		   "uprobe_cnt:\t%u\n"
+> +		   "pid:\t%u\n"
+> +		   "path:\t%s\n",
+> +		   umulti_link->flags == BPF_F_UPROBE_MULTI_RETURN ?
+> +					 "uretprobe_multi" : "uprobe_multi",
+> +		   umulti_link->cnt,
+> +		   umulti_link->task ? task_pid_nr_ns(umulti_link->task,
+> +			   task_active_pid_ns(current)) : 0,
+> +		   p);
+> +
+> +	for (int i = 0; i < umulti_link->cnt; i++) {
+> +		seq_printf(seq,
+> +			   "offset:\t%#llx\n"
+> +			   "ref_ctr_offset:\t%#lx\n"
+> +			   "cookie:\t%llu\n",
+> +			   umulti_link->uprobes[i].offset,
+> +			   umulti_link->uprobes[i].ref_ctr_offset,
+> +			   umulti_link->uprobes[i].cookie);
+> +	}
+> +
+> +	kfree(buf);
+> +}
+> +#endif
+> +
+>  static const struct bpf_link_ops bpf_uprobe_multi_link_lops = {
+>  	.release = bpf_uprobe_multi_link_release,
+>  	.dealloc_deferred = bpf_uprobe_multi_link_dealloc,
+>  	.fill_link_info = bpf_uprobe_multi_link_fill_link_info,
+> +#ifdef CONFIG_PROC_FS
+> +	.show_fdinfo = bpf_uprobe_multi_show_fdinfo,
+> +#endif
+>  };
+>  
+>  static int uprobe_prog_run(struct bpf_uprobe *uprobe,
+> -- 
+> 2.48.1
+> 
 
