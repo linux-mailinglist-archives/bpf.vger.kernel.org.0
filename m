@@ -1,174 +1,169 @@
-Return-Path: <bpf+bounces-60778-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60779-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BA6BADBD7F
-	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 01:20:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C425CADBDC3
+	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 01:37:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D33A1727F1
-	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 23:20:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0003918915C3
+	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 23:37:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9BFD22DA0B;
-	Mon, 16 Jun 2025 23:20:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1602722F14D;
+	Mon, 16 Jun 2025 23:37:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MckM5IBx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nDY4T2sj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAB1E1DF739
-	for <bpf@vger.kernel.org>; Mon, 16 Jun 2025 23:20:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43B8C2163B2
+	for <bpf@vger.kernel.org>; Mon, 16 Jun 2025 23:37:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750116041; cv=none; b=Mglpw3aqAcCDH0OeAp02sElE8dKw99uiXsjm3//WHakI4W3orN8bHKp/94NFb79uAnR7od8etnFaaMXrTCwmpSLC3B8+C0+LULmjF5KD857hgxzSn+W5WzyeV2OqHddxVsl7ewt/Ss4JCIM4XQrv82o+YjtasMrcWR5SHN1VVjc=
+	t=1750117029; cv=none; b=WtBBJXd+x8IXsPJv0G3fHeeaj8i6kcA+papzWoodnPn4/qki/jNcue7a2C1xTjaC4VD4yjH0DrPRUP0Jn0sMt2kWbJnVl78w+0Es1GP4nSYo1ZMeMsip7a0m6wOoLyjsVEQmS8/Qs388cxybZiIM87IwMFciUjfztr+AcXvmHkc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750116041; c=relaxed/simple;
-	bh=vNTnwF9GKK0IoF6o/nzhrJo2uLgI+FrXJuwxp8SqTQI=;
+	s=arc-20240116; t=1750117029; c=relaxed/simple;
+	bh=HEKJ13sbMQ7XRIVtVSdhBAAeC0w/Rk+mFe7mNEW0fis=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PyTt5cWaV/o/3X0kTQsTvOwLcQSUBa5+qGgjKF8UGkUjDZhd2x9IuRNL1DmpToQP437tDVBpUX6TUjJn8pzkME8+d19AU+dmQ9uEmA7KK5DReyLmVS7Mmtf2gLmY63q1xQ23xOYuXPGwanAFViquiFfjw7tJ66ExHDUgTyOtD6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MckM5IBx; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-2357c61cda7so30335ad.1
-        for <bpf@vger.kernel.org>; Mon, 16 Jun 2025 16:20:39 -0700 (PDT)
+	 To:Cc:Content-Type; b=YGKwP63LpCoG05xG616GUEQEgYfsZvgF3uxaBIZXnX1Lir4OmCRbIPLT8pV1d+vgecWIG6bdA7eflI/FVqM7MmXJyZCh1TUOGg40Oa0gEhx72riE8AbBjiGPGkAJj5fZSy9ghse9UdE/zJJLlNtFfG1weIB14NeF3bETLo8Kgkw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nDY4T2sj; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-3138e64b3fcso4606827a91.2
+        for <bpf@vger.kernel.org>; Mon, 16 Jun 2025 16:37:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1750116039; x=1750720839; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1750117027; x=1750721827; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kyytRBIss30VLX92/RelICIPjiY1WTLTsOKNaQMthuE=;
-        b=MckM5IBxSpxEkpnREDbQCGssFi2zwwoMzRv/sKjHGFe3Y21GIsKmbZHS1tw74x01PO
-         wFcsw+HnJ2D2dorp+sNRQS95c3nzqyAKN4BLNKC9accNGTN1dDIYa2ZNri8TDNW/XTZs
-         YMiVrpw/d4zNEa2gLWH4bTNxh0y4roULFxryzC/yMq4YMv0m0Fe3DY+nxOtd9ee+VbQk
-         IE9wR/r2EnIJNz8Ze/EJ6j1MTNJn6HY+p49afoGBJ4qjM1E1YOSN2rifo95w0xFGNt/N
-         kyCqaCsz1eAQC0x+5pNejlZNluMbjQbzVVz0YVwWWMRwuyxISouxIQ/ul6jT7WgR/unu
-         gExQ==
+        bh=MNwDORcO4bHfXQRFrCL0fYyHh5Y9Ugr7OJawSD9yuFk=;
+        b=nDY4T2sjY247LftFMCuZ5xt9tMnv6yYQGc6/pUheIfmHp9X/ez/2LYba7jSwce80FM
+         UdYNxWL/OfMZLItCr5bq2dyvyIvddMcLIxsv6VwAEwEDNDcuN6HdmnmqC7/6e2Pawmn0
+         lw+/2Wy8Y8tcQO0YKCK/xVsVqLda/T0LGveITgMYbzfJr+nt+Czv8ANPz8x8nfXPsgHk
+         drR6ZxWDCnl7uJ96k/GigT3G2CkUc/5Vyx6vZUl8J/2jBaBLPKrKhPzDUkeAQQ+WaW/8
+         dsY1IaHTeXfxZQXckw9imTmZcfAG2e308aCKfA/iOzY8s8Vg5czrTPPFplI9hJZtRd16
+         +WFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750116039; x=1750720839;
+        d=1e100.net; s=20230601; t=1750117027; x=1750721827;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kyytRBIss30VLX92/RelICIPjiY1WTLTsOKNaQMthuE=;
-        b=IGwlulYjBiCJPlTI4vdwjmp2PNVCsX8USZpwkHUM8BIVbrxAFveS64HBwBXAEL7pNa
-         X17ykZd+CchFw6FmpvncrYObvyQW4TycwYRjZe0taeTSmCi0QCXPtjVF+xAqh7xMFFCK
-         Y4GGf3NTbOux+gKkqYn3T5qpE0OP3itJ9febUr6u5sUz6OuhHrlyVFTqrtzRobQ80xol
-         u3T+a3mVO1VyuBMZPY+grejKoMG2L+Trp/w3XA2so3dAz/ulIu9rC5p+F4kXHhtJCb/D
-         p/wqD0/p7xeClfbT6YYF9qn7ceE769h1rRFfA4cDTRm4qLOx3pf2qAGTxYI8xkuAkN3Z
-         EabA==
-X-Forwarded-Encrypted: i=1; AJvYcCXAzX+NZ0QbbzuXkCRIDEH5m5vsXL6rDy1Ef/0tueozGCPzlLaX4629mCLfkKk3jKBSOHM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy4VOEF1zZjTk7A+AjpSyjo7s9WeOr7sI/szhBBMdS0FKva/tyD
-	D2CxoxaP82hal2BTLgxRlh4UIOZwTZVT9Hfl7nm/8vHtx8hNVbV7RpbLyHy6jz8YV8jb1ke2O/o
-	1rWBd/1JP3/GdgLiXIz19MF5AKlO7/OBvpLWpVqD0
-X-Gm-Gg: ASbGncswVlbj05vyzTiF+0rtQFAWyiCD/h3G67abSbGA++gHit4CTUBx3RFpljAcSYv
-	Pok/ENycoQ7XbfrPZIYZ0oYittmiUdV6UPbHhuXlWUiWksZmYPvRK5ldnwuY+UhYNwB5aqHb9KL
-	mdVpc/iVd/gUV845DyZyv1NoOAUXPX3WL4huThplmJPEWJ
-X-Google-Smtp-Source: AGHT+IHXnwARWegGFo3Ls/RMFPkkol/qsUQos1PSrw1y658KGXmes/6RuO0wwXI83dq5TgtFosifbJghm7S3DE4kZ4Y=
-X-Received: by 2002:a17:903:2f07:b0:22e:1858:fc25 with SMTP id
- d9443c01a7336-2366eef4f2bmr5835145ad.9.1750116038794; Mon, 16 Jun 2025
- 16:20:38 -0700 (PDT)
+        bh=MNwDORcO4bHfXQRFrCL0fYyHh5Y9Ugr7OJawSD9yuFk=;
+        b=KqS9QYLn7S1/zlpH4X6I4oaEjrdXtVDTAbnSx7jHiPMNJBYnXG6q7HfZyLM4XyMVeH
+         5mpm4SK0GFGBD88BxeYL3O477dl/Sq/TJFr7hQdRkWIA4RdRlSUPwkMxrr9AMNvTDtvc
+         /rrUcVdv4Mz0oW+l0tM8G5RoawHhzikWsDOKmFmUGsL8N0QUYUsQsSA52Ttbj+Ul98Uq
+         bhg7TI0y4zs/RwXZZYnOK8Fp04KSuQEd55n4V2zf6vsnJsN+BuhqbAUuGv9W+0AcC61+
+         nmCuXxKRcYjDbgSCZhtQDIbLfTh5k4mYhb0zkC0AEfWVvmDc7NRyx7cnOC+VkjXQmw+u
+         zsLQ==
+X-Gm-Message-State: AOJu0YyEe7G5lRdyA5y7kmxA7dmC5OOpZyDaD9cc16W+nyyGc4tV71V9
+	PeZFnGg/orb2hp71ibmbiKucFb5+39jT0EjEw7rpSyBUXf+aLkMhg2tq50yrtzfbYI1Ic2MORDg
+	7qtvLllmVJ+PP10jbgbkZWKV4jRy16Tc=
+X-Gm-Gg: ASbGncu6Da9hbdNIQyJqV2RwO9haG3NaUZoLcCS4pyvGeIJ5bdPOm5ZGZRN8Qmju0BK
+	1ul9RZQ3PiwD5LbpSE2rouUiIxc0pkMntL1XcVscWtulWR/ZJ4t+eycW+wcnDH36BsQCHKdVNW+
+	wX2IjE/z1S9pJXOBpSKo3ihugiWVq3OgmZqKdzPF/oDRqaGooJ+Z2LKDDrAEI=
+X-Google-Smtp-Source: AGHT+IEfsf7uxVuXF3mTn7nePr+MrfqUJc9FIVomekZ9U/xizQzp0trtUyDbDsFusf4Jb7fo2h74/DfoyJFHvW+ptbs=
+X-Received: by 2002:a17:90b:5150:b0:312:1143:cf8c with SMTP id
+ 98e67ed59e1d1-313f1cafae6mr18239936a91.16.1750117027511; Mon, 16 Jun 2025
+ 16:37:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250616141441.1243044-1-mbloch@nvidia.com> <20250616141441.1243044-11-mbloch@nvidia.com>
-In-Reply-To: <20250616141441.1243044-11-mbloch@nvidia.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Mon, 16 Jun 2025 16:20:25 -0700
-X-Gm-Features: AX0GCFtZpxhZvU77AkL5_V9_bYi_u1lZxXIho5kV2sVVHPGhYrOea7qfCuTr1rU
-Message-ID: <CAHS8izN_Aj6jswP=FRDu6a4TG1Qcc2HHQYxRUuL4HO_UShHkRg@mail.gmail.com>
-Subject: Re: [PATCH net-next v6 10/12] net/mlx5e: Implement queue mgmt ops and
- single channel swap
-To: Mark Bloch <mbloch@nvidia.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, Simon Horman <horms@kernel.org>, saeedm@nvidia.com, 
-	gal@nvidia.com, leonro@nvidia.com, tariqt@nvidia.com, 
-	Leon Romanovsky <leon@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Richard Cochran <richardcochran@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, netdev@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	Dragos Tatulea <dtatulea@nvidia.com>
+References: <20250614050617.4161083-1-eddyz87@gmail.com> <20250614050617.4161083-2-eddyz87@gmail.com>
+ <CAEf4BzYh38ZW5x_tttT7qGSPbUtT4SLC7F+aoE_cymkV5q59hw@mail.gmail.com> <d92b2e43d7710624deaf10a9919cdfa45ee91bdb.camel@gmail.com>
+In-Reply-To: <d92b2e43d7710624deaf10a9919cdfa45ee91bdb.camel@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 16 Jun 2025 16:36:54 -0700
+X-Gm-Features: AX0GCFtYqzOwguz4sVtp5t5FFnuaSZ-D1HO6s2G64GpEyny7eloEnpHwKCXYylA
+Message-ID: <CAEf4BzbHZgz3=1o2gmE80cyD7AVDejdDZEk1Qv-wqdL6cs62nQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/1] selftests/bpf: more precise
+ cpu_mitigations state detection
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
+	yonghong.song@linux.dev, laoar.shao@gmail.com, mykyta.yatsenko5@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 16, 2025 at 7:22=E2=80=AFAM Mark Bloch <mbloch@nvidia.com> wrot=
-e:
+On Mon, Jun 16, 2025 at 2:27=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
 >
-> From: Saeed Mahameed <saeedm@nvidia.com>
+> On Mon, 2025-06-16 at 14:13 -0700, Andrii Nakryiko wrote:
 >
-> The bulk of the work is done in mlx5e_queue_mem_alloc, where we allocate
-> and create the new channel resources, similar to
-> mlx5e_safe_switch_params, but here we do it for a single channel using
-> existing params, sort of a clone channel.
-> To swap the old channel with the new one, we deactivate and close the
-> old channel then replace it with the new one, since the swap procedure
-> doesn't fail in mlx5, we do it all in one place (mlx5e_queue_start).
+> [...]
 >
-> Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
-> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
-> Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-> Signed-off-by: Mark Bloch <mbloch@nvidia.com>
+> > > +static int config_contains(const char *pat)
+> >
+> > int-returning function... but we return do `ret =3D true;`, that looks
+> > accidental and sloppy. Let's add a comment that it returns <0 on
+> > error, 0 for no match, 1 for match and stick to numbers everywhere?
+>
+> It was actually intentional but ok, I can change that.
 
-Acked-by: Mina Almasry <almasrymina@google.com>
+Thanks, I wouldn't mix true/false and integers, even though false ->
+0, true -> 1 implicit conversion is well defined.
 
-> ---
->  .../net/ethernet/mellanox/mlx5/core/en_main.c | 98 +++++++++++++++++++
->  1 file changed, 98 insertions(+)
 >
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/=
-net/ethernet/mellanox/mlx5/core/en_main.c
-> index a51e204bd364..873a42b4a82d 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> @@ -5494,6 +5494,103 @@ static const struct netdev_stat_ops mlx5e_stat_op=
-s =3D {
->         .get_base_stats      =3D mlx5e_get_base_stats,
->  };
+> > > +{
+> > > +       int n, err, ret =3D -1;
+> > > +       const char *msg;
+> > > +       char buf[1024];
+> > > +       gzFile config;
+> > > +
+> > > +       config =3D open_config();
+> > > +       if (!config)
+> > > +               goto out;
+> >
+> > nothing to gzclose if open_config() returns NULL, just return
+> >
+> > pw-bot: cr
+> >
+> > > +
+> > > +       for (;;) {
+> > > +               if (!gzgets(config, buf, sizeof(buf))) {
+> > > +                       msg =3D gzerror(config, &err);
+> > > +                       if (err =3D=3D Z_ERRNO)
+> > > +                               perror("gzgets /proc/config.gz");
+> > > +                       else if (err !=3D Z_OK)
+> > > +                               fprintf(stderr, "gzgets /proc/config.=
+gz: %s", msg);
+> > > +                       goto out;
+> >
+> > nit: I'd probably just do
+> >
+> > gzclose(config);
+> > return -EINVAL; (or whatever the error code might be)
 >
-> +struct mlx5_qmgmt_data {
-> +       struct mlx5e_channel *c;
-> +       struct mlx5e_channel_param cparam;
-> +};
-> +
-> +static int mlx5e_queue_mem_alloc(struct net_device *dev, void *newq,
-> +                                int queue_index)
-> +{
-> +       struct mlx5_qmgmt_data *new =3D (struct mlx5_qmgmt_data *)newq;
-> +       struct mlx5e_priv *priv =3D netdev_priv(dev);
-> +       struct mlx5e_channels *chs =3D &priv->channels;
-> +       struct mlx5e_params params =3D chs->params;
-> +       struct mlx5_core_dev *mdev;
-> +       int err;
-> +
-> +       mutex_lock(&priv->state_lock);
-> +       if (!test_bit(MLX5E_STATE_OPENED, &priv->state)) {
-> +               err =3D -ENODEV;
-> +               goto unlock;
-> +       }
-> +
-> +       if (queue_index >=3D chs->num) {
-> +               err =3D -ERANGE;
-> +               goto unlock;
-> +       }
-> +
-> +       if (MLX5E_GET_PFLAG(&chs->params, MLX5E_PFLAG_TX_PORT_TS) ||
-> +           chs->params.ptp_rx   ||
-> +           chs->params.xdp_prog ||
-> +           priv->htb) {
-> +               netdev_err(priv->netdev,
-> +                          "Cloning channels with Port/rx PTP, XDP or HTB=
- is not supported\n");
-> +               err =3D -EOPNOTSUPP;
+> I'll make this change just to avoid arguing but don't understand why tbh.
 
-I would have used a different error code here as EOFNOTSUPP usually
-means the driver doesn't support queue API at all.
+I don't insist, but early return is easier for me to follow because it
+clearly states that nothing is going to happen after that point, so
+whoever is reading the code doesn't have to jump around the code to
+see if there is some follow up logic.
 
---=20
-Thanks,
-Mina
+It's similar (for me) to the common pattern of
+
+for (i =3D 0; i < n; i++) {
+  if (<some condition>) {
+     ... here goes multi-line processing logic ...
+  }
+}
+
+I find it much more mentally draining than more obvious (to me)
+
+for (i =3D 0; i < n; i++) {
+    if (!<some condition)
+        continue
+    ... same logic, -1 level of nestedness, but really it's just to
+know there is no other logic past <some condition> ...
+}
+
+It's all subjective, of course.
+
+>
+> [...]
 
