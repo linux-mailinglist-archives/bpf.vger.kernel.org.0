@@ -1,91 +1,126 @@
-Return-Path: <bpf+bounces-60741-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60742-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56B1CADB898
-	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 20:15:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A876ADB8C3
+	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 20:23:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04D2D171D04
-	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 18:15:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 042473A9180
+	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 18:23:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12702288C23;
-	Mon, 16 Jun 2025 18:15:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36BBA28937D;
+	Mon, 16 Jun 2025 18:23:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OP2hkkbH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LOVjTnIT"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ECB31922D3;
-	Mon, 16 Jun 2025 18:15:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 243C8204C1A;
+	Mon, 16 Jun 2025 18:23:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750097719; cv=none; b=X/LB5oRGODkdeBMI3NX2tpwfMCQPz6MTwufsbCqkU534cwFI9ba+lK8Fjc5fujmTHRXdSTMsfLPYVoClqtk5D5X4ld+eypoWk6BoDQL0032YZokhalDF6c99v3O0aftq5Yg9PIou9YI2A9hzmsiwOrFbpc1qyOKHFfLl/QXTT10=
+	t=1750098202; cv=none; b=WBeZVt9mlqcL5sCx3tpgodfcdQGuPEQAMo5xGimb47tIiNsgqVACJ17D3EMhgs7YDsTufNfnPjaLveLoI1Zlvq873JRGD6twmv5LTUbbRqHmhYpKoYT5fNrCqfQ8fIawMGLmh4T0EVsrjDYzy9ymLD9Mcstn380hZFMJt7SQVdU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750097719; c=relaxed/simple;
-	bh=yA7nQY6EB3++WTiYEV3GhWn+708ii7DZS9WFb6/7CHU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G83sY7LcVscC5thGD52wVi4Y8H1d5TE3Mp7ndcWDscNGKh28nOq8tMMv9dknXYCAYTxeB44uN7DwqMtIwGQZ4hTf9R6wd3fv2kI7bUZHOr34QYp/6hTLXWMcHkmDY8fPyIbpwMd1H3TzWZQKngYUe70B8Tdntwl+YUjUsVQOEoc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OP2hkkbH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF5CAC4CEF1;
-	Mon, 16 Jun 2025 18:15:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750097718;
-	bh=yA7nQY6EB3++WTiYEV3GhWn+708ii7DZS9WFb6/7CHU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OP2hkkbH8ofhfta0N/V3Cd6gPLQX7bBJtzWLbXa6/z12V/OKP+hrdGdyL0OVh0Bbl
-	 0iDhqKqww7fOB6i6ybbv+R5ZKx9TJJP6OB8xVO5ip9SWlDfpSCZ6v05dTYyUqFVC4y
-	 DoQJPoCn2xAGql4W/aDC/vktQtbm1DGDz0d0ne6yb2t8aHNiafPQYhDUeNL9txbsGV
-	 /SsUF9NiZAxMU1PuUiURQe6QrO02J1GurlZf43Aez1IZIfF0gtIWiuhWjHnb1+9Qj4
-	 0OJwVkYDi6MLVY6YM2w68jS9SEtKuOLI45uaml0aH/bovsFIU2bzu69YuAphARxJFR
-	 NpwhVu6tJBUpw==
-Date: Mon, 16 Jun 2025 08:15:17 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	JP Kobryn <inwardvessel@gmail.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Harry Yoo <harry.yoo@oracle.com>,
-	Yosry Ahmed <yosry.ahmed@linux.dev>, bpf@vger.kernel.org,
-	linux-mm@kvack.org, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Meta kernel team <kernel-team@meta.com>
-Subject: Re: [PATCH v2 0/4] cgroup: nmi safe css_rstat_updated
-Message-ID: <aFBfNRVAyE1FU9aQ@slm.duckdns.org>
-References: <20250611221532.2513772-1-shakeel.butt@linux.dev>
+	s=arc-20240116; t=1750098202; c=relaxed/simple;
+	bh=SkxBo5Uo9BmDFR9ctIppZLeQSbbHyl6wpewl0lp/nng=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZstjW0fnuOpbPAPSzNvzru03WPtkeNOtPA5bKnXZjJdZPYGOa2oiYaKJp1XTsZYsuged299sfyyHhRD/+dXTby0QGAkyHzOl1k/PpcxRHGbSDfNBI89DYDYcM9J3SlieaSsjjO/oDuxeb5kOBcVxRhL8b6Hw1hPErJCnCuCaOo8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LOVjTnIT; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-606b58241c9so8272914a12.3;
+        Mon, 16 Jun 2025 11:23:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1750098199; x=1750702999; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5432uNKHLCfvBYMfRf2s2o1tNhT7+RCbmj1pz5oxdBA=;
+        b=LOVjTnITYuE0XxoTfl06ktA0dIipsAMvdsxEAov9HSrYIqE69EyVTQXOT7sEsWxHS2
+         rQm7hYKrTSHbpC4NtpeLO5khY2dH3zVbpOQuDbrM8SV8EejUtPkadjtVGInQaLWcFbFc
+         5IYWGnvpiPoAnNamP4/CdoMitrKlL62EG0O5DPPe88z4RcFnP1M+4cDGfPRec78Zw2HD
+         6NNpFU6Dxxj+jO/S/3A+JQXVvaBy9u8uBDFA/L2XidYr0iR2DOlnqQdQ+bTUCmM2dsgU
+         jde8XagKiPRKDOGad0OLfRXuwSgt6JBDCFf9pMcpLMtOgnLkDcfe7Y9a6a2c+jJLUugz
+         HqdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750098199; x=1750702999;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5432uNKHLCfvBYMfRf2s2o1tNhT7+RCbmj1pz5oxdBA=;
+        b=w2bgD6DajPAtxSYAlEvUy8SQcdfqrtEFOWROuHUMH+eu+0yY/gPdzZdxnSTIAUm5Ag
+         /pzVhMnZ1DozUtlc4ky4ke1KWM5Eg9tzp3rVkScLkbkbPn0vRQfukYDqdeVxqtTcztzS
+         vdDTNumk+998t48pnZagZDzyWXWxv6q6+jbC6c43zo5l0FTIjpqjpELQShtQM6Nfazqk
+         otCFI9pDBu7SmVtRswTpcwzkr6mpNqnKakPLkzIjxauuDzEr8545CuUhgAc4CBOiYdUP
+         CLIMajRXF+1uT//uStJCmUSb8WVQFVYOSOi2kfHQdX5871Bebobp5t4lkYybi/zAfW9S
+         bITA==
+X-Forwarded-Encrypted: i=1; AJvYcCWYgztZky7AxV5BVeymNWwB+LBqe4Gu2o39k/fHUcyg5a0TU873e0Tr8OF9lyJOtDM9sxIubQxmhbjx1QYN@vger.kernel.org, AJvYcCXZckMeY3h06CfoeBD0dXw8f21GhPYstI5/gf2j5XQhj9Tm/xTXCRHDPa6hRJd8xbgwj8c=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxFSjzCbxT1o1lDJ6E4aW2R/69crrlxc+yHFnvGmf8lG5hlmDHK
+	bZdZCx+KXnBlP37igTbXujoPx/Wwp8HiYKhWILMqsK6z0logXPbcpx3bwRKZUKm5EMWQAYyEvsa
+	1l1hD/A/FksL4jXsf0qulYJz72WlvgWoH8Igt5Y8=
+X-Gm-Gg: ASbGncvyojxviRTx6crPhGWhdiS3udxDT/b6uUI5RxkuYzZF5j7v4wEH3T4Rble8IZV
+	7cseoXX8eeZ55XH5Mjc/8b981a0lDExzLEk2KvE61U9umvuJ3KD1o4EGQG9rFIgHkrlUN+C2fpJ
+	ymw0eippaG1+t0nS7DgznmeTBDC/Vwpxj1MYGzSlPhcHc=
+X-Google-Smtp-Source: AGHT+IGIjtvphpLoc9kCUbfA2WQ2xN+tzFeedjXYONEHZnsxW37Mi+C338tOkfvnR6sg/j3YidOecbpCL2ca4InMQ+4=
+X-Received: by 2002:a05:6402:2749:b0:5f7:f55a:e5e1 with SMTP id
+ 4fb4d7f45d1cf-608d0976322mr8572060a12.24.1750098199241; Mon, 16 Jun 2025
+ 11:23:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250611221532.2513772-1-shakeel.butt@linux.dev>
+References: <20250616162023.2795566-1-quantumcross@gmail.com> <3c5a8746-4d57-49d5-8a3d-5af7514c46b3@lunn.ch>
+In-Reply-To: <3c5a8746-4d57-49d5-8a3d-5af7514c46b3@lunn.ch>
+From: Robert Cross <quantumcross@gmail.com>
+Date: Mon, 16 Jun 2025 14:22:43 -0400
+X-Gm-Features: AX0GCFvsPOWK_JHyxFl74Qmgj14390Bc6R9oJnYGvhUVTdMTnqGht1oce_wDT2M
+Message-ID: <CAATNC474tcoDeDaGg1GKbSAkb8QBT9rcHrHrszycWpQwzU+6XA@mail.gmail.com>
+Subject: Re: [PATCH v2] net: dsa: mv88e6xxx: fix external smi for mv88e6176
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, olteanv@gmail.com, 
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+According to the documents I'm looking at, the 88E6172 and
+88E6176 both have external MDIO buses. I have brought up
+a board with two connected 88E6176 chips, each with a PHY
+that can only be managed with the MDC/MDIO_PHY pins of
+the 88E6176s.
 
-On Wed, Jun 11, 2025 at 03:15:28PM -0700, Shakeel Butt wrote:
-> Shakeel Butt (4):
->   cgroup: support to enable nmi-safe css_rstat_updated
->   cgroup: make css_rstat_updated nmi safe
->   cgroup: remove per-cpu per-subsystem locks
->   memcg: cgroup: call css_rstat_updated irrespective of in_nmi()
+After applying this patch I was able to successfully manage
+and control these external PHYs without issue. I'm not sure
+if you have access to the 88E6176 datasheet specifically,
+but this chip absolutely does have an external MDIO.
 
-The patches look good to me. How should it be routed? Should I take all
-four, just the first three or would it better to route all through -mm?
+(also, I fixed the problems with the checkpatch.pl, I will submit
+the fixed version again tomorrow)
 
-Thanks.
+- Robert Cross
 
--- 
-tejun
+On Mon, Jun 16, 2025 at 1:55=E2=80=AFPM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> On Mon, Jun 16, 2025 at 12:20:25PM -0400, Robert Cross wrote:
+> > (Sorry this is my second attempt, I fixed my email client)
+> >
+> > I was trying to enable external SMI on a mv88e6176.
+>
+>         MV88E6XXX_FAMILY_6352,  /* 6172 6176 6240 6352 */
+>
+> So it is part of the 6352 family. That family does not have an
+> internal and external MDIO bus. It has a single bus which is both
+> internal and external.
+>
+> It is only the 6390 family and above which has two MDIO busses.
+>
+>     Andrew
+>
+> ---
+> pw-bot: cr
 
