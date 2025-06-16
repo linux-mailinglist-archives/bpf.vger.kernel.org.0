@@ -1,73 +1,53 @@
-Return-Path: <bpf+bounces-60712-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60713-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C8D3ADB103
-	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 15:03:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90021ADB286
+	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 15:50:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B80F3A3E5A
-	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 13:03:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 15BA77AA516
+	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 13:49:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D8F3298CDC;
-	Mon, 16 Jun 2025 13:03:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 691F62877D5;
+	Mon, 16 Jun 2025 13:50:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mXqX5g0O"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="KyrJdwze"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FB94292B3B;
-	Mon, 16 Jun 2025 13:03:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.2])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85E9F2BF01C;
+	Mon, 16 Jun 2025 13:50:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750079022; cv=none; b=YpgYLTdR1taTUxgvdVMWAKEpz2smjCsUX4mmmXrrXMSYgK8/Ruq58TXL+rbcL7QMjdSprLtHPWCxDQVNmxYlN8rvncTB2rNCUr4HQtsps4y6JBY+K0BsuSiYdWYIz0hUXAwU7nkI+fhVMXEOVBeJiiShq2vpboopuMWqHvSCg7c=
+	t=1750081843; cv=none; b=sw2Rx6ZckfgfPGpLJU9RPs+gCUPV/E1aeuTIVEq+ZOHR81wZ3cyqWWJ+bz5nyY7rRu5bMg5J9vNAV+vmNaHlOXEAiPFw/ZuYV40OpyzzvFqN9/ewyX+W6zUU/qWF+AbDaiIG9LkcgSpmmxzk3ZO+yswLHVrotgD+m80Kq58VdX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750079022; c=relaxed/simple;
-	bh=p5RbUZDdBP9GJ45EushgzCm7+amW2nhZBxekb5kEaaY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gq7DXSbK4fTD2hWe9wgDLJm7frXwjmq9Q+T4B+8mEg7rH892FGebZQmt2YanSlOVdGUy6nYMgISatrX43kG26jBAWBjKhvbNnH80aOxt+PVjK6wmd+vay3gsswYLqQf/qJpBxFirRWswrZAnIaIhJCP8H6r9dpakEvjCKD+ygzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mXqX5g0O; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1750079014;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DA4HDcoQwAsvy+FAZ9s9PfK2YKDSvcnxpI2xo5wCIxE=;
-	b=mXqX5g0OBZq0XRkexyW2HXYyD81frodp818ARkJ6Su1YUldK/pBBLJCLo6/hh86FNw0m7B
-	6vxIAZxgDwONHbmzsgf0HLlfZ2vk/PKuln1LW2uPfu4ba9fKf2GLmR62Gx4ItbQ8HNFjkO
-	YOaxUqbbFrVtoW8XJASPOJq5iRjGdP0=
-From: Tao Chen <chen.dylane@linux.dev>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	mattbobrowski@google.com,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com
+	s=arc-20240116; t=1750081843; c=relaxed/simple;
+	bh=+x9sfLGwpIjbHh8f17FciYjgMRNava5SEnnbb4NlD90=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=J4uYI6UNyFwX131kiIPJSHAkLKBzWRrc7W3LPWZzNVkTuL6EN2G+d72JD7jBid/AnI2myjOuVOi1WPVYvOLB9QJ+ZjNalu+EaV0ckb5xzyED3iPAZgwUw6tubwXDW9zwN1EDX/KvJImHFoc0IqQiq1aU7oEbZrse4BLmH3pcJt8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=KyrJdwze; arc=none smtp.client-ip=117.135.210.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=tX
+	tsdxbCeislA/mf7Gi/p/1iYJQhWAtKJw7QjyUyEr0=; b=KyrJdwzehGiRPbGIlM
+	Px5Xb2sd+l9xfvChnwm7FOKYd++9htuKIA2aE1vrLKr5yaDrPlNapQEphhzPo5cb
+	X9s2KrR65vOVM1uo2k9GpyMEyc3G3nnFcqO+ow/x7YSOaCovQekYpJvWlR5OY08k
+	z0PuVa7Z83lHu0Y/pnwhNvErw=
+Received: from 192.168.0.118 (unknown [])
+	by gzsmtp3 (Coremail) with SMTP id PigvCgDXnx4XIVBozSQVBA--.35262S2;
+	Mon, 16 Jun 2025 21:50:16 +0800 (CST)
+From: Yuan Chen <chenyuan_fl@163.com>
+To: qmo@kernel.org,
+	ast@kernel.org
 Cc: bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	Tao Chen <chen.dylane@linux.dev>
-Subject: [PATCH bpf-next v3 2/2] bpf: Add show_fdinfo for kprobe_multi
-Date: Mon, 16 Jun 2025 21:02:33 +0800
-Message-ID: <20250616130233.451439-2-chen.dylane@linux.dev>
-In-Reply-To: <20250616130233.451439-1-chen.dylane@linux.dev>
-References: <20250616130233.451439-1-chen.dylane@linux.dev>
+	chenyuan_fl@163.com,
+	chenyuan <chenyuan@kylinos.cn>
+Subject: [PATCH] bpftool: Fix JSON writer resource leak in version command
+Date: Mon, 16 Jun 2025 09:50:14 -0400
+Message-ID: <20250616135014.12327-1-chenyuan_fl@163.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -75,80 +55,39 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-CM-TRANSID:PigvCgDXnx4XIVBozSQVBA--.35262S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtrykZFy3GFy8ArW7KFyfJFb_yoWfWFXEg3
+	yUXr4kXrn5tayaka18C3yfurW0yFWSgw4DCFn2kr13JFWUJwnxXF1ku39ayas8JFZrGr1a
+	ya93X34fGa13AjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRZnYwPUUUUU==
+X-CM-SenderInfo: xfkh05pxdqswro6rljoofrz/1tbiJw1uvWhQG8Bu5wAAsT
 
-Show kprobe_multi link info with fdinfo, the info as follows:
+From: chenyuan <chenyuan@kylinos.cn>
 
-link_type:	kprobe_multi
-link_id:	1
-prog_tag:	a15b7646cb7f3322
-prog_id:	21
-type:	kprobe_multi
-kprobe_cnt:	8
-missed:	0
-cookie           func
-1                bpf_fentry_test1
-7                bpf_fentry_test2
-2                bpf_fentry_test3
-3                bpf_fentry_test4
-4                bpf_fentry_test5
-5                bpf_fentry_test6
-6                bpf_fentry_test7
-8                bpf_fentry_test8
+When using `bpftool --version -j/-p`, the JSON writer object
+created in do_version() was not properly destroyed after use.
+This caused a memory leak each time the version command was
+executed with JSON output.
 
-Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+Fix: 004b45c0e51a (tools: bpftool: provide JSON output for all possible commands)
+Signed-off-by: chenyuan <chenyuan@kylinos.cn>
 ---
- kernel/trace/bpf_trace.c | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+ tools/bpf/bpftool/main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 2d422f897ac..fcf19e233b5 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -2623,10 +2623,42 @@ static int bpf_kprobe_multi_link_fill_link_info(const struct bpf_link *link,
- 	return err;
- }
+diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
+index cd5963cb6058..c8838196a3bd 100644
+--- a/tools/bpf/bpftool/main.c
++++ b/tools/bpf/bpftool/main.c
+@@ -164,6 +164,7 @@ static int do_version(int argc, char **argv)
+ 		jsonw_end_object(json_wtr);	/* features */
  
-+#ifdef CONFIG_PROC_FS
-+static void bpf_kprobe_multi_show_fdinfo(const struct bpf_link *link,
-+					 struct seq_file *seq)
-+{
-+	struct bpf_kprobe_multi_link *kmulti_link;
-+	char sym[KSYM_NAME_LEN];
-+
-+	kmulti_link = container_of(link, struct bpf_kprobe_multi_link, link);
-+
-+	seq_printf(seq,
-+		   "type:\t%s\n"
-+		   "kprobe_cnt:\t%u\n"
-+		   "missed:\t%lu\n",
-+		   kmulti_link->flags == BPF_F_KPROBE_MULTI_RETURN ? "kretprobe_multi" :
-+					 "kprobe_multi",
-+		   kmulti_link->cnt,
-+		   kmulti_link->fp.nmissed);
-+
-+	seq_printf(seq, "%-16s %-16s\n", "cookie", "func");
-+	for (int i = 0; i < kmulti_link->cnt; i++) {
-+		sprint_symbol_no_offset(sym, kmulti_link->addrs[i]);
-+		seq_printf(seq,
-+			   "%-16llu %-16s\n",
-+			   kmulti_link->cookies[i],
-+			   sym);
-+	}
-+}
-+#endif
-+
- static const struct bpf_link_ops bpf_kprobe_multi_link_lops = {
- 	.release = bpf_kprobe_multi_link_release,
- 	.dealloc_deferred = bpf_kprobe_multi_link_dealloc,
- 	.fill_link_info = bpf_kprobe_multi_link_fill_link_info,
-+#ifdef CONFIG_PROC_FS
-+	.show_fdinfo = bpf_kprobe_multi_show_fdinfo,
-+#endif
- };
+ 		jsonw_end_object(json_wtr);	/* root object */
++		jsonw_destroy(&json_wtr);
+ 	} else {
+ 		unsigned int nb_features = 0;
  
- static void bpf_kprobe_multi_cookie_swap(void *a, void *b, int size, const void *priv)
 -- 
-2.48.1
+2.44.0
 
 
