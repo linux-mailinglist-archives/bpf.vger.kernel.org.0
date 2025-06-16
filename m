@@ -1,127 +1,310 @@
-Return-Path: <bpf+bounces-60769-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60770-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB6F4ADBB89
-	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 22:52:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8497FADBBC5
+	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 23:13:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EF72176A02
-	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 20:52:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4EB6188EEEC
+	for <lists+bpf@lfdr.de>; Mon, 16 Jun 2025 21:14:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B951D214812;
-	Mon, 16 Jun 2025 20:52:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1BBA1D9346;
+	Mon, 16 Jun 2025 21:13:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XOS1qmqF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EXNWwPfx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DFCA1FAC4D;
-	Mon, 16 Jun 2025 20:52:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2EB4215F7C
+	for <bpf@vger.kernel.org>; Mon, 16 Jun 2025 21:13:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750107154; cv=none; b=k4QamR4B+P+rGW7oHpsGxJpuS9kGCqUscxjEBVwSyIL9EzNIIdAbBLHDdXsc7qXqWlIX6ATDa+7v9ZgX4z4yQoWKg5gAXySTHutA8cAhj1W9xtYALxnAOMPGOeM2LjfL9Ps/K6e+e6lbkMdDQGskpSyR//33AX9n2VsI7prZa+I=
+	t=1750108433; cv=none; b=g79LM48x7PheRYZeRev6da7ErdFJB3Sb4LlFKD/VmbnnVXebmaYNp8+Wa/ypC7levPpRvJejMCMXcd2Qdramjqwgsg1QpLZdmOO8tPHVJ5RPOEzYXb/TnRQU8hRpS/ffxZ9H7WsSc2CUdKw1+goa4qYGVSAigMlV3nd6oHbHtWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750107154; c=relaxed/simple;
-	bh=/QPXfKttFjUhg22/E4OyijBaAwE9LIOKJXwgi2S01bU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lXFdS+1EqxQNRnWit14rWZEM3iGZxK1DSSa8dCrbNx371p7V8KF4TsVNgHsq8QWWEMWPhquzBGYxHvX8PW7MSVw6wTULK7jw2YAYODx/C1BPTsBRj8tQlYGNPh4eXEjMzfqcZQ8Xk1CmmQVZBzqPaqrnfFUBfl22arm7Lnexrs8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XOS1qmqF; arc=none smtp.client-ip=209.85.218.48
+	s=arc-20240116; t=1750108433; c=relaxed/simple;
+	bh=j02Dy2rqDlKzp5eicEXSvLdCADh4LUgfrZqMW3pAqvg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=C3wYUP6KOue/ohP66BBYvoHc/2mBAT8BHp3yQ2qJZqL+691FpvD59Wl+UgxcV9XG7RZtkeOamHj5TDzGPWtLE5YfMMqJ9kpGc5Q3soBisrqk6r4uxTEFRvOGplvbvgP84jWtYoKYsbfkq7BAuHFtQ+DBTF0Z9Tz1aeJQMzT0iQg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EXNWwPfx; arc=none smtp.client-ip=209.85.215.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-ad89c10dfabso140637966b.0;
-        Mon, 16 Jun 2025 13:52:32 -0700 (PDT)
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-879d2e419b9so4879585a12.2
+        for <bpf@vger.kernel.org>; Mon, 16 Jun 2025 14:13:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750107151; x=1750711951; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MjHD7ImHqgaEg0QySeT0KO/CLSf7LriRa1vYRjxGumo=;
-        b=XOS1qmqFmUcUiw1wd7Ya933Ri7ekdmFmN8l6GHfPBkggNb1JbbZ+5/l7xIT0R9Q+TM
-         I2/RYOZI/Fy/vsjVIF24PH/kHlZZpAtF7fs6A/3bIli5EO8injwK5H6SecQFvGpruInE
-         fcW130JrUaMVVWWRxnmWtF9wxlz1m3jZdcACJ/E8q3a4fUaSe5URErDyMMlr3/oBB9yU
-         9U/5rv43pCD0GPJU0Otzf5XaubNw8BCpNy3ZM8hPzXdhg18+o0NcuD5RV8fD7Gnx4+Y9
-         c3OVmMYX80vdk4mRC+X4eW+Da3Xl+9f4oXOUTxa3ufnq7VlfbLcoP+qbU1BVfqnUua/Z
-         l3sQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750107151; x=1750711951;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1750108431; x=1750713231; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MjHD7ImHqgaEg0QySeT0KO/CLSf7LriRa1vYRjxGumo=;
-        b=JruoOzC6kxsanAOjynUVLiONVCotcfitqKpu77DZ7JfpCHRC20wS80YX/h+/HUQbXf
-         WASdoM8xPmkEWSK7tZ2ftHO7nW6iuQFMJQwKQ+NxpdngDMG0H0r30R+MvxH7CrYJkq3I
-         Al3sNyjsSY4x2tgaL2VfALO6E8tJWaWJlVA6uvtkKkMloRICt1v4GKP2fayWGEsNmdt5
-         Fat0LGUJzPAeZrLCo+GwzrNDv/GlBtuHHVe0SmuHlqawjKM0IJCJhKrHr0kW7+tkrtV7
-         oY0REavt1fGUpeT0V8ZhUMkvOyKlk/Nh2/iEHWAHcTmog+1SGwb9w0ck9QSvNAx0Mlxn
-         qxqA==
-X-Forwarded-Encrypted: i=1; AJvYcCVFM8hU3BvKLk31cPOpEW+GDd5nHjSxnqBGN+3nQ2pVdywD6xMmk2tHuCca0k2ZfNojwPU=@vger.kernel.org, AJvYcCVgc7lyDaN3cwdIfmgCKmBb3Qw37SJCnKnzeERkqsC2WGZ9FbR8ynSWE++qDnTVzsSgONaEfX39iyFyFuPm@vger.kernel.org, AJvYcCWlC3kkqjKiXEBziWrVLu5Ynt8XCvA6sEYBaI6/g0Wo67QQtJf3QU6V8EVLSBo/AJt1T8mVuQBQ@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxv7YPxzqlj9IJVoslYPFSaZ99YDfo1ImgjIWr2A5Wx4Us7ETcB
-	mkbWT+k4dePVc5kFfYDJ6nQ2mLhMyi/yBP7jE+29FvhKM8P4RJmxDX0k
-X-Gm-Gg: ASbGncvU58TrFBhFkkrgtKQsthg65H63o8AbHG/SRVsfOEo8TvR8krwTAN3fmmMyG+X
-	Gx/wvXlHTYquNn30S4qykcdmmZaUbgSDpj9ElG3OHj6tqcYxMm0Ld1OVhxgPaat5FibH7bTLxY2
-	H3RHQihll2uNgx2I6NmfSLVGr7YTvDz6wWflysUUwfv+gGJH2vhslE4HOqRouwYX+gLX8gbSNWA
-	tmcW04Aq8+uGIEnXuuyPvW0XDHNcqplnl4OOQe90p12u579rDQhbMKAIdn8RZ7KRtkMYj9rX7VF
-	Px7NYfnp0iX24cYCrtkIgNwczro+DXm31lms2M5PbIsQmgklO4/96lhJKdZ/
-X-Google-Smtp-Source: AGHT+IFH/SSx7c8PUrit49w4s+in5qNAffBYzMPwVtXx0HldiOhTr26CVPqogKFnR9YNJ3L1h9lIeg==
-X-Received: by 2002:a17:906:d555:b0:ade:3372:4525 with SMTP id a640c23a62f3a-adfad502daemr381962566b.9.1750107150465;
-        Mon, 16 Jun 2025 13:52:30 -0700 (PDT)
-Received: from skbuf ([86.127.223.77])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-adec81c60f1sm730344566b.60.2025.06.16.13.52.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Jun 2025 13:52:29 -0700 (PDT)
-Date: Mon, 16 Jun 2025 23:52:27 +0300
-From: Vladimir Oltean <olteanv@gmail.com>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Robert Cross <quantumcross@gmail.com>, netdev@vger.kernel.org,
-	bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] net: dsa: mv88e6xxx: fix external smi for mv88e6176
-Message-ID: <20250616205227.2qmzv2fsbx6j533t@skbuf>
-References: <20250616162023.2795566-1-quantumcross@gmail.com>
- <3c5a8746-4d57-49d5-8a3d-5af7514c46b3@lunn.ch>
- <CAATNC474tcoDeDaGg1GKbSAkb8QBT9rcHrHrszycWpQwzU+6XA@mail.gmail.com>
- <ad17b701-f260-473f-b96f-0668ce052e75@lunn.ch>
+        bh=QMyOudDNawoUS6y/kirvFjFOnCv7+8/voSmZoQgxZfU=;
+        b=EXNWwPfxkSUICKD55b74mBYISX9atzgmjsFSdyCVcPHX1+pdrG8/CRxsZ3XXUW78s4
+         6eeYMEz/R8WAeP/dopfchjzw+O9P3dJ4drQVg1JGC/OW6o7LpLXD4Rh2/5GsO55cyU+5
+         dzTDUiaO/SPQKdnCWBhinfbMdK81hLYkRU2tapPPU+cef/aOe6jq+1EvPDlBAzCpW368
+         7x+sCtZl9WrGBm/3IgcWEbMz6nAfnmSe0teAbmVNlzwpgXHW+VyfQRIgo+K00+10kXfd
+         Xc4qtTXhFACWkL8EMJeovLoCHRZd+IY7WAK7/q7pQhMibktw/HDFfay5+EOM8Y/5fBgb
+         lz/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750108431; x=1750713231;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QMyOudDNawoUS6y/kirvFjFOnCv7+8/voSmZoQgxZfU=;
+        b=Z5NX/E07M2omRK97K1S30KwS47v+Fs57b0FlrHerH3+ONioUPdoAQ2SUtN/JtQ3V88
+         1q3EMWPtmmb6nyfesLmKc4McG0Uc0JSM3DVACjs+dE5HN47mWytDpwR9BtClamrENMg4
+         oE3Rmii3h+1lm03k0azUB5xApdCnqX6JTKlSFS+xSYURFP4zLH58SBvm7eiFrSZe5yR2
+         stOkRUC0hoiUTjjshphISxxlwMBwODJSFu3jlLlNJilt3rXN8bysOPOPCVb6uRVc76bi
+         UK3g11fSawDJdXTuVQsN9dGJlXkSRnZUbEKlTzWyeQp7FYjBZchglWd0HLXyy0IngdKm
+         Q4xg==
+X-Gm-Message-State: AOJu0Yy6BdJLVsB8jcG1fCcbm6e3vR2exBGJ8AJXMXoVUpxKl27CjVS6
+	KB8XWIlXNjH+o8TsjL4zg0D8nNkLKa/+5tqB4BzKypUhkqmzI8IC0xs/lBJC9Rui/64xDzJahDg
+	XEFvzim/28t4P2kjo04MbKaB5v3m9NNhH3UBRWcg=
+X-Gm-Gg: ASbGnct75F11l3yjWRh03Tpk/U/u8YajK8/rTtMF5Ri/Bl4jF9VucZIPF8W+JAvavvd
+	KmGvVm4yzXIlPmCgcMv2JX1Wf3MgWFdeuZbP4qO66S1EYfhXmWbRi4omZRmxTL4NDSogDjbkH3q
+	liL9FDrXvsDAxoZjXH5k2fQiYBMfws4yWHYZGUC2NFv1Sa2m5VLIX7hVvOMqU=
+X-Google-Smtp-Source: AGHT+IGbN/fYnEgxsi8N9xw1VC5ioLNXAHjfmOzQ5ZjFXL9cqhjfzxeShNu8h95h4OYdYWLPCNzz1stJLKz7mrw4C64=
+X-Received: by 2002:a17:90b:1e07:b0:311:f99e:7f4e with SMTP id
+ 98e67ed59e1d1-313f1cae835mr19180848a91.16.1750108430746; Mon, 16 Jun 2025
+ 14:13:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ad17b701-f260-473f-b96f-0668ce052e75@lunn.ch>
+References: <20250614050617.4161083-1-eddyz87@gmail.com> <20250614050617.4161083-2-eddyz87@gmail.com>
+In-Reply-To: <20250614050617.4161083-2-eddyz87@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 16 Jun 2025 14:13:37 -0700
+X-Gm-Features: AX0GCFsnhmap9bY88zyDW7gfnu9S9BzCn8Y3z3bqnz7gT8QFMCL4mZPOf9SSyN4
+Message-ID: <CAEf4BzYh38ZW5x_tttT7qGSPbUtT4SLC7F+aoE_cymkV5q59hw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/1] selftests/bpf: more precise
+ cpu_mitigations state detection
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
+	yonghong.song@linux.dev, laoar.shao@gmail.com, mykyta.yatsenko5@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Andrew,
+On Fri, Jun 13, 2025 at 10:06=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.co=
+m> wrote:
+>
+> test_progs and test_verifier binaries execute unpriv tests under the
+> following conditions:
+> - unpriv BPF is enabled;
+> - CPU mitigations are enabled (see [1] for details).
+>
+> The detection of the "mitigations enabled" state is performed by
+> unpriv_helpers.c:get_mitigations_off() via inspecting kernel boot
+> command line, looking for a parameter "mitigations=3Doff".
+>
+> Such detection scheme won't work for certain configurations,
+> e.g. when CONFIG_CPU_MITIGATIONS is disabled and boot parameter is
+> not supplied.
+>
+> Miss-detection leads to test_progs executing tests meant to be run
+> only with mitigations enabled, e.g.
+> verifier_and.c:known_subreg_with_unknown_reg(), and reporting false
+> failures.
+>
+> Internally, verifier sets bpf_verifier_env->bypass_spec_{v1,v4}
+> basing on the value returned by kernel/cpu.c:cpu_mitigations_off().
+> This function is backed by a variable kernel/cpu.c:cpu_mitigations.
+>
+> This state is not fully introspect-able via sysfs. The closest proxy
+> is /sys/devices/system/cpu/vulnerabilities/spectre_v1, but it reports
+> "vulnerable" state only if mitigations are disabled *and* current cpu
+> is vulnerable, while verifier does not check cpu state.
+>
+> There are only two ways the kernel/cpu.c:cpu_mitigations can be set:
+> - via boot parameter;
+> - via CONFIG_CPU_MITIGATIONS option.
+>
+> This commit updates unpriv_helpers.c:get_mitigations_off() to scan
+> /boot/config-$(uname -r) and /proc/config.gz for
+> CONFIG_CPU_MITIGATIONS value in addition to boot command line check.
+>
+> Tested using the following configurations:
+> - mitigations enabled (unpriv tests are enabled)
+> - mitigations disabled via boot cmdline (unpriv tests skipped)
+> - mitigations disabled via CONFIG_CPU_MITIGATIONS
+>   (unpriv tests skipped)
+>
+> [1] https://lore.kernel.org/bpf/20231025031144.5508-1-laoar.shao@gmail.co=
+m/
+>
+> Reported-by: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+>  tools/testing/selftests/bpf/unpriv_helpers.c | 94 +++++++++++++++++++-
+>  1 file changed, 91 insertions(+), 3 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/unpriv_helpers.c b/tools/testing=
+/selftests/bpf/unpriv_helpers.c
+> index 220f6a963813..625556a0e7f1 100644
+> --- a/tools/testing/selftests/bpf/unpriv_helpers.c
+> +++ b/tools/testing/selftests/bpf/unpriv_helpers.c
+> @@ -1,15 +1,76 @@
+>  // SPDX-License-Identifier: GPL-2.0-only
+>
+> +#include <errno.h>
+>  #include <stdbool.h>
+>  #include <stdlib.h>
+>  #include <stdio.h>
+>  #include <string.h>
+> +#include <sys/utsname.h>
+>  #include <unistd.h>
+>  #include <fcntl.h>
+> +#include <zlib.h>
+>
+>  #include "unpriv_helpers.h"
+>
+> -static bool get_mitigations_off(void)
+> +static gzFile open_config(void)
+> +{
+> +       struct utsname uts;
+> +       char buf[PATH_MAX];
+> +       gzFile config;
+> +
+> +       if (uname(&uts)) {
+> +               perror("uname");
+> +               goto config_gz;
+> +       }
+> +
+> +       snprintf(buf, sizeof(buf), "/boot/config-%s", uts.release);
+> +       config =3D gzopen(buf, "rb");
+> +       if (config)
+> +               return config;
+> +       fprintf(stderr, "gzopen %s: %s\n", buf, strerror(errno));
+> +
+> +config_gz:
+> +       config =3D gzopen("/proc/config.gz", "rb");
+> +       if (!config)
+> +               perror("gzopen /proc/config.gz");
+> +       return config;
+> +}
+> +
+> +static int config_contains(const char *pat)
 
-On Mon, Jun 16, 2025 at 08:43:14PM +0200, Andrew Lunn wrote:
-> On Mon, Jun 16, 2025 at 02:22:43PM -0400, Robert Cross wrote:
-> > According to the documents I'm looking at, the 88E6172 and
-> > 88E6176 both have external MDIO buses. I have brought up
-> > a board with two connected 88E6176 chips, each with a PHY
-> > that can only be managed with the MDC/MDIO_PHY pins of
-> > the 88E6176s.
-> > 
-> > After applying this patch I was able to successfully manage
-> > and control these external PHYs without issue. I'm not sure
-> > if you have access to the 88E6176 datasheet specifically,
-> > but this chip absolutely does have an external MDIO.
-> 
-> You are not understanding what i'm saying. This family has a single
-> MDIO bus controller. That controller is used by both the internal PHY
-> devices, plus there are two pins on the chip for external PHYs.
-> 
-> All the PHYs will appear on that one MDIO bus controller.
-> 
-> The MV88E6390_G2_SMI_PHY_CMD_FUNC_EXTERNAL bit is reserved on the 6352
-> family.
-> 
-> 	Andrew
+int-returning function... but we return do `ret =3D true;`, that looks
+accidental and sloppy. Let's add a comment that it returns <0 on
+error, 0 for no match, 1 for match and stick to numbers everywhere?
 
-Is there any addition to Documentation/devicetree/bindings/net/dsa/marvell,mv88e6xxx.yaml
-that we could make in order to clarify which switch families have a
-combined internal+external MDIO bus and which ones have them separate?
-As you're saying, this is an area where mistakes happen relatively
-frequently.
+> +{
+> +       int n, err, ret =3D -1;
+> +       const char *msg;
+> +       char buf[1024];
+> +       gzFile config;
+> +
+> +       config =3D open_config();
+> +       if (!config)
+> +               goto out;
+
+nothing to gzclose if open_config() returns NULL, just return
+
+pw-bot: cr
+
+> +
+> +       for (;;) {
+> +               if (!gzgets(config, buf, sizeof(buf))) {
+> +                       msg =3D gzerror(config, &err);
+> +                       if (err =3D=3D Z_ERRNO)
+> +                               perror("gzgets /proc/config.gz");
+> +                       else if (err !=3D Z_OK)
+> +                               fprintf(stderr, "gzgets /proc/config.gz: =
+%s", msg);
+> +                       goto out;
+
+nit: I'd probably just do
+
+gzclose(config);
+return -EINVAL; (or whatever the error code might be)
+
+> +               }
+> +               n =3D strlen(buf);
+> +               if (buf[n - 1] =3D=3D '\n')
+> +                       buf[n - 1] =3D 0;
+> +               if (strcmp(buf, pat) =3D=3D 0) {
+> +                       ret =3D true;
+> +                       goto out;
+
+same here, gzclose() + return;
+
+it will be easier to follow in this rather straightforward function
+
+> +               }
+> +       }
+> +       ret =3D false;
+> +out:
+> +       gzclose(config);
+> +       return ret;
+> +}
+> +
+> +static bool cmdline_contains(const char *pat)
+>  {
+>         char cmdline[4096], *c;
+>         int fd, ret =3D false;
+> @@ -27,7 +88,7 @@ static bool get_mitigations_off(void)
+>
+>         cmdline[sizeof(cmdline) - 1] =3D '\0';
+>         for (c =3D strtok(cmdline, " \n"); c; c =3D strtok(NULL, " \n")) =
+{
+> -               if (strncmp(c, "mitigations=3Doff", strlen(c)))
+> +               if (strncmp(c, pat, strlen(c)))
+>                         continue;
+>                 ret =3D true;
+>                 break;
+> @@ -37,8 +98,21 @@ static bool get_mitigations_off(void)
+>         return ret;
+>  }
+>
+> +static int get_mitigations_off(void)
+> +{
+> +       int enabled_in_config;
+> +
+> +       if (cmdline_contains("mitigations=3Doff"))
+> +               return true;
+> +       enabled_in_config =3D config_contains("CONFIG_CPU_MITIGATIONS=3Dy=
+");
+> +       if (enabled_in_config < 0)
+> +               return -1;
+> +       return !enabled_in_config;
+
+same mix of bool and integers
+
+> +}
+> +
+>  bool get_unpriv_disabled(void)
+>  {
+> +       int mitigations_off;
+>         bool disabled;
+>         char buf[2];
+>         FILE *fd;
+> @@ -52,5 +126,19 @@ bool get_unpriv_disabled(void)
+>                 disabled =3D true;
+>         }
+>
+> -       return disabled ? true : get_mitigations_off();
+> +       if (disabled)
+> +               return true;
+> +
+> +       /*
+> +        * Some unpriv tests rely on spectre mitigations being on.
+> +        * If mitigations are off or status can't be determined
+> +        * assume that unpriv tests are disabled.
+> +        */
+> +       mitigations_off =3D get_mitigations_off();
+> +       if (mitigations_off < 0) {
+> +               fprintf(stderr,
+> +                       "Can't determine if mitigations are enabled, disa=
+bling unpriv tests.");
+> +               return true;
+> +       }
+> +       return mitigations_off;
+>  }
+> --
+> 2.47.1
+>
 
