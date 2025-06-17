@@ -1,207 +1,261 @@
-Return-Path: <bpf+bounces-60793-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60794-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B652ADC112
-	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 06:50:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90BA9ADC12E
+	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 07:08:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D9A9D188DF74
-	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 04:50:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D22B718870A4
+	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 05:09:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E7FD238151;
-	Tue, 17 Jun 2025 04:50:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDC5723B60C;
+	Tue, 17 Jun 2025 05:08:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ekbZIMJc"
 X-Original-To: bpf@vger.kernel.org
-Received: from 69-171-232-180.mail-mxout.facebook.com (69-171-232-180.mail-mxout.facebook.com [69.171.232.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFE07221F09
-	for <bpf@vger.kernel.org>; Tue, 17 Jun 2025 04:50:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3758514A09C;
+	Tue, 17 Jun 2025 05:08:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750135813; cv=none; b=r78AUMyJnBb4gBepandONBcdSKqataWM5zqJhgnfGbU/NsGKaVCMo97P+m5irsVaELAPcLKmDE16O5vdC/A/Q/d+uQjblZ0bsxseIizbUcMv07xfT4p+NrBWHGnJ2vMRVNAtFEa8yfin6TdGN7h5Kq3WVPv4kQmHE9IxbDd4E30=
+	t=1750136921; cv=none; b=CwIzAyCVsxV1Ne2uDWbFBi2JCYyiejaLzkvwWH1NUnu7+nY+1/7CneVKzhTHRjCaUcJUzuqIhnBIQwC2tNFOvvSZVxf5Eb6uLvZzhS1uXbAoftCPahwtOzKxjLvdMfeINPPzK5cj+gzDgW6N/xTeZqLOVEcE+/Cj9ohJc/vTfts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750135813; c=relaxed/simple;
-	bh=EYh7ZovI2c7m/RqW4i/blSH2PmCjJVBC7F0PSDngRak=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=kQCU2Dvl5KyZYs4/fn0GVshcc1UM0xpgVetOj2WbEnwF+2V7+8l1Lor65LUi8yV9nS2dMLXfm54vxlAiR6lb8MD+obvgS9V2JuOEf66TBViZ5YkKBW9GRkNkXbB1aGTj1ApX8qP/JmWlwq14TcV8Pi/nVbxPZMynNI0H8aE8Zdg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
-Received: by devvm16039.vll0.facebook.com (Postfix, from userid 128203)
-	id 40A449C3E05F; Mon, 16 Jun 2025 21:49:56 -0700 (PDT)
-From: Yonghong Song <yonghong.song@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	kernel-team@fb.com,
-	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next] selftests/bpf: Fix RELEASE build failure with gcc14
-Date: Mon, 16 Jun 2025 21:49:56 -0700
-Message-ID: <20250617044956.2686668-1-yonghong.song@linux.dev>
-X-Mailer: git-send-email 2.47.1
+	s=arc-20240116; t=1750136921; c=relaxed/simple;
+	bh=bl+wQOG/YTu+p7IqZ4udIhLI7a6kbV+hlxc2ZJpROso=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Zdb/pI9qLUJV0B3LmcZdvo05EQh6UqHdlc/UWvKV1q2M0OXlLennrAnKlXcH2FJT0USBTTmwemd0h6yqPnSioLotrZ5B/kjaaX6WJFPQBIZRVfa+ADTjwBSnNEBNQnZpIwJfgDZvETUlbkwYtIZHpxnJYuw51LUnY3Xw3IifRmg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ekbZIMJc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB445C4CEF3;
+	Tue, 17 Jun 2025 05:08:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1750136920;
+	bh=bl+wQOG/YTu+p7IqZ4udIhLI7a6kbV+hlxc2ZJpROso=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ekbZIMJcRVe+dojIqmAuqdH1BMQYae73Fck5FJqWZACFn8R9LXAWSpT7ON04yYGh0
+	 feEKJhlGRBrRf7H+2fDFKAG+DbB3pCEqO1SlT8MmwK+KZ1LSE+ZNOz/xkri/i5lwHY
+	 ciFw3LHR6Hb0sWLsm9uK4NoyQ7YDoyeXX/RB6LgcnMFc2jw1R3tOraTX+TUKHsEOA4
+	 EeXq6hpoD1oF3G3bhcYK83PzLTauxy/knB5kIuq/NeMnV5+xFviDV1AaVVOG/p4/Ri
+	 mgHFlKFb4+67LEv3OBFZ0W9hab8dar4W04Ntng0M8J4LnVDE6x4kQ+8+CR2u9eXYXM
+	 eWWu6VAF11q4g==
+Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-4a43afb04a7so39704281cf.0;
+        Mon, 16 Jun 2025 22:08:40 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCV+A6H7YsQP7k9c7ztaFQTI25GuJMyUQSCXjblR0UOZWT0Rd1KJzGeoiiK1bZCLcd7AEpw37KznmGCzojHIiGUjJGlFAgdx@vger.kernel.org, AJvYcCVnCKJVe1jAsk8oMGJckvSt4Aq7iHxrcTMtbm+IY85MbYFia+AJ+j+s+it8nbG9WowpmoTO3Qx4NpYVMzVn@vger.kernel.org, AJvYcCWGRUeN/G5MfiGKW2aj9T6n366qN6f0ohPFD4NbCOZQ99t8oV1d4nUngaA1pA3hn9ocRpxCQoDvk0/G9VlF@vger.kernel.org
+X-Gm-Message-State: AOJu0YwyoRjVbO/6+OFIaQtXfUgLU2kaLOqvPeolWDf95tVUwrleb4kS
+	2svQYDMC1eTpiUJ8+qseGais9Zsly3eSNytnxMSpPh7wa4h/hg5uzKKnzIawKkCe0ilJ6WTmE+7
+	LslJ+/tzCHmB9Izd2ZlkHfxsjIq7e1Ts=
+X-Google-Smtp-Source: AGHT+IGV2ZQU5FEHR/is6f/JD89L4SCHZd4XCDGZ/qKtzhWxHrZxgM66En+qs2O2CLJ5ZITT0gAb1nHZP6JsA1Z/d4s=
+X-Received: by 2002:a05:622a:1486:b0:494:7ca0:2ff with SMTP id
+ d75a77b69052e-4a73c4beca6mr160152421cf.15.1750136919637; Mon, 16 Jun 2025
+ 22:08:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20250611220220.3681382-1-song@kernel.org> <20250611220220.3681382-2-song@kernel.org>
+ <75ea3f6b-cf5b-4e97-9214-cbd3f299008c@maowtm.org>
+In-Reply-To: <75ea3f6b-cf5b-4e97-9214-cbd3f299008c@maowtm.org>
+From: Song Liu <song@kernel.org>
+Date: Mon, 16 Jun 2025 22:08:27 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW4a9kUyNhw1kZuyrFLsWF4-FseT0Cb2PK1TpZ6VZmT1AQ@mail.gmail.com>
+X-Gm-Features: AX0GCFs1Hp3je6LWKk-M4nBzwlFIO9mQlPC-AG9o6-qRVlulmxfFOuTV6afNyKQ
+Message-ID: <CAPhsuW4a9kUyNhw1kZuyrFLsWF4-FseT0Cb2PK1TpZ6VZmT1AQ@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 1/5] namei: Introduce new helper function path_walk_parent()
+To: Tingmao Wang <m@maowtm.org>
+Cc: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, viro@zeniv.linux.org.uk, 
+	brauner@kernel.org, jack@suse.cz, kpsingh@kernel.org, 
+	mattbobrowski@google.com, amir73il@gmail.com, repnop@google.com, 
+	jlayton@kernel.org, josef@toxicpanda.com, mic@digikod.net, gnoack@google.com, 
+	neil@brown.name
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-With gcc14, when building with RELEASE=3D1, I hit four below compilation
-failure:
+On Sat, Jun 14, 2025 at 11:36=E2=80=AFAM Tingmao Wang <m@maowtm.org> wrote:
+>
+> On 6/11/25 23:02, Song Liu wrote:
+> > This helper walks an input path to its parent. Logic are added to handl=
+e
+> > walking across mount tree.
+> >
+> > This will be used by landlock, and BPF LSM.
+> >
+> > Suggested-by: Neil Brown <neil@brown.name>
+> > Signed-off-by: Song Liu <song@kernel.org>
+> > ---
+> >  fs/namei.c            | 99 +++++++++++++++++++++++++++++++++++++------
+> >  include/linux/namei.h |  2 +
+> >  2 files changed, 87 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/fs/namei.c b/fs/namei.c
+> > index 4bb889fc980b..bc65361c5d13 100644
+> > --- a/fs/namei.c
+> > +++ b/fs/namei.c
+> > @@ -2048,36 +2048,107 @@ static struct dentry *follow_dotdot_rcu(struct=
+ nameidata *nd)
+> >       return nd->path.dentry;
+> >  }
+> >
+> > -static struct dentry *follow_dotdot(struct nameidata *nd)
+> > +/**
+> > + * __path_walk_parent - Find the parent of the given struct path
+> > + * @path  - The struct path to start from
+> > + * @root  - A struct path which serves as a boundary not to be crosses=
+.
+> > + *        - If @root is zero'ed, walk all the way to global root.
+> > + * @flags - Some LOOKUP_ flags.
+> > + *
+> > + * Find and return the dentry for the parent of the given path
+> > + * (mount/dentry). If the given path is the root of a mounted tree, it
+> > + * is first updated to the mount point on which that tree is mounted.
+> > + *
+> > + * If %LOOKUP_NO_XDEV is given, then *after* the path is updated to a =
+new
+> > + * mount, the error EXDEV is returned.
+> > + *
+> > + * If no parent can be found, either because the tree is not mounted o=
+r
+> > + * because the @path matches the @root, then @path->dentry is returned
+> > + * unless @flags contains %LOOKUP_BENEATH, in which case -EXDEV is ret=
+urned.
+> > + *
+> > + * Returns: either an ERR_PTR() or the chosen parent which will have h=
+ad
+> > + * the refcount incremented.
+> > + */
+> > +static struct dentry *__path_walk_parent(struct path *path, const stru=
+ct path *root, int flags)
+> >  {
+> >       struct dentry *parent;
+> >
+> > -     if (path_equal(&nd->path, &nd->root))
+> > +     if (path_equal(path, root))
+> >               goto in_root;
+> > -     if (unlikely(nd->path.dentry =3D=3D nd->path.mnt->mnt_root)) {
+> > -             struct path path;
+> > +     if (unlikely(path->dentry =3D=3D path->mnt->mnt_root)) {
+> > +             struct path new_path;
+> >
+> > -             if (!choose_mountpoint(real_mount(nd->path.mnt),
+> > -                                    &nd->root, &path))
+> > +             if (!choose_mountpoint(real_mount(path->mnt),
+> > +                                    root, &new_path))
+> >                       goto in_root;
+> > -             path_put(&nd->path);
+> > -             nd->path =3D path;
+> > -             nd->inode =3D path.dentry->d_inode;
+> > -             if (unlikely(nd->flags & LOOKUP_NO_XDEV))
+> > +             path_put(path);
+> > +             *path =3D new_path;
+> > +             if (unlikely(flags & LOOKUP_NO_XDEV))
+> >                       return ERR_PTR(-EXDEV);
+> >       }
+> >       /* rare case of legitimate dget_parent()... */
+> > -     parent =3D dget_parent(nd->path.dentry);
+> > -     if (unlikely(!path_connected(nd->path.mnt, parent))) {
+> > +     parent =3D dget_parent(path->dentry);
+> > +     if (unlikely(!path_connected(path->mnt, parent))) {
+>
+> This is checking path_connected here but also in follow_dotdot,
+> path_connected is checked again. Is this check meant to be here?  It will
+> also change the landlock behaviour right?
 
-Error 1:
-  In file included from test_loader.c:6:
-  test_loader.c: In function =E2=80=98run_subtest=E2=80=99: test_progs.h:=
-194:17:
-      error: =E2=80=98retval=E2=80=99 may be used uninitialized in this f=
-unction
-   [-Werror=3Dmaybe-uninitialized]
-    194 |                 fprintf(stdout, ##format);           \
-        |                 ^~~~~~~
-  test_loader.c:958:13: note: =E2=80=98retval=E2=80=99 was declared here
-    958 |         int retval, err, i;
-        |             ^~~~~~
+Good catch! Removed the check in v5.
 
-  The uninitialized var 'retval' actaully could cause incorrect result.
-
-Error 2:
-  In function =E2=80=98test_fd_array_cnt=E2=80=99:
-  prog_tests/fd_array.c:71:14: error: =E2=80=98btf_id=E2=80=99 may be use=
-d uninitialized in this
-      function [-Werror=3Dmaybe-uninitialized]
-     71 |         fd =3D bpf_btf_get_fd_by_id(id);
-        |              ^~~~~~~~~~~~~~~~~~~~~~~~
-  prog_tests/fd_array.c:302:15: note: =E2=80=98btf_id=E2=80=99 was declar=
-ed here
-    302 |         __u32 btf_id;
-        |               ^~~~~~
-
-  Changing ASSERT_GE to ASSERT_EQ can fix the compilation error. Otherwis=
-e,
-  there is no functionality change.
-
-Error 3:
-  prog_tests/tailcalls.c: In function =E2=80=98test_tailcall_hierarchy_co=
-unt=E2=80=99:
-  prog_tests/tailcalls.c:1402:23: error: =E2=80=98fentry_data_fd=E2=80=99=
- may be used uninitialized
-      in this function [-Werror=3Dmaybe-uninitialized]
-     1402 |                 err =3D bpf_map_lookup_elem(fentry_data_fd, &=
-i, &val);
-          |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~~~~
-
-  The code is correct. The change intends to slient gcc errors.
-
-Error 4: (this error only happens on arm64)
-  In file included from prog_tests/log_buf.c:4:
-  prog_tests/log_buf.c: In function =E2=80=98bpf_prog_load_log_buf=E2=80=99=
-:
-  ./test_progs.h:390:22: error: =E2=80=98log_buf=E2=80=99 may be used uni=
-nitialized [-Werror=3Dmaybe-uninitialized]
-    390 |         int ___err =3D libbpf_get_error(___res);             \
-        |                      ^~~~~~~~~~~~~~~~~~~~~~~~
-  prog_tests/log_buf.c:158:14: note: in expansion of macro =E2=80=98ASSER=
-T_OK_PTR=E2=80=99
-    158 |         if (!ASSERT_OK_PTR(log_buf, "log_buf_alloc"))
-        |              ^~~~~~~~~~~~~
-  In file included from selftests/bpf/tools/include/bpf/bpf.h:32,
-                 from ./test_progs.h:36:
-  selftests/bpf/tools/include/bpf/libbpf_legacy.h:113:17:
-    note: by argument 1 of type =E2=80=98const void *=E2=80=99 to =E2=80=98=
-libbpf_get_error=E2=80=99 declared here
-    113 | LIBBPF_API long libbpf_get_error(const void *ptr);
-        |                 ^~~~~~~~~~~~~~~~
-
-  Adding a pragma to disable maybe-uninitialized fixed the issue.
-
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
----
- tools/testing/selftests/bpf/prog_tests/fd_array.c  | 2 +-
- tools/testing/selftests/bpf/prog_tests/log_buf.c   | 4 ++++
- tools/testing/selftests/bpf/prog_tests/tailcalls.c | 2 +-
- tools/testing/selftests/bpf/test_loader.c          | 6 +++---
- 4 files changed, 9 insertions(+), 5 deletions(-)
-
-NOTE: I found these issues when I tried to compare usdt.test.o binaries
-      when building selftests with and without RELEASE=3D1.
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/fd_array.c b/tools/te=
-sting/selftests/bpf/prog_tests/fd_array.c
-index 9add890c2d37..241b2c8c6e0f 100644
---- a/tools/testing/selftests/bpf/prog_tests/fd_array.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fd_array.c
-@@ -312,7 +312,7 @@ static void check_fd_array_cnt__referenced_btfs(void)
-=20
- 	/* btf should still exist when original file descriptor is closed */
- 	err =3D get_btf_id_by_fd(extra_fds[0], &btf_id);
--	if (!ASSERT_GE(err, 0, "get_btf_id_by_fd"))
-+	if (!ASSERT_EQ(err, 0, "get_btf_id_by_fd"))
- 		goto cleanup;
-=20
- 	Close(extra_fds[0]);
-diff --git a/tools/testing/selftests/bpf/prog_tests/log_buf.c b/tools/tes=
-ting/selftests/bpf/prog_tests/log_buf.c
-index 169ce689b97c..d6f14a232002 100644
---- a/tools/testing/selftests/bpf/prog_tests/log_buf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/log_buf.c
-@@ -7,6 +7,10 @@
- #include "test_log_buf.skel.h"
- #include "bpf_util.h"
-=20
-+#if !defined(__clang__)
-+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
-+#endif
-+
- static size_t libbpf_log_pos;
- static char libbpf_log_buf[1024 * 1024];
- static bool libbpf_log_error;
-diff --git a/tools/testing/selftests/bpf/prog_tests/tailcalls.c b/tools/t=
-esting/selftests/bpf/prog_tests/tailcalls.c
-index 66a900327f91..0ab36503c3b2 100644
---- a/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-@@ -1195,7 +1195,7 @@ static void test_tailcall_hierarchy_count(const cha=
-r *which, bool test_fentry,
- 					  bool test_fexit,
- 					  bool test_fentry_entry)
- {
--	int err, map_fd, prog_fd, main_data_fd, fentry_data_fd, fexit_data_fd, =
-i, val;
-+	int err, map_fd, prog_fd, main_data_fd, fentry_data_fd =3D 0, fexit_dat=
-a_fd =3D 0, i, val;
- 	struct bpf_object *obj =3D NULL, *fentry_obj =3D NULL, *fexit_obj =3D N=
-ULL;
- 	struct bpf_link *fentry_link =3D NULL, *fexit_link =3D NULL;
- 	struct bpf_program *prog, *fentry_prog;
-diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/se=
-lftests/bpf/test_loader.c
-index 9551d8d5f8f9..2c7e9729d5fe 100644
---- a/tools/testing/selftests/bpf/test_loader.c
-+++ b/tools/testing/selftests/bpf/test_loader.c
-@@ -1103,9 +1103,9 @@ void run_subtest(struct test_loader *tester,
- 			}
- 		}
-=20
--		do_prog_test_run(bpf_program__fd(tprog), &retval,
--				 bpf_program__type(tprog) =3D=3D BPF_PROG_TYPE_SYSCALL ? true : fals=
-e);
--		if (retval !=3D subspec->retval && subspec->retval !=3D POINTER_VALUE)=
- {
-+		err =3D do_prog_test_run(bpf_program__fd(tprog), &retval,
-+				       bpf_program__type(tprog) =3D=3D BPF_PROG_TYPE_SYSCALL ? true =
-: false);
-+		if (!err && retval !=3D subspec->retval && subspec->retval !=3D POINTE=
-R_VALUE) {
- 			PRINT_FAIL("Unexpected retval: %d !=3D %d\n", retval, subspec->retval=
-);
- 			goto tobj_cleanup;
- 		}
---=20
-2.47.1
-
+>
+> (For some reason patch 2 rejects when I tried to apply it on v6.16-rc1, s=
+o
+> I haven't actually tested this patch to see if this is really an issue)
+>
+> >               dput(parent);
+> >               return ERR_PTR(-ENOENT);
+> >       }
+> >       return parent;
+> >
+> >  in_root:
+> > -     if (unlikely(nd->flags & LOOKUP_BENEATH))
+> > +     if (unlikely(flags & LOOKUP_BENEATH))
+> >               return ERR_PTR(-EXDEV);
+> > -     return dget(nd->path.dentry);
+> > +     return dget(path->dentry);
+> > +}
+> > +
+> > +/**
+> > + * path_walk_parent - Walk to the parent of path
+> > + * @path: input and output path.
+> > + * @root: root of the path walk, do not go beyond this root. If @root =
+is
+> > + *        zero'ed, walk all the way to real root.
+> > + *
+> > + * Given a path, find the parent path. Replace @path with the parent p=
+ath.
+> > + * If we were already at the real root or a disconnected root, @path i=
+s
+> > + * released and zero'ed.
+> > + *
+> > + * Returns:
+> > + *  true  - if @path is updated to its parent.
+> > + *  false - if @path is already the root (real root or @root).
+> > + */
+> > +bool path_walk_parent(struct path *path, const struct path *root)
+> > +{
+> > +     struct dentry *parent;
+> > +
+> > +     parent =3D __path_walk_parent(path, root, LOOKUP_BENEATH);
+> > +
+> > +     if (IS_ERR(parent))
+> > +             goto false_out;
+> > +
+> > +     if (parent =3D=3D path->dentry) {
+> > +             dput(parent);
+> > +             goto false_out;
+> > +     }
+> > +     dput(path->dentry);
+> > +     path->dentry =3D parent;
+> > +     return true;
+> > +
+> > +false_out:
+> > +     path_put(path);
+> > +     memset(path, 0, sizeof(*path));
+> > +     return false;
+> > +}
+> > +
+> > +static struct dentry *follow_dotdot(struct nameidata *nd)
+> > +{
+> > +     struct dentry *parent =3D __path_walk_parent(&nd->path, &nd->root=
+, nd->flags);
+> > +
+> > +     if (IS_ERR(parent))
+> > +             return parent;
+> > +     if (unlikely(!path_connected(nd->path.mnt, parent))) {
+> > +             dput(parent);
+> > +             return ERR_PTR(-ENOENT);
+> > +     }
+> > +     nd->inode =3D nd->path.dentry->d_inode;
+> > +     return parent;
+> >  }
+> >
+> >  static const char *handle_dots(struct nameidata *nd, int type)
+> > diff --git a/include/linux/namei.h b/include/linux/namei.h
+> > index 5d085428e471..cba5373ecf86 100644
+> > --- a/include/linux/namei.h
+> > +++ b/include/linux/namei.h
+> > @@ -85,6 +85,8 @@ extern int follow_down_one(struct path *);
+> >  extern int follow_down(struct path *path, unsigned int flags);
+> >  extern int follow_up(struct path *);
+> >
+> > +bool path_walk_parent(struct path *path, const struct path *root);
+> > +
+> >  extern struct dentry *lock_rename(struct dentry *, struct dentry *);
+> >  extern struct dentry *lock_rename_child(struct dentry *, struct dentry=
+ *);
+> >  extern void unlock_rename(struct dentry *, struct dentry *);
+>
 
