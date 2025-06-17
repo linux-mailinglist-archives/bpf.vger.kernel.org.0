@@ -1,137 +1,146 @@
-Return-Path: <bpf+bounces-60808-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60809-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3115ADC6E2
-	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 11:44:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74F76ADC75E
+	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 12:01:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC0193AB25C
-	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 09:44:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3837D188A003
+	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 10:01:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6E282C030A;
-	Tue, 17 Jun 2025 09:44:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB74B2BDC20;
+	Tue, 17 Jun 2025 10:00:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AMDuYYoD"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="VtgTVgEO"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f68.google.com (mail-wm1-f68.google.com [209.85.128.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF3232BE7D0
-	for <bpf@vger.kernel.org>; Tue, 17 Jun 2025 09:44:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A19842BF012
+	for <bpf@vger.kernel.org>; Tue, 17 Jun 2025 10:00:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750153469; cv=none; b=A/z6i/Z7mD3jBT/qbatV+p7ibTtjuGiV+Tj0KtQ2xfKjqOKU+W5stp6vefeq2QKoctDJXBcvIzXYnJcCM2vsnOzWxzPzjiDFmB1CZ0ucLoC+o3+xdAnZIhmviKIVWaIdpyCfJa7wR/nsAcVrQCUPEFv3iVTK780FKKA+DEUp1KM=
+	t=1750154458; cv=none; b=KJLjb9cnltKTgwkm6zO0Z2uGxeWVs5/W695UWcPu8wmsM4Rjr3Mp1HH4Mz0OW9eoOdhVmCGgVhZrcHAB+lmrzHzPhFynz90dOgmYZGrT+wAeuxHu6MyUoRH3CTYpOUQO5tfAadRyeDJZ2aDCwhAxsKOMuWkiOshS2ZttvkSNrf4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750153469; c=relaxed/simple;
-	bh=e4uRqKiHK+914gVeOIiVV3X3FcUt9r0rHl937hvIjjo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=aJ0NVT43T8iWDYMfbAqOZTSHJj7WkqwmEuUlCxrhd55ghYbyNeuxUAYFfeTi2w6ddnjynFiOIl06W9/zgYPUtpQlczMpukYO7evQzQHAdufOVjEKD5dTkSC8UsUBQg+nrjqHmiGLpDNZxg80C5r6KeEw110xXvBgDoRA0CBXj8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AMDuYYoD; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1750153466;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rzL8BCb5z5mTe8AmKnSvyMsKdN+ktV9EKzPlxxLDauM=;
-	b=AMDuYYoDWFJKnahySOKC7fu/UovDN6k0UTkmMIPV70HymgS1GDLj29vd9bYslqJnpNaeeq
-	ugNe4tn24TZsLlZC23YsVaXKRxP0BRDr+uPRfnQM4BQzco1AtYV369AKkttflG443hF4h1
-	4XElNQqDsLX6VB7o8dhARnhOVl2ZiWM=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-76-mR1d1-0ENsm6t1UBT0FxJw-1; Tue, 17 Jun 2025 05:44:25 -0400
-X-MC-Unique: mR1d1-0ENsm6t1UBT0FxJw-1
-X-Mimecast-MFC-AGG-ID: mR1d1-0ENsm6t1UBT0FxJw_1750153464
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-3a503f28b09so322980f8f.0
-        for <bpf@vger.kernel.org>; Tue, 17 Jun 2025 02:44:25 -0700 (PDT)
+	s=arc-20240116; t=1750154458; c=relaxed/simple;
+	bh=63f0TqEe7ZSJlAEEDh5c6QP7qrLi0rXRzYggtZFz3+4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=U8upXwt0JuAnif96X4guIddh7LFw7DEG0zwrbrxeMyoRP8zWObfSeJivbrRsVCOCYtx38o1mHjuNfXH5A3eIh/j3fSu4ikS8r2hRPdbTZOn6PkbP7cGpJ/hEaWNjd6Kip/IHsScEbWKoCyFlKZobmaft6A0TiJceCzTRTUKWLyc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=VtgTVgEO; arc=none smtp.client-ip=209.85.128.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f68.google.com with SMTP id 5b1f17b1804b1-451d6ade159so45455705e9.1
+        for <bpf@vger.kernel.org>; Tue, 17 Jun 2025 03:00:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1750154455; x=1750759255; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=63f0TqEe7ZSJlAEEDh5c6QP7qrLi0rXRzYggtZFz3+4=;
+        b=VtgTVgEOKtrCkqMX4unbbSIrCU3tRWd9VRML+CeTM68VOv88gNhJWuZyGajcecdP0O
+         0/bY5iuY1IIQQG5tFi2LHNRh/5/JLztDNAdK8S8XyfAHD/WXkPgfgD1kQ9koR243msbM
+         0F/aNKyTokJmbblE+CDTCluN/IadEGieSO3ws805DcT7TQu6V8lD+/va+AzIM342/HqD
+         akpEjYm00QtlpfJBzpWIF4XccQkq5ELeo8Le8DT5MycagWkrRrlV5tBoU9zQ8cC0b4we
+         d1tEsS14ibTIfOYAYLzUMn8NfOhPXOEMh1Aze1XvAZzjlqfM9rDJhx35B3Hhs6VuVDK+
+         v9Kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750153464; x=1750758264;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rzL8BCb5z5mTe8AmKnSvyMsKdN+ktV9EKzPlxxLDauM=;
-        b=fkTYS5mEqmKYMzFzpOyc6rWjxKulyDJt/5gV8PCuybxwqeHPtW6OTwS5fdnLWw+gws
-         7qb5KWGod8r1ZPQruA9e9IUsfP9DgysFwHDRKBtyDOXL8xZyMotdv5LkTZLpIdWlxZ4G
-         BaI5Ed2IvbYzohX5z+HGcSUjs2/lF0OJgTMHtx01i9k30JL7csXHii/t49apILj8PPht
-         dLz+uqo6D14UexiO1nHBhIz9TEx967VHg8PsgcIwuWstrgYZk8Q6X98H6n4I47ogUdyV
-         UQNx3FbfahmnBltIG2CBm6GUE6zAcLVttQJJ/nPGU+y3w4A/zioQIVdyJC8krfqNDk5A
-         43pg==
-X-Forwarded-Encrypted: i=1; AJvYcCUwnFyfMjliowhByTJbBJlWWdj/wSiNNpGxUpRnyTd5lKrebQlKqvJsJJLcuYL/nqUNybE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxRXE9Q6KEvN0xnUBFr4Hf8HtaPez0vms/2nKskcuHN9Hy/SZwk
-	3Vb8hjEHa0Rf9iXJIbtKzenmK3K20UwnEoKYtvHsusKCOj0W/EuSWItxB+xBCQIKOluFvRUHzvT
-	wXqS/4bLuJmkAspM0QLWk4P3kDZ4inrCAp8tbtVAMuUfQLO7CAfyA6w==
-X-Gm-Gg: ASbGncu7fRA8AkNjAGNvHUIcXJ68PZwjAAgP5GXD2YLiT9Bu3rjXd/3oIL19Ukz50KZ
-	Owj7GW36eX1tLJJ6hozHsbUnvm9aIZnPxZM5K1rTP/pMahDIshYHNRKy2PY+B5/LbIIaslVFtAJ
-	xQ916ybfAp2Nql67DrZiXsipLoX2izBPevzahvOvCNuAV1P2qC72ZCJ1KPQuRzmPtgcOdbhohtn
-	V9f4QgkoZY0xs0fsjHwunsIpt6vTUmU0A23LgnVMeEVBAOkETtrevk6d+JyJ2D+h9VZingk9Osz
-	AR/gICm3VherE9ZsZQvHJnKPGD21pY4ffNcrS0MQKH3gZqY2VlIpKQbVd7WKc4uTm04oWA==
-X-Received: by 2002:a05:6000:4106:b0:3a5:7c5a:8c43 with SMTP id ffacd0b85a97d-3a57c5a8d11mr6597963f8f.11.1750153464163;
-        Tue, 17 Jun 2025 02:44:24 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEKE4/hdGNiZlnyMYBRWFUzYwIsk6LZeUq2PZYEGJVxcoKxTedoN7Csr9UGI1dlan0YwSjvcg==
-X-Received: by 2002:a05:6000:4106:b0:3a5:7c5a:8c43 with SMTP id ffacd0b85a97d-3a57c5a8d11mr6597942f8f.11.1750153463754;
-        Tue, 17 Jun 2025 02:44:23 -0700 (PDT)
-Received: from ?IPV6:2a0d:3344:2448:cb10:3ac6:72af:52e3:719a? ([2a0d:3344:2448:cb10:3ac6:72af:52e3:719a])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4532e13d009sm172188815e9.20.2025.06.17.02.44.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Jun 2025 02:44:23 -0700 (PDT)
-Message-ID: <558d81d1-3cd0-41f8-87b1-aa7be05f2924@redhat.com>
-Date: Tue, 17 Jun 2025 11:44:21 +0200
+        d=1e100.net; s=20230601; t=1750154455; x=1750759255;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=63f0TqEe7ZSJlAEEDh5c6QP7qrLi0rXRzYggtZFz3+4=;
+        b=fvfFv6vmTk+9xLh4VQLVzb2Gk7Xyhd8R8jzYZc7DAbLQVZyvKqOvV5Q8meCTVz4fks
+         aS4xaNERx4TrWDhmGupOQ6Nc6w88I0GP8LYDCOQWFzCIYMhq/fSAMlDZ0XFJO8F3CJuA
+         JaBPjbJDMqRj7jVQdmycTXI4AyvAzMhmG7PoHpY1tSp9ud6f61LqCQzqDzIRJoTD710+
+         fY2uqeexI7m1c4HkwyHuRlJ48FYcWRHU1CmgKbhboBsDqRbUPX7xiME+QBiYwqFkL+N9
+         8qV9BXTvb4im7LwpT258NAhRKNA54TvgFxE3Feoz35AQSnMGPjFBdSpyuQdiVjvQ4hWN
+         MRsA==
+X-Forwarded-Encrypted: i=1; AJvYcCXlLzIL0owDvqCGiwyreFAoEoridrbfHq8UHMUd/YDC0okJ5s2cg0J2AnbSZ5u1SwR4tNk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyqCImRMXG8h6WWKiViGk7yZDtXESRIbPiqge58k4mLQ65dBL0c
+	qmgAo3YwGhROyW82vYKDtIEMruu+95NLV9+uJfa8dGu6uH0ks1YK2nNv/P5A/l7QyFo=
+X-Gm-Gg: ASbGncsz3pCGrqKvVQz+bcYyWirdU6ti4/V03bJU4UnHk5cmnmYJ4J6OYzR4tbZfYf+
+	kgKLbcRHH9jBWzF+dao6VjrbCKdidbpjbHHSwVYBfQ4I8ShtlKlZSyqCw/87wD3wwZegghZVI5A
+	H4EHO2x8Q09t70L1k3UaReHUcLQ7s6LfX42aE7SAaAp5cKqKL5IfTFwnR+6pmz3v36aDXPDJXr5
+	2zbY41CVH66dN9Ti8xcKp375Eb4Gn6kSkuSqG6FM0YQiV6AC7UtXgPy49Urq/eLAQtCe6BFlzYM
+	oq2cNIQwYRLvDwF3l3Q/1/qL8TerbouDKfW3MEFVPZBnmFKEkO0IMk7bqUbJ7oeI
+X-Google-Smtp-Source: AGHT+IFOY4uMo1XQEX4RuwIHAMfgibmwRB22iBO5mpSJQ1+dfkCUk/eEmOPDTUbzxCn/VYVxqmedIA==
+X-Received: by 2002:a05:600d:10f:b0:452:fdfa:3b3b with SMTP id 5b1f17b1804b1-4533cadf885mr65921715e9.5.1750154454019;
+        Tue, 17 Jun 2025 03:00:54 -0700 (PDT)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4532e195768sm171790845e9.0.2025.06.17.03.00.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Jun 2025 03:00:53 -0700 (PDT)
+Date: Tue, 17 Jun 2025 12:00:51 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: syzbot <syzbot+31eb4d4e7d9bc1fc1312@syzkaller.appspotmail.com>, 
+	inwardvessel@gmail.com
+Cc: akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org, 
+	axboe@kernel.dk, bpf@vger.kernel.org, cgroups@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, hannes@cmpxchg.org, haoluo@google.com, 
+	hawk@kernel.org, john.fastabend@gmail.com, jolsa@kernel.org, josef@toxicpanda.com, 
+	kpsingh@kernel.org, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-mm@kvack.org, martin.lau@linux.dev, mhocko@kernel.org, 
+	muchun.song@linux.dev, mykolal@fb.com, netdev@vger.kernel.org, roman.gushchin@linux.dev, 
+	sdf@fomichev.me, shakeel.butt@linux.dev, shuah@kernel.org, song@kernel.org, 
+	syzkaller-bugs@googlegroups.com, tj@kernel.org, yonghong.song@linux.dev
+Subject: Re: [syzbot] [cgroups?] general protection fault in
+ __cgroup_rstat_lock
+Message-ID: <qzzfped7jds7kcr466zahbrcw2eg5n6ke7drzxm6btexv36ca2@mici3xiuajuz>
+References: <6751e769.050a0220.b4160.01df.GAE@google.com>
+ <683c7dee.a00a0220.d8eae.0032.GAE@google.com>
+ <p32ytuin2hmxacacroykhtfxf6l5l7sji33dt4xknnojqm4xh2@hrldb5d6fgfj>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 net-next 11/15] tcp: accecn: AccECN option failure
- handling
-To: chia-yu.chang@nokia-bell-labs.com, edumazet@google.com,
- linux-doc@vger.kernel.org, corbet@lwn.net, horms@kernel.org,
- dsahern@kernel.org, kuniyu@amazon.com, bpf@vger.kernel.org,
- netdev@vger.kernel.org, dave.taht@gmail.com, jhs@mojatatu.com,
- kuba@kernel.org, stephen@networkplumber.org, xiyou.wangcong@gmail.com,
- jiri@resnulli.us, davem@davemloft.net, andrew+netdev@lunn.ch,
- donald.hunter@gmail.com, ast@fiberby.net, liuhangbin@gmail.com,
- shuah@kernel.org, linux-kselftest@vger.kernel.org, ij@kernel.org,
- ncardwell@google.com, koen.de_schepper@nokia-bell-labs.com,
- g.white@cablelabs.com, ingemar.s.johansson@ericsson.com,
- mirja.kuehlewind@ericsson.com, cheshire@apple.com, rs.ietf@gmx.at,
- Jason_Livingood@comcast.com, vidhi_goel@apple.com
-References: <20250610125314.18557-1-chia-yu.chang@nokia-bell-labs.com>
- <20250610125314.18557-12-chia-yu.chang@nokia-bell-labs.com>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <20250610125314.18557-12-chia-yu.chang@nokia-bell-labs.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="krlwbo2bq63d5qwa"
+Content-Disposition: inline
+In-Reply-To: <p32ytuin2hmxacacroykhtfxf6l5l7sji33dt4xknnojqm4xh2@hrldb5d6fgfj>
 
-On 6/10/25 2:53 PM, chia-yu.chang@nokia-bell-labs.com wrote:
-> diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-> index 3de6641c776e..d7cdc6589a9c 100644
-> --- a/net/ipv4/tcp_output.c
-> +++ b/net/ipv4/tcp_output.c
-> @@ -1087,6 +1087,7 @@ static unsigned int tcp_syn_options(struct sock *sk, struct sk_buff *skb,
->  	/* Simultaneous open SYN/ACK needs AccECN option but not SYN */
->  	if (unlikely((TCP_SKB_CB(skb)->tcp_flags & TCPHDR_ACK) &&
->  		     tcp_ecn_mode_accecn(tp) &&
-> +		     inet_csk(sk)->icsk_retransmits < 2 &&
->  		     sock_net(sk)->ipv4.sysctl_tcp_ecn_option &&
->  		     remaining >= TCPOLEN_ACCECN_BASE)) {
->  		u32 saving = tcp_synack_options_combine_saving(opts);
 
-AFAICS here the AccECN option is allowed even on the first retransmit as
-opposed of what enforced for synack packets and what stated in the
-commit message. Why?
+--krlwbo2bq63d5qwa
+Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [syzbot] [cgroups?] general protection fault in
+ __cgroup_rstat_lock
+MIME-Version: 1.0
 
-Either code change or code/commit message comment needed.
+On Mon, Jun 02, 2025 at 04:15:56PM +0200, Michal Koutn=FD <mkoutny@suse.com=
+> wrote:
+> I'd say this might be relevant (although I don't see the possibly
+> incorrect error handlnig path) but it doesn't mean this commit fixes it,
+> it'd rather require the reproducer to adjust the N on this path.
 
-Thanks,
+Hm, possibly syzbot caught up here [1]:
 
-Paolo
+-mkdir(&(0x7f0000000000)=3D'./cgroup/file0\x00', 0xd0939199c36b4d28) (fail_=
+nth: 8)
++mkdirat$cgroup_root(0xffffffffffffff9c, &(0x7f00000005c0)=3D'./cgroup.net/=
+syz0\x00', 0x1ff) (fail_nth: 23)
 
+So there's something fishy in the error handling.
+
+HTH,
+Michal
+
+[1] https://lore.kernel.org/lkml/68403875.a00a0220.d4325.000a.GAE@google.co=
+m/
+
+--krlwbo2bq63d5qwa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaFE80QAKCRB+PQLnlNv4
+CFc5AQDFUQDIxN7rZwIY/4HwJm40c4uz7Kwbk8e3RX9sQwVOOQEA0j9JsDa/0bOB
+mCi/pTl0V4lRqubAZXTV4nhvtAtknwY=
+=+ozi
+-----END PGP SIGNATURE-----
+
+--krlwbo2bq63d5qwa--
 
