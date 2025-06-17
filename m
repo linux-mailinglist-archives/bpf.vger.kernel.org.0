@@ -1,126 +1,115 @@
-Return-Path: <bpf+bounces-60801-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60802-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E509ADC247
-	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 08:20:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7395ADC265
+	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 08:32:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE708171A9F
-	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 06:20:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 443001895B52
+	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 06:32:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1586228B7C7;
-	Tue, 17 Jun 2025 06:20:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lhlp6DqN"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 525A5273D8A;
+	Tue, 17 Jun 2025 06:32:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8020C4430;
-	Tue, 17 Jun 2025 06:20:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8CBC27461;
+	Tue, 17 Jun 2025 06:32:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750141244; cv=none; b=dnVNj7cwYGFri80AKf22+zSGZjlQnGhOlBS0jvS4IAlWQ3oIjW8pEOyJ06Mupp9e3WUadFhYwhmffn3Jv+mnfiMrFDo8BOgISTFmY4giHq1LNi3exgLeYBsQYsrw1y/MW9jYtZ5Ozsemh2HUKvRMuwTsCT4npqtgY8a/YnLu06A=
+	t=1750141951; cv=none; b=qz2+61QcTYeVmJFUVcNwz9X84qfZNGDFN9FvexQJoMP40oNNuHbS6mHxrIyrjdBFnA6IRxAi3n6wNLfQ4BHjuQip+fE4SSjnCT0W6kA5ZDFLcNS3g0zd7DCCReFek8cjIP7OuOEcxvzChmIgU3g6YuBZcyxuK7C2mJVC+DBGHQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750141244; c=relaxed/simple;
-	bh=u3O95KE8NMjq/YtPJoQWCUtVyluWqez6mFmjxn3YSVI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MdF3604zg5AWMDBpzgwW5STwhi0nTMvOu9e2pVHF8NyWUIWYcFC9E9Od9A/JekA+083qUzhC2y+nstni0DCEM5IATU5yd9F0l8Z/WucERhiLnxLCLcY/jbsbHdQiuhIex5LPkhL0TPESu/W11SOj5kTiCY4b6IxJWpMPcymg9wI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Lhlp6DqN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 063E7C4CEF9;
-	Tue, 17 Jun 2025 06:20:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750141244;
-	bh=u3O95KE8NMjq/YtPJoQWCUtVyluWqez6mFmjxn3YSVI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Lhlp6DqNxVcVz1dCamkFKPpzu8pZRNdo1CZN3k9RSsKSDLS0BHn8DRL54JH9Da2/m
-	 nvwn6jQYCnHBg18M1P9I8nMCLGvKCEJvxTswESLpo6DTwZsvt5yDGql3TgVhc/9ksF
-	 5/l+8lvDEhj0JwTWvFAYz4PRHglvTagx/0H1tOI4haIIWmGOeNPsWa0cHm9Xo0FcJg
-	 /hG86EZPJrwQv33KmPZifburIvG0ts1b495o+7kxnf4qj8yhFZToS48+NsnG4VXKJ3
-	 TpP0cpKGUuADk0rgDZeh2Vo/htyYRDMb1jzS4Li0RcIgT6Gc+3cNqXWbAD2aPJxNZJ
-	 EZcxTZaYv5EKQ==
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-4a58f79d6e9so66528311cf.2;
-        Mon, 16 Jun 2025 23:20:43 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUnxCfVn0pZPUNEys9wQrAf0b9feLDc86L+QBe1KU7wEmbN1697qTlk6D0N0hhzpkFDGuHSN2pGaD5MAUVulg==@vger.kernel.org, AJvYcCV6BY/ep6oKYVwrhTCFEnqesoDm1babUyarMWsGCG5PRjB02VFS9ce+oasW/60/FX6P0hoUJdrcQZpdl0Y2@vger.kernel.org, AJvYcCVqJ77O2jN1W6tukGOe5AnAM24eoKuh/RnUaNhp8PP/cPdWS8OVdvPr1WK5TmPD30nDxUkmJodpEabiuahAKcbhto4JcifV@vger.kernel.org, AJvYcCWmOAGWZim5R+eKxD1BF3D4A/0dqe2RUT5LWqZhi25/EQUucWEX2zIi+s1cfviuNVcH8Hg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywxz/b0K2tfguwKQh589GqxaIdtZ8PXf9E+2141PzbeLcEinxkt
-	KSQiPToWHu1SnpVUbEY8tL/Rz2J5Wn4jUs0QNHQvic65PSHwjG81FuiNDhT3YDJQJsDjknVeR+F
-	QhyPypwsXIjIPCi+cu0nSftVWFB5IN6g=
-X-Google-Smtp-Source: AGHT+IFZ2TRPLBFHmBOZTnfR5Pb1FyA1L8NE+zM+lH2GvsQm33BUwd4NKksdhGTBuyRJIy1l1HDMxjixcrU9dVrUJJ8=
-X-Received: by 2002:a05:622a:1a24:b0:494:aa40:b0c3 with SMTP id
- d75a77b69052e-4a73c51f9b5mr161338631cf.10.1750141242988; Mon, 16 Jun 2025
- 23:20:42 -0700 (PDT)
+	s=arc-20240116; t=1750141951; c=relaxed/simple;
+	bh=MQwvrsyatOU2v9XdcxbXbe/0dPzrutKdVRXMXMclAwA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IVCfmvLiYbBTYSbqzOrvmCma39xKfshj2CYK+zOrYSeHR+3pDOXKvoBvja4zdGTSynkp7tibyj32PjD0bB9i+TqZLi2N6qCPy48qxOUZSW4inP+yLyf2dCMo8BBoTIGIHpCk8cTfBLHjNbJn6Nm9JUvmHEub0QqplUlIp0Dctcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [113.200.148.30])
+	by gateway (Coremail) with SMTP id _____8Axz3PyC1FoljUYAQ--.55626S3;
+	Tue, 17 Jun 2025 14:32:18 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+	by front1 (Coremail) with SMTP id qMiowMDx_MTnC1FoNwIeAQ--.23222S2;
+	Tue, 17 Jun 2025 14:32:10 +0800 (CST)
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>
+Cc: Hengqi Chen <hengqi.chen@gmail.com>,
+	bpf@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next] LoongArch, bpf: Set bpf_jit_bypass_spec_v1/v4()
+Date: Tue, 17 Jun 2025 14:32:06 +0800
+Message-ID: <20250617063206.24733-1-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250606213015.255134-1-song@kernel.org> <20250606213015.255134-2-song@kernel.org>
- <174959847640.608730.1496017556661353963@noble.neil.brown.name>
- <CAPhsuW6oet8_LbL+6mVi7Lc4U_8i7O-PN5F1zOm5esV52sBu0A@mail.gmail.com>
- <20250611.Bee1Iohoh4We@digikod.net> <CAPhsuW6jZxRBEgz00KV4SasiMhBGyMHoP5dMktoyCOeMbJwmgg@mail.gmail.com>
- <e7115b18-84fc-4e8f-afdb-0d3d3e574497@maowtm.org> <CAPhsuW4LfhtVCe8Kym4qM6s-7n5rRMY-bBkhwoWU7SPGQdk=bw@mail.gmail.com>
- <csh2jbt5gythdlqps7b4jgizfeww6siuu7de5ftr6ygpnta6bd@umja7wbmnw7j>
- <zlpjk36aplguzvc2feyu4j5levmbxlzwvrn3bo5jpsc5vjztm2@io27pkd44pow>
- <20250612-erraten-bepacken-42675dfcfa82@brauner> <afe77383-fe56-4029-848e-1401e3297139@maowtm.org>
-In-Reply-To: <afe77383-fe56-4029-848e-1401e3297139@maowtm.org>
-From: Song Liu <song@kernel.org>
-Date: Mon, 16 Jun 2025 23:20:30 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW735dqFzHyVnZXOX3AVRtuVZ5QPCvss+DkHCWB7wHkw1A@mail.gmail.com>
-X-Gm-Features: AX0GCFvvMXRiZXydmA5bWHytCJnIjryEUzvxUctPeTuiH78KsqQ-oZiOBzDBAJ4
-Message-ID: <CAPhsuW735dqFzHyVnZXOX3AVRtuVZ5QPCvss+DkHCWB7wHkw1A@mail.gmail.com>
-Subject: Re: Ref-less parent walk from Landlock (was: Re: [PATCH v3 bpf-next
- 1/5] namei: Introduce new helper function path_walk_parent())
-To: Tingmao Wang <m@maowtm.org>
-Cc: Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
-	NeilBrown <neil@brown.name>, bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, viro@zeniv.linux.org.uk, 
-	kpsingh@kernel.org, mattbobrowski@google.com, amir73il@gmail.com, 
-	repnop@google.com, jlayton@kernel.org, josef@toxicpanda.com, 
-	gnoack@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:qMiowMDx_MTnC1FoNwIeAQ--.23222S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoWrKF4kCrW8ury7AF1DtFWkGrX_yoW8JF17pr
+	W2kFnxArs8Xwn7JF43tayrZFW5JF1kGFy7WF129a4Fk3ZxX3WxXr1xK3s8GF4Yyr15XFy8
+	Wr95C34a9FykAagCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v2
+	6F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc
+	02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAF
+	wI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7V
+	AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
+	r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6x
+	IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAI
+	w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
+	0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxU7_MaUUUUU
 
-On Sun, Jun 15, 2025 at 5:24=E2=80=AFPM Tingmao Wang <m@maowtm.org> wrote:
-[...]
-> >
-> > I would not want it in the first place. But I have a deep seated
-> > aversion to exposing two different variants.
->
-> Hi Christian, Jan, Song,
->
-> I do appreciate your thoughts here and thanks for taking the time to
-> explain.  I just have some specific points which I would like you to
-> consider:
->
-> Taking a step back, maybe the specific designs need a bit more thought,
-> but are you at all open to the idea of letting other subsystems take
-> advantage of a rcu-based parent walk?
+JITs can set bpf_jit_bypass_spec_v1/v4() if they want the verifier
+to skip analysis/patching for the respective vulnerability, it is
+safe to set both bpf_jit_bypass_spec_v1/v4(), because there is no
+speculation barrier instruction for LoongArch.
 
-I cannot really speak for VFS folks, but I guess rcu-based parent walk
-out of fs/ is not preferred.
+Suggested-by: Luis Gerhorst <luis.gerhorst@fau.de>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
 
-> Testing shows that for specific
-> cases of a deep directory hierarchy the speedup (for time in Landlock) ca=
-n
-> be almost 60%, and still very significant for the average case. [1]
-[...]
-> I'm happy to wait till Song's current patch is finished before continuing
-> this, but if there is strong objection to two separate APIs, I would
-> really appreciate if we can end up in a state where further change to
-> implement this is possible.
+This is based on the latest bpf-next tree which contains the
+prototype and caller for bpf_jit_bypass_spec_v1/v4().
 
-In v5, path_walk_parent API is not exported. We can easily change it
-in the future. Therefore, I don't think we need to rush into a rcu-walk
-design before landing path_walk_parent.
+By the way, it needs to update bpf-next tree before building
+on LoongArch:
 
-Thanks,
-Song
+[Build Error Report] Implicit Function declaration for bpf-next tree
+https://lore.kernel.org/bpf/d602ae87-8bed-1633-d5b6-41c5bd8bbcdc@loongson.cn/
 
-[...]
+ arch/loongarch/net/bpf_jit.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
+index fa1500d4aa3e..5de8f4c44700 100644
+--- a/arch/loongarch/net/bpf_jit.c
++++ b/arch/loongarch/net/bpf_jit.c
+@@ -1359,3 +1359,13 @@ bool bpf_jit_supports_subprog_tailcalls(void)
+ {
+ 	return true;
+ }
++
++bool bpf_jit_bypass_spec_v1(void)
++{
++	return true;
++}
++
++bool bpf_jit_bypass_spec_v4(void)
++{
++	return true;
++}
+-- 
+2.42.0
+
 
