@@ -1,91 +1,117 @@
-Return-Path: <bpf+bounces-60857-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60858-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAE78ADDE46
-	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 23:54:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5C3AADDE81
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 00:09:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C421166C4C
-	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 21:54:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45C691895D78
+	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 22:10:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EE23290D9E;
-	Tue, 17 Jun 2025 21:53:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38F8729293F;
+	Tue, 17 Jun 2025 22:09:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="uafN8n/s"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="D9/lvRGQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B8B92F5302;
-	Tue, 17 Jun 2025 21:53:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69BA4169AE6
+	for <bpf@vger.kernel.org>; Tue, 17 Jun 2025 22:09:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750197238; cv=none; b=Ke6Er8B0TVBDMqpyiPyWd/bCfZAsWVEF6mP1SbW8RF1OsqpeE6rc2Cfieqcc8wL8MeQxH914ai10LIQVRoYAoVeQFQKiS/vlqskB0CellxWohaCAP3X4h0YuHUuUpE+Ouro3xM5dEIwrKwYwP1VjDPgb/WShEyEwl5AhvOqy8Rs=
+	t=1750198192; cv=none; b=ur+2fgQjMHfz7sxRc7cLeOWAQR4xy9/s2wm4NYARsIdRHEHyrz8P6lQ7Y6os9PdipXE5f2H9FQnYXJZIGhUfLQqARdGJl4VU5gb4F5FcwTuT9WD4Hy9qA0jYnkjOGjUHUqABVJY6nTNdoqQCuzkhXW30Ynnsyy1ia8jctVlUF1A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750197238; c=relaxed/simple;
-	bh=PtLj67abZ/KpL9Q3IuYBJ2w7BRwkhJvJp6IyhNrFUDQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QA/dgWudTKwF6jWy6n4AJYHbIrYCIOGT5N1QmGYsJDExZpkUVlOtnCQUlF7IsPXOQ5Itx6uyQFv7uuiDEZOnqROAXldMLj55FQ3p29z63ijgFoG9Ebndzc/AekDW1iEwn5ideK1/0ba4ZzLkWBNAoCdqZb7R4E2mjuyxGBAsJV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=uafN8n/s; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
-	bh=X9nuhrnuhTJv89xV+YDRP7ivaD79L39PJPrFNaVU358=; b=uafN8n/sx5ZNoR23yFmryBANkf
-	vUqhQCF/ySFd4A8Kk033nLTALmJVSKaG4FhWxEgvbKyGoYPCl0hfq4ZPrGt1ifbnS68J+vI36/fEw
-	ACNYIjn5zQaFLx+WN/L9e61l8tM+a5J2HXr349dh/MRpE5LvvdwVt5oid5ZkFeCtHVRy6kQh2ySg3
-	U5GuItB9sWJncIdj7fsevcy8nTnRhO/rUSNfrihnWEKNxzvhxIKwMG6gVByftBcYez65Ij0cmEfWh
-	JRjooHrMc+befh2a0DmatA17FLxKHXiJpiUHPGHCfkUlttuLnL5RHfGAh2z6yV562I8sExabpTUK4
-	h/RZ55AA==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uReFd-00000001L6l-3jKq;
-	Tue, 17 Jun 2025 21:53:54 +0000
-Date: Tue, 17 Jun 2025 22:53:53 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-	Christian Brauner <brauner@kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [bpf_iter] get rid of redundant 3rd argument of
- prepare_seq_file()
-Message-ID: <20250617215353.GL1880847@ZenIV>
-References: <20250615003011.GD1880847@ZenIV>
- <20250615003110.GA3011112@ZenIV>
- <20250615003216.GB3011112@ZenIV>
- <20250615003321.GC3011112@ZenIV>
- <20250615003507.GD3011112@ZenIV>
- <20250615004719.GE3011112@ZenIV>
- <CAADnVQLB3viNyMzndwZbfZrpwLNAMcVE+ffwWPqEt5YVa3QaVA@mail.gmail.com>
+	s=arc-20240116; t=1750198192; c=relaxed/simple;
+	bh=md5ltiwqeUfrAI/H1uP9NmLu2Y+ryVbLw3ocw5PnKmQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=M+8vG3b5i0ZAoushaKATcOtxkhiVq8x7Yx3nss5h2Fjiqj4vP0MPE3LpnfNmO0waGVpHz78vb1VWbuwRJF4/coAxVSOALcfnhSOwk0HxxUDkxNT/hLAKpZZH8fYatz7MoP3SjJUjKyKHmf7AEjZhETSTlQbJOAVM0E4ViQoM0Ng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=D9/lvRGQ; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <88cdbd9d-e0cf-443d-b3a2-28aa7e5d896c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1750198188;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TsMXzQXhQLFm9pTr9bci1vqfLwP8c5etCiCzRZNSYFA=;
+	b=D9/lvRGQYvSGw9GZtzyiUks0WuYvCOf1rTo9QFmCK3/HTnXQLq7v3aA/Ox4CjEi7cXHxZv
+	+9ip72z53WxGSBJKA/Boa6E9e+3L0hYs+umZG7aq+8j1xamW3xqyDJ2e55HmGuT423wfML
+	y/Pj61rjT9tqGdTHRaOhChlC1pIxz2Q=
+Date: Tue, 17 Jun 2025 15:09:42 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix RELEASE build failure with
+ gcc14
+Content-Language: en-GB
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
+References: <20250617044956.2686668-1-yonghong.song@linux.dev>
+ <CAADnVQKiTOst_qaN2azvg9JXqQPJ8SqE7LMPTWve6Omo=ZhLNw@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAADnVQKiTOst_qaN2azvg9JXqQPJ8SqE7LMPTWve6Omo=ZhLNw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQLB3viNyMzndwZbfZrpwLNAMcVE+ffwWPqEt5YVa3QaVA@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Jun 17, 2025 at 10:31:37AM -0700, Alexei Starovoitov wrote:
-> On Sat, Jun 14, 2025 at 5:47 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
-> >
-> > [don't really care which tree that goes through; right now it's
-> > in viro/vfs.git #work.misc, but if somebody prefers to grab it
-> > through a different tree, just say so]
-> > always equal to __get_seq_info(2nd argument)
-> 
-> We'll take it through bpf-next,
-> but it needs a proper commit log that explains the motivation.
-> Just to clean up the code a bit ?
-> or something else?
 
-Umm...  It had been sitting around for a couple of years, but IIRC
-that was from doing data flow analysis for bpf_iter_seq_info.
-I really don't remember details of that code audit, so just chalk
-it up to cleaning the code up a bit.
+
+On 6/17/25 10:24 AM, Alexei Starovoitov wrote:
+> On Mon, Jun 16, 2025 at 9:50 PM Yonghong Song <yonghong.song@linux.dev> wrote:
+>> With gcc14, when building with RELEASE=1, I hit four below compilation
+>> failure:
+>>
+>> Error 1:
+>>    In file included from test_loader.c:6:
+>>    test_loader.c: In function ‘run_subtest’: test_progs.h:194:17:
+>>        error: ‘retval’ may be used uninitialized in this function
+>>     [-Werror=maybe-uninitialized]
+>>      194 |                 fprintf(stdout, ##format);           \
+>>          |                 ^~~~~~~
+>>    test_loader.c:958:13: note: ‘retval’ was declared here
+>>      958 |         int retval, err, i;
+>>          |             ^~~~~~
+>>
+>>    The uninitialized var 'retval' actaully could cause incorrect result.
+> actually
+>
+>> Error 2:
+>>    In function ‘test_fd_array_cnt’:
+>>    prog_tests/fd_array.c:71:14: error: ‘btf_id’ may be used uninitialized in this
+>>        function [-Werror=maybe-uninitialized]
+>>       71 |         fd = bpf_btf_get_fd_by_id(id);
+>>          |              ^~~~~~~~~~~~~~~~~~~~~~~~
+>>    prog_tests/fd_array.c:302:15: note: ‘btf_id’ was declared here
+>>      302 |         __u32 btf_id;
+>>          |               ^~~~~~
+>>
+>>    Changing ASSERT_GE to ASSERT_EQ can fix the compilation error. Otherwise,
+>>    there is no functionality change.
+>>
+>> Error 3:
+>>    prog_tests/tailcalls.c: In function ‘test_tailcall_hierarchy_count’:
+>>    prog_tests/tailcalls.c:1402:23: error: ‘fentry_data_fd’ may be used uninitialized
+>>        in this function [-Werror=maybe-uninitialized]
+>>       1402 |                 err = bpf_map_lookup_elem(fentry_data_fd, &i, &val);
+>>            |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>
+>>    The code is correct. The change intends to slient gcc errors.
+> to silence.
+>
+> Fixed the typos while applying.
+> Pls use spell check.
+
+Sorry about typo's. Will pay attention to spell check for later patches.
+
 
