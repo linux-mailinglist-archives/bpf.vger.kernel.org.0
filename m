@@ -1,102 +1,121 @@
-Return-Path: <bpf+bounces-60782-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60783-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0A4BADBDE9
-	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 02:05:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D8CCADBE11
+	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 02:22:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0E907A7D63
-	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 00:03:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73F543B7E03
+	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 00:22:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBE04749C;
-	Tue, 17 Jun 2025 00:05:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC4C9139579;
+	Tue, 17 Jun 2025 00:22:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fO258oFN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HkDCiaPT"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E4F91862
-	for <bpf@vger.kernel.org>; Tue, 17 Jun 2025 00:05:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94188632;
+	Tue, 17 Jun 2025 00:22:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750118707; cv=none; b=itzsJsazBWxmbwiMba2j1fGdNlVVZ/oEGWPISZmr4a06noA90jYsJXcrAoPKPMVGNXUBvo8gROd5fajuGGQidZ/K13FVnftv2sSMUDNitGJiF1qSgHfNyoLgqsQTZRcR6x+0zLnGMzl8fTU86uXAprF6oQaUzWPr1mz2CH+Ng7Q=
+	t=1750119766; cv=none; b=sn+fDCSIsr4S2mrIM/GBFoBq3CYeat3GkDy37enLdEvqmL03QPibSe3JhHUZsrwnrhOs5X8QGiVcl3ts0ILMF8IooJ0u8gbSTN6Zhrnotz3dJ9iBctHz30Z8yj6pNNykcWJ7vuNWbvCI7Kbk8sHmavlODBD9e2B+LZ46ChCZLjA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750118707; c=relaxed/simple;
-	bh=mXeRxE4mNKkb2mbB2IETi4Z4PPYEcmCGyzcdrGEoiWU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rXJcwrCU+19/NCD9D2TYBIs5e+bHOKG+OvO+rJmhuodOA4cXIXsxNuNdx/dgvPrkMd19cq+gOqL4kdqGmE+FVSGZbGTLs8DXPCuEtuB1sNvdsZbnFe+tdGwcqmgUcdJ8OQX5JD8gQ0JXiFMGaHReXodY+JPXp0dQUVoo6mN1qPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fO258oFN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3340AC4CEEA
-	for <bpf@vger.kernel.org>; Tue, 17 Jun 2025 00:05:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750118707;
-	bh=mXeRxE4mNKkb2mbB2IETi4Z4PPYEcmCGyzcdrGEoiWU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=fO258oFNW3Qt9qmfdL29Ax/p//NPM4I8z7tNya0TlDATgaf0CX6GJ3hRycckc43bH
-	 kdASmcwbO/WInflp9qiL3JB/CjZMzSbDWxRsWJ8L5LxC1v3qQzT0g4EiVqgToegJb8
-	 7FUaqnzQxS6CMZZ98yGLQSFynamfv9MiUQQOE5MsiaVd2VdXfxpU1SEwAcUsoEn5R7
-	 QW81iG4XvUNgkKdZFf1vf01P/m4HthdFx3eYYHbE6m0nTn7j19uu71MstfivjrLYgq
-	 +gJzju0l7Wr+Y4I7MSuLf6yAQNCKyc/mkzmlitXsbCGvti4pmn+74+a5SAreJRl0sE
-	 CE1aNephdeW2w==
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-60702d77c60so10816266a12.3
-        for <bpf@vger.kernel.org>; Mon, 16 Jun 2025 17:05:07 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yz/bZ6c05O+mWFHrAsZJ6IKRlZSDhpLDhRId63TymrzbNw8xihz
-	M3Cq4dTXkG8krZOG6PrsoHy2+1Sfpp6VUo4JFUXVZkmsMMslcCeJfHA1Z2Rm83k22/F31Yd4gYd
-	ONrJJTCBigQPIC1G95s6QV6RgrvWP2dOZwYTzKkG5
-X-Google-Smtp-Source: AGHT+IFwyMlRsWMMOKi2pk5SCfeoUUEP8ljPneEYIp/jKlMgC3WGTP+bhK1z4QTezR16kNA45NimK4eHZvFHlePinnY=
-X-Received: by 2002:a05:6402:3510:b0:606:b4de:f72c with SMTP id
- 4fb4d7f45d1cf-608d00a2284mr10376391a12.0.1750118705755; Mon, 16 Jun 2025
- 17:05:05 -0700 (PDT)
+	s=arc-20240116; t=1750119766; c=relaxed/simple;
+	bh=ifiLdSFjQX7kMyQsUwUgAzWnIbStH9hCdkGLsh+DO9c=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pL5m4KIvIAftZm18WPyGXiKfZyZaZujVU80pUZ6kpu5Zm7BsVYxoMPg+qN4AdgkvHuiuIS+hgZyL8gjVwfVPVL4CDK3iJ0BItR05koLRlbEXakbLNL1fbGx+QAf1fGGseE77o/FOOZRk4yHwI3RJ6ZYMHu+JUWAR2YANODnTq9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HkDCiaPT; arc=none smtp.client-ip=209.85.215.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-b2fd091f826so3701134a12.1;
+        Mon, 16 Jun 2025 17:22:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1750119764; x=1750724564; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zBcG1Lt3BIKP4gpzl4o9hJZrLstu7vqeFH0eF9H4TZo=;
+        b=HkDCiaPTY9ZjJ6PP4bQiPcZGQtVUIPh2eFjE5FV8yeAgpc07CE3J0PC9Ji/byPDCte
+         FsYU8v2AnfwoC/bd0nanU5vcEhX9GeaEtPzQQDfeOAFNY+fWZu6Go/+jXSXS+zBXcJ5X
+         AA2phW9mTj1K+MumhuwMxKW2N+amOBfOpDVM/thUwdrUjsC47f7nOsN85YfsZF1aImpE
+         I4VGLj1vrwoxVEGZoL+Yv8gXYVziO2Bueq3R4L0BN/jC0PG5I/ce7DVDSns4l/2a146Q
+         CtXoySm3sXSMuUKScF7nNzlpJ2EZItnbuVv+MXPtEv9aT3Jzp/6CXstePPLA3HXjfeUA
+         JbMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750119764; x=1750724564;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zBcG1Lt3BIKP4gpzl4o9hJZrLstu7vqeFH0eF9H4TZo=;
+        b=RuhaIIxxAP1gkTPakR7qPY089NCzLSXr9Ri++MK9hQo0pXHK4UjFgXmAiputK6Tvhk
+         WuIBQqImL2xnRaZzP3OtvBPdSO9vjF47BAXY2LioZd1U+yrCcEW8lfejGkkqsPB4eYdD
+         5KxjGAQm1QzQJgHE4mXUryWdUKjPpMqVCMst9i9XJ4ms/oTBkiD5gb6baVOLsjO7bhZz
+         prVsUD6cBwtX2PhxFk7BuPUSE55RjYhFyVL2iAEiQ2Ox7tRRAX2jVk4ifZT7VcihWkQr
+         pSonmUgzWu6vLC0qZn9mLB2zJUSiOcptjHf1/B0BxCP4QIlWRgrEHxnHejH4mYoX+zJ0
+         Vorw==
+X-Forwarded-Encrypted: i=1; AJvYcCVyUl1s3Z/716I2gIl1TpcDHQN+k23nv8YZWrfHwnHrxjug5JQSADS0im7ykfAcGzZnecfoWjs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyTP4/UXriqep+AYOCcU4b2+TsxFYQVhSfkzmeudcqg9YR/tWjR
+	6d6ztyvbmslCpfHymRdpFg9Gbg/w8c/KegR7YgoA2//rbxw5jKTyIfjQ
+X-Gm-Gg: ASbGncu7CUPwwAohHAhnWkp7dVhuSDSDvPupRl8obAvseHelUPDv2dLVsI9HHwg7xPf
+	KWH6vcL1xuzcyaMxB3P2/PW97Fl6viUcJxobAVYfV2TFbj7ZbDK6kcNmJiGixfLX2iAi/ceGrMe
+	JGS/CL0yQ10wvjiSZk3dtlQ2LmyALZLUHwpK3Dc0NFLdbz68Po/El7TEb3Zdn25+wLaSkzi5tP/
+	tvH1+uXps+aN0y6zaEPBiwICIIpXuQ1gy129l3WRqpKHiZsEjDnWHpZJj1dJXn28DXUS8/gjbn1
+	hDmGiGVISLzT8ok/47SsR8Hp55+3jO1zocgE0etKt1i/oh59Yy/yQLOKD84u8hryo6RL5r1tGNy
+	k7nRT1SC7WgHspewNvXJo2cCI
+X-Google-Smtp-Source: AGHT+IEAX6q6gUqRgz/XTf3j9LFKw9EdjMGao1J8jOiJcseh4OzFo4qy/hdYy4DRwjwmyWWeVCZEtQ==
+X-Received: by 2002:a05:6a21:3294:b0:1f3:26ae:7792 with SMTP id adf61e73a8af0-21fbc7e6c47mr15909987637.18.1750119763742;
+        Mon, 16 Jun 2025 17:22:43 -0700 (PDT)
+Received: from KERNELXING-MC1.tencent.com ([111.201.27.248])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-748900d252esm7488606b3a.163.2025.06.16.17.22.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Jun 2025 17:22:43 -0700 (PDT)
+From: Jason Xing <kerneljasonxing@gmail.com>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	bjorn@kernel.org,
+	magnus.karlsson@intel.com,
+	maciej.fijalkowski@intel.com,
+	jonathan.lemon@gmail.com,
+	sdf@fomichev.me,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	hawk@kernel.org,
+	john.fastabend@gmail.com
+Cc: bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	Jason Xing <kernelxing@tencent.com>
+Subject: [PATCH net-next 0/2] net: xsk: add two sysctl knobs
+Date: Tue, 17 Jun 2025 08:22:34 +0800
+Message-Id: <20250617002236.30557-1-kerneljasonxing@gmail.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250606232914.317094-1-kpsingh@kernel.org> <20250606232914.317094-2-kpsingh@kernel.org>
- <20250612190739.GC1283@sol> <CACYkzJ5NbpTjwtWKx6ehqy7wyENovcFQVQqjO0-m9XoAJP=-nw@mail.gmail.com>
- <20250616234857.GC23807@google.com>
-In-Reply-To: <20250616234857.GC23807@google.com>
-From: KP Singh <kpsingh@kernel.org>
-Date: Tue, 17 Jun 2025 02:04:55 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ6iHaZBuFiio=D2UZ1k=V2WwpyTVENKyPWKHXa5TwJ-Tg@mail.gmail.com>
-X-Gm-Features: AX0GCFuOabgyDuZYIq3akoSA2CTYDCw1HjWxiwIBR9v3x0Md5VapURLDMhJejmE
-Message-ID: <CACYkzJ6iHaZBuFiio=D2UZ1k=V2WwpyTVENKyPWKHXa5TwJ-Tg@mail.gmail.com>
-Subject: Re: [PATCH 01/12] bpf: Implement an internal helper for SHA256 hashing
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: bpf@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	bboscaccy@linux.microsoft.com, paul@paul-moore.com, kys@microsoft.com, 
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jun 17, 2025 at 1:49=E2=80=AFAM Eric Biggers <ebiggers@kernel.org> =
-wrote:
->
-> On Tue, Jun 17, 2025 at 01:40:22AM +0200, KP Singh wrote:
-> > On Thu, Jun 12, 2025 at 9:08=E2=80=AFPM Eric Biggers <ebiggers@kernel.o=
-rg> wrote:
-> > >
-> > [...]
-> > >
-> > > You're looking for sha256() from <crypto/sha2.h>.  Just use that inst=
-ead.
-> >
-> > I did look at it but my understanding is that it will always use the
-> > non-accelerated version and in theory the program can be megabytes in
-> > size, so might be worth using the accelerated crypto API. What do you
-> > think?
-> >
->
-> I fixed that in 6.16.  sha256() gives you the accelerated version now.
+From: Jason Xing <kernelxing@tencent.com>
 
-This is awesome, I will drop this patch.
+Introduce a control method in the xsk path to let users have the chance
+to tune it manually.
 
-- KP
+Jason Xing (2):
+  net: xsk: make MAX_PER_SOCKET_BUDGET tunable
+  net: xsk: make xsk_tx_batch_size tunable
 
->
-> - Eric
+ include/net/hotdata.h      |  2 ++
+ net/core/hotdata.c         |  4 +++-
+ net/core/sysctl_net_core.c | 15 +++++++++++++++
+ net/xdp/xsk.c              | 10 +++++-----
+ 4 files changed, 25 insertions(+), 6 deletions(-)
+
+-- 
+2.43.5
+
 
