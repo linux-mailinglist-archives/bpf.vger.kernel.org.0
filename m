@@ -1,102 +1,63 @@
-Return-Path: <bpf+bounces-60838-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60839-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 323F8ADDC1F
-	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 21:17:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF6BEADDC84
+	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 21:39:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DE8F175022
-	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 19:17:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EBB017A6D0
+	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 19:39:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE5E725A334;
-	Tue, 17 Jun 2025 19:17:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1E882E719A;
+	Tue, 17 Jun 2025 19:39:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dama-to.20230601.gappssmtp.com header.i=@dama-to.20230601.gappssmtp.com header.b="f24dP1a6"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nNiMjqme"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6E6D215073
-	for <bpf@vger.kernel.org>; Tue, 17 Jun 2025 19:17:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C11EA28D8C4
+	for <bpf@vger.kernel.org>; Tue, 17 Jun 2025 19:39:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750187866; cv=none; b=eUmf6pXFzpe47alqyu34nyLtOdmhuORxMfyGTYH7SSQm3Z6a0uLS+OcBKHT5/TCq/ltRT1hxuIQ7XY3B88+ZP6kNZDrSRKUcSGtAvfJF0zZlf2uOHzCtZ+tgxvqM6jBDJ2sOQZR8d7O9toQzevCmCwDHGCcceptawIlXDgrKPus=
+	t=1750189149; cv=none; b=NLFPvMhmAOd0dBx5hKvzECTL+I2UrDA28pDAUesnNO7ruThFkfXqLH8+pG9b1mue4qqd2SyifS+iuaOFAlYV0IteweWA4zk0FVHSCXqhT9vNhRiZ8u5htVIvTUi38mn2TCI0h5bdUjTBj6y/6TJPgwIdD5FaLfC3XwIDPDvX5DI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750187866; c=relaxed/simple;
-	bh=1bP6rJEA8wFohueF5jqDh/zAC0rZ53XrMgdF+00Sxw8=;
+	s=arc-20240116; t=1750189149; c=relaxed/simple;
+	bh=T6/GPJUaE5MWO1xJYkdWZ+ZjWpepTkI5T3JAT7p2KUw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CVSz6Cu6sqlFdoUkh6Pf+qIqqnUiUr3BUu1MhvsX1qH7q7E4RFRp097iNNnbLD8LPikcQDL/Y/deqzyISf4vJ92ug/S+qS3ul2tcMGKm85XKXDFU8BIq910En3EWqlIjrSheIkXADHKpwLzQpKigaeQsHhO2OHPI7TxFNETkEqg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dama.to; spf=none smtp.mailfrom=dama.to; dkim=pass (2048-bit key) header.d=dama-to.20230601.gappssmtp.com header.i=@dama-to.20230601.gappssmtp.com header.b=f24dP1a6; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dama.to
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=dama.to
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-452f9735424so20389715e9.3
-        for <bpf@vger.kernel.org>; Tue, 17 Jun 2025 12:17:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dama-to.20230601.gappssmtp.com; s=20230601; t=1750187863; x=1750792663; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uvfQMwCx3aaFLH1gBYzFPVa5Y0KFbLLTPkKAtJ7FGcM=;
-        b=f24dP1a6dfCFYcJJz9zsm/qxBai4Kp/6CWp1u6yb5AR3BJAqSBmKihBlsObpDAmyBK
-         rH2EN970kST+6qFYVH8eSayc1z9Tu8gTR0nDMFCD5iZLQHxwwpHRcn546psZp1H3PDL/
-         TsfRJgvSN+Kwgpekvg0HzFVmFjshdTGkU9Czhgs6HpcL21QH95DKcRfVxIYaPc0vFbLi
-         2l7WhVpoNH6weLKZwwURN9Ixny85r4mYVs0p13tGQDQkBuNosxIkSCkj9bFuWWVqx5+l
-         2i0SqJKu51oGLHO+Kfx+V6NjhIu3nUeTdG4k6e10E6W1YVwqpP14fcGRTqeK2MO5EFWc
-         zKfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750187863; x=1750792663;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uvfQMwCx3aaFLH1gBYzFPVa5Y0KFbLLTPkKAtJ7FGcM=;
-        b=KaqsmukCxRdkUxISaUCKaNQNlZvV4hPfB+9I5L4vvZZRjyTuro8xEdt/hE2GshQAPE
-         5o2coPtUEyitLPS6Yd9blH6f2B7oH5skDyv/8EiimijRMB/yfCrKw6RRzPpBerXbz5YD
-         QpvGiC+S3Sq4KCU6wJpxI6JcG6te+vNZwUSrjhFGU5vEgiNL7RQCSXp6NsVb37yIzvPr
-         7f2tuuQ7DLziIPjAVpuWIVPdPHoCXLP1taFr1X4uki+IA+nEVRxwJexSSctqhrNq54kl
-         wykYIcTIqE7MLK28v0zKZJVrcqJDrQ8Igor8Xj4MbKMilOpfcZcin0AgbjCd7khbmOkv
-         sTVA==
-X-Forwarded-Encrypted: i=1; AJvYcCV3tKnzs6Uq7C2ad8XJK3BS0oJM0rq5CA9Cjn7djBFXQxhDS29MRoGucefBkpbV4qSaV5g=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw5jeZOA8S7uHnY1wtX/W6EaK4a43Z9jeZybjLySZ+J8UmF6MpI
-	HauF9xdA/TfW+TPAX7NL8crhGLZmO10K1DFDCh8oZ1/jMfR4qSRttdtfiKyoLq41pQI=
-X-Gm-Gg: ASbGncvgg1M3nl/bp+44A0ofDB5CJmg0xqaZ2Gc9Ay6FrSQPJ+8Y6P8LYjz49qknH65
-	DXSczfF19BWpjApv9aKhD7j+ptiYosDEKMhBMe9qptjBPiH0jkAjM9K5UTkZG3x9sdIv96OI3+a
-	k5l8bQSQg/GJTpTZclriH/7XbRrvEbes1202pV0h80aWz2kgtMVd/vnKuEbumOpw85Fha4Y2pWv
-	w/EwwYteuvb4ADdr5VBNUZLCROvg32slp5yOwxERTyRYZ2Z54puVn+ORrNcrkc824IHsGE4u+ug
-	8vzpu62CB2e2T5Gqf92WY/jfMMs3tJuujt+V9skQItrrs5240190IQaK9J07XAcFU2U=
-X-Google-Smtp-Source: AGHT+IH6QEm50PmO7DOXT3ObwZddoTuvRG1KMDkLrrDO70vSNhxTbXEd9HYKRQhDrOpboEzGDHDmKw==
-X-Received: by 2002:a05:600c:1f10:b0:442:e0f9:394d with SMTP id 5b1f17b1804b1-453560d2fe9mr22881915e9.24.1750187862956;
-        Tue, 17 Jun 2025 12:17:42 -0700 (PDT)
-Received: from MacBook-Air.local ([5.100.243.24])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4532dea1925sm188221825e9.12.2025.06.17.12.17.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Jun 2025 12:17:42 -0700 (PDT)
-Date: Tue, 17 Jun 2025 22:17:39 +0300
-From: Joe Damato <joe@dama.to>
-To: Stanislav Fomichev <stfomichev@gmail.com>
-Cc: Jason Xing <kerneljasonxing@gmail.com>, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	bjorn@kernel.org, magnus.karlsson@intel.com,
-	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
-	sdf@fomichev.me, ast@kernel.org, daniel@iogearbox.net,
-	hawk@kernel.org, john.fastabend@gmail.com, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
-Subject: Re: [PATCH net-next 0/2] net: xsk: add two sysctl knobs
-Message-ID: <aFG_U2lGIPWTDp1E@MacBook-Air.local>
-Mail-Followup-To: Joe Damato <joe@dama.to>,
-	Stanislav Fomichev <stfomichev@gmail.com>,
-	Jason Xing <kerneljasonxing@gmail.com>, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	bjorn@kernel.org, magnus.karlsson@intel.com,
-	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
-	sdf@fomichev.me, ast@kernel.org, daniel@iogearbox.net,
-	hawk@kernel.org, john.fastabend@gmail.com, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
-References: <20250617002236.30557-1-kerneljasonxing@gmail.com>
- <aFDAwydw5HrCXAjd@mini-arch>
- <CAL+tcoDYiwH8nz5u=sUiYucJL+VkGx4M50q9Lc2jsPPupZ2bFg@mail.gmail.com>
- <aFGp8tXaL7NCORhk@mini-arch>
+	 Content-Type:Content-Disposition:In-Reply-To; b=dLIRVz0iQZWf+4WRz3KDHIvcXKfzz1ckC42LLfwz5yfuacx/TPZsVnUm0Ft2IAzUIOCj1tpyxSqMi5+kgtfvh5uk60e/7uAOzbwQ94afdnhGtCiZwZn60zXEufrkC5N0QaxobmZ1NNXW4vLQhPHpYWsUhl3X8F62Z1Q9t+sX+Lo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nNiMjqme; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Tue, 17 Jun 2025 12:38:49 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1750189135;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4glMiMkHgRFcU3DsIIfl2zw2C365sdHCF6BOHGpWlxw=;
+	b=nNiMjqmeytdSt1NSBO5GH+jC1MrgK7NYBOn2uyEclOXBjXHdzP25+sRv/P2PRE5rEyZ2q0
+	iGPJUFqtq+6LpgyKNtZXmdoJu8jXYcuvKcVSdzMuZjVtwwSxZyKhXth4/55VePAC7lo1MI
+	TSu8dvgo7qJow0bSx72Tg6xP6XI1jZY=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Tejun Heo <tj@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	JP Kobryn <inwardvessel@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Vlastimil Babka <vbabka@suse.cz>, 
+	Alexei Starovoitov <ast@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
+	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, Harry Yoo <harry.yoo@oracle.com>, 
+	Yosry Ahmed <yosry.ahmed@linux.dev>, bpf@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>
+Subject: Re: [PATCH v2 0/4] cgroup: nmi safe css_rstat_updated
+Message-ID: <rnbk6cnvkvpdaei7zhtgcmzw3cbokmbgt6qnorf5cpey5ievlq@yffgq4oslnvv>
+References: <20250611221532.2513772-1-shakeel.butt@linux.dev>
+ <aFBfNRVAyE1FU9aQ@slm.duckdns.org>
+ <qtudjvrdvbsz6rrygb5bt32dzps6ocwefhr5hyfgtam65jowdo@colgnna6ogqm>
+ <aFG8mZOOwl9s5ySm@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -105,24 +66,31 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aFGp8tXaL7NCORhk@mini-arch>
+In-Reply-To: <aFG8mZOOwl9s5ySm@slm.duckdns.org>
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Jun 17, 2025 at 10:46:26AM -0700, Stanislav Fomichev wrote:
-> On 06/17, Jason Xing wrote:
-
-> > >
-> > > Also, can we put these settings into the socket instead of (global/ns)
-> > > sysctl?
+On Tue, Jun 17, 2025 at 09:06:01AM -1000, Tejun Heo wrote:
+> On Mon, Jun 16, 2025 at 12:20:28PM -0700, Shakeel Butt wrote:
+> > On Mon, Jun 16, 2025 at 08:15:17AM -1000, Tejun Heo wrote:
+> > > Hello,
+> > > 
+> > > On Wed, Jun 11, 2025 at 03:15:28PM -0700, Shakeel Butt wrote:
+> > > > Shakeel Butt (4):
+> > > >   cgroup: support to enable nmi-safe css_rstat_updated
+> > > >   cgroup: make css_rstat_updated nmi safe
+> > > >   cgroup: remove per-cpu per-subsystem locks
+> > > >   memcg: cgroup: call css_rstat_updated irrespective of in_nmi()
+> > > 
+> > > The patches look good to me. How should it be routed? Should I take all
+> > > four, just the first three or would it better to route all through -mm?
+> > > 
 > > 
-> > As to MAX_PER_SOCKET_BUDGET, it seems not easy to get its
-> > corresponding netns? I have no strong opinion on this point for now.
+> > I would like all four to be together and since most of the code is in
+> > cgroup, cgroup tree makes more sense unless Andrew has different
+> > opinion.
 > 
-> I'm suggesting something along these lines (see below). And then add
-> some way to configure it (plus, obviously, set the default value
-> on init). 
+> Okay, I'll route them through cgroup. The patches don't apply cleanly on
+> cgroup/for-6.17. Can you please send a refreshed set?
 
-+1 from me on making this per-socket instead of global with sysfs.
-
-I feel like the direction networking has taken lately (netdev-genl, for
-example) is to make things more granular instead of global.
+Yup, I will do asap.
 
