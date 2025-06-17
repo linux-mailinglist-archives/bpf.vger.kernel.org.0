@@ -1,122 +1,142 @@
-Return-Path: <bpf+bounces-60840-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60841-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 364DDADDC88
-	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 21:41:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B5D8ADDCA1
+	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 21:46:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B8ED40164E
-	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 19:41:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F2AD189A41E
+	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 19:46:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A16EA2E3AFD;
-	Tue, 17 Jun 2025 19:41:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC68F156678;
+	Tue, 17 Jun 2025 19:46:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hh/GMYWP"
+	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="gc7sbHgy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx-rz-2.rrze.uni-erlangen.de (mx-rz-2.rrze.uni-erlangen.de [131.188.11.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D6152E54B8
-	for <bpf@vger.kernel.org>; Tue, 17 Jun 2025 19:41:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECB1442A99;
+	Tue, 17 Jun 2025 19:46:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750189283; cv=none; b=U+bfl8USBk5h2I1jYy2eS8l8iZtrHt/MZxwSwFw4deTVIeIWURRvDAdH8cK7cdspDRakFVHQfPkhe8nJCtx5DfWJCLSm5ACUqjVFCWO1SSGNkFky9tKvj/KWSEbEceU+xUjbRbLXQLf8EyuicfocQ0QGth9NRBK/mb3t7n9afLQ=
+	t=1750189575; cv=none; b=pnRousf0yLy2r09NVqGzhmKdp1r5fOZBTlBKkRNhbFfQjjTjpLAeWUP/Hb07YNrLXEFLlWnqRsQ7+Dc0gh81gbkJPzo+QpxGF+SONBwJ32gPLe4WjObpFIFoxmow2RA+3LYFEyhSmo6VDUoNM5cIxAhfpftZL8jm7d2rUMj1uUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750189283; c=relaxed/simple;
-	bh=AGLzjS/1BSwPsignAbDfqrKx1gFrVsCrqfvij3dlhnE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MW13qnFjXlFuyZQ2rpdwY1cmhgBPMG2CMJxhXEn5VOrKTDQ1vAhMrZ/MQ+zU4BL+VPcAjRqrM8qdyXLsVU88cGXtP9TvB9mCSTIi189anSi9+NJoqVxctQ6kQ4to94VZJOY/3YYh3nYGsOZX5K7o1J1t5r1dL8xrmgCYesR8nww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hh/GMYWP; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3a4fb9c2436so3583378f8f.1
-        for <bpf@vger.kernel.org>; Tue, 17 Jun 2025 12:41:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750189280; x=1750794080; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HZqYeuK1FaEvKvrYFUWYLp2RzFp1z+Zs06p+gSmOzj4=;
-        b=hh/GMYWPYWvJGZcTJcwcPJ4F8HHiBfjQ5B3z1N5wvXeCQS8Hfj16bjEROLiPVpdrve
-         xSanOUtkLaiuHvILTbgZLO/yH0Z/6owzSgxWWrexH5eKZe47NzGJgP21SHP7x3ps0N0s
-         qFsywbWzjrp0roa9PL/X8gBHHNGNbS5Qi36P+tWEwb09qQJyIEu5e5ygjDA+HAq8hnvn
-         NHW3sPSNILAVOSkyosVZWR8bv5CHNp2BOcO57ie6nQ1DAxcHo3DEAtKvfG5Ekg17wqY5
-         /tIWwmunyQedYKPLGDqqYwdMdZgfV7XesZP6x79VVIYDuvqKd/QwXqbkNsS3nrX8Drsc
-         ywwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750189280; x=1750794080;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HZqYeuK1FaEvKvrYFUWYLp2RzFp1z+Zs06p+gSmOzj4=;
-        b=dRIe6KslkX1Tm+x0pTAXAoA6zfLK8kfSFGzRsHrclkjmyavnMbD0vB/m7V0ltgUDQS
-         443hVww4ke7nL4sAGfAlT1/y0x2lGqWTfk9tnOq9g3wIb3j8FrIxyGjF7h4aJylDP9Kh
-         yk2mgQ0RnBCLlnhIPeY8d40/jjqYXtsaEmwLzibcy+hc98gQJdGiM/kpsFF7zo9SmMK9
-         Ipc8xbNEmlKR+r/KFm4CmBAxO6qOV+6qpkXpumJzQRocqmDXvj+qO8ZV2hF01FYyq7UK
-         yPc1+4viLNS9mPjCYMpih6gXeBZ97agiC5vUMbPN/KE8bFhIpr3Eh+I/1v+/Jn2nAHCu
-         3k3Q==
-X-Gm-Message-State: AOJu0YxdTejETqLO1Ty26LB+OzBEfor83iqupCqJd/NFWbBpbkuPVmH6
-	JGL7yAh2YYx9QlgbljdenrkgHeDySRCFY/kkG8HWT+wbfLWlsH3+ZnwIoWX4gn64fBlQrmrOgKS
-	k0KFAkbtrVMUGVswY/bfWDDUGN0AMkxk=
-X-Gm-Gg: ASbGncvoh38jqybPlB2owuLeToxXQq0vr8aydMuxaqfiJW+8mxLkD3MQMjpQUvbUnmT
-	Fq4Mtk1z2Yjhe8NrxLEoV/SbDBVWUYsNYJP+Q+PaCkPu6HoL8rL+lchaWUHswkP9X2SNWRgUZvv
-	Ffld/0A4jkNiXC3JnGbnZx9BbQM5F7BudFf+Z8McfvOyxTLsXmyZ66NiumnW+NURqX+pTSkQ==
-X-Google-Smtp-Source: AGHT+IFAJxYXP8dnb1WiHEDcOINadBPPSaqSajMhmHCRyUofhMc+MJCmyWsI/QxSshxrPB2O6nQmOTna4RPLz0vTSE0=
-X-Received: by 2002:a05:6000:2c13:b0:3a5:1241:ce99 with SMTP id
- ffacd0b85a97d-3a5723ad5dfmr11509509f8f.24.1750189279566; Tue, 17 Jun 2025
- 12:41:19 -0700 (PDT)
+	s=arc-20240116; t=1750189575; c=relaxed/simple;
+	bh=i9VT9MU1eV1jZusVXBnUaKR1q6jUkGire7MftlUt0tM=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=dTPSyQ73FhUvTdZi9HyEfrsrC1v/k9ZJs8xz1SziVIMrWh6o9hM6w4mLqxJTRtBEUREK5GCgnduiD5pY/Fo5lr3xEwwcMGDz5YlVvveI9kQ58QGpgJbxtddUibS8STLYBCHqseKagL/VzNpZYCbyVzMWfQAuMliFZJhSHJH89+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=gc7sbHgy; arc=none smtp.client-ip=131.188.11.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fau.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
+	t=1750189564; bh=bmjUaNu902W4Vnz0nSIWioF+mc9zxOtXqhelb4K0/uk=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From:To:CC:
+	 Subject;
+	b=gc7sbHgyLiegGVmE2Zn1Wn3DldzVxvLMeWsT9J0xbJnddnJfYwDFAEO1oEXPi8xi3
+	 suCiaT6WGnv/iS2HDxdUa1O6PPWTrb52RnuRvCd+PK1R1LwOXQQWi7LRPpkQ6b9Fd4
+	 04+OjFnUpM144evsVpDnbpaTghp6drwKoniJ3H19jhdnzi1o9JQR4ywRrLZAN0aDzH
+	 evzUuExysaIbiJLhkTpT4Ja1pLI1CUEtaPaA6OLdpRM35WG8nKErEzeyolQNO4fpYI
+	 3P9/fJ/Z3miC6Yt0+XQrpTIiAvAEdXD6LiWqvMeN1TOtwuO/hd2TiIGXl3geF+8zYk
+	 qobG9U6X24MsA==
+Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-rz-2.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4bMHRc3qMgzPk6c;
+	Tue, 17 Jun 2025 21:46:04 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at boeck5.rrze.uni-erlangen.de (RRZE)
+X-RRZE-Flag: Not-Spam
+X-RRZE-Submit-IP: 2001:9e8:3605:d600:62fb:a084:d4d8:4e7e
+Received: from localhost (unknown [IPv6:2001:9e8:3605:d600:62fb:a084:d4d8:4e7e])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: U2FsdGVkX1+C3RkGdAmEaAKGq86i/+jmt+HKq4VH57I=)
+	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4bMHRY3SzPzPjjf;
+	Tue, 17 Jun 2025 21:46:01 +0200 (CEST)
+From: Luis Gerhorst <luis.gerhorst@fau.de>
+To: Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc: Alexei Starovoitov <ast@kernel.org>,  Daniel Borkmann
+ <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>,  Hengqi Chen
+ <hengqi.chen@gmail.com>,  bpf@vger.kernel.org,  loongarch@lists.linux.dev,
+  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next] LoongArch, bpf: Set bpf_jit_bypass_spec_v1/v4()
+In-Reply-To: <20250617063206.24733-1-yangtiezhu@loongson.cn> (Tiezhu Yang's
+	message of "Tue, 17 Jun 2025 14:32:06 +0800")
+References: <20250617063206.24733-1-yangtiezhu@loongson.cn>
+User-Agent: mu4e 1.12.8; emacs 30.1
+Date: Tue, 17 Jun 2025 21:46:00 +0200
+Message-ID: <87a5665eyv.fsf@fau.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250615085943.3871208-1-a.s.protopopov@gmail.com> <20250615085943.3871208-5-a.s.protopopov@gmail.com>
-In-Reply-To: <20250615085943.3871208-5-a.s.protopopov@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 17 Jun 2025 12:41:08 -0700
-X-Gm-Features: Ac12FXw61DqooyiJYNKbx-WPlsIfOpoNUu3LtC9cgOrB52_7xqdSChKbldVvrZ0
-Message-ID: <CAADnVQLtPuWOQmeJhPtBf-wyR8PS=u+1Wg4DtNVNZ7kPF5QZ0Q@mail.gmail.com>
-Subject: Re: [RFC bpf-next 4/9] bpf, x86: allow indirect jumps to r8...r15
-To: Anton Protopopov <a.s.protopopov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Anton Protopopov <aspsk@isovalent.com>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Quentin Monnet <qmo@kernel.org>, Yonghong Song <yonghong.song@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Sun, Jun 15, 2025 at 1:55=E2=80=AFAM Anton Protopopov
-<a.s.protopopov@gmail.com> wrote:
->
-> Currently, the emit_indirect_jump() function only accepts one of the
-> RAX, RCX, ..., RBP registers as the destination. Prepare it to accept
-> R8, R9, ..., R15 as well. This is necessary to enable indirect jumps
-> support in eBPF.
->
-> Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
-> ---
->  arch/x86/net/bpf_jit_comp.c | 26 +++++++++++++++++++-------
->  1 file changed, 19 insertions(+), 7 deletions(-)
->
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index 923c38f212dc..37dc83d91832 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -659,7 +659,19 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_=
-type t,
->
->  #define EMIT_LFENCE()  EMIT3(0x0F, 0xAE, 0xE8)
->
-> -static void emit_indirect_jump(u8 **pprog, int reg, u8 *ip)
-> +static void __emit_indirect_jump(u8 **pprog, int reg, bool ereg)
+Tiezhu Yang <yangtiezhu@loongson.cn> writes:
 
-Instead of adding bool flag make reg to be bpf reg
-instead of x86 reg, tweak the signature to
-emit_indirect_jump(..., u32 reg, ..),
-and add is_ereg(reg) inside.
+> JITs can set bpf_jit_bypass_spec_v1/v4() if they want the verifier
+> to skip analysis/patching for the respective vulnerability, it is
+> safe to set both bpf_jit_bypass_spec_v1/v4(), because there is no
+> speculation barrier instruction for LoongArch.
 
-Also drop RFC tag next time. Let CI do the work.
+Thank you for addressing this.
+
+Do you think it would be possible to give a more detailed reason for why
+Spectre v1/v4 do not affect LoongArch?
+
+Which exploits were tried (and failed) in [3]?
+
+At least from [1] it appears as if there is branch prediction (Figure 5.
+LA464 structure, Page 52) and thus also the potential for Spectre v1 (if
+there is no hardware countermeasure). For Spectre v4, [1] states
+"Supports access optimization techniques such as Non-blocking access and
+Load-Speculation" (Chapter 8. LA464 Processor Core). Based on that I
+would assume v4 mitigation might also be required.
+
+If there is no countermeasure (and no dedicated speculation barrier), it
+would probably be best to lower BPF_NOSPEC to ibar+dbar (leaving
+bpf_jit_bypass_spec_v1/v4=false) which might be good enough to make
+exploits much harder/impossible.
+
+[1] https://loongson.github.io/LoongArch-Documentation/Loongson-3A5000-usermanual-EN.pdf
+
+> Suggested-by: Luis Gerhorst <luis.gerhorst@fau.de>
+
+Just to clarify, I only suggested it assuming that LoongArch CPUs are
+not vulnerable (which I only assumed because of [2]).
+
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a6f6a95f2580
+
+> diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
+> index fa1500d4aa3e..5de8f4c44700 100644
+> --- a/arch/loongarch/net/bpf_jit.c
+> +++ b/arch/loongarch/net/bpf_jit.c
+> @@ -1359,3 +1359,13 @@ bool bpf_jit_supports_subprog_tailcalls(void)
+>  {
+>  	return true;
+>  }
+> +
+> +bool bpf_jit_bypass_spec_v1(void)
+> +{
+> +	return true;
+> +}
+> +
+> +bool bpf_jit_bypass_spec_v4(void)
+> +{
+> +	return true;
+> +}
+
+Looks as expected besides the unclarity regarding the countermeasure. In
+any case having these set to false (default) does not help if BPF_NOSPEC
+is not implemented, thus this is an improvement.
+
+Except for the stated reason:
+
+Acked-by: Luis Gerhorst <luis.gerhorst@fau.de>
 
