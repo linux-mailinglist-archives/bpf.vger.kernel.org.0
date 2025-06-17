@@ -1,96 +1,122 @@
-Return-Path: <bpf+bounces-60839-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60840-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF6BEADDC84
-	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 21:39:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 364DDADDC88
+	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 21:41:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EBB017A6D0
-	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 19:39:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B8ED40164E
+	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 19:41:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1E882E719A;
-	Tue, 17 Jun 2025 19:39:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A16EA2E3AFD;
+	Tue, 17 Jun 2025 19:41:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nNiMjqme"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hh/GMYWP"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C11EA28D8C4
-	for <bpf@vger.kernel.org>; Tue, 17 Jun 2025 19:39:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D6152E54B8
+	for <bpf@vger.kernel.org>; Tue, 17 Jun 2025 19:41:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750189149; cv=none; b=NLFPvMhmAOd0dBx5hKvzECTL+I2UrDA28pDAUesnNO7ruThFkfXqLH8+pG9b1mue4qqd2SyifS+iuaOFAlYV0IteweWA4zk0FVHSCXqhT9vNhRiZ8u5htVIvTUi38mn2TCI0h5bdUjTBj6y/6TJPgwIdD5FaLfC3XwIDPDvX5DI=
+	t=1750189283; cv=none; b=U+bfl8USBk5h2I1jYy2eS8l8iZtrHt/MZxwSwFw4deTVIeIWURRvDAdH8cK7cdspDRakFVHQfPkhe8nJCtx5DfWJCLSm5ACUqjVFCWO1SSGNkFky9tKvj/KWSEbEceU+xUjbRbLXQLf8EyuicfocQ0QGth9NRBK/mb3t7n9afLQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750189149; c=relaxed/simple;
-	bh=T6/GPJUaE5MWO1xJYkdWZ+ZjWpepTkI5T3JAT7p2KUw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dLIRVz0iQZWf+4WRz3KDHIvcXKfzz1ckC42LLfwz5yfuacx/TPZsVnUm0Ft2IAzUIOCj1tpyxSqMi5+kgtfvh5uk60e/7uAOzbwQ94afdnhGtCiZwZn60zXEufrkC5N0QaxobmZ1NNXW4vLQhPHpYWsUhl3X8F62Z1Q9t+sX+Lo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nNiMjqme; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 17 Jun 2025 12:38:49 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1750189135;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4glMiMkHgRFcU3DsIIfl2zw2C365sdHCF6BOHGpWlxw=;
-	b=nNiMjqmeytdSt1NSBO5GH+jC1MrgK7NYBOn2uyEclOXBjXHdzP25+sRv/P2PRE5rEyZ2q0
-	iGPJUFqtq+6LpgyKNtZXmdoJu8jXYcuvKcVSdzMuZjVtwwSxZyKhXth4/55VePAC7lo1MI
-	TSu8dvgo7qJow0bSx72Tg6xP6XI1jZY=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Tejun Heo <tj@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	JP Kobryn <inwardvessel@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Vlastimil Babka <vbabka@suse.cz>, 
-	Alexei Starovoitov <ast@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
-	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, Harry Yoo <harry.yoo@oracle.com>, 
-	Yosry Ahmed <yosry.ahmed@linux.dev>, bpf@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>
-Subject: Re: [PATCH v2 0/4] cgroup: nmi safe css_rstat_updated
-Message-ID: <rnbk6cnvkvpdaei7zhtgcmzw3cbokmbgt6qnorf5cpey5ievlq@yffgq4oslnvv>
-References: <20250611221532.2513772-1-shakeel.butt@linux.dev>
- <aFBfNRVAyE1FU9aQ@slm.duckdns.org>
- <qtudjvrdvbsz6rrygb5bt32dzps6ocwefhr5hyfgtam65jowdo@colgnna6ogqm>
- <aFG8mZOOwl9s5ySm@slm.duckdns.org>
+	s=arc-20240116; t=1750189283; c=relaxed/simple;
+	bh=AGLzjS/1BSwPsignAbDfqrKx1gFrVsCrqfvij3dlhnE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MW13qnFjXlFuyZQ2rpdwY1cmhgBPMG2CMJxhXEn5VOrKTDQ1vAhMrZ/MQ+zU4BL+VPcAjRqrM8qdyXLsVU88cGXtP9TvB9mCSTIi189anSi9+NJoqVxctQ6kQ4to94VZJOY/3YYh3nYGsOZX5K7o1J1t5r1dL8xrmgCYesR8nww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hh/GMYWP; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3a4fb9c2436so3583378f8f.1
+        for <bpf@vger.kernel.org>; Tue, 17 Jun 2025 12:41:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1750189280; x=1750794080; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HZqYeuK1FaEvKvrYFUWYLp2RzFp1z+Zs06p+gSmOzj4=;
+        b=hh/GMYWPYWvJGZcTJcwcPJ4F8HHiBfjQ5B3z1N5wvXeCQS8Hfj16bjEROLiPVpdrve
+         xSanOUtkLaiuHvILTbgZLO/yH0Z/6owzSgxWWrexH5eKZe47NzGJgP21SHP7x3ps0N0s
+         qFsywbWzjrp0roa9PL/X8gBHHNGNbS5Qi36P+tWEwb09qQJyIEu5e5ygjDA+HAq8hnvn
+         NHW3sPSNILAVOSkyosVZWR8bv5CHNp2BOcO57ie6nQ1DAxcHo3DEAtKvfG5Ekg17wqY5
+         /tIWwmunyQedYKPLGDqqYwdMdZgfV7XesZP6x79VVIYDuvqKd/QwXqbkNsS3nrX8Drsc
+         ywwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750189280; x=1750794080;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HZqYeuK1FaEvKvrYFUWYLp2RzFp1z+Zs06p+gSmOzj4=;
+        b=dRIe6KslkX1Tm+x0pTAXAoA6zfLK8kfSFGzRsHrclkjmyavnMbD0vB/m7V0ltgUDQS
+         443hVww4ke7nL4sAGfAlT1/y0x2lGqWTfk9tnOq9g3wIb3j8FrIxyGjF7h4aJylDP9Kh
+         yk2mgQ0RnBCLlnhIPeY8d40/jjqYXtsaEmwLzibcy+hc98gQJdGiM/kpsFF7zo9SmMK9
+         Ipc8xbNEmlKR+r/KFm4CmBAxO6qOV+6qpkXpumJzQRocqmDXvj+qO8ZV2hF01FYyq7UK
+         yPc1+4viLNS9mPjCYMpih6gXeBZ97agiC5vUMbPN/KE8bFhIpr3Eh+I/1v+/Jn2nAHCu
+         3k3Q==
+X-Gm-Message-State: AOJu0YxdTejETqLO1Ty26LB+OzBEfor83iqupCqJd/NFWbBpbkuPVmH6
+	JGL7yAh2YYx9QlgbljdenrkgHeDySRCFY/kkG8HWT+wbfLWlsH3+ZnwIoWX4gn64fBlQrmrOgKS
+	k0KFAkbtrVMUGVswY/bfWDDUGN0AMkxk=
+X-Gm-Gg: ASbGncvoh38jqybPlB2owuLeToxXQq0vr8aydMuxaqfiJW+8mxLkD3MQMjpQUvbUnmT
+	Fq4Mtk1z2Yjhe8NrxLEoV/SbDBVWUYsNYJP+Q+PaCkPu6HoL8rL+lchaWUHswkP9X2SNWRgUZvv
+	Ffld/0A4jkNiXC3JnGbnZx9BbQM5F7BudFf+Z8McfvOyxTLsXmyZ66NiumnW+NURqX+pTSkQ==
+X-Google-Smtp-Source: AGHT+IFAJxYXP8dnb1WiHEDcOINadBPPSaqSajMhmHCRyUofhMc+MJCmyWsI/QxSshxrPB2O6nQmOTna4RPLz0vTSE0=
+X-Received: by 2002:a05:6000:2c13:b0:3a5:1241:ce99 with SMTP id
+ ffacd0b85a97d-3a5723ad5dfmr11509509f8f.24.1750189279566; Tue, 17 Jun 2025
+ 12:41:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aFG8mZOOwl9s5ySm@slm.duckdns.org>
-X-Migadu-Flow: FLOW_OUT
+References: <20250615085943.3871208-1-a.s.protopopov@gmail.com> <20250615085943.3871208-5-a.s.protopopov@gmail.com>
+In-Reply-To: <20250615085943.3871208-5-a.s.protopopov@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 17 Jun 2025 12:41:08 -0700
+X-Gm-Features: Ac12FXw61DqooyiJYNKbx-WPlsIfOpoNUu3LtC9cgOrB52_7xqdSChKbldVvrZ0
+Message-ID: <CAADnVQLtPuWOQmeJhPtBf-wyR8PS=u+1Wg4DtNVNZ7kPF5QZ0Q@mail.gmail.com>
+Subject: Re: [RFC bpf-next 4/9] bpf, x86: allow indirect jumps to r8...r15
+To: Anton Protopopov <a.s.protopopov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Anton Protopopov <aspsk@isovalent.com>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Quentin Monnet <qmo@kernel.org>, Yonghong Song <yonghong.song@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 17, 2025 at 09:06:01AM -1000, Tejun Heo wrote:
-> On Mon, Jun 16, 2025 at 12:20:28PM -0700, Shakeel Butt wrote:
-> > On Mon, Jun 16, 2025 at 08:15:17AM -1000, Tejun Heo wrote:
-> > > Hello,
-> > > 
-> > > On Wed, Jun 11, 2025 at 03:15:28PM -0700, Shakeel Butt wrote:
-> > > > Shakeel Butt (4):
-> > > >   cgroup: support to enable nmi-safe css_rstat_updated
-> > > >   cgroup: make css_rstat_updated nmi safe
-> > > >   cgroup: remove per-cpu per-subsystem locks
-> > > >   memcg: cgroup: call css_rstat_updated irrespective of in_nmi()
-> > > 
-> > > The patches look good to me. How should it be routed? Should I take all
-> > > four, just the first three or would it better to route all through -mm?
-> > > 
-> > 
-> > I would like all four to be together and since most of the code is in
-> > cgroup, cgroup tree makes more sense unless Andrew has different
-> > opinion.
-> 
-> Okay, I'll route them through cgroup. The patches don't apply cleanly on
-> cgroup/for-6.17. Can you please send a refreshed set?
+On Sun, Jun 15, 2025 at 1:55=E2=80=AFAM Anton Protopopov
+<a.s.protopopov@gmail.com> wrote:
+>
+> Currently, the emit_indirect_jump() function only accepts one of the
+> RAX, RCX, ..., RBP registers as the destination. Prepare it to accept
+> R8, R9, ..., R15 as well. This is necessary to enable indirect jumps
+> support in eBPF.
+>
+> Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
+> ---
+>  arch/x86/net/bpf_jit_comp.c | 26 +++++++++++++++++++-------
+>  1 file changed, 19 insertions(+), 7 deletions(-)
+>
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index 923c38f212dc..37dc83d91832 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -659,7 +659,19 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_=
+type t,
+>
+>  #define EMIT_LFENCE()  EMIT3(0x0F, 0xAE, 0xE8)
+>
+> -static void emit_indirect_jump(u8 **pprog, int reg, u8 *ip)
+> +static void __emit_indirect_jump(u8 **pprog, int reg, bool ereg)
 
-Yup, I will do asap.
+Instead of adding bool flag make reg to be bpf reg
+instead of x86 reg, tweak the signature to
+emit_indirect_jump(..., u32 reg, ..),
+and add is_ereg(reg) inside.
+
+Also drop RFC tag next time. Let CI do the work.
 
