@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-60868-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60866-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5FB6ADDF37
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 00:53:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A31E7ADDF32
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 00:52:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07A37189E69C
-	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 22:53:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 200567AC1EC
+	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 22:51:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1A6C2F2727;
-	Tue, 17 Jun 2025 22:51:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41F362EFDBC;
+	Tue, 17 Jun 2025 22:51:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0010.hostedemail.com [216.40.44.10])
+Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 934AF2F0C42;
-	Tue, 17 Jun 2025 22:51:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD4A7298994;
+	Tue, 17 Jun 2025 22:51:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750200684; cv=none; b=IyKIEaRgdPRANlBPGbG3jFMZs6an+//oZ9gLZPu0VX25EmN+rP+4Nwb8mZ4r6xHlv09IpMDC2daHUflYD+8QdfMelimSByCN1pvaJqNNiK3efyiWVE3CAMVLT/vv+918GoevrPSurdO/1zrIsXmgvb/LrmVqDncYY5RxpNlPhQE=
+	t=1750200681; cv=none; b=h2/II4Mn8BDZBUNVyvEc9+Sf79HO7Ww9XVfJVGmxu+kPzuVLx/6A7ha+aesIu3EZPhdNRSPr6i1lauZ+U+03EbEetOOgS54m+eY0RYx5gjpLYP2Q2GXLAE1DIRbQurq2FDpsruifS0Y99Z2/mONoCckvfUSZmcsIc0Mg6OwJHL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750200684; c=relaxed/simple;
-	bh=+1dKUkXeGNCMo2SsOx0RVb/skigBKBZOQ6KCmMD4/Gk=;
+	s=arc-20240116; t=1750200681; c=relaxed/simple;
+	bh=cQU/IOg2dV3IqPOdj6NyIdrtPpR/u8Ehsn+YFDVM0xo=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=Sty2Ayew7ZxBuDCjzFwNQhLONYdGIuxO5tBt+l/c5EjHJ+AR/i8bwpr9dhav8iy2HB7T181DJ+82JeEn8EiwKGSYRaGDiG5HiQQ0WZ5xhad25Cg0BTVwe2qXKYr0iBNBXKUiIEajvDdnW1h83bSVnwC7h3GFcZ5n8dJV8OjQfCk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.10
+	 Content-Type; b=aigX6RX6GnJdQ5twVU22hn9zvFgcWkk4kD3Dnh3Zet2DhVOoIgYUWzpCELEKF6oyxWGIRBovjikDeAeJEZmyxbYdv5Z5k1PTHTNtxpyh6sQEHs3G+BMY1RRKi63rlm4Bl2e3OoN0dV6qsiNbAGirlAmRsjtreHFaTQoD1H9ga/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf08.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay01.hostedemail.com (Postfix) with ESMTP id 0D6FB1D35B0;
+Received: from omf18.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay09.hostedemail.com (Postfix) with ESMTP id 283B281190;
 	Tue, 17 Jun 2025 22:51:15 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: nevets@goodmis.org) by omf08.hostedemail.com (Postfix) with ESMTPA id E241E20026;
-	Tue, 17 Jun 2025 22:51:11 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: nevets@goodmis.org) by omf18.hostedemail.com (Postfix) with ESMTPA id 12BDB35;
+	Tue, 17 Jun 2025 22:51:12 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.98.2)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1uRf9C-00000002L7q-3YE6;
-	Tue, 17 Jun 2025 18:51:18 -0400
-Message-ID: <20250617225118.701549034@goodmis.org>
+	id 1uRf9D-00000002L8K-04Rv;
+	Tue, 17 Jun 2025 18:51:19 -0400
+Message-ID: <20250617225118.866845255@goodmis.org>
 User-Agent: quilt/0.68
-Date: Tue, 17 Jun 2025 18:50:19 -0400
+Date: Tue, 17 Jun 2025 18:50:20 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org,
@@ -61,7 +61,7 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Jens Remus <jremus@linux.ibm.com>,
  Linus Torvalds <torvalds@linux-foundation.org>,
  Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH v6 10/12] unwind_user/sframe: Show file name in debug output
+Subject: [PATCH v6 11/12] unwind_user/sframe: Enable debugging in uaccess regions
 References: <20250617225009.233007152@goodmis.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -70,205 +70,245 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Rspamd-Queue-Id: E241E20026
-X-Stat-Signature: k4y3g7y9beza9yu3kn7g1rjpn1rwoa16
+X-Rspamd-Queue-Id: 12BDB35
+X-Stat-Signature: 3w3e13iiqkeo3ojzax1dazypgzeazdse
 X-Rspamd-Server: rspamout07
 X-Session-Marker: 6E657665747340676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1/yTP2AI7BIPMOkpjB8iVdpaCBUNHtqKRE=
-X-HE-Tag: 1750200671-419350
-X-HE-Meta: U2FsdGVkX1++lvpNJjpML/jAnkQJMIJ5BA5d8vzqZeOxdKDapeFb5iOLZN70ZMeS3xOQaFlEtoG7iinF2SqA1XbKJGJF1DHJ//7aQl8NGIZFbUeqYbv3g6JaR9VhRvqBncD4KksrvnUV7gnf135F3YWGN5fL1csE8854LvrIJRI+L2tc7+0T5H5V+Y/D2vC+Hhf8qIXSOTTgRnH0wkqjtVcOf20IYSpFtIwnjoMTS+q8dcfRGxQPamfoKEV+NxA4Bm4cVuVAAOXv7HyzKv9N5izZAaUUs7XXPmLvEDzqC3ixq1fuQq/3xvCLmyV9JVVIDxzgp+hmhmrHM2fIqLbsxtr8sk5b3lwoYGaEaxGeUOqi7bV9FgiZYDYEfHX6JG60pmr83N/n7VnaXWxdFOoe+LCl9gig6TQGDu/zw1gxBp4=
+X-Session-ID: U2FsdGVkX1/Uipkp5OhmEHLmgWnvZv1n9OMggK4AmgE=
+X-HE-Tag: 1750200672-822738
+X-HE-Meta: U2FsdGVkX19iPcfMA+Z3aqy9vpfBmf8iFXbk+9KE3rzhuLQCQ0oVD1T+O3byU9k/7YcZc7Cu/n+dhrEPj6KPxQIdmQURHasnPGyufmU2ywokA/ZagLurVxK/T8vHLdBQmmOsrbzCtqWWkpsAoImPMOj1nE9bAWDzdx6fswezsh2Wb3rAFIRbJPyTe0KW6GJqhRMeEx6/iATcuUOGX9/0aybJnkrMDwrYS0cmJKXQ1eG9lON/z3R3SQqfjzGXJfloMSQsH+pCZziZBE15yS5LAPJfr3avmCzSsc/p8cOGH1kwpkMmSfA3gxrwzWmEKnIofvaRwbAcAcEN2wM5qMleRfpFTBF3j2+HCqgLRnMI6Rt+ra8JgYMr0u8Jn1tAmt0ZFQvi3coot6kmCiD/5vWAQ+cpT70EZ1F5l8uhJ6c+CjY=
 
 From: Josh Poimboeuf <jpoimboe@kernel.org>
 
-When debugging sframe issues, the error messages aren't all that helpful
-without knowing what file a corresponding .sframe section belongs to.
-Prefix debug output strings with the file name.
+Objtool warns about calling pr_debug() from uaccess-enabled regions, and
+rightfully so.  Add a dbg_sec_uaccess() macro which temporarily disables
+uaccess before doing the dynamic printk, and use that to add debug
+messages throughout the uaccess-enabled regions.
 
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- include/linux/sframe.h       |  4 +++-
- kernel/unwind/sframe.c       | 23 ++++++++++--------
- kernel/unwind/sframe_debug.h | 45 +++++++++++++++++++++++++++++++-----
- 3 files changed, 56 insertions(+), 16 deletions(-)
+ kernel/unwind/sframe.c       | 60 ++++++++++++++++++++++++++++--------
+ kernel/unwind/sframe_debug.h | 31 +++++++++++++++++++
+ 2 files changed, 78 insertions(+), 13 deletions(-)
 
-diff --git a/include/linux/sframe.h b/include/linux/sframe.h
-index 9a72209696f9..b79c5ec09229 100644
---- a/include/linux/sframe.h
-+++ b/include/linux/sframe.h
-@@ -10,7 +10,9 @@
- 
- struct sframe_section {
- 	struct rcu_head	rcu;
--
-+#ifdef CONFIG_DYNAMIC_DEBUG
-+	const char	*filename;
-+#endif
- 	unsigned long	sframe_start;
- 	unsigned long	sframe_end;
- 	unsigned long	text_start;
 diff --git a/kernel/unwind/sframe.c b/kernel/unwind/sframe.c
-index f246ead6c2a0..66d3ba3c8389 100644
+index 66d3ba3c8389..3972bce40fc7 100644
 --- a/kernel/unwind/sframe.c
 +++ b/kernel/unwind/sframe.c
-@@ -311,14 +311,17 @@ int sframe_find(unsigned long ip, struct unwind_user_frame *frame)
- end:
- 	user_read_access_end();
+@@ -53,12 +53,15 @@ static __always_inline int __read_fde(struct sframe_section *sec,
+ 			      sizeof(struct sframe_fde), Efault);
  
--	if (ret == -EFAULT)
-+	if (ret == -EFAULT) {
-+		dbg_sec("removing bad .sframe section\n");
- 		WARN_ON_ONCE(sframe_remove_section(sec->sframe_start));
+ 	ip = sec->sframe_start + fde->start_addr;
+-	if (ip < sec->text_start || ip > sec->text_end)
++	if (ip < sec->text_start || ip > sec->text_end) {
++		dbg_sec_uaccess("bad fde num %d\n", fde_num);
+ 		return -EINVAL;
 +	}
  
- 	return ret;
+ 	return 0;
+ 
+ Efault:
++	dbg_sec_uaccess("fde %d usercopy failed\n", fde_num);
+ 	return -EFAULT;
  }
  
- static void free_section(struct sframe_section *sec)
- {
-+	dbg_free(sec);
- 	kfree(sec);
+@@ -85,16 +88,22 @@ static __always_inline int __find_fde(struct sframe_section *sec,
+ 		unsafe_get_user(func_off, (s32 __user *)mid, Efault);
+ 
+ 		if (ip_off >= func_off) {
+-			if (func_off < func_off_low)
++			if (func_off < func_off_low) {
++				dbg_sec_uaccess("fde %u not sorted\n",
++						(unsigned int)(mid - first));
+ 				return -EFAULT;
++			}
+ 
+ 			func_off_low = func_off;
+ 
+ 			found = mid;
+ 			low = mid + 1;
+ 		} else {
+-			if (func_off > func_off_high)
++			if (func_off > func_off_high) {
++				dbg_sec_uaccess("fde %u not sorted\n",
++						(unsigned int)(mid - first));
+ 				return -EFAULT;
++			}
+ 
+ 			func_off_high = func_off;
+ 
+@@ -116,6 +125,7 @@ static __always_inline int __find_fde(struct sframe_section *sec,
+ 	return 0;
+ 
+ Efault:
++	dbg_sec_uaccess("fde usercopy failed\n");
+ 	return -EFAULT;
  }
  
-@@ -329,7 +332,7 @@ static int sframe_read_header(struct sframe_section *sec)
- 	unsigned int num_fdes;
+@@ -140,6 +150,8 @@ static __always_inline int __find_fde(struct sframe_section *sec,
+ 		____UNSAFE_GET_USER_INC(to, from, u_or_s##32, label);	\
+ 		break;							\
+ 	default:							\
++		dbg_sec_uaccess("%d: bad UNSAFE_GET_USER_INC size %u\n",\
++				__LINE__, size);			\
+ 		return -EFAULT;						\
+ 	}								\
+ })
+@@ -174,24 +186,34 @@ static __always_inline int __read_fre(struct sframe_section *sec,
+ 	u8 info;
  
- 	if (copy_from_user(&shdr, (void __user *)sec->sframe_start, sizeof(shdr))) {
--		dbg("header usercopy failed\n");
-+		dbg_sec("header usercopy failed\n");
+ 	addr_size = fre_type_to_size(fre_type);
+-	if (!addr_size)
++	if (!addr_size) {
++		dbg_sec_uaccess("bad addr_size in fde info %u\n", fde->info);
  		return -EFAULT;
++	}
+ 
+-	if (fre_addr + addr_size + 1 > sec->fres_end)
++	if (fre_addr + addr_size + 1 > sec->fres_end) {
++		dbg_sec_uaccess("fre addr+info goes past end of subsection\n");
+ 		return -EFAULT;
++	}
+ 
+ 	UNSAFE_GET_USER_INC(ip_off, cur, addr_size, Efault);
+-	if (fde_type == SFRAME_FDE_TYPE_PCINC && ip_off > fde->func_size)
++	if (fde_type == SFRAME_FDE_TYPE_PCINC && ip_off > fde->func_size) {
++		dbg_sec_uaccess("fre starts past end of function: ip_off=0x%x, func_size=0x%x\n",
++				ip_off, fde->func_size);
+ 		return -EFAULT;
++	}
+ 
+ 	UNSAFE_GET_USER_INC(info, cur, 1, Efault);
+ 	offset_count = SFRAME_FRE_OFFSET_COUNT(info);
+ 	offset_size  = offset_size_enum_to_size(SFRAME_FRE_OFFSET_SIZE(info));
+-	if (!offset_count || !offset_size)
++	if (!offset_count || !offset_size) {
++		dbg_sec_uaccess("zero offset_count or size in fre info %u\n",info);
+ 		return -EFAULT;
+-
+-	if (cur + (offset_count * offset_size) > sec->fres_end)
++	}
++	if (cur + (offset_count * offset_size) > sec->fres_end) {
++		dbg_sec_uaccess("fre goes past end of subsection\n");
+ 		return -EFAULT;
++	}
+ 
+ 	fre->size = addr_size + 1 + (offset_count * offset_size);
+ 
+@@ -200,8 +222,10 @@ static __always_inline int __read_fre(struct sframe_section *sec,
+ 
+ 	ra_off = sec->ra_off;
+ 	if (!ra_off) {
+-		if (!offset_count--)
++		if (!offset_count--) {
++			dbg_sec_uaccess("zero offset_count, can't find ra_off\n");
+ 			return -EFAULT;
++		}
+ 
+ 		UNSAFE_GET_USER_INC(ra_off, cur, offset_size, Efault);
+ 	}
+@@ -212,8 +236,10 @@ static __always_inline int __read_fre(struct sframe_section *sec,
+ 		UNSAFE_GET_USER_INC(fp_off, cur, offset_size, Efault);
  	}
  
-@@ -337,18 +340,18 @@ static int sframe_read_header(struct sframe_section *sec)
- 	    shdr.preamble.version != SFRAME_VERSION_2 ||
- 	    !(shdr.preamble.flags & SFRAME_F_FDE_SORTED) ||
- 	    shdr.auxhdr_len) {
--		dbg("bad/unsupported sframe header\n");
-+		dbg_sec("bad/unsupported sframe header\n");
- 		return -EINVAL;
- 	}
+-	if (offset_count)
++	if (offset_count) {
++		dbg_sec_uaccess("non-zero offset_count after reading fre\n");
+ 		return -EFAULT;
++	}
  
- 	if (!shdr.num_fdes || !shdr.num_fres) {
--		dbg("no fde/fre entries\n");
-+		dbg_sec("no fde/fre entries\n");
- 		return -EINVAL;
- 	}
+ 	fre->ip_off		= ip_off;
+ 	fre->cfa_off		= cfa_off;
+@@ -224,6 +250,7 @@ static __always_inline int __read_fre(struct sframe_section *sec,
+ 	return 0;
  
- 	header_end = sec->sframe_start + SFRAME_HEADER_SIZE(shdr);
- 	if (header_end >= sec->sframe_end) {
--		dbg("header doesn't fit in section\n");
-+		dbg_sec("header doesn't fit in section\n");
- 		return -EINVAL;
- 	}
+ Efault:
++	dbg_sec_uaccess("fre usercopy failed\n");
+ 	return -EFAULT;
+ }
  
-@@ -360,7 +363,7 @@ static int sframe_read_header(struct sframe_section *sec)
- 	fres_end   = fres_start + shdr.fre_len;
+@@ -257,13 +284,20 @@ static __always_inline int __find_fre(struct sframe_section *sec,
+ 		which = !which;
  
- 	if (fres_start < fdes_end || fres_end > sec->sframe_end) {
--		dbg("inconsistent fde/fre offsets\n");
-+		dbg_sec("inconsistent fde/fre offsets\n");
- 		return -EINVAL;
- 	}
+ 		ret = __read_fre(sec, fde, fre_addr, fre);
+-		if (ret)
++		if (ret) {
++			dbg_sec_uaccess("fde addr 0x%x: __read_fre(%u) failed\n",
++					fde->start_addr, i);
++			dbg_print_fde_uaccess(sec, fde);
+ 			return ret;
++		}
  
-@@ -416,6 +419,8 @@ int sframe_add_section(unsigned long sframe_start, unsigned long sframe_end,
- 	sec->text_start		= text_start;
- 	sec->text_end		= text_end;
+ 		fre_addr += fre->size;
  
-+	dbg_init(sec);
-+
- 	ret = sframe_read_header(sec);
- 	if (ret) {
- 		dbg_print_header(sec);
-@@ -424,8 +429,8 @@ int sframe_add_section(unsigned long sframe_start, unsigned long sframe_end,
+-		if (prev_fre && fre->ip_off <= prev_fre->ip_off)
++		if (prev_fre && fre->ip_off <= prev_fre->ip_off) {
++			dbg_sec_uaccess("fde addr 0x%x: fre %u not sorted\n",
++					fde->start_addr, i);
+ 			return -EFAULT;
++		}
  
- 	ret = mtree_insert_range(sframe_mt, sec->text_start, sec->text_end, sec, GFP_KERNEL);
- 	if (ret) {
--		dbg("mtree_insert_range failed: text=%lx-%lx\n",
--		    sec->text_start, sec->text_end);
-+		dbg_sec("mtree_insert_range failed: text=%lx-%lx\n",
-+			sec->text_start, sec->text_end);
- 		goto err_free;
- 	}
- 
-@@ -447,7 +452,7 @@ static int __sframe_remove_section(struct mm_struct *mm,
- 				   struct sframe_section *sec)
- {
- 	if (!mtree_erase(&mm->sframe_mt, sec->text_start)) {
--		dbg("mtree_erase failed: text=%lx\n", sec->text_start);
-+		dbg_sec("mtree_erase failed: text=%lx\n", sec->text_start);
- 		return -EINVAL;
- 	}
- 
+ 		if (fre->ip_off > ip_off)
+ 			break;
 diff --git a/kernel/unwind/sframe_debug.h b/kernel/unwind/sframe_debug.h
-index 055c8c8fae24..7794bf0bd78c 100644
+index 7794bf0bd78c..045e9c0b16c9 100644
 --- a/kernel/unwind/sframe_debug.h
 +++ b/kernel/unwind/sframe_debug.h
-@@ -10,26 +10,59 @@
- #define dbg(fmt, ...)							\
- 	pr_debug("%s (%d): " fmt, current->comm, current->pid, ##__VA_ARGS__)
+@@ -13,6 +13,26 @@
+ #define dbg_sec(fmt, ...)						\
+ 	dbg("%s: " fmt, sec->filename, ##__VA_ARGS__)
  
-+#define dbg_sec(fmt, ...)						\
-+	dbg("%s: " fmt, sec->filename, ##__VA_ARGS__)
++#define __dbg_sec_descriptor(fmt, ...)					\
++	__dynamic_pr_debug(&descriptor, "sframe: %s: " fmt,		\
++			   sec->filename, ##__VA_ARGS__)
++
++/*
++ * To avoid breaking uaccess rules, temporarily disable uaccess
++ * before calling printk.
++ */
++#define dbg_sec_uaccess(fmt, ...)					\
++({									\
++	DEFINE_DYNAMIC_DEBUG_METADATA(descriptor, fmt);			\
++	if (DYNAMIC_DEBUG_BRANCH(descriptor)) {				\
++		user_read_access_end();					\
++		__dbg_sec_descriptor(fmt, ##__VA_ARGS__);		\
++		BUG_ON(!user_read_access_begin(				\
++				(void __user *)sec->sframe_start,	\
++				sec->sframe_end - sec->sframe_start));	\
++	}								\
++})
 +
  static __always_inline void dbg_print_header(struct sframe_section *sec)
  {
  	unsigned long fdes_end;
- 
- 	fdes_end = sec->fdes_start + (sec->num_fdes * sizeof(struct sframe_fde));
- 
--	dbg("SEC: sframe:0x%lx-0x%lx text:0x%lx-0x%lx "
--	    "fdes:0x%lx-0x%lx fres:0x%lx-0x%lx "
--	    "ra_off:%d fp_off:%d\n",
--	    sec->sframe_start, sec->sframe_end, sec->text_start, sec->text_end,
--	    sec->fdes_start, fdes_end, sec->fres_start, sec->fres_end,
--	    sec->ra_off, sec->fp_off);
-+	dbg_sec("SEC: sframe:0x%lx-0x%lx text:0x%lx-0x%lx "
-+		"fdes:0x%lx-0x%lx fres:0x%lx-0x%lx "
-+		"ra_off:%d fp_off:%d\n",
-+		sec->sframe_start, sec->sframe_end, sec->text_start, sec->text_end,
-+		sec->fdes_start, fdes_end, sec->fres_start, sec->fres_end,
-+		sec->ra_off, sec->fp_off);
-+}
-+
-+static inline void dbg_init(struct sframe_section *sec)
-+{
-+	struct mm_struct *mm = current->mm;
-+	struct vm_area_struct *vma;
-+
-+	guard(mmap_read_lock)(mm);
-+	vma = vma_lookup(mm, sec->sframe_start);
-+	if (!vma)
-+		sec->filename = kstrdup("(vma gone???)", GFP_KERNEL);
-+	else if (vma->vm_file)
-+		sec->filename = kstrdup_quotable_file(vma->vm_file, GFP_KERNEL);
-+	else if (vma->vm_ops && vma->vm_ops->name)
-+		sec->filename = kstrdup(vma->vm_ops->name(vma), GFP_KERNEL);
-+	else if (arch_vma_name(vma))
-+		sec->filename = kstrdup(arch_vma_name(vma), GFP_KERNEL);
-+	else if (!vma->vm_mm)
-+		sec->filename = kstrdup("(vdso)", GFP_KERNEL);
-+	else
-+		sec->filename = kstrdup("(anonymous)", GFP_KERNEL);
-+}
-+
-+static inline void dbg_free(struct sframe_section *sec)
-+{
-+	kfree(sec->filename);
+@@ -27,6 +47,15 @@ static __always_inline void dbg_print_header(struct sframe_section *sec)
+ 		sec->ra_off, sec->fp_off);
  }
  
- #else /* !CONFIG_DYNAMIC_DEBUG */
++static __always_inline void dbg_print_fde_uaccess(struct sframe_section *sec,
++						  struct sframe_fde *fde)
++{
++	dbg_sec_uaccess("FDE: start_addr:0x%x func_size:0x%x "
++			"fres_off:0x%x fres_num:%d info:%u rep_size:%u\n",
++			fde->start_addr, fde->func_size,
++			fde->fres_off, fde->fres_num, fde->info, fde->rep_size);
++}
++
+ static inline void dbg_init(struct sframe_section *sec)
+ {
+ 	struct mm_struct *mm = current->mm;
+@@ -57,8 +86,10 @@ static inline void dbg_free(struct sframe_section *sec)
  
  #define dbg(args...)			no_printk(args)
-+#define dbg_sec(args...	)		no_printk(args)
+ #define dbg_sec(args...	)		no_printk(args)
++#define dbg_sec_uaccess(args...)	no_printk(args)
  
  static inline void dbg_print_header(struct sframe_section *sec) {}
++static inline void dbg_print_fde_uaccess(struct sframe_section *sec, struct sframe_fde *fde) {}
  
-+static inline void dbg_init(struct sframe_section *sec) {}
-+static inline void dbg_free(struct sframe_section *sec) {}
-+
- #endif /* !CONFIG_DYNAMIC_DEBUG */
- 
- #endif /* _SFRAME_DEBUG_H */
+ static inline void dbg_init(struct sframe_section *sec) {}
+ static inline void dbg_free(struct sframe_section *sec) {}
 -- 
 2.47.2
 
