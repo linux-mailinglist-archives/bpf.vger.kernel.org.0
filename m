@@ -1,265 +1,129 @@
-Return-Path: <bpf+bounces-60988-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60989-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09B26ADF69C
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 21:09:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D11BADF6C3
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 21:22:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9836A4A2DA9
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 19:09:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F393189D33C
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 19:22:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC90220E71E;
-	Wed, 18 Jun 2025 19:09:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2436B20CCD0;
+	Wed, 18 Jun 2025 19:22:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jy4x/7PV"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3C8020A5EA;
-	Wed, 18 Jun 2025 19:09:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41CA23085AE;
+	Wed, 18 Jun 2025 19:22:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750273761; cv=none; b=iDEnVNhUmLbGrKPOgL+8116xVZYz+mUykTtGk71TdZhf6DLVtfkRWeb3wMK83UyZ6A4E3AU5Af7WrnkDcR9q+drKlU2WFyfIXZI8XMpOEvdbD3+HaidKv+0DPjP5eKn2r0ePD8zsI1GdIP4WAUxcuIy25ukGkZpdztzYG2Aqu/M=
+	t=1750274542; cv=none; b=BvEU/ptkkp8L1awwQJ3ULZo723uoHaZVw5yLd8omLVgI9/k2tufn0NHq4AE7DcdgAzU6xQR10JSp07qlktib2NS5DrX9HdJ0wyb5n5gNhJG1dkh5ueLcirFCngEK8V9h7FCcZFxHmin3juP9Xaxd31EaoARJiNTT2lZIhgSwwys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750273761; c=relaxed/simple;
-	bh=YJ8mz+ikgW8nKvjldFD7MTl5HffyMooPfVfI4mhvw+s=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bgjutJ/TvZ6/2+nibgj1GFV7w20IyQ6RiQIrXMxfpAPZgU3tgCrRRfv5baDFxP9KKSS/YjV/vEWnl6sN2aoQU4mDvImjRpa0zVqeIITgXg5kKxeca1s/reXXJfYOFnJrKw/nYb6N4rakbn+22E6jAJ+k28cBH60GsRNu/aQQ8u4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf08.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay03.hostedemail.com (Postfix) with ESMTP id 934CBBD597;
-	Wed, 18 Jun 2025 19:09:10 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf08.hostedemail.com (Postfix) with ESMTPA id CFEC42002B;
-	Wed, 18 Jun 2025 19:09:06 +0000 (UTC)
-Date: Wed, 18 Jun 2025 15:09:15 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- bpf@vger.kernel.org, x86@kernel.org, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Josh Poimboeuf <jpoimboe@kernel.org>, Ingo Molnar <mingo@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Thomas
- Gleixner <tglx@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, Indu
- Bhagat <indu.bhagat@oracle.com>, "Jose E. Marchesi" <jemarch@gnu.org>, Beau
- Belgrave <beaub@linux.microsoft.com>, Jens Remus <jremus@linux.ibm.com>,
- Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton
- <akpm@linux-foundation.org>
-Subject: Re: [PATCH v10 06/14] unwind_user/deferred: Add deferred unwinding
- interface
-Message-ID: <20250618150915.3e811f4b@gandalf.local.home>
-In-Reply-To: <20250618184620.GT1613376@noisy.programming.kicks-ass.net>
-References: <20250611005421.144238328@goodmis.org>
-	<20250611010428.770214773@goodmis.org>
-	<20250618184620.GT1613376@noisy.programming.kicks-ass.net>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1750274542; c=relaxed/simple;
+	bh=K+Sxn5ZFjdLNK4MAiVvRQ0Ik9p5RLUsRzxE55lXXHiQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WdfRwCZ5nPvN3/Fyawd6ebMmcdNtrpK5CVwPqEx5tRvilOPmfnEB3iOwL0p0805WMJ2UlrTtJeCJyYNYZG3GEY5cB7GNf59vVsInWbDiP7kEm3ixoKfBIGQyg5pGh/Tglo7uc66aXdhkw+Ho2Hx2M6D4RMM3dCjXIR4CKjdfXhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jy4x/7PV; arc=none smtp.client-ip=209.85.166.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-875ce3c8e24so194293539f.1;
+        Wed, 18 Jun 2025 12:22:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1750274540; x=1750879340; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=K+Sxn5ZFjdLNK4MAiVvRQ0Ik9p5RLUsRzxE55lXXHiQ=;
+        b=Jy4x/7PVs+t67m5SWs2qRt14Ewq74gdp7CigkhWZNQ61pjXU02mcF/uheRzduCNxOq
+         K/NOPWkbb+WzstX7ZiffzIm4llw3hJ/txNDlE0+w9ZFYpzKTh12cj3oNMHvFqN9e5EHr
+         mqnNlCZ8HsX6uAq3/L/7fMxiKhC4WFWzxAp0ruSHaE3N3UNeIlMtOkwVVpkqfd6R/1uB
+         FjYUMm5fjR8dm/pRT9MmY/PGeKPwcBCTnNe0+jbHkit+67cE0Qt6LpCOuZ7iQmPF6/Nu
+         BjD8skLZchX1VEpkxyykmxyMO4h886y60kHWTvNiMntZID5ZRqhTlsKKZ6ubZg/L+dbu
+         EPnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750274540; x=1750879340;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=K+Sxn5ZFjdLNK4MAiVvRQ0Ik9p5RLUsRzxE55lXXHiQ=;
+        b=a5ZebYXLi7Vzu7RD+y8rjykxiF+pkZr0HoHonqWKIcBRf8YZMK/c0sx2sXQAAQass0
+         1qnRIJ9d057tL2nhemk4F67s8IXAuPzudM+IObuhgpGzF4qWRVhI5Fdtnatc1rXXkMsJ
+         yfEgZpvZb4HjhsHcluyjx96Om0yeEGOKbjwSrnYUMxZpRgR/t4SbPGBxsRSGwVFZpFmg
+         uJLZ2RI322Veym2KXNbN8UMydIpAzG8J0jEWGqOwtAniL17yYOyHLIgUFCkfwvsXMZgP
+         cAvkQNCPnUzfuWdsQxzgx5YvhRPy+cHa7uLHwrNer5qi896mS8qZauzp8TGYertaM/UQ
+         nafQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU4iI7uJb13Yuu6JDre81+BrEPdhWeyqDMo3782Yq6MG4ZQW0x73XMx7m/OBdRQPAdKeQw=@vger.kernel.org, AJvYcCVAV13g/2l5+qkxfI+/dZGY9qig4rb2W31dG8jYAibp/vX5nOwaPtyydJ3HJQG6XmIvIdCkD0Ym@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw8tSAIgatXJayb5Ecy7zYFSYH+AndQ/Vi9XBLMDO+AMYbtyluI
+	AOu13ioRjiN93PGEpgxLmAeCfFosSM3M+W0+kw7h4HMOvfITwVxJk/qBZ3DZBay9hCWDsttRg6A
+	YG8W3ywZ0Oe8jUMebHVwBIs1rQaVHRBY=
+X-Gm-Gg: ASbGnct1507z7737lQPNQlTQdaTocaOMImhiiBCXd8xeiW8+HpB2b98qm8spS2+pmhX
+	vKaR6Ddy/FSPEog5Hjv14vUgH78wleE2lh1sSRKL93tuWJ30da5QMGrOS5UfudnlvgNgnPvnmaA
+	E85WlXwvJN1MwTT3k2oNySHsFtvfilL3MBiuMr13jPufY=
+X-Google-Smtp-Source: AGHT+IG2hEsrQOuGjhv1gsjDmB2ZXYLINw/QptPg+a1sMwMqZJqieX7poWJ7RU1vqQ+Kr4d1fE7nLR3UqlHe0kkQqU8=
+X-Received: by 2002:a05:6e02:1522:b0:3de:2102:f1d8 with SMTP id
+ e9e14a558f8ab-3de2102f53dmr116891125ab.18.1750274540223; Wed, 18 Jun 2025
+ 12:22:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: CFEC42002B
-X-Stat-Signature: xymxfyhx6nz85eykkyyk75a7pf5icotc
-X-Rspamd-Server: rspamout06
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1//gPL2Am6Um4rgqXE7/zsuJupVWU7zvUY=
-X-HE-Tag: 1750273746-299713
-X-HE-Meta: U2FsdGVkX1/iuUT1wS6HmN8aOXA0jTCnMH9pqx9YO3LcwcuOu+qWjJNY0zT2xtV4bVBwjGBx/xiA626GfvLBedmWrblKFf4y6nwNfCLeovh58OkMRMw/Wn8m4D+tAue55WxAhmtJ4o1ULeZ4/z5TDHFdhNitF6wm46IMTFkAgIjjS3+LJ12shSs9VawFev8YYTB3rGX+vyMArQ3PO3IgWY32CY4iD/2Sx/bgXLGsZcB5iMxlDH+4qI78n7+K0Lw6imh6VesOOQoWu1mfGBad0ie7FDq1ku2arPNrViuxfjOo7T/RpKW1fQEbS7CfV+rMAEVnNC4bPpsEsLzXR/3IJ/Mbu1e5f9Y3F63SvnCIk3APvNopf2jhSlNRSdDO40iB
+References: <20250618065553.96822-1-kerneljasonxing@gmail.com> <aFLWpssHj9sE9vvc@mini-arch>
+In-Reply-To: <aFLWpssHj9sE9vvc@mini-arch>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Thu, 19 Jun 2025 03:21:44 +0800
+X-Gm-Features: AX0GCFtRPZS7-yuuAEBOnY_Nb8fXmLzjToI7h7V4uWl7SK5t0tRTC65U76KxMoY
+Message-ID: <CAL+tcoDX=VOPQokJ+xZwyO1GcGwyyJtH2Vowh8d3T0SEzS8_6Q@mail.gmail.com>
+Subject: Re: [PATCH net-next v2] net: xsk: add sysctl_xsk_max_tx_budget in the
+ xmit path
+To: Stanislav Fomichev <stfomichev@gmail.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com, 
+	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com, sdf@fomichev.me, 
+	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
+	john.fastabend@gmail.com, joe@dama.to, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 18 Jun 2025 20:46:20 +0200
-Peter Zijlstra <peterz@infradead.org> wrote:
+On Wed, Jun 18, 2025 at 11:09=E2=80=AFPM Stanislav Fomichev
+<stfomichev@gmail.com> wrote:
+>
+> On 06/18, Jason Xing wrote:
+> > From: Jason Xing <kernelxing@tencent.com>
+> >
+> > For some applications, it's quite useful to let users have the chance t=
+o
+> > tune the max budget, like accelerating transmission, when xsk is sendin=
+g
+> > packets. Exposing such a knob also helps auto/AI tuning in the long run=
+.
+> >
+> > The patch unifies two definitions into one that is 32 by default and
+> > makes the sysctl knob namespecified.
+> >
+> > Signed-off-by: Jason Xing <kernelxing@tencent.com>
+> > ---
+> > v2
+> > Link: https://lore.kernel.org/all/20250617002236.30557-1-kerneljasonxin=
+g@gmail.com/
+> > 1. use a per-netns sysctl knob
+>
+> Why are you still insisting on the sysctl? Why not a per-socket (struct
+> xdp_sock) value? And then you can add a setsockopt (xsk_setsockopt) to tu=
+ne it.
 
-> > +struct unwind_work;
-> > +
-> > +typedef void (*unwind_callback_t)(struct unwind_work *work, struct unwind_stacktrace *trace, u64 timestamp);
-> > +
-> > +struct unwind_work {
-> > +	struct list_head		list;  
-> 
-> Does this really need to be a list? Single linked list like
-> callback_head not good enough?
+Oh, I gave that thought too. At that time, I was thinking it requires
+an extra system call to take effect. Maybe not that flexible?
 
-Doesn't a list head make it easier to remove without having to iterate the
-list?
+I'll follow your advice in V3 if no other objections arise.
 
-> 
-> > +	unwind_callback_t		func;
-> > +};
-> > +
-> >  #ifdef CONFIG_UNWIND_USER
-> >  
-> >  void unwind_task_init(struct task_struct *task);
-> > @@ -12,10 +22,15 @@ void unwind_task_free(struct task_struct *task);
-> >  
-> >  int unwind_deferred_trace(struct unwind_stacktrace *trace);
-> >  
-> > +int unwind_deferred_init(struct unwind_work *work, unwind_callback_t
-> > func); +int unwind_deferred_request(struct unwind_work *work, u64
-> > *timestamp); +void unwind_deferred_cancel(struct unwind_work *work);
-> > +
-> >  static __always_inline void unwind_exit_to_user_mode(void)
-> >  {
-> >  	if (unlikely(current->unwind_info.cache))
-> >  		current->unwind_info.cache->nr_entries = 0;
-> > +	current->unwind_info.timestamp = 0;  
-> 
-> Surely clearing that timestamp is only relevant when there is a cache
-> around? Better to not add this unconditional write to the exit path.
-
-That's actually not quite true. If the allocation fails, we still want to
-clear the timestamp. But later patches add more data to check and it does
-exit out if there's been no requests:
-
-{
-        struct unwind_task_info *info = &current->unwind_info;
-        unsigned long bits;
-
-        /* Was there any unwinding? */
-        if (likely(!info->unwind_mask))
-                return;
-
-        bits = info->unwind_mask;
-        do {
-                /* Is a task_work going to run again before going back */
-                if (bits & UNWIND_PENDING)
-                        return;
-        } while (!try_cmpxchg(&info->unwind_mask, &bits, 0UL));
-
-        if (likely(info->cache))
-                info->cache->nr_entries = 0;
-        info->timestamp = 0;
-}
-
-But for better reviewing, I could add a comment in this patch that states
-that this will eventually exit out early when it does more work.
-
-
-> 
-> >  }
-> >  
-> >  #else /* !CONFIG_UNWIND_USER */
-> > @@ -24,6 +39,9 @@ static inline void unwind_task_init(struct
-> > task_struct *task) {} static inline void unwind_task_free(struct
-> > task_struct *task) {} 
-> >  static inline int unwind_deferred_trace(struct unwind_stacktrace
-> > *trace) { return -ENOSYS; } +static inline int
-> > unwind_deferred_init(struct unwind_work *work, unwind_callback_t func)
-> > { return -ENOSYS; } +static inline int unwind_deferred_request(struct
-> > unwind_work *work, u64 *timestamp) { return -ENOSYS; } +static inline
-> > void unwind_deferred_cancel(struct unwind_work *work) {} static inline
-> > void unwind_exit_to_user_mode(void) {} 
-> > diff --git a/include/linux/unwind_deferred_types.h
-> > b/include/linux/unwind_deferred_types.h index
-> > db5b54b18828..5df264cf81ad 100644 ---
-> > a/include/linux/unwind_deferred_types.h +++
-> > b/include/linux/unwind_deferred_types.h @@ -9,6 +9,9 @@ struct
-> > unwind_cache { 
-> >  struct unwind_task_info {
-> >  	struct unwind_cache	*cache;
-> > +	struct callback_head	work;
-> > +	u64			timestamp;
-> > +	int			pending;
-> >  };
-> >  
-> >  #endif /* _LINUX_UNWIND_USER_DEFERRED_TYPES_H */
-> > diff --git a/kernel/unwind/deferred.c b/kernel/unwind/deferred.c
-> > index e3913781c8c6..b76c704ddc6d 100644
-> > --- a/kernel/unwind/deferred.c
-> > +++ b/kernel/unwind/deferred.c
-> > @@ -2,13 +2,35 @@
-> >  /*
-> >   * Deferred user space unwinding
-> >   */
-> > +#include <linux/sched/task_stack.h>
-> > +#include <linux/unwind_deferred.h>
-> > +#include <linux/sched/clock.h>
-> > +#include <linux/task_work.h>
-> >  #include <linux/kernel.h>
-> >  #include <linux/sched.h>
-> >  #include <linux/slab.h>
-> > -#include <linux/unwind_deferred.h>
-> > +#include <linux/mm.h>
-> >  
-> >  #define UNWIND_MAX_ENTRIES 512
-> >  
-> > +/* Guards adding to and reading the list of callbacks */
-> > +static DEFINE_MUTEX(callback_mutex);
-> > +static LIST_HEAD(callbacks);  
-> 
-> Global state.. smells like failure.
-
-Yes, the unwind infrastructure is global, as it is the way tasks know what
-tracer's callbacks to call.
-
-> 
-> > +/*
-> > + * Read the task context timestamp, if this is the first caller then
-> > + * it will set the timestamp.
-> > + */
-> > +static u64 get_timestamp(struct unwind_task_info *info)
-> > +{
-> > +	lockdep_assert_irqs_disabled();
-> > +
-> > +	if (!info->timestamp)
-> > +		info->timestamp = local_clock();
-> > +
-> > +	return info->timestamp;
-> > +}
-> > +
-> >  /**
-> >   * unwind_deferred_trace - Produce a user stacktrace in faultable
-> > context
-> >   * @trace: The descriptor that will store the user stacktrace
-> > @@ -59,11 +81,117 @@ int unwind_deferred_trace(struct unwind_stacktrace
-> > *trace) return 0;
-> >  }
-> >  
-> > +static void unwind_deferred_task_work(struct callback_head *head)
-> > +{
-> > +	struct unwind_task_info *info = container_of(head, struct
-> > unwind_task_info, work);
-> > +	struct unwind_stacktrace trace;
-> > +	struct unwind_work *work;
-> > +	u64 timestamp;
-> > +
-> > +	if (WARN_ON_ONCE(!info->pending))
-> > +		return;
-> > +
-> > +	/* Allow work to come in again */
-> > +	WRITE_ONCE(info->pending, 0);
-> > +
-> > +	/*
-> > +	 * From here on out, the callback must always be called, even
-> > if it's
-> > +	 * just an empty trace.
-> > +	 */
-> > +	trace.nr = 0;
-> > +	trace.entries = NULL;
-> > +
-> > +	unwind_deferred_trace(&trace);
-> > +
-> > +	timestamp = info->timestamp;
-> > +
-> > +	guard(mutex)(&callback_mutex);
-> > +	list_for_each_entry(work, &callbacks, list) {
-> > +		work->func(work, &trace, timestamp);
-> > +	}  
-> 
-> So now you're globally serializing all return-to-user instances. How is
-> that not a problem?
-
-It was the original way we did things. The next patch changes this to SRCU.
-But it requires a bit more care. For breaking up the series, I preferred
-not to add that logic and make it a separate patch.
-
-For better reviewing, I'll add a comment here that says:
-
-	/* TODO switch this global lock to SRCU */
-
--- Steve
+Thanks,
+Jason
 
