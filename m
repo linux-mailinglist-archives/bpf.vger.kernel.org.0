@@ -1,370 +1,217 @@
-Return-Path: <bpf+bounces-60891-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60892-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FB2CADE29F
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 06:36:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAA39ADE363
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 08:07:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFB3217B8C8
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 04:36:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96DAB3B769C
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 06:06:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC6801E51EF;
-	Wed, 18 Jun 2025 04:36:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65C161EA7C4;
+	Wed, 18 Jun 2025 06:07:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WuGvWiEo"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aw9b2FQ7"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07D4F1DE2A7
-	for <bpf@vger.kernel.org>; Wed, 18 Jun 2025 04:36:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 626B018FC86
+	for <bpf@vger.kernel.org>; Wed, 18 Jun 2025 06:07:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750221393; cv=none; b=oAJeGV8lqatBasEpsW6PwU25q8/0fOZ/SFEefX4qsfN5cwU1fuIOWmm9HAN6hKq4lU/3rwnXS38tCfBG+FqH+WHRr7eta9O11nDuTrNtaqCmpEd6gt+L0oRWBOnwg+v94L5Ow1KdBCivRCMwrui1LPSEHrTNmni2JSIFVHj8vL8=
+	t=1750226838; cv=none; b=fCLjvXRX/gDQaQSXvhQ98NTLSeglKHe0YPolmrTwBHFMdR/SRTdwbC/ksR75dNRsS3X39vHWWKGNCzlWTBkbuPNOvt3yRg3JJyiyzwHeOPA+EaacNqk5+LC7DAz4L9ul9KepILQjNQfEUK+dYT1a8Jkn6XjAE0ky4Ew1Fd3P7oc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750221393; c=relaxed/simple;
-	bh=w4pcOt+ScaAM5Jfr0CS430TwrL8pDBZeEekyT57w/QM=;
+	s=arc-20240116; t=1750226838; c=relaxed/simple;
+	bh=gVpRGpWbvK2l2EgWkUdriQt0Z8wJ5SQFwm0/UlJCZCQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fY4BQpq4G2Y5l+1wmcrIwto3JOHACn4NfHNCWSMfQ9aYW3zZooVDaLJqkfc4G017K7/QAaC4w7BgAe5xPg4rJPnwrG28Hb1I7g/rrfNDaapub+aqTFgmzun9IUVGMe/rR2yIkx7PRzDgvUZ/7xJH+pZ0aiQsTRagc1fHgxXI33M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WuGvWiEo; arc=none smtp.client-ip=95.215.58.189
+	 In-Reply-To:Content-Type; b=G368T3r9U7kSn387tfDBYXyMnjniibDDFGFCMT5E37SjaSMuXKYzNmyH6pgGgHZvHu3JLZUl/nt+YTP6TUqFSQPZRO8srvTrL8XPGfhsg+8K9al+WyyqFi2TgEwG2zfR62dut8UntaL5SZZnAk+OfEMa+H6YQDNK0mMPF4uJNKE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aw9b2FQ7; arc=none smtp.client-ip=91.218.175.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <b3ce39f0-c52b-4787-980c-973bd4228349@linux.dev>
+Message-ID: <325ab9a0-44d1-44a2-aefe-9cd49dcd12f5@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1750221387;
+	t=1750226827;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vMiBGwJIFsuwKorQA5fQy1QVopHhwCl6+KnXqj2rbSc=;
-	b=WuGvWiEoIpWes/X3aCpDaHrlKnkMllDPN3RjE0i5YkO4ips96xJtiY3lLkgZQk3blVa+IB
-	8JMArdIWra9aqciu6IMHPrRcJNPP1JwoCi76KXO7SI/uTo8CYzoQ/e/csc/Evm41szivCT
-	QnM8Mnj2dEK6XoKIT47AWsJ6D1Nr34Y=
-Date: Tue, 17 Jun 2025 21:36:15 -0700
+	bh=NkuFePhrx7gFmJOrw5AAMhKELjMHQfD+AdCkLnFiRGI=;
+	b=aw9b2FQ7pNugXJV0VcM6mLYbw5VWRu7wvN+6UUWbwbPdlWLsDYLiwI6KgDtMGuzIpy8nW3
+	2NBbXpHvUFxO9U7iE2frkLEYATSmZ6ODBNCYhLpOUIlXQmYLj2uJ34QHWIA4wSucCXacT0
+	nZWvDmjbsLGMme3pBGyRInNwmZuxNTk=
+Date: Tue, 17 Jun 2025 23:06:52 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 1/3] selftests/bpf: Refactor the failed
- assertion to another subtest
-Content-Language: en-GB
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
-References: <20250615185345.2756663-1-yonghong.song@linux.dev>
- <20250615185351.2757391-1-yonghong.song@linux.dev>
- <CAEf4BzZmzrT7+nB0eyK-iLv+un68VtLY-TAq3G5Pti=sjM41TQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v6 10/12] net/mlx5e: Implement queue mgmt ops and
+ single channel swap
+To: Mark Bloch <mbloch@nvidia.com>, "David S. Miller" <davem@davemloft.net>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ Simon Horman <horms@kernel.org>
+Cc: saeedm@nvidia.com, gal@nvidia.com, leonro@nvidia.com, tariqt@nvidia.com,
+ Leon Romanovsky <leon@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>,
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+ Richard Cochran <richardcochran@gmail.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Stanislav Fomichev <sdf@fomichev.me>, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, Dragos Tatulea <dtatulea@nvidia.com>
+References: <20250616141441.1243044-1-mbloch@nvidia.com>
+ <20250616141441.1243044-11-mbloch@nvidia.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAEf4BzZmzrT7+nB0eyK-iLv+un68VtLY-TAq3G5Pti=sjM41TQ@mail.gmail.com>
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20250616141441.1243044-11-mbloch@nvidia.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-
-
-On 6/16/25 3:00 PM, Andrii Nakryiko wrote:
-> On Sun, Jun 15, 2025 at 11:54 AM Yonghong Song <yonghong.song@linux.dev> wrote:
->> When building the selftest with arm64/clang20, the following test failed:
->>      ...
->>      ubtest_multispec_usdt:PASS:usdt_100_called 0 nsec
->>      subtest_multispec_usdt:PASS:usdt_100_sum 0 nsec
->>      subtest_multispec_usdt:FAIL:usdt_300_bad_attach unexpected pointer: 0xaaaad82a2a80
->>      #469/2   usdt/multispec:FAIL
->>      #469     usdt:FAIL
->>
->> The failed assertion
->>      subtest_multispec_usdt:FAIL:usdt_300_bad_attach unexpected pointer: 0xaaaad82a2a80
->> is caused by bpf_program__attach_usdt() which is expected to fail. But
->> with arm64/clang20 bpf_program__attach_usdt() actually succeeded.
-> I think I missed that it's unexpected *success* that is causing
-> issues. If that's so, then I think it might be more straightforward to
-> just ensure that test is expectedly failing regardless of compiler
-> code generation logic. Maybe something along the following lines:
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/usdt.c
-> b/tools/testing/selftests/bpf/prog_tests/usdt.c
-> index 495d66414b57..fdd8642cfdff 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/usdt.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/usdt.c
-> @@ -190,11 +190,21 @@ static void __always_inline f300(int x)
->          STAP_PROBE1(test, usdt_300, x);
->   }
->
-> +#define RP10(F, X)  F(*(X+0)); F(*(X+1));F(*(X+2)); F(*(X+3)); F(*(X+4)); \
-> +                   F(*(X+5)); F(*(X+6)); F(*(X+7)); F(*(X+8)); F(*(X+9));
-> +#define RP100(F, X) RP10(F,X+
-> 0);RP10(F,X+10);RP10(F,X+20);RP10(F,X+30);RP10(F,X+40); \
+在 2025/6/16 7:14, Mark Bloch 写道:
+> From: Saeed Mahameed <saeedm@nvidia.com>
+> 
+> The bulk of the work is done in mlx5e_queue_mem_alloc, where we allocate
+> and create the new channel resources, similar to
+> mlx5e_safe_switch_params, but here we do it for a single channel using
+> existing params, sort of a clone channel.
+> To swap the old channel with the new one, we deactivate and close the
+> old channel then replace it with the new one, since the swap procedure
+> doesn't fail in mlx5, we do it all in one place (mlx5e_queue_start).
+> 
+> Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
+> Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+> Signed-off-by: Mark Bloch <mbloch@nvidia.com>
+> ---
+>   .../net/ethernet/mellanox/mlx5/core/en_main.c | 98 +++++++++++++++++++
+>   1 file changed, 98 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> index a51e204bd364..873a42b4a82d 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> @@ -5494,6 +5494,103 @@ static const struct netdev_stat_ops mlx5e_stat_ops = {
+>   	.get_base_stats      = mlx5e_get_base_stats,
+>   };
+>   
+> +struct mlx5_qmgmt_data {
+> +	struct mlx5e_channel *c;
+> +	struct mlx5e_channel_param cparam;
+> +};
 > +
-> RP10(F,X+50);RP10(F,X+60);RP10(F,X+70);RP10(F,X+80);RP10(F,X+90);
+> +static int mlx5e_queue_mem_alloc(struct net_device *dev, void *newq,
+> +				 int queue_index)
+> +{
+> +	struct mlx5_qmgmt_data *new = (struct mlx5_qmgmt_data *)newq;
+> +	struct mlx5e_priv *priv = netdev_priv(dev);
+> +	struct mlx5e_channels *chs = &priv->channels;
+> +	struct mlx5e_params params = chs->params;
+
+RCT (Reverse Christmas Tree) ?
+
+Yanjun.Zhu
+
+> +	struct mlx5_core_dev *mdev;
+> +	int err;
 > +
->   __weak void trigger_300_usdts(void)
+> +	mutex_lock(&priv->state_lock);
+> +	if (!test_bit(MLX5E_STATE_OPENED, &priv->state)) {
+> +		err = -ENODEV;
+> +		goto unlock;
+> +	}
+> +
+> +	if (queue_index >= chs->num) {
+> +		err = -ERANGE;
+> +		goto unlock;
+> +	}
+> +
+> +	if (MLX5E_GET_PFLAG(&chs->params, MLX5E_PFLAG_TX_PORT_TS) ||
+> +	    chs->params.ptp_rx   ||
+> +	    chs->params.xdp_prog ||
+> +	    priv->htb) {
+> +		netdev_err(priv->netdev,
+> +			   "Cloning channels with Port/rx PTP, XDP or HTB is not supported\n");
+> +		err = -EOPNOTSUPP;
+> +		goto unlock;
+> +	}
+> +
+> +	mdev = mlx5_sd_ch_ix_get_dev(priv->mdev, queue_index);
+> +	err = mlx5e_build_channel_param(mdev, &params, &new->cparam);
+> +	if (err)
+> +		goto unlock;
+> +
+> +	err = mlx5e_open_channel(priv, queue_index, &params, NULL, &new->c);
+> +unlock:
+> +	mutex_unlock(&priv->state_lock);
+> +	return err;
+> +}
+> +
+> +static void mlx5e_queue_mem_free(struct net_device *dev, void *mem)
+> +{
+> +	struct mlx5_qmgmt_data *data = (struct mlx5_qmgmt_data *)mem;
+> +
+> +	/* not supposed to happen since mlx5e_queue_start never fails
+> +	 * but this is how this should be implemented just in case
+> +	 */
+> +	if (data->c)
+> +		mlx5e_close_channel(data->c);
+> +}
+> +
+> +static int mlx5e_queue_stop(struct net_device *dev, void *oldq, int queue_index)
+> +{
+> +	/* In mlx5 a txq cannot be simply stopped in isolation, only restarted.
+> +	 * mlx5e_queue_start does not fail, we stop the old queue there.
+> +	 * TODO: Improve this.
+> +	 */
+> +	return 0;
+> +}
+> +
+> +static int mlx5e_queue_start(struct net_device *dev, void *newq,
+> +			     int queue_index)
+> +{
+> +	struct mlx5_qmgmt_data *new = (struct mlx5_qmgmt_data *)newq;
+> +	struct mlx5e_priv *priv = netdev_priv(dev);
+> +	struct mlx5e_channel *old;
+> +
+> +	mutex_lock(&priv->state_lock);
+> +
+> +	/* stop and close the old */
+> +	old = priv->channels.c[queue_index];
+> +	mlx5e_deactivate_priv_channels(priv);
+> +	/* close old before activating new, to avoid napi conflict */
+> +	mlx5e_close_channel(old);
+> +
+> +	/* start the new */
+> +	priv->channels.c[queue_index] = new->c;
+> +	mlx5e_activate_priv_channels(priv);
+> +	mutex_unlock(&priv->state_lock);
+> +	return 0;
+> +}
+> +
+> +static const struct netdev_queue_mgmt_ops mlx5e_queue_mgmt_ops = {
+> +	.ndo_queue_mem_size	=	sizeof(struct mlx5_qmgmt_data),
+> +	.ndo_queue_mem_alloc	=	mlx5e_queue_mem_alloc,
+> +	.ndo_queue_mem_free	=	mlx5e_queue_mem_free,
+> +	.ndo_queue_start	=	mlx5e_queue_start,
+> +	.ndo_queue_stop		=	mlx5e_queue_stop,
+> +};
+> +
+>   static void mlx5e_build_nic_netdev(struct net_device *netdev)
 >   {
-> -       R100(f300, 0);
-> -       R100(f300, 100);
-> -       R100(f300, 200);
-> +       volatile int arr[300], i;
-> +
-> +       for (i = 0; i < 300; i++)
-> +               arr[i] = 300;
-> +
-> +       RP100(f300, arr + 0);
-> +       RP100(f300, arr + 100);
-> +       RP100(f300, arr + 200);
->   }
->
->
-> So basically force the compiler to use 300 different locations for
-> each of 300 USDT instantiations? I didn't check how that will look
-> like on arm64, but on x86 gcc it seems to generate what is expected of
-> it.
->
-> Can you please try it on arm64 and see if that works?
-
-I tried the above on arm64 and it does not work. It has the same usdt arguments
-as without this patch:
-
-   stapsdt              0x0000002e       NT_STAPSDT (SystemTap probe descriptors)
-     Provider: test
-     Name: usdt_300
-     Location: 0x00000000000009e0, Base: 0x0000000000000000, Semaphore: 0x0000000000000008
-     Arguments: -4@[x9]
-   stapsdt              0x0000002e       NT_STAPSDT (SystemTap probe descriptors)
-     Provider: test
-     Name: usdt_300
-     Location: 0x00000000000009f8, Base: 0x0000000000000000, Semaphore: 0x0000000000000008
-     Arguments: -4@[x9]
-   ...
-
-But I found if we build usdt.c file with -O2 (RELEASE=1) on arm64, the test will be successful:
-
-   stapsdt              0x0000002b       NT_STAPSDT (SystemTap probe descriptors)
-     Provider: test
-     Name: usdt_300
-     Location: 0x00000000000001a4, Base: 0x0000000000000000, Semaphore: 0x0000000000000008
-     Arguments: -4@0
-   stapsdt              0x0000002b       NT_STAPSDT (SystemTap probe descriptors)
-     Provider: test
-     Name: usdt_300
-     Location: 0x00000000000001a8, Base: 0x0000000000000000, Semaphore: 0x0000000000000008
-     Arguments: -4@1
-   ...
-
-But usdt.c with -O2 will have a problem with gcc14 on x86:
-
-   stapsdt              0x00000087       NT_STAPSDT (SystemTap probe descriptors)
-     Provider: test
-     Name: usdt12
-     Location: 0x000000000000258f, Base: 0x0000000000000000, Semaphore: 0x0000000000000006
-     Arguments: -4@$2 -4@$3 -8@$42 -8@$44 -4@$5 -8@$6 8@%rdx 8@%rsi -4@$-9 -2@%cx -2@nums(%rax,%rax) -1@t1+4(%rip)
-   ...
-
-You can see the above last two arguments which are not supported by libbpf.
-
-So let us say usdt.c is compiled with -O2:
-    x86:
-      gcc14 built kernel/selftests: failed, see the above
-      clang built kernel/selftests: good
-    arm64:
-      both gcc14/clang built kernel/selftrests: good
-
-arm64 has more reigsters so it is likely to have better argument representation, e.g.,
-for arm64/gcc with -O2, we have
-
-   stapsdt              0x00000071       NT_STAPSDT (SystemTap probe descriptors)
-     Provider: test
-     Name: usdt12
-     Location: 0x0000000000002e74, Base: 0x0000000000000000, Semaphore: 0x000000000000000a
-     Arguments: -4@2 -4@3 -8@42 -8@44 -4@5 -8@6 8@x1 8@x3 -4@-9 -2@x2 -2@[x0, 8] -1@[x3, 28]
-
-Eduard helped me to figure out how to compile prog_tests/usdt.c with -O2 alone.
-The following patch resolved the issue and usdt test will be happy for both x86 and arm64:
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 97013c49920b..05fc9149bc4f 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -760,6 +760,14 @@ TRUNNER_BPF_BUILD_RULE := $$(error no BPF objects should be built)
-  TRUNNER_BPF_CFLAGS :=
-  $(eval $(call DEFINE_TEST_RUNNER,test_maps))
-  
-+# Compiler prog_tests/usdt.c with -O2 with clang compiler.
-+# Otherwise, with -O0 on arm64, the usdt test will fail.
-+ifneq ($(LLVM),)
-+$(OUTPUT)/usdt.test.o: CFLAGS:=$(subst O0,O2,$(CFLAGS))
-+$(OUTPUT)/cpuv4/usdt.test.o: CFLAGS:=$(subst O0,O2,$(CFLAGS))
-+$(OUTPUT)/no_alu32/usdt.test.o: CFLAGS:=$(subst O0,O2,$(CFLAGS))
-+endif
-+
-  # Define test_verifier test runner.
-  # It is much simpler than test_maps/test_progs and sufficiently different from
-  # them (e.g., test.h is using completely pattern), that it's worth just
-
-Another choice is to support argument like `-2@nums(%rax,%rax)` and `-1@t1+4(%rip)`.
-But I am not sure whether we should do it or not as typically a usdt probe
-probably won't have lots of diverse arguments.
-
-WDYT?
-
-
->
->> Checking usdt probes with usdt.test.o,
->>
->> with gcc11 build binary:
->>    stapsdt              0x0000002e       NT_STAPSDT (SystemTap probe descriptors)
->>      Provider: test
->>      Name: usdt_300
->>      Location: 0x00000000000054f8, Base: 0x0000000000000000, Semaphore: 0x0000000000000008
->>      Arguments: -4@[sp]
->>    stapsdt              0x00000031       NT_STAPSDT (SystemTap probe descriptors)
->>      Provider: test
->>      Name: usdt_300
->>      Location: 0x0000000000005510, Base: 0x0000000000000000, Semaphore: 0x0000000000000008
->>      Arguments: -4@[sp, 4]
->>    ...
->>    stapsdt              0x00000032       NT_STAPSDT (SystemTap probe descriptors)
->>      Provider: test
->>      Name: usdt_300
->>      Location: 0x0000000000005660, Base: 0x0000000000000000, Semaphore: 0x0000000000000008
->>      Arguments: -4@[sp, 60]
->>    ...
->>    stapsdt              0x00000034       NT_STAPSDT (SystemTap probe descriptors)
->>      Provider: test
->>      Name: usdt_300
->>      Location: 0x00000000000070e8, Base: 0x0000000000000000, Semaphore: 0x0000000000000008
->>      Arguments: -4@[sp, 1192]
->>    stapsdt              0x00000034       NT_STAPSDT (SystemTap probe descriptors)
->>      Provider: test
->>      Name: usdt_300
->>      Location: 0x0000000000007100, Base: 0x0000000000000000, Semaphore: 0x0000000000000008
->>      Arguments: -4@[sp, 1196]
->>    ...
->>    stapsdt              0x00000032       NT_STAPSDT (SystemTap probe descriptors)
->>      Provider: test
->>      Name: usdt_300
->>      Location: 0x0000000000009ec4, Base: 0x0000000000000000, Semaphore: 0x0000000000000008
->>      Arguments: -4@[sp, 60]
->>
->> with clang20 build binary:
->>    stapsdt              0x0000002e       NT_STAPSDT (SystemTap probe descriptors)
->>      Provider: test
->>      Name: usdt_300
->>      Location: 0x00000000000009a0, Base: 0x0000000000000000, Semaphore: 0x0000000000000008
->>      Arguments: -4@[x9]
->>    stapsdt              0x0000002e       NT_STAPSDT (SystemTap probe descriptors)
->>      Provider: test
->>      Name: usdt_300
->>      Location: 0x00000000000009b8, Base: 0x0000000000000000, Semaphore: 0x0000000000000008
->>      Arguments: -4@[x9]
->>    ...
->>    stapsdt              0x0000002e       NT_STAPSDT (SystemTap probe descriptors)
->>      Provider: test
->>      Name: usdt_300
->>      Location: 0x0000000000002590, Base: 0x0000000000000000, Semaphore: 0x0000000000000008
->>      Arguments: -4@[x9]
->>    stapsdt              0x0000002e       NT_STAPSDT (SystemTap probe descriptors)
->>      Provider: test
->>      Name: usdt_300
->>      Location: 0x00000000000025a8, Base: 0x0000000000000000, Semaphore: 0x0000000000000008
->>      Arguments: -4@[x8]
->>    ...
->>    stapsdt              0x0000002f       NT_STAPSDT (SystemTap probe descriptors)
->>      Provider: test
->>      Name: usdt_300
->>      Location: 0x0000000000007fdc, Base: 0x0000000000000000, Semaphore: 0x0000000000000008
->>      Arguments: -4@[x10]
->>
->> There are total 301 locations for usdt_300. For gcc11 built binary, there are
->> 300 spec's. But for clang20 built binary, there are 3 spec's. The libbpf default
->> BPF_USDT_MAX_SPEC_CNT is 256. So for gcc11, the above bpf_program__attach_usdt() will
->> fail, but the function will succeed for clang20.
->>
->> Note that we cannot just change BPF_USDT_MAX_SPEC_CNT from 256 to 2 (through overwriting
->> BPF_USDT_MAX_SPEC_CNT before usdt.bpf.h) since it will cause other test failures.
->> We cannot just set BPF_USDT_MAX_SPEC_CNT to 2 for test_usdt_multispec.c since we
->> have below in the Makefile:
->>    test_usdt.skel.h-deps := test_usdt.bpf.o test_usdt_multispec.bpf.o
->> and the linker will enforce that BPF_USDT_MAX_SPEC_CNT values for both progs must
->> be the same.
->>
->> The refactoring does not change existing test result. But the future change will
->> allow to set BPF_USDT_MAX_SPEC_CNT to be 2 for arm64/clang20 case, which will have
->> the same attachment failure as in gcc11.
->>
->> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
->> ---
->>   tools/testing/selftests/bpf/prog_tests/usdt.c | 35 +++++++++++++------
->>   1 file changed, 25 insertions(+), 10 deletions(-)
->>
->> diff --git a/tools/testing/selftests/bpf/prog_tests/usdt.c b/tools/testing/selftests/bpf/prog_tests/usdt.c
->> index 495d66414b57..dc29ef94312a 100644
->> --- a/tools/testing/selftests/bpf/prog_tests/usdt.c
->> +++ b/tools/testing/selftests/bpf/prog_tests/usdt.c
->> @@ -270,18 +270,8 @@ static void subtest_multispec_usdt(void)
->>           */
->>          trigger_300_usdts();
->>
->> -       /* we'll reuse usdt_100 BPF program for usdt_300 test */
->>          bpf_link__destroy(skel->links.usdt_100);
->> -       skel->links.usdt_100 = bpf_program__attach_usdt(skel->progs.usdt_100, -1, "/proc/self/exe",
->> -                                                       "test", "usdt_300", NULL);
->> -       err = -errno;
->> -       if (!ASSERT_ERR_PTR(skel->links.usdt_100, "usdt_300_bad_attach"))
->> -               goto cleanup;
->> -       ASSERT_EQ(err, -E2BIG, "usdt_300_attach_err");
->>
->> -       /* let's check that there are no "dangling" BPF programs attached due
->> -        * to partial success of the above test:usdt_300 attachment
->> -        */
->>          bss->usdt_100_called = 0;
->>          bss->usdt_100_sum = 0;
->>
->> @@ -312,6 +302,29 @@ static void subtest_multispec_usdt(void)
->>          test_usdt__destroy(skel);
->>   }
->>
->> +static void subtest_multispec_fail_usdt(void)
->> +{
->> +       LIBBPF_OPTS(bpf_usdt_opts, opts);
->> +       struct test_usdt *skel;
->> +       int err;
->> +
->> +       skel = test_usdt__open_and_load();
->> +       if (!ASSERT_OK_PTR(skel, "skel_open"))
->> +               return;
->> +
->> +       skel->bss->my_pid = getpid();
->> +
->> +       skel->links.usdt_100 = bpf_program__attach_usdt(skel->progs.usdt_100, -1, "/proc/self/exe",
->> +                                                       "test", "usdt_300", NULL);
->> +       err = -errno;
->> +       if (!ASSERT_ERR_PTR(skel->links.usdt_100, "usdt_300_bad_attach"))
->> +               goto cleanup;
->> +       ASSERT_EQ(err, -E2BIG, "usdt_300_attach_err");
->> +
->> +cleanup:
->> +       test_usdt__destroy(skel);
->> +}
->> +
->>   static FILE *urand_spawn(int *pid)
->>   {
->>          FILE *f;
->> @@ -422,6 +435,8 @@ void test_usdt(void)
->>                  subtest_basic_usdt();
->>          if (test__start_subtest("multispec"))
->>                  subtest_multispec_usdt();
->> +       if (test__start_subtest("multispec_fail"))
->> +               subtest_multispec_fail_usdt();
->>          if (test__start_subtest("urand_auto_attach"))
->>                  subtest_urandom_usdt(true /* auto_attach */);
->>          if (test__start_subtest("urand_pid_attach"))
->> --
->> 2.47.1
->>
+>   	struct mlx5e_priv *priv = netdev_priv(netdev);
+> @@ -5504,6 +5601,7 @@ static void mlx5e_build_nic_netdev(struct net_device *netdev)
+>   	SET_NETDEV_DEV(netdev, mdev->device);
+>   
+>   	netdev->netdev_ops = &mlx5e_netdev_ops;
+> +	netdev->queue_mgmt_ops = &mlx5e_queue_mgmt_ops;
+>   	netdev->xdp_metadata_ops = &mlx5e_xdp_metadata_ops;
+>   	netdev->xsk_tx_metadata_ops = &mlx5e_xsk_tx_metadata_ops;
+>   	netdev->request_ops_lock = true;
 
 
