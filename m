@@ -1,53 +1,50 @@
-Return-Path: <bpf+bounces-60884-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60883-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7BD9ADE0A0
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 03:20:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3D4EADE09F
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 03:20:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C3EA189CB04
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 01:20:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F93C189CB04
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 01:20:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7A8E17C211;
-	Wed, 18 Jun 2025 01:20:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A0B317D346;
+	Wed, 18 Jun 2025 01:20:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="UofJ55Nf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PoToQin3"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.5])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D77A6522F;
-	Wed, 18 Jun 2025 01:20:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.5
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2E06522F;
+	Wed, 18 Jun 2025 01:19:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750209609; cv=none; b=GzeCe+P4QmAeU9CahBrNhEsKBhSWRIPnIUmEwm+sLIVXc0mC8I8qSxN7QT9p385+rH6k0MRb9vYMRFfZi0HWtNJLXqRVFQRKR2OzdXJnSNvAuJUO8jN24VTkLDkesBcVIb8g0ZdsdgMqL+xf6WRm+/kGf5z0g8t1+TiiuPQTkqM=
+	t=1750209599; cv=none; b=JIp+VHZDgYfTpPO5pUJxAJgZZ5MXPdPH1yvaFE8by/S0ufuz1VfD/EqMJ7OvcKTfStSGzahFK2Cxv0oXbKkS9IjmVUy2E/O7prXxUlgRosGpiwarLaJwLmVPNCkxB9CZM91vu7Vy/6zPU2HOXhy4YYnWGHaVPM+/AwbF33stBMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750209609; c=relaxed/simple;
-	bh=GSlCfS4KpSEwtC7tiXYXLQqO0FpVAZR012++6tFEayY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=dcbQwZJfZ7FKGf4f1bkMBecwPGSAdLPHAHNt+yiWYYXBVBhY/LPeU1CLz70soVv+YMT6tnXN4rRBzi9sDuCxFiL7/wfaSzqCMUl5rSymnMeg40mwxqZlYDVCFuETxRUKW9LO7zxEnPEvrgn8Gdt1sxqTiLXy/ksesi+8sGARulk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=UofJ55Nf; arc=none smtp.client-ip=117.135.210.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=yR
-	LjXnG7P8t/iK8n+LF0HnDZ3TakiYuoqdEOZIveRAY=; b=UofJ55NfUk5BTjvmGP
-	A2ntqENLZEiBz2E0Ge+ea/Ih9lWGpk5zwyhQGLnsL+DbXeLJRKnmKif13kk3JZtU
-	Xz0wc8LLV9J0iLVDxXOa6sBCjghuhE1Nf/qmpodfb0b0iyTAotwGyYDfSEGsSORy
-	spsNZxI4/JFc4NsvNPHCCuGyA=
-Received: from 163.com (unknown [])
-	by gzga-smtp-mtada-g0-1 (Coremail) with SMTP id _____wDXX4YtFFJoJT98AA--.19090S2;
-	Wed, 18 Jun 2025 09:19:42 +0800 (CST)
-From: chenyuan <chenyuan_fl@163.com>
-To: ast@kernel.org
-Cc: andrii.nakryiko@gmail.com,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	chenyuan_fl@163.com,
-	chenyuan <chenyuan@kylinos.cn>
-Subject: [PATCH v2] libbpf: Fix null pointer dereference in btf_dump__free on allocation failure
-Date: Wed, 18 Jun 2025 09:19:33 +0800
-Message-Id: <20250618011933.11423-1-chenyuan_fl@163.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1750209599; c=relaxed/simple;
+	bh=nOK1F2fLwFNCFaaqse5vh/+uEsbqSBiETDGgi3+2988=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=GFch+uICdxnIcbhEfb4TkDem+KDyjUZzs6qbYynlKYGjggFZXhk5fIbS3LxxyaS6jPymcVcylCdkhWqAGI7/JQiflUO/t4QJMq9mNw5jrF0xRvT19+pvziLcDg+J2BtI895PkcPMhnaFY0QrELw+NyRNnTt3BhikxRs0TK8cA7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PoToQin3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76DF4C4CEE3;
+	Wed, 18 Jun 2025 01:19:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1750209599;
+	bh=nOK1F2fLwFNCFaaqse5vh/+uEsbqSBiETDGgi3+2988=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=PoToQin35CfTM/Sy5GIyxOlY0SmPl/j92D8UoXYbzYCXS1tTeJz9r0dWPbYcwXppx
+	 lt6en6T8Fk++UCagpaRzJM7TBWxCM0OXKaKTiaF17DX3c156xE+TFhZkS1VGW5s3jN
+	 8EWAxhhlGSiHwOLPVng4GxssoRQhSaZozbRAiHhjuVjd8TkyQasIoX+XjJ5JdsGhTt
+	 WBVPCExw4D+ck/5uljKLK0pdKZ514bn3qAF4E5vm2Dftnlz8OYTfJGQG2aEOx8o6kD
+	 u3J6RjotJ/Ml5qiNKm8Ie5zXCgS/CqNCoNZI5UeVz5X4Im/M3JMITT8gtibRDJeeSP
+	 una2zoDZ/TOxQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33B8B38111DD;
+	Wed, 18 Jun 2025 01:20:29 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -55,42 +52,43 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDXX4YtFFJoJT98AA--.19090S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtryDGw4rKFyrAr1kCr1ftFb_yoWDXwc_GF
-	48ZrsrJrWYga9Ivw1UCFZavryfGFW5Ka10qrn5KrnxKayUG3WUJrZIvF9ayFW3G3yktFy7
-	KasYgF93tr4UGjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7sRttxh7UUUUU==
-X-CM-SenderInfo: xfkh05pxdqswro6rljoofrz/1tbiNwtwvWhSCmz3uQAAsj
+Subject: Re: bpf: fix key serial argument of bpf_lookup_user_key()
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175020962801.3757059.1481472277492875690.git-patchwork-notify@kernel.org>
+Date: Wed, 18 Jun 2025 01:20:28 +0000
+References: 
+ <84cdb0775254d297d75e21f577089f64abdfbd28.camel@HansenPartnership.com>
+In-Reply-To: 
+ <84cdb0775254d297d75e21f577089f64abdfbd28.camel@HansenPartnership.com>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc: bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ roberto.sassu@huawei.com
 
-From: chenyuan <chenyuan@kylinos.cn>
+Hello:
 
-When btf_dump__new() fails to allocate memory for the internal hashmap
-(btf_dump->type_names), it returns an error code. However, the cleanup
-function btf_dump__free() does not check if btf_dump->type_names is NULL
-before attempting to free it. This leads to a null pointer dereference
-when btf_dump__free() is called on a btf_dump object.
+This patch was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-Fix: 351131b51c7a ("libbpf: add btf_dump API for BTF-to-C conversion")
-Signed-off-by: chenyuan <chenyuan@kylinos.cn>
----
- tools/lib/bpf/btf_dump.c | 3 +++
- 1 file changed, 3 insertions(+)
+On Tue, 17 Jun 2025 10:57:36 -0400 you wrote:
+> The underlying lookup_user_key() function uses a signed 32 bit integer
+> for key serial numbers because legitimate serial numbers are positive
+> (and > 3) and keyrings are negative.  Using a u32 for the keyring in
+> the bpf function doesn't currently cause any conversion problems but
+> will start to trip the signed to unsigned conversion warnings when the
+> kernel enables them, so convert the argument to signed (and update the
+> tests accordingly) before it acquires more users.
+> 
+> [...]
 
-diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-index 7c2f1f13f958..f09f25eccf3c 100644
---- a/tools/lib/bpf/btf_dump.c
-+++ b/tools/lib/bpf/btf_dump.c
-@@ -227,6 +227,9 @@ static void btf_dump_free_names(struct hashmap *map)
- 	size_t bkt;
- 	struct hashmap_entry *cur;
- 
-+	if (!map)
-+		return;
-+
- 	hashmap__for_each_entry(map, cur, bkt)
- 		free((void *)cur->pkey);
- 
+Here is the summary with links:
+  - bpf: fix key serial argument of bpf_lookup_user_key()
+    https://git.kernel.org/bpf/bpf-next/c/bd07bd12f2c1
+
+You are awesome, thank you!
 -- 
-2.25.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
