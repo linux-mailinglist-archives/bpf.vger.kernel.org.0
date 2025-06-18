@@ -1,117 +1,96 @@
-Return-Path: <bpf+bounces-60882-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60884-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF0D7ADE047
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 03:02:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7BD9ADE0A0
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 03:20:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C970164946
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 01:02:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C3EA189CB04
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 01:20:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD60E16DEB1;
-	Wed, 18 Jun 2025 01:02:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7A8E17C211;
+	Wed, 18 Jun 2025 01:20:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ncrglit1"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="UofJ55Nf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB897F9C1;
-	Wed, 18 Jun 2025 01:02:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D77A6522F;
+	Wed, 18 Jun 2025 01:20:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750208564; cv=none; b=BwYAyFz6DJ1yXiMhOaDHlfpVGxBGiZd/MaVfZzm7t+4hdl8EFsquWpZE6AmQ4tQ2l7vmP+WINbQrSAtSY3vNcHNALPQRJF0QahGPjWkdiE+GzYZoo7GMl1VlYIJKORb6d+vZjdVTTGvnT4je6azpiN5HSRMeVnxcuueQdfDK1pc=
+	t=1750209609; cv=none; b=GzeCe+P4QmAeU9CahBrNhEsKBhSWRIPnIUmEwm+sLIVXc0mC8I8qSxN7QT9p385+rH6k0MRb9vYMRFfZi0HWtNJLXqRVFQRKR2OzdXJnSNvAuJUO8jN24VTkLDkesBcVIb8g0ZdsdgMqL+xf6WRm+/kGf5z0g8t1+TiiuPQTkqM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750208564; c=relaxed/simple;
-	bh=PWnnedWVfPY2tdFcAXHhWCXMbyXV6iE2eboLu0vmnrA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u9gkEdxCrG3JJm7MsL+NsVb95Pmw7H7jLJurPLYzVTVCM9irIoCoP9GsU5A+T4WtZXdSleeZV9xtvsZoi1Pq/kRsh1k54uJkZxmy9tiMstIGWBxqWiaOYnJwkw/rBgPyDD4cRWs7f1spyRqkTqjlD51WPm3dgjzbIfoQ+Mf+Qdc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ncrglit1; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1750208563; x=1781744563;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=PWnnedWVfPY2tdFcAXHhWCXMbyXV6iE2eboLu0vmnrA=;
-  b=ncrglit1M0cJ+EyR6zkB2N2ldq31bxhdNIoXKCSorBpNXJUKOcs321c9
-   b8u4V4MaRqTbTOIQ3Qg3DnXJQ+SvoB3hthJZ2gyZo9GqlbCwYJjrOUa7T
-   pm/5i18/sHQwigxAvr/Mag0pX10EtfAAockGsswdn7opo/YeNoEYV/LE1
-   GWFENDCzA/n7itJL/NMg6lqMw0dx3l6VNBj0zhCvOgdfr2eJaWM7KdQGF
-   LpH29Sfngaa+EVTcM6QDmvKuWRnRS8Od3YrGkelEzZU7z+BLJUkJF5qvz
-   VMdh+b+YAoHor8k3bXbGCpcFVNcXlDzUV+Lg6YTiZ4ZrkhzYYgyeQx5GY
-   w==;
-X-CSE-ConnectionGUID: 71CzB1joTyydmeZmXG5pcQ==
-X-CSE-MsgGUID: B/FJNYOIQ3G6o8AfecYydg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11467"; a="52278352"
-X-IronPort-AV: E=Sophos;i="6.16,244,1744095600"; 
-   d="scan'208";a="52278352"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2025 18:02:42 -0700
-X-CSE-ConnectionGUID: Zna6SpJ6Rn60loJKW+5dHQ==
-X-CSE-MsgGUID: zHzHN8bpSBeRBzY74FOBaQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,244,1744095600"; 
-   d="scan'208";a="149588616"
-Received: from lkp-server01.sh.intel.com (HELO e8142ee1dce2) ([10.239.97.150])
-  by orviesa007.jf.intel.com with ESMTP; 17 Jun 2025 18:02:37 -0700
-Received: from kbuild by e8142ee1dce2 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uRhCE-000JGU-3C;
-	Wed, 18 Jun 2025 01:02:34 +0000
-Date: Wed, 18 Jun 2025 09:02:07 +0800
-From: kernel test robot <lkp@intel.com>
-To: Song Liu <song@kernel.org>, bpf@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-security-module@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, kernel-team@meta.com, andrii@kernel.org,
-	eddyz87@gmail.com, ast@kernel.org, daniel@iogearbox.net,
-	martin.lau@linux.dev, viro@zeniv.linux.org.uk, brauner@kernel.org,
-	jack@suse.cz, kpsingh@kernel.org, mattbobrowski@google.com,
-	m@maowtm.org, neil@brown.name, Song Liu <song@kernel.org>
-Subject: Re: [PATCH v5 bpf-next 1/5] namei: Introduce new helper function
- path_walk_parent()
-Message-ID: <202506180814.GoByWn1r-lkp@intel.com>
-References: <20250617061116.3681325-2-song@kernel.org>
+	s=arc-20240116; t=1750209609; c=relaxed/simple;
+	bh=GSlCfS4KpSEwtC7tiXYXLQqO0FpVAZR012++6tFEayY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=dcbQwZJfZ7FKGf4f1bkMBecwPGSAdLPHAHNt+yiWYYXBVBhY/LPeU1CLz70soVv+YMT6tnXN4rRBzi9sDuCxFiL7/wfaSzqCMUl5rSymnMeg40mwxqZlYDVCFuETxRUKW9LO7zxEnPEvrgn8Gdt1sxqTiLXy/ksesi+8sGARulk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=UofJ55Nf; arc=none smtp.client-ip=117.135.210.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=yR
+	LjXnG7P8t/iK8n+LF0HnDZ3TakiYuoqdEOZIveRAY=; b=UofJ55NfUk5BTjvmGP
+	A2ntqENLZEiBz2E0Ge+ea/Ih9lWGpk5zwyhQGLnsL+DbXeLJRKnmKif13kk3JZtU
+	Xz0wc8LLV9J0iLVDxXOa6sBCjghuhE1Nf/qmpodfb0b0iyTAotwGyYDfSEGsSORy
+	spsNZxI4/JFc4NsvNPHCCuGyA=
+Received: from 163.com (unknown [])
+	by gzga-smtp-mtada-g0-1 (Coremail) with SMTP id _____wDXX4YtFFJoJT98AA--.19090S2;
+	Wed, 18 Jun 2025 09:19:42 +0800 (CST)
+From: chenyuan <chenyuan_fl@163.com>
+To: ast@kernel.org
+Cc: andrii.nakryiko@gmail.com,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	chenyuan_fl@163.com,
+	chenyuan <chenyuan@kylinos.cn>
+Subject: [PATCH v2] libbpf: Fix null pointer dereference in btf_dump__free on allocation failure
+Date: Wed, 18 Jun 2025 09:19:33 +0800
+Message-Id: <20250618011933.11423-1-chenyuan_fl@163.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250617061116.3681325-2-song@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wDXX4YtFFJoJT98AA--.19090S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtryDGw4rKFyrAr1kCr1ftFb_yoWDXwc_GF
+	48ZrsrJrWYga9Ivw1UCFZavryfGFW5Ka10qrn5KrnxKayUG3WUJrZIvF9ayFW3G3yktFy7
+	KasYgF93tr4UGjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7sRttxh7UUUUU==
+X-CM-SenderInfo: xfkh05pxdqswro6rljoofrz/1tbiNwtwvWhSCmz3uQAAsj
 
-Hi Song,
+From: chenyuan <chenyuan@kylinos.cn>
 
-kernel test robot noticed the following build warnings:
+When btf_dump__new() fails to allocate memory for the internal hashmap
+(btf_dump->type_names), it returns an error code. However, the cleanup
+function btf_dump__free() does not check if btf_dump->type_names is NULL
+before attempting to free it. This leads to a null pointer dereference
+when btf_dump__free() is called on a btf_dump object.
 
-[auto build test WARNING on bpf-next/master]
+Fix: 351131b51c7a ("libbpf: add btf_dump API for BTF-to-C conversion")
+Signed-off-by: chenyuan <chenyuan@kylinos.cn>
+---
+ tools/lib/bpf/btf_dump.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Song-Liu/namei-Introduce-new-helper-function-path_walk_parent/20250617-141322
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20250617061116.3681325-2-song%40kernel.org
-patch subject: [PATCH v5 bpf-next 1/5] namei: Introduce new helper function path_walk_parent()
-config: loongarch-randconfig-r072-20250618 (https://download.01.org/0day-ci/archive/20250618/202506180814.GoByWn1r-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 12.4.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250618/202506180814.GoByWn1r-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202506180814.GoByWn1r-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> Warning: fs/namei.c:2072 function parameter 'path' not described in '__path_walk_parent'
->> Warning: fs/namei.c:2072 function parameter 'root' not described in '__path_walk_parent'
->> Warning: fs/namei.c:2072 function parameter 'flags' not described in '__path_walk_parent'
-
+diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+index 7c2f1f13f958..f09f25eccf3c 100644
+--- a/tools/lib/bpf/btf_dump.c
++++ b/tools/lib/bpf/btf_dump.c
+@@ -227,6 +227,9 @@ static void btf_dump_free_names(struct hashmap *map)
+ 	size_t bkt;
+ 	struct hashmap_entry *cur;
+ 
++	if (!map)
++		return;
++
+ 	hashmap__for_each_entry(map, cur, bkt)
+ 		free((void *)cur->pkey);
+ 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.25.1
+
 
