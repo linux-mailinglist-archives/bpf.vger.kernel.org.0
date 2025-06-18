@@ -1,130 +1,167 @@
-Return-Path: <bpf+bounces-60976-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60977-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F185ADF2B1
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 18:30:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE135ADF2B4
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 18:30:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 708011885918
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 16:29:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E6A0160F6D
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 16:30:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F9212F0050;
-	Wed, 18 Jun 2025 16:29:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 974442F0046;
+	Wed, 18 Jun 2025 16:30:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J+qIb6oy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QLvz2Bho"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CB6B2EE5ED;
-	Wed, 18 Jun 2025 16:29:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71A862F1980
+	for <bpf@vger.kernel.org>; Wed, 18 Jun 2025 16:30:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750264150; cv=none; b=e4v4075k5ntfrHGGnbH/x1U80b9tSAmUB6sP0Ws9Tz6DomQFoQVGU6iG8XKo3AoUfwevY0MdI/9B2CyM3rmKTCNMXbvFn26+rM7CNFm8Kkz5E+tJGd7qvK76bQZKa8DI6pgSz+kYy0d5feJS1pGWyB+/darhNgj852FS4JdSvF0=
+	t=1750264235; cv=none; b=G7hV2Q3RqDZ7b1d+isQUpiPGOkOla0vIyFK6p6dwpOgQTQMywvlA6ENZw+cT80hafaCZwNJjLE3QYpq2bSMrD8k/z93EbdxQL0yO4qcQ1g9MU0PuHgGZ7RMvw2YwIr9ur/BhFy2+hKtLJWh8Dd2/zDHc5QyqpEk/BGjQAc8++BY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750264150; c=relaxed/simple;
-	bh=9SLa1q9Pak84QCpjXco8/q2gGqSY6bF+kN8FZ0ev6fA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hBA5IIEb3hEvZ5aFsBNaWAmqzY1qOsYtZgRumbInI3piXOQDqiAH7B/Yn/89vzSPftTBJmTnMd2nt+rS17JLK5ikNgqxJR9bksT2jENi9AqBwoh6d+3Di6M3s0kBUvqNatzUxpMCNCSmYvN7i9/E7R8eY6tbJx9iTgOC/rg5nzI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J+qIb6oy; arc=none smtp.client-ip=209.85.128.44
+	s=arc-20240116; t=1750264235; c=relaxed/simple;
+	bh=kO+cnWFwKLC0Pze3CGoMIC9KzsnxaGf3JLnJdEjbETI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s1nVGybC8v31aCBCwvrkPOr2+gOPYehRzI2eVZ12fKdfcXy0znnjCfhBoG0dehAaVWx97fmMNqfm+CKqDKie0U5R/Pn3iBS3IHTpscdO3DXnY6gbWyghL0KGGmHS6Ge0Q3aBAgwqClFzgVJMugP23xdqP3wunFJe3Q5+LGQTRIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QLvz2Bho; arc=none smtp.client-ip=209.85.221.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-451dbe494d6so90391065e9.1;
-        Wed, 18 Jun 2025 09:29:08 -0700 (PDT)
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3a5123c1533so4068900f8f.2
+        for <bpf@vger.kernel.org>; Wed, 18 Jun 2025 09:30:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750264147; x=1750868947; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6lqAYtkpafNC7lzR5Lfub5awrDOE4jtjrDArcjQTGp0=;
-        b=J+qIb6oyTjxytzJBXAWZ92f7M83UMdWHTiLclw+i059JKVqOGlYUL42wUJ8Ln52Htl
-         c1UVvax/QpLfRpbcbbh/kJqyaxtgru58cY/31nicdZS/W9fneraVRrKBg0h3qtwx7VIO
-         3PLdr6rg59dRDPKitvuT508/R7ya8oYlETQau62wN/DzkzRjZrBY0vdbEPTt4s6lblcS
-         Nf2YpZCqkm8Urh6oIKatdkj2HSZKRoyv22y2RDScjNuW8W1jZBbD7TrABLpmmf1woXYd
-         tGfR4ZCWy5kaQQbXl64ks8jnmZ6MJ4+CyzCf+vql48GPhzX6jNBNhg0wTsO3fs4feYaL
-         7COA==
+        d=gmail.com; s=20230601; t=1750264231; x=1750869031; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=K07rBjofrMbe2PWGL67RpmUV1u8o3IvQGinFyRGxbjY=;
+        b=QLvz2BhovH30QkTN0lwdMby6uFK5T6FhYTBwErbdANtWWhDpnBWOgmglpTdllUycRp
+         yuNN/tvcHrEXvH3zs9cYGRcY4C/SV93zqMP9rtSnYT12fmMKSK3DrfIk6oVHnbeTAUGh
+         O2Gd0uuJ9vSTMbdJB68iM8bTMD0oRJ/5zr292u7kSxpPk0nSNKkUOLjRHLCw72k8Cq8v
+         LYfE4logagjnBFDY+eUnj93cqSWA37yS16fVLW2k24KXJ+o5kiVoXgIM1nM5CSojIA9l
+         0Br74XSaUTCIAx8wvI7zrl7GSN/SRg43pVZMlfmhFG2LIxlvvY8LA5zMP6Jp5HcVxivW
+         74aQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750264147; x=1750868947;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6lqAYtkpafNC7lzR5Lfub5awrDOE4jtjrDArcjQTGp0=;
-        b=cwnoE6dvi3PC4k1AefC9d3oLSFHxEZW7NtrwVvbQVcjCqxBz9qPvaLHguYYkvBfD1x
-         T0sqK5K43FmbaQa96g9Yug9SCD5+x5/H0U4dm4y4kxo0Biafwmoytk70K836b9d66I5s
-         CnFkQlMawssIbPnT1waKRydqUinEZeyMzKp3cOBFc8YvpPqMcOEeNkX/6W6u+B9Xw+l5
-         06IEN8KxU2O+obodnnOgwUE3x3ItHUCRHr6Lxe8F/cSbSW4k3wFc8/HX5YZIx+UvmPEm
-         2zyB1bPCk7h29GvLyhooairaIDbDQu6nrLnX06ItkS/yZuo1HEwAW94+o3PrI3bMUlb/
-         b/3A==
-X-Forwarded-Encrypted: i=1; AJvYcCWtepYb4S87/tg+XMnwfhOTecwmJHZNJ69g7wT6AKieiYNdaLeYLP+898RV7sjkESa8PRA=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz9C+o3KBPSkYFovJJdNjIElwrZVQxUl0sklz2s5hmBVmmoNOuA
-	tdDY1RfNUhN1TEmOzjoE6DoNOrelPOMk7FqGsv4bq4cbDReYC290CSRCOeyIfdNChhgsKfN3SeN
-	nomTxB4wb5U0ukH7UsyTGG8hxc57t/uQ=
-X-Gm-Gg: ASbGncskVTdvOtbFbEjNpYRwPQoP9Q1WSwbpsHqz1Z44JvOlOt9c0pLgyOTh2E7dM+n
-	QGPxkvMapKFn/nw/IkhEygXqi59eDTjCYogQggw7PMaw0CUU5o0bSVWQKq+SI4rBk88/P30m1C5
-	5UY8xONqhUIDhSz80T0R7QPsnTJWdo8MsaAX79G6uha1DMyMYQkAKLLkHRUJjm1ZHYiIlm2A9n
-X-Google-Smtp-Source: AGHT+IGoN6HWyBfV65/LyWEmoXqWenu7SN8sC6ZCkhabNJsbT32Xy+4ii7hnttDTx9oQB2WDXJ/obmubwj32atMFFlA=
-X-Received: by 2002:a05:600c:620f:b0:43d:fa59:a685 with SMTP id
- 5b1f17b1804b1-4533cb1b85cmr175708405e9.33.1750264147095; Wed, 18 Jun 2025
- 09:29:07 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1750264231; x=1750869031;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=K07rBjofrMbe2PWGL67RpmUV1u8o3IvQGinFyRGxbjY=;
+        b=BpSLiz3BxfA72vnmVIc0JMnf84lN0WfR7lW77uZzS4LxugOmKRdGJmc2E4ch3QXuJp
+         Q3SzReKeUDy3amyxWl5vzvi6ui21+4VbLSO+FFMHVtirXSDCTWm9rwnryz39wCjFaEOR
+         buBlU0WBo8PZB5KNJ0MD2+hR78RtzusqOJCYEqPY9dc77eeSQX4bS1kQ4WPj00DUYYqn
+         Mw1LCQNgpZ9ALfRIeDZJKX72PCbKPpAqo/QWJeHV6kIQQoXJ0AVG571+AETxG1gUCm3c
+         gY1hBAy8LaiH4GqBswA531P91A18nNytcV/Tdry+XW+YsVpqipYWa6Mk5iROXTWaB4tX
+         aM2Q==
+X-Gm-Message-State: AOJu0Yxna40ol3rbCvO3GEtquQvR7J1u/AKwyQA3+sJrgt8X3mH6TQ4P
+	m3OID6Mcc+1UMJFBES+HmGRmvfin49y96ApuJ/47VHf2LoHQFDEErm9m
+X-Gm-Gg: ASbGncse0Mjwy/oNiLyxmN/BkPegjVjLGyJeSiNCHjJc1u2pVYrbnIhf09xL0v6xlSR
+	n9qvb95lEH6doH3nB8ws7OBFX0OgZBGn4jZhV0B8TcLOqgHfTRIPg2jt3d4CxDiS8UULWbTCWsu
+	Jr/IrPYuPXf/7X4bluPwLz+KTzOtLwC0cgJWHl4/EoqT8U19Po35P0uwiKs67ezYHnUgzZexFiY
+	u0ti12RdVTtJCAVKfEGnqTv5HUGHHUjCfrFS/0Yv8XvninPo3Z/AlflvODHRAeEAU2tM/4qFbcb
+	UhQlETOYOaMYof48mZdYEhcILX7kdEUtKAfytF05OrkiQ0HxW2pY0oCKHfTe5SeU346D5vtdXg=
+	=
+X-Google-Smtp-Source: AGHT+IFgRzsW8ghKtb7EFUF8nVOlONfBvddcXkWxSptC7kq/gcS5jwk/l43rZH5suZ5wCoTb9E2MxQ==
+X-Received: by 2002:a05:6000:400c:b0:3a4:d6aa:1277 with SMTP id ffacd0b85a97d-3a572e79d82mr14306442f8f.37.1750264230437;
+        Wed, 18 Jun 2025 09:30:30 -0700 (PDT)
+Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4535e9844a9sm2244855e9.12.2025.06.18.09.30.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Jun 2025 09:30:29 -0700 (PDT)
+Date: Wed, 18 Jun 2025 16:36:13 +0000
+From: Anton Protopopov <a.s.protopopov@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Anton Protopopov <aspsk@isovalent.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Quentin Monnet <qmo@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>
+Subject: Re: [RFC bpf-next 9/9] selftests/bpf: add selftests for indirect
+ jumps
+Message-ID: <aFLq/blfEEiIqXGz@mail.gmail.com>
+References: <20250615085943.3871208-1-a.s.protopopov@gmail.com>
+ <20250615085943.3871208-10-a.s.protopopov@gmail.com>
+ <CAADnVQKPbBRGOj2mB5Um80VFUh_vVg=oRJCdYUgyz_DrObuagQ@mail.gmail.com>
+ <aFLR7NrdX3gbjC1s@mail.gmail.com>
+ <CAADnVQ+nHemrEgeWYHxLi1UVeJ2u7DtSDTpcrPR7w2PgFPgQZw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250618-btf_skip_structs_on_stack-v1-1-e70be639cc53@bootlin.com>
-In-Reply-To: <20250618-btf_skip_structs_on_stack-v1-1-e70be639cc53@bootlin.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 18 Jun 2025 09:28:56 -0700
-X-Gm-Features: Ac12FXw-X8EiXIr6EGaMDDd9Tzs40cG-ybs1fp6ccCveR6AKiIh5vRmb4lwUmzQ
-Message-ID: <CAADnVQJOiqCic664bPaBdwBwf1NGqfH-T6ZkQJOF7X4h7HuxBA@mail.gmail.com>
-Subject: Re: [PATCH RFC] btf_encoder: skip functions consuming structs passed
- by value on stack
-To: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-Cc: dwarves <dwarves@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Alan Maguire <alan.maguire@oracle.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Alexei Starovoitov <ast@fb.com>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
-	Bastien Curutchet <bastien.curutchet@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQ+nHemrEgeWYHxLi1UVeJ2u7DtSDTpcrPR7w2PgFPgQZw@mail.gmail.com>
 
-On Wed, Jun 18, 2025 at 8:02=E2=80=AFAM Alexis Lothor=C3=A9
-<alexis.lothore@bootlin.com> wrote:
->
-> - those attributes are not reliably encoded by compilers in DWARF info
+On 25/06/18 09:01AM, Alexei Starovoitov wrote:
+> On Wed, Jun 18, 2025 at 7:43 AM Anton Protopopov
+> <a.s.protopopov@gmail.com> wrote:
+> >
+> > On 25/06/17 08:24PM, Alexei Starovoitov wrote:
+> > > On Sun, Jun 15, 2025 at 1:55 AM Anton Protopopov
+> > > <a.s.protopopov@gmail.com> wrote:
+> > > > +SEC("syscall")
+> > > > +int two_towers(struct simple_ctx *ctx)
+> > > > +{
+> > > > +       switch (ctx->x) {
+> > > >
+> > >
+> > > Not sure why you went with switch() statements everywhere.
+> > > Please add few tests with explicit indirect goto
+> > > like interpreter does: goto *jumptable[insn->code];
+> >
+> > This requires to patch libbpf a bit more, as some meta-info
+> > accompanying this instruction should be emitted, like LLVM does with
+> > jump_table_sizes. And this probably should be a different section,
+> > such that it doesn't conflict with LLVM/GCC. I thought to add this
+> > later, but will try to add to the next version.
+> 
+> Hmm. I'm not sure why llvm should handle explicit indirect goto
+> any different than the one generated from switch.
+> The generated bpf.o should be the same.
 
-What would be an example of unreliability?
-Maybe they're reliable enough for cases we're concerned about ?
+For a switch statement LLVM will create a jump table
+and create the {,.rel}.llvm_jump_table_sizes tables.
 
-> +
-> +               if (param_idx >=3D cu->nr_register_params) {
-> +                       if(dwarf_attr(die, DW_AT_type, &attr)){
-> +                               Dwarf_Die type_die;
-> +                               if (dwarf_formref_die(&attr, &type_die) &=
-&
-> +                                               dwarf_tag(&type_die) =3D=
-=3D DW_TAG_structure_type) {
-> +                                       parm->uncertain_loc =3D 1;
-> +                               }
-> +                       }
-> +                       return parm;
+For a direct goto *, say
 
-This is too pessimistic.
-In
-bpf_testmod_test_struct_arg_9(u64 a, void *b, short c, int d, void *e, char=
- f,
-                              short g, struct bpf_testmod_struct_arg_5
-h, long i)
+    static const void *table[] = {
+            &&l1, &&l2, &&l3, &&l4, &&l5, 
+    };
+    if (index > ARRAY_SIZE(table))
+            return 0;
+    goto *table[index];
 
-struct bpf_testmod_struct_arg_5 {
-        char a;
-        short b;
-        int c;
-        long d;
-};
+it will not generate {,.rel}.llvm_jump_table_sizes. I wonder, does
+LLVM emit the size of `table`? (If no, then some assembly needed to
+emit it.) In any case it should be easy to add this case, but still
+it is a bit of coding, thus a bit different case.)
 
-though it's passed on the stack it fits into normal calling convention.
-It doesn't have align or packed attributes, so no need to exclude it ?
+> > > Remove all bpf_printk() too and get easy on names.
+> >
+> > The `bpf_printk` is there to emit some instructions which later will
+> > be replaced by the verifier with more instructions; this is to
+> > additionally test "instruction set" basic functionality
+> > (orig->xlated mapping). Do you think this selftest shouldn't have
+> > this?
+> 
+> None of the runnable tests should have bpf_printk() since
+> it spams the global trace pipe.
+> There are few tests that have printks, but they shouldn't be runnable.
+> It's load only.
+
+Ok, thanks, makes total sense now
+
+> > > i_am_a_little_tiny_foo() sounds funny today, but
+> > > it won't be funny at all tomorrow.
+> >
+> > Yeah, thanks, will rename it.
 
