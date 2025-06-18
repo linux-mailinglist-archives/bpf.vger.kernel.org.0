@@ -1,117 +1,130 @@
-Return-Path: <bpf+bounces-60950-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60952-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE524ADF0C4
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 17:09:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0C0AADF0C8
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 17:10:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3963F4A1112
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 15:09:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDEF14A0215
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 15:10:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2449A2EF281;
-	Wed, 18 Jun 2025 15:09:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X6j8dsn0"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F32E2EE987;
+	Wed, 18 Jun 2025 15:10:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay.hostedemail.com (smtprelay0010.hostedemail.com [216.40.44.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D15B283145;
-	Wed, 18 Jun 2025 15:09:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E66AC16A95B;
+	Wed, 18 Jun 2025 15:10:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750259372; cv=none; b=sDxQi3NQrh9y/ZhiZE3Qt2NhZ4SdQcvrjM01IxsMBKA0TCslnkZqF75RKt5CbbeDHGyuqo4xDubhJR6ftMKP8xMwsSvFUIi/3Y0AEUzCDsRRe9V/92w+HxxnRzsj1248v6RTt2pqFWMQ74yFIPDCuXq3ByEU1s/yY6xJt2p7yDc=
+	t=1750259448; cv=none; b=Q47wBYd8I+aAb8pufS5O1Oj+pbf3wa/gK7S2ue5HiwP10/oiCuQG5pxHXFJX5qDUEJoWj+nx+FgX23RTQ9Dtc58BM0gEyyxoQsxS/aqfvu8L9a9+/ok3rqwTItVBeaZdSQ1HBHjzj2aXXKCho3UxFXzS9WSUuYWmzkSK9LxqeT0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750259372; c=relaxed/simple;
-	bh=sHdDL0lA0stF0MeG+rkk3pcKnkNoIWMrrmlS6ON+UeA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QvSODjh26pEHpgrqbZuDOXzcgI2Q4XgpAo4Xk7xYz3WAqV90KKM8gsBb+LMZvIdxY5fB3qv3WiotIw+cSRWvH6BgeUXtMjUjN0piUaDCZYCp3ObqL7mvNf0xUtoxbQNQsZmXFM3pCHq1GLF2ONyk5oRklJ+RJjEpPyrxT4bGp0o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X6j8dsn0; arc=none smtp.client-ip=209.85.215.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-b2c4e46a89fso5760606a12.2;
-        Wed, 18 Jun 2025 08:09:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750259370; x=1750864170; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cNb6f+/HlT4jqkJKTMtbJO2tCcxdBDz9ZG+I5Pj37LI=;
-        b=X6j8dsn01GqLFdtPPpw2RP0UDa+OFHPobow29Y8aI4wUFZgowERLmBPpcou2mLt5VY
-         Q6PuzLt7Uoc/u/iJQMSc91y6l+nFSA2nm2Xvy7P52UAAX0fJr5qoGcu21OvhTe4J0xnG
-         pVn8roaszI3K1W4mHCrPIQsRRsNX03GE1nq16p92zCbaIYTJU4KgtiZeMJYJddoV4X69
-         lNKzPlUor1v1wsNcnBLIhybw/2P6MRXmPSWRKyhExRZ7ueMjOhNlEcpFqJkvCl3XZTKB
-         eG4BLJQgh+6v5JIk8hNJiuuvatVRHGe3ywzjHwfWDE5BH7eJ3bxwR8RE8ubKiJ3W6a5h
-         hEjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750259370; x=1750864170;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cNb6f+/HlT4jqkJKTMtbJO2tCcxdBDz9ZG+I5Pj37LI=;
-        b=TFyKnHQnO7iF6+RRACWQ0IHfvuEk76K2U4iOdLdd72PRuj4n9Oy39r0QN+a7ORLvDL
-         oCa7opVGtD8dU1bwjr9NEfXDe22Uj/q2knp1al6vbhd2yrR2QuWHJGbaiOcYNaHAJQ5W
-         OlrPNYaxk4Ouqbv867pUz94ZVIWFuSZ+Ps16rj58ilGBnX22EudywM61kYzYceqzRFAg
-         R8Uh92sB9HvnRopR7A1m8osLLrLBTTSvMbYKrOhy/8J0nvNsrB/oShjYKKmg5QCgWXKY
-         wgPYmGnr7WG2J5RNUbj8iiH1waVgO0YS2/YYRC7QL3NWyoatwdqnWOLbohCJFHDdXcVU
-         4/tw==
-X-Forwarded-Encrypted: i=1; AJvYcCVtdKwKgJ5q27cKSdSw8GONhjaAbdHNevo64BR3AWsTtUFPbKGA/HJnPnhqby+pru84y677G+mX@vger.kernel.org, AJvYcCW3gZABBUGZgFs1xkX4ULA5Sf9HulGdZJ6P/VfKElndWmajH95IR7VVCxcGs4GIvBWjJAQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyXSwBQ4RqVvJz+6UKnP/cPj6nEnJ46cfxvjwDIf8QcJP0MpFsD
-	KoBooyO/mgOdk2ia5QOADUP7KlAEp5X2lnOx+EO93xF4fkQrhdVONx8=
-X-Gm-Gg: ASbGncttH/hcN4z2UloZeIw/JbjhyITMA6rzDvvOrAYs/YtVjehUg4Zk0CjKw+4DKqS
-	BaHyqAFdhYGgJn1FLz0eDK+hqJ1Cb+HnAclYzk1P5gVhSJF2e1iB7pkEfP7xSCdvUS/TWp1pUC7
-	6jFmlGtex9i2kBDYht9FyrjAfpT1Q0fL15sUTFO4PUDUrtg5OyviyZ15BmTR/ySrIut62wqamCU
-	qZrTchTda2oXSBAUXAAJR9fpiBxzSiODscACf3ZKy65mAV8QUB6mvrHPggerl5PNiOVaViLRWiQ
-	4HiwXFP0N3hhloADy3+DMPnLaRlHttNyNHshi9o/9SstwTz0tQAAChW1765voZu7LnkneajIbrF
-	YSEM/Y4q0QoGe8kqmRLOSrUQ=
-X-Google-Smtp-Source: AGHT+IGUm7uBSvn4NHDyf/t75YKWMdQKachTxhA8/0XLD5p+1+PaWOBk+QFFO5aAgkLt6UXKrHgO/Q==
-X-Received: by 2002:a05:6a21:6d8c:b0:21a:bfb6:1c74 with SMTP id adf61e73a8af0-21fbd58c764mr30915422637.34.1750259368276;
-        Wed, 18 Jun 2025 08:09:28 -0700 (PDT)
-Received: from localhost (c-73-158-218-242.hsd1.ca.comcast.net. [73.158.218.242])
-        by smtp.gmail.com with UTF8SMTPSA id 41be03b00d2f7-b2fe163a470sm11130566a12.9.2025.06.18.08.09.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Jun 2025 08:09:27 -0700 (PDT)
-Date: Wed, 18 Jun 2025 08:09:26 -0700
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Jason Xing <kerneljasonxing@gmail.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com,
-	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
-	sdf@fomichev.me, ast@kernel.org, daniel@iogearbox.net,
-	hawk@kernel.org, john.fastabend@gmail.com, joe@dama.to,
-	bpf@vger.kernel.org, netdev@vger.kernel.org,
-	Jason Xing <kernelxing@tencent.com>
-Subject: Re: [PATCH net-next v2] net: xsk: add sysctl_xsk_max_tx_budget in
- the xmit path
-Message-ID: <aFLWpssHj9sE9vvc@mini-arch>
-References: <20250618065553.96822-1-kerneljasonxing@gmail.com>
+	s=arc-20240116; t=1750259448; c=relaxed/simple;
+	bh=7celbNZK7cUowrtpbJpvgT/P4/mtH33mLD4DahcanO0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=hlPznCfvQk1Jp2yWiPY7h56dTLTcCe+GbnNpa6Wx5TPG7/zhwLR1HBwG2HJ9Ib4wN9G/FqvB8O+IKDHOaB3q9zkSgJBYWrOtyVI1jWNLn/aJKqeU2el/ocaE4AYUZPgFXAC4bLE0A0CkpOJuBs8tbZMDzamjW6jH0Y8GehXWQ1A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf16.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay01.hostedemail.com (Postfix) with ESMTP id 640E31CD07A;
+	Wed, 18 Jun 2025 15:10:42 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf16.hostedemail.com (Postfix) with ESMTPA id 823AE20019;
+	Wed, 18 Jun 2025 15:10:38 +0000 (UTC)
+Date: Wed, 18 Jun 2025 11:10:46 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, x86@kernel.org, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Josh Poimboeuf <jpoimboe@kernel.org>, Ingo Molnar <mingo@kernel.org>, Jiri
+ Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, Indu
+ Bhagat <indu.bhagat@oracle.com>, "Jose E. Marchesi" <jemarch@gnu.org>, Beau
+ Belgrave <beaub@linux.microsoft.com>, Jens Remus <jremus@linux.ibm.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton
+ <akpm@linux-foundation.org>
+Subject: Re: [PATCH v10 03/14] unwind_user: Add compat mode frame pointer
+ support
+Message-ID: <20250618111046.793870b8@gandalf.local.home>
+In-Reply-To: <20250618134641.GJ1613376@noisy.programming.kicks-ass.net>
+References: <20250611005421.144238328@goodmis.org>
+	<20250611010428.261095906@goodmis.org>
+	<20250618134641.GJ1613376@noisy.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250618065553.96822-1-kerneljasonxing@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Server: rspamout01
+X-Rspamd-Queue-Id: 823AE20019
+X-Stat-Signature: 4dy7nzocsgk4ijxsa3itupmpfbp6ogep
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX18qKTDnFjwgUe2QGMU6ftBeeSp0rG0uMe4=
+X-HE-Tag: 1750259438-195004
+X-HE-Meta: U2FsdGVkX18lMjb0gzHottcD+djXgm1V24zuIEaRz5H6kvhaYJpN5MnMA6PJDkC6o3d+5DKlf6puSBleP2YAsi2jHw4XzvzshrLt0mYR9R3n2YEhdgCTT7Pau02nG+TTjaZUenMtTUb9BKvDbajnAzwv4ZozWSJ1br5o+JRtU58jP9kx8u0uovm/J2+IERHAz5DsrOIZT/zBRGpiRKAFLmSHOR0os4/UO3MralzMnI8VeoHBA+8OxKxtIdjWDpeEfjJxsJWBQXJY9uCcs6XVUxQslCPlDqQJA6jkp/wBA2jzAXlRYO2bZ57e00XYCJ7mYlXFHHq7w4gLWaCMz7dhnSFgQIuDYwhfMUvUJQl+rl2UcqoRKWogbkuZ3rmH9DQW
 
-On 06/18, Jason Xing wrote:
-> From: Jason Xing <kernelxing@tencent.com>
-> 
-> For some applications, it's quite useful to let users have the chance to
-> tune the max budget, like accelerating transmission, when xsk is sending
-> packets. Exposing such a knob also helps auto/AI tuning in the long run.
-> 
-> The patch unifies two definitions into one that is 32 by default and
-> makes the sysctl knob namespecified.
-> 
-> Signed-off-by: Jason Xing <kernelxing@tencent.com>
-> ---
-> v2
-> Link: https://lore.kernel.org/all/20250617002236.30557-1-kerneljasonxing@gmail.com/
-> 1. use a per-netns sysctl knob
+On Wed, 18 Jun 2025 15:46:41 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-Why are you still insisting on the sysctl? Why not a per-socket (struct
-xdp_sock) value? And then you can add a setsockopt (xsk_setsockopt) to tune it.
+> On Tue, Jun 10, 2025 at 08:54:24PM -0400, Steven Rostedt wrote:
+> > diff --git a/kernel/unwind/user.c b/kernel/unwind/user.c
+> > index 4fc550356b33..29e1f497a26e 100644
+> > --- a/kernel/unwind/user.c
+> > +++ b/kernel/unwind/user.c
+> > @@ -12,12 +12,32 @@ static struct unwind_user_frame fp_frame = {
+> >  	ARCH_INIT_USER_FP_FRAME
+> >  };
+> >  
+> > +static struct unwind_user_frame compat_fp_frame = {
+> > +	ARCH_INIT_USER_COMPAT_FP_FRAME
+> > +};
+> > +
+> >  static inline bool fp_state(struct unwind_user_state *state)
+> >  {
+> >  	return IS_ENABLED(CONFIG_HAVE_UNWIND_USER_FP) &&
+> >  	       state->type == UNWIND_USER_TYPE_FP;
+> >  }
+> >  
+> > +static inline bool compat_state(struct unwind_user_state *state)  
+> 
+> Consistency would mandate this thing be called: compat_fp_state().
+
+Sure. Will update it.
+
+> 
+> > +{
+> > +	return IS_ENABLED(CONFIG_HAVE_UNWIND_USER_COMPAT_FP) &&
+> > +	       state->type == UNWIND_USER_TYPE_COMPAT_FP;
+> > +}
+> > +
+> > +#define UNWIND_GET_USER_LONG(to, from, state)				\  
+> 
+> Do we have to shout this?
+
+Don't we usually shout macros?
+
+-- Steve
+
+> 
+> > +({									\
+> > +	int __ret;							\
+> > +	if (compat_state(state))					\
+> > +		__ret = get_user(to, (u32 __user *)(from));		\
+> > +	else								\
+> > +		__ret = get_user(to, (unsigned long __user *)(from));	\
+> > +	__ret;								\
+> > +})
+> > +
+> >  int unwind_user_next(struct unwind_user_state *state)
+> >  {
+> >  	struct unwind_user_frame *frame;  
+
 
