@@ -1,142 +1,181 @@
-Return-Path: <bpf+bounces-60942-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60944-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECC30ADEF1D
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 16:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B1B5ADEFDE
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 16:40:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE973177E90
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 14:23:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA39B166E30
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 14:40:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A804C2EACE5;
-	Wed, 18 Jun 2025 14:23:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 394332EAD14;
+	Wed, 18 Jun 2025 14:40:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NqNSuyCS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jQIFwer5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86DE628137C
-	for <bpf@vger.kernel.org>; Wed, 18 Jun 2025 14:23:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1071827E071
+	for <bpf@vger.kernel.org>; Wed, 18 Jun 2025 14:40:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750256590; cv=none; b=lj/8K0ogNPL4WDTEQbbhFn6Iettss5RANh38vyJxrEGr6spANIihXN2zPn5T0pF4vIlvG1+q9sKsJiaMuA2+KmPHvKqtowUpmclRVppo+U1W9Q7FNHXVipDFnGi5SVlo0pHaeAZV0BvtlZlaJ1ZkO0Ox+teQ5qyVrpy4V4d0H0I=
+	t=1750257640; cv=none; b=SFwN/tFDcXqGTNZx/ENyh1bDiDqid0oPjlr/FkWJvLCX1YhrCPN8MNBGPRprFkcTBOYvmeQxAda3UnicWBrzO+GebbDrYhinSmTd8ikJlIj3Rd3gUq/KXFq/hRuVTqnGvugiRs4wm//fFsUQEnsUrcXghyfYkg3qLm1JLDrxozI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750256590; c=relaxed/simple;
-	bh=n7+cjd1VyHcpNP13JlmNBkSTByav6W6lei0UBrp8ihU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kAhJIYcyl+kvmaqo5XArY/Y6h6sVgJrK7eIFr7SmHpXp9tLH8K6MVSyaoKS20kspPKSiylP3f9wCCJUR88lqSRX9Bopw/8Ddyie5ZppIMoPO2b1h5zx7YhVhBLTE3+oWYSDvEHpnGmHU7CvshRugYg0GJlP+9rzD6STF1f2QdFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NqNSuyCS; arc=none smtp.client-ip=209.85.208.51
+	s=arc-20240116; t=1750257640; c=relaxed/simple;
+	bh=s4bbGvmBfOc+GNEx/wDDd4G9EZzztNpo6c3V+WPbXWY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=U0LTptpEzPfCqBxpQ6bEjtc6l4zRL7071BQBXqn5wm/K3cTmbPNo6VZY6RnAtVqbcv2lBMhEbYq6XvUrNYsJkafUnixRyVeaDLHDdR+ujW90OFsKAA9PqcpGql87/1JDSFcq1gzzyCXsA6Mxjoi752pAC4y0Gkw+sgmEekh5Bs0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jQIFwer5; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-606fdbd20afso14079402a12.1
-        for <bpf@vger.kernel.org>; Wed, 18 Jun 2025 07:23:08 -0700 (PDT)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-451d54214adso54060345e9.3
+        for <bpf@vger.kernel.org>; Wed, 18 Jun 2025 07:40:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750256587; x=1750861387; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=cy3fAy0BX4pZqoqoQhf1uWIglbHLRaZZUFXxb9DufFQ=;
-        b=NqNSuyCScdY9KaR1quaff6B5O6hQL4KSa4iWJGXR832eYvjQ4KtF2rnUmLczZESyvX
-         Iq3mYUANYzL5IDFOsA4jIPEVkjJ+gqV1nEVvXKD641ctQQt8JqpqHqKVtJ6ZbJtR626v
-         aXcjPyzw2S1JssvkC8nLrl1bN2XkMnh9/1dI02+SH8mwfDZM2N0Sr3JD5ctgOyEvaYUp
-         l6aTdPW8etMCzRVWUEYIkbs99m9J4L1qmRWuKNp+Y6/uu+cFc1HD8Y8e+vkmv6L0gEQE
-         IvwGNcsYr5zjUSKGgfjGy8WqqnkgNQ0v78CMpFdKUdYoHeWx6qPKGaQXcXoo2nhpCSoA
-         dI/A==
+        d=gmail.com; s=20230601; t=1750257636; x=1750862436; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KThMzXeTXCcvMnBD/oVLEje4P+EluL1loERY1QqGn84=;
+        b=jQIFwer5gqpel96PaT2TV/vWIs4KHLX4Q7bIhZLUYauUr6ZCEmnEmE4RtcusUqsq0W
+         7x9QGVGxciGjD1keMmoA38y7KRWrvdHyL3FpBhD6Deasup0tF0BszEQMNcjm/t9qq+lp
+         3QqAj+GnSDf6p6v6kHwRXaLZF3vOPOVFsuXHJzlnunUgyBfHgCLO9eh9C88T6OAKkQXN
+         hRPj542nFwrcv8a0aF1Fzlmvdky/MfruYhKM+Y8jBA3s4+PjHpf17RP4XF8XpL3hALdn
+         Hdacfj+pigX59ayUKlyhYisA3y1d/Zaj3+eotL2h2oZs/hyy+8LlFtUB9nzPv7JdBc0p
+         IQsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750256587; x=1750861387;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cy3fAy0BX4pZqoqoQhf1uWIglbHLRaZZUFXxb9DufFQ=;
-        b=nGFViXrrq2FF94DxQ3kpJ5hjR4cmZnQldzX8X0+dCeZt1Jw6yux3kGhfFMDe5VWlHX
-         Iyiwyrm/8DcDS0d4rIidsrT/HZ/obLUWa3dKqSSHqJAj5IbAyKoe+TuL/6cvb1Q/cWj0
-         jwdpk7sec4CbIcn7FOJqWiW63hPPzjlUstX+1QEBc/8f4HcljqFUlx7iVp1qvP0b82fo
-         VCCNlQHHUbPcXmCw9wcEzN3KIRrZ8cL//FlPZddX+0+6zXjjXcZUrBYI1EhySaXaRtf2
-         aFDHmqa0B1mewo7mhslyywyI5yJhIuWf1/38l8TcWSmai1cdV9voOdcMBZXJ2UOrtmTz
-         vv0w==
-X-Gm-Message-State: AOJu0YzNov7zg/2v1x9cLs5fV7w4yCoj8zugGbvq44O1XmBt6/hlb3c8
-	wJB/pSmPmEJqDBVhLiSNm6Gu9DREBdeHlwb3MtjTZ+SET2JtrfKOXTJR
-X-Gm-Gg: ASbGncsAg6t6i78WsqOKVyFIX4HYuFR+7XVlzhdl22IhvU6mr1j4l5wqw8epq8OQICd
-	Id/ayWpbetUXBpy4I2OU89ExpWhMGwZSydE/B/WXFCmP6pB9x2/lOyyyWQv5GSGcuidRQug2i+E
-	j9AhdIscYY+YLcr42ibcV9ZYGYyrmrfttyJ/45cUyp8PAEQdXNLtaLtKOPAPF1bVg0H3Lg543fJ
-	BOEKDOkFT3CXmAE2GkEfBXlzEtZgcBVvLbu8IjwQIhoLIJy1XLpIFIbd51WScwPRnl3G5D7xGup
-	hFOr7pqXKgfGp/q6U1J+aOt4CRBEd8gHMO6vrIUVI+75xbzdt7TJI/OdR8/KBwKqt/WQDstkqGs
-	sJHG6NON7
-X-Google-Smtp-Source: AGHT+IEVWh/fZIsiLHo5Auql73Eql+HFAt1tLQ61bJsJjTXqRuGDXbqKscbMqfSAx41YEUqnTywrrA==
-X-Received: by 2002:a17:906:6a1c:b0:ad4:d00f:b4ca with SMTP id a640c23a62f3a-adfad4f4e53mr1697995966b.50.1750256586724;
-        Wed, 18 Jun 2025 07:23:06 -0700 (PDT)
-Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-adec81baf3esm1055434966b.40.2025.06.18.07.23.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Jun 2025 07:23:06 -0700 (PDT)
-Date: Wed, 18 Jun 2025 14:28:50 +0000
-From: Anton Protopopov <a.s.protopopov@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Anton Protopopov <aspsk@isovalent.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Quentin Monnet <qmo@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>
-Subject: Re: [RFC bpf-next 4/9] bpf, x86: allow indirect jumps to r8...r15
-Message-ID: <aFLNIjeDvKLLVkls@mail.gmail.com>
-References: <20250615085943.3871208-1-a.s.protopopov@gmail.com>
- <20250615085943.3871208-5-a.s.protopopov@gmail.com>
- <CAADnVQLtPuWOQmeJhPtBf-wyR8PS=u+1Wg4DtNVNZ7kPF5QZ0Q@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1750257636; x=1750862436;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KThMzXeTXCcvMnBD/oVLEje4P+EluL1loERY1QqGn84=;
+        b=ZIbOwIyqXLGdjGT4PybsLVrxy2thGaOJGTaoKeE+qN2XncdpcyvrLdh4KLHgjdnXrz
+         1a2a88ksOjbGgEG9FvHBUjlTpOd0xXu1JFbsTKlYQYvHb6Aom1usB3HStPmzBqX7hRc4
+         M/OIeC9a/mQIXeF2wXIqSj0ylQ3p7NZDmed3fRRb1tCA43AhDy1BDLb8Sah7Us3HxmOk
+         oLnA9bKYQqLwzGu468TQbfSsIz7v08kfsBjIsqU0nw+G1LXxeUkgIlMxyPwdG6i5waMR
+         IVLmEoHbfPNl9B6setaJMpVFIF2QIIVqAbgxLAxxIlp3G4dC+F3zU/HPsa1DxLFZQtek
+         JJkw==
+X-Gm-Message-State: AOJu0YwccqVxBN1J0ARrk8JX3YyOAeZDLGbZWOembu9EjTY2+hOJWOn2
+	BN093Q3eqTx3eLz7zuIV9yO1DXD0nFgjmj/+DVLQZeqOXIhAVYv0bNnFc5IubA6L4pxG79GGcLS
+	dBB/cysDmDOF/NyVeq0e3sQ0VAcYiuoE=
+X-Gm-Gg: ASbGncvT5MtYnucTBJhDjhh+nS/T4UopgmARoRUEvZFFEZxwTlFqdkRbZXdXXaIlKtK
+	TFpXQomosx04hi4K+9yKDFv8fN+YSOPZ9ecuoxddJWzQdunTMaK9PlUpmKRKAaXNZr1O94vMFCI
+	yromETa1moE28YRUWlto4lyJJuYyGLC+FFHaRdiQnrjLSkKnR3Yqt4/GmSA4f2yWV2m5SwUpvb
+X-Google-Smtp-Source: AGHT+IH+0RPAYE7P5b/EDaBROlkg26LwIGaXd3OKxcog1FCEKJjnfek+9gS8I0X25gh1SBvkPwME3P1urxgqALbHkGg=
+X-Received: by 2002:a05:600c:a02:b0:450:c210:a01b with SMTP id
+ 5b1f17b1804b1-4533caa641emr181370465e9.17.1750257636035; Wed, 18 Jun 2025
+ 07:40:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQLtPuWOQmeJhPtBf-wyR8PS=u+1Wg4DtNVNZ7kPF5QZ0Q@mail.gmail.com>
+References: <cover.1750252029.git.vmalik@redhat.com> <04a320f8a9405caee87c59807a4192e2b5e14bed.1750252029.git.vmalik@redhat.com>
+In-Reply-To: <04a320f8a9405caee87c59807a4192e2b5e14bed.1750252029.git.vmalik@redhat.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 18 Jun 2025 07:40:24 -0700
+X-Gm-Features: Ac12FXy2bVcP1GQlhLYQ1aKroVbGpnKaNaP5dwhPpHU02xzDLFvFCXbvRhGrXBU
+Message-ID: <CAADnVQLwxwLo5RqBPy=-Rr30nni5ZL8X5on-LenFMHqArZ6XFg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 3/4] selftests/bpf: Allow macros in __retval
+To: Viktor Malik <vmalik@redhat.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 25/06/17 12:41PM, Alexei Starovoitov wrote:
-> On Sun, Jun 15, 2025 at 1:55 AM Anton Protopopov
-> <a.s.protopopov@gmail.com> wrote:
-> >
-> > Currently, the emit_indirect_jump() function only accepts one of the
-> > RAX, RCX, ..., RBP registers as the destination. Prepare it to accept
-> > R8, R9, ..., R15 as well. This is necessary to enable indirect jumps
-> > support in eBPF.
-> >
-> > Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
-> > ---
-> >  arch/x86/net/bpf_jit_comp.c | 26 +++++++++++++++++++-------
-> >  1 file changed, 19 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> > index 923c38f212dc..37dc83d91832 100644
-> > --- a/arch/x86/net/bpf_jit_comp.c
-> > +++ b/arch/x86/net/bpf_jit_comp.c
-> > @@ -659,7 +659,19 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
-> >
-> >  #define EMIT_LFENCE()  EMIT3(0x0F, 0xAE, 0xE8)
-> >
-> > -static void emit_indirect_jump(u8 **pprog, int reg, u8 *ip)
-> > +static void __emit_indirect_jump(u8 **pprog, int reg, bool ereg)
-> 
-> Instead of adding bool flag make reg to be bpf reg
-> instead of x86 reg, tweak the signature to
-> emit_indirect_jump(..., u32 reg, ..),
-> and add is_ereg(reg) inside.
+On Wed, Jun 18, 2025 at 6:32=E2=80=AFAM Viktor Malik <vmalik@redhat.com> wr=
+ote:
+>
+> Allow macro expansion for values passed to the `__retval` and
+> `__retval_unpriv` attributes. This is especially useful for testing
+> programs which return various error codes.
+>
+> With this change, the code for parsing special literals is made
+> redundant (as the literals are defined via macros) so drop it.
+>
+> Signed-off-by: Viktor Malik <vmalik@redhat.com>
+> ---
+>  tools/testing/selftests/bpf/progs/bpf_misc.h | 11 ++++++-----
+>  tools/testing/selftests/bpf/test_loader.c    | 17 -----------------
+>  2 files changed, 6 insertions(+), 22 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing=
+/selftests/bpf/progs/bpf_misc.h
+> index a678463e972c..1758265f5905 100644
+> --- a/tools/testing/selftests/bpf/progs/bpf_misc.h
+> +++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
+> @@ -83,9 +83,10 @@
+>   *                   expect return value to match passed parameter:
+>   *                   - a decimal number
+>   *                   - a hexadecimal number, when starts from 0x
+> - *                   - literal INT_MIN
+> - *                   - literal POINTER_VALUE (see definition below)
+> - *                   - literal TEST_DATA_LEN (see definition below)
+> + *                   - a macro which expands to one of the above
+> + *                   In addition, two special macros are defined:
+> + *                   - POINTER_VALUE (see definition below)
+> + *                   - TEST_DATA_LEN (see definition below)
+>   * __retval_unpriv   Same, but load program in unprivileged mode.
+>   *
+>   * __description     Text to be used instead of a program name for displ=
+ay
+> @@ -125,8 +126,8 @@
+>  #define __success_unpriv       __attribute__((btf_decl_tag("comment:test=
+_expect_success_unpriv")))
+>  #define __log_level(lvl)       __attribute__((btf_decl_tag("comment:test=
+_log_level=3D"#lvl)))
+>  #define __flag(flag)           __attribute__((btf_decl_tag("comment:test=
+_prog_flags=3D"#flag)))
+> -#define __retval(val)          __attribute__((btf_decl_tag("comment:test=
+_retval=3D"#val)))
+> -#define __retval_unpriv(val)   __attribute__((btf_decl_tag("comment:test=
+_retval_unpriv=3D"#val)))
+> +#define __retval(val)          __attribute__((btf_decl_tag("comment:test=
+_retval=3D"XSTR(val))))
+> +#define __retval_unpriv(val)   __attribute__((btf_decl_tag("comment:test=
+_retval_unpriv=3D"XSTR(val))))
+>  #define __auxiliary            __attribute__((btf_decl_tag("comment:test=
+_auxiliary")))
+>  #define __auxiliary_unpriv     __attribute__((btf_decl_tag("comment:test=
+_auxiliary_unpriv")))
+>  #define __btf_path(path)       __attribute__((btf_decl_tag("comment:test=
+_btf_path=3D" path)))
+> diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/se=
+lftests/bpf/test_loader.c
+> index 9551d8d5f8f9..28d2d366a8ae 100644
+> --- a/tools/testing/selftests/bpf/test_loader.c
+> +++ b/tools/testing/selftests/bpf/test_loader.c
+> @@ -318,23 +318,6 @@ static int parse_caps(const char *str, __u64 *val, c=
+onst char *name)
+>
+>  static int parse_retval(const char *str, int *val, const char *name)
+>  {
+> -       struct {
+> -               char *name;
+> -               int val;
+> -       } named_values[] =3D {
+> -               { "INT_MIN"      , INT_MIN },
+> -               { "POINTER_VALUE", POINTER_VALUE },
+> -               { "TEST_DATA_LEN", TEST_DATA_LEN },
+> -       };
+> -       int i;
+> -
+> -       for (i =3D 0; i < ARRAY_SIZE(named_values); ++i) {
+> -               if (strcmp(str, named_values[i].name) !=3D 0)
+> -                       continue;
+> -               *val =3D named_values[i].val;
+> -               return 0;
+> -       }
+> -
 
-Ok, will do. Didn't do it initially, because it assumes this change
-(and another one similar):
+and this broke a bunch of tests.
 
--       emit_indirect_jump(&prog, 1 /* rcx */, ip + (prog - start));
-+       emit_indirect_jump(&prog, BPF_REG_4 /* R4 -> rcx */, ip + (prog - start));
-
-but with the "R4 -> rcx" actually looks ok to me.
-
-> Also drop RFC tag next time. Let CI do the work.
-
-Ok
+pw-bot: cr
 
