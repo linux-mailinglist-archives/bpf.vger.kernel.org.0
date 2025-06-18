@@ -1,139 +1,142 @@
-Return-Path: <bpf+bounces-60943-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60942-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B761ADEF5C
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 16:29:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECC30ADEF1D
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 16:24:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7D2797A0221
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 14:27:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE973177E90
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 14:23:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1B742EBBA4;
-	Wed, 18 Jun 2025 14:27:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A804C2EACE5;
+	Wed, 18 Jun 2025 14:23:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="M8F939s6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NqNSuyCS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D1CC2877E8
-	for <bpf@vger.kernel.org>; Wed, 18 Jun 2025 14:27:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86DE628137C
+	for <bpf@vger.kernel.org>; Wed, 18 Jun 2025 14:23:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750256859; cv=none; b=DV6RuibEd6+B6MDF/JX2pM+mQSEMfHhButaALkGz9v35/AtqwchnVsss/5KPnefqy1jAMRtYW+2vl3dHp6hIxa4H4AuwCUlJylNS6dP4xbHn/WHQLzsQn4sOj0VcYxncOwPxJktEYxf4amX7+odgWTVUYHNPrtpVy0x6r0s7ipM=
+	t=1750256590; cv=none; b=lj/8K0ogNPL4WDTEQbbhFn6Iettss5RANh38vyJxrEGr6spANIihXN2zPn5T0pF4vIlvG1+q9sKsJiaMuA2+KmPHvKqtowUpmclRVppo+U1W9Q7FNHXVipDFnGi5SVlo0pHaeAZV0BvtlZlaJ1ZkO0Ox+teQ5qyVrpy4V4d0H0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750256859; c=relaxed/simple;
-	bh=0R04X2IxAUZ+Y0jSm7qz0sa4qxhk6NzAtpPdgD8xbVQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Zww51WSzr/hdBKxRcpYPlqPAWZsRmWTuH8hHRYKQ8l1Y1PqW660ojWXicdg3oR3sDIJBQsHehhtPPdHBWEIqeGSIGbmaWTBNhVXl7ZGmJmEM0FcFFCvRiaAOnJ37SpLYO6uI2QlFh+1WfrK0TqDxnZleIr37oEUs8Nv55Nb5SDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=M8F939s6; arc=none smtp.client-ip=209.85.208.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-32addf54a01so73028021fa.3
-        for <bpf@vger.kernel.org>; Wed, 18 Jun 2025 07:27:36 -0700 (PDT)
+	s=arc-20240116; t=1750256590; c=relaxed/simple;
+	bh=n7+cjd1VyHcpNP13JlmNBkSTByav6W6lei0UBrp8ihU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kAhJIYcyl+kvmaqo5XArY/Y6h6sVgJrK7eIFr7SmHpXp9tLH8K6MVSyaoKS20kspPKSiylP3f9wCCJUR88lqSRX9Bopw/8Ddyie5ZppIMoPO2b1h5zx7YhVhBLTE3+oWYSDvEHpnGmHU7CvshRugYg0GJlP+9rzD6STF1f2QdFk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NqNSuyCS; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-606fdbd20afso14079402a12.1
+        for <bpf@vger.kernel.org>; Wed, 18 Jun 2025 07:23:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1750256854; x=1750861654; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0R04X2IxAUZ+Y0jSm7qz0sa4qxhk6NzAtpPdgD8xbVQ=;
-        b=M8F939s6AEUCMyHjj+jeloh3DP6d22N7SImeAmZ0qEzWxA1fhP/5tFCK1U5OsJ0kPG
-         si6gpln635DkGCqpQX7pZ44u0T1Fuqq1LH9OQA18hHD+xgEyNPGZM/p0xXeyn7nowqMK
-         Gfck6hyqQmu2QsIcQVr3qCWVChMW4ZLCEu2RNJypBcfXWSW5G+2TjRkJlUR3TSoVjoBu
-         k4nYslmXfLO03hEHcTl6tfRs8ltl88u1Q9ZGbymcAGajCajMDq039AHx6O9syvYyKim2
-         xWYmI9BA80QODd+z/b+ldOr6YXmrgj5vS2aJNMkxYK9kEn/793ejXhnoj9pKgq+ZdKi1
-         Hq1g==
+        d=gmail.com; s=20230601; t=1750256587; x=1750861387; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=cy3fAy0BX4pZqoqoQhf1uWIglbHLRaZZUFXxb9DufFQ=;
+        b=NqNSuyCScdY9KaR1quaff6B5O6hQL4KSa4iWJGXR832eYvjQ4KtF2rnUmLczZESyvX
+         Iq3mYUANYzL5IDFOsA4jIPEVkjJ+gqV1nEVvXKD641ctQQt8JqpqHqKVtJ6ZbJtR626v
+         aXcjPyzw2S1JssvkC8nLrl1bN2XkMnh9/1dI02+SH8mwfDZM2N0Sr3JD5ctgOyEvaYUp
+         l6aTdPW8etMCzRVWUEYIkbs99m9J4L1qmRWuKNp+Y6/uu+cFc1HD8Y8e+vkmv6L0gEQE
+         IvwGNcsYr5zjUSKGgfjGy8WqqnkgNQ0v78CMpFdKUdYoHeWx6qPKGaQXcXoo2nhpCSoA
+         dI/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750256854; x=1750861654;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0R04X2IxAUZ+Y0jSm7qz0sa4qxhk6NzAtpPdgD8xbVQ=;
-        b=tpF4q0nw3xRGwLPYtNwDN1TkFooLAOYnXIyLkPA4aXGQ5FEn5xy8+vmUwpl/YlFZB5
-         rcaxAJ/xuzvo03nA9T3nnYX/BxtHogZ6UlZ9ydyIv0R630/OwQ4I1lsEg1K3zCt9WF8w
-         ylfUN+g9FGOeLqlXUNzEde0URbebFbY2hL+Upw6HS7fzaVkwYt//OM/NcuL6M3Z0KYop
-         /2Fs3Eh5lY+OKPEn1qrRq0c6UPlhEeECtyHGr3dH43NGgpWvwQB8v0mHzvX/ZYqFR+sX
-         nFxw0pDBD66y7WRcupmDrN+erKAJXWEjXpDzVxTuHtAMA/ScQQ8c4xt7j0loNHpy5/YL
-         3lZg==
-X-Forwarded-Encrypted: i=1; AJvYcCU8bkds9xU/dijp8tffImmakhZRLx+ocm+AVnpNLrLasMMDnUL8re4jF1EoETix2MzKzRM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzwdjJ2dsEcZiyyTNXKrUn8zDPrSPf8qvfbWzpM2EbMB5CV92k+
-	E9L0cfSHHyVrWeZji8xRm3EJZt2GNmDrk2v//ocbUpuMXnbSYV8BlRN0+f21/rA1IpfPUbAEM5g
-	QNTLu0bgNsCoAVDMPZt5lt4rCFyoB9X5X/3oMzG8+Fw==
-X-Gm-Gg: ASbGnctlwbGJqmF5Jn10Y9tKFv9RRYzR7VvUg3qT7sRltPzpcClhCarMiKrZpkN2nuP
-	iCxKHMOXbN/vyW8vV8lOZhD2SJpLUG3HLAgShebSAakWbxHINoptZ9zT0S2obRfDeQ/1od2X45e
-	sJFqOSi6ZlyVxRB68ZDzbVEAwhLHOgE8nm4+xwgG/UN0UHlOWZ9SOO9uhaP6nUlw==
-X-Google-Smtp-Source: AGHT+IGGgI3FTwdOcK8RLKdtKdhn3U4LuZlr6R5KwqYquv0mpgnRFvgV/Xu6G6n/cNU5rLBns6CPyI5rMhviN4oJemU=
-X-Received: by 2002:a05:651c:1987:b0:32a:ec98:e15c with SMTP id
- 38308e7fff4ca-32b4a5ca0f9mr60085391fa.19.1750256854524; Wed, 18 Jun 2025
- 07:27:34 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1750256587; x=1750861387;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cy3fAy0BX4pZqoqoQhf1uWIglbHLRaZZUFXxb9DufFQ=;
+        b=nGFViXrrq2FF94DxQ3kpJ5hjR4cmZnQldzX8X0+dCeZt1Jw6yux3kGhfFMDe5VWlHX
+         Iyiwyrm/8DcDS0d4rIidsrT/HZ/obLUWa3dKqSSHqJAj5IbAyKoe+TuL/6cvb1Q/cWj0
+         jwdpk7sec4CbIcn7FOJqWiW63hPPzjlUstX+1QEBc/8f4HcljqFUlx7iVp1qvP0b82fo
+         VCCNlQHHUbPcXmCw9wcEzN3KIRrZ8cL//FlPZddX+0+6zXjjXcZUrBYI1EhySaXaRtf2
+         aFDHmqa0B1mewo7mhslyywyI5yJhIuWf1/38l8TcWSmai1cdV9voOdcMBZXJ2UOrtmTz
+         vv0w==
+X-Gm-Message-State: AOJu0YzNov7zg/2v1x9cLs5fV7w4yCoj8zugGbvq44O1XmBt6/hlb3c8
+	wJB/pSmPmEJqDBVhLiSNm6Gu9DREBdeHlwb3MtjTZ+SET2JtrfKOXTJR
+X-Gm-Gg: ASbGncsAg6t6i78WsqOKVyFIX4HYuFR+7XVlzhdl22IhvU6mr1j4l5wqw8epq8OQICd
+	Id/ayWpbetUXBpy4I2OU89ExpWhMGwZSydE/B/WXFCmP6pB9x2/lOyyyWQv5GSGcuidRQug2i+E
+	j9AhdIscYY+YLcr42ibcV9ZYGYyrmrfttyJ/45cUyp8PAEQdXNLtaLtKOPAPF1bVg0H3Lg543fJ
+	BOEKDOkFT3CXmAE2GkEfBXlzEtZgcBVvLbu8IjwQIhoLIJy1XLpIFIbd51WScwPRnl3G5D7xGup
+	hFOr7pqXKgfGp/q6U1J+aOt4CRBEd8gHMO6vrIUVI+75xbzdt7TJI/OdR8/KBwKqt/WQDstkqGs
+	sJHG6NON7
+X-Google-Smtp-Source: AGHT+IEVWh/fZIsiLHo5Auql73Eql+HFAt1tLQ61bJsJjTXqRuGDXbqKscbMqfSAx41YEUqnTywrrA==
+X-Received: by 2002:a17:906:6a1c:b0:ad4:d00f:b4ca with SMTP id a640c23a62f3a-adfad4f4e53mr1697995966b.50.1750256586724;
+        Wed, 18 Jun 2025 07:23:06 -0700 (PDT)
+Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-adec81baf3esm1055434966b.40.2025.06.18.07.23.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Jun 2025 07:23:06 -0700 (PDT)
+Date: Wed, 18 Jun 2025 14:28:50 +0000
+From: Anton Protopopov <a.s.protopopov@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Anton Protopopov <aspsk@isovalent.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Quentin Monnet <qmo@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>
+Subject: Re: [RFC bpf-next 4/9] bpf, x86: allow indirect jumps to r8...r15
+Message-ID: <aFLNIjeDvKLLVkls@mail.gmail.com>
+References: <20250615085943.3871208-1-a.s.protopopov@gmail.com>
+ <20250615085943.3871208-5-a.s.protopopov@gmail.com>
+ <CAADnVQLtPuWOQmeJhPtBf-wyR8PS=u+1Wg4DtNVNZ7kPF5QZ0Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250616095532.47020-1-matt@readmodwrite.com> <CAPhsuW4ie=vvDSc97pk5qH+faoKjz+b51MDYGA3shaJwNd677Q@mail.gmail.com>
- <CAENh_SQPLHC8pswTRoqh0bQR84HHQmnO3bM07UQa1Xu9uY_3WA@mail.gmail.com>
- <CAADnVQ+QyPqi7XJ2p=S9FVDbOxMXvVPU859n+2ApuRQv5T2S5w@mail.gmail.com>
- <CAENh_SQgZ5yVpshKRhiezhGMDAMvgV7SmwD_8u++mACE33oNrg@mail.gmail.com> <CAADnVQJgOyBCCySnBkTk-VCsz0dy+ppdGHpggxbtDpBBGhaXVg@mail.gmail.com>
-In-Reply-To: <CAADnVQJgOyBCCySnBkTk-VCsz0dy+ppdGHpggxbtDpBBGhaXVg@mail.gmail.com>
-From: Ignat Korchagin <ignat@cloudflare.com>
-Date: Wed, 18 Jun 2025 15:27:23 +0100
-X-Gm-Features: AX0GCFsaM9DGTqH4WJ6Z032fn61el3PhuhfhzVPYIHaWfMnL8mcSuRqckaKRyAc
-Message-ID: <CALrw=nFvUwmpjUMYh5iJqjo6SbAO8fZt8pkys7iDjZHfpF2DxQ@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Call cond_resched() to avoid soft lockup in trie_free()
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Matt Fleming <matt@readmodwrite.com>, Song Liu <song@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	kernel-team <kernel-team@cloudflare.com>, Matt Fleming <mfleming@cloudflare.com>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQLtPuWOQmeJhPtBf-wyR8PS=u+1Wg4DtNVNZ7kPF5QZ0Q@mail.gmail.com>
 
-On Wed, Jun 18, 2025 at 3:01=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Jun 18, 2025 at 5:29=E2=80=AFAM Matt Fleming <matt@readmodwrite.c=
-om> wrote:
+On 25/06/17 12:41PM, Alexei Starovoitov wrote:
+> On Sun, Jun 15, 2025 at 1:55 AM Anton Protopopov
+> <a.s.protopopov@gmail.com> wrote:
 > >
-> > On Tue, Jun 17, 2025 at 4:55=E2=80=AFPM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Tue, Jun 17, 2025 at 2:43=E2=80=AFAM Matt Fleming <matt@readmodwri=
-te.com> wrote:
-> > > >
-> > >
-> > > > soft lockup - CPU#41 stuck for 76s
-> > >
-> > > How many elements are in the trie that it takes 76 seconds??
+> > Currently, the emit_indirect_jump() function only accepts one of the
+> > RAX, RCX, ..., RBP registers as the destination. Prepare it to accept
+> > R8, R9, ..., R15 as well. This is necessary to enable indirect jumps
+> > support in eBPF.
 > >
-> > We run our maps with potentially millions of entries, so it's the size
-> > of the map plus the fact that kfree() does more work with KASAN that
-> > triggers this for us.
+> > Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
+> > ---
+> >  arch/x86/net/bpf_jit_comp.c | 26 +++++++++++++++++++-------
+> >  1 file changed, 19 insertions(+), 7 deletions(-)
 > >
-> > > I feel the issue is different.
-> > > It seems the trie_free() algorithm doesn't scale.
-> > > Pls share a full reproducer.
+> > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> > index 923c38f212dc..37dc83d91832 100644
+> > --- a/arch/x86/net/bpf_jit_comp.c
+> > +++ b/arch/x86/net/bpf_jit_comp.c
+> > @@ -659,7 +659,19 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
 > >
-> > Yes, the scalability of the algorithm is also an issue. Jesper (CC'd)
-> > had some thoughts on this.
+> >  #define EMIT_LFENCE()  EMIT3(0x0F, 0xAE, 0xE8)
 > >
-> > But regardless, it seems like a bad idea to have an unbounded loop
-> > inside the kernel that processes user-controlled data.
->
-> 1M kfree should still be very fast even with kasan, lockdep, etc.
-> 76 seconds is an algorithm problem. Address the root cause.
+> > -static void emit_indirect_jump(u8 **pprog, int reg, u8 *ip)
+> > +static void __emit_indirect_jump(u8 **pprog, int reg, bool ereg)
+> 
+> Instead of adding bool flag make reg to be bpf reg
+> instead of x86 reg, tweak the signature to
+> emit_indirect_jump(..., u32 reg, ..),
+> and add is_ereg(reg) inside.
 
-What if later we have 1G? 100G? Apart from the root cause we still
-have "scalability concerns" unless we can somehow reimplement this as
-O(1)
+Ok, will do. Didn't do it initially, because it assumes this change
+(and another one similar):
 
-Ignat
+-       emit_indirect_jump(&prog, 1 /* rcx */, ip + (prog - start));
++       emit_indirect_jump(&prog, BPF_REG_4 /* R4 -> rcx */, ip + (prog - start));
+
+but with the "R4 -> rcx" actually looks ok to me.
+
+> Also drop RFC tag next time. Let CI do the work.
+
+Ok
 
