@@ -1,217 +1,231 @@
-Return-Path: <bpf+bounces-60892-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60893-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAA39ADE363
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 08:07:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D83FADE40C
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 08:56:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96DAB3B769C
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 06:06:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4AA5A189CB53
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 06:56:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65C161EA7C4;
-	Wed, 18 Jun 2025 06:07:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BF982594B4;
+	Wed, 18 Jun 2025 06:56:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aw9b2FQ7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T7oeYUor"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 626B018FC86
-	for <bpf@vger.kernel.org>; Wed, 18 Jun 2025 06:07:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 333F52580F1;
+	Wed, 18 Jun 2025 06:56:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750226838; cv=none; b=fCLjvXRX/gDQaQSXvhQ98NTLSeglKHe0YPolmrTwBHFMdR/SRTdwbC/ksR75dNRsS3X39vHWWKGNCzlWTBkbuPNOvt3yRg3JJyiyzwHeOPA+EaacNqk5+LC7DAz4L9ul9KepILQjNQfEUK+dYT1a8Jkn6XjAE0ky4Ew1Fd3P7oc=
+	t=1750229767; cv=none; b=QRGC8Eqf8LaaDRfZbzaXjJofjVaasHYJrZwafre5L+FNMbKF25AiNkWKqw/lu4pfBR/HIbMmhn0CTVe7xjqQ89Wk76iU4PiwMPXAN0YxQZYiGtsXEWxoFyPhLT9Ab9x8nn14+CJKQDw1wAUPrAIFX/Oz5ioA2gXbx1WqqHzwHYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750226838; c=relaxed/simple;
-	bh=gVpRGpWbvK2l2EgWkUdriQt0Z8wJ5SQFwm0/UlJCZCQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=G368T3r9U7kSn387tfDBYXyMnjniibDDFGFCMT5E37SjaSMuXKYzNmyH6pgGgHZvHu3JLZUl/nt+YTP6TUqFSQPZRO8srvTrL8XPGfhsg+8K9al+WyyqFi2TgEwG2zfR62dut8UntaL5SZZnAk+OfEMa+H6YQDNK0mMPF4uJNKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aw9b2FQ7; arc=none smtp.client-ip=91.218.175.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <325ab9a0-44d1-44a2-aefe-9cd49dcd12f5@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1750226827;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NkuFePhrx7gFmJOrw5AAMhKELjMHQfD+AdCkLnFiRGI=;
-	b=aw9b2FQ7pNugXJV0VcM6mLYbw5VWRu7wvN+6UUWbwbPdlWLsDYLiwI6KgDtMGuzIpy8nW3
-	2NBbXpHvUFxO9U7iE2frkLEYATSmZ6ODBNCYhLpOUIlXQmYLj2uJ34QHWIA4wSucCXacT0
-	nZWvDmjbsLGMme3pBGyRInNwmZuxNTk=
-Date: Tue, 17 Jun 2025 23:06:52 -0700
+	s=arc-20240116; t=1750229767; c=relaxed/simple;
+	bh=Ufj1Ve1yx1z53tof+gYkfjzJ5vn/yw4UB29+0ds9ltM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UMB33m7jHo6xIobd9VigxIWkKUL7+il15blkVJgPODBt7BtIrDBrzE70G6GQujm73axMlfzqByISLwqyd2n68995ZTVjR2RgVR8AopsrN6eRbBjHO2wKDz3DIGjLMutVCh22+TTpmC8SDW37I4huGhhAY0rE9B+yCijEy6/TzpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T7oeYUor; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-312e747d2d8so356997a91.0;
+        Tue, 17 Jun 2025 23:56:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1750229765; x=1750834565; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zD4epyLQ1xLlDMRfj3B+WCP+Gez/lsY1w8BlgJOMNAk=;
+        b=T7oeYUorK/lr1QDgx9o4bVkuoZwbb+a27wGKTRXll2w0OIIGsDqkDxVHF3OpwruCoS
+         aJaJkP1ZPbcYqoQqRPFjZcKVsWIbS88eb/SM2aRSyW51XGbrHVuypCYgvxWi5eb5ofqJ
+         8lYM7pPrYmgMRMOkNerLx3EruBkO9oiseO+ea0ci8BYKVP1B+RccWzwWUETi7A7cyX/P
+         EFhQXv8xAxrLOe0mDwAgO1GwPT/fi+K3J7virfN8W2CWbGN6geKOovDzxlXW283vd9s3
+         77fNuf0zAKOaSQZ02k7yEhT+ir050wp2JxoHGZXOt4tneropXE6SQ2VSa2prWXnNJuZI
+         PFsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750229765; x=1750834565;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zD4epyLQ1xLlDMRfj3B+WCP+Gez/lsY1w8BlgJOMNAk=;
+        b=IZKst50rhBM9678fYEFfqzFpQSpNUj+sCLojsVZCwcKPEY9xkRf9bTYWDhp7m8722b
+         Iiifb1kxyVgCGteVz0/gNxGm4qtFcjxp/8JGTuVxT8GY+a/cjBdxpGCnetMgRYlIo0mL
+         zWzf446xYyGjigJkZXECpnKlOExInAkwH7Rk3UqAxjc4AWHNT0EiPcOUpsEzsL+K4Ywo
+         qpDuz+nuVIHL/8bSBozR4vfew+syw0PE9tCL4TwtF8EtHmZtc75TDurUyY9pTo8gkhDn
+         9nmkryv0Pz02O+VSkE5hSrZ9b/QqF+s917VYSmNapJ06DpMLAe0aptgZslx4bAhWPrfF
+         fOyg==
+X-Forwarded-Encrypted: i=1; AJvYcCWNyPJ8RFYuATMi9NoFd63bwwKn6rA5+LNjkve6H1soQ14DVlpbJudGQWrDRiTvUFWe4ML2mH8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxyC8lAUgbgvg62VsgYzQjRSgLdHdNcR3AbWZ5SmoXE5ILlazf+
+	OVojjdGyaQC+3ZjbIRCcowsv47jJOsS5vTdR9YjtwKYKWBolN6QUsL02
+X-Gm-Gg: ASbGnctq85ITi3lDEffqAVJ15x/onXMG7170hKYT6zoaXncmTmeGodvaa75uXxQu6Ir
+	H3E1wag+oxjEtifhZmlrJw07chv8YXQKBeICvlNDL803tJuj2nkBXrniazs/5//dz+Lb1axnerg
+	QHI1z+TtFYTHzH0lUxO92jUwdtIdUpuImlyMPjSVUJm4vj/yS5fcKua+BScKL33/e4Z56abN0IY
+	u6o9CshKnoqI4pwgL0Ume4IH0q0P6ju3K/PiQhXMQPmEZKP9qLyzozBMwZrB01/AMvA42GKxyS3
+	adXRr/tkrYDudDJaLUr6J36Ha8y7/x9YqJANyrxs/DOuXNeLI6m/95/axbCqH8cUf65ZetQomkT
+	rUigkokT+Qh0NXKh2VV/vx9Ruutg0Rogn7w==
+X-Google-Smtp-Source: AGHT+IEtnTdWsIG6RSlbujnQtmVZpuH1mZixKMM8JLrsLXHgTbXBclHr/bkw6UQeiu8QyxsSHi5Ixw==
+X-Received: by 2002:a17:90b:5627:b0:311:abba:53b6 with SMTP id 98e67ed59e1d1-3157c856847mr2096287a91.14.1750229765296;
+        Tue, 17 Jun 2025 23:56:05 -0700 (PDT)
+Received: from KERNELXING-MB0.tencent.com ([43.132.141.24])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2365de782e2sm91844535ad.103.2025.06.17.23.56.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Jun 2025 23:56:04 -0700 (PDT)
+From: Jason Xing <kerneljasonxing@gmail.com>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	bjorn@kernel.org,
+	magnus.karlsson@intel.com,
+	maciej.fijalkowski@intel.com,
+	jonathan.lemon@gmail.com,
+	sdf@fomichev.me,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
+	joe@dama.to
+Cc: bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	Jason Xing <kernelxing@tencent.com>
+Subject: [PATCH net-next v2] net: xsk: add sysctl_xsk_max_tx_budget in the xmit path
+Date: Wed, 18 Jun 2025 14:55:53 +0800
+Message-Id: <20250618065553.96822-1-kerneljasonxing@gmail.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next v6 10/12] net/mlx5e: Implement queue mgmt ops and
- single channel swap
-To: Mark Bloch <mbloch@nvidia.com>, "David S. Miller" <davem@davemloft.net>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- Simon Horman <horms@kernel.org>
-Cc: saeedm@nvidia.com, gal@nvidia.com, leonro@nvidia.com, tariqt@nvidia.com,
- Leon Romanovsky <leon@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- Richard Cochran <richardcochran@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Stanislav Fomichev <sdf@fomichev.me>, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, Dragos Tatulea <dtatulea@nvidia.com>
-References: <20250616141441.1243044-1-mbloch@nvidia.com>
- <20250616141441.1243044-11-mbloch@nvidia.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20250616141441.1243044-11-mbloch@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-在 2025/6/16 7:14, Mark Bloch 写道:
-> From: Saeed Mahameed <saeedm@nvidia.com>
-> 
-> The bulk of the work is done in mlx5e_queue_mem_alloc, where we allocate
-> and create the new channel resources, similar to
-> mlx5e_safe_switch_params, but here we do it for a single channel using
-> existing params, sort of a clone channel.
-> To swap the old channel with the new one, we deactivate and close the
-> old channel then replace it with the new one, since the swap procedure
-> doesn't fail in mlx5, we do it all in one place (mlx5e_queue_start).
-> 
-> Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
-> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
-> Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-> Signed-off-by: Mark Bloch <mbloch@nvidia.com>
-> ---
->   .../net/ethernet/mellanox/mlx5/core/en_main.c | 98 +++++++++++++++++++
->   1 file changed, 98 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> index a51e204bd364..873a42b4a82d 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> @@ -5494,6 +5494,103 @@ static const struct netdev_stat_ops mlx5e_stat_ops = {
->   	.get_base_stats      = mlx5e_get_base_stats,
->   };
->   
-> +struct mlx5_qmgmt_data {
-> +	struct mlx5e_channel *c;
-> +	struct mlx5e_channel_param cparam;
-> +};
-> +
-> +static int mlx5e_queue_mem_alloc(struct net_device *dev, void *newq,
-> +				 int queue_index)
-> +{
-> +	struct mlx5_qmgmt_data *new = (struct mlx5_qmgmt_data *)newq;
-> +	struct mlx5e_priv *priv = netdev_priv(dev);
-> +	struct mlx5e_channels *chs = &priv->channels;
-> +	struct mlx5e_params params = chs->params;
+From: Jason Xing <kernelxing@tencent.com>
 
-RCT (Reverse Christmas Tree) ?
+For some applications, it's quite useful to let users have the chance to
+tune the max budget, like accelerating transmission, when xsk is sending
+packets. Exposing such a knob also helps auto/AI tuning in the long run.
 
-Yanjun.Zhu
+The patch unifies two definitions into one that is 32 by default and
+makes the sysctl knob namespecified.
 
-> +	struct mlx5_core_dev *mdev;
-> +	int err;
-> +
-> +	mutex_lock(&priv->state_lock);
-> +	if (!test_bit(MLX5E_STATE_OPENED, &priv->state)) {
-> +		err = -ENODEV;
-> +		goto unlock;
-> +	}
-> +
-> +	if (queue_index >= chs->num) {
-> +		err = -ERANGE;
-> +		goto unlock;
-> +	}
-> +
-> +	if (MLX5E_GET_PFLAG(&chs->params, MLX5E_PFLAG_TX_PORT_TS) ||
-> +	    chs->params.ptp_rx   ||
-> +	    chs->params.xdp_prog ||
-> +	    priv->htb) {
-> +		netdev_err(priv->netdev,
-> +			   "Cloning channels with Port/rx PTP, XDP or HTB is not supported\n");
-> +		err = -EOPNOTSUPP;
-> +		goto unlock;
-> +	}
-> +
-> +	mdev = mlx5_sd_ch_ix_get_dev(priv->mdev, queue_index);
-> +	err = mlx5e_build_channel_param(mdev, &params, &new->cparam);
-> +	if (err)
-> +		goto unlock;
-> +
-> +	err = mlx5e_open_channel(priv, queue_index, &params, NULL, &new->c);
-> +unlock:
-> +	mutex_unlock(&priv->state_lock);
-> +	return err;
-> +}
-> +
-> +static void mlx5e_queue_mem_free(struct net_device *dev, void *mem)
-> +{
-> +	struct mlx5_qmgmt_data *data = (struct mlx5_qmgmt_data *)mem;
-> +
-> +	/* not supposed to happen since mlx5e_queue_start never fails
-> +	 * but this is how this should be implemented just in case
-> +	 */
-> +	if (data->c)
-> +		mlx5e_close_channel(data->c);
-> +}
-> +
-> +static int mlx5e_queue_stop(struct net_device *dev, void *oldq, int queue_index)
-> +{
-> +	/* In mlx5 a txq cannot be simply stopped in isolation, only restarted.
-> +	 * mlx5e_queue_start does not fail, we stop the old queue there.
-> +	 * TODO: Improve this.
-> +	 */
-> +	return 0;
-> +}
-> +
-> +static int mlx5e_queue_start(struct net_device *dev, void *newq,
-> +			     int queue_index)
-> +{
-> +	struct mlx5_qmgmt_data *new = (struct mlx5_qmgmt_data *)newq;
-> +	struct mlx5e_priv *priv = netdev_priv(dev);
-> +	struct mlx5e_channel *old;
-> +
-> +	mutex_lock(&priv->state_lock);
-> +
-> +	/* stop and close the old */
-> +	old = priv->channels.c[queue_index];
-> +	mlx5e_deactivate_priv_channels(priv);
-> +	/* close old before activating new, to avoid napi conflict */
-> +	mlx5e_close_channel(old);
-> +
-> +	/* start the new */
-> +	priv->channels.c[queue_index] = new->c;
-> +	mlx5e_activate_priv_channels(priv);
-> +	mutex_unlock(&priv->state_lock);
-> +	return 0;
-> +}
-> +
-> +static const struct netdev_queue_mgmt_ops mlx5e_queue_mgmt_ops = {
-> +	.ndo_queue_mem_size	=	sizeof(struct mlx5_qmgmt_data),
-> +	.ndo_queue_mem_alloc	=	mlx5e_queue_mem_alloc,
-> +	.ndo_queue_mem_free	=	mlx5e_queue_mem_free,
-> +	.ndo_queue_start	=	mlx5e_queue_start,
-> +	.ndo_queue_stop		=	mlx5e_queue_stop,
-> +};
-> +
->   static void mlx5e_build_nic_netdev(struct net_device *netdev)
->   {
->   	struct mlx5e_priv *priv = netdev_priv(netdev);
-> @@ -5504,6 +5601,7 @@ static void mlx5e_build_nic_netdev(struct net_device *netdev)
->   	SET_NETDEV_DEV(netdev, mdev->device);
->   
->   	netdev->netdev_ops = &mlx5e_netdev_ops;
-> +	netdev->queue_mgmt_ops = &mlx5e_queue_mgmt_ops;
->   	netdev->xdp_metadata_ops = &mlx5e_xdp_metadata_ops;
->   	netdev->xsk_tx_metadata_ops = &mlx5e_xsk_tx_metadata_ops;
->   	netdev->request_ops_lock = true;
+Signed-off-by: Jason Xing <kernelxing@tencent.com>
+---
+v2
+Link: https://lore.kernel.org/all/20250617002236.30557-1-kerneljasonxing@gmail.com/
+1. use a per-netns sysctl knob
+2. use sysctl_xsk_max_tx_budget to unify both definitions.
+---
+ include/net/netns/core.h   |  1 +
+ include/net/xdp_sock.h     |  2 +-
+ net/core/net_namespace.c   |  1 +
+ net/core/sysctl_net_core.c |  8 ++++++++
+ net/xdp/xsk.c              | 12 ++++++------
+ 5 files changed, 17 insertions(+), 7 deletions(-)
+
+diff --git a/include/net/netns/core.h b/include/net/netns/core.h
+index 9b36f0ff0c20..f1ff15fd0032 100644
+--- a/include/net/netns/core.h
++++ b/include/net/netns/core.h
+@@ -14,6 +14,7 @@ struct netns_core {
+ 
+ 	int	sysctl_somaxconn;
+ 	int	sysctl_optmem_max;
++	int	sysctl_xsk_max_tx_budget;
+ 	u8	sysctl_txrehash;
+ 	u8	sysctl_tstamp_allow_data;
+ 
+diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+index e8bd6ddb7b12..57b26ad12aa1 100644
+--- a/include/net/xdp_sock.h
++++ b/include/net/xdp_sock.h
+@@ -65,7 +65,7 @@ struct xdp_sock {
+ 	struct xsk_queue *tx ____cacheline_aligned_in_smp;
+ 	struct list_head tx_list;
+ 	/* record the number of tx descriptors sent by this xsk and
+-	 * when it exceeds MAX_PER_SOCKET_BUDGET, an opportunity needs
++	 * when it exceeds sysctl_xsk_max_tx_budget, an opportunity needs
+ 	 * to be given to other xsks for sending tx descriptors, thereby
+ 	 * preventing other XSKs from being starved.
+ 	 */
+diff --git a/net/core/net_namespace.c b/net/core/net_namespace.c
+index ae54f26709ca..890f8dc28690 100644
+--- a/net/core/net_namespace.c
++++ b/net/core/net_namespace.c
+@@ -396,6 +396,7 @@ static __net_init void preinit_net_sysctl(struct net *net)
+ 	net->core.sysctl_optmem_max = 128 * 1024;
+ 	net->core.sysctl_txrehash = SOCK_TXREHASH_ENABLED;
+ 	net->core.sysctl_tstamp_allow_data = 1;
++	net->core.sysctl_xsk_max_tx_budget = 32;
+ }
+ 
+ /* init code that must occur even if setup_net() is not called. */
+diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
+index 5dbb2c6f371d..a51d9c7246ee 100644
+--- a/net/core/sysctl_net_core.c
++++ b/net/core/sysctl_net_core.c
+@@ -667,6 +667,14 @@ static struct ctl_table netns_core_table[] = {
+ 		.extra1		= SYSCTL_ZERO,
+ 		.proc_handler	= proc_dointvec_minmax
+ 	},
++	{
++		.procname	= "xsk_max_tx_budget",
++		.data		= &init_net.core.sysctl_xsk_max_tx_budget,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.extra1		= SYSCTL_ONE,
++		.proc_handler	= proc_dointvec_minmax
++	},
+ 	{
+ 		.procname	= "txrehash",
+ 		.data		= &init_net.core.sysctl_txrehash,
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 72c000c0ae5f..15df133b50d7 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -33,9 +33,6 @@
+ #include "xdp_umem.h"
+ #include "xsk.h"
+ 
+-#define TX_BATCH_SIZE 32
+-#define MAX_PER_SOCKET_BUDGET (TX_BATCH_SIZE)
+-
+ void xsk_set_rx_need_wakeup(struct xsk_buff_pool *pool)
+ {
+ 	if (pool->cached_need_wakeup & XDP_WAKEUP_RX)
+@@ -424,7 +421,10 @@ bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_desc *desc)
+ 	rcu_read_lock();
+ again:
+ 	list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
+-		if (xs->tx_budget_spent >= MAX_PER_SOCKET_BUDGET) {
++		struct sock *sk = (struct sock *)xs;
++		int max_budget = READ_ONCE(sock_net(sk)->core.sysctl_xsk_max_tx_budget);
++
++		if (xs->tx_budget_spent >= max_budget) {
+ 			budget_exhausted = true;
+ 			continue;
+ 		}
+@@ -778,8 +778,8 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 
+ static int __xsk_generic_xmit(struct sock *sk)
+ {
++	u32 max_budget = READ_ONCE(sock_net(sk)->core.sysctl_xsk_max_tx_budget);
+ 	struct xdp_sock *xs = xdp_sk(sk);
+-	u32 max_batch = TX_BATCH_SIZE;
+ 	bool sent_frame = false;
+ 	struct xdp_desc desc;
+ 	struct sk_buff *skb;
+@@ -797,7 +797,7 @@ static int __xsk_generic_xmit(struct sock *sk)
+ 		goto out;
+ 
+ 	while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
+-		if (max_batch-- == 0) {
++		if (max_budget-- == 0) {
+ 			err = -EAGAIN;
+ 			goto out;
+ 		}
+-- 
+2.43.5
 
 
