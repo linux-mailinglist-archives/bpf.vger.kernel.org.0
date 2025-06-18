@@ -1,40 +1,40 @@
-Return-Path: <bpf+bounces-60955-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60956-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE6BEADF108
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 17:20:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68364ADF152
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 17:25:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 43BAF7A44E8
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 15:19:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3AEA0175F6F
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 15:24:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42DAB2EF289;
-	Wed, 18 Jun 2025 15:20:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ECE22EF9D3;
+	Wed, 18 Jun 2025 15:23:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
+Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32CCC1F9A8B;
-	Wed, 18 Jun 2025 15:20:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00B022EE99E;
+	Wed, 18 Jun 2025 15:23:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750260017; cv=none; b=iQ3gvsPV+jL/HdR+wu7saawK7IGNw2Ozsv9QJtrWeKmFxPDcNmYlwAw60yBy6Li5uFCp/aW0NZt6UQOYzpEs9ZQOSEKesHVjtZofeahZTjh3OasZ8+S8h0E9Vwkt0p/NK6eVRaUroC1AHto8deNlGOM0NCsW5/LroLpdIsEwgbo=
+	t=1750260235; cv=none; b=FHyIo492Xlstv679HnJ09oMdoetF/93p/B4Ty+z6MviQpleySkzW9gfFVExz2M6qnFjXSIChWQ27DjA/NqWHgt3/j2Qkovg+ggJf43g5EjSrH5QYBaKqhSLzKvPAjINPQBz0qKZfW8kQYp23ibTVGISGe9SrW+PDxA2YbEmYEf0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750260017; c=relaxed/simple;
-	bh=M5lnijI13V/qYoxT9osq8y5e8Gbr0yn0hqjpvJdZJ7g=;
+	s=arc-20240116; t=1750260235; c=relaxed/simple;
+	bh=SX5OHD/d/ITogClcMTplzdS9fgFMBWy9hG0cbMhULFc=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lv+1cunUjEPrQkA1lMMNxqrNfjFOaMC1/qr1CDAul69tbWAFmysLfY/tFTADaZFBbO6wgzUQ+l0AdoGzqTOuVZkZR00dWLeT8YFh1Tx3kRbJ4N3nuzTLRC29OmEB5J0VXyK8Jcarih4FMKxV4BJWQdSOpvkFoyyVF8Slvl78VIw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.13
+	 MIME-Version:Content-Type; b=BxgWT2rXUr4kj2wKtLGN6qedTqppBLZGzMaYfrJtFpmYpU6Td2fwYFxoqoepnccXSAyv3+5f92va32flt9xkZZlU4ELPdzD9jHbYOvwSkj1FrSgsu7AgW0ew8hN/0ZitG5qLecaBgf1/aLEttv9J4btL+wi5dpd2oF2hh2yHgFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf10.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay07.hostedemail.com (Postfix) with ESMTP id A85711601A2;
-	Wed, 18 Jun 2025 15:20:11 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf10.hostedemail.com (Postfix) with ESMTPA id A28892F;
-	Wed, 18 Jun 2025 15:20:07 +0000 (UTC)
-Date: Wed, 18 Jun 2025 11:20:15 -0400
+Received: from omf01.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay04.hostedemail.com (Postfix) with ESMTP id AD49E1A02C0;
+	Wed, 18 Jun 2025 15:23:51 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf01.hostedemail.com (Postfix) with ESMTPA id CEFF460009;
+	Wed, 18 Jun 2025 15:23:47 +0000 (UTC)
+Date: Wed, 18 Jun 2025 11:23:55 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Peter Zijlstra <peterz@infradead.org>
 Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
@@ -49,11 +49,11 @@ Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
  <akpm@linux-foundation.org>
 Subject: Re: [PATCH v10 04/14] unwind_user/deferred: Add
  unwind_deferred_trace()
-Message-ID: <20250618112015.56507e6f@gandalf.local.home>
-In-Reply-To: <20250618135907.GO1613376@noisy.programming.kicks-ass.net>
+Message-ID: <20250618112355.47ed62e6@gandalf.local.home>
+In-Reply-To: <20250618140111.GP1613376@noisy.programming.kicks-ass.net>
 References: <20250611005421.144238328@goodmis.org>
 	<20250611010428.433111891@goodmis.org>
-	<20250618135907.GO1613376@noisy.programming.kicks-ass.net>
+	<20250618140111.GP1613376@noisy.programming.kicks-ass.net>
 X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -63,30 +63,45 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Stat-Signature: r7eq6e89kmdqg5zdnibfs9qjqfqw8xno
-X-Rspamd-Server: rspamout02
-X-Rspamd-Queue-Id: A28892F
+X-Rspamd-Server: rspamout01
+X-Rspamd-Queue-Id: CEFF460009
+X-Stat-Signature: y6mrjqrdyr9rapdufpodsd89snn3sdx5
 X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1/v39Vor/fXhiByYy9BWsvEhl9lM6az1FQ=
-X-HE-Tag: 1750260007-255307
-X-HE-Meta: U2FsdGVkX19ieS+6nHd0Bg4L7pE7eBCmTgEZV/wJWkDKBF698hzLF/yVfqQwTRtLew6nDayy7fTN8lnz5JqAcKAGrxI+x+7sAm9F2/X1ppk4XivKFTUR3fp8q1/tI/IV8186HaFmEVAgVc34GFleedu03Lsw6i/zi2tLF0kHlJd/qiKfdTHwt1Q7sahaFw9+pFrnjc2oI0oaKioCBVkFzkablL30WOlj6qcA31PBDTzuLqI9uPoI8WW0h79kqCBiuqfHykEup6t3USNqT3MgzHenfE5B26pbpS13rvK8a09MFqdBvX1WAvqlm2GDXN2/lMBKrE3KZB2yrFzN6PeEgoDO03Gh7nal9YkO5AE66V0tOTw3Wdun5vHFKKgSavec
+X-Session-ID: U2FsdGVkX18tgXEdbs5iaqcKTWUAIktxWeEKoKyWLcY=
+X-HE-Tag: 1750260227-738225
+X-HE-Meta: U2FsdGVkX1/KV2XbzLVp5QcwT2vO3ZLzoSiV6kHNCKriq0j6j3wN3uT2MlIILhcOLnJYbZ3FjZx+/wpAU5eA2HHloPA5QZFEfP5JfxHC+Pk2mHDT4EKm1RerOLiM+MiqRbxR9uXfm4ApdFiskOo0+MW/PVEZj90xsuo5re27rSmFWPu39//amkYt7FtknfJqGDKq3IvfBhN4LXUojnSVXKpKpwGwEermIf6Jn9ugmc8YkDWr4bcktSZjnk1iNld2Vau2gC9VLcf0YH5Gmxxk5TK0+YjCvtCOjwp1Cu6PqTox+UxBarr5Pk9aMea9CecOiIT1M7A4Zu/20o11sOkt7mcpqli69dEyqvqRF4ERNGTHZRr/qUVekIwG/y3hTMhN
 
-On Wed, 18 Jun 2025 15:59:07 +0200
+On Wed, 18 Jun 2025 16:01:11 +0200
 Peter Zijlstra <peterz@infradead.org> wrote:
 
 > On Tue, Jun 10, 2025 at 08:54:25PM -0400, Steven Rostedt wrote:
-> > diff --git a/kernel/unwind/Makefile b/kernel/unwind/Makefile
-> > index 349ce3677526..6752ac96d7e2 100644
-> > --- a/kernel/unwind/Makefile
-> > +++ b/kernel/unwind/Makefile
-> > @@ -1 +1 @@
-> > - obj-$(CONFIG_UNWIND_USER) += user.o
-> > + obj-$(CONFIG_UNWIND_USER)		+= user.o deferred.o  
 > 
-> We really needed that extra whitespace? :-)
+> > +#define UNWIND_MAX_ENTRIES 512  
+> 
+> The reason this is 512 is so that you end up with a whole page below?
 
-Oops, I have no idea how that happened. Especially since emacs doesn't do
-tabs well.
+Possibly. We could probably even make that configurable. Perhaps just use
+sysctl_perf_event_max_contexts_per_stack ?
+
+
+Josh, any comments about why you picked this number?
 
 -- Steve
+
+> 
+> > +int unwind_deferred_trace(struct unwind_stacktrace *trace)
+> > +{
+> > +	struct unwind_task_info *info = &current->unwind_info;
+> > +
+> > +	/* Should always be called from faultable context */
+> > +	might_fault();
+> > +
+> > +	if (current->flags & PF_EXITING)
+> > +		return -EINVAL;
+> > +
+> > +	if (!info->entries) {
+> > +		info->entries = kmalloc_array(UNWIND_MAX_ENTRIES, sizeof(long),
+> > +					      GFP_KERNEL);  
+> 
+
 
