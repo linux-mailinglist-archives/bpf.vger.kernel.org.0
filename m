@@ -1,224 +1,213 @@
-Return-Path: <bpf+bounces-60875-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60876-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2384FADDF80
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 01:19:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24D48ADDFE9
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 02:09:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31E2E16EFDD
-	for <lists+bpf@lfdr.de>; Tue, 17 Jun 2025 23:19:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7AC0017CDCD
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 00:09:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62A362BCF6A;
-	Tue, 17 Jun 2025 23:18:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BMyvJl/c"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95EA43214;
+	Wed, 18 Jun 2025 00:09:01 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34B0129B8E4;
-	Tue, 17 Jun 2025 23:18:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D1431362;
+	Wed, 18 Jun 2025 00:08:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750202333; cv=none; b=XO/BpflQ5zXFJM9Sm9IyNrFhcZqAYRoogbq7ErLmAF7P02iay9Y6F650sB1O/QWFB2eKKupMqSY9epNyzuZIV4D8hUryrusYIoyZq1iC08VttbqLVUi+B54z2qqLi13IfQn17NWb0ECiADpAj09JX3v5R0dr7K8AkAvDjGTKjUE=
+	t=1750205341; cv=none; b=QK9KOTgZry1o+0t+QbqHZc4yIKCfKzV0iJugui7EItvuwjaSMpePmT9Sci1VGVVRewh1sZ3PTCTkfliDqVTioE/fxyAqrjzQXaQaCToN46soeObGnxRwoxRznNGkm6OPnWwQcCMikPPidlbrD2GdDjr6gfqoH0xQ9QSQyCDo4dU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750202333; c=relaxed/simple;
-	bh=Gyd89FC9CmOQQ8A+9ZkRn5DKNiKCa70YaSK3DDh1WpI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YcF5oGAax1zGdheSeakhqEzno5fvoLYD/e6ear3AAc5JCsjjtwbByli+aZC7iUbLS8JKjfHC+a/vxRQiEmudC2UbK/bAvDNwW2e5nDc1S5SvYVQCQqwVW9zXh3t0LNmyiOtvjqD+HMFTAjK3UXH/nI6sIe+J+ZiUE8ontgmaZ7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BMyvJl/c; arc=none smtp.client-ip=209.85.219.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-6fadd3ad18eso53709266d6.2;
-        Tue, 17 Jun 2025 16:18:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750202331; x=1750807131; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4m2i072eY2V/Lpj23ft0PYlJ1QdWWASrOKZEzo7QZKY=;
-        b=BMyvJl/cEJCZyfc0QNIvBZBEj9k6Ru1mdLWZT4AFiROEpaMK2iaOPiXg5gTpFZ4uYY
-         8V3PNcwvUAQEr9QcLt/PqYc6XTDrnBaJhSZ9C1zN8yrzetGgj1WgVE4P6yuTDdrCQHwy
-         Sh7aYZmjJGSzRNPCdHKxZMMvXaGtJsVvxcfNxkQ7r8yIgFKkSEac2RWZ5jNfrgE3asvk
-         zo6R8BRJi77Fzo7po2qSYdJFtKJVy9Jo8gNUo2Ap6Flu7Vb7o0N6yE3HA200fkV5tiHm
-         9h2+Me481PzkCzoKgHAI15XoK6Cqtkb6d6xBt+FsncYzDiQA1aGrxuRsqecCCseJ4MWV
-         aTWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750202331; x=1750807131;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4m2i072eY2V/Lpj23ft0PYlJ1QdWWASrOKZEzo7QZKY=;
-        b=u69eXK6Jp2UwJvu4RKW7mwC+D10ICqkcnOOw8NWpi/uptgtyn5RJ3c/gLY1KtS2ka5
-         JGRLmVJwiWQQxj6ebPgzwpsDfLu15WnCO3L8Q84k6mTefJEYeURuQ6CccUtbQXSyk/Es
-         oHn8VEWChGlFBGWyfb4YTqIhyFVzv3TVKdFASzLNci4xx4+uHsPBKUIJv77CJNJtlcGV
-         7gRXblDreXAjBtEh57P7xsKLIxB0cON1eGp6t7D+2BVFDY/HRZbBa12OEyCou0yI6bqA
-         DDA8NCtpdee3hu9sh1QYe8m4qDe3ZFgSXp1VVK3lzUB/tlkh97CqZUJZEQcK0QcYBEdj
-         Opxg==
-X-Forwarded-Encrypted: i=1; AJvYcCUTkyXDLK0Er1PIB7TWVSTdEaBa7RTIYk5pCUtAyBdY52Q1i0LGbKgC5IfpACfPwROVgk8guSbVOWTubDJl@vger.kernel.org, AJvYcCVqPEbR3ojrFt4PQOQUWRX/GUdcBieaThgTIvbvjLRjrL2LY7+AUz//0VFkzjoBMccMwcQ=@vger.kernel.org, AJvYcCWE/Ci+ph4i7BzE6195m+76bVPJ0URhb6mYhznkcxb/rAvfsID4RWPoZP8SXUDPrlYap6e1XmZ7hsqioP5328zk@vger.kernel.org
-X-Gm-Message-State: AOJu0YzPwJZBs7aaRa9jCQresv8YGlUFcoB5m6G9eut+WUcf+o/j7rx6
-	Mz5bjajRGz/Hq0GvOjkKH78go+Ta5Al0WcENxGKn8Qmh7JL2tmBZR7Il
-X-Gm-Gg: ASbGncvvGM+8B/eIf8eLjnGmEVZo3WEsrsLt/IMEiRkavvS0fgKCJCI1s2bfOgDQFKK
-	5NXJcy+TOQrKUgwgvxdrv7Ia7D/SnWdGZ4+87WMJcLNtOm60Oa0B8XLiAeHX5C5XH4dkNrZkQGV
-	NMze2va77wiSQrk6efBrP78GLlyshiZHinbsEZxwb1zj4VEp/WzYnih3P3WAURlY/HF8nwoTAc0
-	jlNFJCfz71xCpF7kHWcV+qKSw6i2+nERNKBaCvqazEmbJ2kEyQiIT8LnLeaGilMmWnLq9caqhPN
-	kl8KBJ71fy64aYs6zxvwAYjaOMTCN9SqetAu5NXcb7vjz1UGgDpSEiCpQAj499Tk3HAozYEb7tl
-	6/Ibt/weorZBhyhdCzuxRGDb13LieqW5xGfGiBfNbPpXDLdtjdXhL98ToMxsB/qLPAgICTg==
-X-Google-Smtp-Source: AGHT+IG4PL9CNIYyLFeVBaz5Sus/L9wLZ8/0wuS99owjWOyWj/GoiHW/J971fUutvNJBcNXOuyUCIA==
-X-Received: by 2002:a05:6214:3203:b0:6fa:c22e:e56 with SMTP id 6a1803df08f44-6fb4762f4c6mr251792536d6.8.1750202331102;
-        Tue, 17 Jun 2025 16:18:51 -0700 (PDT)
-Received: from lima-default.. (pool-108-50-252-180.nwrknj.fios.verizon.net. [108.50.252.180])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6fb5db9f173sm12992576d6.14.2025.06.17.16.18.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Jun 2025 16:18:50 -0700 (PDT)
-From: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>
-To: ast@kernel.org
-Cc: m.shachnai@rutgers.edu,
-	srinivas.narayana@rutgers.edu,
-	santosh.nagarakatte@rutgers.edu,
-	Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Matan Shachnai <m.shachnai@gmail.com>,
-	Luis Gerhorst <luis.gerhorst@fau.de>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH v2 2/2] selftests/bpf: Add testcases for BPF_ADD and BPF_SUB
-Date: Tue, 17 Jun 2025 19:17:32 -0400
-Message-ID: <20250617231733.181797-3-harishankar.vishwanathan@gmail.com>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20250617231733.181797-1-harishankar.vishwanathan@gmail.com>
-References: <20250617231733.181797-1-harishankar.vishwanathan@gmail.com>
+	s=arc-20240116; t=1750205341; c=relaxed/simple;
+	bh=Lk70ooPuIoOcs1tkJF7x2dkbLiotCwY9cR+w6sgUM2Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OR0s9hoAZE+6BN9ffnxTVdLc2f+SgnkwPuVXt4jEnXAofgZxrPKrCzw516MIsdAgFLsK7NOcMiv5qXgKyMm7px0YMgHjc2bX1y/DcSnFuC5hGq2kW1PkXWF1ZwUy2CXg0Kh7HKXXRRxjF83QyfvBrBhQet7K5XOgltAtGlzf+WQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-681ff7000002311f-28-6852038d4a0f
+Date: Wed, 18 Jun 2025 09:08:40 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: David Hildenbrand <david@redhat.com>
+Cc: Harry Yoo <harry.yoo@oracle.com>, Mina Almasry <almasrymina@google.com>,
+	willy@infradead.org, Jakub Kicinski <kuba@kernel.org>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, kernel_team@skhynix.com,
+	ilias.apalodimas@linaro.org, hawk@kernel.org,
+	akpm@linux-foundation.org, davem@davemloft.net,
+	john.fastabend@gmail.com, andrew+netdev@lunn.ch,
+	asml.silence@gmail.com, toke@redhat.com, tariqt@nvidia.com,
+	edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com,
+	leon@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
+	rppt@kernel.org, surenb@google.com, mhocko@suse.com,
+	horms@kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+	vishal.moola@gmail.com
+Subject: Re: netmem series needs some love and Acks from MM folks
+Message-ID: <20250618000840.GA23579@system.software.com>
+References: <20250609043225.77229-1-byungchul@sk.com>
+ <20250609043225.77229-2-byungchul@sk.com>
+ <20250609123255.18f14000@kernel.org>
+ <20250610013001.GA65598@system.software.com>
+ <20250611185542.118230c1@kernel.org>
+ <20250613011305.GA18998@system.software.com>
+ <CAHS8izMsKaP66A1peCHEMxaqf0SV-O6uRQ9Q6MDNpnMbJ+XLUA@mail.gmail.com>
+ <aFDTikg1W3Bz_s5E@hyeyoo>
+ <129fe808-4285-48fe-95b6-00ea19bd87af@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <129fe808-4285-48fe-95b6-00ea19bd87af@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUhTYRTHe3af3V2Hg+tKeyp6cRVGkJpInKhEo5dLpVRCRAU18tZWvuSm
+	poJktQxFp6WYzrelNV8yV6t0ikjaKktBWyirrImlZWSS1tCUalMkv/04/z/ndz4chpJWCJcy
+	yug4XhUtj5TRYiwecS/foKUOKvy1dgqKjbU03JlIhMp+sxCKa+oR/Jx8J4Jxy3MaKm46nI0u
+	DYZfxt8UDD4bEIHdMISh+WoDBQPZ7TRkaaYouGSuEkB3vVYIeb9vU9CQ2i+C103FNHyo/SuE
+	obYsDC901Rjs2mB4pvcCR8c3BBZjgwAcmSU05Fr1NHzU2BFYnwxgKLqoRWBssQlhaqKYDvbm
+	Hla/EXCNuvciTm+K5x5UrecybFaKM9Wk05xp7LqI6+ttprn2ginMNZrHBVzW5e8092PwLeZG
+	W3pozviwB3OdeouIGzet2M8eEW+N4COVCbzKL+iEWPEh/5XoXL5PoqVMmop6l2cgN4awgWTE
+	cAPPcf77EqGLMbuWOAxNIhfTrA+x2SYpFy9i1xFT2j0nixmKvUaTnj7LTLCQDSF/7j8VuFjC
+	AsmrmMCukpS9RZGRlwPUbOBBXhR+mrFRzq3TpVbnnHHyMlL5h5kdrySXHxXN1N3YIDL5yDbD
+	nuxq8rj+ucC1k7BmhnyurkWzVy8hrVU2nIM8dPMUunkK3X+Fbp5Cj3ANkiqjE6LkyshAX0VS
+	tDLR92RMlAk5X8eQMn3UjMa6w9sQyyCZu+TengMKqVCeoE6KakOEoWSLJBXtYQqpJEKelMyr
+	Yo6r4iN5dRtaxmDZYkmA43yElD0tj+PP8vw5XjWXChi3palox7EtRdvO+H97M+F/92RtwL5M
+	49D30pQFuw8ZsjXZLaYQTVfeZu86cdpIWVNs3c6c+/5qk2dHLm2v2dXiVziqQteC3bcHFmA6
+	WcF6hV0YXHXiq/RpecGV1lOhPpsyHiTtXZP1ZFXncMeXMH34aFd67zCypqZIDufGKrwMQ6FI
+	vE6G1Qr5xvWUSi3/B2gXCps2AwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SXUhTcRyG+e+cnXM2Wh3X0oNiwawMKctI/EERSkQHL6TyIrSLHHpoy6/a
+	1LQyNKVQmmWF5Jy1skxN3Fzl1MRiTt0ssmbastRaKRV9LW1MLWtTIu8e3vfluXopTHyaH0gp
+	MrI4ZYYsTUoIcWHc1qINamyvfNMFz3rQ6hsJuO3JhVtvWvmgbWhBMDX9ioRJSy8BNdfcGGj7
+	i3H4qZ/BYLzHScJY7QQOHWdMGDjPWQlQF89icKq1jgdd1TY+PG0p48OlmZsYmArekDDQriVg
+	tPEPHybMahxsmnocxsqioUfnD+5HnxFY9CYeuM9WE3DRriPgXfEYAnuXE4eqwjIE+k4HH2Y9
+	WiJayt6tf8lj2zQjJKszZrN36sLYUocdY40NJQRr/HGBZF8PdRCs9fIszra1TvJYddFXgnWN
+	D+Pst85Bgq358J3H6u8O4uxjnYXc7Zco3JbCpSlyOOXG7UlC+WjFM/JwRWiu5aq4AA0FlyIB
+	xdBbmIqRar6PcXoN465tJ31M0KGMwzGN+VhCr2OMpw1eFlIYXU4wg68t88VyOoaZa+7m+VhE
+	A3OpxoP7RmL6BsZ86XNiC4UfY6t8j/sY81p/XbF7c8rLQcytOWohXsUU3auanwvo7cz0Pcc8
+	r6BDmIctvbzzaKlmkUmzyKT5b9IsMukQ3oAkioycdJkiLTJclSrPy1DkhidnphuR9x21+b/K
+	W9HUwC4zoikkXSIyxO6Ri/myHFVeuhkxFCaViGqscXKxKEWWd4xTZh5QZqdxKjMKonBpgCh2
+	H5ckpg/KsrhUjjvMKf+1PEoQWIAeDG5WmOMNNsnXvvvdnV9GpR+vuRjp29Kmk1Z3aMzzbk//
+	6sK6FyvrTE8Cm483d6rid7q2TdsFO/yPnFCPy0MkYflr3VVtxM3I4Ka+eGQ5Gu2azIvyK81y
+	WoZliSXX3eZc229DQnllgiuZLBRGLStuJD7NRKzojzy0v2B4JEAjxVVyWUQYplTJ/gIzik1J
+	GQMAAA==
+X-CFilter-Loop: Reflected
 
-The previous commit improves the precision in scalar(32)_min_max_add,
-and scalar(32)_min_max_sub. The improvement in precision occurs in
-cases when all outcomes overflow or underflow, respectively. This
-commit adds selftests that exercise those cases.
+On Tue, Jun 17, 2025 at 06:09:36PM +0200, David Hildenbrand wrote:
+> On 17.06.25 04:31, Harry Yoo wrote:
+> > On Fri, Jun 13, 2025 at 07:19:07PM -0700, Mina Almasry wrote:
+> > > On Thu, Jun 12, 2025 at 6:13 PM Byungchul Park <byungchul@sk.com> wrote:
+> > > > 
+> > > > On Wed, Jun 11, 2025 at 06:55:42PM -0700, Jakub Kicinski wrote:
+> > > > > On Tue, 10 Jun 2025 10:30:01 +0900 Byungchul Park wrote:
+> > > > > > > What's the intended relation between the types?
+> > > > > > 
+> > > > > > One thing I'm trying to achieve is to remove pp fields from struct page,
+> > > > > > and make network code use struct netmem_desc { pp fields; } instead of
+> > > > > > sturc page for that purpose.
+> > > > > > 
+> > > > > > The reason why I union'ed it with the existing pp fields in struct
+> > > > > > net_iov *temporarily* for now is, to fade out the existing pp fields
+> > > > > > from struct net_iov so as to make the final form like:
+> > > > > 
+> > > > > I see, I may have mixed up the complaints there. I thought the effort
+> > > > > was also about removing the need for the ref count. And Rx is
+> > > > > relatively light on use of ref counting.
+> > > > > 
+> > > > > > > netmem_ref exists to clearly indicate that memory may not be readable.
+> > > > > > > Majority of memory we expect to allocate from page pool must be
+> > > > > > > kernel-readable. What's the plan for reading the "single pointer"
+> > > > > > > memory within the kernel?
+> > > > > > > 
+> > > > > > > I think you're approaching this problem from the easiest and least
+> > > > > > 
+> > > > > > No, I've never looked for the easiest way.  My bad if there are a better
+> > > > > > way to achieve it.  What would you recommend?
+> > > > > 
+> > > > > Sorry, I don't mean that the approach you took is the easiest way out.
+> > > > > I meant that between Rx and Tx handling Rx is the easier part because
+> > > > > we already have the suitable abstraction. It's true that we use more
+> > > > > fields in page struct on Rx, but I thought Tx is also more urgent
+> > > > > as there are open reports for networking taking references on slab
+> > > > > pages.
+> > > > > 
+> > > > > In any case, please make sure you maintain clear separation between
+> > > > > readable and unreadable memory in the code you produce.
+> > > > 
+> > > > Do you mean the current patches do not?  If yes, please point out one
+> > > > as example, which would be helpful to extract action items.
+> > > > 
+> > > 
+> > > I think one thing we could do to improve separation between readable
+> > > (pages/netmem_desc) and unreadable (net_iov) is to remove the struct
+> > > netmem_desc field inside the net_iov, and instead just duplicate the
+> > > pp/pp_ref_count/etc fields. The current code gives off the impression
+> > > that net_iov may be a container of netmem_desc which is not really
+> > > accurate.
+> > > 
+> > > But I don't think that's a major blocker. I think maybe the real issue
+> > > is that there are no reviews from any mm maintainers?
+> > 
+> > Let's try changing the subject to draw some attention from MM people :)
+> 
+> Hi, it worked! :P
+> 
+> I hope Willy will find his way to this thread as well.
+> 
+> > 
+> > > So I'm not 100%
+> > > sure this is in line with their memdesc plans. I think probably
+> > > patches 2->8 are generic netmem-ifications that are good to merge
+> > > anyway, but I would say patch 1 and 9 need a reviewed by from someone
+> > > on the mm side. Just my 2 cents.
+> > 
+> > As someone who worked on the zpdesc series, I think it is pretty much
+> > in line with the memdesc plans.
+> > 
+> > I mean, it does differ a bit from the initial idea of generalizing it as
+> > "bump" allocator, but overall, it's still aligned with the memdesc
+> > plans, and looks like a starting point, IMHO.
+> 
+> Just to summarize (not that there is any misunderstanding), the first
+> step of the memdesc plan is simple:
+> 
+> 1) have a dedicated data-structure we will allocate alter dynamically.
+> 
+> 2) Make it overlay "struct page" for now in a way that doesn't break things
+> 
+> 3) Convert all users of "struct page" to the new data-structure
+> 
+> Later, the memdesc data-structure will then actually come be allocated
+> dynamically, so "struct page" content will not apply anymore, and we can
+> shrink "struct page".
+> 
+> 
+> What I see in this patch is exactly 1) and 2).
+> 
+> I am not 100% sure about existing "struct net_iov" and how that
+> interacts with "struct page" overlay. I suspects it's just a dynamically
+> allocated structure?
+> 
+> Because this patch changes the layout of "struct net_iov", which is a
+> bit confusing at first sight?
 
-Co-developed-by: Matan Shachnai <m.shachnai@rutgers.edu>
-Signed-off-by: Matan Shachnai <m.shachnai@rutgers.edu>
-Signed-off-by: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>
----
- .../selftests/bpf/progs/verifier_bounds.c     | 85 +++++++++++++++++++
- 1 file changed, 85 insertions(+)
+The changes of the layout was asked by network folks, that was to split
+the struct net_iov fields to two, netmem_desc and net_iov specific ones.
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_bounds.c b/tools/testing/selftests/bpf/progs/verifier_bounds.c
-index 30e16153fdf1..20fb0fef5719 100644
---- a/tools/testing/selftests/bpf/progs/verifier_bounds.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_bounds.c
-@@ -1371,4 +1371,89 @@ __naked void mult_sign_ovf(void)
- 	  __imm(bpf_skb_store_bytes)
- 	: __clobber_all);
- }
-+
-+SEC("socket")
-+__description("64-bit addition overflow, all outcomes overflow")
-+__success __log_level(2)
-+__msg("7: (0f) r5 += r3 {{.*}} R5_w=scalar(smin=0x800003d67e960f7d,umin=0x551ee3d67e960f7d,umax=0xc0149fffffffffff,smin32=0xfe960f7d,umin32=0x7e960f7d,var_off=(0x3d67e960f7d; 0xfffffc298169f082))")
-+__retval(0)
-+__naked void add64_ovf(void)
-+{
-+	asm volatile (
-+	"call %[bpf_get_prandom_u32];"
-+	"r3 = r0;"
-+	"r4 = 0x950a43d67e960f7d ll;"
-+	"r3 |= r4;"
-+	"r5 = 0xc014a00000000000 ll;"
-+	"r5 += r3;"
-+	"r0 = 0;"
-+	"exit"
-+	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("32-bit addition overflow, all outcomes overflow")
-+__success __log_level(2)
-+__msg("5: (0c) w5 += w3 {{.*}} R5_w=scalar(smin=umin=umin32=0x20130018,smax=umax=umax32=0x8000ffff,smin32=0x80000018,var_off=(0x18; 0xffffffe7))")
-+__retval(0)
-+__naked void add32_ovf(void)
-+{
-+	asm volatile (
-+	"call %[bpf_get_prandom_u32];"
-+	"r3 = r0;"
-+	"w4 = 0xa0120018;"
-+	"w3 |= w4;"
-+	"w5 = 0x80010000;"
-+	"w5 += w3;"
-+	"r0 = 0;"
-+	"exit"
-+	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("64-bit subtraction overflow, all outcomes underflow")
-+__success __log_level(2)
-+__msg("6: (1f) r3 -= r1 {{.*}} R3_w=scalar(umin=1,umax=0x8000000000000000)")
-+__retval(0)
-+__naked void sub64_ovf(void)
-+{
-+	asm volatile (
-+	"call %[bpf_get_prandom_u32];"
-+	"r1 = r0;"
-+	"r2 = 0x8000000000000000 ll;"
-+	"r1 |= r2;"
-+	"r3 = 0x0;"
-+	"r3 -= r1;"
-+	"r0 = 0;"
-+	"exit"
-+	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("32-bit subtraction overflow, all outcomes underflow")
-+__success __log_level(2)
-+__msg("5: (1c) w3 -= w1 {{.*}} R3_w=scalar(smin=umin=umin32=1,smax=umax=umax32=0x80000000,var_off=(0x0; 0xffffffff))")
-+__retval(0)
-+__naked void sub32_ovf(void)
-+{
-+	asm volatile (
-+	"call %[bpf_get_prandom_u32];"
-+	"r1 = r0;"
-+	"w2 = 0x80000000;"
-+	"w1 |= w2;"
-+	"r3 = 0x0;"
-+	"w3 -= w1;"
-+	"r0 = 0;"
-+	"exit"
-+	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.45.2
+How to organize struct net_iov further is up to the network folks, but
+I believe the current layout should be the first step.
 
+	Byungchul
+
+> 
+> --
+> Cheers,
+> 
+> David / dhildenb
 
