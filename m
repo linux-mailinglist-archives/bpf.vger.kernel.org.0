@@ -1,182 +1,171 @@
-Return-Path: <bpf+bounces-61005-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61006-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDE1AADF90B
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 23:59:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89F29ADF928
+	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 00:03:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29D017AA5CC
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 21:58:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CB7D3B9C46
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 22:02:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 677D927E1D0;
-	Wed, 18 Jun 2025 21:59:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B08BC27E04A;
+	Wed, 18 Jun 2025 22:03:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VT8mT8jK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JkCExPN0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24AEB27E044
-	for <bpf@vger.kernel.org>; Wed, 18 Jun 2025 21:59:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5AB0186294;
+	Wed, 18 Jun 2025 22:03:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750283985; cv=none; b=JNZ4YUW25p9tQh4cvS6l1KVmfk2RYESMFsbBs+OZ3co4KH46pmDF2SYng3wvQuhjwquxsyaLaW0cj6WTD6QPsH9YblJJnHVOIH0LneF/NDJlBHpItSudSrg06zZTQ1I9injCfAfqYbJHyhTGkucvvZyB0gqZNadK2K6vBXGq680=
+	t=1750284185; cv=none; b=J23xNFMSguGz/qgxbVRVo5mDQKmOgwS7PGnBTfIrddDMoJWbah9zstZti2NmlaPEJ8E8xvEeTyumr8ZwkaPA0FdljTo3+8kLPeum70jqy7ISNuuw7aN65W8j1pYnivaq/RVhkq6pztELVRX3+ljCU0Ulq9gmbozJkChQPJFSiD0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750283985; c=relaxed/simple;
-	bh=7nGvX5WWNrwrnFJvm86lFz12xKyHqiqJeLale5KfaYg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ePlXgHWDhMAEjIeOFY84eZu+5e+eS9YUR85hTgBHMdjn6Fl7KIRiLzSUktFreexVA3SROu3hXjHob2DAEc/FnwMerJEnG2zA1cfROR+iGaOwVCfV8tGzwcIKQdPmg0KNm0f8SKFahVbJohkMlsVWaPanX6AdX1EPldDQ6YpI7kA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VT8mT8jK; arc=none smtp.client-ip=209.85.221.47
+	s=arc-20240116; t=1750284185; c=relaxed/simple;
+	bh=XCrE9YZpd1aOHLMWh4zYUf3neHcw+UBD/EiQR4z9ErM=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=CcvrpfbKy91uDcli5hDaKW0A9/RD7AXmEKEQE9+uoONOoB/iGJrFZY5nBS07z6KrpddzEtW+k+BoOgu52r3Dpjx+IUvWGcF5NbfB6abTpN+hYP66XM+8eILKDeChkYInFbmi4Fvb97npv3AZ3hPfyGv/Y9a/qYp6obx4BFQCHd8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JkCExPN0; arc=none smtp.client-ip=209.85.128.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3a4fea34e07so80352f8f.1
-        for <bpf@vger.kernel.org>; Wed, 18 Jun 2025 14:59:42 -0700 (PDT)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-70a57a8ffc3so1704727b3.0;
+        Wed, 18 Jun 2025 15:03:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750283981; x=1750888781; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1750284182; x=1750888982; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WWKaX7Uqa3jo+GIPCuaDb5VGbrS8+M8C2JgytHjAudU=;
-        b=VT8mT8jKzjQCoNaFbhXkQ+4N9eZEW9HiPJ3TAKF2CKpUpWoLlbkXRkpA9dAU7DFRI3
-         4ZON9hsmLtxznpx1XtgIO+XNEH0H2cPhS5STNf7KhKG4E4UVeQBL8DI5GIY3oG35xea4
-         G7ILMU4uP7vG0fbhMmgdtQjJy5Qt7gL5Pnvq6nTihiu7PAP1biMuPX4oWZ/d3/AVW4XS
-         n74WUSOgR4Pthl3awrMyilHm6KZ2hTpCIDf4j5rjMmqK/dBlwYfJWLbUCGpUi20NMWNw
-         +AUVd5DX+NBwBF0AHv0gnsku6Wm1ZZVibmtqmuIwtGisXb8kl1vwmtIXaG5Frn2Zy7+8
-         2yYw==
+        bh=XCrE9YZpd1aOHLMWh4zYUf3neHcw+UBD/EiQR4z9ErM=;
+        b=JkCExPN07UMYjpnHyVp/Oo5M6aagFSfGCf7LLBCBb89k79dXUlkgfUyweeXMQNh6dd
+         riMZ/+SvQftmmNzmpcczgCi3p06HgolRPP9KavU8cIVo/nxiL5cghujqdDsTlC9upjE2
+         tIQRpS9YUc01Mq3lc0WrQny54O/eikm46z7b2Q78LIWfbpqUoNvUcef2jZ9WgAPrM/Z6
+         MHvwNe2Rb/8sYEnWMKyzLrPfyiz8Au2YoI1k62gx+JLZWzc3AI3myHrh3/okDvOgEqVQ
+         AJTe2MQhaOzDjnYUZGURh6q21qH7MRz875oDPmrDn7Kje64MCCb2nFqVMZqwMI374jSj
+         shug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750283981; x=1750888781;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WWKaX7Uqa3jo+GIPCuaDb5VGbrS8+M8C2JgytHjAudU=;
-        b=tkv9ef4VG+w9+oVohmgaY+8nYorUrwGTccdRCY5X/VTPwSXSJzLGjcmLszA5vZOtpp
-         Me39po/BIKVIO2oTKLgl2VCGKKYIm/dNyAbEhZ33e01MjZw/MhzHXSv+Af8ykWJp7hZS
-         44AFnmPnL10U3PTZZuSNPlDCU4U8HaL3XVWURlhp8qftz/TIIun4nTHBDJvSLUrjSwzF
-         +2+/3DL8Q31AVoNU4A3fklq4QLQLs/vCCzmimqeLdRylIWzYPQKtjeytJJls01XzvPfi
-         ze04dMUtV901ILVhJp0cEAbwjjmSWymG3WuPHvx5Lay85vBIUi3SH43csWDBr2PqsxXU
-         CNoA==
-X-Gm-Message-State: AOJu0Ywu4GcHbPuj0HwOS2SaBsfX7OmCRS5G76VQgvDLkOyFzFQ/wDMW
-	mfL3SeHUfm2gxq90HMYULJM4Y39Y0BWGiIevBMRhbG05IrnBbcWuTwI0m7lfkTlUtBRCnTpr4FK
-	EDF0Jv5St81jndHoBSG0pxGuAepbpXgY=
-X-Gm-Gg: ASbGnct8APTClOOzbyVNxU/Lis2tTQ4SyGhxjrhz7uxdMKTgsN9kHU492q1RwQPX2jX
-	/GTkAhG0eFkgFIBegs1ieyNPxPkfpJwNN3frif94AeFCQ/QEo5N2SU4GbP/YEIxqzSYJxQYvmA8
-	uP455zB6XKE3aYtPMuf62vERHyFprUgebQ34ogYr9JWLoVlovP8pv9C/tXWcZ+0p4y2Mal2ul5
-X-Google-Smtp-Source: AGHT+IEz2M3D5mj5nFzTLJkc6fIEUPA9KOoTVRbvThrycywPaqeFQu1n/57Gqx6tp9TDUJCCGmJ+d8iI3nt59c4EYKw=
-X-Received: by 2002:a05:6000:2893:b0:3a5:26fd:d46f with SMTP id
- ffacd0b85a97d-3a5723a2765mr15125652f8f.32.1750283981062; Wed, 18 Jun 2025
- 14:59:41 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1750284182; x=1750888982;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=XCrE9YZpd1aOHLMWh4zYUf3neHcw+UBD/EiQR4z9ErM=;
+        b=vzc6WUVIr5z/pVkQXp8E5QTytAkT2XkFOhrGAOsjkb2CQUNQsWHOVTZi3fkWHUeo+K
+         rV6At5IsE70ELLUN9ToWGXEQIPCbSAEQff1ssLfrsaiWEIhZixPreMy8BNsflYo2tzRs
+         A9K7zhOT2g3yhYJSCRtiYi4d+cIEequiLa2uygjZqMsz4q4wBxDmYb7oWjlvYk1Hu5As
+         6r1Vi+u7a1F/YPORDjK1m7yLed8tZexxCE1jrukPygox18iPHUwVeYnmGR7Dkw5agMg5
+         4IXWfHrM9hkqiorZt/t3qFeTZEiBJGyDyFVBRRAalfkbHe593cY/T9RGBQBZvb5rRUtQ
+         p6Iw==
+X-Forwarded-Encrypted: i=1; AJvYcCUwlV5M22dBBlLf7KKA8U8QIh/IGaomcQOU/adT+YDupDQ0SaSOZO9QuSHHaoR/xpmBoMgwF3iT@vger.kernel.org, AJvYcCWDAETDyqId8JJCy0or9eKVWI6wB5qepr1ZfmqAlXqwmUTKpIBfRUEpCL6cIMlRyIlAor0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzCW7UhySKPk6v9EKKeyvMz95QHhy2y7rISgfbNFthHKEz9jiSK
+	HzUL1WXZTIo3s2+NrDmmEklwSPvpwqO8++I3ESN3uBPDQvVpNkNVEpNr
+X-Gm-Gg: ASbGncvfEG38bVj+yojJJSKVPjQ3fY/Mr6NoNQ2rSML0aHLrJqguwfrxyZzJ2Z3JMTg
+	1VVPS4Hu8styZjNWdPF8bAUF5IF41j/MvamSOO4A5r4xqwImx2qoNJUJEWfAPmu7wThYZVR0qRR
+	GmXgUOV47IAjclvcJorlkdzdBKB/HC9WNylLa6n23g3oqCxS5ddBJYP6s1oXu9wVTZIAzvdyEsV
+	OkOlc7fQPWK4ijm9NYoiLyhcMGxTAAM/q4MSbls1w9M00lOZLsXWRBe6x2gb+maYFXkk8Mz7Oya
+	AmKVT5TSTAZbwfVRqG2/jgPzcrkO8lMtiw+dX+9Svqrbrlylt/bweB/dEU7fkrIzzvyaytEho45
+	RT9pYmSOliLx78g0Iz4wN3e9DUEsq2QZeGpnhCiB4Qw==
+X-Google-Smtp-Source: AGHT+IH/0+BZXssfQvwAQjkInwKwqJzwZ7siKQhj/08N0p9PmdqMfx2lOhibjDK4nAR8ejA5fMc+JA==
+X-Received: by 2002:a05:690c:4c0f:b0:70e:a1e:d9c7 with SMTP id 00721157ae682-7117545bf11mr267700867b3.10.1750284182608;
+        Wed, 18 Jun 2025 15:03:02 -0700 (PDT)
+Received: from localhost (141.139.145.34.bc.googleusercontent.com. [34.145.139.141])
+        by smtp.gmail.com with UTF8SMTPSA id 00721157ae682-712b7b99eabsm262107b3.89.2025.06.18.15.03.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Jun 2025 15:03:02 -0700 (PDT)
+Date: Wed, 18 Jun 2025 18:03:01 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+ Anton Protopopov <a.s.protopopov@gmail.com>
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ bpf <bpf@vger.kernel.org>, 
+ Network Development <netdev@vger.kernel.org>, 
+ Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Willem de Bruijn <willemb@google.com>
+Message-ID: <685337959d81b_36b4e62943a@willemb.c.googlers.com.notmuch>
+In-Reply-To: <CAADnVQJ9e3Sf_kAh1LNqqeVvs7dwOC-AY_KEj5eRGGLGyC1F5A@mail.gmail.com>
+References: <20250616143846.2154727-1-willemdebruijn.kernel@gmail.com>
+ <aFLFkFpQP789M1Tx@mail.gmail.com>
+ <CAADnVQJ9e3Sf_kAh1LNqqeVvs7dwOC-AY_KEj5eRGGLGyC1F5A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: lru: adjust free target to avoid global
+ table starvation
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250615085943.3871208-1-a.s.protopopov@gmail.com>
- <20250615085943.3871208-10-a.s.protopopov@gmail.com> <CAADnVQKPbBRGOj2mB5Um80VFUh_vVg=oRJCdYUgyz_DrObuagQ@mail.gmail.com>
- <aFLR7NrdX3gbjC1s@mail.gmail.com> <CAADnVQ+nHemrEgeWYHxLi1UVeJ2u7DtSDTpcrPR7w2PgFPgQZw@mail.gmail.com>
- <aFLq/blfEEiIqXGz@mail.gmail.com> <CAADnVQK7M7L4j8ydo7GOFqZ4rbdJwg_Ghx6uNcD8SqMQnBbZCQ@mail.gmail.com>
- <aFMgvroYZapTkTSj@mail.gmail.com>
-In-Reply-To: <aFMgvroYZapTkTSj@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 18 Jun 2025 14:59:30 -0700
-X-Gm-Features: Ac12FXweevxEIF-oeAZ_keR9jYCvP2ZcGeDaqg_bRWViFHsRDzYieIagzGmJArg
-Message-ID: <CAADnVQ+H-OMe0rUGr63SEJpYT4MVv=j9=5hcDBShfCNKSHf+mQ@mail.gmail.com>
-Subject: Re: [RFC bpf-next 9/9] selftests/bpf: add selftests for indirect jumps
-To: Anton Protopopov <a.s.protopopov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Anton Protopopov <aspsk@isovalent.com>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Quentin Monnet <qmo@kernel.org>, Yonghong Song <yonghong.song@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 18, 2025 at 1:19=E2=80=AFPM Anton Protopopov
-<a.s.protopopov@gmail.com> wrote:
->
-> On 25/06/18 09:43AM, Alexei Starovoitov wrote:
-> > On Wed, Jun 18, 2025 at 9:30=E2=80=AFAM Anton Protopopov
-> > <a.s.protopopov@gmail.com> wrote:
-> > >
-> > > On 25/06/18 09:01AM, Alexei Starovoitov wrote:
-> > > > On Wed, Jun 18, 2025 at 7:43=E2=80=AFAM Anton Protopopov
-> > > > <a.s.protopopov@gmail.com> wrote:
-> > > > >
-> > > > > On 25/06/17 08:24PM, Alexei Starovoitov wrote:
-> > > > > > On Sun, Jun 15, 2025 at 1:55=E2=80=AFAM Anton Protopopov
-> > > > > > <a.s.protopopov@gmail.com> wrote:
-> > > > > > > +SEC("syscall")
-> > > > > > > +int two_towers(struct simple_ctx *ctx)
-> > > > > > > +{
-> > > > > > > +       switch (ctx->x) {
-> > > > > > >
-> > > > > >
-> > > > > > Not sure why you went with switch() statements everywhere.
-> > > > > > Please add few tests with explicit indirect goto
-> > > > > > like interpreter does: goto *jumptable[insn->code];
-> > > > >
-> > > > > This requires to patch libbpf a bit more, as some meta-info
-> > > > > accompanying this instruction should be emitted, like LLVM does w=
-ith
-> > > > > jump_table_sizes. And this probably should be a different section=
-,
-> > > > > such that it doesn't conflict with LLVM/GCC. I thought to add thi=
-s
-> > > > > later, but will try to add to the next version.
-> > > >
-> > > > Hmm. I'm not sure why llvm should handle explicit indirect goto
-> > > > any different than the one generated from switch.
-> > > > The generated bpf.o should be the same.
-> > >
-> > > For a switch statement LLVM will create a jump table
-> > > and create the {,.rel}.llvm_jump_table_sizes tables.
-> > >
-> > > For a direct goto *, say
-> > >
-> > >     static const void *table[] =3D {
-> > >             &&l1, &&l2, &&l3, &&l4, &&l5,
-> > >     };
-> > >     if (index > ARRAY_SIZE(table))
-> > >             return 0;
-> > >     goto *table[index];
-> > >
-> > > it will not generate {,.rel}.llvm_jump_table_sizes. I wonder, does
-> > > LLVM emit the size of `table`? (If no, then some assembly needed to
-> > > emit it.) In any case it should be easy to add this case, but still
-> > > it is a bit of coding, thus a bit different case.)
+Alexei Starovoitov wrote:
+> On Wed, Jun 18, 2025 at 6:50=E2=80=AFAM Anton Protopopov
+> <a.s.protopopov@gmail.com> wrote:
 > >
-> > It's controlled by -emit-jump-table-sizes-section flag.
-> > I haven't looked at pending llvm/bpf diff, but it should be possible
-> > to standardize. Emit it for both or for none.
-> > My preference would be for _none_.
+> > On 25/06/16 10:38AM, Willem de Bruijn wrote:
+> > > From: Willem de Bruijn <willemb@google.com>
+> > >
+> > > BPF_MAP_TYPE_LRU_HASH can recycle most recent elements well before =
+the
+> > > map is full, due to percpu reservations and force shrink before
+> > > neighbor stealing. Once a CPU is unable to borrow from the global m=
+ap,
+> > > it will once steal one elem from a neighbor and after that each tim=
+e
+> > > flush this one element to the global list and immediately recycle i=
+t.
+> > >
+> > > Batch value LOCAL_FREE_TARGET (128) will exhaust a 10K element map
+> > > with 79 CPUs. CPU 79 will observe this behavior even while its
+> > > neighbors hold 78 * 127 + 1 * 15 =3D=3D 9921 free elements (99%).
+> > >
+> > > CPUs need not be active concurrently. The issue can appear with
+> > > affinity migration, e.g., irqbalance. Each CPU can reserve and then=
+
+> > > hold onto its 128 elements indefinitely.
+> > >
+> > > Avoid global list exhaustion by limiting aggregate percpu caches to=
+
+> > > half of map size, by adjusting LOCAL_FREE_TARGET based on cpu count=
+.
+> > > This change has no effect on sufficiently large tables.
+> > >
+> > > Similar to LOCAL_NR_SCANS and lru->nr_scans, introduce a map variab=
+le
+> > > lru->free_target. The extra field fits in a hole in struct bpf_lru.=
+
+> > > The cacheline is already warm where read in the hot path. The field=
+ is
+> > > only accessed with the lru lock held.
 > >
-> > Not sure why you made libbpf rely on that section name.
-> > Relocations against text can be in other rodata sections.
-> > Normal behavior for x86 and other backends.
->
-> So, those sections are just an easier way to find jump table sizes.
-> The other way is as was described by Yonghong in [1] (parse
-> .rel.rodata, follow each symbol to its section, find offset, then
-> find each gotox instruction, map it to a load, then one can find that
-> the load is from a jump table, etc.). Just to be sure, is the latter by
-> your opinion the better way (because it doesn't depend on emitting
-> tables?)?
->
-> Those tables are _not_ generated for the code I've listed above.
-> However, in this case I can get the size of the table directly from
-> the symtab.
+> > Hi Willem! The patch looks very reasonable. I've bumbed into this
+> > issue before (see https://lore.kernel.org/bpf/ZJwy478jHkxYNVMc@zh-lab=
+-node-5/)
+> > but didn't follow up, as we typically have large enough LRU maps.
+> >
+> > I've tested your patch (with a patched map_tests/map_percpu_stats.c
+> > selftest), works as expected for small maps. E.g., before your patch
+> > map of size 4096 after being updated 2176 times from 32 threads on 32=
 
-Since Yonghong's diff did:
-bool BPFAsmPrinter::doInitialization(Module &M) {
+> > CPUS contains around 150 elements, after your patch around (expected)=
 
-EmitJumpTableSizesSection =3D true;
+> > 2100 elements.
+> >
+> > Tested-by: Anton Protopopov <a.s.protopopov@gmail.com>
+> =
 
-and llvm did not emit jump table for explicit 'goto *table[index]'
-I suspect it will be hard to fix.
-Meaning libbpf cannot rely on a special section name.
-So it makes sense not to force this mode in llvm
-(especially since no other backend does it) and do generic
-detection in libbpf. It will work for both explicit gotox and
-switch generated at the end.
+> Looks like we have consensus.
+
+Great. Thanks for the reviews and testing. Good to have more data that
+the issue is well understood and the approach helps.
+
+> Willem,
+> please target bpf tree when you respin.
+
+Done: https://lore.kernel.org/bpf/20250618215803.3587312-1-willemdebruijn=
+.kernel@gmail.com/T/#u=
 
