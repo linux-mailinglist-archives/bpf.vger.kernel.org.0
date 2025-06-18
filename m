@@ -1,140 +1,176 @@
-Return-Path: <bpf+bounces-60992-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60993-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADD2BADF72A
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 21:49:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 877BAADF792
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 22:20:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 31D567A8BF8
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 19:47:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1DDA617125C
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 20:20:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91118219311;
-	Wed, 18 Jun 2025 19:49:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2182421ABD0;
+	Wed, 18 Jun 2025 20:19:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZytZ6UYZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ASeSRVaf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3D3B1E0B91
-	for <bpf@vger.kernel.org>; Wed, 18 Jun 2025 19:49:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8EF020CCD0
+	for <bpf@vger.kernel.org>; Wed, 18 Jun 2025 20:19:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750276149; cv=none; b=VOEXDReLdRJtI23RUyPFeF/Yd+MtAV3F+jvO/Rh99eglrnoxZhI+54djxkPLCfPGmmWPkXLOz3dWzYrXECWJb3rh0asRkX6W/VDSQTjA6U/Hzlq54sNKrdkeR/1MdLoxtvmYXdgAIkku6TiwkM4gFh0mCb+xzctCJ+FzN4P9bis=
+	t=1750277995; cv=none; b=heGMjQAv2f6DseQ11dmMvHT1o707IlM+s6ZiDDN7CYZV44KnhSVDFGSq/gT4pSH+aANH0IZDSq6DtYwTt0gxGk2QXvsZVU9uPMarOto7Z/v/6uYJUzT7gE7xIWVLGdkQPIpQUbCJBgyyWsprT3I2FNR8XiMUV+exTTrjDKNJ1Dw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750276149; c=relaxed/simple;
-	bh=SIknRRuJoAmJQrfveZxAenHRhoJwCxG8uPlWkrv6/94=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=uySWuY85w3oNMiQDw66xQAkmYJikWuk8+vdE50qfEOPOj7FAGdz9CcT9cQg+BsYJfLi+qvcEa9v8VvxypOXbk6qEa8AobyjoHnvaHb9QNEvFA/JnCcZvytx8mDAc7GYibyTilYs/bW3NPcj8CsSXdx/653AFNDgbqB1zK4g2Dls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZytZ6UYZ; arc=none smtp.client-ip=209.85.216.53
+	s=arc-20240116; t=1750277995; c=relaxed/simple;
+	bh=BuA8Db1xEvLlpkAhBdzTbojqHkzmn5Gte//Y8IFeiRI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fRFOy/HwZ3hegHxrzzHtdou00aVzyW8JtG4z+ZCHKmZh3/PKwp4KmfN9X341PTuCtfZnGP7l6eUxLR9loO2NT8mI0Ca+BwrqSnwkK0vyNMJa88aicW1/IQPSzPD0oMtncXihseb9hojGLios7AEs8r53i9ivhQJ82TqY826JxbI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ASeSRVaf; arc=none smtp.client-ip=209.85.128.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-311a6236effso5721659a91.2
-        for <bpf@vger.kernel.org>; Wed, 18 Jun 2025 12:49:07 -0700 (PDT)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-450cfb79177so365385e9.0
+        for <bpf@vger.kernel.org>; Wed, 18 Jun 2025 13:19:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750276147; x=1750880947; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=avIKHeUWhUc/S3ePcCKX+yG4/EyxTP7saneAp8nUYcY=;
-        b=ZytZ6UYZ2Vl+1B6qWh3fFeAA+2P8YD0XHVnaOi7vhmjgkB43udd5naXqynTWxG9OdB
-         Ubs2sz4lDpJ8Aa+KFtbBC4qA5ZgnFylHjB6ZGHJpbTFnJu+wuyDFhhPIF1Gksi2iIGR7
-         +Dmwu9WQod3a0XkQkhtfIUulidQMnWzmMYxj2UyoBP9UMHt8xiXknPYyU2CK1/O+CSgR
-         Kcc2+Q6Z7eCZKHcJZFPBYrudsK6Xk23hav3XcWDziROmgbfiExaOOFXCreTinTYXAwfp
-         oDnlcegdcxZ5fmJrgT+N//kUZxQUZvNdrB0mfr+DSrAxDjQX/RnNQWVQ/dQByr5sG7T4
-         rmLA==
+        d=gmail.com; s=20230601; t=1750277992; x=1750882792; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Rjw8fdGTX2nFKEkpBLYbIU9IBE4sqVmKV9cISVjZbCI=;
+        b=ASeSRVafvJGqOltKbbHH3fB86FCrDdbCAX8a8Pv6uiepBJ0xH86AMSr7ey76578JJM
+         GPvksqw1OgMOCNUqEmzJcgU/uw1ra/jGkOAad2Sm+M08UwaeRXWp2zBSwUK6c1WDSO9+
+         QgugUzNRlZf68jRXxZ3idN3lKJJdY45K/QyFj5fAWiiEFZa35HS1X8Yhq1SgLWlLRRtU
+         arwWfw7opewQXZJ5H99EwmiaMQqkQr5tDLV+a8OTU8MqPILvpWKjsmm47bJgzkBlqYH3
+         fZ4rbbGVNMWZ8euCKAitUkSpwZRrMpj/7BVtkO+E7OH46gWAvP7FT/vNb+xOoIRHam8g
+         n2Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750276147; x=1750880947;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=avIKHeUWhUc/S3ePcCKX+yG4/EyxTP7saneAp8nUYcY=;
-        b=oqUqBb3fbx4i8gwyJq3p8pxAGMyetbhtIIcPf6qT1LuYVciM0lPvu8ZHD139Jk4UMd
-         weszNgxKSNdSwj3wcKs7rU0l1BgvHBkhjpKEnmp4eEqkHHyxl8Brrt/80i+0THpZV8JB
-         yFiE28GiEp1dKByer0S4mmUTW9cxASnx1oizd4Op+l58CvyUaivHJj/KDXjXYtMPBQ5V
-         nQe/lmgeUwjuw/zGo49KQ/VmP31J8PkmMNHBZBq/Lunw3HCT59p0iPY4rtRsHz6atpse
-         ks2Xq6HRldc/sYGXKtt2skDWLHr0oBhsYMYgQFJ0+pmKAd79QoUEuFrhA+iHMXD1Tccd
-         7IvQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWQPtrrz163f/yfkh+/GChUTkji1bl9vnNH9Qj3z+su1FihvBMx1rYqbs0ooPrx0w/CKdc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzblPV0Kn2Jv7rBWNhBB1tFWBFe+pgFf/8Fn/xYOYDEEttTWBY+
-	OSy+llDpK+d3gLGwUWY9yDQjbAdawHToHUwkQAUTqJft0IGubIr5OxPa8J4P4/WZQn4=
-X-Gm-Gg: ASbGncvAEdkgf+1BfHFn8PFh/DxJi2wRy/vPMBjXg7t1KFjq3/o5nkNry4h/yQUqTLW
-	cpz0P+8SxkIMFpqnhH3C/R+otmTMaV5opnRf06tLR/Lj8Qzxnct2iuvhUcktM/WbGgp9KUNJBdA
-	zQ4w9mvxuw3w3oQ5wWZ7yxKfLDbPo6hDAjlnbGV97bzss7oLU3srUikmawM2gvfi935AssZqwoe
-	2mijdK0MtcMktcs16DFa905oy733xI4xiKnwI+++1p22r/QOlYQHAd/tp6pO8aE1nFFKi7mjFdc
-	xoUuw2RGssS5SFTmGxMyDf/cf0ksydh7w2LkqRiW6GkdcHXAKiso8nhTxA==
-X-Google-Smtp-Source: AGHT+IH+vsuTeTuiZ7icSSZfZ3+VwHGhhjtohRTt/K5mOag5iH7Bfx669eEVvjhF/uxMwJ1MqG+hrA==
-X-Received: by 2002:a17:90b:57ec:b0:313:d350:a78a with SMTP id 98e67ed59e1d1-313f1cc64d1mr29055061a91.13.1750276146925;
-        Wed, 18 Jun 2025 12:49:06 -0700 (PDT)
-Received: from [192.168.0.56] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2365d88c0a8sm105602295ad.3.2025.06.18.12.49.06
+        d=1e100.net; s=20230601; t=1750277992; x=1750882792;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Rjw8fdGTX2nFKEkpBLYbIU9IBE4sqVmKV9cISVjZbCI=;
+        b=Sx427BvobAFBR/vn2XRJuEqdmHnFjj38jDJB1wO/Y0VnyiyIoCppNLATGKTAndPiRf
+         GG7QLDkC39HIVBiTiVXurP331ySuuLuR8f7umNrrE0On/uvHz+nXb3E5b/gb62HgWnqy
+         wM2fB/YZn3QqaIpqKVxnd4O7Cs1ebT6TPijbFBbqidJxj65Hntkts5f16rWSo4IH82x6
+         gnY+VhiOP0JNElPSwZpyZ6/gELmqncNTK8zeNPOMXtmiX7DJmt7Uzr3TejaiNp7NWone
+         9FMmSohKN6G7aKAGRVxdam7SX9H7R6BLyTJQ6aBQPsLtZX8gFHsN8z0Uv0f+YZZbm6wN
+         oYrA==
+X-Gm-Message-State: AOJu0Yz9jwaGROMN6r05bmnBSf2CuzZTPs/5kWzrTFvpzAsK99OwDVqX
+	T0oddC6UjhfE8u0ScgS8s+dUR/msRI+rGAbwAF1hf5nA7XQ5kl28s4Yh
+X-Gm-Gg: ASbGnctZEAPTCkSC66EWgfA/kvZY5jTz4Wv902KBcY+SoPfzqKAjAGIcltMUopALcjG
+	m4rrkD66UG6CZoS5PbJPxh0pnNV7JjZwLs/ooEy4ry68XqvHn5s/ZzOR831XoLzU09ryGGHxyuZ
+	uGCMo+V2pSk/m1JCEvUlSqCBsENDee17/AFJo2KScaf0M7PGSNniHa6Imn2Xmm1uU185OHVFZaW
+	0MGo7rNCTc9wD+D3gYum/0YDue0hbrCmVMJeYDd+ogHRy/8sMyOsfBGS/AjAAGjCUKzbXCnnmuk
+	2MmUl3IXngE3BMYCTWWXsXdfyAlmXDeTJZxBLvSy0cCvf0/vmz9OBQ8q1BeWSZFQBKi6xfAbUQ=
+	=
+X-Google-Smtp-Source: AGHT+IHJn7MKndoXPtBf2GipNJs1pGUHn5Z3vWvbkQUwdyb15vzgKfdPjU9g6z+ztss+vE6ACefWzg==
+X-Received: by 2002:a05:600c:8685:b0:453:483b:6272 with SMTP id 5b1f17b1804b1-453483b6369mr96927195e9.7.1750277991905;
+        Wed, 18 Jun 2025 13:19:51 -0700 (PDT)
+Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a568a7cb65sm18027569f8f.38.2025.06.18.13.19.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Jun 2025 12:49:06 -0700 (PDT)
-Message-ID: <1c17cd755a3e8865ad06baad86d42e42e289439a.camel@gmail.com>
-Subject: Re: [RFC bpf-next 8/9] libbpf: support llvm-generated indirect jumps
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Anton Protopopov <a.s.protopopov@gmail.com>, bpf@vger.kernel.org, Alexei
- Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Anton
- Protopopov <aspsk@isovalent.com>,  Daniel Borkmann <daniel@iogearbox.net>,
- Quentin Monnet <qmo@kernel.org>, Yonghong Song <yonghong.song@linux.dev>
-Date: Wed, 18 Jun 2025 12:49:04 -0700
-In-Reply-To: <20250615085943.3871208-9-a.s.protopopov@gmail.com>
+        Wed, 18 Jun 2025 13:19:51 -0700 (PDT)
+Date: Wed, 18 Jun 2025 20:25:34 +0000
+From: Anton Protopopov <a.s.protopopov@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Anton Protopopov <aspsk@isovalent.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Quentin Monnet <qmo@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>
+Subject: Re: [RFC bpf-next 9/9] selftests/bpf: add selftests for indirect
+ jumps
+Message-ID: <aFMgvroYZapTkTSj@mail.gmail.com>
 References: <20250615085943.3871208-1-a.s.protopopov@gmail.com>
-	 <20250615085943.3871208-9-a.s.protopopov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+ <20250615085943.3871208-10-a.s.protopopov@gmail.com>
+ <CAADnVQKPbBRGOj2mB5Um80VFUh_vVg=oRJCdYUgyz_DrObuagQ@mail.gmail.com>
+ <aFLR7NrdX3gbjC1s@mail.gmail.com>
+ <CAADnVQ+nHemrEgeWYHxLi1UVeJ2u7DtSDTpcrPR7w2PgFPgQZw@mail.gmail.com>
+ <aFLq/blfEEiIqXGz@mail.gmail.com>
+ <CAADnVQK7M7L4j8ydo7GOFqZ4rbdJwg_Ghx6uNcD8SqMQnBbZCQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQK7M7L4j8ydo7GOFqZ4rbdJwg_Ghx6uNcD8SqMQnBbZCQ@mail.gmail.com>
 
-On Sun, 2025-06-15 at 08:59 +0000, Anton Protopopov wrote:
+On 25/06/18 09:43AM, Alexei Starovoitov wrote:
+> On Wed, Jun 18, 2025 at 9:30 AM Anton Protopopov
+> <a.s.protopopov@gmail.com> wrote:
+> >
+> > On 25/06/18 09:01AM, Alexei Starovoitov wrote:
+> > > On Wed, Jun 18, 2025 at 7:43 AM Anton Protopopov
+> > > <a.s.protopopov@gmail.com> wrote:
+> > > >
+> > > > On 25/06/17 08:24PM, Alexei Starovoitov wrote:
+> > > > > On Sun, Jun 15, 2025 at 1:55 AM Anton Protopopov
+> > > > > <a.s.protopopov@gmail.com> wrote:
+> > > > > > +SEC("syscall")
+> > > > > > +int two_towers(struct simple_ctx *ctx)
+> > > > > > +{
+> > > > > > +       switch (ctx->x) {
+> > > > > >
+> > > > >
+> > > > > Not sure why you went with switch() statements everywhere.
+> > > > > Please add few tests with explicit indirect goto
+> > > > > like interpreter does: goto *jumptable[insn->code];
+> > > >
+> > > > This requires to patch libbpf a bit more, as some meta-info
+> > > > accompanying this instruction should be emitted, like LLVM does with
+> > > > jump_table_sizes. And this probably should be a different section,
+> > > > such that it doesn't conflict with LLVM/GCC. I thought to add this
+> > > > later, but will try to add to the next version.
+> > >
+> > > Hmm. I'm not sure why llvm should handle explicit indirect goto
+> > > any different than the one generated from switch.
+> > > The generated bpf.o should be the same.
+> >
+> > For a switch statement LLVM will create a jump table
+> > and create the {,.rel}.llvm_jump_table_sizes tables.
+> >
+> > For a direct goto *, say
+> >
+> >     static const void *table[] = {
+> >             &&l1, &&l2, &&l3, &&l4, &&l5,
+> >     };
+> >     if (index > ARRAY_SIZE(table))
+> >             return 0;
+> >     goto *table[index];
+> >
+> > it will not generate {,.rel}.llvm_jump_table_sizes. I wonder, does
+> > LLVM emit the size of `table`? (If no, then some assembly needed to
+> > emit it.) In any case it should be easy to add this case, but still
+> > it is a bit of coding, thus a bit different case.)
+> 
+> It's controlled by -emit-jump-table-sizes-section flag.
+> I haven't looked at pending llvm/bpf diff, but it should be possible
+> to standardize. Emit it for both or for none.
+> My preference would be for _none_.
+> 
+> Not sure why you made libbpf rely on that section name.
+> Relocations against text can be in other rodata sections.
+> Normal behavior for x86 and other backends.
 
-[...]
+So, those sections are just an easier way to find jump table sizes.
+The other way is as was described by Yonghong in [1] (parse
+.rel.rodata, follow each symbol to its section, find offset, then
+find each gotox instruction, map it to a load, then one can find that
+the load is from a jump table, etc.). Just to be sure, is the latter by
+your opinion the better way (because it doesn't depend on emitting
+tables?)?
 
-> @@ -698,6 +712,14 @@ struct bpf_object {
->  	bool has_subcalls;
->  	bool has_rodata;
-> =20
-> +	const void *rodata;
-> +	size_t rodata_size;
-> +	int rodata_map_fd;
+Those tables are _not_ generated for the code I've listed above.
+However, in this case I can get the size of the table directly from
+the symtab.
 
-This is sort-of strange, that jump table metadata resides in one
-section, while jump section itself is in .rodata. Wouldn't it be
-simpler make LLVM emit all jump tables info in one section?
-Also note that Elf_Sym has name, section index, value and size,
-hence symbols defined for jump table section can encode jump tables.
-E.g. the following implementation seems more intuitive:
-
-  .jumptables
-    <subprog-rel-off-0>
-    <subprog-rel-off-1> | <--- jump table #1 symbol:
-    <subprog-rel-off-2> |        .size =3D 2   // number of entries in the =
-jump table
-    ...                          .value =3D 1  // offset within .jumptables
-    <subprog-rel-off-N>                          ^
-                                                 |
-  .text                                          |
-    ...                                          |
-    <insn-N>     <------ relocation referencing -'
-    ...                  jump table #1 symbol
-
-> +
-> +	/* Jump Tables */
-> +	struct jt **jt;
-> +	size_t jt_cnt;
-> +
->  	struct bpf_gen *gen_loader;
-> =20
->  	/* Information when doing ELF related work. Only valid if efile.elf is =
-not NULL */
-
-[...]
-
+  [1] https://github.com/llvm/llvm-project/pull/133856#issuecomment-2769970882
 
