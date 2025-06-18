@@ -1,126 +1,103 @@
-Return-Path: <bpf+bounces-61012-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61013-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC7BDADF9BA
-	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 01:22:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F052ADF9C7
+	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 01:38:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCC793B2B28
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 23:22:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F192E19E026B
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 23:38:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA873281365;
-	Wed, 18 Jun 2025 23:22:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96C38284B56;
+	Wed, 18 Jun 2025 23:37:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jOZZtNPq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j4F15rpw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F27FA20A5EA;
-	Wed, 18 Jun 2025 23:22:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09F431C2324;
+	Wed, 18 Jun 2025 23:37:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750288968; cv=none; b=pTazZyROtVKNjNvpbtmptkj/rjp2jze7RLU4nwbUtTtn2BQR7yIalsnLCqpiSlxZmoDEMQ4HkKpmAwwbjVOxdPMek9ke5Dzfh2ZNtaDU99FabSPESQSBpSEzu+wTc5DSd30F6Qt11HRth0o1vrYZI5eEkviAxuVxbGSoBr8YbBk=
+	t=1750289869; cv=none; b=hPjApl2WZlX0zvBhEmqP2KCek2pBxbvSpsPE0nsRtmjiWL5ZCaJ1mVUb7Te6M8zPk9fqZ5h0gA0+n/VrIxUPQn/STXb7lSrMF4iCFlpYxIKgpXvHKKhOw8D72POfN32V84bA7VfFnrGFnYby0IwsTWMDXmlXJDgKPpzxzhLDpwU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750288968; c=relaxed/simple;
-	bh=2Jh8N/RnNelfFY1DTUN7BBE/Ny8GXBQN1Ajac0ILru0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KYmbKHQnodNaYFPb+8Q3gH9EsqYXhQvN1/Q6sL7DLlK/Hh0PcGzdDArH1Nf01E7jbb2PNEMbYKVT0fWvl1hfs5mFusLqjzRTbKM6lAZxYa5Ad9vdl4YL8PH8TRVyqaIok6TBgEljZYzrLG+GoXPkIYxG/FTLxX48LRwzFuinWOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jOZZtNPq; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-748e378ba4fso200524b3a.1;
-        Wed, 18 Jun 2025 16:22:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750288966; x=1750893766; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=w0g7L7ZDMeHK1pkRh2Qw8KR1qnyspxCM85YKsIf0ab8=;
-        b=jOZZtNPqYWyaUZoa7bhrHUdpMRXrjyD+pMcxrCEm3h33v+C3kdTrkJxwL0ezv1Sqkj
-         3NmtZ5sII82GtM+ThnNuuFH838LnTtbw4cHwVxfVZrLVsJd/rcINYP5mtf5peLueauD7
-         u5JuTtcAAzS/Wn5+DyZ0N4e2NBI9ZYEm/fidWxSM2PkTHqNZESvrc5umSUG+ZOaKruvT
-         DaNGcS5L2uqwAH3N8Cl403L3diGOGKAUDN55GftHeB3n6LGlm6tSE2r/+gB9LpyPBwLN
-         S+ZZqvut1gpAo9I2gn+wuxlB607FUXOy+Cbic1+vrJUrpfx1m9HQKeRZv3byB3gcYyBm
-         X+TA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750288966; x=1750893766;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=w0g7L7ZDMeHK1pkRh2Qw8KR1qnyspxCM85YKsIf0ab8=;
-        b=Z3NgmbkFkmNHCP+IXgqX0pqhFfQ8Sa1Jw/l6gCK1GDKfrqCG0E25ZwDIOzyf+uJRs7
-         hhChyRnvnkg93FOz1xPmBKFf0QJY17opla8ZSUTDMBn5cV9yqUfKuO63wlRHi2HWm9rt
-         ggUPOjXX/sRS+7cu7N4bP1uIXb7vNMWF9LtYKm2v/Pcaq+Ns+VtAzjTVAaLnvZMdtvrB
-         EgHANCnd81iIF6JVF092j4uAIJliVBD/ldNVupnDB9jzh4CdO6lz+RAsaMk0WHiD51gC
-         7Xi6LBQF5wmtPa5dTkPRtVvQg1gZioXFk3HmlzencaQcaO0lazwKgPCZjZ2/AH/BthAZ
-         oKyw==
-X-Forwarded-Encrypted: i=1; AJvYcCWgD6oNkiDz8rvSdS7QD7M0jlbntd632jiomjOxfq/XowqNZe6J3Bp6b8O1zjZkPkV91i9WTJE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YypcCK0wdK0Lk7CQFZrOssNKPe+W15gQBxtBS0qm3jxz3BekKWW
-	JwzW/m9icdf68DcNle1ZAbKSJ3hFzpQYfo1mZf+6XvQtQuRHMZwOuhAZIXuI
-X-Gm-Gg: ASbGncsyUJkjfBmZ5v9dA1XcdDjxx/hde8N5ULObYxqIkk62wVY/+izeRpXh5bAz4x8
-	aF2Z867adqyUaSgbOv/pMruFVxN73B9aP8REcyi/0Go+ozE0XRLBGoxmoj3EclyUFDDYReDl3Z2
-	bZkkVhrSTEIy1484kk2AAcJKxT9h237cHYRnXayCZhHBrvCaFGG4RUsRBhsjVDIVxwGyltqSgeK
-	A74fpO0CN6a0I3N2QBWHPObHMAxTFN2rgTbzUmsXbTsBKbQpAuGuqn9QNhJqazfFnePHwqnwsUQ
-	B6tIbY0dEdk9npsD4DSfagF/072Qw7V+KidJUpPPQvSO/t/FOm8rP7H9fxvbbd3bVwI8T141yZv
-	b/i5Bgo9nHO8cCB/l1s00iL8arCvojH1i8A==
-X-Google-Smtp-Source: AGHT+IFFKv7n8oUGaqWSXMHbW26xg9YHvVSs6wlrPC5Qx6zyN7T5lwhw7Z3xEDcXi7UCUcpd7JXKSg==
-X-Received: by 2002:a05:6a20:729f:b0:21a:3d97:e93a with SMTP id adf61e73a8af0-21fbd5d9253mr28824725637.42.1750288966081;
-        Wed, 18 Jun 2025 16:22:46 -0700 (PDT)
-Received: from localhost (c-73-158-218-242.hsd1.ca.comcast.net. [73.158.218.242])
-        by smtp.gmail.com with UTF8SMTPSA id 41be03b00d2f7-b2fe16806casm9854241a12.50.2025.06.18.16.22.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Jun 2025 16:22:45 -0700 (PDT)
-Date: Wed, 18 Jun 2025 16:22:44 -0700
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-	daniel@iogearbox.net, john.fastabend@gmail.com,
-	martin.lau@linux.dev, a.s.protopopov@gmail.com,
-	Willem de Bruijn <willemb@google.com>
-Subject: Re: [PATCH bpf v2] bpf: lru: adjust free target to avoid global
- table starvation
-Message-ID: <aFNKRMETc0nh82LK@mini-arch>
-References: <20250618215803.3587312-1-willemdebruijn.kernel@gmail.com>
+	s=arc-20240116; t=1750289869; c=relaxed/simple;
+	bh=57U4HUj1TaKN/otMUBUDWLAiMAuN6kSRzu/C1u8g3Tk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qVlrqMOnpH1NWbjNl4i0/avZHbqo45JkqNV07fnYcD+Jp947yXz5Qb3abiXP5+oUi86wYsRIND+JSYXac6LFNi6lggFTELxvZlW9Dt5WlzgJnngmjz3Rju1hwk6TAsiLHuz5SV4kPsfxw9Ca0AzgmTaUXqe4kZ0aVIwi5ybTeCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j4F15rpw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A125CC4CEE7;
+	Wed, 18 Jun 2025 23:37:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1750289868;
+	bh=57U4HUj1TaKN/otMUBUDWLAiMAuN6kSRzu/C1u8g3Tk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=j4F15rpwS3hjum2uic6o/rp9fqV3p2hbKVhFqSnOU11x12hvHb7WN34wsfhf0CV5w
+	 DSe4+fDMRbzSPfnGfwwOYWPI0SAew64BirgVZAxGsAL4uQ3ywROwix/QhgTftn2DiE
+	 ALdvPI5r6f8/peNq7ggbGGWBkxX6SHmLWyb5RVDiOZamb+XgvFju84QzE4SRj/DPPB
+	 l93bxMcdsU6g4Zx5RYokkjFubvVjAb3tL60CCamjX1vKEQ6JKBBE9GKQJt8RztUUyt
+	 3dNGGawVud3Feuuvw82dESceNPU7X5otfG70+Y77Sx29bXy7HYYGcTlw0Ej5CzPGmj
+	 vwAY18NEC9SzQ==
+From: Song Liu <song@kernel.org>
+To: bpf@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-security-module@vger.kernel.org
+Cc: kernel-team@meta.com,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	viro@zeniv.linux.org.uk,
+	brauner@kernel.org,
+	jack@suse.cz,
+	kpsingh@kernel.org,
+	mattbobrowski@google.com,
+	amir73il@gmail.com,
+	gregkh@linuxfoundation.org,
+	tj@kernel.org,
+	daan.j.demeyer@gmail.com,
+	Song Liu <song@kernel.org>
+Subject: [PATCH bpf-next 0/4] Introduce bpf_kernfs_read_xattr
+Date: Wed, 18 Jun 2025 16:37:35 -0700
+Message-ID: <20250618233739.189106-1-song@kernel.org>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250618215803.3587312-1-willemdebruijn.kernel@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On 06/18, Willem de Bruijn wrote:
-> From: Willem de Bruijn <willemb@google.com>
-> 
-> BPF_MAP_TYPE_LRU_HASH can recycle most recent elements well before the
-> map is full, due to percpu reservations and force shrink before
-> neighbor stealing. Once a CPU is unable to borrow from the global map,
-> it will once steal one elem from a neighbor and after that each time
-> flush this one element to the global list and immediately recycle it.
-> 
-> Batch value LOCAL_FREE_TARGET (128) will exhaust a 10K element map
-> with 79 CPUs. CPU 79 will observe this behavior even while its
-> neighbors hold 78 * 127 + 1 * 15 == 9921 free elements (99%).
-> 
-> CPUs need not be active concurrently. The issue can appear with
-> affinity migration, e.g., irqbalance. Each CPU can reserve and then
-> hold onto its 128 elements indefinitely.
-> 
-> Avoid global list exhaustion by limiting aggregate percpu caches to
-> half of map size, by adjusting LOCAL_FREE_TARGET based on cpu count.
-> This change has no effect on sufficiently large tables.
-> 
-> Similar to LOCAL_NR_SCANS and lru->nr_scans, introduce a map variable
-> lru->free_target. The extra field fits in a hole in struct bpf_lru.
-> The cacheline is already warm where read in the hot path. The field is
-> only accessed with the lru lock held.
-> 
-> Tested-by: Anton Protopopov <a.s.protopopov@gmail.com>
-> Signed-off-by: Willem de Bruijn <willemb@google.com>
+Introduce a new kfunc bpf_kernfs_read_xattr, which can read xattr from
+kernfs nodes (cgroupfs, for example). The primary users are LSMs, for
+example, from systemd. sched_ext could also use xattrs on cgroupfs nodes.
+However, this is not allowed yet, because bpf_kernfs_read_xattr is only
+allowed from LSM hooks. The plan is to address sched_ext later (or in a
+later revision of this set).
 
-Acked-by: Stanislav Fomichev <sdf@fomichev.me>
+Song Liu (4):
+  kernfs: Add __kernfs_xattr_get for RCU protected access
+  bpf: Introduce bpf_kernfs_read_xattr to read xattr of kernfs nodes
+  bpf: Mark cgroup_subsys_state->cgroup RCU safe
+  selftests/bpf: Add tests for bpf_kernfs_read_xattr
+
+ fs/bpf_fs_kfuncs.c                            |  33 ++++
+ fs/kernfs/inode.c                             |  14 ++
+ include/linux/kernfs.h                        |   2 +
+ kernel/bpf/verifier.c                         |   5 +
+ .../selftests/bpf/prog_tests/kernfs_xattr.c   | 145 ++++++++++++++++++
+ .../selftests/bpf/progs/kernfs_read_xattr.c   | 117 ++++++++++++++
+ .../selftests/bpf/progs/read_cgroupfs_xattr.c |  60 ++++++++
+ 7 files changed, 376 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/kernfs_xattr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/kernfs_read_xattr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/read_cgroupfs_xattr.c
+
+--
+2.47.1
 
