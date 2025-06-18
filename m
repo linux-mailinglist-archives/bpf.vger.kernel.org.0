@@ -1,91 +1,136 @@
-Return-Path: <bpf+bounces-60960-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60961-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03668ADF17A
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 17:38:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4E7CADF21C
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 18:01:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C364B3AD0C4
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 15:38:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8032E17F46A
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 16:01:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 192291E505;
-	Wed, 18 Jun 2025 15:38:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E29A2EB5A3;
+	Wed, 18 Jun 2025 16:01:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LFJMJjww"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D155028FA85;
-	Wed, 18 Jun 2025 15:38:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56BA216EB42
+	for <bpf@vger.kernel.org>; Wed, 18 Jun 2025 16:01:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750261111; cv=none; b=fUJnzXWC9OAst59j2i4s7kakv+47uZvi7Iw0Kj79DnPggh/KTY+OSdvl+UTktWSeI1mCzYG3LofVN+ThRRRDbxhTrGQ+BapS65m2MOVj0MNne/gfjNdWQA9WFt9bdk5JqidKv6Ed236ZXGDpnFfjahzCOoWWGQBHPp0aAUm8AlY=
+	t=1750262512; cv=none; b=qnbXIA0GuK03RxDrSrCyPvlWzhLCKpei/or+giXdC8gD/KdRU+lDyhjHbEYLKw9rhOY5F1pcH9rscABcP5ErVETgfBZfk8AaWtNppAp+EQmCe7x1fBC5r5axWoFkROG+G1eFyAjVcp5cRgzkjyg3hEgHM7GuofTwr9YettoLe0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750261111; c=relaxed/simple;
-	bh=cKSFSoxnitAjZGgvNgqUq5XLSDt0L0l7BTH00fNZQyY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ojpF50eljr42vqxQsuFyEJ5Q3jas6WRJB8JG4mnw9EOLcoDZjCEgskEqtY4xr0e4ucYNsN7Ps5yxUHBN3lP6sR1X4TJdEa/fZ5+EQtT9TOEDfpFjLXucwZ966nyWy865MMtjEKfR8WeMhGASUgKlS8BH6elHXEIwCyilEUxtAkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf15.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay09.hostedemail.com (Postfix) with ESMTP id 513DF8030A;
-	Wed, 18 Jun 2025 15:38:27 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf15.hostedemail.com (Postfix) with ESMTPA id 8AC9A18;
-	Wed, 18 Jun 2025 15:38:23 +0000 (UTC)
-Date: Wed, 18 Jun 2025 11:38:31 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- bpf@vger.kernel.org, x86@kernel.org, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Josh Poimboeuf <jpoimboe@kernel.org>, Ingo Molnar <mingo@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Thomas
- Gleixner <tglx@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, Indu
- Bhagat <indu.bhagat@oracle.com>, "Jose E. Marchesi" <jemarch@gnu.org>, Beau
- Belgrave <beaub@linux.microsoft.com>, Jens Remus <jremus@linux.ibm.com>,
- Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton
- <akpm@linux-foundation.org>
-Subject: Re: [PATCH v10 06/14] unwind_user/deferred: Add deferred unwinding
- interface
-Message-ID: <20250618113831.1e26bb8f@gandalf.local.home>
-In-Reply-To: <20250618113706.2eb46544@gandalf.local.home>
-References: <20250611005421.144238328@goodmis.org>
-	<20250611010428.770214773@goodmis.org>
-	<20250618142000.GS1613376@noisy.programming.kicks-ass.net>
-	<20250618113706.2eb46544@gandalf.local.home>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1750262512; c=relaxed/simple;
+	bh=Zcd3ar7/AAphIeSTv4j4akGFlZa39ZKvxyzLGtQm8Vw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uU1bwSau64x6RXZ3kqycktN1Sc4hILRILTB/Wv6kq2uNJEO15X5Vsa8xwovTvGo1ShYKMAzMWus9Pqfa7Y9WuNAmdpCelDZk94oRgkOH5uWOQOAHuekf5bxq1iCoEsfTBKfIse1ZE1P7PsmsacLNte3md0d+OdiL3yVmS983O4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LFJMJjww; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3a588da60dfso1605091f8f.1
+        for <bpf@vger.kernel.org>; Wed, 18 Jun 2025 09:01:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1750262509; x=1750867309; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eIHL7KmUeSrCqJJfzMfR1PenJsRrLN15ljNj9tpNMR8=;
+        b=LFJMJjwwsoUY//nUBE8YDqSiyNOPOqLWz8522U5mVO075ug2ALmhskRSD9oXbTYmri
+         RE+V56NSYUr6W5AUm6nipOo/sQ0uQdm+CJEzo8+pDLzVmnheLrD4C0Z51FwUIh5aV6Rq
+         iAMs+jaaMIyMgKRNW5QgY31EOxzm96xLZ83hH3Vaj6+s8HLkBQUzvxoCIywdI8AAydrX
+         CLhXi4GHAt+54cJhmzvlPOgEpej4WmFvLfLe5GunF9iwYzyOqN4gyTGhLvQh3xhxY9CC
+         jHKEeozpUz8E6Su+HtJ1DsXC4QM4lupPQdiGpHpIkrbVo/ytkfkEzvnYXnkZC+Gne9hV
+         XeJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750262509; x=1750867309;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eIHL7KmUeSrCqJJfzMfR1PenJsRrLN15ljNj9tpNMR8=;
+        b=inDaYPHT6i2KmOcc/qDtEacwyEi27fyKd4Gy3iky0lDE/Tsq0Lb+9gvkl25nwE0hpi
+         sW9C4WjqpOZPodMSU8bXf2cFN1zUOvnPu84WbyEXu/CjkpigsnzSNe1/jAgJ+n31rL/G
+         vhbtzkqWzqnPKgR9jl4dIkA3iV0rZT15wXy2rh1fLhUKHmcrD9M3XX9RXguEM0siWnK9
+         Oh3emzQrkvBmRKhnxwE/lUVon/TrmcvnpEIb1LpY9g34vMkxx83GS6yoZR9XYRRg4tzt
+         ozG1y1eh7diLFv9qPnVe7Y/G49LHfT/fMuWEGNPkzP5P6+YmXPAyLvePSPL6laqqymnB
+         /bzg==
+X-Gm-Message-State: AOJu0Yy9A+qikdZTgRNGloE2HuVP0W8Q89ASKLtExnJIXvbjjUnNEhPE
+	fsYO9JLZy5tfMLWVwdeBcePG0J5trvp2Uj1agtG+qquCUdB8I0My9P0rv6wWIs/oIBnPOnKb1gA
+	GALy7q3UCyTmYhivPlZFJuFv2uot8XQQ=
+X-Gm-Gg: ASbGncs1w13/VBELusbxuolWrmcURyWfzrNrRlb5bgq/+6LU8xAkINSBk5wj90yX/CH
+	vI3zMmAOeEaNOxQw+ZgSNlINkbk0CGhHd6v6P42xxdTtMF0HNPYgCWHLV1fdzYNibSMbyyB6cqm
+	4jIX9xnYxdE4Pc/olZAn1e+SjJ0vl8bWn0J9dE5hRXvAOETtA9L9R/KYzouT0c4zthlluup07U
+X-Google-Smtp-Source: AGHT+IFGyAkEgswW6QH1SbB7r3UtgAa8TSWr0dYw0DkBAaYc427+ySp9OD/t/6yKpW8bT01A2hN43txLxOtbAuhZ6RM=
+X-Received: by 2002:a05:6000:2881:b0:3a4:f936:7882 with SMTP id
+ ffacd0b85a97d-3a572e9df1emr13664546f8f.55.1750262507361; Wed, 18 Jun 2025
+ 09:01:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 8AC9A18
-X-Stat-Signature: 9iom6z8i66zini513gfg4cfdddsds1ej
-X-Rspamd-Server: rspamout05
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1/ghWbw4OhlNrQUhRvEjr4WTJdnB8xIu9E=
-X-HE-Tag: 1750261103-260494
-X-HE-Meta: U2FsdGVkX1+Zb3aFmTig2sc9oHDxGzoxPAPVRMMDMdGsNcMwCVfCIq9cb5qeHdR9cf1rgXOoKdMI11YFVKGsQW7Hp6dXNkA2V82gofI8VLhDAr30CUBkbuwOSuRwOP82/pPxKL+3NYChbGNQ5PMTNiIoUD+VWuaHz8vouUcyKD525ahAgre4dQ2bMdbG/VBsWaTSUx1dLIJmwWwRxUz7gfm7PcbOWclEnyCBCTODpqi2ixk9w+ohsQrpMq4Ag6dm1YzrIJiv/kVmNCfiGI1uReR03BlrLa8TCyUsPJJfHxbE3j0II8hfVVeqKSxhmgQW8uyE22llU25FLW5ANafbO6wPFjB/KqmWKOa+Q1yB6DMK4voYlIeVQeH4S0vB1ydC
+References: <20250615085943.3871208-1-a.s.protopopov@gmail.com>
+ <20250615085943.3871208-10-a.s.protopopov@gmail.com> <CAADnVQKPbBRGOj2mB5Um80VFUh_vVg=oRJCdYUgyz_DrObuagQ@mail.gmail.com>
+ <aFLR7NrdX3gbjC1s@mail.gmail.com>
+In-Reply-To: <aFLR7NrdX3gbjC1s@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 18 Jun 2025 09:01:35 -0700
+X-Gm-Features: Ac12FXxaT76RJYfBGa4DQVSiDGM09RhJlThDhzUgmp_WLbN4rjtxAEbOyrYn5PQ
+Message-ID: <CAADnVQ+nHemrEgeWYHxLi1UVeJ2u7DtSDTpcrPR7w2PgFPgQZw@mail.gmail.com>
+Subject: Re: [RFC bpf-next 9/9] selftests/bpf: add selftests for indirect jumps
+To: Anton Protopopov <a.s.protopopov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Anton Protopopov <aspsk@isovalent.com>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Quentin Monnet <qmo@kernel.org>, Yonghong Song <yonghong.song@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 18 Jun 2025 11:37:06 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Wed, Jun 18, 2025 at 7:43=E2=80=AFAM Anton Protopopov
+<a.s.protopopov@gmail.com> wrote:
+>
+> On 25/06/17 08:24PM, Alexei Starovoitov wrote:
+> > On Sun, Jun 15, 2025 at 1:55=E2=80=AFAM Anton Protopopov
+> > <a.s.protopopov@gmail.com> wrote:
+> > > +SEC("syscall")
+> > > +int two_towers(struct simple_ctx *ctx)
+> > > +{
+> > > +       switch (ctx->x) {
+> > >
+> >
+> > Not sure why you went with switch() statements everywhere.
+> > Please add few tests with explicit indirect goto
+> > like interpreter does: goto *jumptable[insn->code];
+>
+> This requires to patch libbpf a bit more, as some meta-info
+> accompanying this instruction should be emitted, like LLVM does with
+> jump_table_sizes. And this probably should be a different section,
+> such that it doesn't conflict with LLVM/GCC. I thought to add this
+> later, but will try to add to the next version.
 
-> > What about two CPUs managing to request an unwind at exactly the same
-> > time?  
-> 
-> It's mapped to a task. As long as each timestamp is unique for a task it
-> should be fine. As the trace can record the current->pid along with the
-> timestamp to map to the unique user space stack trace.
-> 
-> As for resolution, as long as there can't be two system calls back to back
-> within the same time stamp. Otherwise, yeah, we have an issue.
+Hmm. I'm not sure why llvm should handle explicit indirect goto
+any different than the one generated from switch.
+The generated bpf.o should be the same.
 
-I'll add a comment that states this as a constraint.
+> > Remove all bpf_printk() too and get easy on names.
+>
+> The `bpf_printk` is there to emit some instructions which later will
+> be replaced by the verifier with more instructions; this is to
+> additionally test "instruction set" basic functionality
+> (orig->xlated mapping). Do you think this selftest shouldn't have
+> this?
 
--- Steve
+None of the runnable tests should have bpf_printk() since
+it spams the global trace pipe.
+There are few tests that have printks, but they shouldn't be runnable.
+It's load only.
+
+> > i_am_a_little_tiny_foo() sounds funny today, but
+> > it won't be funny at all tomorrow.
+>
+> Yeah, thanks, will rename it.
 
