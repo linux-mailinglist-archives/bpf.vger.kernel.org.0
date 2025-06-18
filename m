@@ -1,40 +1,40 @@
-Return-Path: <bpf+bounces-60956-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60957-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68364ADF152
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 17:25:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 256ACADF164
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 17:29:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3AEA0175F6F
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 15:24:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88ABA3A5BB5
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 15:29:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ECE22EF9D3;
-	Wed, 18 Jun 2025 15:23:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45DCE2EF9B5;
+	Wed, 18 Jun 2025 15:29:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00B022EE99E;
-	Wed, 18 Jun 2025 15:23:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B78D92E9ECB;
+	Wed, 18 Jun 2025 15:29:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750260235; cv=none; b=FHyIo492Xlstv679HnJ09oMdoetF/93p/B4Ty+z6MviQpleySkzW9gfFVExz2M6qnFjXSIChWQ27DjA/NqWHgt3/j2Qkovg+ggJf43g5EjSrH5QYBaKqhSLzKvPAjINPQBz0qKZfW8kQYp23ibTVGISGe9SrW+PDxA2YbEmYEf0=
+	t=1750260581; cv=none; b=VJdqR/5BTcTHv5VbNs4Fw6hM0BUln7FvnEwAr0l1RVEJpOQujrI9Ci3op4D+TkJYQrKKxyfKJEHNLDG5nQtdgIvf876GEh8F/0pEp+PN/jBO587W2KgV+NnrAHAr8OZz1RYw7X3RxbZCGHffkelu+YLPcMo6m46901GCdx9rt24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750260235; c=relaxed/simple;
-	bh=SX5OHD/d/ITogClcMTplzdS9fgFMBWy9hG0cbMhULFc=;
+	s=arc-20240116; t=1750260581; c=relaxed/simple;
+	bh=lW4X2/j0mHA1tNFg9bYU+FZz+tPT0wmbAyYt+FoNbkA=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BxgWT2rXUr4kj2wKtLGN6qedTqppBLZGzMaYfrJtFpmYpU6Td2fwYFxoqoepnccXSAyv3+5f92va32flt9xkZZlU4ELPdzD9jHbYOvwSkj1FrSgsu7AgW0ew8hN/0ZitG5qLecaBgf1/aLEttv9J4btL+wi5dpd2oF2hh2yHgFg=
+	 MIME-Version:Content-Type; b=o9Hyxx9SKlPe56FI6cEQal68cv/vG5xcld/YI7eNq+Pbqc6p44bVN8hwLHAeNA2YO819bHad0H8EdQR/VRYewSFTj0rNd12EeJrR+JTqRPX+VyeMX/522rzQt3m7vocP+2kFa2+K4w3Txyrk9tnKdRHxLxR/8tO/jcGiakiuKUg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf01.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay04.hostedemail.com (Postfix) with ESMTP id AD49E1A02C0;
-	Wed, 18 Jun 2025 15:23:51 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf01.hostedemail.com (Postfix) with ESMTPA id CEFF460009;
-	Wed, 18 Jun 2025 15:23:47 +0000 (UTC)
-Date: Wed, 18 Jun 2025 11:23:55 -0400
+Received: from omf12.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay10.hostedemail.com (Postfix) with ESMTP id DF163C02B9;
+	Wed, 18 Jun 2025 15:29:35 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf12.hostedemail.com (Postfix) with ESMTPA id 1DF0C20;
+	Wed, 18 Jun 2025 15:29:32 +0000 (UTC)
+Date: Wed, 18 Jun 2025 11:29:39 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Peter Zijlstra <peterz@infradead.org>
 Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
@@ -49,11 +49,11 @@ Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
  <akpm@linux-foundation.org>
 Subject: Re: [PATCH v10 04/14] unwind_user/deferred: Add
  unwind_deferred_trace()
-Message-ID: <20250618112355.47ed62e6@gandalf.local.home>
-In-Reply-To: <20250618140111.GP1613376@noisy.programming.kicks-ass.net>
+Message-ID: <20250618112939.76f4bb87@gandalf.local.home>
+In-Reply-To: <20250618140247.GQ1613376@noisy.programming.kicks-ass.net>
 References: <20250611005421.144238328@goodmis.org>
 	<20250611010428.433111891@goodmis.org>
-	<20250618140111.GP1613376@noisy.programming.kicks-ass.net>
+	<20250618140247.GQ1613376@noisy.programming.kicks-ass.net>
 X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -63,45 +63,45 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: CEFF460009
-X-Stat-Signature: y6mrjqrdyr9rapdufpodsd89snn3sdx5
+X-Rspamd-Queue-Id: 1DF0C20
+X-Stat-Signature: tsa5f6hsoe9t4jumybf5yux1amccjmzj
+X-Rspamd-Server: rspamout06
 X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX18tgXEdbs5iaqcKTWUAIktxWeEKoKyWLcY=
-X-HE-Tag: 1750260227-738225
-X-HE-Meta: U2FsdGVkX1/KV2XbzLVp5QcwT2vO3ZLzoSiV6kHNCKriq0j6j3wN3uT2MlIILhcOLnJYbZ3FjZx+/wpAU5eA2HHloPA5QZFEfP5JfxHC+Pk2mHDT4EKm1RerOLiM+MiqRbxR9uXfm4ApdFiskOo0+MW/PVEZj90xsuo5re27rSmFWPu39//amkYt7FtknfJqGDKq3IvfBhN4LXUojnSVXKpKpwGwEermIf6Jn9ugmc8YkDWr4bcktSZjnk1iNld2Vau2gC9VLcf0YH5Gmxxk5TK0+YjCvtCOjwp1Cu6PqTox+UxBarr5Pk9aMea9CecOiIT1M7A4Zu/20o11sOkt7mcpqli69dEyqvqRF4ERNGTHZRr/qUVekIwG/y3hTMhN
+X-Session-ID: U2FsdGVkX18ezSxyACc6GRwHDFQgKNfyshvjstQIJbs=
+X-HE-Tag: 1750260572-758865
+X-HE-Meta: U2FsdGVkX1+Whxt1YjVRFQvEKsQMCy9zG2QwWy029AeidKVH9+toGcDXMZj8vlnlbKg4bRAYkDEWJZJ3BlnpVFJCZfLHu9gOsWVs2MPYcB7VluSY9kVBMf3BDjLLXCAPOqCINfYDJQShbdoIOK/NWnU/xBvCopScba2ktXD1eqUlebES9UbMRxF/XGcxwcoJk161avURclnzXwo7nk590Q8+maVlST30WYNfjW+qx9ISH1/REGHsV1g1dU9SH24cRwM7tB2heJz2Avqy8ydHqxAwpw0FJT4SeSfUUBdwN+dDNChy8hAMzewIJEmTx4NqH70FwetUvUEEFnqZ9Z9iVXMYTSdCjwLW0jOe3Q5ICG26FSzHg3I8D340vipkZXA3
 
-On Wed, 18 Jun 2025 16:01:11 +0200
+On Wed, 18 Jun 2025 16:02:47 +0200
 Peter Zijlstra <peterz@infradead.org> wrote:
 
 > On Tue, Jun 10, 2025 at 08:54:25PM -0400, Steven Rostedt wrote:
+> > +/**
+> > + * unwind_deferred_trace - Produce a user stacktrace in faultable context
+> > + * @trace: The descriptor that will store the user stacktrace
+> > + *
+> > + * This must be called in a known faultable context (usually when entering
+> > + * or exiting user space). Depending on the available implementations
+> > + * the @trace will be loaded with the addresses of the user space stacktrace
+> > + * if it can be found.  
 > 
-> > +#define UNWIND_MAX_ENTRIES 512  
+> I am confused -- why would we ever want to call this on exiting
+> user-space, or rather kernel entry?
 > 
-> The reason this is 512 is so that you end up with a whole page below?
+> I thought the whole point was to request a user trace while in-kernel,
+> and defer that to return-to-user.
 
-Possibly. We could probably even make that configurable. Perhaps just use
-sysctl_perf_event_max_contexts_per_stack ?
+This code was broken out of the unwind deferred trace to be more stand
+alone. Actually, it should be renamed to unwind_faultable_trace() or
+something to denote that it must be called from a faultable context.
 
+When Josh made perf use the task_work directly, it used this function to do
+the trace as it handled the deferring.
 
-Josh, any comments about why you picked this number?
+Note, a request from the gcc folks is to add a system call that gives the
+user space application a backtrace from its current location. This can be
+handy for debugging as it would be similar to how we use dump_stack().
+
+This function would be used for that.
 
 -- Steve
-
-> 
-> > +int unwind_deferred_trace(struct unwind_stacktrace *trace)
-> > +{
-> > +	struct unwind_task_info *info = &current->unwind_info;
-> > +
-> > +	/* Should always be called from faultable context */
-> > +	might_fault();
-> > +
-> > +	if (current->flags & PF_EXITING)
-> > +		return -EINVAL;
-> > +
-> > +	if (!info->entries) {
-> > +		info->entries = kmalloc_array(UNWIND_MAX_ENTRIES, sizeof(long),
-> > +					      GFP_KERNEL);  
-> 
-
 
