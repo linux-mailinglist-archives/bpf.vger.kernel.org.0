@@ -1,40 +1,40 @@
-Return-Path: <bpf+bounces-60958-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60959-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3C23ADF171
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 17:34:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B6BEADF176
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 17:37:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D919189F25F
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 15:34:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E01617A7AD1
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 15:35:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49B7A2EF9B0;
-	Wed, 18 Jun 2025 15:34:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEF212EF9AF;
+	Wed, 18 Jun 2025 15:37:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
+Received: from relay.hostedemail.com (smtprelay0010.hostedemail.com [216.40.44.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7A732E54CD;
-	Wed, 18 Jun 2025 15:33:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5556328507D;
+	Wed, 18 Jun 2025 15:37:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750260841; cv=none; b=lq136Kj2b+/bj9crUWlmj1E4zo/vAntHdXfR3gp5ZWMzJ7z9uzpw6NNbkGVdmSxY7eYWsiXxzbbKA+hXZ2Ozq1GLIG8BDMmupIJj3sggDw27laC4wldmB+1XZqt5yuL0AuIoOJavx0a9wnLLYvQ6z/61JmGmGnF7eEZxmZzVhZA=
+	t=1750261027; cv=none; b=C1rYg9jpjzZhzHSLXsYuHS5VNBDvMZYF2CcMVRYJ89Xw1p2QCo1Uj5USJBMsnAiTYciL6ozXyisf1pfe6RtBDnTHaXHgl45dMER1C4VCDfKEMTbW6t678akOoDZfK4XM6aJMDN+fAQLvADlNgeJkVeBaxmlBSdxY8iNNLuQJSmM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750260841; c=relaxed/simple;
-	bh=/+3mDsUmmAwOcqtSmHgk1L6Pp9HylpoqA3Igxbt+tLU=;
+	s=arc-20240116; t=1750261027; c=relaxed/simple;
+	bh=H4U3Ky+IrsZIJIJLfXMmCz0/Z/sH4WWa+E0A4hZY8gM=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RbaYLBklla8Rtj4JsOf/Rv+LWxMhDcD6nTn4p5zh5S4/Wwvd2lP4+AT/EX2U655ttWSldA3Yc2vvoZY0MFyXQAJ86fZGN2Qe1Rli4kDwvCvaNzywmhOcLkhvHlPe37OgOLr2qRJ2CwwhNAYcKmI+opBWimxgIt/XFloNp9ycbrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.15
+	 MIME-Version:Content-Type; b=izXjoiky8caEF4DFKADhuY8M0Hn1B+srfqkl2Q5k9W0V4i9bza9XRyY9SxQpo9FToD98rqjNgnOMw5HpfAIiAt+kWqVn6USoBemcgGrw3kMekLzRnqLQ4JQtuGMJqvK2nr0biTnw7xfedt6tPqcGysklCyfEHXTKyftYNl35JwQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.10
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf15.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay07.hostedemail.com (Postfix) with ESMTP id C5B6816029D;
-	Wed, 18 Jun 2025 15:33:55 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf15.hostedemail.com (Postfix) with ESMTPA id DF05817;
-	Wed, 18 Jun 2025 15:33:51 +0000 (UTC)
-Date: Wed, 18 Jun 2025 11:33:59 -0400
+Received: from omf13.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay08.hostedemail.com (Postfix) with ESMTP id B1C781402DB;
+	Wed, 18 Jun 2025 15:37:02 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf13.hostedemail.com (Postfix) with ESMTPA id A3AD420010;
+	Wed, 18 Jun 2025 15:36:58 +0000 (UTC)
+Date: Wed, 18 Jun 2025 11:37:06 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Peter Zijlstra <peterz@infradead.org>
 Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
@@ -47,12 +47,13 @@ Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
  Belgrave <beaub@linux.microsoft.com>, Jens Remus <jremus@linux.ibm.com>,
  Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton
  <akpm@linux-foundation.org>
-Subject: Re: [PATCH v10 05/14] unwind_user/deferred: Add unwind cache
-Message-ID: <20250618113359.585b3770@gandalf.local.home>
-In-Reply-To: <20250618141345.GR1613376@noisy.programming.kicks-ass.net>
+Subject: Re: [PATCH v10 06/14] unwind_user/deferred: Add deferred unwinding
+ interface
+Message-ID: <20250618113706.2eb46544@gandalf.local.home>
+In-Reply-To: <20250618142000.GS1613376@noisy.programming.kicks-ass.net>
 References: <20250611005421.144238328@goodmis.org>
-	<20250611010428.603778772@goodmis.org>
-	<20250618141345.GR1613376@noisy.programming.kicks-ass.net>
+	<20250611010428.770214773@goodmis.org>
+	<20250618142000.GS1613376@noisy.programming.kicks-ass.net>
 X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -62,106 +63,35 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: DF05817
-X-Stat-Signature: qn145nasyjo71b6c4mp48cby95e8fyix
-X-Rspamd-Server: rspamout06
+X-Rspamd-Queue-Id: A3AD420010
+X-Stat-Signature: je68cw8skeuwinopqsr3tb1eoid8b658
+X-Rspamd-Server: rspamout05
 X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX19z+V8EdxvZHYuSr2+nvc1NgqcE5Ym4NK0=
-X-HE-Tag: 1750260831-793816
-X-HE-Meta: U2FsdGVkX1/pJDS4niRQIt8lw8hjU2/CPzqN8+QqDAeVS5fEqQH8L3j2HRdolw6MlrXmneyfAmuLE2hEV5tilhjhHP1bQjtK7qcQ7+Po5tZGy/1c6OXAUc+XS7PXcsytj6O4KePSBBxPRf44KrAjuizxfTA2WkW0EyLXNrDjOOC1qsLaWBlilqYl1+Uf7IOS/Nt9yDSOVJ9B0kQIh7pGOQosFm9FhXEshz/VC7fPPLkTjB8H0/IbbrU3aEwkQY/wHiA9WL2yxCQnC7zJt7GazMXVY34OY7hM8QFbKhk5ypliehINYgkTGyAX2zoOXCZdrwjHlapnp3XBx3mgi5JVy+QEZTDGWu10Za6AlWu4l+ijsP/FVAtvFlrdnpMwJzf3SwqMoO/hdVM+YBSCipisUYF2Qp26aeOz
+X-Session-ID: U2FsdGVkX1/YoKH8GuEQ0yQVJuweTy+bFYg7UncVhlQ=
+X-HE-Tag: 1750261018-678897
+X-HE-Meta: U2FsdGVkX19XfgmjSoFRuaBqQl+KSL0/+93MSakFfJdGRZSGhN7pEoSQsJlLVCfByRxxCGivGP4wgp10u5COPglY4NovJUFeQSFbttUk9SrRTfOlMgZ0LrPYVeIkKJcZGS+z8F9mUaP+2c968hzJvVrLWAOC9o9pgNosJa18H/jHmhtMVrBUAwQLM/KT39SHUIjpuUeaQABg0L+kGaMPBk/6Hg9nBoCKlf+4wepjjJNHMqoGzNvxWsPjSuIB5GmhM3dxznDQf+p0gVBueUkYACTOjTWMW1e1WufGgDDccZoeQ4iX7XJ4Qot5Cpykwig4piM0AeJgg5jl4GygO5ZyNFu5wa59XOAZKXFtuVYnif51p3JxgRfHcpCjnpH5unv0
 
-On Wed, 18 Jun 2025 16:13:45 +0200
+On Wed, 18 Jun 2025 16:20:00 +0200
 Peter Zijlstra <peterz@infradead.org> wrote:
 
-> > diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
-> > index f94f3fdf15fc..6e850c9d3f0c 100644
-> > --- a/include/linux/entry-common.h
-> > +++ b/include/linux/entry-common.h
-> > @@ -12,6 +12,7 @@
-> >  #include <linux/resume_user_mode.h>
-> >  #include <linux/tick.h>
-> >  #include <linux/kmsan.h>
-> > +#include <linux/unwind_deferred.h>
-> >  
-> >  #include <asm/entry-common.h>
-> >  #include <asm/syscall.h>
-> > @@ -362,6 +363,7 @@ static __always_inline void exit_to_user_mode(void)
-> >  	lockdep_hardirqs_on_prepare();
-> >  	instrumentation_end();
-> >  
-> > +	unwind_exit_to_user_mode();  
+> > The timestamp is passed to the caller on request, and when the stacktrace is
+> > generated upon returning to user space, it call the requester's callback
+> > with the timestamp as well as the stacktrace.  
 > 
-> So I was expecting this to do the actual unwind, and was about to go
-> yell this is the wrong place for that.
+> This whole story hinges on there being a high resolution time-stamp
+> available... Good thing we killed x86 !TSC support when we did. You sure
+> there's no other architectures you're interested in that lack a high res
+> time source?
 > 
-> But this is not that. Perhaps find a better name like:
-> unwind_clear_cache() or so?
+> What about two CPUs managing to request an unwind at exactly the same
+> time?
 
-Sure.
+It's mapped to a task. As long as each timestamp is unique for a task it
+should be fine. As the trace can record the current->pid along with the
+timestamp to map to the unique user space stack trace.
 
-How about unwind_reset_info()?
-
-As it's not going to just clear the cache but also reset the trace info
-(like the timestamp and such).
-
-
-> 
-> >  	user_enter_irqoff();
-> >  	arch_exit_to_user_mode();
-> >  	lockdep_hardirqs_on(CALLER_ADDR0);  
-> 
-> 
-> > diff --git a/include/linux/unwind_deferred_types.h b/include/linux/unwind_deferred_types.h
-> > index aa32db574e43..db5b54b18828 100644
-> > --- a/include/linux/unwind_deferred_types.h
-> > +++ b/include/linux/unwind_deferred_types.h
-> > @@ -2,8 +2,13 @@
-> >  #ifndef _LINUX_UNWIND_USER_DEFERRED_TYPES_H
-> >  #define _LINUX_UNWIND_USER_DEFERRED_TYPES_H
-> >  
-> > +struct unwind_cache {
-> > +	unsigned int		nr_entries;
-> > +	unsigned long		entries[];
-> > +};
-> > +
-> >  struct unwind_task_info {
-> > -	unsigned long		*entries;
-> > +	struct unwind_cache	*cache;
-> >  };
-> >  
-> >  #endif /* _LINUX_UNWIND_USER_DEFERRED_TYPES_H */
-> > diff --git a/kernel/unwind/deferred.c b/kernel/unwind/deferred.c
-> > index 0bafb95e6336..e3913781c8c6 100644
-> > --- a/kernel/unwind/deferred.c
-> > +++ b/kernel/unwind/deferred.c
-> > @@ -24,6 +24,7 @@
-> >  int unwind_deferred_trace(struct unwind_stacktrace *trace)
-> >  {
-> >  	struct unwind_task_info *info = &current->unwind_info;
-> > +	struct unwind_cache *cache;
-> >  
-> >  	/* Should always be called from faultable context */
-> >  	might_fault();
-> > @@ -31,17 +32,30 @@ int unwind_deferred_trace(struct unwind_stacktrace *trace)
-> >  	if (current->flags & PF_EXITING)
-> >  		return -EINVAL;
-> >  
-> > -	if (!info->entries) {
-> > -		info->entries = kmalloc_array(UNWIND_MAX_ENTRIES, sizeof(long),
-> > -					      GFP_KERNEL);
-> > -		if (!info->entries)
-> > +	if (!info->cache) {
-> > +		info->cache = kzalloc(struct_size(cache, entries, UNWIND_MAX_ENTRIES),
-> > +				      GFP_KERNEL);  
-> 
-> And now you're one 'long' larger than a page. Surely that's a crap size
-> for an allocator?
-
-Bah, Ingo suggested to put the counter in the allocation and I didn't think
-about the size going over the page. Good catch!
-
-Since it can make one per task, it may be good to make this into a
-kmemcache.
+As for resolution, as long as there can't be two system calls back to back
+within the same time stamp. Otherwise, yeah, we have an issue.
 
 -- Steve
 
