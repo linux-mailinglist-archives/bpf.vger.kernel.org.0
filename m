@@ -1,181 +1,93 @@
-Return-Path: <bpf+bounces-60948-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-60949-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A2D2ADF0A1
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 17:04:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E8A0ADF0C1
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 17:09:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A2D83A628A
-	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 15:02:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9967B4A0EF1
+	for <lists+bpf@lfdr.de>; Wed, 18 Jun 2025 15:09:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1D762EE5EC;
-	Wed, 18 Jun 2025 15:02:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bxjAL65u"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78E6A2EE980;
+	Wed, 18 Jun 2025 15:09:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A858D2EB5C9
-	for <bpf@vger.kernel.org>; Wed, 18 Jun 2025 15:02:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 961562EE969;
+	Wed, 18 Jun 2025 15:09:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750258965; cv=none; b=NGsczBk9k8kuFz4wchcBr2pVRusMTUORiC6L4IvsPBCrUoH6gJM3Poty83LEDNRFgPnVv2mLpzg40YX/PUjbIz8L9lmYOcV3+QyMvL8Gk3pszdckLq88xskOf7ZoYA/dajMldB2ttQ3fa8X8ykzYMplN1pu6TXLbmXh7r9/Kot0=
+	t=1750259357; cv=none; b=VBsN8NeTC6VRn1neEWUkud61T96KeAD+SzjMJLhos70uLTOpgua9pC44056+y3T3qGZDC0zxX8f2w/XZJjSN4ygjYq/4uWIGn4Xcgad8ABzNuRXv+B6mtaxJfIJ2OXc4badFK1l8SWlttJXdrlX3n2QnJ9XKYMMM00ZaKuBke+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750258965; c=relaxed/simple;
-	bh=sXkDppOa6rcnZZR7hP9SjEuI1jqbfhQ9DYE07E0Nu4Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K0NgxrCL3v0nPhN5TJTy00cOdlKbr2vNaTEdxzi+cGbrNrww/QzuUD9vV3RciytXsNOQFqmWZmwNafZ4DGTb/tLEt7ekxXwyEymp//s4HclGEqv/faOPRGQxU3LLJVSXILLCL3BIQJWleAtFFYEDxoXK8ErIzc6j+jqOyEZVLvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bxjAL65u; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3a36748920cso8383151f8f.2
-        for <bpf@vger.kernel.org>; Wed, 18 Jun 2025 08:02:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750258962; x=1750863762; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=dnHoNavC/AzvzFvuJVlV26ty+sgzg5ysQfyg3r41LGI=;
-        b=bxjAL65uhXu8sLV0WJZ+UE+secOvIxDs3Lz1FQXqXMrzzHg0M3phIpdX02xw94IL41
-         3tXaP/hQcrHlyvD3Qw2haLMquIl98FlE8il977+GZjlHZrTKVmsxBQF3w2kpgD4t3Spa
-         92tai7zPNZPgdxjKYS4jLqlXwC2xv8rZfZqe5j3jw8D4Cm59rAFK4WHRADz4CbMcSh5A
-         r1ZIpsXwHulOvc1OIPi8lcMIs+aOvLPRl8D+WA537kU5PySfQafm3w+DLyzbqIYMCrJe
-         1GuFf+vMX4onBcgBck97tDZJVFvkaAiE7NJnL45NxJqt7YkiYH0qsrUNQl1uesiVv6yS
-         2Q4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750258962; x=1750863762;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dnHoNavC/AzvzFvuJVlV26ty+sgzg5ysQfyg3r41LGI=;
-        b=OLhf7jG11+pkuhMoXrIu+vD+7bB98Fmd4ZD9r8cApKES4kM9rw5D3xIQXPLtCfUwWL
-         z+h9FeU4JITcMXVl7ueNRhQwW40MDrX1II2Jl+17jTipRLD4+NF46eyECNhjjgQ391LD
-         nT64ltURzD1VLbwFIPhWcIpVg7QNDAOstEjj69iArSIrfIETwVI4KhrrkmpVrViVIR2q
-         9mlD2AFEEqvdPbcAOnjC/Y2pqz/Z9sX+LRV7Igo2ZpR/9G7iELkvi7hb4g9vV2Yfc9tX
-         0uaiuftbJK99tXLPMzbpXqbV9dyqDK+4tdj1+vvF23YMA/HZXg9kmWTQz3M/YCZP64Zk
-         F+mw==
-X-Gm-Message-State: AOJu0Yw56FTO3JkyqK+ulduApvJVnqU/q3KwBNx9oo5oEr+vUM2DPmDR
-	ATBI9CdCADAByB0euImQFafFRVOoajH8sjmr48Qj32NUiQbh4E0c715F
-X-Gm-Gg: ASbGncuiswHfUqUOpwor3wyAsI8Pwyy6/lujMygYWpM8CIGEHRvBTUkGcMoOGmUi3iK
-	jNXQ5v90nR4QVITt/fAimg4w0ab+Dl4ZLphAso8NXyYOpjWtMIp1lSyzNGNq/Ue4Yr9MRiK83Fs
-	Nnj9bRLcwSpqwggr59mBeE8IV9Tz1RZYTsijQXx6g+/yK0O8Wry2pzizbCnmO3n13QrdYKTiBjI
-	JHwwru6LiW9Ebxer7EECawY0OBuxMZQIa5aqHcpEA04J2BIdxVxQ5lLE6OmrmEpZ6QHVQrNDUkV
-	wskeGuFBo/BfaVGZonsxuTGARaCHSe03kCswfGddQAhzRzcZrbP57iixqhCrjRojrlupp5FFiA=
-	=
-X-Google-Smtp-Source: AGHT+IE1KllU0BKfq0C6G6b4T4fWVOrdmyBsIhxMmquIi+NhcA+d9oI9IjYjXsgQrkAxQLw4IRQkcA==
-X-Received: by 2002:a05:6000:2c10:b0:3a4:de02:208 with SMTP id ffacd0b85a97d-3a57238421cmr15813090f8f.25.1750258961118;
-        Wed, 18 Jun 2025 08:02:41 -0700 (PDT)
-Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a577e928f7sm13663159f8f.64.2025.06.18.08.02.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Jun 2025 08:02:40 -0700 (PDT)
-Date: Wed, 18 Jun 2025 15:08:24 +0000
-From: Anton Protopopov <a.s.protopopov@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Anton Protopopov <aspsk@isovalent.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Quentin Monnet <qmo@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>
-Subject: Re: [RFC bpf-next 8/9] libbpf: support llvm-generated indirect jumps
-Message-ID: <aFLWaNSsV7M2gV98@mail.gmail.com>
-References: <20250615085943.3871208-1-a.s.protopopov@gmail.com>
- <20250615085943.3871208-9-a.s.protopopov@gmail.com>
- <CAADnVQKhVyh4WqjUgxYLZwn5VMY6hSMWyLoQPxt4TJG1812DcA@mail.gmail.com>
+	s=arc-20240116; t=1750259357; c=relaxed/simple;
+	bh=NM0uIEIBmKPjssAbv5WPcgFwThslLyP/kq/2pIREebo=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=aECsHcEyM1Z53ylkAz/5lHMVKda4/L6tsMe/nIFrO4QyQxA5Rqds38xxoJOiycnJ01A97MfLmTSfhPbyiyTX2qDUvj9mYc3lLc/Djz36fXmMt+ce4XMJ4OYisC8wh8L+xWL6PzHuhqsw5AaWFxkArgyK4xo+n8e94eXWMfwArJM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf01.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay01.hostedemail.com (Postfix) with ESMTP id B9DB91CF622;
+	Wed, 18 Jun 2025 15:09:11 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf01.hostedemail.com (Postfix) with ESMTPA id C60036000C;
+	Wed, 18 Jun 2025 15:09:07 +0000 (UTC)
+Date: Wed, 18 Jun 2025 11:09:15 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, x86@kernel.org, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Josh Poimboeuf <jpoimboe@kernel.org>, Ingo Molnar <mingo@kernel.org>, Jiri
+ Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, Indu
+ Bhagat <indu.bhagat@oracle.com>, "Jose E. Marchesi" <jemarch@gnu.org>, Beau
+ Belgrave <beaub@linux.microsoft.com>, Jens Remus <jremus@linux.ibm.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton
+ <akpm@linux-foundation.org>
+Subject: Re: [PATCH v10 02/14] unwind_user: Add frame pointer support
+Message-ID: <20250618110915.754e604f@gandalf.local.home>
+In-Reply-To: <20250618135201.GM1613376@noisy.programming.kicks-ass.net>
+References: <20250611005421.144238328@goodmis.org>
+	<20250611010428.092934995@goodmis.org>
+	<20250618135201.GM1613376@noisy.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQKhVyh4WqjUgxYLZwn5VMY6hSMWyLoQPxt4TJG1812DcA@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: C60036000C
+X-Stat-Signature: 73r1rkxrmzpy3cjc799wwjicbegsdwmk
+X-Rspamd-Server: rspamout05
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX18/w7XWFVjVdAceVbXFYHMY+StonkwTq24=
+X-HE-Tag: 1750259347-837396
+X-HE-Meta: U2FsdGVkX197pXU/+eJz5G9JDPn2gxiuB/VN7TILucKUgp0Vnd9b6s73QPwXmg6ohDGCwYBS52e+9HpjdgLM6UJDHhmfGD8lFNQbjAttS0AM957ejc0xPDuNLLF2yVd4AKMq55l3cmgddlyI3DTPPEdLqMuZDxvB1mZxvXTXfaJnlqpbMRXAeF4DdDott21EN5T6bbEMXgAqkFFJVPK6lv0kolDbiC0WnAUgOCiL4IWws4n/VZCmgkAg90BYDKkvapyojxv6mq0ZSlW/i/voyuZOQldY/HxCwuOilyKXyfLB7kkMxgXeYoJpGoV11YuajigkFMuvq/xLq/s/Mhw+1gYxuDmx4ajXsXDRvRv0FnA4uo+NoLSpatpuBh+e8z8Q
 
-On 25/06/17 08:22PM, Alexei Starovoitov wrote:
-> On Sun, Jun 15, 2025 at 1:55 AM Anton Protopopov
-> <a.s.protopopov@gmail.com> wrote:
-> >
-> > The final line generates an indirect jump. The
-> > format of the indirect jump instruction supported by BPF is
-> >
-> >     BPF_JMP|BPF_X|BPF_JA, SRC=0, DST=Rx, off=0, imm=fd(M)
-> >
-> > and, obviously, the map M must be the same map which was used to
-> > init the register rX. This patch implements this in the following,
-> > hacky, but so far suitable for all existing use-cases, way. On
-> > encountering a `gotox` instruction libbpf tracks back to the
-> > previous direct load from map and stores this map file descriptor
-> > in the gotox instruction.
-> 
-> ...
-> 
-> > +/*
-> > + * This one is too dumb, of course. TBD to make it smarter.
-> > + */
-> > +static int find_jt_map_fd(struct bpf_program *prog, int insn_idx)
-> > +{
-> > +       struct bpf_insn *insn = &prog->insns[insn_idx];
-> > +       __u8 dst_reg = insn->dst_reg;
-> > +
-> > +       /* TBD: this function is such smart for now that it even ignores this
-> > +        * register. Instead, it should backtrack the load more carefully.
-> > +        * (So far even this dumb version works with all selftests.)
-> > +        */
-> > +       pr_debug("searching for a load instruction which populated dst_reg=r%u\n", dst_reg);
-> > +
-> > +       while (--insn >= prog->insns) {
-> > +               if (insn->code == (BPF_LD|BPF_DW|BPF_IMM))
-> > +                       return insn[0].imm;
-> > +       }
-> > +
-> > +       return -ENOENT;
-> > +}
-> > +
-> > +static int bpf_object__patch_gotox(struct bpf_object *obj, struct bpf_program *prog)
-> > +{
-> > +       struct bpf_insn *insn = prog->insns;
-> > +       int map_fd;
-> > +       int i;
-> > +
-> > +       for (i = 0; i < prog->insns_cnt; i++, insn++) {
-> > +               if (!insn_is_gotox(insn))
-> > +                       continue;
-> > +
-> > +               if (obj->gen_loader)
-> > +                       return -EFAULT;
-> > +
-> > +               map_fd = find_jt_map_fd(prog, i);
-> > +               if (map_fd < 0)
-> > +                       return map_fd;
-> > +
-> > +               insn->imm = map_fd;
-> > +       }
-> 
-> This is obviously broken and cannot be made smarter in libbpf.
-> It won't be doing data flow analysis.
-> 
-> The only option I see is to teach llvm to tag jmp_table in gotox.
-> Probably the simplest way is to add the same relo to gotox insn
-> as for ld_imm64. Then libbpf has a direct way to assign
-> the same map_fd into both ld_imm64 and gotox.
+On Wed, 18 Jun 2025 15:52:01 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-This would be nice.
+> > +the_end:
+> > +	state->done = true;
+> >  	return -EINVAL;
+> >  }  
+> 
+> I'm thinking 'the_end' might be better named 'done' ?
 
-> Uglier alternatives is to redesign the gotox encoding and
-> drop ld_imm64 and *=8 altogether.
-> Then gotox jmp_table[R5] will be like jumbo insn that
-> does *=8 and load inside and JIT emits all that.
-> But it's ugly and likely has other downsides.
+I thought it was cute ;-) (BTW, I didn't name it).
 
-I did this in my initial draft for LLVM (and supporting different
-kind of instructions was done using bits in SRC). But the "native"
-approach looks better for me now, especially if compiles can be
-taught to link load&gotox.
+But sure, I can update it to be something more common.
+
+> 
+> Also, CFA here is Call-Frame-Address and RA Return-Address ?
+
+I believe so. Do you want me to add a comment?
+
+-- Steve
 
