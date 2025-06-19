@@ -1,94 +1,93 @@
-Return-Path: <bpf+bounces-61022-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61023-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00F9BADFB0D
-	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 03:59:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1A62ADFB1C
+	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 04:11:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C98AF3B79E9
-	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 01:59:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 652AB17FBD4
+	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 02:11:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8533121C9E4;
-	Thu, 19 Jun 2025 01:59:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 654D8225777;
+	Thu, 19 Jun 2025 02:11:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MY4Piz6+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W6CdYxqw"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 022D3137932;
-	Thu, 19 Jun 2025 01:59:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4A8E76034;
+	Thu, 19 Jun 2025 02:11:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750298379; cv=none; b=f97+IfJZWUvFat7hxkUKveBM5LBPnzO59VhjsE3YGBjeL2pwtHiRZbHzmSarAITYHZ3dvwc4OEVYX/d+BGoW1aUn7Pg+W0YfwKJSdUPKJBUCDeY91Vc6s6jIYLjQRmTO/b+lyDsDtIVrBS8Qh4GueICdSTs/E3pfEX3QrEaXRL8=
+	t=1750299072; cv=none; b=qK0oC/0/hEs/CZWtiNmyPVqMQmHzoeJuA2cXxwF9cS+bKI6xHGusQjQOmlL4DfISe/6COT5rvMXKWTS75SQBodvSbSwvPARi4Rz/W1GFLyYzpw7bdug1ZDtja7rv4FWY9nO50ZETYbHkIhFbs4/0uOEatNefowyeVYvLKkHJfdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750298379; c=relaxed/simple;
-	bh=khrqJTYzLiyC8cYk0kH+2VMCEQnQ/rTVvh2Vw4TXnC8=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=Wgu8HYkISTdx78OyeYyYO1DvOV7dFwDwqICz+HdyOGSMsaSDR/s87ySr4DCKXTaQnnYWWZ/tSAmSSnpL0sNuvWbeqJaAWwiNgVQtCONLr94ZO6pNTIARD0zHXWu4lr7GaM4JKOGgblcx80yS1JNNeKp9HciovNCYRSYOwlaxQfQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MY4Piz6+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81B4EC4CEE7;
-	Thu, 19 Jun 2025 01:59:38 +0000 (UTC)
+	s=arc-20240116; t=1750299072; c=relaxed/simple;
+	bh=MH8crp1DhW23/OKmNtZBXsV7bwbGco8MJctbSo83AO4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tOo/aOQUf+CBlRxoSxbzx1qR7mCX7woRNAKjxFu1bMMnVxXp75eyjGollbJFohkQdz0etH0Ps3kcNhPjpO+JtRZzs5LKv12i90APHNa09DA2tx0Dy6cF9A1PtOhv78XyHlphuSmKPTuZCynS25BDBez5wrJ5uEw0ThQElPwaaRE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W6CdYxqw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC1BDC4CEE7;
+	Thu, 19 Jun 2025 02:11:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750298378;
-	bh=khrqJTYzLiyC8cYk0kH+2VMCEQnQ/rTVvh2Vw4TXnC8=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=MY4Piz6+HC1N/Se0ZBfxQ8eaLBuV9NMuHW4UhNfHesUcGbGv/K4FmWtbbclNvC4Fh
-	 JoV8Bj8cvdIgTpqp2DLMo7EUifSzAM2S6lufdqJbhfg1pKKCztPvSl7FBYMxM32eIG
-	 LHVGm7/QhPklda6FtG5QiEbbfLvV19riJLTGdZNvdYUGQYx+YReYdUsQzQo+jFzCLf
-	 Js2OVXYIVt3osjvclMt5euHyxvBT8suDbHjeST6JCckWsHoYxbIWxKMV0MxqE6vvbw
-	 Yd3MRS9HApMVrfMRS+02Z0L80xnWaPqxLrnr/pYJV1iG1XAsdaGRjbCFQmlwrxrCBs
-	 QoEpLm++OXDNA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB00B3806649;
-	Thu, 19 Jun 2025 02:00:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1750299072;
+	bh=MH8crp1DhW23/OKmNtZBXsV7bwbGco8MJctbSo83AO4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=W6CdYxqwN/NBljKsxlJlQh1OdGAEzo0+mfdv4gr+uFBkTq3Ih3rbplQhPvMVI6Ijq
+	 6W2sTe3RzvcnrXZGvBGR/QMmFeNp9tKQs1D3wFECVPF9oH53M8s1qaXk5DGvW4mmln
+	 lImovZffVl5q900PmwgF0tidZSOpykcCQt/jins4zwLxBPFuvsXd1w6DFv5DcS3W54
+	 PyMcTHXj/MKeuH8X+RO0u98h7UxdhnAXaYZUqzpEzQmD0zL47uKVKE2bmADoTglVPI
+	 omisZagomvBwO8IWBoG7h+UoeOZOMRELh7hCRMddk/bGYqJQkzMZ/Hu6QpV4cAOFiy
+	 GLcI/UtzZARqg==
+Date: Wed, 18 Jun 2025 19:11:11 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Bui Quang Minh <minhquangbui99@gmail.com>
+Cc: netdev@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>, Jason
+ Wang <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Eugenio
+ =?UTF-8?B?UMOpcmV6?= <eperezma@redhat.com>, Andrew Lunn
+ <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend
+ <john.fastabend@gmail.com>, virtualization@lists.linux.dev,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net 1/2] virtio-net: xsk: rx: fix the frame's length
+ check
+Message-ID: <20250618191111.29e6136e@kernel.org>
+In-Reply-To: <20250615151333.10644-2-minhquangbui99@gmail.com>
+References: <20250615151333.10644-1-minhquangbui99@gmail.com>
+	<20250615151333.10644-2-minhquangbui99@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf v2] bpf: lru: adjust free target to avoid global table
- starvation
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <175029840650.320658.8717699321491832494.git-patchwork-notify@kernel.org>
-Date: Thu, 19 Jun 2025 02:00:06 +0000
-References: <20250618215803.3587312-1-willemdebruijn.kernel@gmail.com>
-In-Reply-To: <20250618215803.3587312-1-willemdebruijn.kernel@gmail.com>
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
- daniel@iogearbox.net, john.fastabend@gmail.com, martin.lau@linux.dev,
- stfomichev@gmail.com, a.s.protopopov@gmail.com, willemb@google.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello:
+On Sun, 15 Jun 2025 22:13:32 +0700 Bui Quang Minh wrote:
+> +/**
+> + * buf_to_xdp() - convert the @buf context to xdp_buff
+> + * @vi: virtnet_info struct
+> + * @rq: the receive queue struct
+> + * @buf: the xdp_buff pointer that is passed to virtqueue_add_inbuf_premapped in
+> + *       virtnet_add_recvbuf_xsk
+> + * @len: the length of received data without virtio header's length
+> + * @first_buf: this buffer is the first one or not
+> + */
+>  static struct xdp_buff *buf_to_xdp(struct virtnet_info *vi,
+> -				   struct receive_queue *rq, void *buf, u32 len)
+> +				   struct receive_queue *rq, void *buf,
+> +				   u32 len, bool first_buf)
 
-This patch was applied to bpf/bpf.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+I think Michael mention he's AFK so while we wait could you fix this
+kdoc? I'm not sure whether the kdoc is really necessary here, but if
+you want to keep it you have to document the return value:
 
-On Wed, 18 Jun 2025 17:57:40 -0400 you wrote:
-> From: Willem de Bruijn <willemb@google.com>
-> 
-> BPF_MAP_TYPE_LRU_HASH can recycle most recent elements well before the
-> map is full, due to percpu reservations and force shrink before
-> neighbor stealing. Once a CPU is unable to borrow from the global map,
-> it will once steal one elem from a neighbor and after that each time
-> flush this one element to the global list and immediately recycle it.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf,v2] bpf: lru: adjust free target to avoid global table starvation
-    https://git.kernel.org/bpf/bpf/c/d4adf1c9ee77
-
-You are awesome, thank you!
+Warning: drivers/net/virtio_net.c:1141 No description found for return value of 'buf_to_xdp'
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+pw-bot: cr
 
