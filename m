@@ -1,107 +1,157 @@
-Return-Path: <bpf+bounces-61025-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61026-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 069A9ADFBA1
-	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 05:11:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E0C7ADFBD6
+	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 05:23:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 541083B4B69
-	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 03:10:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF86C7A2F24
+	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 03:22:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 852F5237713;
-	Thu, 19 Jun 2025 03:11:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82FAC239E77;
+	Thu, 19 Jun 2025 03:23:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="kgDW3oXF"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="EsbS84FS"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19F124A3C;
-	Thu, 19 Jun 2025 03:11:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.2
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59FBE1CBEB9
+	for <bpf@vger.kernel.org>; Thu, 19 Jun 2025 03:23:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750302671; cv=none; b=IUh4AZgSGEwykL7o4oua66OT7N3qb/ww287ni8soAS+5S+ZtfS0LNfuBOjO0AJ0IMeP5OgwMZjNTwksmNQcvxpHaE8k4g2o8nArpYUL0mU1VoBgNsYopVvekMhZhS/jHdEkHQlux5PYGx7nUA9YSRr1WqeslG1xcYbbIcVfLdZ0=
+	t=1750303425; cv=none; b=UiSNftWYTOBD6ojSUqHDA7A9KFGgqEqkn/McO+y/wEMo9rsiqbnYeX7RldB71DPNMDhSFKaAkMgRjpUaYGjFTsqM/YU9a+KRPCN+3K6ZaxOxElfkh7/4JlE/HNz2XKIuDiMEsQzFuPRAPxbWb4jtncmaGl9mkwjC2VpJ5vaM6Ok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750302671; c=relaxed/simple;
-	bh=51oZ/IZDB7F4eTcBwvlqPOac0I3Sr1Bdpv7wS8vzbPY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=SS8Acomn9XyxmvNIHzKMjsRflrVF5Dl0m0Rnh+N5wcEn09HHkmnw1prZVnBqu+4qMPH5HSvGcE+KULs4IjjAgk7CuVSP+fiONqUN3aGXdzgg1D/4IwTwwmIf3vGWMtNKtm65QQt/A1K0FnC9uyrM5jvSuqf7OgnWUKkgeaB7AA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=kgDW3oXF; arc=none smtp.client-ip=220.197.31.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=ST
-	RjQteFUZoF2HoMiQkIsJ7Znz080VPaSrZB64TS8oQ=; b=kgDW3oXF2c5Wd110nD
-	3F0z2jzbW8mqoBs9me8T0ojmZxZaJkZfDvdfxLi+1B1rNEhDq0OsP6Ug6etyVi65
-	z0J70DWpOlQaC3i56e7ryJqRJXYxbWipbS2JqESY0ei9ztOZJBmCJVO9t056lmlu
-	ZPRM0+rPLAgJsIRFD/xcCZ5ew=
-Received: from 163.com (unknown [])
-	by gzga-smtp-mtada-g1-2 (Coremail) with SMTP id _____wD3P6K0f1NowTSLAQ--.64025S2;
-	Thu, 19 Jun 2025 11:10:44 +0800 (CST)
-From: chenyuan <chenyuan_fl@163.com>
-To: ast@kernel.org,
-	andrii@kernel.org
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	chenyuan_fl@163.com,
-	chenyuan <chenyuan@kylinos.cn>
-Subject: [PATCH] bpftool: Fix memory leak in dump_link_nlmsg on realloc failure
-Date: Thu, 19 Jun 2025 11:10:37 +0800
-Message-Id: <20250619031037.39068-1-chenyuan_fl@163.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1750303425; c=relaxed/simple;
+	bh=nbuySolPRrKrb/6LuT5vebnUQjPFVCtq1MS/A8Kd8hM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=n119TFx9VMAVuct45bzrRTALL4SKUZpcwjFZEh59HfEBB/SYcWFg6NWJJkRZSdrE2r2S3l9xDfiK2C0vx+Sx+nTuuJofX92U5Hd/mZLYo+rmCyFxpi+kQI7skO84LWGQD2HE6PxYOxaGMwDOeeHQzbsBfPs2Qa2paIJo1TXqo3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=EsbS84FS; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-710f39f5cb9so4014257b3.3
+        for <bpf@vger.kernel.org>; Wed, 18 Jun 2025 20:23:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1750303422; x=1750908222; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8iJFw3hcoXsGe4DbyON26AXsapbrXOUsJDzr8Kus6pk=;
+        b=EsbS84FSKxXZnHZQXjCF+6Upv9EOpcGFcTUVOLCtnKH5Wmutvrxzybfqf1BNSbyKRm
+         5s88hw90IYwGLcY01H/gkeGrLadMET9j9VwTMUVRM0F4eVYvD/h70qg+PuW4QXugdAvQ
+         ABTg6Bg2fAVdWUVMQDbOsQ9lAyIy5DeJ7+fsrIahKP3cSxAbbO82X1BdcUVUwBk8M1cS
+         3g7MAb52YZEhjLEhRNQcH4poe29H4oBnIoelr+iWJJZv6li/BPxAwNKnheUo69bAqGIU
+         IFioyFhn8wDKVL5dMd5jAZ6xRzB28wMB9uY0MfjivMAo6qTsn4xYtYf9/OdCevxqCO5n
+         Fcmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750303422; x=1750908222;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8iJFw3hcoXsGe4DbyON26AXsapbrXOUsJDzr8Kus6pk=;
+        b=K+ZF4B6NDy5VNElU5D1hKD4ZwkvwbY6OtGB693ZtD/lQDtBjxA7zV/vROiyX3P7aOx
+         olVNwaSJn5zV9zwwqarNso7KFTfjsUz1mSDaAC1J9g99MzvSKZbq6zCgx4zBIg5O8ve5
+         JryzskateXeRSz14JjlglXYYYZfDiHRSTenXVTYdICTosKEPDDKcChU1dzG8X06nl6nu
+         HINjAcsTB5rZHxD/2tJIE2hcsRZ5M/pUvZwCjOhHfQPAJ2LHJyI3mQPR9doVrYehYQL/
+         wonygDypZB95LSCSpnuSDin7iqxNjCRGk7FOywy/YldgUjjH2wYOS52PW+tANEqr7+vn
+         Ct3w==
+X-Forwarded-Encrypted: i=1; AJvYcCULd1QljBlbn4ouZyIJDD7BY00p7sw7V11JGXcc9McjUvhrznWBVhbrMBxIFuE6ibUI6vc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzofLayX2vWnbTeiyZoNZhNnbmJq9wWPYr/m5JywiYUusm6jNTV
+	ZSJ0ZO3sTIGTj/IZsSacgMa4jtwxoZV1F7WnJF7T9U9zhFV5WSlewvCQSubXnIaXADhW0Iu2oF0
+	VZXVos97g8EtL2fxYu3FRFk17iLZr+8IyQshBPKJS
+X-Gm-Gg: ASbGncsdEw24weZWRC7n6JYCAjymkNnBiLtmAytj91mB1I9VX+UdlylBhU7E5k7CpIz
+	k+0sz0ceTvk88H1IuFCm7lA0l+n7r3fycN6QFFUfIoeO6bnmwq8qaWDD4Tals5HeHHnvJQSLXZs
+	I9S0NMkDKCFUV68fxqR5drUBHhttpTyTp7npX2XjyIOC8=
+X-Google-Smtp-Source: AGHT+IGcN/556LS+CfAEL1VYzf1syP51qd2XAQEDn5URamBiRo8ZdesoI3xzet3HROXiTs7jECSzpEiJz/1uPLWWuek=
+X-Received: by 2002:a05:690c:6886:b0:6fb:ae6b:a340 with SMTP id
+ 00721157ae682-71175456e3bmr301614567b3.30.1750303422334; Wed, 18 Jun 2025
+ 20:23:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3P6K0f1NowTSLAQ--.64025S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7tFW5Xry7Wr4kJF1rAw13urg_yoW8Gw13pa
-	4UGa40vr15Wryru3s7Aa15ZFW3C3WxJrs5GF47A34ruryrXrsrZr18KFyFvanIgFn5XFy2
-	yr1Y9a17XF1UAaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pio5d_UUUUU=
-X-CM-SenderInfo: xfkh05pxdqswro6rljoofrz/1tbiJxpxvWhTfSNNUwAAsK
+References: <1976e40bd50.28a7.85c95baa4474aabc7814e68940a78392@paul-moore.com> <20250614204044.2190213-1-kuni1840@gmail.com>
+In-Reply-To: <20250614204044.2190213-1-kuni1840@gmail.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Wed, 18 Jun 2025 23:23:31 -0400
+X-Gm-Features: Ac12FXxwFQ9XrzTaZ4vv6beLeYr34oLYlm8Lv3ct4ijMlJ9Ogo8mnNb8EPo9mo0
+Message-ID: <CAHC9VhRWi5QdRgU-Eko4XZ9A2W2o3uhVAagVkhu1eT18qAWdkg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 0/4] af_unix: Allow BPF LSM to filter
+ SCM_RIGHTS at sendmsg().
+To: Kuniyuki Iwashima <kuni1840@gmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	casey@schaufler-ca.com, daniel@iogearbox.net, eddyz87@gmail.com, 
+	gnoack@google.com, haoluo@google.com, jmorris@namei.org, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	kuniyu@google.com, linux-security-module@vger.kernel.org, 
+	martin.lau@linux.dev, memxor@gmail.com, mic@digikod.net, 
+	netdev@vger.kernel.org, omosnace@redhat.com, sdf@fomichev.me, 
+	selinux@vger.kernel.org, serge@hallyn.com, song@kernel.org, 
+	stephen.smalley.work@gmail.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: chenyuan <chenyuan@kylinos.cn>
+On Sat, Jun 14, 2025 at 4:40=E2=80=AFPM Kuniyuki Iwashima <kuni1840@gmail.c=
+om> wrote:
+> From: Paul Moore <paul@paul-moore.com>
+> Date: Sat, 14 Jun 2025 07:43:46 -0400
+> > On June 13, 2025 6:24:15 PM Kuniyuki Iwashima <kuni1840@gmail.com> wrot=
+e:
+> > > From: Kuniyuki Iwashima <kuniyu@google.com>
+> > >
+> > > Since commit 77cbe1a6d873 ("af_unix: Introduce SO_PASSRIGHTS."),
+> > > we can disable SCM_RIGHTS per socket, but it's not flexible.
+> > >
+> > > This series allows us to implement more fine-grained filtering for
+> > > SCM_RIGHTS with BPF LSM.
+> >
+> > My ability to review this over the weekend is limited due to device and
+> > network access, but I'll take a look next week.
+> >
+> > That said, it would be good if you could clarify the "filtering" aspect=
+ of
+> > your comments; it may be obvious when I'm able to look at the full patc=
+hset
+>
+> I meant to mention that just below the quoted part :)
+>
+> ---8<---
+> Changes:
+>   v2: Remove SCM_RIGHTS fd scrubbing functionality
+> ---8<---
 
-In function dump_link_nlmsg(), when realloc() fails to allocate memory,
-the original pointer to the buffer is overwritten with NULL. This causes
-a memory leak because the previously allocated buffer becomes unreachable
-without being freed.
+Thanks :)
 
-Fix: 7900efc19214 ("tools/bpf: bpftool: improve output format for bpftool net")
-Signed-off-by: chenyuan <chenyuan@kylinos.cn>
----
- tools/bpf/bpftool/net.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+While looking at your patches tonight, I was wondering if you had ever
+considered adding a new LSM hook to __scm_send() that specifically
+targets SCM_RIGHTS?  I was thinking of something like this:
 
-diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
-index 64f958f437b0..e00637b85e56 100644
---- a/tools/bpf/bpftool/net.c
-+++ b/tools/bpf/bpftool/net.c
-@@ -366,17 +366,18 @@ static int dump_link_nlmsg(void *cookie, void *msg, struct nlattr **tb)
- {
- 	struct bpf_netdev_t *netinfo = cookie;
- 	struct ifinfomsg *ifinfo = msg;
-+	struct ip_devname_ifindex *tmp;
- 
- 	if (netinfo->filter_idx > 0 && netinfo->filter_idx != ifinfo->ifi_index)
- 		return 0;
- 
- 	if (netinfo->used_len == netinfo->array_len) {
--		netinfo->devices = realloc(netinfo->devices,
--			(netinfo->array_len + 16) *
-+		tmp = realloc(netinfo->devices, (netinfo->array_len + 16) *
- 			sizeof(struct ip_devname_ifindex));
--		if (!netinfo->devices)
-+		if (!tmp)
- 			return -ENOMEM;
- 
-+		netinfo->devices = tmp;
- 		netinfo->array_len += 16;
- 	}
- 	netinfo->devices[netinfo->used_len].ifindex = ifinfo->ifi_index;
--- 
-2.25.1
+diff --git a/net/core/scm.c b/net/core/scm.c
+index 0225bd94170f..5fec8abc99f5 100644
+--- a/net/core/scm.c
++++ b/net/core/scm.c
+@@ -173,6 +173,9 @@ int __scm_send(struct socket *sock, struct msghdr *msg,=
+ stru
+ct scm_cookie *p)
+               case SCM_RIGHTS:
+                       if (!ops || ops->family !=3D PF_UNIX)
+                               goto error;
++                       err =3D security_sock_scm_rights(sock);
++                       if (err<0)
++                               goto error;
+                       err=3Dscm_fp_copy(cmsg, &p->fp);
+                       if (err<0)
+                               goto error;
 
+... if I'm correct in my understanding of what you are trying to
+accomplish, I believe this should allow you to meet your goals with a
+much simpler and targeted approach.  Or am I thinking about this
+wrong?
+
+--=20
+paul-moore.com
 
