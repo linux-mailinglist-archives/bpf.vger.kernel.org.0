@@ -1,284 +1,220 @@
-Return-Path: <bpf+bounces-61068-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61069-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C9C6AE0238
-	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 12:01:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA1EBAE024E
+	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 12:04:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49B763AEFAA
-	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 10:01:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7A933B70C2
+	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 10:04:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4D92221DA6;
-	Thu, 19 Jun 2025 10:01:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7EEA221733;
+	Thu, 19 Jun 2025 10:04:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YXHujRx2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kCbf5/sa"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 191A835963;
-	Thu, 19 Jun 2025 10:01:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABA7021FF38
+	for <bpf@vger.kernel.org>; Thu, 19 Jun 2025 10:04:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750327287; cv=none; b=QENeFgCHEcnVz/JroAXgImvWwRYtWwfk5iqrwzkmIOWZBeTgKPRMYSPj/K7BOfhr2uIk8hcwK5DVdZPK1a+dXzwfG4fTxxYc2piodqBbsqgToBAAq+DMmVwTQsr9VC+taiUq+/9MJhYWmqY6XPy3avn1qVNKohL59PDdupoiDiQ=
+	t=1750327476; cv=none; b=IqrivPFLNSYvQKzU7z4vlMBbfnbSILRK1envg0iHNSDKospL8LAWzy1TujeFb0HqVMrNfTQcof0OTlDstHa352J2g+lTaSHcj4yis27AlPfV3EOijUjYL/BpwoUBpiptEazJaqbeSPEi0upEBYe4OA9r3cb92HqKJERNgWBpNWI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750327287; c=relaxed/simple;
-	bh=iH2r4/nOdisJ4ji3r1eyCc2glfT0fNCXVE6J/1rZ5yI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OstHINpAaXz//PkcyelxbJ2xeXLpuga13oJfcGKC5eLgF8ZbfRkAG8BLCGf6jge9T6qrPnDVLHeiebVthnfEUbDTGy/zmibnS2EqLk7S/TJml5M1zziQWV2sstVZqFYNWPUqbWBmRu1+1FlHYZ7txMy+bzYunMPQ09Efc0AWDhc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YXHujRx2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55811C4CEEA;
-	Thu, 19 Jun 2025 10:01:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750327286;
-	bh=iH2r4/nOdisJ4ji3r1eyCc2glfT0fNCXVE6J/1rZ5yI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YXHujRx2ZkIBQtDu3BCwhIEOlxLAAhZslA2k8hvv/w+RV1qJk+INWsQWw7hjGmorg
-	 ZKXxRWlfbSSUJkgxKd3Z4h3Eyy8dmr53NXMxneA8z0sxE7/0PHAH2FiShO1lPmMYHy
-	 S6qpJul6haD3AGvM9bFOxuQKeKC+qDIyZ0VmrUuQ6NzNnea5UQPbAiSDenDCEL/b1L
-	 Swb7ukZt0FWOJuQYKjwCtnNygvmB59Ll6oM+55xVCRnT/H8Gg0S2IpQDUXEs6cm0RB
-	 VUSC5YBYxIplToSY7nX+ponT5m0bRT0I1suIaehY1eUxSQSv79Y2NsktyXBrb0UYJI
-	 s7COAQxIknpjQ==
-Date: Thu, 19 Jun 2025 12:01:19 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Song Liu <song@kernel.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Tejun Heo <tj@kernel.org>
-Cc: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, kernel-team@meta.com, 
-	andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, daniel@iogearbox.net, 
-	martin.lau@linux.dev, viro@zeniv.linux.org.uk, jack@suse.cz, kpsingh@kernel.org, 
-	mattbobrowski@google.com, amir73il@gmail.com, gregkh@linuxfoundation.org, tj@kernel.org, 
-	daan.j.demeyer@gmail.com
-Subject: Re: [PATCH bpf-next 1/4] kernfs: Add __kernfs_xattr_get for RCU
- protected access
-Message-ID: <20250619-kaulquappen-absagen-27377e154bc0@brauner>
-References: <20250618233739.189106-1-song@kernel.org>
- <20250618233739.189106-2-song@kernel.org>
+	s=arc-20240116; t=1750327476; c=relaxed/simple;
+	bh=GksoWb9UA1unU75uMZV8pIjRmsJx8XvP4QafljQeYKs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QYHzNoROH8gaI6By/vilArGfxHS3a5aWu4dykgjJs+wm13GDz+cVAfPNlQ6Zasx7V8l2S44pP65/xQPIqC7rfHg0re+B2ak+8Z51wQtRQXzmKAu6UfgLesTMCT2unl6RKU45UDCzscYS94VYxNuRg9tTg7brrtw9u3iopNWs4ik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kCbf5/sa; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-442e9c00bf4so5095385e9.3
+        for <bpf@vger.kernel.org>; Thu, 19 Jun 2025 03:04:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1750327473; x=1750932273; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+wyjMeCyVh8m/SdgCbaGOPySphGaY24FLTC1uPvV4xg=;
+        b=kCbf5/sarR+VNA8FavxYi4jGcVIGvo0Rcv5e2v7dcaF0ANLO9jMcLPahS69sY6iuf6
+         s4kRazzVIOaArKpcDANt2U/1FKQzlLCRrJa8Vc9k2cJxa2vkgD5dpPDkasCbz/vo0E9w
+         3jPUeyZFI3AnnJGXb8mFdW8jD1xU+2zLjauszbahjN6EeoZ/cr6maIuMMlUKm+f+vnuy
+         OupsTlfyIRkUdn9A5ch7IfZpfcbEqH7BXd4jt/vgR1GrrzGOqoFpO9A5Djp4QTc5dyOT
+         PqZAQEusT7KzvoIxfkV61Pvs/9NXac8IkqdCyPcBWFAcHJrPsfo74GjGWIVRSJ7UD8o3
+         PpZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750327473; x=1750932273;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+wyjMeCyVh8m/SdgCbaGOPySphGaY24FLTC1uPvV4xg=;
+        b=vMN5SWMU7ZNReECYigWd4lP3uL3bKh8FGbjHaA1ayS6OVC/mTv8m+fuNxsXau6w+yK
+         Vj6cZpzvZlgJd/B3Bs/FCSw0+FV08jy3O78B9GlYfI2GN7NeFcMA6j10QhLTdTYEs+tn
+         umK/6OPJkXZFTCDHLvHzIg0vBAyZ3OfecaUfFAB2W8qkoI/s1QJFsDgy1Uw5TYi38JON
+         9LYEQHEtSuLgayA0+xxTN4gQ0LZGXRhhNM/AFODDsNRLn/pndRSrnLi+L9MGthFK6jMj
+         r3FidDVfSE03AsrLTMAUjBSBjy3IKOJOtUvNWgauAJXWT7spkp1j4LA7lRzBmWaC+sDl
+         OuuA==
+X-Forwarded-Encrypted: i=1; AJvYcCVeStQnRS1si4rjzwkIzRQoPtBtJ9T26Ytf9OHmjH8TYA3JtghwItJ6igjRJtCPb0xZtyQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwbZeZRvns06gG6Bf8PUN7cORiuyw7eyx0lDkPo5pSfiXmvlsVs
+	boXThfNGgdNo0vTm0u0iFi2XmMlMiOX6vRVkKMBUqo1YTFj5iw79SJ7I
+X-Gm-Gg: ASbGnctIP6N75rObk5UI72N1gOTyLBJZTScMbIJoPD0B93WecfqahdLNzndaOffZjNW
+	lubd01Lv4nVrW7sw+wIgzIwXWumDVnhIRgKUwFVVgBLoXP6VJUM8PF21LkO00EgE8wQ4hxGAFnb
+	QAbhqvu6PUwJd/c4hBHa7s7xiOnyilLuvzMOMd7TcTmHz1ZX+A/lB9T8xS0tLnIv8GKSRcJlj0x
+	uxaCCUpwWOqfigpwrj4QMNgqfv9LUT8tnycPyYzyP6KghPlGVg76Mnr55cyNLgxGYbTT56tRmef
+	qyJrw8e1f/Kg4BzJ9XYQ7fnA+JNOADE8v5ESoEvorQm3XA1vnXJTwBzPuSJhw1K2btoAqBbGcIK
+	4v+Zx1tTE4054qtnH+n9//wQFsVGyLkgbYP9xaXaKgZGNYbFwXsT3CR3V
+X-Google-Smtp-Source: AGHT+IGCD/DMBQCSvnw9MUDNxa1AHC62POn1n0qOZB6RjnLHXle4rNiNv41qEvV3VGEA+NPhtcKLsw==
+X-Received: by 2002:a05:600c:4f53:b0:453:5d8d:d1b8 with SMTP id 5b1f17b1804b1-4535d8ddc69mr42754575e9.30.1750327472527;
+        Thu, 19 Jun 2025 03:04:32 -0700 (PDT)
+Received: from ?IPV6:2a01:4b00:bf28:2e00:106b:a16d:4d49:8ce9? ([2a01:4b00:bf28:2e00:106b:a16d:4d49:8ce9])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4535a14221csm32066605e9.1.2025.06.19.03.04.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Jun 2025 03:04:32 -0700 (PDT)
+Message-ID: <c8039d72-23bc-4318-a7c8-2f6b1a2c6f84@gmail.com>
+Date: Thu, 19 Jun 2025 11:04:31 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="m55nvctvuaufcxua"
-Content-Disposition: inline
-In-Reply-To: <20250618233739.189106-2-song@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v4 2/3] selftests/bpf: support array presets in
+ veristat
+To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
+ ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com,
+ kernel-team@meta.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+References: <20250618203903.539270-1-mykyta.yatsenko5@gmail.com>
+ <20250618203903.539270-3-mykyta.yatsenko5@gmail.com>
+ <9bb199046f0b55ea4952ee028fc242db7a56bcc3.camel@gmail.com>
+Content-Language: en-US
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+In-Reply-To: <9bb199046f0b55ea4952ee028fc242db7a56bcc3.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+On 6/19/25 08:34, Eduard Zingerman wrote:
+> On Wed, 2025-06-18 at 21:39 +0100, Mykyta Yatsenko wrote:
+>> From: Mykyta Yatsenko <yatsenko@meta.com>
+>>
+>> Implement support for presetting values for array elements in veristat.
+>> For example:
+>> ```
+>> sudo ./veristat set_global_vars.bpf.o -G "arr[3] = 1"
+>> ```
+>> Arrays of structures and structure of arrays work, but each individual
+>> scalar value has to be set separately: `foo[1].bar[2] = value`.
+>>
+>> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+>> ---
+>>   tools/testing/selftests/bpf/veristat.c | 226 ++++++++++++++++++++-----
+>>   1 file changed, 180 insertions(+), 46 deletions(-)
+>>
+>> diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
+>> index 483442c08ecf..9942adbda411 100644
+>> --- a/tools/testing/selftests/bpf/veristat.c
+>> +++ b/tools/testing/selftests/bpf/veristat.c
+> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+>
+> [...]
+>
+>> @@ -1670,7 +1706,7 @@ static int append_var_preset(struct var_preset **presets, int *cnt, const char *
+>>   	memset(cur, 0, sizeof(*cur));
+>>   	(*cnt)++;
+>>   
+>> -	if (sscanf(expr, "%s = %s %n", var, val, &n) != 2 || n != strlen(expr)) {
+>> +	if (sscanf(expr, "%[][a-zA-Z0-9_.] = %s %n", var, val, &n) != 2 || n != strlen(expr)) {
+> Out of curiosity, won't match if the pattern would remain "%s = %s %n"?
+"foo=1" won't be parsed correctly, as the entire string will be consumed 
+by the first %s.
+>
+>>   		fprintf(stderr, "Failed to parse expression '%s'\n", expr);
+>>   		return -EINVAL;
+>>   	}
+>> @@ -1763,17 +1799,103 @@ static bool is_preset_supported(const struct btf_type *t)
+>>   	return btf_is_int(t) || btf_is_enum(t) || btf_is_enum64(t);
+>>   }
+>>   
+>> +static int find_enum_value(const struct btf *btf, const char *name, long long *value)
+>> +{
+>> +	const struct btf_type *t;
+>> +	int cnt, i;
+>> +	long long lvalue;
+>> +
+>> +	cnt = btf__type_cnt(btf);
+>> +	for (i = 1; i != cnt; ++i) {
+>> +		t = btf__type_by_id(btf, i);
+>> +
+>> +		if (!btf_is_any_enum(t))
+>> +			continue;
+>> +
+>> +		if (enum_value_from_name(btf, t, name, &lvalue) == 0) {
+>> +			*value = lvalue;
+>> +			return 0;
+>> +		}
+>> +	}
+>> +	return -ESRCH;
+>> +}
+>> +
+> [...]
+>
+>> @@ -1815,26 +1938,29 @@ const int btf_find_member(const struct btf *btf,
+>>   static int adjust_var_secinfo(struct btf *btf, const struct btf_type *t,
+>>   			      struct btf_var_secinfo *sinfo, struct var_preset *preset)
+>>   {
+>> -	const struct btf_type *base_type, *member_type;
+>> -	int err, member_tid, i;
+>> -	__u32 member_offset = 0;
+>> -
+>> -	base_type = btf__type_by_id(btf, btf__resolve_type(btf, t->type));
+>> -
+>> -	for (i = 1; i < preset->atom_count; ++i) {
+>> -		err = btf_find_member(btf, base_type, 0, preset->atoms[i].name,
+>> -				      &member_tid, &member_offset);
+>> -		if (err) {
+>> -			fprintf(stderr, "Could not find member %s for variable %s\n",
+>> -				preset->atoms[i].name, preset->atoms[i - 1].name);
+>> -			return err;
+>> +	const struct btf_type *base_type;
+>> +	int err, i = 1, n;
+>> +	int tid;
+>> +
+>> +	tid = btf__resolve_type(btf, t->type);
+>> +	base_type = btf__type_by_id(btf, tid);
+>> +
+>> +	while (i < preset->atom_count) {
+>> +		if (preset->atoms[i].type == ARRAY_INDEX) {
+>> +			n = adjust_var_secinfo_array(btf, tid, preset, i, sinfo);
+>> +			if (n < 0)
+>> +				return n;
+>> +			i += n;
+> Having a nested loop to consume all indices looks annoying.
+> On the other hand, there is not much one can do w/o some kind of
+> btf__type_physical_size.
+>
+>> +		} else {
+>> +			err = btf_find_member(btf, base_type, 0, preset->atoms[i].name, sinfo);
+>> +			if (err)
+>> +				return err;
+>> +			i++;
+>>   		}
+>> -		member_type = btf__type_by_id(btf, member_tid);
+>> -		sinfo->offset += member_offset / 8;
+>> -		sinfo->size = member_type->size;
+>> -		sinfo->type = member_tid;
+>> -		base_type = member_type;
+>> +		base_type = btf__type_by_id(btf, sinfo->type);
+>> +		tid = sinfo->type;
+>>   	}
+>> +
+>>   	return 0;
+>>   }
+>>   
+> [...]
+>
 
---m55nvctvuaufcxua
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-
-On Wed, Jun 18, 2025 at 04:37:36PM -0700, Song Liu wrote:
-> Existing kernfs_xattr_get() locks iattr_mutex, so it cannot be used in
-> RCU critical sections. Introduce __kernfs_xattr_get(), which reads xattr
-> under RCU read lock. This can be used by BPF programs to access cgroupfs
-> xattrs.
-> 
-> Signed-off-by: Song Liu <song@kernel.org>
-> ---
->  fs/kernfs/inode.c      | 14 ++++++++++++++
->  include/linux/kernfs.h |  2 ++
->  2 files changed, 16 insertions(+)
-> 
-> diff --git a/fs/kernfs/inode.c b/fs/kernfs/inode.c
-> index b83054da68b3..0ca231d2012c 100644
-> --- a/fs/kernfs/inode.c
-> +++ b/fs/kernfs/inode.c
-> @@ -302,6 +302,20 @@ int kernfs_xattr_get(struct kernfs_node *kn, const char *name,
->  	return simple_xattr_get(&attrs->xattrs, name, value, size);
->  }
->  
-> +int __kernfs_xattr_get(struct kernfs_node *kn, const char *name,
-> +		       void *value, size_t size)
-> +{
-> +	struct kernfs_iattrs *attrs;
-> +
-> +	WARN_ON_ONCE(!rcu_read_lock_held());
-> +
-> +	attrs = rcu_dereference(kn->iattr);
-> +	if (!attrs)
-> +		return -ENODATA;
-
-Hm, that looks a bit silly. Which isn't your fault. I'm looking at the
-kernfs code that does the xattr allocations and I think that's the
-origin of the silliness. It uses a single global mutex for all kernfs
-users thus serializing all allocations for kernfs->iattr. That seems
-crazy but maybe I'm missing a good reason.
-
-I'm appending a patch to remove that mutex. @Greg, @Tejun, can you take
-a look whether that makes sense to you. Then I can take that patch and
-you can build yours on top of the series and I'll pick it all up in one
-go.
-
-You should then just use READ_ONCE(kn->iattr) or the
-kernfs_iattrs_noalloc(kn) helper in your kfunc.
-
---m55nvctvuaufcxua
-Content-Type: text/x-diff; charset=utf-8
-Content-Disposition: attachment;
-	filename="0001-kernfs-remove-iattr_mutex.patch"
-
-From bdc53435a1cd5c456dc28d8239eff0e7fa4e8dda Mon Sep 17 00:00:00 2001
-From: Christian Brauner <brauner@kernel.org>
-Date: Thu, 19 Jun 2025 11:50:26 +0200
-Subject: [PATCH] kernfs: remove iattr_mutex
-
-All allocations of struct kernfs_iattrs are serialized through a global
-mutex. Simply do a racy allocation and let the first one win. I bet most
-callers are under inode->i_rwsem anyway and it wouldn't be needed but
-let's not require that.
-
-Signed-off-by: Christian Brauner <brauner@kernel.org>
----
-Note, that this uses kfree() for the kmem cache allocation.
-That's been possible for a while now but not everyone knows about it
-yet so I'm pointing it out explicitly.
----
- fs/kernfs/inode.c | 74 +++++++++++++++++++++++++----------------------
- 1 file changed, 40 insertions(+), 34 deletions(-)
-
-diff --git a/fs/kernfs/inode.c b/fs/kernfs/inode.c
-index b83054da68b3..f4b73b9482b7 100644
---- a/fs/kernfs/inode.c
-+++ b/fs/kernfs/inode.c
-@@ -24,45 +24,46 @@ static const struct inode_operations kernfs_iops = {
- 	.listxattr	= kernfs_iop_listxattr,
- };
- 
--static struct kernfs_iattrs *__kernfs_iattrs(struct kernfs_node *kn, int alloc)
-+static struct kernfs_iattrs *__kernfs_iattrs(struct kernfs_node *kn, bool alloc)
- {
--	static DEFINE_MUTEX(iattr_mutex);
--	struct kernfs_iattrs *ret;
-+	struct kernfs_iattrs *ret __free(kfree) = NULL;
-+	struct kernfs_iattrs *attr;
- 
--	mutex_lock(&iattr_mutex);
-+	attr = READ_ONCE(kn->iattr);
-+	if (attr || !alloc)
-+		return attr;
- 
--	if (kn->iattr || !alloc)
--		goto out_unlock;
--
--	kn->iattr = kmem_cache_zalloc(kernfs_iattrs_cache, GFP_KERNEL);
--	if (!kn->iattr)
--		goto out_unlock;
-+	ret = kmem_cache_zalloc(kernfs_iattrs_cache, GFP_KERNEL);
-+	if (!ret)
-+		return NULL;
- 
- 	/* assign default attributes */
--	kn->iattr->ia_uid = GLOBAL_ROOT_UID;
--	kn->iattr->ia_gid = GLOBAL_ROOT_GID;
--
--	ktime_get_real_ts64(&kn->iattr->ia_atime);
--	kn->iattr->ia_mtime = kn->iattr->ia_atime;
--	kn->iattr->ia_ctime = kn->iattr->ia_atime;
--
--	simple_xattrs_init(&kn->iattr->xattrs);
--	atomic_set(&kn->iattr->nr_user_xattrs, 0);
--	atomic_set(&kn->iattr->user_xattr_size, 0);
--out_unlock:
--	ret = kn->iattr;
--	mutex_unlock(&iattr_mutex);
--	return ret;
-+	ret->ia_uid = GLOBAL_ROOT_UID;
-+	ret->ia_gid = GLOBAL_ROOT_GID;
-+
-+	ktime_get_real_ts64(&ret->ia_atime);
-+	ret->ia_mtime = ret->ia_atime;
-+	ret->ia_ctime = ret->ia_atime;
-+
-+	simple_xattrs_init(&ret->xattrs);
-+	atomic_set(&ret->nr_user_xattrs, 0);
-+	atomic_set(&ret->user_xattr_size, 0);
-+
-+	/* If someone raced us, recognize it. */
-+	if (!try_cmpxchg(&kn->iattr, &attr, ret))
-+		return READ_ONCE(kn->iattr);
-+
-+	return no_free_ptr(ret);
- }
- 
- static struct kernfs_iattrs *kernfs_iattrs(struct kernfs_node *kn)
- {
--	return __kernfs_iattrs(kn, 1);
-+	return __kernfs_iattrs(kn, true);
- }
- 
- static struct kernfs_iattrs *kernfs_iattrs_noalloc(struct kernfs_node *kn)
- {
--	return __kernfs_iattrs(kn, 0);
-+	return __kernfs_iattrs(kn, false);
- }
- 
- int __kernfs_setattr(struct kernfs_node *kn, const struct iattr *iattr)
-@@ -141,9 +142,9 @@ ssize_t kernfs_iop_listxattr(struct dentry *dentry, char *buf, size_t size)
- 	struct kernfs_node *kn = kernfs_dentry_node(dentry);
- 	struct kernfs_iattrs *attrs;
- 
--	attrs = kernfs_iattrs(kn);
-+	attrs = kernfs_iattrs_noalloc(kn);
- 	if (!attrs)
--		return -ENOMEM;
-+		return -ENODATA;
- 
- 	return simple_xattr_list(d_inode(dentry), &attrs->xattrs, buf, size);
- }
-@@ -166,9 +167,10 @@ static inline void set_inode_attr(struct inode *inode,
- 
- static void kernfs_refresh_inode(struct kernfs_node *kn, struct inode *inode)
- {
--	struct kernfs_iattrs *attrs = kn->iattr;
-+	struct kernfs_iattrs *attrs;
- 
- 	inode->i_mode = kn->mode;
-+	attrs = kernfs_iattrs_noalloc(kn);
- 	if (attrs)
- 		/*
- 		 * kernfs_node has non-default attributes get them from
-@@ -306,7 +308,9 @@ int kernfs_xattr_set(struct kernfs_node *kn, const char *name,
- 		     const void *value, size_t size, int flags)
- {
- 	struct simple_xattr *old_xattr;
--	struct kernfs_iattrs *attrs = kernfs_iattrs(kn);
-+	struct kernfs_iattrs *attrs;
-+
-+	attrs = kernfs_iattrs(kn);
- 	if (!attrs)
- 		return -ENOMEM;
- 
-@@ -345,8 +349,9 @@ static int kernfs_vfs_user_xattr_add(struct kernfs_node *kn,
- 				     struct simple_xattrs *xattrs,
- 				     const void *value, size_t size, int flags)
- {
--	atomic_t *sz = &kn->iattr->user_xattr_size;
--	atomic_t *nr = &kn->iattr->nr_user_xattrs;
-+	struct kernfs_iattrs *attr = kernfs_iattrs_noalloc(kn);
-+	atomic_t *sz = &attr->user_xattr_size;
-+	atomic_t *nr = &attr->nr_user_xattrs;
- 	struct simple_xattr *old_xattr;
- 	int ret;
- 
-@@ -384,8 +389,9 @@ static int kernfs_vfs_user_xattr_rm(struct kernfs_node *kn,
- 				    struct simple_xattrs *xattrs,
- 				    const void *value, size_t size, int flags)
- {
--	atomic_t *sz = &kn->iattr->user_xattr_size;
--	atomic_t *nr = &kn->iattr->nr_user_xattrs;
-+	struct kernfs_iattrs *attr = kernfs_iattrs(kn);
-+	atomic_t *sz = &attr->user_xattr_size;
-+	atomic_t *nr = &attr->nr_user_xattrs;
- 	struct simple_xattr *old_xattr;
- 
- 	old_xattr = simple_xattr_set(xattrs, full_name, value, size, flags);
--- 
-2.47.2
-
-
---m55nvctvuaufcxua--
 
