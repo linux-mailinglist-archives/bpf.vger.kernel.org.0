@@ -1,135 +1,127 @@
-Return-Path: <bpf+bounces-61089-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61090-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A686AE0A07
-	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 17:15:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4216FAE0A31
+	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 17:20:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0573116917A
-	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 15:15:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC1D01673B1
+	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 15:20:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8D9421C9F2;
-	Thu, 19 Jun 2025 15:15:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B278221F2E;
+	Thu, 19 Jun 2025 15:20:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d2xCJ5FH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g6Cge1br"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 282C93085DB;
-	Thu, 19 Jun 2025 15:15:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF87C21E094;
+	Thu, 19 Jun 2025 15:20:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750346131; cv=none; b=Us69AUIz16HhcM6LlxdsGaOasGy6MY6DF2Y4mAFQ25VxODORNFnEtFqDV3ebcblV4IGw07Hhrj5IvYUCaq6WlzsuYZ4k6K4S23NUsoIOJgmM/iPKuDKeb6RRJxnRy6wiJYQ6OK6i3RfOB2pZk/5O/mvoNJBGL5miXNylTub71/Q=
+	t=1750346427; cv=none; b=c3K8/RE04FxZLQF3kU7kkyfaGHfW6MzhX4tby+4rjtPszl1wpEbDbnYLH3V6ViWZo83MAyD+kK/L3qVINAqN/skTl2qLSotB01u8p+cj/q4jLodyihiX1v96viihAOgId/HXStj8fG3SL3Xwu1bE370mf8LtZnm1w6zGoUp9Ef4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750346131; c=relaxed/simple;
-	bh=Oy26i3upVrCD7UDszTSqhSYEJtW0IGyLV7OlJ6noH/0=;
+	s=arc-20240116; t=1750346427; c=relaxed/simple;
+	bh=YYemg1DZbLYuOwEnTxXkp/8rM6iO4piNRQwhWzEsPyY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hCkSEuhyc/OPGCZq6ihb1yeAhi7j4TcDT8G1PDnSLbREzSFIuzSi/+rFEFWrLhwyCmrR1UpwaIVU1JpJ/Ty3A4vTpsccN8x25iJEIKOWN2vuIy43jjwV+9COYA9Jwtj85Hwt3YV/5Awyw/NjfEBbiFjZWE1ILsLiNsnBL4M0qmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d2xCJ5FH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A852AC4CEF0;
-	Thu, 19 Jun 2025 15:15:30 +0000 (UTC)
+	 To:Cc:Content-Type; b=lFdhpm63dj67/58Y12jv2pQcJsLcT4SEGtMx/K+BEq1P+KaAcdS92mO2zxwBBtjzuRv73eDdwei/0dhFqlBpAVU+yfwSV6GJeyJl3BnTN1CXcuD5hk9NJuv1ZegaHdzK8IvWFetf0XoaQsGBmmTib86ew7uVTvF4IjFbjuKHbzA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g6Cge1br; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6860AC4CEEF;
+	Thu, 19 Jun 2025 15:20:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750346130;
-	bh=Oy26i3upVrCD7UDszTSqhSYEJtW0IGyLV7OlJ6noH/0=;
+	s=k20201202; t=1750346427;
+	bh=YYemg1DZbLYuOwEnTxXkp/8rM6iO4piNRQwhWzEsPyY=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=d2xCJ5FHgmFi1M00kIgUy9QjepJRjPhXNxk9CaARVBn9nkV8hCkW258NnW7rtOu21
-	 ceiHZmM0AYIKiuyzsQI1YrWgpF8nHG2bpnHqaOIbsPUJo95zA4XgBfMQaJQJF0PbSA
-	 QtTxdB1BeFu/mZylSlu+pNgS4ia/pscZywi0eOUxAYhOOJdaMlbCxaUZqN70qHxBmI
-	 k3SDEMJtF/tbAHurVeL0Bg9CCKyi2WydslDN2VDgaaaK2JyjHNPVRNzbvXYw4CnN1x
-	 g7quU3z9lp0auALyABhG/CHq6FbmUT9TOSOkXRBzsCe6Lm5yhIxzB8WAt8rQ9/zhKB
-	 pu6i7EffrNBEA==
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-60179d8e65fso1574997a12.0;
-        Thu, 19 Jun 2025 08:15:30 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVRmx2h7RlmSyKlDg5D1Y2u5ClyKjHAsQIPQF2PeFDbNgRinyaukuzu2WXGRZa+Ypdi+Y4=@vger.kernel.org, AJvYcCVsgBiqUscSQh0epht82+wgv/bFBblzG/d1RFcRKnegYXDzOwJJn8RofbLjTh//+X1LGCnhPphkMeE78ZNa@vger.kernel.org
-X-Gm-Message-State: AOJu0YzpinoIXMaUAmo/KO2nZFjon3SfuF0U01CXzZY/h2GSaEvAaFRi
-	jjNtxs07Vzr6qdw1TpFl39PrCHYNveNUOe0ouTw6J6/eHC8a3U2FBNY0dDAJHVMOYHS3Sb+YLxP
-	NJAu21ayYfvn8DG5AtFxmNMnDRyMqv7U=
-X-Google-Smtp-Source: AGHT+IG2ALZUQRFJMZgCdxYR7KvaYQjH4fcXX42gOqzLIZaoeaGclYBaHEWX2rsYxLFZxRm3Zes8D8IOCfQkDnIzMck=
-X-Received: by 2002:a05:6402:4416:b0:607:7aed:feef with SMTP id
- 4fb4d7f45d1cf-608d09b1569mr19236212a12.34.1750346129245; Thu, 19 Jun 2025
- 08:15:29 -0700 (PDT)
+	b=g6Cge1br7gh3z3g/7NXWP+pIDxR0Y07FlnMCprV04fnZlHl9ztfOZ7Jed23XO+PwA
+	 YKPnTdVXfe+jqS/5fRxzvFGJJgXelgyJyVPUgCGoumCwvVLgHGPA8qgNLv6Eoal+zP
+	 naFQmYU3q55b/A1KPYDO9DinE2sCg6tp8GBI6xOGYK53wyYiyAKPi/TbZDFdA5sA+K
+	 5DARdyi30SsSAuDzSYgwrQ6XWpuBJ1SxBOTnpuHacevnZWf6yj22aubGWyIbeoY94O
+	 F8PiwN52uVLJIHJ+Hn8e8vGLdx773W+r7ou/e94Uly9UHLiiWJa2WjqPBDGPBa6lnp
+	 PmzFLFWpFV5IQ==
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-6071ac9dc3eso1475280a12.1;
+        Thu, 19 Jun 2025 08:20:27 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCU9bjSYnosEb+D3de2oYgsG+JMYngzk/EcpkIN9FTRkikDWPy7sYLwS+ADc9Oaa49/bWjPleUd3j+4OJR6x@vger.kernel.org, AJvYcCWFLUD3Y3/v2Pp6VpyBYlzSWtSiTfvaTkEJBvRwSFksUbI6+XhU2yXkzs0CI18jZ1easX8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwV98ijHzXTpcqhPKmT6gpEjPGRS6uuV9Vtq7LIJGvCGouyuB+m
+	8x8MYn/r65P31a8C/1XjVPsS99X2Iq6b4dwkGNeESbTZ8DhUWmL68lDJsEvfkjmVNyeRsNLSRwm
+	HExuATNgRfXSM2QvjcFsQnKEzgbmCw1o=
+X-Google-Smtp-Source: AGHT+IFXK+Qw9NgGm0hee492d8UUku0ecCMsOIPbbPeNge5/EfHtOghCJ2WTuf5yJT7m69zgr05or7oou+dMn0UFtOc=
+X-Received: by 2002:a50:d00a:0:b0:609:b5e0:598a with SMTP id
+ 4fb4d7f45d1cf-609b5efa3c2mr5938805a12.24.1750346425944; Thu, 19 Jun 2025
+ 08:20:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250618105048.1510560-1-duanchenghao@kylinos.cn> <20250618105048.1510560-5-duanchenghao@kylinos.cn>
-In-Reply-To: <20250618105048.1510560-5-duanchenghao@kylinos.cn>
+References: <20250617063206.24733-1-yangtiezhu@loongson.cn>
+In-Reply-To: <20250617063206.24733-1-yangtiezhu@loongson.cn>
 From: Huacai Chen <chenhuacai@kernel.org>
-Date: Thu, 19 Jun 2025 23:15:18 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H5CWK=sNCjFVCLq86A6ZPetux_uL9ZtnBf36TU09AKUVQ@mail.gmail.com>
-X-Gm-Features: AX0GCFsc6fJ7KC4_g1yD65ZFe4-rT-z964H3Ww8nKBWhEQck_dJgpapMEyVxsEQ
-Message-ID: <CAAhV-H5CWK=sNCjFVCLq86A6ZPetux_uL9ZtnBf36TU09AKUVQ@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] LoongArch: BPF: Update the code to rename
- validate_code to validate_ctx.
-To: Chenghao Duan <duanchenghao@kylinos.cn>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	yangtiezhu@loongson.cn, hengqi.chen@gmail.com, martin.lau@linux.dev, 
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	haoluo@google.com, jolsa@kernel.org, kernel@xen0n.name, 
-	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev, bpf@vger.kernel.org, 
-	guodongtai@kylinos.cn, youling.tang@linux.dev, jianghaoran@kylinos.cn
+Date: Thu, 19 Jun 2025 23:20:11 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H6TeZpLyY19xBhVwZbQeH5gQyZZqw_xP2P9rgTyFOiHUw@mail.gmail.com>
+X-Gm-Features: AX0GCFuKQYqo1n7IN8eZ9SnbFz0JRivAai9Ek3n9r7iBcKd8_Yvi2GKDfv2Nfps
+Message-ID: <CAAhV-H6TeZpLyY19xBhVwZbQeH5gQyZZqw_xP2P9rgTyFOiHUw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] LoongArch, bpf: Set bpf_jit_bypass_spec_v1/v4()
+To: Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Hengqi Chen <hengqi.chen@gmail.com>, bpf@vger.kernel.org, 
+	loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi, Chenghao,
-
-On Wed, Jun 18, 2025 at 6:51=E2=80=AFPM Chenghao Duan <duanchenghao@kylinos=
-.cn> wrote:
->
-> Update the code to rename validate_code to validate_ctx.
-> validate_code is used to check the validity of code.
-> validate_ctx is used to check both code validity and table entry
-> correctness.
-Is this patch really needed? Just keep the same with ARM64?
+Queued for loongarch-next, thanks.
 
 
 Huacai
 
+On Tue, Jun 17, 2025 at 2:32=E2=80=AFPM Tiezhu Yang <yangtiezhu@loongson.cn=
+> wrote:
 >
-> Co-developed-by: George Guo <guodongtai@kylinos.cn>
-> Signed-off-by: George Guo <guodongtai@kylinos.cn>
-> Signed-off-by: Chenghao Duan <duanchenghao@kylinos.cn>
+> JITs can set bpf_jit_bypass_spec_v1/v4() if they want the verifier
+> to skip analysis/patching for the respective vulnerability, it is
+> safe to set both bpf_jit_bypass_spec_v1/v4(), because there is no
+> speculation barrier instruction for LoongArch.
+>
+> Suggested-by: Luis Gerhorst <luis.gerhorst@fau.de>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 > ---
->  arch/loongarch/net/bpf_jit.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
+>
+> This is based on the latest bpf-next tree which contains the
+> prototype and caller for bpf_jit_bypass_spec_v1/v4().
+>
+> By the way, it needs to update bpf-next tree before building
+> on LoongArch:
+>
+> [Build Error Report] Implicit Function declaration for bpf-next tree
+> https://lore.kernel.org/bpf/d602ae87-8bed-1633-d5b6-41c5bd8bbcdc@loongson=
+.cn/
+>
+>  arch/loongarch/net/bpf_jit.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
 >
 > diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
-> index 348ea3bfb..fa187f727 100644
+> index fa1500d4aa3e..5de8f4c44700 100644
 > --- a/arch/loongarch/net/bpf_jit.c
 > +++ b/arch/loongarch/net/bpf_jit.c
-> @@ -1185,6 +1185,14 @@ static int validate_code(struct jit_ctx *ctx)
->                         return -1;
->         }
->
-> +       return 0;
+> @@ -1359,3 +1359,13 @@ bool bpf_jit_supports_subprog_tailcalls(void)
+>  {
+>         return true;
+>  }
+> +
+> +bool bpf_jit_bypass_spec_v1(void)
+> +{
+> +       return true;
 > +}
 > +
-> +static int validate_ctx(struct jit_ctx *ctx)
+> +bool bpf_jit_bypass_spec_v4(void)
 > +{
-> +       if (validate_code(ctx))
-> +               return -1;
-> +
->         if (WARN_ON_ONCE(ctx->num_exentries !=3D ctx->prog->aux->num_exen=
-tries))
->                 return -1;
->
-> @@ -1293,7 +1301,7 @@ skip_init_ctx:
->         build_epilogue(&ctx);
->
->         /* 3. Extra pass to validate JITed code */
-> -       if (validate_code(&ctx)) {
-> +       if (validate_ctx(&ctx)) {
->                 bpf_jit_binary_free(header);
->                 prog =3D orig_prog;
->                 goto out_offset;
+> +       return true;
+> +}
 > --
-> 2.43.0
+> 2.42.0
 >
 >
 
