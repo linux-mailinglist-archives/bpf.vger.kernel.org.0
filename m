@@ -1,236 +1,133 @@
-Return-Path: <bpf+bounces-61084-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61083-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69416AE0877
-	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 16:19:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CB7EAE0871
+	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 16:17:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 33532188425B
-	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 14:19:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D03E3AD1DE
+	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 14:16:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75EBA1DA62E;
-	Thu, 19 Jun 2025 14:19:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B02FE1F875C;
+	Thu, 19 Jun 2025 14:17:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="sfIKtBtm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NcWOWZ/p"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx-rz-1.rrze.uni-erlangen.de (mx-rz-1.rrze.uni-erlangen.de [131.188.11.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 714AB1D6187;
-	Thu, 19 Jun 2025 14:19:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5F261386C9;
+	Thu, 19 Jun 2025 14:17:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750342746; cv=none; b=EnKivHzxWGue/Y4p98x1YFemTMVP/3k+/g4cJrCrB6hMIG6awuptKRIt02AVK8H+jbWQPErZvDsm8Y3mVsFtCEmj/VXYyEePS41vSJUD3QLOopeHKIHXtgfuIgUD9fx5kJDTA6kXeOmf+s7YkL3OD7xO8R4I5OS3h4qy60wi3Q0=
+	t=1750342634; cv=none; b=cGqvM/c+l7GH065in4jnJ2u7Gd48HUZe0FbnZMg+AS0jU4bF23o8ko/WE6xunEVi4RiC2ScI3Uo64af3n0DjDkn3oyRGLO0UUuVqwco2OZuNS/nPOKeIjW0BBZtgMmKULKcUzCTJ5ir04a+KICDvj9wZjzaNqZGNm103T6gsO0Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750342746; c=relaxed/simple;
-	bh=ss7iazria96I7YtSfmcL9zT0uqya5/2ZeIZbuBrsEOc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZHbj6KWwEIawrPt+kAgSFpJsbYEUaAFUOWq8PtUUEjnf7uq+ZEiSZKFBBL2vseLBIR+/xdVOJOt7V3l2RTTfKpOWKf1GxHqMamJnAWEPaRaiL9wGNPv5B0fHBdO8sr2ak+0H48oDPfbTZqEZO738ReZLVCxw9DdPlLRSVoudFNU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=sfIKtBtm; arc=none smtp.client-ip=131.188.11.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fau.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
-	t=1750342219; bh=poAPVZRH/Ym2dVkMmx5T8JhCt5BXCY00Cmi30L1b95I=;
-	h=From:To:Cc:Subject:Date:From:To:CC:Subject;
-	b=sfIKtBtm3gk316hz4Ct+J7uUXhnT7tx+GMfmhgTzt68s49srMKTeQYHhX1XBLx7EZ
-	 m9u10hAlLXJ46DW96J3xsfXhh2A/UIHY3p29kg1PkO5PuwlYS/otwRale5KIxS26Oy
-	 g3GDcUDmNkiJ0vbHELl1q7NsLBL3ZeJOfwu8R6kRYt+hG/Epd02em9ym9aPdmtX2v+
-	 v/sA9IQq8/bQ3gSVOLi39EfBoWEhuzlU9WN13QqVGbEWOUdUlaxVrdzUnikjcY0EnN
-	 SEnWmJRR/VuMLFI+2hCmd9bO04aym0H+C3Dq/4my40kUJS58s7Ne3j+ZYTJhzFrVck
-	 4WgmuBss5zGHw==
-Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-rz-1.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4bNMvH3KlFz8sr5;
-	Thu, 19 Jun 2025 16:10:19 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at boeck4.rrze.uni-erlangen.de (RRZE)
-X-RRZE-Flag: Not-Spam
-X-RRZE-Submit-IP: 2001:9e8:3610:e200:f74c:d89c:f3eb:14e2
-Received: from luis-tp.fritz.box (unknown [IPv6:2001:9e8:3610:e200:f74c:d89c:f3eb:14e2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: U2FsdGVkX19ceJz6kt+8pw8G45x/Oq8NCBPARrdAk2Q=)
-	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4bNMvD2k43z8slX;
-	Thu, 19 Jun 2025 16:10:16 +0200 (CEST)
-From: Luis Gerhorst <luis.gerhorst@fau.de>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	hbathini@linux.ibm.com,
-	christophe.leroy@csgroup.eu,
-	naveen@kernel.org
-Cc: Luis Gerhorst <luis.gerhorst@fau.de>
-Subject: [PATCH bpf-next] selftests/bpf: Support ppc64el in vmtest
-Date: Thu, 19 Jun 2025 16:08:53 +0200
-Message-ID: <20250619140854.2135283-1-luis.gerhorst@fau.de>
-X-Mailer: git-send-email 2.49.0
+	s=arc-20240116; t=1750342634; c=relaxed/simple;
+	bh=1hirRnewnVTSaRWGgBit3cpzA+mUHqZUrx6XP1uGhbY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YB4FJMbNU69DrhpwxcJXpjzINWwu2XHYg3Qy9h7kPfPpF4Al12f9y3NwWCkQ2NDDmHtmAQrFLzW6nWG0Q5sxmv7LVrvcUGmWs++k8rYQ5cyapqQsXVkgvqKA7nSM4Q3KDxwgzyKYbpAyOw/RcEaMfNqF76He7N4rZPy+cYPpJjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NcWOWZ/p; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-234d366e5f2so11116895ad.1;
+        Thu, 19 Jun 2025 07:17:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1750342632; x=1750947432; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hs5sTPL4UKP6A3I0eYJSr3E+nHFf8KogN1avtTdVl5M=;
+        b=NcWOWZ/pIlootJttCZS4IvNqUcvWoBuEKqWmrPnRKmmCE4PmDbFeQWwvQA/5z0R/gb
+         fFGNV7VSsX07G30xzBFWmkUqFzWcHiC6jPkXYKgoxHziT5rAkFZvA4u250VRCk/iDV2p
+         Rii26RJlnJGKvPE81SluN8IScByS04wza0mU6xXbeWUY6lqVv/9r/8opGIjVTdatAFpP
+         uMroSexi7n9sPG2rMilxN+PzmkUPtqVWGc0E3izwOwXz4jweQB8AOz7A2X7dXOPDukuc
+         7r+y5RkiOKRq630Z69Wh/cE7L/e5dP1x8v/R2Fwj2aomnSCtqGWZesSTAnnajAR+QVKf
+         gLXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750342632; x=1750947432;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hs5sTPL4UKP6A3I0eYJSr3E+nHFf8KogN1avtTdVl5M=;
+        b=nJ18xCaxILh9PNFKBzCBNt5zrgY5K/DqtTyyF6HCRBeGtysglLxulXhvPUza01pPch
+         AhKWScgc3fnLi2ixZeoUsRy6bgqY4oGN9VTZiIQ7XAtvW92kOmYTcRT9xbbmKwq2+7rr
+         L/W0Ly9yImlSEjURaNnIoUnAEkL2z1D5ckjpctMsoHQ/NngMOu79QR6jZD3m3nLu6Krk
+         aCIdjAHSX0vl3KjMTGaUXG4r4HMWl8kUCMJDixOKSMKOoJRLpaXAcrJ5fdf0JM3T+si8
+         kY2TcnI9iFnUay4RloS5zRGLdLC5R0H2UBJi9LNaF/bQ2UYFvcSAG4DLEAOAQEIcnec4
+         7w5w==
+X-Forwarded-Encrypted: i=1; AJvYcCWj6ZfjNvhxRrKyiC/2DoyjNArtWLE7mDrJUcK1IudJHhqSlUmvjJ6A2RzlwfgS4euTB1X6hmolEJyZBEJR@vger.kernel.org, AJvYcCX9HChUpvcp1J8m48kST8xX8vLVBxAK1gIndmdTIzYLJi8J+oIr9WYDWg9mbvs6i8bUvMY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwTqYXuLCTT3flh9hWeaTIHsZrMc1REHHPnl+ZpSjB/nze/dOtL
+	fdnrV/HbdKFoN4OjXYSOVx+yipRaRAnPsWTYKQp1R7ydU8tcTwNeNbSK
+X-Gm-Gg: ASbGncutmMLKd8xTDuTtP6zF4FDRq/88j9Eo0Js+YOxE+CSdGdvrofoUYJKG8eBMuB+
+	ybNuYvjTcoL3H6abQqP1b3U9jRiFGD20Rea66X7iR7sINlvW4T6cODr14ks2Kac2gUyEwgEIL6T
+	JdXS0ZdwUYJQSduT/mHfZkUuhBZST99ZeYb5pG5xoPFT28q8PlF5EYbRxfC1QPVgXCzcuBs4iaW
+	IF/Dt0ddgqZz5iJ05ZbpUoyGSP1MLQXoBuhwx4b8B23826r1ceyy9M2DNLc51JIY9Vr9QG0Ln8n
+	YUukUZ+ItKoowPAksdp9NTX/IKWZm9vxuZBQp0xPPw+R4eV0XfH8z3lUfssPzb14e63SB39XLaW
+	AGmnG0XA0TB6NIktBKZVVWHv04YhpPchl4PoVtRUc
+X-Google-Smtp-Source: AGHT+IFirRO1ynx4PNieJwh+/qxRIudXvdXESLhzB5PFfPGxqyne4FswnV3bsltUa6DtqhYDvrtYcg==
+X-Received: by 2002:a17:903:b88:b0:234:9094:3fb1 with SMTP id d9443c01a7336-2366b3c2d82mr381111275ad.35.1750342632036;
+        Thu, 19 Jun 2025 07:17:12 -0700 (PDT)
+Received: from ?IPV6:2001:ee0:4f0e:fb30:5502:31a7:8320:fc5a? ([2001:ee0:4f0e:fb30:5502:31a7:8320:fc5a])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2365d8a1f93sm120183875ad.79.2025.06.19.07.17.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Jun 2025 07:17:11 -0700 (PDT)
+Message-ID: <9a38a134-3ce8-4c91-a7e7-2a162cbf3b7c@gmail.com>
+Date: Thu, 19 Jun 2025 21:17:03 +0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net 1/2] virtio-net: xsk: rx: fix the frame's length check
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
+ Jason Wang <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+ =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, virtualization@lists.linux.dev,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20250615151333.10644-1-minhquangbui99@gmail.com>
+ <20250615151333.10644-2-minhquangbui99@gmail.com>
+ <20250618191111.29e6136e@kernel.org>
+Content-Language: en-US
+From: Bui Quang Minh <minhquangbui99@gmail.com>
+In-Reply-To: <20250618191111.29e6136e@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-With a rootfs built using libbpf's BPF CI [1], we can run specific tests
-as follows:
+On 6/19/25 09:11, Jakub Kicinski wrote:
+> On Sun, 15 Jun 2025 22:13:32 +0700 Bui Quang Minh wrote:
+>> +/**
+>> + * buf_to_xdp() - convert the @buf context to xdp_buff
+>> + * @vi: virtnet_info struct
+>> + * @rq: the receive queue struct
+>> + * @buf: the xdp_buff pointer that is passed to virtqueue_add_inbuf_premapped in
+>> + *       virtnet_add_recvbuf_xsk
+>> + * @len: the length of received data without virtio header's length
+>> + * @first_buf: this buffer is the first one or not
+>> + */
+>>   static struct xdp_buff *buf_to_xdp(struct virtnet_info *vi,
+>> -				   struct receive_queue *rq, void *buf, u32 len)
+>> +				   struct receive_queue *rq, void *buf,
+>> +				   u32 len, bool first_buf)
+> I think Michael mention he's AFK so while we wait could you fix this
+> kdoc? I'm not sure whether the kdoc is really necessary here, but if
+> you want to keep it you have to document the return value:
+>
+> Warning: drivers/net/virtio_net.c:1141 No description found for return value of 'buf_to_xdp'
 
-$ ../libbpf-ci/rootfs/mkrootfs_debian.sh --arch ppc64el --distro noble
-$ PLATFORM=ppc64el CROSS_COMPILE=powerpc64le-linux-gnu- \
-    tools/testing/selftests/bpf/vmtest.sh \
-    -l libbpf-vmtest-rootfs-*-noble-ppc64el.tar.zst \
-    -- ./test_progs -t verifier_array_access
+I want to add kdoc to clarify that the @len must be without virtio 
+header's length. I'll fix it in the next version.
 
-Does not include a DENYLIST or support for KVM for now.
-
-[1] https://github.com/libbpf/ci
-
-Signed-off-by: Luis Gerhorst <luis.gerhorst@fau.de>
----
- tools/testing/selftests/bpf/config.ppc64el | 93 ++++++++++++++++++++++
- tools/testing/selftests/bpf/vmtest.sh      |  9 +++
- 2 files changed, 102 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/config.ppc64el
-
-diff --git a/tools/testing/selftests/bpf/config.ppc64el b/tools/testing/selftests/bpf/config.ppc64el
-new file mode 100644
-index 000000000000..9acf389dc4ce
---- /dev/null
-+++ b/tools/testing/selftests/bpf/config.ppc64el
-@@ -0,0 +1,93 @@
-+CONFIG_ALTIVEC=y
-+CONFIG_AUDIT=y
-+CONFIG_BLK_CGROUP=y
-+CONFIG_BLK_DEV_INITRD=y
-+CONFIG_BLK_DEV_RAM=y
-+CONFIG_BONDING=y
-+CONFIG_BPF_JIT_ALWAYS_ON=y
-+CONFIG_BPF_PRELOAD_UMD=y
-+CONFIG_BPF_PRELOAD=y
-+CONFIG_CGROUP_CPUACCT=y
-+CONFIG_CGROUP_DEVICE=y
-+CONFIG_CGROUP_FREEZER=y
-+CONFIG_CGROUP_HUGETLB=y
-+CONFIG_CGROUP_NET_CLASSID=y
-+CONFIG_CGROUP_PERF=y
-+CONFIG_CGROUP_PIDS=y
-+CONFIG_CGROUP_SCHED=y
-+CONFIG_CGROUPS=y
-+CONFIG_CMDLINE_BOOL=y
-+CONFIG_CMDLINE="console=hvc0 wg.success=hvc1 panic_on_warn=1"
-+CONFIG_CPU_LITTLE_ENDIAN=y
-+CONFIG_CPUSETS=y
-+CONFIG_DEBUG_ATOMIC_SLEEP=y
-+CONFIG_DEBUG_FS=y
-+CONFIG_DETECT_HUNG_TASK=y
-+CONFIG_DEVTMPFS_MOUNT=y
-+CONFIG_DEVTMPFS=y
-+CONFIG_EXPERT=y
-+CONFIG_EXT4_FS_POSIX_ACL=y
-+CONFIG_EXT4_FS_SECURITY=y
-+CONFIG_EXT4_FS=y
-+CONFIG_FRAME_POINTER=y
-+CONFIG_FRAME_WARN=1280
-+CONFIG_HARDLOCKUP_DETECTOR=y
-+CONFIG_HIGH_RES_TIMERS=y
-+CONFIG_HUGETLBFS=y
-+CONFIG_HVC_CONSOLE=y
-+CONFIG_INET=y
-+CONFIG_IP_ADVANCED_ROUTER=y
-+CONFIG_IP_MULTICAST=y
-+CONFIG_IP_MULTIPLE_TABLES=y
-+CONFIG_IPV6_SEG6_LWTUNNEL=y
-+CONFIG_JUMP_LABEL=y
-+CONFIG_KALLSYMS_ALL=y
-+CONFIG_KPROBES=y
-+CONFIG_MEMCG=y
-+CONFIG_NAMESPACES=y
-+CONFIG_NET_ACT_BPF=y
-+CONFIG_NETDEVICES=y
-+CONFIG_NETFILTER_XT_MATCH_BPF=y
-+CONFIG_NET_L3_MASTER_DEV=y
-+CONFIG_NET_VRF=y
-+CONFIG_NET=y
-+CONFIG_NO_HZ_IDLE=y
-+CONFIG_NONPORTABLE=y
-+CONFIG_NR_CPUS=256
-+CONFIG_PACKET=y
-+CONFIG_PANIC_ON_OOPS=y
-+CONFIG_PARTITION_ADVANCED=y
-+CONFIG_PCI_HOST_GENERIC=y
-+CONFIG_PCI=y
-+CONFIG_POSIX_MQUEUE=y
-+CONFIG_PPC64=y
-+CONFIG_PPC_OF_BOOT_TRAMPOLINE=y
-+CONFIG_PPC_PSERIES=y
-+CONFIG_PPC_RADIX_MMU=y
-+CONFIG_PRINTK_TIME=y
-+CONFIG_PROC_KCORE=y
-+CONFIG_PROFILING=y
-+CONFIG_RCU_CPU_STALL_TIMEOUT=60
-+CONFIG_RT_GROUP_SCHED=y
-+CONFIG_SECTION_MISMATCH_WARN_ONLY=y
-+CONFIG_SECURITY_NETWORK=y
-+CONFIG_SERIAL_8250_CONSOLE=y
-+CONFIG_SERIAL_8250=y
-+CONFIG_SERIAL_OF_PLATFORM=y
-+CONFIG_SMP=y
-+CONFIG_SOC_VIRT=y
-+CONFIG_SYSVIPC=y
-+CONFIG_TCP_CONG_ADVANCED=y
-+CONFIG_THREAD_SHIFT=14
-+CONFIG_TLS=y
-+CONFIG_TMPFS_POSIX_ACL=y
-+CONFIG_TMPFS=y
-+CONFIG_TUN=y
-+CONFIG_UNIX=y
-+CONFIG_UPROBES=y
-+CONFIG_USER_NS=y
-+CONFIG_VETH=y
-+CONFIG_VLAN_8021Q=y
-+CONFIG_VSOCKETS_LOOPBACK=y
-+CONFIG_VSX=y
-+CONFIG_XFRM_USER=y
-diff --git a/tools/testing/selftests/bpf/vmtest.sh b/tools/testing/selftests/bpf/vmtest.sh
-index 79505d294c44..2f869daf8a06 100755
---- a/tools/testing/selftests/bpf/vmtest.sh
-+++ b/tools/testing/selftests/bpf/vmtest.sh
-@@ -43,6 +43,15 @@ riscv64)
- 	BZIMAGE="arch/riscv/boot/Image"
- 	ARCH="riscv"
- 	;;
-+ppc64el)
-+	QEMU_BINARY=qemu-system-ppc64
-+	QEMU_CONSOLE="hvc0"
-+	# KVM could not be tested for powerpc, therefore not enabled for now.
-+	HOST_FLAGS=(-machine pseries -cpu POWER9)
-+	CROSS_FLAGS=(-machine pseries -cpu POWER9)
-+	BZIMAGE="vmlinux"
-+	ARCH="powerpc"
-+	;;
- *)
- 	echo "Unsupported architecture"
- 	exit 1
-
-base-commit: cd7312a78f36e981939abe1cd1f21d355e083dfe
--- 
-2.49.0
+Thanks,
+Quang Minh.
 
 
