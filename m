@@ -1,148 +1,115 @@
-Return-Path: <bpf+bounces-61131-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61132-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38801AE0FA3
-	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 00:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F3B7AE0FA9
+	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 00:40:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D1E3C17BC46
-	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 22:34:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 542D117364A
+	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 22:40:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 454C127E7D9;
-	Thu, 19 Jun 2025 22:34:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F265228B7EC;
+	Thu, 19 Jun 2025 22:39:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SgKTQsXE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eoOaF+hY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DA2930E83F;
-	Thu, 19 Jun 2025 22:34:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DC8A1FBE8B;
+	Thu, 19 Jun 2025 22:39:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750372457; cv=none; b=EyHKq3lcAO2WN8rtkhXoEIM8ON2njf06r2zNPLoeobfqxo7Wskixnq5p7YwfTQA+TKDR8MKk6guY9Sy1R19n6sZEft1yZi03OnQxlQT3TeN/KIyoeeeDAmhTsH7knloo95WMP2j8ShfEC5HzDrPAuNmwAzyx82cfo4JaEIM+KcE=
+	t=1750372797; cv=none; b=RyrvSfAPIQwJXgwUF4zqopR/hRVJgsZX/Ye5hnnKFbT6wYdiJEJ+sY/EiwyuE76RYGrK2VaASWEHsoI3ljcDx5EJ985HWTDM55HAxdledG/spnpSbCv+l5VPXjt4YnWlZIDd3+DyKoxLFAw+ui9QyjJv1NWSMdE2Ko2RWJjWMUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750372457; c=relaxed/simple;
-	bh=GIDO9BDys8lQULlVy8TnjQvIn6yRHEVxpy5WzFL7pTs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IbNgv/NMObVdjmTO22aS6JMDzwtn2hCizjlNlvAiza1u1KhR2Hcyud5NGKriklylu4WNAnUEvoHCHt/MGrQXxXph2up6gkVjqsb4K26WYXXjoko+TTnmZ1GCzw3PcHe8fcfejZC5cs4oVdFNZ0WWdnnCqws37PpRQRnP1n/rkEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SgKTQsXE; arc=none smtp.client-ip=209.85.222.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f45.google.com with SMTP id a1e0cc1a2514c-86f9c719d63so282181241.1;
-        Thu, 19 Jun 2025 15:34:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750372455; x=1750977255; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+Eu0lFqQOWmj7E0S9GLB+pQ4SPFVJIlw2LIM4BGXQqs=;
-        b=SgKTQsXEt3xvU8AQfsr9ORnoGP8YSdUn1GoflWbleEETDqiG9NoJjwGB08LQUjHf90
-         Tm091V8YOjmWoErwZ5y5V/ld1wCU0o5BMhB14bt0Ha6cC5taPQb0zf6gvZpxH9uprjpD
-         LFdHv308Fw+ar9g67NeKtOjQfJXtf+sIo+NXUa151O9CFd+SEX3GIzyELEGeFb4KMLPF
-         YQbopvAvyOhSGLnrp60CxbDP5UcmF5H+8ERvwX//enXcgzbvnNVpK8mVFPkyFpJ72z3t
-         qUSt3qLzQyTBJSHskNqJOrWWgI9s4oqVGqngcuw+N1Taij2R1IhMBGpoJtE0/42MPqwE
-         gkkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750372455; x=1750977255;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+Eu0lFqQOWmj7E0S9GLB+pQ4SPFVJIlw2LIM4BGXQqs=;
-        b=W91KWuz6BByyfIz5bOAqEN3jpKE97thPSIIiM2iraBbkd+Bk0IHNdbclDP0B18t8w0
-         ta4TOx9VHXHOHd7SFy1SQM8S55R4fSJSfAw1EA1wM47z/3s6n2JmcmOPFTqWfhZkmk3t
-         XXzjz738WW8Ydyxy4wfp5B1EYGMLWN8tS9GjHoWpyR+lrpSO/vNd2Hz8YsX4ht4QnGv1
-         jfWz1jyoAJr8lf4v7xwQx5FYoKBLhCLApUIsgH8YVV0fQ7Q8OLne4SFnkZYCM3SVVQL2
-         DB7xLiem4kD0eEJrN4daWimGMDD/8HLvSPf1vGS+jbmDs/R/5SW2mM8JYP2mqIuPuwYd
-         zrkg==
-X-Forwarded-Encrypted: i=1; AJvYcCVLgmylL27J5PhlGr4NUbkK34rSUOYomnLNPRExLwO8PGSAv2ifTrY8cTIu88CkOdwmRYe9Bt38z3wZsUC72cAm@vger.kernel.org, AJvYcCWsBPA7FuUX8NCl0mf3pE/6Yj0E4fnbYvyA0js8P/iGC55bYhQ6AO+nL+ioZ4jR9CA2eXDrknOq3+7v+lYD@vger.kernel.org, AJvYcCXeV9afQRGmh+OsUvI/rnxJbGEUAIsCoYih9WPJBfjHdVRedsXMJT3Tre5wQhqsz3//VKY=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz26FbAnzoTmwgKKPLQBT7wcnj9mxQ709qyCjY+w++6gQ7lV4Pv
-	0Ov4o/0mi6Pa9VBR64t+1vuTzmDlc/UheWIoO5swfK24wIsgA6vnySI2e7DT/nuBxQjIs83jnQ1
-	F3MRcqxSXjrlUobPx0BzLAO8efgn9uLA=
-X-Gm-Gg: ASbGncvOSAqqNTUvHbjSpAZgVrfdv/RRA5rEHLGMTE9EmKeNfegeO8hIQfhKuXb2gwl
-	xcQYKENFMBM13Cj0LftSrl6GUa9SLVi1w9lysMi1NX1NZPRBVuYTwrZga5fjPMlSGDSebH3DB0F
-	7nx1AScoNDp8ZVTRpcUbdJGJ+Qbz1DN0/YrHuIHt22XJrT41ixQfTaFKnpimJesgZY7GDj/0yJt
-	lw7NQ==
-X-Google-Smtp-Source: AGHT+IHe72C1tJM/iB5rsdcWJQTGhwtVphYyYCNbBUmZo81jrxCV8UJZ1GwAYAWo6O2BQQWy1dedvf63/naTFnqb+Kw=
-X-Received: by 2002:a05:6102:449a:b0:4e9:b7e3:bdc5 with SMTP id
- ada2fe7eead31-4e9c2cf24d3mr410953137.15.1750372455117; Thu, 19 Jun 2025
- 15:34:15 -0700 (PDT)
+	s=arc-20240116; t=1750372797; c=relaxed/simple;
+	bh=75c4S8adQQnHNd/zO6XocENI2O2MLyqODhXEw4RIaNA=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=spMDm+eo8Zwasr3lA5HLU5eiefjQ2MKE3qqwDGL/D7eoj/ZhJq1omQYtDFNxeKe2HyemsLVnF7jYP0uBR3kzd3GjiX3UqwiM5dXSJ8f1TggzeMk/Q7tjxWn7Hbk1X6JVLdAHBKjVBEXncL33USeBDUCKAr+o4pW/TsIsIih5Mpk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eoOaF+hY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6CE7C4CEEA;
+	Thu, 19 Jun 2025 22:39:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1750372796;
+	bh=75c4S8adQQnHNd/zO6XocENI2O2MLyqODhXEw4RIaNA=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=eoOaF+hY9mZ2EZr0AtsIAyH8YftKqZWjg+wLJxL+tzO3rpIisDECrg52MQk8Nn0JV
+	 z1G/oYAvbvtzAma/CQl6DgKH0IBSWI3WH6EUQ4KZfFEsHwWPeivJda2pPJXi6SV4eP
+	 gNT9HVmIwyhhJXOzwotPY3KTHV/7iXKkbros4fNnXLBx3vHdX2+5H4B+gl2Rv9EPIv
+	 +021fxeoFCKZIZtkov4aR+/LDNrtEW08l7e8isaurzST6tSkaxhNenMHNjIxyxcZ9H
+	 b10D5VqsD6bofY+AvKGu4J8vXXBMuA4ESYLhauFfRDsEwEn8H+nQmnqaGRVRwjB36b
+	 1VKJ5Ch/gdjaA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33C5938111DD;
+	Thu, 19 Jun 2025 22:40:26 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250617231733.181797-1-harishankar.vishwanathan@gmail.com>
- <20250617231733.181797-3-harishankar.vishwanathan@gmail.com>
- <5b3b620d04fc3bcf4286dc4bb8c6fd995df86a25.camel@gmail.com>
- <CAM=Ch05aDpkCZ7xF1Fs9SVrU8DFG7kofzRw4g4bkaUSdUsp3jQ@mail.gmail.com> <04a5d2572ca2af1ec4dbc9cab5c61b1d0d9af0a9.camel@gmail.com>
-In-Reply-To: <04a5d2572ca2af1ec4dbc9cab5c61b1d0d9af0a9.camel@gmail.com>
-From: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>
-Date: Thu, 19 Jun 2025 18:34:04 -0400
-X-Gm-Features: Ac12FXyGtdXXkVrsVuq7BO53UmZ4YR6jgxU7w7dp-jZNI1PCHrcOg3bcAsbVjfc
-Message-ID: <CAM=Ch044aYYx_wJ+wPoDu6u0jqGk_18SyAkkTWf=ygofzDT2bw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] selftests/bpf: Add testcases for BPF_ADD and BPF_SUB
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: ast@kernel.org, m.shachnai@rutgers.edu, srinivas.narayana@rutgers.edu, 
-	santosh.nagarakatte@rutgers.edu, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, Matan Shachnai <m.shachnai@gmail.com>, 
-	Luis Gerhorst <luis.gerhorst@fau.de>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v4 00/11] net: fec: general + VLAN cleanups
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175037282500.1008441.15490348725238364188.git-patchwork-notify@kernel.org>
+Date: Thu, 19 Jun 2025 22:40:25 +0000
+References: <20250618-fec-cleanups-v4-0-c16f9a1af124@pengutronix.de>
+In-Reply-To: <20250618-fec-cleanups-v4-0-c16f9a1af124@pengutronix.de>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: wei.fang@nxp.com, shenwei.wang@nxp.com, xiaoning.wang@nxp.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ richardcochran@gmail.com, andrew+netdev@lunn.ch,
+ aleksander.lobakin@intel.com, imx@lists.linux.dev, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kernel@pengutronix.de, bpf@vger.kernel.org,
+ Frank.Li@nxp.com, andrew@lunn.ch
 
-On Thu, Jun 19, 2025 at 5:55=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Thu, 2025-06-19 at 17:13 -0400, Harishankar Vishwanathan wrote:
-> > On Wed, Jun 18, 2025 at 5:22=E2=80=AFPM Eduard Zingerman <eddyz87@gmail=
-.com> wrote:
-> > >
-> > > On Tue, 2025-06-17 at 19:17 -0400, Harishankar Vishwanathan wrote:
-[...]
-> Hm, I see, that's an interesting angle.
-> The problem is, if I do something silly changing the code and this
-> test fails I'd have a hard time understanding the expected output.
-> Therefore, I'd prefer something more obvious.
->
-> Maybe let's go with this:
->
->   SEC("tc")
->   __success
->   __naked void test1(void)
->   {
->         asm volatile (
->         "r3 =3D 0xa000000000000000 ll;"
->         "r4 =3D 0x0;"
->         "r4 =3D -r4;"
->         "r3 |=3D r4;"
->         "r3 +=3D r3;"
->         "r0 =3D 1;"
->         "exit;"
->         :
->         : __imm(bpf_get_prandom_u32)
->         : __clobber_all);
->   }
->
-> Here is verifier log comparison:
->
->   master: 5: (0f) r3 +=3D r3     ; R3_w=3Dscalar()
->   branch: 5: (0f) r3 +=3D r3     ; R3_w=3Dscalar(umin=3D0x400000000000000=
-0,umax=3D0xfffffffffffffffe)
->
-> ?
+Hello:
 
-Okay, this seems both readable and also demonstrates precision gains.
-I'll follow up with a
-v3 with similar updated test cases for full overflow and partial
-overflow for all the four functions.
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-[...]
+On Wed, 18 Jun 2025 14:00:00 +0200 you wrote:
+> This series first cleans up the fec driver a bit (typos, obsolete
+> comments, add missing header files, rename struct, replace magic
+> number by defines).
+> 
+> The last 5 patches clean up the fec_enet_rx_queue() function,
+> including VLAN handling.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,v4,01/11] net: fec: fix typos found by codespell
+    https://git.kernel.org/netdev/net-next/c/a822bdb23b3b
+  - [net-next,v4,02/11] net: fec: struct fec_enet_private: remove obsolete comment
+    https://git.kernel.org/netdev/net-next/c/3e03dad543fd
+  - [net-next,v4,03/11] net: fec: switch from asm/cacheflush.h to linux/cacheflush.h
+    https://git.kernel.org/netdev/net-next/c/99d171ae9595
+  - [net-next,v4,04/11] net: fec: sort the includes by alphabetic order
+    https://git.kernel.org/netdev/net-next/c/658e25f770de
+  - [net-next,v4,05/11] net: fec: rename struct fec_devinfo fec_imx6x_info -> fec_imx6sx_info
+    https://git.kernel.org/netdev/net-next/c/4e8594a88656
+  - [net-next,v4,06/11] net: fec: fec_restart(): introduce a define for FEC_ECR_SPEED
+    https://git.kernel.org/netdev/net-next/c/a4addc337745
+  - [net-next,v4,07/11] net: fec: fec_enet_rx_queue(): use same signature as fec_enet_tx_queue()
+    https://git.kernel.org/netdev/net-next/c/e222c08f9669
+  - [net-next,v4,08/11] net: fec: fec_enet_rx_queue(): replace manual VLAN header calculation with skb_vlan_eth_hdr()
+    https://git.kernel.org/netdev/net-next/c/e4a3659a986e
+  - [net-next,v4,09/11] net: fec: fec_enet_rx_queue(): reduce scope of data
+    https://git.kernel.org/netdev/net-next/c/33b9f31893bd
+  - [net-next,v4,10/11] net: fec: fec_enet_rx_queue(): move_call to _vlan_hwaccel_put_tag()
+    https://git.kernel.org/netdev/net-next/c/4dffaf379104
+  - [net-next,v4,11/11] net: fec: fec_enet_rx_queue(): factor out VLAN handling into separate function fec_enet_rx_vlan()
+    https://git.kernel.org/netdev/net-next/c/0593f8df66e5
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
