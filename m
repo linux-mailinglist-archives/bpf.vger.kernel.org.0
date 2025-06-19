@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-61116-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61117-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B3D0AE0E3F
-	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 21:52:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4ECF9AE0E41
+	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 21:53:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 593E61BC6E19
-	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 19:52:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA301168EA9
+	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 19:53:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA9562459F3;
-	Thu, 19 Jun 2025 19:51:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C50F2459F3;
+	Thu, 19 Jun 2025 19:52:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tw3kOlWV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dMyyAAnO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C2FF30E85B
-	for <bpf@vger.kernel.org>; Thu, 19 Jun 2025 19:51:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2221B30E84E
+	for <bpf@vger.kernel.org>; Thu, 19 Jun 2025 19:52:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750362719; cv=none; b=rRqAqcTMXSgdA8LigSnWqKX+/THSHxrl9hkuTBIgy66Oo5CCKlB8jwJYSu4sfTAptSv55tp3fBHlUSqYKsfzPEigvGtprnKcIBq7bMCziN+4dWJtqQc5gH1mxnnA1G6pa7u0eAnEV1E7MH54tIgv676emEMwYssj3eSl1pjzRRk=
+	t=1750362774; cv=none; b=LJwPtgdgjDn3iq7UyL+is9Xweok5cMVAXCP095ttK2kpSBs6N3jO9L0znx2iTPxq5fH4ENuX+Veh+d/SIv/cg9PMRJC9lS8PSaA+4R+N/7Cd3o+r7KKMXAMFMrYBebSv3wAh9+CnZAL1tIAHUAHmzEt3Smf7+1/QememJ3/sEOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750362719; c=relaxed/simple;
-	bh=kCFZEhEZojh6JGtF6pntCUJAATLgVcUtcFl1+ViUfLg=;
+	s=arc-20240116; t=1750362774; c=relaxed/simple;
+	bh=50cIVJpeAgAc0z97+DU/CbVuNglWfQ8GRlVjiK2Y87A=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mdNiXaKt7bICskyNAbn0rI9rnQ73q38YreEyv7yXOTUWmE8TnZQCaC75cxrnNuOGQARO6JapDp1c7btNxgQssvpQhtuN6Pxe5GsGojRu8xEZgmSKb4mE8E0Ial0548PSJxwftY/f9oQN5eqJ+/dI2ZG5DC8ImfQaKacRJTsQs+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tw3kOlWV; arc=none smtp.client-ip=209.85.128.43
+	 Content-Type:Content-Disposition:In-Reply-To; b=e0QAeVTbQn36p06cP+fI/Qge84Gp0acDTWoL5is2FNey6l2tl337pVieaeDwzyy77RG8gKmvFZFdEQIk65cyqeXdSzLqioBz+byXu57JKa4x9li6ItsTNPgwe952Zo90voLN6JyWOxkvKcpq35rA0+/4AMcfOaqVGE82W6gCsHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dMyyAAnO; arc=none smtp.client-ip=209.85.128.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-45348bff79fso13475465e9.2
-        for <bpf@vger.kernel.org>; Thu, 19 Jun 2025 12:51:56 -0700 (PDT)
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-450cfb79177so6213905e9.0
+        for <bpf@vger.kernel.org>; Thu, 19 Jun 2025 12:52:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750362715; x=1750967515; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1750362770; x=1750967570; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=vxD8w1ZuVhnZzpV5jHKu0JNplaPxCVJm8dvajlVLWOA=;
-        b=Tw3kOlWVL2avslr8wyCJDvhQGp7/fbiW/B6n+TWxqWucMcLw9PD9Yy9DUR/K5pCo7U
-         p0liNF2HQiUCgGDanky7RsLqWyfDc5GLV4FOd9fQvtm0RvzT/M3GEweI1EqzunnGOAQ7
-         RUxejVzZrpb87VS+bp2Me83ToCX2hGE0bEfVhbOnTmUCwTAkgzuJJ1LWqkizlgeLpcH+
-         apbijgTt4o27rzpxyqZuSZELsbv9TBqbCJc9QNdMlzjgqtPrIqKVz/pRguqeKVhj1r/K
-         xbvWwveyWFzsHsk4/qcKMGrjzO4fXYk54d/kSFqljUW3G9dGYbYiz+0SZu5UHiBSxspH
-         eCCQ==
+        bh=juGyv/CePCPVRhCBjUImhXiHsgTO6g9Lq2Ky1Nc/oV4=;
+        b=dMyyAAnOgq8g9qgFhsCKfZfHcdAS88FHgSctrW3OKTOpsGOHtCyo1UZ2xTzvAr2f4Z
+         v4VwUiV3lHy20WP5P2qbCrmsUrmMG2zoJGkR3mAEr8nuHQybNclpxOIG7xlLGatsQw/L
+         uDYkJqwqeGwquLJ/yixY+IggHG/hNBcju5pUiyJibteVnflfqEdRkw28uNi/DhL/Jgjm
+         P+idudo9jrwfViGJsWjrrFOuqzFXw9/sR4r6ocqjI5ErFFCbKmc+jE8s98mTLCRl8N2C
+         UXjLuPcZloGqVlwbxa1/uWSeI8F9uPERi2b8jD2Nd4nrquFW58FH7Y+aYFwM6qfqDYTr
+         nYCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750362715; x=1750967515;
+        d=1e100.net; s=20230601; t=1750362770; x=1750967570;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vxD8w1ZuVhnZzpV5jHKu0JNplaPxCVJm8dvajlVLWOA=;
-        b=WbRVrs78IgopUx/J59/svLszFgTJ5tbdWRq6ifg7DcoJTeGJJWlHVsK1oymiCkQdu5
-         2dcY5WnjdzAYCNRguOJVbOKCSWU7un9kh8pw6b0ujnYlsuDzKxTtv/zfQ+0LPdmllWPh
-         Fgb8RFcFZjIiAFz9XbXKm9EdXBJ5RrdWFddgIozYP4PT5nt/PHLEuZEf95cet0lG0bmo
-         fG8zkZlSyIwi6FfJ82zIzzilFMSVrcXJcFNDJONT5vXavr8ynC5Qf0YKrOE04ZXigEOb
-         aoYiQsPsYIBo5e6TNE7PgShhtyd8/jb6xC2wKXMoUE+Kl9UrjGK0QXLZcVD445WMNqnA
-         sEEg==
-X-Gm-Message-State: AOJu0YwKtU1aCA6oN05JP/H2iZKzWwie+Qkb8FZBpmt1qgLY6HyQTN+Y
-	hqr2FEqq/CsfnuPTwoI5VGBX4Y12IQ3fjQKIvd5HMkeXA7E2QTc2LxODkFFYzw==
-X-Gm-Gg: ASbGncuDuAQYkluvXjRQroVQF8lm139BzjAAlsZg5Y1viCd7P0gLzo1QvG80hZCb2Ir
-	+NddUFClKmY5yOOyaogjQ7sahy3gmnjB9boJOxeauqJyCHgZD7VVxxGUHYFrPhvws7U+Gm+PHxE
-	ptePatFWysl8qGnKKYkPkDmm/9GOnVfMM899ltMDYvUF+l3bWIbNf2Wq6kr2ZFUzogwDGwThQmz
-	AWLpzU7DtKT7/x2bmRB8dpxa3gQcqApztO12+3vF+I5Cfh1ukcrqY1c7aUeGkRjqp3wjIa8OHzh
-	riRrx+p4Hyd0M64+YcM/GHIZ+4hf/n1zSsZOqEF5CYxtwCMPllG9H8PF/tcAUkwIh/iQF+jD8A=
-	=
-X-Google-Smtp-Source: AGHT+IHq6bn25dbIHh16PhIBK58J4GiMsGv5Gun1wTfRb3wwYYhJL/kgGPqEj/+murue9nTK81yR/g==
-X-Received: by 2002:a05:600c:4686:b0:450:cfe1:a827 with SMTP id 5b1f17b1804b1-453659f4fa0mr436095e9.31.1750362714301;
-        Thu, 19 Jun 2025 12:51:54 -0700 (PDT)
+        bh=juGyv/CePCPVRhCBjUImhXiHsgTO6g9Lq2Ky1Nc/oV4=;
+        b=TqxGH+s/GyvGBucfufA6hQvcT18K+0vgIebRxGbDE4o4S4tnbS9zobm6CwAPiULkZx
+         uEkzBWjWB5SwH7CTtlVnJ4eS/rZ7/2M9BhjXlyYKAhlIqImu0iQlF5RV1+Av0fW+duWm
+         v2GkukHmP0Z3UhS6HABVCXvyJiU3fckGElIVPaUgNodvhi/kceObEKGUa2ec3yDTBE7Q
+         fgYkY4Yt8d/tntvwqnPP6ipSz16r2KLiN1n1Hur9uL6DmVvqOroNhxOF4WqR+BjdAcjy
+         pXMWJNEJuAz+8MHL2YSxL31te+18RJcI0qwJuRCNGG1KxWTKeyMTb6jji39NwOn15kxC
+         O5Yw==
+X-Gm-Message-State: AOJu0YzQ9VCQQGNFEH0Yu6Ybf1BmCNxkguFmLKA5D9lvW95GZcm3w8Jn
+	1mB1/bPYPVAqBAqhFwzUU9BCGc+XzjCSdfjVGlQz2NrBTJS+DLgEjt04
+X-Gm-Gg: ASbGncvcj/no+y4KggPOdVwxGcFz6bj/6icemUH3d2UU+rU2tvcBixJxizohfWzySe6
+	zryQLWebYkej7qpTbzI8WwcwPBIxU784E3N7S8PoQ3CnGgtGcIZ0X6lOLJnpkGcPeAg6Bluijjq
+	RmiTojSv6P0XUK2Ori9n6yDeFg0fUquUSEEB2PqsLLhcLNzXPvcYDRNHkF6joq5QqFQCeEOhF73
+	x1L7IUELKE4SFXonM93v9j7a5sb9gB8QVbH/xnjTKxPvCGn6bZI6d3PLS1OPTvedo+S+VAFh1TN
+	OI7s9HQuhrx/2rxUuCFbOsEv8XoFws3pN7TTKtSHdZMI8NeH7zZQFyhr7sIR1yOQmC+yqCn/oRf
+	+yKul8ElV
+X-Google-Smtp-Source: AGHT+IGnOyzBBM6OJcVr6U+oolnge+KcS5XGcR/67slzbzow3YPgl6hStipLyKjDIti0Q/wvZ/XyDg==
+X-Received: by 2002:a05:600c:45cd:b0:450:cfcb:5c9b with SMTP id 5b1f17b1804b1-453653cf392mr765975e9.1.1750362770060;
+        Thu, 19 Jun 2025 12:52:50 -0700 (PDT)
 Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4535ead2a27sm36740255e9.31.2025.06.19.12.51.53
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-453646cb57fsm3866255e9.1.2025.06.19.12.52.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Jun 2025 12:51:53 -0700 (PDT)
-Date: Thu, 19 Jun 2025 19:57:34 +0000
+        Thu, 19 Jun 2025 12:52:49 -0700 (PDT)
+Date: Thu, 19 Jun 2025 19:58:30 +0000
 From: Anton Protopopov <a.s.protopopov@gmail.com>
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
@@ -83,7 +83,7 @@ Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
 	Quentin Monnet <qmo@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>
 Subject: Re: [RFC bpf-next 5/9] bpf, x86: add support for indirect jumps
-Message-ID: <aFRrrmlzQQQsjIpV@mail.gmail.com>
+Message-ID: <aFRr5poRTGThzhZI@mail.gmail.com>
 References: <20250615085943.3871208-1-a.s.protopopov@gmail.com>
  <20250615085943.3871208-6-a.s.protopopov@gmail.com>
  <CAADnVQJGgLNENh15Bp==Ui0GxL1_iwgZ1vHkFTGp9xtO8n_XNg@mail.gmail.com>
@@ -126,7 +126,9 @@ On 25/06/17 08:06PM, Alexei Starovoitov wrote:
 > which insn (map key) does it point to ?
 > In case of global data it's key==0.
 > Here it's 1st element of insn_array ?
-> 
+
+Sorry, could you please rephrase the question here, I do not get it.
+
 > >     5:   r1 += r3                   # r1 inherits boundaries from r3
 > >     6:   r1 = *(u64 *)(r1 + 0x0)    # r1 now has type INSN_TO_PTR
 > >     7:   gotox r1[,imm=fd(M)]       # verifier checks that M == r1->map_ptr
@@ -211,9 +213,7 @@ On 25/06/17 08:06PM, Alexei Starovoitov wrote:
 > 
 > This is no go. We cannot grow bpf_reg_state.
 > Find a way to reuse fields without increasing the size.
-
-See my comment below, next to "Why bother consuming memory".
-
+> 
 > >  };
 > >
 > >  enum bpf_stack_slot_type {
@@ -270,9 +270,7 @@ See my comment below, next to "Why bother consuming memory".
 > 
 > I bet it's easy enough to make llvm generate such code,
 > so this needs to be supported sooner than later.
-
-Ok, makes sense, will add to the list for the next version.
-
+> 
 > > +
 > > +       /* from BPF's point of view, this map is a jump table */
 > > +       *imm = (unsigned long)insn_set->ips;
@@ -329,27 +327,7 @@ Ok, makes sense, will add to the list for the next version.
 > 
 > Why bother with this optimization in the kernel?
 > Shouldn't libbpf give unique already?
-
-So, in a _running_ program, an array may contain non-unique elements.
-Example:
-
-  switch(i) {
-  case 0:
-   ...
-  case 2:
-   ...
-  case 4:
-   ...
-  default:
-   ...
-  }
-
-LLVM will generate a jump table of size 6 , check that i <= 5,
-and point slots 1 and 3 with a jump to "default".
-
-But during the verification, this is not needed to take all the
-branches, thus the "unique" array in kernel.
-
+> 
 > > +
 > >  int bpf_insn_set_init(struct bpf_map *map, const struct bpf_prog *prog)
 > >  {
@@ -436,11 +414,7 @@ branches, thus the "unique" array in kernel.
 > Don't hack it like this.
 > If you're reusing PTR_TO_MAP_VALUE for this then set mem_size correctly
 > early on.
-
-Ok, I will see how to make this less hacky. I believe I added the
-exception not becase the mem_size, but becaus of "off" (currently,
-direct memory access is only allowed to maps of size 1).
-
+> 
 > >                 verbose(env, "invalid access to map value, value_size=%d off=%d size=%d\n",
 > >                         mem_size, off, size);
 > >                 break;
@@ -490,17 +464,6 @@ direct memory access is only allowed to maps of size 1).
 > of defaulting to SCALAR_VALUE like it does today.
 > 
 > Then the callback for insn_array will set it to PTR_TO_INSN.
-
-But here we're dereferencing it. We need to have different types for
-
-    rx = ldimm64 map # "ptr_to_map_value"
-    rx *= rx         # PTR_TO_INSN
-
-this is required to 1) make sure that it actually was dereferenced
-and 2) that it was only dereferenced once.
-
-Or is this a different comment?
-
 > 
 > > +
 > >         return err;
@@ -530,19 +493,7 @@ Or is this a different comment?
 > > +               dst_reg->max_index = src_reg->umax_value / sizeof(long);
 > 
 > Why bother consuming memory with these two fields if they are derivative ?
-
-I've added it becase it becase when we do
-
-    gotox rx
-
-rx will actually have src_reg->umin_value=0, src_reg->umax_value=~0,
-becase rx is "pointing to instruction", thus can actually have random
-address. The proper umin/umax were correct before the rx was
-dereferenced from a PTR_TO_MAP_VALUE.
-
-As this patch is to be refactored, I will try to see if this can be
-avoided to waste more memory.
-
+> 
 > > +       }
 > > +
 > >         if (dst_reg->type != SCALAR_VALUE)
@@ -562,9 +513,7 @@ avoided to waste more memory.
 > >                 WARN_ON_ONCE(map->max_entries != 1);
 > 
 > Instead of copy pasting two lines, make WARN conditional.
-
-Ok.
-
+> 
 > > @@ -17552,6 +17607,62 @@ static int mark_fastcall_patterns(struct bpf_verifier_env *env)
 > >         return 0;
 > >  }
@@ -591,18 +540,10 @@ Ok.
 > 
 > I don't quite understand the algorithm.
 > Pls expand the comment.
-
-When we reach a `gotox rx`, rx can contain a pointer to instruction
-loaded from a map M. The verifier needs to try to jump to any
-possible location in the map.  The bpf_insn_set_iter_xlated_offset()
-helps to start from M[0] and iterate over the unique elements in that
-set R defined above.
-
+> 
 > Also insn_successors() needs to support gotox as well.
 > It's used by liveness and by scc.
-
-Oh, sure, thanks.
-
+> 
 > > +       if (w == -ENOENT)
 > > +               return DONE_EXPLORING;
 > > +       else if (w < 0)
@@ -655,9 +596,7 @@ Oh, sure, thanks.
 > There should be a check somewhere that checks that insn->imm ==
 > insn_array_map_fd is the same map during the main pass of the
 > verifier.
-
-The check is below.
-
+> 
 > >
 > >                 if (BPF_CLASS(insn->code) == BPF_JMP)
 > >                         off = insn->off;
@@ -690,9 +629,6 @@ The check is below.
 > 
 > func_states_equal() shouldn't look back into insn_idx.
 > It should use what's in bpf_func_state.
-
-Ok, thanks.
-
 > 
 > > +               struct bpf_reg_state *old_dst = &old->regs[insn->dst_reg];
 > > +               struct bpf_reg_state *cur_dst = &cur->regs[insn->dst_reg];
@@ -702,9 +638,7 @@ Ok, thanks.
 > > +                       return false;
 > 
 > Doesn't look right. It should properly compare two PTR_TO_INSN.
-
-Ok, will fix.
-
+> 
 > > +       }
 > > +
 > >         for (i = 0; i < MAX_BPF_REG; i++)
@@ -731,10 +665,7 @@ Ok, will fix.
 > Remember map pointer during resolve_pseudo_ldimm64()
 > in insn_aux_data for gotox insn.
 > No need to call add_used_map() so late.
-
-Yes, thanks, I wanted initially to add smth like find_used_map()
-(thus the commen above), but saving in aux is better.
-
+> 
 > > +       if (err < 0)
 > > +               return err;
 > > +
@@ -748,9 +679,7 @@ Yes, thanks, I wanted initially to add smth like find_used_map()
 > > +       if (dst_reg->map_ptr != map) {
 > 
 > and here it would compare dst_reg->map_ptr with env->used_maps[aux->map_index]
-
-Yes, thanks.
-
+> 
 > > +               verbose(env, "BPF_JA|BPF_X R%d was loaded from map id=%u, expected id=%u\n",
 > > +                               insn->dst_reg, dst_reg->map_ptr->id, map->id);
 > > +               return -EINVAL;
@@ -807,9 +736,7 @@ Yes, thanks.
 > > +static int add_used_map(struct bpf_verifier_env *env, int fd, struct bpf_map **map_ptr)
 > 
 > no need.
-
-Thanks, will revert.
-
+> 
 > >  {
 > >         struct bpf_map *map;
 > >         CLASS(fd, f)(fd);
