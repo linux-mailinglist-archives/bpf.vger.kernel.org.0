@@ -1,83 +1,91 @@
-Return-Path: <bpf+bounces-61047-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61049-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 118EAAE0059
-	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 10:48:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DD75AE005C
+	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 10:50:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D49157A37DE
-	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 08:47:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B76923B51DC
+	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 08:49:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DB8E265614;
-	Thu, 19 Jun 2025 08:48:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UwI1tCtz"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00E47265611;
+	Thu, 19 Jun 2025 08:49:57 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay.hostedemail.com (smtprelay0010.hostedemail.com [216.40.44.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84FFA3085A5;
-	Thu, 19 Jun 2025 08:48:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 101AA200127;
+	Thu, 19 Jun 2025 08:49:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750322900; cv=none; b=jNslDwLqwiPaljFBP6phpqWkuuqWJ9rbYQSjIfIIMqUvQH2f/FSgjPCqnlWYqsSWNEVS9Qag3fgRY+S6ojkoULF3EXIEsA8XfOTQWgorimzjDtIaHw+iHKidh4fI517eWoZgxFLbIFP7T1OuIECrULn4pXP1ZAwfUrXBumdxPo0=
+	t=1750322996; cv=none; b=q2bFzre3ECxVUdDm2yEunxhm7tShvuBEf5e66WVBV9yl+hBnNv/aNbwq5p3HIYpaPl3hG4gZYpZImggtUGUiDAEp+SjFhbrO4J2kjvlRCYOxNqlzxdDtoYfeQa9Z5zdIg484zgzJLIfMzu/zMqZpzhzmsdmjnrcjt6GT6jlQ8DI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750322900; c=relaxed/simple;
-	bh=48BhRGPoPQC3ZkFsaCUupKaDvr/iXvVX4G/QDp4DAKY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pBetjvoe9BQyJxypKmC7JUWpYUxRBtuYVZimDpIQoy/kBh75JVyMrU5c/f8h9s6ayZgDC7aFS4tqCioFIp8GYCb5mhQYoyQJJQ+h7nvTzGXwRfOblAi+zsbUvMK9E08yrFl9KV7ZKAYE6eEwLw17b7s/6qYmzSaOSSM118wrouw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UwI1tCtz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50A52C4CEEA;
-	Thu, 19 Jun 2025 08:48:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750322900;
-	bh=48BhRGPoPQC3ZkFsaCUupKaDvr/iXvVX4G/QDp4DAKY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UwI1tCtzVaxcRAQ+91xU5Yw1D1P5yrJOQ1NmyJ1w4RJuBfuwYpXo5TpyixVWFqgmh
-	 HMMOmlsLB++U7x1wCuApC2Z3C+zFZSAokbSkG2ha1zX3CBeP76mnO3hcCoowshVdTF
-	 xv0qWAjQ7GTRisIXK5A/3Acc+CDMz9W49nN1oEfdDxcnekeK3MfICNEI+1xTEckG8g
-	 lj1FmqG3xMwbKZ6Df6kQV5Fg1VEaR4d8MIEgBANFbghsnjmYz8DZnu09tg1G/tKlnY
-	 T+YVwJD5SmL/rWD7pqSq+29q326punG6FW8MynVsf+Zn3jc9dylXtCA1Ofm+RnRmkX
-	 Qmz25pxKQquJA==
-Date: Thu, 19 Jun 2025 10:48:13 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Tejun Heo <tj@kernel.org>
-Cc: Song Liu <song@kernel.org>, bpf@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, 
-	ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
-	viro@zeniv.linux.org.uk, jack@suse.cz, kpsingh@kernel.org, mattbobrowski@google.com, 
-	amir73il@gmail.com, gregkh@linuxfoundation.org, daan.j.demeyer@gmail.com
-Subject: Re: [PATCH bpf-next 0/4] Introduce bpf_kernfs_read_xattr
-Message-ID: <20250619-zwirn-thunfisch-de6e4891a453@brauner>
-References: <20250618233739.189106-1-song@kernel.org>
- <aFNdNv4Bvw6MwlaH@slm.duckdns.org>
+	s=arc-20240116; t=1750322996; c=relaxed/simple;
+	bh=n71zzM0zn0yiB0UuLeFSmpaT+ZOUy5bd8NLW3zJzq+g=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=HVCApn2+23JKakkp6StPIZnQ1xst0Bk0fkAM9InBTuuXtVxsjKOkAJr0X3OHlTT4VZCHtMresB6pyZpw3s3NDLZi1USz3S2A36frHggYz0u5aGJmNdu3YDzwv+K1mo0zdAuaz3cfr3yHOqo7RC5guLpC2bONcv2aDunPq8ouUP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf06.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay05.hostedemail.com (Postfix) with ESMTP id 688035B3C3;
+	Thu, 19 Jun 2025 08:49:52 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf06.hostedemail.com (Postfix) with ESMTPA id 70A6B20011;
+	Thu, 19 Jun 2025 08:49:48 +0000 (UTC)
+Date: Thu, 19 Jun 2025 04:49:53 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, x86@kernel.org, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Josh Poimboeuf <jpoimboe@kernel.org>, Ingo Molnar <mingo@kernel.org>, Jiri
+ Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, Indu
+ Bhagat <indu.bhagat@oracle.com>, "Jose E. Marchesi" <jemarch@gnu.org>, Beau
+ Belgrave <beaub@linux.microsoft.com>, Jens Remus <jremus@linux.ibm.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton
+ <akpm@linux-foundation.org>
+Subject: Re: [PATCH v10 06/14] unwind_user/deferred: Add deferred unwinding
+ interface
+Message-ID: <20250619044953.630c349a@batman.local.home>
+In-Reply-To: <20250619080108.GY1613376@noisy.programming.kicks-ass.net>
+References: <20250611005421.144238328@goodmis.org>
+	<20250611010428.770214773@goodmis.org>
+	<20250618142000.GS1613376@noisy.programming.kicks-ass.net>
+	<20250618113706.2eb46544@gandalf.local.home>
+	<20250619080108.GY1613376@noisy.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <aFNdNv4Bvw6MwlaH@slm.duckdns.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 70A6B20011
+X-Stat-Signature: wm8mdhhxwsab9enitotenb1s4y6gfb3r
+X-Rspamd-Server: rspamout05
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1+m9RaEQFiWcConn3hFsX2R58+fX92JsoU=
+X-HE-Tag: 1750322988-760678
+X-HE-Meta: U2FsdGVkX19ItN7KcrqT3FzBR8Bm28K8TnxtDsJL/KxHZ+vHOPUqMdz5SmRXrau124q3SQQJYemftlaLRX67QqjcHj4zpZRxdM8hF4lxz32ei7WwobXcl27K68b+tKhTZgbk+uPGmXrtVFMcWQSarkzIxwyuG2rrAU3Vh8+4D9F1ZdXqAyGdE/oj0PNUXXHEV4MPhOI1X8xsIi3PRwDivWX2pmpw5JK7+xny1u4m+3B0D1r+FEUscmLWESdNcdao3i2O9STRZlSK2US6KDZGcWuewZpDYUFzri1kugojVDcNBH7oHrYAce1tpYSedi8pupgvPLJ4o4ATd48DLfve/zK1FhityT+C7reWBTkrnQ3OwYQs3w9kq4b+r0fMuz3r
 
-On Wed, Jun 18, 2025 at 02:43:34PM -1000, Tejun Heo wrote:
-> Hello,
-> 
-> On Wed, Jun 18, 2025 at 04:37:35PM -0700, Song Liu wrote:
-> > Introduce a new kfunc bpf_kernfs_read_xattr, which can read xattr from
-> > kernfs nodes (cgroupfs, for example). The primary users are LSMs, for
-> > example, from systemd. sched_ext could also use xattrs on cgroupfs nodes.
-> > However, this is not allowed yet, because bpf_kernfs_read_xattr is only
-> > allowed from LSM hooks. The plan is to address sched_ext later (or in a
-> > later revision of this set).
-> 
-> I don't think kernfs is the name we should be exposing to BPF users. This is
-> an implementation detail which may change in the future. I'd rather make it
-> a generic interface or a cgroup specific one. The name "kernfs" doesn't
+On Thu, 19 Jun 2025 10:01:08 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-cgroup specific, please. That's what I suggested to Daan. 
+> If you want to rely on consecutive system calls never seeing the same
+> timestamp, let alone PID reuse in the same timestamp -- for some generic
+> infrastructure -- you need to go audit all the arch code.
+
+I can drop the timestamp and go back to the original "cookie"
+generation that guaranteed unique ids for something like 2^48 system
+calls per task.
+
+I thought the timestamps just made it easier. But having to audit every
+arch, may make that not the case.
+
+-- Steve
 
