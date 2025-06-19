@@ -1,111 +1,92 @@
-Return-Path: <bpf+bounces-61103-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61104-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E74EDAE0BDD
-	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 19:19:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34606AE0BF7
+	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 19:33:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F9B05A34C6
-	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 17:19:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85FAB16B928
+	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 17:32:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3223328BA91;
-	Thu, 19 Jun 2025 17:19:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5F6528D8CE;
+	Thu, 19 Jun 2025 17:32:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jTcVyWFs"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gCzK4Jtq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7885821C9E1
-	for <bpf@vger.kernel.org>; Thu, 19 Jun 2025 17:19:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21DB021E0AF
+	for <bpf@vger.kernel.org>; Thu, 19 Jun 2025 17:32:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750353564; cv=none; b=h19MORDQK1gvQFOxgOwreD9V6hoK2U4yJmyTDnn4qM/CDy6UhmFgxdvQE+lxLBJ4JWo8Yc82zI5rwaXzonllWmaQsUd72KJgp8MEmzR+eE5aBcqvN+BQkJzo2CzMNE4yxGyc5TGfE9aOg/LyXjSw2D17wVUvZRDX1+i4yJYHkfY=
+	t=1750354367; cv=none; b=FMx5Q3qWiRWvmWuKyMZY+xp1XlwiFUEd8MyF6NSGXMWL9pVtMEKx/teWHjKoeQjitHKqXvEwIUiTW9z311PbCEWJ/21B8SYcUCVjEwlenMxToulrkIMppQHEf/acdUCM3Ddd2kmdyzyddfq4qvaMp2Jz3ckYrJqDan4pBPb04Dk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750353564; c=relaxed/simple;
-	bh=LaaqiiEL9zYJgHRyozBrVv/dU8/AOpKbhEwvzCYkBgM=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=YVqzY50cin3O9D3sTyHycGCpkYvim2H0BpCZcyKf/sfrdmuG6HpvRxsMJPL+J+F8q5znfLMNngz2K3u7Xb7FSOoeBcioBYdvHk1sgLJ5gv+4k+BVOkyGeEjrzUtraXO6N3jY/2iUSN3oPGiIjAe16Jb02VGAlu+bfDTt1sacrrI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jTcVyWFs; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-747fc7506d4so727365b3a.0
-        for <bpf@vger.kernel.org>; Thu, 19 Jun 2025 10:19:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750353563; x=1750958363; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=LaaqiiEL9zYJgHRyozBrVv/dU8/AOpKbhEwvzCYkBgM=;
-        b=jTcVyWFs/aGUlNBfNAiREWKrqVBHyuaJzgk0RctS4FqEoRT+cm9X9CUdX3c4Ol6nAZ
-         RjKLm4fUnTNNDGFZEu7rveMYfNurEnx+rWhq6/Dm9raCinf6fVESpfvaf1IXMA3YYvCP
-         eEALFXuAVkC3GQ6r52bILIYjRn70PJRBEeUffUuaHDWDHxaB4+HWLQp+0ZFbBknzjXcT
-         zlrcyZvBroKJIFPVTnk2c6P2FOuI9tkCM8ztKDsNzTPrt8LLym79DRyfXgzOvxDmqk2O
-         YK9rR5gl4vspqRd3M3n5RxvSnYmlZ+vjwWvCCzFIGYyzLOMilAwK3aqtAm+18S3LsBq6
-         m9aA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750353563; x=1750958363;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LaaqiiEL9zYJgHRyozBrVv/dU8/AOpKbhEwvzCYkBgM=;
-        b=DeguoRrAMCpIWPU0X++6lH+n+nxmexKRLlcTLOTQtLxkkisoBaL2kKZJx6gsJb10Zo
-         ICquS5Td8/AmTT91phELgzAUf2nTJsUjC5m6ZRulg5IGCql3rXK/+m80eV1Xn2gxbuqa
-         PqeaflxphcO2D2F4rbyCb7gOqi2+f5cAuOpz/LDXNFfImM6pXaNStOjd49ucdVUA9DgU
-         hy2d6/PQKm3ksIsUBu39pYUF1fxot5F1LZLfGFO7vm6LmkCo/v7DOPn7uo1rIOs1drIV
-         cg7wGq/gIJnXuw3mZvSdZ6fzyjznNOzWCAuFXWmqVQADzWfhVbVHyj3CxEeKG2P75RFG
-         /xrw==
-X-Gm-Message-State: AOJu0YwVKQTrf9NwA8UUWYnBwAtbVsYtwSAjx+h92B0MRWU2TTyv/cub
-	g8FFZQggCWbBgj80JcGFrTGHIKXL/UTsb6uuuq5mMh8J/FdHYbhxLSbT
-X-Gm-Gg: ASbGnctbyShRzyTzkHYuslQqwY53gwvG5sJpfv4IkGr1StIMT4G+d4G+nDWBccUNDr3
-	zem2kd0F5XeF5jFtO8gvb6pCzYyf4EMlZEYULedwnMYr/H76tHLp+B9eXCTqMFnJU1GE3TTPe9J
-	2qx9BS4jTGZt0fzx8d/xH+BwpjkwiGw6P6V3mtVUhTPzBVO9zAS/pwVDaLuIDax4lDkErtbuspx
-	1YLvEhEQMWwo1KROFKfogm0Tz4IrQL4lXOXy8t0usMh2h1KAYILlgR7G/Ha/l7dZjnj9A3/QgUk
-	NbQ93NPWCozsL6pML2cPRqQ1GB6KC88zSvU27h6UsJzDgxPgmIftewbCHA==
-X-Google-Smtp-Source: AGHT+IETNlJztDJk0Ua5ORnDgwhzuNM43mUYdTA1uVW5xrRwiarBGkAxN/9FXONnNHyxELxf1qxOYg==
-X-Received: by 2002:a05:6a21:99a4:b0:21d:fd1:9be with SMTP id adf61e73a8af0-21fbd57ff13mr33017620637.12.1750353562599;
-        Thu, 19 Jun 2025 10:19:22 -0700 (PDT)
-Received: from [192.168.0.56] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7490a68b0desm248589b3a.150.2025.06.19.10.19.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Jun 2025 10:19:22 -0700 (PDT)
-Message-ID: <7852f30ba177dc5b811bb0840ca0f301df2a8b58.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: add bpf_dynptr_memset() kfunc
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Ihor Solodrai <ihor.solodrai@linux.dev>, Mykyta Yatsenko
-	 <mykyta.yatsenko5@gmail.com>, andrii@kernel.org
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- mykolal@fb.com, 	kernel-team@meta.com
-Date: Thu, 19 Jun 2025 10:19:20 -0700
-In-Reply-To: <45390c6c-bd2a-4962-8222-1ad346f9908c@linux.dev>
-References: <20250618223310.3684760-1-isolodrai@meta.com>
-	 <b35ce32e-a5e7-4589-ab16-d931194a32bb@gmail.com>
-	 <45390c6c-bd2a-4962-8222-1ad346f9908c@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+	s=arc-20240116; t=1750354367; c=relaxed/simple;
+	bh=WHFA3dt+gXVNZyOzMwYU23xWVhQTSPBOMqpAAE95nE8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=u1CDmRZfBp6ajH9fgsui8MJSBlkb6cGNhJT51I6Pm0hFvo8CtnxCXBI2rBFloLW3gJ+MvkL2dHCuSB+5JKjCuIfGfwuazyHOu1ftAyg8dWB1idkWK4ZYZ+d04Oxm0dTz8E9Y07BI7aA79UIeiz960kupY7HHn1TRmv04cAgKT9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gCzK4Jtq; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <38415904-6af7-41ef-9963-fe60cc6560ba@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1750354362;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WHFA3dt+gXVNZyOzMwYU23xWVhQTSPBOMqpAAE95nE8=;
+	b=gCzK4JtqUv5MIyP+ZDj2ON8lIxmOCbpEvKPCXR72qskW84oCy5cMRGmvu/92FIbvzzPdI+
+	yOHz6OmDG6qSII8OBnwCqfEImiIflh9WcRFN+Dtxk7BzURMpFVJ8ntZBSh3hjC2NGbelLT
+	/OLy+CCYxsU10mki62CaOvLrxiVkd5I=
+Date: Thu, 19 Jun 2025 10:32:37 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH v3 1/2] bpf: Specify access type of bpf_sysctl_get_name
+ args
+Content-Language: en-GB
+To: Jerome Marchand <jmarchan@redhat.com>, bpf@vger.kernel.org
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ linux-kernel@vger.kernel.org
+References: <20250619140603.148942-1-jmarchan@redhat.com>
+ <20250619140603.148942-2-jmarchan@redhat.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20250619140603.148942-2-jmarchan@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, 2025-06-19 at 10:09 -0700, Ihor Solodrai wrote:
 
-[...]
 
-> But then, does memset even make sense for xdp/skb buffers?
+On 6/19/25 7:06 AM, Jerome Marchand wrote:
+> The second argument of bpf_sysctl_get_name() helper is a pointer to a
+> buffer that is being written to. However that isn't specify in the
+> prototype.
+>
+> Until commit 37cce22dbd51a ("bpf: verifier: Refactor helper access
+> type tracking"), all helper accesses were considered as a possible
+> write access by the verifier, so no big harm was done. However, since
+> then, the verifier might make wrong asssumption about the content of
+> that address which might lead it to make faulty optimizations (such as
+> removing code that was wrongly labeled dead). This is what happens in
+> test_sysctl selftest to the tests related to sysctl_get_name.
+>
+> Add MEM_WRITE flag the second argument of bpf_sysctl_get_name().
+>
+> Signed-off-by: Jerome Marchand <jmarchan@redhat.com>
 
-Why not?
+You can carry previous ACK if there is no big change. Ack again here.
 
-> Maybe -ENOTSUPP is more appropriate?
->=20
-> I'd appreciate any hints.
-
-I think Mykyta has kernel/trace/bpf_trace.c:__bpf_dynptr_copy_str() in mind=
-.
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
 
 
