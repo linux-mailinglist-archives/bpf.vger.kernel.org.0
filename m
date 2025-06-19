@@ -1,73 +1,84 @@
-Return-Path: <bpf+bounces-61126-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61127-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42125AE0F6D
-	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 00:05:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82888AE0F78
+	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 00:14:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DADC5173141
-	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 22:05:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F195E1BC3125
+	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 22:14:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DED1E2BD59F;
-	Thu, 19 Jun 2025 22:02:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0E8A25EFB9;
+	Thu, 19 Jun 2025 22:14:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K/7siiah"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jDT9SRFX"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54DAA29CB40;
-	Thu, 19 Jun 2025 22:02:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75DB630E826
+	for <bpf@vger.kernel.org>; Thu, 19 Jun 2025 22:14:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750370534; cv=none; b=rQpJ+YWIMNKipIyAwfL3TJMvXp3KHoSdRP454hlFtsPUvTDmBiD4azrKLA8mlt9VDelLc65Sn9epOA2RBwjoph4mJjbtRKyf5kuDACyR3jPmEqWtIIi/PmHQEkOM8stjca6wLXPOrjBLCFc9Y5cPi4Mp25TRwkWQ5HOu2YDuI24=
+	t=1750371266; cv=none; b=fgOT7vpKuv99ZhkaNzx/aE15/XDuU2eXHQzoTcNnxymqgvVDy+dRIvthoUDt0jcBdtd0+iHbBKD1W4Tm0j0y1yFN+aLYZVE+wkWkAyHyt3JPH8g21pdOm3rP+5Zp2QVlQJl3hRfM8BXOHDFV34n3ewVOIXQu0TP70K3z9boudak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750370534; c=relaxed/simple;
-	bh=puTnRa7DG1Y2PCVVgbCIuZlS5MYTdTwFeWDN6MNVDzk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TINgn3FSbiNZlQButuLgN/HHezOf7lfFgJo9OH25uslnye7q9HVxZvt1+GeWCnRSVtMg/ZN7rTsw1JWlOL6wNK5iAtQvsOkI5BbJGjFHTpVIPD5C/PUlmLSiVrbudsaYiCk0JM5x/EwT2GTj+rkAXPxsJLD9Qp5vZiduEgHA1vc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K/7siiah; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04170C4CEEE;
-	Thu, 19 Jun 2025 22:02:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750370533;
-	bh=puTnRa7DG1Y2PCVVgbCIuZlS5MYTdTwFeWDN6MNVDzk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=K/7siiahIm2+vZA2wm1AFxzo5pqkamDp6sKxQ9Vmz62HlRZ2iwBJEj9va2lWHpWFt
-	 HzRkvbJTJOBKMKlNXsI4zgUC/z3UnXa9eyxdVC8p0kt5GcPqrEt+fRYTUOqZ/+T/p9
-	 2V2GLD0wmBChNu81p44UA/T7Hl8ONPHFIVN1pKSMOjFk7l5u1iT0tpJY/P+MtYlgG3
-	 oyrZkcd3I0dQhTIQcxl/WGfyET25Q0pQiFInDTtr6vSh1guqGyhFUYj1p2VR7Di6Ah
-	 cz/F6tgeXiPl6tyvG7UpF92wxJOX+8Zx1Cy/j3tZ3umrjKwBAtITwfztifQGG4aevM
-	 krBu93NfV+KXg==
-From: Song Liu <song@kernel.org>
-To: bpf@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-security-module@vger.kernel.org
-Cc: kernel-team@meta.com,
-	andrii@kernel.org,
-	eddyz87@gmail.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	viro@zeniv.linux.org.uk,
-	brauner@kernel.org,
-	jack@suse.cz,
-	kpsingh@kernel.org,
-	mattbobrowski@google.com,
-	amir73il@gmail.com,
-	gregkh@linuxfoundation.org,
-	tj@kernel.org,
-	daan.j.demeyer@gmail.com,
-	Song Liu <song@kernel.org>
-Subject: [PATCH v2 bpf-next 5/5] bpf: Make bpf_cgroup_read_xattr available to cgroup and struct_ops progs
-Date: Thu, 19 Jun 2025 15:01:14 -0700
-Message-ID: <20250619220114.3956120-6-song@kernel.org>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20250619220114.3956120-1-song@kernel.org>
-References: <20250619220114.3956120-1-song@kernel.org>
+	s=arc-20240116; t=1750371266; c=relaxed/simple;
+	bh=km2GDs110bHh1EdDUtu8Be0wtTFBJbPGRrr18WT3tOE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Acgl2AJ8Bccf1/EkaeiIrjVmdxEEJTCD6bnP3mJoDE+V7lL7JD+saYw42XCLp5uA1eOcdw7K02JGQXm/k4MVB/W3pDKMjtAV84HPvUGOLOIjUMwlwlNLzrW5hmjRwFlJM6XRtISGIZJUJQoi2sZ/wG9tAtJlQNRBKe2/8C2Gzls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=scannell.ca; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jDT9SRFX; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=scannell.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-451e2f0d9c2so9212115e9.1
+        for <bpf@vger.kernel.org>; Thu, 19 Jun 2025 15:14:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1750371262; x=1750976062; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=WT4P8MlXaQzK0MCV6GKAfI2mlMLpfWf5UqTGhXXvYHs=;
+        b=jDT9SRFXihzFYV4Ru0gR+cdDC1hVewrDvQk29rHFfhslGdc1xffSAFU1h/3jIOB1Uf
+         3K1SftySz9jU5uTGPB00/5v/w1Kfe5+d4suG7oEFLvWx4XMtO2DvfWJc9gMLNPwFlqxX
+         OfMa7AkKfclsxpd7brbS+RPsVg3uwv26hsaEbLEJWRCYpb3ZV/VDD9hEvHbGt70XBDg7
+         X7mk9VbeDO5I/XDa0bGbojHF3hE7eO5Hj2Rp8yIiXE0Q/F2Q+K4yRInsXqGFqm93Sl9e
+         2/mU/R0W2ybWyyTa/917fYoE7IUqgaufjs0bxPJQgBw9SAHIJTnXvcDJHAISY5EGnAfP
+         Gzmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750371262; x=1750976062;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WT4P8MlXaQzK0MCV6GKAfI2mlMLpfWf5UqTGhXXvYHs=;
+        b=rV++U56DH9wSnFbVarLTN7y5vD4CITrnt663iqXzpsBRjZVNtTcLrqbHjZblmDQfLV
+         RX/16uPCT2PMbyT4TAnCmNHHEAc7qeVwzwYskaQX7kLB+D/+d7Kwztat3OaFWdZ9AUCE
+         r03Tmu64TqjM7TK+qV0Pds3PAKMFxAMGZ46Ohc15Gta/gvZLVj0NKcOvX34xHlfXBwSO
+         Ao9YNagN+/nGex9cdO1LjHTB7kD4jWIc8aI2bp69whFX/VJXPBN6QgQfdOlcbjCXAG1F
+         P5PBNiNZS5y/ZK89EiD64T5OoKQLLVD3jAERejNDtNp7BjEYw+vQilD/U04HnErJxIlp
+         Yylg==
+X-Gm-Message-State: AOJu0Yz/EcRFWBr5oGdz3HRFMslXDF2Mo6BIyFUmzzqh+n/NR6hvuHI7
+	qIA9E1CFslJiKbO1Mc5E9Er0DNsH+oAjqJfHCYIV9vOQ/Ql27CZdBjpKqak7KoUfnY0=
+X-Gm-Gg: ASbGncuPV4T+DoKghPzBCK2hHVqSYD7VP1WLTJsNHEWLRChnwY+nt9Gx3XfCv1gCv1u
+	Ye3HUDqgzlyJDWh5uG4Zgg5JpO+cu4c4lp77wKQ0h+iTzrYqa+dpgSV+PllBYiLIOENjMlIEIdo
+	B/zZpeSsu+5ULBwikNrxSwSvOIhx9CkGDOT9tbfDgj+lIEVSMyzuBBtdUS9E8/kFDgL3kpzGCth
+	EEn/T8UOj9JNQPJFsyFLkLAYTL2Nd3m99qIbz40XCsiDvHAdxQc2Jkraxm8NWx2UxHq658sHpYF
+	Ca69yseQDvm+yfOits49F85uqIo54ww8bJpcyQx1Oy/Vz68O4t6+3dJKjRu6x6kq1ZBgZtTxF4O
+	pb1+AW2w=
+X-Google-Smtp-Source: AGHT+IGMJWqskbHtvSA/FMmD1vUKwVLJX580b89++C+5T2URrthgvSqv3vZ11Jm/i6HZ7w3PCAcODQ==
+X-Received: by 2002:a05:600c:1d27:b0:453:10c1:cb21 with SMTP id 5b1f17b1804b1-45365e3dffamr607785e9.8.1750371261869;
+        Thu, 19 Jun 2025 15:14:21 -0700 (PDT)
+Received: from localhost.localdomain ([193.117.204.194])
+        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-453632312a3sm16075725e9.1.2025.06.19.15.14.21
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Thu, 19 Jun 2025 15:14:21 -0700 (PDT)
+Sender: Adin Scannell <amscanne@gmail.com>
+From: Adin Scannell <adin@scannell.ca>
+To: bpf@vger.kernel.org
+Cc: Adin Scannell <adin@scannell.ca>,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH] libbpf: fix possible use-after-free for externs
+Date: Thu, 19 Jun 2025 23:12:56 +0100
+Message-Id: <20250619221256.50893-1-adin@scannell.ca>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,140 +87,54 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-cgroup BPF programs and struct_ops BPF programs (such as sched_ext), need
-bpf_cgroup_read_xattr. Make bpf_cgroup_read_xattr available to these prog
-types.
+The `name` field in `obj->externs` points into the BTF data at load time.
+However, some functions may invalidate this after loading (e.g.
+`bpf_map__set_value_size`), which results in pointers into freed memory and
+undefined behavior.
 
-Rename bpf_fs_kfunc_* variables as bpf_lsm_fs_kfunc_*, as these are only
-available to BPF LSM programs. Then, reuse bpf_fs_kfunc_* name for cgroup
-and struct_ops prog typs.
+The simplest solution is to simply `strdup` these strings, similar to the
+`essent_name`, and free them at the same time.
 
-Also add a selftest with program of "cgroup/sendmsg4" type.
-
-Signed-off-by: Song Liu <song@kernel.org>
+Signed-off-by: Adin Scannell <adin@scannell.ca>
 ---
- fs/bpf_fs_kfuncs.c                            | 53 +++++++++++++++++--
- .../selftests/bpf/progs/cgroup_read_xattr.c   | 22 ++++++++
- 2 files changed, 70 insertions(+), 5 deletions(-)
+ tools/lib/bpf/libbpf.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/fs/bpf_fs_kfuncs.c b/fs/bpf_fs_kfuncs.c
-index 9f3f9bd0f6f7..8e02e09e092e 100644
---- a/fs/bpf_fs_kfuncs.c
-+++ b/fs/bpf_fs_kfuncs.c
-@@ -356,7 +356,7 @@ __bpf_kfunc int bpf_cgroup_read_xattr(struct cgroup *cgroup, const char *name__s
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 6445165a24f2..5adf2b68adb3 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -597,7 +597,7 @@ struct extern_desc {
+ 	int sym_idx;
+ 	int btf_id;
+ 	int sec_btf_id;
+-	const char *name;
++	char *name;
+ 	char *essent_name;
+ 	bool is_set;
+ 	bool is_weak;
+@@ -4259,7 +4259,7 @@ static int bpf_object__collect_externs(struct bpf_object *obj)
+ 			return ext->btf_id;
+ 		}
+ 		t = btf__type_by_id(obj->btf, ext->btf_id);
+-		ext->name = btf__name_by_offset(obj->btf, t->name_off);
++		ext->name = strdup(btf__name_by_offset(obj->btf, t->name_off));
+ 		ext->sym_idx = i;
+ 		ext->is_weak = ELF64_ST_BIND(sym->st_info) == STB_WEAK;
  
- __bpf_kfunc_end_defs();
+@@ -9138,8 +9138,10 @@ void bpf_object__close(struct bpf_object *obj)
+ 	zfree(&obj->btf_custom_path);
+ 	zfree(&obj->kconfig);
  
--BTF_KFUNCS_START(bpf_fs_kfunc_set_ids)
-+BTF_KFUNCS_START(bpf_lsm_fs_kfunc_set_ids)
- BTF_ID_FLAGS(func, bpf_get_task_exe_file,
- 	     KF_ACQUIRE | KF_TRUSTED_ARGS | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_put_file, KF_RELEASE)
-@@ -366,11 +366,11 @@ BTF_ID_FLAGS(func, bpf_get_file_xattr, KF_SLEEPABLE | KF_TRUSTED_ARGS)
- BTF_ID_FLAGS(func, bpf_set_dentry_xattr, KF_SLEEPABLE | KF_TRUSTED_ARGS)
- BTF_ID_FLAGS(func, bpf_remove_dentry_xattr, KF_SLEEPABLE | KF_TRUSTED_ARGS)
- BTF_ID_FLAGS(func, bpf_cgroup_read_xattr, KF_RCU)
--BTF_KFUNCS_END(bpf_fs_kfunc_set_ids)
-+BTF_KFUNCS_END(bpf_lsm_fs_kfunc_set_ids)
- 
--static int bpf_fs_kfuncs_filter(const struct bpf_prog *prog, u32 kfunc_id)
-+static int bpf_lsm_fs_kfuncs_filter(const struct bpf_prog *prog, u32 kfunc_id)
- {
--	if (!btf_id_set8_contains(&bpf_fs_kfunc_set_ids, kfunc_id) ||
-+	if (!btf_id_set8_contains(&bpf_lsm_fs_kfunc_set_ids, kfunc_id) ||
- 	    prog->type == BPF_PROG_TYPE_LSM)
- 		return 0;
- 	return -EACCES;
-@@ -407,6 +407,40 @@ bool bpf_lsm_has_d_inode_locked(const struct bpf_prog *prog)
- 	return btf_id_set_contains(&d_inode_locked_hooks, prog->aux->attach_btf_id);
- }
- 
-+static const struct btf_kfunc_id_set bpf_lsm_fs_kfunc_set = {
-+	.owner = THIS_MODULE,
-+	.set = &bpf_lsm_fs_kfunc_set_ids,
-+	.filter = bpf_lsm_fs_kfuncs_filter,
-+};
-+
-+/*
-+ * This set contains kfuncs available to BPF programs of cgroup type and
-+ * struct_ops type.
-+ */
-+BTF_KFUNCS_START(bpf_fs_kfunc_set_ids)
-+BTF_ID_FLAGS(func, bpf_cgroup_read_xattr, KF_RCU)
-+BTF_KFUNCS_END(bpf_fs_kfunc_set_ids)
-+
-+static int bpf_fs_kfuncs_filter(const struct bpf_prog *prog, u32 kfunc_id)
-+{
-+	if (!btf_id_set8_contains(&bpf_fs_kfunc_set_ids, kfunc_id))
-+		return 0;
-+	switch (prog->type) {
-+	case BPF_PROG_TYPE_LSM:
-+	case BPF_PROG_TYPE_STRUCT_OPS:
-+	case BPF_PROG_TYPE_CGROUP_SKB:
-+	case BPF_PROG_TYPE_CGROUP_SOCK:
-+	case BPF_PROG_TYPE_CGROUP_DEVICE:
-+	case BPF_PROG_TYPE_CGROUP_SOCK_ADDR:
-+	case BPF_PROG_TYPE_CGROUP_SYSCTL:
-+	case BPF_PROG_TYPE_CGROUP_SOCKOPT:
-+		return 0;
-+	default:
-+		break;
+-	for (i = 0; i < obj->nr_extern; i++)
++	for (i = 0; i < obj->nr_extern; i++) {
++		zfree(&obj->externs[i].name);
+ 		zfree(&obj->externs[i].essent_name);
 +	}
-+	return -EACCES;
-+}
-+
- static const struct btf_kfunc_id_set bpf_fs_kfunc_set = {
- 	.owner = THIS_MODULE,
- 	.set = &bpf_fs_kfunc_set_ids,
-@@ -415,7 +449,16 @@ static const struct btf_kfunc_id_set bpf_fs_kfunc_set = {
  
- static int __init bpf_fs_kfuncs_init(void)
- {
--	return register_btf_kfunc_id_set(BPF_PROG_TYPE_LSM, &bpf_fs_kfunc_set);
-+	int ret;
-+
-+	ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_LSM, &bpf_lsm_fs_kfunc_set);
-+	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS, &bpf_fs_kfunc_set);
-+	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_CGROUP_SKB, &bpf_fs_kfunc_set);
-+	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_CGROUP_SOCK, &bpf_fs_kfunc_set);
-+	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_CGROUP_DEVICE, &bpf_fs_kfunc_set);
-+	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_CGROUP_SOCK_ADDR, &bpf_fs_kfunc_set);
-+	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_CGROUP_SYSCTL, &bpf_fs_kfunc_set);
-+	return ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_CGROUP_SOCKOPT, &bpf_fs_kfunc_set);
- }
- 
- late_initcall(bpf_fs_kfuncs_init);
-diff --git a/tools/testing/selftests/bpf/progs/cgroup_read_xattr.c b/tools/testing/selftests/bpf/progs/cgroup_read_xattr.c
-index b50ccb3aebcf..0995fb2ac9ff 100644
---- a/tools/testing/selftests/bpf/progs/cgroup_read_xattr.c
-+++ b/tools/testing/selftests/bpf/progs/cgroup_read_xattr.c
-@@ -134,3 +134,25 @@ int BPF_PROG(use_bpf_cgroup_ancestor)
- 	bpf_cgroup_release(cgrp);
- 	return 0;
- }
-+
-+SEC("cgroup/sendmsg4")
-+__success
-+int BPF_PROG(cgroup_skb)
-+{
-+	u64 cgrp_id = bpf_get_current_cgroup_id();
-+	struct cgroup *cgrp, *ancestor;
-+
-+	cgrp = bpf_cgroup_from_id(cgrp_id);
-+	if (!cgrp)
-+		return 0;
-+
-+	ancestor = bpf_cgroup_ancestor(cgrp, 1);
-+	if (!ancestor)
-+		goto out;
-+
-+	read_xattr(cgrp);
-+	bpf_cgroup_release(ancestor);
-+out:
-+	bpf_cgroup_release(cgrp);
-+	return 0;
-+}
+ 	zfree(&obj->externs);
+ 	obj->nr_extern = 0;
 -- 
-2.47.1
+2.39.5 (Apple Git-154)
 
 
