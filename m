@@ -1,225 +1,182 @@
-Return-Path: <bpf+bounces-61034-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61035-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50BF3ADFECE
-	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 09:34:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29EECADFF1D
+	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 09:50:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4365189A3A3
-	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 07:34:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3B4716C883
+	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 07:50:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B523248F6D;
-	Thu, 19 Jun 2025 07:34:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D733A2566E6;
+	Thu, 19 Jun 2025 07:50:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EaJ96M4W"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="AA6OjpEe"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8047C242D89
-	for <bpf@vger.kernel.org>; Thu, 19 Jun 2025 07:34:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47708218596;
+	Thu, 19 Jun 2025 07:50:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750318460; cv=none; b=hHUucB2ROOmgezrd1labzrTEwwS02i1EDCuKcVVEdImu3QJ5M4k9Hg1KM2cJy8xBoJavSDMrLSe7VXnXOEObGiw8k5Q0RZw3tMs8BfVm5W+QSKV5jTmwHIRngoAryOtqV0qdojwq708a4MpsTR4uQffUO4PCE3frfnQJ6wlj7Nc=
+	t=1750319426; cv=none; b=sOOx3sZP74HfB8sBYNPsWE3G4s4SrzC3snMsZbGGtOn2jOulLSnN4XjgMFq/rLG1q2QOx5z4VsPI7YX+CkblgtAbH+SFN3xKrLRYC6akUbhfBLYYH0fY+x/S6566qQ7Xk6i7UUkR2NqocjsQJrnk9PCaVheSOFHiwyVMtbDAqTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750318460; c=relaxed/simple;
-	bh=yeWtiBHZH55n42YNLoCsOYSdzWMXXcEm7aOvz/PsYMk=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=J0HuPnmaoEymE73s3Ql3Wz2+E5kxTm5lCdk1ANsV9RxuwYmFc5qhUcdZ7gCNkeVHOjDAJwPDD5noD9VWKsO+kzGj5+CAA1Z9GDFEDnsdbF1dItV9bDY5gD5/mU3jJNh4NeOIONjzvMMLdlekAocEE3b1tr4oaGtuR83/kFu8wX4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EaJ96M4W; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-236470b2dceso5450535ad.0
-        for <bpf@vger.kernel.org>; Thu, 19 Jun 2025 00:34:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750318456; x=1750923256; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=0KYHqwue1sBve1P/vKqUFzQgU9HAIouU3ioU5vMyvnM=;
-        b=EaJ96M4WVr9J5YUdsclVV8zLYVe+lzHJcoZ/Eie5dIxE38fCFskiLEDnjWDGg6Vdk0
-         EkVZ4OYzrZkWxKaE0y5kbPwpfMiJ4pvhcszjtFAfTTYg6rvRBzbIOL2VYnTwBtZFXBnK
-         MLHI4UHMfRZKZB+ixK4F1OtLEoXxDIY/6DKXTUKAstbcKrInDPZ1Gj7goRwRU/MXkzDf
-         YtiXJEQ8QuGhcHJtojYxHhLlWG154knBresN/ja33nqZTOBlPn6MMvX2CaqxFkaSFDTz
-         B++5SZk4N0tUQ+Rh1p9nU/TuieXPkNqbeHsnMZJAkhhtWp5ga91EosOGbzpyjQBwjvzP
-         oyww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750318456; x=1750923256;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0KYHqwue1sBve1P/vKqUFzQgU9HAIouU3ioU5vMyvnM=;
-        b=FBEr6K4QLPGmKKfjamAvva1vF0kzjwo71VmCosVSzfph2/04/LnOPF+q0tvctzwjb7
-         2okDM92bhnDFBNqYG/vrgN3lugAnjDadpy3Xd2l4wFtx5HShewYqlTYUVeQScI9xJStQ
-         x0YG28AKdMFm1TjJAQQ5f1vEeOIULzx8bqCwqIxvxc/wOfT03ESrZjMV9iTfTcHr7CBx
-         JtLc380EnTkhvbr5RTscO5hN/8KalgGvg9VCOYJeEXkMNQj+Gko2WAB9Ert49bPC5VBP
-         3HptXtWmqBNYooE2W+8OGYFr6XDL71OIXNCPYOUYW/7yMLhhvnH7nnjhl9CsepS5T1OR
-         f/AQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVyHZ7doZKiT2NmfkZnc9nuHGsL+9cJIL9rpqAYecQikoSWk98CjekXQCqlWBH2Z+ezlx4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YywkQUfkwl4Vnshfv6ZIxKapIPHVRg0rv2SoayTTwBHH/tZTsV7
-	btHfZa+EOfdA1wqey8AluVulqE4d+0Ig0k1A0qiXWJeq7HrRxRB1yF1H2xZ/pHOb
-X-Gm-Gg: ASbGncsAhk94/FG23OfaeDq/Hu0mzTdku1sEYUr/f1cF4m2mjY7GRSqDtDhNqI21jin
-	5y+ZL60U8/zeIrxyY26RLBFuC8Mp85k4aDc/JWYf6tJw6dtp93T2INISPm7bI69botqi2IzgVK+
-	nx96a5Gyw7OYz6h6/Efzd78hZ7gMn3OsK7OYIz4b9Cu4YqtcOuELOwKO2WRpkY4GXdSTrHFGrDu
-	koS4MYz7486bo3M6qUdPU++FhaIjzJjKUGMUDVE0T6qmlJWOK2/izVZBJ2hUvya1CSwqB3KwV+p
-	rth9shIRUr1UonvtnblZKY2vG/xXdgj8NCst5diQ77Hk/hMy6IKrKoR8QnlDP21v7sj6
-X-Google-Smtp-Source: AGHT+IERvGhw29/ssIW9pVTeW/CvFbjIanfJ/JldRLAbG8i24z8ksOyTstaNUqVIyC/bvT2iPCQJmw==
-X-Received: by 2002:a17:903:98c:b0:236:9dd9:b75d with SMTP id d9443c01a7336-2369dd9bb57mr129569715ad.40.1750318455583;
-        Thu, 19 Jun 2025 00:34:15 -0700 (PDT)
-Received: from [192.168.0.56] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2365dea7db9sm113736095ad.144.2025.06.19.00.34.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Jun 2025 00:34:15 -0700 (PDT)
-Message-ID: <9bb199046f0b55ea4952ee028fc242db7a56bcc3.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v4 2/3] selftests/bpf: support array presets in
- veristat
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, 
-	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, 
-	kernel-team@meta.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Date: Thu, 19 Jun 2025 00:34:13 -0700
-In-Reply-To: <20250618203903.539270-3-mykyta.yatsenko5@gmail.com>
-References: <20250618203903.539270-1-mykyta.yatsenko5@gmail.com>
-	 <20250618203903.539270-3-mykyta.yatsenko5@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+	s=arc-20240116; t=1750319426; c=relaxed/simple;
+	bh=+LdJTkLwhNLBRu51Qjbu3Cs+Afo6/71D2l3eYk+Jksw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LbjBGiW5iGkSKADsCnXs7QM6sQwkXo+yBcjC3KL/Ty7MCV+4MYUSGfkvVJruvapndlJ2X/G6WFfU862Yk+1ylgmliWHLXf6ZON1ClrHG524VgLwzydWS6zHYDQZirJFNs+zoviWLjN0ffO9ye8x0s9I+zlrd2cLExNFvVMonBa4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=AA6OjpEe; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=hx0YVP2tukiJV2KpHYvTHfhjqFI5IFm6q+doEiyTGvs=; b=AA6OjpEeSklZgSVkmbQNpiPpkF
+	YScSkT80pMjOwbudH1ZxaDzwL7EfdkGlfQUNONfl9VHmg6P92KkuwLpnJOczMwVF8mOKAFaZKgWcE
+	FQYrXhAHij1j69QGRY7pdfKH6lbQqF54fFNXqehEBEfuni9RmiTGeHunbl6jL/1/6m/BWFsBWenEz
+	pCPckHH0Z3Tlo+4xJ0QQdta6NFWxCYH90a/l4OLHgosFC4130U3Th+WtN438HuZpsS/wqt71GjCEI
+	J9SgdrDsRV/z1itXsBOGduZytqJuqkydzasdfNWIJOvdpMUrrdosTEtaXOhVt/l1z+TCQj1Rgbklg
+	0Pe05hqA==;
+Received: from 2001-1c00-8d82-d000-266e-96ff-fe07-7dcc.cable.dynamic.v6.ziggo.nl ([2001:1c00:8d82:d000:266e:96ff:fe07:7dcc] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uSA2F-00000004NLC-1js9;
+	Thu, 19 Jun 2025 07:50:11 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id D4E883088F2; Thu, 19 Jun 2025 09:50:08 +0200 (CEST)
+Date: Thu, 19 Jun 2025 09:50:08 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, x86@kernel.org,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Indu Bhagat <indu.bhagat@oracle.com>,
+	"Jose E. Marchesi" <jemarch@gnu.org>,
+	Beau Belgrave <beaub@linux.microsoft.com>,
+	Jens Remus <jremus@linux.ibm.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v10 06/14] unwind_user/deferred: Add deferred unwinding
+ interface
+Message-ID: <20250619075008.GU1613376@noisy.programming.kicks-ass.net>
+References: <20250611005421.144238328@goodmis.org>
+ <20250611010428.770214773@goodmis.org>
+ <20250618184620.GT1613376@noisy.programming.kicks-ass.net>
+ <20250618150915.3e811f4b@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250618150915.3e811f4b@gandalf.local.home>
 
-On Wed, 2025-06-18 at 21:39 +0100, Mykyta Yatsenko wrote:
-> From: Mykyta Yatsenko <yatsenko@meta.com>
->=20
-> Implement support for presetting values for array elements in veristat.
-> For example:
-> ```
-> sudo ./veristat set_global_vars.bpf.o -G "arr[3] =3D 1"
-> ```
-> Arrays of structures and structure of arrays work, but each individual
-> scalar value has to be set separately: `foo[1].bar[2] =3D value`.
->=20
-> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
-> ---
->  tools/testing/selftests/bpf/veristat.c | 226 ++++++++++++++++++++-----
->  1 file changed, 180 insertions(+), 46 deletions(-)
->=20
-> diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selft=
-ests/bpf/veristat.c
-> index 483442c08ecf..9942adbda411 100644
-> --- a/tools/testing/selftests/bpf/veristat.c
-> +++ b/tools/testing/selftests/bpf/veristat.c
+On Wed, Jun 18, 2025 at 03:09:15PM -0400, Steven Rostedt wrote:
+> On Wed, 18 Jun 2025 20:46:20 +0200
+> Peter Zijlstra <peterz@infradead.org> wrote:
+> 
+> > > +struct unwind_work;
+> > > +
+> > > +typedef void (*unwind_callback_t)(struct unwind_work *work, struct unwind_stacktrace *trace, u64 timestamp);
+> > > +
+> > > +struct unwind_work {
+> > > +	struct list_head		list;  
+> > 
+> > Does this really need to be a list? Single linked list like
+> > callback_head not good enough?
+> 
+> Doesn't a list head make it easier to remove without having to iterate the
+> list?
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+Yeah, but why would you ever want to remove it? You asked for an unwind,
+you get an unwind, no?
 
-[...]
+> > >  static __always_inline void unwind_exit_to_user_mode(void)
+> > >  {
+> > >  	if (unlikely(current->unwind_info.cache))
+> > >  		current->unwind_info.cache->nr_entries = 0;
+> > > +	current->unwind_info.timestamp = 0;  
+> > 
+> > Surely clearing that timestamp is only relevant when there is a cache
+> > around? Better to not add this unconditional write to the exit path.
+> 
+> That's actually not quite true. If the allocation fails, we still want to
+> clear the timestamp. But later patches add more data to check and it does
+> exit out if there's been no requests:
 
-> @@ -1670,7 +1706,7 @@ static int append_var_preset(struct var_preset **pr=
-esets, int *cnt, const char *
->  	memset(cur, 0, sizeof(*cur));
->  	(*cnt)++;
-> =20
-> -	if (sscanf(expr, "%s =3D %s %n", var, val, &n) !=3D 2 || n !=3D strlen(=
-expr)) {
-> +	if (sscanf(expr, "%[][a-zA-Z0-9_.] =3D %s %n", var, val, &n) !=3D 2 || =
-n !=3D strlen(expr)) {
+Well, you could put in an error value on alloc fail or somesuch. Then
+its non-zero.
 
-Out of curiosity, won't match if the pattern would remain "%s =3D %s %n"?
+> But for better reviewing, I could add a comment in this patch that states
+> that this will eventually exit out early when it does more work.
 
->  		fprintf(stderr, "Failed to parse expression '%s'\n", expr);
->  		return -EINVAL;
->  	}
-> @@ -1763,17 +1799,103 @@ static bool is_preset_supported(const struct btf=
-_type *t)
->  	return btf_is_int(t) || btf_is_enum(t) || btf_is_enum64(t);
->  }
-> =20
-> +static int find_enum_value(const struct btf *btf, const char *name, long=
- long *value)
-> +{
-> +	const struct btf_type *t;
-> +	int cnt, i;
-> +	long long lvalue;
-> +
-> +	cnt =3D btf__type_cnt(btf);
-> +	for (i =3D 1; i !=3D cnt; ++i) {
-> +		t =3D btf__type_by_id(btf, i);
-> +
-> +		if (!btf_is_any_enum(t))
-> +			continue;
-> +
-> +		if (enum_value_from_name(btf, t, name, &lvalue) =3D=3D 0) {
-> +			*value =3D lvalue;
-> +			return 0;
-> +		}
-> +	}
-> +	return -ESRCH;
-> +}
-> +
+You're making this really hard to review, why not do it right from the
+get-go?
 
-[...]
+> > > +/* Guards adding to and reading the list of callbacks */
+> > > +static DEFINE_MUTEX(callback_mutex);
+> > > +static LIST_HEAD(callbacks);  
+> > 
+> > Global state.. smells like failure.
+> 
+> Yes, the unwind infrastructure is global, as it is the way tasks know what
+> tracer's callbacks to call.
 
-> @@ -1815,26 +1938,29 @@ const int btf_find_member(const struct btf *btf,
->  static int adjust_var_secinfo(struct btf *btf, const struct btf_type *t,
->  			      struct btf_var_secinfo *sinfo, struct var_preset *preset)
->  {
-> -	const struct btf_type *base_type, *member_type;
-> -	int err, member_tid, i;
-> -	__u32 member_offset =3D 0;
-> -
-> -	base_type =3D btf__type_by_id(btf, btf__resolve_type(btf, t->type));
-> -
-> -	for (i =3D 1; i < preset->atom_count; ++i) {
-> -		err =3D btf_find_member(btf, base_type, 0, preset->atoms[i].name,
-> -				      &member_tid, &member_offset);
-> -		if (err) {
-> -			fprintf(stderr, "Could not find member %s for variable %s\n",
-> -				preset->atoms[i].name, preset->atoms[i - 1].name);
-> -			return err;
-> +	const struct btf_type *base_type;
-> +	int err, i =3D 1, n;
-> +	int tid;
-> +
-> +	tid =3D btf__resolve_type(btf, t->type);
-> +	base_type =3D btf__type_by_id(btf, tid);
-> +
-> +	while (i < preset->atom_count) {
-> +		if (preset->atoms[i].type =3D=3D ARRAY_INDEX) {
-> +			n =3D adjust_var_secinfo_array(btf, tid, preset, i, sinfo);
-> +			if (n < 0)
-> +				return n;
-> +			i +=3D n;
+Well, that's apparently how you've set it up. I don't immediately see
+this has to be like this.
 
-Having a nested loop to consume all indices looks annoying.
-On the other hand, there is not much one can do w/o some kind of
-btf__type_physical_size.
+And there's no comments no nothing.
 
-> +		} else {
-> +			err =3D btf_find_member(btf, base_type, 0, preset->atoms[i].name, sin=
-fo);
-> +			if (err)
-> +				return err;
-> +			i++;
->  		}
-> -		member_type =3D btf__type_by_id(btf, member_tid);
-> -		sinfo->offset +=3D member_offset / 8;
-> -		sinfo->size =3D member_type->size;
-> -		sinfo->type =3D member_tid;
-> -		base_type =3D member_type;
-> +		base_type =3D btf__type_by_id(btf, sinfo->type);
-> +		tid =3D sinfo->type;
->  	}
-> +
->  	return 0;
->  }
-> =20
+I don't see why you can't have something like:
 
-[...]
+struct unwind_work {
+	struct callback_head task_work;
+	void *data;
+	void (*func)(struct unwind_work *work, void *data);
+};
+
+void unwind_task_work_func(struct callback_head *task_work)
+{
+	struct unwind_work *uw = container_of(task_work, struct unwind_work, task_work);
+
+	// do actual unwind
+
+	uw->func(uw, uw->data);
+}
+
+or something along those lines. No global state involved.
+
+
+> > > +	guard(mutex)(&callback_mutex);
+> > > +	list_for_each_entry(work, &callbacks, list) {
+> > > +		work->func(work, &trace, timestamp);
+> > > +	}  
+> > 
+> > So now you're globally serializing all return-to-user instances. How is
+> > that not a problem?
+> 
+> It was the original way we did things. The next patch changes this to SRCU.
+> But it requires a bit more care. For breaking up the series, I preferred
+> not to add that logic and make it a separate patch.
+> 
+> For better reviewing, I'll add a comment here that says:
+> 
+> 	/* TODO switch this global lock to SRCU */
+
+Oh ffs :-(
+
+So splitting up patches is for ease of review, but now you're making
+splits that make review harder, how does that make sense?
 
 
