@@ -1,127 +1,88 @@
-Return-Path: <bpf+bounces-61090-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61091-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4216FAE0A31
-	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 17:20:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE336AE0A5A
+	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 17:26:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC1D01673B1
-	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 15:20:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B77223A4FB8
+	for <lists+bpf@lfdr.de>; Thu, 19 Jun 2025 15:25:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B278221F2E;
-	Thu, 19 Jun 2025 15:20:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8307F215F53;
+	Thu, 19 Jun 2025 15:26:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g6Cge1br"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KAZF1CAT"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF87C21E094;
-	Thu, 19 Jun 2025 15:20:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF4477494;
+	Thu, 19 Jun 2025 15:26:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750346427; cv=none; b=c3K8/RE04FxZLQF3kU7kkyfaGHfW6MzhX4tby+4rjtPszl1wpEbDbnYLH3V6ViWZo83MAyD+kK/L3qVINAqN/skTl2qLSotB01u8p+cj/q4jLodyihiX1v96viihAOgId/HXStj8fG3SL3Xwu1bE370mf8LtZnm1w6zGoUp9Ef4=
+	t=1750346763; cv=none; b=YUrGDNILZjK9EUUrm0aR2wXNxSaD6RR5rbUjtNF984Y4Esp7+uGwrXS+WvQ4qB/SBYy3yTpoe23kCxPgqSGl+waZJy82DuOjBKpIqOM7ISXlwXnsiTR6DY7GHZYalKQ5yXkwf0hXs1Pbp92thbmjhC8Zx1r+iImk73RMzTuDgJo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750346427; c=relaxed/simple;
-	bh=YYemg1DZbLYuOwEnTxXkp/8rM6iO4piNRQwhWzEsPyY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lFdhpm63dj67/58Y12jv2pQcJsLcT4SEGtMx/K+BEq1P+KaAcdS92mO2zxwBBtjzuRv73eDdwei/0dhFqlBpAVU+yfwSV6GJeyJl3BnTN1CXcuD5hk9NJuv1ZegaHdzK8IvWFetf0XoaQsGBmmTib86ew7uVTvF4IjFbjuKHbzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g6Cge1br; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6860AC4CEEF;
-	Thu, 19 Jun 2025 15:20:27 +0000 (UTC)
+	s=arc-20240116; t=1750346763; c=relaxed/simple;
+	bh=un6tvBy8UgIsmggAAGQTIqboNDym9ssERw/2WamhE+M=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=EcVAgiTFJTgnVZ4s3YH1msKds+DBQgliiO5B45tYflBCSstDO6wDrZhKNGdR02eJOiXl9kgGnao63I1UWiI4IkY4tLrdr4MXnzulyKDyWxG6wZ+4TFeX4WN8IR/D8EWp0YSu2RjsiQpXr9BX6uQVyu43bVsWflO2iQ/S3nWLt3Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KAZF1CAT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8DBCC4CEEA;
+	Thu, 19 Jun 2025 15:26:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750346427;
-	bh=YYemg1DZbLYuOwEnTxXkp/8rM6iO4piNRQwhWzEsPyY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=g6Cge1br7gh3z3g/7NXWP+pIDxR0Y07FlnMCprV04fnZlHl9ztfOZ7Jed23XO+PwA
-	 YKPnTdVXfe+jqS/5fRxzvFGJJgXelgyJyVPUgCGoumCwvVLgHGPA8qgNLv6Eoal+zP
-	 naFQmYU3q55b/A1KPYDO9DinE2sCg6tp8GBI6xOGYK53wyYiyAKPi/TbZDFdA5sA+K
-	 5DARdyi30SsSAuDzSYgwrQ6XWpuBJ1SxBOTnpuHacevnZWf6yj22aubGWyIbeoY94O
-	 F8PiwN52uVLJIHJ+Hn8e8vGLdx773W+r7ou/e94Uly9UHLiiWJa2WjqPBDGPBa6lnp
-	 PmzFLFWpFV5IQ==
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-6071ac9dc3eso1475280a12.1;
-        Thu, 19 Jun 2025 08:20:27 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU9bjSYnosEb+D3de2oYgsG+JMYngzk/EcpkIN9FTRkikDWPy7sYLwS+ADc9Oaa49/bWjPleUd3j+4OJR6x@vger.kernel.org, AJvYcCWFLUD3Y3/v2Pp6VpyBYlzSWtSiTfvaTkEJBvRwSFksUbI6+XhU2yXkzs0CI18jZ1easX8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwV98ijHzXTpcqhPKmT6gpEjPGRS6uuV9Vtq7LIJGvCGouyuB+m
-	8x8MYn/r65P31a8C/1XjVPsS99X2Iq6b4dwkGNeESbTZ8DhUWmL68lDJsEvfkjmVNyeRsNLSRwm
-	HExuATNgRfXSM2QvjcFsQnKEzgbmCw1o=
-X-Google-Smtp-Source: AGHT+IFXK+Qw9NgGm0hee492d8UUku0ecCMsOIPbbPeNge5/EfHtOghCJ2WTuf5yJT7m69zgr05or7oou+dMn0UFtOc=
-X-Received: by 2002:a50:d00a:0:b0:609:b5e0:598a with SMTP id
- 4fb4d7f45d1cf-609b5efa3c2mr5938805a12.24.1750346425944; Thu, 19 Jun 2025
- 08:20:25 -0700 (PDT)
+	s=k20201202; t=1750346762;
+	bh=un6tvBy8UgIsmggAAGQTIqboNDym9ssERw/2WamhE+M=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=KAZF1CATh+Fk7ABgx1rAsdVd2Ilstb0aPIU9Wpx62AEM3GFmaGhNFe5cq8CWSc2u3
+	 8wdf4iAmdQfc8Q43NNA22Q7j2gwwKPq0uJAaD13DUctLAlndev4gjvJbxBp7//sXhH
+	 5nDQTIQIFQEALIrj0z/N6ayQeHLPRbwtgQqb0ksQXBF2Q1nsbiRwBbwVyHVv95109g
+	 xdhxQ8X3XNt52lab1qbcUBPTJiTfZkqQxJCWTonNc6E/VzJTt3bWFqNr0+PwJIER/B
+	 Ihj0Wm+GdjHeZs62Xodoh4oPJM1Yr++BMH51Dy5e+NangO15Pl9bgelCieuphnHUS5
+	 SwPqRb6CLrfEQ==
+Date: Thu, 19 Jun 2025 08:26:01 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Bui Quang Minh <minhquangbui99@gmail.com>
+Cc: netdev@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>, Jason
+ Wang <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Eugenio
+ =?UTF-8?B?UMOpcmV6?= <eperezma@redhat.com>, Andrew Lunn
+ <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend
+ <john.fastabend@gmail.com>, virtualization@lists.linux.dev,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net 1/2] virtio-net: xsk: rx: fix the frame's length
+ check
+Message-ID: <20250619082601.3e5b6251@kernel.org>
+In-Reply-To: <9a38a134-3ce8-4c91-a7e7-2a162cbf3b7c@gmail.com>
+References: <20250615151333.10644-1-minhquangbui99@gmail.com>
+	<20250615151333.10644-2-minhquangbui99@gmail.com>
+	<20250618191111.29e6136e@kernel.org>
+	<9a38a134-3ce8-4c91-a7e7-2a162cbf3b7c@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250617063206.24733-1-yangtiezhu@loongson.cn>
-In-Reply-To: <20250617063206.24733-1-yangtiezhu@loongson.cn>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Thu, 19 Jun 2025 23:20:11 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H6TeZpLyY19xBhVwZbQeH5gQyZZqw_xP2P9rgTyFOiHUw@mail.gmail.com>
-X-Gm-Features: AX0GCFuKQYqo1n7IN8eZ9SnbFz0JRivAai9Ek3n9r7iBcKd8_Yvi2GKDfv2Nfps
-Message-ID: <CAAhV-H6TeZpLyY19xBhVwZbQeH5gQyZZqw_xP2P9rgTyFOiHUw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] LoongArch, bpf: Set bpf_jit_bypass_spec_v1/v4()
-To: Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Hengqi Chen <hengqi.chen@gmail.com>, bpf@vger.kernel.org, 
-	loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Queued for loongarch-next, thanks.
+On Thu, 19 Jun 2025 21:17:03 +0700 Bui Quang Minh wrote:
+> > I think Michael mention he's AFK so while we wait could you fix this
+> > kdoc? I'm not sure whether the kdoc is really necessary here, but if
+> > you want to keep it you have to document the return value:
+> >
+> > Warning: drivers/net/virtio_net.c:1141 No description found for return value of 'buf_to_xdp'  
+> 
+> I want to add kdoc to clarify that the @len must be without virtio 
+> header's length. I'll fix it in the next version.
 
+If that's the case I'd personally limit the doc to:
 
-Huacai
+/* Note that @len is the length of received data without virtio header */
 
-On Tue, Jun 17, 2025 at 2:32=E2=80=AFPM Tiezhu Yang <yangtiezhu@loongson.cn=
-> wrote:
->
-> JITs can set bpf_jit_bypass_spec_v1/v4() if they want the verifier
-> to skip analysis/patching for the respective vulnerability, it is
-> safe to set both bpf_jit_bypass_spec_v1/v4(), because there is no
-> speculation barrier instruction for LoongArch.
->
-> Suggested-by: Luis Gerhorst <luis.gerhorst@fau.de>
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->
-> This is based on the latest bpf-next tree which contains the
-> prototype and caller for bpf_jit_bypass_spec_v1/v4().
->
-> By the way, it needs to update bpf-next tree before building
-> on LoongArch:
->
-> [Build Error Report] Implicit Function declaration for bpf-next tree
-> https://lore.kernel.org/bpf/d602ae87-8bed-1633-d5b6-41c5bd8bbcdc@loongson=
-.cn/
->
->  arch/loongarch/net/bpf_jit.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
->
-> diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
-> index fa1500d4aa3e..5de8f4c44700 100644
-> --- a/arch/loongarch/net/bpf_jit.c
-> +++ b/arch/loongarch/net/bpf_jit.c
-> @@ -1359,3 +1359,13 @@ bool bpf_jit_supports_subprog_tailcalls(void)
->  {
->         return true;
->  }
-> +
-> +bool bpf_jit_bypass_spec_v1(void)
-> +{
-> +       return true;
-> +}
-> +
-> +bool bpf_jit_bypass_spec_v4(void)
-> +{
-> +       return true;
-> +}
-> --
-> 2.42.0
->
->
+but up to you, it's quite subjective.
 
