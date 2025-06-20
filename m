@@ -1,72 +1,78 @@
-Return-Path: <bpf+bounces-61161-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61162-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC662AE1A1F
-	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 13:38:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23390AE1A49
+	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 13:53:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DF3E4A20B9
-	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 11:39:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 099125A5FC4
+	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 11:52:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0B7728A3E4;
-	Fri, 20 Jun 2025 11:38:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4272288525;
+	Fri, 20 Jun 2025 11:52:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dldju2PV"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="i1bc+LuI"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F42421A425;
-	Fri, 20 Jun 2025 11:38:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B280223DFA
+	for <bpf@vger.kernel.org>; Fri, 20 Jun 2025 11:52:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750419533; cv=none; b=jVXagAcgJpGHdtLUEu0AvG4T3Kv4KuIHL9QjXocu9IY61zlheN8ZGKnRT0xYnbKDEJLirdl61E5ep+KJZOQduXp9fygLsZmb9DTCrweSpullqszbaBv6fXjsLbj/en8JRxEnTQsKjNRFIM7yKnupGpnzw2ge+dwaszUUjeqAlW0=
+	t=1750420371; cv=none; b=kYd984FoXfNYAy6qrlYZdHkgZtggMZQn0gBc1oy4yhwTfF/Y/o6dsGxuESQo1/AteJYWYNoHt1kKS7n+jUnhXU16hSrQj8vImOTiuGYHvqyUnpHG2eUeAqQEGnz+m0PZ7+Xs9/2OnDejjRes4GYkIQX6iY53xBGGLAYmRbuFcXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750419533; c=relaxed/simple;
-	bh=wldGJgpWJX2/0ox4U/bhSDHg+C5dlQXJ/dU+3159yuc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fbolBHXGIGiVquGPOViWPZiSVyU0u9EEDraeLs0ZI680HrqWtUwZEOZX4FsGUbzoa/jWLPMsdWru6nl2SgjgbfnGnXMEuOfWQAHEaMjZeM0Bgo2dH3049tOKyri2q9WrmxHIf2Y9d1fb2y/fIUr6Z6gCyiXgzvrM+MpxGVAitJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dldju2PV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCFFBC4CEE3;
-	Fri, 20 Jun 2025 11:38:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750419532;
-	bh=wldGJgpWJX2/0ox4U/bhSDHg+C5dlQXJ/dU+3159yuc=;
-	h=From:To:Cc:Subject:Date:From;
-	b=dldju2PVtEAP0iOcKTNK5vE2o3MW/EilJAOJSK3Zx1GIX0B85uwHE0Zjzq3HyMT+V
-	 HqBbayBwnJ5Q7J0u56Lb8OyHOi7e7CjiiHbHBwQKDNJ9Rv9aYo4kCH+cUfTeeBlHR/
-	 miZPL9NIQkQYSoWD16p407/1I6M3WntWtqTNZY0KWLNS3WFEF5/FB0jRNDKSYilNiT
-	 gskxkUb9r4fXjYLKnkdDVV5t+DU76gRayPyDHD6xl4vzh8nvMm1Ie0WL//VL94xHYP
-	 ln6rxkqW78au2X2/u3+vYRJ6Ha9AfYmv9CX+4L12K/PmWCpgbM6CgkFD049HJxzwMV
-	 zhjT+iPhEqMHA==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>,
+	s=arc-20240116; t=1750420371; c=relaxed/simple;
+	bh=Om8SjADcgF5LVJcSVJVtWn8v6IJvgWou0X0SKHS7aoY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=do4m33BNum1b7Pk6T2N9o9GP0ZDIxST5lslE7b37cQcqxq27fWHytWiIhdBsfrVSHCYskrCXstJ/aa8p9iWsE1DM1XK0nfu85MTGvwyUVszOLIGlzAiGkeh11nYwfFZQ2OaVBC+fToDBMELWw0s/jbzCUxKGU48OUdp86tkdMdA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=i1bc+LuI; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1750420368;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=kq44sqfOiSYHZkC/WHrkigXZylua8qA0dObWJXEe66M=;
+	b=i1bc+LuIHtALw8Xmi6CbBChah1ry7ma3mUMME7sXhfHqJcJREQok0XXQ4muonHo5MmuY7K
+	dCh5jyiT0b/ZBzMJl5LE+lVsGgte74YoIO+EaivbSwUwtzRTYSevOCGnMUWymu4xeiLOqC
+	5LM8iuwcyx1gMEn4SLxXevx79+ashgc=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-689-0rvFUmy9P3GeL_RoQL6-tQ-1; Fri,
+ 20 Jun 2025 07:52:45 -0400
+X-MC-Unique: 0rvFUmy9P3GeL_RoQL6-tQ-1
+X-Mimecast-MFC-AGG-ID: 0rvFUmy9P3GeL_RoQL6-tQ_1750420363
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id C777919560BA;
+	Fri, 20 Jun 2025 11:52:42 +0000 (UTC)
+Received: from vmalik-fedora.redhat.com (unknown [10.44.34.11])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 4793B195609D;
+	Fri, 20 Jun 2025 11:52:36 +0000 (UTC)
+From: Viktor Malik <vmalik@redhat.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	John Fastabend <john.fastabend@gmail.com>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
 	Eduard Zingerman <eddyz87@gmail.com>,
 	Song Liu <song@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
 	KP Singh <kpsingh@kernel.org>,
 	Stanislav Fomichev <sdf@fomichev.me>,
 	Hao Luo <haoluo@google.com>,
 	Jiri Olsa <jolsa@kernel.org>,
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Luis Gerhorst <luis.gerhorst@fau.de>,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH] bpf: turn off sanitizer in do_misc_fixups for old clang
-Date: Fri, 20 Jun 2025 13:38:31 +0200
-Message-Id: <20250620113846.3950478-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.5
+	Viktor Malik <vmalik@redhat.com>
+Subject: [PATCH bpf-next v6 0/4] bpf: Add kfuncs for read-only string operations
+Date: Fri, 20 Jun 2025 13:52:27 +0200
+Message-ID: <cover.1750402154.git.vmalik@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -74,54 +80,87 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-From: Arnd Bergmann <arnd@arndb.de>
+String operations are commonly used in programming and BPF programs are
+no exception. Since it is cumbersome to reimplement them over and over,
+this series introduce kfuncs which provide the most common operations.
+For now, we only limit ourselves to functions which do not copy memory
+since these usually introduce undefined behaviour in case the
+source/destination buffers overlap which would have to be prevented by
+the verifier.
 
-clang versions before version 18 manage to badly optimize the bpf
-verifier, with lots of variable spills leading to excessive stack
-usage in addition to likely rather slow code:
+The kernel already contains implementations for all of these, however,
+it is not possible to use them from BPF context. The main reason is that
+the verifier is not able to check that it is safe to access the entire
+string and that the string is null-terminated and the function won't
+loop forever. Therefore, the operations are open-coded using
+__get_kernel_nofault instead of plain dereference and bounded to at most
+XATTR_SIZE_MAX characters to make them safe. That allows to skip all the
+verfier checks for the passed-in strings as safety is ensured
+dynamically.
 
-kernel/bpf/verifier.c:23936:5: error: stack frame size (2096) exceeds limit (1280) in 'bpf_check' [-Werror,-Wframe-larger-than]
-kernel/bpf/verifier.c:21563:12: error: stack frame size (1984) exceeds limit (1280) in 'do_misc_fixups' [-Werror,-Wframe-larger-than]
+All of the proposed functions return integers, even those that normally
+(in the kernel or libc) return pointers into the strings. The reason is
+that since the strings are generally treated as unsafe, the pointers
+couldn't be dereferenced anyways. So, instead, we return an index to the
+string and let user decide what to do with it. The integer APIs also
+allow to return various error codes when unexpected situations happen
+while processing the strings.
 
-Turn off the sanitizer in the two functions that suffer the most from
-this when using one of the affected clang version.
+The series include both positive and negative tests using the kfuncs.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- kernel/bpf/verifier.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+Changelog
+---------
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 2fa797a6d6a2..7724c7a56d79 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -19810,7 +19810,14 @@ static int do_check_insn(struct bpf_verifier_env *env, bool *do_print_state)
- 	return 0;
- }
- 
--static int do_check(struct bpf_verifier_env *env)
-+#if defined(CONFIG_CC_IS_CLANG) && CONFIG_CLANG_VERSION < 180100
-+/* old clang versions cause excessive stack usage here */
-+#define __workaround_kasan  __disable_sanitizer_instrumentation
-+#else
-+#define __workaround_kasan
-+#endif
-+
-+static __workaround_kasan int do_check(struct bpf_verifier_env *env)
- {
- 	bool pop_log = !(env->log.level & BPF_LOG_LEVEL2);
- 	struct bpf_verifier_state *state = env->cur_state;
-@@ -21817,7 +21824,7 @@ static int add_hidden_subprog(struct bpf_verifier_env *env, struct bpf_insn *pat
- /* Do various post-verification rewrites in a single program pass.
-  * These rewrites simplify JIT and interpreter implementations.
-  */
--static int do_misc_fixups(struct bpf_verifier_env *env)
-+static __workaround_kasan int do_misc_fixups(struct bpf_verifier_env *env)
- {
- 	struct bpf_prog *prog = env->prog;
- 	enum bpf_attach_type eatype = prog->expected_attach_type;
+Changes in v6:
+- Improve the third patch which allows to use macros in __retval in
+  selftests. The previous solution broke several tests.
+
+Changes in v5:
+- Make all kfuncs return integers (Andrii).
+- Return -ERANGE when passing non-kernel pointers on arches with
+  non-overlapping address spaces (Alexei).
+- Implement "unbounded" variants using the bounded ones (Andrii).
+- Add more negative test cases.
+
+Changes in v4 (all suggested by Andrii):
+- Open-code all the kfuncs, not just the unbounded variants.
+- Introduce `pagefault` lock guard to simplify the implementation
+- Return appropriate error codes (-E2BIG and -EFAULT) on failures
+- Const-ify all arguments and return values
+- Add negative test-cases
+
+Changes in v3:
+- Open-code unbounded variants with __get_kernel_nofault instead of
+  dereference (suggested by Alexei).
+- Use the __sz suffix for size parameters in bounded variants (suggested
+  by Eduard and Alexei).
+- Make tests more compact (suggested by Eduard).
+- Add benchmark.
+
+Viktor Malik (4):
+  uaccess: Define pagefault lock guard
+  bpf: Add kfuncs for read-only string operations
+  selftests/bpf: Allow macros in __retval
+  selftests/bpf: Add tests for string kfuncs
+
+ include/linux/uaccess.h                       |   2 +
+ kernel/bpf/helpers.c                          | 389 ++++++++++++++++++
+ .../selftests/bpf/prog_tests/string_kfuncs.c  |  63 +++
+ tools/testing/selftests/bpf/progs/bpf_misc.h  |  14 +-
+ .../bpf/progs/string_kfuncs_failure1.c        |  77 ++++
+ .../bpf/progs/string_kfuncs_failure2.c        |  21 +
+ .../bpf/progs/string_kfuncs_success.c         |  35 ++
+ .../bpf/progs/verifier_div_overflow.c         |   4 +-
+ tools/testing/selftests/bpf/test_loader.c     |  23 +-
+ 9 files changed, 605 insertions(+), 23 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/string_kfuncs.c
+ create mode 100644 tools/testing/selftests/bpf/progs/string_kfuncs_failure1.c
+ create mode 100644 tools/testing/selftests/bpf/progs/string_kfuncs_failure2.c
+ create mode 100644 tools/testing/selftests/bpf/progs/string_kfuncs_success.c
+
 -- 
-2.39.5
+2.49.0
 
 
