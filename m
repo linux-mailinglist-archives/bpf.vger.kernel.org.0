@@ -1,136 +1,114 @@
-Return-Path: <bpf+bounces-61138-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61139-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87493AE1177
-	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 05:00:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30F9EAE1194
+	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 05:11:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC26D7AA0FC
-	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 02:58:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1FD91BC2E90
+	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 03:12:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B9B51DC075;
-	Fri, 20 Jun 2025 03:00:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 339A41C861A;
+	Fri, 20 Jun 2025 03:11:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ch7S/74U"
+	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="uDUVFsLL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 183471C8632;
-	Fri, 20 Jun 2025 03:00:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8997823CE
+	for <bpf@vger.kernel.org>; Fri, 20 Jun 2025 03:11:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750388413; cv=none; b=MLNTY8LJcjpkVPormPYPY5qyGDqk5MLcCw7uffIs8ZRJqx8Mco/9VZCR6gJwChEKOKTTH27QdRfntmtSTikc9OxMJfFSsA7ZTCi1Ss6gaTDvNiP5Cwz4UJ4+Ir2Ffsn99BFkwEGbLqoajGukdBcvbL7MyFRLCFqCXf7zWT+lT0w=
+	t=1750389099; cv=none; b=LFhOoJ/BYeERBpx3+exRjGQ+GiTX8qexnWunTp2/bYmfXW0X4aKyMXP546P+8sdlehPTPflweS/p62sWHIiNCs+R3MgxwICAF2GsiC36ynbFzxxete54I9tmjyc9IrXFlEe9vQh9wQyKWF67FD1+K2K1J+rflzyStb6os7xgqWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750388413; c=relaxed/simple;
-	bh=492FkEcbUqlitli7afwsSzul8nCEhg3OOiELnPHhD0k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eApFHcZNWjFt6us0rJrtMkYr4ZfA4qDRaNTyZiM4ePj1RrMWmQB1C14ahmZzYCCJDPCklmTil91TVbGWIs+3brPvohdjrJAmmVEH+rNt6JdQoExcQxsZXu9bGPr9VFw2AgXjJ/gJODEO6hGOXMTfeWZOXn1O0CAYpfZg8V9pfHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ch7S/74U; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-450cfb79177so7152785e9.0;
-        Thu, 19 Jun 2025 20:00:11 -0700 (PDT)
+	s=arc-20240116; t=1750389099; c=relaxed/simple;
+	bh=qfoR3xg8SouGAkuAj30p44xOAE0+C9pkoYj1SVnQvIk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=s1u5d/JnTu5JQG2sZTtmnWHDEtFnZYUUMi9nqqHYJ/uvEtL+z1qfGLhk/InSXrTx3N/r982ODiZbipY0jKFTzABcOHd67NnBRWYf4ZdUb3gG9mpEgAB/F7pd/GUYxhaxPbkXeFweB2M5oV4/1cigqm4XUGQT0pa9P9W0Iwc1w64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=uDUVFsLL; arc=none smtp.client-ip=209.85.160.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etsalapatis.com
+Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-4a585dc5f4aso16106671cf.2
+        for <bpf@vger.kernel.org>; Thu, 19 Jun 2025 20:11:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750388410; x=1750993210; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ap5dRT8eTtOkg8Wh5kHr4/xuZQ7FxGdTJiWZWoXWBZA=;
-        b=ch7S/74UGPW5tqHHhimIC6AlsThoNicwoRNPMmXjtoSuoEHCBiK7ChldCDxOSjURKH
-         e/uibot8bJbu9/885u2B+ooI7BHwsKW5Ht3PcPzn0bZyBI7UZpWdEUAjHNZVwhWxf30m
-         NKxccYV5nry9Gh2mbt8xmXAtFhqezlD343Cl3RoPFxW9X/exmNUw/BmZOLucGdAVEOT0
-         8zIDt4gUNeBmC43IwLkGtni9u442yf8qo52IgHi9eYGeTAgm+e5MxXTO+/eHv8mPNyiu
-         zpqmKSTBhd9WprBbBTrk/lmY1mqSUOAPnttHMll2Qso1zPw6OW4tbUOViA6xsURyUDaR
-         jaXA==
+        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1750389096; x=1750993896; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xi/hczcpZg9I5SOGYM1aAWQ/pmGexqQaBjs3hn7VO6w=;
+        b=uDUVFsLLZalEAPjzAljvePl3IPePHHI1SKHKw5d79BIKumz/zlCfNnro4Et2vgKn3n
+         P1/JYO8r111JRsxh+miZKVamY8zCf1R0O4vHskFKJWPXCiSssiCBUmeYg9EgajIWi/7r
+         1sNcEtW60HKvEXdFfSnNV0SCHr+OhZypYgmVkoTkubBf+X1Bzp10kj+iBqJ1F1iBEvmR
+         UACeYNVvhTI6toS3JB7OkytH2XqWH+r7ZKrUPrIHrnoPPlSBvESIA+SnMFSibgID3vtR
+         9396vb1PzDVaJVVv3kVEc1+F34+3OkWGQHEgTFZKXWdenzI37exjSHSHjY64D+5KMsbi
+         /9BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750388410; x=1750993210;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ap5dRT8eTtOkg8Wh5kHr4/xuZQ7FxGdTJiWZWoXWBZA=;
-        b=AeR7ZncJrVlBAlVTBfYT+/VDVDNFZpQi2klTCQuJU9/2B1pDxGxS7JSDnFwbGOx8o/
-         FCnuREMVrDGBsRLLgCVEnE6Ztb3zEHXO5c0+HgrqfBbfcIEgdU5gG5QBSQFRQmutRbWk
-         5oVKFlGbDOqck6kqVJPoLdGFrrvoApb5i9Bq6WfRCXDn0p+C9JvmIo3ELrscxPq/g/Od
-         ELxBoA7q/f2JGHjjCUpSSRpxL8PYrCztGQYMCgqdBzfOQLLIpfkaxlduqLTvHm4W0fKp
-         BE86mjgq0Xlp6reGVtgv/N+81Jzvh5/st4IH1dt6QIVBtKpiUzl7tmINTfIC0OOOwz6R
-         5dcg==
-X-Forwarded-Encrypted: i=1; AJvYcCV6p4JN9JuP0HeEcJaFFuY28QahhsR7ut+Lwc121W4+9at74EhVQV4UnrISdKEZH95ONoOwawsAkqJrZ9E4k7wdilTD@vger.kernel.org, AJvYcCVq+Lz1vs9rK/Fa7E2rSyaqkYvHD0ye2wnILPzi7ptGJOfW0Hpp3wHzm2pyhdK37winvxhowfnqbpzpCoab@vger.kernel.org, AJvYcCXNRHji9m09eTjEK3A2g+BzGg3X01ycXAxNwVMA7TLLWRYZzya7pgwceotpVz9pZo1EvEs=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy35cH12Beo8R4DaYp4JpQryFFLfAXTMnJwh0nAjeVdIH02zAOU
-	GcanvuMzDEXF/vzmOjpZgtotW8sXxD+IRm1l7XBjr6TO5JVg28/J0kftoXPvx1ZBxAWCRWb/gpK
-	g5rUEL4SFTm3TF4M8EVam8vmJ+P4SR0Q=
-X-Gm-Gg: ASbGncvo6FQoiizkIX69rxsL0YHPojEJQJJ2RdRHRDdrOB1f1A3G8Vn7IXw5zZYawPS
-	ZW1vsPHL72LNJ5yNbMilDeyRe+ti1bZ/O1CvM5UlGw6Zk90r2F7/j4cwMBiUcqk4rGyFyyCky9W
-	3R16E/WHfRX5UtVUP+zNLgfNAcJtoiFopWbbo7YNdr82I8MRV4DhlgiURFoftw2K5c+/R/LP5fr
-	tnRwxDXTHs=
-X-Google-Smtp-Source: AGHT+IGsnhG6fTAAT1UObGDFDFR647lPms9A8JEG/JJiKLiJ1UD/icxHvsb5XUs4Md6E5j0VCaYuwe5RdMxO1nOqvSk=
-X-Received: by 2002:a05:6000:4182:b0:3a4:eecd:f4d2 with SMTP id
- ffacd0b85a97d-3a6d12dafc8mr721486f8f.38.1750388410067; Thu, 19 Jun 2025
- 20:00:10 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1750389096; x=1750993896;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Xi/hczcpZg9I5SOGYM1aAWQ/pmGexqQaBjs3hn7VO6w=;
+        b=DFMJUm9Fu1MTZvfi9tr8q4joS+LnelFpZsRI2zBsdgx/pROHm9aNIih+FhvzSDG7uw
+         cBkNNJ5GJ1kTltTEs7oyPEAyLX6kYNbrNyRGqjPGziZzQRm/Jakqn/jkHeDCZkX0XYI2
+         RjZ0YAjzm8X+JyCKF8vIlzLflni+RKold59TzsehxC/l9Ga4i6j5UocgWRi4KFhfdPjm
+         RBJg6Iqv2G/86q8QSVD3lHfSWyWyQKBCppeqLuE2dFMeDI/UtUKZ/Rkb7cBcEQLnXmas
+         dHQvqN/LhVjQPgw+31dcpyGnPJkxDK+P+B+/YOBakj/tr17+ZqCuA2hF+x433uaimr5j
+         Q9gQ==
+X-Gm-Message-State: AOJu0YxiIgtSa8az+Gd2feGKRZbigUm3P6gh5iBkqmA7hIx2fSqjIgQA
+	BZZnkRSifTBptas76nhzB4djiIZhuAA3QhjCmXdXosbRl6AawMOP4jtVSiCb3S5cIewifjHRI1i
+	PD9gCArD6Qg==
+X-Gm-Gg: ASbGncvFBVh+xO2dhbwfBnyhPVeGMoECwTNRsArO9JPmE/dE90Hw1RdtYs+YlyZboEg
+	Qtm4TSrvKeLjHTntqB4/IA2uMio1bF9PmPQAKS+e996eNtbNAo4Qdn5OuIfGf1iQMNXkNXwry1f
+	/09iG6F1tl6lxvaDBfaLvi8b+YzppJ0zqrvxzliLcxpXAc77Jh1g7EAxbgEWcO0D00jWlZFRHPW
+	0lZTvQo1QYRD5/h8h6eegT4AAqMAb9Gc5GZ/MdoWRqEOjf667MtO8tRnb77kfYuERcVs4ecPD82
+	eMIfauA4ZdohoL5kU9RNH9S3nKsmFRrooL1x9yPRwSzfuFSEPs8yh1RSVzTd
+X-Google-Smtp-Source: AGHT+IFZS4LWqp0UCj33uTU5Ev97aF3KRAPrI6A/RbOF3HdHLZrPkL4oO/vcoj0bMCvrMN+xFkTMQQ==
+X-Received: by 2002:a05:622a:489:b0:476:8288:9558 with SMTP id d75a77b69052e-4a77a29e41amr23830591cf.46.1750389096337;
+        Thu, 19 Jun 2025 20:11:36 -0700 (PDT)
+Received: from boreas.. ([140.174.215.70])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4a779e90ffasm4502441cf.70.2025.06.19.20.11.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Jun 2025 20:11:36 -0700 (PDT)
+From: Emil Tsalapatis <emil@etsalapatis.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	memxor@gmail.com,
+	sched-ext@meta.com,
+	Emil Tsalapatis <emil@etsalapatis.com>
+Subject: [PATCH bpf-next 0/2] bpf/arena: Add kfunc for reserving arena guard memory regions
+Date: Thu, 19 Jun 2025 23:11:16 -0400
+Message-ID: <20250620031118.245601-1-emil@etsalapatis.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250619034257.70520-1-chen.dylane@linux.dev> <20250619034257.70520-2-chen.dylane@linux.dev>
- <CAADnVQLyAeo9ztPoJzU1QJUQf6SMptVNoOzZza02xPuXO1ES2g@mail.gmail.com> <9eedd830-9222-4ac0-8ccd-72499fb85b13@linux.dev>
-In-Reply-To: <9eedd830-9222-4ac0-8ccd-72499fb85b13@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 19 Jun 2025 19:59:58 -0700
-X-Gm-Features: Ac12FXwaZwTIE2k7zGGdi2J1vur8ZmKROFqRXFOqv5Xmlf0XVxISh9G5k-LHsFc
-Message-ID: <CAADnVQJcdVCKPu8aPPj5hZExNTFYAYTd5xkF=Ljfm__+ugirGg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 2/2] bpf: Add show_fdinfo for kprobe_multi
-To: Tao Chen <chen.dylane@linux.dev>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Matt Bobrowski <mattbobrowski@google.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jun 19, 2025 at 7:46=E2=80=AFPM Tao Chen <chen.dylane@linux.dev> wr=
-ote:
->
-> =E5=9C=A8 2025/6/20 01:17, Alexei Starovoitov =E5=86=99=E9=81=93:
-> > On Wed, Jun 18, 2025 at 8:44=E2=80=AFPM Tao Chen <chen.dylane@linux.dev=
-> wrote:
-> >>
-> >> Show kprobe_multi link info with fdinfo, the info as follows:
-> >>
-> >> link_type:      kprobe_multi
-> >> link_id:        1
-> >> prog_tag:       a15b7646cb7f3322
-> >> prog_id:        21
-> >> type:   kprobe_multi
-> >
-> > ..
-> >
-> >> +       seq_printf(seq,
-> >> +                  "type:\t%s\n"
-> >> +                  "kprobe_cnt:\t%u\n"
-> >> +                  "missed:\t%lu\n",
-> >> +                  kmulti_link->flags =3D=3D BPF_F_KPROBE_MULTI_RETURN=
- ? "kretprobe_multi" :
-> >> +                                        "kprobe_multi",
-> >
-> > why print the same info twice ?
-> > seq_printf(m, "link_type:\t%s\n", bpf_link_type_strs[type]);
-> > in bpf_link_show_fdinfo() already did it in a cleaner way.
-> >
->
-> link_type only shows 'kprobe_multi', maybe we can show the format like:
+Add a new kfunc for BPF arenas that reserves a region of the mapping
+to prevent it from being mapped. These regions serve as guards against
+out-of-bounds accesses and are useful for debugging arena-related code.
 
-Ohh. Especially so. It would be wrong and confusing to display:
-link_type:      kprobe_multi
-type: kretprobe_multi
+Emil Tsalapatis (2):
+  bpf/arena: add bpf_arena_guard_pages kfunc
+  selftests/bpf: add selftests for bpf_arena_guard_pages
 
-Let's fix 'link_type' to display it properly.
+ kernel/bpf/arena.c                            |  95 +++++++++++++++-
+ .../testing/selftests/bpf/bpf_arena_common.h  |   3 +
+ .../selftests/bpf/progs/verifier_arena.c      | 106 ++++++++++++++++++
+ .../bpf/progs/verifier_arena_large.c          |  93 +++++++++++++++
+ 4 files changed, 294 insertions(+), 3 deletions(-)
+
+-- 
+2.49.0
+
 
