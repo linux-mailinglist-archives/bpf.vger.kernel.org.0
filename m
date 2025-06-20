@@ -1,85 +1,85 @@
-Return-Path: <bpf+bounces-61217-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61218-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBE73AE2585
-	for <lists+bpf@lfdr.de>; Sat, 21 Jun 2025 00:27:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34957AE2588
+	for <lists+bpf@lfdr.de>; Sat, 21 Jun 2025 00:27:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A267E7B1F5D
-	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 22:26:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1376F5A49AD
+	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 22:27:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B045242D9D;
-	Fri, 20 Jun 2025 22:20:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1549A24466C;
+	Fri, 20 Jun 2025 22:21:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bWXZfIxU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UiMvH70o"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59724233721;
-	Fri, 20 Jun 2025 22:20:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9938223E324;
+	Fri, 20 Jun 2025 22:21:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750458034; cv=none; b=jjI6ywthmx7OclVuEmtMHx27bQnbsNhGNVZ3Z9u1sUyUUAb7GfDy56x90Kq0cMal0kCMRsYhOI1ZQkiJK+/SNujGBD5NNMtBJWIsopHRqdyZvq6+N9xzcc3+OOAFEoQII49DvdsiBmzZGGD0EhrLQJyixyDWOizVRvGgeVeQg9A=
+	t=1750458083; cv=none; b=VVLB2WV4QU6NaZPdKHzOGSW/R2rYkdDxF2Al3JCVSFLcmg2U/SoLbIJLvI2fuUGo95o4csPxF9dmCOWLKt4RDRJi0TkF1wb0F+KZ8ohBLHmmZ6owdInRdaV5/kLhb3G2YnZknViY9YFVpEYFpLqcLh1+pisj+D72w2hoNHtMUpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750458034; c=relaxed/simple;
-	bh=3pUIOcQNUUkvmULbS/HU3spk89w9s+yI4Q70q5/OXm8=;
+	s=arc-20240116; t=1750458083; c=relaxed/simple;
+	bh=0fveV5BVEE33jCOBIkTWqJ2P2Ox80pQRtae9npV236o=;
 	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=N8K2nwMN/NI/IZ0K9f9WVfeXbUA/O92VTybnuZB8wHJr1pu8Gce1Gsx1vJ850eFDOvjSQGzpv16YV4HgFteSJQN7pGQYP5hBQrehrFlN9bjd9v0F+d1HbvEhmbx+SmaU7YYWisNQUqEga1Yb6WIGoK6NmeBJcvfkfWZzxwtwOk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bWXZfIxU; arc=none smtp.client-ip=209.85.128.174
+	 Mime-Version:Content-Type; b=J+v/jfU0XeXOTJJcXoKFCZEVHB1pXViUtk8g09aItaakPVdT5xyql+gQ2rLjXJYzm8sHrV6UXoTeMz6IBLSVRbI6R6+lg3oBzCjTQPc8f6MUFQzD8JY4018CRu+ru6plaSz7N0TkPJAcIWXe7vRZQrWmyxFdYhiBtsZxyfc5/RA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UiMvH70o; arc=none smtp.client-ip=209.85.128.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-71173646662so24150947b3.2;
-        Fri, 20 Jun 2025 15:20:32 -0700 (PDT)
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-7115e32802bso20343487b3.1;
+        Fri, 20 Jun 2025 15:21:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750458031; x=1751062831; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1750458080; x=1751062880; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8ghc8gOZ0/DUlUqFMh+/E61H1ztiwVWcBAsR1etA3/w=;
-        b=bWXZfIxUodLiCMEw84yLEJYfKli3v+Y6Sm4+MGi3BOTo/5/x8FlPKs4gdJP+3UszeL
-         /mE591WB+ASBlUp0/puoNoxCXfvWO1V4OFJwfp592witxcmbxFKw3Ioy4U6/jhws5cir
-         YBfV49X4NFeHu/bMMhIpeNUQbqJTflhoeqnZ7P1rc75dJf4ORPpWOejw6q38H4NnNA29
-         e30paSb9omH5GRcgtVYTEfThZyt7SXl1GmFaEBU5fVfQ5o+xy2zK9UWiqo5UdLZEUniC
-         +M0vWHrNQB8J/VGw0Mncp0oQ7f8ocnggzgCfHwSrxNB9kdALqubeDsHIJGBc89qW6zOZ
-         pp1A==
+        bh=SSHnGtkJy75nQrfwNnEbkEYOCDTPzLCeEgoZTEl9i1U=;
+        b=UiMvH70omlgVEs673JfXfJ/Uhx/acsRyiokiVTDjCidmapiXp2jQEPmpaSrwQqRTMT
+         IuSvOANUHlOyCx/BT0dVAJopPevpKooKp9A9NYSak6Yya+F52wUONf/u443nV6RoOgnq
+         VD/4QkiLZql/kNRepnStdR7JZhrW4nQdbwrfvV0YsdbMvvtLiiyOaPj4sXk0N7/pYBgE
+         eCPR6THPWn2H0WVEafCBmmaKGNBRBdTblh5+jQviEFWgSEwl9dnBmGgGDIVu7jHkcNXg
+         22U6Z7whajfQtghia2Tg30Mo9LaTPE+55yuJKL1QzRNySzvumB2kw0ZV0nTKa+aznOwp
+         arog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750458031; x=1751062831;
+        d=1e100.net; s=20230601; t=1750458080; x=1751062880;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=8ghc8gOZ0/DUlUqFMh+/E61H1ztiwVWcBAsR1etA3/w=;
-        b=g+s5rPFzbNioHC8TJbW50HNfnnPNIR6DwqWUdbTTntGS0fMoVvKVudlJEhg98pi31L
-         zXhKSQKl4Qfm6c2AryywvKIwwkFn3FTvM0jUfWHxvjCNbUhWk302sY7AyAy50egyq19N
-         p+OUwscuzqSa9jh7wAOuCPZcb7vQCR7S5tZdJfo/Z7faScLMTL3snD95pkWXnl39j2Gq
-         9YB/qlWxWCz60YLRtXJcwrydc4y69WWgmiH2GHW4xv7bCCuRh7NccwkvqdZvM7CDxBR8
-         ndZ0duG98ztuCLVvHybh7G0ApunjfRQxZ9AKR5TN2W2UATDkNU/T2G+vkaOJw2b5Hq0B
-         8mrg==
-X-Forwarded-Encrypted: i=1; AJvYcCVled0RmZ4lY58EnhBo3QjGmBPvICuBhCIYU5ikjtqrEF9den0bc2zDJBkwCtrxULrhNqg=@vger.kernel.org, AJvYcCWCSeObtjXxVh1ktWGy3wji8vw2XZqy21ZPi+mTdqVoPFywCSxeNozdLI/6gIqqaFKTpq80hbbx@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyw3QpVhLr9uHTGDbkV/WbRqDWv0Rk2/bXOX/ffQY+iQ/BTRAC4
-	psd0BuF94jvuFwgBM2ySLkRQa5uJjF0DWi/awNeA7iAzXVvxmZf99KR3/FSIjA==
-X-Gm-Gg: ASbGncs0tLsiBu8wrlKOs24B3Q1oBycZDp9qy1LM5LpPDfp4MxgshZohTvySnyHUamc
-	ZScc7gztPyxIt9K6neqO7Zc2zQ0GsS6rXj74BL2t/qj1Q16eUDciOK3MOSg9vd9OD5rZjCC2zQz
-	PbSz35/eyPJ4fls7fn2blcpRWr4evWblJkrBk0BFx+YJTwgED9ewYjcZ5mpBk5G5XRQm2CVfOxs
-	KAO62gPNtHQbzoECMrARmCR5LUCHH7/i6J6ynL39bBhS+UQRjr4dmahgoRhHFr9NLnB/Le+KBA5
-	zGstZfqT4I2FfIfQ3DFKHNkjgB91uKkrkCAYuttGrcLpLlKax9WWjw/dDcyqEJEHgbU/n7OUz2k
-	VYnCzve8njsHTBftQk5nBprm8fm6fyC40ewxhKnD2W67AZcmXjCsk
-X-Google-Smtp-Source: AGHT+IEoKhRPTvmwpz4pucYlxRuD0UmltMwN0ii0+0f/q9fkhv4JdF/pjmtY82xg3UYFKCXpG5cUhg==
-X-Received: by 2002:a05:690c:6:b0:70e:a1e:d9f8 with SMTP id 00721157ae682-712c64f520amr61934367b3.22.1750458031084;
-        Fri, 20 Jun 2025 15:20:31 -0700 (PDT)
+        bh=SSHnGtkJy75nQrfwNnEbkEYOCDTPzLCeEgoZTEl9i1U=;
+        b=FibNui7bZOde9fLG+bk8B3jpWsUDfepBXZcgbd+xveS1hrQDlLn1m4K9olmtgJtzrE
+         0exAokFapRyr8euWZv7nplKHvI2KnYMTXjPtD0yoxKtigA1i3WtAxYvEoerngaZUi+4u
+         LpP4zaG0STyQScP1NxfGBY33l2bhkb/MfMKRPs93QVQescQ519X1HzI9MAhlS1Jg4b53
+         3ByxdgFVuXCaeNGhmmH/pSWebTv2dHYdbK4MNX92Omi/n5dcEAz6unQr6DH5YKec2SDU
+         69f7kFjtI8z/TqAe94Kn8aSXa7Kl6wRtd7I2twJEtSW1tAXKcwYQeVWN+D3uIVlBtz1s
+         ilHw==
+X-Forwarded-Encrypted: i=1; AJvYcCV7nFr3zOa/w9bA5Yb9becuX4UWFpTiT27VqpJuqZL/Zfl01V/GeJbnYYRdjBWMjLkAlS8=@vger.kernel.org, AJvYcCW8qYrimdWLdWz1DqBGdKhQeLRYHcoLvgxk3esXV4sj8t5I6cfmYYzSx85+JYbH+gxpOT6+SRw7@vger.kernel.org
+X-Gm-Message-State: AOJu0YyIKZ2GyFAcCAPHCA4eBMVYZ9bS4kpuzp8CDI3uZ2dTeToDhCq8
+	sSCtPpb1kYwOq78YBHXK/8s4KmN3z6eP7LYjb1zra5PoVdyIbMgXQhAA
+X-Gm-Gg: ASbGncsxES6mD01y5j8SugZVhIsyvJfAlHntNyzot8MLcseIDBApLlxLogWEtff1oug
+	M/0Y03cGncZ3ZJ9RX4AAN1QQ87vzo+Qb9MPnEIyP9t30vFay10WEEM+vsokMr3oIxvwEZQnZDKo
+	wEi4v+NW7uBOdpcJ8bU+xaqCLl5rX9ksPV4oiDN3gDYcbu50tIsPYB90b80MxKKz0luTp1yb/E1
+	CA4UahhQFe1wF7zhyBEnrB04r9b7cwXe7LKELRLye713TFg6HEvL+Hsa6gCzHjoga1m3cczYhMl
+	f4QGwCurpx3L7p7sOj5UFBrztVFATLzeKpcKOD0gfYO3PpoZXOnrG0BB5urc36fAI8N4rnGErje
+	atxDpOxbrGSG0QZOdguBEhmZtRHX1fTJxml86IpL7ow==
+X-Google-Smtp-Source: AGHT+IG5u5som35pY4h58Azh8jqaaEQF10kZBaaGV03+id+6c++w4nIvI8/JPUiCkPY9VcHUZrlS5w==
+X-Received: by 2002:a05:690c:61c9:b0:710:f401:2fd8 with SMTP id 00721157ae682-712c64e5727mr68830557b3.30.1750458080510;
+        Fri, 20 Jun 2025 15:21:20 -0700 (PDT)
 Received: from localhost (141.139.145.34.bc.googleusercontent.com. [34.145.139.141])
-        by smtp.gmail.com with UTF8SMTPSA id 00721157ae682-712c4c1d4basm5884857b3.110.2025.06.20.15.20.30
+        by smtp.gmail.com with UTF8SMTPSA id 00721157ae682-712c4a2358fsm5981417b3.49.2025.06.20.15.21.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Jun 2025 15:20:30 -0700 (PDT)
-Date: Fri, 20 Jun 2025 18:20:29 -0400
+        Fri, 20 Jun 2025 15:21:19 -0700 (PDT)
+Date: Fri, 20 Jun 2025 18:21:19 -0400
 From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Stanislav Fomichev <stfomichev@gmail.com>, 
- Jakub Kicinski <kuba@kernel.org>
-Cc: Jason Xing <kerneljasonxing@gmail.com>, 
- davem@davemloft.net, 
+To: Jason Xing <kerneljasonxing@gmail.com>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: davem@davemloft.net, 
  edumazet@google.com, 
+ kuba@kernel.org, 
  pabeni@redhat.com, 
  bjorn@kernel.org, 
  magnus.karlsson@intel.com, 
@@ -91,17 +91,17 @@ Cc: Jason Xing <kerneljasonxing@gmail.com>,
  hawk@kernel.org, 
  john.fastabend@gmail.com, 
  joe@dama.to, 
- willemdebruijn.kernel@gmail.com, 
  bpf@vger.kernel.org, 
  netdev@vger.kernel.org, 
- Jason Xing <kernelxing@tencent.com>, 
- magnus.karlsson@gmail.com, 
- skhawaja@google.com
-Message-ID: <6855deade401b_1ca4329456@willemb.c.googlers.com.notmuch>
-In-Reply-To: <aFVvcgJpw5Cnog2O@mini-arch>
+ Jason Xing <kernelxing@tencent.com>
+Message-ID: <6855dedf90dec_1ca4329463@willemb.c.googlers.com.notmuch>
+In-Reply-To: <CAL+tcoAMHPYw2bZV87epRFU4oL0=aeUPE3oM6=BUSJuOHPgo8w@mail.gmail.com>
 References: <20250619090440.65509-1-kerneljasonxing@gmail.com>
- <20250619080904.0a70574c@kernel.org>
- <aFVvcgJpw5Cnog2O@mini-arch>
+ <6854165ccb312_3a357029426@willemb.c.googlers.com.notmuch>
+ <CAL+tcoBpfFPrYYfWa5P+Sr6S64_stUHiJj26QCtcx56cA5BWXg@mail.gmail.com>
+ <685565722327f_3ffda42943d@willemb.c.googlers.com.notmuch>
+ <68556906dc574_164a294f9@willemb.c.googlers.com.notmuch>
+ <CAL+tcoAMHPYw2bZV87epRFU4oL0=aeUPE3oM6=BUSJuOHPgo8w@mail.gmail.com>
 Subject: Re: [PATCH net-next v3] net: xsk: introduce XDP_MAX_TX_BUDGET
  set/getsockopt
 Precedence: bulk
@@ -112,59 +112,197 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
-Stanislav Fomichev wrote:
-> On 06/19, Jakub Kicinski wrote:
-> > On Thu, 19 Jun 2025 17:04:40 +0800 Jason Xing wrote:
-> > > @@ -424,7 +421,9 @@ bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_desc *desc)
-> > >  	rcu_read_lock();
-> > >  again:
-> > >  	list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
-> > > -		if (xs->tx_budget_spent >= MAX_PER_SOCKET_BUDGET) {
-> > > +		int max_budget = READ_ONCE(xs->max_tx_budget);
-> > > +
-> > > +		if (xs->tx_budget_spent >= max_budget) {
-> > >  			budget_exhausted = true;
-> > >  			continue;
-> > >  		}
-> > > @@ -779,7 +778,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
-> > >  static int __xsk_generic_xmit(struct sock *sk)
-> > >  {
-> > >  	struct xdp_sock *xs = xdp_sk(sk);
-> > > -	u32 max_batch = TX_BATCH_SIZE;
-> > > +	u32 max_budget = READ_ONCE(xs->max_tx_budget);
-> > 
-> > Hm, maybe a question to Stan / Willem & other XSK experts but are these
-> > two max values / code paths really related? Question 2 -- is generic
-> > XSK a legit optimization target, legit enough to add uAPI?
-> 
-> 1) xsk_tx_peek_desc is for zc case and xsk_build_skb is copy mode;
-> whether we want to affect zc case given the fact that Jason seemingly
-> cares about copy mode is a good question.
+Jason Xing wrote:
+> On Fri, Jun 20, 2025 at 9:58=E2=80=AFPM Willem de Bruijn
+> <willemdebruijn.kernel@gmail.com> wrote:
+> >
+> > Willem de Bruijn wrote:
+> > > Jason Xing wrote:
+> > > > On Thu, Jun 19, 2025 at 9:53=E2=80=AFPM Willem de Bruijn
+> > > > <willemdebruijn.kernel@gmail.com> wrote:
+> > > > >
+> > > > > Jason Xing wrote:
+> > > > > > From: Jason Xing <kernelxing@tencent.com>
+> > > > > >
+> > > > > > The patch does the following things:
+> > > > > > - Add XDP_MAX_TX_BUDGET socket option.
+> > > > > > - Unify TX_BATCH_SIZE and MAX_PER_SOCKET_BUDGET into single o=
+ne
+> > > > > >   tx_budget_spent.
+> > > > > > - tx_budget_spent is set to 32 by default in the initializati=
+on phase.
+> > > > > >   It's a per-socket granular control.
+> > > > > >
+> > > > > > The idea behind this comes out of real workloads in productio=
+n. We use a
+> > > > > > user-level stack with xsk support to accelerate sending packe=
+ts and
+> > > > > > minimize triggering syscall. When the packets are aggregated,=
+ it's not
+> > > > > > hard to hit the upper bound (namely, 32). The moment user-spa=
+ce stack
+> > > > > > fetches the -EAGAIN error number passed from sendto(), it wil=
+l loop to try
+> > > > > > again until all the expected descs from tx ring are sent out =
+to the driver.
+> > > > > > Enlarging the XDP_MAX_TX_BUDGET value contributes to less fre=
+quencies of
+> > > > > > sendto(). Besides, applications leveraging this setsockopt ca=
+n adjust
+> > > > > > its proper value in time after noticing the upper bound issue=
+ happening.
+> > > > > >
+> > > > > > Signed-off-by: Jason Xing <kernelxing@tencent.com>
+> > > > > > ---
+> > > > > > V3
+> > > > > > Link: https://lore.kernel.org/all/20250618065553.96822-1-kern=
+eljasonxing@gmail.com/
+> > > > > > 1. use a per-socket control (suggested by Stanislav)
+> > > > > > 2. unify both definitions into one
+> > > > > > 3. support setsockopt and getsockopt
+> > > > > > 4. add more description in commit message
+> > > > >
+> > > > > +1 on an XSK setsockopt only
+> > > >
+> > > > May I ask why only setsockopt? In tradition, dev_tx_weight can be=
+ read
+> > > > and written through running sysctl. I think they are the same?
+> > >
+> > > This is not dev_tx_weight, which is per device.
+> > >
+> > > This is a per-socket choice. The reason for adding it that you gave=
+,
+> > > a specific application that is known to be able to batch more than =
+32,
+> > > can tune this configurable in the application.
+> =
 
-The two constants seem to be only tangentially created.
+> I was thinking a pair is needed like some existing options I'm
+> familiar with like TCP_RTO_MAX_MS. As I said, it's just a feeling.
+> =
 
-If there is fear that one tunable modifies both, it is simple enough
-to remove the unnecessary dependency and only tune the first.
- 
-> 2) I do find it surprising as well. Recent busy polling patches were
-> also using/targeting copy mode. But from my pow, if people use it, I see
-> no reason to make it more usable.
+> Okay, I have no strong opinion on this. I will remove it then.
+> =
 
-That's a very fair question.
+> > >
+> > > I see no immediately need to set this at a per netns or global leve=
+l.
+> > > If so, the extra cacheline space in those structs is not warranted.=
 
-Jason, have you tried XDP_ZEROCOPY? It's quite plausible that that
-would address your issue.
+> > >
+> > > > >
+> > > > > >
+> > > > > > V2
+> > > > > > Link: https://lore.kernel.org/all/20250617002236.30557-1-kern=
+eljasonxing@gmail.com/
+> > > > > > 1. use a per-netns sysctl knob
+> > > > > > 2. use sysctl_xsk_max_tx_budget to unify both definitions.
+> > > > > > ---
+> > > > > >  include/net/xdp_sock.h            |  3 ++-
+> > > > > >  include/uapi/linux/if_xdp.h       |  1 +
+> > > > > >  net/xdp/xsk.c                     | 36 +++++++++++++++++++++=
+++++------
+> > > > > >  tools/include/uapi/linux/if_xdp.h |  1 +
+> > > > > >  4 files changed, 34 insertions(+), 7 deletions(-)
+> > > > > >
+> > > > > > diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+> > > > > > index e8bd6ddb7b12..8eecafad92c0 100644
+> > > > > > --- a/include/net/xdp_sock.h
+> > > > > > +++ b/include/net/xdp_sock.h
+> > > > > > @@ -65,11 +65,12 @@ struct xdp_sock {
+> > > > > >       struct xsk_queue *tx ____cacheline_aligned_in_smp;
+> > > > > >       struct list_head tx_list;
+> > > > > >       /* record the number of tx descriptors sent by this xsk=
+ and
+> > > > > > -      * when it exceeds MAX_PER_SOCKET_BUDGET, an opportunit=
+y needs
+> > > > > > +      * when it exceeds max_tx_budget, an opportunity needs
+> > > > > >        * to be given to other xsks for sending tx descriptors=
+, thereby
+> > > > > >        * preventing other XSKs from being starved.
+> > > > > >        */
+> > > > > >       u32 tx_budget_spent;
+> > > > > > +     u32 max_tx_budget;
+> > > > >
+> > > > > This probably does not need to be a u32?
+> > > >
+> > > > From what I've known, it's not possible to set a very large value=
+ like
+> > > > 1000 which probably brings side effects.
+> > > >
+> > > > But it seems we'd better not limit the use of this max_tx_budget?=
+ We
+> > > > don't know what the best fit for various use cases is. If the typ=
+e
+> > > > needs to be downsized to a smaller one like u16, another related
+> > > > consideration is that dev_tx_weight deserves the same treatment?
+> > >
+> > > If the current constant is 32, is U16_MAX really a limiting factor.=
 
-I have had a use for copy mode, but that was rather obscure. A small
-packet workload where copy cost is negligible, and with copy mode it
-was easy to make to reinstate flow steering in XDP to specific XSKs,
-akin to
+> > > See also the next point.
+> > >
+> > > > Or let me adjust to 'int' then?
+> > > > > > @@ -1437,6 +1436,18 @@ static int xsk_setsockopt(struct socke=
+t *sock, int level, int optname,
+> > > > > >               mutex_unlock(&xs->mutex);
+> > > > > >               return err;
+> > > > > >       }
+> > > > > > +     case XDP_MAX_TX_BUDGET:
+> > > > > > +     {
+> > > > > > +             unsigned int budget;
+> > > > > > +
+> > > > > > +             if (optlen < sizeof(budget))
+> > > > > > +                     return -EINVAL;
+> > > > > > +             if (copy_from_sockptr(&budget, optval, sizeof(b=
+udget)))
+> > > > > > +                     return -EFAULT;
+> > > > > > +
+> > > > > > +             WRITE_ONCE(xs->max_tx_budget, budget);
+> > > > >
+> > > > > Sanitize input: bounds check
+> > > >
+> > > > Thanks for catching this.
+> > > >
+> > > > I will change it like this:
+> > > >     WRITE_ONCE(xs->max_tx_budget, min_t(int, budget, INT_MAX));?
+> > >
+> > > INT_MAX is not a valid upper bound. The current constant is 32.
+> > > I would expect an upper bound to perhaps be a few orders larger.
+> >
+> > And this would need a clamp to also set a lower bound greater than 0.=
 
-https://lore.kernel.org/netdev/65c0f032ac71a_7396029419@willemb.c.googlers.com.notmuch/
+> =
 
-The main issue with that remained that driver copy mode also implies
-the slower generic copy based Tx path, which goes through the full
-dev_queue_xmit stack.
+> Sorry, I don't fully follow here. I'm worried if I understand it in
+> the wrong way.
+> =
+
+> In this patch, max_tx_budget is u32. If we're doing this this:
+>         case XDP_MAX_TX_BUDGET:
+>         {
+>                 unsigned int budget;
+> =
+
+>                 if (optlen !=3D sizeof(budget))    // this line can
+> filter out those unmatched numbers, right?
+>                         return -EINVAL;
+>                 if (copy_from_sockptr(&budget, optval,
+> sizeof(budget)))
+>                         return -EFAULT;
+> =
+
+>                 WRITE_ONCE(xs->max_tx_budget, budget);
+> =
+
+>                 return 0;
+>         }
+> , I'm thinking, is it sufficient because u32 makes sure of zero as its
+> lower bound?
+
+The issue is that 0 is not a valid budget.
+
+__xsk_generic_xmit will not make any progress as it will break out
+immediately at the start of the while loop.
 
