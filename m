@@ -1,62 +1,62 @@
-Return-Path: <bpf+bounces-61163-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61164-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E42D7AE1A48
-	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 13:53:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57B9AAE1A4C
+	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 13:53:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA3C31BC4A91
-	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 11:53:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9D205A58CF
+	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 11:52:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 976EF28A1FE;
-	Fri, 20 Jun 2025 11:52:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CB8028A40D;
+	Fri, 20 Jun 2025 11:53:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Kx1jrqaU"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="F16zkX5Y"
 X-Original-To: bpf@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94AC825F984
-	for <bpf@vger.kernel.org>; Fri, 20 Jun 2025 11:52:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96C6128AAE9
+	for <bpf@vger.kernel.org>; Fri, 20 Jun 2025 11:53:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750420377; cv=none; b=P6DdbyvVlCJuDNTydBqFqsydLs+/9khvAJuu0J06EEZRSWz2B9RXH+GSyr+fiEsa7DuWe7kzvqp2jEaMpp4WFgPz3mcSxD4bJFKTWe2j+c2MAUr+hYKglTAOoSOW96FbjZVqAfI9fQyrzHUVC9+q3UlU4tgZwIXuaL2Vq/7k59w=
+	t=1750420384; cv=none; b=NvLCloJwjy3e1H6+M4vRtiRC+ukoaffQCgIQVB0HqzeC6uT8cSA7hgQjnhAsL4n/kbTm2ayoTEistsaPvA+TmDqdJxlZavFT8FiXOG8LHhJnt54Y+mZHhYx3vZGVvBfVLmDRRVS5bMU27rqQvAH5QwmLLFb7AmCwvyx5hGgJsPc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750420377; c=relaxed/simple;
-	bh=r93OQAL+O+DGIdysH+atzMrXTR4OgqwgoeNHguqSrRk=;
+	s=arc-20240116; t=1750420384; c=relaxed/simple;
+	bh=VryLg8QIpCCiXWsUr6V0rI60TAfTmgQNLvvojD90p4M=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KtdMC2ihXnsJqLc/VvMG/MDLgH/+Tm8UojKHTNiE1eUTDlz4qIq6iMifqT3gj2/ayZW0l4lqyTbCIzXNgmn/TD4QwfuDp7GcdH8WR58o3QEE5hjBhTZdc9LQkPQ7+r2886/PoeMRr6f2j9E8SdR8BHBOeqSG5vIxCo+tewkabsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Kx1jrqaU; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=q3pDjYMLx3OJEvpSvbAmnzI8hkEAMD9l4btcMEL2wLUr1usSPrX2cCixTCCbzrzkGlqm47K21SMel+8TVsSwTM4lAVHp2wlKx4ikh6Tq+fgWHnTcD09dIRr2fegqNL0GPiJBSatJ/z6KzZYWW4jqFM/ON/2j9NfPLOF+wj8UBRM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=F16zkX5Y; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1750420374;
+	s=mimecast20190719; t=1750420381;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Aq9GfmifFmUJTHzOzR3uh/CPBzOh0qHNI3h7c2rC8V0=;
-	b=Kx1jrqaUuzTZtATqVabFz86ENmf4pWiLuilbQWMCAweHOQMjPqWH3GWR0NIOBU/WiiZ1cE
-	ZiWysT76XRQxwzSvX4ud6EcqS2gbNYDEWDbKW/HSAyAaIuNkaa8FsetVnxRkApmZBjQpeC
-	GUB4TdhT6Ez4SvX3/tdss6KjapyFGyE=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+	bh=WC90qhcVw+LthRGUO/7JwkaSn5ActJf9qYe8MASw6Qk=;
+	b=F16zkX5YCrDiRzofJNNc1Nm9WraH5fwJPdsxuqVLw5fpn4eDO3geEBpTtVXVaOoKcYwtic
+	WbWvEgj3sFvGMaq5ejOjZkZgChwN/T7vLVd7d6rc0fWnecAlMHmv8xJa+Q4cfzdB57jQ7C
+	8BaZfD6nLIuzEwM7ivzt2T13FIRGioI=
+Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-58-WccyDccqPoGEAKIJCbQdcw-1; Fri,
- 20 Jun 2025 07:52:51 -0400
-X-MC-Unique: WccyDccqPoGEAKIJCbQdcw-1
-X-Mimecast-MFC-AGG-ID: WccyDccqPoGEAKIJCbQdcw_1750420369
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-94-t6mBKHtFN_2OdRJgnT8W7Q-1; Fri,
+ 20 Jun 2025 07:52:56 -0400
+X-MC-Unique: t6mBKHtFN_2OdRJgnT8W7Q-1
+X-Mimecast-MFC-AGG-ID: t6mBKHtFN_2OdRJgnT8W7Q_1750420374
 Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id D0049195608E;
-	Fri, 20 Jun 2025 11:52:48 +0000 (UTC)
+	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 8F20119560AE;
+	Fri, 20 Jun 2025 11:52:54 +0000 (UTC)
 Received: from vmalik-fedora.redhat.com (unknown [10.44.34.11])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 4791819560AB;
-	Fri, 20 Jun 2025 11:52:43 +0000 (UTC)
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 6C111195609D;
+	Fri, 20 Jun 2025 11:52:49 +0000 (UTC)
 From: Viktor Malik <vmalik@redhat.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -71,11 +71,10 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Stanislav Fomichev <sdf@fomichev.me>,
 	Hao Luo <haoluo@google.com>,
 	Jiri Olsa <jolsa@kernel.org>,
-	linux-kernel@vger.kernel.org,
 	Viktor Malik <vmalik@redhat.com>
-Subject: [PATCH bpf-next v6 1/4] uaccess: Define pagefault lock guard
-Date: Fri, 20 Jun 2025 13:52:28 +0200
-Message-ID: <50ef2ee55009540d2e9bf434005b3324731c53ee.1750402154.git.vmalik@redhat.com>
+Subject: [PATCH bpf-next v6 2/4] bpf: Add kfuncs for read-only string operations
+Date: Fri, 20 Jun 2025 13:52:29 +0200
+Message-ID: <ba09ffb7fbbd2e08be01f3a687cb33598b5b57d8.1750402154.git.vmalik@redhat.com>
 In-Reply-To: <cover.1750402154.git.vmalik@redhat.com>
 References: <cover.1750402154.git.vmalik@redhat.com>
 Precedence: bulk
@@ -87,27 +86,451 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-Define a pagefault lock guard which allows to simplify functions that
-need to disable page faults.
+String operations are commonly used so this exposes the most common ones
+to BPF programs. For now, we limit ourselves to operations which do not
+copy memory around.
 
+Unfortunately, most in-kernel implementations assume that strings are
+%NUL-terminated, which is not necessarily true, and therefore we cannot
+use them directly in the BPF context. Instead, we open-code them using
+__get_kernel_nofault instead of plain dereference to make them safe and
+limit the strings length to XATTR_SIZE_MAX to make sure the functions
+terminate. When __get_kernel_nofault fails, functions return -EFAULT.
+Similarly, when the size bound is reached, the functions return -E2BIG.
+In addition, we return -ERANGE when the passed strings are outside of
+the kernel address space.
+
+Note that thanks to these dynamic safety checks, no other constraints
+are put on the kfunc args (they are marked with the "__ign" suffix to
+skip any verifier checks for them).
+
+All of the functions return integers, including functions which normally
+(in kernel or libc) return pointers to the strings. The reason is that
+since the strings are generally treated as unsafe, the pointers couldn't
+be dereferenced anyways. So, instead, we return an index to the string
+and let user decide what to do with it. This also nicely fits with
+returning various error codes when necessary (see above).
+
+Suggested-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Viktor Malik <vmalik@redhat.com>
 ---
- include/linux/uaccess.h | 2 ++
- 1 file changed, 2 insertions(+)
+ kernel/bpf/helpers.c | 389 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 389 insertions(+)
 
-diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
-index 7c06f4795670..1beb5b395d81 100644
---- a/include/linux/uaccess.h
-+++ b/include/linux/uaccess.h
-@@ -296,6 +296,8 @@ static inline bool pagefault_disabled(void)
-  */
- #define faulthandler_disabled() (pagefault_disabled() || in_atomic())
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index b71e428ad936..d32175dc89bd 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -24,6 +24,7 @@
+ #include <linux/bpf_mem_alloc.h>
+ #include <linux/kasan.h>
+ #include <linux/bpf_verifier.h>
++#include <linux/uaccess.h>
  
-+DEFINE_LOCK_GUARD_0(pagefault, pagefault_disable(), pagefault_enable())
+ #include "../../lib/kstrtox.h"
+ 
+@@ -3278,6 +3279,383 @@ __bpf_kfunc void __bpf_trap(void)
+ {
+ }
+ 
++/* Kfuncs for string operations.
++ *
++ * Since strings are not necessarily %NUL-terminated, we cannot directly call
++ * in-kernel implementations. Instead, we open-code the implementations using
++ * __get_kernel_nofault instead of plain dereference to make them safe.
++ */
 +
- #ifndef CONFIG_ARCH_HAS_SUBPAGE_FAULTS
++/**
++ * bpf_strcmp - Compare two strings
++ * @s1__ign: One string
++ * @s2__ign: Another string
++ *
++ * Return:
++ * * %0       - Strings are equal
++ * * %-1      - @s1__ign is smaller
++ * * %1       - @s2__ign is smaller
++ * * %-EFAULT - Cannot read one of the strings
++ * * %-E2BIG  - One of strings is too large
++ * * %-ERANGE - One of strings is outside of kernel address space
++ */
++__bpf_kfunc int bpf_strcmp(const char *s1__ign, const char *s2__ign)
++{
++	char c1, c2;
++	int i;
++
++	if (!copy_from_kernel_nofault_allowed(s1__ign, 1) ||
++	    !copy_from_kernel_nofault_allowed(s2__ign, 1)) {
++		return -ERANGE;
++	}
++
++	guard(pagefault)();
++	for (i = 0; i < XATTR_SIZE_MAX; i++) {
++		__get_kernel_nofault(&c1, s1__ign, char, err_out);
++		__get_kernel_nofault(&c2, s2__ign, char, err_out);
++		if (c1 != c2)
++			return c1 < c2 ? -1 : 1;
++		if (c1 == '\0')
++			return 0;
++		s1__ign++;
++		s2__ign++;
++	}
++	return -E2BIG;
++err_out:
++	return -EFAULT;
++}
++
++/**
++ * bpf_strnchr - Find a character in a length limited string
++ * @s__ign: The string to be searched
++ * @count: The number of characters to be searched
++ * @c: The character to search for
++ *
++ * Note that the %NUL-terminator is considered part of the string, and can
++ * be searched for.
++ *
++ * Return:
++ * * >=0      - Index of the first occurrence of @c within @s__ign
++ * * %-1      - @c not found in the first @count characters of @s__ign
++ * * %-EFAULT - Cannot read @s__ign
++ * * %-E2BIG  - @s__ign is too large
++ * * %-ERANGE - @s__ign is outside of kernel address space
++ */
++__bpf_kfunc int bpf_strnchr(const char *s__ign, size_t count, char c)
++{
++	char sc;
++	int i;
++
++	if (!copy_from_kernel_nofault_allowed(s__ign, 1))
++		return -ERANGE;
++
++	guard(pagefault)();
++	for (i = 0; i < count && i < XATTR_SIZE_MAX; i++) {
++		__get_kernel_nofault(&sc, s__ign, char, err_out);
++		if (sc == c)
++			return i;
++		if (sc == '\0')
++			return -1;
++		s__ign++;
++	}
++	return i == XATTR_SIZE_MAX ? -E2BIG : -1;
++err_out:
++	return -EFAULT;
++}
++
++/**
++ * bpf_strchr - Find the first occurrence of a character in a string
++ * @s__ign: The string to be searched
++ * @c: The character to search for
++ *
++ * Note that the %NUL-terminator is considered part of the string, and can
++ * be searched for.
++ *
++ * Return:
++ * * >=0      - The index of the first occurrence of @c within @s__ign
++ * * -1       - @c not found in @s__ign
++ * * %-EFAULT - Cannot read @s__ign
++ * * %-E2BIG  - @s__ign is too large
++ * * %-ERANGE - @s__ign is outside of kernel address space
++ */
++__bpf_kfunc int bpf_strchr(const char *s__ign, char c)
++{
++	return bpf_strnchr(s__ign, XATTR_SIZE_MAX, c);
++}
++
++/**
++ * bpf_strchrnul - Find and return a character in a string, or end of string
++ * @s__ign: The string to be searched
++ * @c: The character to search for
++ *
++ * Return:
++ * * >=0      - Index of the first occurrence of @c within @s__ign or index of
++ *              the null byte at the end of @s__ign when @c is not found
++ * * %-EFAULT - Cannot read @s__ign
++ * * %-E2BIG  - @s__ign is too large
++ * * %-ERANGE - @s__ign is outside of kernel address space
++ */
++__bpf_kfunc int bpf_strchrnul(const char *s__ign, char c)
++{
++	char sc;
++	int i;
++
++	if (!copy_from_kernel_nofault_allowed(s__ign, 1))
++		return -ERANGE;
++
++	guard(pagefault)();
++	for (i = 0; i < XATTR_SIZE_MAX; i++) {
++		__get_kernel_nofault(&sc, s__ign, char, err_out);
++		if (sc == '\0' || sc == c)
++			return i;
++		s__ign++;
++	}
++	return -E2BIG;
++err_out:
++	return -EFAULT;
++}
++
++/**
++ * bpf_strrchr - Find the last occurrence of a character in a string
++ * @s__ign: The string to be searched
++ * @c: The character to search for
++ *
++ * Return:
++ * * >=0      - Index of the last occurrence of @c within @s__ign
++ * * %-1      - @c not found in @s__ign
++ * * %-EFAULT - Cannot read @s__ign
++ * * %-E2BIG  - @s__ign is too large
++ * * %-ERANGE - @s__ign is outside of kernel address space
++ */
++__bpf_kfunc int bpf_strrchr(const char *s__ign, int c)
++{
++	char sc;
++	int i, last = -1;
++
++	if (!copy_from_kernel_nofault_allowed(s__ign, 1))
++		return -ERANGE;
++
++	guard(pagefault)();
++	for (i = 0; i < XATTR_SIZE_MAX; i++) {
++		__get_kernel_nofault(&sc, s__ign, char, err_out);
++		if (sc == '\0')
++			return last;
++		if (sc == c)
++			last = i;
++		s__ign++;
++	}
++	return -E2BIG;
++err_out:
++	return -EFAULT;
++}
++
++/**
++ * bpf_strlen - Calculate the length of a length-limited string
++ * @s__ign: The string
++ * @count: The maximum number of characters to count
++ *
++ * Return:
++ * * >=0      - The length of @s__ign
++ * * %-EFAULT - Cannot read @s__ign
++ * * %-E2BIG  - @s__ign is too large
++ * * %-ERANGE - @s__ign is outside of kernel address space
++ */
++__bpf_kfunc int bpf_strnlen(const char *s__ign, size_t count)
++{
++	char c;
++	int i;
++
++	if (!copy_from_kernel_nofault_allowed(s__ign, 1))
++		return -ERANGE;
++
++	guard(pagefault)();
++	for (i = 0; i < count && i < XATTR_SIZE_MAX; i++) {
++		__get_kernel_nofault(&c, s__ign, char, err_out);
++		if (c == '\0')
++			return i;
++		s__ign++;
++	}
++	return i == XATTR_SIZE_MAX ? -E2BIG : i;
++err_out:
++	return -EFAULT;
++}
++
++/**
++ * bpf_strlen - Calculate the length of a string
++ * @s__ign: The string
++ *
++ * Return:
++ * * >=0      - The length of @s__ign
++ * * %-EFAULT - Cannot read @s__ign
++ * * %-E2BIG  - @s__ign is too large
++ * * %-ERANGE - @s__ign is outside of kernel address space
++ */
++__bpf_kfunc int bpf_strlen(const char *s__ign)
++{
++	return bpf_strnlen(s__ign, XATTR_SIZE_MAX);
++}
++
++/**
++ * bpf_strspn - Calculate the length of the initial substring of @s__ign which
++ *              only contains letters in @accept__ign
++ * @s__ign: The string to be searched
++ * @accept__ign: The string to search for
++ *
++ * Return:
++ * * >=0      - The length of the initial substring of @s__ign which only
++ *              contains letters from @accept__ign
++ * * %-EFAULT - Cannot read one of the strings
++ * * %-E2BIG  - One of the strings is too large
++ * * %-ERANGE - One of the strings is outside of kernel address space
++ */
++__bpf_kfunc int bpf_strspn(const char *s__ign, const char *accept__ign)
++{
++	char cs, ca;
++	bool found;
++	int i, j;
++
++	if (!copy_from_kernel_nofault_allowed(s__ign, 1) ||
++	    !copy_from_kernel_nofault_allowed(accept__ign, 1)) {
++		return -ERANGE;
++	}
++
++	guard(pagefault)();
++	for (i = 0; i < XATTR_SIZE_MAX; i++) {
++		__get_kernel_nofault(&cs, s__ign, char, err_out);
++		if (cs == '\0')
++			return i;
++		found = false;
++		for (j = 0; j < XATTR_SIZE_MAX; j++) {
++			__get_kernel_nofault(&ca, accept__ign + j, char, err_out);
++			if (cs == ca) {
++				found = true;
++				break;
++			}
++			if (ca == '\0')
++				break;
++		}
++		if (!found)
++			return i;
++		s__ign++;
++	}
++	return -E2BIG;
++err_out:
++	return -EFAULT;
++}
++
++/**
++ * strcspn - Calculate the length of the initial substring of @s__ign which
++ *           does not contain letters in @reject__ign
++ * @s__ign: The string to be searched
++ * @reject__ign: The string to search for
++ *
++ * Return:
++ * * >=0      - The length of the initial substring of @s__ign which does not
++ *              contain letters from @reject__ign
++ * * %-EFAULT - Cannot read one of the strings
++ * * %-E2BIG  - One of the strings is too large
++ * * %-ERANGE - One of the strings is outside of kernel address space
++ */
++__bpf_kfunc int bpf_strcspn(const char *s__ign, const char *reject__ign)
++{
++	char cs, cr;
++	bool found;
++	int i, j;
++
++	if (!copy_from_kernel_nofault_allowed(s__ign, 1) ||
++	    !copy_from_kernel_nofault_allowed(reject__ign, 1)) {
++		return -ERANGE;
++	}
++
++	guard(pagefault)();
++	for (i = 0; i < XATTR_SIZE_MAX; i++) {
++		__get_kernel_nofault(&cs, s__ign, char, err_out);
++		if (cs == '\0')
++			return i;
++		found = false;
++		for (j = 0; j < XATTR_SIZE_MAX; j++) {
++			__get_kernel_nofault(&cr, reject__ign + j, char, err_out);
++			if (cs == cr) {
++				found = true;
++				break;
++			}
++			if (cr == '\0')
++				break;
++		}
++		if (found)
++			return i;
++		s__ign++;
++	}
++	return -E2BIG;
++err_out:
++	return -EFAULT;
++}
++
++/**
++ * bpf_strnstr - Find the first substring in a length-limited string
++ * @s1__ign: The string to be searched
++ * @s2__ign: The string to search for
++ * @len: the maximum number of characters to search
++ *
++ * Return:
++ * * >=0      - Index of the first character of the first occurrence of @s2__ign
++ *              within the first @len characters of @s1__ign
++ * * %-1      - @s2__ign not found in the first @len characters of @s1__ign
++ * * %-EFAULT - Cannot read one of the strings
++ * * %-E2BIG  - One of the strings is too large
++ * * %-ERANGE - One of the strings is outside of kernel address space
++ */
++__bpf_kfunc int bpf_strnstr(const char *s1__ign, const char *s2__ign, size_t len)
++{
++	char c1, c2;
++	int i, j;
++
++	if (!copy_from_kernel_nofault_allowed(s1__ign, 1) ||
++	    !copy_from_kernel_nofault_allowed(s2__ign, 1)) {
++		return -ERANGE;
++	}
++
++	guard(pagefault)();
++	for (i = 0; i < XATTR_SIZE_MAX; i++) {
++		for (j = 0; i + j < len && j < XATTR_SIZE_MAX; j++) {
++			__get_kernel_nofault(&c1, s1__ign + j, char, err_out);
++			__get_kernel_nofault(&c2, s2__ign + j, char, err_out);
++			if (c2 == '\0')
++				return i;
++			if (c1 == '\0')
++				return -1;
++			if (c1 != c2)
++				break;
++		}
++		if (j == XATTR_SIZE_MAX)
++			return -E2BIG;
++		if (i + j == len)
++			return -1;
++		s1__ign++;
++	}
++	return -E2BIG;
++err_out:
++	return -EFAULT;
++}
++
++/**
++ * bpf_strstr - Find the first substring in a string
++ * @s1__ign: The string to be searched
++ * @s2__ign: The string to search for
++ *
++ * Return:
++ * * >=0      - Index of the first character of the first occurrence of @s2__ign
++ *              within @s1__ign
++ * * %-1      - @s2__ign is not a substring of @s1__ign
++ * * %-EFAULT - Cannot read one of the strings
++ * * %-E2BIG  - One of the strings is too large
++ * * %-ERANGE - One of the strings is outside of kernel address space
++ */
++__bpf_kfunc int bpf_strstr(const char *s1__ign, const char *s2__ign)
++{
++	return bpf_strnstr(s1__ign, s2__ign, XATTR_SIZE_MAX);
++}
++
+ __bpf_kfunc_end_defs();
  
- /**
+ BTF_KFUNCS_START(generic_btf_ids)
+@@ -3397,6 +3775,17 @@ BTF_ID_FLAGS(func, bpf_iter_dmabuf_next, KF_ITER_NEXT | KF_RET_NULL | KF_SLEEPAB
+ BTF_ID_FLAGS(func, bpf_iter_dmabuf_destroy, KF_ITER_DESTROY | KF_SLEEPABLE)
+ #endif
+ BTF_ID_FLAGS(func, __bpf_trap)
++BTF_ID_FLAGS(func, bpf_strcmp);
++BTF_ID_FLAGS(func, bpf_strchr);
++BTF_ID_FLAGS(func, bpf_strchrnul);
++BTF_ID_FLAGS(func, bpf_strnchr);
++BTF_ID_FLAGS(func, bpf_strrchr);
++BTF_ID_FLAGS(func, bpf_strlen);
++BTF_ID_FLAGS(func, bpf_strnlen);
++BTF_ID_FLAGS(func, bpf_strspn);
++BTF_ID_FLAGS(func, bpf_strcspn);
++BTF_ID_FLAGS(func, bpf_strstr);
++BTF_ID_FLAGS(func, bpf_strnstr);
+ BTF_KFUNCS_END(common_btf_ids)
+ 
+ static const struct btf_kfunc_id_set common_kfunc_set = {
 -- 
 2.49.0
 
