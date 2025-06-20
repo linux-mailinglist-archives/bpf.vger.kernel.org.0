@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-61140-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61141-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0EF0AE1195
-	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 05:11:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 164BCAE1196
+	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 05:11:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76EC73B8CD1
-	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 03:11:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B2A71BC2E83
+	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 03:12:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 919D51D5CDD;
-	Fri, 20 Jun 2025 03:11:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 361311DB375;
+	Fri, 20 Jun 2025 03:11:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="Ts1yuVv4"
+	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="jpA2Nscf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 136601BEF77
-	for <bpf@vger.kernel.org>; Fri, 20 Jun 2025 03:11:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97A1C1D618A
+	for <bpf@vger.kernel.org>; Fri, 20 Jun 2025 03:11:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750389102; cv=none; b=OWQVFKvux5zQMAxPvpaZceMteviLD5zYuEJXrafhxoFL4O8Pp0eg4NEX00Sk/4EKiZeYfKSrE1t6kLtqS00x65Dkjq2ZrKjnhFfkWfkD3zy7L3A/4jY5JzvE01MK3eUqQyU1rweIERTaKxGvtiT+CQCBXWKy6z6OB6XUpWZSXgY=
+	t=1750389104; cv=none; b=HL68jC3m9FR+pujO4q4IscnUnQQjvrhtLiXOu2QHOnoGD32vcbz8lxuoF6MYuPXbAi9O9pCQoa9CNzgcpdQVFhV2kL/dxfIijw0v9ORUsj9AhVhwg38piGLOzuUsNJiU7FnVBUv5lyNdQnJLG0vI25ZlMuJuEaZV36H8CedUtvU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750389102; c=relaxed/simple;
-	bh=uiJNe8EGt4qyJNqE7qSsMOHTTR1w+p7DUhFW11QFtQM=;
+	s=arc-20240116; t=1750389104; c=relaxed/simple;
+	bh=CsH5vX18nwg9v+NAyZXViFVnEMNbFuYeIn5DLpjYCvs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jkpZkWVX7cVFQRPU4UEUb1u62j7IO6CMbLtIamkgAbKsj877zNZMloEfGwc8ilp2a2m71+8UJifdKmZDvA38QtmI4UxDpkkNf8LmCFTqScO/wrJQdRcj8AoBJtyKPCNKW4AFRfzBmfAqb0CISjH2epm8ZKtndJuiZZkimet+uR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=Ts1yuVv4; arc=none smtp.client-ip=209.85.222.169
+	 MIME-Version; b=pHoJ2XXfzdUdUiUj93rfQHsI70wUsUbAKgOWfTDAVXycET+bnsrn5iz5d9v6IdR5DydJ9V1bGQ3VVcrpNgtDesdBPCoBZYBFRr/UE1luZsqk+lHZr/svBIuPM5zXKJgGHC7/ZiBzGiZuyryBROjQoftvE86GNe3DpEYfOZfeST0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=jpA2Nscf; arc=none smtp.client-ip=209.85.160.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etsalapatis.com
-Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-7d3da67de87so163894585a.3
-        for <bpf@vger.kernel.org>; Thu, 19 Jun 2025 20:11:39 -0700 (PDT)
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-4a4312b4849so14656401cf.1
+        for <bpf@vger.kernel.org>; Thu, 19 Jun 2025 20:11:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1750389099; x=1750993899; darn=vger.kernel.org;
+        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1750389101; x=1750993901; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Oo9SkDG7E5ZB7X/mvcMzdeeOs9uOdAX+sV8s1qxmbA4=;
-        b=Ts1yuVv4O8CWULjMUb6CNL9v1d71IS4v10ludABKgIqtJZu67Gro7+8wwoPt5ItWbk
-         BfffWmlTq5b++s4vYExyX4vR87Q/9ArWIpK3hqxyPAKxBmLzmFt86DBlrE87kSACXnsX
-         9/mlB2Jvv5amMbwS9jzyKxEgJ5ejEiCuaF3z2x46jQbCGPcUQivWt3XXfYaWaydcyM53
-         xYdTBBAFQSZ3UXS55qEM9PTEyixiTgj3mQsQxcNyoZddGqiPSRch3BKyj9fTBq7ElCRw
-         Z21zXkVc28O9DBX+GTu77I2336kbJENP26ZG1rrGTMc2t4BhMiMBKUuquzgbpYXiKfMg
-         YpDA==
+        bh=c8wQA4DSL5XWvf0QBO0pa8E//areszTV+4hTG0I/jAw=;
+        b=jpA2Nscf1woewdcFTzuoPf1QH/wU83Qx9dtsPWxoA1PbUl/sHRc4BvHHbe9LQ9P9kY
+         8qON2ID+f2MD7WQle21N3nmvYN8jYmxblXy42QkouXwhfrXflahktrZseOdyD3CvFrRx
+         OHQIPxlzCxuFgx/5D8fFJu+JDMxIvblQGB5vT8e+BWmZO7rPhRnL+rtnZUx4+ERL63n6
+         OjwoiQ2r0yfs9IVaLYS6fCUePI0mPEyqPSHYE2QhcUvJHPZ2OYJfSGG+9RxZVEsdii3Q
+         /NqfzFVzXogdxNl9Hg42cpY7f6YVnQ0s0y+nOAmhSWUMlYmCCKvEv+9FlrLYa+vQ/mq2
+         u9FA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750389099; x=1750993899;
+        d=1e100.net; s=20230601; t=1750389101; x=1750993901;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Oo9SkDG7E5ZB7X/mvcMzdeeOs9uOdAX+sV8s1qxmbA4=;
-        b=MYj+AnAVb6daZnggNW6eyzotdNm4j8ACHdlWGdEDk1jYiBioin0H0hV19eOXvJWI28
-         MMZeHVJCIrH5JLdRrT5AUB17GY1MeDoNlciKoOA97LSOUgE8qLlPa/Ss4FW/B3kwjiSX
-         btnpPt4obNQht+80e0QV4toEnCgFGOg0ZvWCKgvLZoEI4rfXN1aE1cFnxjL9FB9VQXTS
-         Ol5fc9Ug2zG4XxepL523mgE+nP1LVDsLuiFscT1urRmhyl+1eNctaBioFnij4PbXZple
-         RI2u7P0U3wNe/XCaTXh+kKWTfCF3ApmIlxEKMMWQqpLFu7GmRiimuNtek2lnaBIMqUBD
-         mXGg==
-X-Gm-Message-State: AOJu0YyiKWsIKfVRj8yBzPIddt7SHXGfiF2G+xiQWtrt3QLsvaxXkavY
-	82GprQmlvEkalDrlu5Vt2jz6r5CrhgGA9QRHgFP4vPjSV3sQhHZjfsOBO6gjLtnCwun9IB1ufng
-	g/4q/9lyIQw==
-X-Gm-Gg: ASbGncukIOjQwBgB2nevhCVKvovncn65qkTDxStfMUUdPHjmvbb3AQSqBG9WrwNs35k
-	hbIeO4c+GCsuRPrW5YU+7KCrgmc/sjNIT4MTy8XIJCfuXMvKhXB/ZwwmQYO0fOisI6nnYM1jjrh
-	THNVeMndu4cu/ioZWlYytCsOpWuJPsUeomJkkmx0aTQTNb/SsOXQC1PHSA5QR6Lv90SxXA2ejUM
-	qdjwYg0wg8p6skgdidGizDp3BQJ24MyVn347SMitGQs3g2XisG6JS/MsOtv6S33XrG2bNyUDF5v
-	NnrPYBh7ZsIAGHrFwHtFvnptJ8L2yM3aa+pbUFsic1ZEoZ+HFAI8I2KIDgBN
-X-Google-Smtp-Source: AGHT+IGI3Q5lVQyxDu3iV77xa2ZWMiB4lkuQ/DvJXC4x1hLFVQgdfXSXccDRz51LUx9esFhGw0Ej7w==
-X-Received: by 2002:a05:620a:3191:b0:7d3:8a1a:9a03 with SMTP id af79cd13be357-7d3f98c9769mr202034485a.14.1750389098859;
-        Thu, 19 Jun 2025 20:11:38 -0700 (PDT)
+        bh=c8wQA4DSL5XWvf0QBO0pa8E//areszTV+4hTG0I/jAw=;
+        b=VUiFnvZ1FtL5tsJb7+GpRK8iAzS302eskNS2ZMVdIJmznAX+vsZZEx80XGVj1VMDkF
+         mJfkJT7AsE29WXhGEfRVqzxt90QlP7b54HoXvslx/F1KPaCbQXgrr7yk9ER6KiDZme96
+         2E6NoCE++AaXsk+QjznT8BBSpimoNKIlQJuGKxMOI36pE+lP9LBU5veDnEV1Irf5g7Pe
+         RGz+MbrBe0lt48Mf7Yrk5au7wPe8n96XBFmcNmPeWergXuERTE6MOVnHpOjX2vNP2b7O
+         2FAgaMkWWPZgz1+JgynZji0yh6O6zlHRZpU6mzb1Js0kp/1WspQ2ytybjKhWf8AEyUh+
+         AyMg==
+X-Gm-Message-State: AOJu0Yx5OKi1+bBNPD5YYNKtX91n7pdXpFt4NIOHjExQ/88jn1baZO4l
+	l4JXchDNICdOQ6i8Z5fT+escx1k6cUIdIRdKYCJcOszzdULUONFbY1q4AORabm1J/VOuBYn1DvY
+	6872u3tkMFA==
+X-Gm-Gg: ASbGncuoHfxpzk9y1AhOYNIiylyhjzdQG56r+dvJTSHbA/JxclzGb7h26F6rgAFcvfu
+	sFu2T/RNVdIjne8rM+/dTbqdMzim8OfTaFTDlNI8794PzyaxXD01Ek3vc34odU19BtntXvF9UiM
+	5LR6BFl8FUTH7Ldm0deAM7ldG75j2t7/+gFZ96MA48ePNVr+blxUdyowGaa0jgP864odOrSYSpD
+	ifMpWMjFFw8Ki+sYqcJqclIABFXSCOw/PguN6pwv2OQ8RCJyPV/3yFQ8qLosFiAKUwMF50cUenA
+	xrWwnaBop/jHZGfSfhuxvnGZV95dNjiViI0TMXwzd3qo4NS3wptjqTHySSLZ
+X-Google-Smtp-Source: AGHT+IEEZB6VvPF1mGwpNYO80lFZqAdkS80+CQtmC/CGbcBEcx2I+IQZaiC1AhSUya3ro7m0qINbeQ==
+X-Received: by 2002:a05:622a:1b90:b0:4a6:f99d:9633 with SMTP id d75a77b69052e-4a77a269e25mr23327281cf.31.1750389101514;
+        Thu, 19 Jun 2025 20:11:41 -0700 (PDT)
 Received: from boreas.. ([140.174.215.70])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4a779e90ffasm4502441cf.70.2025.06.19.20.11.38
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4a779e90ffasm4502441cf.70.2025.06.19.20.11.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Jun 2025 20:11:38 -0700 (PDT)
+        Thu, 19 Jun 2025 20:11:41 -0700 (PDT)
 From: Emil Tsalapatis <emil@etsalapatis.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -84,9 +84,9 @@ Cc: ast@kernel.org,
 	memxor@gmail.com,
 	sched-ext@meta.com,
 	Emil Tsalapatis <emil@etsalapatis.com>
-Subject: [PATCH bpf-next 1/2] bpf/arena: add bpf_arena_guard_pages kfunc
-Date: Thu, 19 Jun 2025 23:11:17 -0400
-Message-ID: <20250620031118.245601-2-emil@etsalapatis.com>
+Subject: [PATCH bpf-next 2/2] selftests/bpf: add selftests for bpf_arena_guard_pages
+Date: Thu, 19 Jun 2025 23:11:18 -0400
+Message-ID: <20250620031118.245601-3-emil@etsalapatis.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250620031118.245601-1-emil@etsalapatis.com>
 References: <20250620031118.245601-1-emil@etsalapatis.com>
@@ -98,186 +98,252 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a new BPF arena kfunc from protecting a range of pages. These pages
-cannot be allocated, either explicitly through bpf_arena_alloc_pages()
-or implicitly through userspace page faults.
+Add selftests for the new bpf_arena_guard_pages kfunc.
 
 Signed-off-by: Emil Tsalapatis <emil@etsalapatis.com>
 ---
- kernel/bpf/arena.c | 95 ++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 92 insertions(+), 3 deletions(-)
+ .../testing/selftests/bpf/bpf_arena_common.h  |   3 +
+ .../selftests/bpf/progs/verifier_arena.c      | 106 ++++++++++++++++++
+ .../bpf/progs/verifier_arena_large.c          |  93 +++++++++++++++
+ 3 files changed, 202 insertions(+)
 
-diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
-index 0d56cea71602..2f9293eb7151 100644
---- a/kernel/bpf/arena.c
-+++ b/kernel/bpf/arena.c
-@@ -48,6 +48,7 @@ struct bpf_arena {
- 	u64 user_vm_end;
- 	struct vm_struct *kern_vm;
- 	struct range_tree rt;
-+	struct range_tree rt_guard;
- 	struct list_head vma_list;
- 	struct mutex lock;
- };
-@@ -143,6 +144,20 @@ static struct bpf_map *arena_map_alloc(union bpf_attr *attr)
- 		bpf_map_area_free(arena);
- 		goto err;
- 	}
-+
-+	/*
-+	 * Use the same semantics as the main range tree to reuse
-+	 * its methods: Present ranges are all unguarded, while
-+	 * absent ones are guarded.
-+	 */
-+	range_tree_init(&arena->rt_guard);
-+	err = range_tree_set(&arena->rt_guard, 0, attr->max_entries);
-+	if (err) {
-+		range_tree_destroy(&arena->rt);
-+		bpf_map_area_free(arena);
-+		goto err;
-+	}
-+
- 	mutex_init(&arena->lock);
+diff --git a/tools/testing/selftests/bpf/bpf_arena_common.h b/tools/testing/selftests/bpf/bpf_arena_common.h
+index 68a51dcc0669..339de1719bc7 100644
+--- a/tools/testing/selftests/bpf/bpf_arena_common.h
++++ b/tools/testing/selftests/bpf/bpf_arena_common.h
+@@ -46,8 +46,11 @@
  
- 	return &arena->map;
-@@ -193,6 +208,7 @@ static void arena_map_free(struct bpf_map *map)
- 	apply_to_existing_page_range(&init_mm, bpf_arena_get_kern_vm_start(arena),
- 				     KERN_VM_SZ - GUARD_SZ, existing_page_cb, NULL);
- 	free_vm_area(arena->kern_vm);
-+	range_tree_destroy(&arena->rt_guard);
- 	range_tree_destroy(&arena->rt);
- 	bpf_map_area_free(arena);
- }
-@@ -282,6 +298,11 @@ static vm_fault_t arena_vm_fault(struct vm_fault *vmf)
- 		/* User space requested to segfault when page is not allocated by bpf prog */
- 		return VM_FAULT_SIGSEGV;
+ void __arena* bpf_arena_alloc_pages(void *map, void __arena *addr, __u32 page_cnt,
+ 				    int node_id, __u64 flags) __ksym __weak;
++int bpf_arena_guard_pages(void *map, void __arena *addr, __u32 page_cnt) __ksym __weak;
+ void bpf_arena_free_pages(void *map, void __arena *ptr, __u32 page_cnt) __ksym __weak;
  
-+	/* Make sure the page is not guarded. */
-+	ret = is_range_tree_set(&arena->rt_guard, vmf->pgoff, 1);
-+	if (ret)
-+		return VM_FAULT_SIGSEGV;
++#define arena_base(map) ((void __arena *)((struct bpf_arena *)(map))->user_vm_start)
 +
- 	ret = range_tree_clear(&arena->rt, vmf->pgoff, 1);
- 	if (ret)
- 		return VM_FAULT_SIGSEGV;
-@@ -456,12 +477,17 @@ static long arena_alloc_pages(struct bpf_arena *arena, long uaddr, long page_cnt
- 		ret = is_range_tree_set(&arena->rt, pgoff, page_cnt);
- 		if (ret)
- 			goto out_free_pages;
--		ret = range_tree_clear(&arena->rt, pgoff, page_cnt);
- 	} else {
- 		ret = pgoff = range_tree_find(&arena->rt, page_cnt);
--		if (pgoff >= 0)
--			ret = range_tree_clear(&arena->rt, pgoff, page_cnt);
-+		if (pgoff < 0)
-+			goto out_free_pages;
- 	}
-+
-+	ret = is_range_tree_set(&arena->rt_guard, pgoff, page_cnt);
-+	if (ret)
-+		goto out_free_pages;
-+
-+	ret = range_tree_clear(&arena->rt, pgoff, page_cnt);
- 	if (ret)
- 		goto out_free_pages;
+ #else /* when compiled as user space code */
  
-@@ -512,6 +538,7 @@ static void arena_free_pages(struct bpf_arena *arena, long uaddr, long page_cnt)
- 	u64 full_uaddr, uaddr_end;
- 	long kaddr, pgoff, i;
- 	struct page *page;
-+	int ret;
- 
- 	/* only aligned lower 32-bit are relevant */
- 	uaddr = (u32)uaddr;
-@@ -525,7 +552,14 @@ static void arena_free_pages(struct bpf_arena *arena, long uaddr, long page_cnt)
- 
- 	guard(mutex)(&arena->lock);
- 
-+
- 	pgoff = compute_pgoff(arena, uaddr);
-+
-+	/* Do not free regions that include guarded pages. */
-+	ret = is_range_tree_set(&arena->rt_guard, pgoff, page_cnt);
-+	if (ret)
-+		return;
-+
- 	/* clear range */
- 	range_tree_set(&arena->rt, pgoff, page_cnt);
- 
-@@ -550,6 +584,46 @@ static void arena_free_pages(struct bpf_arena *arena, long uaddr, long page_cnt)
- 	}
+ #define __arena
+diff --git a/tools/testing/selftests/bpf/progs/verifier_arena.c b/tools/testing/selftests/bpf/progs/verifier_arena.c
+index 67509c5d3982..af175dc89a8c 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_arena.c
++++ b/tools/testing/selftests/bpf/progs/verifier_arena.c
+@@ -114,6 +114,112 @@ int basic_alloc3(void *ctx)
+ 	return 0;
  }
  
-+static int arena_guard_pages(struct bpf_arena *arena, long uaddr, u32 page_cnt)
++SEC("syscall")
++__success __retval(0)
++int basic_guard1(void *ctx)
 +{
-+	long page_cnt_max = (arena->user_vm_end - arena->user_vm_start) >> PAGE_SHIFT;
-+	long pgoff;
++#if defined(__BPF_FEATURE_ADDR_SPACE_CAST)
++	char __arena *page;
 +	int ret;
 +
-+	if (uaddr & ~PAGE_MASK)
-+		return 0;
++	page = bpf_arena_alloc_pages(&arena, NULL, 1, NUMA_NO_NODE, 0);
++	if (!page)
++		return 1;
 +
-+	pgoff = compute_pgoff(arena, uaddr);
-+	if (pgoff + page_cnt > page_cnt_max)
-+		return -EINVAL;
++	page += __PAGE_SIZE;
 +
-+	guard(mutex)(&arena->lock);
-+
-+	/* Make sure we have not already guarded the pages. */
-+	ret = is_range_tree_set(&arena->rt_guard, pgoff, page_cnt);
++	/* Guard the second page */
++	ret = bpf_arena_guard_pages(&arena, page, 1);
 +	if (ret)
-+		return -EALREADY;
++		return 2;
 +
-+	/* Cannot guard already allocated pages. */
-+	ret = is_range_tree_set(&arena->rt, pgoff, page_cnt);
-+	if (ret)
-+		return -EINVAL;
++	/* Try to explicitly allocate the guarded page. */
++	page = bpf_arena_alloc_pages(&arena, page, 1, NUMA_NO_NODE, 0);
++	if (page)
++		return 3;
 +
-+	/* Reserve the region. */
-+	ret = range_tree_clear(&arena->rt_guard, pgoff, page_cnt);
-+	if (ret)
-+		return ret;
-+
-+	/* Also "allocate" the region to prevent it from being allocated. */
-+	ret = range_tree_clear(&arena->rt, pgoff, page_cnt);
-+	if (ret) {
-+		range_tree_set(&arena->rt_guard, pgoff, page_cnt);
-+		return ret;
-+	}
-+
++	/* Try to implicitly allocate the page (since there's only 2 of them). */
++	page = bpf_arena_alloc_pages(&arena, NULL, 1, NUMA_NO_NODE, 0);
++	if (page)
++		return 4;
++#endif
 +	return 0;
 +}
 +
- __bpf_kfunc_start_defs();
- 
- __bpf_kfunc void *bpf_arena_alloc_pages(void *p__map, void *addr__ign, u32 page_cnt,
-@@ -573,11 +647,26 @@ __bpf_kfunc void bpf_arena_free_pages(void *p__map, void *ptr__ign, u32 page_cnt
- 		return;
- 	arena_free_pages(arena, (long)ptr__ign, page_cnt);
- }
-+
-+__bpf_kfunc int bpf_arena_guard_pages(void *p__map, void *ptr__ign, u32 page_cnt)
++SEC("syscall")
++__success __retval(0)
++int basic_guard2(void *ctx)
 +{
-+	struct bpf_map *map = p__map;
-+	struct bpf_arena *arena = container_of(map, struct bpf_arena, map);
++#if defined(__BPF_FEATURE_ADDR_SPACE_CAST)
++	char __arena *page;
++	int ret;
 +
-+	if (map->map_type != BPF_MAP_TYPE_ARENA)
-+		return -EINVAL;
++	page = arena_base(&arena);
++	ret = bpf_arena_guard_pages(&arena, page, 1);
++	if (ret)
++		return 1;
 +
-+	if (!page_cnt)
-+		return 0;
-+
-+	return arena_guard_pages(arena, (long)ptr__ign, page_cnt);
++	page = bpf_arena_alloc_pages(&arena, page, 1, NUMA_NO_NODE, 0);
++	if ((u64)page)
++		return 2;
++#endif
++	return 0;
 +}
- __bpf_kfunc_end_defs();
++
++/* Guard the same page twice, should return -EALREADY. */
++SEC("syscall")
++__success __retval(0)
++int guard_twice(void *ctx)
++{
++#if defined(__BPF_FEATURE_ADDR_SPACE_CAST)
++	char __arena *page;
++	int ret;
++
++	page = arena_base(&arena);
++
++	ret = bpf_arena_guard_pages(&arena, page, 1);
++	if (ret)
++		return 1;
++
++	/* Should be -EALREADY. */
++	ret = bpf_arena_guard_pages(&arena, page, 1);
++	if (ret != -114)
++		return 2;
++#endif
++	return 0;
++}
++
++/* Try to add a guard past the end of the arena. */
++SEC("syscall")
++__success __retval(0)
++int guard_invalid_region(void *ctx)
++{
++#if defined(__BPF_FEATURE_ADDR_SPACE_CAST)
++	char __arena *page;
++	int ret;
++
++	/* Try a NULL pointer. */
++	ret = bpf_arena_guard_pages(&arena, NULL, 3);
++	if (ret != -22)
++		return 1;
++
++	page = arena_base(&arena);
++
++	ret = bpf_arena_guard_pages(&arena, page, 3);
++	if (ret != -22)
++		return 2;
++
++	ret = bpf_arena_guard_pages(&arena, page, 4096);
++	if (ret != -22)
++		return 3;
++
++	ret = bpf_arena_guard_pages(&arena, page, (1ULL << 32) - 1);
++	if (ret != -22)
++		return 4;
++#endif
++	return 0;
++}
++
+ SEC("iter.s/bpf_map")
+ __success __log_level(2)
+ int iter_maps1(struct bpf_iter__bpf_map *ctx)
+diff --git a/tools/testing/selftests/bpf/progs/verifier_arena_large.c b/tools/testing/selftests/bpf/progs/verifier_arena_large.c
+index f94f30cf1bb8..cf76acd72ed1 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_arena_large.c
++++ b/tools/testing/selftests/bpf/progs/verifier_arena_large.c
+@@ -67,6 +67,99 @@ int big_alloc1(void *ctx)
+ 	return 0;
+ }
  
- BTF_KFUNCS_START(arena_kfuncs)
- BTF_ID_FLAGS(func, bpf_arena_alloc_pages, KF_TRUSTED_ARGS | KF_SLEEPABLE | KF_ARENA_RET | KF_ARENA_ARG2)
- BTF_ID_FLAGS(func, bpf_arena_free_pages, KF_TRUSTED_ARGS | KF_SLEEPABLE | KF_ARENA_ARG2)
-+BTF_ID_FLAGS(func, bpf_arena_guard_pages, KF_TRUSTED_ARGS | KF_SLEEPABLE | KF_ARENA_ARG2)
- BTF_KFUNCS_END(arena_kfuncs)
- 
- static const struct btf_kfunc_id_set common_kfunc_set = {
++/* Try to access a guarded page. Behavior should be identical with accessing unallocated pages. */
++SEC("syscall")
++__success __retval(0)
++int access_guarded(void *ctx)
++{
++#if defined(__BPF_FEATURE_ADDR_SPACE_CAST)
++	volatile char __arena *page;
++	char __arena *base;
++	const size_t len = 4;
++	int ret, i;
++
++	/* Get a separate region of the arena. */
++	page = base = arena_base(&arena) + 16384 * PAGE_SIZE;
++
++	ret = bpf_arena_guard_pages(&arena, base, len);
++	if (ret)
++		return 1;
++
++	/* Try to dirty guarded memory. */
++	for (i = 0; i < len && can_loop; i++)
++		*page = 0x5a;
++
++	for (i = 0; i < len && can_loop; i++) {
++		page = (volatile char __arena *)(base + i * PAGE_SIZE);
++
++		/*
++		 * Error out in case either the write went through,
++		 * or the address has random garbage.
++		 */
++		if (*page == 0x5a)
++			return 2 + 2 * i;
++
++		if (*page)
++			return 2 + 2 * i + 1;
++	}
++#endif
++	return 0;
++}
++
++/* Try to allocate a region overlapping with a guard. */
++SEC("syscall")
++__success __retval(0)
++int request_partially_guarded(void *ctx)
++{
++#if defined(__BPF_FEATURE_ADDR_SPACE_CAST)
++	volatile char __arena *page;
++	char __arena *base;
++	int ret;
++
++	/* Add an arbitrary page offset. */
++	page = base = arena_base(&arena) + 4096 * __PAGE_SIZE;
++
++	ret = bpf_arena_guard_pages(&arena, base + 3 * __PAGE_SIZE, 4);
++	if (ret)
++		return 1;
++
++	page = bpf_arena_alloc_pages(&arena, base, 5, NUMA_NO_NODE, 0);
++	if ((u64)page != 0ULL)
++		return 2;
++#endif
++	return 0;
++}
++
++SEC("syscall")
++__success __retval(0)
++int free_guarded(void *ctx)
++{
++#if defined(__BPF_FEATURE_ADDR_SPACE_CAST)
++	char __arena *addr;
++	char __arena *page;
++	int ret;
++
++	/* Add an arbitrary page offset. */
++	addr = arena_base(&arena) + 32768 * __PAGE_SIZE;
++
++	page = bpf_arena_alloc_pages(&arena, addr, 4, NUMA_NO_NODE, 0);
++	if (!page)
++		return 1;
++
++	ret = bpf_arena_guard_pages(&arena, addr + 4 * __PAGE_SIZE, 4);
++	if (ret)
++		return 2;
++
++	bpf_arena_free_pages(&arena, addr + 3 * __PAGE_SIZE, 2);
++
++	/* The free pages call above should have failed, so this allocation should fail too. */
++	page = bpf_arena_alloc_pages(&arena, addr + 3 * __PAGE_SIZE, 1, NUMA_NO_NODE, 0);
++	if (page)
++		return 3;
++#endif
++	return 0;
++}
++
+ #if defined(__BPF_FEATURE_ADDR_SPACE_CAST)
+ #define PAGE_CNT 100
+ __u8 __arena * __arena page[PAGE_CNT]; /* occupies the first page */
 -- 
 2.49.0
 
