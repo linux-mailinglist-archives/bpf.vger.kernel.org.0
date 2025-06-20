@@ -1,48 +1,48 @@
-Return-Path: <bpf+bounces-61142-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61143-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01E31AE11B8
-	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 05:22:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACA13AE11CD
+	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 05:32:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A9B94A376D
-	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 03:22:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42D974A21CF
+	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 03:32:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B94D91C5F27;
-	Fri, 20 Jun 2025 03:22:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 119771C5F37;
+	Fri, 20 Jun 2025 03:32:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mh73/h4Q"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EqRiKvO0"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24334433B1
-	for <bpf@vger.kernel.org>; Fri, 20 Jun 2025 03:22:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C39A9625
+	for <bpf@vger.kernel.org>; Fri, 20 Jun 2025 03:32:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750389740; cv=none; b=ZsOE7NCR9Q8rKLCJgiCQplLbfyzr3XOar+u7152pHnK5Mg+RS59nI7nk1QwFCzYavmqM5fk6c9aNX3Pjub7F49j31FYdAU0GCChBVrDA//jP9aCe/W+cUhhbqiPqtdvV0bg7P2J/EeJLseOfhyySLWP3V2oIrxPUXbcZQVSCSJk=
+	t=1750390325; cv=none; b=bYQVwPr9POVmdJvY/2M6et8+RSCu8X+VdnpewJcIHp7KY7c/IaFoONpcnUj4UiXL3lhzKrDyNWE11CGEvrun4zZnUpe5tGN7B1bdJtYXi/gWJaw3cL9aNW9v+aQRBdRgN9obLNU0st1hKvrrZUxeRf9I22XPH//uYBMdYz6KDOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750389740; c=relaxed/simple;
-	bh=BNVZL1LwSlKQ2Hwemkrc1kvOKy4tqch5FGs7pVe0NsE=;
+	s=arc-20240116; t=1750390325; c=relaxed/simple;
+	bh=qe2WZJOXDFXtbGsYs8yHVh293TDNB/jAfqNfOyKBbJk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JVhdNgIzZylJlKXLVDlNiR1mFZ4UygQ2sY2TB+noGzU8HMX55b0Qh5Xop9vmxWw8FKJGS8gcdvLXlTM+DNM9cnhZlE2zYmSvTMBPwSKT5i8vGsIS5QwlObVHsqNj3HhIrEq0GkqbpsxKU3PRYoclFSaj9zBv2Qk48abZOyZUbEs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mh73/h4Q; arc=none smtp.client-ip=95.215.58.186
+	 In-Reply-To:Content-Type; b=aQfbgVjoZCBIkXr8G1v/zRuUguUi2tpVM05DO8yKux7G8Yw/4yPjjkUa1TQ6usC3BJyf+NJSSXsnc/btrSFN54A/d+WEaD2Bb1WSDJ6Ii8qiSKb+bJ1BfkR1CDxu3BPxsmgKbHiOwSUa6S4oMiRlNpphEiUfYwgYEHxx0LfmPOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=EqRiKvO0; arc=none smtp.client-ip=95.215.58.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <28a6e8ae-7344-4c09-a779-af0d833d8578@linux.dev>
+Message-ID: <77b09f48-01d9-46f1-8a31-a1824c0eef8d@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1750389722;
+	t=1750390311;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=yiYHAkxGzw2ln42MzS53hzpnRDIheaafpYaL8k6tDvA=;
-	b=mh73/h4QeFY3OkDc8dwZdRmQypRhWlNdTh8jivXqn5WIYL+6wa1OycpmOo/kvhSdXXT50J
-	FN2FYGs2v9HTj9BrmlHwMV94B2HP1JZJmNctXmM5jyZQyywIaS0jqj/hxWd6yqBzSjv7Bc
-	lUoPZbOhClFMcV5Qg7X8el9oPz7JIyo=
-Date: Fri, 20 Jun 2025 11:21:45 +0800
+	bh=IvpYb8k/NL2t39sUPEZh6TnSoeFYsRoqFlVYkMs7g3k=;
+	b=EqRiKvO08D0o/1M6IsABbVCaKpmV6NLcNhfCrPzEHHvkJmCWQLslajKSRPNcet189vJjX+
+	Sl0tvsTpjoiLAcuxW/EO/pNT0tjU+7pqDKfvVwd/P+2bFK0QzAija06prM6kzzHw/MkPrM
+	aSnHXnRzqiX50p4Dko8uruD2mj0rpKQ=
+Date: Fri, 20 Jun 2025 11:31:38 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -110,8 +110,24 @@ X-Migadu-Flow: FLOW_OUT
 > 
 > Let's fix 'link_type' to display it properly.
 
-Yeah, but it seems that 'link_type' is a common field for other link 
-types, you mean use 'link_type' to show 'kprobe_multi' or 'kretprobe_multi'?
+What do you think show like this:
+
+     link_type:      kprobe_multi
+     link_id:        1
+     prog_tag:       33be53a4fd673e1d
+     prog_id:        21
+     retprobe:       false
+     kprobe_cnt:     8
+     missed: 0
+     cookie           func
+     1                bpf_fentry_test1+0x0/0x20
+     7                bpf_fentry_test2+0x0/0x20
+     2                bpf_fentry_test3+0x0/0x20
+     3                bpf_fentry_test4+0x0/0x20
+     4                bpf_fentry_test5+0x0/0x20
+     5                bpf_fentry_test6+0x0/0x20
+     6                bpf_fentry_test7+0x0/0x20
+     8                bpf_fentry_test8+0x0/0x10
 
 -- 
 Best Regards
