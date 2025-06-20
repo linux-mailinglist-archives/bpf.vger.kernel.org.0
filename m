@@ -1,91 +1,92 @@
-Return-Path: <bpf+bounces-61173-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61174-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AD73AE1D11
-	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 16:11:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80F97AE1D44
+	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 16:26:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B5DC4A6558
-	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 14:11:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 931E57A3ABE
+	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 14:24:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A48162951BA;
-	Fri, 20 Jun 2025 14:10:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C73A290D83;
+	Fri, 20 Jun 2025 14:25:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h9CCFKsu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b12NawZn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D7F828F51C;
-	Fri, 20 Jun 2025 14:10:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9C47237708;
+	Fri, 20 Jun 2025 14:25:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750428655; cv=none; b=naKFdotCt2V6HlkVEG90O7K8vnZrZG2eHI44q+mUkdCuOhTFKBfa3PVVrxK63jgMVhcmz/Ef6mo8QRRYWBlYmtshFKu1yUhshGa7mCdlS+V/lFjVdAqXIzfQFYi9ucdp6dN5h2++8ukg7cdGO+S1uKWXcM1/jKe0Xec02gAqY+0=
+	t=1750429558; cv=none; b=XHvFLRe0OMbD9cYlbNslNL5TVRfl9grcJLfpDATVCI/ncbo+ZtwM2wrYpgYj3PdEy/1BskqPHcX7DFXaaQU0JZ+k3hGVyNnW+6E4pUGjvedZKGFfPGM4fCBHDGTM9uqH56aHy9F70zNhKRu65os96HyKqILgcxXEIetH54Jrq4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750428655; c=relaxed/simple;
-	bh=GL50W4CAzr7lMp7WSXLe/G7ojtPN2HkR1M4KvG9PoqU=;
+	s=arc-20240116; t=1750429558; c=relaxed/simple;
+	bh=fRMQdvjZ8yoFE451awnv4ngfHqVahpVyU08RAxzf2ug=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DCbDRjIQjgWVnheQrbet/A3Qxt9BNQbiviZBPkr1F6lm1sLuOs+hgAiXU0fXtGIYput2GXN/i7FWKJp5YQcTaTY2MJWE+GViRthh5esEf6xpbScq86yNYaPryFWTa7mDVaGAkr9ea8zKpP980ywHi9tjXvGmTy7n2eC1gCSZJfg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h9CCFKsu; arc=none smtp.client-ip=209.85.215.172
+	 Content-Type:Content-Disposition:In-Reply-To; b=ElJo+cGYSSzM5x1scD69qrBgrACX/gWOBpjQEmYwP4iXgSc905LIMM4XSaxnlfFs0eAkUcmGfmKDuvtrPEB+1w5njzExRhKgVb4JBRjhPIIcmQ1bssq24n258NiFpNuXfOeuwyh7RfxunaFVLGH5gF8Nc6pLnQzph1e+RRA7S8c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b12NawZn; arc=none smtp.client-ip=209.85.216.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-b31f22d706aso655784a12.0;
-        Fri, 20 Jun 2025 07:10:53 -0700 (PDT)
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-3138e64b42aso2171417a91.0;
+        Fri, 20 Jun 2025 07:25:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750428653; x=1751033453; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1750429556; x=1751034356; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OtaAZotoZbAmUCqV04nGyV/X1A2T8LT4Vme2bmNP5JA=;
-        b=h9CCFKsuwmr9l9/AABhDYMCGW9ubqTocBp3zN1L/OS3DM/vpr374a9i5OBa4E6KNNq
-         6IHX7R7Blp4FiJRWeA5onuKKt5G4IDJ3mgBhzSh6or5lPp2i5NuD7Witt9GSKElBmpjO
-         waXNgJZDb93WXHKQsCRs4KijNzpiiB9f7zPEbT5bCUCDScEnP6pEEx46RC9wT2RnnZ95
-         Rx99qevYkfTITpiY1TShHnqefew+LtGZdZ4sbO4HGCRmkzQ/f889BO3d9AkOuMreVfAu
-         44VJOUa2wIe53lJtu63lCB/EfbseUNfQgmOYSyY7Hq7Ujbf/6Fmgosn8n2/KqvYouO3X
-         vp9w==
+        bh=ZulnvmbPp0e7G5fm5a5Hu6trUAX/RE3SimOYUWQq4Rg=;
+        b=b12NawZnNSdkdaSIh5jFrfFinAEPdglQ9TJvCR2i7/uq9F5EuvtQd7JPB7FTJ3pDJe
+         lTJE9lRyueipUuey5wRHeoFaBS6q7y+WYi3/JB4Ci1wlNt93z0XG0Pe33jeXY8VozgzS
+         41mOuieR6R0kjtSOrb8Xt7ggtdaLzkVoKIz8OtlqNeIySJUlaFYntJuzqfCeiMXiX/iW
+         8CSg0EcUKdpS6J5w56Tj/0cpIiQ3m3u2kqpHyJjpvmUua0qLRl79/mKLw1EKr9o6YTSw
+         C46lHCzcz9hLSdu6SLTwmyki1LKXJ36KPgTkRe2F/RtWqgs2aWmQwOEDPqg4+t1FOehR
+         tGeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750428653; x=1751033453;
+        d=1e100.net; s=20230601; t=1750429556; x=1751034356;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OtaAZotoZbAmUCqV04nGyV/X1A2T8LT4Vme2bmNP5JA=;
-        b=ejTpp+V9+/Uj/awLu/6Nt3cigqe63o2QIrRrUCDt2aBgtuoO09pqbP5SlzmNh7FEPC
-         XKJ5tAA6DIgvvziG9B5KOJ91FALVIbwob9MDVO1dQLN0Bbf+RtnXQE2fatImLIhsyAsZ
-         U0pz3rJvwOxXRyvbBceDQ/AdL2xrzlJ7mAJqOnP1wugy/gR2zmeivlfkLErNdUQKzQ7V
-         IzNvPFFEwzXK8sVQ8TxhhyUY2NzWcmVUHifVfGfcWgxOwtxo9ZPo1WbBMmi4bTFRPyQ1
-         2AnenkwU8eMuHUxfokIHLqL0WF9c86CFatdFGWn4fqilxmTEJKFNIdHe2XaXvPcLOIkD
-         CCMw==
-X-Forwarded-Encrypted: i=1; AJvYcCUqlRxYYyZD2I9BlOpURa/IFekMfYOFJ/r1vVLPfu7Eo46kAd8TkC7XFtpL5fRmsW0SCpM=@vger.kernel.org, AJvYcCX3WLLEPt+VqTI/564zjBQh2gxCJDu28Qdd/GVCSeOtGVpljZTiqj/3MBdL3OtUcrrTWw3gLGl3@vger.kernel.org
-X-Gm-Message-State: AOJu0YwR4weTlet60Wk7lZGme6reDngwCtxxMMiL66owbD6XhUWOsPRI
-	MS1tEM1iHvMO03BM3M+Rbra0shxlAy624BWtJ/p/YecrkkR3Gev/EdQ=
-X-Gm-Gg: ASbGncuPaLXEgCvytm0TdGxOb2em/KQ7lPQfP9beRTwtLJelWEV7DxWtHVgVZKgmbZA
-	TS8X13f5hzgNAvwKq2fD8WTIbVBDsckVOiOlou4+D/VdZ99KlUddCAqK7gHzFsrTBBIgx7rQuC8
-	q2PnlD61e7b6jiU3icwxg39udxDuo2oexbm3OG2dIWrBG6kunFrtORAGzG6eRfngVhlpk8KHSTo
-	60/tlYADlowtU2rKDX5LrAODpXwy/Gl3uekECR3vFkZT88fN6qc4NAqOAnM9N5L/yWXJ1kckl09
-	iVOvBIGS33LlUo79GW290p3R/qJzvbUcTT+bfen9tgULgCYlv9UxuEpmLxKpDHOkreyWW3W/IMk
-	lbIVn2SHhdeS14EuZj7gA8y8=
-X-Google-Smtp-Source: AGHT+IEXi1orG63ESahh7V/mf0IgIv1CI0C+U+SlRZHDDFhuLCWsWhgvSv8Pw27b4STyMf7wyRyvnw==
-X-Received: by 2002:a17:90b:3952:b0:311:ea13:2e6e with SMTP id 98e67ed59e1d1-3159d8dfbd4mr5140205a91.28.1750428652821;
-        Fri, 20 Jun 2025 07:10:52 -0700 (PDT)
+        bh=ZulnvmbPp0e7G5fm5a5Hu6trUAX/RE3SimOYUWQq4Rg=;
+        b=r6b5V6+bykYjvD/oBNP1hwVpQFwhosp4lVnmhu7FvDlOC0z+poC9HHlYYQqPI900Jk
+         QKi0OwzQOvEtByRI76PVOKGJhAAKtCdoZ7DKjIj3xNFZ7P+7Z88WkG+V85Uw9AKSKRgM
+         mQ9cDq5zWt5fh11592BtdxKyyCeGlNZBUqb6A3li6ueZv8CxrSrswlTL9o4lc4lNM95T
+         sRpuSfhz4wLW3ZgzGSLXR01phr9Y+xQq71Uc0Xw+hA709Q5fUzrGwIu53hjlOuaOtskt
+         z2Ll0Q7fMuc1sen2yDUqkj+tqNcmsPYBUVBuoHCm70kqYDEZsLQXO2XDmHFsWpUaeQ8W
+         JfdA==
+X-Forwarded-Encrypted: i=1; AJvYcCWCof0NVj1J48SePxfqRBPj/fXDb8bKcoebJwqCrlmuqfI9oamrbDzzNzQEgD1vwiMoymunu7dC@vger.kernel.org, AJvYcCWuYAhvyBuDzqVmy6/QPvC4SmylNmnOHn6FltR31c6IdwkqxcYMJ/n1gvmeH6xs4r06YUU=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyt9GuOOnplAuPyboHQwAyusqSKrHwFqKxOha19RWzEIykG4KFg
+	wRxc1nT0oZekGlFhxHqat17S/sN2FIpKS/ZYMmzUcpGQ6KNZLl8iCME=
+X-Gm-Gg: ASbGnctXXL+GiJtlqS3EA+QbYLs+we6PqqCAF7sTd7DB1NS8Dx1NZ3XZMGifjjeg/Uo
+	ubdaMuSHRAEujGcAtZEMJbBWiIKPj8DXtJCvL+30qfByvvqHOZwzVMyEEtYbpKZDTbB2AJt94nI
+	TCowfCtXulW6+7gNyKP4u9GoLWz8byjajUNCjJsN+0Yd1TuG54t/XCUkaXP0TWa2nijMu33aqgY
+	JI/xBt4EuEh6tK1RPLdPexCfNrIR0MKAff1EMSsAwk30dLEc+a5vN7Mx1WY1leJyO5cVjl/S5Xx
+	IyPV1ZZ02vGIB3p5DTs5XXbRV7QJMB2p8VFFYJJD7JBKr4F7DWiYgHx0GRBoex6bU8mWA0mmYnp
+	FlQXRf271PZq+Dd0PadPBWZ0=
+X-Google-Smtp-Source: AGHT+IFNJusKxfr5mKPjRkcQBUy6wFvWqWVc/l98db/XSc9Tsoqe+NBk1q6dS+HId1dLO3ockwzhxw==
+X-Received: by 2002:a17:90b:278b:b0:30e:8c5d:8ed with SMTP id 98e67ed59e1d1-3159d7c8d9cmr4854920a91.19.1750429555945;
+        Fri, 20 Jun 2025 07:25:55 -0700 (PDT)
 Received: from localhost (c-73-158-218-242.hsd1.ca.comcast.net. [73.158.218.242])
-        by smtp.gmail.com with UTF8SMTPSA id 98e67ed59e1d1-3158a23e5a0sm4328356a91.17.2025.06.20.07.10.51
+        by smtp.gmail.com with UTF8SMTPSA id 98e67ed59e1d1-3158a2f3358sm4779624a91.30.2025.06.20.07.25.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Jun 2025 07:10:52 -0700 (PDT)
-Date: Fri, 20 Jun 2025 07:10:51 -0700
+        Fri, 20 Jun 2025 07:25:55 -0700 (PDT)
+Date: Fri, 20 Jun 2025 07:25:54 -0700
 From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Jason Xing <kerneljasonxing@gmail.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com,
-	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
-	sdf@fomichev.me, ast@kernel.org, daniel@iogearbox.net,
-	hawk@kernel.org, john.fastabend@gmail.com, joe@dama.to,
-	willemdebruijn.kernel@gmail.com, bpf@vger.kernel.org,
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Jason Xing <kerneljasonxing@gmail.com>, davem@davemloft.net,
+	edumazet@google.com, pabeni@redhat.com, bjorn@kernel.org,
+	magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
+	jonathan.lemon@gmail.com, sdf@fomichev.me, ast@kernel.org,
+	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+	joe@dama.to, willemdebruijn.kernel@gmail.com, bpf@vger.kernel.org,
 	netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
-Subject: Re: [PATCH net-next] net: xsk: update tx queue consumer immdiately
- after transmission
-Message-ID: <aFVr60tw3QJopcOo@mini-arch>
-References: <20250619093641.70700-1-kerneljasonxing@gmail.com>
+Subject: Re: [PATCH net-next v3] net: xsk: introduce XDP_MAX_TX_BUDGET
+ set/getsockopt
+Message-ID: <aFVvcgJpw5Cnog2O@mini-arch>
+References: <20250619090440.65509-1-kerneljasonxing@gmail.com>
+ <20250619080904.0a70574c@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -94,51 +95,37 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250619093641.70700-1-kerneljasonxing@gmail.com>
+In-Reply-To: <20250619080904.0a70574c@kernel.org>
 
-On 06/19, Jason Xing wrote:
-> From: Jason Xing <kernelxing@tencent.com>
+On 06/19, Jakub Kicinski wrote:
+> On Thu, 19 Jun 2025 17:04:40 +0800 Jason Xing wrote:
+> > @@ -424,7 +421,9 @@ bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_desc *desc)
+> >  	rcu_read_lock();
+> >  again:
+> >  	list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
+> > -		if (xs->tx_budget_spent >= MAX_PER_SOCKET_BUDGET) {
+> > +		int max_budget = READ_ONCE(xs->max_tx_budget);
+> > +
+> > +		if (xs->tx_budget_spent >= max_budget) {
+> >  			budget_exhausted = true;
+> >  			continue;
+> >  		}
+> > @@ -779,7 +778,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+> >  static int __xsk_generic_xmit(struct sock *sk)
+> >  {
+> >  	struct xdp_sock *xs = xdp_sk(sk);
+> > -	u32 max_batch = TX_BATCH_SIZE;
+> > +	u32 max_budget = READ_ONCE(xs->max_tx_budget);
 > 
-> For afxdp, the return value of sendto() syscall doesn't reflect how many
-> descs handled in the kernel. One of use cases is that when user-space
-> application tries to know the number of transmitted skbs and then decides
-> if it continues to send, say, is it stopped due to max tx budget?
-> 
-> The following formular can be used after sending to learn how many
-> skbs/descs the kernel takes care of:
-> 
->   tx_queue.consumers_before - tx_queue.consumers_after
-> 
-> Prior to the current patch, the consumer of tx queue is not immdiately
-> updated at the end of each sendto syscall, which leads the consumer
-> value out-of-dated from the perspective of user space. So this patch
-> requires store operation to pass the cached value to the shared value
-> to handle the problem.
-> 
-> Signed-off-by: Jason Xing <kernelxing@tencent.com>
-> ---
->  net/xdp/xsk.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index 7c47f665e9d1..3288ab2d67b4 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -856,6 +856,8 @@ static int __xsk_generic_xmit(struct sock *sk)
->  	}
->  
->  out:
-> +	__xskq_cons_release(xs->tx);
-> +
->  	if (sent_frame)
->  		if (xsk_tx_writeable(xs))
->  			sk->sk_write_space(sk);
+> Hm, maybe a question to Stan / Willem & other XSK experts but are these
+> two max values / code paths really related? Question 2 -- is generic
+> XSK a legit optimization target, legit enough to add uAPI?
 
-So for the "good" case we are going to write the cons twice? From
-xskq_cons_peek_desc and from here? Maybe make this __xskq_cons_release
-conditional ('if (err)')?
+1) xsk_tx_peek_desc is for zc case and xsk_build_skb is copy mode;
+whether we want to affect zc case given the fact that Jason seemingly
+cares about copy mode is a good question.
 
-I also wonder whether we should add a test for that? Should be easy to
-verify by sending more than 32 packets. Is there a place in
-tools/testing/selftests/bpf/xskxceiver.c to add that?
+2) I do find it surprising as well. Recent busy polling patches were
+also using/targeting copy mode. But from my pow, if people use it, I see
+no reason to make it more usable.
 
