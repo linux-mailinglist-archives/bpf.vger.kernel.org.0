@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-61200-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61201-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21BACAE2257
-	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 20:39:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8751AE225A
+	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 20:39:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A5981BC5A26
-	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 18:40:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EA0D3ACDC0
+	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 18:39:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 702CD2EA74A;
-	Fri, 20 Jun 2025 18:39:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B448F2EB5D8;
+	Fri, 20 Jun 2025 18:39:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="otJWSjfL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="czQmKt1A"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E455B6BFCE;
-	Fri, 20 Jun 2025 18:39:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33F3C2EAB93;
+	Fri, 20 Jun 2025 18:39:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750444781; cv=none; b=otx4116A3FShdnW9/XgT40WCGBzNWH47+GhCjEbigu9ayGQjmzI9F2yIPy2yEu0swJOYRR7FHahPOtca2GSGYnfZ1hRRqUzqg9uf/R0l6Pdo5tCakxUItyi+wLxL3C4koKHJKred4u60LW7PPne/lp0Eq46KglA5nYFFfeF9Vh4=
+	t=1750444782; cv=none; b=mYLfnBcThCeu4B2tufVcaM4vZAp+x5s1vyoBugADkBXG2X9bwzOHphny7j6FbjK3+BAclsRHIeEzvXepc0v4gjge6Tf9e4F/G4262f3V8mkuvICC8Ap4yfitB+BIxaatehjUF6xAi9F5UYt4VIBWn2nUgvThPy7ru395z7+XLik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750444781; c=relaxed/simple;
-	bh=WBAGkyPnLnmnwszlkbywC9BZ09qLFxK6zCZgFlCdjoU=;
+	s=arc-20240116; t=1750444782; c=relaxed/simple;
+	bh=qFplRIR30byJ3eK29/l57zIY4PeTzFMDH2y+qY42Hjw=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=CK4UJnWqjhgFCvrpOKRjtR001kZJ3txWRPCtc2nFPzYl47kRUv+2JRLcMmHwF3dMZ0eWj9S1SxPSjKhF7gCBCLrz4aS3Dr7HK3KhsNzbetCURAZ5s0Qs4obM2TkWj5QZndTxj5LFk+bosv2MdDGS72qvniHvblvPWGdyB84f15E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=otJWSjfL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A2C4C4CEE3;
-	Fri, 20 Jun 2025 18:39:40 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=RCsmPrQzMobm5TUEdFS20UYw+J9f92x9As3kGOB+IBjI/wuBTSZFN/OtSl+HmpNY4lTCT4cVnDy/2VwkY4ImynZze1f5NvVW/PHizZcfel05gZ4imOF57Og8jKdRv6sLdgjMZbPvn+QpZ5EQIOvFc8+F1t6y/9HW/w3OVVh/nxE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=czQmKt1A; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0534C4CEE3;
+	Fri, 20 Jun 2025 18:39:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750444780;
-	bh=WBAGkyPnLnmnwszlkbywC9BZ09qLFxK6zCZgFlCdjoU=;
+	s=k20201202; t=1750444781;
+	bh=qFplRIR30byJ3eK29/l57zIY4PeTzFMDH2y+qY42Hjw=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=otJWSjfL0DeqdBhyQ0TqDupvRsm3c/+lJJQECmczA+3WKspiyGBvSfOAF4H4zMtn5
-	 pDL9XGpY01skaJ3yNuI89Jy0wgkhcYO6xwirzlextJz4GwjJ9mqoeS88WOc6fa1DN9
-	 SBYODifjXOwVXvcuZV4qWMGRrJNOEfRmV+oQImMRacJ3wJzOyVQwa47sYEuxMV3KCn
-	 nPkonvEtGZXe2HHNQ32gLehhLMrrd2GoSAYN34qyUsyGFwJOha648pL7q7YjcxCdip
-	 PARK1zF4uyFHD6AISqn3Qlt8vHf++0t1vouos3sHgxwwxOvHKotxaQtmdn6QT149ZY
-	 sDGHl1O3h8SYA==
+	b=czQmKt1AnfvaXLqTvZ2KHnzn0cUAxtgxEDTkl8IDvWT0vqMnCOX3krGRrHGUnCGbt
+	 HxgAX/ZeDaR+u4l58FYbQh3E5mVnA3cHc1mQqs6As7ey7IGDOV/ygl2GX6PbS27RBX
+	 +FVagyYCjeuzxaSLLIHpEDsLNDXfglerrMyFLoSz77xcKXVr8RrAoV9ypHEEAEqRXj
+	 5wnxd9+sijPDWZ2GOQN+AH5NC3Yl8LC47ajlKYl411kRg7eKKbXDo21ijO5tus3GAm
+	 F8dfocxVnVfFWwH1i5RtJ6kQmxtOdjFI57UY+pKN/zZZMuYj16ffvcQ4Cvur4ZYEtx
+	 N4DkVISMGED5Q==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70C9D39FEB78;
-	Fri, 20 Jun 2025 18:40:09 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADFCB39FEB78;
+	Fri, 20 Jun 2025 18:40:10 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,36 +52,45 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3] bpftool: Fix memory leak in dump_xx_nlmsg on realloc
- failure
+Subject: Re: [PATCH bpf-next v4 1/2] bpftool: Use appropriate permissions for
+ map
+ access
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <175044480826.1670618.12225951813813785948.git-patchwork-notify@kernel.org>
-Date: Fri, 20 Jun 2025 18:40:08 +0000
-References: <20250620012133.14819-1-chenyuan_fl@163.com>
-In-Reply-To: <20250620012133.14819-1-chenyuan_fl@163.com>
-To: Yuan Chen <chenyuan_fl@163.com>
-Cc: ast@kernel.org, qmo@qmon.net, alexei.starovoitov@gmail.com,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org, chenyuan@kylinos.cn
+ <175044480950.1670618.6860751226215846032.git-patchwork-notify@kernel.org>
+Date: Fri, 20 Jun 2025 18:40:09 +0000
+References: <20250620151812.13952-1-slava.imameev@crowdstrike.com>
+In-Reply-To: <20250620151812.13952-1-slava.imameev@crowdstrike.com>
+To: Slava Imameev <slava.imameev@crowdstrike.com>
+Cc: qmo@kernel.org, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ shuah@kernel.org, bpf@vger.kernel.org, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+ justin.deschamp@crowdstrike.com, mark.fontana@crowdstrike.com,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
 
 Hello:
 
-This patch was applied to bpf/bpf-next.git (master)
+This series was applied to bpf/bpf-next.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Fri, 20 Jun 2025 09:21:33 +0800 you wrote:
-> From: Yuan Chen <chenyuan@kylinos.cn>
+On Sat, 21 Jun 2025 01:18:11 +1000 you wrote:
+> Modify several functions in tools/bpf/bpftool/common.c to allow
+> specification of requested access for file descriptors, such as
+> read-only access.
 > 
-> In function dump_xx_nlmsg(), when realloc() fails to allocate memory,
-> the original pointer to the buffer is overwritten with NULL. This causes
-> a memory leak because the previously allocated buffer becomes unreachable
-> without being freed.
+> Update bpftool to request only read access for maps when write
+> access is not required. This fixes errors when reading from maps
+> that are protected from modification via security_bpf_map.
 > 
 > [...]
 
 Here is the summary with links:
-  - [v3] bpftool: Fix memory leak in dump_xx_nlmsg on realloc failure
-    https://git.kernel.org/bpf/bpf-next/c/99fe8af069a9
+  - [bpf-next,v4,1/2] bpftool: Use appropriate permissions for map access
+    https://git.kernel.org/bpf/bpf-next/c/d32179e8c258
+  - [bpf-next,v4,2/2] selftests/bpf: Add test for bpftool access to read-only protected maps
+    https://git.kernel.org/bpf/bpf-next/c/f8b19aeca165
 
 You are awesome, thank you!
 -- 
