@@ -1,120 +1,96 @@
-Return-Path: <bpf+bounces-61215-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61216-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C732AE243B
-	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 23:41:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16EF1AE2463
+	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 23:59:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1331E5A7630
-	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 21:40:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35AA37AB4B1
+	for <lists+bpf@lfdr.de>; Fri, 20 Jun 2025 21:58:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C30FA239E60;
-	Fri, 20 Jun 2025 21:41:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEB0023B612;
+	Fri, 20 Jun 2025 21:59:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y2Q/EiGE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O1tra5fA"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F12B23814A;
-	Fri, 20 Jun 2025 21:41:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67672224898;
+	Fri, 20 Jun 2025 21:59:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750455666; cv=none; b=vBPA9YPcNhtHtYmcuH1G8/j+9qehU62oTqyF6HIdk86h3nQAosG3LtEstCP7292ip7NG/PPFOrnSHDikU/jZP5DRgVN/dbHWsaSgMUyefrbeQb75UySAF4GZ12BVXEMYR6eNo54kghHj8QNMSO1wrtQPtYPE40VreL/xb3bBatc=
+	t=1750456770; cv=none; b=uXsR869PLnPIBWfMSyT8ekrU8Mt+6lA3hvktaVJ2166izlqF5lw2WVdwmNHxSfDJt3fF79msdJQmNLSQnVm5V+blh5tdtbA9AW0te1GeHsWOD9fZdJEmLvp5lRgNNG2TwHwmRjGwyl+WwUm3YzRHXDJjOdURdNajBK0P3N0m48w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750455666; c=relaxed/simple;
-	bh=rKjdBQKmlk3ftyyNyRJyICUhNkVNb/3e3jwzM9KV5lw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c41vHiIj+TlXLQk2zM3qttnvm692TbnCXKOgENM62pOVxJ8Yp5jjW4cj7iTs0uH/OqUl2Q37KzTHdXn4UEaNoJqf//pzzkwEqVlt1yqhbsh6R3DswcuNSxyHTTZ1gTUypnq3n4nXPbpXsEFFKHu1IWtJQ+qWZZqs3yztI5oyVHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y2Q/EiGE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B84B9C4CEE3;
-	Fri, 20 Jun 2025 21:41:04 +0000 (UTC)
+	s=arc-20240116; t=1750456770; c=relaxed/simple;
+	bh=63te8wwcuOZegBXprmXeQJ2OOPB2Fa+R7wapMpKOn44=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YXe6Rpuy+G/vnRrYIH39JXNeRSj+S/CZFwS1ZyJzFYuOKSDqUpF7PimSLooqAt9ZjWwyOeG1wyitctdUeWpqlRHlvVetwBtIaGFqAiJKe3g6JxytWQxL8msr/sIweo6pFGec2Ufmy59lsCD7vptiKixWuc1jxpwJ1yTN++q+ous=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O1tra5fA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0802BC4CEF2;
+	Fri, 20 Jun 2025 21:59:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750455665;
-	bh=rKjdBQKmlk3ftyyNyRJyICUhNkVNb/3e3jwzM9KV5lw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Y2Q/EiGEGh/O7kruofaRpkbSXvdSBv37Z3Avg+hm/eQ4M+QcsQVG836aM91JY9AA7
-	 D2CXnmtUc0FF9PozAXT2neLUnYa5DNgSB2FCXrzn4aiHxKUd67KrR74m98pXh9V1J8
-	 C05nfgS7u4+FyBfrFMS8oZ/TZCnN0tQT+VWdxBmgDp2i4TRYXHZRb5Ottr0WFLl2ND
-	 IKwysLFwOqghQ/coH4eNJP51/EzPSmxImV+EFvHxU+itQymtsHmY0UrxMo7h3pt72p
-	 1ss3wfmh+VE6+RLIzgTaG3PmbWSiIlSxzvzPHWt0NRf4kHi6f5WkFd7vdgK2usYVdK
-	 8ohjiqag8p3TA==
-Date: Fri, 20 Jun 2025 14:41:02 -0700
-From: Namhyung Kim <namhyung@kernel.org>
-To: Blake Jones <blakejones@google.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Tomas Glozar <tglozar@redhat.com>,
-	James Clark <james.clark@linaro.org>, Leo Yan <leo.yan@arm.com>,
-	Guilherme Amadio <amadio@gentoo.org>,
-	Yang Jihong <yangjihong@bytedance.com>,
-	Charlie Jenkins <charlie@rivosinc.com>,
-	Chun-Tse Shao <ctshao@google.com>,
-	Aditya Gupta <adityag@linux.ibm.com>,
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-	Zhongqiu Han <quic_zhonhan@quicinc.com>,
-	Andi Kleen <ak@linux.intel.com>, Dmitry Vyukov <dvyukov@google.com>,
-	Yujie Liu <yujie.liu@intel.com>,
-	Graham Woodward <graham.woodward@arm.com>,
-	Yicong Yang <yangyicong@hisilicon.com>,
-	Ben Gainey <ben.gainey@arm.com>, linux-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v3 0/5] perf: generate events for BPF metadata
-Message-ID: <aFXVbkxNoHOVyFwy@google.com>
-References: <20250606215246.2419387-1-blakejones@google.com>
- <aEnLBgCTuuZjeakP@google.com>
- <CAP_z_Ci2HtnSX8h51Lg=XcW_-5OryGb3PAH7MJjWg60Bjpdpng@mail.gmail.com>
- <CAP_z_CjRB6MwNrXW_o_XyWSwcXZKpVHyGZoj1udJU4uBu1iw=g@mail.gmail.com>
+	s=k20201202; t=1750456770;
+	bh=63te8wwcuOZegBXprmXeQJ2OOPB2Fa+R7wapMpKOn44=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=O1tra5fA5OpmS2CF8mrWsYLyZJUoMg+5Ly9hiRBQHQtmj7TAeSv3pQzPPqNQgHf3H
+	 xVuwl0k6m560FMkJb0uCoL0/fZK1FQaVfhWt6O6P9aRUF5wy17xcW61a25K7YK6o2T
+	 d3zLV92yMLgfpycoU4G2s3JhVCRfvxApsdaEldCW+pdYzSmoXE32fHxtzuliqXm924
+	 bVSea4Dv5RF9blS75r/FU/nVWkpBhFQ8nCdskdWp4xSKnwWEn7o6xzzHCQSTXtMxy2
+	 i6SSlGhdlvXpkLwQQs0qXAhfixUJSwI6WTgpdlmLt15u8kK2gUYPgQnsYzWnXGxY8A
+	 u+EM7P+I2G8dw==
+Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-4a440a72584so24363571cf.2;
+        Fri, 20 Jun 2025 14:59:29 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUXTMlvw4Cj2iiF3zQ2hxymL/pjbOea+PAFUUbIcSXVHFcI+U6zxls5a3ylHq46PPdN0jIjGptFl4bGXLaQKezZVqMlKGfX@vger.kernel.org, AJvYcCWnP9K7sU/ZodDAXlQKelVtFohhOHR2++67SmnB6xfvyn9dr5XnH8k7c+7rinOpkrLKX5fyvGcEmmtlPcGi@vger.kernel.org, AJvYcCX6anLRY3DEDPf6iqFdkgk1sURgpQGp1z+XkekfmfaqwvSF5wSmyG3YZKI6KemrzHLUxeDtWsi/HMLzs6Py@vger.kernel.org
+X-Gm-Message-State: AOJu0YzVCCHevgHSMpMYxuvgyDWiPcic0utuXieLplXPScl2K1juyDfk
+	RsAcz39EaNll8d0CZu5O8gAyZ75/7SS79ur6fuhy7/46KaCJQzBdlKZuQ2b5vdaNa47s4hWqg/y
+	DvkkAC4CoqiEd+bMKET7jOzOtfa59CwQ=
+X-Google-Smtp-Source: AGHT+IFD3WvtlrgNG6kq+U9U7yxkF7/+ufoV54N6pbVQsB7ri9hvP39fSdWH0gFoWV+S6HvLUhxN1D9ZuXCtLuuijd4=
+X-Received: by 2002:ac8:5894:0:b0:477:c04:b512 with SMTP id
+ d75a77b69052e-4a77a24bc5fmr74015541cf.16.1750456769124; Fri, 20 Jun 2025
+ 14:59:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP_z_CjRB6MwNrXW_o_XyWSwcXZKpVHyGZoj1udJU4uBu1iw=g@mail.gmail.com>
+References: <20250617061116.3681325-1-song@kernel.org>
+In-Reply-To: <20250617061116.3681325-1-song@kernel.org>
+From: Song Liu <song@kernel.org>
+Date: Fri, 20 Jun 2025 14:59:17 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5uu8cOYJWJ3Gne+ixpiWVAby1hZOnUgsXcFASEhV4Xhg@mail.gmail.com>
+X-Gm-Features: AX0GCFtB5WpXbtgDqonU-KBN5EWY8ZPLkipOykAU_GhR2BYEI5Zkrc7jPl_KFTM
+Message-ID: <CAPhsuW5uu8cOYJWJ3Gne+ixpiWVAby1hZOnUgsXcFASEhV4Xhg@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 0/5] bpf path iterator
+To: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	brauner@kernel.org, =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
+Cc: kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, viro@zeniv.linux.org.uk, 
+	jack@suse.cz, kpsingh@kernel.org, mattbobrowski@google.com, m@maowtm.org, 
+	neil@brown.name
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Blake,
+Hi Christian, Micka=C3=ABl, and folks,
 
-On Wed, Jun 11, 2025 at 06:02:55PM -0700, Blake Jones wrote:
-> On Wed, Jun 11, 2025 at 5:39 PM Blake Jones <blakejones@google.com> wrote:
-> > Is there anything written up about how to set up a machine so that
-> > "make build-test" works reliably?
+Could you please share your comments on this version? Does this
+look sane?
 
-Sorry for the trouble.  I found it needs more work.
+Thanks,
+Song
 
-> 
-> Barring that, I've confirmed that each of my new patches builds successfully
-> under the following build commands: (I have a copy of libbpf that supports
-> ".emit_strings" in /usr/local/include)
-> 
->     cd tools/perf
->     make clean
->     make NO_LIBTRACEEVENT=1 LIBBPF_DYNAMIC=1 LIBBPF_INCLUDE=/usr/local/include
->     ./perf check feature libbpf-strings
-> 
->     make clean
->     make NO_LIBTRACEEVENT=1
->     ./perf check feature libbpf-strings
-> 
->     make clean
->     make NO_LIBTRACEEVENT=1 NO_LIBBPF=1
->     ./perf check feature libbpf-strings
-> 
-> Please let me know if that seems like sufficient testing.
+On Mon, Jun 16, 2025 at 11:11=E2=80=AFPM Song Liu <song@kernel.org> wrote:
+>
+> In security use cases, it is common to apply rules to VFS subtrees.
+> However, filtering files in a subtree is not straightforward [1].
+>
+> One solution to this problem is to start from a path and walk up the VFS
+> tree (towards the root). Among in-tree LSMs, Landlock uses this solution.
+>
 
-Looks ok to me and thanks for doing this.
-
-Namhyung
-
+[...]
 
