@@ -1,98 +1,50 @@
-Return-Path: <bpf+bounces-61229-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61230-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6240AE2770
-	for <lists+bpf@lfdr.de>; Sat, 21 Jun 2025 06:57:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91547AE2929
+	for <lists+bpf@lfdr.de>; Sat, 21 Jun 2025 15:29:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A2E117F00A
-	for <lists+bpf@lfdr.de>; Sat, 21 Jun 2025 04:57:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E09887ABE4E
+	for <lists+bpf@lfdr.de>; Sat, 21 Jun 2025 13:28:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B795B18DB26;
-	Sat, 21 Jun 2025 04:57:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A9B6213E78;
+	Sat, 21 Jun 2025 13:29:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C3/5QXrK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Surd9VUY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f196.google.com (mail-pg1-f196.google.com [209.85.215.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 909A25258;
-	Sat, 21 Jun 2025 04:57:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8C961F09B3;
+	Sat, 21 Jun 2025 13:29:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750481829; cv=none; b=TUdM+oRVeOPOc8SFSINA+asEs2VwrDeVLGkPwEsTc5A0G7z2wYUcdlNlKm7wyOwHBMatmRUsjBejA11ExQgMtoZtEhWAWX57HRHfjGEavk4jJR++L0Ax0Gkh6X5uNG7CpFgyNyv/Nk68gq9pgzXpdX1/fQDghaj/XIRJ00GaDO0=
+	t=1750512585; cv=none; b=j9vb9t4KEDE1cPvPu2XhCvpRfghmPsGw72aA8Y9rqpbWfKMt6tcjcnON6h9IoGU4ceydLrAO1Avdm9LCnsAuoTSuJTkFCGvcVetO89Kwxwna8E8aN8vBiCHaTyyyLKmjTDzkQjRC47pdW1qToMASEyhNnV9LLErFBSWElTgbebE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750481829; c=relaxed/simple;
-	bh=SZMVQplISMRTt/KEL+/WHBkKFvZGfIuPgMGfMq6ma8k=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=h3MAExkkeP4z+fzo1NMMuISwob5X/VnxWBzHDOXo2+quh9o4b1Q1YM27YZUUuVwBqkEtMQCd7TRAU3ymvEKwxJT/7UOLcC4bTtqAeEZtbq4Dqu8oJjk/tUImhcPfYJCKDeQV6h+t5jVP92Kd7u1peVR9mh083lrmlw8JZOeNhkc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C3/5QXrK; arc=none smtp.client-ip=209.85.215.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f196.google.com with SMTP id 41be03b00d2f7-af51596da56so2089656a12.0;
-        Fri, 20 Jun 2025 21:57:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750481825; x=1751086625; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4Gk9KzOnDrveEvUaMvbrRa1a7xuC2txgmZLY22etVjU=;
-        b=C3/5QXrKu9RZYgpk7k1dfdPE6sFIF63t03NBWlwMVyHCWFj2c9SXsTf8mdGdRvMlMl
-         xhAIX0OgO9DCaywANuyUEkuKKdxJMAWLCrGW6a5B7aAxNwpkw84q4DBGkVPEwReJ3rve
-         JCcAqqgJ9tezz3GJC/0pGlDnEUS/7H+GJA/NZUSyGcsnOhXbi4qPMyQtul2SREm2tdfb
-         NxBPYa6dR/ff/uWHLiZMSuY80cEXSZE/EN526xBZPjq2O19hQuZ/njwFiAfJ/SLK/XYh
-         Ti75XrF6Uf1mtQEjKgdDQnIdKYBwYkayb6WYiBpPLoGnkhxAtCuiMzp3pb9aDmNiq41K
-         2hMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750481825; x=1751086625;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4Gk9KzOnDrveEvUaMvbrRa1a7xuC2txgmZLY22etVjU=;
-        b=RbmoSjToRcrV3vD5vzDAjZIPmFVbpFs5BR2Ep5ppuB5EyWQLJp+MCGBn5pFIjlnc91
-         tWyYNc1cOSu/uFFp0IGFx9mM4ggt7POBSVbhkZqavaWbU7RdoacX32GSeE/DDvCgS9tp
-         3uCvZePQ62GhH9L2PIY/YZDHjh5IPkQpoGQbHi5cRSBoV/aRbhfYu2qxZYue8pOrbJ9H
-         sUAZhz9CWyQu7Vz0jygFJsOWZpeGPR+90aosbi2l581iN1s93B93YlEQxCpp3i0wnScs
-         MjVARH4uISBZzvkiVun/mVuqS78X/WbCQ/yo2t1keroxB+kAclvA331lFfg8YjSJBgiV
-         Zkfg==
-X-Forwarded-Encrypted: i=1; AJvYcCUwFSswbrkG+FsFL6Xdyn9tbR2j10f6QWCMoW+aze+C3a22Km2pxoW5l36abZoKLWjEXdLxIFIv8DX9CZrq@vger.kernel.org, AJvYcCVpnShyDFz3t69kjaE27XZP0wYL5lmYvuJuszQY2Y6QxtRHtRLEHWgJcRpezLHOnfQSJbM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwmBAvpZefs5SChI9unjzsbZ1NJonNxeKn9Ogr6O6q+ImoLfaSY
-	dt98/LCUMJymQbPWUuXo7uaRut23LYnLw2pVS7efZQDrTfGjYBqeYm1c
-X-Gm-Gg: ASbGncuexoLoulZZU0La1tjPkVHOkpq9JDhVqkKzTrfTY9GsHxagHc7osZPCn76aafp
-	YW09J3G6jVCNGw3ga9OFwaMJa5K6qEqz9x9BAaXsD0pTU10y+7OCx4gobQ+k3w+LKPBwgknZ64N
-	g5oGV+c42Jto5v8Y5kSH1Hh3wqe4wp7Fq8IjERJmFIKtbYkkWf/AOeXSz9zMSlxw39jtb6Tw4J0
-	cCv1zHtwmKONU2MQZTExMyqBdy5DcYHPXXaAyapWN9EbozZzh7Z46YD/BSDk1p9cdebDBTavY+E
-	iX+07M4utiv2m/qimwGNyI6MTn9eaNi6o9uHYfqqwz+Q7t7OG4PPmQyBN9oDwoJKGjbbYhQArH4
-	D090=
-X-Google-Smtp-Source: AGHT+IHFsyBci8OAgKje9b5uzYUXjzK7zIS6C+PIkxYu+QCnmHONTiB7jHCMRL82Q/cufbSMYuCUEw==
-X-Received: by 2002:a05:6a20:ce43:b0:21e:f2c4:7743 with SMTP id adf61e73a8af0-22026d5f209mr9090570637.7.1750481824780;
-        Fri, 20 Jun 2025 21:57:04 -0700 (PDT)
-Received: from localhost.localdomain ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b31f1242bfasm2433134a12.46.2025.06.20.21.57.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Jun 2025 21:57:04 -0700 (PDT)
-From: Menglong Dong <menglong8.dong@gmail.com>
-X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
-To: alexei.starovoitov@gmail.com
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Menglong Dong <dongml2@chinatelecom.cn>
-Subject: [PATCH bpf-next v2] bpf: make update_prog_stats always_inline
-Date: Sat, 21 Jun 2025 12:55:01 +0800
-Message-Id: <20250621045501.101187-1-dongml2@chinatelecom.cn>
-X-Mailer: git-send-email 2.39.5
+	s=arc-20240116; t=1750512585; c=relaxed/simple;
+	bh=4KIouuDzMIi1N93un7VQrPFp3Ee2u13/JkQGdbfDUy4=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=SonqoWfAeGR7EX73Wa/eRWj4rqT+IpoIFrPqE/XtYwWAVKvVaPkRSIKxu50v1Wu279oK2KfIkNr9Vqj/huewaomr6uETdxbDK0EAIPSfkDVllz/pxZ34jK5k7xfRhpHKXTlNKi5sC+iH9av4q5rBtKiPbGTzG6kEQrL3TFG8sYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Surd9VUY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 573E2C4CEE7;
+	Sat, 21 Jun 2025 13:29:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1750512584;
+	bh=4KIouuDzMIi1N93un7VQrPFp3Ee2u13/JkQGdbfDUy4=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=Surd9VUY1sU7gKRYkPfdkSSXkx7jxjJoJnI1hogLhDQKmvMPG/9BIy27ND+Kte8S2
+	 3U2BurGZRiN1qvLZ8VWkB+zfSNI676Gr3qkUi3mIzMpTzC3qFi7N0gUtW8F1wuZf+c
+	 R/e1BWpHSKWbW85cOhOmYJikVrixi/ex670AxMUFxfjMpG50K8Zty8xFupG2jIAQTW
+	 Z1YRcP+MZRD5o0OmXnxbpQJvV+4Y6E/5o6plqM/0kiNIEWbFo5v6KoPqTPUHMnWwxz
+	 AVHpJUqXzg896Aid8BaauXWUJ9VyF5FDQF6YhyAlXFD8xokkc9nsxrB9WlzDyYKnLu
+	 y2V9g52mtavQg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33BA638111DD;
+	Sat, 21 Jun 2025 13:30:13 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -100,66 +52,48 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 0/3] gve: XDP TX and redirect support for DQ RDA
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175051261200.1863352.2816536185194869650.git-patchwork-notify@kernel.org>
+Date: Sat, 21 Jun 2025 13:30:12 +0000
+References: <20250618205613.1432007-1-hramamurthy@google.com>
+In-Reply-To: <20250618205613.1432007-1-hramamurthy@google.com>
+To: Harshitha Ramamurthy <hramamurthy@google.com>
+Cc: netdev@vger.kernel.org, jeroendb@google.com, andrew+netdev@lunn.ch,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+ john.fastabend@gmail.com, sdf@fomichev.me, willemb@google.com,
+ ziweixiao@google.com, pkaligineedi@google.com, joshwash@google.com,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org
 
-The function update_prog_stats() will be called in the bpf trampoline.
-In most cases, it will be optimized by the compiler by making it inline.
-However, we can't rely on the compiler all the time, and just make it
-__always_inline to reduce the possible overhead.
+Hello:
 
-Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
----
-v2:
-- split out __update_prog_stats() and make update_prog_stats()
-  __always_inline, as Alexei's advice
----
- kernel/bpf/trampoline.c | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+This series was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index c4b1a98ff726..1f92246117eb 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -911,18 +911,16 @@ static u64 notrace __bpf_prog_enter_recur(struct bpf_prog *prog, struct bpf_tram
- 	return bpf_prog_start_time();
- }
- 
--static void notrace update_prog_stats(struct bpf_prog *prog,
--				      u64 start)
-+static void notrace __update_prog_stats(struct bpf_prog *prog, u64 start)
- {
- 	struct bpf_prog_stats *stats;
- 
--	if (static_branch_unlikely(&bpf_stats_enabled_key) &&
--	    /* static_key could be enabled in __bpf_prog_enter*
--	     * and disabled in __bpf_prog_exit*.
--	     * And vice versa.
--	     * Hence check that 'start' is valid.
--	     */
--	    start > NO_START_TIME) {
-+	/* static_key could be enabled in __bpf_prog_enter*
-+	 * and disabled in __bpf_prog_exit*.
-+	 * And vice versa.
-+	 * Hence check that 'start' is valid.
-+	 */
-+	if (start > NO_START_TIME) {
- 		u64 duration = sched_clock() - start;
- 		unsigned long flags;
- 
-@@ -934,6 +932,13 @@ static void notrace update_prog_stats(struct bpf_prog *prog,
- 	}
- }
- 
-+static __always_inline void notrace update_prog_stats(struct bpf_prog *prog,
-+						      u64 start)
-+{
-+	if (static_branch_unlikely(&bpf_stats_enabled_key))
-+		__update_prog_stats(prog, start);
-+}
-+
- static void notrace __bpf_prog_exit_recur(struct bpf_prog *prog, u64 start,
- 					  struct bpf_tramp_run_ctx *run_ctx)
- 	__releases(RCU)
+On Wed, 18 Jun 2025 20:56:10 +0000 you wrote:
+> From: Joshua Washington <joshwash@google.com>
+> 
+> A previous patch series[1] introduced the ability to process XDP buffers
+> to the DQ RDA queue format. This is a follow-up patch series to
+> introduce XDP_TX and XDP_REDIRECT support and expose XDP support to the
+> kernel.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,1/3] gve: rename gve_xdp_xmit to gve_xdp_xmit_gqi
+    https://git.kernel.org/netdev/net-next/c/d05ebf7cc3c5
+  - [net-next,2/3] gve: refactor DQO TX methods to be more generic for XDP
+    https://git.kernel.org/netdev/net-next/c/cb711b3d197a
+  - [net-next,3/3] gve: add XDP_TX and XDP_REDIRECT support for DQ RDA
+    https://git.kernel.org/netdev/net-next/c/d8a8ca14c937
+
+You are awesome, thank you!
 -- 
-2.39.5
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
