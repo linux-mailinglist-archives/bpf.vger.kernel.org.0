@@ -1,73 +1,73 @@
-Return-Path: <bpf+bounces-61223-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61224-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8713CAE26A6
-	for <lists+bpf@lfdr.de>; Sat, 21 Jun 2025 02:41:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78117AE26C8
+	for <lists+bpf@lfdr.de>; Sat, 21 Jun 2025 03:06:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D163A7B04ED
-	for <lists+bpf@lfdr.de>; Sat, 21 Jun 2025 00:39:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4FB34A657A
+	for <lists+bpf@lfdr.de>; Sat, 21 Jun 2025 01:06:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC8E68BE8;
-	Sat, 21 Jun 2025 00:40:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 732FE12E7F;
+	Sat, 21 Jun 2025 01:06:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eYDZAHPW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UQ9ZgpI6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
+Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3DA14A35;
-	Sat, 21 Jun 2025 00:40:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E023173;
+	Sat, 21 Jun 2025 01:06:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750466450; cv=none; b=Ssx6QO6WAJGWON0PQ4Xr1Afn3Lz9Zs/4xpU3WTxHJjmVD9qlTyQMk0WDxgLumJG5pbS5BV2GDhLAkiDy1i/vi5DgPcaVvwN+GvyHHHZmrJkgH7KpYL4e47tuPVX35lx54UuPUdvQGDexWgX7O/ZrDO4vb3pHO3UFeCu5KGsDVg0=
+	t=1750468003; cv=none; b=d3Hxh49knj5c/2QBXknL/IpDvz+LRCa5iOA2V9e3P9CxrmSpZU7qpG07KdeGkzqQIqFPuk2AY4Fo6yO+PVtkutf1lEEetG3xlcaLL11/2wyW7rOEWicMut2lH9E3x3jIf83/ufHDulek1wLkmhAI/rXdRY5rYNrD6mOnq92H37c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750466450; c=relaxed/simple;
-	bh=b3l7q/zYy3M7RbCLsH1q/7gW+nGgdArO535ClG/5q1g=;
+	s=arc-20240116; t=1750468003; c=relaxed/simple;
+	bh=/zUEP/ZthdU/jL5hhulkFW79OME62AvtfmvxYVKjDY0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KU4ei867MM+4QITZ3zxmN/h7/cpPPZi7xmVFjCVejI2sOTuB3QRHMHXfY0fDHb6X9XC/+X2XeZ+j6slWhwv4HkbaEpQMlNeE+p1vdkbfk0LKgBVpcGQSb2NH41F6FE1B+pLzZy6Ksxe1QW3q/mdATzz3i02Ua06EEW83bgz3QMM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eYDZAHPW; arc=none smtp.client-ip=209.85.166.51
+	 To:Cc:Content-Type; b=pz+8DUzMoLGcllHNolrbTFNX5nrcN/ph9iqhFOjEK17eatFnBtdsUfVDJWgnbOTd6Wa67dCsm9wkmfgKdtzZS9Anew3VNE4Y1xlsX6Mpb98MPmYwKWbO9dOyXWB3+OaktwvXzKNtw+byHhE12OBaedt3FLxeFxfixyH76+5VQnw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UQ9ZgpI6; arc=none smtp.client-ip=209.85.166.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-872886ed65aso188968439f.1;
-        Fri, 20 Jun 2025 17:40:48 -0700 (PDT)
+Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-3ddd32e3955so8393895ab.2;
+        Fri, 20 Jun 2025 18:06:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750466448; x=1751071248; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1750468000; x=1751072800; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SVJ012qlo34+OkFVKxCvvps77WHbwLWwAdWVC2t5ATA=;
-        b=eYDZAHPWAEOWyuLi0yp4tI9A8f1IAeDBINJtvTPxQ5JbUF9bmkgKs9hokY9cXJbcE9
-         11Ud4pDOO2dCqAvjc8c6SI8VtWLdLwWyJaoTDlbuTgurPMTrGtoGv/93TCipqm2/ZMV6
-         h1IYXZWvMWvhFMuoOjFivxf7TxxRdjZtW3NJPEjRYxBiX34cUvu+QR0V7j10+oZD9nD2
-         ADEaVA2OJi1KGMpYI1VQ5PZPE8iOAWf4Y3m12umIKaAXwKUzqK3MXYI6ABd8z65B/0IT
-         Ae9Y+cjIrOQUoqjvN4Zwh71DqaQ6TAZnCeTr8unTDLo7WuIQnwp8uejILpul1mq2UuUD
-         jrJw==
+        bh=IPKKNAvlZSp+QOhtTY1FDg2ly4OUD3/RjCrMWA/mLac=;
+        b=UQ9ZgpI68plX4RZFqW+ayR+4N7EzcxYuxwaltsSlF1jVEI7wkE/Gro171kExNElTct
+         YeiecsVph7AmGL6vo5fhqB7D+rMbGwjqcmCJ7JS2CIV8tpSyfVtqBF/OhEZE2wb7Nhau
+         rYXFGYFpDiBRt2yDVM9IkgukVr8ePxHqMYERhG8s6Wn4AnmMg/kLccxxTWiMk53aVLmv
+         A6dmzyAZitWzRtsbL/Dejpm1lbYB3pyR3kzuUdmSczqBPzdTSXkwR20zSLNiH8QQkQe1
+         Y5vo0XUfft3q3dcYf1lOCY2frEBh+MKyGuH7Z2sSbl8JYyWhrG97OMSna7Mc4QQXeTbK
+         bv0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750466448; x=1751071248;
+        d=1e100.net; s=20230601; t=1750468000; x=1751072800;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SVJ012qlo34+OkFVKxCvvps77WHbwLWwAdWVC2t5ATA=;
-        b=pabsYegWhSAJMOhxeFTB30tYwvH60tMcntUAAsSM5wqcs8pu125KrnNOljZfsRm39G
-         sCAbzRruw2/Dg7GbUEGoOLP8o7wfoMn+fH2brg2kjtojQnQYXOJbY8ibQkyCmFPD+qvN
-         Vt6RphIPopyQA3q6KsICYIarqeuRX2OxAehMnFbYifxc1PfGeY9H2SEWxuaKYnv6VaM4
-         ZqisK0G7tWea1rw42oE+CxPMXJ6cwC5GH3F7BpvqMAeNNH28ZcXZJE+0z3W7+d2PS/0U
-         kyVWn2RlAkoWCDOpkCIo6FapjuevpnTc5sc8E/VV/mlq7pIG09CgFaUYUOlhaqK0/CDD
-         KLWQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV8dAAJvWXFLhluFmO5wEbu/oSuvUSoDgZtUFOBvZ5UKIfjsrzq9tLqOEZ5w8bWqcuoA1ipRj45@vger.kernel.org, AJvYcCVmA8i0rKqNKxLQl48yAsxYPxxewjub/c0CHwscQW9VveHJgLdxzmXwg1TvlLxUV/DSw/k=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxjm1CDAupycu1KqFEETqihpaXTf406frlMJEXcrfADK03I9qUj
-	NH2nre0KRopZxkxBIhGMGepejPTNNTbevLZ2MG3e0uo/KsYgCp8anZkpAqi6PFptA0pwmESbqeP
-	XHZ8JyoeK64heNlWPjtE8IUZSC/kbUEM=
-X-Gm-Gg: ASbGncskBuF/i3wxnAOUoR/J/+9tANbJ17Tv8BajxGmhiTICtb9RQnrJy6u/HLOu096
-	zHWiU11AbAy79ZvgS9K2wU+jhm8TjgiHyDkQFny3TCFxOsOb+W+K/QJzjJeR4onWUjahqCmnZWM
-	iWghZ89k4Ja2VlXu+F1TETBa9v21EE3w0iiy6A/pERf5U=
-X-Google-Smtp-Source: AGHT+IGiMTbCo3njpiaBXeCzBj9uS37h5r+k3v/ZmBqV5fXOQTKBNB6yBolrU8G/JPcR93aNP3GqRUAm0QH4DBZ7yjY=
-X-Received: by 2002:a05:6e02:221e:b0:3dd:d6c0:cccd with SMTP id
- e9e14a558f8ab-3de38ca54bemr46490885ab.13.1750466447736; Fri, 20 Jun 2025
- 17:40:47 -0700 (PDT)
+        bh=IPKKNAvlZSp+QOhtTY1FDg2ly4OUD3/RjCrMWA/mLac=;
+        b=AOLsRu6RY73WGWWgN2SBphNIyaDfcGyBb9YJzPVBgXwuAfS9yG22+Njl9tXWjmwWdO
+         mGcmZQfNKl8iz+CWGqV/Oe0IW+PB8ld5jrY0Evk4jV5onoYhwVhvmfX8WfNd5Fm2Bgl3
+         SHYumClucTNCgy+BTp7+C8l9mMIk4taTg00Lyw4o5udhycbC2DdfK4RcSUIQnOtlpssf
+         Ss+zeRrS8Eio+C5WO5AuuvSQo4buje9+ROR6cCTP857+7suI0ZloqCJp/IO5tBejl2I3
+         RcuCBkNYXWFac5t5HkpBIrxR4HhwUG4ecPlqn9hVE5fRvmZcRw8cECytMxxdSoQmFX80
+         jLtw==
+X-Forwarded-Encrypted: i=1; AJvYcCVWOHliAA4Lf92GNjYiCQvpZX0fbsmK0dycPQzMU16RZI8n5GSklMSgkRe7qIOaOMzRoEw=@vger.kernel.org, AJvYcCWv6TV0efQiJVEXfcITbuJsoAFY5mo7hk3GpetAGuXsU1dSKWZezBipF7ozqhKNYQp7qqYn80Pm@vger.kernel.org
+X-Gm-Message-State: AOJu0YwBlsJUtsEjk+sYRdyXLi+6ddskMginNtONmtUfFycBurD0WrY5
+	Vxa45RZCQUaGcHiVIJSC5yxnB1r6JEqBQub8j1QaKFLCls3v28FbMhT2FP2ILy7AixenJJ0QZAy
+	h0VoV4jCPTZmfJbjwi/Y6THyAhziZSbo=
+X-Gm-Gg: ASbGncu/UrR9lxiyqHfVVibzzB1MTFBECrRjwCYux9YxbtR/+Cw0+ak1hvysTeK5/Ww
+	SDLzqEtELfX8kATuAbJy9NlHdAWDw1J3NPQ5OXcM1zBrd7XVoCee0y1CM+kRFXULLeljkRyCpIY
+	rVbbbNB+LGAoKsYy7xtZ0SolNZOTQO0LrBKmmnXwCl6Q==
+X-Google-Smtp-Source: AGHT+IE/Nwiw4ZighNENV+5mjdW0ijfvaQezgdCgMFiM/p+8kjUkbGTiT2fr1TuOHDxksvCkse4ZrOv3dqeCyJnBycw=
+X-Received: by 2002:a05:6e02:2217:b0:3dc:7a9a:4529 with SMTP id
+ e9e14a558f8ab-3de38cb10cdmr58268895ab.16.1750468000468; Fri, 20 Jun 2025
+ 18:06:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -75,165 +75,104 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20250619090440.65509-1-kerneljasonxing@gmail.com>
- <20250619080904.0a70574c@kernel.org> <CAL+tcoA=KQCLdthH3VXPhd-z=sieKQu_xOPgQEzxdy0Mtnycag@mail.gmail.com>
- <68556722b5c47_3ffda429453@willemb.c.googlers.com.notmuch>
- <CAL+tcoAfr_3g6mD0i8dzMnm6aO+FzWRBo_eoHv7+mjDLve90Ww@mail.gmail.com> <6855df87665e3_1ca432948d@willemb.c.googlers.com.notmuch>
-In-Reply-To: <6855df87665e3_1ca432948d@willemb.c.googlers.com.notmuch>
+ <20250619080904.0a70574c@kernel.org> <aFVvcgJpw5Cnog2O@mini-arch> <6855deade401b_1ca4329456@willemb.c.googlers.com.notmuch>
+In-Reply-To: <6855deade401b_1ca4329456@willemb.c.googlers.com.notmuch>
 From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Sat, 21 Jun 2025 08:40:10 +0800
-X-Gm-Features: AX0GCFtYL84Jm9D4foTHAUrHNPNqxLpF4Vutgr_cEHaYzFLt0qbUs4Jlo3Ytb3E
-Message-ID: <CAL+tcoD=4UKY-YK8NWGvTnbUUGpDa+5Orh3a3zE-YT5MFvBMbg@mail.gmail.com>
+Date: Sat, 21 Jun 2025 09:06:03 +0800
+X-Gm-Features: AX0GCFv0krLjmeVrJvtIlqPv_bisd_76ZoX3YG1MQEZz4IgaTCk-dCALd5WXTU4
+Message-ID: <CAL+tcoD6gkyirk=CQ0yepk3fkZVf+28Zc7nUoModeCT3Po7VYQ@mail.gmail.com>
 Subject: Re: [PATCH net-next v3] net: xsk: introduce XDP_MAX_TX_BUDGET set/getsockopt
 To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net, edumazet@google.com, 
-	pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com, 
-	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com, sdf@fomichev.me, 
-	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
-	john.fastabend@gmail.com, joe@dama.to, bpf@vger.kernel.org, 
-	netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
+Cc: Stanislav Fomichev <stfomichev@gmail.com>, Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net, 
+	edumazet@google.com, pabeni@redhat.com, bjorn@kernel.org, 
+	magnus.karlsson@intel.com, maciej.fijalkowski@intel.com, 
+	jonathan.lemon@gmail.com, sdf@fomichev.me, ast@kernel.org, 
+	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com, joe@dama.to, 
+	bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	Jason Xing <kernelxing@tencent.com>, magnus.karlsson@gmail.com, skhawaja@google.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jun 21, 2025 at 6:24=E2=80=AFAM Willem de Bruijn
+On Sat, Jun 21, 2025 at 6:20=E2=80=AFAM Willem de Bruijn
 <willemdebruijn.kernel@gmail.com> wrote:
 >
-> Jason Xing wrote:
-> > On Fri, Jun 20, 2025 at 9:50=E2=80=AFPM Willem de Bruijn
-> > <willemdebruijn.kernel@gmail.com> wrote:
+> Stanislav Fomichev wrote:
+> > On 06/19, Jakub Kicinski wrote:
+> > > On Thu, 19 Jun 2025 17:04:40 +0800 Jason Xing wrote:
+> > > > @@ -424,7 +421,9 @@ bool xsk_tx_peek_desc(struct xsk_buff_pool *poo=
+l, struct xdp_desc *desc)
+> > > >   rcu_read_lock();
+> > > >  again:
+> > > >   list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
+> > > > -         if (xs->tx_budget_spent >=3D MAX_PER_SOCKET_BUDGET) {
+> > > > +         int max_budget =3D READ_ONCE(xs->max_tx_budget);
+> > > > +
+> > > > +         if (xs->tx_budget_spent >=3D max_budget) {
+> > > >                   budget_exhausted =3D true;
+> > > >                   continue;
+> > > >           }
+> > > > @@ -779,7 +778,7 @@ static struct sk_buff *xsk_build_skb(struct xdp=
+_sock *xs,
+> > > >  static int __xsk_generic_xmit(struct sock *sk)
+> > > >  {
+> > > >   struct xdp_sock *xs =3D xdp_sk(sk);
+> > > > - u32 max_batch =3D TX_BATCH_SIZE;
+> > > > + u32 max_budget =3D READ_ONCE(xs->max_tx_budget);
 > > >
-> > > Jason Xing wrote:
-> > > > On Thu, Jun 19, 2025 at 11:09=E2=80=AFPM Jakub Kicinski <kuba@kerne=
-l.org> wrote:
-> > > > >
-> > > > > On Thu, 19 Jun 2025 17:04:40 +0800 Jason Xing wrote:
-> > > > > > @@ -424,7 +421,9 @@ bool xsk_tx_peek_desc(struct xsk_buff_pool =
-*pool, struct xdp_desc *desc)
-> > > > > >       rcu_read_lock();
-> > > > > >  again:
-> > > > > >       list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) =
-{
-> > > > > > -             if (xs->tx_budget_spent >=3D MAX_PER_SOCKET_BUDGE=
-T) {
-> > > > > > +             int max_budget =3D READ_ONCE(xs->max_tx_budget);
-> > > > > > +
-> > > > > > +             if (xs->tx_budget_spent >=3D max_budget) {
-> > > > > >                       budget_exhausted =3D true;
-> > > > > >                       continue;
-> > > > > >               }
-> > > > > > @@ -779,7 +778,7 @@ static struct sk_buff *xsk_build_skb(struct=
- xdp_sock *xs,
-> > > > > >  static int __xsk_generic_xmit(struct sock *sk)
-> > > > > >  {
-> > > > > >       struct xdp_sock *xs =3D xdp_sk(sk);
-> > > > > > -     u32 max_batch =3D TX_BATCH_SIZE;
-> > > > > > +     u32 max_budget =3D READ_ONCE(xs->max_tx_budget);
-> > > > >
-> > > > > Hm, maybe a question to Stan / Willem & other XSK experts but are=
- these
-> > > > > two max values / code paths really related? Question 2 -- is gene=
-ric
-> > > > > XSK a legit optimization target, legit enough to add uAPI?
-> > > >
-> > > > I'm not an expert but my take is:
-> > > > #1, I don't see the correlation actually while I don't see any reas=
-on
-> > > > to use the different values for both of them.
-> > > > #2, These two definitions are improvement points because whether to=
- do
-> > > > the real send is driven by calling sendto(). Enlarging a little bit=
- of
-> > > > this value could save many times of calling sendto(). As for the uA=
-PI,
-> > > > I don't know if it's worth it, sorry. If not, the previous version =
-2
-> > > > patch (regarding per-netns policy) will be revived.
-> > > >
-> > > > So I will leave those two questions to XSK experts as well.
-> > >
-> > > You're proposing the code change, so I think it's on you to make
-> > > this argument?
-> > >
-> > > > #2 quantification
-> > > > It's really hard to do so mainly because of various stacks implemen=
-ted
-> > > > in the user-space. AF_XDP is providing a fundamental mechanism only
-> > > > and its upper layer is prosperous.
-> > >
-> > > I think it's a hard sell to argue adding a tunable, if no plausible
-> > > recommendation can be given on how the tunable is to be used.
+> > > Hm, maybe a question to Stan / Willem & other XSK experts but are the=
+se
+> > > two max values / code paths really related? Question 2 -- is generic
+> > > XSK a legit optimization target, legit enough to add uAPI?
 > >
-> > Actually I mentioned it in the commit message. One of advantages is to
-> > contribute to less frequencies of sendto() and overall higher
-> > transmission speed.
+> > 1) xsk_tx_peek_desc is for zc case and xsk_build_skb is copy mode;
+> > whether we want to affect zc case given the fact that Jason seemingly
+> > cares about copy mode is a good question.
 >
-> Understood. It is just informative to have more quantitative data.
-> What value worked for you.
+> The two constants seem to be only tangentially created.
+>
+> If there is fear that one tunable modifies both, it is simple enough
+> to remove the unnecessary dependency and only tune the first.
 
-I see what you mean. Now I think I had better add more details as
-follows to show how I arrived at the certain value in the next
-version.
-
->
-> > >
-> > > It's not necessary, and most cases infeasible, to give a heuristic
-> > > that fits all possible users. But at a minimum the one workload that
-> > > prompted the patch. What value do you set it to and how did you
-> > > arrive at that number?
-> >
-> > One naive question from me is why the number of packets to be sent is
-> > definitely required to be limited within a small number by default?
-> > Let me set tcp as an example, a simple sendmsg call will not be
-> > stopped because of the hardcoded limitation.
-> >
-> > For one application I saw, I suggested using 128 because I saw two
-> > limitations without changing any default configuration: 1)
-> > XDP_MAX_TX_BUDGET, 2) socket sndbuf which is 212992 decided by
-> > net.core.wmem_default. As to XDP_MAX_TX_BUDGET, the scenario behind
-> > this was I counted how many desc are transmitted to the driver at one
-> > time of sendto() based on [1] patch and then I calculated the
-> > possibility of hitting the upper bound. Finally I chose 128 as a
-> > suitable value because 1) it covers most of the cases, 2) a higher
-> > number would not bring evident results.
-> >
-> > [1]: https://lore.kernel.org/all/20250619093641.70700-1-kerneljasonxing=
-@gmail.com/
->
-> This is indeed helpful context.
->
-> Another limiting factor is the XSK TX queue length?
-
-Right, through setting setsockopt(SO_SNDBUD) to increase the queue
-length can avoid frequent premature exit from __xsk_generic_xmit().
-FYI, the call trace is
-__xsk_generic_xmit()
-    ->xsk_build_skb()
-        ->sock_alloc_send_skb()
-            -> if (sk_wmem_alloc_get(sk) < READ_ONCE(sk->sk_sndbuf))
+Last night I was thinking only let the first one take effect and keep
+the zc mode untouched. IIUC, if we publish the uAPI (setsockopt),
+we're _not_ allowed to remove the unwanted one when we spot some
+problems? If so, I will only make the copy mode work :) If the latter
+needs this in the future, another setsockopt can be easily added. Am I
+right?
 
 >
-> So even if a user passes UINT_MAX, nothing terrible will happen.
+> > 2) I do find it surprising as well. Recent busy polling patches were
+> > also using/targeting copy mode. But from my pow, if people use it, I se=
+e
+> > no reason to make it more usable.
+>
+> That's a very fair question.
+>
+> Jason, have you tried XDP_ZEROCOPY? It's quite plausible that that
+> would address your issue.
 
-Right. And the BQL feature is another possible limit.
+Not yet, but I will try and verify maybe at the beginning of next
+month as you suggested.
 
 >
-> Still, it is better to not accept obviously bad input to begin with.
+> I have had a use for copy mode, but that was rather obscure. A small
+> packet workload where copy cost is negligible, and with copy mode it
+> was easy to make to reinstate flow steering in XDP to specific XSKs,
+> akin to
+>
+> https://lore.kernel.org/netdev/65c0f032ac71a_7396029419@willemb.c.googler=
+s.com.notmuch/
 
-Sure, I can do that. What exact value of upper bound should be, I
-wonder? It's not easy to set a hard limit.
+Interesting. Thanks for the pointer  :)
 
-Another thing is that what you said on the lower bound in the previous
-email is what I missed in the current patch. Thanks for your reminder.
-And sorry. I forgot to set it to 1 as my first two patches did. At
-least, lower bound is required which is an explicitly unexpected
-behaviour.
+>
+> The main issue with that remained that driver copy mode also implies
+> the slower generic copy based Tx path, which goes through the full
+> dev_queue_xmit stack.
 
-I'm about to set the lower one _only_ in V4 to see if it works for everyone=
-.
+To be more specific, not the full dev_queue_xmit stack as
+__xsk_generic_xmit() bypasses the qdisc layer.
 
 Thanks,
 Jason
-
->
-> Normal packet processing loops give up control after tens or maybe
-> a few hundred packets at a time.
 
