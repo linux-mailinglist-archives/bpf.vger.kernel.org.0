@@ -1,253 +1,226 @@
-Return-Path: <bpf+bounces-61297-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61298-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64D49AE490A
-	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 17:45:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67302AE49EA
+	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 18:10:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBF4517632B
-	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 15:45:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41B8918843D8
+	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 16:07:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 968A128E579;
-	Mon, 23 Jun 2025 15:44:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A426028DF3B;
+	Mon, 23 Jun 2025 16:06:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="YYdoaprW"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="HZR9Cz4d"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2081.outbound.protection.outlook.com [40.107.244.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83AD81F94A;
-	Mon, 23 Jun 2025 15:44:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.81
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750693487; cv=fail; b=Vo6KuxmefzG4FgJ9c/B7tzJinYu4xLz4S/Fm0Junfx5tf4m4XumEOnZk4vMRXPvw9bP0JR9+ld3+qe/96i/mbOe+nOHg8e1buAaGue3FP+Q9nbRJ4/WKG5fpKLXcTvr1jL1WlaizBsJhjp/WA9ezF8pKEhOtQyDdENSR2kpgTOQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750693487; c=relaxed/simple;
-	bh=eN3rjzEbYGOws5lf4iJHU9GdQl0K0Un7WlBHC7qBhZo=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=DC24p9lKtwEuWd4EBpyY2Ajz3i4w4YFpbl6RZJm1Pebv1mCmeGhdAz8xVlndpXbwW9SSssiu5XfBY5odR33stQQ4BwcyC6rgUdB6r6tY54/3/CTL63c8MAWW7w9umfinguPHAjeZIzBTb4O46OF/K5Puof4f9ANPdqRuvEW87eo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=YYdoaprW; arc=fail smtp.client-ip=40.107.244.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=oiHOrWEKJLr4sYTajzqN6RPwanM2lABvXkiTJaUefDSSb8ttk1qPy9Kubhwo/PyQiKq+o9OjCtZ7Mq4kGy+SZPbXsqrZctwQLbxdmLE/yDL5t3a3xEGCVz+AezllV+JBde7fbPCv609gV/9sXAyqmFsy+xXGLrEev9+E7mZluKh/vY2hyzkG6+3q73Nh3d4Op3pVPBEDSpO722Px0naD3JRJIrn0cqr4BHLvAjc5CS2OR4Jp8fWu5m5dfLpu+Dj2QElkjNvP3hDWZ9jkP+9lJVXeFlemL1VzlysaRELZL9GgF16I6lhfu0LxxVx2UbKYeE//ZcUByDSOxIbZJ362xQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CtGGu/bHwbi07+bHWdUhLUhJYsXAj2s6r2Rw6SFVzl0=;
- b=Sm8ERav2j8EyXchqR3Az755D0XygnLA19J6VqbUq7weX0EnhJBLhg2+pTOqA1DIv+aP/WS4ao4tYANj+5wuk+cj+bJ9A1pZsXknwoNcAl7sUUotI/pbbPJXTf3btp4nHOISUtitx6UyDuW1d4H223JQz3akemuRCpMY5IYoqAjh7kCxRN/x5nw/aZSVw3vELSaqV/56I9tKZiQ87zgCbAM7En7vweH0+BSMAMHDqn0Vy3qiiQmv5/bLZ4WKxgsZapi7zviccf1bR/5km1yEYaBSFAUQmfspizXlMBGS3vVxfISE5gRuYomj0QCFil/KCa0+r0mBVbcCpp49nPxyq9A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CtGGu/bHwbi07+bHWdUhLUhJYsXAj2s6r2Rw6SFVzl0=;
- b=YYdoaprWYFv1B/bDqSosvjxKkQJJNcPOlyjkhZT5S+ZtUDwsA+W5dQfeM/9ETSRLrmPY+0SAFX+yT/MY05sZertB0ifdyRQo0vaDWx9N5UgtKhifkyGNFN52NUDxEOdfHiVj+RM/WJVLRFVc0rEKobBRhS+nMZZWrXUH3jYOEpU=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH0PR12MB7982.namprd12.prod.outlook.com (2603:10b6:510:28d::5)
- by CH2PR12MB4262.namprd12.prod.outlook.com (2603:10b6:610:af::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8857.25; Mon, 23 Jun
- 2025 15:44:41 +0000
-Received: from PH0PR12MB7982.namprd12.prod.outlook.com
- ([fe80::bfd5:ffcf:f153:636a]) by PH0PR12MB7982.namprd12.prod.outlook.com
- ([fe80::bfd5:ffcf:f153:636a%5]) with mapi id 15.20.8857.022; Mon, 23 Jun 2025
- 15:44:41 +0000
-Message-ID: <8f54ae13-7943-4e45-9881-a01108a1b58f@amd.com>
-Date: Mon, 23 Jun 2025 08:44:39 -0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v3] ethernet: ionic: Fix DMA mapping tests
-To: Simon Horman <horms@kernel.org>
-Cc: Thomas Fourier <fourier.thomas@gmail.com>,
- Shannon Nelson <shannon.nelson@amd.com>,
- Brett Creeley <brett.creeley@amd.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Stanislav Fomichev <sdf@fomichev.me>,
- Vladimir Oltean <vladimir.oltean@nxp.com>,
- Caleb Sander Mateos <csander@purestorage.com>,
- Taehee Yoo <ap420073@gmail.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-References: <20250619094538.283723-2-fourier.thomas@gmail.com>
- <bb84f844-ac16-4a35-9abf-614bbf576551@amd.com>
- <20250620105114.GH194429@horms.kernel.org>
-Content-Language: en-US
-From: Brett Creeley <bcreeley@amd.com>
-In-Reply-To: <20250620105114.GH194429@horms.kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR01CA0026.prod.exchangelabs.com (2603:10b6:a02:80::39)
- To PH0PR12MB7982.namprd12.prod.outlook.com (2603:10b6:510:28d::5)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76D961C84A1
+	for <bpf@vger.kernel.org>; Mon, 23 Jun 2025 16:06:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1750694804; cv=none; b=MUtbHS7J6BibhzPyQJv3Ah7aOUMSeCcEWl20rqji5LFifFPBspj2PMCMDf3s3j7CxRO7VchXy0odoLYYj3gdO36t4rZMipBE83hC5T8nzfX1xcJ0A3L/EK0OXjh2/23yrA0bgtjy4MmedBcujImbA8rEYgerP8z6easIe8gZfa8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1750694804; c=relaxed/simple;
+	bh=Mi/60CA7Ydz3R+PY7UFNgNc1KYMFHge7mElfLwWKOr8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=J5rnC+rDio/l+yHRjhXmsrGg5d3Hc87Q9k7B2fi9fbRFWzA1SFUNTCW4xGjXbU9FC4TF8idYZSHUv4oEMWl4+GiOZajX3WCVk2z6rwBjU3YkW1/osNHiBEmy9kdYkIK5qcEG3DpGan5W+yc782dZZnDRRlcmUQW3lXB5NUaCzPg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=HZR9Cz4d; arc=none smtp.client-ip=209.85.160.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-4a585dc5f4aso52779821cf.2
+        for <bpf@vger.kernel.org>; Mon, 23 Jun 2025 09:06:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1750694801; x=1751299601; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ktC6cfOVZ/76Z0Ijy6OOpcQ17JdhB2dNNAa6r8b5k90=;
+        b=HZR9Cz4dpBF6zvt6bbVFA/8QW+qOjnBv3pj+SgGnlEerrAmoSn1JrfXxWlLHAA2Ogs
+         Lr2pzCKYHLt5GwFCBh201FMKxDBjqofdtwJLOnl+wdgGfRauyg3Ucc49hB1dusnp/RBh
+         pOeDEW5iN9rkXSDGaeNH1po0ohysR3fqh6fLaofVHr5Jcw86OpaR5xXh3jbXAak81GaF
+         oDzn3c5NsiMt2zrtuz+JymjMXYXPwssnzrj3Gb9UiW2EhvinEKCcPrWUZ54VPNPxjz6c
+         OupEzcCi9HswQdllA0QIVvzV51HvsbYyk2KyxECpepv4uoKU4dmbE8aMgRWbn00mFOUz
+         x+EA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750694801; x=1751299601;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ktC6cfOVZ/76Z0Ijy6OOpcQ17JdhB2dNNAa6r8b5k90=;
+        b=Wg6CLXkh/YoQeAvoPlBtazvMj8E6j8/DoirrwU2dJQAJrzS+PGqLWEZIOTG8JTqI7V
+         F0zCN2IRDU7mVwUWuWIwalJtE74QR9fwycDTW9FfOg+78Dah6W/EuModm5R3mdoTaCL5
+         XV80wlPtLSZ96+apVqnxMav4TDzqhRcmy6AtmPjWcwIeHlCP9H+7S8NCxW69VzCjGT0G
+         +ZMrtv/bFh1kD/RvbW+g4iBmUoyD2LBGRPBOeQyOYpqFYB7faQ0C08U2T1fgE0FBgFlJ
+         yWhE6te65FOZOQ9NX5iF2ei+S6eP4UTT80Fv8nAMLfPsViTCDrY+tKNaZE0pMwmpU2mc
+         xI0w==
+X-Forwarded-Encrypted: i=1; AJvYcCUKENlLzH1t7Yhh23SnqI7Dp83qy2XsdVS+drFKZboIdBTc8Xo0uUS4pt9117hll6TyWBc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxJZMEe+XYNErvgtdM1/VfK3Uo1bFWw33B3i8o+Sy6x3Xx+s2Dz
+	IqN+qsuj37zgb3h+qQwarh5+EwJxOfyXtMA8UQE/HzKGlTgS3TYmxHCdpvkU5gRuXu8=
+X-Gm-Gg: ASbGncta5nojQ7INp5FaOzDO4eXNmko0psh7uNU1XLwKia1gIPdr2ANVzqZREwJPDwD
+	TR9rYsErnc1cC+GBwfdn1DqBhGceeInExPo1gJk4SRH50gX0dBdOf6t2FYHYueKfO/ABNH6tb/B
+	qgIESZPPu2422P0pSFmroM3UGYpDvEIcFRsZvTFggjhQMF7Kinx8QKDXPcMVXej3uFCAMGbIdzN
+	1L90VXaUnnFdRijP8rFNXuUraQGLm837zrh/UfzQWt2JlguTYU2lJEHJCConXKNQg8VU3fpGODa
+	9rkNo+IUJxxKzLsRk34TSTHeL8Dtcv9HXWdeuivuTodGpOEygys=
+X-Google-Smtp-Source: AGHT+IGoR8ANNdKqeXSB6QUjUR7YL2sWmX6fZq3ocRFUEgh9F0Tx0iW7Wm2+7Ic1YaQV1+hJP8HI+A==
+X-Received: by 2002:a05:620a:319b:b0:7d3:9ba1:a044 with SMTP id af79cd13be357-7d3f9923097mr1677605985a.33.1750694801144;
+        Mon, 23 Jun 2025 09:06:41 -0700 (PDT)
+Received: from debian.debian ([2a09:bac5:7a49:1cd2::2df:3a])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7d3ffdb190esm349258785a.86.2025.06.23.09.06.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Jun 2025 09:06:40 -0700 (PDT)
+Date: Mon, 23 Jun 2025 09:06:38 -0700
+From: Yan Zhai <yan@cloudflare.com>
+To: netdev@vger.kernel.org
+Cc: Michael Chan <michael.chan@broadcom.com>,
+	Pavan Chebbi <pavan.chebbi@broadcom.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Andy Gospodarek <andrew.gospodarek@broadcom.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, kernel-team@cloudflare.com
+Subject: [PATCH net] bnxt: properly flush XDP redirect lists
+Message-ID: <aFl7jpCNzscumuN2@debian.debian>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR12MB7982:EE_|CH2PR12MB4262:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6cb1f461-a09f-49e2-44bb-08ddb26cde5e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|366016|7416014|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?RmQ3S080MUxxamZIY0VuWDJLM3E3U1dZQ2hCMzNUY0VhcVdjYjBheUpGSm8y?=
- =?utf-8?B?QmVRRGEySUhiRGY2ajdHcDlTMHF5LzZlLzFCeUdPa25ZMU9FWUJSUENmMlh5?=
- =?utf-8?B?alVyUW9PWmI0V2xUOFdOeVFyUCs5c1BoU0dHTGUxNldPV2pBZ0tSWnJlM1FI?=
- =?utf-8?B?OHZ2QnE0SXBVaDZQR0dXUXBMQ01ETVp2VkZYTDVHb3pFbkhFWVlGdmpJaE9C?=
- =?utf-8?B?dHZPeUUxUkNmbjczOFFLVWxVNE9LTnJ4K0t2UmpGTWhCT2dYMW16Y2R5cnlV?=
- =?utf-8?B?QzJNMHMzWnIrVE9GWmlWQWoyTDU0YVhJYU9oK1p3QjhabUNSVW9qUmJTS3RH?=
- =?utf-8?B?NktOemVydUdzN2hjb1E0TGtvdzNOQ3NtLzZ6Zmh0dkxIdVd6SXd3Vm1KWGFH?=
- =?utf-8?B?UjdYVlc5b2w4SS9aMXlPVWFoWitldzZGd0lBVHFvZnZ5SlcvQjlNT1JEdjcw?=
- =?utf-8?B?aEI5ZFJsS0RHQndBc3dpVkRjeEpvdGFFYllNNTFqYk1Sc0RBaExLUzcyTjho?=
- =?utf-8?B?SlV1NUV5MTZwR2pvQmVJWlQ2ZUxhS0lkc3p5Q1pTWTdTRld3N2RaMEF4VmI3?=
- =?utf-8?B?UzZXZ013QlpUckZyaHlJWlEwWVNnOGIzNHJST3NKY2NLc2tOQzRic05kT3Ba?=
- =?utf-8?B?TnpyTmJWSENsdngyT2k1czhFdGdWRTR5TVpDUitYWTI3L21LVU9hVnFBQjR5?=
- =?utf-8?B?L1Ryelk4Vmt2bTBITWhjNTJSOC9SOUxxRDlzbVpQamJia2Vwc2dkWmVmRFFZ?=
- =?utf-8?B?L2hoU1k1UGkrM0l1bHoxT3Q5SUZ5YTdOaFl0MG5JRVVDWmhxcnlLR3d3YkVh?=
- =?utf-8?B?N01BbTRNZ1JGWGlxbTIrcEk1cHM4RlNqWTZzQTYzSS9nVnJXazdwM2ZCSERL?=
- =?utf-8?B?Tk1oK0w5QjYzNEt6TWZYbHBZZk5oenVKUUV6emNVYkJYY2lVWnJWalp2TllJ?=
- =?utf-8?B?VXdta0h6WjI4K3QzSGcyT0dLKzlteVBuTFNkYm5QWDZZbGtEbkdiRHBUcUQ2?=
- =?utf-8?B?SDg3WTNiRTJ6TFZPYWc1b2t4RnF3Nk5wQWQvMGUyM0FXT3U1SHJHc1p5aFh1?=
- =?utf-8?B?KzRGNlhUUDkzYW4wRlZ5NUpQZzI4dXJsZlJQQnFNVnJFVHVSNzJHRFNrei80?=
- =?utf-8?B?UGZMKzZTV3lxSjFicm92VjAvNWZtNnpDR2RYK01pQjE1TUYveVVsd1lNOVpp?=
- =?utf-8?B?Q3R4WXJmcEpnZXhQa2FXQ1Y3blVOOWpsNk1IWS9DbEJ2dWZvTVVROHQxQkZt?=
- =?utf-8?B?Y3RlQTAvd01PeU5DTkg4UEpJTWthblJHaHJHU1JXeHZkTXF2SzYxWXgyL3Ay?=
- =?utf-8?B?UC9DcTh5MlpPcGh0bzhxSXpyemhPMTh1RHd4U09KRFlUWi81dG5ZeXJ2Wm1v?=
- =?utf-8?B?VFZ3SVUzRHEwZUx5Uk8vYU4rc0d6Vm5xMEdSWHI5a3V6K1NZczdoY2dRYzFS?=
- =?utf-8?B?Wm1oZEtGZ0UxcVhJdGlGQU10d1U2S1lHaDJweXFmM3l3Z0VFSjJsRHNDem8w?=
- =?utf-8?B?L3BFcmIxSWwrMFJtK1NNRXFJanAyK3ZmRjlRMFNpRjFCVG9ZUzMvTFd0L1U0?=
- =?utf-8?B?emxEOTN6Smx6azJHVmNESGhPMXIxSlFWcFpQNjZvNjY5LzJrbThJMXFnVmxR?=
- =?utf-8?B?M0JqVlB2Tzc5ZzlKS3llazJYOEZrOFhlb1lCcGQ4WkVaR0xqWVZ4MExqYXFS?=
- =?utf-8?B?OTJPRWN2cWVLbDBLQ0pLS0IxTG0ySDlKWFpJeExSN0IzWTEyeFNSSVZnNzQ1?=
- =?utf-8?B?NlJYOEZIaTI5MSswdmpwd1FYRk83c2dzWDh2WFF5T093RlNmd0R4cEg1Z1ln?=
- =?utf-8?B?ZDJYVHhsSDBGYmJZRVpEUTQzekt4eitGVG1sUFhNY21qaXJlQ1BBbFJhbWMz?=
- =?utf-8?B?b3YrSmVaRlRJOVdyNHlMWGFBQno1ZC9qbTN5djBLQnpHd1l4T3lKVFBuVm5C?=
- =?utf-8?Q?rcwjByEv70E=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR12MB7982.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(7416014)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?SWZkZmY4WU5RN0tSN3hxdG9QWmY1dkJ2b25LcFFxYzA2eFlpWFpDVi9HYU1G?=
- =?utf-8?B?RlZ3NUZlcndzalRsUDQ4TXg3bEx1aVd2d0VoNE9xeUhZK3JQbTRIUDFFRXAy?=
- =?utf-8?B?UUtsOG4ycE5uMHdUUSsxS3IrUUVoVklxQndnRkxSWGt2VEdEdnhSY1JuU084?=
- =?utf-8?B?UHVMeVlIbXVpTGpjc1BrcjBFNWtrMmYrTWJsdXFhL2dGdVhkb3JiYUNpYVlm?=
- =?utf-8?B?NUt5VXhvc2gvNDFCZkFKVXJhMGxudHU5aDkxU2I1ZXN0b2tFa1NjUU1OYk9n?=
- =?utf-8?B?VjF2VzUrdWlCWEllTEZuV2NxVENHTGM5L1lMN2NBVnEwSnU2RVBZRWtkS3hs?=
- =?utf-8?B?eDhMVnF4dHZMZmxnOGg0aEVmeTMrQW5YeUgzeGQxUDhKUFdJYVFTNGRYQTU2?=
- =?utf-8?B?WXBrWjl6Sis0V0hRNmNaaHROVExmZm1qT1JZNTI5SUFFNS9KaitQRmhmSytS?=
- =?utf-8?B?dktSbEhqWEJJMHVmQnRoQmxvQUVYV0taaUJRdWVzMVhMVFUrMnVGVVRJWG5h?=
- =?utf-8?B?YnBuQkF3U2s5dXE5KzVHS0FvNmtmdnFnQ3lnekJIeDNZbWhjcWM4bUxmRUJv?=
- =?utf-8?B?VG1SdlZsNW16dVo3VmFOOXgvRUdaaUhoNVk1eWRMNFM3QnBCZ2dKRUlHbXJu?=
- =?utf-8?B?UCsxdzJ5cjRVQmh5OCt6dEpCdzNEaXhwZW0vV2hWYTd6REpTajkyRDhYaHpU?=
- =?utf-8?B?RkR3RWZuOHlTTkZmQ092Tmc4S0tpa1ZBQTl2ZTNOZEl3cmFack5ldFNEV2hq?=
- =?utf-8?B?WmZvYzdTOEpVZklUeUxQYjhZNDZNZ3FNYzVOZzA3SGRWaTdtck4rUXhJc3VW?=
- =?utf-8?B?Y2NHTHdBTDVzb2xEUG8wOFRHQURzL3d4OGJMdDlSUTZYNDBWQ1ZuMW5CRTRi?=
- =?utf-8?B?RmZsZGJlclVzU2E2d3pRTlNwSFRMMXhIWUduc0hKajRZSVYzZDlCUm9qcUs4?=
- =?utf-8?B?Y3FnSW1SYzBCWWZ5dVRtcVFDaytNQUo3QzFpS0kzS1VqY1daUFUxM2ZSaTEz?=
- =?utf-8?B?MzhHM0pLZHVMdUdXdTBFRCtJMVZ2cVh1TkxLTFI4UWlFYzMxU01JUTFYbnBi?=
- =?utf-8?B?bGYxcjVvRk1Xaks4N0Y0cHhhb21SVnV4cGVsTXNZZ1dkbTFIRGp4b0JyS0xO?=
- =?utf-8?B?dHpoT0VyZkIreHVucW5BZ2d3TnNFNGdKblFDSEZQYVB1YU5LQ1E0SEJkbjd3?=
- =?utf-8?B?d2oxYUtRS1A2dnIvQkJ6SUhwajR5T3hRMFFaVDRqZnBlN3NYNUYzbXRvZ1NO?=
- =?utf-8?B?NitwVjZuMndFL0MrNklSWVNFazlTRDFFRmhUN2ppQ0dhemszUW5NZWFjVWFn?=
- =?utf-8?B?ejZneHFGWWxrRURTRTFISk8yRWlkQmxVWGU0TFVMYk5kb2NhbVlHSXZjTUlq?=
- =?utf-8?B?LytGNm1KK3F5SGYyV084WS9Id2VmdGpWTmdFMVAxYlpPWGZaZ1dWcWlwL1Q4?=
- =?utf-8?B?WmpUWlBnYy9pUExoMXdBTUZZQ0k4aXd2RFBZT1dQSFRZb2hGajNHcVZyblVT?=
- =?utf-8?B?VE1ETmJpZ21UQjZmV3doNHFmWEJ1bHFRU3NEM2xUbkUvTTJHQTE2eWIvTzZI?=
- =?utf-8?B?bVB2Kys0SWtBMEZLcWpxSkJwc1JtdU5yM3ZHNDBOWWtOMkNUOUdPTWIvcjZY?=
- =?utf-8?B?dXVsWFdrV3kydWU3Rm1zWWtRQisya3VXM25PWFhzc1F6U1hldG05dG1Xd3Va?=
- =?utf-8?B?a09uWHpWRWNNWlpLODNvTlZiZHVSM2h2cHlIYWQrREtrWThJUHBBOG51NC9D?=
- =?utf-8?B?WGJoNTJqTnE1Sm5mOTNnOXAyVlhTU1dpUzlIQmpwN09Tc1NHU3dwZHdxMTZv?=
- =?utf-8?B?bGUxUW9jTm1YYnRXQnVVT2tsQXB3c1hPMzVGNzRjMmNBN3I0UVg2WWgvemZ3?=
- =?utf-8?B?RVVEZXdJNWlJVHpGbTFoQk5YanRIb1dTRTNWRlFNbHNIRXFtWlEwdk0zT2lI?=
- =?utf-8?B?K0Z0bFJ2SnZ4VjgzQXk3YlJ4T3FhTUwvU1NqYjVUa3FBTW82SG05YnZkZUFW?=
- =?utf-8?B?S1RNcVpXM0lIQW53YlJQa09JMDFlQUt2WS9NUHhyZXhoMnhpYmtjVjdUUkNH?=
- =?utf-8?B?WjhaZU56d1dRY0VDKzA3eDVhYjloNkRaZXgvVVhOOTViVlUzNG02UlBVWDU3?=
- =?utf-8?Q?Xmppf5y1U8d6UwBDxmroPlu5U?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6cb1f461-a09f-49e2-44bb-08ddb26cde5e
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR12MB7982.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jun 2025 15:44:41.5704
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YQ8IMbntmvOzWV2UhpgWeLU3lohkjC3PnHSeMDL1HdI3QP5ID43FDyH7EmRPD25YwmXlzRqNG3ceFVJ266gw6g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4262
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+We encountered following crash when testing a XDP_REDIRECT feature
+in production:
 
+[56251.579676] list_add corruption. next->prev should be prev (ffff93120dd40f30), but was ffffb301ef3a6740. (next=ffff93120dd
+40f30).
+[56251.601413] ------------[ cut here ]------------
+[56251.611357] kernel BUG at lib/list_debug.c:29!
+[56251.621082] Oops: invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
+[56251.632073] CPU: 111 UID: 0 PID: 0 Comm: swapper/111 Kdump: loaded Tainted: P           O       6.12.33-cloudflare-2025.6.
+3 #1
+[56251.653155] Tainted: [P]=PROPRIETARY_MODULE, [O]=OOT_MODULE
+[56251.663877] Hardware name: MiTAC GC68B-B8032-G11P6-GPU/S8032GM-HE-CFR, BIOS V7.020.B10-sig 01/22/2025
+[56251.682626] RIP: 0010:__list_add_valid_or_report+0x4b/0xa0
+[56251.693203] Code: 0e 48 c7 c7 68 e7 d9 97 e8 42 16 fe ff 0f 0b 48 8b 52 08 48 39 c2 74 14 48 89 f1 48 c7 c7 90 e7 d9 97 48
+ 89 c6 e8 25 16 fe ff <0f> 0b 4c 8b 02 49 39 f0 74 14 48 89 d1 48 c7 c7 e8 e7 d9 97 4c 89
+[56251.725811] RSP: 0018:ffff93120dd40b80 EFLAGS: 00010246
+[56251.736094] RAX: 0000000000000075 RBX: ffffb301e6bba9d8 RCX: 0000000000000000
+[56251.748260] RDX: 0000000000000000 RSI: ffff9149afda0b80 RDI: ffff9149afda0b80
+[56251.760349] RBP: ffff9131e49c8000 R08: 0000000000000000 R09: ffff93120dd40a18
+[56251.772382] R10: ffff9159cf2ce1a8 R11: 0000000000000003 R12: ffff911a80850000
+[56251.784364] R13: ffff93120fbc7000 R14: 0000000000000010 R15: ffff9139e7510e40
+[56251.796278] FS:  0000000000000000(0000) GS:ffff9149afd80000(0000) knlGS:0000000000000000
+[56251.809133] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[56251.819561] CR2: 00007f5e85e6f300 CR3: 00000038b85e2006 CR4: 0000000000770ef0
+[56251.831365] PKRU: 55555554
+[56251.838653] Call Trace:
+[56251.845560]  <IRQ>
+[56251.851943]  cpu_map_enqueue.cold+0x5/0xa
+[56251.860243]  xdp_do_redirect+0x2d9/0x480
+[56251.868388]  bnxt_rx_xdp+0x1d8/0x4c0 [bnxt_en]
+[56251.877028]  bnxt_rx_pkt+0x5f7/0x19b0 [bnxt_en]
+[56251.885665]  ? cpu_max_write+0x1e/0x100
+[56251.893510]  ? srso_alias_return_thunk+0x5/0xfbef5
+[56251.902276]  __bnxt_poll_work+0x190/0x340 [bnxt_en]
+[56251.911058]  bnxt_poll+0xab/0x1b0 [bnxt_en]
+[56251.919041]  ? srso_alias_return_thunk+0x5/0xfbef5
+[56251.927568]  ? srso_alias_return_thunk+0x5/0xfbef5
+[56251.935958]  ? srso_alias_return_thunk+0x5/0xfbef5
+[56251.944250]  __napi_poll+0x2b/0x160
+[56251.951155]  bpf_trampoline_6442548651+0x79/0x123
+[56251.959262]  __napi_poll+0x5/0x160
+[56251.966037]  net_rx_action+0x3d2/0x880
+[56251.973133]  ? srso_alias_return_thunk+0x5/0xfbef5
+[56251.981265]  ? srso_alias_return_thunk+0x5/0xfbef5
+[56251.989262]  ? __hrtimer_run_queues+0x162/0x2a0
+[56251.996967]  ? srso_alias_return_thunk+0x5/0xfbef5
+[56252.004875]  ? srso_alias_return_thunk+0x5/0xfbef5
+[56252.012673]  ? bnxt_msix+0x62/0x70 [bnxt_en]
+[56252.019903]  handle_softirqs+0xcf/0x270
+[56252.026650]  irq_exit_rcu+0x67/0x90
+[56252.032933]  common_interrupt+0x85/0xa0
+[56252.039498]  </IRQ>
+[56252.044246]  <TASK>
+[56252.048935]  asm_common_interrupt+0x26/0x40
+[56252.055727] RIP: 0010:cpuidle_enter_state+0xb8/0x420
+[56252.063305] Code: dc 01 00 00 e8 f9 79 3b ff e8 64 f7 ff ff 49 89 c5 0f 1f 44 00 00 31 ff e8 a5 32 3a ff 45 84 ff 0f 85 ae
+ 01 00 00 fb 45 85 f6 <0f> 88 88 01 00 00 48 8b 04 24 49 63 ce 4c 89 ea 48 6b f1 68 48 29
+[56252.088911] RSP: 0018:ffff93120c97fe98 EFLAGS: 00000202
+[56252.096912] RAX: ffff9149afd80000 RBX: ffff9141d3a72800 RCX: 0000000000000000
+[56252.106844] RDX: 00003329176c6b98 RSI: ffffffe36db3fdc7 RDI: 0000000000000000
+[56252.116733] RBP: 0000000000000002 R08: 0000000000000002 R09: 000000000000004e
+[56252.126652] R10: ffff9149afdb30c4 R11: 071c71c71c71c71c R12: ffffffff985ff860
+[56252.136637] R13: 00003329176c6b98 R14: 0000000000000002 R15: 0000000000000000
+[56252.146667]  ? cpuidle_enter_state+0xab/0x420
+[56252.153909]  cpuidle_enter+0x2d/0x40
+[56252.160360]  do_idle+0x176/0x1c0
+[56252.166456]  cpu_startup_entry+0x29/0x30
+[56252.173248]  start_secondary+0xf7/0x100
+[56252.179941]  common_startup_64+0x13e/0x141
+[56252.186886]  </TASK>
 
-On 6/20/2025 3:51 AM, Simon Horman wrote:
-> Caution: This message originated from an External Source. Use proper caution when opening attachments, clicking links, or responding.
-> 
-> 
-> On Thu, Jun 19, 2025 at 03:28:06PM -0700, Brett Creeley wrote:
->>
->>
->> On 6/19/2025 2:45 AM, Thomas Fourier wrote:
->>> Caution: This message originated from an External Source. Use proper caution when opening attachments, clicking links, or responding.
->>>
->>>
->>> Change error values of `ionic_tx_map_single()` and `ionic_tx_map_frag()`
->>> from 0 to `DMA_MAPPING_ERROR` to prevent collision with 0 as a valid
->>> address.
->>>
->>> This also fixes the use of `dma_mapping_error()` to test against 0 in
->>> `ionic_xdp_post_frame()`
->>>
->>> Fixes: 0f3154e6bcb3 ("ionic: Add Tx and Rx handling")
->>
->> I'm not sure the Fixes commit above should be in the list. Functionally it's
->> correct, except there being multiple calls to dma_mapping_error() on the
->> same dma_addr.
->>
->> Other than the minor nit above the commit looks good. Thanks again for
->> fixing this.
->>
->> Reviewed-by: Brett Creeley <brett.creeley@amd.com>
-> 
-> Hi Brett and Thomas,
-> 
-> Maybe I misunderstand things, if so I apologise.
-> 
-> If this patch fixes a bug - e.g. the may observe a system crash -
-> then it should be targeted at net and have a Fixes tag. Where the
-> Fixes tag generally cites the first commit in which the user may
-> experience the bug.
-> 
-> If, on the other hand, this does not fix a bug then the patch
-> should be targeted at net-next and should not have a Fixes tag.
-> 
-> In that case, commits may be cited using following form in
-> the commit message (before the Signed-off-by and other tags).
-> And, unlike tags, it may be line wrapped.
-> 
-> commit 0f3154e6bcb3 ("ionic: Add Tx and Rx handling")
-> 
-> E.g.: This was introduce by commit 0f3154e6bcb3 ("ionic: Add Tx and Rx
-> handling").
-> 
-> I hope this helps. If not, sorry for the noise.
+From the crash dump, we found that the cpu_map_flush_list inside
+redirect info is partially corrupted: its list_head->next points to
+itself, but list_head->prev points to a valid list of unflushed bq
+entries.
 
-Simon,
+This turned out to be a result of missed XDP flush on redirect lists. By
+digging in the actual source code, we found that
+commit 7f0a168b0441 ("bnxt_en: Add completion ring pointer in TX and RX
+ring structures") incorrectly overwrites the event mask for XDP_REDIRECT
+in bnxt_rx_xdp. We can stably reproduce this crash by returning XDP_TX
+and XDP_REDIRECT randomly for incoming packets in a naive XDP program.
+Properly propagate the XDP_REDIRECT events back fixes the crash.
 
-I suspect you are right and this probably shouldn't be categorized as a 
-bug fix since the change only addresses a corner case that would happen 
-if the DMA mapping API(s) return 0 as a valid adddress, which wouldn't 
-cause a crash with/without this patch.
+Fixes: 7f0a168b0441 ("bnxt_en: Add completion ring pointer in TX and RX ring structures")
+Tested-by: Andrew Rzeznik <arzeznik@cloudflare.com>
+Signed-off-by: Yan Zhai <yan@cloudflare.com>
+---
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Thanks for the feedback.
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+index 2cb3185c442c..ae89a981e052 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -2989,6 +2989,7 @@ static int __bnxt_poll_work(struct bnxt *bp, struct bnxt_cp_ring_info *cpr,
+ {
+ 	struct bnxt_napi *bnapi = cpr->bnapi;
+ 	u32 raw_cons = cpr->cp_raw_cons;
++	bool flush_xdp = false;
+ 	u32 cons;
+ 	int rx_pkts = 0;
+ 	u8 event = 0;
+@@ -3042,6 +3043,8 @@ static int __bnxt_poll_work(struct bnxt *bp, struct bnxt_cp_ring_info *cpr,
+ 			else
+ 				rc = bnxt_force_rx_discard(bp, cpr, &raw_cons,
+ 							   &event);
++			if (event & BNXT_REDIRECT_EVENT)
++				flush_xdp = true;
+ 			if (likely(rc >= 0))
+ 				rx_pkts += rc;
+ 			/* Increment rx_pkts when rc is -ENOMEM to count towards
+@@ -3066,7 +3069,7 @@ static int __bnxt_poll_work(struct bnxt *bp, struct bnxt_cp_ring_info *cpr,
+ 		}
+ 	}
+ 
+-	if (event & BNXT_REDIRECT_EVENT) {
++	if (flush_xdp) {
+ 		xdp_do_flush();
+ 		event &= ~BNXT_REDIRECT_EVENT;
+ 	}
+-- 
+2.39.5
 
-Brett
-
-> 
-> ...
 
 
