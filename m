@@ -1,144 +1,190 @@
-Return-Path: <bpf+bounces-61259-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61260-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48FEEAE3453
-	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 06:32:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 617BFAE34C2
+	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 07:32:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 209C7188FE77
-	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 04:32:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77FD41891723
+	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 05:32:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB2F11C68A6;
-	Mon, 23 Jun 2025 04:32:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C65161C5F2C;
+	Mon, 23 Jun 2025 05:32:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y5NONZjc"
 X-Original-To: bpf@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76CFCA95C;
-	Mon, 23 Jun 2025 04:32:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBB7BA94A;
+	Mon, 23 Jun 2025 05:32:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750653141; cv=none; b=S/qi2eBGexumtRn2L9CSL8+eM61pzt8qhXsiCBoKFPQnB2Az8Aj+K961GJSJV/ISPxKTmdwN05SNMf2+t8tH9O4h643okB9/U+cX4fsexHmFByLcGEvk/V+76t5bjBj+/eolHFG3qIRCAHT7jacwbKVlFnEDq3Y7/3sLxdUwAGw=
+	t=1750656744; cv=none; b=QykjeoJeAsV70g77f/lFZ67rww/mXhyAge5HLdXf5427p0dk9FBOl/LUUqObbRuZ9g81a41b+0HSKJaA3QUia1XfdNXtvPBt0rlkkZsAt+Hk1CBfC8qZTXpyhJmI4hOb4UeGMsGDf7w4183f35hR2nOrQwNcgjuU0PI3MCt/Yyk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750653141; c=relaxed/simple;
-	bh=ggo/SI/AISA8J6s0yt0k1qoyYkjyPngK3bM8bZl5ikQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IKd8avWAJQGBPq2thfFwk/jUdid8fNIV3T7yjmu/vWAbO2cwU+mKnXRNEtW/LHVNfr3LaRsEx/OeezN58Z0yL7yOD6fN/vozC/a/JgfZFLL8SOK7eEYQI1sVZSeChbdwxyenBlIRnSIARpbDe9MIZr9Pq1GSpptcXOvCVcY6B5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-681ff7000002311f-e8-6858d8cc5518
-Date: Mon, 23 Jun 2025 13:32:07 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: willy@infradead.org, netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	kernel_team@skhynix.com, kuba@kernel.org, almasrymina@google.com,
-	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
-	akpm@linux-foundation.org, davem@davemloft.net,
-	john.fastabend@gmail.com, andrew+netdev@lunn.ch,
-	asml.silence@gmail.com, toke@redhat.com, tariqt@nvidia.com,
-	edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com,
-	leon@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	david@redhat.com, lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
-	surenb@google.com, mhocko@suse.com, horms@kernel.org,
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-	vishal.moola@gmail.com, hannes@cmpxchg.org, ziy@nvidia.com,
-	jackmanb@google.com
-Subject: Re: [PATCH net-next v6 6/9] netmem: remove __netmem_get_pp()
-Message-ID: <20250623043207.GA31962@system.software.com>
-References: <20250620041224.46646-1-byungchul@sk.com>
- <20250620041224.46646-7-byungchul@sk.com>
+	s=arc-20240116; t=1750656744; c=relaxed/simple;
+	bh=E9z4e7s2uQVO9h0Ov63rqlGh/C2/1kMwsbmh51gr50k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fUD3bycY9f4EOMnv1UoUlopsWF7H7HlI7GfHq2awaj4nbDl5XV4zuwv/D2HqXAc63WOwSEC8Cjkdbg6IVFnIfdjHWpuh7IFvA4GgawqvOTreHQTD958OXIUWSJXMWJrOLO/Y485Ey9agCAMRw6KFzNVfASCcnEaZvllA1eyv7jU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y5NONZjc; arc=none smtp.client-ip=209.85.166.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-3da73df6c4eso36669735ab.0;
+        Sun, 22 Jun 2025 22:32:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1750656742; x=1751261542; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=G7LciVUQWo6KzDlBpZAsr1crD+PFweTX3WBGTlA1qmk=;
+        b=Y5NONZjcgaq8NJC3henWrd6Etg/8QTcO62PmDcM0cD4D8R7B25ovCDLNy5YtkFXwro
+         tsmPUt8bNY/OX5QTa95fQDQJubjzLWedZMy0xO7hkQSylsVDqFM/y2J2Lxzxoq3MQnT5
+         wPzQurBs5DxkjdyDAeCpDxOybgHDbVFy6wEZvOQGnZSvMCUtJ7m3NmFmzh/BiuIw4nLN
+         IJjA26iKC54+KmxrnOwPmUve87z2tUpC80Mhve5MruoSFWWxEJRZR7B+U+wQVOI8OORH
+         a/O0fH4Eq1iSK3o0dIS4cYkXLkwgO3CbGiKeFy/juV8CpDfN97YSl2nmkAVUq0wiV7Ew
+         U5qQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750656742; x=1751261542;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=G7LciVUQWo6KzDlBpZAsr1crD+PFweTX3WBGTlA1qmk=;
+        b=Jv546kUdfE65J9nFlSHb6NmH9iyI+GMVq3256dRIT7RrH6yzqT0W5J2yK8xzpibO0R
+         30LrCdz8q6qj6onJoUwbDzoQOus89wfLBm7EKJdyNT5ivQAXhTMJO9fq5T16pfnsWk0d
+         zTIgw5aWkvz3QTK9ZbFPSUVQTaVVP9ozyv/7Pmx0JI2yuNV4aH4CLzV2WEtDKSE/z1Hp
+         01U9cmuWar8ZTpfFOIPbNrlGzDjJazHJYLks+fRL9dhy9fIKzjmWchh00YIXbjV4xuRx
+         8WkjO2UFQkSqr1wdVZryv0u86XwPsEvQOSh6fInhrLfaWh3XtcVY03ZUaKp4fOECaRb+
+         iVCg==
+X-Forwarded-Encrypted: i=1; AJvYcCW9tHPOvr5wyzud6UOCbTOdelLi3tMorvGTCw1j2Hd0pxqIZ1ucUThGCBRng+9oxmunBT8=@vger.kernel.org, AJvYcCXbPpn5pvRmr7+FB1jfsr1cH1oF9lLZ4SyQ8kagImr8mCJSeaOnSu3foQRHDZ1nIsvpZhxZVKyx@vger.kernel.org
+X-Gm-Message-State: AOJu0YxXJHMjeM4a98PZxt76+4UbR8yV+1Zf9h7KtREdSOpoHT4peiNw
+	f3FGSjaPdjvO8zl9Nu7RH+oFbnbJ2zYdbdFsaorx8Ccc2ewmF6s37X3oc3php7jw8KT8D7WZ8aK
+	Y3uWrQ702wFh9M/noNONESqbS+eM/+Z8=
+X-Gm-Gg: ASbGncu/5XRxfk9Iy7Q5gryfusvXDt/+mSuh2sMDKpnjEs8eM9m4wpTjBOE629HjwKw
+	IUXeCMcpObS7t0aBYkCSh1dVq12A4a3BIBCREF0p0tGTXwpklPX3dTwTQJFnTlAw+GWcITj0ELm
+	gMQtXLdRQG97WfjGW7iN/ZxpJElBfkJ+ABmSEHpMSE3uk=
+X-Google-Smtp-Source: AGHT+IFzy2XnGAL5HLGzTOwELofaRCvqkhnsEv9L2eYBrQSm9LJBBgzmQYRj3xu180tj0AKVIpbzlGxTEvnW8loGlxs=
+X-Received: by 2002:a05:6e02:1fc4:b0:3dd:f743:d182 with SMTP id
+ e9e14a558f8ab-3de38c2204emr133405675ab.5.1750656741820; Sun, 22 Jun 2025
+ 22:32:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250620041224.46646-7-byungchul@sk.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUhTYRTHe3af3V2Xi+syfVIiWklgmRVlBwqNQrpfKiEISyMveWkjXbql
-	qRRprizxDYuyuWoRmWmwmqmzF8211KhIDWOVOtE0MdPUFDezckrktx//8+f8zofDUPIHYj9G
-	pT4haNR8nIKWYul3z1tBb+yRyvV3ckLAYLpPQ/lkCtztsojBUFaF4KfzswTGbI003L41QYHh
-	nQ7DuMlFQW9DtwTKzbvBUdKH4WlWNQXd+U005OqmKHjmHJLAWUupCJqr8sRw2XWHgur0Lgm8
-	f2ygofP+HzH0WXMxvNLfw+DI2w4NRh+YeD2IwGaqFsFEznUaLrUaaejRORC0vujGUJyRh8BU
-	axfD1OTMjuKXnZLtq7gXg8MU9+jeRxFXo++QcEZzEldRGshl21spzlx2kebMo4USrv3DU5pr
-	KprCXI1lTMTlZg7R3EjvJ8wN17bRnOlRG+beGG2SCK+D0m2xQpwqWdAEh8ZIlaar9TghY1HK
-	w3wDTkd1C7ORB0PYTaQz6wb1j0d0zdjNmA0gjZ2FsznNriZ2u3OGGcabDSYfCg9kIylDsZk0
-	KWxzzvYXs+HkbWkO7WYZC8T54xtys5zlyYWBc2gu9yKvrn2Z7VPsWlJT2U67d1KsP7n7m5mL
-	l5PMyuJZrQcbQvqHmkRuXsKuJM+rGkVzZzYzxGRLneOlpL7UjguQl36eQT/PoP9v0M8zGBEu
-	Q3KVOjmeV8VtWqdMVatS1h05Hm9GM39UcvpXlAWNNu+zIpZBCk9ZjGekUi7mk7Wp8VZEGErh
-	LbPu2K+Uy2L51DRBc/ywJilO0FqRP4MVvrKNEydj5exR/oRwTBASBM2/qYjx8EtHEaYVLYkD
-	tvbENP9+JmjLnj/L66ZFPo/PhLWs8ap1FQU9Cay/MnI+IKvOvtl1ROe6GX3qYGXeHvOA7zJ2
-	esjHA0kd4R22Tw0qlSO9qnLL1lZKG7SguIa+MZ1Wbv66K+JQeFHY3jWW8RZeEebZE1rQFfM8
-	qi16yc4Flw7HjFeUqRUKrFXyGwIpjZb/C5Lllu9DAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTcRjG+e/8d3Zczk5r1Uk/RDMLokzpwptFSCEdsiII1Ppgjjy15bUt
-	TaPIy0IztZpRNlctRF0mrZbXsqx5mWKRKNqypWkqZualdDjt5ozIbz+e9+H3fHkpQpzDd6cU
-	0ac4ZbQsUkoKsXD/ttT1r6whcp9P6Z6gM5aQcH8qAYo+VvJBV1yOYMLxXgDf6ywk5N+1E6B7
-	o8YwaZwmoL+hVwD3Tfugu3AAQ3VaBQG9lxtJyFLPEPDMMSKAlEoDD2pvNfGhpTybD9emCwio
-	SPoogLYnOhK6Sn7zYcCchaFJew9Dd7Y/NOiXgr15GEGdsYIH9sxbJOS06kn4pO5G0FrbiyEv
-	ORuB8bmVDzNTs468+i6BvxdbOzxKsKX33vHYKu0HAas3xbGPDWvZDGsrwZqKL5Ks6ZtGwNo6
-	qkm2MXcGs1WV33lsVuoIyY73d2J29Hk7yeYPjvFYY2k7PiA+LNwezkUq4jnlhh1hQrnxxksc
-	m+yW8OiyDiehmgUZyIVi6E3MuLoFOxnTXoylS0M4maTXMFarY5YpSkJvYDo0hzKQkCLoVJLR
-	tDvm+ovpAOa1IZN0sogGxjH2BTlZTMuY9KEL6G++iGm62TfXJ+h1TFWZjXQ6CdqDKfpF/Y1X
-	MKlleXOzLvQWZnCkkefkJbQn86LcwruC3LTzTNp5Ju1/k3aeSY9wMZIoouOjZIrIzd6qCHli
-	tCLB+2hMlAnNvkrhuR9XK9FE224zoikkdRUZAkPkYr4sXpUYZUYMRUglIvPOILlYFC5LPMMp
-	Y44o4yI5lRl5UFi6TLQnmAsT08dlp7gIjovllP+uPMrFPQnhga81Kw2HA0sXzsSnTFX7rc7v
-	WO7bs7Xn4O2GtJOaveWWoFHHF9uq83GXJk+/dLtTd6Dq7fqzybb3PvWZSe82YunPPl3nCdex
-	66e9a+iBuLPBi0KajfbPDyWhBSMF7lf9AnI9UybVuzpj/AnLmWOTgz0FoVfk+gcSQebTIbtt
-	eWGYFKvkMt+1hFIl+wM4qcRvJgMAAA==
-X-CFilter-Loop: Reflected
+References: <20250619093641.70700-1-kerneljasonxing@gmail.com>
+ <aFVr60tw3QJopcOo@mini-arch> <CAL+tcoBLAMWXjBz9BYb84MmJxGztHFOLbqZL-YX0s7ykBjNT7g@mail.gmail.com>
+ <aFWFO2SH0QUFArct@mini-arch>
+In-Reply-To: <aFWFO2SH0QUFArct@mini-arch>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Mon, 23 Jun 2025 13:31:45 +0800
+X-Gm-Features: AX0GCFuZpFXovIUu_6Eyhadg_XHtrhRm97hDqysS8Uh_fDzZ7rFbKiVlCgDd9mI
+Message-ID: <CAL+tcoDHe=bMESuJe-zVXyU6r7QHmZ3w6CK0g=N6Dqvf8ONh3g@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: xsk: update tx queue consumer immdiately
+ after transmission
+To: Stanislav Fomichev <stfomichev@gmail.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com, 
+	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com, sdf@fomichev.me, 
+	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
+	john.fastabend@gmail.com, joe@dama.to, willemdebruijn.kernel@gmail.com, 
+	bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	Jason Xing <kernelxing@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 20, 2025 at 01:12:21PM +0900, Byungchul Park wrote:
-> There are no users of __netmem_get_pp().  Remove it.
-> 
-> Signed-off-by: Byungchul Park <byungchul@sk.com>
-> Reviewed-by: Mina Almasry <almasrymina@google.com>
-> Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
-> Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
-> Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-> ---
->  include/net/netmem.h | 16 ----------------
->  1 file changed, 16 deletions(-)
-> 
-> diff --git a/include/net/netmem.h b/include/net/netmem.h
-> index e27ed0b9c82e..d0a84557983d 100644
-> --- a/include/net/netmem.h
-> +++ b/include/net/netmem.h
-> @@ -245,22 +245,6 @@ static inline struct net_iov *__netmem_clear_lsb(netmem_ref netmem)
->  	return (struct net_iov *)((__force unsigned long)netmem & ~NET_IOV);
->  }
->  
-> -/**
-> - * __netmem_get_pp - unsafely get pointer to the &page_pool backing @netmem
-> - * @netmem: netmem reference to get the pointer from
-> - *
-> - * Unsafe version of netmem_get_pp(). When @netmem is always page-backed,
-> - * e.g. when it's a header buffer, performs faster and generates smaller
-> - * object code (avoids clearing the LSB). When @netmem points to IOV,
-> - * provokes invalid memory access.
-> - *
-> - * Return: pointer to the &page_pool (garbage if @netmem is not page-backed).
-> - */
-> -static inline struct page_pool *__netmem_get_pp(netmem_ref netmem)
-> -{
-> -	return __netmem_to_page(netmem)->pp;
-> -}
-> -
+On Fri, Jun 20, 2025 at 11:58=E2=80=AFPM Stanislav Fomichev
+<stfomichev@gmail.com> wrote:
+>
+> On 06/20, Jason Xing wrote:
+> > On Fri, Jun 20, 2025 at 10:10=E2=80=AFPM Stanislav Fomichev
+> > <stfomichev@gmail.com> wrote:
+> > >
+> > > On 06/19, Jason Xing wrote:
+> > > > From: Jason Xing <kernelxing@tencent.com>
+> > > >
+> > > > For afxdp, the return value of sendto() syscall doesn't reflect how=
+ many
+> > > > descs handled in the kernel. One of use cases is that when user-spa=
+ce
+> > > > application tries to know the number of transmitted skbs and then d=
+ecides
+> > > > if it continues to send, say, is it stopped due to max tx budget?
+> > > >
+> > > > The following formular can be used after sending to learn how many
+> > > > skbs/descs the kernel takes care of:
+> > > >
+> > > >   tx_queue.consumers_before - tx_queue.consumers_after
+> > > >
+> > > > Prior to the current patch, the consumer of tx queue is not immdiat=
+ely
+> > > > updated at the end of each sendto syscall, which leads the consumer
+> > > > value out-of-dated from the perspective of user space. So this patc=
+h
+> > > > requires store operation to pass the cached value to the shared val=
+ue
+> > > > to handle the problem.
+> > > >
+> > > > Signed-off-by: Jason Xing <kernelxing@tencent.com>
+> > > > ---
+> > > >  net/xdp/xsk.c | 2 ++
+> > > >  1 file changed, 2 insertions(+)
+> > > >
+> > > > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> > > > index 7c47f665e9d1..3288ab2d67b4 100644
+> > > > --- a/net/xdp/xsk.c
+> > > > +++ b/net/xdp/xsk.c
+> > > > @@ -856,6 +856,8 @@ static int __xsk_generic_xmit(struct sock *sk)
+> > > >       }
+> > > >
+> > > >  out:
+> > > > +     __xskq_cons_release(xs->tx);
+> > > > +
+> > > >       if (sent_frame)
+> > > >               if (xsk_tx_writeable(xs))
+> > > >                       sk->sk_write_space(sk);
+> > >
+> > > So for the "good" case we are going to write the cons twice? From
+> > > xskq_cons_peek_desc and from here? Maybe make this __xskq_cons_releas=
+e
+> > > conditional ('if (err)')?
+> >
+> > One unlikely exception:
+> > xskq_cons_peek_desc()->xskq_cons_read_desc()->xskq_cons_is_valid_desc()=
+->return
+> > false;
+> > ?
+> >
+> > There are still two possible 'return false' in xskq_cons_peek_desc()
+> > while so far I didn't spot a single one happening.
+> >
+> > Admittedly, your suggestion covers the majority of normal good ones. I
+> > can adjust it as you said.
+> >
+> > >
+> > > I also wonder whether we should add a test for that? Should be easy t=
+o
+> > > verify by sending more than 32 packets. Is there a place in
+> > > tools/testing/selftests/bpf/xskxceiver.c to add that?
+> >
+> > Well, sorry, if it's not required, please don't force me to do so :S
+> > The patch is only one simple update of the consumer that is shared
+> > between user-space and kernel.
+>
+> My suspicion is that the same issue exists for the zc case. So would
+> be nice to test it and fix it as well :-p
 
-In the meantime, libeth started to use __netmem_get_pp() again :(
+After digging into the logic around xsk_tx_peek_desc(), I can say that
+at the end of every caller of xsk_tx_peek_desc(), there is always a
+xsk_tx_release() function that used to update the local consumer to
+the global state of consumer. So for the zero copy mode, no need to
+change at all :)
 
-Discard this patch please.  Do I have to resend this series with this
-excluded?
+I will soon send the v2 with the 'if (error)' statement in the
+__xsk_generic_xmit().
 
-	Byungchul
-
->  static inline struct page_pool *netmem_get_pp(netmem_ref netmem)
->  {
->  	return __netmem_clear_lsb(netmem)->pp;
-> -- 
-> 2.17.1
+Thanks,
+Jason
 
