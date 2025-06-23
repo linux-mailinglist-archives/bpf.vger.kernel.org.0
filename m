@@ -1,244 +1,299 @@
-Return-Path: <bpf+bounces-61314-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61315-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C782AE4E6B
-	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 22:59:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAD70AE50F4
+	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 23:29:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B16FE178C9E
-	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 20:59:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D34C1440F51
+	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 21:29:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2109218ABA;
-	Mon, 23 Jun 2025 20:59:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44B17221DAE;
+	Mon, 23 Jun 2025 21:29:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QDORCNeS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JpeG+Ay9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFC811E1A05;
-	Mon, 23 Jun 2025 20:59:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FD9621FF50
+	for <bpf@vger.kernel.org>; Mon, 23 Jun 2025 21:29:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750712373; cv=none; b=gJ8oWfRBIAyvx3gnI/39fFR0dUDLaxny/ALTxvqjA7pWTysoipVUftW5gRev8DgvBnk6cDCRVHAKpAJMG10ujSCrnVedoC52ljJ7srZL1+WNgdPpC/UZPuypWEXp+3IivmQbhwCSbxs7WR6JI/yz7W5h/sTN6a1k3p37bCEVGmM=
+	t=1750714173; cv=none; b=bgG45jeuSM2l6tKXroOBo0tA8MYv8lyp4oG5AJnwTVYAgTuZf24R89UbJBPH32LRgHHLBdxJU1Ti8Og4KhEwzcB0ybcl5zN+kIPq6em1HlDTItLe03WgK4uZ6r+fyrCrFo2E2mDRN0p15Ss0HqaRmvFlvt0p3oEJNSs2XVEsosM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750712373; c=relaxed/simple;
-	bh=WZruAnztn6MF7xWYnIIM0veISFiEsNO/iHg0h++rAR4=;
+	s=arc-20240116; t=1750714173; c=relaxed/simple;
+	bh=PKjccEtQTQJ+WUlWmAJTa5qaZ4bI75AGsY8jDfb8Hts=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rBN7MiPs7rW4z0tYqinBuzeZDtbBxjaTSXmqqQEHrqjiTjsXlB4/bJQWbhLmQ/QJhLZ/KxqeE7qYz4yPgaGs8V1d+NWfe5NvIaYsVIEJauUKblZL0iZgUkEOOF/a8hcCu/BFgHpHY/yxLg8F9pB1VVfwa2ERcJtHU9JMu0OiMsY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QDORCNeS; arc=none smtp.client-ip=209.85.216.50
+	 To:Cc:Content-Type; b=HFwiqvo13FF6EkbO1CPJktxA2alcIeHn3tpc9RHrLVPy0XjAfk1Kjx/jmXvFo93JHXorfT7OeDypuIq0eNEhroY+3vOc+9SrY6DWwkINDvRxdYnSUnhZ7Vz3ZeppBT/vF/b3Pi/9Qe+29XuBHuuKg8nK0M1PfvwFiihHTBxg6aM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JpeG+Ay9; arc=none smtp.client-ip=209.85.216.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-311bd8ce7e4so3876565a91.3;
-        Mon, 23 Jun 2025 13:59:31 -0700 (PDT)
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-3134c67a173so5088369a91.1
+        for <bpf@vger.kernel.org>; Mon, 23 Jun 2025 14:29:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750712371; x=1751317171; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1750714171; x=1751318971; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IIYisaKrEPvbF6CacQ7ic1VL3m70GVRp4DrkFHHRCLY=;
-        b=QDORCNeSCVl1JtQtBtOxKNm9nAEJGOdmxzHbc1sttgNVNqGFw4IHvJuE04iDyxzfnO
-         4nPW6ZlejzUwXmJfs7yVyv1KR0gpbI2v9rU7tTo5edI/2dPMMr217ypvXbC8w7iZOlpD
-         P36naLaIxCv8H60REsDim6Og4eRfq4glC32J6qnz0A+K0d0sVg20Lme9UwLMkWizX4Xm
-         VLMa3AQWtMdXsKYgvs8UpTUQ57QMPckQRIsOIquItqocIC3N7Jqyv2D3Tx7/N6Vee8vc
-         cEVyhnWi+hVB2xVQdSKSIHumH3Km5Ib92fKXAusijpoO5OcmB3rweJNaD33nW3/LIvcy
-         UcEQ==
+        bh=CL3LhEttgGEpUZlN6r2JFG60zk0+w1uqQU/YCzcnbzM=;
+        b=JpeG+Ay9gg6hV9bCAR3p2aN6g7UN+jluqZL0oh0idlthCEB9O7f6bs1NCvED2onxef
+         0CDYhcDX70JXj+6fNuphrOGKO4hemSBN7SALL8BFH/qweTRdzb1UtejobCBVgWEsLDKI
+         3zO9HIbHMilxQmzJJw3lz/5wYSwhcDEROWMcZR/yg2s7/gjeaXT5TwVL2wG73Tk//oU1
+         AqPakFJNEJiMaXCjaWxY/rhZe15bDlN81ys8hQJQ3PXJrn4ek16nR1njvH877zV6yebU
+         YfwMi+oJBUDO2xGgG7cGgKI0XVils9DrQ/jaGdcXJkiKFYufblU+11Y8ixz+ivOUSYaT
+         8sfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750712371; x=1751317171;
+        d=1e100.net; s=20230601; t=1750714171; x=1751318971;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IIYisaKrEPvbF6CacQ7ic1VL3m70GVRp4DrkFHHRCLY=;
-        b=kSfWchIMl0cJaAksWwXD269Y40cuqGWk3Jwy+8cKphyk1JyEwcIs4n/3Bt0S7X1r+6
-         iovTZQpVLCYui+9fecSQipKfblLVQjjjogFmggzzgKVY6WXNfGahfU1F2rllaD1eKGTj
-         w5lX4U2rM/o3G7DCUbMcuJxHsOYffxe++inFECj6tHv2R7YqFP6T4m3oKktl0lK14L2d
-         LLhbtLR/uhih5GDtHbKjQqtUQOsQlDIyYVQurXhakb9wuMedZ+eLf0177GIq6cj/YNH2
-         us3aXTgGOMzt3KwJrMFmfKgPLlkp8LXtQerJhJ08Q8tqc70n/u0ogYjYXBl9wRXLJVl2
-         d2wg==
-X-Forwarded-Encrypted: i=1; AJvYcCWGiTHcm+yD3c1jMvhWn1ceMqN/KSpqv/0UZmJHdX4/J79CX11xwZGbiY9O+6EuaMmBK+Y=@vger.kernel.org, AJvYcCWtqapkDigzczgrhF+E0nFyJfF7oYQzFn4NaFdLQFzUQsiK/NI3paD9D49P61tkvLPsURw0FsJ8Rv/tYRuJ@vger.kernel.org, AJvYcCXkTeeTLlvyvjulSe8E8d/yvpV1HXVBBVZy308Z+M5zOBTzCLGa8PoMG36MMEB2ej/58NLXLyFrwfiGOaYdGT1qEyDZ@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzlp+zrkOP9RSrENEeKuyjkMMTS5/wJ9CxmtupR3JRQ1kw2N9X8
-	4x4wEE7xGGBWbPxLNE76zOWNA/8i8yPEqLSvv5P9DezNU0ut6yK3N5tILZ2/XZw2xBVKgnrkrGN
-	8Ra0G16gVit0kMwx9qehrwd79zdWh+wsVl7EXkb8=
-X-Gm-Gg: ASbGncvuPwORb1zBVuxHrexjYeRJ0NdEf4daMB0w/XO10Ll2bVxX4gdI9gXm64YYr9R
-	udkU2EAOCM2rz1CU7atyTQaDuwnewgXxVlCZSl2WWgZPsHzJMaKG0kPK6IEtH0KAslmFcTwK0I0
-	EW21033wZ8gctnGcdf/g76z4TGWy+epRyQuX3GlBBm8xwtNQ2Umuc+nPRtNUw=
-X-Google-Smtp-Source: AGHT+IEJ1r4+4S62s8+RfRSEKVsBZin0OkzARoxCIjvu0jINETaQLPIEbbajvP2ZXPmd5Aq+ABd5ORvmmb5Gx2HKCUA=
-X-Received: by 2002:a17:90b:3802:b0:312:e8ed:758 with SMTP id
- 98e67ed59e1d1-3159d64cb4cmr22831896a91.13.1750712370575; Mon, 23 Jun 2025
- 13:59:30 -0700 (PDT)
+        bh=CL3LhEttgGEpUZlN6r2JFG60zk0+w1uqQU/YCzcnbzM=;
+        b=cwh6J6WmlCDGwZk9cie0MTrsoMBJhtKnxUpnjEoI5kDWIu3o1JkfuyQzZh8Yi7QPgp
+         sywTlfQgvLIIObFxKoGZcWhw/N55+dBR3rfhwkibS3MpmlfQ1B66Ng4QpWYB+TOXK0yp
+         QLKUfbAaUFUOsJ7sLouJ25TdHl4lMZ7gehptKNx68SupZoQbi5cfF+jmvC9DrC3lRpgS
+         8WdAyRANr4vuAOO1opRzUI/6bJPAlp6wIcTlQG+M0rD/+rnTRX26n7kd00BHaUkrTYlr
+         iamj/BjaeKyH3gAzoMndKnKbXwogw1lYXBrG1DocyQ436j/waG4U2LIv5LrRPOrS/1ML
+         1w4A==
+X-Gm-Message-State: AOJu0Yz/1TT5KhSbP3dpFbgnlA83zY2fpcXvX9nA8M4tNC3+R+kFemsS
+	Rm8Md2E8jUK6y99VB6Yn937DXgbMQO584gLJjXpBl3KRNXkqhQqUEcn4gHmae3di88ANdjyUlLe
+	FlkRDrmN6wHCmNcNLqAunq0ERrd2/KoM=
+X-Gm-Gg: ASbGncvcjajbLez7IPl2pvNrzlAu/bvKCl/pEBr35YYBUONDGOdEQZbfheRpXdw1JsS
+	TKBDTDnD9+PUc7zEzkq6VkULLZIt1gSf/28TtWwfyr82lBrkauQQ6ZKjuuBqIn25vq5hg1ob9nj
+	fwWr7mAaibeig6SCduDmwOkDqtICbcD/kkwFRtZh204tiqIA1+qCz8X19QHxw=
+X-Google-Smtp-Source: AGHT+IGOE6sXx3SEiBejoCfkxxdGWnHCvTilY1cwVk825NFpojFWSDh6txdHyRAl7ahlgec0gbVfzVb/6g6NojlfABE=
+X-Received: by 2002:a17:90a:c883:b0:311:ab20:159a with SMTP id
+ 98e67ed59e1d1-3159d8d9098mr21475817a91.29.1750714171547; Mon, 23 Jun 2025
+ 14:29:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250623134342.227347-1-chen.dylane@linux.dev> <CAADnVQ+aZw4-3Ab9nLWrZUg78sc-SXuEGYnPrdOChw8m9sRLvw@mail.gmail.com>
-In-Reply-To: <CAADnVQ+aZw4-3Ab9nLWrZUg78sc-SXuEGYnPrdOChw8m9sRLvw@mail.gmail.com>
+References: <cover.1750681829.git.vmalik@redhat.com> <1b75082af9f349a0c20aa49a47d003fc1b81e5f5.1750681829.git.vmalik@redhat.com>
+In-Reply-To: <1b75082af9f349a0c20aa49a47d003fc1b81e5f5.1750681829.git.vmalik@redhat.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 23 Jun 2025 13:59:18 -0700
-X-Gm-Features: AX0GCFvcaaDX9RNsqxJ0KrpocEQKEc9AnYShotDaNDti4oIGI457khj9jcSwtPc
-Message-ID: <CAEf4BzZVw4aSpdTH+VKkG_q6J-sQwSFSCyU+-c5DcA5euP49ng@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 1/3] bpf: Show precise link_type for
- {uprobe,kprobe}_multi fdinfo
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Tao Chen <chen.dylane@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Matt Bobrowski <mattbobrowski@google.com>, Song Liu <song@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, 
+Date: Mon, 23 Jun 2025 14:29:18 -0700
+X-Gm-Features: AX0GCFt06dbAQx07j5zArrZszcuwBNRWnbEKjwemDIqOx2nzC5E_E5MCxn5RHtc
+Message-ID: <CAEf4BzYxZkwBQJncHRw9KQCrPcCs9L3h-6szgKLiT=QPErPzqw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v7 2/4] bpf: Add kfuncs for read-only string operations
+To: Viktor Malik <vmalik@redhat.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
 	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 23, 2025 at 10:56=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Mon, Jun 23, 2025 at 6:48=E2=80=AFAM Viktor Malik <vmalik@redhat.com> wr=
+ote:
 >
-> On Mon, Jun 23, 2025 at 6:44=E2=80=AFAM Tao Chen <chen.dylane@linux.dev> =
-wrote:
-> >
-> > Alexei suggested, 'link_type' can be more precise and differentiate
-> > for human in fdinfo. In fact BPF_LINK_TYPE_KPROBE_MULTI includes
-> > kretprobe_multi type, the same as BPF_LINK_TYPE_UPROBE_MULTI, so we
-> > can show it more concretely.
-> >
-> > link_type:      kprobe_multi
-> > link_id:        1
-> > prog_tag:       d2b307e915f0dd37
-> > ...
-> > link_type:      kretprobe_multi
-> > link_id:        2
-> > prog_tag:       ab9ea0545870781d
-> > ...
-> > link_type:      uprobe_multi
-> > link_id:        9
-> > prog_tag:       e729f789e34a8eca
-> > ...
-> > link_type:      uretprobe_multi
-> > link_id:        10
-> > prog_tag:       7db356c03e61a4d4
-> >
-> > Signed-off-by: Tao Chen <chen.dylane@linux.dev>
-> > ---
-> >  include/linux/trace_events.h | 10 ++++++++++
-> >  kernel/bpf/syscall.c         |  9 ++++++++-
-> >  kernel/trace/bpf_trace.c     | 28 ++++++++++++++++++++++++++++
-> >  3 files changed, 46 insertions(+), 1 deletion(-)
-> >
-> > Change list:
-> >   v4 -> v5:
-> >     - Add patch1 to show precise link_type for
-> >       {uprobe,kprobe}_multi.(Alexei)
-> >     - patch2,3 just remove type field, which will be showed in
-> >       link_type
-> >   v4:
-> >   https://lore.kernel.org/bpf/20250619034257.70520-1-chen.dylane@linux.=
-dev
-> >
-> >   v3 -> v4:
-> >     - use %pS to print func info.(Alexei)
-> >   v3:
-> >   https://lore.kernel.org/bpf/20250616130233.451439-1-chen.dylane@linux=
-.dev
-> >
-> >   v2 -> v3:
-> >     - show info in one line for multi events.(Jiri)
-> >   v2:
-> >   https://lore.kernel.org/bpf/20250615150514.418581-1-chen.dylane@linux=
-.dev
-> >
-> >   v1 -> v2:
-> >     - replace 'func_cnt' with 'uprobe_cnt'.(Andrii)
-> >     - print func name is more readable and security for kprobe_multi.(A=
-lexei)
-> >   v1:
-> >   https://lore.kernel.org/bpf/20250612115556.295103-1-chen.dylane@linux=
-.dev
-> >
-> > diff --git a/include/linux/trace_events.h b/include/linux/trace_events.=
-h
-> > index fa9cf4292df..951c91babbc 100644
-> > --- a/include/linux/trace_events.h
-> > +++ b/include/linux/trace_events.h
-> > @@ -780,6 +780,8 @@ int bpf_get_perf_event_info(const struct perf_event=
- *event, u32 *prog_id,
-> >                             unsigned long *missed);
-> >  int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bp=
-f_prog *prog);
-> >  int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bp=
-f_prog *prog);
-> > +void bpf_kprobe_multi_link_type_show(const struct bpf_link *link, char=
- *link_type, int len);
-> > +void bpf_uprobe_multi_link_type_show(const struct bpf_link *link, char=
- *link_type, int len);
-> >  #else
-> >  static inline unsigned int trace_call_bpf(struct trace_event_call *cal=
-l, void *ctx)
-> >  {
-> > @@ -832,6 +834,14 @@ bpf_uprobe_multi_link_attach(const union bpf_attr =
-*attr, struct bpf_prog *prog)
-> >  {
-> >         return -EOPNOTSUPP;
-> >  }
-> > +static inline void
-> > +bpf_kprobe_multi_link_type_show(const struct bpf_link *link, char *lin=
-k_type, int len)
-> > +{
-> > +}
-> > +static inline void
-> > +bpf_uprobe_multi_link_type_show(const struct bpf_link *link, char *lin=
-k_type, int len)
-> > +{
-> > +}
-> >  #endif
-> >
-> >  enum {
-> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > index 51ba1a7aa43..43b821b37bc 100644
-> > --- a/kernel/bpf/syscall.c
-> > +++ b/kernel/bpf/syscall.c
-> > @@ -3226,9 +3226,16 @@ static void bpf_link_show_fdinfo(struct seq_file=
- *m, struct file *filp)
-> >         const struct bpf_prog *prog =3D link->prog;
-> >         enum bpf_link_type type =3D link->type;
-> >         char prog_tag[sizeof(prog->tag) * 2 + 1] =3D { };
-> > +       char link_type[64] =3D {};
-> >
-> >         if (type < ARRAY_SIZE(bpf_link_type_strs) && bpf_link_type_strs=
-[type]) {
-> > -               seq_printf(m, "link_type:\t%s\n", bpf_link_type_strs[ty=
-pe]);
-> > +               if (link->type =3D=3D BPF_LINK_TYPE_KPROBE_MULTI)
-> > +                       bpf_kprobe_multi_link_type_show(link, link_type=
-, sizeof(link_type));
-> > +               else if (link->type =3D=3D BPF_LINK_TYPE_UPROBE_MULTI)
-> > +                       bpf_uprobe_multi_link_type_show(link, link_type=
-, sizeof(link_type));
-> > +               else
-> > +                       strscpy(link_type, bpf_link_type_strs[type], si=
-zeof(link_type));
-> > +               seq_printf(m, "link_type:\t%s\n", link_type);
+> String operations are commonly used so this exposes the most common ones
+> to BPF programs. For now, we limit ourselves to operations which do not
+> copy memory around.
 >
-> New callbacks just to print a string?
-> Let's find a different way.
+> Unfortunately, most in-kernel implementations assume that strings are
+> %NUL-terminated, which is not necessarily true, and therefore we cannot
+> use them directly in the BPF context. Instead, we open-code them using
+> __get_kernel_nofault instead of plain dereference to make them safe and
+> limit the strings length to XATTR_SIZE_MAX to make sure the functions
+> terminate. When __get_kernel_nofault fails, functions return -EFAULT.
+> Similarly, when the size bound is reached, the functions return -E2BIG.
+> In addition, we return -ERANGE when the passed strings are outside of
+> the kernel address space.
 >
-> How about moving 'flags' from bpf_[ku]probe_multi_link into bpf_link ?
-> (There is a 7 byte hole there anyway)
-> and checking flags inline.
+> Note that thanks to these dynamic safety checks, no other constraints
+> are put on the kfunc args (they are marked with the "__ign" suffix to
+> skip any verifier checks for them).
 >
-> Jiri, Andrii,
+> All of the functions return integers, including functions which normally
+> (in kernel or libc) return pointers to the strings. The reason is that
+> since the strings are generally treated as unsafe, the pointers couldn't
+> be dereferenced anyways. So, instead, we return an index to the string
+> and let user decide what to do with it. This also nicely fits with
+> returning various error codes when necessary (see above).
 >
-> better ideas?
+> Suggested-by: Alexei Starovoitov <ast@kernel.org>
+> Signed-off-by: Viktor Malik <vmalik@redhat.com>
+> ---
+>  kernel/bpf/helpers.c | 389 +++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 389 insertions(+)
+>
 
-We can just remember original attr->link_create.attach_type in
-bpf_link itself, and then have a small helper that will accept link
-type and attach type, and fill out link type representation based on
-those two. Internally we can do the special-casing of  uprobe vs
-uretprobe and kprobe vs kretprobe transparently to all the other code.
-And use that here in show_fdinfo
+few more comments below, beside the -ENOENT issue Alexei mentioned earlier
+
+[...]
+
+> +/**
+> + * bpf_strrchr - Find the last occurrence of a character in a string
+> + * @s__ign: The string to be searched
+> + * @c: The character to search for
+> + *
+> + * Return:
+> + * * >=3D0      - Index of the last occurrence of @c within @s__ign
+> + * * %-1      - @c not found in @s__ign
+> + * * %-EFAULT - Cannot read @s__ign
+> + * * %-E2BIG  - @s__ign is too large
+> + * * %-ERANGE - @s__ign is outside of kernel address space
+> + */
+> +__bpf_kfunc int bpf_strrchr(const char *s__ign, int c)
+> +{
+> +       char sc;
+> +       int i, last =3D -1;
+> +
+> +       if (!copy_from_kernel_nofault_allowed(s__ign, 1))
+> +               return -ERANGE;
+> +
+> +       guard(pagefault)();
+> +       for (i =3D 0; i < XATTR_SIZE_MAX; i++) {
+> +               __get_kernel_nofault(&sc, s__ign, char, err_out);
+> +               if (sc =3D=3D '\0')
+> +                       return last;
+> +               if (sc =3D=3D c)
+> +                       last =3D i;
+
+swap these two ifs, so that bpf_strrchr("blah", 0) will still return a
+meaningful result (effectively become bpf_strlen(), of course)? That
+should match strrchr's behavior in libc, if I'm reading this
+correctly:
+
+"The terminating NUL character is considered to be part of the string."
+
+
+> +               s__ign++;
+> +       }
+> +       return -E2BIG;
+> +err_out:
+> +       return -EFAULT;
+> +}
+> +
+
+[...]
+
+> +/**
+> + * bpf_strspn - Calculate the length of the initial substring of @s__ign=
+ which
+> + *              only contains letters in @accept__ign
+> + * @s__ign: The string to be searched
+> + * @accept__ign: The string to search for
+> + *
+> + * Return:
+> + * * >=3D0      - The length of the initial substring of @s__ign which o=
+nly
+> + *              contains letters from @accept__ign
+> + * * %-EFAULT - Cannot read one of the strings
+> + * * %-E2BIG  - One of the strings is too large
+> + * * %-ERANGE - One of the strings is outside of kernel address space
+> + */
+> +__bpf_kfunc int bpf_strspn(const char *s__ign, const char *accept__ign)
+> +{
+> +       char cs, ca;
+> +       bool found;
+> +       int i, j;
+> +
+> +       if (!copy_from_kernel_nofault_allowed(s__ign, 1) ||
+> +           !copy_from_kernel_nofault_allowed(accept__ign, 1)) {
+> +               return -ERANGE;
+> +       }
+> +
+> +       guard(pagefault)();
+> +       for (i =3D 0; i < XATTR_SIZE_MAX; i++) {
+> +               __get_kernel_nofault(&cs, s__ign, char, err_out);
+> +               if (cs =3D=3D '\0')
+> +                       return i;
+> +               found =3D false;
+> +               for (j =3D 0; j < XATTR_SIZE_MAX; j++) {
+> +                       __get_kernel_nofault(&ca, accept__ign + j, char, =
+err_out);
+> +                       if (cs =3D=3D ca) {
+> +                               found =3D true;
+> +                               break;
+> +                       }
+> +                       if (ca =3D=3D '\0')
+> +                               break;
+> +               }
+> +               if (!found)
+> +                       return i;
+
+nit: you shouldn't need "found", just `ca =3D=3D '\0'` would mean "not
+found", I think?
+
+so you'd have a succinct `if (cs =3D=3D ca || ca =3D=3D '\0') break;` in th=
+e
+innermost loop
+
+
+> +               s__ign++;
+> +       }
+> +       return -E2BIG;
+> +err_out:
+> +       return -EFAULT;
+> +}
+> +
+
+[...]
+
+> +/**
+> + * bpf_strnstr - Find the first substring in a length-limited string
+> + * @s1__ign: The string to be searched
+> + * @s2__ign: The string to search for
+> + * @len: the maximum number of characters to search
+> + *
+> + * Return:
+> + * * >=3D0      - Index of the first character of the first occurrence o=
+f @s2__ign
+> + *              within the first @len characters of @s1__ign
+> + * * %-1      - @s2__ign not found in the first @len characters of @s1__=
+ign
+> + * * %-EFAULT - Cannot read one of the strings
+> + * * %-E2BIG  - One of the strings is too large
+> + * * %-ERANGE - One of the strings is outside of kernel address space
+> + */
+> +__bpf_kfunc int bpf_strnstr(const char *s1__ign, const char *s2__ign, si=
+ze_t len)
+> +{
+> +       char c1, c2;
+> +       int i, j;
+> +
+> +       if (!copy_from_kernel_nofault_allowed(s1__ign, 1) ||
+> +           !copy_from_kernel_nofault_allowed(s2__ign, 1)) {
+> +               return -ERANGE;
+> +       }
+> +
+> +       guard(pagefault)();
+> +       for (i =3D 0; i < XATTR_SIZE_MAX; i++) {
+> +               for (j =3D 0; i + j < len && j < XATTR_SIZE_MAX; j++) {
+> +                       __get_kernel_nofault(&c1, s1__ign + j, char, err_=
+out);
+
+move this after you check `c2 =3D=3D 0` below? why reading this character
+if we are not going to compare it?
+
+> +                       __get_kernel_nofault(&c2, s2__ign + j, char, err_=
+out);
+> +                       if (c2 =3D=3D '\0')
+> +                               return i;
+> +                       if (c1 =3D=3D '\0')
+> +                               return -1;
+> +                       if (c1 !=3D c2)
+> +                               break;
+> +               }
+> +               if (j =3D=3D XATTR_SIZE_MAX)
+> +                       return -E2BIG;
+> +               if (i + j =3D=3D len)
+> +                       return -1;
+> +               s1__ign++;
+> +       }
+> +       return -E2BIG;
+> +err_out:
+> +       return -EFAULT;
+> +}
+> +
+
+[...]
 
