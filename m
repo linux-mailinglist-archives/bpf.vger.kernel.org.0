@@ -1,218 +1,186 @@
-Return-Path: <bpf+bounces-61279-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61280-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E4A7AE3DDA
-	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 13:25:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7128AE3FB6
+	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 14:22:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C9BE1896723
-	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 11:26:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A9F13A9189
+	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 12:16:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B230A23ED58;
-	Mon, 23 Jun 2025 11:25:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CAF61CAA96;
+	Mon, 23 Jun 2025 12:12:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="B9dsXbEZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 653BDAD2C;
-	Mon, 23 Jun 2025 11:25:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BD9A2451F0
+	for <bpf@vger.kernel.org>; Mon, 23 Jun 2025 12:12:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750677944; cv=none; b=KqrEs2MjPXcH2QvUPkccMEjLBU5JXgq//xGzARWtqwr6zmfX5FvCOaYMpZ5ev3lgPweR4T9iGiq7rCYhNJLSdKkQIDoxF87WwE7HwdOtY2m1NICwL9ue35EUPmHp6pTXfCSrPpD39b1dBGZt7ZL3xou+dZqC4CxYorgfyh+4OaU=
+	t=1750680760; cv=none; b=XjmgH+c4e6r+BU+THwUg2G71+kTmLqoAUzWvDUoF8thNjb9rprS5tBSsvqGFTz7prHUqTUeboYcjfsAaVrHllWCmRS+l303S/sdKE8Q//kfr0dQA20tCRbccoJq1uE41sZB1fkf1LDHTVZ301/opEN1i0FMNIVMGsmpbIUvwmyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750677944; c=relaxed/simple;
-	bh=AfGEXRx1HFoQszR4uv7ffzuBfSxCOCFfR097o41bj/U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cE9q6IJUCW2iWWeDkNP1MFuzcRSyWQ4eC1xkoYUVQEnwu+e0n7Xt/uvUgNmZuHyCsm9qf7dgRENlzFzCUcNlH4sg/BsW0oWYPD6QlASDSxaL1+m6AvFbAB72+fc8yXsd+rt2PIhK7y6HO9DO3FjlWsclAGnSy41B4KA0OEsgQws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-681ff7000002311f-80-685939af5f24
-Date: Mon, 23 Jun 2025 20:25:30 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: Zi Yan <ziy@nvidia.com>
-Cc: David Hildenbrand <david@redhat.com>, willy@infradead.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, kernel_team@skhynix.com, kuba@kernel.org,
-	almasrymina@google.com, ilias.apalodimas@linaro.org,
-	harry.yoo@oracle.com, hawk@kernel.org, akpm@linux-foundation.org,
-	davem@davemloft.net, john.fastabend@gmail.com,
-	andrew+netdev@lunn.ch, asml.silence@gmail.com, toke@redhat.com,
-	tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com,
-	saeedm@nvidia.com, leon@kernel.org, ast@kernel.org,
-	daniel@iogearbox.net, lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
-	surenb@google.com, mhocko@suse.com, horms@kernel.org,
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-	vishal.moola@gmail.com, hannes@cmpxchg.org, jackmanb@google.com
-Subject: Re: [PATCH net-next v6 9/9] page_pool: access ->pp_magic through
- struct netmem_desc in page_pool_page_is_pp()
-Message-ID: <20250623112530.GA67291@system.software.com>
-References: <20250620041224.46646-1-byungchul@sk.com>
- <20250620041224.46646-10-byungchul@sk.com>
- <ce5b4b18-9934-41e3-af04-c34653b4b5fa@redhat.com>
- <20250623101622.GB3199@system.software.com>
- <460ACE40-9E99-42B8-90F0-2B18D2D8C72C@nvidia.com>
+	s=arc-20240116; t=1750680760; c=relaxed/simple;
+	bh=J5xE9/bI1a+Dj6JaxrJqt/gS56GaWfcQ2w5drIb20fQ=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=M4ml+GeXt9brsjQKz0I2pzfsKMB9TUtEgKysOsmIXe0i0oqYh2lOAfKlpS7e67JV5Cvr0j6TW9ASRgMuMQGNIuLR9/k4Omopn9BC9Cysp+7D89g9rztR7DaxHoXUR5hF7+FguCUIB25oewQZkMWK9nNZ5n9QYpvrnQiGzsm6Dlk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=B9dsXbEZ; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55NBGpbh012293;
+	Mon, 23 Jun 2025 12:12:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=J5xE9/
+	bI1a+Dj6JaxrJqt/gS56GaWfcQ2w5drIb20fQ=; b=B9dsXbEZGZLgR3zwobUXc9
+	fJ61ZNmVqo9dRB1MGmgP6MfwlfL2M63liF8+bePedQsjUMHqFqFCkoXuXtHI4iVf
+	igMltR18Syxp8a89+/QeDCGyUjzltaoUnyZYExfaL00TTk7eDyBMMzR4WUtPhoCt
+	fQ7qWMP6x3Sn/EjqxOL9o+MlAwniYNraJJrLXpgsWkzCzE8sgPOtTCB8jwyKjrju
+	DZdiBwfTm2q+B5Ujx/+LgCL9MoOi+58HxBOe+WM+kEORkGQz27ODYsFjxhoJgIRv
+	DpN5C9SLq4yYlz8fuRK1iwX8L0jve5RXZO+zMPyE+FUWUuzegRlihvVmTUC6pHsQ
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47dme11ju2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 23 Jun 2025 12:12:19 +0000 (GMT)
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 55NBtkIv026033;
+	Mon, 23 Jun 2025 12:12:19 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47dme11jtw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 23 Jun 2025 12:12:19 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 55NB21uC015025;
+	Mon, 23 Jun 2025 12:12:18 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 47e72teh4b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 23 Jun 2025 12:12:17 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 55NCCG8f60096914
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 23 Jun 2025 12:12:16 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 47A582004B;
+	Mon, 23 Jun 2025 12:12:16 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D28FF20040;
+	Mon, 23 Jun 2025 12:12:14 +0000 (GMT)
+Received: from [127.0.0.1] (unknown [9.152.108.100])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 23 Jun 2025 12:12:14 +0000 (GMT)
+Message-ID: <46be3ce7314e2f41a34acf5b1c78cf1e4b7022cd.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf-next v6 4/4] selftests/bpf: Add tests for string
+ kfuncs
+From: Ilya Leoshkevich <iii@linux.ibm.com>
+To: Viktor Malik <vmalik@redhat.com>,
+        Alexei Starovoitov
+	 <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel
+ Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau	 <martin.lau@linux.dev>,
+        Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu	 <song@kernel.org>,
+        Yonghong Song
+ <yonghong.song@linux.dev>,
+        John Fastabend	 <john.fastabend@gmail.com>,
+        KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev	 <sdf@fomichev.me>,
+        Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 23 Jun 2025 14:12:14 +0200
+In-Reply-To: <6c716452-5743-4708-a0cc-34166a742c93@redhat.com>
+References: <cover.1750402154.git.vmalik@redhat.com>
+	 <17543560f4a1e269aec6596e72fe3fff8ef1dd2e.1750402154.git.vmalik@redhat.com>
+	 <fdbb8caa-77f6-4143-ad0b-4f32d9e6d8e6@redhat.com>
+	 <CAADnVQKj3iTJyhXiQbcSo=6rJarfY_uMQi9yhytmjX-y24GXkQ@mail.gmail.com>
+	 <6c716452-5743-4708-a0cc-34166a742c93@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <460ACE40-9E99-42B8-90F0-2B18D2D8C72C@nvidia.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRjHeXfec3E5OK7bm1bCKgrpjtETiFQf4hAI0dWKyNVObTSnzLx1
-	tZQi03UVclqtxDQtlkud5oVa1jQDxUpnmpqpXTTFmWNeqJwS+e3H/7n8ng8PR8kLaF9Oozsu
-	6nVKrYKRYulP7/srzBv2qld/bg6ATPMjBvLdcZDTUUJDZl4xgl8jLSwMVdkZyLrnoiCzLgnD
-	sHmUgu7XnSzkW0Kg/UEPhvKLVgo6r1QzkJo0RkHFSD8L50tyJVBfbKDh5mg2BdaEDhbePctk
-	oO3RHxp6bKkYaowPMbQbNsJr0xxw1fYhqDJbJeBKuc3AjQYTA1+S2hE0vOzEkHHOgMBc6aBh
-	zD2xI+NVG7txsfCyb4ASCh82S4RS4ydWMFmihae5AUKyo4ESLHmXGMHivM4KrY3ljFB9awwL
-	pSVDEiE1sZ8RBrs/YmGg8gMjmAs/YOGtqYrd5rNPGqQStZoYUb8qOEyqLsgaxpEXF8f1PvmF
-	EtCP+cnIiyN8IDE4UyXJiJtkd85JT4z5JaSt/TvtYYZfShyOEcrDs3g/UmsYn2ApR/GFDHly
-	oZH1FGbycWSss2eyScYDybFWTrKcdyOSXRkylfuQmvQu7GGKX05Ki1oZj5eaWJrzm5uK/Uli
-	UcbkqBcfTJzJKYyHZ/OLyPNiu8TjJXw1R8rL7kim7p9HXuQ68FXkY5ymME5TGP8rjNMUJoTz
-	kFyjiwlXarSBK9XxOk3cysMR4RY08UgPTo/vL0HO+h02xHNI4S0L8w5Vy2llTFR8uA0RjlLM
-	ktk271bLZSpl/AlRH3FQH60Vo2zIj8OKubK1rliVnD+qPC4eE8VIUf+vKuG8fBPQwi3SA017
-	dDU7034k9W7KLvKveL87xHtR6Fb786D0xFPRdGL9Hzt7ZHvZ4GWtG6s+nr7RGzuybmBBBTNj
-	8BvvsyqWX9qRb695nPXG3WKN7N4ubaKO1DVdvhL4NdLrbmPo2TNH026LTl+p09VF26+lrJ/b
-	WDacrvq82ly7bFdX86FYBY5SK9cEUPoo5V98/A9vRAMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRjHeXfOzo6jyXGtPGkoLCWKsoSiJ5KIoHpJ7OKHLn6xUx7c8tpW
-	4orEUoqW85JBNmcpovOWszWdE5OY5iUha6JYmStv2AUrb8xWmVMiv/34/5/n93x5aEKaL/Sj
-	lYkXeVUiFy+nxKT4yJ6MrabdpxXbf3+XgcFUQ0G1KxWMHxqFYKhqQDAz/04E020dFJSWzBFg
-	6MkkYdb0k4Cx9mERVJsjwFk+TkLzTSsBwzmdFOgy3QQ8nZ8UwfXGCgG0FnUJ4VVDthDu/iwj
-	wJr+QQS9TQYKhmoWhDBu15HQpa8kwZm9D9qL18Jc91cEbSarAOayiijIdxRTMJLpROBoHSah
-	8Fo2AlPLgBDcrkVH4fMh0b5g3Pr1G4EtlW8E2KZ/L8LF5kv4ScVmrB1wENhcdYvC5qk7IjzY
-	30zhzgI3iW2N0wKsy5ik8I+xtyT+1tJH4dKJ7wJssvSRx6RR4rAYPl6Zwqu27T0jVjwunSWT
-	bwalfqmbQeno83otommW2cG6jFe0yIsmmWB2yPlJ6GGK2cgODMwTHpYx/mx39q9FFtMEY6HY
-	uhv9Ik+xmkll3cPjS0MSBlijtWWJpYwLsWUtEcu5D9t1f5T0MMFsYW31g5TnLrEoNf6hl+NA
-	NqO+cGnVi9nLTmmzKA+vYTawzxo6BLnIW7/CpF9h0v836VeYihFZhWTKxJQEThm/M0Qdp9Ak
-	KlNDziUlmNHiq5Rf/ZXXiGZ6D9kRQyP5KklF+CmFVMilqDUJdsTShFwmse8/oZBKYjjNZV6V
-	FK26FM+r7cifJuW+ksMn+TNSJpa7yMfxfDKv+tcKaC+/dFT7zK+nhObqIrW3w9odj3S6Wlpl
-	Dts1FyOHkuM5nxb85WKfAwsf86IdvLXpxbrZAE1kR6/hbOiUZSQvqFl2nmp4520rnKQv2Hzv
-	HfTSkOGDac6q8LyXORO8vKBAEJWw6ZDe3VH9AM/8jnVVjFpyHwYe9ePK0npf7++vDFhnlJNq
-	BRe6mVCpub9KbC+1JgMAAA==
-X-CFilter-Loop: Reflected
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=Tc6WtQQh c=1 sm=1 tr=0 ts=685944a3 cx=c_pps a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17 a=IkcTkHD0fZMA:10 a=6IFa9wvqVegA:10 a=20KFwNOVAAAA:8 a=f8jJ-nJ9vMlnWP3bw48A:9 a=QEXdDO2ut3YA:10
+X-Proofpoint-GUID: rYfgSOWmBmxi3vt4UTCoo71pL6TOACWP
+X-Proofpoint-ORIG-GUID: I6-qZkG_Ti0rZHxPyZaTKW7fLP9pnBj2
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjIzMDA3MSBTYWx0ZWRfX40+/iWQVIzQc GSUCwwt9AjnB/FmvnHepejdG+/EAF7BULrHaXgHaN+ApK/85e+hdUtJNi2XAT/Ubsp/77jB5krP 3OM1yq3kp9gtBsin5x3Z2daQ2PWo0a3zgY42SgL+bf1B5bH9huSHcowm+MK+behJZm/9CCa/FSR
+ Sot5bk+zuIZYyYIdUIVgvx+5KOqr2HBN/0yw1jfk8S4li1pa7asQwUDya1QO2E53YCs9T1VKN9r B0J5FOEPDnc+PGHKigTRYrMSo4vtbaP4N81G7ratHNatEL9pLDvF2JqA65+idsBPj0cOjG0+FD8 0kAHRVtLHqozkRf8uGn52nujdPnE0XiBwNcOq1W9yipBonIVI2bsbNJg7703T4o8SCwj/HhtYaj
+ GsHPreZR3QXmgfVi+SgnmB3OhMIncSyQmtNzCu9xnehx1eEMJDErv6x1BaAqV7qOkYrLkn6a
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-06-23_03,2025-06-23_02,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ priorityscore=1501 mlxscore=0 mlxlogscore=729 phishscore=0 spamscore=0
+ malwarescore=0 suspectscore=0 impostorscore=0 clxscore=1011 adultscore=0
+ bulkscore=0 classifier=spam authscore=0 authtc=n/a authcc= route=outbound
+ adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
+ definitions=main-2506230071
 
-On Mon, Jun 23, 2025 at 07:13:21AM -0400, Zi Yan wrote:
-> On 23 Jun 2025, at 6:16, Byungchul Park wrote:
-> > On Mon, Jun 23, 2025 at 11:16:43AM +0200, David Hildenbrand wrote:
-> >> On 20.06.25 06:12, Byungchul Park wrote:
-> >>> To simplify struct page, the effort to separate its own descriptor from
-> >>> struct page is required and the work for page pool is on going.
-> >>>
-> >>> To achieve that, all the code should avoid directly accessing page pool
-> >>> members of struct page.
-> >>>
-> >>> Access ->pp_magic through struct netmem_desc instead of directly
-> >>> accessing it through struct page in page_pool_page_is_pp().  Plus, move
-> >>> page_pool_page_is_pp() from mm.h to netmem.h to use struct netmem_desc
-> >>> without header dependency issue.
-> >>>
-> >>> Signed-off-by: Byungchul Park <byungchul@sk.com>
-> >>> Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
-> >>> Reviewed-by: Mina Almasry <almasrymina@google.com>
-> >>> Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
-> >>> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-> >>> Acked-by: Harry Yoo <harry.yoo@oracle.com>
-> >>> ---
-> >>>   include/linux/mm.h   | 12 ------------
-> >>>   include/net/netmem.h | 14 ++++++++++++++
-> >>>   mm/page_alloc.c      |  1 +
-> >>>   3 files changed, 15 insertions(+), 12 deletions(-)
-> >>>
-> >>> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> >>> index 0ef2ba0c667a..0b7f7f998085 100644
-> >>> --- a/include/linux/mm.h
-> >>> +++ b/include/linux/mm.h
-> >>> @@ -4172,16 +4172,4 @@ int arch_lock_shadow_stack_status(struct task_struct *t, unsigned long status);
-> >>>    */
-> >>>   #define PP_MAGIC_MASK ~(PP_DMA_INDEX_MASK | 0x3UL)
-> >>>
-> >>> -#ifdef CONFIG_PAGE_POOL
-> >>> -static inline bool page_pool_page_is_pp(struct page *page)
-> >>> -{
-> >>> -     return (page->pp_magic & PP_MAGIC_MASK) == PP_SIGNATURE;
-> >>> -}
-> >>> -#else
-> >>> -static inline bool page_pool_page_is_pp(struct page *page)
-> >>> -{
-> >>> -     return false;
-> >>> -}
-> >>> -#endif
-> >>> -
-> >>>   #endif /* _LINUX_MM_H */
-> >>> diff --git a/include/net/netmem.h b/include/net/netmem.h
-> >>> index d49ed49d250b..3d1b1dfc9ba5 100644
-> >>> --- a/include/net/netmem.h
-> >>> +++ b/include/net/netmem.h
-> >>> @@ -56,6 +56,20 @@ NETMEM_DESC_ASSERT_OFFSET(pp_ref_count, pp_ref_count);
-> >>>    */
-> >>>   static_assert(sizeof(struct netmem_desc) <= offsetof(struct page, _refcount));
-> >>>
-> >>> +#ifdef CONFIG_PAGE_POOL
-> >>> +static inline bool page_pool_page_is_pp(struct page *page)
-> >>> +{
-> >>> +     struct netmem_desc *desc = (struct netmem_desc *)page;
-> >>> +
-> >>> +     return (desc->pp_magic & PP_MAGIC_MASK) == PP_SIGNATURE;
-> >>> +}
-> >>> +#else
-> >>> +static inline bool page_pool_page_is_pp(struct page *page)
-> >>> +{
-> >>> +     return false;
-> >>> +}
-> >>> +#endif
-> >>
-> >> I wonder how helpful this cleanup is long-term.
-> >>
-> >> page_pool_page_is_pp() is only called from mm/page_alloc.c, right?
-> >
-> > Yes.
-> >
-> >> There, we want to make sure that no pagepool page is ever returned to
-> >> the buddy.
-> >>
-> >> How reasonable is this sanity check to have long-term? Wouldn't we be
-> >> able to check that on some higher-level freeing path?
-> >>
-> >> The reason I am commenting is that once we decouple "struct page" from
-> >> "struct netmem_desc", we'd have to lookup here the corresponding "struct
-> >> netmem_desc".
-> >>
-> >> ... but at that point here (when we free the actual pages), the "struct
-> >> netmem_desc" would likely already have been freed separately (remember:
-> >> it will be dynamically allocated).
-> >>
-> >> With that in mind:
-> >>
-> >> 1) Is there a higher level "struct netmem_desc" freeing path where we
-> >> could check that instead, so we don't have to cast from pages to
-> >> netmem_desc at all.
-> >
-> > I also thought it's too paranoiac.  However, I thought it's other issue
-> > than this work.  That's why I left the API as is for now, it can be gone
-> > once we get convinced the check is unnecessary in deep buddy.  Wrong?
-> >
-> >> 2) How valuable are these sanity checks deep in the buddy?
-> >
-> > That was also what I felt weird on.
-> 
-> It seems very useful when I asked last time[1]:
-> 
-> |> We have actually used this at Cloudflare to catch some page_pool bugs.
+On Mon, 2025-06-23 at 08:05 +0200, Viktor Malik wrote:
+> On 6/20/25 20:06, Alexei Starovoitov wrote:
+> > On Fri, Jun 20, 2025 at 5:33=E2=80=AFAM Viktor Malik <vmalik@redhat.com=
+>
+> > wrote:
+> > >=20
+> > > > +SEC("syscall") __retval(USER_PTR_ERR) int
+> > > > test_strnstr_user_ptr2(void *ctx) { return bpf_strnstr("hello",
+> > > > user_ptr, 1); }
+> > >=20
+> > > For some reason, these tests are failing on s390x. I'll
+> > > investigate.
+> >=20
+> > I suspect this is the reason for failures:
+> >=20
+> > +char *user_ptr =3D (char *)1;
+> > +char *invalid_kern_ptr =3D (char *)-1;
+>=20
+> Actually, the kernel address works fine, it's the userspace addresses
+> causing the problem (user_ptr and NULL). On s390,
+> __get_kernel_nofault
+> always returns 0 for these addresses instead of going to the
+> exception
+> table.
+>=20
+> > Ilya,
+> >=20
+> > Please suggest user/kern addresses to use for these tests.
+>=20
+> FWIW, I've also tried a couple other random userspace addresses, for
+> all
+> of them __get_kernel_nofault returned 0.
+>=20
+> In string kfuncs, 0 is treated as the end of the string (not an
+> error),
+> so, unless some s390 expert has a better solution, the best I can
+> think
+> of here is to disable the userspace addresses tests on s390.
+>=20
+> Viktor
 
-Indeed..  So I think it'd be better to leave the check as is until we
-will be fully convinced on that issue, I ideally agree with David's
-opinion tho.
+Unfortunately NULL is a valid kernel pointer on s390; this is very
+annoying, but unlikely to change any time soon.
 
-	Byungchul
+Also, s390 has overlapping kernel and user address spaces. This means
+that you cannot deduce by the value of an address whether it's a
+kernel or a user address; something like 0x400000 can be both valid
+kernel and user address. Normal dereferences access the kernel address
+space; in order to access the user address space, one has to use magic
+machine instructions.
 
-> [1] https://lore.kernel.org/linux-mm/4d35bda2-d032-49db-bb6e-b1d70f10d436@kernel.org/
-> 
-> --
-> Best Regards,
-> Yan, Zi
+So I would disable both NULL and invalid user_ptr tests on s390, since
+they do not apply. I would still test for an invalid kernel_ptr though;
+accessing (char *)-1 should cause an exception on s390.
 
