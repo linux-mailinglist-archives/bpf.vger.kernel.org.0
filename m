@@ -1,307 +1,144 @@
-Return-Path: <bpf+bounces-61258-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61259-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEAF4AE3429
-	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 06:05:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48FEEAE3453
+	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 06:32:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92EB116F6C0
-	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 04:05:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 209C7188FE77
+	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 04:32:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B0031D2F42;
-	Mon, 23 Jun 2025 04:04:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f6UrStKy"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB2F11C68A6;
+	Mon, 23 Jun 2025 04:32:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B9541C8612;
-	Mon, 23 Jun 2025 04:04:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76CFCA95C;
+	Mon, 23 Jun 2025 04:32:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750651491; cv=none; b=LRxTouVHSpPsgD0tLK9xIT5sFes0wCg24Kr9VBP2/zSTAXrr8QrV0hi+nYdPv0iiBWdm/ihzTZ28CdlQIrOFL+HGeoqhWcJx40oSoXXCUdHzWjCpSuhah4XDioOhDx6gzFNC7iEUyVIwXCQQZq4GPcA5KLbdjkweEWgXWCzEkFU=
+	t=1750653141; cv=none; b=S/qi2eBGexumtRn2L9CSL8+eM61pzt8qhXsiCBoKFPQnB2Az8Aj+K961GJSJV/ISPxKTmdwN05SNMf2+t8tH9O4h643okB9/U+cX4fsexHmFByLcGEvk/V+76t5bjBj+/eolHFG3qIRCAHT7jacwbKVlFnEDq3Y7/3sLxdUwAGw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750651491; c=relaxed/simple;
-	bh=Om7oDGhV8WhIe7MihQ/sdXI7ZWZeAbnV9SZEqTmmH0w=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bfaBfzy0i9jya7PN/mVXMFrI5pTzSzmWyUnbK4PCJjynkHNrpenbCbTiLagAIkLpCrWTrvQKIF5SQFL+ZDqznHVn5iJrtgelzbP0o2gtriAL+xO9nFecRr5yO4yyu43A3rIRnfHNMUup5VPn8VjhTVJZkbUzTc+lAB3AduwVeLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f6UrStKy; arc=none smtp.client-ip=209.85.222.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-7d38cfa9773so404031785a.2;
-        Sun, 22 Jun 2025 21:04:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750651488; x=1751256288; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KxiQZQWkAOiMlWzdIY0yzPCGK3zVKGxK5z7H8GVPDEM=;
-        b=f6UrStKyGeCW7VtNtQ30Eq1UcPePgFiF/Wsejo4c52ERdznrbDH5TZCb3KAGa858TR
-         T+ix4b81lTBU0mTTULVMzZ1PpTbtH+4nvskLlMf+mRs064Kis5nlAs4oCZM9XaIqx3DD
-         3cuEHwavKLhH2ipQBv1b/GPcdOp9RLixKU8IEpwO3O7QP7QXEaDToYOEyslU4geEzbJs
-         LiDyjlfC/jPMYt3921Dn83AR1mNEC7rpbwFvastZasjOZYA+L8aCDCJlOw/3woPbsb7+
-         MAufcCBtELR//PdlYoIt5wYc7iRf2zKLhXrgNVEr0yDBlkVxPw5J0pRSLiKduku+W1Sc
-         lybA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750651488; x=1751256288;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KxiQZQWkAOiMlWzdIY0yzPCGK3zVKGxK5z7H8GVPDEM=;
-        b=WUYz5Ey/UQM0P7PqaO+g5+Xqhvy8sP+ubic5gUMLoWSQUswVvg3r2Y6vGCNkq6rnFF
-         8n/TAxp9ZnEtSqQ3X0QV5rar3TZvojtuHOQVIgL2lt1Geq66DCUSYVZnl+IIrvmM1gEK
-         dj2xp/68ZE9XyPcZwY+JA74jajkqz79+wDT1QZ4jVB/yb6CKrvnt6pgVeCH5Ug44xzmN
-         IRroosKEaCWSNW6iakhMBJZ2Zdr9U6R2J7rtKnozgtIl52KesPXKmfm8Zhyc3Frz9raJ
-         0LAMyJFHkE00RuCF7CPnY2bTwHjjlgdtp1KDpQ5mR7WXAzmrDL+mtayR6UwTLG3CGK4x
-         vnQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUWGwCqV25g1WDpipx/VfXh0EUrS6x7QepeiV+/YzGp57eVLwCk6J6uOj3bFYnJONo8n/oaveqAR9sJOg7s@vger.kernel.org, AJvYcCVHKLRFy3wq9EDD/mh9swwB1qwHRrZR1YjmYolLVgy4j0zU1ZKEBxkpOxnQh9FEjNgtS929wL8ziOkyty4vjJcV@vger.kernel.org, AJvYcCXEC+ss02RfsYNoSR7CkcLm3OyuwpzE7rUqTfhP4SKGYdvvTyCNpsqEIuZ852haw+9sKSU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwcH1LmRcYPglwMI5Yd5BIg+2ssn7xl4Fy0FxqGl7pMl7TFV98y
-	m+y4Z916wJEkxVesyy2/ZV508lMsrRVLmvPGiNs4VfpzaNZE7oUm1fkx
-X-Gm-Gg: ASbGncuuYmcb7V1lf6YeCr/uOKKJAd0wl/CZDWoP+Tf3hXcjor6PU11oeEoB5IzNkka
-	Eme6Ig7kPlG/uNFd4YwApDtwUS0SxU6AK+o8L0A/9qjdaf5orDHOUo0BcdAghA059nVfBdWfFA4
-	pmpfo94PUqvOV2R2E34r4D6Tqdq7L+J+MpykwrMsw0kpe5KjDpqNPOgQGrv2Y1KasCvHk2gr6Ie
-	KuOuuY2vfntemFERXdSH3gsD3Ef6mxWSY8/tdgiv66vtXHECa6TbesHmL+a1BlQneYy/dIsif5v
-	EJkzRrWUTN0ZXfPZhMHAvbQuz2h/1Gdsnw+GkLnL8I7+XgwvWxwIp+7GNTKu+6ZBIG+n20DQTcg
-	XbOzXJJDuVQ+b0FTNp013goS1lRROtodrJLOqpw4mjguY6aDRjHynWTBUhYEMUaPqHBGTCA==
-X-Google-Smtp-Source: AGHT+IEB+CtGeKi3Mghgbkve8NhXsQpZ3/7P7VeN57IvlHIz4GSzj4W8NkOFZ/GfWWwCM3KTkq/J/A==
-X-Received: by 2002:a05:620a:bc1:b0:7d1:fc53:c6b2 with SMTP id af79cd13be357-7d3f9939f14mr1645336585a.41.1750651488257;
-        Sun, 22 Jun 2025 21:04:48 -0700 (PDT)
-Received: from lima-default.. (pool-108-50-252-180.nwrknj.fios.verizon.net. [108.50.252.180])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7d3f99fc0a8sm347274385a.80.2025.06.22.21.04.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Jun 2025 21:04:48 -0700 (PDT)
-From: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>
-To: ast@kernel.org
-Cc: m.shachnai@rutgers.edu,
-	srinivas.narayana@rutgers.edu,
-	santosh.nagarakatte@rutgers.edu,
-	Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Matan Shachnai <m.shachnai@gmail.com>,
-	Henriette Herzog <henriette.herzog@rub.de>,
-	Luis Gerhorst <luis.gerhorst@fau.de>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH v3 2/2] selftests/bpf: Add testcases for BPF_ADD and BPF_SUB
-Date: Mon, 23 Jun 2025 00:03:57 -0400
-Message-ID: <20250623040359.343235-3-harishankar.vishwanathan@gmail.com>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20250623040359.343235-1-harishankar.vishwanathan@gmail.com>
-References: <20250623040359.343235-1-harishankar.vishwanathan@gmail.com>
+	s=arc-20240116; t=1750653141; c=relaxed/simple;
+	bh=ggo/SI/AISA8J6s0yt0k1qoyYkjyPngK3bM8bZl5ikQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IKd8avWAJQGBPq2thfFwk/jUdid8fNIV3T7yjmu/vWAbO2cwU+mKnXRNEtW/LHVNfr3LaRsEx/OeezN58Z0yL7yOD6fN/vozC/a/JgfZFLL8SOK7eEYQI1sVZSeChbdwxyenBlIRnSIARpbDe9MIZr9Pq1GSpptcXOvCVcY6B5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-681ff7000002311f-e8-6858d8cc5518
+Date: Mon, 23 Jun 2025 13:32:07 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: willy@infradead.org, netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	kernel_team@skhynix.com, kuba@kernel.org, almasrymina@google.com,
+	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
+	akpm@linux-foundation.org, davem@davemloft.net,
+	john.fastabend@gmail.com, andrew+netdev@lunn.ch,
+	asml.silence@gmail.com, toke@redhat.com, tariqt@nvidia.com,
+	edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com,
+	leon@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	david@redhat.com, lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
+	surenb@google.com, mhocko@suse.com, horms@kernel.org,
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+	vishal.moola@gmail.com, hannes@cmpxchg.org, ziy@nvidia.com,
+	jackmanb@google.com
+Subject: Re: [PATCH net-next v6 6/9] netmem: remove __netmem_get_pp()
+Message-ID: <20250623043207.GA31962@system.software.com>
+References: <20250620041224.46646-1-byungchul@sk.com>
+ <20250620041224.46646-7-byungchul@sk.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250620041224.46646-7-byungchul@sk.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUhTYRTHe3af3V2Xi+syfVIiWklgmRVlBwqNQrpfKiEISyMveWkjXbql
+	qRRprizxDYuyuWoRmWmwmqmzF8211KhIDWOVOtE0MdPUFDezckrktx//8+f8zofDUPIHYj9G
+	pT4haNR8nIKWYul3z1tBb+yRyvV3ckLAYLpPQ/lkCtztsojBUFaF4KfzswTGbI003L41QYHh
+	nQ7DuMlFQW9DtwTKzbvBUdKH4WlWNQXd+U005OqmKHjmHJLAWUupCJqr8sRw2XWHgur0Lgm8
+	f2ygofP+HzH0WXMxvNLfw+DI2w4NRh+YeD2IwGaqFsFEznUaLrUaaejRORC0vujGUJyRh8BU
+	axfD1OTMjuKXnZLtq7gXg8MU9+jeRxFXo++QcEZzEldRGshl21spzlx2kebMo4USrv3DU5pr
+	KprCXI1lTMTlZg7R3EjvJ8wN17bRnOlRG+beGG2SCK+D0m2xQpwqWdAEh8ZIlaar9TghY1HK
+	w3wDTkd1C7ORB0PYTaQz6wb1j0d0zdjNmA0gjZ2FsznNriZ2u3OGGcabDSYfCg9kIylDsZk0
+	KWxzzvYXs+HkbWkO7WYZC8T54xtys5zlyYWBc2gu9yKvrn2Z7VPsWlJT2U67d1KsP7n7m5mL
+	l5PMyuJZrQcbQvqHmkRuXsKuJM+rGkVzZzYzxGRLneOlpL7UjguQl36eQT/PoP9v0M8zGBEu
+	Q3KVOjmeV8VtWqdMVatS1h05Hm9GM39UcvpXlAWNNu+zIpZBCk9ZjGekUi7mk7Wp8VZEGErh
+	LbPu2K+Uy2L51DRBc/ywJilO0FqRP4MVvrKNEydj5exR/oRwTBASBM2/qYjx8EtHEaYVLYkD
+	tvbENP9+JmjLnj/L66ZFPo/PhLWs8ap1FQU9Cay/MnI+IKvOvtl1ROe6GX3qYGXeHvOA7zJ2
+	esjHA0kd4R22Tw0qlSO9qnLL1lZKG7SguIa+MZ1Wbv66K+JQeFHY3jWW8RZeEebZE1rQFfM8
+	qi16yc4Flw7HjFeUqRUKrFXyGwIpjZb/C5Lllu9DAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTcRjG+e/8d3Zczk5r1Uk/RDMLokzpwptFSCEdsiII1Ppgjjy15bUt
+	TaPIy0IztZpRNlctRF0mrZbXsqx5mWKRKNqypWkqZualdDjt5ozIbz+e9+H3fHkpQpzDd6cU
+	0ac4ZbQsUkoKsXD/ttT1r6whcp9P6Z6gM5aQcH8qAYo+VvJBV1yOYMLxXgDf6ywk5N+1E6B7
+	o8YwaZwmoL+hVwD3Tfugu3AAQ3VaBQG9lxtJyFLPEPDMMSKAlEoDD2pvNfGhpTybD9emCwio
+	SPoogLYnOhK6Sn7zYcCchaFJew9Dd7Y/NOiXgr15GEGdsYIH9sxbJOS06kn4pO5G0FrbiyEv
+	ORuB8bmVDzNTs468+i6BvxdbOzxKsKX33vHYKu0HAas3xbGPDWvZDGsrwZqKL5Ks6ZtGwNo6
+	qkm2MXcGs1WV33lsVuoIyY73d2J29Hk7yeYPjvFYY2k7PiA+LNwezkUq4jnlhh1hQrnxxksc
+	m+yW8OiyDiehmgUZyIVi6E3MuLoFOxnTXoylS0M4maTXMFarY5YpSkJvYDo0hzKQkCLoVJLR
+	tDvm+ovpAOa1IZN0sogGxjH2BTlZTMuY9KEL6G++iGm62TfXJ+h1TFWZjXQ6CdqDKfpF/Y1X
+	MKlleXOzLvQWZnCkkefkJbQn86LcwruC3LTzTNp5Ju1/k3aeSY9wMZIoouOjZIrIzd6qCHli
+	tCLB+2hMlAnNvkrhuR9XK9FE224zoikkdRUZAkPkYr4sXpUYZUYMRUglIvPOILlYFC5LPMMp
+	Y44o4yI5lRl5UFi6TLQnmAsT08dlp7gIjovllP+uPMrFPQnhga81Kw2HA0sXzsSnTFX7rc7v
+	WO7bs7Xn4O2GtJOaveWWoFHHF9uq83GXJk+/dLtTd6Dq7fqzybb3PvWZSe82YunPPl3nCdex
+	66e9a+iBuLPBi0KajfbPDyWhBSMF7lf9AnI9UybVuzpj/AnLmWOTgz0FoVfk+gcSQebTIbtt
+	eWGYFKvkMt+1hFIl+wM4qcRvJgMAAA==
+X-CFilter-Loop: Reflected
 
-The previous commit improves the precision in scalar(32)_min_max_add,
-and scalar(32)_min_max_sub. The improvement in precision occurs in cases
-when all outcomes overflow or underflow, respectively.
+On Fri, Jun 20, 2025 at 01:12:21PM +0900, Byungchul Park wrote:
+> There are no users of __netmem_get_pp().  Remove it.
+> 
+> Signed-off-by: Byungchul Park <byungchul@sk.com>
+> Reviewed-by: Mina Almasry <almasrymina@google.com>
+> Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
+> Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
+> Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> ---
+>  include/net/netmem.h | 16 ----------------
+>  1 file changed, 16 deletions(-)
+> 
+> diff --git a/include/net/netmem.h b/include/net/netmem.h
+> index e27ed0b9c82e..d0a84557983d 100644
+> --- a/include/net/netmem.h
+> +++ b/include/net/netmem.h
+> @@ -245,22 +245,6 @@ static inline struct net_iov *__netmem_clear_lsb(netmem_ref netmem)
+>  	return (struct net_iov *)((__force unsigned long)netmem & ~NET_IOV);
+>  }
+>  
+> -/**
+> - * __netmem_get_pp - unsafely get pointer to the &page_pool backing @netmem
+> - * @netmem: netmem reference to get the pointer from
+> - *
+> - * Unsafe version of netmem_get_pp(). When @netmem is always page-backed,
+> - * e.g. when it's a header buffer, performs faster and generates smaller
+> - * object code (avoids clearing the LSB). When @netmem points to IOV,
+> - * provokes invalid memory access.
+> - *
+> - * Return: pointer to the &page_pool (garbage if @netmem is not page-backed).
+> - */
+> -static inline struct page_pool *__netmem_get_pp(netmem_ref netmem)
+> -{
+> -	return __netmem_to_page(netmem)->pp;
+> -}
+> -
 
-This commit adds selftests that exercise those cases.
+In the meantime, libeth started to use __netmem_get_pp() again :(
 
-This commit also adds selftests for cases where the output register
-state bounds for u(32)_min/u(32)_max are conservatively set to unbounded
-(when there is partial overflow or underflow).
+Discard this patch please.  Do I have to resend this series with this
+excluded?
 
-Signed-off-by: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>
-Co-developed-by: Matan Shachnai <m.shachnai@rutgers.edu>
-Signed-off-by: Matan Shachnai <m.shachnai@rutgers.edu>
-Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
----
- .../selftests/bpf/progs/verifier_bounds.c     | 161 ++++++++++++++++++
- 1 file changed, 161 insertions(+)
+	Byungchul
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_bounds.c b/tools/testing/selftests/bpf/progs/verifier_bounds.c
-index 30e16153fdf1..31986f6c609e 100644
---- a/tools/testing/selftests/bpf/progs/verifier_bounds.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_bounds.c
-@@ -1371,4 +1371,165 @@ __naked void mult_sign_ovf(void)
- 	  __imm(bpf_skb_store_bytes)
- 	: __clobber_all);
- }
-+
-+SEC("socket")
-+__description("64-bit addition, all outcomes overflow")
-+__success __log_level(2)
-+__msg("5: (0f) r3 += r3 {{.*}} R3_w=scalar(umin=0x4000000000000000,umax=0xfffffffffffffffe)")
-+__retval(0)
-+__naked void add64_full_overflow(void)
-+{
-+	asm volatile (
-+	"r4 = 0;"
-+	"r4 = -r4;"
-+	"r3 = 0xa000000000000000 ll;"
-+	"r3 |= r4;"
-+	"r3 += r3;"
-+	"r0 = 0;"
-+	"exit"
-+	:
-+	:
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("64-bit addition, partial overflow, result in unbounded reg")
-+__success __log_level(2)
-+__msg("4: (0f) r3 += r3 {{.*}} R3_w=scalar()")
-+__retval(0)
-+__naked void add64_partial_overflow(void)
-+{
-+	asm volatile (
-+	"r4 = 0;"
-+	"r4 = -r4;"
-+	"r3 = 2;"
-+	"r3 |= r4;"
-+	"r3 += r3;"
-+	"r0 = 0;"
-+	"exit"
-+	:
-+	:
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("32-bit addition overflow, all outcomes overflow")
-+__success __log_level(2)
-+__msg("4: (0c) w3 += w3 {{.*}} R3_w=scalar(smin=umin=umin32=0x40000000,smax=umax=umax32=0xfffffffe,var_off=(0x0; 0xffffffff))")
-+__retval(0)
-+__naked void add32_full_overflow(void)
-+{
-+	asm volatile (
-+	"w4 = 0;"
-+	"w4 = -w4;"
-+	"w3 = 0xa0000000;"
-+	"w3 |= w4;"
-+	"w3 += w3;"
-+	"r0 = 0;"
-+	"exit"
-+	:
-+	:
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("32-bit addition, partial overflow, result in unbounded u32 bounds")
-+__success __log_level(2)
-+__msg("4: (0c) w3 += w3 {{.*}} R3_w=scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff))")
-+__retval(0)
-+__naked void add32_partial_overflow(void)
-+{
-+	asm volatile (
-+	"w4 = 0;"
-+	"w4 = -w4;"
-+	"w3 = 2;"
-+	"w3 |= w4;"
-+	"w3 += w3;"
-+	"r0 = 0;"
-+	"exit"
-+	:
-+	:
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("64-bit subtraction, all outcomes underflow")
-+__success __log_level(2)
-+__msg("6: (1f) r3 -= r1 {{.*}} R3_w=scalar(umin=1,umax=0x8000000000000000)")
-+__retval(0)
-+__naked void sub64_full_overflow(void)
-+{
-+	asm volatile (
-+	"r1 = 0;"
-+	"r1 = -r1;"
-+	"r2 = 0x8000000000000000 ll;"
-+	"r1 |= r2;"
-+	"r3 = 0;"
-+	"r3 -= r1;"
-+	"r0 = 0;"
-+	"exit"
-+	:
-+	:
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("64-bit subtration, partial overflow, result in unbounded reg")
-+__success __log_level(2)
-+__msg("3: (1f) r3 -= r2 {{.*}} R3_w=scalar()")
-+__retval(0)
-+__naked void sub64_partial_overflow(void)
-+{
-+	asm volatile (
-+	"r3 = 0;"
-+	"r3 = -r3;"
-+	"r2 = 1;"
-+	"r3 -= r2;"
-+	"r0 = 0;"
-+	"exit"
-+	:
-+	:
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("32-bit subtraction overflow, all outcomes underflow")
-+__success __log_level(2)
-+__msg("5: (1c) w3 -= w1 {{.*}} R3_w=scalar(smin=umin=umin32=1,smax=umax=umax32=0x80000000,var_off=(0x0; 0xffffffff))")
-+__retval(0)
-+__naked void sub32_full_overflow(void)
-+{
-+	asm volatile (
-+	"w1 = 0;"
-+	"w1 = -w1;"
-+	"w2 = 0x80000000;"
-+	"w1 |= w2;"
-+	"w3 = 0;"
-+	"w3 -= w1;"
-+	"r0 = 0;"
-+	"exit"
-+	:
-+	:
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("32-bit subtration, partial overflow, result in unbounded u32 bounds")
-+__success __log_level(2)
-+__msg("3: (1c) w3 -= w2 {{.*}} R3_w=scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff))")
-+__retval(0)
-+__naked void sub32_partial_overflow(void)
-+{
-+	asm volatile (
-+	"w3 = 0;"
-+	"w3 = -w3;"
-+	"w2 = 1;"
-+	"w3 -= w2;"
-+	"r0 = 0;"
-+	"exit"
-+	:
-+	:
-+	: __clobber_all);
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.45.2
-
+>  static inline struct page_pool *netmem_get_pp(netmem_ref netmem)
+>  {
+>  	return __netmem_clear_lsb(netmem)->pp;
+> -- 
+> 2.17.1
 
