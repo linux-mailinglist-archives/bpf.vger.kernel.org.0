@@ -1,137 +1,144 @@
-Return-Path: <bpf+bounces-61255-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61256-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 465FEAE3397
-	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 04:33:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9462BAE3424
+	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 06:04:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 021417A6B95
-	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 02:31:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2965516D617
+	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 04:04:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6427D19E7D0;
-	Mon, 23 Jun 2025 02:33:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0FB81A23B6;
+	Mon, 23 Jun 2025 04:04:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sl30Inp7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BaG8D44R"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07720183CA6
-	for <bpf@vger.kernel.org>; Mon, 23 Jun 2025 02:32:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF51810A1E;
+	Mon, 23 Jun 2025 04:04:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750645981; cv=none; b=fnjwXSoT/iSBk1p1wrur4THGdCMM73Rh1UdgVmOrA0WPoZcjHlM1PVekmQw31xwEhZll2MlpKrK3k1pwfK4rG/XV6vL5mbUcGSiCXtwi+wA4wvLLkrAadCK1zhyzwXh3wDiz9qkNYH8RtPvUbNgvA+HCgeZXx8lMlkCEK+2p4Rw=
+	t=1750651478; cv=none; b=BtHgkmDL8y6j1VsB45ngNeg5g0YF7vPAWsd1eII1J7bt5qdyC4XxemwR2pLnrXbX5rJqrexawkYJSwY8JQVVe9MpIw0AHYyXVI3Dvhpa+4SINyPkj8IwpOxDO5Yw8ChAysFiho/lueHxlpTl9eLB4tIVrk13X9hradz+UGeLNo8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750645981; c=relaxed/simple;
-	bh=8hluwjVTmXXog4aTRxgoRd/tz2EcAslNixaPAR1dtNM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mymI3B132YKZMm5ZuN+HZVQwkbkiZeABGqJZ2syUbQQSIEgmvcj5cCEQLWpVL4gj9v04fQTFJ2FOl9BM8/pk6SNoJH2SsXnoudjkII8IsGYFP01gHEeGxGmxlZRBf1YiLJKOYO7bVGGW116fgDgzVnB4yfeVRYNFqEMFC+Ts8JY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sl30Inp7; arc=none smtp.client-ip=95.215.58.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <b2656172-091a-435b-a197-6472ca9a038a@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1750645968;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=voS/IXxDZSgvXt/HTZvb06bjDBsLY8G70iK7t5CzXcc=;
-	b=sl30Inp7L/uRJ9KlWfg7mh20YwAu/RTNbG+JqwALSU3CmnMZgQP4CJaIZcn9BdGjhz6dn0
-	0TCN/xTkJNH1YjvfJHIKGd1ChZV6jrNs1v2+IKrc4aSuY+GhejGCRtf2HG1fWJCHUgR4Fl
-	9afyH2U6vEpvvI63s7aftIqRAeawro8=
-Date: Mon, 23 Jun 2025 10:32:28 +0800
+	s=arc-20240116; t=1750651478; c=relaxed/simple;
+	bh=NMMH/a/h9GKlHxgqPIAhgpz1RgpPV9y01d9DBYIVi8U=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dL/zvAoLqHJeBpLTrerLQQYljjVwddMPyOU93sUi6QlvQ8p59usIV1kY1P7xnTR0ovm/oyRtuRZB4RZeM3EmB0MZSdWKq6zO6OlUAcy6NvKOHt+1Gt5OUdwzD9xBDwNvzSPZV4rL+t7IlZBzT2NGalrFm4AYCLyNnJlsMRa/Yfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BaG8D44R; arc=none smtp.client-ip=209.85.219.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-6fadb9a0325so32475516d6.2;
+        Sun, 22 Jun 2025 21:04:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1750651475; x=1751256275; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Md8vFLFRSCAoAlCVLUSMYdQwjWVR5zcLjkPNgRxuLls=;
+        b=BaG8D44Rlfy4V7HKafKiNms+CHggXWGrhOIZX3t1bajZR4rK4YJzzdw4xDEAD/4ktV
+         UvaLyqzUrbYosTyK95H/liGTmiFH+MGH02j3mh4DdZKmLXjDiTkVSFUVJHN/QjvF3P7T
+         NctvEZs+yvWN7JnCuE7V+BaG8s6fLTk5de4moKAEFyNw271oyfQOU5Mj+ZN0N/LucNvi
+         0NGUxyKNvffLjZidufva6wpPlLY/Im/2pRzzyuD/khqqFDwEoTLbBC9xfadLKG+x+zH7
+         IfC3Cu9lbbWToxbEkBlaRezRh7lHr18uj5D6pvHqTKgwGjbfK/0x+F061+UV0gZsAqGL
+         Q+JQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750651475; x=1751256275;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Md8vFLFRSCAoAlCVLUSMYdQwjWVR5zcLjkPNgRxuLls=;
+        b=u/x6OYmmGV4nrZwyvocHllGxFPHlFZD6EJar8VUM/2K9zUwqMB/Ys4nsh4kZyEereB
+         XoWOG0EgO1yS8d3jznVSHGtqYRcfxdF2R3CNwArignZQJgFLaR9hfuRgiXyXhN5dV49G
+         diAGjpHtQK/tgN2rTaz3jGLHCHJ7bhCiq3CpjcDxlI9FlXw3/VYLFHk5cMujuft8V8/x
+         Gb9sNJxrHnGncQ4Q9263ThEOOKKvvbJ3sQgAQdtnojuVGSTny8ocWuBQN6SdkS5xzGRx
+         mR23yhhX+kx+C5pdvg/8SNSMrLYZRAjdCvx6YBpWNC2jyhdclQgy40Sv5EHmLiWyY8O3
+         gqqA==
+X-Forwarded-Encrypted: i=1; AJvYcCVNHmmtuHGRjp+RkrTFVEbAKtsenUWfsbUGyrjLs+Aa1vesDDflV6oPFZmGURdvfEiKE5UCMBC9+4pSBfIl@vger.kernel.org, AJvYcCVpOC8xLpRSHCVXv+xn3jl59TcPYP2S4EqinM3Dt0bPKNEM/gVCS6TSr1UO6kh+rBLaZQc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxusqNywPKzlsKZhwR1NpevnWD4bSBHEMgfOZGOHOu4ZFmO8zRi
+	7Qi/eAY/AHMvsAJd3eOhPm8xhj3HmfdD8n2ApVcFsbykuLdZig9FlgP6
+X-Gm-Gg: ASbGncuO0n1fmmtS0XwM1EeSJwyF/4D2NMPIYzVvO+7rzwxeK7/jK5BbpZcMU2/fOpS
+	34m/kTjrMIBmdd4x3pXKqLwUQxf0B8C5IOy9gCfA0LVDQFV2mxtPzZlWPfuP0I11WZoM5aRmMXv
+	wDNVvNiuRbsXO2gQ7MuBZ01KzQTqTzDgvLh6rIhCPuR7kXjAU2ZVwhHN24zZRBizLlUHBJzSIUm
+	uqcgSzq+aX+YaWZloVXZ4f22Au1YV4eE4+bXlvIf1LsPCv9M6pjcHjeWr+sMmbInzkISTY6xusj
+	KAiLtaTm9Hgh6A1S7PzEdJOwGCnJQTq77SARf+MoJzAZKlohTOQftXYscPiDnJjoeFVrxZY+KAz
+	RFMpsYCGXvawkOviJJhEb+2AIRWPylTN2L/QisH0iBTR4HT0qTkxRrIsjW4FHzxAy7LZuIA==
+X-Google-Smtp-Source: AGHT+IGoqQ2krgFek93TTJE8oNo1dXpK2rhyDOE2arFxVMVJAR875laOmCSpHGxPcf6PmqtrT1yYLg==
+X-Received: by 2002:ad4:5e87:0:b0:6fd:8fc:e2fa with SMTP id 6a1803df08f44-6fd0a570c7emr199623296d6.32.1750651475553;
+        Sun, 22 Jun 2025 21:04:35 -0700 (PDT)
+Received: from lima-default.. (pool-108-50-252-180.nwrknj.fios.verizon.net. [108.50.252.180])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7d3f99fc0a8sm347274385a.80.2025.06.22.21.04.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Jun 2025 21:04:35 -0700 (PDT)
+From: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>
+To: ast@kernel.org
+Cc: m.shachnai@rutgers.edu,
+	srinivas.narayana@rutgers.edu,
+	santosh.nagarakatte@rutgers.edu,
+	Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/2] bpf, verifier: Improve precision of BPF_ADD and BPF_SUB
+Date: Mon, 23 Jun 2025 00:03:55 -0400
+Message-ID: <20250623040359.343235-1-harishankar.vishwanathan@gmail.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v4 2/2] bpf: Add show_fdinfo for kprobe_multi
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- linux-trace-kernel <linux-trace-kernel@vger.kernel.org>
-References: <20250619034257.70520-1-chen.dylane@linux.dev>
- <20250619034257.70520-2-chen.dylane@linux.dev>
- <CAADnVQLyAeo9ztPoJzU1QJUQf6SMptVNoOzZza02xPuXO1ES2g@mail.gmail.com>
- <9eedd830-9222-4ac0-8ccd-72499fb85b13@linux.dev>
- <CAADnVQJcdVCKPu8aPPj5hZExNTFYAYTd5xkF=Ljfm__+ugirGg@mail.gmail.com>
- <77b09f48-01d9-46f1-8a31-a1824c0eef8d@linux.dev>
- <CAADnVQ+SgYop50-1S7424ecRKWDM3R=8cHeizRCjeC_FXdkdLA@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Tao Chen <chen.dylane@linux.dev>
-In-Reply-To: <CAADnVQ+SgYop50-1S7424ecRKWDM3R=8cHeizRCjeC_FXdkdLA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-在 2025/6/21 02:25, Alexei Starovoitov 写道:
-> On Thu, Jun 19, 2025 at 8:31 PM Tao Chen <chen.dylane@linux.dev> wrote:
->>
->> 在 2025/6/20 10:59, Alexei Starovoitov 写道:
->>> On Thu, Jun 19, 2025 at 7:46 PM Tao Chen <chen.dylane@linux.dev> wrote:
->>>>
->>>> 在 2025/6/20 01:17, Alexei Starovoitov 写道:
->>>>> On Wed, Jun 18, 2025 at 8:44 PM Tao Chen <chen.dylane@linux.dev> wrote:
->>>>>>
->>>>>> Show kprobe_multi link info with fdinfo, the info as follows:
->>>>>>
->>>>>> link_type:      kprobe_multi
->>>>>> link_id:        1
->>>>>> prog_tag:       a15b7646cb7f3322
->>>>>> prog_id:        21
->>>>>> type:   kprobe_multi
->>>>>
->>>>> ..
->>>>>
->>>>>> +       seq_printf(seq,
->>>>>> +                  "type:\t%s\n"
->>>>>> +                  "kprobe_cnt:\t%u\n"
->>>>>> +                  "missed:\t%lu\n",
->>>>>> +                  kmulti_link->flags == BPF_F_KPROBE_MULTI_RETURN ? "kretprobe_multi" :
->>>>>> +                                        "kprobe_multi",
->>>>>
->>>>> why print the same info twice ?
->>>>> seq_printf(m, "link_type:\t%s\n", bpf_link_type_strs[type]);
->>>>> in bpf_link_show_fdinfo() already did it in a cleaner way.
->>>>>
->>>>
->>>> link_type only shows 'kprobe_multi', maybe we can show the format like:
->>>
->>> Ohh. Especially so. It would be wrong and confusing to display:
->>> link_type:      kprobe_multi
->>> type: kretprobe_multi
->>>
->>> Let's fix 'link_type' to display it properly.
->>
->> What do you think show like this:
->>
->>       link_type:      kprobe_multi
->>       link_id:        1
->>       prog_tag:       33be53a4fd673e1d
->>       prog_id:        21
->>       retprobe:       false
-> 
-> It leaks implementation details.
-> For the kernel the link type is BPF_LINK_TYPE_KPROBE_MULTI for retprobe too,
-> but show_fdinfo is for humans.
-> 'link_type:' field can be more precise and differentiate
-> what's effectively a subtype of the link.
+This patchset improves the precision of BPF_ADD and BPF_SUB range
+tracking. It also adds selftests that exercise the cases where precision
+improvement occurs, and selftests for the cases where precise bounds
+cannot be computed and the output register state values are set to
+unbounded.
 
-Well, i will fix it in v5. Thanks.
+Changelog:
+
+v3:
+* Improve readability in selftests and commit message by using
+  more readable constants (suggested by Eduard Zingerman).
+* Add four new selftests for the cases where precise output register
+  state bounds cannot be computed in scalar(32)_min_max_add/sub, so the
+  output register state must be set to unbounded, i.e., [0, U64_MAX]
+  or [0, U32_MAX].
+* Add suggested-by Eduard tag to commit message for changes to
+  verifier_bounds.c
+
+v2:
+* Add clearer example of precision improvement in the commit message for
+  verifier.c changes.
+* Add selftests that exercise the precision improvement to
+  verifier_bounds.c (suggested by Eduard Zingerman).
+
+v1:
+  https://lore.kernel.org/bpf/20250610221356.2663491-1-harishankar.vishwanathan@gmail.com/
+
+Harishankar Vishwanathan (2):
+  bpf, verifier: Improve precision for BPF_ADD and BPF_SUB
+  selftests/bpf: Add testcases for BPF_ADD and BPF_SUB
+
+ kernel/bpf/verifier.c                         |  76 ++++++---
+ .../selftests/bpf/progs/verifier_bounds.c     | 161 ++++++++++++++++++
+ 2 files changed, 217 insertions(+), 20 deletions(-)
 
 -- 
-Best Regards
-Tao Chen
+2.45.2
+
 
