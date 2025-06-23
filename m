@@ -1,153 +1,149 @@
-Return-Path: <bpf+bounces-61299-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61300-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0B6BAE4AA7
-	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 18:24:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 813DCAE4AFA
+	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 18:31:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3EB997AD95D
-	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 16:21:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 181743B91CA
+	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 16:27:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 754BF29CB40;
-	Mon, 23 Jun 2025 16:14:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA83129B781;
+	Mon, 23 Jun 2025 16:26:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gvvWkioS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jXcw2UMQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C89323C51F
-	for <bpf@vger.kernel.org>; Mon, 23 Jun 2025 16:14:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71BDF28E607;
+	Mon, 23 Jun 2025 16:26:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750695254; cv=none; b=oJGi+e1PC5WXOVZL6JqlxrMjjLLsdLtDzZ7KnS8dPwXP6NmfFyYvaLBW5/a0mgXQzT4fYMs4ZJTzvdSbfK4PESdu9l5yw4QgYcVmFvWk/znNvfukkqqOVugpP09YZ9NIxaY99xdpXhgCZqjjUTRJKt7nGx8rzdTI4ZLehrx4zL4=
+	t=1750696018; cv=none; b=MGKJGu9O05GDqvONoxEgZNHXDPrLLksKSIjrUs/VBugHBt9FzJXsODktWkDxd9tFnCruCOi1240AJ0NkXGcf3y0491w15KWhpQT90jpPVQuaDWdyHk6L7Rr2kt+finXjEwdi1hZQk8qFzXG6qeiDBAwcGCTsqXuHZc+dbZkNVBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750695254; c=relaxed/simple;
-	bh=Tz+moTFStFX1YX39jWCVWhxsp1nVbvbMEnciDuWFgg4=;
+	s=arc-20240116; t=1750696018; c=relaxed/simple;
+	bh=Y6SzHtj22EyMMF6v55IM7BONRXybPUbVypRpur/aCy8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cmNr5t/F0NG47T3KJzIShM+n+pk0Hx8lDQwT3x4M8EyDcHbHIZmpG+jRxJbg02PCwX3B+UVir4NA52KHM0IBEPFZScsYYlffLyO/49Tf3fH1Zxy89W9xdHB6ildpAK1rVsRMuKWsywjjZvHN0G7U9N5urz1sapmVrvT4fuPxv5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gvvWkioS; arc=none smtp.client-ip=209.85.160.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-4a58ba6c945so74275841cf.2
-        for <bpf@vger.kernel.org>; Mon, 23 Jun 2025 09:14:11 -0700 (PDT)
+	 To:Cc:Content-Type; b=Ts8utpPB73vCvlbhvZfWHLbEQrDTAXxK2dt0ltxEhzEmnctdPsUUFrdfTVlMBUTh/GGiwi4Js9bWFQU5zfd/G/V6oddr9og+Ke/Y/n5EFxMBTjwWFzQAtdX8TPdYPCkgCCegtJXUVuUkYRM8PyECOg1BuimKRPFWcy8mmx7/QdE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jXcw2UMQ; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4535fbe0299so23228415e9.3;
+        Mon, 23 Jun 2025 09:26:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1750695250; x=1751300050; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1750696015; x=1751300815; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wN+RSCnSaEyeOJOV22jB+Ns6YfYfbuKVTQFf93dpJN8=;
-        b=gvvWkioSl67jjGr10PTQQbIlXYXFSOz+Z6BtomHgsf5xPkkU/kGiapFMoBfZUN+U+Z
-         PmKLO+iCoRzYV+tRxsXYCbrKhyAa1hdTqOH09Hl4u0xClAtggzbulu0ZRR7kzldIpDvE
-         IwUMIZ5OTZawrkly0Dh1AcIANi1TWz5FjW9vPINoUGfMEbsrcNdIS2XQQShLb/nxi2Mc
-         uUtzKrWqqLBNt14ACAOTgcBlZW5vSthVqcUdQXYPKfoMR8iTGATIR9MJO6l+HG2j3KFK
-         XadtpyQk6YSNilylWwOUrTJbFS10f/Icks5jOR77h3zDvY5TAiF+pkPNiPdYPAMCO+6I
-         7U8Q==
+        bh=YSDtoA+3CYJQ9s5hNpx567tpNF7qKvZSoZnmnOpBoHs=;
+        b=jXcw2UMQbPKr7BquXVVE21b6X41/M/todPAiNCv05KwtmYPtGdVs8rBbKmraN3jyui
+         G/SgDmNYJmu667Tmdi9x1/ZyszJJV3mm84elXaV7V71idP1cpSHk1uo+TpPVOAP8Ef6K
+         6HI9YeFM840gy0VCttMgVelyeq5NXVsfvi3vTa8REfuXlLbaTdDnup0ihiHDhvNDTsUX
+         zdSQzBGlyj08XiTSQHkH6gDY5Ot/3uOun/Sp2VYm6HMqVO+PLx+5nukXXlZDLNpy6OUH
+         VCHM+RfOCw0V6k/hB6rmBAwh0aVXeYYn0+jY1JvpP8V9JuasXV0vOusSlFgzRRtMsfVR
+         IJIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750695250; x=1751300050;
+        d=1e100.net; s=20230601; t=1750696015; x=1751300815;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wN+RSCnSaEyeOJOV22jB+Ns6YfYfbuKVTQFf93dpJN8=;
-        b=Dstn3XL4a9Qoqi3I405r+4Xd2SQ/ZOTzn7PNIK7okAgBmqW+nBi3WJn3QJSK+S3Khk
-         1C7/B7OzXYPxiDCFxUA6J4pn6bvVMslvbeZ1+fiIUNMLI0anujMwFiLNBetOaG1lqGk5
-         Ani/XR3DJgdInw9QldPdxRHDMtAcHF9iaCuisJ16n3QzOYwoi0rE+Ly7GLgb5EQkjYu9
-         HkxrlURZe9jvB7LfyqlIXe3dH7oY5khSESCol0NNt6Yf3vcuJHSVrOlyoF6ApNXQRX2m
-         9W/uQiApbdnJ/mQV2wTceFYz+lW5lp3zPrc9B0gUFa+4nkhlPSGvc8+Xn636/tzUoviz
-         /tyg==
-X-Forwarded-Encrypted: i=1; AJvYcCUCcEGUiGpMngqBuQ9QlunztX8bn4Pn3gifdn3ECvHuRr8hk+f5oIAyjEPJeri8Rt8Bc+A=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxBEyMw1TrQNDhVUGeMBVbFEv8CzCdBVwia+h2auhMwsqkMULgl
-	7cxhn5uZwgWXv0dXf5QKZMDbU5dK3O81z8mgCAyKCf2lU3YQ3E3ACZWBP0sTgrTUZFG9eJ22OGA
-	0H4tDW/9rZ6KsLAvcRFzb5oXGb0n8lTNwY3t/pcE1
-X-Gm-Gg: ASbGncvHlvsSKeQqLXcShtst7W+ZFswTMVmCcjHllLWwxc+1pyHFAEcgrm/qJfRXY1q
-	ELhy+WIWpei7pkf+yMimNN/FLDvCuv+4wL0PdN5MqUuQPvNltJIhMqSN7dOezIpNJ59glL0rWKz
-	5R7he79PDyOeNomEeBVjXdL7MbEEGChaz86obUal3AUjQ=
-X-Google-Smtp-Source: AGHT+IEobn0And7X+FnotCoZ870DRkq0dQIwi5clxpS4xb+1xJRmqq200eOqBXI6G1dwNYsWyv6mWhZ2d1yR0qDuYeA=
-X-Received: by 2002:a05:622a:610e:b0:4a4:3a34:ee71 with SMTP id
- d75a77b69052e-4a77a2b6514mr178869141cf.29.1750695250190; Mon, 23 Jun 2025
- 09:14:10 -0700 (PDT)
+        bh=YSDtoA+3CYJQ9s5hNpx567tpNF7qKvZSoZnmnOpBoHs=;
+        b=DwX0MEbRxK7VNd/OsdaM8QYM8FpsibzKEk4DZqth8zNstLovcDn7C5pfwMvIdjJ79m
+         vcv61T433j+T5C8/JsqeIrzmJ3KAgXhFZU5DClQGLw7pu/hKe+keVUv2ckiuE9qxl04f
+         ZWjyohF7El/dHXR4c1z6x0gswjS2MuxS023zIUCWHP+2JJeYv4TglC74yebfKoNswwbw
+         ixktPuVVJPUUfxOi38eFR35RDlL3vmNh+sFiID0+odUba/j2oPnkphegvCF9rzcG5Bl9
+         KmPwkGGzGn7xetN84my4KfqdgT3R4YfcaraEjpHGp/eYby7Gjufxn2wE/IO0oTlpUVE0
+         ba7g==
+X-Forwarded-Encrypted: i=1; AJvYcCU0KOjm3ZCyg8bW0KZXH8aGgr1iR05JlFNUrm2ZB6JfgOfYizJOy55w1Q9b+pikkMTn8pM=@vger.kernel.org, AJvYcCVwcNbzwDobViKBE0iLMi0XnKqjw+DeJy5YFyrwA5bNY2XqjftBx5vcYP8DKQvsRcML+X6zKOgtWqjkxHiI@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw2ofZsjRUI1TxNoNYFyrhwDH3X6sXJBxDslFLQx527yWQeU+c6
+	EpsAx5g6JtkOqacDXbXY8EgOOFuh0M2+GBlggw1PzF64nYRWlaU8juUoBJCa7aLc0OSfGQauKmO
+	bMisPfaZFB6oXfzqHN6FEKQ81LySKnWk=
+X-Gm-Gg: ASbGncvUI9v7Jdas+ix911E0Vk8kvszddq0RIUF+ClUPHZwdbCcJ4j2OSA0NXUm1x7H
+	xyZtDs1lyiip8GgxKbgScGjo+I2shaI+7Pws0FTj5KLjczN2IUKD4UvPbE/ksq6e546MSSQtog4
+	s24rEzOt5HaiY0JbWbqy3dG5T6jxfB+E5LUipRw4UmCDr9T3NrjIG7jlC3wMdGffndvAPUcw==
+X-Google-Smtp-Source: AGHT+IGbrt6ZJ+UP+PNSqfWiWRPF0qzGEANYAlCONftPVh2oCHKU0PtQcpCabpvjSirIY4iHkuKjyEg2cgZvT7L9ZuI=
+X-Received: by 2002:a05:600c:81c8:b0:441:d4e8:76cd with SMTP id
+ 5b1f17b1804b1-453659f6a8cmr128124955e9.29.1750696014331; Mon, 23 Jun 2025
+ 09:26:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250621193737.16593-1-chia-yu.chang@nokia-bell-labs.com> <20250621193737.16593-5-chia-yu.chang@nokia-bell-labs.com>
-In-Reply-To: <20250621193737.16593-5-chia-yu.chang@nokia-bell-labs.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Mon, 23 Jun 2025 09:13:59 -0700
-X-Gm-Features: AX0GCFsz5JzbRrh0-kqOwf2TSk7Ef6ZqFtN_ZPJc01ldHoBLtqqmmWiHN33x0qI
-Message-ID: <CANn89iKLKzvkLkPY67286+dKC4fGS3VtP_YhL00BmS6-0yXKxQ@mail.gmail.com>
-Subject: Re: [PATCH v9 net-next 04/15] tcp: AccECN core
-To: chia-yu.chang@nokia-bell-labs.com
-Cc: pabeni@redhat.com, linux-doc@vger.kernel.org, corbet@lwn.net, 
-	horms@kernel.org, dsahern@kernel.org, kuniyu@amazon.com, bpf@vger.kernel.org, 
-	netdev@vger.kernel.org, dave.taht@gmail.com, jhs@mojatatu.com, 
-	kuba@kernel.org, stephen@networkplumber.org, xiyou.wangcong@gmail.com, 
-	jiri@resnulli.us, davem@davemloft.net, andrew+netdev@lunn.ch, 
-	donald.hunter@gmail.com, ast@fiberby.net, liuhangbin@gmail.com, 
-	shuah@kernel.org, linux-kselftest@vger.kernel.org, ij@kernel.org, 
-	ncardwell@google.com, koen.de_schepper@nokia-bell-labs.com, 
-	g.white@cablelabs.com, ingemar.s.johansson@ericsson.com, 
-	mirja.kuehlewind@ericsson.com, cheshire@apple.com, rs.ietf@gmx.at, 
-	Jason_Livingood@comcast.com, vidhi_goel@apple.com, 
-	Olivier Tilmans <olivier.tilmans@nokia.com>
+References: <20250621045501.101187-1-dongml2@chinatelecom.cn>
+In-Reply-To: <20250621045501.101187-1-dongml2@chinatelecom.cn>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 23 Jun 2025 09:26:42 -0700
+X-Gm-Features: Ac12FXwNQwTXTebPScXO5Y5esR9EWCRME1zD8mdwelhzYSda5beKDZc9-HxJRcU
+Message-ID: <CAADnVQLz7-tVmJ7C3VdNDcL8y07Vyg5Ad+DhKAQ7odQAo_BO=Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf: make update_prog_stats always_inline
+To: Menglong Dong <menglong8.dong@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Menglong Dong <dongml2@chinatelecom.cn>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jun 21, 2025 at 12:37=E2=80=AFPM <chia-yu.chang@nokia-bell-labs.com=
-> wrote:
+On Fri, Jun 20, 2025 at 9:57=E2=80=AFPM Menglong Dong <menglong8.dong@gmail=
+.com> wrote:
 >
-> From: Ilpo J=C3=A4rvinen <ij@kernel.org>
+> The function update_prog_stats() will be called in the bpf trampoline.
+> In most cases, it will be optimized by the compiler by making it inline.
+> However, we can't rely on the compiler all the time, and just make it
+> __always_inline to reduce the possible overhead.
 >
-> This change implements Accurate ECN without negotiation and
-> AccECN Option (that will be added by later changes). Based on
-> AccECN specifications:
->   https://tools.ietf.org/id/draft-ietf-tcpm-accurate-ecn-28.txt
->
-> Accurate ECN allows feeding back the number of CE (congestion
-> experienced) marks accurately to the sender in contrast to
-> RFC3168 ECN that can only signal one marks-seen-yes/no per RTT.
-> Congestion control algorithms can take advantage of the accurate
-> ECN information to fine-tune their congestion response to avoid
-> drastic rate reduction when only mild congestion is encountered.
->
-> With Accurate ECN, tp->received_ce (r.cep in AccECN spec) keeps
-> track of how many segments have arrived with a CE mark. Accurate
-> ECN uses ACE field (ECE, CWR, AE) to communicate the value back
-> to the sender which updates tp->delivered_ce (s.cep) based on the
-> feedback. This signalling channel is lossy when ACE field overflow
-> occurs.
->
-> Conservative strategy is selected here to deal with the ACE
-> overflow, however, some strategies using the AccECN option later
-> in the overall patchset mitigate against false overflows detected.
->
-> The ACE field values on the wire are offset by
-> TCP_ACCECN_CEP_INIT_OFFSET. Delivered_ce/received_ce count the
-> real CE marks rather than forcing all downstream users to adapt
-> to the wire offset.
->
-> This patch uses the first 1-byte hole and the last 4-byte hole of
-> the tcp_sock_write_txrx for 'received_ce_pending' and 'received_ce'.
-> Also, the group size of tcp_sock_write_txrx is increased from
-> 91 + 4 to 95 + 4 due to the new u32 received_ce member. Below are
-> the trimmed pahole outcomes before and after this patch.
->
-
-> Signed-off-by: Ilpo J=C3=A4rvinen <ij@kernel.org>
-> Co-developed-by: Olivier Tilmans <olivier.tilmans@nokia.com>
-> Signed-off-by: Olivier Tilmans <olivier.tilmans@nokia.com>
-> Co-developed-by: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
-> Signed-off-by: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
->
+> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
 > ---
-> v9:
-> - Use tcp_data_ecn_check() to set TCP_ECN_SEE flag only for RFC3168 ECN
-> - Add comments about setting TCP_ECN_SEEN flag for RFC3168 and Accruate E=
-CN
+> v2:
+> - split out __update_prog_stats() and make update_prog_stats()
+>   __always_inline, as Alexei's advice
+> ---
+>  kernel/bpf/trampoline.c | 23 ++++++++++++++---------
+>  1 file changed, 14 insertions(+), 9 deletions(-)
+>
+> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> index c4b1a98ff726..1f92246117eb 100644
+> --- a/kernel/bpf/trampoline.c
+> +++ b/kernel/bpf/trampoline.c
+> @@ -911,18 +911,16 @@ static u64 notrace __bpf_prog_enter_recur(struct bp=
+f_prog *prog, struct bpf_tram
+>         return bpf_prog_start_time();
+>  }
+>
+> -static void notrace update_prog_stats(struct bpf_prog *prog,
+> -                                     u64 start)
+> +static void notrace __update_prog_stats(struct bpf_prog *prog, u64 start=
+)
+>  {
+>         struct bpf_prog_stats *stats;
+>
+> -       if (static_branch_unlikely(&bpf_stats_enabled_key) &&
+> -           /* static_key could be enabled in __bpf_prog_enter*
+> -            * and disabled in __bpf_prog_exit*.
+> -            * And vice versa.
+> -            * Hence check that 'start' is valid.
+> -            */
+> -           start > NO_START_TIME) {
+> +       /* static_key could be enabled in __bpf_prog_enter*
+> +        * and disabled in __bpf_prog_exit*.
+> +        * And vice versa.
+> +        * Hence check that 'start' is valid.
+> +        */
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+
+Instead of old networking style I reformatted above to normal
+kernel style comment.
+
+> +       if (start > NO_START_TIME) {
+
+and refactored it to <=3D and removed extra indent in below.
+while applying.
 
