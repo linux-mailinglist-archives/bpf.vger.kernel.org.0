@@ -1,100 +1,107 @@
-Return-Path: <bpf+bounces-61257-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61258-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 224B8AE3426
-	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 06:04:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEAF4AE3429
+	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 06:05:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6FC916F6C5
-	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 04:04:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92EB116F6C0
+	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 04:05:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEE391A23AD;
-	Mon, 23 Jun 2025 04:04:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B0031D2F42;
+	Mon, 23 Jun 2025 04:04:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EKLrkNWh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f6UrStKy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
+Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EB3D10A1E;
-	Mon, 23 Jun 2025 04:04:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B9541C8612;
+	Mon, 23 Jun 2025 04:04:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750651485; cv=none; b=lju+nFZY7/WbI69TQeqSgVdwi3lS2R/uGo9IVrxF3xLmP2cI0RnzUeuogk4sdRXHUVP8Nqw6hONo4FKiRJFJbz+q7/y2QeOcxWVQcDbA/6lfTp/N4Z3UvNcwPIiNqJZcJonR1yNpgW879vv8E++UmCNr/2S/Z4uf5aXsovgmBxk=
+	t=1750651491; cv=none; b=LRxTouVHSpPsgD0tLK9xIT5sFes0wCg24Kr9VBP2/zSTAXrr8QrV0hi+nYdPv0iiBWdm/ihzTZ28CdlQIrOFL+HGeoqhWcJx40oSoXXCUdHzWjCpSuhah4XDioOhDx6gzFNC7iEUyVIwXCQQZq4GPcA5KLbdjkweEWgXWCzEkFU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750651485; c=relaxed/simple;
-	bh=nw0HZ/MY1R0AfsbyhAholz+uRmivzjRSJqewjIU5Ttc=;
+	s=arc-20240116; t=1750651491; c=relaxed/simple;
+	bh=Om7oDGhV8WhIe7MihQ/sdXI7ZWZeAbnV9SZEqTmmH0w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DnlnJTnaDDmspzDnXk7hBvWU7lj9gbo4/9J6T+cUKiLrB2jGKeZO+bpdlhq/1/iTPQtLMp4LXXxrR14/Atut/XSWRdSC93vQ2HHmXKVFJZMrhnKRGjji+1Ol0S3VP3q/g/bb0US6vCMSMIU4myuiXljjdY6nS0oqVyxd0bdXL0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EKLrkNWh; arc=none smtp.client-ip=209.85.222.174
+	 MIME-Version; b=bfaBfzy0i9jya7PN/mVXMFrI5pTzSzmWyUnbK4PCJjynkHNrpenbCbTiLagAIkLpCrWTrvQKIF5SQFL+ZDqznHVn5iJrtgelzbP0o2gtriAL+xO9nFecRr5yO4yyu43A3rIRnfHNMUup5VPn8VjhTVJZkbUzTc+lAB3AduwVeLI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f6UrStKy; arc=none smtp.client-ip=209.85.222.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-7d219896edeso447748585a.1;
-        Sun, 22 Jun 2025 21:04:43 -0700 (PDT)
+Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-7d38cfa9773so404031785a.2;
+        Sun, 22 Jun 2025 21:04:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750651482; x=1751256282; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1750651488; x=1751256288; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yvZn2UHvruNWAJqVxizc+nhbDtjTIhNXgvVbLLYHuUk=;
-        b=EKLrkNWhY90LmEA5AG9/GMbERpJjd8aKHn7+1nf/fyuPiZLa2Lf25KdxCJPZOkJ1pt
-         Uvi6MtuVzdVum1TXh7SdVGYluJiZ3r6mCZAzR04UQ8vfBISrCrGd5frWkfI1JPdkihIZ
-         OUB/H+AdQMMKTwNTlBWqZjdDsYYA3ijN/iDphHGeULzDMVbTVjkExb5ddoMLHFPqIRv0
-         VzSuxlMu0AhOOYozhrRM1xBBOzaH3tEcM7Md20yT3c3hhCifovJWdQOpwNjTJ1UU+gg0
-         vadpcugs7D6qs7SV9022TeYTQzaHSVoYQpfNicZrfz/cWL4QcvJdYi27m4pyuOPrdgeT
-         eLrQ==
+        bh=KxiQZQWkAOiMlWzdIY0yzPCGK3zVKGxK5z7H8GVPDEM=;
+        b=f6UrStKyGeCW7VtNtQ30Eq1UcPePgFiF/Wsejo4c52ERdznrbDH5TZCb3KAGa858TR
+         T+ix4b81lTBU0mTTULVMzZ1PpTbtH+4nvskLlMf+mRs064Kis5nlAs4oCZM9XaIqx3DD
+         3cuEHwavKLhH2ipQBv1b/GPcdOp9RLixKU8IEpwO3O7QP7QXEaDToYOEyslU4geEzbJs
+         LiDyjlfC/jPMYt3921Dn83AR1mNEC7rpbwFvastZasjOZYA+L8aCDCJlOw/3woPbsb7+
+         MAufcCBtELR//PdlYoIt5wYc7iRf2zKLhXrgNVEr0yDBlkVxPw5J0pRSLiKduku+W1Sc
+         lybA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750651482; x=1751256282;
+        d=1e100.net; s=20230601; t=1750651488; x=1751256288;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yvZn2UHvruNWAJqVxizc+nhbDtjTIhNXgvVbLLYHuUk=;
-        b=i8ar8/QxuJA/4JqDrn0Wz6tnHiXvAST8X4jHOrTJ6L9vf77ES5nC2ZQTIll1KR2nOy
-         S2aLsWWVPFpJQhlkQ9R4XuqYGDVlL3fetagB9k36cfpC5ZKTMbYGfCTAJEXgYQqKeWrq
-         2sXV8sQBhBL+5XnYy+eiTxJUGxP0GAIrVTcb7BGWU2KaWHdownIovBP7Z9Wuw1F3OVzU
-         gDHmxYjxn7kBxQ/VgnwX8HsyvbPh7Sz43E5t4n3i797zdExOfeRysdyB+4nuT+Tddud7
-         N9Uto9ubjsUuaWupRfjABS0I4E+Sd3Iz3OnWAnOSGB51/Dh0Yjzacr1t74ZrzionEHfF
-         ygSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW1BakbJMpJu1z3wUUjLEFYkASKAklIwzLEuraEu9HYtMWcjO1U1oR5VU8+UrtjKQlEIs5fjbctXVFSAn1w@vger.kernel.org, AJvYcCWOmkPWG6rpZzTWAYY7dnU0e5bspq9ZjYHfePSUyPXJAGuK1lriMFE8yf2R35BPkwcL1vU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyaQv0NS5w9F0nA4/NCA0Lr/HZUqjBAVNsPhcKH+cfv9g7fNHjD
-	ZkfA/feRiEqhnVFVOzmZoxRK+UgYS9SMAqVBz4+fjD1D4H/z6B17wv5n
-X-Gm-Gg: ASbGnctP0/C6mNHqI11rGO5WSz0VM7uePizJT5HPSgJ9g9t+omOTkEhJOOOguCqVX9F
-	SKK0CL5+KZOB9z46MVR/S2uUBEuI2M0jh+Hjs3yI4qUF19VoOqvXY5YVNRYp8ZVtHaBeLMIb8Yo
-	zEUaBNC7rC7KcOP/AshlrVRId6zSrd/lx5kjD0fFN2p7S0GkodxgL+B2YVo2uBrA7kgC2h8eGjf
-	HLLNbDhPFls6MYagcUxKjeXXqPpoTigNJmVlmlrGda9cdAue8wxtCTDHeHt7AG4ZPWT9ar+JtX4
-	6yr3BWkmOnxymbyv/dwTb76xKrcWcjd+PSn3y5/Ka7rKYT9Vxj1rn8RLnB9t+lbcq75ltdTBKIH
-	hALXg5Km3XfTl6Jy84NE0aNz50godseWmpfCKHqS4X/rk6BUFE42AtjlgVz1N+JMxm1PZ/A==
-X-Google-Smtp-Source: AGHT+IH9596AlMlifeMZTXGzaSdRIMkbnWhJ7RJVTh9YxLnayJSOqQNQQXzfDlMxHJ5Zibiiwpc5IQ==
-X-Received: by 2002:a05:620a:3948:b0:7cd:2857:331c with SMTP id af79cd13be357-7d3f99391b4mr1451307585a.42.1750651482134;
-        Sun, 22 Jun 2025 21:04:42 -0700 (PDT)
+        bh=KxiQZQWkAOiMlWzdIY0yzPCGK3zVKGxK5z7H8GVPDEM=;
+        b=WUYz5Ey/UQM0P7PqaO+g5+Xqhvy8sP+ubic5gUMLoWSQUswVvg3r2Y6vGCNkq6rnFF
+         8n/TAxp9ZnEtSqQ3X0QV5rar3TZvojtuHOQVIgL2lt1Geq66DCUSYVZnl+IIrvmM1gEK
+         dj2xp/68ZE9XyPcZwY+JA74jajkqz79+wDT1QZ4jVB/yb6CKrvnt6pgVeCH5Ug44xzmN
+         IRroosKEaCWSNW6iakhMBJZ2Zdr9U6R2J7rtKnozgtIl52KesPXKmfm8Zhyc3Frz9raJ
+         0LAMyJFHkE00RuCF7CPnY2bTwHjjlgdtp1KDpQ5mR7WXAzmrDL+mtayR6UwTLG3CGK4x
+         vnQQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUWGwCqV25g1WDpipx/VfXh0EUrS6x7QepeiV+/YzGp57eVLwCk6J6uOj3bFYnJONo8n/oaveqAR9sJOg7s@vger.kernel.org, AJvYcCVHKLRFy3wq9EDD/mh9swwB1qwHRrZR1YjmYolLVgy4j0zU1ZKEBxkpOxnQh9FEjNgtS929wL8ziOkyty4vjJcV@vger.kernel.org, AJvYcCXEC+ss02RfsYNoSR7CkcLm3OyuwpzE7rUqTfhP4SKGYdvvTyCNpsqEIuZ852haw+9sKSU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwcH1LmRcYPglwMI5Yd5BIg+2ssn7xl4Fy0FxqGl7pMl7TFV98y
+	m+y4Z916wJEkxVesyy2/ZV508lMsrRVLmvPGiNs4VfpzaNZE7oUm1fkx
+X-Gm-Gg: ASbGncuuYmcb7V1lf6YeCr/uOKKJAd0wl/CZDWoP+Tf3hXcjor6PU11oeEoB5IzNkka
+	Eme6Ig7kPlG/uNFd4YwApDtwUS0SxU6AK+o8L0A/9qjdaf5orDHOUo0BcdAghA059nVfBdWfFA4
+	pmpfo94PUqvOV2R2E34r4D6Tqdq7L+J+MpykwrMsw0kpe5KjDpqNPOgQGrv2Y1KasCvHk2gr6Ie
+	KuOuuY2vfntemFERXdSH3gsD3Ef6mxWSY8/tdgiv66vtXHECa6TbesHmL+a1BlQneYy/dIsif5v
+	EJkzRrWUTN0ZXfPZhMHAvbQuz2h/1Gdsnw+GkLnL8I7+XgwvWxwIp+7GNTKu+6ZBIG+n20DQTcg
+	XbOzXJJDuVQ+b0FTNp013goS1lRROtodrJLOqpw4mjguY6aDRjHynWTBUhYEMUaPqHBGTCA==
+X-Google-Smtp-Source: AGHT+IEB+CtGeKi3Mghgbkve8NhXsQpZ3/7P7VeN57IvlHIz4GSzj4W8NkOFZ/GfWWwCM3KTkq/J/A==
+X-Received: by 2002:a05:620a:bc1:b0:7d1:fc53:c6b2 with SMTP id af79cd13be357-7d3f9939f14mr1645336585a.41.1750651488257;
+        Sun, 22 Jun 2025 21:04:48 -0700 (PDT)
 Received: from lima-default.. (pool-108-50-252-180.nwrknj.fios.verizon.net. [108.50.252.180])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7d3f99fc0a8sm347274385a.80.2025.06.22.21.04.41
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7d3f99fc0a8sm347274385a.80.2025.06.22.21.04.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Jun 2025 21:04:41 -0700 (PDT)
+        Sun, 22 Jun 2025 21:04:48 -0700 (PDT)
 From: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>
 To: ast@kernel.org
 Cc: m.shachnai@rutgers.edu,
 	srinivas.narayana@rutgers.edu,
 	santosh.nagarakatte@rutgers.edu,
 	Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>,
+	Eduard Zingerman <eddyz87@gmail.com>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	John Fastabend <john.fastabend@gmail.com>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
 	Song Liu <song@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
 	KP Singh <kpsingh@kernel.org>,
 	Stanislav Fomichev <sdf@fomichev.me>,
 	Hao Luo <haoluo@google.com>,
 	Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Matan Shachnai <m.shachnai@gmail.com>,
+	Henriette Herzog <henriette.herzog@rub.de>,
+	Luis Gerhorst <luis.gerhorst@fau.de>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
 	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/2] bpf, verifier: Improve precision for BPF_ADD and BPF_SUB
-Date: Mon, 23 Jun 2025 00:03:56 -0400
-Message-ID: <20250623040359.343235-2-harishankar.vishwanathan@gmail.com>
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH v3 2/2] selftests/bpf: Add testcases for BPF_ADD and BPF_SUB
+Date: Mon, 23 Jun 2025 00:03:57 -0400
+Message-ID: <20250623040359.343235-3-harishankar.vishwanathan@gmail.com>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20250623040359.343235-1-harishankar.vishwanathan@gmail.com>
 References: <20250623040359.343235-1-harishankar.vishwanathan@gmail.com>
@@ -104,258 +111,196 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-This patch improves the precison of the scalar(32)_min_max_add and
-scalar(32)_min_max_sub functions, which update the u(32)min/u(32)_max
-ranges for the BPF_ADD and BPF_SUB instructions. We discovered this more
-precise operator using a technique we are developing for automatically
-synthesizing functions for updating tnums and ranges.
+The previous commit improves the precision in scalar(32)_min_max_add,
+and scalar(32)_min_max_sub. The improvement in precision occurs in cases
+when all outcomes overflow or underflow, respectively.
 
-According to the BPF ISA [1], "Underflow and overflow are allowed during
-arithmetic operations, meaning the 64-bit or 32-bit value will wrap".
-Our patch leverages the wrap-around semantics of unsigned overflow and
-underflow to improve precision.
+This commit adds selftests that exercise those cases.
 
-Below is an example of our patch for scalar_min_max_add; the idea is
-analogous for all four functions.
+This commit also adds selftests for cases where the output register
+state bounds for u(32)_min/u(32)_max are conservatively set to unbounded
+(when there is partial overflow or underflow).
 
-There are three cases to consider when adding two u64 ranges [dst_umin,
-dst_umax] and [src_umin, src_umax]. Consider a value x in the range
-[dst_umin, dst_umax] and another value y in the range [src_umin,
-src_umax].
-
-(a) No overflow: No addition x + y overflows. This occurs when even the
-largest possible sum, i.e., dst_umax + src_umax <= U64_MAX.
-
-(b) Partial overflow: Some additions x + y overflow. This occurs when
-the largest possible sum overflows (dst_umax + src_umax > U64_MAX), but
-the smallest possible sum does not overflow (dst_umin + src_umin <=
-U64_MAX).
-
-(c) Full overflow: All additions x + y overflow. This occurs when both
-the smallest possible sum and the largest possible sum overflow, i.e.,
-both (dst_umin + src_umin) and (dst_umax + src_umax) are > U64_MAX.
-
-The current implementation conservatively sets the output bounds to
-unbounded, i.e, [umin=0, umax=U64_MAX], whenever there is *any*
-possibility of overflow, i.e, in cases (b) and (c). Otherwise it
-computes tight bounds as [dst_umin + src_umin, dst_umax + src_umax]:
-
-if (check_add_overflow(*dst_umin, src_reg->umin_value, dst_umin) ||
-    check_add_overflow(*dst_umax, src_reg->umax_value, dst_umax)) {
-	*dst_umin = 0;
-	*dst_umax = U64_MAX;
-}
-
-Our synthesis-based technique discovered a more precise operator.
-Particularly, in case (c), all possible additions x + y overflow and
-wrap around according to eBPF semantics, and the computation of the
-output range as [dst_umin + src_umin, dst_umax + src_umax] continues to
-work. Only in case (b), do we need to set the output bounds to
-unbounded, i.e., [0, U64_MAX].
-
-Case (b) can be checked by seeing if the minimum possible sum does *not*
-overflow and the maximum possible sum *does* overflow, and when that
-happens, we set the output to unbounded:
-
-min_overflow = check_add_overflow(*dst_umin, src_reg->umin_value, dst_umin);
-max_overflow = check_add_overflow(*dst_umax, src_reg->umax_value, dst_umax);
-
-if (!min_overflow && max_overflow) {
-	*dst_umin = 0;
-	*dst_umax = U64_MAX;
-}
-
-Below is an example eBPF program and the corresponding log from the
-verifier.
-
-The current implementation of scalar_min_max_add() sets r3's bounds to
-[0, U64_MAX] at instruction 5: (0f) r3 += r3, due to conservative
-overflow handling.
-
-0: R1=ctx() R10=fp0
-0: (b7) r4 = 0                        ; R4_w=0
-1: (87) r4 = -r4                      ; R4_w=scalar()
-2: (18) r3 = 0xa000000000000000       ; R3_w=0xa000000000000000
-4: (4f) r3 |= r4                      ; R3_w=scalar(smin=0xa000000000000000,smax=-1,umin=0xa000000000000000,var_off=(0xa000000000000000; 0x5fffffffffffffff)) R4_w=scalar()
-5: (0f) r3 += r3                      ; R3_w=scalar()
-6: (b7) r0 = 1                        ; R0_w=1
-7: (95) exit
-
-With our patch, r3's bounds after instruction 5 are set to a much more
-precise [0x4000000000000000,0xfffffffffffffffe].
-
-...
-5: (0f) r3 += r3                      ; R3_w=scalar(umin=0x4000000000000000,umax=0xfffffffffffffffe)
-6: (b7) r0 = 1                        ; R0_w=1
-7: (95) exit
-
-The logic for scalar32_min_max_add is analogous. For the
-scalar(32)_min_max_sub functions, the reasoning is similar but applied
-to detecting underflow instead of overflow.
-
-We verified the correctness of the new implementations using Agni [3,4].
-
-We since also discovered that a similar technique has been used to
-calculate output ranges for unsigned interval addition and subtraction
-in Hacker's Delight [2].
-
-[1] https://docs.kernel.org/bpf/standardization/instruction-set.html
-[2] Hacker's Delight Ch.4-2, Propagating Bounds through Add’s and Subtract’s
-[3] https://github.com/bpfverif/agni
-[4] https://people.cs.rutgers.edu/~sn349/papers/sas24-preprint.pdf
-
+Signed-off-by: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>
 Co-developed-by: Matan Shachnai <m.shachnai@rutgers.edu>
 Signed-off-by: Matan Shachnai <m.shachnai@rutgers.edu>
-Co-developed-by: Srinivas Narayana <srinivas.narayana@rutgers.edu>
-Signed-off-by: Srinivas Narayana <srinivas.narayana@rutgers.edu>
-Co-developed-by: Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>
-Signed-off-by: Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>
-Signed-off-by: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>
+Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- kernel/bpf/verifier.c | 76 +++++++++++++++++++++++++++++++------------
- 1 file changed, 56 insertions(+), 20 deletions(-)
+ .../selftests/bpf/progs/verifier_bounds.c     | 161 ++++++++++++++++++
+ 1 file changed, 161 insertions(+)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 279a64933262..f403524bd215 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -14605,14 +14605,25 @@ static void scalar32_min_max_add(struct bpf_reg_state *dst_reg,
- 	s32 *dst_smax = &dst_reg->s32_max_value;
- 	u32 *dst_umin = &dst_reg->u32_min_value;
- 	u32 *dst_umax = &dst_reg->u32_max_value;
-+	u32 umin_val = src_reg->u32_min_value;
-+	u32 umax_val = src_reg->u32_max_value;
-+	bool min_overflow, max_overflow;
- 
- 	if (check_add_overflow(*dst_smin, src_reg->s32_min_value, dst_smin) ||
- 	    check_add_overflow(*dst_smax, src_reg->s32_max_value, dst_smax)) {
- 		*dst_smin = S32_MIN;
- 		*dst_smax = S32_MAX;
- 	}
--	if (check_add_overflow(*dst_umin, src_reg->u32_min_value, dst_umin) ||
--	    check_add_overflow(*dst_umax, src_reg->u32_max_value, dst_umax)) {
-+
-+	/* If either all additions overflow or no additions overflow, then
-+	 * it is okay to set: dst_umin = dst_umin + src_umin, dst_umax =
-+	 * dst_umax + src_umax. Otherwise (some additions overflow), set
-+	 * the output bounds to unbounded.
-+	 */
-+	min_overflow = check_add_overflow(*dst_umin, umin_val, dst_umin);
-+	max_overflow = check_add_overflow(*dst_umax, umax_val, dst_umax);
-+
-+	if (!min_overflow && max_overflow) {
- 		*dst_umin = 0;
- 		*dst_umax = U32_MAX;
- 	}
-@@ -14625,14 +14636,25 @@ static void scalar_min_max_add(struct bpf_reg_state *dst_reg,
- 	s64 *dst_smax = &dst_reg->smax_value;
- 	u64 *dst_umin = &dst_reg->umin_value;
- 	u64 *dst_umax = &dst_reg->umax_value;
-+	u64 umin_val = src_reg->umin_value;
-+	u64 umax_val = src_reg->umax_value;
-+	bool min_overflow, max_overflow;
- 
- 	if (check_add_overflow(*dst_smin, src_reg->smin_value, dst_smin) ||
- 	    check_add_overflow(*dst_smax, src_reg->smax_value, dst_smax)) {
- 		*dst_smin = S64_MIN;
- 		*dst_smax = S64_MAX;
- 	}
--	if (check_add_overflow(*dst_umin, src_reg->umin_value, dst_umin) ||
--	    check_add_overflow(*dst_umax, src_reg->umax_value, dst_umax)) {
-+
-+	/* If either all additions overflow or no additions overflow, then
-+	 * it is okay to set: dst_umin = dst_umin + src_umin, dst_umax =
-+	 * dst_umax + src_umax. Otherwise (some additions overflow), set
-+	 * the output bounds to unbounded.
-+	 */
-+	min_overflow = check_add_overflow(*dst_umin, umin_val, dst_umin);
-+	max_overflow = check_add_overflow(*dst_umax, umax_val, dst_umax);
-+
-+	if (!min_overflow && max_overflow) {
- 		*dst_umin = 0;
- 		*dst_umax = U64_MAX;
- 	}
-@@ -14643,8 +14665,11 @@ static void scalar32_min_max_sub(struct bpf_reg_state *dst_reg,
- {
- 	s32 *dst_smin = &dst_reg->s32_min_value;
- 	s32 *dst_smax = &dst_reg->s32_max_value;
-+	u32 *dst_umin = &dst_reg->u32_min_value;
-+	u32 *dst_umax = &dst_reg->u32_max_value;
- 	u32 umin_val = src_reg->u32_min_value;
- 	u32 umax_val = src_reg->u32_max_value;
-+	bool min_underflow, max_underflow;
- 
- 	if (check_sub_overflow(*dst_smin, src_reg->s32_max_value, dst_smin) ||
- 	    check_sub_overflow(*dst_smax, src_reg->s32_min_value, dst_smax)) {
-@@ -14652,14 +14677,18 @@ static void scalar32_min_max_sub(struct bpf_reg_state *dst_reg,
- 		*dst_smin = S32_MIN;
- 		*dst_smax = S32_MAX;
- 	}
--	if (dst_reg->u32_min_value < umax_val) {
--		/* Overflow possible, we know nothing */
--		dst_reg->u32_min_value = 0;
--		dst_reg->u32_max_value = U32_MAX;
--	} else {
--		/* Cannot overflow (as long as bounds are consistent) */
--		dst_reg->u32_min_value -= umax_val;
--		dst_reg->u32_max_value -= umin_val;
-+
-+	/* If either all subtractions underflow or no subtractions
-+	 * underflow, it is okay to set: dst_umin = dst_umin - src_umax,
-+	 * dst_umax = dst_umax - src_umin. Otherwise (some subtractions
-+	 * underflow), set the output bounds to unbounded.
-+	 */
-+	min_underflow = check_sub_overflow(*dst_umin, umax_val, dst_umin);
-+	max_underflow = check_sub_overflow(*dst_umax, umin_val, dst_umax);
-+
-+	if (min_underflow && !max_underflow) {
-+		*dst_umin = 0;
-+		*dst_umax = U32_MAX;
- 	}
+diff --git a/tools/testing/selftests/bpf/progs/verifier_bounds.c b/tools/testing/selftests/bpf/progs/verifier_bounds.c
+index 30e16153fdf1..31986f6c609e 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_bounds.c
++++ b/tools/testing/selftests/bpf/progs/verifier_bounds.c
+@@ -1371,4 +1371,165 @@ __naked void mult_sign_ovf(void)
+ 	  __imm(bpf_skb_store_bytes)
+ 	: __clobber_all);
  }
- 
-@@ -14668,8 +14697,11 @@ static void scalar_min_max_sub(struct bpf_reg_state *dst_reg,
- {
- 	s64 *dst_smin = &dst_reg->smin_value;
- 	s64 *dst_smax = &dst_reg->smax_value;
-+	u64 *dst_umin = &dst_reg->umin_value;
-+	u64 *dst_umax = &dst_reg->umax_value;
- 	u64 umin_val = src_reg->umin_value;
- 	u64 umax_val = src_reg->umax_value;
-+	bool min_underflow, max_underflow;
- 
- 	if (check_sub_overflow(*dst_smin, src_reg->smax_value, dst_smin) ||
- 	    check_sub_overflow(*dst_smax, src_reg->smin_value, dst_smax)) {
-@@ -14677,14 +14709,18 @@ static void scalar_min_max_sub(struct bpf_reg_state *dst_reg,
- 		*dst_smin = S64_MIN;
- 		*dst_smax = S64_MAX;
- 	}
--	if (dst_reg->umin_value < umax_val) {
--		/* Overflow possible, we know nothing */
--		dst_reg->umin_value = 0;
--		dst_reg->umax_value = U64_MAX;
--	} else {
--		/* Cannot overflow (as long as bounds are consistent) */
--		dst_reg->umin_value -= umax_val;
--		dst_reg->umax_value -= umin_val;
 +
-+	/* If either all subtractions underflow or no subtractions
-+	 * underflow, it is okay to set: dst_umin = dst_umin - src_umax,
-+	 * dst_umax = dst_umax - src_umin. Otherwise (some subtractions
-+	 * underflow), set the output bounds to unbounded.
-+	 */
-+	min_underflow = check_sub_overflow(*dst_umin, umax_val, dst_umin);
-+	max_underflow = check_sub_overflow(*dst_umax, umin_val, dst_umax);
++SEC("socket")
++__description("64-bit addition, all outcomes overflow")
++__success __log_level(2)
++__msg("5: (0f) r3 += r3 {{.*}} R3_w=scalar(umin=0x4000000000000000,umax=0xfffffffffffffffe)")
++__retval(0)
++__naked void add64_full_overflow(void)
++{
++	asm volatile (
++	"r4 = 0;"
++	"r4 = -r4;"
++	"r3 = 0xa000000000000000 ll;"
++	"r3 |= r4;"
++	"r3 += r3;"
++	"r0 = 0;"
++	"exit"
++	:
++	:
++	: __clobber_all);
++}
 +
-+	if (min_underflow && !max_underflow) {
-+		*dst_umin = 0;
-+		*dst_umax = U64_MAX;
- 	}
- }
- 
++SEC("socket")
++__description("64-bit addition, partial overflow, result in unbounded reg")
++__success __log_level(2)
++__msg("4: (0f) r3 += r3 {{.*}} R3_w=scalar()")
++__retval(0)
++__naked void add64_partial_overflow(void)
++{
++	asm volatile (
++	"r4 = 0;"
++	"r4 = -r4;"
++	"r3 = 2;"
++	"r3 |= r4;"
++	"r3 += r3;"
++	"r0 = 0;"
++	"exit"
++	:
++	:
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("32-bit addition overflow, all outcomes overflow")
++__success __log_level(2)
++__msg("4: (0c) w3 += w3 {{.*}} R3_w=scalar(smin=umin=umin32=0x40000000,smax=umax=umax32=0xfffffffe,var_off=(0x0; 0xffffffff))")
++__retval(0)
++__naked void add32_full_overflow(void)
++{
++	asm volatile (
++	"w4 = 0;"
++	"w4 = -w4;"
++	"w3 = 0xa0000000;"
++	"w3 |= w4;"
++	"w3 += w3;"
++	"r0 = 0;"
++	"exit"
++	:
++	:
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("32-bit addition, partial overflow, result in unbounded u32 bounds")
++__success __log_level(2)
++__msg("4: (0c) w3 += w3 {{.*}} R3_w=scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff))")
++__retval(0)
++__naked void add32_partial_overflow(void)
++{
++	asm volatile (
++	"w4 = 0;"
++	"w4 = -w4;"
++	"w3 = 2;"
++	"w3 |= w4;"
++	"w3 += w3;"
++	"r0 = 0;"
++	"exit"
++	:
++	:
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("64-bit subtraction, all outcomes underflow")
++__success __log_level(2)
++__msg("6: (1f) r3 -= r1 {{.*}} R3_w=scalar(umin=1,umax=0x8000000000000000)")
++__retval(0)
++__naked void sub64_full_overflow(void)
++{
++	asm volatile (
++	"r1 = 0;"
++	"r1 = -r1;"
++	"r2 = 0x8000000000000000 ll;"
++	"r1 |= r2;"
++	"r3 = 0;"
++	"r3 -= r1;"
++	"r0 = 0;"
++	"exit"
++	:
++	:
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("64-bit subtration, partial overflow, result in unbounded reg")
++__success __log_level(2)
++__msg("3: (1f) r3 -= r2 {{.*}} R3_w=scalar()")
++__retval(0)
++__naked void sub64_partial_overflow(void)
++{
++	asm volatile (
++	"r3 = 0;"
++	"r3 = -r3;"
++	"r2 = 1;"
++	"r3 -= r2;"
++	"r0 = 0;"
++	"exit"
++	:
++	:
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("32-bit subtraction overflow, all outcomes underflow")
++__success __log_level(2)
++__msg("5: (1c) w3 -= w1 {{.*}} R3_w=scalar(smin=umin=umin32=1,smax=umax=umax32=0x80000000,var_off=(0x0; 0xffffffff))")
++__retval(0)
++__naked void sub32_full_overflow(void)
++{
++	asm volatile (
++	"w1 = 0;"
++	"w1 = -w1;"
++	"w2 = 0x80000000;"
++	"w1 |= w2;"
++	"w3 = 0;"
++	"w3 -= w1;"
++	"r0 = 0;"
++	"exit"
++	:
++	:
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("32-bit subtration, partial overflow, result in unbounded u32 bounds")
++__success __log_level(2)
++__msg("3: (1c) w3 -= w2 {{.*}} R3_w=scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff))")
++__retval(0)
++__naked void sub32_partial_overflow(void)
++{
++	asm volatile (
++	"w3 = 0;"
++	"w3 = -w3;"
++	"w2 = 1;"
++	"w3 -= w2;"
++	"r0 = 0;"
++	"exit"
++	:
++	:
++	: __clobber_all);
++}
++
+ char _license[] SEC("license") = "GPL";
 -- 
 2.45.2
 
