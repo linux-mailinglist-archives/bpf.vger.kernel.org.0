@@ -1,142 +1,347 @@
-Return-Path: <bpf+bounces-61388-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61389-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36E57AE6C06
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 18:04:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BD59AE6C2F
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 18:13:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F35983B5A4A
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 16:03:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 51C191BC2495
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 16:13:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8E002E174E;
-	Tue, 24 Jun 2025 16:03:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 933742E2EE2;
+	Tue, 24 Jun 2025 16:13:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DhyYdfPS"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FRXIiUeV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9403726CE13
-	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 16:03:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAC5F2E172F
+	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 16:13:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750781003; cv=none; b=AxbDjQEzeH3rVkhzUwmKYQPSjf4k7zMpJkl8dUm834brqdRyOWCIn8Wi7cz6mTFKI4bRUt4hzfYz8qU5wpBuLU6FgL3+VxCklEV5V7q5sbDYEcK3Js8VtHnZOpmGEG1KyZdLwcVUebhIjnxxn6h/AI/syQhhheuZnQLuE6xbTag=
+	t=1750781603; cv=none; b=EywqZLxnM26Jl9gC5QPbbAN15kgYSCfIXhHiTeXp2TgXFsrMw85yIdyQWiwES+IFMk6Qrrv9osXBPq/xcCSi1fmy1VmnWQruUD548dM8i3vewNcvAI35qaXU15CIbz/kJXaBqaowD8+bkKbORdjXoUmQHHq3c/dptWIo0pqfowE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750781003; c=relaxed/simple;
-	bh=hXawdhAkJZeyB33uC67SYm13VaHSv8kWcLT+M6yr+fw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mrGoe3+c3s+EDSvvh322zF73g8Wv5vejdjUqmuNHsIhEGezdC1oEbmgTT0UG8mkq73f7jW6SfUMQGh0pBSYmzakDJxKTQ7PxxNChmOiNSpF+My/N+5ap6WlIXJgg/ulAVUm+XO97tAELkK0zOkoixwqq1+VyfH6ox8k5UaRG5a0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DhyYdfPS; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-453608ed113so49102075e9.0
-        for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 09:03:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750780998; x=1751385798; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hXawdhAkJZeyB33uC67SYm13VaHSv8kWcLT+M6yr+fw=;
-        b=DhyYdfPSqXrH0BDnJ0cqaf3hFgxFEWVqy7XrK79cRn2TCLkGj5P5V4DVKfNzHyXOj8
-         X8CkDnDSarQzGUvgtA9jxpr8MYtTKHyDwO+371S2Jf2PU6uFFY8JUQG7C7j+r6x8opVZ
-         lwb8nh1xvjNswxLkfrklWXFXJ8ZQxkRHRLU3eWVbGr+29jMujFG+blZiMVu1spwXN70s
-         TEO15A3C7mEAbXyg6qjoJyGZZBMw7UVtRRaNc8QvGYiWZskD033bj18UKNc/lNnRg2Qz
-         Askfn+MGivbqYq2zl33xv0zkWjOa+XPGJ51SG9sRrKH+Tb1ptyIv6Pk7cOuimGdcgrnc
-         Kx4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750780998; x=1751385798;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hXawdhAkJZeyB33uC67SYm13VaHSv8kWcLT+M6yr+fw=;
-        b=cIuEeG7wa0RMhUkEFOQNR5kYPuLe4LYBhS2mzN8cKXE+DNEj817hlziFIPG8H4ybcR
-         cQzJz7OwcPOWw/yeYIOku3oUhNdpgGmyzIdN2hWDSnHYS/8/6t92YeJmIsv1mxzFi9Fd
-         KQwHduxUqGmCtNw67lmsPRozAghVJFOSD1PasII86FizvvJx6VC5cCOfiPgE3h2+QLCE
-         J9JsGEyQ7XgAOcb2+BPYqstMZGn0AQnfNnQ+dAgx8OVyCYdTX3e7S9bLW3owAqHvHPCk
-         76LObImcGNURe/9PgPk4IhclQk08l+QF1vo/Uajue8Zg54vbmoaP2Bfak5Zmaw++WYdm
-         ojlQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV5P+s4GNsqK0mcz2QvBVxsDGJAV5xaQyhCoO2vYt9D32yidLvWRZIupAbDAjcS/uPfkkU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwVCERxqEgvly+fRjr8aMx1eliOp4ELkfmMsV8gTJNBQ42uXqPb
-	du11vwF4x6DqIw447lCRu0C2PCEb0SsyjvefEakeU1vx0SGqjaIVSlzn1BUl31WGYcri8d0Xlsq
-	hm/0yR0guXaMafnExTjtj/QFsrhXFuaY=
-X-Gm-Gg: ASbGnctaXL1ax3wf+hQ7mGbPK9fq3mWFP9CZZr+Vwam+5eqCY4nZd4A0NEKN8E2F1A9
-	ZhUiUe/YQBDKFcagFC+6ekLywxP+6mrGsrBpHcju+PUbvKrN1A+SAwfZvywlK1+yutBF/c0mlqI
-	yxs7faC7r8WZVrcuL+ayzdYQoxa2GO8kntPr1owm96Sz6tFPf2l6TOeUo9o5k=
-X-Google-Smtp-Source: AGHT+IGS3GWfrNgOjZScVXyve5dSUedvOMD8hoZC1XiqYBmxqRvBaquy1cDi0Y2/7Za2MWGdTNUVonO7Uy2OHfJ1eqc=
-X-Received: by 2002:a05:6000:2d11:b0:3a4:e1e1:7779 with SMTP id
- ffacd0b85a97d-3a6d130707cmr8782917f8f.32.1750780997697; Tue, 24 Jun 2025
- 09:03:17 -0700 (PDT)
+	s=arc-20240116; t=1750781603; c=relaxed/simple;
+	bh=pBxAy1pCFtDfRbtpB4R90EkOue4doRXdXiuaMQoVeW8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=otopLcJ8d51r357In/H3jtvjRDVIpGis+0GyDG8F82MNtiqK/j1jx8z8wPTrwM6RTO211FBqbRAIYhk08h/Z25oV5TItkn1fKkDS74y46KoTT1XJdaAH8m1DMayVEHXbeLFGmPoyCkNmVbQyW06W7ltfQu2Z/swBHGOI9N6mHNQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FRXIiUeV; arc=none smtp.client-ip=91.218.175.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <5a772bf2-aeef-4dad-881a-a7684f6b5dfc@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1750781586;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GcsGLTJbKE+n2f7o4De1OfinTFhNpuXnxlPgDUg97bI=;
+	b=FRXIiUeVwB+ebT0Ji3lsvk4m/4V4VloCDbU68rxR5f3MB1PCa8I/ko/LEsSdztjHfw/hT4
+	+F63JxkPxqu77gDMTbS9wTVFwvVL1uS3RMHRWE1NzxpSNv5Xp9NkkkHIfrHv6CIKlQYww+
+	Y8BVyWkt58jfBZWKt/DTqYdevRJofMA=
+Date: Wed, 25 Jun 2025 00:12:56 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250624031252.2966759-1-memxor@gmail.com> <20250624031252.2966759-3-memxor@gmail.com>
- <aFqTiLd4HmjPS5eP@krava> <CAP01T77EXWDdRYtrJHUR6qLBgLqe4oT0A0N74CGBBRVGYPuKnQ@mail.gmail.com>
- <aFqpdkLaRsjTw7Ik@krava>
-In-Reply-To: <aFqpdkLaRsjTw7Ik@krava>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 24 Jun 2025 09:03:06 -0700
-X-Gm-Features: Ac12FXy2Q1BNwV6AkD2QnnBRs7HoRCnausP3YjrvVbOoL3WJ6oA3FOgCQ0L9yrU
-Message-ID: <CAADnVQJ+rCkrykbs-_qT9VTpp0in20U8K-eYEfXEyus88PihwA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 02/12] bpf: Introduce BPF standard streams
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Emil Tsalapatis <emil@etsalapatis.com>, Barret Rhoden <brho@google.com>, 
-	Matt Bobrowski <mattbobrowski@google.com>, kkd@meta.com, Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v5 1/3] bpf: Show precise link_type for
+ {uprobe,kprobe}_multi fdinfo
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ KP Singh <kpsingh@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>,
+ Song Liu <song@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ linux-trace-kernel <linux-trace-kernel@vger.kernel.org>
+References: <20250623134342.227347-1-chen.dylane@linux.dev>
+ <CAADnVQ+aZw4-3Ab9nLWrZUg78sc-SXuEGYnPrdOChw8m9sRLvw@mail.gmail.com>
+ <CAEf4BzZVw4aSpdTH+VKkG_q6J-sQwSFSCyU+-c5DcA5euP49ng@mail.gmail.com>
+ <aFpeyZnOuJ3Xr4J6@krava> <9034e367-e7e1-43b5-bd7c-70fc9a58335d@linux.dev>
+ <CAEf4BzY7TZRjxpCJM-+LYgEqe23YFj5Uv3isb7gat2-HU4OSng@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Tao Chen <chen.dylane@linux.dev>
+In-Reply-To: <CAEf4BzY7TZRjxpCJM-+LYgEqe23YFj5Uv3isb7gat2-HU4OSng@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Jun 24, 2025 at 6:34=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
-e:
->
-> On Tue, Jun 24, 2025 at 02:15:09PM +0200, Kumar Kartikeya Dwivedi wrote:
-> > On Tue, 24 Jun 2025 at 14:01, Jiri Olsa <olsajiri@gmail.com> wrote:
-> > >
-> > > On Mon, Jun 23, 2025 at 08:12:42PM -0700, Kumar Kartikeya Dwivedi wro=
-te:
-> > > > Add support for a stream API to the kernel and expose related kfunc=
-s to
-> > > > BPF programs. Two streams are exposed, BPF_STDOUT and BPF_STDERR. T=
-hese
-> > > > can be used for printing messages that can be consumed from user sp=
-ace,
-> > > > thus it's similar in spirit to existing trace_pipe interface.
-> > > >
-> > > > The kernel will use the BPF_STDERR stream to notify the program of =
-any
-> > > > errors encountered at runtime. BPF programs themselves may use both
-> > > > streams for writing debug messages. BPF library-like code may use
-> > > > BPF_STDERR to print warnings or errors on misuse at runtime.
-> > >
-> > > just curious, IIUC we can't mix the output of the streams when we dum=
-p
-> > > them, right? I wonder it'd be handy to be able to get combined output
-> > > and see messages from bpf programs sorted out with messages from kern=
-el
-> > >
-> >
-> > Yeah, this is a good point.
-> > Right now, no, in the sense that sequentiality is definitely broken
-> > across the two streams.
-> > We can force print a timestamp for every message and do the sorting
-> > from bpftool side, or it can just be piped to sort after dumping both
-> > stdout and stderr.
-> > Output will look like trace_pipe with some fixed format before the
-> > actual message.
-> > WDYT? Others are also welcome to chime in.
->
-> yes, keeping the kernel simple (just adding timestamp) and sorting
-> it in bpftool seems good to me
+在 2025/6/24 23:46, Andrii Nakryiko 写道:
+> On Tue, Jun 24, 2025 at 1:41 AM Tao Chen <chen.dylane@linux.dev> wrote:
+>>
+>> 在 2025/6/24 16:16, Jiri Olsa 写道:
+>>> On Mon, Jun 23, 2025 at 01:59:18PM -0700, Andrii Nakryiko wrote:
+>>>> On Mon, Jun 23, 2025 at 10:56 AM Alexei Starovoitov
+>>>> <alexei.starovoitov@gmail.com> wrote:
+>>>>>
+>>>>> On Mon, Jun 23, 2025 at 6:44 AM Tao Chen <chen.dylane@linux.dev> wrote:
+>>>>>>
+>>>>>> Alexei suggested, 'link_type' can be more precise and differentiate
+>>>>>> for human in fdinfo. In fact BPF_LINK_TYPE_KPROBE_MULTI includes
+>>>>>> kretprobe_multi type, the same as BPF_LINK_TYPE_UPROBE_MULTI, so we
+>>>>>> can show it more concretely.
+>>>>>>
+>>>>>> link_type:      kprobe_multi
+>>>>>> link_id:        1
+>>>>>> prog_tag:       d2b307e915f0dd37
+>>>>>> ...
+>>>>>> link_type:      kretprobe_multi
+>>>>>> link_id:        2
+>>>>>> prog_tag:       ab9ea0545870781d
+>>>>>> ...
+>>>>>> link_type:      uprobe_multi
+>>>>>> link_id:        9
+>>>>>> prog_tag:       e729f789e34a8eca
+>>>>>> ...
+>>>>>> link_type:      uretprobe_multi
+>>>>>> link_id:        10
+>>>>>> prog_tag:       7db356c03e61a4d4
+>>>>>>
+>>>>>> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+>>>>>> ---
+>>>>>>    include/linux/trace_events.h | 10 ++++++++++
+>>>>>>    kernel/bpf/syscall.c         |  9 ++++++++-
+>>>>>>    kernel/trace/bpf_trace.c     | 28 ++++++++++++++++++++++++++++
+>>>>>>    3 files changed, 46 insertions(+), 1 deletion(-)
+>>>>>>
+>>>>>> Change list:
+>>>>>>     v4 -> v5:
+>>>>>>       - Add patch1 to show precise link_type for
+>>>>>>         {uprobe,kprobe}_multi.(Alexei)
+>>>>>>       - patch2,3 just remove type field, which will be showed in
+>>>>>>         link_type
+>>>>>>     v4:
+>>>>>>     https://lore.kernel.org/bpf/20250619034257.70520-1-chen.dylane@linux.dev
+>>>>>>
+>>>>>>     v3 -> v4:
+>>>>>>       - use %pS to print func info.(Alexei)
+>>>>>>     v3:
+>>>>>>     https://lore.kernel.org/bpf/20250616130233.451439-1-chen.dylane@linux.dev
+>>>>>>
+>>>>>>     v2 -> v3:
+>>>>>>       - show info in one line for multi events.(Jiri)
+>>>>>>     v2:
+>>>>>>     https://lore.kernel.org/bpf/20250615150514.418581-1-chen.dylane@linux.dev
+>>>>>>
+>>>>>>     v1 -> v2:
+>>>>>>       - replace 'func_cnt' with 'uprobe_cnt'.(Andrii)
+>>>>>>       - print func name is more readable and security for kprobe_multi.(Alexei)
+>>>>>>     v1:
+>>>>>>     https://lore.kernel.org/bpf/20250612115556.295103-1-chen.dylane@linux.dev
+>>>>>>
+>>>>>> diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+>>>>>> index fa9cf4292df..951c91babbc 100644
+>>>>>> --- a/include/linux/trace_events.h
+>>>>>> +++ b/include/linux/trace_events.h
+>>>>>> @@ -780,6 +780,8 @@ int bpf_get_perf_event_info(const struct perf_event *event, u32 *prog_id,
+>>>>>>                               unsigned long *missed);
+>>>>>>    int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog);
+>>>>>>    int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog);
+>>>>>> +void bpf_kprobe_multi_link_type_show(const struct bpf_link *link, char *link_type, int len);
+>>>>>> +void bpf_uprobe_multi_link_type_show(const struct bpf_link *link, char *link_type, int len);
+>>>>>>    #else
+>>>>>>    static inline unsigned int trace_call_bpf(struct trace_event_call *call, void *ctx)
+>>>>>>    {
+>>>>>> @@ -832,6 +834,14 @@ bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+>>>>>>    {
+>>>>>>           return -EOPNOTSUPP;
+>>>>>>    }
+>>>>>> +static inline void
+>>>>>> +bpf_kprobe_multi_link_type_show(const struct bpf_link *link, char *link_type, int len)
+>>>>>> +{
+>>>>>> +}
+>>>>>> +static inline void
+>>>>>> +bpf_uprobe_multi_link_type_show(const struct bpf_link *link, char *link_type, int len)
+>>>>>> +{
+>>>>>> +}
+>>>>>>    #endif
+>>>>>>
+>>>>>>    enum {
+>>>>>> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+>>>>>> index 51ba1a7aa43..43b821b37bc 100644
+>>>>>> --- a/kernel/bpf/syscall.c
+>>>>>> +++ b/kernel/bpf/syscall.c
+>>>>>> @@ -3226,9 +3226,16 @@ static void bpf_link_show_fdinfo(struct seq_file *m, struct file *filp)
+>>>>>>           const struct bpf_prog *prog = link->prog;
+>>>>>>           enum bpf_link_type type = link->type;
+>>>>>>           char prog_tag[sizeof(prog->tag) * 2 + 1] = { };
+>>>>>> +       char link_type[64] = {};
+>>>>>>
+>>>>>>           if (type < ARRAY_SIZE(bpf_link_type_strs) && bpf_link_type_strs[type]) {
+>>>>>> -               seq_printf(m, "link_type:\t%s\n", bpf_link_type_strs[type]);
+>>>>>> +               if (link->type == BPF_LINK_TYPE_KPROBE_MULTI)
+>>>>>> +                       bpf_kprobe_multi_link_type_show(link, link_type, sizeof(link_type));
+>>>>>> +               else if (link->type == BPF_LINK_TYPE_UPROBE_MULTI)
+>>>>>> +                       bpf_uprobe_multi_link_type_show(link, link_type, sizeof(link_type));
+>>>>>> +               else
+>>>>>> +                       strscpy(link_type, bpf_link_type_strs[type], sizeof(link_type));
+>>>>>> +               seq_printf(m, "link_type:\t%s\n", link_type);
+>>>>>
+>>>>> New callbacks just to print a string?
+>>>>> Let's find a different way.
+>>>>>
+>>>>> How about moving 'flags' from bpf_[ku]probe_multi_link into bpf_link ?
+>>>>> (There is a 7 byte hole there anyway)
+>>>>> and checking flags inline.
+>>>>>
+>>>>> Jiri, Andrii,
+>>>>>
+>>>>> better ideas?
+>>>>
+>>>> We can just remember original attr->link_create.attach_type in
+>>>> bpf_link itself, and then have a small helper that will accept link
+>>>> type and attach type, and fill out link type representation based on
+>>>> those two. Internally we can do the special-casing of  uprobe vs
+>>>> uretprobe and kprobe vs kretprobe transparently to all the other code.
+>>>> And use that here in show_fdinfo
+>>>
+>>> but you'd still need the flags, no? to find out if it's return probe
+>>>
+>>> I tried what Alexei suggested and it seems ok and simple enough
+>>>
+>>> jirka
+>>>
+>>>
+>>> ---
+>>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>>> index 5dd556e89cce..287c956cdbd2 100644
+>>> --- a/include/linux/bpf.h
+>>> +++ b/include/linux/bpf.h
+>>> @@ -1702,6 +1702,7 @@ struct bpf_link {
+>>>         * link's semantics is determined by target attach hook
+>>>         */
+>>>        bool sleepable;
+>>> +     u32 flags;
+>>>        /* rcu is used before freeing, work can be used to schedule that
+>>>         * RCU-based freeing before that, so they never overlap
+>>>         */
+>>> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+>>> index 56500381c28a..f1d9ee9717a1 100644
+>>> --- a/kernel/bpf/syscall.c
+>>> +++ b/kernel/bpf/syscall.c
+>>> @@ -3228,7 +3228,14 @@ static void bpf_link_show_fdinfo(struct seq_file *m, struct file *filp)
+>>>        char prog_tag[sizeof(prog->tag) * 2 + 1] = { };
+>>>
+>>>        if (type < ARRAY_SIZE(bpf_link_type_strs) && bpf_link_type_strs[type]) {
+>>> -             seq_printf(m, "link_type:\t%s\n", bpf_link_type_strs[type]);
+>>> +             if (link->type == BPF_LINK_TYPE_KPROBE_MULTI)
+>>> +                     seq_printf(m, "link_type:\t%s\n", link->flags == BPF_F_KPROBE_MULTI_RETURN ?
+>>> +                                "kretprobe_multi" : "kprobe_multi");
+>>> +             else if (link->type == BPF_LINK_TYPE_UPROBE_MULTI)
+>>> +                     seq_printf(m, "link_type:\t%s\n", link->flags == BPF_F_UPROBE_MULTI_RETURN ?
+>>> +                                "uretprobe_multi" : "uprobe_multi");
+>>> +             else
+>>> +                     seq_printf(m, "link_type:\t%s\n", bpf_link_type_strs[type]);
+>>>        } else {
+>>>                WARN_ONCE(1, "missing BPF_LINK_TYPE(...) for link type %u\n", type);
+>>>                seq_printf(m, "link_type:\t<%u>\n", type);
+>>> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+>>> index 0a06ea6638fe..81d7a4e5ae15 100644
+>>> --- a/kernel/trace/bpf_trace.c
+>>> +++ b/kernel/trace/bpf_trace.c
+>>> @@ -2466,7 +2466,6 @@ struct bpf_kprobe_multi_link {
+>>>        u32 cnt;
+>>>        u32 mods_cnt;
+>>>        struct module **mods;
+>>> -     u32 flags;
+>>>    };
+>>>
+>>>    struct bpf_kprobe_multi_run_ctx {
+>>> @@ -2586,7 +2585,7 @@ static int bpf_kprobe_multi_link_fill_link_info(const struct bpf_link *link,
+>>>
+>>>        kmulti_link = container_of(link, struct bpf_kprobe_multi_link, link);
+>>>        info->kprobe_multi.count = kmulti_link->cnt;
+>>> -     info->kprobe_multi.flags = kmulti_link->flags;
+>>> +     info->kprobe_multi.flags = kmulti_link->link.flags;
+>>>        info->kprobe_multi.missed = kmulti_link->fp.nmissed;
+>>>
+>>>        if (!uaddrs)
+>>> @@ -2976,7 +2975,7 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+>>>        link->addrs = addrs;
+>>>        link->cookies = cookies;
+>>>        link->cnt = cnt;
+>>> -     link->flags = flags;
+>>> +     link->link.flags = flags;
+>>>
+>>>        if (cookies) {
+>>>                /*
+>>> @@ -3045,7 +3044,6 @@ struct bpf_uprobe_multi_link {
+>>>        struct path path;
+>>>        struct bpf_link link;
+>>>        u32 cnt;
+>>> -     u32 flags;
+>>>        struct bpf_uprobe *uprobes;
+>>>        struct task_struct *task;
+>>>    };
+>>> @@ -3109,7 +3107,7 @@ static int bpf_uprobe_multi_link_fill_link_info(const struct bpf_link *link,
+>>>
+>>>        umulti_link = container_of(link, struct bpf_uprobe_multi_link, link);
+>>>        info->uprobe_multi.count = umulti_link->cnt;
+>>> -     info->uprobe_multi.flags = umulti_link->flags;
+>>> +     info->uprobe_multi.flags = umulti_link->link.flags;
+>>>        info->uprobe_multi.pid = umulti_link->task ?
+>>>                                 task_pid_nr_ns(umulti_link->task, task_active_pid_ns(current)) : 0;
+>>>
+>>> @@ -3369,7 +3367,7 @@ int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+>>>        link->uprobes = uprobes;
+>>>        link->path = path;
+>>>        link->task = task;
+>>> -     link->flags = flags;
+>>> +     link->link.flags = flags;
+>>>
+>>>        bpf_link_init(&link->link, BPF_LINK_TYPE_UPROBE_MULTI,
+>>>                      &bpf_uprobe_multi_link_lops, prog);
+>>
+>> Hi, Jiri, Andrii,
+>>
+>> Jiri's patch looks more simple, and i see other struct xx_links wrap
+>> bpf_link, which have attach_type field like:
+>> struct sockmap_link {
+>>           struct bpf_link link;
+>>           struct bpf_map *map;
+>>           enum bpf_attach_type attach_type;
+>> };
+>> If we create attach_type filed in bpf_link, maybe these struct xx_link
+>> should also be modified. BTW, as Jiri said, we still can not find return
+>> probe type from attach_type.
+> 
+> You are right, I somehow was under impression that ret vs non-retprobe
+> comes from attach type as well.
+> 
+> Ok, moving flags into common bpf_link struct sounds good to me. I'd
+> still move attach_type into bpf_link, together with flags, for
+> generality (and update all those links that already include
+> attach_type as you mentioned). We can make it a single-byte field to
+> not increase bpf_link size unnecessarily (by using bitfield size).
+> 
 
-I don't see the point in all that complication.
-If bpf prog wants to separate its printk vs kernel printks
-it should use a different stream.
-Right now there is only stdout and stderr.
-Eventually we will allow for more.
+Well，can we complete this in two steps?
+
+1. Create a common field in bpf_link used for flags or attach_type, and 
+realise the precise link_type feature as Jiri and Alexei said, the 
+review of this part has been revised almost completely.
+
+2. Move the attach_type from struct bpf_xx_link into bpf_link, this will 
+involve a lot of changes, i will send a separate patchset to finish it.
+
+>>
+>> --
+>> Best Regards
+>> Tao Chen
+
+
+-- 
+Best Regards
+Tao Chen
 
