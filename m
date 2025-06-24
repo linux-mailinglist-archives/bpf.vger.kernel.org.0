@@ -1,168 +1,180 @@
-Return-Path: <bpf+bounces-61365-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61366-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 605AFAE63D4
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 13:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B251AE63E3
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 13:50:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 604CA4075B3
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 11:47:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 619E73AC29E
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 11:49:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9421284682;
-	Tue, 24 Jun 2025 11:48:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F1E728C864;
+	Tue, 24 Jun 2025 11:50:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GgqlfVAc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TGMwRVzo"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+Received: from mail-ed1-f68.google.com (mail-ed1-f68.google.com [209.85.208.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BE0F1EBA09
-	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 11:48:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5275422CBF9
+	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 11:50:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750765694; cv=none; b=ISN7zZFP76zD+Qc0JGnJHiaPHpUGi4kLmzQcq+lJzkzEGU/ZNKDGcn2gkFsQQZNpbECrxviMaHYHYCQ5TgpGoObUNwxt9JiCLZiMkT8DlA0Y+g28Bh0I59EF0O7qmdW2ZoHn+NRyZDe3Ok0xS7iGeXTSHaOAZPxXwWkfl/6iPsM=
+	t=1750765809; cv=none; b=g1e659QLL28+LXBUbxLfrg4HNYifFKMlldB2mshYmPRho2vrztZ/uU29Shux+/mVi3mzWRP3pdAXxPYWx8zf0qBsJL2MGwrLVVlteMuHamz1AKsNi7WA3E/H3p2fnltFSvUB04Mi0FBWmOF6eCO+Y2wJJvSGs0JDrkWn1X2SZ80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750765694; c=relaxed/simple;
-	bh=g3MvI9dlAPXk9v7Ht3Y5Sbu9RyZs3MDiQQpGCfyFxF0=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JeG/wh2M+ZtkC+WcDwEDXqtWnPEcfAY4J5+P+hhQttNkeB/e4TwikYX5sZbdps8zfBQ/yRnC755Zdxb/mvkq17mRIrMROyLcOJDBQZkGQEbDWcU1mxY5NIO6sM9dc4rgm/aCR8TRwZfl6pnVSXrx/gDySgkN30Q4Ir1NA/Sfrzs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GgqlfVAc; arc=none smtp.client-ip=209.85.218.53
+	s=arc-20240116; t=1750765809; c=relaxed/simple;
+	bh=cJTHrSk9wN8IzAE6LwZnoFPtveZIQEjzvkTWX0QnRbc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=R7SfTW49+F2zu65eFVpV/StLW3Pnrt8ieeqfMk94sN1zm1nWsryQz88B/ck96zqm39oPVGPneUs7G99y7j+q8LHUyTCNA+uSjYxFTRE7xawwGcp4HmA6+nSi/7rsf1pDoM5EYb2bDz0vEhMC4LQXR72nWAsoyEIGqF2AbOUNLaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TGMwRVzo; arc=none smtp.client-ip=209.85.208.68
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-acb5ec407b1so871814566b.1
-        for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 04:48:12 -0700 (PDT)
+Received: by mail-ed1-f68.google.com with SMTP id 4fb4d7f45d1cf-60c01f70092so543829a12.3
+        for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 04:50:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750765691; x=1751370491; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zW+6D+JP87Tc9aa8R+gIT+GfGOYUJF9yrXCxL9GmKlA=;
-        b=GgqlfVAczNcabzSaxtFmrdOIpSWGFD37G9PFvti8OZ/0UKX2kbGkptdIEk/ZH4vS33
-         8pAKcaZczkOdM7jedbd9kxU8h/fRYHI/FKBw10owe+L7D6SoKVBwILWpZ4oIq/FgAmwg
-         5pS9ajre/d9BBaazG6gtOjpWSE8lkoQGvyRIKdPwokm6rojwzoaacKUEgeT19ZllvrhT
-         CvTO4/tj/ssq/rXB0yo8hp9KIcRN02uGxyN/0DLQwGMtUfHddQ3/4lstsQVWyyFKRwr8
-         pVMap/k5kgIgwwTvGgTXSFNbnC8szx8EonI7rP0nmqdOHsx7EEmjrinF5ycZ2rghbG2L
-         6AFA==
+        d=gmail.com; s=20230601; t=1750765805; x=1751370605; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=vfKxy4paMErPO/QGjvni1F33jnL80RR0ffWPIayQVik=;
+        b=TGMwRVzoReut7ALPgCtZfFuEcXNtv/1LllZB6noO5iMqpFtsE0STUW6DINl7fW+v0t
+         d69Qq1Aepo7iyUBA/RzMmGUeTleIo/K2XLu83PKsnL93zgg6UmO7eGlcE8awn3NxdSq2
+         0iE0teQxqH31IFKGrHgvoYmNh9QMuw5oTw+aaFwfG5OgR3LEYJMNxotyM1AI+sqboHm/
+         CrRW9iBUZSSNMZuv20Duar3ShT5i6jgbCp79aW/jSBOL4VT2ncteLjoqZOi9F+sJsVbL
+         S8LxQZD0tIaB2uavSi5s5NtRRQnFgCwYDpgp4DL5T3483WgTlpZyu6WP5u8xmz1FE0iK
+         gr9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750765691; x=1751370491;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zW+6D+JP87Tc9aa8R+gIT+GfGOYUJF9yrXCxL9GmKlA=;
-        b=Hn2g7p6HGEhPxZFDDd7bI7XSW9aWqO1yF2H1CjQj7pIb/7ZGrAolpGtJkCFiJb5uRi
-         +kguxsxIProQXEcdHMwUawoRa8BxzwD5K/3ioWBPCyRG0Wh2mVsCK+1FM6FQYZoK7VNg
-         Mt9QYR/c44lhzt76Irb9G1K3CX99Fa863ynOD/FuUsVVVgig9/mNUIOXvXF00dZ5hydZ
-         zA9VzIvkBl6jw3fEW9mAOE7WAY4I9OcFsA8jdBmiyGDXt556zCWvyhq/2qr5V6UE+yTs
-         dGiri1ByT+bKLcA4ZAHSVmAGS5gT5niP5Aog0iuXUj5zRKu5BEgnVjB9wC0d1s+Ass9o
-         LfBw==
-X-Forwarded-Encrypted: i=1; AJvYcCVV7sbLS5doiSIBKvGR1S5aQfoVOpPQqQ1vqpgEV/h+laE4wFl5HSblhrZhyaY0J0UDiEY=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxe5KruHhctYEn9AI+XQUqRmZ3nJe1EIBtaTnvblBNXSJEGG/Mc
-	m++dQMnT7+wpYaFLYu0zlgGREPOxVUYPAS3QuFelNfbfgySIpSdCRh41
-X-Gm-Gg: ASbGncuj7YAhjCPFnwpc5uUoGSZVTXYaiSWKb/rXa9DD8g3C4KINRGt3haLweb4laRy
-	S5/pkRU9quwdaJh5ORWuKFUQsGWGTSz1M8QEZQWOxSfq3DkpfuIC2Fg8Ydgrmn9H/3ayIwD08/Q
-	VErIqJCy/vIX7T/4niJGzLv1/wFSiIQIz7qfIfpepMccwOxsiaUvzNfxoRL5k4fJwEzfgtk7LG+
-	fKUVvjE3/6qIrrofo/v5dO6g+2X9wmA5I9SFEE28ivD1p6dPRbwzPk/EaS6uesCrGLQNVNPz2L7
-	Fj41BzZ7gATKdRChDtH1jR63SjfzzUAjOA/T3X/syLmWU8FybQ==
-X-Google-Smtp-Source: AGHT+IHHr0pI3KWTliUDk10tZ0NrK19mQurQjpg6T39VbqlBJvS4gvtBJfL5EjE3Vk+tNOWA4QuO6g==
-X-Received: by 2002:a17:907:6ea5:b0:ad5:a29c:efed with SMTP id a640c23a62f3a-ae057b6c0efmr1429398566b.33.1750765690340;
-        Tue, 24 Jun 2025 04:48:10 -0700 (PDT)
-Received: from krava ([176.74.159.170])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae053e8086fsm859214166b.27.2025.06.24.04.48.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Jun 2025 04:48:10 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 24 Jun 2025 13:48:08 +0200
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, ast@kernel.org, andrii@kernel.org,
-	daniel@iogearbox.net, martin.lau@linux.dev, eddyz87@gmail.com,
-	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
-	mykolal@fb.com, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next] selftests/bpf: add btf dedup test covering
- module BTF dedup
-Message-ID: <aFqQeGG-vXEAldRA@krava>
-References: <20250430134249.2451066-1-alan.maguire@oracle.com>
- <aFVjVoafmmPeUqiz@krava>
- <aFVnWxNycW6ZtQAU@krava>
- <769e1fb7-d4b2-47cb-b71d-7db2168cb5aa@oracle.com>
+        d=1e100.net; s=20230601; t=1750765805; x=1751370605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vfKxy4paMErPO/QGjvni1F33jnL80RR0ffWPIayQVik=;
+        b=Wt5v5A07BBuArXg6Lgdfc/PtBm/GmmVWFkpG12l3qa3aJI03PnQ0gYDGI25mbchhXn
+         skq9qvC5o7pay3762jhYFkNR26UhvFLu6Ve8ArhfQ3eel/+RCue+Lp4UcfXY8OAR/jze
+         0L16cLOYcCtzNswV0fakWhPuNPY14Dc6iMrB65wNl1p+iBm9fy9nU559hkjnoehz3rBB
+         IUEVGlN/svs69EcfZTKWkbux9UYwvEBuIuNN9gZvUpXlo/Iy/o2TcHtPDAeChub779Px
+         t31uZQaWiVKQBVrsqRptBBb96GJi906H3iJc/OUrNTKJlCQBcdYp/5rE09f4Lk1CR5k3
+         CC2A==
+X-Gm-Message-State: AOJu0YyQUpXYY7ZSm46A37NbPjJZLZrzA0wwRrz4X88ku38u9zDrmnNe
+	URl9ky6qbFNtWzLY4L1tSB2i3VohBBf343Z69M13r+hoY6D+xRfe91CDyW3VbFA+htW1HRyrb9t
+	oCKBkXTjWKYypchnITj+Kk9g2aXSs4EE=
+X-Gm-Gg: ASbGnctKVA/CEXwOq//bmX1jXVmftDwkA35PJ6sTlX8DcmWrr8a6VXSE0I48ZHOok1d
+	SLd31BHfQ8HoIaYIO09M1fXMBejskOrReEaq/f9GQrKkzH4cZ3ZpAgSoP9/1Xg/0RDqwKLiUmPZ
+	7TsLvjbhB1wiR7i3piyaPWDDH+y7yoOftX5rzW+OQwDPS+
+X-Google-Smtp-Source: AGHT+IGgtcKo+nrEz5dUAH+HMEeomQITe0jDnmcdam+dNuH6eRfX9V8bC7LEdyPGjsKMgNWoMHyu/FTYETMzoc/nnnY=
+X-Received: by 2002:a17:907:d2cf:b0:ad5:7bc4:84b5 with SMTP id
+ a640c23a62f3a-ae057c3ecb4mr1612504266b.57.1750765805258; Tue, 24 Jun 2025
+ 04:50:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <769e1fb7-d4b2-47cb-b71d-7db2168cb5aa@oracle.com>
+References: <20250624031252.2966759-1-memxor@gmail.com> <20250624031252.2966759-7-memxor@gmail.com>
+ <aFqOHariTJvjyJwX@krava>
+In-Reply-To: <aFqOHariTJvjyJwX@krava>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Tue, 24 Jun 2025 13:49:28 +0200
+X-Gm-Features: Ac12FXxeYhBbfX7cSS741W1XTbeb4SQ5hwe_9UPGCRh377KFdKd-tQlZJwMfHT0
+Message-ID: <CAP01T75sqm+VqePRyjRkpgtpb3n+8553rBqwTQdgeBS=dOg32g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 06/12] bpf: Add dump_stack() analogue to print
+ to BPF stderr
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Emil Tsalapatis <emil@etsalapatis.com>, Barret Rhoden <brho@google.com>, 
+	Matt Bobrowski <mattbobrowski@google.com>, kkd@meta.com, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Jun 20, 2025 at 04:41:48PM +0100, Alan Maguire wrote:
-> On 20/06/2025 14:51, Jiri Olsa wrote:
-> > On Fri, Jun 20, 2025 at 03:34:14PM +0200, Jiri Olsa wrote:
-> >> On Wed, Apr 30, 2025 at 02:42:49PM +0100, Alan Maguire wrote:
-> >>> Recently issues were observed with module BTF deduplication failures
-> >>> [1].  Add a dedup selftest that ensures that core kernel types are
-> >>> referenced from split BTF as base BTF types.  To do this use bpf_testmod
-> >>> functions which utilize core kernel types, specifically
-> >>>
-> >>> ssize_t
-> >>> bpf_testmod_test_write(struct file *file, struct kobject *kobj,
-> >>>                        struct bin_attribute *bin_attr,
-> >>>                        char *buf, loff_t off, size_t len);
-> >>>
-> >>> __bpf_kfunc struct sock *bpf_kfunc_call_test3(struct sock *sk);
-> >>>
-> >>> __bpf_kfunc void bpf_kfunc_call_test_pass_ctx(struct __sk_buff *skb);
-> >>>
-> >>> For each of these ensure that the types they reference -
-> >>> struct file, struct kobject, struct bin_attr etc - are in base BTF.
-> >>> Note that because bpf_testmod.ko is built with distilled base BTF
-> >>> the associated reference types - i.e. the PTR that points at a
-> >>> "struct file" - will be in split BTF.  As a result the test resolves
-> >>> typedef and pointer references and verifies the pointed-at or
-> >>> typedef'ed type is in base BTF.  Because we use BTF from
-> >>> /sys/kernel/btf/bpf_testmod relocation has occurred for the
-> >>> referenced types and they will be base - not distilled base - types.
-> >>>
-> >>> For large-scale dedup issues, we see such types appear in split BTF and
-> >>> as a result this test fails.  Hence it is proposed as a test which will
-> >>> fail when large-scale dedup issues have occurred.
-> >>>
-> >>> [1] https://lore.kernel.org/dwarves/CAADnVQL+-LiJGXwxD3jEUrOonO-fX0SZC8496dVzUXvfkB7gYQ@mail.gmail.com/
-> >>>
-> >>> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> >>
-> >> hi Alan,
-> >> this one started to fail in my tests.. it's likely some screw up in
-> >> my environment, but I haven't found the cause yet, I'm using the
-> >> pahole 1.30 .. just cheking if it's known issue already ;-)
-> > 
-> > hum, it might be my gcc-14 .. will upgrade
+On Tue, 24 Jun 2025 at 13:38, Jiri Olsa <olsajiri@gmail.com> wrote:
+>
+> On Mon, Jun 23, 2025 at 08:12:46PM -0700, Kumar Kartikeya Dwivedi wrote:
+>
+> SNIP
+>
+> > diff --git a/kernel/bpf/stream.c b/kernel/bpf/stream.c
+> > index 75ceb6379368..5fb11202ab9c 100644
+> > --- a/kernel/bpf/stream.c
+> > +++ b/kernel/bpf/stream.c
+> > @@ -2,6 +2,7 @@
+> >  /* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
 > >
-> 
-> hi Jiri, is it possible you were using the pre-dedup-fix pahole, i.e.
-> the official 1.30, or a version without
-> 
-> commit 6362d1f1657e3381e3e622d70364145f72804504
-> Author: Alan Maguire <alan.maguire@oracle.com>
-> Date:   Tue Apr 29 20:49:05 2025 +0100
-> 
->     pahole: Sync with libbpf mainline
-> 
->     To pull in dedup fix in
-> 
->     commit 8e64c387c942 ("libbpf: Add identical pointer detection to
-> btf_dedup_is_equiv()")
-> 
->     sync with latest libbpf.
-> 
-> ? That would mean you would hit the module dedup failure and the test
-> would fail as a result. If that's the case, if you could try syncing to
-> the "next" branch of pahole and see if it recurs, that would be great!
-> Thanks!
+> >  #include <linux/bpf.h>
+> > +#include <linux/filter.h>
+> >  #include <linux/bpf_mem_alloc.h>
+> >  #include <linux/percpu.h>
+> >  #include <linux/refcount.h>
+> > @@ -483,3 +484,46 @@ bool bpf_prog_stream_error_limit(struct bpf_prog *prog)
+> >  {
+> >       return atomic_fetch_add(1, &prog->aux->stream_error_cnt) >= BPF_PROG_STREAM_ERROR_CNT;
+> >  }
+> > +
+> > +struct dump_stack_ctx {
+> > +     struct bpf_stream_stage *ss;
+> > +     int err;
+> > +};
+> > +
+> > +static bool dump_stack_cb(void *cookie, u64 ip, u64 sp, u64 bp)
+> > +{
+> > +     struct dump_stack_ctx *ctxp = cookie;
+> > +     const char *file = "", *line = "";
+> > +     struct bpf_prog *prog;
+> > +     int num, ret;
+> > +
+> > +     if (is_bpf_text_address(ip)) {
+> > +             rcu_read_lock();
+> > +             prog = bpf_prog_ksym_find(ip);
+> > +             rcu_read_unlock();
+>
+> do you need to check prog != NULL ?
 
-yep, that helped, thank you
+I think it should be non-NULL, given we're walking IPs of progs with
+an active stack frame so they're not going away.
 
-jirka
+>
+> also is_bpf_text_address calls bpf_ksym_find and bpf_prog_ksym_find calls it again,
+> I think it'd be better just to call bpf_prog_ksym_find from here
+>
+
+Good point, I will fix that. Then just check it for NULL once and
+continue using it.
+
+Thanks!
+
+> jirka
+>
+>
+> > +             ret = bpf_prog_get_file_line(prog, ip, &file, &line, &num);
+> > +             if (ret < 0)
+> > +                     goto end;
+> > +             ctxp->err = bpf_stream_stage_printk(ctxp->ss, "%pS\n  %s @ %s:%d\n",
+> > +                                                 (void *)ip, line, file, num);
+> > +             return !ctxp->err;
+> > +     }
+> > +end:
+> > +     ctxp->err = bpf_stream_stage_printk(ctxp->ss, "%pS\n", (void *)ip);
+> > +     return !ctxp->err;
+> > +}
+> > +
+> > +int bpf_stream_stage_dump_stack(struct bpf_stream_stage *ss)
+> > +{
+> > +     struct dump_stack_ctx ctx = { .ss = ss };
+> > +     int ret;
+> > +
+> > +     ret = bpf_stream_stage_printk(ss, "CPU: %d UID: %d PID: %d Comm: %s\n",
+> > +                                   raw_smp_processor_id(), __kuid_val(current_real_cred()->euid),
+> > +                                   current->pid, current->comm);
+> > +     ret = ret ?: bpf_stream_stage_printk(ss, "Call trace:\n");
+> > +     if (!ret)
+> > +             arch_bpf_stack_walk(dump_stack_cb, &ctx);
+> > +     ret = ret ?: ctx.err;
+> > +     return ret ?: bpf_stream_stage_printk(ss, "\n");
+> > +}
+> > --
+> > 2.47.1
+> >
+> >
 
